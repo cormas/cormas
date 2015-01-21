@@ -6,6 +6,8 @@ Current stable version of CORMAS is based on VisualWorks 7.2 and can be found on
 Some documentation (to be cleaned and reorganized) about Cormas is available on the Wiki here: 
 https://github.com/cormas/documentation
 
+All issues about the current and ongoing port are here: https://github.com/cormas/cormas/issues
+
 ##How to install Cormas in MOOSE 5.0 image
 
 Download last version of MOOSE 5.0 here: http://www.moosetechnology.org/
