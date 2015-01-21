@@ -1,6 +1,6 @@
-Cormas is a Pharo Smalltalk project to do agent simulation.
+Cormas is a Pharo Smalltalk project to do multi-agent simulation.
 
-:bangbang: Current active development repository is located at **[SmalltalkHub](http://www.smalltalkhub.com/#!/~SergeStinckwich/SciSmalltalk)**
+:bangbang: Current active development repository is located at **[SmalltalkHub](http://www.smalltalkhub.com/#!/~SergeStinckwich/cormas)**
 
 Some documentation (to be cleaned and reorganized) about Cormas is available on the Wiki here: 
 
