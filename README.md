@@ -1,10 +1,12 @@
-Cormas is a Pharo Smalltalk project to do multi-agent simulation.
+This is an ongoing effort to port CORMAS to Pharo ecosystem: http://www.pharo.org/
+Current stable version of CORMAS is based on VisualWorks 7.2 and can be found on: http://cormas.cirad.fr/indexeng.htm
 
-:bangbang: Current active development repository is located at **[SmalltalkHub](http://www.smalltalkhub.com/#!/~SergeStinckwich/cormas)**
+:bangbang: Current active development repository is located at **[SmalltalkHub](http://www.smalltalkhub.com/#!/~SergeStinckwich/CORMAS)**
 
 Some documentation (to be cleaned and reorganized) about Cormas is available on the Wiki here: 
+https://github.com/cormas/documentation
 
-##How to install Cormas in MOOSE 5.0
+##How to install Cormas in MOOSE 5.0 image
 
 Download last version of MOOSE 5.0 here: http://www.moosetechnology.org/
 
