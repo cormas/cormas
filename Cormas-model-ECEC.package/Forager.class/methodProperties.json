@@ -1,0 +1,26 @@
+{
+	"class" : {
+		"VectorialPOV_Forager" : " 19/3/15 20:02",
+		"activity_step" : " 19/3/15 20:02",
+		"catabolicRate" : " 19/3/15 20:02",
+		"catabolicRate:" : " 19/3/15 20:02",
+		"catabolicRate_default" : " 19/3/15 20:02",
+		"energy_default" : " 19/3/15 20:02",
+		"fertilityThreshold" : " 19/3/15 20:02",
+		"fertilityThreshold:" : " 19/3/15 20:02",
+		"fertilityThreshold_default" : " 19/3/15 20:02",
+		"harvestRate" : " 19/3/15 20:02",
+		"harvestRate:" : " 19/3/15 20:02",
+		"harvestRate_default" : " 19/3/15 20:02",
+		"isAbstract" : " 19/3/15 20:02" },
+	"instance" : {
+		"consumeEnergy" : " 19/3/15 20:02",
+		"die" : " 19/3/15 20:02",
+		"eat" : " 19/3/15 20:02",
+		"energy" : " 19/3/15 20:02",
+		"energy:" : " 19/3/15 20:02",
+		"isEnergyHigh" : " 19/3/15 20:02",
+		"isEnergyTooLow" : " 19/3/15 20:02",
+		"move" : " 19/3/15 20:02",
+		"reproduce" : " 19/3/15 20:02",
+		"step" : " 19/3/15 20:02" } }

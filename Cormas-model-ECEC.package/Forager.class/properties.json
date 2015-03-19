@@ -1,0 +1,16 @@
+{
+	"category" : "Cormas-Model-ECEC",
+	"classinstvars" : [
+		"fertilityThreshold",
+		"catabolicRate",
+		"harvestRate" ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"energy" ],
+	"name" : "Forager",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }
