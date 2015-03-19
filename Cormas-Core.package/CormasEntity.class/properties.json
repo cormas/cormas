@@ -1,0 +1,22 @@
+{
+	"category" : "Cormas-Core",
+	"classinstvars" : [
+		"activeProbes",
+		"activityDiagrams",
+		"colorsDict",
+		"image",
+		"modelClass",
+		"povDict" ],
+	"classvars" : [
+		"CurrentId" ],
+	"commentStamp" : "",
+	"instvars" : [
+		"request",
+		"collector",
+		"flag",
+		"id" ],
+	"name" : "CormasEntity",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

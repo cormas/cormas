@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Core",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		 ],
+	"name" : "CormasSpatialEntityElement",
+	"pools" : [
+		 ],
+	"super" : "CormasSpatialEntity",
+	"type" : "normal" }
