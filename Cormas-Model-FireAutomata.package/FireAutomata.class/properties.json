@@ -11,5 +11,5 @@
 	"name" : "FireAutomata",
 	"pools" : [
 		 ],
-	"super" : "CormasModelOld",
+	"super" : "Object",
 	"type" : "normal" }
