@@ -1,0 +1,18 @@
+{
+	"category" : "Cormas-Core",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		"targetClass",
+		"name",
+		"cormasModel",
+		"option",
+		"location" ],
+	"name" : "ActivityDiagramEditor",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }
