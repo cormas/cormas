@@ -1,0 +1,15 @@
+{
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"outgoingTrue",
+		"outgoingFalse" ],
+	"name" : "DecisionPointModel",
+	"pools" : [
+		 ],
+	"super" : "AbstractActivityModel",
+	"type" : "normal" }

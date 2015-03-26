@@ -1,0 +1,24 @@
+{
+	"class" : {
+		"diamondFigure" : " 26/3/15 17:29",
+		"diamondIm" : " 26/3/15 17:29",
+		"diamondImage" : " 26/3/15 17:29",
+		"diamondMask" : " 26/3/15 17:29",
+		"setterWindows" : " 26/3/15 17:29",
+		"windowSpec" : " 26/3/15 17:29",
+		"windowSpec2" : " 26/3/15 17:29",
+		"windowSpecTest" : " 26/3/15 17:29" },
+	"instance" : {
+		"connectToDestination:" : " 26/3/15 17:29",
+		"connectToDestinationFalse:" : " 26/3/15 17:29",
+		"connectToDestinationTrue:" : " 26/3/15 17:29",
+		"delete" : " 26/3/15 17:29",
+		"disconnectFromDestination:" : " 26/3/15 17:29",
+		"figureType" : " 26/3/15 17:29",
+		"initialize" : " 26/3/15 17:29",
+		"outgoingFalse" : " 26/3/15 17:29",
+		"outgoingFalse:" : " 26/3/15 17:29",
+		"outgoingTrue" : " 26/3/15 17:29",
+		"outgoingTrue:" : " 26/3/15 17:29",
+		"removeOutgoing:" : " 26/3/15 17:29",
+		"storeOn:" : " 26/3/15 17:29" } }
