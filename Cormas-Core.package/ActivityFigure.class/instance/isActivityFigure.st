@@ -1,0 +1,4 @@
+testing
+isActivityFigure
+	
+	^true

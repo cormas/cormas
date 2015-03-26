@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Core",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"id" ],
+	"name" : "ActivityFigure",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }
