@@ -1,0 +1,18 @@
+{
+	"category" : "Cormas-Core",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"activityChoices",
+		"selectedActivity",
+		"targetClass",
+		"listActivity",
+		"purpose" ],
+	"name" : "AbstractActivityModel",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }
