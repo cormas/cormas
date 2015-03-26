@@ -1,1 +1,0 @@
-CormasModel is one of the main class of Cormas. It is the super class of your model class.
