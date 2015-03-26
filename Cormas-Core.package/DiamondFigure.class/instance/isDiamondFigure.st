@@ -1,0 +1,4 @@
+testing
+isDiamondFigure
+	
+	^true

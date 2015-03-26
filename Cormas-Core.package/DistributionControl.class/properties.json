@@ -1,0 +1,28 @@
+{
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"serverPort",
+		"clients",
+		"distributedMode",
+		"serverNameOrIP",
+		"broker",
+		"habitusNames",
+		"clientNameOrIP",
+		"remoteDistribution",
+		"remoteBroker",
+		"client",
+		"brokerPort",
+		"brokerNameOrIP",
+		"connected",
+		"clientSpaceModel",
+		"currentSimulation" ],
+	"name" : "DistributionControl",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

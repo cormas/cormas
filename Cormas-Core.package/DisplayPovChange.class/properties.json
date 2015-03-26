@@ -1,0 +1,15 @@
+{
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		"povName",
+		"entityClass" ],
+	"name" : "DisplayPovChange",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

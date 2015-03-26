@@ -1,0 +1,4 @@
+opentalk-stst
+passMode
+	
+	^#value
