@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Model-Conway",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		"CurrentId" ],
+	"commentStamp" : "",
+	"instvars" : [
+		 ],
+	"name" : "Cell",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

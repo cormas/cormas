@@ -1,0 +1,15 @@
+{
+	"class" : {
+		"cormasCompatibleVersion" : " 26/3/15 10:26",
+		"howToRunIt" : " 26/3/15 10:26",
+		"lastUpdate" : " 26/3/15 10:26",
+		"version" : " 26/3/15 10:26",
+		"vwCompatibleVersion" : " 26/3/15 10:26" },
+	"instance" : {
+		"alive" : " 26/3/15 10:26",
+		"dead" : " 26/3/15 10:26",
+		"init" : " 26/3/15 10:26",
+		"initRandomly" : " 26/3/15 10:26",
+		"stepSynchronously:" : " 26/3/15 10:26",
+		"theCells" : " 26/3/15 10:26",
+		"theCells:" : " 26/3/15 10:26" } }
