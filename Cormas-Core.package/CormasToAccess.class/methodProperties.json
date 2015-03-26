@@ -1,0 +1,25 @@
+{
+	"class" : {
+		"createODBCConnection:password:base:" : " 26/3/15 17:12",
+		"loginSpec" : " 26/3/15 17:12" },
+	"instance" : {
+		"accept" : " 26/3/15 17:12",
+		"accept:" : " 26/3/15 17:12",
+		"cancel" : " 26/3/15 17:12",
+		"connection" : " 26/3/15 17:12",
+		"connection:" : " 26/3/15 17:12",
+		"cormasModel" : " 26/3/15 17:12",
+		"cormasModel:" : " 26/3/15 17:12",
+		"createODBCConnection" : " 26/3/15 17:12",
+		"createODBCConnection:password:base:" : " 26/3/15 17:12",
+		"createTableFromSQLcommand:" : " 26/3/15 17:12",
+		"dataBase" : " 26/3/15 17:12",
+		"dataBase:" : " 26/3/15 17:12",
+		"disconnectODBCConnection" : " 26/3/15 17:12",
+		"openLoginWindow" : " 26/3/15 17:12",
+		"pwd" : " 26/3/15 17:12",
+		"pwd:" : " 26/3/15 17:12",
+		"sql_command:" : " 26/3/15 17:12",
+		"trySQL_command:" : " 26/3/15 17:12",
+		"username" : " 26/3/15 17:12",
+		"username:" : " 26/3/15 17:12" } }

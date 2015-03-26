@@ -1,0 +1,18 @@
+{
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		"runtimePackager",
+		"checkIcons",
+		"checks",
+		"targetFileVM",
+		"userHasChoosedTargetFile" ],
+	"name" : "CormasPackager",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

@@ -1,0 +1,22 @@
+{
+	"class" : {
+		"launchPackagingLabel" : " 26/3/15 17:11",
+		"targetPublic" : " 26/3/15 17:11",
+		"windowTitle" : " 26/3/15 17:11" },
+	"instance" : {
+		"changeDefaultCOMDirectory" : " 26/3/15 17:11",
+		"computeDefaultTargetFile" : " 26/3/15 17:11",
+		"copyModelFiles" : " 26/3/15 17:11",
+		"createReadmeFile" : " 26/3/15 17:11",
+		"doPackaging" : " 26/3/15 17:11",
+		"extraParcelsNamesToUnload" : " 26/3/15 17:11",
+		"initializeChecks" : " 26/3/15 17:11",
+		"openAndPlaceSimulationGUI" : " 26/3/15 17:11",
+		"pstFileFrom:" : " 26/3/15 17:11",
+		"rebuildMainMenu" : " 26/3/15 17:11",
+		"redirectSourceFileFor:to:" : " 26/3/15 17:11",
+		"saveThenQuitImage" : " 26/3/15 17:11",
+		"shouldLeaveOpened:" : " 26/3/15 17:11",
+		"suppressEmergencyEvaluator" : " 26/3/15 17:11",
+		"suppressVisualLauncherShortcut" : " 26/3/15 17:11",
+		"targetRuntimeMode" : " 26/3/15 17:11" } }

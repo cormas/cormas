@@ -1,0 +1,21 @@
+{
+	"category" : "Cormas-Core-Connect",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"workbook",
+		"sheets",
+		"sheetName",
+		"visible",
+		"linePos",
+		"controller",
+		"fileName",
+		"dataSavedByLine" ],
+	"name" : "CormasToExcel",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

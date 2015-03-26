@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		 ],
+	"name" : "CormasPackagerForModeler",
+	"pools" : [
+		 ],
+	"super" : "CormasPackager",
+	"type" : "normal" }

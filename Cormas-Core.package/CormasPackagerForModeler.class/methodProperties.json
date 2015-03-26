@@ -1,0 +1,16 @@
+{
+	"class" : {
+		"launchPackagingLabel" : " 26/3/15 17:10",
+		"targetPublic" : " 26/3/15 17:10",
+		"windowTitle" : " 26/3/15 17:10" },
+	"instance" : {
+		"changeDefaultCOMDirectory" : " 26/3/15 17:10",
+		"computeDefaultTargetFile" : " 26/3/15 17:10",
+		"copyAndInstallVWSources" : " 26/3/15 17:10",
+		"copyParcelsSources" : " 26/3/15 17:10",
+		"createReadmeFile" : " 26/3/15 17:10",
+		"doPackaging" : " 26/3/15 17:10",
+		"initializeChecks" : " 26/3/15 17:10",
+		"saveThenQuitImage" : " 26/3/15 17:10",
+		"shouldBeCopiedSource:" : " 26/3/15 17:10",
+		"targetRuntimeMode" : " 26/3/15 17:10" } }
