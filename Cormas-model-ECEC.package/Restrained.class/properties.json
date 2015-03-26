@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Model-ECEC",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		 ],
+	"name" : "Restrained",
+	"pools" : [
+		 ],
+	"super" : "Forager",
+	"type" : "normal" }

@@ -1,0 +1,18 @@
+{
+	"category" : "Cormas-Model-ECEC",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"theVegetationUnits",
+		"theRestraineds",
+		"theUnrestraineds",
+		"restrainedInitialNumber",
+		"unrestrainedInitialNumber" ],
+	"name" : "ECEC",
+	"pools" : [
+		 ],
+	"super" : "CormasModel",
+	"type" : "normal" }

@@ -1,0 +1,11 @@
+{
+	"class" : {
+		"VectorialPOV_Restrained" : " 26/3/15 08:30",
+		"catabolicRate" : " 26/3/15 08:30",
+		"fertilityThreshold" : " 26/3/15 08:30",
+		"harvestRate" : " 26/3/15 08:30",
+		"harvestRate_default" : " 26/3/15 08:30",
+		"isAbstract" : " 26/3/15 08:30" },
+	"instance" : {
+		"energy" : " 26/3/15 08:30",
+		"energy:" : " 26/3/15 08:30" } }
