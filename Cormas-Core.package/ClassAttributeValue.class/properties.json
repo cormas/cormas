@@ -1,0 +1,32 @@
+{
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"targetClass",
+		"targetAttribute",
+		"currentValue",
+		"valueType",
+		"hasBeenModified",
+		"isHidden",
+		"randInteger",
+		"maxValueHolder",
+		"minValueHolder",
+		"intOrFloat",
+		"upperConstraint",
+		"lowerConstraint",
+		"setNotification",
+		"setterAccessor",
+		"typeOfValue",
+		"defaultValueHolder",
+		"randomValueHolder",
+		"getterAccessor",
+		"entityInstances" ],
+	"name" : "ClassAttributeValue",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

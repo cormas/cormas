@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"distributionList" ],
+	"name" : "ClassAttributeValueAnalysisDistribution",
+	"pools" : [
+		 ],
+	"super" : "ClassAttributeValueAnalysis",
+	"type" : "normal" }

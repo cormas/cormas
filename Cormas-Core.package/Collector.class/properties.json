@@ -1,0 +1,15 @@
+{
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		"entities",
+		"cormasModel" ],
+	"name" : "Collector",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

@@ -1,0 +1,4 @@
+transforming
+asCompositeFigure
+	
+	^self

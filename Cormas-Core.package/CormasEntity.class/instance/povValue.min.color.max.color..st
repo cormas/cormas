@@ -9,8 +9,8 @@ ECEC example :
 	(aValue isNil or: [aValue cormasHelper isTypeNumber not]) ifTrue: [^ColorValue white].
 	value := (aValue <= minValue) ifTrue:[minValue] ifFalse:[aValue].
 	value := (aValue >= maxValue) ifTrue:[maxValue] ifFalse:[aValue].
-	start_Color := Cormas colorFrom: startColor.
-	stop_Color := Cormas colorFrom: stopColor.
+	start_Color := CormasOld colorFrom: startColor.
+	stop_Color := CormasOld colorFrom: stopColor.
 	alpha := (value - minValue) / (maxValue - minValue).
 	rv := (stop_Color scaledRed * alpha) rounded 
 				+ (start_Color scaledRed * (1 - alpha)) rounded.

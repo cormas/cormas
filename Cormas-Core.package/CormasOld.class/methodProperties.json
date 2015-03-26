@@ -1,0 +1,24 @@
+{
+	"class" : {
+		"aboutCormas" : "SergeStinckwich 3/26/2015 16:30",
+		"ask:toDo:" : "AlassaneBah 9/17/2014 16:27",
+		"ask:toDo:with:" : "AlassaneBah 9/17/2014 13:55",
+		"contributors" : "SergeStinckwich 3/26/2015 16:30",
+		"createN:entity:initMethod:arguments:" : "AlassaneBah 9/17/2014 13:38",
+		"currentVersion" : "SergeStinckwich 1/7/2015 10:54",
+		"developerNames" : "SergeStinckwich 1/7/2015 10:34",
+		"downloadString" : "SergeStinckwich 1/7/2015 10:55",
+		"licenseString" : "SergeStinckwich 1/7/2015 10:30",
+		"licenseStringTemplate" : "SergeStinckwich 1/7/2015 15:28",
+		"mixt:" : "SergeStinckwich 1/7/2015 16:20",
+		"normal:sigma:" : "SergeStinckwich 3/26/2015 16:30",
+		"random" : "SergeStinckwich 9/19/2014 08:35",
+		"randomBoolean" : "SergeStinckwich 9/19/2014 09:28",
+		"randomCell" : "SergeStinckwich 9/19/2014 08:37",
+		"randomColor" : "SergeStinckwich 1/7/2015 15:41",
+		"randomFrom:to:" : "SergeStinckwich 3/26/2015 16:30",
+		"selectRandomlyFrom:" : "SergeStinckwich 9/19/2014 08:44",
+		"setRandomlyLocatedAgents:n:initMethod:arguments:" : "AlassaneBah 9/17/2014 13:29",
+		"systemInformationString" : "SergeStinckwich 1/7/2015 10:56" },
+	"instance" : {
+		 } }

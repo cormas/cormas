@@ -1,0 +1,22 @@
+{
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		"modelName",
+		"creationDate",
+		"modelComments",
+		"authorMailList",
+		"selectedRow",
+		"authorName",
+		"cormasComments",
+		"previousComments",
+		"newComments" ],
+	"name" : "CommentInterface",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

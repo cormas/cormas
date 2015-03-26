@@ -5,7 +5,7 @@ inspectCode
 	((self targetClass methodsOfProtocol: #'@ control_diagram')
 		includes: self selectedActivity value asSymbol)
 		ifFalse:
-			[Cormas
+			[CormasOld
 				editMethod: self selectedActivity value asSymbol
 				fromClass: self targetClass]
 		ifTrue:

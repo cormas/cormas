@@ -1,0 +1,26 @@
+{
+	"class" : {
+		"arrayFrom:" : " 26/3/15 16:36",
+		"arrayOrNilFrom:" : " 26/3/15 16:36",
+		"assert:equals:" : " 26/3/15 16:36",
+		"colorFrom:" : " 26/3/15 16:36",
+		"colorOrBlackFrom:" : " 26/3/15 16:36",
+		"elementsOf:equalElemenstOf:" : " 26/3/15 16:36",
+		"isTypeArray" : " 26/3/15 16:36",
+		"isTypeArrayNotChars" : " 26/3/15 16:36",
+		"isTypeBoolean" : " 26/3/15 16:36",
+		"isTypeCollectionNotChars" : " 26/3/15 16:36",
+		"isTypeColorValue" : " 26/3/15 16:36",
+		"isTypeDictionary" : " 26/3/15 16:36",
+		"isTypeEntity" : " 26/3/15 16:36",
+		"isTypeEntityClass" : " 26/3/15 16:36",
+		"isTypeNumber" : " 26/3/15 16:36",
+		"isTypeSet" : " 26/3/15 16:36",
+		"isTypeString" : " 26/3/15 16:36",
+		"isTypeSymbol" : " 26/3/15 16:36",
+		"nullValue" : " 26/3/15 16:36",
+		"stringForDefaultValue:" : " 26/3/15 16:36",
+		"valueFrom:" : " 26/3/15 16:36",
+		"verify" : " 26/3/15 16:36" },
+	"instance" : {
+		 } }

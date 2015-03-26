@@ -1,0 +1,18 @@
+{
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		"plusMinus",
+		"percent",
+		"standardAnalysis",
+		"labelForProcess",
+		"zeroError" ],
+	"name" : "ClassifyParameter",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

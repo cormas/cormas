@@ -1,0 +1,27 @@
+{
+	"category" : "Cormas-Core",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "SergeStinckwich 1/7/2015 11:40",
+	"instvars" : [
+		"cormas",
+		"timeStepValue",
+		"channel",
+		"activeInit",
+		"activeControl",
+		"spaceModel",
+		"data",
+		"simManager",
+		"database",
+		"collector",
+		"defaultAttributesSetter",
+		"sensitivitySetter",
+		"delayedChanges",
+		"allClassVarBOSS" ],
+	"name" : "CormasModelOld",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

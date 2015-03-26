@@ -1,0 +1,12 @@
++ utilities - save load attributes
+saveAttributes: attributes fromClass: aClass inFile: aStringOrFilename
+	"Save the attributes of the intances of aClass on a file 'aStringOrFilename'  
+attributes <OrderedCollection> ex: OrderedCollection ('seed' 'context')
+file <Filename> ex: aFATFilename('d:\vw7nc\cormas\Models\TSE\data\titi.txt') or
+file <String> ex: 'titi.txt'  it will be save into data/"
+	
+	self
+		saveAttributes: attributes
+		fromClass: aClass
+		inFile: aStringOrFilename
+		separator: Character tab

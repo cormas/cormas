@@ -10,5 +10,5 @@ Example: self randomWalkConstrainedBy: [:c | c noOccupant]"
 	destinations := patch neighbourhood select: [:c | aBlock value: c].
 	destinations isEmpty
 		ifFalse:
-			[destination := Cormas selectRandomlyFrom: destinations.
+			[destination := CormasOld selectRandomlyFrom: destinations.
 			self moveTo: destination]

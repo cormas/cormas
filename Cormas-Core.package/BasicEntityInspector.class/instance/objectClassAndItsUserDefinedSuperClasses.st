@@ -3,7 +3,7 @@ objectClassAndItsUserDefinedSuperClasses
 	
 	| collec |
 	collec := object class superClassesUntil: Entity.
-	CormasModel allClasses
+	CormasModelOld allClasses
 		do:
 			[:c | 
 			collec

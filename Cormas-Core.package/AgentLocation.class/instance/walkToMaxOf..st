@@ -16,5 +16,5 @@ Example: self walkToMaxOf: #sugar"
 			destinations := destinations
 				select:
 					[:c | (c perform: aSymbol) = (destinations first perform: aSymbol)].
-			destination := Cormas selectRandomlyFrom: destinations.
+			destination := CormasOld selectRandomlyFrom: destinations.
 			self moveTo: destination]

@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Core-Interface",
+	"classinstvars" : [
+		"theVisualLauncher" ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		 ],
+	"name" : "CormasLauncher",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

@@ -3,7 +3,7 @@ prepareTable
 	"Detect all add-ons availble in the add-on diirectory and put them in the dataset"
 	
 	| dir tmp aList corruptedFiles |
-	dir := Cormas addOnsPath asFilename.
+	dir := CormasOld addOnsPath asFilename.
 	tmp := SortedCollection sortBlock: [:a :b | a asString < b asString].
 	dir directoryContents do: [:each | tmp add: (dir construct: each)].
 	tmp removeAllSuchThat: [:file | file isDirectory].

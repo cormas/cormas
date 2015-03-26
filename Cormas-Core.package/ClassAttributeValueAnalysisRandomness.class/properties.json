@@ -1,0 +1,17 @@
+{
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		"randomType",
+		"repetitions",
+		"repNb",
+		"randomTypeChoices" ],
+	"name" : "ClassAttributeValueAnalysisRandomness",
+	"pools" : [
+		 ],
+	"super" : "ClassAttributeValueAnalysis",
+	"type" : "normal" }

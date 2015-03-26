@@ -1,0 +1,21 @@
+{
+	"class" : {
+		"adaptSettings" : " 26/3/15 16:37",
+		"checkVwHomeDirectory" : " 26/3/15 16:37",
+		"cormasEn" : " 26/3/15 16:37",
+		"cormasFr" : " 26/3/15 16:37",
+		"launchCormas" : " 26/3/15 16:37",
+		"loadLocaleFile" : " 26/3/15 16:37",
+		"setCormasParcelPath" : " 26/3/15 16:37",
+		"setMessagesPath" : " 26/3/15 16:37",
+		"setParcelPath:" : " 26/3/15 16:37",
+		"setParcelPathForModel:" : " 26/3/15 16:37",
+		"setParcelPathForModels" : " 26/3/15 16:37",
+		"setSourceFilePath" : " 26/3/15 16:37",
+		"theVisualLauncher" : " 26/3/15 16:37",
+		"theVisualLauncher:" : " 26/3/15 16:37",
+		"windowSpec" : " 26/3/15 16:37" },
+	"instance" : {
+		"launchCormas" : " 26/3/15 16:37",
+		"launchCormasInEnglish" : " 26/3/15 16:37",
+		"launchCormasInFrench" : " 26/3/15 16:37" } }

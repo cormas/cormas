@@ -1,0 +1,35 @@
+{
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"chartsView",
+		"chartsList",
+		"idList",
+		"menuHolder",
+		"levelClassName",
+		"data",
+		"cormasModel",
+		"fromStep",
+		"toStep",
+		"fromSlider",
+		"toSlider",
+		"displayMarkers",
+		"autoScale",
+		"displayValues",
+		"colorForGlobalProbes",
+		"colorForLocalProbes",
+		"cormasModel_data",
+		"nbPts",
+		"name",
+		"simDescriptionText",
+		"linkedSI",
+		"startAt0" ],
+	"name" : "ChartsInterface",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

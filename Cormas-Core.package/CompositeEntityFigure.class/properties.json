@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Core-Interface",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"delimitors" ],
+	"name" : "CompositeEntityFigure",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

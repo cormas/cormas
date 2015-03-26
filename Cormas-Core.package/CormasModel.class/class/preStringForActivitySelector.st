@@ -1,0 +1,4 @@
+- activityEditor
+preStringForActivitySelector
+	
+	^'activity_'

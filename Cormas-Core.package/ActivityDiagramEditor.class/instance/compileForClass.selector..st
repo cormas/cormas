@@ -26,7 +26,7 @@ compileForClass: aTargetClass selector: selectorName
 	codeStream nextPutAll: '	self performActivityDiagram: #' , selectorName.
 	string := codeStream contents.
 	protocol := '@ control_diagram'.
-	(aTargetClass includesBehavior: CormasModel)
+	(aTargetClass includesBehavior: CormasModelOld)
 		ifTrue:
 			[protocol := Dialog choose:
 					'Please, choose a protocol to install the diagram?'

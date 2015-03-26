@@ -1,10 +1,21 @@
 {
-	"category" : "Cormas-Core",
+	"category" : "Cormas-Core-Interface",
 	"classinstvars" : [
-		 ],
+		"timeStep",
+		"cellClass",
+		"spatialClasses",
+		"socialClasses",
+		"passiveClasses",
+		"povColorsDict",
+		"visualStateIsOpen",
+		"charts",
+		"activeProbes",
+		"activityDiagrams",
+		"currentSimulation",
+		"randUi" ],
 	"classvars" : [
 		 ],
-	"commentStamp" : "SergeStinckwich 1/7/2015 11:40",
+	"commentStamp" : "<historical>",
 	"instvars" : [
 		"cormas",
 		"timeStepValue",

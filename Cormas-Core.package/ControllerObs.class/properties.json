@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Core-Observer",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"secondMenu" ],
+	"name" : "ControllerObs",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

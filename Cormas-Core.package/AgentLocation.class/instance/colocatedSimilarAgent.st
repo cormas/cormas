@@ -8,4 +8,4 @@ Return value: <AgentLocation | nil>"
 	candidates := self colocatedSimilarAgents.
 	^(candidates isNil or: [candidates isEmpty])
 		ifTrue: [nil]
-		ifFalse: [Cormas selectRandomlyFrom: candidates]
+		ifFalse: [CormasOld selectRandomlyFrom: candidates]

@@ -3,7 +3,7 @@ initForSuperClassOf: aKlass
 	"Create a list of ClassAttributeValue of the superclasses of aKlass"
 	
 	| aList attributColl attributs allClasses |
-	(aKlass inheritsFrom: CormasModel) ifTrue: [^nil].
+	(aKlass inheritsFrom: CormasModelOld) ifTrue: [^nil].
 	aList := List new.
 	attributColl := OrderedCollection new.
 	allClasses := aKlass superClassesUntilEntity.

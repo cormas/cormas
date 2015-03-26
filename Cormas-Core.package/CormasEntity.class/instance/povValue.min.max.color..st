@@ -14,7 +14,7 @@ ECEC example :
 		ifTrue: [index := 0.8]
 		"ifFalse: [index := 0.8 + (0.2 * (performResult - minValue) / (maxValue - minValue))]."
 		ifFalse: [index := (maxValue - value) / (maxValue - minValue)].
-	color := Cormas colorFrom: baseColor.
+	color := CormasOld colorFrom: baseColor.
 	^ColorValue
 		hue: color hue
 		saturation: color saturation * (1 - (index raisedTo: 10))

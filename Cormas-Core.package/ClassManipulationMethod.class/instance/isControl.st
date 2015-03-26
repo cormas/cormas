@@ -1,0 +1,4 @@
+accessing
+isControl
+	
+	^isControl

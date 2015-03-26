@@ -11,7 +11,7 @@ cormasMethodsMenu
 			[mb := self addEntityMethodsToMenuBuilder: mb.
 			mb := self addEntityClassMethodsToMenuBuilder: mb].
 	(codeModel navigator isNil not
-		and: [self isActive and: [self selectedClass inheritsFrom: CormasModel]])
+		and: [self isActive and: [self selectedClass inheritsFrom: CormasModelOld]])
 		ifTrue:
 			[mb := self addModelMethodsToMenuBuilder: mb.
 			mb := self addModelClassMethodsToMenuBuilder: mb].
