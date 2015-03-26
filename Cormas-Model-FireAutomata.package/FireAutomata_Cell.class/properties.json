@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Model-FireAutomata",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		 ],
+	"name" : "FireAutomata_Cell",
+	"pools" : [
+		 ],
+	"super" : "CormasSpatialEntity",
+	"type" : "normal" }

@@ -1,0 +1,15 @@
+{
+	"category" : "Cormas-Model-FireAutomata",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "SergeStinckwich 3/5/2015 17:35",
+	"instvars" : [
+		"trees",
+		"theFireAutomata_Cells" ],
+	"name" : "FireAutomata",
+	"pools" : [
+		 ],
+	"super" : "CormasModelOld",
+	"type" : "normal" }
