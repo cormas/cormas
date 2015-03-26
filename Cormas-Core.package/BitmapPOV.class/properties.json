@@ -1,0 +1,15 @@
+{
+	"category" : "Cormas-Core-Interface",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"bitmap",
+		"position" ],
+	"name" : "BitmapPOV",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

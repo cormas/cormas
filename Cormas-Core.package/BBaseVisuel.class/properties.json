@@ -1,0 +1,16 @@
+{
+	"category" : "Cormas-Core-Observer",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"centre",
+		"listeEtat",
+		"adaptor" ],
+	"name" : "BBaseVisuel",
+	"pools" : [
+		 ],
+	"super" : "Model",
+	"type" : "normal" }

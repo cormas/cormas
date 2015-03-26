@@ -1,0 +1,17 @@
+{
+	"category" : "Cormas-Core-Entities",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		"mailBox",
+		"channel",
+		"agentObs",
+		"acquaintances" ],
+	"name" : "AgentCommLocation",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

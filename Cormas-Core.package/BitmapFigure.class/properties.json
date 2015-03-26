@@ -1,0 +1,17 @@
+{
+	"category" : "Cormas-Core-Interface",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"bitmap",
+		"ratio",
+		"scale",
+		"cacheScaleFactor" ],
+	"name" : "BitmapFigure",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

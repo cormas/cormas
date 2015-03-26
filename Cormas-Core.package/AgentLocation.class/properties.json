@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Core-Entities",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		"patch" ],
+	"name" : "AgentLocation",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

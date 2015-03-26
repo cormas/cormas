@@ -1,0 +1,16 @@
+{
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [
+		"isWinOpen" ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"cormas",
+		"selectedRow",
+		"addOns_List" ],
+	"name" : "AddOnManager",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

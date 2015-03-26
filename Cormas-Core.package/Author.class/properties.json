@@ -1,0 +1,15 @@
+{
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "MiguelCoba 7/25/2009 01:09",
+	"instvars" : [
+		"name",
+		"email" ],
+	"name" : "Author",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

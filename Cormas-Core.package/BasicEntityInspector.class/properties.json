@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Core-Interface",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"attributesSpec" ],
+	"name" : "BasicEntityInspector",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

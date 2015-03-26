@@ -1,0 +1,28 @@
+{
+	"class" : {
+		"authorSettingOn:" : "StephaneDucasse 11/11/2014 18:15",
+		"changeStamp" : "",
+		"changeStampPerSe" : "",
+		"fixStamp:" : "MarcusDenker 10/9/2013 17:05",
+		"fullName" : "",
+		"fullName:" : "",
+		"fullNamePerSe" : "Zork 10/13/2013 17:35",
+		"new" : "",
+		"requestFullName" : "",
+		"reset" : "IgorStasenko 10/13/2013 18:09",
+		"uniqueInstance" : "",
+		"useAuthor:during:" : "" },
+	"instance" : {
+		"checkAndSetFullNameWith:" : "Lr 12/9/2010 17:34",
+		"email" : " 26/3/15 15:41",
+		"email:" : " 26/3/15 15:41",
+		"fullName" : "",
+		"fullName:" : "CamilloBruni 7/17/2013 23:20",
+		"fullNamePerSe" : "CamilloBruni 7/17/2013 23:20",
+		"ifUnknownAuthorUse:during:" : "ClementBera 4/11/2013 14:01",
+		"initialize" : "",
+		"name" : " 26/3/15 15:41",
+		"name:" : " 26/3/15 15:41",
+		"requestFullName" : "CamilloBruni 10/20/2012 21:04",
+		"reset" : "",
+		"useAuthor:during:" : "" } }

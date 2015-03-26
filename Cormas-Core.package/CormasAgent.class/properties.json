@@ -1,10 +1,10 @@
 {
-	"category" : "Cormas-Core",
+	"category" : "Cormas-Core-Entities",
 	"classinstvars" : [
 		 ],
 	"classvars" : [
 		 ],
-	"commentStamp" : "",
+	"commentStamp" : "SergeStinckwich 3/26/2015 15:34",
 	"instvars" : [
 		"dead" ],
 	"name" : "CormasAgent",

@@ -1,0 +1,23 @@
+{
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"file",
+		"nameAsString",
+		"versionAsString",
+		"shouldLoad",
+		"typeAsString",
+		"authorAsString",
+		"fileAsString",
+		"dateAsString",
+		"categoryAsString",
+		"addOnDescription" ],
+	"name" : "AddOnManager_ListItem",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

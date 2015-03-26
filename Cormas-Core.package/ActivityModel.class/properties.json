@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		 ],
+	"name" : "ActivityModel",
+	"pools" : [
+		 ],
+	"super" : "AbstractActivityModel",
+	"type" : "normal" }

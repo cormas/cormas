@@ -1,0 +1,33 @@
+{
+	"category" : "Cormas-Core-Observer",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"preferences",
+		"nbMsg",
+		"nbAmis",
+		"nom",
+		"agentSource",
+		"fonction",
+		"displayForces",
+		"H",
+		"level",
+		"cercleCommunication",
+		"A",
+		"AA",
+		"B",
+		"BB",
+		"Cadre",
+		"Deplacement",
+		"Eint",
+		"Eext",
+		"Extent",
+		"Lien" ],
+	"name" : "AgentObs",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }
