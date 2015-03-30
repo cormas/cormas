@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		 ],
+	"name" : "EndPointModel",
+	"pools" : [
+		 ],
+	"super" : "ElementActivityDiagramModel",
+	"type" : "normal" }

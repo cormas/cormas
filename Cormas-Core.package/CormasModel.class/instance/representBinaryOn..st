@@ -16,7 +16,7 @@ representBinaryOn: bos
 					(result isLiteral
 						or:
 							[result isCollection
-								or: [(result isKindOf: Entity) or: [result isKindOf: Channel]]])
+								or: [(result isKindOf: CormasEntity) or: [result isKindOf: Channel]]])
 						ifTrue:
 							[attributColl
 								add:

@@ -1,3 +1,4 @@
-as yet unclassified
+- accessing
 povDict
-	^povDict ifNil:[povDict := Dictionary new]
+	
+	^povDict ifNil: [povDict := Dictionary new]

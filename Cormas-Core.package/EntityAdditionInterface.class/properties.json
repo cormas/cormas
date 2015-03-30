@@ -1,0 +1,21 @@
+{
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"newClassName",
+		"cbLocation",
+		"cbComm",
+		"cbGroup",
+		"spatialEntitySuperclass",
+		"cormas",
+		"passiveEntitySuperclass",
+		"cellOrCA" ],
+	"name" : "EntityAdditionInterface",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

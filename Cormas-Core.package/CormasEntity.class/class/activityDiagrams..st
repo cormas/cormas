@@ -1,3 +1,4 @@
-as yet unclassified
+- activityDiagram
 activityDiagrams: anObject
+	
 	activityDiagrams := anObject

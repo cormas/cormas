@@ -1,3 +1,4 @@
-as yet unclassified
-colorsDict: aDico 
+- accessing
+colorsDict: aDico
+	
 	colorsDict := aDico

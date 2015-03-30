@@ -1,9 +1,9 @@
-as yet unclassified
+- probes
 probes
 	"self superClassesUntilEntity"
-
+	
 	| coll |
 	coll := IndexedSet new.
-	self withAllSuperclasses 
+	self withAllSuperclasses
 		do: [:cl | coll addAll: (cl organization listAtCategoryNamed: #probes)].
 	^coll asSortedCollection

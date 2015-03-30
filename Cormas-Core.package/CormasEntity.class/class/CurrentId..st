@@ -1,4 +1,5 @@
-as yet unclassified
+- accessing
 CurrentId: anInteger
-	CurrentId := anInteger. 
+	
+	CurrentId := anInteger.
 	^anInteger

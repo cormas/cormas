@@ -1,8 +1,8 @@
-as yet unclassified
++ diagram
 performActivityDiagram
-"Purpose: to open the editor of activity diagrams. This method may be redefined"
-		
+	"Purpose: to open the editor of activity diagrams. This method may be redefined"
+	
 	| aName |
 	aName := self class chooseActivityDiagramName.
-	aName ifNil:[^nil].
+	aName ifNil: [^nil].
 	self performActivityDiagram: aName

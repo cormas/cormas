@@ -1,4 +1,4 @@
-as yet unclassified
+- utilities - binary storage
 newBoss: attributList
 	"Method only used for BOSS.
 	Create a new instance of Entity."
@@ -8,5 +8,7 @@ newBoss: attributList
 	attributList
 		do:
 			[:assoc | 
-			ag update: assoc key asString to: assoc value].
+			ag
+				update: assoc key asString
+				to: assoc value].
 	^ag

@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		"entity" ],
+	"name" : "EntityChange",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

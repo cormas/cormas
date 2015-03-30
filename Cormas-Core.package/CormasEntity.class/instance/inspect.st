@@ -1,6 +1,7 @@
-as yet unclassified
+- displaying
 inspect
 	"Open an inspector, but previously set the default value of the parameters"
+	
 	self class allSpecificClassVariables
 		do:
 			[:att | 

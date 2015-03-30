@@ -1,5 +1,6 @@
-as yet unclassified
++ accessing - scheduling
 currentTime
-"Purpose: returns the current time step of the simulation
+	"Purpose: returns the current time step of the simulation
 Return value = <Integer>"
+	
 	^self modelClass timeStep

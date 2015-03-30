@@ -1,5 +1,6 @@
-as yet unclassified
+- utilities - ADvance
 ad2ClassInfo
+	
 	^'
 
 Instance Variables:

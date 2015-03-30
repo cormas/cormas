@@ -1,20 +1,21 @@
 {
-	"category" : "Cormas-Core",
+	"category" : "Cormas-Core-Entities",
 	"classinstvars" : [
-		"activeProbes",
-		"activityDiagrams",
+		"modelClass",
+		"CurrentId",
 		"colorsDict",
 		"image",
-		"modelClass",
-		"povDict" ],
+		"activeProbes",
+		"povDict",
+		"activityDiagrams" ],
 	"classvars" : [
-		"CurrentId" ],
-	"commentStamp" : "",
+		 ],
+	"commentStamp" : "<historical>",
 	"instvars" : [
-		"request",
-		"collector",
+		"id",
 		"flag",
-		"id" ],
+		"collector",
+		"request" ],
 	"name" : "CormasEntity",
 	"pools" : [
 		 ],

@@ -8,8 +8,8 @@ verifyAndInstall
 			[| answer |
 			answer := Dialog
 				choose: 'On which class to install the diagram?'
-				fromList: (Entity allTerminalClasses collect: [:cl | cl name asString])
-				values: Entity allTerminalClasses
+				fromList: (CormasEntity allTerminalClasses collect: [:cl | cl name asString])
+				values: CormasEntity allTerminalClasses
 				lines: 8
 				cancel: [nil].
 			answer isNil

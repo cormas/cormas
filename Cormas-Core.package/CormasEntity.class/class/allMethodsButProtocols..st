@@ -1,4 +1,4 @@
-as yet unclassified
+- accessing - methods & classes
 allMethodsButProtocols: aProtocolList
 	"Return a set of all instance methods of this class and upperclasses which are not in the given aProtocolList.
 	aProtocolList = <Collection of string>, ex: #('* pov' '+ pov' '+ accessing' 'probes' '* info')"
@@ -13,5 +13,7 @@ allMethodsButProtocols: aProtocolList
 					[| cat |
 					cat := aClass organization categories asOrderedCollection.
 					cat removeAllSuchThat: [:st | aProtocolList includes: st asString].
-					cat do: [:categ | coll addAll: (aClass organization listAtCategoryNamed: categ)]]].	
+					cat
+						do:
+							[:categ | coll addAll: (aClass organization listAtCategoryNamed: categ)]]].
 	^coll sorted

@@ -1,4 +1,4 @@
-as yet unclassified
+- activityDiagram
 preStringForActivitySelector
 	
-	^ 'activity_'
+	^'activity_'

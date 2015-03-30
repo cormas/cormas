@@ -1,0 +1,26 @@
+{
+	"class" : {
+		"addAgent" : " 30/3/15 11:23",
+		"addPassiveEntity" : " 30/3/15 11:23",
+		"addSpatialEntity" : " 30/3/15 11:23",
+		"messageImage" : " 30/3/15 11:23" },
+	"instance" : {
+		"addNewPassivelEntityGUI" : " 30/3/15 11:23",
+		"addNewSocialEntityGUI" : " 30/3/15 11:23",
+		"addNewSpatialEntityGUI" : " 30/3/15 11:23",
+		"cbComm" : " 30/3/15 11:23",
+		"cbGroup" : " 30/3/15 11:23",
+		"cbLocation" : " 30/3/15 11:23",
+		"cbSuperclassChanged" : " 30/3/15 11:23",
+		"cellOrCA" : " 30/3/15 11:23",
+		"cormas" : " 30/3/15 11:23",
+		"cormas:" : " 30/3/15 11:23",
+		"crPassiveSuperclassChanged" : " 30/3/15 11:23",
+		"crSpatialSuperclassChanged" : " 30/3/15 11:23",
+		"getAgentSuperclassFromGUI" : " 30/3/15 11:23",
+		"getNewClassNameFromGUI" : " 30/3/15 11:23",
+		"initialize" : " 30/3/15 11:23",
+		"newClassName" : " 30/3/15 11:23",
+		"passiveEntitySuperclass" : " 30/3/15 11:23",
+		"postBuildWith:" : " 30/3/15 11:23",
+		"spatialEntitySuperclass" : " 30/3/15 11:23" } }

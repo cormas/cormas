@@ -1,4 +1,4 @@
-as yet unclassified
+- accessing
 hasRandomAttribute: anAttributeName
 	"' Answer if anAttributeName defined at class or instance level is a random attribute"
 	

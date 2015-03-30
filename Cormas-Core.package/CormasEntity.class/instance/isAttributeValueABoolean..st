@@ -1,4 +1,4 @@
-as yet unclassified
+- utilities - attributes
 isAttributeValueABoolean: aSymbol
 	
 	| aClass |

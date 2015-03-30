@@ -1,4 +1,4 @@
-as yet unclassified
++ activityDiagram - editor
 openBlankActivityDiagramEditor
 	" Purpose: open a blank ActivityDiagramEditor for this class.
 	 ex:   AgentLocation openActivityDiagramEditor   "

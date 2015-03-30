@@ -1,4 +1,4 @@
-as yet unclassified
++ common-pool resources
 request
-
-	^request ifNil:[request := OrderedCollection new]
+	
+	^request ifNil: [request := OrderedCollection new]

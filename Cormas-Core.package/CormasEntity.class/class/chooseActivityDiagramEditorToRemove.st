@@ -1,9 +1,9 @@
-as yet unclassified
++ activityDiagram - editor
 chooseActivityDiagramEditorToRemove
-"Purpose: a user interface to remove an activity diagram
+	"Purpose: a user interface to remove an activity diagram
 Example: CormasNS.Kernel.Entity chooseActivityDiagramEditorToRemove   "
-| operationName list |
-
+	
+	| operationName list |
 	list := self allActivitySelectors asSortedCollection.
 	operationName := Dialog
 		choose: 'Which activity diagram to remove?'

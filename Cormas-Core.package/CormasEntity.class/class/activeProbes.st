@@ -1,3 +1,6 @@
-as yet unclassified
+- probes
 activeProbes
-	^activeProbes isNil ifTrue: [Array new] ifFalse: [activeProbes]
+	
+	^activeProbes isNil
+		ifTrue: [self defaultProbes]
+		ifFalse: [activeProbes]

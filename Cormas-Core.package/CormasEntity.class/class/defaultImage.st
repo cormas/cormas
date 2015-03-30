@@ -1,6 +1,6 @@
-as yet unclassified
+- image
 defaultImage
-
+	
 	| im |
 	im := VectorialElementaryPOV hexagon.
 	im color: self defaultColor.

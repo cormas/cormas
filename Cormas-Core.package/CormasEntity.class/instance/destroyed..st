@@ -1,3 +1,4 @@
-as yet unclassified
+- initialize-release
 destroyed: aBoolean
-	aBoolean ifTrue:[self release]
+	
+	aBoolean ifTrue: [self release]

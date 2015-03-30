@@ -1,4 +1,5 @@
-as yet unclassified
-povDict: aDico 
-aDico isEmpty ifFalse: [self halt].
+- accessing
+povDict: aDico
+	
+	aDico isEmpty ifFalse: [self halt].
 	povDict := aDico

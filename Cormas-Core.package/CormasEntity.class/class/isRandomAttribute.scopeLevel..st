@@ -1,4 +1,4 @@
-as yet unclassified
+- accessing
 isRandomAttribute: anAttributeName scopeLevel: level
 	"' Answer if anAttributeName defined at level (#instance or #class) is a random attribute"
 	

@@ -1,4 +1,5 @@
-as yet unclassified
+controlling
 delete
-"Purpose: indicates that the instance has to be removed"
+	"Purpose: indicates that the instance has to be removed"
+	
 	self destroyed: true

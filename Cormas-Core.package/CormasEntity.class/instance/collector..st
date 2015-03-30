@@ -1,3 +1,4 @@
-as yet unclassified
-collector: anObject 
+- accessing
+collector: anObject
+	
 	collector := anObject

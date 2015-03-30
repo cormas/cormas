@@ -1,4 +1,5 @@
-as yet unclassified
+- deprecated
 classFromSymbol: aSymbol
-"Deprecated. Should use:"
+	"Deprecated. Should use:"
+	
 	^self classNamed: aSymbol

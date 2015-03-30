@@ -1,6 +1,11 @@
-as yet unclassified
++ utilities - classes
 modelClass
-"Purpose: returns the Class of the current model.
+	"Purpose: returns the Class of the current model.
 Return value: <class>
 Example: RestrainedForager modelClass -> ECEC "
-	^modelClass ifNil: [self environment at: (self environment name) ifAbsent: nil]
+	
+	^modelClass
+		ifNil:
+			[self environment
+				at: self environment name
+				ifAbsent: nil]

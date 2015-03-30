@@ -1,4 +1,4 @@
-as yet unclassified
+- testing
 isGenericEntity
-
+	
 	^self genericEntities includes: self

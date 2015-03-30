@@ -33,7 +33,7 @@ updateLocalChartsDisplayZoom
 						id: (idList selections at: id)
 						lineStyle: (styles at: (j min: styles size))
 						color:
-							(Entity
+							(CormasEntity
 								colorWithout: #white
 								OfNumber: 23 + id)
 						label:

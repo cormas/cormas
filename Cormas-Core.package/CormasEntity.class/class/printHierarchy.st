@@ -1,6 +1,6 @@
-as yet unclassified
++ printing
 printHierarchy
-"Purpose: to show the hierarchy of all the subclasses of the receiver
+	"Purpose: to show the hierarchy of all the subclasses of the receiver
 Return value: a byteString
 Example: CormasNS.Kernel.Agent printHierarchy"
 	

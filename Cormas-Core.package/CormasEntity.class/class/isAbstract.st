@@ -1,4 +1,5 @@
-as yet unclassified
+- testing
 isAbstract
-"Purpose: to test the existence of subclasses"
+	"Purpose: to test the existence of subclasses"
+	
 	^self subclasses notEmpty

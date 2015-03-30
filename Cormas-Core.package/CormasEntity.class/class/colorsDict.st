@@ -1,3 +1,4 @@
-as yet unclassified
-colorsDict 
-	^ colorsDict ifNil: [colorsDict :=  Dictionary new].
+- accessing
+colorsDict
+	
+	^colorsDict ifNil: [colorsDict := Dictionary new]

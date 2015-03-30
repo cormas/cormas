@@ -1,8 +1,9 @@
-as yet unclassified
+- accessing - methods & classes
 allInstanceSelectors
-"Purpose:returns the list of all methods defined at instance level
+	"Purpose:returns the list of all methods defined at instance level
 Return value: an indexedSet
-Example: CormasNS.Kernel.Agent allInstanceSelectors"			
+Example: CormasNS.Kernel.Agent allInstanceSelectors"
+	
 	| coll |
 	coll := IndexedSet new.
 	(self superClassesUntil: Object)

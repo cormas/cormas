@@ -1,3 +1,4 @@
-as yet unclassified
+- activityDiagram
 activityDiagrams
-	^activityDiagrams ifNil:[activityDiagrams := Dictionary new]
+	
+	^activityDiagrams ifNil: [activityDiagrams := Dictionary new]

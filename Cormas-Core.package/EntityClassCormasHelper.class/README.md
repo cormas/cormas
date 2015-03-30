@@ -1,0 +1,1 @@
+helper class for entity classes

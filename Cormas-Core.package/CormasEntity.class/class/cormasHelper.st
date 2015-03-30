@@ -1,4 +1,4 @@
-as yet unclassified
+- cormas helper
 cormasHelper
 	"return the helper class for this class"
 	

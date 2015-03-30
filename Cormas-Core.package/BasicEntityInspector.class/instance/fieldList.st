@@ -8,9 +8,9 @@ fieldList
 		do: [:c | collec addAll: c instVarNames].
 	collec := collec asOrderedCollection.
 	collec addFirst: '----------'.
-	(((object class superClassesUntil: Entity) includes: AgentComm)
+	(((object class superClassesUntil: CormasEntity) includes: AgentComm)
 		or:
-			[(object class superClassesUntil: Entity) includes: AgentCommLocation])
+			[(object class superClassesUntil: CormasEntity) includes: AgentCommLocation])
 		ifTrue: [collec addFirst: 'mailBox'].
 	(object class inheritsFrom: SpatialEntityCell)
 		ifTrue: [collec addFirst: 'state'].

@@ -1,12 +1,16 @@
-as yet unclassified
+- accessing
 hasRandomAttribute: anAttributeName classVariable: boolean value: aString
 	"' Answer if anAttributeName defined at level (#instance or #class) is already defined with the same value as aString.
 randomAttributes = #(#bioma #instance #randomFloat 0 1). "
 	
 	| level anArray otherString include |
-	(self isRandomAttribute: anAttributeName classVariable: boolean) ifFalse: [^false].
-	level := boolean ifTrue: [#class] ifFalse: [#instance].
-	anArray := self randomAttributes detect:
+	(self isRandomAttribute: anAttributeName classVariable: boolean)
+		ifFalse: [^false].
+	level := boolean
+		ifTrue: [#class]
+		ifFalse: [#instance].
+	anArray := self randomAttributes
+		detect:
 			[:line | (line at: 1) = anAttributeName and: [(line at: 2) = level]].
 	otherString := (anArray at: 3) asString.
 	otherString = 'randomFloat'

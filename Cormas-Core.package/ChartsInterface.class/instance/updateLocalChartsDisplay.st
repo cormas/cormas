@@ -49,7 +49,7 @@ updateLocalChartsDisplay
 							(self colorForLocalProbes
 								at: probe
 								ifAbsent: [nil])
-						backgroundColor: (Entity darkColorOfNumber: id + j)
+						backgroundColor: (CormasEntity darkColorOfNumber: id + j)
 						markerType:
 							(markers
 								at:

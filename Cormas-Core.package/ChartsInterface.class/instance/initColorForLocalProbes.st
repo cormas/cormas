@@ -14,7 +14,7 @@ initColorForLocalProbes
 					color := targetClass colorOfProbe: probe.
 					color
 						ifNil:
-							[color := Entity
+							[color := CormasEntity
 								colorWithout: #white
 								OfNumber: 23 + index	"start with red (24)"].
 					color]].

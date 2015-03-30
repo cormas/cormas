@@ -1,0 +1,16 @@
+{
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"incoming",
+		"outgoing",
+		"id" ],
+	"name" : "ElementActivityDiagramModel",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

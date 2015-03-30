@@ -1,5 +1,5 @@
-as yet unclassified
-figureAt: selectorName 
+- displaying
+figureAt: selectorName
 	"Returns the figure for a selectorName"
-
- ^ (self povAt: selectorName) asFigure
+	
+	^(self povAt: selectorName) asFigure

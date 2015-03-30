@@ -1,3 +1,4 @@
-as yet unclassified
+- testing
 isCompoundSpatialClass
-	^self isSpatialClass and:[self isSpatialEntityElementClass not]
+	
+	^self isSpatialClass and: [self isSpatialEntityElementClass not]

@@ -1,4 +1,5 @@
-as yet unclassified
+- displaying
 defineVisualState
-"DEPRECATED. Should use :"
+	"DEPRECATED. Should use :"
+	
 	self changed

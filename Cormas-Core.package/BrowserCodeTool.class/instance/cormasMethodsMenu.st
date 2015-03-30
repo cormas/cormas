@@ -6,7 +6,7 @@ cormasMethodsMenu
 	| mb |
 	mb := MenuBuilder new.
 	(codeModel navigator isNil not
-		and: [self isActive and: [self selectedClass inheritsFrom: Entity]])
+		and: [self isActive and: [self selectedClass inheritsFrom: CormasEntity]])
 		ifTrue:
 			[mb := self addEntityMethodsToMenuBuilder: mb.
 			mb := self addEntityClassMethodsToMenuBuilder: mb].

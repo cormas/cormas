@@ -1,6 +1,7 @@
-as yet unclassified
+- accessing - methods & classes
 superClassesInSameEnvironmentUntilEntity
-"Purpose: returns the list of super classes of the receiver that share the same environment up to Entity
+	"Purpose: returns the list of super classes of the receiver that share the same environment up to Entity
 Return value: an orderedCollection
 Example: FarmerTypeA superClassesInSameEnvironmentUntil: Entity"
-	^self superClassesInSameEnvironmentUntil: Entity
+	
+	^self superClassesInSameEnvironmentUntil: CormasEntity

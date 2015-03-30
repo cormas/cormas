@@ -1,4 +1,5 @@
-as yet unclassified
++ accessing
 id
-"Purpose: integer value, assigned at creation, used to identify the instance"
+	"Purpose: integer value, assigned at creation, used to identify the instance"
+	
 	^id

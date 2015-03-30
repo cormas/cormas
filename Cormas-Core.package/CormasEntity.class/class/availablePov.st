@@ -1,6 +1,6 @@
-as yet unclassified
+- accessing - methods & classes
 availablePov
-"Purpose: returns the list of available pov methods
+	"Purpose: returns the list of available pov methods
 Return value: <IndexedSet>"
 	
 	| collec |
