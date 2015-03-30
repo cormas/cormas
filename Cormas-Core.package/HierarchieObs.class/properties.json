@@ -1,0 +1,18 @@
+{
+	"category" : "Cormas-Core-Observer",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"higherLevels",
+		"levelHolder",
+		"oneLevel",
+		"appelant",
+		"degreMaxHolder" ],
+	"name" : "HierarchieObs",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

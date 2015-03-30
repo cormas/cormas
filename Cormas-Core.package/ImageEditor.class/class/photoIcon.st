@@ -1,0 +1,4 @@
+image
+photoIcon
+	
+	^SpaceInterface iconPhoto

@@ -1,0 +1,19 @@
+{
+	"class" : {
+		"new" : " 30/3/15 16:08",
+		"windowSpec" : " 30/3/15 16:08" },
+	"instance" : {
+		"actionDecLevel" : " 30/3/15 16:08",
+		"actionIncLevel" : " 30/3/15 16:08",
+		"appelant:" : " 30/3/15 16:08",
+		"degreMaxHolder" : " 30/3/15 16:08",
+		"degreMaxHolderChanged" : " 30/3/15 16:08",
+		"higherLevels" : " 30/3/15 16:08",
+		"higherLevelsChanged" : " 30/3/15 16:08",
+		"initialize" : " 30/3/15 16:08",
+		"levelChanged" : " 30/3/15 16:08",
+		"levelHolder" : " 30/3/15 16:08",
+		"levelHolderChanged" : " 30/3/15 16:08",
+		"oneLevel" : " 30/3/15 16:08",
+		"oneLevelChanged" : " 30/3/15 16:08",
+		"requestForWindowClose" : " 30/3/15 16:08" } }

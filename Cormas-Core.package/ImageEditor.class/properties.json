@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Core-Interface",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"observer" ],
+	"name" : "ImageEditor",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

@@ -1,0 +1,15 @@
+{
+	"class" : {
+		"cachedImage" : " 30/3/15 16:10",
+		"openOnClass:" : " 30/3/15 16:10",
+		"photoIcon" : " 30/3/15 16:10",
+		"windowSpec" : " 30/3/15 16:10" },
+	"instance" : {
+		"initialize" : " 30/3/15 16:10",
+		"install" : " 30/3/15 16:10",
+		"installInSystem" : " 30/3/15 16:10",
+		"installInSystem2" : " 30/3/15 16:10",
+		"loadCurrentImage" : " 30/3/15 16:10",
+		"observer" : " 30/3/15 16:10",
+		"observer:" : " 30/3/15 16:10",
+		"runInstallationDialog" : " 30/3/15 16:10" } }
