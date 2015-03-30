@@ -1,0 +1,4 @@
+acces
+dimensionX
+	
+	^dimension x
