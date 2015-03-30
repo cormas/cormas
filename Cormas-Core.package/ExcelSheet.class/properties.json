@@ -1,0 +1,19 @@
+{
+	"category" : "Cormas-Core-Connect",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		"name",
+		"sheet",
+		"currentCell",
+		"currentLine",
+		"currentCol",
+		"dataSavedByLine" ],
+	"name" : "ExcelSheet",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

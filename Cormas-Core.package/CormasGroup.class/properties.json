@@ -1,12 +1,14 @@
 {
-	"category" : "Cormas-Core",
+	"category" : "Cormas-Core-Entities",
 	"classinstvars" : [
 		 ],
 	"classvars" : [
 		 ],
-	"commentStamp" : "",
+	"commentStamp" : "<historical>",
 	"instvars" : [
-		 ],
+		"components",
+		"newComponents",
+		"removedComponents" ],
 	"name" : "CormasGroup",
 	"pools" : [
 		 ],

@@ -1,0 +1,18 @@
+{
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"povSelector",
+		"povResult",
+		"infoName",
+		"infoResult",
+		"elementaryComponentsId" ],
+	"name" : "EntityPOVSpec",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

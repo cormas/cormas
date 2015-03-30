@@ -1,0 +1,4 @@
+accessing
+entityId
+	
+	^object entityId

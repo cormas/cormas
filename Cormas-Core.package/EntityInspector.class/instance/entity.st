@@ -1,0 +1,4 @@
+accessing
+entity
+	
+	^object entity

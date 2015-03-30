@@ -1,0 +1,16 @@
+{
+	"category" : "Cormas-Core-Interface",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"name",
+		"value",
+		"entity" ],
+	"name" : "EntityInspector_AttributeItem",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

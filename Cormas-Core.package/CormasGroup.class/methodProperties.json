@@ -1,5 +1,28 @@
 {
 	"class" : {
-		 },
+		"newWith:" : " 30/3/15 15:58" },
 	"instance" : {
-		 } }
+		"addComponent:" : " 30/3/15 15:58",
+		"addComponents:" : " 30/3/15 15:58",
+		"addSynchronouslyComponent:" : " 30/3/15 15:58",
+		"components" : " 30/3/15 15:58",
+		"components:" : " 30/3/15 15:58",
+		"contain:" : " 30/3/15 15:58",
+		"deleteComponent:" : " 30/3/15 15:58",
+		"deleteComponents:" : " 30/3/15 15:58",
+		"deleteSynchronouslyComponent:" : " 30/3/15 15:58",
+		"initWith:" : " 30/3/15 15:58",
+		"newComponents" : " 30/3/15 15:58",
+		"newComponents:" : " 30/3/15 15:58",
+		"othersBut:" : " 30/3/15 15:58",
+		"othersButMe:" : " 30/3/15 15:58",
+		"removedComponents" : " 30/3/15 15:58",
+		"removedComponents:" : " 30/3/15 15:58",
+		"reset" : " 30/3/15 15:58",
+		"size" : " 30/3/15 15:58",
+		"stepDynPop" : " 30/3/15 15:58",
+		"synchronousAddition:" : " 30/3/15 15:58",
+		"synchronousRemoval:" : " 30/3/15 15:58",
+		"updateAgents" : " 30/3/15 15:58",
+		"updateComponents" : " 30/3/15 15:58",
+		"updateWith:" : " 30/3/15 15:58" } }

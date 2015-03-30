@@ -10,7 +10,7 @@ getAgentSuperclassFromGUI
 	self cbComm value & self cbLocation value & self cbGroup value not
 		ifTrue: [^AgentCommLocation].
 	self cbComm value not & self cbLocation value not & self cbGroup value
-		ifTrue: [^Group].
+		ifTrue: [^CormasGroup].
 	self cbComm value & self cbLocation value not & self cbGroup value
 		ifTrue: [^GroupComm].
 	self cbComm value not & self cbLocation value & self cbGroup value

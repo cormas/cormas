@@ -1,0 +1,4 @@
+accessing
+currentCol
+	
+	^currentCol

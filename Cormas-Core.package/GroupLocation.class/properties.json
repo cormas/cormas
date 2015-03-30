@@ -1,0 +1,16 @@
+{
+	"category" : "Cormas-Core-Entities",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		"components",
+		"newComponents",
+		"removedComponents" ],
+	"name" : "GroupLocation",
+	"pools" : [
+		 ],
+	"super" : "AgentLocation",
+	"type" : "normal" }

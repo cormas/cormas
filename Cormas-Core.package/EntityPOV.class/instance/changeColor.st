@@ -1,0 +1,4 @@
+changed
+changeColor
+	
+	self subclassResponsibility
