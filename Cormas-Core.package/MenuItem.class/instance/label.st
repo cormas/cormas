@@ -1,0 +1,4 @@
+labeling
+label
+	
+	^self filteredLabel

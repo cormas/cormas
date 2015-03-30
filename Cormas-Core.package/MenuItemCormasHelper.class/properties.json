@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Core-Interface",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		 ],
+	"name" : "MenuItemCormasHelper",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

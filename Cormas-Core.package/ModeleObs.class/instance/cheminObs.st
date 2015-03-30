@@ -1,0 +1,4 @@
+fichier
+cheminObs
+	
+	^'./obs/'
