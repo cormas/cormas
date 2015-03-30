@@ -1,0 +1,32 @@
+{
+	"category" : "Cormas-Core-Observer",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"modeleObs",
+		"vueObs",
+		"compteur",
+		"cycle",
+		"deplacement",
+		"lienHolder",
+		"aSlider",
+		"bSlider",
+		"vueEllipse",
+		"aHolder",
+		"bHolder",
+		"extentHolder",
+		"interieurHolder",
+		"dBuilder",
+		"changedOK",
+		"quitter",
+		"cercleCommHolder",
+		"dialogPreferences",
+		"dialogParametres" ],
+	"name" : "InterfaceObs",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

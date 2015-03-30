@@ -1,0 +1,4 @@
+init
+new
+	
+	^super new

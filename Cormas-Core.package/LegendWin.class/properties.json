@@ -1,0 +1,20 @@
+{
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		"legendes",
+		"superviseur",
+		"tableInterface",
+		"sightingsTable",
+		"classe",
+		"methode",
+		"isOpened" ],
+	"name" : "LegendWin",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }
