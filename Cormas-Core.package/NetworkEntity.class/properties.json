@@ -1,0 +1,15 @@
+{
+	"category" : "Cormas-Core-Entities",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		"nodes",
+		"arcs" ],
+	"name" : "NetworkEntity",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

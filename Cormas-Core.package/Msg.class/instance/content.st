@@ -1,0 +1,4 @@
+accessing
+content
+	
+	^self content

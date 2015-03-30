@@ -1,0 +1,18 @@
+{
+	"category" : "Cormas-Core-Communication",
+	"classinstvars" : [
+		"isObserved" ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		"sender",
+		"receiver",
+		"topic",
+		"content",
+		"symbol" ],
+	"name" : "Msg",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

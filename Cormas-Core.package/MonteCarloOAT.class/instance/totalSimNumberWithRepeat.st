@@ -1,0 +1,4 @@
+setParameters
+totalSimNumberWithRepeat
+	
+	^self totalSimNumber
