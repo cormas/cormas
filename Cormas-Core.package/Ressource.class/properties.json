@@ -1,0 +1,16 @@
+{
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"symbol",
+		"donnee",
+		"proprietaire" ],
+	"name" : "Ressource",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

@@ -1,0 +1,36 @@
+{
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		"probeFormat",
+		"listControle",
+		"fixRandomSeed",
+		"listProbes",
+		"randomSeed",
+		"nbOfRepeat",
+		"listInit",
+		"fileFormat",
+		"finalStep",
+		"releaseRandomSeed",
+		"cormas",
+		"simProgress",
+		"analysisProgress",
+		"displaySimNumber",
+		"simNumero",
+		"dataSaver",
+		"sumTimeSeriesProbes",
+		"averagePeriod",
+		"periodField",
+		"runSilently",
+		"filesExist",
+		"process",
+		"isAnalysisEnded" ],
+	"name" : "SensitivityAnalysisAbstract",
+	"pools" : [
+		 ],
+	"super" : "DefaultAttributesSetter",
+	"type" : "normal" }

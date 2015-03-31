@@ -1,0 +1,17 @@
+{
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"cormasModel",
+		"listEntities",
+		"listProbes",
+		"menuHolder" ],
+	"name" : "ProbesList",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }
