@@ -1,0 +1,4 @@
+testing
+isSpatialEntityElementClass
+	
+	^true

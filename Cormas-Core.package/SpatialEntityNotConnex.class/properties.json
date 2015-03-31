@@ -6,9 +6,8 @@
 		 ],
 	"commentStamp" : "<historical>",
 	"instvars" : [
-		"compactness",
-		"givenSize" ],
-	"name" : "SpatialEntityAggregate",
+		 ],
+	"name" : "SpatialEntityNotConnex",
 	"pools" : [
 		 ],
 	"super" : "SpatialEntitySet",

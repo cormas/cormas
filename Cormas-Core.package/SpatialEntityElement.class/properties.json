@@ -6,10 +6,10 @@
 		 ],
 	"commentStamp" : "<historical>",
 	"instvars" : [
-		"compactness",
-		"givenSize" ],
-	"name" : "SpatialEntityAggregate",
+		"orderedNeighbourhood",
+		"default" ],
+	"name" : "SpatialEntityElement",
 	"pools" : [
 		 ],
-	"super" : "SpatialEntitySet",
+	"super" : "SpatialEntity",
 	"type" : "normal" }

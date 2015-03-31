@@ -4,12 +4,12 @@
 		 ],
 	"classvars" : [
 		 ],
-	"commentStamp" : "<historical>",
+	"commentStamp" : "",
 	"instvars" : [
-		"compactness",
-		"givenSize" ],
-	"name" : "SpatialEntityAggregate",
+		"state",
+		"bufferState" ],
+	"name" : "SpatialEntityCell",
 	"pools" : [
 		 ],
-	"super" : "SpatialEntitySet",
+	"super" : "SpatialEntityElement",
 	"type" : "normal" }

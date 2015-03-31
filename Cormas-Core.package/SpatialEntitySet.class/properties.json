@@ -6,10 +6,11 @@
 		 ],
 	"commentStamp" : "<historical>",
 	"instvars" : [
-		"compactness",
-		"givenSize" ],
-	"name" : "SpatialEntityAggregate",
+		"components",
+		"type",
+		"surround" ],
+	"name" : "SpatialEntitySet",
 	"pools" : [
 		 ],
-	"super" : "SpatialEntitySet",
+	"super" : "SpatialEntity",
 	"type" : "normal" }
