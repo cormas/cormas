@@ -1,5 +1,5 @@
 instance creation
 initialize
 	
-	self initializeWithoutVS.
-	self initVS
+	"self initializeWithoutVS.
+	self initVS"
