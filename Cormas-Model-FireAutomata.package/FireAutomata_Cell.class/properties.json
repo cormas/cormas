@@ -10,5 +10,5 @@
 	"name" : "FireAutomata_Cell",
 	"pools" : [
 		 ],
-	"super" : "CormasSpatialEntity",
+	"super" : "SpatialEntity",
 	"type" : "normal" }
