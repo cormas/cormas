@@ -1,0 +1,4 @@
+controller accessing
+defaultControllerClass
+	
+	^VectorialController

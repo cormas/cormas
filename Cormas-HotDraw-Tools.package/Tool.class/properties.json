@@ -1,0 +1,22 @@
+{
+	"category" : "Cormas-HotDraw-Tools",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		"Debug",
+		"Grid",
+		"States" ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		"controller",
+		"cursor",
+		"currentState",
+		"initialState",
+		"passInputDown",
+		"data",
+		"figure" ],
+	"name" : "Tool",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

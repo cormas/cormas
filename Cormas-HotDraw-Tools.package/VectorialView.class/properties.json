@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-HotDraw-Tools",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		 ],
+	"name" : "VectorialView",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

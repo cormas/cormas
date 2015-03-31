@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-HotDraw-Tools",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"toolConditionResult" ],
+	"name" : "ToolConditionType",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }
