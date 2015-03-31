@@ -1,0 +1,20 @@
+{
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"classesList",
+		"attributsList",
+		"selectedClass",
+		"selectedAttribut",
+		"parameterInitialValue",
+		"parameterFinalValue",
+		"parameterStep" ],
+	"name" : "OneParameterWindow",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

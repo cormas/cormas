@@ -1,0 +1,1 @@
+PovSetter to set the figures of the located agents

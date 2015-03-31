@@ -1,0 +1,4 @@
+actions
+resetBitmapSize
+	
+	self listSymbolsChanged

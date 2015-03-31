@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Core-Interface",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		 ],
+	"name" : "PovSetter_SpatialEntity",
+	"pools" : [
+		 ],
+	"super" : "PovSetter",
+	"type" : "normal" }

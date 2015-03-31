@@ -1,0 +1,15 @@
+{
+	"category" : "Cormas-Core-Observer",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"agent",
+		"pref" ],
+	"name" : "Pref",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }
