@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Tests-Core",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		 ],
+	"name" : "CormasTest",
+	"pools" : [
+		 ],
+	"super" : "TestCase",
+	"type" : "normal" }
