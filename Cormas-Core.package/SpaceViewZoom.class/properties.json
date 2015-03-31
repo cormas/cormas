@@ -1,0 +1,15 @@
+{
+	"category" : "Cormas-Core-Space",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"zoomFactor",
+		"translationVector" ],
+	"name" : "SpaceViewZoom",
+	"pools" : [
+		 ],
+	"super" : "SpaceView",
+	"type" : "normal" }

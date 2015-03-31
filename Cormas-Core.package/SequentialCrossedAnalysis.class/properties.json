@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		 ],
+	"name" : "SequentialCrossedAnalysis",
+	"pools" : [
+		 ],
+	"super" : "CrossedSensitivity",
+	"type" : "normal" }

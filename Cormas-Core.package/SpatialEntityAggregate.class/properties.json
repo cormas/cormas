@@ -1,0 +1,15 @@
+{
+	"category" : "Cormas-Core-Entities",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		"compactness",
+		"givenSize" ],
+	"name" : "SpatialEntityAggregate",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

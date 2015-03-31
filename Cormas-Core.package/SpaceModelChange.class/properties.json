@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Core-Space",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		 ],
+	"name" : "SpaceModelChange",
+	"pools" : [
+		 ],
+	"super" : "GenericChange",
+	"type" : "normal" }

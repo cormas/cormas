@@ -1,0 +1,21 @@
+{
+	"class" : {
+		 },
+	"instance" : {
+		"changedTool" : " 31/3/15 09:59",
+		"dispatchMenuSelection22:" : " 31/3/15 09:59",
+		"dispatchMenuSelection:" : " 31/3/15 09:59",
+		"handleEvent:" : " 31/3/15 09:59",
+		"isControlWanted" : " 31/3/15 09:59",
+		"manipulationMenuForMultipleTypeEntities:" : " 31/3/15 09:59",
+		"manipulationMenuForSingleTypeEntities:" : " 31/3/15 09:59",
+		"processChangeFigureMenuAt:forSelectedFigures:" : " 31/3/15 09:59",
+		"processManipulateMenuAt:local:for:" : " 31/3/15 09:59",
+		"processManipulateMenuAt:local:forSelectedFigures:localFigures:" : " 31/3/15 09:59",
+		"processMenuAt:centered:" : " 31/3/15 09:59",
+		"processMenuAt:local:for:" : " 31/3/15 09:59",
+		"processMenuAt:local:forMultipleFigures:" : " 31/3/15 09:59",
+		"processModifyFigureMenuAt:local:for:" : " 31/3/15 09:59",
+		"redButtonPressedEvent22:" : " 31/3/15 09:59",
+		"redButtonPressedEvent:" : " 31/3/15 09:59",
+		"tool:" : " 31/3/15 09:59" } }

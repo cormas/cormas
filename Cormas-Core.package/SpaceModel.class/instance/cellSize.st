@@ -1,0 +1,4 @@
+private - accessing
+cellSize
+	
+	^cellSize

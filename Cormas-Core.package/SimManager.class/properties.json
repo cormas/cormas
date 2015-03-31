@@ -1,0 +1,36 @@
+{
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [
+		"newFolder" ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		"cormasModel",
+		"simNumero",
+		"randomSeed",
+		"simName",
+		"enableBackward",
+		"dontAsk",
+		"simFolder",
+		"nextStep",
+		"buttonsForwardAreOn",
+		"deviationChoice",
+		"listControle",
+		"releaseRandomSeed",
+		"listProbes",
+		"fixRandomSeed",
+		"listInit",
+		"finalStep",
+		"enableBackwardValue",
+		"traceSize",
+		"processRun",
+		"processReplayBackward",
+		"processReplayForward",
+		"undoList",
+		"redoList" ],
+	"name" : "SimManager",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

@@ -1,0 +1,35 @@
+{
+	"category" : "Cormas-Core-Space",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		"spaceModel",
+		"menuHolder",
+		"legend",
+		"activeSpatialEntity",
+		"basicTitle",
+		"delimiterSize",
+		"fillDico",
+		"povMethodDico",
+		"infoMethodDico",
+		"trackedFigureTypes",
+		"video",
+		"zoomInterfaceIsStatic",
+		"isTimeTitleDisplayed",
+		"isTimeFieldDisplayed",
+		"timeField",
+		"timeUnitName",
+		"manipInstancesController",
+		"createInstancesController",
+		"entityForManipulation",
+		"siConfig",
+		"configName",
+		"enableUndo" ],
+	"name" : "SpaceInterface",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

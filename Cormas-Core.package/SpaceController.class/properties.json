@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Core-Space",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		 ],
+	"name" : "SpaceController",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

@@ -1,0 +1,24 @@
+{
+	"category" : "Cormas-Core-Space",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"entityFigures",
+		"activeAttributeValue",
+		"activeAttribute",
+		"oldBounds",
+		"delimiter",
+		"delimiterColor",
+		"figuresByReference",
+		"manipulatedEntity",
+		"manipulationAction",
+		"manipulationActionArguments",
+		"backgroundFillColor" ],
+	"name" : "SpaceView",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

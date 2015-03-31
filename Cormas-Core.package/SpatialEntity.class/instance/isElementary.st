@@ -1,0 +1,4 @@
+- testing
+isElementary
+	
+	self subclassResponsibility
