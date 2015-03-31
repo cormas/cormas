@@ -1,0 +1,4 @@
+viewCorrespondance
+asFigure
+	
+	^CompositeEntityFigure

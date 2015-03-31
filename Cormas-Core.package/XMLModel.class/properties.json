@@ -1,0 +1,26 @@
+{
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [
+		"saxElementHandlers" ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		"dimX",
+		"dimY",
+		"connexity",
+		"delimiter",
+		"boundaries",
+		"attributes",
+		"views",
+		"currentView",
+		"agents",
+		"model",
+		"filepath",
+		"xmlRpcClient",
+		"playbackLogStream" ],
+	"name" : "XMLModel",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

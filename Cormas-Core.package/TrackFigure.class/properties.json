@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Core-Interface",
+	"classinstvars" : [
+		"maxSize" ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		 ],
+	"name" : "TrackFigure",
+	"pools" : [
+		 ],
+	"super" : "LineFigure",
+	"type" : "normal" }

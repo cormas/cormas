@@ -1,0 +1,27 @@
+{
+	"class" : {
+		"asFigure" : " 31/3/15 13:37",
+		"circle" : " 31/3/15 13:37",
+		"circleRadius:" : " 31/3/15 13:37",
+		"diamond" : " 31/3/15 13:37",
+		"fromPolyline:" : " 31/3/15 13:37",
+		"hexagon" : " 31/3/15 13:37",
+		"new:" : " 31/3/15 13:37",
+		"newColor:lineColor:lineWidth:sizeRatio:position:vertices:" : " 31/3/15 13:37",
+		"newLineWidth:nbSegments:sizeRatio:isStroked:" : " 31/3/15 13:37",
+		"newNbSegments:" : " 31/3/15 13:37",
+		"pentagone" : " 31/3/15 13:37",
+		"polylineFromRadius:angleBetweenPoints:" : " 31/3/15 13:37",
+		"triangle" : " 31/3/15 13:37" },
+	"instance" : {
+		"asFigure" : " 31/3/15 13:37",
+		"asFigure_basic" : " 31/3/15 13:37",
+		"asGeometric" : " 31/3/15 13:37",
+		"bounds" : " 31/3/15 13:37",
+		"center" : " 31/3/15 13:37",
+		"lineWidth:nbSegments:sizeRatio:ev:colR:colG:colB:" : " 31/3/15 13:37",
+		"nbSegments" : " 31/3/15 13:37",
+		"points" : " 31/3/15 13:37",
+		"polyline" : " 31/3/15 13:37",
+		"polyline:" : " 31/3/15 13:37",
+		"scaledBy:" : " 31/3/15 13:37" } }

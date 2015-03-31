@@ -1,0 +1,4 @@
+accessing
+asGeometric
+	
+	^self outline

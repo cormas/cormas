@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Core-Interface",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"isDistortable" ],
+	"name" : "VectorialFigure",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

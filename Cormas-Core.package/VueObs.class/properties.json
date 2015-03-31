@@ -1,0 +1,15 @@
+{
+	"category" : "Cormas-Core-Observer",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"zone",
+		"acces" ],
+	"name" : "VueObs",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"components" ],
+	"name" : "VectorialCompositePOV",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }
