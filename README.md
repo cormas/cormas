@@ -16,7 +16,7 @@ If you want to install the last stable version (0.2):
 ```Smalltalk
 Gofer new
    url: 'http://smalltalkhub.com/mc/SergeStinckwich/CORMAS/main';
-   configurationOf: 'ConfigurationOfCormas';
+   configurationOf: 'Cormas';
    loadStable.
 ```
 
@@ -24,7 +24,7 @@ If you want to install the development version:
 ```Smalltalk
 Gofer new
    url: 'http://smalltalkhub.com/mc/SergeStinckwich/CORMAS/main';
-   configurationOf: 'ConfigurationOfCormas';
+   configurationOf: 'Cormas';
    loadDevelopment.
 ```
 
