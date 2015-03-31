@@ -10,7 +10,7 @@ All issues about the current and ongoing port are here: https://github.com/corma
 
 ##How to install Cormas in MOOSE 5.1 image
 
-Download last version of MOOSE 5.1 here: http://www.moosetechnology.org/
+Download last version of MOOSE 5.1 here: https://ci.inria.fr/moose/job/moose-5.1/
 
 If you want to install the last stable version (0.1):
 ```Smalltalk
@@ -18,7 +18,7 @@ Gofer new
    url: 'http://smalltalkhub.com/mc/SergeStinckwich/CORMAS/main';
    package: 'ConfigurationOfCormas';
    load.
-((Smalltalk at: #ConfigurationOfCormas) project version: '0.1') load.
+((Smalltalk at: #ConfigurationOfCormas) project version: '0.2') load.
 ```
 
 If you want to install the development version:
