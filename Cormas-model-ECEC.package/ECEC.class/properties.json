@@ -14,5 +14,5 @@
 	"name" : "ECEC",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "CormasModel",
 	"type" : "normal" }
