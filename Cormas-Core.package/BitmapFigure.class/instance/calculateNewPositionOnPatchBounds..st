@@ -19,11 +19,11 @@ calculateNewPositionOnPatchBounds: patchBounds
 	adaptedPatchBounds := patchBounds insetOriginBy: origin cornerBy: diagonal.	"adaptedPatchBounds := patchBounds translatedBy: diagonal / -2."
 	positionName = #random
 		ifTrue:
-			[^(CormasOld
+			[^(Cormas
 				simpleRandomFrom: adaptedPatchBounds origin x
 				to: adaptedPatchBounds corner x)
 				@
-					(CormasOld
+					(Cormas
 						simpleRandomFrom: adaptedPatchBounds origin y
 						to: adaptedPatchBounds corner y)].
 	^adaptedPatchBounds perform: positionName

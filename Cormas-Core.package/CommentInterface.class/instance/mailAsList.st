@@ -1,4 +1,4 @@
 asList
 mailAsList
 	
-	^CormasOld textAsList: self eMailList value
+	^Cormas textAsList: self eMailList value

@@ -46,5 +46,5 @@
 	"name" : "SpaceInterfaceConfig",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "UIApplicationModel",
 	"type" : "normal" }

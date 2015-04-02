@@ -14,5 +14,5 @@
 	"name" : "ClassifyParameter",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "OATsensitivity",
 	"type" : "normal" }

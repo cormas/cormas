@@ -28,5 +28,5 @@
 	"name" : "InterfaceObs",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "UIApplicationModel",
 	"type" : "normal" }

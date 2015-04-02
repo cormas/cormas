@@ -10,4 +10,4 @@ Example: self nearestSimilarAgentWithinRadius: 2"
 	candidates := self nearestSimilarAgentsWithinRadius: range.
 	^(candidates isNil or: [candidates isEmpty])
 		ifTrue: [nil]
-		ifFalse: [CormasOld selectRandomlyFrom: candidates]
+		ifFalse: [Cormas selectRandomlyFrom: candidates]

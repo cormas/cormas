@@ -10,5 +10,5 @@
 	"name" : "AgentLocation",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "CormasAgent",
 	"type" : "normal" }

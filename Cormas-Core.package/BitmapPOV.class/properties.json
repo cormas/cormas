@@ -11,5 +11,5 @@
 	"name" : "BitmapPOV",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "EntityPOV",
 	"type" : "normal" }

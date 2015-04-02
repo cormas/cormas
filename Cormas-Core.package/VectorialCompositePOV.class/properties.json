@@ -1,5 +1,5 @@
 {
-	"category" : "Cormas-Core-Others",
+	"category" : "Cormas-Core-Interface",
 	"classinstvars" : [
 		 ],
 	"classvars" : [
@@ -10,5 +10,5 @@
 	"name" : "VectorialCompositePOV",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "VectorialPOV",
 	"type" : "normal" }

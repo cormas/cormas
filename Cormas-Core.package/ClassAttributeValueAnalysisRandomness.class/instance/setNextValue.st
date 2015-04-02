@@ -5,4 +5,4 @@ setNextValue
 	self isAnalysisDone ifTrue: [^nil].
 	self repNb: self repNb + 1.
 	self currentValue: self getRandomValue.
-	CormasOld initRandomSeed
+	Cormas initRandomSeed

@@ -11,5 +11,5 @@
 	"name" : "NetworkEntity",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "PassiveObject",
 	"type" : "normal" }

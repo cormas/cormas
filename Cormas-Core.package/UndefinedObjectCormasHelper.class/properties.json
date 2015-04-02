@@ -10,5 +10,5 @@
 	"name" : "UndefinedObjectCormasHelper",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "ObjectCormasHelper",
 	"type" : "normal" }

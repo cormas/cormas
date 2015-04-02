@@ -10,5 +10,5 @@
 	"name" : "CormasLauncher",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "UIApplicationModel",
 	"type" : "normal" }

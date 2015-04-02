@@ -11,5 +11,5 @@
 	"name" : "Map",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "Ressource",
 	"type" : "normal" }

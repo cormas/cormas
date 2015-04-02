@@ -10,5 +10,5 @@
 	"name" : "BooleanCormasHelper",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "ObjectCormasHelper",
 	"type" : "normal" }

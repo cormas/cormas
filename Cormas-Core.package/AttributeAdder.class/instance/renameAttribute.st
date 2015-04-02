@@ -6,13 +6,13 @@ renameAttribute
 	aCAV := self selectedRow value.
 	aCAV isNil ifTrue: [^self cormas warn: 'Please, select a row.'].
 	oldName := aCAV targetAttribute.
-	newName := CormasOld current
+	newName := Cormas current
 		request: 'Enter new attribute name'
 		initialAnswer: oldName asString.
 	newName = '' ifTrue: [^nil].	"Renaming the attribute"
 	(aCAV targetClass instVarNames includes: oldName asString)
 		ifTrue:
-			[CormasOld
+			[Cormas
 				renameAttribute: oldName
 				to: newName
 				inClass: aCAV targetClass]
@@ -28,7 +28,7 @@ renameAttribute
 								with: oldName asString
 								with: cl name asString)
 								ifFalse: [^nil]
-								ifTrue: [CormasOld renameAttribute: oldName to: newName inClass: cl]]]].	"Renaming the accessors of the target class and its super classes and sub classes"
+								ifTrue: [Cormas renameAttribute: oldName to: newName inClass: cl]]]].	"Renaming the accessors of the target class and its super classes and sub classes"
 	((aCAV targetClass withAllSuperclasses)
 		addAll: aCAV targetClass allSubclasses;
 		yourself)
@@ -36,21 +36,21 @@ renameAttribute
 			[:cl | 
 			(cl includesSelector: oldName)
 				ifTrue:
-					[CormasOld
+					[Cormas
 						renameSelector: oldName asSymbol
 						to: newName asSymbol
 						nbArguments: 0
 						inClass: cl].
 			(cl includesSelector: (oldName , ':') asSymbol)
 				ifTrue:
-					[CormasOld
+					[Cormas
 						renameSelector: (oldName , ':') asSymbol
 						to: (newName , ':') asSymbol asSymbol
 						nbArguments: 1
 						inClass: cl].
 			(cl class includesSelector: ('default_' , oldName) asSymbol)
 				ifTrue:
-					[CormasOld
+					[Cormas
 						renameSelector: ('default_' , oldName) asSymbol
 						to: ('default_' , newName) asSymbol asSymbol
 						nbArguments: 1

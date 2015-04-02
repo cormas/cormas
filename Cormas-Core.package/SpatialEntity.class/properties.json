@@ -17,5 +17,5 @@
 	"name" : "SpatialEntity",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "CormasEntity",
 	"type" : "normal" }

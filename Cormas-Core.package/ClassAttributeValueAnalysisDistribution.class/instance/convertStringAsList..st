@@ -14,6 +14,6 @@ convertStringAsList: aString
 	arrayOfSubstrings
 		do:
 			[:st | 
-			nb := CormasOld stringAsObjectType: st.
+			nb := Cormas stringAsObjectType: st.
 			nb cormasHelper isTypeNumber ifTrue: [list add: nb]].
 	^list

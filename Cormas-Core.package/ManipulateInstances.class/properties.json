@@ -42,5 +42,5 @@
 	"name" : "ManipulateInstances",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "UIApplicationModel",
 	"type" : "normal" }

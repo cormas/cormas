@@ -10,5 +10,5 @@
 	"name" : "NetworkComponentEntity",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "ObjectLocation",
 	"type" : "normal" }

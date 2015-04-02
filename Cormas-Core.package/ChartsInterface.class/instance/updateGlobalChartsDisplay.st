@@ -33,7 +33,7 @@ updateGlobalChartsDisplay
 				markerType:
 					(markers
 						at:
-							(CormasOld
+							(Cormas
 								number: index
 								onCycle: markers size)).	"(CormasNS.Kernel.Entity darkColorOfNumber: index * 3)"
 			newDescriptors add: res first.

@@ -10,5 +10,5 @@
 	"name" : "ArrayCormasHelper",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "CollectionCormasHelper",
 	"type" : "normal" }

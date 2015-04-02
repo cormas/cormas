@@ -29,5 +29,5 @@
 	"name" : "AgentObs",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "BBaseVisuel",
 	"type" : "normal" }

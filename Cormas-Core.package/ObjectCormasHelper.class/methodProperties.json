@@ -1,0 +1,24 @@
+{
+	"class" : {
+		"arrayFrom:" : " 1/4/15 16:16",
+		"arrayOrNilFrom:" : " 1/4/15 16:16",
+		"colorFrom:" : " 1/4/15 16:16",
+		"colorOrBlackFrom:" : " 1/4/15 16:16",
+		"isTypeArray" : " 1/4/15 16:16",
+		"isTypeArrayNotChars" : " 1/4/15 16:16",
+		"isTypeBoolean" : " 1/4/15 16:16",
+		"isTypeCollection" : " 1/4/15 16:16",
+		"isTypeCollectionNotChars" : " 1/4/15 16:16",
+		"isTypeColorValue" : " 1/4/15 16:16",
+		"isTypeDictionary" : " 1/4/15 16:16",
+		"isTypeEntity" : " 1/4/15 16:16",
+		"isTypeEntityClass" : " 1/4/15 16:16",
+		"isTypeNumber" : " 1/4/15 16:16",
+		"isTypeSet" : " 1/4/15 16:16",
+		"isTypeString" : " 1/4/15 16:16",
+		"isTypeSymbol" : " 1/4/15 16:16",
+		"nullValue" : " 1/4/15 16:16",
+		"stringForDefaultValue:" : " 1/4/15 16:16",
+		"valueFrom:" : " 1/4/15 16:16" },
+	"instance" : {
+		 } }

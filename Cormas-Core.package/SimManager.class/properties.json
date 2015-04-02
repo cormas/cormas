@@ -32,5 +32,5 @@
 	"name" : "SimManager",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "UIApplicationModel",
 	"type" : "normal" }

@@ -1,0 +1,14 @@
+{
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		 ],
+	"name" : "CharacterArrayCormasHelper",
+	"pools" : [
+		 ],
+	"super" : "ArrayCormasHelper",
+	"type" : "normal" }

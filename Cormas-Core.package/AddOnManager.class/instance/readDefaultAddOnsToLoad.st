@@ -2,8 +2,8 @@ default add-ons
 readDefaultAddOnsToLoad
 	
 	| aFile |
-	aFile := CormasOld addOnsPath asFilename construct:
+	aFile := Cormas addOnsPath asFilename construct:
 			'Cormas_DefaultAddOnsToLoad.txt'.
 	aFile exists
-		ifTrue: [^CormasOld loadLinesInCollecFromTxtFile: aFile]
+		ifTrue: [^Cormas loadLinesInCollecFromTxtFile: aFile]
 		ifFalse: [^#()]

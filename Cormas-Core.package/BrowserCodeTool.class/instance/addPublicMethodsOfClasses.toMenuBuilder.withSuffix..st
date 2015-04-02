@@ -24,7 +24,7 @@ addPublicMethodsOfClasses: aSetOfClasses toMenuBuilder: mb withSuffix: aString
 								do:
 									[:aSelector | 
 									(dicoM at: protocolExactName)
-										add: (CormasOld headerOfMethod: aSelector class: aClass)]]]].
+										add: (Cormas headerOfMethod: aSelector class: aClass)]]]].
 	dicoM keys asSortedCollection
 		do:
 			[:aProtocol | 

@@ -15,7 +15,7 @@ aProbeName = <Symbol>"
 				getExcelDataModifiedBy:
 					aCAV classNameAsString , '_' , aCAV attributeAsString
 				ofProbe: aProbeName].
-	moyModified := CormasOld averageOf: data.	"store information for impossible calculus"
+	moyModified := Cormas averageOf: data.	"store information for impossible calculus"
 	aCAV finalValue = aCAV currentValue ifTrue: [^0].
 	(moyModified * moyStandard * aCAV finalValue * aCAV currentValue <= 0
 		or:

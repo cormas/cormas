@@ -6,4 +6,4 @@ Example: self randomWalk: 2 "
 	
 	self
 		moveTo:
-			(CormasOld selectRandomlyFrom: (self patch recursiveNeighbourhood: radius))
+			(Cormas selectRandomlyFrom: (self patch recursiveNeighbourhood: radius))

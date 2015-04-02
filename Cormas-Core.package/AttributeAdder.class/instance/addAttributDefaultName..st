@@ -5,7 +5,7 @@ defaultName =<String>"
 	
 	| newAttributName wrongCharactPlace |
 	"Name verification"
-	newAttributName := CormasOld current request:
+	newAttributName := Cormas current request:
 			'Enter an attribute name (without white space, number nor symbol)'
 		initialAnswer: defaultName.
 	newAttributName isNil ifTrue: [^nil].

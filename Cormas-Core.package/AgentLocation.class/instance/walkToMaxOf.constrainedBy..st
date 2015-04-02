@@ -18,5 +18,5 @@ Example: self walkToMaxOf: #sugar constrainedBy: [:c | c noOccupant]"
 			destinations := destinations
 				select:
 					[:c | (c perform: aSymbol) = (destinations first perform: aSymbol)].
-			destination := CormasOld selectRandomlyFrom: destinations.
+			destination := Cormas selectRandomlyFrom: destinations.
 			self moveTo: destination]

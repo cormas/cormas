@@ -3,8 +3,8 @@ addCormasUtilsToMenuBuilder: mb
 	
 	| classes mb2 |
 	mb beginSubMenuLabeled: 'Cormas Utils'.
-	classes := Array with: CormasOld class.
+	classes := Array with: Cormas class.
 	mb2 := self addPublicMethodsOfClasses: classes toMenuBuilder: mb
-		withSuffix: #CormasOld.
+		withSuffix: #Cormas.
 	mb2 endSubMenu.
 	^mb2

@@ -36,7 +36,7 @@ updateLocalChartsDisplay
 						lineStyle:
 							(styles
 								at:
-									(CormasOld
+									(Cormas
 										number: id
 										onCycle: styles size))
 						label:
@@ -53,7 +53,7 @@ updateLocalChartsDisplay
 						markerType:
 							(markers
 								at:
-									(CormasOld
+									(Cormas
 										number: j
 										onCycle: markers size)).	"CormasNS.Kernel.Entity colorWithout: #white OfNumber: 23 + id"
 					newDescriptors add: res first.

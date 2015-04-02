@@ -10,4 +10,4 @@ Example: self colocatedSimilarAgentVerifying: [:a | a sex ~= self sex]"
 	candidates := self colocatedSimilarAgentsVerifying: aCondition.
 	^(candidates isNil or: [candidates isEmpty])
 		ifTrue: [nil]
-		ifFalse: [CormasOld selectRandomlyFrom: candidates]
+		ifFalse: [Cormas selectRandomlyFrom: candidates]

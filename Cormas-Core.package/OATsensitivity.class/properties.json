@@ -10,5 +10,5 @@
 	"name" : "OATsensitivity",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "SensitivitySetter",
 	"type" : "normal" }

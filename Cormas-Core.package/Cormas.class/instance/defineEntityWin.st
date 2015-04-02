@@ -1,0 +1,4 @@
+accessing
+defineEntityWin
+	
+	^defineEntityWin

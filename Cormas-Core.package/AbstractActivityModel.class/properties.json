@@ -14,5 +14,5 @@
 	"name" : "AbstractActivityModel",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "ElementActivityDiagramModel",
 	"type" : "normal" }

@@ -7,6 +7,6 @@ activityChanged
 	self changed: #name.
 	self purpose
 		value:
-			(CormasOld
+			(Cormas
 				commentOfMethod: self listActivity selection
 				class: self targetClass)

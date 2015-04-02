@@ -7,7 +7,7 @@ loadDefaultAddOns
 	collec
 		do:
 			[:aString | 
-			aFile := CormasOld addOnsPath asFilename construct: aString.
+			aFile := Cormas addOnsPath asFilename construct: aString.
 			aFile exists
 				ifTrue:
 					[aFile extension = '.st' ifTrue: [aFile fileIn].

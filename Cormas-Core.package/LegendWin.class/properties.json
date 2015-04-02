@@ -16,5 +16,5 @@
 	"name" : "LegendWin",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "UIApplicationModel",
 	"type" : "normal" }

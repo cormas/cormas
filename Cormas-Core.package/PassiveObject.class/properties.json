@@ -10,5 +10,5 @@
 	"name" : "PassiveObject",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "CormasEntity",
 	"type" : "normal" }

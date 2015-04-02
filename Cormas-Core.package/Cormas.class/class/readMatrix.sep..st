@@ -1,4 +1,4 @@
-as yet unclassified
++ utilities - files
 readMatrix: fileName sep: aSepChar
 	"Returns a collection of collections (a Matrix), each one containing the values between the separator of the file.
 	Example: file = 
@@ -19,21 +19,21 @@ Ex: Cormas readMatrix: 'D:\vw7.6\cormas\Models\Ecec\data\test.csv' sep: ';'   "
 		ifFalse: [sep := aSepChar].
 	lines := OrderedCollection new.
 	stream := fileName asFilename readStream.	"On devine le format des lignes"
-	stream lineEndAuto.
-	" Lecture du fichier, ligne par ligne "
+	stream lineEndAuto.	" Lecture du fichier, ligne par ligne "
 	nbColumns := 0.
 	[stream atEnd]
 		whileFalse:
 			[line := Cormas splitLine: stream sep: sep.
-			(nbColumns < line size) ifTrue: [nbColumns := line size].
+			nbColumns < line size ifTrue: [nbColumns := line size].
 			lines add: line].
-	stream close.
-	"creates the Matrix"
+	stream close.	"creates the Matrix"
 	matrix := OrderedCollection new.
-	lines do:
-			[: aLine |  "coll removeAllSuchThat:[:x| x isEmpty]."
+	lines
+		do:
+			[:aLine | 
+			"coll removeAllSuchThat:[:x| x isEmpty]."
 			subCollection := OrderedCollection new.
 			aLine do: [:x | subCollection add: (Cormas stringAsObjectType: x)].
-			[subCollection size < nbColumns] whileTrue:[subCollection add: nil].
+			[subCollection size < nbColumns] whileTrue: [subCollection add: nil].
 			matrix add: subCollection].
 	^matrix

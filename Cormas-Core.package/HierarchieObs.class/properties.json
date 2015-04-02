@@ -14,5 +14,5 @@
 	"name" : "HierarchieObs",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "UIApplicationModel",
 	"type" : "normal" }

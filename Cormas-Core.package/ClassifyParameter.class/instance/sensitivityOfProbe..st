@@ -17,7 +17,7 @@ aProbeName = <Symbol>"
 	
 	| moyStandard dico |
 	dico := Dictionary new.
-	moyStandard := CormasOld averageOf: (self getStandardDataOfProbe: aProbeName).
+	moyStandard := Cormas averageOf: (self getStandardDataOfProbe: aProbeName).
 	self classAttribValueAnalysis_List list
 		do:
 			[:aCAV | 

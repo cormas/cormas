@@ -1,0 +1,4 @@
+changed
+entryN
+	
+	self halt

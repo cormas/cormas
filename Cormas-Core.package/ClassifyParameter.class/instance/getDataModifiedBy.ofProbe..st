@@ -9,7 +9,7 @@ getDataModifiedBy: aParameter ofProbe: aProbeName
 			(f
 				findString: aProbeName asString
 				startingAt: 1) ~= 0].
-	table := CormasOld
+	table := Cormas
 		readCsv: (self dataSaver directory construct: standardFile).
 	table removeFirst.
 	data := OrderedCollection new.

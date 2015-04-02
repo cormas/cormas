@@ -12,6 +12,6 @@ getRandomValue
 		max: self finalValue asRational denominator.
 	factor := factor * self repetitions.
 	factor := 10 raisedTo: factor log ceiling.
-	^((CormasOld
+	^((Cormas
 		randomFrom: self initValue * factor
 		to: self finalValue * factor) / factor) asFloat

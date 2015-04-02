@@ -1,4 +1,4 @@
 asList
 authorsAsList
 	
-	^CormasOld textAsList: self authorList value
+	^Cormas textAsList: self authorList value

@@ -10,4 +10,4 @@ Example: self colocatedEntity: #Prey"
 	candidates := self colocatedEntities: locatedEntityName.
 	^(candidates isNil or: [candidates isEmpty])
 		ifTrue: [nil]
-		ifFalse: [CormasOld selectRandomlyFrom: candidates]
+		ifFalse: [Cormas selectRandomlyFrom: candidates]

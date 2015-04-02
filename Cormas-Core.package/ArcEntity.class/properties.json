@@ -1,0 +1,15 @@
+{
+	"category" : "Cormas-Core-Interface",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		"startNode",
+		"stopNode" ],
+	"name" : "ArcEntity",
+	"pools" : [
+		 ],
+	"super" : "NetworkComponentEntity",
+	"type" : "normal" }
