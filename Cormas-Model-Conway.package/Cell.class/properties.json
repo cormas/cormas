@@ -10,5 +10,5 @@
 	"name" : "Cell",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "SpatialEntityCell",
 	"type" : "normal" }

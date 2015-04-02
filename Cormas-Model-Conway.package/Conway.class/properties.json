@@ -10,5 +10,5 @@
 	"name" : "Conway",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "CormasModel",
 	"type" : "normal" }
