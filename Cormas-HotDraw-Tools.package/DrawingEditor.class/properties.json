@@ -1,0 +1,15 @@
+{
+	"category" : "Cormas-HotDraw-Tools",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "<historical>",
+	"instvars" : [
+		"buttons",
+		"drawing" ],
+	"name" : "DrawingEditor",
+	"pools" : [
+		 ],
+	"super" : "UIApplicationModel",
+	"type" : "normal" }
