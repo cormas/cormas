@@ -1,5 +1,5 @@
 tests
 testRandomBooleanReturnABoolean
 	| aBoolean |
-	aBoolean := CormasOld randomBoolean.
+	aBoolean := Cormas randomBoolean.
 	self assert: (aBoolean or: [ aBoolean not ])

@@ -1,4 +1,4 @@
 tests
 testRandomReturnAValueBetweenZeroAndOne
-	self assert: CormasOld random > 0.
-	self assert: CormasOld random <= 1
+	self assert: Cormas random > 0.
+	self assert: Cormas random <= 1
