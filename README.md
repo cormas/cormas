@@ -12,7 +12,7 @@ All issues about the current and ongoing port are here: https://github.com/corma
 
 Download last version of MOOSE 5.1 here: https://ci.inria.fr/moose/job/moose-5.1/
 
-If you want to install the last stable version (0.2):
+If you want to install the last stable version (0.5):
 ```Smalltalk
 Gofer new
    url: 'http://smalltalkhub.com/mc/SergeStinckwich/CORMAS/main';
