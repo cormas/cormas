@@ -1,0 +1,14 @@
+SmalltalkCISpec {
+  #loading : [
+    SCIMetacelloLoadSpec {
+      #configuration : 'Cormas',
+      #repository : 'http://smalltalkhub.com/mc/SergeStinckwich/CORMAS/main',
+      #load : [ 'default' ],
+      #platforms : [
+        #pharo ]
+    }
+  ],
+  #testing : {
+    #categories : [ 'Cormas-Core-Tests' ]
+  }
+}
