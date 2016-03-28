@@ -17,7 +17,7 @@ All issues about the current and ongoing port are here: https://github.com/corma
 Gofer new
    url: 'http://smalltalkhub.com/mc/SergeStinckwich/CORMAS/main';
    configurationOf: 'Cormas';
-   loadVersion:'0.16'.
+   loadVersion: '0.16'.
 ```
 
 If you want to install the development version:
