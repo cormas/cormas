@@ -1,4 +1,4 @@
-[![Build Status](https://ci.inria.fr/pharo-contribution/buildStatus/icon?job=CORMAS)](https://ci.inria.fr/pharo-contribution/job/CORMAS/)
+[![Build Status](https://travis-ci.org/cormas/cormas.svg?branch=master)](https://travis-ci.org/cormas/cormas)
 
 This is an ongoing effort to port CORMAS to Pharo ecosystem: http://www.pharo.org/
 Current stable version of CORMAS is based on VisualWorks 7.6 and can be found on: http://cormas.cirad.fr/indexeng.htm
