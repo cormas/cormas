@@ -1,4 +1,0 @@
-changed
-changeN
-	
-	self halt

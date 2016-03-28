@@ -1,4 +1,0 @@
-managing classes
-passiveClasses
-	
-	^passiveClasses

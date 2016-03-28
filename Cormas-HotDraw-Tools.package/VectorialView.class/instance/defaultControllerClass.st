@@ -1,4 +1,0 @@
-controller accessing
-defaultControllerClass
-	
-	^VectorialController

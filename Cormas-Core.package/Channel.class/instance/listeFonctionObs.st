@@ -1,4 +1,0 @@
-acces
-listeFonctionObs
-	
-	^listeFonctionObs

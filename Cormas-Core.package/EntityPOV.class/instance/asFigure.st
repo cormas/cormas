@@ -1,4 +1,0 @@
-private
-asFigure
-	
-	self subclassResponsibility

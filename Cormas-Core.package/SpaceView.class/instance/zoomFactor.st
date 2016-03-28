@@ -1,4 +1,0 @@
-accessing
-zoomFactor
-	
-	^1

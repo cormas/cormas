@@ -1,4 +1,0 @@
-setParameters
-totalSimNumberWithRepeat
-	
-	^self totalSimNumber

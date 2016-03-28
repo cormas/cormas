@@ -1,4 +1,0 @@
-init
-new
-	
-	^super new

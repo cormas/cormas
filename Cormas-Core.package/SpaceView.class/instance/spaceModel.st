@@ -1,4 +1,0 @@
-accessing
-spaceModel
-	
-	^model spaceModel

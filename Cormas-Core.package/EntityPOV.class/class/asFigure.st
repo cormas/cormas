@@ -1,4 +1,0 @@
-viewCorrespondance
-asFigure
-	
-	self subclassResponsibility

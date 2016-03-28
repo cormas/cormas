@@ -1,3 +1,0 @@
-access
-theFireAutomata_Cells
-	^ theFireAutomata_Cells

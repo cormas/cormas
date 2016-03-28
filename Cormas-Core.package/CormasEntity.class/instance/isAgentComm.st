@@ -1,4 +1,0 @@
-+ testing
-isAgentComm
-	
-	^false

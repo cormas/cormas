@@ -1,4 +1,0 @@
-private - accessing
-column
-	
-	^column

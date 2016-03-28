@@ -1,4 +1,0 @@
-histogram
-histogramsList
-	
-	

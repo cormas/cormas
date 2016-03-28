@@ -1,4 +1,0 @@
-accessing
-entity
-	
-	^object entity

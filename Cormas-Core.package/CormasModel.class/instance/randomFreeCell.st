@@ -1,4 +1,0 @@
-deprecated
-randomFreeCell
-	
-	^self pickUnoccupiedCell

@@ -1,4 +1,0 @@
-+ accessing
-surface
-	
-	^self size

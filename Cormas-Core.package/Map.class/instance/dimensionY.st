@@ -1,4 +1,0 @@
-acces
-dimensionY
-	
-	^dimension y

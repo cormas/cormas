@@ -1,4 +1,0 @@
-hierarchie
-degreMax
-	
-	^degreMax

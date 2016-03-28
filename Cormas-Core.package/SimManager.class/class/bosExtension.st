@@ -1,4 +1,0 @@
-accessing
-bosExtension
-	
-	^'.bos'

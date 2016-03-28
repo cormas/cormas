@@ -1,4 +1,0 @@
-managing classes
-cellClass
-	
-	^cellClass

@@ -1,4 +1,0 @@
-managing classes
-socialClasses
-	
-	^socialClasses

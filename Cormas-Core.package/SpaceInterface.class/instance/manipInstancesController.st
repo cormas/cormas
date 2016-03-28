@@ -1,4 +1,0 @@
-accessing
-manipInstancesController
-	
-	^manipInstancesController

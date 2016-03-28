@@ -1,4 +1,0 @@
-accessing
-dialogPreferences
-	
-	^dialogPreferences

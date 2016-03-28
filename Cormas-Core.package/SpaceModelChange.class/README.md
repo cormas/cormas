@@ -1,1 +1,0 @@
-SpaceModelChange represents a delayed change from the spaceModel.

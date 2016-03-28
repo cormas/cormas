@@ -1,4 +1,0 @@
-ressources
-diamondFigure
-	
-	^VectorialElementaryPOV diamond

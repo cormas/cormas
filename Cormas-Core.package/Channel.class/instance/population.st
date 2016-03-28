@@ -1,4 +1,0 @@
-acces
-population
-	
-	^population

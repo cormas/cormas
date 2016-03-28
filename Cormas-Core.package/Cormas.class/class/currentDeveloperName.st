@@ -1,4 +1,0 @@
-version
-currentDeveloperName
-	
-	^'Pierre Bommel'

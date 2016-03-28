@@ -1,3 +1,0 @@
-control
-step
-	self subclassResponsibility

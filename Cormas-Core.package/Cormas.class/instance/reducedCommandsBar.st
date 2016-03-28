@@ -1,4 +1,0 @@
-accessing
-reducedCommandsBar
-	
-	^reducedCommandsBar

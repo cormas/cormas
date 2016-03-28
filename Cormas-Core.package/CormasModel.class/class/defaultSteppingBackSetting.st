@@ -1,4 +1,0 @@
-+ simulation settings
-defaultSteppingBackSetting
-	
-	^false

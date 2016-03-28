@@ -1,4 +1,0 @@
-accessing
-defaultDirectoryName
-	
-	^'SensitivityOAT_'

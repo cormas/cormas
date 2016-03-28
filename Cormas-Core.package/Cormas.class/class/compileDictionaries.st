@@ -1,4 +1,0 @@
-actions
-compileDictionaries
-	
-	IndexedFileMessageCatalog compileAllCatalogsInSearchDirectories

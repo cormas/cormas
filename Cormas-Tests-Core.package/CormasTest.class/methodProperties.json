@@ -1,8 +1,0 @@
-{
-	"class" : {
-		 },
-	"instance" : {
-		"testMixt" : "SergeStinckwich 4/2/2015 20:23",
-		"testRandomBooleanReturnABoolean" : "SergeStinckwich 4/2/2015 20:35",
-		"testRandomReturnAValueBetweenZeroAndOne" : "SergeStinckwich 4/2/2015 20:35",
-		"testSelectRandomlyFrom" : "SergeStinckwich 4/2/2015 20:35" } }

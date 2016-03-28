@@ -1,4 +1,0 @@
-action
-empty
-	
-	entities := nil

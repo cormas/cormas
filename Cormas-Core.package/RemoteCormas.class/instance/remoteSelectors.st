@@ -1,4 +1,0 @@
-error handling
-remoteSelectors
-	
-	^#(#currentSimulation)

@@ -1,5 +1,0 @@
-deprecated
-initAgents
-	"DEPRECATED"
-	
-	

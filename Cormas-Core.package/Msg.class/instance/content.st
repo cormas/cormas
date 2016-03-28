@@ -1,4 +1,0 @@
-accessing
-content
-	
-	^self content

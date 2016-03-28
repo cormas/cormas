@@ -1,4 +1,0 @@
-fichier
-close
-	
-	donnee := nil

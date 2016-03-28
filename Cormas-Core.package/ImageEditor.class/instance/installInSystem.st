@@ -1,4 +1,0 @@
-private
-installInSystem
-	
-	super installInSystem

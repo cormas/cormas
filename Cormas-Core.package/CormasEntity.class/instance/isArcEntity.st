@@ -1,4 +1,0 @@
-+ testing
-isArcEntity
-	
-	^false

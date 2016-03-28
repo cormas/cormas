@@ -1,4 +1,0 @@
-accessing
-attributesSpec
-	
-	^attributesSpec

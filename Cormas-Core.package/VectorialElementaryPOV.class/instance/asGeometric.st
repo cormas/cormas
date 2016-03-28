@@ -1,4 +1,0 @@
-accessing
-asGeometric
-	
-	^self outline

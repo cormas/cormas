@@ -1,4 +1,0 @@
-opentalk-stst
-passMode
-	
-	^#value

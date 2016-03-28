@@ -1,4 +1,0 @@
-resources
-pauseIcon
-	
-	^Cormas pauseIcon

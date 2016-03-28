@@ -1,4 +1,0 @@
-resources
-plusIcon
-	
-	^SpaceInterface createEntityIcon

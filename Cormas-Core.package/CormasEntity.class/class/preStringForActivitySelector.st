@@ -1,4 +1,0 @@
-- activityDiagram
-preStringForActivitySelector
-	
-	^'activity_'
