@@ -1,5 +1,7 @@
 ![CORMAS Logo](http://cormas.cirad.fr/images/CormasLogoBig.png "CORMAS Logo")
 
+# CORMAS (COmmon pool Ressources and Multi-Agent Simulations)
+
 [![Build Status](https://travis-ci.org/cormas/cormas.svg?branch=master)](https://travis-ci.org/cormas/cormas)
 
 This is an ongoing effort to port CORMAS to Pharo ecosystem: http://www.pharo.org/
