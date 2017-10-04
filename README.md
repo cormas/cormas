@@ -1,4 +1,4 @@
-![CORMAS Logo](http://cormas.cirad.fr/images/CormasLogoFull.png "CORMAS Logo")
+![CORMAS Logo](http://cormas.cirad.fr/images/CormasLogoBig.png "CORMAS Logo")
 
 [![Build Status](https://travis-ci.org/cormas/cormas.svg?branch=master)](https://travis-ci.org/cormas/cormas)
 
