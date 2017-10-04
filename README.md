@@ -1,3 +1,5 @@
+![CORMAS Logo](http://cormas.cirad.fr/images/CormasLogoFull.png "CORMAS Logo")
+
 [![Build Status](https://travis-ci.org/cormas/cormas.svg?branch=master)](https://travis-ci.org/cormas/cormas)
 
 This is an ongoing effort to port CORMAS to Pharo ecosystem: http://www.pharo.org/
@@ -10,7 +12,7 @@ https://github.com/cormas/documentation
 
 All issues about the current and ongoing port are here: https://github.com/cormas/cormas/issues
 
-## How to install Cormas 0.24
+## How to install Cormas 0.25
 * Download a Spur VM: https://ci.inria.fr/pharo/view/5.0-VM-Spur/job/PharoVM-spur32/
 * Download the last dev MOOSE 6.0 on INRIA's CI server: https://ci.inria.fr/moose/job/moose-6.0/
 * Load Cormas: Open MOOSE 6.0 image with the Spur VM then right-click anywhere to open the main menu. Choose Playground to execute script. Paste the script below in Playground, select all then right-click and choose Do it to execute this.
@@ -19,7 +21,7 @@ All issues about the current and ongoing port are here: https://github.com/corma
 Gofer new
    url: 'http://smalltalkhub.com/mc/SergeStinckwich/CORMAS/main';
    configurationOf: 'Cormas';
-   loadVersion: '0.24'.
+   loadVersion: '0.25'.
 ```
 
 If you want to install the development version:
