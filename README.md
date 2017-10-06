@@ -15,9 +15,9 @@ https://github.com/cormas/documentation
 All issues about the current and ongoing port are here: https://github.com/cormas/cormas/issues
 
 ## How to install Cormas 0.25
-* Download a Spur VM: https://ci.inria.fr/pharo/view/5.0-VM-Spur/job/PharoVM-spur32/
-* Download the last dev MOOSE 6.0 on INRIA's CI server: https://ci.inria.fr/moose/job/moose-6.0/
-* Load Cormas: Open MOOSE 6.0 image with the Spur VM then right-click anywhere to open the main menu. Choose Playground to execute script. Paste the script below in Playground, select all then right-click and choose Do it to execute this.
+* Download a Pharo VM depending of your platform: http://pharo.org/download
+* Download the last dev MOOSE 6.1 on INRIA's CI server: https://ci.inria.fr/moose/job/moose-6.1/
+* Load Cormas: Open MOOSE 6.1 image with the Pharo VM then right-click anywhere to open the main menu. Choose Playground to execute script. Paste the script below in Playground, select all then right-click and choose Do it to execute this.
 
 ```Smalltalk
 Gofer new
