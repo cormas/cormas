@@ -1,0 +1,21 @@
+{
+	"commentStamp" : "",
+	"super" : "CMSpatialEntityElement",
+	"category" : "Cormas-Model-Diffuse",
+	"classinstvars" : [
+		"minimunState",
+		"diffusionRate",
+		"evaporationRate",
+		"scheduler"
+	],
+	"pools" : [ ],
+	"classvars" : [
+		"CurrentId"
+	],
+	"instvars" : [
+		"qty",
+		"lostOrReceivedQty"
+	],
+	"name" : "CMDiffuseCell",
+	"type" : "normal"
+}

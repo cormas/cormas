@@ -1,0 +1,18 @@
+{
+	"commentStamp" : "HernanMoralesDurand 1/1/2018 19:31",
+	"super" : "CormasModel",
+	"category" : "Cormas-Model-Diffuse",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"theCells",
+		"theAnts",
+		"activeCells",
+		"newActiveCells",
+		"noMoreActiveCells",
+		"antNumber"
+	],
+	"name" : "CMDiffuseModel",
+	"type" : "normal"
+}

@@ -1,0 +1,13 @@
+{
+	"commentStamp" : "",
+	"super" : "CMAgentLocation",
+	"category" : "Cormas-Model-Diffuse",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [
+		"CurrentId"
+	],
+	"instvars" : [ ],
+	"name" : "CMDiffuseAnt",
+	"type" : "normal"
+}
