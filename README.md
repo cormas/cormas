@@ -14,7 +14,7 @@ https://github.com/cormas/documentation
 
 All issues about the current and ongoing port are here: https://github.com/cormas/cormas/issues
 
-## How to install Cormas 0.28
+## How to install Cormas
 * Download Pharo 6.1 VM depending of your platform: http://pharo.org/download
 * Load Cormas: Open Pharo 6.1 image then right-click anywhere to open the main menu. Choose Playground to execute script. Paste the script below in Playground, select all then right-click and choose Do it to execute this.
 
@@ -27,10 +27,11 @@ Gofer new
 
 If you want to install the development version:
 ```Smalltalk
-Gofer new
-   url: 'http://smalltalkhub.com/mc/SergeStinckwich/CORMAS/main';
-   configurationOf: 'Cormas';
-   loadDevelopment.
+Metacello new
+  smalltalkhubUser: 'SergeStinckwich' project: 'CORMAS';
+  configuration: 'Cormas';
+  version: #development;
+  load: 'All'.
 ```
 
 All packages load into the Cormas-* package names.
@@ -40,4 +41,4 @@ Cormas is licensed under MIT. See : http://opensource.org/licenses/MIT
 
 ## How to contribute to CORMAS
 
-We welcome submissions! A google group exists for this project at http://groups.google.com/group/cormas-dev
+We welcome submissions! Join us here: http://groups.google.com/group/cormas-dev
