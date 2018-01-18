@@ -1,0 +1,11 @@
+{
+	"commentStamp" : "",
+	"super" : "CMSpatialEntityAggregate",
+	"category" : "Cormas-Model-DemoAggregates",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [ ],
+	"name" : "CMGrove",
+	"type" : "normal"
+}

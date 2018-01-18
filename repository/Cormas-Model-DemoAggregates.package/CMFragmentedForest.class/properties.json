@@ -1,0 +1,11 @@
+{
+	"commentStamp" : "",
+	"super" : "CMSpatialEntityNotConnex",
+	"category" : "Cormas-Model-DemoAggregates",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [ ],
+	"name" : "CMFragmentedForest",
+	"type" : "normal"
+}

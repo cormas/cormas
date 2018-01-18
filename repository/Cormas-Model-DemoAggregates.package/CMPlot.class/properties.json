@@ -1,0 +1,14 @@
+{
+	"commentStamp" : "",
+	"super" : "CMSpatialEntityElement",
+	"category" : "Cormas-Model-DemoAggregates",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"seed",
+		"tree"
+	],
+	"name" : "CMPlot",
+	"type" : "normal"
+}

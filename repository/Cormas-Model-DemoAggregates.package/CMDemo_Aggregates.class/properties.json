@@ -1,0 +1,18 @@
+{
+	"commentStamp" : "<historical>",
+	"super" : "CormasModel",
+	"category" : "Cormas-Model-DemoAggregates",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"thePlots",
+		"theGroves",
+		"seeds",
+		"partitionsAverageSize",
+		"nbCells",
+		"theFragmentedForests"
+	],
+	"name" : "CMDemo_Aggregates",
+	"type" : "normal"
+}

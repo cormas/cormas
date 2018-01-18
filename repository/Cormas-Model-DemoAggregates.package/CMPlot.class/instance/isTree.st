@@ -1,0 +1,3 @@
+testing
+isTree
+	^self tree
