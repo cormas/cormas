@@ -1,0 +1,15 @@
+{
+	"commentStamp" : "<historical>",
+	"super" : "UIApplicationModel",
+	"category" : "Cormas-VW-Ported",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"majorKeys",
+		"cormasModel",
+		"cormas"
+	],
+	"name" : "PovSetterNotebook",
+	"type" : "normal"
+}

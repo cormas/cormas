@@ -1,0 +1,4 @@
+accessing
+spaceInterface
+	
+	^spaceInterface

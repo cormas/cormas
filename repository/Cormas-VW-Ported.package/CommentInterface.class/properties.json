@@ -1,0 +1,21 @@
+{
+	"commentStamp" : "<historical>",
+	"super" : "Object",
+	"category" : "Cormas-VW-Ported",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"modelName",
+		"creationDate",
+		"modelComments",
+		"authorMailList",
+		"selectedRow",
+		"authorName",
+		"cormasComments",
+		"previousComments",
+		"newComments"
+	],
+	"name" : "CommentInterface",
+	"type" : "normal"
+}

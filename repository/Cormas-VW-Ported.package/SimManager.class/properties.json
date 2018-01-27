@@ -1,0 +1,37 @@
+{
+	"commentStamp" : "<historical>",
+	"super" : "UIApplicationModel",
+	"category" : "Cormas-VW-Ported",
+	"classinstvars" : [
+		"newFolder"
+	],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"cormasModel",
+		"simNumero",
+		"randomSeed",
+		"simName",
+		"enableBackward",
+		"dontAsk",
+		"simFolder",
+		"nextStep",
+		"buttonsForwardAreOn",
+		"deviationChoice",
+		"listControle",
+		"releaseRandomSeed",
+		"listProbes",
+		"fixRandomSeed",
+		"listInit",
+		"finalStep",
+		"enableBackwardValue",
+		"traceSize",
+		"processRun",
+		"processReplayBackward",
+		"processReplayForward",
+		"undoList",
+		"redoList"
+	],
+	"name" : "SimManager",
+	"type" : "normal"
+}

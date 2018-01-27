@@ -1,0 +1,4 @@
+pov
+always
+	
+	^true

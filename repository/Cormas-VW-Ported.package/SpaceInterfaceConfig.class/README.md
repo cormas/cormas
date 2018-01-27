@@ -1,0 +1,4 @@
+Autre définition que nous donne Bourdieu : "L'habitus, système de disposition acquises par l'apprentissage implicite ou explicite qui fonctionne comme un système de schemes générateurs, est générateur de stratégies qui peuvent être objectivement conformes aux intérêts objectifs de leurs auteurs sans en avoir été expressément conçues à cette fin. "
+
+Pour simplifier, l'habitus est un ensemble de manière d'être, d'agir et de penser propre à un individu, fruit d'un apprentissage particulier lié à son groupe d'appartenance, qui diffère selon sa classe sociale, sa disposition en capital, et sa place occupée dans l'espace social. L'habitus structure les comportements et les actions de l'individu, et à la fois, il structure les positions dans l'espace social.
+http://fr.wikipedia.org/wiki/Habitus_(sociologie)#L.27habitus_selon_Bourdieu

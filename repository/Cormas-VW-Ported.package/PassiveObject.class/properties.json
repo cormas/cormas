@@ -1,0 +1,13 @@
+{
+	"commentStamp" : "<historical>",
+	"super" : "CMEntity",
+	"category" : "Cormas-VW-Ported",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"destroyed"
+	],
+	"name" : "PassiveObject",
+	"type" : "normal"
+}

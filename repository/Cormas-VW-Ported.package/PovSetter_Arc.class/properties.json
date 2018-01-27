@@ -1,0 +1,18 @@
+{
+	"commentStamp" : "",
+	"super" : "PovSetter",
+	"category" : "Cormas-VW-Ported",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"startAnnotation",
+		"widthChoices",
+		"stopAnnotation",
+		"lineWidth",
+		"stopPosition",
+		"startPosition"
+	],
+	"name" : "PovSetter_Arc",
+	"type" : "normal"
+}

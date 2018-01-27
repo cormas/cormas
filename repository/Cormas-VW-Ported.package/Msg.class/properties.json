@@ -1,0 +1,19 @@
+{
+	"commentStamp" : "<historical>",
+	"super" : "Object",
+	"category" : "Cormas-VW-Ported",
+	"classinstvars" : [
+		"isObserved"
+	],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"sender",
+		"receiver",
+		"topic",
+		"content",
+		"symbol"
+	],
+	"name" : "Msg",
+	"type" : "normal"
+}

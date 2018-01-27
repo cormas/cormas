@@ -1,0 +1,1 @@
+the helperClass for objects
