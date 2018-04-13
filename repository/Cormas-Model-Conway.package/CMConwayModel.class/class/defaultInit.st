@@ -1,0 +1,3 @@
+default
+defaultInit
+	^ #initRandomly

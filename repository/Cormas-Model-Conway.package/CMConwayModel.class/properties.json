@@ -1,0 +1,13 @@
+{
+	"commentStamp" : "SergeStinckwich 4/1/2016 20:15",
+	"super" : "CormasModel",
+	"category" : "Cormas-Model-Conway",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"theCMConwayCells"
+	],
+	"name" : "CMConwayModel",
+	"type" : "normal"
+}

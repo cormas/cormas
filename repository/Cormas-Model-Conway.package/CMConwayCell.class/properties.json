@@ -1,0 +1,13 @@
+{
+	"commentStamp" : "SergeStinckwich 4/1/2016 20:13",
+	"super" : "CMSpatialEntityCell",
+	"category" : "Cormas-Model-Conway",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [
+		"CurrentId"
+	],
+	"instvars" : [ ],
+	"name" : "CMConwayCell",
+	"type" : "normal"
+}
