@@ -1,0 +1,4 @@
+resources
+minusIcon
+	
+	^SpaceInterface removeEntityIcon

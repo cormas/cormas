@@ -1,0 +1,14 @@
+{
+	"commentStamp" : "",
+	"super" : "EntityPOV",
+	"category" : "Cormas-Core-Interface",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"bitmap",
+		"position"
+	],
+	"name" : "BitmapPOV",
+	"type" : "normal"
+}

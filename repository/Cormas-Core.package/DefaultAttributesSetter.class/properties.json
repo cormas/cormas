@@ -1,0 +1,18 @@
+{
+	"commentStamp" : "<historical>",
+	"super" : "UIApplicationModel",
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"selectedRow",
+		"classAttribValue_List",
+		"cormasModel",
+		"defaultValueHolder",
+		"allAttributsList",
+		"hiddenParametersInterface"
+	],
+	"name" : "DefaultAttributesSetter",
+	"type" : "normal"
+}

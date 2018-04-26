@@ -1,0 +1,4 @@
+accessing
+zoomFactor
+	
+	^1

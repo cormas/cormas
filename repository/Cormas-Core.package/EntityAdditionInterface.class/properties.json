@@ -1,0 +1,23 @@
+{
+	"commentStamp" : "",
+	"super" : "UIApplicationModel",
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"newClassName",
+		"cbLocation",
+		"cbComm",
+		"cbGroup",
+		"spatialEntitySuperclass",
+		"cormas",
+		"passiveEntitySuperclass",
+		"cellOrCA",
+		"entityName",
+		"entityElementType",
+		"toolbar"
+	],
+	"name" : "EntityAdditionInterface",
+	"type" : "normal"
+}

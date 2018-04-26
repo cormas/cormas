@@ -1,0 +1,3 @@
+viewCorrespondance
+asFigure
+	^ VectorialFigure

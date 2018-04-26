@@ -1,0 +1,17 @@
+{
+	"commentStamp" : "",
+	"super" : "Object",
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"targetClass",
+		"methodName",
+		"isControl",
+		"isTesting",
+		"isInit"
+	],
+	"name" : "CMClassManipulationMethod",
+	"type" : "normal"
+}

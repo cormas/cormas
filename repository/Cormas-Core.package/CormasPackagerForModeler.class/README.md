@@ -1,0 +1,1 @@
+The specialized CormasPackager class for a modeler packaging (installation for modelers)

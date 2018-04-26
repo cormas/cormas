@@ -1,0 +1,4 @@
+accessing
+siConfig
+	
+	^siConfig

@@ -1,0 +1,14 @@
+{
+	"commentStamp" : "<historical>",
+	"super" : "CMSpatialEntity",
+	"category" : "Cormas-Core-Entities",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"orderedNeighbourhood",
+		"default"
+	],
+	"name" : "CMSpatialEntityElement",
+	"type" : "normal"
+}

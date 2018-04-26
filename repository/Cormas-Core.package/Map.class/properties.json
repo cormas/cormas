@@ -1,0 +1,14 @@
+{
+	"commentStamp" : "",
+	"super" : "Ressource",
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"dimension",
+		"nomFichier"
+	],
+	"name" : "Map",
+	"type" : "normal"
+}

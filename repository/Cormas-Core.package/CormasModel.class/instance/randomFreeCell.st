@@ -1,0 +1,4 @@
+deprecated
+randomFreeCell
+	
+	^self pickUnoccupiedCell

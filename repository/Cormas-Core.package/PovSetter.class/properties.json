@@ -1,0 +1,29 @@
+{
+	"commentStamp" : "",
+	"super" : "Object",
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [
+		"standardCellBounds"
+	],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"cormas",
+		"greenSlider",
+		"redSlider",
+		"blueSlider",
+		"redHolder",
+		"blueHolder",
+		"greenHolder",
+		"brightnessHolder",
+		"brightnessSlider",
+		"couleur",
+		"imageOS",
+		"listMethods",
+		"listSymbols",
+		"selectedClass",
+		"listInfo"
+	],
+	"name" : "PovSetter",
+	"type" : "normal"
+}

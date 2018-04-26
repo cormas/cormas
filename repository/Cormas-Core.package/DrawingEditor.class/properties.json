@@ -1,0 +1,14 @@
+{
+	"commentStamp" : "<historical>",
+	"super" : "UIApplicationModel",
+	"category" : "Cormas-Core-HotDraw",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"buttons",
+		"drawing"
+	],
+	"name" : "DrawingEditor",
+	"type" : "normal"
+}

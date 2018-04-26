@@ -1,0 +1,14 @@
+{
+	"commentStamp" : "",
+	"super" : "CMSpatialEntityElement",
+	"category" : "Cormas-Core-Entities",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"state",
+		"bufferState"
+	],
+	"name" : "CMSpatialEntityCell",
+	"type" : "normal"
+}

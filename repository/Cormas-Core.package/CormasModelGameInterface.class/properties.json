@@ -1,0 +1,17 @@
+{
+	"commentStamp" : "",
+	"super" : "Object",
+	"category" : "Cormas-Core-Interface",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"blocks",
+		"validity",
+		"model",
+		"selectedPlayer",
+		"playersScheduling"
+	],
+	"name" : "CormasModelGameInterface",
+	"type" : "normal"
+}

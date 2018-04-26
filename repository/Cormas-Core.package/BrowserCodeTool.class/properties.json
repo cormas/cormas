@@ -1,0 +1,17 @@
+{
+	"commentStamp" : "<historical>",
+	"super" : "Object",
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [
+		"BrowseAutoFormat",
+		"SaveAutoFormat"
+	],
+	"instvars" : [
+		"modified",
+		"initialLookPrefs"
+	],
+	"name" : "BrowserCodeTool",
+	"type" : "normal"
+}

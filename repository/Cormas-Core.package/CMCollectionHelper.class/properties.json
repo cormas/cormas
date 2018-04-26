@@ -1,0 +1,11 @@
+{
+	"commentStamp" : "",
+	"super" : "CMObjectHelper",
+	"category" : "Cormas-Core-Helpers",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [ ],
+	"name" : "CMCollectionHelper",
+	"type" : "normal"
+}

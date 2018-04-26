@@ -1,0 +1,19 @@
+{
+	"commentStamp" : "<historical>",
+	"super" : "SensitivityAnalysisAbstract",
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"stepMethod",
+		"initMethod",
+		"stepMethodChoices",
+		"initMethodChoices",
+		"parametersToAnalyse",
+		"classAttribValueAnalysis_List",
+		"currentAnalysedAttribute"
+	],
+	"name" : "SensitivitySetter",
+	"type" : "normal"
+}

@@ -1,0 +1,16 @@
+{
+	"commentStamp" : "",
+	"super" : "Model",
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"remoteSpaceModel",
+		"cachedValues",
+		"elementaryEntitiesDefaultPovs",
+		"distributionControl"
+	],
+	"name" : "ClientSpaceModel",
+	"type" : "normal"
+}

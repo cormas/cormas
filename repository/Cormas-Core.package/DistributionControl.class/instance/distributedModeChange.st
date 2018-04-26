@@ -1,0 +1,4 @@
+changing
+distributedModeChange
+	
+	self updateWidgets

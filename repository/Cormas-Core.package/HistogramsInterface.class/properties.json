@@ -1,0 +1,28 @@
+{
+	"commentStamp" : "<historical>",
+	"super" : "UIApplicationModel",
+	"category" : "Cormas-Core-Interface",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"data",
+		"cormasModel",
+		"histoList",
+		"nbClasses",
+		"selectedHisto",
+		"classes",
+		"selectedClass",
+		"yUnit",
+		"isHistoOnEntityAttribute",
+		"activeEntity",
+		"histoName",
+		"activeAttribute",
+		"attributeType",
+		"chartsView",
+		"refreshEachStep",
+		"menuHolder"
+	],
+	"name" : "HistogramsInterface",
+	"type" : "normal"
+}

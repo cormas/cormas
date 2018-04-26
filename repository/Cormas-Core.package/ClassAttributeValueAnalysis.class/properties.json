@@ -1,0 +1,15 @@
+{
+	"commentStamp" : "",
+	"super" : "ClassAttributeValue",
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"initValue",
+		"finalValue",
+		"step"
+	],
+	"name" : "ClassAttributeValueAnalysis",
+	"type" : "normal"
+}

@@ -1,0 +1,4 @@
+- activityDiagram
+preStringForActivitySelector
+	
+	^'activity_'

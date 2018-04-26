@@ -1,0 +1,4 @@
+testing
+isVectorialCompositePOV
+	
+	^false

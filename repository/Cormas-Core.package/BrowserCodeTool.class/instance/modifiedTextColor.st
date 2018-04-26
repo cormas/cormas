@@ -1,0 +1,4 @@
+private
+modifiedTextColor
+	
+	^ColorValue red

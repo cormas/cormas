@@ -1,0 +1,5 @@
+testing
+isRepeating
+	"answer if the current simulation is into a repeat loop"
+	
+	^self simNumero < self nbOfRepeat value

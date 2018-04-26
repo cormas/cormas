@@ -1,0 +1,15 @@
+{
+	"commentStamp" : "<historical>",
+	"super" : "Object",
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"image",
+		"retainedMedium",
+		"conversionMessage"
+	],
+	"name" : "CachedImage",
+	"type" : "normal"
+}

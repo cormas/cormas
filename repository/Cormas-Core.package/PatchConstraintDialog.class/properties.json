@@ -1,0 +1,25 @@
+{
+	"commentStamp" : "",
+	"super" : "Object",
+	"category" : "Cormas-Core-Interface",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"cells",
+		"selectedCells",
+		"shouldBeEmptyPatches",
+		"att2OpeChoices",
+		"att1Ope",
+		"att1Choices",
+		"att2Choices",
+		"att1",
+		"att2",
+		"att1Value",
+		"att1OpeChoices",
+		"att2Ope",
+		"att2Value"
+	],
+	"name" : "PatchConstraintDialog",
+	"type" : "normal"
+}

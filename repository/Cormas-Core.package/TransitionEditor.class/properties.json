@@ -1,0 +1,18 @@
+{
+	"commentStamp" : "",
+	"super" : "Object",
+	"category" : "Cormas-Core-HotDraw",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"transition",
+		"eventType",
+		"figureList",
+		"charactersHolder",
+		"characterList",
+		"conditionList"
+	],
+	"name" : "TransitionEditor",
+	"type" : "normal"
+}

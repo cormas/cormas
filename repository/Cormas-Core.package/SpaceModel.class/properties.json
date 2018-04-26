@@ -1,0 +1,31 @@
+{
+	"commentStamp" : "<historical>",
+	"super" : "Model",
+	"category" : "Cormas-Core-Space",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"cardinal",
+		"activeSpatialEntity",
+		"line",
+		"column",
+		"elementaryEntitiesDefaultPovs",
+		"cormasModel",
+		"arrayOrigins",
+		"boundaries",
+		"delimiter",
+		"nbNeighbours",
+		"rMaxEntityImage",
+		"spatialEntities",
+		"gridCellShape",
+		"gridCellImage",
+		"xll",
+		"yll",
+		"cellSize",
+		"absoluteBounds",
+		"autoResizeBounds"
+	],
+	"name" : "SpaceModel",
+	"type" : "normal"
+}

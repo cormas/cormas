@@ -1,0 +1,4 @@
+accessing
+attributeType
+	
+	^attributeType

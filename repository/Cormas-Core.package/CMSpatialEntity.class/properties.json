@@ -1,0 +1,22 @@
+{
+	"commentStamp" : "<historical>",
+	"super" : "CMEntity",
+	"category" : "Cormas-Core-Entities",
+	"classinstvars" : [
+		"bounds"
+	],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"spaceModel",
+		"neighbourhood",
+		"destroyed",
+		"outline",
+		"edge",
+		"theOccupants",
+		"theCSE",
+		"includedEntities"
+	],
+	"name" : "CMSpatialEntity",
+	"type" : "normal"
+}

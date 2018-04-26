@@ -1,0 +1,27 @@
+{
+	"commentStamp" : "",
+	"super" : "UIApplicationModel",
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"serverPort",
+		"clients",
+		"distributedMode",
+		"serverNameOrIP",
+		"broker",
+		"habitusNames",
+		"clientNameOrIP",
+		"remoteDistribution",
+		"remoteBroker",
+		"client",
+		"brokerPort",
+		"brokerNameOrIP",
+		"connected",
+		"clientSpaceModel",
+		"currentSimulation"
+	],
+	"name" : "DistributionControl",
+	"type" : "normal"
+}

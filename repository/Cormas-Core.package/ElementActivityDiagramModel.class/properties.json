@@ -1,0 +1,15 @@
+{
+	"commentStamp" : "",
+	"super" : "UIApplicationModel",
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"incoming",
+		"outgoing",
+		"id"
+	],
+	"name" : "ElementActivityDiagramModel",
+	"type" : "normal"
+}

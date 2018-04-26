@@ -1,0 +1,15 @@
+{
+	"commentStamp" : "",
+	"super" : "Object",
+	"category" : "Cormas-Core-Interface",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"observer",
+		"sliderWidth",
+		"sliderHeigth"
+	],
+	"name" : "VectorialImageEditor",
+	"type" : "normal"
+}

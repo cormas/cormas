@@ -1,0 +1,4 @@
+actions
+cancelWindowMifMid
+	
+	self closeRequest

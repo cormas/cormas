@@ -1,0 +1,4 @@
+accessing
+cormasModelClass
+	
+	^cormasModelClass

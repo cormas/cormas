@@ -1,0 +1,2 @@
+DistributionListCrossedAnalysis allows to conduct Crossed sensitivity analysis by modifying parameters' values simultaneously.
+Each studied parameter may be analysed by changing its initial value for each simulation run. Distribution List means that this parameter will change its value from a given List defined by user.

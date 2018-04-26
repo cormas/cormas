@@ -1,0 +1,3 @@
++ description
+lastUpdate
+	self subclassResponsibility

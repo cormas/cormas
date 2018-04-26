@@ -1,0 +1,4 @@
+accessing
+adaptor
+	
+	^adaptor

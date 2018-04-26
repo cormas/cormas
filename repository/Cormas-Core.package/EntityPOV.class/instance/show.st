@@ -1,0 +1,4 @@
+display
+show
+	
+	self subclassResponsibility

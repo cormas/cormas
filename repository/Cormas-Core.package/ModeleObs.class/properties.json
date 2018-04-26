@@ -1,0 +1,21 @@
+{
+	"commentStamp" : "",
+	"super" : "Model",
+	"category" : "Cormas-Core-Observer",
+	"classinstvars" : [
+		"random"
+	],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"agents",
+		"cardinal",
+		"nomFichier",
+		"init",
+		"fonction",
+		"level",
+		"vue"
+	],
+	"name" : "ModeleObs",
+	"type" : "normal"
+}

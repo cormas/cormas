@@ -1,0 +1,16 @@
+{
+	"commentStamp" : "",
+	"super" : "UIApplicationModel",
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"cormasModel",
+		"listEntities",
+		"listProbes",
+		"menuHolder"
+	],
+	"name" : "ProbesList",
+	"type" : "normal"
+}

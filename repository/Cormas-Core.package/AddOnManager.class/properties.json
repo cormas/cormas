@@ -1,0 +1,17 @@
+{
+	"commentStamp" : "",
+	"super" : "UIApplicationModel",
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [
+		"isWinOpen"
+	],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"cormas",
+		"selectedRow",
+		"addOns_List"
+	],
+	"name" : "AddOnManager",
+	"type" : "normal"
+}

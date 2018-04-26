@@ -1,0 +1,11 @@
+{
+	"commentStamp" : "",
+	"super" : "BitmapImageLibrary",
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [ ],
+	"name" : "VectorialImageLibrary",
+	"type" : "normal"
+}

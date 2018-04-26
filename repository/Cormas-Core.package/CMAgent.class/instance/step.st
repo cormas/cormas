@@ -1,0 +1,3 @@
+control
+step
+	self subclassResponsibility

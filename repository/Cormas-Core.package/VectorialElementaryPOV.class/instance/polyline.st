@@ -1,0 +1,3 @@
+accessing
+polyline
+	^ self outline

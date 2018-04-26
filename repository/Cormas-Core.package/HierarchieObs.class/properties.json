@@ -1,0 +1,17 @@
+{
+	"commentStamp" : "",
+	"super" : "UIApplicationModel",
+	"category" : "Cormas-Core-Observer",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"higherLevels",
+		"levelHolder",
+		"oneLevel",
+		"appelant",
+		"degreMaxHolder"
+	],
+	"name" : "HierarchieObs",
+	"type" : "normal"
+}

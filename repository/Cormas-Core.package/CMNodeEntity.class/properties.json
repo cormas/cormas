@@ -1,0 +1,14 @@
+{
+	"commentStamp" : "<historical>",
+	"super" : "CMNetworkComponentEntity",
+	"category" : "Cormas-Core-Entities",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"arcs",
+		"replaceNodeWhileMoving"
+	],
+	"name" : "CMNodeEntity",
+	"type" : "normal"
+}

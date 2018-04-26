@@ -1,0 +1,16 @@
+{
+	"commentStamp" : "<historical>",
+	"super" : "ClassAttributeValueAnalysis",
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"randomType",
+		"repetitions",
+		"repNb",
+		"randomTypeChoices"
+	],
+	"name" : "ClassAttributeValueAnalysisRandomness",
+	"type" : "normal"
+}

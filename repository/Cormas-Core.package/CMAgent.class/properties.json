@@ -1,0 +1,13 @@
+{
+	"commentStamp" : "SergeStinckwich 3/26/2015 15:34",
+	"super" : "CMEntity",
+	"category" : "Cormas-Core-Entities",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"dead"
+	],
+	"name" : "CMAgent",
+	"type" : "normal"
+}

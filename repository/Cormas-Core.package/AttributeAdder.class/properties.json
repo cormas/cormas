@@ -1,0 +1,22 @@
+{
+	"commentStamp" : "<historical>",
+	"super" : "Object",
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"targetClass",
+		"superClassAttribValue_List",
+		"getterAccessor",
+		"setterAccessor",
+		"remove",
+		"dialogValue",
+		"setChanged",
+		"setNotification",
+		"typeOfValue",
+		"randomValueHolder"
+	],
+	"name" : "AttributeAdder",
+	"type" : "normal"
+}

@@ -1,0 +1,4 @@
++ testing
+isObjectLocation
+	
+	^true

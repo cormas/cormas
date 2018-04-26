@@ -1,0 +1,4 @@
+private
+isMethod
+	
+	^true

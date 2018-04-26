@@ -1,0 +1,18 @@
+{
+	"commentStamp" : "",
+	"super" : "UIApplicationModel",
+	"category" : "Cormas-Core-Connect",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"cormasModel",
+		"connection",
+		"dataBase",
+		"username",
+		"pwd",
+		"accept"
+	],
+	"name" : "CMToAccess",
+	"type" : "normal"
+}

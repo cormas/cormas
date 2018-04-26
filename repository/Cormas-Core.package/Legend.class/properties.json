@@ -1,0 +1,19 @@
+{
+	"commentStamp" : "",
+	"super" : "Model",
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"legendes",
+		"isOpen",
+		"yWin",
+		"xWin",
+		"currentWinPos",
+		"mainInterface",
+		"povDict"
+	],
+	"name" : "Legend",
+	"type" : "normal"
+}

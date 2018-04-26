@@ -1,0 +1,3 @@
+managing classes
+cellClass
+	^ cellClass

@@ -1,0 +1,4 @@
+action
+close
+	
+	self closeRequest

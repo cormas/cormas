@@ -1,0 +1,21 @@
+{
+	"commentStamp" : "",
+	"super" : "EntityPOV",
+	"category" : "Cormas-Core-Interface",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"outline",
+		"internalLines",
+		"nbSegments",
+		"isStroked",
+		"color",
+		"lineColor",
+		"lineWidth",
+		"position",
+		"isDistortable"
+	],
+	"name" : "VectorialPOV",
+	"type" : "normal"
+}

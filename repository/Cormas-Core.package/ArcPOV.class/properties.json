@@ -1,0 +1,18 @@
+{
+	"commentStamp" : "",
+	"super" : "EntityPOV",
+	"category" : "Cormas-Core-Interface",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"lineWidth",
+		"lineColor",
+		"startAnnotation",
+		"stopAnnotation",
+		"startPosition",
+		"stopPosition"
+	],
+	"name" : "ArcPOV",
+	"type" : "normal"
+}

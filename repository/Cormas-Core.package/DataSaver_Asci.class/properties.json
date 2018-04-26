@@ -1,0 +1,13 @@
+{
+	"commentStamp" : "",
+	"super" : "DataSaver",
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [
+		"extension"
+	],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [ ],
+	"name" : "DataSaver_Asci",
+	"type" : "normal"
+}

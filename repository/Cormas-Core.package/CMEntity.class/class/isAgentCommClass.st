@@ -1,0 +1,4 @@
+- testing
+isAgentCommClass
+	
+	^false

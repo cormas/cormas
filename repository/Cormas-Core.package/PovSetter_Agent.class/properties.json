@@ -1,0 +1,18 @@
+{
+	"commentStamp" : "<historical>",
+	"super" : "PovSetter",
+	"category" : "Cormas-Core-Interface",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"tailleSlider",
+		"tailleHolder",
+		"colorChooser",
+		"oldValue",
+		"occupantPosition",
+		"isDistortable"
+	],
+	"name" : "PovSetter_Agent",
+	"type" : "normal"
+}

@@ -1,0 +1,13 @@
+{
+	"commentStamp" : "",
+	"super" : "SpaceInterface",
+	"category" : "Cormas-Core-Space",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"targetPovs"
+	],
+	"name" : "SpaceInterfaceZoom",
+	"type" : "normal"
+}

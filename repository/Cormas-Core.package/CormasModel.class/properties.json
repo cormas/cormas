@@ -1,0 +1,39 @@
+{
+	"commentStamp" : "<historical>",
+	"super" : "Object",
+	"category" : "Cormas-Core-Interface",
+	"classinstvars" : [
+		"timeStep",
+		"cellClass",
+		"spatialClasses",
+		"socialClasses",
+		"passiveClasses",
+		"povColorsDict",
+		"visualStateIsOpen",
+		"charts",
+		"activeProbes",
+		"activityDiagrams",
+		"currentSimulation",
+		"randUi"
+	],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"cormas",
+		"timeStepValue",
+		"channel",
+		"activeInit",
+		"activeControl",
+		"spaceModel",
+		"data",
+		"simManager",
+		"database",
+		"collector",
+		"defaultAttributesSetter",
+		"sensitivitySetter",
+		"delayedChanges",
+		"allClassVarBOSS"
+	],
+	"name" : "CormasModel",
+	"type" : "normal"
+}

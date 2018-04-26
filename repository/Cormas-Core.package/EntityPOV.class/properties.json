@@ -1,0 +1,20 @@
+{
+	"commentStamp" : "",
+	"super" : "Model",
+	"category" : "Cormas-Core-Interface",
+	"classinstvars" : [
+		"rMax"
+	],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"name",
+		"entityReference",
+		"sizeRatio",
+		"povResult",
+		"infoName",
+		"infoResult"
+	],
+	"name" : "EntityPOV",
+	"type" : "normal"
+}

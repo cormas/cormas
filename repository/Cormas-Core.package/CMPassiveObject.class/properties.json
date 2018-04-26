@@ -1,0 +1,13 @@
+{
+	"commentStamp" : "HernanMoralesDurand 12/13/2017 00:44",
+	"super" : "CMEntity",
+	"category" : "Cormas-Core-Entities",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"destroyed"
+	],
+	"name" : "CMPassiveObject",
+	"type" : "normal"
+}

@@ -1,0 +1,4 @@
+testing
+isIdle
+	
+	^currentState == initialState

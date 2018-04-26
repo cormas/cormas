@@ -1,0 +1,24 @@
+{
+	"commentStamp" : "<historical>",
+	"super" : "Object",
+	"category" : "Cormas-Core-Entities",
+	"classinstvars" : [
+		"modelClass",
+		"CurrentId",
+		"colorsDict",
+		"image",
+		"activeProbes",
+		"povDict",
+		"activityDiagrams"
+	],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"id",
+		"flag",
+		"collector",
+		"request"
+	],
+	"name" : "CMEntity",
+	"type" : "normal"
+}

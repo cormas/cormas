@@ -1,0 +1,1 @@
+The specialized CormasPackager class for a model user packaging (installation for model users)

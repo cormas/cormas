@@ -1,0 +1,17 @@
+{
+	"commentStamp" : "",
+	"super" : "ElementActivityDiagramModel",
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"activityChoices",
+		"selectedActivity",
+		"targetClass",
+		"listActivity",
+		"purpose"
+	],
+	"name" : "AbstractActivityModel",
+	"type" : "normal"
+}

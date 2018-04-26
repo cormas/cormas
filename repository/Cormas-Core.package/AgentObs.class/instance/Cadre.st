@@ -1,0 +1,4 @@
+acces parametres
+Cadre
+	
+	^Cadre

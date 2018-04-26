@@ -1,0 +1,20 @@
+{
+	"commentStamp" : "",
+	"super" : "Object",
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [
+		"separator"
+	],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"cormasModel",
+		"filename",
+		"timeSteps",
+		"probes",
+		"directory",
+		"currentParameter"
+	],
+	"name" : "DataSaver",
+	"type" : "normal"
+}

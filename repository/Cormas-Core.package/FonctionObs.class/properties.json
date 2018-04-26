@@ -1,0 +1,26 @@
+{
+	"commentStamp" : "",
+	"super" : "Object",
+	"category" : "Cormas-Core-Observer",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"level",
+		"oneLevel",
+		"higherLevels",
+		"lastFrom",
+		"lastTo",
+		"populationSource",
+		"populationObservateur",
+		"degreMax",
+		"observateur",
+		"hierarchie",
+		"adaptor",
+		"listeCanaux",
+		"window",
+		"msgObs"
+	],
+	"name" : "FonctionObs",
+	"type" : "normal"
+}

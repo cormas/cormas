@@ -1,0 +1,19 @@
+{
+	"commentStamp" : "<historical>",
+	"super" : "UIApplicationModel",
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"legendes",
+		"superviseur",
+		"tableInterface",
+		"sightingsTable",
+		"classe",
+		"methode",
+		"isOpened"
+	],
+	"name" : "LegendWin",
+	"type" : "normal"
+}

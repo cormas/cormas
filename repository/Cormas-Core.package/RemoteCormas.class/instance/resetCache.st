@@ -1,0 +1,4 @@
+caching
+resetCache
+	
+	cachedValues := nil

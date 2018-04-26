@@ -1,0 +1,4 @@
+deprecated
+initCells
+	
+	^self resetCells

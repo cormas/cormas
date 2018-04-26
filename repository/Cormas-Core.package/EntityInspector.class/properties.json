@@ -1,0 +1,24 @@
+{
+	"commentStamp" : "",
+	"super" : "Object",
+	"category" : "Cormas-Core-Interface",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"object",
+		"entityIdField",
+		"attribute_List",
+		"selectedRow",
+		"performBar",
+		"linkedSI",
+		"option",
+		"showInstance",
+		"instanceColor",
+		"previousWidth",
+		"ratioColumns",
+		"previousRatioColumns"
+	],
+	"name" : "EntityInspector",
+	"type" : "normal"
+}

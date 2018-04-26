@@ -1,0 +1,4 @@
++ accessing
+surface
+	
+	^self size

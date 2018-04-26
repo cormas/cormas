@@ -1,0 +1,3 @@
++ simulation settings
+defaultInit
+	^ #init

@@ -1,0 +1,17 @@
+{
+	"commentStamp" : "<historical>",
+	"super" : "OATsensitivity",
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"plusMinus",
+		"percent",
+		"standardAnalysis",
+		"labelForProcess",
+		"zeroError"
+	],
+	"name" : "ClassifyParameter",
+	"type" : "normal"
+}

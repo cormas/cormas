@@ -1,0 +1,16 @@
+{
+	"commentStamp" : "",
+	"super" : "Object",
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [
+		"referencedBounds"
+	],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"rien",
+		"figure"
+	],
+	"name" : "EntityPOVView",
+	"type" : "normal"
+}

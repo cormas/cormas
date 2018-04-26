@@ -1,0 +1,21 @@
+{
+	"commentStamp" : "",
+	"super" : "Object",
+	"category" : "Cormas-Core-Observer",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"a",
+		"b",
+		"e",
+		"aa",
+		"bb",
+		"f",
+		"r",
+		"extent",
+		"interieur"
+	],
+	"name" : "VueEllipse",
+	"type" : "normal"
+}

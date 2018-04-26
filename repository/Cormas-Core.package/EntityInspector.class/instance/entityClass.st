@@ -1,0 +1,4 @@
+accessing
+entityClass
+	
+	^object entityClass

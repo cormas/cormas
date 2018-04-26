@@ -1,0 +1,11 @@
+{
+	"commentStamp" : "",
+	"super" : "OrderedCollection",
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [ ],
+	"name" : "IndexedSet",
+	"type" : "variable"
+}

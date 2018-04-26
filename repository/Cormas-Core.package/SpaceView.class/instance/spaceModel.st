@@ -1,0 +1,4 @@
+accessing
+spaceModel
+	
+	^model spaceModel

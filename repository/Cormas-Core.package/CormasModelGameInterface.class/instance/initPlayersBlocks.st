@@ -1,0 +1,4 @@
+initialize
+initPlayersBlocks
+	
+	self subclassResponsibility

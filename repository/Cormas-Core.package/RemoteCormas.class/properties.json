@@ -1,0 +1,18 @@
+{
+	"commentStamp" : "",
+	"super" : "Object",
+	"category" : "Cormas-Core-Others",
+	"classinstvars" : [
+		"current"
+	],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"remoteCormas",
+		"openTalkClient",
+		"cachedValues",
+		"spaceModel"
+	],
+	"name" : "RemoteCormas",
+	"type" : "normal"
+}

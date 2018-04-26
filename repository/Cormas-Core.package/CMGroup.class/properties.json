@@ -1,0 +1,15 @@
+{
+	"commentStamp" : "<historical>",
+	"super" : "CMAgent",
+	"category" : "Cormas-Core-Entities",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"components",
+		"newComponents",
+		"removedComponents"
+	],
+	"name" : "CMGroup",
+	"type" : "normal"
+}

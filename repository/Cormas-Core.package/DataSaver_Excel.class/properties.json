@@ -1,0 +1,14 @@
+{
+	"commentStamp" : "",
+	"super" : "DataSaver",
+	"category" : "Cormas-Core-Tools",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"excel",
+		"sheets"
+	],
+	"name" : "DataSaver_Excel",
+	"type" : "normal"
+}
