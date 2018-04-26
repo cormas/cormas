@@ -2,10 +2,10 @@ as yet unclassified
 move
 
 	| firedNeighbours |
-	firedNeighbours := self patch neighbourhood select: [:cell | cell state = #fire].
+	firedNeighbours := self nearestLocationsVerifying: [:cell | cell state = #fire] withinRadius: 4.
 	firedNeighbours isEmpty
 		ifTrue: [self randomWalk]
 		ifFalse: [
-			self leave.
+			"self leave."
 			self moveTo: (Cormas selectRandomlyFrom: firedNeighbours)
 		]
