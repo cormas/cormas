@@ -1,0 +1,11 @@
+{
+	"commentStamp" : "NickPapoulias 9/16/2016 09:47",
+	"super" : "CMAgentCommLocation",
+	"category" : "Cormas-Model-FireAutomata",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [ ],
+	"name" : "CMFireman",
+	"type" : "normal"
+}

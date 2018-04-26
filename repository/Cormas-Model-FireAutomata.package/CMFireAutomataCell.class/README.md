@@ -1,0 +1,1 @@
+I'm a cell of a FireAutomata. Four states are possible: #tree, #empty, #ash, #fire

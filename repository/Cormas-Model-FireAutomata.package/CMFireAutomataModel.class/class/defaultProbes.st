@@ -1,0 +1,3 @@
+default settings
+defaultProbes
+	^ #(#nbTrees)
