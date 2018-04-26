@@ -9,7 +9,9 @@
 		"anim",
 		"cellSize",
 		"model",
-		"situatedEntitiesViews"
+		"situatedEntitiesViews",
+		"origin",
+		"speed"
 	],
 	"name" : "CMPharoGridSimulation",
 	"type" : "normal"

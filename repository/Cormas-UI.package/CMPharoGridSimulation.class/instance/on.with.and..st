@@ -1,6 +1,6 @@
 as yet unclassified
 on: aModel with: cells and: situatedEntities
-	| origin windowSize |
+	| windowSize |
 	"self halt."
 	"Create grid"
 	model := aModel. 
@@ -22,7 +22,7 @@ on: aModel with: cells and: situatedEntities
 	windowSize := (self elements collect: [ :e | e position x ]) max
 		@ (self elements collect: [ :e | e position y ]) max.
 	"9@6 / (3@2)"
-	cellSize := (windowSize - origin) / (aModel spaceModel line @ aModel spaceModel column).
+	cellSize := (windowSize - origin) / (aModel spaceModel column @ aModel spaceModel line).
 	situatedEntitiesViews := ((RTEllipse new
 				color: [ :fe | fe getColorForPov: #pov ];
 				size: 20) elementsOn: situatedEntities).
@@ -31,7 +31,7 @@ on: aModel with: cells and: situatedEntities
 	
 	self canvas camera focusOnCenterScaled.
 	anim := RTActiveAnimation new.
-	anim intervalInMilliseconds: 0.
+	anim intervalInMilliseconds: (speed ifNil:[2]).
 	anim
 		blockToExecute: [ self runModelStep].
 	anim inView: self.
