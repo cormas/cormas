@@ -1,4 +1,9 @@
 as yet unclassified
 runAndVisualize
-
-	self openWithToolbar
+	| menuBuilder |
+	self openWithToolbar.
+	menuBuilder := RTMenuBuilder new view: self.
+	menuBuilder menu: 'nextStep'
+	 background: (Color lightBlue alpha: 0.4) 
+	callback: [ self runModelStep ].
+	

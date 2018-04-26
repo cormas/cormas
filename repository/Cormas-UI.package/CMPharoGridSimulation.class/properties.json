@@ -6,7 +6,10 @@
 	"pools" : [ ],
 	"classvars" : [ ],
 	"instvars" : [
-		"anim"
+		"anim",
+		"cellSize",
+		"model",
+		"situatedEntitiesViews"
 	],
 	"name" : "CMPharoGridSimulation",
 	"type" : "normal"

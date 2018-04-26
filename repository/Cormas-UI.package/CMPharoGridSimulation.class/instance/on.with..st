@@ -3,9 +3,7 @@ on: aModel with: cells
 
 
 	self addAll: ((RTBox new color: [ :e | 
-		(e theOccupants values isEmpty or: [ e theOccupants values first isEmpty ])
-			ifFalse: [ e theOccupants values first first getColorForPov: #pov ]
-			ifTrue: [e getColorForPov: #pov]  ]; 
+		e getColorForPov: #pov]; 
 		size: 25) 
 		elementsOn: cells).
 
