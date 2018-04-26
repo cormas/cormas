@@ -6,7 +6,7 @@ baseline012: spec
 		spec blessing: #'baseline'.
 		spec preLoadDoIt: #preLoad.
 		spec postLoadDoIt: #postLoad.		
-		spec repository: 'http://smalltalkhub.com/mc/SergeStinckwich/CORMAS/main'.
+		spec repository: 'http://ss3.gemtalksystems.com/ss/Cormas'.
  		spec 
 			baseline: 'ClassEditor' 
 			with: [ spec repository: 'github://openponk/class-editor/repository' ];
