@@ -6,7 +6,7 @@ example3
 		numberOfFires: 3;
 		numberOfFiremen: 20;
 		percentageOfTrees: 0.60;
-		dimensions: 80->80;
+		dimensions: 60->80;
 		activeControl: #step:;
 		initSimulation.
 
