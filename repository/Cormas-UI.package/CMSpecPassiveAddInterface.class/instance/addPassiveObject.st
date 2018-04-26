@@ -1,0 +1,4 @@
+callbacks
+addPassiveObject
+
+	self shouldBeImplemented.

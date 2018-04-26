@@ -1,0 +1,4 @@
+colors
+defaultColor
+	
+	^ Color blue

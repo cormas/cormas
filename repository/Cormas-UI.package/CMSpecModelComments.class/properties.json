@@ -1,0 +1,17 @@
+{
+	"commentStamp" : "HernanMoralesDurand 1/21/2018 01:51",
+	"super" : "CMSpecObject",
+	"category" : "Cormas-UI-Core",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"authorList",
+		"modelText",
+		"versionName",
+		"toolbar",
+		"creationDate"
+	],
+	"name" : "CMSpecModelComments",
+	"type" : "normal"
+}

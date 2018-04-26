@@ -1,0 +1,11 @@
+{
+	"commentStamp" : "HernanMoralesDurand 9/10/2017 17:19",
+	"super" : "PFTranslator",
+	"category" : "Cormas-UI-Project",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [ ],
+	"name" : "CMTranslator",
+	"type" : "normal"
+}

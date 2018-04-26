@@ -1,0 +1,18 @@
+{
+	"commentStamp" : "",
+	"super" : "CMSpecPovSetter",
+	"category" : "Cormas-UI-PoV",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"startAnnotation",
+		"widthChoices",
+		"stopAnnotation",
+		"lineWidth",
+		"stopPosition",
+		"startPosition"
+	],
+	"name" : "CMSpecPovSetter_Arc",
+	"type" : "normal"
+}

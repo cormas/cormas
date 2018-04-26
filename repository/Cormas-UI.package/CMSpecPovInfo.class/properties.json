@@ -1,0 +1,13 @@
+{
+	"commentStamp" : "HernanMoralesDurand 1/17/2018 18:28",
+	"super" : "CMSpecObject",
+	"category" : "Cormas-UI-PoV",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"povInfoList"
+	],
+	"name" : "CMSpecPovInfo",
+	"type" : "normal"
+}

@@ -1,0 +1,4 @@
+callbacks
+openEditAttributes
+
+	self projectWindow openEditAttributes.

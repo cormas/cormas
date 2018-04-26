@@ -1,0 +1,4 @@
+action
+validate
+	
+	self subclassResponsibility

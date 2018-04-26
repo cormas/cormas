@@ -1,0 +1,31 @@
+{
+	"commentStamp" : "HernanMoralesDurand 12/30/2017 14:03",
+	"super" : "CMSpecObject",
+	"category" : "Cormas-UI-Core",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"simulateLabel",
+		"replayLabel",
+		"initializeLabel",
+		"backwardLabel",
+		"currentStepLabel",
+		"forwardLabel",
+		"closeButton",
+		"changeButton",
+		"simulateButton",
+		"replayButton",
+		"backwardAllButton",
+		"backwardStepButton",
+		"currentStepInputText",
+		"forwardStepButton",
+		"forwardAllButton",
+		"replayStepButton",
+		"replayAllButton",
+		"finalStepInputText",
+		"finalStepLabel"
+	],
+	"name" : "CMSpecSimulationWindow",
+	"type" : "normal"
+}

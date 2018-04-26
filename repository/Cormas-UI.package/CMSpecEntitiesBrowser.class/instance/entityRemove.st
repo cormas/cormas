@@ -1,0 +1,3 @@
+callbacks
+entityRemove
+	self shouldBeImplemented.

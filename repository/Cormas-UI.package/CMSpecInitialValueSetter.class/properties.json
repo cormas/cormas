@@ -1,0 +1,28 @@
+{
+	"commentStamp" : "HernanMoralesDurand 1/17/2018 17:54",
+	"super" : "CMSpecObject",
+	"category" : "Cormas-UI-Core",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"numberRadioButton",
+		"randomRadioButton",
+		"booleanRadioButton",
+		"stringRadioButton",
+		"collectionRadioButton",
+		"arrayRadioButton",
+		"newEntityRadioButton",
+		"noValueRadioButton",
+		"numberTextField",
+		"randomTextField",
+		"booleanList",
+		"stringTextField",
+		"collectionList",
+		"arrayTextField",
+		"newEntityTextField",
+		"initialValueLabel"
+	],
+	"name" : "CMSpecInitialValueSetter",
+	"type" : "normal"
+}

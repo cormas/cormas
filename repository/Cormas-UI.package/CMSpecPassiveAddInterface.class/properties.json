@@ -1,0 +1,16 @@
+{
+	"commentStamp" : "",
+	"super" : "CMSpecObject",
+	"category" : "Cormas-UI-Core",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"entityName",
+		"toolbar",
+		"rbTypeGroup",
+		"entitySuperclass"
+	],
+	"name" : "CMSpecPassiveAddInterface",
+	"type" : "normal"
+}

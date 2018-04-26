@@ -1,0 +1,15 @@
+{
+	"commentStamp" : "HernanMoralesDurand 1/1/2018 18:25",
+	"super" : "PFProjectApplication",
+	"category" : "Cormas-UI-Project",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"processReplayForward",
+		"processReplayBackward",
+		"processRun"
+	],
+	"name" : "CMApplicationProject",
+	"type" : "normal"
+}

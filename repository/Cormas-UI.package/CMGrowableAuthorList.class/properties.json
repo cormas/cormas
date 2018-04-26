@@ -1,0 +1,11 @@
+{
+	"commentStamp" : "HernanMoralesDurand 8/8/2017 03:03",
+	"super" : "SpcGrowableSearchList",
+	"category" : "Cormas-UI-Core",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [ ],
+	"name" : "CMGrowableAuthorList",
+	"type" : "normal"
+}

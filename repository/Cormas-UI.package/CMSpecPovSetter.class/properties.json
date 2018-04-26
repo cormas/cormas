@@ -1,0 +1,23 @@
+{
+	"commentStamp" : "HernanMoralesDurand 1/21/2018 01:38",
+	"super" : "CMSpecObject",
+	"category" : "Cormas-UI-PoV",
+	"classinstvars" : [
+		"standardCellBounds"
+	],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"povDefinition",
+		"povInfo",
+		"toolbar",
+		"povColorButton",
+		"setColorLabel",
+		"applyButton",
+		"selectedClass",
+		"povDefinitionLabel",
+		"povInfoLabel"
+	],
+	"name" : "CMSpecPovSetter",
+	"type" : "normal"
+}

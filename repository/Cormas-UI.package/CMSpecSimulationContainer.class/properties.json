@@ -1,0 +1,13 @@
+{
+	"commentStamp" : "",
+	"super" : "CMSpecObject",
+	"category" : "Cormas-UI-Core",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"simWindow"
+	],
+	"name" : "CMSpecSimulationContainer",
+	"type" : "normal"
+}

@@ -1,0 +1,1 @@
+CMSpecAgentAddInterface example

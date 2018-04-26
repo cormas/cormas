@@ -1,0 +1,15 @@
+{
+	"commentStamp" : "HernanMoralesDurand 9/26/2017 16:58",
+	"super" : "PFProjectBase",
+	"category" : "Cormas-UI-Project",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"cormasModel",
+		"cormasModelClass",
+		"codeGenerator"
+	],
+	"name" : "CMProjectModel",
+	"type" : "normal"
+}

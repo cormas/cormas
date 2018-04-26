@@ -1,0 +1,11 @@
+{
+	"commentStamp" : "HernanMoralesDurand 8/8/2017 03:17",
+	"super" : "CMSpecCommentInterfaceAuthor",
+	"category" : "Cormas-UI-Core",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [ ],
+	"name" : "CMSpecCommentInterfaceRemovableAuthor",
+	"type" : "normal"
+}

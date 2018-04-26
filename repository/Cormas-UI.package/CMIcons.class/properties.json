@@ -1,0 +1,13 @@
+{
+	"commentStamp" : "HernanMoralesDurand 11/25/2017 19:51",
+	"super" : "Object",
+	"category" : "Cormas-UI-Core",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [
+		"icons"
+	],
+	"instvars" : [ ],
+	"name" : "CMIcons",
+	"type" : "normal"
+}

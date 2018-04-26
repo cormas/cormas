@@ -1,0 +1,18 @@
+{
+	"commentStamp" : "HernanMoralesDurand 1/17/2018 19:20",
+	"super" : "CMSpecPovSetter",
+	"category" : "Cormas-UI-PoV",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"tailleSlider",
+		"tailleHolder",
+		"colorChooser",
+		"oldValue",
+		"occupantPosition",
+		"isDistortable"
+	],
+	"name" : "CMSpecPovSetter_Agent",
+	"type" : "normal"
+}

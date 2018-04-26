@@ -1,0 +1,4 @@
+callbacks
+defineScenarioAction
+
+	CMSpecConfirmBeforeLaunch openFor: self projectManager

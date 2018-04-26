@@ -1,0 +1,14 @@
+{
+	"commentStamp" : "HernanMoralesDurand 1/18/2018 02:54",
+	"super" : "CMSpecObject",
+	"category" : "Cormas-UI-PoV",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"colorChooser",
+		"applyButton"
+	],
+	"name" : "CMSpecPovColor",
+	"type" : "normal"
+}
