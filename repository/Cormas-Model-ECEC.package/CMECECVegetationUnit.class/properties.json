@@ -1,0 +1,17 @@
+{
+	"commentStamp" : "",
+	"super" : "CMSpatialEntityCell",
+	"category" : "Cormas-Model-ECEC",
+	"classinstvars" : [
+		"K",
+		"r",
+		"pallete"
+	],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"biomass"
+	],
+	"name" : "CMECECVegetationUnit",
+	"type" : "normal"
+}

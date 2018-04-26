@@ -1,0 +1,4 @@
+control
+step
+	
+	self logisticGrowth

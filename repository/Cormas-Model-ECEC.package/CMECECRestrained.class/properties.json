@@ -1,0 +1,11 @@
+{
+	"commentStamp" : "",
+	"super" : "CMECECForager",
+	"category" : "Cormas-Model-ECEC",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [ ],
+	"name" : "CMECECRestrained",
+	"type" : "normal"
+}

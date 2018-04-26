@@ -1,0 +1,18 @@
+{
+	"commentStamp" : "",
+	"super" : "CormasModel",
+	"category" : "Cormas-Model-ECEC",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"restrainedInitialNumber",
+		"unrestrainedInitialNumber",
+		"theCMECECRestraineds",
+		"theCMECECUnrestraineds",
+		"theCMECECVegetationUnits",
+		"theRestraineds"
+	],
+	"name" : "CMECECModel",
+	"type" : "normal"
+}
