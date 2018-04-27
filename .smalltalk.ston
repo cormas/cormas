@@ -2,7 +2,7 @@ SmalltalkCISpec {
   #loading : [
     SCIMetacelloLoadSpec {
       #configuration : 'Cormas',
-      #repository : 'http://smalltalkhub.com/mc/SergeStinckwich/CORMAS/main',
+      #repository : 'http://ss3.gemstone.com/ss/Cormas',
       #load : [ 'default' ],
       #platforms : [
         #pharo ]
