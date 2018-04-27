@@ -6,7 +6,7 @@
 This is an ongoing effort to port CORMAS to Pharo ecosystem: http://www.pharo.org/
 Current stable version of CORMAS is based on VisualWorks 7.6 and can be found on: http://cormas.cirad.fr/indexeng.htm
 
-:bangbang: Current active development repository is located at **[SmalltalkHub](http://www.smalltalkhub.com/#!/~SergeStinckwich/CORMAS)**
+:bangbang: Current active development repository is located at **[ss3](http://ss3.gemstone.com/ss/Cormas.html)** and will move to github soon.
 
 Some documentation (to be cleaned and reorganized) about Cormas is available on the Wiki here: 
 https://github.com/cormas/documentation
