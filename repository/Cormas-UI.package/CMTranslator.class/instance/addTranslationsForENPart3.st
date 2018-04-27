@@ -8,4 +8,5 @@ addTranslationsForENPart3
 		at: #tAboutModel 						put: 'About this model';
 		at: #tHowToRunModel 					put: 'How to run this model';
 		at: #tChangeModelComments 			put: 'Change model Comments';
+		at: #tWhichOpeningLocation 			put: 'Select open location';
 		yourself

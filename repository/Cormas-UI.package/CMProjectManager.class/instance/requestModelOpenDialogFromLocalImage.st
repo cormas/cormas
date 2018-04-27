@@ -1,6 +1,6 @@
 callbacks
-requestModelNameForOpen
-	" Open request dialog to select a file "
+requestModelOpenDialogFromLocalImage
+	" Open a Cormas model. Answer project creation status, <true> if project was opened successfully "
 	
 	| widget |
 	widget := SpcListModel new.
@@ -8,5 +8,4 @@ requestModelNameForOpen
 		title: self translator tWhichModel;
 		items: self cormasModels.
 	widget openDialogWithSpec modalRelativeTo: self currentWorld.
-	^ widget selectedItem		
-		
+	^ widget selectedItem

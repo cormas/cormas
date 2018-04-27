@@ -7,5 +7,6 @@ addTranslationsForESPart3
 		at: #tDistributeAsClient  			put: 'Distribuir (actuar como cliente)';
 		at: #tAboutModel 						put: 'Sobre este modelo';
 		at: #tHowToRunModel 					put: 'Como ejecutar este modelo';
-		at: #tChangeModelComments 			put: 'Modificar comentarios del modelo';					
+		at: #tChangeModelComments 			put: 'Modificar comentarios del modelo';
+		at: #tWhichOpeningLocation 			put: 'Seleccione la ubicacion del elemento';
 		yourself
