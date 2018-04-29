@@ -6,8 +6,8 @@
 	"pools" : [ ],
 	"classvars" : [ ],
 	"instvars" : [
-		"theCells",
-		"theAnts",
+		"theCMDiffuseCells",
+		"theCMDiffuseAnts",
 		"activeCells",
 		"newActiveCells",
 		"noMoreActiveCells",

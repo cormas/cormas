@@ -4,4 +4,4 @@ pov
 		povAttribute: #qty
 		min: 0
 		max: 100
-		color: ColorValue green
+		color: Color green 

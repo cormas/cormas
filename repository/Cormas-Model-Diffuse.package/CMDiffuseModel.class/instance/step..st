@@ -1,5 +1,5 @@
 control
-stepSynchronously: t
+step: t
 	self activeCells
 		do: [ :a | 
 			a evaporate.
