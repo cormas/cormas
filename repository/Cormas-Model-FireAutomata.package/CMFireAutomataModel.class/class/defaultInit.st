@@ -1,4 +1,4 @@
 default settings
 defaultInit
 
-	^ defaultInit ifNil: [ defaultInit := #init58WithFire ]
+	^ defaultInit ifNil: [ defaultInit := #init58WithFireWithFiremen ]

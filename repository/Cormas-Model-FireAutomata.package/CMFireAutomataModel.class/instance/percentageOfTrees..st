@@ -1,4 +1,4 @@
-init
+accessing
 percentageOfTrees: aNumber
 
 	percentageOfTrees := aNumber

@@ -1,4 +1,4 @@
 accessing
 numberOfFires
 
-	^ numberOfFires
+	^ numberOfFires ifNil:[numberOfFires := 3]

@@ -1,4 +1,4 @@
-accessing
+programmable scenario
 dimensions: aPair
 
 	self initializeSpaceModel.

@@ -1,3 +1,3 @@
 default settings
 defaultControl
-	^ #stepSynchronously:
+	^ #step:

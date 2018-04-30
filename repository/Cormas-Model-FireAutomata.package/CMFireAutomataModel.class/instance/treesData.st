@@ -1,4 +1,4 @@
-accessing
+deprecated
 treesData
 	"return the data to be plotted with the trees chart"
 

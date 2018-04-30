@@ -1,4 +1,4 @@
-init
+accessing
 numberOfFiremen: aNumber
 
 	numberOfFiremen := aNumber

@@ -1,3 +1,3 @@
-accessing
+deprecated
 trees: aCollection
 	trees := aCollection
