@@ -1,4 +1,4 @@
-+ init - spatial entities
++ instance creation - spatial grid
 loadEnvironmentFromFile: aName withPov: aSymbol
 	"Purpose: create spatial elements, load attributes value specified in a defined env file and set the point of view of the elementary spatial entity to a defined pov
 Argument: aName = <String> or aName = <Filename> . If aName = <String>, it creates a Filename from maps directory. 

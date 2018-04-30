@@ -1,4 +1,4 @@
-+ instance creation - spatial entities
++ instance creation - spatial grid
 createGridX: x Y: y neighbourhood: aNumber closed: aBoolean
 	"Purpose: Create a spatial grid made of cells
 Arguments:  X : number of columns ; Y : number of lines of the grid.

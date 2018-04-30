@@ -1,4 +1,4 @@
-+ instance creation - spatial entities
++ instance creation - spatial grid
 createGridNeighbourhood: anInteger closed: aBoolean fromMatrixCsvFile: aString attribute: aName
 	"Purpose: Create a spatial grid made of cells from a csv file in a matrix format providing values for a given attribute.
 The file has to be located into /data folder.

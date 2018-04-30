@@ -16,9 +16,12 @@ aSelectorName could be the name of a method or a Symbol for which an EntityImage
 	aColor class = Color
 		ifTrue: [^aColor]
 		ifFalse:
-			[(Color constantNames includes: aColor)
+			[(Color class selectors includes: aColor)
 				ifTrue: [^Color perform: aColor]
 				ifFalse:
-					[^self class colorsDict
-						at: aColor
-						ifAbsent: [Color veryLightGray]]]
+					[
+					(self class class selectors includes: ('SpatialEntityPOV_',aColor) asSymbol)
+						ifTrue:[^Color fromArray: (self class perform: ('SpatialEntityPOV_',aColor) asSymbol)]
+						ifFalse:[^self class colorsDict
+										at: aColor
+										ifAbsent: [Color veryLightGray]]]]
