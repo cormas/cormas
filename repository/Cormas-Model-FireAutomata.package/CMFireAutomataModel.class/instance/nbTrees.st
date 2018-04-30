@@ -1,3 +1,3 @@
 probes
 nbTrees
-	^ self theCMConwayCells count: [ :c | c state = #tree ]
+	^ self theCMFireAutomataCells  count: [ :c | c state = #tree ]

@@ -4,7 +4,7 @@ example2
 	
 	aModel := self newWithProgrammableScenario 
 		numberOfFires: 3;
-		numberOfFiremen: 20;
+		numberOfFiremen: 2;
 		percentageOfTrees: 0.58;
 		dimensions: 80->80;
 		activeControl: #step:;

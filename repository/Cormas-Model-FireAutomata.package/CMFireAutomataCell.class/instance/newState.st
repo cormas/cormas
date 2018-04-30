@@ -13,4 +13,5 @@ newState
 						ifTrue: [self bufferState: #empty ]
 						ifFalse: [self bufferState: #ash]].
 	self state = #empty
-		ifTrue: [ self bufferState: #empty ]
+		ifTrue: [ self bufferState: #empty ].
+		
