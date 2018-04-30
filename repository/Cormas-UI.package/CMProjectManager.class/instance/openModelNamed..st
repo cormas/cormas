@@ -2,7 +2,12 @@ callbacks
 openModelNamed: aString
 	" Request a file to be opened as CORMAS project "
 
-	(self requestFileNameForOpen: 'st')
+	(FDOpenFileDialog new
+		title: ('Choose st file');
+		extensionFilters: 	{ 'st files' -> #(st) };
+		defaultFolder:  FileLocator imageDirectory / 'Models'/ aString ;
+		openModal)	
+			
 		ifNotNil: [ : fileRef | 
 			[ fileRef readStream fileInDisplayingProgress ]
 			on: Exception
