@@ -2,7 +2,7 @@ tests
 testWhenYouPickACellOfAModelThisIsASpatialEntity
 	| modelClass aModel |
 	modelClass := CMFireAutomataModel.
-	modelClass defaultInit: #init58WithFire.
+	"modelClass defaultInit: #init58WithFire."
 	modelClass initialize.
 	aModel := modelClass new.
 	aModel initializeSpaceModel.

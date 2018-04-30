@@ -13,4 +13,4 @@ testNumberOfDifferentStateInAFireAutomataIsThree
 		neighbourhood: 4
 		closed: true.		
 	aModel initSimulation.
-	self assert: (aModel nClasses: #state) equals: 3
+	self assert: (aModel nbDistinctValuesOf: #state) equals: 3
