@@ -6,7 +6,6 @@ testSizeOfCellsColumnOfFireAutomataModelIsTen
 	aModel := choosenModel
 		initialize;
 		new.
-	aModel class defaultInit: #init58WithFire.
 	aModel initializeSpaceModel.
 	aModel
 		createGridX: 10
