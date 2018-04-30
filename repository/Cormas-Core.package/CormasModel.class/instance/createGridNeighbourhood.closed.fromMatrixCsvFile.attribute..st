@@ -19,7 +19,7 @@ Example: 	self createGridNeighbourhood: 8 closed: true fromMatrixCsvFile: 'map.c
 	collec := OrderedCollection new.
 	matrix do: [:line | collec addAll: line].
 	collec
-		with: self theCMConwayCells
+		with: self theESE
 		do:
 			[:string :c | 
 			c
