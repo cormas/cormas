@@ -2,7 +2,6 @@ tests
 testSizeOfCellsColumnOfFireAutomataModelIsTen
 	| choosenModel aModel |
 	choosenModel := CMFireAutomataModel.
-	choosenModel defaultInit: #init58WithFire.
 	aModel := choosenModel
 		initialize;
 		new.
@@ -12,5 +11,6 @@ testSizeOfCellsColumnOfFireAutomataModelIsTen
 		Y: 10
 		neighbourhood: 4
 		closed: true.
+	aModel activeInit: #init58WithFire.
 	aModel initSimulation.
 	self assert: (aModel selectCellsOfColumn: 1) size equals: 10
