@@ -22,5 +22,7 @@ initializeWidgets
 	self releaseRandomCheck label: 'Release random seed after initialization'.
 	self toolbar
 		secondButtonLabel: 'Apply';
-		firstButtonLabel: 'Cancel'.
+		firstButtonLabel: 'Cancel';
+		firstButtonAction: [ self delete ];
+		secondButtonAction: [ self applyScenarioSettings ].
 		

@@ -24,8 +24,8 @@ defaultSpec
 								add: #replayButton ]  width: 70;
 						newColumn: [ : col | 
 							col 
-								newRow: [ : rowBackwards |
-									rowBackwards 
+								newRow: [ : er |
+									er 
 										add: #backwardAllButton;
 										add: #backwardStepButton  ]
 							] width: 100;
@@ -38,12 +38,12 @@ defaultSpec
 						newColumn: [ : ec | ] width: 10;							
 						newColumn: [ : col | 
 							col 
-								newRow: [ : rowBackwards |
-									rowBackwards 
+								newRow: [ : er |
+									er 
 										add: #forwardStepButton;
 										add: #forwardAllButton ];
-								newRow: [ : rowBackwards |
-									rowBackwards 
+								newRow: [ : er |
+									er 
 										add: #replayStepButton;
 										add: #replayAllButton ]									
 							] width: 100;

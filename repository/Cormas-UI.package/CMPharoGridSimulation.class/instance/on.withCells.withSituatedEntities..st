@@ -1,17 +1,15 @@
-as yet unclassified
+instance creation
 on: aModel withCells: cells withSituatedEntities: situatedEntities
-	| windowSize |
-	"self halt."
-	"Create grid"
-	model := aModel. 
-	
-	self addCells: cells.
-	self addAgents: situatedEntities.
-	
+	"This method is called by the CMSpecSimulationWindow. It launches the RTActiveAnimation (replacement of spaceInterface)"
+
+	model := aModel.
+	self addViewForCells: cells.
+	self addViewForAgents: situatedEntities.
 	self canvas camera focusOnCenterScaled.
 	anim := RTActiveAnimation new.
-	anim intervalInMilliseconds: (speed ifNil:[2]).
+	anim intervalInMilliseconds: (speed ifNil: [ 0 ]).
 	anim
-		blockToExecute: [ self runModelStep].
-	anim inView: self.
-	
+		blockToExecute: [ self runModelStep
+			"model timeStep = 100
+				ifTrue: [ self halt ]" ].
+	anim inView: self

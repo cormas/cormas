@@ -1,5 +1,5 @@
-as yet unclassified
-addCells: cells
+instance creation
+addViewForCells: cells
 self
 		addAll:
 			((RTBox new

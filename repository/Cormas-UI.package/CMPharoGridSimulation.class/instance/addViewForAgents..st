@@ -1,5 +1,5 @@
-as yet unclassified
-addAgents: situatedEntities
+instance creation
+addViewForAgents: situatedEntities
 	"Organize coordinate system"
 	| windowSize |
 	origin := (self elements collect: [ :e | e position x ]) min
