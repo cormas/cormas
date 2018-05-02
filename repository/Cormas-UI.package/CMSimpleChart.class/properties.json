@@ -1,0 +1,14 @@
+{
+	"commentStamp" : "",
+	"super" : "RTGrapher",
+	"category" : "Cormas-UI-charts",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"cormasModel",
+		"probeNum"
+	],
+	"name" : "CMSimpleChart",
+	"type" : "normal"
+}

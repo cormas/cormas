@@ -1,5 +1,5 @@
 as yet unclassified
-on: aModel with: cells and: situatedEntities
+on: aModel with: cells and: situatedEntities withProbe: probeName
 	| windowSize |
 	"self halt."
 	"Create grid"
@@ -28,7 +28,6 @@ on: aModel with: cells and: situatedEntities
 				size: 20) elementsOn: situatedEntities).
 	
 	self addAll: situatedEntitiesViews.
-	
 	self canvas camera focusOnCenterScaled.
 	anim ifNil: [anim := RTActiveAnimation new].
 	anim intervalInMilliseconds: (speed ifNil:[2]).
