@@ -7,5 +7,5 @@ setActiveProbes: listProbes
 	listProbes do: [ : s | 
 			s = CMSimManager separator
 				ifFalse: [
-					selectedClass := self cmEnvironment at: (s findTokens: $>) first asSymbol.
+					selectedClass := (s findTokens: $>) first asSymbol asClass.
 					selectedClass activeProbes add: (s findTokens: $>) last asSymbol]]
