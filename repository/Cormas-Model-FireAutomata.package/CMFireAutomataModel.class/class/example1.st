@@ -1,7 +1,6 @@
 examples
 example1
 	| aModel nbLines v es anim |
-	self defaultInit: #init58WithFire.
 	aModel := self
 		initialize;
 		new.
@@ -13,6 +12,8 @@ example1
 		neighbourhood: 4
 		closed: true.
 	v := RTView new.
+	
+	aModel activeInit: #init58WithFire.
 	aModel initSimulation.
 	aModel runStep.
 	es := (RTBox new
