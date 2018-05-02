@@ -27,6 +27,7 @@
 		"spaceModel",
 		"data",
 		"simManager",
+		"projectManager",
 		"database",
 		"collector",
 		"defaultAttributesSetter",

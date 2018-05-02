@@ -1,4 +1,4 @@
-as yet unclassified
+accessing - entities
 allTheLocatedEntities
 	"Returns a collection of all the instances of AgentLocation and of ObjectLocation (and sub classes) collected by cormasModel"
 	

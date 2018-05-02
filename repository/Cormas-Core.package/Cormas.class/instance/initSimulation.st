@@ -23,7 +23,8 @@ initSimulation
 	Cursor wait
 		showWhile:
 			["self stepCounter value: 0."
-			pop := self cormasModel initSimulation.
+			self cormasModel initSimulation.
+			pop := self cormasModel theAgentsComm.
 			self makeVideo.
 			self obsWin notNil
 				ifTrue:
