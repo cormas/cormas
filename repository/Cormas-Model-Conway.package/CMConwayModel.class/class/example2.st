@@ -4,7 +4,7 @@ example2
 	v := RTView new.
 	nbLines := 10.
 	choosenModel := CMConwayModel.
-	numberOfModels := 20.
+	numberOfModels := 4.
 	models := (1 to: numberOfModels)
 		collect: [ :i | 
 			aModel := choosenModel
