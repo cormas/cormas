@@ -1,6 +1,8 @@
-as yet unclassified
+instance creation
 on: aModel with: cells and: situatedEntities withProbe: probeName
 	| windowSize |
+	"the method is not used. Is it obsolete ?"
+	
 	"self halt."
 	"Create grid"
 	model := aModel. 

@@ -1,4 +1,4 @@
-as yet unclassified
+instance creation
 on: aModel with: cells and: situatedEntities
 	| windowSize |
 	"self halt."

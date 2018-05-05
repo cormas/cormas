@@ -1,4 +1,4 @@
-as yet unclassified
+opening and menus
 createSimulationMenus
 	| menuBuilder |
 	menuBuilder := RTMenuBuilder new view: self.
@@ -42,8 +42,8 @@ createSimulationMenus
 			model initSimulation.
 			self
 				on: model
-				with: model spaceModel elementaryEntities
-				and: (model allTheLocatedEntities: CMAgentLocation).
+				withCells: model spaceModel elementaryEntities
+				withSituatedEntities: (model allTheLocatedEntities: CMAgentLocation).
 			anim
 				intervalInMilliseconds: speed;
 				blockToExecute: [ self runModelStep ] ].

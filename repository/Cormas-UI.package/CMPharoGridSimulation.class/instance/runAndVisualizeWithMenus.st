@@ -1,4 +1,4 @@
-as yet unclassified
+opening and menus
 runAndVisualizeWithMenus
 	self openWithToolbar.
 	self createSimulationMenus.
