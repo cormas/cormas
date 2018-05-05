@@ -11,7 +11,7 @@ example3
 		initSimulation.
 
 	
-	(CMPharoGridSimulation new on: aModel with: aModel theCMFireAutomataCells and: aModel theCMFiremans) 
+	(CMPharoGridSimulation new on: aModel withCells: aModel theCMFireAutomataCells withSituatedEntities: aModel theCMFiremans) 
 		runAndVisualize.
 		
 	

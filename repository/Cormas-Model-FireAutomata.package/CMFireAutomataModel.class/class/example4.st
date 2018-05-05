@@ -16,5 +16,5 @@ example4
 		"open interface"
 	(CMPharoGridSimulation new
 		on: aModel
-		with: aModel theCMFireAutomataCells
-		and: aModel theCMFiremans) runAndVisualizeWithMenus
+		withCells: aModel theCMFireAutomataCells
+		withSituatedEntities: aModel theCMFiremans) runAndVisualizeWithMenus

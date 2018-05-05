@@ -20,5 +20,5 @@ example5
 "create view that control the model and enables visualisation of non dynamic charts"		
 	(CMPharoGridSimulation new
 		on: aModel
-		with: aModel theCMFireAutomataCells
-		and: aModel theCMFiremans) runAndVisualizeWithMenus.
+		withCells: aModel theCMFireAutomataCells
+		withSituatedEntities: aModel theCMFiremans) runAndVisualizeWithMenus.
