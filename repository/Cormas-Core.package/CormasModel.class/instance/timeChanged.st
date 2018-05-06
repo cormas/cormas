@@ -7,7 +7,7 @@ timeChanged
 	newTime := self timeStepValue value.
 	
 	self class timeStep: newTime.
-	self simWindow ifNotNil:[:sw| sw currentStepInputText text:newTime].
+	self simWindow ifNotNil:[:sw| sw newCurrentStepValue: newTime].
 	self changed: #timeChanged with: newTime
 	"newTime = 0 ifTrue: [^self simManager setButtonsForTime0].
 	newTime = 1 ifTrue: [^self simManager setButtonsForTime1]"
