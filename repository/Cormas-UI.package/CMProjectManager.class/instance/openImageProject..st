@@ -1,8 +1,9 @@
 callbacks
 openImageProject: modelName
 	" Open the project named projectApp "
-
+	| modelClass |
+	modelClass := ('CM',modelName , 'Model') asClass.
 	self currentProject: (CMProjectModel basicNew
-		initializeForModel: (Smalltalk at: modelName asSymbol) named: modelName;
+		initializeForModel: modelClass new named: modelName;
 		yourself).
 

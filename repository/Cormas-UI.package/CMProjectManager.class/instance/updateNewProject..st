@@ -7,4 +7,5 @@ updateNewProject: modelName
 			self currentProject cormasModel: self cormasModelClass new ].
 	self cormasModelClass initialize.
 	self cormasModel projectManager: self.
-	super updateNewProject: modelName
+	super updateNewProject: modelName.
+	self cormasModel timeStep:0.
