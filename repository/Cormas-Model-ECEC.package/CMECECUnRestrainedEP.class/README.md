@@ -1,0 +1,1 @@
+Unrestrained is a subclass of forager. this kind of agent will use 1/2 of resources on is cell.
