@@ -1,1 +1,0 @@
-This class will containe agent how will evolve in space and time in our model.  Each agent will spend energy to move themself.

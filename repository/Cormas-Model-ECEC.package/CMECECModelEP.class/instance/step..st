@@ -1,2 +1,0 @@
-control
-step: t
