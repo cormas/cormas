@@ -1,11 +1,10 @@
 initialization
 initializeMorphs
-
-	self simulateButton: self defineScenarioButtonMorph asSpecAdapter.	
+	self initializeSimButton: self defineScenarioButtonMorph asSpecAdapter.
 	self replayButton: self replayAStoredSimButtonMorph asSpecAdapter.
 	self backwardAllButton: self replaySimBackwardButtonMorph asSpecAdapter.
 	self backwardStepButton: self run1StepBackwardButtonMorph asSpecAdapter.
-	self forwardStepButton: self exec1StepButtonMorph asSpecAdapter.
-	self forwardAllButton: self runAllSimButtonMorph asSpecAdapter.
-	self replayStepButton: self replay1StoredStepButtonMorph asSpecAdapter.
-	self replayAllButton: self replayStoredSimButtonMorph asSpecAdapter.
+	self runStepByStepButton: self runStepByStepButtonMorph asSpecAdapter.
+	self runButton: self runButtonMorph asSpecAdapter.
+	self replayStepForwardButton: self replayStepForwardButtonMorph asSpecAdapter.
+	self replayRunForwardButton: self replayRunForwardButtonMorph asSpecAdapter

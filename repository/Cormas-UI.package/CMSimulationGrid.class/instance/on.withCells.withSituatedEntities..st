@@ -9,7 +9,5 @@ on: aModel withCells: cells withSituatedEntities: situatedEntities
 	anim := RTActiveAnimation new.
 	anim intervalInMilliseconds: (speed ifNil: [ 0 ]).
 	anim
-		blockToExecute: [ self runModelStep
-			"model timeStep = 100
-				ifTrue: [ self halt ]" ].
+		blockToExecute: [ self runModelStep ].
 	anim inView: self

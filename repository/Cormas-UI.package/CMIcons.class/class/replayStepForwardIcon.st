@@ -1,7 +1,7 @@
 accessing - icons
-replay1StoredStepIcon
+replayStepForwardIcon
 	"Private - Generated method"
 	^ self icons
-		at: #replay1StoredStepIcon
+		at: #replayStepForwardIcon
 		ifAbsentPut: [ Form
 				fromBinaryStream: (Base64MimeConverter mimeDecodeToBytes: self replay1StoredStepIconContents readStream) ]

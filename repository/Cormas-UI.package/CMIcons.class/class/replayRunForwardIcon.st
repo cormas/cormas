@@ -1,7 +1,7 @@
 accessing - icons
-replayStoredSimIcon
+replayRunForwardIcon
 	"Private - Generated method"
 	^ self icons
-		at: #replayStoredSimIcon
+		at: #replayRunForwardIcon
 		ifAbsentPut: [ Form
 				fromBinaryStream: (Base64MimeConverter mimeDecodeToBytes: self replayStoredSimIconContents readStream) ]

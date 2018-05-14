@@ -1,5 +1,5 @@
 accessing
-simulateButton
+initializeSimButton
 	" Answer the simulateButton of this CMSpecSimulationWindow "
 
-	^ simulateButton
+	^ initializeSimButton

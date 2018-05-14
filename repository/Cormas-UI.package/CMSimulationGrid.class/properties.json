@@ -13,6 +13,6 @@
 		"origin",
 		"speed"
 	],
-	"name" : "CMPharoGridSimulation",
+	"name" : "CMSimulationGrid",
 	"type" : "normal"
 }

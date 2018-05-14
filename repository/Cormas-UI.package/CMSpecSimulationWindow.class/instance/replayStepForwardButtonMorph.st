@@ -1,12 +1,11 @@
 morphic
-replay1StoredStepButtonMorph
-
+replayStepForwardButtonMorph
 	^ IconicButton new
 		target: self;
-		actionSelector: #replay1StoredStepAction;
-		labelGraphic: (self iconNamed: #replay1StoredStepIcon);
+		actionSelector: #replayStepForwardAction;
+		labelGraphic: (self iconNamed: #replayStepForwardIcon);
 		color: Color transparent;
 		borderColor: Color purple;
 		borderWidth: 1;
 		helpText: 'Replay 1 stored step';
-		yourself.
+		yourself

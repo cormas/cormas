@@ -1,10 +1,10 @@
 morphic
-exec1StepButtonMorph
+runStepByStepButtonMorph
 
 	^ IconicButton new
 		target: self;
-		actionSelector: #exec1StepAction;
-		labelGraphic: (self iconNamed: #exec1StepIcon);
+		actionSelector: #runStepByStepAction;
+		labelGraphic: (self iconNamed: #runStepByStepSimIcon);
 		color: Color transparent;
 		borderColor: Color red;
 		borderWidth: 1;

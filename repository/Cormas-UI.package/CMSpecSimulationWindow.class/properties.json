@@ -14,17 +14,17 @@
 		"forwardLabel",
 		"closeButton",
 		"changeButton",
-		"simulateButton",
 		"replayButton",
 		"backwardAllButton",
 		"backwardStepButton",
 		"currentStepInputText",
-		"forwardStepButton",
-		"forwardAllButton",
-		"replayStepButton",
-		"replayAllButton",
+		"runStepByStepButton",
+		"runButton",
+		"replayRunForwardButton",
 		"finalStepInputText",
-		"finalStepLabel"
+		"finalStepLabel",
+		"replayStepForwardButton",
+		"initializeSimButton"
 	],
 	"name" : "CMSpecSimulationWindow",
 	"type" : "normal"

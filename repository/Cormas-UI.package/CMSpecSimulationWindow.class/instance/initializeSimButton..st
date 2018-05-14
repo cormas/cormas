@@ -1,5 +1,5 @@
 accessing
-simulateButton: anObject
+initializeSimButton: anObject
 	" Sets the simulateButton of this CMSpecSimulationWindow "
 
-	simulateButton := anObject
+	initializeSimButton := anObject
