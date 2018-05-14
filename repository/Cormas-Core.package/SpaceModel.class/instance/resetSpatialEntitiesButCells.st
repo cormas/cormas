@@ -23,5 +23,5 @@ resetSpatialEntitiesButCells
 				ifFalse:
 					[self spatialEntities
 						at: se name
-						put: RemotableOrderedCollection new.
+						put: OrderedCollection new."RemotableOrderedCollection new. ** changed to OrderedCollection new. (RemotableOrderedCollection is used for marshalling in remote distributed visualization)" 
 					self cormasModel initializeTheEntity: se]]

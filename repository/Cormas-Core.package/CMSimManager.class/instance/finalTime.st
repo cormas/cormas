@@ -1,4 +1,3 @@
 time
 finalTime
-	
-	^self cormas cycle value
+	^ finalTime ifNil: [ finalTime := self cormasModel class defaultFinalStep ifNil: [ nil]  ]

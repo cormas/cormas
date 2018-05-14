@@ -1,9 +1,7 @@
-instance creation
+initialization
 initializeWithoutVS
-	"set the cellClass, spatialClasses, socialClasses and passiveClasses.
-Set the Charts"
+	"set the cellClass, spatialClasses, socialClasses and passiveClasses."
 
-	self visualStateIsOpen: false.
+	self flag: #shouldBeRevised. 	self visualStateIsOpen: false.	"should be obsolete because visualStateIsOpen refers to visualSTateWin of Cormas which is an access to the pov setter window of cormas-vw"
 	self initializeCellClass.
-	self initializeModelClasses.
-	self initializeCharts.
+	self initializeModelClasses

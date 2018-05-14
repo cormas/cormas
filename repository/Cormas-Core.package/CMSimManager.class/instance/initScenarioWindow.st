@@ -3,7 +3,7 @@ initScenarioWindow
 	
 	| initialList aSet i |  
 	self randomSeed value = 1 ifTrue: [self randomSeed: Cormas seed asValue].
-	self fixRandomSeed onChangeSend: #changedRandomSeed to: self.	"self fixRandomSeed value: self fixRandomSeed value."
+	self isRandomSeedFixed onChangeSend: #changedRandomSeed to: self.	"self fixRandomSeed value: self fixRandomSeed value."
 	(self enableBackward isKindOf: Boolean)
 		ifTrue: [ enableBackwardValue := self enableBackward asValue ].
 	(self listInit list: (self cormasModel class organization listAtCategoryNamed: #init)) isEmpty

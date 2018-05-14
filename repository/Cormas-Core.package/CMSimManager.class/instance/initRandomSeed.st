@@ -1,6 +1,6 @@
 simulate
 initRandomSeed
 	
-	self fixRandomSeed value
-		ifTrue: [Cormas randomSeed: self randomSeed value]
+	self isRandomSeedFixed
+		ifTrue: [Cormas randomSeed: self fixedRandomSeedValue]
 		ifFalse: [Cormas initRandomSeed]

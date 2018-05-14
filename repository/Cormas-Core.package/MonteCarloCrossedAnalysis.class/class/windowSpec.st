@@ -118,7 +118,7 @@ windowSpec
 				#labelsAsButtons: true) #(CheckBoxSpec 
 				#layout: #(Point 22 20) 
 				#name: #CheckBox1 
-				#model: #fixRandomSeed 
+				#model: #isRandomSeedFixed 
 				#helpText: 'Select if you want to fix the random seed and start each simulation with same seed value' 
 				#label: 'Fix the random seed to:') #(InputFieldSpec 
 				#layout: #(Rectangle 87 41 209 62) 

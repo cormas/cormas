@@ -21,11 +21,11 @@ loadAnalysisSettings
 		ifFalse:
 			[self nbOfRepeat value: aLine last.
 			fileContent remove: aLine].
-	aLine := fileContent detect: [:line | line first = 'fixRandomSeed'].
+	aLine := fileContent detect: [:line | line first = #isRandomSeedFixed].
 	aLine last = 'no'
-		ifTrue: [self fixRandomSeed value: false]
+		ifTrue: [self isRandomSeedFixed value: false]
 		ifFalse:
-			[self fixRandomSeed value: true.
+			[self isRandomSeedFixed value: true.
 			self randomSeed value: aLine last].
 	fileContent remove: aLine.
 	aLine := fileContent detect: [:line | line first = 'releaseRandomSeed'].

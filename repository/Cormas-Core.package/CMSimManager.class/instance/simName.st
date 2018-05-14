@@ -1,4 +1,3 @@
 accessing
 simName
-	
-	^simName ifNil: [simName := '']
+	^ simName ifNil: [ simName := 'unnamed' ]

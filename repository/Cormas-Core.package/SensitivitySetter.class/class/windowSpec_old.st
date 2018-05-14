@@ -121,7 +121,7 @@ windowSpec_old
 				#label: 'Analysis type:') #(CheckBoxSpec 
 				#layout: #(Point 511 106) 
 				#name: #CheckBox1 
-				#model: #fixRandomSeed 
+				#model: #isRandomSeedFixed 
 				#helpText: 'Select if you want to fix the random seed and start each simulation with same seed value' 
 				#label: 'Fix the random seed to:') #(LabelSpec 
 				#layout: #(Point 510 161) 

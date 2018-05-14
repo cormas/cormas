@@ -15,9 +15,9 @@ exports the analysis information (except the attributes value) into a CSV file"
 	stream nextPutAll: self nbOfRepeat value printString.
 	stream nextPutAll: DataSaver_Asci separatorAsString.
 	stream nextPutAll: '\' withCRs.
-	stream nextPutAll: 'fixRandomSeed'.
+	stream nextPutAll: #isRandomSeedFixed.
 	stream nextPutAll: DataSaver_Asci separatorAsString.
-	self fixRandomSeed value
+	self isRandomSeedFixed value
 		ifTrue: [stream nextPutAll: self randomSeed value printString]
 		ifFalse: [stream nextPutAll: 'no'].
 	stream nextPutAll: DataSaver_Asci separatorAsString.

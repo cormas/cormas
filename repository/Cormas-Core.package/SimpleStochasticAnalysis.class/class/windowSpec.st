@@ -39,7 +39,7 @@ windowSpec
 				#label: 'Save as:') #(CheckBoxSpec 
 				#layout: #(Point 9 42) 
 				#name: #CheckBox1 
-				#model: #fixRandomSeed 
+				#model: #isRandomSeedFixed 
 				#helpText: 'Select if you want to fix the random seed and start each simulation with same seed value. Thus, each initial state will be identical' 
 				#label: 'Fix the random seed') #(ActionButtonSpec 
 				#layout: #(Rectangle 150 429 198 454) 

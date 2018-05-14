@@ -2,4 +2,7 @@ accessing
 simName: aName
 	
 	simName := aName.
-	self cormas simName value: 'Sim name: ' , simName
+	
+		self flag: #shouldBeRevised.
+	"the following instruction is obsolete isn't it?
+	self cormas simName value: 'Sim name: ' , simName"
