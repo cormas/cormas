@@ -1,7 +1,7 @@
 test
 testCurrentStepInputTextOfSimWindowIsUpdatedWhenRuningSimulation
 	| aCMProjectManager simWindow |
-	aCMProjectManager := self newProjectManagerWithInitializedUIOnModel: #Conway.
+	aCMProjectManager := self newProjectManagerWithInitializedUIOnModel: #CMConwayModel.
 	simWindow := aCMProjectManager projectWindow simWindow simWindow.
 	simWindow openWithSpec.
 	20 timesRepeat: [ aCMProjectManager currentProject cormasModel runStep ].
