@@ -12,9 +12,9 @@ example4
 		activeControl: #step:;
 		initDataStructures;
 		"init simulation"
-		initSimulation.
-		"open interface"
-	(CMPharoGridSimulation new
+			initSimulation.
+	"open interface"
+	(CMSimulationGrid new
 		on: aModel
 		withCells: aModel theCMFireAutomataCells
 		withSituatedEntities: aModel theCMFiremans) runAndVisualizeWithMenus

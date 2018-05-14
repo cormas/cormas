@@ -10,15 +10,15 @@ example5
 		percentageOfTrees: 0.60;
 		dimensions: 60 -> 80;
 		activeControl: #step:.
-	"set probes configuration (probes to save)"	
+	"set probes configuration (probes to save)"
 	probes := OrderedCollection new.
 	probes add: 'CMFireAutomataModel>>nbFires'.
 	probes add: 'CMFireAutomataModel>>nbAshes'.
 	aModel class setActiveProbes: probes.
-	"Init simulation"	
+	"Init simulation"
 	aModel initSimulation.
-"create view that control the model and enables visualisation of non dynamic charts"		
-	(CMPharoGridSimulation new
+	"create view that control the model and enables visualisation of non dynamic charts"
+	(CMSimulationGrid new
 		on: aModel
 		withCells: aModel theCMFireAutomataCells
-		withSituatedEntities: aModel theCMFiremans) runAndVisualizeWithMenus.
+		withSituatedEntities: aModel theCMFiremans) runAndVisualizeWithMenus
