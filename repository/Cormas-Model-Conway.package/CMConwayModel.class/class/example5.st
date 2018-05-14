@@ -4,7 +4,7 @@ example5
 	aModel := self initialize new.
 	aModel activeInit: #initGlidersGun.
 	aModel initSimulation.
-	(CMPharoGridSimulation new
+	(CMSimulationGrid new
 		on: aModel
 		withCells: aModel theESE
 		withSituatedEntities: aModel allTheSituatedEntities) runAndVisualize
