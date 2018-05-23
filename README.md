@@ -27,6 +27,16 @@ Metacello new
 
 All packages load into the Cormas-* package names.
 
+## How to use commandeLine interface
+You can deal with cormas/pharo through unix commande line. It work as follow : 
+
+```
+mkdir mydir
+cd mydir
+curl https://get.pharo.org | bash 
+./pharo Pharo.image config http://ss3.gemstone.com/ss/Cormas --install=development
+```
+
 ## Licence
 Cormas is licensed under MIT. See : http://opensource.org/licenses/MIT
 
