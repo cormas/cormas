@@ -2,7 +2,7 @@ examples
 example2_OM
     | conf aModel |
 	 self createInJSONFile.
-    conf := CmOpenMoleExchange loadJSONFile: 'in.json'.
+    conf := CmOpenMoleExchange loadJSONFile: 'input.json'.
     aModel := self newWithProgrammableScenario
         numberOfFires: (conf at: #numberOfFires) ;
         numberOfFiremen: (conf at: #numberOfFiremen);
