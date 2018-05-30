@@ -1,5 +1,5 @@
 examples
-example2_OM
+example8
     | conf aModel |
 	 self createInJSONFile.
     conf := CMOpenMoleExchange loadJSONFile: 'input.json'.
