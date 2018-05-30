@@ -6,6 +6,6 @@
 	"pools" : [ ],
 	"classvars" : [ ],
 	"instvars" : [ ],
-	"name" : "CmDataPipe",
+	"name" : "CMOpenMoleExchange",
 	"type" : "normal"
 }
