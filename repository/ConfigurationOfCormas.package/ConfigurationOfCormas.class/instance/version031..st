@@ -23,6 +23,6 @@ version031: spec
 			package: 'Cormas-Model-ECEC' with: 'Cormas-Model-ECEC-NicolasBecu.46';
 			package: 'Cormas-Model-FireAutomata' with: 'Cormas-Model-FireAutomata-EtienneDelay.73';
 			package: 'Cormas-OpenMole' with:'Cormas-OpenMole-EtienneDelay.3';
-			package: 'Cormas-Tests' with: 'Cormas-Tests-EtienneDelay.24';
+			package: 'Cormas-Tests' with: 'Cormas-Tests-SergeStinckwich.25';
 			package: 'Cormas-UI' with: 'Cormas-UI-NicolasBecu.73';
 			package: #'Cormas-VW-Ported' with: 'Cormas-VW-Ported-HernanMoralesDurand.9'. ].
