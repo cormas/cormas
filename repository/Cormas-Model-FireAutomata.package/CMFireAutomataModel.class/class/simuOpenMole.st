@@ -1,5 +1,5 @@
 examples
-example8
+simuOpenMole
 	"Example used in OpenMole (https://openmole.org/)"
     | conf aModel |
 	 "self createInJSONFile." "OpenMole usually generate this file"
@@ -15,6 +15,4 @@ example8
         initializeSimulation;
         finalTime: 100;
         runSimulation.
-	Transcript open.
-	Transcript show: ((aModel data at: #CMFireAutomataModel) at: #nbTrees) last.
-   CMOpenMoleExchange saveJSONFile: (aModel data) last.	
+    CMOpenMoleExchange saveJSONFile: (self lastValuesOfVariables: (aModel data)) 
