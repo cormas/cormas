@@ -24,7 +24,6 @@ Metacello new
 	version: #development;
 	load.
 ```
-
 All packages load into the Cormas-* package names.
 
 ## How to use Command Line interface (CLI)
