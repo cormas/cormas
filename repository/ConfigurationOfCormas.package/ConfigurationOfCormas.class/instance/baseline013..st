@@ -14,8 +14,8 @@ baseline013: spec
 			with: [ spec repository: 'github://peteruhnak/file-dialog/repository' ];
 			baseline: 'ProjectFramework' 
 			with: [ spec repository: 'github://hernanmd/ProjectFramework/repository' ];
-			baseline: 'SpecUIAddOns' 
-			with: [ spec repository: 'github://hernanmd/SpecUIAddOns/repository' ];
+			"baseline: 'SpecUIAddOns' 
+			with: [ spec repository: 'github://hernanmd/SpecUIAddOns/repository' ];"
 			baseline: 'CodeGenerator' 
 			with: [ spec repository: 'github://hernanmd/CodeGenerator/repository' ];
 
