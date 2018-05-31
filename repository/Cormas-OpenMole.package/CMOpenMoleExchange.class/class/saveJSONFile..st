@@ -4,7 +4,7 @@ saveJSONFile: myDictionary
 
 	| wd |
 	wd := FileSystem disk workingDirectory.
-	(wd / 'out.json') asFileReference
+	(wd / 'output.json') asFileReference
 		writeStreamDo: [ :stream | 
 			(NeoJSONWriter on: stream)
 				prettyPrint: true;
