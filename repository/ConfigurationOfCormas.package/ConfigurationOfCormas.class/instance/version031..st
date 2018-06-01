@@ -13,7 +13,6 @@ version031: spec
 			project: 'CodeGenerator' with: '1.3';
 			project: 'ProjectFramework' with: '1.2';
 			project: 'Roassal2' with: '1.55';
-			"project: 'SpecUIAddOns' with: '1.0';"
 			project: 'Tabular' with: '0.2-baseline'.
 		spec 
 			package: 'Cormas-Core' with: 'Cormas-Core-SergeStinckwich.207';
