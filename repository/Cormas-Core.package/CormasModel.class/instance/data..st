@@ -1,4 +1,3 @@
 probes - recording
-data: x
-	
-	data := x
+data: aDictionary
+	data := aDictionary
