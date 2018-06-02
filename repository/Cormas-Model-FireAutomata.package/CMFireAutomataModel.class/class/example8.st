@@ -2,7 +2,7 @@ examples
 example8
 	"Example used in OpenMole (https://openmole.org/)"
     | conf aModel |
-	 "self createInJSONFile." "OpenMole usually generate this file"
+	 self createInJSONFile.
     conf := CMOpenMoleExchange loadJSONFile: 'input.json'.
     aModel := self newWithProgrammableScenario
         numberOfFires: (conf at: #numberOfFires) ;
@@ -15,6 +15,4 @@ example8
         initializeSimulation;
         finalTime: 100;
         runSimulation.
-	Transcript open.
-	Transcript show: ((aModel data at: #CMFireAutomataModel) at: #nbTrees) last.
-   CMOpenMoleExchange saveJSONFile: (aModel data) last.	
+   CMOpenMoleExchange saveJSONFile: aModel data.	
