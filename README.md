@@ -26,9 +26,9 @@ Metacello new
 ```
 All packages load into the Cormas-* package names.
 
-## How to use Command Line interface (CLI)
+## How to install with Command Line interface (CLI)
 
-You can deal with cormas/pharo through unix commande line. It work as follow : 
+You can install CORMAS through unix commande line. It work as follow: 
 
 ```
 mkdir mydir
