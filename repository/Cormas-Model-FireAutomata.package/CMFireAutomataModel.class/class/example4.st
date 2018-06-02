@@ -10,9 +10,7 @@ example4
 		percentageOfTrees: 0.60;
 		dimensions: 60 -> 80;
 		activeControl: #step:;
-		initDataStructures;
-		"init simulation"
-			initSimulation.
+		initSimulation.
 	"open interface"
 	(CMSimulationGrid new
 		on: aModel

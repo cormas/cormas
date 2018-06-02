@@ -15,4 +15,5 @@ example8
         initializeSimulation;
         finalTime: 100;
         runSimulation.
+self halt.
    CMOpenMoleExchange saveJSONFile: aModel data.	
