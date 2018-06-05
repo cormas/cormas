@@ -7,10 +7,12 @@ simRunButton_Pause: bool
 		run_offIcon   -      runIcon  "
 	
 	| aLabel |
-	bool
+	
+	self flag: #shouldBeRevised.
+	"bool
 		ifFalse: [aLabel := #runIcon]
 		ifTrue: [aLabel := #pauseIcon].
 	(self cormas mainBuilder componentAt: #runButton) isNil
 		ifFalse:
 			[(self cormas mainBuilder componentAt: #runButton)
-				label: (Cormas perform: aLabel)]
+				label: (Cormas perform: aLabel)]"

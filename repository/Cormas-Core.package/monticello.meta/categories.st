@@ -1,4 +1,5 @@
 SystemOrganization addCategory: #'Cormas-Core'!
+SystemOrganization addCategory: 'Cormas-Core-Announcement'!
 SystemOrganization addCategory: 'Cormas-Core-Communication'!
 SystemOrganization addCategory: 'Cormas-Core-Connect'!
 SystemOrganization addCategory: 'Cormas-Core-Entities'!

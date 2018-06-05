@@ -33,7 +33,8 @@
 		"defaultAttributesSetter",
 		"sensitivitySetter",
 		"delayedChanges",
-		"allClassVarBOSS"
+		"allClassVarBOSS",
+		"announcer"
 	],
 	"name" : "CormasModel",
 	"type" : "normal"

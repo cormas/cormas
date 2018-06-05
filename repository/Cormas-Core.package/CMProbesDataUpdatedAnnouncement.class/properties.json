@@ -1,0 +1,13 @@
+{
+	"commentStamp" : "",
+	"super" : "Announcement",
+	"category" : "Cormas-Core-Announcement",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"timeStep"
+	],
+	"name" : "CMProbesDataUpdatedAnnouncement",
+	"type" : "normal"
+}

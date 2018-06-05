@@ -1,5 +1,5 @@
 scheduling
-initSimulation
+initSimulation	
 	self timeStep: 0.
 	self spaceModel ifNil: [ self initializeSpaceModel ].
 	"initialize probes data structure"
@@ -19,4 +19,6 @@ initSimulation
 	self theAgentsComm do: [ :p | p channel: self channel ].
 	self theAgentsComm isEmpty
 		ifFalse: [ self channel population: self theAgentsComm ].
+	"announce to all the subscribers that simulation is beeing initialized"
+	self announcer announce:CMSimInitializationAnnouncement.
 	^ self

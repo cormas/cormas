@@ -1,11 +1,14 @@
 probes
 setActiveProbes: listProbes
-	
-	| selectedClass |
+	| selectedClass selectedClassName |
 	self activeProbes: OrderedCollection new.
-	self allEntityClasses do: [:c | c activeProbes: OrderedCollection new].
-	listProbes do: [ : s | 
+	self allEntityClasses do: [ :c | c activeProbes: OrderedCollection new ].
+	listProbes
+		do: [ :s | 
 			s = CMSimManager separator
 				ifFalse: [
-					selectedClass := (s findTokens: $>) first asSymbol asClass.
-					selectedClass activeProbes add: (s findTokens: $>) last asSymbol]]
+					selectedClassName := (s findTokens: $>) first asSymbol.
+					selectedClassName = #Global
+						ifTrue: [ selectedClassName := self name ].
+					selectedClass := selectedClassName asClass.
+					selectedClass activeProbes add: (s findTokens: $>) last asSymbol ] ]

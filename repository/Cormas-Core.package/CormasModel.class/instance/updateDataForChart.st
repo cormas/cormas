@@ -5,4 +5,4 @@ updateDataForChart
 	self
 		updateGlobalData;
 		updateLocalData.
-	self cormas refreshCharts
+	self announceProbesDataUpdated
