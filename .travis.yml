@@ -17,8 +17,8 @@ smalltalk:
 
 # prepare the machine before any code
 # installation scripts
-before_install:
-  - './.travis/main.sh'
+# before_install:
+#  - './.travis/main.sh'
 after_success:
   - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
   - export REPO=elcep/cormas
