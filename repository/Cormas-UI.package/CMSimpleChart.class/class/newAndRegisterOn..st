@@ -1,9 +1,9 @@
 deprecated
-newOn: aCMCormasModel
+newAndRegisterOn: aCMCormasModel
 	"createASimpleChartOnACormasModel"
 
 	| newBe |
-	newBe := self basicNew.
+	newBe := self new.
 	newBe cormasModel: aCMCormasModel.
-	newBe initialize.
+	aCMCormasModel addDependent:newBe.
 	^ newBe

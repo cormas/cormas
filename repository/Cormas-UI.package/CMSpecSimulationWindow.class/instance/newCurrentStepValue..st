@@ -1,4 +1,4 @@
 changes
 newCurrentStepValue: anInteger
-
-self currentStepInputText text: anInteger
+anInteger isInteger ifFalse: [ self halt ].
+self currentStepInputText text: anInteger.

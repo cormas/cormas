@@ -5,6 +5,7 @@ initializePresenter
 	
 	self initMethodList items: self projectManager modelInitMethods.
 	self controlMethodList items: self projectManager modelControlInitMethods.
+	self probesList items: self projectManager modelProbesMethods.
 
 	self initMethodList isEmpty 
 		ifTrue: [ self alertMessage: self tMissingInitMethods ].
@@ -13,3 +14,5 @@ initializePresenter
 		
 	self initializeActiveInit.
 	self initializeActiveControl.
+	self initializeActiveProbes.
+	

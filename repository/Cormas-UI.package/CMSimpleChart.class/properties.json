@@ -7,7 +7,8 @@
 	"classvars" : [ ],
 	"instvars" : [
 		"cormasModel",
-		"probeNum"
+		"probeNum",
+		"window"
 	],
 	"name" : "CMSimpleChart",
 	"type" : "normal"
