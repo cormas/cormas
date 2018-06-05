@@ -5,15 +5,20 @@ env:
     - secure: "U57AVS++MYrfWiL3Ry+zjg/9T0YnSzfeu9RE/pCGsnqinzljJNUgGXY+O2JQDsYJmJttdsoiDrjMvNdaQxQfgx6tlNXCc24HigDOvJi2fGQavcZ6bLioSVA4hc0lcx9XngBqJgXucsU7E4umL5abh726W88vacE3q2/9cO4CzDg="
 
 sudo: required
+# have the docker service set up (we'll
+# update it later)
 services:
-- docker
+  - docker
 language: smalltalk
 os:
   - linux
-
 smalltalk:
   - Pharo-6.1
 
+# prepare the machine before any code
+# installation scripts
+before_install:
+  - './.travis/main.sh'
 after_success:
   - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
   - export REPO=elcep/cormas
@@ -22,3 +27,7 @@ after_success:
   - docker tag $REPO:$COMMIT $REPO:$TAG
   - docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
   - docker push $REPO
+
+# don't notify me when things fail
+notifications:
+  email: false
