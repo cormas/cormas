@@ -1,7 +1,8 @@
-opening
+opening-closing
 openWithToolbar
 	| t |
 	self window: super openWithToolbar.
+	self window model: self.
 	axisConfigurationX noDecimal.
 	t := cormasModel timeStep.
 	self view removeAllElements.

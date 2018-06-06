@@ -1,7 +1,6 @@
 refreshing
 timeChanged: aNewTimeStep
-	(self window ifNil: [ false ] ifNotNil: [ :w | w isDisplayed ])
-		ifFalse: [ ^ self cormasModel announcer unsubscribe: self ].	"this is a hack to unsubscribe to the announcer when the window is close"
+	
 	self view removeAllElements.
 	datasets := OrderedCollection new.
 	self refresh.
