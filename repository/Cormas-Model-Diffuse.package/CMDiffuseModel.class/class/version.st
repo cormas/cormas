@@ -1,3 +1,0 @@
-description
-version
-	^ 'Diffuse.pcl'
