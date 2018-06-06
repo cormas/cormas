@@ -10,9 +10,10 @@ testNumberOfDataOfSimpleChartIsUpdatedWhenRuningSimulation
 	aCormasModel initSimulation.
 	aSimpleChart := CMSimpleChart openOn: aCormasModel.
 	5
-		timesRepeat: [ aCMProjectManager currentProject cormasModel runStep.
+		timesRepeat: [ "aSimpleChart close --> There are no such message for RTGrapher"
+			aCMProjectManager currentProject cormasModel runStep.
 			self assert: aSimpleChart maxX value equals: aCormasModel timeStep.
 			self
 				assert: aSimpleChart datasets first elements size - 1
-				equals: aCormasModel timeStep ]
-	"aSimpleChart close --> There are no such message for RTGrapher"
+				equals: aCormasModel timeStep ].
+	aSimpleChart window delete
