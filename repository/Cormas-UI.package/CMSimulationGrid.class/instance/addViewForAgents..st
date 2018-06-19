@@ -13,3 +13,6 @@ addViewForAgents: situatedEntities
 				size: 20) elementsOn: situatedEntities).
 	
 	self addAll: situatedEntitiesViews.
+	"Adding property to be draggable"
+	situatedEntitiesViews do: [:situatedEntityEl | situatedEntityEl @  CMDraggableSituatedEntity]
+	
