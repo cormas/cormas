@@ -1,3 +1,3 @@
 speedOfDisplay
 goFast
-anim intervalInMilliseconds: 2
+anim intervalInMilliseconds: 2.

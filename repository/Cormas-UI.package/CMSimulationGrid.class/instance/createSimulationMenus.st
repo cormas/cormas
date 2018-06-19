@@ -21,7 +21,10 @@ createSimulationMenus
 	menuBuilder
 		menu: 'pause'
 		background: (Color blue alpha: 0.4)
-		callback: [ anim
+		callback: [ 
+			anim intervalInMilliseconds < 5000 ifTrue: [ 
+			speed := anim intervalInMilliseconds ].
+			anim
 				intervalInMilliseconds: 10000.0;
 				blockToExecute: [  ] ].
 	menuBuilder
@@ -33,7 +36,10 @@ createSimulationMenus
 	menuBuilder
 		menu: 'reset'
 		background: (Color lightBlue alpha: 0.4)
-		callback: [ anim blockToExecute: [  ].
+		callback: [
+			anim intervalInMilliseconds < 5000 ifTrue: [ 
+			speed := anim intervalInMilliseconds ].
+			anim blockToExecute: [  ].
 			anim intervalInMilliseconds: 100000.
 			self removeAllElements.
 			model initSimulation.
