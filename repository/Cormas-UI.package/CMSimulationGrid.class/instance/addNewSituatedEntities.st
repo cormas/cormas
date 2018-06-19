@@ -8,4 +8,5 @@ addNewSituatedEntities
 		size: 20) elementsOn: newSituatedEntities.
 	situatedEntitiesViews addAll: newSituatedEntitiesViews.
 	self addAll: newSituatedEntitiesViews.
+	newSituatedEntitiesViews do: [:nse | nse @ CMDraggableSituatedEntity  ]
 	
