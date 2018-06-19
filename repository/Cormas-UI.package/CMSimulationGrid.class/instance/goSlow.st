@@ -1,0 +1,3 @@
+speedOfDisplay
+goSlow
+anim intervalInMilliseconds: 1000

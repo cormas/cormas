@@ -1,0 +1,3 @@
+speedOfDisplay
+goMedium
+anim intervalInMilliseconds: 500

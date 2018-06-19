@@ -1,0 +1,3 @@
+speedOfDisplay
+goFast
+anim intervalInMilliseconds: 2

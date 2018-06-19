@@ -7,20 +7,17 @@ createSimulationMenus
 		menu: 'speed'
 		submenu: 'fast'
 		background: (Color green alpha: 0.4)
-		callback: [ speed := 0.
-			anim intervalInMilliseconds: speed ].
+		callback: [ self goFast ].
 	menuBuilder
 		menu: 'speed'
 		submenu: 'medium'
 		background: (Color orange alpha: 0.4)
-		callback: [ speed := 500.
-			anim intervalInMilliseconds: speed ].
+		callback: [ self goMedium ].
 	menuBuilder
 		menu: 'speed'
 		submenu: 'slow'
 		background: (Color red alpha: 0.4)
-		callback: [ speed := 1000.
-			anim intervalInMilliseconds: speed ].
+		callback: [ self goSlow ].
 	menuBuilder
 		menu: 'pause'
 		background: (Color blue alpha: 0.4)
