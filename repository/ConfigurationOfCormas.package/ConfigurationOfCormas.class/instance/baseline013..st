@@ -21,7 +21,7 @@ baseline013: spec
 				spec
 					className: #ConfigurationOfRoassal2;
 					versionString: #'stable';
-					repository: 'http://smalltalkhub.com/mc/Pharo/MetaRepoForPharo60/main/' ];
+					repository: 'http://smalltalkhub.com/mc/ObjectProfile/Roassal2/main/' ];
 			project: 'Tabular' with: [
 				spec
 					className: #ConfigurationOfTabular;
