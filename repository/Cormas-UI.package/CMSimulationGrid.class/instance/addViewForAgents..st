@@ -10,7 +10,7 @@ addViewForAgents: situatedEntities
 	cellSize := (windowSize - origin) / (model spaceModel column @ model spaceModel line).
 	situatedEntitiesViews := ((RTEllipse new
 				color: [ :fe | fe getColorForPov: #pov ];
-				size: 20) elementsOn: situatedEntities).
+				size: [:fe | fe sizeOfPOV]) elementsOn: situatedEntities).
 	
 	self addAll: situatedEntitiesViews.
 	"Adding property to be draggable"
