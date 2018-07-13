@@ -5,7 +5,7 @@ addNewSituatedEntities
 	newSituatedEntities := model allTheSituatedEntities select: [ :a | ((situatedEntitiesViews collect: [ :e | e model ]) includes: a) not ].
 	newSituatedEntitiesViews := (RTEllipse new
 		color: [ :fe | fe getColorForPov: #pov ];
-		size: 20) elementsOn: newSituatedEntities.
+		size: [:aSituatedEntity | aSituatedEntity sizeOfPOV]) elementsOn: newSituatedEntities.
 	situatedEntitiesViews addAll: newSituatedEntitiesViews.
 	self addAll: newSituatedEntitiesViews.
 	newSituatedEntitiesViews do: [:nse | nse @ CMDraggableSituatedEntity  ]
