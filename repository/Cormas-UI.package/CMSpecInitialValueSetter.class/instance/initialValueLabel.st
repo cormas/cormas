@@ -1,3 +1,0 @@
-accessing
-initialValueLabel
-	^ initialValueLabel

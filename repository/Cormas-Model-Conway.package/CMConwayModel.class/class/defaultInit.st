@@ -1,3 +1,0 @@
-default
-defaultInit
-	^ #initRandomly

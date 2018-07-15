@@ -1,4 +1,0 @@
-transforming
-isDistortable
-	
-	^false

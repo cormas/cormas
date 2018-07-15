@@ -1,4 +1,0 @@
-accessing
-activeAttributeValue
-	
-	^activeAttributeValue

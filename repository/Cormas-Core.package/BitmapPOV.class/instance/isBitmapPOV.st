@@ -1,4 +1,0 @@
-testing
-isBitmapPOV
-	
-	^true

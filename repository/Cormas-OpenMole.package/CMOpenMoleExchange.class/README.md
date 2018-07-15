@@ -1,3 +1,0 @@
-OpenMole is a free and open-source platform. It explores, diagnoses your numerical model and optimizes its dynamics, taking advantage of distributed computing environments. The typical usages are model calibration, model exploration, machine learning, optimization, data processing. 
- You can embed cormas simulation models with openMole workflow. Cormas within openMole use docker. You in order to interact with cormas docker openMole will generate a JSON file with configuration profile. In exchange model results are asked in JSON file to.
- 

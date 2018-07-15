@@ -1,4 +1,0 @@
-control
-swell
-	
-	super swell

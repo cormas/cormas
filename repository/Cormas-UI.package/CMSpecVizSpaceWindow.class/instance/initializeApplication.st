@@ -1,4 +1,0 @@
-initialization
-initializeApplication
-
-	self applicationClass: CMApplicationProject

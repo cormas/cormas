@@ -1,1 +1,0 @@
-Notebook4Example demonstrates the use of a subcanvas within a notebook widget, making each page of the notebook a different application. 

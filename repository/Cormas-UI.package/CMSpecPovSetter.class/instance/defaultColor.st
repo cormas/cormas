@@ -1,4 +1,0 @@
-colors
-defaultColor
-	
-	^ Color blue

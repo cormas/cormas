@@ -1,4 +1,0 @@
-callbacks
-addPassiveObject
-
-	self shouldBeImplemented.

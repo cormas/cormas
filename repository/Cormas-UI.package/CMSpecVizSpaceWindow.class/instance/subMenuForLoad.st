@@ -1,4 +1,0 @@
-private
-subMenuForLoad
-	
-	^ MenuModel new

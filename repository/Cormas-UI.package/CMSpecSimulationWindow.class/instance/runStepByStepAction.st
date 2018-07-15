@@ -1,3 +1,0 @@
-callbacks
-runStepByStepAction
-	self simManager runStepByStep

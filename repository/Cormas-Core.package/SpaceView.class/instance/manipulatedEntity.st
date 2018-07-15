@@ -1,4 +1,0 @@
-accessing
-manipulatedEntity
-	
-	^manipulatedEntity

@@ -1,3 +1,0 @@
-callbacks
-entityEditActivityDiagrams
-	self shouldBeImplemented.

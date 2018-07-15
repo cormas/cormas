@@ -1,4 +1,0 @@
-- accessing
-agentObs
-	
-	^ agentObs

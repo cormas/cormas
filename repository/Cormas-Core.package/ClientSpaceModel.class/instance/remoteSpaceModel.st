@@ -1,4 +1,0 @@
-accessing
-remoteSpaceModel
-	
-	^remoteSpaceModel

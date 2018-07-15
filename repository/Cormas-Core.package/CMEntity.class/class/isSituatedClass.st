@@ -1,4 +1,0 @@
-- testing
-isSituatedClass
-	
-	^false

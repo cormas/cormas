@@ -1,4 +1,0 @@
-testing
-isServerOn
-	
-	^CormasOpentalkIntegration isServerOn

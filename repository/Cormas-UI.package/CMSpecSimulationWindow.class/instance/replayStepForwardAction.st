@@ -1,5 +1,0 @@
-callbacks
-replayStepForwardAction
-
-	self halt.
-	

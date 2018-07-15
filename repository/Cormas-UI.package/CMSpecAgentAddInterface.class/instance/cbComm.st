@@ -1,3 +1,0 @@
-accessing
-cbComm
-	^ cbComm

@@ -1,4 +1,0 @@
-actions
-apply
-	
-	^self confirmParameter

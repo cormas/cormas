@@ -1,4 +1,0 @@
-accesssing
-populationObservateur
-	
-	^populationObservateur

@@ -1,4 +1,0 @@
-actions
-openNew
-	
-	HistogramsInterface additionalWindow

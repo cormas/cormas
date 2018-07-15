@@ -1,4 +1,0 @@
-fichier
-pourSauvegarde
-	
-	proprietaire := nil

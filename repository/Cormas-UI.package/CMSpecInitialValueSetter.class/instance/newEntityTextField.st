@@ -1,3 +1,0 @@
-accessing
-newEntityTextField
-	^ newEntityTextField

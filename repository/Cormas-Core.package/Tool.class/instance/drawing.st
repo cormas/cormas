@@ -1,4 +1,0 @@
-accessing
-drawing
-	
-	^controller view

@@ -1,3 +1,0 @@
-viewCorrespondance
-asFigure
-	^ VectorialFigure

@@ -1,4 +1,0 @@
-+ simulation settings
-defaultDelayChangesSetting
-	
-	^false

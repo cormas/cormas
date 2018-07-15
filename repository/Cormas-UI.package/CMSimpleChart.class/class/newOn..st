@@ -1,9 +1,0 @@
-deprecated
-newOn: aCMCormasModel
-	"createASimpleChartOnACormasModel"
-
-	| newBe |
-	newBe := self basicNew.
-	newBe cormasModel: aCMCormasModel.
-	newBe initialize.
-	^ newBe

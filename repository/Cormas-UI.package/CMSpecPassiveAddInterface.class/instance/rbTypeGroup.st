@@ -1,3 +1,0 @@
-accessing
-rbTypeGroup
-	^ rbTypeGroup

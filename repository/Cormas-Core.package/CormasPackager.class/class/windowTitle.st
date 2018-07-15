@@ -1,4 +1,0 @@
-resources
-windowTitle
-	
-	^'Cormas Packager - '

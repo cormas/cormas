@@ -1,1 +1,0 @@
-CMSpecEntityAddInterface new openWithSpec.

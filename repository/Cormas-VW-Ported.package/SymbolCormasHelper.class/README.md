@@ -1,1 +1,0 @@
-the helper class for symbols

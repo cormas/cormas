@@ -1,2 +1,0 @@
-submenu-tools
-subMenuToolsAddOns: item

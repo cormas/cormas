@@ -1,4 +1,0 @@
-initialize
-initPlayersBlocks
-	
-	self subclassResponsibility

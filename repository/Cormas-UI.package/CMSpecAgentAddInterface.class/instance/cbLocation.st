@@ -1,3 +1,0 @@
-accessing
-cbLocation
-	^ cbLocation

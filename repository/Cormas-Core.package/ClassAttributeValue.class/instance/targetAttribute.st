@@ -1,4 +1,0 @@
-accessing
-targetAttribute
-	
-	^targetAttribute

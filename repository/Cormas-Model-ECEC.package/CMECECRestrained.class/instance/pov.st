@@ -1,4 +1,0 @@
-accessing
-pov
-
-	^ Color blue

@@ -1,1 +1,0 @@
-Code generator for CORMAS 

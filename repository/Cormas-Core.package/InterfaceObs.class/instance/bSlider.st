@@ -1,4 +1,0 @@
-parametres
-bSlider
-	
-	^bSlider

@@ -1,4 +1,0 @@
-resources
-runIcon
-	
-	^Cormas runIcon

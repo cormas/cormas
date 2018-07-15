@@ -1,3 +1,0 @@
-+ description
-creationDate
-	self subclassResponsibility

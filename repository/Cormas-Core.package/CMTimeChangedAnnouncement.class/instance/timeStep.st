@@ -1,3 +1,0 @@
-accessing
-timeStep
-	^ timeStep

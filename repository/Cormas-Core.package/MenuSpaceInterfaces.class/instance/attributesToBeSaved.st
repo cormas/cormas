@@ -1,4 +1,0 @@
-aspects
-attributesToBeSaved
-	
-	^attributesToBeSaved

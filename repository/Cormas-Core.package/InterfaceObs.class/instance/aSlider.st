@@ -1,4 +1,0 @@
-parametres
-aSlider
-	
-	^aSlider

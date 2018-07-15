@@ -1,4 +1,0 @@
-accessing
-dialogParametres
-	
-	^dialogParametres

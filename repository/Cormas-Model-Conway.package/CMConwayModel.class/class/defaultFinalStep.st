@@ -1,3 +1,0 @@
-default
-defaultFinalStep
-	^ 100

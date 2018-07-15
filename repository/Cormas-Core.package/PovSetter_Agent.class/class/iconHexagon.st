@@ -1,4 +1,0 @@
-resources
-iconHexagon
-	
-	^SpaceInterface iconHexagon

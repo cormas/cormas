@@ -1,3 +1,0 @@
-callbacks
-entityRename
-	self shouldBeImplemented.

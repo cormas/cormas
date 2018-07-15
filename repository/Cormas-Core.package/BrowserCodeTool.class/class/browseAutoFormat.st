@@ -1,4 +1,0 @@
-autoformat
-browseAutoFormat
-	
-	^BrowseAutoFormat

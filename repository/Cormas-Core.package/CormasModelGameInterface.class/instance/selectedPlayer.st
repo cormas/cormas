@@ -1,4 +1,0 @@
-accessing
-selectedPlayer
-	
-	^selectedPlayer

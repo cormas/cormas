@@ -1,3 +1,0 @@
-default settings
-defaultControl
-	^ #step:

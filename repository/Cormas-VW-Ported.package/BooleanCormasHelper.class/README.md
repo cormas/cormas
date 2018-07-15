@@ -1,1 +1,0 @@
-helper class for booleans

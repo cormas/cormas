@@ -1,3 +1,0 @@
-tests
-testModelOfFireAutomataCellReturnFireAutomata
-	self assert: CMFireAutomataCell modelClass == CMFireAutomataModel

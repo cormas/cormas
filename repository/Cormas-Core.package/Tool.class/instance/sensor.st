@@ -1,4 +1,0 @@
-accessing
-sensor
-	
-	^controller sensor

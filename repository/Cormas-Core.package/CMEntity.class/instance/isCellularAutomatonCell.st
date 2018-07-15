@@ -1,4 +1,0 @@
-+ testing
-isCellularAutomatonCell
-	
-	^false

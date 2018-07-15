@@ -1,4 +1,0 @@
-changed
-entryV
-	
-	^true

@@ -1,1 +1,0 @@
-I'm a Cell in Diffuse model

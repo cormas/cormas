@@ -1,4 +1,0 @@
-accessing
-cormas
-	
-	^Cormas current

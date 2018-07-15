@@ -1,3 +1,0 @@
-callbacks
-openHelp
-	self shouldBeImplemented.

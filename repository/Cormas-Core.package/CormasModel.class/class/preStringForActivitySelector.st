@@ -1,4 +1,0 @@
-- activityEditor
-preStringForActivitySelector
-	
-	^'activity_'

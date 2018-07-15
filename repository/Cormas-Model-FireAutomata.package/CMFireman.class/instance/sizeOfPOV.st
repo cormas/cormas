@@ -1,3 +1,0 @@
-+ accessing
-sizeOfPOV
-^ self agsize

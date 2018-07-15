@@ -1,3 +1,0 @@
-pov
-pov
-	^ state

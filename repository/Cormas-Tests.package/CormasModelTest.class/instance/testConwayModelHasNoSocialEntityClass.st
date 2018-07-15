@@ -1,3 +1,0 @@
-tests
-testConwayModelHasNoSocialEntityClass
-	self assert: CMConwayModel socialClasses isEmpty

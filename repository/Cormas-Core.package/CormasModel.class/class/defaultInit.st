@@ -1,3 +1,0 @@
-+ simulation settings
-defaultInit
-	^ #init

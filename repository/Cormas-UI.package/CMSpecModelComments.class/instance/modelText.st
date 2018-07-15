@@ -1,3 +1,0 @@
-accessing
-modelText
-	^ modelText

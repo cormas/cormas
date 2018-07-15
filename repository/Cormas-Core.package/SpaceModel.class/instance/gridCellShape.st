@@ -1,4 +1,0 @@
-private - accessing
-gridCellShape
-	
-	^gridCellShape
