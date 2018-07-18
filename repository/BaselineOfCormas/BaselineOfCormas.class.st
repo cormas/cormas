@@ -48,16 +48,14 @@ BaselineOfCormas >> baseline: spec [
 		spec 
 			package: 'Cormas-Core';
 			package: 'Cormas-Model-Conway';
-			package: #'Cormas-Model-DemoAggregates';
+			package: 'Cormas-Model-DemoAggregates';
 			package: 'Cormas-Model-Diffuse';
 			package: 'Cormas-Model-ECEC';
 			package: 'Cormas-Model-FireAutomata';
 			package: 'Cormas-Tests';
-			package: 'Cormas-OpenMole' with: [
-				spec requires: #('Cormas-Core')];
-			package: 'Cormas-UI' with: [
-				spec requires: #('FileDialog' 'ProjectFramework' 'CodeGenerator' 'Roassal2' ). ];
-			package: #'Cormas-VW-Ported'.
+			package: 'Cormas-OpenMole' 			with: [ spec requires: #('Cormas-Core')];
+			package: 'Cormas-UI' 					with: [ spec requires: #('FileDialog' 'ProjectFramework' 'CodeGenerator' 'Roassal2' ). ];
+			package: 'Cormas-VW-Ported'.
 		spec 
 			group: 'All' with: #(#'Cormas-VW-Ported' 'Cormas-UI' 'Cormas-Tests' 'Cormas-Model-FireAutomata' 'Cormas-Model-ECEC' 'Cormas-Model-Conway' 'Cormas-Core' 'ClassEditor' 'Cormas-Model-Diffuse' #'Cormas-Model-DemoAggregates' 'Cormas-OpenMole');
 			group: 'Core' with: #('Cormas-Core' );
@@ -72,9 +70,16 @@ BaselineOfCormas >> baseline: spec [
 BaselineOfCormas >> closePharoWelcomeWindow [
 	" Pharo 6.x version "
 
-	World submorphs 
-		select: [ : sm | sm isSystemWindow and: [ sm label = (Smalltalk globals at: #PharoWelcomePage) title or: [ sm label endsWith: 'Welcome' ] ] ]
-		thenDo: [ : window | window delete ].
+	World submorphs
+		select: [ :sm | self isWelcomeWindow: sm ]
+		thenDo: [ :window | window delete ]
+]
+
+{ #category : #doits }
+BaselineOfCormas >> isWelcomeWindow: sm [
+	^ sm isSystemWindow
+		and: [ sm label = (Smalltalk globals at: #PharoWelcomePage) title
+				or: [ sm label endsWith: 'Welcome' ] ]
 ]
 
 { #category : #doits }
