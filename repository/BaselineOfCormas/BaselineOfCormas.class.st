@@ -76,6 +76,15 @@ BaselineOfCormas >> closePharoWelcomeWindow [
 ]
 
 { #category : #doits }
+BaselineOfCormas >> ensureMetacelloFileDownload [
+
+	Metacello new           
+		baseline: 'MetacelloFileDownload';              
+		repository: 'github://hernanmd/MetacelloFileDownload';          
+		load.
+]
+
+{ #category : #doits }
 BaselineOfCormas >> isWelcomeWindow: sm [
 	^ sm isSystemWindow
 		and: [ sm label = (Smalltalk globals at: #PharoWelcomePage) title
