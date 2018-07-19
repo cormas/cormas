@@ -19,16 +19,16 @@ All issues about the current and ongoing port are here: https://github.com/corma
 
 ```Smalltalk
 Metacello new
-	squeaksource3: 'Cormas';
-	configuration: 'Cormas';
-	version: #development;
+	onWarningLog;
+	repository: 'github://cormas/cormas/repository';
+	baseline: 'Cormas';
 	load.
 ```
 All packages load into the Cormas-* package names.
 
 ## How to install with Command Line interface (CLI)
 
-You can install CORMAS through unix commande line. It work as follow: 
+You can install CORMAS through  nix commande line. It work as follow: 
 
 ```
 mkdir mydir
