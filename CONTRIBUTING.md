@@ -3,7 +3,7 @@
 This file is currently not complete but will be improve step by step.
 
 # Contributing code
-Use Pharo 6.1 and use the following script in order to update Iceberg to the last version : 
+Use Pharo 6.1 and execute the following script in order to update Iceberg to the last version : 
 
 ```Smalltalk
 MetacelloPharoPlatform select.
