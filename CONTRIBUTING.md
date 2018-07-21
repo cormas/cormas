@@ -60,7 +60,7 @@ All changes you'll do will be versionned in your own fork of the [CORMAS reposit
 Go to Cormas github's repository and click on the fork button on the top right. Yes, this means that you'll need a github account to contribute to Cormas, yes.
 
 ## Load last dev version of Cormas
-In a fresh Pharo 7.0 image, load last development version of Cormas : 
+In a fresh Pharo 6.1 image, load last development version of Cormas : 
 
 ```Smalltalk
 Metacello new
