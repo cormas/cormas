@@ -3,7 +3,7 @@
 This file is currently not complete but will be improve step by step.
 
 # Contributing code
-Use Pharo 6.1 and execute the following script in order to update Iceberg to the last version : 
+In a fresh Pharo 6.1, execute the following script in order to update Iceberg to the last version : 
 
 ```Smalltalk
 MetacelloPharoPlatform select.
@@ -60,7 +60,7 @@ All changes you'll do will be versionned in your own fork of the [CORMAS reposit
 Go to Cormas github's repository and click on the fork button on the top right. Yes, this means that you'll need a github account to contribute to Cormas, yes.
 
 ## Load last dev version of Cormas
-In a fresh Pharo 6.1 image, load last development version of Cormas : 
+In your Pharo 6.1 image, load now the last development version of Cormas : 
 
 ```Smalltalk
 Metacello new
@@ -78,7 +78,7 @@ After doing the modification in your image, open Iceberg tool, commit the change
 Send the PR to Cormas main repository.
 
 ## Cleanups
-Ounce your pull request is integrated, some cleanups are required:
+Ounce your pull request is integrated, some cleanups are maybe required:
 - remove your branch from your fork
 - close the issue (tips: you can automatically close the issue n, by inserting the sentence: **close #n** when you merge your pull request).
 
