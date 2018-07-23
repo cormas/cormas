@@ -13,6 +13,8 @@ https://github.com/cormas/documentation
 
 All issues about the current and ongoing port are here: https://github.com/cormas/cormas/issues
 
+If you want to contribute to CORMAS please read : https://github.com/cormas/cormas/blob/master/CODE_OF_CONDUCT.md
+
 ## How to install Cormas
 
 * Download Pharo 6.1 VM depending of your platform: http://pharo.org/download
@@ -29,7 +31,7 @@ All packages load into the Cormas-* package names.
 
 ## How to install with Command Line interface (CLI)
 
-You can install CORMAS through Unix commande line. It works as follow: 
+You can install CORMAS through Unix command line. It works as follow: 
 
 ```bash
 mkdir mydir
