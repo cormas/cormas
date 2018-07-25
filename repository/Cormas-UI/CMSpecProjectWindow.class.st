@@ -444,10 +444,12 @@ CMSpecProjectWindow >> openVizProbes [
 
 { #category : #callbacks }
 CMSpecProjectWindow >> openVizSpace [
-
-	CMSpecVizSpaceWindow new 
-		owner: self;
-		openWithSpec.
+		| aModel |
+	aModel := self projectManager cormasModel.
+	aModel spaceModel isNil
+		ifTrue: [ ^ self alertMessage: 'No spaceModel to visualize' ].
+	CMSimulationGrid openOn: aModel
+		
 ]
 
 { #category : #accessing }

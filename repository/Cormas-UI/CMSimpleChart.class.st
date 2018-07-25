@@ -38,7 +38,7 @@ CMSimpleChart class >> openOn: aCMCormasModel [
 	| newBe |
 	newBe := self basicNew.
 	newBe cormasModel: aCMCormasModel.
-	newBe initialize.
+	newBe initializeAndSubscribe.
 	newBe openWithToolbar.
 	^ newBe
 ]
@@ -97,6 +97,13 @@ CMSimpleChart >> cormasModel: anObject [
 
 { #category : #initialization }
 CMSimpleChart >> initialize [
+	| t |
+	super initialize.
+	self addAZeroDataSet
+]
+
+{ #category : #initialization }
+CMSimpleChart >> initializeAndSubscribe [
 	| t |
 	super initialize.
 	self cormasModel announcer
