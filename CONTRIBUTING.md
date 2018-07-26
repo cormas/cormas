@@ -89,7 +89,7 @@ You made modifications in your image which you would like to share/upload on the
 * A new window opens which will allow you to comment, commit and push
 * when you push, it pushes to your own personnal branch of the cormas github repository. Therefore, you need to merge your personnal branch with the cormas master branch in order to share your modifications with everyone.
 * To merge your personnal branch with the master branch (see why above), go to  https://github.com/cormas/cormas, select your personnal branch, and create a 'Pull Request' from your commit.
-* This procedure will launch an automatic verification process that uses a deployment tool called Travis. This automatic process may take 7 to 8 minutes. When Travis has finish to verify, the operation will appear in green color meaning that it was succesful. After this operation, your personnal code branch of cormas on github, will be automatically merged with the cormas master branch (and your personnal branch will eventually be deleted automatically as well). It's all good.
+* This procedure will launch an automatic verification process that uses a deployment tool called Travis. This automatic process may take 7 to 8 minutes. When Travis has finish the verifications, the process will appear in green color meaning that it was succesful. After this operation, your personnal code branch of cormas on github, will be automatically merged with the cormas master branch (and eventually your personnal branch will deleted automatically as well). You're done!
 
 # Release management
 
