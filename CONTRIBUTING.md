@@ -83,8 +83,8 @@ Ounce your pull request is integrated, some cleanups are maybe required:
 - close the issue (tips: you can automatically close the issue n, by inserting the sentence: **close #n** when you merge your pull request).
 
 # A step by step guide to help you commit and push
-You made modifications in your image which you would like to share/upload on the github repository, but you are still not sure how to do? This step by step guide may help you (note that this is simple guide. If requested, more details in the other sections).
-* in your pharo image, open Iceberg
+You made modifications in your image which you would like to share/upload on the github repository, but you are still not sure how to do? This step by step guide may help you. Note that this is simple guide. If requested, you can find more details in the other sections.
+* In your pharo image, open Iceberg
 * Select the Repository named 'cormas', right clic and select 'Synchronize repository...' , 
 * A new window opens which will allow you to comment, commit and push
 * when you push, it pushes to your own personnal branch of https://github.com/cormas/cormas. Therefore, you need to merge your personnal branch with the cormas master branch.
