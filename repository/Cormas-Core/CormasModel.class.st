@@ -4759,7 +4759,7 @@ CormasModel >> runStep [
 				ifFalse: [self perform: self activeControl].
 			self updateEntities].
 	self channel notNil ifTrue: [self channel flush].
-	self updateDataForChart
+	self updateDataForChart.
 ]
 
 { #category : #deprecated }

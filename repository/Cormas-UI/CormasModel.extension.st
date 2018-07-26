@@ -1,7 +1,7 @@
 Extension { #name : #CormasModel }
 
 { #category : #'*Cormas-UI' }
-CormasModel classSide >> cormasModelName [
+CormasModel class >> cormasModelName [
 
 	^ self asString
 ]

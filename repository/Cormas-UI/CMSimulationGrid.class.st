@@ -12,6 +12,18 @@ Class {
 	#category : 'Cormas-UI-Core'
 }
 
+{ #category : #'instance creation' }
+CMSimulationGrid class >> openOn: aCMCormasModel [
+	"This method is called by the CMSpecProjectWindow. It creates, subscribes and opens a simulationGrid on a cormasModel"
+
+	| newBe |
+	newBe := self new.
+	newBe initializeOn: aCMCormasModel.
+	newBe subscribeOn: aCMCormasModel.
+	newBe openWithToolbar.
+	^ newBe
+]
+
 { #category : #'model scheduling' }
 CMSimulationGrid >> addNewSituatedEntities [
 	
@@ -173,6 +185,18 @@ anim intervalInMilliseconds: 500
 { #category : #speedOfDisplay }
 CMSimulationGrid >> goSlow [
 anim intervalInMilliseconds: 1000
+]
+
+{ #category : #initialization }
+CMSimulationGrid >> initializeOn: aModel [ 
+	"This method initializes a simulationGrid for a specific cormasModel , without specifyin any animation behaviour"
+
+	model := aModel.
+	self addViewForCells: aModel theESE.
+	self addViewForAgents: aModel allTheSituatedEntities.
+	self canvas camera focusOnCenterScaled.
+	situatedEntitiesViews do: [ :e | e translateTo: e model patch x @ e model patch y * cellSize ].
+
 ]
 
 { #category : #'instance creation' }
@@ -372,4 +396,28 @@ CMSimulationGrid >> situatedEntitiesViews [
 { #category : #accessing }
 CMSimulationGrid >> situatedEntitiesViews: anObject [
 	situatedEntitiesViews := anObject
+]
+
+{ #category : #initialization }
+CMSimulationGrid >> subscribeOn: aModel [ 
+	"This method subscribes the simualtionGrid to the timeChange announcements of a cormasModel.
+	When the simulation time has change, the simulation grid can update it self by calling  self  canvas signalUpdate "
+
+	model announcer
+		subscribe: CMTimeChangedAnnouncement
+			do: [ :aAnnounce | 
+			aAnnounce timeStep = 0
+				ifFalse: [ self timeChanged: aAnnounce timeStep ] ];
+		subscribe: CMSimInitializationAnnouncement do: [ self timeChanged: 0 ].
+
+]
+
+{ #category : #refreshing }
+CMSimulationGrid >> timeChanged: aNewTimeStep [
+
+self removeObsoleteSituatedEntities.
+	self addNewSituatedEntities.
+	situatedEntitiesViews do: [ :e | e translateTo: e model patch x @ e model patch y * cellSize ].
+	self elements do: #updateShape.
+self canvas signalUpdate
 ]
