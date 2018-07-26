@@ -68,7 +68,7 @@ In your Pharo 6.1 image, load now the last development version of Cormas :
 
 ```Smalltalk
 Metacello new
-        githubUser: 'XXX' project: 'cormas' commitish: 'master' path: 'src';
+        githubUser: 'XXX' project: 'cormas' commitish: 'master' path: 'repository';
         baseline: 'cormas';
         load
 ```
