@@ -63,7 +63,7 @@ All changes you'll do will be versionned in your own fork of the [CORMAS reposit
 
 Go to Cormas github's repository and click on the fork button on the top right. Yes, this means that you'll need a github account to contribute to Cormas.
 
-## Load last dev version of Cormas
+## Load your fork version of Cormas in your image:
 In your Pharo 6.1 image, load now the last development version of Cormas : 
 
 ```Smalltalk
@@ -73,8 +73,8 @@ Metacello new
         load
 ```
 where you replace XXX with your github user name.
-PS: at the moment, we have only one master branch, so all development happens on this branch. We will use two branches when we release a first version of Cormas.
 
+PS: at the moment, we have only one master branch, so all development happens on this branch. We will use two branches when we release a first version of Cormas.
 
 ## Send the PR to github
 After doing the modification in your image, open Iceberg tool, commit the changes in your Cormas repository. Cherry-pick the modifications that you want to include in your commit. In the github interface, create a Pull Request from your commit.
@@ -85,7 +85,7 @@ Ounce your pull request is integrated, some cleanups are maybe required:
 - remove your branch from your fork
 - close the issue (tips: you can automatically close the issue n, by inserting the sentence: **close #n** when you merge your pull request).
 
-# A step by step guide to help you commit and push
+# A step by step guide to help you commit and push (added by Nicolas but only works if you don't update Iceberg)
 You made modifications in your image which you would like to share/upload on the github repository, but you are still not sure how to do? This step by step guide may help you. Note that this is a simple guide. If requested, you can find more details in the other sections. 
 Note : This guide works for Pharo 6.1, but may not be up to date for the latest version of Iceberg
 
