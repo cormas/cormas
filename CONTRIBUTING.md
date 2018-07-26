@@ -82,6 +82,15 @@ Ounce your pull request is integrated, some cleanups are maybe required:
 - remove your branch from your fork
 - close the issue (tips: you can automatically close the issue n, by inserting the sentence: **close #n** when you merge your pull request).
 
+# A step by step guide to help you commit and push
+You made modifications in your image which you would like to share/upload on the github repository, but you are still not sure how to do? This step by step guide may help you (note that this is simple guide. If requested, more details in the other sections).
+* in your pharo image, open Iceberg
+* Select the Repository named 'cormas', right clic and select 'Synchronize repository...' , 
+* A new window opens which will allow you to comment, commit and push
+* when you push, it pushes to your own personnal branch of https://github.com/cormas/cormas. Therefore, you need to merge your personnal branch with the cormas master branch.
+* To merge you branch with the master master (see why above), go to  https://github.com/cormas/cormas, select your personnal branch, and create a 'Pull Request' from your commit.
+* This procedure will launch an automatic verification process using a deployment tool called Travis. This automatic process may take 7 to 8 minutes. When Travis has finish to verify, the operation will appear in green color meaning that it was succesful. After this operation, your personnal code branch of cormas on github, will be automatically merged with the cormas master branch (and your personnal branch will eventually be deleted automatically as well). It's all good.
+
 # Release management
 
 This project use semantic versionning to define the releases, meaning that each stable release of the project will be assigned a version number of the form `vX.Y.Z`. 
