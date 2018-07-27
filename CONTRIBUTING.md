@@ -77,7 +77,7 @@ where you replace XXX with your github user name.
 
 PS: at the moment, we have only one master branch, so all development happens on this branch. We will use two branches when we release a first version of Cormas.
 
-## Send the PR to github
+## Send the PR to the original cormas repo
 After doing the modification in your image, open Iceberg tool, commit the changes in your Cormas repository. Cherry-pick the modifications that you want to include in your commit. In the github interface, create a Pull Request from your commit.
 Send the PR to Cormas main repository.
 
@@ -85,6 +85,9 @@ Send the PR to Cormas main repository.
 Ounce your pull request is integrated, some cleanups are maybe required:
 - remove your branch from your fork
 - close the issue (tips: you can automatically close the issue n, by inserting the sentence: **close #n** when you merge your pull request).
+
+You will need from time to time to sync your fork with the original repo. You can do it on the command line with: https://help.github.com/articles/syncing-a-fork/ or in the browser like : https://github.com/KirstieJane/STEMMRoleModels/wiki/Syncing-your-fork-to-the-original-repository-via-the-browser 
+You can also kill and redo a fork very easily.
 
 # A step by step guide to help you commit and push (added by Nicolas but only works if you don't update Iceberg)
 You made modifications in your image which you would like to share/upload on the github repository, but you are still not sure how to do? This step by step guide may help you. Note that this is a simple guide. If requested, you can find more details in the other sections. 
