@@ -1,5 +1,5 @@
 "
-TODO
+This class is the base  Agent class of the FireAutomata model, it is a model of a firefighter trying to extinghish fire in a forest
 "
 Class {
 	#name : #CMFireman,
@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'agsize'
 	],
-	#category : 'Cormas-Model-FireAutomata'
+	#category : #'Cormas-Model-FireAutomata'
 }
 
 { #category : #accessing }
