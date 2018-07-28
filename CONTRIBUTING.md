@@ -57,7 +57,7 @@ Smalltalk compilerClass recompileAll
 ## Setup Iceberg
 You need an ssh key in order to commit on github. Open Iceberg tool, and then click on the settings. Check the box : "Use custom SSH keys".
 
-## Fork the Pharo repository
+## Fork the Cormas repository
 
 All changes you'll do will be versionned in your own fork of the [CORMAS repository](https://github.com/cormas/cormas). Then, from your fork you'll be able to issue pull requests to Cormas, where they will be reviewed, and luckily, integrated.
 
