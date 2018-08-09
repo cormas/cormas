@@ -8,4 +8,5 @@ run apt-get update && apt-get install -y curl unzip libx11-6:i386 libgl1-mesa-gl
 
 RUN mkdir cormas && cd cormas
 RUN curl https://get.pharo.org | bash
-RUN ./pharo Pharo.image config http://ss3.gemstone.com/ss/Cormas --install=development
+RUN ./pharo Pharo.image eval "Metacello new onWarningLog; repository: 'github://cormas/cormas/repository'; baseline: 'Cormas'; load"
+
