@@ -8,5 +8,4 @@ run apt-get update && apt-get install -y curl unzip libx11-6:i386 libgl1-mesa-gl
 
 RUN mkdir cormas && cd cormas
 RUN curl https://get.pharo.org | bash
-RUN ./pharo Pharo.image eval "Metacello new onWarningLog; repository: 'github://cormas/cormas/repository'; baseline: 'Cormas'; load"
-
+RUN ./pharo Pharo.image eval "Metacello new onWarningLog; repository: 'github://cormas/cormas/repository'; baseline: 'Cormas'; load. Smalltalk snapshot: true andQuit: true"
