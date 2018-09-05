@@ -1686,11 +1686,16 @@ Example :
 
 { #category : #'+ utilities - files' }
 Cormas class >> readCsv: filename [
-	"Returns a collection of collections, each one containing the values of the each line (separator = $;).
+	"
+	HOW IT WORK ?  
+	readMatrix: '/home/user/Documents/Quantif_atelier_general1.csv' sep: $,.
+	
+	Returns a collection of collections, each one containing the values of the each line (separator = $;).
 The file name must be complete.
 fileName = <String or Filename>
 Ex: Cormas readCsv: 'D:\vw7.6\cormas\Models\Ecec\data\test.csv' "
-	
+	self deprecated: 'It use readMatrix with is not a matrix expected. 
+	Its better to use readCSVFile'.
 	^self
 		readMatrix: filename
 		sep: DataSaver_Asci separator
@@ -1704,6 +1709,7 @@ Ex:    Cormas readCsv: 'palaya1973' myModel: 'Thunupa'    		or
 	Cormas readCsv: 'palaya1973.cvs' myModel: 'Thunupa'           "
 	
 	| stream line dicoR dico l nbLine nbRow r key values |
+	self deprecated: 'It doesnt work in pharo'.
 	stream := ((Cormas dataPath: modelName) construct: file , '.csv')
 		readStream.	"On devine le format des lignes"
 	stream lineEndAuto.
@@ -1741,6 +1747,7 @@ Ex:    Cormas readCsvFile: 'palaya1973' myModel: 'Thunupa'    		or
 	Cormas readCsvFile: 'palaya1973.cvs' myModel: 'Thunupa'           "
 	
 	| filename |
+	self deprecated: 'It doesnt work in pharo'.
 	filename := (Cormas dataPath: modelName) construct: file.
 	filename := Cormas removeExtensionOf: filename.
 	^Cormas
@@ -1756,6 +1763,7 @@ Ex:    Cormas readCsvMap: 'palaya1973' myModel: 'Thunupa'    		or
 	Cormas readCsvMap: 'palaya1973.cvs' myModel: 'Thunupa'           "
 	
 	| filename |
+	self deprecated: 'It doesnt work in pharo'.
 	filename := (Cormas mapsPath: modelName) construct: file.
 	filename := Cormas removeExtensionOf: filename.
 	^Cormas
@@ -1765,43 +1773,45 @@ Ex:    Cormas readCsvMap: 'palaya1973' myModel: 'Thunupa'    		or
 
 { #category : #'+ utilities - files' }
 Cormas class >> readMatrix: fileName sep: aSepChar [
-	"Returns a collection of collections (a Matrix), each one containing the values between the separator of the file.
+	"
+	HOW IT WORK ?  
+	readMatrix: '/home/user/Documents/Quantif_atelier_general1.csv' sep: $,.
+	
+	WHAT IS EXPECTED ?
+	Returns a collection of collections (a Matrix), each one containing the values between the separator of the file.
 	Example: file = 
 		time;0;1;2;3;4;5;6;7;8;9;10;
 		energy;50.0;48.1;47.5;46.5;46.2;44.2;44.4;44.9;45;46;	
 	the Matrix = 
 		OrderedCollection (	OrderedCollection ('time' 0 1 2 3 4 5 6 7 8 9 10) 
 							OrderedCollection ('energy' 50.0 48.1 47.5 46.5 46.2 44.2 44.4 44.9 45 46)   )
+
 The file name must be complete.
 fileName = <String>
 aSepChar = <Character> or <String>
 Ex: Cormas readMatrix: 'D:\vw7.6\cormas\Models\Ecec\data\test.csv' sep: $;    or
 Ex: Cormas readMatrix: 'D:\vw7.6\cormas\Models\Ecec\data\test.csv' sep: ';'   "
 
-	| lines stream line sep subCollection matrix nbColumns |
-	sep := aSepChar isString
-		ifTrue: [ aSepChar first ]
-		ifFalse: [ aSepChar ].
-	lines := OrderedCollection new.
-	stream := fileName asFileName readStream.	"On devine le format des lignes"
-	"stream nextLine."	" Lecture du fichier, ligne par ligne "
-	nbColumns := 0.
-	[ stream atEnd ]
-		whileFalse: [ line := Cormas splitLine: stream sep: sep.
-			nbColumns := nbColumns max: line size.
-			lines add: line ].
-	stream close.	"creates the Matrix"
-	matrix := OrderedCollection new.
-	lines
-		do: [ :aLine | 
-			"coll removeAllSuchThat:[:x| x isEmpty]."
-			subCollection := OrderedCollection new.
-			aLine
-				do: [ :x | subCollection add: (Cormas stringAsObjectType: x) ].
-			[ subCollection size < nbColumns ]
-				whileTrue: [ subCollection add: nil ].
-			matrix add: subCollection ].
-	^ matrix
+	|  arrayOfRows stream  subCollection matrix nbColumns |
+	self flag:#shouldBeRevised.
+stream := fileName asFileReference readStream.
+
+arrayOfRows := (NeoCSVReader on: stream)
+		separator: aSepChar;
+		upToEnd.
+		
+nbColumns := (arrayOfRows at: 1) size.	
+matrix := OrderedCollection new.
+arrayOfRows
+	do: [ :aLine | 
+		subCollection := OrderedCollection new.
+		aLine
+			do: [ :x | subCollection add: (Cormas stringAsObjectType: x) ].
+		[ subCollection size < nbColumns ] " Check if all cells are occupied if not add nil"
+			whileTrue: [ subCollection add: nil ].
+		matrix add: subCollection 
+		].
+	^ matrix.
 ]
 
 { #category : #actions }

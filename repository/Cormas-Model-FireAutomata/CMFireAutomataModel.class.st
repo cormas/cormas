@@ -408,6 +408,26 @@ CMFireAutomataModel class >> simuOpenMole [
     CMOpenMoleExchange saveJSONFile: (self lastValuesOfVariables: (aModel data)) 
 ]
 
+{ #category : #examples }
+CMFireAutomataModel class >> simuOpenMole2 [
+	"Example used in OpenMole (https://openmole.org/)"
+    | conf aModel |
+	 "self createInJSONFile." "OpenMole usually generate this file"
+    conf := CMOpenMoleExchange loadJSONFile: 'input.json'.
+    aModel := self newWithProgrammableScenario
+        numberOfFires: (conf at: #numberOfFires) ;"we use values from input.json you need to "
+        numberOfFiremen: (conf at: #numberOfFiremen);
+        percentageOfTrees: (conf at: #percentageOfTrees);
+        dimensions: (conf at: #dimensionMin) -> (conf at: #dimensionMax);
+        activeControl: #step:;
+        initSimulation.
+    aModel simManager
+        initializeSimulation;
+        finalTime: 100;
+        runSimulation.
+    CMOpenMoleExchange saveJSONFile: (CMOpenMoleExchange lastDataOfModel: aModel). 
+]
+
 { #category : #'programmable scenario' }
 CMFireAutomataModel >> dimensions: aPair [
 
