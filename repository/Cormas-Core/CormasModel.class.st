@@ -2903,7 +2903,7 @@ CormasModel >> data [
 	"At the moment, data is a dictionary"
 	"Should be replaced by DataFrame in the future"
 	^data isNil
-		ifTrue: [Dictionary new]
+		ifTrue: [data := Dictionary new]
 		ifFalse: [data]
 ]
 

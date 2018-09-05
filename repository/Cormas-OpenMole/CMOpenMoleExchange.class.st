@@ -10,6 +10,20 @@ Class {
 }
 
 { #category : #utilities }
+CMOpenMoleExchange class >> lastDataOfModel: aModelInstance [
+	"a Dictionnary is a dictionnary formatted by CORMAS with name of the class containing a dictionnary of keys"
+
+	"representing values, containing collection"
+
+	"This is a really bad conception and we need to replace all of this by DataFrame later :-)"
+
+	| d  |
+	d := Dictionary new.
+	(aModelInstance data at: aModelInstance class name) keysAndValuesDo: [ :k :v | d at: k put: v last ].
+	 ^d
+]
+
+{ #category : #utilities }
 CMOpenMoleExchange class >> lastValuesOfVariables: aDictionnary [
 	"a Dictionnary is a dictionnary formatted by CORMAS with name of the class containing a dictionnary of keys"
 

@@ -1783,8 +1783,8 @@ Ex: Cormas readMatrix: 'D:\vw7.6\cormas\Models\Ecec\data\test.csv' sep: ';'   "
 		ifTrue: [ aSepChar first ]
 		ifFalse: [ aSepChar ].
 	lines := OrderedCollection new.
-	stream := fileName asFilename readStream.	"On devine le format des lignes"
-	stream lineEndAuto.	" Lecture du fichier, ligne par ligne "
+	stream := fileName asFileName readStream.	"On devine le format des lignes"
+	"stream nextLine."	" Lecture du fichier, ligne par ligne "
 	nbColumns := 0.
 	[ stream atEnd ]
 		whileFalse: [ line := Cormas splitLine: stream sep: sep.
