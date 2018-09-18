@@ -56,6 +56,11 @@ CMSpecProjectWindow >> applicationProperties [
 	(CMSpecModelComments for: self projectManager) openWithSpec
 ]
 
+{ #category : #'as yet unclassified' }
+CMSpecProjectWindow >> canDiscardEdits [
+		^ false
+]
+
 { #category : #private }
 CMSpecProjectWindow >> closeAfterCreateProject [
 	^ true

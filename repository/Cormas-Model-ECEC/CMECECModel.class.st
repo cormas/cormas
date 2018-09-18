@@ -32,7 +32,7 @@ CMECECModel class >> colorOfProbe_vegetationBiomass [
 
 { #category : #default }
 CMECECModel class >> defaultFinalStep [
-	^ 100
+	^ 600
 ]
 
 { #category : #default }
@@ -201,7 +201,7 @@ CMECECModel class >> example5 [
 		withSituatedEntities: aModel allTheSituatedEntities) runAndVisualizeWithMenus goSlow
 ]
 
-{ #category : #'examples - with SimManager' }
+{ #category : #'as yet unclassified' }
 CMECECModel class >> exampleSM1 [
 	"In this example the SimManager is not used at all"
 
