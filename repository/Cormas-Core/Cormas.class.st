@@ -1792,25 +1792,21 @@ aSepChar = <Character> or <String>
 Ex: Cormas readMatrix: 'D:\vw7.6\cormas\Models\Ecec\data\test.csv' sep: $;    or
 Ex: Cormas readMatrix: 'D:\vw7.6\cormas\Models\Ecec\data\test.csv' sep: ';'   "
 
-	|  arrayOfRows stream  subCollection matrix nbColumns |
-	self flag:#shouldBeRevised.
-stream := fileName asFileReference readStream.
+	|  arrayOfRows subCollection matrix nbColumns |
 
-arrayOfRows := (NeoCSVReader on: stream)
+	self flag:#shouldBeRevised.
+	arrayOfRows := (NeoCSVReader on: fileName asFileReference readStream)
 		separator: aSepChar;
 		upToEnd.
-		
-nbColumns := (arrayOfRows at: 1) size.	
-matrix := OrderedCollection new.
-arrayOfRows
-	do: [ :aLine | 
-		subCollection := OrderedCollection new.
-		aLine
-			do: [ :x | subCollection add: (Cormas stringAsObjectType: x) ].
-		[ subCollection size < nbColumns ] " Check if all cells are occupied if not add nil"
+	nbColumns := (arrayOfRows at: 1) size.	
+	matrix := OrderedCollection new.
+	arrayOfRows
+		do: [ :aLine | 
+			subCollection := OrderedCollection new.
+			aLine do: [ :x | subCollection add: (Cormas stringAsObjectType: x) ].
+			[ subCollection size < nbColumns ] " Check if all cells are occupied if not add nil"
 			whileTrue: [ subCollection add: nil ].
-		matrix add: subCollection 
-		].
+		matrix add: subCollection ].
 	^ matrix.
 ]
 
