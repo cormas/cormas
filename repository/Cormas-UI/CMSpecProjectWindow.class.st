@@ -56,11 +56,6 @@ CMSpecProjectWindow >> applicationProperties [
 	(CMSpecModelComments for: self projectManager) openWithSpec
 ]
 
-{ #category : #'as yet unclassified' }
-CMSpecProjectWindow >> canDiscardEdits [
-		^ false
-]
-
 { #category : #private }
 CMSpecProjectWindow >> closeAfterCreateProject [
 	^ true
@@ -449,12 +444,12 @@ CMSpecProjectWindow >> openVizProbes [
 
 { #category : #callbacks }
 CMSpecProjectWindow >> openVizSpace [
-		| aModel |
+		| aModel viz |
 	aModel := self projectManager cormasModel.
 	aModel spaceModel isNil
 		ifTrue: [ ^ self alertMessage: 'No spaceModel to visualize' ].
-	CMSimulationGrid openOn: aModel
-		
+	"CMSimulationGrid openOn: aModel"
+	viz := CMSpecVizSpaceWindow openFor: self projectManager.
 ]
 
 { #category : #accessing }

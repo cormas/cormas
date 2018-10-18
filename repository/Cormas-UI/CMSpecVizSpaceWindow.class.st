@@ -34,6 +34,26 @@ Class {
 	#category : 'Cormas-UI-Core'
 }
 
+{ #category : #'instance creation' }
+CMSpecVizSpaceWindow class >> for: aCMProjectManager [ 
+	" Answer a new instance of the receiver using aCMProjectManager as model "
+	
+	^ self basicNew 
+		projectManager: aCMProjectManager;
+		initialize;
+		yourself
+]
+
+{ #category : #'instance creation' }
+CMSpecVizSpaceWindow class >> openFor: aCMProjectManager [ 
+	" Create and open a new instance of the receiver, configuring its controller with aCMProjectManager"
+
+	^ (self for: aCMProjectManager)
+		openWithSpec;
+		centered;
+		yourself
+]
+
 { #category : #private }
 CMSpecVizSpaceWindow >> closeAfterCreateProject [
 	^ true
