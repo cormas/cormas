@@ -44,7 +44,6 @@ CMSpecVizSpaceWindow class >> defaultSpec [
 		newColumn: [ :c | 
 			c
 				add: #menuToolbar height: self toolbarHeight;
-				add: #toolbar height: 26;
 				add: #spaceView ];
 		yourself
 ]
@@ -60,7 +59,7 @@ CMSpecVizSpaceWindow class >> for: aCMProjectManager [
 ]
 
 { #category : #'instance creation' }
-CMSpecVizSpaceWindow class >> openFor: aCMProjectManager [ 
+CMSpecVizSpaceWindow class >> openFor: aCMProjectManager [
 	" Create and open a new instance of the receiver, configuring its controller with aCMProjectManager"
 
 	^ (self for: aCMProjectManager)
@@ -251,9 +250,13 @@ CMSpecVizSpaceWindow >> initializeWidgets [
 	super initializeWidgets.
 	self flag: #shouldBeRevised.	"self initializeMenuToolbar."	"commented because it is already called in super initializeWidgets"
 	self flag: #shouldBeRevised.	"self setFocusOrder."	"commented because it fait rien"
-	self spaceView: ((CMSpecSpaceViewContainer for: self projectManager)
+	"self spaceView: ((CMSpecSpaceViewContainer for: self projectManager)
 				owner: self;
-				yourself)
+				yourself)"
+	self
+		spaceView:
+			((RoassalAndSpecSpaceView new owner: self)
+				cormasModel: self projectManager cormasModel).
 ]
 
 { #category : #private }
