@@ -31,8 +31,22 @@ Smalltalk tools workspace
 Class {
 	#name : #CMSpecVizSpaceWindow,
 	#superclass : #PFStandardProjectWindow,
-	#category : 'Cormas-UI-Core'
+	#instVars : [
+		'spaceView'
+	],
+	#category : #'Cormas-UI-Core'
 }
+
+{ #category : #specs }
+CMSpecVizSpaceWindow class >> defaultSpec [
+	<spec: #default>
+	^ SpecLayout composed
+		newColumn: [ :c | 
+			c
+				add: #menuToolbar height: self toolbarHeight;
+				add: #spaceView ];
+		yourself
+]
 
 { #category : #'instance creation' }
 CMSpecVizSpaceWindow class >> for: aCMProjectManager [ 
@@ -45,7 +59,7 @@ CMSpecVizSpaceWindow class >> for: aCMProjectManager [
 ]
 
 { #category : #'instance creation' }
-CMSpecVizSpaceWindow class >> openFor: aCMProjectManager [ 
+CMSpecVizSpaceWindow class >> openFor: aCMProjectManager [
 	" Create and open a new instance of the receiver, configuring its controller with aCMProjectManager"
 
 	^ (self for: aCMProjectManager)
@@ -234,13 +248,30 @@ CMSpecVizSpaceWindow >> initializeWidgets [
 
 	self initializeApplication.
 	super initializeWidgets.
-	self initializeMenuToolbar.
-	self setFocusOrder.
+	self flag: #shouldBeRevised.	"self initializeMenuToolbar."	"commented because it is already called in super initializeWidgets"
+	self flag: #shouldBeRevised.	"self setFocusOrder."	"commented because it fait rien"
+	"self spaceView: ((CMSpecSpaceViewContainer for: self projectManager)
+				owner: self;
+				yourself)"
+	self
+		spaceView:
+			((RoassalAndSpecSpaceView new owner: self)
+				cormasModel: self projectManager cormasModel).
 ]
 
 { #category : #private }
 CMSpecVizSpaceWindow >> projectClass [
 	^ CMProjectManager
+]
+
+{ #category : #accessing }
+CMSpecVizSpaceWindow >> spaceView [
+	^ spaceView
+]
+
+{ #category : #accessing }
+CMSpecVizSpaceWindow >> spaceView: anObject [
+	spaceView := anObject
 ]
 
 { #category : #private }
