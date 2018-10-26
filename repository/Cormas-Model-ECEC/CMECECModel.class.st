@@ -201,7 +201,7 @@ CMECECModel class >> example5 [
 		withSituatedEntities: aModel allTheSituatedEntities) runAndVisualizeWithMenus goSlow
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'examples - with SimManager' }
 CMECECModel class >> exampleSM1 [
 	"In this example the SimManager is not used at all"
 
