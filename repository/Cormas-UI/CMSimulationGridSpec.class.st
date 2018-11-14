@@ -200,15 +200,16 @@ anim intervalInMilliseconds: 1000
 ]
 
 { #category : #initialization }
-CMSimulationGridSpec >> initializeOn: aModel [ 
+CMSimulationGridSpec >> initializeOn: aModel [
 	"This method initializes a simulationGrid for a specific cormasModel , without specifyin any animation behaviour"
 
 	model := aModel.
 	self addViewForCells: aModel theESE.
-	self addViewForAgents: aModel allTheSituatedEntities.
+	aModel allTheSituatedEntities isEmpty not ifTrue: [ 
+	self addViewForAgents: aModel allTheSituatedEntities ].
 	self canvas camera focusOnCenterScaled.
-	situatedEntitiesViews do: [ :e | e translateTo: e model patch x @ e model patch y * cellSize ].
-
+	situatedEntitiesViews
+		do: [ :e | e translateTo: e model patch x @ e model patch y * cellSize ]
 ]
 
 { #category : #'instance creation' }
