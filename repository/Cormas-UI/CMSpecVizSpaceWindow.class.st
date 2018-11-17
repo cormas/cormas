@@ -32,7 +32,8 @@ Class {
 	#name : #CMSpecVizSpaceWindow,
 	#superclass : #PFStandardProjectWindow,
 	#instVars : [
-		'spaceView'
+		'spaceView',
+		'specSpaceView'
 	],
 	#category : #'Cormas-UI-Core'
 }
@@ -44,7 +45,7 @@ CMSpecVizSpaceWindow class >> defaultSpec [
 		newColumn: [ :c | 
 			c
 				add: #menuToolbar height: self toolbarHeight;
-				add: #spaceView ];
+				add: #specSpaceView ];
 		yourself
 ]
 
@@ -146,27 +147,25 @@ CMSpecVizSpaceWindow >> initializeMenuToolbar [
 	" Private - See superimplementor's commen "
 
 	menuToolbar := MenuModel new
-		addGroup: [ : group | 
+		addGroup: [ :group | 
 			group
-				addItem: [ : item | 
-					item 
+				addItem: [ :item | 
+					item
 						name: self translator tEnvironment;
-						subMenu: self initializeEnvironmentMenuToolbar ];					
-				addItem: [ : item | 
-					item 
+						subMenu: self initializeEnvironmentMenuToolbar ];
+				addItem: [ :item | 
+					item
 						name: self translator tPoV;
-						subMenu: self initializeToolsMenuToolbar ];			
-				addItem: [ : item |
-					item 
-						name: self translator tDisplayLegends;
+						subMenu: self initializePOVMenuToolbar ];
+				addItem: [ :item | 
+					item
+						name: self translator tOptions;
 						subMenu: self initializeOptionMenuToolbar ];
-				addItem: [ : item | 
-					item 
+				addItem: [ :item | 
+					item
 						name: self translator tTools;
-						subMenu: self initializeToolsMenuToolbar ]
-					 ].
-	menuToolbar applyTo: self.
-
+						subMenu: self initializeToolsMenuToolbar ] ].
+	menuToolbar applyTo: self
 ]
 
 { #category : #initialization }
@@ -205,41 +204,80 @@ CMSpecVizSpaceWindow >> initializeOptionMenuToolbar [
 ]
 
 { #category : #initialization }
+CMSpecVizSpaceWindow >> initializePOVMenuToolbar [
+	" Private - See superimplementor's commen "
+
+	| cormasModel |
+	cormasModel := self projectManager cormasModel.
+	^ MenuModel new
+		addGroup: [ :group | 
+			cormasModel class socialClasses
+				do: [ :socialClass | 
+					group
+						addItem: [ :item | 
+							item
+								name: socialClass name;
+								subMenu: (self subMenuForClassPov: socialClass) ] ] ];
+		addGroup: [ :group | 
+			cormasModel class spatialClasses_sorted
+				do: [ :spatialClasse | 
+					group
+						addItem: [ :item | 
+							item
+								name: spatialClasse name;
+								subMenu: (self subMenuForClassPov: spatialClasse) ] ] ];
+		addGroup: [ :group | 
+			cormasModel class passiveObjectClasses
+				do: [ :passiveClass | 
+					group
+						addItem: [ :item | 
+							item
+								name: passiveClass name;
+								subMenu: (self subMenuForClassPov: passiveClass) ] ] ]
+]
+
+{ #category : #initialization }
+CMSpecVizSpaceWindow >> initializePresenter [
+	super initializePresenter.
+]
+
+{ #category : #initialization }
 CMSpecVizSpaceWindow >> initializeToolsMenuToolbar [
 	" Private - See superimplementor's commen "
 
 	^ MenuModel new
-		addGroup: [ : group | 
+		addGroup: [ :group | 
 			group
-				addItem: [ : item | 
-					item 
+				addItem: [ :item | 
+					item
 						name: self translator tDisplayLegends;
 						action: [  ] ];
-				addItem: [ : item | 
-					item 
+				addItem: [ :item | 
+					item
 						name: self translator tPhoto;
 						action: [  ] ];
-				addItem: [ : item | 
-					item 
+				addItem: [ :item | 
+					item
 						name: self translator tVideo;
 						action: [  ] ];
-				addItem: [ : item | 
-					item 
+				addItem: [ :item | 
+					item
 						name: self translator tManipulateInstances;
 						action: [  ] ];
-				addItem: [ : item | 
-					item 
+				addItem: [ :item | 
+					item
 						name: self translator tCreateInstances;
 						action: [  ] ];
-				addItem: [ : item | 
-					item 
+				addItem: [ :item | 
+					item
 						name: self translator tClickTo;
 						action: [  ] ];
-				addItem: [ : item | 
-					item 
-						name: self translator tHabitus;
-						action: [  ] ] ];
-			yourself
+					
+				addItem: [ :item | 
+					item
+						name: 'inspect';
+						action: [ self inspect ] ] ];
+		yourself
 ]
 
 { #category : #initialization }
@@ -248,15 +286,7 @@ CMSpecVizSpaceWindow >> initializeWidgets [
 
 	self initializeApplication.
 	super initializeWidgets.
-	self flag: #shouldBeRevised.	"self initializeMenuToolbar."	"commented because it is already called in super initializeWidgets"
-	self flag: #shouldBeRevised.	"self setFocusOrder."	"commented because it fait rien"
-	"self spaceView: ((CMSpecSpaceViewContainer for: self projectManager)
-				owner: self;
-				yourself)"
-	self
-		spaceView:
-			((RoassalAndSpecSpaceView new owner: self)
-				cormasModel: self projectManager cormasModel).
+	self specSpaceView: (self instantiate: CMSimGridWidgetModel).	
 ]
 
 { #category : #private }
@@ -272,6 +302,29 @@ CMSpecVizSpaceWindow >> spaceView [
 { #category : #accessing }
 CMSpecVizSpaceWindow >> spaceView: anObject [
 	spaceView := anObject
+]
+
+{ #category : #accessing }
+CMSpecVizSpaceWindow >> specSpaceView [
+	^ specSpaceView
+]
+
+{ #category : #accessing }
+CMSpecVizSpaceWindow >> specSpaceView: anObject [
+	specSpaceView := anObject
+]
+
+{ #category : #'as yet unclassified' }
+CMSpecVizSpaceWindow >> subMenuForClassPov: aClass [
+	^ MenuModel new
+		addGroup: [ :group | 
+			(aClass methodsInProtocol: #pov)
+				do: [ :povName | 
+					group
+						addItem: [ :item | 
+							item
+								name: povName selector;
+								action: [ "Changer le pov de cette classe dans la vue spaceView.." ] ] ] ]
 ]
 
 { #category : #private }
