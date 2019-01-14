@@ -1,5 +1,5 @@
 Class {
-	#name : #CMSimulationGridSpec,
+	#name : #CMSpaceView,
 	#superclass : #RTViewForSpec,
 	#instVars : [
 		'anim',
@@ -8,13 +8,14 @@ Class {
 		'situatedEntitiesViews',
 		'origin',
 		'speed',
-		'window'
+		'window',
+		'cellViews'
 	],
 	#category : #'Cormas-UI-PoV'
 }
 
 { #category : #'instance creation' }
-CMSimulationGridSpec class >> newOn: aCMCormasModel [
+CMSpaceView class >> newOn: aCMCormasModel [
 	"This method is called by the CMSpecProjectWindow. It creates, subscribes and opens a simulationGrid on a cormasModel"
 
 	| newBe |
@@ -25,7 +26,7 @@ CMSimulationGridSpec class >> newOn: aCMCormasModel [
 ]
 
 { #category : #'instance creation' }
-CMSimulationGridSpec class >> openOn: aCMCormasModel [
+CMSpaceView class >> openOn: aCMCormasModel [
 	"This method is called by the CMSpecProjectWindow. It creates, subscribes and opens a simulationGrid on a cormasModel"
 
 	| newBe |
@@ -37,7 +38,7 @@ CMSimulationGridSpec class >> openOn: aCMCormasModel [
 ]
 
 { #category : #refreshing }
-CMSimulationGridSpec >> addNewSituatedEntities [
+CMSpaceView >> addNewSituatedEntities [
 	
 	| newSituatedEntities newSituatedEntitiesViews |
 	newSituatedEntities := model allTheSituatedEntities select: [ :a | ((situatedEntitiesViews collect: [ :e | e model ]) includes: a) not ].
@@ -51,7 +52,7 @@ CMSimulationGridSpec >> addNewSituatedEntities [
 ]
 
 { #category : #'instance creation' }
-CMSimulationGridSpec >> addViewForAgents: situatedEntities [
+CMSpaceView >> addViewForAgents: situatedEntities [
 	"Organize coordinate system"
 	| windowSize |
 	origin := (self elements collect: [ :e | e position x ]) min
@@ -71,79 +72,97 @@ CMSimulationGridSpec >> addViewForAgents: situatedEntities [
 ]
 
 { #category : #'instance creation' }
-CMSimulationGridSpec >> addViewForCells: cells [
-self
-		addAll:
-			((RTBox new
-				color: [ :e | 
-					e getColorForPov: #pov ];
-				size: 25) elementsOn: cells).
+CMSpaceView >> addViewForCells: cells [
+	cellViews := (RTBox new
+		color: [ :e | e getColorForPov: #pov ];
+		size: 25) elementsOn: cells.
+	self addAll: cellViews.
 	RTGridLayout new
 		gapSize: 0;
 		lineItemsCount: model spaceModel column;
-		on: self elements.
+		on: self elements
+]
+
+{ #category : #'instance creation' }
+CMSpaceView >> addViewForCells: cells withPov: aPovName [
+	cellViews := (RTBox new
+		color: [ :e | e getColorForPov: aPovName ];
+		size: 25) elementsOn: cells.
+	self addAll: cellViews.
+	RTGridLayout new
+		gapSize: 0;
+		lineItemsCount: model spaceModel column;
+		on: self elements
 ]
 
 { #category : #accessing }
-CMSimulationGridSpec >> cellSize [
+CMSpaceView >> cellSize [
 	^ cellSize 
 ]
 
 { #category : #accessing }
-CMSimulationGridSpec >> cellSize: anObject [
+CMSpaceView >> cellSize: anObject [
 	cellSize := anObject
 ]
 
+{ #category : #accessing }
+CMSpaceView >> cellViews [
+	^ cellViews  ifNil: [ situatedEntitiesViews := IndexedSet new ]
+]
+
 { #category : #refreshing }
-CMSimulationGridSpec >> clearView [
-	situatedEntitiesViews removeAll.
-	self clean.
+CMSpaceView >> clearView [
+	self situatedEntitiesViews removeAll.
+	self clean
 ]
 
 { #category : #initialization }
-CMSimulationGridSpec >> initializeOn: aModel [
+CMSpaceView >> initializeOn: aModel [
 	"This method initializes a simulationGrid for a specific cormasModel , without specifyin any animation behaviour"
 
 	model := aModel.
 	self addViewForCells: aModel theESE.
-	aModel allTheSituatedEntities isEmpty not ifTrue: [ 
-	self addViewForAgents: aModel allTheSituatedEntities.
-		situatedEntitiesViews
-		do: [ :e | e translateTo: e model patch x @ e model patch y * cellSize ]
-		 ].
-	self canvas camera focusOnCenterScaled.
+	aModel allTheSituatedEntities isEmpty not
+		ifTrue: [ self addViewForAgents: aModel allTheSituatedEntities.
+			situatedEntitiesViews
+				do: [ :e | e translateTo: e model patch x @ e model patch y * cellSize ] ].
+	self canvas focusOnCenterScaled.
+	self signalUpdate.
+	"self setDefaultMenu"
 ]
 
 { #category : #accessing }
-CMSimulationGridSpec >> origin [
+CMSpaceView >> origin [
 	^ origin
 ]
 
 { #category : #accessing }
-CMSimulationGridSpec >> origin: anObject [
+CMSpaceView >> origin: anObject [
 	origin := anObject
 ]
 
 { #category : #refreshing }
-CMSimulationGridSpec >> removeObsoleteSituatedEntities [
+CMSpaceView >> removeObsoleteSituatedEntities [
 	| obsoleteSituatedEntities |
-	obsoleteSituatedEntities  := situatedEntitiesViews select: [ :e | e model isSituated not ].
-	obsoleteSituatedEntities do:[:e| e remove].
-	situatedEntitiesViews removeAll: obsoleteSituatedEntities.
+	self situatedEntitiesViews isEmpty
+		ifTrue: [ ^ self ].
+	obsoleteSituatedEntities := self situatedEntitiesViews select: [ :e | e model isSituated not ].
+	obsoleteSituatedEntities do: [ :e | e remove ].
+	self situatedEntitiesViews removeAll: obsoleteSituatedEntities
 ]
 
 { #category : #accessing }
-CMSimulationGridSpec >> situatedEntitiesViews [
-	^ situatedEntitiesViews
+CMSpaceView >> situatedEntitiesViews [
+	^ situatedEntitiesViews ifNil: [ situatedEntitiesViews := IndexedSet new]
 ]
 
 { #category : #accessing }
-CMSimulationGridSpec >> situatedEntitiesViews: anObject [
+CMSpaceView >> situatedEntitiesViews: anObject [
 	situatedEntitiesViews := anObject
 ]
 
 { #category : #initialization }
-CMSimulationGridSpec >> subscribeOn: aModel [ 
+CMSpaceView >> subscribeOn: aModel [ 
 	"This method subscribes the simualtionGrid to the timeChange announcements of a cormasModel.
 	When the simulation time has change, the simulation grid can update it self by calling  self  canvas signalUpdate "
 
@@ -157,7 +176,7 @@ CMSimulationGridSpec >> subscribeOn: aModel [
 ]
 
 { #category : #refreshing }
-CMSimulationGridSpec >> timeChanged: aNewTimeStep [
+CMSpaceView >> timeChanged: aNewTimeStep [
 	aNewTimeStep = 0
 		ifTrue: [ self clearView.
 			self addViewForCells: model theESE ]

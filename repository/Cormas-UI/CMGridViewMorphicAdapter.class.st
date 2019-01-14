@@ -25,7 +25,7 @@ CMGridViewMorphicAdapter >> adapt: aComposableModel [
 
 { #category : #private }
 CMGridViewMorphicAdapter >> buildWidget [
-	view := CMSimulationGridSpec new.
+	view := CMSpaceView new.
 	view initializeOn: self model owner projectManager cormasModel.
 	view subscribeOn: self model owner projectManager cormasModel.
 	^ view
