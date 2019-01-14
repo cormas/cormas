@@ -29,7 +29,7 @@ Smalltalk tools workspace
 
 "
 Class {
-	#name : #CMSpecVizSpaceWindow,
+	#name : #CMSpaceInterface,
 	#superclass : #PFStandardProjectWindow,
 	#instVars : [
 		'spaceView',
@@ -39,18 +39,18 @@ Class {
 }
 
 { #category : #specs }
-CMSpecVizSpaceWindow class >> defaultSpec [
+CMSpaceInterface class >> defaultSpec [
 	<spec: #default>
 	^ SpecLayout composed
 		newColumn: [ :c | 
 			c
 				add: #menuToolbar height: self toolbarHeight;
-				add: #specSpaceView ];
+				add: #specSpaceView];
 		yourself
 ]
 
 { #category : #'instance creation' }
-CMSpecVizSpaceWindow class >> for: aCMProjectManager [ 
+CMSpaceInterface class >> for: aCMProjectManager [ 
 	" Answer a new instance of the receiver using aCMProjectManager as model "
 	
 	^ self basicNew 
@@ -60,7 +60,7 @@ CMSpecVizSpaceWindow class >> for: aCMProjectManager [
 ]
 
 { #category : #'instance creation' }
-CMSpecVizSpaceWindow class >> openFor: aCMProjectManager [
+CMSpaceInterface class >> openFor: aCMProjectManager [
 	" Create and open a new instance of the receiver, configuring its controller with aCMProjectManager"
 
 	^ (self for: aCMProjectManager)
@@ -70,18 +70,18 @@ CMSpecVizSpaceWindow class >> openFor: aCMProjectManager [
 ]
 
 { #category : #private }
-CMSpecVizSpaceWindow >> closeAfterCreateProject [
+CMSpaceInterface >> closeAfterCreateProject [
 	^ true
 ]
 
 { #category : #initialization }
-CMSpecVizSpaceWindow >> initializeApplication [
+CMSpaceInterface >> initializeApplication [
 
 	self applicationClass: CMApplicationProject
 ]
 
 { #category : #initialization }
-CMSpecVizSpaceWindow >> initializeDisplaysMenuToolbar [
+CMSpaceInterface >> initializeDisplaysMenuToolbar [
 	" Private - See superimplementor's commen "
 
 	^ MenuModel new
@@ -110,7 +110,7 @@ CMSpecVizSpaceWindow >> initializeDisplaysMenuToolbar [
 ]
 
 { #category : #initialization }
-CMSpecVizSpaceWindow >> initializeEnvironmentMenuToolbar [
+CMSpaceInterface >> initializeEnvironmentMenuToolbar [
 	" Private - See superimplementor's commen "
 
 	^ MenuModel new
@@ -143,7 +143,31 @@ CMSpecVizSpaceWindow >> initializeEnvironmentMenuToolbar [
 ]
 
 { #category : #initialization }
-CMSpecVizSpaceWindow >> initializeMenuToolbar [
+CMSpaceInterface >> initializeExportMenuToolbar [
+	" Private - See superimplementor's commen "
+
+	^ MenuModel new
+		addGroup:
+			[ :group | 
+			group
+				addItem: [ :item | 
+					item
+						name: 'HTML';
+						action: [ RTHTML5Exporter interactiveExport: self spaceView ] ];
+				addItem: [ :item | 
+					item
+						name: 'SVG';
+						action: [ RTSVGExporter interactiveExportViewAsSVG: self spaceView ] ];
+				addItem: [ :item | 
+					item
+						name: 'PNG';
+						action: [ RTPNGExporter new
+								builder: self spaceView;
+								fileName: 'spaceView.png';exportToFile ] ] ] yourself
+]
+
+{ #category : #initialization }
+CMSpaceInterface >> initializeMenuToolbar [
 	" Private - See superimplementor's commen "
 
 	menuToolbar := MenuModel new
@@ -164,12 +188,29 @@ CMSpecVizSpaceWindow >> initializeMenuToolbar [
 				addItem: [ :item | 
 					item
 						name: self translator tTools;
-						subMenu: self initializeToolsMenuToolbar ] ].
+						subMenu: self initializeToolsMenuToolbar ];
+				addItem: [ :item | 
+					item
+						icon: #glamorousZoomIn asIcon;
+						action: [ RTZoomInMove on: self spaceView ] ];
+				addItem: [ :item | 
+					item
+						icon: #glamorousZoomOut asIcon;
+						action: [ RTZoomOutMove on: self spaceView ] ];
+				addItem: [ :item | 
+					item
+						icon: #glamorousZoomToFit asIcon;
+						action: [ self spaceView canvas focusOnCenterScaled.
+							self spaceView signalUpdate ] ];
+				addItem: [ :item | 
+					item
+						icon: #glamorousSave asIcon;
+						subMenu: self initializeExportMenuToolbar  ] ].
 	menuToolbar applyTo: self
 ]
 
 { #category : #initialization }
-CMSpecVizSpaceWindow >> initializeOptionMenuToolbar [
+CMSpaceInterface >> initializeOptionMenuToolbar [
 	" Private - See superimplementor's commen "
 
 	^ MenuModel new
@@ -204,7 +245,7 @@ CMSpecVizSpaceWindow >> initializeOptionMenuToolbar [
 ]
 
 { #category : #initialization }
-CMSpecVizSpaceWindow >> initializePOVMenuToolbar [
+CMSpaceInterface >> initializePOVMenuToolbar [
 	" Private - See superimplementor's commen "
 
 	| cormasModel |
@@ -237,12 +278,12 @@ CMSpecVizSpaceWindow >> initializePOVMenuToolbar [
 ]
 
 { #category : #initialization }
-CMSpecVizSpaceWindow >> initializePresenter [
+CMSpaceInterface >> initializePresenter [
 	super initializePresenter.
 ]
 
 { #category : #initialization }
-CMSpecVizSpaceWindow >> initializeToolsMenuToolbar [
+CMSpaceInterface >> initializeToolsMenuToolbar [
 	" Private - See superimplementor's commen "
 
 	^ MenuModel new
@@ -281,7 +322,7 @@ CMSpecVizSpaceWindow >> initializeToolsMenuToolbar [
 ]
 
 { #category : #initialization }
-CMSpecVizSpaceWindow >> initializeWidgets [
+CMSpaceInterface >> initializeWidgets [
 	" Private - See superimplementor's comment "
 
 	self initializeApplication.
@@ -290,32 +331,32 @@ CMSpecVizSpaceWindow >> initializeWidgets [
 ]
 
 { #category : #private }
-CMSpecVizSpaceWindow >> projectClass [
+CMSpaceInterface >> projectClass [
 	^ CMProjectManager
 ]
 
 { #category : #accessing }
-CMSpecVizSpaceWindow >> spaceView [
+CMSpaceInterface >> spaceView [
 	^ spaceView
 ]
 
 { #category : #accessing }
-CMSpecVizSpaceWindow >> spaceView: anObject [
+CMSpaceInterface >> spaceView: anObject [
 	spaceView := anObject
 ]
 
 { #category : #accessing }
-CMSpecVizSpaceWindow >> specSpaceView [
+CMSpaceInterface >> specSpaceView [
 	^ specSpaceView
 ]
 
 { #category : #accessing }
-CMSpecVizSpaceWindow >> specSpaceView: anObject [
+CMSpaceInterface >> specSpaceView: anObject [
 	specSpaceView := anObject
 ]
 
 { #category : #'as yet unclassified' }
-CMSpecVizSpaceWindow >> subMenuForClassPov: aClass [
+CMSpaceInterface >> subMenuForClassPov: aClass [
 	^ MenuModel new
 		addGroup: [ :group | 
 			(aClass methodsInProtocol: #pov)
@@ -328,19 +369,19 @@ CMSpecVizSpaceWindow >> subMenuForClassPov: aClass [
 ]
 
 { #category : #private }
-CMSpecVizSpaceWindow >> subMenuForLoad [
+CMSpaceInterface >> subMenuForLoad [
 	
 	^ MenuModel new
 ]
 
 { #category : #private }
-CMSpecVizSpaceWindow >> subMenuForModify [
+CMSpaceInterface >> subMenuForModify [
 
 	^ MenuModel new
 ]
 
 { #category : #private }
-CMSpecVizSpaceWindow >> subMenuForNew [
+CMSpaceInterface >> subMenuForNew [
 
 	^ MenuModel new
 		addGroup: [ : group |
@@ -352,6 +393,6 @@ CMSpecVizSpaceWindow >> subMenuForNew [
 ]
 
 { #category : #initialization }
-CMSpecVizSpaceWindow >> title [
+CMSpaceInterface >> title [
 	^ 'CORMAS - Visualization Space'
 ]

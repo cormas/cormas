@@ -1,6 +1,6 @@
 Class {
 	#name : #CMSimulationGrid,
-	#superclass : #CMSimulationGridSpec,
+	#superclass : #CMSpaceView,
 	#category : #'Cormas-UI-PoV'
 }
 
