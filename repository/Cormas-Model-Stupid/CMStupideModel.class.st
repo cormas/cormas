@@ -15,6 +15,16 @@ Class {
 	#category : #'Cormas-Model-Stupid'
 }
 
+{ #category : #gui }
+CMStupideModel class >> defaultControl [
+	^ #step:
+]
+
+{ #category : #gui }
+CMStupideModel class >> defaultFinalStep [
+	^ 200
+]
+
 { #category : #'instance creation' }
 CMStupideModel class >> defaultInit [
 

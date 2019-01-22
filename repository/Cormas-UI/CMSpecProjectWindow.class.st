@@ -444,12 +444,15 @@ CMSpecProjectWindow >> openVizProbes [
 
 { #category : #callbacks }
 CMSpecProjectWindow >> openVizSpace [
-		| aModel |
+	| aModel viz |
 	aModel := self projectManager cormasModel.
 	aModel spaceModel isNil
 		ifTrue: [ ^ self alertMessage: 'No spaceModel to visualize' ].
-	CMSimulationGrid openOn: aModel
-		
+	viz := CMSpaceInterface openFor: self projectManager.
+	viz spaceView: viz specSpaceView spec instance view.
+	viz window extent: viz spaceView canvas extent + (20 @ 20).
+	viz spaceView canvas focusOnCenterScaled.
+	viz spaceView signalUpdate
 ]
 
 { #category : #accessing }
@@ -493,15 +496,14 @@ CMSpecProjectWindow >> subMenuCormasR [
 ]
 
 { #category : #'submenu-help' }
-CMSpecProjectWindow >> subMenuForHelp [ 
-
+CMSpecProjectWindow >> subMenuForHelp [
 	^ MenuModel new
-		addGroup: [ : group |
-			group 
-				addItem: [ : item | self subMenuAboutThisModel: item ];
-				addItem: [ : item | self subMenuHowToRunThisModel: item ];
-				addItem: [ : item | self subMenuChangeModelComments: item ];
-				addItem: [ : item | self subMenuAbout: item ] ]
+		addGroup: [ :group | 
+			group
+				addItem: [ :item | self subMenuAboutThisModel: item ];
+				addItem: [ :item | self subMenuHowToRunThisModel: item ];
+				addItem: [ :item | self subMenuChangeModelComments: item ];
+				addItem: [ :item | self subMenuAbout: item ]]
 ]
 
 { #category : #'submenu-programming' }
@@ -584,25 +586,28 @@ CMSpecProjectWindow >> subMenuForSimulation [
 
 { #category : #'submenu-tools' }
 CMSpecProjectWindow >> subMenuForTools [
-
 	^ MenuModel new
-		addGroup: [ : group |
-			group 
-				addItem: [ : item | self subMenuToolsManipulateInstances: item ];
-				addItem: [ : item | self subMenuToolsCreateInstances: item ];
-				addItem: [ : item | self subMenuToolsSnapshot: item ];
-				addItem: [ : item | self subMenuToolsMain: item ] ];
-		addGroup: [ : group | 
+		addGroup: [ :group | 
 			group
-				addItem: [ : item | self subMenuToolsAddOns: item ];
-				addItem: [ : item | self subMenuToolsModelListing: item ];
-				addItem: [ : item | self subMenuToolsModelGlossary: item ];
-				addItem: [ : item | self subMenuToolsVersions: item ] ];
-		addGroup: [ : group | 
+				addItem: [ :item | self subMenuToolsManipulateInstances: item ];
+				addItem: [ :item | self subMenuToolsCreateInstances: item ];
+				addItem: [ :item | self subMenuToolsSnapshot: item ];
+				addItem: [ :item | self subMenuToolsMain: item ] ];
+		addGroup: [ :group | 
 			group
-				addItem: [ : item | self subMenuToolsDistributeAsClient: item ];
-				addItem: [ : item | self subMenuToolsDistributeAsServer: item ];
-				addItem: [ : item | self subMenuToolsPackageClient: item ] ]
+				addItem: [ :item | self subMenuToolsAddOns: item ];
+				addItem: [ :item | self subMenuToolsModelListing: item ];
+				addItem: [ :item | self subMenuToolsModelGlossary: item ];
+				addItem: [ :item | self subMenuToolsVersions: item ] ];
+		addGroup: [ :group | 
+			group
+				addItem: [ :item | self subMenuToolsDistributeAsClient: item ];
+				addItem: [ :item | self subMenuToolsDistributeAsServer: item ];
+				addItem: [ :item | self subMenuToolsPackageClient: item ] ;
+				addItem: [ :item | 
+					item
+						name: 'inspect';
+						action: [ self inspect ] ] ]
 ]
 
 { #category : #'submenu-visualization' }

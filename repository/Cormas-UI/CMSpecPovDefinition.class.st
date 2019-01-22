@@ -40,6 +40,11 @@ CMSpecPovDefinition class >> defaultSpec [
 				add: #symbolsList ]
 ]
 
+{ #category : #examples }
+CMSpecPovDefinition class >> example [
+self new open
+]
+
 { #category : #initialization }
 CMSpecPovDefinition >> initialExtent [
 	"Answer the initial extent for the receiver."
