@@ -9,7 +9,8 @@ Class {
 		'origin',
 		'speed',
 		'window',
-		'cellViews'
+		'cellViews',
+		'activePovsSelector'
 	],
 	#category : #'Cormas-UI-PoV'
 }
@@ -37,6 +38,16 @@ CMSpaceView class >> openOn: aCMCormasModel [
 	^ newBe
 ]
 
+{ #category : #accessing }
+CMSpaceView >> activePovsSelector [
+	^ activePovsSelector ifNil: [ activePovsSelector := Dictionary new ]
+]
+
+{ #category : #accessing }
+CMSpaceView >> activePovsSelector: anObject [
+	activePovsSelector := anObject
+]
+
 { #category : #refreshing }
 CMSpaceView >> addNewSituatedEntities [
 	
@@ -54,28 +65,29 @@ CMSpaceView >> addNewSituatedEntities [
 { #category : #'instance creation' }
 CMSpaceView >> addViewForAgents: situatedEntities [
 	"Organize coordinate system"
+
 	| windowSize |
-	origin := (self elements collect: [ :e | e position x ]) min
-		@ (self elements collect: [ :e | e position y ]) min.
-	windowSize := (self elements collect: [ :e | e position x ]) max
-		@ (self elements collect: [ :e | e position y ]) max.
+	
+	origin := (self elements collect: [ :e | e position x ]) min @ (self elements collect: [ :e | e position y ]) min.
+	windowSize := (self elements collect: [ :e | e position x ]) max @ (self elements collect: [ :e | e position y ]) max.
 	"9@6 / (3@2)"
 	cellSize := (windowSize - origin) / (model spaceModel column @ model spaceModel line).
-	situatedEntitiesViews := ((RTEllipse new
-				color: [ :fe | fe getColorForPov: #pov ];
-				size: [:fe | fe sizeOfPOV]) elementsOn: situatedEntities).
-	
+	situatedEntitiesViews := (RTEllipse new
+		color: [ :fe | fe getColorForPov: (self getActivePovSelectorOf: fe class)];
+		size: [ :fe | fe sizeOfPOV ]) elementsOn: situatedEntities.
 	self addAll: situatedEntitiesViews.
 	"Adding property to be draggable"
-	situatedEntitiesViews do: [:situatedEntityEl | situatedEntityEl @  CMDraggableSituatedEntity]
-	
+	situatedEntitiesViews do: [ :situatedEntityEl | situatedEntityEl @ CMDraggableSituatedEntity ]
 ]
 
 { #category : #'instance creation' }
 CMSpaceView >> addViewForCells: cells [
+	| cellClass |
+
+	cellClass := cells first class.
 	cellViews := (RTBox new
-		color: [ :e | e getColorForPov: #pov ];
-		size: 25) elementsOn: cells.
+		color: [ :e | e getColorForPov: (self getActivePovSelectorOf: cellClass) ];
+		size: self cellSize) elementsOn: cells.
 	self addAll: cellViews.
 	RTGridLayout new
 		gapSize: 0;
@@ -85,6 +97,7 @@ CMSpaceView >> addViewForCells: cells [
 
 { #category : #'instance creation' }
 CMSpaceView >> addViewForCells: cells withPov: aPovName [
+self flag: #toBeRevised. "This method seems obsolete"
 	cellViews := (RTBox new
 		color: [ :e | e getColorForPov: aPovName ];
 		size: 25) elementsOn: cells.
@@ -97,7 +110,7 @@ CMSpaceView >> addViewForCells: cells withPov: aPovName [
 
 { #category : #accessing }
 CMSpaceView >> cellSize [
-	^ cellSize 
+	^ cellSize ifNil:[ cellSize := 25]
 ]
 
 { #category : #accessing }
@@ -114,6 +127,12 @@ CMSpaceView >> cellViews [
 CMSpaceView >> clearView [
 	self situatedEntitiesViews removeAll.
 	self clean
+]
+
+{ #category : #accessing }
+CMSpaceView >> getActivePovSelectorOf: aClass [
+^self activePovsSelector at: aClass ifAbsent: [ nil ]
+	
 ]
 
 { #category : #initialization }
@@ -152,6 +171,18 @@ CMSpaceView >> removeObsoleteSituatedEntities [
 ]
 
 { #category : #accessing }
+CMSpaceView >> setActivePovSelectorOf: aClass with: aSymbol [
+self activePovsSelector at: aClass put: aSymbol
+]
+
+{ #category : #accessing }
+CMSpaceView >> setAndRefreshActivePovSelectorOf: aClass with: aSymbol [ 
+self setActivePovSelectorOf: aClass with: aSymbol .
+	self elements do: #updateShape.
+	self canvas signalUpdate
+]
+
+{ #category : #accessing }
 CMSpaceView >> situatedEntitiesViews [
 	^ situatedEntitiesViews ifNil: [ situatedEntitiesViews := IndexedSet new]
 ]
@@ -182,8 +213,7 @@ CMSpaceView >> timeChanged: aNewTimeStep [
 			self addViewForCells: model theESE ]
 		ifFalse: [ self removeObsoleteSituatedEntities ].
 	self addNewSituatedEntities.
-	situatedEntitiesViews
-		do: [ :e | e translateTo: e model patch x @ e model patch y * cellSize ].
+	situatedEntitiesViews do: [ :e | e translateTo: e model patch x @ e model patch y * cellSize ].
 	self elements do: #updateShape.
 	self canvas signalUpdate
 ]

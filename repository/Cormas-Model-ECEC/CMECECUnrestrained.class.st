@@ -57,8 +57,17 @@ CMECECUnrestrained >> energy [
 	^energy ifNil: [energy := 50]
 ]
 
-{ #category : #accessing }
+{ #category : #pov }
 CMECECUnrestrained >> pov [
 
 	^ Color red
+]
+
+{ #category : #pov }
+CMECECUnrestrained >> povEnergy [
+	^ self
+		povAttribute: #energy
+		min: 0
+		max: 180
+		color: Color red
 ]
