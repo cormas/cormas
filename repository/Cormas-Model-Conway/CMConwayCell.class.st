@@ -23,7 +23,15 @@ CMConwayCell class >> SpatialEntityPOV_dead [
 	"Returns an array containing the settings of a Spatial entity pov symbol in the following order:
 (color red) (color green) (color blue)"
 	<pov:#dead>
-	^Array with: 0.0 with: 0.0 with: 0.0
+	^Array with: 0.0 with: 0.0 with: 0
+]
+
+{ #category : #'pov symbols' }
+CMConwayCell class >> SpatialEntityPOV_dead_red [
+	"Returns an array containing the settings of a Spatial entity pov symbol in the following order:
+(color red) (color green) (color blue)"
+	<pov:#dead_red>
+	^Array with: 0.5 with: 0.0 with: 0.1
 ]
 
 { #category : #'- default value' }
@@ -73,11 +81,13 @@ CMConwayCell >> newState [
 ]
 
 { #category : #pov }
-CMConwayCell >> pdv [
-	^ state
+CMConwayCell >> pov [
+	^ self state
 ]
 
 { #category : #pov }
-CMConwayCell >> pov [
-	^ state
+CMConwayCell >> pov_red [
+	self state = #dead
+		ifTrue: [ ^ #dead_red ].
+	^ self state
 ]

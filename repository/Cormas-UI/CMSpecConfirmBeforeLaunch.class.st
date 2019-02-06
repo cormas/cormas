@@ -83,7 +83,7 @@ CMSpecConfirmBeforeLaunch >> applyScenarioSettings [
 			"refactoredProbesList := 'CMFireAutomataModel>>nbTrees'."
 			self cormasModelClass setActiveProbes: (Array with: self probesList selectedItem) ].
 	self projectManager projectWindow simWindow simWindow finalStepInputText
-		text: self finalStep text asInteger .
+		text: (self finalStep text ifNil:[0] ifNotNil:[:userDefinedStep | userDefinedStep]).
 	self cormasModel initSimulation.
 	self delete
 ]

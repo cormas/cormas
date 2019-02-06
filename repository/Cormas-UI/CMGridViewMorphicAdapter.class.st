@@ -25,7 +25,7 @@ CMGridViewMorphicAdapter >> adapt: aComposableModel [
 
 { #category : #private }
 CMGridViewMorphicAdapter >> buildWidget [
-	view := CMSpaceView new.
+	view := CMSpaceView new. self flag: #toBeRevewed. "why in this case (when using the cormasUI), it uses CMSpaceView class as a view, while when launching simulations through model examples, it uses CMSimulationGrid class which is a subclass of CMSpaceView ? "
 	view initializeOn: self model owner projectManager cormasModel.
 	view subscribeOn: self model owner projectManager cormasModel.
 	^ view

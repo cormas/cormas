@@ -63,8 +63,17 @@ CMECECRestrained >> energy: x [
 	energy := x
 ]
 
-{ #category : #accessing }
+{ #category : #pov }
 CMECECRestrained >> pov [
 
 	^ Color blue
+]
+
+{ #category : #pov }
+CMECECRestrained >> povEnergy [
+	^ self
+		povAttribute: #energy
+		min: 0
+		max: 180
+		color: Color blue
 ]

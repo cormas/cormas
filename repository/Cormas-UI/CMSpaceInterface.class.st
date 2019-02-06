@@ -365,7 +365,7 @@ CMSpaceInterface >> subMenuForClassPov: aClass [
 						addItem: [ :item | 
 							item
 								name: povName selector;
-								action: [ "Changer le pov de cette classe dans la vue spaceView.." ] ] ] ]
+								action: [self spaceView setAndRefreshActivePovSelectorOf: aClass with: item name." Changer le pov de cette classe dans la vue spaceView. en utilisant l'argument (item name) " ] ] ] ]
 ]
 
 { #category : #private }

@@ -7,9 +7,10 @@ Class {
 	#classInstVars : [
 		'fertilityThreshold',
 		'catabolicRate',
-		'harvestRate'
+		'harvestRate',
+		'palette'
 	],
-	#category : 'Cormas-Model-ECEC'
+	#category : #'Cormas-Model-ECEC'
 }
 
 { #category : #'pov symbols' }
@@ -192,7 +193,7 @@ CMECECForager >> reproduce [
 	newForager moveTo: freePlace
 ]
 
-{ #category : #pov }
+{ #category : #povSize }
 CMECECForager >> sizeOfPOV [
 ^ 15 + ((self energy / self class fertilityThreshold) * 40)
 ]
