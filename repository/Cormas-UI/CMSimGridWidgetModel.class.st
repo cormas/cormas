@@ -1,6 +1,6 @@
 Class {
 	#name : #CMSimGridWidgetModel,
-	#superclass : #AbstractWidgetModel,
+	#superclass : #AbstractWidgetPresenter,
 	#category : #'Cormas-UI-PoV'
 }
 

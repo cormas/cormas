@@ -237,7 +237,7 @@ CMProjectManager >> openModelNamed: aString [
 	" Request a file to be opened as CORMAS project "
 
 	(FDOpenFileDialog new
-		title: ('Choose st file');
+		title: 'Choose st file';
 		extensionFilters: 	{ 'st files' -> #(st) };
 		defaultFolder:  FileLocator imageDirectory / 'Models'/ aString ;
 		openModal)	
@@ -246,7 +246,7 @@ CMProjectManager >> openModelNamed: aString [
 			[ fileRef readStream fileInDisplayingProgress ]
 			on: Exception
 			do: [ : ex | 
-				self alertMessage: ex messageText. 
+				self alertMessage: ex asString. 
 				openStatus := false ].
 			openStatus := true.
 			^ fileRef fullName ]

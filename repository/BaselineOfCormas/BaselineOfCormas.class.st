@@ -91,9 +91,9 @@ BaselineOfCormas >> ensureMetacelloFileDownload [
 
 { #category : #doits }
 BaselineOfCormas >> isWelcomeWindow: sm [
-	^ sm isSystemWindow
-		and: [ sm label = (Smalltalk globals at: #PharoWelcomePage) title
-				or: [ sm label endsWith: 'Welcome' ] ]
+	" Answer <true> if sm matches the Pharo Welcome window "
+
+	^ sm isSystemWindow and: [ sm label endsWith: 'Welcome' ]
 ]
 
 { #category : #doits }
@@ -141,7 +141,7 @@ BaselineOfCormas >> preLoadConfiguration [
 	Smalltalk tools debugger
 		alwaysOpenFullDebugger: true;
 		filterCommonMessageSends: true.
-	Pharo3Theme beCurrent.
+	PharoLightTheme beCurrent.
 
 
 
