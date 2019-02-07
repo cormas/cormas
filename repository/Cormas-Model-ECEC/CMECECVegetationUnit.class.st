@@ -7,9 +7,9 @@ Class {
 	#classInstVars : [
 		'K',
 		'r',
-		'pallete'
+		'palette'
 	],
-	#category : 'Cormas-Model-ECEC'
+	#category : #'Cormas-Model-ECEC'
 }
 
 { #category : #accessing }
@@ -55,10 +55,10 @@ CMECECVegetationUnit class >> k_default [
 ]
 
 { #category : #'- default value' }
-CMECECVegetationUnit class >> pallete [
-
-	^ pallete ifNil: [ pallete := RTMultiLinearColor new
-		colors: (RTColorPalette sequential colors: 9 scheme: 'YlGnBu') ].
+CMECECVegetationUnit class >> palette [
+	^ palette
+		ifNil: [ palette := RTMultiLinearColor new
+				colors: (RTColorPalette sequential colors: 9 scheme: 'YlGnBu') ]
 ]
 
 { #category : #accessing }
@@ -136,7 +136,7 @@ CMECECVegetationUnit >> logisticGrowth [
 { #category : #control }
 CMECECVegetationUnit >> pov [
 
-	^ self class pallete
+	^ self class palette
 		rtValue: (self biomass / 10.0)
 		
 

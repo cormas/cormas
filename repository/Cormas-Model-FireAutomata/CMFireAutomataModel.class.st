@@ -46,6 +46,11 @@ CMFireAutomataModel class >> defaultControl [
 ]
 
 { #category : #'default settings' }
+CMFireAutomataModel class >> defaultFinalStep [
+	^ 200
+]
+
+{ #category : #'default settings' }
 CMFireAutomataModel class >> defaultInit [
 
 	^ defaultInit ifNil: [ defaultInit := #init58WithFireWithFiremen ]
@@ -119,7 +124,7 @@ CMFireAutomataModel class >> example10 [
 		activeControl: #stepGrowingFiremen:;
 		initSimulation.
 	"open interface"
-	(CMSimulationGrid new
+	((CMSimulationGrid initialize new)
 		on: aModel
 		withCells: aModel theCMFireAutomataCells
 		withSituatedEntities: aModel theCMFiremans) runAndVisualizeWithMenus goSlow
@@ -135,7 +140,7 @@ CMFireAutomataModel class >> example2 [
 		dimensions: 80 -> 200;
 		activeControl: #step:;
 		initSimulation.
-	(CMSimulationGrid new on: aModel with: aModel theCMFireAutomataCells) runAndVisualize
+	((CMSimulationGrid initialize new) on: aModel with: aModel theCMFireAutomataCells) runAndVisualize
 ]
 
 { #category : #examples }
@@ -148,7 +153,7 @@ CMFireAutomataModel class >> example3 [
 		dimensions: 60 -> 80;
 		activeControl: #step:;
 		initSimulation.
-	(CMSimulationGrid new
+	((CMSimulationGrid initialize new)
 		on: aModel
 		withCells: aModel theCMFireAutomataCells
 		withSituatedEntities: aModel theCMFiremans) runAndVisualize
@@ -168,7 +173,7 @@ CMFireAutomataModel class >> example4 [
 		activeControl: #step:;
 		initSimulation.
 	"open interface"
-	(CMSimulationGrid new
+	((CMSimulationGrid initialize new)
 		on: aModel
 		withCells: aModel theCMFireAutomataCells
 		withSituatedEntities: aModel theCMFiremans) runAndVisualizeWithMenus
@@ -292,8 +297,7 @@ CMFireAutomataModel class >> example9 [
 		activeControl: #step:;
 		initSimulation.
 	"open interface"
-	(CMSimulationGrid new
-		on: aModel
+	((CMSimulationGrid initialize new) on: aModel
 		withCells: aModel theCMFireAutomataCells
 		withSituatedEntities: aModel theCMFiremans) runAndVisualizeWithMenus goSlow
 ]
@@ -496,6 +500,23 @@ CMFireAutomataModel >> initAgents [
 
 	self setRandomlyLocatedAgents: CMFireman n: self numberOfFiremen.
 	self generateSymetricNetworkDensity: 1 forAgents: CMFireman.
+]
+
+{ #category : #init }
+CMFireAutomataModel >> initSmallWithFireWithFiremen [
+	| aCell |
+	self
+		createGridX: 40
+		Y: 40
+		neighbourhood: 4
+		closed: false.
+	self initCells: #init58.
+	1 to: self numberOfFires do: [ :i | 
+		aCell := self pickCell.
+		aCell = nil
+			ifTrue: [ self halt ].
+		aCell state: #fire ].
+	self initAgents
 ]
 
 { #category : #init }

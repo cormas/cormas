@@ -1508,12 +1508,11 @@ CMSpecPovSetter_Agent >> initMenuAddSameAs [
 
 { #category : #'initialize-release' }
 CMSpecPovSetter_Agent >> initialize [
-	
 	super initialize.
-	tailleHolder := 1 asValue.
-	tailleHolder onChangeSend: #sizeSliderChanged to: self.
+	tailleHolder := 1" asValue".
+	"tailleHolder onChangeSend: #sizeSliderChanged to: self.
 	tailleSlider := RangeAdaptor on: tailleHolder start: 0.1 stop: 1 grid: 0.1.
-	self occupantPosition onChangeSend: #positionChanged to: self
+	self occupantPosition onChangeSend: #positionChanged to: self"
 ]
 
 { #category : #aspects }

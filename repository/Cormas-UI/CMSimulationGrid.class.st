@@ -1,76 +1,8 @@
 Class {
 	#name : #CMSimulationGrid,
-	#superclass : #RTView,
-	#instVars : [
-		'anim',
-		'cellSize',
-		'model',
-		'situatedEntitiesViews',
-		'origin',
-		'speed'
-	],
-	#category : 'Cormas-UI-Core'
+	#superclass : #CMSpaceView,
+	#category : #'Cormas-UI-PoV'
 }
-
-{ #category : #'instance creation' }
-CMSimulationGrid class >> openOn: aCMCormasModel [
-	"This method is called by the CMSpecProjectWindow. It creates, subscribes and opens a simulationGrid on a cormasModel"
-
-	| newBe |
-	newBe := self new.
-	newBe initializeOn: aCMCormasModel.
-	newBe subscribeOn: aCMCormasModel.
-	newBe openWithToolbar.
-	^ newBe
-]
-
-{ #category : #'model scheduling' }
-CMSimulationGrid >> addNewSituatedEntities [
-	
-	| newSituatedEntities newSituatedEntitiesViews |
-	newSituatedEntities := model allTheSituatedEntities select: [ :a | ((situatedEntitiesViews collect: [ :e | e model ]) includes: a) not ].
-	newSituatedEntitiesViews := (RTEllipse new
-		color: [ :fe | fe getColorForPov: #pov ];
-		size: [:aSituatedEntity | aSituatedEntity sizeOfPOV]) elementsOn: newSituatedEntities.
-	situatedEntitiesViews addAll: newSituatedEntitiesViews.
-	self addAll: newSituatedEntitiesViews.
-	newSituatedEntitiesViews do: [:nse | nse @ CMDraggableSituatedEntity  ]
-	
-]
-
-{ #category : #'instance creation' }
-CMSimulationGrid >> addViewForAgents: situatedEntities [
-	"Organize coordinate system"
-	| windowSize |
-	origin := (self elements collect: [ :e | e position x ]) min
-		@ (self elements collect: [ :e | e position y ]) min.
-	windowSize := (self elements collect: [ :e | e position x ]) max
-		@ (self elements collect: [ :e | e position y ]) max.
-	"9@6 / (3@2)"
-	cellSize := (windowSize - origin) / (model spaceModel column @ model spaceModel line).
-	situatedEntitiesViews := ((RTEllipse new
-				color: [ :fe | fe getColorForPov: #pov ];
-				size: [:fe | fe sizeOfPOV]) elementsOn: situatedEntities).
-	
-	self addAll: situatedEntitiesViews.
-	"Adding property to be draggable"
-	situatedEntitiesViews do: [:situatedEntityEl | situatedEntityEl @  CMDraggableSituatedEntity]
-	
-]
-
-{ #category : #'instance creation' }
-CMSimulationGrid >> addViewForCells: cells [
-self
-		addAll:
-			((RTBox new
-				color: [ :e | 
-					e getColorForPov: #pov ];
-				size: 25) elementsOn: cells).
-	RTGridLayout new
-		gapSize: 0;
-		lineItemsCount: model spaceModel column;
-		on: self elements.
-]
 
 { #category : #'opening and menus' }
 CMSimulationGrid >> buildMenu [
@@ -101,16 +33,6 @@ CMSimulationGrid >> buildMenu [
 				on: model
 				withCells: model spaceModelEntities
 				withSituatedEntities: model allTheSituatedEntities ]
-]
-
-{ #category : #accessing }
-CMSimulationGrid >> cellSize [
-	^ cellSize 
-]
-
-{ #category : #accessing }
-CMSimulationGrid >> cellSize: anObject [
-	cellSize := anObject
 ]
 
 { #category : #'opening and menus' }
@@ -187,18 +109,6 @@ CMSimulationGrid >> goSlow [
 anim intervalInMilliseconds: 1000
 ]
 
-{ #category : #initialization }
-CMSimulationGrid >> initializeOn: aModel [ 
-	"This method initializes a simulationGrid for a specific cormasModel , without specifyin any animation behaviour"
-
-	model := aModel.
-	self addViewForCells: aModel theESE.
-	self addViewForAgents: aModel allTheSituatedEntities.
-	self canvas camera focusOnCenterScaled.
-	situatedEntitiesViews do: [ :e | e translateTo: e model patch x @ e model patch y * cellSize ].
-
-]
-
 { #category : #'instance creation' }
 CMSimulationGrid >> on: aModel [
 
@@ -207,26 +117,21 @@ CMSimulationGrid >> on: aModel [
 
 { #category : #'instance creation' }
 CMSimulationGrid >> on: aModel with: cells [
-
-
-	self addAll: ((RTBox new color: [ :e | 
-		e getColorForPov: #pov]; 
-		size: 25) 
-		elementsOn: cells).
-
+	self
+		addAll:
+			((RTBox new
+				color: [ :e | e getColorForPov: #pov ];
+				size: 25) elementsOn: cells).
 	RTGridLayout new
 		gapSize: 0;
 		lineItemsCount: aModel spaceModel column;
 		on: self elements.
-
 	self canvas camera focusOnCenterScaled.
-	
 	anim := RTActiveAnimation new.
 	anim intervalInMilliseconds: 0.
 	anim
 		blockToExecute: [ aModel runStep.
 			self elements do: #updateShape ].
-	
 	anim inView: self.
 ]
 
@@ -326,24 +231,6 @@ CMSimulationGrid >> on: aModel withCells: cells withSituatedEntities: situatedEn
 	anim inView: self
 ]
 
-{ #category : #accessing }
-CMSimulationGrid >> origin [
-	^ origin
-]
-
-{ #category : #accessing }
-CMSimulationGrid >> origin: anObject [
-	origin := anObject
-]
-
-{ #category : #'model scheduling' }
-CMSimulationGrid >> removeObsoleteSituatedEntities [
-	| obsoleteSituatedEntities |
-	obsoleteSituatedEntities  := situatedEntitiesViews select: [ :e | e model isSituated not ].
-	obsoleteSituatedEntities do:[:e| e remove].
-	situatedEntitiesViews removeAll: obsoleteSituatedEntities.
-]
-
 { #category : #'opening and menus' }
 CMSimulationGrid >> runAndVisualize [
 
@@ -386,38 +273,4 @@ CMSimulationGrid >> runModelStep [
 	self addNewSituatedEntities.
 	situatedEntitiesViews do: [ :e | e translateTo: e model patch x @ e model patch y * cellSize ].
 	self elements do: #updateShape
-]
-
-{ #category : #accessing }
-CMSimulationGrid >> situatedEntitiesViews [
-	^ situatedEntitiesViews
-]
-
-{ #category : #accessing }
-CMSimulationGrid >> situatedEntitiesViews: anObject [
-	situatedEntitiesViews := anObject
-]
-
-{ #category : #initialization }
-CMSimulationGrid >> subscribeOn: aModel [ 
-	"This method subscribes the simualtionGrid to the timeChange announcements of a cormasModel.
-	When the simulation time has change, the simulation grid can update it self by calling  self  canvas signalUpdate "
-
-	model announcer
-		subscribe: CMTimeChangedAnnouncement
-			do: [ :aAnnounce | 
-			aAnnounce timeStep = 0
-				ifFalse: [ self timeChanged: aAnnounce timeStep ] ];
-		subscribe: CMSimInitializationAnnouncement do: [ self timeChanged: 0 ].
-
-]
-
-{ #category : #refreshing }
-CMSimulationGrid >> timeChanged: aNewTimeStep [
-
-self removeObsoleteSituatedEntities.
-	self addNewSituatedEntities.
-	situatedEntitiesViews do: [ :e | e translateTo: e model patch x @ e model patch y * cellSize ].
-	self elements do: #updateShape.
-self canvas signalUpdate
 ]
