@@ -1,10 +1,10 @@
 Class {
 	#name : #CMSpecObject,
-	#superclass : #ComposableModel,
+	#superclass : #ComposablePresenter,
 	#instVars : [
 		'projectManager'
 	],
-	#category : 'Cormas-UI-Core'
+	#category : #'Cormas-UI-Core'
 }
 
 { #category : #examples }
@@ -88,7 +88,7 @@ CMSpecObject >> cormasModelClass [
 
 { #category : #accessing }
 CMSpecObject >> iconNamed: aSymbol [
-	" Answer a <> "
+	" Answer a <Form> representing a Cormas icon "
 
 	^ CMIcons perform: aSymbol
 ]

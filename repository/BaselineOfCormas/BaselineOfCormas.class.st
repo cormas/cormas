@@ -21,8 +21,8 @@ BaselineOfCormas >> baseline: spec [
 		spec postLoadDoIt: #postLoad.		
 		spec repository: 'https://github.com/cormas/cormas'.
  		spec 
-			baseline: 'ClassEditor' 
-			with: [ spec repository: 'github://openponk/class-editor/repository' ];
+"			baseline: 'ClassEditor' 
+			with: [ spec repository: 'github://openponk/class-editor/repository' ];"
 			baseline: 'FileDialog'
 			with: [ spec repository: 'github://peteruhnak/file-dialog/repository' ];
 			baseline: 'ProjectFramework' 
@@ -62,7 +62,7 @@ BaselineOfCormas >> baseline: spec [
 			package: 'Cormas-UI' 					with: [ spec requires: #('FileDialog' 'ProjectFramework' 'CodeGenerator' 'Roassal2' ). ];
 			package: 'Cormas-VW-Ported'.
 		spec 
-			group: 'All' with: #(#'Cormas-VW-Ported' 'Cormas-UI' 'Cormas-Tests' 'Cormas-Model-FireAutomata' 'Cormas-Model-ECEC' 'Cormas-Model-Conway' 'Cormas-Core' 'ClassEditor' 'Cormas-Model-Diffuse' #'Cormas-Model-DemoAggregates' 'Cormas-OpenMole');
+			group: 'All' with: #(#'Cormas-VW-Ported' 'Cormas-UI' 'Cormas-Tests' 'Cormas-Model-FireAutomata' 'Cormas-Model-ECEC' 'Cormas-Model-Conway' 'Cormas-Core' "'ClassEditor'" 'Cormas-Model-Diffuse' #'Cormas-Model-DemoAggregates' 'Cormas-OpenMole');
 			group: 'Core' with: #('Cormas-Core' );
 			group: 'Models' with: #('Cormas-Model-Conway' 'Cormas-Core' 'Cormas-Model-ECEC' 'Cormas-Model-FireAutomata' 'Cormas-Model-Diffuse' #'Cormas-Model-DemoAggregates' );
 			group: 'Tests' with: #('Cormas-Core' 'Cormas-Tests' );
@@ -91,9 +91,9 @@ BaselineOfCormas >> ensureMetacelloFileDownload [
 
 { #category : #doits }
 BaselineOfCormas >> isWelcomeWindow: sm [
-	^ sm isSystemWindow
-		and: [ sm label = (Smalltalk globals at: #PharoWelcomePage) title
-				or: [ sm label endsWith: 'Welcome' ] ]
+	" Answer <true> if sm matches the Pharo Welcome window "
+
+	^ sm isSystemWindow and: [ sm label endsWith: 'Welcome' ]
 ]
 
 { #category : #doits }
@@ -141,7 +141,7 @@ BaselineOfCormas >> preLoadConfiguration [
 	Smalltalk tools debugger
 		alwaysOpenFullDebugger: true;
 		filterCommonMessageSends: true.
-	Pharo3Theme beCurrent.
+	PharoLightTheme beCurrent.
 
 
 

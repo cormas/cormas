@@ -26,7 +26,7 @@ Internal Representation and Key Implementation Points.
 "
 Class {
 	#name : #CMSpecPassiveAddRBGroup,
-	#superclass : #ComposableModel,
+	#superclass : #ComposablePresenter,
 	#instVars : [
 		'buttonObject',
 		'buttonLocatedObject',
@@ -35,7 +35,7 @@ Class {
 		'buttonFullNetwork',
 		'buttonMessage'
 	],
-	#category : 'Cormas-UI-Core'
+	#category : #'Cormas-UI-Core'
 }
 
 { #category : #specs }

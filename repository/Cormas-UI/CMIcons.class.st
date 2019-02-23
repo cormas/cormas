@@ -33,7 +33,7 @@ CMIcons class >> defineScenarioIcon [
 	^ self icons
 		at: #defineScenarioIcon
 		ifAbsentPut: [ Form
-				fromBinaryStream: (Base64MimeConverter mimeDecodeToBytes: self defineScenarioIconContents readStream) ]
+				fromBinaryStream: (self defineScenarioIconContents base64Decoded readStream) ]
 ]
 
 { #category : #'private - contents' }
@@ -66,6 +66,15 @@ CMIcons class >> doesNotUnderstand: aMessage [
 	^ aMessage selector asIcon
 
 
+]
+
+{ #category : #'accessing - icons' }
+CMIcons class >> exec1StepIcon [
+	"Private - Generated method"
+	^ self icons
+		at: #exec1StepIcon
+		ifAbsentPut: [ Form
+				fromBinaryStream: (self exec1StepIconContents base64Decoded readStream) ]
 ]
 
 { #category : #'private - contents' }
@@ -120,7 +129,7 @@ CMIcons class >> replay1StoredStepDisabledIcon [
 	^ self icons
 		at: #replay1StoredStepDisabledIcon
 		ifAbsentPut: [ Form
-				fromBinaryStream: (Base64MimeConverter mimeDecodeToBytes: self replay1StoredStepDisabledIconContents readStream) ]
+				fromBinaryStream: (self replay1StoredStepDisabledIconContents base64Decoded readStream) ]
 ]
 
 { #category : #'private - contents' }
@@ -138,6 +147,15 @@ y7IQQgAwnU5d10UIua5rGMbDHiFESaooy5IxlmUZpdTzvNlsdv0wAACA53m33vbY+WSMMcYA
 IAgCSiml9KHp3V5zWV8nTdMkSYQQvu+7ruu6rtqwHjwVtYYY46IowjC8XC6U0tFo5DjOcDh8
 QrrjEUKKotjtdofDwXEc3/dbW9WnRwhRF4dpmuPxeLFYvF266WGMMcZJkvi+36P0J8+yrOVy
 2a+k0nG/YIyfO3tPeu+aT+/f9n4DW40aAwDjCQQAAAAASUVORK5CYII='
+]
+
+{ #category : #'accessing - icons' }
+CMIcons class >> replay1StoredStepIcon [
+	"Private - Generated method"
+	^ self icons
+		at: #replay1StoredStepIcon
+		ifAbsentPut: [ Form
+				fromBinaryStream: (self replay1StoredStepIconContents base64Decoded readStream) ]
 ]
 
 { #category : #'private - contents' }
@@ -168,7 +186,7 @@ CMIcons class >> replayAStoredSimIcon [
 	^ self icons
 		at: #replayAStoredSimIcon
 		ifAbsentPut: [ Form
-				fromBinaryStream: (Base64MimeConverter mimeDecodeToBytes: self replayAStoredSimIconContents readStream) ]
+				fromBinaryStream: (self replayAStoredSimIconContents base64Decoded readStream) ]
 ]
 
 { #category : #'private - contents' }
@@ -196,21 +214,12 @@ zPN7BOzPAAAAAElFTkSuQmCC'
 ]
 
 { #category : #'accessing - icons' }
-CMIcons class >> replayRunForwardIcon [
-	"Private - Generated method"
-	^ self icons
-		at: #replayRunForwardIcon
-		ifAbsentPut: [ Form
-				fromBinaryStream: (Base64MimeConverter mimeDecodeToBytes: self replayStoredSimIconContents readStream) ]
-]
-
-{ #category : #'accessing - icons' }
 CMIcons class >> replaySimBackwardDisabledIcon [
 	"Private - Generated method"
 	^ self icons
 		at: #replaySimBackwardDisabledIcon
 		ifAbsentPut: [ Form
-				fromBinaryStream: (Base64MimeConverter mimeDecodeToBytes: self replaySimBackwardDisabledIconContents readStream) ]
+				fromBinaryStream: (self replaySimBackwardDisabledIconContents base64Decoded readStream) ]
 ]
 
 { #category : #'private - contents' }
@@ -239,7 +248,7 @@ CMIcons class >> replaySimBackwardIcon [
 	^ self icons
 		at: #replaySimBackwardIcon
 		ifAbsentPut: [ Form
-				fromBinaryStream: (Base64MimeConverter mimeDecodeToBytes: self replaySimBackwardIconContents readStream) ]
+				fromBinaryStream: (self replaySimBackwardIconContents base64Decoded readStream) ]
 ]
 
 { #category : #'private - contents' }
@@ -268,21 +277,12 @@ GStQUmP6FUgAAAAASUVORK5CYII='
 ]
 
 { #category : #'accessing - icons' }
-CMIcons class >> replayStepForwardIcon [
-	"Private - Generated method"
-	^ self icons
-		at: #replayStepForwardIcon
-		ifAbsentPut: [ Form
-				fromBinaryStream: (Base64MimeConverter mimeDecodeToBytes: self replay1StoredStepIconContents readStream) ]
-]
-
-{ #category : #'accessing - icons' }
 CMIcons class >> replayStoredSimDisabledIcon [
 	"Private - Generated method"
 	^ self icons
 		at: #replayStoredSimDisabledIcon
 		ifAbsentPut: [ Form
-				fromBinaryStream: (Base64MimeConverter mimeDecodeToBytes: self replayStoredSimDisabledIconContents readStream) ]
+				fromBinaryStream: (self replayStoredSimDisabledIconContents base64Decoded readStream) ]
 ]
 
 { #category : #'private - contents' }
@@ -302,6 +302,15 @@ Ly8558PhsPO0+jrNnxvnt7c3AEiSJI7ji4uLY0h2+XA4dKf2mBDSNr3B01q/vLwURRFFUZIk
 4/GYc37wYwQA9q9AShmGoS04YywMw6IoOOdBEGzhMcbSNKWUzmazKIqiKDqIcbL5xXHseZ7l
 EUKm0+loNKKUjsdjF0ncfCCilNJ2xJEFPFXLxSs5wz9Zm/df/e/+g7xfTKFX1x7LBeIAAAAA
 SUVORK5CYII='
+]
+
+{ #category : #'accessing - icons' }
+CMIcons class >> replayStoredSimIcon [
+	"Private - Generated method"
+	^ self icons
+		at: #replayStoredSimIcon
+		ifAbsentPut: [ Form
+				fromBinaryStream: (self replayStoredSimIconContents base64Decoded readStream) ]
 ]
 
 { #category : #'private - contents' }
@@ -342,7 +351,7 @@ CMIcons class >> run1StepBackwardDisabledIcon [
 	^ self icons
 		at: #run1StepBackwardDisabledIcon
 		ifAbsentPut: [ Form
-				fromBinaryStream: (Base64MimeConverter mimeDecodeToBytes: self run1StepBackwardDisabledIconContents readStream) ]
+				fromBinaryStream: (self run1StepBackwardDisabledIconContents base64Decoded readStream) ]
 ]
 
 { #category : #'private - contents' }
@@ -369,7 +378,7 @@ CMIcons class >> run1StepBackwardIcon [
 	^ self icons
 		at: #run1StepBackwardIcon
 		ifAbsentPut: [ Form
-				fromBinaryStream: (Base64MimeConverter mimeDecodeToBytes: self run1StepBackwardIconContents readStream) ]
+				fromBinaryStream: (self run1StepBackwardIconContents base64Decoded readStream) ]
 ]
 
 { #category : #'private - contents' }
@@ -392,6 +401,15 @@ cZzXx13XdV230WiYZtcq9b36qNUKDdMURYXB0fWwYH8pl8vlcnl9fV3V+n1v5G0Ou14oy1oO
 +UXq4ZhRqVQ6nU5gBKrV7bfHW/UQEg4Zf1o8ACCEiKKoKIphDNRC4DemvUbM5QRgs5v+CXyP
 TNM0TXMwGBiGoeu+7W57/0Rhh+Es5IndJzKqruue5qlGb+DvtGuxU1JPi5eF4ziSJFmWFZiB
 ez4yCod/S07+viTLsizLhJCZ2Xfovvte8v4HgLdn1doyx+wAAAAASUVORK5CYII='
+]
+
+{ #category : #'accessing - icons' }
+CMIcons class >> runAllSimIcon [
+	"Private - Generated method"
+	^ self icons
+		at: #runAllSimIcon
+		ifAbsentPut: [ Form
+				fromBinaryStream: (self runAllSimIconContents base64Decoded readStream) ]
 ]
 
 { #category : #'private - contents' }
@@ -421,30 +439,12 @@ V3Z2djojhHnPPlcFxZLJfD6/p1S9Vr1edxwnHo+LSKv9gwjGGLvjVSj0vrS8vExEqVSqo4v/
 ]
 
 { #category : #'accessing - icons' }
-CMIcons class >> runSimIcon [
-	"Private - Generated method"
-	^ self icons
-		at: #runSimIcon
-		ifAbsentPut: [ Form
-				fromBinaryStream: (Base64MimeConverter mimeDecodeToBytes: self runAllSimIconContents readStream) ]
-]
-
-{ #category : #'accessing - icons' }
-CMIcons class >> runStepByStepSimIcon [
-	"Private - Generated method"
-	^ self icons
-		at: #runStepByStepSimIcon
-		ifAbsentPut: [ Form
-				fromBinaryStream: (Base64MimeConverter mimeDecodeToBytes: self exec1StepIconContents readStream) ]
-]
-
-{ #category : #'accessing - icons' }
 CMIcons class >> smallCormasLogoIcon [
 	"Private - Generated method"
 	^ self icons
 		at: #smallCormasLogoIcon
 		ifAbsentPut: [ Form
-				fromBinaryStream: (Base64MimeConverter mimeDecodeToBytes: self smallCormasLogoIconContents readStream) ]
+				fromBinaryStream: (self smallCormasLogoIconContents base64Decoded readStream) ]
 ]
 
 { #category : #'private - contents' }

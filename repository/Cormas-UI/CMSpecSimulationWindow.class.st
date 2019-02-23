@@ -59,9 +59,13 @@ Class {
 		'finalStepInputText',
 		'finalStepLabel',
 		'replayStepForwardButton',
-		'initializeSimButton'
+		'initializeSimButton',
+		'forwardStepButton',
+		'forwardAllButton',
+		'replayStepButton',
+		'replayAllButton'
 	],
-	#category : 'Cormas-UI-Core'
+	#category : #'Cormas-UI-Core'
 }
 
 { #category : #specs }
@@ -263,6 +267,20 @@ CMSpecSimulationWindow >> defineScenarioButtonMorph [
 		yourself.
 ]
 
+{ #category : #morphic }
+CMSpecSimulationWindow >> exec1StepButtonMorph [
+
+	^ IconicButton new
+		target: self;
+		actionSelector: #exec1StepAction;
+		labelGraphic: (self iconNamed: #exec1StepIcon);
+		color: Color transparent;
+		borderColor: Color red;
+		borderWidth: 1;
+		helpText: 'Execute 1 step';
+		yourself.
+]
+
 { #category : #accessing }
 CMSpecSimulationWindow >> finalStepInputText [
 	" Answer the finalStepInputText of this CMSpecSimulationWindow "
@@ -288,6 +306,16 @@ CMSpecSimulationWindow >> finalStepLabel: anObject [
 ]
 
 { #category : #accessing }
+CMSpecSimulationWindow >> forwardAllButton [
+	^ forwardAllButton
+]
+
+{ #category : #accessing }
+CMSpecSimulationWindow >> forwardAllButton: anObject [
+	forwardAllButton := anObject
+]
+
+{ #category : #accessing }
 CMSpecSimulationWindow >> forwardLabel [
 	" Answer the forwardLabel of this CMSpecSimulationWindow "
 
@@ -301,6 +329,16 @@ CMSpecSimulationWindow >> forwardLabel: anObject [
 	forwardLabel := anObject
 ]
 
+{ #category : #accessing }
+CMSpecSimulationWindow >> forwardStepButton [
+	^ forwardStepButton
+]
+
+{ #category : #accessing }
+CMSpecSimulationWindow >> forwardStepButton: anObject [
+	forwardStepButton := anObject
+]
+
 { #category : #initialization }
 CMSpecSimulationWindow >> initialExtent [
 	"Answer the initial extent for the receiver."
@@ -311,9 +349,10 @@ CMSpecSimulationWindow >> initialExtent [
 
 { #category : #initialization }
 CMSpecSimulationWindow >> initialize [
+	" Private - See superimplementor's comment "
 
-	self initializeMorphs.
 	super initialize.
+	self initializeMorphs.
 ]
 
 { #category : #initialization }
@@ -368,6 +407,7 @@ CMSpecSimulationWindow >> initializeLabels [
 
 { #category : #initialization }
 CMSpecSimulationWindow >> initializeMorphs [
+
 	self initializeSimButton: self defineScenarioButtonMorph asSpecAdapter.
 	self replayButton: self replayAStoredSimButtonMorph asSpecAdapter.
 	self backwardAllButton: self replaySimBackwardButtonMorph asSpecAdapter.
@@ -375,7 +415,11 @@ CMSpecSimulationWindow >> initializeMorphs [
 	self runStepByStepButton: self runStepByStepButtonMorph asSpecAdapter.
 	self runButton: self runButtonMorph asSpecAdapter.
 	self replayStepForwardButton: self replayStepForwardButtonMorph asSpecAdapter.
-	self replayRunForwardButton: self replayRunForwardButtonMorph asSpecAdapter
+	self replayRunForwardButton: self replayRunForwardButtonMorph asSpecAdapter.
+	self forwardStepButton: self exec1StepButtonMorph asSpecAdapter.
+	self forwardAllButton: self runAllSimButtonMorph asSpecAdapter.
+	self replayStepButton: self replay1StoredStepButtonMorph asSpecAdapter.
+	self replayAllButton: self replayStoredSimButtonMorph asSpecAdapter.
 ]
 
 { #category : #initialization }
@@ -404,43 +448,43 @@ CMSpecSimulationWindow >> initializeSimButton: anObject [
 CMSpecSimulationWindow >> initializeWidgets [
 	" Private - See superimplementor's comment "
 
-	self instantiateModels: #(
-		simulateLabel			LabelModel		
-		replayLabel				LabelModel		
-		initializeLabel			LabelModel		
-		backwardLabel			LabelModel		
-		currentStepLabel		LabelModel		
-		finalStepLabel 			LabelModel
-		forwardLabel				LabelModel
-		currentStepInputText	TextInputFieldModel					
-		finalStepInputText		TextInputFieldModel
-		changeButton				ButtonModel
-		closeButton 				ButtonModel).
+	self
+		instantiateModels:
+			#(simulateLabel LabelModel replayLabel LabelModel initializeLabel LabelModel backwardLabel LabelModel currentStepLabel LabelModel finalStepLabel LabelModel forwardLabel LabelModel currentStepInputText TextInputFieldModel finalStepInputText TextInputFieldModel changeButton ButtonModel closeButton ButtonModel).
 	self initializeFocus.
 	self initializeLabels.
-
 	self changeButton label: self translator tChange.
-
 	self closeButton
-		icon: #smallCancelIcon asIcon;
+		icon:
+			(self iconNamed: #smallCancelIcon);
 		action: [ self delete ];
 		help: self translator tSimCloseHelp.
-
 	self currentStepInputText
 		text: 0;
 		help: self translator tSimStepHelp.
-
 	self finalStepInputText
 		text: 0;
 		help: self translator tSimFinalStepHelp
-
-
 ]
 
 { #category : #changes }
 CMSpecSimulationWindow >> newCurrentStepValue: anInteger [
 anInteger isInteger ifFalse: [ self halt ].
 self currentStepInputText text: anInteger.
+]
+
+{ #category : #morphic }
+CMSpecSimulationWindow >> replay1StoredStepButtonMorph [
+
+	^ IconicButton new
+		target: self;
+		actionSelector: #replay1StoredStepAction;
+		labelGraphic: (self iconNamed: #replay1StoredStepIcon);
+		color: Color transparent;
+		borderColor: Color purple;
+		borderWidth: 1;
+		helpText: 'Replay 1 stored step';
+		yourself.
 ]
 
 { #category : #callbacks }
@@ -466,6 +510,16 @@ CMSpecSimulationWindow >> replayAStoredSimButtonMorph [
 		borderWidth: 1;
 		helpText: 'Replay a stored simulation';
 		yourself.
+]
+
+{ #category : #accessing }
+CMSpecSimulationWindow >> replayAllButton [
+	^ replayAllButton
+]
+
+{ #category : #accessing }
+CMSpecSimulationWindow >> replayAllButton: anObject [
+	replayAllButton := anObject
 ]
 
 { #category : #accessing }
@@ -548,6 +602,16 @@ CMSpecSimulationWindow >> replaySimBackwardButtonMorph [
 		yourself.
 ]
 
+{ #category : #accessing }
+CMSpecSimulationWindow >> replayStepButton [
+	^ replayStepButton
+]
+
+{ #category : #accessing }
+CMSpecSimulationWindow >> replayStepButton: anObject [
+	replayStepButton := anObject
+]
+
 { #category : #callbacks }
 CMSpecSimulationWindow >> replayStepForwardAction [
 
@@ -576,6 +640,20 @@ CMSpecSimulationWindow >> replayStepForwardButtonMorph [
 		borderWidth: 1;
 		helpText: 'Replay 1 stored step';
 		yourself
+]
+
+{ #category : #morphic }
+CMSpecSimulationWindow >> replayStoredSimButtonMorph [
+
+	^ IconicButton new
+		target: self;
+		actionSelector: #replayStoredSimAction;
+		labelGraphic: (self iconNamed: #replayStoredSimIcon);
+		color: Color transparent;
+		borderColor: Color purple;
+		borderWidth: 1;
+		helpText: 'Replay stored simulation';
+		yourself.
 ]
 
 { #category : #callbacks }
@@ -636,6 +714,20 @@ CMSpecSimulationWindow >> run1StepBackwardButtonMorph [
 CMSpecSimulationWindow >> runAction [
 	self simManager finalTime: self finalStepInputText text asInteger.
 	self simManager loopRunStep_untilFinalTime
+]
+
+{ #category : #morphic }
+CMSpecSimulationWindow >> runAllSimButtonMorph [
+
+	^ IconicButton new
+		target: self;
+		actionSelector: #runAllSimAction;
+		labelGraphic: (self iconNamed: #runAllSimIcon);
+		color: Color transparent;
+		borderColor: Color red;
+		borderWidth: 1;
+		helpText: 'Run simulation until final step';
+		yourself.
 ]
 
 { #category : #accessing }

@@ -637,15 +637,13 @@ CMSpecProjectWindow >> subMenuHowToRunThisModel: anItem [
 
 { #category : #'submenu-programming' }
 CMSpecProjectWindow >> subMenuOpenClassEditor: item [
-
 	item
 		name: 'Class Editor...';
-		icon: #openIcon asIcon;
+		icon:
+			(self iconNamed: #openIcon);
 		shortcut: $c command;
-		action: [ OPUmlProject openOnModel: (OPUMLModel new name: self projectManager cormasModelName)
- ]
-		
-
+		action: [ OPUmlProject
+				openOnModel: (OPUMLModel new name: self projectManager cormasModelName) ]
 ]
 
 { #category : #'submenu-programming' }
