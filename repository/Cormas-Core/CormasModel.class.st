@@ -2912,23 +2912,6 @@ CormasModel >> data: aDictionary [
 	data := aDictionary
 ]
 
-{ #category : #'probes - recording' }
-CormasModel >> dataSize [
-	self deprecated: 'To be remove because use nowhere'.
-	((self data includesKey: self class name) and: [ (self data at: self class name) isNotEmpty ])
-		ifTrue: [ ^ (self data at: self class name) values first size ].
-	self data isEmpty
-		ifFalse: [ self data
-				valuesDo: [ :coll | 
-					coll
-						valuesDo: [ :coll2 | 
-							coll2
-								valuesDo: [ :coll3 | 
-									coll3 size > 0
-										ifTrue: [ ^ coll3 size ] ] ] ] ].
-	^ 0
-]
-
 { #category : #accessing }
 CormasModel >> database [
 	^ database
