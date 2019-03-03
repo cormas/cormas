@@ -90,6 +90,13 @@ BaselineOfCormas >> ensureMetacelloFileDownload [
 ]
 
 { #category : #doits }
+BaselineOfCormas >> findCurrentOwner [
+	" Answer a <String> with the name of the current CORMAS repository 'owner', this is the username from where the current image clone of cormas was installed "
+
+	^ (IceRepository registry detect: [ :each | each name asLowercase = 'cormas' ]) origin owner
+]
+
+{ #category : #doits }
 BaselineOfCormas >> isWelcomeWindow: sm [
 	" Answer <true> if sm matches the Pharo Welcome window "
 
@@ -101,13 +108,12 @@ BaselineOfCormas >> platformFilesUrl [
 	" Private - See superimplementor's comment "
 
 	| urlPrefix |
-	urlPrefix := 'https://github.com/hernanmd/cormas/raw/master/resources/'.
-	^ #('CORMAS_Graphics' 'CORMAS_Models' 'CORMAS_Installer_Bootstrap') collect: [ : file |
-		(String streamContents: [ : stream |		
-			stream
-				nextPutAll: urlPrefix;
-				nextPutAll: file;
-				nextPutAll: (Smalltalk os isWin32 ifTrue: [ '.zip' ] ifFalse: [ '.tar.gz' ]) ]) ]
+	urlPrefix := 'https://github.com/' , self findCurrentOwner , '/cormas/raw/master/resources/'.
+	^ String streamContents: [ : stream |		
+		stream
+			nextPutAll: urlPrefix;
+			nextPutAll: 'assets';
+			nextPutAll: (Smalltalk os isWin32 ifTrue: [ '.zip' ] ifFalse: [ '.tar.gz' ]) ]
 ]
 
 { #category : #doits }

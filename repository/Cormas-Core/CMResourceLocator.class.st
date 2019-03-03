@@ -1,0 +1,251 @@
+"
+Helper class to find CORMAS assets. It provides methods to locate model directories and files.
+
+Public API and Key Messages
+
+- message one   
+- message two 
+- (for bonus points) how to create instances.
+
+   One simple example is simply gorgeous.
+ 
+Internal Representation and Key Implementation Points.
+
+
+    Implementation Points
+"
+Class {
+	#name : #CMResourceLocator,
+	#superclass : #Object,
+	#category : #'Cormas-Core-Interface'
+}
+
+{ #category : #public }
+CMResourceLocator class >> workingDirectory [
+	" Answer a <String> with the default directory "
+	
+	^ FileSystem disk workingDirectory fullName
+]
+
+{ #category : #'utilities - path' }
+CMResourceLocator >> addOnsPath [
+	" Answer a <FileReference> corresponding to the path of 'Add-ons' directory "
+	
+	^ (self cormasPath / 'Add-ons') ensureCreateDirectory.
+
+
+]
+
+{ #category : #'+ utilities - files' }
+CMResourceLocator >> assetNamed: aFilename [
+	" Answer a <FileReference> found at the assets location "
+	
+	^ self assetsPath / aFilename
+
+]
+
+{ #category : #'+ utilities - files' }
+CMResourceLocator >> assetsFilesDirectoryName [
+	" Answe a <String> with the name of the directoy where CORMAS resources are found "
+
+	^ 'assets'
+]
+
+{ #category : #'+ utilities - files' }
+CMResourceLocator >> assetsPath [
+	" Answer a <FileReference> specifying a directory where CORRMAS assets are found "
+	
+	^ self cormasPath / self assetsFilesDirectoryName
+]
+
+{ #category : #'utilities - path' }
+CMResourceLocator >> cormasPath [
+	" Answer a <FileReference> corresponding to the path of Cormas directory. "
+
+	^ self workingDirectory asFileReference
+
+]
+
+{ #category : #'utilities - path' }
+CMResourceLocator >> dumpPath: aModelClassName [
+	" Answer a <FileReference> corresponding to the path of the current model 'dump' directory.
+	aModelClassName = <String>"
+	
+	^ ((self modelPath: aModelClassName) asFileReference / 'dump') ensureCreateDirectory.
+
+]
+
+{ #category : #'utilities - path' }
+CMResourceLocator >> modelNames [
+	" Answer a <Collection> of <String> with receiver's available models "
+	
+	^ self modelsPath entries collect: #basename
+]
+
+{ #category : #'utilities - path' }
+CMResourceLocator >> modelPath: aModelClassName [
+	"Purpose: Returns a Filename corresponding to the path of the current model directory.
+	Argument: aModelClassName = <String>
+	Example: 
+	(Cormas modelPath: #FireModel) construct: 'test.csv' 
+	"
+	
+	^ (self modelsPath / aModelClassName asString) ensureCreateDirectory.
+
+]
+
+{ #category : #'utilities - path' }
+CMResourceLocator >> modelsPath [
+	" Answer a <FileReference> corresponding to the path of 'Models' directory "
+	
+	^ (self assetNamed: 'models') ensureCreateDirectory.
+
+]
+
+{ #category : #'+ utilities - files' }
+CMResourceLocator >> readCsv: filename [
+	"
+	HOW IT WORK ?  
+	readMatrix: '/home/user/Documents/Quantif_atelier_general1.csv' sep: $,.
+	
+	Returns a collection of collections, each one containing the values of the each line (separator = $;).
+The file name must be complete.
+fileName = <String or Filename>
+Ex: Cormas readCsv: 'D:\vw7.6\cormas\Models\Ecec\data\test.csv' "
+	self deprecated: 'It use readMatrix with is not a matrix expected. 
+	Its better to use readCSVFile'.
+	^self
+		readMatrix: filename
+		sep: DataSaver_Asci separator
+]
+
+{ #category : #'+ utilities - files' }
+CMResourceLocator >> readCsv: file myModel: modelName [
+	"Purpose: Returns a dictionary containing the values of the csv file (separator is ';').
+The file name is just a string containing the name of the file (with or without extension) that is stored in the /data directory of a model.
+Ex:    Cormas readCsv: 'palaya1973' myModel: 'Thunupa'    		or 
+	Cormas readCsv: 'palaya1973.cvs' myModel: 'Thunupa'           "
+	
+	| stream line dicoR dico l nbLine nbRow r key values |
+	self deprecated: 'It doesnt work in pharo'.
+	stream := ((Cormas dataPath: modelName) construct: file , '.csv')
+		readStream.	"On devine le format des lignes"
+	stream lineEndAuto.
+	dicoR := Dictionary new.
+	dico := Dictionary new.	" Read file line per line and save it into DicoR which is a reversed line and row dictionary "
+	l := 1.
+	[stream atEnd]
+		whileFalse:
+			[line := Cormas splitLine: stream sep: $,.
+			dicoR at: l put: line.
+			l := l + 1].
+	stream close.	"Reverse the dicoR into the dico"
+	nbLine := dicoR keys size.
+	nbRow := (dicoR at: 1) size.
+	r := 1.
+	nbRow
+		timesRepeat:
+			[l := 1.
+			key := (dicoR at: l) at: r.
+			values := OrderedCollection new.
+			nbLine - 1
+				timesRepeat:
+					[l := l + 1.
+					values add: ((dicoR at: l) at: r)].
+			dico at: key put: values.
+			r := r + 1].
+	^dico
+]
+
+{ #category : #'+ utilities - files' }
+CMResourceLocator >> readCsvFile: file myModel: modelName [
+	"Returns a collection of collections, each one containing the values of the csv file (separator is ';').
+The file name is just a string containing the name of the file (with or without extension) that is stored in the /data directory of a model.
+Ex:    Cormas readCsvFile: 'palaya1973' myModel: 'Thunupa'    		or 
+	Cormas readCsvFile: 'palaya1973.cvs' myModel: 'Thunupa'           "
+	
+	| fileName |
+	(fileName := self assetNamed: file) hasExtension 
+		ifFalse: [ fileName := fileName fullName , '.csv' ].
+	^ self
+		readMatrix: fileName
+		sep: $;
+]
+
+{ #category : #'+ utilities - files' }
+CMResourceLocator >> readCsvMap: file myModel: modelName [
+	"Returns a collection of collections, each one containing the values of the csv file (separator is ';').
+The file name is just a string containing the name of the file (with or without extension) that is stored in the /data directory of a model.
+Ex:    Cormas readCsvMap: 'palaya1973' myModel: 'Thunupa'    		or 
+	Cormas readCsvMap: 'palaya1973.cvs' myModel: 'Thunupa'           "
+	
+	| fileName |
+	(fileName := self mapNamed: file) hasExtension 
+		ifFalse: [ fileName := fileName fullName , '.csv' ].
+	^ self
+		readMatrix: fileName
+		sep: $;
+]
+
+{ #category : #'+ utilities - files' }
+CMResourceLocator >> readMatrix: fileName sep: aSepChar [
+	"
+	HOW IT WORK ?  
+	readMatrix: '/home/user/Documents/Quantif_atelier_general1.csv' sep: $,.
+	
+	WHAT IS EXPECTED ?
+	Returns a collection of collections (a Matrix), each one containing the values between the separator of the file.
+	Example: file = 
+		time;0;1;2;3;4;5;6;7;8;9;10;
+		energy;50.0;48.1;47.5;46.5;46.2;44.2;44.4;44.9;45;46;	
+	the Matrix = 
+		OrderedCollection (	OrderedCollection ('time' 0 1 2 3 4 5 6 7 8 9 10) 
+							OrderedCollection ('energy' 50.0 48.1 47.5 46.5 46.2 44.2 44.4 44.9 45 46)   )
+
+The file name must be complete.
+fileName = <String>
+aSepChar = <Character> or <String>
+Ex: Cormas readMatrix: 'D:\vw7.6\cormas\Models\Ecec\data\test.csv' sep: $;    or
+Ex: Cormas readMatrix: 'D:\vw7.6\cormas\Models\Ecec\data\test.csv' sep: ';'   "
+
+	|  arrayOfRows subCollection matrix nbColumns |
+
+	self flag:#shouldBeRevised.
+	arrayOfRows := (NeoCSVReader on: fileName asFileReference readStream)
+		separator: aSepChar;
+		upToEnd.
+	nbColumns := (arrayOfRows at: 1) size.	
+	matrix := OrderedCollection new.
+	arrayOfRows do: [ :aLine | 
+		subCollection := OrderedCollection new.
+		aLine do: [ :x | subCollection add: (Cormas stringAsObjectType: x) ].
+		[ subCollection size < nbColumns ] " Check if all cells are occupied if not add nil"
+			whileTrue: [ subCollection add: nil ].
+		matrix add: subCollection ].
+	^ matrix.
+]
+
+{ #category : #'utilities - path' }
+CMResourceLocator >> videoPath: aModelClassName [
+	" Answer a <FileReference> corresponding to the path of the current model 'dump' directory.
+	aModelClassName = <String>"
+	
+	^ ((self modelPath: aModelClassName) asFileReference / 'video') ensureCreateDirectory.
+
+]
+
+{ #category : #'+ utilities - files' }
+CMResourceLocator >> workingDirectory [
+	" Answer a <String> representing the current working directory "
+	
+	^ self class workingDirectory
+]
+
+{ #category : #'utilities - path' }
+CMResourceLocator >> xmlPath: aModelClassName [
+	" Answer a <FileReference> corresponding to the path of the current model 'dump' directory.
+	aModelClassName = <String>"
+	
+	^ ((self modelPath: aModelClassName) asFileReference / 'xml') ensureCreateDirectory.
+
+]

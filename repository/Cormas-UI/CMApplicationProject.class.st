@@ -15,9 +15,10 @@ Class {
 	#instVars : [
 		'processReplayForward',
 		'processReplayBackward',
-		'processRun'
+		'processRun',
+		'resourceLocator'
 	],
-	#category : 'Cormas-UI-Project'
+	#category : #'Cormas-UI-Project'
 }
 
 { #category : #accessing }
@@ -34,23 +35,6 @@ CMApplicationProject class >> applicationName [
 	^ 'CORMAS Application'
 ]
 
-{ #category : #'accessing-path' }
-CMApplicationProject >> addOnsPath [
-	" Answer a <FileReference> corresponding to the path of 'Add-ons' directory "
-	
-	^ (self cormasPath / 'Add-ons') ensureCreateDirectory.
-
-
-]
-
-{ #category : #'accessing-path' }
-CMApplicationProject >> cormasPath [
-	" Answer a <FileReference> corresponding to the path of Cormas directory. "
-
-	^ FileSystem disk workingDirectory
-		
-]
-
 { #category : #accessing }
 CMApplicationProject >> defaultProjectClass [
 	" Private - See superimplementor's comment "
@@ -65,20 +49,11 @@ CMApplicationProject >> defaultTranslatorClass [
 	^ CMTranslator
 ]
 
-{ #category : #'accessing-path' }
-CMApplicationProject >> dumpPath: aModelClassName [
-	" Answer a <FileReference> corresponding to the path of the current model 'dump' directory.
-	aModelClassName = <String>"
-	
-	^ ((self modelPath: aModelClassName) asFileReference / 'dump') ensureCreateDirectory.
-
-]
-
 { #category : #'accessing-simulations' }
 CMApplicationProject >> findSimulationNamed: aName [
 	" Answer <true> if the dump folder has stored simulations "
 
-	^ (Cormas dumpPath: self cormasModel class name)
+	^ (self resourceLocator dumpPath: self cormasModel class name)
 		removeAllSuchThat: [ : txt | (txt beginsWith: self simNameStart) not ].
 
 ]
@@ -88,37 +63,36 @@ CMApplicationProject >> hasStoredSimulations [
 	" Answer <true> if the dump folder has stored simulations "
 
 	| directoryContent |
+
 	self terminateAllProcesses.
-	(directoryContent := Cormas dumpPath: self cormasModel class name)
+	(directoryContent := self resourceLocator dumpPath: self cormasModel class name)
 		removeAllSuchThat: [ : txt | (txt beginsWith: self simNameStart) not ].
 	^ directoryContent isEmpty
 ]
 
 { #category : #'accessing-path' }
-CMApplicationProject >> modelPath: aModelClassName [
-	"Purpose: Returns a Filename corresponding to the path of the current model directory.
-	Argument: aModelClassName = <String>
-	Example: 
-	(Cormas modelPath: #FireModel) construct: 'test.csv' 
-	"
+CMApplicationProject >> modelNames [
+	" Answer a <Collection> of <String> with receiver's available models "
 	
-	^ (self modelsPath / aModelClassName asString) ensureCreateDirectory.
-
+	^ self resourceLocator modelNames
 ]
 
-{ #category : #'accessing-path' }
-CMApplicationProject >> modelsPath [
-	" Answer a <FileReference> corresponding to the path of 'Models' directory "
-	
-	^ (self cormasPath / 'Models') ensureCreateDirectory.
+{ #category : #accessing }
+CMApplicationProject >> resourceLocator [
+	^ resourceLocator
+		ifNil: [ resourceLocator := CMResourceLocator new ]
+]
 
+{ #category : #accessing }
+CMApplicationProject >> resourceLocator: anObject [
+	resourceLocator := anObject
 ]
 
 { #category : #'accessing-simulations' }
 CMApplicationProject >> storedSimulations [
 	" Answer <true> if the dump folder has stored simulations "
 
-	^ (Cormas dumpPath: self cormasModel class name)
+	^ (self resourceLocator dumpPath: self cormasModel class name)
 		removeAllSuchThat: [ : txt | (txt beginsWith: self simNameStart) not ].
 
 ]
@@ -139,22 +113,4 @@ CMApplicationProject >> terminateAllProcesses [
 		ifFalse:
 			[processRun terminate.
 			processRun := nil]
-]
-
-{ #category : #'accessing-path' }
-CMApplicationProject >> videoPath: aModelClassName [
-	" Answer a <FileReference> corresponding to the path of the current model 'dump' directory.
-	aModelClassName = <String>"
-	
-	^ ((self modelPath: aModelClassName) asFileReference / 'video') ensureCreateDirectory.
-
-]
-
-{ #category : #'accessing-path' }
-CMApplicationProject >> xmlPath: aModelClassName [
-	" Answer a <FileReference> corresponding to the path of the current model 'dump' directory.
-	aModelClassName = <String>"
-	
-	^ ((self modelPath: aModelClassName) asFileReference / 'xml') ensureCreateDirectory.
-
 ]

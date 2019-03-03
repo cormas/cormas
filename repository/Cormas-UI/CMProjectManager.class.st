@@ -111,7 +111,7 @@ CMProjectManager >> cormasModelVersion: aString [
 CMProjectManager >> cormasModels [
 	" Answer a <Collection> of <String> with receiver's available models "
 	
-	^ Cormas modelsPath entries collect: #basename
+	^ self application modelNames
 ]
 
 { #category : #callbacks }
@@ -239,7 +239,7 @@ CMProjectManager >> openModelNamed: aString [
 	(FDOpenFileDialog new
 		title: 'Choose st file';
 		extensionFilters: 	{ 'st files' -> #(st) };
-		defaultFolder:  FileLocator imageDirectory / 'Models'/ aString ;
+		defaultFolder: self resourceLocator modelsPath;
 		openModal)	
 			
 		ifNotNil: [ : fileRef | 
@@ -341,6 +341,12 @@ CMProjectManager >> requestModelOpenFromLocalImage [
 			self doPostOpenActions ]
 		ifFalse: [ self informMessage: self translator tProjectOpenFailed ].
 	^ openStatus
+]
+
+{ #category : #accessing }
+CMProjectManager >> resourceLocator [ 
+
+	^ self application resourceLocator
 ]
 
 { #category : #callbacks }
