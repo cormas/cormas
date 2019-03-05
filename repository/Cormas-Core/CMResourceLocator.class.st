@@ -36,7 +36,7 @@ CMResourceLocator >> addOnsPath [
 
 ]
 
-{ #category : #'+ utilities - files' }
+{ #category : #'utilities - csv' }
 CMResourceLocator >> assetNamed: aFilename [
 	" Answer a <FileReference> found at the assets location "
 	
@@ -44,14 +44,14 @@ CMResourceLocator >> assetNamed: aFilename [
 
 ]
 
-{ #category : #'+ utilities - files' }
+{ #category : #'utilities - path' }
 CMResourceLocator >> assetsFilesDirectoryName [
 	" Answe a <String> with the name of the directoy where CORMAS resources are found "
 
 	^ 'assets'
 ]
 
-{ #category : #'+ utilities - files' }
+{ #category : #'utilities - path' }
 CMResourceLocator >> assetsPath [
 	" Answer a <FileReference> specifying a directory where CORRMAS assets are found "
 	
@@ -66,35 +66,44 @@ CMResourceLocator >> cormasPath [
 
 ]
 
-{ #category : #'utilities - path' }
+{ #category : #'utilities - path - models' }
+CMResourceLocator >> dataPath: aModelClassName [
+	" Answer a <FileReference> corresponding to the path of the current model 'data' directory.
+	aModelClassName = <String>"
+	
+	^ ((self modelPath: aModelClassName) / 'data') ensureCreateDirectory.
+
+]
+
+{ #category : #'utilities - path - models' }
 CMResourceLocator >> dumpPath: aModelClassName [
 	" Answer a <FileReference> corresponding to the path of the current model 'dump' directory.
 	aModelClassName = <String>"
 	
-	^ ((self modelPath: aModelClassName) asFileReference / 'dump') ensureCreateDirectory.
+	^ ((self modelPath: aModelClassName) / 'dump') ensureCreateDirectory.
 
 ]
 
-{ #category : #'utilities - path' }
+{ #category : #'utilities - path - models' }
 CMResourceLocator >> modelNames [
 	" Answer a <Collection> of <String> with receiver's available models "
 	
 	^ self modelsPath entries collect: #basename
 ]
 
-{ #category : #'utilities - path' }
+{ #category : #'utilities - path - models' }
 CMResourceLocator >> modelPath: aModelClassName [
-	"Purpose: Returns a Filename corresponding to the path of the current model directory.
+	" Answer a FileReference corresponding to the path of the current model directory.
 	Argument: aModelClassName = <String>
 	Example: 
-	(Cormas modelPath: #FireModel) construct: 'test.csv' 
+	CMResourceLocator new modelPath: #FireModel
 	"
 	
 	^ (self modelsPath / aModelClassName asString) ensureCreateDirectory.
 
 ]
 
-{ #category : #'utilities - path' }
+{ #category : #'utilities - path - models' }
 CMResourceLocator >> modelsPath [
 	" Answer a <FileReference> corresponding to the path of 'Models' directory "
 	
@@ -102,7 +111,7 @@ CMResourceLocator >> modelsPath [
 
 ]
 
-{ #category : #'+ utilities - files' }
+{ #category : #'utilities - csv' }
 CMResourceLocator >> readCsv: filename [
 	"
 	HOW IT WORK ?  
@@ -119,7 +128,7 @@ Ex: Cormas readCsv: 'D:\vw7.6\cormas\Models\Ecec\data\test.csv' "
 		sep: DataSaver_Asci separator
 ]
 
-{ #category : #'+ utilities - files' }
+{ #category : #'utilities - csv' }
 CMResourceLocator >> readCsv: file myModel: modelName [
 	"Purpose: Returns a dictionary containing the values of the csv file (separator is ';').
 The file name is just a string containing the name of the file (with or without extension) that is stored in the /data directory of a model.
@@ -157,22 +166,25 @@ Ex:    Cormas readCsv: 'palaya1973' myModel: 'Thunupa'    		or
 	^dico
 ]
 
-{ #category : #'+ utilities - files' }
+{ #category : #'utilities - csv' }
 CMResourceLocator >> readCsvFile: file myModel: modelName [
-	"Returns a collection of collections, each one containing the values of the csv file (separator is ';').
+	" Answer a collection of collections, each one containing the values of the csv file (separator is ';').
 The file name is just a string containing the name of the file (with or without extension) that is stored in the /data directory of a model.
-Ex:    Cormas readCsvFile: 'palaya1973' myModel: 'Thunupa'    		or 
-	Cormas readCsvFile: 'palaya1973.cvs' myModel: 'Thunupa'           "
+	Ex: 	CMResourceLocator new readCsvFile: 'palaya1973' myModel: 'Thunupa'    		
+			or 
+			CMResourceLocator new readCsvFile: 'palaya1973.cvs' myModel: 'Thunupa'           
+	"
 	
 	| fileName |
-	(fileName := self assetNamed: file) hasExtension 
-		ifFalse: [ fileName := fileName fullName , '.csv' ].
+	file asPath extension
+		ifEmpty: [ fileName := file , '.csv' ]
+		ifNotEmpty: [ fileName := file ].	
 	^ self
-		readMatrix: fileName
+		readMatrix: ((self dataPath: modelName) / fileName) fullName
 		sep: $;
 ]
 
-{ #category : #'+ utilities - files' }
+{ #category : #'utilities - csv' }
 CMResourceLocator >> readCsvMap: file myModel: modelName [
 	"Returns a collection of collections, each one containing the values of the csv file (separator is ';').
 The file name is just a string containing the name of the file (with or without extension) that is stored in the /data directory of a model.
@@ -187,7 +199,7 @@ Ex:    Cormas readCsvMap: 'palaya1973' myModel: 'Thunupa'    		or
 		sep: $;
 ]
 
-{ #category : #'+ utilities - files' }
+{ #category : #'utilities - csv' }
 CMResourceLocator >> readMatrix: fileName sep: aSepChar [
 	"
 	HOW IT WORK ?  
@@ -225,7 +237,7 @@ Ex: Cormas readMatrix: 'D:\vw7.6\cormas\Models\Ecec\data\test.csv' sep: ';'   "
 	^ matrix.
 ]
 
-{ #category : #'utilities - path' }
+{ #category : #'utilities - path - models' }
 CMResourceLocator >> videoPath: aModelClassName [
 	" Answer a <FileReference> corresponding to the path of the current model 'dump' directory.
 	aModelClassName = <String>"
@@ -234,14 +246,14 @@ CMResourceLocator >> videoPath: aModelClassName [
 
 ]
 
-{ #category : #'+ utilities - files' }
+{ #category : #'utilities - path' }
 CMResourceLocator >> workingDirectory [
 	" Answer a <String> representing the current working directory "
 	
 	^ self class workingDirectory
 ]
 
-{ #category : #'utilities - path' }
+{ #category : #'utilities - path - models' }
 CMResourceLocator >> xmlPath: aModelClassName [
 	" Answer a <FileReference> corresponding to the path of the current model 'dump' directory.
 	aModelClassName = <String>"
