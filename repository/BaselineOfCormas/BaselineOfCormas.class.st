@@ -107,13 +107,12 @@ BaselineOfCormas >> isWelcomeWindow: sm [
 BaselineOfCormas >> platformFilesUrl [
 	" Private - See superimplementor's comment "
 
-	| urlPrefix |
-	urlPrefix := 'https://github.com/' , self findCurrentOwner , '/cormas/raw/master/resources/'.
-	^ String streamContents: [ : stream |		
-		stream
-			nextPutAll: urlPrefix;
-			nextPutAll: 'assets';
-			nextPutAll: (Smalltalk os isWin32 ifTrue: [ '.zip' ] ifFalse: [ '.tar.gz' ]) ]
+	^ { 'https://github.com/' , self findCurrentOwner , '/cormas/raw/master/resources/' } collect: [ : urlPath |
+		(String streamContents: [ : stream |	
+			stream
+				nextPutAll: urlPath;
+				nextPutAll: 'assets';
+				nextPutAll: (Smalltalk os isWin32 ifTrue: [ '.zip' ] ifFalse: [ '.tar.gz' ]) ]) ]
 ]
 
 { #category : #doits }
