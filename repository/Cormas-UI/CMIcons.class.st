@@ -62,10 +62,8 @@ R82HFwCzbfdP0Jdp7VuU8wkAAAAASUVORK5CYII='
 { #category : #'accessing - icons' }
 CMIcons class >> doesNotUnderstand: aMessage [
 	" Redirect message to the answer an icon provided by the system "
-	
-	^ aMessage selector asIcon
 
-
+	^ self iconNamed: aMessage selector
 ]
 
 { #category : #'accessing - icons' }

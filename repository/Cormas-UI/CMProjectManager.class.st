@@ -111,7 +111,7 @@ CMProjectManager >> cormasModelVersion: aString [
 CMProjectManager >> cormasModels [
 	" Answer a <Collection> of <String> with receiver's available models "
 	
-	^ Cormas modelsPath entries collect: #basename
+	^ self application modelNames
 ]
 
 { #category : #callbacks }
@@ -239,7 +239,7 @@ CMProjectManager >> openModelNamed: aString [
 	(FDOpenFileDialog new
 		title: 'Choose st file';
 		extensionFilters: 	{ 'st files' -> #(st) };
-		defaultFolder:  FileLocator imageDirectory / 'Models'/ aString ;
+		defaultFolder: self resourceLocator modelsPath;
 		openModal)	
 			
 		ifNotNil: [ : fileRef | 
@@ -255,10 +255,10 @@ CMProjectManager >> openModelNamed: aString [
 
 { #category : #callbacks }
 CMProjectManager >> openProject [
+	" Request a model to the user and open it for the receiver "
 
-	| locationName |
-	locationName := self requestModelNameLocation
-		ifNotNil: [ : locName | self perform: (self cormasOpenLocationsMap at: locName) ].
+	self requestModelNameLocation ifNotNil: [ : locName | 
+		self perform: (self cormasOpenLocationsMap at: locName) ].
 
 ]
 
@@ -267,18 +267,18 @@ CMProjectManager >> openProject: modelName fileName: fileName [
 	" Open the project named projectApp "
 
 	| modelClass |
-	modelClass := (self findModelClass: fileName) allButFirst asClass.
-	self currentProject: (CMProjectModel basicNew
-		fileName: fileName;
-		initializeForModel: modelClass new named: modelName;
-		yourself).
-
+	modelClass := self class environment at: (self findModelClass: fileName) allButFirst.
+	self currentProject:
+		(CMProjectModel basicNew
+			fileName: fileName;
+			initializeForModel: modelClass new named: modelName;
+			yourself)
 
 ]
 
 { #category : #callbacks }
 CMProjectManager >> requestModelNameLocation [
-	" Open request dialog to select a load nodel location "
+	" Open request dialog to select a load model location "
 	
 	| widget |
 	widget := SpcListModel new.
@@ -334,13 +334,20 @@ CMProjectManager >> requestModelOpenFromLocalDisk [
 CMProjectManager >> requestModelOpenFromLocalImage [
 	" Open a Cormas model. Answer project creation status, <true> if project was opened successfully "
 
-	| mName fileName |
+	| mName |
 	(mName := self requestModelOpenDialogFromLocalImage) ifNotNil: [ :modelName | openStatus := true ].
 	openStatus
-		ifTrue: [ self openImageProject: mName.
+		ifTrue: [ 
+			self openImageProject: mName.
 			self doPostOpenActions ]
 		ifFalse: [ self informMessage: self translator tProjectOpenFailed ].
 	^ openStatus
+]
+
+{ #category : #accessing }
+CMProjectManager >> resourceLocator [ 
+
+	^ self application resourceLocator
 ]
 
 { #category : #callbacks }
