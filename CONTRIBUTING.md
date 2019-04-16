@@ -6,6 +6,11 @@ This file is currently not complete but will be improve step by step.
 In a fresh Pharo 6.1, execute the following script in order to update Iceberg to the last version : 
 
 ```Smalltalk
+"Unregister all iceberg repository adapters since we are going to unload all code related to it.
+Otherwise obsolete instances will stay".
+IceMetacelloRepositoryAdapter allInstances do: #unregister.
+Smalltalk globals at: #IceSystemEventListener ifPresent: #unregisterSystemAnnouncements.
+
 MetacelloPharoPlatform select.
 #(
     'BaselineOfTonel'
@@ -38,19 +43,36 @@ MetacelloPharoPlatform select.
 do: [ :each | (each asPackageIfAbsent: [ nil ]) ifNotNil: #removeFromSystem ].
 "update icons (iceberg needs some new)"
 ThemeIcons current: ThemeIcons loadDefault.
+
+"Loading Tonel before trying to load Iceberg.
+This is required to load iceberg packages and dependencies in Tonel format"
+Metacello new
+  baseline: 'Tonel';
+  repository: 'github://pharo-vcs/tonel:v1.0.12';
+  load.
+
+"Updating Metacello"
+Metacello new
+    baseline: 'Metacello';
+    repository: 'github://metacello/metacello:pharo-6.1_dev/repository';
+    onConflict: [ :ex | ex allow ];
+    load.
+
 "load iceberg"
 Metacello new
   	baseline: 'Iceberg';
-  	repository: 'github://pharo-vcs/iceberg:v1.1.1';
+  	repository: 'github://pharo-vcs/iceberg:v1.5.?';
 	onWarningLog;
   	load.
+	
+
+	
 "Re-initialize libgit2"
 (Smalltalk at: #LGitLibrary) initialize.
 
 "In some case Pharo/Calypso can have a problem with Obsolete classes. If you encounter this problem just execute this command and retry your action:
 
 Smalltalk compilerClass recompileAll
-
 "
 ```
 
