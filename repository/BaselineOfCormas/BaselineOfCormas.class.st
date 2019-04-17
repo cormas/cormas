@@ -112,7 +112,7 @@ BaselineOfCormas >> platformFilesUrl [
 			stream
 				nextPutAll: urlPath;
 				nextPutAll: 'assets';
-				nextPutAll: (Smalltalk os isWin32 ifTrue: [ '.zip' ] ifFalse: [ '.tar.gz' ]) ]) ]
+				nextPutAll: (Smalltalk os isWin32 ifTrue: [ '.zip' ] ifFalse: [ '.tgz' ]) ]) ]
 ]
 
 { #category : #doits }
