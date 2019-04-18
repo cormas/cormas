@@ -104,15 +104,27 @@ BaselineOfCormas >> isWelcomeWindow: sm [
 ]
 
 { #category : #doits }
+BaselineOfCormas >> platformAssetsUrls [
+	" Answer a <Collection> of <String> representing each one an asset base URL "
+	
+	^ {
+		('https://github.com/' , self findCurrentOwner , '/cormas/raw/master/resources/')
+		}
+]
+
+{ #category : #doits }
 BaselineOfCormas >> platformFilesUrl [
 	" Private - See superimplementor's comment "
 
-	^ { 'https://github.com/' , self findCurrentOwner , '/cormas/raw/master/resources/' } collect: [ : urlPath |
-		(String streamContents: [ : stream |	
-			stream
-				nextPutAll: urlPath;
-				nextPutAll: 'assets';
-				nextPutAll: (Smalltalk os isWin32 ifTrue: [ '.zip' ] ifFalse: [ '.tgz' ]) ]) ]
+	^ self platformAssetsUrls collect: [ :urlPath | 
+			String streamContents: [ :stream | 
+					stream
+						nextPutAll: urlPath;
+						nextPutAll: 'assets';
+						nextPutAll:
+							(Smalltalk os isWin32
+								ifTrue: [ '.zip' ]
+								ifFalse: [ '.tgz' ]) ] ]
 ]
 
 { #category : #doits }
