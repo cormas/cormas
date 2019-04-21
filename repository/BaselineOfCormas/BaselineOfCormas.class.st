@@ -19,7 +19,6 @@ BaselineOfCormas >> baseline: spec [
 		spec blessing: #'baseline'.
 		spec preLoadDoIt: #preLoad.
 		spec postLoadDoIt: #postLoad.		
-		spec repository: 'https://github.com/cormas/cormas'.
  		spec 
 "			baseline: 'ClassEditor' 
 			with: [ spec repository: 'github://openponk/class-editor/repository' ];"
@@ -124,7 +123,7 @@ BaselineOfCormas >> platformFilesUrl [
 						nextPutAll:
 							(Smalltalk os isWin32
 								ifTrue: [ '.zip' ]
-								ifFalse: [ '.tgz' ]) ] ]
+								ifFalse: [ '.tar.gz' ]) ] ]
 ]
 
 { #category : #doits }
