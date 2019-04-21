@@ -191,21 +191,25 @@ CMSpaceInterface >> initializeMenuToolbar [
 						subMenu: self initializeToolsMenuToolbar ];
 				addItem: [ :item | 
 					item
-						icon: #glamorousZoomIn asIcon;
+						icon:
+							(self iconNamed: #glamorousZoomIn);
 						action: [ RTZoomInMove on: self spaceView ] ];
 				addItem: [ :item | 
 					item
-						icon: #glamorousZoomOut asIcon;
+						icon:
+							(self iconNamed: #glamorousZoomOut);
 						action: [ RTZoomOutMove on: self spaceView ] ];
 				addItem: [ :item | 
 					item
-						icon: #glamorousZoomToFit asIcon;
+						icon:
+							(self iconNamed: #glamorousZoomToFit);
 						action: [ self spaceView canvas focusOnCenterScaled.
 							self spaceView signalUpdate ] ];
 				addItem: [ :item | 
 					item
-						icon: #glamorousSave asIcon;
-						subMenu: self initializeExportMenuToolbar  ] ].
+						icon:
+							(self iconNamed: #glamorousSave);
+						subMenu: self initializeExportMenuToolbar ] ].
 	menuToolbar applyTo: self
 ]
 
