@@ -2,9 +2,9 @@ SmalltalkCISpec {
   #loading : [
     SCIMetacelloLoadSpec {
 	#baseline : 'Cormas',
-	#repository : 'https://github.com/cormas/cormas',
-	Â#onWarningLog: true,
-	Â#director : 'repositoryÂ',
+        #repository : 'https://github.com/cormas/cormas',
+	#onWarningLog: true,
+	#director : 'repository',
 	#load : [ 'default' ],
 	#platforms : [ #pharo ]
     }
