@@ -267,7 +267,7 @@ CMProjectManager >> openProject: modelName fileName: fileName [
 	" Open the project named projectApp "
 
 	| modelClass |
-	modelClass := self class environment at: (self findModelClass: fileName) allButFirst.
+	modelClass := self class environment at: (self findModelClass: fileName) allButFirst asSymbol.
 	self currentProject:
 		(CMProjectModel basicNew
 			fileName: fileName;

@@ -13,7 +13,7 @@ language: smalltalk
 os:
   - linux
 smalltalk:
-  - Pharo-6.1
+  - Pharo-7.0
 
 # prepare the machine before any code
 # installation scripts
