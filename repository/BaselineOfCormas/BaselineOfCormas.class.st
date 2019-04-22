@@ -95,7 +95,7 @@ BaselineOfCormas >> findCurrentOwner [
 	^ IceRepository registry 
 			detect: [ :each | each name asLowercase = 'cormas' ]
 			ifFound: [ : found | found origin owner ]
-			ifNone: [ 'cormas' ]
+			ifNone: [ 'hernanmd' ]
 ]
 
 { #category : #doits }
