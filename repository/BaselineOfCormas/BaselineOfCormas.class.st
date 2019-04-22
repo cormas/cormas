@@ -19,7 +19,6 @@ BaselineOfCormas >> baseline: spec [
 		spec blessing: #'baseline'.
 		spec preLoadDoIt: #preLoad.
 		spec postLoadDoIt: #postLoad.		
-		spec repository: 'https://github.com/cormas/cormas'.
  		spec 
 "			baseline: 'ClassEditor' 
 			with: [ spec repository: 'github://openponk/class-editor/repository' ];"
@@ -91,9 +90,12 @@ BaselineOfCormas >> ensureMetacelloFileDownload [
 
 { #category : #doits }
 BaselineOfCormas >> findCurrentOwner [
-	" Answer a <String> with the name of the current CORMAS repository 'owner', this is the username from where the current image clone of cormas was installed "
+	" Answer a <String> with the name of the current CORMAS repository 'owner', this is the username from where the current image clone of cormas was installed. If no registry entries are detected, defaults to the cormas repository name "
 
-	^ (IceRepository registry detect: [ :each | each name asLowercase = 'cormas' ]) origin owner
+	^ IceRepository registry 
+			detect: [ :each | each name asLowercase = 'cormas' ]
+			ifFound: [ : found | found origin owner ]
+			ifNone: [ 'hernanmd' ]
 ]
 
 { #category : #doits }
@@ -124,7 +126,7 @@ BaselineOfCormas >> platformFilesUrl [
 						nextPutAll:
 							(Smalltalk os isWin32
 								ifTrue: [ '.zip' ]
-								ifFalse: [ '.tgz' ]) ] ]
+								ifFalse: [ '.tar.gz' ]) ] ]
 ]
 
 { #category : #doits }
