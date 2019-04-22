@@ -1181,7 +1181,7 @@ CormasModel class >> preStringForActivitySelector [
 
 { #category : #probes }
 CormasModel class >> probes [
-	^ (Pragma allNamed: #probes in: self) collect: #selector
+	^ (Pragma allNamed: #probe in: self) collect: #methodSelector
 ]
 
 { #category : #accessing }
@@ -4631,7 +4631,7 @@ CormasModel >> resetCells [
 
 { #category : #'probes - recording' }
 CormasModel >> resetDataStructures [
-	
+"Create a new empty dictionary"
 	data := Dictionary new
 ]
 

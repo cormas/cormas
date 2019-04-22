@@ -492,9 +492,9 @@ CMECECModel >> restrainedInitialNumber: anObject [
 
 { #category : #probes }
 CMECECModel >> restrainedSize [
-	"return the current population size of the Restrained foragers"
+	"return the population size of the Restrained foragers"
 
-	<probes>
+	<probe>
 	^ self theCMECECRestraineds size
 ]
 
@@ -563,16 +563,18 @@ CMECECModel >> unrestrainedInitialNumber: anObject [
 
 { #category : #probes }
 CMECECModel >> unrestrainedSize [
-	"return the current population size of the Unrestrained foragers"
+	"return the population size of the Unrestrained foragers"
 
-	<probes>
+	<probe>
 	^ self theCMECECUnrestraineds size
 ]
 
 { #category : #probes }
 CMECECModel >> vegetationBiomass [
-	"return the data (a number) to be plotted as the total Biomass of the vegetation"
+	"return the total biomass of the vegetation"
 
-	<probes>
-	^ self theCMECECVegetationUnits inject: 0 into: [ :i :j | i + j biomass ]
+	<probe>
+	^ self theCMECECVegetationUnits
+		inject: 0
+		into: [ :i :j | i + j biomass ]
 ]
