@@ -2,79 +2,7 @@
 
 This file is currently not complete but will be improve step by step.
 
-# Update iceberg
-In a fresh Pharo 6.1, execute the following script in order to update Iceberg to the last version : 
-
-```Smalltalk
-"Unregister all iceberg repository adapters since we are going to unload all code related to it.
-Otherwise obsolete instances will stay".
-IceMetacelloRepositoryAdapter allInstances do: #unregister.
-Smalltalk globals at: #IceSystemEventListener ifPresent: #unregisterSystemAnnouncements.
-
-MetacelloPharoPlatform select.
-#(
-    'BaselineOfTonel'
-    'BaselineOfLibGit'
-    'BaselineOfIceberg'
-    'MonticelloTonel-Core'
-    'MonticelloTonel-FileSystem'
-    'MonticelloTonel-Tests'
-    'Iceberg-UI' 
-    'Iceberg-TipUI'
-    'Iceberg-Plugin-Pharo' 
-    'Iceberg-Plugin-Metacello' 
-    'Iceberg-Plugin-GitHub' 
-    'Iceberg-Plugin' 
-    'Iceberg-Metacello-Integration' 
-    'Iceberg-Libgit-Tonel' 
-    'Iceberg-Libgit-Filetree' 
-    'Iceberg-Libgit' 
-    'Iceberg-Tests'
-    'Iceberg-Memory'
-    'Iceberg-UI-Tests'
-    'Iceberg-Core' 
-    'Iceberg-Changes' 
-    'Iceberg-Adapters' 
-    'Iceberg'
-    'Iceberg-GitCommand'
-    'Iceberg-SmartUI'
-    'Iceberg-Pharo6'
-    'LibGit-Core') 
-do: [ :each | (each asPackageIfAbsent: [ nil ]) ifNotNil: #removeFromSystem ].
-"update icons (iceberg needs some new)"
-ThemeIcons current: ThemeIcons loadDefault.
-
-"Loading Tonel before trying to load Iceberg.
-This is required to load iceberg packages and dependencies in Tonel format"
-Metacello new
-  baseline: 'Tonel';
-  repository: 'github://pharo-vcs/tonel:v1.0.12';
-  load.
-
-"Updating Metacello"
-Metacello new
-    baseline: 'Metacello';
-    repository: 'github://metacello/metacello:pharo-6.1_dev/repository';
-    onConflict: [ :ex | ex allow ];
-    load.
-
-"load iceberg"
-Metacello new
-  	baseline: 'Iceberg';
-  	repository: 'github://pharo-vcs/iceberg:v1.5.?';
-	onWarningLog;
-  	load.
-	
-
-	
-"Re-initialize libgit2"
-(Smalltalk at: #LGitLibrary) initialize.
-
-"In some case Pharo/Calypso can have a problem with Obsolete classes. If you encounter this problem just execute this command and retry your action:
-
-Smalltalk compilerClass recompileAll
-"
-```
+You need to download Pharo 7.0 first.
 
 ## Setup Iceberg
 You need an ssh key in order to commit on github. Open Iceberg tool, and then click on the settings. Check the box : "Use custom SSH keys".
@@ -86,7 +14,7 @@ All changes you'll do will be versionned in your own fork of the [CORMAS reposit
 Go to Cormas github's repository and click on the fork button on the top right. Yes, this means that you'll need a github account to contribute to Cormas.
 
 ## Load your fork version of Cormas in your image:
-In your Pharo 6.1 image, load now the last development version of Cormas : 
+In your Pharo 7.0 image, load now the last development version of Cormas : 
 
 ```Smalltalk
 Metacello new
