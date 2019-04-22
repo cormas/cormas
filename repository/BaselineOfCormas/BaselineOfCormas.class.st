@@ -106,6 +106,17 @@ BaselineOfCormas >> isWelcomeWindow: sm [
 ]
 
 { #category : #doits }
+BaselineOfCormas >> loadBgImage [
+	" Load background CORMAS image "
+
+	| logoFileref app |
+	app := (Smalltalk at: #PFProjectApplication) applicationClass uniqueInstance.
+	logoFileref := app resourceLocator imagesPath / 'CormasLogoFull.png'.
+	logoFileref exists
+		ifTrue: [ PolymorphSystemSettings desktopLogoFileName: logoFileref fullName ]
+]
+
+{ #category : #doits }
 BaselineOfCormas >> platformAssetsUrls [
 	" Answer a <Collection> of <String> representing each one an asset base URL "
 	
@@ -134,6 +145,7 @@ BaselineOfCormas >> postLoad [
 	" Private - Execute post install actions "
 
 	self closePharoWelcomeWindow.
+	self loadBgImage.	
 	(Smalltalk at: #PFProjectApplication) applicationClass: (Smalltalk at: #CMApplicationProject).
 	(Smalltalk at: #FDMorphicUIManager) new beDefault.
 	"TaskbarMorph showTaskbar: false."
@@ -154,16 +166,10 @@ BaselineOfCormas >> preLoad [
 { #category : #doits }
 BaselineOfCormas >> preLoadConfiguration [
 
-	| logoFilename |
-	(logoFilename := 'CormasLogoFull.png') asFileReference exists 
-		ifTrue: [ PolymorphSystemSettings desktopLogoFileName: logoFilename ].
 	Smalltalk tools debugger
 		alwaysOpenFullDebugger: true;
 		filterCommonMessageSends: true.
-	PharoLightTheme beCurrent.
-
-
-
+	PharoLightTheme beCurrent
 ]
 
 { #category : #doits }

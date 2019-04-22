@@ -70,6 +70,14 @@ CMResourceLocatorTest >> testDumpPath [
 ]
 
 { #category : #testing }
+CMResourceLocatorTest >> testImagesPath [
+
+	| cmFileRef |
+	cmFileRef := self instance imagesPath.
+	self assert: (cmFileRef isKindOf: FileReference).
+]
+
+{ #category : #testing }
 CMResourceLocatorTest >> testModelNames [
 
 	self assert: (self instance modelNames isKindOf: Collection).
