@@ -110,7 +110,8 @@ BaselineOfCormas >> loadBgImage [
 	" Load background CORMAS image "
 
 	| logoFileref app |
-	app := (Smalltalk at: #PFProjectApplication) applicationClass uniqueInstance.
+	app := (Smalltalk at: #PFProjectApplication) applicationClass
+		uniqueInstance.
 	logoFileref := app resourceLocator imagesPath / 'CormasLogoFull.png'.
 	logoFileref exists
 		ifTrue: [ PolymorphSystemSettings desktopLogoFileName: logoFileref fullName ]
@@ -145,8 +146,8 @@ BaselineOfCormas >> postLoad [
 	" Private - Execute post install actions "
 
 	self closePharoWelcomeWindow.
-	self loadBgImage.	
 	(Smalltalk at: #PFProjectApplication) applicationClass: (Smalltalk at: #CMApplicationProject).
+	self loadBgImage.	
 	(Smalltalk at: #FDMorphicUIManager) new beDefault.
 	"TaskbarMorph showTaskbar: false."
 	self unloadPackages.
