@@ -84,6 +84,15 @@ CMResourceLocator >> dumpPath: aModelClassName [
 
 ]
 
+{ #category : #'utilities - path' }
+CMResourceLocator >> imagesPath [
+	" Answer a <FileReference> corresponding to the path of the current 'images' directory.
+	aModelClassName = <String>"
+	
+	^ (self assetsPath / 'images') ensureCreateDirectory.
+
+]
+
 { #category : #'utilities - path - models' }
 CMResourceLocator >> modelNames [
 	" Answer a <Collection> of <String> with receiver's available models "
@@ -186,7 +195,7 @@ Ex: Cormas readMatrix: 'D:\vw7.6\cormas\Models\Ecec\data\test.csv' sep: ';'   "
 
 { #category : #'utilities - path - models' }
 CMResourceLocator >> videoPath: aModelClassName [
-	" Answer a <FileReference> corresponding to the path of the current model 'dump' directory.
+	" Answer a <FileReference> corresponding to the path of the current model 'video' directory.
 	aModelClassName = <String>"
 	
 	^ ((self modelPath: aModelClassName) asFileReference / 'video') ensureCreateDirectory.
@@ -202,7 +211,7 @@ CMResourceLocator >> workingDirectory [
 
 { #category : #'utilities - path - models' }
 CMResourceLocator >> xmlPath: aModelClassName [
-	" Answer a <FileReference> corresponding to the path of the current model 'dump' directory.
+	" Answer a <FileReference> corresponding to the path of the current model 'xml' directory.
 	aModelClassName = <String>"
 	
 	^ ((self modelPath: aModelClassName) asFileReference / 'xml') ensureCreateDirectory.

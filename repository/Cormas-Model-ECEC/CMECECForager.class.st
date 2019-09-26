@@ -131,8 +131,9 @@ CMECECForager >> eat [
 { #category : #probes }
 CMECECForager >> energy [
 	"Getter accessor with default value = 50 "
-	<probes>
-	^energy ifNil: [energy := 50]
+
+	<probe>
+	^ energy ifNil: [ energy := 50 ]
 ]
 
 { #category : #accessing }

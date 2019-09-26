@@ -213,12 +213,16 @@ Then repeat steps 4 and 5.'
 
 { #category : #probes }
 CMConwayModel >> alive [
-	^ (self theCMConwayCells count: [ :c | c state = #alive ]) / self theCMConwayCells size
+<probe>
+	^ (self theCMConwayCells count: [ :c | c state = #alive ])
+		/ self theCMConwayCells size
 ]
 
 { #category : #probes }
 CMConwayModel >> dead [
-	^ (self theCMConwayCells count: [ :c | c state = #dead ]) / self theCMConwayCells size
+<probe>
+	^ (self theCMConwayCells count: [ :c | c state = #dead ])
+		/ self theCMConwayCells size
 ]
 
 { #category : #init }

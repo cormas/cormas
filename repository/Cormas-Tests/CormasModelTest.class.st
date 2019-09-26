@@ -67,6 +67,11 @@ CormasModelTest >> testDominanceOfAModelIsLessThanOne [
 ]
 
 { #category : #tests }
+CormasModelTest >> testECECModelHasAProbeNamedVegetationBiomass [
+	self assert: (CMECECModel probes includes: #vegetationBiomass)
+]
+
+{ #category : #tests }
 CormasModelTest >> testECECModelHasThreeProbes [
 	self assert: CMECECModel probes size equals: 3
 ]

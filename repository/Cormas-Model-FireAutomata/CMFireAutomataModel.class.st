@@ -541,17 +541,21 @@ CMFireAutomataModel >> initWithProgrammableScenario [
 
 { #category : #probes }
 CMFireAutomataModel >> nbAshes [
-	^ self theCMFireAutomataCells count: [ :c | c state = #ash]
+	"Return number of cells in ash state"
+	<probe>
+	^ self theCMFireAutomataCells count: [ :c | c state = #ash ]
 ]
 
 { #category : #probes }
 CMFireAutomataModel >> nbFires [
+<probe>
 	^ self theCMFireAutomataCells count: [ :c | c state = #fire ]
 ]
 
 { #category : #probes }
 CMFireAutomataModel >> nbTrees [
-	^ self theCMFireAutomataCells  count: [ :c | c state = #tree ]
+<probe>
+	^ self theCMFireAutomataCells count: [ :c | c state = #tree ]
 ]
 
 { #category : #accessing }

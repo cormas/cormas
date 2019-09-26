@@ -13,8 +13,8 @@ If you want to contribute to CORMAS please read : https://github.com/cormas/corm
 
 ## How to install Cormas
 
-* Download a Pharo 6.1 image+VM depending of your platform: http://pharo.org/download
-* Load Cormas: Open Pharo 6.1 image then click anywhere to open the main menu. Choose Playground to execute the following script. Paste the script below in Playground, select all then right-click and choose Do it to execute this.
+* Download a Pharo 7.0 image+VM depending of your platform: http://pharo.org/download
+* Load Cormas: Open Pharo 7.0 image then click anywhere to open the main menu. Choose Playground to execute the following script. Paste the script below in Playground, select all then right-click and choose Do it to execute this.
 
 ```Smalltalk
 Metacello new
