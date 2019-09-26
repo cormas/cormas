@@ -14,6 +14,7 @@ Class {
 { #category : #baselines }
 BaselineOfCormas >> baseline: spec [
 	<baseline>
+
 	spec
 		for: #common
 		do: [ spec blessing: #baseline.
@@ -43,8 +44,9 @@ BaselineOfCormas >> baseline: spec [
 						className: 'ConfigurationOfNeoJSON';
 						version: #stable;
 						repository: 'http://smalltalkhub.com/mc/SvenVanCaekenberghe/Neo/main' ].
-			"			baseline: 'ClassEditor' 
-			with: [ spec repository: 'github://openponk/class-editor/repository' ];"
+			"
+         baseline: 'ClassEditor' 
+			   with: [ spec repository: 'github://openponk/class-editor/repository' ];"
 			spec
 				package: 'Cormas-Core';
 				package: 'Cormas-Model-Conway';
