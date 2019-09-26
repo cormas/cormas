@@ -212,6 +212,15 @@ zPN7BOzPAAAAAElFTkSuQmCC'
 ]
 
 { #category : #'accessing - icons' }
+CMIcons class >> replayRunForwardIcon [
+	"Private - Generated method"
+	^ self icons
+		at: #replayRunForwardIcon
+		ifAbsentPut: [ Form
+				fromBinaryStream: self replayStoredSimIconContents base64Decoded readStream ]
+]
+
+{ #category : #'accessing - icons' }
 CMIcons class >> replaySimBackwardDisabledIcon [
 	"Private - Generated method"
 	^ self icons
@@ -272,6 +281,15 @@ cQrFYlFr7TiNw4PO3kY3LcVE/yXxis8LoZ/JWJlMT42VpZx34qUgrSu5iaiuq11Xa60bjYar
 D/5pdXfWJQ35kXgvv33B87x8Pm/bdui58k714OBAKVUszU7EC61crpTLlXp9p+22LXvPayEf
 97TWm8/CYQ3OzDkTPeOt2+202+2joyPbtpeXV/rzYDQ/PdFQdH5UAHCcwr8wf/7X/z9MG+8x
 GStQUmP6FUgAAAAASUVORK5CYII='
+]
+
+{ #category : #'accessing - icons' }
+CMIcons class >> replayStepForwardIcon [
+	"Private - Generated method"
+	^ self icons
+		at: #replayStepForwardIcon
+		ifAbsentPut: [ Form
+				fromBinaryStream: self replay1StoredStepIconContents base64Decoded readStream ]
 ]
 
 { #category : #'accessing - icons' }
@@ -434,6 +452,25 @@ ajOPxx2nMDyczWYzmcxuGDXnNRFBaYimWKIdzQh8j6Kx3jyLN+2ETiYqs09ahbFCD6n2oDoj
 1VtLVTvS6jZ7aMTzfS96hDqaJMRjrbbsaHV2Vh5+JJvJ9JJqzxU5O7d2fFJrPTAw0PwFTv3l
 V3Z2djojhHnPPlcFxZLJfD6/p1S9Vr1edxwnHo+LSKv9gwjGGLvjVSj0vrS8vExEqVSqo4v/
 43X4f+WQ92/WP219ONyBCw7CAAAAAElFTkSuQmCC'
+]
+
+{ #category : #'accessing - icons' }
+CMIcons class >> runSimIcon [
+	"Private - Generated method"
+	^ self icons
+		at: #runSimIcon
+		ifAbsentPut: [ Form
+				fromBinaryStream: self runAllSimIconContents base64Decoded readStream ]
+]
+
+{ #category : #'accessing - icons' }
+CMIcons class >> runStepByStepSimIcon [
+	"Private - Generated method"
+	^ self icons
+		at: #runStepByStepSimIcon
+		ifAbsentPut: [ Form
+				fromBinaryStream: self exec1StepIconContents base64Decoded readStream ]
+
 ]
 
 { #category : #'accessing - icons' }
