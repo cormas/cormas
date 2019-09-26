@@ -34,11 +34,8 @@ BaselineOfCormas >> baseline: spec [
 						className: #ConfigurationOfTabular;
 						versionString: #development;
 						repository: 'http://ss3.gemtalksystems.com/ss/Tabular' ];
-				project: 'NeoCSV'
-					with: [ spec
-						className: 'ConfigurationOfNeoCSV';
-						version: #stable;
-						repository: 'github://svenvc/NeoCVS:master/repository' ];
+				baseline: 'NeoCSV' 
+					with: [ spec repository: 'github://svenvc/NeoCSV/repository' ];
 				project: 'NeoJSON'
 					with: [ spec
 						className: 'ConfigurationOfNeoJSON';
