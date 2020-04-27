@@ -19,7 +19,7 @@ BaselineOfCormas >> baseline: spec [
 		for: #common
 		do: [
 			spec blessing: #baseline.
-			spec preLoadDoIt: #preLoad.
+
 			spec postLoadDoIt: #postLoad.
 			
 			spec
@@ -65,6 +65,7 @@ BaselineOfCormas >> baseline: spec [
 			].
 		
 		spec for:#'pharo7.x' do:[
+			spec preLoadDoIt: #preLoadForPharo7.
 			spec
 			project: 'Tabular'
 					with: [ spec
@@ -79,7 +80,8 @@ BaselineOfCormas >> baseline: spec [
 					].
 		spec
 		for: #'pharo8.x'
-		do: [ 
+		do: [
+			spec preLoadDoIt: #preLoadForPharo8. 
 			spec
 				baseline: 'Roassal3' with: [ spec repository: 'github://ObjectProfile/Roassal3/src' ];
 				baseline: 'Tabular'
@@ -174,22 +176,40 @@ BaselineOfCormas >> postLoad [
 ]
 
 { #category : #doits }
-BaselineOfCormas >> preLoad [
-	" Private - Execute post install actions "
-
-	self ensureMetacelloFileDownload.
-	super preLoad.
-	self preLoadConfiguration.	
-
-]
-
-{ #category : #doits }
-BaselineOfCormas >> preLoadConfiguration [
+BaselineOfCormas >> preLoadConfigurationforPharo7 [
 
 	Smalltalk tools debugger
 		alwaysOpenFullDebugger: true;
 		filterCommonMessageSends: true.
 	PharoLightTheme beCurrent
+]
+
+{ #category : #doits }
+BaselineOfCormas >> preLoadConfigurationforPharo8 [
+
+	Smalltalk tools debugger
+		filterCommonMessageSends: true.
+	PharoLightTheme beCurrent
+]
+
+{ #category : #doits }
+BaselineOfCormas >> preLoadforPharo7 [
+	" Private - Execute post install actions "
+
+	self ensureMetacelloFileDownload.
+	super preLoad.
+	self preLoadConfigurationforPharo7 	
+
+]
+
+{ #category : #doits }
+BaselineOfCormas >> preLoadforPharo8 [
+	" Private - Execute post install actions "
+
+	self ensureMetacelloFileDownload.
+	super preLoad.
+	self preLoadConfigurationforPharo8	
+
 ]
 
 { #category : #doits }
