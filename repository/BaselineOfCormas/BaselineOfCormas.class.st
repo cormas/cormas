@@ -193,7 +193,7 @@ BaselineOfCormas >> preLoadConfigurationforPharo8 [
 ]
 
 { #category : #doits }
-BaselineOfCormas >> preLoadforPharo7 [
+BaselineOfCormas >> preLoadForPharo7 [
 	" Private - Execute post install actions "
 
 	self ensureMetacelloFileDownload.
@@ -203,7 +203,7 @@ BaselineOfCormas >> preLoadforPharo7 [
 ]
 
 { #category : #doits }
-BaselineOfCormas >> preLoadforPharo8 [
+BaselineOfCormas >> preLoadForPharo8 [
 	" Private - Execute post install actions "
 
 	self ensureMetacelloFileDownload.
