@@ -17,9 +17,11 @@ BaselineOfCormas >> baseline: spec [
 
 	spec
 		for: #common
-		do: [ spec blessing: #baseline.
+		do: [
+			spec blessing: #baseline.
 			spec preLoadDoIt: #preLoad.
 			spec postLoadDoIt: #postLoad.
+			
 			spec
 				baseline: 'FileDialog'
 					with: [ spec repository: 'github://peteruhnak/file-dialog/repository' ];
@@ -29,21 +31,9 @@ BaselineOfCormas >> baseline: spec [
 					with: [ spec repository: 'github://hernanmd/CodeGenerator/repository' ];
 				baseline: 'Roassal2'
 					with: [ spec repository: 'github://ObjectProfile/Roassal2/src' ];
-				project: 'Tabular'
-					with: [ spec
-						className: #ConfigurationOfTabular;
-						versionString: #development;
-						repository: 'http://ss3.gemtalksystems.com/ss/Tabular' ];
 				baseline: 'NeoCSV' 
-					with: [ spec repository: 'github://svenvc/NeoCSV/repository' ];
-				project: 'NeoJSON'
-					with: [ spec
-						className: 'ConfigurationOfNeoJSON';
-						version: #stable;
-						repository: 'http://smalltalkhub.com/mc/SvenVanCaekenberghe/Neo/main' ].
-			"
-         baseline: 'ClassEditor' 
-			   with: [ spec repository: 'github://openponk/class-editor/repository' ];"
+					with: [ spec repository: 'github://svenvc/NeoCSV/repository' ].
+			
 			spec
 				package: 'Cormas-Core';
 				package: 'Cormas-Model-Conway';
@@ -58,6 +48,7 @@ BaselineOfCormas >> baseline: spec [
 					with: [ spec
 						requires: #('FileDialog' 'ProjectFramework' 'CodeGenerator' 'Roassal2') ];
 				package: 'Cormas-VW-Ported'.
+				
 			spec
 				group: 'All'
 					with:
@@ -70,7 +61,32 @@ BaselineOfCormas >> baseline: spec [
 				group: 'OpenMole' with: #('Cormas-OpenMole');
 				group: 'UI'
 					with:
-					#(#'Cormas-UI' 'Cormas-Core' 'Cormas-Model-Conway' 'Cormas-Model-ECEC' 'Cormas-Model-FireAutomata' 'Cormas-Model-Diffuse' #'Cormas-Model-DemoAggregates')]
+					#(#'Cormas-UI' 'Cormas-Core' 'Cormas-Model-Conway' 'Cormas-Model-ECEC' 'Cormas-Model-FireAutomata' 'Cormas-Model-Diffuse' #'Cormas-Model-DemoAggregates').			
+			].
+		
+		spec for:#'pharo7.x' do:[
+			spec
+			project: 'Tabular'
+					with: [ spec
+						className: #ConfigurationOfTabular;
+						versionString: #development;
+						repository: 'http://ss3.gemtalksystems.com/ss/Tabular' ];
+				project: 'NeoJSON'
+					with: [ spec
+						className: 'ConfigurationOfNeoJSON';
+						version: #stable;
+						repository: 'http://smalltalkhub.com/mc/SvenVanCaekenberghe/Neo/main' ].
+					].
+		spec
+		for: #'pharo8.x'
+		do: [ 
+			spec
+				baseline: 'Roassal3' with: [ spec repository: 'github://ObjectProfile/Roassal3/src' ];
+				baseline: 'Tabular'
+					with: [ spec repository: 'github://VincentBlondeau/Tabular' ];
+				baseline: 'NeoJSON'
+					with: [spec repository:'github://svenvc/NeoJSON/repository'  ].
+					]
 ]
 
 { #category : #doits }
