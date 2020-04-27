@@ -88,6 +88,17 @@ BaselineOfCormas >> baseline: spec [
 					with: [ spec repository: 'github://VincentBlondeau/Tabular' ];
 				baseline: 'NeoJSON'
 					with: [spec repository:'github://svenvc/NeoJSON/repository'  ].
+					].
+		spec
+		for: #'pharo9.x'
+		do: [
+			spec preLoadDoIt: #preLoadForPharo9. 
+			spec
+				baseline: 'Roassal3' with: [ spec repository: 'github://ObjectProfile/Roassal3' ];
+				baseline: 'Tabular'
+					with: [ spec repository: 'github://VincentBlondeau/Tabular' ];
+				baseline: 'NeoJSON'
+					with: [spec repository:'github://svenvc/NeoJSON'  ].
 					]
 ]
 
@@ -193,6 +204,14 @@ BaselineOfCormas >> preLoadConfigurationforPharo8 [
 ]
 
 { #category : #doits }
+BaselineOfCormas >> preLoadConfigurationforPharo9 [
+
+	Smalltalk tools debugger
+		filterCommonMessageSends: true.
+	PharoLightTheme beCurrent
+]
+
+{ #category : #doits }
 BaselineOfCormas >> preLoadForPharo7 [
 	" Private - Execute post install actions "
 
@@ -209,6 +228,16 @@ BaselineOfCormas >> preLoadForPharo8 [
 	self ensureMetacelloFileDownload.
 	super preLoad.
 	self preLoadConfigurationforPharo8	
+
+]
+
+{ #category : #doits }
+BaselineOfCormas >> preLoadForPharo9 [
+	" Private - Execute post install actions "
+
+	self ensureMetacelloFileDownload.
+	super preLoad.
+	self preLoadConfigurationforPharo9	
 
 ]
 
