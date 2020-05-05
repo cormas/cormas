@@ -9,7 +9,7 @@ Current stable version of CORMAS is based on VisualWorks 7.6 and can be found on
 Some documentation (to be cleaned and reorganized) about Cormas is available on the Wiki here:
 https://github.com/cormas/documentation
 
-If you want to contribute to CORMAS please read : https://github.com/cormas/cormas/blob/master/CODE_OF_CONDUCT.md
+If you want to contribute to CORMAS please read: https://github.com/cormas/cormas/blob/master/CODE_OF_CONDUCT.md
 
 ## How to install Cormas
 
@@ -42,6 +42,6 @@ curl https://get.pharo.org | bash
 
 Cormas is licensed under MIT. See : http://opensource.org/licenses/MIT
 
-## Where to discuss about CORMAS
+## Where to discuss about CORMAS devlopment
 
 Join us on the cormas-dev mailing-list: http://groups.google.com/group/cormas-dev
