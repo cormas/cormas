@@ -1,5 +1,5 @@
 "
-Agent is the abstract class of all agents classes in CORMAS.
+CMAgent is the abstract class of all agents classes in CORMAS.
 "
 Class {
 	#name : #CMAgent,
@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'dead'
 	],
-	#category : 'Cormas-Core-Entities'
+	#category : #'Cormas-Core-Entities'
 }
 
 { #category : #deprecated }
