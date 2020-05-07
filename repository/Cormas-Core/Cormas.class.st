@@ -72,7 +72,7 @@ Class {
 		'current',
 		'runtimeMode'
 	],
-	#category : 'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Interface'
 }
 
 { #category : #accessing }
@@ -1527,7 +1527,7 @@ Cormas class >> passiveEntitiesClassNames [
 		add: 'Msg';
 		add: 'PassiveObject'.
 	self cmEnvironment allClasses "should be allEntityClasses ??" 
-		do: [ : aClass | (aClass inheritsFrom: PassiveObject)
+		do: [ : aClass | (aClass inheritsFrom: CMPassiveObject)
 			ifTrue: [collec add: aClass name asString ] ].
 	^ collec
 ]
@@ -4251,7 +4251,7 @@ Cormas >> addClassFrom: aSuperClass [
 	aName isNil ifTrue: [^nil].
 	newClass := self createClassNamed: aName from: aSuperClass.
 	((self cormasModelClass passiveClasses includes: aSuperClass)
-		or: [aSuperClass = PassiveObject or: [aSuperClass = CMObjectLocation]])
+		or: [aSuperClass = CMPassiveObject or: [aSuperClass = CMObjectLocation]])
 		ifTrue:
 			[self cormasModelClass passiveClasses add: newClass.
 			(newClass inheritsFrom: CMObjectLocation)

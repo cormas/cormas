@@ -31,7 +31,7 @@ Class {
 		'configName',
 		'enableUndo'
 	],
-	#category : 'Cormas-Core-Space'
+	#category : #'Cormas-Core-Space'
 }
 
 { #category : #resources }
@@ -3370,7 +3370,7 @@ SpaceInterface >> passiveClassesForMenu: aMenuName [
 					'MenuInheritingFrom:'.
 			^siConfig
 				perform: methodName asSymbol
-				with: PassiveObject]
+				with: CMPassiveObject]
 ]
 
 { #category : #'menu - actions' }
