@@ -13,8 +13,8 @@ If you want to contribute to CORMAS please read: https://github.com/cormas/corma
 
 ## How to install Cormas
 
-* Download a Pharo 7.0 image+VM depending of your platform: http://pharo.org/download
-* Load Cormas: Open Pharo 7.0 image then click anywhere to open the main menu. Choose Playground to execute the following script. Paste the script below in Playground, select all then right-click and choose Do it to execute this.
+* Download a Pharo 8.0 image+VM depending of your platform: http://pharo.org/download
+* Load Cormas: Open Pharo 8.0 image then click anywhere to open the main menu. Choose Playground to execute the following script. Paste the script below in Playground, select all then right-click and choose Do it to execute this.
 
 ```Smalltalk
 Metacello new
@@ -24,6 +24,8 @@ Metacello new
 	load.
 ```
 All packages load into the Cormas-* package names.
+
+There is from time to time, loading errors with github. If it happens, just reexecute the Metacello expression.
 
 If you want to contribute code to CORMAS, this is better to follow the contributing guide: https://github.com/cormas/cormas/blob/master/CONTRIBUTING.md
 
@@ -42,6 +44,6 @@ curl https://get.pharo.org | bash
 
 Cormas is licensed under MIT. See : http://opensource.org/licenses/MIT
 
-## Where to discuss about CORMAS devlopment
+## Where to discuss about CORMAS development
 
 Join us on the cormas-dev mailing-list: http://groups.google.com/group/cormas-dev
