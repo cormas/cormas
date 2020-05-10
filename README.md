@@ -24,7 +24,8 @@ Metacello new
 	load.
 ```
 All packages load into the Cormas-* package names.
-There is from time to time errors with github. If it happens, just reexecute the Metacello expression.
+
+There is from time to time, loading errors with github. If it happens, just reexecute the Metacello expression.
 
 If you want to contribute code to CORMAS, this is better to follow the contributing guide: https://github.com/cormas/cormas/blob/master/CONTRIBUTING.md
 
