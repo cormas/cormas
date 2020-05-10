@@ -1,6 +1,6 @@
 # Contribution Guide for CORMAS
 
-This file is currently not complete but will be improve step by step.
+*This file is currently not complete but will be improve step by step.*
 
 You need to download Pharo 8.0 first.
 
