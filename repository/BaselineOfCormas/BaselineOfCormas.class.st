@@ -95,11 +95,8 @@ BaselineOfCormas >> baseline: spec [
 			spec preLoadDoIt: #preLoadForPharo9. 
 			spec
 				baseline: 'Roassal3' with: [ spec repository: 'github://ObjectProfile/Roassal3' ];
-				project: 'Tabular'
-					with: [ spec
-						className: #ConfigurationOfTabular;
-						versionString: #development;
-						repository: 'http://ss3.gemtalksystems.com/ss/Tabular' ];
+				baseline: 'Tabular'
+				with: [ spec repository: 'github://VincentBlondeau/Tabular'];
 				baseline: 'NeoJSON'
 					with: [spec repository:'github://svenvc/NeoJSON'  ].
 					]
