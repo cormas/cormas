@@ -1,4 +1,9 @@
 "
+I'm representing a spatial entity. Spatial entities define a topological support for simulations. They hold natural resources and arbitrate their allocation according to pre-defined protocols based on a metaphor of physical harvest.
+
+
+---------------------------------------------------------------------------------------------------------------------
+
 newBoss: attributList 
 	""Create Entity with only  #id value.
 	To add some other values of attributes, newBoss: must be redefine.
@@ -47,25 +52,8 @@ Class {
 	#classInstVars : [
 		'bounds'
 	],
-	#category : 'Cormas-Core-Entities'
+	#category : #'Cormas-Core-Entities'
 }
-
-{ #category : #'- utilities - ADvance' }
-CMSpatialEntity class >> ad2ClassInfo [
-	
-	^'
-
-Instance Variables:
-	includedEntities 	<Set> 
-	theCSE 	<Dictionary> 
-	theOccupants 	<Dictionary> 
-	edge 	<Boolean> 
-	neighbourhood 	<Array> 
-	center 	<Point> 
-	image 	<VisualComponent> 
-	visualState 	<ColorValue> 
-	spaceModel 	<SpaceModel> '
-]
 
 { #category : #'- accessing' }
 CMSpatialEntity class >> bounds [

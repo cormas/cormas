@@ -11,15 +11,6 @@ Class {
 }
 
 { #category : #deprecated }
-CMAgent class >> ad2ClassInfo [
-self deprecated:'Should be deprecated in the next CORMAS version'.
-	^'
-
-Instance Variables:
-	dead 	<Boolean> '
-]
-
-{ #category : #deprecated }
 CMAgent class >> dead_default [
 self deprecated:'Should be deprecated in the next CORMAS version'.
 	^false

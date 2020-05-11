@@ -47,7 +47,7 @@ Class {
 		'povDict',
 		'activityDiagrams'
 	],
-	#category : 'Cormas-Core-Entities'
+	#category : #'Cormas-Core-Entities'
 }
 
 { #category : #'- accessing' }
@@ -296,16 +296,6 @@ CMEntity class >> activity_exampleTest [
 				width: 429
 				height: 411).
 	^editor
-]
-
-{ #category : #'- utilities - ADvance' }
-CMEntity class >> ad2ClassInfo [
-	
-	^'
-
-Instance Variables:
-	flag 	<Boolean> 
-	id 	<Integer> '
 ]
 
 { #category : #'- accessing' }
