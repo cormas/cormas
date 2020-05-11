@@ -2,6 +2,7 @@
 I'm representing a spatial entity. Spatial entities define a topological support for simulations. They hold natural resources and arbitrate their allocation according to pre-defined protocols based on a metaphor of physical harvest.
 
 
+LEGACY behind this line. To be removed.
 ---------------------------------------------------------------------------------------------------------------------
 
 newBoss: attributList 
@@ -89,21 +90,17 @@ CMSpatialEntity class >> createEntityPOVwithSpec: aSpec defaultPov: aDefaultPov 
 
 { #category : #'+ utilities - colors' }
 CMSpatialEntity class >> defaultColor [
-	"Purpos: return the default color of the current class name.
-	Ex: Entity defaultColor => ColorValue lightGray ; CormasNS.Models.ECEC.Forager defaultColor => ColorValue veryLightGray"
-	
+	"Purpose: return the default color of the current class name.
+	Ex: CMEntity defaultColor => ColorValue lightGray ; CMECECForager defaultColor => ColorValue veryLightGray"
+
 	self colorsDict isEmpty
-		ifTrue: [^super defaultColor]
-		ifFalse:
-			[^self colorsDict
-				at: self name
-				ifAbsent: [super defaultColor]]
+		ifTrue: [ ^ super defaultColor ]
+		ifFalse: [ ^ self colorsDict at: self name ifAbsent: [ super defaultColor ] ]
 ]
 
 { #category : #'- testing' }
 CMSpatialEntity class >> isSpatialClass [
-	
-	^true
+	^ true
 ]
 
 { #category : #'- default value' }

@@ -769,8 +769,8 @@ Example: CormasNS.Kernel.Entity darkColors -> OrderedCollection (#black #blue #b
 
 { #category : #'+ utilities - colors' }
 CMEntity class >> defaultColor [
-	"Purpos: return the default color of the current class name.
-	Ex: Entity defaultColor => ColorValue lightGray ; CormasNS.Models.ECEC.Forager defaultColor => ColorValue veryLightGray"
+	"Purpose: return the default color of the current class name.
+	Ex: CMEntity defaultColor => ColorValue lightGray ; CMECECForager defaultColor => ColorValue veryLightGray"
 	
 	| v |
 	v := 1.
