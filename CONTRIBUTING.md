@@ -28,21 +28,16 @@ where you replace XXX with your github user name.
 ## Send some changes to the original CORMAS repository
 
 #### From Pharo Iceberg
-After doing modifications in your image, open Iceberg tool, commit the changes in your CORMAS repository. Cherry-pick the modifications that you want to include in your commit. Then push your commit to your fork.
+After doing modifications in your image, open Iceberg tool, commit the changes in your CORMAS repository. Cherry-pick the modifications that you want to include in your commit. Then push your commit to your fork. It's more convenient to divide your changes in meaninfull and simple commits, which makes it easier to check for those who need to proofread it.
 
 ![iceberge](img/iceberg_pharo.png)
 
 #### From Github UI
 In the GitHub interface, create a Pull Request from your commit.
-Send the PR to CORMAS main repository. This will notify CORMAS core developers team that an improvement or bug fix is pending.
-
-At this point you can create a pull request for the geart Admin team. A pull request can be seen as a proposal to improve the software or to fix a bug. It's more convenient to divide the pull request into simple problems, which makes it easier to check for those who need to proofread it.
+You have to give some information about what is the purpose of you pull request. Then submit it to CORMAS main repository. 
+This will notify CORMAS core developers team that an improvement or bug fix is pending.
 
 ![iceberge](img/github_pr.png)
-
-You have to give some information about what is the purpose of you pull request. Then submit it.
-
-
 
 ### Pull change from cormas/cormas in your own fork
 
