@@ -13,7 +13,7 @@ All changes you'll do will be versionned in your own fork of the [CORMAS reposit
 
 Go to Cormas github's repository and click on the fork button on the top right. Yes, this means that you'll need a github account to contribute to CORMAS.
 
-## Load your fork version of CORMAS in your image:
+## Load your fork version of CORMAS in your image
 In your Pharo 8.0 image, load now the last development version of CORMAS :
 
 ```Smalltalk
