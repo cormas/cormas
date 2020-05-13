@@ -39,13 +39,12 @@ This will notify CORMAS core developers team that an improvement or bug fix is p
 
 ![iceberge](img/github_pr.png)
 
-### Pull change from cormas/cormas in your own fork
+### Sync your fork ull change from cormas/cormas in your own fork
+After a while, changes from other developers are integrated in the main CORMAS repository and your fork became out of sync.
 
-If your deposit is late on the Official Cormas repository, indeed it is possible to update it by using the compare button (From your own forked repository).
+**TODO: Explain how to sync fork**
 
-![iceberge](img/github_cp.png)
-
-#### Pull change from your fork into pharo
+You have also the possibility to delete your fork and fork again the main CORMAS repository.
 
 ## Cleanups
 Ounce your pull request is integrated, some cleanups are maybe required:
