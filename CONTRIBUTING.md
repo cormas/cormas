@@ -7,14 +7,14 @@ You need to download Pharo 8.0 first.
 ## Setup Iceberg
 You need an ssh key in order to commit on github. Open Iceberg tool, and then click on the settings. Check the box : "Use custom SSH keys".
 
-## Fork the Cormas repository
+## Fork the CORMAS repository
 
-All changes you'll do will be versionned in your own fork of the [CORMAS repository](https://github.com/cormas/cormas). Then, from your fork you'll be able to issue pull requests to Cormas, where they will be reviewed, and luckily, integrated.
+All changes you'll do will be versionned in your own fork of the [CORMAS repository](https://github.com/cormas/cormas). Then, from your fork you'll be able to issue pull requests to CORMAS, where they will be reviewed, and luckily, integrated.
 
-Go to Cormas github's repository and click on the fork button on the top right. Yes, this means that you'll need a github account to contribute to Cormas.
+Go to Cormas github's repository and click on the fork button on the top right. Yes, this means that you'll need a github account to contribute to CORMAS.
 
-## Load your fork version of Cormas in your image:
-In your Pharo 8.0 image, load now the last development version of Cormas :
+## Load your fork version of CORMAS in your image:
+In your Pharo 8.0 image, load now the last development version of CORMAS :
 
 ```Smalltalk
 Metacello new
@@ -25,9 +25,9 @@ Metacello new
 ```
 where you replace XXX with your github user name.
 
-## Send the PR to the original cormas repo
-After doing modifications in your image, open Iceberg tool, commit the changes in your Cormas repository. Cherry-pick the modifications that you want to include in your commit. In the github interface, create a Pull Request from your commit.
-Send the PR to Cormas main repository.
+## Send the PR to the original CORMAS repository
+After doing modifications in your image, open Iceberg tool, commit the changes in your CORMAS repository. Cherry-pick the modifications that you want to include in your commit. In the github interface, create a Pull Request from your commit.
+Send the PR to CORMAS main repository.
 
 :bulb: **be carefull:** once it's pushed into your own cormas repository, you have to make a pull request at the cormas repository. This will notify the admin team that an improvement or bug fix is pending.
 
