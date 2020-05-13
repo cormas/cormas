@@ -25,8 +25,6 @@ Metacello new
 ```
 where you replace XXX with your github user name.
 
-PS: at the moment, we have only one master branch, so all development happens on this branch. We will use two branches when we release a first version of Cormas.
-
 ## Send the PR to the original cormas repo
 After doing the modification in your image,
 
