@@ -60,16 +60,12 @@ If your deposit is late on the Official Cormas repository, indeed it is possible
 
 ![iceberge](img/github_cp.png)
 
-
 #### Pull change from your fork into pharo
 
 ## Cleanups
 Ounce your pull request is integrated, some cleanups are maybe required:
 - remove your branch from your fork
 - close the issue (tips: you can automatically close the issue n, by inserting the sentence: **close #n** when you merge your pull request).
-
-You will need from time to time to sync your fork with the original repo. You can do it on the command line with: https://help.github.com/articles/syncing-a-fork/ or in the browser like : https://github.com/KirstieJane/STEMMRoleModels/wiki/Syncing-your-fork-to-the-original-repository-via-the-browser
-You can also kill and redo a fork very easily.
 
 # Release management (not used at the moment)
 
