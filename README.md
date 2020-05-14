@@ -1,4 +1,4 @@
-<p align="center"><img alt="CORMAS" src="assets/logos/CormasLogoBig.png" style="width: 20%; height: 20%">
+<p align="center"><img alt="CORMAS" src="assets/logos/CormasLogoBig.png" style="width: 15%; height: 15%">
 <h1 align="center">[CORMAS]</h1>
   <p align="center">
     COmmon pool Ressources and Multi-Agent Simulations
