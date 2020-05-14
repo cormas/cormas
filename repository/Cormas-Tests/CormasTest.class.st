@@ -1,7 +1,7 @@
 Class {
 	#name : #CormasTest,
 	#superclass : #TestCase,
-	#category : 'Cormas-Tests'
+	#category : #'Cormas-Tests'
 }
 
 { #category : #tests }
@@ -13,7 +13,7 @@ CormasTest >> testAverage [
 
 { #category : #tests }
 CormasTest >> testCormasIsASingleton [
-	self assert: Cormas current == Cormas current
+	self assert: Cormas current identicalTo: Cormas current
 ]
 
 { #category : #tests }
