@@ -13,6 +13,12 @@ All changes you'll do will be versionned in your own fork of the [CORMAS reposit
 
 Go to Cormas github's repository and click on the fork button on the top right. Yes, this means that you'll need a github account to contribute to CORMAS.
 
+## Add main CORMAS repository as remote
+
+Open Iceberg, open CORMAS repository, click on repositories, then + button (add remote).
+Remote name: cormas-upstream
+Remote URL: https://github.com/cormas/cormas.git
+
 ## Load your fork version of CORMAS in your image
 In your Pharo 8.0 image, load now the last development version of CORMAS :
 
