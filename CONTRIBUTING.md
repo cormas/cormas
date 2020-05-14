@@ -16,7 +16,9 @@ Go to Cormas github's repository and click on the fork button on the top right. 
 ## Add main CORMAS repository as remote
 
 Open Iceberg, open CORMAS repository, click on repositories, then + button (add remote).
+
 Remote name: cormas-upstream
+
 Remote URL: https://github.com/cormas/cormas.git
 
 ## Load your fork version of CORMAS in your image
