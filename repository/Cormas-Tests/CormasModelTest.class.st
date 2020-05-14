@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'conwayModel'
 	],
-	#category : 'Cormas-Tests'
+	#category : #'Cormas-Tests'
 }
 
 { #category : #tests }
@@ -25,7 +25,9 @@ CormasModelTest >> testAfterInitializationAConwayModelHas10000Cells [
 		initialize;
 		new.
 	model initSimulation.
-	self assert: (model allTheEntities:CMConwayCell) size == 10000
+	self
+		assert: (model allTheEntities: CMConwayCell) size
+		identicalTo: 10000
 ]
 
 { #category : #tests }
@@ -35,7 +37,7 @@ CormasModelTest >> testAfterInitializationAConwayModelHas10000Entities [
 		initialize;
 		new.
 	model initSimulation.
-	self assert: model allTheEntities size == 10000
+	self assert: model allTheEntities size identicalTo: 10000
 ]
 
 { #category : #tests }
@@ -45,7 +47,7 @@ CormasModelTest >> testConwayModelHasNoSocialEntityClass [
 
 { #category : #tests }
 CormasModelTest >> testConwayModelHasOnlyOneSpatialEntityClass [
-	self assert: CMConwayModel spatialClasses size == 1
+	self assert: CMConwayModel spatialClasses size identicalTo: 1
 ]
 
 { #category : #tests }
@@ -78,7 +80,9 @@ CormasModelTest >> testECECModelHasThreeProbes [
 
 { #category : #tests }
 CormasModelTest >> testModelOfFireAutomataCellReturnFireAutomata [
-	self assert: CMFireAutomataCell modelClass == CMFireAutomataModel
+	self
+		assert: CMFireAutomataCell modelClass
+		identicalTo: CMFireAutomataModel
 ]
 
 { #category : #tests }
@@ -119,7 +123,7 @@ CormasModelTest >> testSizeOfCellsColumnOfFireAutomataModelIsTen [
 
 { #category : #tests }
 CormasModelTest >> testThereIsTwoClassesInConwayPackage [
-	self assert: CMConwayModel allClassesInPackage size == 2
+	self assert: CMConwayModel allClassesInPackage size identicalTo: 2
 ]
 
 { #category : #tests }
