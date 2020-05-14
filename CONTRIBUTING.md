@@ -29,7 +29,7 @@ where you replace XXX with your github user name.
 
 Open Iceberg, open CORMAS repository, click on repositories, then + button (add remote).
 
-Remote name: cormas-upstream
+Remote name: upstream
 
 Remote URL: https://github.com/cormas/cormas.git
 
