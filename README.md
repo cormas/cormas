@@ -1,4 +1,4 @@
-<p align="center"><img alt="CORMAS" src="assets/logos/CormasLogoBig.png" style="width: 25%; height: 25%">
+<p align="center"><img alt="CORMAS" src="assets/logos/CormasLogoBig.png" style="width: 20%; height: 20%">
 <h1 align="center">[CORMAS]</h1>
   <p align="center">
     COmmon pool Ressources and Multi-Agent Simulations
@@ -17,9 +17,6 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/3tvarh2xi22max8h?svg=true)](https://ci.appveyor.com/project/SergeStinckwich/polymath-88bea)
 [![Coverage Status](https://coveralls.io/repos/github/PolyMathOrg/PolyMath/badge.svg?branch=master)](https://coveralls.io/github/PolyMathOrg/PolyMath?branch=master)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/PolyMathOrg/PolyMath/master/LICENSE)
-
-
-![CORMAS Logo](http://cormas.cirad.fr/images/CormasLogoBig.png "CORMAS Logo")
 
 # CORMAS (COmmon pool Ressources and Multi-Agent Simulations)
 [![Build Status](https://travis-ci.org/cormas/cormas.svg?branch=master)](https://travis-ci.org/cormas/cormas)
