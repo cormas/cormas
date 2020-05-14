@@ -39,7 +39,7 @@ This will notify CORMAS core developers team that an improvement or bug fix is p
 
 ![iceberge](img/github_pr.png)
 
-### Sync your fork ull change from cormas/cormas in your own fork
+### Sync your fork with the CORMAS main repository
 After a while, changes from other developers are integrated in the main CORMAS repository and your fork became out of sync.
 In order to do that, you need the fetch the last modifications from the main CORMAS repository, merge them in your image and then push them in your fork repository.
 
