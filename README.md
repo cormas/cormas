@@ -36,9 +36,7 @@ Metacello new
 	baseline: 'Cormas';
 	load.
 ```
-All packages load into the Cormas-* package names.
-
-There is from time to time, [loading errors with github](https://github.com/cormas/cormas/issues/101). If it happens, just reexecute the Metacello expression.
+All packages load into the Cormas-* package names. (There is from time to time, [loading errors with github](https://github.com/cormas/cormas/issues/101). If it happens, just close the error window and reexecute the Metacello expression).
 
 If you want to contribute code to CORMAS, this is better to follow the contributing guide: [Contributing](https://github.com/cormas/cormas/blob/master/CONTRIBUTING.md)
 
