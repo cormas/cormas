@@ -22,7 +22,7 @@ Current stable version of CORMAS is based on VisualWorks 7.6 and can be found on
 Some documentation (to be cleaned and reorganized) about Cormas is available on the Wiki here:
 https://github.com/cormas/documentation
 
-If you want to contribute to CORMAS please read: https://github.com/cormas/cormas/blob/master/CODE_OF_CONDUCT.md
+If you want to contribute to CORMAS please read: [Code of Conduct](https://github.com/cormas/cormas/blob/master/CODE_OF_CONDUCT.md)
 
 ## How to install Cormas
 
@@ -40,7 +40,7 @@ All packages load into the Cormas-* package names.
 
 There is from time to time, [loading errors with github](https://github.com/cormas/cormas/issues/101). If it happens, just reexecute the Metacello expression.
 
-If you want to contribute code to CORMAS, this is better to follow the contributing guide: https://github.com/cormas/cormas/blob/master/CONTRIBUTING.md
+If you want to contribute code to CORMAS, this is better to follow the contributing guide: [Contributing](https://github.com/cormas/cormas/blob/master/CONTRIBUTING.md)
 
 ## How to install with Command Line interface (CLI)
 
