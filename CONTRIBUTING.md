@@ -7,14 +7,14 @@ You need to download Pharo 8.0 first.
 ## Setup Iceberg
 You need an ssh key in order to commit on github. Open Iceberg tool, and then click on the settings. Check the box : "Use custom SSH keys".
 
-## Fork the Cormas repository
+## Fork the CORMAS repository
 
-All changes you'll do will be versionned in your own fork of the [CORMAS repository](https://github.com/cormas/cormas). Then, from your fork you'll be able to issue pull requests to Cormas, where they will be reviewed, and luckily, integrated.
+All changes you'll do will be versionned in your own fork of the [CORMAS repository](https://github.com/cormas/cormas). Then, from your fork you'll be able to issue pull requests to CORMAS, where they will be reviewed, and luckily, integrated.
 
-Go to Cormas github's repository and click on the fork button on the top right. Yes, this means that you'll need a github account to contribute to Cormas.
+Go to Cormas github's repository and click on the fork button on the top right. Yes, this means that you'll need a github account to contribute to CORMAS.
 
-## Load your fork version of Cormas in your image:
-In your Pharo 8.0 image, load now the last development version of Cormas :
+## Load your fork version of CORMAS in your image
+In your Pharo 8.0 image, load now the last development version of CORMAS :
 
 ```Smalltalk
 Metacello new
@@ -25,51 +25,41 @@ Metacello new
 ```
 where you replace XXX with your github user name.
 
-PS: at the moment, we have only one master branch, so all development happens on this branch. We will use two branches when we release a first version of Cormas.
+## Add main CORMAS repository as remote
 
-## Send the PR to the original cormas repo
-After doing the modification in your image,
+Open Iceberg, open CORMAS repository, click on repositories, then + button (add remote).
 
-### A Pull from Pharo Iceberg
-open Iceberg tool, commit the changes in your Cormas repository. Cherry-pick the modifications that you want to include in your commit. In the github interface, create a Pull Request from your commit.
-Send the PR to Cormas main repository.
+Remote name: upstream
 
-:bulb: **be carefull:** once it's pushed into your own cormas repository, you have to make a pull request at the cormas repository. This will notify the admin team that an improvement or bug fix is pending.
+Remote URL: https://github.com/cormas/cormas.git
 
-### A Pull Request process
+## Send some changes to the original CORMAS repository
 
-:bangbang: If your are in the admin team. You can proced to a merge. Otherwise you can go straight to updating your deposit (section "_Pull change from cormas/cormas in your fork_").
+#### From Pharo Iceberg
+After doing modifications in your image, open Iceberg tool, commit the changes in your CORMAS repository. Cherry-pick the modifications that you want to include in your commit. Then push your commit to your fork. It's more convenient to divide your changes in meaninfull and simple commits, which makes it easier to check for those who need to proofread it.
 
-#### From Github UI
-
-As Usual with git, you need to i) Commit ii) Push you commit.
-It will appear in you cormas fork repository.
 ![iceberge](img/iceberg_pharo.png)
 
-At this point you can create a pull request for the geart Admin team. A pull request can be seen as a proposal to improve the software or to fix a bug. It's more convenient to divide the pull request into simple problems, which makes it easier to check for those who need to proofread it.
+#### From Github UI
+In the GitHub interface, create a Pull Request from your commit.
+You have to give some information about what is the purpose of you pull request. Then submit it to CORMAS main repository. 
+This will notify CORMAS core developers team that an improvement or bug fix is pending.
 
 ![iceberge](img/github_pr.png)
 
-You have to give some information about what is the purpose of you pull request. Then submit it.
+As the main core developers, you have to review the open PRs. When merging the pull request, select *Create a merge commit* not  squash and merge. Try to avoid (except in case of emergency) to review your own commits.
 
-#### From Pharo Iceberg
+### Sync your fork with the CORMAS main repository
 
-### Pull change from cormas/cormas in your own fork
+After a while, changes from other developers are integrated in the main CORMAS repository and your fork became out of sync.
+In order to do that, you need the fetch the last modifications from the main CORMAS repository, merge them in your image and then push them in your fork repository.
 
-If your deposit is late on the Official Cormas repository, indeed it is possible to update it by using the compare button (From your own forked repository).
-
-![iceberge](img/github_cp.png)
-
-
-#### Pull change from your fork into pharo
+You have also the possibility to delete your fork and fork again the main CORMAS repository.
 
 ## Cleanups
 Ounce your pull request is integrated, some cleanups are maybe required:
 - remove your branch from your fork
 - close the issue (tips: you can automatically close the issue n, by inserting the sentence: **close #n** when you merge your pull request).
-
-You will need from time to time to sync your fork with the original repo. You can do it on the command line with: https://help.github.com/articles/syncing-a-fork/ or in the browser like : https://github.com/KirstieJane/STEMMRoleModels/wiki/Syncing-your-fork-to-the-original-repository-via-the-browser
-You can also kill and redo a fork very easily.
 
 # Release management (not used at the moment)
 
@@ -85,14 +75,4 @@ This project use semantic versionning to define the releases, meaning that each 
 
 Thus, it should be safe to depend on a fixed major version and moving minor version of this project.
 
-# Branch management (not used at the moment)
-
-This project uses gitflow management.
-
-This project contains two main branches:
-- **master** : This branch is a stable branch. Each version on this branch should be a stable release of Cormas, and ideally each commit modifying the source code of the project should be tagged with a version number.
-- **development** : This branch contains the current development of this project.
-
-## Hot fix (not used at the moment)
-
-If a bug is found in a stable version and the correction is backward compatible, it should be corrected in an hotfix branch. Once the correction is finished the hotfix branch should be merged into master and development and a new bugfix release should be done.
+# Branch management (to be defined)

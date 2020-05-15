@@ -15,19 +15,8 @@ Class {
 		'patch',
 		'center'
 	],
-	#category : 'Cormas-Core-Entities'
+	#category : #'Cormas-Core-Entities'
 }
-
-{ #category : #'- utilities - ADvance' }
-CMObjectLocation class >> ad2ClassInfo [
-	
-	^'
-
-Instance Variables:
-	center 	<Point> 
-	patch 	<> <> 
-'
-]
 
 { #category : #'- testing' }
 CMObjectLocation class >> isObjectLocationClass [

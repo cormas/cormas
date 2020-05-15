@@ -1,4 +1,10 @@
 "
+I'm representing a spatial entity. Spatial entities define a topological support for simulations. They hold natural resources and arbitrate their allocation according to pre-defined protocols based on a metaphor of physical harvest.
+
+
+LEGACY behind this line. To be removed.
+---------------------------------------------------------------------------------------------------------------------
+
 newBoss: attributList 
 	""Create Entity with only  #id value.
 	To add some other values of attributes, newBoss: must be redefine.
@@ -47,25 +53,8 @@ Class {
 	#classInstVars : [
 		'bounds'
 	],
-	#category : 'Cormas-Core-Entities'
+	#category : #'Cormas-Core-Entities'
 }
-
-{ #category : #'- utilities - ADvance' }
-CMSpatialEntity class >> ad2ClassInfo [
-	
-	^'
-
-Instance Variables:
-	includedEntities 	<Set> 
-	theCSE 	<Dictionary> 
-	theOccupants 	<Dictionary> 
-	edge 	<Boolean> 
-	neighbourhood 	<Array> 
-	center 	<Point> 
-	image 	<VisualComponent> 
-	visualState 	<ColorValue> 
-	spaceModel 	<SpaceModel> '
-]
 
 { #category : #'- accessing' }
 CMSpatialEntity class >> bounds [
@@ -101,21 +90,17 @@ CMSpatialEntity class >> createEntityPOVwithSpec: aSpec defaultPov: aDefaultPov 
 
 { #category : #'+ utilities - colors' }
 CMSpatialEntity class >> defaultColor [
-	"Purpos: return the default color of the current class name.
-	Ex: Entity defaultColor => ColorValue lightGray ; CormasNS.Models.ECEC.Forager defaultColor => ColorValue veryLightGray"
-	
+	"Purpose: return the default color of the current class name.
+	Ex: CMEntity defaultColor => ColorValue lightGray ; CMECECForager defaultColor => ColorValue veryLightGray"
+
 	self colorsDict isEmpty
-		ifTrue: [^super defaultColor]
-		ifFalse:
-			[^self colorsDict
-				at: self name
-				ifAbsent: [super defaultColor]]
+		ifTrue: [ ^ super defaultColor ]
+		ifFalse: [ ^ self colorsDict at: self name ifAbsent: [ super defaultColor ] ]
 ]
 
 { #category : #'- testing' }
 CMSpatialEntity class >> isSpatialClass [
-	
-	^true
+	^ true
 ]
 
 { #category : #'- default value' }
@@ -126,7 +111,7 @@ CMSpatialEntity class >> neighbourhood_default [
 
 { #category : #'- instance creation' }
 CMSpatialEntity class >> new [
-	"Each subclass (Klass) of SpatialEntity should use 'Klass new: aSpaceModel' "
+	"Each subclass (Class) of SpatialEntity should use 'Class new: aSpaceModel' "
 	
 	self error: 'Should use ''new: '' with a spaceModel as argument !'
 ]

@@ -47,7 +47,7 @@ Class {
 		'povDict',
 		'activityDiagrams'
 	],
-	#category : 'Cormas-Core-Entities'
+	#category : #'Cormas-Core-Entities'
 }
 
 { #category : #'- accessing' }
@@ -296,16 +296,6 @@ CMEntity class >> activity_exampleTest [
 				width: 429
 				height: 411).
 	^editor
-]
-
-{ #category : #'- utilities - ADvance' }
-CMEntity class >> ad2ClassInfo [
-	
-	^'
-
-Instance Variables:
-	flag 	<Boolean> 
-	id 	<Integer> '
 ]
 
 { #category : #'- accessing' }
@@ -713,8 +703,8 @@ CMEntity class >> colorsDict: aDico [
 { #category : #'- accessing' }
 CMEntity class >> cormas [
 	"Direct access to the cormas instance"
-	
-	^Cormas current
+
+	^ Cormas current
 ]
 
 { #category : #'- cormas helper' }
@@ -779,8 +769,8 @@ Example: CormasNS.Kernel.Entity darkColors -> OrderedCollection (#black #blue #b
 
 { #category : #'+ utilities - colors' }
 CMEntity class >> defaultColor [
-	"Purpos: return the default color of the current class name.
-	Ex: Entity defaultColor => ColorValue lightGray ; CormasNS.Models.ECEC.Forager defaultColor => ColorValue veryLightGray"
+	"Purpose: return the default color of the current class name.
+	Ex: CMEntity defaultColor => ColorValue lightGray ; CMECECForager defaultColor => ColorValue veryLightGray"
 	
 	| v |
 	v := 1.
@@ -1248,9 +1238,11 @@ CMEntity class >> methodsOfProtocolStartingWith: aString [
 CMEntity class >> modelClass [
 	"Purpose: returns the Class of the current model.
 Return value: <class>
-Example: RestrainedForager modelClass -> ECEC "
-	
-	^self package classes detect:[:cl| cl superclass = CormasModel] ifNone:[nil]
+Example: CMECECRestrained modelClass -> ECEC "
+
+	^ self package classes
+		detect: [ :cl | cl superclass = CormasModel ]
+		ifNone: [ nil ]
 ]
 
 { #category : #'- accessing - methods & classes' }
@@ -1641,9 +1633,8 @@ CMEntity >> collector [
 ]
 
 { #category : #'- accessing' }
-CMEntity >> collector: anObject [
-	
-	collector := anObject
+CMEntity >> collector: aCollector [
+	collector := aCollector
 ]
 
 { #category : #'- utilities - color' }

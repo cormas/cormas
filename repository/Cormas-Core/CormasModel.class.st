@@ -66,7 +66,7 @@ Class {
 		'currentSimulation',
 		'randUi'
 	],
-	#category : 'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Interface'
 }
 
 { #category : #'+ description' }
@@ -2008,9 +2008,8 @@ CormasModel >> collector [
 ]
 
 { #category : #accessing }
-CormasModel >> collector: anObject [
-	
-	collector := anObject
+CormasModel >> collector: aCollector [
+	collector := aCollector
 ]
 
 { #category : #'- probes color' }
@@ -3585,7 +3584,7 @@ CormasModel >> initObjects [
 ]
 
 { #category : #scheduling }
-CormasModel >> initSimulation [	
+CormasModel >> initSimulation [
 	self timeStep: 0.
 	self spaceModel ifNil: [ self initializeSpaceModel ].
 	"initialize probes data structure"
@@ -3606,8 +3605,7 @@ CormasModel >> initSimulation [
 	self theAgentsComm isEmpty
 		ifFalse: [ self channel population: self theAgentsComm ].
 	"announce to all the subscribers that simulation is beeing initialized"
-	self announcer announce:CMSimInitializationAnnouncement.
-	^ self
+	self announcer announce: CMSimInitializationAnnouncement
 ]
 
 { #category : #'initalize release' }
@@ -4992,7 +4990,7 @@ Example: self setLinearGradientForAttribute: #energy centralValue: 10 borderValu
 { #category : #'accessing - entities' }
 CormasModel >> setNewCollector [
 	
-	self collector: Collector new.
+	self collector: CMCollector new.
 	collector cormasModel: self
 ]
 

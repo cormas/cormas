@@ -24,7 +24,7 @@ Class {
 		'typeOfValue',
 		'randomValueHolder'
 	],
-	#category : 'Cormas-Core-Others'
+	#category : #'Cormas-Core-Others'
 }
 
 { #category : #resources }
@@ -421,14 +421,14 @@ AttributeAdder >> addCAV: aCAV [
 ]
 
 { #category : #'initialize-release' }
-AttributeAdder >> addCAVfromClass: aKlass attribute: anAttribute value: aValue [
+AttributeAdder >> addCAVfromClass: aClass attribute: anAttribute value: aValue [
 	"Add aCAV from the list of ClassAttributeValues"
 	
 	| aList aCAV |
 	aList := self classAttribValue_List list.
 	aList
 		add:
-			(aCAV := ClassAttributeValue newClass: aKlass attribute: anAttribute value:
+			(aCAV := ClassAttributeValue newClass: aClass attribute: anAttribute value:
 					aValue).
 	self classAttribValue_List list: aList.
 	^aCAV
@@ -641,23 +641,23 @@ AttributeAdder >> getterAccessor [
 ]
 
 { #category : #'initialize-release' }
-AttributeAdder >> initForClass: aKlass [
+AttributeAdder >> initForClass: aClass [
 	"Create a list of ClassAttributeValue"
 	
 	| aList attributColl attributs aCAV |
-	self initForSuperClassOf: aKlass.
-	aList := List new.
+	self initForSuperClassOf: aClass.
+	aList := OrderedCollection new.
 	attributColl := OrderedCollection new.
-	attributs := self class staticAttributsWithAccessorsFromClass: aKlass.
+	attributs := self class staticAttributsWithAccessorsFromClass: aClass.
 	attributColl
 		addAll:
 			(self class
-				getDefaultValuesForClass: aKlass class
+				getDefaultValuesForClass: aClass class
 				attributs: attributs).
-	attributs := self class attributsWithAccessorsFromClass: aKlass.
+	attributs := self class attributsWithAccessorsFromClass: aClass.
 	attributColl
 		addAll:
-			(self class getDefaultValuesForClass: aKlass attributs: attributs).
+			(self class getDefaultValuesForClass: aClass attributs: attributs).
 	attributColl
 		do:
 			[:coll | 
@@ -668,62 +668,45 @@ AttributeAdder >> initForClass: aKlass [
 			aCAV hasBeenModified: false.
 			aList add: aCAV].
 	self classAttribValue_List list: aList.
-	targetClass := aKlass.
+	targetClass := aClass.
 	super initialize
 ]
 
 { #category : #'initialize-release' }
-AttributeAdder >> initForSuperClassOf: aKlass [
-	"Create a list of ClassAttributeValue of the superclasses of aKlass"
-	
+AttributeAdder >> initForSuperClassOf: aClass [
+	"Create a list of ClassAttributeValue of the superclasses of aClass"
+
 	| aList attributColl attributs allClasses |
-	(aKlass inheritsFrom: CormasModelOld) ifTrue: [^nil].
-	aList := List new.
+	(aClass inheritsFrom: CormasModel)
+		ifTrue: [ ^ nil ].
+	aList := Set new.
 	attributColl := OrderedCollection new.
-	allClasses := aKlass superClassesUntilEntity.
-	allClasses remove: aKlass.
+	allClasses := aClass superClassesUntilEntity.
+	allClasses remove: aClass.
 	allClasses
-		do:
-			[:cl | 
+		do: [ :cl | 
 			attributs := self class staticAttributsWithAccessorsFromClass: cl.
 			#('bounds' 'povDict' 'activityDiagrams' 'colorsDict' 'activeProbes' 'image')
-				do:
-					[:att | 
-					attributs
-						remove: att
-						ifAbsent: []].	"remove attributs of CormasModel"
+				do: [ :att | attributs remove: att ifAbsent: [  ] ].	"remove attributs of CormasModel"
 			#('spatialClasses' 'povColorsDict' 'socialClasses' 'cellClass' 'visualStateIsOpen' 'savedWindowInformation' 'passiveClasses' 'timeStep' 'charts')
-				do:
-					[:att | 
-					attributs
-						remove: att
-						ifAbsent: []].
+				do: [ :att | attributs remove: att ifAbsent: [  ] ].
 			attributColl
 				addAll:
-					(self class
-						getDefaultValuesForClass: cl class
-						attributs: attributs).
+					(self class getDefaultValuesForClass: cl class attributs: attributs).
 			attributs := self class attributsWithAccessorsFromClass: cl.
 			#('povs' 'outline' 'edge' 'orderedNeighbourhood' 'flag' 'collector' 'request' 'includedEntities')
-				do:
-					[:att | 
-					attributs
-						remove: att
-						ifAbsent: []].
-			attributs
-				remove: 'povs'
-				ifAbsent: [].
+				do: [ :att | attributs remove: att ifAbsent: [  ] ].
+			attributs remove: 'povs' ifAbsent: [  ].
 			attributColl
-				addAll: (self class getDefaultValuesForClass: cl attributs: attributs)].
+				addAll: (self class getDefaultValuesForClass: cl attributs: attributs) ].
 	attributColl
-		do:
-			[:coll | 
+		do: [ :coll | 
 			aList
 				add:
 					(ClassAttributeValue
 						newClass: coll first
 						attribute: (coll at: 2)
-						value: (coll at: 3))].
+						value: (coll at: 3)) ].
 	self superClassAttribValue_List list: aList.
 	super initialize
 ]
@@ -1009,9 +992,9 @@ AttributeAdder >> superClassAttribValue_List [
 ]
 
 { #category : #accessing }
-AttributeAdder >> targetClass: aKlass [
+AttributeAdder >> targetClass: aClass [
 	
-	targetClass := aKlass
+	targetClass := aClass 
 ]
 
 { #category : #aspects }
