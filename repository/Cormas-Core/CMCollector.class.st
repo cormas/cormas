@@ -25,10 +25,9 @@ CMCollector >> collect: anEntity [
 	(self entitiesAt: anEntity class) add: anEntity
 ]
 
-{ #category : #private }
-CMCollector >> cormasModel: cm [
-	
-	cormasModel := cm
+{ #category : #accessing }
+CMCollector >> cormasModel: aCormasModel [
+	cormasModel := aCormasModel 
 ]
 
 { #category : #action }
@@ -47,14 +46,7 @@ CMCollector >> empty: aClass [
 
 { #category : #accessing }
 CMCollector >> entities [
-	
-	^entities ifNil: [entities := Dictionary new]
-]
-
-{ #category : #accessing }
-CMCollector >> entities: anObject [
-	
-	entities := anObject
+	^ entities ifNil: [ entities := Dictionary new ]
 ]
 
 { #category : #action }
