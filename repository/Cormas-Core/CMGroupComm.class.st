@@ -17,7 +17,7 @@ Class {
 		'newComponents',
 		'removedComponents'
 	],
-	#category : 'Cormas-Core-Entities'
+	#category : #'Cormas-Core-Entities'
 }
 
 { #category : #'+ components - managing' }
@@ -118,13 +118,6 @@ CMGroupComm >> othersBut: x [
 	collection := OrderedCollection new.
 	self components do: [:other | other ~= x ifTrue: [collection add: other]].
 	^collection
-]
-
-{ #category : #'- deprecated' }
-CMGroupComm >> othersButMe: x [
-	"DEPRECATED - should use instead: othersBut: x "
-	
-	^self othersBut: x
 ]
 
 { #category : #'+ components - accessing' }
