@@ -1631,9 +1631,8 @@ CMEntity >> collector [
 ]
 
 { #category : #'- accessing' }
-CMEntity >> collector: anObject [
-	
-	collector := anObject
+CMEntity >> collector: aCollector [
+	collector := aCollector
 ]
 
 { #category : #'- utilities - color' }

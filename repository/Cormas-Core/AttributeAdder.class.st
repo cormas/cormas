@@ -24,7 +24,7 @@ Class {
 		'typeOfValue',
 		'randomValueHolder'
 	],
-	#category : 'Cormas-Core-Others'
+	#category : #'Cormas-Core-Others'
 }
 
 { #category : #resources }
