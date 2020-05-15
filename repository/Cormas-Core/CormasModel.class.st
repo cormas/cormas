@@ -66,7 +66,7 @@ Class {
 		'currentSimulation',
 		'randUi'
 	],
-	#category : 'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Interface'
 }
 
 { #category : #'+ description' }
@@ -2008,9 +2008,8 @@ CormasModel >> collector [
 ]
 
 { #category : #accessing }
-CormasModel >> collector: anObject [
-	
-	collector := anObject
+CormasModel >> collector: aCollector [
+	collector := aCollector
 ]
 
 { #category : #'- probes color' }
@@ -4992,7 +4991,7 @@ Example: self setLinearGradientForAttribute: #energy centralValue: 10 borderValu
 { #category : #'accessing - entities' }
 CormasModel >> setNewCollector [
 	
-	self collector: Collector new.
+	self collector: CMCollector new.
 	collector cormasModel: self
 ]
 

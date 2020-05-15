@@ -10,35 +10,35 @@ Instance Variables:
 
 "
 Class {
-	#name : #Collector,
+	#name : #CMCollector,
 	#superclass : #Object,
 	#instVars : [
 		'entities',
 		'cormasModel'
 	],
-	#category : 'Cormas-Core-Tools'
+	#category : #'Cormas-Core-Tools'
 }
 
 { #category : #action }
-Collector >> collect: anEntity [
+CMCollector >> collect: anEntity [
 	
 	(self entitiesAt: anEntity class) add: anEntity
 ]
 
 { #category : #private }
-Collector >> cormasModel: cm [
+CMCollector >> cormasModel: cm [
 	
 	cormasModel := cm
 ]
 
 { #category : #action }
-Collector >> empty [
+CMCollector >> empty [
 	
 	entities := nil
 ]
 
 { #category : #action }
-Collector >> empty: aClass [
+CMCollector >> empty: aClass [
 	
 	^self entities
 		at: aClass
@@ -46,19 +46,19 @@ Collector >> empty: aClass [
 ]
 
 { #category : #accessing }
-Collector >> entities [
+CMCollector >> entities [
 	
 	^entities ifNil: [entities := Dictionary new]
 ]
 
 { #category : #accessing }
-Collector >> entities: anObject [
+CMCollector >> entities: anObject [
 	
 	entities := anObject
 ]
 
 { #category : #action }
-Collector >> entitiesAt: aClass [
+CMCollector >> entitiesAt: aClass [
 	
 	^self entities
 		at: aClass
@@ -66,21 +66,21 @@ Collector >> entitiesAt: aClass [
 ]
 
 { #category : #private }
-Collector >> removeDeadEntities [
+CMCollector >> removeDeadEntities [
 	"removes all the dead or destroyed intances"
 	
 	cormasModel removeDestroyedEntities
 ]
 
 { #category : #private }
-Collector >> removeEntity: anEntity [
+CMCollector >> removeEntity: anEntity [
 	"removes the dead or destroyed Entity"
 	
 	cormasModel removeEntity: anEntity
 ]
 
 { #category : #private }
-Collector >> updateEntities [
+CMCollector >> updateEntities [
 	"adds (or removes) all newly created (or dead) intances"
 	
 	cormasModel updateEntities
