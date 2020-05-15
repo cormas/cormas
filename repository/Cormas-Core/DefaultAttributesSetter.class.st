@@ -27,7 +27,7 @@ Class {
 		'allAttributsList',
 		'hiddenParametersInterface'
 	],
-	#category : 'Cormas-Core-Tools'
+	#category : #'Cormas-Core-Tools'
 }
 
 { #category : #getAttributes }
@@ -394,7 +394,7 @@ Compatibility with previous Cormas version: before changing, it tests if the def
 ]
 
 { #category : #getParameters }
-DefaultAttributesSetter class >> getDefaultValuesForClass: aKlass attributs: attributs [
+DefaultAttributesSetter class >> getDefaultValuesForClass: aClass attributs: attributs [
 	"attributs is a Set of static attributs or instance attributs"
 	"Returns the default value of anAttribut (static or instance) of aClass, using the  'anAttribut_default' accessor  located into the ' - default value ' protocol.
 	anAttribut = <Symbol>
@@ -405,12 +405,12 @@ DefaultAttributesSetter class >> getDefaultValuesForClass: aKlass attributs: att
 	attributs
 		do:
 			[:anAttribut | 
-			(aKlass findSelector: anAttribut asSymbol) isNil
+			(aClass findSelector: anAttribut asSymbol) isNil
 				ifFalse:
 					[infoList := Array new: 3.
-					default := self getDefaultValueOfAttribut: anAttribut ofClass: aKlass.
+					default := self getDefaultValueOfAttribut: anAttribut ofClass: aClass.
 					infoList
-						at: 1 put: aKlass;
+						at: 1 put: aClass;
 						at: 2
 							put: anAttribut asSymbol;
 						at: 3 put: default.
@@ -456,7 +456,7 @@ DefaultAttributesSetter class >> getInitialValueOfAttribut: anAttribut ofClass: 
 ]
 
 { #category : #getParameters }
-DefaultAttributesSetter class >> getInitialValuesForClass: aKlass attributs: attributs [
+DefaultAttributesSetter class >> getInitialValuesForClass: aClass attributs: attributs [
 	"Returns the Initial value of anAttribut (static or instance) of aClass, using the  #anAttribut accessor.
 	anAttribut = <Symbol> attributs is a Set of static attributs or instance attributs
 	aClass = <Class>"
@@ -466,13 +466,13 @@ DefaultAttributesSetter class >> getInitialValuesForClass: aKlass attributs: att
 	attributs
 		do:
 			[:anAttribut | 
-			(Cormas findSelector: anAttribut asSymbol in: aKlass) isNil
+			(Cormas findSelector: anAttribut asSymbol in: aClass) isNil
 				ifFalse:
 					[infoList := Array new: 3.
 					initialValue := self getInitialValueOfAttribut: anAttribut ofClass:
-							aKlass.
+							aClass.
 					infoList
-						at: 1 put: aKlass;
+						at: 1 put: aClass;
 						at: 2
 							put: anAttribut asSymbol;
 						at: 3 put: initialValue.
@@ -813,7 +813,7 @@ DefaultAttributesSetter >> classVariablesToNil [
 	defaultParameters := OrderedCollection new.
 	allClasses
 		do:
-			[:aKlass | attributs := self class staticAttributsWithAccessorsFromClass: aKlass].
+			[:aClass | attributs := self class staticAttributsWithAccessorsFromClass: aClass].
 	^defaultParameters
 ]
 
@@ -939,17 +939,17 @@ DefaultAttributesSetter >> getDefaultParametersValues [
 	defaultParameters := OrderedCollection new.
 	allClasses
 		do:
-			[:aKlass | 
-			attributs := self class staticAttributsWithAccessorsFromClass: aKlass.
+			[:aClass | 
+			attributs := self class staticAttributsWithAccessorsFromClass: aClass.
 			defaultParameters
 				addAll:
 					(self class
-						getDefaultValuesForClass: aKlass class
+						getDefaultValuesForClass: aClass class
 						attributs: attributs).
-			attributs := self class attributsWithAccessorsFromClass: aKlass.
+			attributs := self class attributsWithAccessorsFromClass: aClass.
 			defaultParameters
 				addAll:
-					(self class getDefaultValuesForClass: aKlass attributs: attributs)].
+					(self class getDefaultValuesForClass: aClass attributs: attributs)].
 	^defaultParameters
 ]
 
@@ -966,17 +966,17 @@ DefaultAttributesSetter >> getInitialParametersValues [
 	defaultParameters := OrderedCollection new.
 	allClasses
 		do:
-			[:aKlass | 
-			attributs := self class staticAttributsWithAccessorsFromClass: aKlass.
+			[:aClass | 
+			attributs := self class staticAttributsWithAccessorsFromClass: aClass.
 			defaultParameters
 				addAll:
 					(self class
-						getInitialValuesForClass: aKlass class
+						getInitialValuesForClass: aClass class
 						attributs: attributs).
-			attributs := self class attributsWithAccessorsFromClass: aKlass.
+			attributs := self class attributsWithAccessorsFromClass: aClass.
 			defaultParameters
 				addAll:
-					(self class getInitialValuesForClass: aKlass attributs: attributs)].
+					(self class getInitialValuesForClass: aClass attributs: attributs)].
 	^defaultParameters
 ]
 
@@ -1022,72 +1022,67 @@ DefaultAttributesSetter >> modifiedAttribute [
 { #category : #getParameters }
 DefaultAttributesSetter >> parametersForReInitialization [
 	"return a list of ClassAttributeValues containg all the parameters, without the Entity instances' attributs"
-	
+
 	| allClasses parameters attributs |
 	allClasses := self cormasModel class allTerminalClasses.
 	allClasses addFirst: self cormasModel class.
 	parameters := OrderedCollection new.
 	allClasses
-		do:
-			[:aKlass | 
-			(aKlass = self cormasModel class
-				or: [aKlass = self cormasModel class cellClass])
-				ifTrue:
-					[attributs := self class attributsWithAccessorsFromClass: aKlass.
+		do: [ :aClass | 
+			(aClass = self cormasModel class
+				or: [ aClass = self cormasModel class cellClass ])
+				ifTrue: [ attributs := self class attributsWithAccessorsFromClass: aClass.
 					attributs
-						do:
-							[:attrib | 
+						do: [ :attrib | 
 							parameters
 								add:
 									(ClassAttributeValue
-										newClass: aKlass
+										newClass: aClass
 										attribute: attrib asSymbol
-										value: nil)]].
-			attributs := self class staticAttributsWithAccessorsFromClass: aKlass.
+										value: nil) ] ].
+			attributs := self class
+				staticAttributsWithAccessorsFromClass: aClass.
 			attributs
-				do:
-					[:attrib | 
+				do: [ :attrib | 
 					parameters
 						add:
 							(ClassAttributeValue
-								newClass: aKlass class
+								newClass: aClass class
 								attribute: attrib asSymbol
-								value: nil)]].
-	^parameters
+								value: nil) ] ].
+	^ parameters
 ]
 
 { #category : #getParameters }
 DefaultAttributesSetter >> parametersWithAccessors [
 	"return a list of ClassAttributeValues containg all the parameters."
-	
+
 	| allClasses parameters attributs |
 	allClasses := self cormasModel class allTerminalClasses.
 	allClasses addFirst: self cormasModel class.
 	parameters := OrderedCollection new.
 	allClasses
-		do:
-			[:aKlass | 
-			attributs := self class attributsWithAccessorsFromClass: aKlass.
+		do: [ :aClass | 
+			attributs := self class attributsWithAccessorsFromClass: aClass.
 			attributs
-				do:
-					[:attrib | 
+				do: [ :attrib | 
 					parameters
 						add:
 							(ClassAttributeValue
-								newClass: aKlass
+								newClass: aClass
 								attribute: attrib asSymbol
-								value: nil)].
-			attributs := self class staticAttributsWithAccessorsFromClass: aKlass.
+								value: nil) ].
+			attributs := self class
+				staticAttributsWithAccessorsFromClass: aClass.
 			attributs
-				do:
-					[:attrib | 
+				do: [ :attrib | 
 					parameters
 						add:
 							(ClassAttributeValue
-								newClass: aKlass class
+								newClass: aClass class
 								attribute: attrib asSymbol
-								value: nil)]].
-	^parameters
+								value: nil) ] ].
+	^ parameters
 ]
 
 { #category : #getParameters }

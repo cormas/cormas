@@ -111,7 +111,7 @@ CMSpatialEntity class >> neighbourhood_default [
 
 { #category : #'- instance creation' }
 CMSpatialEntity class >> new [
-	"Each subclass (Klass) of SpatialEntity should use 'Klass new: aSpaceModel' "
+	"Each subclass (Class) of SpatialEntity should use 'Class new: aSpaceModel' "
 	
 	self error: 'Should use ''new: '' with a spaceModel as argument !'
 ]
