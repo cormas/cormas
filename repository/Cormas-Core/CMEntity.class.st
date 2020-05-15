@@ -703,8 +703,8 @@ CMEntity class >> colorsDict: aDico [
 { #category : #'- accessing' }
 CMEntity class >> cormas [
 	"Direct access to the cormas instance"
-	
-	^Cormas current
+
+	^ Cormas current
 ]
 
 { #category : #'- cormas helper' }
@@ -1238,9 +1238,11 @@ CMEntity class >> methodsOfProtocolStartingWith: aString [
 CMEntity class >> modelClass [
 	"Purpose: returns the Class of the current model.
 Return value: <class>
-Example: RestrainedForager modelClass -> ECEC "
-	
-	^self package classes detect:[:cl| cl superclass = CormasModel] ifNone:[nil]
+Example: CMECECRestrained modelClass -> ECEC "
+
+	^ self package classes
+		detect: [ :cl | cl superclass = CormasModel ]
+		ifNone: [ nil ]
 ]
 
 { #category : #'- accessing - methods & classes' }
