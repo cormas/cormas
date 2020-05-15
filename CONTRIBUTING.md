@@ -47,6 +47,8 @@ This will notify CORMAS core developers team that an improvement or bug fix is p
 
 ![iceberge](img/github_pr.png)
 
+As the main core developers, you have to review the open PRs. When merging the pull request, select *Create a merge commit* not  squash and merge. Try to avoid (except in case of emergency) to review your own commits.
+
 ### Sync your fork with the CORMAS main repository
 
 After a while, changes from other developers are integrated in the main CORMAS repository and your fork became out of sync.
