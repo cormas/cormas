@@ -41,13 +41,23 @@ After doing modifications in your image, open Iceberg tool, commit the changes i
 ![iceberge](img/iceberg_pharo.png)
 
 #### From Github UI
-In the GitHub interface, create a Pull Request from your commit.
-You have to give some information about what is the purpose of you pull request. Then submit it to CORMAS main repository. 
+In the GitHub interface, create a Pull Request (PR) from your commit.
+You have to give some information about what is the purpose of you pull request. Then submit it to CORMAS main repository.
 This will notify CORMAS core developers team that an improvement or bug fix is pending.
 
-![iceberge](img/github_pr.png)
+![create a pull request from github](img/github_pr.png)
 
 As the main core developers, you have to review the open PRs. When merging the pull request, select *Create a merge commit* not  squash and merge. Try to avoid (except in case of emergency) to review your own commits.
+
+If at some point, you see than the original cormas repository is ahead from your own fork (2 in the following picture) you can synchronize your own repository with all the newest features add to the original using compare (3)
+
+![pull feature in your own](img/github_cp.png)
+
+To compare you can define sources (1) and target (2) for the update. Once it's done, you can use the pull request mechanism (3) to merge the original cormas code to your own.
+
+![pull feature in your own with PR](img/github_pr_fork.png)
+
+The last step in this process, you'll just have to go back to your cormas Pharo a pull into your cormas image in the VM. 
 
 ### Sync your fork with the CORMAS main repository
 
