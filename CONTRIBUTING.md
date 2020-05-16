@@ -49,6 +49,13 @@ This will notify CORMAS core developers team that an improvement or bug fix is p
 
 As the main core developers, you have to review the open PRs. When merging the pull request, select *Create a merge commit* not  squash and merge. Try to avoid (except in case of emergency) to review your own commits.
 
+
+## Pull changes from original to fork
+
+You can proceed in two different ways to update your fork. You can either use github's web interface, or entirely from pharo/cormas.
+
+### From GitHub GUI
+
 If at some point, you see than the original cormas repository is ahead from your own fork (2 in the following picture) you can synchronize your own repository with all the newest features add to the original using compare (3)
 
 ![pull feature in your own](img/github_cp.png)
@@ -57,7 +64,7 @@ To compare you can define sources (1) and target (2) for the update. Once it's d
 
 ![pull feature in your own with PR](img/github_pr_fork.png)
 
-The last step in this process, you'll just have to go back to your cormas Pharo a pull into your cormas image in the VM. 
+The last step in this process, you'll just have to go back to your cormas Pharo a pull into your cormas image in the VM.
 
 ### Sync your fork with the CORMAS main repository
 
