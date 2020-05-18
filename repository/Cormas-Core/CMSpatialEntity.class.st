@@ -257,33 +257,6 @@ CMSpatialEntity >> destroyed: aBoolean [
 	destroyed := aBoolean
 ]
 
-{ #category : #'- obsolete' }
-CMSpatialEntity >> displayFlag [
-	
-	flag isNil ifFalse: [self displayString: flag printString]
-]
-
-{ #category : #'- obsolete' }
-CMSpatialEntity >> displayId [
-	
-	self displayString: id printString
-]
-
-{ #category : #'- obsolete' }
-CMSpatialEntity >> displayString: aString [
-	
-	| x y |
-	
-	self halt.
-	aString size > 1
-		ifTrue: [x := self center x - (self image component width / 2)]
-		ifFalse: [x := self center x - (self image component width / 4)].
-	y := self center y + (self image component height / 4).
-	self view graphicsContext
-		displayString: aString
-		at: x @ y
-]
-
 { #category : #'- deprecated' }
 CMSpatialEntity >> distCenter: aSpatialEntity [
 	"DEPRECATED. You shouldn't use this method: the result depend of the size of the displayed grid ! If you modify the size of the windows, the result will change !!  :o(
