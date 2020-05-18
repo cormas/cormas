@@ -270,26 +270,6 @@ CMSpatialEntity >> displayId [
 ]
 
 { #category : #'- obsolete' }
-CMSpatialEntity >> displayOn: aGC withString: aString [
-	
-	self
-		displayString: self displayInfos
-		on: aGC.
-	self halt.
-	self displayOn: aGC
-]
-
-{ #category : #'- obsolete' }
-CMSpatialEntity >> displayOutlineOn: aGC [
-	
-	self halt	"last version"	"self spaceModel gridCellShape = #irregular ifTrue: 
-			[aGC paint: ColorValue black.
-			image asStroker displayOn: aGC	]"	"even older version"	"self spaceModel gridCellShape = #irregular ifTrue: 
-			[aGC paint: ColorValue black.
-			image asStroker displayOn: aGC	ifFalse: [self image displayOn: aGC at: self center]]"
-]
-
-{ #category : #'- obsolete' }
 CMSpatialEntity >> displayString: aString [
 	
 	| x y |
@@ -302,39 +282,6 @@ CMSpatialEntity >> displayString: aString [
 	self view graphicsContext
 		displayString: aString
 		at: x @ y
-]
-
-{ #category : #'- obsolete' }
-CMSpatialEntity >> displayString: aString color: aColor [
-	
-	| x y |
-	
-	self halt.
-	aString size > 1
-		ifTrue: [x := self center x - (self image component width / 2)]
-		ifFalse: [x := self center x - (self image component width / 4)].
-	y := self center y + (self image component height / 4).
-	self view graphicsContext paint: (Color perform: aColor).
-	self view graphicsContext
-		displayString: aString
-		at: x @ y
-]
-
-{ #category : #'- obsolete' }
-CMSpatialEntity >> displayString: aString on: aGC [
-	
-	self displayString: aString on: aGC color: #black
-]
-
-{ #category : #'- obsolete' }
-CMSpatialEntity >> displayString: aString on: aGC color: aColor [
-	
-	self halt	"aString size > 1
-		ifTrue: [x := self center x - ((self imageLinkedWith: aGC medium) component width / 2)]
-		ifFalse: [x := self center x - ((self imageLinkedWith: aGC medium) component width / 4)].
-	y := self center y + ((self imageLinkedWith: aGC medium) component height / 4).
-	aGC paint: (ColorValue perform: aColor).
-	aGC displayString: aString at: x @ y"
 ]
 
 { #category : #'- deprecated' }
