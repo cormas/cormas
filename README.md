@@ -17,12 +17,13 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/cormas/cormas/master/LICENSE)
 
 This is an ongoing effort to port CORMAS to Pharo ecosystem: http://www.pharo.org/
-Current stable version of CORMAS is based on VisualWorks 7.6 and can be found on: http://cormas.cirad.fr/indexeng.htm
+
+Current stable version of CORMAS is based on VisualWorks 7.6 and still can be found on: http://cormas.cirad.fr/indexeng.htm
 
 Some documentation (to be cleaned and reorganized) about Cormas is available on the Wiki here:
 https://github.com/cormas/documentation
 
-If you want to contribute to CORMAS please read: [Code of Conduct](https://github.com/cormas/cormas/blob/master/CODE_OF_CONDUCT.md)
+If you want to contribute to CORMAS please have a look to the [contributing guide](https://github.com/cormas/cormas/blob/master/CONTRIBUTING.md).
 
 ## How to install Cormas
 
@@ -37,8 +38,6 @@ Metacello new
 	load.
 ```
 All packages load into the Cormas-* package names. (There is from time to time, [loading errors with github](https://github.com/cormas/cormas/issues/101). If it happens, just close the error window and reexecute the Metacello expression).
-
-If you want to contribute code to CORMAS, this is better to follow the contributing guide: [Contributing](https://github.com/cormas/cormas/blob/master/CONTRIBUTING.md)
 
 ## How to install with Command Line interface (CLI)
 
