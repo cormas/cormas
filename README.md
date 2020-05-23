@@ -31,6 +31,15 @@ If you want to contribute to CORMAS please have a look to the [contributing guid
 * Load Cormas: Open Pharo 8.0 image then click anywhere to open the main menu. Choose Playground to execute the following script. Paste the script below in Playground, select all then right-click and choose Do it to execute this.
 
 ```Smalltalk
+Metacello new
+	onWarningLog;
+	repository: 'github://cormas/cormas/repository';
+	baseline: 'Cormas';
+	load.
+```
+There is from time to time, [loading errors with github](https://github.com/cormas/cormas/issues/101). If it happens, execute the following expression:
+
+```Smalltalk
 | maxCount count |
 maxCount := 3.
 count := 1.
@@ -50,11 +59,20 @@ Transcript open.
 	].
 	count := count + 1 ]
 ```
+
+
 All packages load into the Cormas-* package names.
 
 ## How to install with Command Line interface (CLI)
 
 You can install CORMAS through Unix command line. It works as follow:
+```bash
+mkdir mydir
+cd mydir
+curl https://get.pharo.org | bash
+./pharo Pharo.image eval "Metacello new onWarningLog; repository: 'github://cormas/cormas/repository'; baseline: 'Cormas'; load. Smalltalk snapshot: true andQuit: true"
+
+or if there is a problem with github:
 
 ```bash
 mkdir mydir
@@ -71,10 +89,6 @@ curl https://get.pharo.org | bash
 		  (Delay forSeconds: 2) wait. ex retry ]. 
   Smalltalk snapshot: true andQuit: true"
 ```
-
-## Licence
-
-Cormas is licensed under MIT. See : http://opensource.org/licenses/MIT
 
 ## Where to discuss about CORMAS development
 
