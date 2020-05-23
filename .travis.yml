@@ -12,8 +12,10 @@ services:
 language: smalltalk
 os:
   - linux
+  - osx
 smalltalk:
-  - Pharo-7.0
+  - Pharo64-7.0
+  - Pharo64-8.0
 
 # prepare the machine before any code
 # installation scripts
