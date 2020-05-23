@@ -22,9 +22,7 @@ CMConwayModelTest >> testAfterInitializationAConwayModelHas10000Cells [
 		initialize;
 		new.
 	model initSimulation.
-	self
-		assert: (model allTheEntities: CMConwayCell) size
-		identicalTo: 10000
+	self assert: (model allTheEntities: CMConwayCell) size equals: 10000
 ]
 
 { #category : #tests }
@@ -34,7 +32,7 @@ CMConwayModelTest >> testAfterInitializationAConwayModelHas10000Entities [
 		initialize;
 		new.
 	model initSimulation.
-	self assert: model allTheEntities size identicalTo: 10000
+	self assert: model allTheEntities size equals: 10000
 ]
 
 { #category : #tests }
@@ -44,12 +42,12 @@ CMConwayModelTest >> testConwayModelHasNoSocialEntityClass [
 
 { #category : #tests }
 CMConwayModelTest >> testConwayModelHasOnlyOneSpatialEntityClass [
-	self assert: CMConwayModel spatialClasses size identicalTo: 1
+	self assert: CMConwayModel spatialClasses size equals: 1
 ]
 
 { #category : #tests }
 CMConwayModelTest >> testThereIsTwoClassesInConwayPackage [
-	self assert: CMConwayModel allClassesInPackage size identicalTo: 2
+	self assert: CMConwayModel allClassesInPackage size equals: 2
 ]
 
 { #category : #tests }
