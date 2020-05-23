@@ -71,6 +71,7 @@ mkdir mydir
 cd mydir
 curl https://get.pharo.org | bash
 ./pharo Pharo.image eval "Metacello new onWarningLog; repository: 'github://cormas/cormas/repository'; baseline: 'Cormas'; load. Smalltalk snapshot: true andQuit: true"
+```
 
 or if there is a problem with github:
 
