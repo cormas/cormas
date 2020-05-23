@@ -4,7 +4,7 @@ plop
 Class {
 	#name : #CormasOpenMoleTest,
 	#superclass : #TestCase,
-	#category : 'Cormas-Tests'
+	#category : #'Cormas-Tests'
 }
 
 { #category : #examples }
@@ -49,7 +49,7 @@ CormasOpenMoleTest >> testLoadJSONFile [
 { #category : #test }
 CormasOpenMoleTest >> testlastDataOfModel [
 	| dicoGlobals model d t |
-	model := CMECECModel new.
+	model := CormasModel new.
 	dicoGlobals := Dictionary new.
 	dicoGlobals at: #probe1 put: #(10 20 58 96 48 76 57 68 19 1).
 	dicoGlobals at: #probe2 put: #(0 20 58 96 48 76 57 68 19 22).
