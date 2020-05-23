@@ -31,13 +31,26 @@ If you want to contribute to CORMAS please have a look to the [contributing guid
 * Load Cormas: Open Pharo 8.0 image then click anywhere to open the main menu. Choose Playground to execute the following script. Paste the script below in Playground, select all then right-click and choose Do it to execute this.
 
 ```Smalltalk
-Metacello new
-	onWarningLog;
-	repository: 'github://cormas/cormas/repository';
-	baseline: 'Cormas';
-	load.
+| maxCount count |
+maxCount := 3.
+count := 1.
+Transcript open.
+[ count <= maxCount ] whileTrue: [ [
+	^ Metacello new
+		onWarningLog;
+		repository: 'github://cormas/cormas/repository';
+		baseline: 'Cormas';
+		load
+	]
+	on: IceGenericError "Failed to connect to github.com: Interrupted system call"
+	do: [ : ex |
+		MetacelloNotification signal: String cr , ex description , String cr , 'RETRYING ', maxCount asString.
+		(Delay forSeconds: 2) wait.
+		ex retry
+	].
+	count := count + 1 ]
 ```
-All packages load into the Cormas-* package names. (There is from time to time, [loading errors with github](https://github.com/cormas/cormas/issues/101). If it happens, just close the error window and reexecute the Metacello expression).
+All packages load into the Cormas-* package names.
 
 ## How to install with Command Line interface (CLI)
 
@@ -47,7 +60,16 @@ You can install CORMAS through Unix command line. It works as follow:
 mkdir mydir
 cd mydir
 curl https://get.pharo.org | bash
-./pharo Pharo.image eval "Metacello new onWarningLog; repository: 'github://cormas/cormas/repository'; baseline: 'Cormas'; load. Smalltalk snapshot: true andQuit: true"
+./pharo Pharo.image eval "| maxCount count | maxCount := 3. count := 1.
+[ count <= maxCount ] whileTrue: [ [
+  Metacello new
+		onWarningLog;
+		repository: 'github://cormas/cormas/repository';
+		baseline: 'Cormas';
+		load ] on: IceGenericError do: [ : ex |
+		  MetacelloNotification signal: String cr , ex description , String cr , 'RETRYING ', maxCount asString.
+		  (Delay forSeconds: 2) wait. ex retry ]. 
+  Smalltalk snapshot: true andQuit: true"
 ```
 
 ## Licence
