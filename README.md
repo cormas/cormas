@@ -37,22 +37,58 @@ Metacello new
 	baseline: 'Cormas';
 	load.
 ```
-All packages load into the Cormas-* package names. (There is from time to time, [loading errors with github](https://github.com/cormas/cormas/issues/101). If it happens, just close the error window and reexecute the Metacello expression).
+There is from time to time, [loading errors with github](https://github.com/cormas/cormas/issues/101). If it happens, execute the following expression:
+
+```Smalltalk
+| maxCount count |
+maxCount := 3.
+count := 1.
+Transcript open.
+[ count <= maxCount ] whileTrue: [ [
+	^ Metacello new
+		onWarningLog;
+		repository: 'github://cormas/cormas/repository';
+		baseline: 'Cormas';
+		load
+	]
+	on: IceGenericError "Failed to connect to github.com: Interrupted system call"
+	do: [ : ex |
+		MetacelloNotification signal: String cr , ex description , String cr , 'RETRYING ', maxCount asString.
+		(Delay forSeconds: 2) wait.
+		ex retry
+	].
+	count := count + 1 ]
+```
+
+
+All packages load into the Cormas-* package names.
 
 ## How to install with Command Line interface (CLI)
 
 You can install CORMAS through Unix command line. It works as follow:
-
 ```bash
 mkdir mydir
 cd mydir
 curl https://get.pharo.org | bash
 ./pharo Pharo.image eval "Metacello new onWarningLog; repository: 'github://cormas/cormas/repository'; baseline: 'Cormas'; load. Smalltalk snapshot: true andQuit: true"
+
+or if there is a problem with github:
+
+```bash
+mkdir mydir
+cd mydir
+curl https://get.pharo.org | bash
+./pharo Pharo.image eval "| maxCount count | maxCount := 3. count := 1.
+[ count <= maxCount ] whileTrue: [ [
+  Metacello new
+		onWarningLog;
+		repository: 'github://cormas/cormas/repository';
+		baseline: 'Cormas';
+		load ] on: IceGenericError do: [ : ex |
+		  MetacelloNotification signal: String cr , ex description , String cr , 'RETRYING ', maxCount asString.
+		  (Delay forSeconds: 2) wait. ex retry ]. 
+  Smalltalk snapshot: true andQuit: true"
 ```
-
-## Licence
-
-Cormas is licensed under MIT. See : http://opensource.org/licenses/MIT
 
 ## Where to discuss about CORMAS development
 
