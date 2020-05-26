@@ -14,7 +14,7 @@ Class {
 		'entityElementType',
 		'toolbar'
 	],
-	#category : 'Cormas-Core-Tools'
+	#category : #'Cormas-Core-Tools'
 }
 
 { #category : #compiling }
@@ -71,68 +71,9 @@ EntityAdditionInterface class >> addAgent [
 { #category : #'interface specs' }
 EntityAdditionInterface class >> addPassiveEntity [
 	"Tools.UIPainter new openOnClass: self andSelector: #addPassiveEntity"
-	
+
 	<resource: #canvas>
-	^#(FullSpec 
-		#window: #(WindowSpec 
-			#properties: #(PropertyListDictionary #sizeType #specifiedSize #openType #advanced #openPosition #(Point 10 130) #positionType #specifiedPosition) 
-			#label: 'Create a kind of Passive Entity' 
-			#min: #(Point 300 213) 
-			#max: #(Point 300 213) 
-			#bounds: #(Rectangle 718 450 1018 663)) 
-		#component: #(SpecCollection 
-			#collection: #(#(InputFieldSpec 
-				#layout: #(Rectangle 132 29 289 52) 
-				#name: #InputField1 
-				#model: #newClassName 
-				#helpText: 'Enter the name of the new class') #(LabelSpec 
-				#layout: #(Point 190 9) 
-				#name: #name 
-				#label: 'Name') #(ActionButtonSpec 
-				#layout: #(Rectangle 166 157 247 180) 
-				#name: #Ok 
-				#model: #addNewPassivelEntityGUI 
-				#label: 'Ok' 
-				#defaultable: true) #(RadioButtonSpec 
-				#layout: #(Point 19 158) 
-				#name: #Msg 
-				#model: #passiveEntitySuperclass 
-				#helpText: 'Message for AgentCommunication (with mailbox)' 
-				#label: 'Message' 
-				#select: #Msg) #(RadioButtonSpec 
-				#layout: #(Point 19 12) 
-				#name: #PassiveObject 
-				#model: #passiveEntitySuperclass 
-				#helpText: 'A simple passive entity' 
-				#label: 'Object' 
-				#select: #PassiveObject) #(RadioButtonSpec 
-				#layout: #(Point 19 37) 
-				#name: #CMObjectLocation 
-				#model: #passiveEntitySuperclass 
-				#helpText: 'A passive entity located on a Cell' 
-				#label: 'Located Object' 
-				#select: #CMObjectLocation) #(LabelSpec 
-				#layout: #(Point 33 189) 
-				#name: #Label3 
-				#label: '(or right-click on your own class to specialize it)') #(RadioButtonSpec 
-				#layout: #(Point 19 123) 
-				#name: #CMNetworkEntity 
-				#model: #passiveEntitySuperclass 
-				#helpText: 'An oriented Network composed of a set of Arcs and Nodes' 
-				#label: 'Full Network' 
-				#select: #CMNetworkEntity) #(RadioButtonSpec 
-				#layout: #(Point 19 97) 
-				#name: #CMArcEntity 
-				#model: #passiveEntitySuperclass 
-				#helpText: 'An Arc of a Network located on 2 Cells' 
-				#label: 'Network Arc' 
-				#select: #CMArcEntity) #(RadioButtonSpec 
-				#layout: #(Point 19 72) 
-				#name: #CMNodeEntity 
-				#model: #passiveEntitySuperclass 
-				#helpText: 'A Node of a Network located on a Cell' 
-				#label: 'Network Node' 
-				#select: #CMNodeEntity))))
+	^ #(FullSpec #window: #(WindowSpec #properties: #(PropertyListDictionary #sizeType #specifiedSize #openType #advanced #openPosition #(Point 10 130) #positionType #specifiedPosition) #label: 'Create a kind of Passive Entity' #min: #(Point 300 213) #max: #(Point 300 213) #bounds: #(Rectangle 718 450 1018 663)) #component: #(SpecCollection #collection: #(#(InputFieldSpec #layout: #(Rectangle 132 29 289 52) #name: #InputField1 #model: #newClassName #helpText: 'Enter the name of the new class') #(LabelSpec #layout: #(Point 190 9) #name: #name #label: 'Name') #(ActionButtonSpec #layout: #(Rectangle 166 157 247 180) #name: #Ok #model: #addNewPassivelEntityGUI #label: 'Ok' #defaultable: true) #(RadioButtonSpec #layout: #(Point 19 158) #name: #CMMsg #model: #passiveEntitySuperclass #helpText: 'Message for AgentCommunication (with mailbox)' #label: 'Message' #select: #CMMsg) #(RadioButtonSpec #layout: #(Point 19 12) #name: #PassiveObject #model: #passiveEntitySuperclass #helpText: 'A simple passive entity' #label: 'Object' #select: #PassiveObject) #(RadioButtonSpec #layout: #(Point 19 37) #name: #CMObjectLocation #model: #passiveEntitySuperclass #helpText: 'A passive entity located on a Cell' #label: 'Located Object' #select: #CMObjectLocation) #(LabelSpec #layout: #(Point 33 189) #name: #Label3 #label: '(or right-click on your own class to specialize it)') #(RadioButtonSpec #layout: #(Point 19 123) #name: #CMNetworkEntity #model: #passiveEntitySuperclass #helpText: 'An oriented Network composed of a set of Arcs and Nodes' #label: 'Full Network' #select: #CMNetworkEntity) #(RadioButtonSpec #layout: #(Point 19 97) #name: #CMArcEntity #model: #passiveEntitySuperclass #helpText: 'An Arc of a Network located on 2 Cells' #label: 'Network Arc' #select: #CMArcEntity) #(RadioButtonSpec #layout: #(Point 19 72) #name: #CMNodeEntity #model: #passiveEntitySuperclass #helpText: 'A Node of a Network located on a Cell' #label: 'Network Node' #select: #CMNodeEntity))))
 ]
 
 { #category : #'interface specs' }
@@ -367,23 +308,26 @@ EntityAdditionInterface >> entityName: anObject [
 
 { #category : #accessing }
 EntityAdditionInterface >> getAgentSuperclassFromGUI [
-	
-	self cbComm value not & self cbLocation value not & self cbGroup value not
-		ifTrue: [^Agent].
-	self cbComm value & self cbLocation value not & self cbGroup value not
-		ifTrue: [^AgentComm].
-	self cbComm value not & self cbLocation value & self cbGroup value not
-		ifTrue: [^AgentLocation].
+	self cbComm value not & self cbLocation value not
+		& self cbGroup value not
+		ifTrue: [ ^ CMAgent ].
+	self cbComm value & self cbLocation value not
+		& self cbGroup value not
+		ifTrue: [ ^ CMAgentComm ].
+	self cbComm value not & self cbLocation value
+		& self cbGroup value not
+		ifTrue: [ ^ CMAgentLocation ].
 	self cbComm value & self cbLocation value & self cbGroup value not
-		ifTrue: [^CMAgentCommLocation].
-	self cbComm value not & self cbLocation value not & self cbGroup value
-		ifTrue: [^CMGroup].
+		ifTrue: [ ^ CMAgentCommLocation ].
+	self cbComm value not & self cbLocation value not
+		& self cbGroup value
+		ifTrue: [ ^ CMGroup ].
 	self cbComm value & self cbLocation value not & self cbGroup value
-		ifTrue: [^CMGroupComm].
+		ifTrue: [ ^ CMGroupComm ].
 	self cbComm value not & self cbLocation value & self cbGroup value
-		ifTrue: [^CMGroupLocation].
+		ifTrue: [ ^ CMGroupLocation ].
 	self cbComm value & self cbLocation value & self cbGroup value
-		ifTrue: [^CMGroupCommLocation]
+		ifTrue: [ ^ CMGroupCommLocation ]
 ]
 
 { #category : #accessing }
@@ -465,32 +409,27 @@ EntityAdditionInterface >> passiveEntitySuperclass [
 
 { #category : #'interface opening' }
 EntityAdditionInterface >> postBuildWith: aBuilder [
-	
 	('*Spatial*' match: aBuilder window label)
-		ifTrue:
-			[self cormas currentModel cellClass isNil
-				ifFalse:
-					[self spatialEntitySuperclass value: #CMSpatialEntityAggregate.
+		ifTrue: [ self cormas currentModel cellClass isNil
+				ifFalse: [ self spatialEntitySuperclass value: #CMSpatialEntityAggregate.
 					(aBuilder componentAt: #CMSpatialEntityCell) disable.
 					(aBuilder componentAt: #simpleCell) disable.
 					(aBuilder componentAt: #cellAutomaton) disable.
 					(aBuilder componentAt: #LabelSpecialize) enable.
 					(aBuilder componentAt: #CMSpatialEntityAggregate) enable.
-					(aBuilder componentAt: #CMSpatialEntityNotConnex) enable]
-				ifTrue:
-					[self spatialEntitySuperclass value: #CMSpatialEntityCell.
+					(aBuilder componentAt: #CMSpatialEntityNotConnex) enable ]
+				ifTrue: [ self spatialEntitySuperclass value: #CMSpatialEntityCell.
 					self cellOrCA value: #CMSpatialEntityElement.
 					(aBuilder componentAt: #CMSpatialEntityCell) enable.
 					(aBuilder componentAt: #simpleCell) enable.
 					(aBuilder componentAt: #cellAutomaton) enable.
 					(aBuilder componentAt: #LabelSpecialize) disable.
 					(aBuilder componentAt: #CMSpatialEntityAggregate) disable.
-					(aBuilder componentAt: #CMSpatialEntityNotConnex) disable]].
+					(aBuilder componentAt: #CMSpatialEntityNotConnex) disable ] ].
 	('*Passive*' match: aBuilder window label)
-		ifTrue:
-			[self cormas currentModel commClasses isEmpty
-				ifFalse: [(aBuilder componentAt: #Msg) enable]
-				ifTrue: [(aBuilder componentAt: #Msg) disable]]
+		ifTrue: [ self cormas currentModel commClasses isEmpty
+				ifFalse: [ (aBuilder componentAt: #CMMsg) enable ]
+				ifTrue: [ (aBuilder componentAt: #CMMsg) disable ] ]
 ]
 
 { #category : #accessing }
