@@ -411,8 +411,10 @@ CormasModel class >> colorOfProbe: aProbeSymbol [
 
 { #category : #'managing classes' }
 CormasModel class >> commClasses [
-	
-	^ self allEntityClasses select: [ : i | (i inheritsFrom: CMAgentComm) | (i inheritsFrom: CMAgentCommLocation) | (i inheritsFrom: Msg) ]
+	^ self allEntityClasses
+		select: [ :i | 
+			(i inheritsFrom: CMAgentComm) | (i inheritsFrom: CMAgentCommLocation)
+				| (i inheritsFrom: CMMsg) ]
 ]
 
 { #category : #'+ description' }
@@ -969,8 +971,7 @@ CormasModel class >> makeAboutItFirstDate: firstDate lastDate: lastDate authors:
 
 { #category : #'managing classes' }
 CormasModel class >> messages [
-	
-	^self passiveClasses select: [:i | i inheritsFrom: Msg]
+	^ self passiveClasses select: [ :i | i inheritsFrom: CMMsg ]
 ]
 
 { #category : #'- activityEditor' }
@@ -3515,21 +3516,22 @@ CormasModel >> initDataStructures [
 { #category : #'init entities' }
 CormasModel >> initEntities [
 	"Initialize all the Entity classes of the model"
+
 	"Remove all the PassiveObjects and Located Objects"
-	
-	self class passiveClasses do: [ : aClass | 
-		((aClass inheritsFrom: Msg) or: [aClass isAbstract])
-				ifFalse: [ 
-					(aClass inheritsFrom: CMObjectLocation)
+
+	self class passiveClasses
+		do: [ :aClass | 
+			((aClass inheritsFrom: CMMsg) or: [ aClass isAbstract ])
+				ifFalse: [ (aClass inheritsFrom: CMObjectLocation)
 						ifTrue: [ (self theEntities: aClass) isNil
-							ifFalse: [(self theEntities: aClass) do: [ : LO | LO leave]]].
-					self initializeTheEntity: aClass]].	"Remove all the Agents from previous simulation"
-	self class socialClasses do: [ : aClass | 
-		aClass isAbstract
-			ifFalse: 	[
-				(aClass inheritsFrom: CMAgentLocation)
-					ifTrue: [(self theEntities: aClass) isNil
-						ifFalse: [(self theEntities: aClass) do: [ : LO | LO leave ] ] ].
+								ifFalse: [ (self theEntities: aClass) do: [ :LO | LO leave ] ] ].
+					self initializeTheEntity: aClass ] ].	"Remove all the Agents from previous simulation"
+	self class socialClasses
+		do: [ :aClass | 
+			aClass isAbstract
+				ifFalse: [ (aClass inheritsFrom: CMAgentLocation)
+						ifTrue: [ (self theEntities: aClass) isNil
+								ifFalse: [ (self theEntities: aClass) do: [ :LO | LO leave ] ] ].
 					self initializeTheEntity: aClass ] ].
 	self spaceModel isNil
 		ifFalse: [ self spaceModel resetSpatialEntitiesButCells ]
