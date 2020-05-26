@@ -14,14 +14,10 @@ Class {
 { #category : #baselines }
 BaselineOfCormas >> baseline: spec [
 	<baseline>
-
 	spec
 		for: #common
-		do: [
-			spec blessing: #baseline.
-
+		do: [ spec blessing: #baseline.
 			spec postLoadDoIt: #postLoad.
-			
 			spec
 				baseline: 'FileDialog'
 					with: [ spec repository: 'github://peteruhnak/file-dialog/repository' ];
@@ -31,9 +27,8 @@ BaselineOfCormas >> baseline: spec [
 					with: [ spec repository: 'github://hernanmd/CodeGenerator/repository' ];
 				baseline: 'Roassal2'
 					with: [ spec repository: 'github://ObjectProfile/Roassal2/src' ];
-				baseline: 'NeoCSV' 
+				baseline: 'NeoCSV'
 					with: [ spec repository: 'github://svenvc/NeoCSV/repository' ].
-			
 			spec
 				package: 'Cormas-Core';
 				package: 'Cormas-Model-Conway';
@@ -41,6 +36,7 @@ BaselineOfCormas >> baseline: spec [
 				package: 'Cormas-Model-Diffuse';
 				package: 'Cormas-Model-ECEC';
 				package: 'Cormas-Model-FireAutomata';
+				package: 'Cormas-Model-PlotsRental';
 				package: 'Cormas-Tests';
 				package: 'Cormas-OpenMole'
 					with: [ spec requires: #('Cormas-Core') ];
@@ -48,26 +44,24 @@ BaselineOfCormas >> baseline: spec [
 					with: [ spec
 						requires: #('FileDialog' 'ProjectFramework' 'CodeGenerator' 'Roassal2') ];
 				package: 'Cormas-VW-Ported'.
-				
 			spec
 				group: 'All'
 					with:
-					#(#'Cormas-VW-Ported' 'Cormas-UI' 'Cormas-Tests' 'Cormas-Model-FireAutomata' 'Cormas-Model-ECEC' 'Cormas-Model-Conway' 'Cormas-Core' 'Cormas-Model-Diffuse' #'Cormas-Model-DemoAggregates' 'Cormas-OpenMole');
+					#(#'Cormas-VW-Ported' 'Cormas-UI' 'Cormas-Tests' 'Cormas-Model-FireAutomata' 'Cormas-Model-ECEC' 'Cormas-Model-Conway' 'Cormas-Core' 'Cormas-Model-PlotsRental' 'Cormas-Model-Diffuse' #'Cormas-Model-DemoAggregates' 'Cormas-OpenMole');
 				group: 'Core' with: #('Cormas-Core');
 				group: 'Models'
 					with:
-					#('Cormas-Model-Conway' 'Cormas-Core' 'Cormas-Model-ECEC' 'Cormas-Model-FireAutomata' 'Cormas-Model-Diffuse' #'Cormas-Model-DemoAggregates');
+					#('Cormas-Model-Conway' 'Cormas-Core' 'Cormas-Model-ECEC' 'Cormas-Model-FireAutomata' 'Cormas-Model-PlotsRental' 'Cormas-Model-Diffuse' #'Cormas-Model-DemoAggregates');
 				group: 'Tests' with: #('Cormas-Core' 'Cormas-Tests');
 				group: 'OpenMole' with: #('Cormas-OpenMole');
 				group: 'UI'
 					with:
-					#(#'Cormas-UI' 'Cormas-Core' 'Cormas-Model-Conway' 'Cormas-Model-ECEC' 'Cormas-Model-FireAutomata' 'Cormas-Model-Diffuse' #'Cormas-Model-DemoAggregates').			
-			].
-		
-		spec for:#'pharo7.x' do:[
-			spec preLoadDoIt: #preLoadForPharo7.
+					#(#'Cormas-UI' 'Cormas-Core' 'Cormas-Model-Conway' 'Cormas-Model-ECEC' 'Cormas-Model-PlotsRental' 'Cormas-Model-FireAutomata' 'Cormas-Model-Diffuse' #'Cormas-Model-DemoAggregates') ].
+	spec
+		for: #'pharo7.x'
+		do: [ spec preLoadDoIt: #preLoadForPharo7.
 			spec
-			project: 'Tabular'
+				project: 'Tabular'
 					with: [ spec
 						className: #ConfigurationOfTabular;
 						versionString: #development;
@@ -76,30 +70,27 @@ BaselineOfCormas >> baseline: spec [
 					with: [ spec
 						className: 'ConfigurationOfNeoJSON';
 						version: #stable;
-						repository: 'http://smalltalkhub.com/mc/SvenVanCaekenberghe/Neo/main' ].
-					].
-		spec
+						repository: 'http://smalltalkhub.com/mc/SvenVanCaekenberghe/Neo/main' ] ].
+	spec
 		for: #'pharo8.x'
-		do: [
-			spec preLoadDoIt: #preLoadForPharo8. 
+		do: [ spec preLoadDoIt: #preLoadForPharo8.
 			spec
-				baseline: 'Roassal3' with: [ spec repository: 'github://ObjectProfile/Roassal3/src' ];
+				baseline: 'Roassal3'
+					with: [ spec repository: 'github://ObjectProfile/Roassal3/src' ];
 				baseline: 'Tabular'
-				with: [ spec repository: 'github://VincentBlondeau/Tabular'];
+					with: [ spec repository: 'github://VincentBlondeau/Tabular' ];
 				baseline: 'NeoJSON'
-					with: [spec repository:'github://svenvc/NeoJSON/repository'  ].
-					].
-		spec
+					with: [ spec repository: 'github://svenvc/NeoJSON/repository' ] ].
+	spec
 		for: #'pharo9.x'
-		do: [
-			spec preLoadDoIt: #preLoadForPharo9. 
+		do: [ spec preLoadDoIt: #preLoadForPharo9.
 			spec
-				baseline: 'Roassal3' with: [ spec repository: 'github://ObjectProfile/Roassal3' ];
+				baseline: 'Roassal3'
+					with: [ spec repository: 'github://ObjectProfile/Roassal3' ];
 				baseline: 'Tabular'
-				with: [ spec repository: 'github://VincentBlondeau/Tabular'];
+					with: [ spec repository: 'github://VincentBlondeau/Tabular' ];
 				baseline: 'NeoJSON'
-					with: [spec repository:'github://svenvc/NeoJSON'  ].
-					]
+					with: [ spec repository: 'github://svenvc/NeoJSON' ] ]
 ]
 
 { #category : #doits }
