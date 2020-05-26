@@ -9,6 +9,6 @@ SmalltalkCISpec {
     }
   ],
   #testing : {
-    #categories : [ 'Cormas-Tests' ]
+    #categories : [ 'Cormas-*' ]
   }
 }
