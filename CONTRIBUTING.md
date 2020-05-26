@@ -1,3 +1,24 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Contribution Guide for CORMAS](#contribution-guide-for-cormas)
+  - [Setup Iceberg](#setup-iceberg)
+  - [Fork the CORMAS repository](#fork-the-cormas-repository)
+  - [Load your fork version of CORMAS in your image](#load-your-fork-version-of-cormas-in-your-image)
+  - [Add main CORMAS repository as remote](#add-main-cormas-repository-as-remote)
+  - [Send some changes to the original CORMAS repository](#send-some-changes-to-the-original-cormas-repository)
+      - [From Pharo Iceberg](#from-pharo-iceberg)
+      - [From Github UI](#from-github-ui)
+  - [Pull changes from original to fork](#pull-changes-from-original-to-fork)
+    - [From GitHub GUI](#from-github-gui)
+    - [Sync your fork with the CORMAS main repository](#sync-your-fork-with-the-cormas-main-repository)
+  - [Cleanups](#cleanups)
+- [Release management (not used at the moment)](#release-management-not-used-at-the-moment)
+- [Branch management (to be defined)](#branch-management-to-be-defined)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Contribution Guide for CORMAS
 
 *This file is currently not complete but will be improve step by step.*
