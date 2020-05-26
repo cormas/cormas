@@ -12,7 +12,6 @@ services:
 language: smalltalk
 os:
   - linux
-  - osx
 smalltalk:
   - Pharo64-7.0
   - Pharo64-8.0
