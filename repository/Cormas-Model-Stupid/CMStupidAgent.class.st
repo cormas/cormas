@@ -2,7 +2,7 @@
 A stupide agent
 "
 Class {
-	#name : #CMStupideAgent,
+	#name : #CMStupidAgent,
 	#superclass : #CMAgentLocation,
 	#instVars : [
 		'agsize'
@@ -11,24 +11,24 @@ Class {
 }
 
 { #category : #accessing }
-CMStupideAgent >> agsize [
+CMStupidAgent >> agsize [
 	^ agsize ifNil: [ agsize := 20 ]
 ]
 
 { #category : #accessing }
-CMStupideAgent >> agsize: anObject [
+CMStupidAgent >> agsize: anObject [
 	agsize := anObject
 ]
 
 { #category : #growth }
-CMStupideAgent >> gowing [
+CMStupidAgent >> gowing [
 
 	self agsize: (self agsize  + self patch food).
 	self patch food: 0 .
 ]
 
 { #category : #running }
-CMStupideAgent >> move [
+CMStupidAgent >> move [
 	"move to an empty cell... if not don't move"
 
 	self randomWalkConstrainedBy: [
@@ -37,18 +37,18 @@ CMStupideAgent >> move [
 ]
 
 { #category : #pov }
-CMStupideAgent >> pov [
+CMStupidAgent >> pov [
 
 	^ Color blue
 ]
 
 { #category : #pov }
-CMStupideAgent >> sizeOfPOV [
+CMStupidAgent >> sizeOfPOV [
 ^ self agsize
 ]
 
 { #category : #scheduling }
-CMStupideAgent >> step [
+CMStupidAgent >> step [
 
 	self move.
 	self gowing.
