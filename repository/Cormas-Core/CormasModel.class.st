@@ -4337,7 +4337,7 @@ CormasModel >> pickCellsN: anInteger [
 { #category : #'+ accessing - entities' }
 CormasModel >> pickEntity: aClass [
 	"Purpose: return an entity belonging to a class, picked randomly.
-	Return Value: an instance of aClass, or nil if there is no intsance  
+	Return Value: an instance of aClass, or nil if there is no instance  
 	Example:  self pickEntity: RestrainedForager "
 
 	^ Cormas selectRandomlyFrom: (self allTheEntities: aClass)
@@ -4346,7 +4346,7 @@ CormasModel >> pickEntity: aClass [
 { #category : #'+ accessing - entities' }
 CormasModel >> pickEntity: aClass constrainedBy: aBlock [
 	"Purpose: return a random entity belonging to a class and verifying the block condition.
-	Return Value: an instance of aClass, or nil if there is no intsance verifying the condition 
+	Return Value: an instance of aClass, or nil if there is no instance verifying the condition 
 	Example:  self pickEntity: RestrainedForager constrainedBy: [:e| e patch energy <2]"
 
 	^ Cormas
