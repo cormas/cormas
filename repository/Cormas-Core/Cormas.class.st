@@ -1,5 +1,5 @@
 "
-This class is the main class of Cormas (!). It is instanciated from the VisualLauncher menu.
+This class is the main class of CORMAS. It is instanciated from the VisualLauncher menu.
 All the useful method for user are class method into utils's protocols, ex: Cormas random.
 To run Cormas: 
 		VW -> Tools -> Cormas -> Cormas english
@@ -5133,12 +5133,12 @@ Cormas >> cormasModel [
 ]
 
 { #category : #accessing }
-Cormas >> cormasModel: newModelInstance [
+Cormas >> cormasModel: aCormasModel [
 	"set the new simulation and give a reference to cormas"
-	
-	cormasModel := newModelInstance.
-	newModelInstance ifNil: [^nil].
-	newModelInstance cormas: self
+
+	cormasModel := aCormasModel.
+	aCormasModel ifNil: [ ^ nil ].
+	aCormasModel cormas: self
 ]
 
 { #category : #accessing }
@@ -5148,9 +5148,8 @@ Cormas >> cormasModelClass [
 ]
 
 { #category : #accessing }
-Cormas >> cormasModelClass: x [
-	
-	cormasModelClass := x
+Cormas >> cormasModelClass: aClass [
+	cormasModelClass := aClass
 ]
 
 { #category : #'model entities' }
@@ -5315,9 +5314,8 @@ Cormas >> currentModel [
 ]
 
 { #category : #accessing }
-Cormas >> currentModel: x [
-	
-	cormasModelClass := x
+Cormas >> currentModel: aCormasModel [
+	cormasModelClass := aCormasModel
 ]
 
 { #category : #deprecated }
@@ -7062,9 +7060,8 @@ Cormas >> process [
 ]
 
 { #category : #accessing }
-Cormas >> process: x [
-	
-	process := x
+Cormas >> process: aProcess [
+	process := aProcess
 ]
 
 { #category : #'model saving&loading EV' }
