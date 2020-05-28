@@ -2,7 +2,7 @@
 Stupides cell 
 "
 Class {
-	#name : #CMStupideCell,
+	#name : #CMStupidCell,
 	#superclass : #CMSpatialEntityCell,
 	#instVars : [
 		'food'
@@ -15,46 +15,46 @@ Class {
 }
 
 { #category : #accessing }
-CMStupideCell class >> maxFoodProductionRate [
+CMStupidCell class >> maxFoodProductionRate [
 	^ maxFoodProductionRate ifNil: [ maxFoodProductionRate := 0.01 ]
 ]
 
 { #category : #accessing }
-CMStupideCell class >> maxFoodProductionRate: anObject [
+CMStupidCell class >> maxFoodProductionRate: anObject [
 	maxFoodProductionRate := anObject
 ]
 
 { #category : #accessing }
-CMStupideCell class >> pallete [
+CMStupidCell class >> pallete [
 
 	^ pallete ifNil: [ pallete := RTMultiLinearColor new
 		colors: (RTColorPalette sequential colors: 9 scheme: 'YlGnBu') ].
 ]
 
 { #category : #accessing }
-CMStupideCell >> food [
+CMStupidCell >> food [
 	^ food ifNil: [ food :=  0.1]
 ]
 
 { #category : #accessing }
-CMStupideCell >> food: anObject [
+CMStupidCell >> food: anObject [
 	food := anObject
 ]
 
 { #category : #pov }
-CMStupideCell >> pov [
+CMStupidCell >> pov [
 
 	^ self class pallete
 		rtValue: (self food)
 ]
 
 { #category : #pov }
-CMStupideCell >> step [
+CMStupidCell >> step [
 	self updateFood.
 ]
 
 { #category : #pov }
-CMStupideCell >> updateFood [
+CMStupidCell >> updateFood [
 	self
 		food: self food + (self food * (Cormas randomFloatFrom: 0 to: self class maxFoodProductionRate))
 ]

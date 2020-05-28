@@ -32,7 +32,7 @@ Class {
 	#classInstVars : [
 		'isObserved'
 	],
-	#category : 'Cormas-Core-Communication'
+	#category : #'Cormas-Core-Communication'
 }
 
 { #category : #'instance creation' }
@@ -134,8 +134,8 @@ CMMsg class >> superClassesUntil: aSuperClass [
 { #category : #'+ util' }
 CMMsg class >> superClassesUntilEntity [
 	"Return the super classes of the class sender until Msg"
-	
-	^self superClassesUntil: Msg
+
+	^ self superClassesUntil: CMMsg
 ]
 
 { #category : #deprecated }

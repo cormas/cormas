@@ -1,5 +1,5 @@
 "
-Group is a subclass of Agent and is composed with Agents.
+Group is a subclass of Agent and is composed of Agents.
 
 Instance Variables:
 	components			<(Set of: (Agent))>	members of the group
@@ -16,38 +16,36 @@ Class {
 		'newComponents',
 		'removedComponents'
 	],
-	#category : 'Cormas-Core-Entities'
+	#category : #'Cormas-Core-Entities'
 }
 
 { #category : #'instance creation' }
-CMGroup class >> newWith: anAgentsCollection [
-	"Return a new instance of Group, composed with anAgentsCollection."
-	
-	^self new initWith: anAgentsCollection
+CMGroup class >> newWith: anAgentCollection [
+	"Return a new instance of Group, composed with anAgentCollection."
+
+	^ self new initWith: anAgentCollection
 ]
 
 { #category : #'+ components - managing' }
-CMGroup >> addComponent: anItem [
-	"Purpose: add IMMEDIATELY a given item as a new component of the group
-Argument: anItem = <Agent>"
-	
-	self components add: anItem
+CMGroup >> addComponent: anAgent [
+	"Add immediately an agent as a new component of the group"
+
+	self components add: anAgent
 ]
 
 { #category : #'+ components - managing' }
-CMGroup >> addComponents: aCollec [
-	"Purpose: add IMMEDIATELY a collection of agents as new components of the group
-Argument: aCollec = <Collection(Agent)>"
-	
-	self components addAll: aCollec
+CMGroup >> addComponents: aCollection [
+	"Add immediately a collection of agents as new components of the group"
+
+	self components addAll: aCollection
 ]
 
 { #category : #'+ components - managing' }
-CMGroup >> addSynchronouslyComponent: anItem [
+CMGroup >> addSynchronouslyComponent: anAgent [
 	"Purpose: the given item will be added as a new component of the group when 'updateComponents' will be send to the receiver. Meanwhile, it is stored in the buffer attribute 'newComponents'
 Argument: anItem = <Agent>"
-	
-	self newComponents add: anItem
+
+	self newComponents add: anAgent
 ]
 
 { #category : #'+ components - accessing' }
@@ -57,44 +55,35 @@ CMGroup >> components [
 ]
 
 { #category : #'+ components - accessing' }
-CMGroup >> components: uneValeur [
-	
-	components := uneValeur
-]
-
-{ #category : #'- deprecated' }
-CMGroup >> contain: anItem [
-	
-	^self components includes: anItem
+CMGroup >> components: anAgentSet [
+	components := anAgentSet
 ]
 
 { #category : #'+ components - managing' }
-CMGroup >> deleteComponent: anItem [
+CMGroup >> deleteComponent: anAgent [
 	"Purpose: remove IMMEDIATELY a given item from the group components
 Argument: anItem = <Agent>"
-	
-	self components
-		remove: anItem
-		ifAbsent: []
+
+	self components remove: anAgent ifAbsent: [  ]
 ]
 
 { #category : #'+ components - managing' }
-CMGroup >> deleteComponents: aCollec [
+CMGroup >> deleteComponents: aCollection [
 	"Purpose: remove IMMEDIATELY a collection of agents from the group components
 Argument: aCollec = <Collection(Agent)>"
-	
+
 	| listeSet |
 	listeSet := Set new.
-	listeSet := aCollec.
+	listeSet := aCollection.
 	self components: self components - listeSet
 ]
 
 { #category : #'+ components - managing' }
-CMGroup >> deleteSynchronouslyComponent: anItem [
+CMGroup >> deleteSynchronouslyComponent: anAgent [
 	"Purpose: the given item will be removed from the group components when 'updateComponents' will be send to the receiver. Meanwhile, it is stored in the buffer attribute 'removedComponents'
 Argument: anItem = <Agent>"
-	
-	self removedComponents add: anItem
+
+	self removedComponents add: anAgent
 ]
 
 { #category : #'+ initialize - release' }
@@ -112,9 +101,8 @@ CMGroup >> newComponents [
 ]
 
 { #category : #'+ components - accessing' }
-CMGroup >> newComponents: uneValeur [
-	
-	newComponents := uneValeur
+CMGroup >> newComponents: anAgentSet [
+	newComponents := anAgentSet
 ]
 
 { #category : #'+ components - accessing' }
@@ -133,15 +121,14 @@ CMGroup >> removedComponents [
 ]
 
 { #category : #'+ components - accessing' }
-CMGroup >> removedComponents: uneValeur [
-	
-	removedComponents := uneValeur
+CMGroup >> removedComponents: anAgentSet [
+	removedComponents := anAgentSet
 ]
 
 { #category : #'+ initialize - release' }
 CMGroup >> reset [
-	"Purpose: resets inherited and specific attributes"
-	
+	"Resets inherited and specific attributes"
+
 	super reset.
 	self components: Set new.
 	self newComponents: Set new.
@@ -156,7 +143,7 @@ CMGroup >> size [
 
 { #category : #'+ control' }
 CMGroup >> stepDynPop [
-	"Purpose: activate the biological life cycle of each agent of the group. 
+	"Activate the biological life cycle of each agent of the group. 
 Nota: the 'step' method of the Agent must return a collection either empty if there is no successuful reproduction or made of newborn instances to be added as new components of the group"
 
 	| newBorns repro firstComp |
@@ -174,15 +161,15 @@ Nota: the 'step' method of the Agent must return a collection either empty if th
 
 { #category : #'+ control' }
 CMGroup >> updateAgents [
-	"Purpose: get rid of dead components"
-	
+	"Get rid of dead components"
+
 	| theDeadAgents |
-	theDeadAgents := self components select: [:a | a dead].
+	theDeadAgents := self components select: [ :a | a dead ].
 	theDeadAgents
-		do:
-			[:a | 
-			a patch notNil ifTrue: [a leave].
-			self deleteComponent: a]
+		do: [ :a | 
+			a patch notNil
+				ifTrue: [ a leave ].
+			self deleteComponent: a ]
 ]
 
 { #category : #'+ components - managing' }
@@ -197,8 +184,8 @@ CMGroup >> updateComponents [
 
 { #category : #'+ control' }
 CMGroup >> updateWith: aCollec [
-	"Purpose: get rid of dead components and add new ones"
-	
+	"Get rid of dead components and add new ones"
+
 	self updateAgents.
 	self addComponents: aCollec
 ]

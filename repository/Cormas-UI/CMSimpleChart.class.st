@@ -6,7 +6,7 @@ Class {
 		'probeNum',
 		'window'
 	],
-	#category : 'Cormas-UI-charts'
+	#category : #'Cormas-UI-charts'
 }
 
 { #category : #deprecated }
@@ -107,11 +107,11 @@ CMSimpleChart >> initializeAndSubscribe [
 	| t |
 	super initialize.
 	self cormasModel announcer
-		subscribe: CMProbesDataUpdatedAnnouncement
+		when: CMProbesDataUpdatedAnnouncement
 			do: [ :aAnnounce | 
 			aAnnounce timeStep = 0
 				ifFalse: [ self timeChanged: aAnnounce timeStep ] ];
-		subscribe: CMSimInitializationAnnouncement do: [ self timeChanged: 0 ].
+		when: CMSimInitializationAnnouncement do: [ self timeChanged: 0 ].
 	self addAZeroDataSet
 ]
 
