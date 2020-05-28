@@ -1,5 +1,5 @@
 "
-This class is the main class of Cormas (!). It is instanciated from the VisualLauncher menu.
+This class is the main class of CORMAS. It is instanciated from the VisualLauncher menu.
 All the useful method for user are class method into utils's protocols, ex: Cormas random.
 To run Cormas: 
 		VW -> Tools -> Cormas -> Cormas english

@@ -1914,8 +1914,8 @@ Example: self askRandom: (self theAnimals select:[:f | f energy > 10]) toDo: #ea
 
 { #category : #'+ accessing - spatial grid' }
 CormasModel >> autoResizeGrids: aBoolean [
-	"Purpose: Automatically resize all the opened spatial grids when aBoolean = true, otherwise, do not resize"
-	
+	"Purpose: automatically resize all the opened spatial grids when aBoolean = true, otherwise, do not resize"
+
 	self spaceModel autoResizeBounds: aBoolean
 ]
 
@@ -3977,8 +3977,8 @@ Examples: self lowerQuartileOfAttribute: #age of: Person
 { #category : #'+ accessing - entities' }
 CormasModel >> lowerRightCell [
 	"Purpose: returns the cell located at the lower right location of the spatial grid"
-	
-	^self spaceModel lowerRightLocation
+
+	^ self spaceModel lowerRightLocation
 ]
 
 { #category : #'+ utilities - population metrics' }
@@ -4178,13 +4178,13 @@ CormasModel >> openSensitivityInterface: aSensitivityClass [
 
 { #category : #'+ accessing - spatial grid' }
 CormasModel >> openedSpatialGrid [
-	"Purpose: Return the last opened spatial grid"
-	
+	"Purpose: return the last opened spatial grid"
+
 	| spatialGrids |
 	spatialGrids := self openedSpatialGrids.
-	^spatialGrids isEmpty
-		ifTrue: [nil]
-		ifFalse: [spatialGrids last]
+	^ spatialGrids isEmpty
+		ifTrue: [ nil ]
+		ifFalse: [ spatialGrids last ]
 ]
 
 { #category : #'+ accessing - spatial grid' }
@@ -4300,68 +4300,66 @@ CormasModel >> performShiftRedButton: aPoint [
 
 { #category : #'+ accessing - entities' }
 CormasModel >> pickCell [
-	"Purpose: Return a spatialEntityElement (aCell) picked randomly from the spatial grid.
-Example: self pickCell"
-	
-	^Cormas selectRandomlyFrom: self theESE
+	"Purpose: return a spatialEntityElement (aCell) picked randomly from the spatial grid.
+	Example: self pickCell"
+
+	^ Cormas selectRandomlyFrom: self theESE
 ]
 
 { #category : #'+ accessing - entities' }
 CormasModel >> pickCellConstrainedBy: aBlock [
 	"Purpose: return a random cell of the grid. The cell verifies the block condition.
-Example:  self pickCellConstrainedBy: [:cell | state=#land] or self pickCellConstrainedBy: [: cell | cell energy > 1] "
-	
-	^Cormas
-		selectRandomlyFrom: (self theESE asArray select: [:c | aBlock value: c])
+	Example:  self pickCellConstrainedBy: [:cell | state=#land] or self pickCellConstrainedBy: [: cell | cell energy > 1] "
+
+	^ Cormas
+		selectRandomlyFrom: (self theESE asArray select: [ :c | aBlock value: c ])
 ]
 
 { #category : #'+ accessing - entities' }
 CormasModel >> pickCellWithoutAny: aClass [
 	"Purpose: return a cell (picked randomly) without any instance of aClassName
-Return Value: a cell
-Example1: self pickCellWithoutAny: Building
-Example2: self pickCellWithoutAny: #Building"
-	
-	^self pickCellConstrainedBy: [:cell | (cell occupantsAt: aClass) isEmpty]
+	Return Value: a cell
+	Example1: self pickCellWithoutAny: Building
+	Example2: self pickCellWithoutAny: #Building"
+
+	^ self
+		pickCellConstrainedBy: [ :cell | (cell occupantsAt: aClass) isEmpty ]
 ]
 
 { #category : #'+ accessing - entities' }
 CormasModel >> pickCellsN: anInteger [
-	"Purpose: Return a collection of spatialEntityElements (some Cells) picked randomly from the spatial grid (without replacement).
-Example: self pickCellsN: 5"
-	
-	^Cormas
-		selectRandomlyFrom: self theESE
-		subCollectionSize: anInteger
+	"Purpose: return a collection of spatialEntityElements (some Cells) picked randomly from the spatial grid (without replacement).
+	Example: self pickCellsN: 5"
+
+	^ Cormas selectRandomlyFrom: self theESE subCollectionSize: anInteger
 ]
 
 { #category : #'+ accessing - entities' }
 CormasModel >> pickEntity: aClass [
 	"Purpose: return an entity belonging to a class, picked randomly.
-Return Value: an instance of aClass, or nil if there is no intsance  
-Example:  self pickEntity: RestrainedForager "
-	
-	^Cormas selectRandomlyFrom: (self allTheEntities: aClass)
+	Return Value: an instance of aClass, or nil if there is no intsance  
+	Example:  self pickEntity: RestrainedForager "
+
+	^ Cormas selectRandomlyFrom: (self allTheEntities: aClass)
 ]
 
 { #category : #'+ accessing - entities' }
 CormasModel >> pickEntity: aClass constrainedBy: aBlock [
 	"Purpose: return a random entity belonging to a class and verifying the block condition.
-Return Value: an instance of aClass, or nil if there is no intsance verifying the condition 
-Example:  self pickEntity: RestrainedForager constrainedBy: [:e| e patch energy <2] "
-	
-	^Cormas
-		selectRandomlyFrom:
-			((self allTheEntities: aClass) select: [:c | aBlock value: c])
+	Return Value: an instance of aClass, or nil if there is no intsance verifying the condition 
+	Example:  self pickEntity: RestrainedForager constrainedBy: [:e| e patch energy <2]"
+
+	^ Cormas
+		selectRandomlyFrom: ((self allTheEntities: aClass) select: [ :c | aBlock value: c ])
 ]
 
 { #category : #'+ accessing - entities' }
 CormasModel >> pickN: anInteger entities: aClass [
 	"Purpose: return a collection of entities belonging to a class .
-Return Value: a collection of instances of aClass, or an empty collection if there is no intsance 
-Example:  self pickN: 5 entities: Forager "
-	
-	^Cormas
+	Return Value: a collection of instances of aClass, or an empty collection if there is no instance
+	Example:  self pickN: 5 entities: Forager"
+
+	^ Cormas
 		selectRandomlyFrom: (self allTheEntities: aClass)
 		subCollectionSize: anInteger
 ]
@@ -4369,21 +4367,20 @@ Example:  self pickN: 5 entities: Forager "
 { #category : #'+ accessing - entities' }
 CormasModel >> pickN: anInteger entities: aClass constrainedBy: aBlock [
 	"Purpose: return a collection of entities belonging to a class and verifying a condition.
-Return Value: a collection of instances of aClass, or an empty collection if there is no intsance verifying the condition 
-Example:  self pickN: 5 entities: Forager constrainedBy: [:e| e energy > 50] "
-	
-	^Cormas
-		selectRandomlyFrom:
-			((self allTheEntities: aClass) select: [:c | aBlock value: c])
+	Return Value: a collection of instances of aClass, or an empty collection if there is no instance verifying the condition 
+	Example:  self pickN: 5 entities: Forager constrainedBy: [:e| e energy > 50] "
+
+	^ Cormas
+		selectRandomlyFrom: ((self allTheEntities: aClass) select: [ :c | aBlock value: c ])
 		subCollectionSize: anInteger
 ]
 
 { #category : #'+ accessing - entities' }
 CormasModel >> pickUnoccupiedCell [
 	"Purpose: return a random cell not occuppied of the grid
-Return Value: a cell"
-	
-	^self pickCellConstrainedBy: [:cell | cell noOccupant]
+	Return Value: a cell"
+
+	^ self pickCellConstrainedBy: [ :cell | cell noOccupant ]
 ]
 
 { #category : #'initalize release' }
@@ -4829,37 +4826,37 @@ file <String> ex: 'titi.txt'  it will be save into data/"
 
 { #category : #'+ accessing - entities' }
 CormasModel >> selectCellsInRectangle: aRectangle [
-	"Purpose: Return a collection of the cells located in a rectangle defined by an origin cell (top left) and a corner cell (down right). The collection of cells is sorted by id.
-Argument: aRectangle   <Rectangle> where origin < corner.
-Example: self  selectCellsInRectangle: (Rectangle origin: 1@2 corner: 6@3)  ->  a collection of cells between columns 2 and 3, and between lines 1 and 6, and ordered from line 1 to line 6"
-	
-	^self spaceModel cellsIntoRectangle: aRectangle
+	"Purpose: return a collection of the cells located in a rectangle defined by an origin cell (top left) and a corner cell (down right). The collection of cells is sorted by id.
+	Argument: aRectangle   <Rectangle> where origin < corner.
+	Example: self  selectCellsInRectangle: (Rectangle origin: 1@2 corner: 6@3)  ->  a collection of cells between columns 2 and 3, and between lines 1 and 6, and ordered from line 	1 to line 6"
+
+	^ self spaceModel cellsIntoRectangle: aRectangle
 ]
 
 { #category : #'+ accessing - entities' }
 CormasModel >> selectCellsInRectangleOriginCell: cell1 cornerCell: cell2 [
-	"Purpose: Return a collection of the cells located in a rectangle defined by an origin cell and a cell at the opposit corner of the rectangle. The collection of cells is ordered from cell1 to cell2.
-Arguments : cell1   <SpatialEntityElement> 
-Arguments : cell2   <SpatialEntityElement> 
-Example: self createAggregate: City from: (self selectCellsInRectangleOriginCell: self upperLeftCell  cornerCell: self pickCell) "
-	
-	^self spaceModel cellsIntoRectangleFrom: cell1 to: cell2
+	"Purpose: return a collection of the cells located in a rectangle defined by an origin cell and a cell at the opposit corner of the rectangle. The collection of cells is ordered from cell1 to cell2.
+	Arguments : cell1   <SpatialEntityElement>
+	Arguments : cell2   <SpatialEntityElement>
+	Example: self createAggregate: City from: (self selectCellsInRectangleOriginCell: self upperLeftCell  cornerCell: self pickCell)"
+
+	^ self spaceModel cellsIntoRectangleFrom: cell1 to: cell2
 ]
 
 { #category : #'+ accessing - entities' }
 CormasModel >> selectCellsOfColumn: colNumber [
-	"Purpose: Return a collection of the cells belonging to the specified column of the spatial grid.
-Arguments : colNumber   <Integer> colNumber = Positive Integer
-Example: self ask: (self selectCellsOfColumn: 2) toDo: #flash"
+	"Purpose: return a collection of the cells belonging to the specified column of the spatial grid.
+	Arguments: colNumber   <Integer> colNumber = Positive Integer
+	Example: self ask: (self selectCellsOfColumn: 2) toDo: #flash"
 
 	^ self spaceModel cellsOfColumn: colNumber
 ]
 
 { #category : #'+ accessing - entities' }
 CormasModel >> selectCellsOfLine: lineNumber [
-	"Purpose: Return a collection of the cells belonging to the specified line of the spatial grid.
-Arguments : lineNumber   <Integer> lineNumber = Positive Integer
-Example: self ask: (self selectCellsOfLine: 2) toDo: #flash"
+	"Purpose: return a collection of the cells belonging to the specified line of the spatial grid.
+	Arguments : lineNumber   <Integer> lineNumber = Positive Integer
+	Example: self ask: (self selectCellsOfLine: 2) toDo: #flash"
 
 	^ self spaceModel cellsOfLine: lineNumber
 ]
@@ -5427,13 +5424,14 @@ Example: (self testPeriodicity: 12) ifTrue:[self theFarmers do:[:f| f calculateA
 
 { #category : #'+ accessing - entities' }
 CormasModel >> theAgents [
-	"Purpose: Returns a collection of all the agents (social entities) of the model
-Example: self ask: (self theAgents) toDo: #step"
-	
+	"Purpose: returns a collection of all the agents (social entities) of the model
+	Example: self ask: (self theAgents) toDo: #step"
+
 	| collection |
 	collection := OrderedCollection new.
-	self class socialClasses do: [:cl | collection addAll: (self theEntities: cl)].
-	^collection
+	self class socialClasses
+		do: [ :cl | collection addAll: (self theEntities: cl) ].
+	^ collection
 ]
 
 { #category : #'accessing - entities' }
@@ -5516,9 +5514,9 @@ CormasModel >> timeChanged [
 { #category : #'+ accessing - scheduling' }
 CormasModel >> timeStep [
 	"Purpose: returns the current time step.of the simulation
-Example: self timeStep = 2 ifTrue:[self doSomethinig]"
-	
-	^self timeStepValue value
+	Example: self timeStep = 2 ifTrue:[self doSomethinig]"
+
+	^ self timeStepValue value
 ]
 
 { #category : #scheduling }
@@ -5763,8 +5761,8 @@ CormasModel >> updateTable: aTable withValues: anArrayOfValues [
 { #category : #'+ accessing - entities' }
 CormasModel >> upperLeftCell [
 	"Purpose: returns the cell located at the upper left location of the spatial grid"
-	
-	^self spaceModel upperLeftLocation
+
+	^ self spaceModel upperLeftLocation
 ]
 
 { #category : #'+ utilities - population metrics' }
@@ -5782,9 +5780,9 @@ Examples: self upperQuartileOfAttribute: #age of: Person
 
 { #category : #'+ accessing - entities' }
 CormasModel >> upperRightCell [
-	"Purpose: returns the cell located at the upper right location of the spatial grid"
-	
-	^self spaceModel upperRightLocation
+	"Purpose: return the cell located at the upper right location of the spatial grid"
+
+	^ self spaceModel upperRightLocation
 ]
 
 { #category : #'+ utilities - population metrics' }

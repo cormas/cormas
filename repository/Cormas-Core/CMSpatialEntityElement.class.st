@@ -10,7 +10,7 @@ Class {
 		'orderedNeighbourhood',
 		'default'
 	],
-	#category : 'Cormas-Core-Entities'
+	#category : #'Cormas-Core-Entities'
 }
 
 { #category : #testing }
@@ -1027,13 +1027,13 @@ Example: self wayTo: self spaceModel centralLocation constraint: [:c | c isClose
 { #category : #'+ accessing' }
 CMSpatialEntityElement >> x [
 	"Purpose: returns the X coordinate of the cell in a regular spatial grid"
-	
-	^self numCol
+
+	^ self numCol
 ]
 
 { #category : #'+ accessing' }
 CMSpatialEntityElement >> y [
 	"Purpose: returns the Y coordinate of the cell in a regular spatial grid"
-	
-	^self numLine
+
+	^ self numLine
 ]
