@@ -348,23 +348,24 @@ CormasModel class >> channel_default [
 
 { #category : #'+ activityEditor' }
 CormasModel class >> chooseActivityDiagramEditorToOpen [
-	" Purpose: user can choose and reOpen an ActivityDiagramEditor.
-ex:   CormasModel chooseActivityDiagramEditorToOpen   "
-	
+	"Purpose: user can choose and reOpen an ActivityDiagramEditor.
+	Example: CormasModel chooseActivityDiagramEditorToOpen   "
+
 	| chooser |
 	chooser := self chooseActivityDiagramName.
-	chooser ifNil: [^nil].
-	chooser action = #new ifTrue: [^self openBlankActivityDiagramEditor].
+	chooser ifNil: [ ^ nil ].
+	chooser action = #new
+		ifTrue: [ ^ self openBlankActivityDiagramEditor ].
 	chooser action = #remove
-		ifTrue: [^self removeActivityDiagram: chooser diagramList selection].
-	^self openActivityDiagram: chooser diagramList selection
+		ifTrue: [ ^ self removeActivityDiagram: chooser diagramList selection ].
+	^ self openActivityDiagram: chooser diagramList selection
 ]
 
 { #category : #'+ activityEditor' }
 CormasModel class >> chooseActivityDiagramEditorToRemove [
 	" Purpose: user can choose and remove an ActivityDiagramEditor.
-ex:   Entity chooseActivityDiagramEditorToRemove   "
-	
+	Example: Entity chooseActivityDiagramEditorToRemove   "
+
 	| operationName list |
 	list := self allActivitySelectors asSortedCollection.
 	operationName := Dialog
@@ -372,9 +373,10 @@ ex:   Entity chooseActivityDiagramEditorToRemove   "
 		fromList: list
 		values: list
 		lines: 8
-		cancel: [#Cancel].
-	operationName = #Cancel ifTrue: [^nil].
-	^self removeActivityDiagram: operationName
+		cancel: [ #Cancel ].
+	operationName = #Cancel
+		ifTrue: [ ^ nil ].
+	^ self removeActivityDiagram: operationName
 ]
 
 { #category : #'+ activityEditor' }
@@ -1824,10 +1826,10 @@ Example: self ask: Animal select: [:a | a energy > 10] toDo: #eatQuantity: with:
 
 { #category : #'+ control' }
 CormasModel >> ask: aCollecOrClass toDo: aSymbol [
-	"Purpose: To ask a collection of instances or all the instances of a class to execute a method named by aSymbol. In case aCollecOrClass is a class, the entities are ordered according to their id. In case aCollecOrClass is a collection of instances, the order of the collection is kept.
-Example: self ask: Fireman toDo: #move
-Example: self ask: (self theAnimals select:[:f | f energy > 10]) toDo: #reproduce"
-	
+	"Purpose: To ask a collection of instances or all the instances of a class to execute a method named by aSymbol. In case aCollecOrClass is a 	class, the entities are ordered according to their id. In case aCollecOrClass is a collection of instances, the order of the collection is 	kept.
+	Example: self ask: Fireman toDo: #move
+	Example: self ask: (self theAnimals select:[:f | f energy > 10]) toDo: #reproduce"
+
 	self ask: aCollecOrClass toDo: aSymbol with: #()
 ]
 
