@@ -2,7 +2,8 @@ Class {
 	#name : #CormasModelForTest,
 	#superclass : #CormasModel,
 	#instVars : [
-		'cells'
+		'cells',
+		'agents'
 	],
 	#category : #'Cormas-Tests-Model'
 }
@@ -53,6 +54,11 @@ CormasModelForTest >> numDeads [
 			cell state = #dead
 				ifTrue: [ count := count + 1 ] ].
 	^ count
+]
+
+{ #category : #accessing }
+CormasModelForTest >> theCMAgentLocationForTests [
+	^ agents ifNil: [ agents := IndexedSet new ]
 ]
 
 { #category : #accessing }
