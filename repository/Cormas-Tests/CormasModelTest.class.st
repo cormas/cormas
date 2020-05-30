@@ -13,8 +13,8 @@ CormasModelTest >> testCentralCell [
 		activeInit: #initRandom;
 		initSimulation;
 		initializeSpaceModel;
-		createGridX: 3
-			Y: 3
+		createGridColumns: 3
+			lines: 3
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -32,8 +32,8 @@ CormasModelTest >> testCreateGridXYNeighborHoodClosed [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridX: 10
-			Y: 20
+		createGridColumns: 10
+			lines: 20
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -51,8 +51,8 @@ CormasModelTest >> testDominance [
 		activeInit: #initRandom;
 		initSimulation;
 		initializeSpaceModel;
-		createGridX: 100
-			Y: 100
+		createGridColumns: 100
+			lines: 100
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -69,8 +69,8 @@ CormasModelTest >> testDominance1 [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridX: 100
-			Y: 100
+		createGridColumns: 100
+			lines: 100
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -86,8 +86,8 @@ CormasModelTest >> testLowerLeftCell [
 		activeInit: #initRandom;
 		initSimulation;
 		initializeSpaceModel;
-		createGridX: 3
-			Y: 3
+		createGridColumns: 3
+			lines: 3
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -105,8 +105,8 @@ CormasModelTest >> testLowerRightCell [
 		activeInit: #initRandom;
 		initSimulation;
 		initializeSpaceModel;
-		createGridX: 3
-			Y: 3
+		createGridColumns: 3
+			lines: 3
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -124,8 +124,8 @@ CormasModelTest >> testNbDistinctValuesOf [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridX: 10
-			Y: 20
+		createGridColumns: 10
+			lines: 20
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -145,15 +145,15 @@ CormasModelTest >> testPickCell [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridX: 10
-			Y: 20
+		createGridColumns: 10
+			lines: 20
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
 	cell := model pickCell.
 	self assert: cell isSpatialEntity.
-	self assert: (cell x between: 1 and: 10).
-	self assert: (cell y between: 1 and: 20)
+	self assert: (cell numCol between: 1 and: 10).
+	self assert: (cell numLine between: 1 and: 20)
 ]
 
 { #category : #'tests-accessing-entities' }
@@ -165,8 +165,8 @@ CormasModelTest >> testPickCellConstrainedBy [
 		activeInit: #initRandom;
 		initSimulation;
 		initializeSpaceModel;
-		createGridX: 9
-			Y: 9
+		createGridColumns: 9
+			lines: 9
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -189,8 +189,8 @@ CormasModelTest >> testPickCellWithoutAny [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridX: 10
-			Y: 20
+		createGridColumns: 10
+			lines: 20
 			neighbourhood: 4
 			closed: true;
 		initSimulation;
@@ -210,8 +210,8 @@ CormasModelTest >> testPickCellsN [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridX: 10
-			Y: 20
+		createGridColumns: 10
+			lines: 20
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -228,8 +228,8 @@ CormasModelTest >> testPickEntity [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridX: 10
-			Y: 20
+		createGridColumns: 10
+			lines: 20
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -245,25 +245,28 @@ CormasModelTest >> testPickEntityConstrainedBy [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridX: 10
-			Y: 20
+		createGridColumns: 10
+			lines: 20
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
 	self
 		assert:
-			(model pickEntity: CMCellForTest constrainedBy: [ :cell | cell x = 3 ])
-				x
+			(model
+				pickEntity: CMCellForTest
+				constrainedBy: [ :cell | cell numCol = 3 ]) numCol
 		equals: 3.
 	self
 		assert:
-			(model pickEntity: CMCellForTest constrainedBy: [ :cell | cell x = 6 ])
-				x
+			(model
+				pickEntity: CMCellForTest
+				constrainedBy: [ :cell | cell numCol = 6 ]) numCol
 		equals: 6.
 	self
 		assert:
-			(model pickEntity: CMCellForTest constrainedBy: [ :cell | cell x = 9 ])
-				x
+			(model
+				pickEntity: CMCellForTest
+				constrainedBy: [ :cell | cell numCol = 9 ]) numCol
 		equals: 9
 ]
 
@@ -276,8 +279,8 @@ CormasModelTest >> testPickNEntities [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridX: 10
-			Y: 20
+		createGridColumns: 10
+			lines: 20
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -295,8 +298,8 @@ CormasModelTest >> testPickNEntitiesConstrainedBy [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridX: 10
-			Y: 20
+		createGridColumns: 10
+			lines: 20
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -305,8 +308,8 @@ CormasModelTest >> testPickNEntitiesConstrainedBy [
 			((model
 				pickN: 5
 				entities: CMCellForTest
-				constrainedBy: [ :cell | cell x = 5 ])
-				allSatisfy: [ :cell | cell x = 5 ])
+				constrainedBy: [ :cell | cell numCol = 5 ])
+				allSatisfy: [ :cell | cell numCol = 5 ])
 ]
 
 { #category : #'tests-accessing-entities' }
@@ -318,8 +321,8 @@ CormasModelTest >> testPickUnoccupiedCell [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridX: 10
-			Y: 20
+		createGridColumns: 10
+			lines: 20
 			neighbourhood: 4
 			closed: true;
 		initSimulation;
@@ -343,8 +346,8 @@ CormasModelTest >> testSelectCellsInRectangle [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridX: 10
-			Y: 20
+		createGridColumns: 10
+			lines: 20
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -352,8 +355,8 @@ CormasModelTest >> testSelectCellsInRectangle [
 	self assert: cells size equals: 9.
 	cells
 		do: [ :cell | 
-			self assert: (cell x between: 5 and: 7).
-			self assert: (cell y between: 5 and: 7) ]
+			self assert: (cell numCol between: 5 and: 7).
+			self assert: (cell numLine between: 5 and: 7) ]
 ]
 
 { #category : #'tests-accessing-entities' }
@@ -365,8 +368,8 @@ CormasModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridX: 5
-			Y: 9
+		createGridColumns: 5
+			lines: 9
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -376,8 +379,8 @@ CormasModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
 	self assert: cells size equals: 15.
 	cells
 		do: [ :cell | 
-			self assert: (cell x between: 1 and: 3).
-			self assert: (cell y between: 1 and: 5) ]
+			self assert: (cell numCol between: 1 and: 3).
+			self assert: (cell numLine between: 1 and: 5) ]
 ]
 
 { #category : #'tests-accessing-entities' }
@@ -389,8 +392,8 @@ CormasModelTest >> testSelectCellsOfColumn [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridX: 10
-			Y: 20
+		createGridColumns: 10
+			lines: 20
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -411,8 +414,8 @@ CormasModelTest >> testSelectCellsOfLine [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridX: 10
-			Y: 20
+		createGridColumns: 10
+			lines: 20
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -456,8 +459,8 @@ CormasModelTest >> testTheAgents [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridX: 10
-			Y: 20
+		createGridColumns: 10
+			lines: 20
 			neighbourhood: 4
 			closed: true;
 		initSimulation;
@@ -478,8 +481,8 @@ CormasModelTest >> testUpperLeftCell [
 		activeInit: #initRandom;
 		initSimulation;
 		initializeSpaceModel;
-		createGridX: 3
-			Y: 3
+		createGridColumns: 3
+			lines: 3
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -497,8 +500,8 @@ CormasModelTest >> testUpperRightCell [
 		activeInit: #initRandom;
 		initSimulation;
 		initializeSpaceModel;
-		createGridX: 3
-			Y: 3
+		createGridColumns: 3
+			lines: 3
 			neighbourhood: 4
 			closed: true;
 		initSimulation.

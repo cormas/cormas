@@ -2284,6 +2284,35 @@ Example: self createFragmentedEntity: UrbanArea fromCollection: (self theCells s
 ]
 
 { #category : #'+ instance creation - spatial grid' }
+CormasModel >> createGridColumns: numColumns lines: numLines neighbourhood: aNumber closed: aBoolean [
+	"Purpose: Create a spatial grid made of cells
+Arguments:  X : number of columns ; Y : number of lines of the grid.
+Arguments: aNumber is the neighbourhood type. It must 4, 6 or 8
+Arguments: aBoolean : closed or torroidal space.
+Example: self createGridX: 20 Y: 20 neighbourhood: 8 closed: true "
+
+	| shapeSymbol nbSymbol |
+	aNumber = 8
+		ifTrue: [ shapeSymbol := #squared.
+			nbSymbol := #eight ].
+	aNumber = 4
+		ifTrue: [ shapeSymbol := #squared.
+			nbSymbol := #four ].
+	aNumber = 6
+		ifTrue: [ shapeSymbol := #hexagonal.
+			nbSymbol := #six ].
+	self spaceModel
+		initializeRegularColumns: numColumns
+		lines: numLines
+		shape: shapeSymbol
+		nbNeighbours: nbSymbol
+		boundaries:
+			(aBoolean
+				ifTrue: [ #closed ]
+				ifFalse: [ #torroidal ])
+]
+
+{ #category : #'+ instance creation - spatial grid' }
 CormasModel >> createGridNeighbourhood: anInteger closed: aBoolean fromMatrixCsvFile: aString attribute: aName [
 	"Purpose: Create a spatial grid made of cells from a csv file in a matrix format providing values for a given attribute.
 The file has to be located into /data folder.
@@ -2294,54 +2323,43 @@ Arguments:
 	anAttributeName <String>: attribute's name.
 
 Example: 	self createGridNeighbourhood: 8 closed: true fromMatrixCsvFile: 'map.csv' attribute: 'cover'. "
-	
+
 	| matrix nbLines nbCols collec |
 	matrix := self readCsvFile: aString.
 	nbLines := matrix size.
 	nbCols := matrix first size.
-	self createGridX: nbCols Y: nbLines neighbourhood: anInteger closed:
-			aBoolean.
+	self
+		createGridColumns: nbCols
+		lines: nbLines
+		neighbourhood: anInteger
+		closed: aBoolean.
 	collec := OrderedCollection new.
-	matrix do: [:line | collec addAll: line].
+	matrix do: [ :line | collec addAll: line ].
 	collec
 		with: self theESE
-		do:
-			[:string :c | 
+		do: [ :string :c | 
 			c
 				perform: (aName , ':') asSymbol
-				with: (Cormas stringAsObjectType: string)]
+				with: (Cormas stringAsObjectType: string) ]
 ]
 
-{ #category : #'+ instance creation - spatial grid' }
+{ #category : #deprecated }
 CormasModel >> createGridX: x Y: y neighbourhood: aNumber closed: aBoolean [
+	"This method is deprecated. Please use createGridColumn:lines:neighbourhood:closed: instead."
 	"Purpose: Create a spatial grid made of cells
 Arguments:  X : number of columns ; Y : number of lines of the grid.
 Arguments: aNumber is the neighbourhood type. It must 4, 6 or 8
 Arguments: aBoolean : closed or torroidal space.
 Example: self createGridX: 20 Y: 20 neighbourhood: 8 closed: true "
-	
-	| shapeSymbol nbSymbol |
-	aNumber = 8
-		ifTrue:
-			[shapeSymbol := #squared.
-			nbSymbol := #eight].
-	aNumber = 4
-		ifTrue:
-			[shapeSymbol := #squared.
-			nbSymbol := #four].
-	aNumber = 6
-		ifTrue:
-			[shapeSymbol := #hexagonal.
-			nbSymbol := #six].
-	self spaceModel
-		initializeRegularX: x
-		Y: y
-		shape: shapeSymbol
-		nbNeighbours: nbSymbol
-		boundaries:
-			(aBoolean
-				ifTrue: [#closed]
-				ifFalse: [#torroidal])
+
+	self
+		deprecated:
+			'This method is no longer supported. Please use createGridColumns:lines:neighbourhood:closed: instead.'.
+	^ self
+		createGridColumns: x
+		lines: y
+		neighbourhood: aNumber
+		closed: aBoolean
 ]
 
 { #category : #'utilities - files' }
