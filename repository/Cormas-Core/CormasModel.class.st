@@ -2286,10 +2286,10 @@ Example: self createFragmentedEntity: UrbanArea fromCollection: (self theCells s
 { #category : #'+ instance creation - spatial grid' }
 CormasModel >> createGridColumns: numColumns lines: numLines neighbourhood: aNumber closed: aBoolean [
 	"Purpose: Create a spatial grid made of cells
-Arguments:  X : number of columns ; Y : number of lines of the grid.
+Arguments:  numColumns : number of columns ; numLines : number of lines of the grid.
 Arguments: aNumber is the neighbourhood type. It must 4, 6 or 8
 Arguments: aBoolean : closed or torroidal space.
-Example: self createGridX: 20 Y: 20 neighbourhood: 8 closed: true "
+Example: self createGridColumns: 20 lines: 20 neighbourhood: 8 closed: true "
 
 	| shapeSymbol nbSymbol |
 	aNumber = 8
