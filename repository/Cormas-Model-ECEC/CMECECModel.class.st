@@ -9,7 +9,7 @@ Class {
 		'theCMECECVegetationUnits',
 		'theRestraineds'
 	],
-	#category : 'Cormas-Model-ECEC'
+	#category : #'Cormas-Model-ECEC'
 }
 
 { #category : #'- probes' }
@@ -115,6 +115,49 @@ CMECECModel class >> example1 [
 	anim inView: v.
 	
 	v openWithToolbar.
+]
+
+{ #category : #examples }
+CMECECModel class >> example1R3 [
+    "Vegetation grid animation without foragers"
+
+    | aModel v n es popup |
+    aModel := self
+        initialize;
+        new.
+    v := RSCanvas new.
+    n := RSColorPalette sequential ylgnbu9.
+    n := NSScale linear
+        domain: {0 . 0.1 . 0.2 . 0.3 . 0.4 . 0.5 . 0.6 . 0.7 . 1};
+        range: n range.
+    aModel initSimulation.
+    aModel runStep.
+    es := aModel theCMECECVegetationUnits
+        collect: [ :each | 
+            RSBox new
+                size: 25;
+                model: each;
+                yourself ]
+        as: RSGroup.
+    v addAll: es.
+    "Adding a popup for biomass info on hover"
+    popup := RSPopup text: [ :object | object asPopupText ].
+    es @ popup.
+
+    "Adding a popup for object inspection on left click"
+    es when: RSMouseLeftClick do: [ :evt | evt shape model inspect ].
+    RSGridLayout new
+        gapSize: 0;
+        lineItemsCount: aModel spaceModel column;
+        on: v nodes.
+    v zoomToFit.
+    v newAnimation
+        repeat;
+        onStepDo: [ :t | 
+            aModel runStep.
+            es do: [ :each | each color: (n scale: each model biomass / 10.0) ] ].
+    v addInteraction: RSCanvasController new.
+    v open
 ]
 
 { #category : #examples }
