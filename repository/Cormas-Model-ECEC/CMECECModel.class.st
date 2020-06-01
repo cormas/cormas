@@ -9,7 +9,7 @@ Class {
 		'theCMECECVegetationUnits',
 		'theRestraineds'
 	],
-	#category : 'Cormas-Model-ECEC'
+	#category : #'Cormas-Model-ECEC'
 }
 
 { #category : #'- probes' }
@@ -441,18 +441,27 @@ CMECECModel >> homogeneousEnv [
 	"initialize an homogeneous space (from poor.env file) with randomly located foragers"
 
 	"self spaceModel loadEnvironmentFromFile: 'poor.env'."
-	self createGridX: 15 Y: 27 neighbourhood: 8 closed: true.
-	self theCMECECVegetationUnits do: [ :c |  c initRandomBiomass].
+
+	self
+		createGridColumns: 15
+		lines: 27
+		neighbourhood: 8
+		closed: true.
+	self theCMECECVegetationUnits do: [ :c | c initRandomBiomass ].
 	self initAgents
 ]
 
 { #category : #'instance-creation' }
 CMECECModel >> homogeneousEnv2 [
 	"initialize an homogeneous space (27x27, random biomass) with randomly located foragers"
-	
-	self spaceModel initializeRegularX: 27 Y: 27 shape: #squared nbNeighbours:
-			#eight boundaries: #toroidal.
-	self theCMECECVegetationUnits do: [:cell | cell initRandomBiomass].	"or: self initCells: #initRandomBiomass."
+
+	self spaceModel
+		initializeRegularColumns: 27
+		lines: 27
+		shape: #squared
+		nbNeighbours: #eight
+		boundaries: #toroidal.
+	self theCMECECVegetationUnits do: [ :cell | cell initRandomBiomass ].	"or: self initCells: #initRandomBiomass."
 	self initAgents
 ]
 

@@ -44,7 +44,7 @@ Class {
 		'absoluteBounds',
 		'autoResizeBounds'
 	],
-	#category : 'Cormas-Core-Space'
+	#category : #'Cormas-Core-Space'
 }
 
 { #category : #'binary storage' }
@@ -2111,7 +2111,25 @@ SpaceModel >> initializeRegular [
 ]
 
 { #category : #'ESE initialize-release' }
+SpaceModel >> initializeRegularColumns: columns lines: lines shape: shapeSymbol nbNeighbours: nbSymbol boundaries: bSymbol [
+	"Create a grid of regular cells.
+lines = number of lines. columns = number of columns.
+shapeSymbol =<Symbol> (#squared , )
+nbSymbol =<Symbol> (#four, #six or #eight)
+bSymbol = <Symbol> (#toroidal or #closed) .
+ex, from CormasModel:
+	self spaceModel initializeRegularColumns: 101 lines: 101 shape: #squared nbNeighbours: #eight boundaries: #toroidal."
+	
+	self resetSpatialEntities.
+	self line: lines column: columns shape: shapeSymbol nbNeighbours: nbSymbol
+		boundaries: bSymbol.
+	self createCells
+]
+
+{ #category : #deprecated }
 SpaceModel >> initializeRegularX: columns Y: lines shape: shapeSymbol nbNeighbours: nbSymbol boundaries: bSymbol [
+	"This method is deprecated. Please use initializeRegularColumns:lines:shape:nbNeighbours:boundaries: instead."
+
 	"Create a grid of regular cells.
 lines = number of lines. columns = number of columns.
 shapeSymbol =<Symbol> (#squared , )
@@ -2119,11 +2137,16 @@ nbSymbol =<Symbol> (#four, #six or #eight)
 bSymbol = <Symbol> (#toroidal or #closed) .
 ex, from CormasModel:
 	self spaceModel initializeRegularX: 101 Y: 101 shape: #squared nbNeighbours: #eight boundaries: #toroidal."
-	
-	self resetSpatialEntities.
-	self line: lines column: columns shape: shapeSymbol nbNeighbours: nbSymbol
-		boundaries: bSymbol.
-	self createCells
+
+	self
+		deprecated:
+			'This method is no longer supported. Please use initializeRegularColumns:lines:shape:nbNeighbours:boundaries: instead.'.
+	^ self
+		initializeRegularColumns: columns
+		lines: lines
+		shape: shapeSymbol
+		nbNeighbours: nbSymbol
+		boundaries: bSymbol
 ]
 
 { #category : #'private - init' }
@@ -4085,22 +4108,20 @@ SpaceModel >> setSpatialEntitiesAttributsValueFromStream: aStream [
 
 { #category : #'- utilities - binary storage' }
 SpaceModel >> settingsFrom: aClone [
-	
 	(self absoluteBounds = aClone absoluteBounds
-		and:
-			[self column = aClone column
-				and:
-					[self line = aClone line and: [self nbNeighbours = aClone nbNeighbours]]])
-		ifTrue: [aClone isIrregular ifFalse: [^self]].
+		and: [ self column = aClone column
+				and: [ self line = aClone line
+						and: [ self nbNeighbours = aClone nbNeighbours ] ] ])
+		ifTrue: [ aClone isIrregular
+				ifFalse: [ ^ self ] ].
 	self autoResizeBounds: aClone autoResizeBounds.
 	aClone isIrregular
-		ifFalse:
-			[self
-				initializeRegularX: aClone column
-				Y: aClone line
+		ifFalse: [ self
+				initializeRegularColumns: aClone column
+				lines: aClone line
 				shape: aClone gridCellShape
 				nbNeighbours: aClone nbNeighbours
-				boundaries: aClone boundaries]
+				boundaries: aClone boundaries ]
 ]
 
 { #category : #'landscape indices' }

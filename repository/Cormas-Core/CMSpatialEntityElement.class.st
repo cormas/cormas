@@ -1024,16 +1024,22 @@ Example: self wayTo: self spaceModel centralLocation constraint: [:c | c isClose
 	^road
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #'- deprecated' }
 CMSpatialEntityElement >> x [
+	"This method is not supported because numCol is more explicit. Please use numCol instead."
+
 	"Purpose: returns the X coordinate of the cell in a regular spatial grid"
 
+	self deprecated: 'Please use "numCol" instead.'.
 	^ self numCol
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #'- deprecated' }
 CMSpatialEntityElement >> y [
+	"This method is not supported because numCol is more explicit. Please use numCol instead."
+
 	"Purpose: returns the Y coordinate of the cell in a regular spatial grid"
 
+	self deprecated: 'Please use "numLine" instead.'.
 	^ self numLine
 ]

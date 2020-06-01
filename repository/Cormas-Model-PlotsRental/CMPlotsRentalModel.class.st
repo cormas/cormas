@@ -336,9 +336,9 @@ CMPlotsRentalModel >> initAgentsAuctioneer [
 CMPlotsRentalModel >> initCells [
 	"10x10 cells"
 
-	self 
-		createGridX: 10
-		Y: 10
+	self
+		createGridColumns: 10
+		lines: 10
 		neighbourhood: 8
 		closed: true
 ]
