@@ -15,7 +15,7 @@ Class {
 	#instVars : [
 		'theCMConwayCells'
 	],
-	#category : 'Cormas-Model-Conway'
+	#category : #'Cormas-Model-Conway'
 }
 
 { #category : #default }
@@ -42,8 +42,8 @@ CMConwayModel class >> example1 [
 	nbLines := 50.
 	aModel initializeSpaceModel.
 	aModel
-		createGridX: nbLines
-		Y: nbLines
+		createGridColumns: nbLines
+		lines: nbLines
 		neighbourhood: 4
 		closed: true.
 	v := RTView new.
@@ -68,7 +68,7 @@ CMConwayModel class >> example1 [
 		blockToExecute: [ aModel runStep.
 			v elements do: #updateShape ].
 	anim inView: v.
-	v openWithToolbar  
+	v openWithToolbar
 ]
 
 { #category : #examples }
@@ -85,8 +85,8 @@ CMConwayModel class >> example2 [
 				new.
 			aModel initializeSpaceModel.
 			aModel
-				createGridX: nbLines
-				Y: nbLines
+				createGridColumns: nbLines
+				lines: nbLines
 				neighbourhood: 4
 				closed: true.
 			aModel initSimulation.
@@ -130,8 +130,8 @@ CMConwayModel class >> example3 [
 	nbLines := 100.
 	aModel initializeSpaceModel.
 	aModel
-		createGridX: nbLines
-		Y: nbLines
+		createGridColumns: nbLines
+		lines: nbLines
 		neighbourhood: 4
 		closed: true.
 	v := RTView new.
@@ -242,16 +242,19 @@ CMConwayModel >> initGlidersGun [
 
 { #category : #init }
 CMConwayModel >> initRandomly [
-	
-	self createGridX: 100 Y: 100 neighbourhood: 8 closed: true.
+	self
+		createGridColumns: 100
+		lines: 100
+		neighbourhood: 8
+		closed: true.
 	self initCells: #initRandomly
 ]
 
 { #category : #init }
 CMConwayModel >> initSmallGrid [
 	self
-		createGridX: 10
-		Y: 10
+		createGridColumns: 10
+		lines: 10
 		neighbourhood: 4
 		closed: false.
 	self initCells: #initRandomly
