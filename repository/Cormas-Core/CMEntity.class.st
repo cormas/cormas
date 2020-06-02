@@ -73,10 +73,9 @@ CMEntity class >> activePov: aSymbol [
 
 { #category : #'- probes' }
 CMEntity class >> activeProbes [
-	
-	^activeProbes isNil
-		ifTrue: [self defaultProbes]
-		ifFalse: [activeProbes]
+	^ activeProbes
+		ifNil: [ self defaultProbes ]
+		ifNotNil: [ activeProbes ]
 ]
 
 { #category : #'- probes' }

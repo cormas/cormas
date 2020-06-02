@@ -44,8 +44,7 @@ CMECECModel class >> defaultInit [
 
 { #category : #default }
 CMECECModel class >> defaultProbes [
-
-^self probes
+	^ self probes 
 ]
 
 { #category : #'examples - with SimManager' }
@@ -607,10 +606,10 @@ CMECECModel >> unrestrainedInitialNumber [
 ]
 
 { #category : #accessing }
-CMECECModel >> unrestrainedInitialNumber: anObject [
+CMECECModel >> unrestrainedInitialNumber: anInteger [
 	"Setter accessor of attribute unrestrainedInitialNumber "
-	
-	unrestrainedInitialNumber := anObject
+
+	unrestrainedInitialNumber := anInteger
 ]
 
 { #category : #probes }

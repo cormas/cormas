@@ -101,10 +101,9 @@ CormasModel class >> activeInit_default [
 
 { #category : #probes }
 CormasModel class >> activeProbes [
-	
-	^activeProbes isNil
-		ifTrue: [self defaultProbes]
-		ifFalse: [activeProbes]
+	^ activeProbes
+		ifNil: [ self defaultProbes ]
+		ifNotNil: [ activeProbes ]
 ]
 
 { #category : #probes }
@@ -576,7 +575,7 @@ CormasModel class >> defaultDelayChangesSetting [
 
 { #category : #'+ simulation settings' }
 CormasModel class >> defaultFinalStep [
-	^ nil
+	self subclassResponsibility 
 ]
 
 { #category : #'+ simulation settings' }
@@ -586,8 +585,7 @@ CormasModel class >> defaultInit [
 
 { #category : #'+ simulation settings' }
 CormasModel class >> defaultProbes [
-	
-	^Array new
+	^ #()
 ]
 
 { #category : #'+ simulation settings' }
@@ -1119,14 +1117,13 @@ CormasModel class >> passiveObjectClasses [
 
 { #category : #accessing }
 CormasModel class >> povColorsDict [
-	
-	^povColorsDict
+	^ povColorsDict
 ]
 
 { #category : #accessing }
-CormasModel class >> povColorsDict: aDico [
+CormasModel class >> povColorsDict: aDictionary [
 	
-	povColorsDict := aDico
+	povColorsDict := aDictionary
 ]
 
 { #category : #'- default value' }
