@@ -17,6 +17,8 @@ Instance Variables:
 	nbNeighbours	<ByteSymbol>	#four, #six or #eight
 	rMaxEntityImage	<Float>	
 	spatialEntities	<Dictionary>	keys are class names of the different spatial entities of the coresponding CormasModel, values are lists of existing instances
+			
+	xll, yll ??
 
 
 "
@@ -4614,19 +4616,7 @@ CMSpaceModel >> xll [
 ]
 
 { #category : #'private - accessing' }
-CMSpaceModel >> xll: anObject [
-	
-	xll := anObject
-]
-
-{ #category : #'private - accessing' }
 CMSpaceModel >> yll [
 	
 	^yll
-]
-
-{ #category : #'private - accessing' }
-CMSpaceModel >> yll: anObject [
-	
-	yll := anObject
 ]
