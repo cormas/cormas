@@ -32,7 +32,6 @@ Class {
 		'cormasModel',
 		'arrayOrigins',
 		'boundaries',
-		'delimiter',
 		'nbNeighbours',
 		'rMaxEntityImage',
 		'spatialEntities',
@@ -364,13 +363,14 @@ CMSpaceModel >> buildFragmentedEntity: compoundEntity fromCollection: aCollecOfS
 
 { #category : #'private - accessing' }
 CMSpaceModel >> cardinal [
+"Number of cells of the grid"
 	^ cardinal
 ]
 
 { #category : #'private - accessing' }
-CMSpaceModel >> cardinal: v [
-	cardinal := v.
-	arrayOrigins := Array new: v withAll: nil
+CMSpaceModel >> cardinal: anInteger [
+	cardinal := anInteger.
+	arrayOrigins := Array new: anInteger withAll: nil
 ]
 
 { #category : #accessing }
@@ -4275,23 +4275,17 @@ CMSpaceModel >> traiterAutresDonneesMif: objet pointeur: pointeur separateur: se
 ]
 
 { #category : #'private - irregular polygons creation' }
-CMSpaceModel >> traiterChaineDeCaractere: chaine [
-	
+CMSpaceModel >> traiterChaineDeCaractere: aString [
 	| spaceIndex objetGraphique nombreElement listeTemp |
 	listeTemp := OrderedCollection new.
-	spaceIndex := chaine indexOf: Character space.
+	spaceIndex := aString indexOf: Character space.
 	spaceIndex = 0
-		ifFalse:
-			[objetGraphique := chaine
-				copyFrom: 1
-				to: spaceIndex - 1.
-			nombreElement := chaine
-				copyFrom: spaceIndex + 1
-				to: chaine size.
+		ifFalse: [ objetGraphique := aString copyFrom: 1 to: spaceIndex - 1.
+			nombreElement := aString copyFrom: spaceIndex + 1 to: aString size.
 			listeTemp
 				add: objetGraphique;
-				add: nombreElement].
-	^listeTemp
+				add: nombreElement ].
+	^ listeTemp
 ]
 
 { #category : #'private - irregular polygons creation' }
