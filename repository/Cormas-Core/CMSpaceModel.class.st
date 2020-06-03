@@ -2097,7 +2097,7 @@ CMSpaceModel >> initializeRegular [
 ]
 
 { #category : #'ESE initialize-release' }
-CMSpaceModel >> initializeRegularColumns: columns lines: lines shape: shapeSymbol nbNeighbours: nbSymbol boundaries: bSymbol [
+CMSpaceModel >> initializeRegularLines: lines columns: columns shape: shapeSymbol nbNeighbours: nbSymbol boundaries: bSymbol [
 	"Create a grid of regular cells.
 lines = number of lines. columns = number of columns.
 shapeSymbol =<Symbol> (#squared , )
@@ -2128,8 +2128,8 @@ ex, from CormasModel:
 		deprecated:
 			'This method is no longer supported. Please use initializeRegularColumns:lines:shape:nbNeighbours:boundaries: instead.'.
 	^ self
-		initializeRegularColumns: columns
-		lines: lines
+		initializeRegularLines: lines
+		columns: columns
 		shape: shapeSymbol
 		nbNeighbours: nbSymbol
 		boundaries: bSymbol
@@ -4077,8 +4077,8 @@ CMSpaceModel >> settingsFrom: aClone [
 	self autoResizeBounds: aClone autoResizeBounds.
 	aClone isIrregular
 		ifFalse: [ self
-				initializeRegularColumns: aClone column
-				lines: aClone line
+				initializeRegularLines: aClone line
+				columns: aClone column
 				shape: aClone gridCellShape
 				nbNeighbours: aClone nbNeighbours
 				boundaries: aClone boundaries ]

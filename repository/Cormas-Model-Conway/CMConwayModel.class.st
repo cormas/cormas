@@ -42,8 +42,8 @@ CMConwayModel class >> example1 [
 	nbLines := 50.
 	aModel initializeSpaceModel.
 	aModel
-		createGridColumns: nbLines
-		lines: nbLines
+		createGridLines: nbLines
+		columns: nbLines
 		neighbourhood: 4
 		closed: true.
 	v := RTView new.
@@ -85,8 +85,8 @@ CMConwayModel class >> example2 [
 				new.
 			aModel initializeSpaceModel.
 			aModel
-				createGridColumns: nbLines
-				lines: nbLines
+				createGridLines: nbLines
+				columns: nbLines
 				neighbourhood: 4
 				closed: true.
 			aModel initSimulation.
@@ -130,8 +130,8 @@ CMConwayModel class >> example3 [
 	nbLines := 100.
 	aModel initializeSpaceModel.
 	aModel
-		createGridColumns: nbLines
-		lines: nbLines
+		createGridLines: nbLines
+		columns: nbLines
 		neighbourhood: 4
 		closed: true.
 	v := RTView new.
@@ -243,8 +243,8 @@ CMConwayModel >> initGlidersGun [
 { #category : #init }
 CMConwayModel >> initRandomly [
 	self
-		createGridColumns: 100
-		lines: 100
+		createGridLines: 100
+		columns: 100
 		neighbourhood: 8
 		closed: true.
 	self initCells: #initRandomly
@@ -253,8 +253,8 @@ CMConwayModel >> initRandomly [
 { #category : #init }
 CMConwayModel >> initSmallGrid [
 	self
-		createGridColumns: 10
-		lines: 10
+		createGridLines: 10
+		columns: 10
 		neighbourhood: 4
 		closed: false.
 	self initCells: #initRandomly

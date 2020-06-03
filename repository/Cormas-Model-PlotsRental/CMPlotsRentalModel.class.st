@@ -337,8 +337,8 @@ CMPlotsRentalModel >> initCells [
 	"10x10 cells"
 
 	self
-		createGridColumns: 10
-		lines: 10
+		createGridLines: 10
+		columns: 10
 		neighbourhood: 8
 		closed: true
 ]

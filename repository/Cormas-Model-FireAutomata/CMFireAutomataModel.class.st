@@ -76,8 +76,8 @@ CMFireAutomataModel class >> example1 [
 	nbLines := 100.
 	aModel initializeSpaceModel.
 	aModel
-		createGridColumns: nbLines
-		lines: nbLines
+		createGridLines: nbLines
+		columns: nbLines
 		neighbourhood: 4
 		closed: true.
 	v := RTView new.
@@ -435,8 +435,8 @@ CMFireAutomataModel class >> simuOpenMole2 [
 CMFireAutomataModel >> dimensions: aPair [
 	self initializeSpaceModel.
 	self
-		createGridColumns: aPair key
-		lines: aPair value
+		createGridLines: aPair value
+		columns: aPair key
 		neighbourhood: 4
 		closed: true
 ]
@@ -455,8 +455,8 @@ CMFireAutomataModel >> init53 [
 { #category : #init }
 CMFireAutomataModel >> init53WithFire [
 	self
-		createGridColumns: 80
-		lines: 80
+		createGridLines: 80
+		columns: 80
 		neighbourhood: 4
 		closed: false.
 	self initCells: #init53.
@@ -466,8 +466,8 @@ CMFireAutomataModel >> init53WithFire [
 { #category : #init }
 CMFireAutomataModel >> init58 [
 	self
-		createGridColumns: 80
-		lines: 80
+		createGridLines: 80
+		columns: 80
 		neighbourhood: 4
 		closed: false.
 	self initCells: #init58
@@ -483,8 +483,8 @@ CMFireAutomataModel >> init58WithFire [
 CMFireAutomataModel >> init58WithFireWithFiremen [
 	| aCell |
 	self
-		createGridColumns: 80
-		lines: 80
+		createGridLines: 80
+		columns: 80
 		neighbourhood: 4
 		closed: false.
 	self initCells: #init58.
@@ -516,8 +516,8 @@ CMFireAutomataModel >> initAgents [
 CMFireAutomataModel >> initSmallWithFireWithFiremen [
 	| aCell |
 	self
-		createGridColumns: 40
-		lines: 40
+		createGridLines: 40
+		columns: 40
 		neighbourhood: 4
 		closed: false.
 	self initCells: #init58.
@@ -533,8 +533,8 @@ CMFireAutomataModel >> initSmallWithFireWithFiremen [
 CMFireAutomataModel >> initWithFiremen [
 	| aCell |
 	self
-		createGridColumns: 80
-		lines: 80
+		createGridLines: 80
+		columns: 80
 		neighbourhood: 4
 		closed: false.
 	self initCells: #initWith: withArguments: {60}.
