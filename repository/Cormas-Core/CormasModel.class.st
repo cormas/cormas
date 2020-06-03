@@ -2225,7 +2225,7 @@ Example: self createFragmentedEntity: UrbanArea fromCollection: (self theCells s
 ]
 
 { #category : #'+ instance creation - spatial grid' }
-CormasModel >> createGridColumns: numColumns lines: numLines neighbourhood: aNumber closed: aBoolean [
+CormasModel >> createGridLines: numLines columns: numColumns neighbourhood: aNumber closed: aBoolean [
 	"Purpose: Create a spatial grid made of cells
 Arguments:  numColumns : number of columns ; numLines : number of lines of the grid.
 Arguments: aNumber is the neighbourhood type. It must 4, 6 or 8
@@ -2243,8 +2243,8 @@ Example: self createGridColumns: 20 lines: 20 neighbourhood: 8 closed: true "
 		ifTrue: [ shapeSymbol := #hexagonal.
 			nbSymbol := #six ].
 	self spaceModel
-		initializeRegularColumns: numColumns
-		lines: numLines
+		initializeRegularLines: numLines
+		columns: numColumns
 		shape: shapeSymbol
 		nbNeighbours: nbSymbol
 		boundaries:
@@ -2270,8 +2270,8 @@ Example: 	self createGridNeighbourhood: 8 closed: true fromMatrixCsvFile: 'map.c
 	nbLines := matrix size.
 	nbCols := matrix first size.
 	self
-		createGridColumns: nbCols
-		lines: nbLines
+		createGridLines: nbLines
+		columns: nbCols
 		neighbourhood: anInteger
 		closed: aBoolean.
 	collec := OrderedCollection new.
@@ -2287,6 +2287,7 @@ Example: 	self createGridNeighbourhood: 8 closed: true fromMatrixCsvFile: 'map.c
 { #category : #deprecated }
 CormasModel >> createGridX: x Y: y neighbourhood: aNumber closed: aBoolean [
 	"This method is deprecated. Please use createGridColumn:lines:neighbourhood:closed: instead."
+
 	"Purpose: Create a spatial grid made of cells
 Arguments:  X : number of columns ; Y : number of lines of the grid.
 Arguments: aNumber is the neighbourhood type. It must 4, 6 or 8
@@ -2297,8 +2298,8 @@ Example: self createGridX: 20 Y: 20 neighbourhood: 8 closed: true "
 		deprecated:
 			'This method is no longer supported. Please use createGridColumns:lines:neighbourhood:closed: instead.'.
 	^ self
-		createGridColumns: x
-		lines: y
+		createGridLines: y
+		columns: x
 		neighbourhood: aNumber
 		closed: aBoolean
 ]

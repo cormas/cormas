@@ -485,8 +485,8 @@ CMECECModel >> homogeneousEnv [
 	"self spaceModel loadEnvironmentFromFile: 'poor.env'."
 
 	self
-		createGridColumns: 15
-		lines: 27
+		createGridLines: 27
+		columns: 15
 		neighbourhood: 8
 		closed: true.
 	self theCMECECVegetationUnits do: [ :c | c initRandomBiomass ].
@@ -498,8 +498,8 @@ CMECECModel >> homogeneousEnv2 [
 	"initialize an homogeneous space (27x27, random biomass) with randomly located foragers"
 
 	self spaceModel
-		initializeRegularColumns: 27
-		lines: 27
+		initializeRegularLines: 27
+		columns: 27
 		shape: #squared
 		nbNeighbours: #eight
 		boundaries: #toroidal.

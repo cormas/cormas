@@ -13,8 +13,8 @@ CormasModelTest >> testCentralCell [
 		activeInit: #initRandom;
 		initSimulation;
 		initializeSpaceModel;
-		createGridColumns: 3
-			lines: 3
+		createGridLines: 3
+			columns: 3
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -32,8 +32,8 @@ CormasModelTest >> testCreateGridXYNeighborHoodClosed [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridColumns: 10
-			lines: 20
+		createGridLines: 20
+			columns: 10
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -51,8 +51,8 @@ CormasModelTest >> testDominance [
 		activeInit: #initRandom;
 		initSimulation;
 		initializeSpaceModel;
-		createGridColumns: 100
-			lines: 100
+		createGridLines: 100
+			columns: 100
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -69,8 +69,8 @@ CormasModelTest >> testDominance1 [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridColumns: 100
-			lines: 100
+		createGridLines: 100
+			columns: 100
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -86,8 +86,8 @@ CormasModelTest >> testLowerLeftCell [
 		activeInit: #initRandom;
 		initSimulation;
 		initializeSpaceModel;
-		createGridColumns: 3
-			lines: 3
+		createGridLines: 3
+			columns: 3
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -105,8 +105,8 @@ CormasModelTest >> testLowerRightCell [
 		activeInit: #initRandom;
 		initSimulation;
 		initializeSpaceModel;
-		createGridColumns: 3
-			lines: 3
+		createGridLines: 3
+			columns: 3
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -124,8 +124,8 @@ CormasModelTest >> testNbDistinctValuesOf [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridColumns: 10
-			lines: 20
+		createGridLines: 20
+			columns: 10
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -145,8 +145,8 @@ CormasModelTest >> testPickCell [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridColumns: 10
-			lines: 20
+		createGridLines: 20
+			columns: 10
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -165,8 +165,8 @@ CormasModelTest >> testPickCellConstrainedBy [
 		activeInit: #initRandom;
 		initSimulation;
 		initializeSpaceModel;
-		createGridColumns: 9
-			lines: 9
+		createGridLines: 9
+			columns: 9
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -189,8 +189,8 @@ CormasModelTest >> testPickCellWithoutAny [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridColumns: 10
-			lines: 20
+		createGridLines: 20
+			columns: 10
 			neighbourhood: 4
 			closed: true;
 		initSimulation;
@@ -210,8 +210,8 @@ CormasModelTest >> testPickCellsN [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridColumns: 10
-			lines: 20
+		createGridLines: 20
+			columns: 10
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -228,8 +228,8 @@ CormasModelTest >> testPickEntity [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridColumns: 10
-			lines: 20
+		createGridLines: 20
+			columns: 10
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -245,8 +245,8 @@ CormasModelTest >> testPickEntityConstrainedBy [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridColumns: 10
-			lines: 20
+		createGridLines: 20
+			columns: 10
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -279,8 +279,8 @@ CormasModelTest >> testPickNEntities [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridColumns: 10
-			lines: 20
+		createGridLines: 20
+			columns: 10
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -298,8 +298,8 @@ CormasModelTest >> testPickNEntitiesConstrainedBy [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridColumns: 10
-			lines: 20
+		createGridLines: 20
+			columns: 10
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -321,8 +321,8 @@ CormasModelTest >> testPickUnoccupiedCell [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridColumns: 10
-			lines: 20
+		createGridLines: 20
+			columns: 10
 			neighbourhood: 4
 			closed: true;
 		initSimulation;
@@ -346,8 +346,8 @@ CormasModelTest >> testSelectCellsInRectangle [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridColumns: 10
-			lines: 20
+		createGridLines: 20
+			columns: 10
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -368,8 +368,8 @@ CormasModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridColumns: 5
-			lines: 9
+		createGridLines: 9
+			columns: 5
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -392,8 +392,8 @@ CormasModelTest >> testSelectCellsOfColumn [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridColumns: 10
-			lines: 20
+		createGridLines: 20
+			columns: 10
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -414,8 +414,8 @@ CormasModelTest >> testSelectCellsOfLine [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridColumns: 10
-			lines: 20
+		createGridLines: 20
+			columns: 10
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -459,8 +459,8 @@ CormasModelTest >> testTheAgents [
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
-		createGridColumns: 10
-			lines: 20
+		createGridLines: 20
+			columns: 10
 			neighbourhood: 4
 			closed: true;
 		initSimulation;
@@ -481,8 +481,8 @@ CormasModelTest >> testUpperLeftCell [
 		activeInit: #initRandom;
 		initSimulation;
 		initializeSpaceModel;
-		createGridColumns: 3
-			lines: 3
+		createGridLines: 3
+			columns: 3
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
@@ -500,8 +500,8 @@ CormasModelTest >> testUpperRightCell [
 		activeInit: #initRandom;
 		initSimulation;
 		initializeSpaceModel;
-		createGridColumns: 3
-			lines: 3
+		createGridLines: 3
+			columns: 3
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
