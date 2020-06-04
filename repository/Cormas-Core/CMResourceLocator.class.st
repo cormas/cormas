@@ -94,6 +94,29 @@ CMResourceLocator >> imagesPath [
 ]
 
 { #category : #'utilities - path - models' }
+CMResourceLocator >> mapsPath [
+	" Answer a FileReference corresponding to the path of the current path directory.
+	Argument: aModelClassName = <String>
+	Example: 
+		CMResourceLocator new mapsPath
+	"
+	^ (self modelsPath asFileReference / 'maps') ensureCreateDirectory.
+
+]
+
+{ #category : #'utilities - path - models' }
+CMResourceLocator >> mapsPath: aModelClassName [
+	" Answer a FileReference corresponding to the path of the current path directory.
+	Argument: aModelClassName = <String>
+	Example: 
+		CMResourceLocator new mapsPath: #FireModel
+	"
+	
+	^ ((self modelPath: aModelClassName) asFileReference / 'maps') ensureCreateDirectory.
+
+]
+
+{ #category : #'utilities - path - models' }
 CMResourceLocator >> modelNames [
 	" Answer a <Collection> of <String> with receiver's available models "
 	
