@@ -130,9 +130,7 @@ Example: Cormas allTerminalClassesOf: Forager"
 
 { #category : #'+ utilities - files' }
 Cormas class >> application [
-
-	^ CMApplicationProject uniqueInstance
-
+	^ CMApplicationProject uniqueInstance 
 ]
 
 { #category : #'+ utilities - value types' }
@@ -444,9 +442,8 @@ Cormas class >> cormasName [
 { #category : #'+ utilities - files' }
 Cormas class >> cormasPath [
 	" Answer a <FileReference> corresponding to the path of Cormas directory. "
-
+ 
 	^ self application cormasPath
-
 ]
 
 { #category : #'+ utilities - mathematics' }
@@ -1146,49 +1143,15 @@ Cormas class >> mainMenu [
 { #category : #'+ utilities - files' }
 Cormas class >> mapsPath: aModelClassName [
 	"Purpose: Returns a Filename corresponding to the path of the current model 'maps' directory.
-Argument: aModelClassName = <String>
-Example: (Cormas mapsPath: #FireModel) / 'zone.env' 	"
-	
+	Argument: aModelClassName = <String>
+	Example: (Cormas mapsPath: #FireModel) / 'zone.env' 	"
+
 	| modelPath mapsPath |
 	modelPath := self modelPath: aModelClassName.
 	mapsPath := modelPath / 'maps'.
-	mapsPath exists ifFalse: [mapsPath createDirectory].
-	^mapsPath
-]
-
-{ #category : #'+ utilities - files' }
-Cormas class >> matrixInOneColumn: aMatrix [
-	"aMatrix = Coll of collections.
-aMatrix =
-OrderedCollection (
-'a;b;c;d'
-'e;f;g;h' 
-...)
-oneCol = ('a;e;b;f;c;g;d;h)"
-	
-	| oneCol nbOfCol |
-	oneCol := OrderedCollection new.
-	nbOfCol := aMatrix first size.
-	1
-		to: nbOfCol
-		do: [:i | aMatrix do: [:coll | oneCol add: (coll at: i)]].
-	^oneCol
-]
-
-{ #category : #'+ utilities - files' }
-Cormas class >> matrixInOneLine: aMatrix [
-	"aMatrix = Coll of collections.
-aMatrix =
-OrderedCollection (
-'a;b;c;d'
-'e;f;g;h' 
-...)
-oneCol = ('a b c d e f g h)"
-	
-	| oneLine |
-	oneLine := OrderedCollection new.
-	aMatrix do: [:coll | oneLine addAll: coll].
-	^oneLine
+	mapsPath exists
+		ifFalse: [ mapsPath createDirectory ].
+	^ mapsPath
 ]
 
 { #category : #'+ utilities - mathematics' }
@@ -1279,20 +1242,16 @@ ex:		Cormas mode: #( 1 1 1 0 2 6 7 3 3 3) => #(1 3)"
 Cormas class >> modelPath: aModelClassName [
 	"Purpose: Returns a Filename corresponding to the path of the current model directory.
 	Argument: aModelClassName = <String>
-	Example: 
-	(Cormas modelPath: #FireModel) construct: 'test.csv' 
-	"
+	Example: (Cormas modelPath: #FireModel) construct: 'test.csv'"
 
 	^ self application modelPath: aModelClassName
-
 ]
 
 { #category : #'+ utilities - files' }
 Cormas class >> modelsPath [
 	" Answer a <FileReference> corresponding to the path of 'Models' directory "
-
+ 
 	^ self application modelsPath
-
 ]
 
 { #category : #'+ utilities - mathematics' }
@@ -2743,17 +2702,16 @@ Cormas class >> spatialEntitiesClassNames [
 { #category : #'+ utilities - files' }
 Cormas class >> splitLine: stream sep: aSepChar [
 	"Purpose: Used when loading an external file. Split a read stream according to a given separator character
-Example: Cormas splitLine: aStream sep: $,   "
-	
+	Example: Cormas splitLine: aStream sep: $,   "
+
 	| wordsList line item |
 	wordsList := OrderedCollection new.
 	line := (stream upTo: Character cr) readStream.
-	[line atEnd]
-		whileFalse:
-			[item := line upTo: aSepChar.
-			wordsList add: item].
+	[ line atEnd ]
+		whileFalse: [ item := line upTo: aSepChar.
+			wordsList add: item ].
 	line close.
-	^wordsList
+	^ wordsList
 ]
 
 { #category : #'+ utilities - value types' }
