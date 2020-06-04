@@ -2198,28 +2198,25 @@ CMSpaceModel >> loadEnvironmentFromFile: aName [
 	Example:	aName = 'test.env'  or
 				aName = a FATFilename('d:\Vw5i.4\cormas\Models\JLB\maps\test.env')"
 	
-	| stream label dimX dimY ce cp aFile delimiteur |
-	aFile := (self stringToFilename: aName).
-	aFile exists ifFalse: [self error:'Missing environment file'].
-	stream := aFile readStream.	"Lecture des 4 premieres lignes : topologie de la grille"	"On devine le format des lignes"
+	| stream label dimX dimY ce cp aFileReference delimiteur |
+	aFileReference := (self stringToFilename: aName).
+	aFileReference exists ifFalse: [self error:'Missing environment file'].
+	stream := aFileReference readStream.	"Lecture des 4 premieres lignes : topologie de la grille"	"On devine le format des lignes"
 "	stream installLineEndConventionInConverter."
 	label := stream upTo: Character tab.
 	label ~= 'dimensions'
-		ifTrue:
-			[^self cormas warn: (ErrorDialogWindow defaultString: '' key: #readError)].
+		ifTrue: [ ^ self readEnvironmentError: aFileReference ].
 	dimX := (stream upTo: Character space) asNumber.
 	dimY := (stream upTo: Character cr) asNumber.
 	stream skipSeparators.
 	label := stream upTo: Character tab.
 	label ~= 'cloture'
-		ifTrue:
-			[^self cormas warn: (ErrorDialogWindow defaultString: '' key: #readError)].
+		ifTrue: [ ^ self readEnvironmentError: aFileReference ] .
 	ce := (stream upTo: Character cr) asSymbol.
 	stream skipSeparators.
 	label := stream upTo: Character tab.
 	label ~= 'connexite'
-		ifTrue:
-			[^self cormas warn: (ErrorDialogWindow defaultString: '' key: #readError)].
+		ifTrue: [ ^ self readEnvironmentError: aFileReference ].
 	cp := (stream upTo: Character cr) asSymbol.
 	stream skipSeparators.
 	label := stream upTo: Character tab.
@@ -2686,6 +2683,12 @@ CMSpaceModel >> randomCell [
 	^ Cormas selectRandomlyFrom: self elementaryEntities
 ]
 
+{ #category : #'private - notification' }
+CMSpaceModel >> readEnvironmentError: aFileReference [
+
+	^ self error: 'Read error while reading environment file: ' , aFileReference fullName
+]
+
 { #category : #'private - irregular polygons creation' }
 CMSpaceModel >> readMid: fileName entity: class [
 	"Read the MID file storing the values of the attributs of the entities.
@@ -2894,6 +2897,13 @@ CMSpaceModel >> resetSpatialEntitiesButCells [
 						at: se name
 						put: OrderedCollection new."RemotableOrderedCollection new. ** changed to OrderedCollection new. (RemotableOrderedCollection is used for marshalling in remote distributed visualization)" 
 					self cormasModel initializeTheEntity: se]]
+]
+
+{ #category : #accessing }
+CMSpaceModel >> resourceLocator [
+	" Answer the receiver's CMResourceLocator "
+
+	^ self cormasModel resourceLocator
 ]
 
 { #category : #'private - import - export' }
@@ -4021,8 +4031,7 @@ CMSpaceModel >> setSpatialEntitiesAttributsValueFromStream: aStream [
 	dataLine := (aStream upTo: Character cr) readStream.	
 	label := dataLine upTo: Character tab.
 	label ~= 'attributs'
-		ifTrue:
-			[^self cormas warn: (ErrorDialogWindow defaultString: '' key: #readError)].
+		ifTrue: [ ^ self error: 'Error while reading input stream. We expected "attributs" line'].
 	[dataLine atEnd]
 		whileFalse:
 			[couple := OrderedCollection new.
@@ -4161,14 +4170,13 @@ CMSpaceModel >> stringToFilename: aStringOrFilename [
 	| aFilename modelFolderName |
 	aStringOrFilename isString
 		ifTrue: [ "Very bad hack to remove CM and Model to a model name ..."
-			
-	self flag: #shouldBeRevised.
+			self flag: #shouldBeRevised.
 			modelFolderName := self cormasModelClass name.
 			(modelFolderName beginsWith: 'CM')
 				ifTrue: [ modelFolderName := modelFolderName allButFirst: 2 ].
 			(modelFolderName endsWith: 'Model')
 				ifTrue: [ modelFolderName := modelFolderName allButLast: 5 ].
-			aFilename := (Cormas mapsPath: modelFolderName) / aStringOrFilename ]
+			aFilename := (self resourceLocator mapsPath: modelFolderName) / aStringOrFilename ]
 		ifFalse: [ aFilename := aStringOrFilename ].
 	^ aFilename
 ]

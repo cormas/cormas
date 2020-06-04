@@ -4497,6 +4497,12 @@ CormasModel >> resetDataStructures [
 	data := Dictionary new
 ]
 
+{ #category : #accessing }
+CormasModel >> resourceLocator [
+
+	^ self projectManager resourceLocator
+]
+
 { #category : #scheduling }
 CormasModel >> runStep [
 	"The main step method that activates the agents:
