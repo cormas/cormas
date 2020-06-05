@@ -89,6 +89,11 @@ CMEnvFileReader >> cormasModel: anObject [
 ]
 
 { #category : #accessing }
+CMEnvFileReader >> cormasModelClass [
+	^ self cormasModel class.
+]
+
+{ #category : #accessing }
 CMEnvFileReader >> cp [
 	^ cp
 ]
@@ -153,6 +158,12 @@ CMEnvFileReader >> fileReference: anObject [
 { #category : #'accessing - attributes' }
 CMEnvFileReader >> firstAttributeAt: i [
 	^ (self attributeAt: i) first
+]
+
+{ #category : #initialization }
+CMEnvFileReader >> initializeWithModel: aCMSpaceModel [ 
+
+	self cormasModel: aCMSpaceModel.
 ]
 
 { #category : #accessing }
@@ -313,7 +324,7 @@ CMEnvFileReader >> readDimensions: aStream [
 CMEnvFileReader >> readEnvFromFile: aFilename [
 
 	(fileReference := self stringToFilename: aFilename) exists 
-		ifFalse: [ ^ self error: 'Missing environment file' ].
+		ifFalse: [ ^ self error: 'Missing environment file: ' , aFilename asString ].
 	^ fileReference readStream.	
 ]
 
