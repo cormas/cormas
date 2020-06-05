@@ -424,7 +424,7 @@ CormasModelTest >> testSelectCellsOfLine [
 		| cells |
 		cells := model selectCellsOfLine: line.
 		self assert: cells size equals: 10.
-		cells do: [ :cell | self assert: cell y equals: line ] ]
+		cells do: [ :cell | self assert: cell numLine equals: line ] ]
 ]
 
 { #category : #tests }
