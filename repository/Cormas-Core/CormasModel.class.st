@@ -4650,12 +4650,36 @@ file <String> ex: 'titi.txt'  it will be save into data/"
 ]
 
 { #category : #'+ accessing - entities' }
+CormasModel >> selectCellsBetweenLine1: lineNumber1 line2: lineNumber2 andColumn1: colNumber1 column2: colNumber2 [
+	"Purpose: Return the cells between the lines lineNumber1 and lineNumber2, and between the columns colNumber1 and colNumber2 of the spatial grid. The Cells are sorted by id.
+Arguments: lineNumber1   <Integer> lineNumber = Positive Integer
+Arguments: lineNumber2   <Integer> colNumber = Positive Integer
+Arguments: colNumber1   <Integer> lineNumber = Positive Integer
+Arguments: colNumber2   <Integer> colNumber = Positive Integer
+Example:  cellsBetweenLine1: 1 line2: 6 andColumn1: 2 column2: 3  ->  a collection of cells between columns 2 and 3, and between lines 1 and 6, and ordered from line 1 to line 6"
+
+	^ self spaceModel
+		cellsBetweenLine1: lineNumber1
+		line2: lineNumber2
+		andColumn1: colNumber1
+		column2: colNumber2
+]
+
+{ #category : #'+ accessing - entities' }
 CormasModel >> selectCellsInRectangle: aRectangle [
+	"This method is deprecated. Please use selectCellsBetweenLine1:line2:andColumn1:column2: ."
+
 	"Purpose: return a collection of the cells located in a rectangle defined by an origin cell (top left) and a corner cell (down right). The collection of cells is sorted by id.
 	Argument: aRectangle   <Rectangle> where origin < corner.
 	Example: self  selectCellsInRectangle: (Rectangle origin: 1@2 corner: 6@3)  ->  a collection of cells between columns 2 and 3, and between lines 1 and 6, and ordered from line 	1 to line 6"
 
-	^ self spaceModel cellsIntoRectangle: aRectangle
+	self
+		deprecated: 'Please use selectCellsBetweenLine1:line2:andColumn1:column2: instead'.
+	^ self
+		selectCellsBetweenLine1: aRectangle left
+		line2: aRectangle right
+		andColumn1: aRectangle top
+		column2: aRectangle bottom
 ]
 
 { #category : #'+ accessing - entities' }
