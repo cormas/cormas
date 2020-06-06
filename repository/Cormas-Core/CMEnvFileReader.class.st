@@ -391,7 +391,7 @@ CMEnvFileReader >> setSpatialEntitiesAttributesValueFrom: aStream [
 
 { #category : #'accessing - private' }
 CMEnvFileReader >> stringToFilename: aStringOrFilename [
-	"Returns a Filename from (aStringOrFilename) located into the current model 'maps' 
+	"Returns a <FileReference> from (aStringOrFilename) located into the current model 'maps' 
 	directory (ex: 'cormas.env') "
 
 	| aFilename modelFolderName |
@@ -399,6 +399,6 @@ CMEnvFileReader >> stringToFilename: aStringOrFilename [
 		ifTrue: [ 
 			modelFolderName := self resolveModelName: aStringOrFilename.
 			aFilename := (self resourceLocator mapsPath: modelFolderName) / aStringOrFilename ]
-		ifFalse: [ aFilename := aStringOrFilename ].
+		ifFalse: [ aFilename := aStringOrFilename asFileReference ].
 	^ aFilename
 ]
