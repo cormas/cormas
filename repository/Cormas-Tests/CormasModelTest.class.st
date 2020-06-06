@@ -338,7 +338,7 @@ CormasModelTest >> testProbes [
 ]
 
 { #category : #'tests-accessing-entities' }
-CormasModelTest >> testSelectCellsInRectangle [
+CormasModelTest >> testSelectCellsBetweenLine1Line2AndColumn1Column2 [
 	| model cells |
 	model := (CormasModelForTest
 		initialize;
@@ -351,12 +351,16 @@ CormasModelTest >> testSelectCellsInRectangle [
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
-	cells := model selectCellsInRectangle: (5 @ 5 corner: 7 @ 7).
+	cells := model
+		selectCellsBetweenLine1: 13
+		line2: 15
+		andColumn1: 6
+		column2: 8.
 	self assert: cells size equals: 9.
 	cells
 		do: [ :cell | 
-			self assert: (cell numCol between: 5 and: 7).
-			self assert: (cell numLine between: 5 and: 7) ]
+			self assert: (cell numCol between: 6 and: 8).
+			self assert: (cell numLine between: 13 and: 15) ]
 ]
 
 { #category : #'tests-accessing-entities' }
