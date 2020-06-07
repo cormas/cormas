@@ -227,7 +227,7 @@ CMConwayModel >> dead [
 
 { #category : #init }
 CMConwayModel >> initCustomMap [
-	self loadEnvironmentFromFile: 'cormas.env'.
+	self loadEnvironmentFromFile: 'cormas.env'
 ]
 
 { #category : #init }
