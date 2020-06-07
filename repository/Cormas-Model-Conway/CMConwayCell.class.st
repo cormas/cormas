@@ -7,7 +7,7 @@ Class {
 	#classVars : [
 		'CurrentId'
 	],
-	#category : 'Cormas-Model-Conway'
+	#category : #'Cormas-Model-Conway'
 }
 
 { #category : #'pov symbols' }
@@ -54,7 +54,7 @@ CMConwayCell >> initRandomly [
 ]
 
 { #category : #init }
-CMConwayCell >> initTen [
+CMConwayCell >> initTenPercentDead [
 	" 10 % to be dead"
 
 	Cormas random < 0.1

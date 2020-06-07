@@ -19,23 +19,23 @@ Class {
 CMSpaceView class >> newOn: aCMCormasModel [
 	"This method is called by the CMSpecProjectWindow. It creates, subscribes and opens a simulationGrid on a cormasModel"
 
-	| newBe |
-	newBe := self new.
-	newBe initializeOn: aCMCormasModel.
-	newBe subscribeOn: aCMCormasModel.
-	^ newBe
+	| instance |
+	instance := self new.
+	instance initializeOn: aCMCormasModel.
+	instance subscribeOn: aCMCormasModel.
+	^ instance
 ]
 
 { #category : #'instance creation' }
 CMSpaceView class >> openOn: aCMCormasModel [
 	"This method is called by the CMSpecProjectWindow. It creates, subscribes and opens a simulationGrid on a cormasModel"
 
-	| newBe |
-	newBe := self new.
-	newBe initializeOn: aCMCormasModel.
-	newBe subscribeOn: aCMCormasModel.
-	newBe openWithToolbar.
-	^ newBe
+	| instance |
+	instance := self new.
+	instance initializeOn: aCMCormasModel.
+	instance subscribeOn: aCMCormasModel.
+	instance openWithToolbar.
+	^ instance
 ]
 
 { #category : #accessing }

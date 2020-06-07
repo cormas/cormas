@@ -575,7 +575,7 @@ CormasModel class >> defaultDelayChangesSetting [
 
 { #category : #'+ simulation settings' }
 CormasModel class >> defaultFinalStep [
-	self subclassResponsibility 
+	^100
 ]
 
 { #category : #'+ simulation settings' }
