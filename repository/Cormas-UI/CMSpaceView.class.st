@@ -144,7 +144,7 @@ CMSpaceView >> initializeOn: aModel [
 	aModel allTheSituatedEntities isEmpty not
 		ifTrue: [ self addViewForAgents: aModel allTheSituatedEntities.
 			situatedEntitiesViews
-				do: [ :e | e translateTo: e model patch x @ e model patch y * cellSize ] ].
+				do: [ :e | e translateTo: e model patch numCol @ e model patch numLine * cellSize ] ].
 	self canvas focusOnCenterScaled.
 	self signalUpdate.
 	"self setDefaultMenu"
@@ -213,7 +213,7 @@ CMSpaceView >> timeChanged: aNewTimeStep [
 			self addViewForCells: model theESE ]
 		ifFalse: [ self removeObsoleteSituatedEntities ].
 	self addNewSituatedEntities.
-	situatedEntitiesViews do: [ :e | e translateTo: e model patch x @ e model patch y * cellSize ].
+	situatedEntitiesViews do: [ :e | e translateTo: e model patch numCol @ e model patch numLine  * cellSize ].
 	self elements do: #updateShape.
 	self canvas signalUpdate
 ]
