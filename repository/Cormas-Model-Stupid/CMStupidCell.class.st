@@ -1,5 +1,5 @@
 "
-Stupides cell 
+Stupid cell 
 "
 Class {
 	#name : #CMStupidCell,
@@ -20,15 +20,14 @@ CMStupidCell class >> maxFoodProductionRate [
 ]
 
 { #category : #accessing }
-CMStupidCell class >> maxFoodProductionRate: anObject [
-	maxFoodProductionRate := anObject
+CMStupidCell class >> maxFoodProductionRate: aFloat [
+	maxFoodProductionRate := aFloat
 ]
 
 { #category : #accessing }
-CMStupidCell class >> pallete [
-
-	^ pallete ifNil: [ pallete := RTMultiLinearColor new
-		colors: (RTColorPalette sequential colors: 9 scheme: 'YlGnBu') ].
+CMStupidCell class >> palette [
+	^ RTMultiLinearColor new
+				colors: (RTColorPalette sequential colors: 9 scheme: 'YlGnBu')
 ]
 
 { #category : #accessing }
@@ -43,9 +42,7 @@ CMStupidCell >> food: anObject [
 
 { #category : #pov }
 CMStupidCell >> pov [
-
-	^ self class pallete
-		rtValue: (self food)
+	^ self class palette rtValue: self food
 ]
 
 { #category : #pov }

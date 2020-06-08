@@ -1,5 +1,5 @@
 "
-A stupide agent
+A stupid agent
 "
 Class {
 	#name : #CMStupidAgent,
