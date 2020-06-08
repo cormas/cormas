@@ -1,8 +1,33 @@
 Class {
 	#name : #CormasModelTest,
 	#superclass : #TestCase,
+	#instVars : [
+		'model'
+	],
 	#category : #'Cormas-Tests'
 }
+
+{ #category : #'tests-accessing-entities' }
+CormasModelTest >> newTestModel [
+	^ (CormasModelForTest
+		initialize;
+		new)
+		activeInit: #initAlive;
+		initSimulation;
+		initializeSpaceModel;
+		createGridLines: 20
+			columns: 10
+			neighbourhood: 4
+			closed: true;
+		initSimulation
+]
+
+{ #category : #'tests-accessing-entities' }
+CormasModelTest >> setUp [ 
+
+	super setUp.
+	model := self newTestModel.
+]
 
 { #category : #'tests-accessing-entities' }
 CormasModelTest >> testCentralCell [
@@ -25,18 +50,7 @@ CormasModelTest >> testCentralCell [
 
 { #category : #tests }
 CormasModelTest >> testCreateGridXYNeighborHoodClosed [
-	| model |
-	model := (CormasModelForTest
-		initialize;
-		new)
-		activeInit: #initAlive;
-		initSimulation;
-		initializeSpaceModel;
-		createGridLines: 20
-			columns: 10
-			neighbourhood: 4
-			closed: true;
-		initSimulation.
+
 	self assert: model allTheEntities size equals: 200.
 	self assert: (model selectCellsOfColumn: 1) size equals: 20.
 	self assert: (model selectCellsOfLine: 1) size equals: 10
@@ -117,18 +131,7 @@ CormasModelTest >> testLowerRightCell [
 
 { #category : #tests }
 CormasModelTest >> testNbDistinctValuesOf [
-	| model |
-	model := (CormasModelForTest
-		initialize;
-		new)
-		activeInit: #initAlive;
-		initSimulation;
-		initializeSpaceModel;
-		createGridLines: 20
-			columns: 10
-			neighbourhood: 4
-			closed: true;
-		initSimulation.
+
 	self assert: (model nbDistinctValuesOf: #state) equals: 1.
 	(model selectCellsOfLine: 1) do: [ :cell | cell state: #dead ].
 	self assert: (model nbDistinctValuesOf: #state) equals: 2.
@@ -138,18 +141,8 @@ CormasModelTest >> testNbDistinctValuesOf [
 
 { #category : #'tests-accessing-entities' }
 CormasModelTest >> testPickCell [
-	| model cell |
-	model := (CormasModelForTest
-		initialize;
-		new)
-		activeInit: #initAlive;
-		initSimulation;
-		initializeSpaceModel;
-		createGridLines: 20
-			columns: 10
-			neighbourhood: 4
-			closed: true;
-		initSimulation.
+	| cell |
+
 	cell := model pickCell.
 	self assert: cell isSpatialEntity.
 	self assert: (cell numCol between: 1 and: 10).
@@ -182,74 +175,27 @@ CormasModelTest >> testPickCellConstrainedBy [
 
 { #category : #'tests-accessing-entities' }
 CormasModelTest >> testPickCellWithoutAny [
-	| model |
-	model := (CormasModelForTest
-		initialize;
-		new)
-		activeInit: #initAlive;
-		initSimulation;
-		initializeSpaceModel;
-		createGridLines: 20
-			columns: 10
-			neighbourhood: 4
-			closed: true;
-		initSimulation;
-		createN: 50 randomlyLocatedAloneEntities: CMAgentLocationForTest.
-	self
-		assert:
-			((model pickCellWithoutAny: CMAgentLocationForTest)
+
+	model createN: 50 randomlyLocatedAloneEntities: CMAgentLocationForTest.
+	self assert: ((model pickCellWithoutAny: CMAgentLocationForTest)
 				occupantsAt: CMAgentLocationForTest) isEmpty
 ]
 
 { #category : #'tests-accessing-entities' }
 CormasModelTest >> testPickCellsN [
-	| model |
-	model := (CormasModelForTest
-		initialize;
-		new)
-		activeInit: #initAlive;
-		initSimulation;
-		initializeSpaceModel;
-		createGridLines: 20
-			columns: 10
-			neighbourhood: 4
-			closed: true;
-		initSimulation.
-	self
-		assert: ((model pickCellsN: 5) allSatisfy: [ :cell | cell isSpatialEntity ])
+
+	self assert: ((model pickCellsN: 5) allSatisfy: #isSpatialEntity)
 ]
 
 { #category : #'tests-accessing-entities' }
 CormasModelTest >> testPickEntity [
-	| model |
-	model := (CormasModelForTest
-		initialize;
-		new)
-		activeInit: #initAlive;
-		initSimulation;
-		initializeSpaceModel;
-		createGridLines: 20
-			columns: 10
-			neighbourhood: 4
-			closed: true;
-		initSimulation.
+
 	self assert: (model pickEntity: CMCellForTest) isSpatialEntity
 ]
 
 { #category : #'tests-accessing-entities' }
 CormasModelTest >> testPickEntityConstrainedBy [
-	| model |
-	model := (CormasModelForTest
-		initialize;
-		new)
-		activeInit: #initAlive;
-		initSimulation;
-		initializeSpaceModel;
-		createGridLines: 20
-			columns: 10
-			neighbourhood: 4
-			closed: true;
-		initSimulation.
+
 	self
 		assert:
 			(model
@@ -272,18 +218,7 @@ CormasModelTest >> testPickEntityConstrainedBy [
 
 { #category : #'tests-accessing-entities' }
 CormasModelTest >> testPickNEntities [
-	| model |
-	model := (CormasModelForTest
-		initialize;
-		new)
-		activeInit: #initAlive;
-		initSimulation;
-		initializeSpaceModel;
-		createGridLines: 20
-			columns: 10
-			neighbourhood: 4
-			closed: true;
-		initSimulation.
+
 	self
 		assert:
 			((model pickN: 5 entities: CMCellForTest) allSatisfy: #isSpatialEntity)
@@ -291,18 +226,7 @@ CormasModelTest >> testPickNEntities [
 
 { #category : #'tests-accessing-entities' }
 CormasModelTest >> testPickNEntitiesConstrainedBy [
-	| model |
-	model := (CormasModelForTest
-		initialize;
-		new)
-		activeInit: #initAlive;
-		initSimulation;
-		initializeSpaceModel;
-		createGridLines: 20
-			columns: 10
-			neighbourhood: 4
-			closed: true;
-		initSimulation.
+
 	self
 		assert:
 			((model
@@ -314,19 +238,8 @@ CormasModelTest >> testPickNEntitiesConstrainedBy [
 
 { #category : #'tests-accessing-entities' }
 CormasModelTest >> testPickUnoccupiedCell [
-	| model |
-	model := (CormasModelForTest
-		initialize;
-		new)
-		activeInit: #initAlive;
-		initSimulation;
-		initializeSpaceModel;
-		createGridLines: 20
-			columns: 10
-			neighbourhood: 4
-			closed: true;
-		initSimulation;
-		createN: 50 randomlyLocatedAloneEntities: CMAgentLocationForTest.
+
+	model createN: 50 randomlyLocatedAloneEntities: CMAgentLocationForTest.
 	self assert: model pickUnoccupiedCell theOccupants isEmpty
 ]
 
@@ -356,11 +269,6 @@ CormasModelTest >> testSelectCellsBetweenLine1Line2AndColumn1Column2 [
 		line2: 15
 		andColumn1: 6
 		column2: 8.
-	self assert: cells size equals: 9.
-	cells
-		do: [ :cell | 
-			self assert: (cell numCol between: 6 and: 8).
-			self assert: (cell numLine between: 13 and: 15) ]
 ]
 
 { #category : #'tests-accessing-entities' }
@@ -389,18 +297,7 @@ CormasModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
 
 { #category : #'tests-accessing-entities' }
 CormasModelTest >> testSelectCellsOfColumn [
-	| model |
-	model := (CormasModelForTest
-		initialize;
-		new)
-		activeInit: #initAlive;
-		initSimulation;
-		initializeSpaceModel;
-		createGridLines: 20
-			columns: 10
-			neighbourhood: 4
-			closed: true;
-		initSimulation.
+
 	self assert: model allTheEntities size equals: 200.
 	1 to: 10 do: [ :column | 
 		1 to: 20 do: [ :line | 
@@ -411,18 +308,7 @@ CormasModelTest >> testSelectCellsOfColumn [
 
 { #category : #'tests-accessing-entities' }
 CormasModelTest >> testSelectCellsOfLine [
-	| model |
-	model := (CormasModelForTest
-		initialize;
-		new)
-		activeInit: #initAlive;
-		initSimulation;
-		initializeSpaceModel;
-		createGridLines: 20
-			columns: 10
-			neighbourhood: 4
-			closed: true;
-		initSimulation.
+
 	self assert: model allTheEntities size equals: 200.
 	1 to: 20 do: [ :line | 
 		| cells |
@@ -456,19 +342,8 @@ CormasModelTest >> testSpacialClasses [
 
 { #category : #'tests-accessing-entities' }
 CormasModelTest >> testTheAgents [
-	| model agents |
-	model := (CormasModelForTest
-		initialize;
-		new)
-		activeInit: #initAlive;
-		initSimulation;
-		initializeSpaceModel;
-		createGridLines: 20
-			columns: 10
-			neighbourhood: 4
-			closed: true;
-		initSimulation;
-		createN: 50 randomlyLocatedAloneEntities: CMAgentLocationForTest.
+	| agents |
+	model createN: 50 randomlyLocatedAloneEntities: CMAgentLocationForTest.
 	agents := model theAgents.
 	self assert: agents size equals: 50.
 	agents
