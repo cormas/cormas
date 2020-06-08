@@ -193,17 +193,16 @@ CMSpaceView >> situatedEntitiesViews: anObject [
 ]
 
 { #category : #initialization }
-CMSpaceView >> subscribeOn: aModel [ 
+CMSpaceView >> subscribeOn: aModel [
 	"This method subscribes the simualtionGrid to the timeChange announcements of a cormasModel.
 	When the simulation time has change, the simulation grid can update it self by calling  self  canvas signalUpdate "
 
 	model announcer
-		subscribe: CMTimeChangedAnnouncement
+		when: CMTimeChangedAnnouncement
 			do: [ :aAnnounce | 
 			aAnnounce timeStep = 0
 				ifFalse: [ self timeChanged: aAnnounce timeStep ] ];
-		subscribe: CMSimInitializationAnnouncement do: [ self timeChanged: 0 ].
-
+		when: CMSimInitializationAnnouncement do: [ self timeChanged: 0 ]
 ]
 
 { #category : #refreshing }

@@ -43,7 +43,8 @@ Class {
 		'yll',
 		'cellSize',
 		'absoluteBounds',
-		'autoResizeBounds'
+		'autoResizeBounds',
+		'envReader'
 	],
 	#category : #'Cormas-Core-Space'
 }
@@ -89,28 +90,6 @@ CMSpaceModel >> activeSpatialEntity [
 CMSpaceModel >> activeSpatialEntity: aClass [
 	
 	activeSpatialEntity := aClass
-]
-
-{ #category : #'ESE initialize-release' }
-CMSpaceModel >> addEnvironmentDataFromFile: aName [
-	"Add attributs value to cells from an .env file"
-	"aName = <String> or aName = <Filename> . If aName = <String>, it creates a Filename from maps directory.
-	Example:	aName = 'test.env'  or
-				aName = a FATFilename('d:\Vw5i.4\cormas\Models\JLB\maps\test.env')"
-	
-	| stream |
-	stream := (self stringToFilename: aName) readStream.	"Lecture des 4 premieres lignes : topologie de la grille"	"On devine le format des lignes"
-	stream lineEndAuto.
-	stream upTo: Character tab.
-	(stream upTo: Character space) asNumber.
-	(stream upTo: Character cr) asNumber.
-	stream upTo: Character tab.
-	(stream upTo: Character cr) asSymbol.
-	stream upTo: Character tab.
-	(stream upTo: Character cr) asSymbol.
-	stream upTo: Character tab.
-	(stream upTo: Character cr) asNumber.
-	self setSpatialEntitiesAttributsValueFromStream: stream
 ]
 
 { #category : #'- deprecated' }
@@ -547,6 +526,23 @@ CMSpaceModel >> column [
 	^ column
 ]
 
+{ #category : #'CSE (general) - import - export' }
+CMSpaceModel >> configureSpaceFromEnv: aStream [
+	" Private - Use values read from an Env reader to setup the receiver "
+
+	self 
+		line: self envReader dimX 
+		column: self envReader dimY.
+	self nbNeighbours: self envReader cp.
+	self envReader cp = #six
+		ifTrue: [ self gridCellShape: #hexagonal ]
+		ifFalse: [ self gridCellShape: #squared ].
+	self resetSpatialEntities.
+	self createCells.
+	self boundaries: self envReader ce.
+	self envReader setSpatialEntitiesAttributesValueFrom: aStream
+]
+
 { #category : #'private - accessing' }
 CMSpaceModel >> connexity [
 	"Purpose: returns the value of the grid connexity, i.e. 8, 4 or 6.
@@ -978,6 +974,19 @@ CMSpaceModel >> elementaryEntitiesDefaultPovs [
 CMSpaceModel >> elementaryEntitiesDefaultPovs: anObject [
 	
 	elementaryEntitiesDefaultPovs := anObject
+]
+
+{ #category : #accessing }
+CMSpaceModel >> envReader [
+	" Answer a <CMEnvFileReader> used to read and parse a .env file "
+
+	^ envReader
+		ifNil: [ envReader := CMEnvFileReader forModel: self ]
+]
+
+{ #category : #accessing }
+CMSpaceModel >> envReader: anObject [
+	envReader := anObject
 ]
 
 { #category : #'user interface' }
@@ -2192,55 +2201,14 @@ CMSpaceModel >> listMethodsChanged [
 	self changed: #listMethodsChanged
 ]
 
-{ #category : #'ESE initialize-release' }
+{ #category : #'CSE (general) - import - export' }
 CMSpaceModel >> loadEnvironmentFromFile: aName [
-	"Load a grid stored as filename.
-	aName = <String> or aName = <Filename> . If aName = <String>, it creates a Filename from maps directory.
-	Example:	aName = 'test.env'  or
-				aName = a FATFilename('d:\Vw5i.4\cormas\Models\JLB\maps\test.env')"
+
+	| stream |
 	
-	| stream label dimX dimY ce cp aFileReference delimiteur |
-	aFileReference := (self stringToFilename: aName).
-	aFileReference exists ifFalse: [self error:'Missing environment file'].
-	stream := aFileReference readStream.	"Lecture des 4 premieres lignes : topologie de la grille"	"On devine le format des lignes"
-"	stream installLineEndConventionInConverter."
-	label := stream upTo: Character tab.
-	label ~= 'dimensions'
-		ifTrue: [ ^ self readEnvironmentError: aFileReference ].
-	dimX := (stream upTo: Character space) asNumber.
-	dimY := (stream upTo: Character cr) asNumber.
-	stream skipSeparators.
-	label := stream upTo: Character tab.
-	label ~= 'cloture'
-		ifTrue: [ ^ self readEnvironmentError: aFileReference ] .
-	ce := (stream upTo: Character cr) asSymbol.
-	stream skipSeparators.
-	label := stream upTo: Character tab.
-	label ~= 'connexite'
-		ifTrue: [ ^ self readEnvironmentError: aFileReference ].
-	cp := (stream upTo: Character cr) asSymbol.
-	stream skipSeparators.
-	label := stream upTo: Character tab.
-	
-	label = 'delimiteur'
-		ifTrue:
-			["read data"
-			stream skipSeparators.
-			delimiteur := stream upTo: Character cr.	"process data"
-			"delimiteur = 1
-				ifTrue:
-					[self cormasModel registerSpaceModelChange: #delimitorSize with: #pixel1]
-				ifFalse:
-					[self cormasModel registerSpaceModelChange: #delimitorSize with: #pixel0]"].
-	self line: dimX column: dimY.
-	self nbNeighbours: cp.
-	cp = #six
-		ifTrue: [self gridCellShape: #hexagonal]
-		ifFalse: [self gridCellShape: #squared].
-	self resetSpatialEntities.
-	self createCells.
-	self boundaries: ce.
-	self setSpatialEntitiesAttributsValueFromStream: stream
+	stream := self envReader loadEnvironmentFromFile: aName.
+	self configureSpaceFromEnv: stream.
+
 ]
 
 { #category : #'ESE initialize-release' }
@@ -2682,12 +2650,6 @@ CMSpaceModel >> randomCell [
 	"Purpose: Return a spatialEntityElement (aCell) picked randomly from the spatial grid."
 
 	^ Cormas selectRandomlyFrom: self elementaryEntities
-]
-
-{ #category : #'private - notification' }
-CMSpaceModel >> readEnvironmentError: aFileReference [
-
-	^ self error: 'Read error while reading environment file: ' , aFileReference fullName
 ]
 
 { #category : #'private - irregular polygons creation' }
@@ -4161,25 +4123,6 @@ CMSpaceModel >> spatialEntitiesAt: aSpatialEntityName withPovResultFor: povSelec
 	
 	^(self spatialEntities at: aSpatialEntityName) asOrderedCollection
 		collect: [:each | each -> (each getPovResultFor: povSelector)]
-]
-
-{ #category : #'ESE initialize-release' }
-CMSpaceModel >> stringToFilename: aStringOrFilename [
-	"Returns a Filename from (aStringOrFilename) located into the current model 'maps' 
-	directory (ex: 'cormas.env') "
-
-	| aFilename modelFolderName |
-	aStringOrFilename isString
-		ifTrue: [ "Very bad hack to remove CM and Model to a model name ..."
-			self flag: #shouldBeRevised.
-			modelFolderName := self cormasModelClass name.
-			(modelFolderName beginsWith: 'CM')
-				ifTrue: [ modelFolderName := modelFolderName allButFirst: 2 ].
-			(modelFolderName endsWith: 'Model')
-				ifTrue: [ modelFolderName := modelFolderName allButLast: 5 ].
-			aFilename := (self resourceLocator mapsPath: modelFolderName) / aStringOrFilename ]
-		ifFalse: [ aFilename := aStringOrFilename ].
-	^ aFilename
 ]
 
 { #category : #'CSE (regular) - dynamics' }
