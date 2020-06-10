@@ -574,11 +574,6 @@ CormasModel class >> defaultDelayChangesSetting [
 ]
 
 { #category : #'+ simulation settings' }
-CormasModel class >> defaultFinalStep [
-	^100
-]
-
-{ #category : #'+ simulation settings' }
 CormasModel class >> defaultInit [
 	^ #init
 ]
