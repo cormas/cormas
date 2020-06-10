@@ -1214,8 +1214,8 @@ CMEntity class >> methodsOfProtocolStartingWith: aString [
 { #category : #'+ utilities - classes' }
 CMEntity class >> modelClass [
 	"Purpose: returns the Class of the current model.
-Return value: <class>
-Example: CMECECRestrained modelClass -> ECEC "
+	Return value: <class>
+	Example: CMECECRestrained modelClass -> ECEC "
 
 	^ self package classes
 		detect: [ :cl | cl superclass = CormasModel ]
@@ -1648,9 +1648,9 @@ CMEntity >> currentSimulation [
 { #category : #'+ accessing - scheduling' }
 CMEntity >> currentTime [
 	"Purpose: returns the current time step of the simulation
-Return value = <Integer>"
-	
-	^self modelClass timeStep
+	Return value = <Integer>"
+
+	^ self modelClass timeStep
 ]
 
 { #category : #'as yet unclassified' }
