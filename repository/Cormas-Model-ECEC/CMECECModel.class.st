@@ -31,11 +31,6 @@ CMECECModel class >> colorOfProbe_vegetationBiomass [
 ]
 
 { #category : #default }
-CMECECModel class >> defaultFinalStep [
-	^ 600
-]
-
-{ #category : #default }
 CMECECModel class >> defaultInit [
 	
 	^#homogeneousEnv

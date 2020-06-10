@@ -46,11 +46,6 @@ CMFireAutomataModel class >> defaultControl [
 ]
 
 { #category : #'default settings' }
-CMFireAutomataModel class >> defaultFinalStep [
-	^ 200
-]
-
-{ #category : #'default settings' }
 CMFireAutomataModel class >> defaultInit [
 
 	^ defaultInit ifNil: [ defaultInit := #init58WithFireWithFiremen ]

@@ -24,11 +24,6 @@ CMConwayModel class >> defaultControl [
 ]
 
 { #category : #default }
-CMConwayModel class >> defaultFinalStep [
-	^ 100
-]
-
-{ #category : #default }
 CMConwayModel class >> defaultInit [
 	^ #initRandomly
 ]

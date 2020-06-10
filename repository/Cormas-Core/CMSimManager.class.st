@@ -20,7 +20,7 @@ Class {
 	#classInstVars : [
 		'newFolder'
 	],
-	#category : 'Cormas-Core-Tools'
+	#category : #'Cormas-Core-Tools'
 }
 
 { #category : #accessing }
@@ -2934,6 +2934,11 @@ CMSimManager >> currentTime: aValue [
 	self cormasModel timeStepValue: aValue
 ]
 
+{ #category : #time }
+CMSimManager >> defaultFinalTime [
+	^ 100
+]
+
 { #category : #simulate }
 CMSimManager >> displayRunDuration: duration [
 	"display on the Transcript, the duration time of the simulation"
@@ -2973,7 +2978,7 @@ CMSimManager >> enableBackward: bool [
 
 { #category : #time }
 CMSimManager >> finalTime [
-	^ finalTime ifNil: [ finalTime := self cormasModel class defaultFinalStep ifNil: [ nil]  ]
+	^ finalTime ifNil: [ finalTime := self defaultFinalTime]
 ]
 
 { #category : #time }
