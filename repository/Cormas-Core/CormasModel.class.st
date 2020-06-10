@@ -1433,15 +1433,14 @@ CormasModel class >> testTheAccessors [
 { #category : #'+ accessing - scheduling' }
 CormasModel class >> timeStep [
 	"Purpose: Returns the current time step of the simulation. Can be used by any entity of the model. 
-Example: MyModel timeStep = 10 ifTrue:[self reproduce]"
-	
-	^timeStep ifNil: [timeStep := 0]
+	Example: MyModel timeStep = 10 ifTrue:[self reproduce]"
+
+	^ timeStep ifNil: [ timeStep := 0 ]
 ]
 
 { #category : #accessing }
-CormasModel class >> timeStep: anObject [
-	
-	timeStep := anObject
+CormasModel class >> timeStep: anInteger [
+	timeStep := anInteger
 ]
 
 { #category : #'- default value' }
@@ -5308,17 +5307,16 @@ CormasModel >> timeChanged [
 
 { #category : #'+ accessing - scheduling' }
 CormasModel >> timeStep [
-	"Purpose: returns the current time step.of the simulation
-	Example: self timeStep = 2 ifTrue:[self doSomethinig]"
+	"Purpose: returns the current time step of the simulation
+	Example: self timeStep = 2 ifTrue:[self doSomething]"
 
 	^ self timeStepValue value
 ]
 
 { #category : #scheduling }
-CormasModel >> timeStep: aTime [
-	"aTime = <Integer>"
+CormasModel >> timeStep: anInteger [
 
-	self timeStepValue: aTime
+	self timeStepValue: anInteger
 ]
 
 { #category : #scheduling }
@@ -5327,10 +5325,8 @@ CormasModel >> timeStepValue [
 ]
 
 { #category : #scheduling }
-CormasModel >> timeStepValue: aDuration [
-	"aDuration = <Integer>"
-
-	self timeStepValue value: aDuration
+CormasModel >> timeStepValue: anInteger [
+	self timeStepValue value: anInteger
 ]
 
 { #category : #'+ user interface' }
