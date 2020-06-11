@@ -1,5 +1,5 @@
 Class {
-	#name : #EntityInspector,
+	#name : #CMEntityInspector,
 	#superclass : #Object,
 	#instVars : [
 		'object',
@@ -15,11 +15,11 @@ Class {
 		'ratioColumns',
 		'previousRatioColumns'
 	],
-	#category : 'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Interface'
 }
 
 { #category : #resources }
-EntityInspector class >> arrowNext [
+CMEntityInspector class >> arrowNext [
 	"Tools.UIMaskEditor new openOnClass: self andSelector: #arrowNext"
 	
 	<resource: #image>
@@ -101,7 +101,7 @@ EntityInspector class >> arrowNext [
 ]
 
 { #category : #resources }
-EntityInspector class >> arrowPrevious [
+CMEntityInspector class >> arrowPrevious [
 	"Tools.UIMaskEditor new openOnClass: self andSelector: #arrowPrevious"
 	
 	<resource: #image>
@@ -187,7 +187,7 @@ EntityInspector class >> arrowPrevious [
 ]
 
 { #category : #resources }
-EntityInspector class >> iconPrototypeSpec [
+CMEntityInspector class >> iconPrototypeSpec [
 	"Answer a prototype of an action button. This spec is copied 
 	modified and populated on the palette's window."
 	
@@ -200,7 +200,7 @@ EntityInspector class >> iconPrototypeSpec [
 ]
 
 { #category : #'view creation' }
-EntityInspector class >> inspect: anEntityReference spaceInterface: aSI [
+CMEntityInspector class >> inspect: anEntityReference spaceInterface: aSI [
 	"(self hasOneInstanceToBeTheOnlyOneFor: aSI)
 	ifTrue:[(self theOnlyOneInstanceFor: aSI) goToEntity: anEntityReference]
 	ifFalse:[self new openOn: anEntityReference spaceInterface: aSI]
@@ -210,13 +210,13 @@ EntityInspector class >> inspect: anEntityReference spaceInterface: aSI [
 ]
 
 { #category : #'view creation' }
-EntityInspector class >> openOn: anEntity spaceInterface: aSI [
+CMEntityInspector class >> openOn: anEntity spaceInterface: aSI [
 	
 	self new openOn: anEntity spaceInterface: aSI
 ]
 
 { #category : #resources }
-EntityInspector class >> optionMenu [
+CMEntityInspector class >> optionMenu [
 	"Tools.MenuEditor new openOnClass: self andSelector: #optionMenu"
 	
 	<resource: #menu>
@@ -250,7 +250,7 @@ EntityInspector class >> optionMenu [
 ]
 
 { #category : #'interface specs' }
-EntityInspector class >> windowSpec [
+CMEntityInspector class >> windowSpec [
 	"Tools.UIPainter new openOnClass: self andSelector: #windowSpec"
 	
 	<resource: #canvas>
@@ -350,7 +350,7 @@ EntityInspector class >> windowSpec [
 ]
 
 { #category : #'private-buttons list' }
-EntityInspector >> adaptButton: newButtonSpec toRepresent: attributeItem [
+CMEntityInspector >> adaptButton: newButtonSpec toRepresent: attributeItem [
 	"Given aSpec and a prototype spec create a new spec for a 
 	button containing proper label and model. Add 
 	visual to the dictionary in builder."
@@ -367,7 +367,7 @@ EntityInspector >> adaptButton: newButtonSpec toRepresent: attributeItem [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton1 [
+CMEntityInspector >> attButton1 [
 	
 	| index |
 	index := (thisContext selector
@@ -377,7 +377,7 @@ EntityInspector >> attButton1 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton10 [
+CMEntityInspector >> attButton10 [
 	
 	| index |
 	index := (thisContext selector
@@ -387,7 +387,7 @@ EntityInspector >> attButton10 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton11 [
+CMEntityInspector >> attButton11 [
 	
 	| index |
 	index := (thisContext selector
@@ -397,7 +397,7 @@ EntityInspector >> attButton11 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton12 [
+CMEntityInspector >> attButton12 [
 	
 	| index |
 	index := (thisContext selector
@@ -407,7 +407,7 @@ EntityInspector >> attButton12 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton13 [
+CMEntityInspector >> attButton13 [
 	
 	| index |
 	index := (thisContext selector
@@ -417,7 +417,7 @@ EntityInspector >> attButton13 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton14 [
+CMEntityInspector >> attButton14 [
 	
 	| index |
 	index := (thisContext selector
@@ -427,7 +427,7 @@ EntityInspector >> attButton14 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton15 [
+CMEntityInspector >> attButton15 [
 	
 	| index |
 	index := (thisContext selector
@@ -437,7 +437,7 @@ EntityInspector >> attButton15 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton16 [
+CMEntityInspector >> attButton16 [
 	
 	| index |
 	index := (thisContext selector
@@ -447,7 +447,7 @@ EntityInspector >> attButton16 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton17 [
+CMEntityInspector >> attButton17 [
 	
 	| index |
 	index := (thisContext selector
@@ -457,7 +457,7 @@ EntityInspector >> attButton17 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton18 [
+CMEntityInspector >> attButton18 [
 	
 	| index |
 	index := (thisContext selector
@@ -467,7 +467,7 @@ EntityInspector >> attButton18 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton19 [
+CMEntityInspector >> attButton19 [
 	
 	| index |
 	index := (thisContext selector
@@ -477,7 +477,7 @@ EntityInspector >> attButton19 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton2 [
+CMEntityInspector >> attButton2 [
 	
 	| index |
 	index := (thisContext selector
@@ -487,7 +487,7 @@ EntityInspector >> attButton2 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton20 [
+CMEntityInspector >> attButton20 [
 	
 	| index |
 	index := (thisContext selector
@@ -497,7 +497,7 @@ EntityInspector >> attButton20 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton21 [
+CMEntityInspector >> attButton21 [
 	
 	| index |
 	index := (thisContext selector
@@ -507,7 +507,7 @@ EntityInspector >> attButton21 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton22 [
+CMEntityInspector >> attButton22 [
 	
 	| index |
 	index := (thisContext selector
@@ -517,7 +517,7 @@ EntityInspector >> attButton22 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton23 [
+CMEntityInspector >> attButton23 [
 	
 	| index |
 	index := (thisContext selector
@@ -527,7 +527,7 @@ EntityInspector >> attButton23 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton24 [
+CMEntityInspector >> attButton24 [
 	
 	| index |
 	index := (thisContext selector
@@ -537,7 +537,7 @@ EntityInspector >> attButton24 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton25 [
+CMEntityInspector >> attButton25 [
 	
 	| index |
 	index := (thisContext selector
@@ -547,7 +547,7 @@ EntityInspector >> attButton25 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton26 [
+CMEntityInspector >> attButton26 [
 	
 	| index |
 	index := (thisContext selector
@@ -557,7 +557,7 @@ EntityInspector >> attButton26 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton27 [
+CMEntityInspector >> attButton27 [
 	
 	| index |
 	index := (thisContext selector
@@ -567,7 +567,7 @@ EntityInspector >> attButton27 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton28 [
+CMEntityInspector >> attButton28 [
 	
 	| index |
 	index := (thisContext selector
@@ -577,7 +577,7 @@ EntityInspector >> attButton28 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton29 [
+CMEntityInspector >> attButton29 [
 	
 	| index |
 	index := (thisContext selector
@@ -587,7 +587,7 @@ EntityInspector >> attButton29 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton3 [
+CMEntityInspector >> attButton3 [
 	
 	| index |
 	index := (thisContext selector
@@ -597,7 +597,7 @@ EntityInspector >> attButton3 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton30 [
+CMEntityInspector >> attButton30 [
 	
 	| index |
 	index := (thisContext selector
@@ -607,7 +607,7 @@ EntityInspector >> attButton30 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton31 [
+CMEntityInspector >> attButton31 [
 	
 	| index |
 	index := (thisContext selector
@@ -617,7 +617,7 @@ EntityInspector >> attButton31 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton4 [
+CMEntityInspector >> attButton4 [
 	
 	| index |
 	index := (thisContext selector
@@ -627,7 +627,7 @@ EntityInspector >> attButton4 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton5 [
+CMEntityInspector >> attButton5 [
 	
 	| index |
 	index := (thisContext selector
@@ -637,7 +637,7 @@ EntityInspector >> attButton5 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton6 [
+CMEntityInspector >> attButton6 [
 	
 	| index |
 	index := (thisContext selector
@@ -647,7 +647,7 @@ EntityInspector >> attButton6 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton7 [
+CMEntityInspector >> attButton7 [
 	
 	| index |
 	index := (thisContext selector
@@ -657,7 +657,7 @@ EntityInspector >> attButton7 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton8 [
+CMEntityInspector >> attButton8 [
 	
 	| index |
 	index := (thisContext selector
@@ -667,7 +667,7 @@ EntityInspector >> attButton8 [
 ]
 
 { #category : #'private-attButons' }
-EntityInspector >> attButton9 [
+CMEntityInspector >> attButton9 [
 	
 	| index |
 	index := (thisContext selector
@@ -677,7 +677,7 @@ EntityInspector >> attButton9 [
 ]
 
 { #category : #aspects }
-EntityInspector >> attribute_List [
+CMEntityInspector >> attribute_List [
 	"This method was generated by UIDefiner.  Any edits made here
 	may be lost whenever methods are automatically defined.  The
 	initialization provided below may have been preempted by an
@@ -693,14 +693,14 @@ EntityInspector >> attribute_List [
 ]
 
 { #category : #'upper class surdefinition' }
-EntityInspector >> basicPrintStringFor: anObject [
+CMEntityInspector >> basicPrintStringFor: anObject [
 	"Answer a the name of the entity instance"
 	
 	^self entityClass name asString , ' n¬∞ ' , self entityId printString
 ]
 
 { #category : #'private-buttons list' }
-EntityInspector >> buildButtonColumn: aBuilder [
+CMEntityInspector >> buildButtonColumn: aBuilder [
 	"Add icons if the iconic palette is in use"
 	
 	| composite prototypeSpec |
@@ -714,7 +714,7 @@ EntityInspector >> buildButtonColumn: aBuilder [
 ]
 
 { #category : #actions }
-EntityInspector >> changeEntity [
+CMEntityInspector >> changeEntity [
 	
 	| eNames choice |
 	eNames := ((self linkedSI drawing components
@@ -726,13 +726,13 @@ EntityInspector >> changeEntity [
 ]
 
 { #category : #'upper class surdefinition' }
-EntityInspector >> changeRequest [
+CMEntityInspector >> changeRequest [
 	
 	^true
 ]
 
 { #category : #actions }
-EntityInspector >> chooseColor [
+CMEntityInspector >> chooseColor [
 	
 	| color |
 	color := PovSetter colorChooser.
@@ -742,7 +742,7 @@ EntityInspector >> chooseColor [
 ]
 
 { #category : #'private-resize dataset' }
-EntityInspector >> columnsRatioChange [
+CMEntityInspector >> columnsRatioChange [
 	"A method to resize the columns when size of the window changed"
 	
 	| aDatasetobject totWidth |
@@ -769,37 +769,37 @@ EntityInspector >> columnsRatioChange [
 ]
 
 { #category : #accessing }
-EntityInspector >> cormas [
+CMEntityInspector >> cormas [
 	
 	^Cormas current
 ]
 
 { #category : #methods }
-EntityInspector >> entitiesCollec [
+CMEntityInspector >> entitiesCollec [
 	
 	^self linkedSI cormasModel allTheEntities: self entityClass
 ]
 
 { #category : #accessing }
-EntityInspector >> entity [
+CMEntityInspector >> entity [
 	
 	^object entity
 ]
 
 { #category : #accessing }
-EntityInspector >> entityClass [
+CMEntityInspector >> entityClass [
 	
 	^object entityClass
 ]
 
 { #category : #accessing }
-EntityInspector >> entityId [
+CMEntityInspector >> entityId [
 	
 	^object entityId
 ]
 
 { #category : #aspects }
-EntityInspector >> entityIdField [
+CMEntityInspector >> entityIdField [
 	
 	^entityIdField isNil
 		ifTrue: [entityIdField := 0 asValue]
@@ -807,7 +807,7 @@ EntityInspector >> entityIdField [
 ]
 
 { #category : #'doIt/accept/explain' }
-EntityInspector >> evaluateText: aText from: aController ifFail: failBlock [
+CMEntityInspector >> evaluateText: aText from: aController ifFail: failBlock [
 	"The user wishes to evaluate expressions in the value part of an inspector.
 	Do so in the context of the inspector's variables.  Evaluate failBlock
 	if the evaluation does not work."
@@ -825,7 +825,7 @@ EntityInspector >> evaluateText: aText from: aController ifFail: failBlock [
 ]
 
 { #category : #actions }
-EntityInspector >> executePerformBar [
+CMEntityInspector >> executePerformBar [
 	
 	self
 		evaluateText: self performBar value
@@ -836,14 +836,14 @@ EntityInspector >> executePerformBar [
 ]
 
 { #category : #actions }
-EntityInspector >> goToEntity: anEntityReference [
+CMEntityInspector >> goToEntity: anEntityReference [
 	
 	self goToEntityType: anEntityReference entityClass name.
 	self goToId: anEntityReference entityId
 ]
 
 { #category : #actions }
-EntityInspector >> goToEntityType: aClassName [
+CMEntityInspector >> goToEntityType: aClassName [
 	
 	aClassName = self entityClass name ifTrue: [^nil].
 	self resetInstanceShow.
@@ -857,7 +857,7 @@ EntityInspector >> goToEntityType: aClassName [
 ]
 
 { #category : #actions }
-EntityInspector >> goToId [
+CMEntityInspector >> goToId [
 	
 	| nb |
 	nb := Cormas current request: 'Enter id'.
@@ -868,7 +868,7 @@ EntityInspector >> goToId [
 ]
 
 { #category : #actions }
-EntityInspector >> goToId: nb [
+CMEntityInspector >> goToId: nb [
 	
 	object := EntityReference
 		on:
@@ -885,38 +885,38 @@ EntityInspector >> goToId: nb [
 ]
 
 { #category : #'private-buttons list' }
-EntityInspector >> iconView [
+CMEntityInspector >> iconView [
 	"Return a visual component able to house palette's icons."
 	
 	^CompositePart new
 ]
 
 { #category : #accessing }
-EntityInspector >> instanceColor [
+CMEntityInspector >> instanceColor [
 	
 	^instanceColor
 ]
 
 { #category : #accessing }
-EntityInspector >> instanceColor: anObject [
+CMEntityInspector >> instanceColor: anObject [
 	
 	instanceColor := anObject
 ]
 
 { #category : #actions }
-EntityInspector >> isOnlyInspector [
+CMEntityInspector >> isOnlyInspector [
 	
 	^((self builder menuAt: #optionMenu) atNameKey: #onlyInspector) isOn
 ]
 
 { #category : #accessing }
-EntityInspector >> linkedSI [
+CMEntityInspector >> linkedSI [
 	
 	^linkedSI
 ]
 
 { #category : #accessing }
-EntityInspector >> linkedSI: aSpaceInterface [
+CMEntityInspector >> linkedSI: aSpaceInterface [
 	
 	aSpaceInterface == linkedSI ifTrue: [^self].
 	aSpaceInterface ifNotNil: [aSpaceInterface removeDependent: self].
@@ -925,7 +925,7 @@ EntityInspector >> linkedSI: aSpaceInterface [
 ]
 
 { #category : #methods }
-EntityInspector >> listOfAttributes [
+CMEntityInspector >> listOfAttributes [
 	
 	| collec |
 	self linkedSI siConfig
@@ -949,7 +949,7 @@ EntityInspector >> listOfAttributes [
 ]
 
 { #category : #'private-resize dataset' }
-EntityInspector >> maxRatioColumn [
+CMEntityInspector >> maxRatioColumn [
 	
 	| aDatasetobject |
 	aDatasetobject := self widgetAt: #Dataset1.
@@ -962,7 +962,7 @@ EntityInspector >> maxRatioColumn [
 ]
 
 { #category : #'private-resize dataset' }
-EntityInspector >> minRatioColumn [
+CMEntityInspector >> minRatioColumn [
 	
 	| aDatasetobject |
 	aDatasetobject := self widgetAt: #Dataset1.
@@ -973,7 +973,7 @@ EntityInspector >> minRatioColumn [
 ]
 
 { #category : #actions }
-EntityInspector >> next [
+CMEntityInspector >> next [
 	
 	| collec i |
 	self resetInstanceShow.
@@ -987,7 +987,7 @@ EntityInspector >> next [
 ]
 
 { #category : #'access classes' }
-EntityInspector >> objectClassAndItsUserDefinedSuperClasses [
+CMEntityInspector >> objectClassAndItsUserDefinedSuperClasses [
 	
 	| collec |
 	collec := self entityClass superClassesUntil: CMEntity.
@@ -1002,7 +1002,7 @@ EntityInspector >> objectClassAndItsUserDefinedSuperClasses [
 ]
 
 { #category : #actions }
-EntityInspector >> onlyInspector [
+CMEntityInspector >> onlyInspector [
 	
 	| item |
 	item := (self builder menuAt: #optionMenu) atNameKey: #onlyInspector.
@@ -1016,7 +1016,7 @@ EntityInspector >> onlyInspector [
 ]
 
 { #category : #'initialize-release' }
-EntityInspector >> openOn: anObject spaceInterface: aSI [
+CMEntityInspector >> openOn: anObject spaceInterface: aSI [
 	
 	| win minS maxS |
 	history := nil.
@@ -1041,7 +1041,7 @@ EntityInspector >> openOn: anObject spaceInterface: aSI [
 ]
 
 { #category : #aspects }
-EntityInspector >> option [
+CMEntityInspector >> option [
 	"This method was generated by UIDefiner.  Any edits made here
 	may be lost whenever methods are automatically defined.  The
 	initialization provided below may have been preempted by an
@@ -1053,7 +1053,7 @@ EntityInspector >> option [
 ]
 
 { #category : #aspects }
-EntityInspector >> performBar [
+CMEntityInspector >> performBar [
 	"This method was generated by UIDefiner.  Any edits made here
 	may be lost whenever methods are automatically defined.  The
 	initialization provided below may have been preempted by an
@@ -1065,7 +1065,7 @@ EntityInspector >> performBar [
 ]
 
 { #category : #'private-buttons list' }
-EntityInspector >> performButtonFor: att_Item [
+CMEntityInspector >> performButtonFor: att_Item [
 	
 	att_Item isCollection
 		ifTrue: [^(self entity perform: att_Item name asSymbol) inspect].
@@ -1083,7 +1083,7 @@ EntityInspector >> performButtonFor: att_Item [
 				model: self linkedSI cormasModel].
 	att_Item isAssociation
 		ifTrue:
-			[^EntityInspector
+			[^CMEntityInspector
 				inspect:
 					(EntityReference on: (self entity perform: att_Item name asSymbol))
 				spaceInterface: self linkedSI].	"cas o√π la valeur de l'attribut est du texte ou du symbole"
@@ -1094,7 +1094,7 @@ EntityInspector >> performButtonFor: att_Item [
 ]
 
 { #category : #'private-buttons list' }
-EntityInspector >> populateSpec: prototypeSpec [
+CMEntityInspector >> populateSpec: prototypeSpec [
 	"Replicate a prototype spec by creating clones and changing the layout.
 	Also send adaptButton:toRepresent: message to chage button's properties.
 	The layout algorithm is 'numberOfColumns' icons in a row in the window."
@@ -1135,20 +1135,20 @@ EntityInspector >> populateSpec: prototypeSpec [
 ]
 
 { #category : #'private-resize dataset' }
-EntityInspector >> postBuildWith: aBuilder [
+CMEntityInspector >> postBuildWith: aBuilder [
 	
 	aBuilder window whenAny: #(#bounds) send: #windowHasResized to: self.	"self ratioColumns onChangeSend: #columnsRatioChange to: self."
 	^nil
 ]
 
 { #category : #'upper class surdefinition' }
-EntityInspector >> postBuildWithORIGINAL: aBuilder [
+CMEntityInspector >> postBuildWithORIGINAL: aBuilder [
 	
 	^nil
 ]
 
 { #category : #methods }
-EntityInspector >> prepareTable [
+CMEntityInspector >> prepareTable [
 	
 	| collecAtt aList |
 	collecAtt := self listOfAttributes.
@@ -1165,7 +1165,7 @@ EntityInspector >> prepareTable [
 ]
 
 { #category : #actions }
-EntityInspector >> previous [
+CMEntityInspector >> previous [
 	
 	| collec i |
 	self resetInstanceShow.
@@ -1179,32 +1179,32 @@ EntityInspector >> previous [
 ]
 
 { #category : #accessing }
-EntityInspector >> previousRatioColumns [
+CMEntityInspector >> previousRatioColumns [
 	
 	^previousRatioColumns
 		ifNil: [previousRatioColumns := self ratioColumns value]
 ]
 
 { #category : #accessing }
-EntityInspector >> previousRatioColumns: anObject [
+CMEntityInspector >> previousRatioColumns: anObject [
 	
 	previousRatioColumns := anObject
 ]
 
 { #category : #accessing }
-EntityInspector >> previousWidth [
+CMEntityInspector >> previousWidth [
 	
 	^previousWidth ifNil: [previousWidth := builder window width]
 ]
 
 { #category : #accessing }
-EntityInspector >> previousWidth: anObject [
+CMEntityInspector >> previousWidth: anObject [
 	
 	previousWidth := anObject
 ]
 
 { #category : #aspects }
-EntityInspector >> ratioColumns [
+CMEntityInspector >> ratioColumns [
 	"This method was generated by UIDefiner.  Any edits made here
 	may be lost whenever methods are automatically defined.  The
 	initialization provided below may have been preempted by an
@@ -1216,7 +1216,7 @@ EntityInspector >> ratioColumns [
 ]
 
 { #category : #methods }
-EntityInspector >> removeColor [
+CMEntityInspector >> removeColor [
 	
 	| aFig |
 	aFig := self linkedSI drawing components
@@ -1233,7 +1233,7 @@ EntityInspector >> removeColor [
 ]
 
 { #category : #'interface closing' }
-EntityInspector >> requestForWindowClose [
+CMEntityInspector >> requestForWindowClose [
 	
 	self showNo.
 	linkedSI removeDependent: self.
@@ -1241,14 +1241,14 @@ EntityInspector >> requestForWindowClose [
 ]
 
 { #category : #methods }
-EntityInspector >> resetInstanceShow [
+CMEntityInspector >> resetInstanceShow [
 	
 	self showInstance = #selection ifTrue: [linkedSI drawing clearSelections].
 	self showInstance = #color ifTrue: [self removeColor]
 ]
 
 { #category : #aspects }
-EntityInspector >> selectedRow [
+CMEntityInspector >> selectedRow [
 	"This method was generated by UIDefiner.  Any edits made here
 	may be lost whenever methods are automatically defined.  The
 	initialization provided below may have been preempted by an
@@ -1260,7 +1260,7 @@ EntityInspector >> selectedRow [
 ]
 
 { #category : #actions }
-EntityInspector >> showColor [
+CMEntityInspector >> showColor [
 	
 	self showInstance ~= #color
 		ifTrue:
@@ -1271,19 +1271,19 @@ EntityInspector >> showColor [
 ]
 
 { #category : #accessing }
-EntityInspector >> showInstance [
+CMEntityInspector >> showInstance [
 	
 	^showInstance
 ]
 
 { #category : #accessing }
-EntityInspector >> showInstance: anObject [
+CMEntityInspector >> showInstance: anObject [
 	
 	showInstance := anObject
 ]
 
 { #category : #actions }
-EntityInspector >> showNo [
+CMEntityInspector >> showNo [
 	
 	self showInstance ~= #no
 		ifTrue:
@@ -1294,7 +1294,7 @@ EntityInspector >> showNo [
 ]
 
 { #category : #actions }
-EntityInspector >> showSelection [
+CMEntityInspector >> showSelection [
 	
 	self showInstance ~= #selection
 		ifTrue:
@@ -1305,7 +1305,7 @@ EntityInspector >> showSelection [
 ]
 
 { #category : #methods }
-EntityInspector >> sortedEntitiesCollec [
+CMEntityInspector >> sortedEntitiesCollec [
 	
 	Dev todo:
 			'method a revoir pour ledistribu√© car requiere enormement d''appels au serveur'.
@@ -1313,7 +1313,7 @@ EntityInspector >> sortedEntitiesCollec [
 ]
 
 { #category : #updating }
-EntityInspector >> update: aSymbol with: aValue from: aSender [
+CMEntityInspector >> update: aSymbol with: aValue from: aSender [
 	
 	self builder window isOpen ifFalse: [^nil].
 	aSender == self linkedSI
@@ -1329,7 +1329,7 @@ EntityInspector >> update: aSymbol with: aValue from: aSender [
 ]
 
 { #category : #methods }
-EntityInspector >> updateInstanceShow [
+CMEntityInspector >> updateInstanceShow [
 	
 	| aFig |
 	self showInstance = #selection
@@ -1351,7 +1351,7 @@ EntityInspector >> updateInstanceShow [
 ]
 
 { #category : #methods }
-EntityInspector >> updateMenu [
+CMEntityInspector >> updateMenu [
 	
 	| menuShow |
 	menuShow := ((self builder menuAt: #optionMenu) atNameKey: #show) submenu.
@@ -1373,7 +1373,7 @@ EntityInspector >> updateMenu [
 ]
 
 { #category : #methods }
-EntityInspector >> updateValues [
+CMEntityInspector >> updateValues [
 	
 	self prepareTable.
 	self entityIdField value: self entityId.
@@ -1382,7 +1382,7 @@ EntityInspector >> updateValues [
 ]
 
 { #category : #'private-resize dataset' }
-EntityInspector >> windowHasResized [
+CMEntityInspector >> windowHasResized [
 	"A method to resize the columns when size of the window changed"
 	
 	| aDatasetobject columnWidth ratio |
