@@ -1,25 +1,7 @@
 "
 The model is available online here: http://cormas.cirad.fr/en/applica/diffuse.htm
-"
-Class {
-	#name : #CMDiffuseModel,
-	#superclass : #CormasModel,
-	#instVars : [
-		'theCMDiffuseCells',
-		'theCMDiffuseAnts',
-		'activeCells',
-		'newActiveCells',
-		'noMoreActiveCells',
-		'antNumber'
-	],
-	#category : 'Cormas-Model-Diffuse'
-}
 
-{ #category : #description }
-CMDiffuseModel class >> aboutIt [
-	
-	| txt |
-	txt := 'This model illustrates how the principles of cellular automata are 
+This model illustrates how the principles of cellular automata are 
 implemented in Cormas. 
 
 The spatial entity of the model (the cell), named Cell, 
@@ -37,13 +19,21 @@ being ash will become empty at the next timestep.
 The probability to observe a resteint fire is high if p is lower than 0.55, 
 whereas when p is greater than 0.55, a global fire is likely to occur. 
 This percolation threshold characterizes cellular automata which are 
-representing diffusion processes.' asText emphasizeAllWith: #(#bold).
-"	ComposedTextView
-		open: txt asValue
-		label: 'About ' , self name
-		icon: (Icon constantNamed: #workspace)
-		extent: 500 @ 430"
-]
+representing diffusion processes.
+"
+Class {
+	#name : #CMDiffuseModel,
+	#superclass : #CormasModel,
+	#instVars : [
+		'theCMDiffuseCells',
+		'theCMDiffuseAnts',
+		'activeCells',
+		'newActiveCells',
+		'noMoreActiveCells',
+		'antNumber'
+	],
+	#category : #'Cormas-Model-Diffuse'
+}
 
 { #category : #'- default value' }
 CMDiffuseModel class >> activeCells_default [
@@ -136,21 +126,6 @@ CMDiffuseModel class >> howToInstructions [
 			nextPutAll: 'and ' asText;
 			nextPutAll: ('stepAsynchronously: ' asText emphasizeAllWith: #italic);
 			nextPutAll: 'methods, then run the model again.\' withCRs asText ]
-]
-
-{ #category : #description }
-CMDiffuseModel class >> howToRunIt [
-
-	| dialog |
-	
-	dialog := LongMessageDialogWindow new
-		entryText: self howToInstructions;
-		title: 'How to run ' , self name , '     step-by-step instructions';
-		yourself.
-	dialog open.
-	dialog textMorph
-		minWidth: 60;
-		minHeight: 90.
 ]
 
 { #category : #testing }

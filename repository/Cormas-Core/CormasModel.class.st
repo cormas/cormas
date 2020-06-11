@@ -69,22 +69,6 @@ Class {
 	#category : #'Cormas-Core-Interface'
 }
 
-{ #category : #'+ description' }
-CormasModel class >> aboutIt [
-	
-	| dialog |
-	
-	dialog := LongMessageDialogWindow new
-		entryText: self getDescriptionText;
-		title: 'About ' , self name;
-		yourself.
-	dialog open.
-	dialog textMorph
-		minWidth: 60;
-		minHeight: 90.	
-
-]
-
 { #category : #'- default value' }
 CormasModel class >> activeControl_default [
 	"Return the default value of activeControl attribute"
@@ -313,14 +297,6 @@ CormasModel class >> allTerminalClasses [
 	^all
 ]
 
-{ #category : #'+ description' }
-CormasModel class >> authors [
-	"Return a String with the author's name (a name per line).
-Should be overwriten"
-
-	self subclassResponsibility
-]
-
 { #category : #'- default value' }
 CormasModel class >> builder_default [
 	"Return the default value of builder attribute"
@@ -418,31 +394,10 @@ CormasModel class >> commClasses [
 				| (i inheritsFrom: CMMsg) ]
 ]
 
-{ #category : #'+ description' }
-CormasModel class >> comments [
-	"Return a String with a description of the model.
-Should be overwriten"
-
-	self subclassResponsibility
-]
-
-{ #category : #'description - primitives' }
-CormasModel class >> commentsWithSimpleQuotes [
-	"Get the comments where the stored double quotes are changed as simple quotes"
-	
-	^self comments copyReplaceAll: #($") with: #($')	"embedded quotes get simple"
-]
-
 { #category : #'managing classes' }
 CormasModel class >> compoundSpatialClasses [
 	
 	^ self spatialClasses select: [:i | i inheritsFrom: CMSpatialEntitySet]
-]
-
-{ #category : #description }
-CormasModel class >> cormasCompatibleVersion [
-	
-	^#(2011 2 28 3 30 6)
 ]
 
 { #category : #compiling }
@@ -524,22 +479,11 @@ aClassName = <String> or <Symbol>.
 		notifying: nil
 ]
 
-{ #category : #'+ description' }
-CormasModel class >> creationDate [
-	self subclassResponsibility
-]
-
 { #category : #accessing }
 CormasModel class >> current [
 	"Direct acces to the current cormasModel"
 	
 	^Cormas current cormasModel
-]
-
-{ #category : #description }
-CormasModel class >> currentDeveloperName [
-	
-	^''
 ]
 
 { #category : #accessing }
@@ -650,55 +594,6 @@ CormasModel class >> getAuthors [
 	^authors
 ]
 
-{ #category : #'description - primitives' }
-CormasModel class >> getDescriptionText [
-	"returns a text describing the model, its version, its compatibility and the authors"
-	
-	| txt |
-	txt := 'Model name : ' asText
-		,
-			((self name , '\') asText emphasizeAllWith: #color -> ColorValue red)
-				withCRs asText emphasizeAllWith: #(#bold #large).
-	txt := txt , 'Current version : ' asText
-		,
-			((self version , '\') asText emphasizeAllWith: #color -> ColorValue red)
-				withCRs asText.
-	txt := txt , 'Creation date : ' asText
-		,
-			((self creationDate , '\') asText
-				emphasizeAllWith: #color -> ColorValue red) withCRs asText.
-	txt := txt , 'Last update : ' asText
-		,
-			((self lastUpdate , '\') asText emphasizeAllWith: #color -> ColorValue red)
-				withCRs asText.
-	txt := txt , 'Cormas compatibility : ' asText
-		,
-			(((Cormas versionAsString: self cormasCompatibleVersion) , '\') asText
-				emphasizeAllWith: #color -> ColorValue red) withCRs asText.
-	txt := txt , 'VW compatibility : ' asText
-		,
-			((Cormas vwCompatibleVersion printString , '\') asText
-				emphasizeAllWith: #color -> ColorValue red) withCRs asText.
-	(Cormas textAsList: self authors) size > 1
-		ifTrue:
-			[txt := txt , ('Authors\' withCRs asText emphasizeAllWith: #(#bold #large))]
-		ifFalse:
-			[txt := txt , ('Author\' withCRs asText emphasizeAllWith: #(#bold #large))].
-	(Cormas textAsList: self authors)
-		with: (Cormas textAsList: self emails)
-		do:
-			[:a :e | 
-			txt := txt , a , ' ' asText
-				, (('   ' , e , '\') asText emphasizeAllWith: #italic) withCRs asText].
-	txt := txt
-		, ('Comments\' withCRs asText emphasizeAllWith: #(#bold #large)).
-	txt := txt
-		,
-			((self commentsWithSimpleQuotes , '\') withCRs asText emphasizeAllWith:
-					#(#large)).
-	^txt
-]
-
 { #category : #compiling }
 CormasModel class >> getterForEntityClass: aClass [
 	"efficiently create the getter selector for the entity class aClass (avoid concatenation).
@@ -757,22 +652,6 @@ randomAttributes = #(#bioma #instance #randomFloat 0 1). "
 		ifTrue: [otherString := otherString , ']']
 		ifFalse: [otherString := otherString , '['].
 	^otherString = aString
-]
-
-{ #category : #'+ description' }
-CormasModel class >> howToRunIt [
-	
-	| dialog |
-	
-	dialog := LongMessageDialogWindow new
-		entryText: 'To be written... sorry';
-		title: 'How to run ' , self name , '     step-by-step instructions';
-		yourself.
-	dialog open.
-	dialog textMorph
-		minWidth: 60;
-		minHeight: 90.
-
 ]
 
 { #category : #'instance creation' }
@@ -881,17 +760,6 @@ CormasModel class >> isSituatedClass [
 	^false
 ]
 
-{ #category : #'+ description' }
-CormasModel class >> lastUpdate [
-	self subclassResponsibility
-]
-
-{ #category : #'description - primitives' }
-CormasModel class >> listing [
-	
-	self listing: (Cormas modelPath: self name) , self class name , '.list'
-]
-
 { #category : #'description - primitives' }
 CormasModel class >> listing: fileName [
 	"Creates a simple listing of the attributes and methods of this class into fileName"
@@ -918,26 +786,6 @@ CormasModel class >> listing: fileName [
 CormasModel class >> locatedObjectClasses [
 	
 	^self passiveClasses select: [:i | i inheritsFrom: CMObjectLocation]
-]
-
-{ #category : #'description - primitives' }
-CormasModel class >> makeAboutItDate: date authors: list1 emails: list2 comments: additionalText [
-	
-	self makeAboutItFirstDate: ' ' lastDate: date authors: list1 emails: list2
-		comments: additionalText
-]
-
-{ #category : #'description - primitives' }
-CormasModel class >> makeAboutItFirstDate: firstDate lastDate: lastDate authors: list1 emails: list2 comments: additionalText [
-	
-	| text |
-	text := (self descriptionTextFromFirstDate: firstDate lastDate: lastDate
-		authors: list1 emails: list2 comments: additionalText) asValue.
-	ComposedTextView
-		open: text
-		label: 'About ' , self name
-		icon: (Icon constantNamed: #workspace)
-		extent: 500 @ 200
 ]
 
 { #category : #'managing classes' }
@@ -1039,12 +887,6 @@ Ex: CormasModel modelMethodsForManipulation"
 								sorted]].
 	coll removeAllSuchThat: [:s | s includes: $:].
 	^coll
-]
-
-{ #category : #'instance creation' }
-CormasModel class >> new: x [
-	
-	^self new
 ]
 
 { #category : #'instance creation' }
@@ -1457,47 +1299,6 @@ CormasModel class >> uiSession_default [
 	^nil
 ]
 
-{ #category : #description }
-CormasModel class >> updateComments [
-	"Add some comments to the new Model version by editing a Comment board and add the strings into the #versionComments method. Example:
-versionComments
-	^ 'old comments
-------- 2011/1/7 - 11:58:34 ------- 
-new comments.
-
-	Ex: CormasNS.Models.ECEC.ECEC  updateComments "
-	
-	| commentInterface developerName firstLine |
-	"open comments window"
-	commentInterface := CommentInterface new.
-	commentInterface previousComments value: self versionComments.
-	firstLine := ' --------------------- ' , self version ,
-			' --------------------- Date: ' , Cormas versionAsString , '\' withCRs.
-	commentInterface newComments value: firstLine.
-	self currentDeveloperName isEmpty
-		ifTrue:
-			[self authors isEmpty
-				ifTrue: [developerName := '' asValue]
-				ifFalse:
-					[developerName := (Cormas textAsList: self authors) first asValue]]
-		ifFalse: [developerName := self currentDeveloperName asValue].
-	commentInterface authorName: developerName.
-	commentInterface openInterface: #commentsModelWindow.
-	commentInterface cancel value ifTrue: [^nil].	"update the #versionComments method"
-	self
-		setDescriptionFor: 'versionComments'
-		withText:
-			(self versionComments , '\' withCRs , '\'
-				, commentInterface newComments value , '\ *** Developer: '
-				, commentInterface authorName value , ' ***') withCRs.	"update the #currentDeveloperName method"
-	self currentDeveloperName = commentInterface authorName value
-		ifFalse:
-			[self
-				setDescriptionFor: 'currentDeveloperName'
-				withText: commentInterface authorName value].	"	((Cormas textAsList: self authors) includes: self currentDeveloperName) ifFalse:[self setDescriptionFor: 'developerNames' withText: self developerNames , '\' withCRs , commentInterface authorName value]."
-	^commentInterface
-]
-
 { #category : #Obsolete }
 CormasModel class >> updateVS [
 	"	self imageDict: Dictionary new.
@@ -1508,23 +1309,6 @@ CormasModel class >> updateVS [
 			self povColorsDict at: aClass put: aClass colorsDict]"
 	
 	
-]
-
-{ #category : #'+ description' }
-CormasModel class >> version [
-	self subclassResponsibility
-]
-
-{ #category : #description }
-CormasModel class >> versionComments [
-	
-	^' '
-]
-
-{ #category : #'+ description' }
-CormasModel class >> versionName [
-	
-	^(Filename splitExtension: self version) first
 ]
 
 { #category : #accessing }
