@@ -3301,7 +3301,7 @@ SpaceInterface >> openEntityInspectorOn: anEntity [
 			result key first goToEntity: (EntityReference on: anEntity)]
 		ifFalse:
 			["there are multiple entity inspectors possible. It should now open one more"
-			EntityInspector
+			CMEntityInspector
 				inspect: (EntityReference on: anEntity)
 				spaceInterface: self]	"self siConfig
 		ifNil: [CormasNS.Kernel.BasicEntityInspector openOn: anEntity]

@@ -1,15 +1,15 @@
 Class {
-	#name : #BasicEntityInspector,
+	#name : #CMBasicEntityInspector,
 	#superclass : #Object,
 	#instVars : [
 		'attributesSpec',
 		'object'
 	],
-	#category : 'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Interface'
 }
 
 { #category : #'view creation' }
-BasicEntityInspector class >> openOn: anObject attributesSpec: aDico [
+CMBasicEntityInspector class >> openOn: anObject attributesSpec: aDico [
 	
 	| aInspector |
 	aInspector := self new.
@@ -18,7 +18,7 @@ BasicEntityInspector class >> openOn: anObject attributesSpec: aDico [
 ]
 
 { #category : #'interface specs' }
-BasicEntityInspector class >> windowSpec [
+CMBasicEntityInspector class >> windowSpec [
 	"Tools.UIPainter new openOnClass: self andSelector: #windowSpec"
 	
 	<resource: #canvas>
@@ -49,26 +49,26 @@ BasicEntityInspector class >> windowSpec [
 ]
 
 { #category : #accessing }
-BasicEntityInspector >> attributesSpec [
+CMBasicEntityInspector >> attributesSpec [
 	
 	^attributesSpec
 ]
 
 { #category : #accessing }
-BasicEntityInspector >> attributesSpec: anObject [
+CMBasicEntityInspector >> attributesSpec: anObject [
 	
 	attributesSpec := anObject
 ]
 
 { #category : #'initialize-release' }
-BasicEntityInspector >> basicPrintStringFor: anObject [
+CMBasicEntityInspector >> basicPrintStringFor: anObject [
 	"Answer a the name of the entity instance"
 	
 	^anObject class name asString , ' n¬∞ ' , anObject id printString
 ]
 
 { #category : #'initialize-release' }
-BasicEntityInspector >> field: selection [
+CMBasicEntityInspector >> field: selection [
 	"Set selection to be the currently selected variable."
 	
 	selection = '----------'
@@ -78,7 +78,7 @@ BasicEntityInspector >> field: selection [
 ]
 
 { #category : #'field list' }
-BasicEntityInspector >> fieldList [
+CMBasicEntityInspector >> fieldList [
 	
 	| collec |
 	self attributesSpec ifNotNil: [^self fieldList_SIconfig].
@@ -100,7 +100,7 @@ BasicEntityInspector >> fieldList [
 ]
 
 { #category : #'field list' }
-BasicEntityInspector >> fieldList_SIconfig [
+CMBasicEntityInspector >> fieldList_SIconfig [
 	
 	| collec |
 	collec := SortedCollection new.
@@ -111,7 +111,7 @@ BasicEntityInspector >> fieldList_SIconfig [
 ]
 
 { #category : #'initialize-release' }
-BasicEntityInspector >> initialize [
+CMBasicEntityInspector >> initialize [
 	"Initialize a newly created instance. This method must answer the receiver."
 	
 	super initialize.	" *** Replace this comment with the appropriate initialization code *** "
@@ -119,7 +119,7 @@ BasicEntityInspector >> initialize [
 ]
 
 { #category : #'access classes' }
-BasicEntityInspector >> objectClassAndItsUserDefinedSuperClasses [
+CMBasicEntityInspector >> objectClassAndItsUserDefinedSuperClasses [
 	"Still used??"
 	| collec |
 	collec := object class superClassesUntil: CMEntity.
