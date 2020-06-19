@@ -1218,7 +1218,7 @@ CMEntity class >> modelClass [
 	Example: CMECECRestrained modelClass -> ECEC "
 
 	^ self package classes
-		detect: [ :cl | cl superclass = CormasModel ]
+		detect: [ :cl | cl superclass = CMAbstractModel ]
 		ifNone: [ nil ]
 ]
 

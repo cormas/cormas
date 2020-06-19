@@ -123,7 +123,7 @@ CMBasicEntityInspector >> objectClassAndItsUserDefinedSuperClasses [
 	"Still used??"
 	| collec |
 	collec := object class superClassesUntil: CMEntity.
-	CormasModel allEntityClasses
+	CMAbstractModel allEntityClasses
 		do:
 			[:c | 
 			collec

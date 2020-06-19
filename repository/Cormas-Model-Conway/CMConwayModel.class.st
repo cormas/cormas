@@ -39,7 +39,7 @@ Then repeat steps 4 and 5.
 "
 Class {
 	#name : #CMConwayModel,
-	#superclass : #CormasModel,
+	#superclass : #CMAbstractModel,
 	#instVars : [
 		'theCMConwayCells'
 	],

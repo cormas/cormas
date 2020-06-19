@@ -991,7 +991,7 @@ CMEntityInspector >> objectClassAndItsUserDefinedSuperClasses [
 	
 	| collec |
 	collec := self entityClass superClassesUntil: CMEntity.
-	CormasModel allEntityClasses
+	CMAbstractModel allEntityClasses
 		do:
 			[:c | 
 			collec

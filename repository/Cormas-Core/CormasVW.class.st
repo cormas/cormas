@@ -22552,7 +22552,7 @@ CormasVW >> objectName [
 CormasVW >> openModel [
 	
 	| tmp aModel |
-	tmp := (CormasModel subclasses select: [:m | m subclasses isEmpty])
+	tmp := (CMAbstractModel subclasses select: [:m | m subclasses isEmpty])
 		asSortedCollection: [:a :b | a name < b name].
 	tmp
 		remove: CormasModelGameInterface

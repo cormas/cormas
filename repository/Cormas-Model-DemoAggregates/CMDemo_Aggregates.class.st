@@ -12,7 +12,7 @@ In the second one, 10 seed cells are randomly chosen in the 50*50 spatial grid. 
 "
 Class {
 	#name : #'CMDemo_Aggregates',
-	#superclass : #CormasModel,
+	#superclass : #CMAbstractModel,
 	#instVars : [
 		'thePlots',
 		'theGroves',
@@ -21,7 +21,7 @@ Class {
 		'nbCells',
 		'theFragmentedForests'
 	],
-	#category : 'Cormas-Model-DemoAggregates'
+	#category : #'Cormas-Model-DemoAggregates'
 }
 
 { #category : #description }

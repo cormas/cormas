@@ -5120,7 +5120,7 @@ Cormas >> createClassModelNamed: aName [
 	classBuilder
 		environment: nameSpace;
 		beFixed;
-		superclass: CormasModel;
+		superclass: CMAbstractModel;
 		className: aName asSymbol;
 		instVarString: '';
 		category: aName , 'Category'.
@@ -5656,7 +5656,7 @@ Cormas >> entitiesListings [
 	directory = '' ifTrue: [^nil].
 	directory := directory asFilename.
 	(self cormasModelClass allClassesInPackage
-		select: [:c | (c inheritsFrom: Entity) or: [c inheritsFrom: CormasModel]])
+		select: [:c | (c inheritsFrom: Entity) or: [c inheritsFrom: CMAbstractModel]])
 		do: [:d | d listing: (directory construct: d class name , '.list.txt')]
 ]
 
@@ -6666,7 +6666,7 @@ Cormas >> openCormasGlossary [
 	| allClasses |
 	allClasses := OrderedCollection new.
 	allClasses add: Cormas.
-	allClasses add: CormasModel.
+	allClasses add: CMAbstractModel.
 	allClasses
 		addAll:
 			('Cormas-Core' asPackage classTagNamed: 'Entities') classes.
@@ -6693,7 +6693,7 @@ Cormas >> openCormasGlossary_Cormas [
 { #category : #'main menu' }
 Cormas >> openCormasGlossary_CormasModel [
 	
-	^self openCormasGlossaryClasses: (Array with: CormasModel)
+	^self openCormasGlossaryClasses: (Array with: CMAbstractModel)
 ]
 
 { #category : #'main menu' }

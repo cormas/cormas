@@ -23,7 +23,7 @@ representing diffusion processes.
 "
 Class {
 	#name : #CMDiffuseModel,
-	#superclass : #CormasModel,
+	#superclass : #CMAbstractModel,
 	#instVars : [
 		'theCMDiffuseCells',
 		'theCMDiffuseAnts',
