@@ -16,7 +16,7 @@ Class {
 		'BrowseAutoFormat',
 		'SaveAutoFormat'
 	],
-	#category : 'Cormas-Core-Others'
+	#category : #'Cormas-Core-Others'
 }
 
 { #category : #autoformat }
@@ -561,7 +561,7 @@ BrowserCodeTool >> addModelMethodsToMenuBuilder: mb [
 	
 	| classes mb2 |
 	mb beginSubMenuLabeled: 'Model methods'.
-	classes := Array with: CormasModelOld.
+	classes := Array with: CMAbstractModel.
 	mb2 := self addPublicMethodsOfClasses: classes toMenuBuilder: mb
 		withSuffix: 'self'.
 	mb2 endSubMenu.
