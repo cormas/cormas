@@ -1,6 +1,6 @@
 Class {
 	#name : #CormasModelForTest,
-	#superclass : #CormasModel,
+	#superclass : #CMAbstractModel,
 	#instVars : [
 		'cells',
 		'agents'

@@ -1,5 +1,5 @@
 Class {
-	#name : #CormasModelTest,
+	#name : #CMAbstractModelTest,
 	#superclass : #TestCase,
 	#instVars : [
 		'model'
@@ -8,7 +8,7 @@ Class {
 }
 
 { #category : #'tests-accessing-entities' }
-CormasModelTest >> newTestModel [
+CMAbstractModelTest >> newTestModel [
 	^ (CormasModelForTest
 		initialize;
 		new)
@@ -23,14 +23,14 @@ CormasModelTest >> newTestModel [
 ]
 
 { #category : #'tests-accessing-entities' }
-CormasModelTest >> setUp [ 
+CMAbstractModelTest >> setUp [ 
 
 	super setUp.
 	model := self newTestModel.
 ]
 
 { #category : #'tests-accessing-entities' }
-CormasModelTest >> testCentralCell [
+CMAbstractModelTest >> testCentralCell [
 	| model |
 	model := (CormasModelForTest
 		initialize;
@@ -49,7 +49,7 @@ CormasModelTest >> testCentralCell [
 ]
 
 { #category : #tests }
-CormasModelTest >> testCreateGridXYNeighborHoodClosed [
+CMAbstractModelTest >> testCreateGridXYNeighborHoodClosed [
 
 	self assert: model allTheEntities size equals: 200.
 	self assert: (model selectCellsOfColumn: 1) size equals: 20.
@@ -57,7 +57,7 @@ CormasModelTest >> testCreateGridXYNeighborHoodClosed [
 ]
 
 { #category : #tests }
-CormasModelTest >> testDominance [
+CMAbstractModelTest >> testDominance [
 	| model |
 	model := (CormasModelForTest
 		initialize;
@@ -75,7 +75,7 @@ CormasModelTest >> testDominance [
 ]
 
 { #category : #tests }
-CormasModelTest >> testDominance1 [
+CMAbstractModelTest >> testDominance1 [
 	| model |
 	model := (CormasModelForTest
 		initialize;
@@ -92,7 +92,7 @@ CormasModelTest >> testDominance1 [
 ]
 
 { #category : #'tests-accessing-entities' }
-CormasModelTest >> testLowerLeftCell [
+CMAbstractModelTest >> testLowerLeftCell [
 	| model |
 	model := (CormasModelForTest
 		initialize;
@@ -111,7 +111,7 @@ CormasModelTest >> testLowerLeftCell [
 ]
 
 { #category : #'tests-accessing-entities' }
-CormasModelTest >> testLowerRightCell [
+CMAbstractModelTest >> testLowerRightCell [
 	| model |
 	model := (CormasModelForTest
 		initialize;
@@ -130,7 +130,7 @@ CormasModelTest >> testLowerRightCell [
 ]
 
 { #category : #tests }
-CormasModelTest >> testNbDistinctValuesOf [
+CMAbstractModelTest >> testNbDistinctValuesOf [
 
 	self assert: (model nbDistinctValuesOf: #state) equals: 1.
 	(model selectCellsOfLine: 1) do: [ :cell | cell state: #dead ].
@@ -140,7 +140,7 @@ CormasModelTest >> testNbDistinctValuesOf [
 ]
 
 { #category : #'tests-accessing-entities' }
-CormasModelTest >> testPickCell [
+CMAbstractModelTest >> testPickCell [
 	| cell |
 
 	cell := model pickCell.
@@ -150,7 +150,7 @@ CormasModelTest >> testPickCell [
 ]
 
 { #category : #'tests-accessing-entities' }
-CormasModelTest >> testPickCellConstrainedBy [
+CMAbstractModelTest >> testPickCellConstrainedBy [
 	| model |
 	model := (CormasModelForTest
 		initialize;
@@ -174,7 +174,7 @@ CormasModelTest >> testPickCellConstrainedBy [
 ]
 
 { #category : #'tests-accessing-entities' }
-CormasModelTest >> testPickCellWithoutAny [
+CMAbstractModelTest >> testPickCellWithoutAny [
 
 	model createN: 50 randomlyLocatedAloneEntities: CMAgentLocationForTest.
 	self assert: ((model pickCellWithoutAny: CMAgentLocationForTest)
@@ -182,19 +182,19 @@ CormasModelTest >> testPickCellWithoutAny [
 ]
 
 { #category : #'tests-accessing-entities' }
-CormasModelTest >> testPickCellsN [
+CMAbstractModelTest >> testPickCellsN [
 
 	self assert: ((model pickCellsN: 5) allSatisfy: #isSpatialEntity)
 ]
 
 { #category : #'tests-accessing-entities' }
-CormasModelTest >> testPickEntity [
+CMAbstractModelTest >> testPickEntity [
 
 	self assert: (model pickEntity: CMCellForTest) isSpatialEntity
 ]
 
 { #category : #'tests-accessing-entities' }
-CormasModelTest >> testPickEntityConstrainedBy [
+CMAbstractModelTest >> testPickEntityConstrainedBy [
 
 	self
 		assert:
@@ -217,7 +217,7 @@ CormasModelTest >> testPickEntityConstrainedBy [
 ]
 
 { #category : #'tests-accessing-entities' }
-CormasModelTest >> testPickNEntities [
+CMAbstractModelTest >> testPickNEntities [
 
 	self
 		assert:
@@ -225,7 +225,7 @@ CormasModelTest >> testPickNEntities [
 ]
 
 { #category : #'tests-accessing-entities' }
-CormasModelTest >> testPickNEntitiesConstrainedBy [
+CMAbstractModelTest >> testPickNEntitiesConstrainedBy [
 
 	self
 		assert:
@@ -237,21 +237,21 @@ CormasModelTest >> testPickNEntitiesConstrainedBy [
 ]
 
 { #category : #'tests-accessing-entities' }
-CormasModelTest >> testPickUnoccupiedCell [
+CMAbstractModelTest >> testPickUnoccupiedCell [
 
 	model createN: 50 randomlyLocatedAloneEntities: CMAgentLocationForTest.
 	self assert: model pickUnoccupiedCell theOccupants isEmpty
 ]
 
 { #category : #tests }
-CormasModelTest >> testProbes [
+CMAbstractModelTest >> testProbes [
 	self
 		assert: CormasModelForTest probes asSet
 		equals: (Set with: #numAlives with: #numDeads)
 ]
 
 { #category : #'tests-accessing-entities' }
-CormasModelTest >> testSelectCellsBetweenLine1Line2AndColumn1Column2 [
+CMAbstractModelTest >> testSelectCellsBetweenLine1Line2AndColumn1Column2 [
 	| model cells |
 	model := (CormasModelForTest
 		initialize;
@@ -272,7 +272,7 @@ CormasModelTest >> testSelectCellsBetweenLine1Line2AndColumn1Column2 [
 ]
 
 { #category : #'tests-accessing-entities' }
-CormasModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
+CMAbstractModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
 	| model cells |
 	model := (CormasModelForTest
 		initialize;
@@ -296,7 +296,7 @@ CormasModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
 ]
 
 { #category : #'tests-accessing-entities' }
-CormasModelTest >> testSelectCellsOfColumn [
+CMAbstractModelTest >> testSelectCellsOfColumn [
 
 	self assert: model allTheEntities size equals: 200.
 	1 to: 10 do: [ :column | 
@@ -307,7 +307,7 @@ CormasModelTest >> testSelectCellsOfColumn [
 ]
 
 { #category : #'tests-accessing-entities' }
-CormasModelTest >> testSelectCellsOfLine [
+CMAbstractModelTest >> testSelectCellsOfLine [
 
 	self assert: model allTheEntities size equals: 200.
 	1 to: 20 do: [ :line | 
@@ -318,7 +318,7 @@ CormasModelTest >> testSelectCellsOfLine [
 ]
 
 { #category : #tests }
-CormasModelTest >> testShortestDistanceToCellsVerifying [
+CMAbstractModelTest >> testShortestDistanceToCellsVerifying [
 	| model |
 	model := CormasModelForTest
 		initialize;
@@ -334,14 +334,14 @@ CormasModelTest >> testShortestDistanceToCellsVerifying [
 ]
 
 { #category : #tests }
-CormasModelTest >> testSpacialClasses [
+CMAbstractModelTest >> testSpacialClasses [
 	self
 		assert: CormasModelForTest spatialClasses
 		equals: (Set with: CMCellForTest)
 ]
 
 { #category : #'tests-accessing-entities' }
-CormasModelTest >> testTheAgents [
+CMAbstractModelTest >> testTheAgents [
 	| agents |
 	model createN: 50 randomlyLocatedAloneEntities: CMAgentLocationForTest.
 	agents := model theAgents.
@@ -352,7 +352,7 @@ CormasModelTest >> testTheAgents [
 ]
 
 { #category : #'tests-accessing-entities' }
-CormasModelTest >> testUpperLeftCell [
+CMAbstractModelTest >> testUpperLeftCell [
 	| model |
 	model := (CormasModelForTest
 		initialize;
@@ -371,7 +371,7 @@ CormasModelTest >> testUpperLeftCell [
 ]
 
 { #category : #'tests-accessing-entities' }
-CormasModelTest >> testUpperRightCell [
+CMAbstractModelTest >> testUpperRightCell [
 	| model |
 	model := (CormasModelForTest
 		initialize;

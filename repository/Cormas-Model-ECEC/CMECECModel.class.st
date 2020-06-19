@@ -1,6 +1,6 @@
 Class {
 	#name : #CMECECModel,
-	#superclass : #CormasModel,
+	#superclass : #CMAbstractModel,
 	#instVars : [
 		'restrainedInitialNumber',
 		'unrestrainedInitialNumber',

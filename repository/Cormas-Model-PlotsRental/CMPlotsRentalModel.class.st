@@ -41,7 +41,7 @@ is even less optimized.
 "
 Class {
 	#name : #CMPlotsRentalModel,
-	#superclass : #CormasModel,
+	#superclass : #CMAbstractModel,
 	#instVars : [
 		'thePR_Farmers',
 		'thePR_Cells',

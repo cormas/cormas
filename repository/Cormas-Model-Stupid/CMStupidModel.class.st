@@ -1,6 +1,6 @@
 Class {
 	#name : #CMStupidModel,
-	#superclass : #CormasModel,
+	#superclass : #CMAbstractModel,
 	#instVars : [
 		'theCMStupidCells',
 		'theCMStupidAgents',

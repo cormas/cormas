@@ -26,7 +26,7 @@ Class {
 		'cormasModelClass',
 		'codeGenerator'
 	],
-	#category : 'Cormas-UI-Project'
+	#category : #'Cormas-UI-Project'
 }
 
 { #category : #'instance creation' }
@@ -145,7 +145,7 @@ CMProjectModel >> createClassModelNamed: modelName [
 		targetClassCategory: validClassName , 'Category';
 		targetClass: validClassName;
 		generateClassNamed: validClassName 
-		superclass: CormasModel.
+		superclass: CMAbstractModel.
 	self codeGenerator generateMethods.
 	^ Smalltalk at: validClassName asSymbol
 ]

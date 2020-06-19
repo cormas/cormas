@@ -15,7 +15,7 @@ This percolation threshold characterizes cellular automata which are representin
 "
 Class {
 	#name : #CMFireAutomataModel,
-	#superclass : #CormasModel,
+	#superclass : #CMAbstractModel,
 	#instVars : [
 		'trees',
 		'theCMFireAutomataCells',
