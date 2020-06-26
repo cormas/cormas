@@ -3743,12 +3743,14 @@ Example: self nearestNeighbourProbaAttribute: #landUse state1: #field state2: #f
 CMAbstractModel >> newEntity: aClass [
 	"Creates a new instance of aClass and collects it, immediately, at the level of  theXXXs collection. 
 	Set also the collector of the new instance"
-	
+
 	| anEntity |
 	anEntity := aClass new.
-	anEntity collector: self collector.
+	anEntity
+		cormasModel: self;
+		collector: self collector.
 	self collect: anEntity.
-	^anEntity
+	^ anEntity
 ]
 
 { #category : #'default values' }
