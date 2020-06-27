@@ -2929,9 +2929,8 @@ CMSimManager >> currentTime [
 ]
 
 { #category : #time }
-CMSimManager >> currentTime: aValue [
-	
-	self cormasModel timeStepValue: aValue
+CMSimManager >> currentTime: anInteger [
+	self cormasModel timeStep: anInteger
 ]
 
 { #category : #time }
@@ -2989,8 +2988,7 @@ CMSimManager >> finalTime: anInteger [
 
 { #category : #time }
 CMSimManager >> finishSimulation [
-	
-	self cormasModel timeStepValue: self finalTime
+	self cormasModel timeStep: self finalTime
 ]
 
 { #category : #accessing }

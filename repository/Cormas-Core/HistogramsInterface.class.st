@@ -38,7 +38,7 @@ Class {
 		'refreshEachStep',
 		'menuHolder'
 	],
-	#category : 'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Interface'
 }
 
 { #category : #'initialize-release' }
@@ -422,12 +422,11 @@ HistogramsInterface >> cormasModel [
 
 { #category : #accessing }
 HistogramsInterface >> cormasModel: aModel [
-	
 	cormasModel == aModel
-		ifFalse:
-			[cormasModel isNil ifFalse: [cormasModel removeDependent: self].
-			(cormasModel := aModel) isNil ifFalse: [cormasModel addDependent: self]].
-	cormasModel timeStepValue onChangeSend: #refreshAfterStep to: self
+		ifTrue: [ ^ self ].
+	cormasModel ifNotNil: [ cormasModel removeDependent: self ].
+	(cormasModel := aModel) ifNotNil: [ cormasModel addDependent: self ].
+	cormasModel whenTimeStepChangedDo: [ self refreshAfterStep ]
 ]
 
 { #category : #aspects }
