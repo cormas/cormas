@@ -37,35 +37,35 @@ Class {
 	#traits : 'TObservable',
 	#classTraits : 'TObservable classTrait',
 	#instVars : [
-		'#cormas',
-		'#timeStep => ObservableSlot',
-		'#channel',
-		'#activeInit',
-		'#activeControl',
-		'#spaceModel',
-		'#data',
-		'#simManager',
-		'#projectManager',
-		'#database',
-		'#collector',
-		'#defaultAttributesSetter',
-		'#sensitivitySetter',
-		'#delayedChanges',
-		'#allClassVarBOSS',
-		'#announcer'
+		'cormas',
+		'timeStep',
+		'channel',
+		'activeInit',
+		'activeControl',
+		'spaceModel',
+		'data',
+		'simManager',
+		'projectManager',
+		'database',
+		'collector',
+		'defaultAttributesSetter',
+		'sensitivitySetter',
+		'delayedChanges',
+		'allClassVarBOSS',
+		'announcer'
 	],
 	#classInstVars : [
-		'#cellClass',
-		'#spatialClasses',
-		'#socialClasses',
-		'#passiveClasses',
-		'#povColorsDict',
-		'#visualStateIsOpen',
-		'#charts',
-		'#activeProbes',
-		'#activityDiagrams',
-		'#currentSimulation',
-		'#randUi'
+		'cellClass',
+		'spatialClasses',
+		'socialClasses',
+		'passiveClasses',
+		'povColorsDict',
+		'visualStateIsOpen',
+		'charts',
+		'activeProbes',
+		'activityDiagrams',
+		'currentSimulation',
+		'randUi'
 	],
 	#category : #'Cormas-Core-Interface'
 }
@@ -3166,7 +3166,7 @@ CMAbstractModel >> hiddenAttributes [
 
 { #category : #scheduling }
 CMAbstractModel >> incrementTimeStep [
-	timeStep := timeStep + 1
+	self timeStep: self timeStep + 1
 ]
 
 { #category : #deprecated }
@@ -3334,8 +3334,6 @@ CMAbstractModel >> initSimulation [
 
 { #category : #initialization }
 CMAbstractModel >> initialize [
-	self class initializeSlots: self.
-	self whenTimeStepChangedDo: [ self timeChanged ].
 	"self class spatialClasses isEmpty ifFalse: [self initializeSpaceModel]."	"NB ->retire pour que les cells ne demandent pas le currentSimulation spaceModel alors qu''il n''est pas encore fini d''initialise"
 	self class socialClasses ifNil: [ self class initializeWithoutVS ].
 	self class socialClasses isEmpty
@@ -5107,8 +5105,8 @@ CMAbstractModel >> timeStep [
 
 { #category : #scheduling }
 CMAbstractModel >> timeStep: anInteger [
-
-	timeStep := anInteger
+	timeStep := anInteger.
+	self timeChanged
 ]
 
 { #category : #scheduling }
@@ -5116,7 +5114,7 @@ CMAbstractModel >> timeStepValue [
 	self
 		deprecated:
 			'timeStepValue is deprecated. If you want to get the timeStep value, use timeStep. If you want to subscribe to the change of timeStep, use whenTimeStepChangedDo:.'.
-	^ self observablePropertyNamed: #timeStep
+	^ self shouldNotImplement
 ]
 
 { #category : #scheduling }
@@ -5395,5 +5393,13 @@ CMAbstractModel >> wayFromCell: cell1 toCell: cell2 [
 
 { #category : #scheduling }
 CMAbstractModel >> whenTimeStepChangedDo: aBlock [
-	self property: #timeStep whenChangedDo: aBlock
+	self announcer when: CMTimeChangedAnnouncement do: aBlock
+]
+
+{ #category : #scheduling }
+CMAbstractModel >> whenTimeStepChangedSend: aSymbol to: anObject [
+	self announcer
+		when: CMTimeChangedAnnouncement
+		send: aSymbol
+		to: anObject
 ]

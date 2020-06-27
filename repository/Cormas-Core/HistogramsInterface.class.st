@@ -426,7 +426,7 @@ HistogramsInterface >> cormasModel: aModel [
 		ifTrue: [ ^ self ].
 	cormasModel ifNotNil: [ cormasModel removeDependent: self ].
 	(cormasModel := aModel) ifNotNil: [ cormasModel addDependent: self ].
-	cormasModel whenTimeStepChangedDo: [ self refreshAfterStep ]
+	cormasModel whenTimeStepChangedSend: #refreshAfterStep to: self
 ]
 
 { #category : #aspects }
