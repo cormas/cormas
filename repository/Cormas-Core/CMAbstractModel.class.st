@@ -34,8 +34,6 @@ Instance Variables
 Class {
 	#name : #CMAbstractModel,
 	#superclass : #Object,
-	#traits : 'TObservable',
-	#classTraits : 'TObservable classTrait',
 	#instVars : [
 		'cormas',
 		'timeStep',
