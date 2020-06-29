@@ -36,7 +36,8 @@ Class {
 		'id',
 		'flag',
 		'collector',
-		'request'
+		'request',
+		'cormasModel'
 	],
 	#classInstVars : [
 		'modelClass',
@@ -1638,11 +1639,21 @@ CMEntity >> cormasHelper [
 	^ CMEntityHelper
 ]
 
+{ #category : #'+ accessing' }
+CMEntity >> cormasModel [
+	^ cormasModel
+]
+
+{ #category : #'+ accessing' }
+CMEntity >> cormasModel: aCMAbstractModel [
+	cormasModel := aCMAbstractModel
+]
+
 { #category : #'- accessing' }
 CMEntity >> currentSimulation [
 	"Direct access to the current simulation registered by the current cormas"
-	
-	^self class modelClass currentSimulation
+
+	^ cormasModel ifNil: [ self class modelClass currentSimulation ]
 ]
 
 { #category : #'+ accessing - scheduling' }
@@ -1980,7 +1991,7 @@ CMEntity >> modelClass [
 	Return value: a class
 	Example: self modelClass -> ECEC"
 
-	^ self class modelClass
+	^ cormasModel ifNotNil: #class ifNil: [ self class modelClass ]
 ]
 
 { #category : #'+ instance creation' }
@@ -2000,12 +2011,14 @@ CMEntity >> newEntity: aClass [
 	"Purpose: creates a new instance of aClass. This new instance will be collected at the level of the model (theXXXs collection) at the end of the current timestep
 Return value: an instance of aClass
 Example: newBorn := self newEntity: self class"
-	
+
 	| anEntity |
 	anEntity := aClass new.
-	anEntity collector: self collector.
+	anEntity
+		cormasModel: self cormasModel;
+		collector: self collector.
 	self collect: anEntity.
-	^anEntity
+	^ anEntity
 ]
 
 { #category : #'- accessing' }
