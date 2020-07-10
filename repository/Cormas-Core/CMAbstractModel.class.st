@@ -36,7 +36,7 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'cormas',
-		'timeStepValue',
+		'timeStep',
 		'channel',
 		'activeInit',
 		'activeControl',
@@ -53,7 +53,6 @@ Class {
 		'announcer'
 	],
 	#classInstVars : [
-		'timeStep',
 		'cellClass',
 		'spatialClasses',
 		'socialClasses',
@@ -1245,11 +1244,10 @@ CMAbstractModel class >> superClassesUntilEntity [
 
 { #category : #'+ testing - scheduling' }
 CMAbstractModel class >> testPeriodicity: anInteger [
-	"Purpose: To test if the curent time step is a multiple of the periodicity defined by anInteger. Can be used by any entity of the model. 
-Return value: aBoolean
-Example: (MyModel testPeriodicity: 12) ifTrue:[self  calculateAnnualBalance]"
-	
-	^self timeStep \\ anInteger = 0
+	"This method is moved to the instance side."
+
+	self deprecated: 'This method is moved to the instance side.'.
+	^ self timeStep \\ anInteger = 0
 ]
 
 { #category : #compiling }
@@ -1274,15 +1272,20 @@ CMAbstractModel class >> testTheAccessors [
 
 { #category : #'+ accessing - scheduling' }
 CMAbstractModel class >> timeStep [
-	"Purpose: Returns the current time step of the simulation. Can be used by any entity of the model. 
-	Example: MyModel timeStep = 10 ifTrue:[self reproduce]"
+	"Deprecated. If you want to get the current timeStep, try 'self cormasModel timeStep'."
 
-	^ timeStep ifNil: [ timeStep := 0 ]
+	self
+		deprecated:
+			'timeStep is moved to the instance side. If you want to get the current time, try "self cormasModel timeStep".'
 ]
 
 { #category : #accessing }
 CMAbstractModel class >> timeStep: anInteger [
-	timeStep := anInteger
+	"deprecated. The timeStep management is moved to the instance side so that we can run multiple instances of models."
+
+	self
+		deprecated: 'The timeStep management is moved to the instance side.'.
+
 ]
 
 { #category : #'- default value' }
@@ -1492,12 +1495,14 @@ Example: (self allTheSituatedEntities: Forager) is returning all the instances o
 
 { #category : #announcement }
 CMAbstractModel >> announceProbesDataUpdated [
-	^self announcer announce: (CMProbesDataUpdatedAnnouncement timeStep:  self class timeStep) 
+	^ self announcer
+		announce: (CMProbesDataUpdatedAnnouncement timeStep: self timeStep)
 ]
 
 { #category : #announcement }
 CMAbstractModel >> announceTimeChange [
-	^self announcer announce: (CMTimeChangedAnnouncement timeStep:  self class timeStep) 
+	^ self announcer
+		announce: (CMTimeChangedAnnouncement timeStep: self timeStep)
 ]
 
 { #category : #announcement }
@@ -3159,7 +3164,7 @@ CMAbstractModel >> hiddenAttributes [
 
 { #category : #scheduling }
 CMAbstractModel >> incrementTimeStep [
-	self timeStepValue: self timeStepValue value + 1
+	self timeStep: self timeStep + 1
 ]
 
 { #category : #deprecated }
@@ -3325,13 +3330,12 @@ CMAbstractModel >> initSimulation [
 	self announcer announce: CMSimInitializationAnnouncement
 ]
 
-{ #category : #'initalize release' }
+{ #category : #initialization }
 CMAbstractModel >> initialize [
-	self timeStepValue whenChangedDo: [ self timeChanged ].	
-		"self class spatialClasses isEmpty ifFalse: [self initializeSpaceModel]."	"NB ->retire pour que les cells ne demandent pas le currentSimulation spaceModel alors qu''il n''est pas encore fini d''initialise"
-	self class socialClasses 
-		ifNil: [ self class initializeWithoutVS ].
-	self class socialClasses isEmpty ifFalse: [ self initializeChannel ].
+	"self class spatialClasses isEmpty ifFalse: [self initializeSpaceModel]."	"NB ->retire pour que les cells ne demandent pas le currentSimulation spaceModel alors qu''il n''est pas encore fini d''initialise"
+	self class socialClasses ifNil: [ self class initializeWithoutVS ].
+	self class socialClasses isEmpty
+		ifFalse: [ self initializeChannel ].
 	self applyModelDefaultCormasSettings
 ]
 
@@ -3743,12 +3747,14 @@ Example: self nearestNeighbourProbaAttribute: #landUse state1: #field state2: #f
 CMAbstractModel >> newEntity: aClass [
 	"Creates a new instance of aClass and collects it, immediately, at the level of  theXXXs collection. 
 	Set also the collector of the new instance"
-	
+
 	| anEntity |
 	anEntity := aClass new.
-	anEntity collector: self collector.
+	anEntity
+		cormasModel: self;
+		collector: self collector.
 	self collect: anEntity.
-	^anEntity
+	^ anEntity
 ]
 
 { #category : #'default values' }
@@ -4162,7 +4168,6 @@ CMAbstractModel >> release [
 	self spaceModel: nil.
 	self channel isNil ifFalse: [self channel population: nil].
 	self channel: nil.
-	self timeStepValue retractInterestsFor: self.
 	super release
 ]
 
@@ -4296,7 +4301,7 @@ CMAbstractModel >> runStep [
 				ifTrue:
 					[self
 						perform: self activeControl
-						with: self timeStepValue value]
+						with: self timeStep]
 				ifFalse: [self perform: self activeControl].
 			self updateEntities].
 	self channel notNil ifTrue: [self channel flush].
@@ -4996,8 +5001,8 @@ CMAbstractModel >> testPeriodicity: anInteger [
 	"Purpose: To test if the curent time step is a multiple of the periodicity defined by anInteger
 Return value: aBoolean
 Example: (self testPeriodicity: 12) ifTrue:[self theFarmers do:[:f| f calculateAnnualBalance]]"
-	
-	^self class testPeriodicity: anInteger
+		
+	^self timeStep \\ anInteger = 0
 ]
 
 { #category : #'+ accessing - entities' }
@@ -5079,8 +5084,7 @@ CMAbstractModel >> timeChanged [
 	Propagate the new time to the class (to be easily accessible from the agents: #currentTime) and all dependents"
 
 	| newTime |
-	newTime := self timeStepValue value.
-	self class timeStep: newTime.
+	newTime := self timeStep.
 	self simWindow ifNotNil: [ :sw | sw newCurrentStepValue: newTime ].
 	self announceTimeChange.
 	self flag: #toClean.
@@ -5094,23 +5098,28 @@ CMAbstractModel >> timeStep [
 	"Purpose: returns the current time step of the simulation
 	Example: self timeStep = 2 ifTrue:[self doSomething]"
 
-	^ self timeStepValue value
+	^ timeStep
 ]
 
 { #category : #scheduling }
 CMAbstractModel >> timeStep: anInteger [
-
-	self timeStepValue: anInteger
+	timeStep := anInteger.
+	self timeChanged
 ]
 
 { #category : #scheduling }
 CMAbstractModel >> timeStepValue [
-	^ timeStepValue ifNil: [ timeStepValue := 0 asValueHolder ]
+	self
+		deprecated:
+			'timeStepValue is deprecated. If you want to get the timeStep value, use timeStep. If you want to subscribe to the change of timeStep, use whenTimeStepChangedDo:.'.
+	^ self shouldNotImplement
 ]
 
 { #category : #scheduling }
 CMAbstractModel >> timeStepValue: anInteger [
-	self timeStepValue value: anInteger
+	self
+		deprecated: 'timeStepValue: is deprecated. Use timeStep: to set the timeStep.'.
+	self timeStep: anInteger
 ]
 
 { #category : #'+ user interface' }
@@ -5378,4 +5387,17 @@ CMAbstractModel >> wayFromCell: cell1 toCell: cell2 [
 	"Purpose: return a collection of cells from cell1 to cell2 (including cell1 and cell2)"
 	
 	^self spaceModel wayFromCell: cell1 toCell: cell2
+]
+
+{ #category : #scheduling }
+CMAbstractModel >> whenTimeStepChangedDo: aBlock [
+	self announcer when: CMTimeChangedAnnouncement do: aBlock
+]
+
+{ #category : #scheduling }
+CMAbstractModel >> whenTimeStepChangedSend: aSymbol to: anObject [
+	self announcer
+		when: CMTimeChangedAnnouncement
+		send: aSymbol
+		to: anObject
 ]
