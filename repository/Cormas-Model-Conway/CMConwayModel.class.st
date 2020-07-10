@@ -240,7 +240,7 @@ CMConwayModel >> initRandomly [
 		columns: 100
 		neighbourhood: 8
 		closed: true.
-	self initCells: #initRandomly
+		self theCMConwayCells do: #initRandomly
 ]
 
 { #category : #init }
@@ -250,7 +250,9 @@ CMConwayModel >> initSmallGrid [
 		columns: 10
 		neighbourhood: 4
 		closed: false.
-	self initCells: #initRandomly
+	
+
+	self theCMConwayCells do: #initRandomly
 ]
 
 { #category : #control }
