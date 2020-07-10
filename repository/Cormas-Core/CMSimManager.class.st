@@ -20,7 +20,7 @@ Class {
 	#classInstVars : [
 		'newFolder'
 	],
-	#category : 'Cormas-Core-Tools'
+	#category : #'Cormas-Core-Tools'
 }
 
 { #category : #accessing }
@@ -2929,9 +2929,13 @@ CMSimManager >> currentTime [
 ]
 
 { #category : #time }
-CMSimManager >> currentTime: aValue [
-	
-	self cormasModel timeStepValue: aValue
+CMSimManager >> currentTime: anInteger [
+	self cormasModel timeStep: anInteger
+]
+
+{ #category : #time }
+CMSimManager >> defaultFinalTime [
+	^ 100
 ]
 
 { #category : #simulate }
@@ -2973,7 +2977,7 @@ CMSimManager >> enableBackward: bool [
 
 { #category : #time }
 CMSimManager >> finalTime [
-	^ finalTime ifNil: [ finalTime := self cormasModel class defaultFinalStep ifNil: [ nil]  ]
+	^ finalTime ifNil: [ finalTime := self defaultFinalTime]
 ]
 
 { #category : #time }
@@ -2984,8 +2988,7 @@ CMSimManager >> finalTime: anInteger [
 
 { #category : #time }
 CMSimManager >> finishSimulation [
-	
-	self cormasModel timeStepValue: self finalTime
+	self cormasModel timeStep: self finalTime
 ]
 
 { #category : #accessing }

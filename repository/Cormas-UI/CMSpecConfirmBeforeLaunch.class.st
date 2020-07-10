@@ -39,7 +39,7 @@ Class {
 		'releaseRandomCheck',
 		'toolbar'
 	],
-	#category : 'Cormas-UI-Core'
+	#category : #'Cormas-UI-Core'
 }
 
 { #category : #specs }
@@ -208,7 +208,7 @@ CMSpecConfirmBeforeLaunch >> initializeWidgets [
 	self fixRandomSeedCheck label: 'Fix the random seed to'.
 	self finalStep label: 'Final step'.
 	self finalStep
-		text: self cormasModel class defaultFinalStep;
+		text: self cormasModel simManager finalTime;
 		help: self translator tSimFinalStepHelp.
 	self finalStep acceptBlock: [  ].
 	self stepBackCheck label: 'Enable stepping back'.

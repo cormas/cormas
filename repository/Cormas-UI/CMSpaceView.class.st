@@ -19,23 +19,23 @@ Class {
 CMSpaceView class >> newOn: aCMCormasModel [
 	"This method is called by the CMSpecProjectWindow. It creates, subscribes and opens a simulationGrid on a cormasModel"
 
-	| newBe |
-	newBe := self new.
-	newBe initializeOn: aCMCormasModel.
-	newBe subscribeOn: aCMCormasModel.
-	^ newBe
+	| instance |
+	instance := self new.
+	instance initializeOn: aCMCormasModel.
+	instance subscribeOn: aCMCormasModel.
+	^ instance
 ]
 
 { #category : #'instance creation' }
 CMSpaceView class >> openOn: aCMCormasModel [
 	"This method is called by the CMSpecProjectWindow. It creates, subscribes and opens a simulationGrid on a cormasModel"
 
-	| newBe |
-	newBe := self new.
-	newBe initializeOn: aCMCormasModel.
-	newBe subscribeOn: aCMCormasModel.
-	newBe openWithToolbar.
-	^ newBe
+	| instance |
+	instance := self new.
+	instance initializeOn: aCMCormasModel.
+	instance subscribeOn: aCMCormasModel.
+	instance openWithToolbar.
+	^ instance
 ]
 
 { #category : #accessing }
@@ -144,7 +144,7 @@ CMSpaceView >> initializeOn: aModel [
 	aModel allTheSituatedEntities isEmpty not
 		ifTrue: [ self addViewForAgents: aModel allTheSituatedEntities.
 			situatedEntitiesViews
-				do: [ :e | e translateTo: e model patch x @ e model patch y * cellSize ] ].
+				do: [ :e | e translateTo: e model patch numCol @ e model patch numLine * cellSize ] ].
 	self canvas focusOnCenterScaled.
 	self signalUpdate.
 	"self setDefaultMenu"
@@ -193,17 +193,16 @@ CMSpaceView >> situatedEntitiesViews: anObject [
 ]
 
 { #category : #initialization }
-CMSpaceView >> subscribeOn: aModel [ 
+CMSpaceView >> subscribeOn: aModel [
 	"This method subscribes the simualtionGrid to the timeChange announcements of a cormasModel.
 	When the simulation time has change, the simulation grid can update it self by calling  self  canvas signalUpdate "
 
 	model announcer
-		subscribe: CMTimeChangedAnnouncement
+		when: CMTimeChangedAnnouncement
 			do: [ :aAnnounce | 
 			aAnnounce timeStep = 0
 				ifFalse: [ self timeChanged: aAnnounce timeStep ] ];
-		subscribe: CMSimInitializationAnnouncement do: [ self timeChanged: 0 ].
-
+		when: CMSimInitializationAnnouncement do: [ self timeChanged: 0 ]
 ]
 
 { #category : #refreshing }
@@ -213,7 +212,7 @@ CMSpaceView >> timeChanged: aNewTimeStep [
 			self addViewForCells: model theESE ]
 		ifFalse: [ self removeObsoleteSituatedEntities ].
 	self addNewSituatedEntities.
-	situatedEntitiesViews do: [ :e | e translateTo: e model patch x @ e model patch y * cellSize ].
+	situatedEntitiesViews do: [ :e | e translateTo: e model patch numCol @ e model patch numLine  * cellSize ].
 	self elements do: #updateShape.
 	self canvas signalUpdate
 ]

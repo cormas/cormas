@@ -36,7 +36,8 @@ Class {
 		'id',
 		'flag',
 		'collector',
-		'request'
+		'request',
+		'cormasModel'
 	],
 	#classInstVars : [
 		'modelClass',
@@ -73,10 +74,9 @@ CMEntity class >> activePov: aSymbol [
 
 { #category : #'- probes' }
 CMEntity class >> activeProbes [
-	
-	^activeProbes isNil
-		ifTrue: [self defaultProbes]
-		ifFalse: [activeProbes]
+	^ activeProbes
+		ifNil: [ self defaultProbes ]
+		ifNotNil: [ activeProbes ]
 ]
 
 { #category : #'- probes' }
@@ -838,28 +838,6 @@ Example: CormasNS.Kernel.Agent getActivityDiagram: #exampleTest   "
 	^ad
 ]
 
-{ #category : #'- utilities - binary storage' }
-CMEntity class >> getClassVarBoss [
-	"Return an OrderedCollection with: (Association key: 'classVar name' value:  classVar value )."
-	
-	| attributColl result attributes |
-	attributColl := OrderedCollection new.
-	attributes := self class allInstVarNames.
-	attributes
-		do:
-			[:att | 
-			(#('superclass' 'methodDict' 'format' 'subclasses' 'instanceVariables' 'organization' 'name' 'classPool' 'environment' 'CurrentId' 'colorsDict' 'image' 'activeProbes' 'povDict' 'activityDiagrams' 'bounds' 'modelClass')
-				includes: att)
-				ifFalse:
-					[result := self instVarAt: (attributes indexOf: att).
-					attributColl
-						add:
-							(Association
-								key: att asSymbol
-								value: result)]].
-	^attributColl
-]
-
 { #category : #'- image' }
 CMEntity class >> getColorAtPov: aSymbolPOV [
 	"Returns a ColorValue according to aSymbolPOV).
@@ -1237,11 +1215,11 @@ CMEntity class >> methodsOfProtocolStartingWith: aString [
 { #category : #'+ utilities - classes' }
 CMEntity class >> modelClass [
 	"Purpose: returns the Class of the current model.
-Return value: <class>
-Example: CMECECRestrained modelClass -> ECEC "
+	Return value: <class>
+	Example: CMECECRestrained modelClass -> ECEC "
 
 	^ self package classes
-		detect: [ :cl | cl superclass = CormasModel ]
+		detect: [ :cl | cl superclass = CMAbstractModel ]
 		ifNone: [ nil ]
 ]
 
@@ -1287,22 +1265,6 @@ CMEntity class >> newAndCollect: aCollector [
 	aCollector collect: anInstance.
 	aCollector updateEntities.
 	^anInstance
-]
-
-{ #category : #'- utilities - binary storage' }
-CMEntity class >> newBoss: attributList [
-	"Method only used for BOSS.
-	Create a new instance of Entity."
-	
-	| ag |
-	ag := self basicNew.
-	attributList
-		do:
-			[:assoc | 
-			ag
-				update: assoc key asString
-				to: assoc value].
-	^ag
 ]
 
 { #category : #'+ activityDiagram - editor' }
@@ -1677,19 +1639,29 @@ CMEntity >> cormasHelper [
 	^ CMEntityHelper
 ]
 
+{ #category : #'+ accessing' }
+CMEntity >> cormasModel [
+	^ cormasModel
+]
+
+{ #category : #'+ accessing' }
+CMEntity >> cormasModel: aCMAbstractModel [
+	cormasModel := aCMAbstractModel
+]
+
 { #category : #'- accessing' }
 CMEntity >> currentSimulation [
 	"Direct access to the current simulation registered by the current cormas"
-	
-	^self class modelClass currentSimulation
+
+	^ cormasModel ifNil: [ self class modelClass currentSimulation ]
 ]
 
 { #category : #'+ accessing - scheduling' }
 CMEntity >> currentTime [
 	"Purpose: returns the current time step of the simulation
-Return value = <Integer>"
-	
-	^self modelClass timeStep
+	Return value = <Integer>"
+
+	^ self modelClass timeStep
 ]
 
 { #category : #'as yet unclassified' }
@@ -2016,10 +1988,10 @@ CMEntity >> manipulationMenuItems [
 { #category : #'+ accessing' }
 CMEntity >> modelClass [
 	"Purpose: returns the Class of the current model
-Return value: a class
-Example: self modelClass -> ECEC"
-	
-	^self class modelClass
+	Return value: a class
+	Example: self modelClass -> ECEC"
+
+	^ cormasModel ifNotNil: #class ifNil: [ self class modelClass ]
 ]
 
 { #category : #'+ instance creation' }
@@ -2039,12 +2011,14 @@ CMEntity >> newEntity: aClass [
 	"Purpose: creates a new instance of aClass. This new instance will be collected at the level of the model (theXXXs collection) at the end of the current timestep
 Return value: an instance of aClass
 Example: newBorn := self newEntity: self class"
-	
+
 	| anEntity |
 	anEntity := aClass new.
-	anEntity collector: self collector.
+	anEntity
+		cormasModel: self cormasModel;
+		collector: self collector.
 	self collect: anEntity.
-	^anEntity
+	^ anEntity
 ]
 
 { #category : #'- accessing' }
@@ -2260,32 +2234,6 @@ Example: self receiveResource: #surfaceWater qty: 10.3"
 	self
 		perform: (att , ':') asSymbol
 		with: newValue
-]
-
-{ #category : #'- utilities - binary storage' }
-CMEntity >> representBinaryOn: bos [
-	"Purpose: The basic approach is to create an instance method named representBinaryOn: in the class whose BOSS representation you want to customize. The method typically returns a MessageSend, which is created by sending a receiver:selector:arguments: message to that class. The receiver argument identifies the class that is to create an instance, typically the object's class. The selector argument is the name of the instance-creation method that is to be used when the data is read by BOSS. The arguments argument is a collection of data values, typically the values of the object's instance variables"
-	
-	| attributColl result attributes |
-	attributColl := OrderedCollection new.
-	attributes := self class allInstVarNames.
-	attributes
-		do:
-			[:att | 
-			(#('collector' 'spaceModel' 'orderedNeighbourhood' 'default') includes: att)
-				ifFalse:
-					[result := self instVarAt: (attributes indexOf: att).	"On supprime les attributs de type UiBuilder,"
-					((result isKindOf: UIBuilder) or: [result isKindOf: Window])
-						ifFalse:
-							[attributColl
-								add:
-									(Association
-										key: att asSymbol
-										value: result)]]].
-	^MessageSend
-		receiver: self class
-		selector: #newBoss:
-		arguments: (Array with: attributColl)
 ]
 
 { #category : #'+ common-pool resources' }

@@ -13,6 +13,28 @@ CMEntityTest >> testCormasEntityIsAbstract [
 ]
 
 { #category : #tests }
+CMEntityTest >> testCormasModel [
+	| model |
+	model := (CormasModelForTest
+		initialize;
+		new)
+		activeInit: #initRandom;
+		initSimulation;
+		initializeSpaceModel;
+		createGridLines: 3
+			columns: 3
+			neighbourhood: 4
+			closed: true;
+		initSimulation.
+	self assert: model centralCell cormasModel identicalTo: model.
+	model
+		createN: 5
+		randomlyLocatedAloneEntities: CMAgentLocationForTest.
+	model theAgents
+		do: [ :agent | self assert: agent cormasModel identicalTo: model ]
+]
+
+{ #category : #tests }
 CMEntityTest >> testModelClass [
 	self
 		assert: CMCellForTest modelClass

@@ -1,18 +1,5 @@
-Class {
-	#name : #CMPlotsRentalModel,
-	#superclass : #CormasModel,
-	#instVars : [
-		'thePR_Farmers',
-		'thePR_Cells',
-		'thePR_Auctioneers'
-	],
-	#category : #'Cormas-Model-PlotsRental'
-}
-
-{ #category : #description }
-CMPlotsRentalModel class >> aboutIt [
-	| txt |
-	txt := 'This model demonstrates the principles of Cormas communicating agents.
+"
+This model demonstrates the principles of Cormas communicating agents.
 Communicating agents have a mailbox and use a communicating channel to deliver messages in the mailboxes of the other agents belonging to their social network.
 
 In this exercice, 10 farmer agents are randomly located on a 
@@ -50,23 +37,18 @@ an asynchronous way of communication between the members of each group:
 as soon as a farmer receives an interesting proposal, he immediatly finalizes 
 the contract without waiting for any other proposal. In this version with 
 social and temporal asymetric of information, the land regrouping process 
-is even less optimized.' asText emphasizeAllWith: #(#bold).
-	ComposedTextView
-			open: txt asValue
-		label: 'About ' , self name
-		icon: (Icon constantNamed: #workspaceModel)
-		extent: 550 @ 600
-]
-
-{ #category : #description }
-CMPlotsRentalModel class >> cormasCompatibleVersion [
-	^ #(2020 5 13 5 43 3) 
-]
-
-{ #category : #description }
-CMPlotsRentalModel class >> currentDeveloperName [
-	^ ' ' 
-]
+is even less optimized.
+"
+Class {
+	#name : #CMPlotsRentalModel,
+	#superclass : #CMAbstractModel,
+	#instVars : [
+		'thePR_Farmers',
+		'thePR_Cells',
+		'thePR_Auctioneers'
+	],
+	#category : #'Cormas-Model-PlotsRental'
+}
 
 { #category : #description }
 CMPlotsRentalModel class >> howToRunIt [
@@ -207,57 +189,6 @@ CMPlotsRentalModel class >> howToRunItOld [
 9. In the Simulation zone, click on the Step button.'
 ]
 
-{ #category : #description }
-CMPlotsRentalModel class >> lastUpdate [
-	^ 'vendredi 22 mai 2020' 
-]
-
-{ #category : #description }
-CMPlotsRentalModel class >> version [
-	^ 'PlotsRental.st' 
-]
-
-{ #category : #description }
-CMPlotsRentalModel class >> versionComments [
-	^ ' 
---------------------- PlotsRental.pcl --------------------- Date: 2020.5.13
-
- *** Developer:   ***
-
- --------------------- PlotsRental.pcl --------------------- Date: 2020.5.13
-
- *** Developer:   ***
-
- --------------------- PlotsRental.pcl --------------------- Date: 2020.5.13
-
- *** Developer:   ***
-
- --------------------- PlotsRental.pcl --------------------- Date: 2020.5.13
-
- *** Developer:   ***
-
- --------------------- PlotsRental.pcl --------------------- Date: 2020.5.13
-
- *** Developer:   ***
-
- --------------------- PlotsRental.pcl --------------------- Date: 2020.5.13
-
- *** Developer:   ***
-
- --------------------- PlotsRental.pcl --------------------- Date: 2020.5.13
-
- *** Developer:   ***
-
- --------------------- PlotsRental.st --------------------- Date: 2020.5.13
-Squeak format
- *** Developer:   ***'
-]
-
-{ #category : #description }
-CMPlotsRentalModel class >> vwCompatibleVersion [
-	^ '7.6' 
-]
-
 { #category : #acces }
 CMPlotsRentalModel >> auctioneer [
 	^ self thePR_Auctioneers first 
@@ -336,9 +267,9 @@ CMPlotsRentalModel >> initAgentsAuctioneer [
 CMPlotsRentalModel >> initCells [
 	"10x10 cells"
 
-	self 
-		createGridX: 10
-		Y: 10
+	self
+		createGridLines: 10
+		columns: 10
 		neighbourhood: 8
 		closed: true
 ]

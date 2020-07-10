@@ -17,11 +17,13 @@ Instance Variables:
 	nbNeighbours	<ByteSymbol>	#four, #six or #eight
 	rMaxEntityImage	<Float>	
 	spatialEntities	<Dictionary>	keys are class names of the different spatial entities of the coresponding CormasModel, values are lists of existing instances
+			
+	xll, yll ??
 
 
 "
 Class {
-	#name : #SpaceModel,
+	#name : #CMSpaceModel,
 	#superclass : #Model,
 	#instVars : [
 		'cardinal',
@@ -32,7 +34,6 @@ Class {
 		'cormasModel',
 		'arrayOrigins',
 		'boundaries',
-		'delimiter',
 		'nbNeighbours',
 		'rMaxEntityImage',
 		'spatialEntities',
@@ -42,29 +43,14 @@ Class {
 		'yll',
 		'cellSize',
 		'absoluteBounds',
-		'autoResizeBounds'
+		'autoResizeBounds',
+		'envReader'
 	],
-	#category : 'Cormas-Core-Space'
+	#category : #'Cormas-Core-Space'
 }
 
-{ #category : #'binary storage' }
-SpaceModel class >> newBoss: attributList [
-	"Method only used for BOSS.
-	Create a new instance of Entity."
-	
-	| ag |
-	ag := self basicNew.
-	attributList
-		do:
-			[:assoc | 
-			ag
-				update: assoc key asString
-				to: assoc value].
-	^ag
-]
-
 { #category : #'private - absoluteWorld' }
-SpaceModel >> absoluteBounds [
+CMSpaceModel >> absoluteBounds [
 	"the absolute default space is a square space of 50x50. It has been defined for a 10x10 cells space.
 It is never display, only copied by the SpaceViews.
 It can be modified (setAbsoluteBounds) when for exemple there is 3 lines and 10 column. Then, absoluteBounds = 3/10 * 50 @ 50"
@@ -77,59 +63,37 @@ It can be modified (setAbsoluteBounds) when for exemple there is 3 lines and 10 
 ]
 
 { #category : #'private - absoluteWorld' }
-SpaceModel >> absoluteBounds: aRectangle [
+CMSpaceModel >> absoluteBounds: aRectangle [
 	
 	absoluteBounds := aRectangle
 ]
 
 { #category : #'private - absoluteWorld' }
-SpaceModel >> absoluteHeight [
+CMSpaceModel >> absoluteHeight [
 	
 	^self absoluteBounds height
 ]
 
 { #category : #'private - absoluteWorld' }
-SpaceModel >> absoluteWidth [
+CMSpaceModel >> absoluteWidth [
 	
 	^self absoluteBounds width
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> activeSpatialEntity [
+CMSpaceModel >> activeSpatialEntity [
 	
 	^activeSpatialEntity
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> activeSpatialEntity: aClass [
+CMSpaceModel >> activeSpatialEntity: aClass [
 	
 	activeSpatialEntity := aClass
 ]
 
-{ #category : #'ESE initialize-release' }
-SpaceModel >> addEnvironmentDataFromFile: aName [
-	"Add attributs value to cells from an .env file"
-	"aName = <String> or aName = <Filename> . If aName = <String>, it creates a Filename from maps directory.
-	Example:	aName = 'test.env'  or
-				aName = a FATFilename('d:\Vw5i.4\cormas\Models\JLB\maps\test.env')"
-	
-	| stream |
-	stream := (self stringToFilename: aName) readStream.	"Lecture des 4 premieres lignes : topologie de la grille"	"On devine le format des lignes"
-	stream lineEndAuto.
-	stream upTo: Character tab.
-	(stream upTo: Character space) asNumber.
-	(stream upTo: Character cr) asNumber.
-	stream upTo: Character tab.
-	(stream upTo: Character cr) asSymbol.
-	stream upTo: Character tab.
-	(stream upTo: Character cr) asSymbol.
-	stream upTo: Character tab.
-	(stream upTo: Character cr) asNumber.
-	self setSpatialEntitiesAttributsValueFromStream: stream
-]
-
 { #category : #'- deprecated' }
-SpaceModel >> aggregate: listPolygons [
+CMSpaceModel >> aggregate: listPolygons [
 	"fusion-agregation des autres polygones sur le premier de la liste"
 	
 	| fusion allPolygons theOthers |
@@ -156,7 +120,7 @@ SpaceModel >> aggregate: listPolygons [
 ]
 
 { #category : #'- deprecated' }
-SpaceModel >> aggregate: listPolygons new: entityC [
+CMSpaceModel >> aggregate: listPolygons new: entityC [
 	"Creation d'une entite de niveau N+1 par aggregation de polygones de niveau N"
 	"!!! Les elements de listPolygons doivent etre adjacents !!!"
 	
@@ -179,12 +143,12 @@ SpaceModel >> aggregate: listPolygons new: entityC [
 ]
 
 { #category : #accessing }
-SpaceModel >> aggregateClasses [
+CMSpaceModel >> aggregateClasses [
 	^ self cormasModelClass compoundSpatialClasses
 ]
 
 { #category : #accessing }
-SpaceModel >> aggregatesEntities [
+CMSpaceModel >> aggregatesEntities [
 	
 	| aCollection |
 	aCollection := OrderedCollection new.
@@ -200,7 +164,7 @@ SpaceModel >> aggregatesEntities [
 ]
 
 { #category : #'- deprecated' }
-SpaceModel >> aggregatesInstancesOf: entityE condition: methodName [
+CMSpaceModel >> aggregatesInstancesOf: entityE condition: methodName [
 	
 	| nameEntitiesE theInterestingEntitiesE setOfComponents seed neighbours newNeighbours |
 	self halt.	"should not implement anymore"
@@ -238,7 +202,7 @@ SpaceModel >> aggregatesInstancesOf: entityE condition: methodName [
 ]
 
 { #category : #'private - irregular polygons creation' }
-SpaceModel >> ajouterAutresAttribut: cel objet: objet attribut: attrib [
+CMSpaceModel >> ajouterAutresAttribut: cel objet: objet attribut: attrib [
 	"Ex: cel = 0.49018@13.7327   objet = a Cell   attrib = 'center'"
 	
 	| listeAttributs position |
@@ -250,41 +214,41 @@ SpaceModel >> ajouterAutresAttribut: cel objet: objet attribut: attrib [
 ]
 
 { #category : #accessing }
-SpaceModel >> allOccupants [
+CMSpaceModel >> allOccupants [
 	"return a list of all the located entities"
 
 	^ self cormasModel allTheEntities select: [ :entity | entity isSituated ]
 ]
 
 { #category : #accessing }
-SpaceModel >> allTheEntities: aClass [
+CMSpaceModel >> allTheEntities: aClass [
 	^ self cormasModel allTheEntities: aClass
 ]
 
 { #category : #accessing }
-SpaceModel >> allTheSituatedEntities: aClass [
+CMSpaceModel >> allTheSituatedEntities: aClass [
 	
 	^self cormasModel allTheSituatedEntities: aClass
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> arrayOrigins: anArray [
+CMSpaceModel >> arrayOrigins: anArray [
 	
 	arrayOrigins := anArray
 ]
 
 { #category : #accessing }
-SpaceModel >> autoResizeBounds [
+CMSpaceModel >> autoResizeBounds [
 	^ autoResizeBounds ifNil: [ autoResizeBounds := true ]
 ]
 
 { #category : #accessing }
-SpaceModel >> autoResizeBounds: anObject [
+CMSpaceModel >> autoResizeBounds: anObject [
 	autoResizeBounds := anObject
 ]
 
 { #category : #'private - regular polygons' }
-SpaceModel >> basicCreateAggregate: compoundEntity from: aSet [
+CMSpaceModel >> basicCreateAggregate: compoundEntity from: aSet [
 	"Creates and returns an instance of compoundEntity composed with a set of cells. The new aggregate is not displayed, nor added to theXXs collection and the components are not informed.
 	aSet = a set of base entities (inheriting from <SpatialEntity>) 
 	compoundEntity = a Class name inheriting from <SpatialEntitySet>"
@@ -298,13 +262,13 @@ SpaceModel >> basicCreateAggregate: compoundEntity from: aSet [
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> boundaries [
+CMSpaceModel >> boundaries [
 	
 	^boundaries
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> boundaries: aSymbol [
+CMSpaceModel >> boundaries: aSymbol [
 	"aSymbol = #closed  or  #torroidal"
 	
 	self boundaries == aSymbol ifTrue: [^self].
@@ -315,7 +279,7 @@ SpaceModel >> boundaries: aSymbol [
 ]
 
 { #category : #'CSE (regular) - instance creation' }
-SpaceModel >> buildAggregates: compoundEntity from: baseEntity verifying: aBlock [
+CMSpaceModel >> buildAggregates: compoundEntity from: baseEntity verifying: aBlock [
 	"This method is equivalent to setAggregates: compoundEntity from: baseEntity verifying: aBlock, except that the aggregats are not reset.
 baseEntity = a subClass of <SpatialEntityElement>
 aBlock example = [:cell | cell state = #tree]
@@ -326,7 +290,7 @@ compoundEntity = a subClass of  <SpatialEntitySet>"
 ]
 
 { #category : #'CSE (regular) - instance creation' }
-SpaceModel >> buildAggregates: compoundEntity from: baseEntity verifying: aBlock minimumSize: ms [
+CMSpaceModel >> buildAggregates: compoundEntity from: baseEntity verifying: aBlock minimumSize: ms [
 	"This method is equivalent to setAggregates: compoundEntity from: baseEntity verifying: aBlock minimumSize: ms, except that the previous aggregats are not reset.
 baseEntity = a subClass of  <SpatialEntity>
 aBlock example = [:cell | cell state = #tree]
@@ -347,14 +311,14 @@ ms= <integer> must be >= 1"
 ]
 
 { #category : #'private - regular polygons - deprecated' }
-SpaceModel >> buildAggregatesFrom: baseEntity verifying: aBlock into: compoundEntity [
+CMSpaceModel >> buildAggregatesFrom: baseEntity verifying: aBlock into: compoundEntity [
 	" ! Deprecated ! Should use : "
 	
 	self setAggregates: compoundEntity from: baseEntity verifying: aBlock
 ]
 
 { #category : #'private - regular polygons - deprecated' }
-SpaceModel >> buildAggregatesFrom: baseEntity verifying: aBlock into: compoundEntity minimumSize: ms [
+CMSpaceModel >> buildAggregatesFrom: baseEntity verifying: aBlock into: compoundEntity minimumSize: ms [
 	" ! Deprecated ! Should use : "
 	
 	self setAggregates: compoundEntity from: baseEntity verifying: aBlock
@@ -362,7 +326,7 @@ SpaceModel >> buildAggregatesFrom: baseEntity verifying: aBlock into: compoundEn
 ]
 
 { #category : #'CSE (regular) - instance creation' }
-SpaceModel >> buildFragmentedEntity: compoundEntity fromCollection: aCollecOfSpatialEntityElement [
+CMSpaceModel >> buildFragmentedEntity: compoundEntity fromCollection: aCollecOfSpatialEntityElement [
 	"create one aggregate <SpatialEntityNotConnex> made of a collection of spatialEntityElements.
 	This method do not resets all aggregates 'compoundEntity' . 
 	aCollecOfSpatialEntityElement = a collection of base entities (inheriting from <SpatialEntity>) 
@@ -379,35 +343,36 @@ SpaceModel >> buildFragmentedEntity: compoundEntity fromCollection: aCollecOfSpa
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> cardinal [
+CMSpaceModel >> cardinal [
+"Number of cells of the grid"
 	^ cardinal
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> cardinal: v [
-	cardinal := v.
-	arrayOrigins := Array new: v withAll: nil
+CMSpaceModel >> cardinal: anInteger [
+	cardinal := anInteger.
+	arrayOrigins := Array new: anInteger withAll: nil
 ]
 
 { #category : #accessing }
-SpaceModel >> cellClass [
+CMSpaceModel >> cellClass [
 	"return the SpatialEntityElement class of the current model"
 
 	^ self cormasModelClass cellClass
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> cellSize [
+CMSpaceModel >> cellSize [
 	^ cellSize
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> cellSize: anObject [
+CMSpaceModel >> cellSize: anObject [
 	cellSize := anObject
 ]
 
 { #category : #'ESE (regular) - special locations' }
-SpaceModel >> cellsBetweenColumn1: colNumber1 andColumn2: colNumber2 [
+CMSpaceModel >> cellsBetweenColumn1: colNumber1 andColumn2: colNumber2 [
 	"Return the cells between the colNumber1 and the colNumber2 of the spatial grid.
 colNumber1   <Integer> lineNumber = Positive Integer
 colNumber2   <Integer> colNumber = Positive Integer"
@@ -422,7 +387,7 @@ colNumber2   <Integer> colNumber = Positive Integer"
 ]
 
 { #category : #'ESE (regular) - special locations' }
-SpaceModel >> cellsBetweenLine1: lineNumber1 andLine2: lineNumber2 [
+CMSpaceModel >> cellsBetweenLine1: lineNumber1 andLine2: lineNumber2 [
 	"Return the cells between the lineNumber1 and the lineNumber2 of the spatial grid.
 lineNumber1   <Integer> lineNumber = Positive Integer
 lineNumber2   <Integer> colNumber = Positive Integer"
@@ -437,43 +402,44 @@ lineNumber2   <Integer> colNumber = Positive Integer"
 ]
 
 { #category : #'ESE (regular) - special locations' }
-SpaceModel >> cellsBetweenLine1: lineNumber1 line2: lineNumber2 andColumn1: colNumber1 column2: colNumber2 [
-	"Return the cells between the lines lineNumber1 and lineNumber2, and between the columns colNumber1 and colNumber2 of the spatial grid. The Cells are sorted by id.
-lineNumber1   <Integer> lineNumber = Positive Integer
-lineNumber2   <Integer> colNumber = Positive Integer
-colNumber1   <Integer> lineNumber = Positive Integer
-colNumber2   <Integer> colNumber = Positive Integer
-Ex:  cellsBetweenLine1: 1 line2: 6 andColumn1: 2 column2: 3  ->  a collection of cells between columns 2 and 3, and between lines 1 and 6, and ordered from line 1 to line 6"
-	
-	| l1 l2 c1 c2 |
+CMSpaceModel >> cellsBetweenLine1: lineNumber1 line2: lineNumber2 andColumn1: colNumber1 column2: colNumber2 [
+	"Purpose: Return the cells between the lines lineNumber1 and lineNumber2, and between the columns colNumber1 and colNumber2 of the spatial grid. The Cells are sorted by id.
+Arguments: lineNumber1   <Integer> lineNumber = Positive Integer
+Arguments: lineNumber2   <Integer> colNumber = Positive Integer
+Arguments: colNumber1   <Integer> lineNumber = Positive Integer
+Arguments: colNumber2   <Integer> colNumber = Positive Integer
+Example:  cellsBetweenLine1: 1 line2: 6 andColumn1: 2 column2: 3  ->  a collection of cells between columns 2 and 3, and between lines 1 and 6, and ordered from line 1 to line 6"
+
+	| l1 l2 c1 c2 cellsCol |
 	l1 := lineNumber1 min: lineNumber2.
 	l2 := lineNumber1 max: lineNumber2.
 	c1 := colNumber1 min: colNumber2.
 	c2 := colNumber1 max: colNumber2.
-	^self
-		cellsIntoRectangle:
-			(Rectangle
-				origin: l1 @ c1
-				corner: l2 @ c2)
+	cellsCol := self cellsBetweenColumn1: c1 andColumn2: c2.
+	^ (self cellsBetweenLine1: l1 andLine2: l2)
+		select: [ :c | cellsCol includes: c ]
 ]
 
 { #category : #'ESE (regular) - special locations' }
-SpaceModel >> cellsIntoRectangle: aRectangle [
-	"Return the cells between the lineNumber and the colNumber of the spatial grid. The Cells are sorted by id.
-aRectangle   <Rectangle> where origin < corner.
-Ex:  cellsIntoRectangle: (Rectangle origin: 1@2 corner: 6@3)  ->  a collection of cells between columns 2 and 3, and between lines 1 and 6, and ordered from line 1 to line 6"
-	
+CMSpaceModel >> cellsIntoRectangle: aRectangle [
+	"This method is deprecated. Please use cellsBetwenLine1:line2:andColumn1:column2: instead.
+Purpose: Return the cells between the lineNumber and the colNumber of the spatial grid. The Cells are sorted by id.
+Argument: aRectangle   <Rectangle> where origin < corner.
+Example:  cellsIntoRectangle: (Rectangle origin: 1@2 corner: 6@3)  ->  a collection of cells between columns 2 and 3, and between lines 1 and 6, and ordered from line 1 to line 6"
+
 	| cellsCol |
+	self
+		deprecated: 'Please use cellsBetwenLine1:line2:andColumn1:column2: instead.'.
 	cellsCol := self
 		cellsBetweenColumn1: aRectangle origin y
 		andColumn2: aRectangle corner y.
-	^(self
+	^ (self
 		cellsBetweenLine1: aRectangle origin x
-		andLine2: aRectangle corner x) select: [:c | cellsCol includes: c]
+		andLine2: aRectangle corner x) select: [ :c | cellsCol includes: c ]
 ]
 
 { #category : #'ESE (regular) - special locations' }
-SpaceModel >> cellsIntoRectangleFrom: cell1 to: cell2 [
+CMSpaceModel >> cellsIntoRectangleFrom: cell1 to: cell2 [
 	"Return the cells between the lineNumber and the colNumber of the spatial grid. The Cells are ordered from cell1 to cell2.
 cell1   <SpatialEntityElement>  
 cell2   <SpatialEntityElement> "
@@ -509,7 +475,7 @@ cell2   <SpatialEntityElement> "
 ]
 
 { #category : #'ESE (regular) - special locations' }
-SpaceModel >> cellsOfColumn: colNumber [
+CMSpaceModel >> cellsOfColumn: colNumber [
 	"Return the cells in the colNumber of the spatial grid.
 colNumber   <Integer> colNumber = Positive Integer"
 
@@ -517,7 +483,7 @@ colNumber   <Integer> colNumber = Positive Integer"
 ]
 
 { #category : #'ESE (regular) - special locations' }
-SpaceModel >> cellsOfLine: lineNumber [
+CMSpaceModel >> cellsOfLine: lineNumber [
 	"Return the cells in the lineNumber of the spatial grid.
 lineNumber   <Integer> lineNumber = Positive Integer"
 
@@ -525,21 +491,21 @@ lineNumber   <Integer> lineNumber = Positive Integer"
 ]
 
 { #category : #'ESE (regular) - special locations' }
-SpaceModel >> centralLocation [
+CMSpaceModel >> centralLocation [
 	(line even or: [ column even ])
 		ifTrue: [ ^ self cormas warn: 'Grid dimensions is not odd' ].
 	^ self elementaryEntities at: (line * column / 2) asInteger + 1
 ]
 
 { #category : #'private - notification' }
-SpaceModel >> changed: anAspectSymbol with: aParameter [
+CMSpaceModel >> changed: anAspectSymbol with: aParameter [
 	"All changes are redirected to cormasModel which can buffer them"
 	
 	self cormasModel registerSpaceModelChange: anAspectSymbol with: aParameter
 ]
 
 { #category : #'private - notification' }
-SpaceModel >> checkRemoteSpaceModels [
+CMSpaceModel >> checkRemoteSpaceModels [
 	
 	| notResponding |
 	notResponding := Set new.
@@ -549,42 +515,63 @@ SpaceModel >> checkRemoteSpaceModels [
 ]
 
 { #category : #'user interface' }
-SpaceModel >> closeGraphicWindows [
+CMSpaceModel >> closeGraphicWindows [
 	"propagate some closeRequest to dependents. Added while removing Cormas>>spaceInterfaces link"
 	
 	self changed: #closeRequest
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> column [
+CMSpaceModel >> column [
 	^ column
 ]
 
-{ #category : #'private - accessing' }
-SpaceModel >> connexity [
-	"Purpose: returns the value of the grid connexity, i.e. 8, 4 or 6.
-If the grid is irregular, returns 0"
-	
-	self gridCellShape = #irregular ifTrue: [^0].
-	self nbNeighbours = #eight ifTrue: [^8].
-	self nbNeighbours = #four ifTrue: [^4].
-	self nbNeighbours = #six ifTrue: [^6]
+{ #category : #'CSE (general) - import - export' }
+CMSpaceModel >> configureSpaceFromEnv: aStream [
+	" Private - Use values read from an Env reader to setup the receiver "
+
+	self 
+		line: self envReader dimX 
+		column: self envReader dimY.
+	self nbNeighbours: self envReader cp.
+	self envReader cp = #six
+		ifTrue: [ self gridCellShape: #hexagonal ]
+		ifFalse: [ self gridCellShape: #squared ].
+	self resetSpatialEntities.
+	self createCells.
+	self boundaries: self envReader ce.
+	self envReader setSpatialEntitiesAttributesValueFrom: aStream
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> cormas [
+CMSpaceModel >> connexity [
+	"Purpose: returns the value of the grid connexity, i.e. 8, 4 or 6.
+	If the grid is irregular, returns 0"
+	
+	self gridCellShape = #irregular
+		ifTrue: [ ^ 0 ].
+	self nbNeighbours = #eight
+		ifTrue: [ ^ 8 ].
+	self nbNeighbours = #four
+		ifTrue: [ ^ 4 ].
+	self nbNeighbours = #six
+		ifTrue: [ ^ 6 ]
+]
+
+{ #category : #'private - accessing' }
+CMSpaceModel >> cormas [
 	
 	^cormasModel cormas
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> cormasModel [
+CMSpaceModel >> cormasModel [
 	
 	^cormasModel
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> cormasModel: aCormasModel [
+CMSpaceModel >> cormasModel: aCormasModel [
 	"The cormasModel is some kind of model for the spaceModel (receive notification)"
 	
 	cormasModel == aCormasModel ifTrue: [^self].
@@ -594,12 +581,12 @@ SpaceModel >> cormasModel: aCormasModel [
 ]
 
 { #category : #accessing }
-SpaceModel >> cormasModelClass [
+CMSpaceModel >> cormasModelClass [
 	^ self cormasModel class
 ]
 
 { #category : #'private - regular polygons' }
-SpaceModel >> createAggregate: compoundEntity from: aSet [
+CMSpaceModel >> createAggregate: compoundEntity from: aSet [
 	"Creates and returns an instance of compoundEntity composed with a set of cells. 
 	aSet = a set of base entities (inheriting from <SpatialEntity>) 
 	compoundEntity = a Class name inheriting from <SpatialEntitySet>"
@@ -616,7 +603,7 @@ SpaceModel >> createAggregate: compoundEntity from: aSet [
 ]
 
 { #category : #'private - regular cells - instance creation' }
-SpaceModel >> createCells [
+CMSpaceModel >> createCells [
 	"create all the cells and their connexions, and collect them as elementaryEntities collection"
 	
 	| allEse |
@@ -639,7 +626,7 @@ SpaceModel >> createCells [
 ]
 
 { #category : #'private - regular cells - instance creation' }
-SpaceModel >> createHexagonalCellsFigure [
+CMSpaceModel >> createHexagonalCellsFigure [
 	"On enleve le nombre de poly a hauteur et largeur afin de laisser une 
 	bordure"
 	"calcul du diametre du cercle"
@@ -675,7 +662,7 @@ SpaceModel >> createHexagonalCellsFigure [
 ]
 
 { #category : #'private - regular polygons' }
-SpaceModel >> createOneAggregate: compoundEntity from: aSet [
+CMSpaceModel >> createOneAggregate: compoundEntity from: aSet [
 	"Creates and returns an instance of compoundEntity composed with a set of cells. 
 	aSet = a set of base entities (inheriting from <SpatialEntity>) 
 	compoundEntity = a Class name inheriting from <SpatialEntitySet>"
@@ -687,7 +674,7 @@ SpaceModel >> createOneAggregate: compoundEntity from: aSet [
 ]
 
 { #category : #'private - regular cells - instance creation' }
-SpaceModel >> createRectangularCellsFigure [
+CMSpaceModel >> createRectangularCellsFigure [
 	"creation des coordonnees de l'ensemble des cellules carrees de la grille"
 	
 	| cote carre aPov i |
@@ -715,7 +702,7 @@ SpaceModel >> createRectangularCellsFigure [
 ]
 
 { #category : #'private - regular polygons' }
-SpaceModel >> createSilentlyAggregate: compoundEntity from: aSet [
+CMSpaceModel >> createSilentlyAggregate: compoundEntity from: aSet [
 	"Creates and returns an instance of compoundEntity composed with a set of cells. The new aggregate is not displayed.
 	aSet = a set of base entities (inheriting from <SpatialEntity>) 
 	compoundEntity = a Class name inheriting from <SpatialEntitySet>"
@@ -733,7 +720,7 @@ SpaceModel >> createSilentlyAggregate: compoundEntity from: aSet [
 ]
 
 { #category : #'private - regular cells - instance creation' }
-SpaceModel >> createTopLeftHexagonalCellsFigure [
+CMSpaceModel >> createTopLeftHexagonalCellsFigure [
 	"return a Dictionary ('translation'->47.619@41.2393 'delay'->23.8095 'object'->a Polyline ) where a Polyline is a perfect hexagon"
 	"soit r le rayon du cercle passant par tous les sommets de l'hexagone, alors, la hauteur de l'hexagone 
 	est de 2r, et la largeur de 2r cos 30¬∞ ( note: cos 30¬∞ = (3 sqrt)/2 = 0.866025 ), et un c√¥t√© mesure r. 
@@ -767,7 +754,7 @@ cad : absoluteLength = (3.p + 1)*(2r) / 4
 ]
 
 { #category : #'private - dispatch' }
-SpaceModel >> dispatchCompoundSpatialEntity: class [
+CMSpaceModel >> dispatchCompoundSpatialEntity: class [
 	"Gives the new entities to cormasModel and alarm the spaceInterfaces"
 	
 	self cormasModel
@@ -777,7 +764,7 @@ SpaceModel >> dispatchCompoundSpatialEntity: class [
 ]
 
 { #category : #'private - dispatch' }
-SpaceModel >> dispatchOneCompoundSpatialEntity: anEntity [
+CMSpaceModel >> dispatchOneCompoundSpatialEntity: anEntity [
 	"Gives the new entity to cormasModel and alarm the spaceInterfaces"
 	
 	self cormasModel collect: anEntity.
@@ -788,7 +775,7 @@ SpaceModel >> dispatchOneCompoundSpatialEntity: anEntity [
 ]
 
 { #category : #'private - display' }
-SpaceModel >> display: aCollec on: aGC [
+CMSpaceModel >> display: aCollec on: aGC [
 	
 	aGC paint: self vue backgroundColor.
 	aGC displayRectangle: aGC clippingBounds.
@@ -796,7 +783,7 @@ SpaceModel >> display: aCollec on: aGC [
 ]
 
 { #category : #'private - display' }
-SpaceModel >> displayInfo: aSymbol of: aClass [
+CMSpaceModel >> displayInfo: aSymbol of: aClass [
 	"Purpose: set the INFO of aClass to be displayed on the opened spatial grid
 Example : self displayInfo: #landUse of: Cell"
 	
@@ -805,7 +792,7 @@ Example : self displayInfo: #landUse of: Cell"
 ]
 
 { #category : #'private - display' }
-SpaceModel >> displayPov: aSymbol of: aClass [
+CMSpaceModel >> displayPov: aSymbol of: aClass [
 	"Purpose: set the POV of aClass to be displayed on the opened spatial grid
 Example : self displayPov: #landUse of: Cell"
 	
@@ -815,7 +802,7 @@ Example : self displayPov: #landUse of: Cell"
 ]
 
 { #category : #'landscape indices' }
-SpaceModel >> distanceFromCell: cell1 toCell: cell2 [
+CMSpaceModel >> distanceFromCell: cell1 toCell: cell2 [
 	"return the distance in number of cells (also known as Manhattan distance)"
 	
 	| nbLines nbCols |
@@ -870,7 +857,7 @@ il faut aussi rajouter 1 √† dC qd dL est impaire..."
 ]
 
 { #category : #'landscape indices' }
-SpaceModel >> distanceFromHexagonalCell: cell1 toCell: cell2 [
+CMSpaceModel >> distanceFromHexagonalCell: cell1 toCell: cell2 [
 	"return the distance in number of hexagonal cells"
 	
 	| nbLines nbCols add colTheoriq |
@@ -891,7 +878,7 @@ SpaceModel >> distanceFromHexagonalCell: cell1 toCell: cell2 [
 ]
 
 { #category : #'landscape indices' }
-SpaceModel >> dominance: attribute [
+CMSpaceModel >> dominance: attribute [
 	"Compute dominance according to the attribute"
 
 	| numberCells sum n pi classes |
@@ -908,7 +895,7 @@ SpaceModel >> dominance: attribute [
 ]
 
 { #category : #'private - regular cells - instance creation' }
-SpaceModel >> eastCell: k [
+CMSpaceModel >> eastCell: k [
 	
 	k \\ column = 0 ifFalse: [^k + 1].
 	boundaries == #torroidal ifTrue: [^k - (column - 1)].
@@ -916,7 +903,7 @@ SpaceModel >> eastCell: k [
 ]
 
 { #category : #'private - regular cells - instance creation' }
-SpaceModel >> eastCellHexa: k [
+CMSpaceModel >> eastCellHexa: k [
 	
 	k = 0 ifTrue: [^0].
 	k < column | ((k - 1) // column + 1) odd
@@ -929,7 +916,7 @@ SpaceModel >> eastCellHexa: k [
 ]
 
 { #category : #'landscape indices' }
-SpaceModel >> edgeDensity: aClass [
+CMSpaceModel >> edgeDensity: aClass [
 	"return the data (a number) to be recorded"
 	
 	| size |
@@ -940,7 +927,7 @@ SpaceModel >> edgeDensity: aClass [
 ]
 
 { #category : #'landscape indices' }
-SpaceModel >> edgeDensity: aClass totalArea: aNumber [
+CMSpaceModel >> edgeDensity: aClass totalArea: aNumber [
 	"this method is created for cases where the totalArea is not equal to the total size of the grid"
 	
 	| size |
@@ -951,7 +938,7 @@ SpaceModel >> edgeDensity: aClass totalArea: aNumber [
 ]
 
 { #category : #'private - regularCells - shapes' }
-SpaceModel >> eightconnexe [
+CMSpaceModel >> eightconnexe [
 	"received from SpaceInterface menu, when the user want to change the shape of the cells"
 	
 	self gridCellShape ~= #squared
@@ -966,13 +953,13 @@ SpaceModel >> eightconnexe [
 ]
 
 { #category : #accessing }
-SpaceModel >> elementaryEntities [
+CMSpaceModel >> elementaryEntities [
 	
 	^self spatialEntities at: self cellClass name
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> elementaryEntities: x [
+CMSpaceModel >> elementaryEntities: x [
 	
 	self spatialEntities
 		at: self cormasModelClass cellClass name
@@ -981,20 +968,33 @@ SpaceModel >> elementaryEntities: x [
 ]
 
 { #category : #accessing }
-SpaceModel >> elementaryEntitiesDefaultPovs [
+CMSpaceModel >> elementaryEntitiesDefaultPovs [
 	
 	^elementaryEntitiesDefaultPovs
 		ifNil: [elementaryEntitiesDefaultPovs := OrderedCollection new]
 ]
 
 { #category : #accessing }
-SpaceModel >> elementaryEntitiesDefaultPovs: anObject [
+CMSpaceModel >> elementaryEntitiesDefaultPovs: anObject [
 	
 	elementaryEntitiesDefaultPovs := anObject
 ]
 
+{ #category : #accessing }
+CMSpaceModel >> envReader [
+	" Answer a <CMEnvFileReader> used to read and parse a .env file "
+
+	^ envReader
+		ifNil: [ envReader := CMEnvFileReader forModel: self ]
+]
+
+{ #category : #accessing }
+CMSpaceModel >> envReader: anObject [
+	envReader := anObject
+]
+
 { #category : #'user interface' }
-SpaceModel >> envSpecStringFor: spatialEntityName [
+CMSpaceModel >> envSpecStringFor: spatialEntityName [
 	"compute the description of the environnment (for the spaceInterface title)"
 	
 	| s nb |
@@ -1033,7 +1033,7 @@ SpaceModel >> envSpecStringFor: spatialEntityName [
 ]
 
 { #category : #'landscape indices' }
-SpaceModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
+CMSpaceModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 	"return the euclidian distance (unit = cell) using the Euclidean distance formula : square root of [(Xa - Xb)^2 + (Ya - Yb)^2)]"
 	
 	| nbLines nbCols |
@@ -1047,7 +1047,7 @@ SpaceModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 ]
 
 { #category : #'import - export' }
-SpaceModel >> exportAggregateClass: class separator: aChar [
+CMSpaceModel >> exportAggregateClass: class separator: aChar [
 	"Creates in maps directory a file named 'class.agg' which contains lines representing each intance of class 'class'. 
 Each line contains the id of the instance as first element and the id of all its components separated by aChar"
 	
@@ -1075,7 +1075,7 @@ Each line contains the id of the instance as first element and the id of all its
 ]
 
 { #category : #'import - export' }
-SpaceModel >> exportAggregateClass: class separator: aChar filename: aStringOrFileName [
+CMSpaceModel >> exportAggregateClass: class separator: aChar filename: aStringOrFileName [
 	"Creates in maps directory a file named 'class.agg' which contains lines representing each intance of class 'class'. 
 Each line contains the id of the instance as first element and the id of all its components separated by aChar"
 	
@@ -1102,7 +1102,7 @@ Each line contains the id of the instance as first element and the id of all its
 ]
 
 { #category : #'import - export' }
-SpaceModel >> exportAttribute: attributeName fromClass: className [
+CMSpaceModel >> exportAttribute: attributeName fromClass: className [
 	
 	| stream filename |
 	filename := (Cormas mapsPath: self cormasModelClass name)
@@ -1125,7 +1125,7 @@ SpaceModel >> exportAttribute: attributeName fromClass: className [
 ]
 
 { #category : #'private - import - export' }
-SpaceModel >> exportToMapInfo: attributes inFile: file [
+CMSpaceModel >> exportToMapInfo: attributes inFile: file [
 	
 	| stream firstValue firstPatch dicoAttConv patch a c collec |
 	stream := file asFilename writeStream.
@@ -1205,7 +1205,7 @@ SpaceModel >> exportToMapInfo: attributes inFile: file [
 ]
 
 { #category : #'private - display' }
-SpaceModel >> findIndexForEntityClass: entityClass id: entityId in: someEntities [
+CMSpaceModel >> findIndexForEntityClass: entityClass id: entityId in: someEntities [
 	"sent by a remote spaceInterface to identify a specific entity identified by its id and class among a 
 	collection of local entities"
 	
@@ -1218,7 +1218,7 @@ SpaceModel >> findIndexForEntityClass: entityClass id: entityId in: someEntities
 ]
 
 { #category : #'private - regularCells - shapes' }
-SpaceModel >> fourconnexe [
+CMSpaceModel >> fourconnexe [
 	"received from SpaceInterface menu, when the user want to change the shape of the cells"
 	
 	self gridCellShape ~= #squared
@@ -1233,7 +1233,7 @@ SpaceModel >> fourconnexe [
 ]
 
 { #category : #'landscape indices' }
-SpaceModel >> fractalDimension: aClass [
+CMSpaceModel >> fractalDimension: aClass [
 	| aCollection aggregates |
 	aggregates := self cormasModel perform: ('the' , aClass name asString , 's') asSymbol.
 	aCollection := aggregates collect: [ :a | Array with: a size ln with: (a perimeter / 4) ln ].
@@ -1241,7 +1241,7 @@ SpaceModel >> fractalDimension: aClass [
 ]
 
 { #category : #'private - regular polygons' }
-SpaceModel >> getAggregatesFrom: baseEntity attribute: attributeName [
+CMSpaceModel >> getAggregatesFrom: baseEntity attribute: attributeName [
 	"Return a collection of sets of contiguous components holding the same attributeName value"
 	
 	| newCollection seed setOfComponents neighbours newNeighbours theLLEntities |
@@ -1280,7 +1280,7 @@ SpaceModel >> getAggregatesFrom: baseEntity attribute: attributeName [
 ]
 
 { #category : #'private - regular polygons' }
-SpaceModel >> getAggregatesFrom: baseEntity verifying: aBlock [
+CMSpaceModel >> getAggregatesFrom: baseEntity verifying: aBlock [
 	
 	| eeInstances set seed neighbours newNeighbours collec |
 	self boundaries = #closed ifFalse: [^self warningBoundaries].
@@ -1312,7 +1312,7 @@ SpaceModel >> getAggregatesFrom: baseEntity verifying: aBlock [
 ]
 
 { #category : #'import - export' }
-SpaceModel >> getDataFromASCFile: aFileName [
+CMSpaceModel >> getDataFromASCFile: aFileName [
 	"Create the cells from an ASC filename. Each value = '-9999'  is set to 'nil' then translated as 0."
 	
 	| file buffer separator fileData temp line2 cols rows i list att |
@@ -1369,7 +1369,7 @@ SpaceModel >> getDataFromASCFile: aFileName [
 ]
 
 { #category : #'import - export' }
-SpaceModel >> getDataFromASCFile: aFileName onAttribute: att [
+CMSpaceModel >> getDataFromASCFile: aFileName onAttribute: att [
 	
 	| file buffer separator fileData temp line2 cols rows i |
 	separator := Character cr.
@@ -1409,7 +1409,7 @@ SpaceModel >> getDataFromASCFile: aFileName onAttribute: att [
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> getInstanceOfClass: aClass fromId: anId [
+CMSpaceModel >> getInstanceOfClass: aClass fromId: anId [
 	
 	(self spatialEntities isNil
 		or:
@@ -1425,7 +1425,7 @@ SpaceModel >> getInstanceOfClass: aClass fromId: anId [
 ]
 
 { #category : #'accessing povs' }
-SpaceModel >> getPovsDataOfArcEntity: aClass forSelector: povSelector andInfo: infoName [
+CMSpaceModel >> getPovsDataOfArcEntity: aClass forSelector: povSelector andInfo: infoName [
 	"direct access to the pov spec of a set of entities"
 	
 	| entities |
@@ -1441,7 +1441,7 @@ SpaceModel >> getPovsDataOfArcEntity: aClass forSelector: povSelector andInfo: i
 ]
 
 { #category : #'accessing povs' }
-SpaceModel >> getPovsDataOfEntity: aClass forSelector: povSelector andInfo: infoName [
+CMSpaceModel >> getPovsDataOfEntity: aClass forSelector: povSelector andInfo: infoName [
 	"direct access to the pov spec of a set of entities"
 	
 	| entities |
@@ -1465,7 +1465,7 @@ SpaceModel >> getPovsDataOfEntity: aClass forSelector: povSelector andInfo: info
 ]
 
 { #category : #'accessing povs' }
-SpaceModel >> getPovsDataOfOccupantEntity: aClass forSelector: povSelector andInfo: infoName [
+CMSpaceModel >> getPovsDataOfOccupantEntity: aClass forSelector: povSelector andInfo: infoName [
 	"direct access to the pov spec of a set of entities"
 	
 	| entities |
@@ -1482,7 +1482,7 @@ SpaceModel >> getPovsDataOfOccupantEntity: aClass forSelector: povSelector andIn
 ]
 
 { #category : #'private - regular polygons' }
-SpaceModel >> getSetsOfContiguous: baseEntity attribute: attributeName [
+CMSpaceModel >> getSetsOfContiguous: baseEntity attribute: attributeName [
 	"Return a collection of sets of contiguous components holding the same attributeName value"
 	
 	^self
@@ -1500,7 +1500,7 @@ SpaceModel >> getSetsOfContiguous: baseEntity attribute: attributeName [
 ]
 
 { #category : #'private - regular polygons' }
-SpaceModel >> getSetsOfContiguous: baseEntity attribute: attributeName1 attribute: attributeName2 [
+CMSpaceModel >> getSetsOfContiguous: baseEntity attribute: attributeName1 attribute: attributeName2 [
 	"Return a collection of sets of contiguous components holding the same value for both attributes"
 	
 	^self
@@ -1525,7 +1525,7 @@ SpaceModel >> getSetsOfContiguous: baseEntity attribute: attributeName1 attribut
 ]
 
 { #category : #'private - regular polygons' }
-SpaceModel >> getSetsOfContiguous: baseEntity attribute: attributeName excludingValue: aValue [
+CMSpaceModel >> getSetsOfContiguous: baseEntity attribute: attributeName excludingValue: aValue [
 	"Return a collection of sets of contiguous components holding the same attributeName value"
 	
 	^self
@@ -1546,7 +1546,7 @@ SpaceModel >> getSetsOfContiguous: baseEntity attribute: attributeName excluding
 ]
 
 { #category : #'private - regular polygons' }
-SpaceModel >> getSetsOfContiguous: baseEntity conditionalBlocks: blocks conditionalArguments: arguments [
+CMSpaceModel >> getSetsOfContiguous: baseEntity conditionalBlocks: blocks conditionalArguments: arguments [
 	"Return a collection of sets of contiguous components"
 	
 	| collec seed setOfContiguousComponents neighbours newNeighbours baseEntities valuesB2 valuesB3 |
@@ -1607,7 +1607,7 @@ SpaceModel >> getSetsOfContiguous: baseEntity conditionalBlocks: blocks conditio
 ]
 
 { #category : #'private - regular polygons' }
-SpaceModel >> getSetsOfContiguous: baseEntity horizontalDividers: i verticalDividers: j [
+CMSpaceModel >> getSetsOfContiguous: baseEntity horizontalDividers: i verticalDividers: j [
 	
 	| nbLG nbCG nbLP nbCP zone allComponents collec |
 	"dimensions de la grille"
@@ -1639,7 +1639,7 @@ SpaceModel >> getSetsOfContiguous: baseEntity horizontalDividers: i verticalDivi
 ]
 
 { #category : #'private - regular polygons' }
-SpaceModel >> getSetsOfContiguous: baseEntity verifying: aBlock [
+CMSpaceModel >> getSetsOfContiguous: baseEntity verifying: aBlock [
 	
 	^self
 		getSetsOfContiguous: baseEntity
@@ -1653,26 +1653,26 @@ SpaceModel >> getSetsOfContiguous: baseEntity verifying: aBlock [
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> gridCellShape [
+CMSpaceModel >> gridCellShape [
 	
 	^gridCellShape
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> gridCellShape: x [
+CMSpaceModel >> gridCellShape: x [
 	
 	gridCellShape := x
 ]
 
 { #category : #testing }
-SpaceModel >> hasGraphicInterfaces [
+CMSpaceModel >> hasGraphicInterfaces [
 	"check if some interfaces are opened. This hack was added while removing spaceInterfaces from cormas"
 	
 	^self dependents contains: [:each | each isKindOf: SpaceInterface]
 ]
 
 { #category : #'private - regularCells - shapes' }
-SpaceModel >> hexagonal [
+CMSpaceModel >> hexagonal [
 	"received from SpaceInterface menu, when the user want to change the shape of the cells"
 	
 	self gridCellShape ~= #hexagonal
@@ -1685,7 +1685,7 @@ SpaceModel >> hexagonal [
 ]
 
 { #category : #'import - export' }
-SpaceModel >> importAggregateClass: class componentClass: cClass separator: aChar [
+CMSpaceModel >> importAggregateClass: class componentClass: cClass separator: aChar [
 	
 	| stream portableFilename ligne dataVector item id nbComponents collec aggregate |
 	portableFilename := Dialog
@@ -1745,7 +1745,7 @@ SpaceModel >> importAggregateClass: class componentClass: cClass separator: aCha
 ]
 
 { #category : #'import - export' }
-SpaceModel >> importAggregateClass: class componentClass: cClass separator: aChar filename: aStringOrFileName [
+CMSpaceModel >> importAggregateClass: class componentClass: cClass separator: aChar filename: aStringOrFileName [
 	
 	| stream portableFilename ligne dataVector item id nbComponents collec aggregate |
 	aStringOrFileName isString
@@ -1805,7 +1805,7 @@ SpaceModel >> importAggregateClass: class componentClass: cClass separator: aCha
 ]
 
 { #category : #'import - export' }
-SpaceModel >> importAttribute: attributeName fromClass: className [
+CMSpaceModel >> importAttribute: attributeName fromClass: className [
 	
 	| stream filename fileData |
 	filename := (Cormas mapsPath: self cormasModelClass name)
@@ -1832,7 +1832,7 @@ SpaceModel >> importAttribute: attributeName fromClass: className [
 ]
 
 { #category : #'CSE (regular) - instance creation' }
-SpaceModel >> initAggregates: compoundEntity fromSeeds: aCollec [
+CMSpaceModel >> initAggregates: compoundEntity fromSeeds: aCollec [
 	"Create N aggregates from a collection of N cells. 
 	The new aggregates are only composed of one cell (the seed); their 'givenSize' attribut value is determine by the distribution.
 	This method resets all aggregates 'compoundEntity' and rebuids them. 
@@ -1856,7 +1856,7 @@ SpaceModel >> initAggregates: compoundEntity fromSeeds: aCollec [
 ]
 
 { #category : #'CSE (regular) - instance creation' }
-SpaceModel >> initAggregates: compoundEntity fromSeeds: aCollecOfCells sizeDistribution: aDistribution [
+CMSpaceModel >> initAggregates: compoundEntity fromSeeds: aCollecOfCells sizeDistribution: aDistribution [
 	"Create N spatial aggregates from a collection of N cells according to a size distribution. 
 	The new aggregates are only composed of one cell (the seed); their 'givenSize' attribut value is determine by the distribution.
 	This method resets all aggregates 'compoundEntity' and rebuids them. 
@@ -1900,7 +1900,7 @@ SpaceModel >> initAggregates: compoundEntity fromSeeds: aCollecOfCells sizeDistr
 ]
 
 { #category : #'private - regular cells - instance creation' }
-SpaceModel >> initEdge [
+CMSpaceModel >> initEdge [
 	
 	| n |
 	self gridCellShape = #irregular ifTrue: [^self setIrregularEntitiesEdge].
@@ -1922,7 +1922,7 @@ SpaceModel >> initEdge [
 ]
 
 { #category : #'private - irregular polygons creation' }
-SpaceModel >> initEntitesSpatiales: aClass [
+CMSpaceModel >> initEntitesSpatiales: aClass [
 	"Creation de la collection d'entites spatiales du modele"
 	"Ca me parait inutile !!"
 	
@@ -1936,7 +1936,7 @@ SpaceModel >> initEntitesSpatiales: aClass [
 ]
 
 { #category : #'private - regular cells - instance creation' }
-SpaceModel >> initNeighbourhood [
+CMSpaceModel >> initNeighbourhood [
 	
 	gridCellShape == #squared
 		ifTrue:
@@ -1951,7 +1951,7 @@ SpaceModel >> initNeighbourhood [
 ]
 
 { #category : #'private - regular cells - instance creation' }
-SpaceModel >> initNeighbourhood4 [
+CMSpaceModel >> initNeighbourhood4 [
 	
 	| v i |
 	1
@@ -1985,7 +1985,7 @@ SpaceModel >> initNeighbourhood4 [
 ]
 
 { #category : #'private - regular cells - instance creation' }
-SpaceModel >> initNeighbourhood6 [
+CMSpaceModel >> initNeighbourhood6 [
 	
 	| v i |
 	1
@@ -2029,7 +2029,7 @@ SpaceModel >> initNeighbourhood6 [
 ]
 
 { #category : #'private - regular cells - instance creation' }
-SpaceModel >> initNeighbourhood8 [
+CMSpaceModel >> initNeighbourhood8 [
 	
 	| v i |
 	1
@@ -2083,13 +2083,13 @@ SpaceModel >> initNeighbourhood8 [
 ]
 
 { #category : #'private - init' }
-SpaceModel >> initialize [
+CMSpaceModel >> initialize [
 	super initialize.
 	self resetSpatialEntities
 ]
 
 { #category : #'private - init' }
-SpaceModel >> initializeIrregular [
+CMSpaceModel >> initializeIrregular [
 	
 	gridCellShape := #irregular.
 	nbNeighbours := #irregular.
@@ -2100,7 +2100,7 @@ SpaceModel >> initializeIrregular [
 ]
 
 { #category : #'private - init' }
-SpaceModel >> initializeRegular [
+CMSpaceModel >> initializeRegular [
 	self
 		line: 10
 		column: 10
@@ -2111,14 +2111,14 @@ SpaceModel >> initializeRegular [
 ]
 
 { #category : #'ESE initialize-release' }
-SpaceModel >> initializeRegularX: columns Y: lines shape: shapeSymbol nbNeighbours: nbSymbol boundaries: bSymbol [
+CMSpaceModel >> initializeRegularLines: lines columns: columns shape: shapeSymbol nbNeighbours: nbSymbol boundaries: bSymbol [
 	"Create a grid of regular cells.
 lines = number of lines. columns = number of columns.
 shapeSymbol =<Symbol> (#squared , )
 nbSymbol =<Symbol> (#four, #six or #eight)
 bSymbol = <Symbol> (#toroidal or #closed) .
 ex, from CormasModel:
-	self spaceModel initializeRegularX: 101 Y: 101 shape: #squared nbNeighbours: #eight boundaries: #toroidal."
+	self spaceModel initializeRegularColumns: 101 lines: 101 shape: #squared nbNeighbours: #eight boundaries: #toroidal."
 	
 	self resetSpatialEntities.
 	self line: lines column: columns shape: shapeSymbol nbNeighbours: nbSymbol
@@ -2126,8 +2126,31 @@ ex, from CormasModel:
 	self createCells
 ]
 
+{ #category : #deprecated }
+CMSpaceModel >> initializeRegularX: columns Y: lines shape: shapeSymbol nbNeighbours: nbSymbol boundaries: bSymbol [
+	"This method is deprecated. Please use initializeRegularColumns:lines:shape:nbNeighbours:boundaries: instead."
+
+	"Create a grid of regular cells.
+lines = number of lines. columns = number of columns.
+shapeSymbol =<Symbol> (#squared , )
+nbSymbol =<Symbol> (#four, #six or #eight)
+bSymbol = <Symbol> (#toroidal or #closed) .
+ex, from CormasModel:
+	self spaceModel initializeRegularX: 101 Y: 101 shape: #squared nbNeighbours: #eight boundaries: #toroidal."
+
+	self
+		deprecated:
+			'This method is no longer supported. Please use initializeRegularColumns:lines:shape:nbNeighbours:boundaries: instead.'.
+	^ self
+		initializeRegularLines: lines
+		columns: columns
+		shape: shapeSymbol
+		nbNeighbours: nbSymbol
+		boundaries: bSymbol
+]
+
 { #category : #'private - init' }
-SpaceModel >> initializeView [
+CMSpaceModel >> initializeView [
 	
 	| aView |
 	"self release."
@@ -2139,27 +2162,27 @@ SpaceModel >> initializeView [
 ]
 
 { #category : #testing }
-SpaceModel >> isIrregular [
+CMSpaceModel >> isIrregular [
 	"Answer if the spaceModel is irregular (or regular), meaning that the cells are not uniform, but have different shapes (vectorial)"
 	
 	^gridCellShape = #irregular
 ]
 
 { #category : #'private - regular polygons' }
-SpaceModel >> isPartitionComplete: compoundEntity [
+CMSpaceModel >> isPartitionComplete: compoundEntity [
 	
 	^(self elementaryEntities
 		contains: [:c | (c isComponentOf: compoundEntity) not]) not
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> line [
+CMSpaceModel >> line [
 	
 	^line
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> line: i column: j [
+CMSpaceModel >> line: i column: j [
 	
 	line := i.
 	column := j.
@@ -2167,7 +2190,7 @@ SpaceModel >> line: i column: j [
 ]
 
 { #category : #'private - init' }
-SpaceModel >> line: l column: c shape: ps nbNeighbours: nbn boundaries: b [
+CMSpaceModel >> line: l column: c shape: ps nbNeighbours: nbn boundaries: b [
 	
 	self gridCellShape: ps.
 	self nbNeighbours: nbn.
@@ -2176,68 +2199,24 @@ SpaceModel >> line: l column: c shape: ps nbNeighbours: nbn boundaries: b [
 ]
 
 { #category : #video }
-SpaceModel >> listMethodsChanged [
+CMSpaceModel >> listMethodsChanged [
 	"some methods has changed. Propagate the changed to the  spaceInterfaces."
 	
 	self changed: #listMethodsChanged
 ]
 
-{ #category : #'ESE initialize-release' }
-SpaceModel >> loadEnvironmentFromFile: aName [
-	"Load a grid stored as filename.
-	aName = <String> or aName = <Filename> . If aName = <String>, it creates a Filename from maps directory.
-	Example:	aName = 'test.env'  or
-				aName = a FATFilename('d:\Vw5i.4\cormas\Models\JLB\maps\test.env')"
+{ #category : #'CSE (general) - import - export' }
+CMSpaceModel >> loadEnvironmentFromFile: aName [
+
+	| stream |
 	
-	| stream label dimX dimY ce cp aFile delimiteur |
-	aFile := (self stringToFilename: aName).
-	aFile exists ifFalse: [self error:'Missing environment file'].
-	stream := aFile readStream.	"Lecture des 4 premieres lignes : topologie de la grille"	"On devine le format des lignes"
-"	stream installLineEndConventionInConverter."
-	label := stream upTo: Character tab.
-	label ~= 'dimensions'
-		ifTrue:
-			[^self cormas warn: (ErrorDialogWindow defaultString: '' key: #readError)].
-	dimX := (stream upTo: Character space) asNumber.
-	dimY := (stream upTo: Character cr) asNumber.
-	stream skipSeparators.
-	label := stream upTo: Character tab.
-	label ~= 'cloture'
-		ifTrue:
-			[^self cormas warn: (ErrorDialogWindow defaultString: '' key: #readError)].
-	ce := (stream upTo: Character cr) asSymbol.
-	stream skipSeparators.
-	label := stream upTo: Character tab.
-	label ~= 'connexite'
-		ifTrue:
-			[^self cormas warn: (ErrorDialogWindow defaultString: '' key: #readError)].
-	cp := (stream upTo: Character cr) asSymbol.
-	stream skipSeparators.
-	label := stream upTo: Character tab.
-	
-	label = 'delimiteur'
-		ifTrue:
-			["read data"
-			stream skipSeparators.
-			delimiteur := stream upTo: Character cr.	"process data"
-			"delimiteur = 1
-				ifTrue:
-					[self cormasModel registerSpaceModelChange: #delimitorSize with: #pixel1]
-				ifFalse:
-					[self cormasModel registerSpaceModelChange: #delimitorSize with: #pixel0]"].
-	self line: dimX column: dimY.
-	self nbNeighbours: cp.
-	cp = #six
-		ifTrue: [self gridCellShape: #hexagonal]
-		ifFalse: [self gridCellShape: #squared].
-	self resetSpatialEntities.
-	self createCells.
-	self boundaries: ce.
-	self setSpatialEntitiesAttributsValueFromStream: stream
+	stream := self envReader loadEnvironmentFromFile: aName.
+	self configureSpaceFromEnv: stream.
+
 ]
 
 { #category : #'ESE initialize-release' }
-SpaceModel >> loadEnvironmentFromFile: aName withPov: aSymbol [
+CMSpaceModel >> loadEnvironmentFromFile: aName withPov: aSymbol [
 	"Load a grid stored as filename and display a POV on each opened grid.
 	aName = <String> or aName = <Filename> . If aName = <String>, it creates a Filename from maps directory.
 	Example:	aName = 'test.env' "
@@ -2249,7 +2228,7 @@ SpaceModel >> loadEnvironmentFromFile: aName withPov: aSymbol [
 ]
 
 { #category : #'private - irregular polygons creation' }
-SpaceModel >> loadMifMid: fileName entity: class neighbourhood: test [
+CMSpaceModel >> loadMifMid: fileName entity: class neighbourhood: test [
 	"Load a mif and associated mif files. Calculus the neighbourhood calculus of each cell, if 'test' is required"
 	
 	self readMif: fileName entity: class.	"set the bounds of the grid. The result is stored into 'bound' class variable of Cell"
@@ -2272,7 +2251,7 @@ SpaceModel >> loadMifMid: fileName entity: class neighbourhood: test [
 ]
 
 { #category : #'CSE (general) - import - export' }
-SpaceModel >> loadNeighboorsClass: class separator: aChar [
+CMSpaceModel >> loadNeighboorsClass: class separator: aChar [
 	
 	| stream portableFilename ligne dataVector item id anEntity |
 	portableFilename := (Cormas mapsPath: self cormasModelClass name)
@@ -2312,7 +2291,7 @@ SpaceModel >> loadNeighboorsClass: class separator: aChar [
 ]
 
 { #category : #'playback-log' }
-SpaceModel >> logLeaveOf: anAgentLocation from: aSpatialEntity [
+CMSpaceModel >> logLeaveOf: anAgentLocation from: aSpatialEntity [
 	"Log the fact that an agent left a spatial entity"
 	"Ask the instance of Cormas"
 	
@@ -2320,7 +2299,7 @@ SpaceModel >> logLeaveOf: anAgentLocation from: aSpatialEntity [
 ]
 
 { #category : #'playback-log' }
-SpaceModel >> logMovementOf: anAgentLocation from: srcSpatialEntity to: dstSpatialEntity [
+CMSpaceModel >> logMovementOf: anAgentLocation from: srcSpatialEntity to: dstSpatialEntity [
 	"Log the movement of an agent from a spatial entity to another entity"
 	"Ask the instance of Cormas"
 	
@@ -2329,17 +2308,17 @@ SpaceModel >> logMovementOf: anAgentLocation from: srcSpatialEntity to: dstSpati
 ]
 
 { #category : #'ESE (regular) - special locations' }
-SpaceModel >> lowerLeftLocation [
+CMSpaceModel >> lowerLeftLocation [
 	^ self elementaryEntities at: column * (line - 1) + 1
 ]
 
 { #category : #'ESE (regular) - special locations' }
-SpaceModel >> lowerRightLocation [
+CMSpaceModel >> lowerRightLocation [
 	^ self elementaryEntities at: column * line
 ]
 
 { #category : #'landscape indices' }
-SpaceModel >> meanCompactness: aClass [
+CMSpaceModel >> meanCompactness: aClass [
 	
 	| sum aggregates |
 	aggregates := self cormasModel
@@ -2353,7 +2332,7 @@ SpaceModel >> meanCompactness: aClass [
 ]
 
 { #category : #'landscape indices' }
-SpaceModel >> meanNearestNeighbourDistanceAggregate: aClass attribute: anAttribute [
+CMSpaceModel >> meanNearestNeighbourDistanceAggregate: aClass attribute: anAttribute [
 	"loop on the aggregates with same attribute and select the minimum distance. If the attribute is nil it means that there is only one type of aggregates"
 
 	| classes n sum collec distMin dist aggregates a b |
@@ -2384,7 +2363,7 @@ SpaceModel >> meanNearestNeighbourDistanceAggregate: aClass attribute: anAttribu
 ]
 
 { #category : #'landscape indices' }
-SpaceModel >> meanPatchSize: aClass [
+CMSpaceModel >> meanPatchSize: aClass [
 	"return the data (a number) to be recorded"
 	
 	| size aggregates |
@@ -2396,7 +2375,7 @@ SpaceModel >> meanPatchSize: aClass [
 ]
 
 { #category : #'private - regular cells - instance creation' }
-SpaceModel >> mergeCells: listOfCells [
+CMSpaceModel >> mergeCells: listOfCells [
 	"Merge the cells of  listOfCells in one cell. The id of the new cell = the id of the first cell. Set the neighbours of the new cell and the new shape. The other cells are removed."
 	
 	| newCell neighbours componentsPovs anEntityPOV minID newEntities |
@@ -2452,7 +2431,7 @@ SpaceModel >> mergeCells: listOfCells [
 ]
 
 { #category : #'landscape indices' }
-SpaceModel >> nPatches: aClass [
+CMSpaceModel >> nPatches: aClass [
 	"return the data (a number) to be recorded"
 	
 	| aggregates |
@@ -2462,27 +2441,26 @@ SpaceModel >> nPatches: aClass [
 ]
 
 { #category : #'landscape indices' }
-SpaceModel >> nbDistinctValuesOf: anAttribute [
+CMSpaceModel >> nbDistinctValuesOf: anAttribute [
 	"Return the number of different values for anAttribute"
 
 	^ (self cormasModel theESE collect: [ :a | a perform: anAttribute ]) asSet size
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> nbNeighbours [
+CMSpaceModel >> nbNeighbours [
 	
 	^nbNeighbours
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> nbNeighbours: x [
-	"x : <Symbol> or <Integer>"
-	
-	nbNeighbours := x
+CMSpaceModel >> nbNeighbours: aSymbolOrInteger [
+
+	nbNeighbours := aSymbolOrInteger 
 ]
 
 { #category : #'landscape indices' }
-SpaceModel >> nearestNeighbourProbaAttribute: anAttribute state1: x1 state2: x2 [
+CMSpaceModel >> nearestNeighbourProbaAttribute: anAttribute state1: x1 state2: x2 [
 	"return the data (a number) to be recorded"
 	
 	| c1 c2 |
@@ -2494,16 +2472,19 @@ SpaceModel >> nearestNeighbourProbaAttribute: anAttribute state1: x1 state2: x2 
 ]
 
 { #category : #'private - init' }
-SpaceModel >> newEntity: aClass [
+CMSpaceModel >> newEntity: aClass [
 	"Creates a new instance of aClass and collects it at the level of theXXXs collection. 
 	Set also the collector of the new instance"
-	
-	^aClass new: self	"anEntity collector: self cormasModel collector.
+
+	^ (aClass new: self)
+		cormasModel: self cormasModel;
+		"anEntity collector: self cormasModel collector.
 	self cormasModel collect: anEntity."
+			yourself
 ]
 
 { #category : #'private - mouse actions' }
-SpaceModel >> noPatch [
+CMSpaceModel >> noPatch [
 	
 	self cormas
 		warn:
@@ -2511,7 +2492,7 @@ SpaceModel >> noPatch [
 ]
 
 { #category : #'private - regular cells - instance creation' }
-SpaceModel >> northCell: k [
+CMSpaceModel >> northCell: k [
 	
 	k = 0 ifTrue: [^0].
 	k > column ifTrue: [^k - column].
@@ -2520,14 +2501,14 @@ SpaceModel >> northCell: k [
 ]
 
 { #category : #'private - notification' }
-SpaceModel >> noticeChange: aChange [
+CMSpaceModel >> noticeChange: aChange [
 	"notice a change reported from anEntity or SpaceModel, dispatch this change to all dependents"
 	
 	self dependents do:[:ob| ob update: #noticeChange with: aChange from: self]
 ]
 
 { #category : #'private - notification' }
-SpaceModel >> noticeChanges: someChanges [
+CMSpaceModel >> noticeChanges: someChanges [
 	"notice some grouped changes"
 	
 	someChanges isEmpty ifTrue: [^nil].
@@ -2537,7 +2518,7 @@ SpaceModel >> noticeChanges: someChanges [
 ]
 
 { #category : #'private - display' }
-SpaceModel >> openedSpatialGrid [
+CMSpaceModel >> openedSpatialGrid [
 	"Purpose: Return the last opened spatial grid"
 	
 	| spatialGrids |
@@ -2548,7 +2529,7 @@ SpaceModel >> openedSpatialGrid [
 ]
 
 { #category : #'private - display' }
-SpaceModel >> openedSpatialGrids [
+CMSpaceModel >> openedSpatialGrids [
 	"Purpose: return a collection of all opened spatial grids.
 	hack because of opentalk and distributed : looking for SpatialGrid in the dependents is wrong because :
 	- some spatialGrids are remote
@@ -2563,7 +2544,7 @@ SpaceModel >> openedSpatialGrids [
 ]
 
 { #category : #'private - display' }
-SpaceModel >> openedSpatialGridsForHabitus: aStringOrNil [
+CMSpaceModel >> openedSpatialGridsForHabitus: aStringOrNil [
 	"Purpose: return a collection of opened spatial grids corresponding to a habitus named aStringOrNil.
 	nil is used to collect all spatial grids
 	hack because of opentalk and distributed : looking for SpatialGrid in the dependents is wrong because :
@@ -2584,7 +2565,7 @@ SpaceModel >> openedSpatialGridsForHabitus: aStringOrNil [
 ]
 
 { #category : #'private - irregular polygons aggregation' }
-SpaceModel >> outlineAggregatedFrom: listPolygons [
+CMSpaceModel >> outlineAggregatedFrom: listPolygons [
 	
 	| newOutline voisinsConcernes listeNoeuds newSegment listeSegments followingSegment |
 	listeSegments := OrderedCollection new.
@@ -2643,7 +2624,7 @@ SpaceModel >> outlineAggregatedFrom: listPolygons [
 ]
 
 { #category : #'landscape indices' }
-SpaceModel >> patchDensity: aClass [
+CMSpaceModel >> patchDensity: aClass [
 	"return the data (a number) to be recorded"
 	
 	| aggregates |
@@ -2653,7 +2634,7 @@ SpaceModel >> patchDensity: aClass [
 ]
 
 { #category : #'landscape indices' }
-SpaceModel >> patchDensity: aClass totalArea: aNumber [
+CMSpaceModel >> patchDensity: aClass totalArea: aNumber [
 	"this method is created for cases where the totalArea is not equal to the total size of the grid"
 	
 	| aggregates |
@@ -2663,7 +2644,7 @@ SpaceModel >> patchDensity: aClass totalArea: aNumber [
 ]
 
 { #category : #'private - notification' }
-SpaceModel >> ping: anObject [
+CMSpaceModel >> ping: anObject [
 	
 	^[anObject ping]
 		on: Exception
@@ -2671,14 +2652,14 @@ SpaceModel >> ping: anObject [
 ]
 
 { #category : #'ESE (regular) - special locations' }
-SpaceModel >> randomCell [
+CMSpaceModel >> randomCell [
 	"Purpose: Return a spatialEntityElement (aCell) picked randomly from the spatial grid."
 
 	^ Cormas selectRandomlyFrom: self elementaryEntities
 ]
 
 { #category : #'private - irregular polygons creation' }
-SpaceModel >> readMid: fileName entity: class [
+CMSpaceModel >> readMid: fileName entity: class [
 	"Read the MID file storing the values of the attributs of the entities.
 The MID file looks like :
 354,'37','2',3,0,'4','37 4','37 2 4 3 0','3','0'
@@ -2745,7 +2726,7 @@ Then, poly of cell 1 = 354, prov_45 of cell 1 = 37..."
 ]
 
 { #category : #'private - irregular polygons creation' }
-SpaceModel >> readMif: fileName entity: class [
+CMSpaceModel >> readMif: fileName entity: class [
 	"Read the MIF file storing the coordinates of the shapes. The instances of 'class' are created here and their shape is stored in the 'outline' attribut.
 The MIF file looks like :
 Version 300
@@ -2801,7 +2782,7 @@ Region  1
 ]
 
 { #category : #'private - display' }
-SpaceModel >> redisplay: aCollec on: aGC [
+CMSpaceModel >> redisplay: aCollec on: aGC [
 	"aGC paint: self vue backgroundColor.
 	aGC displayRectangle: aGC clippingBounds."
 	
@@ -2809,7 +2790,7 @@ SpaceModel >> redisplay: aCollec on: aGC [
 ]
 
 { #category : #'ESE initialize-release' }
-SpaceModel >> release [
+CMSpaceModel >> release [
 	
 	self dependents
 		do:
@@ -2820,40 +2801,14 @@ SpaceModel >> release [
 ]
 
 { #category : #'private - init' }
-SpaceModel >> release: aClass [
+CMSpaceModel >> release: aClass [
 	
 	super release.
 	(self spatialEntities at: aClass name) do: [:e | e spaceModel: nil]
 ]
 
-{ #category : #'- utilities - binary storage' }
-SpaceModel >> representBinaryOn: bos [
-	"Purpose: The basic approach is to create an instance method named representBinaryOn: in the class whose BOSS representation you want to customize. The method typically returns a MessageSend, which is created by sending a receiver:selector:arguments: message to that class. The receiver argument identifies the class that is to create an instance, typically the object's class. The selector argument is the name of the instance-creation method that is to be used when the data is read by BOSS. The arguments argument is a collection of data values, typically the values of the object's instance variables"
-	
-	| attributColl result attributes list |
-	attributColl := OrderedCollection new.
-	attributes := self class allInstVarNames.
-	attributes
-		do:
-			[:att | 
-			list := #('cardinal' 'line' 'column' 'boundaries' 'nbNeighbours' 'gridCellShape' 'absoluteBounds' 'autoResizeBounds')
-				asList.
-			(list includes: att)
-				ifTrue:
-					[result := self instVarAt: (attributes indexOf: att).
-					attributColl
-						add:
-							(Association
-								key: att asSymbol
-								value: result)]].
-	^MessageSend
-		receiver: self class
-		selector: #newBoss:
-		arguments: (Array with: attributColl)
-]
-
 { #category : #'private - init' }
-SpaceModel >> resetCompoundSpatialEntity: compoundClass andTheirComponents: componentClass [
+CMSpaceModel >> resetCompoundSpatialEntity: compoundClass andTheirComponents: componentClass [
 	
 	(self spatialEntities at: componentClass name)
 		do:
@@ -2870,7 +2825,7 @@ SpaceModel >> resetCompoundSpatialEntity: compoundClass andTheirComponents: comp
 ]
 
 { #category : #'private - init' }
-SpaceModel >> resetSpatialEntities [
+CMSpaceModel >> resetSpatialEntities [
 	
 	| newColl |
 	self spatialEntities: Dictionary new. 
@@ -2885,7 +2840,7 @@ SpaceModel >> resetSpatialEntities [
 ]
 
 { #category : #'private - init' }
-SpaceModel >> resetSpatialEntitiesButCells [
+CMSpaceModel >> resetSpatialEntitiesButCells [
 	
 	| theCells |
 	self spatialEntities isEmpty ifTrue: [^nil].
@@ -2913,8 +2868,15 @@ SpaceModel >> resetSpatialEntitiesButCells [
 					self cormasModel initializeTheEntity: se]]
 ]
 
+{ #category : #accessing }
+CMSpaceModel >> resourceLocator [
+	" Answer the receiver's CMResourceLocator "
+
+	^ self cormasModel resourceLocator
+]
+
 { #category : #'private - import - export' }
-SpaceModel >> saveAttributes: attributes inFile: file [
+CMSpaceModel >> saveAttributes: attributes inFile: file [
 	"Save the attribut of the cells on a file.env 
 attributes <OrderedCollection> ex: OrderedCollection ('seed' 'context')
 file <Filename> ex: aFATFilename('d:\vw7nc\cormas\Models\TSE\maps\titi.env')"
@@ -3022,7 +2984,7 @@ file <Filename> ex: aFATFilename('d:\vw7nc\cormas\Models\TSE\maps\titi.env')"
 ]
 
 { #category : #'import - export' }
-SpaceModel >> saveAttributesASC: attributes fileParameters: aList [
+CMSpaceModel >> saveAttributesASC: attributes fileParameters: aList [
 	
 	| stream firstValue type firstPatch dicoAttConv patch a c position file askFileName aPrefix |
 	askFileName := true.
@@ -3145,7 +3107,7 @@ SpaceModel >> saveAttributesASC: attributes fileParameters: aList [
 ]
 
 { #category : #'private - import - export' }
-SpaceModel >> saveAttributesMIFMID: attributes fileParameters: aList class: aClass [
+CMSpaceModel >> saveAttributesMIFMID: attributes fileParameters: aList class: aClass [
 	
 	| stream firstValue type firstPatch dicoAttConv c maxX maxY minX minY |
 	maxX := 0.
@@ -3293,7 +3255,7 @@ SpaceModel >> saveAttributesMIFMID: attributes fileParameters: aList class: aCla
 ]
 
 { #category : #'import - export' }
-SpaceModel >> saveAttributesRSTRDC: attributes fileParameters: aList [
+CMSpaceModel >> saveAttributesRSTRDC: attributes fileParameters: aList [
 	
 	| stream firstPatch firstValue typeAtt a typeData |
 	attributes selections
@@ -3460,7 +3422,7 @@ SpaceModel >> saveAttributesRSTRDC: attributes fileParameters: aList [
 ]
 
 { #category : #'CSE (general) - import - export' }
-SpaceModel >> saveNeighboorsClass: class separator: aChar [
+CMSpaceModel >> saveNeighboorsClass: class separator: aChar [
 	"Creates in maps directory a file named 'class_Neighboors.agg' which contains lines representing each intance of class 'class'. 
 Each line contains the id of the instance as first element and the id of all its neighboors separated by aChar"
 	
@@ -3482,14 +3444,14 @@ Each line contains the id of the instance as first element and the id of all its
 ]
 
 { #category : #'private - notification' }
-SpaceModel >> sendCellsToClientSpaceModels: cellsReference [
+CMSpaceModel >> sendCellsToClientSpaceModels: cellsReference [
 	
 	self myDependents update: #createCellsPovWithReferences with:
 			cellsReference from: self
 ]
 
 { #category : #'private - absoluteWorld' }
-SpaceModel >> setAbsoluteBounds [
+CMSpaceModel >> setAbsoluteBounds [
 	"the absolute default space is a square space of 50x50 pixels. It has been defined for a 10x10 cells space.
 It is never display, only copied by the SpaceViews.
 It can be modified (setAbsoluteBounds) when for exemple there is 3 lines and 10 column. Then, absoluteBounds = 3/10 * 50 @ 50 pixels"
@@ -3506,7 +3468,7 @@ It can be modified (setAbsoluteBounds) when for exemple there is 3 lines and 10 
 ]
 
 { #category : #'CSE (regular) - instance creation' }
-SpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attributeName [
+CMSpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attributeName [
 	"The aggregates occupy the whole grid. 
 	This method resets all aggregates 'compoundEntity' and rebuids them. 
 	baseEntity = a subClass of  <SpatialEntity> 
@@ -3523,7 +3485,7 @@ SpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attribut
 ]
 
 { #category : #'CSE (regular) - instance creation' }
-SpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attributeName1 attribute: attributeName2 [
+CMSpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attributeName1 attribute: attributeName2 [
 	"The aggregates occupy the whole grid. 
 	This method resets all aggregates 'compoundEntity' and rebuids them. 
 	baseEntity = a subClass of  <SpatialEntity> 
@@ -3541,7 +3503,7 @@ SpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attribut
 ]
 
 { #category : #'CSE (regular) - instance creation' }
-SpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attributeName excludingValue: aValue [
+CMSpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attributeName excludingValue: aValue [
 	"The aggregates do not occupy the whole grid. 
 	This method resets all aggregates 'compoundEntity' and rebuids them. 
 	baseEntity = a subClass of  <SpatialEntity> 
@@ -3560,7 +3522,7 @@ SpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attribut
 ]
 
 { #category : #'CSE (regular) - instance creation' }
-SpaceModel >> setAggregates: compoundEntity from: baseEntity horizontalDividers: xRatio verticalDividers: yRatio [
+CMSpaceModel >> setAggregates: compoundEntity from: baseEntity horizontalDividers: xRatio verticalDividers: yRatio [
 	"Creates (xRatio x yRatio) aggregates by dividing the grid by yRatio columns and xRatio lines.
 The aggregates will  occupy the whole grid. 
 	This method resets all aggregates 'compoundEntity' and rebuids them. 
@@ -3578,7 +3540,7 @@ The aggregates will  occupy the whole grid.
 ]
 
 { #category : #'CSE (regular) - instance creation' }
-SpaceModel >> setAggregates: compoundEntity from: baseEntity verifying: aBlock [
+CMSpaceModel >> setAggregates: compoundEntity from: baseEntity verifying: aBlock [
 	"baseEntity = a subClass of  <SpatialEntityElement>
 aBlock example = [:cell | cell state = #tree]
 compoundEntity = a subClass of  <SpatialEntitySet>
@@ -3589,7 +3551,7 @@ This method resets all aggregats 'compoundEntity' and rebuids them"
 ]
 
 { #category : #'CSE (regular) - instance creation' }
-SpaceModel >> setAggregates: compoundEntity from: baseEntity verifying: aBlock minimumSize: ms [
+CMSpaceModel >> setAggregates: compoundEntity from: baseEntity verifying: aBlock minimumSize: ms [
 	"baseEntity = a subClass of  <SpatialEntityElement>
 aBlock example = [:cell | cell state = #tree]
 compoundEntity = a subClass of  <SpatialEntitySet>
@@ -3603,7 +3565,7 @@ This method resets all aggregats 'compoundEntity' and rebuids them"
 ]
 
 { #category : #'CSE (regular) - instance creation' }
-SpaceModel >> setAggregates: compoundEntity fromSeeds: aCollec [
+CMSpaceModel >> setAggregates: compoundEntity fromSeeds: aCollec [
 	"Purpose: Create n aggregates that will occupy the whole grid. The number n of aggregates correspond to the size of aCollecOfCells. Each aggregate is made of an element of aCollecOfCells (a seed) and of its surrounding cells. This method resets all aggregates 'compoundEntity' and rebuilds them.
 Arguments: aCollecOfCells is a collection of cells (SpatialEntityElement). compoundEntity is a Class name inheriting from SpatialEntitySet.
 Example: self createAggregates: VitalArea fromSeeds: (self theDens collect:[:c | c patch])
@@ -3617,7 +3579,7 @@ Example: self createAggregates: Forest fromSeeds: (self theCells select:[:c| c i
 ]
 
 { #category : #'CSE (regular) - instance creation' }
-SpaceModel >> setAggregates: compoundEntity fromSeeds: aCollecOfCells sizeDistribution: aDistribution [
+CMSpaceModel >> setAggregates: compoundEntity fromSeeds: aCollecOfCells sizeDistribution: aDistribution [
 	"Create aggregates from a collection of cells according to a size distribution. 
 	This method resets all aggregates 'compoundEntity' and rebuids them. 
 	aCollecOfCells = a collection of base entities (inheriting from <SpatialEntityElement>) 
@@ -3637,7 +3599,7 @@ SpaceModel >> setAggregates: compoundEntity fromSeeds: aCollecOfCells sizeDistri
 ]
 
 { #category : #'CSE (regular) - instance creation' }
-SpaceModel >> setAggregates: compoundEntity fromSeeds: aCollec verifying: aBlock [
+CMSpaceModel >> setAggregates: compoundEntity fromSeeds: aCollec verifying: aBlock [
 	
 	| haveSpread |
 	self initAggregates: compoundEntity fromSeeds: aCollec.
@@ -3648,7 +3610,7 @@ SpaceModel >> setAggregates: compoundEntity fromSeeds: aCollec verifying: aBlock
 ]
 
 { #category : #'CSE (regular) - instance creation' }
-SpaceModel >> setAggregates: compoundEntity fromSeeds: aCollec verifying: aBlock sizeDistribution: dis [
+CMSpaceModel >> setAggregates: compoundEntity fromSeeds: aCollec verifying: aBlock sizeDistribution: dis [
 	
 	| haveSpread |
 	self initAggregates: compoundEntity fromSeeds: aCollec sizeDistribution:
@@ -3660,20 +3622,20 @@ SpaceModel >> setAggregates: compoundEntity fromSeeds: aCollec verifying: aBlock
 ]
 
 { #category : #'private - regular polygons - deprecated' }
-SpaceModel >> setAggregatesFrom: baseEntity verifying: aBlock into: compoundEntity [
+CMSpaceModel >> setAggregatesFrom: baseEntity verifying: aBlock into: compoundEntity [
 	
 	self setAggregates: compoundEntity from: baseEntity verifying: aBlock
 ]
 
 { #category : #'private - regular polygons - deprecated' }
-SpaceModel >> setAggregatesFrom: baseEntity verifying: aBlock into: compoundEntity minimumSize: ms [
+CMSpaceModel >> setAggregatesFrom: baseEntity verifying: aBlock into: compoundEntity minimumSize: ms [
 	
 	self setAggregates: compoundEntity from: baseEntity verifying: aBlock
 		minimumSize: ms
 ]
 
 { #category : #'private - irregular polygons aggregation' }
-SpaceModel >> setAggregatsBounds: agregat [
+CMSpaceModel >> setAggregatsBounds: agregat [
 	
 	| origin corner aComponent |
 	(self spatialEntities at: agregat name)
@@ -3691,7 +3653,7 @@ SpaceModel >> setAggregatsBounds: agregat [
 ]
 
 { #category : #'private - irregular polygons creation' }
-SpaceModel >> setBounds: allPolygons [
+CMSpaceModel >> setBounds: allPolygons [
 	
 	| entity origin corner |
 	allPolygons isEmpty ifTrue: [^nil].
@@ -3707,7 +3669,7 @@ SpaceModel >> setBounds: allPolygons [
 ]
 
 { #category : #'CSE (regular) - instance creation' }
-SpaceModel >> setFragmentedEntities: compoundEntity from: baseEntity attribute: attributeName [
+CMSpaceModel >> setFragmentedEntities: compoundEntity from: baseEntity attribute: attributeName [
 	"baseEntity = a Class name inheriting from <SpatialEntity>	
 		(can be <SpatialEntityCell> or <SpatialEntityAggregate> or <SpatialEntityNotConnex>) 
 	compoundEntity = a Class name inheriting from <SpatialEntityNotConnex>"
@@ -3734,7 +3696,7 @@ SpaceModel >> setFragmentedEntities: compoundEntity from: baseEntity attribute: 
 ]
 
 { #category : #'CSE (regular) - instance creation' }
-SpaceModel >> setFragmentedEntities: compoundEntity from: baseEntity verifying: aBlock [
+CMSpaceModel >> setFragmentedEntities: compoundEntity from: baseEntity verifying: aBlock [
 	"baseEntity = a Class name inheriting from <SpatialEntity>
 		(can be <SpatialEntityCell> or <SpatialEntityAggregate> or <SpatialEntityNotConnex>) 
 	aBlock (example = [:cell | cell isTree] or [:aggregat | aggregat type = #forest] ) 
@@ -3755,7 +3717,7 @@ SpaceModel >> setFragmentedEntities: compoundEntity from: baseEntity verifying: 
 ]
 
 { #category : #'CSE (regular) - instance creation' }
-SpaceModel >> setFragmentedEntity: compoundEntity fromCollection: aCollecOfSpatialEntityElement [
+CMSpaceModel >> setFragmentedEntity: compoundEntity fromCollection: aCollecOfSpatialEntityElement [
 	"create one aggregate <SpatialEntityNotConnex> made of a collection of spatialEntityElements.
 	This method resets all aggregates 'compoundEntity' and rebuids them. 
 	aCollecOfSpatialEntityElement = a collection of base entities (inheriting from <SpatialEntityElement>) 
@@ -3775,7 +3737,7 @@ SpaceModel >> setFragmentedEntity: compoundEntity fromCollection: aCollecOfSpati
 ]
 
 { #category : #'private - regular polygons' }
-SpaceModel >> setGivenSizes: dis toAggregates: compoundEntity [
+CMSpaceModel >> setGivenSizes: dis toAggregates: compoundEntity [
 	"dis is an array of pair-values: #(#(X1 GS1) #(X2 GS2) ... #(Xi GSi))"
 	"Xi and GSi are integers, respectively a number of aggregates and the givenSize for these aggregates"
 	"Ex: you want to generate 3 aggregates size 1, 5 size 2, and 2 size 3. dis should be #(#(3 1) #(5 2) #(2 3))"
@@ -3801,7 +3763,7 @@ SpaceModel >> setGivenSizes: dis toAggregates: compoundEntity [
 ]
 
 { #category : #'CSE (regular) - instance creation' }
-SpaceModel >> setGridAsAggregat: compoundEntity [
+CMSpaceModel >> setGridAsAggregat: compoundEntity [
 	"Creates one instance of compoundEntity from all the cells <SpatialEntityElement> of the grid.
 	This method resets all aggregats 'compoundEntity' and rebuids them.
 	compoundEntity : a Class name inheriting from <SpatialEntitySet>"
@@ -3813,7 +3775,7 @@ SpaceModel >> setGridAsAggregat: compoundEntity [
 ]
 
 { #category : #'private - irregular polygons creation' }
-SpaceModel >> setImagesPolygons: aCollec [
+CMSpaceModel >> setImagesPolygons: aCollec [
 	"Les coordonnees originales des polygones sont stockees dans outline"
 	"Calcul des coordonnees ajustees a la fenetre de la grille spatiale"
 	"Ces coordonnees relatives sont stockees dans image"
@@ -3850,7 +3812,7 @@ on a bien du les fabriquer a partir des contours d'autres entites..."
 ]
 
 { #category : #'private - irregular polygons creation' }
-SpaceModel >> setIrregularEntitiesEdge [
+CMSpaceModel >> setIrregularEntitiesEdge [
 	
 	| outlineTempo |
 	self elementaryEntities isEmpty ifTrue: [^self halt].
@@ -3869,7 +3831,7 @@ SpaceModel >> setIrregularEntitiesEdge [
 ]
 
 { #category : #'ESE (regular) - gradient creation' }
-SpaceModel >> setLinearGradientForAttribute: aString centralValue: cv borderValue: bv [
+CMSpaceModel >> setLinearGradientForAttribute: aString centralValue: cv borderValue: bv [
 	
 	| distanceCenterToBorder x |
 	(self line odd not or: [self column odd not])
@@ -3907,7 +3869,7 @@ SpaceModel >> setLinearGradientForAttribute: aString centralValue: cv borderValu
 ]
 
 { #category : #'ESE (regular) - gradient creation' }
-SpaceModel >> setLinearGradientForAttribute: aString centralValue: cv borderValue: bv bySections: anArray [
+CMSpaceModel >> setLinearGradientForAttribute: aString centralValue: cv borderValue: bv bySections: anArray [
 	
 	| distanceCenterToBorder allSections startIndex startValue endIndex endValue i x |
 	(self line odd not or: [self column odd not])
@@ -3967,7 +3929,7 @@ SpaceModel >> setLinearGradientForAttribute: aString centralValue: cv borderValu
 ]
 
 { #category : #'ESE initialize-release' }
-SpaceModel >> setNbNeighbours: anInteger [
+CMSpaceModel >> setNbNeighbours: anInteger [
 	"Set the neighbourhood of the regular spaceModel.
 	anInteger = <Integer : 4, 6 or 8>"
 	
@@ -3982,27 +3944,27 @@ SpaceModel >> setNbNeighbours: anInteger [
 ]
 
 { #category : #'private - regular polygons - deprecated' }
-SpaceModel >> setPartitionsFrom: baseEntity attribute: attributeName into: compoundEntity [
+CMSpaceModel >> setPartitionsFrom: baseEntity attribute: attributeName into: compoundEntity [
 	
 	self setAggregates: compoundEntity from: baseEntity attribute:
 			attributeName
 ]
 
 { #category : #'private - regular polygons - deprecated' }
-SpaceModel >> setPartitionsFrom: baseEntity xRatio: i yRatio: j into: compoundEntity [
+CMSpaceModel >> setPartitionsFrom: baseEntity xRatio: i yRatio: j into: compoundEntity [
 	
 	self setAggregates: compoundEntity from: baseEntity horizontalDividers: i
 		verticalDividers: j
 ]
 
 { #category : #'private - regular polygons - deprecated' }
-SpaceModel >> setPartitionsFromSeeds: seeds into: compoundEntity [
+CMSpaceModel >> setPartitionsFromSeeds: seeds into: compoundEntity [
 	
 	^self setAggregates: compoundEntity fromSeeds: seeds
 ]
 
 { #category : #'CSE (regular) - instance creation' }
-SpaceModel >> setSingletonAggregates: compoundEntity fromSeeds: aCollec [
+CMSpaceModel >> setSingletonAggregates: compoundEntity fromSeeds: aCollec [
 	"create n (aCollec size) aggregates made of a single component which is an element of aCollec.
 	This method resets all aggregates 'compoundEntity' and rebuids them. 
 	aCollec = a collection of base entities (inheriting from <SpatialEntity>) 
@@ -4025,7 +3987,7 @@ SpaceModel >> setSingletonAggregates: compoundEntity fromSeeds: aCollec [
 ]
 
 { #category : #'ESE initialize-release' }
-SpaceModel >> setSpatialEntitiesAttributsValueFromStream: aStream [
+CMSpaceModel >> setSpatialEntitiesAttributsValueFromStream: aStream [
 	"lecture des valeurs des attributs, et maj des entites spatiales a 
 	partir de ces valeurs"
 	"balayage de gauche a droite et de bas en haut"
@@ -4038,8 +4000,7 @@ SpaceModel >> setSpatialEntitiesAttributsValueFromStream: aStream [
 	dataLine := (aStream upTo: Character cr) readStream.	
 	label := dataLine upTo: Character tab.
 	label ~= 'attributs'
-		ifTrue:
-			[^self cormas warn: (ErrorDialogWindow defaultString: '' key: #readError)].
+		ifTrue: [ ^ self error: 'Error while reading input stream. We expected "attributs" line'].
 	[dataLine atEnd]
 		whileFalse:
 			[couple := OrderedCollection new.
@@ -4084,27 +4045,25 @@ SpaceModel >> setSpatialEntitiesAttributsValueFromStream: aStream [
 ]
 
 { #category : #'- utilities - binary storage' }
-SpaceModel >> settingsFrom: aClone [
-	
+CMSpaceModel >> settingsFrom: aClone [
 	(self absoluteBounds = aClone absoluteBounds
-		and:
-			[self column = aClone column
-				and:
-					[self line = aClone line and: [self nbNeighbours = aClone nbNeighbours]]])
-		ifTrue: [aClone isIrregular ifFalse: [^self]].
+		and: [ self column = aClone column
+				and: [ self line = aClone line
+						and: [ self nbNeighbours = aClone nbNeighbours ] ] ])
+		ifTrue: [ aClone isIrregular
+				ifFalse: [ ^ self ] ].
 	self autoResizeBounds: aClone autoResizeBounds.
 	aClone isIrregular
-		ifFalse:
-			[self
-				initializeRegularX: aClone column
-				Y: aClone line
+		ifFalse: [ self
+				initializeRegularLines: aClone line
+				columns: aClone column
 				shape: aClone gridCellShape
 				nbNeighbours: aClone nbNeighbours
-				boundaries: aClone boundaries]
+				boundaries: aClone boundaries ]
 ]
 
 { #category : #'landscape indices' }
-SpaceModel >> shannon: attribute [
+CMSpaceModel >> shannon: attribute [
 	"Answer the Shannon index of the attribute of SpatialEntity suchThat:
     Ha = - SumOf [ occuranceOf(attribut) . ln(occuranceOf(attribut)) ] 
     attribute = <Symbol>"
@@ -4124,7 +4083,7 @@ SpaceModel >> shannon: attribute [
 ]
 
 { #category : #video }
-SpaceModel >> snapGridTimeForMovie: t makingMovie: aBoolean [
+CMSpaceModel >> snapGridTimeForMovie: t makingMovie: aBoolean [
 	"ask spaceInterfaces for making video"
 	
 	self
@@ -4133,7 +4092,7 @@ SpaceModel >> snapGridTimeForMovie: t makingMovie: aBoolean [
 ]
 
 { #category : #'private - regular cells - instance creation' }
-SpaceModel >> southCell: k [
+CMSpaceModel >> southCell: k [
 	
 	k = 0 ifTrue: [^0].
 	k <= (column * (line - 1)) ifTrue: [^k + column].
@@ -4142,29 +4101,29 @@ SpaceModel >> southCell: k [
 ]
 
 { #category : #accessing }
-SpaceModel >> spatialClasses [
+CMSpaceModel >> spatialClasses [
 	"return a collection of spatial classes"
 
 	^ self cormasModelClass spatialClasses
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> spatialEntities [
+CMSpaceModel >> spatialEntities [
 	^ spatialEntities ifNil: [ spatialEntities := Dictionary new ]
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> spatialEntities: anObject [
+CMSpaceModel >> spatialEntities: anObject [
 	spatialEntities := anObject
 ]
 
 { #category : #accessing }
-SpaceModel >> spatialEntitiesAt: aSpatialEntityName [
+CMSpaceModel >> spatialEntitiesAt: aSpatialEntityName [
 	^ self spatialEntities at: aSpatialEntityName
 ]
 
 { #category : #accessing }
-SpaceModel >> spatialEntitiesAt: aSpatialEntityName withPovResultFor: povSelector [
+CMSpaceModel >> spatialEntitiesAt: aSpatialEntityName withPovResultFor: povSelector [
 	"return spatialEntities associated with their povResult for a povSelector.
 	this is an optimised method sp√©cially for remote access"
 	
@@ -4172,28 +4131,8 @@ SpaceModel >> spatialEntitiesAt: aSpatialEntityName withPovResultFor: povSelecto
 		collect: [:each | each -> (each getPovResultFor: povSelector)]
 ]
 
-{ #category : #'ESE initialize-release' }
-SpaceModel >> stringToFilename: aStringOrFilename [
-	"Returns a Filename from (aStringOrFilename) located into the current model 'maps' 
-	directory (ex: 'cormas.env') "
-
-	| aFilename modelFolderName |
-	aStringOrFilename isString
-		ifTrue: [ "Very bad hack to remove CM and Model to a model name ..."
-			
-	self flag: #shouldBeRevised.
-			modelFolderName := self cormasModelClass name.
-			(modelFolderName beginsWith: 'CM')
-				ifTrue: [ modelFolderName := modelFolderName allButFirst: 2 ].
-			(modelFolderName endsWith: 'Model')
-				ifTrue: [ modelFolderName := modelFolderName allButLast: 5 ].
-			aFilename := (Cormas mapsPath: modelFolderName) / aStringOrFilename ]
-		ifFalse: [ aFilename := aStringOrFilename ].
-	^ aFilename
-]
-
 { #category : #'CSE (regular) - dynamics' }
-SpaceModel >> swell: compoundEntityClass [
+CMSpaceModel >> swell: compoundEntityClass [
 	"Each instance of compoundEntityClass swells on its surround layer. It swells if there is enough space arround it. The order of the compoundEntities is randomly mixed. 
 	Returns a boolean indicating if at least one aggregate has spread.
 	compoundEntityClass = aClass, subclass of SpatialEntitySet"
@@ -4206,7 +4145,7 @@ SpaceModel >> swell: compoundEntityClass [
 ]
 
 { #category : #'CSE (regular) - dynamics' }
-SpaceModel >> swell: compoundEntityClass verifying: aConditionBlock [
+CMSpaceModel >> swell: compoundEntityClass verifying: aConditionBlock [
 	"Each instance of compoundEntityClass swells on its surround layer. According to aConditionBlock on the surrounded cells, it swells if its size equals to its given size and if there is enough space arround it. 
 	Returns a boolean indicating if at least one aggregate has spread.
 	compoundEntityClass = aClass, subclass of SpatialEntitySet"
@@ -4234,18 +4173,18 @@ SpaceModel >> swell: compoundEntityClass verifying: aConditionBlock [
 ]
 
 { #category : #accessing }
-SpaceModel >> timeStep [
+CMSpaceModel >> timeStep [
 	^ self cormasModel timeStep
 ]
 
 { #category : #'user interface' }
-SpaceModel >> timeUnitName [
+CMSpaceModel >> timeUnitName [
 	
 	^self cormasModel timeUnitName
 ]
 
 { #category : #'private - irregular polygons creation' }
-SpaceModel >> traiterAccesParticulier: val [
+CMSpaceModel >> traiterAccesParticulier: val [
 	
 	| point listePoint |
 	listePoint := self traiterChaineDeCaractere: val.
@@ -4254,7 +4193,7 @@ SpaceModel >> traiterAccesParticulier: val [
 ]
 
 { #category : #'private - irregular polygons creation' }
-SpaceModel >> traiterAutreChaineDeCaractere: chaine [
+CMSpaceModel >> traiterAutreChaineDeCaractere: chaine [
 	"ex: chaine = '    Pen (1,2,0) '   et retourne une coll du genre : OrderedCollection ('Pen' '(1,2,0) ')  "
 	
 	| objet liste |
@@ -4264,7 +4203,7 @@ SpaceModel >> traiterAutreChaineDeCaractere: chaine [
 ]
 
 { #category : #'private - irregular polygons creation' }
-SpaceModel >> traiterAutresDonneesMif: objet pointeur: pointeur separateur: separator polygone: typePoly [
+CMSpaceModel >> traiterAutresDonneesMif: objet pointeur: pointeur separateur: separator polygone: typePoly [
 	"c est dans cette methode qu'il faudra gerer le differentes 
 	possibilites; cette methode est valable 
 	dans le cas d'une region au sens MapInfo; il faudra modifier 
@@ -4296,27 +4235,21 @@ SpaceModel >> traiterAutresDonneesMif: objet pointeur: pointeur separateur: sepa
 ]
 
 { #category : #'private - irregular polygons creation' }
-SpaceModel >> traiterChaineDeCaractere: chaine [
-	
+CMSpaceModel >> traiterChaineDeCaractere: aString [
 	| spaceIndex objetGraphique nombreElement listeTemp |
 	listeTemp := OrderedCollection new.
-	spaceIndex := chaine indexOf: Character space.
+	spaceIndex := aString indexOf: Character space.
 	spaceIndex = 0
-		ifFalse:
-			[objetGraphique := chaine
-				copyFrom: 1
-				to: spaceIndex - 1.
-			nombreElement := chaine
-				copyFrom: spaceIndex + 1
-				to: chaine size.
+		ifFalse: [ objetGraphique := aString copyFrom: 1 to: spaceIndex - 1.
+			nombreElement := aString copyFrom: spaceIndex + 1 to: aString size.
 			listeTemp
 				add: objetGraphique;
-				add: nombreElement].
-	^listeTemp
+				add: nombreElement ].
+	^ listeTemp
 ]
 
 { #category : #'private - irregular polygons creation' }
-SpaceModel >> traiterDonneesMif: valeur pointeur: pointeur separateur: separator nombre: nb classe: aClass info: aBoolean [
+CMSpaceModel >> traiterDonneesMif: valeur pointeur: pointeur separateur: separator nombre: nb classe: aClass info: aBoolean [
 	"Read the coordinates of the shapes from the stream (pointeur). The instances of 'aClass' are created here and their shape is stored into the 'outline' attribut.
 nb is for the number of regions for each entity (usualy 1, more if there are included entities)
 ex: valeur = 'Region 1' pointeur = an ExternalReadStream on 'd:\vw7nc\cormas\Mod...   "
@@ -4370,7 +4303,7 @@ ex: valeur = 'Region 1' pointeur = an ExternalReadStream on 'd:\vw7nc\cormas\Mod
 ]
 
 { #category : #updating }
-SpaceModel >> update: aSymbol with: aValue [
+CMSpaceModel >> update: aSymbol with: aValue [
 	"propagate time changes to the dependents"
 	
 	aSymbol == #timeChanged ifTrue: [self changed: aSymbol with: aValue].
@@ -4378,7 +4311,7 @@ SpaceModel >> update: aSymbol with: aValue [
 ]
 
 { #category : #'private - irregular polygons creation' }
-SpaceModel >> updateIncludedEntities: lesPolygones [
+CMSpaceModel >> updateIncludedEntities: lesPolygones [
 	
 	| polygonsWithIE newIncluded poly |
 	polygonsWithIE := lesPolygones
@@ -4415,17 +4348,17 @@ SpaceModel >> updateIncludedEntities: lesPolygones [
 ]
 
 { #category : #'ESE (regular) - special locations' }
-SpaceModel >> upperLeftLocation [
+CMSpaceModel >> upperLeftLocation [
 	^ self elementaryEntities at: 1
 ]
 
 { #category : #'ESE (regular) - special locations' }
-SpaceModel >> upperRightLocation [
+CMSpaceModel >> upperRightLocation [
 	^ self elementaryEntities at: column
 ]
 
 { #category : #'private - irregular polygons creation' }
-SpaceModel >> voisinsPolygonesNoeuds: lesPolygones [
+CMSpaceModel >> voisinsPolygonesNoeuds: lesPolygones [
 	| boundingRectangle p pPrec pCour allPolygones |
 	lesPolygones isEmpty
 		ifTrue: [ ^ self ].
@@ -4481,7 +4414,7 @@ SpaceModel >> voisinsPolygonesNoeuds: lesPolygones [
 ]
 
 { #category : #deprecated }
-SpaceModel >> vue [
+CMSpaceModel >> vue [
 	"en principe le modele n'a pas a manipuler directement sa vue !!!"
 	
 	^self dependents isEmpty
@@ -4490,14 +4423,14 @@ SpaceModel >> vue [
 ]
 
 { #category : #deprecated }
-SpaceModel >> vues [
+CMSpaceModel >> vues [
 	"DEPRECATED. Should use :"
 	
 	^self dependents
 ]
 
 { #category : #'private - regular polygons' }
-SpaceModel >> warningBoundaries [
+CMSpaceModel >> warningBoundaries [
 	
 	self cormas
 		warn:
@@ -4506,7 +4439,7 @@ SpaceModel >> warningBoundaries [
 ]
 
 { #category : #'landscape indices' }
-SpaceModel >> wayFromCell: cell1 toCell: cell2 [
+CMSpaceModel >> wayFromCell: cell1 toCell: cell2 [
 	"return a collection of cells from cell1 to cell2 (including cell1 and cell2)"
 	
 	| nbLines nbCols firstCell lastCell invert cellsIntoRectangle way |
@@ -4614,7 +4547,7 @@ SpaceModel >> wayFromCell: cell1 toCell: cell2 [
 ]
 
 { #category : #'private - regular cells - instance creation' }
-SpaceModel >> westCell: k [
+CMSpaceModel >> westCell: k [
 	
 	k \\ column = 1 ifFalse: [^k - 1].
 	boundaries == #torroidal ifTrue: [^k + column - 1].
@@ -4622,7 +4555,7 @@ SpaceModel >> westCell: k [
 ]
 
 { #category : #'private - regular cells - instance creation' }
-SpaceModel >> westCellHexa: k [
+CMSpaceModel >> westCellHexa: k [
 	
 	k = 0 ifTrue: [^0].
 	k < column | ((k - 1) // column + 1) odd
@@ -4635,25 +4568,13 @@ SpaceModel >> westCellHexa: k [
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> xll [
+CMSpaceModel >> xll [
 	
 	^xll
 ]
 
 { #category : #'private - accessing' }
-SpaceModel >> xll: anObject [
-	
-	xll := anObject
-]
-
-{ #category : #'private - accessing' }
-SpaceModel >> yll [
+CMSpaceModel >> yll [
 	
 	^yll
-]
-
-{ #category : #'private - accessing' }
-SpaceModel >> yll: anObject [
-	
-	yll := anObject
 ]

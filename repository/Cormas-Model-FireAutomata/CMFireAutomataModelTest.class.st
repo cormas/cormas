@@ -14,8 +14,8 @@ CMFireAutomataModelTest >> testDominanceOfAModelIsLessThanOne [
 	aModel class defaultInit: #init58WithFire.
 	aModel initializeSpaceModel.
 	aModel
-		createGridX: 100
-		Y: 100
+		createGridLines: 100
+		columns: 100
 		neighbourhood: 4
 		closed: true.
 	aModel initSimulation.
@@ -39,10 +39,10 @@ CMFireAutomataModelTest >> testNumberOfDifferentStateInAFireAutomataIsThree [
 	aModel class defaultInit: #init58WithFire.
 	aModel initializeSpaceModel.
 	aModel
-		createGridX: 10
-		Y: 10
+		createGridLines: 10
+		columns: 10
 		neighbourhood: 4
-		closed: true.		
+		closed: true.
 	aModel initSimulation.
 	self assert: (aModel nbDistinctValuesOf: #state) equals: 3
 ]
@@ -56,8 +56,8 @@ CMFireAutomataModelTest >> testSizeOfCellsColumnOfFireAutomataModelIsTen [
 		new.
 	aModel initializeSpaceModel.
 	aModel
-		createGridX: 10
-		Y: 10
+		createGridLines: 10
+		columns: 10
 		neighbourhood: 4
 		closed: true.
 	aModel activeInit: #init58WithFire.
@@ -74,8 +74,8 @@ CMFireAutomataModelTest >> testWhenAfterRunningTheModel20TimesTheProbesResultHav
 	aModel := modelClass new.
 	aModel initializeSpaceModel.
 	aModel
-		createGridX: 100
-		Y: 100
+		createGridLines: 100
+		columns: 100
 		neighbourhood: 4
 		closed: true.
 	nbSteps := 20.
@@ -97,8 +97,8 @@ CMFireAutomataModelTest >> testWhenYouPickACellOfAModelThisIsASpatialEntity [
 	aModel := modelClass new.
 	aModel initializeSpaceModel.
 		aModel
-		createGridX: 100
-		Y: 100
+		createGridLines: 100
+		columns: 100
 		neighbourhood: 4
 		closed: true.
 	aModel initSimulation.

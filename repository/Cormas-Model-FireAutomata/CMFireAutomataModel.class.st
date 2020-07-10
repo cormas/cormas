@@ -15,7 +15,7 @@ This percolation threshold characterizes cellular automata which are representin
 "
 Class {
 	#name : #CMFireAutomataModel,
-	#superclass : #CormasModel,
+	#superclass : #CMAbstractModel,
 	#instVars : [
 		'trees',
 		'theCMFireAutomataCells',
@@ -27,7 +27,7 @@ Class {
 	#classInstVars : [
 		'defaultInit'
 	],
-	#category : 'Cormas-Model-FireAutomata'
+	#category : #'Cormas-Model-FireAutomata'
 }
 
 { #category : #examples }
@@ -43,11 +43,6 @@ CMFireAutomataModel class >> createInJSONFile [
 { #category : #'default settings' }
 CMFireAutomataModel class >> defaultControl [
 	^ #step:
-]
-
-{ #category : #'default settings' }
-CMFireAutomataModel class >> defaultFinalStep [
-	^ 200
 ]
 
 { #category : #'default settings' }
@@ -76,12 +71,11 @@ CMFireAutomataModel class >> example1 [
 	nbLines := 100.
 	aModel initializeSpaceModel.
 	aModel
-		createGridX: nbLines
-		Y: nbLines
+		createGridLines: nbLines
+		columns: nbLines
 		neighbourhood: 4
 		closed: true.
 	v := RTView new.
-	
 	aModel activeInit: #init58WithFire.
 	aModel initSimulation.
 	aModel runStep.
@@ -434,14 +428,12 @@ CMFireAutomataModel class >> simuOpenMole2 [
 
 { #category : #'programmable scenario' }
 CMFireAutomataModel >> dimensions: aPair [
-
 	self initializeSpaceModel.
-
 	self
-		createGridX: aPair key
-		Y: aPair value
+		createGridLines: aPair value
+		columns: aPair key
 		neighbourhood: 4
-		closed: true.
+		closed: true
 ]
 
 { #category : #description }
@@ -452,46 +444,58 @@ CMFireAutomataModel >> howToRunIt [
 
 { #category : #init }
 CMFireAutomataModel >> init53 [
-	self initCells: #init53
+self theCMFireAutomataCells do:#init53 
+
 ]
 
 { #category : #init }
 CMFireAutomataModel >> init53WithFire [
-	self createGridX: 80 Y: 80 neighbourhood: 4 closed: false.
-	self initCells: #init53.
-	self pickCell state: #fire.
+	self
+		createGridLines: 80
+		columns: 80
+		neighbourhood: 4
+		closed: false.
+		self theCMFireAutomataCells do: #init53.
+	self pickCell state: #fire
 ]
 
 { #category : #init }
 CMFireAutomataModel >> init58 [
-	self createGridX: 80 Y: 80 neighbourhood: 4 closed: false.
-	self initCells: #init58.
+	self
+		createGridLines: 80
+		columns: 80
+		neighbourhood: 4
+		closed: false.
+		self theCMFireAutomataCells do: #init58
 ]
 
 { #category : #init }
 CMFireAutomataModel >> init58WithFire [
-	self initCells: #init58.
-	self pickCell ifNotNil:[:c| c state: #fire]
+	self theCMFireAutomataCells do: #init58.
+	self pickCell ifNotNil: [ :c | c state: #fire ]
 ]
 
 { #category : #init }
 CMFireAutomataModel >> init58WithFireWithFiremen [
 	| aCell |
-	self createGridX: 80 Y: 80 neighbourhood: 4 closed: false.
-	self initCells: #init58.
-	1 to: self numberOfFires do: [:i | 
-			aCell :=  self pickCell.
-			aCell = nil ifTrue:[self halt].
-			aCell state: #fire].
-	self initAgents.
+	self
+		createGridLines: 80
+		columns: 80
+		neighbourhood: 4
+		closed: false.
+	self theCMFireAutomataCells do: #init58FireWithFiremen.
+	1 to: self numberOfFires do: [ :i | 
+		aCell := self pickCell.
+		aCell = nil
+			ifTrue: [ self halt ].
+		aCell state: #fire ].
+	self initAgents
 ]
 
 { #category : #init }
 CMFireAutomataModel >> init58WithMultipleFires [
-
-	self initCells: #init58.
-	1 to: self numberOfFires  do: [:i | self pickCell state: #fire].
-	
+	self theCMFireAutomataCells do: #init58WithMultipleFires.
+	1 to: self numberOfFires do: [ :i | self pickCell state: #fire ]
 ]
 
 { #category : #'instance-creation' }
@@ -506,11 +510,11 @@ CMFireAutomataModel >> initAgents [
 CMFireAutomataModel >> initSmallWithFireWithFiremen [
 	| aCell |
 	self
-		createGridX: 40
-		Y: 40
+		createGridLines: 40
+		columns: 40
 		neighbourhood: 4
 		closed: false.
-	self initCells: #init58.
+	self theCMFireAutomataCells do: ##init58.
 	1 to: self numberOfFires do: [ :i | 
 		aCell := self pickCell.
 		aCell = nil
@@ -522,21 +526,23 @@ CMFireAutomataModel >> initSmallWithFireWithFiremen [
 { #category : #init }
 CMFireAutomataModel >> initWithFiremen [
 	| aCell |
-	self createGridX: 80 Y: 80 neighbourhood: 4 closed: false.
-	self initCells: #initWith: withArguments: {60}.
-	1 to: self numberOfFires do: [:i | 
-			aCell :=  self pickCell.
-			aCell = nil ifTrue:[self halt].
-			aCell state: #fire].
-	self initAgents.
+	self
+		createGridLines: 80
+		columns: 80
+		neighbourhood: 4
+		closed: false.
+	self theCMFireAutomataCells do: [ :each | each initWith: 60 ].
+	1 to: self numberOfFires do: [ :i | 
+		aCell := self pickCell.
+		aCell state: #fire ].
+	self initAgents
 ]
 
 { #category : #'programmable scenario' }
 CMFireAutomataModel >> initWithProgrammableScenario [
-
-	self initCells: #initWith: withArguments: {percentageOfTrees}.
-	1 to: self numberOfFires do: [:i | self pickCell state: #fire].
-	self initAgents.
+self theCMFireAutomataCells do: [:each | each initWith: percentageOfTrees ].
+	1 to: self numberOfFires do: [ :i | self pickCell state: #fire ].
+	self initAgents
 ]
 
 { #category : #probes }

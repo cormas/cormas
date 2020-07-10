@@ -16,19 +16,6 @@ self deprecated:'Should be deprecated in the next CORMAS version'.
 	^false
 ]
 
-{ #category : #deprecated }
-CMAgent class >> newBoss33: attributList [ 
-	"Create Agent with only #id and #dead values."
-
-	| ag |
-	self deprecated:'Should be deprecated in the next CORMAS version'.
-	ag := super newBoss: (OrderedCollection with: attributList first).
-	attributList removeFirst.
-	attributList with: #(#dead:)
-		do: [:array1Element :array2Element | ag perform: array2Element with: array1Element].
-	^ag
-]
-
 { #category : #accessing }
 CMAgent >> dead [
 	^dead ifNil: [dead := false]

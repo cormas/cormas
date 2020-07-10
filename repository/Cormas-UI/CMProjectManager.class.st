@@ -20,7 +20,7 @@ Class {
 		'openStatus',
 		'currentModelPath'
 	],
-	#category : 'Cormas-UI-Project'
+	#category : #'Cormas-UI-Project'
 }
 
 { #category : #'code-generation' }
@@ -311,7 +311,7 @@ CMProjectManager >> requestModelOpenDialogFromLocalImage [
 	widget := SpcListModel new.
 	widget
 		title: self translator tWhichModel;
-		items: CormasModel subclasses.
+		items: CMAbstractModel subclasses.
 	widget openDialogWithSpec modalRelativeTo: self currentWorld.
 	^ widget selectedItem name
 ]

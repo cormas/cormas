@@ -1,6 +1,6 @@
 Class {
 	#name : #CMECECModel,
-	#superclass : #CormasModel,
+	#superclass : #CMAbstractModel,
 	#instVars : [
 		'restrainedInitialNumber',
 		'unrestrainedInitialNumber',
@@ -9,7 +9,7 @@ Class {
 		'theCMECECVegetationUnits',
 		'theRestraineds'
 	],
-	#category : 'Cormas-Model-ECEC'
+	#category : #'Cormas-Model-ECEC'
 }
 
 { #category : #'- probes' }
@@ -31,11 +31,6 @@ CMECECModel class >> colorOfProbe_vegetationBiomass [
 ]
 
 { #category : #default }
-CMECECModel class >> defaultFinalStep [
-	^ 600
-]
-
-{ #category : #default }
 CMECECModel class >> defaultInit [
 	
 	^#homogeneousEnv
@@ -44,8 +39,7 @@ CMECECModel class >> defaultInit [
 
 { #category : #default }
 CMECECModel class >> defaultProbes [
-
-^self probes
+	^ self probes 
 ]
 
 { #category : #'examples - with SimManager' }
@@ -115,6 +109,49 @@ CMECECModel class >> example1 [
 	anim inView: v.
 	
 	v openWithToolbar.
+]
+
+{ #category : #examples }
+CMECECModel class >> example1R3 [
+    "Vegetation grid animation without foragers"
+
+    | aModel v n es popup |
+    aModel := self
+        initialize;
+        new.
+    v := RSCanvas new.
+    n := RSColorPalette sequential ylgnbu9.
+    n := NSScale linear
+        domain: {0 . 0.1 . 0.2 . 0.3 . 0.4 . 0.5 . 0.6 . 0.7 . 1};
+        range: n range.
+    aModel initSimulation.
+    aModel runStep.
+    es := aModel theCMECECVegetationUnits
+        collect: [ :each | 
+            RSBox new
+                size: 25;
+                model: each;
+                yourself ]
+        as: RSGroup.
+    v addAll: es.
+    "Adding a popup for biomass info on hover"
+    popup := RSPopup text: [ :object | object asPopupText ].
+    es @ popup.
+
+    "Adding a popup for object inspection on left click"
+    es when: RSMouseLeftClick do: [ :evt | evt shape model inspect ].
+    RSGridLayout new
+        gapSize: 0;
+        lineItemsCount: aModel spaceModel column;
+        on: v nodes.
+    v zoomToFit.
+    v newAnimation
+        repeat;
+        onStepDo: [ :t | 
+            aModel runStep.
+            es do: [ :each | each color: (n scale: each model biomass / 10.0) ] ].
+    v addInteraction: RSCanvasController new.
+    v open
 ]
 
 { #category : #examples }
@@ -441,18 +478,27 @@ CMECECModel >> homogeneousEnv [
 	"initialize an homogeneous space (from poor.env file) with randomly located foragers"
 
 	"self spaceModel loadEnvironmentFromFile: 'poor.env'."
-	self createGridX: 15 Y: 27 neighbourhood: 8 closed: true.
-	self theCMECECVegetationUnits do: [ :c |  c initRandomBiomass].
+
+	self
+		createGridLines: 27
+		columns: 15
+		neighbourhood: 8
+		closed: true.
+	self theCMECECVegetationUnits do: [ :c | c initRandomBiomass ].
 	self initAgents
 ]
 
 { #category : #'instance-creation' }
 CMECECModel >> homogeneousEnv2 [
 	"initialize an homogeneous space (27x27, random biomass) with randomly located foragers"
-	
-	self spaceModel initializeRegularX: 27 Y: 27 shape: #squared nbNeighbours:
-			#eight boundaries: #toroidal.
-	self theCMECECVegetationUnits do: [:cell | cell initRandomBiomass].	"or: self initCells: #initRandomBiomass."
+
+	self spaceModel
+		initializeRegularLines: 27
+		columns: 27
+		shape: #squared
+		nbNeighbours: #eight
+		boundaries: #toroidal.
+	self theCMECECVegetationUnits do: [ :cell | cell initRandomBiomass ].	"or: self initCells: #initRandomBiomass."
 	self initAgents
 ]
 
@@ -555,10 +601,10 @@ CMECECModel >> unrestrainedInitialNumber [
 ]
 
 { #category : #accessing }
-CMECECModel >> unrestrainedInitialNumber: anObject [
+CMECECModel >> unrestrainedInitialNumber: anInteger [
 	"Setter accessor of attribute unrestrainedInitialNumber "
-	
-	unrestrainedInitialNumber := anObject
+
+	unrestrainedInitialNumber := anInteger
 ]
 
 { #category : #probes }

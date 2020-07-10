@@ -10,7 +10,7 @@ Class {
 		'orderedNeighbourhood',
 		'default'
 	],
-	#category : 'Cormas-Core-Entities'
+	#category : #'Cormas-Core-Entities'
 }
 
 { #category : #testing }
@@ -1024,16 +1024,26 @@ Example: self wayTo: self spaceModel centralLocation constraint: [:c | c isClose
 	^road
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #'- deprecated' }
 CMSpatialEntityElement >> x [
+	"This method is not supported because numCol is more explicit. Please use numCol instead."
+
 	"Purpose: returns the X coordinate of the cell in a regular spatial grid"
-	
-	^self numCol
+
+	self
+		deprecated: 'Please use "numCol" instead.'
+		transformWith: '`@receiver x' -> '`@receiver numCol'.
+	^ self numCol
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #'- deprecated' }
 CMSpatialEntityElement >> y [
+	"This method is not supported because numCol is more explicit. Please use numCol instead."
+
 	"Purpose: returns the Y coordinate of the cell in a regular spatial grid"
-	
-	^self numLine
+
+	self
+		deprecated: 'Please use "numLine" instead.'
+		transformWith: '`@receiver y' -> '`@receiver numLine'.
+	^ self numLine
 ]

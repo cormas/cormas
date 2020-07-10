@@ -41,7 +41,7 @@ DefaultAttributesSetter class >> attributsFromClass: aClass [
 		ifTrue:
 			[set add: 'state'	"Parmis les attributs herites, il n'y a que state qui puisse etre un nombre"].
 	(aClass superclass = CormasModelGameInterface
-		or: [aClass superclass = CormasModel])
+		or: [aClass superclass = CMAbstractModel])
 		ifTrue:
 			[set add: 'periodicity'	"Parmis les attributs herites, il n'y a que periodicity qui puisse etre un nombre a analyser"].
 	set addAll: aClass instVarNames.	"and add attributs superclasses except from Entities"
