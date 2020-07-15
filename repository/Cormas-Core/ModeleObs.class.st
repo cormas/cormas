@@ -13,7 +13,7 @@ Class {
 	#classInstVars : [
 		'random'
 	],
-	#category : 'Cormas-Core-Observer'
+	#category : #'Cormas-Core-Observer'
 }
 
 { #category : #'class initialization' }
@@ -25,11 +25,9 @@ ModeleObs class >> new [
 { #category : #obsolete }
 ModeleObs >> Rand [
 	
-	self halt	"obsolete"	"	RandomNumber isNil ifTrue: [RandomNumber := RandomGenerator fromGenerator: 1 seededWith: Time millisecondClockValue].
+	self deprecated: 'obsolete"	"	RandomNumber isNil ifTrue: [RandomNumber := RandomGenerator fromGenerator: 1 seededWith: Time millisecondClockValue].
 
-
-
-	^RandomNumber next"
+	^RandomNumber next'
 ]
 
 { #category : #action }
