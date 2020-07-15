@@ -7,7 +7,7 @@ Class {
 		'scale',
 		'cacheScaleFactor'
 	],
-	#category : 'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Interface'
 }
 
 { #category : #displaying }
@@ -21,7 +21,7 @@ BitmapFigure >> adaptColorAndText [
 
 { #category : #aVirer }
 BitmapFigure >> adaptImageAndText [
-	
+	self flag:#shouldBeRevised.
 	self halt.
 	self pov = #nil ifTrue: [^self].
 	self info = #nil

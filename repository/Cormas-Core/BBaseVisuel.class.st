@@ -6,7 +6,7 @@ Class {
 		'listeEtat',
 		'adaptor'
 	],
-	#category : 'Cormas-Core-Observer'
+	#category : #'Cormas-Core-Observer'
 }
 
 { #category : #'class initialization' }
@@ -18,11 +18,9 @@ BBaseVisuel class >> new [
 { #category : #obsolete }
 BBaseVisuel >> Rand [
 	
-	self halt	"obsolete"	"	Rand isNil ifTrue: [Rand := RandomGenerator fromGenerator: 1 seededWith: Time millisecondClockValue].
+	self deprecated: 'obsolete"	"	Rand isNil ifTrue: [Rand := RandomGenerator fromGenerator: 1 seededWith: Time millisecondClockValue].
 
-
-
-	^Rand next"
+	^Rand next'
 ]
 
 { #category : #accessing }
