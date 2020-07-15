@@ -62,7 +62,6 @@ Class {
 		'charts',
 		'activeProbes',
 		'activityDiagrams',
-		'currentSimulation',
 		'randUi'
 	],
 	#category : #'Cormas-Core-Interface'
@@ -487,14 +486,12 @@ CMAbstractModel class >> current [
 
 { #category : #accessing }
 CMAbstractModel class >> currentSimulation [
-	
-	^currentSimulation ifNil: [currentSimulation := self allInstances first]
+	self deprecated: 'currentSimulation is no longer supported.'
 ]
 
 { #category : #accessing }
 CMAbstractModel class >> currentSimulation: anObject [
-	
-	currentSimulation := anObject
+	self deprecated: 'currentSimulation is no longer supported.'
 ]
 
 { #category : #'- default value' }
