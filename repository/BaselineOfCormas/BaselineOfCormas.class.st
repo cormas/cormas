@@ -37,6 +37,7 @@ BaselineOfCormas >> baseline: spec [
 				package: 'Cormas-Model-ECEC';
 				package: 'Cormas-Model-FireAutomata';
 				package: 'Cormas-Model-PlotsRental';
+				package: 'Cormas-Model-ReHab';
 				package: 'Cormas-Tests';
 				package: 'Cormas-OpenMole'
 					with: [ spec requires: #('Cormas-Core') ];
@@ -47,16 +48,16 @@ BaselineOfCormas >> baseline: spec [
 			spec
 				group: 'All'
 					with:
-					#(#'Cormas-VW-Ported' 'Cormas-UI' 'Cormas-Tests' 'Cormas-Model-FireAutomata' 'Cormas-Model-ECEC' 'Cormas-Model-Conway' 'Cormas-Core' 'Cormas-Model-PlotsRental' 'Cormas-Model-Diffuse' #'Cormas-Model-DemoAggregates' 'Cormas-OpenMole');
+					#(#'Cormas-VW-Ported' 'Cormas-UI' 'Cormas-Tests' 'Cormas-Model-FireAutomata' 'Cormas-Model-ECEC' 'Cormas-Model-Conway' 'Cormas-Core' 'Cormas-Model-PlotsRental' 'Cormas-Model-Diffuse' #'Cormas-Model-DemoAggregates' 'Cormas-Model-ReHab' 'Cormas-OpenMole');
 				group: 'Core' with: #('Cormas-Core');
 				group: 'Models'
 					with:
-					#('Cormas-Model-Conway' 'Cormas-Core' 'Cormas-Model-ECEC' 'Cormas-Model-FireAutomata' 'Cormas-Model-PlotsRental' 'Cormas-Model-Diffuse' #'Cormas-Model-DemoAggregates');
+					#('Cormas-Model-Conway' 'Cormas-Model-ReHab' 'Cormas-Core' 'Cormas-Model-ECEC' 'Cormas-Model-FireAutomata' 'Cormas-Model-PlotsRental' 'Cormas-Model-Diffuse' #'Cormas-Model-DemoAggregates');
 				group: 'Tests' with: #('Cormas-Core' 'Cormas-Tests');
 				group: 'OpenMole' with: #('Cormas-OpenMole');
 				group: 'UI'
 					with:
-					#(#'Cormas-UI' 'Cormas-Core' 'Cormas-Model-Conway' 'Cormas-Model-ECEC' 'Cormas-Model-PlotsRental' 'Cormas-Model-FireAutomata' 'Cormas-Model-Diffuse' #'Cormas-Model-DemoAggregates') ].
+					#(#'Cormas-UI' 'Cormas-Core' 'Cormas-Model-ReHab' 'Cormas-Model-Conway' 'Cormas-Model-ECEC' 'Cormas-Model-PlotsRental' 'Cormas-Model-FireAutomata' 'Cormas-Model-Diffuse' #'Cormas-Model-DemoAggregates') ].
 	spec
 		for: #'pharo7.x'
 		do: [ spec preLoadDoIt: #preLoadForPharo7.
