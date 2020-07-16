@@ -33,7 +33,7 @@ Class {
 		'Grid',
 		'States'
 	],
-	#category : 'Cormas-Core-HotDraw'
+	#category : #'Cormas-Core-HotDraw'
 }
 
 { #category : #'tool states' }
@@ -51,7 +51,7 @@ tool drawing add:
 	transitions := OrderedCollection new.
 	transitions add: (ToolStateTransitionModel new from: (stateTable at: 'Activity Tool'); to: (stateTable at: 'Create Activity Figure'); type: (Refactory.HotDraw.TransitionType basicNew instVarAt: 1 put: #redButtonPress; yourself); points: ((Core.OrderedCollection new) add: (Core.Point x: 212.497 y: 87.824); add: (Core.Point x: 149 y: 104); add: (Core.Point x: 91 y: 171); add: (Core.Point x: 361 y: 112); add: (Core.Point x: 117 y: 249); add: (Core.Point x: 221.025 y: 256.422); yourself); yourself). self halt.
 	ToolStateMachineEditor openWithStates: states connections: transitions"
-	
+	self flag:#shouldBeRevised.
 	Tool states
 		at: 'Activity Tool'
 		put:

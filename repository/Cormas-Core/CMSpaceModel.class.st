@@ -94,48 +94,48 @@ CMSpaceModel >> activeSpatialEntity: aClass [
 
 { #category : #'- deprecated' }
 CMSpaceModel >> aggregate: listPolygons [
-	"fusion-agregation des autres polygones sur le premier de la liste"
+	"merge-aggregation of the other polygons on the first of the list"
 	
 	| fusion allPolygons theOthers |
-	self halt.	"should not implement anymore"
+	self flag:#shouldBeRevised.
 	listPolygons isEmpty
 		ifFalse:
-			["Attention a l'ordenancement de listPolygons !!!"
+			["Beware of listPolygons ordering !!!"
 			theOthers := listPolygons
 				copyFrom: 2
 				to: listPolygons size.
-			fusion := listPolygons first.	"Calcul des nouvelles coordonnees d'origine"
-			fusion outline: (self outlineAggregatedFrom: listPolygons).	"Mise a jour des coordonnes de l'image du polygone dans la fenetre de dessin"
-			self setImagesPolygons: (Array with: fusion).	"On doit supprimer les polygones senses ne plus exister avant de s'attaquer au voisinage"
+			fusion := listPolygons first.	"Calculation of the new origin coordinates"
+			fusion outline: (self outlineAggregatedFrom: listPolygons).	"Updating the coordinates of the polygon image in the drawing window"
+			self setImagesPolygons: (Array with: fusion).	"we need to remove polygons that are supposed to no longer exist before attacking the neighborhood"
 			allPolygons := self cormasModel
 				perform:
 					('the' , listPolygons first class name asString , 's') asSymbol.
-			allPolygons removeAll: theOthers.	"Reconstruction du voisinage du nouveau polygone"
+			allPolygons removeAll: theOthers.	"Reconstruction of the neighbourhood of the new polygon"
 			fusion neighbourhood: nil.
-			self voisinsPolygonesNoeuds: (Array with: fusion).	"Reconstruction du voisinage des voisins du nouveau polygone"
+			self voisinsPolygonesNoeuds: (Array with: fusion).	"Reconstruction of the neighbourhood of the neighbours of the new polygon"
 			fusion neighbourhood do: [:p | p neighbourhood: nil].
-			self voisinsPolygonesNoeuds: fusion neighbourhood asOrderedCollection.	"Mise a jour des components de la nouvelle entite spatiale, au cas ou elle serait composee"
+			self voisinsPolygonesNoeuds: fusion neighbourhood asOrderedCollection.	"Updating the components of the new spatial entity, in case it is composed of"
 			(fusion class inheritsFrom: CMSpatialEntityElement)
 				ifFalse: [theOthers do: [:p | fusion addComponents: p components]]]
 ]
 
 { #category : #'- deprecated' }
 CMSpaceModel >> aggregate: listPolygons new: entityC [
-	"Creation d'une entite de niveau N+1 par aggregation de polygones de niveau N"
-	"!!! Les elements de listPolygons doivent etre adjacents !!!"
+	"Creation of an N+1 level integer by aggregation of N level polygons"
+	"!!! The elements of listPolygons must be adjacent. !!!"
 	
 	| newEntityC |
-	self halt.	"should not implement anymore"
+	self flag:#shouldBeRevised.
 	listPolygons isEmpty
 		ifFalse:
 			[newEntityC := entityC new init.	"Calcul des coordonnees d'origine"
-			newEntityC outline: (self outlineAggregatedFrom: listPolygons).	"Mise a jour des coordonnes de l'image du polygone dans la fenetre de dessin"
-			self setImagesPolygons: (Array with: newEntityC).	"Construction du voisinage du nouveau polygone"
+			newEntityC outline: (self outlineAggregatedFrom: listPolygons).	"Updating the coordinates of the polygon image in the drawing window"
+			self setImagesPolygons: (Array with: newEntityC).	"Construction of the neighbourhood of the new polygon"
 			newEntityC neighbourhood: nil.
-			self voisinsPolygonesNoeuds: (Array with: newEntityC).	"Reconstruction du voisinage des voisins du nouveau polygone"
+			self voisinsPolygonesNoeuds: (Array with: newEntityC).	"Reconstruction of the neighbourhood of the neighbours of the new polygon"
 			newEntityC neighbourhood do: [:p | p neighbourhood: nil].
 			self
-				voisinsPolygonesNoeuds: newEntityC neighbourhood asOrderedCollection.	"Mise a jour des components de la nouvelle entite spatiale"
+				voisinsPolygonesNoeuds: newEntityC neighbourhood asOrderedCollection.	"Updating the components of the new spatial entity"
 			newEntityC addComponents: listPolygons.
 			(self cormasModel
 				perform: ('the' , entityC name asString , 's') asSymbol) add:
@@ -167,7 +167,7 @@ CMSpaceModel >> aggregatesEntities [
 CMSpaceModel >> aggregatesInstancesOf: entityE condition: methodName [
 	
 	| nameEntitiesE theInterestingEntitiesE setOfComponents seed neighbours newNeighbours |
-	self halt.	"should not implement anymore"
+	self flag:#shouldBeRevised.
 	nameEntitiesE := 'the' , entityE name asString , 's'.
 	theInterestingEntitiesE := ((self cormasModel
 		perform: nameEntitiesE asSymbol) select: [:c | c perform: methodName])
