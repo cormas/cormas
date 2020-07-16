@@ -13,7 +13,7 @@ Class {
 		'type',
 		'surround'
 	],
-	#category : 'Cormas-Core-Entities'
+	#category : #'Cormas-Core-Entities'
 }
 
 { #category : #'- displaying' }
@@ -72,13 +72,11 @@ aSetOfSpatialEntitiesOrAnObject = aSpatialEntity  or a Collection of SpatialEnti
 CMSpatialEntitySet >> addComponent: aSpatialEntity [
 	"Purpose: adds a given component and notifies the change to dependents
 Argument: aSpatialEntity = <SpatialEntity>"
-	
-	aSpatialEntity compoundSpatialClasses
-		at: self class name
-		put: self.
+
+	aSpatialEntity compoundSpatialClasses at: self class name put: self.
 	self components add: aSpatialEntity.
 	self setSurround.
-	self currentSimulation
+	self cormasModel
 		registerEntityChange: #compositionChanged
 		with: (EntityReference onEntities: self components)
 		from: (EntityReference on: self)
@@ -89,16 +87,12 @@ CMSpatialEntitySet >> addComponents: aCollecOfSpatialEntities [
 	"Purpose: adds a given aCollecOfSpatialEntities of components and notifies the change to dependents
 Argument: aCollecOfSpatialEntities = <Collection(SpatialEntity)>
 Example: self addComponents: self surround"
-	
+
 	self components addAll: aCollecOfSpatialEntities.
 	aCollecOfSpatialEntities
-		do:
-			[:c | 
-			c theCSE
-				at: self class name
-				put: self].
+		do: [ :c | c theCSE at: self class name put: self ].
 	self setSurround.
-	self currentSimulation
+	self cormasModel
 		registerEntityChange: #compositionChanged
 		with: (EntityReference onEntities: self components)
 		from: (EntityReference on: self)
@@ -203,7 +197,7 @@ CMSpatialEntitySet >> changedWithNewComponents: aCollecOfComponents [
 	"the shape of the aggregate has changed, then new POVs must be created"
 	
 	self halt.	"not used anymore"	" 'la notifictaion direct aux povs a √©t√© remplac√© par une notifictaion via le spaceModel '"	"Ancienne m√©thode : self povs do: [: aPov | aPov addAll: aCollecOfComponents]."
-	self currentSimulation spaceModel dispatchOneCompoundSpatialEntity: self
+	self cormasModel spaceModel dispatchOneCompoundSpatialEntity: self
 ]
 
 { #category : #'+ displaying' }
@@ -265,11 +259,18 @@ CMSpatialEntitySet >> containsCell: aCell [
 
 { #category : #'star testing' }
 CMSpatialEntitySet >> delete [
-"Purpose: gets rid of this object. The collectGarbage is IMMEDIATELY performed  (ie. the receiver of class X is removed from 'theXXXs' collection)"
-	self components isEmpty ifFalse:[self deleteComponents: self components].
-	self reset ; destroyed: true.
-	self collector isNil ifFalse:[self collector removeEntity: self].
-	self currentSimulation registerEntityChange: #removeEntity from: (EntityReference on:self)
+	"Purpose: gets rid of this object. The collectGarbage is IMMEDIATELY performed  (ie. the receiver of class X is removed from 'theXXXs' collection)"
+
+	self components isEmpty
+		ifFalse: [ self deleteComponents: self components ].
+	self
+		reset;
+		destroyed: true.
+	self collector isNil
+		ifFalse: [ self collector removeEntity: self ].
+	self cormasModel
+		registerEntityChange: #removeEntity
+		from: (EntityReference on: self)
 ]
 
 { #category : #'- control' }
@@ -621,19 +622,17 @@ Arguments: y = <SpatialEntitySet>"
 CMSpatialEntitySet >> removeComponent: anItem [
 	"Purpose: removes a given component and notifies the change to dependents
 Argument: anItem = <SpatialEntity>"
-	
+
 	self deleteComponent: anItem.
 	self components isEmpty
-		ifFalse:
-			[self currentSimulation
+		ifFalse: [ self cormasModel
 				registerEntityChange: #compositionChanged
 				with: (EntityReference onEntities: self components)
-				from: (EntityReference on: self)]
-		ifTrue:
-			[self delete.
-			self currentSimulation
+				from: (EntityReference on: self) ]
+		ifTrue: [ self delete.
+			self cormasModel
 				registerEntityChange: #removeEntity
-				from: (EntityReference on: self)]
+				from: (EntityReference on: self) ]
 ]
 
 { #category : #'+ components - managing' }
@@ -641,15 +640,14 @@ CMSpatialEntitySet >> removeComponents: aCollec [
 	"Purpose: removes a given collection of components and notifies the change to dependents
 Argument: aCollec = <Collection(SpatialEntity)>
 Example: self removeComponents: self getEpidermis"
-	
+
 	self deleteComponents: aCollec.
 	self components isEmpty
-		ifFalse:
-			[self currentSimulation
+		ifFalse: [ self cormasModel
 				registerEntityChange: #compositionChanged
 				with: (EntityReference onEntities: self components)
-				from: (EntityReference on: self)]
-		ifTrue: [self delete]
+				from: (EntityReference on: self) ]
+		ifTrue: [ self delete ]
 ]
 
 { #category : #'+ initialize-release' }
