@@ -89,25 +89,25 @@ CMObjectLocation >> isMovedTo: aSpatialEntity [
 	"Purpose: moves to a given location.
 Argument: aSpatialEntity = <SpatialEntity>
 Example: self isMovedTo: self patch neighbourN"
-	
+
 	| alreadySituated |
-	aSpatialEntity isSpatialEntity ifFalse: [^nil].
+	aSpatialEntity isSpatialEntity
+		ifFalse: [ ^ nil ].
 	alreadySituated := self isSituated.
 	self leaveWhileMoving: true.
 	self patch: aSpatialEntity.
 	(self patch occupants: self class name) add: self.
 	alreadySituated
 		ifFalse:
-			["the agent is arriving on the grid for the first time, the SpaceInterfaces should be aware"
-			self currentSimulation
+			[ "the agent is arriving on the grid for the first time, the SpaceInterfaces should be aware"
+			self cormasModel
 				registerEntityChange: #newOccupant
 				with: (EntityReference on: aSpatialEntity)
-				from: (EntityReference on: self)]
-		ifTrue:
-			[self currentSimulation
+				from: (EntityReference on: self) ]
+		ifTrue: [ self cormasModel
 				registerEntityChange: #movingOccupant
 				with: (EntityReference on: aSpatialEntity)
-				from: (EntityReference on: self)]
+				from: (EntityReference on: self) ]
 ]
 
 { #category : #'+ testing' }
@@ -132,19 +132,20 @@ CMObjectLocation >> leave [
 { #category : #'- moving' }
 CMObjectLocation >> leaveWhileMoving: isBeingMoved [
 	"The situated object is not located any more. But it is still 'alive'  "
-	
-	self patch isNil ifTrue: [^self].
+
+	self patch isNil
+		ifTrue: [ ^ self ].
 	isBeingMoved
 		ifFalse:
-			["The situated agent doesn't move; it is not located any more. But it is still 'alive'  "
-			self currentSimulation spaceModel ifNil: [^nil].
-			self currentSimulation spaceModel logLeaveOf: self from: patch.
-			self currentSimulation
+			[ "The situated agent doesn't move; it is not located any more. But it is still 'alive'  "
+			self cormasModel spaceModel ifNil: [ ^ nil ].
+			self cormasModel spaceModel logLeaveOf: self from: patch.
+			self cormasModel
 				registerEntityChange: #leavingOccupant
-				from: (EntityReference on: self)].
+				from: (EntityReference on: self) ].
 	(self patch theOccupants at: self class name)
 		remove: self
-		ifAbsent: [].
+		ifAbsent: [  ].
 	self patch: nil
 ]
 

@@ -1653,7 +1653,7 @@ CMEntity >> cormasModel: aCMAbstractModel [
 CMEntity >> currentSimulation [
 	"Direct access to the current simulation registered by the current cormas"
 
-	^ cormasModel ifNil: [ self class modelClass currentSimulation ]
+	^ cormasModel
 ]
 
 { #category : #'+ accessing - scheduling' }
