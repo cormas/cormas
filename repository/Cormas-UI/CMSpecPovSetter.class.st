@@ -40,7 +40,7 @@ Class {
 	#classInstVars : [
 		'standardCellBounds'
 	],
-	#category : 'Cormas-UI-PoV'
+	#category : #'Cormas-UI-PoV'
 }
 
 { #category : #colors }
@@ -130,9 +130,8 @@ CMSpecPovSetter >> addPovOnAttribute [
 		title: 'CORMAS'
 		list: list) ifNil: [ ^ nil ].
 	self createPovOnAttribute: choice.
-	self cormas currentSimulation
-		ifNotNil: [ values := (self cormas currentSimulation
-				allTheEntities: selectedClass)
+	self cormasModel
+		ifNotNil: [ values := (self cormasModel allTheEntities: selectedClass)
 				collect: [ :entity | entity perform: choice asSymbol ] ].
 	(values isNil or: [ values size = 1 and: [ values first isNil ] ])
 		ifTrue: [ ^ self ].
@@ -140,7 +139,8 @@ CMSpecPovSetter >> addPovOnAttribute [
 	values
 		do: [ :v | valuesTextLine := valuesTextLine , v printString , ' ' ].
 	(self confirmAttValues: choice for: valuesTextLine)
-		ifTrue: [ values do: [ :v | 
+		ifTrue: [ values
+				do: [ :v | 
 					v isSymbol
 						ifTrue: [ self addSymbolPov: v asString ]
 						ifFalse: [ v isString
