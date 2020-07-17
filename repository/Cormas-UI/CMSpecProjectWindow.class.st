@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'simWindow'
 	],
-	#category : 'Cormas-UI-Project'
+	#category : #'Cormas-UI-Project'
 }
 
 { #category : #specs }
@@ -54,6 +54,11 @@ CMSpecProjectWindow >> applicationProperties [
 	" Private - Open a window to set receiver's properties "
 
 	(CMSpecModelComments for: self projectManager) openWithSpec
+]
+
+{ #category : #'as yet unclassified' }
+CMSpecProjectWindow >> canDiscardEdits [
+		^ false
 ]
 
 { #category : #private }

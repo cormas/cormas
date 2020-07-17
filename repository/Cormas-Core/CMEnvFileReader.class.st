@@ -3,134 +3,32 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'cormasModel',
-		'label',
-		'dimX',
-		'dimY',
-		'ce',
 		'fileReference',
-		'cp',
-		'delimiteur',
-		'attype'
+		'cmEnvironment'
 	],
 	#category : #'Cormas-Core-Space'
 }
 
-{ #category : #'instance creation' }
-CMEnvFileReader class >> forModel: aCMSpaceModel [
-	" Answer a new instance of the receiver using aCormasModel mainly for resource location "
-
-	^ self new
-		initializeWithModel: aCMSpaceModel;
-		yourself
-]
-
-{ #category : #'accessing - public' }
-CMEnvFileReader >> addEnvironmentDataFromFile: aFilename [
-	"Add attributs value to cells from an .env file"
-
-	"aName = <String> or aName = <Filename> . If aName = <String>, it creates a Filename from maps directory.
-	Example:	aName = 'test.env'  or
-				aName = a FATFilename('d:\Vw5i.4\cormas\Models\JLB\maps\test.env')"
-
-	| stream |
-	"Lecture des 4 premieres lignes : topologie de la grille"
-	"On devine le format des lignes"
-	stream := self readEnvFromFile: aFilename.
-	"stream lineEndAuto."
-	self consumeAttributesFrom: stream.
-	self setSpatialEntitiesAttributesValueFrom: stream
-]
-
-{ #category : #'accessing - attributes' }
-CMEnvFileReader >> attributeAt: aNumber [
-
-	^ self attributes at: aNumber 
-]
-
-{ #category : #'accessing - attributes' }
-CMEnvFileReader >> attributes [
-
-	^ attype
-		ifNil: [ attype := OrderedCollection new ]
+{ #category : #accessing }
+CMEnvFileReader >> cmEnvironment [
+	^ cmEnvironment
 ]
 
 { #category : #accessing }
-CMEnvFileReader >> ce [
-	^ ce
-]
-
-{ #category : #accessing }
-CMEnvFileReader >> ce: anObject [
-	ce := anObject
-]
-
-{ #category : #'accessing - attributes' }
-CMEnvFileReader >> consumeAttributesFrom: stream [
-
-	stream upTo: Character tab.
-	(stream upTo: Character space) asNumber.
-	(stream upTo: Character cr) asNumber.
-	stream upTo: Character tab.
-	(stream upTo: Character cr) asSymbol.
-	stream upTo: Character tab.
-	(stream upTo: Character cr) asSymbol.
-	stream upTo: Character tab.
-	(stream upTo: Character cr) asNumber
+CMEnvFileReader >> cmEnvironment: anObject [
+	cmEnvironment := anObject
 ]
 
 { #category : #accessing }
 CMEnvFileReader >> cormasModel [
-	^ cormasModel
-]
-
-{ #category : #accessing }
-CMEnvFileReader >> cormasModel: anObject [
-	cormasModel := anObject
+	" Answer a <CormasModel> "
+	
+	^ self spaceModel cormasModel
 ]
 
 { #category : #accessing }
 CMEnvFileReader >> cormasModelClass [
 	^ self cormasModel class.
-]
-
-{ #category : #accessing }
-CMEnvFileReader >> cp [
-	^ cp
-]
-
-{ #category : #accessing }
-CMEnvFileReader >> cp: anObject [
-	cp := anObject
-]
-
-{ #category : #accessing }
-CMEnvFileReader >> delimiteur [
-	^ delimiteur
-]
-
-{ #category : #accessing }
-CMEnvFileReader >> delimiteur: anObject [
-	delimiteur := anObject
-]
-
-{ #category : #accessing }
-CMEnvFileReader >> dimX [
-	^ dimX
-]
-
-{ #category : #accessing }
-CMEnvFileReader >> dimX: anObject [
-	dimX := anObject
-]
-
-{ #category : #accessing }
-CMEnvFileReader >> dimY [
-	^ dimY
-]
-
-{ #category : #accessing }
-CMEnvFileReader >> dimY: anObject [
-	dimY := anObject
 ]
 
 { #category : #'accessing - parsing' }
@@ -160,22 +58,6 @@ CMEnvFileReader >> firstAttributeAt: i [
 	^ (self attributeAt: i) first
 ]
 
-{ #category : #initialization }
-CMEnvFileReader >> initializeWithModel: aCMSpaceModel [ 
-
-	self cormasModel: aCMSpaceModel.
-]
-
-{ #category : #accessing }
-CMEnvFileReader >> label [
-	^ label
-]
-
-{ #category : #accessing }
-CMEnvFileReader >> label: anObject [
-	label := anObject
-]
-
 { #category : #'accessing - attributes' }
 CMEnvFileReader >> lastAttributeAt: i [
 	^ (self attributeAt: i) last
@@ -188,22 +70,27 @@ CMEnvFileReader >> loadEnvironmentFromFile: aFilename [
 	Example:	aName = 'test.env'  or
 				aName = a FATFilename('d:\Vw5i.4\cormas\Models\JLB\maps\test.env')"
 	
-	| stream |
-	stream := self readEnvFromFile: aFilename.
+	| matrix |
+	"stream := self readEnvFromFile: aFilename."
+	matrix := self resourceLocator readMatrix: aFilename sep: Character tab.
 	"Lecture des 4 premieres lignes : topologie de la grille"	"On devine le format des lignes"
 	" stream installLineEndConventionInConverter."
 	self 
-		readDimensions: stream;
-		readCloture: stream;
-		readConnexite: stream;
-		readDelimiter: stream.
-	^ stream
+		readDimensions: matrix first;
+		readCloture: matrix second;
+		readConnexite: matrix third;
+		readDelimiter: (matrix allButFirst: 3);
+		readBackgroundColor: matrix;
+		readIsFull: matrix;
+		readAttributes: matrix.
+	^ matrix
 	
 
 ]
 
 { #category : #'accessing - parsing' }
 CMEnvFileReader >> parseAttributesFrom: dataLine [
+	" Answer a <Collection> of two elements "
 
 	| couple name type |
 	couple := OrderedCollection new.
@@ -261,62 +148,64 @@ CMEnvFileReader >> parseSpatialEntitiesDataLinesFrom: aStream line: dataLine lin
 ]
 
 { #category : #'accessing - private' }
-CMEnvFileReader >> readAttributes: aStream [
+CMEnvFileReader >> readAttributes: aCollection [
 
-	| dataLine |
-	dataLine := self readNextLineAsSymbol: aStream.	
-	label := dataLine upTo: Character tab.
-	label ~= 'attributs'
-		ifTrue: [ ^ self error: 'Error while reading input stream. We expected "attributs" line'].
-	^ dataLine
+	aCollection 
+		detect: [: c | c first = 'attributs'] 
+		ifFound: [ : delimLine | ]
 ]
 
 { #category : #'accessing - private' }
-CMEnvFileReader >> readCloture: stream [
+CMEnvFileReader >> readBackgroundColor: aCollection [ 
 
-	stream skipSeparators.
-	label := stream upTo: Character tab.
-	label ~= 'cloture'
+	aCollection 
+		detect: [:c | c first = 'backgroundColor']
+		ifFound: [ : aLine |
+			| bgColor |
+			bgColor := Color 
+				red: aLine last substrings first asNumber
+				green: aLine last substrings second asNumber
+				blue: aLine last substrings last asNumber. 
+			self cormasModel 
+				registerSpaceModelChange: #backgroundColor 
+				with: bgColor ].
+]
+
+{ #category : #'accessing - private' }
+CMEnvFileReader >> readCloture: aCollection [
+
+	aCollection first ~= 'cloture'
 		ifTrue: [ ^ self readEnvironmentError ] .
-	ce := self readNextLineAsSymbol: stream.
+	self cmEnvironment ce: aCollection last.
 
 ]
 
 { #category : #'accessing - private' }
-CMEnvFileReader >> readConnexite: aStream [
+CMEnvFileReader >> readConnexite: aCollection [
 
-	aStream skipSeparators.
-	label := aStream upTo: Character tab.
-	label ~= 'connexite'
+	aCollection first ~= 'connexite'
 		ifTrue: [ ^ self readEnvironmentError ].
-	cp := self readNextLineAsSymbol: aStream
+	self cmEnvironment cp: aCollection last
 ]
 
 { #category : #'accessing - private' }
-CMEnvFileReader >> readDelimiter: aStream [
+CMEnvFileReader >> readDelimiter: aCollection [
 
-	aStream skipSeparators.
-	label := aStream upTo: Character tab.
-	label = 'delimiteur'
-		ifTrue: [
-			"read data"
-			aStream skipSeparators.
-			delimiteur := aStream upTo: Character cr.	"process data"
-			"delimiteur = 1
-				ifTrue:
-					[self cormasModel registerSpaceModelChange: #delimitorSize with: #pixel1]
-				ifFalse:
-					[self cormasModel registerSpaceModelChange: #delimitorSize with: #pixel0]" ].
+	aCollection 
+		detect: [: c | c first = 'delimiteur'] 
+		ifFound: [ : delimLine | 
+			delimLine last asNumber = 1
+				ifTrue: [ self cormasModel registerSpaceModelChange: #delimitorSize with: #pixel1 ]
+				ifFalse: [ self cormasModel registerSpaceModelChange: #delimitorSize with: #pixel0 ] ].
 ]
 
 { #category : #'accessing - private' }
-CMEnvFileReader >> readDimensions: aStream [
+CMEnvFileReader >> readDimensions: aCollection [
 
-	label := aStream upTo: Character tab.
-	label ~= 'dimensions'
+	aCollection first ~= 'dimensions'
 		ifTrue: [ self readEnvironmentError ].
-	dimX := (aStream upTo: Character space) asNumber.
-	dimY := (self readNextLine: aStream) asNumber.
+	self cmEnvironment dimX: (self readXDimension: aCollection last).
+	self cmEnvironment dimY: (self readYDimension: aCollection last).
 
 ]
 
@@ -334,17 +223,26 @@ CMEnvFileReader >> readEnvironmentError [
 	^ self error: 'Read error while reading environment file: ' , self fileReference fullName
 ]
 
-{ #category : #'accessing - parsing' }
-CMEnvFileReader >> readNextLine: aStream [
+{ #category : #'accessing - private' }
+CMEnvFileReader >> readIsFull: aCollection [
 
-	^ aStream upTo: Character cr
-
+	aCollection 
+		detect: [:c | c first = 'full'] 
+		ifFound: [ : aLine | self spaceModel isFull: aLine last ]
 ]
 
-{ #category : #'accessing - parsing' }
-CMEnvFileReader >> readNextLineAsSymbol: aStream [
+{ #category : #'accessing - private' }
+CMEnvFileReader >> readXDimension: aString [ 
+	" Private - aString is in form '<Number> <Number>'. Answer the first object as <Number> "
+	
+	^ aString substrings first asNumber
+]
 
-	^ (self readNextLine: aStream) asSymbol
+{ #category : #'accessing - private' }
+CMEnvFileReader >> readYDimension: aString [ 
+	" Private - aString is in form '<Number> <Number>'. Answer the last object as <Number> "
+	
+	^ aString substrings last asNumber
 ]
 
 { #category : #'accessing - private' }

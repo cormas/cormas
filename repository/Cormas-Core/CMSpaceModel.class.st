@@ -49,6 +49,15 @@ Class {
 	#category : #'Cormas-Core-Space'
 }
 
+{ #category : #'instance creation' }
+CMSpaceModel class >> forModel: aCormasModel [
+
+	^ self basicNew 
+		cormasModel: aCormasModel;
+		initialize;
+		yourself.
+]
+
 { #category : #'private - absoluteWorld' }
 CMSpaceModel >> absoluteBounds [
 	"the absolute default space is a square space of 50x50. It has been defined for a 10x10 cells space.
@@ -526,20 +535,20 @@ CMSpaceModel >> column [
 ]
 
 { #category : #'CSE (general) - import - export' }
-CMSpaceModel >> configureSpaceFromEnv: aStream [
+CMSpaceModel >> configureSpaceFromEnv: aCMEnvironment [
 	" Private - Use values read from an Env reader to setup the receiver "
 
 	self 
-		line: self envReader dimX 
-		column: self envReader dimY.
-	self nbNeighbours: self envReader cp.
-	self envReader cp = #six
+		line: aCMEnvironment dimX 
+		column: aCMEnvironment dimY.
+	self nbNeighbours: aCMEnvironment cp.
+	aCMEnvironment cp = #six
 		ifTrue: [ self gridCellShape: #hexagonal ]
 		ifFalse: [ self gridCellShape: #squared ].
 	self resetSpatialEntities.
 	self createCells.
-	self boundaries: self envReader ce.
-	self envReader setSpatialEntitiesAttributesValueFrom: aStream
+	self boundaries: aCMEnvironment ce.
+	self envReader setSpatialEntitiesAttributesValueFrom: aCMEnvironment
 ]
 
 { #category : #'private - accessing' }
@@ -980,7 +989,7 @@ CMSpaceModel >> envReader [
 	" Answer a <CMEnvFileReader> used to read and parse a .env file "
 
 	^ envReader
-		ifNil: [ envReader := CMEnvFileReader forModel: self ]
+		ifNil: [ envReader := CMEnvFileReader new ]
 ]
 
 { #category : #accessing }
@@ -2203,10 +2212,10 @@ CMSpaceModel >> listMethodsChanged [
 { #category : #'CSE (general) - import - export' }
 CMSpaceModel >> loadEnvironmentFromFile: aName [
 
-	| stream |
+	| aCMEnvironment |
 	
-	stream := self envReader loadEnvironmentFromFile: aName.
-	self configureSpaceFromEnv: stream.
+	aCMEnvironment := self envReader loadEnvironmentFromFile: aName.
+	self configureSpaceFromEnv: aCMEnvironment.
 
 ]
 
