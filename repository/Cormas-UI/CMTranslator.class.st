@@ -7,7 +7,7 @@ See superclass for usage and description.
 Class {
 	#name : #CMTranslator,
 	#superclass : #PFTranslator,
-	#category : 'Cormas-UI-Project'
+	#category : #'Cormas-UI-Project'
 }
 
 { #category : #accessing }
@@ -25,132 +25,151 @@ CMTranslator >> addTranslationsForEN [
 CMTranslator >> addTranslationsForENPart1 [
 	" Private - See superimplementor's comment "
 
-	^ (self translatorClass forLanguage: #EN) translationMap 
-		at: #tVersionName 						put: 'Version name';
-		at: #tCreationDate 					put: 'Creation date';
-		at: #tModelComments 					put: 'Model Comments';
-		at: #tModelRename 						put: 'The model has been renamed as {1}.
+	^ (self translatorClass forLanguage: #EN) translationMap
+		at: #tVersionName put: 'Version name';
+		at: #tCreationDate put: 'Creation date';
+		at: #tModelComments put: 'Model Comments';
+		at: #tModelRename
+			put:
+			'The model has been renamed as {1}.
 A new class category has been created and all the classes of the previous model have ben copied
 
 We recommend you:
 - To save and reload this model, then
 - To copy the required directories (Maps, Data, ...) from {2} to {1}
 ';
-		at: #tCreateNewModel 					put: 'Create a new model!!';
-		at: #tCreateEntityKind 				put: 'Create a kind of Entity';
-		at: #tCreateAgent 						put: 'Create a kind of Agent';
-		at: #tCommunication 					put: 'Communication';
-		at: #tGroup 								put: 'Group';
-		at: #tLocation 							put: 'Location';								
-		at: #tElement 							put: 'Element';
-		at: #tSimpleCell 						put: 'Simple Cell';
-		at: #tCellularAutomaton 				put: 'Cellular Automaton';
-		at: #tAggregate 						put: 'Aggregate';
-		at: #tSetNotConnex 					put: 'Set no connex';
-		at: #tName 								put: 'Name';
-		at: #tDefineEntities 					put: 'Define the entities';
-		at: #tAbstract 							put: 'Abstract / No abstract';
-		at: #tSpatial 							put: 'Spatial';
-		at: #tSocial 							put: 'Social';
-		at: #tPassive 							put: 'Passive';
-		at: #tProgrammingEntityClass		put: 'the class for each Entity...';
-		at: #tSimOrganization 				put: 'the simulation Organization...';
-		at: #tObserver 							put: 'the Observer...';
-		at: #tMessages 							put: 'Messages';
-		at: #tProbes 							put: 'Probes';
-		at: #tInitInstantiation 				put: 'the initial instantiation';
-		at: #tScheduler 						put: 'the scheduler';
-		at: #tSpaceEntities 					put: 'Space and Entities';
-		at: #tEdit 								put: 'Edit';
-		at: #tSpecialize						put: 'Specialize';
-		at: #tRemove 							put: 'Remove';
-		at: #tAttributes 						put: 'Attributes';
-		at: #tMethods 							put: 'Methods';
-		at: #tActivityDiagrams 				put: 'Activity diagrams';
-		at: #tPoVSetter 						put: 'PoV Setter';
-		at: #tObject  							put: 'Object';
-		at: #tObjectHelp 						put: 'A simple passive entity';
-		at: #tLocatedObject 					put: 'Located Object';
-		at: #tLocatedObjectHelp 				put: 'A passive entity located on a cell';
-		at: #tNetworkNode 						put: 'Network Node';
-		at: #tNetworkNodeHelp 				put: 'A Node of a Network located on a Cell';
-		at: #tNetworkArc 						put: 'Network Arc';
-		at: #tNetworkArcHelp 					put: 'An Arc of a Network located on 2 Cells';
-		at: #tFullNetwork 						put: 'Full Network';
-		at: #tFullNetworkHelp 				put: 'An oriented Network composed of a Set of Arc and Nodes';
-		at: #tMessage 							put: 'Message';
-		at: #tMessageHelp 						put: 'Message for AgentCommunication (with mailbox)';
-		at: #tEditActivityDiagrams 			put: 'edit activity diagrams';
-		at: #tEditAttributes 					put: 'edit attributes';
-		at: #tEditInit 							put: 'edit initialization';
-		at: #tEditSteps 						put: 'edit steps';
-		at: #tMissingClassName 				put: 'Please enter a name for the new class!!';
-		at: #tAlreadyUsed 						put: 'Already used!!';
-		at: #tWhichModel 						put: 'Which Model?';
-		at: #tVisualization 					put: 'Visualization';
-		at: #tProgramming 						put: 'Programming';
-		at: #tSimulation 						put: 'Simulation';
-		at: #tEnterClassName 					put: 'Please enter a name for the new class!';
-		at: #tSpatialEntityCellHelp 		put: 'SpatialEntityCell: the cell is the basic entity of the space (as Cellular Automata)';
-		at: #tSimpleCellHelp 					put: 'SpatialEntityElement is the basic Cell entity';
-		at: #tSpatialEntityHelp 				put: 'SpatialEntityAggregate is composed of connected cells';
-		at: #tSetNotConnexHelp 				put: 'SpatialEntityNotConnex is composed of unconnected cells or aggregates';
-		at: #tCellAutomatonHelp 				put: 'CA is usefull for dynamics between cells';
-		at: #tOATPredefValues 				put: 'Predefined by list of values';						
-		at: #tOATSeqValues 					put: 'Sequential values';
-		at: #tCrossedSeqValues 				put: 'Sequential values';
-		at: #tCrossedPredefValues 			put: 'Predefined by list of values';						
-		at: #tCrossSensAnalysis 				put: 'Crossed Sensitivity Analysis';
-		at: #tDisplayParams 					put: 'Display Parameters';
-		at: #tOATSensAnalysis 				put: 'OAT Sensitivity Analysis';
-		at: #tSimpleStochAnalysis 			put: 'Simple Stochastic Analysis';
-		at: #tMonteCarlo 						put: 'Monte Carlo';
-		at: #tClassifyByParams 				put: 'Classify by parameters';
-		at: #tSimInformation 					put: 'Simulation Information';
-		at: #tSimInterface 					put: 'Simulation Interface';
-		at: #tStartRWebService 				put: 'Start Web Service for R';
-		at: #tStopRWebService 				put: 'Stop Web Service for R';
-		at: #tAnalysis 							put: 'Analysis';
-		at: #tCreateInstances 				put: 'Create Instances';
-		at: #tOpenPharoMenu 					put: 'Open Pharo Menu';
-		at: #tManipulateInstances 			put: 'Manipulate Instances';
-		at: #tModelGlossary 					put: 'Model Glossary';
-		at: #tModelListing 					put: 'Model listing as text file';
-		at: #tPackageClient 					put: 'Package client';
-		at: #tSpace 								put: 'Space';
-		at: #tDisplayModelVersions 			put: 'Display model versions';
-		at: #tSnapshot 							put: 'Snapshot current state';
-		at: #tModifiedModelName 				put: 'The name has been renamed as ';
-		at: #tDisplayLegends 					put: 'Display Legends';
-		at: #tPhoto 								put: 'Photo';
-		at: #tVideo 								put: 'Video';
-		at: #tClickTo 							put: 'Click to...';
-		at: #tHabitus 							put: 'Habitus';
-		at: #tUnmoveableZoom 					put: 'Unmoveable zoom';
-		at: #tMoveableZoom						put: 'Moveable zoom';
-		at: #tSetTrackLength					put: 'Set track length';
-		at: #tEnableUndoRedo					put: 'Enable Undo/Redo...';
-		at: #tTouchpad 							put: 'Touchpad manipulate mode';
-		at: #tEnvironment 						put: 'Environment';
-		at: #tGridSize 							put: 'Grid size';
-		at: #tLoad 								put: 'Load';
-		at: #tModify 							put: 'Modify';
-		at: #tReOpen 							put: 'Re-Open';
-		at: #tPoV 								put: 'PoV';
-		at: #tAttribute 						put: 'Attribute';
-		at: #tClassVariable 					put: 'Class variable';
-		at: #tAttributesSuperLabel 			put: 'Attributes and class Variables of the super classes';
-		at: #tAttributesTargetLabel 		put: 'Attributes and class Variables of the target class';
-		at: #tReset 								put: 'Reset';
-		at: #tApply 								put: 'Apply';
-		at: #tEnterAttName 					put: 'Enter an attribute name (without white spaces, numbers or symbols)';
-		at: #tAppTitle 							put: 'CORMAS';
-		at: #tInvalidName 						put: ' is not a valid name. Please, enter a valid name';
-		at: #tHelpAddInstAtt 					put: 'Add a new attribute to the target class';
-		at: #tHelpRemoveInstAtt 				put: 'Remove an attribute from the target class';
-		at: #tHelpAddClassAttr				put: 'Add a new class attribute to the target class';
-		at: #tHelpRemoveClassAtt 			put: 'Remove an attribute from the target class';
-		at: #tClassEditor 						put: 'UML - Class Editor';
+		at: #tCreateNewModel put: 'Create a new model!!';
+		at: #tCreateEntityKind put: 'Create a kind of Entity';
+		at: #tCreateAgent put: 'Create a kind of Agent';
+		at: #tCommunication put: 'Communication';
+		at: #tGroup put: 'Group';
+		at: #tLocation put: 'Location';
+		at: #tElement put: 'Element';
+		at: #tSimpleCell put: 'Simple Cell';
+		at: #tCellularAutomaton put: 'Cellular Automaton';
+		at: #tAggregate put: 'Aggregate';
+		at: #tSetNotConnex put: 'Set no connex';
+		at: #tName put: 'Name';
+		at: #tDefineEntities put: 'Define the entities';
+		at: #tAbstract put: 'Abstract / No abstract';
+		at: #tSpatial put: 'Spatial';
+		at: #tSocial put: 'Social';
+		at: #tPassive put: 'Passive';
+		at: #tProgrammingEntityClass put: 'the class for each Entity...';
+		at: #tSimOrganization put: 'the simulation Organization...';
+		at: #tObserver put: 'the Observer...';
+		at: #tMessages put: 'Messages';
+		at: #tProbes put: 'Probes';
+		at: #tInitInstantiation put: 'the initial instantiation';
+		at: #tScheduler put: 'the scheduler';
+		at: #tSpaceEntities put: 'Space and Entities';
+		at: #tEdit put: 'Edit';
+		at: #tSpecialize put: 'Specialize';
+		at: #tRemove put: 'Remove';
+		at: #tAttributes put: 'Attributes';
+		at: #tMethods put: 'Methods';
+		at: #tActivityDiagrams put: 'Activity diagrams';
+		at: #tPoVSetter put: 'PoV Setter';
+		at: #tObject put: 'Object';
+		at: #tObjectHelp put: 'A simple passive entity';
+		at: #tLocatedObject put: 'Located Object';
+		at: #tLocatedObjectHelp put: 'A passive entity located on a cell';
+		at: #tNetworkNode put: 'Network Node';
+		at: #tNetworkNodeHelp put: 'A Node of a Network located on a Cell';
+		at: #tNetworkArc put: 'Network Arc';
+		at: #tNetworkArcHelp put: 'An Arc of a Network located on 2 Cells';
+		at: #tFullNetwork put: 'Full Network';
+		at: #tFullNetworkHelp
+			put: 'An oriented Network composed of a Set of Arc and Nodes';
+		at: #tMessage put: 'Message';
+		at: #tMessageHelp
+			put: 'Message for AgentCommunication (with mailbox)';
+		at: #tEditActivityDiagrams put: 'edit activity diagrams';
+		at: #tEditAttributes put: 'edit attributes';
+		at: #tEditInit put: 'edit initialization';
+		at: #tEditSteps put: 'edit steps';
+		at: #tMissingClassName
+			put: 'Please enter a name for the new class.';
+		at: #tAlreadyUsed put: 'Already used!!';
+		at: #tWhichModel put: 'Which Model?';
+		at: #tVisualization put: 'Visualization';
+		at: #tProgramming put: 'Programming';
+		at: #tSimulation put: 'Simulation';
+		at: #tEnterClassName put: 'Please enter a name for the new class!';
+		at: #tSpatialEntityCellHelp
+			put:
+			'SpatialEntityCell: the cell is the basic entity of the space (as Cellular Automata)';
+		at: #tSimpleCellHelp
+			put: 'SpatialEntityElement is the basic Cell entity';
+		at: #tSpatialEntityHelp
+			put: 'SpatialEntityAggregate is composed of connected cells';
+		at: #tSetNotConnexHelp
+			put:
+			'SpatialEntityNotConnex is composed of unconnected cells or aggregates';
+		at: #tCellAutomatonHelp
+			put: 'CA is usefull for dynamics between cells';
+		at: #tOATPredefValues put: 'Predefined by list of values';
+		at: #tOATSeqValues put: 'Sequential values';
+		at: #tCrossedSeqValues put: 'Sequential values';
+		at: #tCrossedPredefValues put: 'Predefined by list of values';
+		at: #tCrossSensAnalysis put: 'Crossed Sensitivity Analysis';
+		at: #tDisplayParams put: 'Display Parameters';
+		at: #tOATSensAnalysis put: 'OAT Sensitivity Analysis';
+		at: #tSimpleStochAnalysis put: 'Simple Stochastic Analysis';
+		at: #tMonteCarlo put: 'Monte Carlo';
+		at: #tClassifyByParams put: 'Classify by parameters';
+		at: #tSimInformation put: 'Simulation Information';
+		at: #tSimInterface put: 'Simulation Interface';
+		at: #tStartRWebService put: 'Start Web Service for R';
+		at: #tStopRWebService put: 'Stop Web Service for R';
+		at: #tAnalysis put: 'Analysis';
+		at: #tCreateInstances put: 'Create Instances';
+		at: #tOpenPharoMenu put: 'Open Pharo Menu';
+		at: #tManipulateInstances put: 'Manipulate Instances';
+		at: #tModelGlossary put: 'Model Glossary';
+		at: #tModelListing put: 'Model listing as text file';
+		at: #tPackageClient put: 'Package client';
+		at: #tSpace put: 'Space';
+		at: #tDisplayModelVersions put: 'Display model versions';
+		at: #tSnapshot put: 'Snapshot current state';
+		at: #tModifiedModelName put: 'The name has been renamed as ';
+		at: #tDisplayLegends put: 'Display Legends';
+		at: #tPhoto put: 'Photo';
+		at: #tVideo put: 'Video';
+		at: #tClickTo put: 'Click to...';
+		at: #tHabitus put: 'Habitus';
+		at: #tUnmoveableZoom put: 'Unmoveable zoom';
+		at: #tMoveableZoom put: 'Moveable zoom';
+		at: #tSetTrackLength put: 'Set track length';
+		at: #tEnableUndoRedo put: 'Enable Undo/Redo...';
+		at: #tTouchpad put: 'Touchpad manipulate mode';
+		at: #tEnvironment put: 'Environment';
+		at: #tGridSize put: 'Grid size';
+		at: #tLoad put: 'Load';
+		at: #tModify put: 'Modify';
+		at: #tReOpen put: 'Re-Open';
+		at: #tPoV put: 'PoV';
+		at: #tAttribute put: 'Attribute';
+		at: #tClassVariable put: 'Class variable';
+		at: #tAttributesSuperLabel
+			put: 'Attributes and class Variables of the super classes';
+		at: #tAttributesTargetLabel
+			put: 'Attributes and class Variables of the target class';
+		at: #tReset put: 'Reset';
+		at: #tApply put: 'Apply';
+		at: #tEnterAttName
+			put: 'Enter an attribute name (without white spaces, numbers or symbols)';
+		at: #tAppTitle put: 'CORMAS';
+		at: #tInvalidName
+			put: ' is not a valid name. Please, enter a valid name';
+		at: #tHelpAddInstAtt put: 'Add a new attribute to the target class';
+		at: #tHelpRemoveInstAtt
+			put: 'Remove an attribute from the target class';
+		at: #tHelpAddClassAttr
+			put: 'Add a new class attribute to the target class';
+		at: #tHelpRemoveClassAtt
+			put: 'Remove an attribute from the target class';
+		at: #tClassEditor put: 'UML - Class Editor';
 		yourself
 ]
 
