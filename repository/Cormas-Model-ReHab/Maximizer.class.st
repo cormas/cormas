@@ -4,11 +4,6 @@ Class {
 	#category : #'Cormas-Model-ReHab'
 }
 
-{ #category : #testing }
-Maximizer class >> isAbstract [
-^false
-]
-
 { #category : #accessing }
 Maximizer >> possibleLocations [
 | maxBiomass |

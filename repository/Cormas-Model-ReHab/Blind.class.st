@@ -4,13 +4,7 @@ Class {
 	#category : #'Cormas-Model-ReHab'
 }
 
-{ #category : #testing }
-Blind class >> isAbstract [
-^false
-]
-
 { #category : #accessing }
 Blind >> possibleLocations [
-
-	^super possibleLocations
+	^ super possibleLocations
 ]

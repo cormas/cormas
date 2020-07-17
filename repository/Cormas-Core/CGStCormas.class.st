@@ -8,7 +8,7 @@ Class {
 	#instVars : [
 		'cormasModel'
 	],
-	#category : 'Cormas-Core-Tools'
+	#category : #'Cormas-Core-Tools'
 }
 
 { #category : #'instance creation' }
@@ -24,8 +24,7 @@ CGStCormas class >> for: aCMProjectModel [
 CGStCormas >> addNewClassType: aType inheritingFrom: aSuperclass name: aName initProtocol: createInit stepProtocol: createStep [
 
 	| newClass selectionInList selector newList |
-
-	self halt.	
+	self flag:#shouldBeRevised.	
 
 	(aName isNil or: [aName isEmpty]) ifTrue: [^nil].
 	newClass := self generateClass: aName superclass: aSuperclass.

@@ -4,16 +4,8 @@ Class {
 	#classInstVars : [
 		'debug'
 	],
-	#category : 'Cormas-Core-Others'
+	#category : #'Cormas-Core-Others'
 }
-
-{ #category : #api }
-Dev class >> altHalt [
-	"Halt if the Alt key is down"
-	
-	InputState default altDown ifFalse: [^self].
-	self halt
-]
 
 { #category : #accessing }
 Dev class >> debug [

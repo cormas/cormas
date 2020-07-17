@@ -4263,6 +4263,7 @@ Cormas >> addNewClassType: aType inheritingFrom: aSuperclass defaultName: aStrin
 Cormas >> addNewClassType: aType inheritingFrom: aSuperclass name: aName initProtocol: createInit stepProtocol: createStep [
 	
 	| newClass selectionInList selector newList |
+	self flag:#shouldBeRevised.
 	self cormasModelClass isNil ifTrue: [^self alert_NewModel].
 	(aName isNil or: [aName isEmpty]) ifTrue: [^nil].
 	newClass := self createClassNamed: aName from: aSuperclass.
@@ -4584,12 +4585,6 @@ Cormas >> changeFinalV [
 		ifTrue: [self cycle myDependents editValue]
 		ifFalse: [^true].	"^true"
 	^self simManager applyUserChangeForFinalStep: newValue
-]
-
-{ #category : #changed }
-Cormas >> changeN [
-	
-	self halt
 ]
 
 { #category : #'interface actions' }
