@@ -2,28 +2,66 @@ Class {
 	#name : #CMEnvFileReader,
 	#superclass : #Object,
 	#instVars : [
-		'cormasModel',
+		'spaceModel',
 		'fileReference',
 		'cmEnvironment'
 	],
 	#category : #'Cormas-Core-Space'
 }
 
-{ #category : #accessing }
-CMEnvFileReader >> cmEnvironment [
-	^ cmEnvironment
+{ #category : #'instance creation' }
+CMEnvFileReader class >> forSpaceModel: aCMSpaceModel [
+
+	^ self new 
+		spaceModel: aCMSpaceModel;
+		initialize;
+		yourself.
 ]
 
 { #category : #accessing }
-CMEnvFileReader >> cmEnvironment: anObject [
+CMEnvFileReader >> attributes [
+	" Answer a <Collection> of receiver's attributes "
+
+	^ self cmEnvFile attributes
+]
+
+{ #category : #private }
+CMEnvFileReader >> buildEnvFileFrom: aCollection [ 
+	" Parse and configure the receiver's CMEnvFile from aCollection (of Matrix form) "
+
+	self 
+		readDimensions: aCollection first;
+		readCloture: aCollection second;
+		readConnexite: aCollection third;
+		readDelimiter: (aCollection allButFirst: 3);
+		readBackgroundColor: aCollection;
+		readIsFull: aCollection;
+		readAttributes: aCollection.
+	self cmEnvFile matrix: aCollection.
+]
+
+{ #category : #accessing }
+CMEnvFileReader >> cmEnvFile [
+	^ cmEnvironment
+		ifNil: [ cmEnvironment := CMEnvFile new ]
+]
+
+{ #category : #accessing }
+CMEnvFileReader >> cmEnvFile: anObject [
 	cmEnvironment := anObject
 ]
 
 { #category : #accessing }
 CMEnvFileReader >> cormasModel [
-	" Answer a <CormasModel> "
+	" Answer the receiver's <CormasModel> "
 	
 	^ self spaceModel cormasModel
+]
+
+{ #category : #accessing }
+CMEnvFileReader >> cormasModel: anObject [
+
+	self spaceModel cormasModel: anObject
 ]
 
 { #category : #accessing }
@@ -55,54 +93,40 @@ CMEnvFileReader >> fileReference: anObject [
 
 { #category : #'accessing - attributes' }
 CMEnvFileReader >> firstAttributeAt: i [
-	^ (self attributeAt: i) first
+	^ (self cmEnvFile attributeAt: i) first
 ]
 
 { #category : #'accessing - attributes' }
 CMEnvFileReader >> lastAttributeAt: i [
-	^ (self attributeAt: i) last
+	^ (self cmEnvFile attributeAt: i) last
 ]
 
 { #category : #'accessing - public' }
 CMEnvFileReader >> loadEnvironmentFromFile: aFilename [
-	" Load a grid stored as filename.
-	aName = <String> or aName = <Filename> . If aName = <String>, it creates a Filename from maps directory.
-	Example:	aName = 'test.env'  or
-				aName = a FATFilename('d:\Vw5i.4\cormas\Models\JLB\maps\test.env')"
+	" Load a grid stored as filename "
 	
 	| matrix |
-	"stream := self readEnvFromFile: aFilename."
-	matrix := self resourceLocator readMatrix: aFilename sep: Character tab.
-	"Lecture des 4 premieres lignes : topologie de la grille"	"On devine le format des lignes"
-	" stream installLineEndConventionInConverter."
-	self 
-		readDimensions: matrix first;
-		readCloture: matrix second;
-		readConnexite: matrix third;
-		readDelimiter: (matrix allButFirst: 3);
-		readBackgroundColor: matrix;
-		readIsFull: matrix;
-		readAttributes: matrix.
-	^ matrix
+	matrix := self resourceLocator 
+		readMatrix: aFilename 
+		sep: Character tab.
+	self buildEnvFileFrom: matrix.
+
 	
 
 ]
 
 { #category : #'accessing - parsing' }
 CMEnvFileReader >> parseAttributesFrom: dataLine [
-	" Answer a <Collection> of two elements "
+	" Parse dataLine and answer a <Collection> of two <Symbol> matching attribute name and conversion selector "
 
-	| couple name type |
-	couple := OrderedCollection new.
-	name := dataLine upTo: $(.
-	name := (name , ':') asSymbol.
-	type := dataLine upTo: $).
-	type := ('as' , type) asSymbol.
-	dataLine skipSeparators.
-	couple
-		add: name;
-		add: type.
+	| couple typeAttr typeName |
+	couple := OrderedCollection new: 2.
+	typeAttr := dataLine last.
+	typeName := self parseTypeNameFrom: typeAttr.
 	^ couple
+		add: (self parseTypeAttrFrom: typeAttr) asMutator;
+		add: ('as' , typeName) asSymbol;
+		yourself
 ]
 
 { #category : #'accessing - parsing' }
@@ -147,12 +171,25 @@ CMEnvFileReader >> parseSpatialEntitiesDataLinesFrom: aStream line: dataLine lin
 	dataLine close
 ]
 
+{ #category : #'accessing - parsing' }
+CMEnvFileReader >> parseTypeAttrFrom: typeAttr [
+		
+	^ (typeAttr copyUpTo: $() asSymbol
+]
+
+{ #category : #'accessing - parsing' }
+CMEnvFileReader >> parseTypeNameFrom: typeAttr [
+	
+	^ (typeAttr findTokens: $() last allButLast
+]
+
 { #category : #'accessing - private' }
 CMEnvFileReader >> readAttributes: aCollection [
 
 	aCollection 
 		detect: [: c | c first = 'attributs'] 
-		ifFound: [ : delimLine | ]
+		ifFound: [ : delimLine | self attributes add: (self parseAttributesFrom: delimLine) ]
+		ifNone: [ self inform: 'The file has no data about attributes' ]
 ]
 
 { #category : #'accessing - private' }
@@ -161,11 +198,12 @@ CMEnvFileReader >> readBackgroundColor: aCollection [
 	aCollection 
 		detect: [:c | c first = 'backgroundColor']
 		ifFound: [ : aLine |
-			| bgColor |
+			| bgColor colors |
+			colors := aLine last substrings.
 			bgColor := Color 
-				red: aLine last substrings first asNumber
-				green: aLine last substrings second asNumber
-				blue: aLine last substrings last asNumber. 
+				red: colors first asNumber
+				green: colors second asNumber
+				blue: colors last asNumber. 
 			self cormasModel 
 				registerSpaceModelChange: #backgroundColor 
 				with: bgColor ].
@@ -176,7 +214,7 @@ CMEnvFileReader >> readCloture: aCollection [
 
 	aCollection first ~= 'cloture'
 		ifTrue: [ ^ self readEnvironmentError ] .
-	self cmEnvironment ce: aCollection last.
+	self cmEnvFile ce: aCollection last asSymbol.
 
 ]
 
@@ -185,7 +223,7 @@ CMEnvFileReader >> readConnexite: aCollection [
 
 	aCollection first ~= 'connexite'
 		ifTrue: [ ^ self readEnvironmentError ].
-	self cmEnvironment cp: aCollection last
+	self cmEnvFile cp: aCollection last asSymbol
 ]
 
 { #category : #'accessing - private' }
@@ -204,8 +242,8 @@ CMEnvFileReader >> readDimensions: aCollection [
 
 	aCollection first ~= 'dimensions'
 		ifTrue: [ self readEnvironmentError ].
-	self cmEnvironment dimX: (self readXDimension: aCollection last).
-	self cmEnvironment dimY: (self readYDimension: aCollection last).
+	self cmEnvFile dimX: (self readXDimension: aCollection last).
+	self cmEnvFile dimY: (self readYDimension: aCollection last).
 
 ]
 
@@ -266,25 +304,14 @@ CMEnvFileReader >> resourceLocator [
 	^ self cormasModel resourceLocator 
 ]
 
-{ #category : #'accessing - parsing' }
-CMEnvFileReader >> setSpatialEntitiesAttributesValueFrom: aStream [
-	"lecture des valeurs des attributs, et maj des entites spatiales a partir de ces valeurs"
+{ #category : #accessing }
+CMEnvFileReader >> spaceModel [
+	^ spaceModel
+]
 
-	"balayage de gauche a droite et de bas en haut"
-
-	"Lecture de la 5e ligne: noms des attributs et leur type pour conversion"
-
-	| dataLine |
-	aStream skipSeparators.
-	dataLine := self readAttributes: aStream.
-	[ dataLine atEnd ]
-		whileFalse: [ 
-			| couple |
-			couple := self parseAttributesFrom: dataLine.
-			self attributes add: couple ].
-	dataLine close.
-	self parseSpatialEntitiesAttributeValuesFrom: aStream.
-	aStream close
+{ #category : #accessing }
+CMEnvFileReader >> spaceModel: anObject [
+	spaceModel := anObject
 ]
 
 { #category : #'accessing - private' }

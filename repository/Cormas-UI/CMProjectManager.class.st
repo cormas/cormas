@@ -20,7 +20,7 @@ Class {
 		'openStatus',
 		'currentModelPath'
 	],
-	#category : 'Cormas-UI-Project'
+	#category : #'Cormas-UI-Project'
 }
 
 { #category : #'code-generation' }
@@ -346,6 +346,7 @@ CMProjectManager >> requestModelOpenFromLocalImage [
 
 { #category : #accessing }
 CMProjectManager >> resourceLocator [ 
+	" Answer the receiver's <CMResourceLocator>, an object to locate resources "
 
 	^ self application resourceLocator
 ]

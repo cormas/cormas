@@ -4499,6 +4499,7 @@ CormasModel >> resetDataStructures [
 
 { #category : #accessing }
 CormasModel >> resourceLocator [
+	" Answer the receiver's <CMResourceLocator>, an object to locate resources "
 
 	^ self projectManager resourceLocator
 ]
