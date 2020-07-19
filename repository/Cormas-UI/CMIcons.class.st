@@ -1,22 +1,17 @@
 "
 Provide icons for CORMAS project.
+Do not modify ""accessing - icons"" category without updateing #writeIconsAsPNGFiles.
 
-Updating this class:
+To re-generate icon methods from a directory with icon files:
 
 IconFactory 	
-	syncDirectory: 'c:\MySmalltalkProjects\CORMAS\CORMAS_Pharo6_GitHub\icons\' 
+	syncDirectory: 'c:\ .... \CORMAS\icons\' 
 	intoClass: CMIcons
 
-- message one   
-- message two 
-- (for bonus points) how to create instances.
+To write icons as PNG files into the Pharo working directory:
 
-   One simple example is simply gorgeous.
- 
-Internal Representation and Key Implementation Points.
+CMIcons writeIconsAsPNGFiles.
 
-
-    Implementation Points
 "
 Class {
 	#name : #CMIcons,
@@ -24,7 +19,7 @@ Class {
 	#classVars : [
 		'icons'
 	],
-	#category : 'Cormas-UI-Core'
+	#category : #'Cormas-UI-Core'
 }
 
 { #category : #'accessing - icons' }
@@ -498,4 +493,16 @@ AgC0vsWpZOCFTsnvMsaXY/FEoUMEmafH8nZw1XDB54HMlBFLJ7L8Th/JKF5oHAhYs0zHPVg0
 t6PZaCo5Xpz/wDStfytxSswFS5GJeX4taA16YDJJs+sSAIh3K/x0K93qkfu8YrHAvLJtoD3W
 wOdQz48smLkKBp0Y16uvl2rjY34n3g9Dm1LbQKwoRqL0UwcAkDmTkMrm/rXaEI95od0BgkAr
 CK0A/8MfsroIJBuY++QAAAAASUVORK5CYII='
+]
+
+{ #category : #accessing }
+CMIcons class >> writeIconsAsPNGFiles [
+	" CMIcons writeIconsAsPNGFiles "
+
+	(self class methodsInProtocol: 'accessing - icons') 
+		select: [ : method | method selector asLowercase endsWith: 'icon' ]
+		thenDo: [ : iconMethod |
+			PNGReadWriter 
+				putForm: (self perform: iconMethod selector)
+				onFileNamed: (iconMethod selector , '.png') ]
 ]

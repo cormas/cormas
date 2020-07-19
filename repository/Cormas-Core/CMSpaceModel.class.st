@@ -104,48 +104,48 @@ CMSpaceModel >> activeSpatialEntity: aClass [
 
 { #category : #'- deprecated' }
 CMSpaceModel >> aggregate: listPolygons [
-	"fusion-agregation des autres polygones sur le premier de la liste"
+	"merge-aggregation of the other polygons on the first of the list"
 	
 	| fusion allPolygons theOthers |
-	self halt.	"should not implement anymore"
+	self flag:#shouldBeRevised.
 	listPolygons isEmpty
 		ifFalse:
-			["Attention a l'ordenancement de listPolygons !!!"
+			["Beware of listPolygons ordering !!!"
 			theOthers := listPolygons
 				copyFrom: 2
 				to: listPolygons size.
-			fusion := listPolygons first.	"Calcul des nouvelles coordonnees d'origine"
-			fusion outline: (self outlineAggregatedFrom: listPolygons).	"Mise a jour des coordonnes de l'image du polygone dans la fenetre de dessin"
-			self setImagesPolygons: (Array with: fusion).	"On doit supprimer les polygones senses ne plus exister avant de s'attaquer au voisinage"
+			fusion := listPolygons first.	"Calculation of the new origin coordinates"
+			fusion outline: (self outlineAggregatedFrom: listPolygons).	"Updating the coordinates of the polygon image in the drawing window"
+			self setImagesPolygons: (Array with: fusion).	"we need to remove polygons that are supposed to no longer exist before attacking the neighborhood"
 			allPolygons := self cormasModel
 				perform:
 					('the' , listPolygons first class name asString , 's') asSymbol.
-			allPolygons removeAll: theOthers.	"Reconstruction du voisinage du nouveau polygone"
+			allPolygons removeAll: theOthers.	"Reconstruction of the neighbourhood of the new polygon"
 			fusion neighbourhood: nil.
-			self voisinsPolygonesNoeuds: (Array with: fusion).	"Reconstruction du voisinage des voisins du nouveau polygone"
+			self voisinsPolygonesNoeuds: (Array with: fusion).	"Reconstruction of the neighbourhood of the neighbours of the new polygon"
 			fusion neighbourhood do: [:p | p neighbourhood: nil].
-			self voisinsPolygonesNoeuds: fusion neighbourhood asOrderedCollection.	"Mise a jour des components de la nouvelle entite spatiale, au cas ou elle serait composee"
+			self voisinsPolygonesNoeuds: fusion neighbourhood asOrderedCollection.	"Updating the components of the new spatial entity, in case it is composed of"
 			(fusion class inheritsFrom: CMSpatialEntityElement)
 				ifFalse: [theOthers do: [:p | fusion addComponents: p components]]]
 ]
 
 { #category : #'- deprecated' }
 CMSpaceModel >> aggregate: listPolygons new: entityC [
-	"Creation d'une entite de niveau N+1 par aggregation de polygones de niveau N"
-	"!!! Les elements de listPolygons doivent etre adjacents !!!"
+	"Creation of an N+1 level integer by aggregation of N level polygons"
+	"!!! The elements of listPolygons must be adjacent. !!!"
 	
 	| newEntityC |
-	self halt.	"should not implement anymore"
+	self flag:#shouldBeRevised.
 	listPolygons isEmpty
 		ifFalse:
 			[newEntityC := entityC new init.	"Calcul des coordonnees d'origine"
-			newEntityC outline: (self outlineAggregatedFrom: listPolygons).	"Mise a jour des coordonnes de l'image du polygone dans la fenetre de dessin"
-			self setImagesPolygons: (Array with: newEntityC).	"Construction du voisinage du nouveau polygone"
+			newEntityC outline: (self outlineAggregatedFrom: listPolygons).	"Updating the coordinates of the polygon image in the drawing window"
+			self setImagesPolygons: (Array with: newEntityC).	"Construction of the neighbourhood of the new polygon"
 			newEntityC neighbourhood: nil.
-			self voisinsPolygonesNoeuds: (Array with: newEntityC).	"Reconstruction du voisinage des voisins du nouveau polygone"
+			self voisinsPolygonesNoeuds: (Array with: newEntityC).	"Reconstruction of the neighbourhood of the neighbours of the new polygon"
 			newEntityC neighbourhood do: [:p | p neighbourhood: nil].
 			self
-				voisinsPolygonesNoeuds: newEntityC neighbourhood asOrderedCollection.	"Mise a jour des components de la nouvelle entite spatiale"
+				voisinsPolygonesNoeuds: newEntityC neighbourhood asOrderedCollection.	"Updating the components of the new spatial entity"
 			newEntityC addComponents: listPolygons.
 			(self cormasModel
 				perform: ('the' , entityC name asString , 's') asSymbol) add:
@@ -177,7 +177,7 @@ CMSpaceModel >> aggregatesEntities [
 CMSpaceModel >> aggregatesInstancesOf: entityE condition: methodName [
 	
 	| nameEntitiesE theInterestingEntitiesE setOfComponents seed neighbours newNeighbours |
-	self halt.	"should not implement anymore"
+	self flag:#shouldBeRevised.
 	nameEntitiesE := 'the' , entityE name asString , 's'.
 	theInterestingEntitiesE := ((self cormasModel
 		perform: nameEntitiesE asSymbol) select: [:c | c perform: methodName])
@@ -413,38 +413,39 @@ lineNumber2   <Integer> colNumber = Positive Integer"
 
 { #category : #'ESE (regular) - special locations' }
 CMSpaceModel >> cellsBetweenLine1: lineNumber1 line2: lineNumber2 andColumn1: colNumber1 column2: colNumber2 [
-	"Return the cells between the lines lineNumber1 and lineNumber2, and between the columns colNumber1 and colNumber2 of the spatial grid. The Cells are sorted by id.
-lineNumber1   <Integer> lineNumber = Positive Integer
-lineNumber2   <Integer> colNumber = Positive Integer
-colNumber1   <Integer> lineNumber = Positive Integer
-colNumber2   <Integer> colNumber = Positive Integer
-Ex:  cellsBetweenLine1: 1 line2: 6 andColumn1: 2 column2: 3  ->  a collection of cells between columns 2 and 3, and between lines 1 and 6, and ordered from line 1 to line 6"
-	
-	| l1 l2 c1 c2 |
+	"Purpose: Return the cells between the lines lineNumber1 and lineNumber2, and between the columns colNumber1 and colNumber2 of the spatial grid. The Cells are sorted by id.
+Arguments: lineNumber1   <Integer> lineNumber = Positive Integer
+Arguments: lineNumber2   <Integer> colNumber = Positive Integer
+Arguments: colNumber1   <Integer> lineNumber = Positive Integer
+Arguments: colNumber2   <Integer> colNumber = Positive Integer
+Example:  cellsBetweenLine1: 1 line2: 6 andColumn1: 2 column2: 3  ->  a collection of cells between columns 2 and 3, and between lines 1 and 6, and ordered from line 1 to line 6"
+
+	| l1 l2 c1 c2 cellsCol |
 	l1 := lineNumber1 min: lineNumber2.
 	l2 := lineNumber1 max: lineNumber2.
 	c1 := colNumber1 min: colNumber2.
 	c2 := colNumber1 max: colNumber2.
-	^self
-		cellsIntoRectangle:
-			(Rectangle
-				origin: l1 @ c1
-				corner: l2 @ c2)
+	cellsCol := self cellsBetweenColumn1: c1 andColumn2: c2.
+	^ (self cellsBetweenLine1: l1 andLine2: l2)
+		select: [ :c | cellsCol includes: c ]
 ]
 
 { #category : #'ESE (regular) - special locations' }
 CMSpaceModel >> cellsIntoRectangle: aRectangle [
-	"Return the cells between the lineNumber and the colNumber of the spatial grid. The Cells are sorted by id.
-aRectangle   <Rectangle> where origin < corner.
-Ex:  cellsIntoRectangle: (Rectangle origin: 1@2 corner: 6@3)  ->  a collection of cells between columns 2 and 3, and between lines 1 and 6, and ordered from line 1 to line 6"
-	
+	"This method is deprecated. Please use cellsBetwenLine1:line2:andColumn1:column2: instead.
+Purpose: Return the cells between the lineNumber and the colNumber of the spatial grid. The Cells are sorted by id.
+Argument: aRectangle   <Rectangle> where origin < corner.
+Example:  cellsIntoRectangle: (Rectangle origin: 1@2 corner: 6@3)  ->  a collection of cells between columns 2 and 3, and between lines 1 and 6, and ordered from line 1 to line 6"
+
 	| cellsCol |
+	self
+		deprecated: 'Please use cellsBetwenLine1:line2:andColumn1:column2: instead.'.
 	cellsCol := self
 		cellsBetweenColumn1: aRectangle origin y
 		andColumn2: aRectangle corner y.
-	^(self
+	^ (self
 		cellsBetweenLine1: aRectangle origin x
-		andLine2: aRectangle corner x) select: [:c | cellsCol includes: c]
+		andLine2: aRectangle corner x) select: [ :c | cellsCol includes: c ]
 ]
 
 { #category : #'ESE (regular) - special locations' }
@@ -566,12 +567,16 @@ CMSpaceModel >> configureSpace [
 { #category : #'private - accessing' }
 CMSpaceModel >> connexity [
 	"Purpose: returns the value of the grid connexity, i.e. 8, 4 or 6.
-If the grid is irregular, returns 0"
+	If the grid is irregular, returns 0"
 	
-	self gridCellShape = #irregular ifTrue: [^0].
-	self nbNeighbours = #eight ifTrue: [^8].
-	self nbNeighbours = #four ifTrue: [^4].
-	self nbNeighbours = #six ifTrue: [^6]
+	self gridCellShape = #irregular
+		ifTrue: [ ^ 0 ].
+	self nbNeighbours = #eight
+		ifTrue: [ ^ 8 ].
+	self nbNeighbours = #four
+		ifTrue: [ ^ 4 ].
+	self nbNeighbours = #six
+		ifTrue: [ ^ 6 ]
 ]
 
 { #category : #'private - accessing' }
@@ -2483,10 +2488,9 @@ CMSpaceModel >> nbNeighbours [
 ]
 
 { #category : #'private - accessing' }
-CMSpaceModel >> nbNeighbours: x [
-	"x : <Symbol> or <Integer>"
-	
-	nbNeighbours := x
+CMSpaceModel >> nbNeighbours: aSymbolOrInteger [
+
+	nbNeighbours := aSymbolOrInteger 
 ]
 
 { #category : #'landscape indices' }
@@ -2505,9 +2509,12 @@ CMSpaceModel >> nearestNeighbourProbaAttribute: anAttribute state1: x1 state2: x
 CMSpaceModel >> newEntity: aClass [
 	"Creates a new instance of aClass and collects it at the level of theXXXs collection. 
 	Set also the collector of the new instance"
-	
-	^aClass new: self	"anEntity collector: self cormasModel collector.
+
+	^ (aClass new: self)
+		cormasModel: self cormasModel;
+		"anEntity collector: self cormasModel collector.
 	self cormasModel collect: anEntity."
+			yourself
 ]
 
 { #category : #'private - mouse actions' }

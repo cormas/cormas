@@ -1030,7 +1030,9 @@ CMSpatialEntityElement >> x [
 
 	"Purpose: returns the X coordinate of the cell in a regular spatial grid"
 
-	self deprecated: 'Please use "numCol" instead.'.
+	self
+		deprecated: 'Please use "numCol" instead.'
+		transformWith: '`@receiver x' -> '`@receiver numCol'.
 	^ self numCol
 ]
 
@@ -1040,6 +1042,8 @@ CMSpatialEntityElement >> y [
 
 	"Purpose: returns the Y coordinate of the cell in a regular spatial grid"
 
-	self deprecated: 'Please use "numLine" instead.'.
+	self
+		deprecated: 'Please use "numLine" instead.'
+		transformWith: '`@receiver y' -> '`@receiver numLine'.
 	^ self numLine
 ]

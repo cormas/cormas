@@ -677,7 +677,7 @@ AttributeAdder >> initForSuperClassOf: aClass [
 	"Create a list of ClassAttributeValue of the superclasses of aClass"
 
 	| aList attributColl attributs allClasses |
-	(aClass inheritsFrom: CormasModel)
+	(aClass inheritsFrom: CMAbstractModel)
 		ifTrue: [ ^ nil ].
 	aList := Set new.
 	attributColl := OrderedCollection new.

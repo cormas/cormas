@@ -1,6 +1,6 @@
 Class {
 	#name : #CMECECModel,
-	#superclass : #CormasModel,
+	#superclass : #CMAbstractModel,
 	#instVars : [
 		'restrainedInitialNumber',
 		'unrestrainedInitialNumber',
@@ -28,11 +28,6 @@ CMECECModel class >> colorOfProbe_unrestrainedSize [
 CMECECModel class >> colorOfProbe_vegetationBiomass [
 	
 	^ Color red: 0.0 green: 0.839458 blue: 0.0
-]
-
-{ #category : #default }
-CMECECModel class >> defaultFinalStep [
-	^ 600
 ]
 
 { #category : #default }

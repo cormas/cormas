@@ -1,6 +1,6 @@
 Class {
 	#name : #CormasModelForTest,
-	#superclass : #CormasModel,
+	#superclass : #CMAbstractModel,
 	#instVars : [
 		'cells',
 		'agents'
@@ -15,17 +15,17 @@ CormasModelForTest >> init [
 
 { #category : #initialization }
 CormasModelForTest >> initAlive [
-	self initCells: #initAlive
+self theCMCellForTests do: #initAlive
 ]
 
 { #category : #initialization }
 CormasModelForTest >> initDead [
-	self initCells: #initDead
+	self theCMCellForTests do: #initDead
 ]
 
 { #category : #initialization }
 CormasModelForTest >> initRandom [
-	self initCells: #initRandom
+	self theCMCellForTests do: #initRandom
 ]
 
 { #category : #probes }

@@ -36,7 +36,8 @@ Class {
 		'id',
 		'flag',
 		'collector',
-		'request'
+		'request',
+		'cormasModel'
 	],
 	#classInstVars : [
 		'modelClass',
@@ -1214,11 +1215,11 @@ CMEntity class >> methodsOfProtocolStartingWith: aString [
 { #category : #'+ utilities - classes' }
 CMEntity class >> modelClass [
 	"Purpose: returns the Class of the current model.
-Return value: <class>
-Example: CMECECRestrained modelClass -> ECEC "
+	Return value: <class>
+	Example: CMECECRestrained modelClass -> ECEC "
 
 	^ self package classes
-		detect: [ :cl | cl superclass = CormasModel ]
+		detect: [ :cl | cl superclass = CMAbstractModel ]
 		ifNone: [ nil ]
 ]
 
@@ -1638,19 +1639,29 @@ CMEntity >> cormasHelper [
 	^ CMEntityHelper
 ]
 
+{ #category : #'+ accessing' }
+CMEntity >> cormasModel [
+	^ cormasModel
+]
+
+{ #category : #'+ accessing' }
+CMEntity >> cormasModel: aCMAbstractModel [
+	cormasModel := aCMAbstractModel
+]
+
 { #category : #'- accessing' }
 CMEntity >> currentSimulation [
 	"Direct access to the current simulation registered by the current cormas"
-	
-	^self class modelClass currentSimulation
+
+	^ cormasModel
 ]
 
 { #category : #'+ accessing - scheduling' }
 CMEntity >> currentTime [
 	"Purpose: returns the current time step of the simulation
-Return value = <Integer>"
-	
-	^self modelClass timeStep
+	Return value = <Integer>"
+
+	^ self modelClass timeStep
 ]
 
 { #category : #'as yet unclassified' }
@@ -1977,10 +1988,10 @@ CMEntity >> manipulationMenuItems [
 { #category : #'+ accessing' }
 CMEntity >> modelClass [
 	"Purpose: returns the Class of the current model
-Return value: a class
-Example: self modelClass -> ECEC"
-	
-	^self class modelClass
+	Return value: a class
+	Example: self modelClass -> ECEC"
+
+	^ cormasModel ifNotNil: #class ifNil: [ self class modelClass ]
 ]
 
 { #category : #'+ instance creation' }
@@ -2000,12 +2011,14 @@ CMEntity >> newEntity: aClass [
 	"Purpose: creates a new instance of aClass. This new instance will be collected at the level of the model (theXXXs collection) at the end of the current timestep
 Return value: an instance of aClass
 Example: newBorn := self newEntity: self class"
-	
+
 	| anEntity |
 	anEntity := aClass new.
-	anEntity collector: self collector.
+	anEntity
+		cormasModel: self cormasModel;
+		collector: self collector.
 	self collect: anEntity.
-	^anEntity
+	^ anEntity
 ]
 
 { #category : #'- accessing' }

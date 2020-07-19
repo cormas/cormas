@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'components'
 	],
-	#category : 'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Interface'
 }
 
 { #category : #viewCorrespondance }
@@ -44,7 +44,7 @@ VectorialCompositePOV class >> newFromFigures: aSetOfFigures [
 
 { #category : #'add-remove' }
 VectorialCompositePOV >> add: aPov [
-	
+	self flag:#shouldBeRevised.
 	self halt.
 	self components add: aPov
 ]

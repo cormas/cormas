@@ -16,7 +16,7 @@ Class {
 		'startNode',
 		'stopNode'
 	],
-	#category : 'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Interface'
 }
 
 { #category : #image }
@@ -274,7 +274,7 @@ CMArcEntity >> isMovedFrom: startCell to: endCell [
 	"the startNode of the Arc is moved to aSpatialEntityElement.
 	the stopNode of the Arc is moved to aSpatialEntityElement.
 	aSpatialEntityElement = <SpatialEntityElement>"
-	
+
 	| alreadySituated_start |
 	alreadySituated_start := self isSituated.	"Log the movement"
 	startCell spaceModel logMovementOf: self from: patch to: startCell.
@@ -285,50 +285,51 @@ CMArcEntity >> isMovedFrom: startCell to: endCell [
 	(startCell occupants: self class name) add: self.
 	(endCell occupants: self class name) add: self.
 	alreadySituated_start
-		ifTrue:
-			[self halt.
-			Dev todo:
+		ifTrue: [ self halt.
+			Dev
+				todo:
 					'a priori ca ne marche pas car la notification renvoi √† un moveOccupant qui n''a pas √©t√© pr√©vu pour des Arcs. D''un autre cot√© je ne vois pas pouquoi on devrait avoir des "moving arcs" puisqu''ils ne bougent pas d''eux memes, mais que lorsqu''un de leur node bouge'.
-			self currentSimulation
+			self cormasModel
 				registerEntityChange: #movingArc
 				with: (EntityReference on: startCell) -> (EntityReference on: endCell)
-				from: (EntityReference on: self)]
-		ifFalse:
-			[self currentSimulation
+				from: (EntityReference on: self) ]
+		ifFalse: [ self cormasModel
 				registerEntityChange: #newArc
 				with: (EntityReference on: startCell) -> (EntityReference on: endCell)
-				from: (EntityReference on: self)]
+				from: (EntityReference on: self) ]
 ]
 
 { #category : #'+ procedures' }
 CMArcEntity >> isMovedTo: startCell [
 	"the startNode of the Arc is moved to aSpatialEntityElement.
 	aSpatialEntityElement = <SpatialEntityElement>"
+
 	"the entity is moved to aSpatialEntityElement.
 	aSpatialEntityElement = <SpatialEntityElement>"
-	
+
 	| alreadySituated_start |
 	alreadySituated_start := self isSituated.	"Log the movement"
 	startCell spaceModel logMovementOf: self from: patch to: startCell.
 	self moveStartNodeTo: startCell.
 	(startCell occupants: self class name) add: self.
-	stopNode patch ifNil: [^nil].
+	stopNode patch ifNil: [ ^ nil ].
 	alreadySituated_start
-		ifTrue:
-			["self halt."
-			Dev todo:
+		ifTrue: [ "self halt."
+			Dev
+				todo:
 					'a priori ca ne marche pas car la notification renvoi √† un moveOccupant qui n''a pas √©t√© pr√©vu pour des Arcs. D''un autre cot√© je ne vois pas pouquoi on devrait avoir des "moving arcs" puisqu''ils ne bougent pas d''eux memes, mais que lorsqu''un de leur node bouge'.
-			self currentSimulation
+			self cormasModel
 				registerEntityChange: #movingArc
 				with:
-					(EntityReference on: startCell) -> (EntityReference on: stopNode patch)
-				from: (EntityReference on: self)]
-		ifFalse:
-			[self currentSimulation
+					(EntityReference on: startCell)
+						-> (EntityReference on: stopNode patch)
+				from: (EntityReference on: self) ]
+		ifFalse: [ self cormasModel
 				registerEntityChange: #newArc
 				with:
-					(EntityReference on: startCell) -> (EntityReference on: stopNode patch)
-				from: (EntityReference on: self)]
+					(EntityReference on: startCell)
+						-> (EntityReference on: stopNode patch)
+				from: (EntityReference on: self) ]
 ]
 
 { #category : #'+ testing' }
@@ -366,30 +367,26 @@ CMArcEntity >> isUpstreamOf: anotherArc [
 { #category : #'+ procedures' }
 CMArcEntity >> leaveWhileMoving: isBeingMoved [
 	"The situated Arc is not located any more. But it is still 'alive'  "
-	
-	patch isNil ifTrue: [^self].
+
+	patch isNil
+		ifTrue: [ ^ self ].
 	patch := nil.
 	startNode isNil
-		ifFalse:
-			[startNode patch isNil
-				ifFalse:
-					[(startNode patch occupants: self class name)
+		ifFalse: [ startNode patch isNil
+				ifFalse: [ (startNode patch occupants: self class name)
 						remove: self
-						ifAbsent: []].
-			startNode removeArc: self].
+						ifAbsent: [  ] ].
+			startNode removeArc: self ].
 	stopNode isNil
-		ifFalse:
-			[stopNode patch isNil
-				ifFalse:
-					[(stopNode patch occupants: self class name)
+		ifFalse: [ stopNode patch isNil
+				ifFalse: [ (stopNode patch occupants: self class name)
 						remove: self
-						ifAbsent: []].
-			stopNode removeArc: self].
+						ifAbsent: [  ] ].
+			stopNode removeArc: self ].
 	isBeingMoved
-		ifFalse:
-			[self currentSimulation
+		ifFalse: [ self cormasModel
 				registerEntityChange: #leavingOccupant
-				from: (EntityReference on: self)]
+				from: (EntityReference on: self) ]
 ]
 
 { #category : #'+ measures' }
@@ -495,8 +492,7 @@ CMArcEntity >> newOutgoingArcToNode: endNode [
 
 { #category : #'- dispatch' }
 CMArcEntity >> newStartPosition: aCell [
-	
-	self currentSimulation
+	self cormasModel
 		registerEntityChange: #newStartPosition
 		with: (EntityReference on: aCell)
 		from: (EntityReference on: self)
@@ -504,8 +500,7 @@ CMArcEntity >> newStartPosition: aCell [
 
 { #category : #'- dispatch' }
 CMArcEntity >> newStopPosition: aCell [
-	
-	self currentSimulation
+	self cormasModel
 		registerEntityChange: #newStopPosition
 		with: (EntityReference on: aCell)
 		from: (EntityReference on: self)

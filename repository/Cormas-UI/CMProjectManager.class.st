@@ -311,7 +311,7 @@ CMProjectManager >> requestModelOpenDialogFromLocalImage [
 	widget := SpcListModel new.
 	widget
 		title: self translator tWhichModel;
-		items: CormasModel subclasses.
+		items: CMAbstractModel subclasses.
 	widget openDialogWithSpec modalRelativeTo: self currentWorld.
 	^ widget selectedItem name
 ]

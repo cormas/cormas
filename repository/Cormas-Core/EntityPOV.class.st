@@ -12,7 +12,7 @@ Class {
 	#classInstVars : [
 		'rMax'
 	],
-	#category : 'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Interface'
 }
 
 { #category : #viewCorrespondance }
@@ -41,13 +41,6 @@ EntityPOV class >> rMax: anObject [
 { #category : #private }
 EntityPOV >> asFigure [
 	self subclassResponsibility
-]
-
-{ #category : #'user interface' }
-EntityPOV >> basicInspectorOnEntity [
-	"Create and schedule a BasicEntityInspector in which the user can examine a limited set of variables."
-	
-	^BasicEntityInspector openOn: self entity
 ]
 
 { #category : #accessing }

@@ -72,7 +72,6 @@ CMSimpleChart >> addProbe: probeName ofClass: className [
 	ds y: yValues.
 	ds x: #yourself.
 	ds connectColor: (Color colorFrom: (Color defaultColors2 at: 1 + (4 * probeNum))).
-	"self halt."
 	self add: ds
 ]
 
