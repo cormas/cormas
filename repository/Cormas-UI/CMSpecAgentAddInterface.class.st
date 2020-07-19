@@ -12,7 +12,7 @@ Class {
 		'descriptionLabel',
 		'toolbar'
 	],
-	#category : 'Cormas-UI-Core'
+	#category : #'Cormas-UI-Core'
 }
 
 { #category : #specs }
@@ -36,16 +36,15 @@ CMSpecAgentAddInterface class >> defaultSpec [
 
 { #category : #actions }
 CMSpecAgentAddInterface >> addNewSocialEntityGUI [
-	
 	| newName superClass |
-	(newName := self getNewClassNameFromGUI) isNil
-		ifTrue: [ ^ self alertMessage: self translator tMissingClassName ].
+	(newName := self getNewClassNameFromGUI)
+		ifNil: [ ^ self alertMessage: self translator tMissingClassName ].
 	superClass := self getAgentSuperclassFromGUI.
-	self projectManager 
-		addNewClassType: 'Social' 
-		inheritingFrom: superClass 
-		name: newName 
-		initProtocol: false 
+	self projectManager
+		addNewClassType: 'Social'
+		inheritingFrom: superClass
+		name: newName
+		initProtocol: false
 		stepProtocol: false.
 	self closeRequest
 ]
@@ -127,7 +126,6 @@ CMSpecAgentAddInterface >> getNewClassNameFromGUI [
 	" Answer a <String> with a valid Smalltalk class name "	
 
 	| aName |
-	self halt.
 	(aName := self newClassName textValuePending) isEmpty
 		ifFalse: [
 			aName first isLetter ifFalse: [ aName := self defaultClassPrefix , aName ].

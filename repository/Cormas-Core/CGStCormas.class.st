@@ -23,8 +23,6 @@ CGStCormas class >> for: aCMProjectModel [
 { #category : #'code-generation' }
 CGStCormas >> addNewClassType: aType inheritingFrom: aSuperclass name: aName initProtocol: createInit stepProtocol: createStep [
 	| newClass selectionInList selector newList |
-	(aName isNil or: [ aName isEmpty ])
-		ifTrue: [ ^ nil ].
 	self generateClass: aName superclass: aSuperclass.
 	newClass := self targetClass.
 	selector := (aType asLowercase , 'Classes') asSymbol.
