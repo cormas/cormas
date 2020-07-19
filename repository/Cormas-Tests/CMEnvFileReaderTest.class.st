@@ -2,7 +2,7 @@ Class {
 	#name : #CMEnvFileReaderTest,
 	#superclass : #CormasModelTest,
 	#instVars : [
-		'instance'
+		'envFileReader'
 	],
 	#category : #'Cormas-Tests'
 }
@@ -11,19 +11,20 @@ Class {
 CMEnvFileReaderTest >> createSampleEnvFile [
 
 	| sampleEnvFile |
-	sampleEnvFile := 'assets/models/CormasModelForTest/maps/temp.env' asFileReference.
+	sampleEnvFile := (CMResourceLocator new mapsPath: 'CormasModelForTest') / 'temp.env'.
 	sampleEnvFile writeStreamDo: [ :arg1 | arg1 nextPutAll: self sampleEnv ].
 	^ sampleEnvFile
 ]
 
 { #category : #accessing }
-CMEnvFileReaderTest >> instance [
-	^ instance
+CMEnvFileReaderTest >> envFileReader [
+	^ envFileReader
 ]
 
 { #category : #accessing }
-CMEnvFileReaderTest >> instance: arg1 [
-	instance := arg1
+CMEnvFileReaderTest >> envFileReader: aCMEnvFileReader [
+
+	envFileReader := aCMEnvFileReader
 ]
 
 { #category : #accessing }
@@ -52,7 +53,7 @@ CMEnvFileReaderTest >> setUp [
 	" See superimplementor's comment "
 
 	super setUp.
-	self instance: 
+	self envFileReader: 
 		(CMEnvFileReader new
 			cormasModel: self newTestModel;
 			fileReference: self createSampleEnvFile;
@@ -63,56 +64,70 @@ CMEnvFileReaderTest >> setUp [
 CMEnvFileReaderTest >> tearDown [ 
 
 	super tearDown.
-	self instance fileReference ifNotNil: [ : envFile | envFile ensureDelete ]
+	self envFileReader fileReference ifNotNil: [ : envFile | envFile ensureDelete ]
+]
+
+{ #category : #test }
+CMEnvFileReaderTest >> testCmEnvFile [
+
+	self assert: (self envFileReader cmEnvFile isKindOf: CMEnvFile).
 ]
 
 { #category : #testing }
 CMEnvFileReaderTest >> testCormasModel [
 
-	self assert: (self instance cormasModel isKindOf: CormasModel) 
+	self assert: (self envFileReader cormasModel isKindOf: CormasModel) 
 ]
 
 { #category : #testing }
 CMEnvFileReaderTest >> testCormasModelClass [
 
-	self assert: (self instance cormasModelClass isKindOf: CormasModel class) 
+	self assert: (self envFileReader cormasModelClass isKindOf: CormasModel class) 
 ]
 
 { #category : #testing }
 CMEnvFileReaderTest >> testElementaryEntities [
-	self assert: self instance elementaryEntities
-]
 
-{ #category : #testing }
-CMEnvFileReaderTest >> testElementaryEntitiesAt [
-	self assert: (self instance elementaryEntitiesAt: nil)
+	self assert: (self envFileReader elementaryEntities allSatisfy: [ : e | e isKindOf: CMSpatialEntityElement ])
 ]
 
 { #category : #testing }
 CMEnvFileReaderTest >> testFileReference [
 
-	self assert: (self instance fileReference isKindOf: FileReference)
+	self assert: (self envFileReader fileReference isKindOf: FileReference)
 ]
 
 { #category : #testing }
 CMEnvFileReaderTest >> testLoadEnvironmentFromFile [
-	| matrix |
+
+	| cmEnvFile |
+	self envFileReader loadEnvironmentFromFile: self envFileReader fileReference.
 	
-	matrix := self instance loadEnvironmentFromFile: self instance fileReference.
-	self assert: matrix isCollection.
-	self deny: matrix isEmpty.
+	cmEnvFile := self envFileReader cmEnvFile.
+	self assert: cmEnvFile  matrix isCollection.
+	self deny: cmEnvFile matrix isEmpty.
 ]
 
 { #category : #testing }
 CMEnvFileReaderTest >> testReadAttributes [
-	self assert: (self instance readAttributes: nil)
+
+	| cmEnvFileReader cmEnvFile |
+	cmEnvFileReader := self envFileReader readAttributes: { 'attributs biomass(Number)' substrings }.
+	cmEnvFile := cmEnvFileReader cmEnvFile.
+	self assert: (cmEnvFileReader isKindOf: CMEnvFileReader).
+	self assert: cmEnvFile attributes isCollection.
+	self assertCollection: (cmEnvFile attributeAt: 1) hasSameElements: { #biomass: . #asNumber }.
+	
+	cmEnvFileReader := self envFileReader readAttributes: { 'attributs seed(nil) tree(Boolean)' substrings }.
+	self assertCollection: (cmEnvFile attributeAt: 2) hasSameElements: { #tree: . #asBoolean }.
+	
 ]
 
 { #category : #testing }
 CMEnvFileReaderTest >> testReadCloture [
 
 	| cmEnvFileReader cmEnvFile |
-	cmEnvFileReader := self instance readCloture: 'cloture torroidal' substrings.
+	cmEnvFileReader := self envFileReader readCloture: 'cloture torroidal' substrings.
 	cmEnvFile := cmEnvFileReader cmEnvFile.
 	self assert: (cmEnvFileReader isKindOf: CMEnvFileReader).
 	self assert: cmEnvFile ce equals: 'torroidal'
@@ -121,20 +136,20 @@ CMEnvFileReaderTest >> testReadCloture [
 { #category : #testing }
 CMEnvFileReaderTest >> testReadConnexite [
 	| cmEnvFileReader cmEnvFile |
-	cmEnvFileReader := self instance readConnexite: 'connexite eight' substrings.
+	cmEnvFileReader := self envFileReader readConnexite: 'connexite eight' substrings.
 	cmEnvFile := cmEnvFileReader cmEnvFile.
 	self assert: (cmEnvFileReader isKindOf: CMEnvFileReader).
 	self assert: cmEnvFile cp equals: 'eight'
 ]
 
 { #category : #testing }
-CMEnvFileReaderTest >> testReadDelimiter [
-	self assert: (self instance readDelimiter: nil)
-]
-
-{ #category : #testing }
 CMEnvFileReaderTest >> testReadDimensions [
-	self assert: (self instance readDimensions: nil)
+	| cmEnvFileReader cmEnvFile |
+	cmEnvFileReader := self envFileReader readDimensions: 'dimensions 50 10' substrings.
+	cmEnvFile := cmEnvFileReader cmEnvFile.
+	self assert: (cmEnvFileReader isKindOf: CMEnvFileReader).
+	self assert: cmEnvFile dimX equals: 50.
+	self assert: cmEnvFile dimY equals: 10
 ]
 
 { #category : #testing }
@@ -142,7 +157,7 @@ CMEnvFileReaderTest >> testReadEnvFromFile [
 
 	| envStream |
 	
-	envStream := self instance readEnvFromFile: self instance fileReference.
+	envStream := self envFileReader readEnvFromFile: self envFileReader fileReference.
 	self assert: envStream isStream.
 	self deny: envStream atEnd.
 	self deny: envStream isBinary.
@@ -151,16 +166,19 @@ CMEnvFileReaderTest >> testReadEnvFromFile [
 { #category : #testing }
 CMEnvFileReaderTest >> testReadEnvironmentError [
 
-	self should: [ self instance readEnvironmentError ] raise: Error
+	self should: [ self envFileReader readEnvironmentError ] raise: Error
 ]
 
 { #category : #testing }
 CMEnvFileReaderTest >> testResolveModelName [
-	self assert: (self instance resolveModelName: nil)
+
+	self envFileReader cormasModel: CMConwayModel new.
+	self assert: (self envFileReader resolveModelName: 'CMConwayModel') equals: 'Conway'.
+	self assert: (self envFileReader resolveModelName: 'Conway') equals: 'Conway'.
 ]
 
 { #category : #testing }
 CMEnvFileReaderTest >> testResourceLocator [
 
-	self assert: (self instance resourceLocator isKindOf: CMResourceLocator)
+	self assert: (self envFileReader resourceLocator isKindOf: CMResourceLocator)
 ]

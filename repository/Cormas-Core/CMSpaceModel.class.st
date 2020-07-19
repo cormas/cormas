@@ -44,7 +44,8 @@ Class {
 		'cellSize',
 		'absoluteBounds',
 		'autoResizeBounds',
-		'envReader'
+		'envReader',
+		'isFull'
 	],
 	#category : #'Cormas-Core-Space'
 }
@@ -555,7 +556,11 @@ CMSpaceModel >> configureSpace [
 	self resetSpatialEntities.
 	self createCells.
 	self boundaries: self cmEnvFile ce.
-	self parseSpatialEntitiesAttributeValues.
+	self isFull 
+		ifFalse: [ self createUncompleteGrid ]
+		ifTrue: [ 
+			self createCells. 
+			self parseSpatialEntitiesAttributeValues ]
 ]
 
 { #category : #'private - accessing' }
@@ -2173,6 +2178,20 @@ CMSpaceModel >> initializeView [
 ]
 
 { #category : #testing }
+CMSpaceModel >> isFull [
+	"Answer if the spaceModel is completely occupied by cells, meaning that some cells are missing or not "
+	
+	^ isFull 
+		ifNil: [ self cardinal = self elementaryEntities size ]
+]
+
+{ #category : #testing }
+CMSpaceModel >> isFull: anObject [
+
+	isFull := anObject
+]
+
+{ #category : #testing }
 CMSpaceModel >> isIrregular [
 	"Answer if the spaceModel is irregular (or regular), meaning that the cells are not uniform, but have different shapes (vectorial)"
 	
@@ -2643,6 +2662,7 @@ CMSpaceModel >> parseSpatialEntitiesAttributeValues [
 		ifFalse:[ ^ self 
 			setUncompleteGridFromData: aMatrix 
 			forAttributes: listAttr_type ].
+	listAttr_type := self cmEnvFile attributes.
 	aMatrix do: [ : aLine |  
 		| aColl |
 		numLigne := numLigne + 1.
@@ -4194,6 +4214,7 @@ CMSpaceModel >> spatialClasses [
 
 { #category : #'private - accessing' }
 CMSpaceModel >> spatialEntities [
+
 	^ spatialEntities ifNil: [ spatialEntities := Dictionary new ]
 ]
 

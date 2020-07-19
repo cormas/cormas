@@ -1,13 +1,52 @@
+"
+Example:
+
+| envFileRef cmModel |
+
+envFileRef := (CMResourceLocator new mapsPath: 'Conway') / 'cormas.env'.
+(CMSpaceModel forModel: cmModel) loadEnvironmentFromFile: envFileRef.
+ 
+Internal Representation and Key Implementation Points.
+
+    Instance Variables
+	cmEnvironment:		<Object>
+	cormasModel:		<Object>
+	fileReference:		<Object>
+	spaceModel:		<Object>
+
+
+    Implementation Points
+"
 Class {
 	#name : #CMEnvFileReader,
 	#superclass : #Object,
 	#instVars : [
 		'spaceModel',
 		'fileReference',
-		'cmEnvironment'
+		'cmEnvironment',
+		'cormasModel'
 	],
 	#category : #'Cormas-Core-Space'
 }
+
+{ #category : #examples }
+CMEnvFileReader class >> example1 [
+
+	| envFileRef cmModel |
+
+	cmModel := (CormasModelForTest initialize; 	new)
+		activeInit: #initAlive;
+		initSimulation;
+		initializeSpaceModel;
+		createGridLines: 20
+			columns: 10
+			neighbourhood: 4
+			closed: true;
+		projectManager: CMProjectManager new;
+		yourself.
+	envFileRef := (CMResourceLocator new mapsPath: 'Conway') / 'cormas.env'.
+	(CMSpaceModel forModel: cmModel) loadEnvironmentFromFile: envFileRef.
+]
 
 { #category : #'instance creation' }
 CMEnvFileReader class >> forSpaceModel: aCMSpaceModel [
@@ -55,13 +94,13 @@ CMEnvFileReader >> cmEnvFile: anObject [
 CMEnvFileReader >> cormasModel [
 	" Answer the receiver's <CormasModel> "
 	
-	^ self spaceModel cormasModel
+	^ cormasModel
 ]
 
 { #category : #accessing }
 CMEnvFileReader >> cormasModel: anObject [
 
-	self spaceModel cormasModel: anObject
+	cormasModel := anObject
 ]
 
 { #category : #accessing }
@@ -71,8 +110,9 @@ CMEnvFileReader >> cormasModelClass [
 
 { #category : #'accessing - parsing' }
 CMEnvFileReader >> elementaryEntities [
+	" Answer a <Collection> of <CMSpatialEntityElement> "
 
-	^ self cormasModel elementaryEntities
+	^ self spaceModel elementaryEntities
 ]
 
 { #category : #'accessing - parsing' }
@@ -83,6 +123,8 @@ CMEnvFileReader >> elementaryEntitiesAt: lineNumber [
 
 { #category : #accessing }
 CMEnvFileReader >> fileReference [
+	" Answer a <FileReference> to the receiver's .env file "
+
 	^ fileReference
 ]
 
@@ -120,7 +162,7 @@ CMEnvFileReader >> parseAttributesFrom: dataLine [
 	" Parse dataLine and answer a <Collection> of two <Symbol> matching attribute name and conversion selector "
 
 	| couple typeAttr typeName |
-	couple := OrderedCollection new: 2.
+	couple := OrderedCollection new.
 	typeAttr := dataLine last.
 	typeName := self parseTypeNameFrom: typeAttr.
 	^ couple
@@ -242,7 +284,7 @@ CMEnvFileReader >> readDimensions: aCollection [
 
 	aCollection first ~= 'dimensions'
 		ifTrue: [ self readEnvironmentError ].
-	self cmEnvFile dimX: (self readXDimension: aCollection last).
+	self cmEnvFile dimX: (self readXDimension: aCollection second).
 	self cmEnvFile dimY: (self readYDimension: aCollection last).
 
 ]
@@ -306,12 +348,14 @@ CMEnvFileReader >> resourceLocator [
 
 { #category : #accessing }
 CMEnvFileReader >> spaceModel [
-	^ spaceModel
+
+	^ self cormasModel spaceModel
 ]
 
 { #category : #accessing }
 CMEnvFileReader >> spaceModel: anObject [
-	spaceModel := anObject
+
+	self cormasModel spaceModel: anObject
 ]
 
 { #category : #'accessing - private' }
