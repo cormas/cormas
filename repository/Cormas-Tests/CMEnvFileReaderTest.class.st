@@ -1,6 +1,6 @@
 Class {
 	#name : #CMEnvFileReaderTest,
-	#superclass : #CormasModelTest,
+	#superclass : #CMAbstractModelTest,
 	#instVars : [
 		'envFileReader'
 	],
@@ -75,14 +75,14 @@ CMEnvFileReaderTest >> testCmEnvFile [
 
 { #category : #testing }
 CMEnvFileReaderTest >> testCormasModel [
-
-	self assert: (self envFileReader cormasModel isKindOf: CormasModel) 
+	self
+		assert: (self envFileReader cormasModel isKindOf: CMAbstractModel)
 ]
 
 { #category : #testing }
 CMEnvFileReaderTest >> testCormasModelClass [
-
-	self assert: (self envFileReader cormasModelClass isKindOf: CormasModel class) 
+	self
+		assert: (self envFileReader cormasModelClass isKindOf: CMAbstractModel class)
 ]
 
 { #category : #testing }
