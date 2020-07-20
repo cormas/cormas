@@ -61,8 +61,7 @@ Class {
 		'visualStateIsOpen',
 		'charts',
 		'activeProbes',
-		'activityDiagrams',
-		'randUi'
+		'activityDiagrams'
 	],
 	#category : #'Cormas-Core-Interface'
 }
@@ -975,18 +974,6 @@ CMAbstractModel class >> preStringForActivitySelector [
 { #category : #probes }
 CMAbstractModel class >> probes [
 	^ (Pragma allNamed: #probe in: self) collect: #methodSelector
-]
-
-{ #category : #accessing }
-CMAbstractModel class >> randUi [
-	
-	^randUi
-]
-
-{ #category : #accessing }
-CMAbstractModel class >> randUi: anObject [
-	
-	randUi := anObject
 ]
 
 { #category : #accessing }
@@ -4279,6 +4266,7 @@ CMAbstractModel >> resetDataStructures [
 
 { #category : #accessing }
 CMAbstractModel >> resourceLocator [
+	" Answer the receiver's <CMResourceLocator>, an object to locate resources "
 
 	^ self projectManager resourceLocator
 ]

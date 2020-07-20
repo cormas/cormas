@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'simWindow'
 	],
-	#category : 'Cormas-UI-Project'
+	#category : #'Cormas-UI-Project'
 }
 
 { #category : #specs }
