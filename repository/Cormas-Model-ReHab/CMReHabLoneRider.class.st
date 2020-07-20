@@ -1,11 +1,11 @@
 Class {
-	#name : #LoneRider,
-	#superclass : #'Strategy_Family',
+	#name : #CMReHabLoneRider,
+	#superclass : #CMReHabStrategyFamily,
 	#category : #'Cormas-Model-ReHab'
 }
 
 { #category : #accessing }
-LoneRider >> possibleLocations [
+CMReHabLoneRider >> possibleLocations [
 	| minBiomass |
 	minBiomass := Cormas
 		minOf: #biomass

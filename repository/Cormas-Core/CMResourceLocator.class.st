@@ -178,6 +178,16 @@ The file name is just a string containing the name of the file (with or without 
 		sep: DataSaver_Asci separator
 ]
 
+{ #category : #private }
+CMResourceLocator >> readCsvLine: aLine [ 
+	" Answer a <Collection> with elements from aLine converted into its matching Smalltalk 'type'. nil objects are added as nil "
+
+	^ aLine collect: [ : elem | 
+			elem
+				ifNotNil: [ Cormas stringAsObjectType: elem ]
+				ifNil: [ nil ] ].
+]
+
 { #category : #'utilities - csv' }
 CMResourceLocator >> readMatrix: fileName sep: aSepChar [
 	"
@@ -208,8 +218,7 @@ Ex: Cormas readMatrix: 'D:\vw7.6\cormas\Models\Ecec\data\test.csv' sep: ';'   "
 	nbColumns := (arrayOfRows at: 1) size.	
 	matrix := OrderedCollection new.
 	arrayOfRows do: [ :aLine | 
-		subCollection := OrderedCollection new.
-		aLine do: [ :x | subCollection add: (Cormas stringAsObjectType: x) ].
+		subCollection := self readCsvLine: aLine.
 		[ subCollection size < nbColumns ] " Check if all cells are occupied if not add nil"
 			whileTrue: [ subCollection add: nil ].
 		matrix add: subCollection ].
