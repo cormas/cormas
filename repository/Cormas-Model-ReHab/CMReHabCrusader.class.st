@@ -1,16 +1,16 @@
 Class {
-	#name : #Crusader,
-	#superclass : #'Strategy_ParkManager',
+	#name : #CMReHabCrusader,
+	#superclass : #CMReHabStrategyParkManager,
 	#category : #'Cormas-Model-ReHab'
 }
 
 { #category : #testing }
-Crusader class >> isAbstract [
+CMReHabCrusader class >> isAbstract [
 ^false
 ]
 
 { #category : #control }
-Crusader >> getLocations [
+CMReHabCrusader >> getLocations [
 | selection coll |
 
 	selection := OrderedCollection new.

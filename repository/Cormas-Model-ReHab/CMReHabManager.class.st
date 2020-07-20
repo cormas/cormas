@@ -1,16 +1,16 @@
 Class {
-	#name : #Manager,
-	#superclass : #'Strategy_ParkManager',
+	#name : #CMReHabManager,
+	#superclass : #CMReHabStrategyParkManager,
 	#category : #'Cormas-Model-ReHab'
 }
 
 { #category : #testing }
-Manager class >> isAbstract [
+CMReHabManager class >> isAbstract [
 ^false
 ]
 
 { #category : #control }
-Manager >> getLocations [
+CMReHabManager >> getLocations [
 	| corners centralZone edges others |
 	corners := #(1 5 16 20).
 	centralZone := self getReserveCentralZoneFrom: corners.
@@ -28,7 +28,7 @@ Manager >> getLocations [
 ]
 
 { #category : #misc }
-Manager >> getReserveAround: aZone [
+CMReHabManager >> getReserveAround: aZone [
 | coll goodAround |
 
 	coll := IndexedSet new.
@@ -45,21 +45,21 @@ Manager >> getReserveAround: aZone [
 ]
 
 { #category : #misc }
-Manager >> getReserveCentralZoneFrom: aColl [
+CMReHabManager >> getReserveCentralZoneFrom: aColl [
 | goodLocations |
 
 	goodLocations := self holder zones
 		select:
-			[:z | z biomass >= Bird habitatSuitabilityThreshold and: [aColl includes: z id]].
+			[:z | z biomass >= CMReHabBird habitatSuitabilityThreshold and: [aColl includes: z id]].
 
 	goodLocations := goodLocations
 		asSortedCollection:
 			[:z1 :z2 |
 			(z1 neighbourhoodAndSelf
-				select: [:z | z biomass >= Bird habitatSuitabilityThreshold]) size
+				select: [:z | z biomass >= CMReHabBird habitatSuitabilityThreshold]) size
 				>
 					(z2 neighbourhoodAndSelf
-						select: [:z | z biomass >= Bird habitatSuitabilityThreshold]) size].
+						select: [:z | z biomass >= CMReHabBird habitatSuitabilityThreshold]) size].
 
 	^goodLocations isEmpty ifTrue: [nil] ifFalse: [goodLocations first]
 ]

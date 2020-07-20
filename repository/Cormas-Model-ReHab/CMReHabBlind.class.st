@@ -1,10 +1,10 @@
 Class {
-	#name : #Blind,
-	#superclass : #'Strategy_Family',
+	#name : #CMReHabBlind,
+	#superclass : #CMReHabStrategyFamily,
 	#category : #'Cormas-Model-ReHab'
 }
 
 { #category : #accessing }
-Blind >> possibleLocations [
+CMReHabBlind >> possibleLocations [
 	^ super possibleLocations
 ]
