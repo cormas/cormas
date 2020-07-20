@@ -21,6 +21,9 @@ Class {
 		'strategy_ParkManager',
 		'theExplorers'
 	],
+	#classInstVars : [
+		'defaultInit'
+	],
 	#category : #'Cormas-Model-ReHab'
 }
 
@@ -331,6 +334,18 @@ ReHab class >> dataPlayer: aString time: t separator: aChar [
 	^collec
 ]
 
+{ #category : #'+ simulation settings' }
+ReHab class >> defaultInit [
+
+	^ defaultInit ifNil: [ defaultInit := #init ]
+]
+
+{ #category : #accessing }
+ReHab class >> defaultInit: aSelector [
+
+	defaultInit := aSelector
+]
+
 { #category : #description }
 ReHab class >> emails [
 ^ 'le_page@cirad.fr'
@@ -393,17 +408,6 @@ ReHab class >> excelWorksheet_type [
 { #category : #sessions }
 ReHab class >> filenameMap [
 	^self gameSession construct: 'carte' , self year printString , '.env'
-]
-
-{ #category : #accessing }
-ReHab class >> gameSession [
-	"Getter accessor without default value "
-	^gameSession
-]
-
-{ #category : #accessing }
-ReHab class >> gameSession: anObject [
-	gameSession := anObject
 ]
 
 { #category : #'- default value' }
@@ -511,6 +515,16 @@ ReHab class >> nbFamilies_unit [
 	!! BECAREFUL, You should not modify this method as it can be generated again when changing the value (Sensitivity Analysis for ex) !!"
 
 	^ ''
+]
+
+{ #category : #'instance creation' }
+ReHab class >> newWithProgrammableScenario [
+"the way to init a scenraio for OpenMole"
+<openMole>
+	^ self 
+		defaultInit: #initWithProgrammableScenario;
+		initialize;
+		new.
 ]
 
 { #category : #sessions }
@@ -641,6 +655,27 @@ ReHab class >> sessionsPath [
 	^path
 ]
 
+{ #category : #examples }
+ReHab class >> simuOpenMole [
+	"Example used in OpenMole (https://openmole.org/)"
+	<openMole>
+    | conf aModel |
+	 "self createInJSONFile." "OpenMole usually generate this file"
+    conf := CMOpenMoleExchange loadJSONFile: 'input.json'.
+    aModel := self newWithProgrammableScenario
+        numberOfFires: (conf at: #numberOfFires) ;
+        numberOfFiremen: (conf at: #numberOfFiremen);
+        percentageOfTrees: (conf at: #percentageOfTrees);
+        dimensions: (conf at: #dimensionMin) -> (conf at: #dimensionMax);
+        activeControl: #step:;
+        initSimulation.
+    aModel simManager
+        initializeSimulation;
+        finalTime: 100;
+        runSimulation.
+    CMOpenMoleExchange saveJSONFile: (self lastValuesOfVariables: (aModel data))
+]
+
 { #category : #'- default value' }
 ReHab class >> strategy_Family_default [
 	"Return the default value of attribute #strategy_Family : 1.
@@ -735,209 +770,6 @@ ReHab class >> timeStepsPlayed [
 			[(stream upTo: Character cr) isEmpty ifFalse: [nbLines := nbLines + 1]].
 	stream close.
 	^nbLines
-]
-
-{ #category : #description }
-ReHab class >> version [
-^ 'ReHab_Pharo.st'
-]
-
-{ #category : #description }
-ReHab class >> versionComments [
-^ '
-
- --------------------- ReHab_2016.pcl --------------------- Date: 2016.9.25
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2016.pcl --------------------- Date: 2016.9.25
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2016.pcl --------------------- Date: 2016.9.25
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2016.pcl --------------------- Date: 2016.9.25
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2016.pcl --------------------- Date: 2016.9.25
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2016.pcl --------------------- Date: 2016.9.25
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2017.pcl --------------------- Date: 2016.9.25
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2017.pcl --------------------- Date: 2016.9.25
-can now be played with only 3 or 4 families
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2018.pcl --------------------- Date: 2017.11.15
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2018.pcl --------------------- Date: 2017.11.15
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2018.pcl --------------------- Date: 2017.11.15
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2018.pcl --------------------- Date: 2017.11.15
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2018.pcl --------------------- Date: 2017.11.15
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2018.pcl --------------------- Date: 2017.11.15
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2018.pcl --------------------- Date: 2017.11.15
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2018.pcl --------------------- Date: 2017.11.15
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2018.pcl --------------------- Date: 2017.11.15
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2018.pcl --------------------- Date: 2017.11.15
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2019.pcl --------------------- Date: 2017.11.15
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2019.pcl --------------------- Date: 2017.11.15
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2019.pcl --------------------- Date: 2017.11.15
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2019.pcl --------------------- Date: 2017.11.15
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2019.pcl --------------------- Date: 2017.11.15
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2019.pcl --------------------- Date: 2017.11.15
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2019.pcl --------------------- Date: 2017.11.15
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2019.pcl --------------------- Date: 2017.11.15
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2019.pcl --------------------- Date: 2017.11.15
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2019.pcl --------------------- Date: 2017.11.15
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
-with module "Autonomous"
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2019.pcl --------------------- Date: 2017.11.15
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2019.pcl --------------------- Date: 2017.11.15
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2019.pcl --------------------- Date: 2017.11.15
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_2019.pcl --------------------- Date: 2017.11.15
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_Pharo.pcl --------------------- Date: 2020.1.26
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_Pharo.st --------------------- Date: 2020.1.26
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_Pharo.pcl --------------------- Date: 2020.1.26
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_Pharo.pcl --------------------- Date: 2020.1.26
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_Pharo.pcl --------------------- Date: 2020.1.26
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_Pharo.pcl --------------------- Date: 2020.1.26
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_Pharo.pcl --------------------- Date: 2020.1.26
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_Pharo.pcl --------------------- Date: 2020.1.26
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_Pharo.pcl --------------------- Date: 2020.1.26
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_Pharo.pcl --------------------- Date: 2020.1.26
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_Pharo.pcl --------------------- Date: 2020.1.26
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_Pharo.pcl --------------------- Date: 2020.1.26
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_Pharo.st --------------------- Date: 2020.1.26
-
- *** Developer: Christophe Le Page & Anne Dray ***
-
- --------------------- ReHab_Pharo.st --------------------- Date: 2020.1.26
-
- *** Developer: Christophe Le Page & Anne Dray ***'
-]
-
-{ #category : #description }
-ReHab class >> vwCompatibleVersion [
-^ '7.6'
 ]
 
 { #category : #probes }
