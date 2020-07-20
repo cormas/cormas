@@ -346,6 +346,7 @@ CMProjectManager >> requestModelOpenFromLocalImage [
 
 { #category : #accessing }
 CMProjectManager >> resourceLocator [ 
+	" Answer the receiver's <CMResourceLocator>, an object to locate resources "
 
 	^ self application resourceLocator
 ]

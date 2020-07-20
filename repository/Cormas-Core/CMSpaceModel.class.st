@@ -44,10 +44,20 @@ Class {
 		'cellSize',
 		'absoluteBounds',
 		'autoResizeBounds',
-		'envReader'
+		'envReader',
+		'isFull'
 	],
 	#category : #'Cormas-Core-Space'
 }
+
+{ #category : #'instance creation' }
+CMSpaceModel class >> forModel: aCormasModel [
+
+	^ self basicNew 
+		cormasModel: aCormasModel;
+		initialize;
+		yourself.
+]
 
 { #category : #'private - absoluteWorld' }
 CMSpaceModel >> absoluteBounds [
@@ -521,26 +531,37 @@ CMSpaceModel >> closeGraphicWindows [
 	self changed: #closeRequest
 ]
 
+{ #category : #accessing }
+CMSpaceModel >> cmEnvFile [
+	" Answer a <CMEnvFile> for the receiver's env file reader "
+	
+	^ self envReader cmEnvFile
+]
+
 { #category : #'private - accessing' }
 CMSpaceModel >> column [
 	^ column
 ]
 
 { #category : #'CSE (general) - import - export' }
-CMSpaceModel >> configureSpaceFromEnv: aStream [
+CMSpaceModel >> configureSpace [
 	" Private - Use values read from an Env reader to setup the receiver "
 
 	self 
-		line: self envReader dimX 
-		column: self envReader dimY.
-	self nbNeighbours: self envReader cp.
-	self envReader cp = #six
+		line: self cmEnvFile dimX 
+		column: self cmEnvFile dimY.
+	self nbNeighbours: self cmEnvFile cp.
+	self cmEnvFile cp = #six
 		ifTrue: [ self gridCellShape: #hexagonal ]
 		ifFalse: [ self gridCellShape: #squared ].
 	self resetSpatialEntities.
 	self createCells.
-	self boundaries: self envReader ce.
-	self envReader setSpatialEntitiesAttributesValueFrom: aStream
+	self boundaries: self cmEnvFile ce.
+	self isFull 
+		ifFalse: [ self createUncompleteGrid ]
+		ifTrue: [ 
+			self createCells. 
+			self parseSpatialEntitiesAttributeValues ]
 ]
 
 { #category : #'private - accessing' }
@@ -985,7 +1006,7 @@ CMSpaceModel >> envReader [
 	" Answer a <CMEnvFileReader> used to read and parse a .env file "
 
 	^ envReader
-		ifNil: [ envReader := CMEnvFileReader forModel: self ]
+		ifNil: [ envReader := CMEnvFileReader forSpaceModel: self ]
 ]
 
 { #category : #accessing }
@@ -2162,6 +2183,20 @@ CMSpaceModel >> initializeView [
 ]
 
 { #category : #testing }
+CMSpaceModel >> isFull [
+	"Answer if the spaceModel is completely occupied by cells, meaning that some cells are missing or not "
+	
+	^ isFull 
+		ifNil: [ self cardinal = self elementaryEntities size ]
+]
+
+{ #category : #testing }
+CMSpaceModel >> isFull: anObject [
+
+	isFull := anObject
+]
+
+{ #category : #testing }
 CMSpaceModel >> isIrregular [
 	"Answer if the spaceModel is irregular (or regular), meaning that the cells are not uniform, but have different shapes (vectorial)"
 	
@@ -2206,12 +2241,11 @@ CMSpaceModel >> listMethodsChanged [
 ]
 
 { #category : #'CSE (general) - import - export' }
-CMSpaceModel >> loadEnvironmentFromFile: aName [
-
-	| stream |
+CMSpaceModel >> loadEnvironmentFromFile: aFilename [
+	" Load aFilename .env file and configure the reiceiver's using a CMEnvFile "
 	
-	stream := self envReader loadEnvironmentFromFile: aName.
-	self configureSpaceFromEnv: stream.
+	self envReader loadEnvironmentFromFile: aFilename.
+	self configureSpace.
 
 ]
 
@@ -2623,6 +2657,43 @@ CMSpaceModel >> outlineAggregatedFrom: listPolygons [
 	^newOutline
 ]
 
+{ #category : #parsing }
+CMSpaceModel >> parseSpatialEntitiesAttributeValues [
+
+	| aMatrix numLigne i valeur aCell listAttr_type |
+	
+	numLigne := 0.
+	aMatrix := self cmEnvFile matrix.
+	aMatrix removeFirst.	
+	self isFull 
+		ifFalse:[ ^ self 
+			setUncompleteGridFromData: aMatrix 
+			forAttributes: listAttr_type ].
+	listAttr_type := self cmEnvFile attributes.
+	aMatrix do: [ : aLine |  
+		| aColl |
+		numLigne := numLigne + 1.
+		i := 0.
+		aLine removeAllSuchThat: [:v | v isNil].
+		aLine first isCollection 
+			ifFalse:[aColl := OrderedCollection with: aLine first] 
+			ifTrue:[aColl := (Cormas splitString: aLine first with: $, )].
+		aColl do: [:val | |attr_type|
+			i := i + 1.	
+			valeur := val asString.
+			attr_type := listAttr_type at: i.
+			aCell := self elementaryEntities at: numLigne.
+			attr_type value = #asEntity
+				ifTrue: [
+					valeur := (valeur tokensBasedOn: $.) last asSymbol.
+					aCell perform: attr_type key with: valeur]
+				ifFalse: [
+					aCell perform: attr_type key with: 
+						(valeur = 'nil'
+								ifFalse: [valeur perform: attr_type value]
+								ifTrue: [nil])]]]
+]
+
 { #category : #'landscape indices' }
 CMSpaceModel >> patchDensity: aClass [
 	"return the data (a number) to be recorded"
@@ -2829,14 +2900,14 @@ CMSpaceModel >> resetSpatialEntities [
 	
 	| newColl |
 	self spatialEntities: Dictionary new. 
-	self cormasModelClass spatialClasses
+"	self cormasModelClass spatialClasses
 		do:
 			[:aSpatialClass | 
 			newColl := self cormasModel initializeTheEntity: aSpatialClass.
 			self spatialEntities
 				at: aSpatialClass name
 				put: newColl].
-	self changed: #removeAllFigures	"all the figures of the spaceInterfaces have to be deleted"
+	self changed: #removeAllFigures"	"all the figures of the spaceInterfaces have to be deleted"
 ]
 
 { #category : #'private - init' }
@@ -4044,6 +4115,47 @@ CMSpaceModel >> setSpatialEntitiesAttributsValueFromStream: aStream [
 	aStream close
 ]
 
+{ #category : #parsing }
+CMSpaceModel >> setUncompleteGridFromData: aMatrix forAttributes: listAttr_type [
+	"lecture des valeurs des attributs, et maj des entites spatiales a partir de ces valeurs"
+	"balayage de gauche a droite et de bas en haut"
+	"Lecture de la 5e ligne: noms des attributs et leur type pour conversion"
+	
+	| i  aCell valeur anID livingCells allCells |
+	
+	livingCells := OrderedCollection new.
+	listAttr_type removeFirst.
+	aMatrix
+		do:
+			[:aLine |  |aColl|
+			i := 0.
+			aLine removeAllSuchThat: [:v | v isNil].
+			aLine first isCollection 
+				ifFalse:[aLine size = 1 ifTrue:[aColl := Cormas splitString: aLine first printString with: $. .
+aColl at: 1 put: aColl first asNumber. aColl at: 2 put: aColl last asNumber. ]] "pb avec , et . qui ont été retranscrits en ."
+				ifTrue:[ aColl := (Cormas splitString: aLine first with: $, )].
+			anID := aColl first asNumber. aColl removeFirst.
+			aCell := self elementaryEntities detect: [:c | c id = anID].
+			livingCells add: aCell.
+			aColl do: [:val | |attr_type|
+					i := i + 1.	
+					valeur := val.
+					attr_type := listAttr_type at: i.
+					attr_type value = #asEntity
+						ifTrue:
+							[valeur := (valeur tokensBasedOn: $.) last asSymbol.
+							aCell perform: attr_type key with: valeur]
+						ifFalse:
+							[aCell perform: attr_type key with:
+									(valeur = 'nil'
+										ifFalse: [valeur perform: attr_type value]
+										ifTrue: [nil])]]].
+"Killing the unecessary cells"
+		allCells :=self elementaryEntities asOrderedCollection.
+		allCells removeAll: livingCells.
+		allCells reverseDo: [: c | c delete]
+]
+
 { #category : #'- utilities - binary storage' }
 CMSpaceModel >> settingsFrom: aClone [
 	(self absoluteBounds = aClone absoluteBounds
@@ -4109,6 +4221,7 @@ CMSpaceModel >> spatialClasses [
 
 { #category : #'private - accessing' }
 CMSpaceModel >> spatialEntities [
+
 	^ spatialEntities ifNil: [ spatialEntities := Dictionary new ]
 ]
 

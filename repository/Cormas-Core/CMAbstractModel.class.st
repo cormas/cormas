@@ -4266,6 +4266,7 @@ CMAbstractModel >> resetDataStructures [
 
 { #category : #accessing }
 CMAbstractModel >> resourceLocator [
+	" Answer the receiver's <CMResourceLocator>, an object to locate resources "
 
 	^ self projectManager resourceLocator
 ]
