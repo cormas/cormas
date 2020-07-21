@@ -1163,6 +1163,20 @@ CMAbstractModel class >> setterForEntityClass: aClass [
 	^getter asSymbol
 ]
 
+{ #category : #'+ accessing' }
+CMAbstractModel class >> shortName [
+	"simplify the accessors in the cormas class models by removing the 
+	in CMModelNameModel an entitie is theEntitys and not theCMModelNameModelEntitys"
+
+	| myPackageName modelName oneEntityClass |
+	myPackageName := self package name.
+	modelName := (myPackageName splitOn: '-') last.	"'Conway'"
+	oneEntityClass := self allEntityClasses asOrderedCollection.
+	^oneEntityClass
+		collect:
+			[ :each | each name copyFrom: modelName size + 3 to: each name size ]
+]
+
 { #category : #'- default value' }
 CMAbstractModel class >> simManager_default [
 	"Return the default value of simManager attribute"
