@@ -9,7 +9,7 @@ Class {
 
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> newTestModel [
-	^ (CormasModelForTest
+	^ (CMModelForTest
 		initialize;
 		new)
 		activeInit: #initAlive;
@@ -32,7 +32,7 @@ CMAbstractModelTest >> setUp [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testCentralCell [
 	| m |
-	m := (CormasModelForTest
+	m := (CMModelForTest
 		initialize;
 		new)
 		activeInit: #initRandom;
@@ -59,7 +59,7 @@ CMAbstractModelTest >> testCreateGridXYNeighborHoodClosed [
 { #category : #tests }
 CMAbstractModelTest >> testDominance [
 	| m |
-	m := (CormasModelForTest
+	m := (CMModelForTest
 		initialize;
 		new)
 		activeInit: #initRandom;
@@ -77,7 +77,7 @@ CMAbstractModelTest >> testDominance [
 { #category : #tests }
 CMAbstractModelTest >> testDominance1 [
 	| m |
-	m := (CormasModelForTest
+	m := (CMModelForTest
 		initialize;
 		new)
 		activeInit: #initAlive;
@@ -94,7 +94,7 @@ CMAbstractModelTest >> testDominance1 [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testLowerLeftCell [
 	| m |
-	m := (CormasModelForTest
+	m := (CMModelForTest
 		initialize;
 		new)
 		activeInit: #initRandom;
@@ -113,7 +113,7 @@ CMAbstractModelTest >> testLowerLeftCell [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testLowerRightCell [
 	| m |
-	m := (CormasModelForTest
+	m := (CMModelForTest
 		initialize;
 		new)
 		activeInit: #initRandom;
@@ -152,7 +152,7 @@ CMAbstractModelTest >> testPickCell [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testPickCellConstrainedBy [
 	| m |
-	m := (CormasModelForTest
+	m := (CMModelForTest
 		initialize;
 		new)
 		activeInit: #initRandom;
@@ -246,14 +246,14 @@ CMAbstractModelTest >> testPickUnoccupiedCell [
 { #category : #tests }
 CMAbstractModelTest >> testProbes [
 	self
-		assert: CormasModelForTest probes asSet
+		assert: CMModelForTest probes asSet
 		equals: (Set with: #numAlives with: #numDeads)
 ]
 
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testSelectCellsBetweenLine1Line2AndColumn1Column2 [
 	| m cells |
-	m := (CormasModelForTest
+	m := (CMModelForTest
 		initialize;
 		new)
 		activeInit: #initAlive;
@@ -279,7 +279,7 @@ CMAbstractModelTest >> testSelectCellsBetweenLine1Line2AndColumn1Column2 [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
 	| m cells |
-	m := (CormasModelForTest
+	m := (CMModelForTest
 		initialize;
 		new)
 		activeInit: #initAlive;
@@ -325,7 +325,7 @@ CMAbstractModelTest >> testSelectCellsOfLine [
 { #category : #tests }
 CMAbstractModelTest >> testShortestDistanceToCellsVerifying [
 	| m |
-	m := CormasModelForTest
+	m := CMModelForTest
 		initialize;
 		new.
 	m initSimulation.
@@ -341,7 +341,7 @@ CMAbstractModelTest >> testShortestDistanceToCellsVerifying [
 { #category : #tests }
 CMAbstractModelTest >> testSpacialClasses [
 	self
-		assert: CormasModelForTest spatialClasses
+		assert: CMModelForTest spatialClasses
 		equals: (Set with: CMCellForTest)
 ]
 
@@ -359,7 +359,7 @@ CMAbstractModelTest >> testTheAgents [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testUpperLeftCell [
 	| m |
-	m := (CormasModelForTest
+	m := (CMModelForTest
 		initialize;
 		new)
 		activeInit: #initRandom;
@@ -378,7 +378,7 @@ CMAbstractModelTest >> testUpperLeftCell [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testUpperRightCell [
 	| m |
-	m := (CormasModelForTest
+	m := (CMModelForTest
 		initialize;
 		new)
 		activeInit: #initRandom;

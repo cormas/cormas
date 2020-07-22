@@ -15,7 +15,7 @@ CMEntityTest >> testCormasEntityIsAbstract [
 { #category : #tests }
 CMEntityTest >> testCormasModel [
 	| model |
-	model := (CormasModelForTest
+	model := (CMModelForTest
 		initialize;
 		new)
 		activeInit: #initRandom;
@@ -38,7 +38,7 @@ CMEntityTest >> testCormasModel [
 CMEntityTest >> testModelClass [
 	self
 		assert: CMCellForTest modelClass
-		identicalTo: CormasModelForTest
+		identicalTo: CMModelForTest
 ]
 
 { #category : #tests }
