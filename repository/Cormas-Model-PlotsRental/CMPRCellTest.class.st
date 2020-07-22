@@ -1,7 +1,7 @@
 Class {
 	#name : #CMPRCellTest,
 	#superclass : #TestCase,
-	#category : #'Cormas-Model-PlotsRental'
+	#category : #'Cormas-Model-PlotsRental-Tests'
 }
 
 { #category : #tests }

@@ -1,7 +1,7 @@
 Class {
 	#name : #CMPRFarmerTest,
 	#superclass : #TestCase,
-	#category : #'Cormas-Model-PlotsRental'
+	#category : #'Cormas-Model-PlotsRental-Tests'
 }
 
 { #category : #tests }
