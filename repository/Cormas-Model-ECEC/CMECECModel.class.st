@@ -4,10 +4,9 @@ Class {
 	#instVars : [
 		'restrainedInitialNumber',
 		'unrestrainedInitialNumber',
-		'theCMECECRestraineds',
-		'theCMECECUnrestraineds',
-		'theCMECECVegetationUnits',
-		'theRestraineds'
+		'theRestraineds',
+		'theUnrestraineds',
+		'theVegetationUnits'
 	],
 	#category : #'Cormas-Model-ECEC'
 }
@@ -82,7 +81,7 @@ CMECECModel class >> example1 [
 	
 	es := (RTBox new
 		color: c;
-		size: 25) elementsOn: aModel theCMECECVegetationUnits.
+		size: 25) elementsOn: aModel theVegetationUnits.
 		
 	v addAll: es.
 	
@@ -126,7 +125,7 @@ CMECECModel class >> example1R3 [
         range: n range.
     aModel initSimulation.
     aModel runStep.
-    es := aModel theCMECECVegetationUnits
+    es := aModel theVegetationUnits
         collect: [ :each | 
             RSBox new
                 size: 25;
@@ -158,7 +157,7 @@ CMECECModel class >> example1R3 [
 CMECECModel class >> example2 [
 	| aModel |
 	aModel := self initialize new initSimulation.
-	(CMSimulationGrid new on: aModel with: aModel theCMECECVegetationUnits) runAndVisualize
+	(CMSimulationGrid new on: aModel with: aModel theVegetationUnits) runAndVisualize
 ]
 
 { #category : #examples }
@@ -184,7 +183,7 @@ CMECECModel class >> example3 [
 	
 	es := (RTBox new
 		color: c;
-		size: 25) elementsOn: aModel theCMECECVegetationUnits.
+		size: 25) elementsOn: aModel theVegetationUnits.
 		
 	v addAll: es.
 	
@@ -484,7 +483,7 @@ CMECECModel >> homogeneousEnv [
 		columns: 15
 		neighbourhood: 8
 		closed: true.
-	self theCMECECVegetationUnits do: [ :c | c initRandomBiomass ].
+	self theVegetationUnits do: [ :c | c initRandomBiomass ].
 	self initAgents
 ]
 
@@ -498,7 +497,7 @@ CMECECModel >> homogeneousEnv2 [
 		shape: #squared
 		nbNeighbours: #eight
 		boundaries: #toroidal.
-	self theCMECECVegetationUnits do: [ :cell | cell initRandomBiomass ].	"or: self initCells: #initRandomBiomass."
+	self theVegetationUnits do: [ :cell | cell initRandomBiomass ].	"or: self initCells: #initRandomBiomass."
 	self initAgents
 ]
 
@@ -541,7 +540,7 @@ CMECECModel >> restrainedSize [
 	"return the population size of the Restrained foragers"
 
 	<probe>
-	^ self theCMECECRestraineds size
+	^ self theRestraineds size
 ]
 
 { #category : #control }
@@ -549,7 +548,7 @@ CMECECModel >> step: t [
 	"main step: activation of all the plants (Resource dynamics), then activation of the foragers (Agents dynamics)"
 	"Resource dynamics   (because the dynamics of the plants are independants, the activation is not mixted)"
 	
-	self stepEntities: self theCMECECVegetationUnits.	"Agents dynamics    (because the agents may compete for plant access, the activation is randomly mixted)"
+	self stepEntities: self theVegetationUnits.	"Agents dynamics    (because the agents may compete for plant access, the activation is randomly mixted)"
 	self askRandom: CMECECForager toDo: #step.
 ]
 
@@ -561,35 +560,35 @@ CMECECModel >> theCMECECForagers [
 ]
 
 { #category : #accessing }
-CMECECModel >> theCMECECRestraineds [
+CMECECModel >> theRestraineds [
 ^theRestraineds ifNil:[theRestraineds := IndexedSet new]
 ]
 
 { #category : #accessing }
-CMECECModel >> theCMECECRestraineds: aCollection [
-	theCMECECRestraineds := aCollection
+CMECECModel >> theRestraineds: aCollection [
+	theRestraineds := aCollection
 ]
 
 { #category : #accessing }
-CMECECModel >> theCMECECUnrestraineds [
+CMECECModel >> theUnrestraineds [
 	
-	^theCMECECUnrestraineds ifNil: [theCMECECUnrestraineds := OrderedCollection new]
+	^theUnrestraineds ifNil: [theUnrestraineds := OrderedCollection new]
 ]
 
 { #category : #accessing }
-CMECECModel >> theCMECECUnrestraineds: aCollection [
-	theCMECECUnrestraineds := aCollection
+CMECECModel >> theUnrestraineds: aCollection [
+	theUnrestraineds := aCollection
 ]
 
 { #category : #accessing }
-CMECECModel >> theCMECECVegetationUnits [
+CMECECModel >> theVegetationUnits [
 	
-	^theCMECECVegetationUnits ifNil: [theCMECECVegetationUnits := OrderedCollection new]
+	^theVegetationUnits ifNil: [theVegetationUnits := OrderedCollection new]
 ]
 
 { #category : #accessing }
-CMECECModel >> theCMECECVegetationUnits: aCollection [
-	theCMECECVegetationUnits := aCollection
+CMECECModel >> theVegetationUnits: aCollection [
+	theVegetationUnits := aCollection
 ]
 
 { #category : #accessing }
@@ -612,7 +611,7 @@ CMECECModel >> unrestrainedSize [
 	"return the population size of the Unrestrained foragers"
 
 	<probe>
-	^ self theCMECECUnrestraineds size
+	^ self theUnrestraineds size
 ]
 
 { #category : #probes }
@@ -620,7 +619,7 @@ CMECECModel >> vegetationBiomass [
 	"return the total biomass of the vegetation"
 
 	<probe>
-	^ self theCMECECVegetationUnits
+	^ self theVegetationUnits
 		inject: 0
 		into: [ :i :j | i + j biomass ]
 ]
