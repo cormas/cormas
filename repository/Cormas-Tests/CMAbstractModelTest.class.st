@@ -176,9 +176,9 @@ CMAbstractModelTest >> testPickCellConstrainedBy [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testPickCellWithoutAny [
 
-	model createN: 50 randomlyLocatedAloneEntities: CMAgentLocationForTest.
-	self assert: ((model pickCellWithoutAny: CMAgentLocationForTest)
-				occupantsAt: CMAgentLocationForTest) isEmpty
+	model createN: 50 randomlyLocatedAloneEntities: CMTestsAgentLocationForTest.
+	self assert: ((model pickCellWithoutAny: CMTestsAgentLocationForTest)
+				occupantsAt: CMTestsAgentLocationForTest) isEmpty
 ]
 
 { #category : #'tests-accessing-entities' }
@@ -239,7 +239,7 @@ CMAbstractModelTest >> testPickNEntitiesConstrainedBy [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testPickUnoccupiedCell [
 
-	model createN: 50 randomlyLocatedAloneEntities: CMAgentLocationForTest.
+	model createN: 50 randomlyLocatedAloneEntities: CMTestsAgentLocationForTest.
 	self assert: model pickUnoccupiedCell theOccupants isEmpty
 ]
 
@@ -342,18 +342,18 @@ CMAbstractModelTest >> testShortestDistanceToCellsVerifying [
 CMAbstractModelTest >> testSpacialClasses [
 	self
 		assert: CormasModelForTest spatialClasses
-		equals: (Set with: CMCellForTest with: CMTestsCellForTest)
+		equals: (Set with: CMCellForTest)
 ]
 
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testTheAgents [
 	| agents |
-	model createN: 50 randomlyLocatedAloneEntities: CMAgentLocationForTest.
+	model createN: 50 randomlyLocatedAloneEntities: CMTestsAgentLocationForTest.
 	agents := model theAgents.
 	self assert: agents size equals: 50.
 	agents
 		do:
-			[ :agent | self assert: agent class identicalTo: CMAgentLocationForTest ]
+			[ :agent | self assert: agent class identicalTo: CMTestsAgentLocationForTest ]
 ]
 
 { #category : #'tests-accessing-entities' }
