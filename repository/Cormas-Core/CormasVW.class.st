@@ -22587,15 +22587,6 @@ CormasVW >> packagingNamespace: aNameSpace [
 	^pkg
 ]
 
-{ #category : #'opentalk-stst' }
-CormasVW >> passInstVars [
-	"	***This is decompiled code.*** 
-	No source was available"
-	
-	^#(#default #default #default #default #default #default #default #default #default #default #default #default #default #default #default #default #default #default #default #default #default #default #default #default #default #default #default #default #default #default #default #default #default #default #default #default #default)
-		halt
-]
-
 { #category : #'main menu' }
 CormasVW >> rebuildMenu [
 	"rebuild the main menu (usefull when adding item in the mainMenu)"
