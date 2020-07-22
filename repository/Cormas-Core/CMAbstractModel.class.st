@@ -579,7 +579,11 @@ CMAbstractModel class >> getterForEntityClass: aClass [
 	self basicNew getterForEntityClass: Object
 	"
 
-	^ ('the' , aClass shortName pluralize capitalized) asSymbol
+	^ ('the'
+		,
+			(aClass isString
+				ifTrue: [ aClass ]
+				ifFalse: [ aClass shortName ]) pluralize capitalized) asSymbol
 ]
 
 { #category : #testing }
@@ -1092,25 +1096,10 @@ CMAbstractModel class >> setterForEntityClass: aClass [
 	"efficiently create the setter selector for the entity class aClass (avoid concatenation).
 	ex : Object -> #theObjects:
 
-	self basicNew setterForEntityClass: Object 
+	self setterForEntityClass: CMEntity
 	"
-	
-	| className getter |
-	className := aClass name.
-	getter := String new: className size + 5.
-	getter replaceFrom: 1 to: 3 with: 'the' startingAt: 1.
-	getter
-		replaceFrom: 4
-		to: getter size - 2
-		with: className
-		startingAt: 1.
-	getter
-		at: getter size - 1
-		put: $s.
-	getter
-		at: getter size
-		put: $:.
-	^getter asSymbol
+
+	^ ((self getterForEntityClass: aClass) , ':') asSymbol
 ]
 
 { #category : #'- default value' }
@@ -2735,20 +2724,18 @@ CMAbstractModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 CMAbstractModel >> exportAttribute: attributeName fromClass: className [
 	"attributeName <Symbol>
 className <String>"
-	
+
 	| stream filename instances |
 	filename := (Cormas dataPath: self class name)
 		construct: className asString , '_' , attributeName asString , '.txt'.
 	stream := filename asFilename writeStream.
-	instances := self perform: ('the' , className , 's') asSymbol.
+	instances := self perform: (self getterForEntityClass: className).
 	instances isEmpty
-		ifFalse:
-			[instances
-				do:
-					[:anInstance | 
+		ifFalse: [ instances
+				do: [ :anInstance | 
 					stream
 						store: (anInstance perform: attributeName);
-						cr]].
+						cr ] ].
 	stream close
 ]
 
@@ -3144,16 +3131,12 @@ CMAbstractModel >> initCharts [
 
 { #category : #deprecated }
 CMAbstractModel >> initCollec: aListOfEntities [
-	
-	| accessW |
 	aListOfEntities
-		do:
-			[:e | 
+		do: [ :e | 
 			e new perform: #CurrentId: with: 0.
-			accessW := ('the' , e name asString , 's:') asSymbol.
 			self
-				perform: accessW
-				with: OrderedCollection new]
+				perform: (self setterForEntityClass: e)
+				with: OrderedCollection new ]
 ]
 
 { #category : #deprecated }
@@ -5205,35 +5188,24 @@ CMAbstractModel >> updateGlobalData [
 
 { #category : #'probes - charts' }
 CMAbstractModel >> updateLocalCharts: t [
-	
 	| classAndSelector res collec className selector |
 	self localCharts
-		do:
-			[:s | 
+		do: [ :s | 
 			classAndSelector := self perform: (s asString , 'Data') asSymbol.
 			className := classAndSelector first.
 			selector := classAndSelector last.
 			res := OrderedCollection new.
-			(self perform: ('the' , className asString , 's') asSymbol)
+			(self perform: (self getterForEntityClass: className))
 				do:
-					[:c | 
-					res
-						add:
-							(Array
-								with: (c perform: selector)
-								with: c id)].
+					[ :c | res add: (Array with: (c perform: selector) with: c id) ].
 			res
-				do:
-					[:x | 
+				do: [ :x | 
 					((self perform: s) keys includes: x last)
-						ifFalse:
-							[collec := OrderedCollection new.
-							t timesRepeat: [collec add: 0]]
-						ifTrue: [collec := (self perform: s) at: x last].
+						ifFalse: [ collec := OrderedCollection new.
+							t timesRepeat: [ collec add: 0 ] ]
+						ifTrue: [ collec := (self perform: s) at: x last ].
 					collec add: x first.
-					(self perform: s)
-						at: x last
-						put: collec]]
+					(self perform: s) at: x last put: collec ] ]
 ]
 
 { #category : #'probes - recording' }

@@ -105,51 +105,49 @@ CMSpaceModel >> activeSpatialEntity: aClass [
 { #category : #'- deprecated' }
 CMSpaceModel >> aggregate: listPolygons [
 	"merge-aggregation of the other polygons on the first of the list"
-	
+
 	| fusion allPolygons theOthers |
-	self flag:#shouldBeRevised.
+	self flag: #shouldBeRevised.
 	listPolygons isEmpty
-		ifFalse:
-			["Beware of listPolygons ordering !!!"
-			theOthers := listPolygons
-				copyFrom: 2
-				to: listPolygons size.
+		ifFalse: [ "Beware of listPolygons ordering !!!"
+			theOthers := listPolygons copyFrom: 2 to: listPolygons size.
 			fusion := listPolygons first.	"Calculation of the new origin coordinates"
 			fusion outline: (self outlineAggregatedFrom: listPolygons).	"Updating the coordinates of the polygon image in the drawing window"
 			self setImagesPolygons: (Array with: fusion).	"we need to remove polygons that are supposed to no longer exist before attacking the neighborhood"
 			allPolygons := self cormasModel
 				perform:
-					('the' , listPolygons first class name asString , 's') asSymbol.
+					(self cormasModel class getterForEntityClass: listPolygons first class).
 			allPolygons removeAll: theOthers.	"Reconstruction of the neighbourhood of the new polygon"
 			fusion neighbourhood: nil.
 			self voisinsPolygonesNoeuds: (Array with: fusion).	"Reconstruction of the neighbourhood of the neighbours of the new polygon"
-			fusion neighbourhood do: [:p | p neighbourhood: nil].
-			self voisinsPolygonesNoeuds: fusion neighbourhood asOrderedCollection.	"Updating the components of the new spatial entity, in case it is composed of"
+			fusion neighbourhood do: [ :p | p neighbourhood: nil ].
+			self
+				voisinsPolygonesNoeuds: fusion neighbourhood asOrderedCollection.	"Updating the components of the new spatial entity, in case it is composed of"
 			(fusion class inheritsFrom: CMSpatialEntityElement)
-				ifFalse: [theOthers do: [:p | fusion addComponents: p components]]]
+				ifFalse: [ theOthers do: [ :p | fusion addComponents: p components ] ] ]
 ]
 
 { #category : #'- deprecated' }
 CMSpaceModel >> aggregate: listPolygons new: entityC [
 	"Creation of an N+1 level integer by aggregation of N level polygons"
+
 	"!!! The elements of listPolygons must be adjacent. !!!"
-	
+
 	| newEntityC |
-	self flag:#shouldBeRevised.
+	self flag: #shouldBeRevised.
 	listPolygons isEmpty
-		ifFalse:
-			[newEntityC := entityC new init.	"Calcul des coordonnees d'origine"
+		ifFalse: [ newEntityC := entityC new init.	"Calcul des coordonnees d'origine"
 			newEntityC outline: (self outlineAggregatedFrom: listPolygons).	"Updating the coordinates of the polygon image in the drawing window"
 			self setImagesPolygons: (Array with: newEntityC).	"Construction of the neighbourhood of the new polygon"
 			newEntityC neighbourhood: nil.
 			self voisinsPolygonesNoeuds: (Array with: newEntityC).	"Reconstruction of the neighbourhood of the neighbours of the new polygon"
-			newEntityC neighbourhood do: [:p | p neighbourhood: nil].
+			newEntityC neighbourhood do: [ :p | p neighbourhood: nil ].
 			self
 				voisinsPolygonesNoeuds: newEntityC neighbourhood asOrderedCollection.	"Updating the components of the new spatial entity"
 			newEntityC addComponents: listPolygons.
 			(self cormasModel
-				perform: ('the' , entityC name asString , 's') asSymbol) add:
-					newEntityC]
+				perform: (self cormasModel getterForEntityClass: entityC))
+				add: newEntityC ]
 ]
 
 { #category : #accessing }
@@ -175,40 +173,36 @@ CMSpaceModel >> aggregatesEntities [
 
 { #category : #'- deprecated' }
 CMSpaceModel >> aggregatesInstancesOf: entityE condition: methodName [
-	
 	| nameEntitiesE theInterestingEntitiesE setOfComponents seed neighbours newNeighbours |
-	self flag:#shouldBeRevised.
-	nameEntitiesE := 'the' , entityE name asString , 's'.
+	self flag: #shouldBeRevised.
+	nameEntitiesE := self cormasModel class getterForEntityClass: entityE.
 	theInterestingEntitiesE := ((self cormasModel
-		perform: nameEntitiesE asSymbol) select: [:c | c perform: methodName])
-		copy asOrderedCollection.
-	[theInterestingEntitiesE isEmpty]
-		whileFalse:
-			[setOfComponents := Set new.
+		perform: nameEntitiesE asSymbol)
+		select: [ :c | c perform: methodName ]) copy asOrderedCollection.
+	[ theInterestingEntitiesE isEmpty ]
+		whileFalse: [ setOfComponents := Set new.
 			seed := theInterestingEntitiesE first.
 			setOfComponents add: seed.
-			neighbours := seed neighbourhood select: [:v | v perform: methodName].
-			[neighbours isEmpty]
-				whileFalse:
-					[setOfComponents addAll: neighbours.
+			neighbours := seed neighbourhood
+				select: [ :v | v perform: methodName ].
+			[ neighbours isEmpty ]
+				whileFalse: [ setOfComponents addAll: neighbours.
 					newNeighbours := Set new.
 					neighbours
-						do:
-							[:v | 
+						do: [ :v | 
 							newNeighbours
 								addAll:
 									(v neighbourhood
 										select:
-											[:u | (u perform: methodName) and: [(setOfComponents includes: u) not]])].
-					neighbours := newNeighbours].
+											[ :u | (u perform: methodName) and: [ (setOfComponents includes: u) not ] ]) ].
+					neighbours := newNeighbours ].
 			setOfComponents size > 1
-				ifTrue:
-					[setOfComponents := setOfComponents asOrderedCollection.
+				ifTrue: [ setOfComponents := setOfComponents asOrderedCollection.
 					setOfComponents
 						remove: seed;
 						addFirst: seed.
-					self aggregate: setOfComponents].
-			setOfComponents do: [:c | theInterestingEntitiesE remove: c]]
+					self aggregate: setOfComponents ].
+			setOfComponents do: [ :c | theInterestingEntitiesE remove: c ] ]
 ]
 
 { #category : #'private - irregular polygons creation' }
@@ -939,23 +933,25 @@ CMSpaceModel >> eastCellHexa: k [
 { #category : #'landscape indices' }
 CMSpaceModel >> edgeDensity: aClass [
 	"return the data (a number) to be recorded"
-	
+
 	| size |
 	size := 0.
-	(self cormasModel perform: ('the' , aClass name asString , 's') asSymbol)
-		do: [:a | size := size + a surround size].
-	^size / self cormasModel theESE size
+	(self cormasModel
+		perform: (self cormasModel getterForEntityClass: aClass) asSymbol)
+		do: [ :a | size := size + a surround size ].
+	^ size / self cormasModel theESE size
 ]
 
 { #category : #'landscape indices' }
 CMSpaceModel >> edgeDensity: aClass totalArea: aNumber [
 	"this method is created for cases where the totalArea is not equal to the total size of the grid"
-	
+
 	| size |
 	size := 0.
-	(self cormasModel perform: ('the' , aClass name asString , 's') asSymbol)
-		do: [:a | size := size + a perimeter].
-	^size / aNumber
+	(self cormasModel
+		perform: (self cormasModel getterForEntityClass: aClass))
+		do: [ :a | size := size + a perimeter ].
+	^ size / aNumber
 ]
 
 { #category : #'private - regularCells - shapes' }
@@ -1017,40 +1013,38 @@ CMSpaceModel >> envReader: anObject [
 { #category : #'user interface' }
 CMSpaceModel >> envSpecStringFor: spatialEntityName [
 	"compute the description of the environnment (for the spaceInterface title)"
-	
+
 	| s nb |
 	s := (String new: 100) writeStream.
 	s
 		nextPutAll:
 			(self boundaries = #torroidal
-				ifTrue: ['Torroidal ']
-				ifFalse: ['Closed ']).
+				ifTrue: [ 'Torroidal ' ]
+				ifFalse: [ 'Closed ' ]).
 	(spatialEntityName = self cellClass name
-		and: [self gridCellShape ~= #irregular])
-		ifTrue:
-			[s
+		and: [ self gridCellShape ~= #irregular ])
+		ifTrue: [ s
 				print: self line;
 				nextPutAll: ' x ';
 				print: self column.
 			nb := self elementaryEntities size.
 			self line * self column > nb
-				ifTrue:
-					[s
+				ifTrue: [ s
 						nextPutAll: ' restricted to ';
-						print: nb].
+						print: nb ].
 			self nbNeighbours = #eight | (self nbNeighbours = 8)
-				ifTrue: [s nextPutAll: ' (8)'].
+				ifTrue: [ s nextPutAll: ' (8)' ].
 			self nbNeighbours = #six | (self nbNeighbours = 6)
-				ifTrue: [s nextPutAll: ' (6)'].
+				ifTrue: [ s nextPutAll: ' (6)' ].
 			self nbNeighbours = #four | (self nbNeighbours = 4)
-				ifTrue: [s nextPutAll: ' (4)']]
-		ifFalse:
-			[s
+				ifTrue: [ s nextPutAll: ' (4)' ] ]
+		ifFalse: [ s
 				print:
 					(self cormasModel
-						perform: ('the' , spatialEntityName asString , 's') asSymbol) size].
+						perform: (self cormasModel getterForEntityClass: spatialEntityName))
+						size ].
 	s nextPutAll: '  '.
-	^s contents
+	^ s contents
 ]
 
 { #category : #'landscape indices' }
@@ -1256,80 +1250,75 @@ CMSpaceModel >> fourconnexe [
 { #category : #'landscape indices' }
 CMSpaceModel >> fractalDimension: aClass [
 	| aCollection aggregates |
-	aggregates := self cormasModel perform: ('the' , aClass name asString , 's') asSymbol.
-	aCollection := aggregates collect: [ :a | Array with: a size ln with: (a perimeter / 4) ln ].
+	aggregates := self cormasModel
+		perform: (self cormasModel getterForEntityClass: aClass).
+	aCollection := aggregates
+		collect: [ :a | Array with: a size ln with: (a perimeter / 4) ln ].
 	^ ((Cormas linearRegression: aCollection) at: 2) * 2
 ]
 
 { #category : #'private - regular polygons' }
 CMSpaceModel >> getAggregatesFrom: baseEntity attribute: attributeName [
 	"Return a collection of sets of contiguous components holding the same attributeName value"
-	
+
 	| newCollection seed setOfComponents neighbours newNeighbours theLLEntities |
-	self boundaries = #closed ifFalse: [^self warningBoundaries].
+	self boundaries = #closed
+		ifFalse: [ ^ self warningBoundaries ].
 	newCollection := OrderedCollection new.
 	theLLEntities := ((self cormasModel
-		perform: ('the' , baseEntity name asString , 's') asSymbol)
-		select: [:c | (c perform: attributeName) isNil not]) copy
+		perform: (self cormasModel getterForEntityClass: baseEntity))
+		select: [ :c | (c perform: attributeName) isNil not ]) copy
 		asOrderedCollection.
-	[theLLEntities isEmpty]
-		whileFalse:
-			[setOfComponents := Set new.
+	[ theLLEntities isEmpty ]
+		whileFalse: [ setOfComponents := Set new.
 			seed := theLLEntities first.
 			setOfComponents add: seed.
 			neighbours := seed neighbourhood
-				select:
-					[:v | (v perform: attributeName) = (seed perform: attributeName)].
-			[neighbours isEmpty]
-				whileFalse:
-					[setOfComponents addAll: neighbours.
+				select: [ :v | (v perform: attributeName) = (seed perform: attributeName) ].
+			[ neighbours isEmpty ]
+				whileFalse: [ setOfComponents addAll: neighbours.
 					newNeighbours := Set new.
 					neighbours
-						do:
-							[:v | 
+						do: [ :v | 
 							newNeighbours
 								addAll:
 									(v neighbourhood
-										select:
-											[:u | 
+										select: [ :u | 
 											(u perform: attributeName) = (seed perform: attributeName)
-												and: [(setOfComponents includes: u) not]])].
-					neighbours := newNeighbours].
+												and: [ (setOfComponents includes: u) not ] ]) ].
+					neighbours := newNeighbours ].
 			newCollection add: setOfComponents.
-			setOfComponents do: [:c | theLLEntities remove: c]].
-	^newCollection
+			setOfComponents do: [ :c | theLLEntities remove: c ] ].
+	^ newCollection
 ]
 
 { #category : #'private - regular polygons' }
 CMSpaceModel >> getAggregatesFrom: baseEntity verifying: aBlock [
-	
 	| eeInstances set seed neighbours newNeighbours collec |
-	self boundaries = #closed ifFalse: [^self warningBoundaries].
+	self boundaries = #closed
+		ifFalse: [ ^ self warningBoundaries ].
 	eeInstances := ((self cormasModel
-		perform: ('the' , baseEntity name asString , 's') asSymbol)
-		select: [:c | aBlock value: c]) copy asOrderedCollection.
+		perform: (self cormasModel getterForEntityClass: baseEntity))
+		select: [ :c | aBlock value: c ]) copy asOrderedCollection.
 	collec := OrderedCollection new.	"collec est une collection de set (composants des agregats)"
-	[eeInstances isEmpty]
-		whileFalse:
-			[set := OrderedCollection new.
+	[ eeInstances isEmpty ]
+		whileFalse: [ set := OrderedCollection new.
 			seed := eeInstances first.
 			set add: seed.
-			neighbours := seed neighbourhood select: [:v | aBlock value: v].
-			[neighbours isEmpty]
-				whileFalse:
-					[set addAll: neighbours.
+			neighbours := seed neighbourhood select: [ :v | aBlock value: v ].
+			[ neighbours isEmpty ]
+				whileFalse: [ set addAll: neighbours.
 					newNeighbours := OrderedCollection new.
 					neighbours
-						do:
-							[:v | 
+						do: [ :v | 
 							newNeighbours
 								addAll:
 									(v neighbourhood
-										select: [:u | (aBlock value: u) and: [(set includes: u) not]])].
-					neighbours := newNeighbours].
-			set do: [:c | eeInstances remove: c].
-			collec add: set].
-	^collec
+										select: [ :u | (aBlock value: u) and: [ (set includes: u) not ] ]) ].
+					neighbours := newNeighbours ].
+			set do: [ :c | eeInstances remove: c ].
+			collec add: set ].
+	^ collec
 ]
 
 { #category : #'import - export' }
@@ -1707,7 +1696,6 @@ CMSpaceModel >> hexagonal [
 
 { #category : #'import - export' }
 CMSpaceModel >> importAggregateClass: class componentClass: cClass separator: aChar [
-	
 	| stream portableFilename ligne dataVector item id nbComponents collec aggregate |
 	portableFilename := Dialog
 		requestFileName: 'Name a file'
@@ -1715,112 +1703,92 @@ CMSpaceModel >> importAggregateClass: class componentClass: cClass separator: aC
 			((Cormas mapsPath: self cormasModelClass name)
 				construct: class name asString , '.agg').
 	portableFilename asFilename exists
-		ifFalse:
-			[^self cormas warn: portableFilename asString , ' is missing !!!'].
-	self boundaries = #closed ifFalse: [^self warningBoundaries].
+		ifFalse: [ ^ self cormas warn: portableFilename asString , ' is missing !!!' ].
+	self boundaries = #closed
+		ifFalse: [ ^ self warningBoundaries ].
 	(self spatialEntities isNil
-		or:
-			[self spatialEntities isEmpty
-				or:
-					[(self spatialEntities includesKey: cClass name) not
-						or: [(self spatialEntities at: cClass name) isEmpty]]])
-		ifTrue:
-			[self cormas warn: 'pb !!!'.
-			self halt].
+		or: [ self spatialEntities isEmpty
+				or: [ (self spatialEntities includesKey: cClass name) not
+						or: [ (self spatialEntities at: cClass name) isEmpty ] ] ])
+		ifTrue: [ self cormas warn: 'pb !!!'.
+			self halt ].
 	self resetCompoundSpatialEntity: class andTheirComponents: cClass.
 	stream := portableFilename asFilename readStream.	"On devine le format des lignes"
 	stream lineEndAuto.
-	[stream atEnd]
-		whileFalse:
-			[ligne := (stream upTo: Character cr) readStream.
+	[ stream atEnd ]
+		whileFalse: [ ligne := (stream upTo: Character cr) readStream.
 			dataVector := OrderedCollection new.
-			[ligne atEnd]
-				whileFalse:
-					[item := ligne upTo: aChar.
-					dataVector add: item asNumber].
+			[ ligne atEnd ]
+				whileFalse: [ item := ligne upTo: aChar.
+					dataVector add: item asNumber ].
 			ligne close.
 			id := dataVector first.
 			dataVector remove: id.
 			nbComponents := dataVector first.
 			dataVector remove: nbComponents.
 			dataVector size = nbComponents
-				ifFalse:
-					[self cormas warn: 'pb !!!'.
-					self halt]
-				ifTrue:
-					[collec := (self spatialEntities at: cClass name)
-						select: [:i | dataVector includes: i id].
+				ifFalse: [ self cormas warn: 'pb !!!'.
+					self halt ]
+				ifTrue: [ collec := (self spatialEntities at: cClass name)
+						select: [ :i | dataVector includes: i id ].
 					collec size = nbComponents
-						ifFalse:
-							[self cormas warn: 'pb !!!'.
-							self halt]
-						ifTrue:
-							[aggregate := class new: self.
+						ifFalse: [ self cormas warn: 'pb !!!'.
+							self halt ]
+						ifTrue: [ aggregate := class new: self.
 							aggregate addSilentlyComponents: collec.
-							(self spatialEntities at: class name) add: aggregate]]].
+							(self spatialEntities at: class name) add: aggregate ] ] ].
 	stream close.
 	self cormasModel
-		perform: ('the' , class name asString , 's:') asSymbol
+		perform: (self cormasModel getterForEntityClass: class)
 		with: (self spatialEntities at: class name).
 	self dispatchCompoundSpatialEntity: class
 ]
 
 { #category : #'import - export' }
 CMSpaceModel >> importAggregateClass: class componentClass: cClass separator: aChar filename: aStringOrFileName [
-	
 	| stream portableFilename ligne dataVector item id nbComponents collec aggregate |
 	aStringOrFileName isString
-		ifTrue:
-			[portableFilename := (Cormas mapsPath: self cormasModelClass name)
-				construct: aStringOrFileName]
-		ifFalse: [portableFilename := aStringOrFileName].
+		ifTrue: [ portableFilename := (Cormas mapsPath: self cormasModelClass name)
+				construct: aStringOrFileName ]
+		ifFalse: [ portableFilename := aStringOrFileName ].
 	portableFilename asFilename exists
-		ifFalse:
-			[^self cormas warn: portableFilename asString , ' is missing !!!'].
-	self boundaries = #closed ifFalse: [^self warningBoundaries].
+		ifFalse: [ ^ self cormas warn: portableFilename asString , ' is missing !!!' ].
+	self boundaries = #closed
+		ifFalse: [ ^ self warningBoundaries ].
 	(self spatialEntities isNil
-		or:
-			[self spatialEntities isEmpty
-				or:
-					[(self spatialEntities includesKey: cClass name) not
-						or: [(self spatialEntities at: cClass name) isEmpty]]])
-		ifTrue:
-			[self cormas warn: 'pb !!!'.
-			self halt].
+		or: [ self spatialEntities isEmpty
+				or: [ (self spatialEntities includesKey: cClass name) not
+						or: [ (self spatialEntities at: cClass name) isEmpty ] ] ])
+		ifTrue: [ self cormas warn: 'pb !!!'.
+			self halt ].
 	self resetCompoundSpatialEntity: class andTheirComponents: cClass.
 	stream := portableFilename asFilename readStream.	"On devine le format des lignes"
 	stream lineEndAuto.
-	[stream atEnd]
-		whileFalse:
-			[ligne := (stream upTo: Character cr) readStream.
+	[ stream atEnd ]
+		whileFalse: [ ligne := (stream upTo: Character cr) readStream.
 			dataVector := OrderedCollection new.
-			[ligne atEnd]
-				whileFalse:
-					[item := ligne upTo: aChar.
-					dataVector add: item asNumber].
+			[ ligne atEnd ]
+				whileFalse: [ item := ligne upTo: aChar.
+					dataVector add: item asNumber ].
 			ligne close.
 			id := dataVector first.
 			dataVector remove: id.
 			nbComponents := dataVector first.
 			dataVector remove: nbComponents.
 			dataVector size = nbComponents
-				ifFalse:
-					[self cormas warn: 'pb !!!'.
-					self halt]
-				ifTrue:
-					[collec := (self spatialEntities at: cClass name)
-						select: [:i | dataVector includes: i id].
+				ifFalse: [ self cormas warn: 'pb !!!'.
+					self halt ]
+				ifTrue: [ collec := (self spatialEntities at: cClass name)
+						select: [ :i | dataVector includes: i id ].
 					collec size = nbComponents
-						ifFalse:
-							[self cormas warn: 'pb !!!'.
-							self halt]
-						ifTrue:
-							[aggregate := class new: self.
+						ifFalse: [ self cormas warn: 'pb !!!'.
+							self halt ]
+						ifTrue: [ aggregate := class new: self.
 							aggregate addSilentlyComponents: collec.
-							(self spatialEntities at: class name) add: aggregate]]].
+							(self spatialEntities at: class name) add: aggregate ] ] ].
 	stream close.
 	self cormasModel
-		perform: ('the' , class name asString , 's:') asSymbol
+		perform: (self cormasModel setterForEntityClass: class)
 		with: (self spatialEntities at: class name).
 	self dispatchCompoundSpatialEntity: class
 ]
@@ -1948,7 +1916,7 @@ CMSpaceModel >> initEntitesSpatiales: aClass [
 	"Ca me parait inutile !!"
 	
 	"self cormasModel theEntities: aClass .  Returns a indexedSet of all the instances of aClass collected by cormasModel"
-	"	aggregatesCollection := 'the' , aClass name asString , 's'.
+	"	aggregatesCollection := self cormasModel getterForEntityClass: aClass.
 	self cormasModel class instVarNames detect: [:i | i = aggregatesCollection]
 		ifNone: [self halt].
 	self cormasModel perform: (aggregatesCollection , ':') asSymbol
@@ -2353,16 +2321,15 @@ CMSpaceModel >> lowerRightLocation [
 
 { #category : #'landscape indices' }
 CMSpaceModel >> meanCompactness: aClass [
-	
 	| sum aggregates |
 	aggregates := self cormasModel
-		perform: ('the' , aClass name asString , 's') asSymbol.
+		perform: (self cormasModel getterForEntityClass: aClass).
 	sum := aggregates
 		inject: 0
-		into: [:cumul :aggreg | cumul + aggreg updateCompactness].
-	^aggregates size = 0
-		ifTrue: [0]
-		ifFalse: [sum / aggregates size]
+		into: [ :cumul :aggreg | cumul + aggreg updateCompactness ].
+	^ aggregates size = 0
+		ifTrue: [ 0 ]
+		ifFalse: [ sum / aggregates size ]
 ]
 
 { #category : #'landscape indices' }
@@ -2371,7 +2338,7 @@ CMSpaceModel >> meanNearestNeighbourDistanceAggregate: aClass attribute: anAttri
 
 	| classes n sum collec distMin dist aggregates a b |
 	aggregates := self cormasModel
-		perform: ('the' , aClass name asString , 's') asSymbol.
+		perform: (self cormasModel getterForEntityClass: aClass).
 	classes := anAttribute isNil
 		ifFalse: [ (aggregates collect: [ :ag | ag perform: anAttribute ]) asSet ]
 		ifTrue: [ aggregates ].
@@ -2399,13 +2366,13 @@ CMSpaceModel >> meanNearestNeighbourDistanceAggregate: aClass attribute: anAttri
 { #category : #'landscape indices' }
 CMSpaceModel >> meanPatchSize: aClass [
 	"return the data (a number) to be recorded"
-	
+
 	| size aggregates |
 	aggregates := self cormasModel
-		perform: ('the' , aClass name asString , 's') asSymbol.
+		perform: (self cormasModel getterForEntityClass: aClass).
 	size := 0.
-	aggregates do: [:a | size := size + a components size].
-	^size / aggregates size
+	aggregates do: [ :a | size := size + a components size ].
+	^ size / aggregates size
 ]
 
 { #category : #'private - regular cells - instance creation' }
@@ -2467,11 +2434,11 @@ CMSpaceModel >> mergeCells: listOfCells [
 { #category : #'landscape indices' }
 CMSpaceModel >> nPatches: aClass [
 	"return the data (a number) to be recorded"
-	
+
 	| aggregates |
 	aggregates := self cormasModel
-		perform: ('the' , aClass name asString , 's') asSymbol.
-	^aggregates size
+		perform: (self cormasModel getterForEntityClass: aClass).
+	^ aggregates size
 ]
 
 { #category : #'landscape indices' }
@@ -2697,21 +2664,21 @@ CMSpaceModel >> parseSpatialEntitiesAttributeValues [
 { #category : #'landscape indices' }
 CMSpaceModel >> patchDensity: aClass [
 	"return the data (a number) to be recorded"
-	
+
 	| aggregates |
 	aggregates := self cormasModel
-		perform: ('the' , aClass name asString , 's') asSymbol.
-	^aggregates size / (self column * self line)
+		perform: (self cormasModel getterForEntityClass: aClass).
+	^ aggregates size / (self column * self line)
 ]
 
 { #category : #'landscape indices' }
 CMSpaceModel >> patchDensity: aClass totalArea: aNumber [
 	"this method is created for cases where the totalArea is not equal to the total size of the grid"
-	
+
 	| aggregates |
 	aggregates := self cormasModel
-		perform: ('the' , aClass name asString , 's') asSymbol.
-	^aggregates size / aNumber
+		perform: (self cormasModel getterForEntityClass: aClass).
+	^ aggregates size / aNumber
 ]
 
 { #category : #'private - notification' }
@@ -2763,7 +2730,7 @@ Then, poly of cell 1 = 354, prov_45 of cell 1 = 37..."
 						with: (wordList at: 2) asNumber
 						with: (wordList at: 3) asSymbol)]].
 	readingBlock valueNowOrOnUnwindDo: [stream close].	"Lecture des valeurs, 1 ligne <-> 1 entite; 1 colonne <-> 1 valeur pour attribut"
-	lesEntites := 'the' , class name asString , 's'.
+	lesEntites := self cormasModel getterForEntityClass: class.
 	stream := midFile readStream.
 	collec := self cormasModel perform: lesEntites asSymbol.
 	cpt := 0.
@@ -3744,26 +3711,29 @@ CMSpaceModel >> setFragmentedEntities: compoundEntity from: baseEntity attribute
 	"baseEntity = a Class name inheriting from <SpatialEntity>	
 		(can be <SpatialEntityCell> or <SpatialEntityAggregate> or <SpatialEntityNotConnex>) 
 	compoundEntity = a Class name inheriting from <SpatialEntityNotConnex>"
-	
+
 	| fragmentedEntity beInstances collec |
-	self boundaries = #closed ifFalse: [^self warningBoundaries].
-	self resetCompoundSpatialEntity: compoundEntity andTheirComponents:
-			baseEntity.
+	self boundaries = #closed
+		ifFalse: [ ^ self warningBoundaries ].
+	self
+		resetCompoundSpatialEntity: compoundEntity
+		andTheirComponents: baseEntity.
 	beInstances := (self cormasModel
-		perform: ('the' , baseEntity name asString , 's') asSymbol) copy
+		perform: (self cormasModel getterForEntityClass: baseEntity)) copy
 		asOrderedCollection.
-	[beInstances isEmpty]
-		whileFalse:
-			[collec := beInstances
-				select:
-					[:c | (beInstances first perform: attributeName) = (c perform: attributeName)].
+	[ beInstances isEmpty ]
+		whileFalse: [ collec := beInstances
+				select: [ :c | 
+					(beInstances first perform: attributeName)
+						= (c perform: attributeName) ].
 			beInstances removeAll: collec.
 			fragmentedEntity := compoundEntity new: self.
 			fragmentedEntity addSilentlyComponents: collec.
 			fragmentedEntity type: (collec first perform: attributeName).
-			(self spatialEntities at: compoundEntity name) add: fragmentedEntity].
+			(self spatialEntities at: compoundEntity name)
+				add: fragmentedEntity ].
 	self dispatchCompoundSpatialEntity: compoundEntity.
-	^self spatialEntities at: compoundEntity name
+	^ self spatialEntities at: compoundEntity name
 ]
 
 { #category : #'CSE (regular) - instance creation' }
@@ -3772,19 +3742,21 @@ CMSpaceModel >> setFragmentedEntities: compoundEntity from: baseEntity verifying
 		(can be <SpatialEntityCell> or <SpatialEntityAggregate> or <SpatialEntityNotConnex>) 
 	aBlock (example = [:cell | cell isTree] or [:aggregat | aggregat type = #forest] ) 
 	compoundEntity = a Class name inheriting from <SpatialEntityNotConnex>"
-	
+
 	| fragmentedEntity beInstances |
-	self boundaries = #closed ifFalse: [^self warningBoundaries].
-	self resetCompoundSpatialEntity: compoundEntity andTheirComponents:
-			baseEntity.
+	self boundaries = #closed
+		ifFalse: [ ^ self warningBoundaries ].
+	self
+		resetCompoundSpatialEntity: compoundEntity
+		andTheirComponents: baseEntity.
 	beInstances := ((self cormasModel
-		perform: ('the' , baseEntity name asString , 's') asSymbol)
-		select: [:c | aBlock value: c]) copy asOrderedCollection.
+		perform: (self cormasModel getterForEntityClass: baseEntity) asSymbol)
+		select: [ :c | aBlock value: c ]) copy asOrderedCollection.
 	fragmentedEntity := compoundEntity new: self.
 	fragmentedEntity addSilentlyComponents: beInstances.
 	(self spatialEntities at: compoundEntity name) add: fragmentedEntity.
 	self dispatchCompoundSpatialEntity: compoundEntity.
-	^self spatialEntities at: compoundEntity name
+	^ self spatialEntities at: compoundEntity name
 ]
 
 { #category : #'CSE (regular) - instance creation' }
@@ -4476,7 +4448,7 @@ CMSpaceModel >> voisinsPolygonesNoeuds: lesPolygones [
 	lesPolygones isEmpty
 		ifTrue: [ ^ self ].
 	allPolygones := self cormasModel
-		perform: ('the' , lesPolygones first class name asString , 's') asSymbol.
+		perform: (self cormasModel getterForEntityClass: lesPolygones first).
 	lesPolygones
 		do: [ :b | 
 			b neighbourhood isNil
@@ -4503,8 +4475,7 @@ CMSpaceModel >> voisinsPolygonesNoeuds: lesPolygones [
 										pPrec & pCour not
 											ifTrue: [ b neighbourhood add: c.
 												(b nodes keys includes: c)
-													ifFalse:
-														[ b nodes at: c put: OrderedCollection new ].
+													ifFalse: [ b nodes at: c put: OrderedCollection new ].
 												(b nodes at: c)
 													add:
 														(i = 2
@@ -4513,8 +4484,7 @@ CMSpaceModel >> voisinsPolygonesNoeuds: lesPolygones [
 										pPrec not & pCour
 											ifTrue: [ b neighbourhood add: c.
 												(b nodes keys includes: c)
-													ifFalse:
-														[ b nodes at: c put: OrderedCollection new ].
+													ifFalse: [ b nodes at: c put: OrderedCollection new ].
 												(b nodes at: c)
 													add:
 														(i = b outline size
@@ -4522,8 +4492,7 @@ CMSpaceModel >> voisinsPolygonesNoeuds: lesPolygones [
 															ifTrue: [ 1 ]) ].	"(b nodes at: c) add: i]."
 										pPrec := pCour ].
 									(b nodes keys includes: c)
-										ifTrue:
-											[ b nodes at: c put: (b nodes at: c) asSortedCollection ] ] ] ] ]
+										ifTrue: [ b nodes at: c put: (b nodes at: c) asSortedCollection ] ] ] ] ]
 ]
 
 { #category : #deprecated }
