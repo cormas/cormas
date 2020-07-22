@@ -3885,62 +3885,6 @@ Cormas >> confirm_IsAbstractClass: aClass [
 	^self confirm: text asText
 ]
 
-{ #category : #util }
-Cormas >> convertSourceTo2002: name [
-	"on copie le fichier model.st en model2001.st"
-	
-	| contents upgradeDictionary index stream oldVersion answer |
-	oldVersion := (Filename splitExtension: name) first , '2001.'
-		, (Filename splitExtension: name) last.
-	oldVersion asFilename exists
-		ifTrue:
-			[self
-				warn:
-					(UserMessage defaultString:
-							'Conversion already performed ! Just import it !' key:
-							#alreadyConverted).
-			^nil].
-	answer := Dialog
-		requestFileName:
-			(UserMessage defaultString: 'Your previous version will be renamed as : '
-				key: #previousVersion)
-		default: oldVersion
-		version: #new.
-	answer isEmpty ifTrue: [^nil].
-	name asFilename copyTo: answer asFilename.
-	stream := name asFilename readStream.	"On devine le format des lignes"
-	stream lineEndAuto.
-	contents := stream contents.
-	upgradeDictionary := Dictionary new.	"a completer en fonction de tous les changements de noms de methodes et de classes"	"attention a ne pas oublier le blanc en fin de string du nouveau nom sous 2002"
-	upgradeDictionary
-		at: 'SpatialEntity_Element' put: 'SpatialEntityElement ';
-		at: 'SpatialEntity_Aggregate' put: 'SpatialEntityAggregate ';
-		at: 'SpatialEntity_Partition' put: 'SpatialEntityAggregate ';
-		at: 'SpatialEntity_Set_notConnex' put: 'SpatialEntityNotConnex ';
-		at: 'SpatialEntity_CA' put: 'SpatialEntityCell ';
-		at: 'initCharts!' put: 'initData! ';
-		at: 'initLocalCharts' put: 'initData ';
-		at: 'initGlobalCharts' put: 'initData ';
-		at: 'updateCharts:' put: 'updateData: ';
-		at: 'updateLocalCharts:' put: 'updateData: ';
-		at: 'updateGlobalCharts:' put: 'updateData: ';
-		at: 'Cormas_Model' put: 'CormasModel '.
-	upgradeDictionary
-		keysAndValuesDo:
-			[:k :v | 
-			index := contents findString: k startingAt: 1.
-			[index ~= 0]
-				whileTrue:
-					[contents := contents
-						changeFrom: index
-						to: index + k size
-						with: v.
-					index := contents findString: k startingAt: index]].
-	stream := name asFilename writeStream.
-	stream nextPutAll: contents.
-	stream close
-]
-
 { #category : #version }
 Cormas >> convertToCormas2011 [
 	"Add tje _default parameters to the entity classes of the model"
@@ -4550,18 +4494,6 @@ Cormas >> entitiesListings [
 		do: [:d | d listing: (directory construct: d class name , '.list.txt')]
 ]
 
-{ #category : #changed }
-Cormas >> entryN [
-	
-	self halt
-]
-
-{ #category : #changed }
-Cormas >> entryV [
-	
-	^true
-]
-
 { #category : #aspects }
 Cormas >> eraseLinks [
 	
@@ -4574,20 +4506,6 @@ Cormas >> eraseLinks [
 Cormas >> eraseLinks: aBool [
 	
 	eraseLinks := aBool
-]
-
-{ #category : #changed }
-Cormas >> exitN [
-	
-	self halt.
-	^true
-]
-
-{ #category : #changed }
-Cormas >> exitV [
-	
-	self halt.
-	^true
 ]
 
 { #category : #'interface actions' }
@@ -6088,20 +6006,6 @@ Cormas >> removeModelAccessors: aName [
 			[self cormasModelClass removeSelector: ('allThe' , aName , 's') asSymbol]
 ]
 
-{ #category : #util }
-Cormas >> removeParentheses: aNom [
-	"inutile avec Cormas2000"
-	
-	| index unNom |
-	aNom isNil ifTrue: [^nil].
-	index := aNom findFirst: [:aChar | aChar = $(].
-	unNom := aNom
-		changeFrom: index - 1
-		to: aNom size
-		with: ''.
-	^unNom
-]
-
 { #category : #'model entities' }
 Cormas >> removePassiveEntityClass [
 	
@@ -6268,12 +6172,6 @@ Cormas >> replayStepForward [
 	"Replay a step forward using BOS file"
 self halt.
 	^ self simManager replayStepForward
-]
-
-{ #category : #'binary storage' }
-Cormas >> representBinaryOn: bos [
-	
-	self halt
 ]
 
 { #category : #'user messages' }
@@ -6797,34 +6695,6 @@ Cormas >> targetForHabitus: aHabitusName or: anotherHabitusName [
 		values: targets
 		lines: 5
 		cancel: [^self]
-]
-
-{ #category : #util }
-Cormas >> testParcelsRequired: fileNameSt [
-	
-	| stream line parcels |
-	parcels := OrderedCollection new.
-	stream := fileNameSt asFilename readStream.
-	[stream atEnd]
-		whileFalse:
-			[line := (stream upTo: Character cr) tokensBasedOn: Character space.
-			(line includes: 'subclass:')
-				ifTrue:
-					[line first = 'ExternalInterface' ifTrue: [parcels add: 'DLLCC' -> ''].
-					line first = 'DdemlClient' ifTrue: [parcels add: 'DDEML' -> '']]].
-	stream close.
-	Parcel setFileCachesTo: [Dictionary new].
-	Cursor wait
-		showWhile:
-			[parcels
-				do:
-					[:pname | 
-					Parcel
-						handleParcelSignalsDo:
-							[Parcel
-								ensureLoadedParcel: pname key
-								withVersion: pname value
-								for: nil]]]
 ]
 
 { #category : #'interface actions' }
