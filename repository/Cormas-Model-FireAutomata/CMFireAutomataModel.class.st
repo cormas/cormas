@@ -18,11 +18,11 @@ Class {
 	#superclass : #CMAbstractModel,
 	#instVars : [
 		'trees',
-		'theCMFireAutomataCells',
 		'numberOfFires',
 		'percentageOfTrees',
-		'theFiremans',
-		'numberOfFiremen'
+		'numberOfFiremen',
+		'theFiremen',
+		'theCells'
 	],
 	#classInstVars : [
 		'defaultInit'
@@ -88,7 +88,7 @@ CMFireAutomataModel class >> example1 [
 						ifFalse: [ e state == #ash
 								ifTrue: [ Color gray ]
 								ifFalse: [ Color black ] ] ] ];
-		size: 25) elementsOn: aModel theCMFireAutomataCells.
+		size: 25) elementsOn: aModel theCells.
 	v addAll: es.
 	RTGridLayout new
 		gapSize: 0;
@@ -120,8 +120,8 @@ CMFireAutomataModel class >> example10 [
 	"open interface"
 	((CMSimulationGrid initialize new)
 		on: aModel
-		withCells: aModel theCMFireAutomataCells
-		withSituatedEntities: aModel theCMFiremans) runAndVisualizeWithMenus goSlow
+		withCells: aModel theCells
+		withSituatedEntities: aModel theFiremen) runAndVisualizeWithMenus goSlow
 ]
 
 { #category : #examples }
@@ -134,7 +134,7 @@ CMFireAutomataModel class >> example2 [
 		dimensions: 80 -> 200;
 		activeControl: #step:;
 		initSimulation.
-	((CMSimulationGrid initialize new) on: aModel with: aModel theCMFireAutomataCells) runAndVisualize
+	((CMSimulationGrid initialize new) on: aModel with: aModel theCells) runAndVisualize
 ]
 
 { #category : #examples }
@@ -149,8 +149,8 @@ CMFireAutomataModel class >> example3 [
 		initSimulation.
 	((CMSimulationGrid initialize new)
 		on: aModel
-		withCells: aModel theCMFireAutomataCells
-		withSituatedEntities: aModel theCMFiremans) runAndVisualize
+		withCells: aModel theCells
+		withSituatedEntities: aModel theFiremen) runAndVisualize
 ]
 
 { #category : #examples }
@@ -169,8 +169,8 @@ CMFireAutomataModel class >> example4 [
 	"open interface"
 	((CMSimulationGrid initialize new)
 		on: aModel
-		withCells: aModel theCMFireAutomataCells
-		withSituatedEntities: aModel theCMFiremans) runAndVisualizeWithMenus
+		withCells: aModel theCells
+		withSituatedEntities: aModel theFiremen) runAndVisualizeWithMenus
 ]
 
 { #category : #examples }
@@ -195,8 +195,8 @@ CMFireAutomataModel class >> example5 [
 	"create view that control the model and enables visualisation of non dynamic charts"
 	(CMSimulationGrid new
 		on: aModel
-		withCells: aModel theCMFireAutomataCells
-		withSituatedEntities: aModel theCMFiremans) runAndVisualizeWithMenus
+		withCells: aModel theCells
+		withSituatedEntities: aModel theFiremen) runAndVisualizeWithMenus
 ]
 
 { #category : #examples }
@@ -292,8 +292,8 @@ CMFireAutomataModel class >> example9 [
 		initSimulation.
 	"open interface"
 	((CMSimulationGrid initialize new) on: aModel
-		withCells: aModel theCMFireAutomataCells
-		withSituatedEntities: aModel theCMFiremans) runAndVisualizeWithMenus goSlow
+		withCells: aModel theCells
+		withSituatedEntities: aModel theFiremen) runAndVisualizeWithMenus goSlow
 ]
 
 { #category : #description }
@@ -444,7 +444,7 @@ CMFireAutomataModel >> howToRunIt [
 
 { #category : #init }
 CMFireAutomataModel >> init53 [
-self theCMFireAutomataCells do:#init53 
+self theCells do:#init53 
 
 ]
 
@@ -455,7 +455,7 @@ CMFireAutomataModel >> init53WithFire [
 		columns: 80
 		neighbourhood: 4
 		closed: false.
-		self theCMFireAutomataCells do: #init53.
+		self theCells do: #init53.
 	self pickCell state: #fire
 ]
 
@@ -466,12 +466,12 @@ CMFireAutomataModel >> init58 [
 		columns: 80
 		neighbourhood: 4
 		closed: false.
-		self theCMFireAutomataCells do: #init58
+		self theCells do: #init58
 ]
 
 { #category : #init }
 CMFireAutomataModel >> init58WithFire [
-	self theCMFireAutomataCells do: #init58.
+	self theCells do: #init58.
 	self pickCell ifNotNil: [ :c | c state: #fire ]
 ]
 
@@ -483,7 +483,7 @@ CMFireAutomataModel >> init58WithFireWithFiremen [
 		columns: 80
 		neighbourhood: 4
 		closed: false.
-	self theCMFireAutomataCells do: #init58FireWithFiremen.
+	self theCells do: #init58FireWithFiremen.
 	1 to: self numberOfFires do: [ :i | 
 		aCell := self pickCell.
 		aCell = nil
@@ -494,7 +494,7 @@ CMFireAutomataModel >> init58WithFireWithFiremen [
 
 { #category : #init }
 CMFireAutomataModel >> init58WithMultipleFires [
-	self theCMFireAutomataCells do: #init58WithMultipleFires.
+	self theCells do: #init58WithMultipleFires.
 	1 to: self numberOfFires do: [ :i | self pickCell state: #fire ]
 ]
 
@@ -514,7 +514,7 @@ CMFireAutomataModel >> initSmallWithFireWithFiremen [
 		columns: 40
 		neighbourhood: 4
 		closed: false.
-	self theCMFireAutomataCells do: ##init58.
+	self theCells do: ##init58.
 	1 to: self numberOfFires do: [ :i | 
 		aCell := self pickCell.
 		aCell = nil
@@ -531,7 +531,7 @@ CMFireAutomataModel >> initWithFiremen [
 		columns: 80
 		neighbourhood: 4
 		closed: false.
-	self theCMFireAutomataCells do: [ :each | each initWith: 60 ].
+	self theCells do: [ :each | each initWith: 60 ].
 	1 to: self numberOfFires do: [ :i | 
 		aCell := self pickCell.
 		aCell state: #fire ].
@@ -540,7 +540,7 @@ CMFireAutomataModel >> initWithFiremen [
 
 { #category : #'programmable scenario' }
 CMFireAutomataModel >> initWithProgrammableScenario [
-self theCMFireAutomataCells do: [:each | each initWith: percentageOfTrees ].
+self theCells do: [:each | each initWith: percentageOfTrees ].
 	1 to: self numberOfFires do: [ :i | self pickCell state: #fire ].
 	self initAgents
 ]
@@ -549,19 +549,19 @@ self theCMFireAutomataCells do: [:each | each initWith: percentageOfTrees ].
 CMFireAutomataModel >> nbAshes [
 	"Return number of cells in ash state"
 	<probe>
-	^ self theCMFireAutomataCells count: [ :c | c state = #ash ]
+	^ self theCells count: [ :c | c state = #ash ]
 ]
 
 { #category : #probes }
 CMFireAutomataModel >> nbFires [
 <probe>
-	^ self theCMFireAutomataCells count: [ :c | c state = #fire ]
+	^ self theCells count: [ :c | c state = #fire ]
 ]
 
 { #category : #probes }
 CMFireAutomataModel >> nbTrees [
 <probe>
-	^ self theCMFireAutomataCells count: [ :c | c state = #tree ]
+	^ self theCells count: [ :c | c state = #tree ]
 ]
 
 { #category : #accessing }
@@ -605,7 +605,7 @@ CMFireAutomataModel >> step: t [
 "To be completed"
 
 	self stepSynchronously: t.
-	self theCMFiremans do: [:fm | fm step].
+	self theFiremen do: [:fm | fm step].
 ]
 
 { #category : #control }
@@ -618,7 +618,7 @@ CMFireAutomataModel >> stepGrowingFiremen: t [
 "To be completed"
 
 	self stepSynchronously: t.
-	self theCMFiremans do: [:fm | fm step. fm agsize: fm agsize + 1].
+	self theFiremen do: [:fm | fm step. fm agsize: fm agsize + 1].
 ]
 
 { #category : #control }
@@ -627,35 +627,37 @@ CMFireAutomataModel >> stepSynchronously: t [
 ]
 
 { #category : #accessing }
-CMFireAutomataModel >> theCMFireAutomataCells [
+CMFireAutomataModel >> theCells [
 	"Returns a collection of all the instances of the sub classes collected by cormasModel.
 	!! This method was automatically generated by Cormas !!"
 
-	^ theCMFireAutomataCells ifNil: [ theCMFireAutomataCells := OrderedCollection new ]
+
+^theCells ifNil:[theCells := IndexedSet new]
 ]
 
 { #category : #accessing }
-CMFireAutomataModel >> theCMFireAutomataCells: aCollection [
-	theCMFireAutomataCells := aCollection
-]
-
-{ #category : #accessing }
-CMFireAutomataModel >> theCMFiremans [
-	"Returns a collection of all the instances of the sub classes collected by cormasModel.
-	This method was automatically generated by Cormas.
-	!! BECAREFUL, You should not modify this method as it can be generated again when changing the value (Sensitivity Analysis for ex) !!"
-
-
-^theFiremans ifNil:[theFiremans := IndexedSet new]
-]
-
-{ #category : #accessing }
-CMFireAutomataModel >> theCMFiremans: aNewCollection [
+CMFireAutomataModel >> theCells: aNewCollection [
 	"Set a new collection for theXXXs attribute.
-	This method was automatically generated by Cormas.
-	!! BECAREFUL, You should not modify this method as it can be generated again when changing the value (Sensitivity Analysis for ex) !!"
+	!! This method was automatically generated by Cormas !!"
 
-	theFiremans := aNewCollection
+	theCells := aNewCollection
+]
+
+{ #category : #accessing }
+CMFireAutomataModel >> theFiremen [
+	"Returns a collection of all the instances of the sub classes collected by cormasModel.
+	!! This method was automatically generated by Cormas !!"
+
+
+^theFiremen ifNil:[theFiremen := IndexedSet new]
+]
+
+{ #category : #accessing }
+CMFireAutomataModel >> theFiremen: aNewCollection [
+	"Set a new collection for theXXXs attribute.
+	!! This method was automatically generated by Cormas !!"
+
+	theFiremen := aNewCollection
 ]
 
 { #category : #deprecated }
@@ -674,5 +676,5 @@ CMFireAutomataModel >> trees: aCollection [
 CMFireAutomataModel >> treesData [
 	"return the data to be plotted with the trees chart"
 
-	^ (self theCMFireAutomataCells count: [ :c | c state = #tree ]) / self theCMFireAutomataCells size
+	^ (self theCells count: [ :c | c state = #tree ]) / self theCells size
 ]
