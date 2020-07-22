@@ -1006,7 +1006,7 @@ CMSpaceModel >> envReader [
 	" Answer a <CMEnvFileReader> used to read and parse a .env file "
 
 	^ envReader
-		ifNil: [ envReader := CMEnvFileReader forSpaceModel: self ]
+		ifNil: [ envReader := CMEnvFileReader new cormasModel: cormasModel; spaceModel: self ]
 ]
 
 { #category : #accessing }
