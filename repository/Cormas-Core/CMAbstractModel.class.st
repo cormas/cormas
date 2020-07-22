@@ -571,30 +571,6 @@ CMAbstractModel class >> descriptionTextFromFirstDate: firstDate lastDate: lastD
 	^txt
 ]
 
-{ #category : #'description - primitives' }
-CMAbstractModel class >> getAuthors [
-	
-	| authors lesAuteurs lesEMails |
-	authors := OrderedCollection new.
-	lesAuteurs := Cormas textAsList: self authors.
-	lesEMails := Cormas textAsList: self emails.
-	lesAuteurs size > lesEMails size
-		ifTrue:
-			[lesEMails size + 1
-				to: lesAuteurs size
-				do: [:i | lesEMails add: ' ']].
-	lesAuteurs
-		with: lesEMails
-		do:
-			[:a :e | 
-			authors
-				add:
-					((CMAuthor new)
-						name: a;
-						email: e)].
-	^authors
-]
-
 { #category : #compiling }
 CMAbstractModel class >> getterForEntityClass: aClass [
 	"efficiently create the getter selector for the entity class aClass (avoid concatenation).
@@ -602,20 +578,8 @@ CMAbstractModel class >> getterForEntityClass: aClass [
 
 	self basicNew getterForEntityClass: Object
 	"
-	
-	| className getter |
-	className := aClass name.
-	getter := String new: className size + 4.
-	getter replaceFrom: 1 to: 3 with: 'the' startingAt: 1.
-	getter
-		replaceFrom: 4
-		to: getter size - 1
-		with: className
-		startingAt: 1.
-	getter
-		at: getter size
-		put: $s.
-	^getter asSymbol
+
+	^ ('the' , aClass shortName pluralize capitalized) asSymbol
 ]
 
 { #category : #testing }
@@ -1103,20 +1067,6 @@ CMAbstractModel class >> setCormasAndVwVersion [
 ]
 
 { #category : #'description - primitives' }
-CMAbstractModel class >> setDescriptionFirstDate: firstDate authors: list1 emails: list2 comments: additionalText [
-	
-	self setDescriptionFor: 'creationDate' withText: firstDate.
-	self
-		setDescriptionFor: 'authors'
-		withText: (list1 fold: [:a :b | a , '\' , b]) withCRs.
-	self
-		setDescriptionFor: 'emails'
-		withText: (list2 fold: [:a :b | a , '\' , b]) withCRs.
-	self setDescriptionFor: 'comments' withText: additionalText.
-	self addClassComment
-]
-
-{ #category : #'description - primitives' }
 CMAbstractModel class >> setDescriptionFor: method withText: text [
 	"Creates  a method for a CormasModel subclass from the text"
 	
@@ -1161,20 +1111,6 @@ CMAbstractModel class >> setterForEntityClass: aClass [
 		at: getter size
 		put: $:.
 	^getter asSymbol
-]
-
-{ #category : #'+ accessing' }
-CMAbstractModel class >> shortName [
-	"simplify the accessors in the cormas class models by removing the 
-	in CMModelNameModel an entitie is theEntitys and not theCMModelNameModelEntitys"
-
-	| myPackageName modelName oneEntityClass |
-	myPackageName := self package name.
-	modelName := (myPackageName splitOn: '-') last.	"'Conway'"
-	oneEntityClass := self allEntityClasses asOrderedCollection.
-	^oneEntityClass
-		collect:
-			[ :each | each name copyFrom: modelName size + 3 to: each name size ]
 ]
 
 { #category : #'- default value' }

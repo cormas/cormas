@@ -25,12 +25,12 @@ Class {
 	#name : #CMDiffuseModel,
 	#superclass : #CMAbstractModel,
 	#instVars : [
-		'theCMDiffuseCells',
-		'theCMDiffuseAnts',
 		'activeCells',
 		'newActiveCells',
 		'noMoreActiveCells',
-		'antNumber'
+		'antNumber',
+		'theAnts',
+		'theCells'
 	],
 	#category : #'Cormas-Model-Diffuse'
 }
@@ -175,7 +175,7 @@ CMDiffuseModel >> antNumber: aNumber [
 CMDiffuseModel >> init [
 	self spaceModel loadEnvironmentFromFile: '40x40.env' withPov: #pov.
 	self initOptimize.
-	self theCMDiffuseCells do: #initEmpty.
+	self theCells do: #initEmpty.
 	self setRandomlyLocatedAgents: CMDiffuseAnt n: self antNumber
 ]
 
@@ -215,7 +215,7 @@ CMDiffuseModel >> step: t [
 			a diffuse ].
 	self updateActiveCells.
 	self activeCells do: [ :a | a updateState ].
-	self theCMDiffuseAnts do: [ :a | a step ].
+	self theAnts do: [ :a | a step ].
 	self updateActiveCells
 ]
 
@@ -227,28 +227,28 @@ CMDiffuseModel >> stepSynchronously: t [
 			a diffuse ].
 	self updateActiveCells.
 	self activeCells do: [ :a | a updateState ].
-	self theCMDiffuseAnts do: [ :a | a step ].
+	self theAnts do: [ :a | a step ].
 	self updateActiveCells
 ]
 
 { #category : #accessing }
-CMDiffuseModel >> theCMDiffuseAnts [
-	^ theCMDiffuseAnts ifNil: [ theCMDiffuseAnts := OrderedCollection new ]
+CMDiffuseModel >> theAnts [
+	^ theAnts ifNil: [ theAnts := OrderedCollection new ]
 ]
 
 { #category : #accessing }
-CMDiffuseModel >> theCMDiffuseAnts: aCollection [
-	theCMDiffuseAnts := aCollection
+CMDiffuseModel >> theAnts: aCollection [
+	theAnts := aCollection
 ]
 
 { #category : #accessing }
-CMDiffuseModel >> theCMDiffuseCells [
-	^ theCMDiffuseCells ifNil: [ theCMDiffuseCells := OrderedCollection new ]
+CMDiffuseModel >> theCells [
+	^ theCells ifNil: [ theCells := OrderedCollection new ]
 ]
 
 { #category : #accessing }
-CMDiffuseModel >> theCMDiffuseCells: aCollection [
-	theCMDiffuseCells := aCollection
+CMDiffuseModel >> theCells: aCollection [
+	theCells := aCollection
 ]
 
 { #category : #optimize }
