@@ -211,7 +211,6 @@ Ex: Cormas readMatrix: 'D:\vw7.6\cormas\Models\Ecec\data\test.csv' sep: ';'   "
 
 	|  arrayOfRows subCollection matrix nbColumns |
 
-	self flag:#shouldBeRevised.
 	arrayOfRows := (NeoCSVReader on: fileName asFileReference readStream)
 		separator: aSepChar;
 		upToEnd.
