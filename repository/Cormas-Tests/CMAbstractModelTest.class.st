@@ -318,14 +318,6 @@ CMAbstractModelTest >> testSelectCellsOfLine [
 ]
 
 { #category : #tests }
-CMAbstractModelTest >> testShortName [
-	"simplify the accessors in the cormas class models by removing the 
-	in CMModelNameModel an entitie is theEntitys and not theCMModelNameModelEntitys
-	An other method will create the entity"
-	self assert: (CMConwayModel shortName ) equals: #('Cell') asOrderedCollection
-]
-
-{ #category : #tests }
 CMAbstractModelTest >> testShortestDistanceToCellsVerifying [
 	| model |
 	model := CormasModelForTest
@@ -345,7 +337,7 @@ CMAbstractModelTest >> testShortestDistanceToCellsVerifying [
 CMAbstractModelTest >> testSpacialClasses [
 	self
 		assert: CormasModelForTest spatialClasses
-		equals: (Set with: CMCellForTest)
+		equals: (Set with: CMCellForTest with: CMTestsCellForTest)
 ]
 
 { #category : #'tests-accessing-entities' }

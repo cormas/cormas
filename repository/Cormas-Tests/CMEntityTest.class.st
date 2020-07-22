@@ -40,3 +40,9 @@ CMEntityTest >> testModelClass [
 		assert: CMCellForTest modelClass
 		identicalTo: CormasModelForTest
 ]
+
+{ #category : #tests }
+CMEntityTest >> testShortName [
+	self assert: CMCellForTest shortName equals: 'CellForTest'.
+	self assert: CMTestsCellForTest shortName equals: 'CellForTest'
+]

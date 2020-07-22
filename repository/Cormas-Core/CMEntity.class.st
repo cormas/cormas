@@ -1512,6 +1512,21 @@ colorOfProbe_aSymbol
 		notifying: nil
 ]
 
+{ #category : #accessing }
+CMEntity class >> shortName [
+	"Answers a short name without prefixes ('CM' and the model name)"
+
+	^ {'CM'.
+	((self package name substrings: '-')
+		ifNotEmpty: #last
+		ifEmpty: [ '' ])}
+		inject: self name
+		into: [ :shortName :prefix | 
+			(prefix asRegex matchesPrefix: shortName)
+				ifTrue: [ shortName allButFirst: prefix size ]
+				ifFalse: [ shortName ] ]
+]
+
 { #category : #'- accessing - methods & classes' }
 CMEntity class >> superClassesInSameEnvironmentUntil: aSuperClass [
 	"Purpose: returns the list of super classes of the receiver that share the same environment up to aSuperClass
