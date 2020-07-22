@@ -34,7 +34,7 @@ CMEnvFileReader class >> example1 [
 
 	| envFileRef cmModel |
 
-	cmModel := (CormasModelForTest initialize; 	new)
+	cmModel := (CMModelForTest initialize; 	new)
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;

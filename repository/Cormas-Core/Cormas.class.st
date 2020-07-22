@@ -100,9 +100,13 @@ Cormas class >> aboutCormas [
 	| text dialog width |
 	text := Cormas systemInformationString withCRs.
 	width := 0.
-	text linesDo: [ :l | width := width max: (Smalltalk ui theme textFont widthOfStringOrText: l) ].
+	text
+		linesDo: [ :l | 
+			width := width
+				max: (Smalltalk ui theme textFont widthOfStringOrText: l) ].
 	dialog := LongMessageDialogWindow new entryText: text.
-	dialog iconMorph image: #pharoIcon asIcon.
+	dialog iconMorph image:
+		(self iconNamed: #pharoIcon).
 	dialog title: 'About Cormas'.
 	dialog open.
 	dialog textMorph
@@ -431,12 +435,8 @@ Cormas class >> construireOpaqueImageAvec: uneImage [
 
 { #category : #version }
 Cormas class >> contributors [
-	^ 'Thank you to the following contributors: \' , String cr , Cormas developerNames
-]
-
-{ #category : #version }
-Cormas class >> cormasName [
-	^ 'cormasMVC2014'
+	^ 'Thank you to the following contributors: \' , String cr
+		, self developerNames
 ]
 
 { #category : #'+ utilities - files' }
@@ -471,40 +471,6 @@ Cormas class >> current: aCormas [
 	Used by the initialize during cormas initialisation"
 	
 	current := aCormas
-]
-
-{ #category : #version }
-Cormas class >> currentVersion [
-	^ 'Cormas 2014.3' , String cr
-]
-
-{ #category : #version }
-Cormas class >> dateAsArray [
-	"Answer an array (6) with current date. 
-	Example: #(2010 6 24 8 31 54) . 
-	Cormas dateAsArray"
-	
-	| day array |
-	day := Time dateAndTimeNow first day
-		- Time dateAndTimeNow first firstDayOfMonth + 1.
-	array := Array new: 6.
-	array
-		at: 1
-		put: Time dateAndTimeNow first year.
-	array
-		at: 2
-		put: Time dateAndTimeNow first monthIndex.
-	array at: 3 put: day.
-	array
-		at: 4
-		put: (Time dateAndTimeNow at: 2) hours.
-	array
-		at: 5
-		put: (Time dateAndTimeNow at: 2) minutes.
-	array
-		at: 6
-		put: (Time dateAndTimeNow at: 2) seconds.
-	^array
 ]
 
 { #category : #distributed }
@@ -719,30 +685,6 @@ Cormas class >> entities [
 				#style: #pixelLarge))))
 ]
 
-{ #category : #'util_export' }
-Cormas class >> export [
-	"Export Cormas. 
-The cormas version is updated.
-ST files (kernel.st, VisualLauncher...) are save on disk.
-A parcel is generated "
-	"update version name and comments"
-	
-	self
-		setDescriptionFor: 'kernelFileName'
-		withText: 'Kernel-v.' , self versionAsString.
-	self updateVersion.
-	Notice
-		show: 'Saving Cormas as ST files...'
-		while: [self saveAsST].
-	Notice
-		show: 'Saving Cormas as Parcel...'
-		while:
-			[self
-				saveParcelFromPackage:
-					(Registry containingPackageForNameSpace: self environment)]	"parcels := Parcel parcelsForClass: self.
-	parcels ifNotNil: [parcels do: [:parcel | parcel saveParcelDialogFor: nil]]"
-]
-
 { #category : #'+ utilities - code management' }
 Cormas class >> findSelector: selector in: aClass [
 
@@ -946,12 +888,6 @@ Cormas class >> kernelClassNames [
 ]
 
 { #category : #version }
-Cormas class >> kernelFileName [
-	
-	^'Kernel-v.2014.6.23 - .st'
-]
-
-{ #category : #version }
 Cormas class >> licenseString [
 	^ self licenseStringTemplate format: (Array with: Date today year asString)
 ]
@@ -962,7 +898,7 @@ Cormas class >> licenseStringTemplate [
 	
 Licensed under the MIT License.
 
-Copyright (c) 1996-{1} CIRAD - Green Research Unit, and Cormas Contributors
+Copyright (c) 1996-{1} CIRAD - Green Research Unit, and CORMAS Contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the "Software"), to deal in the Software
@@ -2306,21 +2242,6 @@ Cormas class >> separator: aSeparator [
 	DataSaver_Asci separator: aSeparator
 ]
 
-{ #category : #version }
-Cormas class >> setDescriptionFor: method withText: text [
-	"Creates  a method for a CormasModel subclass from the text"
-	
-	| textWithoutQuote |
-	textWithoutQuote := text copyReplaceAll: #($') with: #($").	"embedded quotes get doubled"
-	self class
-		compile:
-			method ,
-					'
-^ ''' , textWithoutQuote , '''	'
-		classified: 'version'
-		notifying: nil
-]
-
 { #category : #'util_export' }
 Cormas class >> silentlySaveParcel: aParcel [
 	"Save aParcel into model's directory. Erase previous version"
@@ -2844,34 +2765,6 @@ Cormas class >> updateFile: t1 dataCollection: t2 separator: t3 [
 	^self
 ]
 
-{ #category : #version }
-Cormas class >> updateName [
-	"	update the Cormas name with new date"
-	
-	self class
-		compile:
-			'cormasName\	^ ''' withCRs , 'cormasMVC'
-				, Time dateAndTimeNow first year printString , ''''
-		classified: 'version'
-		notifying: nil.
-	^self
-]
-
-{ #category : #version }
-Cormas class >> updateVersion [
-	"Create the Cormas 'version' method. Example:
-version
-	^ #(2010 6 24 8 31 54)   
-Cormas updateVersion"
-	
-	self class
-		compile: 'version\	^ ' withCRs , self dateAsArray printString
-		classified: 'version'
-		notifying: nil.
-	self updateName.
-	self updateComments
-]
-
 { #category : #'+ utilities - string' }
 Cormas class >> upperCaseFirstChar: aString [
 	"Purpose: Converts the first character of of a string into uppercase
@@ -2956,32 +2849,6 @@ Example: Cormas variance: #( 1 2 3)		=> 0.666667  "
 	moy := self average: aCollectionOfNumbers.
 	^ ((aCollectionOfNumbers inject: 0 into: [ :subTotal :next | subTotal + (next - moy) squared ])
 		/ aCollectionOfNumbers size) asFloat
-]
-
-{ #category : #version }
-Cormas class >> version [
-	
-	^#(2014 6 23 11 51 45)
-]
-
-{ #category : #version }
-Cormas class >> versionAsString [
-	
-	^self versionAsString: self version
-]
-
-{ #category : #version }
-Cormas class >> versionAsString: aDateCollection [
-	"  Cormas versionAsString:#(2010 6 24 8 31 54)  -> '2010.6.24 '  "
-	
-	| text |
-	text := ''.
-	text := text , (aDateCollection at: 1) printString , '.'.
-	text := text , (aDateCollection at: 2) printString , '.'.
-	text := text , (aDateCollection at: 3) printString.	", ' - ' "	"text := text , (aDateCollection at: 4) printString , ':'.
-	text := text , (aDateCollection at: 5) printString , ':'.
-	text := text , (aDateCollection at: 6) printString."
-	^text
 ]
 
 { #category : #'+ utilities - files' }
@@ -4018,62 +3885,6 @@ Cormas >> confirm_IsAbstractClass: aClass [
 	^self confirm: text asText
 ]
 
-{ #category : #util }
-Cormas >> convertSourceTo2002: name [
-	"on copie le fichier model.st en model2001.st"
-	
-	| contents upgradeDictionary index stream oldVersion answer |
-	oldVersion := (Filename splitExtension: name) first , '2001.'
-		, (Filename splitExtension: name) last.
-	oldVersion asFilename exists
-		ifTrue:
-			[self
-				warn:
-					(UserMessage defaultString:
-							'Conversion already performed ! Just import it !' key:
-							#alreadyConverted).
-			^nil].
-	answer := Dialog
-		requestFileName:
-			(UserMessage defaultString: 'Your previous version will be renamed as : '
-				key: #previousVersion)
-		default: oldVersion
-		version: #new.
-	answer isEmpty ifTrue: [^nil].
-	name asFilename copyTo: answer asFilename.
-	stream := name asFilename readStream.	"On devine le format des lignes"
-	stream lineEndAuto.
-	contents := stream contents.
-	upgradeDictionary := Dictionary new.	"a completer en fonction de tous les changements de noms de methodes et de classes"	"attention a ne pas oublier le blanc en fin de string du nouveau nom sous 2002"
-	upgradeDictionary
-		at: 'SpatialEntity_Element' put: 'SpatialEntityElement ';
-		at: 'SpatialEntity_Aggregate' put: 'SpatialEntityAggregate ';
-		at: 'SpatialEntity_Partition' put: 'SpatialEntityAggregate ';
-		at: 'SpatialEntity_Set_notConnex' put: 'SpatialEntityNotConnex ';
-		at: 'SpatialEntity_CA' put: 'SpatialEntityCell ';
-		at: 'initCharts!' put: 'initData! ';
-		at: 'initLocalCharts' put: 'initData ';
-		at: 'initGlobalCharts' put: 'initData ';
-		at: 'updateCharts:' put: 'updateData: ';
-		at: 'updateLocalCharts:' put: 'updateData: ';
-		at: 'updateGlobalCharts:' put: 'updateData: ';
-		at: 'Cormas_Model' put: 'CormasModel '.
-	upgradeDictionary
-		keysAndValuesDo:
-			[:k :v | 
-			index := contents findString: k startingAt: 1.
-			[index ~= 0]
-				whileTrue:
-					[contents := contents
-						changeFrom: index
-						to: index + k size
-						with: v.
-					index := contents findString: k startingAt: index]].
-	stream := name asFilename writeStream.
-	stream nextPutAll: contents.
-	stream close
-]
-
 { #category : #version }
 Cormas >> convertToCormas2011 [
 	"Add tje _default parameters to the entity classes of the model"
@@ -4683,18 +4494,6 @@ Cormas >> entitiesListings [
 		do: [:d | d listing: (directory construct: d class name , '.list.txt')]
 ]
 
-{ #category : #changed }
-Cormas >> entryN [
-	
-	self halt
-]
-
-{ #category : #changed }
-Cormas >> entryV [
-	
-	^true
-]
-
 { #category : #aspects }
 Cormas >> eraseLinks [
 	
@@ -4707,20 +4506,6 @@ Cormas >> eraseLinks [
 Cormas >> eraseLinks: aBool [
 	
 	eraseLinks := aBool
-]
-
-{ #category : #changed }
-Cormas >> exitN [
-	
-	self halt.
-	^true
-]
-
-{ #category : #changed }
-Cormas >> exitV [
-	
-	self halt.
-	^true
 ]
 
 { #category : #'interface actions' }
@@ -6003,37 +5788,6 @@ Cormas >> openedSpatialsGrids [
 	^self cormasModel openedSpatialsGrids
 ]
 
-{ #category : #'model saving&loading' }
-Cormas >> prepareSavingAs: extensionFile [
-	"Prepare the exportation of the model as ST file or Parcel, according to extensionFile. The user can choose the file name and also the version of the model as a consequence.
-Return a filename or nil.
-extensionFile = <String>  ex: '.st' or '.pcl' "
-	
-	| fileName defaultFileName |
-	(self cormasModelClass version = 'v-0'
-		or: [self cormasModelClass version isNil])
-		ifTrue:
-			[defaultFileName := (self class modelPath: self cormasModelClass name)
-				construct: self cormasModelClass name asString , extensionFile]
-		ifFalse:
-			[defaultFileName := (self class modelPath: self cormasModelClass name)
-				construct: self cormasModelClass version.
-			defaultFileName := ((Cormas removeExtensionOf: defaultFileName) asString
-				, extensionFile) asFilename].
-	fileName := Dialog
-		requestNewFileName:
-			(UserMessage defaultString: 'Save as' key: #saveas) asString
-		default: defaultFileName.
-	fileName = '' ifTrue: [^nil].
-	self setModelVersionEqualTo: fileName asFilename.
-	self cormasModelClass
-		setDescriptionFor: 'lastUpdate'
-		withText: Date today printString.
-	self cormasModelClass updateComments.
-	self updateGUI.
-	^fileName asFilename
-]
-
 { #category : #accessing }
 Cormas >> process [
 	
@@ -6252,20 +6006,6 @@ Cormas >> removeModelAccessors: aName [
 			[self cormasModelClass removeSelector: ('allThe' , aName , 's') asSymbol]
 ]
 
-{ #category : #util }
-Cormas >> removeParentheses: aNom [
-	"inutile avec Cormas2000"
-	
-	| index unNom |
-	aNom isNil ifTrue: [^nil].
-	index := aNom findFirst: [:aChar | aChar = $(].
-	unNom := aNom
-		changeFrom: index - 1
-		to: aNom size
-		with: ''.
-	^unNom
-]
-
 { #category : #'model entities' }
 Cormas >> removePassiveEntityClass [
 	
@@ -6432,12 +6172,6 @@ Cormas >> replayStepForward [
 	"Replay a step forward using BOS file"
 self halt.
 	^ self simManager replayStepForward
-]
-
-{ #category : #'binary storage' }
-Cormas >> representBinaryOn: bos [
-	
-	self halt
 ]
 
 { #category : #'user messages' }
@@ -6961,34 +6695,6 @@ Cormas >> targetForHabitus: aHabitusName or: anotherHabitusName [
 		values: targets
 		lines: 5
 		cancel: [^self]
-]
-
-{ #category : #util }
-Cormas >> testParcelsRequired: fileNameSt [
-	
-	| stream line parcels |
-	parcels := OrderedCollection new.
-	stream := fileNameSt asFilename readStream.
-	[stream atEnd]
-		whileFalse:
-			[line := (stream upTo: Character cr) tokensBasedOn: Character space.
-			(line includes: 'subclass:')
-				ifTrue:
-					[line first = 'ExternalInterface' ifTrue: [parcels add: 'DLLCC' -> ''].
-					line first = 'DdemlClient' ifTrue: [parcels add: 'DDEML' -> '']]].
-	stream close.
-	Parcel setFileCachesTo: [Dictionary new].
-	Cursor wait
-		showWhile:
-			[parcels
-				do:
-					[:pname | 
-					Parcel
-						handleParcelSignalsDo:
-							[Parcel
-								ensureLoadedParcel: pname key
-								withVersion: pname value
-								for: nil]]]
 ]
 
 { #category : #'interface actions' }

@@ -571,30 +571,6 @@ CMAbstractModel class >> descriptionTextFromFirstDate: firstDate lastDate: lastD
 	^txt
 ]
 
-{ #category : #'description - primitives' }
-CMAbstractModel class >> getAuthors [
-	
-	| authors lesAuteurs lesEMails |
-	authors := OrderedCollection new.
-	lesAuteurs := Cormas textAsList: self authors.
-	lesEMails := Cormas textAsList: self emails.
-	lesAuteurs size > lesEMails size
-		ifTrue:
-			[lesEMails size + 1
-				to: lesAuteurs size
-				do: [:i | lesEMails add: ' ']].
-	lesAuteurs
-		with: lesEMails
-		do:
-			[:a :e | 
-			authors
-				add:
-					((CMAuthor new)
-						name: a;
-						email: e)].
-	^authors
-]
-
 { #category : #compiling }
 CMAbstractModel class >> getterForEntityClass: aClass [
 	"efficiently create the getter selector for the entity class aClass (avoid concatenation).
@@ -1088,20 +1064,6 @@ CMAbstractModel class >> setCormasAndVwVersion [
 		classified: 'description'
 		notifying: nil.
 	self setDescriptionFor: 'vwCompatibleVersion' withText: SystemVersionName	"SystemUtils.SystemVersionName     -> '7.6'"	"SystemUtils version   ->  'VisualWorks¬Æ NonCommercial, 7.6 of lundi 3 mars 2008'"
-]
-
-{ #category : #'description - primitives' }
-CMAbstractModel class >> setDescriptionFirstDate: firstDate authors: list1 emails: list2 comments: additionalText [
-	
-	self setDescriptionFor: 'creationDate' withText: firstDate.
-	self
-		setDescriptionFor: 'authors'
-		withText: (list1 fold: [:a :b | a , '\' , b]) withCRs.
-	self
-		setDescriptionFor: 'emails'
-		withText: (list2 fold: [:a :b | a , '\' , b]) withCRs.
-	self setDescriptionFor: 'comments' withText: additionalText.
-	self addClassComment
 ]
 
 { #category : #'description - primitives' }
