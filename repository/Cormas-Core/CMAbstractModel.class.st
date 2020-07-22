@@ -415,24 +415,30 @@ CMAbstractModel class >> createDefaultMethods [
 ]
 
 { #category : #compiling }
+CMAbstractModel class >> createInstancesAccessorsForAllEntityClasses [
+	self allEntityClasses
+		do: [ :class | self createInstancesAccessorsForClass: class ]
+]
+
+{ #category : #compiling }
 CMAbstractModel class >> createInstancesAccessorsForClass: aClass [
-	
 	| pop |
 	pop := self getterForEntityClass: aClass.
 	aClass isAbstract
-		ifTrue:
-			[self
+		ifTrue: [ self
 				compile:
-					(pop ,
+					(pop
+						,
 							'\	"Returns a collection of all the instances of aClass (and sub classes) collected by cormasModel.\'
-						, Cormas automaticCommentString , ' "\\   ^self allTheEntities: '
-						, aClass name asString) withCRs
+						, Cormas automaticCommentString
+						, ' "\\   ^self allTheEntities: ' , aClass name asString)
+						withCRs
 				classified: 'accessing'
-				notifying: nil]
-		ifFalse:
-			[self addInstVarName: pop.
+				notifying: nil ]
+		ifFalse: [ (self hasInstVarNamed: pop)
+				ifFalse: [ self addInstVarNamed: pop ].
 			self createReaderAccessor: aClass.
-			self createSetterAccessor: aClass]
+			self createSetterAccessor: aClass ]
 ]
 
 { #category : #compiling }
@@ -1155,6 +1161,20 @@ CMAbstractModel class >> setterForEntityClass: aClass [
 		at: getter size
 		put: $:.
 	^getter asSymbol
+]
+
+{ #category : #'+ accessing' }
+CMAbstractModel class >> shortName [
+	"simplify the accessors in the cormas class models by removing the 
+	in CMModelNameModel an entitie is theEntitys and not theCMModelNameModelEntitys"
+
+	| myPackageName modelName oneEntityClass |
+	myPackageName := self package name.
+	modelName := (myPackageName splitOn: '-') last.	"'Conway'"
+	oneEntityClass := self allEntityClasses asOrderedCollection.
+	^oneEntityClass
+		collect:
+			[ :each | each name copyFrom: modelName size + 3 to: each name size ]
 ]
 
 { #category : #'- default value' }
