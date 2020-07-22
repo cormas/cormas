@@ -31,8 +31,8 @@ CMAbstractModelTest >> setUp [
 
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testCentralCell [
-	| model |
-	model := (CormasModelForTest
+	| m |
+	m := (CormasModelForTest
 		initialize;
 		new)
 		activeInit: #initRandom;
@@ -44,8 +44,8 @@ CMAbstractModelTest >> testCentralCell [
 			closed: true;
 		initSimulation.
 	self
-		assert: model centralCell
-		identicalTo: (model selectCellsOfColumn: 2) second
+		assert: m centralCell
+		identicalTo: (m selectCellsOfColumn: 2) second
 ]
 
 { #category : #tests }
@@ -58,8 +58,8 @@ CMAbstractModelTest >> testCreateGridXYNeighborHoodClosed [
 
 { #category : #tests }
 CMAbstractModelTest >> testDominance [
-	| model |
-	model := (CormasModelForTest
+	| m |
+	m := (CormasModelForTest
 		initialize;
 		new)
 		activeInit: #initRandom;
@@ -70,14 +70,14 @@ CMAbstractModelTest >> testDominance [
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
-	self assert: (model dominance: #state) < 1.0.
+	self assert: (m dominance: #state) < 1.0.
 
 ]
 
 { #category : #tests }
 CMAbstractModelTest >> testDominance1 [
-	| model |
-	model := (CormasModelForTest
+	| m |
+	m := (CormasModelForTest
 		initialize;
 		new)
 		activeInit: #initAlive;
@@ -88,13 +88,13 @@ CMAbstractModelTest >> testDominance1 [
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
-	self assert: (model dominance: #state) < 1.0
+	self assert: (m dominance: #state) < 1.0
 ]
 
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testLowerLeftCell [
-	| model |
-	model := (CormasModelForTest
+	| m |
+	m := (CormasModelForTest
 		initialize;
 		new)
 		activeInit: #initRandom;
@@ -106,14 +106,14 @@ CMAbstractModelTest >> testLowerLeftCell [
 			closed: true;
 		initSimulation.
 	self
-		assert: model lowerLeftCell
-		identicalTo: (model selectCellsOfColumn: 1) third
+		assert: m lowerLeftCell
+		identicalTo: (m selectCellsOfColumn: 1) third
 ]
 
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testLowerRightCell [
-	| model |
-	model := (CormasModelForTest
+	| m |
+	m := (CormasModelForTest
 		initialize;
 		new)
 		activeInit: #initRandom;
@@ -125,8 +125,8 @@ CMAbstractModelTest >> testLowerRightCell [
 			closed: true;
 		initSimulation.
 	self
-		assert: model lowerRightCell
-		identicalTo: (model selectCellsOfColumn: 3) third
+		assert: m lowerRightCell
+		identicalTo: (m selectCellsOfColumn: 3) third
 ]
 
 { #category : #tests }
@@ -151,8 +151,8 @@ CMAbstractModelTest >> testPickCell [
 
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testPickCellConstrainedBy [
-	| model |
-	model := (CormasModelForTest
+	| m |
+	m := (CormasModelForTest
 		initialize;
 		new)
 		activeInit: #initRandom;
@@ -163,13 +163,13 @@ CMAbstractModelTest >> testPickCellConstrainedBy [
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
-	model centralCell state: #alive.
+	m centralCell state: #alive.
 	self
-		assert: (model pickCellConstrainedBy: [ :cell | cell state = #alive ]) state
+		assert: (m pickCellConstrainedBy: [ :cell | cell state = #alive ]) state
 		equals: #alive.
-	model centralCell state: #dead.
+	m centralCell state: #dead.
 	self
-		assert: (model pickCellConstrainedBy: [ :cell | cell state = #dead ]) state
+		assert: (m pickCellConstrainedBy: [ :cell | cell state = #dead ]) state
 		equals: #dead
 ]
 
@@ -252,8 +252,8 @@ CMAbstractModelTest >> testProbes [
 
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testSelectCellsBetweenLine1Line2AndColumn1Column2 [
-	| model cells |
-	model := (CormasModelForTest
+	| m cells |
+	m := (CormasModelForTest
 		initialize;
 		new)
 		activeInit: #initAlive;
@@ -264,17 +264,22 @@ CMAbstractModelTest >> testSelectCellsBetweenLine1Line2AndColumn1Column2 [
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
-	cells := model
+	cells := m
 		selectCellsBetweenLine1: 13
 		line2: 15
 		andColumn1: 6
 		column2: 8.
+	self assert: cells size equals: 9.
+	cells
+		do: [ :cell | 
+			self assert: (cell numCol between: 6 and: 8).
+			self assert: (cell numLine between: 13 and: 15) ]
 ]
 
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
-	| model cells |
-	model := (CormasModelForTest
+	| m cells |
+	m := (CormasModelForTest
 		initialize;
 		new)
 		activeInit: #initAlive;
@@ -285,9 +290,9 @@ CMAbstractModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
 			neighbourhood: 4
 			closed: true;
 		initSimulation.
-	cells := model
-		selectCellsInRectangleOriginCell: model upperLeftCell
-		cornerCell: model centralCell.
+	cells := m
+		selectCellsInRectangleOriginCell: m upperLeftCell
+		cornerCell: m centralCell.
 	self assert: cells size equals: 15.
 	cells
 		do: [ :cell | 
@@ -319,12 +324,12 @@ CMAbstractModelTest >> testSelectCellsOfLine [
 
 { #category : #tests }
 CMAbstractModelTest >> testShortestDistanceToCellsVerifying [
-	| model |
-	model := CormasModelForTest
+	| m |
+	m := CormasModelForTest
 		initialize;
 		new.
-	model initSimulation.
-	(model allTheEntities: CMCellForTest)
+	m initSimulation.
+	(m allTheEntities: CMCellForTest)
 		do: [ :cell | 
 			self
 				assert:
@@ -353,8 +358,8 @@ CMAbstractModelTest >> testTheAgents [
 
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testUpperLeftCell [
-	| model |
-	model := (CormasModelForTest
+	| m |
+	m := (CormasModelForTest
 		initialize;
 		new)
 		activeInit: #initRandom;
@@ -366,14 +371,14 @@ CMAbstractModelTest >> testUpperLeftCell [
 			closed: true;
 		initSimulation.
 	self
-		assert: model upperLeftCell
-		identicalTo: (model selectCellsOfColumn: 1) first
+		assert: m upperLeftCell
+		identicalTo: (m selectCellsOfColumn: 1) first
 ]
 
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testUpperRightCell [
-	| model |
-	model := (CormasModelForTest
+	| m |
+	m := (CormasModelForTest
 		initialize;
 		new)
 		activeInit: #initRandom;
@@ -385,6 +390,6 @@ CMAbstractModelTest >> testUpperRightCell [
 			closed: true;
 		initSimulation.
 	self
-		assert: model upperRightCell
-		identicalTo: (model selectCellsOfColumn: 3) first
+		assert: m upperRightCell
+		identicalTo: (m selectCellsOfColumn: 3) first
 ]
