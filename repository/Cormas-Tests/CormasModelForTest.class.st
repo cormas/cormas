@@ -2,8 +2,8 @@ Class {
 	#name : #CormasModelForTest,
 	#superclass : #CMAbstractModel,
 	#instVars : [
-		'cells',
-		'agents'
+		'theAgentLocationForTests',
+		'theCellForTests'
 	],
 	#category : #'Cormas-Tests-Model'
 }
@@ -15,17 +15,17 @@ CormasModelForTest >> init [
 
 { #category : #initialization }
 CormasModelForTest >> initAlive [
-self theCMCellForTests do: #initAlive
+self theCellForTests do: #initAlive
 ]
 
 { #category : #initialization }
 CormasModelForTest >> initDead [
-	self theCMCellForTests do: #initDead
+	self theCellForTests do: #initDead
 ]
 
 { #category : #initialization }
 CormasModelForTest >> initRandom [
-	self theCMCellForTests do: #initRandom
+	self theCellForTests do: #initRandom
 ]
 
 { #category : #probes }
@@ -57,11 +57,11 @@ CormasModelForTest >> numDeads [
 ]
 
 { #category : #accessing }
-CormasModelForTest >> theCMAgentLocationForTests [
-	^ agents ifNil: [ agents := IndexedSet new ]
+CormasModelForTest >> theAgentLocationForTests [
+	^ theAgentLocationForTests ifNil: [ theAgentLocationForTests := IndexedSet new ]
 ]
 
 { #category : #accessing }
-CormasModelForTest >> theCMCellForTests [
-	^ cells ifNil: [ cells := OrderedCollection new ]
+CormasModelForTest >> theCellForTests [
+	^ theCellForTests ifNil: [ theCellForTests := OrderedCollection new ]
 ]

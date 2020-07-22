@@ -602,20 +602,8 @@ CMAbstractModel class >> getterForEntityClass: aClass [
 
 	self basicNew getterForEntityClass: Object
 	"
-	
-	| className getter |
-	className := aClass name.
-	getter := String new: className size + 4.
-	getter replaceFrom: 1 to: 3 with: 'the' startingAt: 1.
-	getter
-		replaceFrom: 4
-		to: getter size - 1
-		with: className
-		startingAt: 1.
-	getter
-		at: getter size
-		put: $s.
-	^getter asSymbol
+
+	^ ('the' , aClass shortName pluralize capitalized) asSymbol
 ]
 
 { #category : #testing }
@@ -1161,20 +1149,6 @@ CMAbstractModel class >> setterForEntityClass: aClass [
 		at: getter size
 		put: $:.
 	^getter asSymbol
-]
-
-{ #category : #'+ accessing' }
-CMAbstractModel class >> shortName [
-	"simplify the accessors in the cormas class models by removing the 
-	in CMModelNameModel an entitie is theEntitys and not theCMModelNameModelEntitys"
-
-	| myPackageName modelName oneEntityClass |
-	myPackageName := self package name.
-	modelName := (myPackageName splitOn: '-') last.	"'Conway'"
-	oneEntityClass := self allEntityClasses asOrderedCollection.
-	^oneEntityClass
-		collect:
-			[ :each | each name copyFrom: modelName size + 3 to: each name size ]
 ]
 
 { #category : #'- default value' }
