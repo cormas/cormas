@@ -14,7 +14,7 @@ Class {
 		'manipulationActionArguments',
 		'backgroundFillColor'
 	],
-	#category : 'Cormas-Core-Space'
+	#category : #'Cormas-Core-Space'
 }
 
 { #category : #accessing }
@@ -474,32 +474,26 @@ SpaceView >> delimiterColor: aColor [
 
 { #category : #click }
 SpaceView >> detectSpatialEntityImageIncluding22: aPoint [
-	
 	| collec |
 	collec := self model cormasModel
-		perform: ('the' , self activeSpatialEntity name asString , 's') asSymbol.
-	^collec
-		detect:
-			[:p | 
-			self
-				image: (self getImageForEntity: p)
-				includes: aPoint]
-		ifNone: []
+		perform:
+			(self model cormasModel getterForEntityClass: self activeSpatialEntity)
+				asSymbol.
+	^ collec
+		detect: [ :p | self image: (self getImageForEntity: p) includes: aPoint ]
+		ifNone: [  ]
 ]
 
 { #category : #click }
 SpaceView >> detectSpatialEntityImageIncluding: aPoint [
-	
 	| collec |
 	collec := self model cormasModel
-		perform: ('the' , self activeSpatialEntity name asString , 's') asSymbol.
-	^collec
+		perform:
+			(self model cormasModel getterForEntityClass: self activeSpatialEntity).
+	^ collec
 		detect:
-			[:p | 
-			self
-				image: (self getImageForEntity: p)
-				includes: aPoint]
-		ifNone: []
+			[ :p | self image: (self getImageForEntity: p) includes: aPoint ]
+		ifNone: [  ]
 ]
 
 { #category : #displaying }
