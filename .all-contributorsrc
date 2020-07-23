@@ -46,16 +46,6 @@
       ]
     },
     {
-      "login": "npapoylias",
-      "name": "npapoylias",
-      "avatar_url": "https://avatars1.githubusercontent.com/u/8402525?v=4",
-      "profile": "https://github.com/npapoylias",
-      "contributions": [
-        "code",
-        "test"
-      ]
-    },
-    {
       "login": "cdrick65",
       "name": "Cédrick Béler",
       "avatar_url": "https://avatars0.githubusercontent.com/u/4181440?v=4",
@@ -71,6 +61,16 @@
       "profile": "https://github.com/nbecu",
       contributions": [
         "code"
+      ]
+    },
+    {
+      "login": "npapoylias",
+      "name": "npapoylias",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/8402525?v=4",
+      "profile": "https://github.com/npapoylias",
+      "contributions": [
+        "code",
+        "test"
       ]
     },
     {
