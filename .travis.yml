@@ -10,7 +10,6 @@ language: smalltalk
 os:
   - linux
 smalltalk:
-  - Pharo64-7.0
   - Pharo64-8.0
 
 # prepare the machine before any code
