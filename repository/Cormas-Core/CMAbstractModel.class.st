@@ -1099,7 +1099,7 @@ CMAbstractModel class >> setterForEntityClass: aClass [
 	self setterForEntityClass: CMEntity
 	"
 
-	^ ((self getterForEntityClass: aClass) , ':') asSymbol
+	^ (self getterForEntityClass: aClass) , ':'
 ]
 
 { #category : #'- default value' }
