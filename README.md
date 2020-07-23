@@ -18,14 +18,14 @@
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
-This is an ongoing effort to port CORMAS to [Pharo ecosystem](http://www.pharo.org/).
 
-Current stable version of CORMAS is based on VisualWorks 7.6 and still can be found on: http://cormas.cirad.fr/indexeng.htm
+This is an ongoing effort to port CORMAS to [Pharo ecosystem](http://www.pharo.org/). Current stable version of CORMAS is based on VisualWorks 7.6 and still can be found on: http://cormas.cirad.fr/indexeng.htm
 
 Some documentation (to be cleaned and reorganized) about Cormas is available on the Wiki here:
 https://github.com/cormas/documentation
 
 If you want to contribute to CORMAS please have a look to the [contributing guide](https://github.com/cormas/cormas/blob/master/CONTRIBUTING.md).
+Join us on the cormas-dev mailing-list: http://groups.google.com/group/cormas-dev
 
 ## How to install Cormas
 
@@ -92,10 +92,6 @@ curl https://get.pharo.org | bash
 		  (Delay forSeconds: 2) wait. ex retry ]. 
   Smalltalk snapshot: true andQuit: true"
 ```
-
-## Where to discuss about CORMAS development
-
-Join us on the cormas-dev mailing-list: http://groups.google.com/group/cormas-dev
 
 ## Contributors ✨
 
