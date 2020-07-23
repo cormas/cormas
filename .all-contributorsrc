@@ -44,6 +44,15 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "brun0",
+      "name": "Bruno Bonté",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/444953?v=4",
+      "profile": "https://github.com/brun0",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
