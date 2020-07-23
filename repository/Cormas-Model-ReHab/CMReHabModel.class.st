@@ -828,7 +828,7 @@ CMReHabModel >> initAgents_Autonomous [
 	"self strategy_ParkManager: 2." "integer from 1 (default) to nb subclasses Strategy_ParkManager (2 in this version)"
 
 	self createFamiliesFromDistributionMembers.
-	self theFamilys
+	self theFamilies
 		do:
 			[:f |
 			f zones: self theZones.
@@ -914,7 +914,7 @@ CMReHabModel >> run: t [
 	| newBirds |
 	self birdsNesting.
 	t > 1 ifTrue: [self parkManager decideAccess].
-	self theFamilys do: [:f | f decideHarvestersLocations; sendMembersHarvesting].
+	self theFamilies do: [:f | f decideHarvestersLocations; sendMembersHarvesting].
 	self theZones do: [:aZone | aZone allocateHarvests].
 	newBirds := Set new.
 	self theBirds do: [:aBird | newBirds addAll: aBird reproduce].
@@ -922,7 +922,7 @@ CMReHabModel >> run: t [
 	self birdNewborns: (self birdNewborns + newBirds size).
 	self theZones do: [:aZone | aZone renewBiomass].
 	self thePlantHarvesters do: [:ph | ph leave].
-	self theFamilys do: [:h | h updateHarvest].
+	self theFamilies do: [:h | h updateHarvest].
 	self birdsMigrating.
 	t > 1 ifTrue: [self theZones do: [:z | z access: true]]
 ]
