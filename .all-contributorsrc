@@ -53,6 +53,24 @@
       "contributions": [
         "code",
         "test"
+       ]
+    },
+    {
+      "login": "cdrick65",
+      "name": "Cédrick Béler",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/4181440?v=4",
+      "profile": "http://symbios.io",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "nbecu",
+      "name": "nbecu",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/7630183?v=4",
+      "profile": "https://github.com/nbecu",
+      "contributions": [
+        "code"
       ]
     }
   ],
