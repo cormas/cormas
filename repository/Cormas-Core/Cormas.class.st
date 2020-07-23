@@ -3879,7 +3879,7 @@ Cormas >> confirm_IsAbstractClass: aClass [
 		, self cormasModelClass name , ' will define an attribut called ' asText.
 	text := text
 		,
-			(('the' , aClass name , 's') asText
+			((CMAbstractModel getterForEntityClass: aClass) asText
 				emphasizeAllWith: #color -> ColorValue red) asText.
 	text := text , ').' asText.
 	^self confirm: text asText
@@ -5991,19 +5991,18 @@ Cormas >> removeEntityClassType: aType [
 
 { #category : #'model entities' }
 Cormas >> removeModelAccessors: aName [
-	
 	| pop |
-	pop := 'the' , aName , 's'.
+	pop := self cormasModelClass getterForEntityClass: aName.
 	(self cormasModelClass instVarNames includes: pop)
-		ifTrue: [self cormasModelClass removeInstVarName: pop].
+		ifTrue: [ self cormasModelClass removeInstVarName: pop ].
 	(self cormasModelClass selectors includes: pop asSymbol)
-		ifTrue: [self cormasModelClass removeSelector: pop asSymbol].
+		ifTrue: [ self cormasModelClass removeSelector: pop asSymbol ].
 	(self cormasModelClass selectors includes: (pop , ':') asSymbol)
-		ifTrue: [self cormasModelClass removeSelector: (pop , ':') asSymbol].
+		ifTrue: [ self cormasModelClass removeSelector: (pop , ':') asSymbol ].
 	(self cormasModelClass selectors
 		includes: ('allThe' , aName , 's') asSymbol)
-		ifTrue:
-			[self cormasModelClass removeSelector: ('allThe' , aName , 's') asSymbol]
+		ifTrue: [ self cormasModelClass
+				removeSelector: ('allThe' , aName , 's') asSymbol ]
 ]
 
 { #category : #'model entities' }
@@ -6050,38 +6049,38 @@ Cormas >> renameClass: aClass [
 
 { #category : #'model entities' }
 Cormas >> renameEntityClass: aClass entitiesList: listSymbol [
-	
 	| newName oldName result |
 	"get the new name"
 	oldName := aClass name.
 	result := self renameClass: aClass.
-	result isNil ifTrue: [^nil].
+	result isNil
+		ifTrue: [ ^ nil ].
 	newName := result name.
-	newName isEmpty ifTrue: [^nil].	"Change attribut name at the level of CormasModel (ex: theCells by theLandUnits)"
+	newName isEmpty
+		ifTrue: [ ^ nil ].	"Change attribut name at the level of CormasModel (ex: theCells by theLandUnits)"
 	(self alert_ChangeAccessors: oldName by: newName)
-		ifTrue:
-			[self cormasModelClass
-				renameAttribute: 'the' , oldName , 's'
-				by: 'the' , newName , 's'.	"Change accessors name at the level of CormasModel (ex: theCells by theLandUnits)"
+		ifTrue: [ self cormasModelClass
+				renameAttribute: (self cormasModelClass getterForEntityClass: oldName) asString
+				by: (self cormasModelClass getterForEntityClass: newName) asString.	"Change accessors name at the level of CormasModel (ex: theCells by theLandUnits)"
 			self cormasModelClass
-				renameSelector: 'the' , oldName , 's'
-				by: 'the' , newName , 's'
+				renameSelector: (self cormasModelClass getterForEntityClass: oldName) asString
+				by: (self cormasModelClass getterForEntityClass: newName) asString
 				inputParametersNumber: 0.
 			self cormasModelClass
-				renameSelector: 'the' , oldName , 's:'
-				by: 'the' , newName , 's:'
-				inputParametersNumber: 1].	"change the lists (ex: listSymbol = #listSpatialEntities)"
+				renameSelector: (self cormasModelClass setterForEntityClass: oldName) asString
+				by: (self cormasModelClass setterForEntityClass: newName) asString
+				inputParametersNumber: 1 ].	"change the lists (ex: listSymbol = #listSpatialEntities)"
 	(self perform: listSymbol) list add: newName.
 	(self perform: listSymbol) list remove: oldName.
 	(self perform: listSymbol) selectionIndex: 0.
 	listSymbol = #listPassiveEntities
-		ifTrue: [self listEntitesPassivesChanged].
-	listSymbol = #listSocialEntities ifTrue: [self listAgentsChanged].
+		ifTrue: [ self listEntitesPassivesChanged ].
+	listSymbol = #listSocialEntities
+		ifTrue: [ self listAgentsChanged ].
 	listSymbol = #listSpatialEntities
-		ifTrue:
-			[self listEntitesSpatialesChanged.
-			self warnCormasModelThat: oldName changeTo: aClass].
-	^aClass
+		ifTrue: [ self listEntitesSpatialesChanged.
+			self warnCormasModelThat: oldName changeTo: aClass ].
+	^ aClass
 ]
 
 { #category : #'model entities' }
@@ -6096,15 +6095,15 @@ Cormas >> renameEntityClass: aClass type: aType [
 	(self alert_ChangeAccessors: oldName by: newName)
 		ifTrue:
 			[self cormasModelClass
-				renameAttribute: 'the' , oldName , 's'
-				by: 'the' , newName , 's'.
+				renameAttribute: (self cormasModelClass getterForEntityClass: oldName) asString
+				by: (self cormasModelClass getterForEntityClass: newName) asString.
 			self cormasModelClass
-				renameSelector: 'the' , oldName , 's'
-				by: 'the' , newName , 's'
+				renameSelector: (self cormasModelClass getterForEntityClass: oldName) asString
+				by: (self cormasModelClass getterForEntityClass: newName) asString
 				inputParametersNumber: 0.
 			self cormasModelClass
-				renameSelector: 'the' , oldName , 's:'
-				by: 'the' , newName , 's:'
+				renameSelector: (self cormasModelClass setterForEntityClass: oldName) asString
+				by: (self cormasModelClass setterForEntityClass: newName) asString
 				inputParametersNumber: 1].
 	(self perform: ('list' , aType , 'Entities') asSymbol)
 		list: (self getSortedListEntityClassType: aType).
@@ -6859,31 +6858,24 @@ Cormas >> warn: aString [
 
 { #category : #'model entities' }
 Cormas >> warnCormasModelThat: oldName changeTo: newClass [
-	
 	| entities |
 	(newClass inheritsFrom: CMSpatialEntity)
-		ifTrue:
-			["spaceModel"
+		ifTrue: [ "spaceModel"
 			self spaceModel
-				ifNotNil:
-					[:sm | 
-					entities := sm spatialEntities
-						at: oldName
-						ifAbsent: [nil].
-					entities isNil ifTrue: [^nil].
-					sm spatialEntities
-						at: newClass name
-						put: entities.
+				ifNotNil: [ :sm | 
+					entities := sm spatialEntities at: oldName ifAbsent: [ nil ].
+					entities isNil
+						ifTrue: [ ^ nil ].
+					sm spatialEntities at: newClass name put: entities.
 					sm spatialEntities removeKey: oldName.
 					sm activeSpatialEntity = oldName asSymbol
-						ifTrue: [sm activeSpatialEntity: newClass name]].	"cormasModel"
+						ifTrue: [ sm activeSpatialEntity: newClass name ] ].	"cormasModel"
 			(newClass inheritsFrom: CMSpatialEntityElement)
-				ifTrue: [self cormasModel theESE: entities].
+				ifTrue: [ self cormasModel theESE: entities ].
 			(newClass inheritsFrom: CMSpatialEntityAggregate)
-				ifTrue:
-					[self cormasModel
-						perform: ('the' , newClass name asString , 's:') asSymbol
-						with: entities]].
+				ifTrue: [ self cormasModel
+						perform: (self cormasModel setterForEntityClass: newClass)
+						with: entities ] ].
 	self alert_SaveModel
 ]
 

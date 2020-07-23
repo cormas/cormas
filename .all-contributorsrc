@@ -1,0 +1,83 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "tomooda",
+      "name": "Tomohiro Oda",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/836308?v=4",
+      "profile": "http://tomostavern.blogspot.jp/",
+      "contributions": [
+        "code",
+        "test"
+      ]
+    },
+    {
+      "login": "ElCep",
+      "name": "Etienne DELAY",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1777267?v=4",
+      "profile": "http://elcep.legtux.org/",
+      "contributions": [
+        "code",
+        "test"
+      ]
+    },
+    {
+      "login": "hernanmd",
+      "name": "Hernán Morales Durand",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/4825959?v=4",
+      "profile": "https://github.com/hernanmd",
+      "contributions": [
+        "code",
+        "test"
+      ]
+    },
+    {
+      "login": "SergeStinckwich",
+      "name": "Serge Stinckwich",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/327334?v=4",
+      "profile": "http://macau.unu.edu",
+      "contributions": [
+        "code",
+        "test"
+      ]
+    },
+    {
+      "login": "npapoylias",
+      "name": "npapoylias",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/8402525?v=4",
+      "profile": "https://github.com/npapoylias",
+      "contributions": [
+        "code",
+        "test"
+       ]
+    },
+    {
+      "login": "cdrick65",
+      "name": "Cédrick Béler",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/4181440?v=4",
+      "profile": "http://symbios.io",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "nbecu",
+      "name": "nbecu",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/7630183?v=4",
+      "profile": "https://github.com/nbecu",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "cormas",
+  "projectOwner": "cormas",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
