@@ -87,6 +87,15 @@
       "name": "Christophe Le Page",
       "avatar_url": "https://avatars2.githubusercontent.com/u/7639614?v=4",
       "profile": "https://github.com/ChLePage",
+      contributions": [
+        "code"
+      ]
+    },
+    {      
+      "login": "brun0",
+      "name": "Bruno Bonté",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/444953?v=4",
+      "profile": "https://github.com/brun0",
       "contributions": [
         "code"
       ]
