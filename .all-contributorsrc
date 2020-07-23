@@ -24,6 +24,16 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "hernanmd",
+      "name": "Hernán Morales Durand",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/4825959?v=4",
+      "profile": "https://github.com/hernanmd",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
