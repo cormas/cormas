@@ -78,6 +78,15 @@
       "name": "Pierre Bommel",
       "avatar_url": "https://avatars3.githubusercontent.com/u/7630722?v=4",
       "profile": "http://ur-green.cirad.fr",
+      contributions": [
+        "code"
+      ]
+    },
+    {      
+      "login": "ChLePage",
+      "name": "Christophe Le Page",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/7639614?v=4",
+      "profile": "https://github.com/ChLePage",
       "contributions": [
         "code"
       ]
