@@ -907,24 +907,6 @@ CMReHabModel >> restrained: aSmallInteger [
 	restrained := aSmallInteger
 ]
 
-{ #category : #control }
-CMReHabModel >> run: t [
-	| newBirds |
-	self birdsNesting.
-	t > 1 ifTrue: [self parkManager decideAccess].
-	self theFamilies do: [:f | f decideHarvestersLocations; sendMembersHarvesting].
-	self theZones do: [:aZone | aZone allocateHarvests].
-	newBirds := Set new.
-	self theBirds do: [:aBird | newBirds addAll: aBird reproduce].
-	self theBirds addAll: newBirds.
-	self birdNewborns: (self birdNewborns + newBirds size).
-	self theZones do: [:aZone | aZone renewBiomass].
-	self thePlantHarvesters do: [:ph | ph leave].
-	self theFamilies do: [:h | h updateHarvest].
-	self birdsMigrating.
-	t > 1 ifTrue: [self theZones do: [:z | z access: true]]
-]
-
 { #category : #'instance-creation' }
 CMReHabModel >> setInitialBiomasses [
 
@@ -937,9 +919,26 @@ CMReHabModel >> setInitialBiomasses [
 
 { #category : #control }
 CMReHabModel >> step: t [
-"To be completed"
-
- 
+	| newBirds |
+	self birdsNesting.
+	t > 1
+		ifTrue: [ self parkManager decideAccess ].
+	self theFamilies
+		do: [ :f | 
+			f
+				decideHarvestersLocations;
+				sendMembersHarvesting ].
+	self theZones do: [ :aZone | aZone allocateHarvests ].
+	newBirds := Set new.
+	self theBirds do: [ :aBird | newBirds addAll: aBird reproduce ].
+	self theBirds addAll: newBirds.
+	self birdNewborns: self birdNewborns + newBirds size.
+	self theZones do: [ :aZone | aZone renewBiomass ].
+	self thePlantHarvesters do: [ :ph | ph leave ].
+	self theFamilies do: [ :h | h updateHarvest ].
+	self birdsMigrating.
+	t > 1
+		ifTrue: [ self theZones do: [ :z | z access: true ] ]
 ]
 
 { #category : #accessing }
