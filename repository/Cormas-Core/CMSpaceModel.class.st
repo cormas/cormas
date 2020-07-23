@@ -116,7 +116,7 @@ CMSpaceModel >> aggregate: listPolygons [
 			self setImagesPolygons: (Array with: fusion).	"we need to remove polygons that are supposed to no longer exist before attacking the neighborhood"
 			allPolygons := self cormasModel
 				perform:
-					(self cormasModel class getterForEntityClass: listPolygons first class).
+					(self cormasModel getterForEntityClass: listPolygons first class).
 			allPolygons removeAll: theOthers.	"Reconstruction of the neighbourhood of the new polygon"
 			fusion neighbourhood: nil.
 			self voisinsPolygonesNoeuds: (Array with: fusion).	"Reconstruction of the neighbourhood of the neighbours of the new polygon"
@@ -175,7 +175,7 @@ CMSpaceModel >> aggregatesEntities [
 CMSpaceModel >> aggregatesInstancesOf: entityE condition: methodName [
 	| nameEntitiesE theInterestingEntitiesE setOfComponents seed neighbours newNeighbours |
 	self flag: #shouldBeRevised.
-	nameEntitiesE := self cormasModel class getterForEntityClass: entityE.
+	nameEntitiesE := self cormasModel getterForEntityClass: entityE.
 	theInterestingEntitiesE := ((self cormasModel
 		perform: nameEntitiesE asSymbol)
 		select: [ :c | c perform: methodName ]) copy asOrderedCollection.
