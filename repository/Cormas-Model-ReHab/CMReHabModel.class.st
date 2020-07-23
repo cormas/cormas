@@ -809,13 +809,11 @@ CMReHabModel >> harvest [
 
 { #category : #init }
 CMReHabModel >> init [
-"To be completed"
-	self initCells.
-]
 
-{ #category : #'instance-creation' }
-CMReHabModel >> initAgents [
-"To be completed"
+	self createGridLines: 4 columns: 5  neighbourhood: 8 closed: true .
+	self setInitialBiomasses.
+	self theZones do: [:aZone | aZone noHarvestPeriod: 0].
+	self initAgents_Autonomous.
 	
 ]
 
