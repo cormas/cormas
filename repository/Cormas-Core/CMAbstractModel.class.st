@@ -3111,15 +3111,6 @@ CMAbstractModel >> initData [
 	
 ]
 
-{ #category : #'probes - recording' }
-CMAbstractModel >> initDataStructures [
-	
-	self resetDataStructures.
-	self setDataStructures.
-	self cormas ifNil: [^nil].
-	self cormas refreshCharts
-]
-
 { #category : #'init entities' }
 CMAbstractModel >> initEntities [
 	"Initialize all the Entity classes of the model"
@@ -3196,8 +3187,7 @@ CMAbstractModel >> initObjects [
 CMAbstractModel >> initSimulation [
 	self timeStep: 0.
 	self spaceModel ifNil: [ self initializeSpaceModel ].
-	"initialize probes data structure"
-	self initDataStructures.
+	self initializeProbes.
 	"store the instances of entities in a collection and request an update of the space views at the end of the initialization"
 	self setNewCollector.
 	"remove the previous entities of the collections (theXXXs), except for theCells"
@@ -3230,6 +3220,14 @@ CMAbstractModel >> initialize [
 CMAbstractModel >> initializeChannel [
 	
 	self channel: CMChannel new
+]
+
+{ #category : #'probes - recording' }
+CMAbstractModel >> initializeProbes [
+	data := Dictionary new.
+	self setDataStructures.
+	self cormas ifNil: [ ^ nil ].
+	self cormas refreshCharts
 ]
 
 { #category : #'initalize release' }
@@ -4159,12 +4157,6 @@ CMAbstractModel >> resetCells [
 	"Purpose: reset all the generic attributes of the cells"
 	
 	self theESE do: [:e | e reset]
-]
-
-{ #category : #'probes - recording' }
-CMAbstractModel >> resetDataStructures [
-"Create a new empty dictionary"
-	data := Dictionary new
 ]
 
 { #category : #accessing }
