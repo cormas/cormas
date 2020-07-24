@@ -82,7 +82,7 @@
         "code"
       ]
     },
-    {      
+    {
       "login": "ChLePage",
       "name": "Christophe Le Page",
       "avatar_url": "https://avatars2.githubusercontent.com/u/7639614?v=4",
@@ -91,11 +91,20 @@
         "code"
       ]
     },
-    {      
+    {
       "login": "brun0",
       "name": "Bruno Bonté",
       "avatar_url": "https://avatars3.githubusercontent.com/u/444953?v=4",
       "profile": "https://github.com/brun0",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "jigyasa-grover",
+      "name": "Jigyasa Grover",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/9291400?v=4",
+      "profile": "https://github.com/jigyasa-grover",
       "contributions": [
         "code"
       ]
