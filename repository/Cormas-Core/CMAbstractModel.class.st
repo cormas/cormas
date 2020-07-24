@@ -626,6 +626,7 @@ randomAttributes = #(#bioma #instance #randomFloat 0 1). "
 { #category : #'instance creation' }
 CMAbstractModel class >> initVS [
 	self flag:#shouldBeRevised.
+
 	self cellClass notNil
 		ifTrue:
 			["self povColorsDict at: self cellClass put: Dictionary new."
@@ -681,7 +682,8 @@ CMAbstractModel class >> initializeWithVS [
 CMAbstractModel class >> initializeWithoutVS [
 	"set the cellClass, spatialClasses, socialClasses and passiveClasses."
 
-	self flag: #shouldBeRevised. 	self visualStateIsOpen: false.	"should be obsolete because visualStateIsOpen refers to visualSTateWin of Cormas which is an access to the pov setter window of cormas-vw"
+	self deprecated: 'should be obsolete because visualStateIsOpen refers to visualSTateWin of Cormas which is an access to the pov setter window of cormas-vw. This method will disappear in the next version'.
+	self visualStateIsOpen: false.
 	self initializeCellClass.
 	self initializeModelClasses
 ]
@@ -862,7 +864,7 @@ Ex: CormasModel modelMethodsForManipulation"
 CMAbstractModel class >> newSimulation [
 	
 	| sim |
-	sim := super new.	"sim initialize.   d√©ja appel√© par new"
+	sim := super new.	"sim initialize.   already called by new"
 	self currentSimulation: sim.
 	^sim
 ]
@@ -911,6 +913,7 @@ CMAbstractModel class >> passiveClasses [
 
 { #category : #Obsolete }
 CMAbstractModel class >> passiveClasses: aList [
+	self deprecated: 'This class is in a obsolet protocol and will be remoded soon'.
 	passiveClasses := aList
 ]
 
@@ -1119,6 +1122,7 @@ CMAbstractModel class >> socialClasses [
 
 { #category : #Obsolete }
 CMAbstractModel class >> socialClasses: aList [
+self deprecated: 'This class is in a obsolet protocol and will be remoded soon'.
 	socialClasses := aList
 ]
 
@@ -1138,7 +1142,7 @@ CMAbstractModel class >> spatialClasses [
 
 { #category : #Obsolete }
 CMAbstractModel class >> spatialClasses: aList [
-
+self deprecated: 'This class is in a obsolet protocol and will be remoded soon'.
 	spatialClasses := aList
 ]
 
@@ -1233,6 +1237,7 @@ CMAbstractModel class >> uiSession_default [
 
 { #category : #Obsolete }
 CMAbstractModel class >> updateVS [
+self deprecated: 'This class is in a obsolet protocol and will be remoded soon'.
 	"	self imageDict: Dictionary new.
 	self povColorsDict: Dictionary new.
 	self allClasses do: 

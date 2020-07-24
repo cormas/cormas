@@ -32,7 +32,7 @@ CMECECModel class >> colorOfProbe_vegetationBiomass [
 { #category : #default }
 CMECECModel class >> defaultInit [
 	
-	^#homogeneousEnv
+	^#randomEnv
 
 ]
 
@@ -467,27 +467,12 @@ CMECECModel class >> visualize: es [
 { #category : #init }
 CMECECModel >> fragmentedEnv [
 	"initialize an fragmented space (from fragmented.env file) with randomly located foragers"
-	
+	self deprecated: '?env files come from VW. Not suported in Pharo. This method will disappear in the next version'.
 	self spaceModel loadEnvironmentFromFile: 'fragmented.env'.
 	self initAgents
 ]
 
 { #category : #init }
-CMECECModel >> homogeneousEnv [
-	"initialize an homogeneous space (from poor.env file) with randomly located foragers"
-
-	"self spaceModel loadEnvironmentFromFile: 'poor.env'."
-
-	self
-		createGridLines: 27
-		columns: 15
-		neighbourhood: 8
-		closed: true.
-	self theVegetationUnits do: [ :c | c initRandomBiomass ].
-	self initAgents
-]
-
-{ #category : #'instance-creation' }
 CMECECModel >> homogeneousEnv2 [
 	"initialize an homogeneous space (27x27, random biomass) with randomly located foragers"
 
@@ -501,7 +486,7 @@ CMECECModel >> homogeneousEnv2 [
 	self initAgents
 ]
 
-{ #category : #'instance-creation' }
+{ #category : #'init entities' }
 CMECECModel >> initAgents [
 	"initialize 10 foragers of each type and move then randomly on a free cell"
 	
@@ -516,8 +501,23 @@ CMECECModel >> initAgents [
 { #category : #init }
 CMECECModel >> noAgent [
 	"initialize the space (from poor.env file) without agent"
-	
+	self deprecated: '?env files come from VW. Not suported in Pharo. This method will disappear in the next version'.
 	self spaceModel loadEnvironmentFromFile: 'poor.env'
+]
+
+{ #category : #init }
+CMECECModel >> randomEnv [
+	"initialize an homogeneous space (from poor.env file) with randomly located foragers"
+
+	"self spaceModel loadEnvironmentFromFile: 'poor.env'."
+
+	self
+		createGridLines: 27
+		columns: 15
+		neighbourhood: 8
+		closed: true.
+	self theVegetationUnits do: [ :c | c initRandomBiomass ].
+	self initAgents
 ]
 
 { #category : #accessing }
