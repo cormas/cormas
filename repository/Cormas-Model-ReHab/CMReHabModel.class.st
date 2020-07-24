@@ -263,11 +263,6 @@ trackLengthValue:*All,nil
 trackedAgents:*'
 ]
 
-{ #category : #description }
-CMReHabModel class >> authors [
-^ 'Christophe Le Page & Anne Dray'
-]
-
 { #category : #'- default value' }
 CMReHabModel class >> birdNewborns_default [
 	"Return the default value of attribute #birdNewborns : 0.
@@ -298,16 +293,6 @@ CMReHabModel class >> comments [
 '
 ]
 
-{ #category : #description }
-CMReHabModel class >> cormasCompatibleVersion [
-^ #(2020 1 26 14 39 0)
-]
-
-{ #category : #description }
-CMReHabModel class >> creationDate [
-^ '2008-05-16'
-]
-
 { #category : #sessions }
 CMReHabModel class >> dataPlayer: aString time: t separator: aChar [
 	| stream i dataLine collec |
@@ -319,11 +304,6 @@ CMReHabModel class >> dataPlayer: aString time: t separator: aChar [
 			i = t ifTrue: [collec := dataLine tokensBasedOn: aChar]].
 	stream close.
 	^collec
-]
-
-{ #category : #description }
-CMReHabModel class >> emails [
-^ 'le_page@cirad.fr'
 ]
 
 { #category : #'- default value' }
@@ -463,11 +443,6 @@ CMReHabModel class >> interfaceSession_default [
 CMReHabModel class >> interface_default [
 	"Return the default value of interface attribute"
 	^nil
-]
-
-{ #category : #description }
-CMReHabModel class >> lastUpdate [
-^ 'lundi 13 juillet 2020'
 ]
 
 { #category : #'- default value' }
@@ -700,22 +675,6 @@ CMReHabModel class >> testInfoPlayer: aString [
 ]
 
 { #category : #sessions }
-CMReHabModel class >> testSession [
-	| list |
-	list := self gameSession directoryContents.
-	self halt.
-	list isEmpty
-		ifTrue: [self halt]
-		ifFalse:
-			["
-
-testInfoPlayer: aString
-	^(self gameSession construct: aString , '.txt') exists"
-
-			]
-]
-
-{ #category : #sessions }
 CMReHabModel class >> timeStepsPlayed [
 	| stream nbLines |
 	stream := (self gameSession construct: 'harvestersLocations.txt')
@@ -725,16 +684,6 @@ CMReHabModel class >> timeStepsPlayed [
 			[(stream upTo: Character cr) isEmpty ifFalse: [nbLines := nbLines + 1]].
 	stream close.
 	^nbLines
-]
-
-{ #category : #description }
-CMReHabModel class >> version [
-^ 'ReHab_Pharo.st'
-]
-
-{ #category : #description }
-CMReHabModel class >> vwCompatibleVersion [
-^ '7.6'
 ]
 
 { #category : #probes }

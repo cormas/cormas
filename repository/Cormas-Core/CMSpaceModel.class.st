@@ -4224,7 +4224,7 @@ CMSpaceModel >> swell: compoundEntityClass [
 	
 	| haveSpread |
 	haveSpread := false.
-	(Cormas mixt: (self spatialEntities at: compoundEntityClass name))
+	(Cormas mix: (self spatialEntities at: compoundEntityClass name))
 		do: [:aggregate | aggregate swell ifTrue: [haveSpread := true]].
 	^haveSpread
 ]
@@ -4245,7 +4245,7 @@ CMSpaceModel >> swell: compoundEntityClass verifying: aConditionBlock [
 					[:c | (c isComponentOf: compoundEntityClass) not and: [aConditionBlock value: c]].
 			newCells isEmpty
 				ifFalse:
-					[(Cormas mixt: newCells)
+					[(Cormas mix: newCells)
 						do:
 							[:nc | 
 							aggregate size < aggregate givenSize
