@@ -290,7 +290,7 @@ CMReHabZone >> noHarvester [
 { #category : #'accessing - occupants' }
 CMReHabZone >> randomizedHarvesters [
 
-	^Cormas mixt: self harvesters
+	^Cormas mix: self harvesters
 ]
 
 { #category : #dynamics }
