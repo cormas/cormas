@@ -304,7 +304,7 @@ CMPlotsRentalModel >> stepD1G: t [
 	| collec |
 	self thePRCells do: [ :a | a status: #notRent ].
 	self create1Group.
-	collec := Cormas mixt: self thePRFarmers.
+	collec := Cormas mix: self thePRFarmers.
 	collec do: [ :f | f initialCalls ]. 
 	collec do: [ :f | f proposals ].
 	collec do: [ :f | f finalAnswers ].
@@ -320,7 +320,7 @@ CMPlotsRentalModel >> stepD2G: t [
 	| collec |
 	self thePRCells do: [ :a | a status: #notRent ].
 	self create2Groups.
-	collec := Cormas mixt: self thePRFarmers.
+	collec := Cormas mix: self thePRFarmers.
 	collec do: [ :f | f initialCalls ].
 	collec do: [ :f | f proposals ]. 
 	collec do: [ :f | f finalAnswers ].

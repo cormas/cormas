@@ -1139,7 +1139,7 @@ ex:		Cormas min: #( 1 2 3)	=> 1"
 ]
 
 { #category : #'+ utilities - random' }
-Cormas class >> mixt: aCollection [
+Cormas class >> mix: aCollection [
 	"Purpose: Returns a randomly mixed collection
 Argument: aCollection is a collection to be mixed"
 
@@ -2188,7 +2188,7 @@ Examples: Cormas selectRandomlyFrom: (Set withAll: #(1 2 3 4 5)) subCollectionSi
 	
 	| randomCollection |
 	anInteger < 1 ifTrue: [^OrderedCollection new].
-	randomCollection := Cormas mixt: aCollection.
+	randomCollection := Cormas mix: aCollection.
 	randomCollection size <= anInteger ifTrue: [^randomCollection].
 	^randomCollection copyFrom: 1 to: anInteger
 ]
@@ -2201,7 +2201,7 @@ Examples: Cormas selectRandomlyFrom: (Set withAll: #(1 2 3 4 5)) subCollectionSi
 	
 	| randomCollection |
 	anInteger < 1 ifTrue: [^OrderedCollection new].
-	randomCollection := Cormas mixt: (aCollection select: aBlock).
+	randomCollection := Cormas mix: (aCollection select: aBlock).
 	randomCollection size <= anInteger ifTrue: [^randomCollection].
 	^randomCollection copyFrom: 1 to: anInteger
 ]

@@ -17,7 +17,7 @@ Class {
 		'newComponents',
 		'removedComponents'
 	],
-	#category : 'Cormas-Core-Entities'
+	#category : #'Cormas-Core-Entities'
 }
 
 { #category : #'+ components - managing' }
@@ -165,7 +165,7 @@ Nota: the 'step' method of the Agent must return a collection either empty if th
 		ifTrue: [ firstComp := self components first.
 			(firstComp cormasHelper isTypeEntity and: [ firstComp isAgent ])
 				ifTrue: [ newBorns := OrderedCollection new.
-					(Cormas mixt: self components)
+					(Cormas mix: self components)
 						do: [ :anAgent | 
 							repro := anAgent step.
 							newBorns addAll: repro ].

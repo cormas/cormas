@@ -1534,7 +1534,7 @@ Example: self askRandom: Animal with: [:a | a energy > 10] toDo: #eatQuantity: w
 			[self
 				checkEntity: collecEntities first
 				respondsTo: aSymbol.
-			(Cormas mixt: collecEntities)
+			(Cormas mix: collecEntities)
 				do: [:c | c perform: aSymbol withArguments: allArguments]]
 ]
 
@@ -1563,7 +1563,7 @@ Example: self askRandom: (self theAnimals select:[:f | f energy > 10]) toDo: #ea
 			[self
 				checkEntity: collecEntities first
 				respondsTo: aSymbol.
-			(Cormas mixt: collecEntities)
+			(Cormas mix: collecEntities)
 				do: [:c | c perform: aSymbol withArguments: allArguments]]
 ]
 
@@ -2072,7 +2072,7 @@ Example: self createN: 5 groups: Village from: self theIndividuals"
 	
 	| collection groupSize index newGroup groupsCollec |
 	groupsCollec := OrderedCollection new.
-	collection := Cormas mixt: aCollec.
+	collection := Cormas mix: aCollec.
 	groupSize := (aCollec size / n) asInteger.
 	index := 1.
 	1
@@ -2807,7 +2807,7 @@ Example: self generateAsymetricNetworkDensity: 0.6 forAgents: Citizen"
 			[:a | 
 			a acquaintances size < n
 				ifTrue:
-					[otherAgents := Cormas mixt: (self otherAgentsButMe: a).
+					[otherAgents := Cormas mix: (self otherAgentsButMe: a).
 					1
 						to: n
 						do: [:i | a acquaintances add: (otherAgents at: i)]]]
@@ -2821,13 +2821,13 @@ Argument: x is a ratio of the total population of agents of aClass. Its value is
 Example: self generateSymetricNetworkDensity: 0.3 forAgents: Citizen"
 	
 	| allAgents n otherAgents |
-	allAgents := Cormas mixt: (self theEntities: aClass).
+	allAgents := Cormas mix: (self theEntities: aClass).
 	n := (x * allAgents size) truncated.
 	allAgents
 		do:
 			[:a | 
 			otherAgents := Cormas
-				mixt:
+				mix:
 					((self otherAgentsButMe: a) select: [:o | o acquaintances size < n]).
 			1
 				to: (n min: otherAgents size)
@@ -4850,7 +4850,7 @@ CMAbstractModel >> stepDynPop: aCollec [
 	
 	| newBorns repro |
 	newBorns := OrderedCollection new.
-	(Cormas mixt: aCollec)
+	(Cormas mix: aCollec)
 		do:
 			[:anAgent | 
 			repro := anAgent step.
