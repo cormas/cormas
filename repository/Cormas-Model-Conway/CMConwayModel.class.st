@@ -58,19 +58,13 @@ CMConwayModel class >> defaultInit [
 
 { #category : #examples }
 CMConwayModel class >> example1 [
-	| aModel nbLines v es anim |
+	| aModel v es anim |
 	aModel := self
 		initialize;
 		new.
-	nbLines := 50.
 	aModel initializeSpaceModel.
-	aModel
-		createGridLines: nbLines
-		columns: nbLines
-		neighbourhood: 4
-		closed: true.
 	v := RTView new.
-	aModel initSimulation.
+	aModel initSimulation.	"creates 100x100 cells."
 	aModel runStep.
 	v clean.
 	es := (RTBox new
@@ -96,9 +90,8 @@ CMConwayModel class >> example1 [
 
 { #category : #examples }
 CMConwayModel class >> example2 [
-	| v nbLines choosenModel numberOfModels aModel models normalizer colors es groupsOfElements anim |
+	| v choosenModel numberOfModels aModel models normalizer colors es groupsOfElements anim |
 	v := RTView new.
-	nbLines := 10.
 	choosenModel := CMConwayModel.
 	numberOfModels := 4.
 	models := (1 to: numberOfModels)
@@ -107,11 +100,7 @@ CMConwayModel class >> example2 [
 				initialize;
 				new.
 			aModel initializeSpaceModel.
-			aModel
-				createGridLines: nbLines
-				columns: nbLines
-				neighbourhood: 4
-				closed: true.
+			aModel activeInit: #initSmallGrid.	"creates 10x10 cells"
 			aModel initSimulation.
 			aModel runStep.
 			aModel ].
