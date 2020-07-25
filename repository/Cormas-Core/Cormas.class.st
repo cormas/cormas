@@ -1409,15 +1409,15 @@ Cormas class >> originPointOfWindowExtent: bounds toPlaceOnSideOf: mainWindow an
 
 { #category : #accessing }
 Cormas class >> passiveEntitiesClassNames [
-	
 	| collec |
 	collec := OrderedCollection new.
 	collec
 		add: 'Msg';
 		add: 'PassiveObject'.
-	self cmEnvironment allClasses "should be allEntityClasses ??" 
-		do: [ : aClass | (aClass inheritsFrom: CMPassiveObject)
-			ifTrue: [collec add: aClass name asString ] ].
+	self cmEnvironment allEntityClasses
+		do: [ :aClass | 
+			(aClass inheritsFrom: CMPassiveObject)
+				ifTrue: [ collec add: aClass name asString ] ].	"should be allEntityClasses ??"
 	^ collec
 ]
 
@@ -2220,11 +2220,10 @@ ex: Cormas selectSimpleRandomlyFrom: (Set withAll: #(1 2 3 4 5))"
 
 { #category : #'util_export' }
 Cormas class >> selectedThingsWithOrder: aBlock onSelection: aNameSpace [
-	
 	| things |
 	things := OrderedCollection new.
 	things add: aNameSpace.
-	things addAll: aNameSpace allClasses.
+	things addAll: aNameSpace allEntityClasses.
 	things addAll: aNameSpace allNameSpaces.
 	things := SystemUtils sortForLoading: things.
 	aBlock value: things
@@ -2488,13 +2487,13 @@ example: Environment updateTemperature: time
 
 { #category : #accessing }
 Cormas class >> socialEntitiesClassNames [
-	
 	| collec |
 	collec := OrderedCollection new.
 	collec add: 'Agent'.
-	self cmEnvironment allClasses "should be allEntityClasses ??" 
-		do: [ : aClass | (aClass inheritsFrom: CMAgent) 
-				ifTrue: [ collec add: aClass name asString ] ].
+	self cmEnvironment allEntityClasses 
+		do: [ :aClass | 
+			(aClass inheritsFrom: CMAgent)
+				ifTrue: [ collec add: aClass name asString ] ].	"should be allEntityClasses ??"
 	^ collec
 ]
 
@@ -2604,14 +2603,13 @@ Example: Cormas sortIncreasingly: #( 2 1 3)	 => aSortedCollection (1 2 3)"
 
 { #category : #accessing }
 Cormas class >> spatialEntitiesClassNames [
-	
 	| collec |
 	collec := OrderedCollection new.
-	self cmEnvironment allClasses "should be allEntityClasses ??" 
-		do: [ : aClass | 
+	self cmEnvironment allEntityClasses 
+		do: [ :aClass | 
 			(aClass inheritsFrom: CMSpatialEntity)
-				ifTrue: [ collec add: aClass name asString ] ].
-	^collec
+				ifTrue: [ collec add: aClass name asString ] ].	"should be allEntityClasses ??"
+	^ collec
 ]
 
 { #category : #'+ utilities - files' }

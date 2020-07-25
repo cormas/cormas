@@ -226,39 +226,26 @@ CMAbstractModel class >> allActivitySelectors [
 ]
 
 { #category : #'managing classes' }
-CMAbstractModel class >> allClasses [
-	"return all the classes of the model (except the classes that inheriting from Msg and other classes like Interface etc"
-
-	| collection |
-	collection := self allClassesInPackage.
-	collection removeAllSuchThat: [:cl | (cl inheritsFrom: CMEntity) not].
-	^ collection
-]
-
-{ #category : #'managing classes' }
 CMAbstractModel class >> allClassesInPackage [
-"Returns all classes of the package ie. we the correct tag"
-"^ self package classes   doesn't work because doesn't take tags into account"
+	"Returns all classes of the package in the same tag than the model (include the model)"
 
-^(self package classTags detect: [ :each | each includesClass: self ]) classes.
-	
+	^ (self package classTags
+		detect: [ :class | class includesClass: self ]) classes
 ]
 
 { #category : #'managing classes' }
 CMAbstractModel class >> allClassesNames [
-	"return all the Entity class names of the model (except the my self, Msg and other classes like Interface etc"
-	
-	^self allEntityClasses collect: [:c | c name asString]
+	"return all the Entity class names of the model (except the my self, Msg and other classes like Interface etc)"
+
+	^ self allEntityClasses collect: [ :c | c name asString ]
 ]
 
 { #category : #'managing classes' }
 CMAbstractModel class >> allEntityClasses [
 	"return all the classes of the model (except the classes that inheriting from Msg and other classes like Interface etc"
 
-	| collection |
-	collection := self allClassesInPackage.
-	collection removeAllSuchThat: [:cl | (cl inheritsFrom: CMEntity) not].
-	^ collection
+	^ self allClassesInPackage
+		removeAllSuchThat: [ :class | (class inheritsFrom: CMEntity) not ]
 ]
 
 { #category : #'- activityEditor' }
@@ -639,28 +626,30 @@ CMAbstractModel class >> initialize [
 
 { #category : #'instance creation' }
 CMAbstractModel class >> initializeCellClass [
-"Store the Cell class of the model into #cellClass"
-	self cellClass: (self allEntityClasses
-		detect: [ :cl | cl inheritsFrom: CMSpatialEntityElement ]
-		ifNone: [ nil ]).
+	"Store the Cell class of the model into cellClass"
 
+	self
+		cellClass:
+			(self allEntityClasses
+				detect: [ :each | each inheritsFrom: CMSpatialEntityElement ]
+				ifNone: [ nil ])
 ]
 
 { #category : #'instance creation' }
 CMAbstractModel class >> initializeModelClasses [
-	"Distributes and stores the classes of the model in the 3 main archetypes (spatialClasses, socialClasses and passiveClasses)"
+	"Decompose classes of the model in spatial, social and passive classes"
 
-	| collec subset |
-	collec := self allClassesInPackage.
-	subset := collec select: [ :e | e inheritsFrom: CMSpatialEntity ].
-	self spatialClasses: subset.
-	
-	subset := collec select: [ :e | e inheritsFrom: CMAgent ].
-	self socialClasses: subset.
-	
-	subset := collec
-		select: [ :e | (e inheritsFrom: CMPassiveObject) or: [ e inheritsFrom: CMMsg ] ].
-	self passiveClasses: subset
+	| classes |
+	classes := self allClassesInPackage.
+	self
+		spatialClasses: (classes select: [ :each | each inheritsFrom: CMSpatialEntity ]).
+	self
+		socialClasses: (classes select: [ :each | each inheritsFrom: CMAgent ]).
+	self
+		passiveClasses:
+			(classes
+				select:
+					[ :each | (each inheritsFrom: CMPassiveObject) or: [ each inheritsFrom: CMMsg ]])
 ]
 
 { #category : #'- activityEditor' }
