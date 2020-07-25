@@ -624,27 +624,17 @@ randomAttributes = #(#bioma #instance #randomFloat 0 1). "
 ]
 
 { #category : #'instance creation' }
-CMAbstractModel class >> initVS [
-	self flag:#shouldBeRevised.
-
+CMAbstractModel class >> initialize [
+	self initializeCellClass.
+	self initializeModelClasses.
 	self cellClass notNil
 		ifTrue:
-			["self povColorsDict at: self cellClass put: Dictionary new."
-			self cellClass colorsDict: Dictionary new	"(self povColorsDict at: self cellClass)"].
-	(self compoundSpatialClasses select: [:cse | cse isGenericEntity not])
+			[ "self povColorsDict at: self cellClass put: Dictionary new." self cellClass colorsDict: Dictionary new	"(self povColorsDict at: self cellClass)" ].
+	(self compoundSpatialClasses
+		select: [ :cse | cse isGenericEntity not ])
 		do:
-			[:aClass | 
-			"self povColorsDict at: aClass put: Dictionary new."
-			"self dicoImage at: aClass put: ImageObjetSpatialise new.
-			aClass image: (self dicoImage at: aClass)."
-			aClass colorsDict: Dictionary new	"(self povColorsDict at: aClass)"]
-]
-
-{ #category : #'instance creation' }
-CMAbstractModel class >> initialize [
-	
-	self initializeWithoutVS.
-	self initVS
+			[ :aClass | "self povColorsDict at: aClass put: Dictionary new." "self dicoImage at: aClass put: ImageObjetSpatialise new.
+			aClass image: (self dicoImage at: aClass)." aClass colorsDict: Dictionary new	"(self povColorsDict at: aClass)" ]
 ]
 
 { #category : #'instance creation' }
@@ -658,34 +648,19 @@ CMAbstractModel class >> initializeCellClass [
 
 { #category : #'instance creation' }
 CMAbstractModel class >> initializeModelClasses [
-"Distributes and stores the classes of the model in the 3 main archetypes (spatialClasses, socialClasses and passiveClasses)"
+	"Distributes and stores the classes of the model in the 3 main archetypes (spatialClasses, socialClasses and passiveClasses)"
+
 	| collec subset |
-	collec := self allClassesInPackage copy.
+	collec := self allClassesInPackage.
 	subset := collec select: [ :e | e inheritsFrom: CMSpatialEntity ].
 	self spatialClasses: subset.
-	collec removeAll: subset.
+	
 	subset := collec select: [ :e | e inheritsFrom: CMAgent ].
 	self socialClasses: subset.
-	collec removeAll: subset.
-	subset := collec select: [ :e | (e inheritsFrom: CMPassiveObject) or:[ e inheritsFrom: CMMsg]].
-	self passiveClasses: subset
-]
-
-{ #category : #'instance creation' }
-CMAbstractModel class >> initializeWithVS [
 	
-	self initializeWithoutVS.
-	self updateVS
-]
-
-{ #category : #initialization }
-CMAbstractModel class >> initializeWithoutVS [
-	"set the cellClass, spatialClasses, socialClasses and passiveClasses."
-
-	self deprecated: 'should be obsolete because visualStateIsOpen refers to visualSTateWin of Cormas which is an access to the pov setter window of cormas-vw. This method will disappear in the next version'.
-	self visualStateIsOpen: false.
-	self initializeCellClass.
-	self initializeModelClasses
+	subset := collec
+		select: [ :e | (e inheritsFrom: CMPassiveObject) or: [ e inheritsFrom: CMMsg ] ].
+	self passiveClasses: subset
 ]
 
 { #category : #'- activityEditor' }
@@ -911,10 +886,9 @@ CMAbstractModel class >> passiveClasses [
 		yourself
 ]
 
-{ #category : #Obsolete }
-CMAbstractModel class >> passiveClasses: aList [
-	self deprecated: 'This class is in a obsolet protocol and will be remoded soon'.
-	passiveClasses := aList
+{ #category : #accessing }
+CMAbstractModel class >> passiveClasses: aCollection [
+	passiveClasses := aCollection
 ]
 
 { #category : #'managing classes' }
@@ -1120,10 +1094,9 @@ CMAbstractModel class >> socialClasses [
 	^ socialClasses ifNil: [ socialClasses := self allClassesInPackage select: [ :e | e inheritsFrom: CMAgent ] ]
 ]
 
-{ #category : #Obsolete }
-CMAbstractModel class >> socialClasses: aList [
-self deprecated: 'This class is in a obsolet protocol and will be remoded soon'.
-	socialClasses := aList
+{ #category : #accessing }
+CMAbstractModel class >> socialClasses: aCollection [
+	socialClasses := aCollection
 ]
 
 { #category : #'- default value' }
@@ -1140,10 +1113,9 @@ CMAbstractModel class >> spatialClasses [
 	^ spatialClasses
 ]
 
-{ #category : #Obsolete }
-CMAbstractModel class >> spatialClasses: aList [
-self deprecated: 'This class is in a obsolet protocol and will be remoded soon'.
-	spatialClasses := aList
+{ #category : #accessing }
+CMAbstractModel class >> spatialClasses: aCollection [
+	spatialClasses := aCollection
 ]
 
 { #category : #'managing classes' }
@@ -1233,19 +1205,6 @@ CMAbstractModel class >> uiSession_default [
 	"Return the default value of uiSession attribute"
 	
 	^nil
-]
-
-{ #category : #Obsolete }
-CMAbstractModel class >> updateVS [
-self deprecated: 'This class is in a obsolet protocol and will be remoded soon'.
-	"	self imageDict: Dictionary new.
-	self povColorsDict: Dictionary new.
-	self allClasses do: 
-			[:aClass | 
-			aClass image notNil ifTrue: [self imageDict at: aClass put: aClass image].
-			self povColorsDict at: aClass put: aClass colorsDict]"
-	
-	
 ]
 
 { #category : #accessing }
@@ -3152,15 +3111,6 @@ CMAbstractModel >> initData [
 	
 ]
 
-{ #category : #'probes - recording' }
-CMAbstractModel >> initDataStructures [
-	
-	self resetDataStructures.
-	self setDataStructures.
-	self cormas ifNil: [^nil].
-	self cormas refreshCharts
-]
-
 { #category : #'init entities' }
 CMAbstractModel >> initEntities [
 	"Initialize all the Entity classes of the model"
@@ -3237,8 +3187,7 @@ CMAbstractModel >> initObjects [
 CMAbstractModel >> initSimulation [
 	self timeStep: 0.
 	self spaceModel ifNil: [ self initializeSpaceModel ].
-	"initialize probes data structure"
-	self initDataStructures.
+	self initializeProbes.
 	"store the instances of entities in a collection and request an update of the space views at the end of the initialization"
 	self setNewCollector.
 	"remove the previous entities of the collections (theXXXs), except for theCells"
@@ -3271,6 +3220,14 @@ CMAbstractModel >> initialize [
 CMAbstractModel >> initializeChannel [
 	
 	self channel: CMChannel new
+]
+
+{ #category : #'probes - recording' }
+CMAbstractModel >> initializeProbes [
+	data := Dictionary new.
+	self setDataStructures.
+	self cormas ifNil: [ ^ nil ].
+	self cormas refreshCharts
 ]
 
 { #category : #'initalize release' }
@@ -4200,12 +4157,6 @@ CMAbstractModel >> resetCells [
 	"Purpose: reset all the generic attributes of the cells"
 	
 	self theESE do: [:e | e reset]
-]
-
-{ #category : #'probes - recording' }
-CMAbstractModel >> resetDataStructures [
-"Create a new empty dictionary"
-	data := Dictionary new
 ]
 
 { #category : #accessing }
