@@ -46,6 +46,11 @@ CMConwayModelTest >> testConwayModelHasOnlyOneSpatialEntityClass [
 ]
 
 { #category : #tests }
+CMConwayModelTest >> testThereIsOneEntityClassInConwayModel [
+	self assert: CMConwayModel allEntityClasses size equals: 1
+]
+
+{ #category : #tests }
 CMConwayModelTest >> testThereIsTwoClassesInConwayPackage [
 	self assert: CMConwayModel allClassesInPackage size equals: 2
 ]
