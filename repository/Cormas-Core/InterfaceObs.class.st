@@ -332,38 +332,6 @@ InterfaceObs >> actionOpenParametres [
 	tmp Eext: vueEllipse f
 ]
 
-{ #category : #parametres }
-InterfaceObs >> actionOpenParametresOld [
-	"modeleObs isInitialized ifFalse: [^self]."
-	
-	| dialogModel |
-	self flag:#shouldBeRevised.
-	dialogModel := SimpleDialog new.
-	InputFieldSpec new.
-	dialogModel builder
-		aspectAt: #fonction
-		put: 10 asValue.
-	self halt.
-	dialogModel openFor: self interface: #ecranParametres
-]
-
-{ #category : #parametres }
-InterfaceObs >> actionOpenParametresTest [
-	"modeleObs isInitialized ifFalse: [^self]."
-	
-	| dialogModel |
-	dialogModel := SimpleDialog new.
-	dialogModel
-		postBuildBlock:
-			[self builder componentAt: #fonction.
-			self halt].
-	dialogModel openFor: self interface: #ecranParametres.
-	dialogModel
-		postBuildBlock:
-			[self builder componentAt: #fonction.
-			self halt]
-]
-
 { #category : #actions }
 InterfaceObs >> actionOpenPreferences [
 	

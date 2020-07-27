@@ -43,7 +43,7 @@ Class {
 		'winAddEntities_title',
 		'winAddMethods_title'
 	],
-	#category : 'Cormas-UI-Core'
+	#category : #'Cormas-UI-Core'
 }
 
 { #category : #resources }
@@ -1506,8 +1506,7 @@ CMSpaceInterfaceConfig >> checkHabitusList: aHabitusMethodList existsIn: modelLi
 { #category : #debuging }
 CMSpaceInterfaceConfig >> checkMethods: methodsList exists_dialogConfirmTypeName: methodsName [
 	| undefined |
-	methodsList = #defaultPov
-		ifTrue: [ self halt ].
+	methodsList = #defaultPov.
 	(self perform: methodsList)
 		keysDo: [ :aClass | 
 			undefined := Set new.
