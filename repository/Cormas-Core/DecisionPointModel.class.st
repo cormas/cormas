@@ -5,7 +5,7 @@ Class {
 		'outgoingTrue',
 		'outgoingFalse'
 	],
-	#category : 'Cormas-Core-Tools'
+	#category : #'Cormas-Core-Tools'
 }
 
 { #category : #ressources }
@@ -295,7 +295,7 @@ DecisionPointModel >> connectToDestination: destinationModel [
 { #category : #connection }
 DecisionPointModel >> connectToDestinationFalse: destinationModel [
 	
-	self outgoingFalse isNil ifFalse: [self halt].
+	self outgoingFalse isNil ifFalse: [self inform: 'outgoingFalse is not nil and it was overwrited with destinationModel'].
 	self outgoingFalse: destinationModel.
 	destinationModel incoming add: self
 ]
@@ -303,7 +303,7 @@ DecisionPointModel >> connectToDestinationFalse: destinationModel [
 { #category : #connection }
 DecisionPointModel >> connectToDestinationTrue: destinationModel [
 	
-	self outgoingTrue isNil ifFalse: [self halt].
+	self outgoingTrue isNil ifFalse: [self inform: 'outgoingTrue is not nil and it was overwrited with destinationModel'].
 	self outgoingTrue: destinationModel.
 	destinationModel incoming add: self
 ]

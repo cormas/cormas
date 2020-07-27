@@ -12,7 +12,7 @@ Class {
 		'position',
 		'isDistortable'
 	],
-	#category : 'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Interface'
 }
 
 { #category : #viewCorrespondance }
@@ -63,7 +63,7 @@ VectorialPOV >> color [
 VectorialPOV >> color: aColor [
 	
 	aColor isNil ifTrue: [^color := self color].
-	aColor class = ColorValue ifFalse: [self halt].
+	aColor class = ColorValue ifFalse: [self inform: 'aColor isNil ! You must specify a color'].
 	color := aColor
 ]
 

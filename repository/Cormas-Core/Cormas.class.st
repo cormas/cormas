@@ -1138,6 +1138,22 @@ ex:		Cormas min: #( 1 2 3)	=> 1"
 	^ aCollectionOfNumbers min
 ]
 
+{ #category : #'+ utilities - mathematics' }
+Cormas class >> minOf: aMagnitudeName amongObjects: aCollection [
+	"Purpose: returns the lowest value of a given function among a collection of objects understanding this function
+Arguments: aName = <ByteSymbol>
+			aCollection = <Collection(Object)>
+Return value: <Magnitude>
+Example: Cormas maxOf: #elevation amongObject: self theCells"
+	
+	| collec |
+	collec := aCollection
+		select: [:c | (c perform: aMagnitudeName) respondsTo: #>].
+	^collec isEmpty
+		ifFalse: [self min: (collec collect: [:c | c perform: aMagnitudeName])]
+		ifTrue: [nil]
+]
+
 { #category : #'+ utilities - random' }
 Cormas class >> mix: aCollection [
 	"Purpose: Returns a randomly mixed collection
