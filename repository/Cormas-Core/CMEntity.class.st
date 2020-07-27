@@ -624,17 +624,15 @@ aSymbolPOV = <Symbol> "
 
 { #category : #'+ utilities - colors' }
 CMEntity class >> colorOfNumber: aNumber [
-	"Purpose: Returns a ColorValue from the existing 31 constant names: #(#black #blue #brown #chartreuse #cyan #darkCyan #darkGray #darkGreen #darkMagenta #darkRed #gray #green #lightCyan #lightGray #lightYellow #magenta #navy #olive #orange #orchid #paleGreen #pink #purple #red #royalBlue #salmon #springGreen #veryDarkGray #veryLightGray #white #yellow).
-Argument: aNumber = <Integer> is the index at which the color name is picked in the array. It can be greater than 31.
-Example: CormasNS.Kernel.Entity colorOfNumber: 65  -> ColorValue brown"
-	
-	^ColorValue
+	"Purpose: Returns a ColorValue from the existing 40 constant names: #('brickDarken' 'lightMagenta' 'darkGray' 'lightBlue' 'tan' 'black' 'paleMagenta' 'lightBrown' 'gray' 'paleYellow' 'paleOrange' 'paleBlue' 'paleRed' 'orange' 'lightCyan' 'veryLightGray' 'red' 'veryVeryLightGray' 'lightRed' 'blue' 'lightGray' 'veryVeryDarkGray' 'magenta' 'lightGreen' 'brown' 'yellow' 'purple' 'white' 'veryDarkGray' 'cyan' 'veryPaleRed' 'paleTan' 'palePeach' 'green' 'paleBuff' 'paleGreen' 'pink' 'lightOrange' 'transparent' 'lightYellow').
+	Argument: aNumber = <Integer> is the index at which the color name is picked in the array. It can be greater than 40.
+	Example: CMEntity colorOfNumber: 65  -> Color verylightGray"
+
+	^ Color
 		perform:
-			(ColorValue constantNames reverse
-				at:
-					(Cormas
-						number: aNumber
-						onCycle: ColorValue constantNames size))
+			(Color registeredColorNames reverse
+				at: (Cormas number: aNumber onCycle: Color registeredColorNames size))
+				asSymbol
 ]
 
 { #category : #'- probes' }
@@ -651,20 +649,17 @@ CMEntity class >> colorOfProbe: aProbeSymbol [
 
 { #category : #'+ utilities - colors' }
 CMEntity class >> colorOfVectorialPOV: aPov [
-	"Returns a ColorValue, according to VectorialPOV. A VectorialPOV is an array containing the settings of a Situated entity vectorial pov symbol in the following order:
+	"Returns a Color, according to VectorialPOV. A VectorialPOV is an array containing the settings of a Situated entity vectorial pov symbol in the following order:
 (color red) (color green) (color blue) (lineColor red) (lineColor green) (lineColor blue) lineWidth sizeratio position (array of outline vertices).
 aPov = <Symbol>
 
 self colorOfVectorialPOV: #VectorialPOV_A"
-	
+
 	| array |
-	[array := self perform: aPov]
+	[ array := self perform: aPov ]
 		on: Error
-		do: [:ex | ^self cormas warn: 'There is no POV for : <1p>' with: aPov].
-	^ColorValue
-		red: (array at: 1)
-		green: (array at: 2)
-		blue: (array at: 3)
+		do: [ :ex | ^ self cormas warn: 'There is no POV for : <1p>' with: aPov ].
+	^ Color red: (array at: 1) green: (array at: 2) blue: (array at: 3)
 ]
 
 { #category : #'+ utilities - colors' }
