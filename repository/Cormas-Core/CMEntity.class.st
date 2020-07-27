@@ -1608,7 +1608,7 @@ CMEntity >> colorId [
 { #category : #'- utilities - color' }
 CMEntity >> colorOfNumber: aNumber [
 	"Returns a Color for aNumber.
-	(There is only 31 colors)"
+	(There is only 40 colors)"
 
 	^ self class colorOfNumber: aNumber
 ]
