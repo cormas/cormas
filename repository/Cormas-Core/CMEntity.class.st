@@ -664,23 +664,16 @@ self colorOfVectorialPOV: #VectorialPOV_A"
 
 { #category : #'+ utilities - colors' }
 CMEntity class >> colorWithout: aColorName OfNumber: aNumber [
-	"Purpose: Returns a ColorValue from the existing constant names: #(#black #blue #brown #chartreuse #cyan #darkCyan #darkGray #darkGreen #darkMagenta #darkRed #gray #green #lightCyan #lightGray #lightYellow #magenta #navy #olive #orange #orchid #paleGreen #pink #purple #red #royalBlue #salmon #springGreen #veryDarkGray #veryLightGray #white #yellow) except the one given as the first argument.
-Arguments: aColorName : <Symbol>
+	"Purpose: Returns a Color from the existing constant names: #(#black #blue #brown #chartreuse #cyan #darkCyan #darkGray #darkGreen #darkMagenta #darkRed #gray #green #lightCyan #lightGray #lightYellow #magenta #navy #olive #orange #orchid #paleGreen #pink #purple #red #royalBlue #salmon #springGreen #veryDarkGray #veryLightGray #white #yellow) except the one given as the first argument.
+	Arguments: aColorName : <Symbol>
 			aNumber = <Integer> is the index at which the color name is picked in the array. It can be greater than 31.
-Example: CormasNS.Kernel.Entity colorWithout: #white OfNumber: 30  -> ColorValue yellow  (30 is the index of #white in the array of the constant names)"
-	
+	Example: CMEntity colorWithout: #white OfNumber: 30  -> Color yellow  (30 is the index of #white in the array of the constant names)"
+
 	| colors |
-	colors := ColorValue constantNames asOrderedCollection.
-	colors
-		remove: aColorName
-		ifAbsent: [nil].
-	^ColorValue
-		perform:
-			(colors
-				at:
-					(Cormas
-						number: aNumber
-						onCycle: colors size))
+	colors := Color registeredColorNames asOrderedCollection.
+	colors remove: aColorName ifAbsent: [ nil ].
+	^ Color
+		perform: (colors at: ((Cormas number: aNumber onCycle: colors size) asSymbol))
 ]
 
 { #category : #'- accessing' }
@@ -730,47 +723,38 @@ CMEntity class >> createEntityPOVwithSpec: aSpec [
 
 { #category : #'+ utilities - colors' }
 CMEntity class >> darkColorOfNumber: aNumber [
-	"Purpose: Returns a dark ColorValue from the existing 25 constant names: #(#black #blue #brown #chartreuse #cyan #darkCyan #darkGray #darkGreen #darkMagenta #darkRed #gray #green #magenta #navy #olive #orange #orchid #paleGreen #pink #purple #red #royalBlue #salmon #springGreen #veryDarkGray).
+	"Purpose: Returns a dark Color from the existing 25 constant names: #(#black #blue #brown #chartreuse #cyan #darkCyan #darkGray #darkGreen #darkMagenta #darkRed #gray #green #magenta #navy #olive #orange #orchid #paleGreen #pink #purple #red #royalBlue #salmon #springGreen #veryDarkGray).
 Argument: aNumber = <Integer> is the index at which the color name is picked in the array. It can be greater than 25.
-Example: CormasNS.Kernel.Entity darkColorOfNumber:  30 -> ColorValue cyan  "
-	
+Example: CMEntity darkColorOfNumber:  30 -> Color tan"
+
 	| colors |
 	colors := self darkColors.
-	^ColorValue
-		perform:
-			(colors
-				at:
-					(Cormas
-						number: aNumber
-						onCycle: colors size))
+	^ Color
+		perform: (colors at: (Cormas number: aNumber onCycle: colors size)) asSymbol
 ]
 
 { #category : #'+ utilities - colors' }
 CMEntity class >> darkColors [
 	"Purpose: Returns the dark ColorValues from the existing constant color values.
-Example: CormasNS.Kernel.Entity darkColors -> OrderedCollection (#black #blue #brown #chartreuse #cyan #darkCyan #darkGray #darkGreen #darkMagenta #darkRed #gray #green #magenta #navy #olive #orange #orchid #paleGreen #pink #purple #red #royalBlue #salmon #springGreen #veryDarkGray)"
-	
+Example: CMEntity darkColors -> OrderedCollection (#black #blue #brown #chartreuse #cyan #darkCyan #darkGray #darkGreen #darkMagenta #darkRed #gray #green #magenta #navy #olive #orange #orchid #paleGreen #pink #purple #red #royalBlue #salmon #springGreen #veryDarkGray)"
+
 	| colors |
-	colors := ColorValue constantNames asOrderedCollection.
+	colors := Color registeredColorNames  asOrderedCollection.
 	colors
-		removeAllSuchThat:
-			[:symb | 
+		removeAllSuchThat: [ :symb | 
 			(symb indexOfSubCollection: 'light' startingAt: 1) ~= 0
-				or: [(symb indexOfSubCollection: 'Light' startingAt: 1) ~= 0]].
+				or: [ (symb indexOfSubCollection: 'Light' startingAt: 1) ~= 0 ] ].
 	colors remove: #white.
 	colors remove: #yellow.
-	^colors
+	^ colors
 ]
 
 { #category : #'+ utilities - colors' }
 CMEntity class >> defaultColor [
 	"Purpose: return the default color of the current class name.
-	Ex: CMEntity defaultColor => ColorValue lightGray ; CMECECForager defaultColor => ColorValue veryLightGray"
-	
-	| v |
-	v := 1.
-	self name do: [:char | v := v + char asInteger].
-	^self colorOfNumber: v	"^ColorValue red"
+	Example: CMEntity defaultColor => Color red ; CMFireman defaultColor => Color gray"
+
+	^ self colorOfNumber: self hash
 ]
 
 { #category : #'- image' }
@@ -1040,33 +1024,27 @@ CMEntity class >> labelName [
 CMEntity class >> lightColorOfNumber: aNumber [
 	"Purpose: Returns a light ColorValue from the existing 24 constant names: #(#blue #brown #chartreuse #cyan #gray #green #lightCyan #lightGray #lightYellow #magenta #navy #olive #orange #orchid #paleGreen #pink #purple #red #royalBlue #salmon #springGreen #veryLightGray #white #yellow).
 Argument: aNumber = <Integer> is the index at which the color name is picked in the array. It can be greater than 24.
-Example: CormasNS.Kernel.Entity lightColorOfNumber:  30  -> ColorValue green"
-	
+Example: CMEntity lightColorOfNumber:  30  -> Color paleBuff"
+
 	| colors |
 	colors := self lightColors.
-	^ColorValue
-		perform:
-			(colors
-				at:
-					(Cormas
-						number: aNumber
-						onCycle: colors size))
+	^ Color
+		perform: (colors at: (Cormas number: aNumber onCycle: colors size)) asSymbol
 ]
 
 { #category : #'+ utilities - colors' }
 CMEntity class >> lightColors [
 	"Purpose: Returns the light ColorValues from the existing constant color values.
-Example: CormasNS.Kernel.Entity lightColors -> OrderedCollection (#blue #brown #chartreuse #cyan #gray #green #lightCyan #lightGray #lightYellow #magenta #navy #olive #orange #orchid #paleGreen #pink #purple #red #royalBlue #salmon #springGreen #veryLightGray #white #yellow)"
-	
+Example: CMEntity lightColors -> OrderedCollection (#blue #brown #chartreuse #cyan #gray #green #lightCyan #lightGray #lightYellow #magenta #navy #olive #orange #orchid #paleGreen #pink #purple #red #royalBlue #salmon #springGreen #veryLightGray #white #yellow)"
+
 	| colors |
-	colors := ColorValue constantNames asOrderedCollection.
+	colors := Color registeredColorNames asOrderedCollection.
 	colors
-		removeAllSuchThat:
-			[:symb | 
+		removeAllSuchThat: [ :symb | 
 			(symb indexOfSubCollection: 'dark' startingAt: 1) ~= 0
-				or: [(symb indexOfSubCollection: 'Dark' startingAt: 1) ~= 0]].
+				or: [ (symb indexOfSubCollection: 'Dark' startingAt: 1) ~= 0 ] ].
 	colors remove: #black.
-	^colors
+	^ colors
 ]
 
 { #category : #doc }
@@ -1629,10 +1607,10 @@ CMEntity >> colorId [
 
 { #category : #'- utilities - color' }
 CMEntity >> colorOfNumber: aNumber [
-	"Returns a ColorValue for aNumber. 
+	"Returns a Color for aNumber.
 	(There is only 31 colors)"
-	
-	^self class colorOfNumber: aNumber
+
+	^ self class colorOfNumber: aNumber
 ]
 
 { #category : #'- accessing' }
