@@ -630,7 +630,7 @@ CMEntity class >> colorOfNumber: aNumber [
 
 	^ Color
 		perform:
-			(Color registeredColorNames reverse
+			(Color registeredColorNames sorted
 				at: (Cormas number: aNumber onCycle: Color registeredColorNames size))
 				asSymbol
 ]
