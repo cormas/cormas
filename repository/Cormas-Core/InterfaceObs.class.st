@@ -333,21 +333,6 @@ InterfaceObs >> actionOpenParametres [
 ]
 
 { #category : #parametres }
-InterfaceObs >> actionOpenParametresOld [
-	"modeleObs isInitialized ifFalse: [^self]."
-	
-	| dialogModel |
-	self flag:#shouldBeRevised.
-	dialogModel := SimpleDialog new.
-	InputFieldSpec new.
-	dialogModel builder
-		aspectAt: #fonction
-		put: 10 asValue.
-	self halt.
-	dialogModel openFor: self interface: #ecranParametres
-]
-
-{ #category : #parametres }
 InterfaceObs >> actionOpenParametresTest [
 	"modeleObs isInitialized ifFalse: [^self]."
 	
