@@ -50,7 +50,7 @@ Class {
 		'winAddEntities_title',
 		'winAddMethods_title'
 	],
-	#category : 'Cormas-VW-Ported'
+	#category : #'Cormas-VW-Ported'
 }
 
 { #category : #resources }
@@ -1541,7 +1541,7 @@ If you accept, even if the obsolete ' , typeName ,
 SpaceInterfaceConfig >> checkMethods: methodsList exists_dialogConfirmTypeName: methodsName [
 	
 	| undefined |
-	methodsList = #defaultPov ifTrue: [self halt].
+	methodsList = #defaultPov.
 	(self perform: methodsList) keys
 		do:
 			[:aClass | 

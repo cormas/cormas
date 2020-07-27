@@ -195,8 +195,7 @@ Return value: <SpatialEntity>"
 { #category : #'- obsolete' }
 CMSpatialEntitySet >> changedWithNewComponents: aCollecOfComponents [
 	"the shape of the aggregate has changed, then new POVs must be created"
-	
-	self halt.	"not used anymore"	" 'la notifictaion direct aux povs a √©t√© remplac√© par une notifictaion via le spaceModel '"	"Ancienne m√©thode : self povs do: [: aPov | aPov addAll: aCollecOfComponents]."
+	self deprecated: 'not used anymore, the direct notification to the POVs has been replaced by a notification via the spaceModel Old method : self povs do: [: aPov | aPov addAll: aCollecOfComponents]. This method will disappear in the next version'.
 	self cormasModel spaceModel dispatchOneCompoundSpatialEntity: self
 ]
 

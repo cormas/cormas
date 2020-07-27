@@ -1568,7 +1568,6 @@ CMAbstractModel >> checkEntity: anEntity respondsTo: aSymbol [
 		warn: 'The class <1s> does not have a method called <2p>'
 		with: anEntity class name
 		with: aSymbol.
-	self halt
 ]
 
 { #category : #'accessing - entities' }

@@ -478,6 +478,15 @@ CMReHabModel class >> nbFamilies_unit [
 	^ ''
 ]
 
+{ #category : #openMole }
+CMReHabModel class >> newWithProgrammableScenario [
+
+	^ self 
+		defaultInit: #initWithProgrammableScenario;
+		initialize;
+		new.
+]
+
 { #category : #sessions }
 CMReHabModel class >> outputStreamPlayer: aString [
 	| filename |
@@ -604,6 +613,26 @@ CMReHabModel class >> sessionsPath [
 	path := modelPath construct: 'data'.
 	path asFilename exists ifFalse: [path asFilename makeDirectory].
 	^path
+]
+
+{ #category : #openMole }
+CMReHabModel class >> simuOpenMole [
+	"Example used in OpenMole (https://openmole.org/)"
+    | conf aModel |
+	 "self createInJSONFile." "OpenMole usually generate this file"
+    conf := CMOpenMoleExchange loadJSONFile: 'input.json'.
+    aModel := self newWithProgrammableScenario
+        numberOfFires: (conf at: #numberOfFires) ;
+        numberOfFiremen: (conf at: #numberOfFiremen);
+        percentageOfTrees: (conf at: #percentageOfTrees);
+        dimensions: (conf at: #dimensionMin) -> (conf at: #dimensionMax);
+        activeControl: #step:;
+        initSimulation.
+    aModel simManager
+        initializeSimulation;
+        finalTime: 100;
+        runSimulation.
+    CMOpenMoleExchange saveJSONFile: (CMOpenMoleExchange lastValuesOfVariables: (aModel data)) 
 ]
 
 { #category : #'- default value' }
@@ -782,7 +811,8 @@ CMReHabModel >> initAgents_Autonomous [
 			f strategy: (self newEntity: (CMReHabStrategyFamily allSubclasses at: self strategy_Family)).
 			f strategy holder: f.
 			f strategy poacher: self poaching.
-			f strategy restrained: self restrained].
+			f strategy restrained: self restrained.
+			self halt.].
 	self initAnimals.
 	self initParkManager.
 	self parkManager strategy: (self newEntity: (CMReHabStrategyParkManager allSubclasses at: self strategy_ParkManager)).
@@ -798,6 +828,17 @@ CMReHabModel >> initAnimals [
 CMReHabModel >> initParkManager [
 	self newEntity: CMReHabParkManager.
 	self parkManager zones: self theZones
+]
+
+{ #category : #openMole }
+CMReHabModel >> initWithProgrammableScenario [
+
+	self setInitialBiomasses.
+	self theZones do: [:aZone | aZone noHarvestPeriod: 0].
+	"I need to initialize agents :
+	* nb of families
+	* type of strategies
+	"
 ]
 
 { #category : #accessing }
