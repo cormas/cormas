@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'isDistortable'
 	],
-	#category : 'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Interface'
 }
 
 { #category : #new }
@@ -131,7 +131,8 @@ VectorialFigure >> calculateNewPositionOnPatchBounds: absolutePatchBounds [
 VectorialFigure >> changeWith: anOtherCoordinate [
 	"This message is sent when a figure (self) is being deleted and replaced by anOtherCoordinate. The old one (self) is removed from SpaceView and the new one is added"
 	
-	self halt.	"a virer ?"
+	self deprecated: 'If it doesnt break nothing. This method will disappear in the next version'.
+
 	self changed: #replace with: anOtherCoordinate
 ]
 
