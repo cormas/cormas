@@ -622,14 +622,14 @@ aSymbolPOV = <Symbol> "
 		ifAbsentPut: [nil]
 ]
 
-{ #category : #'+ utilities - colors' }
+{ #category : #'utilities - colors' }
 CMEntity class >> colorNames [
     | colorSpecs |
     colorSpecs := Color defaultColors, Color defaultColors2, Color defaultColors3, Color defaultColors4.
     ^ Array streamContents: [:stream | 1 to: colorSpecs size by: 4 do: [ :i | stream nextPut: (colorSpecs at: i) ]]
 ]
 
-{ #category : #'+ utilities - colors' }
+{ #category : #'utilities - colors' }
 CMEntity class >> colorOfNumber: aNumber [
 	"Purpose: Returns a Color from the existing 38 constant names: #(#black #veryVeryDarkGray #veryDarkGray #darkGray #gray #lightGray #veryLightGray #veryVeryLightGray #white #red #yellow #green #cyan #blue #magenta #brown #orange #lightRed #lightYellow #lightGreen #lightCyan #lightBlue #lightMagenta #lightBrown #lightOrange #pink #purple #tan #veryPaleRed #paleYellow #paleTan #paleRed #palePeach #paleOrange #paleMagenta #paleGreen #paleBuff #paleBlue).
 	Argument: aNumber = <Integer> is the index at which the color name is picked in the array. It can be greater than 38.
@@ -654,7 +654,7 @@ CMEntity class >> colorOfProbe: aProbeSymbol [
 	^self perform: selectorName
 ]
 
-{ #category : #'+ utilities - colors' }
+{ #category : #'utilities - colors' }
 CMEntity class >> colorOfVectorialPOV: aPov [
 	"Returns a Color, according to VectorialPOV. A VectorialPOV is an array containing the settings of a Situated entity vectorial pov symbol in the following order:
 (color red) (color green) (color blue) (lineColor red) (lineColor green) (lineColor blue) lineWidth sizeratio position (array of outline vertices).
@@ -669,7 +669,7 @@ self colorOfVectorialPOV: #VectorialPOV_A"
 	^ Color red: (array at: 1) green: (array at: 2) blue: (array at: 3)
 ]
 
-{ #category : #'+ utilities - colors' }
+{ #category : #'utilities - colors' }
 CMEntity class >> colorWithout: aColorName OfNumber: aNumber [
 	"Purpose: Returns a Color from the existing constant names: #(#black #veryVeryDarkGray #veryDarkGray #darkGray #gray #lightGray #veryLightGray #veryVeryLightGray #white #red #yellow #green #cyan #blue #magenta #brown #orange #lightRed #lightYellow #lightGreen #lightCyan #lightBlue #lightMagenta #lightBrown #lightOrange #pink #purple #tan #veryPaleRed #paleYellow #paleTan #paleRed #palePeach #paleOrange #paleMagenta #paleGreen #paleBuff #paleBlue) except the one given as the first argument.
 	Arguments: aColorName : <Symbol>
@@ -728,7 +728,7 @@ CMEntity class >> createEntityPOVwithSpec: aSpec [
 	^anEntityPOV
 ]
 
-{ #category : #'+ utilities - colors' }
+{ #category : #'utilities - colors' }
 CMEntity class >> darkColorOfNumber: aNumber [
 	"Purpose: Returns a dark Color from the existing 38 constant names: #(#black #veryVeryDarkGray #veryDarkGray #darkGray #gray #lightGray #veryLightGray #veryVeryLightGray #white #red #yellow #green #cyan #blue #magenta #brown #orange #lightRed #lightYellow #lightGreen #lightCyan #lightBlue #lightMagenta #lightBrown #lightOrange #pink #purple #tan #veryPaleRed #paleYellow #paleTan #paleRed #palePeach #paleOrange #paleMagenta #paleGreen #paleBuff #paleBlue).
 Argument: aNumber = <Integer> is the index at which the color name is picked in the array. It can be greater than 25.
@@ -740,7 +740,7 @@ Example: CMEntity darkColorOfNumber:  30 -> Color brown"
 		perform: (colors at: (Cormas number: aNumber onCycle: colors size)) asSymbol
 ]
 
-{ #category : #'+ utilities - colors' }
+{ #category : #'utilities - colors' }
 CMEntity class >> darkColors [
 	"Purpose: Returns the dark ColorValues from the existing constant color values.
 Example: CMEntity darkColors -> an OrderedCollection('veryPaleRed' 'magenta' 'brown' 'red' 'paleBlue' 'darkGray' 'palePeach' 'transparent' 'blue' 'purple' 'paleGreen' 'paleYellow' 'paleBuff' 'tan' 'paleOrange' 'veryVeryDarkGray' 'paleRed' 'orange' 'paleMagenta' 'black' 'pink' 'paleTan' 'gray' 'green' 'veryDarkGray' 'cyan' 'brickDarken')"
@@ -755,7 +755,7 @@ Example: CMEntity darkColors -> an OrderedCollection('veryPaleRed' 'magenta' 'br
 	^ colors
 ]
 
-{ #category : #'+ utilities - colors' }
+{ #category : #'utilities - colors' }
 CMEntity class >> defaultColor [
 	"Purpose: return the default color of the current class name.
 	Example: CMEntity defaultColor => Color lightBrown ; CMFireman defaultColor => Color paleRed"
@@ -1026,7 +1026,7 @@ CMEntity class >> labelName [
 	^ self name allButFirst: 2
 ]
 
-{ #category : #'+ utilities - colors' }
+{ #category : #'utilities - colors' }
 CMEntity class >> lightColorOfNumber: aNumber [
 	"Purpose: Returns a light ColorValue from the existing 38 constant names: #(#black #veryVeryDarkGray #veryDarkGray #darkGray #gray #lightGray #veryLightGray #veryVeryLightGray #white #red #yellow #green #cyan #blue #magenta #brown #orange #lightRed #lightYellow #lightGreen #lightCyan #lightBlue #lightMagenta #lightBrown #lightOrange #pink #purple #tan #veryPaleRed #paleYellow #paleTan #paleRed #palePeach #paleOrange #paleMagenta #paleGreen #paleBuff #paleBlue).
 Argument: aNumber = <Integer> is the index at which the color name is picked in the array. It can be greater than 38.
@@ -1038,7 +1038,7 @@ Example: CMEntity lightColorOfNumber:  30 => Color lightMagenta"
 		perform: (colors at: (Cormas number: aNumber onCycle: colors size)) asSymbol
 ]
 
-{ #category : #'+ utilities - colors' }
+{ #category : #'utilities - colors' }
 CMEntity class >> lightColors [
 	"Purpose: Returns the light Color from the existing constant color values.
 Example: CMEntity lightColors => an OrderedCollection('veryPaleRed' 'magenta' 'brown' 'red' 'paleBlue' 'palePeach' 'white' 'transparent' 'blue' 'yellow' 'lightGreen' 'purple' 'lightGray' 'paleGreen' 'paleYellow' 'paleBuff' 'tan' 'lightBlue' 'lightRed' 'paleOrange' 'paleRed' 'orange' 'lightBrown' 'lightOrange' 'paleMagenta' 'pink' 'paleTan' 'gray' 'green' 'lightMagenta' 'lightCyan' 'lightYellow' 'cyan' 'veryLightGray' 'veryVeryLightGray')"
@@ -1593,28 +1593,23 @@ CMEntity >> collector: aCollector [
 	collector := aCollector
 ]
 
-{ #category : #'- utilities - color' }
+{ #category : #'utilities - color' }
 CMEntity >> colorFromName: aName [
-	"return a specific color from a name"
-	
-	| tot |
-	tot := 0.
-	aName asArray do: [:i | tot := tot + i asInteger].
-	^self colorOfNumber: (tot * 40 quo: 36)
+	"returns a specific color from a name"
+
+	^ self colorOfNumber: aName hash
 ]
 
-{ #category : #'- utilities - color' }
+{ #category : #'utilities - color' }
 CMEntity >> colorId [
-	"Returns a ColorValue for the id. 
-	(There is only 31 colors)."
-	
-	^self colorOfNumber: self id
+	"Returns a Color from the id (there is only 38 colors)."
+
+	^ self colorOfNumber: self id
 ]
 
-{ #category : #'- utilities - color' }
+{ #category : #'utilities - color' }
 CMEntity >> colorOfNumber: aNumber [
-	"Returns a Color for aNumber.
-	(There is only 40 colors)"
+	"Returns a Color for aNumber (there is only 38 colors)."
 
 	^ self class colorOfNumber: aNumber
 ]
@@ -1719,7 +1714,7 @@ CMEntity >> flag: aValue [
 	flag := aValue
 ]
 
-{ #category : #'- utilities - color' }
+{ #category : #'utilities - color' }
 CMEntity >> getColorForPov: aSelectorName [
 	"Returns a Color according to the POV (aSelectorName).
 aSelectorName = <Symbol>.
@@ -1796,9 +1791,8 @@ CMEntity >> id [
 ]
 
 { #category : #'- accessing' }
-CMEntity >> id: aVal [
-	
-	id := aVal
+CMEntity >> id: aNumber [
+	id := aNumber
 ]
 
 { #category : #'as yet unclassified' }
@@ -2148,7 +2142,7 @@ Example: for an instance with id = 65, the returned color will be brown (65= 2*3
 ^self class colorOfNumber: self id
 ]
 
-{ #category : #'- utilities - color' }
+{ #category : #'utilities - color' }
 CMEntity >> povValue: aValue min: minValue color: startColor max: maxValue color: stopColor [
 	"Return a Color associated to aValue amongs a palette of colors.
 aValue = <Number> ; minValue = <Integer> ; maxValue = <Integer> ; startColor = <Color or Symbol> ; stopColor = <Color  or Symbol>
@@ -2177,25 +2171,27 @@ ECEC example :
 	^Color red: rv green: gv blue: bv
 ]
 
-{ #category : #'- utilities - color' }
+{ #category : #'utilities - color' }
 CMEntity >> povValue: aValue min: minValue max: maxValue color: baseColor [
-	"Return a ColorValue for aValue, in the interval of minValue and maxValue. 
+	"Return a Color for aValue, in the interval of minValue and maxValue. 
 Works even if this value is less or up to minValue or maxValue
 aValue = <Number> ; minValue = <Integer> ; maxValue = <Integer> ; baseColor = <ColorValue  or Symbol>
 ECEC example : 
 	povAttribute: #energy min: 0 max: self class K color: ColorValue green"
-	
+
 	| index value color |
-	(aValue isNil or: [aValue cormasHelper isTypeNumber not])
-		ifTrue: [^Color white].
+	(aValue isNil or: [ aValue cormasHelper isTypeNumber not ])
+		ifTrue: [ ^ Color white ].
 	value := aValue.
-	value <= minValue ifTrue: [value := minValue].
-	value >= maxValue ifTrue: [value := maxValue].
+	value <= minValue
+		ifTrue: [ value := minValue ].
+	value >= maxValue
+		ifTrue: [ value := maxValue ].
 	maxValue = minValue
-		ifTrue: [index := 0.8]
-		ifFalse: [index := (maxValue - value) / (maxValue - minValue)].	"ifFalse: [index := 0.8 + (0.2 * (performResult - minValue) / (maxValue - minValue))]."
+		ifTrue: [ index := 0.8 ]
+		ifFalse: [ index := (maxValue - value) / (maxValue - minValue) ].	"ifFalse: [index := 0.8 + (0.2 * (performResult - minValue) / (maxValue - minValue))]."
 	color := Cormas colorFrom: baseColor.
-	^Color
+	^ Color
 		h: color hue
 		s: color saturation * (1 - (index raisedTo: 10))
 		v: color brightness * index
