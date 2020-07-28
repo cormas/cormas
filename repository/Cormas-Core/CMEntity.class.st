@@ -624,9 +624,9 @@ aSymbolPOV = <Symbol> "
 
 { #category : #'+ utilities - colors' }
 CMEntity class >> colorOfNumber: aNumber [
-	"Purpose: Returns a ColorValue from the existing 40 constant names: #('brickDarken' 'lightMagenta' 'darkGray' 'lightBlue' 'tan' 'black' 'paleMagenta' 'lightBrown' 'gray' 'paleYellow' 'paleOrange' 'paleBlue' 'paleRed' 'orange' 'lightCyan' 'veryLightGray' 'red' 'veryVeryLightGray' 'lightRed' 'blue' 'lightGray' 'veryVeryDarkGray' 'magenta' 'lightGreen' 'brown' 'yellow' 'purple' 'white' 'veryDarkGray' 'cyan' 'veryPaleRed' 'paleTan' 'palePeach' 'green' 'paleBuff' 'paleGreen' 'pink' 'lightOrange' 'transparent' 'lightYellow').
+	"Purpose: Returns a Color from the existing 40 constant names: #('brickDarken' 'lightMagenta' 'darkGray' 'lightBlue' 'tan' 'black' 'paleMagenta' 'lightBrown' 'gray' 'paleYellow' 'paleOrange' 'paleBlue' 'paleRed' 'orange' 'lightCyan' 'veryLightGray' 'red' 'veryVeryLightGray' 'lightRed' 'blue' 'lightGray' 'veryVeryDarkGray' 'magenta' 'lightGreen' 'brown' 'yellow' 'purple' 'white' 'veryDarkGray' 'cyan' 'veryPaleRed' 'paleTan' 'palePeach' 'green' 'paleBuff' 'paleGreen' 'pink' 'lightOrange' 'transparent' 'lightYellow').
 	Argument: aNumber = <Integer> is the index at which the color name is picked in the array. It can be greater than 40.
-	Example: CMEntity colorOfNumber: 65  -> Color verylightGray"
+	Example: CMEntity colorOfNumber: 65  -> Color palePeach"
 
 	^ Color
 		perform:
