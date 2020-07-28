@@ -108,6 +108,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "peteruhnak",
+      "name": "Peter Uhnak",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1276328?v=4",
+      "profile": "http://peteruhnak.com/blog",
+      "contributions": [
+        "tool"
+      ]
     }
   ],
   "contributorsPerLine": 7,
