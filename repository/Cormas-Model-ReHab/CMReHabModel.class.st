@@ -788,7 +788,7 @@ CMReHabModel >> harvest [
 { #category : #init }
 CMReHabModel >> init [
 
-	self createGridLines: 4 columns: 5  neighbourhood: 8 closed: true .
+	self createGridLines: 4 columns: 5  neighbourhood: 8 closed: true.
 	self setInitialBiomasses.
 	self theZones do: [:aZone | aZone noHarvestPeriod: 0].
 	self initAgents_Autonomous.
