@@ -638,7 +638,7 @@ CMEntity class >> colorOfNumber: aNumber [
 	^ Color
 		perform:
 			(self colorNames
-				at: (Cormas number: aNumber onCycle: Color registeredColorNames size))
+				at: (Cormas number: aNumber onCycle: self colorNames size))
 				asSymbol
 ]
 

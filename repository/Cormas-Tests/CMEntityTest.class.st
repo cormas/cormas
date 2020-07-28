@@ -11,7 +11,7 @@ Class {
 CMEntityTest >> testColorOfNumber [
 
 
-self assert: (CMEntity colorOfNumber: 65) equals: Color lightOrange   
+self assert: (CMEntity colorOfNumber: 65) equals: Color purple   
 ]
 
 { #category : #tests }
