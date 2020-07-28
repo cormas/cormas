@@ -623,14 +623,21 @@ aSymbolPOV = <Symbol> "
 ]
 
 { #category : #'+ utilities - colors' }
+CMEntity class >> colorNames [
+    | colorSpecs |
+    colorSpecs := Color defaultColors, Color defaultColors2, Color defaultColors3, Color defaultColors4.
+    ^ Array streamContents: [:stream | 1 to: colorSpecs size by: 4 do: [ :i | stream nextPut: (colorSpecs at: i) ]]
+]
+
+{ #category : #'+ utilities - colors' }
 CMEntity class >> colorOfNumber: aNumber [
-	"Purpose: Returns a Color from the existing 40 constant names: #('brickDarken' 'lightMagenta' 'darkGray' 'lightBlue' 'tan' 'black' 'paleMagenta' 'lightBrown' 'gray' 'paleYellow' 'paleOrange' 'paleBlue' 'paleRed' 'orange' 'lightCyan' 'veryLightGray' 'red' 'veryVeryLightGray' 'lightRed' 'blue' 'lightGray' 'veryVeryDarkGray' 'magenta' 'lightGreen' 'brown' 'yellow' 'purple' 'white' 'veryDarkGray' 'cyan' 'veryPaleRed' 'paleTan' 'palePeach' 'green' 'paleBuff' 'paleGreen' 'pink' 'lightOrange' 'transparent' 'lightYellow').
-	Argument: aNumber = <Integer> is the index at which the color name is picked in the array. It can be greater than 40.
+	"Purpose: Returns a Color from the existing 38 constant names: #(#black #veryVeryDarkGray #veryDarkGray #darkGray #gray #lightGray #veryLightGray #veryVeryLightGray #white #red #yellow #green #cyan #blue #magenta #brown #orange #lightRed #lightYellow #lightGreen #lightCyan #lightBlue #lightMagenta #lightBrown #lightOrange #pink #purple #tan #veryPaleRed #paleYellow #paleTan #paleRed #palePeach #paleOrange #paleMagenta #paleGreen #paleBuff #paleBlue).
+	Argument: aNumber = <Integer> is the index at which the color name is picked in the array. It can be greater than 38.
 	Example: CMEntity colorOfNumber: 65  -> Color palePeach"
 
 	^ Color
 		perform:
-			(Color registeredColorNames sorted
+			(self colorNames
 				at: (Cormas number: aNumber onCycle: Color registeredColorNames size))
 				asSymbol
 ]
@@ -664,16 +671,16 @@ self colorOfVectorialPOV: #VectorialPOV_A"
 
 { #category : #'+ utilities - colors' }
 CMEntity class >> colorWithout: aColorName OfNumber: aNumber [
-	"Purpose: Returns a Color from the existing constant names: #(#black #blue #brown #chartreuse #cyan #darkCyan #darkGray #darkGreen #darkMagenta #darkRed #gray #green #lightCyan #lightGray #lightYellow #magenta #navy #olive #orange #orchid #paleGreen #pink #purple #red #royalBlue #salmon #springGreen #veryDarkGray #veryLightGray #white #yellow) except the one given as the first argument.
+	"Purpose: Returns a Color from the existing constant names: #(#black #veryVeryDarkGray #veryDarkGray #darkGray #gray #lightGray #veryLightGray #veryVeryLightGray #white #red #yellow #green #cyan #blue #magenta #brown #orange #lightRed #lightYellow #lightGreen #lightCyan #lightBlue #lightMagenta #lightBrown #lightOrange #pink #purple #tan #veryPaleRed #paleYellow #paleTan #paleRed #palePeach #paleOrange #paleMagenta #paleGreen #paleBuff #paleBlue) except the one given as the first argument.
 	Arguments: aColorName : <Symbol>
-			aNumber = <Integer> is the index at which the color name is picked in the array. It can be greater than 31.
-	Example: CMEntity colorWithout: #white OfNumber: 30  -> Color yellow  (30 is the index of #white in the array of the constant names)"
+			aNumber = <Integer> is the index at which the color name is picked in the array. It can be greater than 38.
+	Example: CMEntity colorWithout: #white OfNumber: 30  -> Color gray "
 
 	| colors |
 	colors := Color registeredColorNames asOrderedCollection.
 	colors remove: aColorName ifAbsent: [ nil ].
 	^ Color
-		perform: (colors at: ((Cormas number: aNumber onCycle: colors size) asSymbol))
+		perform: (colors at: (Cormas number: aNumber onCycle: colors size) asSymbol)
 ]
 
 { #category : #'- accessing' }
@@ -723,9 +730,9 @@ CMEntity class >> createEntityPOVwithSpec: aSpec [
 
 { #category : #'+ utilities - colors' }
 CMEntity class >> darkColorOfNumber: aNumber [
-	"Purpose: Returns a dark Color from the existing 25 constant names: #(#black #blue #brown #chartreuse #cyan #darkCyan #darkGray #darkGreen #darkMagenta #darkRed #gray #green #magenta #navy #olive #orange #orchid #paleGreen #pink #purple #red #royalBlue #salmon #springGreen #veryDarkGray).
+	"Purpose: Returns a dark Color from the existing 38 constant names: #(#black #veryVeryDarkGray #veryDarkGray #darkGray #gray #lightGray #veryLightGray #veryVeryLightGray #white #red #yellow #green #cyan #blue #magenta #brown #orange #lightRed #lightYellow #lightGreen #lightCyan #lightBlue #lightMagenta #lightBrown #lightOrange #pink #purple #tan #veryPaleRed #paleYellow #paleTan #paleRed #palePeach #paleOrange #paleMagenta #paleGreen #paleBuff #paleBlue).
 Argument: aNumber = <Integer> is the index at which the color name is picked in the array. It can be greater than 25.
-Example: CMEntity darkColorOfNumber:  30 -> Color tan"
+Example: CMEntity darkColorOfNumber:  30 -> Color brown"
 
 	| colors |
 	colors := self darkColors.
@@ -736,10 +743,9 @@ Example: CMEntity darkColorOfNumber:  30 -> Color tan"
 { #category : #'+ utilities - colors' }
 CMEntity class >> darkColors [
 	"Purpose: Returns the dark ColorValues from the existing constant color values.
-Example: CMEntity darkColors -> OrderedCollection (#black #blue #brown #chartreuse #cyan #darkCyan #darkGray #darkGreen #darkMagenta #darkRed #gray #green #magenta #navy #olive #orange #orchid #paleGreen #pink #purple #red #royalBlue #salmon #springGreen #veryDarkGray)"
-
+Example: CMEntity darkColors -> an OrderedCollection('veryPaleRed' 'magenta' 'brown' 'red' 'paleBlue' 'darkGray' 'palePeach' 'transparent' 'blue' 'purple' 'paleGreen' 'paleYellow' 'paleBuff' 'tan' 'paleOrange' 'veryVeryDarkGray' 'paleRed' 'orange' 'paleMagenta' 'black' 'pink' 'paleTan' 'gray' 'green' 'veryDarkGray' 'cyan' 'brickDarken')"
 	| colors |
-	colors := Color registeredColorNames  asOrderedCollection.
+	colors := Color registeredColorNames asOrderedCollection.
 	colors
 		removeAllSuchThat: [ :symb | 
 			(symb indexOfSubCollection: 'light' startingAt: 1) ~= 0
@@ -752,7 +758,7 @@ Example: CMEntity darkColors -> OrderedCollection (#black #blue #brown #chartreu
 { #category : #'+ utilities - colors' }
 CMEntity class >> defaultColor [
 	"Purpose: return the default color of the current class name.
-	Example: CMEntity defaultColor => Color red ; CMFireman defaultColor => Color gray"
+	Example: CMEntity defaultColor => Color lightBrown ; CMFireman defaultColor => Color paleRed"
 
 	^ self colorOfNumber: self hash
 ]
@@ -1022,9 +1028,9 @@ CMEntity class >> labelName [
 
 { #category : #'+ utilities - colors' }
 CMEntity class >> lightColorOfNumber: aNumber [
-	"Purpose: Returns a light ColorValue from the existing 24 constant names: #(#blue #brown #chartreuse #cyan #gray #green #lightCyan #lightGray #lightYellow #magenta #navy #olive #orange #orchid #paleGreen #pink #purple #red #royalBlue #salmon #springGreen #veryLightGray #white #yellow).
-Argument: aNumber = <Integer> is the index at which the color name is picked in the array. It can be greater than 24.
-Example: CMEntity lightColorOfNumber:  30  -> Color paleBuff"
+	"Purpose: Returns a light ColorValue from the existing 38 constant names: #(#black #veryVeryDarkGray #veryDarkGray #darkGray #gray #lightGray #veryLightGray #veryVeryLightGray #white #red #yellow #green #cyan #blue #magenta #brown #orange #lightRed #lightYellow #lightGreen #lightCyan #lightBlue #lightMagenta #lightBrown #lightOrange #pink #purple #tan #veryPaleRed #paleYellow #paleTan #paleRed #palePeach #paleOrange #paleMagenta #paleGreen #paleBuff #paleBlue).
+Argument: aNumber = <Integer> is the index at which the color name is picked in the array. It can be greater than 38.
+Example: CMEntity lightColorOfNumber:  30 => Color lightMagenta"
 
 	| colors |
 	colors := self lightColors.
@@ -1034,8 +1040,8 @@ Example: CMEntity lightColorOfNumber:  30  -> Color paleBuff"
 
 { #category : #'+ utilities - colors' }
 CMEntity class >> lightColors [
-	"Purpose: Returns the light ColorValues from the existing constant color values.
-Example: CMEntity lightColors -> OrderedCollection (#blue #brown #chartreuse #cyan #gray #green #lightCyan #lightGray #lightYellow #magenta #navy #olive #orange #orchid #paleGreen #pink #purple #red #royalBlue #salmon #springGreen #veryLightGray #white #yellow)"
+	"Purpose: Returns the light Color from the existing constant color values.
+Example: CMEntity lightColors => an OrderedCollection('veryPaleRed' 'magenta' 'brown' 'red' 'paleBlue' 'palePeach' 'white' 'transparent' 'blue' 'yellow' 'lightGreen' 'purple' 'lightGray' 'paleGreen' 'paleYellow' 'paleBuff' 'tan' 'lightBlue' 'lightRed' 'paleOrange' 'paleRed' 'orange' 'lightBrown' 'lightOrange' 'paleMagenta' 'pink' 'paleTan' 'gray' 'green' 'lightMagenta' 'lightCyan' 'lightYellow' 'cyan' 'veryLightGray' 'veryVeryLightGray')"
 
 	| colors |
 	colors := Color registeredColorNames asOrderedCollection.
