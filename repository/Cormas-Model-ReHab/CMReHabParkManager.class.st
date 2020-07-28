@@ -52,15 +52,11 @@ CMReHabParkManager class >> zones_type [
 
 { #category : #control }
 CMReHabParkManager >> decideAccess [
-| zone |
-
+	| zone |
 	self strategy getLocations
-		do:
-			[:n |
-			zone := self zones
-				detect: [:c | c id = n]
-				ifNone: [nil].
-			zone isNil ifFalse: [zone access: false]]
+		do: [ :n | 
+			zone := self zones detect: [ :c | c id = n ] ifNone: [ nil ].
+			zone ifNotNil: [ zone access: false ] ]
 ]
 
 { #category : #control }
