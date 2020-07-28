@@ -144,6 +144,12 @@ getmode(c(10,20,58,96,48,76,57,68,19,10))
 ]
 
 { #category : #tests }
+CormasTest >> testNumberOnCycle [
+
+self assert: (Cormas number: 65 onCycle:40) equals:25
+]
+
+{ #category : #tests }
 CormasTest >> testObjectTypeAsString [
 	
 	self assert: (Cormas objectTypeAsString: 12) equals: '12'.

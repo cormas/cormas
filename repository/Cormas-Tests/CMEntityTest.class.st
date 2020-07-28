@@ -8,6 +8,13 @@ Class {
 }
 
 { #category : #tests }
+CMEntityTest >> testColorOfNumber [
+
+
+self assert: (CMEntity colorOfNumber: 65) equals: Color purple   
+]
+
+{ #category : #tests }
 CMEntityTest >> testCormasEntityIsAbstract [
 	self assert: CMEntity isAbstract
 ]
