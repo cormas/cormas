@@ -49,14 +49,6 @@ CMEntityTest >> testModelClass [
 ]
 
 { #category : #tests }
-CMEntityTest >> testRegisteredColor [
-	self
-		assert: Color registeredColorNames sorted
-		equals:
-		#('black' 'blue' 'brickDarken' 'brown' 'cyan' 'darkGray' 'gray' 'green' 'lightBlue' 'lightBrown' 'lightCyan' 'lightGray' 'lightGreen' 'lightMagenta' 'lightOrange' 'lightRed' 'lightYellow' 'magenta' 'orange' 'paleBlue' 'paleBuff' 'paleGreen' 'paleMagenta' 'paleOrange' 'palePeach' 'paleRed' 'paleTan' 'paleYellow' 'pink' 'purple' 'red' 'tan' 'transparent' 'veryDarkGray' 'veryLightGray' 'veryPaleRed' 'veryVeryDarkGray' 'veryVeryLightGray' 'white' 'yellow')
-]
-
-{ #category : #tests }
 CMEntityTest >> testShortName [
 	self assert: CMCellForTest shortName equals: 'CellForTest'.
 	self
