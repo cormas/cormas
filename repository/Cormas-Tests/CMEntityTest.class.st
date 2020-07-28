@@ -50,8 +50,10 @@ CMEntityTest >> testModelClass [
 
 { #category : #tests }
 CMEntityTest >> testRegisteredColor [
-
-self assert: Color registeredColorNames equals: #('brickDarken' 'lightMagenta' 'darkGray' 'lightBlue' 'tan' 'black' 'paleMagenta' 'lightBrown' 'gray' 'paleYellow' 'paleOrange' 'paleBlue' 'paleRed' 'orange' 'lightCyan' 'veryLightGray' 'red' 'veryVeryLightGray' 'lightRed' 'blue' 'lightGray' 'veryVeryDarkGray' 'magenta' 'lightGreen' 'brown' 'yellow' 'purple' 'white' 'veryDarkGray' 'cyan' 'veryPaleRed' 'paleTan' 'palePeach' 'green' 'paleBuff' 'paleGreen' 'pink' 'lightOrange' 'transparent' 'lightYellow')
+	self
+		assert: Color registeredColorNames sorted
+		equals:
+		#('black' 'blue' 'brickDarken' 'brown' 'cyan' 'darkGray' 'gray' 'green' 'lightBlue' 'lightBrown' 'lightCyan' 'lightGray' 'lightGreen' 'lightMagenta' 'lightOrange' 'lightRed' 'lightYellow' 'magenta' 'orange' 'paleBlue' 'paleBuff' 'paleGreen' 'paleMagenta' 'paleOrange' 'palePeach' 'paleRed' 'paleTan' 'paleYellow' 'pink' 'purple' 'red' 'tan' 'transparent' 'veryDarkGray' 'veryLightGray' 'veryPaleRed' 'veryVeryDarkGray' 'veryVeryLightGray' 'white' 'yellow')
 ]
 
 { #category : #tests }
