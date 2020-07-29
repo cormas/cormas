@@ -266,8 +266,8 @@ CMReHabPlantHarvester >> label: anObject [
 
 { #category : #accessing }
 CMReHabPlantHarvester >> myClan [
-	"Getter accessor without default value "
-	^myClan
+
+	^ myClan
 ]
 
 { #category : #accessing }
@@ -283,11 +283,9 @@ CMReHabPlantHarvester >> pov [
 
 { #category : #pov }
 CMReHabPlantHarvester >> povColor [
-
-	self myClan isNil ifTrue: [^self class name].
-	^self myClan color isNil
-		ifTrue: [self colorOfNumber: self myClan id]
-		ifFalse: [self myClan color]
+	self myClan ifNil: [ ^ self class name ].
+	^ self myClan color ifNil: [ self colorOfNumber: self myClan id ]
+		ifNotNil: [ self myClan color ]
 ]
 
 { #category : #pov }
