@@ -618,21 +618,26 @@ CMReHabModel class >> sessionsPath [
 { #category : #openMole }
 CMReHabModel class >> simuOpenMole [
 	"Example used in OpenMole (https://openmole.org/)"
-    | conf aModel |
-	 "self createInJSONFile." "OpenMole usually generate this file"
-    conf := CMOpenMoleExchange loadJSONFile: 'input.json'.
-    aModel := self newWithProgrammableScenario
-        numberOfFires: (conf at: #numberOfFires) ;
-        numberOfFiremen: (conf at: #numberOfFiremen);
-        percentageOfTrees: (conf at: #percentageOfTrees);
-        dimensions: (conf at: #dimensionMin) -> (conf at: #dimensionMax);
-        activeControl: #step:;
-        initSimulation.
-    aModel simManager
-        initializeSimulation;
-        finalTime: 100;
-        runSimulation.
-    CMOpenMoleExchange saveJSONFile: (CMOpenMoleExchange lastValuesOfVariables: (aModel data)) 
+
+	| conf aModel |
+	"self createInJSONFile."
+	"OpenMole usually generate this file"
+	conf := CMOpenMoleExchange loadJSONFile: 'input.json'.
+	aModel := self newWithProgrammableScenario
+		nbFamilies: (conf at: #nbFamilies);
+		strategy_Family: (conf at: #strategy_Family);
+		holder: (conf at: #holder);
+		poacher: (conf at: #poacher);
+		restrained: (conf at: #restrained);
+		strategy_ParkManager: (conf at: #strategy_ParkManager);
+		activeControl: #step:;
+		initSimulation.
+	aModel simManager
+		initializeSimulation;
+		finalTime: 6;
+		runSimulation.
+	CMOpenMoleExchange
+		saveJSONFile: (CMOpenMoleExchange lastValuesOfVariables: aModel data)
 ]
 
 { #category : #'- default value' }
@@ -832,13 +837,33 @@ CMReHabModel >> initParkManager [
 
 { #category : #openMole }
 CMReHabModel >> initWithProgrammableScenario [
-
 	self setInitialBiomasses.
-	self theZones do: [:aZone | aZone noHarvestPeriod: 0].
+	self theZones do: [ :aZone | aZone noHarvestPeriod: 0 ].
 	"I need to initialize agents :
 	* nb of families
 	* type of strategies
 	"
+	(CMReHabFamily membersDistribution at: self nbFamilies)
+		do: [ :nbMembers | self createFamilyWithNbMembers: nbMembers ].
+	self theFamilies
+		do: [ :f | 
+			f zones: self theZones.
+			f
+				strategy:
+					(self
+						newEntity: (CMReHabStrategyFamily allSubclasses at: self strategy_Family)).
+			f strategy holder: f.
+			f strategy poacher: self poaching.
+			f strategy restrained: self restrained ].
+	self initAnimals.
+	self initParkManager.
+	self parkManager
+		strategy:
+			(self
+				newEntity:
+					(CMReHabStrategyParkManager allSubclasses
+						at: self strategy_ParkManager)).
+	self parkManager strategy holder: self parkManager
 ]
 
 { #category : #accessing }
