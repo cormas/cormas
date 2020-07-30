@@ -181,7 +181,7 @@ CMReHabPlantHarvester class >> harvest_default [
 
 { #category : #accessing }
 CMReHabPlantHarvester class >> imageHighlight [
-	"self halt."
+
 	^self image isStroked: false
 ]
 

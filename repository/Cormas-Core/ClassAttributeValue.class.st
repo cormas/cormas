@@ -22,7 +22,7 @@ Class {
 		'getterAccessor',
 		'entityInstances'
 	],
-	#category : 'Cormas-Core-Others'
+	#category : #'Cormas-Core-Others'
 }
 
 { #category : #new }
@@ -453,7 +453,6 @@ ClassAttributeValue >> hasBeenModified [
 
 { #category : #accessing }
 ClassAttributeValue >> hasBeenModified: anObject [
-	"anObject ifTrue:[self halt]."
 	
 	hasBeenModified := anObject
 ]

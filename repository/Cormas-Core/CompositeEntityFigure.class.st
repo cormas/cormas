@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'delimitors'
 	],
-	#category : 'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Interface'
 }
 
 { #category : #new }
@@ -118,7 +118,7 @@ CompositeEntityFigure >> delimitors: anObject [
 { #category : #displaying }
 CompositeEntityFigure >> displayFigureOn: aGraphicsContext [
 	
-	self isOpaque ifTrue: [super displayFigureOn: aGraphicsContext].	"display the delimitors"	"self model entity id = 14 ifTrue:[self halt]."
+	self isOpaque ifTrue: [super displayFigureOn: aGraphicsContext].	"display the delimitors"
 	self lineWidth > 0
 		ifTrue:
 			[aGraphicsContext lineWidth: self lineWidth.

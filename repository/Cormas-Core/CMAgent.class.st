@@ -53,7 +53,7 @@ CMAgent >> destroyed: aBoolean [
 CMAgent >> displayOn: aGC at: unPoint [
 
 self deprecated:'Should be deprecated in the next CORMAS version'.
-self halt
+
 	"| couleur |
 	couleur := self color.
 	couleur notNil ifTrue: 

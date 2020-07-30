@@ -14,7 +14,7 @@ Class {
 		'arcs',
 		'replaceNodeWhileMoving'
 	],
-	#category : 'Cormas-Core-Entities'
+	#category : #'Cormas-Core-Entities'
 }
 
 { #category : #image }
@@ -231,8 +231,6 @@ CMNodeEntity >> downstreamWays: previousWays [
 					[cyclicWays
 						do:
 							[:cw | 
-							"|nbOcc| nbOcc := (cw occurrencesOf: self). nbOcc > 1 ifTrue:[nbOcc halt]. "
-							"(self checkOrientedWay: cw) ifFalse:[self halt]."
 							self addCyclicNodesOf: cw forArc: arc waysToMe: waysToMe fullWays:
 									fullWays]]].
 	^fullWays

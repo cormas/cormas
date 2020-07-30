@@ -8,7 +8,7 @@ Class {
 		'selectedPlayer',
 		'playersScheduling'
 	],
-	#category : 'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Interface'
 }
 
 { #category : #'interface specs' }
@@ -194,7 +194,7 @@ CormasModelGameInterface >> delete [
 						ifTrue:
 							[(newList includes: self lineSep)
 								ifTrue: [newList remove: self lineSep]
-								ifFalse: [self halt]].
+							].
 					self playersScheduling list: newList.
 					(((self builder menuAt: #menuDecisionsSheet) atNameKey:
 							#DecisionsSheet) submenu atNameKey: self selectedPlayer asSymbol)
@@ -222,7 +222,7 @@ CormasModelGameInterface >> events [
 			self blocks keys do: [:bn | self setInvisibleBlock: bn].
 			self setVisibleBlock: #Events.
 			self resetBlock: #Events]
-		ifFalse: [self halt]
+		
 ]
 
 { #category : #actions }

@@ -19,7 +19,7 @@ Class {
 		'repNb',
 		'randomTypeChoices'
 	],
-	#category : 'Cormas-Core-Others'
+	#category : #'Cormas-Core-Others'
 }
 
 { #category : #controlling }
@@ -27,10 +27,11 @@ ClassAttributeValueAnalysisRandomness >> getRandomValue [
 	"This method calculates the new value of a parameter."
 	
 	| factor |
+	self flag:#shouldBeRevised.
 	(self randomType = 'random'
 		or: [self randomType = '' or: [self randomType isNil]])
 		ifFalse:
-			["√† faire"
+			["ToDo"
 			self halt].
 	factor := self initValue asRational denominator
 		max: self finalValue asRational denominator.

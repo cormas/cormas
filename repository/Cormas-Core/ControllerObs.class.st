@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'secondMenu'
 	],
-	#category : 'Cormas-Core-Observer'
+	#category : #'Cormas-Core-Observer'
 }
 
 { #category : #accessing }
@@ -20,12 +20,11 @@ ControllerObs >> controlActivity [
 
 { #category : #action }
 ControllerObs >> dispatchMenuSelection: menuSelection [
-	"Detournement de la fonction generique initiale, clp Mai 99"
+	"Diversion of the initial generic function, clp May 99"
 	
 	menuSelection = 0 ifTrue: [^self].
 	menuSelection isSymbol
-		ifTrue: [self model updatePov: menuSelection]
-		ifFalse: [self halt]
+		ifTrue: [self model updatePov: menuSelection].
 ]
 
 { #category : #accessing }

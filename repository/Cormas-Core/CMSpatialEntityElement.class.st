@@ -81,7 +81,6 @@ CMSpatialEntityElement >> directionNeighbour: v [
 { #category : #'- displaying - obsolete' }
 CMSpatialEntityElement >> displayOn: aGC outlinesInstancesOf: aClassName color: aColorName lineWidth: anInteger [
 
-	self halt.
 	(self id = self spaceModel elementaryEntities size
 		and: [ (self spaceModel spatialEntities includesKey: aClassName)
 				and: [ (self spaceModel spatialEntities at: aClassName) isNil not
@@ -99,7 +98,6 @@ CMSpatialEntityElement >> displaySegment: aDirection [
 	
 	| readAccessSelector |
 	
-	self halt.
 	readAccessSelector := ('lineSegment' , aDirection) asSymbol.
 	(self perform: readAccessSelector) notNil
 		ifTrue:

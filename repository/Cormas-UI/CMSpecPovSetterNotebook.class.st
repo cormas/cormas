@@ -31,7 +31,7 @@ Class {
 		'cormasModel',
 		'cormas'
 	],
-	#category : 'Cormas-UI-PoV'
+	#category : #'Cormas-UI-PoV'
 }
 
 { #category : #specs }
@@ -49,7 +49,6 @@ CMSpecPovSetterNotebook >> changedExample [
 	
 	| sel modelClass povSetter |
 	
-	self halt.
 	(sel := self tabManager selectedTab) isNil 
 		ifTrue: [ ^ self ].
 	((modelClass := ('CM' , sel label) asClass) inheritsFrom: CMArcEntity)
