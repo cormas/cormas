@@ -1,50 +1,50 @@
 Class {
-	#name : #CMGrove,
+	#name : #CMDemoAggregatesGrove,
 	#superclass : #CMSpatialEntityAggregate,
-	#category : 'Cormas-Model-DemoAggregates'
+	#category : #'Cormas-Model-DemoAggregates'
 }
 
 { #category : #'pov symbols' }
-CMGrove class >> CMSpatialEntityPOV_Grove [
+CMDemoAggregatesGrove class >> CMSpatialEntityPOV_Grove [
 "Returns an array containing the settings of a CMSpatial entity pov symbol in the following order:
 (color red) (color green) (color blue)"
 ^Array with: 0.0 with: 1.0 with: 0.0
 ]
 
 { #category : #'pov symbols' }
-CMGrove class >> CMSpatialEntityPOV_big [
+CMDemoAggregatesGrove class >> CMSpatialEntityPOV_big [
 "Returns an array containing the settings of a CMSpatial entity pov symbol in the following order:
 (color red) (color green) (color blue)"
 ^Array with: 0.0 with: 0.340007 with: 0.0
 ]
 
 { #category : #'pov symbols' }
-CMGrove class >> CMSpatialEntityPOV_medium [
+CMDemoAggregatesGrove class >> CMSpatialEntityPOV_medium [
 "Returns an array containing the settings of a CMSpatial entity pov symbol in the following order:
 (color red) (color green) (color blue)"
 ^Array with: 0.0 with: 0.670004 with: 0.0
 ]
 
 { #category : #'pov symbols' }
-CMGrove class >> CMSpatialEntityPOV_small [
+CMDemoAggregatesGrove class >> CMSpatialEntityPOV_small [
 "Returns an array containing the settings of a CMSpatial entity pov symbol in the following order:
 (color red) (color green) (color blue)"
 ^Array with: 0.0 with: 1.0 with: 0.0
 ]
 
 { #category : #'pov symbols' }
-CMGrove class >> defaultColor [ 
+CMDemoAggregatesGrove class >> defaultColor [ 
 "Returns the default color (Automatically defined by Cormas)." 
 ^Color green
 ]
 
 { #category : #testing }
-CMGrove class >> isAbstract [ 
+CMDemoAggregatesGrove class >> isAbstract [ 
 ^false
 ]
 
 { #category : #control }
-CMGrove >> expand [
+CMDemoAggregatesGrove >> expand [
 	"Each forest expands on external cells that are mostly surrounded by forest"
 	
 	| collec |
@@ -60,7 +60,7 @@ CMGrove >> expand [
 ]
 
 { #category : #pov }
-CMGrove >> povSize [
+CMDemoAggregatesGrove >> povSize [
 	
 	self components size < 50 ifTrue: [^#small].
 	self components size < 250 ifTrue: [^#medium].
@@ -68,13 +68,13 @@ CMGrove >> povSize [
 ]
 
 { #category : #procedure }
-CMGrove >> setForest [
+CMDemoAggregatesGrove >> setForest [
 	
 	self components do: [:c | c tree: true]
 ]
 
 { #category : #control }
-CMGrove >> swell [
+CMDemoAggregatesGrove >> swell [
 	"super swell ifTrue:[self getSkins do: [:coll | coll do: [:c| c tree: true]]]"
 	
 	^super swell

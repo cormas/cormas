@@ -9,7 +9,7 @@ Class {
 
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> newTestModel [
-	^ (CMModelForTest
+	^ (CMTestModel
 		initialize;
 		new)
 		activeInit: #initAlive;
@@ -32,7 +32,7 @@ CMAbstractModelTest >> setUp [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testCentralCell [
 	| m |
-	m := (CMModelForTest
+	m := (CMTestModel
 		initialize;
 		new)
 		activeInit: #initRandom;
@@ -59,7 +59,7 @@ CMAbstractModelTest >> testCreateGridXYNeighborHoodClosed [
 { #category : #tests }
 CMAbstractModelTest >> testDominance [
 	| m |
-	m := (CMModelForTest
+	m := (CMTestModel
 		initialize;
 		new)
 		activeInit: #initRandom;
@@ -77,7 +77,7 @@ CMAbstractModelTest >> testDominance [
 { #category : #tests }
 CMAbstractModelTest >> testDominance1 [
 	| m |
-	m := (CMModelForTest
+	m := (CMTestModel
 		initialize;
 		new)
 		activeInit: #initAlive;
@@ -94,7 +94,7 @@ CMAbstractModelTest >> testDominance1 [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testLowerLeftCell [
 	| m |
-	m := (CMModelForTest
+	m := (CMTestModel
 		initialize;
 		new)
 		activeInit: #initRandom;
@@ -113,7 +113,7 @@ CMAbstractModelTest >> testLowerLeftCell [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testLowerRightCell [
 	| m |
-	m := (CMModelForTest
+	m := (CMTestModel
 		initialize;
 		new)
 		activeInit: #initRandom;
@@ -152,7 +152,7 @@ CMAbstractModelTest >> testPickCell [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testPickCellConstrainedBy [
 	| m |
-	m := (CMModelForTest
+	m := (CMTestModel
 		initialize;
 		new)
 		activeInit: #initRandom;
@@ -176,9 +176,9 @@ CMAbstractModelTest >> testPickCellConstrainedBy [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testPickCellWithoutAny [
 
-	model createN: 50 randomlyLocatedAloneEntities: CMTestsAgentLocationForTest.
-	self assert: ((model pickCellWithoutAny: CMTestsAgentLocationForTest)
-				occupantsAt: CMTestsAgentLocationForTest) isEmpty
+	model createN: 50 randomlyLocatedAloneEntities: CMTestAgentLocation.
+	self assert: ((model pickCellWithoutAny: CMTestAgentLocation)
+				occupantsAt: CMTestAgentLocation) isEmpty
 ]
 
 { #category : #'tests-accessing-entities' }
@@ -190,7 +190,7 @@ CMAbstractModelTest >> testPickCellsN [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testPickEntity [
 
-	self assert: (model pickEntity: CMCellForTest) isSpatialEntity
+	self assert: (model pickEntity: CMTestCell) isSpatialEntity
 ]
 
 { #category : #'tests-accessing-entities' }
@@ -199,19 +199,19 @@ CMAbstractModelTest >> testPickEntityConstrainedBy [
 	self
 		assert:
 			(model
-				pickEntity: CMCellForTest
+				pickEntity: CMTestCell
 				constrainedBy: [ :cell | cell numCol = 3 ]) numCol
 		equals: 3.
 	self
 		assert:
 			(model
-				pickEntity: CMCellForTest
+				pickEntity: CMTestCell
 				constrainedBy: [ :cell | cell numCol = 6 ]) numCol
 		equals: 6.
 	self
 		assert:
 			(model
-				pickEntity: CMCellForTest
+				pickEntity: CMTestCell
 				constrainedBy: [ :cell | cell numCol = 9 ]) numCol
 		equals: 9
 ]
@@ -221,7 +221,7 @@ CMAbstractModelTest >> testPickNEntities [
 
 	self
 		assert:
-			((model pickN: 5 entities: CMCellForTest) allSatisfy: #isSpatialEntity)
+			((model pickN: 5 entities: CMTestCell) allSatisfy: #isSpatialEntity)
 ]
 
 { #category : #'tests-accessing-entities' }
@@ -231,7 +231,7 @@ CMAbstractModelTest >> testPickNEntitiesConstrainedBy [
 		assert:
 			((model
 				pickN: 5
-				entities: CMCellForTest
+				entities: CMTestCell
 				constrainedBy: [ :cell | cell numCol = 5 ])
 				allSatisfy: [ :cell | cell numCol = 5 ])
 ]
@@ -239,21 +239,21 @@ CMAbstractModelTest >> testPickNEntitiesConstrainedBy [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testPickUnoccupiedCell [
 
-	model createN: 50 randomlyLocatedAloneEntities: CMTestsAgentLocationForTest.
+	model createN: 50 randomlyLocatedAloneEntities: CMTestAgentLocation.
 	self assert: model pickUnoccupiedCell theOccupants isEmpty
 ]
 
 { #category : #tests }
 CMAbstractModelTest >> testProbes [
 	self
-		assert: CMModelForTest probes asSet
+		assert: CMTestModel probes asSet
 		equals: (Set with: #numAlives with: #numDeads)
 ]
 
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testSelectCellsBetweenLine1Line2AndColumn1Column2 [
 	| m cells |
-	m := (CMModelForTest
+	m := (CMTestModel
 		initialize;
 		new)
 		activeInit: #initAlive;
@@ -279,7 +279,7 @@ CMAbstractModelTest >> testSelectCellsBetweenLine1Line2AndColumn1Column2 [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
 	| m cells |
-	m := (CMModelForTest
+	m := (CMTestModel
 		initialize;
 		new)
 		activeInit: #initAlive;
@@ -325,11 +325,11 @@ CMAbstractModelTest >> testSelectCellsOfLine [
 { #category : #tests }
 CMAbstractModelTest >> testShortestDistanceToCellsVerifying [
 	| m |
-	m := CMModelForTest
+	m := CMTestModel
 		initialize;
 		new.
 	m initSimulation.
-	(m allTheEntities: CMCellForTest)
+	(m allTheEntities: CMTestCell)
 		do: [ :cell | 
 			self
 				assert:
@@ -341,25 +341,25 @@ CMAbstractModelTest >> testShortestDistanceToCellsVerifying [
 { #category : #tests }
 CMAbstractModelTest >> testSpacialClasses [
 	self
-		assert: CMModelForTest spatialClasses
-		equals: (Set with: CMCellForTest)
+		assert: CMTestModel spatialClasses
+		equals: (Set with: CMTestCell)
 ]
 
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testTheAgents [
 	| agents |
-	model createN: 50 randomlyLocatedAloneEntities: CMTestsAgentLocationForTest.
+	model createN: 50 randomlyLocatedAloneEntities: CMTestAgentLocation.
 	agents := model theAgents.
 	self assert: agents size equals: 50.
 	agents
 		do:
-			[ :agent | self assert: agent class identicalTo: CMTestsAgentLocationForTest ]
+			[ :agent | self assert: agent class identicalTo: CMTestAgentLocation ]
 ]
 
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testUpperLeftCell [
 	| m |
-	m := (CMModelForTest
+	m := (CMTestModel
 		initialize;
 		new)
 		activeInit: #initRandom;
@@ -378,7 +378,7 @@ CMAbstractModelTest >> testUpperLeftCell [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testUpperRightCell [
 	| m |
-	m := (CMModelForTest
+	m := (CMTestModel
 		initialize;
 		new)
 		activeInit: #initRandom;

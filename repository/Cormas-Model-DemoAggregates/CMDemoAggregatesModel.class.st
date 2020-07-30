@@ -11,7 +11,7 @@ To let co-exist in the same model several spatial entities defined at different 
 In the second one, 10 seed cells are randomly chosen in the 50*50 spatial grid. 10 aggregates are intialized with one of these seeds as a single component. The iterative building process of the aggregates relies on the integration, among the cells belonging to the outside edge of each aggregate, of all the one that do not yet belong to another aggregate'
 "
 Class {
-	#name : #'CMDemo_Aggregates',
+	#name : #CMDemoAggregatesModel,
 	#superclass : #CMAbstractModel,
 	#instVars : [
 		'thePlots',
@@ -25,7 +25,7 @@ Class {
 }
 
 { #category : #description }
-CMDemo_Aggregates class >> aProposDe [
+CMDemoAggregatesModel class >> aProposDe [
 	| txt |
 	txt := 'Ce modele illustre les principes d''utilisation des entites spatiales agregatives de Cormas. Dans l''arbre d''heritage des entites spatiales generiques de Cormas, l''entite spatiale composee SpatialEntity_Set se specialise :
       * SpatialEntityAggregate  dont les composants respectent une contrainte de contiguite
@@ -45,7 +45,7 @@ La seconde consiste a partir de 10 cellules graines, et a creer autant d''agrega
 ]
 
 { #category : #description }
-CMDemo_Aggregates class >> howToRunIt [
+CMDemoAggregatesModel class >> howToRunIt [
 | txt |
 txt := '1. Spreading of 3 forests\' withCRs asText emphasizeAllWith: #(#bold #large).
 txt := txt, '1.1 From the Cormas main menu, load ' asText, ('Files -> Load ' asText emphasizeAllWith: #italic), '. Select ' asText, ('TSE ' asText emphasizeAllWith: #italic), 'and choose ' asText, ('SpreadForest.st ' asText emphasizeAllWith: #color -> Color red), ' version of TSE.\' withCRs asText.
@@ -73,79 +73,79 @@ txt := txt, '3.2 If you want to see how to save the current grid, the aggregates
 ]
 
 { #category : #testing }
-CMDemo_Aggregates class >> isAbstract [ 
+CMDemoAggregatesModel class >> isAbstract [ 
 ^false
 ]
 
 { #category : #'- default value' }
-CMDemo_Aggregates class >> seeds_default [ 
+CMDemoAggregatesModel class >> seeds_default [ 
 	"Return the default value of seeds attribute"	
 	^nil
 ]
 
 { #category : #procedures }
-CMDemo_Aggregates >> buildForests [
+CMDemoAggregatesModel >> buildForests [
 	"Create the Aggregates from trees. Each aggregate must be bigger than 25 cells (set the compactness)"
-	self deleteSpatialEntitySet: CMGrove.
-	self createAggregates: CMGrove from: CMPlot verifying: [:aCell | aCell tree] minimumSize: 25.
+	self deleteSpatialEntitySet: CMDemoAggregatesGrove.
+	self createAggregates: CMDemoAggregatesGrove from: CMDemoAggregatesPlot verifying: [:aCell | aCell tree] minimumSize: 25.
 	self theGroves do: [:agg | agg initNeighbourhood].
-	self spaceModel meanCompactness: CMGrove
+	self spaceModel meanCompactness: CMDemoAggregatesGrove
 ]
 
 { #category : #procedures }
-CMDemo_Aggregates >> buildFragmentedEntitiesFromAggregates [
+CMDemoAggregatesModel >> buildFragmentedEntitiesFromAggregates [
 	self spaceModel
-		setFragmentedEntities: CMFragmentedForest
-		from: CMGrove
+		setFragmentedEntities: CMDemoAggregatesFragmentedForest
+		from: CMDemoAggregatesGrove
 		verifying: [:c | c size > 50]
 ]
 
 { #category : #procedures }
-CMDemo_Aggregates >> buildFragmentedEntitiesFromCells [
+CMDemoAggregatesModel >> buildFragmentedEntitiesFromCells [
 
 	self spaceModel
-		setFragmentedEntities: CMFragmentedForest
-		from: CMPlot
+		setFragmentedEntities: CMDemoAggregatesFragmentedForest
+		from: CMDemoAggregatesPlot
 		verifying: #tree
 ]
 
 { #category : #procedures }
-CMDemo_Aggregates >> createNewAggregateWith: setCell [
+CMDemoAggregatesModel >> createNewAggregateWith: setCell [
 
 	| fe |
 
-	fe := CMFragmentedForest newWith: setCell.
-	fe id: CMFragmentedForest CurrentId.
+	fe := CMDemoAggregatesFragmentedForest newWith: setCell.
+	fe id: CMDemoAggregatesFragmentedForest CurrentId.
 	fe components: OrderedCollection new.
 	fe components addAll: setCell.
-	setCell do: [ : c | c theCSE at: #CMFragmentedForest put: fe ].
-	(self spaceModel spatialEntities at: #CMFragmentedForest) add: fe.
+	setCell do: [ : c | c theCSE at: #CMDemoAggregatesFragmentedForest put: fe ].
+	(self spaceModel spatialEntities at: #CMDemoAggregatesFragmentedForest) add: fe.
 	fe spaceModel: self spaceModel.
 	self theFragmentedForests add: fe.
 ]
 
 { #category : #procedures }
-CMDemo_Aggregates >> defaultDisplay [
+CMDemoAggregatesModel >> defaultDisplay [
 	self openOneSpaceInterface.
-	self displayPov: #povTree of: CMPlot.
-	self displayPov: #delimitors of: CMGrove
+	self displayPov: #povTree of: CMDemoAggregatesPlot.
+	self displayPov: #delimitors of: CMDemoAggregatesGrove
 ]
 
 { #category : #procedures }
-CMDemo_Aggregates >> exportForests [
+CMDemoAggregatesModel >> exportForests [
 	self spaceModel 
-		exportAggregateClass: CMGrove 
+		exportAggregateClass: CMDemoAggregatesGrove 
 		separator: $;
 ]
 
 { #category : #procedures }
-CMDemo_Aggregates >> exportNeighboors [
-	self spaceModel saveNeighboorsClass: CMGrove separator: $;
+CMDemoAggregatesModel >> exportNeighboors [
+	self spaceModel saveNeighboorsClass: CMDemoAggregatesGrove separator: $;
 	"self spaceModel saveNeighboorsClass: Cell separator: $;"
 ]
 
 { #category : #seeds }
-CMDemo_Aggregates >> givenSeeds [
+CMDemoAggregatesModel >> givenSeeds [
 "set 5 particular seeds on the space"
 	self seeds: OrderedCollection new.
 	self seeds add: self spaceModel centralLocation;
@@ -158,45 +158,45 @@ CMDemo_Aggregates >> givenSeeds [
 ]
 
 { #category : #procedures }
-CMDemo_Aggregates >> importForests [
+CMDemoAggregatesModel >> importForests [
 	self spaceModel 
-		importAggregateClass: CMGrove
-		componentClass: CMPlot
+		importAggregateClass: CMDemoAggregatesGrove
+		componentClass: CMDemoAggregatesPlot
 		separator: $;
 ]
 
 { #category : #procedures }
-CMDemo_Aggregates >> importNeighboors [
-	self spaceModel loadNeighboorsClass: CMGrove separator: $;
+CMDemoAggregatesModel >> importNeighboors [
+	self spaceModel loadNeighboorsClass: CMDemoAggregatesGrove separator: $;
 ]
 
 { #category : #init }
-CMDemo_Aggregates >> init1FragmentedAggregate [
+CMDemoAggregatesModel >> init1FragmentedAggregate [
 "Build 1 FragmentedForest of forested plots"
 	self loadEnvironmentFromFile: '3forests.env'.
 	self buildFragmentedEntitiesFromCells.
 	self defaultDisplay.
-	self displayPov: #nil of: CMGrove.
-	self displayPov: #povId of: CMFragmentedForest
+	self displayPov: #nil of: CMDemoAggregatesGrove.
+	self displayPov: #povId of: CMDemoAggregatesFragmentedForest
 ]
 
 { #category : #init }
-CMDemo_Aggregates >> init2AggregateLevels [
+CMDemoAggregatesModel >> init2AggregateLevels [
 "Build the 3 groves + the FragmentedForest. Each FragmentedForest is composed of groves having the same surface: 
 	1 of 128 groves of 1 plot, 	1 of 49 groves of 2 plots, 	1 of 21 groves of 3 plots,
 	1 of 1 grove of 240 plots, 	1 of 1 grove of 80 plots, 	1 of 2 groves of 4 plots,
 	1 of 1 grove of 143 plots"
 	self loadEnvironmentFromFile: '3forests.env'.
-	self createAggregates: CMGrove from: CMPlot verifying: [:aCell | aCell tree].
+	self createAggregates: CMDemoAggregatesGrove from: CMDemoAggregatesPlot verifying: [:aCell | aCell tree].
 	self theGroves do:[:ag| ag initNeighbourhood].
-	self createFragmentedEntities: CMFragmentedForest from: CMGrove attribute: #size.
+	self createFragmentedEntities: CMDemoAggregatesFragmentedForest from: CMDemoAggregatesGrove attribute: #size.
 	self defaultDisplay.
-	self displayPov: #nil of: CMGrove.
-	self displayPov: #povId of: CMFragmentedForest
+	self displayPov: #nil of: CMDemoAggregatesGrove.
+	self displayPov: #povId of: CMDemoAggregatesFragmentedForest
 ]
 
 { #category : #init }
-CMDemo_Aggregates >> initForests [
+CMDemoAggregatesModel >> initForests [
 	"Constructs the forest aggregates"
 
 	self loadEnvironmentFromFile: '3forests.env'.
@@ -206,7 +206,7 @@ CMDemo_Aggregates >> initForests [
 ]
 
 { #category : #seeds }
-CMDemo_Aggregates >> randomSeeds: n [
+CMDemoAggregatesModel >> randomSeeds: n [
 	"Spreads randomly n seeds on the space"
 
 	| newSeed |
@@ -222,52 +222,52 @@ CMDemo_Aggregates >> randomSeeds: n [
 ]
 
 { #category : #accessing }
-CMDemo_Aggregates >> seeds [
+CMDemoAggregatesModel >> seeds [
 ^seeds
 ]
 
 { #category : #accessing }
-CMDemo_Aggregates >> seeds: aValue [
+CMDemoAggregatesModel >> seeds: aValue [
 seeds := aValue
 ]
 
 { #category : #init }
-CMDemo_Aggregates >> setAggregatesFifthFourth [
+CMDemoAggregatesModel >> setAggregatesFifthFourth [
 	"Constructs a complete space partition by regular segmentation"
 
 	self spaceModel loadEnvironmentFromFile: '3forests.env'.
-	self createAggregates: CMGrove from: CMPlot horizontalDividers: 5 verticalDividers: 4.
+	self createAggregates: CMDemoAggregatesGrove from: CMDemoAggregatesPlot horizontalDividers: 5 verticalDividers: 4.
 	self defaultDisplay
 ]
 
 { #category : #init }
-CMDemo_Aggregates >> setAggregatesFromRandomSeeds [
+CMDemoAggregatesModel >> setAggregatesFromRandomSeeds [
 	"Constructs a complete space partition from seeds"
 
 	self loadEnvironmentFromFile: '3forests.env'.
-	self createAggregates: CMGrove
+	self createAggregates: CMDemoAggregatesGrove
 		fromSeeds: (self randomSeeds: 30)
 		sizeDistribution: #(#(30 80) )
 		"sizeDistribution: #(#(1 800) #(5 30) #(4 3) #(20 10))".
-	self displayPov: #povId of: CMGrove.
-	self displayInfo: #info_surface of: CMGrove
+	self displayPov: #povId of: CMDemoAggregatesGrove.
+	self displayInfo: #info_surface of: CMDemoAggregatesGrove
 ]
 
 { #category : #init }
-CMDemo_Aggregates >> setSingletonAggregatesFromRandomSeeds [
+CMDemoAggregatesModel >> setSingletonAggregatesFromRandomSeeds [
 	"Constructs 30 singleton groves from random seeds.
 	Step = swellForests: t"
 
 	"self spaceModel loadEnvironmentFromFile: '3forests.env'."
-	self createSingletonAggregates: CMGrove
+	self createSingletonAggregates: CMDemoAggregatesGrove
 		fromSeeds: (self randomSeeds: 30).
-	self ask: CMGrove toDo: #setForest.
-	self displayPov: #povId of: CMGrove.
-	self displayInfo: #info_surface of: CMGrove
+	self ask: CMDemoAggregatesGrove toDo: #setForest.
+	self displayPov: #povId of: CMDemoAggregatesGrove.
+	self displayInfo: #info_surface of: CMDemoAggregatesGrove
 ]
 
 { #category : #control }
-CMDemo_Aggregates >> step2AggregateLevels: t [
+CMDemoAggregatesModel >> step2AggregateLevels: t [
 	"the 1st FragmentedForest will swell"
 	self ask:
 			(Cormas elementsFrom: self theFragmentedForests withMinValue: #minSurface)
@@ -275,7 +275,7 @@ CMDemo_Aggregates >> step2AggregateLevels: t [
 ]
 
 { #category : #control }
-CMDemo_Aggregates >> stepForests: t [ 
+CMDemoAggregatesModel >> stepForests: t [ 
 "Each cell has a small probability of changing its state. Then each grove expands on external cells that are mostly surrounded by groves. Finally, the aggregates are rebuilt"
 	self thePlots do: [:c | c newState].
 	self theGroves do: [:a | a expand].
@@ -283,55 +283,55 @@ CMDemo_Aggregates >> stepForests: t [
 ]
 
 { #category : #control }
-CMDemo_Aggregates >> swellForests: t [
+CMDemoAggregatesModel >> swellForests: t [
 "Each grove swells on external cells"
 
-	self askRandom: CMGrove toDo: #swell
+	self askRandom: CMDemoAggregatesGrove toDo: #swell
 ]
 
 { #category : #accessing }
-CMDemo_Aggregates >> theCMFragmentedForests [
+CMDemoAggregatesModel >> theCMFragmentedForests [
 	^ theFragmentedForests ifNil: [ theFragmentedForests := IndexedSet new ]
 ]
 
 { #category : #accessing }
-CMDemo_Aggregates >> theCMGroves [
+CMDemoAggregatesModel >> theCMGroves [
 	^ theGroves ifNil: [ theGroves := IndexedSet new ]
 ]
 
 { #category : #accessing }
-CMDemo_Aggregates >> theCMPlots [
+CMDemoAggregatesModel >> theCMPlots [
 	^ thePlots ifNil: [ thePlots := IndexedSet new ]
 ]
 
 { #category : #accessing }
-CMDemo_Aggregates >> theFragmentedForests [
+CMDemoAggregatesModel >> theFragmentedForests [
 ^theFragmentedForests ifNil:[theFragmentedForests := IndexedSet new]
 ]
 
 { #category : #accessing }
-CMDemo_Aggregates >> theFragmentedForests: x [
+CMDemoAggregatesModel >> theFragmentedForests: x [
 theFragmentedForests := x
 ]
 
 { #category : #accessing }
-CMDemo_Aggregates >> theGroves [
+CMDemoAggregatesModel >> theGroves [
 ^theGroves ifNil:[theGroves := IndexedSet new]
 ]
 
 { #category : #accessing }
-CMDemo_Aggregates >> theGroves: x [ 
+CMDemoAggregatesModel >> theGroves: x [ 
 	theGroves := x
 ]
 
 { #category : #accessing }
-CMDemo_Aggregates >> thePlots [
+CMDemoAggregatesModel >> thePlots [
 
 	^ thePlots 
 		ifNil: [ thePlots := IndexedSet new ]
 ]
 
 { #category : #accessing }
-CMDemo_Aggregates >> thePlots: x [ 
+CMDemoAggregatesModel >> thePlots: x [ 
 	thePlots := x
 ]

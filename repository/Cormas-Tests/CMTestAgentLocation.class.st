@@ -1,10 +1,10 @@
 Class {
-	#name : #CMTestsAgentLocationForTest,
+	#name : #CMTestAgentLocation,
 	#superclass : #CMAgentLocation,
 	#category : #'Cormas-Tests-Model'
 }
 
 { #category : #control }
-CMTestsAgentLocationForTest >> step [
+CMTestAgentLocation >> step [
 	
 ]

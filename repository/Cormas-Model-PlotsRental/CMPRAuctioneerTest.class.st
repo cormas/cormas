@@ -6,5 +6,5 @@ Class {
 
 { #category : #tests }
 CMPRAuctioneerTest >> testShortName [
-	self assert: CMPRAuctioneer shortName equals: 'PRAuctioneer'
+	self assert: CMPRAuctioneer shortName equals: 'Auctioneer'
 ]

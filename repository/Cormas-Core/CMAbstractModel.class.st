@@ -824,6 +824,12 @@ Ex: CormasModel modelMethodsForManipulation"
 	^coll
 ]
 
+{ #category : #accessing }
+CMAbstractModel class >> modelPrefix [
+	"Remove CM prefix at the beginning and Model at the end"
+	^ (self name allButFirst: 'CM' size) allButLast: 'Model' size
+]
+
 { #category : #'instance creation' }
 CMAbstractModel class >> newSimulation [
 	

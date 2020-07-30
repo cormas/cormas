@@ -502,8 +502,8 @@ CMFireAutomataModel >> init58WithMultipleFires [
 CMFireAutomataModel >> initAgents [
 "To be completed"
 
-	self setRandomlyLocatedAgents: CMFireman n: self numberOfFiremen.
-	self generateSymetricNetworkDensity: 1 forAgents: CMFireman.
+	self setRandomlyLocatedAgents: CMFireAutomataFireman n: self numberOfFiremen.
+	self generateSymetricNetworkDensity: 1 forAgents: CMFireAutomataFireman.
 ]
 
 { #category : #init }
