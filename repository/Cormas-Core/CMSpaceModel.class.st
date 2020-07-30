@@ -2229,29 +2229,6 @@ CMSpaceModel >> loadEnvironmentFromFile: aName withPov: aSymbol [
 		of: self cellClass
 ]
 
-{ #category : #'private - irregular polygons creation' }
-CMSpaceModel >> loadMifMid: fileName entity: class neighbourhood: test [
-	"Load a mif and associated mif files. Calculus the neighbourhood calculus of each cell, if 'test' is required"
-	
-	self readMif: fileName entity: class.	"set the bounds of the grid. The result is stored into 'bound' class variable of Cell"
-	(self spatialEntities at: class name)
-		do:
-			[:b | 
-			b outline
-				do:
-					[:aPoint | 
-					b bounds origin: (b bounds origin min: aPoint).
-					b bounds corner: (b bounds corner max: aPoint)]].	"self updateIncludedEntities: (self spatialEntities at: class name)"
-	(self spatialEntities at: class name) isEmpty
-		ifFalse:
-			[self readMid: fileName entity: class.
-			self setBounds: (self spatialEntities at: class name).
-			test
-				ifTrue:
-					[self voisinsPolygonesNoeuds: (self spatialEntities at: class name)].
-			self vues do: [:aView | aView createImagesForSpatialEntity22: class]]
-]
-
 { #category : #'CSE (general) - import - export' }
 CMSpaceModel >> loadNeighboorsClass: class separator: aChar [
 	
@@ -2694,129 +2671,6 @@ CMSpaceModel >> randomCell [
 	"Purpose: Return a spatialEntityElement (aCell) picked randomly from the spatial grid."
 
 	^ Cormas selectRandomlyFrom: self elementaryEntities
-]
-
-{ #category : #'private - irregular polygons creation' }
-CMSpaceModel >> readMid: fileName entity: class [
-	"Read the MID file storing the values of the attributs of the entities.
-The MID file looks like :
-354,'37','2',3,0,'4','37 4','37 2 4 3 0','3','0'
-354,'37','2',3,0,'4','37 4','37 2 4 3 0','3','0'   ....
-The COR file looks like :
-poly	1	asNumber
-prov_45	2	asNumber
-Then, poly of cell 1 = 354, prov_45 of cell 1 = 37..."
-	
-	| midFile lesEntites stream listeCor listeMots corFile readingBlock wordList cpt e f collec i |
-	midFile := (((Filename splitExtension: fileName asString) at: 1) , '.mid')
-		asFilename.
-	midFile exists not ifTrue: [^nil].	"Interface pour recuperer la liste de correspondance de couples: 
-	1. nom attribut entite <-> 2. numero colonne midFile <-> 3. type"
-	listeCor := OrderedCollection new.
-	corFile := (((Filename splitExtension: fileName asString) at: 1) , '.cor')
-		asFilename.
-	corFile exists not ifTrue: [^nil].
-	stream := corFile readStream.	"On devine le format des lignes"
-	stream lineEndAuto.
-	readingBlock := [[stream atEnd]
-		whileFalse:
-			[wordList := Cormas
-				splitLine: stream
-				sep: Character tab.
-			listeCor
-				add:
-					(Array
-						with: (wordList at: 1)
-						with: (wordList at: 2) asNumber
-						with: (wordList at: 3) asSymbol)]].
-	readingBlock valueNowOrOnUnwindDo: [stream close].	"Lecture des valeurs, 1 ligne <-> 1 entite; 1 colonne <-> 1 valeur pour attribut"
-	lesEntites := self cormasModel getterForEntityClass: class.
-	stream := midFile readStream.
-	collec := self cormasModel perform: lesEntites asSymbol.
-	cpt := 0.
-	i := 1.
-	[i + cpt <= collec size]
-		whileTrue:
-			[e := collec at: i + cpt.
-			e spaceModel: self.
-			listeMots := Cormas splitLine: stream sep: $,.
-			listeMots := listeMots collect: [:u | u copyWithout: $"].
-			listeCor
-				do:
-					[:a | 
-					e
-						perform: ((a at: 1) , ':') asSymbol
-						with: ((listeMots at: (a at: 2)) perform: (a at: 3))].
-			1
-				to: e includedEntities size
-				do:
-					[:j | 
-					cpt := cpt + 1.
-					f := collec at: i + cpt.
-					listeCor
-						do:
-							[:a | 
-							f
-								perform: ((a at: 1) , ':') asSymbol
-								with: ((listeMots at: (a at: 2)) perform: (a at: 3))]].
-			i := i + 1].
-	stream close
-]
-
-{ #category : #'private - irregular polygons creation' }
-CMSpaceModel >> readMif: fileName entity: class [
-	"Read the MIF file storing the coordinates of the shapes. The instances of 'class' are created here and their shape is stored in the 'outline' attribut.
-The MIF file looks like :
-Version 300
-Index 7,8
-CoordSys Earth Projection 1, 0
-Columns 10
-  ID Float
-  N__PROV_ Char(2)
-...
-Data
-Region  1
-  28
--2.30042376 13.88605788
-  .... (28 points)
--2.30042376 13.88605788
-    Pen (1,2,0) 
-    Brush (1,0,16777215)
-    Center -2.43676116 13.83987069
-Region  1
-  51
--2.501586 13.94239248...."
-	
-	| stream readingBlock sep temp zoneDonnees listeTemp readOtherInfo |
-	sep := Character cr.
-	stream := fileName asFilename readStream.	"On devine le format des lignes"
-	stream lineEndAuto.
-	zoneDonnees := 0.
-	self spatialEntities
-		at: class name
-		put: OrderedCollection new.
-	readOtherInfo := self cormas confirm:
-			' Does your MIF file includes the Pen, Brush, Center data?'.
-	readingBlock := [[stream atEnd]
-		whileFalse:
-			[temp := stream upTo: sep.
-			listeTemp := self traiterChaineDeCaractere: temp.
-			listeTemp isEmpty
-				ifFalse:
-					[((listeTemp at: 1) sameAs: 'Region') ifTrue: [zoneDonnees := 1]].
-			zoneDonnees = 1
-				ifTrue:
-					[self
-						traiterDonneesMif: temp
-						pointeur: stream
-						separateur: sep
-						nombre: (listeTemp at: 2) asNumber
-						classe: class
-						info: readOtherInfo.
-					zoneDonnees := 0]]].
-	readingBlock valueNowOrOnUnwindDo: [stream close].
-	self initEntitesSpatiales: class.
-	self activeSpatialEntity: class
 ]
 
 { #category : #'private - display' }
@@ -4288,38 +4142,6 @@ CMSpaceModel >> traiterAutreChaineDeCaractere: chaine [
 ]
 
 { #category : #'private - irregular polygons creation' }
-CMSpaceModel >> traiterAutresDonneesMif: objet pointeur: pointeur separateur: separator polygone: typePoly [
-	"c est dans cette methode qu'il faudra gerer le differentes 
-	possibilites; cette methode est valable 
-	dans le cas d'une region au sens MapInfo; il faudra modifier 
-	nbElement en fonction de la nature du 
-	polygone"
-	
-	| donnee listeDonnees nbElement compteurBis |
-	nbElement := 3.
-	compteurBis := 1.
-	[compteurBis <= nbElement]
-		whileTrue:
-			[donnee := pointeur upTo: separator.
-			listeDonnees := self traiterAutreChaineDeCaractere: donnee.
-			listeDonnees isEmpty
-				ifTrue: [compteurBis := compteurBis + 1]
-				ifFalse:
-					[((listeDonnees at: 1) sameAs: 'Pen')
-						ifTrue: [compteurBis := compteurBis + 1].
-					((listeDonnees at: 1) sameAs: 'Brush')
-						ifTrue: [compteurBis := compteurBis + 1].
-					((listeDonnees at: 1) sameAs: 'Center')
-						ifTrue:
-							[self
-								ajouterAutresAttribut:
-									(self traiterAccesParticulier: (listeDonnees at: 2))
-								objet: objet
-								attribut: 'center'.
-							compteurBis := compteurBis + 1]]]
-]
-
-{ #category : #'private - irregular polygons creation' }
 CMSpaceModel >> traiterChaineDeCaractere: aString [
 	| spaceIndex objetGraphique nombreElement listeTemp |
 	listeTemp := OrderedCollection new.
@@ -4331,60 +4153,6 @@ CMSpaceModel >> traiterChaineDeCaractere: aString [
 				add: objetGraphique;
 				add: nombreElement ].
 	^ listeTemp
-]
-
-{ #category : #'private - irregular polygons creation' }
-CMSpaceModel >> traiterDonneesMif: valeur pointeur: pointeur separateur: separator nombre: nb classe: aClass info: aBoolean [
-	"Read the coordinates of the shapes from the stream (pointeur). The instances of 'aClass' are created here and their shape is stored into the 'outline' attribut.
-nb is for the number of regions for each entity (usualy 1, more if there are included entities)
-ex: valeur = 'Region 1' pointeur = an ExternalReadStream on 'd:\vw7nc\cormas\Mod...   "
-	
-	| aggreSpat taille donnee listeCoordonnees coordonnees nombreSousRegions coorSousComposants compteur origin corner agSpat2 col |
-	aggreSpat := aClass new: self.
-	aggreSpat outline: OrderedCollection new.
-	compteur := 1.
-	nombreSousRegions := 1.
-	[nombreSousRegions <= nb]
-		whileTrue:
-			[taille := (pointeur upTo: separator) asNumber.	" = number of points"
-			coorSousComposants := OrderedCollection new.
-			compteur := 1.
-			origin := 99e30 @ 99e30.	"needed to calculate the bounds of the entity"
-			corner := -99e30 @ -99e30.
-			[compteur <= taille]
-				whileTrue:
-					[donnee := pointeur upTo: separator.
-					listeCoordonnees := self traiterChaineDeCaractere: donnee.
-					coordonnees := (listeCoordonnees at: 1) asNumber
-						@ (listeCoordonnees at: 2) asNumber.
-					(coordonnees x = 0 and: [coordonnees y = 0])
-						ifFalse:
-							[nombreSousRegions > 1
-								ifTrue: [coorSousComposants add: coordonnees]
-								ifFalse:
-									[aggreSpat outline add: coordonnees.
-									origin := origin min: coordonnees.
-									corner := corner max: coordonnees].
-							compteur := compteur + 1]].
-			coorSousComposants isEmpty
-				ifFalse: [aggreSpat includedEntities add: coorSousComposants].
-			nombreSousRegions := nombreSousRegions + 1].
-	aBoolean
-		ifTrue:
-			[self traiterAutresDonneesMif: aggreSpat pointeur: pointeur separateur:
-					separator polygone: 'Region'].
-	aggreSpat bounds: (Rectangle origin: origin corner: corner).	"Set the bounds of the entity"
-	(self spatialEntities at: aClass name) add: aggreSpat.
-	col := OrderedCollection new.
-	aggreSpat includedEntities
-		do:
-			[:aCollOfPoints | 
-			agSpat2 := aClass new: self.
-			agSpat2 outline: aCollOfPoints.
-			agSpat2 bounds: (Rectangle origin: origin corner: corner).
-			(self spatialEntities at: aClass name) add: agSpat2.
-			col add: agSpat2].	"at this time, includedEntities is a Set of collections of points"
-	aggreSpat includedEntities: col	"at this time, includedEntities is a Set entities"
 ]
 
 { #category : #updating }
