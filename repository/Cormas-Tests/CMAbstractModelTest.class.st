@@ -129,6 +129,11 @@ CMAbstractModelTest >> testLowerRightCell [
 		identicalTo: (m selectCellsOfColumn: 3) third
 ]
 
+{ #category : #'tests-accessing-entities' }
+CMAbstractModelTest >> testModelPrefix [
+	self assert: CMTestCell modelClass modelPrefix equals: 'Test'
+]
+
 { #category : #tests }
 CMAbstractModelTest >> testNbDistinctValuesOf [
 

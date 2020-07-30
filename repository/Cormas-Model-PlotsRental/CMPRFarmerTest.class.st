@@ -5,6 +5,11 @@ Class {
 }
 
 { #category : #tests }
+CMPRFarmerTest >> testModelPrefix [
+	self assert: CMPRFarmer modelClass modelPrefix equals: 'PR'
+]
+
+{ #category : #tests }
 CMPRFarmerTest >> testShortName [
 	self assert: CMPRFarmer shortName equals: 'Farmer'
 ]
