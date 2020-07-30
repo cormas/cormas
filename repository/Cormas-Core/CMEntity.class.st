@@ -40,7 +40,6 @@ Class {
 		'cormasModel'
 	],
 	#classInstVars : [
-		'modelClass',
 		'CurrentId',
 		'colorsDict',
 		'image',
@@ -1275,13 +1274,6 @@ CMEntity class >> povDict [
 	^povDict ifNil: [povDict := Dictionary new]
 ]
 
-{ #category : #'- accessing' }
-CMEntity class >> povDict: aDico [
-	
-	aDico isEmpty ifFalse: [self halt].
-	povDict := aDico
-]
-
 { #category : #'- activityDiagram' }
 CMEntity class >> preStringForActivitySelector [
 	
@@ -1495,15 +1487,7 @@ colorOfProbe_aSymbol
 CMEntity class >> shortName [
 	"Answers a short name without prefixes ('CM' and the model name)"
 
-	^ {'CM'.
-	((self package name substrings: '-')
-		ifNotEmpty: #last
-		ifEmpty: [ '' ])}
-		inject: self name
-		into: [ :shortName :prefix | 
-			(prefix asRegex matchesPrefix: shortName)
-				ifTrue: [ shortName allButFirst: prefix size ]
-				ifFalse: [ shortName ] ]
+	^ self name allButFirst: 'CM' size + self modelClass modelPrefix size
 ]
 
 { #category : #'- accessing - methods & classes' }
@@ -1655,9 +1639,10 @@ CMEntity >> currentTime [
 
 { #category : #'as yet unclassified' }
 CMEntity >> defaultPOV [
-"Purpose: returns the class name, to be added as an associated symbol in the Pov Setter Interface
-Return value: <ByteSymbol>"
-	^self class name
+	"Purpose: returns the class name, to be added as an associated symbol in the Pov Setter Interface
+	Return value: <ByteSymbol>"
+
+	^ self class name
 ]
 
 { #category : #'- displaying' }
@@ -1793,18 +1778,6 @@ CMEntity >> id [
 { #category : #'- accessing' }
 CMEntity >> id: aNumber [
 	id := aNumber
-]
-
-{ #category : #'as yet unclassified' }
-CMEntity >> info_ClassName [
-"Purpose: enables the class name to be displayed in graphical user interfaces"
-	^self class name asString
-]
-
-{ #category : #'as yet unclassified' }
-CMEntity >> info_ID [
-"Purpose: enables the id number to be displayed in graphical user interfaces"
-	^self id
 ]
 
 { #category : #'- initialize-release' }
@@ -2115,11 +2088,11 @@ CMEntity >> povAttribute: aSymbol minPalette: startArray maxPalette: stopArray [
 Arguments: aSymbol = <Symbol>, the name of the attribute
 			minPalette = <Array(Nuimber Symbol)> (minimum value of the attribute; name of color) 
 		 	maxPalette = <Array(Number Symbol)> (maximum value of the attribute; name of color)
-			color = <ColorValue  or Symbol>, the color itself or its name
-Return value: a colorValue
+			color = <Color  or Symbol>, the color itself or its name
+Return value: a Color
 Example : self povAttribute: #boisMort minPalette:#(1 #red) maxPalette: #(15 #green)"
-	
-	^self
+
+	^ self
 		povValue: (self perform: aSymbol)
 		min: startArray first
 		color: startArray last
@@ -2130,16 +2103,17 @@ Example : self povAttribute: #boisMort minPalette:#(1 #red) maxPalette: #(15 #gr
 { #category : #'+ pov' }
 CMEntity >> povClassName [
 	"Purpose: returns the class name, to be added as an associated symbol in the Pov Setter Interface
-Return value: <ByteSymbol>"
-	
-	^self class name
+	Return value: <ByteSymbol>"
+
+	^ self class name
 ]
 
 { #category : #'as yet unclassified' }
 CMEntity >> povId [
-"Purpose: Returns a ColorValue from the existing 31 constant names: #(#black #blue #brown #chartreuse #cyan #darkCyan #darkGray #darkGreen #darkMagenta #darkRed #gray #green #lightCyan #lightGray #lightYellow #magenta #navy #olive #orange #orchid #paleGreen #pink #purple #red #royalBlue #salmon #springGreen #veryDarkGray #veryLightGray #white #yellow). The id is used to determine the index at which the color name is picked in the array. 
+	"Purpose: Returns a Color from the existing 31 constant names: #(#black #blue #brown #chartreuse #cyan #darkCyan #darkGray #darkGreen #darkMagenta #darkRed #gray #green #lightCyan #lightGray #lightYellow #magenta #navy #olive #orange #orchid #paleGreen #pink #purple #red #royalBlue #salmon #springGreen #veryDarkGray #veryLightGray #white #yellow). The id is used to determine the index at which the color name is picked in the array. 
 Example: for an instance with id = 65, the returned color will be brown (65= 2*31+3)"
-^self class colorOfNumber: self id
+
+	^ self class colorOfNumber: self id
 ]
 
 { #category : #'utilities - color' }

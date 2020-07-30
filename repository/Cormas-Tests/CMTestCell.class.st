@@ -1,21 +1,21 @@
 Class {
-	#name : #CMCellForTest,
+	#name : #CMTestCell,
 	#superclass : #CMSpatialEntityCell,
 	#category : #'Cormas-Tests-Model'
 }
 
 { #category : #'as yet unclassified' }
-CMCellForTest >> initAlive [
+CMTestCell >> initAlive [
 	self state: #alive
 ]
 
 { #category : #'as yet unclassified' }
-CMCellForTest >> initDead [
+CMTestCell >> initDead [
 	self state: #dead
 ]
 
 { #category : #'as yet unclassified' }
-CMCellForTest >> initRandom [
+CMTestCell >> initRandom [
 	self
 		state:
 			(Cormas random < 0.1
@@ -24,7 +24,7 @@ CMCellForTest >> initRandom [
 ]
 
 { #category : #control }
-CMCellForTest >> newState [
+CMTestCell >> newState [
 	"Purpose: the specific transition function of the automaton should be written here
 Example: self bufferState: (test ifTrue: [value1] ifFalse: [value2])"
 

@@ -1,35 +1,35 @@
 Class {
-	#name : #CMModelForTest,
+	#name : #CMTestModel,
 	#superclass : #CMAbstractModel,
 	#instVars : [
-		'theAgentLocationForTests',
-		'theCellForTests'
+		'theAgentLocations',
+		'theCells'
 	],
 	#category : #'Cormas-Tests-Model'
 }
 
 { #category : #'initialize-release' }
-CMModelForTest >> init [ 
+CMTestModel >> init [ 
 	self initRandom
 ]
 
 { #category : #initialization }
-CMModelForTest >> initAlive [
-self theCellForTests do: #initAlive
+CMTestModel >> initAlive [
+self theCells do: #initAlive
 ]
 
 { #category : #initialization }
-CMModelForTest >> initDead [
-	self theCellForTests do: #initDead
+CMTestModel >> initDead [
+	self theCells do: #initDead
 ]
 
 { #category : #initialization }
-CMModelForTest >> initRandom [
-	self theCellForTests do: #initRandom
+CMTestModel >> initRandom [
+	self theCells do: #initRandom
 ]
 
 { #category : #probes }
-CMModelForTest >> numAlives [
+CMTestModel >> numAlives [
 	"return the population size of the alive"
 
 	<probe>
@@ -43,7 +43,7 @@ CMModelForTest >> numAlives [
 ]
 
 { #category : #probes }
-CMModelForTest >> numDeads [
+CMTestModel >> numDeads [
 	"return the population size of the dead"
 
 	<probe>
@@ -57,11 +57,12 @@ CMModelForTest >> numDeads [
 ]
 
 { #category : #accessing }
-CMModelForTest >> theAgentLocationForTests [
-	^ theAgentLocationForTests ifNil: [ theAgentLocationForTests := IndexedSet new ]
+CMTestModel >> theAgentLocations [
+	^ theAgentLocations
+		ifNil: [ theAgentLocations := IndexedSet new ]
 ]
 
 { #category : #accessing }
-CMModelForTest >> theCellForTests [
-	^ theCellForTests ifNil: [ theCellForTests := OrderedCollection new ]
+CMTestModel >> theCells [
+	^ theCells ifNil: [ theCells := OrderedCollection new ]
 ]
