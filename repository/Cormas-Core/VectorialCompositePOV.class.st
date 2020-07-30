@@ -42,20 +42,6 @@ VectorialCompositePOV class >> newFromFigures: aSetOfFigures [
 	^inst
 ]
 
-{ #category : #'add-remove' }
-VectorialCompositePOV >> add: aPov [
-	self flag:#shouldBeRevised.
-	self halt.
-	self components add: aPov
-]
-
-{ #category : #'add-remove' }
-VectorialCompositePOV >> addAll: aSetOfPovs [
-	
-	self components addAll: aSetOfPovs.
-	self changeWith: self
-]
-
 { #category : #private }
 VectorialCompositePOV >> asFigure [
 	
