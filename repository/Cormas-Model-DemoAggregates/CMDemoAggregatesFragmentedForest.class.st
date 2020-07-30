@@ -21,3 +21,22 @@ CMDemoAggregatesFragmentedForest class >> defaultColor [
 CMDemoAggregatesFragmentedForest class >> isAbstract [ 
 ^false
 ]
+
+{ #category : #procedure }
+CMDemoAggregatesFragmentedForest >> minSurface [
+"return the surface of the smallest grove"
+	^Cormas minOf: #surface amongObjects: self components
+]
+
+{ #category : #control }
+CMDemoAggregatesFragmentedForest >> step [
+	
+	self components do: [:g | g swell].
+	self changed
+]
+
+{ #category : #control }
+CMDemoAggregatesFragmentedForest >> swell [
+	
+	super swell
+]
