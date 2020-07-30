@@ -1487,15 +1487,7 @@ colorOfProbe_aSymbol
 CMEntity class >> shortName [
 	"Answers a short name without prefixes ('CM' and the model name)"
 
-	^ {'CM'.
-	((self package name substrings: '-')
-		ifNotEmpty: #last
-		ifEmpty: [ '' ])}
-		inject: self name
-		into: [ :shortName :prefix | 
-			(prefix asRegex matchesPrefix: shortName)
-				ifTrue: [ shortName allButFirst: prefix size ]
-				ifFalse: [ shortName ] ]
+	^ self name allButFirst: 'CM' size + self modelClass modelPrefix size
 ]
 
 { #category : #'- accessing - methods & classes' }

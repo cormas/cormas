@@ -6,5 +6,5 @@ Class {
 
 { #category : #tests }
 CMPRCellTest >> testShortName [
-	self assert: CMPRCell shortName equals: 'PRCell'
+	self assert: CMPRCell shortName equals: 'Cell'
 ]

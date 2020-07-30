@@ -34,7 +34,7 @@ CMEnvFileReader class >> example1 [
 
 	| envFileRef cmModel |
 
-	cmModel := (CMModelForTest initialize; 	new)
+	cmModel := (CMTestModel initialize; 	new)
 		activeInit: #initAlive;
 		initSimulation;
 		initializeSpaceModel;
