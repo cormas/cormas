@@ -5,6 +5,6 @@ Class {
 }
 
 { #category : #tests }
-CMFireAutomataCellTest >> testShortName [
-	self assert: CMFireAutomataCell shortName equals: 'Cell'
+CMFireAutomataCellTest >> testEntityName [
+	self assert: CMFireAutomataCell entityName equals: 'Cell'
 ]

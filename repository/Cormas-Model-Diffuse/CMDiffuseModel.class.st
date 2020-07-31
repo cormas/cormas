@@ -176,7 +176,7 @@ CMDiffuseModel >> init [
 	self spaceModel loadEnvironmentFromFile: '40x40.env' withPov: #pov.
 	self initOptimize.
 	self theCells do: #initEmpty.
-	self setRandomlyLocatedAgents: CMDiffuseAnt n: self antNumber
+	self createN:self antNumber randomlyLocatedEntities: CMDiffuseAnt
 ]
 
 { #category : #optimize }

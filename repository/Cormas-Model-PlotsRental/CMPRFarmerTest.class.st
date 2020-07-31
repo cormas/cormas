@@ -5,11 +5,11 @@ Class {
 }
 
 { #category : #tests }
-CMPRFarmerTest >> testModelPrefix [
-	self assert: CMPRFarmer modelClass modelPrefix equals: 'PR'
+CMPRFarmerTest >> testEntityName [
+	self assert: CMPRFarmer entityName equals: 'Farmer'
 ]
 
 { #category : #tests }
-CMPRFarmerTest >> testShortName [
-	self assert: CMPRFarmer shortName equals: 'Farmer'
+CMPRFarmerTest >> testModelPrefix [
+	self assert: CMPRFarmer modelClass modelPrefix equals: 'PR'
 ]

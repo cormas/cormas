@@ -69,9 +69,13 @@ CMStupidModel >> foodAverage [
 
 { #category : #'programmable scenario' }
 CMStupidModel >> initWithProgrammableScenario [
-
-	self createGridLines: 100 columns: 100 neighbourhood: 4 closed: false.
-	self setRandomlyLocatedAgents: CMStupidAgent n: self numberOfStupidAgent.
+	self
+		createGridLines: 100
+		columns: 100
+		neighbourhood: 4
+		closed: false.
+		self createN: self numberOfStupidAgent
+		randomlyLocatedEntities: CMStupidAgent
 ]
 
 { #category : #accessing }

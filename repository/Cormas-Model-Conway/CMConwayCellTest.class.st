@@ -5,6 +5,6 @@ Class {
 }
 
 { #category : #tests }
-CMConwayCellTest >> testShortName [
-	self assert: CMConwayCell shortName equals: 'Cell'
+CMConwayCellTest >> testEntityName [
+	self assert: CMConwayCell entityName equals: 'Cell'
 ]

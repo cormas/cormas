@@ -5,6 +5,6 @@ Class {
 }
 
 { #category : #tests }
-CMDiffuseCellTest >> testShortName [
-	self assert: CMDiffuseCell shortName equals: 'Cell'
+CMDiffuseCellTest >> testEntityName [
+	self assert: CMDiffuseCell entityName equals: 'Cell'
 ]
