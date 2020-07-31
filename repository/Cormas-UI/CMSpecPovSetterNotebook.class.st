@@ -98,12 +98,12 @@ CMSpecPovSetterNotebook >> initializeWidgets [
 { #category : #initialization }
 CMSpecPovSetterNotebook >> newTabFor: anEntity [
 	| tab modelClass |
-	
 	modelClass := self findPovSetterTabFor: anEntity.
 	(tab := self newTab)
-		label: anEntity labelName; " Cell, Node, Arc, etc "
-		model: modelClass;
-		owner: self.			
+		label: anEntity entityName;
+		" Cell, Node, Arc, etc "
+			model: modelClass;
+		owner: self.
 	^ tab
 ]
 

@@ -5,6 +5,6 @@ Class {
 }
 
 { #category : #tests }
-CMPRAuctioneerTest >> testShortName [
-	self assert: CMPRAuctioneer shortName equals: 'Auctioneer'
+CMPRAuctioneerTest >> testEntityName [
+	self assert: CMPRAuctioneer entityName equals: 'Auctioneer'
 ]

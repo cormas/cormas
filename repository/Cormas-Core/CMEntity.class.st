@@ -784,6 +784,13 @@ CMEntity class >> destroyed_default [
 	^false
 ]
 
+{ #category : #accessing }
+CMEntity class >> entityName [
+	"Answers entity name without prefixes ('CM' and the model name)"
+
+	^ self name allButFirst: 'CM' size + self modelClass modelPrefix size
+]
+
 { #category : #'- accessing - methods & classes' }
 CMEntity class >> genericEntities [
 	
@@ -1016,13 +1023,6 @@ CMEntity class >> isSpatialEntityElementClass [
 CMEntity class >> isSpatialEntitySetClass [
 	
 	^false
-]
-
-{ #category : #accessing }
-CMEntity class >> labelName [
-	" Answer a <String> to be displayed as receiver's label "
-	
-	^ self name allButFirst: 2
 ]
 
 { #category : #'utilities - colors' }
@@ -1481,13 +1481,6 @@ colorOfProbe_aSymbol
 				withCRs
 		classified: '- probes'
 		notifying: nil
-]
-
-{ #category : #accessing }
-CMEntity class >> shortName [
-	"Answers a short name without prefixes ('CM' and the model name)"
-
-	^ self name allButFirst: 'CM' size + self modelClass modelPrefix size
 ]
 
 { #category : #'- accessing - methods & classes' }

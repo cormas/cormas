@@ -42,16 +42,14 @@ CMEntityTest >> testCormasModel [
 ]
 
 { #category : #tests }
+CMEntityTest >> testEntityName [
+	self assert: CMTestCell entityName equals: 'Cell'.
+	self assert: CMTestAgentLocation entityName equals: 'AgentLocation'
+]
+
+{ #category : #tests }
 CMEntityTest >> testModelClass [
 	self
 		assert: CMTestCell modelClass
 		identicalTo: CMTestModel
-]
-
-{ #category : #tests }
-CMEntityTest >> testShortName [
-	self assert: CMTestCell shortName equals: 'Cell'.
-	self
-		assert: CMTestAgentLocation shortName
-		equals: 'AgentLocation'
 ]

@@ -5,6 +5,6 @@ Class {
 }
 
 { #category : #tests }
-CMECECVegetationUnitTest >> testShortName [
-	self assert: CMECECVegetationUnit shortName equals: 'VegetationUnit'
+CMECECVegetationUnitTest >> testEntityName [
+	self assert: CMECECVegetationUnit entityName equals: 'VegetationUnit'
 ]

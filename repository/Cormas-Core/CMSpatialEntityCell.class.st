@@ -18,13 +18,6 @@ CMSpatialEntityCell class >> isCellularAutomatonClass [
 ]
 
 { #category : #accessing }
-CMSpatialEntityCell class >> labelName [
-	" Answer a <String> to be displayed as receiver's label "
-
-	^ 'Cell'
-]
-
-{ #category : #accessing }
 CMSpatialEntityCell >> bufferState [
 	^ bufferState
 ]

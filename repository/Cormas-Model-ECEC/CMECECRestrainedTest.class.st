@@ -5,6 +5,6 @@ Class {
 }
 
 { #category : #tests }
-CMECECRestrainedTest >> testShortName [
-	self assert: CMECECRestrained shortName equals: 'Restrained'
+CMECECRestrainedTest >> testEntityName [
+	self assert: CMECECRestrained entityName equals: 'Restrained'
 ]

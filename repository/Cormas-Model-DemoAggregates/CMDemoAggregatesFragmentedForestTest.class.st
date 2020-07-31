@@ -5,6 +5,8 @@ Class {
 }
 
 { #category : #tests }
-CMDemoAggregatesFragmentedForestTest >> testShortName [
-	self assert: CMDemoAggregatesFragmentedForest shortName equals: 'FragmentedForest'
+CMDemoAggregatesFragmentedForestTest >> testEntityName [
+	self
+		assert: CMDemoAggregatesFragmentedForest entityName
+		equals: 'FragmentedForest'
 ]
