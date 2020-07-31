@@ -3314,15 +3314,6 @@ SpaceInterface >> openWindowGridSize [
 	win openDialog: #windowGridSize with: self
 ]
 
-{ #category : #'interface opening' }
-SpaceInterface >> openWindowMifMid [
-	
-	| parametersWindow |
-	parametersWindow := MenuSpaceInterfaces new openDialog: #windowMifMid
-		with: self.
-	parametersWindow initSigParametres: self cormasModelClass
-]
-
 { #category : #'manipulate instances' }
 SpaceInterface >> openedEntityInspectors_IsTheOnlyOne [
 	"Purpose: return an association which key is collection of opened entity inspectors for that space interface, and value is true or false depending if the enity inspecor is set to bethe only one.	"

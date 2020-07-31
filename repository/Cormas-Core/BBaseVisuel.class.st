@@ -56,7 +56,6 @@ BBaseVisuel >> centre: unPt [
 { #category : #private }
 BBaseVisuel >> displayOn: aGC [
 	
-	self halt.
 	adaptor level = 0 ifTrue: [ ^ self ].
 	self state isNil
 		ifTrue: [ aGC paint: Color black ]

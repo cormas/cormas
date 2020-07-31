@@ -39,7 +39,7 @@ Class {
 		'currentInstance',
 		'timeTagForLocateManually'
 	],
-	#category : 'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Interface'
 }
 
 { #category : #resources }
@@ -1040,7 +1040,6 @@ ManipulateInstances >> controlMethodChoices [
 { #category : #accessing }
 ManipulateInstances >> cormas [
 	
-	self halt.
 	^cormas
 ]
 

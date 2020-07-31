@@ -11,7 +11,7 @@ Class {
 		'fileName',
 		'dataSavedByLine'
 	],
-	#category : 'Cormas-Core-Connect'
+	#category : #'Cormas-Core-Connect'
 }
 
 { #category : #new }
@@ -125,7 +125,7 @@ CMToExcel >> createChartFromSheet: aSheet [
 	chart chartWizard: spellDetails]
 		ensure:
 			[aRangeController release.
-			chart release]	"self halt"
+			chart release]
 ]
 
 { #category : #charts }

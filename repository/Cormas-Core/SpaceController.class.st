@@ -1,7 +1,7 @@
 Class {
 	#name : #SpaceController,
 	#superclass : #Object,
-	#category : 'Cormas-Core-Space'
+	#category : #'Cormas-Core-Space'
 }
 
 { #category : #changing }
@@ -22,7 +22,7 @@ SpaceController >> dispatchMenuSelection22: menuSelection [
 	menuSelection = 0 ifTrue: [^self].
 	menuSelection isSymbol
 		ifTrue:
-			[self view mainInterface updatePov: menuSelection	"ifFalse: [self halt]"]
+			[self view mainInterface updatePov: menuSelection	]
 ]
 
 { #category : #events }

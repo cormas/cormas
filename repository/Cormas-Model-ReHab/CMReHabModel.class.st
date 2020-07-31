@@ -16,6 +16,9 @@ Class {
 		'theFamilies',
 		'theZones'
 	],
+	#classInstVars : [
+		'defaultInit'
+	],
 	#category : #'Cormas-Model-ReHab'
 }
 
@@ -304,6 +307,18 @@ CMReHabModel class >> dataPlayer: aString time: t separator: aChar [
 			i = t ifTrue: [collec := dataLine tokensBasedOn: aChar]].
 	stream close.
 	^collec
+]
+
+{ #category : #'+ simulation settings' }
+CMReHabModel class >> defaultInit [
+
+	^ defaultInit ifNil: [ defaultInit := #init ]
+]
+
+{ #category : #'instance creation' }
+CMReHabModel class >> defaultInit: aSelector [
+
+	defaultInit := aSelector
 ]
 
 { #category : #'- default value' }
@@ -626,8 +641,7 @@ CMReHabModel class >> simuOpenMole [
 	aModel := self newWithProgrammableScenario
 		nbFamilies: (conf at: #nbFamilies);
 		strategy_Family: (conf at: #strategy_Family);
-		holder: (conf at: #holder);
-		poacher: (conf at: #poacher);
+		poaching: (conf at: #potching);
 		restrained: (conf at: #restrained);
 		strategy_ParkManager: (conf at: #strategy_ParkManager);
 		activeControl: #step:;
