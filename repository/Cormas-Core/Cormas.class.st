@@ -1144,14 +1144,14 @@ Cormas class >> minOf: aMagnitudeName amongObjects: aCollection [
 Arguments: aName = <ByteSymbol>
 			aCollection = <Collection(Object)>
 Return value: <Magnitude>
-Example: Cormas maxOf: #elevation amongObject: self theCells"
-	
+Example: Cormas minOf: #elevation amongObject: self theCells"
+
 	| collec |
 	collec := aCollection
-		select: [:c | (c perform: aMagnitudeName) respondsTo: #>].
-	^collec isEmpty
-		ifFalse: [self min: (collec collect: [:c | c perform: aMagnitudeName])]
-		ifTrue: [nil]
+		select: [ :c | (c perform: aMagnitudeName) respondsTo: #> ].
+	^ collec isEmpty
+		ifFalse: [ self min: (collec collect: [ :c | c perform: aMagnitudeName ]) ]
+		ifTrue: [ nil ]
 ]
 
 { #category : #'+ utilities - random' }

@@ -115,6 +115,13 @@ CormasTest >> testMin [
 ]
 
 { #category : #tests }
+CormasTest >> testMinOfAmongObjects [
+	self
+		assert: (Cormas minOf: #abs amongObjects: #(-2 -1 0 1 2))
+		equals: 0
+]
+
+{ #category : #tests }
 CormasTest >> testMinimumOfNumbers [
 	| aCollection |
 	aCollection := #(3 1 5 4 2).
