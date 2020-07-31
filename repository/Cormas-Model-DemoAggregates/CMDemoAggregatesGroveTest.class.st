@@ -5,6 +5,6 @@ Class {
 }
 
 { #category : #tests }
-CMDemoAggregatesGroveTest >> testShortName [
-	self assert: CMDemoAggregatesGrove shortName equals: 'Grove'
+CMDemoAggregatesGroveTest >> testEntityName [
+	self assert: CMDemoAggregatesGrove entityName equals: 'Grove'
 ]
