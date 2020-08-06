@@ -164,6 +164,15 @@ CormasTest >> testObjectTypeAsString [
 ]
 
 { #category : #tests }
+CormasTest >> testRandom [
+	Cormas seed: 0.
+	self assert: Cormas random equals: 0.0.
+	Cormas seed: 1.
+	self assert: Cormas random closeTo: 0.625715795264447.
+	Cormas initRandomSeed
+]
+
+{ #category : #tests }
 CormasTest >> testRandomBooleanReturnABoolean [
 	| aBoolean |
 	aBoolean := Cormas randomBoolean.
@@ -174,13 +183,20 @@ CormasTest >> testRandomBooleanReturnABoolean [
 CormasTest >> testRandomFloat [
 	| n |
 	n := Cormas randomFloatFrom: -4.1 to: 2.5.
-	self assert: n > -4.1 & (n < 2.5)
+	self assert: n >= -4.1.
+	self assert: n < 2.5
+]
+
+{ #category : #tests }
+CormasTest >> testRandomGenerator [
+	self
+		assert: (Cormas randomGenerator isKindOf: CMFishmanMooreRandomGenerator)
 ]
 
 { #category : #tests }
 CormasTest >> testRandomReturnAValueBetweenZeroAndOne [
-	self assert: Cormas random > 0.
-	self assert: Cormas random <= 1
+	1000 timesRepeat: [ self assert: Cormas random >= 0 ].
+	1000 timesRepeat: [ self assert: Cormas random < 1 ]
 ]
 
 { #category : #tests }
@@ -198,6 +214,13 @@ CormasTest >> testRoundToNdigits [
 ]
 
 { #category : #tests }
+CormasTest >> testSeed [
+	Cormas seed: 0.
+	self assert: Cormas seed equals: 0.
+	Cormas initRandomSeed
+]
+
+{ #category : #tests }
 CormasTest >> testSelectRandomlyFrom [
 	| aCollection |
 	aCollection := #(1 2 3 4 5).
@@ -207,7 +230,7 @@ CormasTest >> testSelectRandomlyFrom [
 { #category : #tests }
 CormasTest >> testSinMinMaxPhasePeriod [
 	"Not nice but ... work :-) I need to fin the way in R to build a true test"
-	self assert: (Cormas sin: 3 min: -10 max: 20 phase: 0 period: 24) equals: 25.606601717798213 
+	self assert: (Cormas sin: 3 min: -10 max: 20 phase: 0 period: 24) closeTo: 25.606601717798213 
 ]
 
 { #category : #tests }
@@ -231,7 +254,7 @@ CormasTest >> testStandardDeviation [
 
 	| n |
 	n := #(10 20 58 96 48 76 57 68 19 10).
-	self assert: (Cormas standardDeviation: n) equals: 28.547504269200136.
+	self assert: (Cormas standardDeviation: n) closeTo: 28.547504269200136.
 ]
 
 { #category : #tests }
