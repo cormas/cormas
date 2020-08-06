@@ -5,6 +5,7 @@ SmalltalkCISpec {
       #directory : 'repository',
       #onWarningLog: true,
       #load : [ 'default' ],
+      #onConflict : #useLoaded,
       #platforms : [ #pharo ]
     }
   ],
