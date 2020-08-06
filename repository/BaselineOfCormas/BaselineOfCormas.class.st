@@ -19,6 +19,8 @@ BaselineOfCormas >> baseline: spec [
 			do: [ spec blessing: #baseline.
 			spec postLoadDoIt: #postLoad.
 			spec
+				baseline: 'I18N'
+					with: [ spec repository: 'github://astares/Pharo-I18N/src' ];
 				baseline: 'FileDialog'
 					with: [ spec repository: 'github://peteruhnak/file-dialog/repository' ];
 				baseline: 'ProjectFramework'
