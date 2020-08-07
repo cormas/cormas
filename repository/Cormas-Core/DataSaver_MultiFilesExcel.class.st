@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'excelDictionary'
 	],
-	#category : 'Cormas-Core-Tools'
+	#category : #'Cormas-Core-Tools'
 }
 
 { #category : #operation }
@@ -256,15 +256,14 @@ DataSaver_MultiFilesExcel >> saveCollectionWithLabel: aCollection onSheet: sheet
 { #category : #'+ save' }
 DataSaver_MultiFilesExcel >> savePeriodAverageFiles: list2 [
 	"Add the average value between the first and last list2 of the selected probes to the PeriodAverage file"
-	
+
 	| aCollection |
 	self probes
-		keysAndValuesDo:
-			[:key :coll | 
+		keysAndValuesDo: [ :key :coll | 
 			aCollection := List
 				with:
 					(Cormas
-						averageOf:
+						average:
 							((self getCollectionOfNumbers: coll)
 								copyFrom: 1 + list2 first
 								to: 1 + list2 last)).
@@ -272,7 +271,7 @@ DataSaver_MultiFilesExcel >> savePeriodAverageFiles: list2 [
 			self
 				saveCollectionWithLabel: aCollection
 				onSheet: key asString
-				onFile: self getPeriodAverageFilename]
+				onFile: self getPeriodAverageFilename ]
 ]
 
 { #category : #'+ save' }
@@ -317,18 +316,17 @@ DataSaver_MultiFilesExcel >> saveSensitivityClassification: aDictionary [
 { #category : #'+ save' }
 DataSaver_MultiFilesExcel >> saveSimAverageFiles [
 	"Add the Sim Averaged value of the selected probes to the SimAverage file"
-	
+
 	| aCollection |
 	self probes
-		keysAndValuesDo:
-			[:key :coll | 
+		keysAndValuesDo: [ :key :coll | 
 			aCollection := List
-				with: (Cormas averageOf: (self getCollectionOfNumbers: coll)).
+				with: (Cormas average: (self getCollectionOfNumbers: coll)).
 			aCollection addFirst: self getInformation.
 			self
 				saveCollectionWithLabel: aCollection
 				onSheet: key asString
-				onFile: self getSimAverageFilename]
+				onFile: self getSimAverageFilename ]
 ]
 
 { #category : #'- save' }
