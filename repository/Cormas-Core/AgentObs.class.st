@@ -23,7 +23,7 @@ Class {
 		'Extent',
 		'Lien'
 	],
-	#category : 'Cormas-Core-Observer'
+	#category : #'Cormas-Core-Observer'
 }
 
 { #category : #'instance creation' }
@@ -262,11 +262,8 @@ AgentObs >> Lien: unB [
 
 { #category : #initialize }
 AgentObs >> adaptor: unAdaptor [
-	
 	adaptor := unAdaptor.
-	listeEtat := Array
-		new: unAdaptor list size
-		withAll: nil
+	listeEtat := Array new: unAdaptor list size
 ]
 
 { #category : #acces }

@@ -230,9 +230,9 @@ CMPRModel >> create2Groups [
 CMPRModel >> init [
 	"Init a 10x10 space, + 10 Farmers + 1 auctioneer"
 
-	self initCells.
+	self resetCells.
 	self initAgentsAuctioneer.
-	CMPRMessage isObserved: #finalisations 
+	CMPRMessage isObserved: #finalisations
 ]
 
 { #category : #procedures }
