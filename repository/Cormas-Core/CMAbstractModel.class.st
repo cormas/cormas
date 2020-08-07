@@ -2973,10 +2973,12 @@ CMAbstractModel >> initSimulation [
 
 { #category : #initialization }
 CMAbstractModel >> initialize [
-	"self class spatialClasses isEmpty ifFalse: [self initializeSpaceModel]."	"NB ->retire pour que les cells ne demandent pas le currentSimulation spaceModel alors qu''il n''est pas encore fini d''initialise"
+	"self class spatialClasses isEmpty ifFalse: [self initializeSpaceModel]."
+
+	"NB ->retire pour que les cells ne demandent pas le currentSimulation spaceModel alors qu''il n''est pas encore fini d''initialise"
+
 	self class socialClasses ifNil: [ self class initializeWithoutVS ].
-	self class socialClasses isEmpty
-		ifFalse: [ self initializeChannel ].
+	self class socialClasses ifNotEmpty: [ self initializeChannel ].
 	self applyModelDefaultCormasSettings
 ]
 
@@ -2996,8 +2998,8 @@ CMAbstractModel >> initializeProbes [
 
 { #category : #'initalize release' }
 CMAbstractModel >> initializeSpaceModel [
-	
-	self class cellClass ifNil: [^nil].
+
+	self class cellClass ifNil: [ ^ nil ].
 	self spaceModel: CMSpaceModel basicNew.
 	self spaceModel cormasModel: self.
 	self spaceModel initialize.
