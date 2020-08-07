@@ -622,7 +622,7 @@ CMSpaceModel >> createCells [
 	"create all the cells and their connexions, and collect them as elementaryEntities collection"
 	
 	| allEse |
-	allEse := Array new: cardinal withAll: nil.
+	allEse := Array new: cardinal.
 	self cormasModelClass cellClass CurrentId: 0.
 	1
 		to: cardinal
