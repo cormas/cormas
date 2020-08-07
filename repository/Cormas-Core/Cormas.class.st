@@ -1518,7 +1518,7 @@ Cormas class >> randomFrom: startInteger to: endInteger [
 
 { #category : #accessing }
 Cormas class >> randomGenerator [
-	^ randomGenerator ifNil: [ randomGenerator := CMFishmanMooreRandomGenerator new ]
+	^ randomGenerator ifNil: [ randomGenerator := PMFishmanMooreRandomGenerator new ]
 ]
 
 { #category : #accessing }

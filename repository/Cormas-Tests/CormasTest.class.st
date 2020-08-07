@@ -165,11 +165,7 @@ CormasTest >> testObjectTypeAsString [
 
 { #category : #tests }
 CormasTest >> testRandom [
-	Cormas seed: 0.
-	self assert: Cormas random equals: 0.0.
-	Cormas seed: 1.
-	self assert: Cormas random closeTo: 0.625715795264447.
-	Cormas initRandomSeed
+	self assert: (Cormas random between: 0.0 and: 1.0)
 ]
 
 { #category : #tests }
@@ -190,7 +186,7 @@ CormasTest >> testRandomFloat [
 { #category : #tests }
 CormasTest >> testRandomGenerator [
 	self
-		assert: (Cormas randomGenerator isKindOf: CMFishmanMooreRandomGenerator)
+		assert: (Cormas randomGenerator isKindOf: PMFishmanMooreRandomGenerator)
 ]
 
 { #category : #tests }
