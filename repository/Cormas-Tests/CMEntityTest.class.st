@@ -9,9 +9,7 @@ Class {
 
 { #category : #tests }
 CMEntityTest >> testColorOfNumber [
-
-
-self assert: (CMEntity colorOfNumber: 65) equals: Color purple   
+	self assert: (CMEntity colorOfNumber: 65) equals: Color purple
 ]
 
 { #category : #tests }
@@ -32,7 +30,7 @@ CMEntityTest >> testCormasModel [
 			columns: 3
 			neighbourhood: 4
 			closed: true;
-		initSimulation.
+		yourself.
 	self assert: model centralCell cormasModel identicalTo: model.
 	model
 		createN: 5
