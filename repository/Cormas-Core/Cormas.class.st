@@ -66,34 +66,13 @@ Class {
 		'simNum'
 	],
 	#classInstVars : [
-		'Rand',
-		'seed',
 		'simpleRand',
 		'current',
-		'runtimeMode'
+		'runtimeMode',
+		'randomGenerator'
 	],
 	#category : #'Cormas-Core-Interface'
 }
-
-{ #category : #accessing }
-Cormas class >> Rand [
-	
-	Rand isNil
-		ifTrue:
-			[Rand := RandFishmanMoore new.
-			seed := Rand class Ui].
-	Rand class Ui isNil
-		ifTrue:
-			[Rand := RandFishmanMoore new.
-			seed := Rand class Ui].
-	^Rand
-]
-
-{ #category : #accessing }
-Cormas class >> Rand: aRandFishmanMoore [
-	
-	Rand := aRandFishmanMoore
-]
 
 { #category : #version }
 Cormas class >> aboutCormas [
@@ -790,9 +769,8 @@ Cormas class >> initRandom [
 Cormas class >> initRandomSeed [
 	"Release the randomSeed. 
 For example, if the initilizations of the simulations were done with fixed random seed (identical initial state for each simulation), then with #initRandomSeed called after initilization, the  simulations may be different"
-	
-	seed := nil.
-	Rand := nil
+
+	randomGenerator := nil
 ]
 
 { #category : #'class initialization' }
@@ -1124,7 +1102,7 @@ Cormas class >> mix: aCollection [
 	"Purpose: Returns a randomly mixed collection
 Argument: aCollection is a collection to be mixed"
 
-	^ aCollection shuffle
+	^ aCollection shuffleBy: self randomGenerator
 ]
 
 { #category : #'+ utilities - mathematics' }
@@ -1482,13 +1460,12 @@ Example: Cormas println: 'Hello World'   "
 
 { #category : #'+ utilities - random' }
 Cormas class >> random [
-	self flag:#shouldBeRevised.
-	^ Random new next
+	^ self randomGenerator next
 ]
 
 { #category : #'+ utilities - random' }
 Cormas class >> randomBoolean [
-	^ #(true false) atRandom
+	^ #(true false) atRandom: self randomGenerator
 ]
 
 { #category : #'+ utilities - random' }
@@ -1503,7 +1480,7 @@ Cormas class >> randomCell [
 Cormas class >> randomColor [
 "Purpose: Returns a random ColorValue
 Example: Cormas randomColor"
-	^Color registeredColorNames atRandom
+	^Color registeredColorNames atRandom: self randomGenerator
 ]
 
 { #category : #'+ utilities - random' }
@@ -1527,6 +1504,16 @@ Cormas class >> randomFrom: startInteger to: endInteger [
 	| extent |
 	extent := endInteger - startInteger + 1.
 	^endInteger min: (Cormas random * extent) truncated + startInteger
+]
+
+{ #category : #accessing }
+Cormas class >> randomGenerator [
+	^ randomGenerator ifNil: [ randomGenerator := PMFishmanMooreRandomGenerator new ]
+]
+
+{ #category : #accessing }
+Cormas class >> randomGenerator: aRandFishmanMoore [
+	randomGenerator := aRandFishmanMoore
 ]
 
 { #category : #'+ utilities - random' }
@@ -2103,17 +2090,12 @@ Cormas class >> saveParcelFromPackage: aPackage [
 
 { #category : #accessing }
 Cormas class >> seed [
-	
-	seed isNil ifTrue: [self seed: self Rand class Ui].
-	^seed
+	^ self randomGenerator seed
 ]
 
 { #category : #accessing }
-Cormas class >> seed: aValue [
-	
-	Rand := RandFishmanMoore new.
-	RandFishmanMoore Ui: aValue.
-	seed := aValue
+Cormas class >> seed: anInteger [
+	randomGenerator seed: anInteger
 ]
 
 { #category : #'+ utilities - collection' }
@@ -2245,10 +2227,8 @@ Cormas class >> silentlySaveParcel: aParcel [
 Cormas class >> simpleRandom [
 	" Return a pseudo-random value according to the Random equation. No seed.
 	It is also useful for non-entities, as display processes for example"
-	
-	simpleRand isNil 
-		ifTrue: [ simpleRand := Random new ].
-	^ simpleRand next
+
+	^ (simpleRand ifNil: [ simpleRand := Random new ]) next
 ]
 
 { #category : #'private_aleat' }

@@ -28,9 +28,11 @@ BaselineOfCormas >> baseline: spec [
 				baseline: 'Roassal2'
 					with: [ spec repository: 'github://ObjectProfile/Roassal2/src' ];
 				baseline: 'NeoCSV'
-					with: [ spec repository: 'github://svenvc/NeoCSV/repository' ].
+					with: [ spec repository: 'github://svenvc/NeoCSV/repository' ];
+				baseline: 'PolyMath'
+					with: [ spec repository: 'github://PolyMathOrg/PolyMath/src' ].
 			spec
-				package: 'Cormas-Core';
+				package: 'Cormas-Core' with: [ spec requires: #('PolyMath') ];
 				package: 'Cormas-Model-Conway';
 				package: 'Cormas-Model-DemoAggregates';
 				package: 'Cormas-Model-Diffuse';
