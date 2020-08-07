@@ -20,7 +20,7 @@ Class {
 		'labelForProcess',
 		'zeroError'
 	],
-	#category : 'Cormas-Core-Others'
+	#category : #'Cormas-Core-Others'
 }
 
 { #category : #help }
@@ -821,58 +821,54 @@ Dictionary (#Restrained_energy->0.171174
 
 formule: Sensib (prob.j) = ln(moy(prob_j.modif)) - ln (moy(prob_j.standard)) / ln (j.modif) - ln(J.stand).
 aProbeName = <Symbol>"
-	
+
 	| moyStandard dico |
 	dico := Dictionary new.
-	moyStandard := Cormas averageOf: (self getStandardDataOfProbe: aProbeName).
+	moyStandard := Cormas
+average: (self getStandardDataOfProbe: aProbeName).
 	self classAttribValueAnalysis_List list
-		do:
-			[:aCAV | 
+		do: [ :aCAV | 
 			dico
 				at: (aCAV classNameAsString , '_' , aCAV attributeAsString) asSymbol
 				put:
-					(self sensitivityOfProbe: aProbeName toParameter: aCAV standardAverage:
-							moyStandard)].
-	^dico
+					(self
+						sensitivityOfProbe: aProbeName
+						toParameter: aCAV
+						standardAverage: moyStandard) ].
+	^ dico
 ]
 
 { #category : #sensitivity }
 ClassifyParameter >> sensitivityOfProbe: aProbeName toParameter: aCAV standardAverage: moyStandard [
 	"formule: Sensib (prob.j) = ln(moy(prob_j.modif)) - ln (moy(prob_j.standard)) / ln (j.modif) - ln(J.stand).
 aProbeName = <Symbol>"
-	
+
 	| moyModified sensitivity data |
 	data := self fileFormat value = #excel
-		ifFalse:
-			[self
-				getDataModifiedBy:
-					aCAV classNameAsString , '_' , aCAV attributeAsString
-				ofProbe: aProbeName]
-		ifTrue:
-			[self
-				getExcelDataModifiedBy:
-					aCAV classNameAsString , '_' , aCAV attributeAsString
-				ofProbe: aProbeName].
-	moyModified := Cormas averageOf: data.	"store information for impossible calculus"
-	aCAV finalValue = aCAV currentValue ifTrue: [^0].
+		ifFalse: [ self
+				getDataModifiedBy: aCAV classNameAsString , '_' , aCAV attributeAsString
+				ofProbe: aProbeName ]
+		ifTrue: [ self
+				getExcelDataModifiedBy: aCAV classNameAsString , '_' , aCAV attributeAsString
+				ofProbe: aProbeName ].
+	moyModified := Cormas average: data.	"store information for impossible calculus"
+	aCAV finalValue = aCAV currentValue
+		ifTrue: [ ^ 0 ].
 	(moyModified * moyStandard * aCAV finalValue * aCAV currentValue <= 0
-		or:
-			[(moyModified * moyStandard * aCAV finalValue * aCAV currentValue) ln = 0])
-		ifTrue:
-			[| aList |
-			aList := List
-				with: aCAV targetClass
-				with: aCAV targetAttribute.
+		or: [ (moyModified * moyStandard * aCAV finalValue * aCAV currentValue) ln
+				= 0 ])
+		ifTrue: [ | aList |
+			aList := List with: aCAV targetClass with: aCAV targetAttribute.
 			aList
 				add: moyModified;
 				add: moyStandard;
 				add: aCAV finalValue;
 				add: aCAV currentValue.
 			self zeroError at: aProbeName put: aList.
-			^0].	"Sensitivity calculus"
+			^ 0 ].	"Sensitivity calculus"
 	sensitivity := (moyModified abs ln - moyStandard abs ln)
 		/ (aCAV finalValue abs ln - aCAV currentValue abs ln).
-	^sensitivity abs
+	^ sensitivity abs
 ]
 
 { #category : #save }
