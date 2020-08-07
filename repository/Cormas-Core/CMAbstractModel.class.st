@@ -2129,16 +2129,15 @@ CMAbstractModel >> createN: aNumber randomlyLocatedEntities: aClass initMethod: 
 	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' with a set of arguments 'aCollec' has been send. 
 	The new entities are randomly located on the grid.
 	ex: self createN: 10 randomlyLocatedEntities: Predator initMethod: #initAge:energy: arguments: #(0 50) "
-	
+
 	| anAgent newEntities |
 	newEntities := OrderedCollection new.
 	aNumber
-		timesRepeat:
-			[anAgent := self newEntity: aClass.
-			anAgent moveTo: self randomCell.
+		timesRepeat: [ anAgent := self newEntity: aClass.
+			anAgent moveTo: self pickCell.
 			anAgent perform: aSymbol withArguments: aCollec.
-			newEntities add: anAgent].
-	^newEntities
+			newEntities add: anAgent ].
+	^ newEntities
 ]
 
 { #category : #'+ instance creation - agents & objects' }
@@ -2207,12 +2206,13 @@ CMAbstractModel >> createODBCConnection: username password: password base: aData
 
 { #category : #'+ instance creation - nodes & arcs' }
 CMAbstractModel >> createRandomNetworkOfN: n arcs: anArcClass [
-	"create a random Network of n arcs (instances of anArcClass) randomly located on the grid. N is a value > 2"
-	
+	"create a random Network of n arcs (instances of anArcClass) randomly located on the grid.
+	n is a value > 2"
+
 	| coll |
 	coll := OrderedCollection new.
-	n timesRepeat: [coll add: self randomCell].
-	^self createNetworkOfArcs: anArcClass onCells: coll
+	n timesRepeat: [ coll add: self pickCell ].
+	^ self createNetworkOfArcs: anArcClass onCells: coll
 ]
 
 { #category : #'+ instance creation - spatial entities' }
@@ -2828,51 +2828,12 @@ CMAbstractModel >> initCells [
 	^self resetCells
 ]
 
-{ #category : #deprecated }
-CMAbstractModel >> initCells: initSelector [
-	"The method initSelector <Symbol> is send to each Cell instance"
-	
-	self initCells: initSelector withArguments: #()
-]
-
-{ #category : #deprecated }
-CMAbstractModel >> initCells: initSelector withArguments: argumentCollection [
-	"The method initSelector <Symbol> with the arguments : argumentCollection, is send to each Cell instance"
-	
-	| cellClass |
-	cellClass := self class cellClass ifNil: [^nil].
-	cellClass CurrentId: 0.
-	(self theEntities: cellClass)
-		do:
-			[:ese | 
-			ese reset.
-			ese perform: initSelector withArguments: argumentCollection]
-]
-
 { #category : #'probes - charts' }
 CMAbstractModel >> initCharts [
 	
 	self
 		initLocalCharts;
 		initGlobalCharts
-]
-
-{ #category : #deprecated }
-CMAbstractModel >> initCollec: aListOfEntities [
-	aListOfEntities
-		do: [ :e | 
-			e new perform: #CurrentId: with: 0.
-			self
-				perform: (self setterForEntityClass: e)
-				with: OrderedCollection new ]
-]
-
-{ #category : #deprecated }
-CMAbstractModel >> initData [
-	"DEPRECATED. Do nothing anymore"
-	"self updateData: 0"
-	
-	
 ]
 
 { #category : #'init entities' }
@@ -2939,12 +2900,6 @@ CMAbstractModel >> initLocalCharts [
 				perform: (s asString , ':') asSymbol
 				with: (self perform: s) class new].
 	self updateLocalCharts: 0
-]
-
-{ #category : #deprecated }
-CMAbstractModel >> initObjects [
-	
-	
 ]
 
 { #category : #scheduling }
@@ -3921,8 +3876,8 @@ CMAbstractModel >> removeOldEntities: aClass [
 { #category : #'+ update' }
 CMAbstractModel >> resetCells [
 	"Purpose: reset all the generic attributes of the cells"
-	
-	self theESE do: [:e | e reset]
+
+	self theESE do: #reset
 ]
 
 { #category : #accessing }
