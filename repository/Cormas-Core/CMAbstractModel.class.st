@@ -2695,27 +2695,28 @@ CMAbstractModel >> getFileOf: aClassName from: fileNameString [
 { #category : #'+ user interface' }
 CMAbstractModel >> getSimDescriptionText [
 	"returns a text describing the information of the current simulation"
-	
-	| txt |
-	txt := 'Model name : ' asText
-		,
-			((self class name , '\\') asText emphasizeAllWith: #color -> ColorValue red)
-				withCRs asText emphasizeAllWith: #(#bold #large).	"txt := txt , 'Simulation duration: ' asText , ((333 printString , 'secondes \') asText emphasizeAllWith: #color -> ColorValue red) withCRs asText."
-	txt := txt , 'Initialization: ' , (String with: Character tab)
-		, '#' asText
-		,
-			((self activeInit , '\') asText emphasizeAllWith: #italic) withCRs asText.
-	txt := txt , 'Control:        ' , (String with: Character tab)
-		, '#' asText
-		,
-			((self activeControl , '\') asText emphasizeAllWith: #italic) withCRs
-				asText.
-	txt := txt , 'Random seed: ' , (String with: Character tab)
-		,
-			((Cormas seed printString , '\') asText emphasizeAllWith: #italic) withCRs
-				asText.	"txt := txt , ('Comments\' withCRs asText emphasizeAllWith: #(#bold #large)).
-	txt := txt , ((self commentsWithSimpleQuotes , '\') withCRs asText emphasizeAllWith: #(#large))."
-	^txt
+
+	^ Text
+		streamContents: [ :stream | 
+			stream
+				nextPutAll: 'Model name : ';
+				nextPutAll: (self class modelPrefix asText allBold addAttribute: TextColor red);
+				cr;
+				cr;
+				nextPutAll: 'Initialization: ';
+				tab;
+				nextPutAll: '#';
+				nextPutAll: (self activeInit asText addAttribute: TextEmphasis italic);
+				cr;
+				nextPutAll: 'Control:           ';
+				tab;
+				nextPutAll: '#';
+				nextPutAll: (self activeControl asText addAttribute: TextEmphasis italic);
+				cr;
+				nextPutAll: 'Random seed: ';
+				tab;
+				nextPutAll: (Cormas seed printString asText addAttribute: TextEmphasis italic);
+				cr ]
 ]
 
 { #category : #'accessing - entities' }
