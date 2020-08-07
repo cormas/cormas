@@ -118,17 +118,14 @@ CMSpatialEntity class >> new [
 
 { #category : #'- instance creation' }
 CMSpatialEntity class >> new: aSpaceModel [
-	
 	| anEntity |
-	"x := aSpaceModel newEntity: self. Ne marche pas : dead lock"
 	anEntity := super new.
 	aSpaceModel notNil
-		ifTrue:
-			[anEntity spaceModel: aSpaceModel.
+		ifTrue: [ anEntity spaceModel: aSpaceModel.
 			anEntity collector: aSpaceModel cormasModel collector.
 			aSpaceModel cormasModel collect: anEntity.
-			anEntity initOcc].
-	^anEntity
+			anEntity initOccupants ].
+	^ anEntity
 ]
 
 { #category : #'- default value' }
@@ -364,7 +361,7 @@ CMSpatialEntity >> init: aSpaceModel [
 ]
 
 { #category : #'- initialize-release' }
-CMSpatialEntity >> initOcc [
+CMSpatialEntity >> initOccupants [
 	
 	self allOccupants do: [:a | a leave]	"self spaceModel cormasModel class occupantClasses isEmpty 
 		ifFalse: 
@@ -907,7 +904,7 @@ CMSpatialEntity >> reset [
 	super reset.
 	theCSE := nil.
 	includedEntities := nil.
-	self initOcc
+	self initOccupants
 ]
 
 { #category : #'- environment - sensing - space' }

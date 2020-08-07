@@ -830,8 +830,7 @@ CMReHabModel >> initAgents_Autonomous [
 			f strategy: (self newEntity: (CMReHabStrategyFamily allSubclasses at: self strategy_Family)).
 			f strategy holder: f.
 			f strategy poacher: self poaching.
-			f strategy restrained: self restrained.
-			self halt.].
+			f strategy restrained: self restrained].
 	self initAnimals.
 	self initParkManager.
 	self parkManager strategy: (self newEntity: (CMReHabStrategyParkManager allSubclasses at: self strategy_ParkManager)).
