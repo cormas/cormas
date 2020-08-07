@@ -19,7 +19,7 @@ CMAbstractModelTest >> newTestModel [
 			columns: 10
 			neighbourhood: 4
 			closed: true;
-		initSimulation
+		yourself
 ]
 
 { #category : #'tests-accessing-entities' }
@@ -42,7 +42,7 @@ CMAbstractModelTest >> testCentralCell [
 			columns: 3
 			neighbourhood: 4
 			closed: true;
-		initSimulation.
+		yourself.
 	self
 		assert: m centralCell
 		identicalTo: (m selectCellsOfColumn: 2) second
@@ -69,7 +69,7 @@ CMAbstractModelTest >> testDominance [
 			columns: 100
 			neighbourhood: 4
 			closed: true;
-		initSimulation.
+		yourself.
 	self assert: (m dominance: #state) < 1.0.
 
 ]
@@ -87,7 +87,7 @@ CMAbstractModelTest >> testDominance1 [
 			columns: 100
 			neighbourhood: 4
 			closed: true;
-		initSimulation.
+		yourself.
 	self assert: (m dominance: #state) < 1.0
 ]
 
@@ -104,7 +104,7 @@ CMAbstractModelTest >> testLowerLeftCell [
 			columns: 3
 			neighbourhood: 4
 			closed: true;
-		initSimulation.
+		yourself.
 	self
 		assert: m lowerLeftCell
 		identicalTo: (m selectCellsOfColumn: 1) third
@@ -123,7 +123,7 @@ CMAbstractModelTest >> testLowerRightCell [
 			columns: 3
 			neighbourhood: 4
 			closed: true;
-		initSimulation.
+		yourself.
 	self
 		assert: m lowerRightCell
 		identicalTo: (m selectCellsOfColumn: 3) third
@@ -167,7 +167,7 @@ CMAbstractModelTest >> testPickCellConstrainedBy [
 			columns: 9
 			neighbourhood: 4
 			closed: true;
-		initSimulation.
+		yourself.
 	m centralCell state: #alive.
 	self
 		assert: (m pickCellConstrainedBy: [ :cell | cell state = #alive ]) state
@@ -268,7 +268,7 @@ CMAbstractModelTest >> testSelectCellsBetweenLine1Line2AndColumn1Column2 [
 			columns: 10
 			neighbourhood: 4
 			closed: true;
-		initSimulation.
+		yourself.
 	cells := m
 		selectCellsBetweenLine1: 13
 		line2: 15
@@ -294,7 +294,7 @@ CMAbstractModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
 			columns: 5
 			neighbourhood: 4
 			closed: true;
-		initSimulation.
+		yourself.
 	cells := m
 		selectCellsInRectangleOriginCell: m upperLeftCell
 		cornerCell: m centralCell.
@@ -374,7 +374,7 @@ CMAbstractModelTest >> testUpperLeftCell [
 			columns: 3
 			neighbourhood: 4
 			closed: true;
-		initSimulation.
+		yourself.
 	self
 		assert: m upperLeftCell
 		identicalTo: (m selectCellsOfColumn: 1) first
@@ -393,7 +393,7 @@ CMAbstractModelTest >> testUpperRightCell [
 			columns: 3
 			neighbourhood: 4
 			closed: true;
-		initSimulation.
+		yourself.
 	self
 		assert: m upperRightCell
 		identicalTo: (m selectCellsOfColumn: 3) first
