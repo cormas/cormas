@@ -3665,7 +3665,7 @@ CMAbstractModel >> prepareCommunicationFor: anAgent [
 	
 	anAgent channel: self channel.
 	self channel population add: anAgent.
-	self channel listeFonctionObs
+	self channel observerFunctions
 		do: [:a | a populationSourceAddAgent: anAgent]
 ]
 
@@ -3769,12 +3769,11 @@ CMAbstractModel >> registerSpaceModelChange: aSymbol with: aParameter [
 
 { #category : #'initalize release' }
 CMAbstractModel >> release [
-	
+super release.
 	self spaceModel release.
 	self spaceModel: nil.
-	self channel isNil ifFalse: [self channel population: nil].
-	self channel: nil.
-	super release
+	self channel ifNotNil: [ self channel population: nil ].
+	self channel: nil
 ]
 
 { #category : #'referencing entities' }
@@ -3836,7 +3835,7 @@ CMAbstractModel >> removeEntity: anEntity [
 { #category : #'initalize release' }
 CMAbstractModel >> removeFromChannel: anAgent [
 	
-	self channel listeFonctionObs
+	self channel observerFunctions
 		do: [:a | a populationSourceRemoveAgent: anAgent]
 ]
 
