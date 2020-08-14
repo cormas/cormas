@@ -989,7 +989,7 @@ CMAbstractModel class >> renameSelector: oldName by: newName inputParametersNumb
 		ifTrue:
 			[Cursor wait
 				showWhile:
-					[(RenameMethodRefactoring
+					[(RBChangeMethodNameRefactoring
 						renameMethod: oldName asSymbol
 						in: self
 						to: newName asSymbol
