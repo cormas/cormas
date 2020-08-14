@@ -261,24 +261,22 @@ CMAbstractModel class >> allInstanceSelectors [
 { #category : #'managing classes' }
 CMAbstractModel class >> allTerminalClasses [
 	"Return a collection of classes without superclasses"
-	
-	| all |
-	all := OrderedCollection new: 30.
-	self spatialClasses_sorted
-		ifNotNil:
-			[:coll | coll do: [:each | (Cormas isTerminal: each) ifTrue: [all add: each]]].
-	self socialClasses
-		ifNotNil:
-			[:coll | coll do: [:each | (Cormas isTerminal: each) ifTrue: [all add: each]]].
-	self passiveClasses
-		ifNotNil:
-			[:coll | 
-			coll
-				do:
-					[:each | 
-					((Cormas isTerminal: each) and: [each inheritsFrom: Entity])
-						ifTrue: [all add: each]]].
-	^all
+
+	^ OrderedCollection
+		streamContents: [ :stream | 
+			(self spatialClasses_sorted ifNil: [ #() ])
+				do: [ :spatialClass | 
+					(Cormas isTerminal: spatialClass)
+						ifTrue: [ stream nextPut: spatialClass ] ].
+			(self socialClasses ifNil: [ #() ])
+				do: [ :socialClass | 
+					(Cormas isTerminal: socialClass)
+						ifTrue: [ stream nextPut: socialClass ] ].
+			(self passiveClasses ifNil: [ #() ])
+				do: [ :passiveClass | 
+					((Cormas isTerminal: passiveClass)
+						and: [ passiveClass inheritsFrom: CMEntity ])
+						ifTrue: [ stream nextPut: passiveClass ] ] ]
 ]
 
 { #category : #'- default value' }
@@ -325,17 +323,17 @@ CMAbstractModel class >> chooseActivityDiagramEditorToRemove [
 	" Purpose: user can choose and remove an ActivityDiagramEditor.
 	Example: Entity chooseActivityDiagramEditorToRemove   "
 
-	| operationName list |
-	list := self allActivitySelectors asSortedCollection.
-	operationName := Dialog
-		choose: 'Which activity diagram to remove?'
-		fromList: list
-		values: list
-		lines: 8
-		cancel: [ #Cancel ].
-	operationName = #Cancel
-		ifTrue: [ ^ nil ].
-	^ self removeActivityDiagram: operationName
+	| selectors |
+	selectors := self allActivitySelectors asSortedCollection.
+	^ (UIManager default
+		chooseFrom: selectors
+		lines: selectors
+		message: 'Which activity diagram to remove?'
+		title: '* Select an activity diagram *')
+		in: [ :index | 
+			index = 0
+				ifTrue: [ nil ]
+				ifFalse: [ self removeActivityDiagram: (selectors at: index) ] ]
 ]
 
 { #category : #'+ activityEditor' }
@@ -992,7 +990,7 @@ CMAbstractModel class >> renameSelector: oldName by: newName inputParametersNumb
 		ifTrue:
 			[Cursor wait
 				showWhile:
-					[(RenameMethodRefactoring
+					[(RBChangeMethodNameRefactoring
 						renameMethod: oldName asSymbol
 						in: self
 						to: newName asSymbol
@@ -2010,18 +2008,17 @@ CMAbstractModel >> createN: aNumber entity: aClass initMethod: aSymbol [
 ]
 
 { #category : #'+ instance creation - agents & objects' }
-CMAbstractModel >> createN: aNumber entity: aClass initMethod: aSymbol arguments: aCollec [
-	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' with a set of arguments 'aCollec' has been send.
+CMAbstractModel >> createN: aNumber entity: aCMEntityClass initMethod: aSymbol arguments: anArray [
+	"Return a collection of aNumber of entities of aCMEntityClass for wich the init method 'aSymbol' with a set of arguments 'anArray' has been send.
 	ex: self createN: 10 entity: Predator initMethod: #initAge:energy: arguments: #(0 50) "
-	
-	| anEntity collec |
-	collec := List new.
-	aNumber
-		timesRepeat:
-			[anEntity := self newEntity: aClass.
-			anEntity perform: aSymbol withArguments: aCollec.
-			collec add: anEntity].
-	^collec
+
+	| args |
+	args := anArray asArray.
+	^ (1 to: aNumber)
+		collect: [ :i | 
+			(self newEntity: aCMEntityClass)
+				perform: aSymbol withArguments: args;
+				yourself ]
 ]
 
 { #category : #'+ instance creation - groups' }
@@ -2365,12 +2362,10 @@ Example : self displayPov: #landUse of: Cell"
 { #category : #'+ user interface' }
 CMAbstractModel >> displaySimInformation [
 	"display information on the current simulation"
-	
-	ComposedTextView
-		open: self getSimDescriptionText asValue
-		label: '* About Current Simulation * '
-		icon: (Icon constantNamed: #workspace)
-		extent: 400 @ 200
+
+	UIManager default
+		longMessage: self getSimDescriptionText
+		title: '* About Current Simulation * '
 ]
 
 { #category : #'+ utilities - space metrics' }
@@ -2814,8 +2809,8 @@ CMAbstractModel >> hasAttributesSetter [
 CMAbstractModel >> hiddenAttributes [
 	"returns a list of hidden attributs that won't be displayed by the parameter interface.
 	This method is automatically redefined from the Setting menu (Hide Parameters...) of Parameter interface"
-	
-	^List new
+
+	^ OrderedCollection new
 ]
 
 { #category : #scheduling }
