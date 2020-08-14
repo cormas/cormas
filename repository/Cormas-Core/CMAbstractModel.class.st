@@ -1255,12 +1255,6 @@ CMAbstractModel >> activeInit: aSymbol [
 	activeInit := aSymbol
 ]
 
-{ #category : #deprecated }
-CMAbstractModel >> allEntities: aClass [
-	
-	^self allTheEntities: aClass
-]
-
 { #category : #'- pov and info' }
 CMAbstractModel >> allEntitiesFrom: aClass getInfoFor: infoSymbol [
 	"return a collection of info from all entities inheriting from aClass"
@@ -1659,12 +1653,6 @@ CMAbstractModel >> cormas: anObject [
 	cormas := anObject
 ]
 
-{ #category : #deprecated }
-CMAbstractModel >> create: n groups: classGroup from: aCollec [
-	
-	^self createN: n groups: classGroup from: aCollec
-]
-
 { #category : #ODBC }
 CMAbstractModel >> createAccessConnection: username password: password base: aDataBase [
 	"Create a ODBC connection on base aDataBase (<String>) with username (<String>) and password (<String>).
@@ -1817,41 +1805,6 @@ Example: self createAggregates: Forest fromSeeds: (self theCells select:[:c| c i
 		verifying: aBlock sizeDistribution: dis
 ]
 
-{ #category : #deprecated }
-CMAbstractModel >> createAndLoadAttributesFromClass: aClass fromFile: aStringOrFilename [
-	"Load data from a File, create as many instances of aClass as necessary and set the values of the attributs according to the format declared into the file.
-	!!Be carefull, you should use this method to create spatial entity instances !!!"
-	
-	self createInstancesFromClass: aClass fromFile: aStringOrFilename.
-	self setValuesForEntities: aClass fromFile: aStringOrFilename
-]
-
-{ #category : #deprecated }
-CMAbstractModel >> createAndLoadEntity: aClass fromFile: aStringOrFilename [
-	"Deprecated. Load data from a File, create as many instances of aClass as necessary and set the values of the attributs according to the format declared into the file. 
-	If the patchID is declared into the file, the located entities are moved to the right cells"
-	
-	self createEntities: aClass fromFile: aStringOrFilename
-]
-
-{ #category : #deprecated }
-CMAbstractModel >> createAndLoadLocatedEntity: aClass fromFile: aStringOrFilename [
-	"Deprecated.
-	Load data from a File, create as many instances of aClass as necessary and set the values of the attributs according to the format declared into the file. 
-	If the patchID is declared into the file, the located entities are moved to the right cells"
-	
-	self createAndLoadEntity: aClass fromFile: aStringOrFilename
-]
-
-{ #category : #deprecated }
-CMAbstractModel >> createDataBaseConnection: username password: password base: aDataBase [
-	"Create a ODBC connection on base aDataBase (<String>) with username (<String>) and password (<String>).
-This method may be called from your model in order to save or get values from a database."
-	
-	self simManager createODBCConnection: username password: password base:
-			aDataBase
-]
-
 { #category : #'+ utilities - save load attributes' }
 CMAbstractModel >> createEntities: aClass fromFile: aStringOrFilename [
 	"Load data from a File, create as many instances of aClass as necessary and set the values of the attributs according to the format declared into the file. 
@@ -1951,26 +1904,6 @@ Example: 	self createGridNeighbourhood: 8 closed: true fromMatrixCsvFile: 'map.c
 			c
 				perform: (aName , ':') asSymbol
 				with: (Cormas stringAsObjectType: string) ]
-]
-
-{ #category : #deprecated }
-CMAbstractModel >> createGridX: x Y: y neighbourhood: aNumber closed: aBoolean [
-	"This method is deprecated. Please use createGridColumn:lines:neighbourhood:closed: instead."
-
-	"Purpose: Create a spatial grid made of cells
-Arguments:  X : number of columns ; Y : number of lines of the grid.
-Arguments: aNumber is the neighbourhood type. It must 4, 6 or 8
-Arguments: aBoolean : closed or torroidal space.
-Example: self createGridX: 20 Y: 20 neighbourhood: 8 closed: true "
-
-	self
-		deprecated:
-			'This method is no longer supported. Please use createGridColumns:lines:neighbourhood:closed: instead.'.
-	^ self
-		createGridLines: y
-		columns: x
-		neighbourhood: aNumber
-		closed: aBoolean
 ]
 
 { #category : #'utilities - files' }
@@ -2076,21 +2009,19 @@ CMAbstractModel >> createN: aNumber randomlyLocatedAloneEntities: aClass initMet
 	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' with a set of arguments 'aCollec' has been send.
 	The new entities are randomly located on the free cells of the grid.
 	ex: self createN: 10 randomlyLocatedAloneEntities: Predator initMethod: #initAge:energy: arguments: #(0 50) "
-	
+
 	| a freeCell newEntities |
 	newEntities := OrderedCollection new.
 	aNumber
-		timesRepeat:
-			[freeCell := self randomFreeCell.
+		timesRepeat: [ freeCell := self pickUnoccupiedCell.
 			freeCell isNil
-				ifTrue:
-					[self cormas warn: 'No free cell. The simulation will stop'.
-					self halt].
+				ifTrue: [ self cormas warn: 'No free cell. The simulation will stop'.
+					self halt ].
 			a := self newEntity: aClass.
 			a moveTo: freeCell.
 			a perform: aSymbol withArguments: aCollec.
-			newEntities add: a].
-	^newEntities
+			newEntities add: a ].
+	^ newEntities
 ]
 
 { #category : #'+ instance creation - agents & objects' }
@@ -2443,25 +2374,6 @@ CMAbstractModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 	^self spaceModel euclideanDistanceFromCell: cell1 toCell: cell2
 ]
 
-{ #category : #deprecated }
-CMAbstractModel >> exportAttribute: attributeName fromClass: className [
-	"attributeName <Symbol>
-className <String>"
-
-	| stream filename instances |
-	filename := (Cormas dataPath: self class name)
-		construct: className asString , '_' , attributeName asString , '.txt'.
-	stream := filename asFilename writeStream.
-	instances := self perform: (self getterForEntityClass: className).
-	instances isEmpty
-		ifFalse: [ instances
-				do: [ :anInstance | 
-					stream
-						store: (anInstance perform: attributeName);
-						cr ] ].
-	stream close
-]
-
 { #category : #'probes - charts' }
 CMAbstractModel >> exportGlobalCharts: aList inFile: aString [
 	
@@ -2776,13 +2688,6 @@ CMAbstractModel >> globalCharts [
 		ifTrue: [(self data at: self class name) keys]
 ]
 
-{ #category : #deprecated }
-CMAbstractModel >> group: aCollec by: n into: aGroupClass [
-	"Creates and returns n instances of classGroup. Each group is composed of X agents (X=aCollec size / n). The agents (included into aCollec) are randomly distributed into the groups"
-	
-	^self create: n groups: aGroupClass from: aCollec
-]
-
 { #category : #'- user interface' }
 CMAbstractModel >> habitusNames [
 	
@@ -2816,12 +2721,6 @@ CMAbstractModel >> hiddenAttributes [
 { #category : #scheduling }
 CMAbstractModel >> incrementTimeStep [
 	self timeStep: self timeStep + 1
-]
-
-{ #category : #deprecated }
-CMAbstractModel >> initCells [
-	
-	^self resetCells
 ]
 
 { #category : #'probes - charts' }
@@ -2865,13 +2764,6 @@ CMAbstractModel >> initFile: aStringOrFilename dataCollection: aCollec separator
 	aFilename := self stringToFilename: aStringOrFilename.
 	aFilename exists ifTrue: [aFilename delete].
 	self updateFile: aFilename dataCollection: aCollec separator: aChar
-]
-
-{ #category : #deprecated }
-CMAbstractModel >> initFullPathFile: aFilename dataCollection: aCollec separator: aChar [
-	"Deprecated. Should use :"
-	
-	self initFile: aFilename dataCollection: aCollec separator: aChar
 ]
 
 { #category : #'probes - charts' }
@@ -2959,7 +2851,7 @@ CMAbstractModel >> initializeSpaceModel [
 
 { #category : #'init entities' }
 CMAbstractModel >> initializeTheEntity: aClass [
-	"Initialize the Entity classes of the model and creates the new collector (IndexedSet)"
+	"Initialize the Entity classes of the model and creates the new collector (OrderedCollection)"
 	
 	| entities |
 	entities := self theEntities: aClass.
@@ -3152,21 +3044,6 @@ CMAbstractModel >> loadAttributesForClass: aClass fromFile: aStringOrFilename [
 					(instances at: numLigne) perform: method with: valeur].
 			dataLine close].
 	stream close
-]
-
-{ #category : #deprecated }
-CMAbstractModel >> loadAttributesForLocatedEntity: aClass fromFile: aStringOrFilename [
-	"Load data from a File, create as many instances of aClass as necessary and set the values of the attributs 
-	according to the format declared into the file. If the patchID is declared into the file, the located entities are moved to the right cells"
-	
-	self createAndLoadLocatedEntity: aClass fromFile: aStringOrFilename
-]
-
-{ #category : #deprecated }
-CMAbstractModel >> loadDataForClass: aClass fromFile: aStringOrFilename [
-	"Deprecated. Load data from a File, create as many instances that necessary and set the values of the attributs according to the format declared into the file"
-	
-	self setValuesForEntities: aClass fromFile: aStringOrFilename
 ]
 
 { #category : #'+ instance creation - spatial grid' }
@@ -3675,19 +3552,6 @@ CMAbstractModel >> projectManager: anObject [
 	projectManager := anObject
 ]
 
-{ #category : #deprecated }
-CMAbstractModel >> randomCell [
-	"Purpose: Return a spatialEntityElement (aCell) picked randomly from the spatial grid."
-	
-	^self pickCell
-]
-
-{ #category : #deprecated }
-CMAbstractModel >> randomFreeCell [
-	
-	^self pickUnoccupiedCell
-]
-
 { #category : #'+ utilities - files' }
 CMAbstractModel >> readCsvFile: file [
 	" Returns a <Collection> of collections, each one containing the values of the csv file (separator is ';').
@@ -3904,25 +3768,6 @@ CMAbstractModel >> runStep [
 	self updateDataForChart.
 ]
 
-{ #category : #deprecated }
-CMAbstractModel >> runStep: aStep [
-	"The main step method that activates the agents:
-		- execute the selected STEP method (of the ScenarioBuilder Interface),
-		- UPDATE the Entities (remove the dead ones and add the new ones in theXXs collections).
-	(For display: Store the changed entities in a collection and request an update of the space views at the end of the timestep)"
-	
-	self
-		delayChangesWhile:
-			[self activeControl last = $:
-				ifTrue:
-					[self
-						perform: self activeControl
-						with: aStep]
-				ifFalse: [self perform: self activeControl].
-			self updateEntities].
-	self channel notNil ifTrue: [self channel flush]
-]
-
 { #category : #'+ utilities - save load attributes' }
 CMAbstractModel >> saveAttributes: attributes fromClass: aClass inFile: aStringOrFilename [
 	"Save the attributes of the intances of aClass on a file 'aStringOrFilename'  
@@ -4042,23 +3887,6 @@ Example:  cellsBetweenLine1: 1 line2: 6 andColumn1: 2 column2: 3  ->  a collecti
 		line2: lineNumber2
 		andColumn1: colNumber1
 		column2: colNumber2
-]
-
-{ #category : #'+ accessing - entities' }
-CMAbstractModel >> selectCellsInRectangle: aRectangle [
-	"This method is deprecated. Please use selectCellsBetweenLine1:line2:andColumn1:column2: ."
-
-	"Purpose: return a collection of the cells located in a rectangle defined by an origin cell (top left) and a corner cell (down right). The collection of cells is sorted by id.
-	Argument: aRectangle   <Rectangle> where origin < corner.
-	Example: self  selectCellsInRectangle: (Rectangle origin: 1@2 corner: 6@3)  ->  a collection of cells between columns 2 and 3, and between lines 1 and 6, and ordered from line 	1 to line 6"
-
-	self
-		deprecated: 'Please use selectCellsBetweenLine1:line2:andColumn1:column2: instead'.
-	^ self
-		selectCellsBetweenLine1: aRectangle left
-		line2: aRectangle right
-		andColumn1: aRectangle top
-		column2: aRectangle bottom
 ]
 
 { #category : #'+ accessing - entities' }
@@ -4368,21 +4196,6 @@ Examples: self stDevOfAttribute: #age of: Person
 				collect: [:e | e perform: att])
 ]
 
-{ #category : #deprecated }
-CMAbstractModel >> stepAgents [
-	"DEPRECATED"
-	"Iteration over the collection of agents. The agents are ordered according to their id"
-	
-	self stepEntities: self theAgents
-]
-
-{ #category : #deprecated }
-CMAbstractModel >> stepAsynchronously: t [
-	"Purpose: To active the transition function and to update asynchronously a cellular automata"
-	
-	self stepAsynchronouslyCA: t
-]
-
 { #category : #'+ control' }
 CMAbstractModel >> stepAsynchronouslyCA: t [
 	"Purpose: To active the transition function and to update asynchronously a cellular automata"
@@ -4393,20 +4206,6 @@ CMAbstractModel >> stepAsynchronouslyCA: t [
 			a
 				newState;
 				updateState]
-]
-
-{ #category : #deprecated }
-CMAbstractModel >> stepDynPop: aCollec [
-	"Deprecated. Should use   stepEntities: aCollec"
-	
-	| newBorns repro |
-	newBorns := OrderedCollection new.
-	(Cormas mix: aCollec)
-		do:
-			[:anAgent | 
-			repro := anAgent step.
-			repro notNil ifTrue: [newBorns add: repro]].
-	self update: aCollec with: newBorns
 ]
 
 { #category : #'+ control' }
@@ -4427,7 +4226,7 @@ Example: self stepEntities: (self theForagers select:[:f| f energy > 10])"
 	self askRandom: aCollecOrClass toDo: #step
 ]
 
-{ #category : #deprecated }
+{ #category : #Olddeprecated }
 CMAbstractModel >> stepSynchronously: t [
 	"Purpose: To active the transition function and to update synchronously a cellular automata
 Example: See the models Conway http://cormas.cirad.fr/en/applica/conway.htm or Fire http://cormas.cirad.fr/en/applica/fireautomata.htm "
@@ -4545,12 +4344,6 @@ CMAbstractModel >> theEntities: aClass [
 	^ collection
 ]
 
-{ #category : #deprecated }
-CMAbstractModel >> theEntity: aClass with: aSet [
-	
-	^self setTheEntity: aClass with: aSet
-]
-
 { #category : #scheduling }
 CMAbstractModel >> timeChanged [
 	"the time has changed (time step). Method is called whenever a modification of #timeStepValue.
@@ -4580,21 +4373,6 @@ CMAbstractModel >> timeStep: anInteger [
 	self timeChanged
 ]
 
-{ #category : #scheduling }
-CMAbstractModel >> timeStepValue [
-	self
-		deprecated:
-			'timeStepValue is deprecated. If you want to get the timeStep value, use timeStep. If you want to subscribe to the change of timeStep, use whenTimeStepChangedDo:.'.
-	^ self shouldNotImplement
-]
-
-{ #category : #scheduling }
-CMAbstractModel >> timeStepValue: anInteger [
-	self
-		deprecated: 'timeStepValue: is deprecated. Use timeStep: to set the timeStep.'.
-	self timeStep: anInteger
-]
-
 { #category : #'+ user interface' }
 CMAbstractModel >> timeStepWithUnit [
 	"return a String describing the current time + the time unit name.
@@ -4617,7 +4395,7 @@ timeUnitName
 	^'steps'
 ]
 
-{ #category : #deprecated }
+{ #category : #Olddeprecated }
 CMAbstractModel >> update: aCollec with: newCollec [
 	"DEPRECATED. You should rather use newAndCollect to create and collect new entities"
 	
@@ -4631,28 +4409,12 @@ CMAbstractModel >> update: aCollec with: newCollec [
 	aCollec addAll: newCollec
 ]
 
-{ #category : #deprecated }
-CMAbstractModel >> updateAgents [
-	"DEPRECATED"
-	
-	self updateEntities
-]
-
 { #category : #'probes - charts' }
 CMAbstractModel >> updateCharts: t [
 	
 	self
 		updateGlobalCharts: t;
 		updateLocalCharts: t
-]
-
-{ #category : #deprecated }
-CMAbstractModel >> updateData: t [
-	"DEPRECATED. Do nothing anymore"
-	"self updateGlobalData;
-		updateLocalData: t"
-	
-	
 ]
 
 { #category : #'probes - recording' }
@@ -4663,15 +4425,6 @@ CMAbstractModel >> updateDataForChart [
 		updateGlobalData;
 		updateLocalData.
 	self announceProbesDataUpdated
-]
-
-{ #category : #deprecated }
-CMAbstractModel >> updateDataForChart: t [
-	
-	self
-		updateGlobalData;
-		updateLocalData.
-	self cormas refreshCharts
 ]
 
 { #category : #'+ update' }
@@ -4709,13 +4462,6 @@ CMAbstractModel >> updateFile: aStringOrFilename dataCollection: aCollec separat
 	stream nextPutAll: aCollec last printString.
 	stream nextPutAll: '\' withCRs.
 	stream close
-]
-
-{ #category : #deprecated }
-CMAbstractModel >> updateFullPathFile: aFilename dataCollection: aCollec separator: aChar [
-	"Deprecated. Should use :"
-	
-	self updateFile: aFilename dataCollection: aCollec separator: aChar
 ]
 
 { #category : #'probes - charts' }

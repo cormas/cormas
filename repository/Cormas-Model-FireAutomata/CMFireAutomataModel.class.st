@@ -612,11 +612,6 @@ CMFireAutomataModel >> step: t [
 ]
 
 { #category : #control }
-CMFireAutomataModel >> stepAsynchronously: t [
-	super stepAsynchronously: t.
-]
-
-{ #category : #control }
 CMFireAutomataModel >> stepGrowingFiremen: t [
 "To be completed"
 
