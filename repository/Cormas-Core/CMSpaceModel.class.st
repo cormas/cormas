@@ -1915,7 +1915,7 @@ CMSpaceModel >> initEntitesSpatiales: aClass [
 	"Creation de la collection d'entites spatiales du modele"
 	"Ca me parait inutile !!"
 	
-	"self cormasModel theEntities: aClass .  Returns a indexedSet of all the instances of aClass collected by cormasModel"
+	"self cormasModel theEntities: aClass .  Returns a orderedCollection of all the instances of aClass collected by cormasModel"
 	"	aggregatesCollection := self cormasModel getterForEntityClass: aClass.
 	self cormasModel class instVarNames detect: [:i | i = aggregatesCollection]
 		ifNone: [self halt].

@@ -29,19 +29,14 @@ CMReHabManager >> getLocations [
 
 { #category : #misc }
 CMReHabManager >> getReserveAround: aZone [
-| coll goodAround |
-
-	coll := IndexedSet new.
-
+	| coll goodAround |
+	coll := OrderedCollection new.
 	coll add: aZone.
-
 	goodAround := aZone neighbourhood
-		asSortedCollection: [:z1 :z2 | z1 biomass > z2 biomass].
-
+		asSortedCollection: [ :z1 :z2 | z1 biomass > z2 biomass ].
 	coll add: goodAround first.
 	coll add: (goodAround at: 2).
-
-^coll collect: [:z | z id]
+	^ coll collect: [ :z | z id ]
 ]
 
 { #category : #misc }

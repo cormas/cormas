@@ -382,7 +382,7 @@ Example: GroupLocation allAttributesUntilEntity"
 { #category : #'- accessing - methods & classes' }
 CMEntity class >> allClassSelectors [
 	"Purpose: returns the list of all methods defined at class level
-Return value: an indexedSet
+Return value: an orderedCollection
 Example: CormasNS.Kernel.Agent allClassSelectors"
 	
 	| coll |
@@ -395,7 +395,7 @@ Example: CormasNS.Kernel.Agent allClassSelectors"
 { #category : #'- accessing - methods & classes' }
 CMEntity class >> allClassSelectorsInProtocol: aProtocolName [
 	"Purpose: returns the list of all methods defined at class level in a given protocol
-Return value: an indexedSet
+Return value: an orderedCollection
 Example: CormasNS.Kernel.Entity allClassSelectorsInProtocol: #'+ util_Color'  "
 	
 	| coll |
@@ -431,7 +431,7 @@ Example: AgentLocation allClassVariablesUntilEntity"
 { #category : #'- accessing - methods & classes' }
 CMEntity class >> allInstanceSelectors [
 	"Purpose:returns the list of all methods defined at instance level
-Return value: an indexedSet
+Return value: an orderedCollection
 Example: CormasNS.Kernel.Agent allInstanceSelectors"
 	
 	| coll |

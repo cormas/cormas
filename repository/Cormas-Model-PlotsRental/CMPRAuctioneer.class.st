@@ -56,8 +56,8 @@ CMPRAuctioneer >> createMsgTopic: aSymbol receiver: anAgent object: anObject [
 CMPRAuctioneer >> getPlotsFromMessages [
 	"Returns all the plots from the last received messages"
 
-	^ IndexedSet
-		withAll: (self mailBox collect: [ :aMessage | aMessage object ]) 
+	^ OrderedCollection
+		withAll: (self mailBox collect: [ :aMessage | aMessage object ])
 ]
 
 { #category : #control }
