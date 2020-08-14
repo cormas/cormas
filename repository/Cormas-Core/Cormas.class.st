@@ -812,13 +812,10 @@ Cormas class >> isTerminal: aClass [
 	use the well known hack size = 0 for testing nil or empty collection
 
 	self isTerminal: Object.
-	self isTerminal: Fraction.
-
-	Time microsecondsToRun: [10000 timesRepeat: [ Object subclasses isEmpty. Fraction subclasses isEmpty ]]
-	Time microsecondsToRun: [10000 timesRepeat: [ CormasModel isTerminal: Object.  CormasModel isTerminal: Fraction ]]
+	self isTerminal: UndefinedObject.
 	"
-	
-	^aClass subclasses size == 0
+
+	^ aClass hasSubclasses not
 ]
 
 { #category : #accessing }

@@ -261,24 +261,22 @@ CMAbstractModel class >> allInstanceSelectors [
 { #category : #'managing classes' }
 CMAbstractModel class >> allTerminalClasses [
 	"Return a collection of classes without superclasses"
-	
-	| all |
-	all := OrderedCollection new: 30.
-	self spatialClasses_sorted
-		ifNotNil:
-			[:coll | coll do: [:each | (Cormas isTerminal: each) ifTrue: [all add: each]]].
-	self socialClasses
-		ifNotNil:
-			[:coll | coll do: [:each | (Cormas isTerminal: each) ifTrue: [all add: each]]].
-	self passiveClasses
-		ifNotNil:
-			[:coll | 
-			coll
-				do:
-					[:each | 
-					((Cormas isTerminal: each) and: [each inheritsFrom: Entity])
-						ifTrue: [all add: each]]].
-	^all
+
+	^ OrderedCollection
+		streamContents: [ :stream | 
+			(self spatialClasses_sorted ifNil: [ #() ])
+				do: [ :spatialClass | 
+					(Cormas isTerminal: spatialClass)
+						ifTrue: [ stream nextPut: spatialClass ] ].
+			(self socialClasses ifNil: [ #() ])
+				do: [ :socialClass | 
+					(Cormas isTerminal: socialClass)
+						ifTrue: [ stream nextPut: socialClass ] ].
+			(self passiveClasses ifNil: [ #() ])
+				do: [ :passiveClass | 
+					((Cormas isTerminal: passiveClass)
+						and: [ passiveClass inheritsFrom: CMEntity ])
+						ifTrue: [ stream nextPut: passiveClass ] ] ]
 ]
 
 { #category : #'- default value' }
@@ -325,17 +323,17 @@ CMAbstractModel class >> chooseActivityDiagramEditorToRemove [
 	" Purpose: user can choose and remove an ActivityDiagramEditor.
 	Example: Entity chooseActivityDiagramEditorToRemove   "
 
-	| operationName list |
-	list := self allActivitySelectors asSortedCollection.
-	operationName := Dialog
-		choose: 'Which activity diagram to remove?'
-		fromList: list
-		values: list
-		lines: 8
-		cancel: [ #Cancel ].
-	operationName = #Cancel
-		ifTrue: [ ^ nil ].
-	^ self removeActivityDiagram: operationName
+	| selectors |
+	selectors := self allActivitySelectors asSortedCollection.
+	^ (UIManager default
+		chooseFrom: selectors
+		lines: selectors
+		message: 'Which activity diagram to remove?'
+		title: '* Select an activity diagram *')
+		in: [ :index | 
+			index = 0
+				ifTrue: [ nil ]
+				ifFalse: [ self removeActivityDiagram: (selectors at: index) ] ]
 ]
 
 { #category : #'+ activityEditor' }
@@ -2363,12 +2361,10 @@ Example : self displayPov: #landUse of: Cell"
 { #category : #'+ user interface' }
 CMAbstractModel >> displaySimInformation [
 	"display information on the current simulation"
-	
-	ComposedTextView
-		open: self getSimDescriptionText asValue
-		label: '* About Current Simulation * '
-		icon: (Icon constantNamed: #workspace)
-		extent: 400 @ 200
+
+	UIManager default
+		longMessage: self getSimDescriptionText
+		title: '* About Current Simulation * '
 ]
 
 { #category : #'+ utilities - space metrics' }
@@ -2812,8 +2808,8 @@ CMAbstractModel >> hasAttributesSetter [
 CMAbstractModel >> hiddenAttributes [
 	"returns a list of hidden attributs that won't be displayed by the parameter interface.
 	This method is automatically redefined from the Setting menu (Hide Parameters...) of Parameter interface"
-	
-	^List new
+
+	^ OrderedCollection new
 ]
 
 { #category : #scheduling }
