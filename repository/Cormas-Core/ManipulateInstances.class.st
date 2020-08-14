@@ -1376,13 +1376,12 @@ ManipulateInstances >> mainApply [
 
 { #category : #deprecated }
 ManipulateInstances >> moveToRandomCell [
-	
-	(self entityClass isNil not and: [self selectedEntities isEmpty not])
-		ifTrue:
-			[self selectedEntities
-				do: [:e | e moveTo: cormas currentSimulation randomCell].
+	(self entityClass isNil not
+		and: [ self selectedEntities isEmpty not ])
+		ifTrue: [ self selectedEntities
+				do: [ :e | e moveTo: cormas currentSimulation pickCell ].
 			nbExistingEntitiesSituated
-				value: (self entitiesCollection select: [:a | a isSituated]) size]
+				value: (self entitiesCollection select: [ :a | a isSituated ]) size ]
 ]
 
 { #category : #aspects }
