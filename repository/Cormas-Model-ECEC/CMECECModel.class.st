@@ -561,7 +561,7 @@ CMECECModel >> theCMECECForagers [
 
 { #category : #accessing }
 CMECECModel >> theRestraineds [
-^theRestraineds ifNil:[theRestraineds := IndexedSet new]
+	^ theRestraineds ifNil: [ theRestraineds := OrderedCollection new ]
 ]
 
 { #category : #accessing }

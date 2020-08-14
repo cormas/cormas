@@ -120,7 +120,7 @@ CMSpaceView >> cellSize: anObject [
 
 { #category : #accessing }
 CMSpaceView >> cellViews [
-	^ cellViews  ifNil: [ situatedEntitiesViews := IndexedSet new ]
+	^ cellViews ifNil: [ situatedEntitiesViews := OrderedCollection new ]
 ]
 
 { #category : #refreshing }
@@ -184,7 +184,8 @@ self setActivePovSelectorOf: aClass with: aSymbol .
 
 { #category : #accessing }
 CMSpaceView >> situatedEntitiesViews [
-	^ situatedEntitiesViews ifNil: [ situatedEntitiesViews := IndexedSet new]
+	^ situatedEntitiesViews
+		ifNil: [ situatedEntitiesViews := OrderedCollection new ]
 ]
 
 { #category : #accessing }

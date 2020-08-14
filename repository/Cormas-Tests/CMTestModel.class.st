@@ -58,8 +58,7 @@ CMTestModel >> numDeads [
 
 { #category : #accessing }
 CMTestModel >> theAgentLocations [
-	^ theAgentLocations
-		ifNil: [ theAgentLocations := IndexedSet new ]
+	^ theAgentLocations ifNil: [ theAgentLocations := OrderedCollection new ]
 ]
 
 { #category : #accessing }

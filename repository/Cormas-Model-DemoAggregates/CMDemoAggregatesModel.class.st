@@ -291,22 +291,24 @@ CMDemoAggregatesModel >> swellForests: t [
 
 { #category : #accessing }
 CMDemoAggregatesModel >> theCMFragmentedForests [
-	^ theFragmentedForests ifNil: [ theFragmentedForests := IndexedSet new ]
+	^ theFragmentedForests
+		ifNil: [ theFragmentedForests := OrderedCollection new ]
 ]
 
 { #category : #accessing }
 CMDemoAggregatesModel >> theCMGroves [
-	^ theGroves ifNil: [ theGroves := IndexedSet new ]
+	^ theGroves ifNil: [ theGroves := OrderedCollection new ]
 ]
 
 { #category : #accessing }
 CMDemoAggregatesModel >> theCMPlots [
-	^ thePlots ifNil: [ thePlots := IndexedSet new ]
+	^ thePlots ifNil: [ thePlots := OrderedCollection new ]
 ]
 
 { #category : #accessing }
 CMDemoAggregatesModel >> theFragmentedForests [
-^theFragmentedForests ifNil:[theFragmentedForests := IndexedSet new]
+	^ theFragmentedForests
+		ifNil: [ theFragmentedForests := OrderedCollection new ]
 ]
 
 { #category : #accessing }
@@ -316,7 +318,7 @@ theFragmentedForests := x
 
 { #category : #accessing }
 CMDemoAggregatesModel >> theGroves [
-^theGroves ifNil:[theGroves := IndexedSet new]
+	^ theGroves ifNil: [ theGroves := OrderedCollection new ]
 ]
 
 { #category : #accessing }
@@ -326,9 +328,7 @@ CMDemoAggregatesModel >> theGroves: x [
 
 { #category : #accessing }
 CMDemoAggregatesModel >> thePlots [
-
-	^ thePlots 
-		ifNil: [ thePlots := IndexedSet new ]
+	^ thePlots ifNil: [ thePlots := OrderedCollection new ]
 ]
 
 { #category : #accessing }
