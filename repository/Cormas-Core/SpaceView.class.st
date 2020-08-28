@@ -43,25 +43,24 @@ SpaceView >> activeAttributeValue: anObject [
 
 { #category : #adapting }
 SpaceView >> adaptComponentsForNewBounds [
-	
 	| scaleFactor |
 	scaleFactor := self preferredBounds extent / self oldBounds extent.	"- (1@0)"	"scaleFactor := self bounds extent / oldBounds extent."	"scaleFactor := self bounds extent / container bounds extent."
 	self components
-		do: [:aFigure | aFigure scaleByWithConstraints: scaleFactor].	"When the grid size has changed, the BitmapFigure have to be placed at the right place"
+		do: [ :aFigure | aFigure scaleByWithConstraints: scaleFactor ].	"When the grid size has changed, the BitmapFigure have to be placed at the right place"
 	((self components
 		select:
-			[:aFigure | (aFigure isKindOf: BitmapFigure) or: [aFigure isDistortable not]])
-		collect: [:fig | fig entityType])
-		do:
-			[:aClass | 
+			[ :aFigure | (aFigure isKindOf: BitmapFigure) or: [ aFigure isDistortable not ] ])
+		collect: [ :fig | fig entityType ])
+		do: [ :aClass | 
 			self
 				changePov: (self model povMethodDico at: aClass name)
-				ofEntity: aClass].	"	(((self components select: [:aFigure | aFigure isBitmapFigure]) 
+				ofEntity: aClass ].	"	(((self components select: [:aFigure | aFigure isBitmapFigure]) 
 		collect: [:fig | fig entityType]) asSet) do: 
 				[:aClass | 
 				self changePov: (self model povMethodDico at: aClass name) ofEntity: aClass]."
-	Dev todo:
-			'C''est incroyable √ßa (le change pov au dessus). il doit y a voir un moyen de replacer le bitmap figure au bonne endroit sans etre oblig√© de les reconstruire.'	"	self invalidateNow.
+	self flag:#TODO.
+			"C''est incroyable √ßa (le change pov au dessus). il doit y a voir un moyen de replacer le bitmap figure au bonne endroit sans etre oblig√© de les reconstruire."
+				"	self invalidateNow.
 	(Dialog confirm: 'Fit Window to the SpaceModel?') ifTrue:[self model resizeWindow]"
 ]
 
@@ -552,16 +551,16 @@ SpaceView >> entityFiguresAt: anImage put: aFigure [
 	"Store the figures (SpatialEntityCoordinates scaled to the window size) of anEntity into entityFigures (an identityDictionary ).
 entityFigures = [ #class -> anIdentityDictionary (anImage -> aFigure anImage -> aFigure...)
 				#class2 -> anIdentityDictionary (anImage -> aFigure anImage -> aFigure...)]"
-	
+
 	(self entityFigures
 		at: anImage entityReference entityClass
-		ifAbsentPut: [IdentityDictionary new]) at: anImage put: aFigure.
-	Dev todo:
-			'A Revoir
-		entityFigures est uniquement utilis√©s pour le acc√©der aux figures des occupants pour un faire un track agents.
-		Or actuellement les arcs utilisent enregistrent √©galement leur entityFigures
-		Et par ailleurs les figures sont d√©j√† accessibles via les components du spaceView
-		Il vaudrait donc mieux virer le entityFigures et passer par les components'
+		ifAbsentPut: [ IdentityDictionary new ]) at: anImage put: aFigure.
+	self flag: #TODO.
+	"A Revoir
+		entityFigures est uniquement utilisés pour le accéder aux figures des occupants pour un faire un track agents.
+		Or actuellement les arcs utilisent enregistrent également leur entityFigures
+		Et par ailleurs les figures sont déjà accessibles via les components du spaceView
+		Il vaudrait donc mieux virer le entityFigures et passer par les components"
 ]
 
 { #category : #click }
@@ -1189,120 +1188,105 @@ SpaceView >> update: aspectSymbol [
 SpaceView >> updateFigureForEntityReference: anEntityReference [
 	"update the figure corresponding to anEntityReference (and its model, namely currentPov) in case the current values of the povResult and infoResult of the model of figure are different from the one of a updatedPovSpec which is newly calculated using the povSelector and infoName of the model of the figure.
 	This method allows to manage figures which have a same enityType but not a same povSelector or povName"
-	
+
 	| aFig currentPov aSelector newPov currentPatch updatedPovSpec startPatch stopPatch |
 	aFig := self findRegisteredFigureFor: anEntityReference.
-	aFig ifNil: [^nil].
-	aFig model ifNil: [^nil].
+	aFig ifNil: [ ^ nil ].
+	aFig model ifNil: [ ^ nil ].
 	currentPov := aFig model.	"((self components select: [:f| f model entityType = CormasNS.Models.NewDistrict.Abeille]) collect: [:f| f model entity])"
 	aSelector := currentPov name.
-	(aSelector = #nil or: [aSelector = #delimitors]) ifTrue: [^nil].	"Delimitors are updated only when the components of a spatialSet is changed"
+	(aSelector = #nil or: [ aSelector = #delimitors ])
+		ifTrue: [ ^ nil ].	"Delimitors are updated only when the components of a spatialSet is changed"
 	updatedPovSpec := anEntityReference entity
 		getPovSpecForSelector: aSelector
 		andInfo: currentPov infoName.
 	currentPov povResult = updatedPovSpec povResult
-		ifFalse:
-			[currentPov povResult: updatedPovSpec povResult.
+		ifFalse: [ currentPov povResult: updatedPovSpec povResult.
 			currentPov povResult cormasHelper isTypeColorValue
-				ifTrue:
-					[currentPov color: currentPov povResult.
-					aFig fillColor: currentPov color]
-				ifFalse:
-					["In this case, it means the shape of entity has to be updated"
+				ifTrue: [ currentPov color: currentPov povResult.
+					aFig fillColor: currentPov color ]
+				ifFalse: [ "In this case, it means the shape of entity has to be updated"
 					"in the cas of a spatialEntity this is simple because the shape remains the same. Only the color changes. (a spatialEntitySet which compoistion changed is handled by the method redisplayCompoundSpatialEntity:"
 					anEntityReference entityClass isSpatialClass
-						ifTrue:
-							[currentPov
-								color:
-									(anEntityReference entityClass getColorAtPov: currentPov povResult).
-							aFig fillColor: currentPov color]
-						ifFalse:
-							["it is then an occupant or an arc that has a different shape"
-							newPov := anEntityReference entityClass createEntityPOVwithSpec:
-									updatedPovSpec.
+						ifTrue: [ currentPov
+								color: (anEntityReference entityClass getColorAtPov: currentPov povResult).
+							aFig fillColor: currentPov color ]
+						ifFalse: [ "it is then an occupant or an arc that has a different shape"
+							newPov := anEntityReference entityClass
+								createEntityPOVwithSpec: updatedPovSpec.
 							newPov entityReference: anEntityReference.
 							anEntityReference entityClass isArcClass
-								ifTrue:
-									["It is then an arc"
+								ifTrue: [ "It is then an arc"
 									startPatch := anEntityReference entity startNode patch.
 									stopPatch := anEntityReference entity stopNode patch.
 									self remove: aFig.
 									self
 										addFigureForArcPov: newPov
 										start: (EntityReference on: startPatch)
-										end: (EntityReference on: stopPatch)]
-								ifFalse:
-									["It is then an Occupant"
+										end: (EntityReference on: stopPatch) ]
+								ifFalse: [ "It is then an Occupant"
 									currentPatch := anEntityReference entity patch.
-									Dev todo:
-											'Ici on fait un appel au serveur via le message entity. A voir comment optimiser pour qu''il n''yest pas d''apel au serveur'.
+									self flag:#TODO.
+											"Ici on fait un appel au serveur via le message entity. A voir comment optimiser pour qu''il n''yest pas d''apel au serveur"
 									self remove: aFig.
 									self
 										addFigureForOccupantPov: newPov
-										on: (EntityReference on: currentPatch)]]]].
+										on: (EntityReference on: currentPatch) ] ] ] ].
 	currentPov infoResult ~= updatedPovSpec infoResult
-		ifTrue:
-			[currentPov infoResult: updatedPovSpec infoResult.
-			aFig setText: updatedPovSpec infoResult]
+		ifTrue: [ currentPov infoResult: updatedPovSpec infoResult.
+			aFig setText: updatedPovSpec infoResult ]
 ]
 
 { #category : #'adding-removing' }
 SpaceView >> updateFigureForEntityReference: anEntityReference ifPovNameIs: aPovName [
 	"update the figure corresponding to anEntityReference (and its model, namely currentPov) in case the current values of the povResult and infoResult of the model of figure are different from the one of a updatedPovSpec which is newly calculated using the povSelector and infoName of the model of the figure.
 	This method allows to manage figures which have a same enityType but not a same povSelector or povName"
-	
+
 	| aFig currentPov aSelector newPov currentPatch updatedPovSpec startPatch stopPatch |
 	aFig := self findRegisteredFigureFor: anEntityReference.
-	aFig ifNil: [^nil].
+	aFig ifNil: [ ^ nil ].
 	currentPov := aFig model.
 	aSelector := currentPov name.
 	(currentPov povResult ~= aPovName
-		or: [aSelector = #nil or: [aSelector = #delimitors]]) ifTrue: [^nil].	"Delimitors are updated only when the components of a spatialSet is changed"
+		or: [ aSelector = #nil or: [ aSelector = #delimitors ] ])
+		ifTrue: [ ^ nil ].	"Delimitors are updated only when the components of a spatialSet is changed"
 	updatedPovSpec := anEntityReference entity
 		getPovSpecForSelector: aSelector
 		andInfo: currentPov infoName.
 	currentPov povResult: updatedPovSpec povResult.
 	currentPov povResult cormasHelper isTypeColorValue
-		ifTrue:
-			[currentPov color: currentPov povResult.
-			aFig fillColor: currentPov color]
-		ifFalse:
-			["In this case, it means the shape of entity has to be updated"
+		ifTrue: [ currentPov color: currentPov povResult.
+			aFig fillColor: currentPov color ]
+		ifFalse: [ "In this case, it means the shape of entity has to be updated"
 			"in the cas of a spatialEntity this is simple because the shape remains the same. Only the color changes. (a spatialEntitySet which composition changed is handled by the method redisplayCompoundSpatialEntity:"
 			anEntityReference entityClass isSpatialClass
-				ifTrue:
-					[currentPov
-						color:
-							(anEntityReference entityClass getColorAtPov: currentPov povResult).
-					aFig fillColor: currentPov color]
-				ifFalse:
-					["it is then an Occupant or an Arc that has a different shape"
-					newPov := anEntityReference entityClass createEntityPOVwithSpec:
-							updatedPovSpec.
+				ifTrue: [ currentPov
+						color: (anEntityReference entityClass getColorAtPov: currentPov povResult).
+					aFig fillColor: currentPov color ]
+				ifFalse: [ "it is then an Occupant or an Arc that has a different shape"
+					newPov := anEntityReference entityClass
+						createEntityPOVwithSpec: updatedPovSpec.
 					newPov entityReference: anEntityReference.
 					anEntityReference entityClass isArcClass
-						ifTrue:
-							["It is then an arc"
+						ifTrue: [ "It is then an arc"
 							startPatch := anEntityReference entity startNode patch.
 							stopPatch := anEntityReference entity stopNode patch.
 							self remove: aFig.
 							self
 								addFigureForArcPov: newPov
 								start: (EntityReference on: startPatch)
-								end: (EntityReference on: stopPatch)]
-						ifFalse:
-							["It is then an Occupant"
+								end: (EntityReference on: stopPatch) ]
+						ifFalse: [ "It is then an Occupant"
 							currentPatch := anEntityReference entity patch.
-							Dev todo:
-									'Ici on fait un appel au serveur via le message entity. A voir comment optimiser pour qu''il n''yest pas d''apel au serveur'.
+							self flag:#TODO.
+							"Ici on fait un appel au serveur via le message entity. A voir comment optimiser pour qu''il n''yest pas d''apel au serveur"
 							self remove: aFig.
 							self
 								addFigureForOccupantPov: newPov
-								on: (EntityReference on: currentPatch)]]].
+								on: (EntityReference on: currentPatch) ] ] ].
 	currentPov infoResult ~= updatedPovSpec infoResult
-		ifTrue:
-			[currentPov infoResult: updatedPovSpec infoResult.
-			aFig setText: updatedPovSpec infoResult]
+		ifTrue: [ currentPov infoResult: updatedPovSpec infoResult.
+			aFig setText: updatedPovSpec infoResult ]
 ]
 
 { #category : #'adding-removing' }
