@@ -158,6 +158,14 @@ CMProjectManager >> createNewProject [
 ]
 
 { #category : #callbacks }
+CMProjectManager >> doPostNewActions [
+	" Private - See superimplentor's comment "
+
+	self updateNewProject: self cormasModelName.
+	super doPostNewActions.
+]
+
+{ #category : #callbacks }
 CMProjectManager >> doPostOpenActions [
 	" Private - See superimplentor's comment "
 
@@ -381,14 +389,6 @@ CMProjectManager >> updateStateInit [
 		menuDisableSimulationGroup;
 		menuDisableToolsGroup;
 		menuDisableHelpGroup.
-]
-
-{ #category : #callbacks }
-CMProjectManager >> updateStateNew [
-	" Private - A new project has been created, create a model class and set the receiver's model "
-	
-	super updateStateNew.
-	self updateNewProject: self currentProjectName.
 ]
 
 { #category : #utilities }
