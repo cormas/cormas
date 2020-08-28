@@ -150,6 +150,7 @@ CMProjectManager >> createNewProject [
 	(answer := self requestMessage: self translator tNewProjectName) isEmptyOrNil 
 		ifFalse: [ 
 			self createAppProject: answer.
+			self doPostNewActions.
 			(CMSpecModelComments for: self) openWithSpec ]
 		ifTrue: [ self informMessage: self translator tNewProjectEmptyName ].
 
