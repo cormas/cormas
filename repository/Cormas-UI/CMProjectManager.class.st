@@ -161,7 +161,6 @@ CMProjectManager >> createNewProject [
 CMProjectManager >> doPostNewActions [
 	" Private - See superimplentor's comment "
 
-	self halt.
 	self updateNewProject: self cormasModelName.
 	super doPostNewActions.
 ]
