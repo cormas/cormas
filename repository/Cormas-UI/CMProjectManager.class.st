@@ -150,7 +150,6 @@ CMProjectManager >> createNewProject [
 	(answer := self requestMessage: self translator tNewProjectName) isEmptyOrNil 
 		ifFalse: [ 
 			self createAppProject: answer.
-			self fsm handleEvent: #actionNew.
 			(CMSpecModelComments for: self) openWithSpec ]
 		ifTrue: [ self informMessage: self translator tNewProjectEmptyName ].
 
@@ -161,6 +160,7 @@ CMProjectManager >> createNewProject [
 CMProjectManager >> doPostNewActions [
 	" Private - See superimplentor's comment "
 
+	self halt.
 	self updateNewProject: self cormasModelName.
 	super doPostNewActions.
 ]
@@ -170,7 +170,7 @@ CMProjectManager >> doPostOpenActions [
 	" Private - See superimplentor's comment "
 
 	self updateNewProject: self cormasModelName.
-	self fsm handleEvent: #actionOpened.
+	super doPostOpenActions.
 ]
 
 { #category : #callbacks }
