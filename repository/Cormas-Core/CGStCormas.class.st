@@ -112,7 +112,10 @@ CGStCormas >> templateForInitAgents [
 { #category : #'code-templates' }
 CGStCormas >> templateForPovOnAttribute [
 
+	^ 'pov
+	" To be completed "
 	
+'
 ]
 
 { #category : #'mustache-templates' }

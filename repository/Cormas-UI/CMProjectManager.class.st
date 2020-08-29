@@ -150,7 +150,7 @@ CMProjectManager >> createNewProject [
 	(answer := self requestMessage: self translator tNewProjectName) isEmptyOrNil 
 		ifFalse: [ 
 			self createAppProject: answer.
-			self fsm handleEvent: #actionNew.
+			self doPostNewActions.
 			(CMSpecModelComments for: self) openWithSpec ]
 		ifTrue: [ self informMessage: self translator tNewProjectEmptyName ].
 
@@ -158,11 +158,19 @@ CMProjectManager >> createNewProject [
 ]
 
 { #category : #callbacks }
+CMProjectManager >> doPostNewActions [
+	" Private - See superimplentor's comment "
+
+	self updateNewProject: self cormasModelName.
+	super doPostNewActions.
+]
+
+{ #category : #callbacks }
 CMProjectManager >> doPostOpenActions [
 	" Private - See superimplentor's comment "
 
 	self updateNewProject: self cormasModelName.
-	self fsm handleEvent: #actionOpened.
+	super doPostOpenActions.
 ]
 
 { #category : #callbacks }
@@ -276,6 +284,12 @@ CMProjectManager >> openProject: modelName fileName: fileName [
 
 ]
 
+{ #category : #accessing }
+CMProjectManager >> projectClass [
+
+	^ CMProjectModel
+]
+
 { #category : #callbacks }
 CMProjectManager >> requestModelNameLocation [
 	" Open request dialog to select a load model location "
@@ -356,12 +370,12 @@ CMProjectManager >> updateNewProject: modelName [
 	" See superimplementor's comment "
 
 	self currentProject hasCormasModelClass
-		ifFalse: [ self currentProject cormasModelClass: (self createClassModelNamed: modelName).
-			self currentProject cormasModel: self cormasModelClass new ].
+		ifFalse: [ self currentProject cormasModelClass: (self createClassModelNamed: modelName) ].
+	self currentProject cormasModel: self cormasModelClass new.
 	self cormasModelClass initialize.
 	self cormasModel projectManager: self.
 	super updateNewProject: modelName.
-	self cormasModel timeStep:0.
+	self cormasModel timeStep: 0.
 ]
 
 { #category : #callbacks }
