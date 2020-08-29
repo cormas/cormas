@@ -76,8 +76,8 @@ BaselineOfCormas >> baseline: spec [
 		for: #'pharo8.x'
 		do: [ spec preLoadDoIt: #preLoadForPharo8.
 			spec
-				baseline: 'Roassal3'
-					with: [ spec repository: 'github://ObjectProfile/Roassal3/src' ];
+				"baseline: 'Roassal3'
+					with: [ spec repository: 'github://ObjectProfile/Roassal3' ];"
 				baseline: 'Tabular'
 					with: [ spec repository: 'github://VincentBlondeau/Tabular' ];
 				baseline: 'NeoJSON'
@@ -86,8 +86,8 @@ BaselineOfCormas >> baseline: spec [
 		for: #'pharo9.x'
 		do: [ spec preLoadDoIt: #preLoadForPharo9.
 			spec
-				baseline: 'Roassal3'
-					with: [ spec repository: 'github://ObjectProfile/Roassal3' ];
+				"baseline: 'Roassal3'
+					with: [ spec repository: 'github://ObjectProfile/Roassal3' ];"
 				baseline: 'Tabular'
 					with: [ spec repository: 'github://VincentBlondeau/Tabular' ];
 				baseline: 'NeoJSON'
