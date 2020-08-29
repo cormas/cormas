@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'simWindow'
 	],
-	#category : 'Cormas-UI-Project'
+	#category : #'Cormas-UI-Project'
 }
 
 { #category : #specs }
@@ -1163,6 +1163,20 @@ CMSpecProjectWindow >> updateSimulationWindow [
 	" Open or update the receiver's simulation interface "
 	
 	self simWindow toggleSimInterface
+]
+
+{ #category : #callbacks }
+CMSpecProjectWindow >> updateStateNew [
+	" Private - See superimplementor's comment "
+
+	super updateStateNew.
+	self 
+		menuEnableProgrammingGroup;
+		menuEnableSimulationGroup;
+		menuEnableToolsGroup;
+		menuEnableVisualizationGroup;
+		menuEnableHelpGroup;
+		updateSimulationWindow
 ]
 
 { #category : #callbacks }

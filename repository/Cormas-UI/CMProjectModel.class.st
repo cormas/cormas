@@ -75,7 +75,10 @@ CMProjectModel >> cormasModelAuthors: aString [
 
 { #category : #accessing }
 CMProjectModel >> cormasModelClass [
+	" Answer the receiver's model, a subclass of <CMAbstractModel> "
+
 	^ cormasModelClass
+		ifNil: [ cormasModelClass := self createClassModelNamed: 'CM' , self info infoName ]
 ]
 
 { #category : #accessing }
