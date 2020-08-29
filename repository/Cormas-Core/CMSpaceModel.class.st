@@ -644,8 +644,9 @@ CMSpaceModel >> createCells [
 CMSpaceModel >> createHexagonalCellsFigure [
 	"On enleve le nombre de poly a hauteur et largeur afin de laisser une 
 	bordure"
+
 	"calcul du diametre du cercle"
-	
+
 	| hexagone translation hexagoneInfo delay lineCounter aPov i |
 	self elementaryEntitiesDefaultPovs: nil.
 	hexagoneInfo := self createTopLeftHexagonalCellsFigure.	"SpatialEntityCoordinates new: (hexagoneInfo at: 'object') =>pour inspecter la tete que √ßa a"
@@ -655,25 +656,22 @@ CMSpaceModel >> createHexagonalCellsFigure [
 	lineCounter := 1.
 	i := 1.
 	self line
-		timesRepeat:
-			[lineCounter odd
-				ifTrue: [hexagone := hexagone translatedBy: delay @ 0]
-				ifFalse: [hexagone := hexagone translatedBy: delay negated @ 0].
+		timesRepeat: [ lineCounter odd
+				ifTrue: [ hexagone := hexagone translatedBy: delay @ 0 ]
+				ifFalse: [ hexagone := hexagone translatedBy: delay negated @ 0 ].
 			lineCounter := lineCounter + 1.
 			self column
-				timesRepeat:
-					[aPov := VectorialElementaryPOV new: hexagone asPolyline.
+				timesRepeat: [ aPov := VectorialElementaryPOV new: hexagone asPolyline.
 					aPov name: #nil.
 					aPov
-						entityReference:
-							(EntityReference on: (self elementaryEntities at: i)).
+						entityReference: (EntityReference on: (self elementaryEntities at: i)).
 					self elementaryEntitiesDefaultPovs add: aPov.
 					hexagone := hexagone translatedBy: translation x @ 0.	"SpatialEntityCoordinates new: (hexagone) =>pour inspecter la tete que √ßa a"
-					i := i + 1].
+					i := i + 1 ].
 			hexagone := hexagone
-				translatedBy: (self column * translation x negated) @ translation y].
-	Dev todo:
-			'c''est ici qu''il faut corriger le bug de decalage des cellules en bas √† droite sous vw7.9'
+				translatedBy: (self column * translation x negated) @ translation y ].
+	self flag:#TODO.
+	"c''est ici qu''il faut corriger le bug de decalage des cellules en bas à droite sous vw7.9"
 ]
 
 { #category : #'private - regular polygons' }
@@ -2419,11 +2417,12 @@ CMSpaceModel >> noticeChange: aChange [
 { #category : #'private - notification' }
 CMSpaceModel >> noticeChanges: someChanges [
 	"notice some grouped changes"
-	
-	someChanges isEmpty ifTrue: [^nil].
+
+	someChanges isEmpty
+		ifTrue: [ ^ nil ].
 	self myDependents update: #noticeChanges with: someChanges from: self.
-	Dev todo:
-			'g√©rer ici les coupures r√©seaux en faisant des v√©rifications au niveau de myDependents'
+	self flag:#TODO.
+	"g√©rer ici les coupures r√©seaux en faisant des v√©rifications au niveau de myDependents"
 ]
 
 { #category : #'private - display' }

@@ -286,9 +286,8 @@ CMArcEntity >> isMovedFrom: startCell to: endCell [
 	(endCell occupants: self class name) add: self.
 	alreadySituated_start
 		ifTrue: [ self halt.
-			Dev
-				todo:
-					'a priori ca ne marche pas car la notification renvoi √† un moveOccupant qui n''a pas √©t√© pr√©vu pour des Arcs. D''un autre cot√© je ne vois pas pouquoi on devrait avoir des "moving arcs" puisqu''ils ne bougent pas d''eux memes, mais que lorsqu''un de leur node bouge'.
+			self flag:#TODO.
+"a priori ca ne marche pas car la notification renvoi √† un moveOccupant qui n''a pas √©t√© pr√©vu pour des Arcs. D''un autre cot√© je ne vois pas pouquoi on devrait avoir des moving arcs puisqu''ils ne bougent pas d''eux memes, mais que lorsqu''un de leur node bouge'"
 			self cormasModel
 				registerEntityChange: #movingArc
 				with: (EntityReference on: startCell) -> (EntityReference on: endCell)
@@ -315,9 +314,8 @@ CMArcEntity >> isMovedTo: startCell [
 	stopNode patch ifNil: [ ^ nil ].
 	alreadySituated_start
 		ifTrue: [ "self halt."
-			Dev
-				todo:
-					'a priori ca ne marche pas car la notification renvoi √† un moveOccupant qui n''a pas √©t√© pr√©vu pour des Arcs. D''un autre cot√© je ne vois pas pouquoi on devrait avoir des "moving arcs" puisqu''ils ne bougent pas d''eux memes, mais que lorsqu''un de leur node bouge'.
+			self flag:#TODO.
+				"a priori ca ne marche pas car la notification renvoi à un moveOccupant qui n a pas été prévu pour des Arcs. D un autre coté je ne vois pas pouquoi on devrait avoir des moving arcs puisqu''ils ne bougent pas d''eux memes, mais que lorsqu''un de leur node bouge"
 			self cormasModel
 				registerEntityChange: #movingArc
 				with:

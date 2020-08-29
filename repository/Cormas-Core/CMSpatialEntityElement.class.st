@@ -176,16 +176,16 @@ CMSpatialEntityElement >> isConnectedToCells: setOfCells [
 { #category : #'- testing' }
 CMSpatialEntityElement >> isCrossedByArc: anArc [
 	"answer if the cell is crossed by anArc"
-	
+
 	| arcLine |
 	self halt.	"does not work anymore. an ESE does not know directly it bounds."
-	Dev todo:
-			'Il faudrait justement que √ßa fonctionne !
-L idee initiale √©tait d avoir un espace par d√©faut (non affich√©) sur lequel on pourrait plus facilement faire ce genre de calcul'.
+	self flag:#TODO.
+			"Il faudrait justement que ca fonctionne !
+L idee initiale était d avoir un espace par défaut (non affiché) sur lequel on pourrait plus facilement faire ce genre de calcul"
 	arcLine := LineSegment
 		from: anArc startCell center
 		to: anArc stopCell center.
-	^arcLine outlineIntersects: self bounds
+	^ arcLine outlineIntersects: self bounds
 ]
 
 { #category : #'- testing' }

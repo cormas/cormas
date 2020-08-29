@@ -303,8 +303,8 @@ Example: self removeComponents: self getEpidermis"
 { #category : #'- initialize-release' }
 CMSpatialEntitySet >> destroyed: aBoolean [
 	"for the moment, it is a non destructive method for the components. "
-	
-	Dev todo: 'To be changed ?'.
+
+	self flag:#TODO. "To be changed ?"
 	super destroyed: aBoolean
 ]
 
