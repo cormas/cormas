@@ -78,7 +78,7 @@ CMProjectModel >> cormasModelClass [
 	" Answer the receiver's model, a subclass of <CMAbstractModel> "
 
 	^ cormasModelClass
-		ifNil: [ cormasModelClass := self createClassModelNamed: self defaultCormasModelName ]
+		ifNil: [ cormasModelClass := self createClassModelNamed: self defaultStdCormasModelName ]
 ]
 
 { #category : #accessing }
@@ -144,10 +144,9 @@ CMProjectModel >> createClassModelNamed: modelName [
 	
 	| validClassName |
 	
-	self halt.
 	validClassName := self validateCormasModelName: modelName.
 	self codeGenerator
-		targetClassCategory: self defaultCormasCategoryName;
+		targetClassCategory: self defaultStdCormasCategoryName;
 		targetClass: validClassName;
 		generateClassNamed: validClassName 
 		superclass: CMAbstractModel.
@@ -155,8 +154,15 @@ CMProjectModel >> createClassModelNamed: modelName [
 	^ Smalltalk at: validClassName asSymbol
 ]
 
-{ #category : #accessing }
-CMProjectModel >> defaultCormasCategoryName [
+{ #category : #defaults }
+CMProjectModel >> defaultCormasModelName [
+	" Answer a default model <String> name for unnamed model's creation case "
+
+	^ 'Unnamed'
+]
+
+{ #category : #defaults }
+CMProjectModel >> defaultStdCormasCategoryName [
 	" Answer a <String> in the format CMXXXModel where XXX is the user provided name of the receiver's model "
 	
 	^ String streamContents: [ : stream |
@@ -165,8 +171,8 @@ CMProjectModel >> defaultCormasCategoryName [
 				<< self userProvidedName ]
 ]
 
-{ #category : #accessing }
-CMProjectModel >> defaultCormasModelName [
+{ #category : #defaults }
+CMProjectModel >> defaultStdCormasModelName [
 	" Answer a <String> in the format CMXXXModel where XXX is the user provided name of the receiver's model "
 	
 	^ String streamContents: [ : stream |
@@ -187,7 +193,7 @@ CMProjectModel >> hasCormasModelClass [
 CMProjectModel >> initializeForModel: aCormasModel [
 	" Private - Set up the cormas model for the receiver "
 
-	self initializeNamed: 'Unnamed'.
+	self initializeNamed: self defaultCormasModelName.
 	self cormasModel: aCormasModel.
 	self cormasModelClass: aCormasModel class.
 ]
