@@ -3904,23 +3904,6 @@ Cormas >> cormasModelClass: aClass [
 ]
 
 { #category : #'model entities' }
-Cormas >> createClassModelNamed: aName [
-	"Create the NameSpace of the new model and its category then create the class of this model"
-	
-	| classBuilder nameSpace |
-	nameSpace := self createSubModelsNameSpace: aName.
-	classBuilder := ClassBuilder new.
-	classBuilder
-		environment: nameSpace;
-		beFixed;
-		superclass: CMAbstractModel;
-		className: aName asSymbol;
-		instVarString: '';
-		category: aName , 'Category'.
-	^classBuilder reviseSystemSilently
-]
-
-{ #category : #'model entities' }
 Cormas >> createClassNamed: aName from: aSuperClass [
 	"aName <String> - aSuperClass <Object, Agent, Entity, etc >"
 	
@@ -4043,19 +4026,6 @@ Cormas >> createStep: newClass [
 		compile: 'step\	"to be completed"' withCRs
 		classified: 'control'
 		notifying: nil
-]
-
-{ #category : #'model entities' }
-Cormas >> createSubModelsNameSpace: aName [
-	"Creates and returns the NameSpace under CormasNS.Models    aName : <String>"
-	
-	^Models
-		defineNameSpace: aName asSymbol
-		private: false
-		imports:
-			'private Smalltalk.* 
-						 private CormasNS.Kernel.*'
-		category: aName , 'Category'
 ]
 
 { #category : #deprecated }
