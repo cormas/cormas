@@ -104,11 +104,11 @@ Cormas class >> addOnsPath [
 ]
 
 { #category : #'+ utilities - code management' }
-Cormas class >> allTerminalClassesOf: aClassRoot [
-	"Purpose: Returns a collection of all the terminal classes of aClassRoot
-Example: Cormas allTerminalClassesOf: Forager"
-	
-	^aClassRoot withAllSubclasses select: [:aClass | self isTerminal: aClass]
+Cormas class >> allTerminalClassesOf: aClass [
+	"Purpose: Returns a collection of all the terminal classes of aClass
+	Example: Cormas allTerminalClassesOf: CMECECForager"
+
+	^ aClass withAllSubclasses select: [ :each | self isTerminal: each ]
 ]
 
 { #category : #'+ utilities - files' }
@@ -1071,9 +1071,9 @@ ex:		Cormas median: #( 1 2 3) 	=> 2
 
 { #category : #'+ utilities - mathematics' }
 Cormas class >> min: aCollectionOfNumbers [
-	"Answer the minimum of a set of numbers. 
-aCollectionOfNumbers = < OrderedCollection> or <Array>
-ex:		Cormas min: #( 1 2 3)	=> 1"
+	"Purpose: Answer the minimum of a set of numbers. 
+	Argument: aCollectionOfNumbers = < OrderedCollection> or <Array>
+	Example:	Cormas min: #( 1 2 3)	=> 1"
 
 	^ aCollectionOfNumbers min
 ]
@@ -1189,8 +1189,8 @@ Examples:
 	Cormas number: 5 onCycle: 5 => 5
 	Cormas number: 6 onCycle: 5 => 1
 	Cormas number: 7 onCycle: 5 => 2"
-	
-	^(aNumber - 1) \\ aCycleBase + 1
+
+	^ (aNumber - 1) \\ aCycleBase + 1
 ]
 
 { #category : #'+ utilities - string' }
@@ -2630,9 +2630,9 @@ Examples:
 
 { #category : #'+ utilities - mathematics' }
 Cormas class >> sum: aCollectionOfNumbers [
-	"Purpoose: Answer the summation of a set of numbers. 
-Argument: aCollectionOfNumbers = < OrderedCollection> or <Array>
-Example: Cormas sum: #( 1 2 3)	=> 6"
+	"Purpose: Answer the summation of a set of numbers. 
+	Argument: aCollectionOfNumbers = < OrderedCollection> or <Array>
+	Example: Cormas sum: #( 1 2 3)	=> 6"
 
 	^ aCollectionOfNumbers sum
 ]
