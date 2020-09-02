@@ -269,6 +269,7 @@ CMTranslator >> addTranslationsForENPart3 [
 		at: #tChangeModelComments put: 'Change model Comments';
 		at: #tWhichOpeningLocation put: 'Select open location';
 		at: #tOptions put: 'Options';
+		at: #tNoVersion put: 'No version';
 		yourself
 ]
 
@@ -507,6 +508,7 @@ CMTranslator >> addTranslationsForESPart3 [
 		at: #tHowToRunModel 					put: 'Como ejecutar este modelo';
 		at: #tChangeModelComments 			put: 'Modificar comentarios del modelo';
 		at: #tWhichOpeningLocation 			put: 'Seleccione la ubicacion del elemento';
+		at: #tNoVersion 						put: 'Sin versión';
 		yourself
 
 ]

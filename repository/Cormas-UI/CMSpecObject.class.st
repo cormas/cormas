@@ -87,6 +87,12 @@ CMSpecObject >> cormasModelClass [
 ]
 
 { #category : #accessing }
+CMSpecObject >> currentProject [ 
+
+	^ self projectManager currentProject 
+]
+
+{ #category : #accessing }
 CMSpecObject >> iconNamed: aSymbol [
 	" Answer a <Form> representing a Cormas icon "
 
@@ -96,6 +102,12 @@ CMSpecObject >> iconNamed: aSymbol [
 { #category : #callbacks }
 CMSpecObject >> openHelp [
 	self shouldBeImplemented.
+]
+
+{ #category : #accessing }
+CMSpecObject >> projectAnnouncer [
+
+	^ self projectManager announcer 
 ]
 
 { #category : #accessing }

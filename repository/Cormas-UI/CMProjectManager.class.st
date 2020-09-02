@@ -65,6 +65,7 @@ CMProjectManager >> cormasModelAuthors: aString [
 
 { #category : #accessing }
 CMProjectManager >> cormasModelClass [
+	" Answer a <Class> representing the model class of the receiver's current project "
 
 	^ self currentProject cormasModelClass
 ]
@@ -74,13 +75,6 @@ CMProjectManager >> cormasModelCreationDate: aString [
 
 	self currentProject cormasModelCreationDate: aString
 
-]
-
-{ #category : #accessing }
-CMProjectManager >> cormasModelEmails: aString [
-	" Set aString with emails (one by line) to the receiver's model "
-
-	self currentProject cormasModelEmails: aString
 ]
 
 { #category : #accessing }
@@ -107,14 +101,14 @@ CMProjectManager >> cormasModelVersion: aString [
 
 ]
 
-{ #category : #callbacks }
+{ #category : #accessing }
 CMProjectManager >> cormasModels [
 	" Answer a <Collection> of <String> with receiver's available models "
 	
 	^ self application modelNames
 ]
 
-{ #category : #callbacks }
+{ #category : #accessing }
 CMProjectManager >> cormasOpenLocations [
 	" Answer a Collection of valid locations for opening a Cormas model "
 	
@@ -122,7 +116,7 @@ CMProjectManager >> cormasOpenLocations [
 
 ]
 
-{ #category : #callbacks }
+{ #category : #accessing }
 CMProjectManager >> cormasOpenLocationsMap [
 	" Answer a Collection of valid locations for opening a Cormas model "
 
@@ -142,35 +136,70 @@ CMProjectManager >> createClassModelNamed: modelName [
 ]
 
 { #category : #callbacks }
-CMProjectManager >> createNewProject [
-	" Private - See superimplementor's comment "
+CMProjectManager >> createProject: projectName in: aCMApplicationProject [
+
+	| newProject |
 	
-	| answer |
+	newProject := aCMApplicationProject createProjectNamed: projectName.
+	aCMApplicationProject currentProject: newProject.
+	self updateNewProject: projectName.
+	self fsm handleEvent: #actionNew.
 
-	(answer := self requestMessage: self translator tNewProjectName) isEmptyOrNil 
-		ifFalse: [ 
-			self createAppProject: answer.
-			self doPostNewActions.
-			(CMSpecModelComments for: self) openWithSpec ]
-		ifTrue: [ self informMessage: self translator tNewProjectEmptyName ].
+]
 
+{ #category : #testing }
+CMProjectManager >> currentProjectAuthors [
+	" Answer a <String> containing receiver's model authors "
+
+	^ self currentProject cormasModelClass cmAuthors
+
+]
+
+{ #category : #accessing }
+CMProjectManager >> currentProjectHasAuthor [
+	" Answer <true> if the receiver's model has comments "
+
+	^ self currentProject cormasModelClass respondsTo: #cmAuthors
+]
+
+{ #category : #testing }
+CMProjectManager >> currentProjectHasComments [
+	" Answer <true> if the receiver's model has comments "
+
+	^ self currentProject cormasModelClass respondsTo: #comments
+]
+
+{ #category : #testing }
+CMProjectManager >> currentProjectHasCreationDate [
+	" Answer <true> if receiver's contains a version name "
+
+	^  self currentProject cormasModelClass respondsTo: #creationDate
+]
+
+{ #category : #testing }
+CMProjectManager >> currentProjectHasVersion [
+	" Answer <true> if receiver's contains a version name "
+
+	^  self currentProject cormasModelClass respondsTo: #version
+]
+
+{ #category : #testing }
+CMProjectManager >> currentProjectVersion [
+	" Answer a <String> containing receiver's current version name. If no version is found, answer a descriptive string reflecting the situation (i.e. 'no version') "
+
+	^ [ self currentProject cormasModelClass version ]
+	on: MessageNotUnderstood 
+	do: [ : ex | self translator tNoVersion ]
 
 ]
 
 { #category : #callbacks }
 CMProjectManager >> doPostNewActions [
-	" Private - See superimplentor's comment "
+	" Basic post new actions. Redefine in subclasses if necessary "
 
-	self updateNewProject: self cormasModelName.
 	super doPostNewActions.
-]
+	(CMSpecModelComments for: self) openWithSpec.
 
-{ #category : #callbacks }
-CMProjectManager >> doPostOpenActions [
-	" Private - See superimplentor's comment "
-
-	self updateNewProject: self cormasModelName.
-	super doPostOpenActions.
 ]
 
 { #category : #callbacks }
@@ -319,7 +348,7 @@ CMProjectManager >> requestModelOpenDialogFromLocalDisk [
 
 { #category : #callbacks }
 CMProjectManager >> requestModelOpenDialogFromLocalImage [
-	" Open a Cormas model. Answer project creation status, <true> if project was opened successfully "
+	" Open a Cormas model. Answer a <String> with the project name it it was opened successfully, nil otherwise "
 
 	| widget |
 	widget := SpcListModel new.
@@ -327,7 +356,9 @@ CMProjectManager >> requestModelOpenDialogFromLocalImage [
 		title: self translator tWhichModel;
 		items: CMAbstractModel subclasses.
 	widget openDialogWithSpec modalRelativeTo: self currentWorld.
-	^ widget selectedItem name
+	^ widget selectedItem 
+		ifNotNil: [ : selection | selection name ]
+		ifNil: [ widget selectedItem ]
 ]
 
 { #category : #callbacks }
@@ -374,7 +405,6 @@ CMProjectManager >> updateNewProject: modelName [
 	self currentProject cormasModel: self cormasModelClass new.
 	self cormasModelClass initialize.
 	self cormasModel projectManager: self.
-	super updateNewProject: modelName.
 	self cormasModel timeStep: 0.
 ]
 

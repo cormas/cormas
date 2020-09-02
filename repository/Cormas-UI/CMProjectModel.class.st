@@ -65,10 +65,10 @@ CMProjectModel >> cormasModel: aCormasModel [
 { #category : #accessing }
 CMProjectModel >> cormasModelAuthors: aString [ 
 	" See comment in CMProjectManager>>cormasModelAuthors: "
-	
-	self codeGenerator 
+
+	self codeGenerator
 		generateMethod: aString 
-		selector: #authors 
+		selector: #cmAuthors 
 		inClass: self cormasModelClass class.
 
 ]
@@ -96,17 +96,6 @@ CMProjectModel >> cormasModelCreationDate: aString [
 		selector: #creationDate 
 		inClass: self cormasModelClass class.
 
-
-]
-
-{ #category : #accessing }
-CMProjectModel >> cormasModelEmails: aString [ 
-	" See comment in CMProjectManager>>cormasModelEmails: "
-
-	self codeGenerator 
-		generateMethod: aString 
-		selector: #emails 
-		inClass: self cormasModelClass class.
 
 ]
 

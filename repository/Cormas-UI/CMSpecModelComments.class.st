@@ -26,7 +26,7 @@ Class {
 		'toolbar',
 		'creationDate'
 	],
-	#category : 'Cormas-UI-Core'
+	#category : #'Cormas-UI-Core'
 }
 
 { #category : #specs }
@@ -50,14 +50,13 @@ CMSpecModelComments class >> defaultSpec [
 { #category : #callbacks }
 CMSpecModelComments >> addModelComments [
 	" Private - User has clicked Ok to add model comments "
-	
+
 	self projectManager 
 		cormasModelCreationDate: self creationDate textValuePending;
 		cormasModelVersion: self versionName textValuePending;
-		cormasModelAuthors: self authorList authors;
-		cormasModelEmails: self authorList emails;
+		cormasModelAuthors: self authorList textValuePending;
 		cormasModelText: self modelText textValuePending.
-		
+	self projectAnnouncer announce: CMProjectUpdateAnnouncement new
 
 ]
 
@@ -83,6 +82,42 @@ CMSpecModelComments >> creationDate: anObject [
 	creationDate := anObject
 ]
 
+{ #category : #initialization }
+CMSpecModelComments >> currentProjectAuthors [
+	" See comment in ProjectManager #currentProjectAuthors method "
+	
+	^ self projectManager currentProjectAuthors
+]
+
+{ #category : #initialization }
+CMSpecModelComments >> currentProjectClass [
+	" See comment in ProjectManager #currentProjectVersion method "
+	
+	^ self currentProject cormasModelClass
+]
+
+{ #category : #initialization }
+CMSpecModelComments >> currentProjectVersion [
+	" See comment in ProjectManager #currentProjectVersion method "
+	
+	^ self projectManager currentProjectVersion
+]
+
+{ #category : #defaults }
+CMSpecModelComments >> defaultAuthorList [
+	" Answer a <String> with some default text for authors list "
+	
+	^ 'Author1;email1@author1.com
+Author2;email2@author2.com
+'
+]
+
+{ #category : #defaults }
+CMSpecModelComments >> defaultVersionName [
+
+	^ '1.0'
+]
+
 { #category : #api }
 CMSpecModelComments >> initialExtent [
 	"Answer the initial extent for the receiver."
@@ -91,17 +126,51 @@ CMSpecModelComments >> initialExtent [
 ]
 
 { #category : #initialization }
-CMSpecModelComments >> initializePresenter [
-	" Private - See superimplementor's comment "
-	
-	self versionName
-		label: self translator tVersionName;
-		ghostText: '1.0'.
+CMSpecModelComments >> initializeAuthors [
+
+	self authorList
+		label: self translator tVersionName.
+	self authorList text: (self projectManager currentProjectHasAuthor
+		ifTrue: [  self currentProjectAuthors ]
+		ifFalse: [ self defaultAuthorList ])
+]
+
+{ #category : #initialization }
+CMSpecModelComments >> initializeCreationDateField [
+
 	self creationDate 
 		label: self translator tCreationDate;
 		ghostText: Date today asString.
+	self projectManager currentProjectHasCreationDate
+		ifTrue: [ self creationDate textValue: self projectManager currentProjectCreationDate ].
+	self creationDate disable
+]
+
+{ #category : #initialization }
+CMSpecModelComments >> initializeModelComments [
+
 	self modelText
 		label: self translator tModelComments.
+	self projectManager currentProjectHasComments
+		ifTrue: [ self modelText text: self cormasModelClass comments ].
+
+]
+
+{ #category : #initialization }
+CMSpecModelComments >> initializePresenter [
+	" Private - See superimplementor's comment "
+	
+	self 
+		initializeVersionField;
+		initializeCreationDateField;
+		initializeModelComments;
+		initializeAuthors;
+		initializeToolbar.
+]
+
+{ #category : #initialization }
+CMSpecModelComments >> initializeToolbar [
+
 	self toolbar 
 "		firstButtonLabel: 'Cancel';
 		firstButtonAction: [ self delete ];"
@@ -112,17 +181,28 @@ CMSpecModelComments >> initializePresenter [
 ]
 
 { #category : #initialization }
+CMSpecModelComments >> initializeVersionField [
+
+	self versionName
+		label: self translator tVersionName;
+		ghostText: self defaultVersionName.
+	self projectManager currentProjectHasVersion
+		ifTrue: [ self versionName textValue: self currentProjectVersion ].
+]
+
+{ #category : #initialization }
 CMSpecModelComments >> initializeWidgets [
 	" Private - See superimplementor's comment "
 	
 	self instantiateModels: #(
 		versionName 			SpcLabeledTextField
 		creationDate 		SpcLabeledTextField
-		authorList 			CMGrowableAuthorList
+		authorList 			SpcLabeledTextArea
 		modelText 			SpcLabeledTextArea
 		toolbar 				SpcOneButtonToolbar
 		).
 	self focusOrder 
+		add: self versionName;
 		add: self authorList;
 		add: self toolbar.
 ]
@@ -141,7 +221,7 @@ CMSpecModelComments >> modelText: anObject [
 CMSpecModelComments >> title [
 	" Private - See superimplementor's comment "
 
-	^ 'Model Comments'
+	^ self translator tModelComments
 ]
 
 { #category : #accessing }
