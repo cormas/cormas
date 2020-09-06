@@ -51,14 +51,21 @@ CMProjectManager >> codeGenerator [
 
 { #category : #accessing }
 CMProjectManager >> cormasModel [
-	" Answer a <CMProjectModel> which is a Cormas model instance "
+	" Answer a <CMAbstractModel> which is a Cormas model instance "
 
 	^ self currentProject cormasModel
 ]
 
 { #category : #accessing }
+CMProjectManager >> cormasModel: aCMAbstractModel [
+	" Set aCMAbstractModel which is a Cormas model instance "
+
+	self currentProject cormasModel: aCMAbstractModel
+]
+
+{ #category : #accessing }
 CMProjectManager >> cormasModelAuthors: aString [
-	" Set aString with author names (one by line) to the receiver's model "
+	" Set aString with author names (one by line) to the receiver's current project model "
 
 	self currentProject cormasModelAuthors: aString
 ]
@@ -68,6 +75,14 @@ CMProjectManager >> cormasModelClass [
 	" Answer a <Class> representing the model class of the receiver's current project "
 
 	^ self currentProject cormasModelClass
+]
+
+{ #category : #accessing }
+CMProjectManager >> cormasModelComment: aString [
+	" Set the receiver's model comments to aString "
+
+	self currentProject cormasModelComment: aString
+
 ]
 
 { #category : #accessing }
@@ -85,14 +100,6 @@ CMProjectManager >> cormasModelName [
 ]
 
 { #category : #accessing }
-CMProjectManager >> cormasModelText: aString [
-	" Set the receiver's model comments to aString "
-
-	self currentProject cormasModelText: aString
-
-]
-
-{ #category : #accessing }
 CMProjectManager >> cormasModelVersion: aString [
 	" Set the receiver's model version number to aString.
 	ToDo: Currently the version number format is not normalized/validated "
@@ -103,7 +110,7 @@ CMProjectManager >> cormasModelVersion: aString [
 
 { #category : #accessing }
 CMProjectManager >> cormasModels [
-	" Answer a <Collection> of <String> with receiver's available models "
+	" Answer a <Collection> of <String> with the application available models "
 	
 	^ self application modelNames
 ]
@@ -121,10 +128,10 @@ CMProjectManager >> cormasOpenLocationsMap [
 	" Answer a Collection of valid locations for opening a Cormas model "
 
 	^ Dictionary new
-		at: 'Local Disk' 		put: #requestModelOpenFromLocalDisk;
-		at: 'URL' 				put: #requestModelOpenFromURL;
-		at: 'Local image' 		put: #requestModelOpenFromLocalImage;
-		at: 'Remote image'		put: #requestModelOpenFromRemoteImage;
+		at: self translator tLocalStorage 		put: #requestModelOpenFromLocalDisk;
+		at: 'URL' 										put: #requestModelOpenFromURL;
+		at: self translator tLocalImage			put: #requestModelOpenFromLocalImage;
+		at: self translator tRemoteImage 			put: #requestModelOpenFromRemoteImage;
 		yourself 
 ]
 
@@ -180,14 +187,14 @@ CMProjectManager >> currentProjectHasCreationDate [
 CMProjectManager >> currentProjectHasVersion [
 	" Answer <true> if receiver's contains a version name "
 
-	^  self currentProject cormasModelClass respondsTo: #version
+	^  self currentProject cormasModelClass respondsTo: #cmVersion
 ]
 
 { #category : #testing }
 CMProjectManager >> currentProjectVersion [
 	" Answer a <String> containing receiver's current version name. If no version is found, answer a descriptive string reflecting the situation (i.e. 'no version') "
 
-	^ [ self currentProject cormasModelClass version ]
+	^ [ self currentProject cormasModelClass cmVersion ]
 	on: MessageNotUnderstood 
 	do: [ : ex | self translator tNoVersion ]
 
@@ -262,11 +269,10 @@ CMProjectManager >> openEditAttributes [
 CMProjectManager >> openImageProject: modelName [
 	" Open the project of the modelClass "
 
-	self
-		currentProject:
-			(CMProjectModel basicNew
-				initializeForModel: modelName asClass new named: modelName;
-				yourself)
+	self currentProject: (CMProjectModel basicNew
+		initializeForModel: (self class environment at: modelName) new
+			named: modelName;
+			yourself)
 ]
 
 { #category : #callbacks }
@@ -419,6 +425,23 @@ CMProjectManager >> updateStateInit [
 		menuDisableSimulationGroup;
 		menuDisableToolsGroup;
 		menuDisableHelpGroup.
+]
+
+{ #category : #callbacks }
+CMProjectManager >> updateStateNew [
+
+	self notifyEvent:	'Action: New'.
+	self announcer announce: CMProjectNewAnnouncement new.
+	self informMessage: self translator tProjectNewSuccess.
+]
+
+{ #category : #callbacks }
+CMProjectManager >> updateStateOpened [
+	" Private - This callback evaluate after the handleEvent: was fired "
+
+	self notifyEvent:	'Action: Opened'.
+	self announcer announce: CMProjectOpenAnnouncement new.
+	self informMessage: self translator tProjectOpenSuccess.
 ]
 
 { #category : #utilities }

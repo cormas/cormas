@@ -1,7 +1,7 @@
 Class {
 	#name : #CormasUITest,
 	#superclass : #TestCase,
-	#category : 'Cormas-Tests'
+	#category : #'Cormas-Tests'
 }
 
 { #category : #'create CMProjet' }
@@ -34,8 +34,8 @@ CormasUITest >> testCurrentStepInputTextOfSimWindowIsResetAfterOpeningAModel [
 	
 	20 timesRepeat: [ aCMProjectManager currentProject cormasModel runStep ].
 	
-	aCMProjectManager openImageProject: 'CMECECModel'.
-	aCMProjectManager updateNewProject: 'CMECECModel'.
+	aCMProjectManager openImageProject: #CMECECModel.
+	aCMProjectManager updateNewProject: #CMECECModel.
 	self assert: simWindow currentStepInputText text equals: 0.
 ]
 

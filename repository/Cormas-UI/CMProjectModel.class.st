@@ -89,6 +89,17 @@ CMProjectModel >> cormasModelClass: aClass [
 ]
 
 { #category : #accessing }
+CMProjectModel >> cormasModelComment: aString [ 
+	" See comment in CMProjectManager>>cormasModelComment: "
+
+	self codeGenerator 
+		generateMethod: aString 
+		selector: #comments 
+		inClass: self cormasModelClass class.
+
+]
+
+{ #category : #accessing }
 CMProjectModel >> cormasModelCreationDate: aString [ 
 
 	self codeGenerator
@@ -107,22 +118,11 @@ CMProjectModel >> cormasModelName [
 ]
 
 { #category : #accessing }
-CMProjectModel >> cormasModelText: aString [ 
-	" See comment in CMProjectManager>>cormasModelText: "
-
-	self codeGenerator 
-		generateMethod: aString 
-		selector: #comments 
-		inClass: self cormasModelClass class.
-
-]
-
-{ #category : #accessing }
 CMProjectModel >> cormasModelVersion: aString [ 
 
 	self codeGenerator
 		generateMethod: aString 
-		selector: #version 
+		selector: #cmVersion 
 		inClass: self cormasModelClass class
 ]
 
@@ -171,11 +171,26 @@ CMProjectModel >> defaultStdCormasModelName [
 				<< 'Model' ]
 ]
 
+{ #category : #'accessing-simulations' }
+CMProjectModel >> findSimulationNamed: aName [
+	" Answer <true> if the dump folder has stored simulations "
+
+	^ self storedSimulations detect: [ : simName | simName = aName ]
+
+]
+
 { #category : #testing }
 CMProjectModel >> hasCormasModelClass [
 	" Answer <true> if receiver has configured a Cormas model "
 	
 	^ self cormasModelClass notNil
+]
+
+{ #category : #testing }
+CMProjectModel >> hasStoredSimulations [
+	" Answer <true> if the receiver has a project opened and the project's dump folder has stored simulations, <false> otherwise "
+
+	^ self storedSimulations notEmpty
 ]
 
 { #category : #'initialize - release' }
@@ -204,6 +219,22 @@ CMProjectModel >> projectName [
 ]
 
 { #category : #accessing }
+CMProjectModel >> resourceLocator [
+	" Answer the application's resource locator "
+	
+	^ self application resourceLocator
+]
+
+{ #category : #'accessing-simulations' }
+CMProjectModel >> storedSimulations [
+	" Answer a <Collection> with the receiver's current model stored simulations "
+
+	^ (self resourceLocator dumpPath: self cormasModel class name) 
+		allChildrenMatching: CMSimManager simNameStart , '*'
+
+]
+
+{ #category : #accessing }
 CMProjectModel >> userProvidedName [
 	" Answer a <String> with the receiver's name as provided by the user on creation "
 
@@ -215,8 +246,7 @@ CMProjectModel >> validateCormasModelName: modelName [
 	" Answer a <String> with modelName as valid Smalltalk class name "
 
 	| validClassName |
-	
 	(validClassName := self codeGenerator validateClassName: modelName) ~= modelName
-		ifTrue: [ self alertMessage: self translator tModifiedModelName  ].
+		ifTrue: [ self crTrace: modelName , ': ' , self translator tModifiedModelName , validClassName ].
 	^ validClassName
 ]

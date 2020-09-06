@@ -4155,7 +4155,11 @@ CMAbstractModel >> simNumero [
 { #category : #'accessing  - projectManager' }
 CMAbstractModel >> simWindow [
 
-^self projectManager ifNil:[nil] ifNotNil:[:pm| pm projectWindow simWindow simWindow ]
+	^ self projectManager 
+		ifNil: [ nil ] 
+		ifNotNil: [ : pm | pm projectWindow 
+			ifNil: [ nil ]
+			ifNotNil: [ : pw | pw simWindow simWindow ] ]
 ]
 
 { #category : #'- pov and info' }

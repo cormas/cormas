@@ -2763,6 +2763,13 @@ CMSimManager class >> separator [
 	^'-------'
 ]
 
+{ #category : #'replay-private' }
+CMSimManager class >> simNameStart [
+	"Return the begining part of each simName (=> 'sim_' )  "
+	
+	^'sim_'
+]
+
 { #category : #actions }
 CMSimManager >> accept [
 	
@@ -3627,9 +3634,9 @@ CMSimManager >> simName: aName [
 
 { #category : #'replay-private' }
 CMSimManager >> simNameStart [
-	"Return the begining part of each simName (=> 'sim_' )  "
+	" Return the begining part of each simName (=> 'sim_' )  "
 	
-	^'sim_'
+	^ self class simNameStart 
 ]
 
 { #category : #accessing }

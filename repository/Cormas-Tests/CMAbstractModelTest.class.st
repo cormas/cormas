@@ -7,6 +7,19 @@ Class {
 	#category : #'Cormas-Tests'
 }
 
+{ #category : #test }
+CMAbstractModelTest >> cormasModelNamesForTests [
+
+	^ 'Demo_Aquifer
+Demo_Aggregates
+Conway
+Demo_ArcsNodes
+Diffuse
+FireModel
+DemoWayTo
+ECEC' lines
+]
+
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> newTestModel [
 	^ (CMTestModel
@@ -20,6 +33,12 @@ CMAbstractModelTest >> newTestModel [
 			neighbourhood: 4
 			closed: true;
 		yourself
+]
+
+{ #category : #test }
+CMAbstractModelTest >> sampleModelName [
+
+	^ 'CMXXXModel'
 ]
 
 { #category : #'tests-accessing-entities' }
