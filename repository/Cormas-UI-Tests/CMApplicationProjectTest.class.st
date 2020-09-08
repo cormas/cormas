@@ -62,7 +62,7 @@ CMApplicationProjectTest >> testDefaultTranslatorClass [
 { #category : #test }
 CMApplicationProjectTest >> testModelNames [
 
-	self assert: self application modelNames equals: self cormasModelNamesForTests
+	self assertCollection: self application modelNames hasSameElements: self cormasModelNamesForTests
 ]
 
 { #category : #test }

@@ -124,7 +124,7 @@ CMProjectManagerTest >> testCormasModelVersion [
 { #category : #test }
 CMProjectManagerTest >> testCormasModels [
 
-	self assert: self projectManager cormasModels equals: self cormasModelNamesForTests.
+	self assertCollection: self projectManager cormasModels hasSameElements: self cormasModelNamesForTests.
 ]
 
 { #category : #test }
