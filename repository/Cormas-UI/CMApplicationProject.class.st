@@ -35,6 +35,13 @@ CMApplicationProject class >> applicationName [
 	^ 'CORMAS Application'
 ]
 
+{ #category : #testing }
+CMApplicationProject >> cormasModel [
+	" Answer the receiver's current project model, a <CMAbstractModel> instance "
+
+	^ self currentProject cormasModel 
+]
+
 { #category : #accessing }
 CMApplicationProject >> defaultProjectClass [
 	" Private - See superimplementor's comment "
@@ -47,27 +54,6 @@ CMApplicationProject >> defaultTranslatorClass [
 	" Answer the default translation class for the receiver "
 
 	^ CMTranslator
-]
-
-{ #category : #'accessing-simulations' }
-CMApplicationProject >> findSimulationNamed: aName [
-	" Answer <true> if the dump folder has stored simulations "
-
-	^ (self resourceLocator dumpPath: self cormasModel class name)
-		removeAllSuchThat: [ : txt | (txt beginsWith: self simNameStart) not ].
-
-]
-
-{ #category : #testing }
-CMApplicationProject >> hasStoredSimulations [
-	" Answer <true> if the dump folder has stored simulations "
-
-	| directoryContent |
-
-	self terminateAllProcesses.
-	(directoryContent := self resourceLocator dumpPath: self cormasModel class name)
-		removeAllSuchThat: [ : txt | (txt beginsWith: self simNameStart) not ].
-	^ directoryContent isEmpty
 ]
 
 { #category : #'accessing-path' }
@@ -88,29 +74,17 @@ CMApplicationProject >> resourceLocator: anObject [
 	resourceLocator := anObject
 ]
 
-{ #category : #'accessing-simulations' }
-CMApplicationProject >> storedSimulations [
-	" Answer <true> if the dump folder has stored simulations "
-
-	^ (self resourceLocator dumpPath: self cormasModel class name)
-		removeAllSuchThat: [ : txt | (txt beginsWith: self simNameStart) not ].
-
-]
-
 { #category : #convenience }
 CMApplicationProject >> terminateAllProcesses [
 	"Terminate all the processes"
-	
-	processReplayForward isNil
-		ifFalse:
-			[processReplayForward terminate.
-			processReplayForward := nil].
-	processReplayBackward isNil
-		ifFalse:
-			[processReplayBackward terminate.
-			processReplayBackward := nil].
-	processRun isNil
-		ifFalse:
-			[processRun terminate.
-			processRun := nil]
+
+	processReplayForward
+		ifNotNil: [ processReplayForward terminate.
+			processReplayForward := nil ].
+	processReplayBackward
+		ifNotNil: [ processReplayBackward terminate.
+			processReplayBackward := nil ].
+	processRun
+		ifNotNil: [ processRun terminate.
+			processRun := nil ]
 ]

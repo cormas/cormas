@@ -11,7 +11,7 @@ Class {
 CMEnvFileReaderTest >> createSampleEnvFile [
 
 	| sampleEnvFile |
-	sampleEnvFile := (CMResourceLocator new mapsPath: 'CormasModelForTest') / 'temp.env'.
+	sampleEnvFile := (CMResourceLocator new mapsPath: self sampleModelPath) / 'temp.env'.
 	sampleEnvFile writeStreamDo: [ :arg1 | arg1 nextPutAll: self sampleEnv ].
 	^ sampleEnvFile
 ]
@@ -49,6 +49,12 @@ dead'
 ]
 
 { #category : #accessing }
+CMEnvFileReaderTest >> sampleModelPath [
+	
+	^ 'CormasModelForTest'
+]
+
+{ #category : #running }
 CMEnvFileReaderTest >> setUp [
 	" See superimplementor's comment "
 
@@ -60,11 +66,12 @@ CMEnvFileReaderTest >> setUp [
 			yourself).
 ]
 
-{ #category : #accessing }
+{ #category : #running }
 CMEnvFileReaderTest >> tearDown [ 
 
+	self envFileReader fileReference ifNotNil: [ : envFile | envFile ensureDelete ].
+	(CMResourceLocator new modelPath: self sampleModelPath) ensureDeleteAll. 
 	super tearDown.
-	self envFileReader fileReference ifNotNil: [ : envFile | envFile ensureDelete ]
 ]
 
 { #category : #test }

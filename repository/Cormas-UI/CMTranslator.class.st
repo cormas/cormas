@@ -262,14 +262,17 @@ CMTranslator >> addTranslationsForENPart3 [
 	" Private - See superimplementor's comment "
 
 	^ (self translatorClass forLanguage: #EN) translationMap
-		at: #tDistributeAsServer put: 'Distribute (act as a server)';
-		at: #tDistributeAsClient put: 'Distribute (act as a client)';
-		at: #tAboutModel put: 'About this model';
-		at: #tHowToRunModel put: 'How to run this model';
-		at: #tChangeModelComments put: 'Change model Comments';
-		at: #tWhichOpeningLocation put: 'Select open location';
-		at: #tOptions put: 'Options';
-		at: #tNoVersion put: 'No version';
+		at: #tDistributeAsServer 		put: 'Distribute (act as a server)';
+		at: #tDistributeAsClient 		put: 'Distribute (act as a client)';
+		at: #tAboutModel 					put: 'About this model';
+		at: #tHowToRunModel 				put: 'How to run this model';
+		at: #tChangeModelComments 		put: 'Change model Comments';
+		at: #tWhichOpeningLocation 		put: 'Select open location';
+		at: #tOptions 						put: 'Options';		
+		at: #tNoVersion 				put: 'No version';
+		at: #tLocalStorage 				put: 'Local disk';
+		at: #tLocalImage 					put: 'Local image';
+		at: #tRemoteImage 					put: 'Remote image';
 		yourself
 ]
 
@@ -509,6 +512,9 @@ CMTranslator >> addTranslationsForESPart3 [
 		at: #tChangeModelComments 			put: 'Modificar comentarios del modelo';
 		at: #tWhichOpeningLocation 			put: 'Seleccione la ubicacion del elemento';
 		at: #tNoVersion 						put: 'Sin versión';
+		at: #tLocalStorage 					put: 'Almacenamiento local';
+		at: #tLocalImage 						put: 'Imagen local';
+		at: #tRemoteImage 						put: 'Imagen remota';
 		yourself
 
 ]
