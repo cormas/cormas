@@ -505,6 +505,19 @@ Example: LandCover allTerminalClasses"
 	^self withAllSubclasses select: [:aClass | Cormas isTerminal: aClass]
 ]
 
+{ #category : #accessing }
+CMEntity class >> asGetterForEntityClass [
+	" Create the getter selector for the entity class aClass.
+
+	CMEntity asGetterForEntityClass -> #theEntities
+	"
+
+	^ (String streamContents: [ : stream | 
+		stream 
+			<< 'the';
+			<< self entityName pluralize capitalized]) asSymbol
+]
+
 { #category : #'- accessing - methods & classes' }
 CMEntity class >> availableInfo [
 	"Purpose: returns the list of available info methods
@@ -786,9 +799,14 @@ CMEntity class >> destroyed_default [
 
 { #category : #accessing }
 CMEntity class >> entityName [
-	"Answers entity name without prefixes ('CM' and the model name)"
+	" Answer a <String> with the entity name without prefixes ('CM' and the model name)"
 
-	^ self name allButFirst: 'CM' size + self modelClass modelPrefix size
+	^ (self name beginsWith: 'CM')
+		ifTrue: [ 
+			((self name allButFirst: 2) beginsWith: self modelClass modelPrefix)
+				ifTrue: [ self name allButFirst: 2 + self modelClass modelPrefix size ]
+				ifFalse: [ self name allButFirst: 2 ] ]
+		ifFalse: [ self name ]
 ]
 
 { #category : #'- accessing - methods & classes' }

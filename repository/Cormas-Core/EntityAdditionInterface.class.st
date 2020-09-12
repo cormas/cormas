@@ -17,141 +17,6 @@ Class {
 	#category : #'Cormas-Core-Tools'
 }
 
-{ #category : #compiling }
-EntityAdditionInterface class >> acceptsLoggingOfCompilation [
-	^ true
-]
-
-{ #category : #'interface specs' }
-EntityAdditionInterface class >> addAgent [
-	"Tools.UIPainter new openOnClass: self andSelector: #addAgent"
-	
-	<resource: #canvas>
-	^#(FullSpec 
-		#window: #(WindowSpec 
-			#properties: #(PropertyListDictionary #sizeType #specifiedSize #openType #advanced #openPosition #(Point 10 130) #positionType #specifiedPosition) 
-			#label: 'Create a kind of Agent' 
-			#min: #(Point 311 126) 
-			#max: #(Point 311 126) 
-			#bounds: #(Rectangle 720 450 1031 576)) 
-		#component: #(SpecCollection 
-			#collection: #(#(InputFieldSpec 
-				#layout: #(Rectangle 135 36 287 59) 
-				#name: #InputField1 
-				#model: #newClassName 
-				#helpText: 'Enter the name of the new class') #(LabelSpec 
-				#layout: #(Point 190 16) 
-				#name: #name 
-				#label: 'Name') #(ActionButtonSpec 
-				#layout: #(Rectangle 168 67 249 90) 
-				#name: #Ok 
-				#model: #addNewSocialEntityGUI 
-				#label: 'Ok' 
-				#defaultable: true) #(CheckBoxSpec 
-				#layout: #(Point 17 18) 
-				#name: #cbComm 
-				#model: #cbComm 
-				#helpText: 'Agent with mailbox' 
-				#label: 'Communication') #(CheckBoxSpec 
-				#layout: #(Point 17 45) 
-				#name: #cbGroup 
-				#model: #cbGroup 
-				#helpText: 'Agent as a group of agents' 
-				#label: 'Group') #(CheckBoxSpec 
-				#layout: #(Point 17 72) 
-				#name: #cbLocation 
-				#model: #cbLocation 
-				#helpText: 'Agent located on a Cell' 
-				#label: 'Location') #(LabelSpec 
-				#layout: #(Point 35 99) 
-				#name: #Label1 
-				#label: '(or right-click on your own class to specialize it)'))))
-]
-
-{ #category : #'interface specs' }
-EntityAdditionInterface class >> addPassiveEntity [
-	"Tools.UIPainter new openOnClass: self andSelector: #addPassiveEntity"
-
-	<resource: #canvas>
-	^ #(FullSpec #window: #(WindowSpec #properties: #(PropertyListDictionary #sizeType #specifiedSize #openType #advanced #openPosition #(Point 10 130) #positionType #specifiedPosition) #label: 'Create a kind of Passive Entity' #min: #(Point 300 213) #max: #(Point 300 213) #bounds: #(Rectangle 718 450 1018 663)) #component: #(SpecCollection #collection: #(#(InputFieldSpec #layout: #(Rectangle 132 29 289 52) #name: #InputField1 #model: #newClassName #helpText: 'Enter the name of the new class') #(LabelSpec #layout: #(Point 190 9) #name: #name #label: 'Name') #(ActionButtonSpec #layout: #(Rectangle 166 157 247 180) #name: #Ok #model: #addNewPassivelEntityGUI #label: 'Ok' #defaultable: true) #(RadioButtonSpec #layout: #(Point 19 158) #name: #CMMsg #model: #passiveEntitySuperclass #helpText: 'Message for AgentCommunication (with mailbox)' #label: 'Message' #select: #CMMsg) #(RadioButtonSpec #layout: #(Point 19 12) #name: #PassiveObject #model: #passiveEntitySuperclass #helpText: 'A simple passive entity' #label: 'Object' #select: #PassiveObject) #(RadioButtonSpec #layout: #(Point 19 37) #name: #CMObjectLocation #model: #passiveEntitySuperclass #helpText: 'A passive entity located on a Cell' #label: 'Located Object' #select: #CMObjectLocation) #(LabelSpec #layout: #(Point 33 189) #name: #Label3 #label: '(or right-click on your own class to specialize it)') #(RadioButtonSpec #layout: #(Point 19 123) #name: #CMNetworkEntity #model: #passiveEntitySuperclass #helpText: 'An oriented Network composed of a set of Arcs and Nodes' #label: 'Full Network' #select: #CMNetworkEntity) #(RadioButtonSpec #layout: #(Point 19 97) #name: #CMArcEntity #model: #passiveEntitySuperclass #helpText: 'An Arc of a Network located on 2 Cells' #label: 'Network Arc' #select: #CMArcEntity) #(RadioButtonSpec #layout: #(Point 19 72) #name: #CMNodeEntity #model: #passiveEntitySuperclass #helpText: 'A Node of a Network located on a Cell' #label: 'Network Node' #select: #CMNodeEntity))))
-]
-
-{ #category : #'interface specs' }
-EntityAdditionInterface class >> addSpatialEntity [
-	"Tools.UIPainter new openOnClass: self andSelector: #addSpatialEntity"
-	
-	<resource: #canvas>
-	^#(FullSpec 
-		#window: #(WindowSpec 
-			#properties: #(PropertyListDictionary #sizeType #specifiedSize #openType #advanced #openPosition #(Point 10 130) #positionType #specifiedPosition) 
-			#label: 'Create a kind of Spatial Entity' 
-			#min: #(Point 260 205) 
-			#max: #(Point 300 250) 
-			#bounds: #(Rectangle 209 232 469 437)) 
-		#component: #(SpecCollection 
-			#collection: #(#(InputFieldSpec 
-				#layout: #(Rectangle 51 128 214 151) 
-				#name: #InputField1 
-				#model: #newClassName) #(LabelSpec 
-				#layout: #(Point 113 108) 
-				#name: #name 
-				#label: 'Name:') #(ActionButtonSpec 
-				#layout: #(Rectangle 91 160 172 183) 
-				#name: #Ok 
-				#model: #addNewSpatialEntityGUI 
-				#label: 'Ok' 
-				#defaultable: true) #(RadioButtonSpec 
-				#layout: #(Point 18 16) 
-				#name: #CMSpatialEntityCell 
-				#model: #spatialEntitySuperclass 
-				#helpText: 'SpatialEntityCell: the cell is the basic entity of the space (as Cellular Automata)' 
-				#label: 'Element' 
-				#select: #CMSpatialEntityCell) #(RadioButtonSpec 
-				#layout: #(Point 18 58) 
-				#name: #CMSpatialEntityAggregate 
-				#flags: 32 
-				#model: #spatialEntitySuperclass 
-				#helpText: 'SpatialEntityAggregate is composed of connected cells' 
-				#label: 'Aggregate' 
-				#select: #CMSpatialEntityAggregate) #(RadioButtonSpec 
-				#layout: #(Point 18 87) 
-				#name: #CMSpatialEntityNotConnex 
-				#flags: 32 
-				#model: #spatialEntitySuperclass 
-				#helpText: 'SpatialEntityNotConnex is composed of unconnected cells or aggregates' 
-				#label: 'Set not connex' 
-				#select: #CMSpatialEntityNotConnex) #(LabelSpec 
-				#layout: #(Point 23 180) 
-				#name: #LabelSpecialize 
-				#label: '(or right-click on your own class to specialize it)') #(RadioButtonSpec 
-				#layout: #(Point 92 16) 
-				#name: #simpleCell 
-				#model: #cellOrCA 
-				#helpText: 'SpatialEntityElement is the basic Cell entity' 
-				#label: 'Simple Cell' 
-				#style: #small 
-				#select: #CMSpatialEntityElement) #(RadioButtonSpec 
-				#layout: #(Point 92 36) 
-				#name: #cellAutomaton 
-				#model: #cellOrCA 
-				#helpText: 'CA is usefull for dynamics between cells' 
-				#label: 'Cellular Automaton' 
-				#style: #small 
-				#select: #CMSpatialEntityCell))))
-]
-
-{ #category : #initialization }
-EntityAdditionInterface class >> defaultSpec [
-	<spec>
-	^ SpecLayout composed
-]
-
-{ #category : #'resources-icons' }
-EntityAdditionInterface class >> messageImage [
-	
-	^Cormas messageImage
-]
-
 { #category : #actions }
 EntityAdditionInterface >> addNewPassivelEntityGUI [
 	
@@ -168,22 +33,11 @@ EntityAdditionInterface >> addNewPassivelEntityGUI [
 ]
 
 { #category : #actions }
-EntityAdditionInterface >> addNewSocialEntityGUI [
-	
-	| newName superClass |
-	newName := self getNewClassNameFromGUI.
-	newName isNil
-		ifTrue: [^self cormas warn: 'Please enter a name for the new class!'].
-	superClass := self getAgentSuperclassFromGUI.
-	self cormas addNewClassType: 'Social' inheritingFrom: superClass name:
-			newName initProtocol: false stepProtocol: false.
-	self closeRequest
-]
-
-{ #category : #actions }
 EntityAdditionInterface >> addNewSpatialEntityGUI [
 	
 	| superClass newName aClass |
+	
+	self flag: #toDelete.
 	newName := self getNewClassNameFromGUI.
 	newName isNil
 		ifTrue: [^self cormas warn: 'Please enter a name for the new class!'].

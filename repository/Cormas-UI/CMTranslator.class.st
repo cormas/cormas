@@ -269,10 +269,18 @@ CMTranslator >> addTranslationsForENPart3 [
 		at: #tChangeModelComments 		put: 'Change model Comments';
 		at: #tWhichOpeningLocation 		put: 'Select open location';
 		at: #tOptions 						put: 'Options';		
-		at: #tNoVersion 				put: 'No version';
+		at: #tNoVersion 					put: 'No version';
 		at: #tLocalStorage 				put: 'Local disk';
 		at: #tLocalImage 					put: 'Local image';
 		at: #tRemoteImage 					put: 'Remote image';
+		at: #tConfirmDeleteEntity 		put: 'Are you sure to remove the selected entity';
+		at: #tEntities 						put: 'Entities';
+		at: #tRenameEntityDialogText 	put: 'Enter the entity''s name:';
+		at: #tSpecializeEntityDialogText put: 'Create a new kind of Entity
+Enter the entity''s name';
+		at: #tSpecialization 				put: 'CORMAS - Specialization';
+		at: #tConfirmAbstractEntity 	put: ' is abstract. It will be changed as concrete class. Ok?';
+		at: #tConfirmConcreteEntity 	put: ' is concrete. It will be changed as abstract class. Ok?';
 		yourself
 ]
 
@@ -515,6 +523,14 @@ CMTranslator >> addTranslationsForESPart3 [
 		at: #tLocalStorage 					put: 'Almacenamiento local';
 		at: #tLocalImage 						put: 'Imagen local';
 		at: #tRemoteImage 						put: 'Imagen remota';
+		at: #tConfirmDeleteEntity 			put: '¿Está seguro de borrar la entidad seleccionada?';
+		at: #tEntities 							put: 'Entidades';
+		at: #tRenameEntityDialogText 		put: 'Ingrese el nombre de la entidad:';
+		at: #tSpecializeEntityDialogText 	put: 'Crear un nuevo tipo de Entidad
+Ingrese el nombre de la entidad';
+		at: #tSpecialization 					put: 'CORMAS - Especialización';
+		at: #tConfirmAbstractEntity 	put: ' es abstracta. Será cambiada a una clase concreta. Ok?';
+		at: #tConfirmConcreteEntity 	put: ' es concreta. Será cambiada a una clase abstracta. Ok?';
 		yourself
 
 ]

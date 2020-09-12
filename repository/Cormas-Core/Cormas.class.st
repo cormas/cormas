@@ -563,97 +563,6 @@ Cormas class >> emphasisForProtocol [
 		with: #color -> ColorValue black
 ]
 
-{ #category : #'interface specs' }
-Cormas class >> entities [
-	"Tools.UIPainter new openOnClass: self andSelector: #entities"
-	
-	<resource: #canvas>
-	^#(FullSpec 
-		#window: #(WindowSpec 
-			#properties: #(PropertyListDictionary #sizeType #specifiedSize #openType #advanced #openPosition #(Point 10 254) #positionType #specifiedPosition) 
-			#label: 'entities' 
-			#min: #(Point 404 149) 
-			#max: #(Point 804 1000) 
-			#bounds: #(Rectangle 719 449 1119 598)) 
-		#component: #(SpecCollection 
-			#collection: #(#(SequenceViewSpec 
-				#layout: #(LayoutFrame 0 0.3525 44 0 0 0.6625 -7 1) 
-				#name: #List1 
-				#colors: #(LookPreferences 
-					#setBackgroundColor: #(ColorValue 6143 7167 8191)) 
-				#model: #listSocialEntities 
-				#callbacksSpec: #(UIEventCallbackSubSpec 
-					#doubleClickSelector: #modifySocialEntityClass) 
-				#menu: #socialEntityMenu 
-				#style: #pixelLarge) #(SequenceViewSpec 
-				#layout: #(LayoutFrame 0 0.68 44 0 0 0.985 -7 1) 
-				#name: #List3 
-				#colors: #(LookPreferences 
-					#setBackgroundColor: #(ColorValue 8191 6143 4096)) 
-				#model: #listPassiveEntities 
-				#callbacksSpec: #(UIEventCallbackSubSpec 
-					#doubleClickSelector: #modifyPassiveEntityClass) 
-				#menu: #passiveEntityMenu 
-				#style: #pixelLarge) #(GroupBoxSpec 
-				#layout: #(LayoutFrame 2 0 2 0 0 0.995 -3 1) 
-				#name: #GroupBox1 
-				#colors: #(LookPreferences 
-					#setForegroundColor: #(ColorValue #blue)) 
-				#label: 'Define the entities') #(ActionButtonSpec 
-				#properties: #(PropertyListDictionary #labelFromApplication true) 
-				#layout: #(LayoutSizedOrigin 0 0.0575 19.5 0 26 24) 
-				#name: #addSpatialEntityClass 
-				#colors: #(LookPreferences 
-					#setForegroundColor: #(ColorValue 4607 8191 1024) 
-					#setBackgroundColor: #(ColorValue #green)) 
-				#model: #addSpatialEntityClass 
-				#helpText: 'Click to add a Spatial entity class' 
-				#label: #plusIcon 
-				#hasCharacterOrientedLabel: false 
-				#defaultable: true) #(LabelSpec 
-				#layout: #(LayoutSizedOrigin 0 0.13 18 0 47 24) 
-				#name: #Label2 
-				#label: 'spatial   ' 
-				#style: #pixelLarge) #(LabelSpec 
-				#layout: #(LayoutSizedOrigin 0 0.4675 18 0 39 24) 
-				#name: #Label1 
-				#label: 'social' 
-				#style: #pixelLarge) #(ActionButtonSpec 
-				#properties: #(PropertyListDictionary #labelFromApplication true) 
-				#layout: #(LayoutSizedOrigin 0 0.395 19 0 26 24) 
-				#name: #addSocialEntityClass 
-				#colors: #(LookPreferences 
-					#setBackgroundColor: #(ColorValue 6143 7167 8191)) 
-				#model: #addSocialEntityClass 
-				#helpText: 'Click to add a Social entity class' 
-				#label: #plusIcon 
-				#hasCharacterOrientedLabel: false 
-				#defaultable: true) #(LabelSpec 
-				#layout: #(LayoutSizedOrigin 0 0.79 18 0 50 24) 
-				#name: #Label3 
-				#label: 'passive' 
-				#style: #pixelLarge) #(ActionButtonSpec 
-				#properties: #(PropertyListDictionary #labelFromApplication true) 
-				#layout: #(LayoutSizedOrigin 0 0.715 19.5 0 26 24) 
-				#name: #addPassiveEntityClass 
-				#colors: #(LookPreferences 
-					#setBackgroundColor: #(ColorValue 8191 6143 4096)) 
-				#model: #addPassiveEntityClass 
-				#helpText: 'Click to add a passive entity class' 
-				#label: #plusIcon 
-				#hasCharacterOrientedLabel: false 
-				#defaultable: true) #(SequenceViewSpec 
-				#layout: #(LayoutFrame 0 0.02 45 0 0 0.34 -7 1) 
-				#name: #List2 
-				#colors: #(LookPreferences 
-					#setBackgroundColor: #(ColorValue 5119 8191 5119)) 
-				#model: #listSpatialEntities 
-				#callbacksSpec: #(UIEventCallbackSubSpec 
-					#doubleClickSelector: #modifySpatialEntityClass) 
-				#menu: #spatialEntityMenu 
-				#style: #pixelLarge))))
-]
-
 { #category : #'+ utilities - code management' }
 Cormas class >> findSelector: selector in: aClass [
 
@@ -2830,255 +2739,6 @@ Cormas class >> visualLauncherWindow [
 	^nil
 ]
 
-{ #category : #'interface specs' }
-Cormas class >> windowSpec [
-	"Tools.UIPainter new openOnClass: self andSelector: #windowSpec"
-	
-	<resource: #canvas>
-	^#(FullSpec 
-		#window: #(WindowSpec 
-			#properties: #(PropertyListDictionary #sizeType #specifiedSize #positionType #specifiedPosition #openType #advanced) 
-			#label: 'CORMAS' 
-			#min: #(Point 406 80) 
-			#max: #(Point 406 208) 
-			#bounds: #(Rectangle 720 450 1126 530) 
-			#flags: 4 
-			#menu: #menuHolder 
-			#colors: #(LookPreferences 
-				#setForegroundColor: nil 
-				#setBackgroundColor: #(ColorValue #white) 
-				#setSelectionForegroundColor: nil 
-				#setSelectionBackgroundColor: nil) 
-			#isEventDriven: true) 
-		#component: #(SpecCollection 
-			#collection: #(#(LabelSpec 
-				#layout: #(Point 9 3) 
-				#name: #Label1 
-				#label: 'ModelName:') #(LabelSpec 
-				#layout: #(Point 10 28) 
-				#name: #Label2 
-				#label: 'Version : ' 
-				#style: #small) #(InputFieldSpec 
-				#layout: #(Rectangle 80 4 235 25) 
-				#flags: 0 
-				#model: #modelNameField 
-				#tabable: false 
-				#isReadOnly: true) #(InputFieldSpec 
-				#layout: #(Rectangle 80 27 235 49) 
-				#flags: 0 
-				#model: #versionField 
-				#tabable: false 
-				#style: #pixelDefault 
-				#isReadOnly: true) #(SubCanvasSpec 
-				#layout: #(Rectangle -2 59 407 168) 
-				#name: #subcanvasSim 
-				#flags: 24 
-				#majorKey: Cormas 
-				#minorKey: #simulationWindow 
-				#clientKey: #subcanvasSim) #(InputFieldSpec 
-				#layout: #(Rectangle 237 0.5 403 25.0) 
-				#name: #simNameInputField 
-				#flags: 0 
-				#model: #simName 
-				#tabable: false 
-				#style: #pixelDefault 
-				#isReadOnly: true) #(InputFieldSpec 
-				#layout: #(Rectangle 237 28 403 49) 
-				#name: #simNumInputField 
-				#flags: 0 
-				#model: #simNum 
-				#tabable: false 
-				#style: #pixelDefault 
-				#isReadOnly: true))))
-]
-
-{ #category : #'interface specs' }
-Cormas class >> windowSpec_old [
-	"UIPainter new openOnClass: self andSelector: #windowSpec_old"
-	
-	<resource: #canvas>
-	^#(FullSpec 
-		#window: #(WindowSpec 
-			#label: 'CORMAS' 
-			#min: #(Point 394 423) 
-			#max: #(Point 394 423) 
-			#bounds: #(Rectangle 512 345 906 768) 
-			#flags: 4 
-			#menu: #mainMenu_old 
-			#colors: #(LookPreferences 
-				#setBackgroundColor: #(ColorValue #white)) 
-			#isEventDriven: true) 
-		#component: #(SpecCollection 
-			#collection: #(#(SequenceViewSpec 
-				#layout: #(Rectangle 139 56 256 147) 
-				#model: #listSocialEntities 
-				#callbacksSpec: #(UIEventCallbackSubSpec 
-					#doubleClickSelector: #modifySocialEntityClass) 
-				#menu: #socialEntityMenu 
-				#style: #pixelLarge) #(LabelSpec 
-				#layout: #(Point 166 33) 
-				#label: #(UserMessage 
-					#key: #sociales 
-					#defaultString: 'sociales!!!') 
-				#style: #pixelLarge) #(GroupBoxSpec 
-				#layout: #(Rectangle 4 3 390 222) 
-				#colors: #(LookPreferences 
-					#setForegroundColor: #(ColorValue #red)) 
-				#label: #(UserMessage 
-					#key: #modelisation 
-					#defaultString: 'Modelisation!!')) #(ActionButtonSpec 
-				#layout: #(Rectangle 132 363 220 386) 
-				#name: #run 
-				#isOpaque: true 
-				#colors: #(LookPreferences 
-					#setForegroundColor: #(ColorValue #black) 
-					#setBackgroundColor: #(ColorValue 6553 6553 6553)) 
-				#model: #run 
-				#label: #(UserMessage 
-					#key: #launch 
-					#defaultString: 'Lancer!!!') 
-				#isDefault: false 
-				#defaultable: true) #(InputFieldSpec 
-				#layout: #(Rectangle 324 360 369 386) 
-				#colors: #(LookPreferences 
-					#setBackgroundColor: #(ColorValue 6553 6553 6553)) 
-				#model: #stepCounter 
-				#alignment: #right 
-				#isReadOnly: true 
-				#type: #number 
-				#formatString: '0') #(LabelSpec 
-				#layout: #(Point 286 361) 
-				#label: #(UserMessage 
-					#key: #time 
-					#defaultString: 'Current time-step')) #(ActionButtonSpec 
-				#layout: #(Rectangle 115 247 155 286) 
-				#model: #openSpatialGrid 
-				#label: #defineSpaceIcon 
-				#hasCharacterOrientedLabel: false 
-				#defaultable: true) #(ActionButtonSpec 
-				#layout: #(Rectangle 19 178 171 203) 
-				#isOpaque: true 
-				#colors: #(LookPreferences 
-					#setForegroundColor: #(ColorValue #black) 
-					#setBackgroundColor: #(ColorValue 6553 6553 6553)) 
-				#model: #openDefineSchedulerWin 
-				#label: #(UserMessage 
-					#key: #preparecontrole 
-					#defaultString: 'Preparer et Controler!!!') 
-				#defaultable: true) #(ActionButtonSpec 
-				#layout: #(Rectangle 174 247 214 286) 
-				#model: #openVisuCommunications 
-				#label: #defineCommunicationIcon 
-				#hasCharacterOrientedLabel: false 
-				#defaultable: true) #(GroupBoxSpec 
-				#layout: #(Rectangle 198 154 380 214) 
-				#colors: #(LookPreferences 
-					#setForegroundColor: #(ColorValue #blue)) 
-				#label: #(UserMessage 
-					#key: #defineobservation 
-					#defaultString: ' Definir l''observation...!!!')) #(InputFieldSpec 
-				#layout: #(Rectangle 221 362 267 386) 
-				#model: #cycle 
-				#alignment: #right 
-				#type: #number 
-				#formatString: '0') #(ActionButtonSpec 
-				#layout: #(Rectangle 56 362 126 386) 
-				#name: #stepButton 
-				#isOpaque: true 
-				#colors: #(LookPreferences 
-					#setForegroundColor: #(ColorValue #black) 
-					#setBackgroundColor: #(ColorValue 6553 6553 6553)) 
-				#model: #runStepByStep 
-				#label: #(UserMessage 
-					#key: #step 
-					#defaultString: 'Pas a pas') 
-				#defaultable: true) #(ActionButtonSpec 
-				#layout: #(Rectangle 75 324 186 352) 
-				#isOpaque: true 
-				#colors: #(LookPreferences 
-					#setForegroundColor: #(ColorValue #black) 
-					#setBackgroundColor: #(ColorValue 6553 6553 6553)) 
-				#model: #openScenarioBuilderWin 
-				#label: #(UserMessage 
-					#key: #initialiser 
-					#defaultString: 'Initialiser...') 
-				#defaultable: true) #(GroupBoxSpec 
-				#layout: #(Rectangle 10 21 383 154) 
-				#colors: #(LookPreferences 
-					#setForegroundColor: #(ColorValue #blue)) 
-				#label: #(UserMessage 
-					#key: #defineentities 
-					#defaultString: 'Definir les entites !!!')) #(ActionButtonSpec 
-				#layout: #(Rectangle 233 246 271 286) 
-				#model: #openCharts 
-				#label: #chartsIcon 
-				#hasCharacterOrientedLabel: false 
-				#defaultable: true) #(GroupBoxSpec 
-				#layout: #(Rectangle 11 154 180 214) 
-				#colors: #(LookPreferences 
-					#setForegroundColor: #(ColorValue #blue)) 
-				#label: #(UserMessage 
-					#key: #controletheevolution 
-					#defaultString: 'Controler l''evolution!!!')) #(ActionButtonSpec 
-				#layout: #(Rectangle 133 362 220 386) 
-				#name: #runSimulation 
-				#flags: 24 
-				#isOpaque: true 
-				#colors: #(LookPreferences 
-					#setForegroundColor: #(ColorValue #black) 
-					#setBackgroundColor: #(ColorValue 6553 6553 6553)) 
-				#model: #runSimulation 
-				#label: #(UserMessage 
-					#key: #ntimes 
-					#defaultString: 'Lancer N fois') 
-				#defaultable: true) #(GroupBoxSpec 
-				#layout: #(Rectangle 15 300 381 396) 
-				#colors: #(LookPreferences 
-					#setForegroundColor: #(ColorValue #red)) 
-				#label: #(UserMessage 
-					#key: #cormasModel 
-					#defaultString: 'Simulation')) #(MenuButtonSpec 
-				#layout: #(Rectangle 212 179 366 203) 
-				#model: #defineObservation 
-				#menu: #defineObsMenu) #(SequenceViewSpec 
-				#layout: #(Rectangle 17 56 134 147) 
-				#model: #listSpatialEntities 
-				#callbacksSpec: #(UIEventCallbackSubSpec 
-					#doubleClickSelector: #modifySpatialEntityClass) 
-				#menu: #spatialEntityMenu 
-				#style: #pixelLarge) #(SequenceViewSpec 
-				#layout: #(Rectangle 260 56 377 147) 
-				#model: #listPassiveEntities 
-				#callbacksSpec: #(UIEventCallbackSubSpec 
-					#doubleClickSelector: #modifyPassiveEntityClass) 
-				#menu: #passiveEntityMenu 
-				#style: #pixelLarge) #(LabelSpec 
-				#layout: #(Point 40 33) 
-				#label: #(UserMessage 
-					#key: #spatiales 
-					#defaultString: 'spatiales!!!') 
-				#style: #pixelLarge) #(LabelSpec 
-				#layout: #(Point 282 33) 
-				#label: #(UserMessage 
-					#key: #passives 
-					#defaultString: 'passives!!!') 
-				#style: #pixelLarge) #(GroupBoxSpec 
-				#layout: #(Rectangle 88 225 292 294) 
-				#colors: #(LookPreferences 
-					#setForegroundColor: #(ColorValue #red)) 
-				#label: 'Visualisation') #(LabelSpec 
-				#layout: #(Point 247 328) 
-				#name: #Label1 
-				#label: 'simulation') #(InputFieldSpec 
-				#layout: #(Rectangle 310 325 369 351) 
-				#name: #InputField1 
-				#colors: #(LookPreferences 
-					#setBackgroundColor: #(ColorValue 6553 6553 6553)) 
-				#model: #displaySimNumber 
-				#alignment: #right 
-				#isReadOnly: true))))
-]
-
 { #category : #'+ utilities - files' }
 Cormas class >> xmlPath: aModelClassName [
 	" Answer a <FileReference> corresponding to the path of the current model 'dump' directory.
@@ -3286,29 +2946,6 @@ Cormas >> alert: aString [
 ]
 
 { #category : #'user messages' }
-Cormas >> askUserTheClassNameWithDefaultValue: defaultString [
-	
-	| aName |
-	(aName := self
-		request:
-			'*** Create a new kind of Entity ***\         Enter the entity''s name '
-				withCRs
-		initialAnswer: defaultString) isEmpty
-		ifFalse:
-			[aName beMutable.
-			aName first isAlpha ifFalse: [aName := 'X_' , aName].
-			aName
-				at: 1
-				put: aName first asUppercase.
-			(self verifyClassExist: aName)
-				ifTrue:
-					[self alert_NameAlreadyExist.
-					^self askUserTheClassNameWithDefaultValue: defaultString]]
-		ifTrue: [^nil].
-	^aName
-]
-
-{ #category : #'user messages' }
 Cormas >> asynchronousDo: aBlock [
 	"ask aSpatialGrid for habitus named aHabitusName to execute aBlock in an asynchronous way (used for distributed cormas)
 	no result expected"
@@ -3377,54 +3014,6 @@ Cormas >> browserWindow [
 	win ifNil: [^win].
 	win key ifNil: [^nil].
 	^win
-]
-
-{ #category : #'model entities' }
-Cormas >> changeAbstract: aClass [
-	
-	(aClass isAbstract
-		ifTrue:
-			[self
-				confirm:
-					aClass name asString ,
-							' is abstract. It will be changed as concrete class. 
-OK?']
-		ifFalse:
-			[self
-				confirm:
-					aClass name asString ,
-							' is concrete. It will be changed as abstract class. 
-OK?']) ifFalse: [^nil].
-	aClass isAbstract not
-		ifTrue:
-			[aClass class
-				compile: 'isAbstract \^true' withCRs
-				classified: 'testing'
-				notifying: nil]
-		ifFalse:
-			[aClass class
-				compile: 'isAbstract \^false' withCRs
-				classified: 'testing'
-				notifying: nil].
-	self cormasModelClass createInstancesAccessorsForClass: aClass
-]
-
-{ #category : #'model entities' }
-Cormas >> changeAbstractPassive [
-	"Set target class as Abstract or Concret class. "
-	
-	| aClass |
-	aClass := self getSelectedEntityClassType: 'Passive'.
-	aClass isNil ifFalse: [self changeAbstract: aClass]
-]
-
-{ #category : #'model entities' }
-Cormas >> changeAbstractSocial [
-	"Set target class as Abstract or Concret class. "
-	
-	| aClass |
-	aClass := self getSelectedEntityClassType: 'Social'.
-	aClass isNil ifFalse: [self changeAbstract: aClass]
 ]
 
 { #category : #changed }
@@ -3816,34 +3405,6 @@ Cormas >> confirm_DeleteSimulation [
 	^UserMessage defaultString: ' Are you sure ? ' key: #deleteSimulation
 ]
 
-{ #category : #'user messages' }
-Cormas >> confirm_IsAbstractClass: aClass [
-	| text |
-	self flag:#TODO.
-	"Il y a TextStream pour faire ca."
-	text := '                                           Is ' asText
-		emphasizeAllWith: #bold.
-	text := text
-		, (aClass name asText emphasizeAllWith: #(#bold #italic)).
-	text := text
-		,
-			((' an Abstract class?' , '\' withCRs) asText
-				emphasizeAllWith: #(#bold)).
-	text := text
-		,
-			' (an abstract class does not have instance and must have subclasses, while \'
-				withCRs asText.
-	text := text , ' a concret class will have instances and '
-		, self cormasModelClass name
-		, ' will define an attribut called ' asText.
-	text := text
-		,
-			((CMAbstractModel getterForEntityClass: aClass) asText
-				emphasizeAllWith: #color -> ColorValue red) asText.
-	text := text , ').' asText.
-	^ self confirm: text asText
-]
-
 { #category : #version }
 Cormas >> convertToCormas2011 [
 	"Add tje _default parameters to the entity classes of the model"
@@ -3977,55 +3538,6 @@ Cormas >> createImageDictClass: newClass [
 	newClass image: (self currentModel imageDict at: newClass)"
 	
 	
-]
-
-{ #category : #'model entities' }
-Cormas >> createInit: newClass [
-	
-	newClass
-		compile: 'init\	"to be completed"\' withCRs
-		classified: 'init'
-		notifying: nil
-]
-
-{ #category : #'model entities' }
-Cormas >> createModelAccessors: newClass [
-	"ask if newClass is Abstract, 
-	no, then creates the attribut 'theNewClasss' and the accesors at the level of cormasModel,
-	yes, then creates an accessing methods 'theNewClasss' that will returns a collection of all entities of newClass and its subclasses"
-	
-	| isAbstract |
-	(newClass inheritsFrom: CMSpatialEntityElement)
-		ifTrue: [isAbstract := false]
-		ifFalse: [isAbstract := self confirm_IsAbstractClass: newClass].
-	isAbstract
-		ifTrue:
-			[newClass class
-				compile: 'isAbstract \^true' withCRs
-				classified: 'testing'
-				notifying: nil]
-		ifFalse:
-			[newClass class
-				compile: 'isAbstract \^false' withCRs
-				classified: 'testing'
-				notifying: nil].
-	self cormasModelClass createInstancesAccessorsForClass: newClass
-]
-
-{ #category : #'model entities' }
-Cormas >> createProtocol: aSymbol forClass: aClass [
-	
-	BrowserNavigator new
-		performChange: (AddProtocolChange class: aClass protocol: aSymbol)
-]
-
-{ #category : #'model entities' }
-Cormas >> createStep: newClass [
-	
-	newClass
-		compile: 'step\	"to be completed"' withCRs
-		classified: 'control'
-		notifying: nil
 ]
 
 { #category : #deprecated }
@@ -4683,16 +4195,6 @@ Cormas >> launchPackagerForModeler [
 	"launch the packaging window for a modeler packaging"
 	
 	CormasPackagerForModeler open
-]
-
-{ #category : #changed }
-Cormas >> listAgentsChanged [
-	
-	| menu |
-	menu := self builder menuAt: #socialEntityMenu.
-	self listSocialEntities selection isNil
-		ifTrue: [menu menuItems do: [:i | i disable]]
-		ifFalse: [menu menuItems do: [:i | i enable]]
 ]
 
 { #category : #changed }
@@ -5961,22 +5463,6 @@ Cormas >> removeSpatialEntityClass [
 ]
 
 { #category : #'model entities' }
-Cormas >> renameClass: aClass [
-	
-	| newName oldName |
-	oldName := aClass name asString.
-	newName := self askUserTheClassNameWithDefaultValue: oldName.
-	newName isNil ifTrue: [^nil].
-	[aClass renameAndFixSourceTo: newName]
-		on: Error
-		do:
-			[:ex | 
-			self warn: ex messageText.
-			^self renameClass: aClass].
-	^aClass
-]
-
-{ #category : #'model entities' }
 Cormas >> renameEntityClass: aClass entitiesList: listSymbol [
 	| newName oldName result |
 	"get the new name"
@@ -6106,12 +5592,6 @@ self halt.
 Cormas >> request: msgString [
 	
 	^Dialog request: msgString
-]
-
-{ #category : #'user messages' }
-Cormas >> request: msgString initialAnswer: initialString [
-	
-	^Dialog request: msgString initialAnswer: initialString
 ]
 
 { #category : #'user messages' }

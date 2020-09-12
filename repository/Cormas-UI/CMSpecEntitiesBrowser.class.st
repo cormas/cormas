@@ -31,7 +31,7 @@ Class {
 		'passiveList',
 		'defineEntitiesLabel'
 	],
-	#category : 'Cormas-UI-Core'
+	#category : #'Cormas-UI-Core'
 }
 
 { #category : #initialization }
@@ -64,14 +64,49 @@ CMSpecEntitiesBrowser >> defineEntitiesLabel: anObject [
 ]
 
 { #category : #callbacks }
+CMSpecEntitiesBrowser >> entityAbstract: aCMEntityAbstractAnnouncement [
+
+	(self class environment at: aCMEntityAbstractAnnouncement entityName) isAbstract
+		ifTrue: [ 
+			(self confirm: aCMEntityAbstractAnnouncement entityName , self translator tConfirmAbstractEntity)
+				ifTrue: [ self projectAnnouncer announce: aCMEntityAbstractAnnouncement beConcrete ] ]
+		ifFalse: [ 
+			(self confirm: aCMEntityAbstractAnnouncement entityName , self translator tConfirmConcreteEntity)
+				ifTrue: [ self projectAnnouncer announce: aCMEntityAbstractAnnouncement beAbstract ] ].
+
+]
+
+{ #category : #'accessing-menu' }
+CMSpecEntitiesBrowser >> entityAbstractAction: selectedEntity [
+
+	self entityAbstract: (CMEntityAbstractAnnouncement named: selectedEntity)
+]
+
+{ #category : #callbacks }
 CMSpecEntitiesBrowser >> entityEditActivityDiagrams [
 	self shouldBeImplemented.
 ]
 
 { #category : #callbacks }
-CMSpecEntitiesBrowser >> entityEditMethods [
+CMSpecEntitiesBrowser >> entityEditMethods: selectedClass [
+	" Open a browser tool to edit the receiver's model initialization "
 
-	self shouldBeImplemented.
+	selectedClass ifNotNil: [ 
+		ClyFullBrowser openWithState: [ : browser | 
+			browser 
+				selectClass: selectedClass
+				atMethodTag: #control ] ]
+]
+
+{ #category : #callbacks }
+CMSpecEntitiesBrowser >> entityEditPassiveMethods [
+	" Open a browser tool to edit the receiver's model initialization "
+
+	ClyFullBrowser openWithState: [ : browser | 
+		browser 
+			selectClass: self passiveListSelectedClass
+			atMethodTag: #control ]
+	
 ]
 
 { #category : #callbacks }
@@ -80,13 +115,137 @@ CMSpecEntitiesBrowser >> entityEditPoVSetter [
 ]
 
 { #category : #callbacks }
-CMSpecEntitiesBrowser >> entityRemove [
-	self shouldBeImplemented.
+CMSpecEntitiesBrowser >> entityEditSocialMethods [
+	" Open a browser tool to edit the receiver's model initialization "
+
+	ClyFullBrowser openWithState: [ : browser | 
+		browser 
+			selectClass: self socialListSelectedClass
+			atMethodTag: #control ]
+	
 ]
 
 { #category : #callbacks }
-CMSpecEntitiesBrowser >> entityRename [
-	self shouldBeImplemented.
+CMSpecEntitiesBrowser >> entityEditSpatialMethods [
+	" Open a browser tool to edit the receiver's model initialization "
+
+	ClyFullBrowser openWithState: [ : browser | 
+		browser 
+			selectClass: self spatialListSelectedClass
+			atMethodTag: #control ]
+	
+]
+
+{ #category : #'accessing-menu' }
+CMSpecEntitiesBrowser >> entityPassiveSpecializeAction [
+
+	| ann |
+	ann := CMEntitySpecializeAnnouncement
+		named: self selectedPassiveListItem asValidCormasClassName
+		type: 'Passive'.
+	self entitySpecialize: ann.
+	(Smalltalk hasClassNamed: ann entityName)
+		ifFalse: [ ^ self ].
+	self passiveList addItem: ann entityName.
+	self passiveList items: (self initializeListsContents: 'Passive').
+	
+
+]
+
+{ #category : #callbacks }
+CMSpecEntitiesBrowser >> entityRemove: aCMEntityRemoveAnnouncement [
+
+	(self confirm: self translator tConfirmDeleteEntity)
+		ifTrue: [ 
+			self entityRemoveConfirmed: aCMEntityRemoveAnnouncement.
+			^ true ].
+	^ false
+]
+
+{ #category : #callbacks }
+CMSpecEntitiesBrowser >> entityRemoveConfirmed: aCMEntityRemoveAnnouncement [
+	" Trigger an announcement to actually remove the selected entity "
+
+	self projectAnnouncer announce: aCMEntityRemoveAnnouncement.
+	
+]
+
+{ #category : #callbacks }
+CMSpecEntitiesBrowser >> entityRename: anAnnouncement [
+	| className |
+	
+	(className := UIManager default 
+		request: self translator tRenameEntityDialogText 
+		initialAnswer: anAnnouncement entityName) isEmptyOrNil 
+			ifTrue: [ ^ self ].
+	self projectAnnouncer announce: (
+		anAnnouncement 
+			oldName: anAnnouncement entityName;
+			entityName: className asValidCormasClassName).
+
+]
+
+{ #category : #'accessing-menu' }
+CMSpecEntitiesBrowser >> entitySocialRenameAction [
+	| ann |
+	ann := CMEntityRenameAnnouncement
+		named: self selectedSocialListItem asValidCormasClassName
+		type: 'Social'.
+	self entityRename: ann.
+	(Smalltalk hasClassNamed: ann entityName)
+		ifFalse: [ ^ self ].
+	(self socialList includes: ann entityName)
+		ifTrue: [ ^ self ].
+	self socialList addItem: ann entityName.
+	self socialList remove: ann oldName
+]
+
+{ #category : #'accessing-menu' }
+CMSpecEntitiesBrowser >> entitySocialSpecializeAction [
+
+	| ann |
+	ann := CMEntitySpecializeAnnouncement
+		named: self selectedSocialListItem asValidCormasClassName
+		type: 'Social'.
+	self entitySpecialize: ann.
+	(Smalltalk hasClassNamed: ann entityName)
+		ifFalse: [ ^ self ].
+	self socialList addItem: ann entityName.
+	self socialList items: (self initializeListsContents: 'Social').
+	
+
+]
+
+{ #category : #'accessing-menu' }
+CMSpecEntitiesBrowser >> entitySpatialRenameAction [
+	| ann |
+	ann := CMEntityRenameAnnouncement
+		named: self selectedSpatialListItem asValidCormasClassName
+		type: 'Spatial'.
+	self entityRename: ann.
+	(Smalltalk hasClassNamed: ann entityName)
+		ifFalse: [ ^ self ].
+	(self spatialList includes: ann entityName)
+		ifTrue: [ ^ self ].
+	self spatialList addItem: ann entityName.
+	self spatialList remove: ann oldName
+]
+
+{ #category : #'accessing-menu' }
+CMSpecEntitiesBrowser >> entitySpecialize: anAnnouncement [
+
+	| className |
+	
+	(className := UIManager default 
+		request: self translator tSpecializeEntityDialogText 
+		initialAnswer: anAnnouncement entityName
+		title: self translator tSpecialization) isEmptyOrNil
+			ifTrue: [ ^ self ].
+	self projectAnnouncer announce: (
+		anAnnouncement 
+			superclass: anAnnouncement entityName;
+			entityName: className asValidCormasClassName).
+
 ]
 
 { #category : #initialization }
@@ -112,7 +271,6 @@ CMSpecEntitiesBrowser >> initializeListsContents [
 		do: [ : aType | 
 			| typeSelector |
 			typeSelector := (aType asLowercase , 'List') asSymbol.
-			"selectionInList := self perform: typeSelector."
 			(self perform: typeSelector) items: (self initializeListsContents: aType) ]
 ]
 
@@ -145,9 +303,24 @@ CMSpecEntitiesBrowser >> initializeMenuItems [
 CMSpecEntitiesBrowser >> initializePresenter [
 	" Private - See superimplementor's comment "
 
-	self spatialList addActionBlock: [ self openAddEntityInterface ].
-	self socialList addActionBlock: [ self openAddAgentInterface ].
-	self passiveList addActionBlock: [ self openAddPassiveInterface ].
+	self spatialList 
+		addActionBlock: [ self openAddSpatialEntityInterface ];
+		removeActionBlock: [ self entityRemove: (
+			CMEntityRemoveAnnouncement 
+				named: self selectedSpatialListItem asValidCormasClassName
+				type: 'Spatial') ].
+	self socialList 
+		addActionBlock: [ self openAddAgentInterface ];
+		removeActionBlock: [ self entityRemove: (
+			CMEntityRemoveAnnouncement 
+				named: self selectedSocialListItem asValidCormasClassName
+				type: 'Social') ].
+	self passiveList 
+		addActionBlock: [ self openAddPassiveInterface ];
+		removeActionBlock: [ self entityRemove: (
+			CMEntityRemoveAnnouncement 
+				named: self selectedPassiveListItem asValidCormasClassName
+				type: 'Passive')  ].
 
 ]
 
@@ -184,23 +357,23 @@ CMSpecEntitiesBrowser >> menuForPassiveList [
 			aGroup addItem: [ : anItem |
 				anItem
 					name: self translator tEdit;
-					subMenu: self subMenuForEditEntity ] ];
+					subMenu: self subMenuForEditPassiveEntity ] ];
 		addGroup: [ : aGroup |
 			aGroup 
 				addItem: [ : anItem |
 					anItem
 						name: self translator tSpecialize;
-						action: [ self entitySpecialize ] ];
+						action: [ self entityPassiveSpecializeAction ] ];
 				addItem: [ : anItem | 
 					anItem
 						name: self translator tAbstract;
-						action: [ self entityAbstract ] ] ];
+						action: [ self entityAbstractAction: self selectedPassiveListItem asValidCormasClassName ] ] ];
 		addGroup: [ : aGroup |
 			aGroup 
 				addItem: [ : anItem | 
 					anItem
 						name: self translator tRemove;
-						action: [ self entityRemove ] ] ].
+						action: [ self passiveList removeAction. ] ] ].
 	^ aMenu buildWithSpecAsPopup.
 ]
 
@@ -214,23 +387,23 @@ CMSpecEntitiesBrowser >> menuForSocialList [
 			aGroup addItem: [ : anItem |
 				anItem
 					name: self translator tEdit;
-					subMenu: self subMenuForEditEntity ] ];
+					subMenu: self subMenuForEditSocialEntity ] ];
 		addGroup: [ : aGroup |
 			aGroup 
 				addItem: [ : anItem |
 					anItem
 						name: self translator tSpecialize;
-						action: [ self entitySpecialize ] ];
+						action: [ self entitySocialSpecializeAction ] ];
 				addItem: [ : anItem | 
 					anItem
 						name: self translator tRename;
-						action: [ self entityRename ] ] ];
+						action: [ self entitySocialRenameAction ] ] ];
 		addGroup: [ : aGroup |
 			aGroup 
 				addItem: [ : anItem | 
 					anItem
 						name: self translator tAbstract;
-						action: [ self entityAbstract ] ] ].
+						action: [ self entityAbstractAction: self selectedSocialListItem asValidCormasClassName ] ] ].
 	^ aMenu buildWithSpecAsPopup.
 	
 	
@@ -247,24 +420,24 @@ CMSpecEntitiesBrowser >> menuForSpatialList [
 			aGroup addItem: [ : anItem |
 				anItem
 					name: self translator tEdit;
-					subMenu: self subMenuForEditEntity ] ];
+					subMenu: self subMenuForEditSpatialEntity ] ];
 		addGroup: [ : aGroup |
 			aGroup 
 				addItem: [ : anItem |
 					anItem
 						name: self translator tSpecialize;
-						action: [ self entitySpecialize ];
+						action: [ self entityAbstractAction: self selectedSpatialListItem asValidCormasClassName ];
 						enabled: false ];
 				addItem: [ : anItem | 
 					anItem
 						name: self translator tRename;
-						action: [ self entityRename ] ] ];
+						action: [ self entitySpatialRenameAction ] ] ];
 		addGroup: [ : aGroup |
 			aGroup 
 				addItem: [ : anItem | 
 					anItem
 						name: self translator tRemove;
-						action: [ self entityRemove ] ] ].
+						action: [ self spatialList removeAction ] ] ].
 	^ aMenu buildWithSpecAsPopup.
 	
 	
@@ -274,30 +447,30 @@ CMSpecEntitiesBrowser >> menuForSpatialList [
 CMSpecEntitiesBrowser >> openAddAgentInterface [
 	" Private - Callback for opening UI. The user clicked the add button to add a social entity "
 	
-	^ (CMSpecAgentAddInterface openFor: self projectManager)	
-		owner: self socialList;
-		yourself
-
-]
-
-{ #category : #callbacks }
-CMSpecEntitiesBrowser >> openAddEntityInterface [
-	" Private - Callback for opening UI. The user clicked the add button to add a spatial entity "
-
-	^ (CMSpecEntityAddInterface openFor: self projectManager)	
-		owner: self spatialList;
-		yourself
-
-
+	(CMSpecAgentAddInterface openFor: self projectManager)	
+		owner: self socialList.
+	" This is because openDialogWithSpec is not working right now "
+	^ nil
 ]
 
 { #category : #callbacks }
 CMSpecEntitiesBrowser >> openAddPassiveInterface [
 	" Private - Callback for opening UI. The user clicked the add button to add a passive entity "
 	
-	^ (CMSpecPassiveAddInterface openFor: self projectManager)	
-		owner: self passiveList;
-		yourself
+	(CMSpecPassiveAddInterface openFor: self projectManager)	
+		owner: self passiveList.
+	" This is because openDialogWithSpec is not working right now "
+	^ nil
+]
+
+{ #category : #callbacks }
+CMSpecEntitiesBrowser >> openAddSpatialEntityInterface [
+	" Private - Callback for opening UI. The user clicked the add button to add a spatial entity "
+
+	(CMSpecSpatialEntityAddInterface openFor: self projectManager)	
+		owner: self spatialList.
+	" This is because openDialogWithSpec is not working right now "
+	^ nil
 
 ]
 
@@ -322,6 +495,47 @@ CMSpecEntitiesBrowser >> passiveList: anObject [
 	passiveList := anObject
 ]
 
+{ #category : #'accessing-menu' }
+CMSpecEntitiesBrowser >> passiveListSelectedClass [
+	" Answer the currently selected item at the social list "
+
+	^ self class environment 
+		at: self passiveListSelection asValidCormasClassName
+		ifAbsent: [ 
+			self passiveList clickOnSelectedItem.
+			self class environment 
+				at: self passiveList selectionHolderItem value asValidCormasClassName
+				ifAbsent: [ self error ] ]
+]
+
+{ #category : #'accessing-menu' }
+CMSpecEntitiesBrowser >> passiveListSelection [
+	" Answer the currently selected item at the spatial list "
+
+	^ self passiveList selectedItem
+]
+
+{ #category : #accessing }
+CMSpecEntitiesBrowser >> selectedPassiveListItem [
+	" Answer a <String> with the currently selected item in the passive list "
+
+	^ self passiveList selectedItem
+]
+
+{ #category : #accessing }
+CMSpecEntitiesBrowser >> selectedSocialListItem [
+	" Answer a <String> with the currently selected item in the social list "
+
+	^ self socialList selectedItem
+]
+
+{ #category : #accessing }
+CMSpecEntitiesBrowser >> selectedSpatialListItem [
+	" Answer a <String> with the currently selected item in the spatial list "
+
+	^ self spatialList selectedItem
+]
+
 { #category : #accessing }
 CMSpecEntitiesBrowser >> socialList [
 	" Answer the socialList of this CMSpecEntitiesBrowser "
@@ -334,6 +548,28 @@ CMSpecEntitiesBrowser >> socialList: anObject [
 	" Sets the socialList of this CMSpecEntitiesBrowser "
 
 	socialList := anObject
+]
+
+{ #category : #'accessing-menu' }
+CMSpecEntitiesBrowser >> socialListSelectedClass [
+	" Answer the currently selected item at the social list "
+
+	| listSelection |
+	listSelection := self socialListSelection asValidCormasClassName.
+	^ self class environment 
+		at: listSelection trimBoth asSymbol
+		ifAbsent: [ 
+			self socialList clickOnSelectedItem.
+			self class environment 
+				at: self socialList selectionHolderItem value asValidCormasClassName
+				ifAbsent: [ self error ] ]
+]
+
+{ #category : #'accessing-menu' }
+CMSpecEntitiesBrowser >> socialListSelection [
+	" Answer the currently selected item at the spatial list "
+
+	^ self socialList selectedItem
 ]
 
 { #category : #accessing }
@@ -351,7 +587,27 @@ CMSpecEntitiesBrowser >> spatialList: anObject [
 ]
 
 { #category : #'accessing-menu' }
-CMSpecEntitiesBrowser >> subMenuForEditEntity [
+CMSpecEntitiesBrowser >> spatialListSelectedClass [
+	" Answer the currently selected item at the spatial list "
+
+	^ self class environment 
+		at: self spatialListSelection asValidCormasClassName
+		ifAbsent: [ 
+			self spatialList clickOnSelectedItem.
+			self class environment 
+				at: self spatialList selectionHolderItem value asValidCormasClassName
+				ifAbsent: [ self error ] ]
+]
+
+{ #category : #'accessing-menu' }
+CMSpecEntitiesBrowser >> spatialListSelection [
+	" Answer the currently selected item at the spatial list "
+
+	^ self spatialList selectedItem
+]
+
+{ #category : #'accessing-menu' }
+CMSpecEntitiesBrowser >> subMenuForEditPassiveEntity [
 
 	^ MenuModel new
 		addGroup: [ : group |
@@ -363,7 +619,57 @@ CMSpecEntitiesBrowser >> subMenuForEditEntity [
 				addItem: [ : item | 
 					item 
 						name: self translator tMethods;
-						action: [ self entityEditMethods ] ];
+						action: [ self entityEditPassiveMethods ] ];
+				addItem: [ : item | 
+					item 
+						name: self translator tActivityDiagrams;
+						action: [ self entityEditActivityDiagrams ] ];
+				addItem: [ : item | 
+					item 
+						name: self translator tPoVSetter;
+						action: [ self entityEditPoVSetter ] ] ]
+
+]
+
+{ #category : #'accessing-menu' }
+CMSpecEntitiesBrowser >> subMenuForEditSocialEntity [
+
+	^ MenuModel new
+		addGroup: [ : group |
+			group 
+				addItem: [ : item | 				
+					item
+						name: self translator tAttributes;
+						action: [ self openEditAttributes ] ];
+				addItem: [ : item | 
+					item 
+						name: self translator tMethods;
+						action: [ self entityEditSocialMethods ] ];
+				addItem: [ : item | 
+					item 
+						name: self translator tActivityDiagrams;
+						action: [ self entityEditActivityDiagrams ] ];
+				addItem: [ : item | 
+					item 
+						name: self translator tPoVSetter;
+						action: [ self entityEditPoVSetter ] ] ]
+
+]
+
+{ #category : #'accessing-menu' }
+CMSpecEntitiesBrowser >> subMenuForEditSpatialEntity [
+
+	^ MenuModel new
+		addGroup: [ : group |
+			group 
+				addItem: [ : item | 				
+					item
+						name: self translator tAttributes;
+						action: [ self openEditAttributes ] ];
+				addItem: [ : item | 
+					item 
+						name: self translator tMethods;
+						action: [ self entityEditSpatialMethods ] ];
 				addItem: [ : item | 
 					item 
 						name: self translator tActivityDiagrams;
@@ -377,5 +683,10 @@ CMSpecEntitiesBrowser >> subMenuForEditEntity [
 
 { #category : #initialization }
 CMSpecEntitiesBrowser >> title [
-	^ 'Entities'
+	^ String streamContents: [ : stream |
+		stream
+			<< 'Cormas - ';
+			<< self cormasModelClass asString;
+			<< ' - ';
+			<< self translator tEntities ]
 ]

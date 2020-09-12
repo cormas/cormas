@@ -74,7 +74,7 @@ CMSpecObject >> cormas [
 
 { #category : #accessing }
 CMSpecObject >> cormasModel [
-	" Answer a CMProjectModel "
+	" Answer the receiver's model, a subclass of <CMAbstractModel> "
 	
 	^ self projectManager cormasModel
 ]
@@ -87,9 +87,10 @@ CMSpecObject >> cormasModelClass [
 ]
 
 { #category : #accessing }
-CMSpecObject >> currentProject [ 
+CMSpecObject >> currentProject [
+	" Answer the receiver's <CMProjectModel> "
 
-	^ self projectManager currentProject 
+	^ self projectManager currentProject
 ]
 
 { #category : #accessing }
@@ -112,6 +113,8 @@ CMSpecObject >> projectAnnouncer [
 
 { #category : #accessing }
 CMSpecObject >> projectManager [
+	" Answer the receiver's <CMProjectManager> "
+
 	^ projectManager
 ]
 

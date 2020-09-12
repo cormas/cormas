@@ -1,13 +1,11 @@
 Class {
 	#name : #CMSpecPassiveAddInterface,
-	#superclass : #CMSpecObject,
+	#superclass : #CMSpecEntityAddInterface,
 	#instVars : [
-		'entityName',
 		'toolbar',
-		'rbTypeGroup',
-		'entitySuperclass'
+		'rbTypeGroup'
 	],
-	#category : 'Cormas-UI-Core'
+	#category : #'Cormas-UI-Core'
 }
 
 { #category : #specs }
@@ -45,34 +43,10 @@ CMSpecPassiveAddInterface >> addNewSpatialEntityGUI [
 	self closeRequest
 ]
 
-{ #category : #callbacks }
-CMSpecPassiveAddInterface >> addPassiveObject [
-
-	self shouldBeImplemented.
-]
-
 { #category : #accessing }
-CMSpecPassiveAddInterface >> entityName [
-	" Answer the entityName of this CMSpecEntityAddInterface "
+CMSpecPassiveAddInterface >> entityType [
 
-	^ entityName
-]
-
-{ #category : #accessing }
-CMSpecPassiveAddInterface >> entityName: anObject [
-	" Sets the entityName of this CMSpecEntityAddInterface "
-
-	entityName := anObject
-]
-
-{ #category : #accessing }
-CMSpecPassiveAddInterface >> entitySuperclass [
-	^ entitySuperclass
-]
-
-{ #category : #accessing }
-CMSpecPassiveAddInterface >> entitySuperclass: anObject [
-	entitySuperclass := anObject
+	^ 'Passive'
 ]
 
 { #category : #initialization }
@@ -138,17 +112,28 @@ CMSpecPassiveAddInterface >> initializeRbItems [
 ]
 
 { #category : #initialization }
+CMSpecPassiveAddInterface >> initializeToolbar [
+
+	self toolbar 
+		firstButtonLabel: self translator tOk;
+		firstButtonAction: [ self addEntity ];
+
+		secondButtonLabel: self translator tCancel;
+		secondButtonAction: [ self delete ]
+
+]
+
+{ #category : #initialization }
 CMSpecPassiveAddInterface >> initializeWidgets [
 	" Private - See superimplementor's comment "
 
+	super initializeWidgets.
 	self instantiateModels: #(
 		rbTypeGroup 				CMSpecPassiveAddRBGroup
-		entityName 				SpcLabeledTextField			
-		toolbar 					SpcOneButtonToolbar).
+		toolbar 					SpcTwoButtonToolbar).
 
-	self entityName label: self translator tName.
 	self setFocus.
-	self setToolbar.
+	self initializeToolbar.
 	self initializeRbItems.
 ]
 
@@ -164,12 +149,14 @@ CMSpecPassiveAddInterface >> rbTypeGroup: anObject [
 
 { #category : #initialization }
 CMSpecPassiveAddInterface >> setActionsForRb [
-	"  buttonNetworkNode buttonNetworkArc buttonFullNetwork buttonMessage "
-	self rbTypeGroup buttonObject whenActivatedDo: [  ].
-	self rbTypeGroup buttonObject whenDeactivatedDo: [  ].
-	
-	self rbTypeGroup buttonLocatedObject whenActivatedDo: [  ].
-	self rbTypeGroup buttonLocatedObject whenDeactivatedDo: [  ].
+
+	self rbTypeGroup buttonObject whenActivatedDo: [ self entitySuperclass: CMPassiveObject ].
+	self rbTypeGroup buttonLocatedObject whenActivatedDo: [ self entitySuperclass: CMObjectLocation ].
+	self rbTypeGroup buttonNetworkNode whenActivatedDo: [ self entitySuperclass: CMNodeEntity ].
+	self rbTypeGroup buttonNetworkArc whenActivatedDo: [ self entitySuperclass: CMArcEntity ].
+	self rbTypeGroup buttonFullNetwork whenActivatedDo: [ self entitySuperclass: CMNetworkEntity ].
+	self rbTypeGroup buttonMessage whenActivatedDo: [ self entitySuperclass: CMObjectLocation ].
+
 
 
 ]
@@ -178,28 +165,16 @@ CMSpecPassiveAddInterface >> setActionsForRb [
 CMSpecPassiveAddInterface >> setFocus [
 
 	self focusOrder
-		add: self entityName;
-		add: self toolbar
-]
-
-{ #category : #initialization }
-CMSpecPassiveAddInterface >> setToolbar [
-
-	self toolbar 
-		firstButtonLabel: 'Ok';
-		firstButtonAction: [ self addPassiveObject ]
-
-]
-
-{ #category : #callbacks }
-CMSpecPassiveAddInterface >> spatialEntitySuperclass [
-
-	^ Smalltalk at: #CMSpatialEntityAggregate
+		add: self rbTypeGroup buttonObject;
+		add: self entityName textField;
+		add: self toolbar firstButton;
+		add: self toolbar secondButton.
 ]
 
 { #category : #initialization }
 CMSpecPassiveAddInterface >> title [
-	^ 'Create a kind of Entity'
+
+	^ self translator tCreateEntityKind
 ]
 
 { #category : #accessing }
@@ -214,14 +189,4 @@ CMSpecPassiveAddInterface >> toolbar: anObject [
 	" Sets the toolbar of this CMSpecEntityAddInterface "
 
 	toolbar := anObject
-]
-
-{ #category : #callbacks }
-CMSpecPassiveAddInterface >> validateEntity [
-
-	| newClassName |
-	
-	(newClassName := self entityName textValuePending) isEmpty 
-		ifTrue: [ ^ self informMessage: self translator tEnterClassName ].
-	^ self owner addItem: newClassName trimBoth
 ]

@@ -10881,51 +10881,6 @@ CormasVW class >> parametersIcon [
 							'L3L3L3L3L3L3L3L3L3L3L3MUUUUUUUUUUUUUUUUUUUL5MCP4MCP4MCP4MCP4MCP MTUP@@@@@@@@@EUUUUUUHCT5TADQDQDQDQEUUUUUUR@5QU@3L3L3L3L1UUUUUUT MSUPDQDQDQDQDUUUUUUUHCUEUUUUUUUUUUUUUUUUUR@5MUL0T3ASLEL0T3ASLET MTUSDELPT1ASDELPT1AUHCT5T@AP@E@@T@AP@E@@UR@5QUUUUUUUUUUUUUUUUUT MSUSLEL0T3ASLEL0T3AUHCUET1ASDELPT1ASDELPUR@5MU@@T@AP@E@@T@AP@ET MTUUUUUUUUUUUUUUUUUUHCT5T3ASLEL0T3ASL3L0UR@5QULPT1ASDELPT1DQDET MSUP@E@@T@AP@E@@@@AUHCUEUUUUUUUUUUUUUUUUUR@5T"H"H"H"H"H"H"H"H"H L0@@@@@@@@@@@@@@@@@@@0@a'))
 ]
 
-{ #category : #resources }
-CormasVW class >> passiveEntityMenu [
-	"Tools.MenuEditor new openOnClass: self andSelector: #passiveEntityMenu"
-	
-	<resource: #menu>
-	^#(Menu #(#(MenuItem 
-		#rawLabel: #(UserMessage 
-			#key: #modify 
-			#defaultString: 'Edit') 
-		#enabled: false 
-		#submenu: #(Menu #(#(MenuItem 
-			#rawLabel: 'Attributes' 
-			#nameKey: #modifyPassiveEntityClassAttributes 
-			#value: #modifyPassiveEntityClassAttributes) #(MenuItem 
-			#rawLabel: 'Methods' 
-			#nameKey: #modifyPassiveEntityClassMethods 
-			#value: #modifyPassiveEntityClassMethods) #(MenuItem 
-			#rawLabel: 'Activity diagrams' 
-			#nameKey: #modifyPassiveEntityDiagram 
-			#value: #modifyPassiveEntityDiagram) #(MenuItem 
-			#rawLabel: 'PoV setter' 
-			#nameKey: #modifyPassiveEntityPoVSetter 
-			#value: #modifyPassiveEntityPoVSetter)) #(4) nil)) #(MenuItem 
-		#rawLabel: 'Specialize' 
-		#enabled: false 
-		#nameKey: #specializePassiveEntity 
-		#value: #specializePassiveEntity) #(MenuItem 
-		#rawLabel: #(UserMessage 
-			#key: #rename 
-			#defaultString: 'Rename') 
-		#enabled: false 
-		#nameKey: #renamePassiveEntityClass 
-		#value: #renamePassiveEntityClass) #(MenuItem 
-		#rawLabel: 'Abstract / Not abstract' 
-		#enabled: false 
-		#nameKey: #changeAbstractPassive 
-		#value: #changeAbstractPassive) #(MenuItem 
-		#rawLabel: #(UserMessage 
-			#key: #delete 
-			#defaultString: 'Remove') 
-		#enabled: false 
-		#nameKey: #removePassiveEntityClass 
-		#value: #removePassiveEntityClass)) #(1 3 1) nil) decodeAsLiteralArray
-]
-
 { #category : #'resources-icons-Sim' }
 CormasVW class >> pauseIcon [
 	
@@ -20504,51 +20459,6 @@ CormasVW class >> simIconMask [
 ]
 
 { #category : #resources }
-CormasVW class >> socialEntityMenu [
-	"Tools.MenuEditor new openOnClass: self andSelector: #socialEntityMenu"
-	
-	<resource: #menu>
-	^#(Menu #(#(MenuItem 
-		#rawLabel: #(UserMessage 
-			#key: #modify 
-			#defaultString: 'Edit') 
-		#enabled: false 
-		#submenu: #(Menu #(#(MenuItem 
-			#rawLabel: 'Attributes' 
-			#nameKey: #modifySocialEntityClassAttributes 
-			#value: #modifySocialEntityClassAttributes) #(MenuItem 
-			#rawLabel: 'Methods' 
-			#nameKey: #modifySocialEntityClassMethods 
-			#value: #modifySocialEntityClassMethods) #(MenuItem 
-			#rawLabel: 'Activity diagrams' 
-			#nameKey: #modifySocialEntityDiagram 
-			#value: #modifySocialEntityDiagram) #(MenuItem 
-			#rawLabel: 'PoV setter' 
-			#nameKey: #modifySocialEntityPoVSetter 
-			#value: #modifySocialEntityPoVSetter)) #(4) nil)) #(MenuItem 
-		#rawLabel: 'Specialize' 
-		#enabled: false 
-		#nameKey: #specializeSocialEntity 
-		#value: #specializeSocialEntity) #(MenuItem 
-		#rawLabel: #(UserMessage 
-			#key: #rename 
-			#defaultString: 'Rename') 
-		#enabled: false 
-		#nameKey: #renameSocialEntityClass 
-		#value: #renameSocialEntityClass) #(MenuItem 
-		#rawLabel: 'Abstract / Not abstract' 
-		#enabled: false 
-		#nameKey: #changeAbstractSocial 
-		#value: #changeAbstractSocial) #(MenuItem 
-		#rawLabel: #(UserMessage 
-			#key: #delete 
-			#defaultString: 'Remove') 
-		#enabled: false 
-		#nameKey: #removeSocialEntityClass 
-		#value: #removeSocialEntityClass)) #(1 3 1) nil) decodeAsLiteralArray
-]
-
-{ #category : #resources }
 CormasVW class >> spatialEntityMenu [
 	"Tools.MenuEditor new openOnClass: self andSelector: #spatialEntityMenu"
 	
@@ -22284,33 +22194,10 @@ CormasVW >> chooseModel [
 ]
 
 { #category : #'user messages' }
-CormasVW >> entityName [
-	
-	^UserMessage defaultString: ' Enter the entity''s name ' key: #entityName
-]
-
-{ #category : #'user messages' }
 CormasVW >> fseName [
 	
 	^UserMessage defaultString: 'Fragmented Spatial Entity name : ' key:
 			#fseName
-]
-
-{ #category : #'model entities' }
-CormasVW >> getSortedListEntityClassType: aType [
-	"aType is either 'Spatial', 'Social' or 'Passive'"
-	
-	| aList highLevelClasses |
-	aList := List new.
-	highLevelClasses := (self cormasModelClass
-		perform: ((Cormas lowerCaseString: aType) , 'Classes') asSymbol)
-		reject: [:anEntity | anEntity environment includes: anEntity superclass].
-	(highLevelClasses asSortedCollection: [:i :j | i name < j name])
-		do:
-			[:anEntity | 
-			(anEntity printHierarchy tokensBasedOn: Character cr)
-				do: [:s | aList add: s]].
-	^aList
 ]
 
 { #category : #'model entities' }
