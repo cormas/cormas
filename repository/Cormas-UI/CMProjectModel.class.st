@@ -175,6 +175,13 @@ CMProjectModel >> defaultCormasModelName [
 ]
 
 { #category : #defaults }
+CMProjectModel >> defaultProjectManager [
+	" Private - See superimplementor's comment "
+
+	^ CMProjectManager new
+]
+
+{ #category : #defaults }
 CMProjectModel >> defaultStdCormasCategoryName [
 	" Answer a <String> in the format CMXXXModel where XXX is the user provided name of the receiver's model "
 	

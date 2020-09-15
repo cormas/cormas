@@ -4297,7 +4297,7 @@ CMAbstractModel >> theEntities: aClass [
 	| collection getter |
 	aClass isAbstract
 		ifTrue: [ ^ OrderedCollection new ].
-	getter := self getterForEntityClass: aClass.
+	getter := aClass asGetterForEntityClass.
 	collection := self perform: getter.
 	collection
 		ifNil: [ self class createReaderAccessor: aClass.
