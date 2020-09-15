@@ -3,12 +3,11 @@ CMSpecAgentAddInterface example
 "
 Class {
 	#name : #CMSpecAgentAddInterface,
-	#superclass : #CMSpecObject,
+	#superclass : #CMSpecEntityAddInterface,
 	#instVars : [
 		'cbComm',
 		'cbGroup',
 		'cbLocation',
-		'newClassName',
 		'descriptionLabel',
 		'toolbar'
 	],
@@ -29,24 +28,9 @@ CMSpecAgentAddInterface class >> defaultSpec [
 					add: #cbLocation ];
 			newColumn: [ : row | 
 				row
-					add: #newClassName;
+					add: #entityName;
 					add: #descriptionLabel;
 					add: #toolbar height: self toolbarHeight ] ]
-]
-
-{ #category : #actions }
-CMSpecAgentAddInterface >> addNewSocialEntityGUI [
-	| newName superClass |
-	(newName := self getNewClassNameFromGUI)
-		ifNil: [ ^ self alertMessage: self translator tMissingClassName ].
-	superClass := self getAgentSuperclassFromGUI.
-	self projectManager
-		addNewClassType: 'Social'
-		inheritingFrom: superClass
-		name: newName
-		initProtocol: false
-		stepProtocol: false.
-	self closeRequest
 ]
 
 { #category : #accessing }
@@ -100,9 +84,9 @@ CMSpecAgentAddInterface >> descriptionLabel: anObject [
 	descriptionLabel := anObject
 ]
 
-{ #category : #actions }
-CMSpecAgentAddInterface >> getAgentSuperclassFromGUI [
-	
+{ #category : #accessing }
+CMSpecAgentAddInterface >> entitySuperclass [
+
 	self cbComm state not & self cbLocation state not & self cbGroup state not
 		ifTrue: [ ^ CMAgent ].
 	self cbComm state & self cbLocation state not & self cbGroup state not
@@ -119,6 +103,12 @@ CMSpecAgentAddInterface >> getAgentSuperclassFromGUI [
 		ifTrue: [ ^ CMGroupLocation ].
 	self cbComm state & self cbLocation state & self cbGroup state
 		ifTrue: [ ^ CMGroupCommLocation ]
+]
+
+{ #category : #accessing }
+CMSpecAgentAddInterface >> entityType [
+
+	^ 'Social'
 ]
 
 { #category : #actions }
@@ -145,45 +135,32 @@ CMSpecAgentAddInterface >> initialExtent [
 CMSpecAgentAddInterface >> initializePresenter [
 	" Private - See superimplementor's comment "
 
-	self toolbar firstButtonAction: [ self addNewSocialEntityGUI ].
+	self toolbar firstButtonAction: [ self addEntity ].
 ]
 
 { #category : #initialization }
 CMSpecAgentAddInterface >> initializeWidgets [
 	" Private - See superimplementor's comment "
 
+	super initializeWidgets.
 	self instantiateModels: #(
 		cbComm 					CheckBoxModel
 		cbGroup 					CheckBoxModel
 		cbLocation 				CheckBoxModel					 
-		newClassName 			SpcLabeledTextField 
 		descriptionLabel 		LabelModel 
 		toolbar 					SpcOneButtonToolbar).
 
-	self newClassName 
-		beForText;
-		label: 'Name:'.
 	self cbComm label: self translator tCommunication.
 	self cbGroup label: self translator tGroup.
 	self cbLocation label: self translator tLocation.
-	self toolbar firstButtonLabel: 'Ok'.
+	self toolbar firstButtonLabel: self translator tOk.
 	self focusOrder
 		add: self cbComm;
 		add: self cbGroup;
 		add: self cbLocation;
-		add: self newClassName;
+		add: self entityName;
 		add: self descriptionLabel;
 		add: self toolbar
-]
-
-{ #category : #accessing }
-CMSpecAgentAddInterface >> newClassName [
-	^ newClassName
-]
-
-{ #category : #accessing }
-CMSpecAgentAddInterface >> newClassName: anObject [
-	newClassName := anObject
 ]
 
 { #category : #initialization }

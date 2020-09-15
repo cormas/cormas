@@ -23,18 +23,6 @@ Class {
 	#category : #'Cormas-UI-Project'
 }
 
-{ #category : #'code-generation' }
-CMProjectManager >> addNewClassType: aString inheritingFrom: aClass name: nameString initProtocol: initBoolean stepProtocol: stepBoolean [
-
-	self codeGenerator 
-		addNewClassType: aString 
-		inheritingFrom: aClass 
-		name: nameString 
-		initProtocol: initBoolean 
-		stepProtocol: stepBoolean 
-
-]
-
 { #category : #accessing }
 CMProjectManager >> applicationExtension [
 	" See comment in #applicationExtension "
@@ -270,6 +258,7 @@ CMProjectManager >> openImageProject: modelName [
 	" Open the project of the modelClass "
 
 	self currentProject: (CMProjectModel basicNew
+		projectManager: self;
 		initializeForModel: (self class environment at: modelName) new
 			named: modelName;
 			yourself)

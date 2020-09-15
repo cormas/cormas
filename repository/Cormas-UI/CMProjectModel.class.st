@@ -36,6 +36,30 @@ CMProjectModel class >> for: aCormasModel [
 	^ self new initializeForModel: aCormasModel 
 ]
 
+{ #category : #callbacks }
+CMProjectModel >> abstractEntity: aCMEntityAnnouncement [ 
+	" Specialize the entity class in aCMEntityAnnouncement "
+
+	self codeGenerator targetClass: aCMEntityAnnouncement entityName.
+	aCMEntityAnnouncement isAbstract 
+		ifTrue: [ self codeGenerator installAbstractMethod ]
+		ifFalse: [ self codeGenerator installConcreteMethod ]
+
+]
+
+{ #category : #callbacks }
+CMProjectModel >> addNewEntity: aCMEntityNewAnnouncement [ 
+	" Add a new entity to the receiver "
+	
+	self codeGenerator 
+		targetClassCategory: self cormasModelClass category;
+		addNewClassType: aCMEntityNewAnnouncement type
+		inheritingFrom: aCMEntityNewAnnouncement superclass
+		name: aCMEntityNewAnnouncement entityName
+		initProtocol: false 
+		stepProtocol: false
+]
+
 { #category : #accessing }
 CMProjectModel >> codeGenerator [
 	" Answer a code generator binding a reference to the receiver model "
@@ -151,6 +175,13 @@ CMProjectModel >> defaultCormasModelName [
 ]
 
 { #category : #defaults }
+CMProjectModel >> defaultProjectManager [
+	" Private - See superimplementor's comment "
+
+	^ CMProjectManager new
+]
+
+{ #category : #defaults }
 CMProjectModel >> defaultStdCormasCategoryName [
 	" Answer a <String> in the format CMXXXModel where XXX is the user provided name of the receiver's model "
 	
@@ -194,12 +225,36 @@ CMProjectModel >> hasStoredSimulations [
 ]
 
 { #category : #'initialize - release' }
+CMProjectModel >> initializeEvents [
+
+	self projectAnnouncer
+		when: CMEntityNewAnnouncement
+		send: #addNewEntity:
+		to: self.
+	self projectAnnouncer
+		when: CMEntityRemoveAnnouncement
+		send: #removeEntity:
+		to: self.
+	self projectAnnouncer 
+		when: CMEntityRenameAnnouncement 
+		send: #renameEntity:
+		to: self.
+	self projectAnnouncer 
+		when: CMEntitySpecializeAnnouncement 
+		send: #specializeEntity:
+		to: self.
+	self projectAnnouncer 
+		when: CMEntityAbstractAnnouncement 
+		send: #abstractEntity:
+		to: self.
+]
+
+{ #category : #'initialize - release' }
 CMProjectModel >> initializeForModel: aCormasModel [
 	" Private - Set up the cormas model for the receiver "
 
-	self initializeNamed: self defaultCormasModelName.
-	self cormasModel: aCormasModel.
-	self cormasModelClass: aCormasModel class.
+	self initializeForModel: aCormasModel named: self defaultCormasModelName.
+
 ]
 
 { #category : #'initialize - release' }
@@ -209,6 +264,21 @@ CMProjectModel >> initializeForModel: aCormasModel named: aString [
 	self initializeNamed: aString.
 	self cormasModel: aCormasModel.
 	self cormasModelClass: aCormasModel class.
+	self initializeEvents.
+
+]
+
+{ #category : #accessing }
+CMProjectModel >> passiveClasses [
+	" Answer a <Collection> with the receiver's model passive classes "
+	
+	^ self cormasModelClass passiveClasses
+]
+
+{ #category : #'initialize - release' }
+CMProjectModel >> projectAnnouncer [
+
+	^ self projectManager announcer
 ]
 
 { #category : #accessing }
@@ -218,11 +288,68 @@ CMProjectModel >> projectName [
 	^ self cormasModelName
 ]
 
+{ #category : #callbacks }
+CMProjectModel >> removeEntity: aCMEntityAnnouncement [ 
+	" Remove the entity class in aCMEntityAnnouncement "
+
+	| theClass |
+	
+	theClass := self class environment at: aCMEntityAnnouncement entityName.
+	(self perform: (aCMEntityAnnouncement type asLowercase , 'Classes') asSymbol)
+		remove: theClass
+		ifAbsent: [ self error ].
+	self codeGenerator removeClass: aCMEntityAnnouncement entityName asValidCormasClassName.
+]
+
+{ #category : #callbacks }
+CMProjectModel >> renameEntity: aCMEntityAnnouncement [
+	| theClass entitiesGetter |
+	
+	theClass := self class environment at: aCMEntityAnnouncement oldName.
+	(self codeGenerator
+		renameClass: aCMEntityAnnouncement oldName asValidCormasClassName
+		to: aCMEntityAnnouncement entityName asValidCormasClassName)
+		ifFalse: [ ^ self ].
+	entitiesGetter := (aCMEntityAnnouncement type asLowercase , 'Classes') asSymbol.
+	(self perform: entitiesGetter)
+		remove: theClass
+		ifAbsent: [ ^ self error ].
+	(self perform: entitiesGetter) add: theClass
+]
+
 { #category : #accessing }
 CMProjectModel >> resourceLocator [
 	" Answer the application's resource locator "
 	
 	^ self application resourceLocator
+]
+
+{ #category : #accessing }
+CMProjectModel >> socialClasses [
+	" Answer a <Collection> with the receiver's model social classes "
+	
+	^ self cormasModelClass socialClasses
+]
+
+{ #category : #accessing }
+CMProjectModel >> spatialClasses [
+	" Answer a <Collection> with the receiver's model spatial classes "
+	
+	^ self cormasModelClass spatialClasses
+]
+
+{ #category : #callbacks }
+CMProjectModel >> specializeEntity: aCMEntityAnnouncement [ 
+	" Specialize the entity class in aCMEntityAnnouncement "
+
+	self codeGenerator 
+		targetClassCategory: self cormasModelClass category;
+		addNewClassType: aCMEntityAnnouncement type
+		inheritingFrom: aCMEntityAnnouncement superclass
+		name: aCMEntityAnnouncement entityName
+		initProtocol: false 
+		stepProtocol: false.
+
 ]
 
 { #category : #'accessing-simulations' }
