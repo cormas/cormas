@@ -323,7 +323,9 @@ CMProjectManager >> requestModelNameLocation [
 	widget
 		title: self translator tWhichOpeningLocation;
 		items: self cormasOpenLocations.
-	widget openDialogWithSpec modalRelativeTo: self currentWorld.
+	widget openDialogWithSpec 
+		cancelAction: [ widget selectItem: nil ];	
+		modalRelativeTo: self currentWorld.
 	^ widget selectedItem		
 		
 ]
@@ -375,6 +377,8 @@ CMProjectManager >> requestModelOpenFromLocalImage [
 	" Open a Cormas model. Answer project creation status, <true> if project was opened successfully "
 
 	| mName |
+	
+	openStatus := false.
 	(mName := self requestModelOpenDialogFromLocalImage) ifNotNil: [ :modelName | openStatus := true ].
 	openStatus
 		ifTrue: [ 
