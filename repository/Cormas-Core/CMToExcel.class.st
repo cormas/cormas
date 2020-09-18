@@ -1,3 +1,10 @@
+"
+Connect Cormas to Excel spreadsheets
+
+This class does not work anymore on Pharo and should be redesigned correctly.
+With the Tabular project, we should be able to import/export .xlsx
+https://github.com/VincentBlondeau/Tabular
+"
 Class {
 	#name : #CMToExcel,
 	#superclass : #Object,
