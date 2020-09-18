@@ -67,6 +67,13 @@ CMAbstractModelTest >> testCentralCell [
 		identicalTo: (m selectCellsOfColumn: 2) second
 ]
 
+{ #category : #'tests-accessing-entities' }
+CMAbstractModelTest >> testClassNameFromEntityName [
+	self
+		assert: (CMTestCell modelClass classNameFromEntityName: CMTestCell entityName)
+		equals: CMTestCell name
+]
+
 { #category : #tests }
 CMAbstractModelTest >> testCreateGridXYNeighborHoodClosed [
 
