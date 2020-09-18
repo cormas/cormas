@@ -356,6 +356,16 @@ CMAbstractModel class >> classFromSymbol: aSymbol [
 	^ aSymbol class
 ]
 
+{ #category : #accessing }
+CMAbstractModel class >> classNameFromEntityName: aString [
+	| validName prefixName |
+	validName := aString capitalized withoutBlanks withoutLeadingDigits withoutQuoting.
+	prefixName := 'CM' , self modelPrefix.
+	(validName beginsWith: prefixName)
+		ifFalse: [ validName := prefixName , validName ].
+	^ validName asSymbol
+]
+
 { #category : #probes }
 CMAbstractModel class >> colorOfProbe: aProbeSymbol [
 	"answer the color of a probe (to display the curve in ChartsInterface)"
