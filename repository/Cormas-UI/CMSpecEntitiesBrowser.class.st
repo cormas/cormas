@@ -475,10 +475,11 @@ CMSpecEntitiesBrowser >> openAddSpatialEntityInterface [
 ]
 
 { #category : #callbacks }
-CMSpecEntitiesBrowser >> openEditAttributes [
+CMSpecEntitiesBrowser >> openEditAttributesFor: aClass [
 	" Open the edit attributes window "
 
-	self projectManager openEditAttributes
+	self projectAnnouncer announce: (CMEditAttributesAnnouncement new targetClass: aClass).
+
 ]
 
 { #category : #accessing }
@@ -615,7 +616,7 @@ CMSpecEntitiesBrowser >> subMenuForEditPassiveEntity [
 				addItem: [ : item | 				
 					item
 						name: self translator tAttributes;
-						action: [ self openEditAttributes ] ];
+						action: [ self openEditAttributesFor: self passiveListSelectedClass ] ];
 				addItem: [ : item | 
 					item 
 						name: self translator tMethods;
@@ -640,7 +641,7 @@ CMSpecEntitiesBrowser >> subMenuForEditSocialEntity [
 				addItem: [ : item | 				
 					item
 						name: self translator tAttributes;
-						action: [ self openEditAttributes ] ];
+						action: [ self openEditAttributesFor: self socialListSelectedClass ] ];
 				addItem: [ : item | 
 					item 
 						name: self translator tMethods;
@@ -665,7 +666,7 @@ CMSpecEntitiesBrowser >> subMenuForEditSpatialEntity [
 				addItem: [ : item | 				
 					item
 						name: self translator tAttributes;
-						action: [ self openEditAttributes ] ];
+						action: [ self openEditAttributesFor: self spatialListSelectedClass ] ];
 				addItem: [ : item | 
 					item 
 						name: self translator tMethods;

@@ -916,7 +916,7 @@ DefaultAttributesSetter >> getAllAttributesList [
 		do:
 			[:coll | 
 			"(coll at: 3) isSymbol ifTrue:[coll at: 3 put: (coll at: 3) printString]."
-			cav := ClassAttributeValue
+			cav := CMClassAttributeValue
 				newClass: coll first
 				attribute: (coll at: 2)
 				value: (coll at: 3).
@@ -1036,7 +1036,7 @@ DefaultAttributesSetter >> parametersForReInitialization [
 						do: [ :attrib | 
 							parameters
 								add:
-									(ClassAttributeValue
+									(CMClassAttributeValue
 										newClass: aClass
 										attribute: attrib asSymbol
 										value: nil) ] ].
@@ -1046,7 +1046,7 @@ DefaultAttributesSetter >> parametersForReInitialization [
 				do: [ :attrib | 
 					parameters
 						add:
-							(ClassAttributeValue
+							(CMClassAttributeValue
 								newClass: aClass class
 								attribute: attrib asSymbol
 								value: nil) ] ].
@@ -1068,7 +1068,7 @@ DefaultAttributesSetter >> parametersWithAccessors [
 				do: [ :attrib | 
 					parameters
 						add:
-							(ClassAttributeValue
+							(CMClassAttributeValue
 								newClass: aClass
 								attribute: attrib asSymbol
 								value: nil) ].
@@ -1078,7 +1078,7 @@ DefaultAttributesSetter >> parametersWithAccessors [
 				do: [ :attrib | 
 					parameters
 						add:
-							(ClassAttributeValue
+							(CMClassAttributeValue
 								newClass: aClass class
 								attribute: attrib asSymbol
 								value: nil) ] ].

@@ -25,7 +25,7 @@ Class {
 		'classVarAddButton',
 		'classVarRemoveButton'
 	],
-	#category : 'Cormas-UI-Core'
+	#category : #'Cormas-UI-Attributes'
 }
 
 { #category : #specs }
@@ -49,6 +49,21 @@ CMSpecAttributesToolbar class >> defaultSpec [
 
 { #category : #callbacks }
 CMSpecAttributesToolbar >> addAttributeCallback [
+	" Callback for adding attribute in the target class "
+	
+	| userAnswer |
+	userAnswer := self 
+		requestText: self translator tEnterAttName
+		title: self translator tAppTitle.
+	(self validateAttributeName: userAnswer)
+	 	ifTrue: [ CMSpecInitialValueChooser openFor: self projectManager ]
+		ifFalse: [ 
+			userAnswer 
+				ifNotNil: [ self informMessage: userAnswer , self translator tInvalidName ] ]
+]
+
+{ #category : #callbacks }
+CMSpecAttributesToolbar >> addClassAttributeCallback [
 	" Callback for adding attribute in the target class "
 	
 	| userAnswer |
@@ -202,10 +217,10 @@ CMSpecAttributesToolbar >> initializePresenter [
 	" Private - See superimplementor's comment "
 
 	self attributeAddButton action: [ self addAttributeCallback ].
-	self attributeRemoveButton action: [ self removeAtributeCallback ].
+	self attributeRemoveButton action: [ self removeAttributeCallback ].
 
-	self classVarAddButton action: [ self shouldBeImplemented ].
-	self classVarRemoveButton action: [ self shouldBeImplemented ].
+	self classVarAddButton action: [ self addClassAttributeCallback ].
+	self classVarRemoveButton action: [ self removeClassAttributeCallback ].
 ]
 
 { #category : #initialization }
@@ -233,23 +248,19 @@ CMSpecAttributesToolbar >> openInitialValueChooser [
 ]
 
 { #category : #callbacks }
-CMSpecAttributesToolbar >> removeAtributeCallback [
+CMSpecAttributesToolbar >> removeAttributeCallback [
+	" Private - User clicked in the remove attribute button, confirm and remove "
 
-	self owner superclassesAttributesTable hasSelectedItem
-		ifTrue: [ self shouldBeImplemented  ]
+	(self owner superclassesAttributesTable hasSelection and: [ self confirm: self translator tConfirmDeleteAttribute  ])
+		ifTrue: [ self halt ]
 ]
 
 { #category : #callbacks }
-CMSpecAttributesToolbar >> removeAttributeCallback [
-	" Callback for adding attribute in the target class "
-	
-	| userAnswer |
-	userAnswer := self 
-		requestText: self translator tEnterAttName
-		title: self translator tAppTitle.
-	(self validateAttributeName: userAnswer)
-	 	ifTrue: [ self openInitialValueChooser ]
-		ifFalse: [ self informMessage: userAnswer , self translator tInvalidName ]
+CMSpecAttributesToolbar >> removeClassAttributeCallback [
+	" Private - User clicked in the remove attribute button, confirm and remove "
+
+	(self owner superclassesAttributesTable hasSelection and: [ self confirm: self translator tConfirmDeleteAttribute  ])
+		ifTrue: [ self halt ]
 ]
 
 { #category : #initialization }

@@ -149,7 +149,7 @@ CMEnvFileReader >> loadEnvironmentFromFile: aFilename [
 	
 	| matrix |
 	matrix := self resourceLocator 
-		readMatrix: aFilename 
+		readMatrix: ((self resourceLocator mapsPath: self cormasModelClass modelPrefix) / aFilename)
 		sep: Character tab.
 	self buildEnvFileFrom: matrix.
 

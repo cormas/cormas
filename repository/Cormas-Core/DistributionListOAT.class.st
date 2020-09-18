@@ -7,7 +7,7 @@ Each studied parameter may be analysed by changing its initial value for each si
 Class {
 	#name : #DistributionListOAT,
 	#superclass : #Object,
-	#category : 'Cormas-Core-Others'
+	#category : #'Cormas-Core-Others'
 }
 
 { #category : #help }
@@ -380,7 +380,7 @@ DistributionListOAT >> getAllAttributesList [
 	defaultParameters
 		do:
 			[:coll | 
-			cav := ClassAttributeValueAnalysisDistribution
+			cav := CMClassAttributeValueAnalysisDistribution
 				newClass: coll first
 				attribute: (coll at: 2)
 				value: (coll at: 3).

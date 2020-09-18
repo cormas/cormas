@@ -6,7 +6,7 @@ J'ai supprim√© du Menu de Cormas pour le moment
 Class {
 	#name : #MonteCarloCrossedAnalysis,
 	#superclass : #CrossedSensitivity,
-	#category : 'Cormas-Core-Others'
+	#category : #'Cormas-Core-Others'
 }
 
 { #category : #'interface specs' }
@@ -432,7 +432,7 @@ MonteCarloCrossedAnalysis >> getAllAttributesList [
 	defaultParameters
 		do:
 			[:coll | 
-			cav := ClassAttributeValueAnalysisRandomness
+			cav := CMClassAttributeValueAnalysisRandomness
 				newClass: coll first
 				attribute: (coll at: 2)
 				value: (coll at: 3).

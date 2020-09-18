@@ -32,7 +32,6 @@ Class {
 { #category : #'instance creation' }
 CMProjectModel class >> for: aCormasModel [
 	" Answer a new instance of the receiver configured for aCormasModel "
-	
 	^ self new initializeForModel: aCormasModel 
 ]
 
@@ -286,6 +285,19 @@ CMProjectModel >> projectName [
 	" Answer a <String> with the receiver's model name "
 
 	^ self cormasModelName
+]
+
+{ #category : #'initialize - release' }
+CMProjectModel >> release [ 
+
+	super release.
+	self 
+		info: nil;
+		cormasModel: nil;
+		cormasModelClass: nil;
+		projectManager: nil;
+		codeGenerator: nil.
+
 ]
 
 { #category : #callbacks }

@@ -772,7 +772,12 @@ Ex: CormasModel modelMethodsForManipulation"
 { #category : #accessing }
 CMAbstractModel class >> modelPrefix [
 	"Remove CM prefix at the beginning and Model at the end"
-	^ (self name allButFirst: 'CM' size) allButLast: 'Model' size
+	
+	| mName |
+	mName := self name allButFirst: 'CM' size.
+	^ (name endsWith: 'Model')
+		ifTrue: [ mName allButLast: 'Model' size ]
+		ifFalse: [ mName ]
 ]
 
 { #category : #'instance creation' }
@@ -1056,6 +1061,7 @@ CMAbstractModel class >> spaceModel_default [
 CMAbstractModel class >> spatialClasses [
 	" Answer a <Collection> of spatial classes of the model. Aldready configured in #initializeWithoutVS (??)"
 	"self allClassesInPackage select: [ :aClass | aClass inheritsFrom: CMSpatialEntityCell ]"
+	
 	^ spatialClasses
 		ifNil: [ 
 			self initialize.
@@ -3512,6 +3518,7 @@ CMAbstractModel >> prepareCommunicationFor: anAgent [
 { #category : #accessing }
 CMAbstractModel >> projectManager [
 	^ projectManager
+		ifNil: [ projectManager := CMProjectManager new cormasModel: self ]
 ]
 
 { #category : #accessing }

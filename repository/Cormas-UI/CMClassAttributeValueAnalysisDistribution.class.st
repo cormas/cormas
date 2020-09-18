@@ -1,14 +1,14 @@
 Class {
-	#name : #ClassAttributeValueAnalysisDistribution,
-	#superclass : #ClassAttributeValueAnalysis,
+	#name : #CMClassAttributeValueAnalysisDistribution,
+	#superclass : #CMClassAttributeValueAnalysis,
 	#instVars : [
 		'distributionList'
 	],
-	#category : 'Cormas-Core-Others'
+	#category : #'Cormas-UI-Attributes'
 }
 
 { #category : #accessing }
-ClassAttributeValueAnalysisDistribution >> convertStringAsList: aString [
+CMClassAttributeValueAnalysisDistribution >> convertStringAsList: aString [
 	"ex: 'List (1 2 5)'  --> "
 	
 	| arrayOfSubstrings list nb newString |
@@ -29,27 +29,27 @@ ClassAttributeValueAnalysisDistribution >> convertStringAsList: aString [
 ]
 
 { #category : #accessing }
-ClassAttributeValueAnalysisDistribution >> distributionList [
+CMClassAttributeValueAnalysisDistribution >> distributionList [
 	
 	^distributionList
 ]
 
 { #category : #accessing }
-ClassAttributeValueAnalysisDistribution >> distributionList: aList [
+CMClassAttributeValueAnalysisDistribution >> distributionList: aList [
 	
 	distributionList := aList.
 	self hasBeenModified: aList isNil not
 ]
 
 { #category : #accessing }
-ClassAttributeValueAnalysisDistribution >> distributionListAsString [
+CMClassAttributeValueAnalysisDistribution >> distributionListAsString [
 	
 	self distributionList ifNil: [^''].
 	^self distributionList asString
 ]
 
 { #category : #accessing }
-ClassAttributeValueAnalysisDistribution >> distributionListAsString: aString [
+CMClassAttributeValueAnalysisDistribution >> distributionListAsString: aString [
 	
 	aString isNil
 		ifTrue:
@@ -61,19 +61,19 @@ ClassAttributeValueAnalysisDistribution >> distributionListAsString: aString [
 ]
 
 { #category : #accessing }
-ClassAttributeValueAnalysisDistribution >> finalValue [
+CMClassAttributeValueAnalysisDistribution >> finalValue [
 	
 	^self distributionList last
 ]
 
 { #category : #accessing }
-ClassAttributeValueAnalysisDistribution >> initValue [
+CMClassAttributeValueAnalysisDistribution >> initValue [
 	
 	^self distributionList first
 ]
 
 { #category : #testing }
-ClassAttributeValueAnalysisDistribution >> isAnalysisDone [
+CMClassAttributeValueAnalysisDistribution >> isAnalysisDone [
 	"answer if currentValue is upper than the final value"
 	
 	self currentValue isNil ifTrue: [^false].
@@ -81,7 +81,7 @@ ClassAttributeValueAnalysisDistribution >> isAnalysisDone [
 ]
 
 { #category : #controlling }
-ClassAttributeValueAnalysisDistribution >> nbOfSims [
+CMClassAttributeValueAnalysisDistribution >> nbOfSims [
 	"return the number of simulations for the analysis of this attribute, WITHOUT multiplying by the repeat number for each parameters set.
 "
 	
@@ -89,14 +89,14 @@ ClassAttributeValueAnalysisDistribution >> nbOfSims [
 ]
 
 { #category : #controlling }
-ClassAttributeValueAnalysisDistribution >> reset [
+CMClassAttributeValueAnalysisDistribution >> reset [
 	
 	super reset.
 	distributionList := nil
 ]
 
 { #category : #controlling }
-ClassAttributeValueAnalysisDistribution >> setNextValue [
+CMClassAttributeValueAnalysisDistribution >> setNextValue [
 	"This method calculates the new value of a parameter."
 	
 	self currentValue ifNil: [^self currentValue: self distributionList first].
