@@ -1353,6 +1353,13 @@ CMAbstractModel >> announcer [
     ^ announcer ifNil: [ announcer := Announcer new ]
 ]
 
+{ #category : #accessing }
+CMAbstractModel >> application [
+	" Answer the receiver's application object "
+	
+	^ CMApplicationProject uniqueInstance
+]
+
 { #category : #'- simulation settings' }
 CMAbstractModel >> applyModelDefaultCormasSettings [
 	
@@ -3518,7 +3525,7 @@ CMAbstractModel >> prepareCommunicationFor: anAgent [
 { #category : #accessing }
 CMAbstractModel >> projectManager [
 	^ projectManager
-		ifNil: [ projectManager := CMProjectManager new cormasModel: self ]
+
 ]
 
 { #category : #accessing }
@@ -3714,10 +3721,10 @@ CMAbstractModel >> resetCells [
 ]
 
 { #category : #accessing }
-CMAbstractModel >> resourceLocator [
+CMAbstractModel >> resourceLocator [ 
 	" Answer the receiver's <CMResourceLocator>, an object to locate resources "
 
-	^ self projectManager resourceLocator
+	^ self application resourceLocator
 ]
 
 { #category : #scheduling }
