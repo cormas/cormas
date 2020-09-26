@@ -187,9 +187,9 @@ CMSpecConfirmBeforeLaunch >> initializePresenter [
 	self probesList items: self projectManager modelProbesMethods.
 
 	self initMethodList isEmpty 
-		ifTrue: [ self alertMessage: self tMissingInitMethods ].
+		ifTrue: [ self alertMessage: self translator tMissingInitMethods ].
 	self controlMethodList isEmpty 
-		ifTrue: [ self alertMessage: self tMissingControlMethods ].
+		ifTrue: [ self alertMessage: self translator tMissingControlMethods ].
 		
 	self initializeActiveInit.
 	self initializeActiveControl.

@@ -1,7 +1,7 @@
 Class {
 	#name : #VectorialElementaryPOV,
 	#superclass : #VectorialPOV,
-	#category : 'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Interface'
 }
 
 { #category : #viewCorrespondance }
@@ -27,7 +27,10 @@ VectorialElementaryPOV class >> circleRadius: aNumber [
 	(VectorialElementaryPOV circleRadius: 40) asFigure 
 "
 
-	^ self new outline: (Circle center: (aNumber / 2) @ aNumber / 2 radius: aNumber) asPolyline
+	^ self new outline: (
+		GCircle 
+			center: (aNumber / 2) @ aNumber / 2 
+			radius: aNumber) asPolyline
 ]
 
 { #category : #'instance creation' }
@@ -66,7 +69,7 @@ VectorialElementaryPOV class >> newColor: color lineColor: linecolor lineWidth: 
 	inst lineWidth: linewidth.
 	inst sizeRatio: sizeR.
 	inst position: position.
-	inst outline: (Polyline vertices: vertices).
+	inst outline: (GPolygon newVertices: vertices).
 	^inst
 ]
 
@@ -125,7 +128,7 @@ test:  (VectorialElementaryFigure polylineFromRadius: 30  angleBetweenPoints: 90
 	thePoints add: ((thePoints at: 3) copy scaledBy: -1 @ 1).
 	thePoints add: ((thePoints at: 2) copy scaledBy: -1 @ 1).
 	thePoints add: (thePoints at: 1) copy.
-	^Polyline vertices: thePoints
+	^  GPolygon newVertices: thePoints
 ]
 
 { #category : #'instance creation' }

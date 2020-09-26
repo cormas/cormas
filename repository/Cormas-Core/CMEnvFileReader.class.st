@@ -144,12 +144,16 @@ CMEnvFileReader >> lastAttributeAt: i [
 ]
 
 { #category : #'accessing - public' }
-CMEnvFileReader >> loadEnvironmentFromFile: aFilename [
+CMEnvFileReader >> loadEnvironmentFromFile: aFileRefereceOrFilename [
 	" Load a grid stored as filename "
 	
-	| matrix |
+	| matrix fileRef |
+	
+	fileRef := aFileRefereceOrFilename isString 
+		ifTrue: [  ((self resourceLocator mapsPath: self cormasModelClass modelPrefix) / aFileRefereceOrFilename) ]
+		ifFalse: [ aFileRefereceOrFilename  ].
 	matrix := self resourceLocator 
-		readMatrix: aFilename 
+		readMatrix: fileRef
 		sep: Character tab.
 	self buildEnvFileFrom: matrix.
 
@@ -231,7 +235,7 @@ CMEnvFileReader >> readAttributes: aCollection [
 	aCollection 
 		detect: [: c | c first = 'attributs'] 
 		ifFound: [ : delimLine | self attributes add: (self parseAttributesFrom: delimLine) ]
-		ifNone: [ self inform: 'The file has no data about attributes' ]
+		ifNone: [ self crLog: 'The file has no data about attributes' ]
 ]
 
 { #category : #'accessing - private' }

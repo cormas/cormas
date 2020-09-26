@@ -20,12 +20,13 @@ Class {
 	#instVars : [
 		'superclassesAttributesTable',
 		'sAttributesLabel',
-		'targetAttributesTable',
 		'tAttributesLabel',
 		'toolbarAttributeActions',
-		'toolbar'
+		'toolbar',
+		'targetClass',
+		'classAttributesTable'
 	],
-	#category : 'Cormas-UI-Core'
+	#category : #'Cormas-UI-Attributes'
 }
 
 { #category : #initialization }
@@ -37,10 +38,22 @@ CMSpecEditAttributes class >> defaultSpec [
 					add: #sAttributesLabel height: self toolbarHeight;
 					add: #superclassesAttributesTable;
 					add: #tAttributesLabel height: self toolbarHeight;
-					add: #targetAttributesTable;
+					add: #classAttributesTable;
 					add: #toolbarAttributeActions height: self toolbarHeight;
 					add: #toolbar height: self toolbarHeight ]
 
+]
+
+{ #category : #'instance creation' }
+CMSpecEditAttributes class >> for: aClass owner: owner [
+	" Answer a new instance of the receiver configuring project settings "
+	
+	^ self basicNew
+		owner: owner;
+		projectManager: owner projectManager;
+		targetClass: aClass;
+		initialize;
+		yourself.
 ]
 
 { #category : #private }
@@ -53,6 +66,51 @@ CMSpecEditAttributes >> attributesTableMenu [
 	^ aMenu buildWithSpecAsPopup
 ]
 
+{ #category : #accessing }
+CMSpecEditAttributes >> classAttributesTable [
+	" Answer the targetAttributesTable of this CMSpecEditAttributes "
+
+	^ classAttributesTable
+]
+
+{ #category : #accessing }
+CMSpecEditAttributes >> classAttributesTable: anObject [
+	" Sets the targetAttributesTable of this CMSpecEditAttributes "
+
+	classAttributesTable := anObject
+]
+
+{ #category : #private }
+CMSpecEditAttributes >> configureTable: aTable for: attAssoc [
+
+	aTable
+		addColumn: ((FTColumn id: attAssoc key) width: attAssoc value);
+		beResizable;
+		intercellSpacing: 2 @ 1
+
+]
+
+{ #category : #callbacks }
+CMSpecEditAttributes >> editSelectedCell: index inTable: anAttributesTable [
+
+	| morph ed |
+
+	morph :=anAttributesTable visibleRowMorphAtIndex: index.
+	ed := RubFloatingEditorBuilder new 
+		customizeEditorWith: [ :editor | 
+			editor scrollbarsShowNever.
+			editor bounds: (morph bounds insetBy:
+									(Margin
+										left: -2
+										top: 0
+										right: 0
+										bottom: 0)) ];
+		withEditedContentsDo: [ : editedContents | 
+			(anAttributesTable dataSource elementAt: index) currentValue: editedContents.
+			anAttributesTable listWidget refresh].
+	^ ed
+]
+
 { #category : #initialization }
 CMSpecEditAttributes >> initialExtent [
 	^ 600 @ 400
@@ -61,24 +119,69 @@ CMSpecEditAttributes >> initialExtent [
 { #category : #initialization }
 CMSpecEditAttributes >> initializeAttributeTables [
 
-	{ 'Class' . 'Attribute' . 'Value' } do: [ : attName | 
-		self superclassesAttributesTable addColumn: (FTColumn id: attName).
-		self targetAttributesTable addColumn: (FTColumn id: attName) ].
-	"numberOfColumns: 3 withWidths: #(250 250 50);"
+	self tableColumns do: [ : attAssoc | 
+		self 
+			configureTable: self superclassesAttributesTable for: attAssoc;
+			configureTable: self classAttributesTable for: attAssoc ].
 
-	self superclassesAttributesTable
-		display: [ : attItem | self wrapItem: attItem ];
-		menu: [ self menuMorphForSelectedItems ].
-	
-	self targetAttributesTable
-		display: [ : attItem | self morphForItemAt: attItem ];
-		menu: [ self menuMorphForSelectedItems ].
+	self initializeSuperclassAttributeTable.
+	self initializeClassAttributeTable.
+
+
+]
+
+{ #category : #initialization }
+CMSpecEditAttributes >> initializeClassAttributeTable [
+
+	self classAttributesTable 
+		dataSource: (CMClassAttributeValueDataSource forClass: self targetClass);
+		beCellSelection;
+		onAnnouncement: FTStrongSelectionChanged do: [ : ann | 
+			| ed index |
+			index := ann selectedIndex first.
+			ed := self editSelectedCell: index inTable: self classAttributesTable.
+			ed openEditorWithContents: (self classAttributesTable dataSource elementAt: index) currentValueAsString ].
+"		display: [ : attItem | self morphForItemAt: attItem ];
+		menu: [ self menuMorphForSelectedItems ]."
+
+]
+
+{ #category : #initialization }
+CMSpecEditAttributes >> initializeFocus [
+
+	self focusOrder
+		add: superclassesAttributesTable;
+		add: classAttributesTable
 
 ]
 
 { #category : #initialization }
 CMSpecEditAttributes >> initializePresenter [
-	
+
+	self sAttributesLabel label: self translator tAttributesSuperLabel.
+	self tAttributesLabel label: self translator tAttributesTargetLabel.
+]
+
+{ #category : #initialization }
+CMSpecEditAttributes >> initializeSuperclassAttributeTable [
+
+	self superclassesAttributesTable 
+		dataSource: (CMClassAttributeValueDataSource forSuperclass: self targetClass);
+		beCellSelection;
+		onAnnouncement: FTStrongSelectionChanged do: [ : ann | 
+			| ed index |
+			index := ann selectedIndex first.
+			ed := self editSelectedCell: index inTable: self superclassesAttributesTable.
+			ed openEditorWithContents: (self superclassesAttributesTable dataSource elementAt: index) currentValueAsString ].
+
+]
+
+{ #category : #initialization }
+CMSpecEditAttributes >> initializeToolbar [
+
+	self toolbar 
+		firstButtonLabel: self translator tReset;
+		secondButtonLabel: self translator tApply.
 ]
 
 { #category : #initialization }
@@ -87,22 +190,17 @@ CMSpecEditAttributes >> initializeWidgets [
 
 	self
 		instantiateModels: #(
-			superclassesAttributesTable 	SpcFastTable 
+			superclassesAttributesTable 	SpcTablePresenter 
 			sAttributesLabel 					LabelModel 
-			targetAttributesTable 			SpcFastTable 
+			#classAttributesTable 			SpcTablePresenter 
 			tAttributesLabel 					LabelModel
 			toolbarAttributeActions 			CMSpecAttributesToolbar
 			toolbar 								SpcTwoButtonToolbar).
+	self 
+		initializeAttributeTables; 
+		initializeToolbar;
+		initializeFocus.
 
-	self initializeAttributeTables.
-	self sAttributesLabel label: self translator tAttributesSuperLabel.
-	self tAttributesLabel label: self translator tAttributesTargetLabel.
-	self toolbar 
-		firstButtonLabel: self translator tReset;
-		secondButtonLabel: self translator tApply.
-	self focusOrder
-		add: superclassesAttributesTable;
-		add: targetAttributesTable
 ]
 
 { #category : #accessing }
@@ -147,18 +245,23 @@ CMSpecEditAttributes >> tAttributesLabel: anObject [
 	tAttributesLabel := anObject
 ]
 
-{ #category : #accessing }
-CMSpecEditAttributes >> targetAttributesTable [
-	" Answer the targetAttributesTable of this CMSpecEditAttributes "
+{ #category : #private }
+CMSpecEditAttributes >> tableColumns [
 
-	^ targetAttributesTable
+	^ { '#' -> 40 . 
+	'Class' -> 200 . 
+	'Attribute' -> 200 . 
+	'Value' -> 200 } 
 ]
 
 { #category : #accessing }
-CMSpecEditAttributes >> targetAttributesTable: anObject [
-	" Sets the targetAttributesTable of this CMSpecEditAttributes "
+CMSpecEditAttributes >> targetClass [
+	^ targetClass
+]
 
-	targetAttributesTable := anObject
+{ #category : #accessing }
+CMSpecEditAttributes >> targetClass: anObject [
+	targetClass := anObject
 ]
 
 { #category : #initialization }
@@ -184,10 +287,4 @@ CMSpecEditAttributes >> toolbarAttributeActions [
 { #category : #accessing }
 CMSpecEditAttributes >> toolbarAttributeActions: anObject [
 	toolbarAttributeActions := anObject
-]
-
-{ #category : #initialization }
-CMSpecEditAttributes >> wrapItem: attItem [
-
-	^ { attItem . attItem . attItem }
 ]

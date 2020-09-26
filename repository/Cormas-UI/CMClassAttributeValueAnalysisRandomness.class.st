@@ -11,19 +11,19 @@ Instance Variables:
 
 "
 Class {
-	#name : #ClassAttributeValueAnalysisRandomness,
-	#superclass : #ClassAttributeValueAnalysis,
+	#name : #CMClassAttributeValueAnalysisRandomness,
+	#superclass : #CMClassAttributeValueAnalysis,
 	#instVars : [
 		'randomType',
 		'repetitions',
 		'repNb',
 		'randomTypeChoices'
 	],
-	#category : #'Cormas-Core-Others'
+	#category : #'Cormas-UI-Attributes'
 }
 
 { #category : #controlling }
-ClassAttributeValueAnalysisRandomness >> getRandomValue [
+CMClassAttributeValueAnalysisRandomness >> getRandomValue [
 	"This method calculates the new value of a parameter."
 	
 	| factor |
@@ -43,19 +43,19 @@ ClassAttributeValueAnalysisRandomness >> getRandomValue [
 ]
 
 { #category : #'initialize-release' }
-ClassAttributeValueAnalysisRandomness >> init [
+CMClassAttributeValueAnalysisRandomness >> init [
 	
-	self randomTypeChoices value: (List withAll: #('' 'simpleRandom'))
+	self randomTypeChoices value: (Array withAll: #('' 'simpleRandom'))
 ]
 
 { #category : #controlling }
-ClassAttributeValueAnalysisRandomness >> initializeCurrentValue [
+CMClassAttributeValueAnalysisRandomness >> initializeCurrentValue [
 	
 	self currentValue: self getRandomValue
 ]
 
 { #category : #testing }
-ClassAttributeValueAnalysisRandomness >> isAnalysisDone [
+CMClassAttributeValueAnalysisRandomness >> isAnalysisDone [
 	"answer if currentValue is upper than the final value"
 	
 	self currentValue isNil ifTrue: [^false].
@@ -63,65 +63,65 @@ ClassAttributeValueAnalysisRandomness >> isAnalysisDone [
 ]
 
 { #category : #controlling }
-ClassAttributeValueAnalysisRandomness >> nbOfSims [
+CMClassAttributeValueAnalysisRandomness >> nbOfSims [
 	"return the number of simulations for the analysis of this attribute, WITHOUT multiplying by the repeat number for each parameters set."
 	
 	^self repetitions
 ]
 
 { #category : #accessing }
-ClassAttributeValueAnalysisRandomness >> randomType [
+CMClassAttributeValueAnalysisRandomness >> randomType [
 	
 	^randomType
 ]
 
 { #category : #accessing }
-ClassAttributeValueAnalysisRandomness >> randomType: anObject [
+CMClassAttributeValueAnalysisRandomness >> randomType: anObject [
 	
 	randomType := anObject
 ]
 
 { #category : #accessing }
-ClassAttributeValueAnalysisRandomness >> randomTypeChoices [
+CMClassAttributeValueAnalysisRandomness >> randomTypeChoices [
 	
 	^randomTypeChoices isNil
-		ifTrue: [randomTypeChoices := List new asValue]
+		ifTrue: [randomTypeChoices := Array new ]
 		ifFalse: [randomTypeChoices]
 ]
 
 { #category : #accessing }
-ClassAttributeValueAnalysisRandomness >> repNb [
+CMClassAttributeValueAnalysisRandomness >> repNb [
 	
 	^repNb ifNil: [repNb := 0]
 ]
 
 { #category : #accessing }
-ClassAttributeValueAnalysisRandomness >> repNb: anObject [
+CMClassAttributeValueAnalysisRandomness >> repNb: anObject [
 	
 	repNb := anObject
 ]
 
 { #category : #accessing }
-ClassAttributeValueAnalysisRandomness >> repetitions [
+CMClassAttributeValueAnalysisRandomness >> repetitions [
 	
 	^repetitions
 ]
 
 { #category : #accessing }
-ClassAttributeValueAnalysisRandomness >> repetitions: anObject [
+CMClassAttributeValueAnalysisRandomness >> repetitions: anObject [
 	
 	repetitions := anObject
 ]
 
 { #category : #controlling }
-ClassAttributeValueAnalysisRandomness >> reset [
+CMClassAttributeValueAnalysisRandomness >> reset [
 	
 	super reset.
 	repetitions := nil
 ]
 
 { #category : #controlling }
-ClassAttributeValueAnalysisRandomness >> setNextValue [
+CMClassAttributeValueAnalysisRandomness >> setNextValue [
 	"This method calculates the new value of a parameter."
 	
 	self isAnalysisDone ifTrue: [^nil].

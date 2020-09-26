@@ -624,16 +624,13 @@ CMSpaceModel >> createCells [
 	| allEse |
 	allEse := Array new: cardinal.
 	self cormasModelClass cellClass CurrentId: 0.
-	1
-		to: cardinal
-		do:
-			[:i | 
-			allEse
-				at: i
-				put: (self newEntity: self cormasModelClass cellClass)].	"and collect them"
+	1 to: cardinal do: [ : i | 
+		allEse
+			at: i
+			put: (self newEntity: self cormasModelClass cellClass) ].	"and collect them"
 	self elementaryEntities: allEse.
-	"self gridCellShape = #squared ifTrue: [self createRectangularCellsFigure].
-	self gridCellShape = #hexagonal ifTrue: [self createHexagonalCellsFigure]."
+	self gridCellShape = #squared ifTrue: [ self createRectangularCellsFigure ].
+	self gridCellShape = #hexagonal ifTrue: [ self createHexagonalCellsFigure ].
 	self initNeighbourhood.
 	self boundaries = #torroidal ifFalse: [self initEdge].	"newCells notification also dispatch the request to remoteSpaceModels to rebuild the cell figures"
 	"self sendCellsToClientSpaceModels: (EntityReference onEntities: allEse)."	"dispatch the info that cells have been modified to all opened spaceInterfaces"
@@ -698,20 +695,16 @@ CMSpaceModel >> createRectangularCellsFigure [
 		origin: (cote * -1) @ 0
 		corner: 0 @ cote.
 	i := 1.
-	self line
-		timesRepeat:
-			[self column
-				timesRepeat:
-					[carre := carre translateBy: carre width @ 0.
-					aPov := VectorialElementaryPOV new: carre asPolyline.
-					aPov name: #nil.
-					aPov
-						entityReference:
-							(EntityReference on: (self elementaryEntities at: i)).
-					self elementaryEntitiesDefaultPovs add: aPov.
-					i := i + 1].
-			carre := carre
-				translateBy: (self column negated * carre width) @ carre height]
+	self line timesRepeat: [ 
+		self column timesRepeat: [
+			carre := carre translateBy: carre width @ 0.
+			aPov := VectorialElementaryPOV new: carre asPolyline.
+			aPov name: #nil.
+			aPov entityReference: (EntityReference on: (self elementaryEntities at: i)).
+			self elementaryEntitiesDefaultPovs add: aPov.
+			i := i + 1 ].
+		carre := carre translateBy: (self column negated * carre width) @ carre height ].
+
 ]
 
 { #category : #'private - regular polygons' }
@@ -2538,12 +2531,15 @@ CMSpaceModel >> parseSpatialEntitiesAttributeValues [
 	
 	numLigne := 0.
 	aMatrix := self cmEnvFile matrix.
-	aMatrix removeFirst.	
+	[ aMatrix first first includesSubstring: 'attributs' ] 
+		whileFalse: [ aMatrix removeFirst ].
 	self isFull 
 		ifFalse:[ ^ self 
 			setUncompleteGridFromData: aMatrix 
 			forAttributes: listAttr_type ].
-	listAttr_type := self cmEnvFile attributes.
+	listAttr_type := self cmEnvFile attributes asSet asOrderedCollection.
+	aMatrix removeFirst.
+	aMatrix := aMatrix collect: [ : arr | arr asOrderedCollection ].
 	aMatrix do: [ : aLine |  
 		| aColl |
 		numLigne := numLigne + 1.
@@ -2557,9 +2553,10 @@ CMSpaceModel >> parseSpatialEntitiesAttributeValues [
 			valeur := val asString.
 			attr_type := listAttr_type at: i.
 			aCell := self elementaryEntities at: numLigne.
+			attr_type := attr_type first -> attr_type second.
 			attr_type value = #asEntity
 				ifTrue: [
-					valeur := (valeur tokensBasedOn: $.) last asSymbol.
+					valeur := (valeur findTokens: $.) last asSymbol.
 					aCell perform: attr_type key with: valeur]
 				ifFalse: [
 					aCell perform: attr_type key with: 
@@ -2665,29 +2662,20 @@ CMSpaceModel >> resetSpatialEntities [
 CMSpaceModel >> resetSpatialEntitiesButCells [
 	
 	| theCells |
-	self spatialEntities isEmpty ifTrue: [^nil].
+	self spatialEntities isEmpty ifTrue: [ ^ nil ].
 	theCells := self elementaryEntities.
-	self aggregatesEntities
-		do:
-			[:agg | 
+	self aggregatesEntities do: [ : agg | 
 			agg
 				reset;
 				destroyed: true].
 	self changed: #removeAllCompoundSpatialEntityFigures.
 	self spatialEntities: Dictionary new.
-	self cormasModel class spatialClasses
-		do:
-			[:se | 
+	self cormasModel class spatialClasses do: [ : se | 
 			se name = self cormasModel class cellClass name
-				ifTrue:
-					[self spatialEntities
-						at: se name
-						put: theCells]
-				ifFalse:
-					[self spatialEntities
-						at: se name
-						put: OrderedCollection new."RemotableOrderedCollection new. ** changed to OrderedCollection new. (RemotableOrderedCollection is used for marshalling in remote distributed visualization)" 
-					self cormasModel initializeTheEntity: se]]
+				ifTrue: [ self spatialEntities at: se name 	put: theCells ]
+				ifFalse: [ self spatialEntities at: se name put: OrderedCollection new.
+					"RemotableOrderedCollection new. ** changed to OrderedCollection new. (RemotableOrderedCollection is used for marshalling in remote distributed visualization)" 
+					self cormasModel initializeTheEntity: se ] ]
 ]
 
 { #category : #accessing }

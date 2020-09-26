@@ -161,9 +161,8 @@ internalLines  = collection of Polylines. nbSegments lineWidth "
 										add: seg1;
 										add: seg2]]]].
 	allSegments removeAll: duplicates.	"outline = contour externe. on prend les points successifs en partant du 1er point"
-	outline := Polyline vertices: (self getPointsFromSegments: allSegments).	"internalLines = les contours internes d'un agregat de type anneau. on prend les points successifs en partant du 1er point"
+	outline := GPolygon newVertices: (self getPointsFromSegments: allSegments).	"internalLines = les contours internes d'un agregat de type anneau. on prend les points successifs en partant du 1er point"
 	[allSegments isEmpty]
-		whileFalse:
-			[self internalLines
-				add: (Polyline vertices: (self getPointsFromSegments: allSegments))]
+		whileFalse: [
+			self internalLines add: ( GPolygon newVertices: (self getPointsFromSegments: allSegments))]
 ]

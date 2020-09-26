@@ -1,48 +1,48 @@
 Class {
-	#name : #ClassAttributeValueAnalysis,
-	#superclass : #ClassAttributeValue,
+	#name : #CMClassAttributeValueAnalysis,
+	#superclass : #CMClassAttributeValue,
 	#instVars : [
 		'initValue',
 		'finalValue',
 		'step'
 	],
-	#category : 'Cormas-Core-Others'
+	#category : #'Cormas-UI-Attributes'
 }
 
 { #category : #accessing }
-ClassAttributeValueAnalysis >> finalValue [
+CMClassAttributeValueAnalysis >> finalValue [
 	
 	^finalValue
 ]
 
 { #category : #accessing }
-ClassAttributeValueAnalysis >> finalValue: anObject [
+CMClassAttributeValueAnalysis >> finalValue: anObject [
 	
 	finalValue := anObject.
 	self hasBeenModified: anObject isNil not
 ]
 
 { #category : #accessing }
-ClassAttributeValueAnalysis >> initValue [
+CMClassAttributeValueAnalysis >> initValue [
 	
 	^initValue
 ]
 
 { #category : #accessing }
-ClassAttributeValueAnalysis >> initValue: anObject [
+CMClassAttributeValueAnalysis >> initValue: anObject [
 	
 	initValue := anObject.
 	self hasBeenModified: anObject isNil not
 ]
 
 { #category : #controlling }
-ClassAttributeValueAnalysis >> initializeCurrentValue [
+CMClassAttributeValueAnalysis >> initializeCurrentValue [
 	
 	self currentValue: self initValue
 ]
 
 { #category : #testing }
-ClassAttributeValueAnalysis >> isAnalysisDone [
+CMClassAttributeValueAnalysis >> isAnalysisDone [
 	"answer if currentValue is upper than the final value"
 	
 	self currentValue isNil ifTrue: [^false].
@@ -52,7 +52,7 @@ ClassAttributeValueAnalysis >> isAnalysisDone [
 ]
 
 { #category : #controlling }
-ClassAttributeValueAnalysis >> nbOfSims [
+CMClassAttributeValueAnalysis >> nbOfSims [
 	"return the number of simulations for the analysis of this attribute, WITHOUT multiplying by the repeat number for each parameters set.
 self cormas displaySimNumber value: self simNumero printString , '/', self simNumber printString.
 "
@@ -61,7 +61,7 @@ self cormas displaySimNumber value: self simNumero printString , '/', self simNu
 ]
 
 { #category : #controlling }
-ClassAttributeValueAnalysis >> reset [
+CMClassAttributeValueAnalysis >> reset [
 	
 	initValue := nil.
 	finalValue := nil.
@@ -70,7 +70,7 @@ ClassAttributeValueAnalysis >> reset [
 ]
 
 { #category : #controlling }
-ClassAttributeValueAnalysis >> setNextValue [
+CMClassAttributeValueAnalysis >> setNextValue [
 	"This method calculates the new value of a parameter. 
 	For avoiding problems of flotting numbers (Cf. The gohst in the model), currentValue, step, nextValue & finalValue are stored as Rational numbers. We thus avoid accumulating a delta to minimize round-off error."
 	
@@ -89,13 +89,13 @@ ClassAttributeValueAnalysis >> setNextValue [
 ]
 
 { #category : #accessing }
-ClassAttributeValueAnalysis >> step [
+CMClassAttributeValueAnalysis >> step [
 	
 	^step
 ]
 
 { #category : #accessing }
-ClassAttributeValueAnalysis >> step: anObject [
+CMClassAttributeValueAnalysis >> step: anObject [
 	
 	step := anObject.
 	self hasBeenModified: anObject isNil not

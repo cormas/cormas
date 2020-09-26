@@ -5,7 +5,7 @@ Each studied parameter may be analysed by changing its initial value for each si
 Class {
 	#name : #DistributionListCrossedAnalysis,
 	#superclass : #CrossedSensitivity,
-	#category : 'Cormas-Core-Others'
+	#category : #'Cormas-Core-Others'
 }
 
 { #category : #help }
@@ -388,7 +388,7 @@ DistributionListCrossedAnalysis >> getAllAttributesList [
 	defaultParameters
 		do:
 			[:coll | 
-			cav := ClassAttributeValueAnalysisDistribution
+			cav := CMClassAttributeValueAnalysisDistribution
 				newClass: coll first
 				attribute: (coll at: 2)
 				value: (coll at: 3).

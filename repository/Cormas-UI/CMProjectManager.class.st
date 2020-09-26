@@ -135,7 +135,12 @@ CMProjectManager >> createProject: projectName in: aCMApplicationProject [
 
 	| newProject |
 	
-	newProject := aCMApplicationProject createProjectNamed: projectName.
+	newProject := 
+		(aCMApplicationProject createProjectNamed: projectName)
+			projectManager: self;
+			initializeForModel: (self createClassModelNamed: projectName asValidCormasClassName) new
+				named: projectName asValidCormasClassName;
+				yourself.
 	aCMApplicationProject currentProject: newProject.
 	self updateNewProject: projectName.
 	self fsm handleEvent: #actionNew.
@@ -245,12 +250,6 @@ CMProjectManager >> modelProbesMethods [
 	" Answer a <Collection> of <String> with CORMAS model probes selectors "
 
 	^ (self cormasModelClass organization listAtCategoryNamed: #probes) collect: [:aGlobalProbeName | 'Global>>', aGlobalProbeName asString]
-]
-
-{ #category : #callbacks }
-CMProjectManager >> openEditAttributes [
-
-	self projectWindow openEditAttributes.
 ]
 
 { #category : #callbacks }

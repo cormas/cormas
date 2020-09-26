@@ -55,7 +55,7 @@ CMSpecModelComments >> addModelComments [
 		cormasModelCreationDate: self creationDate textValuePending;
 		cormasModelVersion: self versionName textValuePending;
 		cormasModelAuthors: self authorList textValuePending;
-		cormasModelText: self modelText textValuePending.
+		cormasModelComment: self modelText textValuePending.
 	self projectAnnouncer announce: CMProjectUpdateAnnouncement new
 
 ]

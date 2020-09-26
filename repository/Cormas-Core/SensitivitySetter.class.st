@@ -37,7 +37,7 @@ Class {
 		'classAttribValueAnalysis_List',
 		'currentAnalysedAttribute'
 	],
-	#category : 'Cormas-Core-Others'
+	#category : #'Cormas-Core-Others'
 }
 
 { #category : #'interface specs' }
@@ -514,7 +514,7 @@ SensitivitySetter >> getAllAttributesList [
 	defaultParameters
 		do:
 			[:coll | 
-			cav := ClassAttributeValueAnalysis
+			cav := CMClassAttributeValueAnalysis
 				newClass: coll first
 				attribute: (coll at: 2)
 				value: (coll at: 3).

@@ -156,7 +156,11 @@ CMSpecProjectWindow >> initializeSubscriptions [
 		when: CMProjectUpdateAnnouncement, CMProjectRenameAnnouncement
 		do: [ : ann | 
 				self windowTitle: self formattedWindowTitle.
-				self updateTitle. ]
+				self updateTitle. ].
+	self projectAnnouncer
+		when: CMEditAttributesAnnouncement
+		send: #openEditAttributesFor: 
+		to: self.
 ]
 
 { #category : #initialization }
@@ -403,7 +407,17 @@ CMSpecProjectWindow >> menuEnableVisualizationGroup [
 CMSpecProjectWindow >> openEditAttributes [
 	" Open the edit attributes window "
 
-	CMSpecEditAttributes openFor: self projectManager.
+	(CMSpecEditAttributes 
+		for: self cormasModelClass 
+		owner: self) openWithSpec.
+]
+
+{ #category : #callbacks }
+CMSpecProjectWindow >> openEditAttributesFor: aCMEditAttributesAnnouncement [ 
+
+	(CMSpecEditAttributes 
+		for: aCMEditAttributesAnnouncement targetClass 
+		owner: self) openWithSpec.
 ]
 
 { #category : #callbacks }
@@ -1218,9 +1232,9 @@ CMSpecProjectWindow >> updateStateOpened [
 		menuEnableToolsGroup;
 		menuEnableVisualizationGroup;
 		menuEnableHelpGroup;
-		updateSimulationWindow.
-	self windowTitle: self formattedWindowTitle.
-	self updateTitle.
+		updateSimulationWindow;
+		windowTitle: self formattedWindowTitle;
+		updateTitle.
 ]
 
 { #category : #callbacks }

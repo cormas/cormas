@@ -6,7 +6,7 @@ Each studied parameter may be analysed by changing its initial value for each si
 Class {
 	#name : #MonteCarloOAT,
 	#superclass : #Object,
-	#category : 'Cormas-Core-Others'
+	#category : #'Cormas-Core-Others'
 }
 
 { #category : #help }
@@ -658,7 +658,7 @@ MonteCarloOAT >> getAllAttributesList [
 	defaultParameters
 		do:
 			[:coll | 
-			cav := ClassAttributeValueAnalysisRandomness
+			cav := CMClassAttributeValueAnalysisRandomness
 				newClass: coll first
 				attribute: (coll at: 2)
 				value: (coll at: 3).

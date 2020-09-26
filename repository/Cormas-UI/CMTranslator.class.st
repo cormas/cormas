@@ -281,6 +281,7 @@ Enter the entity''s name';
 		at: #tSpecialization 				put: 'CORMAS - Specialization';
 		at: #tConfirmAbstractEntity 	put: ' is abstract. It will be changed as concrete class. Ok?';
 		at: #tConfirmConcreteEntity 	put: ' is concrete. It will be changed as abstract class. Ok?';
+		at: #tConfirmDeleteAttribute	put: 'Are you sure to remove the selected attribute';
 		yourself
 ]
 
@@ -529,8 +530,9 @@ CMTranslator >> addTranslationsForESPart3 [
 		at: #tSpecializeEntityDialogText 	put: 'Crear un nuevo tipo de Entidad
 Ingrese el nombre de la entidad';
 		at: #tSpecialization 					put: 'CORMAS - Especialización';
-		at: #tConfirmAbstractEntity 	put: ' es abstracta. Será cambiada a una clase concreta. Ok?';
-		at: #tConfirmConcreteEntity 	put: ' es concreta. Será cambiada a una clase abstracta. Ok?';
+		at: #tConfirmAbstractEntity 		put: ' es abstracta. Será cambiada a una clase concreta. Ok?';
+		at: #tConfirmConcreteEntity 		put: ' es concreta. Será cambiada a una clase abstracta. Ok?';
+		at: #tConfirmDeleteAttribute		put: 'Está seguro de borrar el atributo seleccionado?';
 		yourself
 
 ]

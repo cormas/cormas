@@ -44,7 +44,7 @@ VectorialPOV >> calculPolyline: nbreSegments [
 			x := 0 - (longueurArrete * angle cos).
 			y := 0 - (longueurArrete * angle sin).
 			points add: x @ y].
-	outline := Polyline vertices: points
+	outline := GPolygon newVertices: points
 ]
 
 { #category : #accessing }
@@ -62,8 +62,10 @@ VectorialPOV >> color [
 { #category : #accessing }
 VectorialPOV >> color: aColor [
 	
-	aColor isNil ifTrue: [^color := self color].
-	aColor class = ColorValue ifFalse: [self inform: 'aColor isNil ! You must specify a color'].
+	aColor isNil 
+		ifTrue: [ ^ color := self color ].
+	aColor class = Color 
+		ifFalse: [ self inform: 'aColor isNil ! You must specify a color' ].
 	color := aColor
 ]
 
@@ -245,7 +247,7 @@ VectorialPOV >> roundedOutline [
 	| newPoints |
 	newPoints := OrderedCollection new: outline vertices size.	"outline vertices do:[:point | newPoints add: ((point * 100) rounded / 100)]."
 	outline vertices do: [:point | newPoints add: point rounded].
-	^Polyline vertices: newPoints
+	^ GPolygon newVertices: newPoints
 ]
 
 { #category : #transforming }
