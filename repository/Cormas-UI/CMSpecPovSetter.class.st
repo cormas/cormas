@@ -1,5 +1,5 @@
 "
-CMPovSetter example.
+CMSpecPovSetter example.
 
 For the Responsibility part: Three sentences about my main responsibilities - what I do, what I know.
 
@@ -46,7 +46,7 @@ Class {
 { #category : #colors }
 CMSpecPovSetter class >> colorChooser [
 	"open a Color chooser.
-	test it : CMPovSetter colorChooser  "
+	test it : CMSpecPovSetter new colorChooser  "
 
 	^ (UITheme builder newColorChooserFor: World
 		getColor: #color

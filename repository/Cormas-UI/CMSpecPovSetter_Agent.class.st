@@ -1,5 +1,5 @@
 "
-CMPovSetter_Agent example.
+CMSpecPovSetter_Agent example.
 
 For the Collaborators Part: State my main collaborators and one line about how I interact with them. 
 
@@ -35,7 +35,7 @@ Class {
 		'occupantPosition',
 		'isDistortable'
 	],
-	#category : 'Cormas-UI-PoV'
+	#category : #'Cormas-UI-PoV'
 }
 
 { #category : #resources }
