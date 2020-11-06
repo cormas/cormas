@@ -101,6 +101,35 @@ BaselineOfCormas >> closePharoWelcomeWindow [
 ]
 
 { #category : #doits }
+BaselineOfCormas >> cormasExpressions [
+	" Answer a <String> with Smalltalk expressions "
+	
+	^ 'CMProjectModel allInstances isEmpty.
+CMProjectManager allInstances.
+CMSpecProjectWindow allInstances.
+
+CMProjectModel allInstances first.
+CMProjectManager allInstances first.
+CMSpecProjectWindow allInstances first.
+
+CMProjectModel allInstances first pointersTo.
+CMProjectManager allInstances first pointersTo.
+CMSpecProjectWindow allInstances first pointersTo.
+
+CMSpecProjectWindow allInstances first projectAnnouncer subscriptions reset.
+CMProjectManager allInstances first announcer subscriptions reset.
+
+CMSpecProjectWindow allInstancesDo: [ : e | e becomeForward: nil ].
+CMProjectManager allInstancesDo: [ : e | e becomeForward: nil ].
+CMProjectModel allInstancesDo: [ : e | e becomeForward: nil ].
+3 timesRepeat: [ Smalltalk garbageCollect ].
+{ CMProjectModel allInstances.
+CMProjectManager allInstances.
+CMSpecProjectWindow allInstances } allSatisfy: #isEmpty.'
+
+]
+
+{ #category : #doits }
 BaselineOfCormas >> ensureMetacelloFileDownload [
 
 	Metacello new           
@@ -139,6 +168,13 @@ BaselineOfCormas >> loadBgImage [
 ]
 
 { #category : #doits }
+BaselineOfCormas >> openPlaygroundWindow [
+
+	(Workspace openLabel: 'CORMAS - Useful expressions')
+		contents: self cormasExpressions.
+]
+
+{ #category : #doits }
 BaselineOfCormas >> platformAssetsUrls [
 	" Answer a <Collection> of <String> representing each one an asset base URL "
 	
@@ -172,7 +208,7 @@ BaselineOfCormas >> postLoad [
 	(Smalltalk at: #FDMorphicUIManager) new beDefault.
 	"TaskbarMorph showTaskbar: false."
 	self unloadPackages.
-
+	self openPlaygroundWindow.
 ]
 
 { #category : #doits }
