@@ -126,7 +126,7 @@ CMCellsLoader >> isStrict: aBoolean [
 CMCellsLoader >> load: aFileReference [
 	| metadata |
 	metadata := PPYAMLGrammar new end
-		parse: (aFileReference / 'metadata.yml') contents withInternalLineEndings.
+		parse: (aFileReference / 'spaceModel.yml') contents withInternalLineEndings.
 	self
 		dimensions:
 			(metadata

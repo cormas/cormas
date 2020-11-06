@@ -83,7 +83,7 @@ CMEnv2CellsConverter >> connexite: anArrayOfString into: aWriteStream [
 CMEnv2CellsConverter >> convert: envStream intoDirectory: cellsFileReference [
 	self flush.
 	self
-		metadataIn: cellsFileReference
+		spaceModelFileIn: cellsFileReference
 		writeStreamDo: [ :metadataStream | 
 			self writeVersionInto: metadataStream.
 			self convertHeaders: envStream into: metadataStream ].
@@ -148,7 +148,7 @@ CMEnv2CellsConverter >> convertAttributes: envStream intoDirectory: cellsFileRef
 				attributeName := (attributeDefinitions at: attributeIndex) key.
 				type := (attributeDefinitions at: attributeIndex) value.
 				self
-					csvIn: cellsFileReference
+					csvFileIn: cellsFileReference
 					forAttribute: attributeName
 					writeStreamDo: [ :csvStream | 
 						matrix
@@ -180,7 +180,7 @@ CMEnv2CellsConverter >> convertHeaders: envStream into: cellsStream [
 ]
 
 { #category : #streaming }
-CMEnv2CellsConverter >> csvIn: cellsFileReference forAttribute: attributeName writeStreamDo: aBlock [
+CMEnv2CellsConverter >> csvFileIn: cellsFileReference forAttribute: attributeName writeStreamDo: aBlock [
 	cellsFileReference ensureCreateDirectory.
 	(cellsFileReference / attributeName withExtension: 'csv')
 		writeStreamDo: aBlock
@@ -225,9 +225,9 @@ CMEnv2CellsConverter >> internalEndOfLine [
 ]
 
 { #category : #streaming }
-CMEnv2CellsConverter >> metadataIn: cellsFileReference writeStreamDo: aBlock [
+CMEnv2CellsConverter >> spaceModelFileIn: cellsFileReference writeStreamDo: aBlock [
 	cellsFileReference ensureCreateDirectory.
-	cellsFileReference / 'metadata.yml' writeStreamDo: aBlock
+	cellsFileReference / 'spaceModel.yml' writeStreamDo: aBlock
 ]
 
 { #category : #types }
