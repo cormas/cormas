@@ -19,6 +19,10 @@ BaselineOfCormas >> baseline: spec [
 			do: [ spec blessing: #baseline.
 			spec postLoadDoIt: #postLoad.
 			spec
+				baseline: 'PetitParser'
+					with: [ spec
+						repository: 'github://moosetechnology/PetitParser/src';
+						loads: #('YAML') ];
 				baseline: 'FileDialog'
 					with: [ spec repository: 'github://peteruhnak/file-dialog/repository' ];
 				baseline: 'ProjectFramework'
@@ -32,7 +36,7 @@ BaselineOfCormas >> baseline: spec [
 				baseline: 'PolyMath'
 					with: [ spec repository: 'github://PolyMathOrg/PolyMath/src' ].
 			spec
-				package: 'Cormas-Core' 		with: [ spec requires: #('PolyMath') ];
+				package: 'Cormas-Core' with: [ spec requires: #('PolyMath') ];
 				package: 'Cormas-Model-Conway';
 				package: 'Cormas-Model-DemoAggregates';
 				package: 'Cormas-Model-Diffuse';
@@ -41,20 +45,25 @@ BaselineOfCormas >> baseline: spec [
 				package: 'Cormas-Model-PlotsRental';
 				package: 'Cormas-Model-ReHab';
 				package: 'Cormas-Model-Stupid';
-				package: 'Cormas-Tests' 		with: [ spec requires: #('Cormas-Core') ];
-				package: 'Cormas-OpenMole'	with: [ spec requires: #('Cormas-Core') ];
-				package: 'Cormas-UI' 			with: [ spec requires: #('FileDialog' 'ProjectFramework' 'CodeGenerator' 'Roassal2') ];
-				package: 'Cormas-UI-Tests' 	with: [ spec requires: #('Cormas-Tests' 'Cormas-UI') ];
+				package: 'Cormas-Tests' with: [ spec requires: #('Cormas-Core') ];
+				package: 'Cormas-OpenMole'
+					with: [ spec requires: #('Cormas-Core') ];
+				package: 'Cormas-UI'
+					with: [ spec
+						requires: #('FileDialog' 'ProjectFramework' 'CodeGenerator' 'Roassal2') ];
+				package: 'Cormas-UI-Tests'
+					with: [ spec requires: #('Cormas-Tests' 'Cormas-UI') ];
 				package: 'Cormas-VW-Ported'.
-
 			spec
-				group: 'Core' 		with: #('Cormas-Core');
-				group: 'Tests' 		with: #('Core' 'Cormas-Tests' 'Cormas-UI-Tests');
-				group: 'UI' 			with: #(#'Cormas-UI' 'Core') ];
-				group: 'Models'		with: 	#('Cormas-Model-Conway' 'Cormas-Model-ReHab' 'Cormas-Core' 'Cormas-Model-ECEC' 'Cormas-Model-FireAutomata' 'Cormas-Model-PlotsRental' 'Cormas-Model-Diffuse' 'Cormas-Model-DemoAggregates' 'Cormas-Model-Stupid');
-				group: 'OpenMole' with: #('Cormas-OpenMole' 'Core');
-				group: 'All'			with: #('Cormas-VW-Ported' 'UI' 'Tests' 'Core' 'Models' 'OpenMole').
-
+				group: 'Core' with: #('Cormas-Core');
+				group: 'Tests' with: #('Core' 'Cormas-Tests' 'Cormas-UI-Tests');
+				group: 'UI' with: #(#'Cormas-UI' 'Core') ];
+		group: 'Models'
+			with:
+			#('Cormas-Model-Conway' 'Cormas-Model-ReHab' 'Cormas-Core' 'Cormas-Model-ECEC' 'Cormas-Model-FireAutomata' 'Cormas-Model-PlotsRental' 'Cormas-Model-Diffuse' 'Cormas-Model-DemoAggregates' 'Cormas-Model-Stupid');
+		group: 'OpenMole' with: #('Cormas-OpenMole' 'Core');
+		group: 'All'
+			with: #('Cormas-VW-Ported' 'UI' 'Tests' 'Core' 'Models' 'OpenMole').
 	spec
 		for: #'pharo7.x'
 		do: [ spec preLoadDoIt: #preLoadForPharo7.
@@ -73,22 +82,20 @@ BaselineOfCormas >> baseline: spec [
 		for: #'pharo8.x'
 		do: [ spec preLoadDoIt: #preLoadForPharo8.
 			spec
-				"baseline: 'Roassal3'
-					with: [ spec repository: 'github://ObjectProfile/Roassal3' ];"
 				baseline: 'Tabular'
 					with: [ spec repository: 'github://VincentBlondeau/Tabular' ];
 				baseline: 'NeoJSON'
-					with: [ spec repository: 'github://svenvc/NeoJSON/repository' ] ].
+					with: [ "baseline: 'Roassal3'
+					with: [ spec repository: 'github://ObjectProfile/Roassal3' ];" spec repository: 'github://svenvc/NeoJSON/repository' ] ].
 	spec
 		for: #'pharo9.x'
 		do: [ spec preLoadDoIt: #preLoadForPharo9.
 			spec
-				"baseline: 'Roassal3'
-					with: [ spec repository: 'github://ObjectProfile/Roassal3' ];"
 				baseline: 'Tabular'
 					with: [ spec repository: 'github://VincentBlondeau/Tabular' ];
 				baseline: 'NeoJSON'
-					with: [ spec repository: 'github://svenvc/NeoJSON' ] ]
+					with: [ "baseline: 'Roassal3'
+					with: [ spec repository: 'github://ObjectProfile/Roassal3' ];" spec repository: 'github://svenvc/NeoJSON' ] ]
 ]
 
 { #category : #doits }

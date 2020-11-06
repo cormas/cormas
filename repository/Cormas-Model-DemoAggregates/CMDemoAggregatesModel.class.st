@@ -173,7 +173,7 @@ CMDemoAggregatesModel >> importNeighboors [
 { #category : #init }
 CMDemoAggregatesModel >> init1FragmentedAggregate [
 "Build 1 FragmentedForest of forested plots"
-	self loadEnvironmentFromFile: '3forests.env'.
+	self loadEnvironmentFromDirectory: '3forests.cells'.
 	self buildFragmentedEntitiesFromCells.
 	self defaultDisplay.
 	self displayPov: #nil of: CMDemoAggregatesGrove.
@@ -186,7 +186,7 @@ CMDemoAggregatesModel >> init2AggregateLevels [
 	1 of 128 groves of 1 plot, 	1 of 49 groves of 2 plots, 	1 of 21 groves of 3 plots,
 	1 of 1 grove of 240 plots, 	1 of 1 grove of 80 plots, 	1 of 2 groves of 4 plots,
 	1 of 1 grove of 143 plots"
-	self loadEnvironmentFromFile: '3forests.env'.
+	self loadEnvironmentFromDirectory: '3forests.cells'.
 	self createAggregates: CMDemoAggregatesGrove from: CMDemoAggregatesPlot verifying: [:aCell | aCell tree].
 	self theGroves do:[:ag| ag initNeighbourhood].
 	self createFragmentedEntities: CMDemoAggregatesFragmentedForest from: CMDemoAggregatesGrove attribute: #size.
@@ -199,7 +199,7 @@ CMDemoAggregatesModel >> init2AggregateLevels [
 CMDemoAggregatesModel >> initForests [
 	"Constructs the forest aggregates"
 
-	self loadEnvironmentFromFile: '3forests.env'.
+	self loadEnvironmentFromDirectory: '3forests.cells'.
 	self buildForests.
 	self buildFragmentedEntitiesFromAggregates.
 	self defaultDisplay
@@ -235,7 +235,7 @@ seeds := aValue
 CMDemoAggregatesModel >> setAggregatesFifthFourth [
 	"Constructs a complete space partition by regular segmentation"
 
-	self spaceModel loadEnvironmentFromFile: '3forests.env'.
+	self spaceModel loadEnvironmentFromDirectory: '3forests.cells'.
 	self createAggregates: CMDemoAggregatesGrove from: CMDemoAggregatesPlot horizontalDividers: 5 verticalDividers: 4.
 	self defaultDisplay
 ]
@@ -244,7 +244,7 @@ CMDemoAggregatesModel >> setAggregatesFifthFourth [
 CMDemoAggregatesModel >> setAggregatesFromRandomSeeds [
 	"Constructs a complete space partition from seeds"
 
-	self loadEnvironmentFromFile: '3forests.env'.
+	self loadEnvironmentFromDirectory: '3forests.cells'.
 	self createAggregates: CMDemoAggregatesGrove
 		fromSeeds: (self randomSeeds: 30)
 		sizeDistribution: #(#(30 80) )
