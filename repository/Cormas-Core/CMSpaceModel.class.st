@@ -365,6 +365,12 @@ CMSpaceModel >> cellClass [
 	^ self cormasModelClass cellClass
 ]
 
+{ #category : #'CSE (general) - import - export' }
+CMSpaceModel >> cellFileDirectory [
+	^ FileLocator workingDirectory / 'assets' / 'models'
+		/ self cormasModelClass modelPrefix / 'maps'
+]
+
 { #category : #'private - accessing' }
 CMSpaceModel >> cellSize [
 	^ cellSize
@@ -2131,24 +2137,42 @@ CMSpaceModel >> listMethodsChanged [
 ]
 
 { #category : #'CSE (general) - import - export' }
-CMSpaceModel >> loadEnvironmentFromFile: aFilename [
-	" Load aFilename .env file and configure the reiceiver's using a CMEnvFile "
-	
-	self envReader loadEnvironmentFromFile: aFilename.
-	self configureSpace.
-
+CMSpaceModel >> loadEnvironmentFromDirectory: aStringOrFileReference [
+	| cellsFile |
+	cellsFile := aStringOrFileReference isString
+		ifTrue: [ self cellFileDirectory / aStringOrFileReference ]
+		ifFalse: [ aStringOrFileReference ].
+	cellsFile exists
+		ifFalse: [ | envFile |
+			envFile := cellsFile withExtension: 'env'.
+			envFile exists
+				ifTrue: [ CMEnv2CellsConverter fromFile: envFile ]
+				ifFalse: [ ^ self error: 'No such a file.' ] ].
+	CMCellsLoader new
+		spaceModel: self;
+		load: cellsFile
 ]
 
 { #category : #'ESE initialize-release' }
-CMSpaceModel >> loadEnvironmentFromFile: aName withPov: aSymbol [
+CMSpaceModel >> loadEnvironmentFromDirectory: aName withPov: aSymbol [
 	"Load a grid stored as filename and display a POV on each opened grid.
-	aName = <String> or aName = <Filename> . If aName = <String>, it creates a Filename from maps directory.
-	Example:	aName = 'test.env' "
+	aName = <String> or aName = <FileReference> . If aName = <String>, it creates a directory in the maps directory.
+	Example:	aName = 'test.cells' "
 	
-	self loadEnvironmentFromFile: aName.
+	self loadEnvironmentFromDirectory: aName.
 	self
 		displayPov: aSymbol
 		of: self cellClass
+]
+
+{ #category : #'CSE (general) - import - export' }
+CMSpaceModel >> loadEnvironmentFromFile: aFilename [
+	" Load aFilename .env file and configure the reiceiver's using a CMEnvFile "
+	
+	self deprecated: 'Use loadEnvironmentFromDirectory:'.
+	self envReader loadEnvironmentFromFile: aFilename.
+	self configureSpace.
+
 ]
 
 { #category : #'CSE (general) - import - export' }
@@ -2537,6 +2561,7 @@ CMSpaceModel >> parseSpatialEntitiesAttributeValues [
 		ifFalse:[ ^ self 
 			setUncompleteGridFromData: aMatrix 
 			forAttributes: listAttr_type ].
+		self halt.
 	listAttr_type := self cmEnvFile attributes asSet asOrderedCollection.
 	aMatrix removeFirst.
 	aMatrix := aMatrix collect: [ : arr | arr asOrderedCollection ].
@@ -3747,13 +3772,13 @@ CMSpaceModel >> setLinearGradientForAttribute: aString centralValue: cv borderVa
 CMSpaceModel >> setNbNeighbours: anInteger [
 	"Set the neighbourhood of the regular spaceModel.
 	anInteger = <Integer : 4, 6 or 8>"
-	
+
 	self nbNeighbours: anInteger.
-	(gridCellShape == #squared and: [anInteger = 6]) ifTrue: [self hexagonal].
-	(gridCellShape == #hexagonal and: [anInteger ~= 6])
-		ifTrue:
-			[self gridCellShape: #squared.
-			self createRectangularCellsFigure].
+	(gridCellShape == #squared and: [ anInteger = 6 ])
+		ifTrue: [ ^ self hexagonal ].
+	(gridCellShape == #hexagonal and: [ anInteger ~= 6 ])
+		ifTrue: [ self gridCellShape: #squared.
+			self createRectangularCellsFigure ].
 	self initNeighbourhood.
 	self changed: #shapeHasChanged with: anInteger
 ]
@@ -3954,6 +3979,11 @@ CMSpaceModel >> southCell: k [
 	k <= (column * (line - 1)) ifTrue: [^k + column].
 	boundaries == #torroidal ifTrue: [^k - (column * (line - 1))].
 	^0
+]
+
+{ #category : #accessing }
+CMSpaceModel >> spaceModel [
+	^ self
 ]
 
 { #category : #accessing }

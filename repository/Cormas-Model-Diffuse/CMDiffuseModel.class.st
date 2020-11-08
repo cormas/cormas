@@ -173,7 +173,7 @@ CMDiffuseModel >> antNumber: aNumber [
 
 { #category : #init }
 CMDiffuseModel >> init [
-	self spaceModel loadEnvironmentFromFile: '40x40.env' withPov: #pov.
+	self spaceModel loadEnvironmentFromDirectory: '40x40.cells' withPov: #pov.
 	self initOptimize.
 	self theCells do: #initEmpty.
 	self createN:self antNumber randomlyLocatedEntities: CMDiffuseAnt

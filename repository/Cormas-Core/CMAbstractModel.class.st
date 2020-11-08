@@ -3027,27 +3027,35 @@ CMAbstractModel >> loadAttributesForClass: aClass fromFile: aStringOrFilename [
 ]
 
 { #category : #'+ instance creation - spatial grid' }
+CMAbstractModel >> loadEnvironmentFromDirectory: aName [
+	"Purpose: create spatial elements and load attributes value specified in a defined .cell directory
+	Argument: aName = <String> or aName = <FileReference> . If aName = <String>, it creates a directory named aName in the maps directory.
+	Example:	self configureWithCellFile: 'test.cells'
+	Example: self configureWithCellFile: (FileLocator workingDirectory / 'assets' / 'models' / self modelPrefix withExtension: 'cells')"
+
+	self spaceModel loadEnvironmentFromDirectory: aName
+]
+
+{ #category : #'+ instance creation - spatial grid' }
+CMAbstractModel >> loadEnvironmentFromDirectory: aName withPov: aSymbol [
+	"Purpose: create spatial elements, load attributes value specified in a defined cells directory and set the point of view of the elementary spatial entity to a defined pov
+Argument: aName = <String> or aName = <FileReference> . If aName = <String>, it creates a directory named aName in the maps directory.
+aSymbol is the name of the cell pov to be displayed
+Example:	self configureWithCellFile: 'test.cells' withPov: #state
+Example: self configureWithCellFile: (FileLocator workingDirectory / 'assets' / 'models' / self modelPrefix withExtension: 'cells') withPov: #state"
+
+	self spaceModel loadEnvironmentFromDirectory: aName.
+	self displayPov: aSymbol of: self class cellClass
+]
+
+{ #category : #'+ instance creation - spatial grid' }
 CMAbstractModel >> loadEnvironmentFromFile: aName [
 	"Purpose: create spatial elements and load attributes value specified in a defined env file
 	Argument: aName = <String> or aName = <Filename> . If aName = <String>, it creates a Filename from maps directory.
 	Example:	self loadEnvironmentFromFile: 'test.env'
 	Example: self loadEnvironmentFromFile: ('d:\Vw5i.4\cormas\Models\JLB\maps\test.env' asFilename)"
-	
+	self deprecated: 'Use loadEnvironmentFromDirectory:'.
 	self spaceModel loadEnvironmentFromFile: aName
-]
-
-{ #category : #'+ instance creation - spatial grid' }
-CMAbstractModel >> loadEnvironmentFromFile: aName withPov: aSymbol [
-	"Purpose: create spatial elements, load attributes value specified in a defined env file and set the point of view of the elementary spatial entity to a defined pov
-Argument: aName = <String> or aName = <Filename> . If aName = <String>, it creates a Filename from maps directory. 
-aSymbol is the name of the cell pov to be displayed
-Example:	self loadEnvironmentFromFile: 'test.env' withPov: #state
-Example: self loadEnvironmentFromFile: ('d:\Vw5i.4\cormas\Models\JLB\maps\test.env' asFilename) withPov: #state"
-	
-	self spaceModel loadEnvironmentFromFile: aName.
-	self
-		displayPov: aSymbol
-		of: self class cellClass
 ]
 
 { #category : #'- user interface' }

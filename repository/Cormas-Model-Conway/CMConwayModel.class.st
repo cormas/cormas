@@ -193,6 +193,40 @@ CMConwayModel class >> example5 [
 		withSituatedEntities: aModel allTheSituatedEntities) runAndVisualize
 ]
 
+{ #category : #examples }
+CMConwayModel class >> exampleGlidersGun [
+	| aModel v es anim |
+	aModel := self
+		initialize;
+		new.
+	aModel
+		initializeSpaceModel;
+		activeInit: #initGlidersGun.
+	v := RTView new.
+	aModel initSimulation.	"creates 100x100 cells."
+	aModel runStep.
+	v clean.
+	es := (RTBox new
+		color: [ :e | 
+			e state == #dead
+				ifTrue: [ Color white ]
+				ifFalse: [ Color black ] ];
+		size: 25) elementsOn: aModel theCells.
+	v addAll: es.
+	RTGridLayout new
+		gapSize: 0;
+		lineItemsCount: aModel spaceModel column;
+		on: v elements.
+	v canvas camera focusOnCenterScaled.
+	anim := RTActiveAnimation new.
+	anim intervalInMilliseconds: 0.
+	anim
+		blockToExecute: [ aModel runStep.
+			v elements do: #updateShape ].
+	anim inView: v.
+	v openWithToolbar
+]
+
 { #category : #probes }
 CMConwayModel >> alive [
 <probe>
@@ -209,17 +243,19 @@ CMConwayModel >> dead [
 
 { #category : #init }
 CMConwayModel >> initCustomMap [
-	self loadEnvironmentFromFile: 'cormas.env'
+	self loadEnvironmentFromDirectory: 'cormas.cells'
 ]
 
 { #category : #init }
 CMConwayModel >> initGliders [
-	self loadEnvironmentFromFile: 'gliders.env'
+	self loadEnvironmentFromDirectory: 'gliders.cells'
 ]
 
 { #category : #init }
 CMConwayModel >> initGlidersGun [
-	self loadEnvironmentFromFile: 'glidersGun.env'
+	"self loadEnvironmentFromFile: 'glidersGun.env'"
+
+	self spaceModel loadEnvironmentFromDirectory: 'glidersGun.cells'
 ]
 
 { #category : #init }

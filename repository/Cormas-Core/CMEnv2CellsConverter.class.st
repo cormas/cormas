@@ -11,27 +11,13 @@ Class {
 }
 
 { #category : #utilities }
-CMEnv2CellsConverter class >> from: envStream [
-	^ String
-		streamContents: [ :stream | self new convert: envStream readStream into: stream ]
-]
-
-{ #category : #utilities }
-CMEnv2CellsConverter class >> from: env to: cells [
-	self new convert: env readStream into: cells writeStream
-]
-
-{ #category : #utilities }
-CMEnv2CellsConverter class >> fromFile: envFile [
-	envFile readStreamDo: [ :readStream | ^ self from: readStream ]
-]
-
-{ #category : #utilities }
-CMEnv2CellsConverter class >> fromFile: env toFile: cells [
-	env
+CMEnv2CellsConverter class >> fromFile: aFileReference [
+	"self fromFile: (FileLocator workingDirectory / 'assets' /'models' / 'Conway' / 'maps' / 'glidersGun.env')"
+	aFileReference
 		readStreamDo: [ :readStream | 
-			cells
-				writeStreamDo: [ :writeStream | self new convert: readStream into: writeStream ] ]
+			self new
+				convert: readStream
+				intoDirectory: (aFileReference withExtension: 'cells') ensureCreateDirectory ]
 ]
 
 { #category : #headers }
@@ -46,22 +32,28 @@ CMEnv2CellsConverter >> attributs: anArrayOfString into: aWriteStream [
 			type := def copyFrom: index + 1 to: def size - 1.
 			self assert: (self availableTypes includes: type).
 			attribute -> type ].
-	aWriteStream
-		nextPutAll: 'attributes_defs:';
-		nextPutAll: self endOfLine.
 	attributeDefinitions
-		do: [ :assoc | 
-			aWriteStream
-				space;
-				nextPutAll: assoc key;
-				nextPutAll: ': ';
-				nextPutAll: assoc value;
-				nextPutAll: self endOfLine ]
+		ifNotEmpty: [ aWriteStream
+				nextPutAll: 'attributes:';
+				nextPutAll: self endOfLine.
+			attributeDefinitions
+				do: [ :assoc | 
+					aWriteStream
+						space;
+						nextPutAll: assoc key;
+						nextPutAll: ': ';
+						nextPutAll: assoc value;
+						nextPutAll: self endOfLine ] ]
 ]
 
 { #category : #types }
 CMEnv2CellsConverter >> availableTypes [
-	^ #('Number' 'Boolean' 'nil')
+	^ #('Number' 'Boolean' 'Symbol' 'nil')
+]
+
+{ #category : #accessing }
+CMEnv2CellsConverter >> cellsFileVersion [
+	^ '0.0.1' copy
 ]
 
 { #category : #headers }
@@ -88,19 +80,14 @@ CMEnv2CellsConverter >> connexite: anArrayOfString into: aWriteStream [
 ]
 
 { #category : #processing }
-CMEnv2CellsConverter >> convert: envStream [
-	^ String
-		streamContents: [ :cellsStream | 
-			self
-				internalEndOfLine;
-				convert: envStream into: cellsStream ]
-]
-
-{ #category : #processing }
-CMEnv2CellsConverter >> convert: envStream into: cellsStream [
+CMEnv2CellsConverter >> convert: envStream intoDirectory: cellsFileReference [
 	self flush.
-	self convertHeaders: envStream into: cellsStream.
-	self convertAttributes: envStream into: cellsStream
+	self
+		spaceModelFileIn: cellsFileReference
+		writeStreamDo: [ :metadataStream | 
+			self writeVersionInto: metadataStream.
+			self convertHeaders: envStream into: metadataStream ].
+	self convertAttributes: envStream intoDirectory: cellsFileReference
 ]
 
 { #category : #private }
@@ -145,6 +132,38 @@ CMEnv2CellsConverter >> convertAttributes: envStream into: cellsStream [
 ]
 
 { #category : #private }
+CMEnv2CellsConverter >> convertAttributes: envStream intoDirectory: cellsFileReference [
+	self assert: numberOfRows notNil.
+	self assert: numberOfColumns notNil.
+	self assert: attributeDefinitions notNil.
+	attributeDefinitions
+		ifNotEmpty: [ | matrix |
+			matrix := (1 to: numberOfRows)
+				collect: [ :rowIndex | 
+					(1 to: numberOfColumns)
+						collect:
+							[ :columnIndex | (envStream nextLine trim substrings: ',') collect: #trim ] ].
+			1 to: attributeDefinitions size do: [ :attributeIndex | 
+				| attributeName type |
+				attributeName := (attributeDefinitions at: attributeIndex) key.
+				type := (attributeDefinitions at: attributeIndex) value.
+				self
+					csvFileIn: cellsFileReference
+					forAttribute: attributeName
+					writeStreamDo: [ :csvStream | 
+						matrix
+							do: [ :values | 
+								values
+									do: [ :attributes | 
+										| value |
+										value := attributes at: attributeIndex.
+										self typecheck: value as: type.
+										self writeValue: value into: csvStream ]
+									separatedBy: [ csvStream nextPut: $, ].
+								csvStream nextPutAll: self endOfLine ] ] ] ]
+]
+
+{ #category : #private }
 CMEnv2CellsConverter >> convertHeader: aString into: cellsStream [
 	aString substrings
 		ifNotEmpty: [ :tokens | 
@@ -160,18 +179,25 @@ CMEnv2CellsConverter >> convertHeaders: envStream into: cellsStream [
 		whileFalse: [ self convertHeader: envStream nextLine trim into: cellsStream ]
 ]
 
+{ #category : #streaming }
+CMEnv2CellsConverter >> csvFileIn: cellsFileReference forAttribute: attributeName writeStreamDo: aBlock [
+	cellsFileReference ensureCreateDirectory.
+	(cellsFileReference / attributeName withExtension: 'csv')
+		writeStreamDo: aBlock
+]
+
 { #category : #headers }
 CMEnv2CellsConverter >> dimensions: anArrayOfString into: aWriteStream [
 	self assert: anArrayOfString size equals: 3.
 	self typecheckNat: anArrayOfString second.
 	self typecheckNat: anArrayOfString third.
-	numberOfColumns := anArrayOfString second asInteger.
-	numberOfRows := anArrayOfString third asInteger.
+	numberOfRows := anArrayOfString second asInteger.
+	numberOfColumns := anArrayOfString third asInteger.
 	aWriteStream
 		nextPutAll: 'dimensions: [';
-		nextPutAll: numberOfColumns asString;
-		nextPutAll: ', ';
 		nextPutAll: numberOfRows asString;
+		nextPutAll: ', ';
+		nextPutAll: numberOfColumns asString;
 		nextPutAll: ']';
 		nextPutAll: self endOfLine
 ]
@@ -196,6 +222,12 @@ CMEnv2CellsConverter >> flush [
 { #category : #accessing }
 CMEnv2CellsConverter >> internalEndOfLine [
 	^ self endOfLine: String cr
+]
+
+{ #category : #streaming }
+CMEnv2CellsConverter >> spaceModelFileIn: cellsFileReference writeStreamDo: aBlock [
+	cellsFileReference ensureCreateDirectory.
+	cellsFileReference / 'spaceModel.yml' writeStreamDo: aBlock
 ]
 
 { #category : #types }
@@ -238,4 +270,32 @@ CMEnv2CellsConverter >> typecheckNumber: aString [
 				or: [ aString first isDigit
 						or: [ aString first = $-
 								and: [ aString size >= 2 and: [ aString second isDigit ] ] ] ])
+]
+
+{ #category : #types }
+CMEnv2CellsConverter >> typecheckSymbol: aString [
+	
+]
+
+{ #category : #private }
+CMEnv2CellsConverter >> writeValue: aString into: aStream [
+	(aString
+		anySatisfy: [ :char | char = $" or: [ char = $, or: [ char = Character cr ] ] ])
+		ifTrue: [ aStream nextPut: $".
+			aString
+				do: [ :char | 
+					char = $"
+						ifTrue: [ aStream nextPut: char ].
+					char = Character cr
+						ifTrue: [ aStream nextPutAll: self endOfLine ]
+						ifFalse: [ aStream nextPut: char ] ] ]
+		ifFalse: [ aStream nextPutAll: aString ]
+]
+
+{ #category : #private }
+CMEnv2CellsConverter >> writeVersionInto: aStream [
+	aStream
+		nextPutAll: 'version: ';
+		nextPutAll: self cellsFileVersion;
+		nextPutAll: self endOfLine
 ]
