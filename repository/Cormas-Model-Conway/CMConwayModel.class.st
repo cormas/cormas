@@ -202,7 +202,6 @@ CMConwayModel class >> exampleGlidersGun [
 	aModel
 		initializeSpaceModel;
 		activeInit: #initGlidersGun.
-	aModel inspect.
 	v := RTView new.
 	aModel initSimulation.	"creates 100x100 cells."
 	aModel runStep.
