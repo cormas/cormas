@@ -1838,10 +1838,7 @@ Example: self createGridColumns: 20 lines: 20 neighbourhood: 8 closed: true "
 		columns: numColumns
 		shape: shapeSymbol
 		nbNeighbours: nbSymbol
-		boundaries:
-			(aBoolean
-				ifTrue: [ #closed ]
-				ifFalse: [ #torroidal ])
+		closed: aBoolean
 ]
 
 { #category : #'+ instance creation - spatial grid' }

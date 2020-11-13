@@ -2178,19 +2178,17 @@ SpaceInterface >> basicTitle: anObject [
 { #category : #menus }
 SpaceInterface >> boundariesChanged [
 	"gere le menu Forme des cellules "
-	
+
 	| menuCloture |
 	self updateWindowName.
 	menuCloture := self menuGridboundaries.
-	spaceModel boundaries = #closed
-		ifTrue:
-			["cellules fermees"
+	spaceModel closed
+		ifTrue: [ "cellules fermees"
 			(menuCloture atNameKey: #torroidal) beOff.
-			(menuCloture atNameKey: #closed) beOn]
-		ifFalse:
-			["cellules toroidales"
+			(menuCloture atNameKey: #closed) beOn ]
+		ifFalse: [ "cellules toroidales"
 			(menuCloture atNameKey: #torroidal) beOn.
-			(menuCloture atNameKey: #closed) beOff]
+			(menuCloture atNameKey: #closed) beOff ]
 ]
 
 { #category : #changed }
@@ -2346,14 +2344,12 @@ SpaceInterface >> clicToInspect [
 
 { #category : #'menu - actions' }
 SpaceInterface >> closed [
-	
-	spaceModel boundaries ~= #closed
-		ifTrue:
-			[spaceModel boundaries: #closed.
+	spaceModel closed
+		ifFalse: [ spaceModel closed: true.
 			spaceModel
 				initNeighbourhood;
 				initEdge.
-			self boundariesChanged]
+			self boundariesChanged ]
 ]
 
 { #category : #aspects }
@@ -4168,14 +4164,12 @@ SpaceInterface >> toolNames [
 
 { #category : #'menu - actions' }
 SpaceInterface >> torroidal [
-	
-	spaceModel boundaries ~= #torroidal
-		ifTrue:
-			[spaceModel boundaries: #torroidal.
+	spaceModel closed
+		ifTrue: [ spaceModel closed: true.
 			spaceModel
 				initNeighbourhood;
 				initEdge.
-			self boundariesChanged]
+			self boundariesChanged ]
 ]
 
 { #category : #'menu-track' }
