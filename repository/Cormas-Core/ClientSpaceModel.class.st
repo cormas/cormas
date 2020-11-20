@@ -28,12 +28,6 @@ ClientSpaceModel >> absoluteWidth [
 	^self absoluteBounds width
 ]
 
-{ #category : #'private - absoluteWorld' }
-ClientSpaceModel >> boundaries [
-	
-	^self cachedValueAt: #boundaries
-]
-
 { #category : #accessing }
 ClientSpaceModel >> cachedValueAt: aSymbol [
 	
@@ -52,6 +46,12 @@ ClientSpaceModel >> cachedValues [
 ClientSpaceModel >> cellClass [
 	
 	^self cachedValueAt: #cellClass
+]
+
+{ #category : #'private - absoluteWorld' }
+ClientSpaceModel >> closed [
+	
+	^self cachedValueAt: #closed
 ]
 
 { #category : #accessing }
@@ -261,7 +261,7 @@ ClientSpaceModel >> openSpaceInterface [
 { #category : #'error handling' }
 ClientSpaceModel >> remoteSelectors [
 	
-	^#(#absoluteBounds #gridCellShape #nbNeighbours #timeUnitName #envSpecStringFor: #boundaries #spatialClasses #cormasModel #spatialEntities #cormas #testSpatialEntitiesAt:povAt: #spatialEntitiesAt: #allTheEntities: #allTheSituatedEntities: #spatialEntitiesAt:withPovResultFor: #getPovsDataOfEntity:forSelector:andInfo: #getPovsDataOfOccupantEntity:forSelector:andInfo: #elementaryEntities)
+	^#(#absoluteBounds #gridCellShape #nbNeighbours #timeUnitName #envSpecStringFor: #closed #spatialClasses #cormasModel #spatialEntities #cormas #testSpatialEntitiesAt:povAt: #spatialEntitiesAt: #allTheEntities: #allTheSituatedEntities: #spatialEntitiesAt:withPovResultFor: #getPovsDataOfEntity:forSelector:andInfo: #getPovsDataOfOccupantEntity:forSelector:andInfo: #elementaryEntities)
 ]
 
 { #category : #accessing }

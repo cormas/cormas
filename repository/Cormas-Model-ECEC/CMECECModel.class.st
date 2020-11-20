@@ -481,7 +481,7 @@ CMECECModel >> homogeneousEnv2 [
 		columns: 27
 		shape: #squared
 		nbNeighbours: #eight
-		boundaries: #toroidal.
+		closed: false.
 	self theVegetationUnits do: [ :cell | cell initRandomBiomass ].	"or: self initCells: #initRandomBiomass."
 	self initAgents
 ]

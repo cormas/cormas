@@ -61,11 +61,11 @@ CMEnv2CellsConverter >> cloture: anArrayOfString into: aWriteStream [
 	self assert: anArrayOfString size equals: 2.
 	self typecheckClosure: anArrayOfString second.
 	aWriteStream
-		nextPutAll: 'closure: ';
+		nextPutAll: 'closed: ';
 		nextPutAll:
 			(anArrayOfString second = 'closed'
-				ifTrue: [ 'closed' ]
-				ifFalse: [ 'toroidal' ]);
+				ifTrue: [ 'true' ]
+				ifFalse: [ 'false' ]);
 		nextPutAll: self endOfLine
 ]
 

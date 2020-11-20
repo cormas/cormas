@@ -33,7 +33,6 @@ Class {
 		'elementaryEntitiesDefaultPovs',
 		'cormasModel',
 		'arrayOrigins',
-		'boundaries',
 		'nbNeighbours',
 		'rMaxEntityImage',
 		'spatialEntities',
@@ -45,7 +44,8 @@ Class {
 		'absoluteBounds',
 		'autoResizeBounds',
 		'envReader',
-		'isFull'
+		'isFull',
+		'closed'
 	],
 	#category : #'Cormas-Core-Space'
 }
@@ -265,23 +265,6 @@ CMSpaceModel >> basicCreateAggregate: compoundEntity from: aSet [
 	^anAggregate
 ]
 
-{ #category : #'private - accessing' }
-CMSpaceModel >> boundaries [
-	
-	^boundaries
-]
-
-{ #category : #'private - accessing' }
-CMSpaceModel >> boundaries: aSymbol [
-	"aSymbol = #closed  or  #torroidal"
-	
-	self boundaries == aSymbol ifTrue: [^self].
-	boundaries := aSymbol.
-	self initNeighbourhood.
-	self initEdge.
-	self cormasModel registerSpaceModelChange: #boundariesChanged	"dispatch the info to other spaceInterfaces"
-]
-
 { #category : #'CSE (regular) - instance creation' }
 CMSpaceModel >> buildAggregates: compoundEntity from: baseEntity verifying: aBlock [
 	"This method is equivalent to setAggregates: compoundEntity from: baseEntity verifying: aBlock, except that the aggregats are not reset.
@@ -300,18 +283,17 @@ baseEntity = a subClass of  <SpatialEntity>
 aBlock example = [:cell | cell state = #tree]
 compoundEntity =a subClass of  <SpatialEntitySet>
 ms= <integer> must be >= 1"
-	
+
 	| coll |
-	self boundaries = #closed ifFalse: [^self warningBoundaries].
+	self closed
+		ifFalse: [ ^ self warningBoundaries ].
 	coll := OrderedCollection new.
 	(self getAggregatesFrom: baseEntity verifying: aBlock)
-		do:
-			[:set | 
+		do: [ :set | 
 			set size < ms
-				ifFalse:
-					[coll add: (self createSilentlyAggregate: compoundEntity from: set)]].
+				ifFalse: [ coll add: (self createSilentlyAggregate: compoundEntity from: set) ] ].
 	self dispatchCompoundSpatialEntity: compoundEntity.
-	^coll
+	^ coll
 ]
 
 { #category : #'private - regular polygons - deprecated' }
@@ -335,15 +317,18 @@ CMSpaceModel >> buildFragmentedEntity: compoundEntity fromCollection: aCollecOfS
 	This method do not resets all aggregates 'compoundEntity' . 
 	aCollecOfSpatialEntityElement = a collection of base entities (inheriting from <SpatialEntity>) 
 	compoundEntity = a subClass of  <SpatialEntityNotConnex>"
-	
+
 	| aSet agg |
-	self boundaries = #closed ifFalse: [^self warningBoundaries].
+	self closed
+		ifFalse: [ ^ self warningBoundaries ].
 	aSet := Set new.
 	aCollecOfSpatialEntityElement
-		do: [:s | (s isComponentOf: compoundEntity) ifTrue: [aSet add: s]].
+		do: [ :s | 
+			(s isComponentOf: compoundEntity)
+				ifTrue: [ aSet add: s ] ].
 	agg := self createSilentlyAggregate: compoundEntity from: aSet.
 	self dispatchCompoundSpatialEntity: compoundEntity.
-	^agg
+	^ agg
 ]
 
 { #category : #'private - accessing' }
@@ -531,6 +516,22 @@ CMSpaceModel >> closeGraphicWindows [
 	self changed: #closeRequest
 ]
 
+{ #category : #'private - accessing' }
+CMSpaceModel >> closed [
+	
+	^closed
+]
+
+{ #category : #'private - accessing' }
+CMSpaceModel >> closed: aBoolean [
+	
+	closed = aBoolean ifTrue: [^self].
+	closed := aBoolean.
+	self initNeighbourhood.
+	self initEdge.
+	self cormasModel registerSpaceModelChange: #boundariesChanged	"dispatch the info to other spaceInterfaces"
+]
+
 { #category : #accessing }
 CMSpaceModel >> cmEnvFile [
 	" Answer a <CMEnvFile> for the receiver's env file reader "
@@ -541,27 +542,6 @@ CMSpaceModel >> cmEnvFile [
 { #category : #'private - accessing' }
 CMSpaceModel >> column [
 	^ column
-]
-
-{ #category : #'CSE (general) - import - export' }
-CMSpaceModel >> configureSpace [
-	" Private - Use values read from an Env reader to setup the receiver "
-
-	self 
-		line: self cmEnvFile dimX 
-		column: self cmEnvFile dimY.
-	self nbNeighbours: self cmEnvFile cp.
-	self cmEnvFile cp = #six
-		ifTrue: [ self gridCellShape: #hexagonal ]
-		ifFalse: [ self gridCellShape: #squared ].
-	self resetSpatialEntities.
-	self createCells.
-	self boundaries: self cmEnvFile ce.
-	self isFull 
-		ifFalse: [ self createUncompleteGrid ]
-		ifTrue: [ 
-			self createCells. 
-			self parseSpatialEntitiesAttributeValues ]
 ]
 
 { #category : #'private - accessing' }
@@ -626,19 +606,20 @@ CMSpaceModel >> createAggregate: compoundEntity from: aSet [
 { #category : #'private - regular cells - instance creation' }
 CMSpaceModel >> createCells [
 	"create all the cells and their connexions, and collect them as elementaryEntities collection"
-	
+
 	| allEse |
 	allEse := Array new: cardinal.
 	self cormasModelClass cellClass CurrentId: 0.
-	1 to: cardinal do: [ : i | 
-		allEse
-			at: i
-			put: (self newEntity: self cormasModelClass cellClass) ].	"and collect them"
+	1 to: cardinal do:
+		[ :i | allEse at: i put: (self newEntity: self cormasModelClass cellClass) ].	"and collect them"
 	self elementaryEntities: allEse.
-	self gridCellShape = #squared ifTrue: [ self createRectangularCellsFigure ].
-	self gridCellShape = #hexagonal ifTrue: [ self createHexagonalCellsFigure ].
+	self gridCellShape = #squared
+		ifTrue: [ self createRectangularCellsFigure ].
+	self gridCellShape = #hexagonal
+		ifTrue: [ self createHexagonalCellsFigure ].
 	self initNeighbourhood.
-	self boundaries = #torroidal ifFalse: [self initEdge].	"newCells notification also dispatch the request to remoteSpaceModels to rebuild the cell figures"
+	self closed
+		ifTrue: [ self initEdge ].	"newCells notification also dispatch the request to remoteSpaceModels to rebuild the cell figures"
 	"self sendCellsToClientSpaceModels: (EntityReference onEntities: allEse)."	"dispatch the info that cells have been modified to all opened spaceInterfaces"
 	self changed: #newCells
 ]
@@ -816,27 +797,31 @@ Example : self displayPov: #landUse of: Cell"
 { #category : #'landscape indices' }
 CMSpaceModel >> distanceFromCell: cell1 toCell: cell2 [
 	"return the distance in number of cells (also known as Manhattan distance)"
-	
+
 	| nbLines nbCols |
 	nbLines := (cell1 numLine - cell2 numLine) abs.
 	nbCols := (cell1 numCol - cell2 numCol) abs.
-	self boundaries = #torroidal
-		ifTrue:
-			[nbLines > (self line - 2) ifTrue: [nbLines := nbLines - self line + 2].
-			nbCols > (self column - 2) ifTrue: [nbCols := nbCols - self column + 2]].
-	self nbNeighbours = #eight ifTrue: [^nbLines max: nbCols].
-	self nbNeighbours = #four ifTrue: [^nbLines + nbCols].
+	self closed
+		ifFalse: [ nbLines > (self line - 2)
+				ifTrue: [ nbLines := nbLines - self line + 2 ].
+			nbCols > (self column - 2)
+				ifTrue: [ nbCols := nbCols - self column + 2 ] ].
+	self nbNeighbours = #eight
+		ifTrue: [ ^ nbLines max: nbCols ].
+	self nbNeighbours = #four
+		ifTrue: [ ^ nbLines + nbCols ].
 	self nbNeighbours = #six
-		ifTrue:
-			[nbLines odd
+		ifTrue: [ nbLines odd
 				ifTrue:
-					["celui des 2 qui est √† droite, s'il est sur la partie droite de sa colonne  (ligne impaire), je rajoute 1 √† dC"
+					[ "celui des 2 qui est √† droite, s'il est sur la partie droite de sa colonne  (ligne impaire), je rajoute 1 √† dC"
 					cell1 numCol > cell2 numCol
-						ifTrue: [cell1 numLine odd ifTrue: [nbCols := nbCols + 1]]
-						ifFalse: [cell2 numLine odd ifTrue: [nbCols := nbCols + 1]].
-					^nbLines + (0 max: (2 * nbCols - nbLines - 1) / 2)]
-				ifFalse: [^nbLines + (0 max: (2 * nbCols - nbLines) / 2)]].	"for irregular cells, the calculus is much more longer"
-	^cell1 distanceCell: cell2	"If nbLines is odd, 
+						ifTrue: [ cell1 numLine odd
+								ifTrue: [ nbCols := nbCols + 1 ] ]
+						ifFalse: [ cell2 numLine odd
+								ifTrue: [ nbCols := nbCols + 1 ] ].
+					^ nbLines + (0 max: (2 * nbCols - nbLines - 1) / 2) ]
+				ifFalse: [ ^ nbLines + (0 max: (2 * nbCols - nbLines) / 2) ] ].	"for irregular cells, the calculus is much more longer"
+	^ cell1 distanceCell: cell2	"If nbLines is odd, 
 	dist = nbLines if nbCols < (nbLines + 1)/ 2    otherwise
 	dist = nbLines + (2.nbCols - nbLines - 1)/ 2
 If nbLines is even, 
@@ -871,22 +856,24 @@ il faut aussi rajouter 1 √† dC qd dL est impaire..."
 { #category : #'landscape indices' }
 CMSpaceModel >> distanceFromHexagonalCell: cell1 toCell: cell2 [
 	"return the distance in number of hexagonal cells"
-	
+
 	| nbLines nbCols add colTheoriq |
-	self nbNeighbours = #six ifFalse: [self halt].
+	self nbNeighbours = #six
+		ifFalse: [ self halt ].
 	nbLines := (cell1 numLine - cell2 numLine) abs.
 	nbCols := (cell1 numCol - cell2 numCol) abs.
-	self boundaries = #torroidal
-		ifTrue:
-			[nbLines := nbLines min: self line - nbLines.
+	self closed
+		ifFalse: [ nbLines := nbLines min: self line - nbLines.
 			nbCols := nbCols min: self column - nbCols.
-			nbLines odd ifTrue: [nbCols := nbCols + 1]].
+			nbLines odd
+				ifTrue: [ nbCols := nbCols + 1 ] ].
 	add := 0.
 	colTheoriq := nbLines even
-		ifTrue: [nbLines / 2]
-		ifFalse: [(nbLines + 1) / 2].
-	colTheoriq < nbCols ifTrue: [add := nbCols - colTheoriq].
-	^nbLines + add
+		ifTrue: [ nbLines / 2 ]
+		ifFalse: [ (nbLines + 1) / 2 ].
+	colTheoriq < nbCols
+		ifTrue: [ add := nbCols - colTheoriq ].
+	^ nbLines + add
 ]
 
 { #category : #'landscape indices' }
@@ -908,10 +895,11 @@ CMSpaceModel >> dominance: attribute [
 
 { #category : #'private - regular cells - instance creation' }
 CMSpaceModel >> eastCell: k [
-	
-	k \\ column = 0 ifFalse: [^k + 1].
-	boundaries == #torroidal ifTrue: [^k - (column - 1)].
-	^0
+	k \\ column = 0
+		ifFalse: [ ^ k + 1 ].
+	^ closed
+		ifTrue: [ 0 ]
+		ifFalse: [ k - (column - 1) ]
 ]
 
 { #category : #'private - regular cells - instance creation' }
@@ -1015,9 +1003,9 @@ CMSpaceModel >> envSpecStringFor: spatialEntityName [
 	s := (String new: 100) writeStream.
 	s
 		nextPutAll:
-			(self boundaries = #torroidal
-				ifTrue: [ 'Torroidal ' ]
-				ifFalse: [ 'Closed ' ]).
+			(self closed
+				ifTrue: [ 'Closed ' ]
+				ifFalse: [ 'Torroidal ' ]).
 	(spatialEntityName = self cellClass name
 		and: [ self gridCellShape ~= #irregular ])
 		ifTrue: [ s
@@ -1047,15 +1035,16 @@ CMSpaceModel >> envSpecStringFor: spatialEntityName [
 { #category : #'landscape indices' }
 CMSpaceModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 	"return the euclidian distance (unit = cell) using the Euclidean distance formula : square root of [(Xa - Xb)^2 + (Ya - Yb)^2)]"
-	
+
 	| nbLines nbCols |
 	nbLines := (cell1 numLine - cell2 numLine) abs.
 	nbCols := (cell1 numCol - cell2 numCol) abs.
-	self boundaries = #torroidal
-		ifTrue:
-			[nbLines > (self line - 2) ifTrue: [nbLines := nbLines - self line + 2].
-			nbCols > (self column - 2) ifTrue: [nbCols := nbCols - self column + 2]].
-	^(nbLines squared + nbCols squared) sqrt
+	self closed
+		ifFalse: [ nbLines > (self line - 2)
+				ifTrue: [ nbLines := nbLines - self line + 2 ].
+			nbCols > (self column - 2)
+				ifTrue: [ nbCols := nbCols - self column + 2 ] ].
+	^ (nbLines squared + nbCols squared) sqrt
 ]
 
 { #category : #'import - export' }
@@ -1259,7 +1248,7 @@ CMSpaceModel >> getAggregatesFrom: baseEntity attribute: attributeName [
 	"Return a collection of sets of contiguous components holding the same attributeName value"
 
 	| newCollection seed setOfComponents neighbours newNeighbours theLLEntities |
-	self boundaries = #closed
+	self closed
 		ifFalse: [ ^ self warningBoundaries ].
 	newCollection := OrderedCollection new.
 	theLLEntities := ((self cormasModel
@@ -1292,7 +1281,7 @@ CMSpaceModel >> getAggregatesFrom: baseEntity attribute: attributeName [
 { #category : #'private - regular polygons' }
 CMSpaceModel >> getAggregatesFrom: baseEntity verifying: aBlock [
 	| eeInstances set seed neighbours newNeighbours collec |
-	self boundaries = #closed
+	self closed
 		ifFalse: [ ^ self warningBoundaries ].
 	eeInstances := ((self cormasModel
 		perform: (self cormasModel getterForEntityClass: baseEntity))
@@ -1555,62 +1544,47 @@ CMSpaceModel >> getSetsOfContiguous: baseEntity attribute: attributeName excludi
 { #category : #'private - regular polygons' }
 CMSpaceModel >> getSetsOfContiguous: baseEntity conditionalBlocks: blocks conditionalArguments: arguments [
 	"Return a collection of sets of contiguous components"
-	
+
 	| collec seed setOfContiguousComponents neighbours newNeighbours baseEntities valuesB2 valuesB3 |
-	self boundaries = #closed ifFalse: [^self warningBoundaries].
+	self closed
+		ifFalse: [ ^ self warningBoundaries ].
 	baseEntities := ((self spatialEntities at: baseEntity name)
 		select:
-			[:c | 
-			blocks first
-				value: c
-				value: arguments first
-				value: arguments last]) copy asOrderedCollection.
+			[ :c | blocks first value: c value: arguments first value: arguments last ])
+		copy asOrderedCollection.
 	collec := OrderedCollection new.
-	[baseEntities isEmpty]
-		whileFalse:
-			[setOfContiguousComponents := Set new.
+	[ baseEntities isEmpty ]
+		whileFalse: [ setOfContiguousComponents := Set new.
 			seed := baseEntities first.
 			setOfContiguousComponents add: seed.
 			neighbours := seed neighbourhood
-				select:
-					[:v | 
+				select: [ :v | 
 					valuesB2 := Array new: 4.
 					valuesB2 at: 1 put: v.
 					valuesB2 at: 2 put: seed.
-					valuesB2
-						at: 3
-						put: arguments first.
-					valuesB2
-						at: 4
-						put: arguments last.
-					(blocks at: 2) valueWithArguments: valuesB2].
-			[neighbours isEmpty]
-				whileFalse:
-					[setOfContiguousComponents addAll: neighbours.
+					valuesB2 at: 3 put: arguments first.
+					valuesB2 at: 4 put: arguments last.
+					(blocks at: 2) valueWithArguments: valuesB2 ].
+			[ neighbours isEmpty ]
+				whileFalse: [ setOfContiguousComponents addAll: neighbours.
 					newNeighbours := Set new.
 					neighbours
-						do:
-							[:v | 
+						do: [ :v | 
 							newNeighbours
 								addAll:
 									(v neighbourhood
-										select:
-											[:u | 
+										select: [ :u | 
 											valuesB3 := Array new: 5.
 											valuesB3 at: 1 put: u.
 											valuesB3 at: 2 put: setOfContiguousComponents.
 											valuesB3 at: 3 put: seed.
-											valuesB3
-												at: 4
-												put: arguments first.
-											valuesB3
-												at: 5
-												put: arguments last.
-											blocks last valueWithArguments: valuesB3])].
-					neighbours := newNeighbours].
+											valuesB3 at: 4 put: arguments first.
+											valuesB3 at: 5 put: arguments last.
+											blocks last valueWithArguments: valuesB3 ]) ].
+					neighbours := newNeighbours ].
 			collec add: setOfContiguousComponents.
-			setOfContiguousComponents do: [:c | baseEntities remove: c]].
-	^collec
+			setOfContiguousComponents do: [ :c | baseEntities remove: c ] ].
+	^ collec
 ]
 
 { #category : #'private - regular polygons' }
@@ -1701,7 +1675,7 @@ CMSpaceModel >> importAggregateClass: class componentClass: cClass separator: aC
 				construct: class name asString , '.agg').
 	portableFilename asFilename exists
 		ifFalse: [ ^ self cormas warn: portableFilename asString , ' is missing !!!' ].
-	self boundaries = #closed
+	self closed
 		ifFalse: [ ^ self warningBoundaries ].
 	(self spatialEntities isNil
 		or: [ self spatialEntities isEmpty
@@ -1750,7 +1724,7 @@ CMSpaceModel >> importAggregateClass: class componentClass: cClass separator: aC
 		ifFalse: [ portableFilename := aStringOrFileName ].
 	portableFilename asFilename exists
 		ifFalse: [ ^ self cormas warn: portableFilename asString , ' is missing !!!' ].
-	self boundaries = #closed
+	self closed
 		ifFalse: [ ^ self warningBoundaries ].
 	(self spatialEntities isNil
 		or: [ self spatialEntities isEmpty
@@ -1824,21 +1798,18 @@ CMSpaceModel >> initAggregates: compoundEntity fromSeeds: aCollec [
 	This method resets all aggregates 'compoundEntity' and rebuids them. 
 	aCollec = a collection of base entities (inheriting from <SpatialEntityElement>) 
 	compoundEntity = a subClass of  <SpatialEntitySet> "
-	
-	self boundaries = #closed ifFalse: [^self warningBoundaries].
+
+	self closed
+		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
 		andTheirComponents: aCollec first class.
 	aCollec
-		do:
-			[:s | 
+		do: [ :s | 
 			(s isComponentOf: compoundEntity)
-				ifFalse:
-					[self
-						createSilentlyAggregate: compoundEntity
-						from: (Set with: s)]].
+				ifFalse: [ self createSilentlyAggregate: compoundEntity from: (Set with: s) ] ].
 	self dispatchCompoundSpatialEntity: compoundEntity.
-	^self spatialEntities at: compoundEntity name
+	^ self spatialEntities at: compoundEntity name
 ]
 
 { #category : #'CSE (regular) - instance creation' }
@@ -1853,36 +1824,33 @@ CMSpaceModel >> initAggregates: compoundEntity fromSeeds: aCollecOfCells sizeDis
 
 	Ex: to generate 3 aggregates size 1, 5 aggregates size 2, and 2 aggregates size 3, this has to be (#(3 1) #(5 2) #(2 3)). 
 	This method uses the attribute called givenSize defined for SpatialEntityAggregate"
-	
+
 	| counter subsetIndice |
-	self boundaries = #closed ifFalse: [^self warningBoundaries].
+	self closed
+		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
 		andTheirComponents: aCollecOfCells first class.
-	((aDistribution collect: [:pair | pair first])
+	((aDistribution collect: [ :pair | pair first ])
 		inject: 0
-		into: [:sum :i | sum + i]) ~= aCollecOfCells size
-		ifTrue:
-			[self error:
-					'the number of seeds is different from the number of aggregates !!!'].
+		into: [ :sum :i | sum + i ]) ~= aCollecOfCells size
+		ifTrue: [ self
+				error: 'the number of seeds is different from the number of aggregates !!!' ].
 	counter := 0.
 	subsetIndice := 1.
 	aCollecOfCells
-		do:
-			[:cell | 
+		do: [ :cell | 
 			(cell isComponentOf: compoundEntity)
-				ifFalse:
-					[(self
+				ifFalse: [ (self
 						createSilentlyAggregate: compoundEntity
 						from: (OrderedCollection with: cell))
 						givenSize: (aDistribution at: subsetIndice) last.
 					counter := counter + 1.
 					counter = (aDistribution at: subsetIndice) first
-						ifTrue:
-							[counter := 0.
-							subsetIndice := subsetIndice + 1]]].
+						ifTrue: [ counter := 0.
+							subsetIndice := subsetIndice + 1 ] ] ].
 	self dispatchCompoundSpatialEntity: compoundEntity.
-	^self spatialEntities at: compoundEntity name
+	^ self spatialEntities at: compoundEntity name
 ]
 
 { #category : #'private - regular cells - instance creation' }
@@ -2010,7 +1978,7 @@ CMSpaceModel >> initializeIrregular [
 	
 	gridCellShape := #irregular.
 	nbNeighbours := #irregular.
-	boundaries := #closed.
+	closed := true.
 	line := nil.
 	column := nil.
 	cardinal := 0	"arrayOrigins := Array new: cardinal."
@@ -2023,29 +1991,33 @@ CMSpaceModel >> initializeRegular [
 		column: 10
 		shape: #squared
 		nbNeighbours: #four
-		boundaries: #closed.
+		closed: true.
 "	self createCells"
 ]
 
 { #category : #'ESE initialize-release' }
-CMSpaceModel >> initializeRegularLines: lines columns: columns shape: shapeSymbol nbNeighbours: nbSymbol boundaries: bSymbol [
+CMSpaceModel >> initializeRegularLines: lines columns: columns shape: shapeSymbol nbNeighbours: nbSymbol closed: aBoolean [
 	"Create a grid of regular cells.
 lines = number of lines. columns = number of columns.
 shapeSymbol =<Symbol> (#squared , )
 nbSymbol =<Symbol> (#four, #six or #eight)
-bSymbol = <Symbol> (#toroidal or #closed) .
+aBoolean = <Boolean> (true for closed, false for toroidal).
 ex, from CormasModel:
-	self spaceModel initializeRegularColumns: 101 lines: 101 shape: #squared nbNeighbours: #eight boundaries: #toroidal."
-	
+	self spaceModel initializeRegularColumns: 101 lines: 101 shape: #squared nbNeighbours: #eight toroidal: true."
+
 	self resetSpatialEntities.
-	self line: lines column: columns shape: shapeSymbol nbNeighbours: nbSymbol
-		boundaries: bSymbol.
+	self
+		line: lines
+		column: columns
+		shape: shapeSymbol
+		nbNeighbours: nbSymbol
+		closed: aBoolean.
 	self createCells
 ]
 
 { #category : #deprecated }
 CMSpaceModel >> initializeRegularX: columns Y: lines shape: shapeSymbol nbNeighbours: nbSymbol boundaries: bSymbol [
-	"This method is deprecated. Please use initializeRegularColumns:lines:shape:nbNeighbours:boundaries: instead."
+	"This method is deprecated. Please use initializeRegularColumns:lines:shape:nbNeighbours:closed: instead."
 
 	"Create a grid of regular cells.
 lines = number of lines. columns = number of columns.
@@ -2057,13 +2029,13 @@ ex, from CormasModel:
 
 	self
 		deprecated:
-			'This method is no longer supported. Please use initializeRegularColumns:lines:shape:nbNeighbours:boundaries: instead.'.
+			'This method is no longer supported. Please use initializeRegularColumns:lines:shape:nbNeighbours:closed: instead.'.
 	^ self
 		initializeRegularLines: lines
 		columns: columns
 		shape: shapeSymbol
 		nbNeighbours: nbSymbol
-		boundaries: bSymbol
+		closed: bSymbol ~= #torroidal
 ]
 
 { #category : #'private - init' }
@@ -2121,11 +2093,10 @@ CMSpaceModel >> line: i column: j [
 ]
 
 { #category : #'private - init' }
-CMSpaceModel >> line: l column: c shape: ps nbNeighbours: nbn boundaries: b [
-	
+CMSpaceModel >> line: l column: c shape: ps nbNeighbours: nbn closed: b [
 	self gridCellShape: ps.
 	self nbNeighbours: nbn.
-	boundaries := b.
+	closed := b.
 	self line: l column: c
 ]
 
@@ -2177,41 +2148,36 @@ CMSpaceModel >> loadEnvironmentFromFile: aFilename [
 
 { #category : #'CSE (general) - import - export' }
 CMSpaceModel >> loadNeighboorsClass: class separator: aChar [
-	
 	| stream portableFilename ligne dataVector item id anEntity |
 	portableFilename := (Cormas mapsPath: self cormasModelClass name)
 		construct: class name asString , '_Neighboors.agg'.
 	portableFilename asFilename exists
-		ifFalse:
-			[^self cormas warn: portableFilename asString , ' is missing !!!'].
-	self boundaries = #closed ifFalse: [^self warningBoundaries].
+		ifFalse: [ ^ self cormas warn: portableFilename asString , ' is missing !!!' ].
+	self closed
+		ifFalse: [ ^ self warningBoundaries ].
 	(self spatialEntities isNil
-		or:
-			[self spatialEntities isEmpty
-				or:
-					[(self spatialEntities includesKey: class name) not
-						or: [(self spatialEntities at: class name) isEmpty]]])
-		ifTrue:
-			[self cormas warn: 'pb !!!'.
-			self halt].	"self resetSpatialEntity: class."
+		or: [ self spatialEntities isEmpty
+				or: [ (self spatialEntities includesKey: class name) not
+						or: [ (self spatialEntities at: class name) isEmpty ] ] ])
+		ifTrue: [ self cormas warn: 'pb !!!'.
+			self halt ].	"self resetSpatialEntity: class."
 	stream := portableFilename asFilename readStream.	"On devine le format des lignes"
 	stream lineEndAuto.
-	[stream atEnd]
-		whileFalse:
-			[ligne := (stream upTo: Character cr) readStream.
+	[ stream atEnd ]
+		whileFalse: [ ligne := (stream upTo: Character cr) readStream.
 			dataVector := OrderedCollection new.
-			[ligne atEnd]
-				whileFalse:
-					[item := ligne upTo: aChar.
-					dataVector add: item asNumber].
+			[ ligne atEnd ]
+				whileFalse: [ item := ligne upTo: aChar.
+					dataVector add: item asNumber ].
 			ligne close.
 			id := dataVector first.
 			anEntity := self getInstanceOfClass: class fromId: id.
 			anEntity neighbourhood: OrderedCollection new.
 			dataVector remove: id.
 			dataVector
-				do:
-					[:anID | anEntity neighbourhood add: (self getInstanceOfClass: class fromId: anID)]].
+				do: [ :anID | 
+					anEntity neighbourhood
+						add: (self getInstanceOfClass: class fromId: anID) ] ].
 	stream close
 ]
 
@@ -2301,57 +2267,58 @@ CMSpaceModel >> meanPatchSize: aClass [
 { #category : #'private - regular cells - instance creation' }
 CMSpaceModel >> mergeCells: listOfCells [
 	"Merge the cells of  listOfCells in one cell. The id of the new cell = the id of the first cell. Set the neighbours of the new cell and the new shape. The other cells are removed."
-	
+
 	| newCell neighbours componentsPovs anEntityPOV minID newEntities |
-	listOfCells size < 2 ifTrue: [^nil].
+	listOfCells size < 2
+		ifTrue: [ ^ nil ].
 	newCell := listOfCells first.	"set the edge of newCell"
-	self boundaries = #torroidal
-		ifFalse: [listOfCells do: [:p | p edge ifTrue: [newCell edge: true]]].	"set the neighbours of newCell"
+	self closed
+		ifTrue: [ listOfCells
+				do: [ :p | 
+					p edge
+						ifTrue: [ newCell edge: true ] ] ].	"set the neighbours of newCell"
 	neighbours := OrderedCollection new.
-	listOfCells do: [:c | neighbours addAll: c neighbourhood].
-	listOfCells do: [:c | neighbours remove: c ifAbsent: nil].
+	listOfCells do: [ :c | neighbours addAll: c neighbourhood ].
+	listOfCells do: [ :c | neighbours remove: c ifAbsent: nil ].
 	newCell neighbourhood: neighbours asOrderedCollection.	"agg := self basicCreateAggregate: SpatialEntityAggregate from: listOfCells."	"set the POV of newCell"
 	componentsPovs := OrderedCollection new.
 	listOfCells
 		do:
-			[:c | componentsPovs add: (self elementaryEntitiesDefaultPovs at: c id)].
+			[ :c | componentsPovs add: (self elementaryEntitiesDefaultPovs at: c id) ].
 	anEntityPOV := VectorialCompositePOV newFrom: componentsPovs.
 	anEntityPOV entityReference: (EntityReference on: newCell).
-	self elementaryEntitiesDefaultPovs
-		at: newCell id
-		put: anEntityPOV.	"remove the other cells"
+	self elementaryEntitiesDefaultPovs at: newCell id put: anEntityPOV.	"remove the other cells"
 	listOfCells removeFirst.
 	componentsPovs removeFirst.
 	self elementaryEntitiesDefaultPovs removeAll: componentsPovs.
 	self elementaryEntities: self elementaryEntities asOrderedCollection.
-	listOfCells do: [:c | self elementaryEntities remove: c ifAbsent: nil].
 	listOfCells
-		do:
-			[:c | 
+		do: [ :c | self elementaryEntities remove: c ifAbsent: nil ].
+	listOfCells
+		do: [ :c | 
 			c destroyed: true.
 			self cormasModel
 				registerEntityChange: #removeEntity
-				from: (EntityReference on: c)].	"MAJ des cells voisines"
+				from: (EntityReference on: c) ].	"MAJ des cells voisines"
 	neighbours
-		do:
-			[:c | 
+		do: [ :c | 
 			c neighbourhood: c neighbourhood asOrderedCollection.
-			c neighbourhood removeAllSuchThat: [:n | listOfCells includes: n].
+			c neighbourhood removeAllSuchThat: [ :n | listOfCells includes: n ].
 			(c neighbourhood includes: newCell)
-				ifFalse: [c neighbourhood add: newCell]].	"Reparation des IDs"
+				ifFalse: [ c neighbourhood add: newCell ] ].	"Reparation des IDs"
 	minID := newCell id.
-	listOfCells do: [:c | c id < minID ifTrue: [minID := c id]].
+	listOfCells
+		do: [ :c | 
+			c id < minID
+				ifTrue: [ minID := c id ] ].
 	newCell id: minID.
 	newEntities := self elementaryEntities
-		asSortedCollection: [:a :b | a id < b id].
-	1
-		to: newEntities size
-		do: [:i | (newEntities at: i) id: i].
+		asSortedCollection: [ :a :b | a id < b id ].
+	1 to: newEntities size do: [ :i | (newEntities at: i) id: i ].
 	newCell class CurrentId: newEntities size.
 	gridCellShape := #irregular.	"newCells notification also dispatch the request to remoteSpaceModels to rebuild the cell figures"
 	self
-		sendCellsToClientSpaceModels:
-			(EntityReference onEntities: self elementaryEntities)	"dispatch the info that cells have been modifyed to all opened spaceInterfaces"	"self changed: #newCells"
+		sendCellsToClientSpaceModels: (EntityReference onEntities: self elementaryEntities)	"dispatch the info that cells have been modifyed to all opened spaceInterfaces"	"self changed: #newCells"
 ]
 
 { #category : #'landscape indices' }
@@ -2417,11 +2384,13 @@ CMSpaceModel >> noPatch [
 
 { #category : #'private - regular cells - instance creation' }
 CMSpaceModel >> northCell: k [
-	
-	k = 0 ifTrue: [^0].
-	k > column ifTrue: [^k - column].
-	boundaries == #torroidal ifTrue: [^column * (line - 1) + k].
-	^0
+	k = 0
+		ifTrue: [ ^ 0 ].
+	k > column
+		ifTrue: [ ^ k - column ].
+	^ closed
+		ifTrue: [ 0 ]
+		ifFalse: [ column * (line - 1) + k ]
 ]
 
 { #category : #'private - notification' }
@@ -2726,7 +2695,7 @@ file <Filename> ex: aFATFilename('d:\vw7nc\cormas\Models\TSE\maps\titi.env')"
 		nextPutAll: '\' withCRs.
 	stream
 		nextPutAll: 'cloture	';
-		nextPutAll: boundaries asString;
+		nextPutAll: closed asString;
 		nextPutAll: '\' withCRs.
 	stream
 		nextPutAll: 'connexite	';
@@ -3309,14 +3278,16 @@ CMSpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attrib
 	baseEntity = a subClass of  <SpatialEntity> 
 	attributeName = #context for example 
 	compoundEntity = a subClass of  <SpatialEntitySet>"
-	
-	self boundaries = #closed ifFalse: [^self warningBoundaries].
-	self resetCompoundSpatialEntity: compoundEntity andTheirComponents:
-			baseEntity.
+
+	self closed
+		ifFalse: [ ^ self warningBoundaries ].
+	self
+		resetCompoundSpatialEntity: compoundEntity
+		andTheirComponents: baseEntity.
 	(self getAggregatesFrom: baseEntity attribute: attributeName)
-		do: [:set | self createSilentlyAggregate: compoundEntity from: set].
+		do: [ :set | self createSilentlyAggregate: compoundEntity from: set ].
 	self dispatchCompoundSpatialEntity: compoundEntity.
-	^self spatialEntities at: compoundEntity name
+	^ self spatialEntities at: compoundEntity name
 ]
 
 { #category : #'CSE (regular) - instance creation' }
@@ -3326,15 +3297,19 @@ CMSpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attrib
 	baseEntity = a subClass of  <SpatialEntity> 
 	attributeName = #context for example 
 	compoundEntity = a subClass of  <SpatialEntitySet>"
-	
-	self boundaries = #closed ifFalse: [^self warningBoundaries].
-	self resetCompoundSpatialEntity: compoundEntity andTheirComponents:
-			baseEntity.
-	(self getSetsOfContiguous: baseEntity attribute: attributeName1 attribute:
-			attributeName2)
-		do: [:set | self createSilentlyAggregate: compoundEntity from: set].
+
+	self closed
+		ifFalse: [ ^ self warningBoundaries ].
+	self
+		resetCompoundSpatialEntity: compoundEntity
+		andTheirComponents: baseEntity.
+	(self
+		getSetsOfContiguous: baseEntity
+		attribute: attributeName1
+		attribute: attributeName2)
+		do: [ :set | self createSilentlyAggregate: compoundEntity from: set ].
 	self dispatchCompoundSpatialEntity: compoundEntity.
-	^self spatialEntities at: compoundEntity name
+	^ self spatialEntities at: compoundEntity name
 ]
 
 { #category : #'CSE (regular) - instance creation' }
@@ -3345,15 +3320,19 @@ CMSpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attrib
 	attributeName = #context for example 
 	aValue is a specific value of the attribute, for instance #notDefined, or 0
 	compoundEntity = a subClass of  <SpatialEntitySet>"
-	
-	self boundaries = #closed ifFalse: [^self warningBoundaries].
-	self resetCompoundSpatialEntity: compoundEntity andTheirComponents:
-			baseEntity.
-	(self getSetsOfContiguous: baseEntity attribute: attributeName
+
+	self closed
+		ifFalse: [ ^ self warningBoundaries ].
+	self
+		resetCompoundSpatialEntity: compoundEntity
+		andTheirComponents: baseEntity.
+	(self
+		getSetsOfContiguous: baseEntity
+		attribute: attributeName
 		excludingValue: aValue)
-		do: [:set | self createSilentlyAggregate: compoundEntity from: set].
+		do: [ :set | self createSilentlyAggregate: compoundEntity from: set ].
 	self dispatchCompoundSpatialEntity: compoundEntity.
-	^self spatialEntities at: compoundEntity name
+	^ self spatialEntities at: compoundEntity name
 ]
 
 { #category : #'CSE (regular) - instance creation' }
@@ -3363,15 +3342,19 @@ The aggregates will  occupy the whole grid.
 	This method resets all aggregates 'compoundEntity' and rebuids them. 
 	baseEntity = a subClass of  <SpatialEntity> 
 	compoundEntity = a subClass of  <SpatialEntitySet>"
-	
-	self boundaries = #closed ifFalse: [^self warningBoundaries].
-	self resetCompoundSpatialEntity: compoundEntity andTheirComponents:
-			baseEntity.
-	(self getSetsOfContiguous: baseEntity horizontalDividers: xRatio
+
+	self closed
+		ifFalse: [ ^ self warningBoundaries ].
+	self
+		resetCompoundSpatialEntity: compoundEntity
+		andTheirComponents: baseEntity.
+	(self
+		getSetsOfContiguous: baseEntity
+		horizontalDividers: xRatio
 		verticalDividers: yRatio)
-		do: [:set | self createSilentlyAggregate: compoundEntity from: set].
+		do: [ :set | self createSilentlyAggregate: compoundEntity from: set ].
 	self dispatchCompoundSpatialEntity: compoundEntity.
-	^self spatialEntities at: compoundEntity name
+	^ self spatialEntities at: compoundEntity name
 ]
 
 { #category : #'CSE (regular) - instance creation' }
@@ -3510,7 +3493,7 @@ CMSpaceModel >> setFragmentedEntities: compoundEntity from: baseEntity attribute
 	compoundEntity = a Class name inheriting from <SpatialEntityNotConnex>"
 
 	| fragmentedEntity beInstances collec |
-	self boundaries = #closed
+	self closed
 		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
@@ -3541,7 +3524,7 @@ CMSpaceModel >> setFragmentedEntities: compoundEntity from: baseEntity verifying
 	compoundEntity = a Class name inheriting from <SpatialEntityNotConnex>"
 
 	| fragmentedEntity beInstances |
-	self boundaries = #closed
+	self closed
 		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
@@ -3562,18 +3545,21 @@ CMSpaceModel >> setFragmentedEntity: compoundEntity fromCollection: aCollecOfSpa
 	This method resets all aggregates 'compoundEntity' and rebuids them. 
 	aCollecOfSpatialEntityElement = a collection of base entities (inheriting from <SpatialEntityElement>) 
 	compoundEntity = a Class name inheriting from <SpatialEntityNotConnex>"
-	
+
 	| aSet |
-	self boundaries = #closed ifFalse: [^self warningBoundaries].
+	self closed
+		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
 		andTheirComponents: aCollecOfSpatialEntityElement first class.
 	aSet := Set new.
 	aCollecOfSpatialEntityElement
-		do: [:s | (s isComponentOf: compoundEntity) ifTrue: [aSet add: s]].
+		do: [ :s | 
+			(s isComponentOf: compoundEntity)
+				ifTrue: [ aSet add: s ] ].
 	self createSilentlyAggregate: compoundEntity from: aSet.
 	self dispatchCompoundSpatialEntity: compoundEntity.
-	^self spatialEntities at: compoundEntity name
+	^ self spatialEntities at: compoundEntity name
 ]
 
 { #category : #'private - regular polygons' }
@@ -3809,21 +3795,18 @@ CMSpaceModel >> setSingletonAggregates: compoundEntity fromSeeds: aCollec [
 	This method resets all aggregates 'compoundEntity' and rebuids them. 
 	aCollec = a collection of base entities (inheriting from <SpatialEntity>) 
 	compoundEntity = a Class name inheriting from <SpatialEntitySet>"
-	
-	self boundaries = #closed ifFalse: [^self warningBoundaries].
+
+	self closed
+		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
 		andTheirComponents: aCollec first class.
 	aCollec
-		do:
-			[:s | 
+		do: [ :s | 
 			(s isComponentOf: compoundEntity)
-				ifFalse:
-					[self
-						createSilentlyAggregate: compoundEntity
-						from: (Set with: s)]].
+				ifFalse: [ self createSilentlyAggregate: compoundEntity from: (Set with: s) ] ].
 	self dispatchCompoundSpatialEntity: compoundEntity.
-	^self spatialEntities at: compoundEntity name
+	^ self spatialEntities at: compoundEntity name
 ]
 
 { #category : #'ESE initialize-release' }
@@ -3940,7 +3923,7 @@ CMSpaceModel >> settingsFrom: aClone [
 				columns: aClone column
 				shape: aClone gridCellShape
 				nbNeighbours: aClone nbNeighbours
-				boundaries: aClone boundaries ]
+				closed: aClone closed ]
 ]
 
 { #category : #'landscape indices' }
@@ -3974,11 +3957,13 @@ CMSpaceModel >> snapGridTimeForMovie: t makingMovie: aBoolean [
 
 { #category : #'private - regular cells - instance creation' }
 CMSpaceModel >> southCell: k [
-	
-	k = 0 ifTrue: [^0].
-	k <= (column * (line - 1)) ifTrue: [^k + column].
-	boundaries == #torroidal ifTrue: [^k - (column * (line - 1))].
-	^0
+	k = 0
+		ifTrue: [ ^ 0 ].
+	k <= (column * (line - 1))
+		ifTrue: [ ^ k + column ].
+	^ closed
+		ifTrue: [ 0 ]
+		ifFalse: [ k - (column * (line - 1)) ]
 ]
 
 { #category : #accessing }
@@ -4346,10 +4331,11 @@ CMSpaceModel >> wayFromCell: cell1 toCell: cell2 [
 
 { #category : #'private - regular cells - instance creation' }
 CMSpaceModel >> westCell: k [
-	
-	k \\ column = 1 ifFalse: [^k - 1].
-	boundaries == #torroidal ifTrue: [^k + column - 1].
-	^0
+	k \\ column = 1
+		ifFalse: [ ^ k - 1 ].
+	^ closed
+		ifTrue: [ 0 ]
+		ifFalse: [ k + column - 1 ]
 ]
 
 { #category : #'private - regular cells - instance creation' }

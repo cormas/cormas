@@ -5,7 +5,7 @@ Class {
 		'isStrict',
 		'model',
 		'defaultConnectivity',
-		'defaultClosure'
+		'defaultClosed'
 	],
 	#category : #'Cormas-Core-Space'
 }
@@ -42,10 +42,11 @@ CMCellsLoader >> attribute: aString type: anotherString values: anArrayOfArray [
 ]
 
 { #category : #loading }
-CMCellsLoader >> closure: aString [
-	self assert: (#('torroidal' 'closed') includes: aString).
+CMCellsLoader >> closed: aString [
+	self assert: (#('true' 'false') includes: aString).
 	self
-		spaceModelDo: [ :spaceModel | spaceModel boundaries: aString asSymbol ]
+		spaceModelDo:
+			[ :spaceModel | spaceModel closed: aString ~= 'false' ]
 ]
 
 { #category : #loading }
@@ -68,13 +69,13 @@ CMCellsLoader >> connectivity: aString [
 ]
 
 { #category : #defaults }
-CMCellsLoader >> defaultClosure [
-	^ defaultClosure ifNil: [ defaultClosure := 'closed' ]
+CMCellsLoader >> defaultClosed [
+	^ defaultClosed ifNil: [ defaultClosed := 'true' ]
 ]
 
 { #category : #defaults }
-CMCellsLoader >> defaultClosure: aString [
-	defaultClosure := aString
+CMCellsLoader >> defaultClosed: aString [
+	defaultClosed := aString
 ]
 
 { #category : #defaults }
@@ -140,7 +141,7 @@ CMCellsLoader >> load: aFileReference [
 				resetSpatialEntities;
 				createCells ].
 	self
-		closure: (metadata at: 'closure' ifAbsent: [ self defaultClosure ]).
+		closed: (metadata at: 'closed' ifAbsent: [ self defaultClosed ]).
 	metadata
 		at: 'attributes'
 		ifPresent: [ :attributes | 
