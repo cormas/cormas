@@ -26,7 +26,8 @@ BaselineOfCormas >> baseline: spec [
 				baseline: 'FileDialog'
 					with: [ spec repository: 'github://peteruhnak/file-dialog/repository' ];
 				baseline: 'ProjectFramework'
-					with: [ spec repository: 'github://hernanmd/ProjectFramework/repository' ];
+					with: [ spec
+						repository: 'github://hernanmd/ProjectFramework/repository' ];
 				baseline: 'CodeGenerator'
 					with: [ spec repository: 'github://hernanmd/CodeGenerator/repository' ];
 				baseline: 'Roassal2'
@@ -84,12 +85,10 @@ BaselineOfCormas >> baseline: spec [
 			spec
 				baseline: 'Tabular'
 					with: [ spec repository: 'github://VincentBlondeau/Tabular' ];
-					spec; 
-			baseline: 'OSSubprocess'
-			with: [ spec repository: 'github://pharo-contributions/OSSubprocess/repository' ];
 				baseline: 'NeoJSON'
-					with: [ "baseline: 'Roassal3'
-					with: [ spec repository: 'github://ObjectProfile/Roassal3' ];" spec repository: 'github://svenvc/NeoJSON/repository' ] ].
+					with: [ spec repository: 'github://svenvc/NeoJSON/repository' ] ].
+	"baseline: 'Roassal3'
+					with: [ spec repository: 'github://ObjectProfile/Roassal3' ];"
 	spec
 		for: #'pharo9.x'
 		do: [ spec preLoadDoIt: #preLoadForPharo9.
@@ -141,11 +140,14 @@ CMSpecProjectWindow allInstances } allSatisfy: #isEmpty.'
 
 { #category : #doits }
 BaselineOfCormas >> ensureMetacelloFileDownload [
-
-	Metacello new           
-		baseline: 'MetacelloFileDownload';              
-		repository: 'github://hernanmd/MetacelloFileDownload';          
+	Metacello new
+		baseline: 'OSSubprocess';
+		repository: 'github://pharo-contributions/OSSubprocess/repository';
 		load.
+	Metacello new
+		baseline: 'MetacelloFileDownload';
+		repository: 'github://hernanmd/MetacelloFileDownload';
+		load
 ]
 
 { #category : #doits }
