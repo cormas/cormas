@@ -84,12 +84,13 @@ BaselineOfCormas >> baseline: spec [
 			spec
 				baseline: 'Tabular'
 					with: [ spec repository: 'github://VincentBlondeau/Tabular' ];
-					spec; 
-			baseline: 'OSSubprocess'
-			with: [ spec repository: 'github://pharo-contributions/OSSubprocess/repository' ];
+				baseline: 'OSSubprocess'
+					with: [ spec
+						repository: 'github://pharo-contributions/OSSubprocess/repository' ];
 				baseline: 'NeoJSON'
-					with: [ "baseline: 'Roassal3'
-					with: [ spec repository: 'github://ObjectProfile/Roassal3' ];" spec repository: 'github://svenvc/NeoJSON/repository' ] ].
+					with: [ spec repository: 'github://svenvc/NeoJSON/repository' ] ].
+				"baseline: 'Roassal3'
+					with: [ spec repository: 'github://ObjectProfile/Roassal3' ];" 
 	spec
 		for: #'pharo9.x'
 		do: [ spec preLoadDoIt: #preLoadForPharo9.
