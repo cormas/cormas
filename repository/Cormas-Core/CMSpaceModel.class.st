@@ -535,7 +535,8 @@ CMSpaceModel >> closed: aBoolean [
 { #category : #accessing }
 CMSpaceModel >> cmEnvFile [
 	" Answer a <CMEnvFile> for the receiver's env file reader "
-	
+
+	self deprecated: 'env file is deprecated'.
 	^ self envReader cmEnvFile
 ]
 
@@ -986,12 +987,16 @@ CMSpaceModel >> elementaryEntitiesDefaultPovs: anObject [
 CMSpaceModel >> envReader [
 	" Answer a <CMEnvFileReader> used to read and parse a .env file "
 
+	self deprecated: 'env file is deprecated'.
 	^ envReader
-		ifNil: [ envReader := CMEnvFileReader new cormasModel: cormasModel; spaceModel: self ]
+		ifNil: [ envReader := CMEnvFileReader new
+				cormasModel: cormasModel;
+				spaceModel: self ]
 ]
 
 { #category : #accessing }
 CMSpaceModel >> envReader: anObject [
+	self deprecated: 'env format is obsolete'.
 	envReader := anObject
 ]
 
