@@ -182,6 +182,18 @@ CMECECForager >> move [
 					(goodCells asSortedCollection: [:c1 :c2 | c1 biomass > c2 biomass]) first]
 ]
 
+{ #category : #'+ pov' }
+CMECECForager >> pov [
+	"To get the option in the grid visualisation window"
+self subclassResponsibility 
+]
+
+{ #category : #'+ pov' }
+CMECECForager >> povEnergy [
+	"To get the option in the grid visualisation window"
+self subclassResponsibility 
+]
+
 { #category : #biology }
 CMECECForager >> reproduce [
 	"The forager reproduces asexually, creating an offspring with the same heritable traits as itself (e.g., feeding strategy). At the same time the parent's energy is reduced by the offspring's initial energy (50).  Newborn offspring occupies the nearest free place to its parent. "
