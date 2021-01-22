@@ -43,7 +43,6 @@ Class {
 		'cellSize',
 		'absoluteBounds',
 		'autoResizeBounds',
-		'envReader',
 		'isFull',
 		'closed'
 	],
@@ -532,14 +531,6 @@ CMSpaceModel >> closed: aBoolean [
 	self cormasModel registerSpaceModelChange: #boundariesChanged	"dispatch the info to other spaceInterfaces"
 ]
 
-{ #category : #accessing }
-CMSpaceModel >> cmEnvFile [
-	" Answer a <CMEnvFile> for the receiver's env file reader "
-
-	self deprecated: 'env file is deprecated'.
-	^ self envReader cmEnvFile
-]
-
 { #category : #'private - accessing' }
 CMSpaceModel >> column [
 	^ column
@@ -981,23 +972,6 @@ CMSpaceModel >> elementaryEntitiesDefaultPovs [
 CMSpaceModel >> elementaryEntitiesDefaultPovs: anObject [
 	
 	elementaryEntitiesDefaultPovs := anObject
-]
-
-{ #category : #accessing }
-CMSpaceModel >> envReader [
-	" Answer a <CMEnvFileReader> used to read and parse a .env file "
-
-	self deprecated: 'env file is deprecated'.
-	^ envReader
-		ifNil: [ envReader := CMEnvFileReader new
-				cormasModel: cormasModel;
-				spaceModel: self ]
-]
-
-{ #category : #accessing }
-CMSpaceModel >> envReader: anObject [
-	self deprecated: 'env format is obsolete'.
-	envReader := anObject
 ]
 
 { #category : #'user interface' }
@@ -2142,16 +2116,6 @@ CMSpaceModel >> loadEnvironmentFromDirectory: aName withPov: aSymbol [
 ]
 
 { #category : #'CSE (general) - import - export' }
-CMSpaceModel >> loadEnvironmentFromFile: aFilename [
-	" Load aFilename .env file and configure the reiceiver's using a CMEnvFile "
-	
-	self deprecated: 'Use loadEnvironmentFromDirectory:'.
-	self envReader loadEnvironmentFromFile: aFilename.
-	self configureSpace.
-
-]
-
-{ #category : #'CSE (general) - import - export' }
 CMSpaceModel >> loadNeighboorsClass: class separator: aChar [
 	| stream portableFilename ligne dataVector item id anEntity |
 	portableFilename := (Cormas mapsPath: self cormasModelClass name)
@@ -2520,48 +2484,6 @@ CMSpaceModel >> outlineAggregatedFrom: listPolygons [
 					[followingSegment removeFirst.
 					newOutline addAll: followingSegment]].
 	^newOutline
-]
-
-{ #category : #parsing }
-CMSpaceModel >> parseSpatialEntitiesAttributeValues [
-
-	| aMatrix numLigne i valeur aCell listAttr_type |
-	
-	numLigne := 0.
-	aMatrix := self cmEnvFile matrix.
-	[ aMatrix first first includesSubstring: 'attributs' ] 
-		whileFalse: [ aMatrix removeFirst ].
-	self isFull 
-		ifFalse:[ ^ self 
-			setUncompleteGridFromData: aMatrix 
-			forAttributes: listAttr_type ].
-		self halt.
-	listAttr_type := self cmEnvFile attributes asSet asOrderedCollection.
-	aMatrix removeFirst.
-	aMatrix := aMatrix collect: [ : arr | arr asOrderedCollection ].
-	aMatrix do: [ : aLine |  
-		| aColl |
-		numLigne := numLigne + 1.
-		i := 0.
-		aLine removeAllSuchThat: [:v | v isNil].
-		aLine first isCollection 
-			ifFalse:[aColl := OrderedCollection with: aLine first] 
-			ifTrue:[aColl := (Cormas splitString: aLine first with: $, )].
-		aColl do: [:val | |attr_type|
-			i := i + 1.	
-			valeur := val asString.
-			attr_type := listAttr_type at: i.
-			aCell := self elementaryEntities at: numLigne.
-			attr_type := attr_type first -> attr_type second.
-			attr_type value = #asEntity
-				ifTrue: [
-					valeur := (valeur findTokens: $.) last asSymbol.
-					aCell perform: attr_type key with: valeur]
-				ifFalse: [
-					aCell perform: attr_type key with: 
-						(valeur = 'nil'
-								ifFalse: [valeur perform: attr_type value]
-								ifTrue: [nil])]]]
 ]
 
 { #category : #'landscape indices' }

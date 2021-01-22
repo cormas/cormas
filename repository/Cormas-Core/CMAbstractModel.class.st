@@ -1774,15 +1774,6 @@ Example: self createAggregates: Forest fromSeeds: (self theCells select:[:c| c i
 		verifying: aBlock sizeDistribution: dis
 ]
 
-{ #category : #'+ utilities - save load attributes' }
-CMAbstractModel >> createEntities: aClass fromFile: aStringOrFilename [
-	"Load data from a File, create as many instances of aClass as necessary and set the values of the attributs according to the format declared into the file. 
-	If the patchID is declared into the file, the located entities are moved to the right cells"
-	
-	self createInstancesFromClass: aClass fromFile: aStringOrFilename.
-	self setValuesForEntities: aClass fromFile: aStringOrFilename
-]
-
 { #category : #'+ instance creation - spatial entities' }
 CMAbstractModel >> createFragmentedEntities: compoundEntity from: baseEntity attribute: attributeName [
 	"Purpose: Create n fragmented spatial entities <SpatialEntityNotConnex>. Each fragmented spatial entity is composed of spatial elements that have the same value of anAttribute. This method resets all fragmented spatial entities 'compoundEntity' and rebuilds them.
@@ -1870,24 +1861,6 @@ Example: 	self createGridNeighbourhood: 8 closed: true fromMatrixCsvFile: 'map.c
 			c
 				perform: (aName , ':') asSymbol
 				with: (Cormas stringAsObjectType: string) ]
-]
-
-{ #category : #'utilities - files' }
-CMAbstractModel >> createInstancesFromClass: aClass fromFile: aStringOrFilename [
-	"class := (self class environment at: className asSymbol)."
-	
-	| fileSize a collec getter |
-	fileSize := (self getDataLinesFromFile: aStringOrFilename) size.
-	self
-		perform: (self setterForEntityClass: aClass)
-		with: OrderedCollection new.
-	getter := self getterForEntityClass: aClass.
-	fileSize - 1
-		timesRepeat:
-			[a := aClass new.
-			collec := self perform: getter.
-			collec add: a].
-	^collec
 ]
 
 { #category : #'+ instance creation - agents & objects' }
@@ -2957,72 +2930,6 @@ CMAbstractModel >> lastValueOfGlobalDataNamed: name [
 		ifFalse: [^0]
 ]
 
-{ #category : #'util_files' }
-CMAbstractModel >> loadAttributesForClass: aClass fromFile: aStringOrFilename [
-	"Load data from a File and set the values of the attributs according to the format declared into the file"
-	
-	| stream aFilename attype dataLine couple name type numLigne i valeur instances method fileSize getter |
-	aFilename := self stringToFilename: aStringOrFilename.
-	fileSize := (self getDataLinesFromFile: aStringOrFilename) size.
-	getter := self getterForEntityClass: aClass.
-	instances := self perform: getter.
-	fileSize - 1 = instances size
-		ifFalse:
-			[self cormas
-				warn: 'Different number of instances declared in <1s> and in <2s> !!'
-				with: aStringOrFilename asString
-				with: getter.
-			self halt].	"Reading the datafile, line by line, each line is giving the values for the attributes of an instance of the class"
-	aFilename exists
-		ifFalse:
-			[self cormas warn: 'This particular datafile does not exist !!'.
-			^nil].
-	stream := aFilename readStream.	"On devine le format des lignes"
-	stream lineEndAuto.
-	attype := OrderedCollection new.
-	dataLine := (stream upTo: Character cr) readStream.
-	[dataLine atEnd]
-		whileFalse:
-			[couple := OrderedCollection new.
-			name := dataLine upTo: $(.
-			name := (name , ':') asSymbol.
-			type := dataLine upTo: $).
-			type := ('as' , type) asSymbol.
-			dataLine skipSeparators.
-			couple
-				add: name;
-				add: type.
-			attype add: couple].
-	dataLine close.	"lecture des valeurs des attributs, et maj des entites spatiales a 
-	partir de ces valeurs"	"balayage de gauche a droite et de bas en haut"
-	numLigne := 0.
-	[stream atEnd]
-		whileFalse:
-			[dataLine := (stream upTo: Character cr) readStream.
-			numLigne := numLigne + 1.
-			i := 0.
-			[dataLine atEnd]
-				whileFalse:
-					[i := i + 1.
-					valeur := dataLine upTo: $,.
-					method := (attype at: i) first.
-					valeur = 'nil'
-						ifFalse: [valeur := valeur perform: (attype at: i) last]
-						ifTrue: [valeur := nil].
-					valeur isNil
-						ifFalse:
-							[method = #patchID:
-								ifTrue:
-									[(aClass inheritsFrom: CMAgentLocation) ifTrue: [method := #moveTo:].
-									(aClass inheritsFrom: CMObjectLocation)
-										ifTrue: [method := #isMovedTo:].
-									valeur := self spaceModel elementaryEntities
-										detect: [:cell | cell id = valeur]]].
-					(instances at: numLigne) perform: method with: valeur].
-			dataLine close].
-	stream close
-]
-
 { #category : #'+ instance creation - spatial grid' }
 CMAbstractModel >> loadEnvironmentFromDirectory: aName [
 	"Purpose: create spatial elements and load attributes value specified in a defined .cell directory
@@ -3043,16 +2950,6 @@ Example: self configureWithCellFile: (FileLocator workingDirectory / 'assets' / 
 
 	self spaceModel loadEnvironmentFromDirectory: aName.
 	self displayPov: aSymbol of: self class cellClass
-]
-
-{ #category : #'+ instance creation - spatial grid' }
-CMAbstractModel >> loadEnvironmentFromFile: aName [
-	"Purpose: create spatial elements and load attributes value specified in a defined env file
-	Argument: aName = <String> or aName = <Filename> . If aName = <String>, it creates a Filename from maps directory.
-	Example:	self loadEnvironmentFromFile: 'test.env'
-	Example: self loadEnvironmentFromFile: ('d:\Vw5i.4\cormas\Models\JLB\maps\test.env' asFilename)"
-	self deprecated: 'Use loadEnvironmentFromDirectory:'.
-	self spaceModel loadEnvironmentFromFile: aName
 ]
 
 { #category : #'- user interface' }
@@ -4024,72 +3921,6 @@ CMAbstractModel >> setTheEntity: aClass with: aSet [
 	^self
 		perform: (self setterForEntityClass: aClass)
 		with: aSet
-]
-
-{ #category : #'+ utilities - save load attributes' }
-CMAbstractModel >> setValuesForEntities: aClass fromFile: aStringOrFilename [
-	"Load data from a File and set the values of the attributs according to the format declared into the file"
-	
-	| stream aFilename attype dataLine couple name type numLigne i valeur instances method fileSize getter |
-	aFilename := self stringToFilename: aStringOrFilename.
-	fileSize := (self getDataLinesFromFile: aStringOrFilename) size.
-	getter := self getterForEntityClass: aClass.
-	instances := self perform: getter.
-	fileSize - 1 = instances size
-		ifFalse:
-			[self cormas
-				warn: 'Different number of instances declared in <1s> and in <2s> !!'
-				with: aStringOrFilename asString
-				with: getter.
-			self halt].	"Reading the datafile, line by line, each line is giving the values for the attributes of an instance of the class"
-	aFilename exists
-		ifFalse:
-			[self cormas warn: 'This particular datafile does not exist !!'.
-			^nil].
-	stream := aFilename readStream.	"On devine le format des lignes"
-	stream lineEndAuto.
-	attype := OrderedCollection new.
-	dataLine := (stream upTo: Character cr) readStream.
-	[dataLine atEnd]
-		whileFalse:
-			[couple := OrderedCollection new.
-			name := dataLine upTo: $(.
-			name := (name , ':') asSymbol.
-			type := dataLine upTo: $).
-			type := ('as' , type) asSymbol.
-			dataLine skipSeparators.
-			couple
-				add: name;
-				add: type.
-			attype add: couple].
-	dataLine close.	"lecture des valeurs des attributs, et maj des entites spatiales a 
-	partir de ces valeurs"	"balayage de gauche a droite et de bas en haut"
-	numLigne := 0.
-	[stream atEnd]
-		whileFalse:
-			[dataLine := (stream upTo: Character cr) readStream.
-			numLigne := numLigne + 1.
-			i := 0.
-			[dataLine atEnd]
-				whileFalse:
-					[i := i + 1.
-					valeur := dataLine upTo: $,.
-					method := (attype at: i) first.
-					valeur = 'nil'
-						ifFalse: [valeur := valeur perform: (attype at: i) last]
-						ifTrue: [valeur := nil].
-					valeur isNil
-						ifFalse:
-							[method = #patchID:
-								ifTrue:
-									[(aClass inheritsFrom: CMAgentLocation) ifTrue: [method := #moveTo:].
-									(aClass inheritsFrom: CMObjectLocation)
-										ifTrue: [method := #isMovedTo:].
-									valeur := self spaceModel elementaryEntities
-										detect: [:cell | cell id = valeur]]].
-					(instances at: numLigne) perform: method with: valeur].
-			dataLine close].
-	stream close
 ]
 
 { #category : #'accessing - entities' }
