@@ -466,9 +466,9 @@ CMECECModel class >> visualize: es [
 
 { #category : #init }
 CMECECModel >> fragmentedEnv [
-	"initialize an fragmented space (from fragmented.env file) with randomly located foragers"
-	self deprecated: '?env files come from VW. Not suported in Pharo. This method will disappear in the next version'.
-	self spaceModel loadEnvironmentFromFile: 'fragmented.env'.
+	"initialize an fragmented space (from fragmented.cells directory) with randomly located foragers"
+
+	self spaceModel loadEnvironmentFromDirectory: 'fragmented.cells'.
 	self initAgents
 ]
 
@@ -500,9 +500,8 @@ CMECECModel >> initAgents [
 
 { #category : #init }
 CMECECModel >> noAgent [
-	"initialize the space (from poor.env file) without agent"
-	self deprecated: '?env files come from VW. Not suported in Pharo. This method will disappear in the next version'.
-	self spaceModel loadEnvironmentFromFile: 'poor.env'
+	"initialize the space (from poor.cells directory) without agent"
+	self spaceModel loadEnvironmentFromDirectory: 'poor.cells'
 ]
 
 { #category : #init }
