@@ -8,6 +8,9 @@ SmalltalkCISpec {
       #platforms : [ #pharo ]
     }
   ],
+  #preTesting : SCICustomScript {
+    #path : 'resources/addRepoToIceberg.st'
+  }
   #testing : {
     #categories : [ 'Cormas-*' ]
   }
