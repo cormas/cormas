@@ -1,0 +1,6 @@
+version: 0.0.1
+dimensions: [27, 27]
+closed: false
+connectivity: eight
+attributes:
+ biomass: Number

@@ -1,0 +1,6 @@
+version: 0.0.1
+dimensions: [41, 41]
+closed: true
+connectivity: four
+attributes:
+ context: Number

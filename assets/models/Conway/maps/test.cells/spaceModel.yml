@@ -1,0 +1,6 @@
+version: 0.0.1
+dimensions: [40, 50]
+closed: false
+connectivity: eight
+attributes:
+ state: Symbol
