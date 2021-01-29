@@ -1,4 +1,4 @@
 (IceRepositoryCreator new
 	location: '.' asFileReference;
-	subdirectory: 'src';
+	subdirectory: 'repository';
 	createRepository) register
