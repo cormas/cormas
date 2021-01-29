@@ -26,8 +26,8 @@ BaselineOfCormas >> baseline: spec [
 				baseline: 'FileDialog'
 					with: [ spec repository: 'github://peteruhnak/file-dialog/repository' ];
 				baseline: 'ProjectFramework'
-					with: [ spec
-						repository: 'github://hernanmd/ProjectFramework/repository' ];
+					with:
+						[ spec repository: 'github://hernanmd/ProjectFramework/repository' ];
 				baseline: 'CodeGenerator'
 					with: [ spec repository: 'github://hernanmd/CodeGenerator/repository' ];
 				baseline: 'Roassal2'
@@ -35,9 +35,11 @@ BaselineOfCormas >> baseline: spec [
 				baseline: 'NeoCSV'
 					with: [ spec repository: 'github://svenvc/NeoCSV/repository' ];
 				baseline: 'PolyMath'
-					with: [ spec repository: 'github://PolyMathOrg/PolyMath/src' ].
+					with: [ spec repository: 'github://PolyMathOrg/PolyMath/src' ];
+				baseline: 'GitBridge'
+					with: [ spec repository: 'github://jecisc/GitBridge/src' ].
 			spec
-				package: 'Cormas-Core' with: [ spec requires: #('PolyMath') ];
+				package: 'Cormas-Core' with: [ spec requires: #('PolyMath' 'PetitParser' 'NeoCSV' 'GitBridge') ];
 				package: 'Cormas-Model-Conway';
 				package: 'Cormas-Model-DemoAggregates';
 				package: 'Cormas-Model-Diffuse';
