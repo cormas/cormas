@@ -188,6 +188,11 @@ BaselineOfCormas >> openPlaygroundWindow [
 		contents: self cormasExpressions.
 ]
 
+{ #category : #'spec classes' }
+BaselineOfCormas >> packageSpecClass [
+  ^ MetacelloCypressPackageSpec
+]
+
 { #category : #doits }
 BaselineOfCormas >> platformAssetsUrls [
 	" Answer a <Collection> of <String> representing each one an asset base URL "
