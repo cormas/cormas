@@ -22,7 +22,9 @@ Class {
 
 { #category : #public }
 CMResourceLocator class >> assetsPath [
-	^ self root / 'assets'
+	^ ([ self root ]
+		on: GBRepositoryNotFound
+		do: [ :ex | FileLocator workingDirectory ]) / 'assets'
 ]
 
 { #category : #'class initialization' }
