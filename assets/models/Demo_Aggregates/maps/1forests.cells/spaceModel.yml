@@ -1,0 +1,7 @@
+version: 0.0.1
+dimensions: [10, 10]
+closed: true
+connectivity: six
+attributes:
+ seed: nil
+ tree: Boolean
