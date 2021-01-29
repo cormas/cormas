@@ -16,9 +16,19 @@ Internal Representation and Key Implementation Points.
 "
 Class {
 	#name : #CMResourceLocator,
-	#superclass : #Object,
+	#superclass : #GitBridge,
 	#category : #'Cormas-Core-Interface'
 }
+
+{ #category : #public }
+CMResourceLocator class >> assetsPath [
+	^ self root / 'assets'
+]
+
+{ #category : #'class initialization' }
+CMResourceLocator class >> initialize [
+	SessionManager default registerSystemClassNamed: self name
+]
 
 { #category : #public }
 CMResourceLocator class >> workingDirectory [
@@ -54,8 +64,8 @@ CMResourceLocator >> assetsFilesDirectoryName [
 { #category : #'utilities - path' }
 CMResourceLocator >> assetsPath [
 	" Answer a <FileReference> specifying a directory where CORRMAS assets are found "
-	
-	^ self cormasPath / self assetsFilesDirectoryName
+
+	^ self class assetsPath asFileReference
 ]
 
 { #category : #'utilities - path' }

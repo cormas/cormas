@@ -351,8 +351,7 @@ CMSpaceModel >> cellClass [
 
 { #category : #'CSE (general) - import - export' }
 CMSpaceModel >> cellFileDirectory [
-	^ FileLocator workingDirectory / 'assets' / 'models'
-		/ self cormasModelClass modelPrefix / 'maps'
+	^ self resourceLocator mapsPath: self cormasModelClass modelPrefix
 ]
 
 { #category : #'private - accessing' }
