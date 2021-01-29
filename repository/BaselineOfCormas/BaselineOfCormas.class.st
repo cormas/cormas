@@ -38,10 +38,10 @@ BaselineOfCormas >> baseline: spec [
 					with: [ spec repository: 'github://PolyMathOrg/PolyMath/src' ];
 				baseline: 'GitBridge'
 					with: [ spec repository: 'github://jecisc/GitBridge/src' ];
-				baseline: 'ESRIASCIIRASTER'
+				baseline: 'ESRIASCIIRaster'
 					with: [ spec repository: 'github://pharo-GIS/ESRI-ASCII-Raster/' ].
 			spec
-				package: 'Cormas-Core' with: [ spec requires: #('PolyMath' 'PetitParser' 'NeoCSV' 'GitBridge' 'ESRIASCIIRASTER') ];
+				package: 'Cormas-Core' with: [ spec requires: #('PolyMath' 'PetitParser' 'NeoCSV' 'GitBridge' 'ESRIASCIIRaster') ];
 				package: 'Cormas-Model-Conway';
 				package: 'Cormas-Model-DemoAggregates';
 				package: 'Cormas-Model-Diffuse';
