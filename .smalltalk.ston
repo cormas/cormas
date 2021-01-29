@@ -10,7 +10,7 @@ SmalltalkCISpec {
   ],
   #preTesting : SCICustomScript {
     #path : 'resources/addRepoToIceberg.st'
-  }
+  },
   #testing : {
     #categories : [ 'Cormas-*' ]
   }
