@@ -132,9 +132,8 @@ CMResourceLocator >> mapsPath: aModelClassName [
 CMResourceLocator >> modelNames [
 	" Answer a <Collection> of <String> with receiver's available models "
 
-	^ self modelsPath entries
-		select: [ :path | path basename notEmpty and: [ path basename first ~= $. ] ]
-		thenCollect: #basename
+	^ (self modelsPath entries collect: #basename)
+		select: [ :name | name notEmpty and: [ name first ~= $. ] ]
 ]
 
 { #category : #'utilities - path - models' }
