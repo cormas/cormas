@@ -231,6 +231,14 @@ CormasTest >> testSelectRandomlyFrom [
 ]
 
 { #category : #tests }
+CormasTest >> testSelectSimpleRandomlyFrom [
+	| aSet |
+	aSet := Set withAll: #(1 2 3 4 5).
+	self
+		assert: (aSet includes: (Cormas selectSimpleRandomlyFrom: aSet))
+]
+
+{ #category : #tests }
 CormasTest >> testSinMinMaxPhasePeriod [
 	"Not nice but ... work :-) I need to fin the way in R to build a true test"
 	self assert: (Cormas sin: 3 min: -10 max: 20 phase: 0 period: 24) closeTo: 25.606601717798213 

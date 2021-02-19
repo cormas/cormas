@@ -1697,17 +1697,8 @@ Cormas class >> removeExtensionOf: aFilename [
 { #category : #'+ utilities - string' }
 Cormas class >> removeFirstCharacterOfString: aString [
 	"Purpose: Remove the first character of aString. Answer a new String that is a copy of the argument, aString without the first character."
-	
-	| newString |
-	newString := String new: aString size - 1.
-	2
-		to: aString size
-		do:
-			[:i | 
-			newString
-				at: i - 1
-				put: (aString at: i)].
-	^newString
+
+	^ aString copy allButFirst
 ]
 
 { #category : #'util_codeManagement' }
@@ -2079,12 +2070,8 @@ Examples: Cormas selectRandomlyFrom: (Set withAll: #(1 2 3 4 5)) subCollectionSi
 Cormas class >> selectSimpleRandomlyFrom: aCollection [
 	"Returns an item at randomly position of the collection 'aCollection'. 
 ex: Cormas selectSimpleRandomlyFrom: (Set withAll: #(1 2 3 4 5))"
-	
-	^aCollection
-		at:
-			(self
-				simpleRandomFrom: 1
-				to: aCollection size)
+
+	^ aCollection atRandom
 ]
 
 { #category : #'util_export' }
