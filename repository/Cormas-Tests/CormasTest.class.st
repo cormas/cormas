@@ -91,6 +91,13 @@ CormasTest >> testMax [
 ]
 
 { #category : #tests }
+CormasTest >> testMaxOfAmongObjects [
+	self
+		assert: (Cormas maxOf: #abs amongObjects: #(-2 -1 0 1 2))
+		equals: 2
+]
+
+{ #category : #tests }
 CormasTest >> testMaximumOfNumbers [
 	| aCollection |
 	aCollection := #(3 1 5 4 2).
@@ -221,6 +228,14 @@ CormasTest >> testSelectRandomlyFrom [
 	| aCollection |
 	aCollection := #(1 2 3 4 5).
 	self assert: (aCollection includes: (Cormas selectRandomlyFrom: aCollection))
+]
+
+{ #category : #tests }
+CormasTest >> testSelectSimpleRandomlyFrom [
+	| aSet |
+	aSet := Set withAll: #(1 2 3 4 5).
+	self
+		assert: (aSet includes: (Cormas selectSimpleRandomlyFrom: aSet))
 ]
 
 { #category : #tests }

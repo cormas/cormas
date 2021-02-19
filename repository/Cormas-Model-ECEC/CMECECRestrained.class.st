@@ -1,7 +1,7 @@
 Class {
 	#name : #CMECECRestrained,
 	#superclass : #CMECECForager,
-	#category : 'Cormas-Model-ECEC'
+	#category : #'Cormas-Model-ECEC'
 }
 
 { #category : #'pov symbols' }
