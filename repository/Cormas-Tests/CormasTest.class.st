@@ -91,6 +91,13 @@ CormasTest >> testMax [
 ]
 
 { #category : #tests }
+CormasTest >> testMaxOfAmongObjects [
+	self
+		assert: (Cormas maxOf: #abs amongObjects: #(-2 -1 0 1 2))
+		equals: 2
+]
+
+{ #category : #tests }
 CormasTest >> testMaximumOfNumbers [
 	| aCollection |
 	aCollection := #(3 1 5 4 2).
