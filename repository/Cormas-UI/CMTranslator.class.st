@@ -282,6 +282,12 @@ Enter the entity''s name';
 		at: #tConfirmAbstractEntity 	put: ' is abstract. It will be changed as concrete class. Ok?';
 		at: #tConfirmConcreteEntity 	put: ' is concrete. It will be changed as abstract class. Ok?';
 		at: #tConfirmDeleteAttribute	put: 'Are you sure to remove the selected attribute';
+		at: #tFixRandomSeed 				put: 'Fix the random seed to';
+		at: #tSelectProbesToRecord		put: 'Select probes to record';
+		at: #tEnableStepBack 				put: 'Enable stepping back';
+		at: #tReleaseRandomSeed 			put: 'Release random seed after initialization';
+		at: #tSelectInitMethod			put: 'Select a method of initialization';
+		at: #tSelectControlMethod 		put: 'Select a method of control';
 		yourself
 ]
 
@@ -533,6 +539,12 @@ Ingrese el nombre de la entidad';
 		at: #tConfirmAbstractEntity 		put: ' es abstracta. Será cambiada a una clase concreta. Ok?';
 		at: #tConfirmConcreteEntity 		put: ' es concreta. Será cambiada a una clase abstracta. Ok?';
 		at: #tConfirmDeleteAttribute		put: 'Está seguro de borrar el atributo seleccionado?';
+		at: #tFixRandomSeed 					put: 'Fijar semilla aleatoria de inicialización a';
+		at: #tSelectProbesToRecord			put: 'Seleccione probes a registrar';
+		at: #tEnableStepBack 					put: 'Habilitar retroceso paso a paso';
+		at: #tReleaseRandomSeed 				put: 'Liberar semilla aleatoria luego de inicializar';
+		at: #tSelectInitMethod				put: 'Seleccione un método de inicialización';
+		at: #tSelectControlMethod 			put: 'Seleccione un método de control';
 		yourself
 
 ]

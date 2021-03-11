@@ -202,20 +202,26 @@ CMSpecConfirmBeforeLaunch >> initializeWidgets [
 	self
 		instantiateModels:
 			#(initMethodList SpcLabeledList controlMethodList SpcLabeledList finalStep SpcLabeledTextField fixRandomSeedCheck CheckBoxModel fixRandomTextField TextInputFieldModel probesList SpcLabeledList releaseRandomCheck CheckBoxModel stepBackCheck CheckBoxModel toolbar SpcTwoButtonToolbar).
-	self initMethodList label: 'Select a method of initialization'.
-	self controlMethodList label: 'Select a method of control'.
-	self probesList label: 'Select probes to record'.
-	self fixRandomSeedCheck label: 'Fix the random seed to'.
-	self finalStep label: 'Final step'.
+
+	self initMethodList 
+		label: self translator tSelectInitMethod.
+	self controlMethodList
+		label: self translator tSelectControlMethod.
+	self probesList 
+		beMultipleSelection;
+		label: self translator tSelectProbesToRecord.
+	self fixRandomSeedCheck label: self translator tFixRandomSeed.
+
+	self finalStep label: self translator tFinalStepChoice.
 	self finalStep
 		text: self cormasModel simManager finalTime;
 		help: self translator tSimFinalStepHelp.
 	self finalStep acceptBlock: [  ].
-	self stepBackCheck label: 'Enable stepping back'.
-	self releaseRandomCheck label: 'Release random seed after initialization'.
+	self stepBackCheck label: self translator tEnableStepBack.
+	self releaseRandomCheck label: self translator tReleaseRandomSeed.
 	self toolbar
-		secondButtonLabel: 'Apply';
-		firstButtonLabel: 'Cancel';
+		secondButtonLabel: self translator tApply;
+		firstButtonLabel: self translator tCancel;
 		firstButtonAction: [ self delete ];
 		secondButtonAction: [ self applyScenarioSettings ]
 ]
