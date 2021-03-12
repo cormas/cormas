@@ -131,6 +131,20 @@ CMProjectManager >> createClassModelNamed: modelName [
 ]
 
 { #category : #callbacks }
+CMProjectManager >> createNewProject [
+	" Ask for a new project name and create it if valid name was provided "
+
+	| answer |
+
+	(answer := self requestedInvalidProjectName: self translator tNewProjectName) value
+		ifTrue: [ self informMessage: self translator tNewProjectInvalidName ]
+		ifFalse: [
+			self createAppProject: answer key.
+			self doPostNewActions ]
+
+]
+
+{ #category : #callbacks }
 CMProjectManager >> createProject: projectName in: aCMApplicationProject [
 
 	| newProject |
