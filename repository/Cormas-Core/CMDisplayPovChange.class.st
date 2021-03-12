@@ -8,17 +8,17 @@ Instance Variables:
 
 "
 Class {
-	#name : #DisplayPovChange,
+	#name : #CMDisplayPovChange,
 	#superclass : #Object,
 	#instVars : [
 		'povName',
 		'entityClass'
 	],
-	#category : 'Cormas-Core-Others'
+	#category : #'Cormas-Core-Others'
 }
 
 { #category : #'instance creation' }
-DisplayPovChange class >> forPov: aSymbol ofEntity: aClass [
+CMDisplayPovChange class >> forPov: aSymbol ofEntity: aClass [
 	
 	^(self new)
 		povName: aSymbol;
@@ -27,31 +27,31 @@ DisplayPovChange class >> forPov: aSymbol ofEntity: aClass [
 ]
 
 { #category : #accessing }
-DisplayPovChange >> entityClass [
+CMDisplayPovChange >> entityClass [
 	
 	^entityClass
 ]
 
 { #category : #accessing }
-DisplayPovChange >> entityClass: anObject [
+CMDisplayPovChange >> entityClass: anObject [
 	
 	entityClass := anObject
 ]
 
 { #category : #accessing }
-DisplayPovChange >> povName [
+CMDisplayPovChange >> povName [
 	
 	^povName
 ]
 
 { #category : #accessing }
-DisplayPovChange >> povName: anObject [
+CMDisplayPovChange >> povName: anObject [
 	
 	povName := anObject
 ]
 
 { #category : #printing }
-DisplayPovChange >> printOn: aStream [
+CMDisplayPovChange >> printOn: aStream [
 	
 	super printOn: aStream.
 	aStream

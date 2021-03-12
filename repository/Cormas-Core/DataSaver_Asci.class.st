@@ -108,22 +108,6 @@ DataSaver_Asci >> prepareTimeSeriesFiles [
 			self updateFile: aFileName dataCollection: times]
 ]
 
-{ #category : #'+ save multi probes' }
-DataSaver_Asci >> saveAveragedTimeSeriesFiles: aDictionaryOfAverages [
-	"Add the Averaged value of the selected probes to each csv file"
-	
-	| aCollection aFileName varInformation |
-	varInformation := self getInformation.
-	aDictionaryOfAverages
-		keysAndValuesDo:
-			[:key :coll | 
-			aCollection := self getCollectionOfNumbers: coll.	"varInformation := key asString, varInformation."
-			self currentParameter isNil ifTrue: [varInformation := key asString].
-			aCollection addFirst: varInformation.
-			aFileName := self getAveragedTimeSeriesFilenameOfProbe: key asString.
-			self updateFile: aFileName dataCollection: aCollection]
-]
-
 { #category : #'+ save' }
 DataSaver_Asci >> saveCollection: aCollection [
 	"Updates a file in the current model 'data' directory and writes in it a tupple separated by aChar, at the end of the previous data.
@@ -132,29 +116,6 @@ DataSaver_Asci >> saveCollection: aCollection [
 	self
 		updateFile: self filename
 		dataCollection: aCollection
-]
-
-{ #category : #'+ save multi probes' }
-DataSaver_Asci >> savePeriodAverageFiles: list2 [
-	"Add the average value between the first and last list2 of the selected probes to each PeriodAverage csv file"
-
-	| aCollection aFileName varInformation info |
-	info := self getInformation.
-	self probes
-		keysAndValuesDo: [ :key :coll | 
-			aCollection := List
-				with:
-					(Cormas
-						average:
-							((self getCollectionOfNumbers: coll)
-								copyFrom: 1 + list2 first
-								to: 1 + list2 last)).
-			info = ' '
-				ifTrue: [ varInformation := key asString ]
-				ifFalse: [ varInformation := key asString , ': ' , info ].
-			aCollection addFirst: varInformation.
-			aFileName := self getPeriodAverageFilenameOfProbe: key asString.
-			self updateFile: aFileName dataCollection: aCollection ]
 ]
 
 { #category : #'+ save' }
@@ -184,24 +145,6 @@ DataSaver_Asci >> saveSensitivityClassification: aDictionary [
 						with: 'sensitivity').
 			aCollection
 				do: [:coll | self updateFile: aFileName dataCollection: coll]]
-]
-
-{ #category : #'+ save multi probes' }
-DataSaver_Asci >> saveSimAverageFiles [
-	"Add the Sim Average value of the selected probes to each csv file"
-
-	| aCollection aFileName varInformation info |
-	info := self getInformation.
-	self probes
-		keysAndValuesDo: [ :key :coll | 
-			aCollection := List
-				with: (Cormas average: (self getCollectionOfNumbers: coll)).
-			info = ' '
-				ifTrue: [ varInformation := key asString ]
-				ifFalse: [ varInformation := key asString , ': ' , info ].
-			aCollection addFirst: varInformation.
-			aFileName := self getSimAverageFilenameOfProbe: key asString.
-			self updateFile: aFileName dataCollection: aCollection ]
 ]
 
 { #category : #'+ save' }
@@ -261,38 +204,4 @@ DataSaver_Asci >> updateFile: aStringOrFilename dataCollection: aCollec [
 			stream nextPutAll: DataSaver_Asci separatorAsString].
 	stream nextPutAll: '\' withCRs.
 	stream close
-]
-
-{ #category : #'+ save multi probes' }
-DataSaver_Asci >> updateLastValuesOfGlobalProbes [
-	"Add the last value of the selected probes to each csv file"
-	
-	| aCollection aFileName varInformation info |
-	info := self getInformation.
-	self probes
-		keysAndValuesDo:
-			[:key :coll | 
-			aCollection := List with: (self getCollectionOfNumbers: coll) last.	"varInformation := key asString, varInformation."
-			info = ' '
-				ifTrue: [varInformation := key asString]
-				ifFalse: [varInformation := key asString , ': ' , info].
-			aCollection addFirst: varInformation.
-			aFileName := self getLastValueFilenameOfProbe: key asString.
-			self updateFile: aFileName dataCollection: aCollection]
-]
-
-{ #category : #'+ save multi probes' }
-DataSaver_Asci >> updateValuesOfGlobalProbes [
-	"Add the value of the selected probes to each csv file"
-	
-	| aCollection aFileName varInformation |
-	varInformation := self getInformation.
-	self probes
-		keysAndValuesDo:
-			[:key :coll | 
-			aCollection := self getCollectionOfNumbers: coll.	"varInformation := key asString, varInformation."
-			self currentParameter isNil ifTrue: [varInformation := key asString].
-			aCollection addFirst: varInformation.
-			aFileName := self getTimeSerieFilenameOfProbe: key asString.
-			self updateFile: aFileName dataCollection: aCollection]
 ]

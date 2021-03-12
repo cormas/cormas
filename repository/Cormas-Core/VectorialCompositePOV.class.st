@@ -4,14 +4,8 @@ Class {
 	#instVars : [
 		'components'
 	],
-	#category : #'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Legacy'
 }
-
-{ #category : #viewCorrespondance }
-VectorialCompositePOV class >> asFigure [
-	
-	^CompositeEntityFigure
-]
 
 { #category : #'instance creation' }
 VectorialCompositePOV class >> newFrom: aSetOfPovs [
@@ -40,25 +34,6 @@ VectorialCompositePOV class >> newFromFigures: aSetOfFigures [
 							((Polyline vertices: figure points) translatedBy: figure center negated)]].
 	inst addAll: aSetOfImages.
 	^inst
-]
-
-{ #category : #private }
-VectorialCompositePOV >> asFigure [
-	
-	| instFigure |
-	"	instFigure := self class asFigure newFromPOV: self ."
-	instFigure := CompositeEntityFigure newFromPOV: self.
-	instFigure model: self.
-	self isStroked
-		ifFalse:
-			[instFigure
-				opaque;
-				fillColor: self color]
-		ifTrue: [instFigure transparent].
-	instFigure scaleBy: self sizeRatio.
-	instFigure lineWidth: self lineWidth.
-	instFigure lineColor: self lineColor.
-	^instFigure
 ]
 
 { #category : #private }

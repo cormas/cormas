@@ -47,20 +47,6 @@ AttributeAdder class >> classTitle [
 				with: #color -> ColorValue black)) asComposedText
 ]
 
-{ #category : #resources }
-AttributeAdder class >> menuTable [
-	"Tools.MenuEditor new openOnClass: self andSelector: #menuTable"
-	
-	<resource: #menu>
-	^#(Menu #(#(MenuItem 
-		#rawLabel: 'remove attribute' 
-		#value: #removeAttribute) #(MenuItem 
-		#rawLabel: 'rename attribute' 
-		#value: #renameAttribute) #(MenuItem 
-		#rawLabel: 'notify observers when changed' 
-		#value: #setChanged)) #(3) nil) decodeAsLiteralArray
-]
-
 { #category : #'instance creation' }
 AttributeAdder class >> newAttributWindowOn: aClass model: cormasModel [
 	
@@ -69,16 +55,6 @@ AttributeAdder class >> newAttributWindowOn: aClass model: cormasModel [
 	inst cormasModel: cormasModel.
 	inst initForClass: aClass.
 	^inst
-]
-
-{ #category : #resources }
-AttributeAdder class >> newValueMenu [
-	"Tools.MenuEditor new openOnClass: self andSelector: #newValueMenu"
-	
-	<resource: #menu>
-	^#(Menu #(#(MenuItem 
-		#rawLabel: 'new default value' 
-		#value: #newRandomValue)) #(1) nil) decodeAsLiteralArray
 ]
 
 { #category : #'interface specs' }
@@ -832,16 +808,6 @@ AttributeAdder >> renameAttribute [
 				ifTrue: [cav targetAttribute: newName asSymbol]].
 	self superClassAttribValue_List
 		list: self superClassAttribValue_List listHolder value
-]
-
-{ #category : #'interface closing' }
-AttributeAdder >> requestForWindowClose [
-	
-	| listCAVs |
-	listCAVs := self classAttribValue_List list
-		select: [:defAttrib | defAttrib hasBeenModified].
-	listCAVs isEmpty ifFalse: [self confirmDoSave ifFalse: [^false]].
-	^super requestForWindowClose
 ]
 
 { #category : #aspects }

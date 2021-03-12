@@ -1,7 +1,7 @@
 Class {
 	#name : #HexagonPOV,
 	#superclass : #VectorialElementaryPOV,
-	#category : 'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Legacy'
 }
 
 { #category : #'instance creation' }

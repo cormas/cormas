@@ -43,45 +43,6 @@ SpaceInterface class >> changeAttributeIcon [
 ]
 
 { #category : #resources }
-SpaceInterface class >> changeAttributeIconImage [
-	"Tools.UIMaskEditor new openOnClass: self andSelector: #changeAttributeIconImage"
-	
-	<resource: #image>
-	^CachedImage
-		on:
-			(Image
-				extent: 1 @ 2
-				depth: 1
-				bitsPerPixel: 1
-				palette:
-					(MappedPalette
-						withColors:
-							(#(#(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(8191 8191 8191)))
-								collect:
-									[:each | 
-									(each at: 1) value
-										perform: (each at: 2)
-										withArguments: (each at: 3)]))
-				usingBits: #[0 0 0 0 0 0 0 0])
-]
-
-{ #category : #resources }
-SpaceInterface class >> changeAttributeIconMask [
-	"Tools.UIMaskEditor new openOnClass: self andSelector: #changeAttributeIconMask"
-	
-	<resource: #image>
-	^CachedImage
-		on:
-			(Image
-				extent: 1 @ 2
-				depth: 1
-				bitsPerPixel: 1
-				palette: CoveragePalette monoMaskPalette
-				usingBits: #[0 0 0 0 0 0 0 0])
-]
-
-{ #category : #resources }
 SpaceInterface class >> createEntityIcon [
 	
 	^OpaqueImage
@@ -677,54 +638,11 @@ SpaceInterface class >> createIconMaskFun [
 ]
 
 { #category : #resources }
-SpaceInterface class >> iconColumn [
-	"UIMaskEditor new openOnClass: self andSelector: #iconColonne"
-	
-	<resource: #image>
-	^CachedImage
-		on:
-			(Image
-				extent: 10 @ 30
-				depth: 1
-				bitsPerPixel: 1
-				palette: MonoMappedPalette blackWhite
-				usingBits:
-					#[0 0 0 0 127 128 0 0 127 128 0 0 127 128 0 0 127 128 0 0 127 128 0 0 127 128 0 0 127 128 0 0 127 128 0 0 127 128 0 0 127 128 0 0 127 128 0 0 127 128 0 0 127 128 0 0 127 128 0 0 127 128 0 0 0 0 0 0 127 128 0 0 127 128 0 0 127 128 0 0 127 128 0 0 255 192 0 0 127 128 0 0 127 128 0 0 127 128 0 0 255 192 0 0 127 128 0 0 127 128 0 0 255 192 0 0 127 128 0 0])
-]
-
-{ #category : #resources }
 SpaceInterface class >> iconHexagon [
 	
 	^OpaqueImage
 		figure: self iconHexagonImage
 		shape: self iconHexagonMask
-]
-
-{ #category : #resources }
-SpaceInterface class >> iconHexagonImage [
-	"Tools.UIMaskEditor new openOnClass: self andSelector: #iconHexagon"
-	
-	<resource: #image>
-	^CachedImage
-		on:
-			(Image
-				extent: 22 @ 22
-				depth: 2
-				bitsPerPixel: 2
-				palette:
-					(MappedPalette
-						withColors:
-							(#(#(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(0 0 0)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6552 3276 0)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(8191 8191 8191)))
-								collect:
-									[:each | 
-									(each at: 1) value
-										perform: (each at: 2)
-										withArguments: (each at: 3)]))
-				usingBits:
-					#[170 170 170 170 170 160 0 0 170 170 170 170 170 160 0 0 170 170 170 170 170 160 0 0 170 168 0 0 170 160 0 0 170 161 85 84 170 160 0 0 170 161 85 85 42 160 0 0 170 133 85 85 42 160 0 0 170 133 85 85 74 160 0 0 170 21 85 85 74 160 0 0 170 21 85 85 82 160 0 0 168 85 85 85 82 160 0 0 168 85 85 85 84 160 0 0 168 85 85 85 82 160 0 0 170 21 85 85 82 160 0 0 170 21 85 85 74 160 0 0 170 133 85 85 74 160 0 0 170 133 85 85 42 160 0 0 170 161 85 85 42 160 0 0 170 161 85 84 170 160 0 0 170 168 0 0 170 160 0 0 170 170 170 170 170 160 0 0 170 170 170 170 170 160 0 0])
 ]
 
 { #category : #resources }
@@ -742,108 +660,9 @@ SpaceInterface class >> iconHexagonMask [
 ]
 
 { #category : #resources }
-SpaceInterface class >> iconIrregular [
-	"Tools.UIMaskEditor new openOnClass: self andSelector: #iconIrregular"
-	
-	<resource: #image>
-	^CachedImage
-		on:
-			(Image
-				extent: 21 @ 20
-				depth: 2
-				bitsPerPixel: 2
-				palette:
-					(MappedPalette
-						withColors:
-							(#(#(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(0 0 0)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6552 3276 0)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(8191 8191 8191)))
-								collect:
-									[:each | 
-									(each at: 1) value
-										perform: (each at: 2)
-										withArguments: (each at: 3)]))
-				usingBits:
-					#[170 170 170 170 170 128 0 0 170 170 170 170 170 128 0 0 170 128 42 128 42 128 0 0 170 21 72 21 74 128 0 0 168 85 81 85 74 128 0 0 161 85 85 85 82 128 0 0 161 85 85 85 82 128 0 0 161 85 85 85 82 128 0 0 168 85 85 85 82 128 0 0 170 21 85 85 74 128 0 0 170 21 85 85 42 128 0 0 170 133 85 85 42 128 0 0 170 161 85 84 170 128 0 0 170 161 85 82 170 128 0 0 170 168 85 74 170 128 0 0 170 170 21 42 170 128 0 0 170 170 133 42 170 128 0 0 170 170 132 170 170 128 0 0 170 170 162 170 170 128 0 0 170 170 170 170 170 128 0 0])
-]
-
-{ #category : #resources }
-SpaceInterface class >> iconLine [
-	"UIMaskEditor new openOnClass: self andSelector: #iconneLigne"
-	
-	<resource: #image>
-	^CachedImage
-		on:
-			(Image
-				extent: 31 @ 10
-				depth: 1
-				bitsPerPixel: 1
-				palette: MonoMappedPalette blackWhite
-				usingBits:
-					#[0 0 2 36 127 255 191 254 127 255 191 254 127 255 191 254 127 255 191 254 127 255 191 254 127 255 191 254 127 255 191 254 127 255 191 254 0 0 2 36])
-]
-
-{ #category : #resources }
 SpaceInterface class >> iconNormal [
 	
 	^Cursor normal asOpaqueImage
-]
-
-{ #category : #resources }
-SpaceInterface class >> iconPhoto [
-	"Tools.UIMaskEditor new openOnClass: self andSelector: #iconPhoto"
-	
-	<resource: #image>
-	^CachedImage
-		on:
-			(Image
-				extent: 32 @ 29
-				depth: 2
-				bitsPerPixel: 2
-				palette:
-					(MappedPalette
-						withColors:
-							(#(#(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6167 6167 6167)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(0 0 0)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(8191 8191 8191)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6809 6681 6424)))
-								collect:
-									[:each | 
-									(each at: 1) value
-										perform: (each at: 2)
-										withArguments: (each at: 3)]))
-				usingBits:
-					(ByteArray fromPackedString:
-							'0@@@@@@@@@C@@@@@@@@@@L@@@@@@@@@@0@@@@@@@@@C@@@@@@@@@@L@@@UU@@@@@0@@D@A@@@@C@EAAUA@AT@LAUPDDAUUU@0D@@UP@@@DC@QU@@AQUTPLAETEUAF*Q@0DUA@A@Z)DC@QPPUAAUTPLAEDEUA@@A@0DTQYUDUUDC@QQF%TQUTPLAEDVUQEUQ@0DTPUTDUUDC@QPPUAAUTPLAEPP@PUUQ@0DUPUTEUUDC@P@@@@@@@PLAUUUUUUUU@0@@@@@@@@@C@@@@@@@@@@L@@@@@@@@@@0@@@@@@@@@C@@@@@@@@@@@@a'))
-]
-
-{ #category : #resources }
-SpaceInterface class >> iconSquare [
-	"Tools.UIMaskEditor new openOnClass: self andSelector: #iconSquare"
-	
-	<resource: #image>
-	^CachedImage
-		on:
-			(Image
-				extent: 22 @ 22
-				depth: 2
-				bitsPerPixel: 2
-				palette:
-					(MappedPalette
-						withColors:
-							(#(#(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(0 0 0)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6552 3276 0)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(8191 8191 8191)))
-								collect:
-									[:t1 | 
-									(t1 at: 1) value
-										perform: (t1 at: 2)
-										withArguments: (t1 at: 3)]))
-				usingBits:
-					#[170 170 170 170 170 160 0 0 170 170 170 170 170 160 0 0 170 170 170 170 170 160 0 0 168 0 0 0 0 160 0 0 168 85 85 85 84 160 0 0 168 85 85 85 84 160 0 0 168 85 85 85 84 160 0 0 168 85 85 85 84 160 0 0 168 85 85 85 84 160 0 0 168 85 85 85 84 160 0 0 168 85 85 85 84 160 0 0 168 85 85 85 84 160 0 0 168 85 85 85 84 160 0 0 168 85 85 85 84 160 0 0 168 85 85 85 84 160 0 0 168 85 85 85 84 160 0 0 168 85 85 85 84 160 0 0 168 85 85 85 84 160 0 0 168 85 85 85 84 160 0 0 168 0 0 0 0 160 0 0 170 170 170 170 170 160 0 0 170 170 170 170 170 160 0 0])
 ]
 
 { #category : #resources }
@@ -861,59 +680,11 @@ SpaceInterface class >> inspectIcon [
 ]
 
 { #category : #resources }
-SpaceInterface class >> inspectIconImage [
-	"UIMaskEditor new openOnClass: self andSelector: #selectionIconImage"
-	
-	<resource: #image>
-	^CachedImage
-		on:
-			(Image
-				extent: 15 @ 18
-				depth: 1
-				bitsPerPixel: 1
-				palette: MonoMappedPalette blackWhite
-				usingBits:
-					#[255 254 0 0 239 254 0 0 231 254 0 0 235 254 0 0 237 254 0 0 238 254 0 0 239 126 0 0 239 190 0 0 239 222 0 0 239 14 0 0 237 126 0 0 233 190 0 0 230 190 0 0 238 222 0 0 255 94 0 0 255 62 0 0 255 254 0 0 255 254 0 0])
-]
-
-{ #category : #resources }
-SpaceInterface class >> inspectIconMask [
-	"UIMaskEditor new openOnClass: self andSelector: #selectionIconMask"
-	
-	<resource: #image>
-	^CachedImage
-		on:
-			(Image
-				extent: 15 @ 18
-				depth: 1
-				bitsPerPixel: 1
-				palette: CoveragePalette monoMaskPalette
-				usingBits:
-					#[0 0 0 0 16 0 0 0 24 0 0 0 28 0 0 0 30 0 0 0 31 0 0 0 31 128 0 0 31 192 0 0 31 224 0 0 31 240 0 0 31 128 0 0 31 192 0 0 25 192 0 0 17 224 0 0 0 224 0 0 0 192 0 0 0 0 0 0 0 0 0 0])
-]
-
-{ #category : #resources }
 SpaceInterface class >> manipulateIcon [
 	
 	^OpaqueImage
 		figure: self manipulateIconImage
 		shape: self manipulateIconMask
-]
-
-{ #category : #resources }
-SpaceInterface class >> manipulateIconImage [
-	"UIMaskEditor new openOnClass: self andSelector: #handIconImage"
-	
-	<resource: #image>
-	^CachedImage
-		on:
-			(Image
-				extent: 16 @ 16
-				depth: 1
-				bitsPerPixel: 1
-				palette: MonoMappedPalette blackWhite
-				usingBits:
-					#[254 127 0 0 229 143 0 0 217 183 0 0 217 181 0 0 237 178 0 0 237 182 0 0 151 246 0 0 103 254 0 0 119 253 0 0 191 253 0 0 223 253 0 0 239 251 0 0 239 251 0 0 247 247 0 0 251 247 0 0 248 7 0 0])
 ]
 
 { #category : #resources }
@@ -956,22 +727,6 @@ SpaceInterface class >> manipulateIconImageOLD [
 ]
 
 { #category : #resources }
-SpaceInterface class >> manipulateIconMask [
-	"UIMaskEditor new openOnClass: self andSelector: #handIconMask"
-	
-	<resource: #image>
-	^CachedImage
-		on:
-			(Image
-				extent: 16 @ 16
-				depth: 1
-				bitsPerPixel: 1
-				palette: CoveragePalette monoMaskPalette
-				usingBits:
-					#[1 128 0 0 27 240 0 0 63 248 0 0 63 250 0 0 31 255 0 0 31 255 0 0 111 255 0 0 255 255 0 0 255 254 0 0 127 254 0 0 63 254 0 0 31 252 0 0 31 252 0 0 15 248 0 0 7 248 0 0 7 248 0 0])
-]
-
-{ #category : #resources }
 SpaceInterface class >> manipulateIconMaskOLD [
 	"Tools.UIMaskEditor new openOnClass: self andSelector: #fingerPointerMask"
 	
@@ -986,422 +741,11 @@ SpaceInterface class >> manipulateIconMaskOLD [
 ]
 
 { #category : #resources }
-SpaceInterface class >> menuBar [
-	"Tools.MenuEditor new openOnClass: self andSelector: #menuBar"
-	
-	<resource: #menu>
-	^#(Menu #(#(MenuItem 
-		#rawLabel: 'Environment' 
-		#nameKey: #environment 
-		#submenu: #(Menu #(#(MenuItem 
-			#rawLabel: 'New' 
-			#labelImage: #(ResourceRetriever ToolbarIconLibrary #fileNew) 
-			#submenu: #(Menu #(#(MenuItem 
-				#rawLabel: 'Grid size' 
-				#nameKey: #gridsize 
-				#value: #openWindowGridSize 
-				#helpText: 'Create a new regular grid')) #(1) nil)) #(MenuItem 
-			#rawLabel: 'Load' 
-			#nameKey: #load 
-			#labelImage: #(ResourceRetriever ToolbarIconLibrary #fileOpen) 
-			#submenu: #(Menu #(#(MenuItem 
-				#rawLabel: 'Regular Tesselation' 
-				#nameKey: #spatialGridType 
-				#labelImage: #(ResourceRetriever SpaceInterface #iconSquare) 
-				#submenu: #(Menu #(#(MenuItem 
-					#rawLabel: 'asc type' 
-					#nameKey: #loadASC 
-					#value: #loadASC) #(MenuItem 
-					#rawLabel: 'env type' 
-					#nameKey: #loadGrid 
-					#value: #loadGrid)) #(2) nil)) #(MenuItem 
-				#rawLabel: 'Irregular Tesselation' 
-				#nameKey: #irregularSpatialGrid 
-				#value: #subMenuTesselationIrr 
-				#labelImage: #(ResourceRetriever SpaceInterface #iconIrregular) 
-				#submenu: #(Menu #(#(MenuItem 
-					#rawLabel: 'MIF/MID Files' 
-					#nameKey: #openWindowMifMid 
-					#value: #openWindowMifMid)) #(1) nil))) #(2) nil)) #(MenuItem 
-			#rawLabel: 'Save' 
-			#labelImage: #(ResourceRetriever ToolbarIconLibrary #fileSave) 
-			#submenu: #(Menu #(#(MenuItem 
-				#rawLabel: 'Asc type' 
-				#nameKey: #saveASC 
-				#value: #saveASC) #(MenuItem 
-				#rawLabel: 'Env type' 
-				#nameKey: #saveGrid 
-				#value: #saveGrid) #(MenuItem 
-				#rawLabel: 'MIF/MID type' 
-				#nameKey: #saveMIFMID 
-				#value: #saveMIFMID) #(MenuItem 
-				#rawLabel: 'Rst/Rdc type' 
-				#nameKey: #saveRSTRDC 
-				#value: #saveRSTRDC)) #(4) nil)) #(MenuItem 
-			#rawLabel: 'Modify' 
-			#nameKey: #modify 
-			#submenu: #(Menu #(#(MenuItem 
-				#rawLabel: 'Cell shape' 
-				#nameKey: #cellshape 
-				#submenu: #(Menu #(#(MenuItem 
-					#rawLabel: 'Square' 
-					#nameKey: #square 
-					#value: #squared 
-					#indication: true 
-					#labelImage: #(ResourceRetriever SpaceInterface #iconSquare) 
-					#submenu: #(Menu #(#(MenuItem 
-						#rawLabel: '4-Connexe' 
-						#nameKey: #fourconnexe 
-						#value: #fourconnexe 
-						#indication: true) #(MenuItem 
-						#rawLabel: #(UserMessage 
-							#key: #eightconnexe 
-							#defaultString: '8-Connexe') 
-						#nameKey: #eightconnexe 
-						#value: #eightconnexe 
-						#indication: false)) #(2) nil)) #(MenuItem 
-					#rawLabel: 'Hexagonal' 
-					#nameKey: #hexagonal 
-					#value: #hexagonal 
-					#indication: false 
-					#labelImage: #(ResourceRetriever SpaceInterface #iconHexagon)) #(MenuItem 
-					#rawLabel: 'Irregular' 
-					#nameKey: #irregular 
-					#value: #notYiet 
-					#indication: false 
-					#labelImage: #(ResourceRetriever SpaceInterface #iconIrregular))) #(3) nil)) #(MenuItem 
-				#rawLabel: 'Grid boundaries' 
-				#nameKey: #gridboundaries 
-				#submenu: #(Menu #(#(MenuItem 
-					#rawLabel: 'Torroidal' 
-					#nameKey: #torroidal 
-					#value: #torroidal) #(MenuItem 
-					#rawLabel: 'Closed' 
-					#nameKey: #closed 
-					#value: #closed)) #(2) nil))) #(2) nil)) #(MenuItem 
-			#rawLabel: 'Re-Open' 
-			#value: #reopen) #(MenuItem 
-			#rawLabel: 'Close' 
-			#value: #closeRequest 
-			#labelImage: #(ResourceRetriever ToolbarIconLibrary #abort))) #(3 2 1) nil)) #(MenuItem 
-		#rawLabel: 'PoV' 
-		#nameKey: #pov 
-		#submenu: #(Menu #(#(MenuItem 
-			#rawLabel: 'bidon' 
-			#nameKey: #bidon)) #(1) nil) 
-		#helpText: 'Point of View') #(MenuItem 
-		#rawLabel: 'Display' 
-		#nameKey: #display 
-		#submenu: #(Menu #(#(MenuItem 
-			#rawLabel: 'info' 
-			#nameKey: #info 
-			#submenu: #(Menu #(#(MenuItem 
-				#rawLabel: 'bidon' 
-				#nameKey: #bidon)) #(1) nil)) #(MenuItem 
-			#rawLabel: 'track' 
-			#nameKey: #trackAgents 
-			#indication: false) #(MenuItem 
-			#rawLabel: 'Spatial delimitor' 
-			#nameKey: #celldelimitation 
-			#submenu: #(Menu #(#(MenuItem 
-				#rawLabel: #(UserMessage 
-					#key: #size 
-					#defaultString: 'Size:') 
-				#nameKey: #sizeLimitation 
-				#submenu: #(Menu #(#(MenuItem 
-					#rawLabel: '0 pixel' 
-					#nameKey: #pixel0 
-					#value: #pixel0 
-					#indication: true 
-					#indicationSelector: #delimiterSize) #(MenuItem 
-					#rawLabel: '1 pixel' 
-					#nameKey: #pixel1 
-					#value: #pixel1 
-					#indication: true 
-					#indicationSelector: #delimiterSize) #(MenuItem 
-					#rawLabel: '2 pixels' 
-					#nameKey: #pixel2 
-					#value: #pixel2 
-					#indication: true 
-					#indicationSelector: #delimiterSize) #(MenuItem 
-					#rawLabel: '3 pixels' 
-					#nameKey: #pixel3 
-					#value: #pixel3 
-					#indication: true 
-					#indicationSelector: #delimiterSize)) #(4) nil) 
-				#helpText: 'Set the size of the cells'' delimitors') #(MenuItem 
-				#rawLabel: 'Color' 
-				#value: #selectColor 
-				#helpText: 'Set the color of the cells'' delimitors')) #(2) nil)) #(MenuItem 
-			#rawLabel: 'Time' 
-			#nameKey: #time 
-			#submenu: #(Menu #(#(MenuItem 
-				#rawLabel: #(UserMessage 
-					#key: #displayTimeTitle 
-					#defaultString: 'Display time in the title') 
-				#nameKey: #timeTitle 
-				#value: #displayTimeTitle 
-				#indication: true) #(MenuItem 
-				#rawLabel: 'Display time on the interface' 
-				#nameKey: #timeField 
-				#value: #displayTimeField 
-				#indication: true)) #(2) nil) 
-			#helpText: 'Display the current time step') #(MenuItem 
-			#rawLabel: 'BackGround' 
-			#value: #setBackGround 
-			#submenu: #(Menu #(#(MenuItem 
-				#rawLabel: 'Change background color' 
-				#value: #setBackGroundColor)) #(1) nil))) #(2 3) nil)) #(MenuItem 
-		#rawLabel: 'Tools' 
-		#nameKey: #tools 
-		#submenu: #(Menu #(#(MenuItem 
-			#rawLabel: 'Display legends' 
-			#nameKey: #activateLegend 
-			#value: #activateLegend) #(MenuItem 
-			#rawLabel: 'Photo' 
-			#nameKey: #photo 
-			#value: #photo) #(MenuItem 
-			#rawLabel: 'Video' 
-			#nameKey: #video 
-			#value: #video) #(MenuItem 
-			#rawLabel: 'Manipulate instances' 
-			#value: #openManipInstances) #(MenuItem 
-			#rawLabel: 'Create instances' 
-			#value: #openCreateInstances) #(MenuItem 
-			#rawLabel: 'Click to...' 
-			#nameKey: #clicTo 
-			#value: #clicTo 
-			#submenu: #(Menu #(#(MenuItem 
-				#rawLabel: 'Change attribute...' 
-				#nameKey: #clicToChange 
-				#value: #clicToChange) #(MenuItem 
-				#rawLabel: 'Inspect' 
-				#value: #clicToInspect)) #(2) nil)) #(MenuItem 
-			#rawLabel: 'Habitus' 
-			#value: #openSIconfig)) #(7) nil)) #(MenuItem 
-		#rawLabel: 'Option' 
-		#nameKey: #option 
-		#submenu: #(Menu #(#(MenuItem 
-			#rawLabel: 'Unmoveable zoom' 
-			#nameKey: #unmoveableZoom 
-			#value: #unmoveableZoom 
-			#indication: true 
-			#helpText: 'The zoom you will open will be static') #(MenuItem 
-			#rawLabel: 'Moveable zoom' 
-			#nameKey: #moveableZoom 
-			#value: #moveableZoom 
-			#indication: false 
-			#helpText: 'The zoom you will open will be moveable') #(MenuItem 
-			#rawLabel: 'Set track length' 
-			#nameKey: #setTrackLength 
-			#value: #setTrackLength) #(MenuItem 
-			#rawLabel: 'Enable Undo/Redo' 
-			#nameKey: #enableUndoOption 
-			#value: #enableUndoOption 
-			#indication: true 
-			#helpText: 'Display or hide the Undo/Redo buttons') #(MenuItem 
-			#rawLabel: 'Touchpad manipulate mode' 
-			#nameKey: #isManipulateForTabletEnabled 
-			#value: #toggleManipulateForTablet 
-			#indication: false 
-			#helpText: 'Clicking for manipulation adapated to touchpad')) #(2 2 1) nil)) #(MenuItem 
-		#rawLabel: '?' 
-		#submenu: #(Menu #(#(MenuItem 
-			#rawLabel: #(UserMessage 
-				#key: #aboutThisModel 
-				#defaultString: 'About this model') 
-			#value: #aboutThisModel 
-			#labelImage: #(ResourceRetriever ToolbarIconLibrary #help)) #(MenuItem 
-			#rawLabel: #(UserMessage 
-				#key: #inspectModel 
-				#defaultString: 'inspect model') 
-			#value: #inspectModel 
-			#labelImage: #(ResourceRetriever ToolbarIconLibrary #debugIt))) #(2) nil))) #(6) nil)
-		decodeAsLiteralArray
-]
-
-{ #category : #resources }
 SpaceInterface class >> modifyFigureIcon [
 	
 	^OpaqueImage
 		figure: self modifyFigureIconImage
 		shape: self modifyFigureIconMask
-]
-
-{ #category : #resources }
-SpaceInterface class >> modifyFigureIconImage [
-	"Tools.UIMaskEditor new openOnClass: self andSelector: #modifyFigureIconImage"
-	
-	<resource: #image>
-	^CachedImage
-		on:
-			(Image
-				extent: 23 @ 19
-				depth: 8
-				bitsPerPixel: 8
-				palette:
-					(MappedPalette
-						withColors:
-							(#(#(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(0 0 0)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(3533 3533 3533)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6135 8191 8191)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(224 224 224)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(5010 5942 5942)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(3918 5332 5332)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(3051 4111 4111)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4175 4047 4047)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4946 5814 5814)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(1606 2023 2023)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(2923 3019 3019)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(3758 3597 3597)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6488 8191 8191)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4079 5589 5589)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(3147 3244 3244)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4625 4657 4657)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6360 8094 8094)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6167 8191 8191)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(5492 6874 6874)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(2794 2762 2762)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6809 6713 6713)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(192 256 256)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(64 321 321)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(3918 3693 3693)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4529 5043 5043)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(2890 4047 4047)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(2955 4015 4015)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6520 8191 8191)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(1124 1124 1124)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(2666 3501 3501)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(5010 4978 4978)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6199 8191 8191)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(1349 1349 1349)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(5235 5203 5203)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6649 6649 6649)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(5171 6231 6231)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4753 4786 4786)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4497 4914 4914)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6552 8191 8191)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(1252 1573 1573)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6874 6874 6874)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6231 8191 8191)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(7934 7837 7837)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(1349 1863 1863)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6392 6295 6295)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(481 481 481)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(417 513 513)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(3790 3629 3629)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6552 6552 6552)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6584 8191 8191)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4914 5717 5717)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4143 3950 3950)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(1670 2376 2376)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(5300 6520 6520)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(3790 3469 3469)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6456 8094 8094)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6263 8191 8191)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4015 3854 3854)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4946 4882 4882)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4561 5075 5075)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6424 6295 6295)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4111 4143 4143)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4175 4111 4111)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(8126 8094 8094)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4529 4432 4432)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4336 4529 4529)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(5653 5524 5524)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(5589 5557 5557)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6617 8191 8191)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6295 8191 8191)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(2505 2473 2473)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(3790 3822 3822)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(1573 2120 2120)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(642 931 931)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(64 64 64)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4914 5749 5749)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6649 8191 8191)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(578 803 803)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(7323 7195 7195)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6327 8191 8191)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(1060 1060 1060)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4850 5621 5621)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(1670 2248 2248)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6006 8191 8191)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(3051 4207 4207)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4272 4593 4593)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4047 4047 4047)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4111 4015 4015)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(3693 3565 3565)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(7644 7548 7548)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4657 5235 5235)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(5043 5043 5043)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(3019 3244 3244)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(3501 3501 3501)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(2441 2376 2376)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4529 4978 4978)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(5075 5203 5203)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4240 5621 5621)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(3404 3726 3726)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6392 8191 8191)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(3533 4657 4657)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(5300 6424 6424)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(224 192 192)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(1445 1734 1734)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(5010 5910 5910)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(449 578 578)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4272 4625 4625)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4561 4978 4978)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(7420 7355 7355)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4721 5396 5396)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6745 8191 8191)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4175 4015 4015)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(96 96 96)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(1541 2023 2023)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4464 4368 4368)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4753 4721 4721)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(3276 3308 3308)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(2055 2762 2762)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6424 8191 8191)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(7934 7934 7934)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(1541 1863 1863)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(7227 7130 7130)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(3758 3404 3404)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6103 8191 8191)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6392 6392 6392)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4207 4175 4175)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(1477 1734 1734)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(7098 7034 7034)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4304 4625 4625)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(7452 7355 7355)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(5557 5492 5492)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4432 4400 4400)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4689 5267 5267)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(3854 3533 3533)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6456 8191 8191)))
-								collect:
-									[:each | 
-									(each at: 1) value
-										perform: (each at: 2)
-										withArguments: (each at: 3)]))
-				usingBits:
-					(ByteArray fromPackedString:
-							'@B0,R&%''_"P:U#=,Q18<KC<?KP@\ZP@@@@@@@EH7DA(J 7<"_U11BP=BY"\?HP@@D4X.]VPLG6M+M ,/^#H[I X4EU@!W@@@O2)8QQ-;@!<5BF DR1H8@#EDE @@@@@@O5$''T4<B@ H8S4UES2$BDXYTOTEAPTD@HRDNV&T)@ HBG2$)JR$)!!$>O3<?O3<@WT]=!XP8@!DBTU<XN2T@U%X?O3<?O3<@Q7=?NV48@!DBPQ\GU6<@@C<?O3<?O3<@Q61,NV48@!DBUT@*JFH@O0@?O3<?O3<@@T]VL8P8@!DB GI,L@D@O3<@O3<?O3<@V6A3]BL)@!DLZ%!"X%0@O3<?@C<?O3<@O3<TJ4TQ^3DMXHICP2D@O3<?O0@?O3<@O3=9RF96S@TJ S<?O3<@O3<?O3<@O3<@PU4SSQ4#XP*AO3<?O3<@O3<?O3<?@C<@H@@@@@AIX$8?O3<?O3<@O3<?O0@@@@@@_$(,X@A^[C<?O3<?O3<@O3<@O0@?O3<@_$(?K@A"O3<?O3<?O3<@O0@@O3<@O3<@I0@C\@A\O3<?O3<?O3<@@C<?@C<@O3<@B"\''I79AO3<?O3<?O3<@O3<?@C<?@C<@'))
-]
-
-{ #category : #resources }
-SpaceInterface class >> modifyFigureIconMask [
-	"Tools.UIMaskEditor new openOnClass: self andSelector: #modifyFigureIconMask"
-	
-	<resource: #image>
-	^CachedImage
-		on:
-			(Image
-				extent: 23 @ 19
-				depth: 1
-				bitsPerPixel: 1
-				palette: CoveragePalette monoMaskPalette
-				usingBits:
-					#[255 255 254 0 255 255 254 0 255 255 254 0 255 255 254 0 255 255 254 0 255 255 254 0 255 255 254 0 255 255 254 0 255 255 254 0 255 255 254 0 255 255 254 0 255 255 254 0 255 255 254 0 255 255 254 0 255 255 254 0 255 255 254 0 255 255 254 0 255 255 254 0 255 255 254 0])
 ]
 
 { #category : #resources }
@@ -1412,38 +756,6 @@ SpaceInterface class >> moveIcon [
 		shape: self moveIconMask
 ]
 
-{ #category : #resources }
-SpaceInterface class >> moveIconImage [
-	"UIMaskEditor new openOnClass: self andSelector: #handIconImage"
-	
-	<resource: #image>
-	^CachedImage
-		on:
-			(Image
-				extent: 16 @ 16
-				depth: 1
-				bitsPerPixel: 1
-				palette: MonoMappedPalette blackWhite
-				usingBits:
-					#[254 127 0 0 229 143 0 0 217 183 0 0 217 181 0 0 237 178 0 0 237 182 0 0 151 246 0 0 103 254 0 0 119 253 0 0 191 253 0 0 223 253 0 0 239 251 0 0 239 251 0 0 247 247 0 0 251 247 0 0 248 7 0 0])
-]
-
-{ #category : #resources }
-SpaceInterface class >> moveIconMask [
-	"UIMaskEditor new openOnClass: self andSelector: #handIconMask"
-	
-	<resource: #image>
-	^CachedImage
-		on:
-			(Image
-				extent: 16 @ 16
-				depth: 1
-				bitsPerPixel: 1
-				palette: CoveragePalette monoMaskPalette
-				usingBits:
-					#[1 128 0 0 27 240 0 0 63 248 0 0 63 250 0 0 31 255 0 0 31 255 0 0 111 255 0 0 255 255 0 0 255 254 0 0 127 254 0 0 63 254 0 0 31 252 0 0 31 252 0 0 15 248 0 0 7 248 0 0 7 248 0 0])
-]
-
 { #category : #'parcel load/unload/save' }
 SpaceInterface class >> obsolete [
 	
@@ -1451,17 +763,6 @@ SpaceInterface class >> obsolete [
 		on: Error
 		do: [:ex | ex return: nil].
 	super obsolete
-]
-
-{ #category : #'instance creation' }
-SpaceInterface class >> openAndDisplay: aSpaceModel [
-	
-	| interface |
-	interface := self new.
-	interface spaceModel: aSpaceModel.
-	interface open.
-	interface displayGrid.
-	^interface
 ]
 
 { #category : #'parcel load/unload/save' }
@@ -1634,77 +935,6 @@ SpaceInterface class >> removeEntityIcon [
 	^OpaqueImage
 		figure: self removeEntityIconImage
 		shape: self removeEntityIconMask
-]
-
-{ #category : #resources }
-SpaceInterface class >> removeEntityIconImage [
-	"Tools.UIMaskEditor new openOnClass: self andSelector: #removeEntityIconMask"
-	
-	<resource: #image>
-	^CachedImage
-		on:
-			(Image
-				extent: 24 @ 14
-				depth: 2
-				bitsPerPixel: 2
-				palette:
-					(MappedPalette
-						withColors:
-							(#(#(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(0 0 0)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(8191 8191 8191)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(1541 1541 1541)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(513 513 513)))
-								collect:
-									[:each | 
-									(each at: 1) value
-										perform: (each at: 2)
-										withArguments: (each at: 3)]))
-				usingBits:
-					#[85 85 85 85 85 85 0 0 85 85 85 85 85 85 0 0 85 85 85 85 85 85 0 0 85 85 85 85 85 85 0 0 85 85 85 85 85 85 0 0 85 96 0 0 37 85 0 0 85 69 85 85 69 85 0 0 85 69 85 85 69 85 0 0 85 69 85 85 69 85 0 0 85 112 0 0 53 85 0 0 85 85 85 85 85 85 0 0 85 85 85 85 85 85 0 0 85 85 85 85 85 85 0 0 85 85 85 85 85 85 0 0])
-]
-
-{ #category : #resources }
-SpaceInterface class >> removeEntityIconMask [
-	"Tools.UIMaskEditor new openOnClass: self andSelector: #removeEntityIconImage"
-	
-	<resource: #image>
-	^CachedImage
-		on:
-			(Image
-				extent: 24 @ 14
-				depth: 1
-				bitsPerPixel: 1
-				palette: CoveragePalette monoMaskPalette
-				usingBits:
-					#[255 255 255 0 255 255 255 0 255 255 255 0 255 255 255 0 255 255 255 0 255 255 255 0 255 255 255 0 255 255 255 0 255 255 255 0 255 255 255 0 255 255 255 0 255 255 255 0 255 255 255 0 255 255 255 0])
-]
-
-{ #category : #resources }
-SpaceInterface class >> temp [
-	"Tools.UIMaskEditor new openOnClass: self andSelector: #temp"
-	
-	<resource: #image>
-	^CachedImage
-		on:
-			(Image
-				extent: 15 @ 18
-				depth: 2
-				bitsPerPixel: 2
-				palette:
-					(MappedPalette
-						withColors:
-							(#(#(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(0 0 0)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(7580 7484 6938)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(8191 8191 8191)))
-								collect:
-									[:each | 
-									(each at: 1) value
-										perform: (each at: 2)
-										withArguments: (each at: 3)]))
-				usingBits:
-					#[85 85 85 84 85 85 85 84 85 69 85 84 85 65 85 84 85 72 85 84 85 74 21 84 85 74 133 84 85 74 161 84 85 74 168 84 85 74 170 20 85 74 160 4 85 74 33 84 85 72 40 84 85 65 72 84 85 69 74 20 85 85 82 20 85 85 80 84 85 85 85 84])
 ]
 
 { #category : #resources }
@@ -1938,60 +1168,6 @@ SpaceInterface class >> zoomIcon [
 	^OpaqueImage
 		figure: self zoomIconImage
 		shape: self zoomIconMask
-]
-
-{ #category : #resources }
-SpaceInterface class >> zoomIconImage [
-	"Tools.UIMaskEditor new openOnClass: self andSelector: #zoom"
-	
-	<resource: #image>
-	^CachedImage
-		on:
-			(Image
-				extent: 20 @ 20
-				depth: 3
-				bitsPerPixel: 4
-				palette:
-					(MappedPalette
-						withColors:
-							(#(#(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(0 0 0)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(6874 6874 6874)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(5010 6617 7130)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(8191 8191 8191)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(5557 5557 5557)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(4240 2120 2120)))
-								collect:
-									[:each | 
-									(each at: 1) value
-										perform: (each at: 2)
-										withArguments: (each at: 3)]))
-				usingBits:
-					(ByteArray fromPackedString:
-							'L3L3L3L3L3L3L0@@L3L3L3L3L3L3L0@@L3L3L3L3L3L3L0@@L3L3L@@CL3L3L0@@L3L0@RI@@3L3L0@@L3LAH"H"PCL3L0@@L3LBH2H"HCL3L0@@L3@RL3H"I@L3L0@@L3@"H2H"H L3L0@@L3@"H"H"H L3L0@@L3ABH"H"HPL3L0@@L3LBH"H"HCL3L0@@L3LDH"H"DCL3L0@@L3L0ABHPAUL3L0@@L3L3L@@CLDT3L0@@L3L3L3L3L0QSL0@@L3L3L3L3L3AEL0@@L3L3L3L3L3LDT0@@L3L3L3L3L3L0@0@@L3L3L3L3L3L3L0@@'))
-]
-
-{ #category : #resources }
-SpaceInterface class >> zoomIconMask [
-	"Tools.UIMaskEditor new openOnClass: self andSelector: #zoomIconMask"
-	
-	<resource: #image>
-	^CachedImage
-		on:
-			(Image
-				extent: 20 @ 20
-				depth: 1
-				bitsPerPixel: 1
-				palette: CoveragePalette monoMaskPalette
-				usingBits:
-					#[0 0 0 0 0 0 0 0 0 0 0 0 1 224 0 0 7 248 0 0 15 252 0 0 15 252 0 0 31 254 0 0 31 254 0 0 31 254 0 0 31 254 0 0 15 252 0 0 15 252 0 0 7 254 0 0 1 231 0 0 0 3 128 0 0 1 192 0 0 0 224 0 0 0 96 0 0 0 0 0])
-]
-
-{ #category : #'menu - actions' }
-SpaceInterface >> aboutThisModel [
-	
-	self spaceModel ifNil: [^nil].
-	self spaceModel cormas aboutThisModel
 ]
 
 { #category : #'tool hotDraw' }
@@ -2276,18 +1452,6 @@ SpaceInterface >> choose: messageString labels: labels values: values default: d
 		for: self mainWindow
 ]
 
-{ #category : #'user message' }
-SpaceInterface >> choose: messageString labels: labels values: values default: defaultValue then: aBlock [
-	"request the user to choose from a list of options then evaluate aBlock in an asynchronous way.
-	no result expected
-	used for distributed cormas"
-	
-	| answer |
-	answer := Dialog choose: messageString labels: labels values: values
-		default: defaultValue.
-	aBlock value: answer
-]
-
 { #category : #'manipulate instances' }
 SpaceInterface >> chooseEntityForManipulation [
 	
@@ -2413,17 +1577,6 @@ SpaceInterface >> cormasModelClass [
 	^self spaceModel cormasModelClass
 ]
 
-{ #category : #'manipulate instances' }
-SpaceInterface >> createEntitiesOn: aFigure [
-	
-	self createInstancesController ifNil: [^nil].
-	self createInstancesController isCreatingInstancesManuallyLocated
-		ifTrue:
-			[self storeBeforeManipulation.
-			self createInstancesController
-				createInstancesOnCell: aFigure model entity]
-]
-
 { #category : #accessing }
 SpaceInterface >> createInstancesController [
 	
@@ -2435,26 +1588,6 @@ SpaceInterface >> createInstancesController: anObject [
 	
 	anObject ifNil: [self activateInspectTool].
 	createInstancesController := anObject
-]
-
-{ #category : #'manipulate instances' }
-SpaceInterface >> createStartArcEntityOn: aFigure [
-	
-	self createInstancesController ifNil: [^nil].
-	self createInstancesController isCreatingInstancesManuallyLocated
-		ifTrue:
-			[self storeBeforeManipulation.
-			self createInstancesController
-				createStartArcEntityOn: aFigure model entity]
-]
-
-{ #category : #'manipulate instances' }
-SpaceInterface >> createStopArcEntityOn: aFigure [
-	
-	self createInstancesController ifNil: [^nil].
-	self createInstancesController isCreatingInstancesManuallyLocated
-		ifTrue:
-			[self createInstancesController createStopArcEntityOn: aFigure model entity]
 ]
 
 { #category : #'tool hotDraw' }
@@ -2492,20 +1625,6 @@ SpaceInterface >> disableToolNumber: anInteger [
 	buttons selectionIndex: anInteger.
 	buttons selection disable.
 	buttons selectionIndex: previous
-]
-
-{ #category : #display }
-SpaceInterface >> displayAllPovs [
-	"Called when a new instance of SpaceInterface is opened from a parent interface"
-	
-	| aClass |
-	self displayGrid.	"self displayAllOccupants."
-	self povMethodDico
-		keysAndValuesDo:
-			[:aKeyClass :selectorName | 
-			aClass := aKeyClass class.
-			(aClass isAbstract or: [selectorName = #nil])
-				ifFalse: [self drawing changePov: selectorName ofEntity: aClass]]
 ]
 
 { #category : #display }
@@ -2556,26 +1675,6 @@ SpaceInterface >> displayCompoundSpatialEntityClass: aClass [
 	(aClass ~= self activeSpatialEntity and: [selectorName ~= #delimitors])
 		ifTrue: [^nil].
 	self drawing loadFiguresFrom: aClass povSelector: selectorName
-]
-
-{ #category : #display }
-SpaceInterface >> displayGrid [
-	"Resize the window firstly, to fit to the spaceModel, then display the grid with the default pov of the elementary spatialEntities.
-	Called when 
-	- a new instance of SpaceInterface is opened, or
-	- the model is reinitialized"
-	
-	| povSelector |
-	self resizeWindow.	"self drawing
-		addFiguresForSpatialPovs: self spaceModel elementaryEntitiesDefaultPovs.  en fait ce n'est plus n√©cessaire car changePov s'en charge"	"refresh POV if necessary"
-	povSelector := self povMethodDico
-		at: self activeSpatialEntity name
-		ifAbsent: [#nil].
-	povSelector = #nil
-		ifFalse:
-			[self
-				changePov: povSelector
-				ofEntity: self activeSpatialEntity]
 ]
 
 { #category : #display }
@@ -2630,13 +1729,6 @@ SpaceInterface >> displayTimeTitle [
 		ifFalse:
 			[self builder window label: self basicTitle.
 			timeTitleMenu beOff]
-]
-
-{ #category : #'drawing description' }
-SpaceInterface >> drawingClass [
-	"What type of drawing should we create?"
-	
-	^SpaceView
 ]
 
 { #category : #'menu - actions' }
@@ -2764,13 +1856,6 @@ SpaceInterface >> infoMethodDicoAt: aClass [
 	^self infoMethodDico
 		at: aClass name
 		ifAbsentPut: [#nil]
-]
-
-{ #category : #initialisation }
-SpaceInterface >> initLegend [
-	
-	self legend: Legend new init.
-	self legend mainInterface: self
 ]
 
 { #category : #menus }
@@ -2981,15 +2066,6 @@ SpaceInterface >> listMethodsChanged [
 ]
 
 { #category : #'menu - actions' }
-SpaceInterface >> loadASC [
-	
-	| parametersWindow |
-	parametersWindow := MenuSpaceInterfaces new openDialog: #windowASC with:
-			self.
-	parametersWindow initASCParametres: self cormasModelClass
-]
-
-{ #category : #'menu - actions' }
 SpaceInterface >> loadGrid [
 	
 	| aName |
@@ -3011,18 +2087,6 @@ SpaceInterface >> loadGrid [
 	self spaceModel loadEnvironmentFromFile: aName.
 	self initMenuTopologie.
 	self updateWindowName
-]
-
-{ #category : #'SI config' }
-SpaceInterface >> loadSilentltySIConfigName: aSymbol [
-	
-	self siConfig
-		ifNil:
-			[self siConfig: (SpaceInterfaceConfig newFor: self withConfig: aSymbol)].
-	self siConfig applyCurrentSettings.
-	self siConfig forceSItoApplyConfigTrackAgents.
-	self siConfig siMenuFormat value ~= #siMenuFull
-		ifTrue: [self siConfig reopenSI]
 ]
 
 { #category : #'grid recorder' }
@@ -3194,14 +2258,6 @@ SpaceInterface >> notYiet [
 ]
 
 { #category : #updating }
-SpaceInterface >> noticeChange: aChange [
-	"Debug =>"
-	"Cormas print: aChange symbol , ' - '."
-	
-	aChange dispatchOn: self
-]
-
-{ #category : #updating }
 SpaceInterface >> noticeEntityChange: anEntityChange [
 	
 	| changeType anEntityReference parameter |
@@ -3251,16 +2307,6 @@ SpaceInterface >> noticeOfWindowClose: aWindow [
 	self changed: #windowClosed
 ]
 
-{ #category : #updating }
-SpaceInterface >> noticeSpaceModelChange: aChange [
-	"the spaceModel has change"
-	
-	self
-		update: aChange symbol
-		with: aChange parameter
-		from: self
-]
-
 { #category : #'interface opening' }
 SpaceInterface >> open [
 	"Open the SpaceInterface adapted to the spaceModel configuration."
@@ -3277,48 +2323,6 @@ SpaceInterface >> open [
 	win := bdr window.
 	win openIn: (origine extent: etendue).	"self resizeWindow: win toOrigine: origine extent: etendue."	"self displayGrid."
 	self setMenuHolder
-]
-
-{ #category : #'manipulate instances' }
-SpaceInterface >> openCreateInstances [
-	
-	self createInstancesController
-		ifNil: [CreateInstances openOnSpaceInterface: self]
-]
-
-{ #category : #'manipulate instances' }
-SpaceInterface >> openManipInstances [
-	
-	self manipInstancesController
-		ifNil: [ManipulateInstances openOnSpaceInterface: self]
-]
-
-{ #category : #'menu - actions' }
-SpaceInterface >> openSIconfig [
-	
-	self siConfig ifNil: [self siConfig: (SpaceInterfaceConfig newFor: self)].
-	self siConfig open
-]
-
-{ #category : #'interface opening' }
-SpaceInterface >> openWindowGridSize [
-	
-	| win |
-	win := MenuSpaceInterfaces new
-		initGridSizeLine: self spaceModel line
-		column: self spaceModel column.
-	win openDialog: #windowGridSize with: self
-]
-
-{ #category : #'manipulate instances' }
-SpaceInterface >> openedEntityInspectors_IsTheOnlyOne [
-	"Purpose: return an association which key is collection of opened entity inspectors for that space interface, and value is true or false depending if the enity inspecor is set to bethe only one.	"
-	
-	| result |
-	result := OrderedCollection new -> false.
-	self myDependents update: #openedEntityInspectors_IsTheOnlyOne with:
-			result from: self.
-	^result
 ]
 
 { #category : #'classes list for menu' }
@@ -3591,22 +2595,6 @@ SpaceInterface >> removeOccupant: anOccupantReference [
 ]
 
 { #category : #'menu - actions' }
-SpaceInterface >> reopen [
-	"Open a new spatial grid with same properties"
-	
-	| interface |
-	self spaceModel cormas
-		ifNil: [^self cormas warn: 'The model should be initialized'].
-	interface := SpaceInterface new.
-	interface copyPovFrom: self.
-	interface open.
-	interface drawing fillColor: self drawing fillColor.
-	interface setMenuHolder.
-	interface displayAllPovs.	"self spaceModel cormas spaceInterfaces add: interface."
-	^interface
-]
-
-{ #category : #'menu - actions' }
 SpaceInterface >> reopenWithSameHabitus [
 	"Open a new spatial grid with same properties and same Habitus"
 	
@@ -3666,45 +2654,6 @@ SpaceInterface >> request: aMessage initialAnswer: initialString then: aBlock [
 	aBlock value: answer] promise
 ]
 
-{ #category : #'interface closing' }
-SpaceInterface >> requestForWindowClose [
-self flag:#TODO.
-	"Ces actions devraient être dans un noticeOfWindowClose:"
-	spaceModel ifNotNil: [ self spaceModel: nil ].
-	self manipInstancesController
-		ifNotNil: [ self manipInstancesController closeWithSpaceInterface ].
-	self createInstancesController
-		ifNotNil: [ self createInstancesController closeWithSpaceInterface ].
-	self siConfig ifNotNil: [ self siConfig closeRequest ].
-	^ super requestForWindowClose
-]
-
-{ #category : #'interface opening' }
-SpaceInterface >> resizeWindow [
-	"Automatically resize the SpaceInterface window to fit (+/- 5 %) the spaceModel configuration."
-
-	| hauteur origine etendue newRatio newExtent previousExtent previousRatio |
-	self spaceModel class = ClientSpaceModel
-		ifFalse: [ self spaceModel autoResizeBounds
-				ifFalse: [ ^ nil ] ].
-	previousExtent := self drawing bounds extent.
-	newExtent := self spaceModel absoluteBounds extent.
-	self flag: #TODO.
-	"c''est pas vraiment normal que la spaceInterface recupère le absolutebounds de son modèle. il aurai mieux fallu que celui ci lui passe lors de la notification"
-	newRatio := newExtent / (newExtent x min: newExtent y).
-	previousRatio := previousExtent
-		/ (previousExtent x min: previousExtent y).	"((previousRatio y - newRatio y) / newRatio y) abs > 0.05 ifFalse:[^false]."
-	(previousRatio / newRatio between: 0.95 * (1 @ 1) and: 1.05 * (1 @ 1))
-		ifTrue: [ ^ false ].	"hauteur := self builder window getDisplayBox height max: self builder window getDisplayBox width."
-	hauteur := previousExtent x max: previousExtent y.
-	etendue := ((hauteur / newRatio y) @ (hauteur / newRatio x)) rounded.
-	origine := (Screen default bounds width - etendue x) @ 0.	"origine := self builder window globalOrigin."
-	self
-		resizeWindow: self builder window
-		toOrigine: origine
-		extent: etendue
-]
-
 { #category : #'interface opening' }
 SpaceInterface >> resizeWindow: win toOrigine: origine extent: newSpaceViewExtent [
 	"resize the SpaceInterface window to fit the spaceModel configuration.
@@ -3734,64 +2683,9 @@ SpaceInterface adds decoration + menu + Tools bar. If interface is very thin, th
 ]
 
 { #category : #'menu - actions' }
-SpaceInterface >> saveASC [
-	
-	| workingWindow |
-	workingWindow := MenuSpaceInterfaces new
-		initSaveASC: self cormasModelClass.
-	workingWindow openDialog: #windowSaveASC with: self
-]
-
-{ #category : #'menu - actions' }
-SpaceInterface >> saveGrid [
-	
-	| workingWindow file |
-	workingWindow := MenuSpaceInterfaces new
-		initSaveEnv: self cormasModelClass.
-	(workingWindow openDialogInterface: #windowSaveEnv) ifFalse: [^nil].
-	file := Dialog
-		requestNewFileName:
-			(UserMessage defaultString: 'Save as' key: #saveas) asString
-		default:
-			((Cormas mapsPath: self cormasModelClass name) construct: 'filename.env').
-	file isEmpty
-		ifFalse:
-			[self spaceModel
-				saveAttributes: workingWindow attributesToBeSaved selections
-				inFile: file asFilename]
-]
-
-{ #category : #'menu - actions' }
 SpaceInterface >> saveGridMapInfo [
 	
 	self spaceModel saveGridMapInfo
-]
-
-{ #category : #'menu - actions' }
-SpaceInterface >> saveMIFMID [
-	
-	| workingWindow c l |
-	l := self spaceModel spatialEntities keys asArray.
-	c := Dialog
-		choose: 'Which class?'
-		fromList: l
-		values: l
-		lines: 8
-		cancel: [#noChoice]
-		for: Dialog defaultParentWindow.
-	c = #noChoice ifTrue: [^nil].
-	workingWindow := MenuSpaceInterfaces new
-		initSaveMIFMID:
-			(self cormasModelClass spatialClasses detect: [:cn | cn name asSymbol = c]).
-	workingWindow openDialog: #windowSaveMIFMID with: self
-]
-
-{ #category : #'menu - actions' }
-SpaceInterface >> saveRSTRDC [
-	
-	| workingWindow |
-	workingWindow := MenuSpaceInterfaces new initSaveRSTRDC: self spaceModel.
-	workingWindow openDialog: #windowSaveRSTRDC with: self
 ]
 
 { #category : #'grid recorder' }
@@ -4226,64 +3120,6 @@ SpaceInterface >> unmoveableZoom [
 			#moveableZoom) beOff
 ]
 
-{ #category : #updating }
-SpaceInterface >> update: anAspectSymbol with: aParameter from: aSender [
-	"Somebody has justed changed. If it is as a result of a deletion dependent then it will be #deleted."
-	
-	anAspectSymbol = #noticeChanges
-		ifTrue:
-			[aParameter isEmpty ifTrue: [^self].
-			aParameter do: [:aChange | self noticeChange: aChange].
-			^Cormas refresh: self].
-	anAspectSymbol = #noticeChange
-		ifTrue:
-			[self noticeChange: aParameter.
-			^Cormas refresh: self].
-	anAspectSymbol = #changePov
-		ifTrue:
-			[^self
-				changePov: aParameter povName
-				ofEntity: aParameter entityClass].
-	anAspectSymbol = #removeAllFigures
-		ifTrue: [^self drawing removeAllFigures].
-	anAspectSymbol = #openedSpatialGridsForHabitus:
-		ifTrue:
-			[^self
-				registerInto: aParameter value
-				forHabitus: aParameter key].	" hack : avoid isKindOf: when getting SpaceInterface from openedSpatialGrid"
-	anAspectSymbol = #timeChanged ifTrue: [^self timeChanged].
-	anAspectSymbol = #backgroundColor
-		ifTrue: [^self drawing fillColor: aParameter].
-	anAspectSymbol = #delimitorSize ifTrue: [^self perform: aParameter].
-	anAspectSymbol = #newCells
-		ifTrue:
-			[self displayGrid.
-			^self updateWindowName].
-	anAspectSymbol = #newAggregates
-		ifTrue:
-			[self displayCompoundSpatialEntityClass: aParameter.	"= class"
-			^self updateWindowName].
-	anAspectSymbol = #shapeHasChanged
-		ifTrue:
-			[self adaptMenuForNewShape.
-			^self updateWindowName].
-	anAspectSymbol = #removeAllCompoundSpatialEntityFigures
-		ifTrue: [^self drawing removeAllCompoundSpatialEntityFigures].
-	anAspectSymbol = #boundariesChanged ifTrue: [^self boundariesChanged].
-	anAspectSymbol = #closeRequest ifTrue: [^self closeRequest].
-	anAspectSymbol = #snapGridTimeForMovie
-		ifTrue:
-			[^self
-				snapGridTimeForMovie: aParameter first
-				makingMovie: aParameter last].
-	anAspectSymbol = #listMethodsChanged ifTrue: [^self listMethodsChanged].
-	anAspectSymbol = #loadSilentltySIConfigName
-		ifTrue:
-			[aParameter key = self
-				ifTrue: [^self loadSilentltySIConfigName: aParameter value]].
-	super update: anAspectSymbol with: aParameter from: aSender
-]
-
 { #category : #'manipulate instances' }
 SpaceInterface >> updateEntitiesSelectionWith: collecOfFigures lastFigureSelected: aFigure [
 	
@@ -4371,17 +3207,6 @@ SpaceInterface >> video: nilOrFilename [
 SpaceInterface >> view [
 	
 	^self drawing
-]
-
-{ #category : #'user message' }
-SpaceInterface >> warn: aMessage [
-	"display a message for this window. Don't block the current thread (usefull for remote dialog when distributed)"
-	
-	^self
-		asynchronousDo:
-			[Dialog
-				warn: aMessage
-				for: self mainWindow]
 ]
 
 { #category : #'drawing description' }

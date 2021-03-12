@@ -1,5 +1,5 @@
 Class {
-	#name : #'AddOnManager_ListItem',
+	#name : #'CMAddOnManager_ListItem',
 	#superclass : #Object,
 	#instVars : [
 		'file',
@@ -13,18 +13,18 @@ Class {
 		'categoryAsString',
 		'addOnDescription'
 	],
-	#category : 'Cormas-Core-Tools'
+	#category : #'Cormas-Core-Tools'
 }
 
 { #category : #'instance creation' }
-AddOnManager_ListItem class >> new [
+CMAddOnManager_ListItem class >> new [
 	"Answer a newly created and initialized instance."
 	
 	^super new initialize
 ]
 
 { #category : #'instance creation' }
-AddOnManager_ListItem class >> newOnFile: aFile [
+CMAddOnManager_ListItem class >> newOnFile: aFile [
 	
 	| x stream line |
 	x := super new initialize.
@@ -99,79 +99,79 @@ AddOnManager_ListItem class >> newOnFile: aFile [
 ]
 
 { #category : #accessing }
-AddOnManager_ListItem >> addOnDescription [
+CMAddOnManager_ListItem >> addOnDescription [
 	
 	^addOnDescription
 ]
 
 { #category : #accessing }
-AddOnManager_ListItem >> addOnDescription: anObject [
+CMAddOnManager_ListItem >> addOnDescription: anObject [
 	
 	addOnDescription := anObject
 ]
 
 { #category : #accessing }
-AddOnManager_ListItem >> authorAsString [
+CMAddOnManager_ListItem >> authorAsString [
 	
 	^authorAsString
 ]
 
 { #category : #accessing }
-AddOnManager_ListItem >> authorAsString: anObject [
+CMAddOnManager_ListItem >> authorAsString: anObject [
 	
 	authorAsString := anObject
 ]
 
 { #category : #accessing }
-AddOnManager_ListItem >> categoryAsString [
+CMAddOnManager_ListItem >> categoryAsString [
 	
 	^categoryAsString
 ]
 
 { #category : #accessing }
-AddOnManager_ListItem >> categoryAsString: anObject [
+CMAddOnManager_ListItem >> categoryAsString: anObject [
 	
 	categoryAsString := anObject
 ]
 
 { #category : #accessing }
-AddOnManager_ListItem >> dateAsString [
+CMAddOnManager_ListItem >> dateAsString [
 	
 	^dateAsString
 ]
 
 { #category : #accessing }
-AddOnManager_ListItem >> dateAsString: anObject [
+CMAddOnManager_ListItem >> dateAsString: anObject [
 	
 	dateAsString := anObject
 ]
 
 { #category : #accessing }
-AddOnManager_ListItem >> file [
+CMAddOnManager_ListItem >> file [
 	
 	^file
 ]
 
 { #category : #accessing }
-AddOnManager_ListItem >> file: anObject [
+CMAddOnManager_ListItem >> file: anObject [
 	
 	file := anObject
 ]
 
 { #category : #accessing }
-AddOnManager_ListItem >> fileAsString [
+CMAddOnManager_ListItem >> fileAsString [
 	
 	^fileAsString
 ]
 
 { #category : #accessing }
-AddOnManager_ListItem >> fileAsString: anObject [
+CMAddOnManager_ListItem >> fileAsString: anObject [
 	
 	fileAsString := anObject
 ]
 
 { #category : #'initialize-release' }
-AddOnManager_ListItem >> initialize [
+CMAddOnManager_ListItem >> initialize [
 	"Initialize a newly created instance. This method must answer the receiver."
 	" *** Replace this comment with the appropriate initialization code *** "
 	
@@ -179,49 +179,49 @@ AddOnManager_ListItem >> initialize [
 ]
 
 { #category : #accessing }
-AddOnManager_ListItem >> nameAsString [
+CMAddOnManager_ListItem >> nameAsString [
 	
 	^nameAsString
 ]
 
 { #category : #accessing }
-AddOnManager_ListItem >> nameAsString: anObject [
+CMAddOnManager_ListItem >> nameAsString: anObject [
 	
 	nameAsString := anObject
 ]
 
 { #category : #accessing }
-AddOnManager_ListItem >> shouldLoad [
+CMAddOnManager_ListItem >> shouldLoad [
 	
 	^shouldLoad
 ]
 
 { #category : #accessing }
-AddOnManager_ListItem >> shouldLoad: anObject [
+CMAddOnManager_ListItem >> shouldLoad: anObject [
 	
 	shouldLoad := anObject
 ]
 
 { #category : #accessing }
-AddOnManager_ListItem >> typeAsString [
+CMAddOnManager_ListItem >> typeAsString [
 	
 	^typeAsString
 ]
 
 { #category : #accessing }
-AddOnManager_ListItem >> typeAsString: anObject [
+CMAddOnManager_ListItem >> typeAsString: anObject [
 	
 	typeAsString := anObject
 ]
 
 { #category : #accessing }
-AddOnManager_ListItem >> versionAsString [
+CMAddOnManager_ListItem >> versionAsString [
 	
 	^versionAsString
 ]
 
 { #category : #accessing }
-AddOnManager_ListItem >> versionAsString: anObject [
+CMAddOnManager_ListItem >> versionAsString: anObject [
 	
 	versionAsString := anObject
 ]

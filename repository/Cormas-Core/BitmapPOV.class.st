@@ -5,14 +5,8 @@ Class {
 		'bitmap',
 		'position'
 	],
-	#category : 'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Legacy'
 }
-
-{ #category : #viewCorrespondance }
-BitmapPOV class >> asFigure [
-	
-	^BitmapFigure
-]
 
 { #category : #'instance-creation' }
 BitmapPOV class >> newFrom: image [

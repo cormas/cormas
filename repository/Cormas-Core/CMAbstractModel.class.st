@@ -304,21 +304,6 @@ CMAbstractModel class >> channel_default [
 ]
 
 { #category : #'+ activityEditor' }
-CMAbstractModel class >> chooseActivityDiagramEditorToOpen [
-	"Purpose: user can choose and reOpen an ActivityDiagramEditor.
-	Example: CormasModel chooseActivityDiagramEditorToOpen   "
-
-	| chooser |
-	chooser := self chooseActivityDiagramName.
-	chooser ifNil: [ ^ nil ].
-	chooser action = #new
-		ifTrue: [ ^ self openBlankActivityDiagramEditor ].
-	chooser action = #remove
-		ifTrue: [ ^ self removeActivityDiagram: chooser diagramList selection ].
-	^ self openActivityDiagram: chooser diagramList selection
-]
-
-{ #category : #'+ activityEditor' }
 CMAbstractModel class >> chooseActivityDiagramEditorToRemove [
 	" Purpose: user can choose and remove an ActivityDiagramEditor.
 	Example: Entity chooseActivityDiagramEditorToRemove   "
@@ -334,20 +319,6 @@ CMAbstractModel class >> chooseActivityDiagramEditorToRemove [
 			index = 0
 				ifTrue: [ nil ]
 				ifFalse: [ self removeActivityDiagram: (selectors at: index) ] ]
-]
-
-{ #category : #'+ activityEditor' }
-CMAbstractModel class >> chooseActivityDiagramName [
-	" Purpose: user can choose an ActivityDiagramEditor.
-ex:   Entity chooseActivityDiagramName inspect   "
-	
-	| list dialogValue |
-	list := self allActivitySelectors asSortedCollection.
-	dialogValue := DiagramChooser new.
-	dialogValue diagramList list: list.
-	dialogValue open.
-	dialogValue cancel value ifTrue: [^nil].
-	^dialogValue
 ]
 
 { #category : #'managing classes' }
@@ -809,14 +780,6 @@ CMAbstractModel class >> openActivityDiagram: operationName [
 	ad open.
 	ad setTitle.
 	^ad
-]
-
-{ #category : #'+ activityEditor' }
-CMAbstractModel class >> openBlankActivityDiagramEditor [
-	" Purpose: open a blank ActivityDiagramEditor for this class.
-	 ex:   AgentLocation openActivityDiagramEditor   "
-	
-	^ActivityDiagramEditor forClass: self
 ]
 
 { #category : #'managing classes' }
@@ -1622,17 +1585,6 @@ CMAbstractModel >> cormas: anObject [
 	cormas := anObject
 ]
 
-{ #category : #ODBC }
-CMAbstractModel >> createAccessConnection: username password: password base: aDataBase [
-	"Create a ODBC connection on base aDataBase (<String>) with username (<String>) and password (<String>).
-This method may be called from your model in order to save or get values from a database."
-	
-	self
-		database:
-			(CMToAccess createODBCConnection: username password: password base:
-					aDataBase)
-]
-
 { #category : #'+ instance creation - spatial entities' }
 CMAbstractModel >> createAggregate: compoundEntity from: aSet [
 	"Purpose: Creates and returns an instance of compoundEntity composed with a set of cells.
@@ -2067,14 +2019,6 @@ createODBCConnection
 	^nil
 ]
 
-{ #category : #'+ utilities - ODBC' }
-CMAbstractModel >> createODBCConnection: username password: password base: aDataBase [
-	"Create a ODBC connection on base aDataBase (<String>) with username (<String>) and password (<String>)"
-	
-	self simManager createODBCConnection: username password: password base:
-			aDataBase
-]
-
 { #category : #'+ instance creation - nodes & arcs' }
 CMAbstractModel >> createRandomNetworkOfN: n arcs: anArcClass [
 	"create a random Network of n arcs (instances of anArcClass) randomly located on the grid.
@@ -2465,44 +2409,6 @@ CMAbstractModel >> getAttributesType: attributes fromInstances: instanceCollecti
 	^dicoAttConv
 ]
 
-{ #category : #ODBC }
-CMAbstractModel >> getDataFromAccess: aDataBase username: username password: password sql: sqlRequest [
-	"return a collection from an SQL request on Access. This method may be called from your model in order to get values from a database.
-Create a ODBC connection on base aDataBase (<String>) with username (<String>) and password (<String>).
-Send the request.
-sqlRequest examples : 'SELECT * FROM SimName'  
-If you need quotes in your request, you should double the quotes. Be careful: Two quotes (' + ') are differents from quotation marks (''). Ex:
-	'SELECT * FROM SimName WHERE version LIKE ''ECEC.st'''   
-
-Example: 
-	self getDataFromAccess: 'cormasSimulations' username: 'bommel' password: '' sql: 'SELECT * FROM SimName WHERE version LIKE ''ECEC.st'''   "
-	
-	| result |
-	self createAccessConnection: username password: password base: aDataBase.
-	result := self database trySQL_command: sqlRequest.
-	self database disconnectODBCConnection.
-	result ifFalse: [self error: 'Connexion Error'].
-	^result
-]
-
-{ #category : #ODBC }
-CMAbstractModel >> getDataFromAccess_sql: sqlRequest [
-	"return a collection from an SQL request on Access. This method may be called from your model in order to get values from a database.
-Be carefull: Except in case of error, the connexion with the database won't be release.
-For a single request, you should rather use : getDataFromAccess: aDataBase username: username password: password sql: sqlRequest"
-	
-	| result |
-	self database
-		ifNil:
-			[self error: 'Database not connected'	"The database is not connected. Before this method, you should send the message : self createAccessConnection: username password: password base: aDataBase"].
-	result := self database trySQL_command: sqlRequest.
-	result
-		ifFalse:
-			[self database disconnectODBCConnection.
-			self error: 'Connexion Error'].
-	^result
-]
-
 { #category : #'+ utilities - files' }
 CMAbstractModel >> getDataFromFile: aStringOrFilename separator: aChar [
 	"Returns a collection of collections containing the elements of one line of the file. The elements are separated by aChar. 
@@ -2786,7 +2692,7 @@ CMAbstractModel >> initializeProbes [
 	data := Dictionary new.
 	self setDataStructures.
 	self cormas ifNil: [ ^ nil ].
-	self cormas refreshCharts
+	"self cormas refreshCharts"
 ]
 
 { #category : #'initalize release' }
@@ -2809,101 +2715,6 @@ CMAbstractModel >> initializeTheEntity: aClass [
 	aClass CurrentId: 0.
 	aClass isAbstract ifTrue: [^OrderedCollection new: 0].
 	^entities removeAll
-]
-
-{ #category : #'- binary storage' }
-CMAbstractModel >> installNewEntities: arrayOfEntitiesSameClass [
-	"set the attribute theXXXs of a Class = arrayOfEntitiesSameClass"
-	
-	| aClass coll newPatch |
-	arrayOfEntitiesSameClass isEmpty ifTrue: [^nil].
-	aClass := arrayOfEntitiesSameClass first class.
-	coll := arrayOfEntitiesSameClass asOrderedCollection.
-	self
-		perform: (self setterForEntityClass: aClass)
-		with: coll.
-	coll
-		do:
-			[:inst | 
-			inst collector: self collector.
-			inst isSpatialEntity ifTrue: [inst spaceModel: self spaceModel].
-			inst isClassLocation
-				ifTrue:
-					["the patch may be an old instance. We must re-localize the agent"
-					inst patch
-						ifNotNil:
-							[newPatch := self theESE at: inst patch id.
-							(inst isKindOf: CMArcEntity)
-								ifTrue:
-									[(inst startNode notNil and: [inst stopNode notNil])
-										ifTrue:
-											[| destination |
-											destination := self theESE at: inst stopNode patch id.
-											inst leave.
-											inst isMovedFrom: newPatch to: destination]]
-								ifFalse:
-									[inst leave.
-									inst moveTo: newPatch]]]].
-	aClass isSpatialClass
-		ifTrue:
-			[self spaceModel spatialEntities
-				at: aClass name
-				put: coll.
-			aClass isSpatialEntityElementClass
-				ifTrue:
-					["newCells notification also dispatch the request to remoteSpaceModels to rebuild the cell figures"
-					self spaceModel
-						sendCellsToClientSpaceModels: (EntityReference onEntities: coll).	"dispatch the info that cells have been modifyed to all opened spaceInterfaces"
-					self spaceModel changed: #newCells]
-				ifFalse: [self registerSpaceModelChange: #newAggregates with: aClass]].
-	aClass CurrentId: coll size
-]
-
-{ #category : #'- binary storage' }
-CMAbstractModel >> installNewEntities: aClass fromClone: cloneCormasModel [
-	"set the attribute theXXXs of a Class = arrayOfEntitiesSameClass"
-	
-	| coll |
-	coll := (cloneCormasModel theEntities: aClass) copy.
-	self
-		perform: (self setterForEntityClass: aClass)
-		with: coll.
-	coll
-		do:
-			[:inst | 
-			inst collector: self collector.
-			inst isSpatialEntity ifTrue: [inst spaceModel: self spaceModel].
-			inst isClassLocation
-				ifTrue:
-					[inst patch
-						ifNotNil:
-							[(inst isKindOf: CMArcEntity)
-								ifTrue:
-									[(inst startNode notNil and: [inst stopNode notNil])
-										ifTrue:
-											[self
-												registerEntityChange: #newArc
-												with:
-													(EntityReference on: inst startCell) -> (EntityReference on: inst stopCell)
-												from: (EntityReference on: inst)]]
-								ifFalse:
-									[self
-										registerEntityChange: #newOccupant
-										with: (EntityReference on: inst patch)
-										from: (EntityReference on: inst)]]]].
-	aClass isSpatialClass
-		ifTrue:
-			[self spaceModel spatialEntities
-				at: aClass name
-				put: coll.
-			aClass isSpatialEntityElementClass
-				ifTrue:
-					["newCells notification also dispatch the request to remoteSpaceModels to rebuild the cell figures"
-					self spaceModel
-						sendCellsToClientSpaceModels: (EntityReference onEntities: coll).	"dispatch the info that cells have been modifyed to all opened spaceInterfaces"
-					self spaceModel changed: #newCells]
-				ifFalse: [self registerSpaceModelChange: #newAggregates with: aClass]].
-	aClass CurrentId: coll size
 ]
 
 { #category : #'+ utilities - population metrics' }
@@ -3132,82 +2943,6 @@ CMAbstractModel >> newSensitivitySetter: aSensitivityClass [
 	^sensitivitySetter"
 ]
 
-{ #category : #'+ user interface' }
-CMAbstractModel >> openASpaceInterface [
-	"Purpose: open programmaticaly a space interface windows
-Example: self loadEnvironmentFromFile: 'test.env' .self openASpaceInterface. self displayPov: #state of: Cell "
-	
-	^self cormas openSpatialGrid
-]
-
-{ #category : #'+ user interface' }
-CMAbstractModel >> openAnotherInterfaceWithHabitusName: aString [
-	"Purpose: open programmaticaly a space interface window and load a specified habitus for it
-If a spaceInterface with a habitus of the same name is already open, a new spaceInterface with the same habitus is open.
-Argument: aSymbol = <aSymbol> that corresponds to a habitus name previously defined
-Example: self openAnotherInterfaceWithHabitusName:'Farmer'    "
-	
-	self
-		loadHabitusName: aString
-		forInterface: self openASpaceInterface
-]
-
-{ #category : #'default values' }
-CMAbstractModel >> openDataSetterInterface [
-	
-	defaultAttributesSetter
-		ifNil: [defaultAttributesSetter := ParameterInterface newOn: self].
-	(defaultAttributesSetter isKindOf: ParameterInterface)
-		ifFalse:
-			[defaultAttributesSetter := ParameterInterface newFromPreviousSetter:
-					defaultAttributesSetter].
-	self defaultAttributesSetter mainWindow isNil
-		ifTrue: [^self defaultAttributesSetter open].
-	self defaultAttributesSetter mainWindow isOpen
-		ifTrue:
-			[(self defaultAttributesSetter mainWindow)
-				raise;
-				expand]
-		ifFalse: [self defaultAttributesSetter open]
-]
-
-{ #category : #'+ user interface' }
-CMAbstractModel >> openInterfaceWithHabitusName: aString [
-	"Purpose: open programmaticaly a space interface window and load a specified habitus for it
-If a spaceInterface with a habitus of the same name is already open, it doesn't open a new spaceInterface, but it reloads the specified habitus for this spaceInterface instead.
-Argument: aSymbol = <aSymbol> that corresponds to a habitus name previously defined
-Example: self openInterfaceWithHabitusName:#Forester"
-	
-	| collec |
-	collec := self openedSpatialGridsForHabitus: aString.
-	collec isEmpty
-		ifTrue: [self openAnotherInterfaceWithHabitusName: aString]
-		ifFalse:
-			[collec do: [:si | self loadHabitusName: aString forInterface: si]]
-]
-
-{ #category : #'default values' }
-CMAbstractModel >> openSensitivityInterface: aSensitivityClass [
-	
-	sensitivitySetter isNil
-		ifTrue: [sensitivitySetter := aSensitivityClass newOn: self].
-	(self sensitivitySetter isKindOf: aSensitivityClass)
-		ifFalse: [self newSensitivitySetter: aSensitivityClass].
-	self sensitivitySetter mainWindow isNil
-		ifTrue:
-			[self sensitivitySetter open.
-			^self sensitivitySetter].
-	self sensitivitySetter mainWindow isOpen
-		ifTrue:
-			[(self sensitivitySetter mainWindow)
-				raise;
-				expand]
-		ifFalse: [self sensitivitySetter open].
-	(self sensitivitySetter isKindOf: SensitivitySetter)
-		ifTrue: [self sensitivitySetter reinitDefaultValues].
-	^self sensitivitySetter
-]
-
 { #category : #'+ accessing - spatial grid' }
 CMAbstractModel >> openedSpatialGrid [
 	"Purpose: return the last opened spatial grid"
@@ -3257,50 +2992,6 @@ aNumber is the specified total area
 Example: self patchDensity: ForestAggregate totalArea: 4875"
 	
 	^self spaceModel patchDensity: aClass totalArea: aNumber
-]
-
-{ #category : #'+ diagram' }
-CMAbstractModel >> performActivityDiagram [
-	"Purpose: Open an activity diagram chooser, then executes the target diagram. 
-This method may be redefined"
-	
-	| aName |
-	aName := self class chooseActivityDiagramName.
-	aName ifNil: [^nil].
-	self performActivityDiagram: aName
-]
-
-{ #category : #'+ diagram' }
-CMAbstractModel >> performActivityDiagram: aName [
-	"Purpose: This is the main method to execute an activity diagram.
-After having found the initial dot (StartFigure), it performs each activity of the diagram, following the way of the transitions, until the stop dot (EndFigure).
-aName = <Symbol>
-Example: Entity new performActivityDiagram: #exampleTest"
-	
-	| editor nextActivityModel result |
-	editor := self class activityDiagramsAt: aName.
-	editor class = ActivityDiagramEditor ifFalse: [^self].
-	nextActivityModel := (editor drawing components
-		detect: [:fig | fig class = StartFigure]) model outgoing first.	" Loop over the activities "
-	[nextActivityModel class = EndPointModel]
-		whileFalse:
-			["          *****************************************************************      "
-			"          ******************      Performs the Activity     ******************      "
-			"          *****************************************************************      "
-			result := self
-				perform: nextActivityModel selectedActivity value asSymbol.	"          *****************************************************************      "	"		select the next activity to be performed "
-			nextActivityModel class = ActivityModel
-				ifTrue: [nextActivityModel := nextActivityModel outgoing first]
-				ifFalse:
-					[(result isKindOf: Boolean)
-						ifFalse:
-							[self cormas warn:
-									'The decision method called %<%<<1s>>> did not return a Boolean. It returns: '
-								with: aName with: result.
-							^self].
-					result
-						ifTrue: [nextActivityModel := nextActivityModel outgoingTrue]
-						ifFalse: [nextActivityModel := nextActivityModel outgoingFalse]]]
 ]
 
 { #category : #'deprecated - mouse behavior' }
@@ -3507,7 +3198,7 @@ CMAbstractModel >> registerSpaceModelChange: aSymbol with: aParameter [
 	"report a change from the spaceModel. These changes can be delayed in order to make one remote call with many changes"
 	
 	self
-		registerChange: (SpaceModelChange newChange: aSymbol with: aParameter)
+		registerChange: (CMSpaceModelChange newChange: aSymbol with: aParameter)
 ]
 
 { #category : #'initalize release' }
@@ -3798,13 +3489,6 @@ CMAbstractModel >> selectCellsOfLine: lineNumber [
 	Example: self ask: (self selectCellsOfLine: 2) toDo: #flash"
 
 	^ self spaceModel cellsOfLine: lineNumber
-]
-
-{ #category : #'default values' }
-CMAbstractModel >> sensitivitySetter [
-	
-	^sensitivitySetter
-		ifNil: [sensitivitySetter := OATsensitivity newOn: self]
 ]
 
 { #category : #'default values' }

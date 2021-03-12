@@ -12,7 +12,7 @@ Class {
 		'position',
 		'isDistortable'
 	],
-	#category : #'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Legacy'
 }
 
 { #category : #viewCorrespondance }

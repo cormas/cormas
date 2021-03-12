@@ -782,7 +782,7 @@ Example : self displayPov: #landUse of: Cell"
 	
 	self
 		changed: #changePov
-		with: (DisplayPovChange forPov: aSymbol ofEntity: aClass)
+		with: (CMDisplayPovChange forPov: aSymbol ofEntity: aClass)
 ]
 
 { #category : #'landscape indices' }
@@ -2232,63 +2232,6 @@ CMSpaceModel >> meanPatchSize: aClass [
 	^ size / aggregates size
 ]
 
-{ #category : #'private - regular cells - instance creation' }
-CMSpaceModel >> mergeCells: listOfCells [
-	"Merge the cells of  listOfCells in one cell. The id of the new cell = the id of the first cell. Set the neighbours of the new cell and the new shape. The other cells are removed."
-
-	| newCell neighbours componentsPovs anEntityPOV minID newEntities |
-	listOfCells size < 2
-		ifTrue: [ ^ nil ].
-	newCell := listOfCells first.	"set the edge of newCell"
-	self closed
-		ifTrue: [ listOfCells
-				do: [ :p | 
-					p edge
-						ifTrue: [ newCell edge: true ] ] ].	"set the neighbours of newCell"
-	neighbours := OrderedCollection new.
-	listOfCells do: [ :c | neighbours addAll: c neighbourhood ].
-	listOfCells do: [ :c | neighbours remove: c ifAbsent: nil ].
-	newCell neighbourhood: neighbours asOrderedCollection.	"agg := self basicCreateAggregate: SpatialEntityAggregate from: listOfCells."	"set the POV of newCell"
-	componentsPovs := OrderedCollection new.
-	listOfCells
-		do:
-			[ :c | componentsPovs add: (self elementaryEntitiesDefaultPovs at: c id) ].
-	anEntityPOV := VectorialCompositePOV newFrom: componentsPovs.
-	anEntityPOV entityReference: (EntityReference on: newCell).
-	self elementaryEntitiesDefaultPovs at: newCell id put: anEntityPOV.	"remove the other cells"
-	listOfCells removeFirst.
-	componentsPovs removeFirst.
-	self elementaryEntitiesDefaultPovs removeAll: componentsPovs.
-	self elementaryEntities: self elementaryEntities asOrderedCollection.
-	listOfCells
-		do: [ :c | self elementaryEntities remove: c ifAbsent: nil ].
-	listOfCells
-		do: [ :c | 
-			c destroyed: true.
-			self cormasModel
-				registerEntityChange: #removeEntity
-				from: (EntityReference on: c) ].	"MAJ des cells voisines"
-	neighbours
-		do: [ :c | 
-			c neighbourhood: c neighbourhood asOrderedCollection.
-			c neighbourhood removeAllSuchThat: [ :n | listOfCells includes: n ].
-			(c neighbourhood includes: newCell)
-				ifFalse: [ c neighbourhood add: newCell ] ].	"Reparation des IDs"
-	minID := newCell id.
-	listOfCells
-		do: [ :c | 
-			c id < minID
-				ifTrue: [ minID := c id ] ].
-	newCell id: minID.
-	newEntities := self elementaryEntities
-		asSortedCollection: [ :a :b | a id < b id ].
-	1 to: newEntities size do: [ :i | (newEntities at: i) id: i ].
-	newCell class CurrentId: newEntities size.
-	gridCellShape := #irregular.	"newCells notification also dispatch the request to remoteSpaceModels to rebuild the cell figures"
-	self
-		sendCellsToClientSpaceModels: (EntityReference onEntities: self elementaryEntities)	"dispatch the info that cells have been modifyed to all opened spaceInterfaces"	"self changed: #newCells"
-]
-
 { #category : #'landscape indices' }
 CMSpaceModel >> nPatches: aClass [
 	"return the data (a number) to be recorded"
@@ -2361,24 +2304,6 @@ CMSpaceModel >> northCell: k [
 		ifFalse: [ column * (line - 1) + k ]
 ]
 
-{ #category : #'private - notification' }
-CMSpaceModel >> noticeChange: aChange [
-	"notice a change reported from anEntity or SpaceModel, dispatch this change to all dependents"
-	
-	self dependents do:[:ob| ob update: #noticeChange with: aChange from: self]
-]
-
-{ #category : #'private - notification' }
-CMSpaceModel >> noticeChanges: someChanges [
-	"notice some grouped changes"
-
-	someChanges isEmpty
-		ifTrue: [ ^ nil ].
-	self myDependents update: #noticeChanges with: someChanges from: self.
-	self flag:#TODO.
-	"g√©rer ici les coupures r√©seaux en faisant des v√©rifications au niveau de myDependents"
-]
-
 { #category : #'private - display' }
 CMSpaceModel >> openedSpatialGrid [
 	"Purpose: Return the last opened spatial grid"
@@ -2403,27 +2328,6 @@ CMSpaceModel >> openedSpatialGrids [
 	"
 	
 	^self openedSpatialGridsForHabitus: nil
-]
-
-{ #category : #'private - display' }
-CMSpaceModel >> openedSpatialGridsForHabitus: aStringOrNil [
-	"Purpose: return a collection of opened spatial grids corresponding to a habitus named aStringOrNil.
-	nil is used to collect all spatial grids
-	hack because of opentalk and distributed : looking for SpatialGrid in the dependents is wrong because :
-	- some spatialGrids are remote
-      - in this case, the registered object is a ClientSpaceModel and not a SpaceInterface
-	- Opentalk register a LocalDependent in order to optimize communication
-      the actual hack is simple : send a normal update to dependents with #openedSpatialGrid, asking them to register iteself in the result collection.
-	Since simple collection have a #value passMode, force a #reference passMode for this result.
-	"
-	
-	| result |
-	result := OrderedCollection new asPassedByReference.
-	self myDependents
-		update: #openedSpatialGridsForHabitus:
-		with: aStringOrNil -> result
-		from: self.
-	^result
 ]
 
 { #category : #'private - irregular polygons aggregation' }
@@ -3171,13 +3075,6 @@ Each line contains the id of the instance as first element and the id of all its
 				do:
 					[:a | stream nextPutAll: ((a neighborsStringWithSeparator: aChar) , '\') withCRs]].
 	stream close
-]
-
-{ #category : #'private - notification' }
-CMSpaceModel >> sendCellsToClientSpaceModels: cellsReference [
-	
-	self myDependents update: #createCellsPovWithReferences with:
-			cellsReference from: self
 ]
 
 { #category : #'private - absoluteWorld' }
