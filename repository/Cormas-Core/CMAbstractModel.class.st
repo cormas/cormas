@@ -3156,7 +3156,7 @@ CMAbstractModel >> registerChange: aChange [
 	delayedChanges == nil
 		ifTrue:
 			["immediate transmission"
-			self spaceModel noticeChange: aChange]
+			"self spaceModel noticeChange: aChange"]
 		ifFalse:
 			["store the change information for delayed transmission"
 			"In case the delaychanges already includes an #updateEntity notice on that same entity ->"
@@ -3166,7 +3166,7 @@ CMAbstractModel >> registerChange: aChange [
 					[| coll |
 					coll := delayedChanges.
 					delayedChanges := OrderedCollection new: 200.
-					self spaceModel noticeChanges: coll].
+					"self spaceModel noticeChanges: coll"].
 			delayedChanges add: aChange]
 ]
 
