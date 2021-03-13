@@ -53,140 +53,6 @@ CMSpaceInterfaceConfig class >> apply [
 ]
 
 { #category : #resources }
-CMSpaceInterfaceConfig class >> attributesMenu [
-	"Tools.MenuEditor new openOnClass: self andSelector: #manipEntityMenu"
-	
-	<resource: #menu>
-	^#(Menu #(#(MenuItem 
-		#rawLabel: 'remove' 
-		#value: #removeAttribute)) #(1) nil) decodeAsLiteralArray
-]
-
-{ #category : #resources }
-CMSpaceInterfaceConfig class >> createEntityMenu [
-	"Tools.MenuEditor new openOnClass: self andSelector: #createEntityMenu"
-	
-	<resource: #menu>
-	^#(Menu #(#(MenuItem 
-		#rawLabel: 'remove' 
-		#value: #removeCreateEntity)) #(1) nil) decodeAsLiteralArray
-]
-
-{ #category : #resources }
-CMSpaceInterfaceConfig class >> displayOptionsMenu [
-	"Tools.MenuEditor new openOnClass: self andSelector: #displayOptionsMenu"
-	
-	<resource: #menu>
-	^#(Menu #(#(MenuItem 
-		#rawLabel: 'Delimitors size' 
-		#submenu: #(Menu #(#(MenuItem 
-			#rawLabel: '0 pixel' 
-			#nameKey: #pixel0 
-			#value: #pixel0 
-			#indication: true 
-			#indicationSelector: #delimiterSize) #(MenuItem 
-			#rawLabel: '1 pixel' 
-			#nameKey: #pixel1 
-			#value: #pixel1 
-			#indication: true 
-			#indicationSelector: #delimiterSize) #(MenuItem 
-			#rawLabel: '2 pixels' 
-			#nameKey: #pixel2 
-			#value: #pixel2 
-			#indication: true 
-			#indicationSelector: #delimiterSize) #(MenuItem 
-			#rawLabel: '3 pixels' 
-			#nameKey: #pixel3 
-			#value: #pixel3 
-			#indication: true 
-			#indicationSelector: #delimiterSize)) #(4) nil)) #(MenuItem 
-		#rawLabel: 'Track agents' 
-		#nameKey: #trackAgents 
-		#indication: false) #(MenuItem 
-		#rawLabel: 'Set track length' 
-		#value: #setTrackLength) #(MenuItem 
-		#rawLabel: 'Default interface tool' 
-		#submenu: #(Menu #(#(MenuItem 
-			#rawLabel: 'Inspect' 
-			#nameKey: #toolInspect 
-			#value: #toolInspect 
-			#indication: true 
-			#indicationSelector: #defaultTool) #(MenuItem 
-			#rawLabel: 'Manipulate' 
-			#nameKey: #toolManipulate 
-			#value: #toolManipulate 
-			#indication: true 
-			#indicationSelector: #defaultTool) #(MenuItem 
-			#rawLabel: 'Create' 
-			#nameKey: #toolCreate 
-			#value: #toolCreate 
-			#indication: true 
-			#indicationSelector: #defaultTool) #(MenuItem 
-			#rawLabel: 'Zoom' 
-			#nameKey: #toolZoom 
-			#value: #toolZoom 
-			#indication: true 
-			#indicationSelector: #defaultTool)) #(4) nil) 
-		#helpText: 'Default tool used when clicking entities in the space interface') #(MenuItem 
-		#rawLabel: 'Enable touchpad mode' 
-		#nameKey: #toggleTouchpadMode 
-		#value: #toggleTouchpadMode 
-		#indication: false) #(MenuItem 
-		#rawLabel: 'Enable Undo/Redo' 
-		#nameKey: #toggleUndoRedo 
-		#value: #toggleUndoRedo 
-		#indication: true) #(MenuItem 
-		#rawLabel: 'Space interface menu bar' 
-		#submenu: #(Menu #(#(MenuItem 
-			#rawLabel: 'full menu' 
-			#nameKey: #siMenuFull 
-			#value: #siMenuFull_apply 
-			#indication: true 
-			#indicationSelector: #siMenuFormat) #(MenuItem 
-			#rawLabel: 'pov, info, track, Habitus' 
-			#nameKey: #siMenuLimitedWithHabitus 
-			#value: #siMenuLimitedWithHabitus_apply 
-			#indication: false 
-			#indicationSelector: #siMenuFormat) #(MenuItem 
-			#rawLabel: 'pov, info, track' 
-			#nameKey: #siMenuLimited 
-			#value: #siMenuLimited_apply 
-			#indication: false 
-			#indicationSelector: #siMenuFormat) #(MenuItem 
-			#rawLabel: 'pov, info, Habitus' 
-			#nameKey: #siMenuLimited2WithHabitus 
-			#value: #siMenuLimited2WithHabitus_apply) #(MenuItem 
-			#rawLabel: 'pov, info' 
-			#nameKey: #siMenuLimited2 
-			#value: #siMenuLimited2_apply) #(MenuItem 
-			#rawLabel: 'none' 
-			#nameKey: #siMenuNone 
-			#value: #siMenuNone_apply)) #(6) nil)) #(MenuItem 
-		#rawLabel: 'Show single default pov in menu' 
-		#nameKey: #toggleShowSingleDefaultPov 
-		#value: #toggleShowSingleDefaultPov 
-		#indication: true) #(MenuItem 
-		#rawLabel: 'Show single default info in menu' 
-		#nameKey: #toggleShowSingleDefaultInfo 
-		#value: #toggleShowSingleDefaultInfo 
-		#indication: true)) #(9) nil) decodeAsLiteralArray
-]
-
-{ #category : #resources }
-CMSpaceInterfaceConfig class >> infoMethodsMenu [
-	"Tools.MenuEditor new openOnClass: self andSelector: #infoMethodsMenu"
-	
-	<resource: #menu>
-	^#(Menu #(#(MenuItem 
-		#rawLabel: 'remove' 
-		#value: #removeInfoMethod) #(MenuItem 
-		#rawLabel: 'set as default' 
-		#value: #setSelectionAsDefaultInfo) #(MenuItem 
-		#rawLabel: 'no default info' 
-		#value: #cancelDefaultInfo)) #(2 1) nil) decodeAsLiteralArray
-]
-
-{ #category : #resources }
 CMSpaceInterfaceConfig class >> load [
 	
 	^ToolbarIconLibrary visualFor: #fileOpen
@@ -321,26 +187,6 @@ CMSpaceInterfaceConfig class >> loadSIconfig: aConfigSpec in: aSIConfig ofModel:
 ]
 
 { #category : #resources }
-CMSpaceInterfaceConfig class >> manipEntityMenu [
-	"Tools.MenuEditor new openOnClass: self andSelector: #manipEntityMenu"
-	
-	<resource: #menu>
-	^#(Menu #(#(MenuItem 
-		#rawLabel: 'remove' 
-		#value: #removeManipEntity)) #(1) nil) decodeAsLiteralArray
-]
-
-{ #category : #resources }
-CMSpaceInterfaceConfig class >> manipMethodsMenu [
-	"Tools.MenuEditor new openOnClass: self andSelector: #manipEntityMenu"
-	
-	<resource: #menu>
-	^#(Menu #(#(MenuItem 
-		#rawLabel: 'remove' 
-		#value: #removeManipMethod)) #(1) nil) decodeAsLiteralArray
-]
-
-{ #category : #resources }
 CMSpaceInterfaceConfig class >> minusIcon [
 	
 	^OpaqueImage
@@ -386,50 +232,6 @@ CMSpaceInterfaceConfig class >> plusIcon [
 CMSpaceInterfaceConfig class >> question [
 	
 	^ToolbarIconLibrary visualFor: #unknownWidget
-]
-
-{ #category : #resources }
-CMSpaceInterfaceConfig class >> removeEntityIconImage [
-	"Tools.UIMaskEditor new openOnClass: self andSelector: #removeEntityIconMask"
-	
-	<resource: #image>
-	^CachedImage
-		on:
-			(Image
-				extent: 24 @ 14
-				depth: 2
-				bitsPerPixel: 2
-				palette:
-					(MappedPalette
-						withColors:
-							(#(#(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(0 0 0)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(8191 8191 8191)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(1541 1541 1541)) #(ColorValue 
-								#scaledRed:scaledGreen:scaledBlue: #(513 513 513)))
-								collect:
-									[:each | 
-									(each at: 1) value
-										perform: (each at: 2)
-										withArguments: (each at: 3)]))
-				usingBits:
-					#[85 85 85 85 85 85 0 0 85 85 85 85 85 85 0 0 85 85 85 85 85 85 0 0 85 85 85 85 85 85 0 0 85 85 85 85 85 85 0 0 85 96 0 0 37 85 0 0 85 69 85 85 69 85 0 0 85 69 85 85 69 85 0 0 85 69 85 85 69 85 0 0 85 112 0 0 53 85 0 0 85 85 85 85 85 85 0 0 85 85 85 85 85 85 0 0 85 85 85 85 85 85 0 0 85 85 85 85 85 85 0 0])
-]
-
-{ #category : #resources }
-CMSpaceInterfaceConfig class >> removeEntityIconMask [
-	"Tools.UIMaskEditor new openOnClass: self andSelector: #removeEntityIconMask"
-	
-	<resource: #image>
-	^CachedImage
-		on:
-			(Image
-				extent: 24 @ 14
-				depth: 1
-				bitsPerPixel: 1
-				palette: CoveragePalette monoMaskPalette
-				usingBits:
-					#[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 7 255 192 0 7 255 192 0 7 255 192 0 7 255 192 0 7 255 192 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0])
 ]
 
 { #category : #resources }
@@ -2286,13 +2088,6 @@ CMSpaceInterfaceConfig >> siMenuFull [
 ]
 
 { #category : #'menu-display options' }
-CMSpaceInterfaceConfig >> siMenuFull_apply [
-	
-	self siMenuFull.
-	self reopenSI openSIconfig
-]
-
-{ #category : #'menu-display options' }
 CMSpaceInterfaceConfig >> siMenuLimited [
 	
 	self siMenuFormat value: #siMenuLimited
@@ -2311,50 +2106,15 @@ CMSpaceInterfaceConfig >> siMenuLimited2WithHabitus [
 ]
 
 { #category : #'menu-display options' }
-CMSpaceInterfaceConfig >> siMenuLimited2WithHabitus_apply [
-	
-	self siMenuLimited2WithHabitus.
-	self reopenSI openSIconfig
-]
-
-{ #category : #'menu-display options' }
-CMSpaceInterfaceConfig >> siMenuLimited2_apply [
-	
-	self siMenuLimited2.
-	self reopenSI openSIconfig
-]
-
-{ #category : #'menu-display options' }
 CMSpaceInterfaceConfig >> siMenuLimitedWithHabitus [
 	
 	self siMenuFormat value: #siMenuLimitedWithHabitus
 ]
 
 { #category : #'menu-display options' }
-CMSpaceInterfaceConfig >> siMenuLimitedWithHabitus_apply [
-	
-	self siMenuLimitedWithHabitus.
-	self reopenSI openSIconfig
-]
-
-{ #category : #'menu-display options' }
-CMSpaceInterfaceConfig >> siMenuLimited_apply [
-	
-	self siMenuLimited.
-	self reopenSI openSIconfig
-]
-
-{ #category : #'menu-display options' }
 CMSpaceInterfaceConfig >> siMenuNone [
 	
 	self siMenuFormat value: #siMenuNone
-]
-
-{ #category : #'menu-display options' }
-CMSpaceInterfaceConfig >> siMenuNone_apply [
-	
-	self siMenuNone.
-	self reopenSI openSIconfig
 ]
 
 { #category : #accessing }

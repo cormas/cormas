@@ -8,7 +8,7 @@ Class {
 		'infoResult',
 		'elementaryComponentsId'
 	],
-	#category : 'Cormas-Core-Tools'
+	#category : #'Cormas-Core-Entities'
 }
 
 { #category : #accessing }

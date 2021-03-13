@@ -17,7 +17,7 @@ Class {
 		'entityClass',
 		'entityId'
 	],
-	#category : 'Cormas-Core-Tools'
+	#category : #'Cormas-Core-Entities'
 }
 
 { #category : #'instance creation' }

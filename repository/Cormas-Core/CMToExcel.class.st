@@ -377,7 +377,7 @@ CMToExcel >> saveLabel: aString and: anOrderedCollection onSheet: numOrName [
 		ifFalse: [sheet := self sheets at: numOrName].	"Get the wright worksheet in the workbook."
 	[sheet saveValue: aString.
 	sheet saveCollection: anOrderedCollection]
-		on: GenericException
+		on: Exception
 		do: [:ex | ]
 ]
 

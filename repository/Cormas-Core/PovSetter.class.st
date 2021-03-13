@@ -21,7 +21,7 @@ Class {
 	#classInstVars : [
 		'standardCellBounds'
 	],
-	#category : 'Cormas-Core-Others'
+	#category : #'Cormas-Core-Others'
 }
 
 { #category : #colors }
@@ -35,105 +35,6 @@ test it :    PovSetter colorChooser  "
 	dialog open.
 	dialog accept value ifFalse: [^nil].
 	^dialog selection
-]
-
-{ #category : #resources }
-PovSetter class >> menuGroupesOSObservationSimulation [
-	"Tools.MenuEditor new openOnClass: self andSelector: #menuGroupesOSObservationSimulation"
-	
-	<resource: #menu>
-	^#(Menu #(#(MenuItem 
-		#rawLabel: #(UserMessage 
-			#key: #add 
-			#defaultString: 'Add') 
-		#value: #groupeOSVisible) #(MenuItem 
-		#rawLabel: #(UserMessage 
-			#key: #extract 
-			#defaultString: 'Remove') 
-		#value: #groupeOSInvisible)) #(2) nil) decodeAsLiteralArray
-]
-
-{ #category : #resources }
-PovSetter class >> menuImage [
-	"MenuEditor new openOnClass: self andSelector: #menuImage"
-	
-	<resource: #menu>
-	^#(#Menu #(#(#MenuItem 
-		#rawLabel: #(#UserMessage 
-			#key: #emptypolygone 
-			#defaultString: 'Polygone Vide') 
-		#value: #strokedPolygon) #(#MenuItem 
-		#rawLabel: #(#UserMessage 
-			#key: #fullpolygone 
-			#defaultString: 'Polygone Plein') 
-		#value: #filledPolygon) #(#MenuItem 
-		#rawLabel: #(#UserMessage 
-			#key: #numberofsegments 
-			#defaultString: 'Nb Segments') 
-		#value: #nbSegments) #(#MenuItem 
-		#rawLabel: #(#UserMessage 
-			#key: #linethickness 
-			#defaultString: 'Epaisseur Trait') 
-		#value: #lineWidth)) #(2 2) nil) decodeAsLiteralArray
-]
-
-{ #category : #resources }
-PovSetter class >> menuInfo [
-	"Tools.MenuEditor new openOnClass: self andSelector: #menuInfo"
-	
-	<resource: #menu>
-	^#(Menu #(#(MenuItem 
-		#rawLabel: #(UserMessage 
-			#key: #add 
-			#defaultString: 'Add...') 
-		#value: #addInfo) #(MenuItem 
-		#rawLabel: #(UserMessage 
-			#key: #modify 
-			#defaultString: 'Modify...') 
-		#value: #modifyInfo) #(MenuItem 
-		#rawLabel: #(UserMessage 
-			#key: #delete 
-			#defaultString: 'Delete') 
-		#value: #removeInfo)) #(2 1) nil) decodeAsLiteralArray
-]
-
-{ #category : #resources }
-PovSetter class >> menuPDV [
-	"Tools.MenuEditor new openOnClass: self andSelector: #menuPDV"
-	
-	<resource: #menu>
-	^#(Menu #(#(MenuItem 
-		#rawLabel: #(UserMessage 
-			#key: #add 
-			#defaultString: 'Add...') 
-		#nameKey: #addx 
-		#value: #addPov) #(MenuItem 
-		#rawLabel: 'Add Pov on attribute' 
-		#value: #addPovOnAttribute) #(MenuItem 
-		#rawLabel: #(UserMessage 
-			#key: #modify 
-			#defaultString: 'Modify...') 
-		#value: #modifyPov) #(MenuItem 
-		#rawLabel: #(UserMessage 
-			#key: #delete 
-			#defaultString: 'Delete') 
-		#value: #removePov)) #(3 1) nil) decodeAsLiteralArray
-]
-
-{ #category : #resources }
-PovSetter class >> menuSymbolePDV [
-	"Tools.MenuEditor new openOnClass: self andSelector: #menuSymbolePDV"
-	
-	<resource: #menu>
-	^#(Menu #(#(MenuItem 
-		#rawLabel: #(UserMessage 
-			#key: #add 
-			#defaultString: 'Add') 
-		#value: #addSymbolPov) #(MenuItem 
-		#rawLabel: #(UserMessage 
-			#key: #delete 
-			#defaultString: 'Remove') 
-		#value: #removeSymbolPov)) #(2) nil) decodeAsLiteralArray
 ]
 
 { #category : #'instance creation' }
@@ -572,47 +473,6 @@ PovSetter >> addPov [
 	self listMethods list
 		addFirst: aName asString , ' (' , selectedClass name asString , ')'.
 	self listMethods selectionIndex: 1
-]
-
-{ #category : #action }
-PovSetter >> addPovOnAttribute [
-	
-	| list choice values valuesTextLine |
-	list := DefaultAttributesSetter attributsFromClass: selectedClass.
-	choice := Dialog
-		choose: 'Create Pov on which attribute?'
-		fromList: list
-		values: list
-		lines: 8
-		cancel: [nil].
-	choice ifNil: [^nil].
-	self createPovOnAttribute: choice.
-	self cormas currentSimulation
-		ifNotNil:
-			[values := (self cormas currentSimulation allTheEntities: selectedClass)
-				collect: [:entity | entity perform: choice asSymbol]].
-	(values isNil or: [values size = 1 and: [values first isNil]])
-		ifFalse:
-			[valuesTextLine := ''.
-			values do: [:v | valuesTextLine := valuesTextLine , v printString , ' '].
-			(self cormas
-				confirm:
-					'Cormas found the following values for the attribute ' , choice ,
-							'.
-' , valuesTextLine ,
-							'
-Do you want to create the symbols associated to these values?')
-				ifTrue:
-					[values
-						do:
-							[:v | 
-							v isSymbol
-								ifTrue: [self addSymbolPov: v asString]
-								ifFalse:
-									[v isString
-										ifTrue: [self addSymbolPov: v]
-										ifFalse:
-											[v isLiteral ifTrue: [self addSymbolPov: choice , v printString]]]]]]
 ]
 
 { #category : #action }

@@ -1,13 +1,8 @@
 Class {
 	#name : #VectorialElementaryPOV,
 	#superclass : #VectorialPOV,
-	#category : #'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Legacy'
 }
-
-{ #category : #viewCorrespondance }
-VectorialElementaryPOV class >> asFigure [
-	^ VectorialFigure
-]
 
 { #category : #'instance creation' }
 VectorialElementaryPOV class >> circle [

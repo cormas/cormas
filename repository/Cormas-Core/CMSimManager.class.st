@@ -3266,15 +3266,6 @@ CMSimManager >> openReplayWin [
 	self replayStepForward: firstStep
 ]
 
-{ #category : #ui }
-CMSimManager >> openScenarioBuilderWin [
-	
-	self terminateAllProcesses.
-	self initScenarioWindow.
-	self openInterface: #scenarioBuilderInterface.
-	self changedRandomSeed
-]
-
 { #category : #'undo/redo' }
 CMSimManager >> redo [
 	"reload the last redo BOS File from the redoList"

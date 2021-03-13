@@ -6,7 +6,7 @@ CrossedSensitivity allows to conduct Crossed sensitivity analysis by modifying p
 Class {
 	#name : #CrossedSensitivity,
 	#superclass : #Object,
-	#category : 'Cormas-Core-Others'
+	#category : #'Cormas-Core-Analysis'
 }
 
 { #category : #'interface specs' }
@@ -276,14 +276,6 @@ CrossedSensitivity >> mainHelpText [
 			'The Crossed Analysis is similar to OAT Analysis but the selected parameter values are crossed.\-------------------------------------------------------------------------------------------\'
 				asText.
 	^text
-]
-
-{ #category : #'actions_buttons' }
-CrossedSensitivity >> runAnalysis [
-	
-	self initializeAnalysis.
-	self setInitialParameters.
-	self runCompleteAnalysis
 ]
 
 { #category : #setParameters }

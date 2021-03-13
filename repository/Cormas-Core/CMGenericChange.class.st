@@ -8,50 +8,50 @@ Instance Variables:
 
 "
 Class {
-	#name : #GenericChange,
+	#name : #CMGenericChange,
 	#superclass : #Object,
 	#instVars : [
 		'symbol',
 		'parameter'
 	],
-	#category : 'Cormas-Core-Others'
+	#category : #'Cormas-Core-Others'
 }
 
 { #category : #'instance creation' }
-GenericChange class >> newChange: aSymbol with: aParameter [
+CMGenericChange class >> newChange: aSymbol with: aParameter [
 	"create a new instance for remembering the change information"
 	
 	^self new newChange: aSymbol with: aParameter
 ]
 
 { #category : #'instance creation' }
-GenericChange class >> newChange: aSymbol with: aParameter from: anEntity [
+CMGenericChange class >> newChange: aSymbol with: aParameter from: anEntity [
 	"create a new instance for remembering the change information"
 	
 	^self new newChange: aSymbol with: aParameter from: anEntity
 ]
 
 { #category : #dispatching }
-GenericChange >> dispatchOn: anObject [
+CMGenericChange >> dispatchOn: anObject [
 	
 	self subclassResponsibility
 ]
 
 { #category : #'initialize-release' }
-GenericChange >> newChange: aSymbol with: aParameter [
+CMGenericChange >> newChange: aSymbol with: aParameter [
 	
 	symbol := aSymbol.
 	parameter := aParameter
 ]
 
 { #category : #accessing }
-GenericChange >> parameter [
+CMGenericChange >> parameter [
 	
 	^parameter
 ]
 
 { #category : #accessing }
-GenericChange >> symbol [
+CMGenericChange >> symbol [
 	
 	^symbol
 ]

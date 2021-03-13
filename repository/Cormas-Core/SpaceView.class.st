@@ -42,29 +42,6 @@ SpaceView >> activeAttributeValue: anObject [
 ]
 
 { #category : #adapting }
-SpaceView >> adaptComponentsForNewBounds [
-	| scaleFactor |
-	scaleFactor := self preferredBounds extent / self oldBounds extent.	"- (1@0)"	"scaleFactor := self bounds extent / oldBounds extent."	"scaleFactor := self bounds extent / container bounds extent."
-	self components
-		do: [ :aFigure | aFigure scaleByWithConstraints: scaleFactor ].	"When the grid size has changed, the BitmapFigure have to be placed at the right place"
-	((self components
-		select:
-			[ :aFigure | (aFigure isKindOf: BitmapFigure) or: [ aFigure isDistortable not ] ])
-		collect: [ :fig | fig entityType ])
-		do: [ :aClass | 
-			self
-				changePov: (self model povMethodDico at: aClass name)
-				ofEntity: aClass ].	"	(((self components select: [:aFigure | aFigure isBitmapFigure]) 
-		collect: [:fig | fig entityType]) asSet) do: 
-				[:aClass | 
-				self changePov: (self model povMethodDico at: aClass name) ofEntity: aClass]."
-	self flag:#TODO.
-			"C''est incroyable √ßa (le change pov au dessus). il doit y a voir un moyen de replacer le bitmap figure au bonne endroit sans etre oblig√© de les reconstruire."
-				"	self invalidateNow.
-	(Dialog confirm: 'Fit Window to the SpaceModel?') ifTrue:[self model resizeWindow]"
-]
-
-{ #category : #adapting }
 SpaceView >> adaptFigure: aFigure [
 	"scaleFactor := self bounds extent / self model spaceModel absoluteBounds extent."
 	
@@ -272,17 +249,6 @@ SpaceView >> changeAttributeOf: figure [
 	figure model entity
 		perform: (activeAttribute , ':') asSymbol
 		with: activeAttributeValue
-]
-
-{ #category : #click }
-SpaceView >> changeColorOf: figure [
-	"method called from Tool (initializeChangeAttributeTool), change color of figure clicked by the user"
-	
-	figure model entity class = self manipulatedEntity ifFalse: [^nil].
-	self manipulationActionArguments isEmpty ifTrue: [^nil].
-	self manipulationActionArguments first class = ColorValue ifFalse: [^nil].
-	figure class ~= BitmapFigure
-		ifTrue: [figure fillColor: self manipulationActionArguments first]
 ]
 
 { #category : #displaying }
@@ -656,20 +622,6 @@ SpaceView >> getTextFrom: aClass info: infoSymbol [
 	"return a collection of TextFigures from the Entity (aClass) and subclasses"
 	
 	^self model cormasModel allEntitiesFrom: aClass getInfoFor: infoSymbol
-]
-
-{ #category : #'menu actions' }
-SpaceView >> group [
-	
-	| figures newFigure |
-	figures := selections copy.
-	figures isEmpty ifTrue: [^self].
-	self removeAll: figures.
-	newFigure := CompositeEntityFigure new.
-	newFigure addAll: figures.
-	self
-		add: newFigure;
-		selection: newFigure
 ]
 
 { #category : #click }
@@ -1082,19 +1034,6 @@ SpaceView >> removeOccupant: aSituatedEntityReference [
 		ifNotNil: [:f | self remove: f]
 ]
 
-{ #category : #click }
-SpaceView >> resetColorOf: figure [
-	"method called from Tool (initializeChangeAttributeTool), reset the color of the figure clicked by the user"
-	
-	figure model entity class = self manipulatedEntity ifFalse: [^nil].
-	figure class ~= BitmapFigure
-		ifTrue:
-			[figure model entity isSpatialEntity
-				ifTrue: [figure fillColor: (figure model getColorForPov: figure pov)]
-				ifFalse:
-					[figure fillColor: (figure model entity povAt: figure pov) color]]
-]
-
 { #category : #adapting }
 SpaceView >> scaleFactor [
 	
@@ -1132,12 +1071,6 @@ SpaceView >> setContextualMenu: aMenuBuilder from: aListOfClasses [
 				do: [:a | aMenuBuilder add: a -> (aClass name , '*' , a) asSymbol].
 			aMenuBuilder endSubMenu].
 	aListOfClasses isEmpty ifFalse: [aMenuBuilder line]
-]
-
-{ #category : #accessing }
-SpaceView >> spaceModel [
-	
-	^model spaceModel
 ]
 
 { #category : #'accessing-Figures' }
@@ -1383,12 +1316,4 @@ SpaceView >> visualizedSpatialClasses [
 SpaceView >> zoomFactor [
 	
 	^1
-]
-
-{ #category : #'private - mouse actions' }
-SpaceView >> zoomOnSpatialEntities: aSetOfFigures [
-	"the user clicked and draged on a set of entities of the grid. An interfaceZoom is opened on the target entities"
-	
-	aSetOfFigures isEmpty ifTrue: [^nil].
-	SpaceInterfaceZoom openAndDisplayFigures: aSetOfFigures
 ]

@@ -12,7 +12,7 @@ Class {
 	#classInstVars : [
 		'rMax'
 	],
-	#category : #'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Legacy'
 }
 
 { #category : #viewCorrespondance }

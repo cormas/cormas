@@ -18,7 +18,7 @@ Instance Variables:
 "
 Class {
 	#name : #DefaultAttributesSetter,
-	#superclass : #UIApplicationModel,
+	#superclass : #Object,
 	#instVars : [
 		'selectedRow',
 		'classAttribValue_List',
@@ -626,19 +626,6 @@ DefaultAttributesSetter class >> staticAttributsWithAccessorsFromClass: aClass [
 	^set
 ]
 
-{ #category : #resources }
-DefaultAttributesSetter class >> toolBar [
-	"Tools.MenuEditor new openOnClass: self andSelector: #toolBar"
-	
-	<resource: #menu>
-	^#(Menu #(#(MenuItem 
-		#rawLabel: 'Save' 
-		#value: #exportAttributsValues 
-		#labelImage: #(ResourceRetriever ToolbarIconLibrary #fileSave) 
-		#helpText: 'Export the attributs'' values')) #(1) nil)
-		decodeAsLiteralArray
-]
-
 { #category : #compiling }
 DefaultAttributesSetter class >> transformAsString: defaultValue [
 	"return the defaultValue as a string.
@@ -1126,26 +1113,6 @@ It means that the attributes must have both accessors available (setter & getter
 			aClassAttributValue targetClass = aClassOrInstance class
 				and: [aClassAttributValue targetAttribute = attributSymbol]].
 	^self classAttribValue_List
-]
-
-{ #category : #actions }
-DefaultAttributesSetter >> removeHiddenAttributes [
-	"Removes elements of classAttribValue_List that are into cormasModel hiddenAttributes list"
-	
-	| cavList currentCAV |
-	cavList := List new.
-	self cormasModel hiddenAttributes
-		do:
-			[:cav | 
-			currentCAV := self classAttribValue_List list
-				detect:
-					[:each | 
-					each targetClass = cav targetClass
-						and: [each targetAttribute = cav targetAttribute]]
-				ifNone: [nil].
-			currentCAV isNil ifFalse: [cavList add: currentCAV]].
-	cavList do: [:cav | cav isHidden: true].
-	self classAttribValue_List list removeAll: cavList
 ]
 
 { #category : #'initialize-release' }

@@ -26,7 +26,7 @@ Class {
 		'entityChoices',
 		'applyToSubclasses'
 	],
-	#category : 'Cormas-UI-Core'
+	#category : #'Cormas-UI-Core'
 }
 
 { #category : #'interface specs' }
@@ -328,13 +328,6 @@ CMManipulationSetter >> prepareTable [
 	entityChoices := (OrderedCollection withAll: modelClasses) asValueHolder.
 	self entity onChangeSend: #changeEntity to: self.	"self setDefaultValues."
 	self initialize
-]
-
-{ #category : #'initialize-release' }
-CMManipulationSetter >> requestForWindowClose [
-	
-	cormasModel := nil.
-	^super requestForWindowClose
 ]
 
 { #category : #actions }

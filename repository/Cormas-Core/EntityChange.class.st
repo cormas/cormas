@@ -12,7 +12,7 @@ Class {
 	#instVars : [
 		'entity'
 	],
-	#category : 'Cormas-Core-Tools'
+	#category : #'Cormas-Core-Entities'
 }
 
 { #category : #'instance creation' }

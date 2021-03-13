@@ -66,15 +66,6 @@ FonctionObs >> actionCloseHierarchie [
 			hierarchie := nil]
 ]
 
-{ #category : #hierarchie }
-FonctionObs >> actionOpenHierarchie [
-	
-	hierarchie isNil ifFalse: [^self].
-	hierarchie := HierarchieObs new.
-	hierarchie appelant: self.
-	hierarchie openInterface: #windowSpec
-]
-
 { #category : #canal }
 FonctionObs >> addCanal: unCanal [
 	
@@ -177,16 +168,6 @@ FonctionObs >> estPresent: unNiveau [
 ]
 
 { #category : #hierarchie }
-FonctionObs >> goFirstLevel [
-	
-	hierarchie notNil
-		ifFalse:
-			[hierarchie := HierarchieObs new.
-			hierarchie appelant: self].
-	hierarchie levelHolder value: 0
-]
-
-{ #category : #hierarchie }
 FonctionObs >> hierarchie [
 	
 	^hierarchie
@@ -236,45 +217,6 @@ FonctionObs >> higherLevels: a to: b withGC: aGC [
 			aGC
 				displayLineFrom: e
 				to: e + ((o - e) unitVector * 10)]
-]
-
-{ #category : #'initialize-release' }
-FonctionObs >> initialize [
-	
-	| tmp win |
-	msgObs := List new.
-	level := 1.
-	oneLevel := true.
-	higherLevels := true.
-	observateur := InterfaceObs new.	"observateur openInterface: #windowSpec."
-	tmp := observateur allButOpenInterface: #windowSpec.
-	win := tmp window.
-	win openIn: (380 @ 20 extent: win minimumSize).	"adaptor := observateur modeleObs adaptor."
-	degreMax := 5.
-	listeCanaux := OrderedCollection new.
-	observateur modeleObs fonction: self.
-	^self
-]
-
-{ #category : #'initialize-release' }
-FonctionObs >> initializeAt: unX [
-	
-	| tmp largeurOpt hauteurOpt origine etendue |
-	level := 1.
-	oneLevel := true.
-	higherLevels := true.
-	observateur := InterfaceObs new.	"observateur openInterface: #windowSpec."
-	tmp := observateur allButOpenInterface: #windowSpec.
-	window := tmp window.
-	largeurOpt := Screen default bounds width - (20 + unX + 10).
-	hauteurOpt := (Screen default bounds height - 40) / 2.
-	origine := (unX + 20) @ (hauteurOpt + 50).
-	etendue := largeurOpt @ (hauteurOpt - 40).
-	window openIn: (origine extent: etendue).	"adaptor := observateur modeleObs adaptor."
-	degreMax := 5.
-	listeCanaux := OrderedCollection new.
-	observateur modeleObs fonction: self.
-	^self
 ]
 
 { #category : #bakam }
