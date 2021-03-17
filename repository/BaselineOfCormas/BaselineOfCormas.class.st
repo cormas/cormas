@@ -65,13 +65,13 @@ BaselineOfCormas >> baselineRepositories: spec [
 		with: [ spec repository: 'github://peteruhnak/file-dialog:v1.0.0/repository' ];
 
 		baseline: 'ProjectFramework'
-		with: [ spec repository: 'github://hernanmd/ProjectFramework/repository' ];
+		with: [ spec repository: 'github://hernanmd/ProjectFramework:v1.0.0/repository' ];
 
 		baseline: 'CodeGenerator'
-		with: [ spec repository: 'github://hernanmd/CodeGenerator/repository' ];
+		with: [ spec repository: 'github://hernanmd/CodeGenerator:v1.0.0/repository' ];
 
 		baseline: 'Roassal2'
-		with: [ spec repository: 'github://ObjectProfile/Roassal2/src' ];
+		with: [ spec repository: 'github://ObjectProfile/Roassal2:v2.0.1/src' ];
 
 		baseline: 'NeoCSV'
 		with: [ spec repository: 'github://svenvc/NeoCSV:v15/repository' ];
@@ -83,7 +83,7 @@ BaselineOfCormas >> baselineRepositories: spec [
 		with: [ spec repository: 'github://jecisc/GitBridge:v1.0.0/src' ];
 
 		baseline: 'ESRIASCIIRaster'
-		with: [ spec repository: 'github://pharo-GIS/ESRI-ASCII-Raster/' ].
+		with: [ spec repository: 'github://pharo-GIS/ESRI-ASCII-Raster:v1.0.0/src' ].
 		
 ]
 
