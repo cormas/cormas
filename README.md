@@ -20,6 +20,22 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
+# Table of Contents
+
+- [Description](#description)
+- [Installation](#installation)
+  - [Standard Installation](#standard-installation)
+  - [CLI Installation](#cli-installation)
+  - [Troubleshooting](#troubleshooting)
+- [Features](#features)
+- [Documentation](#documentation)
+- [Contributors](#contributors)
+  - [Historical contributors](#historical-contributors)  
+- [Change Log](#change-log)
+- [License](./LICENSE)
+
+# Description
+
 This is an ongoing effort to port CORMAS to [Pharo ecosystem](http://www.pharo.org/). Current stable version of CORMAS is based on VisualWorks 7.6 and still can be found on: http://cormas.cirad.fr/indexeng.htm
 
 Some documentation (to be cleaned and reorganized) about Cormas is available on the Wiki here:
@@ -28,19 +44,51 @@ https://github.com/cormas/documentation
 If you want to contribute to CORMAS please have a look to the [contributing guide](https://github.com/cormas/cormas/blob/master/CONTRIBUTING.md).
 Join us on the cormas-dev mailing-list: http://groups.google.com/group/cormas-dev
 
-## How to install Cormas
+# Installation
+
+## Standard Installation
 
 * Download a Pharo 8.0 image+VM depending of your platform: http://pharo.org/download
-* Load Cormas: Open Pharo 8.0 image then click anywhere to open the main menu. Choose Playground to execute the following script. Paste the script below in Playground, select all then right-click and choose Do it to execute this.
+* Load Cormas: Open Pharo 8.0 image then click anywhere to open the main menu. Choose Playground (Ctrl + OW or Cmd + OW) to execute the following script. Paste the script below in Playground, select all then right-click and choose Do it (Ctrl+D or Cmd+D) to execute it:
 
-```Smalltalk
-Metacello new
+[//]: # (pi)
+```smalltalk
+[
+    EpMonitor current disable.
+    Metacello new
 	onWarningLog;
 	repository: 'github://cormas/cormas/repository';
 	baseline: 'Cormas';
 	load.
+] 
+ensure: [ EpMonitor current enable ].
 ```
-There is from time to time, [loading errors with github](https://github.com/cormas/cormas/issues/101). If it happens, execute the following expression:
+
+All packages load into the Cormas-* package names.
+
+## CLI Installation
+
+### Using Standard Unix CLI
+
+You can install CORMAS through Unix command line. It works as follow:
+
+```bash
+mkdir mydir; cd mydir
+curl https://get.pharo.org | bash
+./pharo Pharo.image eval "Metacello new onWarningLog; repository: 'github://cormas/cormas/repository'; baseline: 'Cormas'; load. Smalltalk snapshot: true andQuit: true"
+```
+
+### Using PI
+
+Make sure you have [pi](https://github.com/hernanmd/pi) installed, and then execute:
+
+```bash
+pi install Cormas
+```
+
+## Troubleshooting
+
+There is from time to time, [loading errors with github](https://github.com/cormas/cormas/issues/101). If it happens, execute the following expression from Pharo:
 
 ```Smalltalk
 | maxCount count |
@@ -63,38 +111,21 @@ Transcript open.
 	count := count + 1 ]
 ```
 
+Please add an issue if the installation expression above does not work due to one of these known exceptions:
 
-All packages load into the Cormas-* package names.
+  - IceGenericError: Failed to connect to github.com: Interrupted system call.
+  - IceGenericError: SecureTransport error: connection closed via error
+  - IceGenericError: unexpected return value from ssl handshake -9806
 
-## How to install with Command Line interface (CLI)
+# Features
 
-You can install CORMAS through Unix command line. It works as follow:
-```bash
-mkdir mydir
-cd mydir
-curl https://get.pharo.org | bash
-./pharo Pharo.image eval "Metacello new onWarningLog; repository: 'github://cormas/cormas/repository'; baseline: 'Cormas'; load. Smalltalk snapshot: true andQuit: true"
-```
+Work in progress
 
-or if there is a problem with github:
+# Documentation
 
-```bash
-mkdir mydir
-cd mydir
-curl https://get.pharo.org | bash
-./pharo Pharo.image eval "| maxCount count | maxCount := 3. count := 1.
-[ count <= maxCount ] whileTrue: [ [
-  Metacello new
-		onWarningLog;
-		repository: 'github://cormas/cormas/repository';
-		baseline: 'Cormas';
-		load ] on: IceGenericError do: [ : ex |
-		  MetacelloNotification signal: String cr , ex description , String cr , 'RETRYING ', maxCount asString.
-		  (Delay forSeconds: 2) wait. ex retry ]. 
-  Smalltalk snapshot: true andQuit: true"
-```
+Work in progress
 
-## Contributors ✨
+# Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
