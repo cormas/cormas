@@ -46,7 +46,7 @@ BaselineOfCormas >> baselinePackages: spec [
 		package: 'Cormas-Model-Stupid';
 		package: 'Cormas-Tests' with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-OpenMole'	with: [ spec requires: #('Cormas-Core') ];
-		package: 'Cormas-UI' 	with: [ spec requires: #('FileDialog' 'ProjectFramework' 'CodeGenerator' 'Roassal2') ];
+		package: 'Cormas-UI' 	with: [ spec requires: #('ProjectFramework' 'CodeGenerator' 'Roassal2') ];
 		package: 'Cormas-UI-Tests' with: [ spec requires: #('Cormas-Tests' 'Cormas-UI') ];
 		package: 'Cormas-VW-Ported'.
 
