@@ -68,7 +68,7 @@ BaselineOfCormas >> baselineRepositories: spec [
 		with: [ spec repository: 'github://hernanmd/ProjectFramework:v1.0.1/repository' ];
 
 		baseline: 'CodeGenerator'
-		with: [ spec repository: 'github://hernanmd/CodeGenerator:v1.0.0/repository' ];
+		with: [ spec repository: 'github://hernanmd/CodeGenerator:v1.0.1/repository' ];
 
 		baseline: 'Roassal2'
 		with: [ spec repository: 'github://ObjectProfile/Roassal2:v2.0.1/src' ];
