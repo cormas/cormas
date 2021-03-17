@@ -65,7 +65,7 @@ BaselineOfCormas >> baselineRepositories: spec [
 		with: [ spec repository: 'github://peteruhnak/file-dialog:v1.0.0/repository' ];
 
 		baseline: 'ProjectFramework'
-		with: [ spec repository: 'github://hernanmd/ProjectFramework:v1.0.0/repository' ];
+		with: [ spec repository: 'github://hernanmd/ProjectFramework:v1.0.1/repository' ];
 
 		baseline: 'CodeGenerator'
 		with: [ spec repository: 'github://hernanmd/CodeGenerator:v1.0.0/repository' ];
