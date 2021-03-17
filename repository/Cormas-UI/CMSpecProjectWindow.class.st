@@ -493,6 +493,24 @@ CMSpecProjectWindow >> projectAnnouncer [
 	^ self projectManager announcer
 ]
 
+{ #category : #private }
+CMSpecProjectWindow >> quitApplicationWindow [
+	" Part of the #quitApplicationHack "
+
+	self quitSubApplicationWindows.
+	super quitApplicationWindow.
+]
+
+{ #category : #private }
+CMSpecProjectWindow >> quitSubApplicationWindows [
+	" Private - Close all opened Cormas windows "
+	
+	World submorphs
+		select: [ :sm | sm isSystemWindow and: [ sm label asUppercase beginsWith: 'CORMAS' ] ]
+		thenDo: [ :w | w delete ].
+
+]
+
 { #category : #accessing }
 CMSpecProjectWindow >> simWindow [
 	^ simWindow

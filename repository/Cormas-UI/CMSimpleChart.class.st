@@ -96,14 +96,14 @@ CMSimpleChart >> cormasModel: anObject [
 
 { #category : #initialization }
 CMSimpleChart >> initialize [
-	| t |
+
 	super initialize.
 	self addAZeroDataSet
 ]
 
 { #category : #initialization }
 CMSimpleChart >> initializeAndSubscribe [
-	| t |
+
 	super initialize.
 	self cormasModel announcer
 		when: CMProbesDataUpdatedAnnouncement
@@ -118,7 +118,9 @@ CMSimpleChart >> initializeAndSubscribe [
 CMSimpleChart >> openWithToolbar [
 	| t |
 	self window: super openWithToolbar.
-	self window model: self.
+	self window 
+		model: self;
+		title: 'CORMAS - Probes'.
 	axisConfigurationX noDecimal.
 	t := cormasModel timeStep.
 	self view removeAllElements.
