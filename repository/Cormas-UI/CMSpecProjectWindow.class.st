@@ -61,6 +61,35 @@ CMSpecProjectWindow >> closeAfterCreateProject [
 	^ true
 ]
 
+{ #category : #'submenu-tools' }
+CMSpecProjectWindow >> cormasExpressions [
+	" Answer a <String> with useful Cormas expressions to debug/develop/cleanup "
+	
+	^ 'CMProjectModel allInstances isEmpty.
+CMProjectManager allInstances.
+CMSpecProjectWindow allInstances.
+
+CMProjectModel allInstances first.
+CMProjectManager allInstances first.
+CMSpecProjectWindow allInstances first.
+
+CMProjectModel allInstances first pointersTo.
+CMProjectManager allInstances first pointersTo.
+CMSpecProjectWindow allInstances first pointersTo.
+
+CMSpecProjectWindow allInstances first projectAnnouncer subscriptions reset.
+CMProjectManager allInstances first announcer subscriptions reset.
+
+CMSpecProjectWindow allInstancesDo: [ : e | e becomeForward: nil ].
+CMProjectManager allInstancesDo: [ : e | e becomeForward: nil ].
+CMProjectModel allInstancesDo: [ : e | e becomeForward: nil ].
+3 timesRepeat: [ Smalltalk garbageCollect ].
+{ CMProjectModel allInstances.
+CMProjectManager allInstances.
+CMSpecProjectWindow allInstances } allSatisfy: #isEmpty.'
+
+]
+
 { #category : #private }
 CMSpecProjectWindow >> cormasModelClass [
 	" Private - See comment in #cormasModelClass "
@@ -648,6 +677,7 @@ CMSpecProjectWindow >> subMenuForTools [
 				addItem: [ :item | self subMenuToolsManipulateInstances: item ];
 				addItem: [ :item | self subMenuToolsCreateInstances: item ];
 				addItem: [ :item | self subMenuToolsSnapshot: item ];
+				addItem: [ :item | self subMenuToolsExpressions: item ];
 				addItem: [ :item | self subMenuToolsMain: item ] ];
 		addGroup: [ :group | 
 			group
@@ -1099,6 +1129,16 @@ CMSpecProjectWindow >> subMenuToolsDistributeAsServer: item [
 "		icon: Smalltalk ui icons openIcon;"
 		shortcut: $S command;
 		action: [ self openToolsDistribteAsServer ]
+]
+
+{ #category : #'submenu-tools' }
+CMSpecProjectWindow >> subMenuToolsExpressions: item [
+
+	item
+		name: self translator tUsefulExpressions;
+"		icon: Smalltalk ui icons openIcon;"
+		shortcut: $P command;
+		action: [ (Workspace openLabel: 'CORMAS - Useful expressions') contents: self cormasExpressions. ]
 ]
 
 { #category : #'submenu-tools' }

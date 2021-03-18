@@ -288,6 +288,7 @@ Enter the entity''s name';
 		at: #tReleaseRandomSeed 			put: 'Release random seed after initialization';
 		at: #tSelectInitMethod			put: 'Select a method of initialization';
 		at: #tSelectControlMethod 		put: 'Select a method of control';
+		at: #tUsefulExpressions 			put: 'Useful Expressions';
 		yourself
 ]
 
@@ -545,6 +546,7 @@ Ingrese el nombre de la entidad';
 		at: #tReleaseRandomSeed 				put: 'Liberar semilla aleatoria luego de inicializar';
 		at: #tSelectInitMethod				put: 'Seleccione un método de inicialización';
 		at: #tSelectControlMethod 			put: 'Seleccione un método de control';
+		at: #tUsefulExpressions 				put: 'Expresiones útiles';
 		yourself
 
 ]
