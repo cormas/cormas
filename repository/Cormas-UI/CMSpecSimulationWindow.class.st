@@ -448,15 +448,11 @@ CMSpecSimulationWindow >> initializeSimButton: anObject [
 CMSpecSimulationWindow >> initializeWidgets [
 	" Private - See superimplementor's comment "
 
-	self
-		instantiateModels:
-			#(simulateLabel LabelModel replayLabel LabelModel initializeLabel LabelModel backwardLabel LabelModel currentStepLabel LabelModel finalStepLabel LabelModel forwardLabel LabelModel currentStepInputText TextInputFieldModel finalStepInputText TextInputFieldModel changeButton ButtonModel closeButton ButtonModel).
+	self instantiateModels: #(simulateLabel LabelModel replayLabel LabelModel initializeLabel LabelModel backwardLabel LabelModel currentStepLabel LabelModel finalStepLabel LabelModel forwardLabel LabelModel currentStepInputText TextInputFieldModel finalStepInputText TextInputFieldModel changeButton ButtonModel closeButton ButtonModel).
 	self initializeFocus.
 	self initializeLabels.
 	self changeButton label: self translator tChange.
-	self closeButton
-		icon:
-			(self iconNamed: #smallCancelIcon);
+	self closeButton icon: (self iconNamed: #smallCancelIcon);
 		action: [ self delete ];
 		help: self translator tSimCloseHelp.
 	self currentStepInputText
@@ -712,7 +708,8 @@ CMSpecSimulationWindow >> run1StepBackwardButtonMorph [
 { #category : #callbacks }
 CMSpecSimulationWindow >> runAction [
 	self simManager finalTime: self finalStepInputText text asInteger.
-	self simManager loopRunStep_untilFinalTime
+	self simManager loopRunStep_untilFinalTime.
+	self currentStepInputText text: self finalStepInputText text.
 ]
 
 { #category : #morphic }
@@ -754,7 +751,11 @@ CMSpecSimulationWindow >> runButtonMorph [
 
 { #category : #callbacks }
 CMSpecSimulationWindow >> runStepByStepAction [
-	self simManager runStepByStep
+	" Private - Request simulation manager to execute 1 step. Update the UI "
+
+	self simManager runStepByStep.
+	self currentStepInputText text: self currentStepInputText text + 1.
+
 ]
 
 { #category : #accessing }
