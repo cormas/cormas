@@ -208,6 +208,20 @@ CMProjectManager >> currentProjectVersion [
 ]
 
 { #category : #callbacks }
+CMProjectManager >> doPostCloseActions [
+
+	self announcer unsubscribe: self currentProject.
+	self fsm handleEvent: #actionClose.
+	self projectWindow quitSubApplicationWindows.
+
+	" These 3 steps are necessary because WeakAnnouncements hanging around "
+	self currentProject release.
+	self currentProject: nil.
+	3 timesRepeat: [ Smalltalk garbageCollect ].
+
+]
+
+{ #category : #callbacks }
 CMProjectManager >> doPostNewActions [
 	" Basic post new actions. Redefine in subclasses if necessary "
 
