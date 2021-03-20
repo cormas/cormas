@@ -46,7 +46,7 @@ BaselineOfCormas >> baselinePackages: spec [
 		package: 'Cormas-Model-Stupid';
 		package: 'Cormas-Tests' with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-OpenMole'	with: [ spec requires: #('Cormas-Core') ];
-		package: 'Cormas-UI' 	with: [ spec requires: #('FileDialog' 'ProjectFramework' 'CodeGenerator' 'Roassal2') ];
+		package: 'Cormas-UI' 	with: [ spec requires: #('ProjectFramework' 'CodeGenerator' 'Roassal2') ];
 		package: 'Cormas-UI-Tests' with: [ spec requires: #('Cormas-Tests' 'Cormas-UI') ];
 		package: 'Cormas-VW-Ported'.
 
@@ -83,7 +83,7 @@ BaselineOfCormas >> baselineRepositories: spec [
 		with: [ spec repository: 'github://jecisc/GitBridge:v1.0.0/src' ];
 
 		baseline: 'ESRIASCIIRaster'
-		with: [ spec repository: 'github://pharo-GIS/ESRI-ASCII-Raster:v1.0.0/' ].
+		with: [ spec repository: 'github://pharo-GIS/ESRI-ASCII-Raster:v1.0.0/src' ].
 		
 ]
 
