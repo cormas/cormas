@@ -919,15 +919,15 @@ CMAbstractModel class >> renameSelector: oldName by: newName inputParametersNumb
 CMAbstractModel class >> setActiveProbes: listProbes [
 	| selectedClass selectedClassName |
 	self activeProbes: OrderedCollection new.
-	self allEntityClasses do: [ :c | c activeProbes: OrderedCollection new ].
+	self allEntityClasses
+		do: [ :c | c activeProbes: OrderedCollection new ].
 	listProbes
 		do: [ :s | 
 			s = CMSimManager separator
-				ifFalse: [
-					selectedClassName := (s findTokens: $>) first asSymbol.
+				ifFalse: [ selectedClassName := (s findTokens: $>) first asSymbol.
 					selectedClassName = #Global
 						ifTrue: [ selectedClassName := self name ].
-					selectedClass := selectedClassName asClass.
+					selectedClass := self class environment at: selectedClassName.
 					selectedClass activeProbes add: (s findTokens: $>) last asSymbol ] ]
 ]
 
@@ -2561,6 +2561,13 @@ CMAbstractModel >> hasActiveInit [
 	^ activeInit notNil
 ]
 
+{ #category : #testing }
+CMAbstractModel >> hasActiveProbes [
+	" Answer <true> if the receiver has actually active probes selected "
+	
+	^ self class activeProbes notEmpty
+]
+
 { #category : #'default values' }
 CMAbstractModel >> hasAttributesSetter [
 	
@@ -2572,13 +2579,6 @@ CMAbstractModel >> hasControlInit [
 	" Answer <true> if the receiver has an activeControl method "
 	
 	^ activeControl notNil
-]
-
-{ #category : #testing }
-CMAbstractModel >> hasProbes [
-	" Answer <true> if the receiver has actually active probes selected "
-	
-	^ self class activeProbes notEmpty
 ]
 
 { #category : #'default values' }
@@ -3553,6 +3553,13 @@ CMAbstractModel >> selectCellsOfLine: lineNumber [
 CMAbstractModel >> sensitivitySetter: anObject [
 	
 	sensitivitySetter := anObject
+]
+
+{ #category : #accessing }
+CMAbstractModel >> setActiveProbes: aCollection [
+	" See class comment "
+	
+	self class setActiveProbes: aCollection
 ]
 
 { #category : #'- binary storage' }

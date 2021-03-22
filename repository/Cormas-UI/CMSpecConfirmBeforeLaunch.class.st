@@ -175,7 +175,7 @@ CMSpecConfirmBeforeLaunch >> initializeActiveProbes [
 	
 	| apGlobals |
 	self probesList items: (self projectManager modelProbesMethods collect: #asSymbol).
-	self cormasModel hasProbes
+	self cormasModel hasActiveProbes
 		ifFalse: [ ^ self ].
 	apGlobals := self cormasModelClass activeProbes
 		collect: [ :apName | ('Global>>' , apName) asSymbol ].

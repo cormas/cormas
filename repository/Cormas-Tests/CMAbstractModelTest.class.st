@@ -118,6 +118,34 @@ CMAbstractModelTest >> testDominance1 [
 ]
 
 { #category : #test }
+CMAbstractModelTest >> testHasActiveInit [
+
+	self assert: model hasActiveInit.
+	model activeInit: nil.
+	self deny: model hasActiveInit.
+	
+]
+
+{ #category : #test }
+CMAbstractModelTest >> testHasActiveProbes [
+
+	self deny: model hasActiveProbes.
+	model setActiveProbes: #(#Global).
+	self assert: model hasActiveProbes.
+	model setActiveProbes: Array empty.
+]
+
+{ #category : #test }
+CMAbstractModelTest >> testHasControlInit [
+
+	self deny: model hasControlInit.
+	model activeControl: #step:.
+	self assert: model hasControlInit.
+
+	
+]
+
+{ #category : #test }
 CMAbstractModelTest >> testInitSimulation [
 
 	model := (CMTestModel
