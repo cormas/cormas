@@ -50,7 +50,8 @@ Class {
 		'sensitivitySetter',
 		'delayedChanges',
 		'allClassVarBOSS',
-		'announcer'
+		'announcer',
+		'initStatus'
 	],
 	#classInstVars : [
 		'cellClass',
@@ -2648,6 +2649,7 @@ CMAbstractModel >> initLocalCharts [
 
 { #category : #scheduling }
 CMAbstractModel >> initSimulation [
+
 	self timeStep: 0.
 	self spaceModel ifNil: [ self initializeSpaceModel ].
 	self initializeProbes.
@@ -2661,13 +2663,25 @@ CMAbstractModel >> initSimulation [
 	self perform: self activeInit.	"launch the selected INIT method"
 	self updateEntities.	"updates theXXXs collections"
 	self updateDataForChart.
-	self channel isNil
-		ifTrue: [ self initializeChannel ].
+	self channel ifNil: [ self initializeChannel ].
 	self theAgentsComm do: [ :p | p channel: self channel ].
-	self theAgentsComm isEmpty
-		ifFalse: [ self channel population: self theAgentsComm ].
+	self theAgentsComm ifNotEmpty: [ : agentsComm | self channel population: agentsComm ].
 	"announce to all the subscribers that simulation is beeing initialized"
-	self announcer announce: CMSimInitializationAnnouncement
+	self announcer announce: CMSimInitializationAnnouncement.
+	self initStatus: true.
+]
+
+{ #category : #accessing }
+CMAbstractModel >> initStatus [
+	" Answer <true> if the receiver was initialized through #initSimulation, <false> otherwise "
+	
+	^ initStatus
+		ifNil: [ initStatus := false ]
+]
+
+{ #category : #accessing }
+CMAbstractModel >> initStatus: anObject [
+	initStatus := anObject
 ]
 
 { #category : #initialization }
@@ -2728,6 +2742,13 @@ Examples: self interquartileRangeOfAttribute: #age of: Person
 		interquartileRange:
 			((self allTheEntitiesOfClassOrCollec: aCollecOrClass) asOrderedCollection
 				collect: [:e | e perform: att])
+]
+
+{ #category : #testing }
+CMAbstractModel >> isInitialized [
+	" Answer <true> if the receiver does not have any control or init method defined "
+
+	^ 	self initStatus and: [ activeControl notNil and: [ activeInit notNil ] ].
 ]
 
 { #category : #'probes - recording' }

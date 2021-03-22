@@ -117,6 +117,47 @@ CMAbstractModelTest >> testDominance1 [
 	self assert: (m dominance: #state) < 1.0
 ]
 
+{ #category : #test }
+CMAbstractModelTest >> testInitSimulation [
+
+	model := (CMTestModel
+		initialize;
+		new)
+		activeInit: #initAlive;
+		activeControl: #step:.
+	self deny: model initStatus.
+	model initSimulation.
+	self assert: model initStatus.
+]
+
+{ #category : #test }
+CMAbstractModelTest >> testInitStatus [
+
+	self assert: model initStatus.
+	model initStatus: false.
+	self deny: model initStatus.
+	
+]
+
+{ #category : #test }
+CMAbstractModelTest >> testIsInitialized [
+
+	model := (CMTestModel
+		initialize;
+		new)
+		activeInit: #initAlive;
+		activeControl: #step:.
+	self deny: model isInitialized.
+	model initSimulation.
+	self assert: model isInitialized.
+	model activeInit: nil.
+	self deny: model isInitialized.
+	model activeInit: #initAlive.
+	model activeControl: nil.
+	self deny: model isInitialized.	
+	
+]
+
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testLowerLeftCell [
 	| m |
