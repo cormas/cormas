@@ -2554,10 +2554,31 @@ CMAbstractModel >> habitusNames [
 	^collec
 ]
 
+{ #category : #testing }
+CMAbstractModel >> hasActiveInit [
+	" Answer <true> if the receiver has an activeInit method "
+	
+	^ activeInit notNil
+]
+
 { #category : #'default values' }
 CMAbstractModel >> hasAttributesSetter [
 	
 	^defaultAttributesSetter isNil not
+]
+
+{ #category : #testing }
+CMAbstractModel >> hasControlInit [
+	" Answer <true> if the receiver has an activeControl method "
+	
+	^ activeControl notNil
+]
+
+{ #category : #testing }
+CMAbstractModel >> hasProbes [
+	" Answer <true> if the receiver has actually active probes selected "
+	
+	^ self class activeProbes notEmpty
 ]
 
 { #category : #'default values' }
