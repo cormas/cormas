@@ -819,6 +819,22 @@ CMSpatialEntity >> peripherieRayon: n [
 	^self layerOfRadius: n
 ]
 
+{ #category : #printing }
+CMSpatialEntity >> printOn: aStream [
+	" Private - See superimplementor's comment "
+	
+	super printOn: aStream.
+	aStream
+		space; 
+		<< $-;
+		<< 'n: ';
+		<< self neighbourhood size asString;
+		space;
+		<< $-;
+		<< 'o: ';
+		<< self theOccupants size asString
+]
+
 { #category : #'star pov' }
 CMSpatialEntity >> randomColor [
 	

@@ -3136,6 +3136,22 @@ CMAbstractModel >> prepareCommunicationFor: anAgent [
 		do: [:a | a populationSourceAddAgent: anAgent]
 ]
 
+{ #category : #printing }
+CMAbstractModel >> printOn: aStream [
+	" Private - See superimplementor's comment "
+	
+	super printOn: aStream.
+	aStream
+		space;
+		<< '(init: ';
+		<< self initStatus asString;
+		<< ', time: ';
+		<< self timeStep asString;
+		<< ', entities: ';
+		<< self allTheEntities size asString;
+		<< ')'
+]
+
 { #category : #accessing }
 CMAbstractModel >> projectManager [
 	^ projectManager
