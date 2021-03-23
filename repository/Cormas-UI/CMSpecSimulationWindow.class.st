@@ -707,6 +707,10 @@ CMSpecSimulationWindow >> run1StepBackwardButtonMorph [
 
 { #category : #callbacks }
 CMSpecSimulationWindow >> runAction [
+	" Callback for the run all steps button "
+
+	self validateRunStep
+		ifFalse: [ self cormasModel initSimulation ].
 	self simManager finalTime: self finalStepInputText text asInteger.
 	self simManager loopRunStep_untilFinalTime.
 	self currentStepInputText text: self finalStepInputText text.
@@ -751,8 +755,10 @@ CMSpecSimulationWindow >> runButtonMorph [
 
 { #category : #callbacks }
 CMSpecSimulationWindow >> runStepByStepAction [
-	" Private - Request simulation manager to execute 1 step. Update the UI "
+	" Private - Request simulation manager to execute 1 step. Initialize the simulation if not set. Update the UI "
 
+	self validateRunStep
+		ifFalse: [ self cormasModel initSimulation ].
 	self simManager runStepByStep.
 	self currentStepInputText text: self currentStepInputText text + 1.
 
@@ -806,4 +812,11 @@ CMSpecSimulationWindow >> title [
 	" Private - See superimplementor's comment "
 
 	^ ''
+]
+
+{ #category : #testing }
+CMSpecSimulationWindow >> validateRunStep [
+	" Answer <true> if the receiver's model is ready to run "
+	
+	^ self cormasModel isInitialized
 ]

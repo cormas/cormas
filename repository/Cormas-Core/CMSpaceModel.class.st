@@ -2417,6 +2417,25 @@ CMSpaceModel >> ping: anObject [
 		do: [:ex | false]
 ]
 
+{ #category : #printing }
+CMSpaceModel >> printOn: aStream [
+	" Private - See superimplementor's comment "
+	
+	super printOn: aStream.
+	aStream
+		space;
+		<< self line asString;
+		<< $x;
+		<< self column asString;
+		<< $(;
+		<< self cardinal asString;
+		<< $);
+		space;
+		<< self gridCellShape asString
+
+		
+]
+
 { #category : #'ESE (regular) - special locations' }
 CMSpaceModel >> randomCell [
 	"Purpose: Return a spatialEntityElement (aCell) picked randomly from the spatial grid."

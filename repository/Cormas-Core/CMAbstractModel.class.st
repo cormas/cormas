@@ -50,7 +50,8 @@ Class {
 		'sensitivitySetter',
 		'delayedChanges',
 		'allClassVarBOSS',
-		'announcer'
+		'announcer',
+		'initStatus'
 	],
 	#classInstVars : [
 		'cellClass',
@@ -918,15 +919,15 @@ CMAbstractModel class >> renameSelector: oldName by: newName inputParametersNumb
 CMAbstractModel class >> setActiveProbes: listProbes [
 	| selectedClass selectedClassName |
 	self activeProbes: OrderedCollection new.
-	self allEntityClasses do: [ :c | c activeProbes: OrderedCollection new ].
+	self allEntityClasses
+		do: [ :c | c activeProbes: OrderedCollection new ].
 	listProbes
 		do: [ :s | 
 			s = CMSimManager separator
-				ifFalse: [
-					selectedClassName := (s findTokens: $>) first asSymbol.
+				ifFalse: [ selectedClassName := (s findTokens: $>) first asSymbol.
 					selectedClassName = #Global
 						ifTrue: [ selectedClassName := self name ].
-					selectedClass := selectedClassName asClass.
+					selectedClass := self class environment at: selectedClassName.
 					selectedClass activeProbes add: (s findTokens: $>) last asSymbol ] ]
 ]
 
@@ -2553,10 +2554,31 @@ CMAbstractModel >> habitusNames [
 	^collec
 ]
 
+{ #category : #testing }
+CMAbstractModel >> hasActiveInit [
+	" Answer <true> if the receiver has an activeInit method "
+	
+	^ activeInit notNil
+]
+
+{ #category : #testing }
+CMAbstractModel >> hasActiveProbes [
+	" Answer <true> if the receiver has actually active probes selected "
+	
+	^ self class activeProbes notEmpty
+]
+
 { #category : #'default values' }
 CMAbstractModel >> hasAttributesSetter [
 	
 	^defaultAttributesSetter isNil not
+]
+
+{ #category : #testing }
+CMAbstractModel >> hasControlInit [
+	" Answer <true> if the receiver has an activeControl method "
+	
+	^ activeControl notNil
 ]
 
 { #category : #'default values' }
@@ -2648,6 +2670,7 @@ CMAbstractModel >> initLocalCharts [
 
 { #category : #scheduling }
 CMAbstractModel >> initSimulation [
+
 	self timeStep: 0.
 	self spaceModel ifNil: [ self initializeSpaceModel ].
 	self initializeProbes.
@@ -2661,13 +2684,25 @@ CMAbstractModel >> initSimulation [
 	self perform: self activeInit.	"launch the selected INIT method"
 	self updateEntities.	"updates theXXXs collections"
 	self updateDataForChart.
-	self channel isNil
-		ifTrue: [ self initializeChannel ].
+	self channel ifNil: [ self initializeChannel ].
 	self theAgentsComm do: [ :p | p channel: self channel ].
-	self theAgentsComm isEmpty
-		ifFalse: [ self channel population: self theAgentsComm ].
+	self theAgentsComm ifNotEmpty: [ : agentsComm | self channel population: agentsComm ].
 	"announce to all the subscribers that simulation is beeing initialized"
-	self announcer announce: CMSimInitializationAnnouncement
+	self announcer announce: CMSimInitializationAnnouncement.
+	self initStatus: true.
+]
+
+{ #category : #accessing }
+CMAbstractModel >> initStatus [
+	" Answer <true> if the receiver was initialized through #initSimulation, <false> otherwise "
+	
+	^ initStatus
+		ifNil: [ initStatus := false ]
+]
+
+{ #category : #accessing }
+CMAbstractModel >> initStatus: anObject [
+	initStatus := anObject
 ]
 
 { #category : #initialization }
@@ -2728,6 +2763,13 @@ Examples: self interquartileRangeOfAttribute: #age of: Person
 		interquartileRange:
 			((self allTheEntitiesOfClassOrCollec: aCollecOrClass) asOrderedCollection
 				collect: [:e | e perform: att])
+]
+
+{ #category : #testing }
+CMAbstractModel >> isInitialized [
+	" Answer <true> if the receiver does not have any control or init method defined "
+
+	^ 	self initStatus and: [ activeControl notNil and: [ activeInit notNil ] ].
 ]
 
 { #category : #'probes - recording' }
@@ -3115,6 +3157,22 @@ CMAbstractModel >> prepareCommunicationFor: anAgent [
 		do: [:a | a populationSourceAddAgent: anAgent]
 ]
 
+{ #category : #printing }
+CMAbstractModel >> printOn: aStream [
+	" Private - See superimplementor's comment "
+	
+	super printOn: aStream.
+	aStream
+		space;
+		<< '(init: ';
+		<< self initStatus asString;
+		<< ', time: ';
+		<< self timeStep asString;
+		<< ', entities: ';
+		<< self allTheEntities size asString;
+		<< ')'
+]
+
 { #category : #accessing }
 CMAbstractModel >> projectManager [
 	^ projectManager
@@ -3495,6 +3553,13 @@ CMAbstractModel >> selectCellsOfLine: lineNumber [
 CMAbstractModel >> sensitivitySetter: anObject [
 	
 	sensitivitySetter := anObject
+]
+
+{ #category : #accessing }
+CMAbstractModel >> setActiveProbes: aCollection [
+	" See class comment "
+	
+	self class setActiveProbes: aCollection
 ]
 
 { #category : #'- binary storage' }

@@ -1941,6 +1941,18 @@ ECEC example :
 		v: color brightness * index
 ]
 
+{ #category : #printing }
+CMEntity >> printOn: aStream [
+	" Private - See superimplementor's comment "
+	
+	super printOn: aStream.
+	aStream
+		space; 
+		<< $-;
+		<< 'id: ';
+		<< self id asString
+]
+
 { #category : #'+ common-pool resources' }
 CMEntity >> receiveRequestAbout: anAttribute qty: qty from: aRequester [
 	"Purpose: stores the request (a quantity of an attribute) made by a requester

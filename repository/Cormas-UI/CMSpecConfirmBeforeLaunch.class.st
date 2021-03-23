@@ -68,20 +68,27 @@ CMSpecConfirmBeforeLaunch class >> defaultSpec [
 		yourself
 ]
 
+{ #category : #callbacks }
+CMSpecConfirmBeforeLaunch >> applyActiveProbesChanges [
+
+	self flag: #toBeRevised.
+	"CMFireAutomataModel>>nbTrees'."
+	"refactoredProbesList := 'CMFireAutomataModel>>nbTrees'."
+	self cormasModelClass setActiveProbes: self probesList selectedItems
+]
+
 { #category : #actions }
 CMSpecConfirmBeforeLaunch >> applyScenarioSettings [
-	| refactoredProbesList |
+
 	self initMethodList selectedItem
 		ifNotNil: [ :aInitMethod | self cormasModel activeInit: aInitMethod asSymbol ]
 		ifNil: [ ^ self alertMessage: 'Choose a init method' ].
 	self controlMethodList selectedItem
 		ifNotNil: [ :aControlMethod | self cormasModel activeControl: aControlMethod asSymbol ]
 		ifNil: [ ^ self alertMessage: 'Choose a control method' ].
-	self probesList selectedItem
-		ifNotNil: [ self flag: #toBeRevised.
-			"CMFireAutomataModel>>nbTrees'."
-			"refactoredProbesList := 'CMFireAutomataModel>>nbTrees'."
-			self cormasModelClass setActiveProbes: (Array with: self probesList selectedItem) ].
+		
+	self applyActiveProbesChanges.
+
 	self projectManager projectWindow simWindow simWindow finalStepInputText
 		text: (self finalStep text ifNil:[0] ifNotNil:[:userDefinedStep | userDefinedStep]).
 	self cormasModel initSimulation.
@@ -147,34 +154,35 @@ CMSpecConfirmBeforeLaunch >> initialExtent [
 
 { #category : #initialization }
 CMSpecConfirmBeforeLaunch >> initializeActiveControl [
+	" If there is a control method already selected or the model only has one active control method available, select it "
 
-	(self cormasModel activeControl
-		ifNotNil: [ : m | self controlMethodList items includes: m ]
-		ifNil: [ false ])
-			ifTrue: [ self controlMethodList selectItem: self cormasModel activeControl ]
-			ifFalse: 	 [ self controlMethodList notEmpty
-				ifTrue: [ self controlMethodList selectItem: self controlMethodList items first ] ].
+	self controlMethodList items: (self projectManager modelControlInitMethods collect: #asSymbol).
+	(self cormasModel hasControlInit or: [ self projectManager modelControlInitMethods size = 1 ])
+		ifTrue: [ self controlMethodList selectItem: self cormasModel activeControl ].
 ]
 
 { #category : #initialization }
 CMSpecConfirmBeforeLaunch >> initializeActiveInit [
+	" If there is a init method already selected, select it "
 
-	(self cormasModel activeInit
-		ifNotNil: [ : m | self initMethodList items includes: m ]
-		ifNil: [ false ])
-			ifTrue: [ self initMethodList selectItem: self cormasModel activeInit ]
-			ifFalse: 	 [ self initMethodList items notEmpty
-				ifTrue: [ self initMethodList selectItem: self initMethodList first ] ].
+	self initMethodList items: (self projectManager modelInitMethods collect: #asSymbol) .
+	self cormasModel hasActiveInit 
+		ifTrue: [ self initMethodList selectItem: self cormasModel activeInit ].
 ]
 
 { #category : #initialization }
 CMSpecConfirmBeforeLaunch >> initializeActiveProbes [
-
-	(self cormasModelClass activeProbes 
-		ifNotNil: [ : m | self probesList items includes: m ]
-		ifNil: [ false ])
-			ifTrue: [ self probesList selectItem: self cormasModelClass activeProbes ]
-			.
+	
+	| apGlobals |
+	self probesList items: (self projectManager modelProbesMethods collect: #asSymbol).
+	self cormasModel hasActiveProbes
+		ifFalse: [ ^ self ].
+	apGlobals := self cormasModelClass activeProbes
+		collect: [ :apName | ('Global>>' , apName) asSymbol ].
+	self probesList listItems withIndexDo: [ :item :index |
+		self probesList 
+			setSelectionStateFor: index 
+			at: (apGlobals includes: item) ]
 ]
 
 { #category : #initialization }
@@ -182,19 +190,14 @@ CMSpecConfirmBeforeLaunch >> initializePresenter [
 	" Private - See superimplementor's comment "
 	" SimManager>>initScenarioWindow "
 	
-	self initMethodList items: self projectManager modelInitMethods.
-	self controlMethodList items: self projectManager modelControlInitMethods.
-	self probesList items: self projectManager modelProbesMethods.
-
-	self initMethodList isEmpty 
-		ifTrue: [ self alertMessage: self translator tMissingInitMethods ].
-	self controlMethodList isEmpty 
-		ifTrue: [ self alertMessage: self translator tMissingControlMethods ].
-		
 	self initializeActiveInit.
 	self initializeActiveControl.
 	self initializeActiveProbes.
 	
+	self initMethodList isEmpty 
+		ifTrue: [ self alertMessage: self translator tMissingInitMethods ].
+	self controlMethodList isEmpty 
+		ifTrue: [ self alertMessage: self translator tMissingControlMethods ].
 ]
 
 { #category : #initialization }
@@ -212,10 +215,11 @@ CMSpecConfirmBeforeLaunch >> initializeWidgets [
 		label: self translator tSelectProbesToRecord.
 	self fixRandomSeedCheck label: self translator tFixRandomSeed.
 
-	self finalStep label: self translator tFinalStepChoice.
-	self finalStep
+	self finalStep 
+		label: self translator tFinalStepChoice;
 		text: self cormasModel simManager finalTime;
 		help: self translator tSimFinalStepHelp.
+
 	self finalStep acceptBlock: [  ].
 	self stepBackCheck label: self translator tEnableStepBack.
 	self releaseRandomCheck label: self translator tReleaseRandomSeed.
