@@ -35,6 +35,13 @@ CMApplicationProject class >> applicationName [
 	^ 'CORMAS Application'
 ]
 
+{ #category : #accessing }
+CMApplicationProject class >> applicationVersion [
+	"Answer the current CORMAS version"
+
+	^ GRVersion major: 0 minor: 1 revision: 0
+]
+
 { #category : #testing }
 CMApplicationProject >> cormasModel [
 	" Answer the receiver's current project model, a <CMAbstractModel> instance "

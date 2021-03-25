@@ -61,7 +61,7 @@ CMSpecProjectWindow >> closeAfterCreateProject [
 	^ true
 ]
 
-{ #category : #'submenu-tools' }
+{ #category : #private }
 CMSpecProjectWindow >> cormasExpressions [
 	" Answer a <String> with useful Cormas expressions to debug/develop/cleanup "
 	
@@ -412,7 +412,8 @@ CMSpecProjectWindow >> menuEnableToolsGroup [
 		#tDisplayModelVersions .
 		#tDistributeAsServer .
 		#tDistributeAsClient .
-		#tPackageClient
+		#tPackageClient .
+		#tPreferences
 	} do: [ : itemSel | self menuEnableItem: itemSel ]
 ]
 
@@ -690,10 +691,8 @@ CMSpecProjectWindow >> subMenuForTools [
 				addItem: [ :item | self subMenuToolsDistributeAsClient: item ];
 				addItem: [ :item | self subMenuToolsDistributeAsServer: item ];
 				addItem: [ :item | self subMenuToolsPackageClient: item ] ;
-				addItem: [ :item | 
-					item
-						name: 'inspect';
-						action: [ self inspect ] ] ]
+				addItem: [ :item | self subMenuToolsInspectUI: item ];
+				addItem: [ :item | self subMenuToolsPreferences: item ] ]
 ]
 
 { #category : #'submenu-visualization' }
@@ -945,7 +944,7 @@ CMSpecProjectWindow >> subMenuSimDisplayParams: item [
 
 	item
 		name: self translator tDisplayParams;
-"		icon: Smalltalk ui icons openIcon;"
+		icon: (self iconNamed: #group);
 		shortcut: $D command;
 		action: [ self openSimDisplayParams ]
 ]
@@ -1001,7 +1000,7 @@ CMSpecProjectWindow >> subMenuSimInformation: item [
 
 	item
 		name: self translator tSimInformation;
-"		icon: Smalltalk ui icons openIcon;"
+		icon: (self iconNamed: #smallInfo);
 		shortcut: $F command;
 		action: [ self openSimInformation ]
 ]
@@ -1011,7 +1010,7 @@ CMSpecProjectWindow >> subMenuSimInterface: item [
 
 	item
 		name: self translator tSimInterface;
-"		icon: Smalltalk ui icons openIcon;"
+		icon: (self iconNamed: #window);
 		shortcut: $I command;
 		action: [ self simWindow toggleSimInterface ]
 ]
@@ -1136,9 +1135,17 @@ CMSpecProjectWindow >> subMenuToolsExpressions: item [
 
 	item
 		name: self translator tUsefulExpressions;
-"		icon: Smalltalk ui icons openIcon;"
+		icon: (self iconNamed: #workspace);
 		shortcut: $P command;
 		action: [ (Workspace openLabel: 'CORMAS - Useful expressions') contents: self cormasExpressions. ]
+]
+
+{ #category : #'submenu-tools' }
+CMSpecProjectWindow >> subMenuToolsInspectUI: item [
+
+	item
+		name: 'inspect';
+		action: [ self inspect ]
 ]
 
 { #category : #'submenu-tools' }
@@ -1146,7 +1153,7 @@ CMSpecProjectWindow >> subMenuToolsMain: item [
 
 	item
 		name: self translator tOpenPharoMenu;
-"		icon: Smalltalk ui icons openIcon;"
+		icon: (self iconNamed: #pharo);
 		shortcut: $P command;
 		action: [ World worldMenu openCenteredInWorld ]
 ]
@@ -1189,6 +1196,17 @@ CMSpecProjectWindow >> subMenuToolsPackageClient: item [
 "		icon: Smalltalk ui icons openIcon;"
 		shortcut: $K command;
 		action: [ self openToolsPackageClient ]
+]
+
+{ #category : #'submenu-tools' }
+CMSpecProjectWindow >> subMenuToolsPreferences: item [
+
+	item
+		name: self translator tPreferences;
+		icon: (self iconNamed: #configuration);
+		shortcut: $O command;
+		action: [ CMSettingsBrowser open ]
+
 ]
 
 { #category : #'submenu-tools' }
