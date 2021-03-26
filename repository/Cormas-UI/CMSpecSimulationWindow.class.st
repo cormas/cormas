@@ -760,8 +760,7 @@ CMSpecSimulationWindow >> runStepByStepAction [
 	self validateRunStep
 		ifFalse: [ self cormasModel initSimulation ].
 	self simManager runStepByStep.
-	self currentStepInputText text: self currentStepInputText text + 1.
-
+	self currentStepInputText text: (self cormasModel timeStep asString)
 ]
 
 { #category : #accessing }
