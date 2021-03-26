@@ -289,6 +289,7 @@ Enter the entity''s name';
 		at: #tSelectInitMethod			put: 'Select a method of initialization';
 		at: #tSelectControlMethod 		put: 'Select a method of control';
 		at: #tUsefulExpressions 			put: 'Useful Expressions';
+		at: #tPreferences 					put: 'Preferences';
 		yourself
 ]
 
@@ -547,6 +548,7 @@ Ingrese el nombre de la entidad';
 		at: #tSelectInitMethod				put: 'Seleccione un método de inicialización';
 		at: #tSelectControlMethod 			put: 'Seleccione un método de control';
 		at: #tUsefulExpressions 				put: 'Expresiones útiles';
+		at: #tPreferences 						put: 'Configuración';
 		yourself
 
 ]
