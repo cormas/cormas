@@ -24,7 +24,10 @@ Class {
 	#instVars : [
 		'cormasModel',
 		'cormasModelClass',
-		'codeGenerator'
+		'codeGenerator',
+		'modelComment',
+		'cormasVersion',
+		'providedName'
 	],
 	#category : #'Cormas-UI-Project'
 }
@@ -33,6 +36,53 @@ Class {
 CMProjectModel class >> for: aCormasModel [
 	" Answer a new instance of the receiver configured for aCormasModel "
 	^ self new initializeForModel: aCormasModel 
+]
+
+{ #category : #'instance creation' }
+CMProjectModel class >> for: aCormasModel named: aString [
+	" Answer a new instance of the receiver configured for aCormasModel "
+	^ self basicNew 
+		initializeForModel: aCormasModel 
+		named: aString
+]
+
+{ #category : #'instance creation' }
+CMProjectModel class >> forModel: aCormasModel [
+	" Answer a new instance of the receiver configured for aCormasModel "
+	^ self basicNew 
+		initializeForModel: aCormasModel 
+		named: aCormasModel friendlyName
+]
+
+{ #category : #accessing }
+CMProjectModel class >> projectFileExtension [
+	" Answer a <String> with the receiver's file extension "
+
+	^ CMApplicationProject applicationExtension
+]
+
+{ #category : #'instance creation' }
+CMProjectModel class >> withMetadata: metadataDictionary [
+	" Answer a new instance of the receiver filled with metadaDictionary "
+	
+	^ self basicNew 
+		version: (metadataDictionary at: #Version);
+		userProvidedName: (metadataDictionary at: #Name);
+		authors: (metadataDictionary at: #Authors);
+		creationDate: (metadataDictionary at: #CreationDate);
+		demo: (metadataDictionary at: #Demo);
+
+		cormasModelComment: (metadataDictionary at: #Comments);
+		cormasVersion: (metadataDictionary at: #'CORMAS version');
+		cormasModelVersion: (metadataDictionary at: #Version);
+
+		relatedProjects: (metadataDictionary at: #'Related projects');
+		osVersion: (metadataDictionary at: #'OS version');
+		stars: (metadataDictionary at: #Stars);
+		valid: (metadataDictionary at: #Valid);
+		language: (metadataDictionary at: #Language);
+		yourself
+		
 ]
 
 { #category : #callbacks }
@@ -57,6 +107,18 @@ CMProjectModel >> addNewEntity: aCMEntityNewAnnouncement [
 		name: aCMEntityNewAnnouncement entityName
 		initProtocol: false 
 		stepProtocol: false
+]
+
+{ #category : #accessing }
+CMProjectModel >> asCMProjectModel [
+	^ self
+]
+
+{ #category : #accessing }
+CMProjectModel >> asCormasProjectName [
+	" Answer a <String> with the receiver's name, does not assume a Cormas model already present "
+
+	^ self friendlyName
 ]
 
 { #category : #accessing }
@@ -86,13 +148,10 @@ CMProjectModel >> cormasModel: aCormasModel [
 ]
 
 { #category : #accessing }
-CMProjectModel >> cormasModelAuthors: aString [ 
+CMProjectModel >> cormasModelAuthors: aCollection [ 
 	" See comment in CMProjectManager>>cormasModelAuthors: "
 
-	self codeGenerator
-		generateMethod: aString 
-		selector: #cmAuthors 
-		inClass: self cormasModelClass class.
+	self authors: aCollection
 
 ]
 
@@ -115,10 +174,7 @@ CMProjectModel >> cormasModelClass: aClass [
 CMProjectModel >> cormasModelComment: aString [ 
 	" See comment in CMProjectManager>>cormasModelComment: "
 
-	self codeGenerator 
-		generateMethod: aString 
-		selector: #comments 
-		inClass: self cormasModelClass class.
+	modelComment := aString
 
 ]
 
@@ -142,11 +198,23 @@ CMProjectModel >> cormasModelName [
 
 { #category : #accessing }
 CMProjectModel >> cormasModelVersion: aString [ 
+	" See comment in #version: "
 
-	self codeGenerator
-		generateMethod: aString 
-		selector: #cmVersion 
-		inClass: self cormasModelClass class
+	self version: aString 
+
+]
+
+{ #category : #accessing }
+CMProjectModel >> cormasVersion [
+	^ cormasVersion
+]
+
+{ #category : #accessing }
+CMProjectModel >> cormasVersion: aString [ 
+	" Set the CORMAS version used to create the receiver. This is the minimum version compatible "
+
+	cormasVersion :=  aString 
+
 ]
 
 { #category : #accessing }
@@ -209,6 +277,11 @@ CMProjectModel >> findSimulationNamed: aName [
 
 ]
 
+{ #category : #accessing }
+CMProjectModel >> friendlyName [
+	^ self cormasModel friendlyName.
+]
+
 { #category : #testing }
 CMProjectModel >> hasCormasModelClass [
 	" Answer <true> if receiver has configured a Cormas model "
@@ -221,6 +294,20 @@ CMProjectModel >> hasStoredSimulations [
 	" Answer <true> if the receiver has a project opened and the project's dump folder has stored simulations, <false> otherwise "
 
 	^ self storedSimulations notEmpty
+]
+
+{ #category : #accessing }
+CMProjectModel >> infoString [
+
+	^ String streamContents: [ : stream |
+		stream
+		<< self language; cr;
+		<< self version greaseString; cr;
+		<< self info infoName; cr;
+		<< self demo asString; cr;
+		<< self info fileReference fullName; cr;
+		<< self osVersion; cr;
+		<< self history creationDateAsString; cr ]
 ]
 
 { #category : #'initialize - release' }
@@ -268,10 +355,29 @@ CMProjectModel >> initializeForModel: aCormasModel named: aString [
 ]
 
 { #category : #accessing }
+CMProjectModel >> modelComment [
+	^ modelComment
+]
+
+{ #category : #accessing }
 CMProjectModel >> passiveClasses [
 	" Answer a <Collection> with the receiver's model passive classes "
 	
 	^ self cormasModelClass passiveClasses
+]
+
+{ #category : #printing }
+CMProjectModel >> printOn: aStream [
+	" Private - See superimplementor's comment "
+
+	aStream 
+		nextPutAll: 'Cormas Project: '.
+	info ifNotNil: [ :i | 
+		aStream space; 
+			nextPut: $(;
+			nextPutAll: info infoName;
+			nextPut: $) ]
+		ifNil: [ aStream nextPutAll: '(not yet opened)' ]
 ]
 
 { #category : #'initialize - release' }
@@ -378,6 +484,13 @@ CMProjectModel >> userProvidedName [
 	" Answer a <String> with the receiver's name as provided by the user on creation "
 
 	^ self info infoName
+]
+
+{ #category : #accessing }
+CMProjectModel >> userProvidedName: aString [
+	" Answer a <String> with the receiver's name as provided by the user on creation "
+
+	self info infoName: aString
 ]
 
 { #category : #accessing }

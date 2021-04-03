@@ -290,6 +290,19 @@ Enter the entity''s name';
 		at: #tSelectControlMethod 		put: 'Select a method of control';
 		at: #tUsefulExpressions 			put: 'Useful Expressions';
 		at: #tPreferences 					put: 'Preferences';
+		at: #tNumberOfClasses 			put: 'Number of Classes';
+		at: #tNumberOfEntities 			put: 'Number of Entities';
+		at: #tNumberOfAgents 				put: 'Number of Agents';
+		at: #tSize 							put: 'Size';
+		at: #tIncludesMaps 				put: 'Includes maps';
+		at: #tIncludesInputs 				put: 'Includes inputs';
+		at: #tIncludesSims 				put: 'Includes simulations';
+		at: #tCreatedCormasVersion 		put: 'Created in CORMAS version';
+		at: #tAuthors 						put: 'Authors';
+		at: #tOwner 							put: 'Owner';
+		at: #tRelatedProjects 			put: 'Related projects';
+		at: #tChooseStFile 				put: 'Choose st file';
+		at: #tStFiles 						put: 'st files';
 		yourself
 ]
 
@@ -549,6 +562,19 @@ Ingrese el nombre de la entidad';
 		at: #tSelectControlMethod 			put: 'Seleccione un método de control';
 		at: #tUsefulExpressions 				put: 'Expresiones útiles';
 		at: #tPreferences 						put: 'Configuración';
+		at: #tNumberOfClasses 				put: 'Número de Clases';
+		at: #tNumberOfEntities 				put: 'Número of Entidades';
+		at: #tNumberOfAgents 					put: 'Número of Agentes';
+		at: #tSize 								put: 'Tamaño';
+		at: #tIncludesMaps 					put: 'Incluye mapas';
+		at: #tIncludesInputs 					put: 'Incluye entradas';
+		at: #tIncludesSims 					put: 'Incluye simulaciones';
+		at: #tCreatedCormasVersion 			put: 'Creado en CORMAS';
+		at: #tAuthors 							put: 'Autores';
+		at: #tOwner 								put: 'Propietarip';
+		at: #tRelatedProjects  				put: 'Projectos relacionados';
+		at: #tChooseStFile 					put: 'Seleccionar archivo st';
+		at: #tStFiles 							put: 'archivos st';
 		yourself
 
 ]

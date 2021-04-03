@@ -21,6 +21,16 @@ ECEC' lines
 ]
 
 { #category : #'tests-accessing-entities' }
+CMAbstractModelTest >> newProjectManager [
+
+	^ CMProjectManager new 
+		currentProject: (CMProjectModel basicNew
+				initializeForModel: model named: 'Sample Model';
+				yourself);
+		yourself
+]
+
+{ #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> newTestModel [
 	^ (CMTestModel
 		initialize;

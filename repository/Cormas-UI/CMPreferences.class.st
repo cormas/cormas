@@ -2,6 +2,7 @@ Class {
 	#name : #CMPreferences,
 	#superclass : #Object,
 	#classVars : [
+		'SettingBaseLocation',
 		'SettingWaitLimit',
 		'SettingWarnUsing'
 	],
@@ -15,13 +16,37 @@ CMPreferences class >> availableSettingWarnUsing [
 ]
 
 { #category : #settings }
+CMPreferences class >> cmGeneralSettingOn: aBuilder [
+	<cormasPreferences>
+	
+	(aBuilder group: #cmGeneralSetting)
+		label: 'General';
+		description: 'General application settings';
+		order: 1
+]
+
+{ #category : #settings }
 CMPreferences class >> cmLoadSettingOn: aBuilder [
 	<cormasPreferences>
 	
 	(aBuilder group: #cmLoadSetting)
 		label: 'Loading';
 		description: 'Settings related to loading projects or models';
-		order: 1
+		order: 2
+]
+
+{ #category : #settings }
+CMPreferences class >> cmSettingBaseLocationOn: aBuilder [
+	<cormasPreferences>
+	
+	(aBuilder setting: #settingBaseLocation)
+		label: 'Base location';
+		parent: #cmGeneralSetting;
+		type: #Directory;
+		target: self;
+		default: self defaultBaseLocation;	
+		description: 'Base directory for storing CORMAS artifacts (projects, preferences, etc) in the host machine';
+		order: 5
 ]
 
 { #category : #settings }
@@ -52,10 +77,40 @@ CMPreferences class >> cmSettingWarnUsingOn: aBuilder [
 		default: self defaultSettingWarnUsing
 ]
 
+{ #category : #defaults }
+CMPreferences class >> defaultBaseLocation [
+
+	^ (FileLocator home / 'CORMAS') asFileReference fullName
+]
+
 { #category : #settings }
 CMPreferences class >> defaultSettingWarnUsing [
 	
 	^ CMLoadIgnoreException
+]
+
+{ #category : #'initialize - release' }
+CMPreferences class >> release [
+	" Clean receiver's class variables.
+	self release "
+
+	(self class organization listAtCategoryNamed: #accessing)
+		select: #isKeyword
+		thenDo: [ : selector | self perform: selector with: nil ]
+]
+
+{ #category : #accessing }
+CMPreferences class >> settingBaseLocation [
+	" Answer the settingBaseLocation of this CMPreferences "
+
+	^ SettingBaseLocation
+]
+
+{ #category : #accessing }
+CMPreferences class >> settingBaseLocation: anObject [
+	" Sets the settingBaseLocation of this CMPreferences "
+
+	SettingBaseLocation := anObject
 ]
 
 { #category : #accessing }

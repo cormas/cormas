@@ -1,0 +1,185 @@
+"
+A project is a standard way of working in many applications and could contain multiple models, hold meta-data and even resources such as images/audio/video without the need to be compiled in a .st class method, and be versioned in a standard fashion.
+
+Use this class to create a CORMAS project file after migrated your model classes to Pharo.
+
+Public API and Key Messages
+
+See examples in class side.
+
+"
+Class {
+	#name : #CMModel2ProjectMigrator,
+	#superclass : #CMObject,
+	#instVars : [
+		'currentModel',
+		'outputDirectory'
+	],
+	#category : #'Cormas-UI-Project'
+}
+
+{ #category : #examples }
+CMModel2ProjectMigrator class >> example [ 
+	<example>
+	
+	self new buildProjects
+]
+
+{ #category : #building }
+CMModel2ProjectMigrator >> buildForModel: modelClass [
+	" Creates a CORMAS project file, answer a <FileReference> to the new created project "
+
+	currentModel := CMProjectModel basicNew
+		initializeForModel: modelClass named: modelClass friendlyName;
+		yourself.
+	self 
+		writeDirectoryStructure;
+		writeMetadata;
+		writeSourceCode: modelClass
+
+]
+
+{ #category : #building }
+CMModel2ProjectMigrator >> buildProjectFile [
+	" Creates a CORMAS project file in the receiver's path. Assume the directory structure is already created and populated in outputDirectory "
+	
+	CMProjectFile 
+		archiveAllFromPharo: self outputDirectory asFileReference children
+		as: self currentModel fileName
+
+]
+
+{ #category : #building }
+CMModel2ProjectMigrator >> buildProjectMetadataSTON [
+	" Answer a <String> with project meta-data information in STON format "
+
+	| cmModelClass cmMetadata |
+	
+	cmModelClass := self currentModel cormasModel.
+	cmMetadata := Dictionary new.
+	cmMetadata 
+		at: 'Name' put: cmModelClass friendlyName;
+		at: 'Authors' put: cmModelClass cmAuthors;
+		at: 'Version' put: cmModelClass cmVersion;
+		at: 'Comments' put: cmModelClass cmComments;
+		at: 'Valid'	put: cmModelClass cmValid;
+		at: 'Owner' put: cmModelClass cmOwner;
+		at: 'CORMAS version' put: cmModelClass cmMinimalVersion;
+		at: 'Related projects' put: cmModelClass cmRelatedProjects;
+		at: 'Demo' put: true;
+		at: 'Language' put: 'English';
+		at: 'Pharo version' put: SystemVersion current version;
+		at: 'OS version' put: self osSystemInformation;
+		at: 'CreationDate' put: DateAndTime now;
+		at: 'Stars' put: 5.
+	^ STON toStringPretty: cmMetadata
+
+]
+
+{ #category : #building }
+CMModel2ProjectMigrator >> buildProjects [
+	" Main entry point for generating project files. Generate all project files from the models in this image "
+	" Hopefully this method should be run only once, and to reformat project directory structure for example "
+
+	CMAbstractModel subclassesDo: [ :modelClass |
+			self buildForModel: modelClass.
+			self buildProjectFile ]
+]
+
+{ #category : #accessing }
+CMModel2ProjectMigrator >> currentModel [
+	^ currentModel
+]
+
+{ #category : #accessing }
+CMModel2ProjectMigrator >> currentModel: anObject [
+	currentModel := anObject
+]
+
+{ #category : #defaults }
+CMModel2ProjectMigrator >> defaultOutputDirectory [
+	" Private - Answer the default <String> with the name of the directory serving as temporary location where to write project files before being compressed "
+	
+	^ 'cormas_project'
+]
+
+{ #category : #defaults }
+CMModel2ProjectMigrator >> metadataFilename [
+
+	^ CMProjectFile metadataFilename 
+]
+
+{ #category : #building }
+CMModel2ProjectMigrator >> osSystemInformation [
+
+	^ String streamContents: [ : stream |
+		stream
+			nextPutAll: Smalltalk os platformName; space;
+			nextPutAll: Smalltalk os version; space;
+			nextPutAll: Smalltalk os subtype ]
+]
+
+{ #category : #accessing }
+CMModel2ProjectMigrator >> outputDirectory [
+	" Answer a <String> with the name of the directory serving as temporary location where to write project files before being compressed "
+	
+	^ outputDirectory
+		ifNil: [ outputDirectory := self defaultOutputDirectory ]
+]
+
+{ #category : #defaults }
+CMModel2ProjectMigrator >> resourceDirectoryNames [
+	" Answer a <Collection> with the names of subdirectories of a CORMAS project "
+
+	^ #(
+		'diagrams' 
+		'doc' 
+		'dumps' 
+		'images'
+		'inputs'
+		'maps'
+		'old_versions'
+		'outputs'
+		'video'
+		)
+]
+
+{ #category : #writing }
+CMModel2ProjectMigrator >> writeDirectoryStructure [
+	" Private - Write directory names for the receiver's target project "
+
+	| outDirRef |
+	
+	(outDirRef := self defaultOutputDirectory asFileReference) exists
+		ifTrue: [ outDirRef deleteAll ].
+	self resourceDirectoryNames do: [ : dirName | (outDirRef / dirName) ensureCreateDirectory ].
+
+]
+
+{ #category : #writing }
+CMModel2ProjectMigrator >> writeMetadata [
+	" Private - Write receiver's model metadata in a file "
+	
+	self outputDirectory asFileReference / self metadataFilename  
+		writeStreamDo: [ :outputStream | outputStream << self buildProjectMetadataSTON ].
+
+]
+
+{ #category : #writing }
+CMModel2ProjectMigrator >> writeSourceCode: modelClass [
+
+	| newFile |
+
+	modelClass package 
+		fileOutOn: (WriteStream on: (String new: 4000))
+		named: CMProjectFile sourceCodeFilename.
+	newFile := CMProjectFile sourceCodeFilename , '.st'.
+	[ newFile asFileReference copyTo: (self defaultOutputDirectory asFileReference / newFile) ]
+	on: FileExists 
+	do: [ : ex | 
+		ex ensureDelete.
+		ex retry ].
+	(self defaultOutputDirectory asFileReference / newFile) exists
+		ifFalse: [ self error: 'CORMAS source code file was not copied into project directory' ].
+	newFile asFileReference ensureDelete.
+]

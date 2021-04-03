@@ -1536,45 +1536,6 @@ Cormas class >> runtimeMode: aSymbol [
 	runtimeMode := aSymbol
 ]
 
-{ #category : #'util_export' }
-Cormas class >> saveAsST [
-	"A kernel.st, a VisualLauncher and a Locale.st are created in kernel directory."
-	"Cormas saveAsST"
-	
-	| defaultFileName fileName fileManager path vL |
-	defaultFileName := (Cormas cormasPath construct: 'Kernel')
-		construct: 'Kernel-v.' , self versionAsString , '.st'.
-	fileName := Dialog
-		requestNewFileName: (UserMessage defaultString: '' key: #export) asString
-		default: defaultFileName.
-	fileName = '' ifTrue: [^nil].	"update version name and comments"
-	self
-		setDescriptionFor: 'kernelFileName'
-		withText:
-			(fileName asArrayOfSubstringsSeparatedBy: Filename separator) last.	"save kernel file"
-	fileManager := SourceCodeStream write: fileName encoding: #Source.
-	[fileManager timeStamp.
-	fileManager deferInitializations.
-	self
-		selectedThingsWithOrder:
-			[:definedObjects | 
-			definedObjects
-				do:
-					[:thing | 
-					thing fileOutSourceOn: fileManager.
-					fileManager cr]]
-		onSelection: Kernel asNameSpace.
-	fileManager finishInitializations.
-	fileManager cr] ensure: [fileManager close].	"directoryName := self cormasPath , Cormas pathSeparator, directoryName.
-	directoryName asFilename exists ifFalse: [directoryName asFilename makeDirectory]."	"export VisualLauncher"
-	path := self cormasPath construct: 'Kernel'.
-	vL := (path construct: 'VisualLauncher.st') asFilename.
-	fileManager := SourceCodeStream write: vL encoding: #Source.
-	[fileManager timeStamp.
-	VisualLauncher fileOutSourceOn: fileManager]
-		valueNowOrOnUnwindDo: [fileManager close]
-]
-
 { #category : #'+ utilities - files' }
 Cormas class >> saveCollec: aCollec asLineOfFile: aFilename separator: aChar [
 	"Purpose: Save a Collection of literals (characters, numbers, strings...) into a defined file. The elements of the collection are saved into a single line, each one separated by aChar. If the file already exists, the elements of the collection are saved after the last line of the file.
@@ -2886,118 +2847,6 @@ Cormas >> removeSpatialEntityClass [
 	self removeEntityClassType: 'Spatial'
 ]
 
-{ #category : #'model entities' }
-Cormas >> renameEntityClass: aClass entitiesList: listSymbol [
-	| newName oldName result |
-	"get the new name"
-	oldName := aClass name.
-	result := self renameClass: aClass.
-	result isNil
-		ifTrue: [ ^ nil ].
-	newName := result name.
-	newName isEmpty
-		ifTrue: [ ^ nil ].	"Change attribut name at the level of CormasModel (ex: theCells by theLandUnits)"
-	(self alert_ChangeAccessors: oldName by: newName)
-		ifTrue: [ self cormasModelClass
-				renameAttribute: (self cormasModelClass getterForEntityClass: oldName) asString
-				by: (self cormasModelClass getterForEntityClass: newName) asString.	"Change accessors name at the level of CormasModel (ex: theCells by theLandUnits)"
-			self cormasModelClass
-				renameSelector: (self cormasModelClass getterForEntityClass: oldName) asString
-				by: (self cormasModelClass getterForEntityClass: newName) asString
-				inputParametersNumber: 0.
-			self cormasModelClass
-				renameSelector: (self cormasModelClass setterForEntityClass: oldName) asString
-				by: (self cormasModelClass setterForEntityClass: newName) asString
-				inputParametersNumber: 1 ].	"change the lists (ex: listSymbol = #listSpatialEntities)"
-	(self perform: listSymbol) list add: newName.
-	(self perform: listSymbol) list remove: oldName.
-	(self perform: listSymbol) selectionIndex: 0.
-	listSymbol = #listPassiveEntities
-		ifTrue: [ self listEntitesPassivesChanged ].
-	listSymbol = #listSocialEntities
-		ifTrue: [ self listAgentsChanged ].
-	listSymbol = #listSpatialEntities
-		ifTrue: [ self listEntitesSpatialesChanged.
-			self warnCormasModelThat: oldName changeTo: aClass ].
-	^ aClass
-]
-
-{ #category : #'model entities' }
-Cormas >> renameEntityClass: aClass type: aType [
-	
-	| newName oldName result |
-	oldName := aClass name.
-	result := self renameClass: aClass.
-	result isNil ifTrue: [^nil].
-	newName := result name.
-	newName isEmpty ifTrue: [^nil].	"Change attribute znd its accessors names at the level of CormasModel (ex: theCells by theLandUnits)"
-	(self alert_ChangeAccessors: oldName by: newName)
-		ifTrue:
-			[self cormasModelClass
-				renameAttribute: (self cormasModelClass getterForEntityClass: oldName) asString
-				by: (self cormasModelClass getterForEntityClass: newName) asString.
-			self cormasModelClass
-				renameSelector: (self cormasModelClass getterForEntityClass: oldName) asString
-				by: (self cormasModelClass getterForEntityClass: newName) asString
-				inputParametersNumber: 0.
-			self cormasModelClass
-				renameSelector: (self cormasModelClass setterForEntityClass: oldName) asString
-				by: (self cormasModelClass setterForEntityClass: newName) asString
-				inputParametersNumber: 1].
-	(self perform: ('list' , aType , 'Entities') asSymbol)
-		list: (self getSortedListEntityClassType: aType).
-	(self perform: ('list' , aType , 'Entities') asSymbol) selectionIndex: 0.
-	self warnCormasModelThat: oldName changeTo: aClass.
-	^aClass
-]
-
-{ #category : #'model entities' }
-Cormas >> renameEntityClassType: aType [
-	"aType is either 'Spatial', 'Social' or 'Passive'"
-	
-	| aClass |
-	aClass := self getSelectedEntityClassType: aType.
-	(aClass notNil and: [self changeRequest])
-		ifTrue: [self renameEntityClass: aClass type: aType].
-	^aClass
-]
-
-{ #category : #'model entities' }
-Cormas >> renamePassiveEntityClass [
-	
-	self renameEntityClassType: 'Passive'
-]
-
-{ #category : #'model entities' }
-Cormas >> renamePassiveEntityClass: aClass [
-	
-	^self renameEntityClass: aClass entitiesList: #listPassiveEntities
-]
-
-{ #category : #'model entities' }
-Cormas >> renameSocialEntityClass [
-	
-	self renameEntityClassType: 'Social'
-]
-
-{ #category : #'model entities' }
-Cormas >> renameSocialEntityClass: aClass [
-	
-	^self renameEntityClass: aClass entitiesList: #listSocialEntities
-]
-
-{ #category : #'model entities' }
-Cormas >> renameSpatialEntityClass [
-	
-	self renameEntityClassType: 'Spatial'
-]
-
-{ #category : #'model entities' }
-Cormas >> renameSpatialEntityClass: aClass [
-	
-	^self renameEntityClass: aClass entitiesList: #listSpatialEntities
-]
-
 { #category : #simulation }
 Cormas >> replayRunForward [
 	"Replay the stored simulation history forward using BOS file"
@@ -3197,16 +3046,6 @@ Cormas >> saveVisualStates [
 														, v blue printString].
 									stream nextPutAll: '\' withCRs]]]].
 	stream close
-]
-
-{ #category : #version }
-Cormas >> setModelVersionEqualTo: aFileName [
-	
-	| versionAsString |
-	versionAsString := aFileName isString
-		ifTrue: [aFileName]
-		ifFalse: [aFileName tail].
-	self cormasModelClass setVersion: versionAsString
 ]
 
 { #category : #'interface actions' }

@@ -7,16 +7,6 @@ Class {
 	#category : #'Cormas-UI-Tests-Project'
 }
 
-{ #category : #'tests-accessing-entities' }
-CMProjectManagerTest >> newProjectManager [
-
-	^ CMProjectManager new 
-		currentProject: (CMProjectModel basicNew
-				initializeForModel: model named: 'Sample Model';
-				yourself);
-		yourself
-]
-
 { #category : #accessing }
 CMProjectManagerTest >> projectManager [
 	^ projectManager
@@ -128,20 +118,6 @@ CMProjectManagerTest >> testCormasModels [
 ]
 
 { #category : #test }
-CMProjectManagerTest >> testCormasOpenLocations [
-
-	self 
-		assert: self projectManager cormasOpenLocations 
-		equals: self projectManager cormasOpenLocationsMap keys.
-]
-
-{ #category : #test }
-CMProjectManagerTest >> testCormasOpenLocationsMap [
-
-	self assert: (self projectManager cormasOpenLocationsMap isKindOf: Dictionary).
-]
-
-{ #category : #test }
 CMProjectManagerTest >> testCreateClassModelNamed [
 
 	| modelClassname |
@@ -221,13 +197,6 @@ CMProjectManagerTest >> testModelProbesMethods [
 
 	self assert: (self projectManager modelProbesMethods isKindOf: Array).
 	self assertCollection: self projectManager modelProbesMethods hasSameElements: #('Global>>numDeads' 'Global>>numAlives').
-]
-
-{ #category : #test }
-CMProjectManagerTest >> testOpenImageProject [
-
-	self assert: ((self projectManager openImageProject: #CMECECModel) isKindOf: CMProjectManager).
-	self assert: self projectManager currentProject cormasModelClass equals: CMECECModel
 ]
 
 { #category : #test }

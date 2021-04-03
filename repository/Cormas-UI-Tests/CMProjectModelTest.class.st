@@ -194,6 +194,12 @@ CMProjectModelTest >> testProjectName [
 ]
 
 { #category : #test }
+CMProjectModelTest >> testResourceLocator [
+
+	self assert: (self projectModel resourceLocator isKindOf: CMResourceLocator)
+]
+
+{ #category : #test }
 CMProjectModelTest >> testStoredSimulations [
 
 	self flag: #toDo. "Get simulation files "

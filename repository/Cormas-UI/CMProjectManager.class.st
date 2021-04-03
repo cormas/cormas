@@ -18,7 +18,8 @@ Class {
 	#superclass : #PFProjectManager,
 	#instVars : [
 		'openStatus',
-		'currentModelPath'
+		'currentModelPath',
+		'opener'
 	],
 	#category : #'Cormas-UI-Project'
 }
@@ -101,26 +102,6 @@ CMProjectManager >> cormasModels [
 	" Answer a <Collection> of <String> with the application available models "
 	
 	^ self application modelNames
-]
-
-{ #category : #accessing }
-CMProjectManager >> cormasOpenLocations [
-	" Answer a Collection of valid locations for opening a Cormas model "
-	
-	^ self cormasOpenLocationsMap keys
-
-]
-
-{ #category : #accessing }
-CMProjectManager >> cormasOpenLocationsMap [
-	" Answer a Collection of valid locations for opening a Cormas model "
-
-	^ Dictionary new
-		at: self translator tLocalStorage 		put: #requestModelOpenFromLocalDisk;
-		at: 'URL' 										put: #requestModelOpenFromURL;
-		at: self translator tLocalImage			put: #requestModelOpenFromLocalImage;
-		at: self translator tRemoteImage 			put: #requestModelOpenFromRemoteImage;
-		yourself 
 ]
 
 { #category : #accessing }
@@ -207,6 +188,13 @@ CMProjectManager >> currentProjectVersion [
 
 ]
 
+{ #category : #defaults }
+CMProjectManager >> defaultCormasOpener [
+	" Answer a <Class> responsible for managing to open CORMAS projects or models "
+
+	^ CMProjectOpener
+]
+
 { #category : #callbacks }
 CMProjectManager >> doPostCloseActions [
 
@@ -289,138 +277,27 @@ CMProjectManager >> modelProbesMethods [
 ]
 
 { #category : #callbacks }
-CMProjectManager >> openImageProject: modelName [
-	" Open the project of the modelClass "
-
-	self currentProject: (CMProjectModel basicNew
-		projectManager: self;
-		initializeForModel: (self class environment at: modelName) new
-			named: modelName;
-			yourself)
-]
-
-{ #category : #callbacks }
-CMProjectManager >> openModelNamed: aString [
-	" Request a file to be opened as CORMAS project "
-
-	(FDOpenFileDialog new
-		title: 'Choose st file';
-		extensionFilters: 	{ 'st files' -> #(st) };
-		defaultFolder: self resourceLocator modelsPath;
-		openModal)	
-			
-		ifNotNil: [ : fileRef | 
-			[ fileRef readStream fileInDisplayingProgress ]
-			on: Exception
-			do: [ : ex | 
-				self handleFileInException: ex.
-				openStatus := false ].
-			openStatus := true.
-			^ fileRef fullName ]
-		ifNil: [ openStatus := false ]
-]
-
-{ #category : #callbacks }
 CMProjectManager >> openProject [
 	" Request a model to the user and open it for the receiver "
 
-	self requestModelNameLocation ifNotNil: [ : locName | 
-		self perform: (self cormasOpenLocationsMap at: locName) ].
-
+	self opener openProject
 ]
 
-{ #category : #callbacks }
-CMProjectManager >> openProject: modelName fileName: fileName [
-	" Open the project named projectApp "
+{ #category : #accessing }
+CMProjectManager >> opener [
+	^ opener
+		ifNil: [ opener := self defaultCormasOpener new ]
+]
 
-	| modelClass |
-	modelClass := self class environment at: (self findModelClass: fileName) allButFirst asSymbol.
-	self currentProject:
-		(CMProjectModel basicNew
-			fileName: fileName;
-			initializeForModel: modelClass new named: modelName;
-			yourself)
-
+{ #category : #accessing }
+CMProjectManager >> opener: anObject [
+	opener := anObject
 ]
 
 { #category : #accessing }
 CMProjectManager >> projectClass [
 
 	^ CMProjectModel
-]
-
-{ #category : #callbacks }
-CMProjectManager >> requestModelNameLocation [
-	" Open request dialog to select a load model location "
-	
-	| widget |
-	widget := SpcListModel new.
-	widget
-		title: self translator tWhichOpeningLocation;
-		items: self cormasOpenLocations.
-	widget openDialogWithSpec 
-		cancelAction: [ widget selectItem: nil ];	
-		modalRelativeTo: self currentWorld.
-	^ widget selectedItem		
-		
-]
-
-{ #category : #callbacks }
-CMProjectManager >> requestModelOpenDialogFromLocalDisk [
-	" Open a Cormas model. Answer project creation status, <true> if project was opened successfully "
-
-	| widget |
-	widget := SpcListModel new.
-	widget
-		title: self translator tWhichModel;
-		items: self cormasModels.
-	widget openDialogWithSpec modalRelativeTo: self currentWorld.
-	^ widget selectedItem
-]
-
-{ #category : #callbacks }
-CMProjectManager >> requestModelOpenDialogFromLocalImage [
-	" Open a Cormas model. Answer a <String> with the project name it it was opened successfully, nil otherwise "
-
-	| widget |
-	widget := SpcListModel new.
-	widget
-		title: self translator tWhichModel;
-		items: CMAbstractModel subclasses.
-	widget openDialogWithSpec modalRelativeTo: self currentWorld.
-	^ widget selectedItem 
-		ifNotNil: [ : selection | selection name ]
-		ifNil: [ widget selectedItem ]
-]
-
-{ #category : #callbacks }
-CMProjectManager >> requestModelOpenFromLocalDisk [
-	" Open a Cormas model. Answer project creation status, <true> if project was opened successfully "
-
-	| mName fileName |
-	(mName := self requestModelOpenDialogFromLocalDisk)
-		ifNotNil: [ :modelName | fileName := self openModelNamed: modelName ].
-	openStatus
-		ifTrue: [ self openProject: mName fileName: fileName.
-			self doPostOpenActions ]
-		ifFalse: [ self informMessage: self translator tProjectOpenFailed ].
-	^ openStatus
-]
-
-{ #category : #callbacks }
-CMProjectManager >> requestModelOpenFromLocalImage [
-	" Open a Cormas model. Answer project creation status, <true> if project was opened successfully "
-
-	| mName |
-	
-	openStatus := false.
-	(mName := self requestModelOpenDialogFromLocalImage) ifNotNil: [ :modelName | openStatus := true ].
-	openStatus
-		ifTrue: [ 
-			self openImageProject: mName.
-			self doPostOpenActions ]
-		ifFalse: [ self informMessage: self translator tProjectOpenFailed ].
-	^ openStatus
 ]
 
 { #category : #accessing }

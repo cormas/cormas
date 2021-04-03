@@ -8,6 +8,10 @@ Release and re-initialize application:
 CMApplicationProject release.
 CMApplicationProject currentProjectName.
 
+Create user directories:
+
+CMApplicationProject createUserDirectories.
+CMApplicationProject removeUserDirectories.
 "
 Class {
 	#name : #CMApplicationProject,
@@ -25,7 +29,7 @@ Class {
 CMApplicationProject class >> applicationExtension [
 	" See comment in #applicationExtension "
 
-	^ 'prj'
+	^ 'zip'
 ]
 
 { #category : #accessing }
@@ -40,6 +44,45 @@ CMApplicationProject class >> applicationVersion [
 	"Answer the current CORMAS version"
 
 	^ GRVersion major: 0 minor: 1 revision: 0
+]
+
+{ #category : #accessing }
+CMApplicationProject class >> createUserDirectories [
+	| baseLocation |
+	(baseLocation := CMPreferences settingBaseLocation asFileReference) exists
+		ifTrue: [ ^ self ].
+	baseLocation ensureCreateDirectory.
+	(baseLocation / 'demos') ensureCreateDirectory.
+	(baseLocation / 'preferences') ensureCreateDirectory
+]
+
+{ #category : #accessing }
+CMApplicationProject class >> installDemos [
+
+	| demosLocation |
+	(demosLocation := CMPreferences settingBaseLocation asFileReference / 'demos') exists
+		ifFalse: [ ^ self ].
+	
+
+]
+
+{ #category : #accessing }
+CMApplicationProject class >> removeUserDirectories [
+	| baseLocation |
+	(baseLocation := CMPreferences settingBaseLocation asFileReference) exists
+		ifFalse: [ ^ self ].
+	(self confirm: 'Warning: You are about to remove all directories and files under ' , baseLocation fullName)
+		ifTrue: [ baseLocation deleteAll ].
+
+]
+
+{ #category : #accessing }
+CMApplicationProject class >> removeUserDirectoriesNoConfirmation [
+	| baseLocation |
+	(baseLocation := CMPreferences settingBaseLocation asFileReference) exists
+		ifFalse: [ ^ self ].
+	baseLocation deleteAll.
+
 ]
 
 { #category : #testing }

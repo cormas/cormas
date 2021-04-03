@@ -27,6 +27,18 @@ CMResourceLocator class >> assetsPath [
 		do: [ :ex | FileLocator workingDirectory ]) / 'assets'
 ]
 
+{ #category : #accessing }
+CMResourceLocator class >> cormasHomeProjects [
+
+	^ (FileLocator home / 'CORMAS') allChildrenMatching: CMApplicationProject applicationExtension.
+]
+
+{ #category : #accessing }
+CMResourceLocator class >> demosPath [
+	
+	^ CMPreferences settingBaseLocation asFileReference / 'demos'
+]
+
 { #category : #'class initialization' }
 CMResourceLocator class >> initialize [
 	SessionManager default registerSystemClassNamed: self name
