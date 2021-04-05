@@ -25,7 +25,6 @@ Class {
 		'cormasModel',
 		'cormasModelClass',
 		'codeGenerator',
-		'modelComment',
 		'cormasVersion',
 		'providedName'
 	],
@@ -171,10 +170,18 @@ CMProjectModel >> cormasModelClass: aClass [
 ]
 
 { #category : #accessing }
-CMProjectModel >> cormasModelComment: aString [ 
-	" See comment in CMProjectManager>>cormasModelComment: "
+CMProjectModel >> cormasModelComment [
+	" Answer a <String> with the receiver's comments "
 
-	modelComment := aString
+	^ self info comment
+
+]
+
+{ #category : #accessing }
+CMProjectModel >> cormasModelComment: aString [ 
+	" Set a free text aString to the receiver's comments "
+
+	self info comment: aString
 
 ]
 
@@ -269,6 +276,13 @@ CMProjectModel >> defaultStdCormasModelName [
 				<< 'Model' ]
 ]
 
+{ #category : #accessing }
+CMProjectModel >> definedCormasVersions [
+	" For now we return a CMProjectModel but we should support versions "
+
+	^ Array with: self
+]
+
 { #category : #'accessing-simulations' }
 CMProjectModel >> findSimulationNamed: aName [
 	" Answer <true> if the dump folder has stored simulations "
@@ -297,17 +311,18 @@ CMProjectModel >> hasStoredSimulations [
 ]
 
 { #category : #accessing }
-CMProjectModel >> infoString [
+CMProjectModel >> infoDictionary [
 
-	^ String streamContents: [ : stream |
-		stream
-		<< self language; cr;
-		<< self version greaseString; cr;
-		<< self info infoName; cr;
-		<< self demo asString; cr;
-		<< self info fileReference fullName; cr;
-		<< self osVersion; cr;
-		<< self history creationDateAsString; cr ]
+	^ OrderedDictionary newFromPairs: { 
+		'Name' . self info infoName .
+		'Version' . self versionString .
+		'Author' . self authorName .
+		'Creation date' . self history creationDateAsString .
+		'Is demo' . self demo asString .
+		'Full name' . self info fullFilename .
+		'OS version' . self osVersion .
+		'Language' . self language .
+		'Comments' . self cormasModelComment }
 ]
 
 { #category : #'initialize - release' }
@@ -356,7 +371,7 @@ CMProjectModel >> initializeForModel: aCormasModel named: aString [
 
 { #category : #accessing }
 CMProjectModel >> modelComment [
-	^ modelComment
+	^ self info comment
 ]
 
 { #category : #accessing }

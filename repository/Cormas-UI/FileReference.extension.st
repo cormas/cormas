@@ -9,7 +9,9 @@ FileReference >> asCMProjectModel [
 	(#( #sourceCodeFilenameWithExtension #metadataFilename)
 		allSatisfy: [ : selector | zipFileSys fileEntriesIncludes: (CMProjectFile perform: selector) ])
 			ifFalse: [ self error: 'CORMAS project file missing files' ].
-	^ zipFileSys asCMProjectModel
+	^ zipFileSys asCMProjectModel 
+		fileName: self fullName;
+		yourself
 ]
 
 { #category : #'*Cormas-UI' }
@@ -21,6 +23,7 @@ FileReference >> asCormasProjectName [
 
 { #category : #'*Cormas-UI' }
 FileReference >> definedCormasVersions [
-	
+	" For now we return a CMProjectModel but we should support versions "
+
 	^ Array with: self asCMProjectModel
 ]

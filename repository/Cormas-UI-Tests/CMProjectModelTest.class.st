@@ -90,8 +90,8 @@ CMProjectModelTest >> testCormasModelComment [
 	
 	modelComment := 'This is a model comment'.
 	self projectModel cormasModelComment: modelComment.
-	self assert: (self projectModel cormasModelClass respondsTo: #comments).
-	self assert: self projectModel cormasModelClass comments equals: modelComment.
+	self assert: (self projectModel respondsTo: #cormasModelComment).
+	self assert: self projectModel cormasModelComment equals: modelComment.
 ]
 
 { #category : #test }

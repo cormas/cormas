@@ -2,7 +2,7 @@
 CMOpenProjectWindow new openWithSpec
 "
 Class {
-	#name : #CMOpenProjectWindow,
+	#name : #CMSpOpenProjectPresenter,
 	#superclass : #CMSpPManagedPresenter,
 	#instVars : [
 		'projectsListPresenter',
@@ -17,40 +17,40 @@ Class {
 }
 
 { #category : #specs }
-CMOpenProjectWindow class >> defaultSpec [
+CMSpOpenProjectPresenter class >> defaultSpec [
 	<spec>
-	^ SpPanedLayout newVertical
-		position: 35 percent;
+	^ SpBoxLayout newHorizontal 
+		add: (
+			SpBoxLayout newVertical
+				add: #projectsLocationsPresenter withConstraints: [ :constraints | constraints height: self toolbarHeight ];
+				add: #projectsListPresenter);
 		add:
-			(SpBoxLayout newHorizontal
-				add: (
-					SpBoxLayout newVertical 
-						add: #projectsLocationsPresenter withConstraints: [ :constraints | constraints height: self toolbarHeight ];
-						add: #projectsListPresenter);
-				add: #versionsListPresenter withConstraints: [ :constraints | constraints width: 150 ];
-				add: #previewPresenter;
-				yourself);
-		add:
-			(SpBoxLayout newVertical
-				add: #metaInfoPresenter;
-				add: #toolbar withConstraints: [ :constraints | constraints height: self toolbarHeight ];
-				yourself)
+			(SpPanedLayout newVertical
+				position: 45 percent;
+				add: (SpBoxLayout newHorizontal
+					add: #versionsListPresenter withConstraints: [ :constraints | constraints width: 150 ];
+					add: #previewPresenter;
+					yourself);
+				add: (SpBoxLayout newVertical
+					add: #metaInfoPresenter;
+					add: #toolbar withConstraints: [ :constraints | constraints height: self toolbarHeight ];
+					yourself))
 ]
 
 { #category : #examples }
-CMOpenProjectWindow class >> example [
+CMSpOpenProjectPresenter class >> example [
 	<example>
 
-	CMOpenProjectWindow new openWithSpec
+	CMSpOpenProjectPresenter new openWithSpec
 ]
 
 { #category : #specs }
-CMOpenProjectWindow class >> title [
+CMSpOpenProjectPresenter class >> title [
 	^ 'CORMAS - Open project'
 ]
 
 { #category : #initialization }
-CMOpenProjectWindow >> connectPresenters [ 
+CMSpOpenProjectPresenter >> connectPresenters [ 
 
 	projectsListPresenter
 		transmitTo: versionsListPresenter
@@ -58,47 +58,48 @@ CMOpenProjectWindow >> connectPresenters [
 		postTransmission: [ :destination | destination selectIndex: 1 ].
 		
 	versionsListPresenter 
-		transmitTo: metaInfoPresenter
-		transform: [ : aCormasProjectVersion | aCormasProjectVersion infoString ]
+		whenSelectionChangedDo: [ :aSelection | metaInfoPresenter selectedModel: aSelection selectedItem ].	
+"		transmitTo: metaInfoPresenter
+		transform: [ : aCormasProjectVersion | aCormasProjectVersion infoString ]"
 ]
 
-{ #category : #initialization }
-CMOpenProjectWindow >> cormasLocations [
+{ #category : #private }
+CMSpOpenProjectPresenter >> cormasLocations [
 		
-	^ Dictionary newFromPairs: { 
-		'Demos'	 		. #projectsDemos .
-		'In-image' 		. #projectsInImage .
-		'Browse...'  	. #projectsBrowse
+	^ OrderedDictionary newFromPairs: { 
+		'Demos'	 		. [ self projectsDemos ] .
+		'In-image' 		. [ self projectsInImage ].
+		'Browse...'  	. [ self projectsBrowse ]
 		}
 ]
 
 { #category : #accessing }
-CMOpenProjectWindow >> cormasProjects [
+CMSpOpenProjectPresenter >> cormasProjects [
 	^ cormasProjects
 		ifNil: [ cormasProjects := self defaultCormasProjects ]
 ]
 
 { #category : #accessing }
-CMOpenProjectWindow >> cormasProjects: anObject [
+CMSpOpenProjectPresenter >> cormasProjects: anObject [
 	cormasProjects := anObject
 ]
 
 { #category : #defaults }
-CMOpenProjectWindow >> defaultCormasProjects [
+CMSpOpenProjectPresenter >> defaultCormasProjects [
 	" Answer a <Collection> of <CMProjectModel> "
 	
 	^ #()
 ]
 
 { #category : #accessing }
-CMOpenProjectWindow >> initialExtent [
+CMSpOpenProjectPresenter >> initialExtent [
 	"Answer the initial extent for the receiver."
 	
-	^ 800 @ 700
+	^ (800 @ 700) scaledByDisplayScaleFactor
 ]
 
 { #category : #initialization }
-CMOpenProjectWindow >> initializeButtonBar [
+CMSpOpenProjectPresenter >> initializeButtonBar [
 
 	self toolbar
      add: (self newButton
@@ -118,7 +119,7 @@ CMOpenProjectWindow >> initializeButtonBar [
 ]
 
 { #category : #initialization }
-CMOpenProjectWindow >> initializeLocationsPresenter [
+CMSpOpenProjectPresenter >> initializeLocationsPresenter [
 	
 	projectsLocationsPresenter  
 		items: self cormasLocations keys;
@@ -129,27 +130,21 @@ CMOpenProjectWindow >> initializeLocationsPresenter [
 ]
 
 { #category : #initialization }
-CMOpenProjectWindow >> initializeMetaInfoPresenter [
+CMSpOpenProjectPresenter >> initializeMetaInfoPresenter [
 	
 	self metaInfoPresenter 
 ]
 
 { #category : #initialization }
-CMOpenProjectWindow >> initializePresenters [
+CMSpOpenProjectPresenter >> initializePresenters [
 
 	projectsLocationsPresenter := self newDropList.
 	projectsListPresenter := self newList.
 	versionsListPresenter := self newList.
-	metaInfoPresenter := self instantiate: CMSpMetaProjectPresenter. "self newText".
+	metaInfoPresenter := self instantiate: CMSpOpenProjectNotebookPresenter. "self newText".
 	previewPresenter := self newImage.
 	toolbar := self newButtonBar.
 	self setFocus.
-"	methodsListPresenter contextMenu: self messageMenu.
-	changesListPresenter contextMenu: self changeSetMenu.
-	classesListPresenter contextMenu: self classMenu.
-"
-	projectsListPresenter enableItemSubstringFilter.
-	versionsListPresenter enableItemSubstringFilter.
 	
 	self 
 		initializeLocationsPresenter;
@@ -163,66 +158,68 @@ CMOpenProjectWindow >> initializePresenters [
 ]
 
 { #category : #initialization }
-CMOpenProjectWindow >> initializePreviewPresenter [
+CMSpOpenProjectPresenter >> initializePreviewPresenter [
 
 		
 	self previewPresenter image: self currentWorld submorphs last form
 ]
 
 { #category : #initialization }
-CMOpenProjectWindow >> initializeProjectsPresenter [
+CMSpOpenProjectPresenter >> initializeProjectsPresenter [
 
 	projectsListPresenter 
+		enableItemSubstringFilter;
 		display: [ : fileRef | fileRef asCormasProjectName ];
 		sortingBlock: [ :a :b | a asCormasProjectName < b asCormasProjectName ]
 ]
 
 { #category : #initialization }
-CMOpenProjectWindow >> initializeVersionsPresenter [
+CMSpOpenProjectPresenter >> initializeVersionsPresenter [
 
-	versionsListPresenter 
+	versionsListPresenter
+		enableItemSubstringFilter;
 		display: [ :item | item userProvidedName ].
 
 
 ]
 
-{ #category : #initialization }
-CMOpenProjectWindow >> locationSelectorFor: locationId [
+{ #category : #private }
+CMSpOpenProjectPresenter >> locationSelectorFor: locationId [
 
 	^ self cormasLocations at: locationId
 ]
 
 { #category : #accessing }
-CMOpenProjectWindow >> metaInfoPresenter [
+CMSpOpenProjectPresenter >> metaInfoPresenter [
 	^ metaInfoPresenter
 ]
 
 { #category : #accessing }
-CMOpenProjectWindow >> previewPresenter [
+CMSpOpenProjectPresenter >> previewPresenter [
 	^ previewPresenter
 ]
 
 { #category : #callbacks }
-CMOpenProjectWindow >> projectsBrowse [
+CMSpOpenProjectPresenter >> projectsBrowse [
 	
 	^ CMResourceLocator cormasHomeProjects
 ]
 
 { #category : #callbacks }
-CMOpenProjectWindow >> projectsDemos [
+CMSpOpenProjectPresenter >> projectsDemos [
 	" Answer a <Collection> of <FileReference> in the default built-in location "
 	
 	^ CMResourceLocator demosPath allChildrenMatching: '*.' , CMProjectModel projectFileExtension
 ]
 
-{ #category : #initialization }
-CMOpenProjectWindow >> projectsFor: locationId [
+{ #category : #private }
+CMSpOpenProjectPresenter >> projectsFor: locationId [
 
-	^ self perform: (self locationSelectorFor: locationId).
+	^ (self locationSelectorFor: locationId) value.
 ]
 
 { #category : #callbacks }
-CMOpenProjectWindow >> projectsInImage [
+CMSpOpenProjectPresenter >> projectsInImage [
 	" Answer a <Collection> of <CMProjectModel> for the models in the current image "
 
 	^ CMAbstractModel subclasses collect: [ : cmModelClass |
@@ -230,17 +227,17 @@ CMOpenProjectWindow >> projectsInImage [
 ]
 
 { #category : #accessing }
-CMOpenProjectWindow >> projectsListPresenter [
+CMSpOpenProjectPresenter >> projectsListPresenter [
 	^ projectsListPresenter
 ]
 
 { #category : #accessing }
-CMOpenProjectWindow >> projectsLocationsPresenter [
+CMSpOpenProjectPresenter >> projectsLocationsPresenter [
 	^ projectsLocationsPresenter
 ]
 
-{ #category : #initialization }
-CMOpenProjectWindow >> setFocus [
+{ #category : #private }
+CMSpOpenProjectPresenter >> setFocus [
 
 	self focusOrder
 		add: projectsListPresenter;
@@ -249,11 +246,11 @@ CMOpenProjectWindow >> setFocus [
 ]
 
 { #category : #accessing }
-CMOpenProjectWindow >> toolbar [
+CMSpOpenProjectPresenter >> toolbar [
 	^ toolbar
 ]
 
 { #category : #accessing }
-CMOpenProjectWindow >> versionsListPresenter [
+CMSpOpenProjectPresenter >> versionsListPresenter [
 	^ versionsListPresenter
 ]

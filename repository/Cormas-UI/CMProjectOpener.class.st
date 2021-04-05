@@ -16,7 +16,7 @@ Class {
 CMProjectOpener >> openProject [
 	" Request a model to the user and open it for the receiver "
 
-	CMOpenProjectWindow openFor: self projectManager.
+	CMSpOpenProjectPresenter openFor: self projectManager.
 
 
 ]
