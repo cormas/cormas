@@ -437,6 +437,14 @@ CMAbstractModel class >> defaultSteppingBackSetting [
 	^false
 ]
 
+{ #category : #accessing }
+CMAbstractModel class >> friendlyName [
+
+	^ (self name beginsWith: 'CM')
+		ifTrue: [ self name allButFirst: 2 ]
+		ifFalse: [ self name ]
+]
+
 { #category : #compiling }
 CMAbstractModel class >> getterForEntityClass: aClass [
 	"Create the getter selector for the entity class aClass.

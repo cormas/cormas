@@ -1,5 +1,6 @@
 "
-Provides utilities to browse and open a model file (.st)
+Provides utilities to browse and open a model file (.st).
+
 A CORMAS project file is created automatically for the opened model.
 
 "
@@ -52,27 +53,6 @@ CMModelOpener >> openImageProject: modelName [
 		initializeForModel: (self class environment at: modelName) new
 			named: modelName;
 			yourself)
-]
-
-{ #category : #callbacks }
-CMModelOpener >> openNamed: aString [
-	" Request a file to be opened as CORMAS project "
-
-	(FDOpenFileDialog new
-		title: self translator tChooseStFile;
-		extensionFilters: 	{ self translator tStFiles -> #(st) };
-		defaultFolder: self resourceLocator modelsPath;
-		openModal)	
-			
-		ifNotNil: [ : fileRef | 
-			[ fileRef readStream fileInDisplayingProgress ]
-			on: Exception
-			do: [ : ex | 
-				self projectManager handleFileInException: ex.
-				openStatus := false ].
-			openStatus := true.
-			^ fileRef fullName ]
-		ifNil: [ openStatus := false ]
 ]
 
 { #category : #callbacks }
@@ -134,7 +114,7 @@ CMModelOpener >> requestOpenFromLocalDisk [
 
 	| mName fileName |
 	(mName := self requestOpenDialogFromLocalDisk)
-		ifNotNil: [ :modelName | fileName := self openNamed: modelName ].
+		ifNotNil: [ :modelName | fileName := self requestOpenNamed: modelName ].
 	openStatus
 		ifTrue: [ self open: mName fileName: fileName.
 			self projectManager doPostOpenActions ]
@@ -156,4 +136,21 @@ CMModelOpener >> requestOpenFromLocalImage [
 			self projectManager doPostOpenActions ]
 		ifFalse: [ self informMessage: self translator tProjectOpenFailed ].
 	^ openStatus
+]
+
+{ #category : #callbacks }
+CMModelOpener >> requestOpenNamed: aString [
+	" Request a file to be opened as CORMAS project "
+
+	(FDOpenFileDialog new
+		title: self translator tChooseStFile;
+		extensionFilters: 	{ self translator tStFiles -> #(st) };
+		defaultFolder: self resourceLocator modelsPath;
+		openModal)	
+			
+		ifNotNil: [ : fileRef | 
+			self tryOpenFromFile: fileRef.
+			openStatus := true.
+			^ fileRef fullName ]
+		ifNil: [ openStatus := false ]
 ]

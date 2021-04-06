@@ -163,7 +163,6 @@ CMSpReadOnlyFormBuilder >> newTextPresenterForLabel: aString value: anotherStrin
 				   yourself) width: self labelWidth;
 		  add: ((spApplication newPresenter: SpTextPresenter)
 				   text: (anotherString ifNil: [ 'not set' ] ifNotNil: [ : txt | txt trimBoth ]);
-					"addStyle: 'iceTipReadonly';"
 					enabled: false;
 				   yourself)
 				expand: true;

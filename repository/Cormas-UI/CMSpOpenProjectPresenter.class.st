@@ -105,15 +105,15 @@ CMSpOpenProjectPresenter >> initializeButtonBar [
      add: (self newButton
                     label: self translator tCancel;
                     icon: (self iconNamed: #smallCancel);
-                    action: [  ] );
+                    action: [ self delete ] );
 		add: (self newButton
                     label: self translator tHelp;
                     icon: (self iconNamed: #help);
-                    action: [  ]);
+                    action: [ self openProjectHelp ]);
 		add: (self newButton
                     label: self translator tOk;
                     icon: (self iconNamed: #smallOk);
-                    action: [  ] )
+                    action: [ self openSelectedProject  ] )
 
 
 ]
@@ -194,6 +194,13 @@ CMSpOpenProjectPresenter >> metaInfoPresenter [
 	^ metaInfoPresenter
 ]
 
+{ #category : #callbacks }
+CMSpOpenProjectPresenter >> openSelectedProject [
+	" Private - Callback for the Ok to open button in the Open Project Dialog "
+
+	^ self projectManager openProjectFromFile: self selectedProject.
+]
+
 { #category : #accessing }
 CMSpOpenProjectPresenter >> previewPresenter [
 	^ previewPresenter
@@ -234,6 +241,13 @@ CMSpOpenProjectPresenter >> projectsListPresenter [
 { #category : #accessing }
 CMSpOpenProjectPresenter >> projectsLocationsPresenter [
 	^ projectsLocationsPresenter
+]
+
+{ #category : #accessing }
+CMSpOpenProjectPresenter >> selectedProject [
+	" Answer a <FileReference> of the currently selected project in the receiver "
+	
+	^ self projectsListPresenter selection selectedItem.
 ]
 
 { #category : #private }

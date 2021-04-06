@@ -237,20 +237,13 @@ CMProjectManager >> findModelClass: aFilename [
 		
 ]
 
-{ #category : #callbacks }
-CMProjectManager >> handleFileInException: ex [
-	" Private - There was an exception while loading a file. Handle it accordingly to preferences "
-
-	self settingsClass settingWarnUsing signal: ex messageText
-]
-
 { #category : #initialization }
 CMProjectManager >> initialize [
 	" Set the receiver's inital state "
 
 	super initialize.
 	self applicationClass: CMApplicationProject.
-	self settingsClass: CMPreferences.
+	self settingsClass: CMApplicationPreferences.
 	openStatus := false.
 
 ]
@@ -281,6 +274,13 @@ CMProjectManager >> openProject [
 	" Request a model to the user and open it for the receiver "
 
 	self opener openProject
+]
+
+{ #category : #callbacks }
+CMProjectManager >> openProjectFromFile: aFileReferenceOrName [
+	" Request a model to the user and open it for the receiver "
+
+	self opener openProjectFromFile: aFileReferenceOrName
 ]
 
 { #category : #accessing }

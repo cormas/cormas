@@ -1,15 +1,11 @@
 Extension { #name : #FileReference }
 
 { #category : #'*Cormas-UI' }
-FileReference >> asCMProjectModel [
-	
-	| zipFileSys |
-	
-	zipFileSys := (ZipStore reference: self) open root.
-	(#( #sourceCodeFilenameWithExtension #metadataFilename)
-		allSatisfy: [ : selector | zipFileSys fileEntriesIncludes: (CMProjectFile perform: selector) ])
-			ifFalse: [ self error: 'CORMAS project file missing files' ].
-	^ zipFileSys asCMProjectModel 
+FileReference >> asCormasProjectModelForPreview [
+	" Answer a <CMProjectModel> for the receiver representing a CORMAS project file "
+
+	^ (CMProjectOpener new validateProjectFile: self) 
+		asCormasProjectModelForPreview
 		fileName: self fullName;
 		yourself
 ]
@@ -23,7 +19,7 @@ FileReference >> asCormasProjectName [
 
 { #category : #'*Cormas-UI' }
 FileReference >> definedCormasVersions [
-	" For now we return a CMProjectModel but we should support versions "
+	" For now we return a <Collection> of <CMProjectModel> but we should support versions "
 
-	^ Array with: self asCMProjectModel
+	^ Array with: self asCormasProjectModelForPreview
 ]

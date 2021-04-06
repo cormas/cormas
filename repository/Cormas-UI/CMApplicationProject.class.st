@@ -49,7 +49,7 @@ CMApplicationProject class >> applicationVersion [
 { #category : #accessing }
 CMApplicationProject class >> createUserDirectories [
 	| baseLocation |
-	(baseLocation := CMPreferences settingBaseLocation asFileReference) exists
+	(baseLocation := CMApplicationPreferences settingBaseLocation asFileReference) exists
 		ifTrue: [ ^ self ].
 	baseLocation ensureCreateDirectory.
 	(baseLocation / 'demos') ensureCreateDirectory.
@@ -60,7 +60,7 @@ CMApplicationProject class >> createUserDirectories [
 CMApplicationProject class >> installDemos [
 
 	| demosLocation |
-	(demosLocation := CMPreferences settingBaseLocation asFileReference / 'demos') exists
+	(demosLocation := CMApplicationPreferences settingBaseLocation asFileReference / 'demos') exists
 		ifFalse: [ ^ self ].
 	
 
@@ -69,7 +69,7 @@ CMApplicationProject class >> installDemos [
 { #category : #accessing }
 CMApplicationProject class >> removeUserDirectories [
 	| baseLocation |
-	(baseLocation := CMPreferences settingBaseLocation asFileReference) exists
+	(baseLocation := CMApplicationPreferences settingBaseLocation asFileReference) exists
 		ifFalse: [ ^ self ].
 	(self confirm: 'Warning: You are about to remove all directories and files under ' , baseLocation fullName)
 		ifTrue: [ baseLocation deleteAll ].
@@ -79,7 +79,7 @@ CMApplicationProject class >> removeUserDirectories [
 { #category : #accessing }
 CMApplicationProject class >> removeUserDirectoriesNoConfirmation [
 	| baseLocation |
-	(baseLocation := CMPreferences settingBaseLocation asFileReference) exists
+	(baseLocation := CMApplicationPreferences settingBaseLocation asFileReference) exists
 		ifFalse: [ ^ self ].
 	baseLocation deleteAll.
 

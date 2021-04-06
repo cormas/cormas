@@ -36,7 +36,7 @@ CMResourceLocator class >> cormasHomeProjects [
 { #category : #accessing }
 CMResourceLocator class >> demosPath [
 	
-	^ CMPreferences settingBaseLocation asFileReference / 'demos'
+	^ CMApplicationPreferences settingBaseLocation asFileReference / 'demos'
 ]
 
 { #category : #'class initialization' }

@@ -46,22 +46,7 @@ CMProjectModel class >> for: aCormasModel named: aString [
 ]
 
 { #category : #'instance creation' }
-CMProjectModel class >> forModel: aCormasModel [
-	" Answer a new instance of the receiver configured for aCormasModel "
-	^ self basicNew 
-		initializeForModel: aCormasModel 
-		named: aCormasModel friendlyName
-]
-
-{ #category : #accessing }
-CMProjectModel class >> projectFileExtension [
-	" Answer a <String> with the receiver's file extension "
-
-	^ CMApplicationProject applicationExtension
-]
-
-{ #category : #'instance creation' }
-CMProjectModel class >> withMetadata: metadataDictionary [
+CMProjectModel class >> forMetadata: metadataDictionary [
 	" Answer a new instance of the receiver filled with metadaDictionary "
 	
 	^ self basicNew 
@@ -82,6 +67,30 @@ CMProjectModel class >> withMetadata: metadataDictionary [
 		language: (metadataDictionary at: #Language);
 		yourself
 		
+]
+
+{ #category : #'instance creation' }
+CMProjectModel class >> forModel: aCormasModel [
+	" Answer a new instance of the receiver configured for aCormasModel "
+	^ self basicNew 
+		initializeForModel: aCormasModel 
+		named: aCormasModel friendlyName
+]
+
+{ #category : #'instance creation' }
+CMProjectModel class >> forProjectFile: aCormasProjectFileReference [
+	" Answer a new instance of the receiver filled with metadaDictionary "
+	
+	^ self basicNew 
+		yourself
+		
+]
+
+{ #category : #accessing }
+CMProjectModel class >> projectFileExtension [
+	" Answer a <String> with the receiver's file extension "
+
+	^ CMApplicationProject applicationExtension
 ]
 
 { #category : #callbacks }
@@ -109,7 +118,7 @@ CMProjectModel >> addNewEntity: aCMEntityNewAnnouncement [
 ]
 
 { #category : #accessing }
-CMProjectModel >> asCMProjectModel [
+CMProjectModel >> asCormasProjectModelForPreview [
 	^ self
 ]
 

@@ -8,6 +8,12 @@ Class {
 }
 
 { #category : #accessing }
+CMObject >> appSettings [ 
+
+	^ CMApplicationPreferences
+]
+
+{ #category : #accessing }
 CMObject >> projectManager [ 
 
 	^ CMProjectManager allInstances anyOne

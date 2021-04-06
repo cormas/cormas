@@ -5,7 +5,9 @@ Use this class to create a CORMAS project file after migrated your model classes
 
 Public API and Key Messages
 
-See examples in class side.
+See examples in class side or execute the following expression to generate a set of files matching your currently loaded CORMAS models in the image:
+
+CMModel2ProjectMigrator new buildProjects.
 
 "
 Class {
@@ -59,6 +61,7 @@ CMModel2ProjectMigrator >> buildProjectMetadataSTON [
 	cmMetadata := Dictionary new.
 	cmMetadata 
 		at: 'Name' put: cmModelClass friendlyName;
+		at: 'Model class' put: cmModelClass name;
 		at: 'Authors' put: cmModelClass cmAuthors;
 		at: 'Version' put: cmModelClass cmVersion;
 		at: 'Comments' put: cmModelClass cmComments;

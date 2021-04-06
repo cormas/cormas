@@ -1,5 +1,9 @@
+"
+These are global Cormas settings. For each specific project settings, see class CMProjectPreferences.
+
+"
 Class {
-	#name : #CMPreferences,
+	#name : #CMApplicationPreferences,
 	#superclass : #Object,
 	#classVars : [
 		'SettingBaseLocation',
@@ -10,13 +14,13 @@ Class {
 }
 
 { #category : #settings }
-CMPreferences class >> availableSettingWarnUsing [
+CMApplicationPreferences class >> availableSettingWarnUsing [
 	
 	^ CMLoadException allSubclasses 
 ]
 
 { #category : #settings }
-CMPreferences class >> cmGeneralSettingOn: aBuilder [
+CMApplicationPreferences class >> cmGeneralSettingOn: aBuilder [
 	<cormasPreferences>
 	
 	(aBuilder group: #cmGeneralSetting)
@@ -26,7 +30,7 @@ CMPreferences class >> cmGeneralSettingOn: aBuilder [
 ]
 
 { #category : #settings }
-CMPreferences class >> cmLoadSettingOn: aBuilder [
+CMApplicationPreferences class >> cmLoadSettingOn: aBuilder [
 	<cormasPreferences>
 	
 	(aBuilder group: #cmLoadSetting)
@@ -36,7 +40,7 @@ CMPreferences class >> cmLoadSettingOn: aBuilder [
 ]
 
 { #category : #settings }
-CMPreferences class >> cmSettingBaseLocationOn: aBuilder [
+CMApplicationPreferences class >> cmSettingBaseLocationOn: aBuilder [
 	<cormasPreferences>
 	
 	(aBuilder setting: #settingBaseLocation)
@@ -50,7 +54,7 @@ CMPreferences class >> cmSettingBaseLocationOn: aBuilder [
 ]
 
 { #category : #settings }
-CMPreferences class >> cmSettingWaitLimitOn: aBuilder [
+CMApplicationPreferences class >> cmSettingWaitLimitOn: aBuilder [
 	<cormasPreferences>
 	
 	(aBuilder range: #settingWaitLimit)
@@ -64,7 +68,7 @@ CMPreferences class >> cmSettingWaitLimitOn: aBuilder [
 ]
 
 { #category : #settings }
-CMPreferences class >> cmSettingWarnUsingOn: aBuilder [
+CMApplicationPreferences class >> cmSettingWarnUsingOn: aBuilder [
 	<cormasPreferences>
 	
 	(aBuilder pickOne: #settingWarnUsing)
@@ -78,19 +82,19 @@ CMPreferences class >> cmSettingWarnUsingOn: aBuilder [
 ]
 
 { #category : #defaults }
-CMPreferences class >> defaultBaseLocation [
+CMApplicationPreferences class >> defaultBaseLocation [
 
 	^ (FileLocator home / 'CORMAS') asFileReference fullName
 ]
 
 { #category : #settings }
-CMPreferences class >> defaultSettingWarnUsing [
+CMApplicationPreferences class >> defaultSettingWarnUsing [
 	
 	^ CMLoadIgnoreException
 ]
 
 { #category : #'initialize - release' }
-CMPreferences class >> release [
+CMApplicationPreferences class >> release [
 	" Clean receiver's class variables.
 	self release "
 
@@ -100,42 +104,42 @@ CMPreferences class >> release [
 ]
 
 { #category : #accessing }
-CMPreferences class >> settingBaseLocation [
+CMApplicationPreferences class >> settingBaseLocation [
 	" Answer the settingBaseLocation of this CMPreferences "
 
 	^ SettingBaseLocation
 ]
 
 { #category : #accessing }
-CMPreferences class >> settingBaseLocation: anObject [
+CMApplicationPreferences class >> settingBaseLocation: anObject [
 	" Sets the settingBaseLocation of this CMPreferences "
 
 	SettingBaseLocation := anObject
 ]
 
 { #category : #accessing }
-CMPreferences class >> settingWaitLimit [
+CMApplicationPreferences class >> settingWaitLimit [
 	" Answer the settingWaitLimit of this CMPreferences "
 
 	^ SettingWaitLimit
 ]
 
 { #category : #accessing }
-CMPreferences class >> settingWaitLimit: anObject [
+CMApplicationPreferences class >> settingWaitLimit: anObject [
 	" Sets the settingWaitLimit of this CMPreferences "
 
 	SettingWaitLimit := anObject
 ]
 
 { #category : #accessing }
-CMPreferences class >> settingWarnUsing [
+CMApplicationPreferences class >> settingWarnUsing [
 	" Answer the settingWarnUsing of this CMPreferences "
 
 	^ SettingWarnUsing
 ]
 
 { #category : #accessing }
-CMPreferences class >> settingWarnUsing: anObject [
+CMApplicationPreferences class >> settingWarnUsing: anObject [
 	" Sets the settingWarnUsing of this CMPreferences "
 
 	SettingWarnUsing := anObject

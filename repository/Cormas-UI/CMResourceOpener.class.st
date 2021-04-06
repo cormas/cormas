@@ -15,8 +15,25 @@ CMResourceOpener >> currentProject: aCMProjectModel [
 ]
 
 { #category : #callbacks }
+CMResourceOpener >> handleFileInException: ex [
+	" Private - There was an exception while loading a file. Handle it accordingly to preferences "
+
+	self appSettings settingWarnUsing signal: ex messageText
+]
+
+{ #category : #callbacks }
 CMResourceOpener >> resourceLocator [
 	" Refer to comment in CMProjectManager resourceLocator "
 
 	^ self projectManager resourceLocator
+]
+
+{ #category : #callbacks }
+CMResourceOpener >> tryOpenFromFile: fileRef [
+
+	[ fileRef readStream fileInDisplayingProgress ]
+	on: Exception
+	do: [ : ex | 
+		self handleFileInException: ex.
+		openStatus := false ].
 ]
