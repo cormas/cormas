@@ -119,6 +119,7 @@ CMProjectModel >> addNewEntity: aCMEntityNewAnnouncement [
 
 { #category : #accessing }
 CMProjectModel >> asCormasProjectModelForPreview [
+
 	^ self
 ]
 

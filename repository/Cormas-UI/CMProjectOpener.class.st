@@ -14,9 +14,40 @@ Class {
 }
 
 { #category : #accessing }
+CMProjectOpener class >> demoImageFromProjectFile: aFileReference [
+	" Answer a <Morph> which serves as demo for the CORMAS project in aFileReference "
+
+	| zipFileSys zipFile reader |
+	zipFileSys := (ZipStore reference: aFileReference) open root.
+	zipFile := (zipFileSys fileEntryAt: 'images') 
+		fileEntryAt: CMProjectFile demoImageFilenameWithExtension
+		ifAbsent: [ ^ self noDemoImage ].
+	"^ Form fromBinaryStream: zipFile binaryReadStream"
+	reader := GIFReadWriter on: zipFile binaryReadStream .
+	reader
+		readHeader;
+		readBody.
+	^ (AnimatedImageMorph fromGIFReader: reader)
+			hResizing: #spaceFill;
+			vResizing: #spaceFill;
+			yourself
+]
+
+{ #category : #accessing }
 CMProjectOpener class >> metadataFromProjectFile: aZipFileSystemFile [
+	" Answer a <Dictionary> with metadata for CORMAS project at aZipFileSystemFile "
 
 	^ STON fromStream: (aZipFileSystemFile fileEntryAt: CMProjectFile metadataFilename) readStream
+]
+
+{ #category : #private }
+CMProjectOpener class >> noDemoImage [
+	^ Morph new
+		color: Color black;
+		useGradientFill;
+		hResizing: #spaceFill;
+		vResizing: #spaceFill;
+		yourself
 ]
 
 { #category : #accessing }

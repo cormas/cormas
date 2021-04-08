@@ -73,6 +73,14 @@ CMProjectFile class >> archiveFileMatching: aStringPattern directory: aFileRefer
         self archiveFile: eachFileReference in: aZipArchive ].    
 ]
 
+{ #category : #defaults }
+CMProjectFile class >> demoImageFilenameWithExtension [
+	" Answer a <String> with the file name of the demo image file of a CORMAS project "
+
+	^ 'demo.gif'
+
+]
+
 { #category : #accessing }
 CMProjectFile class >> metadataFilename [
 

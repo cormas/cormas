@@ -58,7 +58,11 @@ CMSpOpenProjectPresenter >> connectPresenters [
 		postTransmission: [ :destination | destination selectIndex: 1 ].
 		
 	versionsListPresenter 
-		whenSelectionChangedDo: [ :aSelection | metaInfoPresenter selectedModel: aSelection selectedItem ].	
+		whenSelectionChangedDo: [ :aSelection | 
+			| selectedModel |
+			selectedModel := aSelection selectedItem.
+			metaInfoPresenter selectedModel: selectedModel.
+			previewPresenter morph: (CMProjectOpener demoImageFromProjectFile: selectedModel fileReference )  ].	
 "		transmitTo: metaInfoPresenter
 		transform: [ : aCormasProjectVersion | aCormasProjectVersion infoString ]"
 ]
@@ -144,7 +148,7 @@ CMSpOpenProjectPresenter >> initializePresenters [
 	projectsListPresenter := self newList.
 	versionsListPresenter := self newList.
 	metaInfoPresenter := self instantiate: CMSpOpenProjectNotebookPresenter. "self newText".
-	previewPresenter := self newImage.
+	previewPresenter := self newMorph.
 	toolbar := self newButtonBar.
 	self setFocus.
 	
@@ -152,18 +156,10 @@ CMSpOpenProjectPresenter >> initializePresenters [
 		initializeLocationsPresenter;
 		initializeProjectsPresenter;
 		initializeVersionsPresenter;
-		initializePreviewPresenter;
 		initializeButtonBar
 	
 
 
-]
-
-{ #category : #initialization }
-CMSpOpenProjectPresenter >> initializePreviewPresenter [
-
-		
-	self previewPresenter image: self currentWorld submorphs last form
 ]
 
 { #category : #initialization }
