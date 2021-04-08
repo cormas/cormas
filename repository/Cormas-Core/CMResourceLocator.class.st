@@ -60,6 +60,14 @@ CMResourceLocator >> addOnsPath [
 
 ]
 
+{ #category : #'utilities - path' }
+CMResourceLocator >> animationsPath [
+	" Answer a <FileReference> corresponding to the path of stored Animations directory. "
+
+	^ (self assetsPath / 'Animations') ensureCreateDirectory.
+
+]
+
 { #category : #'utilities - csv' }
 CMResourceLocator >> assetNamed: aFilename [
 	" Answer a <FileReference> found at the assets location "

@@ -226,6 +226,12 @@ CMSpecProjectWindow >> intializeToolsSubMenu: group [
 				subMenu: self subMenuForTools ]
 ]
 
+{ #category : #testing }
+CMSpecProjectWindow >> isMainCormasAppWindow [
+
+	^ true
+]
+
 { #category : #menu }
 CMSpecProjectWindow >> menuDisableClassForEachEntity [
 
@@ -536,9 +542,8 @@ CMSpecProjectWindow >> quitSubApplicationWindows [
 	" Private - Close all opened Cormas windows "
 	
 	World submorphs
-		select: [ :sm | sm isSystemWindow and: [ sm label asUppercase beginsWith: 'CORMAS' ] ]
+		select: [ :sm | sm isCormasSubApplicationWindow ]
 		thenDo: [ :w | w delete ].
-
 ]
 
 { #category : #accessing }

@@ -75,6 +75,10 @@ CMProjectOpener >> openProjectFromFile: aFileReference [
 		initializeForModel: (self class environment at: self modelMainClass) new
 			named: self modelName;
 			yourself).
+	openStatus
+		ifTrue: [ self projectManager doPostOpenActions ]
+		ifFalse: [ self informMessage: self translator tProjectOpenFailed ].
+	^ openStatus
 ]
 
 { #category : #accessing }

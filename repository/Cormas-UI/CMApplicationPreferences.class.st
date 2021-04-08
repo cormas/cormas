@@ -7,11 +7,21 @@ Class {
 	#superclass : #Object,
 	#classVars : [
 		'SettingBaseLocation',
+		'SettingSpaceViewer',
 		'SettingWaitLimit',
 		'SettingWarnUsing'
 	],
 	#category : #'Cormas-UI-Settings'
 }
+
+{ #category : #settings }
+CMApplicationPreferences class >> availableSettingSpaceViewer [
+	
+	^ { 
+		CMSpaceView .
+	 	CMSpaceAnimationRecorder 
+		}.
+]
 
 { #category : #settings }
 CMApplicationPreferences class >> availableSettingWarnUsing [
@@ -26,7 +36,7 @@ CMApplicationPreferences class >> cmGeneralSettingOn: aBuilder [
 	(aBuilder group: #cmGeneralSetting)
 		label: 'General';
 		description: 'General application settings';
-		order: 1
+		order: 2
 ]
 
 { #category : #settings }
@@ -36,7 +46,7 @@ CMApplicationPreferences class >> cmLoadSettingOn: aBuilder [
 	(aBuilder group: #cmLoadSetting)
 		label: 'Loading';
 		description: 'Settings related to loading projects or models';
-		order: 2
+		order: 1
 ]
 
 { #category : #settings }
@@ -51,6 +61,20 @@ CMApplicationPreferences class >> cmSettingBaseLocationOn: aBuilder [
 		default: self defaultBaseLocation;	
 		description: 'Base directory for storing CORMAS artifacts (projects, preferences, etc) in the host machine';
 		order: 5
+]
+
+{ #category : #settings }
+CMApplicationPreferences class >> cmSettingSpaceViewerOn: aBuilder [
+	<cormasPreferences>
+	
+	(aBuilder pickOne: #settingSpaceViewer)
+		label: 'Space Viewer';
+		parent: #cmGeneralSetting;
+		description: 'You can use multiple types of space viewers, for example, one viewer could just record agent positions in different files, or screenshot each step to produce an animation.';
+		target: self;
+		order: 6;
+		domainValues: self availableSettingSpaceViewer;
+		default: self defaultSettingSpaceViewer
 ]
 
 { #category : #settings }
@@ -87,6 +111,12 @@ CMApplicationPreferences class >> defaultBaseLocation [
 	^ (FileLocator home / 'CORMAS') asFileReference fullName
 ]
 
+{ #category : #defaults }
+CMApplicationPreferences class >> defaultSettingSpaceViewer [
+	
+	^ self availableSettingSpaceViewer first
+]
+
 { #category : #settings }
 CMApplicationPreferences class >> defaultSettingWarnUsing [
 	
@@ -115,6 +145,16 @@ CMApplicationPreferences class >> settingBaseLocation: anObject [
 	" Sets the settingBaseLocation of this CMPreferences "
 
 	SettingBaseLocation := anObject
+]
+
+{ #category : #accessing }
+CMApplicationPreferences class >> settingSpaceViewer [
+	^ SettingSpaceViewer
+]
+
+{ #category : #accessing }
+CMApplicationPreferences class >> settingSpaceViewer: anObject [
+	SettingSpaceViewer := anObject
 ]
 
 { #category : #accessing }

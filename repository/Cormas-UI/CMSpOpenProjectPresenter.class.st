@@ -113,8 +113,10 @@ CMSpOpenProjectPresenter >> initializeButtonBar [
 		add: (self newButton
                     label: self translator tOk;
                     icon: (self iconNamed: #smallOk);
-                    action: [ self openSelectedProject  ] )
-
+                    action: [ 
+							self 
+								openSelectedProject;
+								delete.  ] )
 
 ]
 

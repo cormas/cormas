@@ -3912,13 +3912,12 @@ CMAbstractModel >> updateLocalData [
 						keysAndValuesDo:
 							[:name :dict | 
 							res := OrderedCollection new.
-							(self perform: (self getterForEntityClass: cl))
-								do:
-									[:c | 
-									aValue := c perform: name.
+							(self perform: cl asGetterForEntityClass)
+								do: [:c |  
+									aValue := c class perform: name.
 									aValue isSymbol
-										ifTrue:
-											["The local probe is a reference to a global probe"
+										ifTrue: [ 
+											"The local probe is a reference to a global probe"
 											aValue := self lastValueOfGlobalDataNamed: name].
 									res
 										add:
