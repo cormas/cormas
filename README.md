@@ -161,4 +161,4 @@ This project follows the [all-contributors](https://github.com/all-contributors/
 
 ## Historical contributors
 
-Innocent Bakam, François Bousquet, Alassane Bah, Emmanuel Lieurain, Jean-Christophe Soulié, Paul Guyot, Jean-François Lefevre, Anne Dray, Géraldine Abrami
+Innocent Bakam, François Bousquet, Alassane Bah, Emmanuel Lieurain, Jean-Christophe Soulié, Paul Guyot, Jean-François Lefevre, Anne Dray.
