@@ -83,6 +83,7 @@ CMProjectFile class >> demoImageFilenameWithExtension [
 
 { #category : #accessing }
 CMProjectFile class >> metadataFilename [
+	" Answer a <String> with the name of the file which stores metadata information about a project "
 
 	^ 'metadata.ston'
 ]

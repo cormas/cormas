@@ -108,12 +108,14 @@ CMModel2ProjectMigrator >> defaultOutputDirectory [
 
 { #category : #defaults }
 CMModel2ProjectMigrator >> metadataFilename [
+	" Answer a <String> with the name of the file which stores metadata information about a project "
 
 	^ CMProjectFile metadataFilename 
 ]
 
 { #category : #building }
 CMModel2ProjectMigrator >> osSystemInformation [
+	" Answer a <String> with the OS system information of this host "
 
 	^ String streamContents: [ : stream |
 		stream
@@ -170,6 +172,7 @@ CMModel2ProjectMigrator >> writeMetadata [
 
 { #category : #writing }
 CMModel2ProjectMigrator >> writeSourceCode: modelClass [
+	" Private - Create and store a file in Smalltalk Chunk format with modelClass source code "
 
 	| newFile |
 

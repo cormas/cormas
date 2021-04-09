@@ -302,7 +302,7 @@ CMProjectManager >> projectClass [
 
 { #category : #accessing }
 CMProjectManager >> resourceLocator [ 
-	" Answer the receiver's <CMResourceLocator>, an object to locate resources "
+	" Answer a <CMResourceLocator>, an object to locate receiver resources "
 
 	^ self application resourceLocator
 ]
