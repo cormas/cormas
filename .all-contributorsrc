@@ -117,6 +117,15 @@
       "contributions": [
         "tool"
       ]
+    },
+    {
+      "login": "gabrami34",
+      "name": "Géraldine Abrami",
+      "avatar_url": "https://avatars.githubusercontent.com/u/71649466?v=4",
+      "profile": "https://github.com/gabrami34",
+      "contributions": [
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
