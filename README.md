@@ -17,7 +17,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/cormas/cormas/master/LICENSE)
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 # Table of Contents
@@ -134,25 +134,27 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="http://tomostavern.blogspot.jp/"><img src="https://avatars1.githubusercontent.com/u/836308?v=4" width="100px;" alt=""/><br /><sub><b>Tomohiro Oda</b></sub></a><br /><a href="https://github.com/cormas/cormas/commits?author=tomooda" title="Code">💻</a> <a href="https://github.com/cormas/cormas/commits?author=tomooda" title="Tests">⚠️</a></td>
-    <td align="center"><a href="http://elcep.legtux.org/"><img src="https://avatars2.githubusercontent.com/u/1777267?v=4" width="100px;" alt=""/><br /><sub><b>Etienne DELAY</b></sub></a><br /><a href="https://github.com/cormas/cormas/commits?author=ElCep" title="Code">💻</a> <a href="https://github.com/cormas/cormas/commits?author=ElCep" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/hernanmd"><img src="https://avatars2.githubusercontent.com/u/4825959?v=4" width="100px;" alt=""/><br /><sub><b>Hernán Morales Durand</b></sub></a><br /><a href="https://github.com/cormas/cormas/commits?author=hernanmd" title="Code">💻</a> <a href="https://github.com/cormas/cormas/commits?author=hernanmd" title="Tests">⚠️</a></td>
-    <td align="center"><a href="http://macau.unu.edu"><img src="https://avatars0.githubusercontent.com/u/327334?v=4" width="100px;" alt=""/><br /><sub><b>Serge Stinckwich</b></sub></a><br /><a href="https://github.com/cormas/cormas/commits?author=SergeStinckwich" title="Code">💻</a> <a href="https://github.com/cormas/cormas/commits?author=SergeStinckwich" title="Tests">⚠️</a></td>
-    <td align="center"><a href="http://symbios.io"><img src="https://avatars0.githubusercontent.com/u/4181440?v=4" width="100px;" alt=""/><br /><sub><b>Cédrick Béler</b></sub></a><br /><a href="https://github.com/cormas/cormas/commits?author=cdrick65" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/nbecu"><img src="https://avatars3.githubusercontent.com/u/7630183?v=4" width="100px;" alt=""/><br /><sub><b>nbecu</b></sub></a><br /><a href="https://github.com/cormas/cormas/commits?author=nbecu" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/npapoylias"><img src="https://avatars1.githubusercontent.com/u/8402525?v=4" width="100px;" alt=""/><br /><sub><b>npapoylias</b></sub></a><br /><a href="https://github.com/cormas/cormas/commits?author=npapoylias" title="Code">💻</a> <a href="https://github.com/cormas/cormas/commits?author=npapoylias" title="Tests">⚠️</a></td>
+    <td align="center"><a href="http://tomostavern.blogspot.jp/"><img src="https://avatars1.githubusercontent.com/u/836308?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Tomohiro Oda</b></sub></a><br /><a href="https://github.com/cormas/cormas/commits?author=tomooda" title="Code">💻</a> <a href="https://github.com/cormas/cormas/commits?author=tomooda" title="Tests">⚠️</a></td>
+    <td align="center"><a href="http://elcep.legtux.org/"><img src="https://avatars2.githubusercontent.com/u/1777267?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Etienne DELAY</b></sub></a><br /><a href="https://github.com/cormas/cormas/commits?author=ElCep" title="Code">💻</a> <a href="https://github.com/cormas/cormas/commits?author=ElCep" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/hernanmd"><img src="https://avatars2.githubusercontent.com/u/4825959?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Hernán Morales Durand</b></sub></a><br /><a href="https://github.com/cormas/cormas/commits?author=hernanmd" title="Code">💻</a> <a href="https://github.com/cormas/cormas/commits?author=hernanmd" title="Tests">⚠️</a></td>
+    <td align="center"><a href="http://macau.unu.edu"><img src="https://avatars0.githubusercontent.com/u/327334?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Serge Stinckwich</b></sub></a><br /><a href="https://github.com/cormas/cormas/commits?author=SergeStinckwich" title="Code">💻</a> <a href="https://github.com/cormas/cormas/commits?author=SergeStinckwich" title="Tests">⚠️</a></td>
+    <td align="center"><a href="http://symbios.io"><img src="https://avatars0.githubusercontent.com/u/4181440?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Cédrick Béler</b></sub></a><br /><a href="https://github.com/cormas/cormas/commits?author=cdrick65" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/nbecu"><img src="https://avatars3.githubusercontent.com/u/7630183?v=4?s=100" width="100px;" alt=""/><br /><sub><b>nbecu</b></sub></a><br /><a href="https://github.com/cormas/cormas/commits?author=nbecu" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/npapoylias"><img src="https://avatars1.githubusercontent.com/u/8402525?v=4?s=100" width="100px;" alt=""/><br /><sub><b>npapoylias</b></sub></a><br /><a href="https://github.com/cormas/cormas/commits?author=npapoylias" title="Code">💻</a> <a href="https://github.com/cormas/cormas/commits?author=npapoylias" title="Tests">⚠️</a></td>
   </tr>
   <tr>
-    <td align="center"><a href="http://ur-green.cirad.fr"><img src="https://avatars3.githubusercontent.com/u/7630722?v=4" width="100px;" alt=""/><br /><sub><b>Pierre Bommel</b></sub></a><br /><a href="https://github.com/cormas/cormas/commits?author=pierbo" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/ChLePage"><img src="https://avatars2.githubusercontent.com/u/7639614?v=4" width="100px;" alt=""/><br /><sub><b>Christophe Le Page</b></sub></a><br /><a href="https://github.com/cormas/cormas/commits?author=ChLePage" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/brun0"><img src="https://avatars3.githubusercontent.com/u/444953?v=4" width="100px;" alt=""/><br /><sub><b>Bruno Bonté</b></sub></a><br /><a href="https://github.com/cormas/cormas/commits?author=brun0" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/jigyasa-grover"><img src="https://avatars1.githubusercontent.com/u/9291400?v=4" width="100px;" alt=""/><br /><sub><b>Jigyasa Grover</b></sub></a><br /><a href="https://github.com/cormas/cormas/commits?author=jigyasa-grover" title="Code">💻</a></td>
-    <td align="center"><a href="http://peteruhnak.com/blog"><img src="https://avatars3.githubusercontent.com/u/1276328?v=4" width="100px;" alt=""/><br /><sub><b>Peter Uhnak</b></sub></a><br /><a href="#tool-peteruhnak" title="Tools">🔧</a></td>
+    <td align="center"><a href="http://ur-green.cirad.fr"><img src="https://avatars3.githubusercontent.com/u/7630722?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Pierre Bommel</b></sub></a><br /><a href="https://github.com/cormas/cormas/commits?author=pierbo" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/ChLePage"><img src="https://avatars2.githubusercontent.com/u/7639614?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Christophe Le Page</b></sub></a><br /><a href="https://github.com/cormas/cormas/commits?author=ChLePage" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/brun0"><img src="https://avatars3.githubusercontent.com/u/444953?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Bruno Bonté</b></sub></a><br /><a href="https://github.com/cormas/cormas/commits?author=brun0" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/jigyasa-grover"><img src="https://avatars1.githubusercontent.com/u/9291400?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jigyasa Grover</b></sub></a><br /><a href="https://github.com/cormas/cormas/commits?author=jigyasa-grover" title="Code">💻</a></td>
+    <td align="center"><a href="http://peteruhnak.com/blog"><img src="https://avatars3.githubusercontent.com/u/1276328?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Peter Uhnak</b></sub></a><br /><a href="#tool-peteruhnak" title="Tools">🔧</a></td>
+    <td align="center"><a href="https://github.com/gabrami34"><img src="https://avatars.githubusercontent.com/u/71649466?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Géraldine Abrami</b></sub></a><br /><a href="https://github.com/cormas/cormas/commits?author=gabrami34" title="Tests">⚠️</a></td>
   </tr>
 </table>
 
-<!-- markdownlint-enable -->
+<!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
