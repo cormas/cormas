@@ -49,27 +49,26 @@ CMSpOpenProjectPresenter class >> title [
 	^ 'CORMAS - Open project'
 ]
 
-{ #category : #initialization }
+{ #category : #callbacks }
 CMSpOpenProjectPresenter >> connectPresenters [ 
+	" Private - See superimplementor's comment "
 
 	projectsListPresenter
 		transmitTo: versionsListPresenter
 		transform: [ : aCormasObject | aCormasObject definedCormasVersions ]
-		postTransmission: [ :destination | destination selectIndex: 1 ].
+		postTransmission: [ :destination | destination selectIndex: 1 ];
 		
-	versionsListPresenter 
-		whenSelectionChangedDo: [ :aSelection | 
-			| selectedModel |
-			selectedModel := aSelection selectedItem.
-			metaInfoPresenter selectedModel: selectedModel.
-			previewPresenter morph: (CMProjectOpener demoImageFromProjectFile: selectedModel fileReference )  ].	
-"		transmitTo: metaInfoPresenter
-		transform: [ : aCormasProjectVersion | aCormasProjectVersion infoString ]"
+		transmitTo: previewPresenter
+"		transform: [ : fileReference | CMProjectOpener demoImageFromProjectFile: fileReference ]"
+		transform: [ : anObject | anObject cormasDemoImage ]
+		postTransmission: [ :destination | destination adapter buildWidget ].
+
 ]
 
 { #category : #private }
 CMSpOpenProjectPresenter >> cormasLocations [
-		
+	" Private - Answer a <Dictionary> of CORMAS project opening locations along with a <Closure> specifying the action to retrieve the projects for each location "
+
 	^ OrderedDictionary newFromPairs: { 
 		'Demos'	 		. [ self projectsDemos ] .
 		'In-image' 		. [ self projectsInImage ].
@@ -133,12 +132,6 @@ CMSpOpenProjectPresenter >> initializeLocationsPresenter [
 		transform: [ : locationId | self projectsFor: locationId ];
 		"postTransmission: [ :destination :origin | destination selectIndex: 1 ];"
 		selectIndex: 1.
-]
-
-{ #category : #initialization }
-CMSpOpenProjectPresenter >> initializeMetaInfoPresenter [
-	
-	self metaInfoPresenter 
 ]
 
 { #category : #initialization }

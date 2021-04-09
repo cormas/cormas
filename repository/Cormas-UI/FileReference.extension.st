@@ -18,6 +18,13 @@ FileReference >> asCormasProjectName [
 ]
 
 { #category : #'*Cormas-UI' }
+FileReference >> cormasDemoImage [
+	" Answer a <Morph> demo image for the CORMAS project represented by the receiver "
+
+	^ CMProjectOpener demoImageFromProjectFile: self
+]
+
+{ #category : #'*Cormas-UI' }
 FileReference >> definedCormasVersions [
 	" For now we return a <Collection> of <CMProjectModel> but we should support versions "
 

@@ -145,6 +145,14 @@ CMProjectModel >> codeGenerator: anObject [
 ]
 
 { #category : #accessing }
+CMProjectModel >> cormasDemoImage [
+	" Answer a <Morph> demo image for the CORMAS project represented by the receiver "
+	" So far demo images for in-image models are not supported "
+
+	^ CMModelOpener cormasDemoImage 
+]
+
+{ #category : #accessing }
 CMProjectModel >> cormasModel [
 	^ cormasModel
 ]

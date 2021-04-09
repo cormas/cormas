@@ -7,6 +7,18 @@ Class {
 	#category : #'Cormas-UI-Project'
 }
 
+{ #category : #private }
+CMResourceOpener class >> cormasDemoImage [
+	" Answer a basic <Morph> to display when a project does not have a GIF demo image "
+
+	^ Morph new
+		color: Color black;
+		useGradientFill;
+		hResizing: #spaceFill;
+		vResizing: #spaceFill;
+		yourself
+]
+
 { #category : #callbacks }
 CMResourceOpener >> currentProject: aCMProjectModel [
 	" Refer to comment in CMProjectManager currentProject: "
