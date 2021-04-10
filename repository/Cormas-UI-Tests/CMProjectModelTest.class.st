@@ -71,8 +71,7 @@ CMProjectModelTest >> testCormasModelAuthors [
 	modelAuthors := 'Author1;author1@cormas.org
 Author2;author2@cormas.org'.
 	self projectModel cormasModelAuthors: modelAuthors.
-	self assert: (self projectModel cormasModelClass respondsTo: #cmAuthors).
-	self assert: self projectModel cormasModelClass cmAuthors equals: modelAuthors.
+	self assert: self projectModel cormasModelAuthors equals: modelAuthors.
 ]
 
 { #category : #test }

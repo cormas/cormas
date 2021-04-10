@@ -165,6 +165,14 @@ CMProjectModel >> cormasModel: aCormasModel [
 ]
 
 { #category : #accessing }
+CMProjectModel >> cormasModelAuthors [
+	" See comment in CMProjectManager>>cormasModelAuthors "
+
+	^ self authors
+
+]
+
+{ #category : #accessing }
 CMProjectModel >> cormasModelAuthors: aCollection [ 
 	" See comment in CMProjectManager>>cormasModelAuthors: "
 

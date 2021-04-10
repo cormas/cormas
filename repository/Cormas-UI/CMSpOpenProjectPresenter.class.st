@@ -189,7 +189,7 @@ CMSpOpenProjectPresenter >> metaInfoPresenter [
 CMSpOpenProjectPresenter >> openSelectedProject [
 	" Private - Callback for the Ok to open button in the Open Project Dialog "
 
-	^ self projectManager openProjectFromFile: self selectedProject.
+	^ self projectManager openProject: self selectedProject.
 ]
 
 { #category : #accessing }

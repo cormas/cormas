@@ -85,7 +85,7 @@ CMProjectOpener >> openProject [
 ]
 
 { #category : #callbacks }
-CMProjectOpener >> openProjectFromFile: aFileReference [
+CMProjectOpener >> openProject: aFileReference [
 	" Answer a <String> with the full path of the opened project, if possible. Otherwise raise an Exception "
 
 	self tryOpenFromFile: aFileReference.

@@ -1,10 +1,7 @@
 Class {
 	#name : #CMAbstractModelTest,
-	#superclass : #TestCase,
-	#instVars : [
-		'model'
-	],
-	#category : #'Cormas-Tests'
+	#superclass : #CMBasicModelTest,
+	#category : #'Cormas-Tests-Model'
 }
 
 { #category : #test }
@@ -27,21 +24,6 @@ CMAbstractModelTest >> newProjectManager [
 		currentProject: (CMProjectModel basicNew
 				initializeForModel: model named: 'Sample Model';
 				yourself);
-		yourself
-]
-
-{ #category : #'tests-accessing-entities' }
-CMAbstractModelTest >> newTestModel [
-	^ (CMTestModel
-		initialize;
-		new)
-		activeInit: #initAlive;
-		initSimulation;
-		initializeSpaceModel;
-		createGridLines: 20
-			columns: 10
-			neighbourhood: 4
-			closed: true;
 		yourself
 ]
 

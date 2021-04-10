@@ -13,7 +13,7 @@ CormasUITest >> newProjectManagerWithInitializedUIOnModel: modelName [
 	simWindow
 		translator: (CMTranslator newForLanguage: #EN);
 		initialize.
-	aProject openImageProject: modelName.
+	aProject openModel: modelName.
 		aProject updateNewProject: 'CM' , modelName asString , 'Model'.
 	^ aProject
 ]
@@ -22,7 +22,7 @@ CormasUITest >> newProjectManagerWithInitializedUIOnModel: modelName [
 CormasUITest >> testCanOpenModelFromImage [
 	| p |
 	p := CMProjectManager new.
-	p openImageProject: #CMConwayModel.
+	p openModel: #CMConwayModel.
 	self assert: p currentProject cormasModel class name equals: #CMConwayModel
 ]
 
@@ -34,7 +34,7 @@ CormasUITest >> testCurrentStepInputTextOfSimWindowIsResetAfterOpeningAModel [
 	
 	20 timesRepeat: [ aCMProjectManager currentProject cormasModel runStep ].
 	
-	aCMProjectManager openImageProject: #CMECECModel.
+	aCMProjectManager openModel: #CMECECModel.
 	aCMProjectManager updateNewProject: #CMECECModel.
 	self assert: simWindow currentStepInputText text equals: 0.
 ]

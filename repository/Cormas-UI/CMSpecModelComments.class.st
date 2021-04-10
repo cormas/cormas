@@ -83,13 +83,6 @@ CMSpecModelComments >> creationDate: anObject [
 ]
 
 { #category : #initialization }
-CMSpecModelComments >> currentProjectAuthors [
-	" See comment in ProjectManager #currentProjectAuthors method "
-	
-	^ self projectManager currentProjectAuthors
-]
-
-{ #category : #initialization }
 CMSpecModelComments >> currentProjectClass [
 	" See comment in ProjectManager #currentProjectVersion method "
 	
@@ -131,7 +124,7 @@ CMSpecModelComments >> initializeAuthors [
 	self authorList
 		label: self translator tVersionName.
 	self authorList text: (self projectManager currentProjectHasAuthor
-		ifTrue: [  self currentProjectAuthors ]
+		ifTrue: [  self projectManager cormasModelAuthors ]
 		ifFalse: [ self defaultAuthorList ])
 ]
 

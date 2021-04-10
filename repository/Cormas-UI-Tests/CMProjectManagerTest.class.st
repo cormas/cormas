@@ -57,12 +57,8 @@ CMProjectManagerTest >> testCormasModel [
 { #category : #test }
 CMProjectManagerTest >> testCormasModelAuthors [
 
-	| modelClass |
-	
 	self projectManager cormasModelAuthors: 'author1;author@cormas.org'.
-	modelClass := self projectModel cormasModelClass.
-	self assert: (modelClass respondsTo: #cmAuthors).
-	self assert: modelClass cmAuthors equals: 'author1;author@cormas.org'.
+	self assert: self projectManager cormasModelAuthors equals: 'author1;author@cormas.org'.
 ]
 
 { #category : #test }
@@ -77,10 +73,10 @@ CMProjectManagerTest >> testCormasModelComment [
 
 	| modelComment |
 	
+	self assert: self projectManager cormasModelComment isNil.
 	modelComment := 'This is a model comment'.
-	self projectModel cormasModelComment: modelComment.
-	self assert: (self projectManager cormasModelClass respondsTo: #comments).
-	self assert: self projectManager cormasModelClass comments equals: modelComment.
+	self projectManager cormasModelComment: modelComment.
+	self assert: self projectManager cormasModelComment equals: modelComment.
 ]
 
 { #category : #test }
@@ -125,17 +121,6 @@ CMProjectManagerTest >> testCreateClassModelNamed [
 	modelClassname := self sampleModelName.
 	self assert: ((self projectManager createClassModelNamed: modelClassname) isKindOf: Class).
 	self assert: (self class environment hasClassNamed: modelClassname).
-]
-
-{ #category : #test }
-CMProjectManagerTest >> testCurrentProjectAuthors [
-
-	| authors |
-	authors := 'author_name1;
-author_name2'.
-	self projectManager cormasModelAuthors: authors.
-	self assert: self projectManager currentProjectAuthors equals: authors.
-
 ]
 
 { #category : #test }

@@ -1,6 +1,6 @@
 Class {
 	#name : #CMOpenerTest,
-	#superclass : #CMAbstractModelTest,
+	#superclass : #CMBasicModelTest,
 	#instVars : [
 		'opener',
 		'projectManager'
@@ -13,6 +13,21 @@ CMOpenerTest >> newOpener [
 	
 	self subclassResponsibility 
 
+]
+
+{ #category : #accessing }
+CMOpenerTest >> newTestModel [
+	^ (CMTestModel
+		initialize;
+		new)
+		activeInit: #initAlive;
+		initSimulation;
+		initializeSpaceModel;
+		createGridLines: 20
+			columns: 10
+			neighbourhood: 4
+			closed: true;
+		yourself
 ]
 
 { #category : #accessing }

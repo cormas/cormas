@@ -32,7 +32,7 @@ CMModelOpenerTest >> testOpenImageProject [
 
 	| openedModel |
 	
-	openedModel := self opener openImageProject: #CMECECModel.
+	openedModel := self opener openModel: #CMECECModel.
 	self assert: (openedModel isKindOf: CMProjectModel).
 	self assert: openedModel cormasModelName equals: #CMECECModel
 ]

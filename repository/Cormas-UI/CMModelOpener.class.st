@@ -45,7 +45,7 @@ CMModelOpener >> open: modelName fileName: fileName [
 ]
 
 { #category : #callbacks }
-CMModelOpener >> openImageProject: modelName [
+CMModelOpener >> openModel: modelName [
 	" Open the project of the modelClass "
 
 	^ self currentProject: (CMProjectModel basicNew
@@ -132,7 +132,7 @@ CMModelOpener >> requestOpenFromLocalImage [
 	(mName := self requestOpenDialogFromLocalImage) ifNotNil: [ :modelName | openStatus := true ].
 	openStatus
 		ifTrue: [ 
-			self openImageProject: mName.
+			self openModel: mName.
 			self projectManager doPostOpenActions ]
 		ifFalse: [ self informMessage: self translator tProjectOpenFailed ].
 	^ openStatus

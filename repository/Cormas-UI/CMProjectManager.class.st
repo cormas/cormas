@@ -53,6 +53,13 @@ CMProjectManager >> cormasModel: aCMAbstractModel [
 ]
 
 { #category : #accessing }
+CMProjectManager >> cormasModelAuthors [
+	" Answer a <Collection> with author names (one by line) to the receiver's current project model "
+
+	^ self currentProject cormasModelAuthors
+]
+
+{ #category : #accessing }
 CMProjectManager >> cormasModelAuthors: aString [
 	" Set aString with author names (one by line) to the receiver's current project model "
 
@@ -64,6 +71,14 @@ CMProjectManager >> cormasModelClass [
 	" Answer a <Class> representing the model class of the receiver's current project "
 
 	^ self currentProject cormasModelClass
+]
+
+{ #category : #accessing }
+CMProjectManager >> cormasModelComment [
+	" Set the receiver's model comments to aString "
+
+	^ self currentProject cormasModelComment
+
 ]
 
 { #category : #accessing }
@@ -144,17 +159,25 @@ CMProjectManager >> createProject: projectName in: aCMApplicationProject [
 
 { #category : #testing }
 CMProjectManager >> currentProjectAuthors [
-	" Answer a <String> containing receiver's model authors "
+	" Answer a <String> containing receiver's project authors, opposed to model authors "
 
 	^ self currentProject cormasModelClass cmAuthors
 
 ]
 
+{ #category : #testing }
+CMProjectManager >> currentProjectAuthors: aString [
+	" Set a <String> containing receiver's project authors, opposed to model authors "
+
+	^ self currentProject currentProjectAuthors: aString
+
+]
+
 { #category : #accessing }
 CMProjectManager >> currentProjectHasAuthor [
-	" Answer <true> if the receiver's model has comments "
+	" Answer <true> if the receiver's model has authors "
 
-	^ self currentProject cormasModelClass respondsTo: #cmAuthors
+	^ self currentProject cormasModelAuthors notNil and: [ self currentProject cormasModelAuthors notEmpty ]
 ]
 
 { #category : #testing }
@@ -270,6 +293,13 @@ CMProjectManager >> modelProbesMethods [
 ]
 
 { #category : #callbacks }
+CMProjectManager >> openModel: aModel [
+	" Open aModel for the receiver "
+
+	^ CMModelOpener new openModel: aModel
+]
+
+{ #category : #callbacks }
 CMProjectManager >> openProject [
 	" Request a model to the user and open it for the receiver "
 
@@ -277,10 +307,10 @@ CMProjectManager >> openProject [
 ]
 
 { #category : #callbacks }
-CMProjectManager >> openProjectFromFile: aFileReferenceOrName [
+CMProjectManager >> openProject: aFileReferenceOrName [
 	" Request a model to the user and open it for the receiver "
 
-	self opener openProjectFromFile: aFileReferenceOrName
+	self opener openProject: aFileReferenceOrName
 ]
 
 { #category : #accessing }
