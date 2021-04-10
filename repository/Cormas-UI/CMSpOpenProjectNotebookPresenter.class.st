@@ -45,11 +45,8 @@ CMSpOpenProjectNotebookPresenter >> initializeProjectPanel [
 
 	notebookPanel
 		addPage: (infoPage := self newProjectInfoPage);
-"		addPage: (sourceCodePage := self newSourceCodePage 
-			title: 'Source code';
-			presenterProvider: [ self sourceCodePresenter ];
-			yourself);
-		addPage: (resourcesPage := self newResourcesPage 
+		addPage: (sourceCodePage := self newSourceCodePage);
+	"	addPage: (resourcesPage := self newResourcesPage 
 			title: 'Resources';
 			presenterProvider: [ self resourcesPresenter ];"
 			yourself
@@ -73,12 +70,29 @@ CMSpOpenProjectNotebookPresenter >> newProjectInfoPage [
 ]
 
 { #category : #initialization }
+CMSpOpenProjectNotebookPresenter >> newSourceCodePage [
+
+	^ SpNotebookPage  
+		title: 'Source'
+		icon: (self iconNamed: #smallHierarchyBrowser)
+		provider: [ self projectSourcePresenter ]
+]
+
+{ #category : #initialization }
 CMSpOpenProjectNotebookPresenter >> projectInfoPresenter [
 
 	selectedModel ifNil: [ ^ self newEmpty ].
 	^ CMSpReadOnlyFormBuilder 
 		newBuiltFor: selectedModel infoDictionary
 		application: self application
+]
+
+{ #category : #initialization }
+CMSpOpenProjectNotebookPresenter >> projectSourcePresenter [
+	" Answer a <ComposablePresenter> to browse source code in the receiver's selected model "
+
+	selectedModel ifNil: [ ^ self newEmpty ].
+	^ CMExternalBrowser on: selectedModel fileReference
 ]
 
 { #category : #accessing }

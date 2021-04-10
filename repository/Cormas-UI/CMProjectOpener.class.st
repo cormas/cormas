@@ -127,6 +127,20 @@ CMProjectOpener >> tryOpenFromFile: fileRef [
 ]
 
 { #category : #callbacks }
+CMProjectOpener >> tryReadSourceFromFile: fileRef [
+	" Private - Try to open fileRef <FileReference> project file "
+
+	[ 	
+		zipFileSys := self validateProjectFile: fileRef.
+		^ self modelFile readStream 
+	]
+	on: Error
+	do: [ : ex | 
+		self handleFileInException: ex.
+		openStatus := false ].
+]
+
+{ #category : #callbacks }
 CMProjectOpener >> validateProjectFile: aFileReference [
 	" Answer the <ZipFileSystemDirectory> of aFileReference's root "
 

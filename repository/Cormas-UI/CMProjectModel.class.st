@@ -309,6 +309,13 @@ CMProjectModel >> definedCormasVersions [
 	^ Array with: self
 ]
 
+{ #category : #accessing }
+CMProjectModel >> fileReference [ 
+	" Answer the receiver's project <FileReference> "
+
+	^ self info fileReference
+]
+
 { #category : #'accessing-simulations' }
 CMProjectModel >> findSimulationNamed: aName [
 	" Answer <true> if the dump folder has stored simulations "

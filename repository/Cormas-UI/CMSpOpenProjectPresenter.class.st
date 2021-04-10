@@ -63,6 +63,9 @@ CMSpOpenProjectPresenter >> connectPresenters [
 		transform: [ : anObject | anObject cormasDemoImage ]
 		postTransmission: [ :destination | destination adapter buildWidget ].
 
+	versionsListPresenter 
+		whenSelectionChangedDo: [ :aSelection | metaInfoPresenter selectedModel: aSelection selectedItem ].	
+
 ]
 
 { #category : #private }
