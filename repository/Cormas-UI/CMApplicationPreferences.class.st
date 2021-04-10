@@ -138,6 +138,7 @@ CMApplicationPreferences class >> settingBaseLocation [
 	" Answer the settingBaseLocation of this CMPreferences "
 
 	^ SettingBaseLocation
+		ifNil: [ SettingBaseLocation := self defaultBaseLocation ]
 ]
 
 { #category : #accessing }

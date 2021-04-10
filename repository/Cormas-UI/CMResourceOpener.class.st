@@ -35,7 +35,7 @@ CMResourceOpener >> handleFileInException: ex [
 
 { #category : #callbacks }
 CMResourceOpener >> resourceLocator [
-	" Refer to comment in CMProjectManager resourceLocator "
+	" Answer a <CMResourceLocator>, an object to locate receiver resources "
 
 	^ self projectManager resourceLocator
 ]

@@ -12,7 +12,7 @@ Class {
 
 { #category : #accessing }
 CMModelOpener >> cormasOpenLocations [
-	" Answer a Collection of valid locations for opening a Cormas model "
+	" Answer a <Collection> of <String> with valid locations for opening a Cormas model "
 	
 	^ self cormasOpenLocationsMap keys
 
@@ -20,7 +20,7 @@ CMModelOpener >> cormasOpenLocations [
 
 { #category : #accessing }
 CMModelOpener >> cormasOpenLocationsMap [
-	" Answer a Collection of valid locations for opening a Cormas model "
+	" Answer a <Dictionary> of valid locations for opening a Cormas model "
 
 	^ Dictionary new
 		at: self translator tLocalStorage 		put: #requestOpenFromLocalDisk;
