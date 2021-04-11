@@ -11,7 +11,15 @@ Class {
 { #category : #accessing }
 CMOpenerTest >> newOpener [
 
-	^ self openerClass newFrom: CMProjectManager new.
+	^ self openerClass newFrom: self newProjectManager.
+]
+
+{ #category : #accessing }
+CMOpenerTest >> newProjectManager [
+
+	^ CMProjectManager new 
+		startFSM;
+		yourself.
 ]
 
 { #category : #accessing }
@@ -48,9 +56,8 @@ CMOpenerTest >> openerClass [
 { #category : #accessing }
 CMOpenerTest >> setUp [ 
 
-	opener := self newOpener.
 	CMApplicationProject release.
 	PFProjectSettings currentApplicationClass: CMApplicationProject.
 	model := self newTestModel.
-
+	opener := self newOpener.
 ]

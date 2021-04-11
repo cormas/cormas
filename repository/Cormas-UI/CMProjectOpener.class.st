@@ -7,7 +7,6 @@ Class {
 	#name : #CMProjectOpener,
 	#superclass : #CMResourceOpener,
 	#instVars : [
-		'openerWindow',
 		'zipFileSys'
 	],
 	#category : #'Cormas-UI-Project'
@@ -102,16 +101,6 @@ CMProjectOpener >> openProject: aFileReference [
 	^ openStatus
 ]
 
-{ #category : #accessing }
-CMProjectOpener >> openerWindow [
-	^ openerWindow
-]
-
-{ #category : #accessing }
-CMProjectOpener >> openerWindow: anObject [
-	openerWindow := anObject
-]
-
 { #category : #callbacks }
 CMProjectOpener >> tryOpenFromFile: fileRef [
 	" Private - Try to open fileRef <FileReference> project file "
@@ -149,4 +138,14 @@ CMProjectOpener >> validateProjectFile: aFileReference [
 		allSatisfy: [ : selector | zipFileSys fileEntriesIncludes: (CMProjectFile perform: selector) ])
 			ifFalse: [ self error: 'CORMAS project file missing files' ].
 	^ zipFileSys
+]
+
+{ #category : #accessing }
+CMProjectOpener >> zipFileSys [
+	^ zipFileSys
+]
+
+{ #category : #accessing }
+CMProjectOpener >> zipFileSys: anObject [
+	zipFileSys := anObject
 ]

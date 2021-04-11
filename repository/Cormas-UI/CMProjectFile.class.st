@@ -48,16 +48,24 @@ CMProjectFile class >> archiveAllFromPharo: aCollectionOfFileReferencesOrMatchin
 { #category : #accessing }
 CMProjectFile class >> archiveDirectoryRecursively: aFileReference relativeTo: relativeFileReference in: aZipArchive [
 
+	| relativePath |
+	relativePath := DiskStore current stringFromPath: (aFileReference relativeTo: relativeFileReference ).
     (aFileReference childrenMatching: '*') 
 		ifNotEmpty: [ : subFiles |  
 			subFiles do: [ :eachFileReference | 
             eachFileReference isDirectory
                 ifTrue: [ self archiveDirectoryRecursively: eachFileReference relativeTo: relativeFileReference in: aZipArchive ]
-                ifFalse: [ aZipArchive addFile: eachFileReference pathString as: (DiskStore current stringFromPath: (eachFileReference relativeTo: relativeFileReference )) ] ] ]
-		ifEmpty: [ " This is an empty directory "
-			aZipArchive 
-				addDirectory: aFileReference pathString 
-				as: (DiskStore current stringFromPath: (aFileReference relativeTo: relativeFileReference )) ]
+                ifFalse: [ aZipArchive addFile: eachFileReference pathString as: relativePath ] ] ]
+		ifEmpty: [ 
+			aFileReference isDirectory
+				ifTrue: [ 
+					aZipArchive 
+						addDirectory: aFileReference 
+						as: relativePath  ]
+				ifFalse: [ 
+					aZipArchive 
+						addDirectory: aFileReference pathString 
+						as: relativePath ] ]
 ]
 
 { #category : #accessing }

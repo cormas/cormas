@@ -157,7 +157,7 @@ CMProjectManager >> createProject: projectName in: aCMApplicationProject [
 
 ]
 
-{ #category : #testing }
+{ #category : #accessing }
 CMProjectManager >> currentProjectAuthors [
 	" Answer a <String> containing receiver's project authors, opposed to model authors "
 
@@ -165,7 +165,7 @@ CMProjectManager >> currentProjectAuthors [
 
 ]
 
-{ #category : #testing }
+{ #category : #accessing }
 CMProjectManager >> currentProjectAuthors: aString [
 	" Set a <String> containing receiver's project authors, opposed to model authors "
 
@@ -201,7 +201,7 @@ CMProjectManager >> currentProjectHasVersion [
 	^  self currentProject cormasModelClass respondsTo: #cmVersion
 ]
 
-{ #category : #testing }
+{ #category : #accessing }
 CMProjectManager >> currentProjectVersion [
 	" Answer a <String> containing receiver's current version name. If no version is found, answer a descriptive string reflecting the situation (i.e. 'no version') "
 
@@ -248,7 +248,7 @@ CMProjectManager >> exploreProject [
 	self currentProject explore.
 ]
 
-{ #category : #private }
+{ #category : #utilities }
 CMProjectManager >> findModelClass: aFilename [
 	" Answer a <String> with the model class name found in aFilename"
  
@@ -292,34 +292,34 @@ CMProjectManager >> modelProbesMethods [
 	^ (self cormasModelClass organization listAtCategoryNamed: #probes) collect: [:aGlobalProbeName | 'Global>>', aGlobalProbeName asString]
 ]
 
-{ #category : #callbacks }
+{ #category : #'accessing - opening' }
 CMProjectManager >> openModel: aModel [
 	" Open aModel for the receiver "
 
 	^ CMModelOpener new openModel: aModel
 ]
 
-{ #category : #callbacks }
+{ #category : #'accessing - opening' }
 CMProjectManager >> openProject [
 	" Request a model to the user and open it for the receiver "
 
 	self opener openProject
 ]
 
-{ #category : #callbacks }
+{ #category : #'accessing - opening' }
 CMProjectManager >> openProject: aFileReferenceOrName [
 	" Request a model to the user and open it for the receiver "
 
 	self opener openProject: aFileReferenceOrName
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing - opening' }
 CMProjectManager >> opener [
 	^ opener
 		ifNil: [ opener := self defaultCormasOpener new ]
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing - opening' }
 CMProjectManager >> opener: anObject [
 	opener := anObject
 ]
@@ -350,16 +350,24 @@ CMProjectManager >> updateNewProject: modelName [
 ]
 
 { #category : #callbacks }
+CMProjectManager >> updateStateCormasUI [
+	" Private - If there is a window for the receiver then update its status "
+
+	self projectWindow ifNotNil: [ : w |
+		w
+			menuDisableProgrammingGroup;
+			menuDisableVisualizationGroup;
+			menuDisableSimulationGroup;
+			menuDisableToolsGroup;
+			menuDisableHelpGroup ]
+]
+
+{ #category : #callbacks }
 CMProjectManager >> updateStateInit [
 	" Private - Handle the open application event "
 
 	super updateStateInit.
-	self projectWindow
-		menuDisableProgrammingGroup;
-		menuDisableVisualizationGroup;
-		menuDisableSimulationGroup;
-		menuDisableToolsGroup;
-		menuDisableHelpGroup.
+	self updateStateCormasUI.
 ]
 
 { #category : #callbacks }
@@ -376,7 +384,8 @@ CMProjectManager >> updateStateOpened [
 
 	self notifyEvent:	'Action: Opened'.
 	self announcer announce: CMProjectOpenAnnouncement new.
-	self informMessage: self translator tProjectOpenSuccess.
+	CMApplicationPreferences settingProjectNotifications 
+		ifTrue: [ self informMessage: self translator tProjectOpenSuccess ].
 ]
 
 { #category : #utilities }

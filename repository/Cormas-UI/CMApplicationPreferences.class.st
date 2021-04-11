@@ -74,7 +74,7 @@ CMApplicationPreferences class >> cmSettingProjectNotificationsOn: aBuilder [
 		description: 'If disabled, you will not receive UI notifications when a project is opened or closed.';
 		target: self;
 		order: 5;
-		default: false
+		default: self defaultProjectNotifications
 ]
 
 { #category : #settings }
@@ -128,7 +128,7 @@ CMApplicationPreferences class >> defaultBaseLocation [
 { #category : #defaults }
 CMApplicationPreferences class >> defaultProjectNotifications [
 
-	^ false
+	^ true
 ]
 
 { #category : #defaults }
@@ -212,6 +212,7 @@ CMApplicationPreferences class >> settingWarnUsing [
 	" Answer the settingWarnUsing of this CMPreferences "
 
 	^ SettingWarnUsing
+		ifNil: [ SettingWarnUsing := self defaultSettingWarnUsing ]
 ]
 
 { #category : #accessing }
