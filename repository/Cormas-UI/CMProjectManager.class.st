@@ -305,7 +305,9 @@ CMProjectManager >> openModel: aModel [
 CMProjectManager >> openProject [
 	" Request a model to the user and open it for the receiver "
 
-	self opener openProject
+	self opener 
+		projectManager: self;
+		openProject
 ]
 
 { #category : #'accessing - opening' }
