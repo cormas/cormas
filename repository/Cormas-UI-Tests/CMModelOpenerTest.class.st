@@ -7,10 +7,10 @@ Class {
 	#category : #'Cormas-UI-Tests-Project'
 }
 
-{ #category : #accessing }
-CMModelOpenerTest >> newOpener [
+{ #category : #'as yet unclassified' }
+CMModelOpenerTest >> openerClass [
 
-	^ CMModelOpener new.
+	^ CMModelOpener
 ]
 
 { #category : #test }

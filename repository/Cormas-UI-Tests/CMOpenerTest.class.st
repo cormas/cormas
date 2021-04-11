@@ -10,9 +10,8 @@ Class {
 
 { #category : #accessing }
 CMOpenerTest >> newOpener [
-	
-	self subclassResponsibility 
 
+	^ self openerClass newFrom: CMProjectManager new.
 ]
 
 { #category : #accessing }
@@ -41,13 +40,9 @@ CMOpenerTest >> opener: anObject [
 ]
 
 { #category : #accessing }
-CMOpenerTest >> projectManager [
-	^ projectManager
-]
+CMOpenerTest >> openerClass [
 
-{ #category : #accessing }
-CMOpenerTest >> projectManager: anObject [
-	projectManager := anObject
+	self subclassResponsibility 
 ]
 
 { #category : #accessing }

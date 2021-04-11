@@ -4,8 +4,8 @@ Class {
 	#category : #'Cormas-UI-Tests-Project'
 }
 
-{ #category : #accessing }
-CMProjectOpenerTest >> newOpener [
+{ #category : #'as yet unclassified' }
+CMProjectOpenerTest >> openerClass [
 
-	^ CMProjectOpener new.
+	^ CMProjectOpener
 ]

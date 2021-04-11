@@ -2,7 +2,8 @@ Class {
 	#name : #CMResourceOpener,
 	#superclass : #CMObject,
 	#instVars : [
-		'openStatus'
+		'openStatus',
+		'projectManager'
 	],
 	#category : #'Cormas-UI-Project'
 }
@@ -19,6 +20,15 @@ CMResourceOpener class >> cormasDemoImage [
 		yourself
 ]
 
+{ #category : #'instance creation' }
+CMResourceOpener class >> newFrom: aCMProjectManager [
+	" Answer a new instance of the receiver configured with aCMProjectManager "
+	
+	^ self new
+		projectManager: aCMProjectManager;
+		yourself.
+]
+
 { #category : #callbacks }
 CMResourceOpener >> currentProject: aCMProjectModel [
 	" Refer to comment in CMProjectManager currentProject: "
@@ -31,6 +41,11 @@ CMResourceOpener >> handleFileInException: ex [
 	" Private - There was an exception while loading a file. Handle it accordingly to preferences "
 
 	self appSettings settingWarnUsing signal: ex messageText
+]
+
+{ #category : #accessing }
+CMResourceOpener >> projectManager: anObject [
+	projectManager := anObject
 ]
 
 { #category : #callbacks }
