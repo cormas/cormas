@@ -7,6 +7,7 @@ Class {
 	#superclass : #Object,
 	#classVars : [
 		'SettingBaseLocation',
+		'SettingProjectNotifications',
 		'SettingSpaceViewer',
 		'SettingWaitLimit',
 		'SettingWarnUsing'
@@ -64,6 +65,19 @@ CMApplicationPreferences class >> cmSettingBaseLocationOn: aBuilder [
 ]
 
 { #category : #settings }
+CMApplicationPreferences class >> cmSettingProjectNotificationsOn: aBuilder [
+	<cormasPreferences>
+	
+	(aBuilder setting: #settingProjectNotifications)
+		label: 'Open/Close Notifications';
+		parent: #cmLoadSetting;
+		description: 'If disabled, you will not receive UI notifications when a project is opened or closed.';
+		target: self;
+		order: 5;
+		default: false
+]
+
+{ #category : #settings }
 CMApplicationPreferences class >> cmSettingSpaceViewerOn: aBuilder [
 	<cormasPreferences>
 	
@@ -112,6 +126,12 @@ CMApplicationPreferences class >> defaultBaseLocation [
 ]
 
 { #category : #defaults }
+CMApplicationPreferences class >> defaultProjectNotifications [
+
+	^ false
+]
+
+{ #category : #defaults }
 CMApplicationPreferences class >> defaultSettingSpaceViewer [
 	
 	^ self availableSettingSpaceViewer first
@@ -146,6 +166,21 @@ CMApplicationPreferences class >> settingBaseLocation: anObject [
 	" Sets the settingBaseLocation of this CMPreferences "
 
 	SettingBaseLocation := anObject
+]
+
+{ #category : #accessing }
+CMApplicationPreferences class >> settingProjectNotifications [
+	" Answer the settingProjectNotifications of this CMApplicationPreferences "
+
+	^ SettingProjectNotifications
+		ifNil: [ SettingProjectNotifications := self defaultProjectNotifications ]
+]
+
+{ #category : #accessing }
+CMApplicationPreferences class >> settingProjectNotifications: anObject [
+	" Sets the settingProjectNotifications of this CMApplicationPreferences "
+
+	SettingProjectNotifications := anObject
 ]
 
 { #category : #accessing }
