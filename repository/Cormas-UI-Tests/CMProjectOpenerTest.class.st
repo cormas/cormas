@@ -37,8 +37,8 @@ CMProjectOpenerTest >> sampleProjectReference [
 CMProjectOpenerTest >> setUp [ 
 
 	super setUp.
-	CMApplicationPreferences settingProjectNotifications: false.
-	self opener validateProjectFile: self sampleProjectFile.
+"	CMApplicationPreferences settingProjectNotifications: false.
+	self opener validateProjectFile: self sampleProjectFile."
 ]
 
 { #category : #tests }
