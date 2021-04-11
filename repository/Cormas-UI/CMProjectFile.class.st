@@ -1,18 +1,11 @@
 "
+Represents a CORMAS project on disk.
+Currently, a project is a ZIP file to enable easy edition of projects by users.
+
 Uses bugfixes to ZipArchive shared by Cyril Ferlicot in Pharo Discord channel
 
-Public API and Key Messages
+Use CMModel2ProjectMigrator to create project files.
 
-- message one   
-- message two 
-- (for bonus points) how to create instances.
-
-   One simple example is simply gorgeous.
- 
-Internal Representation and Key Implementation Points.
-
-
-    Implementation Points
 "
 Class {
 	#name : #CMProjectFile,

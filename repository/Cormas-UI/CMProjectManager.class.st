@@ -296,7 +296,9 @@ CMProjectManager >> modelProbesMethods [
 CMProjectManager >> openModel: aModel [
 	" Open aModel for the receiver "
 
-	^ CMModelOpener new openModel: aModel
+	^ (CMModelOpener newFrom: self) 
+		openModel: aModel;
+		yourself
 ]
 
 { #category : #'accessing - opening' }
