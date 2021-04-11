@@ -352,7 +352,16 @@ CMProjectManager >> updateNewProject: modelName [
 ]
 
 { #category : #callbacks }
-CMProjectManager >> updateStateCormasUI [
+CMProjectManager >> updateStateClosed [
+
+	self notifyEvent:	'Action: Close'.
+	self updateUIStateForClose.
+	CMApplicationPreferences settingProjectNotifications 
+		ifTrue: [ self informMessage: self translator tProjectCloseSuccess ].
+]
+
+{ #category : #callbacks }
+CMProjectManager >> updateStateCormasUIForInit [
 	" Private - If there is a window for the receiver then update its status "
 
 	self projectWindow ifNotNil: [ : w |
@@ -369,7 +378,7 @@ CMProjectManager >> updateStateInit [
 	" Private - Handle the open application event "
 
 	super updateStateInit.
-	self updateStateCormasUI.
+	self updateStateCormasUIForInit.
 ]
 
 { #category : #callbacks }
