@@ -25,7 +25,7 @@ CMSpatialEntityElement class >> isSpatialEntityElementClass [
 	^true
 ]
 
-{ #category : #'- environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> boundaryDirections [
 	"Returns a collection of direction (ex: (#E #SE #NE)) of the cell, without cell => the edge of the grid"
 	
@@ -58,7 +58,7 @@ CMSpatialEntityElement >> boundaryDirections [
 	^collec
 ]
 
-{ #category : #'- environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> coordinates [
 	"Purpose: Returns the coordinates x and y as a Point instance.
 Example: self coordinates dist: (self neighbourNE coordinates)"
@@ -68,7 +68,7 @@ Example: self coordinates dist: (self neighbourNE coordinates)"
 		y: self numLine
 ]
 
-{ #category : #'- environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> directionNeighbour: v [
 	
 	| directions |
@@ -78,7 +78,7 @@ CMSpatialEntityElement >> directionNeighbour: v [
 		ifNone: [ nil ]
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> displayOn: aGC outlinesInstancesOf: aClassName color: aColorName lineWidth: anInteger [
 
 	(self id = self spaceModel elementaryEntities size
@@ -93,7 +93,7 @@ CMSpatialEntityElement >> displayOn: aGC outlinesInstancesOf: aClassName color: 
 						ifTrue: [ a image component asStroker displayOn: aGC ] ] ]
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> displaySegment: aDirection [
 	
 	| readAccessSelector |
@@ -105,14 +105,14 @@ CMSpatialEntityElement >> displaySegment: aDirection [
 				displayStrokedOn: self view graphicsContext]
 ]
 
-{ #category : #'- deprecated' }
+{ #category : #deprecated }
 CMSpatialEntityElement >> distCell: aSpatialEntityElement [
 	"returns a distance in cells, between the sender and aSpatialEntity"
 	
 	^self spaceModel distanceFromCell: self toCell: aSpatialEntityElement
 ]
 
-{ #category : #'- environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> distanceCell: aSpatialEntityElement [
 	"returns a distance in cells, between the sender and aSpatialEntityElement. 
 Used for irregular cells, the calculus is much more longer
@@ -125,7 +125,7 @@ Be carefull : it's SLOW !! You should rather use 'distanceTo: aSpatialEntity ' "
 	^n
 ]
 
-{ #category : #'+ environment - distance' }
+{ #category : #'environment - distance' }
 CMSpatialEntityElement >> distanceTo: anotherSpatialEntity [
 	"Purpose: returns the Manhattan distance (in cells) between the receiver and anotherSpatialEntity
 Argument: anotherSpatialEntity = <SpatialEntity>
@@ -136,7 +136,7 @@ Return value: <Integer>"
 	^self spaceModel distanceFromCell: self toCell: anotherSpatialEntity
 ]
 
-{ #category : #'+ environment - distance' }
+{ #category : #'environment - distance' }
 CMSpatialEntityElement >> distanceTo: anotherCell constraintOnPath: aBlock [
 	"Purpose: returns the Manhattan distance (in cells) between the receiver and anotherSpatialEntity, taking a specified constraint into account.
 Arguments: anotherCell = <SpatialEntityElement>
@@ -147,7 +147,7 @@ Example: self distanceTo: self spaceModel centralLocation constraintOnPath: [:aC
 	^(self wayTo: anotherCell constraint: aBlock) size - 1
 ]
 
-{ #category : #'+ environment - distance' }
+{ #category : #'environment - distance' }
 CMSpatialEntityElement >> euclideanDistanceTo: aCell [
 	"Purpose: returns the distance between the receiver and a given spatial entity, using the Euclidean distance formula: 
 	square root of [(Xa - Xb)^2 + (Ya - Yb)^2)]
@@ -157,14 +157,14 @@ Return value: <Number>"
 	^self spaceModel euclideanDistanceFromCell: self toCell: aCell
 ]
 
-{ #category : #'- initialize-release' }
+{ #category : #'initialize-release' }
 CMSpatialEntityElement >> initNeighbourhood [
 	
 	self orderedNeighbourhood isNil ifTrue: [^nil].
 	self neighbourhood: (self orderedNeighbourhood select: [:a | a notNil])
 ]
 
-{ #category : #'+ testing' }
+{ #category : #testing }
 CMSpatialEntityElement >> isConnectedToCells: setOfCells [
 	"Purpose: answer if the current cell touches at least one of the setOfCells"
 	
@@ -173,7 +173,7 @@ CMSpatialEntityElement >> isConnectedToCells: setOfCells [
 	^false
 ]
 
-{ #category : #'- testing' }
+{ #category : #testing }
 CMSpatialEntityElement >> isCrossedByArc: anArc [
 	"answer if the cell is crossed by anArc"
 
@@ -188,19 +188,19 @@ L idee initiale était d avoir un espace par défaut (non affiché) sur lequel o
 	^ arcLine outlineIntersects: self bounds
 ]
 
-{ #category : #'- testing' }
+{ #category : #testing }
 CMSpatialEntityElement >> isElementary [
 	
 	^true
 ]
 
-{ #category : #'+ testing' }
+{ #category : #testing }
 CMSpatialEntityElement >> isSpatialEntityElement [
 	
 	^true
 ]
 
-{ #category : #'- environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> lineCol [
 	"Return an array containing the coordinates Y and X of the Cell"
 	
@@ -209,7 +209,7 @@ CMSpatialEntityElement >> lineCol [
 		with: self numCol
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentE [
 	
 	^self segments notNil
@@ -217,7 +217,7 @@ CMSpatialEntityElement >> lineSegmentE [
 		ifFalse: [nil]
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentEf [
 	
 	| im d |
@@ -232,7 +232,7 @@ CMSpatialEntityElement >> lineSegmentEf [
 	^nil
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentEfh [
 	
 	| starts ends nE nSE nNE |
@@ -260,7 +260,7 @@ CMSpatialEntityElement >> lineSegmentEfh [
 				into: [:i :each | i + each]) / ends size
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentN [
 	
 	^(self segments isNil or: [self orderedNeighbourhood size = 6])
@@ -268,7 +268,7 @@ CMSpatialEntityElement >> lineSegmentN [
 		ifFalse: [self segments first]
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentNE [
 	
 	^(self segments isNil or: [self orderedNeighbourhood size ~= 6])
@@ -276,14 +276,14 @@ CMSpatialEntityElement >> lineSegmentNE [
 		ifFalse: [self segments first]
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentNEf [
 	
 	self spaceModel gridCellShape = #hexagonal ifTrue: [^self lineSegmentNEfh].
 	^nil
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentNEfh [
 	
 	| starts ends nE nNE nNW |
@@ -311,7 +311,7 @@ CMSpatialEntityElement >> lineSegmentNEfh [
 				into: [:i :each | i + each]) / ends size
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentNW [
 	
 	^(self segments isNil or: [self orderedNeighbourhood size ~= 6])
@@ -319,14 +319,14 @@ CMSpatialEntityElement >> lineSegmentNW [
 		ifFalse: [self segments last]
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentNWf [
 	
 	self spaceModel gridCellShape = #hexagonal ifTrue: [^self lineSegmentNWfh].
 	^nil
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentNWfh [
 	
 	| starts ends nNE nNW nW |
@@ -354,7 +354,7 @@ CMSpatialEntityElement >> lineSegmentNWfh [
 				into: [:i :each | i + each]) / ends size
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentNf [
 	
 	| im d |
@@ -368,7 +368,7 @@ CMSpatialEntityElement >> lineSegmentNf [
 	^nil
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentS [
 	
 	^(self segments isNil or: [self orderedNeighbourhood size = 6])
@@ -376,7 +376,7 @@ CMSpatialEntityElement >> lineSegmentS [
 		ifFalse: [self segments at: 3]
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentSE [
 	
 	^(self segments isNil or: [self orderedNeighbourhood size ~= 6])
@@ -384,14 +384,14 @@ CMSpatialEntityElement >> lineSegmentSE [
 		ifFalse: [self segments at: 3]
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentSEf [
 	
 	self spaceModel gridCellShape = #hexagonal ifTrue: [^self lineSegmentSEfh].
 	^nil
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentSEfh [
 	
 	| starts ends nSE nSW nE |
@@ -419,7 +419,7 @@ CMSpatialEntityElement >> lineSegmentSEfh [
 				into: [:i :each | i + each]) / ends size
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentSW [
 	
 	^(self segments isNil or: [self orderedNeighbourhood size ~= 6])
@@ -427,14 +427,14 @@ CMSpatialEntityElement >> lineSegmentSW [
 		ifFalse: [self segments at: 4]
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentSWf [
 	
 	self spaceModel gridCellShape = #hexagonal ifTrue: [^self lineSegmentSWfh].
 	^nil
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentSWfh [
 	
 	| starts ends nW nSE nSW |
@@ -462,7 +462,7 @@ CMSpatialEntityElement >> lineSegmentSWfh [
 				into: [:i :each | i + each]) / ends size
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentSf [
 	
 	| im d |
@@ -476,7 +476,7 @@ CMSpatialEntityElement >> lineSegmentSf [
 	^nil
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentW [
 	
 	self segments isNil ifTrue: [^nil].
@@ -485,7 +485,7 @@ CMSpatialEntityElement >> lineSegmentW [
 		ifFalse: [self segments last]
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentWf [
 	
 	| im d |
@@ -500,7 +500,7 @@ CMSpatialEntityElement >> lineSegmentWf [
 	^nil
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentWfh [
 	
 	| starts ends nW nSW nNW |
@@ -528,7 +528,7 @@ CMSpatialEntityElement >> lineSegmentWfh [
 				into: [:i :each | i + each]) / ends size
 ]
 
-{ #category : #'- environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> nearestCellFromCells: aCollecOfCells constraintOnPath: aBlock [
 	"Return the nearest cell among aCollecOfCells"
 	
@@ -547,7 +547,7 @@ CMSpatialEntityElement >> nearestCellFromCells: aCollecOfCells constraintOnPath:
 	^target
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> nearestCellVerifying: aCondition [
 	"Purpose: returns the nearest spatial entity verifying a specified condition 
 If none: returns nil; if more than one at the minimum radius: random selection
@@ -568,7 +568,7 @@ Example: self nearestCellVerifying: [:c | c isClosed not]"
 				constraintOnPath: [:aCell | true]]
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> nearestCellVerifying: condition1 constraintOnPath: condition2 [
 	"Purpose: returns the nearest cell verifying a specified condition1, the cells in between verifying another specified condition2.
 Arguments: condition1 = <BlockClosure>
@@ -594,7 +594,7 @@ Example := self nearestCellVerifying: [:aCell | aCell hasWater] constraintOnPath
 	^target
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> nearestCellVerifying: aCondition withMaxOf: aMagnitudeName [
 	"Purpose: returns the nearest cell verifying a specified condition and with the highest value of a specified function. 
 If none: returns nil; if more than one at the minimum radius: random selection
@@ -612,7 +612,7 @@ Example: self nearestCellVerifying: [:c | c isPolluted not] withMaxOf: #water"
 		ifTrue: [nil]
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> nearestCellWithMaxOf: aMagnitudeName [
 	"Purpose: returns the nearest cell with the highest value of a specified function. 
 If none: returns nil; if more than one at the minimum radius: random selection
@@ -628,7 +628,7 @@ Example: self nearestCellWithMaxOf: #sugar"
 		ifTrue: [nil]
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> nearestCellWithoutAny: locatedEntityName [
 	"Purpose: returns the nearest cell without any occupant of a given type. 
 If none: returns nil; if more than one at the minimum radius: random selection
@@ -649,7 +649,7 @@ Example: self nearestCellWithoutAny: #Tree"
 			[super nearestCellVerifying: [:p | p noOccupantType: locatedEntityName]]
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> nearestCellsVerifying: aCondition [
 	"Purpose: returns the nearest cells verifying a specified condition.
 Valid only for regular grids (square or hexagonal cells). 
@@ -662,7 +662,7 @@ Example: self nearestCellsVerifying: [:c | c isClosed not]"
 		withinRadius: (self spaceModel line max: self spaceModel column)
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> nearestCellsVerifying: aCondition withMaxOf: aMagnitudeName [
 	"Purpose: returns the nearest cells verifying a specified condition and with the maximum value of a given magnitude. 
 Valid only for regular grids (square or hexagonal cells).  
@@ -677,7 +677,7 @@ Example: self nearestCellsVerifying: [:c | c isPolluted not] withMaxOf: #water"
 		withinRadius: (self spaceModel line max: self spaceModel column)
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> nearestCellsWithMaxOf: aMagnitudeName [
 	"Purpose: returns the nearest cells with the maximum value of a given magnitude. 
 Valid only for regular grids (square or hexagonal cells).  
@@ -691,7 +691,7 @@ Example: self nearestNeighborsWithMaxOf: #water"
 		withinRadius: (self spaceModel line max: self spaceModel column)
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> nearestCellsWithoutAny: locatedEntityName [
 	"Purpose: returns the nearest cells without any occupant of a given type.
 Valid only for regular grids (square or hexagonal cells).  
@@ -704,7 +704,7 @@ Example: self nearestCellsWithoutAny: #Predator"
 		withinRadius: (self spaceModel line max: self spaceModel column)
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> nearestEmptyCell [
 	"Purpose: returns the nearest cell with no occupant of any kind. 
 If none: returns nil; if more than one at the minimum radius: random selection
@@ -724,7 +724,7 @@ Return value: <SpatialEntityElement | nil>"
 		ifFalse: [super nearestCellVerifying: [:p | p noOccupant]]
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> nearestEmptyCells [
 	"Purpose: returns the nearest cell with no occupant of any kind.
 Valid only for regular grids (square or hexagonal cells).  
@@ -735,7 +735,7 @@ Return value: <Collection(SpatialEntityElement)>"
 			(self spaceModel line max: self spaceModel column)
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> neighbourE [
 	"Purpose: returns the neighbour to the East
 Not nil only for square and hexagonal cells (regular spatial grid). 
@@ -750,7 +750,7 @@ Return value: <SpatialEntityElement | nil>"
 	^nil
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> neighbourN [
 	"Purpose: returns the neighbour to the North
 Not nil only for square cells (regular spatial grid). 
@@ -762,7 +762,7 @@ Return value: <SpatialEntityElement | nil>"
 	^nil
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> neighbourNE [
 	"Purpose: returns the neighbour to the NorthEast
 Not nil only for square (8 neighbors) and hexagonal cells (regular spatial grid). 
@@ -775,7 +775,7 @@ Return value: <SpatialEntityElement | nil>"
 	^nil
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> neighbourNW [
 	"Purpose: returns the neighbour to the NorthWest
 Not nil only for square (8 neighbors) and hexagonal cells (regular spatial grid). 
@@ -788,7 +788,7 @@ Return value: <SpatialEntityElement | nil>"
 	^nil
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> neighbourS [
 	"Purpose: returns the neighbour to the South
 Not nil only fore square cells (regular spatial grid). 
@@ -801,7 +801,7 @@ Return value: <SpatialEntityElement | nil>"
 	^nil
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> neighbourSE [
 	"Purpose: returns the neighbour to the SouthEast
 Not nil only for square (8 neighbors) and hexagonal cells (regular spatial grid). 
@@ -814,7 +814,7 @@ Return value: <SpatialEntityElement | nil>"
 	^nil
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> neighbourSW [
 	"Purpose: returns the neighbour to the SouthWest
 Not nil only for square (8 neighbors) and hexagonal cells (regular spatial grid). 
@@ -827,7 +827,7 @@ Return value: <SpatialEntityElement | nil>"
 	^nil
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> neighbourW [
 	"Purpose: returns the neighbour to the West
 Not nil only for square and hexagonal cells (regular spatial grid). 
@@ -842,40 +842,40 @@ Return value: <SpatialEntityElement | nil>"
 	^nil
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMSpatialEntityElement >> numCol [
 	"Purpose: returns the X coordinate of the cell in a regular spatial grid"
 	
 	^self id - ((self numLine - 1) * self spaceModel column)
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMSpatialEntityElement >> numLine [
 	"Purpose: returns the Y coordinate of the cell in a regular spatial grid"
 	
 	^(self id / self spaceModel column) ceiling
 ]
 
-{ #category : #'- accessing' }
+{ #category : #accessing }
 CMSpatialEntityElement >> orderedNeighbourhood [
 	
 	orderedNeighbourhood ifNil: [self spaceModel initNeighbourhood].
 	^orderedNeighbourhood
 ]
 
-{ #category : #'- accessing' }
+{ #category : #accessing }
 CMSpatialEntityElement >> orderedNeighbourhood: aList [
 	
 	orderedNeighbourhood := aList
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> outlinePatch [
 	
 	^self image component translatedBy: self center
 ]
 
-{ #category : #'- deprecated' }
+{ #category : #deprecated }
 CMSpatialEntityElement >> relativeDistanceTo: anotherCell constraint: aBlock [
 	"DEPRECATED. Should use: distanceTo: anotherCell constraintOnPath: aBlock
 Return an integer : the distance (in cell unit) to anotherCell according to constraint  (aBlock)."
@@ -883,7 +883,7 @@ Return an integer : the distance (in cell unit) to anotherCell according to cons
 	^self shortestDistanceTo: anotherCell constraintOnPath: aBlock
 ]
 
-{ #category : #'- displaying - obsolete' }
+{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> segments [
 	
 	| segments |
@@ -893,7 +893,7 @@ CMSpatialEntityElement >> segments [
 	^segments
 ]
 
-{ #category : #'- deprecated' }
+{ #category : #deprecated }
 CMSpatialEntityElement >> shortestDistanceTo: anotherCell constraintOnPath: aBlock [
 	"DEPRECATED. Should use: distanceTo: anotherCell constraintOnPath: aBlock
 
@@ -906,7 +906,7 @@ Example: self shortestDistanceTo: self spaceModel centralLocation constraintOnPa
 	^(self wayTo: anotherCell constraint: aBlock) size - 1
 ]
 
-{ #category : #'+ environment - distance' }
+{ #category : #'environment - distance' }
 CMSpatialEntityElement >> shortestDistanceToCells: aCollecOfCells constraintOnPath: aBlock [
 	"Purpose: gets the shortest distance (Manhattan distance in cell unit) to a collection of other cells, taking a specified constraint into account.
 Arguments: aCollecOfCells = <Collection(SpatialEntityElement)>
@@ -919,7 +919,7 @@ Example: self shortestDistanceToCells: self myPlots constraintOnPath: [:aCell | 
 			(self nearestCellFromCells: aCollecOfCells constraintOnPath: aBlock)
 ]
 
-{ #category : #'+ environment - distance' }
+{ #category : #'environment - distance' }
 CMSpatialEntityElement >> shortestDistanceToCellsVerifying: aCondition [
 	"Purpose: gets the shortest distance (Manhattan distance in cell unit) to a cell verifying a specified condition.
 Arguments: aCondition = <BlockClosure>
@@ -933,7 +933,7 @@ Example: self shortestDistanceToCellVerifying: [:c | c landCover = #forest]"
 		ifFalse: [ self distanceTo: targetCell ]
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> wayTo: anotherCell [
 	"Purpose: gets the shortest way to anotherCell
 Argument: anotherCell = <SpatialEntityElement>
@@ -969,7 +969,7 @@ Example: self wayTo: self spaceModel centralLocation"
 	^path
 ]
 
-{ #category : #'- deprecated' }
+{ #category : #deprecated }
 CMSpatialEntityElement >> wayTo: anotherCell constrainedBy: aCondition [
 	"DEPRECATED. Should use #wayTo: anotherCell constraint: aCondition
 Return an OrderedCollection of cells describing the shortest way to anotherCell according to the constraint aBlock.
@@ -979,7 +979,7 @@ See example in 'DemoWayTo' model"
 	^self wayTo: anotherCell constraint: aCondition
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> wayTo: anotherCell constraint: aBlock [
 	"Purpose: gets the shortest way satisfying a constraint to anotherCell 
 Arguments: anotherCell = <SpatialEntityElement>
@@ -1022,7 +1022,7 @@ Example: self wayTo: self spaceModel centralLocation constraint: [:c | c isClose
 	^road
 ]
 
-{ #category : #'- deprecated' }
+{ #category : #deprecated }
 CMSpatialEntityElement >> x [
 	"This method is not supported because numCol is more explicit. Please use numCol instead."
 
@@ -1034,7 +1034,7 @@ CMSpatialEntityElement >> x [
 	^ self numCol
 ]
 
-{ #category : #'- deprecated' }
+{ #category : #deprecated }
 CMSpatialEntityElement >> y [
 	"This method is not supported because numCol is more explicit. Please use numCol instead."
 

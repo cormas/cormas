@@ -27,7 +27,7 @@ CMSpatialEntityCell >> bufferState: aValue [
 	bufferState := aValue
 ]
 
-{ #category : #'+ initialize - release' }
+{ #category : #'initialize - release' }
 CMSpatialEntityCell >> initWith: aValue [
 	"Purpose: assigns a given value to the 'state' attribute"
 	

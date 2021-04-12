@@ -25,65 +25,65 @@ Class {
 		'agentObs',
 		'acquaintances'
 	],
-	#category : 'Cormas-Core-Entities'
+	#category : #'Cormas-Core-Entities'
 }
 
-{ #category : #'- testing' }
+{ #category : #testing }
 CMAgentCommLocation class >> isAgentCommClass [
 	
 	^true
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMAgentCommLocation >> acquaintances [
 	
 	^acquaintances ifNil: [acquaintances := OrderedCollection new]
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMAgentCommLocation >> acquaintances: x [
 	
 	acquaintances := x
 ]
 
-{ #category : #'- accessing' }
+{ #category : #accessing }
 CMAgentCommLocation >> agentObs [
 	
 	^agentObs
 ]
 
-{ #category : #'- accessing' }
+{ #category : #accessing }
 CMAgentCommLocation >> agentObs: unAgent [
 	
 	agentObs := unAgent
 ]
 
-{ #category : #'- accessing' }
+{ #category : #accessing }
 CMAgentCommLocation >> channel [
 	
 	^channel
 ]
 
-{ #category : #'- accessing' }
+{ #category : #accessing }
 CMAgentCommLocation >> channel: val [
 	
 	channel := val
 ]
 
-{ #category : #'+ testing' }
+{ #category : #testing }
 CMAgentCommLocation >> isAgentComm [
 	
 	^true
 ]
 
-{ #category : #'- deprecated' }
+{ #category : #deprecated }
 CMAgentCommLocation >> lastMessage [
 	"DEPRECATED"
 	
 	^self latestMessage
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMAgentCommLocation >> latestMessage [
 	"Purpose: picks the latest message received in the mailbox, removes it from the mailbox and returns it
 Return value: <Msg>"
@@ -95,33 +95,33 @@ Return value: <Msg>"
 	^aMsg
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMAgentCommLocation >> mailBox [
 	
 	^mailBox ifNil: [mailBox := OrderedCollection new]
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMAgentCommLocation >> mailBox: x [
 	
 	mailBox := x
 ]
 
-{ #category : #'- utilities' }
+{ #category : #utilities }
 CMAgentCommLocation >> messageFromChannel: unMsg [
 	"used by channel"
 	
 	self mailBox addLast: unMsg
 ]
 
-{ #category : #'- deprecated' }
+{ #category : #deprecated }
 CMAgentCommLocation >> nextMessage [
 	"DEPRECATED"
 	
 	^self oldestMessage
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMAgentCommLocation >> oldestMessage [
 	"Purpose: picks the oldest message still stored in the mailbox, removes it from the mailbox and returns it
 Return value: <Msg>"
@@ -133,7 +133,7 @@ Return value: <Msg>"
 	^aMsg
 ]
 
-{ #category : #'+ initialize - release' }
+{ #category : #'initialize - release' }
 CMAgentCommLocation >> reset [
 	"Purpose: resets inherited and specific attributes"
 	
@@ -142,7 +142,7 @@ CMAgentCommLocation >> reset [
 	self acquaintances: Set new
 ]
 
-{ #category : #'+ control - communication' }
+{ #category : #'control - communication' }
 CMAgentCommLocation >> sendAsynchronouslyMsgTo: anAgent topic: aSymbol [
 	"Purpose: sends and delivers IMMEDIATELY a message (with a topic) 
 Arguments: anAgent = <AgentCommLocation or AgentCommLocationLocation
@@ -154,7 +154,7 @@ Example: self sendAsynchronouslyMsgTo: self myFriend topic  #hello)"
 	self channel transmit: aMsg
 ]
 
-{ #category : #'+ control - communication' }
+{ #category : #'control - communication' }
 CMAgentCommLocation >> sendAsynchronouslyMsgTo: anAgent topic: aSymbol content: anObject [
 	"Purpose: sends and delivers IMMEDIATELY a message (with a topic and a content)
 Arguments: anAgent = <AgentCommLocation or AgentCommLocationLocation
@@ -167,7 +167,7 @@ Example: self sendAsynchronouslyMsgTo: self myFriend topic  #wantToBuy content: 
 	self channel transmit: aMsg
 ]
 
-{ #category : #'+ control - communication' }
+{ #category : #'control - communication' }
 CMAgentCommLocation >> sendAsynchronouslyMsgToAll: aCollection topic: aSymbol [
 	"Purpose: sends and delivers IMMEDIATLY to many agents a same message (with a topic)
 Arguments: aCollection =  <a collection of AgentCommLocation or AgentCommLocationLocation>
@@ -180,7 +180,7 @@ Example: self sendAsynchronouslyMsgToAll: self acquaintances  topic  #hello)"
 		self channel transmit: aMsg ]
 ]
 
-{ #category : #'+ control - communication' }
+{ #category : #'control - communication' }
 CMAgentCommLocation >> sendAsynchronouslyMsgToAll: aCollection topic: aSymbol content: anObject [
 	"Purpose: sends and delivers IMMEDIATLY to many agents a same message (with a topic and a content)
 Arguments: anAgent = aCollection =  <a collection of AgentCommLocation or AgentCommLocationLocation>
@@ -196,7 +196,7 @@ Example: self sendAsynchronouslyMsgToAll: self acquaintances topic  #fireHere co
 			self channel transmit: aMsg]
 ]
 
-{ #category : #'+ control' }
+{ #category : #control }
 CMAgentCommLocation >> sendMessageAsynchronously: aMsg [
 	"Purpose: sends and delivers IMMEDIATELY a given message
 Argument: aMsg = <Msg>
@@ -206,7 +206,7 @@ Example: self sendMessageAsynchronously: (Msg to: self myFriend topic: #hello)"
 	self channel transmit: aMsg
 ]
 
-{ #category : #'+ control' }
+{ #category : #control }
 CMAgentCommLocation >> sendMessageSynchronously: aMsg [
 	"Purpose: sends and delivers a given message at the end of the simulation timestep 
 Argument: aMsg = <Msg>
@@ -216,7 +216,7 @@ Example: self sendMessageSynchronously: (Msg to: self myFriend topic  #hello)"
 	self channel stock: aMsg
 ]
 
-{ #category : #'+ control - communication' }
+{ #category : #'control - communication' }
 CMAgentCommLocation >> sendSynchronouslyMsgTo: anAgent topic: aSymbol [
 	"Purpose: sends and delivers a message (with a topic) at the end of the simulation timestep 
 Arguments: anAgent = <AgentCommLocation or AgentCommLocationLocation
@@ -228,7 +228,7 @@ Example: self sendSynchronouslyMsgTo: self myFriend topic  #hello)"
 	self channel stock: aMsg
 ]
 
-{ #category : #'+ control - communication' }
+{ #category : #'control - communication' }
 CMAgentCommLocation >> sendSynchronouslyMsgTo: anAgent topic: aSymbol content: anObject [
 	"Purpose: sends and delivers  a message (with a topic and a content) at the end of the simulation timestep 
 Arguments: anAgent = <AgentCommLocation or AgentCommLocationLocation
@@ -241,7 +241,7 @@ Example: self sendSynchronouslyMsgTo: self myFriend topic  #wantToBuy content: a
 	self channel stock: aMsg
 ]
 
-{ #category : #'+ control - communication' }
+{ #category : #'control - communication' }
 CMAgentCommLocation >> sendSynchronouslyMsgToAll: aCollection topic: aSymbol [
 	"Purpose: sends and delivers to many agents a same message (with a topic) at the end of the simulation timestep 
 Arguments: aCollection =  <a collection of AgentCommLocation or AgentCommLocationLocation>
@@ -256,7 +256,7 @@ Example: self sendSynchronouslyMsgToAll: self acquaintances  topic  #hello)"
 			self channel stock: aMsg]
 ]
 
-{ #category : #'+ control - communication' }
+{ #category : #'control - communication' }
 CMAgentCommLocation >> sendSynchronouslyMsgToAll: aCollection topic: aSymbol content: anObject [
 	"Purpose: sends and delivers to many agents a same message (with a topic and a content) at the end of the simulation timestep 
 Arguments: anAgent = aCollection =  <a collection of AgentCommLocation or AgentCommLocationLocation>

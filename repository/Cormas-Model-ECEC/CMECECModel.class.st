@@ -11,19 +11,19 @@ Class {
 	#category : #'Cormas-Model-ECEC'
 }
 
-{ #category : #'- probes' }
+{ #category : #probes }
 CMECECModel class >> colorOfProbe_restrainedSize [
 	
 	^ Color red: 0.104993 green: 0.104993 blue: 0.839458
 ]
 
-{ #category : #'- probes' }
+{ #category : #probes }
 CMECECModel class >> colorOfProbe_unrestrainedSize [
 	
 	^ Color r: 0.839458 g: 0.0 b: 0.0
 ]
 
-{ #category : #'- probes' }
+{ #category : #probes }
 CMECECModel class >> colorOfProbe_vegetationBiomass [
 	
 	^ Color red: 0.0 green: 0.839458 blue: 0.0
@@ -335,7 +335,7 @@ CMECECModel class >> exampleSM4 [
 	Transcript open
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMECECModel class >> restrainedInitialNumber_default [
 	"Return the default value of restrainedInitialNumber attribute"
 	
@@ -352,14 +352,14 @@ Transcript
 		open
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMECECModel class >> unrestrainedInitialNumber_default [
 	"Return the default value of unrestrainedInitialNumber attribute"
 	
 	^10
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 CMECECModel class >> visualize [
 	
 	| data g ds b c |
@@ -411,7 +411,7 @@ CMECECModel class >> visualize [
 	"v openTitled: 'Data Visualization'."
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 CMECECModel class >> visualize: es [
 	
 	| data g ds b c |

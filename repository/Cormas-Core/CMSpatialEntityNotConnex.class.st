@@ -7,22 +7,22 @@ Please note the following possible problems:
 Class {
 	#name : #CMSpatialEntityNotConnex,
 	#superclass : #CMSpatialEntitySet,
-	#category : 'Cormas-Core-Entities'
+	#category : #'Cormas-Core-Entities'
 }
 
-{ #category : #'- obsolete' }
+{ #category : #obsolete }
 CMSpatialEntityNotConnex >> displayImageOn: aGC [
 	
 	self components do: [:c | c displayImageOn: (aGC paint: self color)]
 ]
 
-{ #category : #'- obsolete' }
+{ #category : #obsolete }
 CMSpatialEntityNotConnex >> displayOn: aGC withColor: aSymbol [
 	
 	self components do: [:c | c displayOn: aGC withColor: aSymbol]
 ]
 
-{ #category : #'- displaying' }
+{ #category : #displaying }
 CMSpatialEntityNotConnex >> getSkinE [
 	"Returns a collection of cells belonging to the 'internal skin' of the aggregate"
 	
@@ -35,13 +35,13 @@ CMSpatialEntityNotConnex >> getSkinE [
 				or: [c edge]]
 ]
 
-{ #category : #'- initialize-release' }
+{ #category : #'initialize-release' }
 CMSpatialEntityNotConnex >> initEdge [
 	
 	self edge: (self components anySatisfy: #edge)
 ]
 
-{ #category : #'- obsolete' }
+{ #category : #obsolete }
 CMSpatialEntityNotConnex >> setImage [
 	"a collec of components images"
 	
@@ -55,7 +55,7 @@ CMSpatialEntityNotConnex >> setImage [
 	self image: collec
 ]
 
-{ #category : #'- displaying' }
+{ #category : #displaying }
 CMSpatialEntityNotConnex >> setOutline [
 	"original setOutline method for SptialEntityNotConnex
 	self outline: Set new.
@@ -81,7 +81,7 @@ CMSpatialEntityNotConnex >> setOutline [
 						with: directions)]
 ]
 
-{ #category : #'- initialize-release' }
+{ #category : #'initialize-release' }
 CMSpatialEntityNotConnex >> setSurround [
 	
 	self components first isSpatialEntityElement ifTrue: [^super setSurround].
@@ -92,7 +92,7 @@ CMSpatialEntityNotConnex >> setSurround [
 	^self surround
 ]
 
-{ #category : #'+ metrics' }
+{ #category : #metrics }
 CMSpatialEntityNotConnex >> surface [
 	"Purpose: returns the number of elementary components
 Return value: <Integer>"

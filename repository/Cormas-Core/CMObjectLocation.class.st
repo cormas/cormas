@@ -18,19 +18,19 @@ Class {
 	#category : #'Cormas-Core-Entities'
 }
 
-{ #category : #'- testing' }
+{ #category : #testing }
 CMObjectLocation class >> isObjectLocationClass [
 	
 	^true
 ]
 
-{ #category : #'- testing' }
+{ #category : #testing }
 CMObjectLocation class >> isSituatedClass [
 	
 	^true
 ]
 
-{ #category : #'- displaying' }
+{ #category : #displaying }
 CMObjectLocation >> center [
 	
 	^patch isNil
@@ -46,7 +46,7 @@ CMObjectLocation >> delete [
 	super delete
 ]
 
-{ #category : #'- displaying' }
+{ #category : #displaying }
 CMObjectLocation >> displayOn: aGC [
 	
 	self
@@ -54,7 +54,7 @@ CMObjectLocation >> displayOn: aGC [
 		at: self center
 ]
 
-{ #category : #'- displaying' }
+{ #category : #displaying }
 CMObjectLocation >> displayOn: aGC at: unPoint [
 	
 	self halt	"self povs2 isNil
@@ -63,7 +63,7 @@ CMObjectLocation >> displayOn: aGC at: unPoint [
 				displayOn: aGC at: unPoint]"
 ]
 
-{ #category : #'+ environment - distance' }
+{ #category : #'environment - distance' }
 CMObjectLocation >> distanceTo: aSpatialEntityOrSituatedEntity [
 	"Purpose: returns the Manhattan distance (in cells) between the patch of the agent and aSpatialEntityOrSituatedEntity
 If it is the distance to a situatedEntity, returrns the distance to the patch of this entity.
@@ -77,14 +77,14 @@ Return value: <Integer>"
 		ifTrue: [^self patch distanceTo: aSpatialEntityOrSituatedEntity]
 ]
 
-{ #category : #'+ testing' }
+{ #category : #testing }
 CMObjectLocation >> isClassLocation [
 	"Answer if the entity is a kind of AgentLocation or of ObjectLocation"
 	
 	^true
 ]
 
-{ #category : #'+ moving' }
+{ #category : #moving }
 CMObjectLocation >> isMovedTo: aSpatialEntity [
 	"Purpose: moves to a given location.
 Argument: aSpatialEntity = <SpatialEntity>
@@ -110,7 +110,7 @@ Example: self isMovedTo: self patch neighbourN"
 				from: (EntityReference on: self) ]
 ]
 
-{ #category : #'+ testing' }
+{ #category : #testing }
 CMObjectLocation >> isObjectLocation [
 	
 	^true
@@ -129,7 +129,7 @@ CMObjectLocation >> leave [
 	self leaveWhileMoving: false.
 ]
 
-{ #category : #'- moving' }
+{ #category : #moving }
 CMObjectLocation >> leaveWhileMoving: isBeingMoved [
 	"The situated object is not located any more. But it is still 'alive'  "
 
@@ -149,7 +149,7 @@ CMObjectLocation >> leaveWhileMoving: isBeingMoved [
 	self patch: nil
 ]
 
-{ #category : #'- deprecated' }
+{ #category : #deprecated }
 CMObjectLocation >> menu [
 	
 	| aMenuBuilder |
@@ -159,7 +159,7 @@ CMObjectLocation >> menu [
 	^aMenuBuilder menu"
 ]
 
-{ #category : #'- moving' }
+{ #category : #moving }
 CMObjectLocation >> moveTo: aSpatialEntity [
 	"Purpose: moves to a given location.
 Argument: aSpatialEntity = <SpatialEntity>
@@ -168,19 +168,19 @@ Example: self moveTo: self patch neighbourN"
 	self isMovedTo: aSpatialEntity
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMObjectLocation >> patch [
 	
 	^patch
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMObjectLocation >> patch: unPatch [
 	
 	patch := unPatch
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMObjectLocation >> patchID [
 	"return ID of patch"
 	
@@ -200,7 +200,7 @@ CMObjectLocation >> randomMove [
 	self isMovedTo: destination
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMObjectLocation >> sizeOfPOV [
 "To be overwritten if needed"
  ^ 20

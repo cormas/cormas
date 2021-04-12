@@ -8,7 +8,7 @@ Class {
 	#instVars : [
 		'destroyed'
 	],
-	#category : 'Cormas-Core-Entities'
+	#category : #'Cormas-Core-Entities'
 }
 
 { #category : #'star control' }
@@ -18,21 +18,21 @@ CMPassiveObject >> delete [
 	self collector isNil ifFalse:[self collector removeEntity: self]
 ]
 
-{ #category : #'- initialize-release' }
+{ #category : #'initialize-release' }
 CMPassiveObject >> destroyed [
 	"Answer if the entity is destroyed or not"
 	
 	^destroyed ifNil: [destroyed := false]
 ]
 
-{ #category : #'- initialize-release' }
+{ #category : #'initialize-release' }
 CMPassiveObject >> destroyed: aBoolean [
 	
 	destroyed := aBoolean.
 	(aBoolean and: [self isSituated]) ifTrue: [self leave]
 ]
 
-{ #category : #'+ testing' }
+{ #category : #testing }
 CMPassiveObject >> isPassiveObject [
 	
 	^true

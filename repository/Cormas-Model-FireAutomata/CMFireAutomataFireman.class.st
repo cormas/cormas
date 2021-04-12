@@ -21,13 +21,13 @@ CMFireAutomataFireman >> agsize: anObject [
 	agsize := anObject
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 CMFireAutomataFireman >> extinctFire [
 
 		self patch state = #fire ifTrue: [self patch state: #empty. self patch bufferState: #empty. ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 CMFireAutomataFireman >> move [
 
 	| firedNeighbours |
@@ -40,19 +40,19 @@ CMFireAutomataFireman >> move [
 		]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 CMFireAutomataFireman >> pov [
 	"^#empty ^#tree ^#fire ^#ash"
 
 	^ Color blue
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMFireAutomataFireman >> sizeOfPOV [
 ^ self agsize
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 CMFireAutomataFireman >> step [
 
 	self move.

@@ -21,47 +21,47 @@ Class {
 		'agentObs',
 		'acquaintances'
 	],
-	#category : 'Cormas-Core-Entities'
+	#category : #'Cormas-Core-Entities'
 }
 
-{ #category : #'- testing' }
+{ #category : #testing }
 CMAgentComm class >> isAgentCommClass [
 	
 	^ true
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMAgentComm >> acquaintances [
 	
 	^ acquaintances 
 		ifNil: [ acquaintances := OrderedCollection new ]
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMAgentComm >> acquaintances: x [
 	
 	acquaintances := x
 ]
 
-{ #category : #'- accessing' }
+{ #category : #accessing }
 CMAgentComm >> agentObs [
 	
 	^ agentObs
 ]
 
-{ #category : #'- accessing' }
+{ #category : #accessing }
 CMAgentComm >> agentObs: unAgent [
 	
 	agentObs := unAgent
 ]
 
-{ #category : #'- accessing' }
+{ #category : #accessing }
 CMAgentComm >> channel [
 	
 	^channel
 ]
 
-{ #category : #'- accessing' }
+{ #category : #accessing }
 CMAgentComm >> channel: val [
 	
 	channel := val
@@ -73,7 +73,7 @@ CMAgentComm >> isAgentComm [
 	^ true
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMAgentComm >> latestMessage [
 	"Purpose: picks the latest message received in the mailbox, removes it from the mailbox and returns it
 	Return value: <Msg>"
@@ -86,27 +86,27 @@ CMAgentComm >> latestMessage [
 	^ aMsg
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMAgentComm >> mailBox [
 	
 	^ mailBox 
 		ifNil: [ mailBox := OrderedCollection new ]
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMAgentComm >> mailBox: anOrderedCollection [
 	
 	mailBox := anOrderedCollection
 ]
 
-{ #category : #'- utilities' }
+{ #category : #utilities }
 CMAgentComm >> messageFromChannel: aMsg [
 	"used by channel"
 	
 	self mailBox addLast: aMsg
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMAgentComm >> oldestMessage [
 	"Purpose: picks the oldest message still stored in the mailbox, removes it from the mailbox and returns it
 Return value: <Msg>"

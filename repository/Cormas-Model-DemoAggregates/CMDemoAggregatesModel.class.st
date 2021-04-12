@@ -77,7 +77,7 @@ CMDemoAggregatesModel class >> isAbstract [
 ^false
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMDemoAggregatesModel class >> seeds_default [ 
 	"Return the default value of seeds attribute"	
 	^nil

@@ -101,7 +101,7 @@ CMSpaceModel >> activeSpatialEntity: aClass [
 	activeSpatialEntity := aClass
 ]
 
-{ #category : #'- deprecated' }
+{ #category : #deprecated }
 CMSpaceModel >> aggregate: listPolygons [
 	"merge-aggregation of the other polygons on the first of the list"
 
@@ -126,7 +126,7 @@ CMSpaceModel >> aggregate: listPolygons [
 				ifFalse: [ theOthers do: [ :p | fusion addComponents: p components ] ] ]
 ]
 
-{ #category : #'- deprecated' }
+{ #category : #deprecated }
 CMSpaceModel >> aggregate: listPolygons new: entityC [
 	"Creation of an N+1 level integer by aggregation of N level polygons"
 
@@ -170,7 +170,7 @@ CMSpaceModel >> aggregatesEntities [
 	^aCollection
 ]
 
-{ #category : #'- deprecated' }
+{ #category : #deprecated }
 CMSpaceModel >> aggregatesInstancesOf: entityE condition: methodName [
 	| nameEntitiesE theInterestingEntitiesE setOfComponents seed neighbours newNeighbours |
 	self flag: #shouldBeRevised.
@@ -3750,7 +3750,7 @@ aColl at: 1 put: aColl first asNumber. aColl at: 2 put: aColl last asNumber. ]] 
 		allCells reverseDo: [: c | c delete]
 ]
 
-{ #category : #'- utilities - binary storage' }
+{ #category : #'utilities - binary storage' }
 CMSpaceModel >> settingsFrom: aClone [
 	(self absoluteBounds = aClone absoluteBounds
 		and: [ self column = aClone column
