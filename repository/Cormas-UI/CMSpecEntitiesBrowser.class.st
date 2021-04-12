@@ -91,21 +91,14 @@ CMSpecEntitiesBrowser >> entityEditActivityDiagrams [
 CMSpecEntitiesBrowser >> entityEditMethods: selectedClass [
 	" Open a browser tool to edit the receiver's model initialization "
 
-	selectedClass ifNotNil: [ 
-		ClyFullBrowser openWithState: [ : browser | 
-			browser 
-				selectClass: selectedClass
-				atMethodTag: #control ] ]
+	selectedClass ifNotNil: [ self openBrowserAt: selectedClass tag: #control ]
 ]
 
 { #category : #callbacks }
 CMSpecEntitiesBrowser >> entityEditPassiveMethods [
 	" Open a browser tool to edit the receiver's model initialization "
 
-	ClyFullBrowser openWithState: [ : browser | 
-		browser 
-			selectClass: self passiveListSelectedClass
-			atMethodTag: #control ]
+	self openBrowserAt: self passiveListSelectedClass tag: #control
 	
 ]
 
@@ -118,10 +111,8 @@ CMSpecEntitiesBrowser >> entityEditPoVSetter [
 CMSpecEntitiesBrowser >> entityEditSocialMethods [
 	" Open a browser tool to edit the receiver's model initialization "
 
-	ClyFullBrowser openWithState: [ : browser | 
-		browser 
-			selectClass: self socialListSelectedClass
-			atMethodTag: #control ]
+	self openBrowserAt: self socialListSelectedClass tag: #control
+
 	
 ]
 
@@ -129,10 +120,8 @@ CMSpecEntitiesBrowser >> entityEditSocialMethods [
 CMSpecEntitiesBrowser >> entityEditSpatialMethods [
 	" Open a browser tool to edit the receiver's model initialization "
 
-	ClyFullBrowser openWithState: [ : browser | 
-		browser 
-			selectClass: self spatialListSelectedClass
-			atMethodTag: #control ]
+	self openBrowserAt: self spatialListSelectedClass tag: #control
+
 	
 ]
 

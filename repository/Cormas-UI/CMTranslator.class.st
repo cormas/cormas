@@ -278,7 +278,7 @@ CMTranslator >> addTranslationsForENPart3 [
 		at: #tRenameEntityDialogText 	put: 'Enter the entity''s name:';
 		at: #tSpecializeEntityDialogText put: 'Create a new kind of Entity
 Enter the entity''s name';
-		at: #tSpecialization 				put: 'CORMAS - Specialization';
+		at: #tSpecialization 				put: 'CORMAS - Specialization - ';
 		at: #tConfirmAbstractEntity 	put: ' is abstract. It will be changed as concrete class. Ok?';
 		at: #tConfirmConcreteEntity 	put: ' is concrete. It will be changed as abstract class. Ok?';
 		at: #tConfirmDeleteAttribute	put: 'Are you sure to remove the selected attribute';
@@ -303,6 +303,7 @@ Enter the entity''s name';
 		at: #tRelatedProjects 			put: 'Related projects';
 		at: #tChooseStFile 				put: 'Choose st file';
 		at: #tStFiles 						put: 'st files';
+		at: #tConfirmBeforeLaunch 		put: 'CORMAS - Confirmation before launching - ';
 		yourself
 ]
 
@@ -550,7 +551,7 @@ CMTranslator >> addTranslationsForESPart3 [
 		at: #tRenameEntityDialogText 		put: 'Ingrese el nombre de la entidad:';
 		at: #tSpecializeEntityDialogText 	put: 'Crear un nuevo tipo de Entidad
 Ingrese el nombre de la entidad';
-		at: #tSpecialization 					put: 'CORMAS - Especialización';
+		at: #tSpecialization 					put: 'CORMAS - Especialización - ';
 		at: #tConfirmAbstractEntity 		put: ' es abstracta. Será cambiada a una clase concreta. Ok?';
 		at: #tConfirmConcreteEntity 		put: ' es concreta. Será cambiada a una clase abstracta. Ok?';
 		at: #tConfirmDeleteAttribute		put: 'Está seguro de borrar el atributo seleccionado?';
@@ -575,6 +576,7 @@ Ingrese el nombre de la entidad';
 		at: #tRelatedProjects  				put: 'Projectos relacionados';
 		at: #tChooseStFile 					put: 'Seleccionar archivo st';
 		at: #tStFiles 							put: 'archivos st';
+		at: #tConfirmBeforeLaunch 			put: 'CORMAS - Confirmación pre-lanzamiento - ';
 		yourself
 
 ]

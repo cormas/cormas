@@ -1,3 +1,7 @@
+"
+This is the main CORMAS UI window.
+
+"
 Class {
 	#name : #CMSpecProjectWindow,
 	#superclass : #PFStandardProjectWindow,
@@ -108,7 +112,7 @@ CMSpecProjectWindow >> defaultProjectManagerClass [
 CMSpecProjectWindow >> defaultWindowTitle [
 	" Private - See superimplementor's comment "
 
-	^ 'Cormas'
+	^ 'CORMAS'
 ]
 
 { #category : #initialization }
