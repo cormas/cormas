@@ -67,20 +67,6 @@ Class {
 	#category : #'Cormas-Core-Interface'
 }
 
-{ #category : #'- default value' }
-CMAbstractModel class >> activeControl_default [
-	"Return the default value of activeControl attribute"
-	
-	^nil
-]
-
-{ #category : #'- default value' }
-CMAbstractModel class >> activeInit_default [
-	"Return the default value of activeInit attribute"
-	
-	^nil
-]
-
 { #category : #probes }
 CMAbstractModel class >> activeProbes [
 	^ activeProbes
@@ -280,13 +266,6 @@ CMAbstractModel class >> allTerminalClasses [
 						ifTrue: [ stream nextPut: passiveClass ] ] ]
 ]
 
-{ #category : #'- default value' }
-CMAbstractModel class >> builder_default [
-	"Return the default value of builder attribute"
-	
-	^nil
-]
-
 { #category : #'managing classes' }
 CMAbstractModel class >> cellClass [
 	^ cellClass
@@ -295,13 +274,6 @@ CMAbstractModel class >> cellClass [
 { #category : #accessing }
 CMAbstractModel class >> cellClass: aClass [
 	cellClass := aClass
-]
-
-{ #category : #'- default value' }
-CMAbstractModel class >> channel_default [
-	"Return the default value of channel attribute"
-	
-	^nil
 ]
 
 { #category : #'+ activityEditor' }
@@ -338,6 +310,62 @@ CMAbstractModel class >> classNameFromEntityName: aString [
 	^ validName asSymbol
 ]
 
+{ #category : #accessing }
+CMAbstractModel class >> cmAuthors [
+	"WARNING: This is code generated automatically.
+ On: 24 March 2021 - 7:59:38.162493 pm"
+
+	^ Dictionary newFromPairs: { 
+		'Author 1' . 'author1@cirad.fr' .
+		'Author 2' . 'author2@cirad.fr' }
+]
+
+{ #category : #accessing }
+CMAbstractModel class >> cmComments [
+	"WARNING: This is code generated automatically.
+ On: 24 March 2021 - 7:59:38.142784 pm"
+
+	^ 'No comments'
+]
+
+{ #category : #accessing }
+CMAbstractModel class >> cmMinimalVersion [
+	" Answer a <String> with the minimal CORMAS version the receiver could be loaded "
+
+	^ '1.0'
+]
+
+{ #category : #accessing }
+CMAbstractModel class >> cmOwner [
+	" A model can be 'marked' as invalid to prevent loading "
+
+	^ ''
+]
+
+{ #category : #accessing }
+CMAbstractModel class >> cmRelatedProjects [
+	" Answer a <String> with the minimal CORMAS version the receiver could be loaded "
+
+	^ Dictionary newFromPairs: { 
+		'Project 1' . 'http://www.cormas.org' .
+		'Project 2' . 'http://www.cirad.fr' }
+]
+
+{ #category : #accessing }
+CMAbstractModel class >> cmValid [
+	" A model can be 'marked' as invalid to prevent loading "
+
+	^ true
+]
+
+{ #category : #accessing }
+CMAbstractModel class >> cmVersion [
+	"WARNING: This is code generated automatically.
+ On: 24 March 2021 - 7:59:38.142784 pm"
+
+	^ '1.0'
+]
+
 { #category : #probes }
 CMAbstractModel class >> colorOfProbe: aProbeSymbol [
 	"answer the color of a probe (to display the curve in ChartsInterface)"
@@ -364,29 +392,6 @@ CMAbstractModel class >> compoundSpatialClasses [
 	^ self spatialClasses select: [:i | i inheritsFrom: CMSpatialEntitySet]
 ]
 
-{ #category : #compiling }
-CMAbstractModel class >> createDefaultMethods [
-	
-	self
-		compile: 'initAgents\"To be completed"\	' withCRs
-		classified: 'instance-creation'
-		notifying: nil.
-	self
-		compile: 'init\"To be completed"\	self initCells.' withCRs
-		classified: 'init'
-		notifying: nil.
-	self
-		compile: 'step: t\"To be completed"\\ ' withCRs
-		classified: 'control'
-		notifying: nil
-]
-
-{ #category : #compiling }
-CMAbstractModel class >> createInstancesAccessorsForAllEntityClasses [
-	self allEntityClasses
-		do: [ :class | self createInstancesAccessorsForClass: class ]
-]
-
 { #category : #accessing }
 CMAbstractModel class >> current [
 	"Direct acces to the current cormasModel"
@@ -402,13 +407,6 @@ CMAbstractModel class >> currentSimulation [
 { #category : #accessing }
 CMAbstractModel class >> currentSimulation: anObject [
 	self deprecated: 'currentSimulation is no longer supported.'
-]
-
-{ #category : #'- default value' }
-CMAbstractModel class >> database_default [
-	"Return the default value of database attribute"
-	
-	^nil
 ]
 
 { #category : #'+ simulation settings' }
@@ -439,41 +437,12 @@ CMAbstractModel class >> defaultSteppingBackSetting [
 	^false
 ]
 
-{ #category : #'description - primitives' }
-CMAbstractModel class >> descriptionTextFromFirstDate: firstDate lastDate: lastDate authors: list1 emails: list2 comments: additionalText [
-	
-	| txt |
-	txt := 'Model name : ' asText
-		,
-			((self name , '\') asText emphasizeAllWith: #color -> ColorValue red)
-				withCRs asText emphasizeAllWith: #(#bold #large).
-	txt := txt , 'Current version : ' asText
-		,
-			((self version , '\') asText emphasizeAllWith: #color -> ColorValue red)
-				withCRs asText.
-	txt := txt , 'Creation date : ' asText
-		,
-			((firstDate , '\') asText emphasizeAllWith: #color -> ColorValue red)
-				withCRs asText.
-	txt := txt , 'Last update : ' asText
-		,
-			((lastDate , '\') asText emphasizeAllWith: #color -> ColorValue red)
-				withCRs asText.
-	list1 size > 1
-		ifTrue:
-			[txt := txt , ('Authors\' withCRs asText emphasizeAllWith: #(#bold #large))]
-		ifFalse:
-			[txt := txt , ('Author\' withCRs asText emphasizeAllWith: #(#bold #large))].
-	list1
-		with: list2
-		do:
-			[:a :e | 
-			txt := txt , a , ' ' asText
-				, (('   ' , e , '\') asText emphasizeAllWith: #italic) withCRs asText].
-	txt := txt
-		, ('Comments\' withCRs asText emphasizeAllWith: #(#bold #large)).
-	txt := txt , (additionalText , '\') withCRs asText.
-	^txt
+{ #category : #accessing }
+CMAbstractModel class >> friendlyName [
+
+	^ (self name beginsWith: 'CM')
+		ifTrue: [ self name allButFirst: 2 ]
+		ifFalse: [ self name ]
 ]
 
 { #category : #compiling }
@@ -612,28 +581,6 @@ CMAbstractModel class >> isSituatedClass [
 	^false
 ]
 
-{ #category : #'description - primitives' }
-CMAbstractModel class >> listing: fileName [
-	"Creates a simple listing of the attributes and methods of this class into fileName"
-	
-	| bufferText stream |
-	bufferText := Text new.
-	bufferText := bufferText , '***** Attributs'' list *****\' withCRs.
-	self instVarNames
-		do: [:iv | bufferText := bufferText , '  -' , iv asString , '\' withCRs].
-	bufferText := bufferText , '\\\***** Methodes'' list ***** ' withCRs.
-	self organization categories
-		do:
-			[:protoc | 
-			bufferText := bufferText , '\\Protocol: ' , protoc asString , '\\' withCRs.
-			(self organization listAtCategoryNamed: protoc)
-				do:
-					[:meth | bufferText := bufferText , '  #' , meth asString , '\' withCRs]].
-	stream := fileName asFilename writeStream.
-	stream nextPutAll: bufferText withCRs.
-	stream close
-]
-
 { #category : #'managing classes' }
 CMAbstractModel class >> locatedObjectClasses [
 	
@@ -752,15 +699,6 @@ CMAbstractModel class >> modelPrefix [
 		ifFalse: [ mName ]
 ]
 
-{ #category : #'instance creation' }
-CMAbstractModel class >> newSimulation [
-	
-	| sim |
-	sim := super new.	"sim initialize.   already called by new"
-	self currentSimulation: sim.
-	^sim
-]
-
 { #category : #'managing classes' }
 CMAbstractModel class >> occupantClasses [
 	"return a collection of classes for which intances are located on the grid"
@@ -821,13 +759,6 @@ CMAbstractModel class >> povColorsDict: aDictionary [
 	povColorsDict := aDictionary
 ]
 
-{ #category : #'- default value' }
-CMAbstractModel class >> povColorsDict_default [
-	"Return the default value of povColorsDict attribute"
-	
-	^nil
-]
-
 { #category : #'- activityEditor' }
 CMAbstractModel class >> preStringForActivitySelector [
 	
@@ -886,18 +817,6 @@ CMAbstractModel class >> removeRandomAttributes: anArray [
 ]
 
 { #category : #'managing classes' }
-CMAbstractModel class >> renameAttribute: oldName by: newName [
-	"(ex: theCells by theLandUnits)"
-	
-	(self instVarNames includes: oldName)
-		ifTrue:
-			[Cursor wait
-				showWhile:
-					[(RenameInstanceVariableRefactoring rename: oldName to: newName in: self)
-						execute]]
-]
-
-{ #category : #'managing classes' }
 CMAbstractModel class >> renameSelector: oldName by: newName inputParametersNumber: nbArgs [
 	"ex: theCells by theLandUnits or 
 	theCells:xx by theLandUnits:xx"
@@ -946,20 +865,6 @@ colorOfProbe_aSymbol
 ]
 
 { #category : #'description - primitives' }
-CMAbstractModel class >> setCormasAndVwVersion [
-	"Creates 2 class methods: #cormasCompatibleVersion and #vwCompatibleVersion"
-	
-	self class
-		compile:
-			'cormasCompatibleVersion' ,
-					'
-^ ' , Cormas version printString
-		classified: 'description'
-		notifying: nil.
-	self setDescriptionFor: 'vwCompatibleVersion' withText: SystemVersionName	"SystemUtils.SystemVersionName     -> '7.6'"	"SystemUtils version   ->  'VisualWorks¬Æ NonCommercial, 7.6 of lundi 3 mars 2008'"
-]
-
-{ #category : #'description - primitives' }
 CMAbstractModel class >> setDescriptionFor: method withText: text [
 	"Creates  a method for a CormasModel subclass from the text"
 	
@@ -974,12 +879,6 @@ CMAbstractModel class >> setDescriptionFor: method withText: text [
 		notifying: nil
 ]
 
-{ #category : #'description - primitives' }
-CMAbstractModel class >> setVersion: aString [
-	
-	self setDescriptionFor: 'version' withText: aString
-]
-
 { #category : #compiling }
 CMAbstractModel class >> setterForEntityClass: aClass [
 	"efficiently create the setter selector for the entity class aClass (avoid concatenation).
@@ -989,13 +888,6 @@ CMAbstractModel class >> setterForEntityClass: aClass [
 	"
 
 	^ (self getterForEntityClass: aClass) , ':'
-]
-
-{ #category : #'- default value' }
-CMAbstractModel class >> simManager_default [
-	"Return the default value of simManager attribute"
-	
-	^nil
 ]
 
 { #category : #'managing classes' }
@@ -1012,13 +904,6 @@ CMAbstractModel class >> socialClasses [
 { #category : #accessing }
 CMAbstractModel class >> socialClasses: aCollection [
 	socialClasses := aCollection
-]
-
-{ #category : #'- default value' }
-CMAbstractModel class >> spaceModel_default [
-	"Return the default value of spaceModel attribute"
-	
-	^nil
 ]
 
 { #category : #'managing classes' }
@@ -1075,26 +960,6 @@ CMAbstractModel class >> testPeriodicity: anInteger [
 	^ self timeStep \\ anInteger = 0
 ]
 
-{ #category : #compiling }
-CMAbstractModel class >> testTheAccessors [
-	"test if reader and setter accessors exist for each terminal class (and if readerAccessors contains OrderedCollection), otherwise it recompiles new code"
-	
-	| accessor |
-	self allEntityClasses
-		do:
-			[:aClass | 
-			aClass isAbstract
-				ifFalse:
-					[accessor := self getterForEntityClass: aClass.
-					(self canUnderstand: accessor)
-						ifFalse: [self createInstancesAccessorsForClass: aClass].
-					(self allInstVarNames includes: accessor asString)
-						ifFalse: [self createInstancesAccessorsForClass: aClass].
-					((self sourceCodeAt: accessor) string indexOfSubCollection:
-							'OrderedCollection' startingAt: 1) = 0
-						ifTrue: [self createInstancesAccessorsForClass: aClass]]]
-]
-
 { #category : #'+ accessing - scheduling' }
 CMAbstractModel class >> timeStep [
 	"Deprecated. If you want to get the current timeStep, try 'self cormasModel timeStep'."
@@ -1102,46 +967,6 @@ CMAbstractModel class >> timeStep [
 	self
 		deprecated:
 			'timeStep is moved to the instance side. If you want to get the current time, try "self cormasModel timeStep".'
-]
-
-{ #category : #accessing }
-CMAbstractModel class >> timeStep: anInteger [
-	"deprecated. The timeStep management is moved to the instance side so that we can run multiple instances of models."
-
-	self
-		deprecated: 'The timeStep management is moved to the instance side.'.
-
-]
-
-{ #category : #'- default value' }
-CMAbstractModel class >> timeStep_default [
-	"Return the default value of timeStep attribute"
-	
-	^0
-]
-
-{ #category : #'- default value' }
-CMAbstractModel class >> uiSession_default [
-	"Return the default value of uiSession attribute"
-	
-	^nil
-]
-
-{ #category : #accessing }
-CMAbstractModel class >> visualStateIsOpen [
-	^ visualStateIsOpen
-]
-
-{ #category : #accessing }
-CMAbstractModel class >> visualStateIsOpen: aBoolean [
-	visualStateIsOpen := aBoolean
-]
-
-{ #category : #'- default value' }
-CMAbstractModel class >> visualStateIsOpen_default [
-	"Return the default value of visualStateIsOpen attribute"
-
-	^ false
 ]
 
 { #category : #'managing classes' }
@@ -4087,13 +3912,12 @@ CMAbstractModel >> updateLocalData [
 						keysAndValuesDo:
 							[:name :dict | 
 							res := OrderedCollection new.
-							(self perform: (self getterForEntityClass: cl))
-								do:
-									[:c | 
-									aValue := c perform: name.
+							(self perform: cl asGetterForEntityClass)
+								do: [:c |  
+									aValue := c class perform: name.
 									aValue isSymbol
-										ifTrue:
-											["The local probe is a reference to a global probe"
+										ifTrue: [ 
+											"The local probe is a reference to a global probe"
 											aValue := self lastValueOfGlobalDataNamed: name].
 									res
 										add:

@@ -71,8 +71,7 @@ CMProjectModelTest >> testCormasModelAuthors [
 	modelAuthors := 'Author1;author1@cormas.org
 Author2;author2@cormas.org'.
 	self projectModel cormasModelAuthors: modelAuthors.
-	self assert: (self projectModel cormasModelClass respondsTo: #cmAuthors).
-	self assert: self projectModel cormasModelClass cmAuthors equals: modelAuthors.
+	self assert: self projectModel cormasModelAuthors equals: modelAuthors.
 ]
 
 { #category : #test }
@@ -90,8 +89,8 @@ CMProjectModelTest >> testCormasModelComment [
 	
 	modelComment := 'This is a model comment'.
 	self projectModel cormasModelComment: modelComment.
-	self assert: (self projectModel cormasModelClass respondsTo: #comments).
-	self assert: self projectModel cormasModelClass comments equals: modelComment.
+	self assert: (self projectModel respondsTo: #cormasModelComment).
+	self assert: self projectModel cormasModelComment equals: modelComment.
 ]
 
 { #category : #test }
@@ -191,6 +190,12 @@ CMProjectModelTest >> testProjectName [
 	self assert: (self projectModel projectName isKindOf: String).
 	self assert: self projectModel projectName equals: 'CMTestModel'.
 
+]
+
+{ #category : #test }
+CMProjectModelTest >> testResourceLocator [
+
+	self assert: (self projectModel resourceLocator isKindOf: CMResourceLocator)
 ]
 
 { #category : #test }

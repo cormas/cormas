@@ -28,15 +28,6 @@ CMApplicationProjectTest >> setUp [
 	application := CMApplicationProject new.
 ]
 
-{ #category : #running }
-CMApplicationProjectTest >> tearDown [
-	"Hooks that subclasses may override to define the fixture of test."
-
-	self.
-	super tearDown.	
-
-]
-
 { #category : #test }
 CMApplicationProjectTest >> testCormasModel [
 

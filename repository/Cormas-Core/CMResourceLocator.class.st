@@ -27,6 +27,19 @@ CMResourceLocator class >> assetsPath [
 		do: [ :ex | FileLocator workingDirectory ]) / 'assets'
 ]
 
+{ #category : #accessing }
+CMResourceLocator class >> cormasHomeProjects [
+
+	^ (FileLocator home / 'CORMAS') allChildrenMatching: CMApplicationProject applicationExtension.
+]
+
+{ #category : #accessing }
+CMResourceLocator class >> demosPath [
+	" Answer a <FileReference> with the receiver's path to the demos directory "
+
+	^ CMApplicationPreferences settingBaseLocation asFileReference / 'demos'
+]
+
 { #category : #'class initialization' }
 CMResourceLocator class >> initialize [
 	SessionManager default registerSystemClassNamed: self name
@@ -45,6 +58,14 @@ CMResourceLocator >> addOnsPath [
 	
 	^ (self cormasPath / 'Add-ons') ensureCreateDirectory.
 
+
+]
+
+{ #category : #'utilities - path' }
+CMResourceLocator >> animationsPath [
+	" Answer a <FileReference> corresponding to the path of stored Animations directory. "
+
+	^ (self assetsPath / 'Animations') ensureCreateDirectory.
 
 ]
 

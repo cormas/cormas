@@ -1,11 +1,11 @@
 Class {
-	#name : #CMMigrator,
-	#superclass : #Object,
-	#category : 'Cormas-UI-Project'
+	#name : #CMGitHubMigrator,
+	#superclass : #CMObject,
+	#category : #'Cormas-UI-Project'
 }
 
 { #category : #accessing }
-CMMigrator class >> migrateToGitHub [
+CMGitHubMigrator class >> migrateToGitHub [
 
 | migration cmRefs | 
 
