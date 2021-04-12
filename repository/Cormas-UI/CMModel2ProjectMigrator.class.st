@@ -21,10 +21,12 @@ Class {
 }
 
 { #category : #examples }
-CMModel2ProjectMigrator class >> example [ 
+CMModel2ProjectMigrator class >> migrateProjects [ 
 	<example>
 	
-	self new buildProjects
+	self new 
+		buildProjects;
+		moveProjects
 ]
 
 { #category : #building }
@@ -111,6 +113,15 @@ CMModel2ProjectMigrator >> metadataFilename [
 	" Answer a <String> with the name of the file which stores metadata information about a project "
 
 	^ CMProjectFile metadataFilename 
+]
+
+{ #category : #building }
+CMModel2ProjectMigrator >> moveProjects [
+	" Move recently generated projects to base location "
+
+	CMApplicationProject createUserDirectories.
+	(FileSystem workingDirectory allChildrenMatching: '*Model.zip') do: [ : modelRef |
+		modelRef moveTo: CMResourceLocator demosPath ]
 ]
 
 { #category : #building }
