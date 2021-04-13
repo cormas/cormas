@@ -165,7 +165,7 @@ CMSpecConfirmBeforeLaunch >> initializeActiveControl [
 CMSpecConfirmBeforeLaunch >> initializeActiveInit [
 	" If there is a init method already selected, select it "
 
-	self initMethodList items: (self projectManager modelInitMethods collect: #asSymbol) .
+	self initMethodList items: (self projectManager modelInitMethods collect: #asSymbol).
 	self cormasModel hasActiveInit 
 		ifTrue: [ self initMethodList selectItem: self cormasModel activeInit ].
 ]
@@ -262,8 +262,9 @@ CMSpecConfirmBeforeLaunch >> stepBackCheck: anObject [
 
 { #category : #accessing }
 CMSpecConfirmBeforeLaunch >> title [
+	" Private - See superimplementor's comment "
 
-	^ 'Confirmation before launching'
+	^ self translator tConfirmBeforeLaunch ", self projectManager projectName"
 ]
 
 { #category : #accessing }

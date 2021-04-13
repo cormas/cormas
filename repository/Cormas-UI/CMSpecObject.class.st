@@ -100,6 +100,15 @@ CMSpecObject >> iconNamed: aSymbol [
 	^ CMIcons perform: aSymbol
 ]
 
+{ #category : #accessing }
+CMSpecObject >> openBrowserAt: aClass tag: aSymbol [
+
+	ClyFullBrowser openWithState: [ : browser | 
+		browser 
+			selectClass: aClass
+			atMethodTag: aSymbol ]
+]
+
 { #category : #callbacks }
 CMSpecObject >> openHelp [
 	self shouldBeImplemented.

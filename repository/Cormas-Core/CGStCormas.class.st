@@ -43,15 +43,6 @@ CGStCormas >> addNewClassType: aType inheritingFrom: aSuperclass name: aName ini
 	^ self targetClass
 ]
 
-{ #category : #'mustache-templates' }
-CGStCormas >> buildContext [
-	" Private - Build Mustache context "
-
-	^ Dictionary new
-		at: 'povAttribute' put: self buildPovAttribute;
-		yourself.
-]
-
 { #category : #accessing }
 CGStCormas >> confirmIsAbstractClass: aClass [
 
@@ -91,10 +82,21 @@ CGStCormas >> cormasModelClass [
 { #category : #'code-generation' }
 CGStCormas >> createInit [
 	
-	self targetClass
-		compile: 'init\	"to be completed"\' withCRs
-		classified: 'init'
-		notifying: nil
+	self 
+		targetMethodCategory: 'init';
+		sourceString: 'init\	"to be completed"\' withCRs;
+		generateMethod.
+
+]
+
+{ #category : #'code-generation' }
+CGStCormas >> createInitAgents [
+	
+	self 
+		targetMethodCategory: 'init';
+		sourceString: 'initAgents\	"to be completed"\' withCRs;
+		generateMethod.
+
 ]
 
 { #category : #'code-generation' }
@@ -132,11 +134,17 @@ CGStCormas >> createModelAccessors [
 	self createInstancesAccessorsForClass: self targetClass.
 ]
 
-{ #category : #'mustache-templates' }
+{ #category : #'code-generation' }
 CGStCormas >> createPovOnAttribute [
-	" Generate code String for #initializeWidgets "
+	
+	self 
+		targetMethodCategory: 'pov';
+		sourceString: 'pov
+	" To be completed "
+	
+' withCRs;
+		generateMethod.
 
-	^ (MustacheTemplate on: self templateForPovOnAttribute) value: self buildContext.
 ]
 
 { #category : #'code-generation' }
@@ -183,10 +191,10 @@ aClassName = <String> or <Symbol>.
 { #category : #'code-generation' }
 CGStCormas >> createStep [
 	
-	self targetClass
-		compile: 'step\	"to be completed"' withCRs
-		classified: 'control'
-		notifying: nil
+	self
+		targetMethodCategory: 'control';
+		sourceString: 'step\	"to be completed"' withCRs;
+		generateMethod.
 ]
 
 { #category : #'code-generation' }
@@ -225,33 +233,6 @@ CGStCormas >> renameClass: oldClassname to: newClassname [
 		to: newClassname.
 ]
 
-{ #category : #'code-templates' }
-CGStCormas >> templateForInit [
-
-	^ 'init
-	" To be completed "
-	
-'
-]
-
-{ #category : #'code-templates' }
-CGStCormas >> templateForInitAgents [
-
-	^ 'initAgents
-	" To be completed "
-	
-'
-]
-
-{ #category : #'code-templates' }
-CGStCormas >> templateForPovOnAttribute [
-
-	^ 'pov
-	" To be completed "
-	
-'
-]
-
 { #category : #'mustache-templates' }
 CGStCormas >> templateForPovOnAttribute: attribute [
 
@@ -260,13 +241,4 @@ CGStCormas >> templateForPovOnAttribute: attribute [
 	self {1} isString ifTrue:[ ^ self {1} asSymbol ].
 	self {1}	isLiteral ifTrue:[ ^ (''{1}'' , self {1} printString) asSymbol ].
 	^ self {1}' format: { attribute }
-]
-
-{ #category : #'code-templates' }
-CGStCormas >> templateForStep [
-
-	^ 'step: anObject
-	" To be completed "
-	
-'
 ]

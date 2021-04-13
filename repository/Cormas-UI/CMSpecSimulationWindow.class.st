@@ -1,5 +1,6 @@
 "
-Simulation interface
+Simulation interface.
+This is the inner part of the main application window.
 
 For the Collaborators Part: State my main collaborators and one line about how I interact with them. 
 
@@ -249,8 +250,15 @@ CMSpecSimulationWindow >> currentStepLabel: anObject [
 
 { #category : #callbacks }
 CMSpecSimulationWindow >> defineScenarioAction [
+	" Private - Callback for the simulation button in the main Simulation Window "
 
-	CMSpecConfirmBeforeLaunch openFor: self projectManager
+	(self projectManager currentProjectHasInitMethods and: [ self projectManager currentProjectHasControlMethods ])
+		ifTrue: [ CMSpecConfirmBeforeLaunch openFor: self projectManager ]
+		ifFalse: [
+			self projectManager currentProjectHasInitMethods 
+				ifFalse: [ self openBrowserAt: self cormasModelClass tag: #init ].
+			self projectManager currentProjectHasControlMethods
+				ifFalse: [ self openBrowserAt: self cormasModelClass tag: #control ]  ]
 ]
 
 { #category : #morphic }

@@ -188,10 +188,24 @@ CMProjectManager >> currentProjectHasComments [
 ]
 
 { #category : #testing }
+CMProjectManager >> currentProjectHasControlMethods [
+	" Answer <true> if receiver's model contains at least one initialization method "
+
+	^  self modelControlInitMethods notEmpty
+]
+
+{ #category : #testing }
 CMProjectManager >> currentProjectHasCreationDate [
 	" Answer <true> if receiver's contains a version name "
 
 	^  self currentProject cormasModelClass respondsTo: #creationDate
+]
+
+{ #category : #testing }
+CMProjectManager >> currentProjectHasInitMethods [
+	" Answer <true> if receiver's model contains at least one initialization method "
+
+	^  self modelInitMethods notEmpty
 ]
 
 { #category : #testing }
