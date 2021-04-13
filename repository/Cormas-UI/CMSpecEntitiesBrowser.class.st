@@ -673,10 +673,7 @@ CMSpecEntitiesBrowser >> subMenuForEditSpatialEntity [
 
 { #category : #initialization }
 CMSpecEntitiesBrowser >> title [
-	^ String streamContents: [ : stream |
-		stream
-			<< 'Cormas - ';
-			<< self cormasModelClass asString;
-			<< ' - ';
-			<< self translator tEntities ]
+	" Private - See superimplementor's comment "
+
+	^ self formattedWindowTitle: self translator tEntities
 ]

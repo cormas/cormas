@@ -264,7 +264,7 @@ CMSpecConfirmBeforeLaunch >> stepBackCheck: anObject [
 CMSpecConfirmBeforeLaunch >> title [
 	" Private - See superimplementor's comment "
 
-	^ self translator tConfirmBeforeLaunch ", self projectManager projectName"
+	^ self formattedWindowTitle: self translator tConfirmBeforeLaunch
 ]
 
 { #category : #accessing }

@@ -108,13 +108,6 @@ CMSpecProjectWindow >> defaultProjectManagerClass [
 	^ CMProjectManager
 ]
 
-{ #category : #defaults }
-CMSpecProjectWindow >> defaultWindowTitle [
-	" Private - See superimplementor's comment "
-
-	^ 'CORMAS'
-]
-
 { #category : #initialization }
 CMSpecProjectWindow >> initialExtent [
 	"Answer the initial extent for the receiver."

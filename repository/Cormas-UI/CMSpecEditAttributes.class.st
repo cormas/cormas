@@ -266,7 +266,8 @@ CMSpecEditAttributes >> targetClass: anObject [
 
 { #category : #initialization }
 CMSpecEditAttributes >> title [
-	^ 'Attributes'
+
+	^ self formattedWindowTitle: 'Attributes'
 ]
 
 { #category : #accessing }
