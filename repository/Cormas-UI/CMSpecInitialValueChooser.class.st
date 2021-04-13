@@ -39,7 +39,7 @@ Class {
 		'toolbar',
 		'initialRBGroup'
 	],
-	#category : 'Cormas-UI-Core'
+	#category : #'Cormas-UI-Core'
 }
 
 { #category : #specs }
@@ -174,8 +174,9 @@ CMSpecInitialValueChooser >> setterAccessorCheckbox: anObject [
 
 { #category : #api }
 CMSpecInitialValueChooser >> title [
+	" Private - See superimplementor's comment "
 
-	^ self translator tInitialValueChooser
+	^ self formattedWindowTitle: self translator tInitialValueChooser
 ]
 
 { #category : #accessing }

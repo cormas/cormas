@@ -1,6 +1,8 @@
 Class {
 	#name : #CMSpecObject,
 	#superclass : #ComposablePresenter,
+	#traits : 'TCMUIUtils',
+	#classTraits : 'TCMUIUtils classTrait',
 	#instVars : [
 		'projectManager'
 	],

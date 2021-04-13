@@ -214,7 +214,7 @@ CMSpecModelComments >> modelText: anObject [
 CMSpecModelComments >> title [
 	" Private - See superimplementor's comment "
 
-	^ self translator tModelComments
+	^ self formattedWindowTitle: self translator tModelComments
 ]
 
 { #category : #accessing }
