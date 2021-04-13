@@ -48,12 +48,14 @@ CMApplicationProject class >> applicationVersion [
 
 { #category : #accessing }
 CMApplicationProject class >> createUserDirectories [
+	" Create the demos location <FileReference> "
+
 	| baseLocation |
 	(baseLocation := CMApplicationPreferences settingBaseLocation asFileReference) exists
 		ifTrue: [ ^ self ].
 	baseLocation ensureCreateDirectory.
 	(baseLocation / 'demos') ensureCreateDirectory.
-	(baseLocation / 'preferences') ensureCreateDirectory
+	(baseLocation / 'preferences') ensureCreateDirectory.
 ]
 
 { #category : #accessing }
