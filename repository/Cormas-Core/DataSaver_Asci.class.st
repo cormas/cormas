@@ -19,7 +19,7 @@ DataSaver_Asci class >> extension: anObject [
 	extension := anObject
 ]
 
-{ #category : #'+ save' }
+{ #category : #save }
 DataSaver_Asci >> initFile: aStringOrFilename dataCollection: aCollec [
 	"Create a file in the current model 'data' directory and writes in it a tupple separated by DataSaver separator.
 	ex: self initFile: 'aFile.txt' dataCollection: #('time' 'value1' 'value2')"
@@ -108,7 +108,7 @@ DataSaver_Asci >> prepareTimeSeriesFiles [
 			self updateFile: aFileName dataCollection: times]
 ]
 
-{ #category : #'+ save' }
+{ #category : #save }
 DataSaver_Asci >> saveCollection: aCollection [
 	"Updates a file in the current model 'data' directory and writes in it a tupple separated by aChar, at the end of the previous data.
 	ex: self updateFile: 'aFile.txt' dataCollection: #(0 11 67) ."
@@ -118,7 +118,7 @@ DataSaver_Asci >> saveCollection: aCollection [
 		dataCollection: aCollection
 ]
 
-{ #category : #'+ save' }
+{ #category : #save }
 DataSaver_Asci >> saveSensitivityClassification: aDictionary [
 	"Save aDictionary into the current directory"
 	
@@ -147,7 +147,7 @@ DataSaver_Asci >> saveSensitivityClassification: aDictionary [
 				do: [:coll | self updateFile: aFileName dataCollection: coll]]
 ]
 
-{ #category : #'+ save' }
+{ #category : #save }
 DataSaver_Asci >> saveTimes: aCollection [
 	"Create a file in the current model 'data' directory and writes in it a tupple separated by aChar.
 	ex: self initFile: 'aFile.txt' dataCollection: #('time' '0' '1' ...)  "
@@ -158,7 +158,7 @@ DataSaver_Asci >> saveTimes: aCollection [
 		dataCollection: aCollection
 ]
 
-{ #category : #'+ save' }
+{ #category : #save }
 DataSaver_Asci >> saveValuesOfGlobalProbe [
 	"Add the value of a probe to each sheet (probeFile type) at time 'time' 
 	aDictionary : probeName + aCollection"
@@ -173,7 +173,7 @@ DataSaver_Asci >> saveValuesOfGlobalProbe [
 			self saveCollection: aCollection]
 ]
 
-{ #category : #'+ save' }
+{ #category : #save }
 DataSaver_Asci >> saveValuesOfLocalProbe [
 	
 	| aCollection |
@@ -189,7 +189,7 @@ DataSaver_Asci >> saveValuesOfLocalProbe [
 					self saveCollection: aCollection]]
 ]
 
-{ #category : #'+ save' }
+{ #category : #save }
 DataSaver_Asci >> updateFile: aStringOrFilename dataCollection: aCollec [
 	"Updates a file in the current model 'data' directory and writes in it a tupple (separated by self class separator), at the end of the previous data.
 	ex: self updateFile: 'aFile.txt' dataCollection: #(0 11 67) "

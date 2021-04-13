@@ -17,7 +17,7 @@ Class {
 		'evaporationRate',
 		'scheduler'
 	],
-	#category : 'Cormas-Model-Diffuse'
+	#category : #'Cormas-Model-Diffuse'
 }
 
 { #category : #id }
@@ -46,7 +46,7 @@ CMDiffuseCell class >> diffusionRate: anObject [
 	diffusionRate := anObject
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMDiffuseCell class >> diffusionRate_default [
 	"Return the default value of diffusionRate attribute"
 
@@ -67,7 +67,7 @@ CMDiffuseCell class >> evaporationRate: anObject [
 	evaporationRate := anObject
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMDiffuseCell class >> evaporationRate_default [
 	"Return the default value of evaporationRate attribute"
 
@@ -79,7 +79,7 @@ CMDiffuseCell class >> isAbstract [
 	^ false
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMDiffuseCell class >> lostOrReceivedQty_default [
 	"Return the default value of lostOrReceivedQty attribute"
 
@@ -100,14 +100,14 @@ CMDiffuseCell class >> minimunState: anObject [
 	minimunState := anObject
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMDiffuseCell class >> minimunState_default [
 	"Return the default value of minimunState attribute"
 
 	^ 1
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMDiffuseCell class >> qty_default [
 	"Return the default value of qty attribute"
 
@@ -124,7 +124,7 @@ CMDiffuseCell class >> scheduler: anObject [
 	scheduler := anObject
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMDiffuseCell class >> scheduler_default [
 	"Return the default value of scheduler attribute"
 

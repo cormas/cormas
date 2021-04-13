@@ -95,7 +95,7 @@ Cormas class >> aboutCormas [
 	dialog position: 25 @ 25
 ]
 
-{ #category : #'+ utilities - files' }
+{ #category : #'utilities - files' }
 Cormas class >> addOnsPath [
 	" Answer a <FileReference> corresponding to the path of 'Add-ons' directory "
 
@@ -103,7 +103,7 @@ Cormas class >> addOnsPath [
 
 ]
 
-{ #category : #'+ utilities - code management' }
+{ #category : #'utilities - code management' }
 Cormas class >> allTerminalClassesOf: aClass [
 	"Purpose: Returns a collection of all the terminal classes of aClass
 	Example: Cormas allTerminalClassesOf: CMECECForager"
@@ -111,19 +111,19 @@ Cormas class >> allTerminalClassesOf: aClass [
 	^ aClass withAllSubclasses select: [ :each | self isTerminal: each ]
 ]
 
-{ #category : #'+ utilities - files' }
+{ #category : #'utilities - files' }
 Cormas class >> application [
 	^ CMApplicationProject uniqueInstance 
 ]
 
-{ #category : #'+ utilities - value types' }
+{ #category : #'utilities - value types' }
 Cormas class >> arrayFrom: anElementOrArray [
 	"return an array for the argument"
 	
 	^anElementOrArray cormasHelper arrayFrom: anElementOrArray
 ]
 
-{ #category : #'+ utilities - value types' }
+{ #category : #'utilities - value types' }
 Cormas class >> arrayOrNilFrom: anElementOrArray [
 	"return an array or a nil for the argument"
 	
@@ -212,7 +212,7 @@ Cormas class >> availableRuntimeModes [
 	^ Set with: #developer with: #modeler with: #modelUser
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> average: aCollectionOfNumbers [
 	"Purpose: Returns the average of set of numbers
 	Argument: aCollectionOfNumbers = < OrderedCollection> or <Array>
@@ -240,7 +240,7 @@ We suggest to use 'newAndCollect: aCollector' to create and collect an entity"
 			[self inform: 'Only ONE simulation is possible']
 ]
 
-{ #category : #'+ user interface' }
+{ #category : #'user interface' }
 Cormas class >> colorChooser [
 	"Purpose: open a Color chooser and returns the color value of the user selected color.
 Example: aColor := Cormas colorChooser "
@@ -248,21 +248,21 @@ Example: aColor := Cormas colorChooser "
 	^PovSetter colorChooser
 ]
 
-{ #category : #'+ utilities - value types' }
+{ #category : #'utilities - value types' }
 Cormas class >> colorFrom: aSymbolOrColorValue [
 	"return a color value for the argument"
 	
 	^aSymbolOrColorValue cormasHelper colorFrom: aSymbolOrColorValue
 ]
 
-{ #category : #'+ utilities - value types' }
+{ #category : #'utilities - value types' }
 Cormas class >> colorOrBlackFrom: aColorValueOrElse [
 	"return either the argument if it is a colorValue or a black colorValue"
 	
 	^aColorValueOrElse cormasHelper colorOrBlackFrom: aColorValueOrElse
 ]
 
-{ #category : #'- printing - documentation' }
+{ #category : #'printing - documentation' }
 Cormas class >> commentOfMethod: sel class: aClass [
 	"Answer a String with the comment of the method"
 	
@@ -386,14 +386,14 @@ Cormas class >> contributors [
 		, self developerNames
 ]
 
-{ #category : #'+ utilities - files' }
+{ #category : #'utilities - files' }
 Cormas class >> cormasPath [
 	" Answer a <FileReference> corresponding to the path of Cormas directory. "
  
 	^ self application cormasPath
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> count: element into: aCollection [
 	"Purpose: Return a value indicating the number of occurrence of 'element' from aCollection. 
 Argument: aCollectionOfNumbers = < OrderedCollection> or <Array>
@@ -473,7 +473,7 @@ Cormas class >> downloadString [
 
 ]
 
-{ #category : #'+ utilities - string' }
+{ #category : #'utilities - string' }
 Cormas class >> dropBlanksFromString: aString [
 	"Purpose: Returns a copy of aString without any space characters
 Example: Cormas dropBlanksFromString: 'Hello World    ' => 'HelloWorld'"
@@ -481,7 +481,7 @@ Example: Cormas dropBlanksFromString: 'Hello World    ' => 'HelloWorld'"
 	^ aString copyWithRegex: ' ' matchesReplacedWith: ''
 ]
 
-{ #category : #'+ utilities - files' }
+{ #category : #'utilities - files' }
 Cormas class >> dumpPath: aModelClassName [
 	" Answer a <FileReference> corresponding to the path of the current model 'dump' directory.
 	aModelClassName = <String>"
@@ -509,7 +509,7 @@ self editMethod: #id fromClass: AgentLocation"
 	(class_method first) browse navigator setSelector: aSelector
 ]
 
-{ #category : #'- printing - documentation' }
+{ #category : #'printing - documentation' }
 Cormas class >> emphasisForMethodComment [
 	
 	^Array
@@ -517,7 +517,7 @@ Cormas class >> emphasisForMethodComment [
 		with: #color -> ColorValue black
 ]
 
-{ #category : #'- printing - documentation' }
+{ #category : #'printing - documentation' }
 Cormas class >> emphasisForMethodHeader [
 	
 	^Array
@@ -525,7 +525,7 @@ Cormas class >> emphasisForMethodHeader [
 		with: #color -> ColorValue black
 ]
 
-{ #category : #'- printing - documentation' }
+{ #category : #'printing - documentation' }
 Cormas class >> emphasisForMethodHeaderArg [
 	
 	^Array
@@ -533,7 +533,7 @@ Cormas class >> emphasisForMethodHeaderArg [
 		with: #color -> ColorValue darkPink
 ]
 
-{ #category : #'- printing - documentation' }
+{ #category : #'printing - documentation' }
 Cormas class >> emphasisForProtocol [
 	
 	^Array
@@ -541,7 +541,7 @@ Cormas class >> emphasisForProtocol [
 		with: #color -> ColorValue black
 ]
 
-{ #category : #'+ utilities - code management' }
+{ #category : #'utilities - code management' }
 Cormas class >> findSelector: selector in: aClass [
 
 "Answer an Array with the class and method for this selector,
@@ -556,7 +556,7 @@ Cormas class >> findSelector: selector in: aClass [
 		ifFalse: [Cormas findSelector: selector in: aClass superclass]
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> giniIndexOf: aCollection [
 	"Purpose: Returns the gini of a set of numbers
 The Gini coefficient is a number between 0 and 1, where 0 corresponds with perfect equality (where everyone has the same income) and 1 corresponds with perfect inequality (where one person has all the income, and everyone else has zero income). The Gini index is the Gini coefficient expressed in percentage form, and is equal to the Gini coefficient multiplied by 100.
@@ -577,7 +577,7 @@ For more details on the calculation and use of the Gini coefficient and index se
 	^ 100 * sum / (2 * mean * size * size)
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> giniIndexOf: aCollec absoluteCorrection: aNumber [
 	"Purpose: Returns the gini of a set of numbers, which can include negative values
 See the 'giniIndexOf: method for more details on Gini index.
@@ -619,7 +619,7 @@ Example: Cormas giniIndexOf: #( 4.5 -88.7 456 -12 64 89.1 44 781) absoluteCorrec
 	^ index
 ]
 
-{ #category : #'- printing - documentation' }
+{ #category : #'printing - documentation' }
 Cormas class >> headerOfMethod: sel class: aClass [
 	
 	| source parser header endOfHeader |
@@ -666,7 +666,7 @@ Cormas class >> initialize [
 	self current: Cormas new
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> interquartileRange: aCollectionOfNumbers [
 	"Purpose : Returns the interquartile range quartile of a collection of numbers 
 The interquartile range is the difference between the upper and lower quartiles
@@ -692,7 +692,7 @@ Cormas class >> isModelerMode [
 	^ self runtimeMode == #modeler
 ]
 
-{ #category : #'+ utilities - code management' }
+{ #category : #'utilities - code management' }
 Cormas class >> isTerminal: aClass [
 	"test efficiently if aClass is a terminal (or concrete) class (has no subclasses)
 	use the getSubclasses which return nil or Array of subclasses without any copy.
@@ -744,7 +744,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 '
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> linearRegression: data [
 	"Purpose: Return an array containing a, b, and correlation coefficient, that are the parameters of the linear 	regression of a set of data, where y = a + bx.
 Argument: data is supposed to be a List of Array ( x,y) : data = <Collection (Array 2)>
@@ -810,7 +810,7 @@ Cormas class >> listing [
 	stream close
 ]
 
-{ #category : #'- printing - documentation' }
+{ #category : #'printing - documentation' }
 Cormas class >> listing: fileName [
 	
 	| bufferText stream |
@@ -830,7 +830,7 @@ Cormas class >> listing: fileName [
 	stream close
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> logisticGrowth: x r: r K: K [
 	"Purpose: Returns the next value of X(t+1), according to the discrete logistic equation :
 	 X(t+1) = X(t) + dx /dt  "
@@ -838,7 +838,7 @@ Cormas class >> logisticGrowth: x r: r K: K [
 	^ x + (self logisticIncrease: x r: r K: K)
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> logisticGrowthContinuous: x r: r K: K [
 	"Returns the next value of X(t+1), according to the continuous logistic equation :
 	 f(x,t) = x(t) = K / [(K-Xo)/Xo . exp(- r.t) + 1]   "
@@ -846,7 +846,7 @@ Cormas class >> logisticGrowthContinuous: x r: r K: K [
 	^K / ((K - x) / x * (2.71828 raisedTo: r negated) + 1)
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> logisticIncrease: x r: r K: K [
 	"Returns the increase of X (dx /dt), according to the discrete logistic equation :
 	 dx / dt  = r . x . (K - X(t)) / K "
@@ -854,7 +854,7 @@ Cormas class >> logisticIncrease: x r: r K: K [
 	^r * x * (K - x) / K
 ]
 
-{ #category : #'+ utilities - string' }
+{ #category : #'utilities - string' }
 Cormas class >> lowerCaseFirstChar: aString [
 	"Purpose: Converts the first character of a string into lowercase
 Example: Cormas lowerCaseFirstChar: 'Hello World' => 'hello World'  "
@@ -862,7 +862,7 @@ Example: Cormas lowerCaseFirstChar: 'Hello World' => 'hello World'  "
 	^ aString uncapitalized 
 ]
 
-{ #category : #'+ utilities - string' }
+{ #category : #'utilities - string' }
 Cormas class >> lowerCaseString: aString [
 	"Purpose: Converts all uppercase characters of a string into lowercase characters
 Example: Cormas lowerCaseString: 'Hello World' 'hello world'   "
@@ -870,7 +870,7 @@ Example: Cormas lowerCaseString: 'Hello World' 'hello world'   "
 	^ aString asLowercase
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> lowerQuartile: aCollectionOfNumbers [
 	"Purpose : Returns the lower quartile of a numbers distribution. 
 The lower quartile (or first quartile or Q1) is the value of the sorted series of numbers which splits the lowest 25% of data
@@ -897,7 +897,7 @@ Cormas class >> mainMenu [
 		ifFalse: [self fullMainMenu]
 ]
 
-{ #category : #'+ utilities - files' }
+{ #category : #'utilities - files' }
 Cormas class >> mapsPath: aModelClassName [
 	"Purpose: Returns a Filename corresponding to the path of the current model 'maps' directory.
 	Argument: aModelClassName = <String>
@@ -911,7 +911,7 @@ Cormas class >> mapsPath: aModelClassName [
 	^ mapsPath
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> max: aCollectionOfNumbers [
 	"Answer the maximum of a set of numbers. 
 aCollectionOfNumbers = < OrderedCollection> or <Array>
@@ -920,7 +920,7 @@ ex:		Cormas max: #( 1 2 3) => 3"
 	^ aCollectionOfNumbers max
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> maxOf: aMagnitudeName amongObjects: aCollection [
 	"Purpose: returns the highest value of a given function among a collection of objects understanding this function
 Arguments: aName = <ByteSymbol>
@@ -936,7 +936,7 @@ Example: Cormas maxOf: #elevation amongObject: self theCells"
 		ifTrue: [nil]
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> median: aCollectionOfNumbers [
 	"Answer the median of a numbers distribution. 
 	The median is defined by :
@@ -956,7 +956,7 @@ ex:		Cormas median: #( 1 2 3) 	=> 2
 				+ (sortedColl at: sortedColl size / 2 + 1)) / 2]
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> min: aCollectionOfNumbers [
 	"Purpose: Answer the minimum of a set of numbers. 
 	Argument: aCollectionOfNumbers = < OrderedCollection> or <Array>
@@ -965,7 +965,7 @@ Cormas class >> min: aCollectionOfNumbers [
 	^ aCollectionOfNumbers min
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> minOf: aMagnitudeName amongObjects: aCollection [
 	"Purpose: returns the lowest value of a given function among a collection of objects understanding this function
 Arguments: aName = <ByteSymbol>
@@ -981,7 +981,7 @@ Example: Cormas minOf: #elevation amongObject: self theCells"
 		ifTrue: [ nil ]
 ]
 
-{ #category : #'+ utilities - random' }
+{ #category : #'utilities - random' }
 Cormas class >> mix: aCollection [
 	"Purpose: Returns a randomly mixed collection
 Argument: aCollection is a collection to be mixed"
@@ -989,7 +989,7 @@ Argument: aCollection is a collection to be mixed"
 	^ aCollection shuffleBy: self randomGenerator
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> mode: aCollectionOfNumbers [
 	"Answer an array of the most frequent values of a set of numbers. 
 aCollectionOfNumbers = < OrderedCollection> or <Array>
@@ -1011,7 +1011,7 @@ ex:		Cormas mode: #( 1 1 1 0 2 6 7 3 3 3) => #(1 3)"
     ^winners asSet asArray
 ]
 
-{ #category : #'+ utilities - files' }
+{ #category : #'utilities - files' }
 Cormas class >> modelPath: aModelClassName [
 	"Purpose: Returns a Filename corresponding to the path of the current model directory.
 	Argument: aModelClassName = <String>
@@ -1020,14 +1020,14 @@ Cormas class >> modelPath: aModelClassName [
 	^ self application modelPath: aModelClassName
 ]
 
-{ #category : #'+ utilities - files' }
+{ #category : #'utilities - files' }
 Cormas class >> modelsPath [
 	" Answer a <FileReference> corresponding to the path of 'Models' directory "
  
 	^ self application modelsPath
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> nextCyclicElementOf: anArray currentElement: currentElement [
 	"Purpose : return the next element of anArray. 
 If currentElement is the last of anArray, then return the first element.
@@ -1046,7 +1046,7 @@ Examples:
 	^anArray at: index
 ]
 
-{ #category : #'+ utilities - random' }
+{ #category : #'utilities - random' }
 Cormas class >> normal: mu sigma: sigma [
 	"Purpose: Return a random number from a normal distribution. polar method, Law et Kelton
 Arguments: mu = mean; sigma = standard deviation."
@@ -1065,7 +1065,7 @@ Arguments: mu = mean; sigma = standard deviation."
 	^ x1
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> number: aNumber onCycle: aCycleBase [
 	"Purpose : return a new number from aNumber transformed in aCycleBase. 
 If aNumber exceeds aCycleBase, return to 1
@@ -1080,7 +1080,7 @@ Examples:
 	^ (aNumber - 1) \\ aCycleBase + 1
 ]
 
-{ #category : #'+ utilities - string' }
+{ #category : #'utilities - string' }
 Cormas class >> objectTypeAsString: anObject [
 	"Purpose: convert anObject as a String.
 Examples: 
@@ -1109,7 +1109,7 @@ Cormas class >> openInterface: anInterface WithLanguage: languageCode ofModel: a
 	Cormas visualLauncherWindow ifNotNil: [:w | w collapse]
 ]
 
-{ #category : #'+ user interface' }
+{ #category : #'user interface' }
 Cormas class >> openVisualInspectorOn: anObject [
 	"display anObject on a VisualInspector"
 	
@@ -1194,7 +1194,7 @@ Cormas class >> passiveEntitiesClassNames [
 	^ collec
 ]
 
-{ #category : #'+ utilities - string' }
+{ #category : #'utilities - string' }
 Cormas class >> print: aString [
 	"Purpose: A Java-like print method. Writes aString on the Transcript Withour carriage return.
 Example: Cormas print: 'Hello World'   "
@@ -1203,7 +1203,7 @@ Example: Cormas print: 'Hello World'   "
 	Transcript flush
 ]
 
-{ #category : #'+ utilities - string' }
+{ #category : #'utilities - string' }
 Cormas class >> println: aString [
 	"Purpose: A Java-like println method. Writes aString on the Transcript
 Example: Cormas println: 'Hello World'   "
@@ -1214,17 +1214,17 @@ Example: Cormas println: 'Hello World'   "
 		cr
 ]
 
-{ #category : #'+ utilities - random' }
+{ #category : #'utilities - random' }
 Cormas class >> random [
 	^ self randomGenerator next
 ]
 
-{ #category : #'+ utilities - random' }
+{ #category : #'utilities - random' }
 Cormas class >> randomBoolean [
 	^ #(true false) atRandom: self randomGenerator
 ]
 
-{ #category : #'+ utilities - random' }
+{ #category : #'utilities - random' }
 Cormas class >> randomCell [
 	| x y |
 	x := self randomFrom: 1 to: 100.
@@ -1232,14 +1232,14 @@ Cormas class >> randomCell [
 	^ x @ y
 ]
 
-{ #category : #'+ utilities - random' }
+{ #category : #'utilities - random' }
 Cormas class >> randomColor [
 "Purpose: Returns a random ColorValue
 Example: Cormas randomColor"
 	^Color registeredColorNames atRandom: self randomGenerator
 ]
 
-{ #category : #'+ utilities - random' }
+{ #category : #'utilities - random' }
 Cormas class >> randomFloatFrom: startNumber to: endNumber [
 	"Purpose: Return a random float between 'startNumber' and 'endNumber' (excluding startNumber and endNumber): 
 	startNumber < randomFloat < endNumber, ie. randomFloat in ]startNumber ; endNumber[.
@@ -1255,7 +1255,7 @@ Examples: Cormas randomFloatFrom: 0 to: 10.
 		ifFalse: [result]
 ]
 
-{ #category : #'+ utilities - random' }
+{ #category : #'utilities - random' }
 Cormas class >> randomFrom: startInteger to: endInteger [
 	| extent |
 	extent := endInteger - startInteger + 1.
@@ -1272,7 +1272,7 @@ Cormas class >> randomGenerator: aRandFishmanMoore [
 	randomGenerator := aRandFishmanMoore
 ]
 
-{ #category : #'+ utilities - random' }
+{ #category : #'utilities - random' }
 Cormas class >> randomIntegerFrom: startInteger to: endInteger [
 	"Purpose: Return a random Integer between 'startInteger' and 'endInteger': 
 	startInteger <= randInteger <= endInteger, ie. randInteger ‚Ç¨ [startInteger ; endInteger].
@@ -1283,7 +1283,7 @@ Examples: Cormas randomFrom: -4 to: 10
 	^self randomFrom: startInteger to: endInteger
 ]
 
-{ #category : #'+ utilities - random' }
+{ #category : #'utilities - random' }
 Cormas class >> randomSeed: aValue [
 	"Purpose: Set the initial value of the RandFishmanMoore suit. Without this method, the initial value is equal to Time millisecondClockValue.
 Argument: aValue must be an integer greater than 1.
@@ -1306,7 +1306,7 @@ Cormas class >> rebuildMenu [
 	self allInstances do: [:each | each rebuildMenu]
 ]
 
-{ #category : #'- printing - documentation' }
+{ #category : #'printing - documentation' }
 Cormas class >> recordDictClass: aClass [
 	
 	| dict dictClass |
@@ -1326,7 +1326,7 @@ Cormas class >> recordDictClass: aClass [
 	^Array with: dict with: dictClass
 ]
 
-{ #category : #'- printing - documentation' }
+{ #category : #'printing - documentation' }
 Cormas class >> recordMethod: sel category: cat class: aClass [
 	
 	| source parser header endOfHeader thisComment |
@@ -1350,7 +1350,7 @@ Cormas class >> recordMethod: sel category: cat class: aClass [
 		value: thisComment
 ]
 
-{ #category : #'- printing - documentation' }
+{ #category : #'printing - documentation' }
 Cormas class >> recordProtocol: cat class: aClass [
 	
 	| dict |
@@ -1366,7 +1366,7 @@ Cormas class >> recordProtocol: cat class: aClass [
 	^dict
 ]
 
-{ #category : #'+ user interface' }
+{ #category : #'user interface' }
 Cormas class >> refresh: aSpaceInterface [
 	"force the mainWindow of aSpaceInterface (spaceView) to refresh its display when the simulation runs in distributedmode.
 Fixes problem of refreshing in distributed mode (without this instruction, the user needs to move his mouse over the spaceview for the display to refresh"
@@ -1392,7 +1392,7 @@ Cormas class >> removeExtensionOf: aFilename [
 		with: '') asFilename
 ]
 
-{ #category : #'+ utilities - string' }
+{ #category : #'utilities - string' }
 Cormas class >> removeFirstCharacterOfString: aString [
 	"Purpose: Remove the first character of aString. Answer a new String that is a copy of the argument, aString without the first character."
 
@@ -1450,7 +1450,7 @@ Cormas class >> renameSelector: oldName to: newName nbArguments: nbArgs inClass:
 						permutation: map) execute]]
 ]
 
-{ #category : #'- printing - documentation' }
+{ #category : #'printing - documentation' }
 Cormas class >> reportTextForClasses: aCollec [
 	"Answer a Text containing a list ordered in alphabetic order of all the method definitions of a given collection of classes."
 	
@@ -1504,7 +1504,7 @@ Cormas class >> reportTextForClasses: aCollec [
 	^stream contents
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> round: aNumber toNdigits: x [
 	"Purpose: Returns a float value rounded with a specified number of decimals
 Argument: aNumber to be rounded   ; x the number of decimals wanted
@@ -1536,7 +1536,7 @@ Cormas class >> runtimeMode: aSymbol [
 	runtimeMode := aSymbol
 ]
 
-{ #category : #'+ utilities - files' }
+{ #category : #'utilities - files' }
 Cormas class >> saveCollec: aCollec asLineOfFile: aFilename separator: aChar [
 	"Purpose: Save a Collection of literals (characters, numbers, strings...) into a defined file. The elements of the collection are saved into a single line, each one separated by aChar. If the file already exists, the elements of the collection are saved after the last line of the file.
 Arguments: aColllec is the collection to be savec ; aFilename is a filename object indicatng the name, the extension and the path of the file  ; aChar the character of the separator writen between each element
@@ -1590,7 +1590,7 @@ Cormas class >> saveCollec: aCollec inTxtFile: aString [
 	file close
 ]
 
-{ #category : #'+ utilities - files' }
+{ #category : #'utilities - files' }
 Cormas class >> saveElementsOfCollec: aCollec inFile: aFilename [
 	"Purpose: Save a Collection of literals (characters, numbers, strings...) into a defined file. Each element of the collection is saved into a separate line of the file. If the file already exists, the elements of the collection are saved starting frm the end of the file.
 Arguments: aColllec is the collection to be savec ; aFilename is a filename object indicatng the name, the extension and the path of the file
@@ -1643,7 +1643,7 @@ Cormas class >> seed: anInteger [
 	randomGenerator seed: anInteger
 ]
 
-{ #category : #'+ utilities - collection' }
+{ #category : #'utilities - collection' }
 Cormas class >> selectEntitiesWithMaxOf: aMagnitudeName amongEntities: aCollection verifying: aCondition [
 	"Purpose: selects the entities with the maximum value of a given magnitude and verifying a specified condition. 
 Arguments: aMagnitudeName = <ByteSymbol>
@@ -1665,14 +1665,14 @@ Example: Cormas selectEntitiesWithMaxOf: #water amongEntities self theCells veri
 	^selection
 ]
 
-{ #category : #'+ utilities - random' }
+{ #category : #'utilities - random' }
 Cormas class >> selectRandomlyFrom: aCollection [
 	aCollection isEmpty
 		ifTrue: [ ^ nil ].
 	^ aCollection atRandom
 ]
 
-{ #category : #'+ utilities - random' }
+{ #category : #'utilities - random' }
 Cormas class >> selectRandomlyFrom: aCollection constrainedBy: aBlock [
 	"Purpose: Returns an item satisfying the condition aBlock at randomly position of the collection 'aCollection'. 
 If the collection is empty, or no item satisfies the condition aBlock, its returns nil.
@@ -1688,7 +1688,7 @@ Example:  Cormas selectRandomlyFrom: self thePersons constrainedBy: [:p | p  age
 	^collec2 asOrderedCollection at: x
 ]
 
-{ #category : #'+ utilities - random' }
+{ #category : #'utilities - random' }
 Cormas class >> selectRandomlyFrom: aCollection subCollectionSize: anInteger [
 	"Purpose: Returns a subcollection randomly built from a collection (an item may be selected only once). If the collection is empty, or if the collection size is lower than the subcollection size, its returns aCollection randomly mixed..
 Examples: Cormas selectRandomlyFrom: (Set withAll: #(1 2 3 4 5)) subCollectionSize: 3 => OrderedCollection (4 5 1)
@@ -1701,7 +1701,7 @@ Examples: Cormas selectRandomlyFrom: (Set withAll: #(1 2 3 4 5)) subCollectionSi
 	^randomCollection copyFrom: 1 to: anInteger
 ]
 
-{ #category : #'+ utilities - random' }
+{ #category : #'utilities - random' }
 Cormas class >> selectRandomlyFrom: aCollection subCollectionSize: anInteger constrainedBy: aBlock [
 	"Purpose: Returns a subcollection, which elements satisfies the condition aBlock and are randomly picked from aCollection (an element may be selected only once). If aCollection is empty, or if the number of elements satisfying the condition aBlock is lower than the subcollection size, its returns a collection of elements satsisfying the condition randomly mixed..
 Examples: Cormas selectRandomlyFrom: (Set withAll: #(1 2 3 4 5)) subCollectionSize: 3  constrainedBy: [:i | i > 2].
@@ -1764,7 +1764,7 @@ Cormas class >> simpleRandomFrom: start to: end [
 	^end min: (Cormas simpleRandom * extent) truncated + start
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> sin: x min: min max: max phase: phase period: period [
 	"return the sinus function of x, according to min value, max value, phase and period.
 example: Environment updateTemperature: time 
@@ -1789,7 +1789,7 @@ Cormas class >> socialEntitiesClassNames [
 	^ collec
 ]
 
-{ #category : #'+ utilities - collection' }
+{ #category : #'utilities - collection' }
 Cormas class >> sort: collec byDecreasing: att1 thenByDecreasing: att2 [
 	"Purpose: Sort a collection of objects (entities) that have the same attributes att1 and att2, first according to an decreasing order of att1, then according to an decreasing value of att2.
 Arguments: collec is the collection to be sorted. at1 and aat2 are the names (in symbol) of the attributes
@@ -1810,7 +1810,7 @@ Example: Cormas sort: (self theTrees) byDecreasing: #age thenByDecreasing: #heig
 	^oc
 ]
 
-{ #category : #'+ utilities - collection' }
+{ #category : #'utilities - collection' }
 Cormas class >> sort: collec byDecreasing: att1 thenByIncreasing: att2 [
 	"Purpose: Sort a collection of objects (entities) that have the same attributes att1 and att2, first according to an Decreasing order of att1, then according to an increasing value of att2.
 Arguments: collec is the collection to be sorted. at1 and aat2 are the names (in symbol) of the attributes
@@ -1831,7 +1831,7 @@ Example: Cormas sort: (self theTrees) byDecreasing: #age thenByIncreasing: #heig
 	^oc
 ]
 
-{ #category : #'+ utilities - collection' }
+{ #category : #'utilities - collection' }
 Cormas class >> sort: collec byIncreasing: att1 thenByDecreasing: att2 [
 	"Purpose: Sort a collection of objects (entities) that have the same attributes att1 and att2, first according to an increasing order of att1, then according to an decreasing value of att2.
 Arguments: collec is the collection to be sorted. at1 and aat2 are the names (in symbol) of the attributes
@@ -1852,7 +1852,7 @@ Example: Cormas sort: (self theTrees) byIncreasing: #age thenByDecreasing: #heig
 	^oc
 ]
 
-{ #category : #'+ utilities - collection' }
+{ #category : #'utilities - collection' }
 Cormas class >> sort: collec byIncreasing: att1 thenByIncreasing: att2 [
 	"Purpose: Sort a collection of objects (entities) that have the same attributes att1 and att2, first according to an increasing order of att1, then according to an increasing value of att2.
 Arguments: collec is the collection to be sorted. at1 and aat2 are the names (in symbol) of the attributes
@@ -1873,7 +1873,7 @@ Example: Cormas sort: (self theTrees) byIncreasing: #age thenByIncreasing: #heig
 	^oc
 ]
 
-{ #category : #'+ utilities - collection' }
+{ #category : #'utilities - collection' }
 Cormas class >> sortDecreasingly: aCollectionOfNumbers [
 	"Purpose: sort the elements of a collection in an decreasing order
 Argument: aCollectionOfNumbers = < OrderedCollection> or <Array>
@@ -1883,7 +1883,7 @@ Example: Cormas sortDecreasingly: #( 2 1 3)	 => aSortedCollection (3 2 1)"
 	^ aCollectionOfNumbers asSortedCollection: [ :a :b | a > b ]
 ]
 
-{ #category : #'+ utilities - collection' }
+{ #category : #'utilities - collection' }
 Cormas class >> sortIncreasingly: aCollectionOfNumbers [
 	"Purpose: sort the elements of a collection in an increasing order
 Argument: aCollectionOfNumbers = < OrderedCollection> or <Array>
@@ -1904,7 +1904,7 @@ Cormas class >> spatialEntitiesClassNames [
 	^ collec
 ]
 
-{ #category : #'+ utilities - files' }
+{ #category : #'utilities - files' }
 Cormas class >> splitLine: stream sep: aSepChar [
 	"Purpose: Used when loading an external file. Split a read stream according to a given separator character
 	Example: Cormas splitLine: aStream sep: $,   "
@@ -1919,7 +1919,7 @@ Cormas class >> splitLine: stream sep: aSepChar [
 	^ wordsList
 ]
 
-{ #category : #'+ utilities - value types' }
+{ #category : #'utilities - value types' }
 Cormas class >> splitString: aString with: aChar [
 	"Purpose: Splits a string according to a given separator character and returns a collection of the splited portions of the string
 Examples: Cormas splitString: 'Hello world;Bonjour le monde;Bom dia Mundo;Buenos Dias Mundo' with: $; "
@@ -1932,7 +1932,7 @@ Examples: Cormas splitString: 'Hello world;Bonjour le monde;Bom dia Mundo;Buenos
 	^collec
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> standardDeviation: aCollectionOfNumbers [
 	"Purpose : Returns the standardDeviation of set of numbers. Measure of the dispersal of a series with regard to their average. Its value is obtained by calculating the square root of the variance (see ''variance:').
 Argument: aCollectionOfNumbers = < OrderedCollection> or <Array>
@@ -1941,7 +1941,7 @@ Example:		Cormas standardDeviation: #( 1 2 3)	=> 0.816497"
 	^(self variance: aCollectionOfNumbers) sqrt
 ]
 
-{ #category : #'+ utilities - string' }
+{ #category : #'utilities - string' }
 Cormas class >> stringAsObjectType: aString [
 	"Pupose: convert aString into a Number, a Boolean, a Symbol, or a String depending of the content.
 Examples: 
@@ -1962,7 +1962,7 @@ Examples:
 	^aString
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> sum: aCollectionOfNumbers [
 	"Purpose: Answer the summation of a set of numbers. 
 	Argument: aCollectionOfNumbers = < OrderedCollection> or <Array>
@@ -1986,7 +1986,7 @@ Cormas class >> systemInformationString [
 			nextPutAll: self contributors ]
 ]
 
-{ #category : #'+ utilities - string' }
+{ #category : #'utilities - string' }
 Cormas class >> textAsList: aText [
 	"Purpose: Returns a list of strings corresponding to each line of a given text.
 Examples: Cormas textAsList: 'Hello world\Bonjour le monde\Bom dia Mundo\Buenos Dias Mundo' withCRs
@@ -2004,7 +2004,7 @@ Buenos Dias Mundo' withCRs "
 	^list
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> transposeMatrix: aCollectionOfCollections [
 	"Return a transposed collection Of Collections.
 Ex:
@@ -2055,7 +2055,7 @@ Cormas class >> updateFile: t1 dataCollection: t2 separator: t3 [
 	^self
 ]
 
-{ #category : #'+ utilities - string' }
+{ #category : #'utilities - string' }
 Cormas class >> upperCaseFirstChar: aString [
 	"Purpose: Converts the first character of of a string into uppercase
 Example: Cormas upperCaseFirstChar: 'hello World'  => 'Hello World'  "
@@ -2063,7 +2063,7 @@ Example: Cormas upperCaseFirstChar: 'hello World'  => 'Hello World'  "
 	^aString capitalized
 ]
 
-{ #category : #'+ utilities - string' }
+{ #category : #'utilities - string' }
 Cormas class >> upperCaseString: aString [
 	"Purpose: Converts all lowercase characters of a string into uppercase characters
 Example: Cormas upperCaseString: 'Hello World'   "
@@ -2084,7 +2084,7 @@ Example: Cormas upperCaseString: 'Hello World'   "
 	^ws contents
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> upperQuartile: aCollectionOfNumbers [
 	"Purpose : Returns the upper quartile of a numbers distribution. 
 The upper quartile (or third quartile or Q3) is the value of the sorted series of numbers which splits the highest 25% of data (or lowest 75%)
@@ -2102,7 +2102,7 @@ Example: Cormas upperQuartile: #(2 4 7 -20 22 -1 0 -1 7 15 8 4 -4 11 11 12 3 12 
 	^ sortedColl at: (0.75 * ((sortedColl size) + 1)) rounded 
 ]
 
-{ #category : #'+ utilities - value types' }
+{ #category : #'utilities - value types' }
 Cormas class >> valueFrom: anObjectOrMenuItemOrValueHolder [
 	"return either the value of the argument if it is a MenuItem or a ValueHolder or the argument itself "
 	
@@ -2126,7 +2126,7 @@ Should use #stringAsType:aStrings"
 	^aString
 ]
 
-{ #category : #'+ utilities - mathematics' }
+{ #category : #'utilities - mathematics' }
 Cormas class >> variance: aCollectionOfNumbers [
 	"Purpose: Returns the variance of set of numbers. Measure of the dispersal of a series with regard to their average. The dispersal of a statistical distribution is obtained by dividing the sum of the squares of the distances in the average by the number N from elements. For instance the average of 1, 2 and 3 is 2 , but the variance is 0,667.
 	[(1 - 2)2 + (2 - 2)2 + (3 - 2)2] √∑ 3 = 0,667
@@ -2141,7 +2141,7 @@ Example: Cormas variance: #( 1 2 3)		=> 0.666667  "
 		/ aCollectionOfNumbers size) asFloat
 ]
 
-{ #category : #'+ utilities - files' }
+{ #category : #'utilities - files' }
 Cormas class >> videoPath: aModelClassName [
 	" Answer a <FileReference> corresponding to the path of the current model 'dump' directory.
 	aModelClassName = <String>"
@@ -2164,7 +2164,7 @@ Cormas class >> visualLauncherWindow [
 	^nil
 ]
 
-{ #category : #'+ utilities - files' }
+{ #category : #'utilities - files' }
 Cormas class >> xmlPath: aModelClassName [
 	" Answer a <FileReference> corresponding to the path of the current model 'dump' directory.
 	aModelClassName = <String>"

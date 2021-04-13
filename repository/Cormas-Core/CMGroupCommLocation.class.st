@@ -20,7 +20,7 @@ Class {
 	#category : #'Cormas-Core-Entities'
 }
 
-{ #category : #'+ components - managing' }
+{ #category : #'components - managing' }
 CMGroupCommLocation >> addComponent: anItem [
 	"Purpose: add IMMEDIATELY a given item as a new component of the group
 Argument: anItem = <Agent>"
@@ -28,7 +28,7 @@ Argument: anItem = <Agent>"
 	self components add: anItem
 ]
 
-{ #category : #'+ components - managing' }
+{ #category : #'components - managing' }
 CMGroupCommLocation >> addComponents: aCollec [
 	"Purpose: add IMMEDIATELY a collection of agents as new components of the group
 Argument: aCollec = <Collection(Agent)>"
@@ -36,7 +36,7 @@ Argument: aCollec = <Collection(Agent)>"
 	self components addAll: aCollec
 ]
 
-{ #category : #'+ components - managing' }
+{ #category : #'components - managing' }
 CMGroupCommLocation >> addSynchronouslyComponent: anItem [
 	"Purpose: the given item will be added as a new component of the group when 'updateComponents' will be send to the receiver. Meanwhile, it is stored in the buffer attribute 'newComponents'
 Argument: anItem = <Agent>"
@@ -44,25 +44,25 @@ Argument: anItem = <Agent>"
 	self newComponents add: anItem
 ]
 
-{ #category : #'+ components - accessing' }
+{ #category : #'components - accessing' }
 CMGroupCommLocation >> components [
 	
 	^components ifNil: [components := Set new]
 ]
 
-{ #category : #'+ components - accessing' }
+{ #category : #'components - accessing' }
 CMGroupCommLocation >> components: uneValeur [
 	
 	components := uneValeur
 ]
 
-{ #category : #'- deprecated' }
+{ #category : #deprecated }
 CMGroupCommLocation >> contain: anItem [
 	
 	^self components includes: anItem
 ]
 
-{ #category : #'+ components - managing' }
+{ #category : #'components - managing' }
 CMGroupCommLocation >> deleteComponent: anItem [
 	"Purpose: remove IMMEDIATELY a given item from the group components
 Argument: anItem = <Agent>"
@@ -72,7 +72,7 @@ Argument: anItem = <Agent>"
 		ifAbsent: []
 ]
 
-{ #category : #'+ components - managing' }
+{ #category : #'components - managing' }
 CMGroupCommLocation >> deleteComponents: aCollec [
 	"Purpose: remove IMMEDIATELY a collection of agents from the group components
 Argument: aCollec = <Collection(Agent)>"
@@ -83,7 +83,7 @@ Argument: aCollec = <Collection(Agent)>"
 	self components: self components - listeSet
 ]
 
-{ #category : #'+ components - managing' }
+{ #category : #'components - managing' }
 CMGroupCommLocation >> deleteSynchronouslyComponent: anItem [
 	"Purpose: the given item will be removed from the group components when 'updateComponents' will be send to the receiver. Meanwhile, it is stored in the buffer attribute 'removedComponents'
 Argument: anItem = <Agent>"
@@ -91,7 +91,7 @@ Argument: anItem = <Agent>"
 	self removedComponents add: anItem
 ]
 
-{ #category : #'+ initialize - release' }
+{ #category : #'initialize - release' }
 CMGroupCommLocation >> initWith: anAgentsCollection [
 	"Purpose: resets and fills with new components"
 	
@@ -99,19 +99,19 @@ CMGroupCommLocation >> initWith: anAgentsCollection [
 	self components: anAgentsCollection
 ]
 
-{ #category : #'+ components - accessing' }
+{ #category : #'components - accessing' }
 CMGroupCommLocation >> newComponents [
 	
 	^newComponents ifNil: [newComponents := Set new]
 ]
 
-{ #category : #'+ components - accessing' }
+{ #category : #'components - accessing' }
 CMGroupCommLocation >> newComponents: uneValeur [
 	
 	newComponents := uneValeur
 ]
 
-{ #category : #'+ components - accessing' }
+{ #category : #'components - accessing' }
 CMGroupCommLocation >> othersBut: x [
 	
 	| collection |
@@ -120,26 +120,26 @@ CMGroupCommLocation >> othersBut: x [
 	^collection
 ]
 
-{ #category : #'- deprecated' }
+{ #category : #deprecated }
 CMGroupCommLocation >> othersButMe: x [
 	"DEPRECATED - should use instead: othersBut: x "
 	
 	^self othersBut: x
 ]
 
-{ #category : #'+ components - accessing' }
+{ #category : #'components - accessing' }
 CMGroupCommLocation >> removedComponents [
 	
 	^removedComponents ifNil: [removedComponents := Set new]
 ]
 
-{ #category : #'+ components - accessing' }
+{ #category : #'components - accessing' }
 CMGroupCommLocation >> removedComponents: uneValeur [
 	
 	removedComponents := uneValeur
 ]
 
-{ #category : #'+ initialize - release' }
+{ #category : #'initialize - release' }
 CMGroupCommLocation >> reset [
 	"Purpose: resets inherited and specific attributes"
 	
@@ -149,13 +149,13 @@ CMGroupCommLocation >> reset [
 	self removedComponents: Set new
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMGroupCommLocation >> size [
 	
 	^self components size
 ]
 
-{ #category : #'+ control' }
+{ #category : #control }
 CMGroupCommLocation >> stepDynPop [
 	"Purpose: activate the biological life cycle of each agent of the group. 
 Nota: the 'step' method of the Agent must return a collection either empty if there is no successuful reproduction or made of newborn instances to be added as new components of the group"
@@ -173,7 +173,7 @@ Nota: the 'step' method of the Agent must return a collection either empty if th
 	^ newBorns
 ]
 
-{ #category : #'+ control' }
+{ #category : #control }
 CMGroupCommLocation >> updateAgents [
 	"Purpose: get rid of dead components"
 	
@@ -184,7 +184,7 @@ CMGroupCommLocation >> updateAgents [
 			self deleteComponent: a ]
 ]
 
-{ #category : #'+ components - managing' }
+{ #category : #'components - managing' }
 CMGroupCommLocation >> updateComponents [
 	"Purpose: use the buffered collections 'newComponents' and 'removedComponents' to update the group components instantaneously"
 	
@@ -194,7 +194,7 @@ CMGroupCommLocation >> updateComponents [
 	self removedComponents: OrderedCollection new
 ]
 
-{ #category : #'+ control' }
+{ #category : #control }
 CMGroupCommLocation >> updateWith: aCollec [
 	"Purpose: get rid of dead components and add new ones"
 

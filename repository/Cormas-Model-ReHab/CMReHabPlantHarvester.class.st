@@ -173,7 +173,7 @@ CMReHabPlantHarvester class >> defaultImage [
 ^((self povDict keys includes: #CMReHabPlantHarvester) ifTrue:[self povDict at:#CMReHabPlantHarvester] ifFalse:[super defaultImage]) copy
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMReHabPlantHarvester class >> harvest_default [
 	"Return the default value of harvest attribute"
 	^0
@@ -185,7 +185,7 @@ CMReHabPlantHarvester class >> imageHighlight [
 	^self image isStroked: false
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMReHabPlantHarvester class >> label_default [
 	"Return the default value of label attribute"
 	^'toto'
@@ -202,13 +202,13 @@ CMReHabPlantHarvester class >> maxHarvest: anObject [
 	maxHarvest := anObject
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMReHabPlantHarvester class >> maxHarvest_default [
 	"Return the default value of maxHarvest attribute"
 	^2
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMReHabPlantHarvester class >> myClan_default [
 	"Return the default value of myClan attribute"
 	^nil
@@ -220,7 +220,7 @@ CMReHabPlantHarvester >> atHome [
 	^self patch isNil or: [(self patch myCSE: CMReHabZone) isNil]
 ]
 
-{ #category : #'+ moving' }
+{ #category : #moving }
 CMReHabPlantHarvester >> goBackHome [
 
 	self myClan bringBackHomeMember: self

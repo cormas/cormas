@@ -27,14 +27,14 @@ CMECECVegetationUnit class >> K: anObject [
 	K := anObject
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMECECVegetationUnit class >> K_default [
 	"Return the default value of K attribute"
 	
 	^10
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMECECVegetationUnit class >> biomass_default [
 	"Return the default value of biomass attribute"
 	
@@ -47,14 +47,14 @@ CMECECVegetationUnit class >> isAbstract [
 	^false
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMECECVegetationUnit class >> k_default [
 	"Return the default value of k attribute"
 	
 	^10
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMECECVegetationUnit class >> palette [
 	^ palette
 		ifNil: [ palette := RTMultiLinearColor new
@@ -76,14 +76,14 @@ CMECECVegetationUnit class >> r: anObject [
 	r := anObject
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMECECVegetationUnit class >> r_default [
 	"Return the default value of r attribute"
 	
 	^0.2
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMECECVegetationUnit class >> state_default [
 	"Return the default value of state attribute"
 	

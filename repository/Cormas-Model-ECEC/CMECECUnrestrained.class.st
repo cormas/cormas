@@ -1,7 +1,7 @@
 Class {
 	#name : #CMECECUnrestrained,
 	#superclass : #CMECECForager,
-	#category : 'Cormas-Model-ECEC'
+	#category : #'Cormas-Model-ECEC'
 }
 
 { #category : #'pov symbols' }
@@ -36,7 +36,7 @@ CMECECUnrestrained class >> harvestRate [
 	^harvestRate ifNil: [harvestRate := 0.99]
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMECECUnrestrained class >> harvestRate_default [
 	"Return the default value of harvestRate attribute"
 	

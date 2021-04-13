@@ -16,7 +16,7 @@ Class {
 		'nodes',
 		'arcs'
 	],
-	#category : 'Cormas-Core-Entities'
+	#category : #'Cormas-Core-Entities'
 }
 
 { #category : #'instance creation' }
@@ -56,19 +56,19 @@ CMNetworkEntity class >> newFromNode: aNode [
 	^self newFromArcs: aNode arcs copy
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMNetworkEntity >> arcs [
 	
 	^arcs ifNil: [arcs := OrderedCollection new]
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMNetworkEntity >> arcs: anObject [
 	
 	arcs := anObject
 ]
 
-{ #category : #'+ ways' }
+{ #category : #ways }
 CMNetworkEntity >> getNodes [
 	" Calculates and returns the nodes of the network"
 	
@@ -79,41 +79,41 @@ CMNetworkEntity >> getNodes [
 	^ nodes
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMNetworkEntity >> nodes [
 	
 	^ nodes 
 		ifNil: [ nodes := self getNodes ]
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMNetworkEntity >> nodes: anObject [
 	
 	nodes := anObject
 ]
 
-{ #category : #'+ ways' }
+{ #category : #ways }
 CMNetworkEntity >> startArcs [
 	" Returns the arcs located at the start of the Network "
 	
 	^ self arcs select: #isNetworkStartArc
 ]
 
-{ #category : #'+ ways' }
+{ #category : #ways }
 CMNetworkEntity >> startNodes [
 	" Returns the nodes located at the start of the Network "
 	
 	^ self startArcs collect: #startNode
 ]
 
-{ #category : #'+ ways' }
+{ #category : #ways }
 CMNetworkEntity >> stopArcs [
 	" Returns the arcs located at the end of the Network "
 	
 	^ self arcs select: #isNetworkStopArc
 ]
 
-{ #category : #'+ ways' }
+{ #category : #ways }
 CMNetworkEntity >> stopNodes [
 	"Purpose: returns the nodes located at the end of the Network"
 	

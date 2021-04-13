@@ -21,13 +21,13 @@ Class {
 	#category : #'Cormas-Core-Entities'
 }
 
-{ #category : #'- testing' }
+{ #category : #testing }
 CMAgentLocation class >> isSituatedClass [
 	
 	^true
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMAgentLocation >> aggregates: aClassOrClassName withinRadius: range [
 	"Purpose: returns an OrderedCollection of ComponentSpatialEntities (aggregate or not connex) located within a given radius of the current position of the agent.
 Argument: range = <Integer>
@@ -38,7 +38,7 @@ Return value: <OrderedCollection(SpatialEntity) | nil>"
 		collect: [:c | c myCSE: aClassOrClassName]
 ]
 
-{ #category : #'- displaying' }
+{ #category : #displaying }
 CMAgentLocation >> center [
 	
 	^ patch isNil
@@ -46,7 +46,7 @@ CMAgentLocation >> center [
 		ifFalse: [ patch center ]
 ]
 
-{ #category : #'+ environment - sensing - agents' }
+{ #category : #'environment - sensing - agents' }
 CMAgentLocation >> colocatedEntities: locatedEntityName [
 	"Purpose: returns all entities (except the sender) of a given type located in the same location as the receiver. (all locatedEntityName subclasses are considered).
 	Argument: 	locatedEntityName = <Symbol | Class>
@@ -62,7 +62,7 @@ CMAgentLocation >> colocatedEntities: locatedEntityName [
 	^ collec
 ]
 
-{ #category : #'+ environment - sensing - agents' }
+{ #category : #'environment - sensing - agents' }
 CMAgentLocation >> colocatedEntities: locatedEntityName verifying: aBlock [
 	"Purpose: returns all entities of a given type located in the same location as the receiver and verifying a specified condition.
 Arguments: 	locatedEntityName = <Symbol | Class>
@@ -76,7 +76,7 @@ Example: self colocatedEntities: #Prey verifying: [:p | p isWeak]"
 			[(self colocatedEntities: locatedEntityName) select: [:a | aBlock value: a]]
 ]
 
-{ #category : #'+ environment - picking - agents' }
+{ #category : #'environment - picking - agents' }
 CMAgentLocation >> colocatedEntity: locatedEntityName [
 	"Purpose: picks RANDOMLY one among the co-located entities of a given type. 
 If none: returns nil; if more than one: random selection
@@ -91,7 +91,7 @@ Example: self colocatedEntity: #Prey"
 		ifFalse: [ Cormas selectRandomlyFrom: candidates ]
 ]
 
-{ #category : #'+ environment - picking - agents' }
+{ #category : #'environment - picking - agents' }
 CMAgentLocation >> colocatedEntity: locatedEntityName verifying: aCondition [
 	"Purpose: picks RANDOMLY one among the co-located entities of a given type verifying a specified condition. 
 If none: returns nil; if more than one: random selection
@@ -107,7 +107,7 @@ Example: self colocatedEntity: #Prey verifying: [:a | a isWeak]"
 		ifFalse: [Cormas selectRandomlyFrom: candidates]
 ]
 
-{ #category : #'+ environment - picking - agents' }
+{ #category : #'environment - picking - agents' }
 CMAgentLocation >> colocatedSimilarAgent [
 	"Purpose: picks RANDOMLY one among the co-located receiver-like entities. 
 If none: returns nil; if more than one: random selection
@@ -120,7 +120,7 @@ Return value: <AgentLocation | nil>"
 		ifFalse: [Cormas selectRandomlyFrom: candidates]
 ]
 
-{ #category : #'+ environment - picking - agents' }
+{ #category : #'environment - picking - agents' }
 CMAgentLocation >> colocatedSimilarAgentVerifying: aCondition [
 	"Purpose: picks RANDOMLY one among the co-located receiver-like entities verifying a specified condition. 
 If none: returns nil; if more than one: random selection
@@ -135,7 +135,7 @@ Example: self colocatedSimilarAgentVerifying: [:a | a sex ~= self sex]"
 		ifFalse: [Cormas selectRandomlyFrom: candidates]
 ]
 
-{ #category : #'+ environment - sensing - agents' }
+{ #category : #'environment - sensing - agents' }
 CMAgentLocation >> colocatedSimilarAgents [
 	"Purpose: returns all receiver-like entities located in the same location as the receiver.
 Return value: <Collection(AgentLocation)>"
@@ -143,7 +143,7 @@ Return value: <Collection(AgentLocation)>"
 	^self colocatedEntities: self class
 ]
 
-{ #category : #'+ environment - sensing - agents' }
+{ #category : #'environment - sensing - agents' }
 CMAgentLocation >> colocatedSimilarAgentsVerifying: aBlock [
 	"Purpose: returns all receiver-like entities located in the same location as the receiver and verifying a specified condition.
 Argument: aBlock = <BlockClosure>
@@ -163,7 +163,7 @@ CMAgentLocation >> delete [
 	super delete
 ]
 
-{ #category : #'- deprecated' }
+{ #category : #deprecated }
 CMAgentLocation >> displayOn: aGC [
 	
 	self halt.
@@ -172,7 +172,7 @@ CMAgentLocation >> displayOn: aGC [
 		at: self center
 ]
 
-{ #category : #'+ environment - distance' }
+{ #category : #'environment - distance' }
 CMAgentLocation >> distanceTo: aSpatialEntityOrSituatedEntity [
 	"Purpose: returns the Manhattan distance (in cells) between the patch of the agent and aSpatialEntityOrSituatedEntity
 If it is the distance to a situatedEntity, returrns the distance to the patch of this entity.
@@ -186,7 +186,7 @@ Return value: <Integer>"
 		ifTrue: [^self patch distanceTo: aSpatialEntityOrSituatedEntity]
 ]
 
-{ #category : #'+ testing' }
+{ #category : #testing }
 CMAgentLocation >> isClassLocation [
 	"Answer if the entity is a kind of AgentLocation or of ObjectLocation"
 	
@@ -205,7 +205,7 @@ CMAgentLocation >> leave [
 	self leaveWhileMoving: false.
 ]
 
-{ #category : #'- moving' }
+{ #category : #moving }
 CMAgentLocation >> leaveWhileMoving: isMoving [
 	"isMoving = <Boolean>"
 
@@ -225,7 +225,7 @@ CMAgentLocation >> leaveWhileMoving: isMoving [
 	self patch: nil
 ]
 
-{ #category : #'+ environment - sensing - agents' }
+{ #category : #'environment - sensing - agents' }
 CMAgentLocation >> locatedEntities: locatedEntityName verifying: aBlock withinRadius: range [
 	"Purpose: returns all located entities of a given type withing a given radius of the current location and fulfilling a specified contraint.
 Arguments: 	locatedEntityName = <Symbol | Class>
@@ -241,7 +241,7 @@ Example: self locatedEntities: #Predator verifying: [:a | a isHungry] withinRadi
 				select: [:a | aBlock value: a]]
 ]
 
-{ #category : #'+ environment - sensing - agents' }
+{ #category : #'environment - sensing - agents' }
 CMAgentLocation >> locatedEntities: locatedEntityName withinRadius: range [
 	"Purpose: returns all located entities of a given type withing a given radius of the current location (all locatedEntityName subclasses are considered).
 Arguments: 	locatedEntityName = <Symbol | Class>
@@ -258,7 +258,7 @@ Example: self locatedEntities: #Predator withinRadius: self perceptionRangePreda
 	^collec
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMAgentLocation >> locationsVerifying: aBlock withinRadius: range [
 	"Purpose: returns the spatial entities within a given radius of the receiver current location and verifying the condition specified in aBlock. 
 The current location is considered
@@ -272,7 +272,7 @@ Example: self locationsVerifying: [:c | c isClosed not] withinRadius: 5"
 		ifFalse: [self patch recursiveNeighbourhood: range verifying: aBlock]
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMAgentLocation >> locationsWithinRadius: range [
 	"Purpose: returns a collection a cells within a given radius of the current position
 The current location is considered
@@ -284,7 +284,7 @@ Return value: <Collection(SpatialEntity) | nil>"
 		ifFalse: [self patch recursiveNeighbourhood: range]
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMAgentLocation >> locationsWithoutAny: locatedEntityName withinRadius: range [
 	"Purpose: returns the spatial entities in a given range without any occupant of a given type. 
 The current location is considered
@@ -299,7 +299,7 @@ Example: self locationsWithoutAny: Predator withinRadius: self perceptionRangePr
 			[self patch recursiveNeighbourhood: range withoutAny: locatedEntityName]
 ]
 
-{ #category : #'- deprecated' }
+{ #category : #deprecated }
 CMAgentLocation >> menu [
 	
 	| aMenuBuilder |
@@ -309,7 +309,7 @@ CMAgentLocation >> menu [
 	^aMenuBuilder menu"
 ]
 
-{ #category : #'- deprecated' }
+{ #category : #deprecated }
 CMAgentLocation >> moveAndTrackTo: aPatch [
 	"Move to aPatch and display a line from origin center to aPatch center"
 	"Deprecated"
@@ -349,7 +349,7 @@ CMAgentLocation >> moveNW [
 		ifTrue: [self moveTo: self patch neighbourNW]
 ]
 
-{ #category : #'+ moving' }
+{ #category : #moving }
 CMAgentLocation >> moveNcells: n towards: aCell [
 	"Purpose: moves n cells in direction of a given location.
 Argument: aCell = <SpatialEntityElement>
@@ -367,7 +367,7 @@ Example: self moveNcells: 5 towards: self house patch"
 						ifFalse: [self moveTo: (path at: n)]]]
 ]
 
-{ #category : #'+ moving' }
+{ #category : #moving }
 CMAgentLocation >> moveNcells: n towards: aCell constraintOnPath: aBlock [
 	"Purpose: moves n cells in direction of a given location, taking a specified constraint on each cell of the path to destination.
 Argument: aCell = <SpatialEntityElement>
@@ -409,7 +409,7 @@ CMAgentLocation >> moveSW [
 		ifTrue: [self moveTo: self patch neighbourSW]
 ]
 
-{ #category : #'+ moving' }
+{ #category : #moving }
 CMAgentLocation >> moveTo: aSpatialEntity [
 	"Purpose: moves to a given location.
 Argument: aSpatialEntity = <SpatialEntity>
@@ -438,7 +438,7 @@ Example: self moveTo: self patch neighbourN"
 				from: (EntityReference on: self)]"
 ]
 
-{ #category : #'+ moving' }
+{ #category : #moving }
 CMAgentLocation >> moveTowards: aCell [
 	"Purpose: moves one cell in direction of a given location.
 Argument: aCell = <SpatialEntityElement>
@@ -449,7 +449,7 @@ Example: self moveTowards: self house patch"
 			[self patch = aCell ifFalse: [self moveTo: (self patch wayTo: aCell) first]]
 ]
 
-{ #category : #'+ moving' }
+{ #category : #moving }
 CMAgentLocation >> moveTowards: aCell constraintOnPath: aBlock [
 	"Purpose: moves one cell in direction of a given location, taking a specified constraint on each cell of the path to destination.
 Argument: aCell = <SpatialEntityElement>
@@ -470,7 +470,7 @@ CMAgentLocation >> moveW [
 		ifTrue: [self moveTo: self patch neighbourW]
 ]
 
-{ #category : #'+ environment - picking - space' }
+{ #category : #'environment - picking - space' }
 CMAgentLocation >> nearestEmptyLocation [
 	"Purpose: returns the nearest spatial entity with no occupant of any kind. 
 The current location is NOT considered
@@ -482,14 +482,14 @@ Return value: <SpatialEntity | nil>"
 		ifFalse: [self patch nearestEmptyCell]
 ]
 
-{ #category : #'- deprecated' }
+{ #category : #deprecated }
 CMAgentLocation >> nearestEmptyLocation: range [
 	"DEPRECATED"
 	
 	^self nearestEmptyLocationWithinRadius: range
 ]
 
-{ #category : #'+ environment - picking - space' }
+{ #category : #'environment - picking - space' }
 CMAgentLocation >> nearestEmptyLocationWithinRadius: range [
 	"Purpose: returns the nearest spatial entity within a given radius of the current location and with no occupant of any kind. 
 The current location is NOT considered
@@ -502,7 +502,7 @@ Return value: <SpatialEntity | nil>"
 		ifFalse: [self patch nearestEmptyNeighborWithinRadius: range]
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMAgentLocation >> nearestEmptyLocations [
 	"Purpose: returns the nearest spatial entities with no occupant of any kind.
 The current location is NOT considered
@@ -513,7 +513,7 @@ Return value: <Collection(SpatialEntity) | nil>"
 		ifFalse: [self patch nearestEmptyCells]
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMAgentLocation >> nearestEmptyLocationsWithinRadius: range [
 	"Purpose: returns the nearest spatial entities with no occupant of any kind and within a given radius of the current location.
 The current location is NOT considered
@@ -525,7 +525,7 @@ Return value: <Collection(SpatialEntity) | nil>"
 		ifFalse: [self patch nearestEmptyNeighborsWithinRadius: range]
 ]
 
-{ #category : #'+ environment - sensing - agents' }
+{ #category : #'environment - sensing - agents' }
 CMAgentLocation >> nearestLocatedEntities: locatedEntityName verifying: aBlock withinRadius: range [
 	"Purpose: returns the nearest located entities of a given type withing a given radius of the current location and fulfilling a specified contraint.
 Arguments: 	locatedEntityName = <Symbol | Class>
@@ -541,7 +541,7 @@ Example: self nearestLocatedEntities: #Predator verifying: [:a | a isHungry] wit
 				select: [:e | aBlock value: e]]
 ]
 
-{ #category : #'+ environment - sensing - agents' }
+{ #category : #'environment - sensing - agents' }
 CMAgentLocation >> nearestLocatedEntities: locatedEntityName withinRadius: range [
 	"Purpose: returns the nearest located entities of a given type withing a given radius of the current location.
 Arguments: 	locatedEntityName = <Symbol | Class>
@@ -560,7 +560,7 @@ Example: self nearestLocatedEntities: #Predator withinRadius: self perceptionRan
 	^entities
 ]
 
-{ #category : #'+ environment - picking - space' }
+{ #category : #'environment - picking - space' }
 CMAgentLocation >> nearestLocationVerifying: aBlock [
 	"Purpose: returns the nearest spatial entity fulfilling the constraint specified in aBlock. 
 The current location is NOT considered
@@ -573,7 +573,7 @@ Example: self nearestLocationVerifying: [:c | c isClosed not]"
 		ifFalse: [self patch nearestCellVerifying: aBlock]
 ]
 
-{ #category : #'+ environment - picking - space' }
+{ #category : #'environment - picking - space' }
 CMAgentLocation >> nearestLocationVerifying: aBlock withinRadius: range [
 	"Purpose: returns the nearest spatial entity within a given radius of the current location and fulfilling the constraint specified in aBlock. 
 The current location is NOT considered
@@ -589,7 +589,7 @@ Example: self nearestLocationVerifying: [:c | c isClosed not] withinRadius: 5"
 			[self patch nearestNeighborVerifying: aBlock withinRadius: range]
 ]
 
-{ #category : #'+ environment - picking - space' }
+{ #category : #'environment - picking - space' }
 CMAgentLocation >> nearestLocationWithoutAny: locatedEntityName [
 	"Purpose: returns the nearest spatial entity without any occupant of a given type.
 The current location is NOT considered
@@ -603,7 +603,7 @@ Example: self nearestLocationWithoutAny: #Predator"
 		ifFalse: [self patch nearestCellWithoutAny: locatedEntityName]
 ]
 
-{ #category : #'+ environment - picking - space' }
+{ #category : #'environment - picking - space' }
 CMAgentLocation >> nearestLocationWithoutAny: locatedEntityName withinRadius: range [
 	"Purpose: returns the nearest spatial entity in a given range without any occupant of a given type. 
 The current location is NOT considered
@@ -620,7 +620,7 @@ Example: self nearestLocationWithoutAny: #Predator withinRadius: self perception
 					range]
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMAgentLocation >> nearestLocationsVerifying: aBlock [
 	"Purpose: returns the nearest spatial entities fulfilling the constraint specified in aBlock.
 The current location is NOT considered
@@ -632,7 +632,7 @@ Example: self nearestLocationsVerifying: [:c | c isClosed not]"
 		ifFalse: [self patch nearestCellsVerifying: aBlock]
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMAgentLocation >> nearestLocationsVerifying: aCondition withMaxOf: aMagnitudeName withinRadius: range [
 	"Purpose: returns the nearest spatial entities within a given radius of the current location with the maximum value of a given magnitude and verifying a specified condition . 
 The current location is NOT considered
@@ -649,7 +649,7 @@ Example: self nearestLocationsWithMaxOf: #water verifying: [:c | c isPolluted no
 				withinRadius: range]
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMAgentLocation >> nearestLocationsVerifying: aBlock withinRadius: range [
 	"Purpose: returns the nearest spatial entities within a given radius of the current location and fulfilling the constraint specified in aBlock. 
 The current location is NOT considered
@@ -664,7 +664,7 @@ Example: self nearestLocationsVerifying: [:c | c isClosed not] withinRadius: 5"
 			[self patch nearestNeighborsVerifying: aBlock withinRadius: range]
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMAgentLocation >> nearestLocationsWithMaxOf: aMagnitudeName withinRadius: range [
 	"Purpose: returns the nearest spatial entities within a given radius of the current location with the maximum value of a given magnitude. 
 The current location is NOT considered
@@ -679,7 +679,7 @@ Example: self nearestLocationsWithMaxOf: #water verifying: [:c | c isPolluted no
 			[self patch nearestNeighborsWithMaxOf: aMagnitudeName withinRadius: range]
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMAgentLocation >> nearestLocationsWithoutAny: locatedEntityName [
 	"Purpose: returns the nearest spatial entities without any occupant of a given type.
 The current location is NOT considered
@@ -692,7 +692,7 @@ Example: self nearestLocationsWithoutAny: #Predator"
 		ifFalse: [self patch nearestCellsWithoutAny: locatedEntityName]
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMAgentLocation >> nearestLocationsWithoutAny: locatedEntityName withinRadius: range [
 	"Purpose: returns the nearest spatial entity in a given range without any occupant of a given type. 
 The current location is NOT considered
@@ -708,7 +708,7 @@ Example: self nearestLocationsWithoutAny: #Predator withinRadius: self perceptio
 					range]
 ]
 
-{ #category : #'+ environment - picking - agents' }
+{ #category : #'environment - picking - agents' }
 CMAgentLocation >> nearestSimilarAgentWithingRadius: range [
 	"Purpose: picks RANDOMLY one among the nearest receiver-like entities located withing a given radius of the receiver current location.
 If none: returns nil; if more than one: random selection
@@ -723,7 +723,7 @@ Example: self nearestSimilarAgentWithinRadius: 2"
 		ifFalse: [Cormas selectRandomlyFrom: candidates]
 ]
 
-{ #category : #'+ environment - sensing - agents' }
+{ #category : #'environment - sensing - agents' }
 CMAgentLocation >> nearestSimilarAgentsVerifying: aBlock withinRadius: range [
 	"Purpose: returns the nearest receiver-like instances located withing a given radius of the receiver location and fulfilling a specified constraint
 Arguments: aBlock = <BlockClosure>
@@ -737,7 +737,7 @@ Example: self nearestSimilarAgentsVerifying: [:a | a sex ~= self sex] withinRadi
 		withinRadius: range
 ]
 
-{ #category : #'+ environment - sensing - agents' }
+{ #category : #'environment - sensing - agents' }
 CMAgentLocation >> nearestSimilarAgentsWithinRadius: range [
 	"Purpose: returns the nearest receiver-like entities located withing a given radius of the receiver current location.
 Argument: 	lrange = <Integer>
@@ -749,7 +749,7 @@ Example: self nearestSimilarAgentsWithinRadius: 2"
 		withinRadius: range
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMAgentLocation >> neighboringLocations [
 	"Purpose: return direct neighbours of current location
 The current location is NOT considered
@@ -760,7 +760,7 @@ Return value: <Collection(SpatialEntity) | nil>"
 		ifFalse: [self patch neighbourhood]
 ]
 
-{ #category : #'+ environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMAgentLocation >> neighboringLocationsVerifying: aBlock [
 	"Purpose: returns direct neighbours of current location fulfilling the constraint specified in aBlock. 
 The current location is NOT considered
@@ -773,7 +773,7 @@ Example: self neighboringLocationsVerifying: [:c | c isClosed not]"
 		ifFalse: [self patch neighbourhood select: [:c | aBlock value: c]]
 ]
 
-{ #category : #'+ environment - sensing - agents' }
+{ #category : #'environment - sensing - agents' }
 CMAgentLocation >> neighbouringLocatedEntities: locatedEntityName [
 	"Purpose: returns all entities of a given type located in the direct neighbourhood of the receiver current location.
 The co-located entities are not considered here (for that, use locatedEntities: locatedEntityName withinRadius: 1)
@@ -789,7 +789,7 @@ Example: self neighbouringLocatedEntities: #Predator"
 	^collec
 ]
 
-{ #category : #'+ environment - sensing - agents' }
+{ #category : #'environment - sensing - agents' }
 CMAgentLocation >> neighbouringLocatedEntities: locatedEntityName verifying: aCondition [
 	"Purpose: returns all entities of a given type located in the direct neighbourhood of the receiver current location and verifying a specified condition.
 The co-located entities are not considered here (for that, use locatedEntities: locatedEntityName verifying: aCondition withinRadius: 1)
@@ -805,7 +805,7 @@ Example: self neighbouringLocatedEntities: #Prey verifying: [:p | p isWeak]"
 				select: [:e | aCondition value: e]]
 ]
 
-{ #category : #'+ environment - sensing - agents' }
+{ #category : #'environment - sensing - agents' }
 CMAgentLocation >> neighbouringSimilarAgents [
 	"Purpose: returns all receiver-like entities located in the direct neighbourhood of the receiver current location.
 The co-located entities are not considered here (#neighbouringSimilarAgents is equivalent to #similarAgentsWithinRadius: 1)
@@ -814,7 +814,7 @@ Return value: <Collection(AgentLocation)>"
 	^self neighbouringLocatedEntities: self class name
 ]
 
-{ #category : #'+ environment - sensing - agents' }
+{ #category : #'environment - sensing - agents' }
 CMAgentLocation >> neighbouringSimilarAgentsVerifying: aCondition [
 	"Purpose: returns all receiver-like entities located in the direct neighbourhood of the receiver current location and verifying a specified condition.
 The co-located entities are not considered here (#neighbouringSimilarAgentsVerifying: aCondition is equivalent to #similarAgentsVerifying: aCondition withinRadius: 1)
@@ -828,19 +828,19 @@ Example: self neighbouringSimilarAgentsVerifying: [:a | a sex ~= self sex]"
 			[self neighbouringSimilarAgents select: [:e | aCondition value: e]]
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMAgentLocation >> patch [
 	
 	^patch
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMAgentLocation >> patch: unPatch [
 	
 	patch := unPatch
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMAgentLocation >> patchID [
 	"Purpose: returns ID of patch
 Return value: <Integer>"
@@ -849,28 +849,28 @@ Return value: <Integer>"
 	^self patch id
 ]
 
-{ #category : #'- deprecated' }
+{ #category : #deprecated }
 CMAgentLocation >> perceivedCellsWithinRange: anInteger [
 	"DEPRECATED"
 	
 	^self locationsWithinRadius: anInteger
 ]
 
-{ #category : #'- deprecated' }
+{ #category : #deprecated }
 CMAgentLocation >> perceivedEntities: locatedEntityName withinRange: range [
 	"DEPRECATED"
 	
 	^self locatedEntities: locatedEntityName withinRadius: range
 ]
 
-{ #category : #'- deprecated' }
+{ #category : #deprecated }
 CMAgentLocation >> perceivedSimilarAgentsWithinRange: aRayon [
 	"DEPRECATED"
 	
 	^self similarAgentsWithinRadius: aRayon
 ]
 
-{ #category : #'- deprecated' }
+{ #category : #deprecated }
 CMAgentLocation >> perception: aRayon [
 	"Return a collection of cells belonging to aRayon (it contains also its current patch)"
 	
@@ -896,7 +896,7 @@ CMAgentLocation >> randomWalk [
 	self moveTo: destination
 ]
 
-{ #category : #'+ moving' }
+{ #category : #moving }
 CMAgentLocation >> randomWalk: radius [
 	"Purpose: moves to aSpatialEntityElement randomly picked among a radius.
 Argument: radius = <positive Integer>
@@ -907,7 +907,7 @@ Example: self randomWalk: 2 "
 			(Cormas selectRandomlyFrom: (self patch recursiveNeighbourhood: radius))
 ]
 
-{ #category : #'+ moving' }
+{ #category : #moving }
 CMAgentLocation >> randomWalkConstrainedBy: aBlock [
 	" Purpose: moves to aSpatialEntityElement randomly picked among the direct neighbours (relative distance = 1) fulfilling the constraint specified in aBlock.  If there is no neighbouring cells fulfilling the constraint, the agent does not move.
 	Argument: aBlock = <BlockClosure>
@@ -923,7 +923,7 @@ CMAgentLocation >> randomWalkConstrainedBy: aBlock [
 	self moveTo: destination
 ]
 
-{ #category : #'+ environment - sensing - agents' }
+{ #category : #'environment - sensing - agents' }
 CMAgentLocation >> similarAgentsVerifying: aBlock withinRadius: range [
 	"Purpose: returns the receiver-like instances located withing a given radius of the receiver location and fulfilling a specified constraint
 Arguments: aBlock = <BlockClosure>
@@ -940,7 +940,7 @@ Example: self similarAgentsVerifying: [:a | a sex ~= self sex] withinRadius: sel
 				withinRadius: range]
 ]
 
-{ #category : #'+ environment - sensing - agents' }
+{ #category : #'environment - sensing - agents' }
 CMAgentLocation >> similarAgentsWithinRadius: range [
 	"Purpose: returns the receiver-like instances located withing a given radius of the receiver location
 Argument: range = <Integer>
@@ -955,13 +955,13 @@ Example: self similarAgentsWithinRadius: 3"
 				withinRadius: range]
 ]
 
-{ #category : #'+ accessing' }
+{ #category : #accessing }
 CMAgentLocation >> sizeOfPOV [
 "To be overwritten if needed"
  ^ 20
 ]
 
-{ #category : #'+ moving' }
+{ #category : #moving }
 CMAgentLocation >> walkToMaxOf: aSymbol [
 	"Purpose: moves to the spatial entity in the direct neighbourhood (relative distance = 1) with the higher value for a given magnitude.
 In case several destinations share the same maximum value, the tie is randomly broken.
@@ -983,7 +983,7 @@ Example: self walkToMaxOf: #sugar"
 			self moveTo: destination]
 ]
 
-{ #category : #'+ moving' }
+{ #category : #moving }
 CMAgentLocation >> walkToMaxOf: aSymbol constrainedBy: aBlock [
 	"Purpose: moves to the spatial entity in the direct neighbourhood (relative distance = 1) with the higher value for a given magnitude and fulfilling the constraint specified in aBlock.
 In case several possible destinations share the same maximum value, the tie is randomly broken.

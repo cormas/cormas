@@ -36,7 +36,7 @@ CMECECRestrained class >> harvestRate [
 	^harvestRate ifNil: [harvestRate := 0.5]
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMECECRestrained class >> harvestRate_default [
 	"Return the default value of harvestRate attribute"
 	

@@ -30,7 +30,7 @@ CMConwayCell class >> SpatialEntityPOV_dead_red [
 	^Array with: 0.5 with: 0.0 with: 0.1
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMConwayCell class >> state_default [
 	^ nil
 ]

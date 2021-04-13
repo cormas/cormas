@@ -35,14 +35,14 @@ Class {
 	#category : #'Cormas-Model-Diffuse'
 }
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMDiffuseModel class >> activeCells_default [
 	"Return the default value of activeCells attribute"
 
 	^ nil
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMDiffuseModel class >> antNumber_default [
 	"Return the default value of antNumber attribute"
 
@@ -133,14 +133,14 @@ CMDiffuseModel class >> isAbstract [
 	^ false
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMDiffuseModel class >> newActiveCells_default [
 	"Return the default value of newActiveCells attribute"
 
 	^ nil
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMDiffuseModel class >> noMoreActiveCells_default [
 	"Return the default value of noMoreActiveCells attribute"
 

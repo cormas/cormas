@@ -35,7 +35,7 @@ CMECECForager class >> catabolicRate: anObject [
 	catabolicRate := anObject
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMECECForager class >> catabolicRate_default [
 	"Return the default value of catabolicRate attribute"
 	
@@ -48,7 +48,7 @@ CMECECForager class >> defaultProbes [
 ^self probes
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMECECForager class >> energy_default [
 	"Return the default value of energy attribute"
 	
@@ -69,7 +69,7 @@ CMECECForager class >> fertilityThreshold: anObject [
 	fertilityThreshold := anObject
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMECECForager class >> fertilityThreshold_default [
 	"Return the default value of fertilityThreshold attribute"
 	
@@ -90,7 +90,7 @@ CMECECForager class >> harvestRate: anObject [
 	harvestRate := anObject
 ]
 
-{ #category : #'- default value' }
+{ #category : #'default value' }
 CMECECForager class >> harvestRate_default [
 	"Return the default value of harvestRate attribute"
 	
@@ -182,13 +182,13 @@ CMECECForager >> move [
 					(goodCells asSortedCollection: [:c1 :c2 | c1 biomass > c2 biomass]) first]
 ]
 
-{ #category : #'+ pov' }
+{ #category : #pov }
 CMECECForager >> pov [
 	"To get the option in the grid visualisation window"
 self subclassResponsibility 
 ]
 
-{ #category : #'+ pov' }
+{ #category : #pov }
 CMECECForager >> povEnergy [
 	"To get the option in the grid visualisation window"
 self subclassResponsibility 

@@ -63,7 +63,7 @@ Example: Msg from: anAgent1 to: anAgent2 content: aGift)"
 	^super new from: anAgent to: anotherOne content: anObject
 ]
 
-{ #category : #'+ communication' }
+{ #category : #communication }
 CMMsg class >> from: anAgent to: anotherOne topic: anObject [
 	"Purpose: Creates a message with a sender, a receiver and a topic. The message can be sent by a communicant agent using the method sendMessageSynchronously:  or sendMessageAsynchronously:
 Argument: anAgent = <AgentComm or AgentCommLocation
@@ -74,7 +74,7 @@ Example: Msg from: anAgent1 to: anAgent2 topic: #hello)"
 	^super new from: anAgent to: anotherOne topic: anObject
 ]
 
-{ #category : #'+ communication' }
+{ #category : #communication }
 CMMsg class >> from: anAgent to: anotherOne topic: aSymbol content: anObject [
 	"Purpose: Creates a message with a sender, a receiver, a topic and a content. The message can be sent by a communicant agent using the method sendMessageSynchronously:  or sendMessageAsynchronously:
 Argument: anAgent = <AgentComm or AgentCommLocation
@@ -120,7 +120,7 @@ CMMsg class >> printHierarchy [
 	^s contents
 ]
 
-{ #category : #'- activityEditor' }
+{ #category : #activityEditor }
 CMMsg class >> superClassesUntil: aSuperClass [
 	"Return the super classes of the class sender until aSuperClass"
 	
@@ -131,7 +131,7 @@ CMMsg class >> superClassesUntil: aSuperClass [
 	^coll
 ]
 
-{ #category : #'+ util' }
+{ #category : #util }
 CMMsg class >> superClassesUntilEntity [
 	"Return the super classes of the class sender until Msg"
 
@@ -149,7 +149,7 @@ Example: Msg to: anAgent content: aGift)"
 	^super new to: anAgent content: anObject
 ]
 
-{ #category : #'+ communication' }
+{ #category : #communication }
 CMMsg class >> to: anotherOne topic: aSymbol [
 	"Purpose: Creates a message with a receiver and a topic. The message can be sent by a communicant agent using the method sendMessageSynchronously:  or sendMessageAsynchronously:
 Argument: anAgent = <AgentComm or AgentCommLocation
@@ -159,7 +159,7 @@ Example: Msg to: anAgent topic: #hello)"
 	^super new to: anotherOne topic: aSymbol
 ]
 
-{ #category : #'+ communication' }
+{ #category : #communication }
 CMMsg class >> to: anotherOne topic: aSymbol content: anObject [
 	"Purpose: Creates a message with a receiver, a topic and a content. The message can be sent by a communicant agent using the method sendMessageSynchronously:  or sendMessageAsynchronously:
 Argument: anAgent = <AgentComm or AgentCommLocation
