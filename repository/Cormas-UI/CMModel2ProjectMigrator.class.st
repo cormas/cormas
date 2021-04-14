@@ -21,7 +21,7 @@ Class {
 }
 
 { #category : #examples }
-CMModel2ProjectMigrator class >> migrateProjects [ 
+CMModel2ProjectMigrator class >> migrateModels [ 
 	<example>
 	
 	self new 
