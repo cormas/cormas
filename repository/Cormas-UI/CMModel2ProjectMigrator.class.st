@@ -86,9 +86,11 @@ CMModel2ProjectMigrator >> buildProjects [
 	" Main entry point for generating project files. Generate all project files from the models in this image "
 	" Hopefully this method should be run only once, and to reformat project directory structure for example "
 
+	'Model2Project: Building project files...' traceCr.
 	CMAbstractModel subclassesDo: [ :modelClass |
 			self buildForModel: modelClass.
-			self buildProjectFile ]
+			self buildProjectFile ].
+	'Model2Project: Done building project files...' traceCr.
 ]
 
 { #category : #accessing }
@@ -113,12 +115,16 @@ CMModel2ProjectMigrator >> handleFileEx: ex [
 
 	(ex isKindOf: FileExists)
 		ifTrue: [ 
+			self traceCrTab: 'Model2Project: Deleting existing project ' , ex fullName. 
 			ex ensureDelete.
+			self traceCrTab: 'Model2Project: Done deleting existing project ' , ex fullName. 
 			ex retry ]
 		ifFalse: [ 
 			(ex isKindOf: FileDoesNotExistException)
 				ifTrue: [ 
+					self traceCrTab: 'Model2Project: Creating projects directory' , self defaultOutputDirectory. 
 					self defaultOutputDirectory asFileReference ensureCreateDirectory.
+					self traceCrTab: 'Model2Project: Done creating projects directory' , self defaultOutputDirectory. 
 					ex retry ] ]
 ]
 
@@ -133,9 +139,14 @@ CMModel2ProjectMigrator >> metadataFilename [
 CMModel2ProjectMigrator >> moveProject: aFileReference [ 
 	" Private - Move aFileReference to the system demos/ path "
 	
-	[ aFileReference moveTo: CMResourceLocator demosPath ]
+	[	
+		self traceCrTab: 'Model2Project: Moving project file...' , aFileReference fullName. 
+		aFileReference moveTo: CMResourceLocator demosPath.
+		self traceCrTab: 'Model2Project: Done moving project file...' , aFileReference fullName. 
+	]
 	on: FileExists
 	do: [ : ex | 
+		self traceCrTab: 'Model2Project: Deleting project file ' , ex fullName. 
 		ex ensureDelete.
 		ex retry. ]
 ]
@@ -144,9 +155,11 @@ CMModel2ProjectMigrator >> moveProject: aFileReference [
 CMModel2ProjectMigrator >> moveProjects [
 	" Move recently generated projects to base location "
 
+	'Model2Project: Moving project files...' traceCr.
 	CMApplicationProject createUserDirectories.
 	(FileSystem workingDirectory allChildrenMatching: '*Model.zip') do: [ : modelRef |
-		self moveProject: modelRef ]
+		self moveProject: modelRef ].
+	'Model2Project: Done moving project files...' traceCr.
 ]
 
 { #category : #building }
@@ -212,11 +225,13 @@ CMModel2ProjectMigrator >> writeSourceCode: modelClass [
 
 	| newFile |
 
+	self traceCrTab: 'Model2Project: Writing source code ' , modelClass asString. 
 	modelClass package 
 		fileOutOn: (WriteStream on: (String new: 4000))
 		named: CMProjectFile sourceCodeFilename.
 	newFile := CMProjectFile sourceCodeFilename , '.st'.
 	self writeSourceCodeInTempLocation: newFile.
+	self traceCrTab: 'Model2Project: Done writing source code ' , modelClass asString. 
 ]
 
 { #category : #writing }
