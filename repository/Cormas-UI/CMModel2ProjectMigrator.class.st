@@ -118,7 +118,7 @@ CMModel2ProjectMigrator >> handleFileEx: ex [
 		ifFalse: [ 
 			(ex isKindOf: FileDoesNotExistException)
 				ifTrue: [ 
-					self defaultOutputDirectory ensureCreateDirectory.
+					self defaultOutputDirectory asFileReference ensureCreateDirectory.
 					ex retry ] ]
 ]
 
