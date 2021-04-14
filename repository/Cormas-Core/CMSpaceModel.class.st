@@ -1026,34 +1026,6 @@ CMSpaceModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 ]
 
 { #category : #'import - export' }
-CMSpaceModel >> exportAggregateClass: class separator: aChar [
-	"Creates in maps directory a file named 'class.agg' which contains lines representing each intance of class 'class'. 
-Each line contains the id of the instance as first element and the id of all its components separated by aChar"
-	
-	| stream file |
-	file := Dialog
-		requestNewFileName:
-			(UserMessage defaultString: 'Save as' key: #saveas) asString
-		default:
-			((Cormas mapsPath: self cormasModelClass name)
-				construct: class name asString , '.agg').
-	file isEmpty
-		ifFalse:
-			[stream := file asFilename writeStream.
-			(self spatialEntities notNil
-				and:
-					[self spatialEntities isEmpty not
-						and:
-							[(self spatialEntities includesKey: class name)
-								and: [(self spatialEntities at: class name) isEmpty not]]])
-				ifTrue:
-					[(self spatialEntities at: class name)
-						do:
-							[:a | stream nextPutAll: ((a stringWithSeparator: aChar) , '\') withCRs]].
-			stream close]
-]
-
-{ #category : #'import - export' }
 CMSpaceModel >> exportAggregateClass: class separator: aChar filename: aStringOrFileName [
 	"Creates in maps directory a file named 'class.agg' which contains lines representing each intance of class 'class'. 
 Each line contains the id of the instance as first element and the id of all its components separated by aChar"
@@ -1283,63 +1255,6 @@ CMSpaceModel >> getAggregatesFrom: baseEntity verifying: aBlock [
 			set do: [ :c | eeInstances remove: c ].
 			collec add: set ].
 	^ collec
-]
-
-{ #category : #'import - export' }
-CMSpaceModel >> getDataFromASCFile: aFileName [
-	"Create the cells from an ASC filename. Each value = '-9999'  is set to 'nil' then translated as 0."
-	
-	| file buffer separator fileData temp line2 cols rows i list att |
-	separator := Character cr.	"Read aFileName and store the data into the fileData collection"
-	file := ((Cormas mapsPath: self cormasModelClass name) construct:
-			aFileName) asFilename readStream.	"On devine le format des lignes"
-	file lineEndAuto.
-	fileData := OrderedCollection new.
-	buffer := [[file atEnd]
-		whileFalse:
-			[temp := file upTo: separator.
-			line2 := temp copyReplaceAll: '-9999' with: 'nil'.
-			fileData add: line2]].
-	buffer valueNowOrOnUnwindDo: [file close].	"Read the main information (cols, rows,...)"
-	cols := ((fileData at: 1) asArrayOfSubstrings at: 2) asNumber.
-	rows := ((fileData at: 2) asArrayOfSubstrings at: 2) asNumber.
-	xll := ((fileData at: 3) asArrayOfSubstrings at: 2) asNumber.
-	yll := ((fileData at: 4) asArrayOfSubstrings at: 2) asNumber.
-	cellSize := ((fileData at: 5) asArrayOfSubstrings at: 2) asNumber.	"Remove the header of files"
-	fileData removeFirst: 6.	"Create the Cells if necessary"
-	(cols ~= self column or: [rows ~= self line])
-		ifTrue:
-			[(Dialog
-				confirm:
-					' Rows and columns are not consistent in ' , aFileName asString ,
-							'
- Do you want to respectively set them to: ' , cols printString , ' & '
-						, rows printString , '? ')
-				ifTrue:
-					[self initializeRegularX: cols Y: rows shape: #squared nbNeighbours: #four
-						boundaries: #closed]].	"User must choose the attribute for the current filename"
-	list := self cormasModel class cellClass instVarNames asList.
-	list addFirst: 'flag'.
-	att := Dialog
-		choose: 'Which attribute for the filename ' , aFileName , '?'
-		fromList: list
-		values: list
-		lines: 8
-		cancel: [nil].
-	att ifNil: [^nil].	"set the value for the selected attribute"
-	i := 1.
-	1
-		to: rows
-		do:
-			[:r | 
-			1
-				to: cols
-				do:
-					[:c | 
-					(self cormasModel theESE at: i)
-						perform: (att , ':') asSymbol
-						with: ((fileData at: r) asArrayOfSubstrings at: c) asNumber.
-					i := i + 1]]
 ]
 
 { #category : #'import - export' }
@@ -1644,56 +1559,6 @@ CMSpaceModel >> hexagonal [
 ]
 
 { #category : #'import - export' }
-CMSpaceModel >> importAggregateClass: class componentClass: cClass separator: aChar [
-	| stream portableFilename ligne dataVector item id nbComponents collec aggregate |
-	portableFilename := Dialog
-		requestFileName: 'Name a file'
-		default:
-			((Cormas mapsPath: self cormasModelClass name)
-				construct: class name asString , '.agg').
-	portableFilename asFilename exists
-		ifFalse: [ ^ self cormas warn: portableFilename asString , ' is missing !!!' ].
-	self closed
-		ifFalse: [ ^ self warningBoundaries ].
-	(self spatialEntities isNil
-		or: [ self spatialEntities isEmpty
-				or: [ (self spatialEntities includesKey: cClass name) not
-						or: [ (self spatialEntities at: cClass name) isEmpty ] ] ])
-		ifTrue: [ self cormas warn: 'pb !!!'.
-			self halt ].
-	self resetCompoundSpatialEntity: class andTheirComponents: cClass.
-	stream := portableFilename asFilename readStream.	"On devine le format des lignes"
-	stream lineEndAuto.
-	[ stream atEnd ]
-		whileFalse: [ ligne := (stream upTo: Character cr) readStream.
-			dataVector := OrderedCollection new.
-			[ ligne atEnd ]
-				whileFalse: [ item := ligne upTo: aChar.
-					dataVector add: item asNumber ].
-			ligne close.
-			id := dataVector first.
-			dataVector remove: id.
-			nbComponents := dataVector first.
-			dataVector remove: nbComponents.
-			dataVector size = nbComponents
-				ifFalse: [ self cormas warn: 'pb !!!'.
-					self halt ]
-				ifTrue: [ collec := (self spatialEntities at: cClass name)
-						select: [ :i | dataVector includes: i id ].
-					collec size = nbComponents
-						ifFalse: [ self cormas warn: 'pb !!!'.
-							self halt ]
-						ifTrue: [ aggregate := class new: self.
-							aggregate addSilentlyComponents: collec.
-							(self spatialEntities at: class name) add: aggregate ] ] ].
-	stream close.
-	self cormasModel
-		perform: (self cormasModel getterForEntityClass: class)
-		with: (self spatialEntities at: class name).
-	self dispatchCompoundSpatialEntity: class
-]
-
-{ #category : #'import - export' }
 CMSpaceModel >> importAggregateClass: class componentClass: cClass separator: aChar filename: aStringOrFileName [
 	| stream portableFilename ligne dataVector item id nbComponents collec aggregate |
 	aStringOrFileName isString
@@ -1740,33 +1605,6 @@ CMSpaceModel >> importAggregateClass: class componentClass: cClass separator: aC
 		perform: (self cormasModel setterForEntityClass: class)
 		with: (self spatialEntities at: class name).
 	self dispatchCompoundSpatialEntity: class
-]
-
-{ #category : #'import - export' }
-CMSpaceModel >> importAttribute: attributeName fromClass: className [
-	
-	| stream filename fileData |
-	filename := (Cormas mapsPath: self cormasModelClass name)
-		construct: className asString , attributeName asString , '.txt'.
-	stream := filename asFilename readStream.	"On devine le format des lignes"
-	stream lineEndAuto.
-	fileData := OrderedCollection new.
-	[[stream atEnd] whileFalse: [fileData add: (stream upTo: Character cr)]]
-		valueNowOrOnUnwindDo: [stream close].
-	(self spatialEntities notNil
-		and:
-			[self spatialEntities isEmpty not
-				and:
-					[(self spatialEntities includesKey: className)
-						and: [(self spatialEntities at: className) isEmpty not]]])
-		ifTrue:
-			[(self spatialEntities at: className)
-				with: fileData
-				do:
-					[:a :x | 
-					a
-						perform: (attributeName asString , ':') asSymbol
-						with: (Compiler evaluate: x)]]
 ]
 
 { #category : #'CSE (regular) - instance creation' }
@@ -2285,14 +2123,6 @@ CMSpaceModel >> newEntity: aClass [
 			yourself
 ]
 
-{ #category : #'private - mouse actions' }
-CMSpaceModel >> noPatch [
-	
-	self cormas
-		warn:
-			(UserMessage defaultString: ' define a topology !  ' key: #defineTopology)
-]
-
 { #category : #'private - regular cells - instance creation' }
 CMSpaceModel >> northCell: k [
 	k = 0
@@ -2526,237 +2356,6 @@ CMSpaceModel >> resourceLocator [
 	" Answer the receiver's CMResourceLocator "
 
 	^ self cormasModel resourceLocator
-]
-
-{ #category : #'private - import - export' }
-CMSpaceModel >> saveAttributes: attributes inFile: file [
-	"Save the attribut of the cells on a file.env 
-attributes <OrderedCollection> ex: OrderedCollection ('seed' 'context')
-file <Filename> ex: aFATFilename('d:\vw7nc\cormas\Models\TSE\maps\titi.env')"
-	
-	| stream firstValue type firstPatch dicoAttConv patch a c bgColor |
-	stream := file writeStream.	" Ecriture des 4 premieres lignes : topologie de la grille "
-	stream
-		nextPutAll: 'dimensions	';
-		nextPutAll: line printString;
-		nextPutAll: ' ';
-		nextPutAll: column printString;
-		nextPutAll: '\' withCRs.
-	stream
-		nextPutAll: 'cloture	';
-		nextPutAll: closed asString;
-		nextPutAll: '\' withCRs.
-	stream
-		nextPutAll: 'connexite	';
-		nextPutAll: nbNeighbours asString;
-		nextPutAll: '\' withCRs.	" Ecriture de la couleur du background de la grille spatiale"
-	bgColor := self vue drawing fillColor.
-	bgColor ifNil: [bgColor := ColorValue gray].
-	stream
-		nextPutAll: 'backgroundColor	';
-		nextPutAll:
-				bgColor red printString , ' ' , bgColor green printString , ' '
-						, bgColor blue printString;
-		nextPutAll: '\' withCRs.	" 5√®me ligne : attributs a sauver, ainsi que leur type (on perd cette info car on les sauve au format string "
-	stream nextPutAll: 'attributs	'.
-	dicoAttConv := Dictionary new.
-	attributes
-		do:
-			[:att | 
-			firstPatch := self elementaryEntities
-				detect: [:p | (p perform: att asSymbol) isNil not]
-				ifNone: [nil].
-			firstPatch isNil
-				ifTrue: [firstValue := nil]
-				ifFalse: [firstValue := firstPatch perform: att asSymbol].
-			firstValue isSymbol
-				ifTrue:
-					[type := '(Symbol)'.
-					dicoAttConv
-						at: att asSymbol
-						put: #asString]
-				ifFalse:
-					[firstValue cormasHelper isTypeNumber
-						ifTrue:
-							[type := '(Number)'.
-							dicoAttConv
-								at: att asSymbol
-								put: #printString]
-						ifFalse:
-							[firstValue isString
-								ifTrue:
-									[type := '(String)'.
-									dicoAttConv
-										at: att asSymbol
-										put: #asString]
-								ifFalse:
-									[firstValue cormasHelper isTypeBoolean
-										ifTrue: [type := '(Boolean)']
-										ifFalse:
-											[firstValue cormasHelper isTypeEntity
-												ifTrue: [type := '(Entity)']
-												ifFalse: [type := '(nil)']].
-									dicoAttConv
-										at: att asSymbol
-										put: #printString]]].
-			stream
-				nextPutAll: att , type;
-				nextPutAll:
-						(att = attributes last
-								ifFalse: [' ']
-								ifTrue: ['\' withCRs])].	" Fin du fichier : 1 ligne pour les valeurs des attributs de chaque cellule de la grille "
-	1
-		to: self elementaryEntities size - 1
-		do:
-			[:i | 
-			patch := self elementaryEntities at: i.
-			attributes
-				do:
-					[:att | 
-					a := att asSymbol.
-					c := dicoAttConv at: a.
-					stream
-						nextPutAll: ((patch perform: a) perform: c);
-						nextPutAll:
-								(att = attributes last
-										ifFalse: [',']
-										ifTrue: ['\' withCRs])]].
-	patch := self elementaryEntities last.
-	attributes
-		do:
-			[:att | 
-			a := att asSymbol.
-			c := dicoAttConv at: a.
-			stream
-				nextPutAll: ((patch perform: a) perform: c);
-				nextPutAll:
-						(att = attributes last
-								ifFalse: [',']
-								ifTrue: [''])].
-	stream close
-]
-
-{ #category : #'import - export' }
-CMSpaceModel >> saveAttributesASC: attributes fileParameters: aList [
-	
-	| stream firstValue type firstPatch dicoAttConv patch a c position file askFileName aPrefix |
-	askFileName := true.
-	attributes size > 1
-		ifTrue:
-			[(self cormas confirm:
-					'Do you want to use a same prefix for the names of all the asc files?')
-				ifTrue:
-					[aPrefix := self cormas request:
-							'Enter a prefix that will be used for all the asc files'.
-					aPrefix = '' ifTrue: [^nil].
-					askFileName := false]].
-	aPrefix ifNil: [aPrefix := ''].
-	attributes
-		do:
-			[:att | 
-			file := (Cormas mapsPath: self cormasModelClass name)
-				construct: aPrefix , att , '.asc'.
-			askFileName
-				ifTrue:
-					[file := Dialog
-						requestNewFileName:
-							(UserMessage defaultString: 'Save as' key: #saveas)
-						default: file.
-					file isEmpty ifTrue: [^nil].
-					file := file asFilename].
-			stream := file asFilename writeStream.
-			stream
-				nextPutAll: 'ncols	';
-				nextPut: Character space;
-				nextPutAll: column printString;
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'nrows	';
-				nextPut: Character space;
-				nextPutAll: line printString;
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'xllcorner	';
-				nextPut: Character space.
-			xll isNil
-				ifTrue: [stream nextPutAll: (aList at: 1)]
-				ifFalse: [stream nextPutAll: xll printString].
-			stream nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'yllcorner	';
-				nextPut: Character space.
-			yll isNil
-				ifTrue: [stream nextPutAll: (aList at: 2)]
-				ifFalse: [stream nextPutAll: yll printString].
-			stream nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'cellSize	';
-				nextPut: Character space.
-			cellSize isNil
-				ifTrue: [stream nextPutAll: (aList at: 4)]
-				ifFalse: [stream nextPutAll: cellSize printString].
-			stream nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'NODATA_value	';
-				nextPut: Character space;
-				nextPutAll: (aList at: 4);
-				nextPutAll: '\' withCRs.
-			dicoAttConv := Dictionary new.
-			firstPatch := self elementaryEntities
-				detect: [:p | (p perform: att asSymbol) isNil not]
-				ifNone: [nil].
-			firstPatch isNil
-				ifTrue: [firstValue := nil]
-				ifFalse: [firstValue := firstPatch perform: att asSymbol].
-			firstValue isSymbol
-				ifTrue:
-					[type := '(Symbol)'.
-					dicoAttConv
-						at: att asSymbol
-						put: #asString]
-				ifFalse:
-					[(firstValue isKindOf: Number)
-						ifTrue:
-							[type := '(Number)'.
-							dicoAttConv
-								at: att asSymbol
-								put: #printString]
-						ifFalse:
-							[firstValue isString
-								ifTrue:
-									[type := '(String)'.
-									dicoAttConv
-										at: att asSymbol
-										put: #asString]
-								ifFalse:
-									[(firstValue isKindOf: Boolean)
-										ifTrue:
-											[type := '(Boolean)'.
-											dicoAttConv
-												at: att asSymbol
-												put: #printString]
-										ifFalse:
-											[type := '(nil)'.
-											dicoAttConv
-												at: att asSymbol
-												put: #printString]]]].
-			1
-				to: line
-				do:
-					[:i | 
-					1
-						to: column
-						do:
-							[:j | 
-							position := (i - 1) * column + j.
-							patch := self elementaryEntities at: position.
-							a := att asSymbol.
-							c := dicoAttConv at: a.
-							stream nextPutAll: ((patch perform: a) perform: c).
-							position \\ column = 0
-								ifFalse: [stream nextPutAll: ' ']
-								ifTrue: [i = line ifFalse: [stream nextPutAll: '\' withCRs]]]].
-			stream close]
 ]
 
 { #category : #'private - import - export' }
@@ -3443,43 +3042,6 @@ CMSpaceModel >> setGridAsAggregat: compoundEntity [
 ]
 
 { #category : #'private - irregular polygons creation' }
-CMSpaceModel >> setImagesPolygons: aCollec [
-	"Les coordonnees originales des polygones sont stockees dans outline"
-	"Calcul des coordonnees ajustees a la fenetre de la grille spatiale"
-	"Ces coordonnees relatives sont stockees dans image"
-	"Les coordonnees initiales du centre du polygone sont remplacees par celles du centre relatif"
-	
-	| Rw Rh vhWidth vhHeight coordonneesRecalibrees newPoint polyline newX newY entity Ratio rectangleTotal |
-	aCollec isEmpty ifTrue: [^nil].
-	entity := aCollec first class.	"Si on n'a pas trace des contours min et max de ce type d'entite, 
-on a bien du les fabriquer a partir des contours d'autres entites..."
-	rectangleTotal := entity bounds.
-	rectangleTotal isNil ifTrue: [self halt].
-	vhWidth := self bounds width - 5.	"10"
-	vhHeight := self bounds height - 5.	"10"
-	Rw := vhWidth / rectangleTotal width.
-	Rh := vhHeight / rectangleTotal height.
-	Ratio := Rh min: Rw.
-	aCollec
-		do:
-			[:b | 
-			coordonneesRecalibrees := OrderedCollection new.
-			b outline
-				do:
-					[:unPoint | 
-					newX := ((unPoint x - rectangleTotal origin x) * Ratio) rounded + 5.
-					newY := vhHeight
-						- ((unPoint y - rectangleTotal origin y) * Ratio) rounded + 5.
-					newPoint := newX @ newY.
-					coordonneesRecalibrees add: newPoint].
-			polyline := Polyline vertices: coordonneesRecalibrees.
-			self
-				entityFiguresAt: b
-				put: polyline asFiller	"b center isNil ifFalse: [b center x: ((b center x - entity bounds origin x) * Ratio) rounded + 5.
-			b center y: vhHeight - ((b center y - entity bounds origin y) * Ratio) rounded + 5]"]
-]
-
-{ #category : #'private - irregular polygons creation' }
 CMSpaceModel >> setIrregularEntitiesEdge [
 	
 	| outlineTempo |
@@ -3496,104 +3058,6 @@ CMSpaceModel >> setIrregularEntitiesEdge [
 						do:
 							[:c | outlineTempo removeAllSuchThat: [:point | c outline includes: point]].
 					aCell edge: outlineTempo isEmpty not]]
-]
-
-{ #category : #'ESE (regular) - gradient creation' }
-CMSpaceModel >> setLinearGradientForAttribute: aString centralValue: cv borderValue: bv [
-	
-	| distanceCenterToBorder x |
-	(self line odd not or: [self column odd not])
-		ifTrue:
-			[^self cormas
-				warn: (UserMessage defaultString: '' key: #gridDimensionsNotOdd)].
-	self elementaryEntities
-		do:
-			[:c | 
-			c
-				perform: (aString , ':') asSymbol
-				with: #undefined].
-	distanceCenterToBorder := ((self line max: self column) - 1) / 2.
-	self centralLocation
-		perform: (aString , ':') asSymbol
-		with: cv.
-	1
-		to: distanceCenterToBorder
-		do:
-			[:index | 
-			(self centralLocation peripherieRayon: index)
-				do:
-					[:c | 
-					x := cv + ((bv - cv) / distanceCenterToBorder * index).
-					c
-						perform: (aString , ':') asSymbol
-						with: x asFloat]].
-	(self elementaryEntities
-		select: [:c | (c perform: aString asSymbol) = #undefined])
-		do:
-			[:c | 
-			c
-				perform: (aString , ':') asSymbol
-				with: bv]
-]
-
-{ #category : #'ESE (regular) - gradient creation' }
-CMSpaceModel >> setLinearGradientForAttribute: aString centralValue: cv borderValue: bv bySections: anArray [
-	
-	| distanceCenterToBorder allSections startIndex startValue endIndex endValue i x |
-	(self line odd not or: [self column odd not])
-		ifTrue:
-			[^self cormas
-				warn: (UserMessage defaultString: '' key: #gridDimensionsNotOdd)].
-	self elementaryEntities
-		do:
-			[:c | 
-			c
-				perform: (aString , ':') asSymbol
-				with: #undefined].
-	distanceCenterToBorder := ((self line max: self column) - 1) / 2.
-	self centralLocation
-		perform: (aString , ':') asSymbol
-		with: cv.
-	allSections := Array new: anArray size + 1.
-	1
-		to: anArray size
-		do:
-			[:j | 
-			allSections
-				at: j
-				put: (anArray at: j)].
-	allSections
-		at: anArray size + 1
-		put: #(1 1).
-	startIndex := 0.
-	startValue := cv.
-	allSections
-		do:
-			[:twoValues | 
-			endIndex := (distanceCenterToBorder * twoValues first) rounded.
-			endValue := cv + (twoValues last * (bv - cv)).
-			i := 0.
-			startIndex + 1
-				to: endIndex
-				do:
-					[:index | 
-					i := i + 1.
-					(self centralLocation peripherieRayon: index)
-						do:
-							[:c | 
-							x := startValue + ((endValue - startValue) / (endIndex - startIndex) * i).
-							c
-								perform: (aString , ':') asSymbol
-								with: x asFloat]].
-			startIndex := endIndex.
-			startValue := endValue].
-	(self elementaryEntities
-		select: [:c | (c perform: aString asSymbol) = #undefined])
-		do:
-			[:c | 
-			c
-				perform: (aString , ':') asSymbol
-				with: endValue]
 ]
 
 { #category : #'ESE initialize-release' }
@@ -4052,15 +3516,6 @@ CMSpaceModel >> vues [
 	"DEPRECATED. Should use :"
 	
 	^self dependents
-]
-
-{ #category : #'private - regular polygons' }
-CMSpaceModel >> warningBoundaries [
-	
-	self cormas
-		warn:
-			(UserMessage defaultString: ' The grid boundaries should be closed !!! '
-				key: #alertToroidal)
 ]
 
 { #category : #'landscape indices' }

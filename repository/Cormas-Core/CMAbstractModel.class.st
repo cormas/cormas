@@ -2045,22 +2045,6 @@ Example: self dominance: #groupNumber"
 	^ self spaceModel dominance: anAttribute
 ]
 
-{ #category : #'binary storage' }
-CMAbstractModel >> dumpOrganization [
-	"Purpose: [Backward] Ask for filename.bos destination and register the complete organization"
-	
-	| name fileName |
-	name := Dialog request: 'Save the whole organization on File '
-		initialAnswer: 'filename.bos'.
-	name = '' ifTrue: [^nil].	"name := 'test.bos'.  "
-	fileName := (Cormas dumpPath: self class name) construct: name.
-	fileName exists
-		ifTrue:
-			[(Dialog confirm: 'File already exists !!! Use it anyway ???')
-				ifFalse: [^nil]].
-	self dumpOrganizationOnFile: fileName
-]
-
 { #category : #'utilities - space metrics' }
 CMAbstractModel >> edgeDensity: aClass [
 	"Purpose: Return the density of edges of an aggregate class instances as compared to the total size of the spatial grid.
@@ -3292,19 +3276,6 @@ file <String> ex: 'titi.txt'  it will be save into data/"
 								ifFalse: [aChar asSymbol asString]
 								ifTrue: ['\' withCRs])].
 	stream close
-]
-
-{ #category : #'utilities - binary storage' }
-CMAbstractModel >> saveBOS: aCollection into: aFileName [
-	"Purpose: Save the entities of aCollection into a BOS file. The file is stored into the 'dump' directory of the model.
-	Arguments:  aCollection <Collection of Entities> ; aFileName = <String>
-	Example: self saveBOS: self theFarmers into: '10x10.Farmer' "
-	
-	| bos fileName |
-	fileName := (Cormas dumpPath: self class name) construct: aFileName.
-	bos := BinaryObjectStorage onNew: fileName writeStream.
-	bos expectCycles: false.
-	[bos nextPutAll: aCollection] ensure: [bos close]
 ]
 
 { #category : #'utilities - files' }

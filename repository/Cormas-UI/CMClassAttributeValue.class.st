@@ -54,31 +54,6 @@ CMClassAttributeValue >> acceptValue [
 	^self closeRequest"
 ]
 
-{ #category : #random }
-CMClassAttributeValue >> addRandomAttribute [
-	"' Compile #randomAttributes as class method into targetClass by adding an array: #(#attribute scopeLevel #randFloat min max) "
-	
-	| aList theClass |
-	self valueType: Random.
-	self targetClass isMeta
-		ifTrue:
-			[theClass := self targetClass instanceBehavior.
-			aList := List
-				with: self targetAttribute
-				with: #class
-				with: self intOrFloat value]
-		ifFalse:
-			[theClass := self targetClass.
-			aList := List
-				with: self targetAttribute
-				with: #instance
-				with: self intOrFloat value].
-	aList
-		add: self minValueHolder value;
-		add: self maxValueHolder value.
-	theClass addRandomAttributes: (Array withAll: aList)
-]
-
 { #category : #'access as String' }
 CMClassAttributeValue >> asString [
 	"Ex: 'Predator_energy: 12'  "
@@ -91,22 +66,6 @@ CMClassAttributeValue >> asString [
 CMClassAttributeValue >> attributeAsString [
 	
 	^self targetAttribute
-]
-
-{ #category : #random }
-CMClassAttributeValue >> chooseRandomness [
-	"Open a random dialog to choose the type of randomness (float or Integer) and to set the range limits"
-	
-	| dialogValue |
-	dialogValue := SimpleDialog new.
-	dialogValue openFor: self interface: #randomChooserWindow.
-	dialogValue accept value ifFalse: [^nil].
-	self minValueHolder value < self maxValueHolder value
-		ifFalse:
-			[Dialog warn: 'Low limit must be lower than the upper limit'.
-			^self chooseRandomness].
-	self valueType: Random.
-	^self currentValue: self randomAsString
 ]
 
 { #category : #'access as String' }
@@ -143,49 +102,6 @@ CMClassAttributeValue >> compileDefaultValue [
 		ofClass: self targetClass
 		withDefaultValue: self currentValue.
 	self setAttributeNewValue
-]
-
-{ #category : #confirm }
-CMClassAttributeValue >> confirmRedefine [
-	" 'Getter accessor for 'XXX already defined. 
-	Overwrite it  ?"
-	
-	| text |
-	" 'Getter accessor for ', getterMethod asString, ' already defined. \Overwrite it  ?' withCRs"
-	text := 'Getter accessor for ' asText.
-	text := text
-		, (self targetAttribute asString asText emphasizeAllWith: #bold).
-	text := text , ' (defaultValue: ' asText.
-	text := text
-		, (self currentValue asString asText emphasizeAllWith: #(#italic)).
-	text := text , ') is already defined. \Overwrite it  ?' asText withCRs.	"	(defAttrib currentValueAsString asText
-						emphasizeAllWith: #color -> ColorValue red) asText."
-	^Dialog confirm: text asText
-]
-
-{ #category : #compiling }
-CMClassAttributeValue >> createAttribute [
-	"Save definitively the changed parameters with the Initial value: compiles the attribute reader accessor and compiles the attribute_default method"
-	
-	| aRefactoring |
-	targetClass withAllSuperclasses
-		do:
-			[:cl | 
-			(cl instVarNames includes: self targetAttribute asString)
-				ifTrue: [^targetAttribute]].	"Compile class adding the attribute"
-	targetClass isMeta
-		ifFalse:
-			[aRefactoring := AddInstanceVariableRefactoring
-				variable: targetAttribute asString
-				class: targetClass.
-			aRefactoring execute]
-		ifTrue:
-			[aRefactoring := AddInstanceVariableRefactoring
-				variable: targetAttribute asString
-				class: targetClass.
-			aRefactoring transform.
-			RefactoringManager instance addRefactoring: aRefactoring].
-	^targetAttribute
 ]
 
 { #category : #accessing }

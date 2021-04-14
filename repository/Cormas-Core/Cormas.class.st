@@ -278,108 +278,6 @@ Cormas class >> commentOfMethod: sel class: aClass [
 		ifFalse: [^thisComment first]
 ]
 
-{ #category : #actions }
-Cormas class >> compileDictionaries [
-	
-	IndexedFileMessageCatalog compileAllCatalogsInSearchDirectories
-]
-
-{ #category : #'util_images' }
-Cormas class >> construireImageDeCouleur: aColorValue avecImageRouge: uneImage [
-	"construire une image colori√©e √† partir d'uneImage rouge.
-	Le principe est de prendre l'image rouge et de fabriquer des copies en changeant la palette.
-	Les couleurs rouges de la palette d'origine sont remplac√©es par la nouvelle couleur mais en essayant
-	de garder le niveau de gris (brightness) pour conserver les ombres.
-	La couleur rouge est int√©ressante car sa valeur hue est de 0"
-	
-	| colors palette newImage |
-	colors := uneImage palette colors
-		collect:
-			[:each | 
-			(each hue <= 0.1 and: [each isGray not])
-				ifTrue:
-					[ColorValue
-						hue: aColorValue hue
-						saturation: aColorValue saturation
-						brightness:
-							(aColorValue brightness - (ColorValue red brightness - each brightness)
-								max: 0)]
-				ifFalse: [each]].
-	palette := MappedPalette withColors: colors.
-	newImage := Image
-		extent: uneImage extent
-		depth: uneImage depth
-		bitsPerPixel: uneImage bitsPerPixel
-		palette: palette
-		usingBits: uneImage bits.
-	^newImage
-]
-
-{ #category : #'util_images' }
-Cormas class >> construireImageGriseAvec: uneImage [
-	"construire une image grise √† partir d'une image existante.
-Le principe est de modifier la palette pour remplacer toutes les couleurs par un niveau de gris"
-	
-	| colors palette newImage im |
-	im := uneImage asImage.
-	colors := im palette colors
-		collect: [:each | ColorValue brightness: each brightness / 3.0 + 0.33].
-	palette := MappedPalette withColors: colors.
-	newImage := Image
-		extent: im extent
-		depth: im depth
-		bitsPerPixel: im bitsPerPixel
-		palette: palette
-		usingBits: im bits.
-	^newImage
-]
-
-{ #category : #'util_images' }
-Cormas class >> construireImageMultipleAvec: uneImage [
-	"construire une image illustrant la multiplicit√© √† partir d'uneImage"
-	
-	| delta pixmap gc |
-	delta := 15 @ 10.
-	pixmap := Pixmap extent: uneImage extent + delta.
-	gc := pixmap graphicsContext.
-	uneImage displayOn: gc.
-	uneImage displayOn: gc at: delta.
-	^pixmap asImage
-]
-
-{ #category : #'util_images' }
-Cormas class >> construireMaskAvec: uneImage [
-	"construction d'un mask √† partird une image.
-	le principe est de cr√©er un mask en mettant opaque les pixels de couleur diff√©rente du premier pixel.
-	Pour autoriser du blanc dans l'image, il est n√©cessaire de consid√©rer une couleur particuli√®re comme transparente.
-	Plut√¥t que prendre automatiquement le blanc, il est pr√©f√©rable de prendre la couleur du premier pixel.
-	self construireMaskAPartirDe: self imageMaison
-	"
-	
-	| im mask transparentColorValue palette transparentValue opaqueValue |
-	im := uneImage asImage.
-	transparentColorValue := im atX: 0 y: 0.
-	palette := CoveragePalette monoMaskPalette.
-	transparentValue := palette indexOf: CoverageValue transparent.
-	opaqueValue := palette indexOf: CoverageValue opaque.
-	mask := Image
-		extent: im extent
-		depth: 1
-		bitsPerPixel: 1
-		palette: palette.
-	im
-		pixelsDo:
-			[:x :y | 
-			mask
-				atX: x
-				y: y
-				put:
-					((im atX: x y: y) = transparentColorValue
-						ifTrue: [transparentValue]
-						ifFalse: [opaqueValue])].
-	^mask
-]
-
 { #category : #version }
 Cormas class >> contributors [
 	^ 'Thank you to the following contributors: \' , String cr
@@ -456,13 +354,6 @@ Cormas class >> displayCormasParcelsOnly [
 	self CormasParcelsOnly do: [:p | Cormas println: p]
 ]
 
-{ #category : #'util_parcels' }
-Cormas class >> displayLoadedParcels [
-	"Write the name of the loaded parcels on the Transcript"
-	
-	Parcel parcels do: [:p | Cormas println: p name]
-]
-
 { #category : #version }
 Cormas class >> downloadString [
 ^ 
@@ -507,38 +398,6 @@ self editMethod: #id fromClass: AgentLocation"
 						with: aClass name).
 			^aClass browse].
 	(class_method first) browse navigator setSelector: aSelector
-]
-
-{ #category : #'printing - documentation' }
-Cormas class >> emphasisForMethodComment [
-	
-	^Array
-		with: #plain
-		with: #color -> ColorValue black
-]
-
-{ #category : #'printing - documentation' }
-Cormas class >> emphasisForMethodHeader [
-	
-	^Array
-		with: #bold
-		with: #color -> ColorValue black
-]
-
-{ #category : #'printing - documentation' }
-Cormas class >> emphasisForMethodHeaderArg [
-	
-	^Array
-		with: #bold
-		with: #color -> ColorValue darkPink
-]
-
-{ #category : #'printing - documentation' }
-Cormas class >> emphasisForProtocol [
-	
-	^Array
-		with: #italic
-		with: #color -> ColorValue black
 ]
 
 { #category : #'utilities - code management' }
@@ -1093,22 +952,6 @@ Examples:
 	^anObject asString
 ]
 
-{ #category : #actions }
-Cormas class >> openInterface: anInterface WithLanguage: languageCode ofModel: aCormas [
-	"languageCode = #fr or #en
- anInterface = #windowSpec or #windowSpec_old "
-	
-	| bdr win |
-	self compileDictionaries.
-	Locale set: languageCode.
-	Locale current preferredPixelSize: nil.
-	bdr := aCormas allButOpenInterface: anInterface.
-	win := bdr window.
-	bdr source mainWin: win.
-	win openIn: (10 @ 20 extent: win minimumSize).
-	Cormas visualLauncherWindow ifNotNil: [:w | w collapse]
-]
-
 { #category : #'user interface' }
 Cormas class >> openVisualInspectorOn: anObject [
 	"display anObject on a VisualInspector"
@@ -1448,60 +1291,6 @@ Cormas class >> renameSelector: oldName to: newName nbArguments: nbArgs inClass:
 						in: aClass
 						to: newName asSymbol
 						permutation: map) execute]]
-]
-
-{ #category : #'printing - documentation' }
-Cormas class >> reportTextForClasses: aCollec [
-	"Answer a Text containing a list ordered in alphabetic order of all the method definitions of a given collection of classes."
-	
-	| stream dictionaries methodName classProt comment dict dictClass dictAll i |
-	stream := TextStream on: (String new: 100).
-	dict := Dictionary new.
-	dictClass := Dictionary new.
-	dictAll := Dictionary new.
-	aCollec
-		do:
-			[:aClass | 
-			dictionaries := self recordDictClass: aClass.
-			dictionaries first
-				keysAndValuesDo:
-					[:k :v | 
-					"dict at: k put: v. "
-					dictAll at: k put: v].
-			dictionaries last
-				keysAndValuesDo:
-					[:k :v | 
-					"dictClass at: k put: v. "
-					dictAll at: k put: v]].
-	dictAll keys asSortedCollection
-		do:
-			[:k | 
-			methodName := (k tokensBasedOn: $&) first.
-			classProt := (k tokensBasedOn: $&) last.
-			comment := dictAll at: k.
-			i := 0.
-			(methodName tokensBasedOn: Character space)
-				do:
-					[:s | 
-					i := i + 1.
-					stream
-						emphasis:
-							((i \\ 2) isZero
-								ifTrue: [self emphasisForMethodHeaderArg]
-								ifFalse: [self emphasisForMethodHeader]).
-					stream
-						nextPutAll: s;
-						space].
-			stream emphasis: self emphasisForProtocol.
-			stream
-				nextPutAll: classProt;
-				cr.
-			stream emphasis: self emphasisForMethodComment.
-			stream
-				nextPutAll: comment;
-				cr;
-				cr].
-	^stream contents
 ]
 
 { #category : #'utilities - mathematics' }
@@ -2179,23 +1968,6 @@ Cormas >> alert: aString [
 	self warn: aString
 ]
 
-{ #category : #'model entities' }
-Cormas >> basicAgentClasses [
-	
-	| coll |
-	coll := OrderedCollection 
-		with: CMAgentComm 
-		with: CMAgentLocation
-		with: CMAgentCommLocation.
-	coll
-		addAll: (OrderedCollection 
-			with: Group 
-			with: CMGroupComm 
-			with: CMGroupLocation 
-			with: 	CMGroupCommLocation).
-	^ coll
-]
-
 { #category : #accessing }
 Cormas >> cormasModel [
 	
@@ -2342,39 +2114,6 @@ Cormas >> inheritedMethodsFrom: aClass category: aCat [
 						put: (tmp at: i) asString , ' (' , uneClasse name asString , ')'].
 			aList addAll: tmp].
 	^aList
-]
-
-{ #category : #deprecated }
-Cormas >> initSimulation [
-"This method is obsolete. In cormas-pharo init simulation is managed by the simManger (and not by cormas)"
-	| pop |
-	self halt.
-	self cormasModel ifNil: [ ^ nil ].
-	self releaseProcess.
-	self cormasModel activeInit isNil
-		ifTrue: [ ^ self alert_NoInit ].	"xmlModel isNil
-		ifFalse: 
-			[xmlModel release.
-			xmlModel := nil]."	"Load the XML file if we export the log or if we use an external visualization module"
-	(self useExternalVisualization or: [ self exportPlaybackLog ])
-		ifTrue: [ xmlModel := XMLModel with: self cormasModel.
-			useExternalVisualization
-				ifTrue:
-					[ "Contact external visualization module via XML-RPC" xmlModel connectToExternalVisualizer ].
-			exportPlaybackLog
-				ifTrue: [ "Open playback log stream" xmlModel openPlaybackLog ] ]
-		ifFalse: [ xmlModel := nil ].
-	Cursor wait
-		showWhile: [ "self stepCounter value: 0."
-			self cormasModel initSimulation.
-			pop := self cormasModel theAgentsComm.
-			self makeVideo.
-			self obsWin notNil
-				ifTrue: [ self obsWin populationSource: pop.
-					self obsWin msgObs: self cormasModelClass messages ] ].
-	useExternalVisualization
-		ifTrue:
-			[ "Send initial map to external visualization module via XML-RPC" xmlModel sendMapToExternalVisualizer ]
 ]
 
 { #category : #'initialize-release' }
@@ -2554,18 +2293,6 @@ Cormas >> mainWin [
 Cormas >> mainWin: anObject [
 	
 	mainWin := anObject
-]
-
-{ #category : #video }
-Cormas >> makeVideo [
-	"ask spaceInterfaces for making video"
-	
-	self spaceModel
-		snapGridTimeForMovie: self stepCounter value
-		makingMovie: self cormasModel currentSimulationEnded	"self spaceInterfaces do: 
-			[:spaceInterface | 
-			spaceInterface snapGridTimeForMovie: self stepCounter value.
-			self currentSimulation currentSimulationEnded ifTrue: [spaceInterface makeMovie]]"
 ]
 
 { #category : #aspects }
@@ -2970,32 +2697,6 @@ self halt.
 				ifTrue:
 					[ self cormasModel perform: self cormasModel activeControl with: cycle value with: j ].
 			j := j + 1 ]
-]
-
-{ #category : #simulation }
-Cormas >> runStepByStep [
-self halt.
-	self cormasModel isNil
-		ifTrue: [ ^ nil ].
-	self stepCounter value = self cycle value
-		ifTrue: [ self cycle value: self cycle value + 1 ].
-	self obsWin isNil
-		ifFalse: [ self obsWin window isOpen
-				ifTrue: [ self eraseLinks isNil
-						ifFalse: [ self eraseLinks
-								ifTrue: [ self obsWin observateur modeleObs actionClear ] ] ] ].
-	xmlModel isNil
-		ifFalse: [ "Handle the beginning of the step for the XMLModel" xmlModel startStep ].
-	exportPlaybackLog
-		ifTrue: [ "Write map to the log" xmlModel writeMapToPlaybackLog ].
-	Processor yield.	"  **************************************************"	"  ******************   RUN Step   ****************"	"**"
-	self simManager runStepByStep.	"**"	"  ********************    Done   ******************"	"  **************************************************"
-	self makeVideo.
-	useExternalVisualization
-		ifTrue:
-			[ "Send map to external visualization module via XML-RPC" xmlModel sendMapToExternalVisualizer ].
-	xmlModel isNil
-		ifFalse: [ "Handle the end of the step in for the XML Model" xmlModel endStep ]
 ]
 
 { #category : #'model saving&loading EV' }

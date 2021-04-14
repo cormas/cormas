@@ -46,154 +46,6 @@ Class {
 	#category : #'Cormas-UI-Core'
 }
 
-{ #category : #resources }
-CMSpaceInterfaceConfig class >> apply [
-	
-	^ToolbarIconLibrary visualFor: #modificationApply
-]
-
-{ #category : #resources }
-CMSpaceInterfaceConfig class >> load [
-	
-	^ToolbarIconLibrary visualFor: #fileOpen
-]
-
-{ #category : #'save-load' }
-CMSpaceInterfaceConfig class >> loadSIconfig: aConfigSpec in: aSIConfig ofModel: aModel [
-	
-	| stream line aL data collec aClass configElement |
-	aSIConfig manipMethods: Dictionary new.
-	aSIConfig defaultPov: nil.
-	aSIConfig defaultInfo: nil.
-	stream := aConfigSpec readStream.
-	[stream atEnd]
-		whileFalse:
-			[line := Cormas splitLine: stream sep: $*.
-			configElement := (line first
-				copyFrom: 1
-				to: line first size - 1) asSymbol.
-			configElement = #configName
-				ifTrue: [aSIConfig configName value: line last].
-			(#(#observedEntitiesList #manipEntitiesList #createEntitiesList)
-				refersToLiteral: configElement)
-				ifTrue:
-					[aL := List new.
-					(Cormas
-						splitLine: line last readStream
-						sep: $,)
-						do:
-							[:i | 
-							aClass := (Cormas stringAsObjectType: i) class.
-							aClass ifNotNil: [aL add: aClass]].
-					(aSIConfig perform: configElement) setList: aL selecting: ''].
-			(#(#manipMethods #povMethods #attributes #infoMethods #probeMethods)
-				refersToLiteral: configElement)
-				ifTrue:
-					[data := (Cormas
-						splitLine: line last readStream
-						sep: $,) asOrderedCollection.
-					aClass := (Cormas stringAsObjectType: data removeFirst) class.
-					aClass
-						ifNotNil:
-							[(aSIConfig perform: configElement)
-								at: aClass
-								put: (data collect: [:m | m asSymbol])]].
-			(#(#canBeMoved #manipWholePop #canChangeValues) refersToLiteral:
-					configElement)
-				ifTrue:
-					[data := (Cormas
-						splitLine: line last readStream
-						sep: $,) asOrderedCollection.
-					aClass := (Cormas stringAsObjectType: data removeFirst) class.
-					aClass
-						ifNotNil:
-							[(aSIConfig perform: configElement)
-								at: aClass
-								put: (Cormas stringAsObjectType: data first)]].
-			(#(#defaultPov #defaultInfo) refersToLiteral: configElement)
-				ifTrue:
-					[data := (Cormas
-						splitLine: line last readStream
-						sep: $,) asOrderedCollection.
-					aClass := (Cormas stringAsObjectType: data removeFirst) class.
-					aClass
-						ifNotNil:
-							[(aSIConfig perform: configElement)
-								at: aClass
-								put: data first asSymbol]].
-			configElement = #delimiterSize
-				ifTrue:
-					[data := (Cormas
-						splitLine: line last readStream
-						sep: $,) asOrderedCollection.
-					data removeFirst.
-					aSIConfig perform: data first asSymbol].
-			configElement = #defaultTool
-				ifTrue:
-					[data := (Cormas
-						splitLine: line last readStream
-						sep: $,) asOrderedCollection.
-					aSIConfig perform: data first asSymbol].
-			configElement = #siMenuFormat
-				ifTrue:
-					[data := (Cormas
-						splitLine: line last readStream
-						sep: $,) asOrderedCollection.
-					aSIConfig perform: data first asSymbol].
-			configElement = #isUndoRedoEnabled
-				ifTrue:
-					[data := (Cormas
-						splitLine: line last readStream
-						sep: $,) asOrderedCollection first.
-					aSIConfig isUndoRedoEnabled: (Cormas stringAsObjectType: data)].
-			configElement = #isManipulateForTabletEnabled
-				ifTrue:
-					[data := (Cormas
-						splitLine: line last readStream
-						sep: $,) asOrderedCollection first.
-					aSIConfig
-						isManipulateForTabletEnabled: (Cormas stringAsObjectType: data)].
-			configElement = #isSingleDefaultPovShown
-				ifTrue:
-					[data := (Cormas
-						splitLine: line last readStream
-						sep: $,) asOrderedCollection first.
-					aSIConfig isSingleDefaultPovShown: (Cormas stringAsObjectType: data)].
-			configElement = #isSingleDefaultInfoShown
-				ifTrue:
-					[data := (Cormas
-						splitLine: line last readStream
-						sep: $,) asOrderedCollection first.
-					aSIConfig isSingleDefaultInfoShown: (Cormas stringAsObjectType: data)].
-			configElement = #trackLengthValue
-				ifTrue:
-					[data := (Cormas
-						splitLine: line last readStream
-						sep: $,) asOrderedCollection.
-					data removeFirst.
-					aSIConfig
-						applyTrackLengthValue: (Cormas stringAsObjectType: data first)].
-			configElement = #trackedAgents
-				ifTrue:
-					[collec := Set new.
-					line size = 1
-						ifFalse:
-							[(Cormas
-								splitLine: line last readStream
-								sep: $,)
-								do: [:i | collec add: (Cormas stringAsObjectType: i) asSymbol]].
-					aSIConfig trackedAgents: collec]].
-	stream close
-]
-
-{ #category : #resources }
-CMSpaceInterfaceConfig class >> minusIcon [
-	
-	^OpaqueImage
-		figure: self removeEntityIconImage
-		shape: self removeEntityIconMask
-]
-
 { #category : #'instance creation' }
 CMSpaceInterfaceConfig class >> newFor: aSI [
 	
@@ -226,18 +78,6 @@ CMSpaceInterfaceConfig class >> newFor: aSI withConfig: aConfigName [
 CMSpaceInterfaceConfig class >> plusIcon [
 	
 	^SpaceInterface createEntityIcon
-]
-
-{ #category : #resources }
-CMSpaceInterfaceConfig class >> question [
-	
-	^ToolbarIconLibrary visualFor: #unknownWidget
-]
-
-{ #category : #resources }
-CMSpaceInterfaceConfig class >> save [
-	
-	^ToolbarIconLibrary visualFor: #fileSave
 ]
 
 { #category : #'save-load' }
@@ -685,26 +525,6 @@ CMSpaceInterfaceConfig >> applyDefaultPovs [
 						ifTrue: [ self spaceInterface changePov: defPov ofEntity: aClass ] ] ]
 ]
 
-{ #category : #'menu-display options' }
-CMSpaceInterfaceConfig >> applyTrackLengthValue: value [
-	
-	| aClass |
-	value = 'nil' ifTrue: [^nil].
-	TrackFigure maxSize: value.
-	self spaceInterface trackedFigureTypes
-		do:
-			[:symbol | 
-			aClass := symbol class.
-			(self spaceInterface drawing entityFiguresAt: aClass)
-				do:
-					[:fig | 
-					(fig dependents select: [:tf | tf isKindOf: TrackFigure])
-						do:
-							[:track | 
-							track testAndRemoveOrigine.
-							track invalidate]]]
-]
-
 { #category : #accessing }
 CMSpaceInterfaceConfig >> attributes [
 	
@@ -1083,81 +903,6 @@ CMSpaceInterfaceConfig >> delimiterSize [
 		ifFalse: [delimiterSize]
 ]
 
-{ #category : #'refresh display methods' }
-CMSpaceInterfaceConfig >> displayMethodsAndOptionsForManipEntity [
-	
-	| anEntity |
-	anEntity := self manipEntitiesList selection.
-	anEntity
-		ifNil:
-			[self moveEntityCheckBox value: false.
-			self manipWholePopCheckBox value: false.
-			self canChangeValuesCheckBox value: false.
-			^self manipMethodsList
-				setList: List new
-				selecting: Array new].
-	self manipMethodsList
-		setList: (self manipMethodsFor: anEntity)
-		selecting: Array new.
-	anEntity isSituatedClass
-		ifTrue:
-			[(self builder namedComponents at: #moveEntityCheckBox)
-				enable;
-				isVisible: true.
-			self moveEntityCheckBox value: (self canBeMovedFor: anEntity)]
-		ifFalse:
-			[(self builder namedComponents at: #moveEntityCheckBox)
-				disable;
-				isVisible: false].
-	self manipWholePopCheckBox value: (self manipWholePopFor: anEntity).
-	self canChangeValuesCheckBox value: (self canChangeValuesFor: anEntity)
-]
-
-{ #category : #'refresh display methods' }
-CMSpaceInterfaceConfig >> displayMethodsForObservedEntity [
-	
-	| anEntity aPovList aInfoList |
-	anEntity := self observedEntitiesList selection.
-	anEntity
-		ifNil:
-			[self povMethodsList
-				setList: List new
-				selecting: Array new.
-			self attributesList
-				setList: List new
-				selecting: Array new.
-			self infoMethodsList
-				setList: List new
-				selecting: Array new.
-			^self probeMethodsList
-				setList: List new
-				selecting: Array new].	"Prepare list for pov methods which will  include a specific sign for the default pov"
-	aPovList := (self povMethodsFor: anEntity) copy.
-	(self defaultPovFor: anEntity)
-		ifNotNil:
-			[aPovList remove: (self defaultPovFor: anEntity).
-			aPovList add: (self defaultPov at: anEntity) , ' ->D'.
-			aPovList sort: [:x :y | x < y]].	"Prepare list for info  methods which will  include a specific sign for the default info"
-	aInfoList := (self infoMethodsFor: anEntity) copy.
-	(self defaultInfoFor: anEntity)
-		ifNotNil:
-			[aInfoList remove: (self defaultInfoFor: anEntity).
-			aInfoList add: (self defaultInfo at: anEntity) , ' ->D'.
-			aInfoList sort: [:x :y | x < y]].
-	self povMethodsList
-		setList: aPovList
-		selecting: Array new.
-	self attributesList
-		setList: (self attributesFor: anEntity)
-		selecting: Array new.
-	self infoMethodsList
-		setList: aInfoList
-		selecting: Array new.
-	self probeMethodsList
-		setList: (self probeMethodsFor: anEntity)
-		selecting: Array new
-]
-
 { #category : #aspects }
 CMSpaceInterfaceConfig >> displayOptionsValidation [
 	
@@ -1208,17 +953,6 @@ CMSpaceInterfaceConfig >> explainHabitus [
 		title: self translator tHabitusTitle;
 		open
 
-]
-
-{ #category : #'overwrite spaceInterface' }
-CMSpaceInterfaceConfig >> forceSItoApplyConfigTrackAgents [
-	
-	(entitiesList
-		sorted: [:a :b | a name asString first > b name asString first])
-		do:
-			[:agentClass | 
-			(agentClass isSituatedClass and: [agentClass inheritsFrom: Agent])
-				ifTrue: [self forceSItrackAgents: agentClass]]
 ]
 
 { #category : #'overwrite spaceInterface' }
@@ -1316,140 +1050,10 @@ CMSpaceInterfaceConfig >> infoMethodsList_WithoutDefaultSign [
 	^ self multiSelectionList with: aList
 ]
 
-{ #category : #'menu-display options' }
-CMSpaceInterfaceConfig >> initDisplayOptionsMenu [
-	
-	| menuDyn agentClasses menuAgents |
-	agentClasses := List new.
-	agentClasses
-		addAll:
-			(entitiesList select: [:e | e isSituatedClass and: [e inheritsFrom: Agent]]).
-	menuDyn := (builder menuAt: #displayOptionsMenu) value atNameKey:
-			#trackAgents.
-	menuAgents := Menu new.
-	1
-		to: agentClasses size
-		do:
-			[:i | 
-			| aClass |
-			aClass := agentClasses at: i.
-			menuAgents
-				addItemLabel: aClass name
-				value: [self trackAgents: aClass]].
-	menuDyn submenu: menuAgents
-]
-
 { #category : #testing }
 CMSpaceInterfaceConfig >> isItDefault: aSymbolOrString [
 	
 	^'* ->D' match: aSymbolOrString
-]
-
-{ #category : #accessing }
-CMSpaceInterfaceConfig >> isManipulateForTabletEnabled [
-	
-	^isManipulateForTabletEnabled
-		ifNil:
-			[isManipulateForTabletEnabled := ((builder menuAt: #displayOptionsMenu)
-				value atNameKey: #toggleTouchpadMode) isOn]
-]
-
-{ #category : #accessing }
-CMSpaceInterfaceConfig >> isManipulateForTabletEnabled: aBoolean [
-	
-	| menuDyn |
-	isManipulateForTabletEnabled := aBoolean.
-	builder
-		ifNotNil:
-			[:b | 
-			menuDyn := (b menuAt: #displayOptionsMenu) value atNameKey:
-					#toggleTouchpadMode.
-			aBoolean
-				ifTrue: [menuDyn beOn]
-				ifFalse: [menuDyn beOff]].
-	self spaceInterface isManipulateForTabletEnabled = aBoolean
-		ifFalse: [self spaceInterface isManipulateForTabletEnabled: aBoolean]
-]
-
-{ #category : #accessing }
-CMSpaceInterfaceConfig >> isSingleDefaultInfoShown [
-	
-	^isSingleDefaultInfoShown
-		ifNil:
-			[isSingleDefaultInfoShown := builder
-				ifNil: [true]
-				ifNotNil:
-					[:b | 
-					((b menuAt: #displayOptionsMenu) value atNameKey:
-							#toggleShowSingleDefaultInfo) isOn]]
-]
-
-{ #category : #accessing }
-CMSpaceInterfaceConfig >> isSingleDefaultInfoShown: aBoolean [
-	
-	| menuDyn |
-	isSingleDefaultInfoShown := aBoolean.
-	builder
-		ifNotNil:
-			[:b | 
-			menuDyn := (b menuAt: #displayOptionsMenu) value atNameKey:
-					#toggleShowSingleDefaultInfo.
-			aBoolean
-				ifTrue: [menuDyn beOn]
-				ifFalse: [menuDyn beOff]]
-]
-
-{ #category : #accessing }
-CMSpaceInterfaceConfig >> isSingleDefaultPovShown [
-	
-	^isSingleDefaultPovShown
-		ifNil:
-			[isSingleDefaultPovShown := builder
-				ifNil: [true]
-				ifNotNil:
-					[:b | 
-					((b menuAt: #displayOptionsMenu) value atNameKey:
-							#toggleShowSingleDefaultPov) isOn]]
-]
-
-{ #category : #accessing }
-CMSpaceInterfaceConfig >> isSingleDefaultPovShown: aBoolean [
-	
-	| menuDyn |
-	isSingleDefaultPovShown := aBoolean.
-	builder
-		ifNotNil:
-			[:b | 
-			menuDyn := (b menuAt: #displayOptionsMenu) value atNameKey:
-					#toggleShowSingleDefaultPov.
-			aBoolean
-				ifTrue: [menuDyn beOn]
-				ifFalse: [menuDyn beOff]]
-]
-
-{ #category : #accessing }
-CMSpaceInterfaceConfig >> isUndoRedoEnabled [
-	
-	^isUndoRedoEnabled
-		ifNil:
-			[isUndoRedoEnabled := ((builder menuAt: #displayOptionsMenu) value
-				atNameKey: #toggleUndoRedo) isOn]
-]
-
-{ #category : #accessing }
-CMSpaceInterfaceConfig >> isUndoRedoEnabled: aBoolean [
-	
-	| menuDyn |
-	isUndoRedoEnabled := aBoolean.
-	builder
-		ifNotNil:
-			[:b | 
-			menuDyn := (b menuAt: #displayOptionsMenu) value atNameKey: #toggleUndoRedo.
-			aBoolean
-				ifTrue: [menuDyn beOn]
-				ifFalse: [menuDyn beOff]].
-	self spaceInterface enableUndo = aBoolean
-		ifFalse: [self spaceInterface enableUndoOption]
 ]
 
 { #category : #actions }
@@ -1609,21 +1213,6 @@ CMSpaceInterfaceConfig >> observedEntitiesList [
 	^observedEntitiesList isNil
 		ifTrue: [observedEntitiesList := SelectionInList new]
 		ifFalse: [observedEntitiesList]
-]
-
-{ #category : #'interface opening' }
-CMSpaceInterfaceConfig >> open [
-	
-	self dependents isEmpty
-		ifTrue:
-			[builder := self allButOpenInterface: #windowSpec.
-			builder window
-				label:
-					builder window label , self spaceInterface basicTitle printString.
-			self initDisplayOptionsMenu.
-			self setCheckMarksForDisplayOptionsMenu.
-			^builder window open]
-		ifFalse: [self mainWindow raise]
 ]
 
 { #category : #'menu-display options' }
@@ -1942,55 +1531,6 @@ CMSpaceInterfaceConfig >> setChangeValues [
 	self canChangeValues
 		at: anEntity
 		put: self canChangeValuesCheckBox value
-]
-
-{ #category : #'menu-display options' }
-CMSpaceInterfaceConfig >> setCheckMarksForDisplayOptionsMenu [
-	
-	| menu menuDyn |
-	entitiesList
-		do:
-			[:agentClass | 
-			(agentClass isSituatedClass and: [agentClass inheritsFrom: Agent])
-				ifTrue:
-					[menu := ((builder menuAt: #displayOptionsMenu) value atNameKey:
-							#trackAgents) submenu menuItemLabeled: agentClass name asString.
-					(self trackedAgents includes: agentClass name)
-						ifFalse: [menu beOff]
-						ifTrue: [menu beOn]]].
-	isManipulateForTabletEnabled
-		ifNotNil:
-			[menuDyn := (builder menuAt: #displayOptionsMenu) value atNameKey:
-					#toggleTouchpadMode.
-			isManipulateForTabletEnabled
-				ifTrue: [menuDyn beOn]
-				ifFalse: [menuDyn beOff]]
-		ifNil:
-			[self
-				isManipulateForTabletEnabled:
-					self spaceInterface isManipulateForTabletEnabled].
-	isUndoRedoEnabled
-		ifNotNil:
-			[menuDyn := (builder menuAt: #displayOptionsMenu) value atNameKey:
-					#toggleUndoRedo.
-			isUndoRedoEnabled
-				ifTrue: [menuDyn beOn]
-				ifFalse: [menuDyn beOff]]
-		ifNil: [self isUndoRedoEnabled: self spaceInterface enableUndo].
-	isSingleDefaultPovShown
-		ifNotNil:
-			[menuDyn := (builder menuAt: #displayOptionsMenu) value atNameKey:
-					#toggleShowSingleDefaultPov.
-			isSingleDefaultPovShown
-				ifTrue: [menuDyn beOn]
-				ifFalse: [menuDyn beOff]].
-	isSingleDefaultInfoShown
-		ifNotNil:
-			[menuDyn := (builder menuAt: #displayOptionsMenu) value atNameKey:
-					#toggleShowSingleDefaultInfo.
-			isSingleDefaultInfoShown
-				ifTrue: [menuDyn beOn]
-				ifFalse: [menuDyn beOff]]
 ]
 
 { #category : #actions }

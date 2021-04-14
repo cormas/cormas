@@ -34,14 +34,6 @@ EntityChange >> entity [
 	^entity
 ]
 
-{ #category : #'initialize-release' }
-EntityChange >> newChange: aSymbol with: aParameter from: anEntity [
-	
-	symbol := aSymbol.
-	parameter := aParameter.
-	entity := anEntity
-]
-
 { #category : #printing }
 EntityChange >> printOn: aStream [
 	

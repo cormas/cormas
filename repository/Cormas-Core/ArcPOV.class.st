@@ -12,12 +12,6 @@ Class {
 	#category : #'Cormas-Core-Legacy'
 }
 
-{ #category : #viewCorrespondance }
-ArcPOV class >> asFigure [
-	
-	^ArcFigure
-]
-
 { #category : #'instance creation' }
 ArcPOV class >> new [
 	"Answer a newly created and initialized instance."

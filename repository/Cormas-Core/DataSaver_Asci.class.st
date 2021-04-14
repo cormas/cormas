@@ -47,54 +47,6 @@ DataSaver_Asci >> prepareAveragedTimeSeriesFiles [
 ]
 
 { #category : #init }
-DataSaver_Asci >> prepareLastValueFiles [
-	"Create the files (one per probe, LastValue_XXX.csv.) and save last time step"
-	
-	| aFileName times |
-	self probes keys
-		do:
-			[:key | 
-			aFileName := self getLastValueFilenameOfProbe: key asString.
-			times := List new.
-			times add: 'Probe: '.
-			times add: 'Value at ' , self timeSteps last asString.
-			self updateFile: aFileName dataCollection: times]
-]
-
-{ #category : #init }
-DataSaver_Asci >> preparePeriodAverageFiles: periodList [
-	"Create the files (one per probe) and save last time step"
-	
-	| aFileName times |
-	self probes keys
-		do:
-			[:key | 
-			times := List new.
-			times add: 'Probe: '.
-			times
-				add:
-					'Average on period [' , periodList first asString , ' '
-						, periodList last asString , ']'.
-			aFileName := self getPeriodAverageFilenameOfProbe: key asString.
-			self updateFile: aFileName dataCollection: times]
-]
-
-{ #category : #init }
-DataSaver_Asci >> prepareSimAverageFiles [
-	"Create the files (one per probe,SimAverage_XXX.csv.) and save the average of each probe"
-	
-	| aFileName times |
-	self probes keys
-		do:
-			[:key | 
-			aFileName := self getSimAverageFilenameOfProbe: key asString.
-			times := List new.
-			times add: 'Probe: '.
-			times add: 'Average on simulation'.
-			self updateFile: aFileName dataCollection: times]
-]
-
-{ #category : #init }
 DataSaver_Asci >> prepareTimeSeriesFiles [
 	"Create the files (one per probe) and save time steps (first column)"
 	
