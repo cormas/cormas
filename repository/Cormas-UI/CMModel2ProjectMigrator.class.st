@@ -108,11 +108,36 @@ CMModel2ProjectMigrator >> defaultOutputDirectory [
 	^ 'cormas_project'
 ]
 
+{ #category : #writing }
+CMModel2ProjectMigrator >> handleFileEx: ex [ 
+
+	(ex isKindOf: FileExists)
+		ifTrue: [ 
+			ex ensureDelete.
+			ex retry ]
+		ifFalse: [ 
+			(ex isKindOf: FileDoesNotExistException)
+				ifTrue: [ 
+					self defaultOutputDirectory ensureCreateDirectory.
+					ex retry ] ]
+]
+
 { #category : #defaults }
 CMModel2ProjectMigrator >> metadataFilename [
 	" Answer a <String> with the name of the file which stores metadata information about a project "
 
 	^ CMProjectFile metadataFilename 
+]
+
+{ #category : #private }
+CMModel2ProjectMigrator >> moveProject: aFileReference [ 
+	" Private - Move aFileReference to the system demos/ path "
+	
+	[ aFileReference moveTo: CMResourceLocator demosPath ]
+	on: FileExists
+	do: [ : ex | 
+		ex ensureDelete.
+		ex retry. ]
 ]
 
 { #category : #building }
@@ -121,7 +146,7 @@ CMModel2ProjectMigrator >> moveProjects [
 
 	CMApplicationProject createUserDirectories.
 	(FileSystem workingDirectory allChildrenMatching: '*Model.zip') do: [ : modelRef |
-		modelRef moveTo: CMResourceLocator demosPath ]
+		self moveProject: modelRef ]
 ]
 
 { #category : #building }
@@ -191,12 +216,19 @@ CMModel2ProjectMigrator >> writeSourceCode: modelClass [
 		fileOutOn: (WriteStream on: (String new: 4000))
 		named: CMProjectFile sourceCodeFilename.
 	newFile := CMProjectFile sourceCodeFilename , '.st'.
-	[ newFile asFileReference copyTo: (self defaultOutputDirectory asFileReference / newFile) ]
-	on: FileExists 
-	do: [ : ex | 
-		ex ensureDelete.
-		ex retry ].
-	(self defaultOutputDirectory asFileReference / newFile) exists
+	self writeSourceCodeInTempLocation: newFile.
+]
+
+{ #category : #writing }
+CMModel2ProjectMigrator >> writeSourceCodeInTempLocation: newFile [
+
+	| dest |
+	
+	dest := self defaultOutputDirectory asFileReference / newFile.
+	[ newFile asFileReference copyTo: dest ]
+	on: FileExists, FileDoesNotExistException
+	do: [ : ex | self handleFileEx: ex ].
+	dest exists
 		ifFalse: [ self error: 'CORMAS source code file was not copied into project directory' ].
 	newFile asFileReference ensureDelete.
 ]
