@@ -17,17 +17,8 @@ Internal Representation and Key Implementation Points.
 Class {
 	#name : #CMSymbolHelper,
 	#superclass : #CMStringHelper,
-	#category : 'Cormas-Core-Helpers'
+	#category : #'Cormas-Core-Helpers'
 }
-
-{ #category : #helping }
-CMSymbolHelper class >> colorFrom: aColorOrSymbol [
-	"return a color value for the argument"
-	
-	^(ColorValue constantNames includes: aColorOrSymbol)
-		ifTrue: [ColorValue perform: aColorOrSymbol]
-		ifFalse: [ColorValue navy]
-]
 
 { #category : #helping }
 CMSymbolHelper class >> isTypeSymbol [

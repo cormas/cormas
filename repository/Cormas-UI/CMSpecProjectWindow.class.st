@@ -729,8 +729,10 @@ CMSpecProjectWindow >> subMenuOpenClassEditor: item [
 		icon:
 			(self iconNamed: #openIcon);
 		shortcut: $c command;
-		action: [ OPUmlProject
-				openOnModel: (OPUMLModel new name: self projectManager cormasModelName) ]
+		action: [ 
+			self halt.
+			"OPUmlProject
+				openOnModel: (OPUMLModel new name: self projectManager cormasModelName)" ]
 ]
 
 { #category : #'submenu-programming' }

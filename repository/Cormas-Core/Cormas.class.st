@@ -381,25 +381,6 @@ Cormas class >> dumpPath: aModelClassName [
 
 ]
 
-{ #category : #'util_files' }
-Cormas class >> editMethod: aSelector fromClass: aClass [
-	"open a RefactoryBrowser for aClass on aSelector. If aSelector is only defined in a superclass, then open this superclass"
-	"self editMethod: #moveTo: fromClass: AgentLocation
-self editMethod: #id fromClass: AgentLocation"
-	
-	| class_method |
-	class_method := aClass findSelector: aSelector.
-	class_method
-		ifNil:
-			[Dialog
-				warn:
-					('No method <1p> found in <2s>and super classes.<n>Will open a standard editor'
-						expandMacrosWith: aSelector
-						with: aClass name).
-			^aClass browse].
-	(class_method first) browse navigator setSelector: aSelector
-]
-
 { #category : #'utilities - code management' }
 Cormas class >> findSelector: selector in: aClass [
 
@@ -959,70 +940,6 @@ Cormas class >> openVisualInspectorOn: anObject [
 	anObject psiVisualInspect
 ]
 
-{ #category : #'util_window' }
-Cormas class >> originPointOfWindowExtent: bounds toPlaceBelow: mainWindow [
-	" Return the preferred position for the origin (upper right) corner of the window extent receiver so that it is placed below the specified window"
-	
-	| mainRectangle hackFactor screenBounds |
-	hackFactor := 0 @ 34.
-	mainRectangle := mainWindow getDisplayBox.
-	screenBounds := mainWindow == nil
-		ifTrue: [Screen default bounds]
-		ifFalse: [mainWindow screen bounds].
-	^Point
-		x:
-			((mainRectangle bottomRight x + hackFactor x - bounds x
-				max: screenBounds left) min: screenBounds right)
-		y:
-			((mainRectangle bottomRight y + hackFactor y max: screenBounds top)
-				min: screenBounds bottom)
-]
-
-{ #category : #'util_window' }
-Cormas class >> originPointOfWindowExtent: bounds toPlaceOnSideOf: mainWindow [
-	" Return the preferred position for the origin (upper right) corner of the window extent receiver so that it is placed on the left or on the right side of the specified window"
-	
-	| mainRectangle hackFactor screenBounds |
-	hackFactor := 16 @ 0.
-	screenBounds := mainWindow == nil
-		ifTrue: [Screen default bounds]
-		ifFalse: [mainWindow screen bounds].
-	mainRectangle := mainWindow getDisplayBox.
-	^Point
-		x:
-			(mainRectangle topLeft x - bounds x - hackFactor x < 0
-				ifFalse:
-					[(mainRectangle topLeft x - bounds x - hackFactor x max: screenBounds left)
-						min: screenBounds right]
-				ifTrue: [mainRectangle topRight x + hackFactor x])
-		y:
-			((mainRectangle topLeft y + hackFactor y max: screenBounds top)
-				min: screenBounds bottom)
-]
-
-{ #category : #'util_window' }
-Cormas class >> originPointOfWindowExtent: bounds toPlaceOnSideOf: mainWindow andBelow: secWindow [
-	" Return the preferred position for the origin (upper right) corner of the window extent receiver so that it is placed on the left or on the right side of the specified window and below another specifed window"
-	
-	| mainRectangle hackFactor screenBounds secRectangle |
-	hackFactor := 16 @ 34.
-	mainRectangle := mainWindow getDisplayBox.
-	secRectangle := secWindow getDisplayBox.
-	screenBounds := mainWindow == nil
-		ifTrue: [Screen default bounds]
-		ifFalse: [mainWindow screen bounds].
-	^Point
-		x:
-			(mainRectangle topLeft x - bounds x - hackFactor x < 0
-				ifFalse:
-					[(mainRectangle topLeft x - bounds x - hackFactor x max: screenBounds left)
-						min: screenBounds right]
-				ifTrue: [mainRectangle topRight x + hackFactor x])
-		y:
-			((secRectangle bottomRight y + hackFactor y max: screenBounds top)
-				min: screenBounds bottom)
-]
-
 { #category : #accessing }
 Cormas class >> passiveEntitiesClassNames [
 	| collec |
@@ -1193,22 +1110,6 @@ Cormas class >> recordMethod: sel category: cat class: aClass [
 		value: thisComment
 ]
 
-{ #category : #'printing - documentation' }
-Cormas class >> recordProtocol: cat class: aClass [
-	
-	| dict |
-	dict := Dictionary new.
-	(Kernel includes: aClass)
-		ifTrue: [(cat first = $+ or: [cat first = $*]) ifFalse: [^dict]]
-		ifFalse:
-			[(cat = #description or: [cat first = $- or: [cat = #'pov symbols']])
-				ifTrue: [^dict]].
-	(aClass organization listAtCategoryNamed: cat)
-		do:
-			[:sel | dict add: (self recordMethod: sel category: cat class: aClass)].
-	^dict
-]
-
 { #category : #'user interface' }
 Cormas class >> refresh: aSpaceInterface [
 	"force the mainWindow of aSpaceInterface (spaceView) to refresh its display when the simulation runs in distributedmode.
@@ -1240,57 +1141,6 @@ Cormas class >> removeFirstCharacterOfString: aString [
 	"Purpose: Remove the first character of aString. Answer a new String that is a copy of the argument, aString without the first character."
 
 	^ aString copy allButFirst
-]
-
-{ #category : #'util_codeManagement' }
-Cormas class >> renameAttribute: oldName to: newName inClass: aClass [
-	"Rename the attribute of aClass by newName.
-	
-	oldName = <Symbol>
-	newName = <Symbol>
-	aClass = <Class> (full name of aClass, with its nameSpace)
-
-	Ex: 
-		Cormas renameAttribute: #energy to: #biomass inClass: CormasNS.Models.ECEC.Forager
-		Cormas renameAttribute: #harvestRate: to: #harvestRateZZ: inClass: CormasNS.Models.ECEC.Forager class"
-	
-	| rb |
-	(aClass instVarNames includes: oldName asString)
-		ifTrue:
-			[Cursor wait
-				showWhile:
-					[rb := RenameInstanceVariableRefactoring
-						rename: oldName asString
-						to: newName
-						in: aClass.
-					rb transform.
-					RefactoringManager instance addRefactoring: rb]]
-]
-
-{ #category : #'util_codeManagement' }
-Cormas class >> renameSelector: oldName to: newName nbArguments: nbArgs inClass: aClass [
-	"Rename the method of aClass by newName. nbArgs is an integer representing the number of arguments of the method.
-	
-	oldName = <Symbol>
-	newName = <Symbol>
-	nbArgs = <Integer (positive)>
-	aClass = <Class> (full name of aClass, with its nameSpace)
-
-	Ex: 
-		Cormas renameSelector: #updateEnergy to: #consumeEnergy nbArguments: 0 inClass: CormasNS.Models.ECEC.Forager
-		Cormas renameSelector: #harvestRate: to: #harvestRateZZ: nbArguments: 1 inClass: CormasNS.Models.ECEC.Forager class"
-	
-	| map |
-	map := (1 to: nbArgs) collect: [:i | i].
-	(aClass allSelectors includes: oldName asSymbol)
-		ifTrue:
-			[Cursor wait
-				showWhile:
-					[(RenameMethodRefactoring
-						renameMethod: oldName asSymbol
-						in: aClass
-						to: newName asSymbol
-						permutation: map) execute]]
 ]
 
 { #category : #'utilities - mathematics' }
@@ -1399,29 +1249,6 @@ Example: Cormas saveElementsOfCollec: #(abc ?? 67) inFile: ((Cormas modelPath: #
 	file close
 ]
 
-{ #category : #'util_export' }
-Cormas class >> saveImage [
-	"save the vw image with Cormas. Usually called when Cormas has just been installed or updated.
-Cormas saveImage"
-	
-	| stringName |
-	(self current
-		confirm:
-			'Cormas has been loaded successfully. \ Do you want to save Cormas now?'
-				withCRs)
-		ifTrue:
-			[ObjectMemory verboseGlobalCompactingGC.
-			Transcript clear.
-			stringName := Dialog requestNewFileName: 'Save image as' default:
-					'cormas.im'.
-			stringName isEmpty ifTrue: [^nil].
-			stringName := (self
-				removeExtensionOf: stringName asFilename tail asFilename) asString.
-			ObjectMemory saveAs: stringName thenQuit: false.
-			Cormas visualLauncherWindow
-				ifNotNil: [:w | w label: VisualLauncher title]]
-]
-
 { #category : #accessing }
 Cormas class >> seed [
 	^ self randomGenerator seed
@@ -1509,17 +1336,6 @@ Cormas class >> selectSimpleRandomlyFrom: aCollection [
 ex: Cormas selectSimpleRandomlyFrom: (Set withAll: #(1 2 3 4 5))"
 
 	^ aCollection atRandom
-]
-
-{ #category : #'util_export' }
-Cormas class >> selectedThingsWithOrder: aBlock onSelection: aNameSpace [
-	| things |
-	things := OrderedCollection new.
-	things add: aNameSpace.
-	things addAll: aNameSpace allEntityClasses.
-	things addAll: aNameSpace allNameSpaces.
-	things := SystemUtils sortForLoading: things.
-	aBlock value: things
 ]
 
 { #category : #'util_files' }
@@ -1937,20 +1753,6 @@ Cormas class >> videoPath: aModelClassName [
 
 	^ self application videoPath: aModelClassName
 
-]
-
-{ #category : #'util_window' }
-Cormas class >> visualLauncherWindow [
-	"return the actual VisualLauncher window if exists. Return one of them if multiple windows exists.
-	return nil if no VisualLauncher is actually open.
-	This method is inspired from ApplicationModel class>>raiseSingleInstance
-	Cormas visualLauncherWindow
-	"
-	
-	Screen default
-		allScheduledWindowsDo:
-			[:each | (each model isKindOf: VisualLauncher) ifTrue: [^each]].
-	^nil
 ]
 
 { #category : #'utilities - files' }

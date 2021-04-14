@@ -400,23 +400,6 @@ CMEntity class >> availablePov [
 	^ collec
 ]
 
-{ #category : #'activityDiagram - editor' }
-CMEntity class >> chooseActivityDiagramEditorToRemove [
-	"Purpose: a user interface to remove an activity diagram
-Example: CormasNS.Kernel.Entity chooseActivityDiagramEditorToRemove   "
-	
-	| operationName list |
-	list := self allActivitySelectors asSortedCollection.
-	operationName := Dialog
-		choose: 'Which activity diagram to remove?'
-		fromList: list
-		values: list
-		lines: 8
-		cancel: [#Cancel].
-	operationName = #Cancel ifTrue: [^nil].
-	^self removeActivityDiagram: operationName
-]
-
 { #category : #deprecated }
 CMEntity class >> classFromSymbol: aSymbol [
 	self deprecated: 'Use class method on Symbol instead of classFromSymbol:'.
@@ -438,21 +421,6 @@ CMEntity class >> cmPrintHierarchy [
 	"CMAgent cmPrintHierarchy"
 
 	^ String streamContents: [ :stream | self printSubclassesOn: stream level: 0 ]
-]
-
-{ #category : #image }
-CMEntity class >> colorAtPov: aSymbolPOV [
-	"Returns a ColorValue according to the a Symbol (aSymbolPOV).
-aSymbolPOV = <Symbol> "
-	
-	aSymbolPOV isNil
-		ifTrue:
-			[^self colorsDict
-				at: #nil
-				ifAbsentPut: [ColorValue gray]].
-	^self colorsDict
-		at: aSymbolPOV
-		ifAbsentPut: [nil]
 ]
 
 { #category : #'utilities - colors' }
@@ -666,17 +634,6 @@ Example: CormasNS.Kernel.Agent getActivityDiagram: #exampleTest   "
 				ifTrue: [self getActivityDiagram: operationName]
 				ifFalse: [false]].
 	^ad
-]
-
-{ #category : #image }
-CMEntity class >> getColorAtPov: aSymbolPOV [
-	"Returns a ColorValue according to aSymbolPOV).
-	If aSymbolPOV is not referenced the colorsDict of the class, returns a default color 
-	aSymbolPOV = <Symbol> "
-	
-	^self colorsDict
-		at: aSymbolPOV
-		ifAbsent: [ColorValue veryLightGray]
 ]
 
 { #category : #'instance creation' }
@@ -1655,29 +1612,11 @@ CMEntity >> isAttributeValueABoolean: aSymbol [
 ]
 
 { #category : #'utilities - attributes' }
-CMEntity >> isAttributeValueACollection: aSymbol [
-	
-	| aClass |
-	aClass := (self perform: aSymbol) class.
-	^(aClass = Collection or: [aClass inheritsFrom: Collection])
-		and: [(aClass inheritsFrom: CharacterArray) not]
-]
-
-{ #category : #'utilities - attributes' }
 CMEntity >> isAttributeValueANumber: aSymbol [
 	
 	| aClass |
 	aClass := (self perform: aSymbol) class.
 	^aClass = Number or: [aClass inheritsFrom: Number]	"or:[(aValue contains: [:char | char isDigit not and:[char ~= $.]]) not]"
-]
-
-{ #category : #'utilities - attributes' }
-CMEntity >> isAttributeValueAString: aSymbol [
-	
-	| aClass |
-	aClass := (self perform: aSymbol) class.
-	^(aClass = CharacterArray or: [aClass inheritsFrom: CharacterArray])
-		and: [(aClass inheritsFrom: Symbol) not]
 ]
 
 { #category : #'utilities - attributes' }
