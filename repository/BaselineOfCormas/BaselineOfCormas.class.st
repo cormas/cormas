@@ -98,7 +98,7 @@ BaselineOfCormas >> postLoad [
 	"TaskbarMorph showTaskbar: false."
 	self unloadPackages.
 	"self openPlaygroundWindow."
-	CMModel2ProjectMigrator migrateModels.
+
 ]
 
 { #category : #doits }

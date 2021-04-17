@@ -5,6 +5,8 @@ This is the main CORMAS UI window.
 Class {
 	#name : #CMSpecProjectWindow,
 	#superclass : #PFStandardProjectWindow,
+	#traits : 'TCMUIUtils',
+	#classTraits : 'TCMUIUtils classTrait',
 	#instVars : [
 		'simWindow'
 	],
@@ -43,6 +45,9 @@ CMSpecProjectWindow class >> open [
 	
 	CMApplicationProject release.
 	PFProjectSettings currentApplicationClass: CMApplicationProject.
+	" Check models are available or should be migrated from the image "
+	CMApplicationProject hasUserProjects
+		ifFalse: [ CMModel2ProjectMigrator migrateModels ].
 	" Rebuild translator table "
 	CMApplicationProject uniqueInstance translator: nil.		
 	win := self new 

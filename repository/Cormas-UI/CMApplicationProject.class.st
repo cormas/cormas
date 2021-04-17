@@ -47,43 +47,63 @@ CMApplicationProject class >> applicationVersion [
 ]
 
 { #category : #accessing }
-CMApplicationProject class >> createUserDirectories [
-	" Create the demos location <FileReference> "
+CMApplicationProject class >> baseDirectory [
+	" Answer a <FileReference> with the directory of CORMAS where projects and settings are located "
 
-	| baseLocation |
-	(baseLocation := CMApplicationPreferences settingBaseLocation asFileReference) exists
-		ifTrue: [ ^ self ].
-	baseLocation ensureCreateDirectory.
-	(baseLocation / 'demos') ensureCreateDirectory.
-	(baseLocation / 'preferences') ensureCreateDirectory.
+	^ CMApplicationPreferences settingBaseLocation asFileReference
 ]
 
 { #category : #accessing }
-CMApplicationProject class >> installDemos [
+CMApplicationProject class >> createUserDirectories [
+	" Create the demos location <FileReference> "
 
-	| demosLocation |
-	(demosLocation := CMApplicationPreferences settingBaseLocation asFileReference / 'demos') exists
-		ifFalse: [ ^ self ].
-	
+	self baseDirectory exists
+		ifTrue: [ ^ self ].
+	self baseDirectory ensureCreateDirectory.
+	CMResourceLocator demosPath ensureCreateDirectory.
+	CMResourceLocator preferencesPath ensureCreateDirectory.
+]
+
+{ #category : #accessing }
+CMApplicationProject class >> hasCormasDemos [
+	" Answer <true> if the system has CORMAS project files in the demos path "
+
+	^ CMResourceLocator demosPath hasFiles and: [ 
+		CMResourceLocator demosPath children anySatisfy: #isZipFile ]
+]
+
+{ #category : #accessing }
+CMApplicationProject class >> hasDemos [
+	" Answer <true> if this system already has a directory where CORMAS projects "
+
+	^ CMResourceLocator demosPath exists and: [ self hasCormasDemos ]
+
+]
+
+{ #category : #accessing }
+CMApplicationProject class >> hasUserProjects [
+	" Answer <true> if this system already has a directory where CORMAS projects and preferences were created "
+
+	^ self baseDirectory exists and: [ self hasDemos ]
 
 ]
 
 { #category : #accessing }
 CMApplicationProject class >> removeUserDirectories [
-	| baseLocation |
-	(baseLocation := CMApplicationPreferences settingBaseLocation asFileReference) exists
+
+	self baseDirectory exists
 		ifFalse: [ ^ self ].
-	(self confirm: 'Warning: You are about to remove all directories and files under ' , baseLocation fullName)
-		ifTrue: [ baseLocation deleteAll ].
+	(self confirm: 'Warning: You are about to remove all directories and files under ' , self baseDirectory fullName)
+		ifTrue: [ self baseDirectory deleteAll ].
 
 ]
 
 { #category : #accessing }
 CMApplicationProject class >> removeUserDirectoriesNoConfirmation [
-	| baseLocation |
-	(baseLocation := CMApplicationPreferences settingBaseLocation asFileReference) exists
+
+	self baseDirectory
 		ifFalse: [ ^ self ].
-	baseLocation deleteAll.
+	self baseDirectory deleteAll.
 
 ]
 
