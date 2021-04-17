@@ -192,33 +192,6 @@ FonctionObs >> higherLevels: b [
 	observateur vueObs invalidate
 ]
 
-{ #category : #'display liens' }
-FonctionObs >> higherLevels: a to: b withGC: aGC [
-	
-	| r o e |
-	r := 1.	"adaptor imageEtDico geometric bounds width / 2 floor"
-	(a center - b center) rrr = 0 ifTrue: [^self].
-	o := a center + ((b center - a center) unitVector * r).
-	e := b center + ((a center - b center) unitVector * r).
-	(a level = b level & a level) = level
-		ifTrue:
-			[aGC paint: (ColorValue perform: #black).
-			aGC displayLineFrom: o to: e.
-			^self].
-	a level >= level
-		ifTrue:
-			[aGC paint: (ColorValue perform: #red).
-			aGC
-				displayLineFrom: o
-				to: o + ((e - o) unitVector * 10)].
-	b level >= level
-		ifTrue:
-			[aGC paint: (ColorValue perform: #red).
-			aGC
-				displayLineFrom: e
-				to: e + ((o - e) unitVector * 10)]
-]
-
 { #category : #bakam }
 FonctionObs >> intensiteLienPour: unMsg [
 	"^unMsg xUG + unMsg xUPA @ (unMsg xUG + unMsg xUPA)"
@@ -340,18 +313,6 @@ FonctionObs >> oneLevel: b [
 	observateur vueObs invalidate
 ]
 
-{ #category : #'display liens' }
-FonctionObs >> oneLevel: a to: b withGC: aGC [
-	
-	| r o e |
-	r := 1.	"(adaptor imageEtDico geometric bounds width / 2 floor)"
-	(b center - a center) rrr = 0 ifTrue: [^self].
-	o := a center + ((b center - a center) unitVector * r).
-	e := b center + ((a center - b center) unitVector * r).
-	aGC paint: (ColorValue perform: #black).
-	aGC displayLineFrom: o to: e
-]
-
 { #category : #accesssing }
 FonctionObs >> populationObservateur [
 	
@@ -425,29 +386,6 @@ FonctionObs >> populationSourceRemoveAgent: anAgent [
 	observateur modeleObs actionDistribuer
 ]
 
-{ #category : #'initialize-release' }
-FonctionObs >> reinitializeAt: unX [
-	
-	| tmp largeurOpt hauteurOpt origine etendue unController |
-	level := 1.
-	oneLevel := true.
-	higherLevels := true.	"observateur openInterface: #windowSpec."
-	tmp := observateur allButOpenInterface: #windowSpec.
-	window := tmp window.
-	largeurOpt := Screen default bounds width - (20 + unX + 10).
-	hauteurOpt := (Screen default bounds height - 40) / 2.
-	origine := (unX + 20) @ (hauteurOpt + 50).
-	etendue := largeurOpt @ (hauteurOpt - 40).
-	window openIn: (origine extent: etendue).
-	unController := ControllerObs new.
-	unController model: observateur modeleObs.
-	unController performer: observateur.
-	observateur vueObs controller: unController.
-	unController initializeMenuCustom.	"adaptor := observateur modeleObs adaptor."
-	degreMax := 5.
-	^self
-]
-
 { #category : #'display liens' }
 FonctionObs >> showLink: a to: b withGC: aGC [
 	
@@ -460,33 +398,6 @@ FonctionObs >> showLink: a to: b withGC: aGC [
 			[self higherLevels: a to: b withGC: aGC.
 			^self].
 	self thisLevel: a to: b withGC: aGC
-]
-
-{ #category : #'display liens' }
-FonctionObs >> thisLevel: a to: b withGC: aGC [
-	
-	| r o e |
-	r := adaptor imageEtDico geometric bounds width / 2 floor.
-	(a center - b center) rrr = 0 ifTrue: [^self].
-	o := a center + ((b center - a center) unitVector * r).
-	e := b center + ((a center - b center) unitVector * r).
-	(a level = b level & a level) = level
-		ifTrue:
-			[aGC paint: (ColorValue perform: #black).
-			aGC displayLineFrom: o to: e.
-			^self].
-	a level = level
-		ifTrue:
-			[aGC paint: (ColorValue perform: #red).
-			aGC
-				displayLineFrom: o
-				to: o + ((e - o) unitVector * 10)].
-	b level = level
-		ifTrue:
-			[aGC paint: (ColorValue perform: #red).
-			aGC
-				displayLineFrom: e
-				to: e + ((o - e) unitVector * 10)]
 ]
 
 { #category : #accessing }

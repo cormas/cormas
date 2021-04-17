@@ -5,6 +5,8 @@ This is the main CORMAS UI window.
 Class {
 	#name : #CMSpecProjectWindow,
 	#superclass : #PFStandardProjectWindow,
+	#traits : 'TCMUIUtils',
+	#classTraits : 'TCMUIUtils classTrait',
 	#instVars : [
 		'simWindow'
 	],
@@ -43,6 +45,9 @@ CMSpecProjectWindow class >> open [
 	
 	CMApplicationProject release.
 	PFProjectSettings currentApplicationClass: CMApplicationProject.
+	" Check models are available or should be migrated from the image "
+	CMApplicationProject hasUserProjects
+		ifFalse: [ CMModel2ProjectMigrator migrateModels ].
 	" Rebuild translator table "
 	CMApplicationProject uniqueInstance translator: nil.		
 	win := self new 
@@ -729,8 +734,10 @@ CMSpecProjectWindow >> subMenuOpenClassEditor: item [
 		icon:
 			(self iconNamed: #openIcon);
 		shortcut: $c command;
-		action: [ OPUmlProject
-				openOnModel: (OPUMLModel new name: self projectManager cormasModelName) ]
+		action: [ 
+			self halt.
+			"OPUmlProject
+				openOnModel: (OPUMLModel new name: self projectManager cormasModelName)" ]
 ]
 
 { #category : #'submenu-programming' }

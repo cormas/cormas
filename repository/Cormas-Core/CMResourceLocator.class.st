@@ -37,12 +37,19 @@ CMResourceLocator class >> cormasHomeProjects [
 CMResourceLocator class >> demosPath [
 	" Answer a <FileReference> with the receiver's path to the demos directory "
 
-	^ CMApplicationPreferences settingBaseLocation asFileReference / 'demos'
+	^ CMApplicationProject baseDirectory / 'demos'
 ]
 
 { #category : #'class initialization' }
 CMResourceLocator class >> initialize [
 	SessionManager default registerSystemClassNamed: self name
+]
+
+{ #category : #accessing }
+CMResourceLocator class >> preferencesPath [
+	" Answer a <FileReference> with the receiver's path to the preferences directory "
+
+	^ CMApplicationProject baseDirectory / 'preferences'
 ]
 
 { #category : #public }

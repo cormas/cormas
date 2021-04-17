@@ -46,35 +46,12 @@ CMToExcel >> addWorkbook [
 ]
 
 { #category : #run }
-CMToExcel >> addWorksheet [
-	
-	| worksheetsDD worksheetDD |
-	worksheetsDD := workbook getMethod: 'Worksheets'.
-	worksheetDD := worksheetsDD invokeMethod: 'Add'.
-	ExcelWorksheetController currentClass onDispatchDriver: worksheetDD
-]
-
-{ #category : #run }
 CMToExcel >> closeApplication [
 	"Close the Excel application and save the worksheet a the given 
 	fileName at the pathName"
 	
 	[ self closeWorkbook ] ensure: [ self workbook release ].
 	"COMSessionManager shutdownImage	""terminateServer allOwnedInterfaces"
-]
-
-{ #category : #'run_private' }
-CMToExcel >> closeWorkbook [
-	"Close the workbook and save the file"
-	
-	[self workbook
-		close: self shouldSaveToFile
-		fileName: fileName
-		routeWorkbook: nil]
-		on: COMDispatchError
-		do: [:ex | ex exceptionInfo wCode = 1004 ifFalse: [ex pass]].
-	self workbook release.
-	self release
 ]
 
 { #category : #'run_private' }
@@ -90,14 +67,6 @@ CMToExcel >> closeWorkbook_old [
 	self release"	"]
 		on: COMDispatchError do: [:ex |
 		ex exceptionInfo wCode = 1004 ifFalse: [ex pass]]"
-]
-
-{ #category : #accessing }
-CMToExcel >> controller [
-	"Answer the Excel Application controller"
-	
-	controller notNil ifTrue: [^controller].
-	^controller := ExcelApplicationController new
 ]
 
 { #category : #charts }

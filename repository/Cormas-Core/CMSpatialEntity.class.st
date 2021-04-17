@@ -293,12 +293,6 @@ Argument: anotherSpatialEntity = <SpatialEntity>"
 	self subclassResponsibility
 ]
 
-{ #category : #'star displaying' }
-CMSpatialEntity >> flash [
-"Purpose: changes background color to yellow (to draw observer attention to the receiver)"
-	self flashColor: ColorValue yellow
-]
-
 { #category : #displaying }
 CMSpatialEntity >> flashColor: aColorValue [
 	"Purpose: changes background color to a given color (to draw observer attention to the receiver). If aColorValue is not a standard Color, it displays the entity in red.

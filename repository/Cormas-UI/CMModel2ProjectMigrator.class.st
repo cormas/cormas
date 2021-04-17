@@ -21,7 +21,7 @@ Class {
 }
 
 { #category : #examples }
-CMModel2ProjectMigrator class >> migrateProjects [ 
+CMModel2ProjectMigrator class >> migrateModels [ 
 	<example>
 	
 	self new 
@@ -86,9 +86,11 @@ CMModel2ProjectMigrator >> buildProjects [
 	" Main entry point for generating project files. Generate all project files from the models in this image "
 	" Hopefully this method should be run only once, and to reformat project directory structure for example "
 
+	'Model2Project: Building project files...' traceCr.
 	CMAbstractModel subclassesDo: [ :modelClass |
 			self buildForModel: modelClass.
-			self buildProjectFile ]
+			self buildProjectFile ].
+	'Model2Project: Done building project files...' traceCr.
 ]
 
 { #category : #accessing }
@@ -108,6 +110,24 @@ CMModel2ProjectMigrator >> defaultOutputDirectory [
 	^ 'cormas_project'
 ]
 
+{ #category : #writing }
+CMModel2ProjectMigrator >> handleFileEx: ex [ 
+
+	(ex isKindOf: FileExists)
+		ifTrue: [ 
+			self traceCrTab: 'Model2Project: Deleting existing project ' , ex fullName. 
+			ex ensureDelete.
+			self traceCrTab: 'Model2Project: Done deleting existing project ' , ex fullName. 
+			ex retry ]
+		ifFalse: [ 
+			(ex isKindOf: FileDoesNotExistException)
+				ifTrue: [ 
+					self traceCrTab: 'Model2Project: Creating projects directory' , self defaultOutputDirectory. 
+					self defaultOutputDirectory asFileReference ensureCreateDirectory.
+					self traceCrTab: 'Model2Project: Done creating projects directory' , self defaultOutputDirectory. 
+					ex retry ] ]
+]
+
 { #category : #defaults }
 CMModel2ProjectMigrator >> metadataFilename [
 	" Answer a <String> with the name of the file which stores metadata information about a project "
@@ -115,13 +135,31 @@ CMModel2ProjectMigrator >> metadataFilename [
 	^ CMProjectFile metadataFilename 
 ]
 
+{ #category : #private }
+CMModel2ProjectMigrator >> moveProject: aFileReference [ 
+	" Private - Move aFileReference to the system demos/ path "
+	
+	[	
+		self traceCrTab: 'Model2Project: Moving project file...' , aFileReference fullName. 
+		aFileReference moveTo: CMResourceLocator demosPath.
+		self traceCrTab: 'Model2Project: Done moving project file...' , aFileReference fullName. 
+	]
+	on: FileExists
+	do: [ : ex | 
+		self traceCrTab: 'Model2Project: Deleting project file ' , ex fullName. 
+		ex ensureDelete.
+		ex retry. ]
+]
+
 { #category : #building }
 CMModel2ProjectMigrator >> moveProjects [
 	" Move recently generated projects to base location "
 
+	'Model2Project: Moving project files...' traceCr.
 	CMApplicationProject createUserDirectories.
 	(FileSystem workingDirectory allChildrenMatching: '*Model.zip') do: [ : modelRef |
-		modelRef moveTo: CMResourceLocator demosPath ]
+		self moveProject: modelRef ].
+	'Model2Project: Done moving project files...' traceCr.
 ]
 
 { #category : #building }
@@ -187,16 +225,25 @@ CMModel2ProjectMigrator >> writeSourceCode: modelClass [
 
 	| newFile |
 
+	self traceCrTab: 'Model2Project: Writing source code ' , modelClass asString. 
 	modelClass package 
 		fileOutOn: (WriteStream on: (String new: 4000))
 		named: CMProjectFile sourceCodeFilename.
 	newFile := CMProjectFile sourceCodeFilename , '.st'.
-	[ newFile asFileReference copyTo: (self defaultOutputDirectory asFileReference / newFile) ]
-	on: FileExists 
-	do: [ : ex | 
-		ex ensureDelete.
-		ex retry ].
-	(self defaultOutputDirectory asFileReference / newFile) exists
+	self writeSourceCodeInTempLocation: newFile.
+	self traceCrTab: 'Model2Project: Done writing source code ' , modelClass asString. 
+]
+
+{ #category : #writing }
+CMModel2ProjectMigrator >> writeSourceCodeInTempLocation: newFile [
+
+	| dest |
+	
+	dest := self defaultOutputDirectory asFileReference / newFile.
+	[ newFile asFileReference copyTo: dest ]
+	on: FileExists, FileDoesNotExistException
+	do: [ : ex | self handleFileEx: ex ].
+	dest exists
 		ifFalse: [ self error: 'CORMAS source code file was not copied into project directory' ].
 	newFile asFileReference ensureDelete.
 ]

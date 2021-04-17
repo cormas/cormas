@@ -195,18 +195,6 @@ entityFigures = [ Predator -> anIdentityDictionary (aPOV -> aFigure aPOV -> aFig
 	^coll
 ]
 
-{ #category : #'accessing-Figures' }
-SpaceView >> allFiguresAt: aPoint [
-	
-	^components select: [:comp | comp containsPoint: aPoint]
-]
-
-{ #category : #accessing }
-SpaceView >> backgroundFillColor [
-	
-	^backgroundFillColor ifNil: [backgroundFillColor := ColorValue gray]
-]
-
 { #category : #accessing }
 SpaceView >> backgroundFillColor: anObject [
 	
@@ -225,30 +213,10 @@ SpaceView >> bounds: newBounds [
 ]
 
 { #category : #'accessing-Figures' }
-SpaceView >> celluleFigureAt: aPoint [
-	
-	^(self allFiguresAt: aPoint)
-		detect:
-			[:fig | fig class ~= TrackFigure and: [fig entityType isSpatialEntityElementClass]]
-		ifNone: [nil]
-]
-
-{ #category : #'accessing-Figures' }
 SpaceView >> celluleFigures [
 	
 	^self components
 		select: [:fig | fig entityType = self model cormasModelClass cellClass]
-]
-
-{ #category : #click }
-SpaceView >> changeAttributeOf: figure [
-	"method called from Tool (initializeChangeAttributeTool), to set a new value of the attribute of a cell clicked by the user"
-	
-	(figure model entity perform: activeAttribute asSymbol) =
-			activeAttributeValue ifFalse: [model storeBeforeManipulation].
-	figure model entity
-		perform: (activeAttribute , ':') asSymbol
-		with: activeAttributeValue
 ]
 
 { #category : #displaying }
@@ -277,34 +245,6 @@ SpaceView >> changePov: selectorName ofEntity: aClass [
 	self removeAllFiguresOf: aClass.	"il se peut que le nouveau PoV demande des images diff√©rentes"
 	selectorName = #nil ifTrue: [^nil].
 	self loadFiguresFrom: aClass povSelector: selectorName
-]
-
-{ #category : #click }
-SpaceView >> clicToChange [
-	
-	| firstPatch valueToBeChanged |
-	activeAttributeValue := self cormas
-		request:
-			(UserMessage defaultString: 'attribute value of ' key: #attributeValue)
-				asString , self activeAttribute.
-	activeAttributeValue isEmpty ifTrue: [^nil].
-	firstPatch := (self spaceModel spatialEntities
-		at: self model activeSpatialEntity name)
-		detect: [:i | (i perform: self activeAttribute asSymbol) isNil not]
-		ifNone:
-			[(self spaceModel spatialEntities at: self model activeSpatialEntity name)
-				first].
-	valueToBeChanged := firstPatch perform: self activeAttribute asSymbol.
-	valueToBeChanged isSymbol
-		ifTrue: [activeAttributeValue := activeAttributeValue asSymbol].
-	(valueToBeChanged isKindOf: Number)
-		ifTrue:
-			[(activeAttributeValue isKindOf: Number)
-				ifFalse: [activeAttributeValue := activeAttributeValue asNumber]].
-	(valueToBeChanged isKindOf: Boolean)
-		ifTrue:
-			[(activeAttributeValue isKindOf: Boolean)
-				ifFalse: [activeAttributeValue := activeAttributeValue asBoolean]]
 ]
 
 { #category : #click }
@@ -353,30 +293,6 @@ SpaceView >> clicToExecuteMethod: aSymbol onEntity: aClass [
 				ifFalse: [activeAttributeValue := activeAttributeValue asBoolean]]
 ]
 
-{ #category : #menus }
-SpaceView >> contextualMenu [
-	"See SpaceController and VectorialFigure #menuAt:"
-	
-	| aMenuBuilder tmp menuUpdated |
-	aMenuBuilder := MenuBuilder new.
-	tmp := self
-		fillContextualMenu: aMenuBuilder
-		forClasses: self model cormasModelClass spatialClasses asList.
-	tmp isEmpty ifFalse: [aMenuBuilder line].
-	tmp := self
-		fillContextualMenu: aMenuBuilder
-		forClasses: self model cormasModelClass socialClasses asList.
-	tmp isEmpty ifFalse: [aMenuBuilder line].
-	tmp := self
-		fillContextualMenu: aMenuBuilder
-		forClasses: self model cormasModelClass locatedObjectClasses asList.
-	menuUpdated := self setCheck: aMenuBuilder menu.
-	self controller menuHolder value isNil not
-		ifTrue:
-			[menuUpdated selectionMemory: self controller menuHolder selectionMemory].
-	self controller menuHolder: menuUpdated
-]
-
 { #category : #accessing }
 SpaceView >> cormas [
 	
@@ -421,12 +337,6 @@ SpaceView >> delimiter: aInteger [
 		do: [:aFig | aFig lineWidth: aInteger]
 ]
 
-{ #category : #accessing }
-SpaceView >> delimiterColor [
-	
-	^delimiterColor ifNil: [delimiterColor := ColorValue black]
-]
-
 { #category : #'menu actions' }
 SpaceView >> delimiterColor: aColor [
 	"change the color of the delimiter"
@@ -459,24 +369,6 @@ SpaceView >> detectSpatialEntityImageIncluding: aPoint [
 		detect:
 			[ :p | self image: (self getImageForEntity: p) includes: aPoint ]
 		ifNone: [  ]
-]
-
-{ #category : #displaying }
-SpaceView >> displayOn: aGraphicsContext [
-	"overriden to set the backgroundColor"
-	
-	| clipRect |
-	clipRect := aGraphicsContext clippingBounds.
-	aGraphicsContext paint: self backgroundFillColor.
-	clipRect displayFilledOn: aGraphicsContext.
-	self isVisible
-		ifTrue:
-			[self isSelected
-				ifTrue: [self displaySelectedFigureOn: aGraphicsContext]
-				ifFalse: [self displayFigureOn: aGraphicsContext]].
-	handles
-		do:
-			[:each | (each intersects: clipRect) ifTrue: [each displayOn: aGraphicsContext copy]]
 ]
 
 { #category : #'accessing-Figures' }
@@ -529,18 +421,6 @@ entityFigures = [ #class -> anIdentityDictionary (anImage -> aFigure anImage -> 
 		Il vaudrait donc mieux virer le entityFigures et passer par les components"
 ]
 
-{ #category : #click }
-SpaceView >> executeMethodOf: figure [
-	"method called from Tool (initializeChangeAttributeTool), to execute a of the attribute of a cell clicked by the user"
-	
-	(figure model entity class includesBehavior: self manipulatedEntity)
-		ifFalse: [^nil].
-	model storeBeforeManipulation.
-	figure model entity
-		perform: self manipulationAction asSymbol
-		withArguments: self manipulationActionArguments
-]
-
 { #category : #accessing }
 SpaceView >> figuresByReference [
 	
@@ -551,12 +431,6 @@ SpaceView >> figuresByReference [
 SpaceView >> figuresOfEntity: aClass [
 	
 	^self components select: [:fig | fig entityType = aClass]
-]
-
-{ #category : #'attribute accessing' }
-SpaceView >> fillColor [
-	
-	^attributes fillColor ifNil: [attributes fillColor: ColorValue lightGray]
 ]
 
 { #category : #'attribute accessing' }
@@ -630,24 +504,6 @@ SpaceView >> image: anImage includes: aPoint [
 	^anImage notNil
 		ifFalse: [false]
 		ifTrue: [anImage bounds regionIntersects: (aPoint extent: 1)]
-]
-
-{ #category : #'initialize-release' }
-SpaceView >> initialize [
-	"super initialize."
-	
-	selections := OrderedCollection new.
-	handles := OrderedCollection new.
-	model := nil.
-	state := 64.
-	components := OrderedCollection new.
-	self
-		lineWidth: 1;
-		lineColor: ColorValue black;
-		selectable: false;
-		moveable: false;
-		removeable: false;
-		connectable: false	"Set the default properties of figures, someone must do this..."
 ]
 
 { #category : #click }
@@ -839,32 +695,6 @@ SpaceView >> moveOccupant: aSituatedEntityReference on: aESEreference [
 	aFig moveTo: absolutePoint
 ]
 
-{ #category : #adapting }
-SpaceView >> moveOccupant: occupantFigure to: absolutePoint [
-	"Move origin of occupantFigure to aPoint x scaleFactor."
-	
-	| lineFigures |
-	"add a new point to the tracker as the last position"
-	lineFigures := occupantFigure dependents
-		select: [:f | f isKindOf: TrackFigure].
-	lineFigures
-		do:
-			[:lf | 
-			lf
-				addPoint: occupantFigure center
-				beforeIndex: lf pointsSize.
-			lf testAndRemoveOrigine].	"move the figure"
-	occupantFigure translateTo: absolutePoint * self scaleFactor
-]
-
-{ #category : #'private - mouse actions' }
-SpaceView >> noPatch [
-	
-	self cormas
-		warn:
-			(UserMessage defaultString: ' define a topology !  ' key: #defineTopology)
-]
-
 { #category : #accessing }
 SpaceView >> oldBounds [
 	
@@ -883,14 +713,6 @@ SpaceView >> performDoubleClickButton: aPoint [
 	| figure |
 	figure := self selection ifNil: [^self].
 	figure model ifNotNil: [figure model inspect]
-]
-
-{ #category : #copying }
-SpaceView >> postCopy [
-	"Do not copy the dependents list."
-	
-	super postCopy.
-	selections := OrderedCollection new
 ]
 
 { #category : #'adding-removing' }

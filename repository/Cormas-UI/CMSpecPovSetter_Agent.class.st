@@ -38,63 +38,6 @@ Class {
 	#category : #'Cormas-UI-PoV'
 }
 
-{ #category : #resources }
-CMSpecPovSetter_Agent class >> bitmapIcon [
-	
-	^OpaqueImage
-		figure: self bitmapImage
-		shape: self bitmapMask
-]
-
-{ #category : #resources }
-CMSpecPovSetter_Agent class >> iconHexagon [
-	
-	^SpaceInterface iconHexagon
-]
-
-{ #category : #resources }
-CMSpecPovSetter_Agent class >> libraryIcon [
-	
-	^OpaqueImage
-		figure: self libraryIconImage
-		shape: self libraryIconMask
-]
-
-{ #category : #resources }
-CMSpecPovSetter_Agent class >> libraryIconImage [
-	
-	<resource: #image>
-	^Image
-		extent: 25 @ 24
-		depth: 1
-		bitsPerPixel: 1
-		palette: MonoMappedPalette whiteBlack
-		usingBits:
-			#[0 0 0 0 112 0 0 0 112 0 0 0 112 0 0 0 112 0 0 0 112 0 112 0 112 0 112 0 112 0 112 0 112 2 112 0 112 7 112 0 112 6 112 0 112 0 120 0 112 0 126 0 112 0 126 0 112 6 119 0 112 6 115 0 112 6 113 0 112 6 113 0 112 6 113 0 127 230 115 0 127 230 118 0 127 224 126 0 127 224 124 0 0 0 0 0]
-]
-
-{ #category : #resources }
-CMSpecPovSetter_Agent class >> libraryIconMask [
-	"Tools.UIMaskEditor new openOnClass: self andSelector: #libraryIconMask"
-	
-	<resource: #image>
-	^Image
-		extent: 25 @ 24
-		depth: 1
-		bitsPerPixel: 1
-		palette: CoveragePalette monoMaskPalette
-		usingBits:
-			#[0 0 0 0 112 0 0 0 112 0 0 0 112 0 0 0 112 0 0 0 112 0 112 0 112 0 112 0 112 0 112 0 112 2 112 0 112 7 112 0 112 6 112 0 112 0 120 0 112 0 126 0 112 0 126 0 112 6 119 0 112 6 115 0 112 6 113 0 112 6 113 0 112 6 113 0 127 230 115 0 127 230 118 0 127 224 126 0 127 224 124 0 0 0 0 0]
-]
-
-{ #category : #resources }
-CMSpecPovSetter_Agent class >> vectorIcon [
-	
-	^OpaqueImage
-		figure: self vectorImage
-		shape: self vectorMask
-]
-
 { #category : #adding }
 CMSpecPovSetter_Agent >> addSameSymbolAs: aSymbolString ofEntity: aClass [
 	
@@ -129,48 +72,6 @@ CMSpecPovSetter_Agent >> addSymbolPov: aString [
 	^aString
 ]
 
-{ #category : #changed }
-CMSpecPovSetter_Agent >> colorChanged [
-	
-	| color |
-	color := super colorChanged.
-	self imageOS model color: color.
-	imageOS figure fillColor: color.
-	imageOS invalidate
-]
-
-{ #category : #image }
-CMSpecPovSetter_Agent >> filledPolygon [
-	
-	imageOS model isStroked: false.
-	self updateMenuImage.
-	(self builder componentAt: #boutonAppliquer) enable.
-	imageOS invalidate
-]
-
-{ #category : #'menu-symbol' }
-CMSpecPovSetter_Agent >> initMenuAddSameAs [
-	"a selection of one of this item create a new symbol which shape is a copy of the selected item"
-	
-	| aMenuBuilder ve listOfSymbolsString |
-	aMenuBuilder := MenuBuilder new.
-	self
-		addSubMenuSymbolSameAsTo: aMenuBuilder
-		from: self listSymbols list
-		for: selectedClass.
-	ve := self visualizedEntities.
-	ve remove: selectedClass.
-	ve
-		do:
-			[:aClass | 
-			listOfSymbolsString := List new.
-			aClass povDict keys do: [:aS | listOfSymbolsString add: aS asString].
-			self addSubMenuSymbolSameAsTo: aMenuBuilder from: listOfSymbolsString
-				for: aClass].
-	self menuAddSameAs addPart: aMenuBuilder menu.
-	self menuAddSameAs hideItem: (self menuAddSameAs menuItemLabeled: 'bidon')
-]
-
 { #category : #'initialize-release' }
 CMSpecPovSetter_Agent >> initialize [
 	super initialize.
@@ -190,54 +91,6 @@ CMSpecPovSetter_Agent >> isDistortable [
 	^isDistortable isNil
 		ifTrue: [isDistortable := false asValue]
 		ifFalse: [isDistortable]
-]
-
-{ #category : #image }
-CMSpecPovSetter_Agent >> lineWidth [
-	
-	| n |
-	n := Cormas current
-		request: 'Epaisseur du Trait : '
-		initialAnswer: imageOS model lineWidth displayString.
-	imageOS model lineWidth: n asNumber.
-	(self builder componentAt: #boutonAppliquer) enable.
-	imageOS invalidate
-]
-
-{ #category : #changed }
-CMSpecPovSetter_Agent >> listSymbolsChanged [
-	
-	| anImage aColor |
-	self listSymbols selection ifNil: [^nil].
-	anImage := selectedClass imageAtPov: listSymbols selection asSymbol.
-	imageOS model: anImage copy.	"The model is the copy of the stored image and is be used to store the parameters of the bitmapPov"
-	imageOS figure: imageOS model asFigure.	"imageOS figure is resized according to the sizeRatio of the image. It is used for the display on the povSetter view"
-	self tailleSlider value: anImage sizeRatio.
-	self isDistortable value: anImage isDistortable.
-	anImage isBitmapPOV
-		ifTrue: [(self builder componentAt: #CacheBitmap) beVisible]
-		ifFalse:
-			[aColor := anImage color.
-			imageOS model color: aColor.
-			self updateSlidersFromColor: aColor.
-			(self builder componentAt: #CacheBitmap) beInvisible.
-			(self builder componentAt: #tailleSlider) beVisible].
-	self occupantPosition value: anImage position.
-	imageOS invalidate
-]
-
-{ #category : #actions }
-CMSpecPovSetter_Agent >> magnifyBitmap [
-	"imageOS figure cache magnifiedBy: 2 @ 2."
-	
-	(imageOS figure scaleByWithAnswer: 2) ifFalse: [^self].	"pour les bitmap, un petit changement ne produit pas de d√©formation du bitmap, et il n efaut donc pas changer le size Ratio"
-	self positionChanged.	"ici on recacul la position en fonction de la position sp√©cifi√© sur l''interface"
-	imageOS model sizeRatio: 2.
-	self builder ifNil: [^self].
-	(self builder componentAt: #boutonAppliquer) enable.
-	imageOS invalidate.
-	(self builder componentAt: #CacheBitmap) beVisible.
-	(self builder componentAt: #tailleSlider) beInvisible
 ]
 
 { #category : #'menu-symbol' }
@@ -269,90 +122,12 @@ CMSpecPovSetter_Agent >> modifyPov: povName [
 	self editMethod: povName fromClass: selectedClass
 ]
 
-{ #category : #image }
-CMSpecPovSetter_Agent >> nbSegments [
-	
-	| n |
-	(n := Cormas current
-		request: 'Nombre de Segments : '
-		initialAnswer: imageOS model nbSegments displayString) isEmpty
-		ifFalse:
-			[imageOS model nbSegments: n asNumber.
-			(self builder componentAt: #boutonAppliquer) enable.
-			imageOS invalidate]
-]
-
 { #category : #aspects }
 CMSpecPovSetter_Agent >> occupantPosition [
 	
 	^occupantPosition isNil
 		ifTrue: [occupantPosition := #center asValue]
 		ifFalse: [occupantPosition]
-]
-
-{ #category : #editor }
-CMSpecPovSetter_Agent >> openVectorImageEditor [
-	
-	| editor |
-	"editor := VectorialImageEditor example."
-	editor := VectorialImageEditor open.
-	editor observer: self.
-	editor loadCurrentImage
-]
-
-{ #category : #changed }
-CMSpecPovSetter_Agent >> positionChanged [
-	"Display the figure at the right position on the virtualCell"
-	
-	| figurePosition |
-	imageOS model position: occupantPosition value.
-	self builder ifNil: [^self].
-	(self builder componentAt: #virtualCell) bounds.
-	(self builder componentAt: #boutonAppliquer) enable.	"figurePosition := imageOS figure calculateNewPositionOnPatchBounds: ((self builder componentAt: #virtualCell) bounds moveTo: -17 @ -19)."
-	occupantPosition value = #topLeft ifTrue: [figurePosition := -17 @ -17].
-	occupantPosition value = #leftCenter ifTrue: [figurePosition := -17 @ 0].
-	occupantPosition value = #bottomLeft ifTrue: [figurePosition := -17 @ 17].
-	occupantPosition value = #topRight ifTrue: [figurePosition := 17 @ -17].
-	occupantPosition value = #rightCenter ifTrue: [figurePosition := 17 @ 0].
-	occupantPosition value = #bottomRight ifTrue: [figurePosition := 17 @ 17].
-	occupantPosition value = #topCenter ifTrue: [figurePosition := 0 @ -17].
-	occupantPosition value = #center ifTrue: [figurePosition := 0 @ 0].
-	occupantPosition value = #bottomCenter ifTrue: [figurePosition := 0 @ 17].
-	occupantPosition value = #random ifTrue: [figurePosition := 4 @ 6].
-	occupantPosition value = #border_topLeft
-		ifTrue: [figurePosition := -25 @ -25].
-	occupantPosition value = #border_leftCenter
-		ifTrue: [figurePosition := -25 @ 0].
-	occupantPosition value = #border_bottomLeft
-		ifTrue: [figurePosition := -25 @ 25].
-	occupantPosition value = #border_topRight
-		ifTrue: [figurePosition := 25 @ -25].
-	occupantPosition value = #border_rightCenter
-		ifTrue: [figurePosition := 25 @ 0].
-	occupantPosition value = #border_bottomRight
-		ifTrue: [figurePosition := 25 @ 25].
-	occupantPosition value = #border_topCenter
-		ifTrue: [figurePosition := 0 @ -25].
-	occupantPosition value = #border_bottomCenter
-		ifTrue: [figurePosition := 0 @ 25].
-	imageOS figure isBitmapFigure
-		ifTrue: [imageOS figure translateTo: figurePosition]
-		ifFalse:
-			["it is a vectorialFigure"
-			imageOS figure
-				translateTo: figurePosition - (imageOS figure bounds extent / 2)].
-	imageOS invalidate
-]
-
-{ #category : #'saving&removing pov symbols' }
-CMSpecPovSetter_Agent >> removeClassMethodForSymbol: aSymbol [
-	
-	imageOS model copy isBitmapPOV
-		ifTrue:
-			[selectedClass class removeSelector: ('BitmapPOV_' , aSymbol) asSymbol.
-			selectedClass class removeSelector: (aSymbol , 'BitmapImage') asSymbol]
-		ifFalse:
-			[selectedClass class removeSelector: ('VectorialPOV_' , aSymbol) asSymbol]
 ]
 
 { #category : #action }
@@ -447,27 +222,6 @@ CMSpecPovSetter_Agent >> saveBitmapPOV: aPOV intoClass: aClass symbol: aSymbol [
 ]
 
 { #category : #'saving&removing pov symbols' }
-CMSpecPovSetter_Agent >> savePOVsymbol: aSymbol [
-	
-	| aPOV |
-	aPOV := imageOS model copy.
-	aPOV isBitmapPOV
-		ifTrue:
-			[self
-				saveBitmapPOV: imageOS model copy
-				intoClass: selectedClass
-				symbol: aSymbol.
-			selectedClass class removeSelector: ('VectorialPOV_' , aSymbol) asSymbol]
-		ifFalse:
-			[self
-				saveVectorialPOV: imageOS model copy
-				intoClass: selectedClass
-				symbol: aSymbol.
-			selectedClass class removeSelector: ('BitmapPOV_' , aSymbol) asSymbol.
-			selectedClass class removeSelector: (aSymbol , 'BitmapImage') asSymbol]
-]
-
-{ #category : #'saving&removing pov symbols' }
 CMSpecPovSetter_Agent >> saveVectorialPOV: aPOV intoClass: aClass symbol: aSymbol [
 	
 	| selector |
@@ -505,20 +259,6 @@ CMSpecPovSetter_Agent >> setDefaultColor [
 		notifying: nil
 ]
 
-{ #category : #'initialize-release' }
-CMSpecPovSetter_Agent >> setListSymbols [
-	
-	| liste |
-	listSymbols selectionIndexHolder onChangeSend: #listSymbolsChanged to:
-			self.
-	liste := OrderedCollection new.
-	liste addAll: (selectedClass povDict keys collect: [:pov | pov asString]).
-	(liste includes: selectedClass name asString)
-		ifFalse: [liste addFirst: selectedClass name asString].
-	self listSymbols list: liste sort.
-	liste isEmpty ifFalse: [listSymbols selection: listSymbols list first]
-]
-
 { #category : #'menu-symbol' }
 CMSpecPovSetter_Agent >> setModelClass: aClass [
 	
@@ -534,107 +274,6 @@ CMSpecPovSetter_Agent >> setModelClass: aClass [
 CMSpecPovSetter_Agent >> setNewBitMapImage [
 	
 	self setNewBitmapImage: self class cachedImage asImage
-]
-
-{ #category : #editor }
-CMSpecPovSetter_Agent >> setNewBitmapImage: anImage [
-	
-	| im |
-	"on adapte le slider avant de coller l'image dans imageOS"
-	"tailleHolder value: ((im preferredBounds extent x / self imageOS bounds extent x 
-				max: im preferredBounds extent y / self imageOS bounds extent y) min: 2)."
-	tailleHolder value: 1.
-	im := anImage.	"si image trop grande, on la r√©tr√©cit"
-	[im preferredBounds extent > (self imageOS bounds extent * 1.5)]
-		whileTrue:
-			[im := im shrunkenBy: 2 @ 2.
-			tailleHolder value: tailleHolder value / 2].
-	imageOS model: (BitmapPOV newFrom: im).
-	imageOS figure: imageOS model asFigure.
-	(self builder componentAt: #boutonAppliquer) enable.
-	(self builder componentAt: #isDistortable) disable.
-	(self builder componentAt: #CacheBitmap) beVisible.
-	imageOS invalidate
-]
-
-{ #category : #editor }
-CMSpecPovSetter_Agent >> setNewVectorialImage: aPOV [
-	
-	(aPOV isKindOf: VectorialPOV) ifFalse: [^nil].
-	aPOV
-		scaledBy:
-			PovSetter standardCellBounds extent
-				/ (aPOV bounds extent x max: aPOV bounds extent y).
-	imageOS model: aPOV.
-	imageOS figure: imageOS model asFigure.
-	self tailleSlider value: aPOV sizeRatio.	"on met le tailleSlider √† 100% sans alerter les listeners"
-	couleur := imageOS model color.
-	self updateSlidersFromColor: couleur.
-	(self builder componentAt: #boutonAppliquer) enable.
-	(self builder componentAt: #isDistortable) enable.
-	(self builder componentAt: #CacheBitmap) beInvisible.
-	(self builder componentAt: #tailleSlider) beVisible.
-	imageOS invalidate
-]
-
-{ #category : #'menu-symbol' }
-CMSpecPovSetter_Agent >> setSymbolAsDefaultImage [
-	"selectedClass povDict at: listSymbols selection asSymbol"
-	
-	(self cormas confirm:
-			'The selected image will be the shape for the next symbols of the class')
-		ifFalse: [^nil].
-	listSymbols selection isNil
-		ifTrue: [^self cormas warn: 'Please, select a symbol'].
-	((selectedClass povDict at: listSymbols selection asSymbol) isKindOf:
-			BitmapPOV)
-		ifTrue: [^self cormas warn: 'Cannot define a shape from a bitmap'].
-	selectedClass class
-		compile:
-			('defaultImage' ,
-					'\"returns a copy of the POV image stored in the povDict of the class at a specifed symbol key"\^((self povDict at: #'
-				, listSymbols selection , ' ifAbsent:[super defaultImage]) copy')
-				withCRs
-		classified: 'pov symbols'
-		notifying: nil
-]
-
-{ #category : #actions }
-CMSpecPovSetter_Agent >> shrunkeBitmap [
-	
-	(imageOS figure scaleByWithAnswer: 0.5) ifFalse: [^self].	"pour les bitmap, un petit changement ne produit pas de d√©formation du bitmap, et il n efaut donc pas changer le size Ratio"
-	self positionChanged.	"ici on recacul la position en fonction de la position sp√©cifi√© sur l''interface"
-	imageOS model sizeRatio: 0.5.
-	self builder ifNil: [^self].
-	(self builder componentAt: #boutonAppliquer) enable.
-	imageOS invalidate.
-	(self builder componentAt: #CacheBitmap) beVisible.
-	(self builder componentAt: #tailleSlider) beInvisible
-]
-
-{ #category : #changed }
-CMSpecPovSetter_Agent >> sizeSliderChanged [
-	
-	tailleHolder value = imageOS model sizeRatio ifTrue: [^self].	"on est oblig√© de repartir de la figure de d√©part pour pas perdre la r√©solution du bitmap de d√©part
-Lorsqu''on part de la figure de d√©part la position est au milieu sur la vue du povSetter. Il faut donc appeler un positionChanged ; mais on fait cela apr√®s avoir ajuster la taille au sizeRatio demand√©"
-	imageOS figure: imageOS model asFigure.	"newScale = newValue / oldValue"
-	(imageOS figure
-		scaleByWithAnswer: tailleHolder value / imageOS model sizeRatio)
-		ifFalse: [^self].	"pour les bitmap, un petit changement ne produit pas de d√©formation du bitmap, et il n efaut donc pas changer le size Ratio"
-	self positionChanged.	"ici on recacul la position en fonction de la position sp√©cifi√© sur l''interface"
-	imageOS model sizeRatio: tailleHolder value.
-	self builder ifNil: [^self].
-	(self builder componentAt: #boutonAppliquer) enable.
-	imageOS invalidate
-]
-
-{ #category : #image }
-CMSpecPovSetter_Agent >> strokedPolygon [
-	
-	self imageOS model isStroked: true.
-	self updateMenuImage.
-	(self builder componentAt: #boutonAppliquer) enable.
-	imageOS invalidate
 ]
 
 { #category : #aspects }
@@ -659,57 +298,6 @@ CMSpecPovSetter_Agent >> updateMenuAddSameAs [
 			self menuAddSameAs
 				removeItem: (self menuAddSameAs menuItemLabeled: aClass name asString)].
 	self initMenuAddSameAs
-]
-
-{ #category : #image }
-CMSpecPovSetter_Agent >> updateMenuImage [
-	
-	| menu |
-	menu := (self builder componentAt: #imageOS) widget controller menu.
-	imageOS model isStroked
-		ifTrue:
-			[(menu menuItemAt: 1)
-				beOn;
-				enable.
-			(menu menuItemAt: 2)
-				beOff;
-				enable]
-		ifFalse:
-			[(menu menuItemAt: 1)
-				beOff;
-				enable.
-			(menu menuItemAt: 2)
-				beOn;
-				enable].
-	(menu menuItemAt: 3) enable.
-	(menu menuItemAt: 4) enable.
-	(self builder componentAt: #tailleSlider) enable
-]
-
-{ #category : #action }
-CMSpecPovSetter_Agent >> validate [
-	
-	| selectedSymbol aPOV |
-	listSymbols selection
-		ifNil: [ ^ self alertMessage: self translator tSelectPoVSymbol ]
-		ifNotNil: [:aSelec | selectedSymbol := aSelec asSymbol].
-	aPOV := imageOS model.	"copy"
-	(aPOV isKindOf: BitmapPOV)
-		ifFalse: [
-			aPOV scaledBy: imageOS model sizeRatio.
-			aPOV sizeRatio: nil.
-			aPOV isDistortable: self isDistortable value ]
-		ifTrue: [ aPOV bitmap: imageOS figure bitmap copy ].
-	selectedClass povDict at: selectedSymbol put: aPOV.	"on met √† jour le dico povDict"
-	self savePOVsymbol: selectedSymbol.	"on sauvegarde au niveau de la classe de l''entit√©"	""	"on demande aux agents de rafraichir leur afficage pour ce povResult"
-	self cormas currentSimulation
-		ifNotNil: [ : sim | 
-			(sim allTheEntities: selectedClass) do: [ : entity | 
-				sim
-					registerEntityChange: #povSymbolChanged
-					with: selectedSymbol
-					from: (EntityReference on: entity) ] ].	"ne fonctionne pas lorsque le povResult est un povId ou un povEnergy ; c''est √† dire un pov dont la couleur est calcul√©, car ds ce cas le povResult est une couleur au 	niveau de la figure alors que c''est le povName sumbol (povId) pour l''entityPov"
-	self tailleSlider value: 1
 ]
 
 { #category : #'menu-symbol' }

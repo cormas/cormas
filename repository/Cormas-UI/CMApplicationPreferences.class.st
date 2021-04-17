@@ -186,6 +186,7 @@ CMApplicationPreferences class >> settingProjectNotifications: anObject [
 { #category : #accessing }
 CMApplicationPreferences class >> settingSpaceViewer [
 	^ SettingSpaceViewer
+		ifNil: [ SettingSpaceViewer := self defaultSettingSpaceViewer ]
 ]
 
 { #category : #accessing }
