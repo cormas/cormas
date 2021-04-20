@@ -52,6 +52,13 @@ CMResourceLocator class >> preferencesPath [
 	^ CMApplicationProject baseDirectory / 'preferences'
 ]
 
+{ #category : #accessing }
+CMResourceLocator class >> userProjectsPath [
+	" Answer a <FileReference> with the receiver's path to the user projects directory "
+
+	^ CMApplicationProject baseDirectory / 'projects'
+]
+
 { #category : #public }
 CMResourceLocator class >> workingDirectory [
 	" Answer a <String> with the default directory "

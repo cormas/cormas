@@ -55,13 +55,11 @@ CMApplicationProject class >> baseDirectory [
 
 { #category : #accessing }
 CMApplicationProject class >> createUserDirectories [
-	" Create the demos location <FileReference> "
+	" Create directories for storing CORMAS files in this system "
 
-	self baseDirectory exists
-		ifTrue: [ ^ self ].
 	self baseDirectory ensureCreateDirectory.
-	CMResourceLocator demosPath ensureCreateDirectory.
-	CMResourceLocator preferencesPath ensureCreateDirectory.
+	#(#demosPath #userProjectsPath #preferencesPath) 
+		do: [ : pathSym | (CMResourceLocator perform: pathSym) ensureCreateDirectory ]
 ]
 
 { #category : #accessing }

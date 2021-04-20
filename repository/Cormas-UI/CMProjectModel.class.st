@@ -309,13 +309,6 @@ CMProjectModel >> definedCormasVersions [
 	^ Array with: self
 ]
 
-{ #category : #accessing }
-CMProjectModel >> fileReference [ 
-	" Answer the receiver's project <FileReference> "
-
-	^ self info fileReference
-]
-
 { #category : #'accessing-simulations' }
 CMProjectModel >> findSimulationNamed: aName [
 	" Answer <true> if the dump folder has stored simulations "
@@ -400,6 +393,18 @@ CMProjectModel >> initializeForModel: aCormasModel named: aString [
 	self cormasModelClass: aCormasModel class.
 	self initializeEvents.
 
+]
+
+{ #category : #testing }
+CMProjectModel >> isModified [
+	" See superimplementor's comment "
+	
+	| opener imageSnap originalFileSnap |
+	
+	imageSnap := (RPackageOrganizer default packageOf: self cormasModel class) mcPackage snapshot.
+	opener := CMProjectOpener newFrom: self projectManager.
+	originalFileSnap := (MCStReader on: opener tryReadSourceFromProject) snapshot.
+	^ imageSnap ~= originalFileSnap
 ]
 
 { #category : #accessing }
@@ -488,6 +493,20 @@ CMProjectModel >> resourceLocator [
 	" Answer the application's resource locator "
 	
 	^ self application resourceLocator
+]
+
+{ #category : #private }
+CMProjectModel >> saveProjectFile [
+
+	| modelSaver |
+	
+	'Saving project file...' traceCr.
+	modelSaver := CMModel2ProjectMigrator new.
+	modelSaver 
+		buildForModel: self;
+		buildProjectFile;
+		moveProjectFile.
+	'Done saving project.'
 ]
 
 { #category : #accessing }

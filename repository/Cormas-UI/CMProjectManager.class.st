@@ -31,6 +31,13 @@ CMProjectManager >> applicationExtension [
 	^ self applicationClass applicationExtension  
 ]
 
+{ #category : #callbacks }
+CMProjectManager >> cleanEnvironment [
+	" These 3 steps are necessary because WeakAnnouncements hanging around "
+
+	3 timesRepeat: [ Smalltalk garbageCollect ].
+]
+
 { #category : #'code-generation' }
 CMProjectManager >> codeGenerator [
 	" Answer the receiver's Code Generator "
@@ -233,17 +240,26 @@ CMProjectManager >> defaultCormasOpener [
 ]
 
 { #category : #callbacks }
-CMProjectManager >> doPostCloseActions [
+CMProjectManager >> deleteProject [
+	" Private - Delete the current project from this system and unset its references "
 
-	self announcer unsubscribe: self currentProject.
-	self fsm handleEvent: #actionClose.
-	self projectWindow quitSubApplicationWindows.
-
-	" These 3 steps are necessary because WeakAnnouncements hanging around "
+	(RGContainer packageOfClass: self cormasModelClass) realPackage removeFromSystem.
 	self currentProject release.
 	self currentProject: nil.
-	3 timesRepeat: [ Smalltalk garbageCollect ].
+]
 
+{ #category : #callbacks }
+CMProjectManager >> doPostCloseActions [
+	" Private - See superimplementor's comment "
+
+	self querySaveProject.
+
+	Cursor wait showWhile: [
+		self announcer unsubscribe: self currentProject.
+		self fsm handleEvent: #actionClose.
+		self projectWindow quitSubApplicationWindows.
+		self deleteProject.	
+		self cleanEnvironment ].
 ]
 
 { #category : #callbacks }
@@ -346,6 +362,14 @@ CMProjectManager >> opener: anObject [
 CMProjectManager >> projectClass [
 
 	^ CMProjectModel
+]
+
+{ #category : #callbacks }
+CMProjectManager >> querySaveProject [
+	" Private - Request saving project if there are unsaved changes "
+	
+	(self currentProject requiresSaving and: [ self confirm: self translator tQuerySaveProject ])
+		ifTrue: [ self saveProject ].
 ]
 
 { #category : #accessing }

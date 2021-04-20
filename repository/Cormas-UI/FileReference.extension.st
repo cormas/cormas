@@ -6,7 +6,7 @@ FileReference >> asCormasProjectModelForPreview [
 
 	^ (CMProjectOpener new validateProjectFile: self) 
 		asCormasProjectModelForPreview
-		fileName: self fullName;
+		fileReference: self;
 		yourself
 ]
 

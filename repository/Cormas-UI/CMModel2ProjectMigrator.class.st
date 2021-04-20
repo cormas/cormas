@@ -15,7 +15,8 @@ Class {
 	#superclass : #CMObject,
 	#instVars : [
 		'currentModel',
-		'outputDirectory'
+		'outputDirectory',
+		'destinationPath'
 	],
 	#category : #'Cormas-UI-Project'
 }
@@ -24,13 +25,22 @@ Class {
 CMModel2ProjectMigrator class >> migrateModels [ 
 	<example>
 	
-	self new 
-		buildProjects;
-		moveProjects
+	Cursor wait showWhile: [ 
+		self new 
+			destinationPath: CMResourceLocator demosPath;
+			buildProjects;
+			moveProjects ]
 ]
 
 { #category : #building }
-CMModel2ProjectMigrator >> buildForModel: modelClass [
+CMModel2ProjectMigrator >> buildForModel: aCMProjectModel [
+	" Creates a CORMAS project file, answer a <FileReference> to the new created project "
+
+	self buildForModelClass: aCMProjectModel cormasModelClass
+]
+
+{ #category : #building }
+CMModel2ProjectMigrator >> buildForModelClass: modelClass [
 	" Creates a CORMAS project file, answer a <FileReference> to the new created project "
 
 	currentModel := CMProjectModel basicNew
@@ -88,7 +98,7 @@ CMModel2ProjectMigrator >> buildProjects [
 
 	'Model2Project: Building project files...' traceCr.
 	CMAbstractModel subclassesDo: [ :modelClass |
-			self buildForModel: modelClass.
+			self buildForModelClass: modelClass.
 			self buildProjectFile ].
 	'Model2Project: Done building project files...' traceCr.
 ]
@@ -104,10 +114,30 @@ CMModel2ProjectMigrator >> currentModel: anObject [
 ]
 
 { #category : #defaults }
+CMModel2ProjectMigrator >> defaultDestinationPath [
+	" Private - By default the destination path it is the user projects directory "
+	
+	^ CMResourceLocator userProjectsPath
+]
+
+{ #category : #defaults }
 CMModel2ProjectMigrator >> defaultOutputDirectory [
 	" Private - Answer the default <String> with the name of the directory serving as temporary location where to write project files before being compressed "
 	
 	^ 'cormas_project'
+]
+
+{ #category : #private }
+CMModel2ProjectMigrator >> destinationPath [
+	" Answer a <FileReference> with the destination where projects should be migrated/written "
+
+	^ destinationPath
+		ifNil: [ destinationPath := self defaultDestinationPath ]
+]
+
+{ #category : #accessing }
+CMModel2ProjectMigrator >> destinationPath: anObject [
+	destinationPath := anObject
 ]
 
 { #category : #writing }
@@ -141,7 +171,7 @@ CMModel2ProjectMigrator >> moveProject: aFileReference [
 	
 	[	
 		self traceCrTab: 'Model2Project: Moving project file...' , aFileReference fullName. 
-		aFileReference moveTo: CMResourceLocator demosPath.
+		aFileReference moveTo: self destinationPath.
 		self traceCrTab: 'Model2Project: Done moving project file...' , aFileReference fullName. 
 	]
 	on: FileExists
@@ -149,6 +179,13 @@ CMModel2ProjectMigrator >> moveProject: aFileReference [
 		self traceCrTab: 'Model2Project: Deleting project file ' , ex fullName. 
 		ex ensureDelete.
 		ex retry. ]
+]
+
+{ #category : #private }
+CMModel2ProjectMigrator >> moveProjectFile [
+	" Private - Move aFileReference to the system demos/ path "
+	
+	self moveProject: FileSystem workingDirectory / self currentModel fileName
 ]
 
 { #category : #building }
