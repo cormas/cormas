@@ -90,7 +90,7 @@ CMProjectOpener >> openProject: aFileReference [
 	self tryOpenFromFile: aFileReference.
 	openStatus := true.
 	self currentProject: (CMProjectModel basicNew
-		fileName: aFileReference fullName;
+		fileReference: aFileReference;
 		projectManager: self projectManager;
 		initializeForModel: (self class environment at: self modelMainClass) new
 			named: self modelName;
@@ -121,6 +121,20 @@ CMProjectOpener >> tryReadSourceFromFile: fileRef [
 
 	[ 	
 		zipFileSys := self validateProjectFile: fileRef.
+		^ self modelFile readStream 
+	]
+	on: Error
+	do: [ : ex | 
+		self handleFileInException: ex.
+		openStatus := false ].
+]
+
+{ #category : #callbacks }
+CMProjectOpener >> tryReadSourceFromProject [
+	" Private - Try to open and read source code for the model currently opened in the receiver's project manager. Answer a <ReadStream> "
+
+	[ 	
+		zipFileSys := self validateProjectFile: self projectManager currentProjectFileReference.
 		^ self modelFile readStream 
 	]
 	on: Error
