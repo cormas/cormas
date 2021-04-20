@@ -887,7 +887,7 @@ CMAbstractModel class >> setterForEntityClass: aClass [
 	self setterForEntityClass: CMEntity
 	"
 
-	^ (self getterForEntityClass: aClass) , ':'
+	^ aClass  asSetterForEntityClass 
 ]
 
 { #category : #'managing classes' }
@@ -2439,7 +2439,7 @@ CMAbstractModel >> initEntities [
 								ifFalse: [ (self theEntities: aClass) do: [ :LO | LO leave ] ] ].
 					self initializeTheEntity: aClass ] ].
 	self spaceModel isNil
-		ifFalse: [ self spaceModel resetSpatialEntitiesButCells ]
+		ifFalse: [ self spaceModel resetSpatialEntities "ButCells" ]
 ]
 
 { #category : #'utilities - files' }
@@ -3476,7 +3476,7 @@ CMAbstractModel >> setterForEntityClass: aClass [
 	self basicNew setterForEntityClass: Object
 	"
 	
-	^self class setterForEntityClass: aClass
+	^self class setterForEntityClass: aClass 
 ]
 
 { #category : #'utilities - space metrics' }

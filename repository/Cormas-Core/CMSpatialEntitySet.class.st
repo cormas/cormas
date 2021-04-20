@@ -267,9 +267,9 @@ CMSpatialEntitySet >> delete [
 		destroyed: true.
 	self collector isNil
 		ifFalse: [ self collector removeEntity: self ].
-	self cormasModel
+	"self cormasModel
 		registerEntityChange: #removeEntity
-		from: (EntityReference on: self)
+		from: (EntityReference on: self)"
 ]
 
 { #category : #control }
@@ -727,7 +727,7 @@ CMSpatialEntitySet >> setSurround [
 	ensVoisins := Set new.
 	ens addAll: self components.
 	self components do: [:cell | ensVoisins addAll: cell neighbourhood].
-	self surround: (OrderedCollection withAll: ensVoisins - ens).
+	self surround: (OrderedCollection withAll: (ensVoisins difference: ens)).
 	^surround
 ]
 

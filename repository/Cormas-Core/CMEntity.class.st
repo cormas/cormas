@@ -367,6 +367,11 @@ CMEntity class >> asGetterForEntityClass [
 			<< self entityName pluralize capitalized]) asSymbol
 ]
 
+{ #category : #accessing }
+CMEntity class >> asSetterForEntityClass [
+	^self asGetterForEntityClass asMutator 
+]
+
 { #category : #'accessing - methods & classes' }
 CMEntity class >> availableInfo [
 	"Purpose: returns the list of available info methods

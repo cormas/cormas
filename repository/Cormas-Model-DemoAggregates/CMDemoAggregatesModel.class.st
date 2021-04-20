@@ -259,11 +259,12 @@ CMDemoAggregatesModel >> setSingletonAggregatesFromRandomSeeds [
 	Step = swellForests: t"
 
 	"self spaceModel loadEnvironmentFromFile: '3forests.env'."
+	self createGridLines: 10 columns: 10 neighbourhood: 4 closed: true.
 	self createSingletonAggregates: CMDemoAggregatesGrove
 		fromSeeds: (self randomSeeds: 30).
 	self ask: CMDemoAggregatesGrove toDo: #setForest.
 	self displayPov: #povId of: CMDemoAggregatesGrove.
-	self displayInfo: #info_surface of: CMDemoAggregatesGrove
+	"self displayInfo: #info_surface of: CMDemoAggregatesGrove"
 ]
 
 { #category : #control }
