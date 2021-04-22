@@ -681,7 +681,7 @@ CMSpatialEntity >> neighbourhood [
 	"Return a collection of spatialEntities (without the nil)"
 	"^self orderedNeighbourhood select: [:spEnt | spEnt notNil]"
 	
-	^neighbourhood
+	^neighbourhood ifNil: [  neighbourhood := OrderedCollection new: 8] 
 ]
 
 { #category : #'environment - sensing - space' }

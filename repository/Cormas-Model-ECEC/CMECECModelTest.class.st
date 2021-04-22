@@ -6,12 +6,12 @@ Class {
 
 { #category : #tests }
 CMECECModelTest >> testAnAbstractClassHasNoInstances [
-	| model |
-	model := CMECECModel
-		initialize;
-		new.
-	model initSimulation.
-	self assert: (model theEntities: CMECECForager) size equals:0
+	| tmp1 tmp3 |
+	tmp3 := CMECECModel.
+	tmp3 initialize.
+	tmp1 := tmp3 new.
+	tmp1 initSimulation.
+	self assert: (tmp1 theEntities: CMECECForager) size equals: 0
 ]
 
 { #category : #tests }

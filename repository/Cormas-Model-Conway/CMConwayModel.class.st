@@ -58,186 +58,199 @@ CMConwayModel class >> defaultInit [
 
 { #category : #examples }
 CMConwayModel class >> example1 [
-	| aModel v es anim |
-	aModel := self
-		initialize;
-		new.
-	aModel initializeSpaceModel.
-	v := RTView new.
-	aModel initSimulation.	"creates 100x100 cells."
-	aModel runStep.
-	v clean.
-	es := (RTBox new
-		color: [ :e | 
-			e state == #dead
+	| tmp1 tmp2 tmp3 tmp4 tmp6 tmp8 tmp10 |
+	tmp6 := self.
+	tmp6 initialize.
+	tmp1 := tmp6 new.
+	tmp1 initializeSpaceModel.
+	tmp2 := RTView new.
+	tmp1
+		initSimulation;
+		runStep.
+	tmp2 clean.
+	tmp8 := RTBox new.
+	tmp8
+		color: [ :arg1 | 
+			arg1 state == #dead
 				ifTrue: [ Color white ]
-				ifFalse: [ Color black ] ];
-		size: 25) elementsOn: aModel theCells.
-	v addAll: es.
-	RTGridLayout new
+				ifFalse: [ Color black ] ].
+	tmp3 := (tmp8 size: 25) elementsOn: tmp1 theCells.
+	tmp2 addAll: tmp3.
+	tmp10 := RTGridLayout new.
+	tmp10
 		gapSize: 0;
-		lineItemsCount: aModel spaceModel column;
-		on: v elements.
-	v canvas camera focusOnCenterScaled.
-	anim := RTActiveAnimation new.
-	anim intervalInMilliseconds: 0.
-	anim
-		blockToExecute: [ aModel runStep.
-			v elements do: #updateShape ].
-	anim inView: v.
-	v openWithToolbar
+		lineItemsCount: tmp1 spaceModel column;
+		on: tmp2 elements.
+	tmp2 canvas camera focusOnCenterScaled.
+	tmp4 := RTActiveAnimation new.
+	tmp4
+		intervalInMilliseconds: 0;
+		blockToExecute: [ tmp1 runStep.
+			tmp2 elements do: #updateShape ];
+		inView: tmp2.
+	tmp2 openWithToolbar
 ]
 
 { #category : #examples }
 CMConwayModel class >> example2 [
-	| v choosenModel numberOfModels aModel models normalizer colors es groupsOfElements anim |
-	v := RTView new.
-	choosenModel := CMConwayModel.
-	numberOfModels := 4.
-	models := (1 to: numberOfModels)
-		collect: [ :i | 
-			aModel := choosenModel
-				initialize;
-				new.
-			aModel initializeSpaceModel.
-			aModel activeInit: #initSmallGrid.	"creates 10x10 cells"
-			aModel initSimulation.
-			aModel runStep.
-			aModel ].
-	normalizer := RTMultiLinearColor new colors: RTPalette c4.
-	colors := (1 to: numberOfModels)
-		collect: [ :i | normalizer level: (i / numberOfModels) asFloat ].
-	groupsOfElements := models
-		with: colors
-		collect: [ :m :c | 
-			es := (RTBox new
-				color: [ :e | 
-					e state == #dead
+	| tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 tmp8 tmp10 tmp11 |
+	tmp1 := RTView new.
+	tmp2 := CMConwayModel.
+	tmp3 := 4.
+	tmp4 := (1 to: tmp3)
+		collect: [ :arg1 | 
+			tmp2 initialize.
+			tmp10 := tmp2 new.
+			tmp10
+				initializeSpaceModel;
+				activeInit: #initSmallGrid;
+				initSimulation;
+				runStep.
+			tmp10 ].
+	tmp5 := RTMultiLinearColor new colors: RTPalette c4.
+	tmp6 := (1 to: tmp3)
+		collect: [ :arg2 | tmp5 level: (arg2 / tmp3) asFloat ].
+	tmp7 := tmp4
+		with: tmp6
+		collect: [ :arg3 :arg4 | 
+			| tmp13 tmp15 |
+			tmp13 := RTBox new.
+			tmp13
+				color: [ :arg5 | 
+					arg5 state == #dead
 						ifTrue: [ Color white ]
-						ifFalse: [ c ] ];
-				size: 25) elementsOn: m theCells.
-			v addAll: es.
-			RTGridLayout new
+						ifFalse: [ arg4 ] ].
+			tmp11 := (tmp13 size: 25) elementsOn: arg3 theCells.
+			tmp1 addAll: tmp11.
+			tmp15 := RTGridLayout new.
+			tmp15
 				gapSize: 0;
-				lineItemsCount: m spaceModel column;
-				on: es.
-			es ].
-	RTGridLayout on: groupsOfElements.
-	v canvas camera focusOnCenterScaled.
-	anim := RTActiveAnimation new.
-	anim intervalInMilliseconds: 500.
-	anim
-		blockToExecute: [ models do: #runStep.
-			v elements do: #updateShape ].
-	anim inView: v.
-	v openWithToolbar
+				lineItemsCount: arg3 spaceModel column;
+				on: tmp11.
+			tmp11 ].
+	RTGridLayout on: tmp7.
+	tmp1 canvas camera focusOnCenterScaled.
+	tmp8 := RTActiveAnimation new.
+	tmp8
+		intervalInMilliseconds: 500;
+		blockToExecute: [ tmp4 do: #runStep.
+			tmp1 elements do: #updateShape ];
+		inView: tmp1.
+	tmp1 openWithToolbar
 ]
 
 { #category : #examples }
 CMConwayModel class >> example3 [
-	| aModel nbLines v es anim |
-	aModel := self
-		initialize;
-		new.
-	nbLines := 100.
-	aModel initializeSpaceModel.
-	aModel
-		createGridLines: nbLines
-		columns: nbLines
-		neighbourhood: 4
-		closed: true.
-	v := RTView new.
-	aModel initSimulation.
-	aModel runStep.
-	v clean.
-	es := (RTBox new
-		color: [ :e | 
-			e state == #dead
+	| tmp1 tmp2 tmp3 tmp4 tmp5 tmp7 tmp9 tmp11 |
+	tmp7 := self.
+	tmp7 initialize.
+	tmp1 := tmp7 new.
+	tmp2 := 100.
+	tmp1
+		initializeSpaceModel;
+		createGridLines: tmp2
+			columns: tmp2
+			neighbourhood: 4
+			closed: true.
+	tmp3 := RTView new.
+	tmp1
+		initSimulation;
+		runStep.
+	tmp3 clean.
+	tmp9 := RTBox new.
+	tmp9
+		color: [ :arg1 | 
+			arg1 state == #dead
 				ifTrue: [ Color white ]
-				ifFalse: [ Color black ] ];
-		size: 25) elementsOn: aModel theCells.
-	v addAll: es.
-	RTGridLayout new
+				ifFalse: [ Color black ] ].
+	tmp4 := (tmp9 size: 25) elementsOn: tmp1 theCells.
+	tmp3 addAll: tmp4.
+	tmp11 := RTGridLayout new.
+	tmp11
 		gapSize: 0;
-		lineItemsCount: aModel spaceModel column;
-		on: v elements.
-	v canvas camera focusOnCenterScaled.
-	anim := RTActiveAnimation new.
-	anim intervalInMilliseconds: 0.
-	anim
-		blockToExecute: [ aModel runStep.
-			v elements do: #updateShape ].
-	anim inView: v.
-	v openWithToolbar
+		lineItemsCount: tmp1 spaceModel column;
+		on: tmp3 elements.
+	tmp3 canvas camera focusOnCenterScaled.
+	tmp5 := RTActiveAnimation new.
+	tmp5
+		intervalInMilliseconds: 0;
+		blockToExecute: [ tmp1 runStep.
+			tmp3 elements do: #updateShape ];
+		inView: tmp3.
+	tmp3 openWithToolbar
 ]
 
 { #category : #examples }
 CMConwayModel class >> example4 [
-	| aModel |
-	aModel := self initialize new initSimulation.
+	| tmp1 |
+	tmp1 := self initialize new initSimulation.
 	(CMSimulationGrid initialize new
-		on: aModel
-		withCells: aModel theESE
-		withSituatedEntities: aModel allTheSituatedEntities) runAndVisualize
+		on: tmp1
+		withCells: tmp1 theESE
+		withSituatedEntities: tmp1 allTheSituatedEntities) runAndVisualize
 ]
 
 { #category : #examples }
 CMConwayModel class >> example5 [
-	| aModel |
-	aModel := self initialize new.
-	aModel activeInit: #initGlidersGun.
-	aModel initSimulation.
+	| tmp1 |
+	tmp1 := self initialize new.
+	tmp1
+		activeInit: #initGlidersGun;
+		initSimulation.
 	(CMSimulationGrid initialize new
-		on: aModel
-		withCells: aModel theESE
-		withSituatedEntities: aModel allTheSituatedEntities) runAndVisualize
+		on: tmp1
+		withCells: tmp1 theESE
+		withSituatedEntities: tmp1 allTheSituatedEntities) runAndVisualize
 ]
 
 { #category : #examples }
 CMConwayModel class >> exampleGlidersGun [
-	| aModel v es anim |
-	aModel := self
-		initialize;
-		new.
-	aModel
+	| tmp1 tmp2 tmp3 tmp4 tmp6 tmp8 tmp10 |
+	tmp6 := self.
+	tmp6 initialize.
+	tmp1 := tmp6 new.
+	tmp1
 		initializeSpaceModel;
 		activeInit: #initGlidersGun.
-	v := RTView new.
-	aModel initSimulation.	"creates 100x100 cells."
-	aModel runStep.
-	v clean.
-	es := (RTBox new
-		color: [ :e | 
-			e state == #dead
+	tmp2 := RTView new.
+	tmp1
+		initSimulation;
+		runStep.
+	tmp2 clean.
+	tmp8 := RTBox new.
+	tmp8
+		color: [ :arg1 | 
+			arg1 state == #dead
 				ifTrue: [ Color white ]
-				ifFalse: [ Color black ] ];
-		size: 25) elementsOn: aModel theCells.
-	v addAll: es.
-	RTGridLayout new
+				ifFalse: [ Color black ] ].
+	tmp3 := (tmp8 size: 25) elementsOn: tmp1 theCells.
+	tmp2 addAll: tmp3.
+	tmp10 := RTGridLayout new.
+	tmp10
 		gapSize: 0;
-		lineItemsCount: aModel spaceModel column;
-		on: v elements.
-	v canvas camera focusOnCenterScaled.
-	anim := RTActiveAnimation new.
-	anim intervalInMilliseconds: 0.
-	anim
-		blockToExecute: [ aModel runStep.
-			v elements do: #updateShape ].
-	anim inView: v.
-	v openWithToolbar
+		lineItemsCount: tmp1 spaceModel column;
+		on: tmp2 elements.
+	tmp2 canvas camera focusOnCenterScaled.
+	tmp4 := RTActiveAnimation new.
+	tmp4
+		intervalInMilliseconds: 0;
+		blockToExecute: [ tmp1 runStep.
+			tmp2 elements do: #updateShape ];
+		inView: tmp2.
+	tmp2 openWithToolbar
 ]
 
 { #category : #probes }
 CMConwayModel >> alive [
-<probe>
-	^ (self theCells count: [ :c | c state = #alive ])
+	<probe>
+	^ (self theCells count: [ :arg1 | arg1 state = #alive ])
 		/ self theCells size
 ]
 
 { #category : #probes }
 CMConwayModel >> dead [
 	<probe>
-	^ (self theCells count: [ :c | c state = #dead ])
+	^ (self theCells count: [ :arg1 | arg1 state = #dead ])
 		/ self theCells size
 ]
 
@@ -253,8 +266,6 @@ CMConwayModel >> initGliders [
 
 { #category : #init }
 CMConwayModel >> initGlidersGun [
-	"self loadEnvironmentFromFile: 'glidersGun.env'"
-
 	self spaceModel loadEnvironmentFromDirectory: 'glidersGun.cells'
 ]
 
@@ -265,7 +276,7 @@ CMConwayModel >> initRandomly [
 		columns: 100
 		neighbourhood: 8
 		closed: true.
-		self theCells do: #initRandomly
+	self theCells do: #initRandomly
 ]
 
 { #category : #init }
@@ -275,28 +286,24 @@ CMConwayModel >> initSmallGrid [
 		columns: 10
 		neighbourhood: 4
 		closed: false.
-	
-
 	self theCells do: #initRandomly
 ]
 
 { #category : #control }
-CMConwayModel >> stepSynchronously: t [
-	super stepSynchronously: t
+CMConwayModel >> stepSynchronously: arg1 [
+	super stepSynchronously: arg1
 ]
 
 { #category : #accessing }
 CMConwayModel >> theCells [
-	"Returns a collection of all the instances of the sub classes collected by cormasModel.
-	!! This method was automatically generated by Cormas !!"
-
-	^ theCells ifNil: [ theCells := OrderedCollection new ]
+	| tmp2 |
+	tmp2 := theCells.
+	^ tmp2
+		ifNil: [ theCells := OrderedCollection new ]
+		ifNotNil: [ tmp2 ]
 ]
 
 { #category : #accessing }
-CMConwayModel >> theCells: aNewCollection [
-	"Set a new collection for theXXXs attribute.
-	!! This method was automatically generated by Cormas !!"
-
-	theCells := aNewCollection
+CMConwayModel >> theCells: arg1 [
+	theCells := arg1
 ]

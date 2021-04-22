@@ -304,7 +304,7 @@ CMAbstractModel class >> classFromSymbol: aSymbol [
 CMAbstractModel class >> classNameFromEntityName: aString [
 	| validName prefixName |
 	validName := aString capitalized withoutBlanks withoutLeadingDigits withoutQuoting.
-	prefixName := 'CM' , self modelPrefix.
+	prefixName := 'CM' , self shortName.
 	(validName beginsWith: prefixName)
 		ifFalse: [ validName := prefixName , validName ].
 	^ validName asSymbol
@@ -688,17 +688,6 @@ Ex: CormasModel modelMethodsForManipulation"
 	^coll
 ]
 
-{ #category : #accessing }
-CMAbstractModel class >> modelPrefix [
-	"Remove CM prefix at the beginning and Model at the end"
-	
-	| mName |
-	mName := self name allButFirst: 'CM' size.
-	^ (name endsWith: 'Model')
-		ifTrue: [ mName allButLast: 'Model' size ]
-		ifFalse: [ mName ]
-]
-
 { #category : #'managing classes' }
 CMAbstractModel class >> occupantClasses [
 	"return a collection of classes for which intances are located on the grid"
@@ -749,6 +738,13 @@ CMAbstractModel class >> passiveObjectClasses [
 ]
 
 { #category : #accessing }
+CMAbstractModel class >> postfixName [
+	"Answer a the postfix name of this model: 'Model' "
+	
+	^ 'Model'
+]
+
+{ #category : #accessing }
 CMAbstractModel class >> povColorsDict [
 	^ povColorsDict
 ]
@@ -763,6 +759,13 @@ CMAbstractModel class >> povColorsDict: aDictionary [
 CMAbstractModel class >> preStringForActivitySelector [
 	
 	^'activity_'
+]
+
+{ #category : #accessing }
+CMAbstractModel class >> prefixName [
+	"Answer a the prefix name of this model: 'CM' "
+	
+	^ 'CM'
 ]
 
 { #category : #probes }
@@ -887,7 +890,19 @@ CMAbstractModel class >> setterForEntityClass: aClass [
 	self setterForEntityClass: CMEntity
 	"
 
-	^ (self getterForEntityClass: aClass) , ':'
+	^ aClass  asSetterForEntityClass 
+]
+
+{ #category : #accessing }
+CMAbstractModel class >> shortName [
+	"Answer the model name as short string (without 'CM' nor 'Model').
+	Remove CM prefix at the beginning and Model at the end"
+	
+	| mName |
+	mName := self name allButFirst: (self prefixName) size.
+	^ (name endsWith: self postfixName)
+		ifTrue: [ mName allButLast: self postfixName size ]
+		ifFalse: [ mName ]
 ]
 
 { #category : #'managing classes' }
@@ -2266,7 +2281,7 @@ CMAbstractModel >> getSimDescriptionText [
 		streamContents: [ :stream | 
 			stream
 				nextPutAll: 'Model name : ';
-				nextPutAll: (self class modelPrefix asText allBold addAttribute: TextColor red);
+				nextPutAll: (self class shortName asText allBold addAttribute: TextColor red);
 				cr;
 				cr;
 				nextPutAll: 'Initialization: ';
@@ -2439,7 +2454,7 @@ CMAbstractModel >> initEntities [
 								ifFalse: [ (self theEntities: aClass) do: [ :LO | LO leave ] ] ].
 					self initializeTheEntity: aClass ] ].
 	self spaceModel isNil
-		ifFalse: [ self spaceModel resetSpatialEntitiesButCells ]
+		ifFalse: [ self spaceModel resetSpatialEntities "ButCells" ]
 ]
 
 { #category : #'utilities - files' }
@@ -2594,10 +2609,9 @@ CMAbstractModel >> lastValueOfGlobalDataNamed: name [
 
 { #category : #'instance creation - spatial grid' }
 CMAbstractModel >> loadEnvironmentFromDirectory: aName [
-	"Purpose: create spatial elements and load attributes value specified in a defined .cell directory
+	"Purpose: create a spatial grid of cells and load attributes value specified in a defined .cell directory.
 	Argument: aName = <String> or aName = <FileReference> . If aName = <String>, it creates a directory named aName in the maps directory.
-	Example:	self configureWithCellFile: 'test.cells'
-	Example: self configureWithCellFile: (FileLocator workingDirectory / 'assets' / 'models' / self modelPrefix withExtension: 'cells')"
+	Example:	CMECECModel new loadEnvironmentFromDirectory: 'poor.cells' "
 
 	self spaceModel loadEnvironmentFromDirectory: aName
 ]
@@ -3182,7 +3196,7 @@ CMAbstractModel >> resetCells [
 
 { #category : #accessing }
 CMAbstractModel >> resourceLocator [ 
-	" Answer the receiver's <CMResourceLocator>, an object to locate resources "
+	" Answer the receiver's <CMResourceLocator>, an object to locate resources on the disk"
 
 	^ self application resourceLocator
 ]
@@ -3476,7 +3490,7 @@ CMAbstractModel >> setterForEntityClass: aClass [
 	self basicNew setterForEntityClass: Object
 	"
 	
-	^self class setterForEntityClass: aClass
+	^self class setterForEntityClass: aClass 
 ]
 
 { #category : #'utilities - space metrics' }
@@ -3535,7 +3549,7 @@ CMAbstractModel >> situatedEntitiesFrom: aClass povAt: povSelector [
 
 { #category : #accessing }
 CMAbstractModel >> spaceModel [
-	^ spaceModel
+	^ spaceModel ifNil: [ self initializeSpaceModel ]
 ]
 
 { #category : #accessing }

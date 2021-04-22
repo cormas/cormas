@@ -66,7 +66,7 @@ Example: self removeComponents: self getEpidermis"
 	
 	| initialSize |
 	initialSize := self components size.	"aCollec do: [:c | self components remove: c ifAbsent: []]."	"NB 2014-04-11->previous line replaced by the following because some elements are not removed with the previous method"
-	self components: self components - aCollec.
+	self components: (self components difference: aCollec).
 	aCollec
 		do:
 			[:c | 

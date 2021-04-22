@@ -367,6 +367,11 @@ CMEntity class >> asGetterForEntityClass [
 			<< self entityName pluralize capitalized]) asSymbol
 ]
 
+{ #category : #accessing }
+CMEntity class >> asSetterForEntityClass [
+	^self asGetterForEntityClass asMutator 
+]
+
 { #category : #'accessing - methods & classes' }
 CMEntity class >> availableInfo [
 	"Purpose: returns the list of available info methods
@@ -592,8 +597,8 @@ CMEntity class >> entityName [
 
 	^ (self name beginsWith: 'CM')
 		ifTrue: [ 
-			((self name allButFirst: 2) beginsWith: self modelClass modelPrefix)
-				ifTrue: [ self name allButFirst: 2 + self modelClass modelPrefix size ]
+			((self name allButFirst: 2) beginsWith: self modelClass shortName)
+				ifTrue: [ self name allButFirst: 2 + self modelClass shortName size ]
 				ifFalse: [ self name allButFirst: 2 ] ]
 		ifFalse: [ self name ]
 ]

@@ -125,23 +125,20 @@ CMCellsLoader >> isStrict: aBoolean [
 
 { #category : #loading }
 CMCellsLoader >> load: aFileReference [
+"Instanciate a new grid of cells from aFileReference (with .cells extension) such as /Users/.../cormas/assets/models/ECEC/maps/poor.cells"
 	| metadata |
 	metadata := PPYAMLGrammar new end
 		parse: (aFileReference / 'spaceModel.yml') contents withInternalLineEndings.
-	self
-		dimensions:
+	self dimensions:
 			(metadata
 				at: 'dimensions'
 				ifAbsent: [ ^ self error: 'dimensions field is mandatory' ]).
-	self
-		connectivity: (metadata at: 'connectivity' ifAbsent: [ self defaultConnectivity ]).
-	self
-		spaceModelDo: [ :spaceModel | 
+	self connectivity: (metadata at: 'connectivity' ifAbsent: [ self defaultConnectivity ]).
+	self spaceModelDo: [ :spaceModel | 
 			spaceModel
 				resetSpatialEntities;
 				createCells ].
-	self
-		closed: (metadata at: 'closed' ifAbsent: [ self defaultClosed ]).
+	self closed: (metadata at: 'closed' ifAbsent: [ self defaultClosed ]).
 	metadata
 		at: 'attributes'
 		ifPresent: [ :attributes | 

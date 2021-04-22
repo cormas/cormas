@@ -12,7 +12,31 @@ Class {
 
 { #category : #utilities }
 CMEnv2CellsConverter class >> fromFile: aFileReference [
-	"self fromFile: (FileLocator workingDirectory / 'assets' /'models' / 'Conway' / 'maps' / 'glidersGun.env')"
+	"Convert .env aFileReference (such as /Users/.../cormas/assets/models/DemoAggregates/maps/3forests.env) as a new directory called '3forests.cells' containing 2 files (See ISSUE #311 from Tomooda: https://github.com/cormas/cormas/issues/311):
+The old .env file is split into multiple files in a directory with a YAML file for parameters of the space model and CSV files corresponding to its attributes.
+For example, assuming that we have the following Sample.env file:
+		dimensions      27 27
+		cloture closed
+		connexite       eight
+		delimiteur      0
+		attributs       biomass(Number)
+		2
+		3
+		1
+		...
+Now there is a 'Sample.cells' directory with the following 'spaceModel.yml
+		version: 0.0.1
+		dimensions: [27, 27]
+		closed: false
+		connectivity: eight
+		attributes:
+ 			biomass: Number
++ a biomass.csv file of 27 lines and 27 columns:
+	2,3,1,...
+	9,2,6,...
+	
+	self fromFile: (FileLocator workingDirectory / 'assets' /'models' / 'Conway' / 'maps' / 'glidersGun.env')"
+	
 	aFileReference
 		readStreamDo: [ :readStream | 
 			self new
