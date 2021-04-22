@@ -13,612 +13,540 @@ Class {
 
 { #category : #probes }
 CMECECModel class >> colorOfProbe_restrainedSize [
-	
 	^ Color red: 0.104993 green: 0.104993 blue: 0.839458
 ]
 
 { #category : #probes }
 CMECECModel class >> colorOfProbe_unrestrainedSize [
-	
 	^ Color r: 0.839458 g: 0.0 b: 0.0
 ]
 
 { #category : #probes }
 CMECECModel class >> colorOfProbe_vegetationBiomass [
-	
 	^ Color red: 0.0 green: 0.839458 blue: 0.0
 ]
 
 { #category : #default }
 CMECECModel class >> defaultInit [
-	
-	^#randomEnv
-
+	^ #randomEnv
 ]
 
 { #category : #default }
 CMECECModel class >> defaultProbes [
-	^ self probes 
+	^ self probes
 ]
 
 { #category : #'examples - with SimManager' }
-CMECECModel class >> displayRunDuration: duration simName: simName [
-	"display on the Transcript, the duration time of the simulation"
-
-	| txt |
-	txt := 'Simulation [', simName, ']was run in ' , duration printString , ' milliseconds'.
-	duration > 1000
-		ifTrue: [ | dur |
-			txt := txt , ', ie. '.
-			dur := Time fromSeconds: duration / 1000.
-			txt := txt , dur hours printString , ' h: ' , dur minutes printString , ' m: ' , dur seconds asFloat printString , ' s.' ].
-	Transcript
+CMECECModel class >> displayRunDuration: arg1 simName: arg2 [
+	| tmp1 tmp2 tmp4 |
+	tmp1 := 'Simulation [' , arg2 , ']was run in ' , arg1 printString
+		, ' milliseconds'.
+	arg1 > 1000
+		ifTrue: [ tmp1 := tmp1 , ', ie. '.
+			tmp2 := Time fromSeconds: arg1 / 1000.
+			tmp1 := tmp1 , tmp2 hours printString , ' h: '
+				, tmp2 minutes printString , ' m: '
+				, tmp2 seconds asFloat printString , ' s.' ].
+	tmp4 := Transcript.
+	tmp4
 		cr;
-		show: txt
+		show: tmp1
 ]
 
 { #category : #examples }
 CMECECModel class >> example1 [
-
-	"Vegetation grid animation without foragers"
-	
-	| aModel v n c es anim popup|
-	
-	aModel := self
-		initialize;
-		new.
-		
-	v := RTView new.
-	"v @ RTZoomableView."
-	
-	n := RTMultiLinearColor new
+	| tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 tmp9 tmp11 tmp13 |
+	tmp9 := self.
+	tmp9 initialize.
+	tmp1 := tmp9 new.
+	tmp2 := RTView new.
+	tmp3 := RTMultiLinearColor new
 		colors: (RTColorPalette sequential colors: 9 scheme: 'YlGnBu').
-		
-	c := n command: [ :cells | cells biomass / 10.0 ].
-	
-	aModel initSimulation.
-	aModel runStep.
-	
-	es := (RTBox new
-		color: c;
-		size: 25) elementsOn: aModel theVegetationUnits.
-		
-	v addAll: es.
-	
-	"Adding a popup for biomass info on hover"
-	popup := RTPopup new.
-	popup text: [ :object | object asPopupText ].
-	es @ popup.
-	
-	"Adding a popup for object inspection on left click"
-	es do: [:element | element when: TRMouseLeftClick do: [ :evt | element model inspect ]].
-	
-	RTGridLayout new
+	tmp4 := tmp3 command: [ :arg1 | arg1 biomass / 10.0 ].
+	tmp1
+		initSimulation;
+		runStep.
+	tmp11 := RTBox new.
+	tmp11 color: tmp4.
+	tmp5 := (tmp11 size: 25) elementsOn: tmp1 theVegetationUnits.
+	tmp2 addAll: tmp5.
+	tmp7 := RTPopup new.
+	tmp7 text: [ :arg2 | arg2 asPopupText ].
+	tmp5
+		@ tmp7;
+		do: [ :arg3 | arg3 when: TRMouseLeftClick do: [ :arg4 | arg3 model inspect ] ].
+	tmp13 := RTGridLayout new.
+	tmp13
 		gapSize: 0;
-		lineItemsCount: aModel spaceModel column;
-		on: v elements.
-	
-	v canvas camera focusOnCenterScaled.
-	
-	anim := RTActiveAnimation new.
-	anim intervalInMilliseconds: 0.
-	anim
-		blockToExecute: [ aModel runStep.
-			v elements do: #updateShape ].
-	anim inView: v.
-	
-	v openWithToolbar.
+		lineItemsCount: tmp1 spaceModel column;
+		on: tmp2 elements.
+	tmp2 canvas camera focusOnCenterScaled.
+	tmp6 := RTActiveAnimation new.
+	tmp6
+		intervalInMilliseconds: 0;
+		blockToExecute: [ tmp1 runStep.
+			tmp2 elements do: #updateShape ];
+		inView: tmp2.
+	tmp2 openWithToolbar
 ]
 
 { #category : #examples }
 CMECECModel class >> example1R3 [
-    "Vegetation grid animation without foragers"
-
-    | aModel v n es popup |
-    aModel := self
-        initialize;
-        new.
-    v := RSCanvas new.
-    n := RSColorPalette sequential ylgnbu9.
-    n := NSScale linear
-        domain: {0 . 0.1 . 0.2 . 0.3 . 0.4 . 0.5 . 0.6 . 0.7 . 1};
-        range: n range.
-    aModel initSimulation.
-    aModel runStep.
-    es := aModel theVegetationUnits
-        collect: [ :each | 
-            RSBox new
-                size: 25;
-                model: each;
-                yourself ]
-        as: RSGroup.
-    v addAll: es.
-    "Adding a popup for biomass info on hover"
-    popup := RSPopup text: [ :object | object asPopupText ].
-    es @ popup.
-
-    "Adding a popup for object inspection on left click"
-    es when: RSMouseLeftClick do: [ :evt | evt shape model inspect ].
-    RSGridLayout new
-        gapSize: 0;
-        lineItemsCount: aModel spaceModel column;
-        on: v nodes.
-    v zoomToFit.
-    v newAnimation
-        repeat;
-        onStepDo: [ :t | 
-            aModel runStep.
-            es do: [ :each | each color: (n scale: each model biomass / 10.0) ] ].
-    v addInteraction: RSCanvasController new.
-    v open
+	| tmp1 tmp2 tmp3 tmp4 tmp5 tmp7 tmp9 tmp13 tmp15 |
+	tmp7 := self.
+	tmp7 initialize.
+	tmp1 := tmp7 new.
+	tmp2 := RSCanvas new.
+	tmp3 := RSColorPalette sequential ylgnbu9.
+	tmp9 := NSScale linear.
+	tmp9 domain: {0 . 0.1 . 0.2 . 0.3 . 0.4 . 0.5 . 0.6 . 0.7 . 1}.
+	tmp3 := tmp9 range: tmp3 range.
+	tmp1
+		initSimulation;
+		runStep.
+	tmp4 := tmp1 theVegetationUnits
+		collect: [ :arg1 | 
+			| tmp11 |
+			tmp11 := RSBox new.
+			tmp11
+				size: 25;
+				model: arg1;
+				yourself ]
+		as: RSGroup.
+	tmp2 addAll: tmp4.
+	tmp5 := RSPopup text: [ :arg2 | arg2 asPopupText ].
+	tmp4
+		@ tmp5;
+		when: RSMouseLeftClick do: [ :arg3 | arg3 shape model inspect ].
+	tmp13 := RSGridLayout new.
+	tmp13
+		gapSize: 0;
+		lineItemsCount: tmp1 spaceModel column;
+		on: tmp2 nodes.
+	tmp2 zoomToFit.
+	tmp15 := tmp2 newAnimation.
+	tmp15
+		repeat;
+		onStepDo: [ :arg4 | 
+			tmp1 runStep.
+			tmp4
+				do: [ :arg5 | arg5 color: (tmp3 scale: arg5 model biomass / 10.0) ] ].
+	tmp2
+		addInteraction: RSCanvasController new;
+		open
 ]
 
 { #category : #examples }
 CMECECModel class >> example2 [
-	| aModel |
-	aModel := self initialize new initSimulation.
-	(CMSimulationGrid new on: aModel with: aModel theVegetationUnits) runAndVisualize
+	| tmp1 |
+	tmp1 := self initialize new initSimulation.
+	(CMSimulationGrid new on: tmp1 with: tmp1 theVegetationUnits)
+		runAndVisualize
 ]
 
 { #category : #examples }
 CMECECModel class >> example3 [
-
-	"Vegetation grid animation without foragers"
-	
-	| aModel v n c es anim popup menu|
-	
-	aModel := self
-		initialize;
-		new.
-	
-	v := RTView new.
-	
-	n := RTMultiLinearColor new
+	| tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 tmp8 tmp10 tmp12 tmp14 |
+	tmp10 := self.
+	tmp10 initialize.
+	tmp1 := tmp10 new.
+	tmp2 := RTView new.
+	tmp3 := RTMultiLinearColor new
 		colors: (RTColorPalette sequential colors: 9 scheme: 'YlGnBu').
-		
-	c := n command: [ :cells | cells biomass / 10.0 ].
-	
-	aModel initSimulation.
-	aModel runStep.
-	
-	es := (RTBox new
-		color: c;
-		size: 25) elementsOn: aModel theVegetationUnits.
-		
-	v addAll: es.
-	
-	"Adding a popup for biomass info on hover"
-	popup := RTPopup new.
-	popup text: [ :object | object asPopupText ].
-	es @ popup.
-	
-	"Adding a popup for object inspection on left click"
-	es do: [:element | element when: TRMouseLeftClick do: [ :evt | element model inspect ]].
-	
-	menu := RTMenuBuilder new view: v. 
-	menu menu: 'Visualize' background: Color red callback: [ self visualize ].
-	
-	RTGridLayout new
+	tmp4 := tmp3 command: [ :arg1 | arg1 biomass / 10.0 ].
+	tmp1
+		initSimulation;
+		runStep.
+	tmp12 := RTBox new.
+	tmp12 color: tmp4.
+	tmp5 := (tmp12 size: 25) elementsOn: tmp1 theVegetationUnits.
+	tmp2 addAll: tmp5.
+	tmp7 := RTPopup new.
+	tmp7 text: [ :arg2 | arg2 asPopupText ].
+	tmp5
+		@ tmp7;
+		do: [ :arg3 | arg3 when: TRMouseLeftClick do: [ :arg4 | arg3 model inspect ] ].
+	tmp8 := RTMenuBuilder new view: tmp2.
+	tmp8
+		menu: 'Visualize'
+		background: Color red
+		callback: [ self visualize ].
+	tmp14 := RTGridLayout new.
+	tmp14
 		gapSize: 0;
-		lineItemsCount: aModel spaceModel column;
-		on: v elements.
-	
-	v canvas camera focusOnCenterScaled.
-	
-	anim := RTActiveAnimation new.
-	"anim intervalInMilliseconds: 0."
-	anim
-		blockToExecute: [ aModel runStep.
-			v elements do: #updateShape ].
-	anim inView: v.
-	
-	v openWithToolbar.
-	
+		lineItemsCount: tmp1 spaceModel column;
+		on: tmp2 elements.
+	tmp2 canvas camera focusOnCenterScaled.
+	tmp6 := RTActiveAnimation new.
+	tmp6
+		blockToExecute: [ tmp1 runStep.
+			tmp2 elements do: #updateShape ];
+		inView: tmp2.
+	tmp2 openWithToolbar
 ]
 
 { #category : #examples }
 CMECECModel class >> example4 [
-	| aModel |
-	aModel := self initialize new initSimulation.
+	| tmp1 |
+	tmp1 := self initialize new initSimulation.
 	(CMSimulationGrid initialize new
-		on: aModel
-		withCells: aModel theESE
-		withSituatedEntities: aModel allTheSituatedEntities) runAndVisualize
+		on: tmp1
+		withCells: tmp1 theESE
+		withSituatedEntities: tmp1 allTheSituatedEntities) runAndVisualize
 ]
 
 { #category : #examples }
 CMECECModel class >> example5 [
-	| aModel |
+	| tmp1 |
 	self setActiveProbes: OrderedCollection new.
-	aModel := self initialize new initSimulation.
-	((CMSimulationGrid initialize new)
-		on: aModel
-		withCells: aModel theESE
-		withSituatedEntities: aModel allTheSituatedEntities) runAndVisualizeWithMenus goSlow
+	tmp1 := self initialize new initSimulation.
+	(CMSimulationGrid initialize new
+		on: tmp1
+		withCells: tmp1 theESE
+		withSituatedEntities: tmp1 allTheSituatedEntities)
+		runAndVisualizeWithMenus goSlow
 ]
 
 { #category : #'examples - with SimManager' }
 CMECECModel class >> exampleSM1 [
-	"In this example the SimManager is not used at all"
-
-	| aModel finalTime chrono |
-	aModel := self initialize new initSimulation.
-	finalTime := 200.
-	chrono := Time millisecondsToRun: [ finalTime timesRepeat: [ aModel runStep ] ].
-	self displayRunDuration: chrono simName: 'a exampleSM1'.
-	self transcriptShow_simulationTime: aModel timeStep nbRestrainedForagers: aModel restrainedSize
+	| tmp1 tmp2 tmp3 |
+	tmp1 := self initialize new initSimulation.
+	tmp2 := 200.
+	tmp3 := Time
+		millisecondsToRun: [ tmp2 timesRepeat: [ tmp1 runStep ] ].
+	self
+		displayRunDuration: tmp3 simName: 'a exampleSM1';
+		transcriptShow_simulationTime: tmp1 timeStep
+			nbRestrainedForagers: tmp1 restrainedSize
 ]
 
 { #category : #'examples - with SimManager' }
 CMECECModel class >> exampleSM2 [
-	"In this example the run of the simulation is managed by the SimManager"
-
-	| aModel |
-	aModel := self initialize new initSimulation.
-	aModel simManager
+	| tmp1 tmp3 |
+	tmp1 := self initialize new initSimulation.
+	tmp3 := tmp1 simManager.
+	tmp3
 		finalTime: 200;
 		runSimulation.
-			self transcriptShow_simulationTime:  aModel simManager currentTime nbRestrainedForagers: aModel restrainedSize 
-	
+	self
+		transcriptShow_simulationTime: tmp1 simManager currentTime
+		nbRestrainedForagers: tmp1 restrainedSize
 ]
 
 { #category : #'examples - with SimManager' }
 CMECECModel class >> exampleSM3 [
-	"In this example the initialization and the run of the simulation is managed by the SimManager"
-
-	| aModel |
-	aModel := self initialize new.
-	aModel simManager
+	| tmp1 tmp3 |
+	tmp1 := self initialize new.
+	tmp3 := tmp1 simManager.
+	tmp3
 		initializeSimulation;
 		finalTime: 200;
 		runSimulation.
 	self
-		transcriptShow_simulationTime: aModel simManager currentTime
-		nbRestrainedForagers: aModel restrainedSize
+		transcriptShow_simulationTime: tmp1 simManager currentTime
+		nbRestrainedForagers: tmp1 restrainedSize
 ]
 
 { #category : #'examples - with SimManager' }
 CMECECModel class >> exampleSM4 [
-	"This example compares the performance of using SimManager or not using it"
-
-	| nbRepetitions chronoRecords finalTime |
-	nbRepetitions := 10.
-	finalTime := 20.
-	"exampleSM1"
-	chronoRecords := OrderedCollection new.
-	1 to: nbRepetitions do: [ :idRepetition | 
-		| chrono |
-		chrono := Time
-			millisecondsToRun: [ | aModel |
-				aModel := self initialize new initSimulation.
-				finalTime timesRepeat: [ aModel runStep ] ].
-		chronoRecords add: chrono
-		"	self displayRunDuration: chrono simName: 'exampleSM1 - repetition' , idRepetition asString " ].
-	Transcript
-		cr;
-		show: 'exampleSM1 (no SimManager) - average time over ' , nbRepetitions asString , ' repetitions: ' , (chronoRecords sum / nbRepetitions) rounded asString , ' ms'.
-	"exampleSM2"
-	chronoRecords := OrderedCollection new.
-	1 to: nbRepetitions do: [ :idRepetition | 
-		| chrono |
-		chrono := Time
-			millisecondsToRun: [ | aModel |
-				aModel := self initialize new initSimulation.
-				aModel simManager
-					finalTime: finalTime;
-					runSimulation ].
-		chronoRecords add: chrono
-		"	self displayRunDuration: chrono simName: 'exampleSM2 - repetition' , idRepetition asString " ].
-	Transcript
+	| tmp1 tmp2 tmp3 tmp4 tmp5 tmp10 tmp15 tmp20 |
+	tmp1 := 10.
+	tmp3 := 20.
+	tmp2 := OrderedCollection new.
+	tmp4 := tmp1.
+	1 to: tmp4 do: [ :tmp6 | 
+		tmp5 := nil.
+		tmp5 := Time
+			millisecondsToRun: [ | tmp8 |
+				tmp8 := self initialize new initSimulation.
+				tmp3 timesRepeat: [ tmp8 runStep ] ].
+		tmp2 add: tmp5 ].
+	tmp10 := Transcript.
+	tmp10
 		cr;
 		show:
-			'exampleSM2 (SimManager used for run) - average time over ' , nbRepetitions asString , ' repetitions: ' , (chronoRecords sum / nbRepetitions) rounded asString
-				, ' ms'.
-	"exampleSM3"
-	chronoRecords := OrderedCollection new.
-	1 to: nbRepetitions do: [ :idRepetition | 
-		| chrono |
-		chrono := Time
-			millisecondsToRun: [ | aModel |
-				aModel := self initialize new.
-				aModel simManager
+			'exampleSM1 (no SimManager) - average time over ' , tmp1 asString
+				, ' repetitions: ' , (tmp2 sum / tmp1) rounded asString , ' ms'.
+	tmp2 := OrderedCollection new.
+	tmp4 := tmp1.
+	1 to: tmp4 do: [ :tmp6 | 
+		tmp5 := nil.
+		tmp5 := Time
+			millisecondsToRun: [ | tmp11 tmp13 |
+				tmp11 := self initialize new initSimulation.
+				tmp13 := tmp11 simManager.
+				tmp13
+					finalTime: tmp3;
+					runSimulation ].
+		tmp2 add: tmp5 ].
+	tmp15 := Transcript.
+	tmp15
+		cr;
+		show:
+			'exampleSM2 (SimManager used for run) - average time over '
+				, tmp1 asString , ' repetitions: '
+				, (tmp2 sum / tmp1) rounded asString , ' ms'.
+	tmp2 := OrderedCollection new.
+	tmp4 := tmp1.
+	1 to: tmp4 do: [ :tmp6 | 
+		tmp5 := nil.
+		tmp5 := Time
+			millisecondsToRun: [ | tmp16 tmp18 |
+				tmp16 := self initialize new.
+				tmp18 := tmp16 simManager.
+				tmp18
 					initializeSimulation;
-					finalTime: finalTime;
+					finalTime: tmp3;
 					runSimulation ].
-		chronoRecords add: chrono
-		"	self displayRunDuration: chrono simName: 'exampleSM3 - repetition' , idRepetition asString " ].
-	Transcript
+		tmp2 add: tmp5 ].
+	tmp20 := Transcript.
+	tmp20
 		cr;
 		show:
-			'exampleSM3 (SimManager used for init and run) - average time over ' , nbRepetitions asString , ' repetitions: '
-				, (chronoRecords sum / nbRepetitions) rounded asString , ' ms'.
+			'exampleSM3 (SimManager used for init and run) - average time over '
+				, tmp1 asString , ' repetitions: '
+				, (tmp2 sum / tmp1) rounded asString , ' ms'.
 	Transcript open
 ]
 
 { #category : #'default value' }
 CMECECModel class >> restrainedInitialNumber_default [
-	"Return the default value of restrainedInitialNumber attribute"
-	
-	^10
+	^ 10
 ]
 
 { #category : #'examples - with SimManager' }
-CMECECModel class >> transcriptShow_simulationTime: nbTimeStep nbRestrainedForagers: aNbRestrainedForagers [
-Transcript
+CMECECModel class >> transcriptShow_simulationTime: arg1 nbRestrainedForagers: arg2 [
+	| tmp2 |
+	tmp2 := Transcript.
+	tmp2
 		cr;
-		show: 'Number of steps : ' , nbTimeStep asString;
+		show: 'Number of steps : ' , arg1 asString;
 		cr;
-		show: 'Number of restrained foragers: ' , aNbRestrainedForagers asString;
+		show: 'Number of restrained foragers: ' , arg2 asString;
 		open
 ]
 
 { #category : #'default value' }
 CMECECModel class >> unrestrainedInitialNumber_default [
-	"Return the default value of unrestrainedInitialNumber attribute"
-	
-	^10
+	^ 10
 ]
 
 { #category : #accessing }
 CMECECModel class >> visualize [
-	
-	| data g ds b c |
-	data := #(20 30 50 100).
-	
-	"v := RTView new."
-	
-	c := RTComposer new.
-	
-	"First visualization"
-	
-	g := RTGrapher new.
-	g extent: 200 @ 200.
-	g view: c view.
-	"g view: v view."
-	
-	ds := RTData new.
-	ds interaction popup.
-	ds barShape color: Color blue.
-	ds points: data.
-	
-	g add: ds.
-	g axisX noTick; noLabel.
-	g build.
-	"v group: #graph."
-	c group: #graph.
-
-	"Second visualization"
-	b := RTPieBuilder new.
-	b view: c view.
-	"b view: v view."
-	b interaction popup.
-	b objects: data.
-	b slice: #yourself.
-	b labeled.
-	b build.
-	"v group: #pie."
-   c group: #pie.
-
-	"Layouting"
-    c move: #graph onTheLeftOf: #pie.
-
-	RTMetricNormalizer new view: c view;
-                 objects: data;
-                 distinctColor.
-	
-	c open.
-	
-	"v openTitled: 'Data Visualization'."
+	| tmp1 tmp2 tmp3 tmp4 tmp5 tmp7 tmp9 |
+	tmp1 := #(20 30 50 100).
+	tmp5 := RTComposer new.
+	tmp2 := RTGrapher new.
+	tmp2
+		extent: 200 @ 200;
+		view: tmp5 view.
+	tmp3 := RTData new.
+	tmp3 interaction popup.
+	tmp3 barShape color: Color blue.
+	tmp3 points: tmp1.
+	tmp2 add: tmp3.
+	tmp7 := tmp2 axisX.
+	tmp7
+		noTick;
+		noLabel.
+	tmp2 build.
+	tmp5 group: #graph.
+	tmp4 := RTPieBuilder new.
+	tmp4 view: tmp5 view.
+	tmp4 interaction popup.
+	tmp4
+		objects: tmp1;
+		slice: #yourself;
+		labeled;
+		build.
+	tmp5
+		group: #pie;
+		move: #graph onTheLeftOf: #pie.
+	tmp9 := RTMetricNormalizer new.
+	tmp9
+		view: tmp5 view;
+		objects: tmp1;
+		distinctColor.
+	tmp5 open
 ]
 
 { #category : #accessing }
-CMECECModel class >> visualize: es [
-	
-	| data g ds b c |
-	
-	data := #(20 30 50 100).
-	
-	"v := RTView new."
-	
-	c := RTComposer new.
-	
-	"First visualization"
-	
-	g := RTGrapher new.
-	g extent: 200 @ 200.
-	g view: c view.
-	"g view: v view."
-	
-	ds := RTData new.
-	ds interaction popup.
-	ds barShape color: Color blue.
-	ds points: data.
-	
-	g add: ds.
-	g axisX noTick; noLabel.
-	g build.
-	"v group: #graph."
-	c group: #graph.
-
-	"Second visualization"
-	b := RTPieBuilder new.
-	b view: c view.
-	"b view: v view."
-	b interaction popup.
-	b objects: data.
-	b slice: #yourself.
-	b labeled.
-	b build.
-	"v group: #pie."
-   c group: #pie.
-
-	"Layouting"
-    c move: #graph onTheLeftOf: #pie.
-
-	RTMetricNormalizer new view: c view;
-                 objects: data;
-                 distinctColor.
-	
-	c open.
-	
-	"v openTitled: 'Data Visualization'."
+CMECECModel class >> visualize: arg1 [
+	| tmp1 tmp2 tmp3 tmp4 tmp5 tmp7 tmp9 |
+	tmp1 := #(20 30 50 100).
+	tmp5 := RTComposer new.
+	tmp2 := RTGrapher new.
+	tmp2
+		extent: 200 @ 200;
+		view: tmp5 view.
+	tmp3 := RTData new.
+	tmp3 interaction popup.
+	tmp3 barShape color: Color blue.
+	tmp3 points: tmp1.
+	tmp2 add: tmp3.
+	tmp7 := tmp2 axisX.
+	tmp7
+		noTick;
+		noLabel.
+	tmp2 build.
+	tmp5 group: #graph.
+	tmp4 := RTPieBuilder new.
+	tmp4 view: tmp5 view.
+	tmp4 interaction popup.
+	tmp4
+		objects: tmp1;
+		slice: #yourself;
+		labeled;
+		build.
+	tmp5
+		group: #pie;
+		move: #graph onTheLeftOf: #pie.
+	tmp9 := RTMetricNormalizer new.
+	tmp9
+		view: tmp5 view;
+		objects: tmp1;
+		distinctColor.
+	tmp5 open
 ]
 
 { #category : #init }
 CMECECModel >> fragmentedEnv [
-	"initialize an fragmented space (from fragmented.cells directory) with randomly located foragers"
-
 	self spaceModel loadEnvironmentFromDirectory: 'fragmented.cells'.
 	self initAgents
 ]
 
 { #category : #init }
 CMECECModel >> homogeneousEnv2 [
-	"initialize an homogeneous space (27x27, random biomass) with randomly located foragers"
-
 	self spaceModel
 		initializeRegularLines: 27
 		columns: 27
 		shape: #squared
 		nbNeighbours: #eight
 		closed: false.
-	self theVegetationUnits do: [ :cell | cell initRandomBiomass ].	"or: self initCells: #initRandomBiomass."
+	self theVegetationUnits do: [ :arg1 | arg1 initRandomBiomass ].
 	self initAgents
 ]
 
 { #category : #'init entities' }
 CMECECModel >> initAgents [
-	"initialize 10 foragers of each type and move then randomly on a free cell"
-	
 	self
 		createN: self restrainedInitialNumber
-		randomlyLocatedAloneEntities: CMECECRestrained.
-	self
+			randomlyLocatedAloneEntities: CMECECRestrained;
 		createN: self unrestrainedInitialNumber
-		randomlyLocatedAloneEntities: CMECECUnrestrained
+			randomlyLocatedAloneEntities: CMECECUnrestrained
 ]
 
 { #category : #init }
 CMECECModel >> noAgent [
-	"initialize the space (from poor.cells directory) without agent"
+	
 	self spaceModel loadEnvironmentFromDirectory: 'poor.cells'
 ]
 
 { #category : #init }
 CMECECModel >> randomEnv [
-	"initialize an homogeneous space (from poor.env file) with randomly located foragers"
-
-	"self spaceModel loadEnvironmentFromFile: 'poor.env'."
-
 	self
 		createGridLines: 27
 		columns: 15
 		neighbourhood: 8
 		closed: true.
-	self theVegetationUnits do: [ :c | c initRandomBiomass ].
+	self theVegetationUnits do: [ :arg1 | arg1 initRandomBiomass ].
 	self initAgents
 ]
 
 { #category : #accessing }
 CMECECModel >> restrainedInitialNumber [
-	"Getter accessor with default value = 10.
-	!! Code automaticaly generated by Cormas !!  "
-	
-	^restrainedInitialNumber ifNil: [restrainedInitialNumber := 10]
+	| tmp2 |
+	tmp2 := restrainedInitialNumber.
+	^ tmp2 ifNil: [ restrainedInitialNumber := 10 ] ifNotNil: [ tmp2 ]
 ]
 
 { #category : #accessing }
-CMECECModel >> restrainedInitialNumber: anObject [
-	"Setter accessor of attribute restrainedInitialNumber "
-	
-	restrainedInitialNumber := anObject
+CMECECModel >> restrainedInitialNumber: arg1 [
+	restrainedInitialNumber := arg1
 ]
 
 { #category : #probes }
 CMECECModel >> restrainedSize [
-	"return the population size of the Restrained foragers"
-
 	<probe>
 	^ self theRestraineds size
 ]
 
 { #category : #control }
-CMECECModel >> step: t [
-	"main step: activation of all the plants (Resource dynamics), then activation of the foragers (Agents dynamics)"
-	"Resource dynamics   (because the dynamics of the plants are independants, the activation is not mixted)"
-	
-	self stepEntities: self theVegetationUnits.	"Agents dynamics    (because the agents may compete for plant access, the activation is randomly mixted)"
-	self askRandom: CMECECForager toDo: #step.
+CMECECModel >> step: arg1 [
+	self
+		stepEntities: self theVegetationUnits;
+		askRandom: CMECECForager toDo: #step
 ]
 
 { #category : #accessing }
 CMECECModel >> theCMECECForagers [
-	"Returns a collection of all the instances of aClass (and sub classes) collected by cormasModel"
-	
-	^self allTheEntities: CMECECForager
+	^ self allTheEntities: CMECECForager
 ]
 
 { #category : #accessing }
 CMECECModel >> theRestraineds [
-	^ theRestraineds ifNil: [ theRestraineds := OrderedCollection new ]
+	| tmp2 |
+	tmp2 := theRestraineds.
+	^ tmp2
+		ifNil: [ theRestraineds := OrderedCollection new ]
+		ifNotNil: [ tmp2 ]
 ]
 
 { #category : #accessing }
-CMECECModel >> theRestraineds: aCollection [
-	theRestraineds := aCollection
+CMECECModel >> theRestraineds: arg1 [
+	theRestraineds := arg1
 ]
 
 { #category : #accessing }
 CMECECModel >> theUnrestraineds [
-	
-	^theUnrestraineds ifNil: [theUnrestraineds := OrderedCollection new]
+	| tmp2 |
+	tmp2 := theUnrestraineds.
+	^ tmp2
+		ifNil: [ theUnrestraineds := OrderedCollection new ]
+		ifNotNil: [ tmp2 ]
 ]
 
 { #category : #accessing }
-CMECECModel >> theUnrestraineds: aCollection [
-	theUnrestraineds := aCollection
+CMECECModel >> theUnrestraineds: arg1 [
+	theUnrestraineds := arg1
 ]
 
 { #category : #accessing }
 CMECECModel >> theVegetationUnits [
-	
-	^theVegetationUnits ifNil: [theVegetationUnits := OrderedCollection new]
+	| tmp2 |
+	tmp2 := theVegetationUnits.
+	^ tmp2
+		ifNil: [ theVegetationUnits := OrderedCollection new ]
+		ifNotNil: [ tmp2 ]
 ]
 
 { #category : #accessing }
-CMECECModel >> theVegetationUnits: aCollection [
-	theVegetationUnits := aCollection
+CMECECModel >> theVegetationUnits: arg1 [
+	theVegetationUnits := arg1
 ]
 
 { #category : #accessing }
 CMECECModel >> unrestrainedInitialNumber [
-	"Getter accessor with default value = 10.
-	!! Code automaticaly generated by Cormas !!  "
-	
-	^unrestrainedInitialNumber ifNil: [unrestrainedInitialNumber := 10]
+	| tmp2 |
+	tmp2 := unrestrainedInitialNumber.
+	^ tmp2 ifNil: [ unrestrainedInitialNumber := 10 ] ifNotNil: [ tmp2 ]
 ]
 
 { #category : #accessing }
-CMECECModel >> unrestrainedInitialNumber: anInteger [
-	"Setter accessor of attribute unrestrainedInitialNumber "
-
-	unrestrainedInitialNumber := anInteger
+CMECECModel >> unrestrainedInitialNumber: arg1 [
+	unrestrainedInitialNumber := arg1
 ]
 
 { #category : #probes }
 CMECECModel >> unrestrainedSize [
-	"return the population size of the Unrestrained foragers"
-
 	<probe>
 	^ self theUnrestraineds size
 ]
 
 { #category : #probes }
 CMECECModel >> vegetationBiomass [
-	"return the total biomass of the vegetation"
-
 	<probe>
 	^ self theVegetationUnits
 		inject: 0
-		into: [ :i :j | i + j biomass ]
+		into: [ :arg1 :arg2 | arg1 + arg2 biomass ]
 ]

@@ -6,33 +6,37 @@ Class {
 
 { #category : #tests }
 CMConwayModelTest >> testACellInConwayModelIsAtDistanceOneToAnotherCell [
-	| model oneCell |
-	model := CMConwayModel
-		initialize;
-		new.
-	model initSimulation.
-	oneCell := (model allTheEntities: CMConwayCell) atRandom.
-	self assert: (oneCell shortestDistanceToCellsVerifying: [ :c | c state = #dead | (c state = #alive) ]) equals: 1
+	| tmp1 tmp2 tmp4 |
+	tmp4 := CMConwayModel.
+	tmp4 initialize.
+	tmp1 := tmp4 new.
+	tmp1 initSimulation.
+	tmp2 := (tmp1 allTheEntities: CMConwayCell) atRandom.
+	self
+		assert:
+			(tmp2
+				shortestDistanceToCellsVerifying: [ :arg1 | arg1 state = #dead | (arg1 state = #alive) ])
+		equals: 1
 ]
 
 { #category : #tests }
 CMConwayModelTest >> testAfterInitializationAConwayModelHas10000Cells [
-	| model |
-	model := CMConwayModel
-		initialize;
-		new.
-	model initSimulation.
-	self assert: (model allTheEntities: CMConwayCell) size equals: 10000
+	| tmp1 tmp3 |
+	tmp3 := CMConwayModel.
+	tmp3 initialize.
+	tmp1 := tmp3 new.
+	tmp1 initSimulation.
+	self assert: (tmp1 allTheEntities: CMConwayCell) size equals: 10000
 ]
 
 { #category : #tests }
 CMConwayModelTest >> testAfterInitializationAConwayModelHas10000Entities [
-	| model |
-	model := CMConwayModel
-		initialize;
-		new.
-	model initSimulation.
-	self assert: model allTheEntities size equals: 10000
+	| tmp1 tmp3 |
+	tmp3 := CMConwayModel.
+	tmp3 initialize.
+	tmp1 := tmp3 new.
+	tmp1 initSimulation.
+	self assert: tmp1 allTheEntities size equals: 10000
 ]
 
 { #category : #tests }
@@ -57,14 +61,16 @@ CMConwayModelTest >> testThereIsTwoClassesInConwayPackage [
 
 { #category : #tests }
 CMConwayModelTest >> testWhenThereIsNoNearestCell [
-	| model oneCell |
-	model := CMConwayModel
-		initialize;
-		new.
-	model activeInit: #initSmallGrid.
-	model initSimulation.
-	oneCell := (model allTheEntities: CMConwayCell) atRandom.
+	| tmp1 tmp2 tmp4 |
+	tmp4 := CMConwayModel.
+	tmp4 initialize.
+	tmp1 := tmp4 new.
+	tmp1
+		activeInit: #initSmallGrid;
+		initSimulation.
+	tmp2 := (tmp1 allTheEntities: CMConwayCell) atRandom.
 	self
-		should: [ oneCell shortestDistanceToCellsVerifying: [ :c | c state = #zork ] ]
+		should: [ tmp2
+				shortestDistanceToCellsVerifying: [ :arg1 | arg1 state = #zork ] ]
 		raise: Error
 ]

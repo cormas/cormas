@@ -218,7 +218,7 @@ CMAbstractModelTest >> testLowerRightCell [
 
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testModelPrefix [
-	self assert: CMTestCell modelClass modelPrefix equals: 'Test'
+	self assert: CMTestCell modelClass shortName equals: 'Test'
 ]
 
 { #category : #tests }

@@ -444,18 +444,17 @@ CMFireAutomataModel >> howToRunIt [
 
 { #category : #init }
 CMFireAutomataModel >> init53 [
-self theCells do:#init53 
-
-]
-
-{ #category : #init }
-CMFireAutomataModel >> init53WithFire [
 	self
 		createGridLines: 80
 		columns: 80
 		neighbourhood: 4
 		closed: false.
 		self theCells do: #init53.
+]
+
+{ #category : #init }
+CMFireAutomataModel >> init53WithFire [
+	self init53.
 	self pickCell state: #fire
 ]
 
@@ -471,42 +470,41 @@ CMFireAutomataModel >> init58 [
 
 { #category : #init }
 CMFireAutomataModel >> init58WithFire [
-	self theCells do: #init58.
+	self init58.
 	self pickCell ifNotNil: [ :c | c state: #fire ]
 ]
 
 { #category : #init }
 CMFireAutomataModel >> init58WithFireWithFiremen [
-	| aCell |
-	self
-		createGridLines: 80
-		columns: 80
-		neighbourhood: 4
-		closed: false.
-	self theCells do: #init58FireWithFiremen.
-	1 to: self numberOfFires do: [ :i | 
-		aCell := self pickCell.
-		aCell = nil
-			ifTrue: [ self halt ].
-		aCell state: #fire ].
+	
+	self init58WithFire.
 	self initAgents
 ]
 
 { #category : #init }
 CMFireAutomataModel >> init58WithMultipleFires [
+	self init58.
 	self theCells do: #init58WithMultipleFires.
 	1 to: self numberOfFires do: [ :i | self pickCell state: #fire ]
 ]
 
 { #category : #'instance-creation' }
 CMFireAutomataModel >> initAgents [
-	"To be completed"
+	"Instantiate N Firemen randomly located"
 
-self createN: self numberOfFiremen
-randomlyLocatedEntities: CMFireAutomataFireman.
+	self
+		createN: self numberOfFiremen
+		randomlyLocatedEntities: CMFireAutomataFireman.
 	self
 		generateSymetricNetworkDensity: 1
 		forAgents: CMFireAutomataFireman
+]
+
+{ #category : #init }
+CMFireAutomataModel >> initFiresWithFiremen [
+
+	self init58WithMultipleFires.
+	self initAgents
 ]
 
 { #category : #init }
@@ -518,23 +516,6 @@ CMFireAutomataModel >> initSmallWithFireWithFiremen [
 		neighbourhood: 4
 		closed: false.
 	self theCells do: ##init58.
-	1 to: self numberOfFires do: [ :i | 
-		aCell := self pickCell.
-		aCell = nil
-			ifTrue: [ self halt ].
-		aCell state: #fire ].
-	self initAgents
-]
-
-{ #category : #init }
-CMFireAutomataModel >> initWithFiremen [
-	| aCell |
-	self
-		createGridLines: 80
-		columns: 80
-		neighbourhood: 4
-		closed: false.
-	self theCells do: [ :each | each initWith: 60 ].
 	1 to: self numberOfFires do: [ :i | 
 		aCell := self pickCell.
 		aCell state: #fire ].

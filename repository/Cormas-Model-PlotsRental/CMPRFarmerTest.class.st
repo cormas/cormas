@@ -11,5 +11,5 @@ CMPRFarmerTest >> testEntityName [
 
 { #category : #tests }
 CMPRFarmerTest >> testModelPrefix [
-	self assert: CMPRFarmer modelClass modelPrefix equals: 'PR'
+	self assert: CMPRFarmer modelClass shortName equals: 'PR'
 ]
