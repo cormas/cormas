@@ -173,9 +173,8 @@ CMDiffuseModel >> activeCells: arg1 [
 
 { #category : #accessing }
 CMDiffuseModel >> antNumber [
-	antNumber isNil
-		ifTrue: [ antNumber := 1 ].
-	^ antNumber
+	^antNumber ifNil: [ antNumber := 1 ].
+	
 ]
 
 { #category : #accessing }

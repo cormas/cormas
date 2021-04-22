@@ -79,7 +79,8 @@ CMSpecConfirmBeforeLaunch >> applyActiveProbesChanges [
 
 { #category : #actions }
 CMSpecConfirmBeforeLaunch >> applyScenarioSettings [
-
+"The 'Confirmation before launching' interface is done. Check if init and control methods have been selected.
+Close the interface before initializing the simulation"
 	self initMethodList selectedItem
 		ifNotNil: [ :aInitMethod | self cormasModel activeInit: aInitMethod asSymbol ]
 		ifNil: [ ^ self alertMessage: 'Choose a init method' ].
