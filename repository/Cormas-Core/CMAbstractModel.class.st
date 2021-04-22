@@ -1192,14 +1192,8 @@ Example: self ask: Animal select: [:a | a energy > 10] toDo: #eatQuantity: with:
 	allArguments := (aValueOrArrayOfValues isKindOf: Array)
 		ifTrue: [aValueOrArrayOfValues]
 		ifFalse: [Array with: aValueOrArrayOfValues].
-	collecEntities := (self allTheEntitiesOfClassOrCollec: aClass) select:
-			aBlockCondition.
-	collecEntities isEmpty
-		ifFalse:
-			[self
-				checkEntity: collecEntities first
-				respondsTo: aSymbol.
-			collecEntities do: [:c | c perform: aSymbol withArguments: allArguments]]
+	collecEntities := (self allTheEntitiesOfClassOrCollec: aClass) select: aBlockCondition.
+	collecEntities do: [:c | c perform: aSymbol withArguments: allArguments]
 ]
 
 { #category : #control }
@@ -1222,12 +1216,7 @@ Example: self ask: (self theAnimals select:[:f | f energy > 10]) toDo: #eatQuant
 	"Check if the argument is a collection or array and rebuilts the list of arguments"
 	allArguments := Cormas arrayFrom: aValueOrArrayOfValues.
 	collecEntities := self allTheEntitiesOfClassOrCollec: aCollecOrClass.
-	collecEntities isEmpty
-		ifFalse:
-			[self
-				checkEntity: collecEntities first
-				respondsTo: aSymbol.
-			collecEntities do: [:c | c perform: aSymbol withArguments: allArguments]]
+	collecEntities do: [:c | c perform: aSymbol withArguments: allArguments]
 ]
 
 { #category : #control }
@@ -1248,19 +1237,12 @@ Example: self askRandom: Animal with: [:a | a energy > 10] toDo: #eatQuantity: w
 	
 	| allArguments collecEntities |
 	"Check if the argument is a collection or array and rebuilts the list of arguments"
-	allArguments := (aValueOrArrayOfValues isCollection
-		and: [aValueOrArrayOfValues isCharacters not])
-		ifTrue: [aValueOrArrayOfValues]
-		ifFalse: [Array with: aValueOrArrayOfValues].
-	collecEntities := (self allTheEntitiesOfClassOrCollec: aClass) select:
-			aBlockCondition.
+	allArguments := (aValueOrArrayOfValues isCollection and: [ aValueOrArrayOfValues allSatisfy: [ : v | v isCharacter not ]])
+		ifTrue: [ aValueOrArrayOfValues ]
+		ifFalse: [ Array with: aValueOrArrayOfValues ].
+	collecEntities := (self allTheEntitiesOfClassOrCollec: aClass) select: aBlockCondition.
 	collecEntities isEmpty
-		ifFalse:
-			[self
-				checkEntity: collecEntities first
-				respondsTo: aSymbol.
-			(Cormas mix: collecEntities)
-				do: [:c | c perform: aSymbol withArguments: allArguments]]
+		ifFalse: [ (Cormas mix: collecEntities) do: [:c | c perform: aSymbol withArguments: allArguments] ]
 ]
 
 { #category : #control }
@@ -1282,14 +1264,8 @@ Example: self askRandom: (self theAnimals select:[:f | f energy > 10]) toDo: #ea
 	| allArguments collecEntities |
 	"Check if the argument is a collection or array and rebuilts the list of arguments"
 	allArguments := Cormas arrayFrom: aValueOrArrayOfValues.
-	collecEntities := self allTheEntitiesOfClassOrCollec: aCollecOrClass.
-	collecEntities isEmpty
-		ifFalse:
-			[self
-				checkEntity: collecEntities first
-				respondsTo: aSymbol.
-			(Cormas mix: collecEntities)
-				do: [:c | c perform: aSymbol withArguments: allArguments]]
+	(collecEntities := self allTheEntitiesOfClassOrCollec: aCollecOrClass) isEmpty
+		ifFalse:[ (Cormas mix: collecEntities) do: [:c | c perform: aSymbol withArguments: allArguments]]
 ]
 
 { #category : #'accessing - spatial grid' }
@@ -1329,17 +1305,6 @@ CMAbstractModel >> channel [
 CMAbstractModel >> channel: aCanal [
 	
 	channel := aCanal
-]
-
-{ #category : #private }
-CMAbstractModel >> checkEntity: anEntity respondsTo: aSymbol [
-	"check the entity can responds to a message. Alert the user if not"
-	
-	(anEntity respondsTo: aSymbol) ifTrue: [^self].
-	self cormas
-		warn: 'The class <1s> does not have a method called <2p>'
-		with: anEntity class name
-		with: aSymbol.
 ]
 
 { #category : #'accessing - entities' }
