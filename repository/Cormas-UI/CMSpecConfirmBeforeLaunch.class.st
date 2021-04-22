@@ -91,8 +91,8 @@ CMSpecConfirmBeforeLaunch >> applyScenarioSettings [
 
 	self projectManager projectWindow simWindow simWindow finalStepInputText
 		text: (self finalStep text ifNil:[0] ifNotNil:[:userDefinedStep | userDefinedStep]).
+	self delete.
 	self cormasModel initSimulation.
-	self delete
 ]
 
 { #category : #accessing }

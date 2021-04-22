@@ -24,10 +24,8 @@ CMConwayCell class >> SpatialEntityPOV_dead [
 
 { #category : #'pov symbols' }
 CMConwayCell class >> SpatialEntityPOV_dead_red [
-	"Returns an array containing the settings of a Spatial entity pov symbol in the following order:
-(color red) (color green) (color blue)"
-	<pov:#dead_red>
-	^Array with: 0.5 with: 0.0 with: 0.1
+	<pov: #dead_red>
+	^ Array with: 0.5 with: 0.0 with: 0.1
 ]
 
 { #category : #'default value' }
@@ -56,8 +54,6 @@ CMConwayCell >> initTen [
 
 { #category : #init }
 CMConwayCell >> initTenPercentDead [
-	" 10 % to be dead"
-
 	Cormas random < 0.1
 		ifTrue: [ self state: #dead ]
 		ifFalse: [ self state: #alive ]
