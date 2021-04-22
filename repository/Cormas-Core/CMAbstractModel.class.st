@@ -2050,38 +2050,6 @@ CMAbstractModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 	^self spaceModel euclideanDistanceFromCell: cell1 toCell: cell2
 ]
 
-{ #category : #'probes - charts' }
-CMAbstractModel >> exportGlobalCharts: aList inFile: aString [
-	
-	| file labels x |
-	file := ((Cormas dataPath: self class name) , aString) asFilename
-		writeStream.
-	labels := aList asOrderedCollection.
-	labels addFirst: #pdt.
-	labels do: [:l | file nextPutAll: l asString , '	'].
-	file nextPutAll: '\' withCRs.
-	1
-		to: (self perform: aList first) size
-		do:
-			[:i | 
-			file nextPutAll: (i - 1) printString , '	'.
-			2
-				to: labels size
-				do:
-					[:j | 
-					x := (self perform: (labels at: j)) at: i.
-					file
-						nextPutAll:
-							(x asFloat printString
-								collect:
-									[:a | 
-									a = $.
-										ifTrue: [$,]
-										ifFalse: [a]]) , '	'].
-			file nextPutAll: '\' withCRs].
-	file close
-]
-
 { #category : #'accessing - scheduling' }
 CMAbstractModel >> finalTime [
 	
@@ -2319,14 +2287,6 @@ For more details on the calculation and use of the Gini coefficient and index se
 				collect: [:e | e perform: att])
 ]
 
-{ #category : #'probes - charts' }
-CMAbstractModel >> globalCharts [
-	
-	^(self data includesKey: self class name)
-		ifFalse: [OrderedCollection  new]
-		ifTrue: [(self data at: self class name) keys]
-]
-
 { #category : #'user interface' }
 CMAbstractModel >> habitusNames [
 	
@@ -2390,14 +2350,6 @@ CMAbstractModel >> incrementTimeStep [
 	self timeStep: self timeStep + 1
 ]
 
-{ #category : #'probes - charts' }
-CMAbstractModel >> initCharts [
-	
-	self
-		initLocalCharts;
-		initGlobalCharts
-]
-
 { #category : #'init entities' }
 CMAbstractModel >> initEntities [
 	"Initialize all the Entity classes of the model"
@@ -2431,30 +2383,6 @@ CMAbstractModel >> initFile: aStringOrFilename dataCollection: aCollec separator
 	aFilename := self stringToFilename: aStringOrFilename.
 	aFilename exists ifTrue: [aFilename delete].
 	self updateFile: aFilename dataCollection: aCollec separator: aChar
-]
-
-{ #category : #'probes - charts' }
-CMAbstractModel >> initGlobalCharts [
-	
-	self globalCharts
-		do:
-			[:s | 
-			self
-				perform: (s asString , ':') asSymbol
-				with: (self perform: s) class new].
-	self updateGlobalCharts: 0
-]
-
-{ #category : #'probes - charts' }
-CMAbstractModel >> initLocalCharts [
-	
-	self localCharts
-		do:
-			[:s | 
-			self
-				perform: (s asString , ':') asSymbol
-				with: (self perform: s) class new].
-	self updateLocalCharts: 0
 ]
 
 { #category : #scheduling }
@@ -2612,16 +2540,6 @@ CMAbstractModel >> localCharts [
 			[:cl | 
 			(self data includesKey: cl name)
 				ifTrue: [list addAll: (self data at: cl name) keys]].
-	^list
-]
-
-{ #category : #'probes - charts' }
-CMAbstractModel >> localChartsForEntity: aName [
-	
-	| list |
-	list := OrderedCollection new.
-	(self data includesKey: aName)
-		ifTrue: [list addAll: (self data at: aName) keys].
 	^list
 ]
 
@@ -3754,14 +3672,6 @@ CMAbstractModel >> update: aCollec with: newCollec [
 	aCollec addAll: newCollec
 ]
 
-{ #category : #'probes - charts' }
-CMAbstractModel >> updateCharts: t [
-	
-	self
-		updateGlobalCharts: t;
-		updateLocalCharts: t
-]
-
 { #category : #'probes - recording' }
 CMAbstractModel >> updateDataForChart [
 	"Update the global and local data and refresh the charts"
@@ -3809,14 +3719,6 @@ CMAbstractModel >> updateFile: aStringOrFilename dataCollection: aCollec separat
 	stream close
 ]
 
-{ #category : #'probes - charts' }
-CMAbstractModel >> updateGlobalCharts: t [
-	
-	self globalCharts
-		do:
-			[:s | (self perform: s) add: (self perform: (s asString , 'Data') asSymbol)]
-]
-
 { #category : #'probes - recording' }
 CMAbstractModel >> updateGlobalData [
 	
@@ -3824,28 +3726,6 @@ CMAbstractModel >> updateGlobalData [
 		ifTrue:
 			[(self data at: self class name)
 				keysAndValuesDo: [:name :list | list add: (self perform: name)]]
-]
-
-{ #category : #'probes - charts' }
-CMAbstractModel >> updateLocalCharts: t [
-	| classAndSelector res collec className selector |
-	self localCharts
-		do: [ :s | 
-			classAndSelector := self perform: (s asString , 'Data') asSymbol.
-			className := classAndSelector first.
-			selector := classAndSelector last.
-			res := OrderedCollection new.
-			(self perform: (self getterForEntityClass: className))
-				do:
-					[ :c | res add: (Array with: (c perform: selector) with: c id) ].
-			res
-				do: [ :x | 
-					((self perform: s) keys includes: x last)
-						ifFalse: [ collec := OrderedCollection new.
-							t timesRepeat: [ collec add: 0 ] ]
-						ifTrue: [ collec := (self perform: s) at: x last ].
-					collec add: x first.
-					(self perform: s) at: x last put: collec ] ]
 ]
 
 { #category : #'probes - recording' }
