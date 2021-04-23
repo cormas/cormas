@@ -7,7 +7,8 @@ Class {
 	#name : #CMProjectOpener,
 	#superclass : #CMResourceOpener,
 	#instVars : [
-		'zipFileSys'
+		'zipFileSys',
+		'readStream'
 	],
 	#category : #'Cormas-UI-Project'
 }
@@ -101,6 +102,16 @@ CMProjectOpener >> openProject: aFileReference [
 	^ openStatus
 ]
 
+{ #category : #accessing }
+CMProjectOpener >> readStream [
+	^ readStream
+]
+
+{ #category : #accessing }
+CMProjectOpener >> readStream: anObject [
+	readStream := anObject
+]
+
 { #category : #callbacks }
 CMProjectOpener >> tryOpenFromFile: fileRef [
 	" Private - Try to open fileRef <FileReference> project file "
@@ -135,7 +146,7 @@ CMProjectOpener >> tryReadSourceFromProject [
 
 	[ 	
 		zipFileSys := self validateProjectFile: self projectManager currentProjectFileReference.
-		^ self modelFile readStream 
+		readStream := self modelFile readStream 
 	]
 	on: Error
 	do: [ : ex | 

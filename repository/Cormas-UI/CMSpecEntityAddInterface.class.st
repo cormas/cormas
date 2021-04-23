@@ -20,9 +20,13 @@ CMSpecEntityAddInterface >> addEntity [
 
 { #category : #callbacks }
 CMSpecEntityAddInterface >> addNewEntityItem: newClassName [
+	" Private - Update the receiver's list of entities with newClassName (if found) "
 
-	(Smalltalk hasClassNamed: newClassName asValidCormasClassName)
-		ifTrue: [ self owner addItem: newClassName asValidCormasClassName ].
+	| newEntity |
+	
+	newEntity := newClassName asValidCormasClassName: self projectManager cormasProjectName.
+	(Smalltalk hasClassNamed: newEntity)
+		ifTrue: [ self owner addItem: newEntity ].
 ]
 
 { #category : #callbacks }
@@ -34,7 +38,7 @@ CMSpecEntityAddInterface >> addValidEntity [
 	newClassName := self entityName textValuePending.
 	self projectAnnouncer announce: 
 		(CMEntityNewAnnouncement 
-			named: newClassName 
+			named: (newClassName asValidCormasClassName: self projectManager cormasProjectName) 
 			type: self entityType
 			superclass: self entitySuperclass).
 	self addNewEntityItem: newClassName.
