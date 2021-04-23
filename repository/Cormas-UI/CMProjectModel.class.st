@@ -123,7 +123,7 @@ CMProjectModel >> asCormasProjectModelForPreview [
 	^ self
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing - names' }
 CMProjectModel >> asCormasProjectName [
 	" Answer a <String> with the receiver's name, does not assume a Cormas model already present "
 
@@ -222,9 +222,9 @@ CMProjectModel >> cormasModelCreationDate: aString [
 
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing - names' }
 CMProjectModel >> cormasModelName [
-	" Answer a <String> with the receiver's model name "
+	" Answer a <String> with the receiver's CORMAS model name "
 
 	^ self cormasModelClass cormasModelName
 ]
@@ -309,7 +309,7 @@ CMProjectModel >> definedCormasVersions [
 	^ Array with: self
 ]
 
-{ #category : #'accessing-simulations' }
+{ #category : #'accessing - simulations' }
 CMProjectModel >> findSimulationNamed: aName [
 	" Answer <true> if the dump folder has stored simulations "
 
@@ -317,7 +317,7 @@ CMProjectModel >> findSimulationNamed: aName [
 
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing - names' }
 CMProjectModel >> friendlyName [
 	^ self cormasModel friendlyName.
 ]
@@ -334,6 +334,17 @@ CMProjectModel >> hasStoredSimulations [
 	" Answer <true> if the receiver has a project opened and the project's dump folder has stored simulations, <false> otherwise "
 
 	^ self storedSimulations notEmpty
+]
+
+{ #category : #accessing }
+CMProjectModel >> info [
+	" Answer an instance of <PFProjectInformation> "
+
+	^ info
+		ifNil: [ 
+			info := PFProjectInformation 
+				named: self defaultCormasModelName
+				project: self. ]
 ]
 
 { #category : #accessing }
@@ -380,13 +391,15 @@ CMProjectModel >> initializeEvents [
 CMProjectModel >> initializeForModel: aCormasModel [
 	" Private - Set up the cormas model for the receiver "
 
-	self initializeForModel: aCormasModel named: self defaultCormasModelName.
+	self cormasModel: aCormasModel.
+	self cormasModelClass: aCormasModel class.
+	self initializeEvents.
 
 ]
 
 { #category : #'initialize - release' }
 CMProjectModel >> initializeForModel: aCormasModel named: aString [
-	" Private - Set up the cormas model for the receiver "
+	" Private - Set up the cormas model for the receiver with name aString "
 
 	self initializeNamed: aString.
 	self cormasModel: aCormasModel.
@@ -401,9 +414,12 @@ CMProjectModel >> isModified [
 	
 	| opener imageSnap originalFileSnap |
 	
+	self projectManager currentProjectFileReference ifNil: [ ^ true ].
 	imageSnap := (RPackageOrganizer default packageOf: self cormasModel class) mcPackage snapshot.
 	opener := CMProjectOpener newFrom: self projectManager.
-	originalFileSnap := (MCStReader on: opener tryReadSourceFromProject) snapshot.
+	opener tryReadSourceFromProject openStatus
+		ifFalse: [ self error: 'Error while reading project from file' ].
+	originalFileSnap := (MCStReader on: opener readStream) snapshot.
 	^ imageSnap ~= originalFileSnap
 ]
 
@@ -439,7 +455,7 @@ CMProjectModel >> projectAnnouncer [
 	^ self projectManager announcer
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing - names' }
 CMProjectModel >> projectName [
 	" Answer a <String> with the receiver's model name "
 
@@ -537,7 +553,7 @@ CMProjectModel >> specializeEntity: aCMEntityAnnouncement [
 
 ]
 
-{ #category : #'accessing-simulations' }
+{ #category : #'accessing - simulations' }
 CMProjectModel >> storedSimulations [
 	" Answer a <Collection> with the receiver's current model stored simulations "
 
@@ -546,21 +562,21 @@ CMProjectModel >> storedSimulations [
 
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing - names' }
 CMProjectModel >> userProvidedName [
 	" Answer a <String> with the receiver's name as provided by the user on creation "
 
 	^ self info infoName
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing - names' }
 CMProjectModel >> userProvidedName: aString [
 	" Answer a <String> with the receiver's name as provided by the user on creation "
 
 	self info infoName: aString
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing - names' }
 CMProjectModel >> validateCormasModelName: modelName [
 	" Answer a <String> with modelName as valid Smalltalk class name "
 

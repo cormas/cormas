@@ -127,6 +127,13 @@ CMProjectManager >> cormasModels [
 ]
 
 { #category : #accessing }
+CMProjectManager >> cormasProjectName [
+	" Answer a <String> which is a Cormas model name "
+
+	^ self currentProject userProvidedName
+]
+
+{ #category : #accessing }
 CMProjectManager >> createClassModelNamed: modelName [
  	" Private - See delegated method implementor. Answer a new <Class> "
 	
@@ -150,14 +157,14 @@ CMProjectManager >> createNewProject [
 { #category : #callbacks }
 CMProjectManager >> createProject: projectName in: aCMApplicationProject [
 
-	| newProject |
+	| newProject newModel |
 	
-	newProject := 
-		(aCMApplicationProject createProjectNamed: projectName)
-			projectManager: self;
-			initializeForModel: (self createClassModelNamed: projectName asValidCormasClassName) new
-				named: projectName asValidCormasClassName;
-				yourself.
+	newProject := aCMApplicationProject createProjectNamed: projectName.
+	newModel := (self createClassModelNamed: projectName asValidCormasClassName) new.
+	newProject
+		projectManager: self;
+		initializeForModel: newModel;
+		yourself.
 	aCMApplicationProject currentProject: newProject.
 	self updateNewProject: projectName.
 	self fsm handleEvent: #actionNew.

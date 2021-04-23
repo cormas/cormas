@@ -44,6 +44,16 @@ CMResourceOpener >> handleFileInException: ex [
 ]
 
 { #category : #accessing }
+CMResourceOpener >> openStatus [
+	^ openStatus
+]
+
+{ #category : #accessing }
+CMResourceOpener >> openStatus: anObject [
+	^ openStatus := anObject
+]
+
+{ #category : #accessing }
 CMResourceOpener >> projectManager [
 
 	^ projectManager
