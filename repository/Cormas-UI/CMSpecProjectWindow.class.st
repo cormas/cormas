@@ -100,6 +100,13 @@ CMSpecProjectWindow allInstances } allSatisfy: #isEmpty.'
 ]
 
 { #category : #private }
+CMSpecProjectWindow >> cormasModel [
+	" Answer the receiver's model, a subclass of <CMAbstractModel> "
+
+	^ self projectManager cormasModel
+]
+
+{ #category : #private }
 CMSpecProjectWindow >> cormasModelClass [
 	" Private - See comment in #cormasModelClass "
 
@@ -1153,8 +1160,10 @@ CMSpecProjectWindow >> subMenuToolsExpressions: item [
 CMSpecProjectWindow >> subMenuToolsInspectUI: item [
 
 	item
-		name: 'inspect';
-		action: [ self inspect ]
+		name: self translator tInspectModel;
+		icon: (self iconNamed: #smallObjects);
+		shortcut: $I command;
+		action: [ self cormasModel inspect ]
 ]
 
 { #category : #'submenu-tools' }

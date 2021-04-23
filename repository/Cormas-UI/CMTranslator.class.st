@@ -304,6 +304,7 @@ Enter the entity''s name';
 		at: #tChooseStFile 				put: 'Choose st file';
 		at: #tStFiles 						put: 'st files';
 		at: #tConfirmBeforeLaunch 		put: 'Confirmation before launching';
+		at: #tInspectModel 				put: 'Inspect model';
 		yourself
 ]
 
@@ -577,6 +578,7 @@ Ingrese el nombre de la entidad';
 		at: #tChooseStFile 					put: 'Seleccionar archivo st';
 		at: #tStFiles 							put: 'archivos st';
 		at: #tConfirmBeforeLaunch 			put: 'Confirmación pre-lanzamiento';
+		at: #tInspectModel 					put: 'Inspeccionar modelo';
 		yourself
 
 ]
