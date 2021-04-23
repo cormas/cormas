@@ -305,6 +305,7 @@ Enter the entity''s name';
 		at: #tStFiles 						put: 'st files';
 		at: #tConfirmBeforeLaunch 		put: 'Confirmation before launching';
 		at: #tInspectModel 				put: 'Inspect model';
+		at: #tValidNameRequired 			put: 'Please provide a valid name';
 		yourself
 ]
 
@@ -579,6 +580,7 @@ Ingrese el nombre de la entidad';
 		at: #tStFiles 							put: 'archivos st';
 		at: #tConfirmBeforeLaunch 			put: 'Confirmación pre-lanzamiento';
 		at: #tInspectModel 					put: 'Inspeccionar modelo';
+		at: #tValidNameRequired 				put: 'Por favor escriba un nombre válido';
 		yourself
 
 ]
