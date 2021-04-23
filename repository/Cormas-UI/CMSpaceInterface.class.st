@@ -74,6 +74,13 @@ CMSpaceInterface >> closeAfterCreateProject [
 	^ true
 ]
 
+{ #category : #accessing }
+CMSpaceInterface >> cormasModel [
+	" Answer the receiver's model, a subclass of <CMAbstractModel> "
+
+	^ self projectManager cormasModel
+]
+
 { #category : #initialization }
 CMSpaceInterface >> initializeApplication [
 
@@ -320,8 +327,10 @@ CMSpaceInterface >> initializeToolsMenuToolbar [
 					
 				addItem: [ :item | 
 					item
-						name: 'inspect';
-						action: [ self inspect ] ] ];
+						name: self translator tInspectModel;
+						icon: (self iconNamed: #smallObjects);
+						shortcut: $I command;
+						action: [ self cormasModel inspect ] ] ];
 		yourself
 ]
 
@@ -359,7 +368,7 @@ CMSpaceInterface >> specSpaceView: anObject [
 	specSpaceView := anObject
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #private }
 CMSpaceInterface >> subMenuForClassPov: aClass [
 	^ MenuModel new
 		addGroup: [ :group | 
