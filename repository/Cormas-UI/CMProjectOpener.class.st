@@ -146,7 +146,8 @@ CMProjectOpener >> tryReadSourceFromProject [
 
 	[ 	
 		zipFileSys := self validateProjectFile: self projectManager currentProjectFileReference.
-		readStream := self modelFile readStream 
+		readStream := self modelFile readStream.
+		openStatus := true.
 	]
 	on: Error
 	do: [ : ex | 
