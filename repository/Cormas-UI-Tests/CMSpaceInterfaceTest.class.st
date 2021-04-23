@@ -14,15 +14,35 @@ Class {
 CMSpaceInterfaceTest >> newProjectManager [
 
 	^ CMProjectManager new 
+		currentProject: (CMProjectModel basicNew
+				initializeForModel: self newTestModel named: 'Sample Model';
+				yourself);
 		startFSM;
 		yourself.
+]
+
+{ #category : #running }
+CMSpaceInterfaceTest >> newTestModel [
+	^ (CMTestModel
+		initialize;
+		new)
+		activeInit: #initAlive;
+		initSimulation;
+		initializeSpaceModel;
+		createGridLines: 20
+			columns: 10
+			neighbourhood: 4
+			closed: true;
+		yourself
 ]
 
 { #category : #running }
 CMSpaceInterfaceTest >> setUp [
 	"Hooks that subclasses may override to define the fixture of test."
 
-	self spaceInterface: (CMSpaceInterface for: self newProjectManager).
+	CMApplicationProject release.
+	PFProjectSettings currentApplicationClass: CMApplicationProject.
+	self spaceInterface: (CMSpaceInterface basicNew projectManager: self newProjectManager).
 ]
 
 { #category : #accessing }
