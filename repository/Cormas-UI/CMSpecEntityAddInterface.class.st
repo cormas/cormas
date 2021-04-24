@@ -10,10 +10,11 @@ Class {
 
 { #category : #callbacks }
 CMSpecEntityAddInterface >> addEntity [
+	" Private - Callback for adding a new entity "
 
 	self hasValidEntityName
 		ifTrue: [ self addValidEntity ]
-		ifFalse: [ ^ self informMessage: self translator tEnterClassName ].
+		ifFalse: [ ^ self informMessage: self translator tValidNameRequired ].
 	self delete.
 
 ]
@@ -78,7 +79,10 @@ CMSpecEntityAddInterface >> entityType [
 CMSpecEntityAddInterface >> hasValidEntityName [
 	" Answer <false> if the user provided entity name is not valid "
 
-	^ self entityName textValuePending notEmpty 
+	| providedName |
+	
+	providedName := self entityName textValuePending.
+	^ providedName notEmpty and: [ self projectManager isValidCormasEntityName: providedName  ]
 
 ]
 

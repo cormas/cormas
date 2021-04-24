@@ -308,6 +308,14 @@ CMProjectManager >> initialize [
 
 ]
 
+{ #category : #testing }
+CMProjectManager >> isValidCormasEntityName: aString [ 
+	" Answer <true> if aString is a valid name for an entity in the context of CORMAS "
+	
+	^ (self class environment hasClassNamed: aString asValidCormasClassName) not
+		and: [ (self class environment hasClassNamed: (aString asValidCormasClassName: self cormasProjectName)) not ] 
+]
+
 { #category : #accessing }
 CMProjectManager >> modelControlInitMethods [
 	" Answer a <Collection> of <String> with CORMAS model control selectors "

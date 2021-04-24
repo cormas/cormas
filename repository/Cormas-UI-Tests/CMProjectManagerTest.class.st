@@ -7,6 +7,13 @@ Class {
 	#category : #'Cormas-UI-Tests-Project'
 }
 
+{ #category : #test }
+CMProjectManagerTest >> newValidEntityNamed: entityName [
+
+	CMSpatialEntityAggregate subclass: #CM , entityName
+
+]
+
 { #category : #accessing }
 CMProjectManagerTest >> projectManager [
 	^ projectManager
@@ -161,6 +168,18 @@ CMProjectManagerTest >> testCurrentProjectVersion [
 	self projectManager cormasModelVersion: '1.0'.
 	self assert: self projectManager currentProjectVersion equals: '1.0'.
 
+]
+
+{ #category : #test }
+CMProjectManagerTest >> testIsValidCormasEntityName [
+
+	| entityName |
+
+	entityName := 'Entity1'.
+	self assert: (self projectManager isValidCormasEntityName: entityName).
+	self newValidEntityNamed: entityName.
+	self deny: (self projectManager isValidCormasEntityName: entityName).
+	(self class environment at: (#CM , entityName)) removeFromSystem
 ]
 
 { #category : #test }
