@@ -123,7 +123,7 @@ BaselineOfCormas >> preLoadForPharo8 [
 BaselineOfCormas >> preLoadForPharo9 [
 	" Private - Execute post install actions "
 
-	Smalltalk tools debugger filterCommonMessageSends: true.
+	"Smalltalk tools debugger filterCommonMessageSends: true."
 	PharoLightTheme beCurrent
 ]
 

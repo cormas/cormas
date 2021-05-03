@@ -59,7 +59,7 @@ CMModel2ProjectMigrator >> buildProjectFile [
 	
 	CMProjectFile 
 		archiveAllFromPharo: self outputDirectory asFileReference children
-		as: self currentModel fileName
+		as: self currentModel projectFilename
 
 ]
 
@@ -124,7 +124,7 @@ CMModel2ProjectMigrator >> defaultDestinationPath [
 CMModel2ProjectMigrator >> defaultOutputDirectory [
 	" Private - Answer the default <String> with the name of the directory serving as temporary location where to write project files before being compressed "
 	
-	^ 'cormas_project'
+	^ (self tempLocation / 'cormas_project') fullName
 ]
 
 { #category : #private }
@@ -154,7 +154,7 @@ CMModel2ProjectMigrator >> handleFileEx: ex [
 				ifTrue: [ 
 					self traceCrTab: 'Model2Project: Creating projects directory' , self defaultOutputDirectory. 
 					self defaultOutputDirectory asFileReference ensureCreateDirectory.
-					self traceCrTab: 'Model2Project: Done creating projects directory' , self defaultOutputDirectory. 
+					self traceCrTab: 'Model2Project: Done creating projects directory' , self defaultOutputDirectory.
 					ex retry ] ]
 ]
 
@@ -194,7 +194,7 @@ CMModel2ProjectMigrator >> moveProjects [
 
 	'Model2Project: Moving project files...' traceCr.
 	CMApplicationProject createUserDirectories.
-	(FileSystem workingDirectory allChildrenMatching: '*Model.zip') do: [ : modelRef |
+	(self tempLocation allChildrenMatching: '*Model.zip') do: [ : modelRef |
 		self moveProject: modelRef ].
 	'Model2Project: Done moving project files...' traceCr.
 ]
@@ -235,6 +235,12 @@ CMModel2ProjectMigrator >> resourceDirectoryNames [
 		)
 ]
 
+{ #category : #defaults }
+CMModel2ProjectMigrator >> tempLocation [
+
+	^ FileLocator imageDirectory
+]
+
 { #category : #writing }
 CMModel2ProjectMigrator >> writeDirectoryStructure [
 	" Private - Write directory names for the receiver's target project "
@@ -266,7 +272,7 @@ CMModel2ProjectMigrator >> writeSourceCode: modelClass [
 	modelClass package 
 		fileOutOn: (WriteStream on: (String new: 4000))
 		named: CMProjectFile sourceCodeFilename.
-	newFile := CMProjectFile sourceCodeFilename , '.st'.
+	newFile := self tempLocation / (CMProjectFile sourceCodeFilename , '.st').
 	self writeSourceCodeInTempLocation: newFile.
 	self traceCrTab: 'Model2Project: Done writing source code ' , modelClass asString. 
 ]
@@ -276,7 +282,7 @@ CMModel2ProjectMigrator >> writeSourceCodeInTempLocation: newFile [
 
 	| dest |
 	
-	dest := self defaultOutputDirectory asFileReference / newFile.
+	dest := self defaultOutputDirectory asFileReference / newFile basename.
 	[ newFile asFileReference copyTo: dest ]
 	on: FileExists, FileDoesNotExistException
 	do: [ : ex | self handleFileEx: ex ].
