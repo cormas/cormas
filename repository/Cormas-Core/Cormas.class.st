@@ -821,12 +821,12 @@ Example: Cormas minOf: #elevation amongObject: self theCells"
 		ifTrue: [ nil ]
 ]
 
-{ #category : #'utilities - random' }
+{ #category : #accessing }
 Cormas class >> mix: aCollection [
 	"Purpose: Returns a randomly mixed collection
 Argument: aCollection is a collection to be mixed"
 
-	^ aCollection shuffleBy: self randomGenerator
+	^ aCollection asOrderedCollection shuffleBy: self randomGenerator
 ]
 
 { #category : #'utilities - mathematics' }

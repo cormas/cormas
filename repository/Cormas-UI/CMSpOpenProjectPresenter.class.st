@@ -18,6 +18,39 @@ Class {
 
 { #category : #specs }
 CMSpOpenProjectPresenter class >> defaultSpec [
+
+	<spec>
+	^ SpBoxLayout newHorizontal
+		  add: (SpBoxLayout newVertical
+				   add: #projectsLocationsPresenter
+				   withConstraints: [ :constraints | 
+					   constraints height: self toolbarHeight ];
+				   add: #projectsListPresenter);
+		  add: (SpPanedLayout newVertical
+				   positionOfSlider: 45 percent;
+				   add: (SpBoxLayout newHorizontal
+						    add: #versionsListPresenter
+						    withConstraints: [ :constraints | constraints width: 150 ];
+						    add: #previewPresenter;
+						    yourself);
+				   add: (SpBoxLayout newVertical
+						    add: #metaInfoPresenter;
+						    add: #toolbar
+						    withConstraints: [ :constraints | 
+							    constraints height: self toolbarHeight ];
+						    yourself))
+]
+
+{ #category : #examples }
+CMSpOpenProjectPresenter class >> example [
+	<example>
+
+	CMSpOpenProjectPresenter new openWithSpec
+]
+
+{ #category : #specs }
+CMSpOpenProjectPresenter class >> specSpecPharo8 [
+
 	<spec>
 	^ SpBoxLayout newHorizontal 
 		add: (
@@ -35,13 +68,6 @@ CMSpOpenProjectPresenter class >> defaultSpec [
 					add: #metaInfoPresenter;
 					add: #toolbar withConstraints: [ :constraints | constraints height: self toolbarHeight ];
 					yourself))
-]
-
-{ #category : #examples }
-CMSpOpenProjectPresenter class >> example [
-	<example>
-
-	CMSpOpenProjectPresenter new openWithSpec
 ]
 
 { #category : #specs }
@@ -132,7 +158,7 @@ CMSpOpenProjectPresenter >> initializeLocationsPresenter [
 	projectsLocationsPresenter  
 		items: self cormasLocations keys;
 		transmitTo: projectsListPresenter
-		transform: [ : locationId | self projectsFor: locationId ];
+		transform: [ : locationId | self projectsFor: locationId model ];
 		"postTransmission: [ :destination :origin | destination selectIndex: 1 ];"
 		selectIndex: 1.
 ]
@@ -160,18 +186,20 @@ CMSpOpenProjectPresenter >> initializePresenters [
 
 { #category : #initialization }
 CMSpOpenProjectPresenter >> initializeProjectsPresenter [
+	" #enableItemSubstringFilter will be removed: Do a component  with a list and a text field, you subscribe to text change, you apply filter and update list items. So you do not add behaviour to a SpListPresenter, you create a presenter (say “ListWithFilterPresenter”) that combines two low level presenters, in pure Spec spirit "
 
 	projectsListPresenter 
-		enableItemSubstringFilter;
+		"enableItemSubstringFilter;"
 		display: [ : fileRef | fileRef asCormasProjectName ];
 		sortingBlock: [ :a :b | a asCormasProjectName < b asCormasProjectName ]
 ]
 
 { #category : #initialization }
 CMSpOpenProjectPresenter >> initializeVersionsPresenter [
-
+	" #enableItemSubstringFilter will be removed: Do a component  with a list and a text field, you subscribe to text change, you apply filter and update list items. So you do not add behaviour to a SpListPresenter, you create a presenter (say “ListWithFilterPresenter”) that combines two low level presenters, in pure Spec spirit "
+	
 	versionsListPresenter
-		enableItemSubstringFilter;
+		"enableItemSubstringFilter;"
 		display: [ :item | item userProvidedName ].
 
 

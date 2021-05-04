@@ -36,18 +36,19 @@ CormasUITest >> testCurrentStepInputTextOfSimWindowIsResetAfterOpeningAModel [
 	
 	aCMProjectManager openModel: #CMECECModel.
 	aCMProjectManager updateNewProject: #CMECECModel.
-	self assert: simWindow currentStepInputText text equals: 0.
+	self assert: simWindow currentStepInputText text asInteger equals: 0.
 ]
 
 { #category : #test }
 CormasUITest >> testCurrentStepInputTextOfSimWindowIsUpdatedWhenRuningSimulation [
 	| aCMProjectManager simWindow |
+	
 	aCMProjectManager := self newProjectManagerWithInitializedUIOnModel: #CMConwayModel.
 	simWindow := aCMProjectManager projectWindow simWindow simWindow.
-	simWindow openWithSpec.
+	"simWindow openWithSpec."
 	20 timesRepeat: [ aCMProjectManager currentProject cormasModel runStep ].
 	self
-		assert: simWindow currentStepInputText text
+		assert: simWindow currentStepInputText text asInteger
 		equals: aCMProjectManager currentProject cormasModel timeStep. simWindow delete
 ]
 
