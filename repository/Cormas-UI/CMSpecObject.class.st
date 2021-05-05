@@ -105,7 +105,7 @@ CMSpecObject >> iconNamed: aSymbol [
 { #category : #accessing }
 CMSpecObject >> openBrowserAt: aClass tag: aSymbol [
 
-	ClyFullBrowser openWithState: [ : browser | 
+	Smalltalk tools browserTool openWithState: [ : browser | 
 		browser 
 			selectClass: aClass
 			atMethodTag: aSymbol ]
