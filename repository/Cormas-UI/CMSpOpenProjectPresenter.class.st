@@ -123,6 +123,14 @@ CMSpOpenProjectPresenter >> defaultCormasProjects [
 	^ #()
 ]
 
+{ #category : #private }
+CMSpOpenProjectPresenter >> defaultSpecSelector [
+
+	^ SystemVersion current major = 8
+		ifTrue: [ #specSpecPharo8 ]
+		ifFalse: [ #defaultSpec ]
+]
+
 { #category : #accessing }
 CMSpOpenProjectPresenter >> initialExtent [
 	"Answer the initial extent for the receiver."
@@ -158,7 +166,7 @@ CMSpOpenProjectPresenter >> initializeLocationsPresenter [
 	projectsLocationsPresenter  
 		items: self cormasLocations keys;
 		transmitTo: projectsListPresenter
-		transform: [ : locationId | self projectsFor: locationId model ];
+		transform: [ : locationId | self projectsFor: (self locationIdentifierFor: locationId) ];
 		"postTransmission: [ :destination :origin | destination selectIndex: 1 ];"
 		selectIndex: 1.
 ]
@@ -203,6 +211,13 @@ CMSpOpenProjectPresenter >> initializeVersionsPresenter [
 		display: [ :item | item userProvidedName ].
 
 
+]
+
+{ #category : #private }
+CMSpOpenProjectPresenter >> locationIdentifierFor: locId [
+	" Temporary patch for backward compatibility with Pharo 8. To be removed "
+	
+	^ locId isString ifTrue: [ locId ] ifFalse: [ locId model ]
 ]
 
 { #category : #private }
