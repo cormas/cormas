@@ -256,9 +256,13 @@ CMSpecSimulationWindow >> defineScenarioAction [
 		ifTrue: [ CMSpecConfirmBeforeLaunch openFor: self projectManager ]
 		ifFalse: [
 			self projectManager currentProjectHasInitMethods 
-				ifFalse: [ self openBrowserAt: self cormasModelClass tag: #init ].
+				ifFalse: [ 
+					self informMessage: self translator tDefineInit4Scenario. 
+					self openBrowserAt: self cormasModelClass tag: #init ].
 			self projectManager currentProjectHasControlMethods
-				ifFalse: [ self openBrowserAt: self cormasModelClass tag: #control ]  ]
+				ifFalse: [ 
+					self informMessage: self translator tDefineControl4Scenario. 
+					self openBrowserAt: self cormasModelClass tag: #control ]  ]
 ]
 
 { #category : #morphic }
@@ -473,8 +477,9 @@ CMSpecSimulationWindow >> initializeWidgets [
 
 { #category : #changes }
 CMSpecSimulationWindow >> newCurrentStepValue: anInteger [
-anInteger isInteger ifFalse: [ self halt ].
-self currentStepInputText text: anInteger.
+
+	anInteger isInteger ifFalse: [ self halt ].
+	self currentStepInputText text: anInteger asString.
 ]
 
 { #category : #morphic }

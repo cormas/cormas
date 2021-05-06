@@ -293,18 +293,21 @@ CMSpecEntitiesBrowser >> initializePresenter [
 	" Private - See superimplementor's comment "
 
 	self spatialList 
+		displayBlock: [ : className | className allButFirst: 2 ];
 		addActionBlock: [ self openAddSpatialEntityInterface ];
 		removeActionBlock: [ self entityRemove: (
 			CMEntityRemoveAnnouncement 
 				named: self selectedSpatialListItem asValidCormasClassName
 				type: 'Spatial') ].
 	self socialList 
+		displayBlock: [ : className | className allButFirst: 2 ];
 		addActionBlock: [ self openAddAgentInterface ];
 		removeActionBlock: [ self entityRemove: (
 			CMEntityRemoveAnnouncement 
 				named: self selectedSocialListItem asValidCormasClassName
 				type: 'Social') ].
 	self passiveList 
+		displayBlock: [ : className | className allButFirst: 2 ];
 		addActionBlock: [ self openAddPassiveInterface ];
 		removeActionBlock: [ self entityRemove: (
 			CMEntityRemoveAnnouncement 
