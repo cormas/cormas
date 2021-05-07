@@ -308,6 +308,12 @@ Enter the entity''s name';
 		at: #tValidNameRequired 			put: 'Please provide a valid name';
 		at: #tDefineInit4Scenario 		put: 'Please define at least one init method for preparing a scenario';
 		at: #tDefineControl4Scenario	put: 'Please define at least one control method for preparing a scenario';
+		at: #tDeveloperTools 				put: 'Developer tools';
+		at: #tRunCormasTests 				put: 'Run CORMAS tests';
+		at: #tOpenCormasIssue 			put: 'Open an issue';
+		at: #tPackageDepedenciesTool 	put: 'Open Package Dependencies Analyzer';
+		at: #tPackageDepedenciesGraph 	put: 'Open Package Dependencies Graph';
+		at: #tCORMASBrowser 				put: 'CORMAS Browser';
 		yourself
 ]
 
@@ -585,6 +591,12 @@ Ingrese el nombre de la entidad';
 		at: #tValidNameRequired 				put: 'Por favor escriba un nombre válido';
 		at: #tDefineInit4Scenario 			put: 'Por favor define al menos un método de inicialización para preparar un escenario';
 		at: #tDefineControl4Scenario		put: 'Por favor define al menos un método de control para preparar un escenario';
+		at: #tDeveloperTools 					put: 'Herramientas de desarrollo';
+		at: #tRunCormasTests 					put: 'Ejecutar tests de  CORMAS';
+		at: #tOpenCormasIssue 				put: 'Abrir una incidencia';
+		at: #tPackageDepedenciesTool 		put: 'Abrir Analizador de Dependencias de Paquetes';
+		at: #tPackageDepedenciesGraph 		put: 'Abrir Visualización de Dependencias de Paquetes';
+		at: #tCORMASBrowser 					put: 'Navegador de CORMAS';
 		yourself
 
 ]

@@ -113,6 +113,13 @@ CMSpecProjectWindow >> cormasModelClass [
 	^ self projectManager cormasModelClass 
 ]
 
+{ #category : #'submenu-tools-developer' }
+CMSpecProjectWindow >> cormasPackages [
+	" Anwser a <Collection> of <RPackage> which belong to the CORMAS project "
+	
+	^ RPackageOrganizer default packageNames select: [ : each | each beginsWith: 'Cormas' ]
+]
+
 { #category : #defaults }
 CMSpecProjectWindow >> defaultProjectManagerClass [
 	" Private - See superimplementor's comment "
@@ -448,6 +455,46 @@ CMSpecProjectWindow >> menuEnableVisualizationGroup [
 	} do: [ : itemSel | self menuEnableItem: itemSel ]
 ]
 
+{ #category : #'submenu-tools-developer' }
+CMSpecProjectWindow >> openCormasIssue [
+
+	Cursor wait showWhile: [ WebBrowser openOn: 'https://github.com/cormas/cormas/issues/new/choose' ]
+]
+
+{ #category : #'submenu-tools-developer' }
+CMSpecProjectWindow >> openCormasSystemBrowser [
+
+	Smalltalk tools browser openWithState: [ : browser | 
+		browser 
+			setUpScopedModeWith: (ClyPackageScope 
+				ofAll: (self cormasPackages collect: #asPackage)
+				in: ClyNavigationEnvironment currentImage 
+				named: 'CORMAS') ]
+]
+
+{ #category : #'submenu-tools-developer' }
+CMSpecProjectWindow >> openDependenciesGraph [
+
+	| matchingPackages |
+
+	matchingPackages := self cormasPackages.
+	matchingPackages := { 'Cormas-Core' . 'Cormas-UI' }.
+	(DAPackageRelationGraphGenerator 
+		newWith: ((DAPackageRelationGraph 
+				onPackages: (matchingPackages collect: [ :packageName | (DAPackage onPackageNamed: packageName) ]))
+				build) 
+		named: 'CORMAS Dependencies')
+			graphviz 
+			make: 'dot';
+			openInWindow. 
+]
+
+{ #category : #'submenu-tools-developer' }
+CMSpecProjectWindow >> openDependenciesTool [
+
+	Cursor wait showWhile: [ (DAPackageAnalyzerTreeModel onPackagesMatch: '*Cormas*') open ]
+]
+
 { #category : #callbacks }
 CMSpecProjectWindow >> openEditAttributes [
 	" Open the edit attributes window "
@@ -555,6 +602,13 @@ CMSpecProjectWindow >> quitSubApplicationWindows [
 		thenDo: [ :w | w delete ].
 ]
 
+{ #category : #'submenu-tools-developer' }
+CMSpecProjectWindow >> runCormasTests [
+
+	^ Cursor wait showWhile: [ 
+		(SubunitRunner runAndCollectPackages: #('Cormas-Tests')) anyOne inspect ]
+]
+
 { #category : #accessing }
 CMSpecProjectWindow >> simWindow [
 	^ simWindow
@@ -593,6 +647,42 @@ CMSpecProjectWindow >> subMenuCormasR [
 			group 
 				addItem: [ : item | self subMenuStartWSR: item ];
 				addItem: [ : item | self subMenuStopWSR: item ] ]
+]
+
+{ #category : #'submenu-tools-developer' }
+CMSpecProjectWindow >> subMenuDependenciesGraph: item [
+
+	item
+		name: self translator tPackageDepedenciesGraph;
+		icon: (self iconNamed: #references);
+		shortcut: $D command;
+		action: [ self openDependenciesGraph ]
+]
+
+{ #category : #'submenu-tools-developer' }
+CMSpecProjectWindow >> subMenuDependenciesTool: item [
+
+	item
+		name: self translator tPackageDepedenciesTool;
+		icon: (self iconNamed: #smallWindow);
+		shortcut: $D command;
+		action: [ self openDependenciesTool ]
+]
+
+{ #category : #'submenu-tools-developer' }
+CMSpecProjectWindow >> subMenuDevTools [
+
+	^ MenuModel new
+		addGroup: [ : group |
+			group 
+				addItem: [ : item | self subMenuDependenciesTool: item ];
+				addItem: [ : item | self subMenuDependenciesGraph: item ] ];
+		addGroup: [ : group | 
+			group
+				addItem: [ : item | self subMenuToolsExpressions: item ];
+				addItem: [ : item | self subMenuToolsCormasBrowser: item ];
+				addItem: [ : item | self subMenuOpenCormasIssue: item ];
+				addItem: [ : item | self subMenuRunCormasTests: item ] ]
 ]
 
 { #category : #'submenu-help' }
@@ -692,11 +782,11 @@ CMSpecProjectWindow >> subMenuForTools [
 				addItem: [ :item | self subMenuToolsManipulateInstances: item ];
 				addItem: [ :item | self subMenuToolsCreateInstances: item ];
 				addItem: [ :item | self subMenuToolsSnapshot: item ];
-				addItem: [ :item | self subMenuToolsExpressions: item ];
 				addItem: [ :item | self subMenuToolsMain: item ] ];
 		addGroup: [ :group | 
 			group
-				addItem: [ :item | self subMenuToolsAddOns: item ];
+				"addItem: [ :item | self subMenuToolsAddOns: item ];"
+				addItem: [ :item | self subMenuToolsDeveloperTools: item ];
 				addItem: [ :item | self subMenuToolsModelListing: item ];
 				addItem: [ :item | self subMenuToolsModelGlossary: item ];
 				addItem: [ :item | self subMenuToolsVersions: item ] ];
@@ -745,6 +835,16 @@ CMSpecProjectWindow >> subMenuOpenClassEditor: item [
 			self halt.
 			"OPUmlProject
 				openOnModel: (OPUMLModel new name: self projectManager cormasModelName)" ]
+]
+
+{ #category : #'submenu-tools-developer' }
+CMSpecProjectWindow >> subMenuOpenCormasIssue: item [
+
+	item
+		name: self translator tOpenCormasIssue;
+		icon: (self iconNamed: #repair);
+		shortcut: $I command;
+		action: [ self openCormasIssue ]
 ]
 
 { #category : #'submenu-programming' }
@@ -890,6 +990,16 @@ CMSpecProjectWindow >> subMenuProgrammingUML: item [
 		subMenu: self subMenuProgrammingClassEditor
 ]
 
+{ #category : #'submenu-tools-developer' }
+CMSpecProjectWindow >> subMenuRunCormasTests: item [
+
+	item
+		name: self translator tRunCormasTests;
+		icon: (self iconNamed: #testRunner);
+		shortcut: $T command;
+		action: [ self runCormasTests ]
+]
+
 { #category : #'submenu-simulation' }
 CMSpecProjectWindow >> subMenuSimAnalysis [
 
@@ -909,7 +1019,7 @@ CMSpecProjectWindow >> subMenuSimAnalysis: item [
 
 	item
 		name: self translator tAnalysis;
-"		icon: Smalltalk ui icons openIcon;"
+		icon: (self iconNamed: #smallInspectIt);
 		shortcut: $A command;
 		subMenu: self subMenuSimAnalysis
 ]
@@ -1116,6 +1226,16 @@ CMSpecProjectWindow >> subMenuToolsAddOns: item [
 
 ]
 
+{ #category : #'submenu-tools-developer' }
+CMSpecProjectWindow >> subMenuToolsCormasBrowser: item [
+
+	item
+		name: self translator tCORMASBrowser;
+		icon: (self iconNamed: #smallHierarchyBrowser);
+		shortcut: $B command;
+		action: [ self openCormasSystemBrowser ]
+]
+
 { #category : #'submenu-tools' }
 CMSpecProjectWindow >> subMenuToolsCreateInstances: item [
 
@@ -1124,6 +1244,16 @@ CMSpecProjectWindow >> subMenuToolsCreateInstances: item [
 "		icon: Smalltalk ui icons openIcon;"
 		shortcut: $C command;
 		action: [ self openToolsCreateInstances ]
+]
+
+{ #category : #'submenu-tools-developer' }
+CMSpecProjectWindow >> subMenuToolsDeveloperTools: item [
+
+	item
+		name: self translator tDeveloperTools;
+		icon: (self iconNamed: #smallExpert);
+		shortcut: $D command;
+		subMenu: self subMenuDevTools
 ]
 
 { #category : #'submenu-tools' }
@@ -1146,7 +1276,7 @@ CMSpecProjectWindow >> subMenuToolsDistributeAsServer: item [
 		action: [ self openToolsDistribteAsServer ]
 ]
 
-{ #category : #'submenu-tools' }
+{ #category : #'submenu-tools-developer' }
 CMSpecProjectWindow >> subMenuToolsExpressions: item [
 
 	item
