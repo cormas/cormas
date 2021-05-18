@@ -1,21 +1,58 @@
 Class {
 	#name : #CormasUITest,
 	#superclass : #TestCase,
+	#instVars : [
+		'pWindow'
+	],
 	#category : #'Cormas-Tests'
 }
 
 { #category : #'create CMProjet' }
 CormasUITest >> newProjectManagerWithInitializedUIOnModel: modelName [
-	| pWindow aProject simWindow |
-	pWindow := CMSpecProjectWindow new.
-	aProject := pWindow projectManager.
-	simWindow := pWindow simWindow simWindow.
-	simWindow
+
+	| aProject |
+
+	aProject := self pWindow projectManager.
+	self simWindow
 		translator: (CMTranslator newForLanguage: #EN);
 		initialize.
 	aProject openModel: modelName.
-		aProject updateNewProject: 'CM' , modelName asString , 'Model'.
+	aProject updateNewProject: 'CM' , modelName asString , 'Model'.
+	aProject cormasModel initSimulation.
 	^ aProject
+]
+
+{ #category : #accessing }
+CormasUITest >> pWindow [
+	^ pWindow
+]
+
+{ #category : #accessing }
+CormasUITest >> pWindow: anObject [
+	pWindow := anObject
+]
+
+{ #category : #running }
+CormasUITest >> setUp [
+	"Hooks that subclasses may override to define the fixture of test."
+
+	pWindow := CMSpecProjectWindow new.
+
+]
+
+{ #category : #'create CMProjet' }
+CormasUITest >> simWindow [
+
+	^ self pWindow simWindow simWindow
+]
+
+{ #category : #running }
+CormasUITest >> tearDown [
+	"Hooks that subclasses may override to define the fixture of test."
+
+	self pWindow delete.
+	self simWindow delete
+
 ]
 
 { #category : #test }
@@ -28,33 +65,38 @@ CormasUITest >> testCanOpenModelFromImage [
 
 { #category : #test }
 CormasUITest >> testCurrentStepInputTextOfSimWindowIsResetAfterOpeningAModel [
-	| aCMProjectManager simWindow |
+
+	| aCMProjectManager |
+
 	aCMProjectManager := self newProjectManagerWithInitializedUIOnModel: #CMConwayModel.
-	simWindow := aCMProjectManager projectWindow simWindow simWindow.
-	
 	20 timesRepeat: [ aCMProjectManager currentProject cormasModel runStep ].
 	
 	aCMProjectManager openModel: #CMECECModel.
 	aCMProjectManager updateNewProject: #CMECECModel.
-	self assert: simWindow currentStepInputText text asInteger equals: 0.
+	self 
+		assert: self simWindow currentStepInputText text asInteger 
+		equals: 0.
 ]
 
 { #category : #test }
 CormasUITest >> testCurrentStepInputTextOfSimWindowIsUpdatedWhenRuningSimulation [
-	| aCMProjectManager simWindow |
+
+	| aCMProjectManager |
 	
 	aCMProjectManager := self newProjectManagerWithInitializedUIOnModel: #CMConwayModel.
-	simWindow := aCMProjectManager projectWindow simWindow simWindow.
 	"simWindow openWithSpec."
 	20 timesRepeat: [ aCMProjectManager currentProject cormasModel runStep ].
 	self
-		assert: simWindow currentStepInputText text asInteger
-		equals: aCMProjectManager currentProject cormasModel timeStep. simWindow delete
+		assert: self simWindow currentStepInputText text asInteger
+		equals: aCMProjectManager currentProject cormasModel timeStep. 
+
 ]
 
 { #category : #test }
 CormasUITest >> testNumberOfDataOfSimpleChartIsUpdatedWhenRuningSimulation [
+
 	| aCMProjectManager aCormasModel aSimpleChart probes |
+
 	aCMProjectManager := self newProjectManagerWithInitializedUIOnModel: #CMConwayModel.
 	aCormasModel := aCMProjectManager currentProject cormasModel.
 	probes := OrderedCollection new.

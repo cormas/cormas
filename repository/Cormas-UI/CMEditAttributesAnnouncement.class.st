@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'targetClass'
 	],
-	#category : #'Cormas-Core-Announcement'
+	#category : #'Cormas-UI-Announcements'
 }
 
 { #category : #accessing }

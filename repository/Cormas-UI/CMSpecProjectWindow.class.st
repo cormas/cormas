@@ -188,15 +188,12 @@ CMSpecProjectWindow >> initializeSimulationSubMenu: group [
 
 { #category : #initialization }
 CMSpecProjectWindow >> initializeSubscriptions [
+	" Private - See superimplementor's comment "
 
+	super initializeSubscriptions.
 	self projectAnnouncer
-		when: CMProjectOpenAnnouncement
-		send: #updateStateOpened
-		to: self.
-	self projectAnnouncer
-		when: CMProjectNewAnnouncement
-		send: #updateStateNew
-		to: self.
+		when: CMFinalStepChangedAnnouncement
+		do: [ : ann | self simWindow simWindow finalStepInputText text: ann finalStep. ].
 	self projectAnnouncer
 		when: CMProjectUpdateAnnouncement, CMProjectRenameAnnouncement
 		do: [ : ann | 
@@ -524,9 +521,9 @@ CMSpecProjectWindow >> openEditInitialization [
 CMSpecProjectWindow >> openEditSteps [
 	" Open a browser tool to edit the model steps "
 
-	Smalltalk tools browser 
-		openOnCategory: #control
-		ofClass: self cormasModelClass 
+	ClyFullBrowser openWithState: [ : browser | 
+		browser selectClass: self cormasModelClass atMethodTag: #control ]
+
 		
 ]
 
@@ -826,10 +823,10 @@ CMSpecProjectWindow >> subMenuHowToRunThisModel: anItem [
 
 { #category : #'submenu-programming' }
 CMSpecProjectWindow >> subMenuOpenClassEditor: item [
+
 	item
 		name: 'Class Editor...';
-		icon:
-			(self iconNamed: #openIcon);
+		icon: (self iconNamed: #openIcon);
 		shortcut: $c command;
 		action: [ 
 			self halt.
@@ -862,7 +859,7 @@ CMSpecProjectWindow >> subMenuProgrammingEntityClass: item [
 
 	item
 		name: self translator tProgrammingEntityClass;
-"		icon: Smalltalk ui icons openIcon;"
+		icon: (self iconNamed: #smallHierarchyBrowser);
 		shortcut: $C command;
 		action: [ self openProgrammingEntityClass ]
 ]
@@ -887,7 +884,7 @@ CMSpecProjectWindow >> subMenuProgrammingMessages: item [
 
 	item
 		name: self translator tMessages;
-"		icon: Smalltalk ui icons openIcon;"
+		icon: (self iconNamed: #smallObjects);
 		shortcut: $M command;
 		action: [ self openProgrammingMessages ]
 ]
@@ -922,7 +919,7 @@ CMSpecProjectWindow >> subMenuProgrammingProbes: item [
 
 	item
 		name: self translator tProbes;
-"		icon: Smalltalk ui icons openIcon;"
+		icon: (self iconNamed: #group);
 		shortcut: $P command;
 		action: [ self openProgrammingProbes ]
 ]
@@ -1114,7 +1111,7 @@ CMSpecProjectWindow >> subMenuSimEditSteps: anItem [
 
 	anItem
 		name: self translator tEditSteps;
-"		icon: Smalltalk ui icons openIcon;"
+		icon: (self iconNamed: #edit);
 		shortcut: $S command;
 		action: [ self openEditSteps ]		
 
@@ -1408,21 +1405,6 @@ CMSpecProjectWindow >> subMenuVizSpace: item [
 ]
 
 { #category : #callbacks }
-CMSpecProjectWindow >> updateCloseProject [
-	" Private - See superimplementor's comment "
-
-	super updateCloseProject.
-	self 
-		menuDisableFileGroup;	
-		menuDisableProgrammingGroup;
-		menuDisableSimulationGroup;
-		menuDisableToolsGroup;
-		menuDisableVisualizationGroup;	
-		menuDisableHelpGroup;
-		updateSimulationWindow.
-]
-
-{ #category : #callbacks }
 CMSpecProjectWindow >> updateSimulationWindow [
 	" Open or update the receiver's simulation interface "
 	
@@ -1430,48 +1412,58 @@ CMSpecProjectWindow >> updateSimulationWindow [
 ]
 
 { #category : #callbacks }
-CMSpecProjectWindow >> updateStateNew [
+CMSpecProjectWindow >> updateUINewProject: aString [
 	" Private - See superimplementor's comment "
 
-	super updateStateNew.
+	super updateUINewProject: aString.
 	self 
 		menuEnableProgrammingGroup;
 		menuEnableSimulationGroup;
 		menuEnableToolsGroup;
 		menuEnableVisualizationGroup;
 		menuEnableHelpGroup;
-		updateSimulationWindow;
-		windowTitle: self formattedWindowTitle;
-		updateTitle.
+		updateSimulationWindow.
 ]
 
 { #category : #callbacks }
-CMSpecProjectWindow >> updateStateOpened [
+CMSpecProjectWindow >> updateUIOpenedProject: aString [
 	" Private - See superimplementor's comment "
 
-	super updateStateOpened.
+	super updateUIOpenedProject: aString.
 	self 
 		menuEnableProgrammingGroup;
 		menuEnableSimulationGroup;
 		menuEnableToolsGroup;
 		menuEnableVisualizationGroup;
 		menuEnableHelpGroup;
-		updateSimulationWindow;
-		windowTitle: self formattedWindowTitle;
-		updateTitle.
+		updateSimulationWindow.
 ]
 
 { #category : #callbacks }
-CMSpecProjectWindow >> updateStateWaitNewOrOpen [
+CMSpecProjectWindow >> updateUIStateForClose: aString [
 	" Private - See superimplementor's comment "
 
-	self flag: #toBeReviewed. "Apparently menugroupmorph does not disable correctly "
-	super updateStateWaitNewOrOpen.
+	super updateUIStateForClose: aString.
 	self 
+		menuDisableFileGroup;	
 		menuDisableProgrammingGroup;
 		menuDisableSimulationGroup;
 		menuDisableToolsGroup;
-		menuDisableVisualizationGroup;
-		menuDisableHelpGroup
+		menuDisableVisualizationGroup;	
+		menuDisableHelpGroup;
+		updateSimulationWindow;
+		quitSubApplicationWindows.
+]
 
+{ #category : #callbacks }
+CMSpecProjectWindow >> updateUIStateForInit [
+	" Private - See superimplementor's comment "
+
+	super updateUIStateForInit.
+	self 
+		menuDisableProgrammingGroup;
+		menuDisableVisualizationGroup;
+		menuDisableSimulationGroup;
+		menuDisableToolsGroup;
+		menuDisableHelpGroup
 ]
