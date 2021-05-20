@@ -88,9 +88,8 @@ CMSpecConfirmBeforeLaunch >> applyScenarioSettings [
 		ifNil: [ ^ self alertMessage: 'Choose a control method' ].
 		
 	self applyActiveProbesChanges.
+	self projectAnnouncer announce: (CMFinalStepChangedAnnouncement new finalStep: self getFinalStep).
 
-	self projectManager projectWindow simWindow simWindow finalStepInputText
-		text: (self finalStep text ifNil:[0] ifNotNil:[:userDefinedStep | userDefinedStep]).
 	self delete.
 	self cormasModel initSimulation.
 ]
@@ -133,6 +132,16 @@ CMSpecConfirmBeforeLaunch >> fixRandomTextField [
 { #category : #accessing }
 CMSpecConfirmBeforeLaunch >> fixRandomTextField: anObject [
 	fixRandomTextField := anObject
+]
+
+{ #category : #accessing }
+CMSpecConfirmBeforeLaunch >> getFinalStep [
+	" Answer a valid <Integer> for the value entered in the final step input "
+	
+	^ self finalStep text 
+		ifNil: [ 0 ] 
+		ifNotNil: [ : userDefinedStep | userDefinedStep ]
+
 ]
 
 { #category : #accessing }

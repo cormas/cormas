@@ -368,6 +368,16 @@ CMSpecSimulationWindow >> initialize [
 ]
 
 { #category : #initialization }
+CMSpecSimulationWindow >> initializeButtons [
+
+	self changeButton label: self translator tChange.
+	self closeButton 
+		icon: (self iconNamed: #smallCancelIcon);
+		action: [ self delete ];
+		help: self translator tSimCloseHelp.
+]
+
+{ #category : #initialization }
 CMSpecSimulationWindow >> initializeFocus [
 	" Private - See superimplementor's comment "
 
@@ -384,6 +394,17 @@ CMSpecSimulationWindow >> initializeFocus [
 		add: self runStepByStepButton;
 		add: self runButton;
 		add: self finalStepInputText
+]
+
+{ #category : #initialization }
+CMSpecSimulationWindow >> initializeInputs [
+
+	self currentStepInputText
+		text: 0;
+		help: self translator tSimStepHelp.
+	self finalStepInputText
+		text: 0;
+		help: self translator tSimFinalStepHelp
 ]
 
 { #category : #accessing }
@@ -457,22 +478,25 @@ CMSpecSimulationWindow >> initializeSimButton: anObject [
 ]
 
 { #category : #initialization }
+CMSpecSimulationWindow >> initializeSubscriptions [
+
+	self projectAnnouncer
+		when: CMTimeChangedAnnouncement
+		do: [ : ann | self newCurrentStepValue: ann timeStep ]
+]
+
+{ #category : #initialization }
 CMSpecSimulationWindow >> initializeWidgets [
 	" Private - See superimplementor's comment "
 
 	self instantiateModels: #(simulateLabel LabelModel replayLabel LabelModel initializeLabel LabelModel backwardLabel LabelModel currentStepLabel LabelModel finalStepLabel LabelModel forwardLabel LabelModel currentStepInputText TextInputFieldModel finalStepInputText TextInputFieldModel changeButton ButtonModel closeButton ButtonModel).
-	self initializeFocus.
-	self initializeLabels.
-	self changeButton label: self translator tChange.
-	self closeButton icon: (self iconNamed: #smallCancelIcon);
-		action: [ self delete ];
-		help: self translator tSimCloseHelp.
-	self currentStepInputText
-		text: 0;
-		help: self translator tSimStepHelp.
-	self finalStepInputText
-		text: 0;
-		help: self translator tSimFinalStepHelp
+	self 
+		initializeFocus;
+		initializeLabels;
+		initializeButtons;
+		initializeInputs;
+		initializeSubscriptions.
+
 ]
 
 { #category : #changes }

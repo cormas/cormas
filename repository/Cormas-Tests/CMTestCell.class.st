@@ -4,17 +4,17 @@ Class {
 	#category : #'Cormas-Tests-Model'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #init }
 CMTestCell >> initAlive [
 	self state: #alive
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #init }
 CMTestCell >> initDead [
 	self state: #dead
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #init }
 CMTestCell >> initRandom [
 	self
 		state:

@@ -1,5 +1,5 @@
 Class {
 	#name : #CMProjectRenameAnnouncement,
 	#superclass : #CMProjectAnnouncement,
-	#category : #'Cormas-Core-Announcement'
+	#category : #'Cormas-UI-Announcements'
 }

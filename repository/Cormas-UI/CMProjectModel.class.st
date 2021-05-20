@@ -412,6 +412,7 @@ CMProjectModel >> initializeForModel: aCormasModel named: aString [
 	self initializeNamed: aString.
 	self cormasModel: aCormasModel.
 	self cormasModelClass: aCormasModel class.
+	self cormasModel projectManager: self projectManager.
 	self initializeEvents.
 
 ]
