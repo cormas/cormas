@@ -10,7 +10,7 @@ Class {
 		'type',
 		'superclass'
 	],
-	#category : #'Cormas-Core-Announcement'
+	#category : #'Cormas-UI-Announcements'
 }
 
 { #category : #'instance creation' }

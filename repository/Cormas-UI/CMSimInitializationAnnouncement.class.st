@@ -1,5 +1,5 @@
 Class {
 	#name : #CMSimInitializationAnnouncement,
 	#superclass : #Announcement,
-	#category : 'Cormas-Core-Announcement'
+	#category : #'Cormas-UI-Announcements'
 }

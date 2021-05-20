@@ -118,6 +118,7 @@ CMSpecObject >> openHelp [
 
 { #category : #accessing }
 CMSpecObject >> projectAnnouncer [
+	" Private - Answer the <Announcer> used by the receiver's project "
 
 	^ self projectManager announcer 
 ]

@@ -1148,8 +1148,8 @@ CMAbstractModel >> announceProbesDataUpdated [
 
 { #category : #announcement }
 CMAbstractModel >> announceTimeChange [
-	^ self announcer
-		announce: (CMTimeChangedAnnouncement timeStep: self timeStep)
+
+	^ self projectAnnouncer announce: (CMTimeChangedAnnouncement timeStep: self timeStep)
 ]
 
 { #category : #announcement }
@@ -2380,6 +2380,7 @@ CMAbstractModel >> initFile: aStringOrFilename dataCollection: aCollec separator
 { #category : #scheduling }
 CMAbstractModel >> initSimulation [
 
+
 	self timeStep: 0.
 	self spaceModel ifNil: [ self initializeSpaceModel ].
 	self initializeProbes.
@@ -2420,6 +2421,7 @@ CMAbstractModel >> initialize [
 
 	"NB ->retire pour que les cells ne demandent pas le currentSimulation spaceModel alors qu''il n''est pas encore fini d''initialise"
 
+	self projectManager: CMProjectManager new.
 	self class socialClasses ifNil: [ self class initializeWithoutVS ].
 	self class socialClasses ifNotEmpty: [ self initializeChannel ].
 	self applyModelDefaultCormasSettings
@@ -2872,6 +2874,13 @@ CMAbstractModel >> printOn: aStream [
 ]
 
 { #category : #accessing }
+CMAbstractModel >> projectAnnouncer [
+	" Private - See commments in #projectAnnouncer "
+
+	^ self projectManager announcer
+]
+
+{ #category : #accessing }
 CMAbstractModel >> projectManager [
 	^ projectManager
 
@@ -3085,15 +3094,11 @@ CMAbstractModel >> runStep [
 	(For display: Store the changed entities in a collection and request an update of the space views at the end of the timestep)"
 	
 	self incrementTimeStep.
-	self
-		delayChangesWhile:
-			[self activeControl last = $:
-				ifTrue:
-					[self
-						perform: self activeControl
-						with: self timeStep]
-				ifFalse: [self perform: self activeControl].
-			self updateEntities].
+	self delayChangesWhile: [
+		self activeControl last = $:
+			ifTrue: [ self perform: self activeControl with: self timeStep ]
+			ifFalse: [ self perform: self activeControl ].
+		self updateEntities ].
 	self channel notNil ifTrue: [self channel flush].
 	self updateDataForChart.
 ]
@@ -3400,16 +3405,6 @@ CMAbstractModel >> simNumero [
 	^self simManager simNumero
 ]
 
-{ #category : #'accessing  - projectManager' }
-CMAbstractModel >> simWindow [
-
-	^ self projectManager 
-		ifNil: [ nil ] 
-		ifNotNil: [ : pm | pm projectWindow 
-			ifNil: [ nil ]
-			ifNotNil: [ : pw | pw simWindow simWindow ] ]
-]
-
 { #category : #'pov and info' }
 CMAbstractModel >> situatedEntitiesFrom: aClass povAt: povSelector [
 	"return a collection of povs from all entities inheriting from aClass"
@@ -3606,7 +3601,7 @@ CMAbstractModel >> timeChanged [
 
 	| newTime |
 	newTime := self timeStep.
-	self simWindow ifNotNil: [ :sw | sw newCurrentStepValue: newTime ].
+	"self simWindow ifNotNil: [ :sw | sw newCurrentStepValue: newTime ]."
 	self announceTimeChange.
 	self flag: #toClean.
 	"self changed: #timeChanged with: newTime."
@@ -3624,6 +3619,7 @@ CMAbstractModel >> timeStep [
 
 { #category : #scheduling }
 CMAbstractModel >> timeStep: anInteger [
+
 	timeStep := anInteger.
 	self timeChanged
 ]
@@ -3678,10 +3674,9 @@ CMAbstractModel >> updateDataForChart [
 CMAbstractModel >> updateEntities [
 	"Purpose: removes all the dead or destroyed intances from all theXXXs collections and adds the new entities stored into collector"
 	
-	self collector entities
-		keysAndValuesDo:
-			[:class :collec | (self theEntities: class) addAll: collec].
-	self collector empty.	"removes all the dead or destroyed intances"
+	self collector entities keysAndValuesDo: [ : class : collec | (self theEntities: class) addAll: collec ].
+	self collector empty.	
+	"removes all the dead or destroyed intances"
 	self removeDestroyedEntities
 ]
 

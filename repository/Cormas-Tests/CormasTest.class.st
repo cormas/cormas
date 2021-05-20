@@ -1,7 +1,7 @@
 Class {
 	#name : #CormasTest,
 	#superclass : #TestCase,
-	#category : #'Cormas-Tests'
+	#category : #'Cormas-Tests-Helpers'
 }
 
 { #category : #tests }

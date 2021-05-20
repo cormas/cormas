@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'loader'
 	],
-	#category : #'Cormas-Tests'
+	#category : #'Cormas-Tests-Helpers'
 }
 
 { #category : #private }

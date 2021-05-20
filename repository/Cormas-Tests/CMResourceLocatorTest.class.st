@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'instance'
 	],
-	#category : #'Cormas-Tests'
+	#category : #'Cormas-Tests-Helpers'
 }
 
 { #category : #accessing }

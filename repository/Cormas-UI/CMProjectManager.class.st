@@ -264,7 +264,6 @@ CMProjectManager >> doPostCloseActions [
 	Cursor wait showWhile: [
 		self announcer unsubscribe: self currentProject.
 		self fsm handleEvent: #actionClose.
-		self projectWindow quitSubApplicationWindows.
 		self deleteProject.	
 		self cleanEnvironment ].
 ]
@@ -410,38 +409,13 @@ CMProjectManager >> updateNewProject: modelName [
 CMProjectManager >> updateStateClosed [
 
 	self notifyEvent:	'Action: Close'.
-	self updateUIStateForClose.
+	self announcer announce: 
+		(PFCloseProject new 
+			projectName: self currentProjectName;
+			projectLocation: self currentProject fileName;
+			yourself).
 	CMApplicationPreferences settingProjectNotifications 
 		ifTrue: [ self informMessage: self translator tProjectCloseSuccess ].
-]
-
-{ #category : #callbacks }
-CMProjectManager >> updateStateCormasUIForInit [
-	" Private - If there is a window for the receiver then update its status "
-
-	self projectWindow ifNotNil: [ : w |
-		w
-			menuDisableProgrammingGroup;
-			menuDisableVisualizationGroup;
-			menuDisableSimulationGroup;
-			menuDisableToolsGroup;
-			menuDisableHelpGroup ]
-]
-
-{ #category : #callbacks }
-CMProjectManager >> updateStateInit [
-	" Private - Handle the open application event "
-
-	super updateStateInit.
-	self updateStateCormasUIForInit.
-]
-
-{ #category : #callbacks }
-CMProjectManager >> updateStateNew [
-
-	self notifyEvent:	'Action: New'.
-	self announcer announce: CMProjectNewAnnouncement new.
-	self informMessage: self translator tProjectNewSuccess.
 ]
 
 { #category : #callbacks }
@@ -449,7 +423,7 @@ CMProjectManager >> updateStateOpened [
 	" Private - This callback evaluate after the handleEvent: was fired "
 
 	self notifyEvent:	'Action: Opened'.
-	self announcer announce: CMProjectOpenAnnouncement new.
+	self announcer announce: PFOpenedProject new.
 	CMApplicationPreferences settingProjectNotifications 
 		ifTrue: [ self informMessage: self translator tProjectOpenSuccess ].
 ]

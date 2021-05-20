@@ -1,5 +1,5 @@
 Class {
 	#name : #CMEntityNewAnnouncement,
 	#superclass : #CMEntityAnnouncement,
-	#category : #'Cormas-Core-Announcement'
+	#category : #'Cormas-UI-Announcements'
 }

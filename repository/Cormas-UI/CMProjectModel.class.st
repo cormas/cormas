@@ -26,7 +26,7 @@ Class {
 		'cormasModelClass',
 		'codeGenerator',
 		'cormasVersion',
-		'providedName'
+		'tracker'
 	],
 	#category : #'Cormas-UI-Project'
 }
@@ -193,6 +193,14 @@ CMProjectModel >> cormasModelClass: aClass [
 	" Set the receiver's model class to be aClass "
 
 	cormasModelClass := aClass
+]
+
+{ #category : #accessing }
+CMProjectModel >> cormasModelClasses [
+	" Answer a <Collection> with the receiver's model classes "
+
+	^ self cormasModelClass package classes
+
 ]
 
 { #category : #accessing }
@@ -404,6 +412,7 @@ CMProjectModel >> initializeForModel: aCormasModel named: aString [
 	self initializeNamed: aString.
 	self cormasModel: aCormasModel.
 	self cormasModelClass: aCormasModel class.
+	self cormasModel projectManager: self projectManager.
 	self initializeEvents.
 
 ]
@@ -412,15 +421,14 @@ CMProjectModel >> initializeForModel: aCormasModel named: aString [
 CMProjectModel >> isModified [
 	" See superimplementor's comment "
 	
-	| opener imageSnap originalFileSnap |
+	| opener |
 	
 	self projectManager currentProjectFileReference ifNil: [ ^ true ].
-	imageSnap := (RPackageOrganizer default packageOf: self cormasModel class) mcPackage snapshot.
 	opener := CMProjectOpener newFrom: self projectManager.
 	opener tryReadSourceFromProject openStatus
 		ifFalse: [ self error: 'Error while reading project from file' ].
-	originalFileSnap := (MCStReader on: opener readStream) snapshot.
-	^ imageSnap ~= originalFileSnap
+	self tracker track: opener readStream.
+	^ (self tracker equalToCurrent: self cormasModelClasses) not
 ]
 
 { #category : #accessing }
@@ -560,6 +568,20 @@ CMProjectModel >> storedSimulations [
 	^ (self resourceLocator dumpPath: self cormasModel class name) 
 		allChildrenMatching: CMSimManager simNameStart , '*'
 
+]
+
+{ #category : #accessing }
+CMProjectModel >> tracker [
+	" Answer a <CMProjectTracker> an object used to track source code changes between a saved version in disk and current version in the image "
+
+	^ tracker
+		ifNil: [ tracker := CMProjectTracker new ]
+]
+
+{ #category : #accessing }
+CMProjectModel >> tracker: anObject [
+
+	tracker := anObject
 ]
 
 { #category : #'accessing - names' }

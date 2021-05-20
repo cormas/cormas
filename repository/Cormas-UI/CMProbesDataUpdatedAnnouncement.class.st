@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'timeStep'
 	],
-	#category : 'Cormas-Core-Announcement'
+	#category : #'Cormas-UI-Announcements'
 }
 
 { #category : #'instance creation' }
