@@ -1149,7 +1149,7 @@ CMAbstractModel >> announceProbesDataUpdated [
 { #category : #announcement }
 CMAbstractModel >> announceTimeChange [
 
-	^ self announcer announce: (CMTimeChangedAnnouncement timeStep: self timeStep)
+	^ self projectAnnouncer announce: (CMTimeChangedAnnouncement timeStep: self timeStep)
 ]
 
 { #category : #announcement }
@@ -2421,6 +2421,7 @@ CMAbstractModel >> initialize [
 
 	"NB ->retire pour que les cells ne demandent pas le currentSimulation spaceModel alors qu''il n''est pas encore fini d''initialise"
 
+	self projectManager: CMProjectManager new.
 	self class socialClasses ifNil: [ self class initializeWithoutVS ].
 	self class socialClasses ifNotEmpty: [ self initializeChannel ].
 	self applyModelDefaultCormasSettings
@@ -2870,6 +2871,13 @@ CMAbstractModel >> printOn: aStream [
 		<< ', entities: ';
 		<< self allTheEntities size asString;
 		<< ')'
+]
+
+{ #category : #accessing }
+CMAbstractModel >> projectAnnouncer [
+	" Private - See commments in #projectAnnouncer "
+
+	^ self projectManager announcer
 ]
 
 { #category : #accessing }
@@ -3611,6 +3619,7 @@ CMAbstractModel >> timeStep [
 
 { #category : #scheduling }
 CMAbstractModel >> timeStep: anInteger [
+
 	timeStep := anInteger.
 	self timeChanged
 ]

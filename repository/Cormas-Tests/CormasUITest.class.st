@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'pWindow'
 	],
-	#category : #'Cormas-Tests'
+	#category : #'Cormas-Tests-UI'
 }
 
 { #category : #'create CMProjet' }
@@ -17,7 +17,6 @@ CormasUITest >> newProjectManagerWithInitializedUIOnModel: modelName [
 		translator: (CMTranslator newForLanguage: #EN);
 		initialize.
 	aProject openModel: modelName.
-	aProject updateNewProject: 'CM' , modelName asString , 'Model'.
 	aProject cormasModel initSimulation.
 	^ aProject
 ]
