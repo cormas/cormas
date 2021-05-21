@@ -132,9 +132,11 @@ BaselineOfCormas >> specForBaselines: spec [
 
 	spec
 		baseline: 'PetitParser'
-		with: [ spec
-					repository: 'github://moosetechnology/PetitParser/src';
-					loads: #('YAML') ];
+		with: [ 
+			spec
+				repository: 'github://moosetechnology/PetitParser/src';
+				loads: #('YAML') ];
+
 		baseline: 'FileDialog'
 		with: [ spec repository: 'github://peteruhnak/file-dialog:v1.0.0/repository' ];
 
@@ -147,11 +149,11 @@ BaselineOfCormas >> specForBaselines: spec [
 		baseline: 'Roassal2'
 		with: [ spec repository: 'github://ObjectProfile/Roassal2/src' ];
 
-		baseline: 'NeoCSV'
-		with: [ spec repository: 'github://svenvc/NeoCSV/repository' ];
-
 		baseline: 'PolyMath'
-		with: [ spec repository: 'github://PolyMathOrg/PolyMath/src' ];
+		with: [ 
+			spec 
+				repository: 'github://PolyMathOrg/PolyMath/src';
+				loads: #('Core') ];
 
 		baseline: 'GitBridge'
 		with: [ spec repository: 'github://jecisc/GitBridge/src' ];
@@ -174,7 +176,7 @@ BaselineOfCormas >> specForGroups: spec [
 BaselineOfCormas >> specForPackages: spec [
 
 	spec
-		package: 'Cormas-Core' with: [ spec requires: #('PolyMath' 'PetitParser' 'NeoCSV' 'GitBridge' 'ESRIASCIIRaster') ];
+		package: 'Cormas-Core' with: [ spec requires: #('PolyMath' 'PetitParser' 'GitBridge' 'ESRIASCIIRaster') ];
 
 		package: 'Cormas-Model-Conway';
 		package: 'Cormas-Model-DemoAggregates';
