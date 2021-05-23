@@ -109,6 +109,7 @@ CMProjectModel >> addNewEntity: aCMEntityNewAnnouncement [
 	" Add a new entity to the receiver "
 	
 	self codeGenerator 
+		targetClass: self cormasModelClass;
 		targetClassCategory: self cormasModelClass category;
 		addNewClassType: aCMEntityNewAnnouncement type
 		inheritingFrom: aCMEntityNewAnnouncement superclass

@@ -33,7 +33,7 @@ Instance Variables
 "
 Class {
 	#name : #CMAbstractModel,
-	#superclass : #Object,
+	#superclass : #CMObject,
 	#instVars : [
 		'cormas',
 		'timeStep',
@@ -517,13 +517,11 @@ CMAbstractModel class >> initialize [
 
 { #category : #'instance creation' }
 CMAbstractModel class >> initializeCellClass [
-	"Store the Cell class of the model into cellClass"
+	" Store the Cell class of the model into cellClass "
 
-	self
-		cellClass:
-			(self allEntityClasses
-				detect: [ :each | each inheritsFrom: CMSpatialEntityElement ]
-				ifNone: [ nil ])
+	self cellClass: (self allEntityClasses
+		detect: [ :each | each inheritsFrom: CMSpatialEntityElement ]
+		ifNone: [ nil ])
 ]
 
 { #category : #'instance creation' }
@@ -918,6 +916,7 @@ CMAbstractModel class >> socialClasses [
 
 { #category : #accessing }
 CMAbstractModel class >> socialClasses: aCollection [
+
 	socialClasses := aCollection
 ]
 

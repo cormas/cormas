@@ -35,7 +35,6 @@ CMSpecObject class >> openFor: aCMProjectManager [
 
 	^ (self for: aCMProjectManager)
 		openWithSpec;
-		centered;
 		yourself
 ]
 

@@ -15,7 +15,7 @@ CMSpaceInterfaceTest >> newProjectManager [
 
 	^ CMProjectManager new 
 		currentProject: (CMProjectModel basicNew
-				initializeForModel: self newTestModel named: 'Sample Model';
+				initializeForModel: self newTestModel named: 'SampleModel';
 				yourself);
 		startFSM;
 		yourself.

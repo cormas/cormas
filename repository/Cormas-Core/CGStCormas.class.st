@@ -16,31 +16,30 @@ CGStCormas class >> for: aCMProjectModel [
 	" Answer a new instance of the recever "
 	
 	^ self new 
-		cormasModel: aCMProjectModel;
+		cormasModel: aCMProjectModel cormasModel;
 		yourself
 ]
 
 { #category : #'code-generation' }
 CGStCormas >> addNewClassType: aType inheritingFrom: aSuperclass name: aName initProtocol: createInit stepProtocol: createStep [
 
-	| selector |
-	
-	[ self 
-		generateClass: aName asValidCormasClassName 
-		superclass: aSuperclass ]
-	on: CircularHierarchyError
-	do: [ : ex | ^ self inform: 'Trying to build a circular hierarchy' ].
+	" aType is a <String> and could be : Social , "
+
+	| selector newEntityClass |
+	newEntityClass := aName asValidCormasClassName.
+	[ self generateClass: newEntityClass superclass: aSuperclass ]
+		on: CircularHierarchyError
+		do: [ :ex | ^ self inform: 'Trying to build a circular hierarchy' ].
+
 	selector := (aType asLowercase , 'Classes') asSymbol.
-	(self cormasModelClass perform: selector) add: self targetClass.
-	(self targetClass inheritsFrom: CMSpatialEntityElement)
-		ifTrue: [ self cormasModelClass cellClass: self targetClass ].
-	self createModelAccessors.
+	(self cormasModelClass perform: selector) add: newEntityClass.
+	((self class environment at: newEntityClass) inheritsFrom: CMSpatialEntityElement) 
+		ifTrue: [ self cormasModelClass cellClass: newEntityClass ].
+	self createModelAccessorsIn: (self class environment at: newEntityClass).
 	self addProtocolNamed: #control.
-	createInit
-		ifTrue: [ self createInit ].
-	createStep
-		ifTrue: [ self createStep ].	"self modifyEntityClassType: aType."
-	^ self targetClass
+	createInit ifTrue: [ self createInit ].
+	createStep ifTrue: [ self createStep ]. "self modifyEntityClassType: aType."
+	^ newEntityClass
 ]
 
 { #category : #'code-generation' }
@@ -73,14 +72,16 @@ CGStCormas >> cormasModel [
 ]
 
 { #category : #accessing }
-CGStCormas >> cormasModel: anObject [
-	cormasModel := anObject
+CGStCormas >> cormasModel: aCMAbstractModel [
+
+	cormasModel := aCMAbstractModel
 ]
 
 { #category : #accessing }
 CGStCormas >> cormasModelClass [
+	" Answer a <CMAbstractModel> "
 
-	^ self cormasModel cormasModelClass
+	^ self cormasModel class
 
 	
 ]
@@ -106,7 +107,7 @@ CGStCormas >> createInitAgents [
 ]
 
 { #category : #'code-generation' }
-CGStCormas >> createInstancesAccessorsForClass: aClass [
+CGStCormas >> createInstancesAccessorsIn: aClass [
 	| pop |
 	
 	pop := aClass asGetterForEntityClass.
@@ -124,17 +125,16 @@ CGStCormas >> createInstancesAccessorsForClass: aClass [
 ]
 
 { #category : #'code-generation' }
-CGStCormas >> createModelAccessors [
+CGStCormas >> createModelAccessorsIn: aClass [
 	"ask if newClass is Abstract, 
 	no, then creates the attribut 'theNewClasss' and the accesors at the level of cormasModel,
 	yes, then creates an accessing methods 'theNewClasss' that will returns a collection of all entities of newClass and its subclasses"
 	
-	(self targetClass inheritsFrom: CMSpatialEntityElement)
-		ifTrue: [ self installConcreteMethod ]
-		ifFalse: [
-			(self confirmIsAbstractClass: self targetClass) 
-				ifTrue: [ self installAbstractMethod ] ].
-	self createInstancesAccessorsForClass: self targetClass.
+	(aClass inheritsFrom: CMSpatialEntityElement)
+		ifTrue: [ self installConcreteMethodIn: aClass ]
+		ifFalse: [ (self confirmIsAbstractClass: aClass) 
+			ifTrue: [ self installAbstractMethodIn: aClass ] ].
+	self createInstancesAccessorsIn: aClass.
 ]
 
 { #category : #'code-generation' }
@@ -206,8 +206,21 @@ CGStCormas >> generateMethodHeader [
 
 { #category : #'code-generation' }
 CGStCormas >> installAbstractMethod [
+	" Private - isAbstract method should be installed in the new entity class being created "
 
 	self
+		targetMethodCategory: 'testing';
+		sourceString: 'isAbstract \	^ true' withCRs;
+		generateMethod.
+
+]
+
+{ #category : #'code-generation' }
+CGStCormas >> installAbstractMethodIn: aClass [
+	" Private - isAbstract method should be installed in the new entity class being created "
+
+	self class new
+		targetClass: aClass;
 		targetMethodCategory: 'testing';
 		sourceString: 'isAbstract \	^ true' withCRs;
 		generateMethod.
@@ -218,6 +231,16 @@ CGStCormas >> installAbstractMethod [
 CGStCormas >> installConcreteMethod [
 	
 	self
+		targetMethodCategory: 'testing';
+		sourceString: 'isAbstract \	^ false' withCRs;
+		generateMethod.
+]
+
+{ #category : #'code-generation' }
+CGStCormas >> installConcreteMethodIn: aClass [
+	
+	self class new
+		targetClass: aClass;
 		targetMethodCategory: 'testing';
 		sourceString: 'isAbstract \	^ false' withCRs;
 		generateMethod.

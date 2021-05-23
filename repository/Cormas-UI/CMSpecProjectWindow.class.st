@@ -52,17 +52,9 @@ CMSpecProjectWindow class >> open [
 	CMApplicationProject uniqueInstance translator: nil.		
 	win := self new 
 		openWithSpec;
-		centered;
 		startFSM;
 		yourself.
 	win simWindow hideSimInterface
-]
-
-{ #category : #callbacks }
-CMSpecProjectWindow >> applicationProperties [
-	" Private - Open a window to set receiver's properties "
-
-	(CMSpecModelComments for: self projectManager) openWithSpec
 ]
 
 { #category : #private }
@@ -489,7 +481,7 @@ CMSpecProjectWindow >> openDependenciesGraph [
 { #category : #'submenu-tools-developer' }
 CMSpecProjectWindow >> openDependenciesTool [
 
-	Cursor wait showWhile: [ (DAPackageAnalyzerTreeModel onPackagesMatch: '*Cormas*') open ]
+	Cursor wait showWhile: [ (DAPackageAnalyzerTreePresenter onPackagesMatch: '*Cormas*') open ]
 ]
 
 { #category : #callbacks }
@@ -513,7 +505,7 @@ CMSpecProjectWindow >> openEditAttributesFor: aCMEditAttributesAnnouncement [
 CMSpecProjectWindow >> openEditInitialization [
 	" Open a browser tool to edit the receiver's model initialization "
 
-	ClyFullBrowser openWithState: [ : browser | 
+	Smalltalk tools browser openWithState: [ : browser | 
 		browser selectClass: self cormasModelClass atMethodTag: #init ]
 ]
 
@@ -521,7 +513,7 @@ CMSpecProjectWindow >> openEditInitialization [
 CMSpecProjectWindow >> openEditSteps [
 	" Open a browser tool to edit the model steps "
 
-	ClyFullBrowser openWithState: [ : browser | 
+	Smalltalk tools browser openWithState: [ : browser | 
 		browser selectClass: self cormasModelClass atMethodTag: #control ]
 
 		
@@ -543,7 +535,13 @@ CMSpecProjectWindow >> openProgrammingEntityClass [
 	" Private - Open an entities browser "
 
 	CMSpecEntitiesBrowser openFor: self projectManager
+]
 
+{ #category : #callbacks }
+CMSpecProjectWindow >> openProjectProperties [
+	" Private - Open a window to set receiver's properties "
+
+	(CMSpecModelComments for: self projectManager) openWithSpec
 ]
 
 { #category : #callbacks }
