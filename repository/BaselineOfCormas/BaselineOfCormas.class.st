@@ -20,11 +20,7 @@ BaselineOfCormas >> baseline: spec [
 			self 
 				specForBaselines: spec;
 				specForPackages: spec;
-				specForGroups: spec ];
-
-		group: 'Models' 	with: 	#('Cormas-Model-Conway' 'Cormas-Model-ReHab' 'Cormas-Core' 'Cormas-Model-ECEC' 'Cormas-Model-FireAutomata' 'Cormas-Model-PlotsRental' 'Cormas-Model-Diffuse' 'Cormas-Model-DemoAggregates' 'Cormas-Model-Stupid');
-		group: 'OpenMole'	with: #('Cormas-OpenMole' 'Core');
-		group: 'All'			with: #('UI' 'Tests' 'Core' 'Models' 'OpenMole').
+				specForGroups: spec ].
 
 	self 
 		specForPharo7: spec;
@@ -167,9 +163,13 @@ BaselineOfCormas >> specForBaselines: spec [
 BaselineOfCormas >> specForGroups: spec [
 
 	spec
-		group: 'Core' 	with: #('Cormas-Core');
-		group: 'Tests' 	with: #('Core' 'Cormas-Tests' 'Cormas-UI-Tests');
-		group: 'UI' 		with: #(#'Cormas-UI' 'Core')
+		group: 'Core' 		with: #('Cormas-Core');
+		group: 'Tests' 		with: #('Core' 'Cormas-Tests' 'Cormas-UI-Tests');
+		group: 'UI' 			with: #(#'Cormas-UI' 'Core');
+		group: 'Models' 	with: 	#('Cormas-Model-Conway' 'Cormas-Model-ReHab' 'Cormas-Core' 'Cormas-Model-ECEC' 'Cormas-Model-FireAutomata' 'Cormas-Model-PlotsRental' 'Cormas-Model-Diffuse' 'Cormas-Model-DemoAggregates' 'Cormas-Model-Stupid');
+		group: 'OpenMole'	with: #('Cormas-OpenMole' 'Core');
+		group: 'All'			with: #('UI' 'Tests' 'Core' 'Models' 'OpenMole');
+		group: 'default' 	with: #('All')	
 ]
 
 { #category : #specs }
