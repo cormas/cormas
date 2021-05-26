@@ -1,6 +1,6 @@
 Class {
 	#name : #CMAbstractModelTest,
-	#superclass : #CMBasicModelTest,
+	#superclass : #CMTestObject,
 	#category : #'Cormas-Tests-Model'
 }
 
@@ -22,7 +22,7 @@ CMAbstractModelTest >> newProjectManager [
 
 	^ CMProjectManager new 
 		currentProject: (CMProjectModel basicNew
-				initializeForModel: model named: 'Sample Model';
+				initializeForModel: model named: self sampleModelNameWithoutPrefix;
 				yourself);
 		yourself
 ]
@@ -31,6 +31,12 @@ CMAbstractModelTest >> newProjectManager [
 CMAbstractModelTest >> sampleModelName [
 
 	^ 'CMXXXModel'
+]
+
+{ #category : #'tests-accessing-entities' }
+CMAbstractModelTest >> sampleModelNameWithoutPrefix [
+
+	^ 'SampleModel'
 ]
 
 { #category : #'tests-accessing-entities' }

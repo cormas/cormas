@@ -1,6 +1,6 @@
 Class {
 	#name : #CMOpenerTest,
-	#superclass : #CMBasicModelTest,
+	#superclass : #CMTestObject,
 	#instVars : [
 		'opener',
 		'projectManager'

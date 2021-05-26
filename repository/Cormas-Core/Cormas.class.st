@@ -1981,22 +1981,6 @@ Cormas >> listEntitesPassivesChanged [
 ]
 
 { #category : #changed }
-Cormas >> listEntitesSpatialesChanged [
-	
-	| menu |
-	menu := self builder menuAt: #spatialEntityMenu.
-	self listSpatialEntities selection isNil
-		ifTrue: [menu menuItems do: [:i | i disable]]
-		ifFalse:
-			[menu menuItems do: [:i | i enable].
-			(self cormasModelClass cellClass notNil
-				and:
-					[self cormasModelClass cellClass name
-						= self listSpatialEntities selection asSymbol])
-				ifTrue: [(menu atNameKey: #specializeSpatialEntity) disable]]
-]
-
-{ #category : #changed }
 Cormas >> listMethodsChanged [
 	"some methods has changed. Propagate the changed to the spaceModel for its spaceInterfaces.
 	(added while removing spaceInterfaces"
@@ -2293,42 +2277,6 @@ Cormas >> removeBrackets: aNom [
 ]
 
 { #category : #'model entities' }
-Cormas >> removeEntityClassType: aType [
-	"aType is either 'Spatial', 'Social' or 'Passive'"
-	
-	| classToBeRemoved selectionInList selector answer |
-	selectionInList := self perform: ('list' , aType , 'Entities') asSymbol.
-	classToBeRemoved := self getSelectedEntityClassType: aType.
-	selector := ((Cormas lowerCaseString: aType) , 'Classes') asSymbol.
-	classToBeRemoved isNil ifTrue: [^nil].
-	answer := classToBeRemoved withAllSubclasses size > 1
-		ifFalse:
-			[self confirm: 'Delete the class ' , classToBeRemoved name asString , ' ?']
-		ifTrue:
-			[| sousClasses |
-			sousClasses := ''.
-			classToBeRemoved allSubclasses
-				do: [:cl | sousClasses := sousClasses , '   ' , cl name asString , '\'].
-			self
-				confirm:
-					('Delete the class ' , classToBeRemoved name asString ,
-							' and the following subclasses ? \' , sousClasses) withCRs].
-	answer ifFalse: [^nil].
-	((OrderedCollection with: classToBeRemoved)
-		addAll: classToBeRemoved allSubclasses;
-		yourself)
-		do:
-			[:cl | 
-			(self cormasModelClass perform: selector) remove: cl.
-			self removeModelAccessors: cl name asString].
-	classToBeRemoved = self cormasModelClass cellClass
-		ifTrue: [self cormasModelClass cellClass: nil].
-	classToBeRemoved removeFromSystem.
-	selectionInList list: (self getSortedListEntityClassType: aType).
-	selectionInList selectionIndex: 0
-]
-
-{ #category : #'model entities' }
 Cormas >> removeModelAccessors: aName [
 	| pop |
 	pop := self cormasModelClass getterForEntityClass: aName.
@@ -2344,30 +2292,12 @@ Cormas >> removeModelAccessors: aName [
 				removeSelector: ('allThe' , aName , 's') asSymbol ]
 ]
 
-{ #category : #'model entities' }
-Cormas >> removePassiveEntityClass [
-	
-	self removeEntityClassType: 'Passive'
-]
-
-{ #category : #'model entities' }
-Cormas >> removeSocialEntityClass [
-	
-	self removeEntityClassType: 'Social'
-]
-
 { #category : #accessing }
 Cormas >> removeSpaceInterface: aSpaceInterface [
 	
 	self spaceInterfaces
 		remove: aSpaceInterface
 		ifAbsent: []
-]
-
-{ #category : #'model entities' }
-Cormas >> removeSpatialEntityClass [
-	
-	self removeEntityClassType: 'Spatial'
 ]
 
 { #category : #simulation }
@@ -2606,45 +2536,6 @@ Cormas >> simulationWin: anObject [
 Cormas >> spaceModel [
 	
 	^self cormasModel ifNotNil: [:sim | sim spaceModel]
-]
-
-{ #category : #'model entities' }
-Cormas >> specializeEntityClass: superClass type: aType [
-	
-	self
-		addNewClassType: aType
-		inheritingFrom: superClass
-		name: (self askUserTheClassNameWithDefaultValue: superClass name)
-		initProtocol: false
-		stepProtocol: false
-]
-
-{ #category : #'model entities' }
-Cormas >> specializeEntityClassType: aType [
-	"aType is either 'Spatial', 'Social' or 'Passive'"
-	
-	| aClass |
-	aClass := self getSelectedEntityClassType: aType.
-	(aClass notNil and: [self changeRequest])
-		ifTrue: [self specializeEntityClass: aClass type: aType]
-]
-
-{ #category : #'model entities' }
-Cormas >> specializePassiveEntity [
-	
-	self specializeEntityClassType: 'Passive'
-]
-
-{ #category : #'model entities' }
-Cormas >> specializeSocialEntity [
-	
-	self specializeEntityClassType: 'Social'
-]
-
-{ #category : #'model entities' }
-Cormas >> specializeSpatialEntity [
-	
-	self specializeEntityClassType: 'Spatial'
 ]
 
 { #category : #simulation }

@@ -294,12 +294,6 @@ CMAbstractModel class >> chooseActivityDiagramEditorToRemove [
 				ifFalse: [ self removeActivityDiagram: (selectors at: index) ] ]
 ]
 
-{ #category : #'managing classes' }
-CMAbstractModel class >> classFromSymbol: aSymbol [
-	self deprecated: 'Use class method on Symbol instead of classFromSymbol:'.
-	^ aSymbol class
-]
-
 { #category : #accessing }
 CMAbstractModel class >> classNameFromEntityName: aString [
 	| validName prefixName |
@@ -712,12 +706,10 @@ CMAbstractModel class >> openActivityDiagram: operationName [
 CMAbstractModel class >> passiveClasses [
 	"return a collection of passive classes of the model"
 
-	^ self
-		allClassesInPackage
-		remove: self;
-		removeAll: self spatialClasses;
-		removeAll: self socialClasses;
-		yourself
+	^ passiveClasses 
+		ifNil: [ 
+			self initialize.
+			passiveClasses ]
 ]
 
 { #category : #accessing }
@@ -2417,11 +2409,10 @@ CMAbstractModel >> initStatus: anObject [
 { #category : #initialization }
 CMAbstractModel >> initialize [
 	"self class spatialClasses isEmpty ifFalse: [self initializeSpaceModel]."
-
 	"NB ->retire pour que les cells ne demandent pas le currentSimulation spaceModel alors qu''il n''est pas encore fini d''initialise"
 
+	super initialize.
 	self projectManager: CMProjectManager new.
-	self class socialClasses ifNil: [ self class initializeWithoutVS ].
 	self class socialClasses ifNotEmpty: [ self initializeChannel ].
 	self applyModelDefaultCormasSettings
 ]
@@ -3535,8 +3526,7 @@ CMAbstractModel >> theAgents [
 
 	| collection |
 	collection := OrderedCollection new.
-	self class socialClasses
-		do: [ :cl | collection addAll: (self theEntities: cl) ].
+	self class socialClasses do: [ :cl | collection addAll: (self theEntities: cl) ].
 	^ collection
 ]
 

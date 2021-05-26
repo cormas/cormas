@@ -276,8 +276,7 @@ CMTranslator >> addTranslationsForENPart3 [
 		at: #tConfirmDeleteEntity 		put: 'Are you sure to remove the selected entity';
 		at: #tEntities 						put: 'Entities';
 		at: #tRenameEntityDialogText 	put: 'Enter the entity''s name:';
-		at: #tSpecializeEntityDialogText put: 'Create a new kind of Entity
-Enter the entity''s name';
+		at: #tSpecializeEntityDialogText put: 'Create a new kind of Entity: Please enter the entity''s name';
 		at: #tSpecialization 				put: 'Specialization';
 		at: #tConfirmAbstractEntity 	put: ' is abstract. It will be changed as concrete class. Ok?';
 		at: #tConfirmConcreteEntity 	put: ' is concrete. It will be changed as abstract class. Ok?';
@@ -559,8 +558,7 @@ CMTranslator >> addTranslationsForESPart3 [
 		at: #tConfirmDeleteEntity 			put: '¿Está seguro de borrar la entidad seleccionada?';
 		at: #tEntities 							put: 'Entidades';
 		at: #tRenameEntityDialogText 		put: 'Ingrese el nombre de la entidad:';
-		at: #tSpecializeEntityDialogText 	put: 'Crear un nuevo tipo de Entidad
-Ingrese el nombre de la entidad';
+		at: #tSpecializeEntityDialogText 	put: 'Crear un nuevo tipo de Entidad: Por favor ingrese el nombre de la entidad';
 		at: #tSpecialization 					put: 'Especialización';
 		at: #tConfirmAbstractEntity 		put: ' es abstracta. Será cambiada a una clase concreta. Ok?';
 		at: #tConfirmConcreteEntity 		put: ' es concreta. Será cambiada a una clase abstracta. Ok?';

@@ -29,20 +29,6 @@ CMSpecPassiveAddInterface >> addActionBlock: aBlockClosure [
 	self owner addActionBlock: aBlockClosure.
 ]
 
-{ #category : #callbacks }
-CMSpecPassiveAddInterface >> addNewSpatialEntityGUI [
-	
-	| superClass newName aClass |
-
-	aClass := self spatialEntitySuperclass value = #CMSpatialEntityCell
-		ifTrue: [self cellOrCA value]
-		ifFalse: [self spatialEntitySuperclass value].
-	superClass := aClass class.
-	self cormas addNewClassType: 'Spatial' inheritingFrom: superClass name:
-			newName initProtocol: false stepProtocol: false.
-	self closeRequest
-]
-
 { #category : #accessing }
 CMSpecPassiveAddInterface >> entityType [
 
@@ -173,8 +159,9 @@ CMSpecPassiveAddInterface >> setFocus [
 
 { #category : #initialization }
 CMSpecPassiveAddInterface >> title [
+	" Private - See superimplementor's comment "
 
-	^ self translator tCreateEntityKind
+	^ self formattedWindowTitle: self translator tCreateEntityKind
 ]
 
 { #category : #accessing }

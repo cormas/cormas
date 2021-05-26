@@ -22,24 +22,25 @@ CGStCormas class >> for: aCMProjectModel [
 
 { #category : #'code-generation' }
 CGStCormas >> addNewClassType: aType inheritingFrom: aSuperclass name: aName initProtocol: createInit stepProtocol: createStep [
+	" aType is a <String> and could be : Social , 
+	aName is a validated CORMAS entity (class) name in the format CM<ModelName>UserProvidedEntityName"
 
-	" aType is a <String> and could be : Social , "
-
-	| selector newEntityClass |
-	newEntityClass := aName asValidCormasClassName.
-	[ self generateClass: newEntityClass superclass: aSuperclass ]
+	| selector theClass |
+	[ self generateClass: aName superclass: aSuperclass ]
 		on: CircularHierarchyError
 		do: [ :ex | ^ self inform: 'Trying to build a circular hierarchy' ].
 
+	theClass := self class environment at: aName.
 	selector := (aType asLowercase , 'Classes') asSymbol.
-	(self cormasModelClass perform: selector) add: newEntityClass.
-	((self class environment at: newEntityClass) inheritsFrom: CMSpatialEntityElement) 
-		ifTrue: [ self cormasModelClass cellClass: newEntityClass ].
-	self createModelAccessorsIn: (self class environment at: newEntityClass).
+
+	(self cormasModelClass perform: selector) add: theClass.
+	(theClass inheritsFrom: CMSpatialEntityElement) 
+		ifTrue: [ self cormasModelClass cellClass: aName ].
+	self createModelAccessorsIn: theClass.
 	self addProtocolNamed: #control.
 	createInit ifTrue: [ self createInit ].
 	createStep ifTrue: [ self createStep ]. "self modifyEntityClassType: aType."
-	^ newEntityClass
+	^ aName
 ]
 
 { #category : #'code-generation' }
@@ -126,15 +127,15 @@ CGStCormas >> createInstancesAccessorsIn: aClass [
 
 { #category : #'code-generation' }
 CGStCormas >> createModelAccessorsIn: aClass [
-	"ask if newClass is Abstract, 
+	" Private - Ask if newClass is Abstract, 
 	no, then creates the attribut 'theNewClasss' and the accesors at the level of cormasModel,
-	yes, then creates an accessing methods 'theNewClasss' that will returns a collection of all entities of newClass and its subclasses"
+	yes, then creates an accessing methods 'theNewClass' that will returns a collection of all entities of newClass and its subclasses"
 	
 	(aClass inheritsFrom: CMSpatialEntityElement)
 		ifTrue: [ self installConcreteMethodIn: aClass ]
 		ifFalse: [ (self confirmIsAbstractClass: aClass) 
-			ifTrue: [ self installAbstractMethodIn: aClass ] ].
-	self createInstancesAccessorsIn: aClass.
+			ifTrue: [ self installAbstractMethodIn: aClass ]
+			ifFalse: [ self createInstancesAccessorsIn: aClass ] ].
 ]
 
 { #category : #'code-generation' }
@@ -244,6 +245,12 @@ CGStCormas >> installConcreteMethodIn: aClass [
 		targetMethodCategory: 'testing';
 		sourceString: 'isAbstract \	^ false' withCRs;
 		generateMethod.
+]
+
+{ #category : #accessing }
+CGStCormas >> projectManager [ 
+
+	^ self cormasModel projectManager
 ]
 
 { #category : #accessing }

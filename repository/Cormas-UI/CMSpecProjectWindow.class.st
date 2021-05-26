@@ -66,7 +66,15 @@ CMSpecProjectWindow >> closeAfterCreateProject [
 CMSpecProjectWindow >> cormasExpressions [
 	" Answer a <String> with useful Cormas expressions to debug/develop/cleanup "
 	
-	^ 'CMProjectModel allInstances isEmpty.
+	^ 'CMConwayModel spatialClasses.
+CMConwayModel passiveClasses.
+CMConwayModel socialClasses.
+
+CMConwayModel passiveClasses: nil.
+CMConwayModel socialClasses: nil.
+CMConwayModel spatialClasses: nil.
+		
+CMProjectModel allInstances isEmpty.
 CMProjectManager allInstances.
 CMSpecProjectWindow allInstances.
 
@@ -81,9 +89,6 @@ CMSpecProjectWindow allInstances first pointersTo.
 CMSpecProjectWindow allInstances first projectAnnouncer subscriptions reset.
 CMProjectManager allInstances first announcer subscriptions reset.
 
-CMSpecProjectWindow allInstancesDo: [ : e | e becomeForward: nil ].
-CMProjectManager allInstancesDo: [ : e | e becomeForward: nil ].
-CMProjectModel allInstancesDo: [ : e | e becomeForward: nil ].
 3 timesRepeat: [ Smalltalk garbageCollect ].
 { CMProjectModel allInstances.
 CMProjectManager allInstances.

@@ -160,7 +160,7 @@ CMProjectManager >> createProject: projectName in: aCMApplicationProject [
 	| newProject newModel |
 	
 	newProject := aCMApplicationProject createProjectNamed: projectName.
-	newModel := (self createClassModelNamed: projectName asValidCormasClassName) new.
+	newModel := (self createClassModelNamed: (projectName asValidCormasClassName: self cormasProjectName)) new.
 	newProject
 		projectManager: self;
 		initializeForModel: newModel;
@@ -250,7 +250,7 @@ CMProjectManager >> defaultCormasOpener [
 CMProjectManager >> deleteProject [
 	" Private - Delete the current project from this system and unset its references "
 
-	(RGContainer packageOfClass: self cormasModelClass) realPackage removeFromSystem.
+	self currentProject ifNotNil: [ (RGContainer packageOfClass: self cormasModelClass) realPackage removeFromSystem ].
 	self currentProject release.
 	self currentProject: nil.
 ]
@@ -311,8 +311,7 @@ CMProjectManager >> initialize [
 CMProjectManager >> isValidCormasEntityName: aString [ 
 	" Answer <true> if aString is a valid name for an entity in the context of CORMAS "
 	
-	^ (self class environment hasClassNamed: aString asValidCormasClassName) not
-		and: [ (self class environment hasClassNamed: (aString asValidCormasClassName: self cormasProjectName)) not ] 
+	^ (self class environment hasClassNamed: (aString asValidCormasClassName: self cormasProjectName)) not
 ]
 
 { #category : #accessing }
@@ -381,7 +380,9 @@ CMProjectManager >> projectClass [
 { #category : #callbacks }
 CMProjectManager >> querySaveProject [
 	" Private - Request saving project if there are unsaved changes "
-	
+
+	" If the project is broken, e.g. development tasks, then we don't want to save anything "
+	self currentProject ifNil:[ ^ false ]. 
 	(self currentProject requiresSaving and: [ self confirm: self translator tQuerySaveProject ])
 		ifTrue: [ self saveProject ].
 ]
@@ -407,12 +408,19 @@ CMProjectManager >> updateNewProject: modelName [
 
 { #category : #callbacks }
 CMProjectManager >> updateStateClosed [
+	" Private - Setup an announcement with information related with closing a project. 
+	If the project is broken, we configure a temporary file. "
+	
+	| fileName |
 
 	self notifyEvent:	'Action: Close'.
+	fileName := self currentProject 
+		ifNil: [ FileReference newTempFilePrefix: 'invalid-cormas-project' suffix: '' ] 
+		ifNotNil: [ self currentProject fileName ]. 
 	self announcer announce: 
 		(PFCloseProject new 
 			projectName: self currentProjectName;
-			projectLocation: self currentProject fileName;
+			projectLocation: fileName;
 			yourself).
 	CMApplicationPreferences settingProjectNotifications 
 		ifTrue: [ self informMessage: self translator tProjectCloseSuccess ].

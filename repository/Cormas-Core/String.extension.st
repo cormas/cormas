@@ -23,26 +23,6 @@ String >> asGetterForEntityClass [
 ]
 
 { #category : #'*Cormas-Core' }
-String >> asValidCormasClassName [
-	" Answer the receiver <Symbol> as valid as CORMAS class name. Currently a CORMAS class name is valid if :
-	- It does not contain blanks
-	- It does not begin with digits
-	- It is not quoted
-	- Begins with CM
-	- It is a Symbol "
-
-	| validName |
-	
-	validName := self capitalized.
-	validName := validName withoutBlanks.
-	validName := validName withoutLeadingDigits.
-	validName := validName withoutQuoting.
-	(validName asUppercase beginsWith: 'CM')
-		ifFalse: [ validName := 'CM' , validName ].
-	^ validName asSymbol
-]
-
-{ #category : #'*Cormas-Core' }
 String >> asValidCormasClassName: aCMProjectName [
 	" Answer the receiver <Symbol> as valid as CORMAS class name along with the project name . 
 	Currently a CORMAS class name is valid if :

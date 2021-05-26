@@ -3,7 +3,7 @@ A CMSpaceInterfaceTest is a test class for testing the behavior of CMSpaceInterf
 "
 Class {
 	#name : #CMSpaceInterfaceTest,
-	#superclass : #TestCase,
+	#superclass : #CMAbstractModelTest,
 	#instVars : [
 		'spaceInterface'
 	],
@@ -15,7 +15,7 @@ CMSpaceInterfaceTest >> newProjectManager [
 
 	^ CMProjectManager new 
 		currentProject: (CMProjectModel basicNew
-				initializeForModel: self newTestModel named: 'SampleModel';
+				initializeForModel: self newTestModel named: self sampleModelNameWithoutPrefix;
 				yourself);
 		startFSM;
 		yourself.

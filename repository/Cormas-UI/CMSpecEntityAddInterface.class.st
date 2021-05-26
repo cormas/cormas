@@ -13,9 +13,10 @@ CMSpecEntityAddInterface >> addEntity [
 	" Private - Callback for adding a new entity "
 
 	self hasValidEntityName
-		ifTrue: [ self addValidEntity ]
+		ifTrue: [ 
+			self addValidEntity.
+			self delete. ]
 		ifFalse: [ ^ self informMessage: self translator tValidNameRequired ].
-	self delete.
 
 ]
 
