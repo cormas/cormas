@@ -109,6 +109,7 @@ CMProjectModel >> addNewEntity: aCMEntityNewAnnouncement [
 	" Add a new entity to the receiver "
 	
 	self codeGenerator 
+		targetClass: self cormasModelClass;
 		targetClassCategory: self cormasModelClass category;
 		addNewClassType: aCMEntityNewAnnouncement type
 		inheritingFrom: aCMEntityNewAnnouncement superclass
@@ -487,29 +488,70 @@ CMProjectModel >> release [
 CMProjectModel >> removeEntity: aCMEntityAnnouncement [ 
 	" Remove the entity class in aCMEntityAnnouncement "
 
-	| theClass |
+	| theClass theGetter |
 	
-	theClass := self class environment at: aCMEntityAnnouncement entityName.
+	theClass := self classFor: aCMEntityAnnouncement entityName.
+	theGetter := theClass asGetterForEntityClass.
+
+	self removeEntitySubclasses: aCMEntityAnnouncement.
+
 	(self perform: (aCMEntityAnnouncement type asLowercase , 'Classes') asSymbol)
 		remove: theClass
 		ifAbsent: [ self error ].
-	self codeGenerator removeClass: aCMEntityAnnouncement entityName asValidCormasClassName.
+	self codeGenerator removeClass: theClass.
+	self removeEntityReferences: theGetter.
+
 ]
 
 { #category : #callbacks }
-CMProjectModel >> renameEntity: aCMEntityAnnouncement [
-	| theClass entitiesGetter |
+CMProjectModel >> removeEntityReferences: theGetter [ 
+	" Remove the entity class in aCMEntityAnnouncement "
+
+	| theSetter |
+	theSetter := theGetter asMutator.
+	(self cormasModelClass canUnderstand: theGetter)
+		ifTrue: [ self cormasModelClass removeSelector: theGetter ].
+	(self cormasModelClass canUnderstand: theSetter)
+		ifTrue: [ self cormasModelClass removeSelector: theSetter ].
+	[ self cormasModelClass removeInstVarNamed: theGetter ]
+	on: SlotNotFound 
+	do: [ : ex | ].
+
+]
+
+{ #category : #callbacks }
+CMProjectModel >> removeEntitySubclasses: aCMEntityAnnouncement [
+	" Callback which ask for confirmation to delete the subclasses in the announcement aCMEntityAnnouncement entity "
+
+	| theClass theGetter |
 	
-	theClass := self class environment at: aCMEntityAnnouncement oldName.
+	theClass := self classFor: aCMEntityAnnouncement entityName.
+	(self shouldRemoveSubclasses: theClass) ifFalse: [ ^ nil ].
+
+	(OrderedCollection withAll: theClass allSubclasses)
+		do: [ : cl | 	
+				theGetter := cl asGetterForEntityClass.
+				(self perform: (aCMEntityAnnouncement type asLowercase , 'Classes') asSymbol)
+					remove: cl
+					ifAbsent: [ self error ].
+				self removeEntityReferences: theGetter.
+				self codeGenerator removeClass: cl ]
+]
+
+{ #category : #callbacks }
+CMProjectModel >> renameEntity: aCMEntityRenameAnnouncement [
+	| oldClass newClass entitiesGetter |
+	
+	oldClass := aCMEntityRenameAnnouncement oldName copy.
+	newClass := aCMEntityRenameAnnouncement entityName asValidCormasClassName: self projectManager cormasProjectName.
 	(self codeGenerator
-		renameClass: aCMEntityAnnouncement oldName asValidCormasClassName
-		to: aCMEntityAnnouncement entityName asValidCormasClassName)
+		renameClass: oldClass
+		to: newClass)
 		ifFalse: [ ^ self ].
-	entitiesGetter := (aCMEntityAnnouncement type asLowercase , 'Classes') asSymbol.
-	(self perform: entitiesGetter)
-		remove: theClass
-		ifAbsent: [ ^ self error ].
-	(self perform: entitiesGetter) add: theClass
+	entitiesGetter := (aCMEntityRenameAnnouncement type asLowercase , 'Classes') asSymbol.
+	(self perform: entitiesGetter) remove: oldClass ifAbsent: [ ].
+	(self perform: entitiesGetter) add: newClass.
+
 ]
 
 { #category : #accessing }
@@ -531,6 +573,25 @@ CMProjectModel >> saveProjectFile [
 		buildProjectFile;
 		moveProjectFile.
 	'Done saving project.'
+]
+
+{ #category : #callbacks }
+CMProjectModel >> shouldRemoveSubclasses: theClass [
+	" Private - Detect if the parameter theClass has subclasses and confirm with the user. Answer <true> if they should be removed "
+
+	theClass withAllSubclasses size > 1
+		ifTrue: [ 
+			| subClasses |
+			subClasses := String streamContents: [ : stream |
+				theClass allSubclasses do: [ : cl |
+					stream 
+						<< '   ';
+						<< cl name asString;
+						<< '\' ] ].
+			^ self confirm: ('Delete the class ' , theClass name asString , ' and the following subclasses ? \ \' , subClasses) withCRs ].
+
+	^ false
+
 ]
 
 { #category : #accessing }

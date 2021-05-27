@@ -42,12 +42,16 @@ CMEntityAnnouncement class >> named: aString type: entityTypeString superclass: 
 
 { #category : #accessing }
 CMEntityAnnouncement >> entityName [
+	" Answer a <Class> representing the entity of the receiver " 
+
 	^ entityName
 ]
 
 { #category : #accessing }
-CMEntityAnnouncement >> entityName: anObject [
-	entityName := anObject
+CMEntityAnnouncement >> entityName: aString [
+	" Set the receiver's target entity to be aString "
+
+	entityName := aString
 ]
 
 { #category : #accessing }

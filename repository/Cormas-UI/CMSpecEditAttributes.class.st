@@ -49,7 +49,6 @@ CMSpecEditAttributes class >> for: aClass owner: owner [
 	" Answer a new instance of the receiver configuring project settings "
 	
 	^ self basicNew
-		owner: owner;
 		projectManager: owner projectManager;
 		targetClass: aClass;
 		initialize;
@@ -267,7 +266,7 @@ CMSpecEditAttributes >> targetClass: anObject [
 { #category : #initialization }
 CMSpecEditAttributes >> title [
 
-	^ self formattedWindowTitle: 'Attributes'
+	^ self formattedWindowTitle: self translator tAttributes
 ]
 
 { #category : #accessing }

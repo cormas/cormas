@@ -1,5 +1,5 @@
 Class {
-	#name : #CMBasicModelTest,
+	#name : #CMTestObject,
 	#superclass : #TestCase,
 	#instVars : [
 		'model'
@@ -8,7 +8,7 @@ Class {
 }
 
 { #category : #'tests-accessing-entities' }
-CMBasicModelTest >> newTestModel [
+CMTestObject >> newTestModel [
 	^ (CMTestModel
 		initialize;
 		new)

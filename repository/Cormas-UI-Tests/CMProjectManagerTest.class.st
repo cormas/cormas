@@ -10,8 +10,7 @@ Class {
 { #category : #test }
 CMProjectManagerTest >> newValidEntityNamed: entityName [
 
-	CMSpatialEntityAggregate subclass: #CM , entityName
-
+	CMSpatialEntityAggregate subclass: (entityName asValidCormasClassName: self sampleModelNameWithoutPrefix)
 ]
 
 { #category : #accessing }
@@ -179,7 +178,7 @@ CMProjectManagerTest >> testIsValidCormasEntityName [
 	self assert: (self projectManager isValidCormasEntityName: entityName).
 	self newValidEntityNamed: entityName.
 	self deny: (self projectManager isValidCormasEntityName: entityName).
-	(self class environment at: (#CM , entityName)) removeFromSystem
+	(self class environment at: (entityName asValidCormasClassName: self sampleModelNameWithoutPrefix)) removeFromSystem
 ]
 
 { #category : #test }

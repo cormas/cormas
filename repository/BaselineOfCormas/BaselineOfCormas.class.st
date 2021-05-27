@@ -20,11 +20,7 @@ BaselineOfCormas >> baseline: spec [
 			self 
 				specForBaselines: spec;
 				specForPackages: spec;
-				specForGroups: spec ];
-
-		group: 'Models' 	with: 	#('Cormas-Model-Conway' 'Cormas-Model-ReHab' 'Cormas-Core' 'Cormas-Model-ECEC' 'Cormas-Model-FireAutomata' 'Cormas-Model-PlotsRental' 'Cormas-Model-Diffuse' 'Cormas-Model-DemoAggregates' 'Cormas-Model-Stupid');
-		group: 'OpenMole'	with: #('Cormas-OpenMole' 'Core');
-		group: 'All'			with: #('UI' 'Tests' 'Core' 'Models' 'OpenMole').
+				specForGroups: spec ].
 
 	self 
 		specForPharo7: spec;
@@ -132,9 +128,11 @@ BaselineOfCormas >> specForBaselines: spec [
 
 	spec
 		baseline: 'PetitParser'
-		with: [ spec
-					repository: 'github://moosetechnology/PetitParser/src';
-					loads: #('YAML') ];
+		with: [ 
+			spec
+				repository: 'github://moosetechnology/PetitParser/src';
+				loads: #('YAML') ];
+
 		baseline: 'FileDialog'
 		with: [ spec repository: 'github://peteruhnak/file-dialog:v1.0.0/repository' ];
 
@@ -147,11 +145,11 @@ BaselineOfCormas >> specForBaselines: spec [
 		baseline: 'Roassal2'
 		with: [ spec repository: 'github://ObjectProfile/Roassal2/src' ];
 
-		baseline: 'NeoCSV'
-		with: [ spec repository: 'github://svenvc/NeoCSV/repository' ];
-
 		baseline: 'PolyMath'
-		with: [ spec repository: 'github://PolyMathOrg/PolyMath/src' ];
+		with: [ 
+			spec 
+				repository: 'github://PolyMathOrg/PolyMath/src';
+				loads: #('Core') ];
 
 		baseline: 'GitBridge'
 		with: [ spec repository: 'github://jecisc/GitBridge/src' ];
@@ -165,16 +163,20 @@ BaselineOfCormas >> specForBaselines: spec [
 BaselineOfCormas >> specForGroups: spec [
 
 	spec
-		group: 'Core' 	with: #('Cormas-Core');
-		group: 'Tests' 	with: #('Core' 'Cormas-Tests' 'Cormas-UI-Tests');
-		group: 'UI' 		with: #(#'Cormas-UI' 'Core')
+		group: 'Core' 		with: #('Cormas-Core');
+		group: 'Tests' 		with: #('Core' 'Cormas-Tests' 'Cormas-UI-Tests');
+		group: 'UI' 			with: #(#'Cormas-UI' 'Core');
+		group: 'Models' 	with: 	#('Cormas-Model-Conway' 'Cormas-Model-ReHab' 'Cormas-Core' 'Cormas-Model-ECEC' 'Cormas-Model-FireAutomata' 'Cormas-Model-PlotsRental' 'Cormas-Model-Diffuse' 'Cormas-Model-DemoAggregates' 'Cormas-Model-Stupid');
+		group: 'OpenMole'	with: #('Cormas-OpenMole' 'Core');
+		group: 'All'			with: #('UI' 'Tests' 'Core' 'Models' 'OpenMole');
+		group: 'default' 	with: #('All')	
 ]
 
 { #category : #specs }
 BaselineOfCormas >> specForPackages: spec [
 
 	spec
-		package: 'Cormas-Core' with: [ spec requires: #('PolyMath' 'PetitParser' 'NeoCSV' 'GitBridge' 'ESRIASCIIRaster') ];
+		package: 'Cormas-Core' with: [ spec requires: #('PolyMath' 'PetitParser' 'GitBridge' 'ESRIASCIIRaster') ];
 
 		package: 'Cormas-Model-Conway';
 		package: 'Cormas-Model-DemoAggregates';

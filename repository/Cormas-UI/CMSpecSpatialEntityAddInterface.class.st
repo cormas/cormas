@@ -39,22 +39,6 @@ CMSpecSpatialEntityAddInterface >> addActionBlock: aBlockClosure [
 	self owner addActionBlock: aBlockClosure.
 ]
 
-{ #category : #callbacks }
-CMSpecSpatialEntityAddInterface >> addNewSpatialEntityGUI [
-	
-	| superClass newName aClass |
-
-	self flag: #toDelete.
-	" Acá ya obtiene el valor de la superclase ingresada porque ya sabe si creó la primera o la segunda "
-	aClass := self spatialEntitySuperclass value = #CMSpatialEntityCell
-		ifTrue: [self cellOrCA value]
-		ifFalse: [self spatialEntitySuperclass value].
-	superClass := aClass class.
-	self cormas addNewClassType: 'Spatial' inheritingFrom: superClass name:
-			newName initProtocol: false stepProtocol: false.
-	self closeRequest
-]
-
 { #category : #'as yet unclassified' }
 CMSpecSpatialEntityAddInterface >> entityType [
 
@@ -247,7 +231,9 @@ CMSpecSpatialEntityAddInterface >> setFocus [
 
 { #category : #initialization }
 CMSpecSpatialEntityAddInterface >> title [
-	^ self translator tCreateEntityKind
+	" Private - See superimplementor's comment "
+
+	^ self formattedWindowTitle: self translator tCreateEntityKind
 ]
 
 { #category : #accessing }
