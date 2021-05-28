@@ -120,7 +120,8 @@ BaselineOfCormas >> preLoadForPharo9 [
 	" Private - Execute post install actions "
 
 	"Smalltalk tools debugger filterCommonMessageSends: true."
-	PharoLightTheme beCurrent
+	PharoLightTheme beCurrent.
+	RSUMLCalypsoSettings useCalypsoUML: false.
 ]
 
 { #category : #specs }
@@ -133,29 +134,34 @@ BaselineOfCormas >> specForBaselines: spec [
 				repository: 'github://moosetechnology/PetitParser/src';
 				loads: #('YAML') ];
 
-		baseline: 'FileDialog'
-		with: [ spec repository: 'github://peteruhnak/file-dialog:v1.0.0/repository' ];
+"				baseline: 'SMark' 
+				with: [ spec repository: 'github://guillep/SMark/repository' ];"
+				baseline: 'SMark'
+				with: [ spec repository: 'github://smarr/SMark:v1.0.4' ];
+					
+				baseline: 'FileDialog'
+				with: [ spec repository: 'github://peteruhnak/file-dialog:v1.0.0/repository' ];
 
-		baseline: 'ProjectFramework'
-		with: [ spec repository: 'github://hernanmd/ProjectFramework/repository' ];
+				baseline: 'ProjectFramework'
+				with: [ spec repository: 'github://hernanmd/ProjectFramework/repository' ];
 
-		baseline: 'CodeGenerator'
-		with: [ spec repository: 'github://hernanmd/CodeGenerator/repository' ];
+				baseline: 'CodeGenerator'
+				with: [ spec repository: 'github://hernanmd/CodeGenerator/repository' ];
 
-		baseline: 'Roassal2'
-		with: [ spec repository: 'github://ObjectProfile/Roassal2/src' ];
+				baseline: 'Roassal2'
+				with: [ spec repository: 'github://ObjectProfile/Roassal2/src' ];
 
-		baseline: 'PolyMath'
-		with: [ 
-			spec 
-				repository: 'github://PolyMathOrg/PolyMath/src';
-				loads: #('Core') ];
+				baseline: 'PolyMath'
+				with: [ 
+					spec 
+						repository: 'github://PolyMathOrg/PolyMath/src';
+						loads: #('Core') ];
 
-		baseline: 'GitBridge'
-		with: [ spec repository: 'github://jecisc/GitBridge/src' ];
+				baseline: 'GitBridge'
+				with: [ spec repository: 'github://jecisc/GitBridge/src' ];
 
-		baseline: 'ESRIASCIIRaster'
-		with: [ spec repository: 'github://pharo-GIS/ESRI-ASCII-Raster/' ].
+				baseline: 'ESRIASCIIRaster'
+				with: [ spec repository: 'github://pharo-GIS/ESRI-ASCII-Raster/' ].
 
 ]
 
@@ -189,7 +195,7 @@ BaselineOfCormas >> specForPackages: spec [
 		package: 'Cormas-Tests' with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-OpenMole' with: [ spec requires: #('Cormas-Core') ];
 
-		package: 'Cormas-UI' with: [ spec requires: #('FileDialog' 'ProjectFramework' 'CodeGenerator' 'Roassal2') ];
+		package: 'Cormas-UI' with: [ spec requires: #('FileDialog' 'ProjectFramework' 'CodeGenerator' 'Roassal2' 'SMark') ];
 		package: 'Cormas-UI-Tests' with: [ spec requires: #('Cormas-Tests' 'Cormas-UI') ]
 ]
 
