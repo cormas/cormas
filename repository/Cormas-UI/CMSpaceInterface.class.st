@@ -31,6 +31,8 @@ Smalltalk tools workspace
 Class {
 	#name : #CMSpaceInterface,
 	#superclass : #PFStandardProjectWindow,
+	#traits : 'TCMUIUtils',
+	#classTraits : 'TCMUIUtils classTrait',
 	#instVars : [
 		'spaceView',
 		'specSpaceView'
@@ -65,7 +67,6 @@ CMSpaceInterface class >> openFor: aCMProjectManager [
 
 	^ (self for: aCMProjectManager)
 		openWithSpec;
-		centered;
 		yourself
 ]
 
@@ -407,5 +408,7 @@ CMSpaceInterface >> subMenuForNew [
 
 { #category : #initialization }
 CMSpaceInterface >> title [
-	^ 'CORMAS - Visualization Space'
+	" Private - See superimplementor's comment "
+
+	^ self formattedWindowTitle: 'Visualization Space'
 ]

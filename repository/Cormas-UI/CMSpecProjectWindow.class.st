@@ -568,10 +568,11 @@ CMSpecProjectWindow >> openVizProbes [
 
 { #category : #callbacks }
 CMSpecProjectWindow >> openVizSpace [
+
 	| aModel viz |
 	aModel := self projectManager cormasModel.
-	aModel spaceModel isNil
-		ifTrue: [ ^ self alertMessage: 'No spaceModel to visualize' ].
+	aModel spaceModel ifNil: [ 
+		^ self alertMessage: self translator tNoSpaceModel ].
 	viz := CMSpaceInterface openFor: self projectManager.
 	viz spaceView: viz specSpaceView spec instance view.
 	viz window extent: viz spaceView canvas extent + (20 @ 20).

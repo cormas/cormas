@@ -198,7 +198,7 @@ CMSpaceView >> subscribeOn: aModel [
 	"This method subscribes the simualtionGrid to the timeChange announcements of a cormasModel.
 	When the simulation time has change, the simulation grid can update it self by calling  self  canvas signalUpdate "
 
-	model announcer
+	model projectAnnouncer
 		when: CMTimeChangedAnnouncement
 			do: [ :aAnnounce | 
 			aAnnounce timeStep = 0
