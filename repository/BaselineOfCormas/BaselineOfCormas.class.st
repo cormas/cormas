@@ -134,9 +134,11 @@ BaselineOfCormas >> specForBaselines: spec [
 				repository: 'github://moosetechnology/PetitParser/src';
 				loads: #('YAML') ];
 
-				baseline: 'SMark' 
-				with: [ spec repository: 'github://guillep/SMark/repository' ];
-
+"				baseline: 'SMark' 
+				with: [ spec repository: 'github://guillep/SMark/repository' ];"
+				baseline: 'SMark'
+				with: [ spec repository: 'github://smarr/SMark:v1.0.4' ];
+					
 				baseline: 'FileDialog'
 				with: [ spec repository: 'github://peteruhnak/file-dialog:v1.0.0/repository' ];
 
