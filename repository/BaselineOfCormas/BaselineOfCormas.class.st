@@ -133,29 +133,32 @@ BaselineOfCormas >> specForBaselines: spec [
 				repository: 'github://moosetechnology/PetitParser/src';
 				loads: #('YAML') ];
 
-		baseline: 'FileDialog'
-		with: [ spec repository: 'github://peteruhnak/file-dialog:v1.0.0/repository' ];
+				baseline: 'SMark' 
+				with: [ spec repository: 'github://guillep/SMark/repository' ];
 
-		baseline: 'ProjectFramework'
-		with: [ spec repository: 'github://hernanmd/ProjectFramework/repository' ];
+				baseline: 'FileDialog'
+				with: [ spec repository: 'github://peteruhnak/file-dialog:v1.0.0/repository' ];
 
-		baseline: 'CodeGenerator'
-		with: [ spec repository: 'github://hernanmd/CodeGenerator/repository' ];
+				baseline: 'ProjectFramework'
+				with: [ spec repository: 'github://hernanmd/ProjectFramework/repository' ];
 
-		baseline: 'Roassal2'
-		with: [ spec repository: 'github://ObjectProfile/Roassal2/src' ];
+				baseline: 'CodeGenerator'
+				with: [ spec repository: 'github://hernanmd/CodeGenerator/repository' ];
 
-		baseline: 'PolyMath'
-		with: [ 
-			spec 
-				repository: 'github://PolyMathOrg/PolyMath/src';
-				loads: #('Core') ];
+				baseline: 'Roassal2'
+				with: [ spec repository: 'github://ObjectProfile/Roassal2/src' ];
 
-		baseline: 'GitBridge'
-		with: [ spec repository: 'github://jecisc/GitBridge/src' ];
+				baseline: 'PolyMath'
+				with: [ 
+					spec 
+						repository: 'github://PolyMathOrg/PolyMath/src';
+						loads: #('Core') ];
 
-		baseline: 'ESRIASCIIRaster'
-		with: [ spec repository: 'github://pharo-GIS/ESRI-ASCII-Raster/' ].
+				baseline: 'GitBridge'
+				with: [ spec repository: 'github://jecisc/GitBridge/src' ];
+
+				baseline: 'ESRIASCIIRaster'
+				with: [ spec repository: 'github://pharo-GIS/ESRI-ASCII-Raster/' ].
 
 ]
 
