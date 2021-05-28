@@ -313,6 +313,7 @@ CMTranslator >> addTranslationsForENPart3 [
 		at: #tPackageDepedenciesTool 	put: 'Open Package Dependencies Analyzer';
 		at: #tPackageDepedenciesGraph 	put: 'Open Package Dependencies Graph';
 		at: #tCORMASBrowser 				put: 'CORMAS Browser';
+		at: #tNoSpaceModel 				put: 'No space model to visualize';
 		yourself
 ]
 
@@ -595,6 +596,7 @@ CMTranslator >> addTranslationsForESPart3 [
 		at: #tPackageDepedenciesTool 		put: 'Abrir Analizador de Dependencias de Paquetes';
 		at: #tPackageDepedenciesGraph 		put: 'Abrir Visualización de Dependencias de Paquetes';
 		at: #tCORMASBrowser 					put: 'Navegador de CORMAS';
+		at: #tNoSpaceModel 					put: 'No hay ningún space model para visualizar';
 		yourself
 
 ]
