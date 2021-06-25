@@ -293,9 +293,7 @@ CMSpecProjectWindow >> menuDisableProgrammingGroup [
 		#tEditAttributes .
 		#tEditSteps .
 		#tEditActivityDiagrams .
-		#tProbes .
-		#tMessages .
-		#tSpaceEntities
+		#tClassEditor
 	} do: [ : itemSel | self menuDisableItem: itemSel ]
 ]
 
@@ -390,9 +388,7 @@ CMSpecProjectWindow >> menuEnableProgrammingGroup [
 		#tEditAttributes .
 		#tEditSteps .
 		#tEditActivityDiagrams .
-		#tProbes .
-		#tMessages .
-		#tSpaceEntities
+		#tClassEditor
 	} do: [ : itemSel | self menuEnableItem: itemSel ]
 ]
 
@@ -438,11 +434,6 @@ CMSpecProjectWindow >> menuEnableVisualizationGroup [
 	" Private - Disable all menu items within the Visualization group "
 
 	{ 
-		#tProgrammingEntityClass .
-		#tEditInit .
-		#tEditAttributes .
-		#tEditSteps .
-		#tEditActivityDiagrams .
 		#tProbes .
 		#tMessages .
 		#tSpaceEntities
@@ -825,19 +816,6 @@ CMSpecProjectWindow >> subMenuHowToRunThisModel: anItem [
 		action: [ self openHelpHowToRunModel ]
 ]
 
-{ #category : #'submenu-programming' }
-CMSpecProjectWindow >> subMenuOpenClassEditor: item [
-
-	item
-		name: 'Class Editor...';
-		icon: (self iconNamed: #openIcon);
-		shortcut: $c command;
-		action: [ 
-			self halt.
-			"OPUmlProject
-				openOnModel: (OPUMLModel new name: self projectManager cormasModelName)" ]
-]
-
 { #category : #'submenu-tools-developer' }
 CMSpecProjectWindow >> subMenuOpenCormasIssue: item [
 
@@ -846,16 +824,6 @@ CMSpecProjectWindow >> subMenuOpenCormasIssue: item [
 		icon: (self iconNamed: #repair);
 		shortcut: $I command;
 		action: [ self openCormasIssue ]
-]
-
-{ #category : #'submenu-programming' }
-CMSpecProjectWindow >> subMenuProgrammingClassEditor [
-
-	^ MenuModel new
-		addGroup: [ : group |
-			group addItem: [ : item | self subMenuOpenClassEditor: item ] ]
-		
-
 ]
 
 { #category : #'submenu-programming' }
@@ -986,9 +954,9 @@ CMSpecProjectWindow >> subMenuProgrammingUML: item [
 
 	item
 		name: self translator tClassEditor;
-"		icon: Smalltalk ui icons openIcon;"
+		icon: (self iconNamed: #openIcon);
 		shortcut: $U command;
-		subMenu: self subMenuProgrammingClassEditor
+		action: [ OPProject openOnModel: (OPUMLPackage new name: self projectManager cormasModelName) ]
 ]
 
 { #category : #'submenu-tools-developer' }

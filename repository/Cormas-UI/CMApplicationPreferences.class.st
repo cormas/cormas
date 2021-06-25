@@ -128,7 +128,7 @@ CMApplicationPreferences class >> defaultBaseLocation [
 { #category : #defaults }
 CMApplicationPreferences class >> defaultProjectNotifications [
 
-	^ true
+	^ false
 ]
 
 { #category : #defaults }
