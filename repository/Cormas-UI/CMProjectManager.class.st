@@ -357,6 +357,8 @@ CMProjectManager >> openProject [
 CMProjectManager >> openProject: aFileReferenceOrName [
 	" Request a model to the user and open it for the receiver "
 
+	self hasProject
+		ifTrue: [ self doPostCloseActions ]. 
 	self opener openProject: aFileReferenceOrName
 ]
 

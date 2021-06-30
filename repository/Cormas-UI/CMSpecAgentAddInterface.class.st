@@ -111,20 +111,6 @@ CMSpecAgentAddInterface >> entityType [
 	^ 'Social'
 ]
 
-{ #category : #actions }
-CMSpecAgentAddInterface >> getNewClassNameFromGUI [
-	" Answer a <String> with a valid Smalltalk class name "	
-
-	| aName |
-	(aName := self newClassName textValuePending) isEmpty
-		ifFalse: [
-			aName first isLetter ifFalse: [ aName := self defaultClassPrefix , aName ].
-			(self projectManager verifyClassExist: aName)
-				ifTrue: [ self cormas alertNameAlreadyExist. 	^nil ] ]
-		ifTrue: [ ^ nil ].
-	^ aName capitalized
-]
-
 { #category : #initialization }
 CMSpecAgentAddInterface >> initialExtent [
 

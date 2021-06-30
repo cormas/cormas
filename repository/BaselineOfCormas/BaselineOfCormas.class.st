@@ -241,8 +241,9 @@ BaselineOfCormas >> specForPharo9: spec [
 		for: #'pharo9.x'
 		do: [ spec preLoadDoIt: #preLoadForPharo9.
 			spec
-				baseline: 'Tabular' 	with: [ spec repository: 'github://VincentBlondeau/Tabular' ];
-				baseline: 'NeoJSON' 	with: [ spec repository: 'github://svenvc/NeoJSON' ] ]
+				baseline: 'Tabular' 		with: [ spec repository: 'github://VincentBlondeau/Tabular' ];
+				baseline: 'NeoJSON' 		with: [ spec repository: 'github://svenvc/NeoJSON' ];
+				baseline: 'ClassEditor'	with: [ spec repository: 'github://hernanmd/class-editor/repository'; loads: 'complete' ]  ]
 				"baseline: 'Roassal3' with: [ spec repository: 'github://ObjectProfile/Roassal3' ];"  
 
 ]
