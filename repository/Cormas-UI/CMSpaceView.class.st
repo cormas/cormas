@@ -12,7 +12,7 @@ Class {
 		'cellViews',
 		'activePovsSelector'
 	],
-	#category : #'Cormas-UI-PoV'
+	#category : #'Cormas-UI-Space-Spec1'
 }
 
 { #category : #'instance creation' }
@@ -67,6 +67,7 @@ CMSpaceView >> addViewForAgents: situatedEntities [
 	"Organize coordinate system"
 
 	| windowSize |
+	
 	
 	origin := (self elements collect: [ :e | e position x ]) min @ (self elements collect: [ :e | e position y ]) min.
 	windowSize := (self elements collect: [ :e | e position x ]) max @ (self elements collect: [ :e | e position y ]) max.
@@ -177,7 +178,8 @@ self activePovsSelector at: aClass put: aSymbol
 
 { #category : #accessing }
 CMSpaceView >> setAndRefreshActivePovSelectorOf: aClass with: aSymbol [ 
-self setActivePovSelectorOf: aClass with: aSymbol .
+
+	self setActivePovSelectorOf: aClass with: aSymbol .
 	self elements do: #updateShape.
 	self canvas signalUpdate
 ]

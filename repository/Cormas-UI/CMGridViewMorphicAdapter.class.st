@@ -6,7 +6,7 @@ Class {
 		'canvas',
 		'spaceViewClass'
 	],
-	#category : #'Cormas-UI-PoV'
+	#category : #'Cormas-UI-Space-Spec1'
 }
 
 { #category : #private }

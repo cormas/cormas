@@ -1,7 +1,7 @@
 Class {
 	#name : #CMSimulationGrid,
 	#superclass : #CMSpaceView,
-	#category : #'Cormas-UI-PoV'
+	#category : #'Cormas-UI-Space-Spec1'
 }
 
 { #category : #'opening and menus' }

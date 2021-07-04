@@ -564,11 +564,11 @@ CMSpecProjectWindow >> openVizSpace [
 	aModel := self projectManager cormasModel.
 	aModel spaceModel ifNil: [ 
 		^ self alertMessage: self translator tNoSpaceModel ].
-	viz := CMSpaceInterface openFor: self projectManager.
-	viz spaceView: viz specSpaceView spec instance view.
+	viz := CMSpaceInterfaceR3 openFor: self projectManager.
+"	viz spaceView: viz specSpaceView spec instance view.
 	viz window extent: viz spaceView canvas extent + (20 @ 20).
 	viz spaceView canvas focusOnCenterScaled.
-	viz spaceView signalUpdate
+	viz spaceView signalUpdate"
 ]
 
 { #category : #accessing }

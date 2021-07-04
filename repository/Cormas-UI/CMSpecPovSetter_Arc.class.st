@@ -9,7 +9,7 @@ Class {
 		'stopPosition',
 		'startPosition'
 	],
-	#category : #'Cormas-UI-PoV'
+	#category : #'Cormas-UI-PoV-Spec1'
 }
 
 { #category : #'initialize-release' }

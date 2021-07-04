@@ -17,5 +17,5 @@ Class {
 	#instVars : [
 		'tabManager'
 	],
-	#category : 'Cormas-UI-PoV'
+	#category : #'Cormas-UI-PoV-Spec1'
 }

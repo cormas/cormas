@@ -20,6 +20,7 @@ CMApplicationPreferences class >> availableSettingSpaceViewer [
 	
 	^ { 
 		CMSpaceView .
+		CMR3SpaceView .
 	 	CMSpaceAnimationRecorder 
 		}.
 ]
@@ -134,7 +135,7 @@ CMApplicationPreferences class >> defaultProjectNotifications [
 { #category : #defaults }
 CMApplicationPreferences class >> defaultSettingSpaceViewer [
 	
-	^ self availableSettingSpaceViewer first
+	^ CMR3SpaceView
 ]
 
 { #category : #settings }

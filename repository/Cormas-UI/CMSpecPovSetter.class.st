@@ -40,7 +40,7 @@ Class {
 	#classInstVars : [
 		'standardCellBounds'
 	],
-	#category : #'Cormas-UI-PoV'
+	#category : #'Cormas-UI-PoV-Spec1'
 }
 
 { #category : #colors }

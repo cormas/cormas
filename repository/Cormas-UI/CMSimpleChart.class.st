@@ -6,7 +6,7 @@ Class {
 		'probeNum',
 		'window'
 	],
-	#category : #'Cormas-UI-charts'
+	#category : #'Cormas-UI-Chart-Spec1-Roassal2'
 }
 
 { #category : #deprecated }

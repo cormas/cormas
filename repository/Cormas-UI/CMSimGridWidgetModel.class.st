@@ -1,7 +1,7 @@
 Class {
 	#name : #CMSimGridWidgetModel,
 	#superclass : #AbstractWidgetPresenter,
-	#category : #'Cormas-UI-PoV'
+	#category : #'Cormas-UI-Space-Spec1'
 }
 
 { #category : #specs }

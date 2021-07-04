@@ -1,58 +1,28 @@
-"
-CMSpecVizSpaceWindow new openWithSpec.
-
-Public API and Key Messages
-
-- message one   
-- message two 
-- (for bonus points) how to create instances.
-
-   One simple example is simply gorgeous.
- 
-Internal Representation and Key Implementation Points.
-
-
-    Implementation Points
-
-| menuModel |
-	
-menuModel := CGStSpcMenuBuilder new 
-	generateGroupSubMenuItems: 
-		#(
-		#(#Info #Track) 
-		#(#SpatialDelimitor #Time #Background)
-		#(#CellVsAggregates)
-		).
-Smalltalk tools workspace 
-	openContents: menuModel 
-	label: 'MenuModel Generator'.
-
-"
 Class {
-	#name : #CMSpaceInterface,
-	#superclass : #PFStandardProjectWindow,
+	#name : #CMSpaceInterfaceR3,
+	#superclass : #SpPresenter,
 	#traits : 'TCMUIUtils',
 	#classTraits : 'TCMUIUtils classTrait',
 	#instVars : [
+		'projectManager',
 		'spaceView',
-		'specSpaceView'
+		'diagram',
+		'menuToolbar'
 	],
 	#category : #'Cormas-UI-Core'
 }
 
 { #category : #specs }
-CMSpaceInterface class >> defaultSpec [
-	<spec: #default>
-	^ SpecLayout composed
-		newColumn: [ :c | 
-			c
-				add: #menuToolbar height: self toolbarHeight;
-				add: #specSpaceView];
-		yourself
+CMSpaceInterfaceR3 class >> defaultSpec [
+
+	^ SpBoxLayout newTopToBottom
+			add: #menuToolbar height: self toolbarHeight;
+			add: #diagram;
+			yourself
 ]
 
 { #category : #'instance creation' }
-CMSpaceInterface class >> for: aCMProjectManager [ 
+CMSpaceInterfaceR3 class >> for: aCMProjectManager [ 
 	" Answer a new instance of the receiver using aCMProjectManager as model "
 	
 	^ self basicNew 
@@ -62,7 +32,7 @@ CMSpaceInterface class >> for: aCMProjectManager [
 ]
 
 { #category : #'instance creation' }
-CMSpaceInterface class >> openFor: aCMProjectManager [
+CMSpaceInterfaceR3 class >> openFor: aCMProjectManager [
 	" Create and open a new instance of the receiver, configuring its controller with aCMProjectManager"
 
 	^ (self for: aCMProjectManager)
@@ -70,29 +40,42 @@ CMSpaceInterface class >> openFor: aCMProjectManager [
 		yourself
 ]
 
+{ #category : #accessing }
+CMSpaceInterfaceR3 >> canvas [
+	" Private - Answer a <RSCanvas> "
+
+	^ self diagram canvas
+]
+
 { #category : #private }
-CMSpaceInterface >> closeAfterCreateProject [
+CMSpaceInterfaceR3 >> closeAfterCreateProject [
 	^ true
 ]
 
 { #category : #accessing }
-CMSpaceInterface >> cormasModel [
-	" Answer the receiver's model, a subclass of <CMAbstractModel> "
+CMSpaceInterfaceR3 >> cormasModel [
+	" Answer the receiver's <CMAbstractModel> "
 
-	^ self projectManager cormasModel
+	^ self projectManager cormasModel.
+]
+
+{ #category : #accessing }
+CMSpaceInterfaceR3 >> diagram [
+
+	^ diagram
+]
+
+{ #category : #accessing }
+CMSpaceInterfaceR3 >> diagram: anObject [
+
+	diagram := anObject
 ]
 
 { #category : #initialization }
-CMSpaceInterface >> initializeApplication [
-
-	self applicationClass: CMApplicationProject
-]
-
-{ #category : #initialization }
-CMSpaceInterface >> initializeDisplaysMenuToolbar [
+CMSpaceInterfaceR3 >> initializeDisplaysMenuToolbar [
 	" Private - See superimplementor's commen "
 
-	^ MenuModel new
+	^ self newMenu
 		addGroup: [ : group | 
 			group
 				addItem: [ : item | 
@@ -118,10 +101,10 @@ CMSpaceInterface >> initializeDisplaysMenuToolbar [
 ]
 
 { #category : #initialization }
-CMSpaceInterface >> initializeEnvironmentMenuToolbar [
+CMSpaceInterfaceR3 >> initializeEnvironmentMenuToolbar [
 	" Private - See superimplementor's commen "
 
-	^ MenuModel new
+	^ self newMenu
 		addGroup: [ : group | 
 			group
 				addItem: [ : item | 
@@ -151,10 +134,10 @@ CMSpaceInterface >> initializeEnvironmentMenuToolbar [
 ]
 
 { #category : #initialization }
-CMSpaceInterface >> initializeExportMenuToolbar [
+CMSpaceInterfaceR3 >> initializeExportMenuToolbar [
 	" Private - See superimplementor's commen "
 
-	^ MenuModel new
+	^ self newMenu
 		addGroup:
 			[ :group | 
 			group
@@ -175,57 +158,10 @@ CMSpaceInterface >> initializeExportMenuToolbar [
 ]
 
 { #category : #initialization }
-CMSpaceInterface >> initializeMenuToolbar [
+CMSpaceInterfaceR3 >> initializeOptionMenuToolbar [
 	" Private - See superimplementor's commen "
 
-	menuToolbar := MenuModel new
-		addGroup: [ :group | 
-			group
-				addItem: [ :item | 
-					item
-						name: self translator tEnvironment;
-						subMenu: self initializeEnvironmentMenuToolbar ];
-				addItem: [ :item | 
-					item
-						name: self translator tPoV;
-						subMenu: self initializePOVMenuToolbar ];
-				addItem: [ :item | 
-					item
-						name: self translator tOptions;
-						subMenu: self initializeOptionMenuToolbar ];
-				addItem: [ :item | 
-					item
-						name: self translator tTools;
-						subMenu: self initializeToolsMenuToolbar ];
-				addItem: [ :item | 
-					item
-						icon:
-							(self iconNamed: #glamorousZoomIn);
-						action: [ RTZoomInMove on: self spaceView ] ];
-				addItem: [ :item | 
-					item
-						icon:
-							(self iconNamed: #glamorousZoomOut);
-						action: [ RTZoomOutMove on: self spaceView ] ];
-				addItem: [ :item | 
-					item
-						icon:
-							(self iconNamed: #glamorousZoomToFit);
-						action: [ self spaceView canvas focusOnCenterScaled.
-							self spaceView signalUpdate ] ];
-				addItem: [ :item | 
-					item
-						icon:
-							(self iconNamed: #glamorousSave);
-						subMenu: self initializeExportMenuToolbar ] ].
-	menuToolbar applyTo: self
-]
-
-{ #category : #initialization }
-CMSpaceInterface >> initializeOptionMenuToolbar [
-	" Private - See superimplementor's commen "
-
-	^ MenuModel new
+	^ self newMenu
 		addGroup: [ : group | 
 			group
 				addItem: [ : item | 
@@ -257,12 +193,12 @@ CMSpaceInterface >> initializeOptionMenuToolbar [
 ]
 
 { #category : #initialization }
-CMSpaceInterface >> initializePOVMenuToolbar [
+CMSpaceInterfaceR3 >> initializePOVMenuToolbar [
 	" Private - See superimplementor's commen "
 
 	| cormasModel |
 	cormasModel := self projectManager cormasModel.
-	^ MenuModel new
+	^ self newMenu
 		addGroup: [ :group | 
 			cormasModel class socialClasses
 				do: [ :socialClass | 
@@ -290,15 +226,23 @@ CMSpaceInterface >> initializePOVMenuToolbar [
 ]
 
 { #category : #initialization }
-CMSpaceInterface >> initializePresenter [
-	super initializePresenter.
+CMSpaceInterfaceR3 >> initializePresenters [
+
+	menuToolbar := self mainMenuToolbar.
+	diagram := self instantiate: CMR3SpaceView.
+	self diagram initializeOn: self cormasModel.
+ 	self canvas 
+		addInteraction: RSCanvasController new;
+		addInteraction: RSZoomToFitCanvasInteraction new;
+		addInteraction: RSZoomableCanvasInteraction new;
+		addInteraction: RSKeyNavigationCanvasInteraction new.
 ]
 
 { #category : #initialization }
-CMSpaceInterface >> initializeToolsMenuToolbar [
+CMSpaceInterfaceR3 >> initializeToolsMenuToolbar [
 	" Private - See superimplementor's commen "
 
-	^ MenuModel new
+	^ self newMenu
 		addGroup: [ :group | 
 			group
 				addItem: [ :item | 
@@ -335,70 +279,107 @@ CMSpaceInterface >> initializeToolsMenuToolbar [
 		yourself
 ]
 
-{ #category : #initialization }
-CMSpaceInterface >> initializeWidgets [
-	" Private - See superimplementor's comment "
+{ #category : #'initialization - menu' }
+CMSpaceInterfaceR3 >> mainMenuToolbar [
+	" Private - See superimplementor's commen "
 
-	self initializeApplication.
-	super initializeWidgets.
-	self specSpaceView: (self instantiate: CMSimGridWidgetModel).	
-]
-
-{ #category : #private }
-CMSpaceInterface >> projectClass [
-	^ CMProjectManager
+	| aMenu |
+	
+	aMenu := self newMenuBar
+		addGroup: [ :group | 
+			group
+				addItem: [ :item | 
+					item
+						name: self translator tEnvironment;
+						subMenu: self initializeEnvironmentMenuToolbar ];
+				addItem: [ :item | 
+					item
+						name: self translator tPoV;
+						subMenu: self initializePOVMenuToolbar ];
+				addItem: [ :item | 
+					item
+						name: self translator tOptions;
+						subMenu: self initializeOptionMenuToolbar ];
+				addItem: [ :item | 
+					item
+						name: self translator tTools;
+						subMenu: self initializeToolsMenuToolbar ];
+				addItem: [ :item | 
+					item
+						icon: (self iconNamed: #glamorousZoomToFit);
+						action: [ self spaceView canvas focusOnCenterScaled.
+							self spaceView signalUpdate ] ];
+				addItem: [ :item | 
+					item
+						icon: (self iconNamed: #glamorousSave);
+						subMenu: self initializeExportMenuToolbar ] ].
+	^ aMenu
 ]
 
 { #category : #accessing }
-CMSpaceInterface >> spaceView [
+CMSpaceInterfaceR3 >> menuToolbar [
+
+	^ menuToolbar
+]
+
+{ #category : #accessing }
+CMSpaceInterfaceR3 >> menuToolbar: anObject [
+
+	menuToolbar := anObject
+]
+
+{ #category : #accessing }
+CMSpaceInterfaceR3 >> projectManager [
+
+	^ projectManager
+]
+
+{ #category : #accessing }
+CMSpaceInterfaceR3 >> projectManager: anObject [
+
+	projectManager := anObject
+]
+
+{ #category : #accessing }
+CMSpaceInterfaceR3 >> spaceView [
 	^ spaceView
 ]
 
 { #category : #accessing }
-CMSpaceInterface >> spaceView: anObject [
+CMSpaceInterfaceR3 >> spaceView: anObject [
 	spaceView := anObject
 ]
 
-{ #category : #accessing }
-CMSpaceInterface >> specSpaceView [
-	^ specSpaceView
-]
-
-{ #category : #accessing }
-CMSpaceInterface >> specSpaceView: anObject [
-	specSpaceView := anObject
-]
-
 { #category : #private }
-CMSpaceInterface >> subMenuForClassPov: aClass [
-	^ MenuModel new
+CMSpaceInterfaceR3 >> subMenuForClassPov: aClass [
+	^ self newMenu 
 		addGroup: [ :group | 
-			(aClass methodsInProtocol: #pov) do: [ :povName | 
-				group addItem: [ :item | 
-					item
-						name: povName selector;
-						action: [ 
-								self spaceView 
-									setAndRefreshActivePovSelectorOf: aClass 
-									with: item name." Changer le pov de cette classe dans la vue spaceView. en utilisant l'argument (item name) " ] ] ] ]
+			(aClass methodsInProtocol: #pov)
+				do: [ :povName | 
+					group
+						addItem: [ :item | 
+							item
+								name: povName selector;
+								action: [ self diagram setAndRefreshActivePovSelectorOf: aClass with: item name.
+									" Changer le pov de cette classe dans la vue spaceView. en utilisant l'argument (item name) " ] ] ] ]
 ]
 
 { #category : #private }
-CMSpaceInterface >> subMenuForLoad [
+CMSpaceInterfaceR3 >> subMenuForLoad [
 	
 	^ MenuModel new
 ]
 
 { #category : #private }
-CMSpaceInterface >> subMenuForModify [
+CMSpaceInterfaceR3 >> subMenuForModify [
 
 	^ MenuModel new
 ]
 
 { #category : #private }
-CMSpaceInterface >> subMenuForNew [
+CMSpaceInterfaceR3 >> subMenuForNew [
 
-	^ MenuModel new
+	^ self newMenu
 		addGroup: [ : group |
 			group 
 				addItem: [ : item | 				
@@ -407,9 +388,9 @@ CMSpaceInterface >> subMenuForNew [
 						action: [ self openDimensionChooser ] ] ]
 ]
 
-{ #category : #initialization }
-CMSpaceInterface >> title [
-	" Private - See superimplementor's comment "
+{ #category : #accessing }
+CMSpaceInterfaceR3 >> translator [
+	" Answer the receiver's <PFTranslator> "
 
-	^ self formattedWindowTitle: 'Visualization Space'
+	^ self projectManager translator.
 ]
