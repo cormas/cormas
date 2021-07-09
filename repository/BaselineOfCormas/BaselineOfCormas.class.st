@@ -148,9 +148,6 @@ BaselineOfCormas >> specForBaselines: spec [
 				baseline: 'CodeGenerator'
 				with: [ spec repository: 'github://hernanmd/CodeGenerator/repository' ];
 
-				baseline: 'Roassal2'
-				with: [ spec repository: 'github://ObjectProfile/Roassal2/src' ];
-
 				baseline: 'PolyMath'
 				with: [ 
 					spec 
@@ -195,7 +192,7 @@ BaselineOfCormas >> specForPackages: spec [
 		package: 'Cormas-Tests' with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-OpenMole' with: [ spec requires: #('Cormas-Core') ];
 
-		package: 'Cormas-UI' with: [ spec requires: #('FileDialog' 'ProjectFramework' 'CodeGenerator' 'Roassal2' 'SMark') ];
+		package: 'Cormas-UI' with: [ spec requires: #('FileDialog' 'ProjectFramework' 'CodeGenerator' 'SMark') ];
 		package: 'Cormas-UI-Tests' with: [ spec requires: #('Cormas-Tests' 'Cormas-UI') ]
 ]
 
