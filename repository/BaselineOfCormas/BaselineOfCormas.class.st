@@ -127,6 +127,9 @@ BaselineOfCormas >> preLoadForPharo9 [
 BaselineOfCormas >> specForBaselines: spec [
 
 	spec
+		baseline: 'NeoJSON' 	
+		with: [ spec repository: 'github://svenvc/NeoJSON/repository' ];
+	
 		baseline: 'PetitParser'
 		with: [ spec repository: 'github://moosetechnology/PetitParser/src'; loads: #('YAML') ];
 			
