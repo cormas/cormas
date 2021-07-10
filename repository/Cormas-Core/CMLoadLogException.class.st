@@ -4,7 +4,7 @@ Class {
 	#category : #'Cormas-Core-Exceptions'
 }
 
-{ #category : #accessing }
+{ #category : #handling }
 CMLoadLogException >> defaultAction [
 
 	Stdio stdout 

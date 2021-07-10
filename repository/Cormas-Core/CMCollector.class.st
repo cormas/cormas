@@ -16,7 +16,7 @@ Class {
 		'entities',
 		'cormasModel'
 	],
-	#category : #'Cormas-Core-Tools'
+	#category : #'Cormas-Core-Kernel'
 }
 
 { #category : #action }

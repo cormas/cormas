@@ -25,12 +25,6 @@ CMStupidCell class >> maxFoodProductionRate: aFloat [
 ]
 
 { #category : #accessing }
-CMStupidCell class >> palette [
-	^ RTMultiLinearColor new
-				colors: (RTColorPalette sequential colors: 9 scheme: 'YlGnBu')
-]
-
-{ #category : #accessing }
 CMStupidCell >> food [
 	^ food ifNil: [ food :=  0.1]
 ]

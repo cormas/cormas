@@ -44,16 +44,6 @@ CMECECVegetationUnit class >> k_default [
 	^ 10
 ]
 
-{ #category : #'default value' }
-CMECECVegetationUnit class >> palette [
-	| tmp2 |
-	tmp2 := palette.
-	^ tmp2
-		ifNil: [ palette := RTMultiLinearColor new
-				colors: (RTColorPalette sequential colors: 9 scheme: 'YlGnBu') ]
-		ifNotNil: [ tmp2 ]
-]
-
 { #category : #accessing }
 CMECECVegetationUnit class >> r [
 	| tmp2 |

@@ -16,7 +16,7 @@ Class {
 		'startNode',
 		'stopNode'
 	],
-	#category : #'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Entities'
 }
 
 { #category : #image }

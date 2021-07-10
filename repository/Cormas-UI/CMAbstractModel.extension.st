@@ -6,3 +6,9 @@ CMAbstractModel class >> cormasModelName [
 
 	^ self asString
 ]
+
+{ #category : #'*Cormas-UI' }
+CMAbstractModel >> defaultAttributesSetterClass [
+
+	^ DefaultAttributesSetter
+]

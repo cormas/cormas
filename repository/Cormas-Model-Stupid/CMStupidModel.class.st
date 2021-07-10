@@ -34,22 +34,6 @@ CMStupidModel class >> defaultInit: aSelector [
 	defaultInit := aSelector
 ]
 
-{ #category : #examples }
-CMStupidModel class >> exampleSM1 [
-	| aModel probes |
-	"self setActiveProbes: OrderedCollection new."
-	aModel := self initialize new initSimulation.
-	"set probes configuration (probes to save)"
-	probes := OrderedCollection new.
-	probes add: 'CMStupidModel>>foodAverage'.
-	aModel class setActiveProbes: probes.
-	(CMSimulationGrid new
-		on: aModel
-		withCells: aModel theCells
-		withSituatedEntities: aModel theAgents) runAndVisualizeWithMenus.
-	Transcript show: aModel foodAverage
-]
-
 { #category : #'instance creation' }
 CMStupidModel class >> newWithProgrammableScenario [
 

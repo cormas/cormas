@@ -20,7 +20,7 @@ Class {
 	#classInstVars : [
 		'newFolder'
 	],
-	#category : #'Cormas-Core-Tools'
+	#category : #'Cormas-Core-Kernel'
 }
 
 { #category : #accessing }

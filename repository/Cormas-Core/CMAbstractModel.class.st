@@ -64,7 +64,7 @@ Class {
 		'activeProbes',
 		'activityDiagrams'
 	],
-	#category : #'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Kernel'
 }
 
 { #category : #probes }
@@ -1897,7 +1897,7 @@ CMAbstractModel >> database: anObject [
 CMAbstractModel >> defaultAttributesSetter [
 	
 	^defaultAttributesSetter
-		ifNil: [defaultAttributesSetter := DefaultAttributesSetter newOn: self]
+		ifNil: [defaultAttributesSetter := self defaultAttributesSetterClass newOn: self]
 ]
 
 { #category : #'default values' }

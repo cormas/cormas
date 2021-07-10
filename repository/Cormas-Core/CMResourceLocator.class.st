@@ -17,7 +17,7 @@ Internal Representation and Key Implementation Points.
 Class {
 	#name : #CMResourceLocator,
 	#superclass : #GitBridge,
-	#category : #'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Kernel'
 }
 
 { #category : #public }

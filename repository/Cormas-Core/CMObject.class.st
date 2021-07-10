@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'translator'
 	],
-	#category : #'Cormas-Core-Others'
+	#category : #'Cormas-Core-Kernel'
 }
 
 { #category : #accessing }

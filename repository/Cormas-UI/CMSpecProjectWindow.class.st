@@ -57,6 +57,20 @@ CMSpecProjectWindow class >> open [
 	win simWindow hideSimInterface
 ]
 
+{ #category : #callbacks }
+CMSpecProjectWindow >> appSettingsClass [
+	" Private - Answer the <Class> responsible to provide application settings "
+
+	^ CMApplicationPreferences
+]
+
+{ #category : #callbacks }
+CMSpecProjectWindow >> chartVisualizer [
+	" Answer a <Class> responsible to display a UI for charting "
+
+	^ self appSettingsClass chartVisualizer
+]
+
 { #category : #private }
 CMSpecProjectWindow >> closeAfterCreateProject [
 	^ true
@@ -554,7 +568,7 @@ CMSpecProjectWindow >> openVizProbes [
 	aModel := self projectManager cormasModel.
 	aModel data isEmpty
 		ifTrue: [ ^ self alertMessage: 'No data to visualize' ].
-	CMSimpleChart openOn: aModel
+	self chartVisualizer openOn: aModel
 ]
 
 { #category : #callbacks }
@@ -564,7 +578,7 @@ CMSpecProjectWindow >> openVizSpace [
 	aModel := self projectManager cormasModel.
 	aModel spaceModel ifNil: [ 
 		^ self alertMessage: self translator tNoSpaceModel ].
-	viz := CMSpaceInterfaceR3 openFor: self projectManager.
+	viz := (Smalltalk at: #CMR3SpaceInterface) openFor: self projectManager.
 "	viz spaceView: viz specSpaceView spec instance view.
 	viz window extent: viz spaceView canvas extent + (20 @ 20).
 	viz spaceView canvas focusOnCenterScaled.

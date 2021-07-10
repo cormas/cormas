@@ -14,7 +14,7 @@ Class {
 		'symbol',
 		'parameter'
 	],
-	#category : #'Cormas-Core-Others'
+	#category : #'Cormas-Core-Legacy'
 }
 
 { #category : #'instance creation' }
