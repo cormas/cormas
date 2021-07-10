@@ -137,7 +137,7 @@ BaselineOfCormas >> specForBaselines: spec [
 		with: [ spec loads: #('Core'); repository: 'github://GsDevKit/Grease:master/repository' ];			
 
 		baseline: 'FileDialog'
-		with: [ spec repository: 'github://peteruhnak/file-dialog:v1.0.0/repository' ];
+		with: [ spec repository: 'github://peteruhnak/file-dialog:v1.x/repository' ];
 
 		baseline: 'ProjectFramework'
 		with: [ spec repository: 'github://hernanmd/ProjectFramework/repository' ];
