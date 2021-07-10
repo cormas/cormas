@@ -133,9 +133,6 @@ BaselineOfCormas >> specForBaselines: spec [
 		baseline: 'PetitParser'
 		with: [ spec repository: 'github://moosetechnology/PetitParser/src'; loads: #('YAML') ];
 			
-		baseline: 'Grease'
-		with: [ spec loads: #('Core'); repository: 'github://GsDevKit/Grease:master/repository' ];			
-
 		baseline: 'FileDialog'
 		with: [ spec repository: 'github://peteruhnak/file-dialog:v1.x/repository' ];
 
@@ -188,7 +185,7 @@ BaselineOfCormas >> specForGroups: spec [
 BaselineOfCormas >> specForPackages: spec [
 
 	spec
-		package: 'Cormas-Core' with: [ spec requires: #('PolyMath' 'PetitParser' 'GitBridge' 'ESRIASCIIRaster' 'CodeGenerator' 'Grease' 'ProjectFramework') ];
+		package: 'Cormas-Core' with: [ spec requires: #('PolyMath' 'PetitParser' 'GitBridge' 'ESRIASCIIRaster' 'CodeGenerator' 'ProjectFramework') ];
 
 		package: 'Cormas-Model-Conway' with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Model-DemoAggregates'  with: [ spec requires: #('Cormas-Core') ];
