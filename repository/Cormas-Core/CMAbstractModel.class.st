@@ -64,7 +64,7 @@ Class {
 		'activeProbes',
 		'activityDiagrams'
 	],
-	#category : #'Cormas-Core-Kernel'
+	#category : #'Cormas-Core-Interface'
 }
 
 { #category : #probes }
