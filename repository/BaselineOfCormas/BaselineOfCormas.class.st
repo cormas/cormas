@@ -127,6 +127,9 @@ BaselineOfCormas >> preLoadForPharo9 [
 BaselineOfCormas >> specForBaselines: spec [
 
 	spec
+		baseline: 'SMark'
+		with: [ spec repository: 'github://smarr/SMark:v1.0.4' ];	
+
 		baseline: 'NeoJSON' 	
 		with: [ spec repository: 'github://svenvc/NeoJSON/repository' ];
 	
@@ -185,8 +188,7 @@ BaselineOfCormas >> specForGroups: spec [
 BaselineOfCormas >> specForPackages: spec [
 
 	spec
-		package: 'Cormas-Core' with: [ spec requires: #('PolyMath' 'PetitParser' 'GitBridge' 'ESRIASCIIRaster' 'CodeGenerator' 'ProjectFramework') ];
-
+		package: 'Cormas-Core' with: [ self specForPackagesInCore: spec ];
 		package: 'Cormas-Model-Conway' with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Model-DemoAggregates'  with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Model-Diffuse'  with: [ spec requires: #('Cormas-Core') ];
@@ -197,6 +199,26 @@ BaselineOfCormas >> specForPackages: spec [
 		package: 'Cormas-Model-Stupid' with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Tests' with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-OpenMole' with: [ spec requires: #('Cormas-Core' 'NeoJSON') ]
+]
+
+{ #category : #specs }
+BaselineOfCormas >> specForPackagesInCore: spec [
+
+	spec requires: #(
+			" Required by ???? "
+			'PolyMath' 
+			" Required by YAML "
+			'PetitParser' 
+			" Required by ??? "
+			'GitBridge' 
+			" Required by ??? "
+			'ESRIASCIIRaster' 
+			" Required SubunitRunner to run tests without the TestRunner UI "
+			'SMark'
+			" Required by the Entity Browser "
+			'CodeGenerator' 
+			" Required for project management "
+			'ProjectFramework')
 ]
 
 { #category : #specs }
