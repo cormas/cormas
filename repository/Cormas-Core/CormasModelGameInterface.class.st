@@ -205,7 +205,7 @@ CormasModelGameInterface >> playersScheduling [
 	initialize method."
 	
 	^playersScheduling isNil
-		ifTrue: [playersScheduling := SelectionInList new]
+		ifTrue: [playersScheduling := OrderedCollection new]
 		ifFalse: [playersScheduling]
 ]
 

@@ -1540,13 +1540,6 @@ CMSpaceModel >> gridCellShape: x [
 	gridCellShape := x
 ]
 
-{ #category : #testing }
-CMSpaceModel >> hasGraphicInterfaces [
-	"check if some interfaces are opened. This hack was added while removing spaceInterfaces from cormas"
-	
-	^self dependents contains: [:each | each isKindOf: SpaceInterface]
-]
-
 { #category : #'private - regularCells - shapes' }
 CMSpaceModel >> hexagonal [
 	"received from SpaceInterface menu, when the user want to change the shape of the cells"
@@ -1855,18 +1848,6 @@ ex, from CormasModel:
 		shape: shapeSymbol
 		nbNeighbours: nbSymbol
 		closed: bSymbol ~= #torroidal
-]
-
-{ #category : #'private - init' }
-CMSpaceModel >> initializeView [
-	
-	| aView |
-	"self release."
-	aView := SpaceView new.
-	aView model: self.
-	aView controller: SpaceController new.
-	aView controller performer: self.
-	aView contextualMenu
 ]
 
 { #category : #testing }

@@ -143,6 +143,13 @@ CMSpecSimulationWindow class >> example [
 		openWithSpec
 ]
 
+{ #category : #callbacks }
+CMSpecSimulationWindow >> appSettingsClass [
+	" Private - Answer the <Class> responsible to provide application settings "
+
+	^ CMApplicationPreferences
+]
+
 { #category : #accessing }
 CMSpecSimulationWindow >> backwardAllButton [
 	" Answer the backwardAllButton of this CMSpecSimulationWindow "
@@ -588,7 +595,7 @@ CMSpecSimulationWindow >> replayRunForwardAction [
 		ifNil: [ ^ self alertMessage: 'The spaceModel is  not yet initialized' ]
 		ifNotNil:
 			[ :aSetOfentities | aSetOfentities ifEmpty: [ ^ self alertMessage: 'The simulation has no spatial entities' ] ].
-	(CMSimulationGrid new
+	(self spaceViewClass new
 		on: self cormasModel
 		withCells: self cormasModel spaceModelEntities
 		withSituatedEntities: self cormasModel allTheSituatedEntities) runAndVisualize
@@ -841,6 +848,13 @@ CMSpecSimulationWindow >> simulateLabel: anObject [
 	" Sets the simulateLabel of this CMSpecSimulationWindow "
 
 	simulateLabel := anObject
+]
+
+{ #category : #callbacks }
+CMSpecSimulationWindow >> spaceViewClass [
+	" Private - Answer a <Class> responsible to display simulations "
+
+	^ self appSettingsClass spaceViewClass
 ]
 
 { #category : #initialization }

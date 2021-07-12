@@ -29,7 +29,7 @@ Class {
 		'colorChooser',
 		'applyButton'
 	],
-	#category : 'Cormas-UI-PoV'
+	#category : #'Cormas-UI-PoV-Spec1'
 }
 
 { #category : #specs }

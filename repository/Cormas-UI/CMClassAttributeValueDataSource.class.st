@@ -17,7 +17,7 @@ CMClassAttributeValueDataSource class >> attributsFromClass: aClass [
 	aClass superclass = CMSpatialEntityCell
 		ifTrue:
 			[set add: 'state'	"Parmis les attributs herites, il n'y a que state qui puisse etre un nombre"].
-	(aClass superclass = CormasModelGameInterface
+	(aClass superclass = ProtoObject "CormasModelGameInterface"
 		or: [aClass superclass = CMAbstractModel])
 		ifTrue:
 			[set add: 'periodicity'	"Parmis les attributs herites, il n'y a que periodicity qui puisse etre un nombre a analyser"].

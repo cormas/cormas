@@ -1445,20 +1445,21 @@ A color may be define to see an entity on the grid but also on another space (ex
 aSelectorName could be the name of a method or a Symbol for which an EntityImage is assign"
 	
 	| aColor |
-	aSelectorName ifNil: [^Color veryLightGray].	"aSelectorName is a key for a fixed color defined at the class level"
+
+	aSelectorName ifNil: [ ^ Color veryLightGray ].	"aSelectorName is a key for a fixed color defined at the class level"
 	(self class colorsDict includesKey: aSelectorName)
-		ifTrue:
-			[^self class colorsDict
+		ifTrue: [ 
+			^ self class colorsDict
 				at: aSelectorName
-				ifAbsentPut: [Color veryLightGray]].	"aSelectorName is a method for a changeable color"
+				ifAbsentPut: [ Color veryLightGray ] ].	"aSelectorName is a method for a changeable color"
+
 	aColor := self perform: aSelectorName.
 	aColor class = Color
-		ifTrue: [^aColor]
-		ifFalse:
-			[(Color class selectors includes: aColor)
-				ifTrue: [^Color perform: aColor]
-				ifFalse:
-					[
+		ifTrue: [ ^ aColor ]
+		ifFalse: [
+			(Color class selectors includes: aColor)
+				ifTrue: [ ^ Color perform: aColor ]
+				ifFalse: [
 					(self class class selectors includes: ('SpatialEntityPOV_',aColor) asSymbol)
 						ifTrue:[^Color fromArray: (self class perform: ('SpatialEntityPOV_',aColor) asSymbol)]
 						ifFalse:[^self class colorsDict

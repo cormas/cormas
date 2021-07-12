@@ -1897,7 +1897,7 @@ CMAbstractModel >> database: anObject [
 CMAbstractModel >> defaultAttributesSetter [
 	
 	^defaultAttributesSetter
-		ifNil: [defaultAttributesSetter := DefaultAttributesSetter newOn: self]
+		ifNil: [defaultAttributesSetter := self defaultAttributesSetterClass newOn: self]
 ]
 
 { #category : #'default values' }

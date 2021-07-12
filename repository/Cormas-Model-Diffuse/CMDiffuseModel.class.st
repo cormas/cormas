@@ -45,16 +45,6 @@ CMDiffuseModel class >> antNumber_default [
 	^ 1
 ]
 
-{ #category : #examples }
-CMDiffuseModel class >> example1 [
-	| aModel |
-	aModel := self initialize new initSimulation.
-	(CMSimulationGrid new
-		on: aModel
-		withCells: aModel theESE
-		withSituatedEntities: aModel allTheSituatedEntities) runAndVisualize
-]
-
 { #category : #description }
 CMDiffuseModel class >> howToInstructions [
 	^ String

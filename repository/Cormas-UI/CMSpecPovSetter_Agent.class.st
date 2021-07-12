@@ -35,7 +35,7 @@ Class {
 		'occupantPosition',
 		'isDistortable'
 	],
-	#category : #'Cormas-UI-PoV'
+	#category : #'Cormas-UI-PoV-Spec1'
 }
 
 { #category : #adding }
