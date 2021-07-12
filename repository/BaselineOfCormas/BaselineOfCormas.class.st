@@ -67,13 +67,6 @@ BaselineOfCormas >> loadBgImage [
 ]
 
 { #category : #doits }
-BaselineOfCormas >> openPlaygroundWindow [
-
-	(Workspace openLabel: 'CORMAS - Welcome')
-		contents: ''.
-]
-
-{ #category : #doits }
 BaselineOfCormas >> platformAssetsUrls [
 	" Answer a <Collection> of <String> representing each one an asset base URL "
 	
