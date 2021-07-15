@@ -19,8 +19,7 @@ BaselineOfCormas >> baseline: spec [
 			spec postLoadDoIt: #postLoad.
 			self 
 				specForBaselines: spec;
-				specForPackages: spec;
-				specForGroups: spec ].
+				specForPackages: spec ].
 
 	self 
 		specForPharo8: spec;
@@ -153,31 +152,6 @@ BaselineOfCormas >> specForBaselines: spec [
 ]
 
 { #category : #specs }
-BaselineOfCormas >> specForGroups: spec [
-
-	spec
-		group: 'Core' 		with: #('Cormas-Core');
-		group: 'UI' 			with: #(#'Cormas-UI' 'Core');
-
-		group: 'Tests' 		with: #('Core' 'Cormas-Tests' 'Cormas-UI-Tests');
-
-		group: 'Models' 	with: 	#(
-						'Cormas-Model-Conway' 
-						'Cormas-Model-ReHab' 
-						'Cormas-Core' 
-						'Cormas-Model-ECEC' 
-						'Cormas-Model-FireAutomata' 
-						'Cormas-Model-PlotsRental' 
-						'Cormas-Model-Diffuse' 
-						'Cormas-Model-DemoAggregates' 
-						'Cormas-Model-Stupid');
-		group: 'OpenMole'	with: #('Cormas-OpenMole' 'Core');
-
-		group: 'All'			with: #('UI' 'Tests' 'Core' 'Models' 'OpenMole');
-		group: 'default' 	with: #('All')	
-]
-
-{ #category : #specs }
 BaselineOfCormas >> specForPackages: spec [
 
 	spec
@@ -234,7 +208,34 @@ BaselineOfCormas >> specForPharo8: spec [
 				package: 'Cormas-Model-Diffuse-Roassal2'  with: [ spec requires: #('Cormas-Model-Diffuse' 'Cormas-UI-Roassal2') ];
 				package: 'Cormas-Model-ECEC-Roassal2' with: [ spec requires: #('Cormas-Model-ECEC' 'Cormas-UI-Roassal2') ];
 				package: 'Cormas-Model-FireAutomata-Roassal2' with: [ spec requires: #('Cormas-Model-FireAutomata' 'Cormas-UI-Roassal2') ];
-				package: 'Cormas-Model-Stupid-Roassal2' with: [ spec requires: #('Roassal2' 'Cormas-Model-Stupid' 'Cormas-UI-Roassal2') ] ]
+				package: 'Cormas-Model-Stupid-Roassal2' with: [ spec requires: #('Roassal2' 'Cormas-Model-Stupid' 'Cormas-UI-Roassal2') ].
+
+			self specForPharo8Groups: spec ]
+]
+
+{ #category : #specs }
+BaselineOfCormas >> specForPharo8Groups: spec [
+
+	spec
+		group: 'Core' 		with: #('Cormas-Core');
+		group: 'UI' 			with: #(#'Cormas-UI' 'Core');
+
+		group: 'Tests' 		with: #('Core' 'Cormas-Tests' 'Cormas-UI-Tests');
+
+		group: 'Models' 	with: 	#(
+						'Cormas-Model-Conway' 
+						'Cormas-Model-ReHab' 
+						'Cormas-Core' 
+						'Cormas-Model-ECEC' 
+						'Cormas-Model-FireAutomata' 
+						'Cormas-Model-PlotsRental' 
+						'Cormas-Model-Diffuse' 
+						'Cormas-Model-DemoAggregates' 
+						'Cormas-Model-Stupid');
+		group: 'OpenMole'	with: #('Cormas-OpenMole' 'Core');
+
+		group: 'All'			with: #('UI' 'Tests' 'Core' 'Models' 'OpenMole');
+		group: 'default' 	with: #('All')	
 ]
 
 { #category : #specs }
@@ -253,8 +254,35 @@ BaselineOfCormas >> specForPharo9: spec [
 				package: 'Cormas-UI'							with: [ spec requires: #('Cormas-Core' 'ClassEditor' 'SpecUIAddOns' 'FileDialog' 'ProjectFramework' 'CodeGenerator') ];
 				package: 'Cormas-UI-Tests' 					with: [ spec requires: #('Cormas-Tests' 'Cormas-UI') ];
 				package: 'Cormas-UI-Roassal3' 				with: [ spec requires: #('Cormas-UI' 'Roassal3' 'Roassal3Exporters') ];
-				package: 'Cormas-Model-ECEC-Roassal3' 	with: [ spec requires: #('Cormas-Model-ECEC' 'Roassal3' 'Cormas-UI-Roassal3') ] ]
+				package: 'Cormas-Model-ECEC-Roassal3' 	with: [ spec requires: #('Cormas-Model-ECEC' 'Roassal3' 'Cormas-UI-Roassal3') ].
+			self specForPharo9Groups: spec. ]
 
+]
+
+{ #category : #specs }
+BaselineOfCormas >> specForPharo9Groups: spec [
+
+	spec
+		group: 'Core' 		with: #('Cormas-Core');
+		group: 'UI' 			with: #(#'Cormas-UI' 'Core' 'Cormas-UI-Roassal3');
+
+		group: 'Tests' 		with: #('Core' 'Cormas-Tests' 'Cormas-UI-Tests');
+
+		group: 'Models' 	with: 	#(
+						'Cormas-Model-Conway' 
+						'Cormas-Model-ReHab' 
+						'Cormas-Core' 
+						'Cormas-Model-ECEC'
+						'Cormas-Model-ECEC-Roassal3'
+						'Cormas-Model-FireAutomata' 
+						'Cormas-Model-PlotsRental' 
+						'Cormas-Model-Diffuse' 
+						'Cormas-Model-DemoAggregates' 
+						'Cormas-Model-Stupid');
+		group: 'OpenMole'	with: #('Cormas-OpenMole' 'Core');
+
+		group: 'All'			with: #('UI' 'Tests' 'Core' 'Models' 'OpenMole');
+		group: 'default' 	with: #('All')	
 ]
 
 { #category : #doits }
