@@ -164,7 +164,8 @@ BaselineOfCormas >> specForPackages: spec [
 		package: 'Cormas-Model-PlotsRental' with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Model-ReHab' with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Model-Stupid' with: [ spec requires: #('Cormas-Core') ];
-		package: 'Cormas-Tests' with: [ spec requires: #('Cormas-Core') ];
+		package: 'Cormas-Mocks' with: [ spec requires: #('Cormas-Core') ];
+		package: 'Cormas-Tests' with: [ spec requires: #('Cormas-Core' 'Cormas-Mocks') ];
 		package: 'Cormas-OpenMole' with: [ spec requires: #('Cormas-Core' 'NeoJSON') ]
 ]
 
@@ -220,7 +221,7 @@ BaselineOfCormas >> specForPharo8Groups: spec [
 		group: 'Core' 		with: #('Cormas-Core');
 		group: 'UI' 			with: #(#'Cormas-UI' 'Core');
 
-		group: 'Tests' 		with: #('Core' 'Cormas-Tests' 'Cormas-UI-Tests');
+		group: 'Tests' 		with: #('Core' 'Cormas-Mocks' 'Cormas-Tests' 'Cormas-UI-Tests');
 
 		group: 'Models' 	with: 	#(
 						'Cormas-Model-Conway' 
@@ -266,7 +267,7 @@ BaselineOfCormas >> specForPharo9Groups: spec [
 		group: 'Core' 		with: #('Cormas-Core');
 		group: 'UI' 			with: #(#'Cormas-UI' 'Core' 'Cormas-UI-Roassal3');
 
-		group: 'Tests' 		with: #('Core' 'Cormas-Tests' 'Cormas-UI-Tests');
+		group: 'Tests' 		with: #('Core' 'Cormas-Mocks' 'Cormas-Tests' 'Cormas-UI-Tests');
 
 		group: 'Models' 	with: 	#(
 						'Cormas-Model-Conway' 

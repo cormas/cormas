@@ -108,7 +108,7 @@ CMProjectModelTest >> testCormasModelCreationDate [
 CMProjectModelTest >> testCormasModelName [
 
 	self assert: (self projectModel cormasModelName isKindOf: String).
-	self assert: self projectModel cormasModelName equals: 'CMTestModel'.
+	self assert: self projectModel cormasModelName equals: 'CMMockModel'.
 
 ]
 
@@ -188,7 +188,7 @@ CMProjectModelTest >> testHasStoredSimulations [
 CMProjectModelTest >> testProjectName [
 
 	self assert: (self projectModel projectName isKindOf: String).
-	self assert: self projectModel projectName equals: 'CMTestModel'.
+	self assert: self projectModel projectName equals: 'CMMockModel'.
 
 ]
 

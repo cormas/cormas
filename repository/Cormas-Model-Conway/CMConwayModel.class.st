@@ -87,6 +87,7 @@ CMConwayModel >> initGlidersGun [
 
 { #category : #init }
 CMConwayModel >> initRandomly [
+
 	self
 		createGridLines: 100
 		columns: 100
