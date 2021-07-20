@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'application'
 	],
-	#category : #'Cormas-UI-Tests-Project'
+	#category : #'Cormas-Tests-Project'
 }
 
 { #category : #accessing }

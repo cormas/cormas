@@ -4,6 +4,13 @@ Class {
 	#category : #'Cormas-Tests-Model'
 }
 
+{ #category : #running }
+CMAbstractModelTest >> cleanGeneratedMethods [
+
+	(self projectModel cormasModelClass respondsTo: #creationDate)
+		ifTrue: [ self projectModel cormasModelClass class removeSelector: #creationDate ].
+]
+
 { #category : #test }
 CMAbstractModelTest >> cormasModelNamesForTests [
 

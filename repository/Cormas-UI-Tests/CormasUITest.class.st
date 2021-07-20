@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'pWindow'
 	],
-	#category : #'Cormas-Tests-UI'
+	#category : #'Cormas-UI-Tests-Core'
 }
 
 { #category : #'create CMProjet' }

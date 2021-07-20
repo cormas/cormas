@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'projectModel'
 	],
-	#category : #'Cormas-UI-Tests-Project'
+	#category : #'Cormas-Tests-Project'
 }
 
 { #category : #running }
@@ -43,6 +43,7 @@ CMProjectModelTest >> tearDown [
 	"Hooks that subclasses may override to define the fixture of test."
 
 	CGSmalltalk new removeClass: self sampleModelName.
+	self cleanGeneratedMethods.
 	super tearDown.	
 
 ]

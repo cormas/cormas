@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'projectManager'
 	],
-	#category : #'Cormas-UI-Tests-Project'
+	#category : #'Cormas-Tests-Project'
 }
 
 { #category : #test }
@@ -37,6 +37,15 @@ CMProjectManagerTest >> setUp [
 	PFProjectSettings currentApplicationClass: CMApplicationProject.
 	model := self newTestModel.
 	projectManager := self newProjectManager.
+]
+
+{ #category : #test }
+CMProjectManagerTest >> tearDown [
+	"Hooks that subclasses may override to define the fixture of test."
+
+	self cleanGeneratedMethods.
+	super tearDown.	
+
 ]
 
 { #category : #test }

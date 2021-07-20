@@ -21,12 +21,20 @@ Class {
 }
 
 { #category : #public }
+CMResourceLocator class >> assetsFilesDirectoryName [
+	" Answe a <String> with the name of the directoy where CORMAS resources are found "
+
+	^ 'assets'
+]
+
+{ #category : #public }
 CMResourceLocator class >> assetsPath [
-"Return the assets path of Cormas
-Ex: {localDirectory}/iceberg/cormas/cormas/assets"
+	"Return the assets path of Cormas
+	Ex: {localDirectory}/iceberg/cormas/cormas/assets"
+	
 	^ ([ self root ]
 		on: GBError
-		do: [ :ex | FileLocator workingDirectory ]) / 'assets'
+		do: [ :ex | FileLocator workingDirectory ]) / self assetsFilesDirectoryName
 ]
 
 { #category : #accessing }
@@ -87,9 +95,9 @@ CMResourceLocator >> animationsPath [
 
 { #category : #'utilities - csv' }
 CMResourceLocator >> assetNamed: aFilename [
-	" Answer a <FileReference> found at the assets location.
-	aFilename = <String>
-	CMResourceLocator new assetNamed: 'models' >>> '/Users/.../iceberg/cormas/cormas/assets/models' "
+	" Answer a <FileReference> found at the assets location, where aFilename is a <String>
+	example: CMResourceLocator new assetNamed: 'models'
+	"
 	
 	^ self assetsPath / aFilename
 
@@ -99,7 +107,7 @@ CMResourceLocator >> assetNamed: aFilename [
 CMResourceLocator >> assetsFilesDirectoryName [
 	" Answe a <String> with the name of the directoy where CORMAS resources are found "
 
-	^ 'assets'
+	^ self class assetsFilesDirectoryName
 ]
 
 { #category : #'utilities - path' }
