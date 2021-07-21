@@ -7,7 +7,7 @@ See superclass for usage and description.
 Class {
 	#name : #CMTranslator,
 	#superclass : #PFTranslator,
-	#category : #'Cormas-UI-Project'
+	#category : #'Cormas-Core-Project'
 }
 
 { #category : #accessing }

@@ -9,7 +9,7 @@ Class {
 
 { #category : #'tests-accessing-entities' }
 CMTestObject >> newTestModel [
-	^ (CMTestModel
+	^ (CMMockModel
 		initialize;
 		new)
 		activeInit: #initAlive;

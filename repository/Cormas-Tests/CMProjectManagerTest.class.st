@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'projectManager'
 	],
-	#category : #'Cormas-UI-Tests-Project'
+	#category : #'Cormas-Tests-Project'
 }
 
 { #category : #test }
@@ -37,6 +37,15 @@ CMProjectManagerTest >> setUp [
 	PFProjectSettings currentApplicationClass: CMApplicationProject.
 	model := self newTestModel.
 	projectManager := self newProjectManager.
+]
+
+{ #category : #test }
+CMProjectManagerTest >> tearDown [
+	"Hooks that subclasses may override to define the fixture of test."
+
+	self cleanGeneratedMethods.
+	super tearDown.	
+
 ]
 
 { #category : #test }
@@ -99,7 +108,7 @@ CMProjectManagerTest >> testCormasModelCreationDate [
 { #category : #test }
 CMProjectManagerTest >> testCormasModelName [
 
-	self assert: self projectManager cormasModelName equals: 'CMTestModel'
+	self assert: self projectManager cormasModelName equals: 'CMMockModel'
 ]
 
 { #category : #test }
@@ -134,14 +143,6 @@ CMProjectManagerTest >> testCurrentProjectHasAuthor [
 
 	self projectManager cormasModelAuthors: 'author_name'.
 	self assert: self projectManager currentProjectHasAuthor.
-
-]
-
-{ #category : #test }
-CMProjectManagerTest >> testCurrentProjectHasComments [
-
-	self projectManager cormasModelComment: 'comment 1'.
-	self assert: self projectManager currentProjectHasComments.
 
 ]
 

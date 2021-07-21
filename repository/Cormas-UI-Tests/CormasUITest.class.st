@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'pWindow'
 	],
-	#category : #'Cormas-Tests-UI'
+	#category : #'Cormas-UI-Tests-Core'
 }
 
 { #category : #'create CMProjet' }
@@ -58,8 +58,8 @@ CormasUITest >> tearDown [
 CormasUITest >> testCanOpenModelFromImage [
 	| p |
 	p := CMProjectManager new.
-	p openModel: #CMConwayModel.
-	self assert: p currentProject cormasModel class name equals: #CMConwayModel
+	p openModel: #CMMockModel.
+	self assert: p currentProject cormasModel class name equals: #CMMockModel
 ]
 
 { #category : #test }
@@ -67,11 +67,11 @@ CormasUITest >> testCurrentStepInputTextOfSimWindowIsResetAfterOpeningAModel [
 
 	| aCMProjectManager |
 
-	aCMProjectManager := self newProjectManagerWithInitializedUIOnModel: #CMConwayModel.
+	aCMProjectManager := self newProjectManagerWithInitializedUIOnModel: #CMMockModel.
 	20 timesRepeat: [ aCMProjectManager currentProject cormasModel runStep ].
 	
-	aCMProjectManager openModel: #CMECECModel.
-	aCMProjectManager updateNewProject: #CMECECModel.
+	aCMProjectManager openModel: #CMMockModel.
+	aCMProjectManager updateNewProject: #CMMockModel.
 	self 
 		assert: self simWindow currentStepInputText text asInteger 
 		equals: 0.

@@ -74,6 +74,7 @@ CMSpPManagedPresenter >> currentProject [
 { #category : #accessing }
 CMSpPManagedPresenter >> projectManager [
 	^ projectManager
+		ifNil: [ projectManager := CMProjectManager new ]
 ]
 
 { #category : #accessing }

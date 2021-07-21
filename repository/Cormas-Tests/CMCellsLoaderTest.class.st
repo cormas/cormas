@@ -9,7 +9,7 @@ Class {
 
 { #category : #private }
 CMCellsLoaderTest >> newTestModel [
-	^ (CMTestModel
+	^ (CMMockModel
 		initialize;
 		new)
 		activeInit: #initAlive;

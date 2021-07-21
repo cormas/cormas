@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'projectModel'
 	],
-	#category : #'Cormas-UI-Tests-Project'
+	#category : #'Cormas-Tests-Project'
 }
 
 { #category : #running }
@@ -43,6 +43,7 @@ CMProjectModelTest >> tearDown [
 	"Hooks that subclasses may override to define the fixture of test."
 
 	CGSmalltalk new removeClass: self sampleModelName.
+	self cleanGeneratedMethods.
 	super tearDown.	
 
 ]
@@ -108,7 +109,7 @@ CMProjectModelTest >> testCormasModelCreationDate [
 CMProjectModelTest >> testCormasModelName [
 
 	self assert: (self projectModel cormasModelName isKindOf: String).
-	self assert: self projectModel cormasModelName equals: 'CMTestModel'.
+	self assert: self projectModel cormasModelName equals: 'CMMockModel'.
 
 ]
 
@@ -188,7 +189,7 @@ CMProjectModelTest >> testHasStoredSimulations [
 CMProjectModelTest >> testProjectName [
 
 	self assert: (self projectModel projectName isKindOf: String).
-	self assert: self projectModel projectName equals: 'CMTestModel'.
+	self assert: self projectModel projectName equals: 'CMMockModel'.
 
 ]
 

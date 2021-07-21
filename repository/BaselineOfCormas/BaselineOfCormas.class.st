@@ -164,7 +164,8 @@ BaselineOfCormas >> specForPackages: spec [
 		package: 'Cormas-Model-PlotsRental' with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Model-ReHab' with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Model-Stupid' with: [ spec requires: #('Cormas-Core') ];
-		package: 'Cormas-Tests' with: [ spec requires: #('Cormas-Core') ];
+		package: 'Cormas-Mocks' with: [ spec requires: #('Cormas-Core') ];
+		package: 'Cormas-Tests' with: [ spec requires: #('Cormas-Core' 'Cormas-Mocks') ];
 		package: 'Cormas-OpenMole' with: [ spec requires: #('Cormas-Core' 'NeoJSON') ]
 ]
 
@@ -220,7 +221,7 @@ BaselineOfCormas >> specForPharo8Groups: spec [
 		group: 'Core' 		with: #('Cormas-Core');
 		group: 'UI' 			with: #(#'Cormas-UI' 'Core');
 
-		group: 'Tests' 		with: #('Core' 'Cormas-Tests' 'Cormas-UI-Tests');
+		group: 'Tests' 		with: #('Core' 'Cormas-Mocks' 'Cormas-Tests' 'Cormas-UI-Tests');
 
 		group: 'Models' 	with: 	#(
 						'Cormas-Model-Conway' 
@@ -252,7 +253,7 @@ BaselineOfCormas >> specForPharo9: spec [
 				baseline: 'Roassal3Exporters' 				with: [ spec repository: 'github://ObjectProfile/Roassal3Exporters' ];
 
 				package: 'Cormas-UI'							with: [ spec requires: #('Cormas-Core' 'ClassEditor' 'SpecUIAddOns' 'FileDialog' 'ProjectFramework' 'CodeGenerator') ];
-				package: 'Cormas-UI-Tests' 					with: [ spec requires: #('Cormas-Tests' 'Cormas-UI') ];
+				package: 'Cormas-UI-Tests' 					with: [ spec requires: #('Cormas-Tests' 'Cormas-UI' 'Cormas-Mocks') ];
 				package: 'Cormas-UI-Roassal3' 				with: [ spec requires: #('Cormas-UI' 'Roassal3' 'Roassal3Exporters') ];
 				package: 'Cormas-Model-ECEC-Roassal3' 	with: [ spec requires: #('Cormas-Model-ECEC' 'Roassal3' 'Cormas-UI-Roassal3') ].
 			self specForPharo9Groups: spec. ]
@@ -266,7 +267,7 @@ BaselineOfCormas >> specForPharo9Groups: spec [
 		group: 'Core' 		with: #('Cormas-Core');
 		group: 'UI' 			with: #(#'Cormas-UI' 'Core' 'Cormas-UI-Roassal3');
 
-		group: 'Tests' 		with: #('Core' 'Cormas-Tests' 'Cormas-UI-Tests');
+		group: 'Tests' 		with: #('Core' 'Cormas-Mocks' 'Cormas-Tests' 'Cormas-UI-Tests');
 
 		group: 'Models' 	with: 	#(
 						'Cormas-Model-Conway' 

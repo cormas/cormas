@@ -20,7 +20,7 @@ CMEntityTest >> testCormasEntityIsAbstract [
 { #category : #tests }
 CMEntityTest >> testCormasModel [
 	| model |
-	model := (CMTestModel
+	model := (CMMockModel
 		initialize;
 		new)
 		activeInit: #initRandom;
@@ -34,20 +34,20 @@ CMEntityTest >> testCormasModel [
 	self assert: model centralCell cormasModel identicalTo: model.
 	model
 		createN: 5
-		randomlyLocatedAloneEntities: CMTestAgentLocation.
+		randomlyLocatedAloneEntities: CMMockAgentLocation.
 	model theAgents
 		do: [ :agent | self assert: agent cormasModel identicalTo: model ]
 ]
 
 { #category : #tests }
 CMEntityTest >> testEntityName [
-	self assert: CMTestCell entityName equals: 'Cell'.
-	self assert: CMTestAgentLocation entityName equals: 'AgentLocation'
+	self assert: CMMockCell entityName equals: 'Cell'.
+	self assert: CMMockAgentLocation entityName equals: 'AgentLocation'
 ]
 
 { #category : #tests }
 CMEntityTest >> testModelClass [
 	self
-		assert: CMTestCell modelClass
-		identicalTo: CMTestModel
+		assert: CMMockCell modelClass
+		identicalTo: CMMockModel
 ]

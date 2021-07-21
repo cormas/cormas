@@ -1,21 +1,21 @@
 Class {
-	#name : #CMTestCell,
+	#name : #CMMockCell,
 	#superclass : #CMSpatialEntityCell,
-	#category : #'Cormas-Tests-Model'
+	#category : #'Cormas-Mocks'
 }
 
 { #category : #init }
-CMTestCell >> initAlive [
+CMMockCell >> initAlive [
 	self state: #alive
 ]
 
 { #category : #init }
-CMTestCell >> initDead [
+CMMockCell >> initDead [
 	self state: #dead
 ]
 
 { #category : #init }
-CMTestCell >> initRandom [
+CMMockCell >> initRandom [
 	self
 		state:
 			(Cormas random < 0.1
@@ -24,7 +24,7 @@ CMTestCell >> initRandom [
 ]
 
 { #category : #control }
-CMTestCell >> newState [
+CMMockCell >> newState [
 	"Purpose: the specific transition function of the automaton should be written here
 Example: self bufferState: (test ifTrue: [value1] ifFalse: [value2])"
 

@@ -272,8 +272,10 @@ CMAbstractModel class >> cellClass [
 ]
 
 { #category : #accessing }
-CMAbstractModel class >> cellClass: aClass [
-	cellClass := aClass
+CMAbstractModel class >> cellClass: aCMSpatialEntityCellClass [
+	" Set the receiver's spatial entity class to aCMSpatialEntityCellClass. This class must exists in the same package of the model class to be properly detected by initialization process "
+	
+	cellClass := aCMSpatialEntityCellClass
 ]
 
 { #category : #activityEditor }
@@ -511,7 +513,7 @@ CMAbstractModel class >> initialize [
 
 { #category : #'instance creation' }
 CMAbstractModel class >> initializeCellClass [
-	" Store the Cell class of the model into cellClass "
+	" Private - Detect and store the Cell class of the model into cellClass "
 
 	self cellClass: (self allEntityClasses
 		detect: [ :each | each inheritsFrom: CMSpatialEntityElement ]

@@ -9,7 +9,7 @@ CMProjectOpenerTest >> createSampleProject [
 	" Create a new sample CORMAS project in the Pharo image directory "
 
 	CMModel2ProjectMigrator new
-		buildForModel: CMECECModel;
+		buildForModel: CMMockModel;
 		buildProjectFile.
 ]
 

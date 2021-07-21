@@ -24,7 +24,7 @@ CMOpenerTest >> newProjectManager [
 
 { #category : #accessing }
 CMOpenerTest >> newTestModel [
-	^ (CMTestModel
+	^ (CMMockModel
 		initialize;
 		new)
 		activeInit: #initAlive;

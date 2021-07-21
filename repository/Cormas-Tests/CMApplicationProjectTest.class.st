@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'application'
 	],
-	#category : #'Cormas-UI-Tests-Project'
+	#category : #'Cormas-Tests-Project'
 }
 
 { #category : #accessing }
@@ -33,7 +33,7 @@ CMApplicationProjectTest >> testCormasModel [
 
 	self assert: self application currentProject isNil.
 	self application currentProject: (CMProjectModel for: self newTestModel).
-	self assert: (self application cormasModel isKindOf: CMTestModel).
+	self assert: (self application cormasModel isKindOf: CMMockModel).
 	
 ]
 

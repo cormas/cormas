@@ -4,7 +4,7 @@ plop
 Class {
 	#name : #CormasOpenMoleTest,
 	#superclass : #TestCase,
-	#category : #'Cormas-Tests-Model'
+	#category : #'Cormas-OpenMole'
 }
 
 { #category : #examples }
