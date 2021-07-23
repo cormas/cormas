@@ -20,11 +20,12 @@
 # Contribution Guide for CORMAS
 
 *This file is currently not complete but will be improve step by step.*
+This guide explain how you can contribute to the development of CORMAS.
 
-You need to download Pharo 9.0 first.
+## Download Pharo
+You need to download Pharo 9.0 first: http://www.pharo.org/
 
 ## Setup Iceberg
-
 You need an ssh key in order to commit on github. Open Iceberg tool, and then click on the settings. Check the box : "Use custom SSH keys".
 
 ## Fork the CORMAS repository
@@ -56,13 +57,13 @@ Remote URL: https://github.com/cormas/cormas.git
 
 ## Send some changes to the original CORMAS repository
 
-#### From Pharo Iceberg
+### From Pharo Iceberg
 
 After doing modifications in your image, open Iceberg tool, commit the changes in your CORMAS repository. Cherry-pick the modifications that you want to include in your commit. Then push your commit to your fork. It's more convenient to divide your changes in meaninfull and simple commits, which makes it easier to check for those who need to proofread it.
 
 ![iceberge](img/iceberg_pharo.png)
 
-#### From Github UI
+### From Github UI
 
 In the GitHub interface, create a Pull Request (PR) from your commit.
 You have to give some information about what is the purpose of you pull request. Then submit it to CORMAS main repository.
@@ -71,7 +72,6 @@ This will notify CORMAS core developers team that an improvement or bug fix is p
 ![create a pull request from github](img/github_pr.png)
 
 As the main core developers, you have to review the open PRs. When merging the pull request, select *Create a merge commit* not  squash and merge. Try to avoid (except in case of emergency) to review your own commits.
-
 
 ## Pull changes from original to fork
 
