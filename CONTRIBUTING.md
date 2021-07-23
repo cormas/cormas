@@ -113,7 +113,7 @@ Ounce your pull request is integrated, some cleanups are maybe required:
 - remove your branch from your fork
 - close the issue (tips: you can automatically close the issue n, by inserting the sentence: **close #n** when you merge your pull request).
 
-# Release management (not used at the moment)
+## Release management (not used at the moment)
 
 This project use semantic versionning to define the releases, meaning that each stable release of the project will be assigned a version number of the form `vX.Y.Z`.
 
@@ -127,4 +127,4 @@ This project use semantic versionning to define the releases, meaning that each 
 
 Thus, it should be safe to depend on a fixed major version and moving minor version of this project.
 
-# Branch management (to be defined)
+## Branch management (to be defined)
