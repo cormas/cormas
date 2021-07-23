@@ -21,21 +21,23 @@
 
 *This file is currently not complete but will be improve step by step.*
 
-You need to download Pharo 8.0 first.
+This guide explain how you can contribute to the development of CORMAS.
+
+## Download Pharo
+You need to download Pharo 9.0 first: http://www.pharo.org/
 
 ## Setup Iceberg
-
 You need an ssh key in order to commit on github. Open Iceberg tool, and then click on the settings. Check the box : "Use custom SSH keys".
 
 ## Fork the CORMAS repository
 
 All changes you'll do will be versionned in your own fork of the [CORMAS repository](https://github.com/cormas/cormas). Then, from your fork you'll be able to issue pull requests to CORMAS, where they will be reviewed, and luckily, integrated.
 
-Go to Cormas github's repository and click on the fork button on the top right. Yes, this means that you'll need a github account to contribute to CORMAS.
+Go to CORMAS github's repository and click on the fork button on the top right. Yes, this means that you'll need a github account to contribute to CORMAS.
 
 ## Load your fork version of CORMAS in your image
 
-In your Pharo 8.0 image, load now the last development version of CORMAS :
+In your Pharo 9.0 image, load now the last development version of CORMAS :
 
 ```Smalltalk
 Metacello new
@@ -56,13 +58,13 @@ Remote URL: https://github.com/cormas/cormas.git
 
 ## Send some changes to the original CORMAS repository
 
-#### From Pharo Iceberg
+### From Pharo Iceberg
 
 After doing modifications in your image, open Iceberg tool, commit the changes in your CORMAS repository. Cherry-pick the modifications that you want to include in your commit. Then push your commit to your fork. It's more convenient to divide your changes in meaninfull and simple commits, which makes it easier to check for those who need to proofread it.
 
 ![iceberge](img/iceberg_pharo.png)
 
-#### From Github UI
+### From Github UI
 
 In the GitHub interface, create a Pull Request (PR) from your commit.
 You have to give some information about what is the purpose of you pull request. Then submit it to CORMAS main repository.
@@ -71,7 +73,6 @@ This will notify CORMAS core developers team that an improvement or bug fix is p
 ![create a pull request from github](img/github_pr.png)
 
 As the main core developers, you have to review the open PRs. When merging the pull request, select *Create a merge commit* not  squash and merge. Try to avoid (except in case of emergency) to review your own commits.
-
 
 ## Pull changes from original to fork
 
@@ -112,7 +113,7 @@ Ounce your pull request is integrated, some cleanups are maybe required:
 - remove your branch from your fork
 - close the issue (tips: you can automatically close the issue n, by inserting the sentence: **close #n** when you merge your pull request).
 
-# Release management (not used at the moment)
+## Release management (not used at the moment)
 
 This project use semantic versionning to define the releases, meaning that each stable release of the project will be assigned a version number of the form `vX.Y.Z`.
 
@@ -126,4 +127,4 @@ This project use semantic versionning to define the releases, meaning that each 
 
 Thus, it should be safe to depend on a fixed major version and moving minor version of this project.
 
-# Branch management (to be defined)
+## Branch management (to be defined)
