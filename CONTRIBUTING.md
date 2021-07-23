@@ -21,7 +21,7 @@
 
 *This file is currently not complete but will be improve step by step.*
 
-You need to download Pharo 8.0 first.
+You need to download Pharo 9.0 first.
 
 ## Setup Iceberg
 
@@ -35,7 +35,7 @@ Go to Cormas github's repository and click on the fork button on the top right. 
 
 ## Load your fork version of CORMAS in your image
 
-In your Pharo 8.0 image, load now the last development version of CORMAS :
+In your Pharo 9.0 image, load now the last development version of CORMAS :
 
 ```Smalltalk
 Metacello new
