@@ -20,6 +20,7 @@
 # Contribution Guide for CORMAS
 
 *This file is currently not complete but will be improve step by step.*
+
 This guide explain how you can contribute to the development of CORMAS.
 
 ## Download Pharo
@@ -32,7 +33,7 @@ You need an ssh key in order to commit on github. Open Iceberg tool, and then cl
 
 All changes you'll do will be versionned in your own fork of the [CORMAS repository](https://github.com/cormas/cormas). Then, from your fork you'll be able to issue pull requests to CORMAS, where they will be reviewed, and luckily, integrated.
 
-Go to Cormas github's repository and click on the fork button on the top right. Yes, this means that you'll need a github account to contribute to CORMAS.
+Go to CORMAS github's repository and click on the fork button on the top right. Yes, this means that you'll need a github account to contribute to CORMAS.
 
 ## Load your fork version of CORMAS in your image
 
