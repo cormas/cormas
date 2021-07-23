@@ -78,7 +78,7 @@ curl https://get.pharo.org/90+vm | bash
 	Metacello new
 		onConflictUseLoaded;
 		onWarningLog;
-		repository: 'github://cormas/cormas/repository';
+		repository: 'github://cormas/cormas/';
 		baseline: 'Cormas';
 		load ]. 
 Smalltalk snapshot: true andQuit: true"
@@ -104,7 +104,7 @@ Transcript open.
 [ count <= maxCount ] whileTrue: [ [
 	^ Metacello new
 		onWarningLog;
-		repository: 'github://cormas/cormas/repository';
+		repository: 'github://cormas/cormas/';
 		baseline: 'Cormas';
 		load
 	]
