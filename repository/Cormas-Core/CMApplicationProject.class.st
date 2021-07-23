@@ -22,12 +22,18 @@ Class {
 		'processRun',
 		'resourceLocator'
 	],
-	#category : #'Cormas-UI-Project'
+	#category : #'Cormas-Core-Project'
 }
 
-{ #category : #'*Cormas-UI' }
+{ #category : #accessing }
 CMApplicationProject >> defaultTranslatorClass [
 	" Answer the default translation class for the receiver "
 
 	^ CMTranslator
+]
+
+{ #category : #accessing }
+CMApplicationProject >> resourceLocator [
+	^ resourceLocator
+		ifNil: [ resourceLocator := CMResourceLocator new ]
 ]
