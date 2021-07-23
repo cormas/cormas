@@ -4,6 +4,9 @@ SmalltalkCISpec {
       #baseline : 'Cormas',
       #directory : 'repository',
       #onWarningLog: true,
+      #onConflict : #useIncoming,
+      #onUpgrade : #useIncoming,
+      #ignoreImage : true,
       #load : [ 'default' ],
       #platforms : [ #pharo ]
     }
