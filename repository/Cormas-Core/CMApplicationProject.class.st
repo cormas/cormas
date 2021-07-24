@@ -105,7 +105,7 @@ CMApplicationProject class >> removeUserDirectoriesNoConfirmation [
 
 ]
 
-{ #category : #testing }
+{ #category : #accessing }
 CMApplicationProject >> cormasModel [
 	" Answer the receiver's current project model, a <CMAbstractModel> instance "
 
@@ -119,7 +119,14 @@ CMApplicationProject >> defaultProjectClass [
 	^ CMProjectModel
 ]
 
-{ #category : #'accessing-path' }
+{ #category : #accessing }
+CMApplicationProject >> defaultTranslatorClass [
+	" Answer the default translation class for the receiver "
+
+	^ CMTranslator
+]
+
+{ #category : #accessing }
 CMApplicationProject >> modelNames [
 	" Answer a <Collection> of <String> with receiver's available models "
 	
@@ -137,7 +144,7 @@ CMApplicationProject >> resourceLocator: anObject [
 	resourceLocator := anObject
 ]
 
-{ #category : #convenience }
+{ #category : #accessing }
 CMApplicationProject >> terminateAllProcesses [
 	"Terminate all the processes"
 
