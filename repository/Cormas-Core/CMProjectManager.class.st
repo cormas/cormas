@@ -329,12 +329,12 @@ CMProjectManager >> openProject [
 ]
 
 { #category : #'accessing - opening' }
-CMProjectManager >> openProject: aFileReferenceOrName [
+CMProjectManager >> openProject: aFileReferenceOrModel [
 	" Request a model to the user and open it for the receiver "
 
 	self hasProject
 		ifTrue: [ self doPostCloseActions ]. 
-	self opener openProject: aFileReferenceOrName
+	self opener openProject: aFileReferenceOrModel
 ]
 
 { #category : #'accessing - opening' }

@@ -40,6 +40,30 @@ CMProjectOpener class >> metadataFromProjectFile: aZipFileSystemFile [
 	^ STON fromStream: (aZipFileSystemFile fileEntryAt: CMProjectFile metadataFilename) readStream
 ]
 
+{ #category : #private }
+CMProjectOpener >> createProjectFor: aFileReference [
+	" Private - Answer a new project model for aFileReference representing a CORMAS project file "
+
+	^ CMProjectModel basicNew
+		fileReference: aFileReference;
+		projectManager: self projectManager;
+		initializeForModel: (self class environment at: self modelMainClass) new
+			named: self modelName;
+			yourself
+]
+
+{ #category : #private }
+CMProjectOpener >> getProjectFrom: aFileReferenceOrProjectModel [
+	" Private - The user can open a project from a demo (file) or the image. This method creates and answer a project model if necessary "
+	
+	^ aFileReferenceOrProjectModel isProject
+		ifFalse: [ 
+			self tryOpenFromFile: aFileReferenceOrProjectModel.
+			openStatus := true.
+			self createProjectFor: aFileReferenceOrProjectModel ]
+		ifTrue: [ aFileReferenceOrProjectModel ].
+]
+
 { #category : #accessing }
 CMProjectOpener >> metadataFromProjectFile [
 	" Answer a <Dictionary> with the receiver's currently opened CORMAS project metadata "
@@ -85,17 +109,12 @@ CMProjectOpener >> openProject [
 ]
 
 { #category : #callbacks }
-CMProjectOpener >> openProject: aFileReference [
+CMProjectOpener >> openProject: aFileReferenceOrProjectModel [
 	" Answer a <String> with the full path of the opened project, if possible. Otherwise raise an Exception "
 
-	self tryOpenFromFile: aFileReference.
-	openStatus := true.
-	self currentProject: (CMProjectModel basicNew
-		fileReference: aFileReference;
-		projectManager: self projectManager;
-		initializeForModel: (self class environment at: self modelMainClass) new
-			named: self modelName;
-			yourself).
+	| currentProjectModel |
+	currentProjectModel := self getProjectFrom: aFileReferenceOrProjectModel.
+	self currentProject: currentProjectModel.
 	openStatus
 		ifTrue: [ self projectManager doPostOpenActions ]
 		ifFalse: [ self informMessage: self translator tProjectOpenFailed ].

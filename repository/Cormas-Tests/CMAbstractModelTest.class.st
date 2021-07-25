@@ -123,6 +123,12 @@ CMAbstractModelTest >> testDominance1 [
 ]
 
 { #category : #test }
+CMAbstractModelTest >> testFriendlyName [
+
+	self deny: (model friendlyName beginsWith: 'CM')
+]
+
+{ #category : #test }
 CMAbstractModelTest >> testHasActiveInit [
 
 	self assert: model hasActiveInit.

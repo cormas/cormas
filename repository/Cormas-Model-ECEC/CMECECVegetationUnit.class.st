@@ -68,7 +68,12 @@ CMECECVegetationUnit class >> state_default [
 
 { #category : #converting }
 CMECECVegetationUnit >> asPopupText [
-	^ 'biomass: ' , biomass asString
+	" Answer a <String> with the receiver's details "
+
+	^ String streamContents: [ : stream |
+		stream 
+			<< 'biomass: ';
+			<< (biomass truncateTo: 0.005) asString ]
 ]
 
 { #category : #accessing }

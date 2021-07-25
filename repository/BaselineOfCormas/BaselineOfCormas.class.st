@@ -157,6 +157,7 @@ BaselineOfCormas >> specForPackages: spec [
 	spec
 		package: 'Cormas-Core' with: [ self specForPackagesInCore: spec ];
 		package: 'Cormas-Model-Conway' with: [ spec requires: #('Cormas-Core') ];
+		package: 'Cormas-Model-Conway-Tests' with: [ spec requires: #('Cormas-Model-Conway') ];	
 		package: 'Cormas-Model-DemoAggregates'  with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Model-Diffuse'  with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Model-ECEC' with: [ spec requires: #('Cormas-Core') ];
