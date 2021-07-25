@@ -6,5 +6,6 @@ Class {
 
 { #category : #tests }
 CMConwayCellTest >> testEntityName [
+
 	self assert: CMConwayCell entityName equals: 'Cell'
 ]

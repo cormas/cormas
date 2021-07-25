@@ -54,6 +54,20 @@ CMModel2ProjectMigrator >> buildForModelClass: modelClass [
 ]
 
 { #category : #building }
+CMModel2ProjectMigrator >> buildForModelInstance: modelInstance [
+	" Creates a CORMAS project file, answer a <FileReference> to the new created project "
+
+	currentModel := CMProjectModel basicNew
+		initializeForModel: modelInstance named: modelInstance friendlyName;
+		yourself.
+	self 
+		writeDirectoryStructure;
+		writeMetadata;
+		writeSourceCode: modelInstance class
+
+]
+
+{ #category : #building }
 CMModel2ProjectMigrator >> buildProjectFile [
 	" Creates a CORMAS project file in the receiver's path. Assume the directory structure is already created and populated in outputDirectory "
 	
@@ -69,7 +83,7 @@ CMModel2ProjectMigrator >> buildProjectMetadataSTON [
 
 	| cmModelClass cmMetadata |
 	
-	cmModelClass := self currentModel cormasModel.
+	cmModelClass := self currentModel cormasModelClass.
 	cmMetadata := Dictionary new.
 	cmMetadata 
 		at: 'Name' put: cmModelClass friendlyName;

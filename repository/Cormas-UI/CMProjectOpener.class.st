@@ -96,7 +96,11 @@ CMProjectOpener >> modelMetadata [
 CMProjectOpener >> modelName [
 	" Answer a <String> representing the receiver's currently project being opened "
 
-	^ self metadataFromProjectFile at: 'Name'
+	| storedName |
+	
+	((storedName := self metadataFromProjectFile at: 'Name') endsWith: 'Model')
+		ifTrue: [ ^ storedName removeSuffix: 'Model' ].
+	^ storedName
 ]
 
 { #category : #callbacks }

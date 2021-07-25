@@ -41,47 +41,239 @@ Class {
 	#name : #CMConwayModel,
 	#superclass : #CMAbstractModel,
 	#instVars : [
-		'theCells'
+		'theCells',
+		'theSocialPruebas'
 	],
 	#category : #'Cormas-Model-Conway'
 }
 
 { #category : #default }
 CMConwayModel class >> defaultControl [
+
 	^ #stepSynchronously:
 ]
 
 { #category : #default }
 CMConwayModel class >> defaultInit [
+
 	^ #initRandomly
+]
+
+{ #category : #examples }
+CMConwayModel class >> example1 [
+
+	| tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 |
+	self initialize.
+	tmp1 := self new.
+	tmp1 initializeSpaceModel.
+	tmp2 := RTView new.
+	tmp1
+		initSimulation;
+		runStep.
+	tmp2 clean.
+	tmp5 := RTBox new.
+	tmp5 color: [ :arg1 | 
+		arg1 state == #dead
+			ifTrue: [ Color white ]
+			ifFalse: [ Color black ] ].
+	tmp3 := (tmp5 size: 25) elementsOn: tmp1 theCells.
+	tmp2 addAll: tmp3.
+	tmp6 := RTGridLayout new.
+	tmp6
+		gapSize: 0;
+		lineItemsCount: tmp1 spaceModel column;
+		on: tmp2 elements.
+	tmp2 canvas camera focusOnCenterScaled.
+	tmp4 := RTActiveAnimation new.
+	tmp4
+		intervalInMilliseconds: 0;
+		blockToExecute: [ 
+			tmp1 runStep.
+			tmp2 elements do: #updateShape ];
+		inView: tmp2.
+	tmp2 openWithToolbar
+]
+
+{ #category : #examples }
+CMConwayModel class >> example2 [
+
+	| tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 tmp8 tmp10 tmp11 |
+	tmp1 := RTView new.
+	tmp2 := CMConwayModel.
+	tmp3 := 4.
+	tmp4 := (1 to: tmp3) collect: [ :arg1 | 
+		        tmp2 initialize.
+		        tmp10 := tmp2 new.
+		        tmp10
+			        initializeSpaceModel;
+			        activeInit: #initSmallGrid;
+			        initSimulation;
+			        runStep.
+		        tmp10 ].
+	tmp5 := RTMultiLinearColor new colors: RTPalette c4.
+	tmp6 := (1 to: tmp3) collect: [ :arg2 | 
+		        tmp5 level: (arg2 / tmp3) asFloat ].
+	tmp7 := tmp4 with: tmp6 collect: [ :arg3 :arg4 | 
+		        | tmp12 tmp13 |
+		        tmp12 := RTBox new.
+		        tmp12 color: [ :arg5 | 
+			        arg5 state == #dead
+				        ifTrue: [ Color white ]
+				        ifFalse: [ arg4 ] ].
+		        tmp11 := (tmp12 size: 25) elementsOn: arg3 theCells.
+		        tmp1 addAll: tmp11.
+		        tmp13 := RTGridLayout new.
+		        tmp13
+			        gapSize: 0;
+			        lineItemsCount: arg3 spaceModel column;
+			        on: tmp11.
+		        tmp11 ].
+	RTGridLayout on: tmp7.
+	tmp1 canvas camera focusOnCenterScaled.
+	tmp8 := RTActiveAnimation new.
+	tmp8
+		intervalInMilliseconds: 500;
+		blockToExecute: [ 
+			tmp4 do: #runStep.
+			tmp1 elements do: #updateShape ];
+		inView: tmp1.
+	tmp1 openWithToolbar
+]
+
+{ #category : #examples }
+CMConwayModel class >> example3 [
+
+	| tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 |
+	self initialize.
+	tmp1 := self new.
+	tmp2 := 100.
+	tmp1
+		initializeSpaceModel;
+		createGridLines: tmp2
+		columns: tmp2
+		neighbourhood: 4
+		closed: true.
+	tmp3 := RTView new.
+	tmp1
+		initSimulation;
+		runStep.
+	tmp3 clean.
+	tmp6 := RTBox new.
+	tmp6 color: [ :arg1 | 
+		arg1 state == #dead
+			ifTrue: [ Color white ]
+			ifFalse: [ Color black ] ].
+	tmp4 := (tmp6 size: 25) elementsOn: tmp1 theCells.
+	tmp3 addAll: tmp4.
+	tmp7 := RTGridLayout new.
+	tmp7
+		gapSize: 0;
+		lineItemsCount: tmp1 spaceModel column;
+		on: tmp3 elements.
+	tmp3 canvas camera focusOnCenterScaled.
+	tmp5 := RTActiveAnimation new.
+	tmp5
+		intervalInMilliseconds: 0;
+		blockToExecute: [ 
+			tmp1 runStep.
+			tmp3 elements do: #updateShape ];
+		inView: tmp3.
+	tmp3 openWithToolbar
+]
+
+{ #category : #examples }
+CMConwayModel class >> example4 [
+
+	| tmp1 |
+	tmp1 := self initialize new initSimulation.
+	(CMSimulationGrid initialize new
+		 on: tmp1
+		 withCells: tmp1 theESE
+		 withSituatedEntities: tmp1 allTheSituatedEntities) runAndVisualize
+]
+
+{ #category : #examples }
+CMConwayModel class >> example5 [
+
+	| tmp1 |
+	tmp1 := self initialize new.
+	tmp1
+		activeInit: #initGlidersGun;
+		initSimulation.
+	(CMSimulationGrid initialize new
+		 on: tmp1
+		 withCells: tmp1 theESE
+		 withSituatedEntities: tmp1 allTheSituatedEntities) runAndVisualize
+]
+
+{ #category : #examples }
+CMConwayModel class >> exampleGlidersGun [
+
+	| tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 |
+	self initialize.
+	tmp1 := self new.
+	tmp1
+		initializeSpaceModel;
+		activeInit: #initGlidersGun.
+	tmp2 := RTView new.
+	tmp1
+		initSimulation;
+		runStep.
+	tmp2 clean.
+	tmp5 := RTBox new.
+	tmp5 color: [ :arg1 | 
+		arg1 state == #dead
+			ifTrue: [ Color white ]
+			ifFalse: [ Color black ] ].
+	tmp3 := (tmp5 size: 25) elementsOn: tmp1 theCells.
+	tmp2 addAll: tmp3.
+	tmp6 := RTGridLayout new.
+	tmp6
+		gapSize: 0;
+		lineItemsCount: tmp1 spaceModel column;
+		on: tmp2 elements.
+	tmp2 canvas camera focusOnCenterScaled.
+	tmp4 := RTActiveAnimation new.
+	tmp4
+		intervalInMilliseconds: 0;
+		blockToExecute: [ 
+			tmp1 runStep.
+			tmp2 elements do: #updateShape ];
+		inView: tmp2.
+	tmp2 openWithToolbar
 ]
 
 { #category : #probes }
 CMConwayModel >> alive [
+
 	<probe>
 	^ (self theCells count: [ :arg1 | arg1 state = #alive ])
-		/ self theCells size
+	  / self theCells size
 ]
 
 { #category : #probes }
 CMConwayModel >> dead [
+
 	<probe>
 	^ (self theCells count: [ :arg1 | arg1 state = #dead ])
-		/ self theCells size
+	  / self theCells size
 ]
 
 { #category : #init }
 CMConwayModel >> initCustomMap [
+
 	self loadEnvironmentFromDirectory: 'cormas.cells'
 ]
 
 { #category : #init }
 CMConwayModel >> initGliders [
+
 	self loadEnvironmentFromDirectory: 'gliders.cells'
 ]
 
 { #category : #init }
 CMConwayModel >> initGlidersGun [
+
 	self spaceModel loadEnvironmentFromDirectory: 'glidersGun.cells'
 ]
 
@@ -98,6 +290,7 @@ CMConwayModel >> initRandomly [
 
 { #category : #init }
 CMConwayModel >> initSmallGrid [
+
 	self
 		createGridLines: 10
 		columns: 10
@@ -108,19 +301,39 @@ CMConwayModel >> initSmallGrid [
 
 { #category : #control }
 CMConwayModel >> stepSynchronously: arg1 [
+
 	super stepSynchronously: arg1
 ]
 
 { #category : #accessing }
 CMConwayModel >> theCells [
-	| tmp2 |
-	tmp2 := theCells.
-	^ tmp2
-		ifNil: [ theCells := OrderedCollection new ]
-		ifNotNil: [ tmp2 ]
+
+	| tmp1 |
+	tmp1 := theCells.
+	^ tmp1
+		  ifNil: [ theCells := OrderedCollection new ]
+		  ifNotNil: [ tmp1 ]
 ]
 
 { #category : #accessing }
 CMConwayModel >> theCells: arg1 [
+
 	theCells := arg1
+]
+
+{ #category : #accessing }
+CMConwayModel >> theSocialPruebas [
+	"Returns a collection of all the instances of the sub classes collected by cormasModel.
+	!! This method was automatically generated by Cormas !!"
+
+	 ^ theSocialPruebas
+		 ifNil: [ theSocialPruebas := OrderedCollection new ]
+]
+
+{ #category : #accessing }
+CMConwayModel >> theSocialPruebas: aNewCollection [
+	" Set a new collection for theXXXs attribute.
+	!! This method was automatically generated by Cormas !!"
+
+	theSocialPruebas := aNewCollection.
 ]
