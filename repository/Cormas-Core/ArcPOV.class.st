@@ -58,7 +58,7 @@ ArcPOV >> color: aColor [
 
 { #category : #private }
 ArcPOV >> exportIn: aStream [
-	"Export the atributes value of the ArcPOV into a stream, to save it on the disk (in .EV file)"
+	"Export the attributes value of the ArcPOV into a stream, to save it on the disk (in .EV file)"
 	
 	aStream
 		nextPutAll:
