@@ -389,6 +389,13 @@ CMAbstractModel class >> compoundSpatialClasses [
 ]
 
 { #category : #accessing }
+CMAbstractModel class >> cormasModelName [
+	" Answer a <String> with the receiver's name "
+
+	^ self asString
+]
+
+{ #category : #accessing }
 CMAbstractModel class >> current [
 	"Direct acces to the current cormasModel"
 	
@@ -435,6 +442,7 @@ CMAbstractModel class >> defaultSteppingBackSetting [
 
 { #category : #accessing }
 CMAbstractModel class >> friendlyName [
+	" Answer a <String> with the receiver's name without any Cormas prefix "
 
 	^ (self name beginsWith: 'CM')
 		ifTrue: [ self name allButFirst: 2 ]
@@ -2062,6 +2070,13 @@ CMAbstractModel >> fractalDimension: aClass [
 Argument: aClass is an aggregate"
 
 	^ self spaceModel fractalDimension: aClass
+]
+
+{ #category : #accessing }
+CMAbstractModel >> friendlyName [
+	" See comment in class side "
+
+	^ self class friendlyName
 ]
 
 { #category : #'init - social network' }

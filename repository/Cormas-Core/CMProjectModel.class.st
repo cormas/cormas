@@ -547,7 +547,7 @@ CMProjectModel >> saveProjectFile [
 	'Saving project file...' traceCr.
 	modelSaver := CMModel2ProjectMigrator new.
 	modelSaver 
-		buildForModel: self;
+		buildForModelInstance: self cormasModel;
 		buildProjectFile;
 		moveProjectFile.
 	'Done saving project.'

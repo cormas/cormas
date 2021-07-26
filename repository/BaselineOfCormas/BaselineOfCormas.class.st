@@ -119,6 +119,9 @@ BaselineOfCormas >> preLoadForPharo9 [
 BaselineOfCormas >> specForBaselines: spec [
 
 	spec
+		baseline: 'CollectionExtensions'
+		with: [ spec loads: 'Core'; repository: 'github://pharo-contributions/CollectionExtensions:v1.x.x/src' ];
+
 		baseline: 'SMark'
 		with: [ spec repository: 'github://smarr/SMark:v1.0.4' ];	
 
@@ -157,6 +160,7 @@ BaselineOfCormas >> specForPackages: spec [
 	spec
 		package: 'Cormas-Core' with: [ self specForPackagesInCore: spec ];
 		package: 'Cormas-Model-Conway' with: [ spec requires: #('Cormas-Core') ];
+		package: 'Cormas-Model-Conway-Tests' with: [ spec requires: #('Cormas-Model-Conway') ];	
 		package: 'Cormas-Model-DemoAggregates'  with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Model-Diffuse'  with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Model-ECEC' with: [ spec requires: #('Cormas-Core') ];
@@ -186,7 +190,10 @@ BaselineOfCormas >> specForPackagesInCore: spec [
 			" Required by the Entity Browser "
 			'CodeGenerator' 
 			" Required for project management "
-			'ProjectFramework')
+			'ProjectFramework'
+			" Required some String methods "
+			'CollectionExtensions' 
+			)
 ]
 
 { #category : #specs }
@@ -267,7 +274,7 @@ BaselineOfCormas >> specForPharo9Groups: spec [
 		group: 'Core' 		with: #('Cormas-Core');
 		group: 'UI' 			with: #(#'Cormas-UI' 'Core' 'Cormas-UI-Roassal3');
 
-		group: 'Tests' 		with: #('Core' 'Cormas-Mocks' 'Cormas-Tests' 'Cormas-UI-Tests');
+		group: 'Tests' 		with: #('Core' 'Cormas-Mocks' 'Cormas-Tests' 'Cormas-UI-Tests' 'Cormas-Model-Conway-Tests');
 
 		group: 'Models' 	with: 	#(
 						'Cormas-Model-Conway' 

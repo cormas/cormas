@@ -25,7 +25,8 @@ CMSpOpenProjectPresenter class >> defaultSpec [
 				   add: #projectsLocationsPresenter
 				   withConstraints: [ :constraints | 
 					   constraints height: self toolbarHeight ];
-				   add: #projectsListPresenter);
+				   add: #projectsListPresenter;
+					yourself);
 		  add: (SpPanedLayout newVertical
 				   positionOfSlider: 45 percent;
 				   add: (SpBoxLayout newHorizontal
@@ -38,7 +39,9 @@ CMSpOpenProjectPresenter class >> defaultSpec [
 						    add: #toolbar
 						    withConstraints: [ :constraints | 
 							    constraints height: self toolbarHeight ];
-						    yourself))
+						    yourself);
+					yourself);
+			yourself
 ]
 
 { #category : #examples }
@@ -75,22 +78,22 @@ CMSpOpenProjectPresenter class >> title [
 	^ 'CORMAS - Open project'
 ]
 
-{ #category : #callbacks }
+{ #category : #initialization }
 CMSpOpenProjectPresenter >> connectPresenters [ 
 	" Private - See superimplementor's comment "
 
 	projectsListPresenter
 		transmitTo: versionsListPresenter
-		transform: [ : aCormasObject | aCormasObject definedCormasVersions ]
-		postTransmission: [ :destination | destination selectIndex: 1 ];
+		transform: [ : aCormasObject |  self versionsFor: aCormasObject ]
+		postTransmission: [ :destination | destination ifNotNil: [ destination selectIndex: 1 ] ];
 		
 		transmitTo: previewPresenter
 "		transform: [ : fileReference | CMProjectOpener demoImageFromProjectFile: fileReference ]"
-		transform: [ : anObject | anObject cormasDemoImage ]
+		transform: [ : aCormasObject | self demoImageFor: aCormasObject ]
 		postTransmission: [ :destination | destination adapter buildWidget ].
 
 	versionsListPresenter 
-		whenSelectionChangedDo: [ :aSelection | metaInfoPresenter selectedModel: aSelection selectedItem ].	
+		whenSelectionChangedDo: [ :aSelection | self metaInfoFor: aSelection ].	
 
 ]
 
@@ -129,6 +132,15 @@ CMSpOpenProjectPresenter >> defaultSpecSelector [
 	^ SystemVersion current major = 8
 		ifTrue: [ #specSpecPharo8 ]
 		ifFalse: [ #defaultSpec ]
+]
+
+{ #category : #private }
+CMSpOpenProjectPresenter >> demoImageFor: aCormasObject [
+	" Answer a <Collection> of versions for aCormasObject "
+
+	^ aCormasObject 
+		ifNotNil: [ : cmObj | cmObj cormasDemoImage ]
+		ifNil: [ CMResourceOpener cormasDemoImage ]
 ]
 
 { #category : #accessing }
@@ -226,6 +238,14 @@ CMSpOpenProjectPresenter >> locationSelectorFor: locationId [
 	^ self cormasLocations at: locationId
 ]
 
+{ #category : #callbacks }
+CMSpOpenProjectPresenter >> metaInfoFor: aSelection [
+
+	aSelection
+		ifNotNil: [ : spSel | metaInfoPresenter selectedModel: spSel selectedItem ]
+
+]
+
 { #category : #accessing }
 CMSpOpenProjectPresenter >> metaInfoPresenter [
 	^ metaInfoPresenter
@@ -267,7 +287,7 @@ CMSpOpenProjectPresenter >> projectsInImage [
 	" Answer a <Collection> of <CMProjectModel> for the models in the current image "
 
 	^ CMAbstractModel subclasses collect: [ : cmModelClass |
-		CMProjectModel forModel: cmModelClass ]
+		CMProjectModel forModel: cmModelClass new ]
 ]
 
 { #category : #accessing }
@@ -299,6 +319,15 @@ CMSpOpenProjectPresenter >> setFocus [
 { #category : #accessing }
 CMSpOpenProjectPresenter >> toolbar [
 	^ toolbar
+]
+
+{ #category : #private }
+CMSpOpenProjectPresenter >> versionsFor: aCormasObject [
+	" Answer a <Collection> of versions for aCormasObject "
+
+	^ aCormasObject 
+		ifNotNil: [ : cmObj | cmObj definedCormasVersions ]
+		ifNil: [ OrderedCollection new ]
 ]
 
 { #category : #accessing }
