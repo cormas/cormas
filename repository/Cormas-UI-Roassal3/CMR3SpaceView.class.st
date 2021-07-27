@@ -210,9 +210,9 @@ CMR3SpaceView >> initializeOn: aModel [
 
 	model := aModel.
 	self addViewForCells: aModel theESE.
-	aModel allTheSituatedEntities ifNotEmpty: [ : atse |
+"	aModel allTheSituatedEntities ifNotEmpty: [ : atse |
 		self addViewForAgents: atse.
-		self moveSituatedEntities ].
+		self moveSituatedEntities ]."
 	model projectAnnouncer
 		when: CMTimeChangedAnnouncement do: [ :aAnnounce | 
 			aAnnounce timeStep = 0 

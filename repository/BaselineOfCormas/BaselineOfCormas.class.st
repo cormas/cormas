@@ -256,7 +256,7 @@ BaselineOfCormas >> specForPharo9: spec [
 			spec
 				baseline: 'Tabular' 							with: [ spec repository: 'github://VincentBlondeau/Tabular' ];
 				baseline: 'ClassEditor'						with: [ spec repository: 'github://hernanmd/class-editor/repository'; loads: 'complete' ];
-				baseline: 'Roassal3' 							with: [ spec repository: 'github://ObjectProfile/Roassal3' ];
+				baseline: 'Roassal3' 							with: [ spec repository: 'github://ObjectProfile/Roassal3'; load: 'Full' ];
 				baseline: 'Roassal3Exporters' 				with: [ spec repository: 'github://ObjectProfile/Roassal3Exporters' ];
 
 				package: 'Cormas-UI'							with: [ spec requires: #('Cormas-Core' 'ClassEditor' 'SpecUIAddOns' 'FileDialog' 'ProjectFramework' 'CodeGenerator') ];
