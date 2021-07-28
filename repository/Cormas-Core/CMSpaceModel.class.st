@@ -286,7 +286,7 @@ ms= <integer> must be >= 1"
 	| coll |
 	self closed
 		ifFalse: [ ^ self warningBoundaries ].
-	coll := OrderedCollection new.
+	coll := IndexedSet new.
 	(self getAggregatesFrom: baseEntity verifying: aBlock)
 		do: [ :set | 
 			set size < ms
@@ -737,6 +737,15 @@ cad : absoluteLength = (3.p + 1)*(2r) / 4
 		at: 'delay'
 		put: (thePoints at: 1) x - (thePoints at: 2) x.
 	^hexagoneInfo
+]
+
+{ #category : #accessing }
+CMSpaceModel >> deleteSpatialEntitySet: aSpatialEntitySetClass [
+	" Remove the instances of aSpatialEntitySetClass. The instances are destroyed, but not their components.
+	The collectGarbage is immediately performed  (ie. 'theXXXs' collection is emptied)
+	<aSpatialEntitySetClass = a subclass of SpatialEntitySet> "
+
+	self spaceModel resetCompoundSpatialEntity: aSpatialEntitySetClass
 ]
 
 { #category : #'private - dispatch' }
@@ -1236,17 +1245,17 @@ CMSpaceModel >> getAggregatesFrom: baseEntity verifying: aBlock [
 	self closed
 		ifFalse: [ ^ self warningBoundaries ].
 	eeInstances := ((self cormasModel
-		perform: (self cormasModel getterForEntityClass: baseEntity))
+		perform: baseEntity asGetterForEntityClass)
 		select: [ :c | aBlock value: c ]) copy asOrderedCollection.
 	collec := OrderedCollection new.	"collec est une collection de set (composants des agregats)"
 	[ eeInstances isEmpty ]
-		whileFalse: [ set := OrderedCollection new.
+		whileFalse: [ set := IndexedSet new.
 			seed := eeInstances first.
 			set add: seed.
 			neighbours := seed neighbourhood select: [ :v | aBlock value: v ].
 			[ neighbours isEmpty ]
 				whileFalse: [ set addAll: neighbours.
-					newNeighbours := OrderedCollection new.
+					newNeighbours := IndexedSet new.
 					neighbours
 						do: [ :v | 
 							newNeighbours
@@ -2027,7 +2036,7 @@ CMSpaceModel >> lowerRightLocation [
 CMSpaceModel >> meanCompactness: aClass [
 	| sum aggregates |
 	aggregates := self cormasModel
-		perform: (self cormasModel getterForEntityClass: aClass).
+		perform: aClass asGetterForEntityClass.
 	sum := aggregates
 		inject: 0
 		into: [ :cumul :aggreg | cumul + aggreg updateCompactness ].
@@ -2122,7 +2131,7 @@ CMSpaceModel >> nearestNeighbourProbaAttribute: anAttribute state1: x1 state2: x
 
 { #category : #'private - init' }
 CMSpaceModel >> newEntity: aClass [
-	"Creates a new instance of aClass and collects it at the level of theXXXs collection. 
+	" Creates a new instance of aClass and collects it at the level of theXXXs collection. 
 	Set also the collector of the new instance"
 
 	^ (aClass new: self)
@@ -2306,6 +2315,17 @@ CMSpaceModel >> release: aClass [
 	
 	super release.
 	(self spatialEntities at: aClass name) do: [:e | e spaceModel: nil]
+]
+
+{ #category : #accessing }
+CMSpaceModel >> resetCompoundSpatialEntity: compoundClass [
+
+	(self spatialEntities at: compoundClass name)
+		do: [: agg | agg components do:[: c | (c theCSE includesKey: compoundClass name)
+				ifTrue: [c theCSE at: compoundClass name put: nil]]].
+	self spatialEntities at: compoundClass name put: OrderedCollection new.
+	self cormasModel initializeTheEntity: compoundClass.
+	"self changed: #createRegularAggregatesImagesFor: with: compoundClass"
 ]
 
 { #category : #'private - init' }
@@ -2980,9 +3000,9 @@ CMSpaceModel >> setFragmentedEntities: compoundEntity from: baseEntity verifying
 	self
 		resetCompoundSpatialEntity: compoundEntity
 		andTheirComponents: baseEntity.
-	beInstances := ((self cormasModel
-		perform: (self cormasModel getterForEntityClass: baseEntity) asSymbol)
-		select: [ :c | aBlock value: c ]) copy asOrderedCollection.
+	beInstances := (
+		(self cormasModel perform: baseEntity asGetterForEntityClass asSymbol)
+			select: [ :c | aBlock value: c ]) copy asOrderedCollection.
 	fragmentedEntity := compoundEntity new: self.
 	fragmentedEntity addSilentlyComponents: beInstances.
 	(self spatialEntities at: compoundEntity name) add: fragmentedEntity.

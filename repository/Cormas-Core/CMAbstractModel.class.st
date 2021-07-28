@@ -1933,6 +1933,13 @@ CMAbstractModel >> delayChangesWhile: aBlock [
 		ifFalse: [aBlock value]
 ]
 
+{ #category : #accessing }
+CMAbstractModel >> deleteSpatialEntitySet: aClass [ 
+	" See comment in Space Model class "
+
+	self spaceModel deleteSpatialEntitySet: aClass
+]
+
 { #category : #ODBC }
 CMAbstractModel >> disconnectAccessConnection [
 	"disconnect the ODBC connection (database) "

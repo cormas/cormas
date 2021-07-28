@@ -118,7 +118,6 @@ CMProjectOpener >> openProject: aFileReferenceOrProjectModel [
 
 	| currentProjectModel |
 	
-	self halt.
 	currentProjectModel := self getProjectFrom: aFileReferenceOrProjectModel.
 	self currentProject: currentProjectModel.
 	openStatus
