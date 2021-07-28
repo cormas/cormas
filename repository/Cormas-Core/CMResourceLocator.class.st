@@ -80,17 +80,16 @@ CMResourceLocator class >> workingDirectory [
 CMResourceLocator >> addOnsPath [
 	" Answer a <FileReference> corresponding to the path of 'Add-ons' directory "
 	
-	^ (self cormasPath / 'Add-ons') ensureCreateDirectory.
+	^ self cormasPath / 'Add-ons'.
 
 
 ]
 
 { #category : #'utilities - path' }
-CMResourceLocator >> animationsPath [
+CMResourceLocator >> animationsPath: shortModelName [
 	" Answer a <FileReference> corresponding to the path of stored Animations directory. "
 
-	^ (self assetsPath / 'Animations') ensureCreateDirectory.
-
+	^ (self modelPath: shortModelName) asFileReference / 'animations'.
 ]
 
 { #category : #'utilities - csv' }
@@ -131,7 +130,7 @@ CMResourceLocator >> dataPath: aModelClassName [
 	" Answer a <FileReference> corresponding to the path of the current model 'data' directory.
 	aModelClassName = <String>"
 	
-	^ ((self modelPath: aModelClassName) / 'data') ensureCreateDirectory.
+	^ (self modelPath: aModelClassName) / 'data'.
 
 ]
 
@@ -140,7 +139,7 @@ CMResourceLocator >> dumpPath: aModelClassName [
 	" Answer a <FileReference> corresponding to the path of the current model 'dump' directory.
 	aModelClassName = <String>"
 	
-	^ ((self modelPath: aModelClassName) / 'dump') ensureCreateDirectory.
+	^ (self modelPath: aModelClassName) / 'dump'.
 
 ]
 
@@ -149,7 +148,7 @@ CMResourceLocator >> imagesPath [
 	" Answer a <FileReference> corresponding to the path of the current 'images' directory.
 	aModelClassName = <String>"
 	
-	^ (self assetsPath / 'images') ensureCreateDirectory.
+	^ self assetsPath / 'images'.
 
 ]
 
@@ -160,19 +159,19 @@ CMResourceLocator >> mapsPath [
 	Example: 
 		CMResourceLocator new mapsPath
 	"
-	^ (self modelsPath asFileReference / 'maps') ensureCreateDirectory.
+	^ self modelsPath asFileReference / 'maps'.
 
 ]
 
 { #category : #'utilities - path - models' }
 CMResourceLocator >> mapsPath: shortModelName [
-	" Answer a FileReference corresponding to the path of the maps directory of the current model.
+	" Answer a <FileReference> corresponding to the path of the maps directory of the current model.
 	Argument: shortModelName = <String>
 	Example: 
 		CMResourceLocator new mapsPath: #FireModel >>> '/Users/.../cormas/assets/models/FireModel'
 	"
 	
-	^ ((self modelPath: shortModelName) asFileReference / 'maps') ensureCreateDirectory.
+	^ (self modelPath: shortModelName) asFileReference / 'maps'.
 
 ]
 
@@ -192,7 +191,7 @@ CMResourceLocator >> modelPath: shortModelName [
 	CMResourceLocator new modelPath: #FireModel >>> 'File @ /Users/Bommel/Pharo/images/Pharo 8.0 - 64bit (stable)/pharo-local/iceberg/cormas/cormas/assets/models/FireModel'
 	"
 	
-	^ (self modelsPath / shortModelName asString) ensureCreateDirectory.
+	^ self modelsPath / shortModelName asString.
 
 ]
 
@@ -201,7 +200,7 @@ CMResourceLocator >> modelsPath [
 	" Answer a <FileReference> corresponding to the path of 'Models' directory 
 	Ex: File @ /Users/.../iceberg/cormas/cormas/assets/models"
 	
-	^ (self assetNamed: 'models') ensureCreateDirectory.
+	^ self assetNamed: 'models'.
 
 ]
 
@@ -291,7 +290,7 @@ CMResourceLocator >> videoPath: aModelClassName [
 	" Answer a <FileReference> corresponding to the path of the current model 'video' directory.
 	aModelClassName = <String>"
 	
-	^ ((self modelPath: aModelClassName) asFileReference / 'video') ensureCreateDirectory.
+	^ (self modelPath: aModelClassName) asFileReference / 'video'.
 
 ]
 
@@ -307,6 +306,6 @@ CMResourceLocator >> xmlPath: aModelClassName [
 	" Answer a <FileReference> corresponding to the path of the current model 'xml' directory.
 	aModelClassName = <String>"
 	
-	^ ((self modelPath: aModelClassName) asFileReference / 'xml') ensureCreateDirectory.
+	^ (self modelPath: aModelClassName) asFileReference / 'xml'.
 
 ]

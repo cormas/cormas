@@ -722,15 +722,6 @@ Example: Cormas lowerQuartile: #(2 4 7 -20 22 -1 0 -1 7 15 8 4 -4 11 11 12 3 12 
 	^ sortedColl at: (0.25 * (sortedColl size + 1)) rounded
 ]
 
-{ #category : #'mainMenu (resources)' }
-Cormas class >> mainMenu [
-	"the main menu depends on the runtime mode"
-	
-	^self isModelUserMode
-		ifTrue: [self modelUserMainMenu]
-		ifFalse: [self fullMainMenu]
-]
-
 { #category : #'utilities - files' }
 Cormas class >> mapsPath: aModelClassName [
 	"Purpose: Returns a Filename corresponding to the path of the current model 'maps' directory.

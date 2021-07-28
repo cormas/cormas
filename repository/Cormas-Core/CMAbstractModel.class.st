@@ -3085,13 +3085,6 @@ CMAbstractModel >> resetCells [
 	self theESE do: #reset
 ]
 
-{ #category : #accessing }
-CMAbstractModel >> resourceLocator [ 
-	" Answer the receiver's <CMResourceLocator>, an object to locate resources on the disk"
-
-	^ self application resourceLocator
-]
-
 { #category : #scheduling }
 CMAbstractModel >> runStep [
 	"The main step method that activates the agents:

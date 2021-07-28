@@ -29,6 +29,15 @@ CMResourceLocatorTest >> setUp [
 ]
 
 { #category : #testing }
+CMResourceLocatorTest >> testAnimationsPath [
+	| cmFileRef |
+	cmFileRef := self instance animationsPath: self sampleModel.
+	self
+		assert: (cmFileRef isKindOf: FileReference);
+		assert: cmFileRef isDirectory 
+]
+
+{ #category : #testing }
 CMResourceLocatorTest >> testAssetNamed [
 
 	self assert: ((self instance assetNamed: 'simpleMap.csv') isKindOf: FileReference)
@@ -54,6 +63,15 @@ CMResourceLocatorTest >> testCormasPath [
 ]
 
 { #category : #testing }
+CMResourceLocatorTest >> testDataPath [
+	| cmFileRef |
+	cmFileRef := self instance dataPath: self sampleModel.
+	self
+		assert: (cmFileRef isKindOf: FileReference);
+		assert: cmFileRef isDirectory 
+]
+
+{ #category : #testing }
 CMResourceLocatorTest >> testDumpPath [
 	| cmFileRef |
 	cmFileRef := self instance dumpPath: self sampleModel.
@@ -68,6 +86,15 @@ CMResourceLocatorTest >> testImagesPath [
 	| cmFileRef |
 	cmFileRef := self instance imagesPath.
 	self assert: (cmFileRef isKindOf: FileReference).
+]
+
+{ #category : #testing }
+CMResourceLocatorTest >> testMapsPath [
+	| cmFileRef |
+	cmFileRef := self instance mapsPath: self sampleModel.
+	self
+		assert: (cmFileRef isKindOf: FileReference);
+		assert: cmFileRef isDirectory 
 ]
 
 { #category : #testing }

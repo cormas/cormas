@@ -71,6 +71,7 @@ CMModel2ProjectMigrator >> buildForModelInstance: modelInstance [
 CMModel2ProjectMigrator >> buildProjectFile [
 	" Creates a CORMAS project file in the receiver's path. Assume the directory structure is already created and populated in outputDirectory "
 	
+	self buildProjectResources.
 	CMProjectFile 
 		archiveAllFromPharo: self outputDirectory asFileReference children
 		as: self currentModel projectFilename
@@ -105,6 +106,14 @@ CMModel2ProjectMigrator >> buildProjectMetadataSTON [
 
 ]
 
+{ #category : #private }
+CMModel2ProjectMigrator >> buildProjectResources [
+	" Private - Locate the current model resources and copy them into the output directory to be archived "
+	
+	(self resourceLocator mapsPath: self currentModel friendlyName) hasFiles
+		ifTrue: [ self halt. ]
+]
+
 { #category : #building }
 CMModel2ProjectMigrator >> buildProjects [
 	" Main entry point for generating project files. Generate all project files from the models in this image "
@@ -112,7 +121,7 @@ CMModel2ProjectMigrator >> buildProjects [
 
 	'Model2Project: Building project files...' traceCr.
 	CMAbstractModel subclassesDo: [ :modelClass |
-			self buildForModelClass: modelClass.
+			self buildForModelInstance: modelClass new.
 			self buildProjectFile ].
 	'Model2Project: Done building project files...' traceCr.
 ]
@@ -237,6 +246,7 @@ CMModel2ProjectMigrator >> resourceDirectoryNames [
 	" Answer a <Collection> with the names of subdirectories of a CORMAS project "
 
 	^ #(
+		'animations'
 		'diagrams' 
 		'doc' 
 		'dumps' 
