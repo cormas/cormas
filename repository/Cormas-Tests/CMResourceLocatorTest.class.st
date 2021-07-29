@@ -160,13 +160,3 @@ CMResourceLocatorTest >> testWorkingDirectory [
 
 	self assert: (self instance workingDirectory isKindOf: String) 
 ]
-
-{ #category : #testing }
-CMResourceLocatorTest >> testXmlPath [
-
-	| cmFileRef |
-	cmFileRef := self instance xmlPath: self sampleModel.
-	self
-		assert: (cmFileRef isKindOf: FileReference);
-		assert: cmFileRef isDirectory
-]

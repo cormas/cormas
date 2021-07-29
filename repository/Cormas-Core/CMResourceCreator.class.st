@@ -100,12 +100,3 @@ CMResourceCreator >> videoPath: aModelClassName [
 	^ (super videoPath: aModelClassName) ensureCreateDirectory.
 
 ]
-
-{ #category : #'utilities - path - models' }
-CMResourceCreator >> xmlPath: aModelClassName [
-	" Answer a <FileReference> corresponding to the path of the current model 'xml' directory.
-	aModelClassName = <String>"
-	
-	^ (super xmlPath: aModelClassName) ensureCreateDirectory.
-
-]

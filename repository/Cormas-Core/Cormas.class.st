@@ -1740,15 +1740,6 @@ Cormas class >> videoPath: aModelClassName [
 
 ]
 
-{ #category : #'utilities - files' }
-Cormas class >> xmlPath: aModelClassName [
-	" Answer a <FileReference> corresponding to the path of the current model 'dump' directory.
-	aModelClassName = <String>"
-
-	^ self application xmlPath: aModelClassName
-
-]
-
 { #category : #'user messages' }
 Cormas >> alert: aString [
 	
