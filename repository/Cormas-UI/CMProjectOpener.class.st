@@ -117,6 +117,7 @@ CMProjectOpener >> openProject: aFileReferenceOrProjectModel [
 	" Answer a <String> with the full path of the opened project, if possible. Otherwise raise an Exception "
 
 	| currentProjectModel |
+	
 	currentProjectModel := self getProjectFrom: aFileReferenceOrProjectModel.
 	self currentProject: currentProjectModel.
 	openStatus

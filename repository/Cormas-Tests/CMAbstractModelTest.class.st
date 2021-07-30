@@ -14,13 +14,17 @@ CMAbstractModelTest >> cleanGeneratedMethods [
 { #category : #test }
 CMAbstractModelTest >> cormasModelNamesForTests [
 
-	^ 'Demo_Aquifer
-Demo_Aggregates
+	^ 'DemoAquifer
+SIS
+DemoAggregates
 Conway
-Demo_ArcsNodes
+DemoArcsNodes
+DemoAquiferPollution
+WolfSheepPredation
 Diffuse
 FireModel
 DemoWayTo
+DemoAquifer
 ECEC' lines
 ]
 

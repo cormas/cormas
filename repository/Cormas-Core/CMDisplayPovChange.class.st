@@ -20,7 +20,7 @@ Class {
 { #category : #'instance creation' }
 CMDisplayPovChange class >> forPov: aSymbol ofEntity: aClass [
 	
-	^(self new)
+	^ self new
 		povName: aSymbol;
 		entityClass: aClass;
 		yourself

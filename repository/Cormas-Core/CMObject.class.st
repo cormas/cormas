@@ -54,10 +54,24 @@ CMObject >> appSettingsClass [
 ]
 
 { #category : #accessing }
+CMObject >> application [ 
+	" Answer a <CMApplicationProject> the unique instance representing the CORMAS application "
+
+	^ CMApplicationProject uniqueInstance
+]
+
+{ #category : #accessing }
 CMObject >> projectManager [ 
 	" Probably should be deleted "
 
 	^ CMProjectManager allInstances anyOne
+]
+
+{ #category : #accessing }
+CMObject >> resourceLocator [ 
+	" Answer the receiver's <CMResourceLocator>, an object to locate resources on the disk"
+
+	^ self application resourceLocator
 ]
 
 { #category : #accessing }

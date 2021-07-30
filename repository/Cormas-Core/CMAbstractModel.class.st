@@ -1933,6 +1933,13 @@ CMAbstractModel >> delayChangesWhile: aBlock [
 		ifFalse: [aBlock value]
 ]
 
+{ #category : #accessing }
+CMAbstractModel >> deleteSpatialEntitySet: aClass [ 
+	" See comment in Space Model class "
+
+	self spaceModel deleteSpatialEntitySet: aClass
+]
+
 { #category : #ODBC }
 CMAbstractModel >> disconnectAccessConnection [
 	"disconnect the ODBC connection (database) "
@@ -3083,13 +3090,6 @@ CMAbstractModel >> resetCells [
 	"Purpose: reset all the generic attributes of the cells"
 
 	self theESE do: #reset
-]
-
-{ #category : #accessing }
-CMAbstractModel >> resourceLocator [ 
-	" Answer the receiver's <CMResourceLocator>, an object to locate resources on the disk"
-
-	^ self application resourceLocator
 ]
 
 { #category : #scheduling }

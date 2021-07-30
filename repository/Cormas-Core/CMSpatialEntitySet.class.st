@@ -572,7 +572,8 @@ CMSpatialEntitySet >> neighborsOf: aCollectionOfCells [
 CMSpatialEntitySet >> outline [
 	" return a Polyline arround the spatialEntity"
 	
-	^outline ifNil: [outline := self defaultPOV outline]
+	^ outline 
+		ifNil: [ outline := self setOutline ]
 ]
 
 { #category : #'components - managing' }
