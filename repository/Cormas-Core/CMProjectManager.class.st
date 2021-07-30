@@ -253,7 +253,6 @@ CMProjectManager >> doPostCloseActions [
 	" Private - See superimplementor's comment "
 
 	self querySaveProject.
-
 	Cursor wait showWhile: [
 		| icePackage cormasRepo |
 		cormasRepo := IceLibgitRepository registry detect: [ : repo | repo name = 'cormas' ].
@@ -262,7 +261,8 @@ CMProjectManager >> doPostCloseActions [
 		self fsm handleEvent: #actionClose.
 		self deleteProject.	
 		self cleanEnvironment.
-		self reloadProject: icePackage repository: cormasRepo ].
+		(RPackageOrganizer default includesPackageNamed: icePackage package)
+			ifTrue: [ self reloadProject: icePackage repository: cormasRepo ] ].
 ]
 
 { #category : #callbacks }
