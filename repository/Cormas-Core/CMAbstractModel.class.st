@@ -67,6 +67,15 @@ Class {
 	#category : #'Cormas-Core-Interface'
 }
 
+{ #category : #accessing }
+CMAbstractModel class >> aboutThisModel [
+	" Answer a <String> which is the main description of the receiver's purpose "
+	
+	self subclassResponsibility
+	
+
+]
+
 { #category : #probes }
 CMAbstractModel class >> activeProbes [
 	^ activeProbes
@@ -264,6 +273,23 @@ CMAbstractModel class >> allTerminalClasses [
 					((Cormas isTerminal: passiveClass)
 						and: [ passiveClass inheritsFrom: CMEntity ])
 						ifTrue: [ stream nextPut: passiveClass ] ] ]
+]
+
+{ #category : #accessing }
+CMAbstractModel class >> buildMicroDownUsing: aBuilder [ 
+
+	aBuilder
+		header: [ :b | b text: self friendlyName ] withLevel: 1;
+		horizontalLine;
+
+		header: [ :b | b text: 'Description' ] withLevel: 3;
+		horizontalLine;
+		text: self aboutThisModel;
+		newLine;
+
+		header: [ :b | b text: 'How to run it' ] withLevel: 3;
+		horizontalLine;
+		text: self howToRunIt
 ]
 
 { #category : #'managing classes' }
@@ -500,6 +526,13 @@ randomAttributes = #(#bioma #instance #randomFloat 0 1). "
 		ifTrue: [otherString := otherString , ']']
 		ifFalse: [otherString := otherString , '['].
 	^otherString = aString
+]
+
+{ #category : #accessing }
+CMAbstractModel class >> howToRunIt [
+	" Answer a <String> with information about how to run the receiver "
+
+	self subclassResponsibility
 ]
 
 { #category : #'instance creation' }

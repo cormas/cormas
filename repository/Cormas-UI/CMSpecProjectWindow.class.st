@@ -529,6 +529,14 @@ CMSpecProjectWindow >> openEditSteps [
 		
 ]
 
+{ #category : #accessing }
+CMSpecProjectWindow >> openHelpAboutThisModel [
+	" Open a window with description and help about the receiver "
+
+	(CMSpAboutWindow owner: self on: self cormasModelClass) openWithSpec
+			
+]
+
 { #category : #callbacks }
 CMSpecProjectWindow >> openPovSetterGUI [
 
