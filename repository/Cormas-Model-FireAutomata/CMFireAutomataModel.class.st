@@ -30,14 +30,30 @@ Class {
 	#category : #'Cormas-Model-FireAutomata'
 }
 
+{ #category : #accessing }
+CMFireAutomataModel class >> aboutThisModel [
+	" Answer a <String> which is the main description of the receiver's purpose "
+	
+	^ 'This is a simple cellular automata (CA) that simulate the diffusion of fire in a forest.
+A cell can take one of the 3 following states: forest, fire or empty.
+In one step, the CA uses 2 loops in order to 
+
+1) calculate the next state of each cell (stored in the bufferState attribute), 
+
+then 2) to update the state of all the cells.
+
+For more information, see: http://cormas.cirad.fr/fr/applica/fireautomata.htm 
+'
+	
+
+]
+
 { #category : #examples }
 CMFireAutomataModel class >> createInJSONFile [
-	"Create a JSON file for example 8"
+	" Create a JSON file for example 8 "
 
-	| stream |
-	stream := FileStream newFileNamed: 'input.json'.
-	stream nextPutAll: self inJSON.
-	stream close
+	'input.json' asFileReference ensureCreateFile writeStreamDo: [ : stream | stream nextPutAll: self inJSON ]
+
 ]
 
 { #category : #'default settings' }
@@ -64,53 +80,48 @@ CMFireAutomataModel class >> defaultProbes [
 
 { #category : #description }
 CMFireAutomataModel class >> howToRunIt [
-<script>
-| txt |
-txt := '1. Prepare the visualisation of the spatial grid\' withCRs asText allBold.
 
-txt := txt, '1.1 Click on the first icon of the ' asText, ('Visualisation ' asText makeAllColor: Color red), 'area to open the standard spatial grid.\' withCRs asText.
+	^ '1. Prepare the visualisation of the spatial grid. 
 
-txt := txt, '1.2 In the ' asText, ('Topology ' asText allItalic), 'menu, clicking on the ' asText, ('Grid size ' asText allItalic), 'item opens a window allowing you to choose the number of lines and columns. For example, choose 30 * 30.\' withCRs asText.
+1.1 Click on the first icon of the Visualisation area to open the standard spatial grid.
 
-txt := txt, '1.3 Check the border condition: ' asText, ('Topology -> Grid boundaries -> closed' asText allItalic), '.\' withCRs asText.
+1.2 In the Topology menu, clicking on the Grid size item opens a window allowing you to choose the number of lines and columns. For example, choose 30 * 30.
 
-txt := txt, '1.4 Right-click within the spatial grid window to select the ' asText, ('pov ' asText allItalic), 'view for ' asText, ('FireAutomata_Cell ' asText allItalic), '.\' withCRs asText.
+1.3 Check the border condition: Topology -> Grid boundaries -> closed.
 
-txt := txt, '1.5 To display the legend of this viewpoint: ' asText, ('Tools -> Display legends.\\' withCRs asText allItalic).
+1.4 Right-click within the spatial grid window to select the pov view for FireAutomata_Cell .
 
+1.5 To display the legend of this viewpoint: Tools -> Display legends.
 
 
-txt := txt, ('2. Prepare the initial spatial grid\' withCRs asText allBold).
+2. Prepare the initial spatial grid
 
-txt := txt, '2.1 Click on the ' asText, ('Initialize ' asText allItalic), 'button of the ' asText, ('Simulation ' asText makeAllColor: Color red),  'area.\' withCRs asText.
+2.1 Click on the Initialize button of the Simulation area.
 
-txt := txt, '2.2 Select the ' asText, ('init53 ' asText allItalic), 'and ' asText, ('stepSynchronously: ' asText allItalic), 'methods, then validate by clicking on ' asText, ('Apply and close.\' withCRs asText allItalic).
+2.2 Select the init53 and stepSynchronously: methods, then validate by clicking on Apply and close.
 
-txt := txt, '2.3 From the spatial grid menu, use ' asText, ('Tools -> Click to... -> Change attribute... -> state' asText allItalic), ', enter ' asText, ('fire ' asText allItalic), 'and validate. The cursor takes a new shape. Click on a cell to change manually its state to fire, then switch back to the mouse select mode with ' asText, ('Tools -> Click to... -> Select ' asText allItalic), '.\\' withCRs asText. 
-
-
-txt := txt, ('3. Run the model\' withCRs asText allBold).
-
-txt := txt, '3.1 Enter 50 in the ' asText, ('Final time ' asText allItalic), 'input field of the ' asText,  ('Simulation ' asText makeAllColor: Color red),  'area.\' withCRs asText.
-
-txt := txt, '3.2 Click on the ' asText, ('Run ' asText allItalic), 'button of the ' asText,  ('Simulation ' asText makeAllColor:Color red),  'area.\\' withCRs asText.
+2.3 From the spatial grid menu, use Tools -> Click to... -> Change attribute... -> state, enter fire and validate. The cursor takes a new shape. Click on a cell to change manually its state to fire, then switch back to the mouse select mode with Tools -> Click to... -> Select 
 
 
+3. Run the model
 
-txt := txt, ('4. Have a look at the charts\' withCRs asText allBold).
+3.1 Enter 50 in the Final time input field of the Simulation area.
 
-txt := txt, '4.1 Click on the third icon of the ' asText, ('Visualisation ' asText makeAllColor: Color red), 'area to open the charts window.\\' withCRs asText.
+3.2 Click on the Run button of the Simulation area.
+
+
+4. Have a look at the charts
+
+4.1 Click on the third icon of the Visualisation area to open the charts window.
 
 
 
-txt := txt, ('5. Run alternative versions of the model\' withCRs asText allBold).
+5. Run alternative versions of the model
 
-txt := txt, '5.1 Select the ' asText, ('init58 ' asText allItalic), 'and ' asText, ('stepSynchronously: ' asText allItalic), 'methods, then run the model again.\' withCRs asText.
+5.1 Select the init58 and stepSynchronously: methods, then run the model again.
 
-txt := txt, '5.2 Select the ' asText, ('init53 ' asText allItalic), 'and ' asText, ('stepAsynchronously: ' asText allItalic), 'methods, then run the model again.\' withCRs asText.
+5.2 Select the init53 and stepAsynchronously: methods, then run the model again.'
 
-txt inspect
-"ComposedTextView open: txt asValue label: ('How to run ', self name, '     step-by-step instructions') icon: (Icon constantNamed: #workspace) extent: 620@550" 
 ]
 
 { #category : #examples }
@@ -200,12 +211,6 @@ CMFireAutomataModel >> dimensions: aPair [
 		columns: aPair key
 		neighbourhood: 4
 		closed: true
-]
-
-{ #category : #description }
-CMFireAutomataModel >> howToRunIt [
-
-^self class howToRunIt 
 ]
 
 { #category : #init }

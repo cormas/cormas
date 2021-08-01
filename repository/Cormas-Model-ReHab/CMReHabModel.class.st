@@ -17,7 +17,9 @@ Class {
 		'theZones'
 	],
 	#classInstVars : [
-		'defaultInit'
+		'defaultInit',
+		'gameSession',
+		'replay'
 	],
 	#category : #'Cormas-Model-ReHab'
 }
@@ -266,6 +268,14 @@ trackLengthValue:*All,nil
 trackedAgents:*'
 ]
 
+{ #category : #description }
+CMReHabModel class >> aboutThisModel [
+	" Answer a <String> which is the main description of the receiver's purpose "
+
+	^ 'This model is supporting a Role-Playing Game. A virtual ecosystem is the reproductive habitat of an endangered species of animal, and at the same time it provides a source of income for local people who are havesting the dominant plant. The spatial setting is set as 20 regular space units holding 0,1,2 or 3 units of plant biomass. A constant number of 20 plant harvesters are competing to harvest the plant while a national park is trying to monitor the reproduction of the endangered species. Most of the players (5 to 20) are clans made of 1 to 4 members per clan (the number of members is set to make a total of 20). 1 to 3 players are National Park Officers"
+'
+]
+
 { #category : #'default value' }
 CMReHabModel class >> birdNewborns_default [
 	"Return the default value of attribute #birdNewborns : 0.
@@ -292,8 +302,8 @@ CMReHabModel class >> checkExistingReplayDataIn: aDirectory [
 
 { #category : #description }
 CMReHabModel class >> comments [
-^ 'This model is supporting a Role-Playing Game. A virtual ecosystem is the reproductive habitat of an endangered species of animal, and at the same time it provides a source of income for local people who are havesting the dominant plant. The spatial setting is set as 20 regular space units holding 0,1,2 or 3 units of plant biomass. A constant number of 20 plant harvesters are competing to harvest the plant while a national park is trying to monitor the reproduction of the endangered species. Most of the players (5 to 20) are clans made of 1 to 4 members per clan (the number of members is set to make a total of 20). 1 to 3 players are National Park Officers"
-'
+
+	^ self aboutThisModel
 ]
 
 { #category : #sessions }
@@ -405,8 +415,8 @@ CMReHabModel class >> highlightedClan_default [
 
 { #category : #description }
 CMReHabModel class >> howToRunIt [
-| txt |
-	txt := 'The documents needed to organize a gaming session are freely downloadable here: http://www.commod.org/modeles/rehab
+
+	^ 'The documents needed to organize a gaming session are freely downloadable here: http://www.commod.org/modeles/rehab
 
 You can play ReHab with a minimum of 6 participants up to about thirty (above that limit, it is better to split the group to play different sessions). With less than 10 participants, allocate just one of them to play the National Park manager; up to 20 (resp. more than 30) participants, allocate 2 (resp. 3) of them to interact in playing the National Park. All the other participants will play households made of harvesting members. The total number of individual harvesters (households'' members) HAS TO BE 20. The number of households can be set from 5 up to 20, with the corresponding distributions of individual members:
 5 households   => 5*4 members
@@ -436,11 +446,7 @@ When 5 rounds have been played, to visualize the results of the scenario, select
 
 During the debriefing, it is often useful to replay a session. Clic on "Initialize", then select ("init_replay" and "run_replay:") and apply. Choose the name of the session you want to replay. If you decide to highlight one household, its members will be coloured, the darker the more biomass they have harvested.
 
-' asText emphasizeAllWith: #(#bold #large).
-	ComposedTextView open: txt asValue
-		label: 'How to run ' , self name , '     step-by-step instructions'
-		icon: (Icon constantNamed: #workspace)
-		extent: 1000 @ 800
+'
 ]
 
 { #category : #sessions }
