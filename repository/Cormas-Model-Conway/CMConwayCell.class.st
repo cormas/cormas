@@ -37,14 +37,6 @@ CMConwayCell class >> state_default [
 	^ nil
 ]
 
-{ #category : #printing }
-CMConwayCell >> asPopupText [
-	^ String streamContents: [ : stream |
-		stream 
-			<< 'State: ';
-			<< self state asString ]
-]
-
 { #category : #init }
 CMConwayCell >> initAllDead [
 

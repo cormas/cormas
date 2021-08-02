@@ -1280,6 +1280,17 @@ Example: GroupLocation superClassesUntilEntity"
 	^self superClassesUntil: CMEntity
 ]
 
+{ #category : #converting }
+CMEntity >> asString [
+	" Private - See superimplementor's comment "
+
+	^ String streamContents: [ : stream |
+		stream 
+			<< 'id: ';
+			<< id asString ]
+	
+]
+
 { #category : #displaying }
 CMEntity >> center: x [
 	"do nothing"
