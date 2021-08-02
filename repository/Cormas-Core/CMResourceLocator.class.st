@@ -17,6 +17,9 @@ Internal Representation and Key Implementation Points.
 Class {
 	#name : #CMResourceLocator,
 	#superclass : #GitBridge,
+	#classInstVars : [
+		'useGitBridge'
+	],
 	#category : #'Cormas-Core-Kernel'
 }
 
@@ -31,7 +34,23 @@ CMResourceLocator class >> assetsFilesDirectoryName [
 CMResourceLocator class >> assetsPath [
 	"Return the assets path of Cormas
 	Ex: {localDirectory}/iceberg/cormas/cormas/assets"
-	
+
+	^ self useGitBridge
+		ifTrue: [ self assetsPathForIceberg ]
+		ifFalse: [ self assetsPathForCI ]
+
+]
+
+{ #category : #accessing }
+CMResourceLocator class >> assetsPathForCI [
+	" The model path from the resource already contains the assets directory "
+
+	^ CMModelResource current modelPath
+]
+
+{ #category : #accessing }
+CMResourceLocator class >> assetsPathForIceberg [
+
 	^ ([ self root ]
 		on: GBError
 		do: [ :ex | FileLocator workingDirectory ]) / self assetsFilesDirectoryName
@@ -63,6 +82,20 @@ CMResourceLocator class >> preferencesPath [
 ]
 
 { #category : #accessing }
+CMResourceLocator class >> useGitBridge [
+	" Read comment in #root method "
+
+	^ useGitBridge
+		ifNil: [ useGitBridge := true ]
+]
+
+{ #category : #accessing }
+CMResourceLocator class >> useGitBridge: anObject [
+
+	useGitBridge := anObject
+]
+
+{ #category : #accessing }
 CMResourceLocator class >> userProjectsPath [
 	" Answer a <FileReference> with the receiver's path to the user projects directory "
 
@@ -76,7 +109,7 @@ CMResourceLocator class >> workingDirectory [
 	^ FileSystem disk workingDirectory fullName
 ]
 
-{ #category : #'utilities - path' }
+{ #category : #'utilities - path - global' }
 CMResourceLocator >> addOnsPath [
 	" Answer a <FileReference> corresponding to the path of 'Add-ons' directory "
 	
@@ -85,7 +118,7 @@ CMResourceLocator >> addOnsPath [
 
 ]
 
-{ #category : #'utilities - path' }
+{ #category : #'utilities - path - models' }
 CMResourceLocator >> animationsPath: shortModelName [
 	" Answer a <FileReference> corresponding to the path of stored Animations directory. "
 
@@ -102,14 +135,14 @@ CMResourceLocator >> assetNamed: aFilename [
 
 ]
 
-{ #category : #'utilities - path' }
+{ #category : #'utilities - path - global' }
 CMResourceLocator >> assetsFilesDirectoryName [
 	" Answe a <String> with the name of the directoy where CORMAS resources are found "
 
 	^ self class assetsFilesDirectoryName
 ]
 
-{ #category : #'utilities - path' }
+{ #category : #'utilities - path - global' }
 CMResourceLocator >> assetsPath [
 	" Answer a <FileReference> specifying a directory where CORMAS assets are found.
 	Ex: /Users/Bommel/Pharo/images/Pharo 8.0 - 64bit (stable)/pharo-local/iceberg/cormas/cormas/assets"
@@ -117,7 +150,7 @@ CMResourceLocator >> assetsPath [
 	^ self class assetsPath asFileReference
 ]
 
-{ #category : #'utilities - path' }
+{ #category : #'utilities - path - global' }
 CMResourceLocator >> cormasPath [
 	" Answer a <FileReference> corresponding to the path of Cormas directory. "
 
@@ -126,11 +159,20 @@ CMResourceLocator >> cormasPath [
 ]
 
 { #category : #'utilities - path - models' }
-CMResourceLocator >> dataPath: aModelClassName [
-	" Answer a <FileReference> corresponding to the path of the current model 'data' directory.
+CMResourceLocator >> diagramsPath: aModelClassName [
+	" Answer a <FileReference> corresponding to the path of the current model 'dump' directory.
 	aModelClassName = <String>"
 	
-	^ (self modelPath: aModelClassName) / 'data'.
+	^ (self modelPath: aModelClassName) / 'diagrams'.
+
+]
+
+{ #category : #'utilities - path - models' }
+CMResourceLocator >> docPath: aModelClassName [
+	" Answer a <FileReference> corresponding to the path of the current model 'doc' directory.
+	aModelClassName = <String>"
+	
+	^ (self modelPath: aModelClassName) / 'doc'.
 
 ]
 
@@ -143,7 +185,7 @@ CMResourceLocator >> dumpPath: aModelClassName [
 
 ]
 
-{ #category : #'utilities - path' }
+{ #category : #'utilities - path - global' }
 CMResourceLocator >> imagesPath [
 	" Answer a <FileReference> corresponding to the path of the current 'images' directory.
 	aModelClassName = <String>"
@@ -153,6 +195,24 @@ CMResourceLocator >> imagesPath [
 ]
 
 { #category : #'utilities - path - models' }
+CMResourceLocator >> imagesPath: shortModelName [
+	" Answer a <FileReference> corresponding to the path of the images directory of shortModelName.
+	Argument: shortModelName = <String>	"
+	
+	^ (self modelPath: shortModelName) asFileReference / 'images'.
+
+]
+
+{ #category : #'utilities - path - models' }
+CMResourceLocator >> inputsPath: aModelClassName [
+	" Answer a <FileReference> corresponding to the path of the current model 'inputs' directory.
+	aModelClassName = <String>"
+	
+	^ (self modelPath: aModelClassName) / 'inputs'.
+
+]
+
+{ #category : #'utilities - path - global' }
 CMResourceLocator >> mapsPath [
 	" Answer a FileReference corresponding to the path of the current path directory.
 	Argument: aModelClassName = <String>
@@ -204,6 +264,24 @@ CMResourceLocator >> modelsPath [
 
 ]
 
+{ #category : #'utilities - path - models' }
+CMResourceLocator >> oldVersionsPath: aModelClassName [
+	" Answer a <FileReference> corresponding to the path of the current model 'old_versions' directory.
+	aModelClassName = <String>"
+	
+	^ (self modelPath: aModelClassName) / 'old_versions'.
+
+]
+
+{ #category : #'utilities - path - models' }
+CMResourceLocator >> outputsPath: aModelClassName [
+	" Answer a <FileReference> corresponding to the path of the current model 'outputs' directory.
+	aModelClassName = <String>"
+	
+	^ (self modelPath: aModelClassName) / 'outputs'.
+
+]
+
 { #category : #'utilities - csv' }
 CMResourceLocator >> readCsv: filename [
 	"
@@ -235,7 +313,7 @@ The file name is just a string containing the name of the file (with or without 
 		ifEmpty: [ fileName := file , '.csv' ]
 		ifNotEmpty: [ fileName := file ].	
 	^ self
-		readMatrix: ((self dataPath: modelName) / fileName) fullName
+		readMatrix: ((self inputsPath: modelName) / fileName) fullName
 		sep: DataSaver_Asci separator
 ]
 
@@ -294,7 +372,7 @@ CMResourceLocator >> videoPath: aModelClassName [
 
 ]
 
-{ #category : #'utilities - path' }
+{ #category : #'utilities - path - global' }
 CMResourceLocator >> workingDirectory [
 	" Answer a <String> representing the current working directory "
 	

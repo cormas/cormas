@@ -22,15 +22,6 @@ CMResourceCreator >> animationsPath [
 ]
 
 { #category : #'utilities - path - models' }
-CMResourceCreator >> dataPath: aModelClassName [
-	" Answer a <FileReference> corresponding to the path of the current model 'data' directory.
-	aModelClassName = <String>"
-	
-	^ (super dataPath: aModelClassName) ensureCreateDirectory.
-
-]
-
-{ #category : #'utilities - path - models' }
 CMResourceCreator >> dumpPath: aModelClassName [
 	" Answer a <FileReference> corresponding to the path of the current model 'dump' directory.
 	aModelClassName = <String>"
