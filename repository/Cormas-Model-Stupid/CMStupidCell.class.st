@@ -25,6 +25,18 @@ CMStupidCell class >> maxFoodProductionRate: aFloat [
 ]
 
 { #category : #accessing }
+CMStupidCell >> asString [
+	" Private - See superimplementor's comment "
+
+	^ String streamContents: [ : stream |
+		stream 
+			<< super asString;
+			cr;
+			<< 'food: ';
+			<< food asString ]
+]
+
+{ #category : #accessing }
 CMStupidCell >> food [
 	^ food ifNil: [ food :=  0.1]
 ]

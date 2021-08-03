@@ -154,7 +154,7 @@ CMR3SpaceView >> configureLayoutOn: aRSGroup [
 CMR3SpaceView >> configurePopUpOn: theCellViews [
 
 	| popUp |
-	popUp := RSPopup text: [ : aCMEntity | aCMEntity asPopupText ].
+	popUp := RSPopup text: [ : aCMEntity | aCMEntity asString ].
 	theCellViews
 		@ popUp;
 		when: RSMouseLeftClick do: [ : aRSMouseClick | aRSMouseClick shape model inspect ].

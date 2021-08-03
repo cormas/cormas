@@ -378,12 +378,3 @@ CMResourceLocator >> workingDirectory [
 	
 	^ self class workingDirectory
 ]
-
-{ #category : #'utilities - path - models' }
-CMResourceLocator >> xmlPath: aModelClassName [
-	" Answer a <FileReference> corresponding to the path of the current model 'xml' directory.
-	aModelClassName = <String>"
-	
-	^ (self modelPath: aModelClassName) asFileReference / 'xml'.
-
-]

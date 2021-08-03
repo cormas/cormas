@@ -17,6 +17,17 @@ CMSpatialEntityCell class >> isCellularAutomatonClass [
 	^ true
 ]
 
+{ #category : #converting }
+CMSpatialEntityCell >> asString [
+	" Private - See superimplementor's comment "
+
+	^ String streamContents: [ : stream |
+		stream 
+			<< 'State: ';
+			<< self state asString ]
+	
+]
+
 { #category : #accessing }
 CMSpatialEntityCell >> bufferState [
 	^ bufferState

@@ -101,11 +101,13 @@ CMDemoAggregatesPlot class >> tree_type [
 ]
 
 { #category : #converting }
-CMDemoAggregatesPlot >> asPopupText [
-	" Answer a <String> with the receiver's details "
+CMDemoAggregatesPlot >> asString [
+	" Private - See superimplementor's comment "
 
 	^ String streamContents: [ : stream |
 		stream 
+			<< super asString;
+			cr;
 			<< 'tree: ';
 			<< tree asString ]
 ]
