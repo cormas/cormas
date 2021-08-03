@@ -32,6 +32,24 @@ CMModel2ProjectMigrator class >> migrateModels [
 			moveProjects ]
 ]
 
+{ #category : #defaults }
+CMModel2ProjectMigrator class >> resourceDirectoryNames [
+	" Answer a <Collection> with the names of subdirectories of a CORMAS project "
+
+	^ #(
+		'animations'
+		'diagrams' 
+		'doc' 
+		'dumps' 
+		'images'
+		'inputs'
+		'maps'
+		'old_versions'
+		'outputs'
+		'video'
+		)
+]
+
 { #category : #building }
 CMModel2ProjectMigrator >> buildForModel: aCMProjectModel [
 	" Creates a CORMAS project file, answer a <FileReference> to the new created project "
@@ -245,18 +263,7 @@ CMModel2ProjectMigrator >> outputDirectory [
 CMModel2ProjectMigrator >> resourceDirectoryNames [
 	" Answer a <Collection> with the names of subdirectories of a CORMAS project "
 
-	^ #(
-		'animations'
-		'diagrams' 
-		'doc' 
-		'dumps' 
-		'images'
-		'inputs'
-		'maps'
-		'old_versions'
-		'outputs'
-		'video'
-		)
+	^ self class resourceDirectoryNames
 ]
 
 { #category : #defaults }
