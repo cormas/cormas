@@ -24,46 +24,17 @@ Class {
 	#name : #Cormas,
 	#superclass : #Object,
 	#instVars : [
-		'reducedCommandsBar',
 		'modelName',
-		'eraseLinks',
-		'obsWin',
-		'visualStateWin',
-		'definePatchWin',
-		'defineCSEWin',
-		'defineEntityWin',
-		'defineObjectWin',
-		'defineCommWin',
-		'displayCommWin',
-		'defineChartsWin',
-		'displayChartsWin',
-		'stepCounter',
 		'cycle',
 		'cormasModel',
 		'cormasModelClass',
-		'defineObservation',
-		'listPassiveEntities',
-		'listSpatialEntities',
-		'listSocialEntities',
 		'process',
-		'displaySimNumber',
-		'mainWin',
-		'simulationWin',
 		'modelNameField',
-		'versionField',
 		'exportPlaybackLog',
 		'useExternalVisualization',
 		'xmlModel',
-		'simManager',
-		'menuHolder',
 		'useOnlyOneRB',
-		'browser',
-		'distributionControl',
-		'isChangesDelayed',
-		'subcanvasSim',
-		'mainBuilder',
-		'simName',
-		'simNum'
+		'isChangesDelayed'
 	],
 	#classInstVars : [
 		'simpleRand',
@@ -73,35 +44,6 @@ Class {
 	],
 	#category : #'Cormas-Core-Legacy'
 }
-
-{ #category : #version }
-Cormas class >> aboutCormas [
-	| text dialog width |
-	text := Cormas systemInformationString withCRs.
-	width := 0.
-	text
-		linesDo: [ :l | 
-			width := width
-				max: (Smalltalk ui theme textFont widthOfStringOrText: l) ].
-	dialog := LongMessageDialogWindow new entryText: text.
-	dialog iconMorph image:
-		(self iconNamed: #pharoIcon).
-	dialog title: 'About Cormas'.
-	dialog open.
-	dialog textMorph
-		minWidth: 20;
-		minHeight: 20.
-	dialog width: (width + 120 min: Display width - 50).
-	dialog position: 25 @ 25
-]
-
-{ #category : #'utilities - files' }
-Cormas class >> addOnsPath [
-	" Answer a <FileReference> corresponding to the path of 'Add-ons' directory "
-
-	^ self application addOnsPath
-
-]
 
 { #category : #'utilities - code management' }
 Cormas class >> allTerminalClassesOf: aClass [
@@ -128,75 +70,6 @@ Cormas class >> arrayOrNilFrom: anElementOrArray [
 	"return an array or a nil for the argument"
 	
 	^anElementOrArray cormasHelper arrayOrNilFrom: anElementOrArray
-]
-
-{ #category : #'util_strings' }
-Cormas class >> askUserArgumentsForMethod: aMethodAsString [
-	"open a Dialog to set the arguments values. Return a collection of values if many arguments or just the value entered otherwise"
-	
-	| arg aV nbArguments |
-	arg := OrderedCollection new.
-	nbArguments := (aMethodAsString select: [:ch | ch = $:]) size.
-	nbArguments
-		timesRepeat:
-			[aV := self current
-				request:
-					(arg isEmpty
-						ifTrue:
-							['Enter an argument for this method
-if the value is a symbol, start with #']
-						ifFalse: ['Enter the next argument']).
-			aV = '' ifTrue: [^nil].
-			aV := Cormas stringAsObjectType: aV.
-			arg add: aV].	"nbArguments = 1 ifTrue:[^aV]."
-	^arg asArray
-]
-
-{ #category : #'util_strings' }
-Cormas class >> askUserArgumentsForMethod: aMethodAsString classesAsArgForModel: aCormasModel [
-	
-	| arg aV |
-	arg := OrderedCollection new.
-	(aMethodAsString select: [:ch | ch = $:]) size
-		timesRepeat:
-			[aV := self current
-				request:
-					(arg isEmpty
-						ifTrue:
-							['Enter an argument for this method
-if the value is a symbol, start with #']
-						ifFalse: ['Enter the next argument']).
-			aV = '' ifTrue: [^nil].
-			aV := Cormas stringAsObjectType: aV.
-			((aCormasModel allEntityClasses collect: [:c | c name]) includes: aV asSymbol)
-				ifTrue:
-					[(self current confirm: 'Do you mean the Class ' , aV , ' ?')
-						ifTrue: [aV := aV asSymbol class]].
-			arg add: aV].
-	^arg asArray
-]
-
-{ #category : #'util_strings' }
-Cormas class >> askUserArgumentsForMethod_Pierre: aMethodAsString [
-	"open a Dialog to set the arguments values. Return a collection of values if many arguments or just the value entered otherwise"
-	
-	| arg aV nbArguments |
-	arg := OrderedCollection new.
-	nbArguments := (aMethodAsString select: [:ch | ch = $:]) size.
-	nbArguments
-		timesRepeat:
-			[aV := self current
-				request:
-					(arg isEmpty
-						ifTrue:
-							['Enter an argument for this method
-if the value is a symbol, start with #']
-						ifFalse: ['Enter the next argument']).
-			aV = '' ifTrue: [^nil].
-			aV := Cormas stringAsObjectType: aV.
-			arg add: aV].
-	nbArguments = 1 ifTrue: [^aV].
-	^arg asArray
 ]
 
 { #category : #'runtime mode accessing' }
@@ -272,19 +145,6 @@ Cormas class >> commentOfMethod: sel class: aClass [
 		ifFalse: [^thisComment first]
 ]
 
-{ #category : #version }
-Cormas class >> contributors [
-	^ 'Thank you to the following contributors: \' , String cr
-		, self developerNames
-]
-
-{ #category : #'utilities - files' }
-Cormas class >> cormasPath [
-	" Answer a <FileReference> corresponding to the path of Cormas directory. "
- 
-	^ self application cormasPath
-]
-
 { #category : #'utilities - mathematics' }
 Cormas class >> count: element into: aCollection [
 	"Purpose: Return a value indicating the number of occurrence of 'element' from aCollection. 
@@ -326,53 +186,12 @@ Cormas class >> defaultServerPort [
 	^4242
 ]
 
-{ #category : #version }
-Cormas class >> developerNames [
-^ 'Innocent Bakam
-François Bousquet
-Christophe Le Page
-Pierre Bommel
-Alassane Bah
-Nicolas Bécu
-Emmanuel Lieurain
-Jean-Christophe Soulié
-Paul Guyot
-Jean François Lefevre'
-]
-
-{ #category : #'util_parcels' }
-Cormas class >> displayCormasParcelsOnly [
-	"Write the name of the loaded parcels on the Transcript.
-		Cormas displayCormasParcelsOnly"
-	
-	self CormasParcelsOnly do: [:p | Cormas println: p]
-]
-
-{ #category : #version }
-Cormas class >> downloadString [
-^ 
-'Visit the Cormas web site :  
-      in French = http://cormas.cirad.fr
-      in English = http://cormas.cirad.fr/indexeng.htm
-'
-
-]
-
 { #category : #'utilities - string' }
 Cormas class >> dropBlanksFromString: aString [
 	"Purpose: Returns a copy of aString without any space characters
 Example: Cormas dropBlanksFromString: 'Hello World    ' => 'HelloWorld'"
 
 	^ aString copyWithRegex: ' ' matchesReplacedWith: ''
-]
-
-{ #category : #'utilities - files' }
-Cormas class >> dumpPath: aModelClassName [
-	" Answer a <FileReference> corresponding to the path of the current model 'dump' directory.
-	aModelClassName = <String>"
-
-	^ self application dumpPath: aModelClassName
-
 ]
 
 { #category : #'utilities - code management' }
@@ -548,36 +367,6 @@ Cormas class >> kernelClassNames [
 	^ collec
 ]
 
-{ #category : #version }
-Cormas class >> licenseString [
-	^ self licenseStringTemplate format: (Array with: Date today year asString)
-]
-
-{ #category : #version }
-Cormas class >> licenseStringTemplate [
-	^ 'LICENSE
-	
-Licensed under the MIT License.
-
-Copyright (c) 1996-{1} CIRAD - Green Research Unit, and CORMAS Contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this
-software and associated documentation files (the "Software"), to deal in the Software
-without restriction, including without limitation the rights to use, copy, modify, merge,
-publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons
-to whom the Software is furnished to do so, subject to the following conditions: The
-above copyright notice and this permission notice shall be included in all copies or
-substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
-OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-'
-]
-
 { #category : #'utilities - mathematics' }
 Cormas class >> linearRegression: data [
 	"Purpose: Return an array containing a, b, and correlation coefficient, that are the parameters of the linear 	regression of a set of data, where y = a + bx.
@@ -621,27 +410,6 @@ Example: Cormas linearRegression: #(#(1 2) #(5 2) #(5 4) #(10 9) #(1 1) #(2 2)) 
 		with: a asFloat
 		with: b asFloat
 		with: correlationCoefficient asFloat
-]
-
-{ #category : #'util_files' }
-Cormas class >> listing [
-	
-	| bufferText stream |
-	bufferText := Text new.
-	bufferText := bufferText , 'Attributs\' withCRs.
-	self instVarNames
-		do: [:iv | bufferText := bufferText , iv asString , '    '].
-	bufferText := bufferText , '\\\Methodes' withCRs.
-	self organization categories
-		do:
-			[:c | 
-			bufferText := bufferText , '\\' , c asString , '\' withCRs.
-			(self organization listAtCategoryNamed: c)
-				do: [:m | bufferText := bufferText , m asString , '    ']].
-	stream := ((Cormas modelPath: self name)
-		construct: self class name , '.list') asFilename writeStream.
-	stream nextPutAll: bufferText withCRs.
-	stream close
 ]
 
 { #category : #'printing - documentation' }
@@ -720,20 +488,6 @@ Example: Cormas lowerQuartile: #(2 4 7 -20 22 -1 0 -1 7 15 8 4 -4 11 11 12 3 12 
 		ifTrue: [ ^ 0 ].
 	sortedColl := aCollectionOfNumbers asSortedCollection: [ :a :b | a < b ].
 	^ sortedColl at: (0.25 * (sortedColl size + 1)) rounded
-]
-
-{ #category : #'utilities - files' }
-Cormas class >> mapsPath: aModelClassName [
-	"Purpose: Returns a Filename corresponding to the path of the current model 'maps' directory.
-	Argument: aModelClassName = <String>
-	Example: (Cormas mapsPath: #FireModel) / 'zone.env' 	"
-
-	| modelPath mapsPath |
-	modelPath := self modelPath: aModelClassName.
-	mapsPath := modelPath / 'maps'.
-	mapsPath exists
-		ifFalse: [ mapsPath createDirectory ].
-	^ mapsPath
 ]
 
 { #category : #'utilities - mathematics' }
@@ -834,22 +588,6 @@ ex:		Cormas mode: #( 1 1 1 0 2 6 7 3 3 3) => #(1 3)"
                     [bestFrequency := count.
                     winners := OrderedCollection with: aNb]].
     ^winners asSet asArray
-]
-
-{ #category : #'utilities - files' }
-Cormas class >> modelPath: aModelClassName [
-	"Purpose: Returns a Filename corresponding to the path of the current model directory.
-	Argument: aModelClassName = <String>
-	Example: (Cormas modelPath: #FireModel) construct: 'test.csv'"
-
-	^ self application modelPath: aModelClassName
-]
-
-{ #category : #'utilities - files' }
-Cormas class >> modelsPath [
-	" Answer a <FileReference> corresponding to the path of 'Models' directory "
- 
-	^ self application modelsPath
 ]
 
 { #category : #'utilities - mathematics' }
@@ -1093,16 +831,6 @@ Cormas class >> recordMethod: sel category: cat class: aClass [
 			(header string , '& [' , aClass name asString , ' >> ' , cat asString , ']')
 				asSymbol
 		value: thisComment
-]
-
-{ #category : #'user interface' }
-Cormas class >> refresh: aSpaceInterface [
-	"force the mainWindow of aSpaceInterface (spaceView) to refresh its display when the simulation runs in distributedmode.
-Fixes problem of refreshing in distributed mode (without this instruction, the user needs to move his mouse over the spaceview for the display to refresh"
-	
-	aSpaceInterface mainWindow
-		ifNotNil:
-			[:w | current isDistributed ifTrue: [w displayPendingInvalidation]]
 ]
 
 { #category : #'util_files' }
@@ -1561,21 +1289,6 @@ Cormas class >> sum: aCollectionOfNumbers [
 	^ aCollectionOfNumbers sum
 ]
 
-{ #category : #version }
-Cormas class >> systemInformationString [
-
-	^ String streamContents: [ : stream |
-		stream 
-			cr;
-			nextPutAll: self currentVersion;
-			cr; cr;
-			nextPutAll: self licenseString;
-			cr; cr;
-			nextPutAll: self downloadString;
-			cr; cr;
-			nextPutAll: self contributors ]
-]
-
 { #category : #'utilities - string' }
 Cormas class >> textAsList: aText [
 	"Purpose: Returns a list of strings corresponding to each line of a given text.
@@ -1731,15 +1444,6 @@ Example: Cormas variance: #( 1 2 3)		=> 0.666667  "
 		/ aCollectionOfNumbers size) asFloat
 ]
 
-{ #category : #'utilities - files' }
-Cormas class >> videoPath: aModelClassName [
-	" Answer a <FileReference> corresponding to the path of the current model 'dump' directory.
-	aModelClassName = <String>"
-
-	^ self application videoPath: aModelClassName
-
-]
-
 { #category : #'user messages' }
 Cormas >> alert: aString [
 	
@@ -1808,45 +1512,6 @@ Cormas >> cycle [
 		ifFalse: [cycle]
 ]
 
-{ #category : #aspects }
-Cormas >> displaySimNumber [
-	"This method was generated by UIDefiner.  Any edits made here
-	may be lost whenever methods are automatically defined.  The
-	initialization provided below may have been preempted by an
-	initialize method."
-	
-	^displaySimNumber isNil
-		ifTrue: [displaySimNumber := String new asValueHolder]
-		ifFalse: [displaySimNumber]
-]
-
-{ #category : #aspects }
-Cormas >> eraseLinks [
-	
-	^eraseLinks isNil
-		ifTrue: [eraseLinks := true]
-		ifFalse: [eraseLinks]
-]
-
-{ #category : #aspects }
-Cormas >> eraseLinks: aBool [
-	
-	eraseLinks := aBool
-]
-
-{ #category : #'interface actions' }
-Cormas >> expandMainWindow [
-	"This stub method was generated by UIDefiner"
-	
-	^self
-]
-
-{ #category : #'main menu' }
-Cormas >> exportCormas [
-	
-	Cormas export
-]
-
 { #category : #accessing }
 Cormas >> exportPlaybackLog [
 	
@@ -1894,9 +1559,9 @@ Cormas >> inheritedMethodsFrom: aClass category: aCat [
 	^aList
 ]
 
-{ #category : #'initialize-release' }
+{ #category : #initialization }
 Cormas >> initialize [
-	
+
 	super initialize.
 	self class current: self.
 	"self menuHolder: self class mainMenu asValue.
@@ -1908,7 +1573,7 @@ Cormas >> initialize [
 			#listEntitesSpatialesChanged to: self.
 	self listPassiveEntities selectionIndexHolder onChangeSend:
 			#listEntitesPassivesChanged to: self."
-	cycle isNil ifFalse: [cycle:= NewValueHolder value: 0]
+	cycle ifNotNil: [ cycle := NewValueHolder value: 0 ]
 ]
 
 { #category : #accessing }
@@ -1921,21 +1586,7 @@ Cormas >> isChangesDelayed [
 Cormas >> isChangesDelayed: aBoolean [
 	
 	isChangesDelayed := aBoolean.
-	aBoolean
-		ifTrue:
-			[((self menuHolder value atNameKey: #Tools) submenu atNameKey:
-					#isChangesDelayed) beOn]
-		ifFalse:
-			[((self menuHolder value atNameKey: #Tools) submenu atNameKey:
-					#isChangesDelayed) beOff]
-]
 
-{ #category : #remoting }
-Cormas >> isDistributed [
-	
-	^distributionControl isNil
-		ifTrue: [false]
-		ifFalse: [distributionControl brokerStarted]
 ]
 
 { #category : #'model saving&loading' }
@@ -1987,30 +1638,6 @@ Cormas >> logMovementOf: anAgentLocation from: srcSpatialEntity to: dstSpatialEn
 				to: dstSpatialEntity]
 ]
 
-{ #category : #accessing }
-Cormas >> mainBuilder [
-	
-	^mainBuilder
-]
-
-{ #category : #accessing }
-Cormas >> mainBuilder: anObject [
-	
-	mainBuilder := anObject
-]
-
-{ #category : #accessing }
-Cormas >> mainWin [
-	
-	^mainWin
-]
-
-{ #category : #accessing }
-Cormas >> mainWin: anObject [
-	
-	mainWin := anObject
-]
-
 { #category : #aspects }
 Cormas >> modelName [
 	"This method was generated by UIDefiner.  Any edits made here
@@ -2050,17 +1677,6 @@ Cormas >> modifyPassiveEntityClassAttributes [
 ]
 
 { #category : #'model entities' }
-Cormas >> modifyPassiveEntityPoVSetter [
-	
-	| aClass |
-	aClass := self getSelectedEntityClassType: 'Passive'.
-	aClass isNil
-		ifFalse:
-			[self openPovSetterGUI.
-			self visualStateWin controller model majorKeys selection: aClass name]
-]
-
-{ #category : #'model entities' }
 Cormas >> modifySchedulerAttributes [
 	
 	self editAttributesClass: self cormasModelClass
@@ -2075,45 +1691,11 @@ Cormas >> modifySocialEntityClassAttributes [
 ]
 
 { #category : #'model entities' }
-Cormas >> modifySocialEntityPoVSetter [
-	
-	| aClass |
-	aClass := self getSelectedEntityClassType: 'Social'.
-	aClass isNil
-		ifFalse:
-			[self openPovSetterGUI.
-			self visualStateWin controller model majorKeys selection: aClass name]
-]
-
-{ #category : #'model entities' }
 Cormas >> modifySpatialEntityClassAttributes [
 	
 	| aClass |
 	aClass := self getSelectedEntityClassType: 'Spatial'.
 	aClass isNil ifFalse: [self editAttributesClass: aClass]
-]
-
-{ #category : #'model entities' }
-Cormas >> modifySpatialEntityPoVSetter [
-	
-	| aClass |
-	aClass := self getSelectedEntityClassType: 'Spatial'.
-	aClass isNil
-		ifFalse:
-			[self openPovSetterGUI.
-			self visualStateWin controller model majorKeys selection: aClass name]
-]
-
-{ #category : #accessing }
-Cormas >> obsWin [
-	
-	^obsWin
-]
-
-{ #category : #accessing }
-Cormas >> obsWin: x [
-	
-	obsWin := x
 ]
 
 { #category : #'model scheduling' }
@@ -2164,28 +1746,6 @@ Cormas >> reduceWindowToMinSize [
 	"set the window size to its min"
 	
 	
-]
-
-{ #category : #accessing }
-Cormas >> reducedCommandsBar [
-	
-	^reducedCommandsBar
-]
-
-{ #category : #accessing }
-Cormas >> reducedCommandsBar: x [
-	
-	reducedCommandsBar := x
-]
-
-{ #category : #'initialize-release' }
-Cormas >> release [
-	
-	super release.	"Clean up the xmlModel"
-	xmlModel isNil
-		ifFalse:
-			[xmlModel release.
-			xmlModel := nil]
 ]
 
 { #category : #simulation }
@@ -2257,53 +1817,6 @@ Cormas >> resetSimulation [
 	self stepCounter value: 0
 ]
 
-{ #category : #'interface actions' }
-Cormas >> resizeWindowToMax [
-	"set the window size to its max"
-	
-	| win orig ext hg |
-	win := self mainBuilder window.
-	orig := win globalOrigin.
-	hg := (self mainBuilder componentAt: #subcanvasSim) bounds height.
-	ext := win bounds extent + (0 @ hg).
-	win displayBox: (orig extent: ext)
-]
-
-{ #category : #'interface actions' }
-Cormas >> resizeWindowToMin [
-	"set the window size to its min"
-	
-	| win orig ext subC |
-	subC := self mainBuilder componentAt: #subcanvasSim.
-	subC bounds extent.
-	win := self mainBuilder window.
-	orig := win globalOrigin.
-	ext := win bounds extent
-		- (0 @ (self mainBuilder componentAt: #subcanvasSim) bounds height).
-	win displayBox: (orig extent: ext rounded).	"m'emmerde ce bandeau qui devient blanc l√† haut..."
-	self mainWin label:
-			'Cormas [                                                                                                                                                                                                                       ]'.
-	self mainWin label: 'Cormas [' , self cormasModelClass name , ']'.	"win moveTo: 44@44. win moveTo: orig."
-	win
-		display;
-		refresh
-]
-
-{ #category : #simulation }
-Cormas >> run [
-	"Run the current  simulation. Threaded process"
-self halt.
-	self cormasModelClass isNil
-		ifTrue: [ ^ nil ].
-	self cormasModel activeControl isNil
-		ifTrue: [ ^ self alert_NoDynamic ].
-	self stepCounter value = self cycle value
-		ifTrue: [ ^ nil ].	"for old cormas versions"
-	(self cormasModel activeControl asString tokensBasedOn: $:) size = 3
-		ifTrue: [ ^ self runNSimulations_old ].	"*******  RUN  threaded *******"
-	self simManager runSimulationThreaded
-]
-
 { #category : #simulation }
 Cormas >> runBack [
 	"Perform a run back to 0 using BOS file"
@@ -2333,32 +1846,6 @@ Cormas >> runButtonRun [
 	
 	(self builder componentAt: #runButton) isNil
 		ifFalse: [(self builder componentAt: #runButton) label: Cormas runIcon]
-]
-
-{ #category : #simulation }
-Cormas >> runNSimulations_old [
-	"Deprecated. Just use for the old 'run: t times: n' method"
-	| nbOfSim j test i |
-self halt.
-	nbOfSim := (self request: self numberOfSimul initialAnswer: '1') asNumber.
-	j := 1.
-	nbOfSim
-		timesRepeat: [ self initSimulation.
-			i := self stepCounter value.
-			test := 'ok'.
-			[ i <= cycle value and: [ test isNil not ] ]
-				whileTrue: [ test := self cormasModel perform: self cormasModel activeControl with: i with: j.
-					self cormasModelClass commClasses isEmpty
-						ifFalse: [ self cormasModel channel flush ].
-					self obsWin notNil
-						ifTrue: [ self eraseLinks
-								ifTrue: [ self obsWin observateur modeleObs actionClear ] ].
-					self stepCounter value: i.
-					i := i + 1 ].
-			test isNil
-				ifTrue:
-					[ self cormasModel perform: self cormasModel activeControl with: cycle value with: j ].
-			j := j + 1 ]
 ]
 
 { #category : #'model saving&loading EV' }
@@ -2424,50 +1911,6 @@ Cormas >> simManager [
 	^self cormasModel simManager
 ]
 
-{ #category : #aspects }
-Cormas >> simName [
-	"This method was generated by UIDefiner.  Any edits made here
-	may be lost whenever methods are automatically defined.  The
-	initialization provided below may have been preempted by an
-	initialize method."
-	
-	^simName isNil
-		ifTrue: [simName := String new asValue]
-		ifFalse: [simName]
-]
-
-{ #category : #aspects }
-Cormas >> simNum [
-	"This method was generated by UIDefiner.  Any edits made here
-	may be lost whenever methods are automatically defined.  The
-	initialization provided below may have been preempted by an
-	initialize method."
-	
-	^simNum isNil
-		ifTrue: [simNum := String new asValue]
-		ifFalse: [simNum]
-]
-
-{ #category : #accessing }
-Cormas >> simSubcanvas [
-	" subcanvas := self widgetAt: #subcanvasSim. "
-	
-	^(self mainBuilder componentAt: #subcanvasSim) widget
-]
-
-{ #category : #accessing }
-Cormas >> simulationWin [
-	self flag:#TODO.
-	"On ne devrait pas conna√Ætre cette fen√™tre (on est un mod√®le ! et en plus on dispose de cette fen√™tre par self mainWindow)"
-	^ simulationWin
-]
-
-{ #category : #accessing }
-Cormas >> simulationWin: anObject [
-	
-	simulationWin := anObject
-]
-
 { #category : #accessing }
 Cormas >> spaceModel [
 	
@@ -2479,18 +1922,6 @@ Cormas >> stepBack [
 	"Perform a step back using BOS file"
 self halt.
 	^ self simManager stepBack
-]
-
-{ #category : #accessing }
-Cormas >> subcanvasSim [
-	"This method was generated by UIDefiner.  Any edits made here
-	may be lost whenever methods are automatically defined.  The
-	initialization provided below may have been preempted by an
-	initialize method."
-	
-	^subcanvasSim isNil
-		ifTrue: [subcanvasSim := self]
-		ifFalse: [subcanvasSim]
 ]
 
 { #category : #'model saving&loading POV' }
@@ -2537,18 +1968,6 @@ Cormas >> useOnlyOneRB: aBoolean [
 		ifFalse:
 			[((self menuHolder value atNameKey: #Tools) submenu atNameKey:
 					#useOnlyOneRB) beOff]
-]
-
-{ #category : #accessing }
-Cormas >> visualStateWin [
-	
-	^visualStateWin
-]
-
-{ #category : #accessing }
-Cormas >> visualStateWin: x [
-	
-	visualStateWin := x
 ]
 
 { #category : #'user messages' }

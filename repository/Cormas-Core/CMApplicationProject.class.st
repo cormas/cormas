@@ -53,6 +53,12 @@ CMApplicationProject class >> baseDirectory [
 	^ CMApplicationPreferences settingBaseLocation asFileReference
 ]
 
+{ #category : #about }
+CMApplicationProject class >> contributors [
+	^ 'Thank you to the following contributors: \' , String cr
+		, self developerNames
+]
+
 { #category : #accessing }
 CMApplicationProject class >> createUserDirectories [
 	" Create directories for storing CORMAS files in this system "
@@ -60,6 +66,37 @@ CMApplicationProject class >> createUserDirectories [
 	self baseDirectory ensureCreateDirectory.
 	#(#demosPath #userProjectsPath #preferencesPath) 
 		do: [ : pathSym | (CMResourceLocator perform: pathSym) ensureCreateDirectory ]
+]
+
+{ #category : #about }
+CMApplicationProject class >> currentVersion [
+		
+	^ '0.1'
+]
+
+{ #category : #about }
+CMApplicationProject class >> developerNames [
+^ 'Innocent Bakam
+François Bousquet
+Christophe Le Page
+Pierre Bommel
+Alassane Bah
+Nicolas Bécu
+Emmanuel Lieurain
+Jean-Christophe Soulié
+Paul Guyot
+Jean François Lefevre
+Hernán Morales Durand'
+]
+
+{ #category : #about }
+CMApplicationProject class >> downloadString [
+^ 
+'Visit the Cormas web site :  
+      in French = http://cormas.cirad.fr
+      in English = http://cormas.cirad.fr/indexeng.htm
+'
+
 ]
 
 { #category : #accessing }
@@ -86,6 +123,36 @@ CMApplicationProject class >> hasUserProjects [
 
 ]
 
+{ #category : #about }
+CMApplicationProject class >> licenseString [
+	^ self licenseStringTemplate format: (Array with: Date today year asString)
+]
+
+{ #category : #about }
+CMApplicationProject class >> licenseStringTemplate [
+	^ 'LICENSE
+	
+Licensed under the MIT License.
+
+Copyright (c) 1996-{1} CIRAD - Green Research Unit, and CORMAS Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this
+software and associated documentation files (the "Software"), to deal in the Software
+without restriction, including without limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons
+to whom the Software is furnished to do so, subject to the following conditions: The
+above copyright notice and this permission notice shall be included in all copies or
+substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
+OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+'
+]
+
 { #category : #accessing }
 CMApplicationProject class >> removeUserDirectories [
 
@@ -103,6 +170,21 @@ CMApplicationProject class >> removeUserDirectoriesNoConfirmation [
 		ifFalse: [ ^ self ].
 	self baseDirectory deleteAll.
 
+]
+
+{ #category : #about }
+CMApplicationProject class >> systemInformationString [
+
+	^ String streamContents: [ : stream |
+		stream 
+			cr;
+			nextPutAll: self currentVersion;
+			cr; cr;
+			nextPutAll: self licenseString;
+			cr; cr;
+			nextPutAll: self downloadString;
+			cr; cr;
+			nextPutAll: self contributors ]
 ]
 
 { #category : #accessing }
