@@ -1032,9 +1032,3 @@ CMSimManager >> undoList: anObject [
 	
 	undoList := anObject
 ]
-
-{ #category : #ui }
-CMSimManager >> updateCormasInterface [
-	
-	self cormas displaySimNumber value: self simNumero printString , '/1'
-]
