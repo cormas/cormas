@@ -253,12 +253,16 @@ CMProjectManager >> doPostCloseActions [
 	" Private - See superimplementor's comment "
 
 	self querySaveProject.
-
 	Cursor wait showWhile: [
+		| icePackage cormasRepo |
+		cormasRepo := IceLibgitRepository registry detect: [ : repo | repo name = 'cormas' ].
+		icePackage := IcePackage named: self cormasModelClass package name repository: cormasRepo.
 		self announcer unsubscribe: self currentProject.
 		self fsm handleEvent: #actionClose.
 		self deleteProject.	
-		self cleanEnvironment ].
+		self cleanEnvironment.
+		(RPackageOrganizer default includesPackageNamed: icePackage package)
+			ifTrue: [ self reloadProject: icePackage repository: cormasRepo ] ].
 ]
 
 { #category : #callbacks }
@@ -362,6 +366,21 @@ CMProjectManager >> querySaveProject [
 	self currentProject ifNil:[ ^ false ]. 
 	(self currentProject requiresSaving and: [ self confirm: self translator tQuerySaveProject ])
 		ifTrue: [ self saveProject ].
+]
+
+{ #category : #callbacks }
+CMProjectManager >> reloadProject: icePackage repository: anIceRepository [
+
+	IceTipStandardAction new 
+		repository: anIceRepository;
+		message: ('Loading package {1}' format: { icePackage name });
+		onSuccessRepositoryModified;
+		execute: [ 
+			Iceberg announcer
+				suspendAllForRepository: anIceRepository
+				while: [ icePackage load ] ].
+	Iceberg announcer announce: (IceRepositoryModified for: anIceRepository)
+
 ]
 
 { #category : #accessing }
