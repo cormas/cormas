@@ -92,35 +92,41 @@ CMReHabParkManager >> getAccessDecisionsFromFileRound: anInteger [
 
 { #category : #control }
 CMReHabParkManager >> getAccessDecisionsFromPlayersRound: anInteger [
+
 	| npString ids zone collec |
-	npString := Dialog request: 'Parc manager decisions\(Enter id numbers of zones to be protected, separated by space) ' withCRs initialAnswer: ''.
-	ids := (npString tokensBasedOn: Character space)
-				collect: [:s | s asNumber].
+	npString := UIManager default
+		            request: 'Parc manager decisions\(Enter id numbers of zones to be protected, separated by space) ' withCRs
+		            initialAnswer: ''.
+
+	ids := (npString findTokens: Character space) collect: #asNumber.
 	"ids size > 3 ifTrue: [Dialog warn: '3 zones max!'. ^self getAccessDecisionsFromPlayersRound: anInteger]."
 	collec := Set new.
-	ids do:
-			[:n |
-			zone := self zones detect: [:c | c id = n] ifNone: [nil].
-			zone isNil
-				ifFalse:
-					[zone access: false. collec add: zone]].
-	self logBannedSpaceUnits: collec round: anInteger.
+	ids do: [ :n | 
+		zone := self zones detect: [ :c | c id = n ] ifNone: [ nil ].
+		zone ifNotNil: [ 
+			zone access: false.
+			collec add: zone ] ].
+	self logBannedSpaceUnits: collec round: anInteger
 ]
 
 { #category : #log }
 CMReHabParkManager >> logBannedSpaceUnits: aSet round: anInteger [
-	| stream |
-	stream := self logFile appendStream.
-	stream nextPutAll: anInteger printString , '	'.
-	aSet do: [:aSU | stream nextPutAll: aSU id printString , ';'].
-	stream nextPutAll: '\' withCRs.
-	stream close
+
+	self logFile writeStreamDo: [ : stream | 
+		stream
+			nextPutAll: anInteger printString;
+			nextPutAll: '	'.
+		aSet do: [ :aSU | 
+			stream
+				nextPutAll: aSU id printString;
+				nextPutAll: ';' ].
+		stream nextPutAll: '\' withCRs ]
 ]
 
 { #category : #accessing }
 CMReHabParkManager >> logFile [
-	^logFile
-		ifNil: [logFile := CMReHabModel gameSession construct: 'bannedLocations.txt']
+	^ logFile
+		ifNil: [ logFile := 'bannedLocations.txt' asFileReference ]
 ]
 
 { #category : #accessing }
