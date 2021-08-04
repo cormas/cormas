@@ -9,12 +9,6 @@ Class {
 }
 
 { #category : #accessing }
-CMSpAboutWindow >> application [
-
-	^ CMSpApplication new
-]
-
-{ #category : #accessing }
 CMSpAboutWindow >> cormasClass [
 
 	^ cormasClass
@@ -38,13 +32,21 @@ CMSpAboutWindow >> createTextMorph [
 ]
 
 { #category : #initialization }
+CMSpAboutWindow >> initialize [
+
+	super initialize.
+	application := CMSpApplication new
+]
+
+{ #category : #initialization }
 CMSpAboutWindow >> initializePresenters [
 
-	self layout: (SpUnstyledBoxLayout newLeftToRight
+	self layout: (SpBoxLayout newLeftToRight
 			 add: #morphPresenter;
 			 yourself).
 	morphPresenter := self newMorph
 		                  morph: self createTextMorph;
+								addStyle: 'aboutMorph';
 		                  yourself
 ]
 

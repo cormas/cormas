@@ -533,7 +533,9 @@ CMSpecProjectWindow >> openEditSteps [
 CMSpecProjectWindow >> openHelpAboutThisModel [
 	" Open a window with description and help about the receiver "
 
-	(CMSpAboutWindow owner: self on: self cormasModelClass) openWithSpec
+	(CMSpAboutWindow 
+		owner: self spPresenter 
+		on: self cormasModelClass) openWithSpec
 			
 ]
 
@@ -631,6 +633,13 @@ CMSpecProjectWindow >> simWindow [
 { #category : #accessing }
 CMSpecProjectWindow >> simWindow: anObject [
 	simWindow := anObject
+]
+
+{ #category : #accessing }
+CMSpecProjectWindow >> spPresenter [
+	" This is used while migrating to Spec2, which needs presenters with an owner with SpApplication linked "
+
+	^ CMSpPresenter new
 ]
 
 { #category : #'submenu-help' }
