@@ -10,7 +10,7 @@ Class {
 	#instVars : [
 		'simWindow'
 	],
-	#category : #'Cormas-UI-Project'
+	#category : #'Cormas-UI-Spec1-Project'
 }
 
 { #category : #specs }
@@ -68,7 +68,7 @@ CMSpecProjectWindow >> appSettingsClass [
 CMSpecProjectWindow >> chartVisualizer [
 	" Answer a <Class> responsible to display a UI for charting "
 
-	^ self appSettingsClass chartVisualizer
+	^ self appSettingsClass settingChartViewer
 ]
 
 { #category : #private }
@@ -574,11 +574,9 @@ self alertMessage: 'No implemented yet'
 
 { #category : #callbacks }
 CMSpecProjectWindow >> openVizProbes [
-	| aModel |
-	aModel := self projectManager cormasModel.
-	aModel data isEmpty
-		ifTrue: [ ^ self alertMessage: 'No data to visualize' ].
-	self chartVisualizer openOn: aModel
+	" Private - Open a window with the chart visualizer configured for the receiver's application "
+
+	self chartVisualizer openOn: self projectManager cormasModel
 ]
 
 { #category : #callbacks }

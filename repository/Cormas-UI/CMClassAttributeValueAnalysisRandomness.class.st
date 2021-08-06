@@ -19,7 +19,7 @@ Class {
 		'repNb',
 		'randomTypeChoices'
 	],
-	#category : #'Cormas-UI-Attributes'
+	#category : #'Cormas-UI-Spec1-Attributes'
 }
 
 { #category : #controlling }

@@ -22,7 +22,7 @@ Class {
 		'getterAccessor',
 		'entityInstances'
 	],
-	#category : #'Cormas-UI-Attributes'
+	#category : #'Cormas-UI-Spec1-Attributes'
 }
 
 { #category : #new }

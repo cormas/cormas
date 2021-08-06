@@ -25,7 +25,7 @@ Class {
 		'classVarAddButton',
 		'classVarRemoveButton'
 	],
-	#category : #'Cormas-UI-Attributes'
+	#category : #'Cormas-UI-Spec1-Attributes'
 }
 
 { #category : #specs }

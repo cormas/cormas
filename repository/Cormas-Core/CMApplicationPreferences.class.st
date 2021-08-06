@@ -7,6 +7,7 @@ Class {
 	#superclass : #Object,
 	#classVars : [
 		'SettingBaseLocation',
+		'SettingChartViewer',
 		'SettingProjectNotifications',
 		'SettingSpaceViewer',
 		'SettingWaitLimit',
@@ -16,12 +17,22 @@ Class {
 }
 
 { #category : #settings }
-CMApplicationPreferences class >> availableSettingSpaceViewer [
-	
+CMApplicationPreferences class >> availableSettingChartViewer [
+	" Answer a <Collection> with classes representing available Chart Viewers implementations "
+
 	^ { 
-		Smalltalk at: #CMR2SpaceView .
+		Smalltalk at: #CMSpChartViewer .
+	 	Smalltalk at: #CMR2SimpleChart
+		}.
+]
+
+{ #category : #settings }
+CMApplicationPreferences class >> availableSettingSpaceViewer [
+	" Answer a <Collection> with classes representing available Space Interfaces implementations "
+
+	^ { 
 		Smalltalk at: #CMR3SpaceView .
-	 	Smalltalk at: #CMR2SpaceAnimationRecorder 
+	 	"Smalltalk at: #CMR2SpaceAnimationRecorder "
 		}.
 ]
 
@@ -63,6 +74,20 @@ CMApplicationPreferences class >> cmSettingBaseLocationOn: aBuilder [
 		default: self defaultBaseLocation;	
 		description: 'Base directory for storing CORMAS artifacts (projects, preferences, etc) in the host machine';
 		order: 5
+]
+
+{ #category : #settings }
+CMApplicationPreferences class >> cmSettingChartViewerOn: aBuilder [
+	<cormasPreferences>
+	
+	(aBuilder pickOne: #settingChartViewer)
+		label: 'Chart Viewer';
+		parent: #cmGeneralSetting;
+		description: 'You can use multiple types of chart viewers';
+		target: self;
+		order: 7;
+		domainValues: self availableSettingChartViewer;
+		default: self defaultSettingChartViewer
 ]
 
 { #category : #settings }
@@ -133,6 +158,12 @@ CMApplicationPreferences class >> defaultProjectNotifications [
 ]
 
 { #category : #defaults }
+CMApplicationPreferences class >> defaultSettingChartViewer [
+	
+	^ Smalltalk at: #CMSpChartViewer
+]
+
+{ #category : #defaults }
 CMApplicationPreferences class >> defaultSettingSpaceViewer [
 	
 	^ Smalltalk at: #CMR3SpaceView
@@ -146,8 +177,8 @@ CMApplicationPreferences class >> defaultSettingWarnUsing [
 
 { #category : #'initialize - release' }
 CMApplicationPreferences class >> release [
-	" Clean receiver's class variables.
-	self release "
+	" Clean receiver's class variables "
+	<script>
 
 	(self class organization listAtCategoryNamed: #accessing)
 		select: #isKeyword
@@ -167,6 +198,19 @@ CMApplicationPreferences class >> settingBaseLocation: anObject [
 	" Sets the settingBaseLocation of this CMPreferences "
 
 	SettingBaseLocation := anObject
+]
+
+{ #category : #accessing }
+CMApplicationPreferences class >> settingChartViewer [
+
+	^ SettingChartViewer
+		ifNil: [ SettingChartViewer := self defaultSettingChartViewer ]
+]
+
+{ #category : #accessing }
+CMApplicationPreferences class >> settingChartViewer: anObject [
+
+	SettingChartViewer := anObject
 ]
 
 { #category : #accessing }

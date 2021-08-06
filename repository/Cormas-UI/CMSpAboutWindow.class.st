@@ -1,24 +1,11 @@
 Class {
 	#name : #CMSpAboutWindow,
-	#superclass : #SpPresenter,
+	#superclass : #CMSpPresenter,
 	#instVars : [
-		'morphPresenter',
-		'cormasClass'
+		'morphPresenter'
 	],
-	#category : #'Cormas-UI-Project'
+	#category : #'Cormas-UI-Spec2-Project'
 }
-
-{ #category : #accessing }
-CMSpAboutWindow >> cormasClass [
-
-	^ cormasClass
-]
-
-{ #category : #accessing }
-CMSpAboutWindow >> cormasClass: anObject [
-
-	cormasClass := anObject
-]
 
 { #category : #initialization }
 CMSpAboutWindow >> createTextMorph [
@@ -29,13 +16,6 @@ CMSpAboutWindow >> createTextMorph [
 		beForPlainText;
 		readOnly: true;
 		yourself
-]
-
-{ #category : #initialization }
-CMSpAboutWindow >> initialize [
-
-	super initialize.
-	application := CMSpApplication new
 ]
 
 { #category : #initialization }
@@ -55,7 +35,7 @@ CMSpAboutWindow >> initializeWindow: aWindowPresenter [
 
 	aWindowPresenter
 		title: self cormasClass asString;
-		initialExtent: 570 @ 500;
+		initialExtent: 770 @ 500;
 		askOkToClose: false
 ]
 
@@ -85,5 +65,5 @@ CMSpAboutWindow >> parseMicrodownText [
 { #category : #initialization }
 CMSpAboutWindow >> setModelBeforeInitialization: aDomainObject [
 
-	self cormasClass: aDomainObject
+	self cormasModel: aDomainObject
 ]

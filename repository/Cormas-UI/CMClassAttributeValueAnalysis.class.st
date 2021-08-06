@@ -6,7 +6,7 @@ Class {
 		'finalValue',
 		'step'
 	],
-	#category : #'Cormas-UI-Attributes'
+	#category : #'Cormas-UI-Spec1-Attributes'
 }
 
 { #category : #accessing }

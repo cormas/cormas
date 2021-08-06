@@ -10,7 +10,7 @@ Class {
 		'sourceCodeTabContainer',
 		'resourcesTabContainer'
 	],
-	#category : #'Cormas-UI-Project-Spec2'
+	#category : #'Cormas-UI-Spec2-Project'
 }
 
 { #category : #specs }
