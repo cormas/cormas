@@ -1706,17 +1706,6 @@ Cormas >> openParametersWin [
 		ifFalse: [self simManager open]
 ]
 
-{ #category : #'model scheduling' }
-Cormas >> openReplayWin [
-	
-	self cormasModelClass isNil ifTrue: [^self alert_NewModel].
-	process isNil
-		ifFalse:
-			[process terminate.
-			process := nil].
-	self simManager openReplayWin
-]
-
 { #category : #'user messages' }
 Cormas >> openedSpatialGridsForHabitus: aString [
 	

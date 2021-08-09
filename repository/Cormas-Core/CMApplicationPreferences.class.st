@@ -202,6 +202,7 @@ CMApplicationPreferences class >> settingBaseLocation: anObject [
 
 { #category : #accessing }
 CMApplicationPreferences class >> settingChartViewer [
+	" Answer a <Class> with the currently selected Chart Viewers implementation "
 
 	^ SettingChartViewer
 		ifNil: [ SettingChartViewer := self defaultSettingChartViewer ]

@@ -1176,8 +1176,8 @@ Example: (self allTheSituatedEntities: Forager) is returning all the instances o
 
 { #category : #announcement }
 CMAbstractModel >> announceProbesDataUpdated [
-	^ self announcer
-		announce: (CMProbesDataUpdatedAnnouncement timeStep: self timeStep)
+
+	self announcer announce: (CMProbesDataUpdatedAnnouncement timeStep: self timeStep)
 ]
 
 { #category : #announcement }

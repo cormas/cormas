@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'simWindow'
 	],
-	#category : 'Cormas-UI-Core'
+	#category : #'Cormas-UI-Spec1-Simulation-Controls'
 }
 
 { #category : #specs }
@@ -12,6 +12,18 @@ CMSpecSimulationContainer class >> defaultSpec [
     <spec>
     ^ SpecLayout composed newColumn: [ : c | 
 			c add: #simWindow ]
+]
+
+{ #category : #'as yet unclassified' }
+CMSpecSimulationContainer >> fsmState [
+
+	^ self owner fsmState
+]
+
+{ #category : #'as yet unclassified' }
+CMSpecSimulationContainer >> fsmStateName [
+
+	^ self fsmState name
 ]
 
 { #category : #accessing }
@@ -31,6 +43,14 @@ CMSpecSimulationContainer >> initializeWidgets [
 
 { #category : #accessing }
 CMSpecSimulationContainer >> showSimInterface [
+	" Make visible the simulation controls "
+
+"	| theRealWidget |
+	
+	self halt.
+	theRealWidget := self simWindow window widget model widget widget.
+	theRealWidget assureExtension visible: true.
+	theRealWidget changed."
 
 	self simulationWidget show.
 ]
@@ -59,8 +79,14 @@ CMSpecSimulationContainer >> simulationWidget [
 
 { #category : #accessing }
 CMSpecSimulationContainer >> toggleSimInterface [
+	" If the user closed the project, then clean the input controls in the receiver "
 
 	self simInterfaceIsDisplayed
 		ifTrue: [ self hideSimInterface ]
-		ifFalse: [ self showSimInterface ]
+		ifFalse: [ self showSimInterface ].
+	self fsmStateName = #stateWaitNewOrOpen
+		ifTrue: [ 
+			self simWindow currentStepInputText text: '0'.
+			self simWindow finalStepInputText text: CMSimManager defaultFinalTime asString  ]
+	
 ]

@@ -76,6 +76,13 @@ CMSpecProjectWindow >> closeAfterCreateProject [
 	^ true
 ]
 
+{ #category : #callbacks }
+CMSpecProjectWindow >> closeSimulationWindow [
+	" Close the receiver's simulation interface "
+	
+	self simWindow delete
+]
+
 { #category : #private }
 CMSpecProjectWindow >> cormasExpressions [
 	" Answer a <String> with useful Cormas expressions to debug/develop/cleanup "
@@ -136,6 +143,12 @@ CMSpecProjectWindow >> defaultProjectManagerClass [
 	" Private - See superimplementor's comment "
 
 	^ CMProjectManager
+]
+
+{ #category : #accessing }
+CMSpecProjectWindow >> fsmState [
+
+	^ self projectManager fsmState
 ]
 
 { #category : #initialization }
@@ -621,6 +634,12 @@ CMSpecProjectWindow >> runCormasTests [
 
 	^ Cursor wait showWhile: [ 
 		(SubunitRunner runAndCollectPackages: #('Cormas-Tests')) anyOne inspect ]
+]
+
+{ #category : #callbacks }
+CMSpecProjectWindow >> showSimulationWindow [
+
+	self simWindow showSimInterface
 ]
 
 { #category : #accessing }
