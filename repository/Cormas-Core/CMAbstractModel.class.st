@@ -89,6 +89,16 @@ CMAbstractModel class >> activeProbes: anObject [
 	activeProbes := anObject
 ]
 
+{ #category : #probes }
+CMAbstractModel class >> activeProbesWithColors [
+	" Answer a <Collection> of <Associations> with receiver's active probes each with a color as value  "
+
+	^ self activeProbes collectWithIndex: [ : ap : index | ap -> (self probeColorAt: index) ].
+
+	
+
+]
+
 { #category : #activityEditor }
 CMAbstractModel class >> activityDiagrams [
 	
@@ -799,6 +809,18 @@ CMAbstractModel class >> prefixName [
 	"Answer a the prefix name of this model: 'CM' "
 	
 	^ 'CM'
+]
+
+{ #category : #accessing }
+CMAbstractModel class >> probeColorAt: anInteger [ 
+
+	^ { Color red .
+		Color blue .
+		Color yellow .
+		Color black .
+		Color green . 
+		Color magenta .
+		Color cyan } at: anInteger
 ]
 
 { #category : #probes }
@@ -2918,6 +2940,13 @@ CMAbstractModel >> printOn: aStream [
 		<< ', entities: ';
 		<< self allTheEntities size asString;
 		<< ')'
+]
+
+{ #category : #'probes - recording' }
+CMAbstractModel >> probeAt: probeName [
+	" Answer a <Collection> with the receiver's values for probeName "
+
+	^ (self data at: self className) at: probeName
 ]
 
 { #category : #accessing }

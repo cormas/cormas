@@ -5,7 +5,7 @@ Class {
 		'chartBuilder',
 		'cormasModel',
 		'probeNum',
-		'plot'
+		'probeLines'
 	],
 	#category : #'Cormas-UI-Spec2-Probes'
 }
@@ -22,17 +22,17 @@ CMSpRoassalChartPresenter class >> owner: anOwningPresenter on: aDomainObject [
 
 { #category : #'accessing - chart' }
 CMSpRoassalChartPresenter >> addAZeroDataSet [
-	| xValue plot |
+	| xValue initialPlot |
 
-	plot := RSLinePlot new.
+	initialPlot := RSLinePlot new.
 	xValue := {0} asOrderedCollection.
-	plot 
+	initialPlot 
 		x: xValue
 		y: { 0 };
 		color:  Color blue trans.
 	
-	self chartBuilder: (self newChartBuilder: (1 -> 2)).
-	self chartBuilder addPlot: plot.
+	self chartBuilder: (self newChartBuilder: (1 -> 1)).
+	self chartBuilder addPlot: initialPlot.
 	self chartBuilder renderIn: self canvas.
 ]
 
@@ -50,51 +50,33 @@ CMSpRoassalChartPresenter >> addControllers: aCanvas [
 ]
 
 { #category : #'accessing - chart' }
-CMSpRoassalChartPresenter >> addProbe: probeName ofClass: className [
+CMSpRoassalChartPresenter >> addProbe: probeName ofClass: className color: aColor [
 
-	| cn pn xValues yValues |
+	| linePlot xValues yValues probeValues |
 	probeNum := probeNum + 1.
-	cn := className asString.
-	pn := probeName asString.
-	
-	plot := RSLinePlot new.
-	xValues := 0 to: ((cormasModel data at: cn) at: pn) asOrderedCollection size - 1 by: 1.
-	yValues := (xValues collect: [ : x | ((cormasModel data at: cn) at: pn) asOrderedCollection at: x + 1 ]).
-	plot 
+	linePlot := RSLinePlot new.
+	probeValues := cormasModel probeAt: probeName.
+	xValues := 0 to: probeValues size - 1 by: 1.
+	yValues := xValues collect: [ : x | probeValues at: x + 1 ].
+	linePlot 
 		x: xValues
 		y: yValues;
-		color:  Color blue trans.
+		color: aColor.
+	self addProbeLine: linePlot.
 	
 
 "	ds connectColor: (Color colorFrom: (Color defaultColors2 at: 1 + (4 * probeNum))).
 	self add: ds"
 ]
 
-{ #category : #accessing }
-CMSpRoassalChartPresenter >> axisConfigurationX [
-	
-	| decos |
-	
-	decos := self chartBuilder decorations.
-	^ decos detect: [ : d | d class = RSHorizontalTick ]
-]
+{ #category : #'accessing - chart' }
+CMSpRoassalChartPresenter >> addProbeLine: linePlot [
 
-{ #category : #accessing }
-CMSpRoassalChartPresenter >> axisConfigurationY [
+	self probeLines add: linePlot
 	
-	| decos |
-	
-	decos := self chartBuilder decorations.
-	^ decos detect: [ : d | d class = RSVerticalTick ]
-]
 
-{ #category : #roassal2 }
-CMSpRoassalChartPresenter >> axisX [
-	| s |
-	s := super axisX.
-"	axisConfigurationX noDecimal.
-	axisConfigurationX numberOfLabels: ((cormasModel timeStep max: 2) min: 10)."
-	^ s
+"	ds connectColor: (Color colorFrom: (Color defaultColors2 at: 1 + (4 * probeNum))).
+	self add: ds"
 ]
 
 { #category : #accessing }
@@ -133,14 +115,15 @@ CMSpRoassalChartPresenter >> newChartBuilder: ticksAssoc [
 	| time |
 	time := self cormasModel timeStep.
 	^ RSChart new
-		addDecoration: (RSChartTitleDecoration new title: 'hello'; fontSize: 20);
+		maxValueY: 1;
+		addDecoration: (RSChartTitleDecoration new title: 'Probes for ' , self cormasModelClass name; fontSize: 20);
 		addDecoration: (RSHorizontalTick new 
 								integer;
 								"numberOfTicks: ticksAssoc key;"
 								yourself);
 		addDecoration: (RSVerticalTick new 
-								integer;
-								numberOfTicks: ticksAssoc value;
+								doNotUseNiceLabel;
+								numberOfTicks: 2;
 								yourself);
 		addDecoration: (RSXLabelDecoration new title: 'Time'; offset: 0 @ 10);
 		addDecoration: (RSYLabelDecoration new title: 'Value'; offset: -20 @ 0);
@@ -152,6 +135,13 @@ CMSpRoassalChartPresenter >> plotChart: aCanvas [
 
 	self chartBuilder container: aCanvas.
 	self addControllers: aCanvas.
+]
+
+{ #category : #accessing }
+CMSpRoassalChartPresenter >> probeLines [
+
+	^ probeLines
+		ifNil: [ probeLines := OrderedCollection new ]
 ]
 
 { #category : #accessing }
@@ -170,29 +160,16 @@ CMSpRoassalChartPresenter >> probeNum: anObject [
 CMSpRoassalChartPresenter >> refresh [
 	"hard method rebuilding all datasets at each refresh."
 
-	"super refresh."
 	probeNum := 1.
-	self cormasModelClass allEntityClasses
-		do: [ :c | c activeProbes do: [ :p | self addProbe: p ofClass: c name ] ].
-	self cormasModelClass activeProbes
-		do: [ :p | self addProbe: p ofClass: cormasModel class name ].
+"	self cormasModelClass allEntityClasses
+		do: [ :c | c activeProbes do: [ :p | self addProbe: p ofClass: c name ] ]."
+	self cormasModelClass activeProbesWithColors 
+		associationsDo: [ : probeAssoc | 
+			self 
+				addProbe: probeAssoc key 
+				ofClass: self cormasModelClass name 
+				color: probeAssoc value ].
 	
-]
-
-{ #category : #roassal2 }
-CMSpRoassalChartPresenter >> refreshHack [
-	"hard method rebuilding all datasets at each refresh."
-
-	probeNum := 1.
-	cormasModel class allEntityClasses
-		do: [ :c | c activeProbes do: [ :p | self updateProbe: p ofClass: c name ] ].
-	cormasModel class activeProbes
-		do: [ :p | self updateProbe: p ofClass: cormasModel class name ].
-
-
-	"axisConfigurationX numberOfLabels: (axisConfigurationX  numberOfLabels +1) ."
-
-	"axisConfigurationX maxValue: axisConfigurationX maxValue + 1"
 ]
 
 { #category : #initialization }
@@ -208,56 +185,21 @@ CMSpRoassalChartPresenter >> setModelBeforeInitialization: aDomainObject [
 	self addAZeroDataSet
 ]
 
-{ #category : #roassal2 }
-CMSpRoassalChartPresenter >> timeChanged [
-
-	self halt.
-	(self window ifNil: [ false ] ifNotNil: [ :w | w isDisplayed ])
-		ifFalse: [ self cormasModel removeDependent: self.
-			^ self cormasModel: nil ].
-	self view removeAllElements.
-"	datasets := OrderedCollection new.
-"	self refresh.
-"	axisConfigurationX maxValue: axisConfigurationX maxValue + 1.
-	axisConfigurationX numberOfLabels: ((axisConfigurationX maxValue max: 4) min: 10).
-	axisConfigurationY numberOfTicks: 4.
-	axisConfigurationY numberOfLabels: 4."
-	self renderIn: self view.
-	self view signalUpdate
-]
-
 { #category : #'accessing - chart' }
 CMSpRoassalChartPresenter >> timeChanged: aNewTimeStep [
 
 	| newMaxX |
-			
+		
 	newMaxX := (aNewTimeStep max: 1) min: 10.
 	self canvas removeAllElements.
 	self refresh.
 	self chartBuilder maxValueX: newMaxX + 1.
-	self chartBuilder: (self newChartBuilder: newMaxX -> 4).
-	self chartBuilder addPlot: plot.
+	self chartBuilder: (self newChartBuilder: newMaxX -> 1).
+	self "selected"probeLines do: [ : probeLine | self chartBuilder addPlot: probeLine ].
 	self chartBuilder renderIn: self canvas.
 	self canvas 
 		zoomToFit;
 		signalUpdate
-]
-
-{ #category : #roassal2 }
-CMSpRoassalChartPresenter >> update: anAspectSymbol with: aParameter [
-	"Somebody has justed changed. If it is as a result of a deletion dependent then it will be #deleted."
-
-	self halt.
-	anAspectSymbol = #timeChanged
-		ifTrue: [ ^ self timeChanged ].
-		
-	"	anAspectSymbol = #noticeChanges
-		ifTrue: 
-			[aParameter isEmpty ifTrue:[^self].
-			aParameter do: [: aChange | self noticeChange: aChange ].
-			^Cormas refresh: self]."
-
-	super update: anAspectSymbol with: aParameter
 ]
 
 { #category : #roassal2 }

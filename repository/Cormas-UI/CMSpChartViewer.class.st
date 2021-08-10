@@ -26,7 +26,6 @@ CMSpChartViewer >> initializePresenters [
 
 	optionsPresenter := self newList.
 	roassalChartPresenter := CMSpRoassalChartPresenter owner: self on: self cormasModel.
-	"roassalChartPresenter script: [ :view | self roassalChartPresenter plotChart: view ]."
 	self roassalChartPresenter plotChart: self roassalChartPresenter currentCanvas. 
 ]
 
