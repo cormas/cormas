@@ -165,16 +165,14 @@ CMSpOpenProjectPresenter >> initializeButtonBar [
 		add: (self newButton
                     label: self translator tOk;
                     icon: (self iconNamed: #smallOk);
-                    action: [ 
-							self 
-								openSelectedProject;
-								delete.  ] )
+                    action: [ self openSelectedProject ] )
 
 ]
 
 { #category : #initialization }
 CMSpOpenProjectPresenter >> initializeLocationsPresenter [
-	
+	" Private - Configure the receiver's locations where CORMAS projects could be found "
+
 	projectsLocationsPresenter  
 		items: self cormasLocations keys;
 		transmitTo: projectsListPresenter
@@ -210,8 +208,11 @@ CMSpOpenProjectPresenter >> initializeProjectsPresenter [
 
 	projectsListPresenter 
 		"enableItemSubstringFilter;"
+		headerTitle: 'Projects';
+		activateOnDoubleClick;
 		display: [ : fileRef | fileRef asCormasProjectName ];
-		sortingBlock: [ :a :b | a asCormasProjectName < b asCormasProjectName ]
+		sortingBlock: [ :a :b | a asCormasProjectName < b asCormasProjectName ].
+	projectsListPresenter eventHandler whenDoubleClickDo: [ self halt. self openSelectedProject ].
 ]
 
 { #category : #initialization }
@@ -220,6 +221,7 @@ CMSpOpenProjectPresenter >> initializeVersionsPresenter [
 	
 	versionsListPresenter
 		"enableItemSubstringFilter;"
+		headerTitle: 'Versions';
 		display: [ :item | item userProvidedName ].
 
 
@@ -253,9 +255,11 @@ CMSpOpenProjectPresenter >> metaInfoPresenter [
 
 { #category : #callbacks }
 CMSpOpenProjectPresenter >> openSelectedProject [
-	" Private - Callback for the Ok to open button in the Open Project Dialog "
+	" Private - Callback for the Ok to open button in the Open Project Dialog and close the receiver  "
 
-	^ self projectManager openProject: self selectedProject.
+	self projectManager openProject: self selectedProject.
+	self delete.
+
 ]
 
 { #category : #accessing }

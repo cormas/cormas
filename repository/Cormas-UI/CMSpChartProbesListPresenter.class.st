@@ -11,7 +11,7 @@ Class {
 { #category : #specs }
 CMSpChartProbesListPresenter class >> defaultSpec [
 
-	^ SpPanedLayout newTopToBottom
+	^ SpBoxLayout newTopToBottom
 		add: #probesListLabel;
 		add: #probesListPresenter;
 		yourself.
