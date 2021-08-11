@@ -2450,7 +2450,6 @@ CMAbstractModel >> initFile: aStringOrFilename dataCollection: aCollec separator
 { #category : #scheduling }
 CMAbstractModel >> initSimulation [
 
-
 	self timeStep: 0.
 	self spaceModel ifNil: [ self initializeSpaceModel ].
 	self initializeProbes.

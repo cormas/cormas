@@ -49,9 +49,22 @@ CMSpPresenter >> cormasModel: anObject [
 	cormasModel := anObject
 ]
 
+{ #category : #accessing }
+CMSpPresenter >> cormasModelClass [ 
+	" Answer the <Class> representing the receiver's cormas model class "
+	
+	^ self cormasModel class
+]
+
 { #category : #initialization }
 CMSpPresenter >> initialize [
 
 	super initialize.
 	application := CMSpApplication new
+]
+
+{ #category : #initialization }
+CMSpPresenter >> setModelBeforeInitialization: aDomainObject [
+
+	self cormasModel: aDomainObject
 ]

@@ -61,9 +61,3 @@ CMSpAboutWindow >> parseMicrodownText [
 			on: MicParsingError, MessageNotUnderstood, SubclassResponsibility 
 			do: [ builder contents ].
 ]
-
-{ #category : #initialization }
-CMSpAboutWindow >> setModelBeforeInitialization: aDomainObject [
-
-	self cormasModel: aDomainObject
-]

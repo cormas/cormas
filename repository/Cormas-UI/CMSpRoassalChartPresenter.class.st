@@ -5,7 +5,11 @@ Class {
 		'chartBuilder',
 		'cormasModel',
 		'probeNum',
-		'probeLines'
+		'probeLines',
+		'title',
+		'titleSize',
+		'numberOfHorizontalTicks',
+		'numberOfVerticalTicks'
 	],
 	#category : #'Cormas-UI-Spec2-Probes'
 }
@@ -51,8 +55,14 @@ CMSpRoassalChartPresenter >> addControllers: aCanvas [
 
 { #category : #'accessing - chart' }
 CMSpRoassalChartPresenter >> addProbe: probeName ofClass: className color: aColor [
+	" Private - Create a new line for the argument probeName with aColor. Obtain its y value from the cormas model "
 
 	| linePlot xValues yValues probeValues |
+
+	self flag: #todo. 
+		" Why do we need the className ? "
+		" Do we need to count probeNum ? "
+		" How to connect lines with points as in R2 connectColor: ? "
 	probeNum := probeNum + 1.
 	linePlot := RSLinePlot new.
 	probeValues := cormasModel probeAt: probeName.
@@ -63,20 +73,15 @@ CMSpRoassalChartPresenter >> addProbe: probeName ofClass: className color: aColo
 		y: yValues;
 		color: aColor.
 	self addProbeLine: linePlot.
-	
 
-"	ds connectColor: (Color colorFrom: (Color defaultColors2 at: 1 + (4 * probeNum))).
-	self add: ds"
 ]
 
 { #category : #'accessing - chart' }
 CMSpRoassalChartPresenter >> addProbeLine: linePlot [
+	" Add linePlot <RSLinePlot> to the receiver's probes to be displayed "
 
 	self probeLines add: linePlot
-	
 
-"	ds connectColor: (Color colorFrom: (Color defaultColors2 at: 1 + (4 * probeNum))).
-	self add: ds"
 ]
 
 { #category : #accessing }
@@ -109,25 +114,102 @@ CMSpRoassalChartPresenter >> cormasModelClass [
 	^ self cormasModel class
 ]
 
-{ #category : #'accessing - chart' }
-CMSpRoassalChartPresenter >> newChartBuilder: ticksAssoc [
+{ #category : #defaults }
+CMSpRoassalChartPresenter >> defaultNumberOfVerticalTicks [
+	
+	^ 2
+]
 
-	| time |
-	time := self cormasModel timeStep.
+{ #category : #defaults }
+CMSpRoassalChartPresenter >> defaultTitle [
+	" Private - Answer a <String> with the receiver's default title to appear inside the canvas "
+	
+	^ 'Probes for ' , self cormasModelClass name
+]
+
+{ #category : #defaults }
+CMSpRoassalChartPresenter >> defaultTitleSize [
+	" Private - Answer a <Number> with the receiver's default title size to appear inside the canvas "
+	
+	^ 18
+]
+
+{ #category : #'accessing - chart' }
+CMSpRoassalChartPresenter >> newBasicChartBuilder [
+	" Private - Answer a new <RSChart> with the basic decorations and settings "
+	
 	^ RSChart new
 		maxValueY: 1;
-		addDecoration: (RSChartTitleDecoration new title: 'Probes for ' , self cormasModelClass name; fontSize: 20);
-		addDecoration: (RSHorizontalTick new 
-								integer;
-								"numberOfTicks: ticksAssoc key;"
-								yourself);
-		addDecoration: (RSVerticalTick new 
-								doNotUseNiceLabel;
-								numberOfTicks: 2;
-								yourself);
+		addDecoration: self newHorizontalTick;
+		addDecoration: self newVerticalTick;
 		addDecoration: (RSXLabelDecoration new title: 'Time'; offset: 0 @ 10);
 		addDecoration: (RSYLabelDecoration new title: 'Value'; offset: -20 @ 0);
 		yourself.
+]
+
+{ #category : #'accessing - chart' }
+CMSpRoassalChartPresenter >> newChartBuilder: ticksAssoc [
+	" Private - Answer a new <RSChart> with ticksAssoc as the number of X ticks"
+	| newChart |
+	
+	newChart := self newBasicChartBuilder.
+	CMApplicationPreferences settingShowProbesTitle
+		ifTrue: [ newChart addDecoration: (RSChartTitleDecoration new title: self title; fontSize: self titleSize) ].
+	^ newChart.
+]
+
+{ #category : #'accessing - ticks' }
+CMSpRoassalChartPresenter >> newHorizontalTick [
+	" Answer a new <RSHorizontalTick> with default or applied settings "
+
+	| hTick |
+	
+	hTick := RSHorizontalTick new 
+			integer;
+			yourself.
+	CMApplicationPreferences settingFixedHorizontalTick
+		ifTrue: [ hTick numberOfTicks: self numberOfHorizontalTicks ].
+	^ hTick
+]
+
+{ #category : #'accessing - ticks' }
+CMSpRoassalChartPresenter >> newVerticalTick [
+	" Answer a new <RSVerticalTick> with default or applied settings "
+
+	| verticalTick |
+	
+	verticalTick := RSVerticalTick new 
+		doNotUseNiceLabel;
+		yourself.
+	verticalTick numberOfTicks: (CMApplicationPreferences settingFixedVerticalTick
+		ifTrue: [  2 ]
+		ifFalse: [ self numberOfVerticalTicks ]).
+	^ verticalTick
+]
+
+{ #category : #'accessing - ticks' }
+CMSpRoassalChartPresenter >> numberOfHorizontalTicks [
+
+	^ numberOfHorizontalTicks
+]
+
+{ #category : #'accessing - ticks' }
+CMSpRoassalChartPresenter >> numberOfHorizontalTicks: anObject [
+
+	numberOfHorizontalTicks := anObject
+]
+
+{ #category : #'accessing - ticks' }
+CMSpRoassalChartPresenter >> numberOfVerticalTicks [
+
+	^ numberOfVerticalTicks
+		ifNil: [ numberOfVerticalTicks := self defaultNumberOfVerticalTicks ]
+]
+
+{ #category : #'accessing - ticks' }
+CMSpRoassalChartPresenter >> numberOfVerticalTicks: anObject [
+
+	numberOfVerticalTicks := anObject
 ]
 
 { #category : #accessing }
@@ -156,7 +238,7 @@ CMSpRoassalChartPresenter >> probeNum: anObject [
 	probeNum := anObject
 ]
 
-{ #category : #accessing }
+{ #category : #public }
 CMSpRoassalChartPresenter >> refresh [
 	"hard method rebuilding all datasets at each refresh."
 
@@ -200,6 +282,33 @@ CMSpRoassalChartPresenter >> timeChanged: aNewTimeStep [
 	self canvas 
 		zoomToFit;
 		signalUpdate
+]
+
+{ #category : #'accessing - chart' }
+CMSpRoassalChartPresenter >> title [
+	" Answer a <String> with the receiver's title shown inside the canvas "
+	
+	^ title
+		ifNil: [ title := self defaultTitle ]
+]
+
+{ #category : #accessing }
+CMSpRoassalChartPresenter >> title: aString [
+
+	title := aString
+]
+
+{ #category : #accessing }
+CMSpRoassalChartPresenter >> titleSize [
+
+	^ titleSize
+		ifNil: [ titleSize := self defaultTitleSize ]
+]
+
+{ #category : #accessing }
+CMSpRoassalChartPresenter >> titleSize: anObject [
+
+	titleSize := anObject
 ]
 
 { #category : #roassal2 }

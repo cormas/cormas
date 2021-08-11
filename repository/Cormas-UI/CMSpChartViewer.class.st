@@ -1,3 +1,19 @@
+"
+This is the main Probes window, which contains:
+
+- A presenter with settings for visualization of probes
+- The Roassal 3 presenter with the canvas.
+
+
+Internal Representation and Key Implementation Points.
+
+    Instance Variables
+	optionsPresenter:		<Object>
+	roassalChartPresenter:		<Object>
+
+
+    Implementation Points
+"
 Class {
 	#name : #CMSpChartViewer,
 	#superclass : #CMSpPresenter,
@@ -24,7 +40,7 @@ CMSpChartViewer class >> defaultSpec [
 { #category : #initialization }
 CMSpChartViewer >> initializePresenters [
 
-	optionsPresenter := self newList.
+	optionsPresenter := CMSpChartOptionsPresenter owner: self on: self cormasModel.
 	roassalChartPresenter := CMSpRoassalChartPresenter owner: self on: self cormasModel.
 	self roassalChartPresenter plotChart: self roassalChartPresenter currentCanvas. 
 ]
