@@ -13,9 +13,9 @@ Class {
 CMSpChartProbesMinMaxPresenter class >> defaultSpec [ 
 
 	^ SpBoxLayout newVertical 
-		add: #scalePresenter;
-		add: #fixMinCheckPresenter;
-		add: #fixMaxCheckPresenter;
+		add: #scalePresenter height: self inputTextHeight;
+		add: #fixMinCheckPresenter height: self inputTextHeight;
+		add: #fixMaxCheckPresenter height: self inputTextHeight;
 		yourself
 ]
 

@@ -76,27 +76,17 @@ CMAbstractModel class >> aboutThisModel [
 
 ]
 
-{ #category : #probes }
+{ #category : #'accessing - probes' }
 CMAbstractModel class >> activeProbes [
 	^ activeProbes
 		ifNil: [ self defaultProbes ]
 		ifNotNil: [ activeProbes ]
 ]
 
-{ #category : #probes }
+{ #category : #'accessing - probes' }
 CMAbstractModel class >> activeProbes: anObject [
 	
 	activeProbes := anObject
-]
-
-{ #category : #probes }
-CMAbstractModel class >> activeProbesWithColors [
-	" Answer a <Collection> of <Associations> with receiver's active probes each with a color as value  "
-
-	^ self activeProbes collectWithIndex: [ : ap : index | ap -> (self probeColorAt: index) ].
-
-	
-
 ]
 
 { #category : #activityEditor }
@@ -398,7 +388,7 @@ CMAbstractModel class >> cmVersion [
 	^ '1.0'
 ]
 
-{ #category : #probes }
+{ #category : #'accessing - probes' }
 CMAbstractModel class >> colorOfProbe: aProbeSymbol [
 	"answer the color of a probe (to display the curve in ChartsInterface)"
 	
@@ -811,19 +801,7 @@ CMAbstractModel class >> prefixName [
 	^ 'CM'
 ]
 
-{ #category : #accessing }
-CMAbstractModel class >> probeColorAt: anInteger [ 
-
-	^ { Color red .
-		Color blue .
-		Color yellow .
-		Color black .
-		Color green . 
-		Color magenta .
-		Color cyan } at: anInteger
-]
-
-{ #category : #probes }
+{ #category : #'accessing - probes' }
 CMAbstractModel class >> probes [
 	^ (Pragma allNamed: #probe in: self) collect: #methodSelector
 ]
@@ -892,7 +870,7 @@ CMAbstractModel class >> renameSelector: oldName by: newName inputParametersNumb
 						permutation: map) execute]]
 ]
 
-{ #category : #probes }
+{ #category : #'accessing - probes' }
 CMAbstractModel class >> setActiveProbes: listProbes [
 	| selectedClass selectedClassName |
 	self activeProbes: OrderedCollection new.
@@ -908,7 +886,7 @@ CMAbstractModel class >> setActiveProbes: listProbes [
 					selectedClass activeProbes add: (s findTokens: $>) last asSymbol ] ]
 ]
 
-{ #category : #compiling }
+{ #category : #'accessing - probes' }
 CMAbstractModel class >> setColor: aColorValue forProbe: aSymbol [
 	"creates a color method at class level, such as :
 colorOfProbe_aSymbol

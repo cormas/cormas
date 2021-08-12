@@ -28,9 +28,9 @@ Class {
 { #category : #specs }
 CMSpChartOptionsPresenter class >> defaultSpec [
 
-	^ SpPanedLayout newTopToBottom
-		add: #probesMinMaxOptionsPresenter;
-		positionOfSlider: 25 percent;
+	^ SpBoxLayout newTopToBottom
+		"add: #menuToolbar height: self toolbarHeight;"
+		add: #probesMinMaxOptionsPresenter expand: false fill: true padding: 5;
 		add: #probesListPresenter;
 		yourself.
 

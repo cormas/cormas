@@ -211,8 +211,8 @@ CMSpOpenProjectPresenter >> initializeProjectsPresenter [
 		headerTitle: 'Projects';
 		activateOnDoubleClick;
 		display: [ : fileRef | fileRef asCormasProjectName ];
-		sortingBlock: [ :a :b | a asCormasProjectName < b asCormasProjectName ].
-	projectsListPresenter eventHandler whenDoubleClickDo: [ self halt. self openSelectedProject ].
+		sortingBlock: [ :a :b | a asCormasProjectName < b asCormasProjectName ];
+		whenActivatedDo: [ self openSelectedProject ].
 ]
 
 { #category : #initialization }

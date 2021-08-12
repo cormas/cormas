@@ -25,7 +25,7 @@ CMSpPresenter >> application [
 	" Answer a Spec2 application object "
 
 	^ CMSpApplication new
-			useBackend: #Morphic with: CMSpMorphicConfiguration new;
+			useBackend: #Morphic with: self styleConfiguration;
 			yourself
 ]
 
@@ -64,7 +64,26 @@ CMSpPresenter >> initialize [
 ]
 
 { #category : #initialization }
+CMSpPresenter >> projectManager [ 
+	" Answer the receiver's <CMProjectManager> "
+
+	^ self cormasModel projectManager
+]
+
+{ #category : #initialization }
 CMSpPresenter >> setModelBeforeInitialization: aDomainObject [
 
 	self cormasModel: aDomainObject
+]
+
+{ #category : #accessing }
+CMSpPresenter >> styleConfiguration [ 
+	" Private - Use a generic default style configuration for Morphic backend "
+
+	^ SpMorphicConfiguration new
+]
+
+{ #category : #accessing }
+CMSpPresenter >> translator [
+	^ self projectManager translator.
 ]

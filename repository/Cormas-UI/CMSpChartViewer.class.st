@@ -17,6 +17,8 @@ Internal Representation and Key Implementation Points.
 Class {
 	#name : #CMSpChartViewer,
 	#superclass : #CMSpPresenter,
+	#traits : 'TCMUIUtils',
+	#classTraits : 'TCMUIUtils classTrait',
 	#instVars : [
 		'optionsPresenter',
 		'roassalChartPresenter'
@@ -45,6 +47,17 @@ CMSpChartViewer >> initializePresenters [
 	self roassalChartPresenter plotChart: self roassalChartPresenter currentCanvas. 
 ]
 
+{ #category : #initialization }
+CMSpChartViewer >> initializeWindow: aWindowPresenter [
+	"override this to set window values before opening. 
+	 You may want to add a menu, a toolbar or a statusbar"
+
+	aWindowPresenter
+		title: self title;
+		initialExtent: 1000 @ 600;
+		windowIcon: self windowIcon
+]
+
 { #category : #accessing }
 CMSpChartViewer >> optionsPresenter [
 
@@ -67,4 +80,10 @@ CMSpChartViewer >> roassalChartPresenter [
 CMSpChartViewer >> roassalChartPresenter: anObject [
 
 	roassalChartPresenter := anObject
+]
+
+{ #category : #initialization }
+CMSpChartViewer >> title [
+
+	^  self formattedWindowTitle: 'Probes'
 ]

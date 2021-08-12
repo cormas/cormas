@@ -56,8 +56,15 @@ CMSpAboutWindow >> parseMicrodownText [
 
 	| builder |
 	builder := MicroDownParser builder.
-	self cormasClass buildMicroDownUsing: builder.
+	self cormasModel buildMicroDownUsing: builder.
 	^ [ MicroDownParser asText: builder contents ] 
 			on: MicParsingError, MessageNotUnderstood, SubclassResponsibility 
 			do: [ builder contents ].
+]
+
+{ #category : #'as yet unclassified' }
+CMSpAboutWindow >> styleConfiguration [ 
+	" Private - See superimplementor's comment "
+
+	^ CMSpMorphicConfigurationForMicrodown new
 ]

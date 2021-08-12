@@ -245,13 +245,18 @@ CMSpRoassalChartPresenter >> refresh [
 	probeNum := 1.
 "	self cormasModelClass allEntityClasses
 		do: [ :c | c activeProbes do: [ :p | self addProbe: p ofClass: c name ] ]."
-	self cormasModelClass activeProbesWithColors 
+	self cormasModelClass activeProbes do: [ : ap | 
+		self 
+			addProbe: ap
+			ofClass: self cormasModelClass
+			color: (self cormasModel colorOfProbe: ap) ]
+"	self cormasModelClass activeProbesWithColors 
 		associationsDo: [ : probeAssoc | 
 			self 
 				addProbe: probeAssoc key 
 				ofClass: self cormasModelClass name 
-				color: probeAssoc value ].
-	
+				color: probeAssoc value ]."
+
 ]
 
 { #category : #initialization }
