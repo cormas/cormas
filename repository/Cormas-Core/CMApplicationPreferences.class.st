@@ -24,8 +24,8 @@ CMApplicationPreferences class >> availableSettingChartViewer [
 	" Answer a <Collection> with classes representing available Chart Viewers implementations "
 
 	^ { 
-		Smalltalk at: #CMSpChartViewer .
-	 	Smalltalk at: #CMR2SimpleChart
+		Smalltalk at: #CMSpChartViewer
+	 	"Smalltalk at: #CMR2SimpleChart"
 		}.
 ]
 
