@@ -600,3 +600,151 @@ CMTranslator >> addTranslationsForESPart3 [
 		yourself
 
 ]
+
+{ #category : #accessing }
+CMTranslator >> addTranslationsForFR [
+	" Private - See superimplementor's comment "
+
+	super addTranslationsForFR.
+	self addTranslationsForFRPart1.
+"	self addTranslationsForENPart2.
+	self addTranslationsForENPart3."
+
+]
+
+{ #category : #accessing }
+CMTranslator >> addTranslationsForFRPart1 [
+	" Private - See superimplementor's comment "
+
+	^ (self translatorClass forLanguage: #EN) translationMap
+		at: #tVersionName put: 'Version name';
+		at: #tCreationDate put: 'Date de création';
+		at: #tModelComments put: 'Commentaires sur le modèle';
+		at: #tModelRename put: 'Le modèle a été renommé en {1}.
+Une nouvelle catégorie de classe a été créée et toutes les classes du modèle précédent ont été copiées
+
+Nous vous recommandons :
+- Pour sauvegarder et recharger ce modèle, puis
+- Copier les répertoires requis (Maps, Data, ...) de {2} à {1}
+';
+		at: #tCreateNewModel put: 'Créer un nouveau modèle!!';
+		at: #tCreateEntityKind put: 'Créer un type d''entité';
+		at: #tCreateAgent put: 'Créer une sorte d''agent';
+		at: #tCommunication put: 'Communication';
+		at: #tGroup put: 'Group';
+		at: #tLocation put: 'Location';
+		at: #tElement put: 'Element';
+		at: #tSimpleCell put: 'Simple Cell';
+		at: #tCellularAutomaton put: 'Cellular Automaton';
+		at: #tAggregate put: 'Aggregate';
+		at: #tSetNotConnex put: 'Set no connex';
+		at: #tName put: 'Name';
+		at: #tDefineEntities put: 'Définir les entités';
+		at: #tAbstract put: 'Abstract / No abstract';
+		at: #tSpatial put: 'Spatial';
+		at: #tSocial put: 'Social';
+		at: #tPassive put: 'Passive';
+		at: #tProgrammingEntityClass put: 'la classe pour chaque entité...';
+		at: #tSimOrganization put: 'l''organisation de la simulation...';
+		at: #tObserver put: 'the Observer...';
+		at: #tMessages put: 'Messages';
+		at: #tProbes put: 'Probes';
+		at: #tInitInstantiation put: 'l''instanciation initiale';
+		at: #tScheduler put: 'le planificateur';
+		at: #tSpaceEntities put: 'Espace et Entités';
+		at: #tEdit put: 'Éditer';
+		at: #tSpecialize put: 'Spécialiser';
+		at: #tRemove put: 'Supprimer';
+		at: #tAttributes put: 'Attributs';
+		at: #tMethods put: 'Méthodes';
+		at: #tActivityDiagrams put: 'Diagrammes d''activités';
+		at: #tPoVSetter put: 'PoV Setter';
+		at: #tObject put: 'Objet';
+		at: #tObjectHelp put: 'Une simple entité passive';
+		at: #tLocatedObject put: 'Located Object';
+		at: #tLocatedObjectHelp put: 'Une entité passive située sur une cellule';
+		at: #tNetworkNode put: 'Nœud de réseau';
+		at: #tNetworkNodeHelp put: 'Un nœud d''un réseau situé sur une cellule';
+		at: #tNetworkArc put: 'Réseau Arc';
+		at: #tNetworkArcHelp put: 'Un Arc de Réseau situé sur 2 Cellules';
+		at: #tFullNetwork put: 'Réseau complet';
+		at: #tFullNetworkHelp
+			put: 'An oriented Network composed of a Set of Arc and Nodes';
+		at: #tMessage put: 'Message';
+		at: #tMessageHelp
+			put: 'Message for AgentCommunication (with mailbox)';
+		at: #tEditActivityDiagrams put: 'edit activity diagrams';
+		at: #tEditAttributes put: 'edit attributes';
+		at: #tEditInit put: 'edit initialization';
+		at: #tEditSteps put: 'edit steps';
+		at: #tMissingClassName
+			put: 'Please enter a name for the new class.';
+		at: #tAlreadyUsed put: 'Already used!!';
+		at: #tWhichModel put: 'Which Model?';
+		at: #tVisualization put: 'Visualization';
+		at: #tProgramming put: 'Programming';
+		at: #tSimulation put: 'Simulation';
+		at: #tEnterClassName put: 'Veuillez saisir un nom pour la nouvelle classe!';
+		at: #tSpatialEntityCellHelp put: 'SpatialEntityCell: la cellule est l''entité de base de l''espace (comme Cellular Automata)';
+		at: #tSimpleCellHelp put: 'SpatialEntityElement est l''entité Cell de base';
+		at: #tSpatialEntityHelp put: 'SpatialEntityAggregate est composé de cellules connectées';
+		at: #tSetNotConnexHelp put: 'SpatialEntityNotConnex est composé de cellules ou d''agrégats non connectés';
+		at: #tCellAutomatonHelp put: 'CA est utile pour la dynamique entre les cellules';
+		at: #tOATPredefValues put: 'Prédéfini par liste de valeurs';
+		at: #tOATSeqValues put: 'Sequential values';
+		at: #tCrossedSeqValues put: 'Sequential values';
+		at: #tCrossedPredefValues put: 'Predefined by list of values';
+		at: #tCrossSensAnalysis put: 'Crossed Sensitivity Analysis';
+		at: #tDisplayParams put: 'Display Parameters';
+		at: #tOATSensAnalysis put: 'OAT Sensitivity Analysis';
+		at: #tSimpleStochAnalysis put: 'Simple Stochastic Analysis';
+		at: #tMonteCarlo put: 'Monte Carlo';
+		at: #tClassifyByParams put: 'Classify by parameters';
+		at: #tSimInformation put: 'Simulation Information';
+		at: #tSimInterface put: 'Simulation Interface';
+		at: #tStartRWebService put: 'Start Web Service for R';
+		at: #tStopRWebService put: 'Stop Web Service for R';
+		at: #tAnalysis put: 'Analysis';
+		at: #tCreateInstances put: 'Créer des instances';
+		at: #tOpenPharoMenu put: 'Open Pharo Menu';
+		at: #tManipulateInstances put: 'Manipulate Instances';
+		at: #tModelGlossary put: 'Model Glossary';
+		at: #tModelListing put: 'Model listing as text file';
+		at: #tPackageClient put: 'Package client';
+		at: #tSpace put: 'Space';
+		at: #tDisplayModelVersions put: 'Display model versions';
+		at: #tSnapshot put: 'Snapshot current state';
+		at: #tModifiedModelName put: 'The name has been renamed as ';
+		at: #tDisplayLegends put: 'Display Legends';
+		at: #tPhoto put: 'Photo';
+		at: #tVideo put: 'Video';
+		at: #tClickTo put: 'Click to...';
+		at: #tHabitus put: 'Habitus';
+		at: #tUnmoveableZoom put: 'Unmoveable zoom';
+		at: #tMoveableZoom put: 'Moveable zoom';
+		at: #tSetTrackLength put: 'Set track length';
+		at: #tEnableUndoRedo put: 'Enable Undo/Redo...';
+		at: #tTouchpad put: 'Touchpad manipulate mode';
+		at: #tEnvironment put: 'Environnement';
+		at: #tGridSize put: 'Grid size';
+		at: #tLoad put: 'Load';
+		at: #tModify put: 'Modifier';
+		at: #tReOpen put: 'Re-Open';
+		at: #tPoV put: 'PoV';
+		at: #tAttribute put: 'Attribute';
+		at: #tClassVariable put: 'Class variable';
+		at: #tAttributesSuperLabel put: 'Attributs et variables de classe des super classes';
+		at: #tAttributesTargetLabel put: 'Attributs et classe Variables de la classe cible';
+		at: #tReset put: 'Réinitialiser';
+		at: #tApply put: 'Appliquer';
+		at: #tEnterAttName put: 'Entrez un nom d''attribut (sans espaces blancs, chiffres ou symboles)';
+		at: #tAppTitle put: 'CORMAS';
+		at: #tInvalidName put: ' n''est pas un nom valide. Merci d''entrer un nom valide';
+		at: #tHelpAddInstAtt put: 'Ajouter un nouvel attribut à la classe cible';
+		at: #tHelpRemoveInstAtt put: 'Supprimer un attribut de la classe cible';
+		at: #tHelpAddClassAttr put: 'Add a new class attribute to the target class';
+		at: #tHelpRemoveClassAtt
+			put: 'Remove an attribute from the target class';
+		at: #tClassEditor put: 'UML - Class Editor';
+		yourself
+]

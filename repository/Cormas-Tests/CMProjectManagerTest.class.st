@@ -7,12 +7,6 @@ Class {
 	#category : #'Cormas-Tests-Project'
 }
 
-{ #category : #test }
-CMProjectManagerTest >> newValidEntityNamed: entityName [
-
-	CMSpatialEntityAggregate subclass: (entityName asValidCormasClassName: self sampleModelNameWithoutPrefix)
-]
-
 { #category : #accessing }
 CMProjectManagerTest >> projectManager [
 	^ projectManager

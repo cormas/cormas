@@ -60,15 +60,12 @@ CMSpaceModel class >> forModel: aCormasModel [
 
 { #category : #'private - absoluteWorld' }
 CMSpaceModel >> absoluteBounds [
-	"the absolute default space is a square space of 50x50. It has been defined for a 10x10 cells space.
-It is never display, only copied by the SpaceViews.
-It can be modified (setAbsoluteBounds) when for exemple there is 3 lines and 10 column. Then, absoluteBounds = 3/10 * 50 @ 50"
+	" The absolute default space is a square space of 50x50. It has been defined for a 10x10 cells space.
+	It is never display, only copied by the SpaceViews.
+	It can be modified (setAbsoluteBounds) when for exemple there is 3 lines and 10 column. Then, absoluteBounds = 3/10 * 50 @ 50 "
 	
-	^absoluteBounds
-		ifNil:
-			[absoluteBounds := Rectangle
-				origin: 0 @ 0
-				extent: 50 @ 50]
+	^ absoluteBounds 
+		ifNil: [ absoluteBounds := Rectangle origin: 0 @ 0 extent: 50 @ 50 ]
 ]
 
 { #category : #'private - absoluteWorld' }
@@ -79,26 +76,16 @@ CMSpaceModel >> absoluteBounds: aRectangle [
 
 { #category : #'private - absoluteWorld' }
 CMSpaceModel >> absoluteHeight [
-	
-	^self absoluteBounds height
+	" Answer an <Integer> representing the receiver's height from the absolute bounds "
+
+	^ self absoluteBounds height
 ]
 
 { #category : #'private - absoluteWorld' }
 CMSpaceModel >> absoluteWidth [
-	
-	^self absoluteBounds width
-]
+	" Answer an <Integer> representing the receiver's width from the absolute bounds "
 
-{ #category : #'private - accessing' }
-CMSpaceModel >> activeSpatialEntity [
-	
-	^activeSpatialEntity
-]
-
-{ #category : #'private - accessing' }
-CMSpaceModel >> activeSpatialEntity: aClass [
-	
-	activeSpatialEntity := aClass
+	^ self absoluteBounds width
 ]
 
 { #category : #deprecated }
@@ -218,9 +205,9 @@ CMSpaceModel >> ajouterAutresAttribut: cel objet: objet attribut: attrib [
 
 { #category : #accessing }
 CMSpaceModel >> allOccupants [
-	"return a list of all the located entities"
+	" Answer a <Collection> of all the located entities"
 
-	^ self cormasModel allTheEntities select: [ :entity | entity isSituated ]
+	^ self cormasModel allTheEntities select: #isSituated
 ]
 
 { #category : #accessing }
@@ -499,23 +486,6 @@ CMSpaceModel >> changed: anAspectSymbol with: aParameter [
 	self cormasModel registerSpaceModelChange: anAspectSymbol with: aParameter
 ]
 
-{ #category : #'private - notification' }
-CMSpaceModel >> checkRemoteSpaceModels [
-	
-	| notResponding |
-	notResponding := Set new.
-	self myDependents
-		do: [:c | (self ping: c) ifFalse: [notResponding add: c]].
-	notResponding do: [:c | self removeDependent: c]
-]
-
-{ #category : #'user interface' }
-CMSpaceModel >> closeGraphicWindows [
-	"propagate some closeRequest to dependents. Added while removing Cormas>>spaceInterfaces link"
-	
-	self changed: #closeRequest
-]
-
 { #category : #'private - accessing' }
 CMSpaceModel >> closed [
 	
@@ -539,7 +509,7 @@ CMSpaceModel >> column [
 
 { #category : #'private - accessing' }
 CMSpaceModel >> connexity [
-	"Purpose: returns the value of the grid connexity, i.e. 8, 4 or 6.
+	" Answer an <Integer> representing the value of the grid connexity, i.e. 8, 4 or 6.
 	If the grid is irregular, returns 0"
 	
 	self gridCellShape = #irregular
@@ -560,8 +530,9 @@ CMSpaceModel >> cormas [
 
 { #category : #'private - accessing' }
 CMSpaceModel >> cormasModel [
-	
-	^cormasModel
+	" Answer the receiver's configured <CMAbstractModel> or nil "
+
+	^ cormasModel
 ]
 
 { #category : #'private - accessing' }
@@ -3246,6 +3217,8 @@ aColl at: 1 put: aColl first asNumber. aColl at: 2 put: aColl last asNumber. ]] 
 
 { #category : #'utilities - binary storage' }
 CMSpaceModel >> settingsFrom: aClone [
+	" This behavior is related with restoring organization (i.e. the redo, replay, etc) in the spatial grid "
+
 	(self absoluteBounds = aClone absoluteBounds
 		and: [ self column = aClone column
 				and: [ self line = aClone line

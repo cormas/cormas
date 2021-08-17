@@ -300,16 +300,6 @@ Example: self locationsWithoutAny: Predator withinRadius: self perceptionRangePr
 ]
 
 { #category : #deprecated }
-CMAgentLocation >> menu [
-	
-	| aMenuBuilder |
-	self halt.
-"	aMenuBuilder := MenuBuilder new.
-	aMenuBuilder add: 'Edition' -> [self inspect].
-	^aMenuBuilder menu"
-]
-
-{ #category : #deprecated }
 CMAgentLocation >> moveAndTrackTo: aPatch [
 	"Move to aPatch and display a line from origin center to aPatch center"
 	"Deprecated"

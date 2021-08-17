@@ -19,9 +19,9 @@ Class {
 CMApplicationPreferences class >> availableSettingSpaceViewer [
 	
 	^ { 
-		Smalltalk at: #CMR2SpaceView .
+		"Smalltalk at: #CMR2SpaceView ."
 		Smalltalk at: #CMR3SpaceView .
-	 	Smalltalk at: #CMR2SpaceAnimationRecorder 
+	 "	Smalltalk at: #CMR2SpaceAnimationRecorder "
 		}.
 ]
 

@@ -39,6 +39,12 @@ CMAbstractModelTest >> newProjectManager [
 ]
 
 { #category : #test }
+CMAbstractModelTest >> newValidEntityNamed: entityName [
+
+	CMSpatialEntityAggregate subclass: (entityName asValidCormasClassName: self sampleModelNameWithoutPrefix)
+]
+
+{ #category : #test }
 CMAbstractModelTest >> sampleModelName [
 
 	^ 'CMXXXModel'

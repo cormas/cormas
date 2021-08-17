@@ -149,16 +149,6 @@ CMObjectLocation >> leaveWhileMoving: isBeingMoved [
 	self patch: nil
 ]
 
-{ #category : #deprecated }
-CMObjectLocation >> menu [
-	
-	| aMenuBuilder |
-	self halt.
-"	aMenuBuilder := MenuBuilder new.
-	aMenuBuilder add: 'Edition' -> [self inspect].
-	^aMenuBuilder menu"
-]
-
 { #category : #moving }
 CMObjectLocation >> moveTo: aSpatialEntity [
 	"Purpose: moves to a given location.
