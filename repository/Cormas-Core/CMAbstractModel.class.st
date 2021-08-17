@@ -76,14 +76,14 @@ CMAbstractModel class >> aboutThisModel [
 
 ]
 
-{ #category : #probes }
+{ #category : #'accessing - probes' }
 CMAbstractModel class >> activeProbes [
 	^ activeProbes
 		ifNil: [ self defaultProbes ]
 		ifNotNil: [ activeProbes ]
 ]
 
-{ #category : #probes }
+{ #category : #'accessing - probes' }
 CMAbstractModel class >> activeProbes: anObject [
 	
 	activeProbes := anObject
@@ -388,7 +388,7 @@ CMAbstractModel class >> cmVersion [
 	^ '1.0'
 ]
 
-{ #category : #probes }
+{ #category : #'accessing - probes' }
 CMAbstractModel class >> colorOfProbe: aProbeSymbol [
 	"answer the color of a probe (to display the curve in ChartsInterface)"
 	
@@ -801,7 +801,7 @@ CMAbstractModel class >> prefixName [
 	^ 'CM'
 ]
 
-{ #category : #probes }
+{ #category : #'accessing - probes' }
 CMAbstractModel class >> probes [
 	^ (Pragma allNamed: #probe in: self) collect: #methodSelector
 ]
@@ -870,7 +870,7 @@ CMAbstractModel class >> renameSelector: oldName by: newName inputParametersNumb
 						permutation: map) execute]]
 ]
 
-{ #category : #probes }
+{ #category : #'accessing - probes' }
 CMAbstractModel class >> setActiveProbes: listProbes [
 	| selectedClass selectedClassName |
 	self activeProbes: OrderedCollection new.
@@ -886,7 +886,7 @@ CMAbstractModel class >> setActiveProbes: listProbes [
 					selectedClass activeProbes add: (s findTokens: $>) last asSymbol ] ]
 ]
 
-{ #category : #compiling }
+{ #category : #'accessing - probes' }
 CMAbstractModel class >> setColor: aColorValue forProbe: aSymbol [
 	"creates a color method at class level, such as :
 colorOfProbe_aSymbol
@@ -1176,8 +1176,8 @@ Example: (self allTheSituatedEntities: Forager) is returning all the instances o
 
 { #category : #announcement }
 CMAbstractModel >> announceProbesDataUpdated [
-	^ self announcer
-		announce: (CMProbesDataUpdatedAnnouncement timeStep: self timeStep)
+
+	self announcer announce: (CMProbesDataUpdatedAnnouncement timeStep: self timeStep)
 ]
 
 { #category : #announcement }
@@ -2428,7 +2428,6 @@ CMAbstractModel >> initFile: aStringOrFilename dataCollection: aCollec separator
 { #category : #scheduling }
 CMAbstractModel >> initSimulation [
 
-
 	self timeStep: 0.
 	self spaceModel ifNil: [ self initializeSpaceModel ].
 	self initializeProbes.
@@ -2918,6 +2917,13 @@ CMAbstractModel >> printOn: aStream [
 		<< ', entities: ';
 		<< self allTheEntities size asString;
 		<< ')'
+]
+
+{ #category : #'probes - recording' }
+CMAbstractModel >> probeAt: probeName [
+	" Answer a <Collection> with the receiver's values for probeName "
+
+	^ (self data at: self className) at: probeName
 ]
 
 { #category : #accessing }

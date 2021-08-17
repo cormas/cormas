@@ -1,18 +1,18 @@
 Class {
-	#name : #CMSpMorphicConfiguration,
+	#name : #CMSpMorphicConfigurationForMicrodown,
 	#superclass : #SpMorphicConfiguration,
 	#category : #'Cormas-UI-Spec2'
 }
 
 { #category : #accessing }
-CMSpMorphicConfiguration >> defaultStyleSheet [
+CMSpMorphicConfigurationForMicrodown >> defaultStyleSheet [
 
 	^ SpStyleVariableSTONReader fromString: self defaultStyleSheetData
 	
 ]
 
 { #category : #accessing }
-CMSpMorphicConfiguration >> defaultStyleSheetData [
+CMSpMorphicConfigurationForMicrodown >> defaultStyleSheetData [
 
 	^ '.application [  
 	Draw { 
@@ -40,7 +40,7 @@ Geometry {
 ]
 
 { #category : #accessing }
-CMSpMorphicConfiguration >> styleSheet [
+CMSpMorphicConfigurationForMicrodown >> styleSheet [
 	"Define the default styleSheet to use in your application. You can override this and add your 
 	 own application dependent styles (and you can compose them, see *SpStyle*).
 	

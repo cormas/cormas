@@ -1,7 +1,7 @@
 Class {
 	#name : #CMExternalBrowser,
 	#superclass : #ExternalBrowser,
-	#category : #'Cormas-UI-Project-Spec1'
+	#category : #'Cormas-UI-Project'
 }
 
 { #category : #'instance creation' }

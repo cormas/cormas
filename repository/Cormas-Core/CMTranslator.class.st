@@ -314,6 +314,9 @@ CMTranslator >> addTranslationsForENPart3 [
 		at: #tPackageDepedenciesGraph 	put: 'Open Package Dependencies Graph';
 		at: #tCORMASBrowser 				put: 'CORMAS Browser';
 		at: #tNoSpaceModel 				put: 'No space model to visualize';
+		at: #tSpaceInterface 				put: 'Space Interface';
+		at: #tChangeColor 					put: 'Change color';
+		at: #tChooseColor 					put: 'Choose a color';
 		yourself
 ]
 
@@ -597,6 +600,9 @@ CMTranslator >> addTranslationsForESPart3 [
 		at: #tPackageDepedenciesGraph 		put: 'Abrir Visualización de Dependencias de Paquetes';
 		at: #tCORMASBrowser 					put: 'Navegador de CORMAS';
 		at: #tNoSpaceModel 					put: 'No hay ningún space model para visualizar';
+		at: #tSpaceInterface 					put: 'Interface de Espacio';
+		at: #tChangeColor 						put: 'Cambiar color';
+		at: #tChooseColor 						put: 'Seleccione un color';
 		yourself
 
 ]

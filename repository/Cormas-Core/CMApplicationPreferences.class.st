@@ -7,7 +7,11 @@ Class {
 	#superclass : #Object,
 	#classVars : [
 		'SettingBaseLocation',
+		'SettingChartViewer',
+		'SettingFixedHorizontalTick',
+		'SettingFixedVerticalTick',
 		'SettingProjectNotifications',
+		'SettingShowProbesTitle',
 		'SettingSpaceViewer',
 		'SettingWaitLimit',
 		'SettingWarnUsing'
@@ -16,12 +20,22 @@ Class {
 }
 
 { #category : #settings }
-CMApplicationPreferences class >> availableSettingSpaceViewer [
-	
+CMApplicationPreferences class >> availableSettingChartViewer [
+	" Answer a <Collection> with classes representing available Chart Viewers implementations "
+
 	^ { 
-		Smalltalk at: #CMR2SpaceView .
+		Smalltalk at: #CMSpChartViewer
+	 	"Smalltalk at: #CMR2SimpleChart"
+		}.
+]
+
+{ #category : #settings }
+CMApplicationPreferences class >> availableSettingSpaceViewer [
+	" Answer a <Collection> with classes representing available Space Interfaces implementations "
+
+	^ { 
 		Smalltalk at: #CMR3SpaceView .
-	 	Smalltalk at: #CMR2SpaceAnimationRecorder 
+	 	"Smalltalk at: #CMR2SpaceAnimationRecorder "
 		}.
 ]
 
@@ -29,6 +43,16 @@ CMApplicationPreferences class >> availableSettingSpaceViewer [
 CMApplicationPreferences class >> availableSettingWarnUsing [
 	
 	^ CMLoadException allSubclasses 
+]
+
+{ #category : #settings }
+CMApplicationPreferences class >> cmChartSettingOn: aBuilder [
+	<cormasPreferences>
+	
+	(aBuilder group: #cmChartSetting)
+		label: 'Probes Chart';
+		description: 'Settings related with Probes Chart visualization';
+		order: 1
 ]
 
 { #category : #settings }
@@ -66,6 +90,46 @@ CMApplicationPreferences class >> cmSettingBaseLocationOn: aBuilder [
 ]
 
 { #category : #settings }
+CMApplicationPreferences class >> cmSettingChartViewerOn: aBuilder [
+	<cormasPreferences>
+	
+	(aBuilder pickOne: #settingChartViewer)
+		label: 'Chart Viewer';
+		parent: #cmGeneralSetting;
+		description: 'You can use multiple types of chart viewers';
+		target: self;
+		order: 7;
+		domainValues: self availableSettingChartViewer;
+		default: self defaultSettingChartViewer
+]
+
+{ #category : #settings }
+CMApplicationPreferences class >> cmSettingFixedHorizontalTickOn: aBuilder [
+	<cormasPreferences>
+	
+	(aBuilder setting: #settingFixedHorizontalTick)
+		label: 'Horizontal ticks are fixed';
+		parent: #cmChartSetting;
+		description: 'Whether the horizontal ticks are a fixed value in the Probes visualization chart';
+		target: self;
+		order: 2;
+		default: false
+]
+
+{ #category : #settings }
+CMApplicationPreferences class >> cmSettingFixedVerticalTickOn: aBuilder [
+	<cormasPreferences>
+	
+	(aBuilder setting: #settingFixedVerticalTick)
+		label: 'Vertical ticks are fixed';
+		parent: #cmChartSetting;
+		description: 'Whether the vertical ticks are a fixed value in the Probes visualization chart';
+		target: self;
+		order: 3;
+		default: false
+]
+
+{ #category : #settings }
 CMApplicationPreferences class >> cmSettingProjectNotificationsOn: aBuilder [
 	<cormasPreferences>
 	
@@ -76,6 +140,19 @@ CMApplicationPreferences class >> cmSettingProjectNotificationsOn: aBuilder [
 		target: self;
 		order: 5;
 		default: self defaultProjectNotifications
+]
+
+{ #category : #settings }
+CMApplicationPreferences class >> cmSettingShowProbesTitleOn: aBuilder [
+	<cormasPreferences>
+	
+	(aBuilder setting: #settingShowProbesTitle)
+		label: 'Include a title for the Probes Chart';
+		parent: #cmChartSetting;
+		description: 'Whether to show a title label in the Probes visualization chart';
+		target: self;
+		order: 1;
+		default: false
 ]
 
 { #category : #settings }
@@ -133,6 +210,24 @@ CMApplicationPreferences class >> defaultProjectNotifications [
 ]
 
 { #category : #defaults }
+CMApplicationPreferences class >> defaultSettingChartViewer [
+	
+	^ Smalltalk at: #CMSpChartViewer
+]
+
+{ #category : #defaults }
+CMApplicationPreferences class >> defaultSettingFixedHorizontalTick [
+
+	^ false
+]
+
+{ #category : #defaults }
+CMApplicationPreferences class >> defaultSettingFixedVerticalTick [
+
+	^ true
+]
+
+{ #category : #defaults }
 CMApplicationPreferences class >> defaultSettingSpaceViewer [
 	
 	^ Smalltalk at: #CMR3SpaceView
@@ -146,8 +241,8 @@ CMApplicationPreferences class >> defaultSettingWarnUsing [
 
 { #category : #'initialize - release' }
 CMApplicationPreferences class >> release [
-	" Clean receiver's class variables.
-	self release "
+	" Clean receiver's class variables "
+	<script>
 
 	(self class organization listAtCategoryNamed: #accessing)
 		select: #isKeyword
@@ -170,6 +265,50 @@ CMApplicationPreferences class >> settingBaseLocation: anObject [
 ]
 
 { #category : #accessing }
+CMApplicationPreferences class >> settingChartViewer [
+	" Answer a <Class> with the currently selected Chart Viewers implementation "
+
+	^ SettingChartViewer
+		ifNil: [ SettingChartViewer := self defaultSettingChartViewer ]
+]
+
+{ #category : #accessing }
+CMApplicationPreferences class >> settingChartViewer: anObject [
+
+	SettingChartViewer := anObject
+]
+
+{ #category : #accessing }
+CMApplicationPreferences class >> settingFixedHorizontalTick [
+	" Answer the settingFixedHorizontalTick of this CMApplicationPreferences "
+
+	^ SettingFixedHorizontalTick
+		ifNil: [ SettingFixedHorizontalTick := self defaultSettingFixedHorizontalTick ]
+]
+
+{ #category : #accessing }
+CMApplicationPreferences class >> settingFixedHorizontalTick: anObject [
+	" Sets the settingFixedHorizontalTick of this CMApplicationPreferences "
+
+	SettingFixedHorizontalTick := anObject
+]
+
+{ #category : #accessing }
+CMApplicationPreferences class >> settingFixedVerticalTick [
+	" Answer the settingFixedVerticalTick of this CMApplicationPreferences "
+
+	^ SettingFixedVerticalTick
+		ifNil: [ SettingFixedVerticalTick := self defaultSettingFixedVerticalTick ]
+]
+
+{ #category : #accessing }
+CMApplicationPreferences class >> settingFixedVerticalTick: anObject [
+	" Sets the settingFixedVerticalTick of this CMApplicationPreferences "
+
+	SettingFixedVerticalTick := anObject
+]
+
+{ #category : #accessing }
 CMApplicationPreferences class >> settingProjectNotifications [
 	" Answer the settingProjectNotifications of this CMApplicationPreferences "
 
@@ -182,6 +321,20 @@ CMApplicationPreferences class >> settingProjectNotifications: anObject [
 	" Sets the settingProjectNotifications of this CMApplicationPreferences "
 
 	SettingProjectNotifications := anObject
+]
+
+{ #category : #accessing }
+CMApplicationPreferences class >> settingShowProbesTitle [
+	" Answer the settingShowProbesTitle of this CMApplicationPreferences "
+
+	^ SettingShowProbesTitle
+]
+
+{ #category : #accessing }
+CMApplicationPreferences class >> settingShowProbesTitle: anObject [
+	" Sets the settingShowProbesTitle of this CMApplicationPreferences "
+
+	SettingShowProbesTitle := anObject
 ]
 
 { #category : #accessing }

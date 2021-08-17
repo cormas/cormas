@@ -10,7 +10,7 @@ Class {
 		'rbCellGroup',
 		'rbConfigGroup'
 	],
-	#category : #'Cormas-UI-Core'
+	#category : #'Cormas-UI-Spec1-Entities'
 }
 
 { #category : #specs }

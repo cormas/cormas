@@ -199,17 +199,24 @@ CMR3SpaceView >> elemClass: anObject [
 
 { #category : #'accessing - pov' }
 CMR3SpaceView >> getActivePovSelectorOf: aClass [
-^self activePovsSelector at: aClass ifAbsent: [ nil ]
+
+	^ self activePovsSelector at: aClass ifAbsent: [ nil ]
 	
 ]
 
 { #category : #initialization }
-CMR3SpaceView >> initializeOn: aModel [
+CMR3SpaceView >> initialize [
+	" Private - Set the receiver's Spec application "
 
-	"This method initializes a simulationGrid for a specific cormasModel , without specifyin any animation behaviour"
+	super initialize.
+	application := CMSpApplication new
+]
 
-	model := aModel.
-	self addViewForCells: aModel theESE.
+{ #category : #initialization }
+CMR3SpaceView >> initializePresenters [
+	" Private - This method initializes a simulationGrid for a specific cormasModel , without specifyin any animation behaviour "
+
+	self addViewForCells: self model theESE.
 "	aModel allTheSituatedEntities ifNotEmpty: [ : atse |
 		self addViewForAgents: atse.
 		self moveSituatedEntities ]."
@@ -323,6 +330,12 @@ CMR3SpaceView >> setAndRefreshActivePovSelectorOf: aClass with: aSymbol [
 			shapeSelector := self getActivePovSelectorOf: aClass.
 			roassalNode color: (roassalNode model getColorForPov: shapeSelector) ].
 	self canvas signalUpdate
+]
+
+{ #category : #initialization }
+CMR3SpaceView >> setModelBeforeInitialization: aModel [
+
+	model := aModel.
 ]
 
 { #category : #accessing }
