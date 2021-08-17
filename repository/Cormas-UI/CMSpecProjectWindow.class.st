@@ -10,7 +10,7 @@ Class {
 	#instVars : [
 		'simWindow'
 	],
-	#category : #'Cormas-UI-Project'
+	#category : #'Cormas-UI-Spec1-Project'
 }
 
 { #category : #specs }
@@ -68,12 +68,19 @@ CMSpecProjectWindow >> appSettingsClass [
 CMSpecProjectWindow >> chartVisualizer [
 	" Answer a <Class> responsible to display a UI for charting "
 
-	^ self appSettingsClass chartVisualizer
+	^ self appSettingsClass settingChartViewer
 ]
 
 { #category : #private }
 CMSpecProjectWindow >> closeAfterCreateProject [
 	^ true
+]
+
+{ #category : #callbacks }
+CMSpecProjectWindow >> closeSimulationWindow [
+	" Close the receiver's simulation interface "
+	
+	self simWindow delete
 ]
 
 { #category : #private }
@@ -136,6 +143,12 @@ CMSpecProjectWindow >> defaultProjectManagerClass [
 	" Private - See superimplementor's comment "
 
 	^ CMProjectManager
+]
+
+{ #category : #accessing }
+CMSpecProjectWindow >> fsmState [
+
+	^ self projectManager fsmState
 ]
 
 { #category : #initialization }
@@ -529,6 +542,16 @@ CMSpecProjectWindow >> openEditSteps [
 		
 ]
 
+{ #category : #accessing }
+CMSpecProjectWindow >> openHelpAboutThisModel [
+	" Open a window with description and help about the receiver "
+
+	(CMSpAboutWindow 
+		owner: self spPresenter 
+		on: self cormasModelClass) openWithSpec
+			
+]
+
 { #category : #callbacks }
 CMSpecProjectWindow >> openPovSetterGUI [
 
@@ -564,11 +587,9 @@ self alertMessage: 'No implemented yet'
 
 { #category : #callbacks }
 CMSpecProjectWindow >> openVizProbes [
-	| aModel |
-	aModel := self projectManager cormasModel.
-	aModel data isEmpty
-		ifTrue: [ ^ self alertMessage: 'No data to visualize' ].
-	self chartVisualizer openOn: aModel
+	" Private - Open a window with the chart visualizer configured for the receiver's application "
+
+	self chartVisualizer openOn: self projectManager cormasModel
 ]
 
 { #category : #callbacks }
@@ -615,6 +636,12 @@ CMSpecProjectWindow >> runCormasTests [
 		(SubunitRunner runAndCollectPackages: #('Cormas-Tests')) anyOne inspect ]
 ]
 
+{ #category : #callbacks }
+CMSpecProjectWindow >> showSimulationWindow [
+
+	self simWindow showSimInterface
+]
+
 { #category : #accessing }
 CMSpecProjectWindow >> simWindow [
 	^ simWindow
@@ -623,6 +650,13 @@ CMSpecProjectWindow >> simWindow [
 { #category : #accessing }
 CMSpecProjectWindow >> simWindow: anObject [
 	simWindow := anObject
+]
+
+{ #category : #accessing }
+CMSpecProjectWindow >> spPresenter [
+	" This is used while migrating to Spec2, which needs presenters with an owner with SpApplication linked "
+
+	^ CMSpPresenter new
 ]
 
 { #category : #'submenu-help' }

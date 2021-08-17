@@ -67,14 +67,23 @@ Class {
 	#category : #'Cormas-Core-Interface'
 }
 
-{ #category : #probes }
+{ #category : #accessing }
+CMAbstractModel class >> aboutThisModel [
+	" Answer a <String> which is the main description of the receiver's purpose "
+	
+	self subclassResponsibility
+	
+
+]
+
+{ #category : #'accessing - probes' }
 CMAbstractModel class >> activeProbes [
 	^ activeProbes
 		ifNil: [ self defaultProbes ]
 		ifNotNil: [ activeProbes ]
 ]
 
-{ #category : #probes }
+{ #category : #'accessing - probes' }
 CMAbstractModel class >> activeProbes: anObject [
 	
 	activeProbes := anObject
@@ -266,6 +275,23 @@ CMAbstractModel class >> allTerminalClasses [
 						ifTrue: [ stream nextPut: passiveClass ] ] ]
 ]
 
+{ #category : #accessing }
+CMAbstractModel class >> buildMicroDownUsing: aBuilder [ 
+
+	aBuilder
+		header: [ :b | b text: self friendlyName ] withLevel: 1;
+		horizontalLine;
+
+		header: [ :b | b text: 'Description' ] withLevel: 3;
+		horizontalLine;
+		text: self aboutThisModel;
+		newLine;
+
+		header: [ :b | b text: 'How to run it' ] withLevel: 3;
+		horizontalLine;
+		text: self howToRunIt
+]
+
 { #category : #'managing classes' }
 CMAbstractModel class >> cellClass [
 	^ cellClass
@@ -362,7 +388,7 @@ CMAbstractModel class >> cmVersion [
 	^ '1.0'
 ]
 
-{ #category : #probes }
+{ #category : #'accessing - probes' }
 CMAbstractModel class >> colorOfProbe: aProbeSymbol [
 	"answer the color of a probe (to display the curve in ChartsInterface)"
 	
@@ -500,6 +526,13 @@ randomAttributes = #(#bioma #instance #randomFloat 0 1). "
 		ifTrue: [otherString := otherString , ']']
 		ifFalse: [otherString := otherString , '['].
 	^otherString = aString
+]
+
+{ #category : #accessing }
+CMAbstractModel class >> howToRunIt [
+	" Answer a <String> with information about how to run the receiver "
+
+	self subclassResponsibility
 ]
 
 { #category : #'instance creation' }
@@ -768,7 +801,7 @@ CMAbstractModel class >> prefixName [
 	^ 'CM'
 ]
 
-{ #category : #probes }
+{ #category : #'accessing - probes' }
 CMAbstractModel class >> probes [
 	^ (Pragma allNamed: #probe in: self) collect: #methodSelector
 ]
@@ -837,7 +870,7 @@ CMAbstractModel class >> renameSelector: oldName by: newName inputParametersNumb
 						permutation: map) execute]]
 ]
 
-{ #category : #probes }
+{ #category : #'accessing - probes' }
 CMAbstractModel class >> setActiveProbes: listProbes [
 	| selectedClass selectedClassName |
 	self activeProbes: OrderedCollection new.
@@ -853,7 +886,7 @@ CMAbstractModel class >> setActiveProbes: listProbes [
 					selectedClass activeProbes add: (s findTokens: $>) last asSymbol ] ]
 ]
 
-{ #category : #compiling }
+{ #category : #'accessing - probes' }
 CMAbstractModel class >> setColor: aColorValue forProbe: aSymbol [
 	"creates a color method at class level, such as :
 colorOfProbe_aSymbol
@@ -1143,8 +1176,8 @@ Example: (self allTheSituatedEntities: Forager) is returning all the instances o
 
 { #category : #announcement }
 CMAbstractModel >> announceProbesDataUpdated [
-	^ self announcer
-		announce: (CMProbesDataUpdatedAnnouncement timeStep: self timeStep)
+
+	self announcer announce: (CMProbesDataUpdatedAnnouncement timeStep: self timeStep)
 ]
 
 { #category : #announcement }
@@ -2395,7 +2428,6 @@ CMAbstractModel >> initFile: aStringOrFilename dataCollection: aCollec separator
 { #category : #scheduling }
 CMAbstractModel >> initSimulation [
 
-
 	self timeStep: 0.
 	self spaceModel ifNil: [ self initializeSpaceModel ].
 	self initializeProbes.
@@ -2885,6 +2917,13 @@ CMAbstractModel >> printOn: aStream [
 		<< ', entities: ';
 		<< self allTheEntities size asString;
 		<< ')'
+]
+
+{ #category : #'probes - recording' }
+CMAbstractModel >> probeAt: probeName [
+	" Answer a <Collection> with the receiver's values for probeName "
+
+	^ (self data at: self className) at: probeName
 ]
 
 { #category : #accessing }

@@ -14,7 +14,7 @@ Class {
 		'creator',
 		'comments'
 	],
-	#category : #'Cormas-UI-Project-Spec2'
+	#category : #'Cormas-UI-Spec2-Project'
 }
 
 { #category : #specs }
@@ -124,22 +124,22 @@ CMSpMetaProjectPresenter >> hasStoredSimulations: anObject [
 { #category : #accessing }
 CMSpMetaProjectPresenter >> initializePresenters [
 		
-	name := self instantiate: (SpLabelledPresenter 
+	name := self instantiate: (SpLabeledPresenter 
 		label: 'Name' 
 		input: self newTextInput).
-	version := self instantiate: (SpLabelledPresenter 
+	version := self instantiate: (SpLabeledPresenter 
 		label: 'Version' 
 		input: self newTextInput).	
-	creationDate := self instantiate: (SpLabelledPresenter 
+	creationDate := self instantiate: (SpLabeledPresenter 
 		label: 'Creation Date' 
 		input: self newTextInput).
-	filePath := self instantiate: (SpLabelledPresenter 
+	filePath := self instantiate: (SpLabeledPresenter 
 		label: 'Path' 
 		input: self newLink).
-	fileSize:= self instantiate: (SpLabelledPresenter 
+	fileSize:= self instantiate: (SpLabeledPresenter 
 		label: 'Size' 
 		input: self newLink).
-	language := self instantiate: (SpLabelledPresenter 
+	language := self instantiate: (SpLabeledPresenter 
 		label: 'Language' 
 		input: self newTextInput).
 	demo := self newCheckBox
@@ -150,10 +150,10 @@ CMSpMetaProjectPresenter >> initializePresenters [
 		label: 'Has stored simulations';
 		state: false;
 		yourself.
-	creator := self instantiate: (SpLabelledPresenter 
+	creator := self instantiate: (SpLabeledPresenter 
 		label: 'Creator' 
 		input: self newTextInput).
-	comments := (self instantiate: (SpLabelledPresenter 
+	comments := (self instantiate: (SpLabeledPresenter 
 		label: 'Comments' "self translator tModelComments "
 		input: self newText))
 			enabled: false.

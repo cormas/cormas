@@ -24,7 +24,7 @@ Class {
 	#instVars : [
 		'projectManager'
 	],
-	#category : #'Cormas-UI-Project-Spec2'
+	#category : #'Cormas-UI-Spec2-Project'
 }
 
 { #category : #'instance creation' }

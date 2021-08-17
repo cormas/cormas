@@ -31,7 +31,7 @@ Class {
 		'passiveList',
 		'defineEntitiesLabel'
 	],
-	#category : #'Cormas-UI-Core'
+	#category : #'Cormas-UI-Spec1-Entities'
 }
 
 { #category : #initialization }

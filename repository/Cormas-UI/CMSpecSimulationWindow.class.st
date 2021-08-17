@@ -66,7 +66,7 @@ Class {
 		'replayStepButton',
 		'replayAllButton'
 	],
-	#category : #'Cormas-UI-Core'
+	#category : #'Cormas-UI-Spec1-Simulation-Controls'
 }
 
 { #category : #specs }
@@ -200,13 +200,6 @@ CMSpecSimulationWindow >> changeButton [
 ]
 
 { #category : #accessing }
-CMSpecSimulationWindow >> changeButton: anObject [
-	" Sets the changeButton of this CMSpecSimulationWindow "
-
-	changeButton := anObject
-]
-
-{ #category : #accessing }
 CMSpecSimulationWindow >> closeButon [
 	" Answer the closeButton of this CMSpecSimulationWindow "
 
@@ -235,24 +228,10 @@ CMSpecSimulationWindow >> currentStepInputText [
 ]
 
 { #category : #accessing }
-CMSpecSimulationWindow >> currentStepInputText: anObject [
-	" Sets the currentStepInputText of this CMSpecSimulationWindow "
-
-	currentStepInputText := anObject
-]
-
-{ #category : #accessing }
 CMSpecSimulationWindow >> currentStepLabel [
 	" Answer the currentStepLabel of this CMSpecSimulationWindow "
 
 	^ currentStepLabel
-]
-
-{ #category : #accessing }
-CMSpecSimulationWindow >> currentStepLabel: anObject [
-	" Sets the currentStepLabel of this CMSpecSimulationWindow "
-
-	currentStepLabel := anObject
 ]
 
 { #category : #callbacks }
@@ -317,11 +296,6 @@ CMSpecSimulationWindow >> finalStepInputText: anObject [
 { #category : #accessing }
 CMSpecSimulationWindow >> finalStepLabel [
 	^ finalStepLabel
-]
-
-{ #category : #accessing }
-CMSpecSimulationWindow >> finalStepLabel: anObject [
-	finalStepLabel := anObject
 ]
 
 { #category : #accessing }

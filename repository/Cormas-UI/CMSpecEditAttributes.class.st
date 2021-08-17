@@ -26,7 +26,7 @@ Class {
 		'targetClass',
 		'classAttributesTable'
 	],
-	#category : #'Cormas-UI-Attributes'
+	#category : #'Cormas-UI-Spec1-Attributes'
 }
 
 { #category : #initialization }

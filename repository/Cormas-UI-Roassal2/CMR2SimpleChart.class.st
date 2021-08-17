@@ -63,7 +63,8 @@ CMR2SimpleChart >> addProbe: probeName ofClass: className [
 	probeNum := probeNum + 1.
 	cn := className asString.
 	pn := probeName asString.
-	yValues := [ :x | ((cormasModel data at: cn) at: pn) asOrderedCollection at: x + 1 ].
+
+	yValues := [ :x | 	self halt. ((cormasModel data at: cn) at: pn) asOrderedCollection at: x + 1 ].
 	xValues := 0 to: ((cormasModel data at: cn) at: pn) asOrderedCollection size - 1 by: 1.
 	ds := RTData new.
 	"ds noDot."
@@ -122,6 +123,7 @@ CMR2SimpleChart >> openWithToolbar [
 		model: self;
 		title: 'CORMAS - Probes'.
 	axisConfigurationX noDecimal.
+	axisConfigurationY noDecimal.
 	t := cormasModel timeStep.
 	self view removeAllElements.
 	datasets := OrderedCollection new.
@@ -145,7 +147,7 @@ CMR2SimpleChart >> refresh [
 	cormasModel class allEntityClasses
 		do: [ :c | c activeProbes do: [ :p | self addProbe: p ofClass: c name ] ].
 	cormasModel class activeProbes
-		do: [ :p | self addProbe: p ofClass: cormasModel class name ].
+		do: [ :p | self addProbe: p ofClass: cormasModel class name  ].
 	
 ]
 

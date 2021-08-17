@@ -45,143 +45,49 @@ La seconde consiste a partir de 10 cellules graines, et a creer autant d''agrega
 { #category : #description }
 CMDemoAggregatesModel class >> howToRunIt [
 
-	| tmp1 |
-	tmp1 := '1. Spreading of 3 forests\' withCRs asText 
-		        emphasizeAllWith: #( #bold #large ).
-	tmp1 := tmp1 , '1.1 From the Cormas main menu, load ' asText
-	        , ('Files -> Load ' asText emphasizeAllWith: #italic)
-	        , '. Select ' asText
-	        , ('TSE ' asText emphasizeAllWith: #italic)
-	        , 'and choose ' asText
-	        ,
-	        ('SpreadForest.st ' asText emphasizeAllWith:
-		         #color -> Color red) , ' version of TSE.\' withCRs asText.
-	tmp1 := tmp1 , '1.2 Click on the first icon of the ' asText
-	        ,
-	        ('Visualisation ' asText emphasizeAllWith:
-		         #color -> Color red)
-	        , 'area to open the standard spatial grid.\' withCRs asText.
-	tmp1 := tmp1 , '1.3 From the spatial grid menu, use ' asText
-	        ,
-	        ('Tools -> Load an environment' asText emphasizeAllWith:
-		         #italic) , ', select ' asText
-	        , ('3forests.env ' asText emphasizeAllWith: #italic)
-	        ,
-		        'and validate. This will initialize a 50*50 grid and assign values (#tree or #empty) to the cell attribute '
-			        asText
-	        , ('context\' withCRs asText emphasizeAllWith: #italic).
-	tmp1 := tmp1
-	        ,
-	        '1.4 Right-click within the spatial grid window to select the '
-		        asText , ('povTree ' asText emphasizeAllWith: #italic)
-	        , 'view for ' asText
-	        , ('Cell' asText emphasizeAllWith: #italic)
-	        , '.\' withCRs asText.
-	tmp1 := tmp1 , '1.5 Click on the ' asText
-	        , ('Initialize ' asText emphasizeAllWith: #italic)
-	        , 'button of the ' asText
-	        ,
-	        ('Simulation ' asText emphasizeAllWith: #color -> Color red)
-	        , 'area.\' withCRs asText.
-	tmp1 := tmp1 , '1.6 Select the ' asText
-	        , ('initForests ' asText emphasizeAllWith: #italic)
-	        , 'and ' asText
-	        , ('stepForests: ' asText emphasizeAllWith: #italic)
-	        , 'methods, then validate by clicking on ' asText
-	        , ('Apply and close.' asText emphasizeAllWith: #italic)
-	        ,
-		        ' This version builds first level Aggregates (the forests are composed of connected cells with #forest as context) and second level aggregates : a fragmented aggregate composed with first level aggregates.\'
-			        withCRs asText.
-	tmp1 := tmp1
-	        ,
-	        '1.7 Right-click within the spatial grid window to select the '
-		        asText , ('povSize ' asText emphasizeAllWith: #italic)
-	        , 'view for ' asText
-	        , ('Aggregate' asText emphasizeAllWith: #italic)
-	        , '.\' withCRs asText.
-	tmp1 := tmp1 , '1.8 Enter 30 in the ' asText
-	        , ('Final time ' asText emphasizeAllWith: #italic)
-	        , 'input field of the ' asText
-	        ,
-	        ('Simulation ' asText emphasizeAllWith: #color -> Color red)
-	        , 'area.\' withCRs asText.
-	tmp1 := tmp1 , '1.9 Click on the ' asText
-	        , ('Run ' asText emphasizeAllWith: #italic)
-	        , 'button of the ' asText
-	        ,
-	        ('Simulation ' asText emphasizeAllWith: #color -> Color red)
-	        , 'area.\\' withCRs asText.
-	tmp1 := tmp1
-	        ,
-		        ('2. Swelling from 10 seeds\' withCRs asText 
-			         emphasizeAllWith: #( #bold #large )).
-	tmp1 := tmp1 , '2.1 From the spatial grid menu, use ' asText
-	        ,
-	        ('Tools -> Load an environment' asText emphasizeAllWith:
-		         #italic) , ', select ' asText
-	        , ('10seeds.env ' asText emphasizeAllWith: #italic)
-	        ,
-		        'and validate. This will initialize a 50*50 grid and assign values (true or false) to the cell attribute '
-			        asText , ('seed\' withCRs asText emphasizeAllWith: #italic).
-	tmp1 := tmp1
-	        ,
-	        '2.2 Right-click within the spatial grid window to select the '
-		        asText , ('povSeed ' asText emphasizeAllWith: #italic)
-	        , 'view for ' asText
-	        , ('Cell' asText emphasizeAllWith: #italic)
-	        , '.\' withCRs asText.
-	tmp1 := tmp1 , '2.3 Click on the ' asText
-	        , ('Initialize ' asText emphasizeAllWith: #italic)
-	        , 'button of the ' asText
-	        ,
-	        ('Simulation ' asText emphasizeAllWith: #color -> Color red)
-	        , 'area.\' withCRs asText.
-	tmp1 := tmp1 , '2.4 Select the ' asText
-	        , ('initSeeds ' asText emphasizeAllWith: #italic)
-	        , 'and ' asText
-	        , ('stepSeeds: ' asText emphasizeAllWith: #italic)
-	        , 'methods, then validate by clicking on ' asText
-	        ,
-	        ('Apply and close.\' asText emphasizeAllWith: #italic)
-		        withCRs asText.
-	tmp1 := tmp1
-	        ,
-	        '2.5 Right-click within the spatial grid window to select the '
-		        asText , ('povId ' asText emphasizeAllWith: #italic)
-	        , 'view for ' asText
-	        , ('Aggregate' asText emphasizeAllWith: #italic)
-	        , '.\' withCRs asText.
-	tmp1 := tmp1 , '2.6 Click on the ' asText
-	        , ('Step ' asText emphasizeAllWith: #italic)
-	        , 'button of the ' asText
-	        ,
-	        ('Simulation ' asText emphasizeAllWith: #color -> Color red)
-	        , 'area.\\' withCRs asText.
-	tmp1 := tmp1 , ('3. Save and load your environment\' withCRs asText 
-		         emphasizeAllWith: #( #bold #large )).
-	tmp1 := tmp1 , '3.1 From the Cormas main menu, load ' asText
-	        , ('Files -> Load ' asText emphasizeAllWith: #italic)
-	        , '. Select ' asText
-	        , ('TSE ' asText emphasizeAllWith: #italic)
-	        , 'and choose ' asText
-	        , ('Save-Load-Aggregates.st ' asText emphasizeAllWith:
-			         #color -> Color red) , ' version of TSE.\' withCRs asText.
-	tmp1 := tmp1
-	        ,
-		        '3.2 The init method will load a 50*50 grid and load the aggregate instances and their neighbours.\'
-			        withCRs asText.
-	tmp1 := tmp1
-	        ,
-		        '3.2 If you want to see how to save the current grid, the aggregates and their neighbours, see the '
-			        asText
-	        ,
-	        ('exportAggregatesAndNeighbours:' asText emphasizeAllWith:
-		         #italic)
-	        ,
-		        ' method. (You can also save the neighbours of the cells. It can save time when you load big irregular grid (see the '
-			        asText
-	        , ('exportNeighboors' asText emphasizeAllWith: #italic)
-	        , ' method).\' withCRs asText
+	 ^ '1. Spreading of 3 forests
+	 
+1.1 From the Cormas main menu, load Files -> Load. Select TSE and choose SpreadForest.st version of TSE. 
+
+1.2 Click on the first icon of the Visualisation area to open the standard spatial grid.
+
+1.3 From the spatial grid menu, use Tools -> Load an environment, select 3forests.env and validate. This will initialize a 50*50 grid and assign values (#tree or #empty) to the cell attribute context 
+
+1.4 Right-click within the spatial grid window to select the povTree view for Cell.
+
+1.5 Click on the Initialize button of the Simulation area.
+ 
+1.6 Select the initForests and stepForests: methods, then validate by clicking on Apply and close
+
+This version builds first level Aggregates (the forests are composed of connected cells with #forest as context) and second level aggregates : a fragmented aggregate composed with first level aggregates
+			        
+1.7 Right-click within the spatial grid window to select the povSize view for Aggregate.  
+ 
+1.8 Enter 30 in the Final time input field of the Simulation area 
+
+1.9 Click on the Run button of the Simulation area
+
+2. Swelling from 10 seeds
+			         .
+2.1 From the spatial grid menu, use Tools -> Load an environment, select 10seeds.env, and validate. This will initialize a 50*50 grid and assign values (true or false) to the cell attribute seed
+
+2.2 Right-click within the spatial grid window to select the povSeed view for Cell.
+ 
+2.3 Click on the Initialize button of the Simulation area.
+	 
+2.4 Select the initSeeds and stepSeeds: methods, then validate by clicking on Apply and close.  
+
+2.5 Right-click within the spatial grid window to select the povId view for Aggregate.
+ 
+2.6 Click on the Step button of the Simulation area.
+
+3. Save and load your environment
+
+3.1 From the Cormas main menu, load Files -> Load. Select TSE, and choose Save-Load-Aggregates.st version of TSE.
+
+3.2 The init method will load a 50*50 grid and load the aggregate instances and their neighbours.
+
+3.3 If you want to see how to save the current grid, the aggregates and their neighbours, see the exportAggregatesAndNeighbours: method. (You can also save the neighbours of the cells. It can save time when you load big irregular grid (see the exportNeighboors method).' 
 ]
 
 { #category : #testing }

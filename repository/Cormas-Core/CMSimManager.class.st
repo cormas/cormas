@@ -15,7 +15,8 @@ Class {
 		'processReplayForward',
 		'undoList',
 		'redoList',
-		'finalTime'
+		'finalTime',
+		'enableBackward'
 	],
 	#classInstVars : [
 		'newFolder'
@@ -27,6 +28,13 @@ Class {
 CMSimManager class >> bosExtension [
 	
 	^'.bos'
+]
+
+{ #category : #time }
+CMSimManager class >> defaultFinalTime [
+	" Answer an <Integer> representing the default final step time "
+
+	^ 100
 ]
 
 { #category : #accessing }
@@ -144,22 +152,6 @@ CMSimManager >> cancel [
 	^false
 ]
 
-{ #category : #actions }
-CMSimManager >> changedRandomSeed [
-	
-	| wrapper |
-	wrapper := self builder componentAt: #randomSeed.
-	fixRandomSeed value
-		ifTrue:
-			[wrapper beVisible.
-			wrapper enable.	"wrapper beInvisible."
-			(self builder componentAt: #releaseRandomSeed) enable]
-		ifFalse:
-			[wrapper disable.
-			(self builder componentAt: #releaseRandomSeed) disable.
-			releaseRandomSeed value: false]
-]
-
 { #category : #'replay-forward' }
 CMSimManager >> confirmDeviation [
 	"check if bos file for next step exists. If not, then continue to simulate and to save into the same folder (continue the same simulation process).
@@ -243,7 +235,9 @@ CMSimManager >> currentTime: anInteger [
 
 { #category : #time }
 CMSimManager >> defaultFinalTime [
-	^ 100
+	" Answer an <Integer> representing the default final step time "
+
+	^ self class defaultFinalTime
 ]
 
 { #category : #simulate }

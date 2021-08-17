@@ -1,3 +1,17 @@
+"
+This is the main container for Space Interface. It holds a Roassal presenter and manages menu instantiation and configuration.
+
+Internal Representation and Key Implementation Points.
+
+Instance Variables
+	diagram:		<Object>
+	menuToolbar:		<Object>
+	projectManager:		<Object>
+	spaceView:		<Object>
+
+
+    Implementation Points
+"
 Class {
 	#name : #CMR3SpaceInterface,
 	#superclass : #SpPresenter,
@@ -235,8 +249,7 @@ CMR3SpaceInterface >> initializePOVMenuToolbar [
 CMR3SpaceInterface >> initializePresenters [
 
 	menuToolbar := self mainMenuToolbar.
-	diagram := self instantiate: CMR3SpaceView.
-	self diagram initializeOn: self cormasModel.
+	diagram := self instantiate: CMR3SpaceView on: self cormasModel.
  	self canvas 
 		addInteraction: RSCanvasController new;
 		addInteraction: RSZoomToFitCanvasInteraction new;
@@ -283,6 +296,15 @@ CMR3SpaceInterface >> initializeToolsMenuToolbar [
 						shortcut: $I command;
 						action: [ self cormasModel inspect ] ] ];
 		yourself
+]
+
+{ #category : #initialization }
+CMR3SpaceInterface >> initializeWindow: w [
+
+	w 
+		title: self formattedWindowTitle , ' - ' , self translator tSpaceInterface;
+		initialExtent: 800 @ 500;
+		centered
 ]
 
 { #category : #'initialization - menu' }

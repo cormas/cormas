@@ -15,6 +15,7 @@ CMTimeChangedAnnouncement class >> timeStep: t [
 
 { #category : #accessing }
 CMTimeChangedAnnouncement >> timeStep [
+	" Answer a positive <Number> representing the receiver's current time step "
 	^ timeStep
 ]
 
