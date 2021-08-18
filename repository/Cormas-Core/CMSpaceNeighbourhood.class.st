@@ -99,7 +99,7 @@ CMSpaceNeighbourhood >> gridCellShape [
 CMSpaceNeighbourhood >> initializeNeighbourhood [
 	" Private - Initialize aSpaceModel neighbourhood values based on the receiver "
 
-	1 to: self class cardinal do: [ :k | 
+	1 to: self spaceModel gridSize do: [ :k | 
 		(self elementaryEntitiesAt: k) ifNotNil: [ 
 			self initializeOrderedNeighbourhood: k ] ]
 ]

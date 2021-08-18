@@ -878,10 +878,11 @@ CMAgentLocation >> randomJump [
 { #category : #'star moving' }
 CMAgentLocation >> randomWalk [
 "Purpose: moves to a spatial entity randomly picked from the direct neighbourhood (relative distance = 1) of the current location "
-| destination |
+
+	| destination |
 	patch ifNil: [^nil].
 	( patch neighbourhood isNil or: [ patch neighbourhood isEmpty])
-		ifTrue: [self halt].
+		ifTrue: [ ^ nil ].
 	destination := Cormas selectRandomlyFrom: patch neighbourhood.
 	self moveTo: destination
 ]

@@ -145,8 +145,8 @@ Return value: <Number>"
 { #category : #'initialize-release' }
 CMSpatialEntityElement >> initNeighbourhood [
 
-	self orderedNeighbourhood ifNil: [ ^ nil ].
-	self neighbourhood: (self orderedNeighbourhood reject: #isNil)
+	self orderedNeighbourhood ifEmpty: [ ^ nil ].
+	self neighbourhood: (self orderedNeighbourhood select: [ : c | c notNil ])
 ]
 
 { #category : #testing }
@@ -837,9 +837,11 @@ CMSpatialEntityElement >> numLine [
 
 { #category : #accessing }
 CMSpatialEntityElement >> orderedNeighbourhood [
+	" Assume the receiver's space model neighbouhoods were already initialized. "
 	
-	orderedNeighbourhood ifNil: [self spaceModel initNeighbourhood].
-	^orderedNeighbourhood
+	orderedNeighbourhood 
+		ifNil: [ orderedNeighbourhood := OrderedCollection new ].
+	^ orderedNeighbourhood
 ]
 
 { #category : #accessing }

@@ -26,7 +26,6 @@ Class {
 	#name : #CMSpaceModel,
 	#superclass : #Model,
 	#instVars : [
-		'cardinal',
 		'activeSpatialEntity',
 		'line',
 		'column',
@@ -37,15 +36,11 @@ Class {
 		'rMaxEntityImage',
 		'spatialEntities',
 		'gridCellShape',
-		'gridCellImage',
-		'xll',
-		'yll',
-		'cellSize',
 		'absoluteBounds',
 		'autoResizeBounds',
-		'isFull',
 		'torroidal',
-		'nbConfiguration'
+		'nbConfiguration',
+		'gridSize'
 	],
 	#category : #'Cormas-Core-Space'
 }
@@ -318,18 +313,6 @@ CMSpaceModel >> buildFragmentedEntity: compoundEntity fromCollection: aCollecOfS
 	^ agg
 ]
 
-{ #category : #'private - accessing' }
-CMSpaceModel >> cardinal [
-"Number of cells of the grid"
-	^ cardinal
-]
-
-{ #category : #'private - accessing' }
-CMSpaceModel >> cardinal: anInteger [
-	cardinal := anInteger.
-	arrayOrigins := Array new: anInteger
-]
-
 { #category : #accessing }
 CMSpaceModel >> cellClass [
 	"return the SpatialEntityElement class of the current model"
@@ -342,16 +325,6 @@ CMSpaceModel >> cellFileDirectory [
 "Returns a FileReference to the maps subdirectory of the model.
 Ex: /Users/.../cormas/assets/models/ECEC/maps"
 	^ self resourceLocator mapsPath: self cormasModelClass shortName
-]
-
-{ #category : #'private - accessing' }
-CMSpaceModel >> cellSize [
-	^ cellSize
-]
-
-{ #category : #'private - accessing' }
-CMSpaceModel >> cellSize: anObject [
-	cellSize := anObject
 ]
 
 { #category : #'ESE (regular) - special locations' }
@@ -557,9 +530,9 @@ CMSpaceModel >> createCells [
 	"create all the cells and their connexions, and collect them as elementaryEntities collection"
 
 	| allEse |
-	allEse := Array new: cardinal.
+	allEse := Array new: gridSize.
 	self cormasModelClass cellClass CurrentId: 0.
-	1 to: cardinal do:
+	1 to: gridSize do:
 		[ :i | allEse at: i put: (self newEntity: self cormasModelClass cellClass) ].	"and collect them"
 
 	self elementaryEntities: allEse.
@@ -1445,6 +1418,19 @@ CMSpaceModel >> gridCellShape: x [
 	gridCellShape := x
 ]
 
+{ #category : #accessing }
+CMSpaceModel >> gridSize [
+	"Number of cells of the grid"
+
+	^ gridSize
+]
+
+{ #category : #'private - accessing' }
+CMSpaceModel >> gridSize: anInteger [
+	gridSize := anInteger.
+	arrayOrigins := Array new: anInteger
+]
+
 { #category : #'private - regularCells - shapes' }
 CMSpaceModel >> hexagonal [
 	"received from SpaceInterface menu, when the user want to change the shape of the cells"
@@ -1618,7 +1604,7 @@ CMSpaceModel >> initializeIrregular [
 	torroidal := true.
 	line := nil.
 	column := nil.
-	cardinal := 0	"arrayOrigins := Array new: cardinal."
+	gridSize := 0	"arrayOrigins := Array new: cardinal."
 ]
 
 { #category : #'private - init' }
@@ -1680,14 +1666,7 @@ ex, from CormasModel:
 CMSpaceModel >> isFull [
 	"Answer if the spaceModel is completely occupied by cells, meaning that some cells are missing or not "
 	
-	^ isFull 
-		ifNil: [ self cardinal = self elementaryEntities size ]
-]
-
-{ #category : #testing }
-CMSpaceModel >> isFull: anObject [
-
-	isFull := anObject
+	^ self gridSize = self elementaryEntities size
 ]
 
 { #category : #testing }
@@ -1721,11 +1700,12 @@ CMSpaceModel >> line: i column: j [
 	
 	line := i.
 	column := j.
-	cardinal := i * j
+	gridSize := i * j
 ]
 
 { #category : #'private - init' }
 CMSpaceModel >> line: l column: c shape: ps nbNeighbours: nbn closed: b [
+
 	self gridCellShape: ps.
 	self nbNeighbours: nbn.
 	torroidal := b.
@@ -2099,7 +2079,7 @@ CMSpaceModel >> printOn: aStream [
 		<< $x;
 		<< self column asString;
 		<< $(;
-		<< self cardinal asString;
+		<< self gridSize asString;
 		<< $);
 		space;
 		<< self gridCellShape asString
@@ -2913,21 +2893,6 @@ CMSpaceModel >> setIrregularEntitiesEdge [
 					aCell edge: outlineTempo isEmpty not]]
 ]
 
-{ #category : #'ESE initialize-release' }
-CMSpaceModel >> setNbNeighbours: anInteger [
-	"Set the neighbourhood of the regular spaceModel.
-	anInteger = <Integer : 4, 6 or 8>"
-
-	self nbNeighbours: anInteger.
-	(gridCellShape == #squared and: [ anInteger = 6 ])
-		ifTrue: [ ^ self hexagonal ].
-	(gridCellShape == #hexagonal and: [ anInteger ~= 6 ])
-		ifTrue: [ self gridCellShape: #squared.
-			self createRectangularCellsFigure ].
-	self initNeighbourhood.
-	self changed: #shapeHasChanged with: anInteger
-]
-
 { #category : #'private - regular polygons - deprecated' }
 CMSpaceModel >> setPartitionsFrom: baseEntity attribute: attributeName into: compoundEntity [
 	
@@ -3485,16 +3450,4 @@ CMSpaceModel >> wayFromCell: cell1 toCell: cell2 [
 									[:c | c numLine = lastCell numLine and: [by * c numCol > (by * way last numCol)]])]].
 	invert ifTrue: [way := way reverse].
 	^way
-]
-
-{ #category : #'private - accessing' }
-CMSpaceModel >> xll [
-	
-	^xll
-]
-
-{ #category : #'private - accessing' }
-CMSpaceModel >> yll [
-	
-	^yll
 ]

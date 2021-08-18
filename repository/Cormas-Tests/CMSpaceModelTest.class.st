@@ -140,5 +140,5 @@ CMSpaceModelTest >> testLineColumn [
 	self spaceModel line: 2 column: 3.
 	self assert: self spaceModel line equals: 2.
 	self assert: self spaceModel column equals: 3.
-	self assert: self spaceModel cardinal equals: 6.
+	self assert: self spaceModel gridSize equals: 6.
 ]

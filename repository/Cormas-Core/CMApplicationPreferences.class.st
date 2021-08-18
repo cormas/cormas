@@ -328,6 +328,7 @@ CMApplicationPreferences class >> settingShowProbesTitle [
 	" Answer the settingShowProbesTitle of this CMApplicationPreferences "
 
 	^ SettingShowProbesTitle
+		ifNil: [ SettingShowProbesTitle := false ]
 ]
 
 { #category : #accessing }

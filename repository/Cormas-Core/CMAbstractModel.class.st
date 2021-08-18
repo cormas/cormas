@@ -1607,6 +1607,8 @@ Arguments: aBoolean : closed or torroidal space.
 Example: self createGridColumns: 20 lines: 20 neighbourhood: 8 closed: true "
 
 	| shapeSymbol nbSymbol |
+	
+	self halt.
 	aNumber = 8
 		ifTrue: [ shapeSymbol := #squared.
 			nbSymbol := #eight ].
