@@ -43,10 +43,9 @@ CMCellsLoader >> attribute: aString type: anotherString values: anArrayOfArray [
 
 { #category : #loading }
 CMCellsLoader >> closed: aString [
+
 	self assert: (#('true' 'false') includes: aString).
-	self
-		spaceModelDo:
-			[ :spaceModel | spaceModel closed: aString ~= 'false' ]
+	self spaceModelDo: [ : spaceModel | spaceModel torroidal: aString ~= 'false' ]
 ]
 
 { #category : #loading }

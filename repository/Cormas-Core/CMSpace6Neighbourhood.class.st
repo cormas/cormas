@@ -4,11 +4,25 @@ Class {
 	#category : #'Cormas-Core-Space'
 }
 
-{ #category : #private }
-CMSpace6Neighbourhood class >> implements: aSymborOrNumberNeighbours [
-	" Private - See superimplementor's comment "
+{ #category : #'private - accessing' }
+CMSpace6Neighbourhood class >> cardinal [
 
-	^ aSymborOrNumberNeighbours == #six or: [ aSymborOrNumberNeighbours = 6 ]
+	^ 6
+]
+
+{ #category : #'private - accessing' }
+CMSpace6Neighbourhood class >> cardinalSymbol [
+
+	^ #six
+]
+
+{ #category : #'private - regular cells - instance creation' }
+CMSpace6Neighbourhood >> eastCellHexa: k [
+	
+	k = 0 ifTrue: [ ^ 0 ].
+	^ k < self column | ((k - 1) // self column + 1) odd
+		ifTrue: [ k ] "ligne impaire ou premiere"
+		ifFalse: [ self eastCell: k ] "ligne paire"
 ]
 
 { #category : #initialization }
@@ -29,4 +43,13 @@ CMSpace6Neighbourhood >> initializeOrderedNeighbourhood: k [
 	(i := self eastCellHexa: (self northCell: k)) > 0 ifTrue: [ 
 		v at: 6 put: (self elementaryEntitiesAt: i) ].
 	^ (self elementaryEntitiesAt: k) orderedNeighbourhood: v
+]
+
+{ #category : #'private - regular cells - instance creation' }
+CMSpace6Neighbourhood >> westCellHexa: k [
+	
+	k = 0 ifTrue: [ ^ 0 ].
+	^ k < self column | ((k - 1) // self column + 1) odd
+		ifTrue: [ self westCell: k ] "ligne impaire ou premiere"
+		ifFalse: [ k ] "ligne paire"
 ]

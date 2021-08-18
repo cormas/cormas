@@ -44,7 +44,8 @@ Class {
 		'absoluteBounds',
 		'autoResizeBounds',
 		'isFull',
-		'closed'
+		'torroidal',
+		'nbConfiguration'
 	],
 	#category : #'Cormas-Core-Space'
 }
@@ -271,7 +272,7 @@ compoundEntity =a subClass of  <SpatialEntitySet>
 ms= <integer> must be >= 1"
 
 	| coll |
-	self closed
+	self isNotTorroidal
 		ifFalse: [ ^ self warningBoundaries ].
 	coll := IndexedSet new.
 	(self getAggregatesFrom: baseEntity verifying: aBlock)
@@ -305,7 +306,7 @@ CMSpaceModel >> buildFragmentedEntity: compoundEntity fromCollection: aCollecOfS
 	compoundEntity = a subClass of  <SpatialEntityNotConnex>"
 
 	| aSet agg |
-	self closed
+	self isNotTorroidal
 		ifFalse: [ ^ self warningBoundaries ].
 	aSet := Set new.
 	aCollecOfSpatialEntityElement
@@ -487,22 +488,6 @@ CMSpaceModel >> changed: anAspectSymbol with: aParameter [
 ]
 
 { #category : #'private - accessing' }
-CMSpaceModel >> closed [
-	
-	^closed
-]
-
-{ #category : #'private - accessing' }
-CMSpaceModel >> closed: aBoolean [
-	
-	closed = aBoolean ifTrue: [^self].
-	closed := aBoolean.
-	self initNeighbourhood.
-	self initEdge.
-	self cormasModel registerSpaceModelChange: #boundariesChanged	"dispatch the info to other spaceInterfaces"
-]
-
-{ #category : #'private - accessing' }
 CMSpaceModel >> column [
 	^ column
 ]
@@ -576,13 +561,15 @@ CMSpaceModel >> createCells [
 	self cormasModelClass cellClass CurrentId: 0.
 	1 to: cardinal do:
 		[ :i | allEse at: i put: (self newEntity: self cormasModelClass cellClass) ].	"and collect them"
+
 	self elementaryEntities: allEse.
 	self gridCellShape = #squared
 		ifTrue: [ self createRectangularCellsFigure ].
+
 	self gridCellShape = #hexagonal
 		ifTrue: [ self createHexagonalCellsFigure ].
 	self initNeighbourhood.
-	self closed
+	self isNotTorroidal
 		ifTrue: [ self initEdge ].	"newCells notification also dispatch the request to remoteSpaceModels to rebuild the cell figures"
 	"self sendCellsToClientSpaceModels: (EntityReference onEntities: allEse)."	"dispatch the info that cells have been modified to all opened spaceInterfaces"
 	self changed: #newCells
@@ -774,7 +761,7 @@ CMSpaceModel >> distanceFromCell: cell1 toCell: cell2 [
 	| nbLines nbCols |
 	nbLines := (cell1 numLine - cell2 numLine) abs.
 	nbCols := (cell1 numCol - cell2 numCol) abs.
-	self closed
+	self isNotTorroidal
 		ifFalse: [ nbLines > (self line - 2)
 				ifTrue: [ nbLines := nbLines - self line + 2 ].
 			nbCols > (self column - 2)
@@ -835,7 +822,7 @@ CMSpaceModel >> distanceFromHexagonalCell: cell1 toCell: cell2 [
 		ifFalse: [ self halt ].
 	nbLines := (cell1 numLine - cell2 numLine) abs.
 	nbCols := (cell1 numCol - cell2 numCol) abs.
-	self closed
+	self isNotTorroidal
 		ifFalse: [ nbLines := nbLines min: self line - nbLines.
 			nbCols := nbCols min: self column - nbCols.
 			nbLines odd
@@ -864,28 +851,6 @@ CMSpaceModel >> dominance: attribute [
 				/ numberCells.
 			sum := sum + (pi * pi ln) ].
 	^ n ln + sum
-]
-
-{ #category : #'private - regular cells - instance creation' }
-CMSpaceModel >> eastCell: k [
-	k \\ column = 0
-		ifFalse: [ ^ k + 1 ].
-	^ closed
-		ifTrue: [ 0 ]
-		ifFalse: [ k - (column - 1) ]
-]
-
-{ #category : #'private - regular cells - instance creation' }
-CMSpaceModel >> eastCellHexa: k [
-	
-	k = 0 ifTrue: [^0].
-	k < column | ((k - 1) // column + 1) odd
-		ifTrue:
-			["ligne impaire ou premiere"
-			^k]
-		ifFalse:
-			["ligne paire"
-			^self eastCell: k]
 ]
 
 { #category : #'landscape indices' }
@@ -963,7 +928,7 @@ CMSpaceModel >> envSpecStringFor: spatialEntityName [
 	s := (String new: 100) writeStream.
 	s
 		nextPutAll:
-			(self closed
+			(self isNotTorroidal
 				ifTrue: [ 'Closed ' ]
 				ifFalse: [ 'Torroidal ' ]).
 	(spatialEntityName = self cellClass name
@@ -999,7 +964,7 @@ CMSpaceModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 	| nbLines nbCols |
 	nbLines := (cell1 numLine - cell2 numLine) abs.
 	nbCols := (cell1 numCol - cell2 numCol) abs.
-	self closed
+	self isNotTorroidal
 		ifFalse: [ nbLines > (self line - 2)
 				ifTrue: [ nbLines := nbLines - self line + 2 ].
 			nbCols > (self column - 2)
@@ -1180,7 +1145,7 @@ CMSpaceModel >> getAggregatesFrom: baseEntity attribute: attributeName [
 	"Return a collection of sets of contiguous components holding the same attributeName value"
 
 	| newCollection seed setOfComponents neighbours newNeighbours theLLEntities |
-	self closed
+	self isNotTorroidal
 		ifFalse: [ ^ self warningBoundaries ].
 	newCollection := OrderedCollection new.
 	theLLEntities := ((self cormasModel
@@ -1213,7 +1178,7 @@ CMSpaceModel >> getAggregatesFrom: baseEntity attribute: attributeName [
 { #category : #'private - regular polygons' }
 CMSpaceModel >> getAggregatesFrom: baseEntity verifying: aBlock [
 	| eeInstances set seed neighbours newNeighbours collec |
-	self closed
+	self isNotTorroidal
 		ifFalse: [ ^ self warningBoundaries ].
 	eeInstances := ((self cormasModel
 		perform: baseEntity asGetterForEntityClass)
@@ -1237,46 +1202,6 @@ CMSpaceModel >> getAggregatesFrom: baseEntity verifying: aBlock [
 			set do: [ :c | eeInstances remove: c ].
 			collec add: set ].
 	^ collec
-]
-
-{ #category : #'import - export' }
-CMSpaceModel >> getDataFromASCFile: aFileName onAttribute: att [
-	
-	| file buffer separator fileData temp line2 cols rows i |
-	separator := Character cr.
-	file := ((Cormas mapsPath: self cormasModelClass name) construct:
-			aFileName) readStream.	"On devine le format des lignes"
-	file lineEndAuto.
-	fileData := OrderedCollection new.
-	buffer := [[file atEnd]
-		whileFalse:
-			[temp := file upTo: separator.
-			line2 := temp copyReplaceAll: '-9999' with: 'nil'.
-			fileData add: line2]].
-	buffer valueNowOrOnUnwindDo: [file close].	"Remove the header of files"
-	cols := ((fileData at: 1) asArrayOfSubstrings at: 2) asNumber.
-	rows := ((fileData at: 2) asArrayOfSubstrings at: 2) asNumber.
-	xll := ((fileData at: 3) asArrayOfSubstrings at: 2) asNumber.
-	yll := ((fileData at: 4) asArrayOfSubstrings at: 2) asNumber.
-	cellSize := ((fileData at: 5) asArrayOfSubstrings at: 2) asNumber.
-	fileData removeFirst: 6.
-	(cols ~= self columns or: [rows ~= self line])
-		ifTrue:
-			[self cormas
-				warn: ' Rows and columns are not consistent in ' , aFileName asString].
-	i := 1.
-	1
-		to: rows
-		do:
-			[:r | 
-			1
-				to: cols
-				do:
-					[:c | 
-					(self cormasModel theESE at: i)
-						perform: (att , ':') asSymbol
-						with: ((fileData at: r) asArrayOfSubstrings at: c) asNumber.
-					i := i + 1]]
 ]
 
 { #category : #'private - accessing' }
@@ -1421,7 +1346,7 @@ CMSpaceModel >> getSetsOfContiguous: baseEntity conditionalBlocks: blocks condit
 	"Return a collection of sets of contiguous components"
 
 	| collec seed setOfContiguousComponents neighbours newNeighbours baseEntities valuesB2 valuesB3 |
-	self closed
+	self isNotTorroidal
 		ifFalse: [ ^ self warningBoundaries ].
 	baseEntities := ((self spatialEntities at: baseEntity name)
 		select:
@@ -1542,7 +1467,7 @@ CMSpaceModel >> importAggregateClass: class componentClass: cClass separator: aC
 		ifFalse: [ portableFilename := aStringOrFileName ].
 	portableFilename asFilename exists
 		ifFalse: [ ^ self cormas warn: portableFilename asString , ' is missing !!!' ].
-	self closed
+	self isNotTorroidal
 		ifFalse: [ ^ self warningBoundaries ].
 	(self spatialEntities isNil
 		or: [ self spatialEntities isEmpty
@@ -1590,7 +1515,7 @@ CMSpaceModel >> initAggregates: compoundEntity fromSeeds: aCollec [
 	aCollec = a collection of base entities (inheriting from <SpatialEntityElement>) 
 	compoundEntity = a subClass of  <SpatialEntitySet> "
 
-	self closed
+	self isNotTorroidal
 		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
@@ -1617,7 +1542,7 @@ CMSpaceModel >> initAggregates: compoundEntity fromSeeds: aCollecOfCells sizeDis
 	This method uses the attribute called givenSize defined for SpatialEntityAggregate"
 
 	| counter subsetIndice |
-	self closed
+	self isNotTorroidal
 		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
@@ -1649,21 +1574,11 @@ CMSpaceModel >> initEdge [
 	
 	| n |
 	self gridCellShape = #irregular ifTrue: [^self setIrregularEntitiesEdge].
-	nbNeighbours == #four
-		ifTrue: [n := 4]
-		ifFalse:
-			[nbNeighbours == #six
-				ifTrue: [n := 6]
-				ifFalse:
-					[nbNeighbours == #eight
-						ifTrue: [n := 8]
-						ifFalse: [self halt]]].
-	self elementaryEntities
-		do:
-			[:p | 
-			p neighbourhood size = n
-				ifTrue: [p edge: false]
-				ifFalse: [p edge: true]]
+	n := self nbConfiguration cardinal.
+	self elementaryEntities do: [ : p | 
+		p neighbourhood size = n
+			ifTrue: [ p edge: false ]
+			ifFalse: [ p edge: true ] ]
 ]
 
 { #category : #'private - irregular polygons creation' }
@@ -1682,80 +1597,11 @@ CMSpaceModel >> initEntitesSpatiales: aClass [
 
 { #category : #'private - regular cells - instance creation' }
 CMSpaceModel >> initNeighbourhood [
-	
-	gridCellShape == #squared
-		ifTrue:
-			[(nbNeighbours == #four or: [nbNeighbours = 4])
-				ifTrue: [self initNeighbourhood4]
-				ifFalse: [self initNeighbourhood8]]
-		ifFalse:
-			[(nbNeighbours == #six or: [nbNeighbours = 6])
-				ifTrue: [self initNeighbourhood6]
-				ifFalse: [self voisinsPolygonesNoeuds: self elementaryEntities]].
-	self elementaryEntities do: [:p | p initNeighbourhood]
-]
+	" Private - Initalize the receiver's neighbourhood "
 
-{ #category : #'private - regular cells - instance creation' }
-CMSpaceModel >> initNeighbourhood4 [
-	| v i |
-	1 to: cardinal do: [ :k | 
-		(self elementaryEntities at: k) isNil
-			ifFalse: [ v := Array new: 4.
-				(i := self northCell: k) > 0
-					ifTrue: [ v at: 1 put: (self elementaryEntities at: i) ].
-				(i := self westCell: k) > 0
-					ifTrue: [ v at: 2 put: (self elementaryEntities at: i) ].
-				(i := self southCell: k) > 0
-					ifTrue: [ v at: 3 put: (self elementaryEntities at: i) ].
-				(i := self eastCell: k) > 0
-					ifTrue: [ v at: 4 put: (self elementaryEntities at: i) ].
-				(self elementaryEntities at: k) orderedNeighbourhood: v ] ]
-]
+	self nbConfiguration: (CMSpaceNeighbourhood forSpace: self).
+	self elementaryEntities do: #initNeighbourhood.
 
-{ #category : #'private - regular cells - instance creation' }
-CMSpaceModel >> initNeighbourhood6 [
-	| v i |
-	1 to: cardinal do: [ :k | 
-		(self elementaryEntities at: k) isNil
-			ifFalse: [ v := Array new: 6.
-				(i := self westCellHexa: (self northCell: k)) > 0
-					ifTrue: [ v at: 1 put: (self elementaryEntities at: i) ].
-				(i := self westCell: k) > 0
-					ifTrue: [ v at: 2 put: (self elementaryEntities at: i) ].
-				(i := self westCellHexa: (self southCell: k)) > 0
-					ifTrue: [ v at: 3 put: (self elementaryEntities at: i) ].
-				(i := self eastCellHexa: (self southCell: k)) > 0
-					ifTrue: [ v at: 4 put: (self elementaryEntities at: i) ].
-				(i := self eastCell: k) > 0
-					ifTrue: [ v at: 5 put: (self elementaryEntities at: i) ].
-				(i := self eastCellHexa: (self northCell: k)) > 0
-					ifTrue: [ v at: 6 put: (self elementaryEntities at: i) ].
-				(self elementaryEntities at: k) orderedNeighbourhood: v ] ]
-]
-
-{ #category : #'private - regular cells - instance creation' }
-CMSpaceModel >> initNeighbourhood8 [
-	| v i |
-	1 to: cardinal do: [ :k | 
-		(self elementaryEntities at: k) isNil
-			ifFalse: [ v := Array new: 8.
-				(i := self northCell: k) > 0
-					ifTrue: [ v at: 1 put: (self elementaryEntities at: i) ].
-				(i := self northCell: (self westCell: k)) > 0
-					ifTrue: [ v at: 2 put: (self elementaryEntities at: i) ].
-				(i := self westCell: k) > 0
-					ifTrue: [ v at: 3 put: (self elementaryEntities at: i) ].
-				(i := self southCell: (self westCell: k)) > 0
-					ifTrue: [ v at: 4 put: (self elementaryEntities at: i) ].
-				(i := self southCell: k) > 0
-					ifTrue: [ v at: 5 put: (self elementaryEntities at: i) ].
-				(i := self southCell: (self eastCell: k)) > 0
-					ifTrue: [ v at: 6 put: (self elementaryEntities at: i) ].
-				(i := self eastCell: k) > 0
-					ifTrue: [ v at: 7 put: (self elementaryEntities at: i) ].
-				(i := self northCell: (self eastCell: k)) > 0
-					ifTrue: [ v at: 8 put: (self elementaryEntities at: i) ].
-				(self elementaryEntities at: k) orderedNeighbourhood: v ] ]
 ]
 
 { #category : #'private - init' }
@@ -1769,7 +1615,7 @@ CMSpaceModel >> initializeIrregular [
 	
 	gridCellShape := #irregular.
 	nbNeighbours := #irregular.
-	closed := true.
+	torroidal := true.
 	line := nil.
 	column := nil.
 	cardinal := 0	"arrayOrigins := Array new: cardinal."
@@ -1851,11 +1697,17 @@ CMSpaceModel >> isIrregular [
 	^gridCellShape = #irregular
 ]
 
+{ #category : #'private - accessing' }
+CMSpaceModel >> isNotTorroidal [
+	
+	^torroidal
+]
+
 { #category : #'private - regular polygons' }
 CMSpaceModel >> isPartitionComplete: compoundEntity [
 	
 	^(self elementaryEntities
-		contains: [:c | (c isComponentOf: compoundEntity) not]) not
+		anySatisfy: [:c | (c isComponentOf: compoundEntity) not]) not
 ]
 
 { #category : #'private - accessing' }
@@ -1876,7 +1728,7 @@ CMSpaceModel >> line: i column: j [
 CMSpaceModel >> line: l column: c shape: ps nbNeighbours: nbn closed: b [
 	self gridCellShape: ps.
 	self nbNeighbours: nbn.
-	closed := b.
+	torroidal := b.
 	self line: l column: c
 ]
 
@@ -1948,7 +1800,7 @@ CMSpaceModel >> loadNeighboorsClass: class separator: aChar [
 		construct: class name asString , '_Neighboors.agg'.
 	portableFilename asFilename exists
 		ifFalse: [ ^ self cormas warn: portableFilename asString , ' is missing !!!' ].
-	self closed
+	self isNotTorroidal
 		ifFalse: [ ^ self warningBoundaries ].
 	(self spatialEntities isNil
 		or: [ self spatialEntities isEmpty
@@ -2069,6 +1921,17 @@ CMSpaceModel >> nPatches: aClass [
 	^ aggregates size
 ]
 
+{ #category : #accessing }
+CMSpaceModel >> nbConfiguration [
+	^ nbConfiguration
+]
+
+{ #category : #accessing }
+CMSpaceModel >> nbConfiguration: aCMSpaceNeighbourhood [ 
+
+	nbConfiguration := aCMSpaceNeighbourhood
+]
+
 { #category : #'landscape indices' }
 CMSpaceModel >> nbDistinctValuesOf: anAttribute [
 	"Return the number of different values for anAttribute"
@@ -2110,17 +1973,6 @@ CMSpaceModel >> newEntity: aClass [
 		"anEntity collector: self cormasModel collector.
 	self cormasModel collect: anEntity."
 			yourself
-]
-
-{ #category : #'private - regular cells - instance creation' }
-CMSpaceModel >> northCell: k [
-	k = 0
-		ifTrue: [ ^ 0 ].
-	k > column
-		ifTrue: [ ^ k - column ].
-	^ closed
-		ifTrue: [ 0 ]
-		ifFalse: [ column * (line - 1) + k ]
 ]
 
 { #category : #'private - display' }
@@ -2295,7 +2147,7 @@ CMSpaceModel >> resetCompoundSpatialEntity: compoundClass [
 		do: [: agg | agg components do:[: c | (c theCSE includesKey: compoundClass name)
 				ifTrue: [c theCSE at: compoundClass name put: nil]]].
 	self spatialEntities at: compoundClass name put: OrderedCollection new.
-	self cormasModel initializeTheEntity: compoundClass.
+	self cormasModel resetEntities: compoundClass.
 	"self changed: #createRegularAggregatesImagesFor: with: compoundClass"
 ]
 
@@ -2313,7 +2165,7 @@ CMSpaceModel >> resetCompoundSpatialEntity: compoundClass andTheirComponents: co
 	self spatialEntities
 		at: compoundClass name
 		put: OrderedCollection new.
-	self cormasModel initializeTheEntity: compoundClass	"self changed: #createRegularAggregatesImagesFor: with: compoundClass"
+	self cormasModel resetEntities: compoundClass	"self changed: #createRegularAggregatesImagesFor: with: compoundClass"
 ]
 
 { #category : #'private - init' }
@@ -2325,7 +2177,7 @@ CMSpaceModel >> resetSpatialEntities [
 	self cormasModelClass spatialClasses
 		do:
 			[:aSpatialClass | 
-			newColl := self cormasModel initializeTheEntity: aSpatialClass.
+			newColl := self cormasModel resetEntities: aSpatialClass.
 			self spatialEntities
 				at: aSpatialClass name
 				put: newColl].
@@ -2349,7 +2201,7 @@ CMSpaceModel >> resetSpatialEntitiesButCells [
 				ifTrue: [ self spatialEntities at: se name 	put: theCells ]
 				ifFalse: [ self spatialEntities at: se name put: OrderedCollection new.
 					"RemotableOrderedCollection new. ** changed to OrderedCollection new. (RemotableOrderedCollection is used for marshalling in remote distributed visualization)" 
-					self cormasModel initializeTheEntity: se ] ]
+					self cormasModel resetEntities: se ] ]
 ]
 
 { #category : #accessing }
@@ -2721,7 +2573,7 @@ CMSpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attrib
 	attributeName = #context for example 
 	compoundEntity = a subClass of  <SpatialEntitySet>"
 
-	self closed
+	self isNotTorroidal
 		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
@@ -2740,7 +2592,7 @@ CMSpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attrib
 	attributeName = #context for example 
 	compoundEntity = a subClass of  <SpatialEntitySet>"
 
-	self closed
+	self isNotTorroidal
 		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
@@ -2763,7 +2615,7 @@ CMSpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attrib
 	aValue is a specific value of the attribute, for instance #notDefined, or 0
 	compoundEntity = a subClass of  <SpatialEntitySet>"
 
-	self closed
+	self isNotTorroidal
 		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
@@ -2785,7 +2637,7 @@ The aggregates will  occupy the whole grid.
 	baseEntity = a subClass of  <SpatialEntity> 
 	compoundEntity = a subClass of  <SpatialEntitySet>"
 
-	self closed
+	self isNotTorroidal
 		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
@@ -2935,7 +2787,7 @@ CMSpaceModel >> setFragmentedEntities: compoundEntity from: baseEntity attribute
 	compoundEntity = a Class name inheriting from <SpatialEntityNotConnex>"
 
 	| fragmentedEntity beInstances collec |
-	self closed
+	self isNotTorroidal
 		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
@@ -2966,7 +2818,7 @@ CMSpaceModel >> setFragmentedEntities: compoundEntity from: baseEntity verifying
 	compoundEntity = a Class name inheriting from <SpatialEntityNotConnex>"
 
 	| fragmentedEntity beInstances |
-	self closed
+	self isNotTorroidal
 		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
@@ -2989,7 +2841,7 @@ CMSpaceModel >> setFragmentedEntity: compoundEntity fromCollection: aCollecOfSpa
 	compoundEntity = a Class name inheriting from <SpatialEntityNotConnex>"
 
 	| aSet |
-	self closed
+	self isNotTorroidal
 		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
@@ -3103,7 +2955,7 @@ CMSpaceModel >> setSingletonAggregates: compoundEntity fromSeeds: aCollec [
 	aCollec = a collection of base entities (inheriting from <SpatialEntity>) 
 	compoundEntity = a Class name inheriting from <SpatialEntitySet>"
 
-	self closed
+	self isNotTorroidal
 		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
@@ -3232,7 +3084,7 @@ CMSpaceModel >> settingsFrom: aClone [
 				columns: aClone column
 				shape: aClone gridCellShape
 				nbNeighbours: aClone nbNeighbours
-				closed: aClone closed ]
+				closed: aClone isNotTorroidal ]
 ]
 
 { #category : #'landscape indices' }
@@ -3262,17 +3114,6 @@ CMSpaceModel >> snapGridTimeForMovie: t makingMovie: aBoolean [
 	self
 		changed: #snapGridTimeForMovie
 		with: (Array with: t with: aBoolean)
-]
-
-{ #category : #'private - regular cells - instance creation' }
-CMSpaceModel >> southCell: k [
-	k = 0
-		ifTrue: [ ^ 0 ].
-	k <= (column * (line - 1))
-		ifTrue: [ ^ k + column ].
-	^ closed
-		ifTrue: [ 0 ]
-		ifFalse: [ k - (column * (line - 1)) ]
 ]
 
 { #category : #accessing }
@@ -3362,6 +3203,23 @@ CMSpaceModel >> timeStep [
 CMSpaceModel >> timeUnitName [
 	
 	^self cormasModel timeUnitName
+]
+
+{ #category : #'private - accessing' }
+CMSpaceModel >> torroidal [
+	
+	^torroidal
+]
+
+{ #category : #'private - accessing' }
+CMSpaceModel >> torroidal: aBoolean [
+	" Requires the receiver already has a number of neighbourhood configured "
+
+	torroidal = aBoolean ifTrue: [ ^ self ].
+	torroidal := aBoolean.
+	self initNeighbourhood.
+	self initEdge.
+	self cormasModel registerSpaceModelChange: #boundariesChanged	"dispatch the info to other spaceInterfaces"
 ]
 
 { #category : #'private - irregular polygons creation' }
@@ -3474,7 +3332,7 @@ CMSpaceModel >> voisinsPolygonesNoeuds: lesPolygones [
 			allPolygones
 				do: [ :c | 
 					b ~= c
-						ifTrue: [ (c bounds regionIntersects: boundingRectangle)
+						ifTrue: [ (c bounds intersects: boundingRectangle)
 								ifTrue:
 									[ "c est POTENTIELLEMENT voisin... on le verifie ici rigoureusement..."
 									"et par la meme occasion, on memorise les noeuds !!!"
@@ -3627,28 +3485,6 @@ CMSpaceModel >> wayFromCell: cell1 toCell: cell2 [
 									[:c | c numLine = lastCell numLine and: [by * c numCol > (by * way last numCol)]])]].
 	invert ifTrue: [way := way reverse].
 	^way
-]
-
-{ #category : #'private - regular cells - instance creation' }
-CMSpaceModel >> westCell: k [
-	k \\ column = 1
-		ifFalse: [ ^ k - 1 ].
-	^ closed
-		ifTrue: [ 0 ]
-		ifFalse: [ k + column - 1 ]
-]
-
-{ #category : #'private - regular cells - instance creation' }
-CMSpaceModel >> westCellHexa: k [
-	
-	k = 0 ifTrue: [^0].
-	k < column | ((k - 1) // column + 1) odd
-		ifTrue:
-			["ligne impaire ou premiere"
-			^self westCell: k]
-		ifFalse:
-			["ligne paire"
-			^k]
 ]
 
 { #category : #'private - accessing' }

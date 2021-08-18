@@ -10,6 +10,30 @@ Class {
 	#category : #'Cormas-Tests-Space'
 }
 
+{ #category : #test }
+CMSpaceModelTest >> newNotTorroidalSpaceModel [
+
+	^ self spaceModel 
+		initializeRegularLines: 9
+		columns: 5
+		shape: #squared
+		nbNeighbours: 4
+		closed: false;
+		yourself
+]
+
+{ #category : #test }
+CMSpaceModelTest >> newTorroidalSpaceModel [
+
+	^ self spaceModel 
+		initializeRegularLines: 9
+		columns: 5
+		shape: #squared
+		nbNeighbours: 4
+		closed: true;
+		yourself
+]
+
 { #category : #running }
 CMSpaceModelTest >> setUp [
 	super setUp.
@@ -70,14 +94,6 @@ CMSpaceModelTest >> testAllOccupants [
 ]
 
 { #category : #test }
-CMSpaceModelTest >> testClosed [
-
-	self spaceModel closed: true.
-	self assert: self spaceModel closed.
-
-]
-
-{ #category : #test }
 CMSpaceModelTest >> testColumn [
 
 	self spaceModel line: 2 column: 3.
@@ -109,6 +125,13 @@ CMSpaceModelTest >> testIsIrregular [
 	self spaceModel gridCellShape: #regular.
 	self deny: self spaceModel isIrregular.
 
+]
+
+{ #category : #test }
+CMSpaceModelTest >> testIsNotTorroidal [
+
+	self assert: self newTorroidalSpaceModel isNotTorroidal.
+	self deny: self newNotTorroidalSpaceModel isNotTorroidal.	
 ]
 
 { #category : #test }

@@ -79,21 +79,6 @@ CMSpatialEntityElement >> directionNeighbour: v [
 ]
 
 { #category : #'displaying - obsolete' }
-CMSpatialEntityElement >> displayOn: aGC outlinesInstancesOf: aClassName color: aColorName lineWidth: anInteger [
-
-	(self id = self spaceModel elementaryEntities size
-		and: [ (self spaceModel spatialEntities includesKey: aClassName)
-				and: [ (self spaceModel spatialEntities at: aClassName) isNil not
-						and: [ (self spaceModel spatialEntities at: aClassName) isNotEmpty ] ] ])
-		ifTrue: [ aGC paint: (Color perform: aColorName).
-			aGC lineWidth: anInteger.
-			(self spaceModel spatialEntities at: aClassName)
-				do: [ :a | 
-					a image notNil
-						ifTrue: [ a image component asStroker displayOn: aGC ] ] ]
-]
-
-{ #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> displaySegment: aDirection [
 	
 	| readAccessSelector |
@@ -159,18 +144,15 @@ Return value: <Number>"
 
 { #category : #'initialize-release' }
 CMSpatialEntityElement >> initNeighbourhood [
-	
-	self orderedNeighbourhood isNil ifTrue: [^nil].
-	self neighbourhood: (self orderedNeighbourhood select: [:a | a notNil])
+
+	self orderedNeighbourhood ifNil: [ ^ nil ].
+	self neighbourhood: (self orderedNeighbourhood reject: #isNil)
 ]
 
 { #category : #testing }
 CMSpatialEntityElement >> isConnectedToCells: setOfCells [
-	"Purpose: answer if the current cell touches at least one of the setOfCells"
-	
-	self neighbourhoodAndSelf
-		do: [:c | (setOfCells includes: c) ifTrue: [^true]].
-	^false
+
+	^ self neighbourhoodAndSelf anySatisfy: [ :c | setOfCells includes: c ]
 ]
 
 { #category : #testing }
@@ -556,16 +538,13 @@ Argument: aCondition = <BlockClosure>
 Return value: <SpatialEntity | nil>
 Example: self nearestCellVerifying: [:c | c isClosed not]"
 	
-	^(self spaceModel gridCellShape = #squared
-		or: [self spaceModel gridCellShape = #hexagonal])
-		ifTrue:
-			[self
+	^(self spaceModel gridCellShape = #squared 	or: [self spaceModel gridCellShape = #hexagonal])
+		ifTrue: [ self
 				nearestNeighborVerifying: aCondition
-				withinRadius: (self spaceModel line max: self spaceModel column)]
-		ifFalse:
-			[self
+				withinRadius: (self spaceModel line max: self spaceModel column) ]
+		ifFalse: [ self
 				nearestCellVerifying: aCondition
-				constraintOnPath: [:aCell | true]]
+				constraintOnPath: [ : aCell | true] ]
 ]
 
 { #category : #'environment - sensing - space' }

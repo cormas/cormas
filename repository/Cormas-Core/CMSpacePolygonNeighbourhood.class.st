@@ -4,11 +4,10 @@ Class {
 	#category : #'Cormas-Core-Space'
 }
 
-{ #category : #private }
-CMSpacePolygonNeighbourhood class >> implements: aSymborOrNumberNeighbours [
-	" Private - See superimplementor's comment "
+{ #category : #testing }
+CMSpacePolygonNeighbourhood class >> isRegularNeighbourhood: aSpaceModel [
 
-	^ aSymborOrNumberNeighbours ~~ #six or: [ aSymborOrNumberNeighbours ~ 6 ]
+	^ (#(3 4 6 8) includes: aSpaceModel nbNeighbours) not
 ]
 
 { #category : #'private - irregular polygons creation' }

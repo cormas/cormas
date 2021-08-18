@@ -27,33 +27,39 @@ Class {
 	#category : #'Cormas-Core-Space'
 }
 
+{ #category : #testing }
+CMSpaceNeighbourhood class >> cardinal [
+
+	self subclassResponsibility
+]
+
+{ #category : #testing }
+CMSpaceNeighbourhood class >> cardinalSymbol [
+
+	self subclassResponsibility
+]
+
 { #category : #'instance creation' }
-CMSpaceNeighbourhood class >> for: aSymborOrNumberNeighbours space: aSpaceModel [
+CMSpaceNeighbourhood class >> forSpace: aSpaceModel [
 	" Answer a new instance of the receiver accordingly to the number of neighbours specified in aSymborOrNumberNeighbours "
 	
-	^ self subclasses 
-		detect: [ : nbSubclass | nbSubclass implements: aSymborOrNumberNeighbours ]
+	^ self concreteSubclasses
+		detect: [ : nbSubclass | nbSubclass isStartConditionFor: aSpaceModel ]
 		ifFound: [ : nbSubclass | nbSubclass new initializeOn: aSpaceModel ]
 		ifNone: [ self error: 'Should not happen' ]
 ]
 
-{ #category : #private }
-CMSpaceNeighbourhood class >> implements: aSymborOrNumberNeighbours [
-	" Answer <true> if the receiver meet the conditions for creating an instance based in aSymbolOrNumberOfNeighbours "
+{ #category : #testing }
+CMSpaceNeighbourhood class >> isRegularNeighbourhood: aSpaceModel [
 
-	^ false
+	^ aSpaceModel nbNeighbours = self cardinal or: [ aSpaceModel nbNeighbours == self cardinalSymbol ]
 ]
 
-{ #category : #initialization }
-CMSpaceNeighbourhood >> cardinal [ 
-
-	^ self spaceModel cardinal
-]
-
-{ #category : #'private - regular cells - instance creation' }
-CMSpaceNeighbourhood >> closed [
-
-	^ self spaceModel closed
+{ #category : #accessing }
+CMSpaceNeighbourhood >> cardinal [
+	" See class side comment "
+	
+	^ self class cardinal
 ]
 
 { #category : #'private - regular cells - instance creation' }
@@ -72,18 +78,9 @@ CMSpaceNeighbourhood >> cormasModel [
 CMSpaceNeighbourhood >> eastCell: k [
 	k \\ self column = 0
 		ifFalse: [ ^ k + 1 ].
-	^ self closed
+	^ self isNotTorroidal
 		ifTrue: [ 0 ]
 		ifFalse: [ k - (self column - 1) ]
-]
-
-{ #category : #'private - regular cells - instance creation' }
-CMSpaceNeighbourhood >> eastCellHexa: k [
-	
-	k = 0 ifTrue: [ ^ 0 ].
-	^ k < self column | ((k - 1) // self column + 1) odd
-		ifTrue: [ k ] "ligne impaire ou premiere"
-		ifFalse: [ self eastCell: k ] "ligne paire"
 ]
 
 { #category : #accessing }
@@ -92,11 +89,17 @@ CMSpaceNeighbourhood >> elementaryEntitiesAt: anInteger [
 	^ self spaceModel elementaryEntities at: anInteger
 ]
 
+{ #category : #accessing }
+CMSpaceNeighbourhood >> gridCellShape [
+
+	^ self spaceModel gridCellShape 
+]
+
 { #category : #initialization }
 CMSpaceNeighbourhood >> initializeNeighbourhood [
 	" Private - Initialize aSpaceModel neighbourhood values based on the receiver "
 
-	1 to: self cardinal do: [ :k | 
+	1 to: self class cardinal do: [ :k | 
 		(self elementaryEntitiesAt: k) ifNotNil: [ 
 			self initializeOrderedNeighbourhood: k ] ]
 ]
@@ -116,9 +119,21 @@ CMSpaceNeighbourhood >> initializeOrderedNeighbourhood: k [
 ]
 
 { #category : #'private - regular cells - instance creation' }
+CMSpaceNeighbourhood >> isNotTorroidal [
+
+	^ self spaceModel isNotTorroidal
+]
+
+{ #category : #'private - regular cells - instance creation' }
 CMSpaceNeighbourhood >> line [
 
 	^ self spaceModel line
+]
+
+{ #category : #'private - accessing' }
+CMSpaceNeighbourhood >> nbNeighbours [
+
+	^ self spaceModel nbNeighbours
 ]
 
 { #category : #'private - regular cells - instance creation' }
@@ -127,19 +142,18 @@ CMSpaceNeighbourhood >> northCell: k [
 		ifTrue: [ ^ 0 ].
 	k > self column
 		ifTrue: [ ^ k - self column ].
-	^ self closed
+	^ self isNotTorroidal
 		ifTrue: [ 0 ]
 		ifFalse: [ self column * (self line - 1) + k ]
 ]
 
 { #category : #'private - regular cells - instance creation' }
 CMSpaceNeighbourhood >> southCell: k [
-
 	k = 0
 		ifTrue: [ ^ 0 ].
 	k <= (self column * (self line - 1))
 		ifTrue: [ ^ k + self column ].
-	^ self closed
+	^ self isNotTorroidal
 		ifTrue: [ 0 ]
 		ifFalse: [ k - (self column * (self line - 1)) ]
 ]
@@ -161,16 +175,7 @@ CMSpaceNeighbourhood >> westCell: k [
 
 	k \\ self column = 1
 		ifFalse: [ ^ k - 1 ].
-	^ self closed
+	^ self isNotTorroidal
 		ifTrue: [ 0 ]
 		ifFalse: [ k + self column - 1 ]
-]
-
-{ #category : #'private - regular cells - instance creation' }
-CMSpaceNeighbourhood >> westCellHexa: k [
-	
-	k = 0 ifTrue: [ ^ 0 ].
-	^ k < self column | ((k - 1) // self column + 1) odd
-		ifTrue: [ self westCell: k ] "ligne impaire ou premiere"
-		ifFalse: [ k ] "ligne paire"
 ]

@@ -2402,14 +2402,14 @@ CMAbstractModel >> initEntities [
 				ifFalse: [ (aClass inheritsFrom: CMObjectLocation)
 						ifTrue: [ (self theEntities: aClass) isNil
 								ifFalse: [ (self theEntities: aClass) do: [ :LO | LO leave ] ] ].
-					self initializeTheEntity: aClass ] ].	"Remove all the Agents from previous simulation"
+					self resetEntities: aClass ] ].	"Remove all the Agents from previous simulation"
 	self class socialClasses
 		do: [ :aClass | 
 			aClass isAbstract
 				ifFalse: [ (aClass inheritsFrom: CMAgentLocation)
 						ifTrue: [ (self theEntities: aClass) isNil
 								ifFalse: [ (self theEntities: aClass) do: [ :LO | LO leave ] ] ].
-					self initializeTheEntity: aClass ] ].
+					self resetEntities: aClass ] ].
 	self spaceModel isNil
 		ifFalse: [ self spaceModel resetSpatialEntities "ButCells" ]
 ]
@@ -2429,6 +2429,7 @@ CMAbstractModel >> initFile: aStringOrFilename dataCollection: aCollec separator
 CMAbstractModel >> initSimulation [
 
 	self timeStep: 0.
+
 	self spaceModel ifNil: [ self initializeSpaceModel ].
 	self initializeProbes.
 	"store the instances of entities in a collection and request an update of the space views at the end of the initialization"
@@ -2495,18 +2496,6 @@ CMAbstractModel >> initializeSpaceModel [
 	self spaceModel cormasModel: self.
 	self spaceModel initialize.
 	self spaceModel initializeRegular
-]
-
-{ #category : #'init entities' }
-CMAbstractModel >> initializeTheEntity: aClass [
-	"Initialize the Entity classes of the model and creates the new collector (OrderedCollection)"
-	
-	| entities |
-	entities := self theEntities: aClass.
-	entities reverseDo: [:anEntity | anEntity delete].
-	aClass CurrentId: 0.
-	aClass isAbstract ifTrue: [^OrderedCollection new: 0].
-	^entities removeAll
 ]
 
 { #category : #'utilities - population metrics' }
@@ -3129,6 +3118,18 @@ CMAbstractModel >> resetCells [
 	"Purpose: reset all the generic attributes of the cells"
 
 	self theESE do: #reset
+]
+
+{ #category : #'init entities' }
+CMAbstractModel >> resetEntities: aClass [
+	"Initialize the Entity classes of the model and creates the new collector (OrderedCollection)"
+	
+	| entities |
+	entities := self theEntities: aClass.
+	entities reverseDo: [:anEntity | anEntity delete].
+	aClass CurrentId: 0.
+	aClass isAbstract ifTrue: [^OrderedCollection new: 0].
+	^entities removeAll
 ]
 
 { #category : #scheduling }

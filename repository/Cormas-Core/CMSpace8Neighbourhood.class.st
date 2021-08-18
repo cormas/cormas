@@ -4,11 +4,16 @@ Class {
 	#category : #'Cormas-Core-Space'
 }
 
-{ #category : #private }
-CMSpace8Neighbourhood class >> implements: aSymborOrNumberNeighbours [
-	" Private - See superimplementor's comment "
+{ #category : #initialization }
+CMSpace8Neighbourhood class >> cardinal [
 
-	^ aSymborOrNumberNeighbours ~~ #four or: [ aSymborOrNumberNeighbours  ~= 4 ]
+	^ 8
+]
+
+{ #category : #'private - accessing' }
+CMSpace8Neighbourhood class >> cardinalSymbol [
+
+	^ #eight
 ]
 
 { #category : #initialization }

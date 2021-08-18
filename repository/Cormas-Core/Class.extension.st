@@ -16,3 +16,10 @@ Class >> chunkOut [
 	self fileOutOn: internalStream.
 	^ internalStream reset
 ]
+
+{ #category : #'*Cormas-Core' }
+Class >> concreteSubclasses [
+
+	^ self allSubclasses select: [ : cls | cls subclasses isEmpty ]
+
+]
