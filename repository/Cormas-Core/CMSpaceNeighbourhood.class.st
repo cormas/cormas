@@ -39,20 +39,27 @@ CMSpaceNeighbourhood class >> cardinalSymbol [
 	self subclassResponsibility
 ]
 
+{ #category : #accessing }
+CMSpaceNeighbourhood class >> distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols [
+
+	^ cell1 distanceCell: cell2	
+
+]
+
 { #category : #'instance creation' }
-CMSpaceNeighbourhood class >> forSpace: aSpaceModel [
+CMSpaceNeighbourhood class >> forNeighbours: aNumberOrSymbol spaceModel: aCMSpaceModel [
 	" Answer a new instance of the receiver accordingly to the number of neighbours specified in aSymborOrNumberNeighbours "
 	
 	^ self concreteSubclasses
-		detect: [ : nbSubclass | nbSubclass isStartConditionFor: aSpaceModel ]
-		ifFound: [ : nbSubclass | nbSubclass new initializeOn: aSpaceModel ]
+		detect: [ : nbSubclass | nbSubclass isStartConditionFor: aNumberOrSymbol ]
+		ifFound: [ : nbSubclass | nbSubclass new spaceModel: aCMSpaceModel ]
 		ifNone: [ self error: 'Should not happen' ]
 ]
 
 { #category : #testing }
-CMSpaceNeighbourhood class >> isRegularNeighbourhood: aSpaceModel [
+CMSpaceNeighbourhood class >> isStartConditionFor: aSymbolOrNumber [
 
-	^ aSpaceModel nbNeighbours = self cardinal or: [ aSpaceModel nbNeighbours == self cardinalSymbol ]
+	^ aSymbolOrNumber = self cardinal or: [ aSymbolOrNumber == self cardinalSymbol ]
 ]
 
 { #category : #accessing }
@@ -69,9 +76,9 @@ CMSpaceNeighbourhood >> column [
 ]
 
 { #category : #accessing }
-CMSpaceNeighbourhood >> cormasModel [
+CMSpaceNeighbourhood >> distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols [
 
-	^ self spaceModel cormasModel
+	^ self class distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols
 ]
 
 { #category : #'private - regular cells - instance creation' }
@@ -85,6 +92,7 @@ CMSpaceNeighbourhood >> eastCell: k [
 
 { #category : #accessing }
 CMSpaceNeighbourhood >> elementaryEntitiesAt: anInteger [
+	" Answer a <Collection> of <CMSpatialEntity> cells at index anInteger "
 
 	^ self spaceModel elementaryEntities at: anInteger
 ]
@@ -93,6 +101,12 @@ CMSpaceNeighbourhood >> elementaryEntitiesAt: anInteger [
 CMSpaceNeighbourhood >> gridCellShape [
 
 	^ self spaceModel gridCellShape 
+]
+
+{ #category : #'private - regular cells - instance creation' }
+CMSpaceNeighbourhood >> gridCellShapeType [
+
+	^ #regular
 ]
 
 { #category : #initialization }
@@ -108,6 +122,7 @@ CMSpaceNeighbourhood >> initializeNeighbourhood [
 CMSpaceNeighbourhood >> initializeOn: aSpaceModel [
 	" Private - Initialize aSpaceModel neighbourhood values based on the receiver "
 
+	aSpaceModel gridCellShape: self gridCellShapeType.
 	self spaceModel: aSpaceModel.
 	self initializeNeighbourhood.
 ]
@@ -133,7 +148,7 @@ CMSpaceNeighbourhood >> line [
 { #category : #'private - accessing' }
 CMSpaceNeighbourhood >> nbNeighbours [
 
-	^ self spaceModel nbNeighbours
+	^ self class cardinal
 ]
 
 { #category : #'private - regular cells - instance creation' }

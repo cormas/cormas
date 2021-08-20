@@ -7,14 +7,12 @@ Class {
 { #category : #tests }
 CMConwayModelTest >> testACellInConwayModelIsAtDistanceOneToAnotherCell [
 
-	| tmp1 tmp2 tmp3 |
-	tmp3 := CMConwayModel.
-	tmp3 initialize.
-	tmp1 := tmp3 new.
-	tmp1 initSimulation.
-	tmp2 := (tmp1 allTheEntities: CMConwayCell) atRandom.
+	| randomEntity m |
+	m := CMConwayModel newWithActiveInit: #initSmallGrid.
+	m initSimulation.
+	randomEntity := (m allTheEntities: CMConwayCell) atRandom.
 	self
-		assert: (tmp2 shortestDistanceToCellsVerifying: [ :arg1 | 
+		assert: (randomEntity shortestDistanceToCellsVerifying: [ :arg1 | 
 				 arg1 state = #dead | (arg1 state = #alive) ])
 		equals: 1
 ]

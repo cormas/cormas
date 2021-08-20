@@ -66,12 +66,8 @@ CMAbstractModelTest >> setUp [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testCentralCell [
 	| m |
-	m := (CMMockModel
-		initialize;
-		new)
-		activeInit: #initRandom;
+	m := (CMMockModel	newWithActiveInit: #initRandom)
 		initSimulation;
-		initializeSpaceModel;
 		createGridLines: 3
 			columns: 3
 			neighbourhood: 4
@@ -100,12 +96,8 @@ CMAbstractModelTest >> testCreateGridXYNeighborHoodClosed [
 { #category : #tests }
 CMAbstractModelTest >> testDominance [
 	| m |
-	m := (CMMockModel
-		initialize;
-		new)
-		activeInit: #initRandom;
+	m := (CMMockModel	newWithActiveInit: #initRandom)
 		initSimulation;
-		initializeSpaceModel;
 		createGridLines: 100
 			columns: 100
 			neighbourhood: 4
@@ -118,12 +110,8 @@ CMAbstractModelTest >> testDominance [
 { #category : #tests }
 CMAbstractModelTest >> testDominance1 [
 	| m |
-	m := (CMMockModel
-		initialize;
-		new)
-		activeInit: #initAlive;
+	m := (CMMockModel	newWithActiveInit: #initRandom)
 		initSimulation;
-		initializeSpaceModel;
 		createGridLines: 100
 			columns: 100
 			neighbourhood: 4
@@ -169,11 +157,9 @@ CMAbstractModelTest >> testHasControlInit [
 { #category : #test }
 CMAbstractModelTest >> testInitSimulation [
 
-	model := (CMMockModel
-		initialize;
-		new)
-		activeInit: #initAlive;
-		activeControl: #step:.
+	model := (CMMockModel	newWithActiveInit: #initRandom)
+		activeControl: #step:;
+		yourself.
 	self deny: model initStatus.
 	model initSimulation.
 	self assert: model initStatus.

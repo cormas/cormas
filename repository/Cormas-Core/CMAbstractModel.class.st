@@ -723,6 +723,14 @@ Ex: CormasModel modelMethodsForManipulation"
 	^coll
 ]
 
+{ #category : #'instance creation' }
+CMAbstractModel class >> newWithActiveInit: aSymbol [
+
+	^ (self initialize; new)
+		activeInit: aSymbol;
+		yourself
+]
+
 { #category : #'managing classes' }
 CMAbstractModel class >> occupantClasses [
 	"return a collection of classes for which intances are located on the grid"
@@ -1606,23 +1614,10 @@ Arguments: aNumber is the neighbourhood type. It must 4, 6 or 8
 Arguments: aBoolean : closed or torroidal space.
 Example: self createGridColumns: 20 lines: 20 neighbourhood: 8 closed: true "
 
-	| shapeSymbol nbSymbol |
-	
-	self halt.
-	aNumber = 8
-		ifTrue: [ shapeSymbol := #squared.
-			nbSymbol := #eight ].
-	aNumber = 4
-		ifTrue: [ shapeSymbol := #squared.
-			nbSymbol := #four ].
-	aNumber = 6
-		ifTrue: [ shapeSymbol := #hexagonal.
-			nbSymbol := #six ].
 	self spaceModel
 		initializeRegularLines: numLines
 		columns: numColumns
-		shape: shapeSymbol
-		nbNeighbours: nbSymbol
+		nbType: aNumber
 		closed: aBoolean
 ]
 
@@ -2431,8 +2426,6 @@ CMAbstractModel >> initFile: aStringOrFilename dataCollection: aCollec separator
 CMAbstractModel >> initSimulation [
 
 	self timeStep: 0.
-
-	self spaceModel ifNil: [ self initializeSpaceModel ].
 	self initializeProbes.
 	"store the instances of entities in a collection and request an update of the space views at the end of the initialization"
 	self setNewCollector.
@@ -3468,7 +3461,9 @@ CMAbstractModel >> situatedEntitiesFrom: aClass povAt: povSelector [
 
 { #category : #accessing }
 CMAbstractModel >> spaceModel [
-	^ spaceModel ifNil: [ self initializeSpaceModel ]
+	
+	spaceModel ifNil: [ self initializeSpaceModel ].
+	^ spaceModel
 ]
 
 { #category : #accessing }

@@ -32,7 +32,6 @@ Class {
 		'elementaryEntitiesDefaultPovs',
 		'cormasModel',
 		'arrayOrigins',
-		'nbNeighbours',
 		'rMaxEntityImage',
 		'spatialEntities',
 		'gridCellShape',
@@ -472,12 +471,7 @@ CMSpaceModel >> connexity [
 	
 	self gridCellShape = #irregular
 		ifTrue: [ ^ 0 ].
-	self nbNeighbours = #eight
-		ifTrue: [ ^ 8 ].
-	self nbNeighbours = #four
-		ifTrue: [ ^ 4 ].
-	self nbNeighbours = #six
-		ifTrue: [ ^ 6 ]
+	^ self nbConfiguration cardinal
 ]
 
 { #category : #'private - accessing' }
@@ -527,15 +521,8 @@ CMSpaceModel >> createAggregate: compoundEntity from: aSet [
 
 { #category : #'private - regular cells - instance creation' }
 CMSpaceModel >> createCells [
-	"create all the cells and their connexions, and collect them as elementaryEntities collection"
+	" Create all the cells and their connexions, and collect them as elementaryEntities collection "
 
-	| allEse |
-	allEse := Array new: gridSize.
-	self cormasModelClass cellClass CurrentId: 0.
-	1 to: gridSize do:
-		[ :i | allEse at: i put: (self newEntity: self cormasModelClass cellClass) ].	"and collect them"
-
-	self elementaryEntities: allEse.
 	self gridCellShape = #squared
 		ifTrue: [ self createRectangularCellsFigure ].
 
@@ -546,6 +533,19 @@ CMSpaceModel >> createCells [
 		ifTrue: [ self initEdge ].	"newCells notification also dispatch the request to remoteSpaceModels to rebuild the cell figures"
 	"self sendCellsToClientSpaceModels: (EntityReference onEntities: allEse)."	"dispatch the info that cells have been modified to all opened spaceInterfaces"
 	self changed: #newCells
+]
+
+{ #category : #'private - regular cells - instance creation' }
+CMSpaceModel >> createElementaryEntities [
+	"create all the cells and their connexions, and collect them as elementaryEntities collection"
+
+	| allEse |
+	allEse := Array new: self gridSize.
+	self cormasModelClass cellClass CurrentId: 0.
+	(1 to: self gridSize) 
+		do: [ :i | allEse at: i put: (self newEntity: self cormasModelClass cellClass) ]
+		displayingProgress: 'Creating cells...'.
+	self elementaryEntities: allEse.
 ]
 
 { #category : #'private - regular cells - instance creation' }
@@ -739,51 +739,8 @@ CMSpaceModel >> distanceFromCell: cell1 toCell: cell2 [
 				ifTrue: [ nbLines := nbLines - self line + 2 ].
 			nbCols > (self column - 2)
 				ifTrue: [ nbCols := nbCols - self column + 2 ] ].
-	self nbNeighbours = #eight
-		ifTrue: [ ^ nbLines max: nbCols ].
-	self nbNeighbours = #four
-		ifTrue: [ ^ nbLines + nbCols ].
-	self nbNeighbours = #six
-		ifTrue: [ nbLines odd
-				ifTrue:
-					[ "celui des 2 qui est √† droite, s'il est sur la partie droite de sa colonne  (ligne impaire), je rajoute 1 √† dC"
-					cell1 numCol > cell2 numCol
-						ifTrue: [ cell1 numLine odd
-								ifTrue: [ nbCols := nbCols + 1 ] ]
-						ifFalse: [ cell2 numLine odd
-								ifTrue: [ nbCols := nbCols + 1 ] ].
-					^ nbLines + (0 max: (2 * nbCols - nbLines - 1) / 2) ]
-				ifFalse: [ ^ nbLines + (0 max: (2 * nbCols - nbLines) / 2) ] ].	"for irregular cells, the calculus is much more longer"
-	^ cell1 distanceCell: cell2	"If nbLines is odd, 
-	dist = nbLines if nbCols < (nbLines + 1)/ 2    otherwise
-	dist = nbLines + (2.nbCols - nbLines - 1)/ 2
-If nbLines is even, 
-	dist = nbLines if nbCols < nbLines/ 2           otherwise
-	dist = nbLines + (2.nbCols - nbLines)/ 2
-explications:  a) dL impaire
-dist = dL en g√©n√©rale, sauf qd on s'√©loigne d'une droite oblique:
-D0 : dL > 2.dC -3
-D1 : dL = 2.dC-3  alors on ajoute 1 
-D2 : dL = 2.dC-5  alors on ajoute 2 
-D3 : dL = 2.dC-7  alors on ajoute 3 
-...
-Dt : dL = 2.dC-(1+2t)   t est l'incr√©ment.
-alors: t = (2.dC -1 - dL)/2
-donc : 
-dist = dL + [ 0 ou (2.dC - dL -1) / 2 si c'est positif]
-			b) dL paire :
-dist = dL en g√©n√©rale, sauf qd on s'√©loigne d'une droite oblique:
-D0 : dL > 2.dC - 2
-D1 : dL = 2.dC-2  alors on ajoute 1 
-D2 : dL = 2.dC-4  alors on ajoute 2 
-D3 : dL = 2.dC-6  alors on ajoute 3 
-...
-Dt : dL = 2.dC-(2t)   t est l'incr√©ment.
-alors: t = (2.dC - dL)/2
-donc : 
-dist = dL + [ 0 ou (2.dC - dL) / 2 si c'est positif] 
-bon en fait √ßa ne marche pas :
-il faut aussi rajouter 1 √† dC qd dL est impaire..."
+	^ self nbConfiguration distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols.
+
 ]
 
 { #category : #'landscape indices' }
@@ -791,7 +748,9 @@ CMSpaceModel >> distanceFromHexagonalCell: cell1 toCell: cell2 [
 	"return the distance in number of hexagonal cells"
 
 	| nbLines nbCols add colTheoriq |
-	self nbNeighbours = #six
+	
+	self flag: #toReview.
+	self nbNeighbours = 6
 		ifFalse: [ self halt ].
 	nbLines := (cell1 numLine - cell2 numLine) abs.
 	nbCols := (cell1 numCol - cell2 numCol) abs.
@@ -855,20 +814,21 @@ CMSpaceModel >> eightconnexe [
 	"received from SpaceInterface menu, when the user want to change the shape of the cells"
 	
 	self gridCellShape ~= #squared
-		ifTrue:
-			[self gridCellShape: #squared.
+		ifTrue: [
+			self gridCellShape: #squared.
 			self createRectangularCellsFigure].
-	self nbNeighbours ~= #eight
+	self nbNeighbours ~= 8
 		ifTrue:
-			[self nbNeighbours: #eight.
+			[self nbConfiguration: (CMSpaceNeighbourhood forNeighbours: #eight spaceModel: self).
 			self initNeighbourhood].
 	self changed: #shapeHasChanged with: 8	"dispatch the info to all spaceInterfaces"
 ]
 
 { #category : #accessing }
 CMSpaceModel >> elementaryEntities [
-	
-	^self spatialEntities at: self cellClass name
+	" Answer a <Collection> of the receiver's cells "
+
+	^ self spatialEntitiesAt: self cellClass name
 ]
 
 { #category : #'private - accessing' }
@@ -1093,13 +1053,13 @@ CMSpaceModel >> fourconnexe [
 	"received from SpaceInterface menu, when the user want to change the shape of the cells"
 	
 	self gridCellShape ~= #squared
-		ifTrue:
-			[self gridCellShape: #squared.
-			self createRectangularCellsFigure].
+		ifTrue: [
+			self gridCellShape: #squared.
+			self createRectangularCellsFigure ].
 	self nbNeighbours ~= #four
-		ifTrue:
-			[self nbNeighbours: #four.
-			self initNeighbourhood].
+		ifTrue: [ 
+			self nbConfiguration: (CMSpaceNeighbourhood forNeighbours: #four spaceModel: self).
+			self initNeighbourhood ].
 	self changed: #shapeHasChanged with: 4	"dispatch the info to other spaceInterfaces"
 ]
 
@@ -1436,9 +1396,9 @@ CMSpaceModel >> hexagonal [
 	"received from SpaceInterface menu, when the user want to change the shape of the cells"
 	
 	self gridCellShape ~= #hexagonal
-		ifTrue:
-			[self gridCellShape: #hexagonal.
-			self nbNeighbours: #six.
+		ifTrue: [ 
+			self gridCellShape: #hexagonal.
+			self nbConfiguration: (CMSpaceNeighbourhood forNeighbours: #six spaceModel: self).
 			self createHexagonalCellsFigure.	"the spaceInterfaces are automatically refreshed"
 			self initNeighbourhood.
 			self changed: #shapeHasChanged]	"set the menu and title to the spaceInterfaces"
@@ -1567,25 +1527,10 @@ CMSpaceModel >> initEdge [
 			ifFalse: [ p edge: true ] ]
 ]
 
-{ #category : #'private - irregular polygons creation' }
-CMSpaceModel >> initEntitesSpatiales: aClass [
-	"Creation de la collection d'entites spatiales du modele"
-	"Ca me parait inutile !!"
-	
-	"self cormasModel theEntities: aClass .  Returns a orderedCollection of all the instances of aClass collected by cormasModel"
-	"	aggregatesCollection := self cormasModel getterForEntityClass: aClass.
-	self cormasModel class instVarNames detect: [:i | i = aggregatesCollection]
-		ifNone: [self halt].
-	self cormasModel perform: (aggregatesCollection , ':') asSymbol
-		with: (self spatialEntities at: aClass name)"
-	
-]
-
 { #category : #'private - regular cells - instance creation' }
 CMSpaceModel >> initNeighbourhood [
 	" Private - Initalize the receiver's neighbourhood "
 
-	self nbConfiguration: (CMSpaceNeighbourhood forSpace: self).
 	self elementaryEntities do: #initNeighbourhood.
 
 ]
@@ -1600,7 +1545,6 @@ CMSpaceModel >> initialize [
 CMSpaceModel >> initializeIrregular [
 	
 	gridCellShape := #irregular.
-	nbNeighbours := #irregular.
 	torroidal := true.
 	line := nil.
 	column := nil.
@@ -1609,56 +1553,51 @@ CMSpaceModel >> initializeIrregular [
 
 { #category : #'private - init' }
 CMSpaceModel >> initializeRegular [
-"create a grid of 10x10 cells by default"
-	self
-		line: 10
-		column: 10
-		shape: #squared
-		nbNeighbours: #four
-		closed: true.
+	" Create a grid of 10x10 cells by default "
+	
+	self flag: #toReview.
+	self flag: #warning. "This method is used as default initialization of the receiver and we should check that further configuration gets actually applied. "
+	self line: 10 column: 10.
+	self nbType: 4.
+	self torroidal: true.
+
 	self createCells 
 ]
 
 { #category : #'ESE initialize-release' }
-CMSpaceModel >> initializeRegularLines: lines columns: columns shape: shapeSymbol nbNeighbours: nbSymbol closed: aBoolean [
-	"Create a grid of regular cells.
-lines = number of lines. columns = number of columns.
-shapeSymbol =<Symbol> (#squared , )
-nbSymbol =<Symbol> (#four, #six or #eight)
-aBoolean = <Boolean> (true for closed, false for toroidal).
-ex, from CormasModel:
-	self spaceModel initializeRegularColumns: 101 lines: 101 shape: #squared nbNeighbours: #eight toroidal: true."
+CMSpaceModel >> initializeRegularLines: lines columns: columns nbType: aNumber closed: aBoolean [
+	" Private - Create a grid of regular cells.
+
+	lines = number of lines. 
+	columns = number of columns.
+	aBoolean = <Boolean> (true for closed, false for toroidal).
+	ex, from CormasModel: self spaceModel initializeRegularColumns: 101 lines: 101 toroidal: true."
 
 	self resetSpatialEntities.
-	self
-		line: lines
-		column: columns
-		shape: shapeSymbol
-		nbNeighbours: nbSymbol
-		closed: aBoolean.
-	self createCells
+	self line: lines column: columns.
+	self nbType: aNumber.
+	self createElementaryEntities.
+	self torroidal: aBoolean.
+	self createCells.
+
+
 ]
 
 { #category : #deprecated }
 CMSpaceModel >> initializeRegularX: columns Y: lines shape: shapeSymbol nbNeighbours: nbSymbol boundaries: bSymbol [
 	"This method is deprecated. Please use initializeRegularColumns:lines:shape:nbNeighbours:closed: instead."
-
 	"Create a grid of regular cells.
 lines = number of lines. columns = number of columns.
-shapeSymbol =<Symbol> (#squared , )
 nbSymbol =<Symbol> (#four, #six or #eight)
 bSymbol = <Symbol> (#toroidal or #closed) .
 ex, from CormasModel:
 	self spaceModel initializeRegularX: 101 Y: 101 shape: #squared nbNeighbours: #eight boundaries: #toroidal."
 
-	self
-		deprecated:
-			'This method is no longer supported. Please use initializeRegularColumns:lines:shape:nbNeighbours:closed: instead.'.
+	self deprecated: 'This method is no longer supported. Please use initializeRegularColumns:lines:nbType:closed: instead.'.
 	^ self
 		initializeRegularLines: lines
 		columns: columns
-		shape: shapeSymbol
-		nbNeighbours: nbSymbol
+		nbType: nbSymbol
 		closed: bSymbol ~= #torroidal
 ]
 
@@ -1701,15 +1640,6 @@ CMSpaceModel >> line: i column: j [
 	line := i.
 	column := j.
 	gridSize := i * j
-]
-
-{ #category : #'private - init' }
-CMSpaceModel >> line: l column: c shape: ps nbNeighbours: nbn closed: b [
-
-	self gridCellShape: ps.
-	self nbNeighbours: nbn.
-	torroidal := b.
-	self line: l column: c
 ]
 
 { #category : #video }
@@ -1921,14 +1851,17 @@ CMSpaceModel >> nbDistinctValuesOf: anAttribute [
 
 { #category : #'private - accessing' }
 CMSpaceModel >> nbNeighbours [
-	
-	^nbNeighbours
+	" Answer a <Number> representing the receiver configured number of neighbours of regular cells "
+
+	^ self nbConfiguration nbNeighbours
 ]
 
-{ #category : #'private - accessing' }
-CMSpaceModel >> nbNeighbours: aSymbolOrInteger [
+{ #category : #'private - init' }
+CMSpaceModel >> nbType: aNumber [
+	" Configure the receiver's neighbourhood type according to aNumber and set remaining attributes "
 
-	nbNeighbours := aSymbolOrInteger 
+	self nbConfiguration: (CMSpaceNeighbourhood forNeighbours: aNumber spaceModel: self).
+
 ]
 
 { #category : #'landscape indices' }
@@ -2744,6 +2677,13 @@ CMSpaceModel >> setAggregatsBounds: agregat [
 			ag bounds: (Rectangle origin: origin corner: corner)]
 ]
 
+{ #category : #accessing }
+CMSpaceModel >> setBoundaryDirectionsFor: aCMSpatialEntity [
+	" Answer a <Collection> of direction (ex: (#E #SE #NE)) of the cell, without cell => the edge of the grid"
+
+	^ self nbConfiguration setBoundaryDirectionsFor: aCMSpatialEntity
+]
+
 { #category : #'private - irregular polygons creation' }
 CMSpaceModel >> setBounds: allPolygons [
 	
@@ -3047,8 +2987,7 @@ CMSpaceModel >> settingsFrom: aClone [
 		ifFalse: [ self
 				initializeRegularLines: aClone line
 				columns: aClone column
-				shape: aClone gridCellShape
-				nbNeighbours: aClone nbNeighbours
+				nbType: aClone nbNeighbours
 				closed: aClone isNotTorroidal ]
 ]
 
@@ -3349,6 +3288,8 @@ CMSpaceModel >> wayFromCell: cell1 toCell: cell2 [
 	"return a collection of cells from cell1 to cell2 (including cell1 and cell2)"
 	
 	| nbLines nbCols firstCell lastCell invert cellsIntoRectangle way |
+	
+	self flag: #toReview. "Refactor!!"
 	"for irregular cells, the calculus is much more longer"
 	self gridCellShape = #irregular ifTrue: [^cell1 wayTo: cell2].	"Calculus for regular cells"
 	nbLines := (cell1 numLine - cell2 numLine) abs.
@@ -3364,7 +3305,7 @@ CMSpaceModel >> wayFromCell: cell1 toCell: cell2 [
 			invert := true].
 	cellsIntoRectangle := self cellsIntoRectangleFrom: firstCell to: lastCell.
 	way := OrderedCollection new.
-	self nbNeighbours = #eight
+	self nbNeighbours = 8
 		ifTrue:
 			[| by |
 			firstCell numCol < lastCell numCol
@@ -3394,14 +3335,14 @@ CMSpaceModel >> wayFromCell: cell1 toCell: cell2 [
 							(cellsIntoRectangle
 								select:
 									[:c | c numLine = lastCell numLine and: [by * c numCol > (by * way last numCol)]])]].
-	self nbNeighbours = #four
+	self nbNeighbours = 4
 		ifTrue:
 			[way
 				addAll:
 					(cellsIntoRectangle select: [:c | c numLine = firstCell numLine]).
 			way
 				addAll: (cellsIntoRectangle select: [:c | c numCol = lastCell numCol])].
-	self nbNeighbours = #six
+	self nbNeighbours = 6
 		ifTrue:
 			[| by |
 			"nbLines odd 

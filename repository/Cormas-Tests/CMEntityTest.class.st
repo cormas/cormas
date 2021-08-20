@@ -8,6 +8,22 @@ Class {
 }
 
 { #category : #tests }
+CMEntityTest >> testCollector [
+
+	| model |
+	model := (CMMockModel initialize; new)
+		activeInit: #initRandom;
+		createGridLines: 3
+			columns: 3
+			neighbourhood: 8
+			closed: true;
+		initSimulation;
+		yourself.
+	self assert: (model collector isKindOf: CMCollector).
+
+]
+
+{ #category : #tests }
 CMEntityTest >> testColorOfNumber [
 	self assert: (CMEntity colorOfNumber: 65) equals: Color purple
 ]

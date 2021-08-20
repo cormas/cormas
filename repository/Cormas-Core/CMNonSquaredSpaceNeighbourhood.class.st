@@ -19,9 +19,3 @@ Class {
 	#superclass : #CMSpaceNeighbourhood,
 	#category : #'Cormas-Core-Space'
 }
-
-{ #category : #testing }
-CMNonSquaredSpaceNeighbourhood class >> isStartConditionFor: aSpaceModel [
-
-	^ aSpaceModel gridCellShape ~~ #squared and: [ self isRegularNeighbourhood: aSpaceModel ]
-]

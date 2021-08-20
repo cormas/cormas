@@ -4,10 +4,23 @@ Class {
 	#category : #'Cormas-Core-Space'
 }
 
-{ #category : #testing }
-CMSpacePolygonNeighbourhood class >> isRegularNeighbourhood: aSpaceModel [
+{ #category : #'private - accessing' }
+CMSpacePolygonNeighbourhood class >> cardinal [ 
 
-	^ (#(3 4 6 8) includes: aSpaceModel nbNeighbours) not
+	^ 0
+]
+
+{ #category : #'private - accessing' }
+CMSpacePolygonNeighbourhood class >> cardinalSymbol [ 
+
+	^ #zero
+]
+
+{ #category : #testing }
+CMSpacePolygonNeighbourhood class >> isStartConditionFor: aSymbolOrNumber [
+	" See superimplementor's comment "
+
+	^ (#(3 4 6 8 #three #four #six #eight) includes: aSymbolOrNumber) not
 ]
 
 { #category : #'private - irregular polygons creation' }
@@ -22,6 +35,12 @@ CMSpacePolygonNeighbourhood >> boundingRectangleFor: b [
 	boundingRectangle corner x: boundingRectangle corner x + 1.
 	boundingRectangle corner y: boundingRectangle corner y + 1.
 	^ boundingRectangle
+]
+
+{ #category : #'private - irregular polygons creation' }
+CMSpacePolygonNeighbourhood >> gridCellShapeType [
+
+	^ #irregular
 ]
 
 { #category : #'private - irregular polygons creation' }

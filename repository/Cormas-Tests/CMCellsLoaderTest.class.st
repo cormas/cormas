@@ -63,21 +63,21 @@ CMCellsLoaderTest >> testConnectivity [
 	model := self newTestModel.
 	loader spaceModel: model spaceModel.
 	loader connectivity: 'three'.
-	self assert: model spaceModel nbNeighbours equals: #three.
+	self assert: model spaceModel nbNeighbours equals: 3.
 	loader connectivity: 'four'.
-	self assert: model spaceModel nbNeighbours equals: #four.
+	self assert: model spaceModel nbNeighbours equals: 4.
 	loader connectivity: 'six'.
-	self assert: model spaceModel nbNeighbours equals: #six.
+	self assert: model spaceModel nbNeighbours equals: 6.
 	loader connectivity: 'eight'.
-	self assert: model spaceModel nbNeighbours equals: #eight.
+	self assert: model spaceModel nbNeighbours equals: 8.
 	loader connectivity: '3'.
-	self assert: model spaceModel nbNeighbours equals: #three.
+	self assert: model spaceModel nbNeighbours equals: 3.
 	loader connectivity: '4'.
-	self assert: model spaceModel nbNeighbours equals: #four.
+	self assert: model spaceModel nbNeighbours equals: 4.
 	loader connectivity: '6'.
-	self assert: model spaceModel nbNeighbours equals: #six.
+	self assert: model spaceModel nbNeighbours equals: 6.
 	loader connectivity: '8'.
-	self assert: model spaceModel nbNeighbours equals: #eight
+	self assert: model spaceModel nbNeighbours equals: 8
 ]
 
 { #category : #tests }

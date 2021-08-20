@@ -57,7 +57,7 @@ CMCellsLoader >> connectivity: aString [
 	gridSelector := self gridShapeSelectors:numberOfNeighbours.
 	self spaceModelDo: [ :spaceModel | 
 		spaceModel 
-			nbNeighbours: numberOfNeighbours;
+			nbConfiguration: (CMSpaceNeighbourhood forNeighbours: numberOfNeighbours spaceModel: spaceModel);
 			gridCellShape: gridSelector ]
 ]
 

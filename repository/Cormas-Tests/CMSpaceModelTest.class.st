@@ -16,8 +16,7 @@ CMSpaceModelTest >> newNotTorroidalSpaceModel [
 	^ self spaceModel 
 		initializeRegularLines: 9
 		columns: 5
-		shape: #squared
-		nbNeighbours: 4
+		nbType: 4
 		closed: false;
 		yourself
 ]
@@ -28,8 +27,7 @@ CMSpaceModelTest >> newTorroidalSpaceModel [
 	^ self spaceModel 
 		initializeRegularLines: 9
 		columns: 5
-		shape: #squared
-		nbNeighbours: 4
+		nbType: 4
 		closed: true;
 		yourself
 ]
@@ -108,11 +106,11 @@ CMSpaceModelTest >> testConnexity [
 	self assert: self spaceModel connexity equals: 0.
 	self spaceModel gridCellShape: #regular.
 	
-	self spaceModel nbNeighbours: #eight.
+	self spaceModel nbConfiguration: (CMSpaceNeighbourhood forNeighbours: #eight spaceModel: self).
 	self assert: self spaceModel connexity equals: 8.
-	self spaceModel nbNeighbours: #four.
+	self spaceModel nbConfiguration: (CMSpaceNeighbourhood forNeighbours: #four spaceModel: self).
 	self assert: self spaceModel connexity equals: 4.
-	self spaceModel nbNeighbours: #six.
+	self spaceModel nbConfiguration: (CMSpaceNeighbourhood forNeighbours: #six spaceModel: self).
 	self assert: self spaceModel connexity equals: 6.
 
 ]

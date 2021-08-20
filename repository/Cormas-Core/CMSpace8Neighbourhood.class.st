@@ -16,6 +16,12 @@ CMSpace8Neighbourhood class >> cardinalSymbol [
 	^ #eight
 ]
 
+{ #category : #accessing }
+CMSpace8Neighbourhood class >> distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols [
+
+	^ nbLines max: nbCols
+]
+
 { #category : #initialization }
 CMSpace8Neighbourhood >> initializeOrderedNeighbourhood: k [
 
@@ -38,4 +44,16 @@ CMSpace8Neighbourhood >> initializeOrderedNeighbourhood: k [
 	(i := self northCell: (self eastCell: k)) > 0 ifTrue: [ 
 		v at: 8 put: (self elementaryEntitiesAt: i) ].
 	^ (self elementaryEntitiesAt: k) orderedNeighbourhood: v
+]
+
+{ #category : #initialization }
+CMSpace8Neighbourhood >> setBoundaryDirectionsFor: aCMSpatialEntityElement [
+
+	| dirCollection |
+	dirCollection := super setBoundaryDirectionsFor: aCMSpatialEntityElement.
+	aCMSpatialEntityElement neighbourNE ifNil: [ dirCollection add: #NE ].
+	aCMSpatialEntityElement neighbourSE ifNil: [ dirCollection add: #SE ].
+	aCMSpatialEntityElement neighbourNW ifNil: [ dirCollection add: #NW ].
+	aCMSpatialEntityElement neighbourSW ifNil: [ dirCollection add: #SW ].
+	^ dirCollection
 ]

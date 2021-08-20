@@ -16,6 +16,12 @@ CMSpace4Neighbourhood class >> cardinalSymbol [
 	^ #four
 ]
 
+{ #category : #accessing }
+CMSpace4Neighbourhood class >> distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols [
+
+	^ nbLines + nbCols
+]
+
 { #category : #initialization }
 CMSpace4Neighbourhood >> initializeOrderedNeighbourhood: k [
 

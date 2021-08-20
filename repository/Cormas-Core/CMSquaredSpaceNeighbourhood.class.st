@@ -4,8 +4,14 @@ Class {
 	#category : #'Cormas-Core-Space'
 }
 
-{ #category : #testing }
-CMSquaredSpaceNeighbourhood class >> isStartConditionFor: aSpaceModel [
+{ #category : #initialization }
+CMSquaredSpaceNeighbourhood >> setBoundaryDirectionsFor: aCMSpatialEntityElement [
 
-	^ aSpaceModel gridCellShape == #squared and: [ self isRegularNeighbourhood: aSpaceModel ]
+	| dirCollection |
+	dirCollection := Set new.
+	aCMSpatialEntityElement neighbourN ifNil: [ dirCollection add: #N ].
+	aCMSpatialEntityElement neighbourW ifNil: [ dirCollection add: #W ].
+	aCMSpatialEntityElement neighbourS ifNil: [ dirCollection add: #S ].
+	aCMSpatialEntityElement neighbourE ifNil: [ dirCollection add: #E ].
+	^ dirCollection
 ]

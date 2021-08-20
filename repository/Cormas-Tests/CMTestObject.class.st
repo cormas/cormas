@@ -9,12 +9,9 @@ Class {
 
 { #category : #'tests-accessing-entities' }
 CMTestObject >> newTestModel [
-	^ (CMMockModel
-		initialize;
-		new)
-		activeInit: #initAlive;
+ 	
+	^ (CMMockModel	newWithActiveInit: #initAlive)
 		initSimulation;
-		initializeSpaceModel;
 		createGridLines: 20
 			columns: 10
 			neighbourhood: 4
