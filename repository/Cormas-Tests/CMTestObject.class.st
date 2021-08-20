@@ -7,6 +7,18 @@ Class {
 	#category : #'Cormas-Tests-Model'
 }
 
+{ #category : #accessing }
+CMTestObject >> model [
+
+	^ model
+]
+
+{ #category : #accessing }
+CMTestObject >> model: anObject [
+
+	model := anObject
+]
+
 { #category : #'tests-accessing-entities' }
 CMTestObject >> newTestModel [
  	
@@ -17,4 +29,11 @@ CMTestObject >> newTestModel [
 			neighbourhood: 4
 			closed: true;
 		yourself
+]
+
+{ #category : #running }
+CMTestObject >> setUp [
+
+	super setUp.
+	self model: self newTestModel.
 ]

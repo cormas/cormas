@@ -52,7 +52,7 @@ CMSpaceNeighbourhood class >> forNeighbours: aNumberOrSymbol spaceModel: aCMSpac
 	
 	^ self concreteSubclasses
 		detect: [ : nbSubclass | nbSubclass isStartConditionFor: aNumberOrSymbol ]
-		ifFound: [ : nbSubclass | nbSubclass new spaceModel: aCMSpaceModel ]
+		ifFound: [ : nbSubclass | nbSubclass new initializeOn: aCMSpaceModel ]
 		ifNone: [ self error: 'Should not happen' ]
 ]
 
@@ -76,6 +76,13 @@ CMSpaceNeighbourhood >> column [
 ]
 
 { #category : #accessing }
+CMSpaceNeighbourhood >> createCellsFigure [ 
+
+	self spaceModel createElementaryEntities.
+	
+]
+
+{ #category : #accessing }
 CMSpaceNeighbourhood >> distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols [
 
 	^ self class distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols
@@ -88,6 +95,12 @@ CMSpaceNeighbourhood >> eastCell: k [
 	^ self isNotTorroidal
 		ifTrue: [ 0 ]
 		ifFalse: [ k - (self column - 1) ]
+]
+
+{ #category : #accessing }
+CMSpaceNeighbourhood >> elementaryEntities [
+
+	^ self spaceModel elementaryEntities.
 ]
 
 { #category : #accessing }
@@ -109,13 +122,30 @@ CMSpaceNeighbourhood >> gridCellShapeType [
 	^ #regular
 ]
 
+{ #category : #accessing }
+CMSpaceNeighbourhood >> initEdges [
+
+	self isNotTorroidal
+		ifFalse: [ ^ self ]
+		ifTrue: [ 
+			| n |
+			self gridCellShape = #irregular ifTrue: [ ^ self setIrregularEntitiesEdge ].
+			n := self cardinal.
+			self elementaryEntities do: [ : p | 
+				p neighbourhood size = n
+					ifTrue: [ p edge: false ]
+					ifFalse: [ p edge: true ] ] ]
+]
+
 { #category : #initialization }
 CMSpaceNeighbourhood >> initializeNeighbourhood [
 	" Private - Initialize aSpaceModel neighbourhood values based on the receiver "
 
 	1 to: self spaceModel gridSize do: [ :k | 
 		(self elementaryEntitiesAt: k) ifNotNil: [ 
-			self initializeOrderedNeighbourhood: k ] ]
+			self initializeOrderedNeighbourhood: k ] ].
+	self elementaryEntities do: #initNeighbourhood.
+	self initEdges.
 ]
 
 { #category : #initialization }
@@ -124,6 +154,7 @@ CMSpaceNeighbourhood >> initializeOn: aSpaceModel [
 
 	aSpaceModel gridCellShape: self gridCellShapeType.
 	self spaceModel: aSpaceModel.
+	self createCellsFigure.
 	self initializeNeighbourhood.
 ]
 
@@ -135,6 +166,7 @@ CMSpaceNeighbourhood >> initializeOrderedNeighbourhood: k [
 
 { #category : #'private - regular cells - instance creation' }
 CMSpaceNeighbourhood >> isNotTorroidal [
+	" Answer a <Boolean>. See comment in #isNotTorroidal "
 
 	^ self spaceModel isNotTorroidal
 ]
@@ -180,9 +212,9 @@ CMSpaceNeighbourhood >> spaceModel [
 ]
 
 { #category : #accessing }
-CMSpaceNeighbourhood >> spaceModel: anObject [
+CMSpaceNeighbourhood >> spaceModel: aCMSpaceModel [
 
-	spaceModel := anObject
+	spaceModel := aCMSpaceModel
 ]
 
 { #category : #'private - regular cells - instance creation' }

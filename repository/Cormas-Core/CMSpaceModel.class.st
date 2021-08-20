@@ -461,7 +461,10 @@ CMSpaceModel >> changed: anAspectSymbol with: aParameter [
 
 { #category : #'private - accessing' }
 CMSpaceModel >> column [
+	" Answer the <Number> of columns in the receiver's grid "
+	
 	^ column
+		ifNil: [ column := self defaultColumns ]
 ]
 
 { #category : #'private - accessing' }
@@ -523,14 +526,8 @@ CMSpaceModel >> createAggregate: compoundEntity from: aSet [
 CMSpaceModel >> createCells [
 	" Create all the cells and their connexions, and collect them as elementaryEntities collection "
 
-	self gridCellShape = #squared
-		ifTrue: [ self createRectangularCellsFigure ].
-
-	self gridCellShape = #hexagonal
-		ifTrue: [ self createHexagonalCellsFigure ].
 	self initNeighbourhood.
-	self isNotTorroidal
-		ifTrue: [ self initEdge ].	"newCells notification also dispatch the request to remoteSpaceModels to rebuild the cell figures"
+	"newCells notification also dispatch the request to remoteSpaceModels to rebuild the cell figures"
 	"self sendCellsToClientSpaceModels: (EntityReference onEntities: allEse)."	"dispatch the info that cells have been modified to all opened spaceInterfaces"
 	self changed: #newCells
 ]
@@ -540,6 +537,7 @@ CMSpaceModel >> createElementaryEntities [
 	"create all the cells and their connexions, and collect them as elementaryEntities collection"
 
 	| allEse |
+
 	allEse := Array new: self gridSize.
 	self cormasModelClass cellClass CurrentId: 0.
 	(1 to: self gridSize) 
@@ -668,6 +666,33 @@ cad : absoluteLength = (3.p + 1)*(2r) / 4
 		at: 'delay'
 		put: (thePoints at: 1) x - (thePoints at: 2) x.
 	^hexagoneInfo
+]
+
+{ #category : #defaults }
+CMSpaceModel >> defaultColumns [
+	" Answer the <Number> of default columns to create in the receiever's grid "
+
+	^ 10 
+]
+
+{ #category : #defaults }
+CMSpaceModel >> defaultGridSize [
+	" Answer a <Number> representing how many cells we create in the grid by default "
+	
+	^ 100
+]
+
+{ #category : #defaults }
+CMSpaceModel >> defaultIsNotTorroidal [
+
+	^ true
+]
+
+{ #category : #defaults }
+CMSpaceModel >> defaultLines [
+	" Answer the <Number> of default lines to create in the receiver's grid "
+	
+	^ 10
 ]
 
 { #category : #accessing }
@@ -1374,15 +1399,19 @@ CMSpaceModel >> gridCellShape [
 
 { #category : #'private - accessing' }
 CMSpaceModel >> gridCellShape: x [
-	
+	" This is not needed anymore, it is already provided by CMSpaceNeighourhood "
+
+	self flag: #toRemove.
 	gridCellShape := x
 ]
 
 { #category : #accessing }
 CMSpaceModel >> gridSize [
-	"Number of cells of the grid"
+	" Answer the <Number> of cells of the grid "
 
 	^ gridSize
+		ifNil: [ gridSize := self defaultGridSize ]
+
 ]
 
 { #category : #'private - accessing' }
@@ -1402,55 +1431,6 @@ CMSpaceModel >> hexagonal [
 			self createHexagonalCellsFigure.	"the spaceInterfaces are automatically refreshed"
 			self initNeighbourhood.
 			self changed: #shapeHasChanged]	"set the menu and title to the spaceInterfaces"
-]
-
-{ #category : #'import - export' }
-CMSpaceModel >> importAggregateClass: class componentClass: cClass separator: aChar filename: aStringOrFileName [
-	| stream portableFilename ligne dataVector item id nbComponents collec aggregate |
-	aStringOrFileName isString
-		ifTrue: [ portableFilename := (Cormas mapsPath: self cormasModelClass name)
-				construct: aStringOrFileName ]
-		ifFalse: [ portableFilename := aStringOrFileName ].
-	portableFilename asFilename exists
-		ifFalse: [ ^ self cormas warn: portableFilename asString , ' is missing !!!' ].
-	self isNotTorroidal
-		ifFalse: [ ^ self warningBoundaries ].
-	(self spatialEntities isNil
-		or: [ self spatialEntities isEmpty
-				or: [ (self spatialEntities includesKey: cClass name) not
-						or: [ (self spatialEntities at: cClass name) isEmpty ] ] ])
-		ifTrue: [ self cormas warn: 'pb !!!'.
-			self halt ].
-	self resetCompoundSpatialEntity: class andTheirComponents: cClass.
-	stream := portableFilename asFilename readStream.	"On devine le format des lignes"
-	stream lineEndAuto.
-	[ stream atEnd ]
-		whileFalse: [ ligne := (stream upTo: Character cr) readStream.
-			dataVector := OrderedCollection new.
-			[ ligne atEnd ]
-				whileFalse: [ item := ligne upTo: aChar.
-					dataVector add: item asNumber ].
-			ligne close.
-			id := dataVector first.
-			dataVector remove: id.
-			nbComponents := dataVector first.
-			dataVector remove: nbComponents.
-			dataVector size = nbComponents
-				ifFalse: [ self cormas warn: 'pb !!!'.
-					self halt ]
-				ifTrue: [ collec := (self spatialEntities at: cClass name)
-						select: [ :i | dataVector includes: i id ].
-					collec size = nbComponents
-						ifFalse: [ self cormas warn: 'pb !!!'.
-							self halt ]
-						ifTrue: [ aggregate := class new: self.
-							aggregate addSilentlyComponents: collec.
-							(self spatialEntities at: class name) add: aggregate ] ] ].
-	stream close.
-	self cormasModel
-		perform: (self cormasModel setterForEntityClass: class)
-		with: (self spatialEntities at: class name).
-	self dispatchCompoundSpatialEntity: class
 ]
 
 { #category : #'CSE (regular) - instance creation' }
@@ -1516,18 +1496,6 @@ CMSpaceModel >> initAggregates: compoundEntity fromSeeds: aCollecOfCells sizeDis
 ]
 
 { #category : #'private - regular cells - instance creation' }
-CMSpaceModel >> initEdge [
-	
-	| n |
-	self gridCellShape = #irregular ifTrue: [^self setIrregularEntitiesEdge].
-	n := self nbConfiguration cardinal.
-	self elementaryEntities do: [ : p | 
-		p neighbourhood size = n
-			ifTrue: [ p edge: false ]
-			ifFalse: [ p edge: true ] ]
-]
-
-{ #category : #'private - regular cells - instance creation' }
 CMSpaceModel >> initNeighbourhood [
 	" Private - Initalize the receiver's neighbourhood "
 
@@ -1551,19 +1519,6 @@ CMSpaceModel >> initializeIrregular [
 	gridSize := 0	"arrayOrigins := Array new: cardinal."
 ]
 
-{ #category : #'private - init' }
-CMSpaceModel >> initializeRegular [
-	" Create a grid of 10x10 cells by default "
-	
-	self flag: #toReview.
-	self flag: #warning. "This method is used as default initialization of the receiver and we should check that further configuration gets actually applied. "
-	self line: 10 column: 10.
-	self nbType: 4.
-	self torroidal: true.
-
-	self createCells 
-]
-
 { #category : #'ESE initialize-release' }
 CMSpaceModel >> initializeRegularLines: lines columns: columns nbType: aNumber closed: aBoolean [
 	" Private - Create a grid of regular cells.
@@ -1575,30 +1530,11 @@ CMSpaceModel >> initializeRegularLines: lines columns: columns nbType: aNumber c
 
 	self resetSpatialEntities.
 	self line: lines column: columns.
+	torroidal := aBoolean.
 	self nbType: aNumber.
-	self createElementaryEntities.
-	self torroidal: aBoolean.
 	self createCells.
 
 
-]
-
-{ #category : #deprecated }
-CMSpaceModel >> initializeRegularX: columns Y: lines shape: shapeSymbol nbNeighbours: nbSymbol boundaries: bSymbol [
-	"This method is deprecated. Please use initializeRegularColumns:lines:shape:nbNeighbours:closed: instead."
-	"Create a grid of regular cells.
-lines = number of lines. columns = number of columns.
-nbSymbol =<Symbol> (#four, #six or #eight)
-bSymbol = <Symbol> (#toroidal or #closed) .
-ex, from CormasModel:
-	self spaceModel initializeRegularX: 101 Y: 101 shape: #squared nbNeighbours: #eight boundaries: #toroidal."
-
-	self deprecated: 'This method is no longer supported. Please use initializeRegularColumns:lines:nbType:closed: instead.'.
-	^ self
-		initializeRegularLines: lines
-		columns: columns
-		nbType: nbSymbol
-		closed: bSymbol ~= #torroidal
 ]
 
 { #category : #testing }
@@ -1617,8 +1553,10 @@ CMSpaceModel >> isIrregular [
 
 { #category : #'private - accessing' }
 CMSpaceModel >> isNotTorroidal [
+	" Answer a <Boolean> whether the receiver hasn't torroidal form "
 	
-	^torroidal
+	^ torroidal
+		ifNil: [ torroidal := self defaultIsNotTorroidal ]
 ]
 
 { #category : #'private - regular polygons' }
@@ -1630,8 +1568,10 @@ CMSpaceModel >> isPartitionComplete: compoundEntity [
 
 { #category : #'private - accessing' }
 CMSpaceModel >> line [
+	" Answer the <Number> of lines of the receiver's grid "
 	
-	^line
+	^ line
+		ifNil: [ line := self defaultLines ]
 ]
 
 { #category : #'private - accessing' }
@@ -1640,13 +1580,6 @@ CMSpaceModel >> line: i column: j [
 	line := i.
 	column := j.
 	gridSize := i * j
-]
-
-{ #category : #video }
-CMSpaceModel >> listMethodsChanged [
-	"some methods has changed. Propagate the changed to the  spaceInterfaces."
-	
-	self changed: #listMethodsChanged
 ]
 
 { #category : #'CSE (general) - import - export' }
@@ -2471,11 +2404,9 @@ It can be modified (setAbsoluteBounds) when for exemple there is 3 lines and 10 
 	absoluteBounds := nil.
 	absoluteWidth := self absoluteBounds width * self column.
 	absoluteHeight := self absoluteBounds height * self line.
-	self
-		absoluteBounds:
-			(Rectangle
-				origin: 0 @ 0
-				extent: absoluteWidth @ absoluteHeight)
+	self absoluteBounds: (Rectangle
+			origin: 0 @ 0
+			extent: absoluteWidth @ absoluteHeight)
 ]
 
 { #category : #'CSE (regular) - instance creation' }
@@ -2818,6 +2749,8 @@ CMSpaceModel >> setGridAsAggregat: compoundEntity [
 CMSpaceModel >> setIrregularEntitiesEdge [
 	
 	| outlineTempo |
+	
+	self flag: #toReview.
 	self elementaryEntities isEmpty ifTrue: [^self halt].
 	self elementaryEntities
 		do:
@@ -3011,15 +2944,6 @@ CMSpaceModel >> shannon: attribute [
 	^sum negated
 ]
 
-{ #category : #video }
-CMSpaceModel >> snapGridTimeForMovie: t makingMovie: aBoolean [
-	"ask spaceInterfaces for making video"
-	
-	self
-		changed: #snapGridTimeForMovie
-		with: (Array with: t with: aBoolean)
-]
-
 { #category : #accessing }
 CMSpaceModel >> spaceModel [
 	^ self
@@ -3122,7 +3046,6 @@ CMSpaceModel >> torroidal: aBoolean [
 	torroidal = aBoolean ifTrue: [ ^ self ].
 	torroidal := aBoolean.
 	self initNeighbourhood.
-	self initEdge.
 	self cormasModel registerSpaceModelChange: #boundariesChanged	"dispatch the info to other spaceInterfaces"
 ]
 

@@ -191,17 +191,6 @@ CMConwayModel class >> example3 [
 ]
 
 { #category : #examples }
-CMConwayModel class >> example4 [
-
-	| tmp1 |
-	tmp1 := self initialize new initSimulation.
-	(CMSimulationGrid initialize new
-		 on: tmp1
-		 withCells: tmp1 theESE
-		 withSituatedEntities: tmp1 allTheSituatedEntities) runAndVisualize
-]
-
-{ #category : #examples }
 CMConwayModel class >> example5 [
 
 	| tmp1 |

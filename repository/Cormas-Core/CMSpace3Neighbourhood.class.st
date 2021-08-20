@@ -15,3 +15,7 @@ CMSpace3Neighbourhood class >> cardinalSymbol [
 
 	^ #three
 ]
+
+{ #category : #initialization }
+CMSpace3Neighbourhood >> initializeOrderedNeighbourhood: k [
+]

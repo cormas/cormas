@@ -36,12 +36,8 @@ CMEntityTest >> testCormasEntityIsAbstract [
 { #category : #tests }
 CMEntityTest >> testCormasModel [
 	| model |
-	model := (CMMockModel
-		initialize;
-		new)
-		activeInit: #initRandom;
+	model := (CMMockModel newWithActiveInit: #initRandom)
 		initSimulation;
-		initializeSpaceModel;
 		createGridLines: 3
 			columns: 3
 			neighbourhood: 4
@@ -51,8 +47,7 @@ CMEntityTest >> testCormasModel [
 	model
 		createN: 5
 		randomlyLocatedAloneEntities: CMMockAgentLocation.
-	model theAgents
-		do: [ :agent | self assert: agent cormasModel identicalTo: model ]
+	model theAgents do: [ :agent | self assert: agent cormasModel identicalTo: model ]
 ]
 
 { #category : #tests }

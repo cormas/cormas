@@ -4,6 +4,13 @@ Class {
 	#category : #'Cormas-Core-Space'
 }
 
+{ #category : #accessing }
+CMSquaredSpaceNeighbourhood >> createCellsFigure [
+
+	super createCellsFigure.
+	self spaceModel createRectangularCellsFigure.
+]
+
 { #category : #initialization }
 CMSquaredSpaceNeighbourhood >> setBoundaryDirectionsFor: aCMSpatialEntityElement [
 

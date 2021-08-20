@@ -2490,7 +2490,7 @@ CMAbstractModel >> initializeSpaceModel [
 	self spaceModel: CMSpaceModel basicNew.
 	self spaceModel cormasModel: self.
 	self spaceModel initialize.
-	self spaceModel initializeRegular
+
 ]
 
 { #category : #'utilities - population metrics' }
