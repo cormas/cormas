@@ -39,6 +39,12 @@ CMAbstractModelTest >> newProjectManager [
 ]
 
 { #category : #test }
+CMAbstractModelTest >> newValidEntityNamed: entityName [
+
+	CMSpatialEntityAggregate subclass: (entityName asValidCormasClassName: self sampleModelNameWithoutPrefix)
+]
+
+{ #category : #test }
 CMAbstractModelTest >> sampleModelName [
 
 	^ 'CMXXXModel'
@@ -60,12 +66,8 @@ CMAbstractModelTest >> setUp [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testCentralCell [
 	| m |
-	m := (CMMockModel
-		initialize;
-		new)
-		activeInit: #initRandom;
+	m := (CMMockModel	newWithActiveInit: #initRandom)
 		initSimulation;
-		initializeSpaceModel;
 		createGridLines: 3
 			columns: 3
 			neighbourhood: 4
@@ -94,12 +96,8 @@ CMAbstractModelTest >> testCreateGridXYNeighborHoodClosed [
 { #category : #tests }
 CMAbstractModelTest >> testDominance [
 	| m |
-	m := (CMMockModel
-		initialize;
-		new)
-		activeInit: #initRandom;
+	m := (CMMockModel	newWithActiveInit: #initRandom)
 		initSimulation;
-		initializeSpaceModel;
 		createGridLines: 100
 			columns: 100
 			neighbourhood: 4
@@ -112,12 +110,8 @@ CMAbstractModelTest >> testDominance [
 { #category : #tests }
 CMAbstractModelTest >> testDominance1 [
 	| m |
-	m := (CMMockModel
-		initialize;
-		new)
-		activeInit: #initAlive;
+	m := (CMMockModel	newWithActiveInit: #initRandom)
 		initSimulation;
-		initializeSpaceModel;
 		createGridLines: 100
 			columns: 100
 			neighbourhood: 4
@@ -163,11 +157,9 @@ CMAbstractModelTest >> testHasControlInit [
 { #category : #test }
 CMAbstractModelTest >> testInitSimulation [
 
-	model := (CMMockModel
-		initialize;
-		new)
-		activeInit: #initAlive;
-		activeControl: #step:.
+	model := (CMMockModel	newWithActiveInit: #initRandom)
+		activeControl: #step:;
+		yourself.
 	self deny: model initStatus.
 	model initSimulation.
 	self assert: model initStatus.
@@ -204,12 +196,8 @@ CMAbstractModelTest >> testIsInitialized [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testLowerLeftCell [
 	| m |
-	m := (CMMockModel
-		initialize;
-		new)
-		activeInit: #initRandom;
+	m := (CMMockModel newWithActiveInit: #initRandom)
 		initSimulation;
-		initializeSpaceModel;
 		createGridLines: 3
 			columns: 3
 			neighbourhood: 4
@@ -223,12 +211,8 @@ CMAbstractModelTest >> testLowerLeftCell [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testLowerRightCell [
 	| m |
-	m := (CMMockModel
-		initialize;
-		new)
-		activeInit: #initRandom;
+	m := (CMMockModel newWithActiveInit: #initRandom)
 		initSimulation;
-		initializeSpaceModel;
 		createGridLines: 3
 			columns: 3
 			neighbourhood: 4
@@ -267,12 +251,8 @@ CMAbstractModelTest >> testPickCell [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testPickCellConstrainedBy [
 	| m |
-	m := (CMMockModel
-		initialize;
-		new)
-		activeInit: #initRandom;
+	m := (CMMockModel newWithActiveInit: #initRandom)
 		initSimulation;
-		initializeSpaceModel;
 		createGridLines: 9
 			columns: 9
 			neighbourhood: 4
@@ -367,13 +347,11 @@ CMAbstractModelTest >> testProbes [
 
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testSelectCellsBetweenLine1Line2AndColumn1Column2 [
+
 	| m cells |
-	m := (CMMockModel
-		initialize;
-		new)
-		activeInit: #initAlive;
+	
+	m := (CMMockModel newWithActiveInit: #initAlive)
 		initSimulation;
-		initializeSpaceModel;
 		createGridLines: 20
 			columns: 10
 			neighbourhood: 4
@@ -385,21 +363,16 @@ CMAbstractModelTest >> testSelectCellsBetweenLine1Line2AndColumn1Column2 [
 		andColumn1: 6
 		column2: 8.
 	self assert: cells size equals: 9.
-	cells
-		do: [ :cell | 
-			self assert: (cell numCol between: 6 and: 8).
-			self assert: (cell numLine between: 13 and: 15) ]
+	cells do: [ :cell | 
+		self assert: (cell numCol between: 6 and: 8).
+		self assert: (cell numLine between: 13 and: 15) ]
 ]
 
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
 	| m cells |
-	m := (CMMockModel
-		initialize;
-		new)
-		activeInit: #initAlive;
+	m := (CMMockModel newWithActiveInit: #initAlive)
 		initSimulation;
-		initializeSpaceModel;
 		createGridLines: 9
 			columns: 5
 			neighbourhood: 4
@@ -409,8 +382,7 @@ CMAbstractModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
 		selectCellsInRectangleOriginCell: m upperLeftCell
 		cornerCell: m centralCell.
 	self assert: cells size equals: 15.
-	cells
-		do: [ :cell | 
+	cells do: [ :cell | 
 			self assert: (cell numCol between: 1 and: 3).
 			self assert: (cell numLine between: 1 and: 5) ]
 ]
@@ -471,12 +443,8 @@ CMAbstractModelTest >> testTheAgents [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testUpperLeftCell [
 	| m |
-	m := (CMMockModel
-		initialize;
-		new)
-		activeInit: #initRandom;
+	m := (CMMockModel newWithActiveInit: #initRandom)
 		initSimulation;
-		initializeSpaceModel;
 		createGridLines: 3
 			columns: 3
 			neighbourhood: 4
@@ -490,12 +458,8 @@ CMAbstractModelTest >> testUpperLeftCell [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testUpperRightCell [
 	| m |
-	m := (CMMockModel
-		initialize;
-		new)
-		activeInit: #initRandom;
+	m := (CMMockModel newWithActiveInit: #initRandom)
 		initSimulation;
-		initializeSpaceModel;
 		createGridLines: 3
 			columns: 3
 			neighbourhood: 4

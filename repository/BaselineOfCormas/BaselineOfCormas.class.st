@@ -164,7 +164,7 @@ BaselineOfCormas >> specForPackages: spec [
 		package: 'Cormas-Model-DemoAggregates'  with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Model-Diffuse'  with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Model-ECEC' with: [ spec requires: #('Cormas-Core') ];
-		package: 'Cormas-Model-FireAutomata' with: [ spec requires: #('Cormas-Core') ];
+		package: 'Cormas-Model-FireAutomata' with: [ spec requires: #('Cormas-Core' 'Cormas-Tests') ];
 		package: 'Cormas-Model-PlotsRental' with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Model-ReHab' with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Model-Stupid' with: [ spec requires: #('Cormas-Core') ];

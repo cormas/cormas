@@ -115,11 +115,11 @@ CMDiffuseCell class >> scheduler_default [
 
 { #category : #control }
 CMDiffuseCell >> connexity [
-	self spaceModel nbNeighbours = #eight
+	self spaceModel nbNeighbours = 8
 		ifTrue: [ ^ 8 ].
-	self spaceModel nbNeighbours = #four
+	self spaceModel nbNeighbours = 4
 		ifTrue: [ ^ 4 ].
-	self spaceModel nbNeighbours = #six
+	self spaceModel nbNeighbours = 6
 		ifTrue: [ ^ 6 ]
 ]
 

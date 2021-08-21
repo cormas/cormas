@@ -29,33 +29,8 @@ CMSpatialEntityElement class >> isSpatialEntityElementClass [
 CMSpatialEntityElement >> boundaryDirections [
 	"Returns a collection of direction (ex: (#E #SE #NE)) of the cell, without cell => the edge of the grid"
 	
-	| collec |
-	collec := Set new.
-	self spaceModel nbNeighbours = #four
-		ifTrue:
-			[self neighbourN isNil ifTrue: [collec add: #N].
-			self neighbourW isNil ifTrue: [collec add: #W].
-			self neighbourS isNil ifTrue: [collec add: #S].
-			self neighbourE isNil ifTrue: [collec add: #E]].
-	self spaceModel nbNeighbours = #eight
-		ifTrue:
-			[self neighbourN isNil ifTrue: [collec add: #N].
-			self neighbourW isNil ifTrue: [collec add: #W].
-			self neighbourS isNil ifTrue: [collec add: #S].
-			self neighbourE isNil ifTrue: [collec add: #E].
-			self neighbourNE isNil ifTrue: [collec add: #NE].
-			self neighbourSE isNil ifTrue: [collec add: #SE].
-			self neighbourNW isNil ifTrue: [collec add: #NW].
-			self neighbourSW isNil ifTrue: [collec add: #SW]].
-	self spaceModel nbNeighbours = #six
-		ifTrue:
-			[self neighbourW isNil ifTrue: [collec add: #W].
-			self neighbourE isNil ifTrue: [collec add: #E].
-			self neighbourNE isNil ifTrue: [collec add: #NE].
-			self neighbourSE isNil ifTrue: [collec add: #SE].
-			self neighbourNW isNil ifTrue: [collec add: #NW].
-			self neighbourSW isNil ifTrue: [collec add: #SW]].
-	^collec
+	^ self spaceModel setBoundaryDirectionsFor: self.
+
 ]
 
 { #category : #'environment - sensing - space' }
@@ -76,21 +51,6 @@ CMSpatialEntityElement >> directionNeighbour: v [
 	^ directions 
 		detect: [ : i | (self perform: ('neighbour' , i asString) asSymbol) = v  ]
 		ifNone: [ nil ]
-]
-
-{ #category : #'displaying - obsolete' }
-CMSpatialEntityElement >> displayOn: aGC outlinesInstancesOf: aClassName color: aColorName lineWidth: anInteger [
-
-	(self id = self spaceModel elementaryEntities size
-		and: [ (self spaceModel spatialEntities includesKey: aClassName)
-				and: [ (self spaceModel spatialEntities at: aClassName) isNil not
-						and: [ (self spaceModel spatialEntities at: aClassName) isNotEmpty ] ] ])
-		ifTrue: [ aGC paint: (Color perform: aColorName).
-			aGC lineWidth: anInteger.
-			(self spaceModel spatialEntities at: aClassName)
-				do: [ :a | 
-					a image notNil
-						ifTrue: [ a image component asStroker displayOn: aGC ] ] ]
 ]
 
 { #category : #'displaying - obsolete' }
@@ -159,18 +119,15 @@ Return value: <Number>"
 
 { #category : #'initialize-release' }
 CMSpatialEntityElement >> initNeighbourhood [
-	
-	self orderedNeighbourhood isNil ifTrue: [^nil].
-	self neighbourhood: (self orderedNeighbourhood select: [:a | a notNil])
+
+	self orderedNeighbourhood ifEmpty: [ ^ nil ].
+	self neighbourhood: (self orderedNeighbourhood select: [ : c | c notNil ])
 ]
 
 { #category : #testing }
 CMSpatialEntityElement >> isConnectedToCells: setOfCells [
-	"Purpose: answer if the current cell touches at least one of the setOfCells"
-	
-	self neighbourhoodAndSelf
-		do: [:c | (setOfCells includes: c) ifTrue: [^true]].
-	^false
+
+	^ self neighbourhoodAndSelf anySatisfy: [ :c | setOfCells includes: c ]
 ]
 
 { #category : #testing }
@@ -556,16 +513,13 @@ Argument: aCondition = <BlockClosure>
 Return value: <SpatialEntity | nil>
 Example: self nearestCellVerifying: [:c | c isClosed not]"
 	
-	^(self spaceModel gridCellShape = #squared
-		or: [self spaceModel gridCellShape = #hexagonal])
-		ifTrue:
-			[self
+	^(self spaceModel gridCellShape = #squared 	or: [self spaceModel gridCellShape = #hexagonal])
+		ifTrue: [ self
 				nearestNeighborVerifying: aCondition
-				withinRadius: (self spaceModel line max: self spaceModel column)]
-		ifFalse:
-			[self
+				withinRadius: (self spaceModel line max: self spaceModel column) ]
+		ifFalse: [ self
 				nearestCellVerifying: aCondition
-				constraintOnPath: [:aCell | true]]
+				constraintOnPath: [ : aCell | true] ]
 ]
 
 { #category : #'environment - sensing - space' }
@@ -741,11 +695,11 @@ CMSpatialEntityElement >> neighbourE [
 Not nil only for square and hexagonal cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
 	
-	self spaceModel nbNeighbours = #four
+	self spaceModel nbNeighbours = 4
 		ifTrue: [^self orderedNeighbourhood at: 4].
-	self spaceModel nbNeighbours = #eight
+	self spaceModel nbNeighbours = 8
 		ifTrue: [^self orderedNeighbourhood at: 7].
-	self spaceModel nbNeighbours = #six
+	self spaceModel nbNeighbours = 6
 		ifTrue: [^self orderedNeighbourhood at: 5].
 	^nil
 ]
@@ -756,10 +710,9 @@ CMSpatialEntityElement >> neighbourN [
 Not nil only for square cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
 	
-	self spaceModel nbNeighbours = #four
-		| (self spaceModel nbNeighbours = #eight)
-		ifTrue: [^self orderedNeighbourhood at: 1].
-	^nil
+	self spaceModel nbNeighbours = 4 | (self spaceModel nbNeighbours = 8)
+		ifTrue: [ ^ self orderedNeighbourhood at: 1 ].
+	^ nil
 ]
 
 { #category : #'environment - sensing - space' }
@@ -768,9 +721,9 @@ CMSpatialEntityElement >> neighbourNE [
 Not nil only for square (8 neighbors) and hexagonal cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
 	
-	self spaceModel nbNeighbours = #eight
+	self spaceModel nbNeighbours = 8
 		ifTrue: [^self orderedNeighbourhood at: 8].
-	self spaceModel nbNeighbours = #six
+	self spaceModel nbNeighbours = 6
 		ifTrue: [^self orderedNeighbourhood at: 6].
 	^nil
 ]
@@ -781,9 +734,9 @@ CMSpatialEntityElement >> neighbourNW [
 Not nil only for square (8 neighbors) and hexagonal cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
 	
-	self spaceModel nbNeighbours = #eight
+	self spaceModel nbNeighbours = 8
 		ifTrue: [^self orderedNeighbourhood at: 2].
-	self spaceModel nbNeighbours = #six
+	self spaceModel nbNeighbours = 6
 		ifTrue: [^self orderedNeighbourhood at: 1].
 	^nil
 ]
@@ -794,9 +747,9 @@ CMSpatialEntityElement >> neighbourS [
 Not nil only fore square cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
 	
-	self spaceModel nbNeighbours = #four
+	self spaceModel nbNeighbours = 4
 		ifTrue: [^self orderedNeighbourhood at: 3].
-	self spaceModel nbNeighbours = #eight
+	self spaceModel nbNeighbours = 8
 		ifTrue: [^self orderedNeighbourhood at: 5].
 	^nil
 ]
@@ -807,9 +760,9 @@ CMSpatialEntityElement >> neighbourSE [
 Not nil only for square (8 neighbors) and hexagonal cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
 	
-	self spaceModel nbNeighbours = #eight
+	self spaceModel nbNeighbours = 8
 		ifTrue: [^self orderedNeighbourhood at: 6].
-	self spaceModel nbNeighbours = #six
+	self spaceModel nbNeighbours = 6
 		ifTrue: [^self orderedNeighbourhood at: 4].
 	^nil
 ]
@@ -820,9 +773,9 @@ CMSpatialEntityElement >> neighbourSW [
 Not nil only for square (8 neighbors) and hexagonal cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
 	
-	self spaceModel nbNeighbours = #eight
+	self spaceModel nbNeighbours = 8
 		ifTrue: [^self orderedNeighbourhood at: 4].
-	self spaceModel nbNeighbours = #six
+	self spaceModel nbNeighbours = 6
 		ifTrue: [^self orderedNeighbourhood at: 3].
 	^nil
 ]
@@ -833,11 +786,11 @@ CMSpatialEntityElement >> neighbourW [
 Not nil only for square and hexagonal cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
 	
-	self spaceModel nbNeighbours = #four
+	self spaceModel nbNeighbours = 4
 		ifTrue: [^self orderedNeighbourhood at: 2].
-	self spaceModel nbNeighbours = #eight
+	self spaceModel nbNeighbours = 8
 		ifTrue: [^self orderedNeighbourhood at: 3].
-	self spaceModel nbNeighbours = #six
+	self spaceModel nbNeighbours = 6
 		ifTrue: [^self orderedNeighbourhood at: 2].
 	^nil
 ]
@@ -858,9 +811,11 @@ CMSpatialEntityElement >> numLine [
 
 { #category : #accessing }
 CMSpatialEntityElement >> orderedNeighbourhood [
+	" Assume the receiver's space model neighbouhoods were already initialized. "
 	
-	orderedNeighbourhood ifNil: [self spaceModel initNeighbourhood].
-	^orderedNeighbourhood
+	orderedNeighbourhood 
+		ifNil: [ orderedNeighbourhood := OrderedCollection new ].
+	^ orderedNeighbourhood
 ]
 
 { #category : #accessing }

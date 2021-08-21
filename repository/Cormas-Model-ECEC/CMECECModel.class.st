@@ -197,8 +197,7 @@ CMECECModel >> homogeneousEnv2 [
 	self spaceModel
 		initializeRegularLines: 27
 		columns: 27
-		shape: #squared
-		nbNeighbours: #eight
+		nbType: #eight		
 		closed: false.
 	self theVegetationUnits do: [ :arg1 | arg1 initRandomBiomass ].
 	self initAgents

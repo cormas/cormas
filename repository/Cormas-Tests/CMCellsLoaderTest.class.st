@@ -9,12 +9,9 @@ Class {
 
 { #category : #private }
 CMCellsLoaderTest >> newTestModel [
-	^ (CMMockModel
-		initialize;
-		new)
-		activeInit: #initAlive;
+
+	^ (CMMockModel  newWithActiveInit: #initAlive)
 		initSimulation;
-		initializeSpaceModel;
 		createGridLines: 20
 			columns: 10
 			neighbourhood: 4
@@ -51,9 +48,9 @@ CMCellsLoaderTest >> testClosed [
 	model := self newTestModel.
 	loader spaceModel: model spaceModel.
 	loader closed: 'true'.
-	self assert: model spaceModel closed equals: true.
+	self assert: model spaceModel isNotTorroidal equals: true.
 	loader closed: 'false'.
-	self assert: model spaceModel closed equals: false.
+	self assert: model spaceModel isNotTorroidal equals: false.
 	self should: [ loader closed: 'error' ] raise: Error
 ]
 
@@ -63,21 +60,21 @@ CMCellsLoaderTest >> testConnectivity [
 	model := self newTestModel.
 	loader spaceModel: model spaceModel.
 	loader connectivity: 'three'.
-	self assert: model spaceModel nbNeighbours equals: #three.
+	self assert: model spaceModel nbNeighbours equals: 3.
 	loader connectivity: 'four'.
-	self assert: model spaceModel nbNeighbours equals: #four.
-	loader connectivity: 'six'.
-	self assert: model spaceModel nbNeighbours equals: #six.
+	self assert: model spaceModel nbNeighbours equals: 4.
+	"loader connectivity: 'six'.
+	self assert: model spaceModel nbNeighbours equals: 6."
 	loader connectivity: 'eight'.
-	self assert: model spaceModel nbNeighbours equals: #eight.
+	self assert: model spaceModel nbNeighbours equals: 8.
 	loader connectivity: '3'.
-	self assert: model spaceModel nbNeighbours equals: #three.
+	self assert: model spaceModel nbNeighbours equals: 3.
 	loader connectivity: '4'.
-	self assert: model spaceModel nbNeighbours equals: #four.
-	loader connectivity: '6'.
-	self assert: model spaceModel nbNeighbours equals: #six.
+	self assert: model spaceModel nbNeighbours equals: 4.
+	"loader connectivity: '6'.
+	self assert: model spaceModel nbNeighbours equals: 6."
 	loader connectivity: '8'.
-	self assert: model spaceModel nbNeighbours equals: #eight
+	self assert: model spaceModel nbNeighbours equals: 8
 ]
 
 { #category : #tests }

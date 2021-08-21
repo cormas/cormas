@@ -23,21 +23,6 @@ CMOpenerTest >> newProjectManager [
 ]
 
 { #category : #accessing }
-CMOpenerTest >> newTestModel [
-	^ (CMMockModel
-		initialize;
-		new)
-		activeInit: #initAlive;
-		initSimulation;
-		initializeSpaceModel;
-		createGridLines: 20
-			columns: 10
-			neighbourhood: 4
-			closed: true;
-		yourself
-]
-
-{ #category : #accessing }
 CMOpenerTest >> opener [
 	^ opener
 ]

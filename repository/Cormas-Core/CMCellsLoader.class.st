@@ -43,29 +43,22 @@ CMCellsLoader >> attribute: aString type: anotherString values: anArrayOfArray [
 
 { #category : #loading }
 CMCellsLoader >> closed: aString [
+
 	self assert: (#('true' 'false') includes: aString).
-	self
-		spaceModelDo:
-			[ :spaceModel | spaceModel closed: aString ~= 'false' ]
+	self spaceModelDo: [ : spaceModel | spaceModel torroidal: aString ~= 'false' ]
 ]
 
 { #category : #loading }
 CMCellsLoader >> connectivity: aString [
-	| numberOfNeighbours |
+	| numberOfNeighbours gridSelector |
+	
 	self assert: aString isString.
-	numberOfNeighbours := {('3' -> #three).
-	('three' -> #three).
-	('4' -> #four).
-	('four' -> #four).
-	('6' -> #six).
-	('six' -> #six).
-	('8' -> #eight).
-	('eight' -> #eight)} asDictionary
-		at: aString
-		ifAbsent: [ ^ self
-				warning: 'Number of neighbors must be one of three, four, six or eight.' ].
-	self
-		spaceModelDo: [ :spaceModel | spaceModel nbNeighbours: numberOfNeighbours ]
+	numberOfNeighbours := self nbNormalization: aString.
+	gridSelector := self gridShapeSelectors:numberOfNeighbours.
+	self spaceModelDo: [ :spaceModel | 
+		spaceModel 
+			nbConfiguration: (CMSpaceNeighbourhood forNeighbours: numberOfNeighbours spaceModel: spaceModel);
+			gridCellShape: gridSelector ]
 ]
 
 { #category : #defaults }
@@ -107,6 +100,21 @@ CMCellsLoader >> dimensions: anArray [
 		spaceModelDo: [ :spaceModel | spaceModel line: numLines column: numColumns ]
 ]
 
+{ #category : #loading }
+CMCellsLoader >> gridShapeSelectors: numberOfNeighbours [
+	" Answer a <Symbol> with the selector for configuring the grid shape in the space model "
+	
+	^ { 
+		(#three -> #triangular).
+		(#four -> #squared ) .
+		(#eight -> #squared).
+		(#six -> #hexagonal).
+		(nil -> #irregular)	
+		} asDictionary
+			at: numberOfNeighbours
+			ifAbsent: [ ^ self warning: 'Number of neighbors must be one of three, four, six or eight.' ].
+]
+
 { #category : #initialization }
 CMCellsLoader >> initialize [
 	super initialize.
@@ -144,6 +152,25 @@ CMCellsLoader >> load: aFileReference [
 		ifPresent: [ :attributes | 
 			attributes
 				keysAndValuesDo: [ :name :type | self attribute: name type: type in: aFileReference ] ]
+]
+
+{ #category : #loading }
+CMCellsLoader >> nbNormalization: aString [
+
+	^ {
+		('3' -> #three) .
+		('three' -> #three) .
+
+		('4' -> #four) .
+		('four' -> #four) .
+
+		('6' -> #six)  .
+		('six' -> #six) .
+
+		('8' -> #eight).
+		('eight' -> #eight) } asDictionary
+			at: aString
+			ifAbsent: [ ^ self warning: 'Number of neighbors must be one of three, four, six or eight.' ].
 ]
 
 { #category : #accessing }
