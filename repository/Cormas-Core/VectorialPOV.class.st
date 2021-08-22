@@ -33,7 +33,7 @@ VectorialPOV >> calculPolyline: nbreSegments [
 	"Set the outline attribut = to a Polyline"
 	
 	| points x y longueurArrete |
-	longueurArrete := self sizeRatio * PovSetter standardCellBounds height /
+	longueurArrete := self sizeRatio * self standardCellBounds height /
 			nbreSegments * 2.	"longueurArrete := 1."
 	points := OrderedCollection new.
 	Float pi / 2
@@ -269,4 +269,12 @@ VectorialPOV >> show [
 	fig lineColor: self lineColor.
 	fig lineWidth: self lineWidth.
 	fig inspect
+]
+
+{ #category : #private }
+VectorialPOV >> standardCellBounds [
+	
+	^ Rectangle
+		origin: 0 @ 0
+		extent: 51 @ 51
 ]

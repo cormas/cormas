@@ -528,8 +528,9 @@ CMSpaceModel >> createCells [
 
 	self initNeighbourhood.
 	"newCells notification also dispatch the request to remoteSpaceModels to rebuild the cell figures"
-	"self sendCellsToClientSpaceModels: (EntityReference onEntities: allEse)."	"dispatch the info that cells have been modified to all opened spaceInterfaces"
-	self changed: #newCells
+	"self sendCellsToClientSpaceModels: (EntityReference onEntities: allEse)."	
+	"dispatch the info that cells have been modified to all opened spaceInterfaces"
+
 ]
 
 { #category : #'private - regular cells - instance creation' }
@@ -2747,23 +2748,20 @@ CMSpaceModel >> setGridAsAggregat: compoundEntity [
 
 { #category : #'private - irregular polygons creation' }
 CMSpaceModel >> setIrregularEntitiesEdge [
-	
+
 	| outlineTempo |
-	
 	self flag: #toReview.
-	self elementaryEntities isEmpty ifTrue: [^self halt].
-	self elementaryEntities
-		do:
-			[:aCell | 
-			aCell neighbourhood isNil ifTrue: [^self halt].	"on test d'abord si il y a des voisins en bordure: si yenapas ben b n'est pas en bordure"
-			(aCell neighbourhood contains: [:neigh | neigh edge ~= false])
-				ifFalse: [aCell edge: false]
-				ifTrue:
-					[outlineTempo := aCell outline copy.
-					aCell neighbourhood
-						do:
-							[:c | outlineTempo removeAllSuchThat: [:point | c outline includes: point]].
-					aCell edge: outlineTempo isEmpty not]]
+	self elementaryEntities isEmpty ifTrue: [ ^ self halt ].
+	self elementaryEntities do: [ :aCell | 
+		aCell neighbourhood ifNil: [ ^ self halt ].
+		(aCell neighbourhood anySatisfy: [ :neigh | neigh edge ~= false ])
+			ifFalse: [ aCell edge: false ]
+			ifTrue: [ 
+				outlineTempo := aCell outline copy.
+				aCell neighbourhood do: [ :c | 
+					outlineTempo removeAllSuchThat: [ :point | 
+						c outline includes: point ] ].
+				aCell edge: outlineTempo isNotEmpty ] ]
 ]
 
 { #category : #'private - regular polygons - deprecated' }

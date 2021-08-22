@@ -326,19 +326,6 @@ CMSpecPovSetter >> listSymbols [
 ]
 
 { #category : #action }
-CMSpecPovSetter >> modifyInfo [
-	| aSelector aClass |
-	selectedClass isNil
-		ifTrue: [ ^ nil ].
-	(self listInfo selection isNil
-		or: [ self listInfo selection = '----' ])
-		ifTrue: [ ^ nil ].
-	aSelector := (self removeBrackets: self listInfo selection) asSymbol.
-	aClass := selectedClass whichClassIncludesSelector: aSelector.
-	self editMethod: aSelector fromClass: aClass
-]
-
-{ #category : #action }
 CMSpecPovSetter >> modifyInfo: infoName [
 	
 	selectedClass
@@ -349,20 +336,6 @@ CMSpecPovSetter >> modifyInfo: infoName [
 		classified: 'info'
 		notifying: nil.
 	self editMethod: infoName fromClass: selectedClass	"selectedClass infoDict at: infoName put: OrderedCollection new"
-]
-
-{ #category : #action }
-CMSpecPovSetter >> modifyPov [
-	| aSelector aClass |
-	selectedClass isNil
-		ifTrue: [ ^ nil ].
-	(self listMethods selection isNil
-		or: [ self listMethods selection = '----' ])
-		ifTrue: [ ^ nil ].
-	aSelector := (self removeBrackets: self listMethods selection)
-		asSymbol.
-	aClass := selectedClass whichClassIncludesSelector: aSelector.
-	self editMethod: aSelector fromClass: aClass
 ]
 
 { #category : #action }

@@ -65,13 +65,6 @@ CMSpatialEntityElement >> displaySegment: aDirection [
 				displayStrokedOn: self view graphicsContext]
 ]
 
-{ #category : #deprecated }
-CMSpatialEntityElement >> distCell: aSpatialEntityElement [
-	"returns a distance in cells, between the sender and aSpatialEntity"
-	
-	^self spaceModel distanceFromCell: self toCell: aSpatialEntityElement
-]
-
 { #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> distanceCell: aSpatialEntityElement [
 	"returns a distance in cells, between the sender and aSpatialEntityElement. 

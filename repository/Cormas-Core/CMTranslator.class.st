@@ -59,7 +59,9 @@ We recommend you:
 		at: #tSimOrganization put: 'the simulation Organization...';
 		at: #tObserver put: 'the Observer...';
 		at: #tMessages put: 'Messages';
+		at: #tMessagesProgramming put: 'Messages Programming';
 		at: #tProbes put: 'Probes';
+		at: #tProbesProgramming put: 'Probes Setter';
 		at: #tInitInstantiation put: 'the initial instantiation';
 		at: #tScheduler put: 'the scheduler';
 		at: #tSpaceEntities put: 'Space and Entities';
@@ -110,8 +112,8 @@ We recommend you:
 			put: 'CA is usefull for dynamics between cells';
 		at: #tOATPredefValues put: 'Predefined by list of values';
 		at: #tOATSeqValues put: 'Sequential values';
-		at: #tCrossedSeqValues put: 'Sequential values';
-		at: #tCrossedPredefValues put: 'Predefined by list of values';
+		at: #tCrossedSeqValues put: 'Crossed Sequential values';
+		at: #tCrossedPredefValues put: 'Crossed predefined by list of values';
 		at: #tCrossSensAnalysis put: 'Crossed Sensitivity Analysis';
 		at: #tDisplayParams put: 'Display Parameters';
 		at: #tOATSensAnalysis put: 'OAT Sensitivity Analysis';
@@ -366,7 +368,9 @@ Le recomendamos que:
 		at: #tSimOrganization 				put: 'la Organización de la simulación...';	
 		at: #tObserver 							put: 'el Observador...';
 		at: #tMessages 							put: 'Mensajes';
+		at: #tMessagesProgramming  			put: 'Configuración de Mensajes';
 		at: #tProbes 							put: 'Probes';
+		at: #tProbesProgramming  			put: 'Configuración de Probes';
 		at: #tInitInstantiation 				put: 'la instanciación inicial';
 		at: #tScheduler 						put: 'el planificador';
 		at: #tSpaceEntities 					put: 'Espacio y Entidades';
@@ -654,7 +658,9 @@ Nous vous recommandons :
 		at: #tSimOrganization put: 'l''organisation de la simulation...';
 		at: #tObserver put: 'the Observer...';
 		at: #tMessages put: 'Messages';
+		at: #tMessagesProgramming put: 'Configuration de Messages';
 		at: #tProbes put: 'Probes';
+		at: #tProbesProgramming  put: 'Configuration de Probes';
 		at: #tInitInstantiation put: 'l''instanciation initiale';
 		at: #tScheduler put: 'le planificateur';
 		at: #tSpaceEntities put: 'Espace et Entités';
@@ -698,24 +704,24 @@ Nous vous recommandons :
 		at: #tCellAutomatonHelp put: 'CA est utile pour la dynamique entre les cellules';
 		at: #tOATPredefValues put: 'Prédéfini par liste de valeurs';
 		at: #tOATSeqValues put: 'Sequential values';
-		at: #tCrossedSeqValues put: 'Sequential values';
-		at: #tCrossedPredefValues put: 'Predefined by list of values';
+		at: #tCrossedSeqValues put: 'Crossed Sequential values';
+		at: #tCrossedPredefValues put: 'Crossed predefined by list of values';
 		at: #tCrossSensAnalysis put: 'Crossed Sensitivity Analysis';
-		at: #tDisplayParams put: 'Display Parameters';
+		at: #tDisplayParams put: 'Paramètres d''Affichage';
 		at: #tOATSensAnalysis put: 'OAT Sensitivity Analysis';
-		at: #tSimpleStochAnalysis put: 'Simple Stochastic Analysis';
+		at: #tSimpleStochAnalysis put: 'Analyse Stochastique Simple';
 		at: #tMonteCarlo put: 'Monte Carlo';
-		at: #tClassifyByParams put: 'Classify by parameters';
-		at: #tSimInformation put: 'Simulation Information';
-		at: #tSimInterface put: 'Simulation Interface';
+		at: #tClassifyByParams put: 'Classer par Paramètres';
+		at: #tSimInformation put: 'Informations sur la simulation';
+		at: #tSimInterface put: 'Interface de Simulation';
 		at: #tStartRWebService put: 'Start Web Service for R';
 		at: #tStopRWebService put: 'Stop Web Service for R';
 		at: #tAnalysis put: 'Analysis';
 		at: #tCreateInstances put: 'Créer des instances';
 		at: #tOpenPharoMenu put: 'Open Pharo Menu';
-		at: #tManipulateInstances put: 'Manipulate Instances';
+		at: #tManipulateInstances put: 'Manipuler les instances';
 		at: #tModelGlossary put: 'Model Glossary';
-		at: #tModelListing put: 'Model listing as text file';
+		at: #tModelListing put: 'Liste de modèles fichier texte';
 		at: #tPackageClient put: 'Package client';
 		at: #tSpace put: 'Space';
 		at: #tDisplayModelVersions put: 'Display model versions';
@@ -738,7 +744,7 @@ Nous vous recommandons :
 		at: #tReOpen put: 'Re-Open';
 		at: #tPoV put: 'PoV';
 		at: #tAttribute put: 'Attribute';
-		at: #tClassVariable put: 'Class variable';
+		at: #tClassVariable put: 'Variable de classe';
 		at: #tAttributesSuperLabel put: 'Attributs et variables de classe des super classes';
 		at: #tAttributesTargetLabel put: 'Attributs et classe Variables de la classe cible';
 		at: #tReset put: 'Réinitialiser';
@@ -746,11 +752,10 @@ Nous vous recommandons :
 		at: #tEnterAttName put: 'Entrez un nom d''attribut (sans espaces blancs, chiffres ou symboles)';
 		at: #tAppTitle put: 'CORMAS';
 		at: #tInvalidName put: ' n''est pas un nom valide. Merci d''entrer un nom valide';
-		at: #tHelpAddInstAtt put: 'Ajouter un nouvel attribut à la classe cible';
-		at: #tHelpRemoveInstAtt put: 'Supprimer un attribut de la classe cible';
+		at: #tHelpAddInstAtt put: 'Ajouter un nouvel attribut à la instance cible';
+		at: #tHelpRemoveInstAtt put: 'Supprimer un attribut de la instance cible';
 		at: #tHelpAddClassAttr put: 'Add a new class attribute to the target class';
-		at: #tHelpRemoveClassAtt
-			put: 'Remove an attribute from the target class';
+		at: #tHelpRemoveClassAtt put: 'Supprimer un attribut de la classe cible';
 		at: #tClassEditor put: 'UML - Class Editor';
 		yourself
 ]
