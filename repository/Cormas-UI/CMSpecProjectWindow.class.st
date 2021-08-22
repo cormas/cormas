@@ -416,7 +416,9 @@ CMSpecProjectWindow >> menuEnableProgrammingGroup [
 		#tEditAttributes .
 		#tEditSteps .
 		#tEditActivityDiagrams .
-		#tClassEditor
+		#tClassEditor .
+		#tMessagesProgramming .
+		#tProbesProgramming
 	} do: [ : itemSel | self menuEnableItem: itemSel ]
 ]
 
@@ -560,11 +562,9 @@ CMSpecProjectWindow >> openHelpAboutThisModel [
 { #category : #callbacks }
 CMSpecProjectWindow >> openPovSetterGUI [
 
-	| setter |
-	
-	self cormasModelClass isNil ifTrue: [ ^ self alertMessage: self translator tNoModel ].
-	self cormasModelClass cellClass isNil ifTrue: [ ^ self alertMessage: self translator tWhichAttribute ].
-	setter := CMSpecPovSetterNotebook openFor: self projectManager.
+"	| setter |
+	setter := CMSpecPovSetterNotebook openFor: self projectManager."
+	self alertMessage: 'Not implemented'.
 
 ]
 
@@ -601,7 +601,7 @@ CMSpecProjectWindow >> openVizProbes [
 CMSpecProjectWindow >> openVizSpace [
 	" Private - Callback for user request to open the Space Model interface "
 
-	self appSettingsClass settingSpaceViewer openFor: self projectManager.
+	CMR3SpaceInterface openFor: self projectManager.
 
 ]
 
