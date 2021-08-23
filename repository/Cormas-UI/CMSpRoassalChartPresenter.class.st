@@ -274,7 +274,7 @@ CMSpRoassalChartPresenter >> setModelBeforeInitialization: aDomainObject [
 
 { #category : #'accessing - chart' }
 CMSpRoassalChartPresenter >> timeChanged: aNewTimeStep [
-	" Private - Important "
+
 	| newMaxX |
 		
 	newMaxX := (aNewTimeStep max: 1) min: 10.

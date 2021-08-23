@@ -1206,38 +1206,6 @@ CMAbstractModel >> application [
 	^ CMApplicationProject uniqueInstance
 ]
 
-{ #category : #'simulation settings' }
-CMAbstractModel >> applyModelDefaultCormasSettings [
-	
-	self cormas isChangesDelayed = self class defaultDelayChangesSetting
-		ifFalse: [self cormas toggleDelayChanges]
-]
-
-{ #category : #control }
-CMAbstractModel >> ask: aClass select: aBlockCondition toDo: aSymbol [
-	"Purpose: To ask the instances of a class that satisfy a condition to execute a method named by aSymbol. The entities are ordered according to their id.
-Arguments: aBlockCondition is aBlock which use the following syntax [:x | x message ]  wherer x message should return true or false
-Example: self ask: Animal select: [:f | f energy > 10] toDo: #reproduce"
-	
-	self ask: aClass select: aBlockCondition toDo: aSymbol with: #()
-]
-
-{ #category : #control }
-CMAbstractModel >> ask: aClass select: aBlockCondition toDo: aSymbol with: aValueOrArrayOfValues [
-	"Purpose: To ask the instances of a class that satisfy a condition to execute a method which requires arguments and named by aSymbol which should end by ':'. The entities are ordered according to their id. 
-Arguments: aBlockCondition is aBlock which use the following syntax [:x | x message ]  wherer x message should return true or false
-Example: self ask: Fireman select:[:f | f isOccupied not] toDo: #moveWithinRange: with: 10
-Example: self ask: Animal select: [:a | a energy > 10] toDo: #eatQuantity: with: 5"
-	
-	| allArguments collecEntities |
-	"Check if the argument is a collection or array and rebuilts the list of arguments"
-	allArguments := (aValueOrArrayOfValues isKindOf: Array)
-		ifTrue: [aValueOrArrayOfValues]
-		ifFalse: [Array with: aValueOrArrayOfValues].
-	collecEntities := (self allTheEntitiesOfClassOrCollec: aClass) select: aBlockCondition.
-	collecEntities do: [:c | c perform: aSymbol withArguments: allArguments]
-]
-
 { #category : #control }
 CMAbstractModel >> ask: aCollecOrClass toDo: aSymbol [
 	"Purpose: To ask a collection of instances or all the instances of a class to execute a method named by aSymbol. In case aCollecOrClass is a 	class, the entities are ordered according to their id. In case aCollecOrClass is a collection of instances, the order of the collection is 	kept.
@@ -1375,15 +1343,6 @@ CMAbstractModel >> collect: anEntity [
 				with: (OrderedCollection withAll: collection).
 			collection := self theEntities: anEntity class].
 	collection add: anEntity
-]
-
-{ #category : #'referencing entities' }
-CMAbstractModel >> collectAll: aCollectionOfEntities [
-	"add all the elements of aCollectionOfEntities to the collection called theXXXs (where XXX is equal to the class name)"
-	
-	aCollectionOfEntities isEmpty ifTrue: [^nil].
-	(self theEntities: aCollectionOfEntities first class) addAll:
-			aCollectionOfEntities
 ]
 
 { #category : #accessing }
@@ -1845,17 +1804,6 @@ CMAbstractModel >> createNetworkOfArcs: anArcClass onCells: listOfCells [
 	^network
 ]
 
-{ #category : #'utilities - ODBC' }
-CMAbstractModel >> createODBCConnection [
-	"Create a ODBC connection.
-This method is called from SimManager in order to save the probe's values into a database (cormasSimulations).
-You may redifine it with the right dataBase (<String>) and username (<String>) and password (<String>). Ex: 
-createODBCConnection
-	self createODBCConnection: 'bommel' password: '' base: 'essai'   "
-	
-	^nil
-]
-
 { #category : #'instance creation - nodes & arcs' }
 CMAbstractModel >> createRandomNetworkOfN: n arcs: anArcClass [
 	"create a random Network of n arcs (instances of anArcClass) randomly located on the grid.
@@ -1901,13 +1849,6 @@ CMAbstractModel >> createTable: aTable withParametersAndProbes: parametersArray 
 			parametersArray primaryKey: primaryKey
 ]
 
-{ #category : #'testing - scheduling' }
-CMAbstractModel >> currentSimulationEnded [
-	"Return YES or NO"
-	
-	^self simManager currentSimEnded
-]
-
 { #category : #'probes - recording' }
 CMAbstractModel >> data [
 	"Returns probes results collected during one simulation"
@@ -1946,42 +1887,11 @@ CMAbstractModel >> defaultAttributesSetter: aDefaultSetter [
 	^defaultAttributesSetter := aDefaultSetter
 ]
 
-{ #category : #'private - notification' }
-CMAbstractModel >> delayChangesWhile: aBlock [
-	"delay changes (see registerChangeFor:) during aBlock evaluation.
-	transmit all delayed changes immediately after"
-	
-	(delayedChanges == nil and: [self cormas isChangesDelayed])
-		ifTrue:
-			[[delayedChanges := OrderedCollection new.
-			aBlock value]
-				ensure:
-					[| coll |
-					coll := delayedChanges.
-					delayedChanges := nil.
-					self spaceModel noticeChanges: coll]]
-		ifFalse: [aBlock value]
-]
-
 { #category : #accessing }
 CMAbstractModel >> deleteSpatialEntitySet: aClass [ 
 	" See comment in Space Model class "
 
 	self spaceModel deleteSpatialEntitySet: aClass
-]
-
-{ #category : #ODBC }
-CMAbstractModel >> disconnectAccessConnection [
-	"disconnect the ODBC connection (database) "
-	
-	self database disconnectODBCConnection
-]
-
-{ #category : #'utilities - ODBC' }
-CMAbstractModel >> disconnectODBCConnection [
-	"Purpose: disconnect the ODBC connection"
-	
-	self simManager disconnectODBCConnection
 ]
 
 { #category : #pov }
@@ -2018,15 +1928,6 @@ Example : self displayPov: #landUse of: Cell"
 				with: aClass name
 				with: aSymbol].
 	self spaceModel displayPov: aSymbol of: aClass
-]
-
-{ #category : #'user interface' }
-CMAbstractModel >> displaySimInformation [
-	"display information on the current simulation"
-
-	UIManager default
-		longMessage: self getSimDescriptionText
-		title: '* About Current Simulation * '
 ]
 
 { #category : #'utilities - space metrics' }
@@ -2466,7 +2367,7 @@ CMAbstractModel >> initialize [
 	super initialize.
 	self projectManager: CMProjectManager new.
 	self class socialClasses ifNotEmpty: [ self initializeChannel ].
-	self applyModelDefaultCormasSettings
+
 ]
 
 { #category : #'initalize release' }
@@ -3136,11 +3037,10 @@ CMAbstractModel >> runStep [
 	(For display: Store the changed entities in a collection and request an update of the space views at the end of the timestep)"
 	
 	self incrementTimeStep.
-	self delayChangesWhile: [
-		self activeControl last = $:
-			ifTrue: [ self perform: self activeControl with: self timeStep ]
-			ifFalse: [ self perform: self activeControl ].
-		self updateEntities ].
+	self activeControl last = $:
+		ifTrue: [ self perform: self activeControl with: self timeStep ]
+		ifFalse: [ self perform: self activeControl ].
+	self updateEntities.
 	self channel notNil ifTrue: [self channel flush].
 	self updateDataForChart.
 ]

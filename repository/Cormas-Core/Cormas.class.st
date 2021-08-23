@@ -107,14 +107,6 @@ We suggest to use 'newAndCollect: aCollector' to create and collect an entity"
 			[self inform: 'Only ONE simulation is possible']
 ]
 
-{ #category : #'user interface' }
-Cormas class >> colorChooser [
-	"Purpose: open a Color chooser and returns the color value of the user selected color.
-Example: aColor := Cormas colorChooser "
-	
-	^PovSetter colorChooser
-]
-
 { #category : #'utilities - value types' }
 Cormas class >> colorFrom: aSymbolOrColorValue [
 	"return a color value for the argument"
@@ -1589,20 +1581,6 @@ Cormas >> isChangesDelayed: aBoolean [
 
 ]
 
-{ #category : #'model saving&loading' }
-Cormas >> isPOVsymbolsSavedAsClassMethods [
-	"Check if the protocol 'pov symbols' exists in one of the entities class"
-	
-	| test |
-	test := false.
-	self cormasModelClass allEntityClasses
-		do:
-			[:entityClass | 
-			(entityClass class organization categories includes: #'pov symbols')
-				ifTrue: [test := true]].
-	^test
-]
-
 { #category : #changed }
 Cormas >> listMethodsChanged [
 	"some methods has changed. Propagate the changed to the spaceModel for its spaceInterfaces.
@@ -1668,55 +1646,10 @@ Cormas >> modelNameField [
 		ifFalse: [modelNameField]
 ]
 
-{ #category : #'model entities' }
-Cormas >> modifyPassiveEntityClassAttributes [
-	
-	| aClass |
-	aClass := self getSelectedEntityClassType: 'Passive'.
-	aClass isNil ifFalse: [self editAttributesClass: aClass]
-]
-
-{ #category : #'model entities' }
-Cormas >> modifySchedulerAttributes [
-	
-	self editAttributesClass: self cormasModelClass
-]
-
-{ #category : #'model entities' }
-Cormas >> modifySocialEntityClassAttributes [
-	
-	| aClass |
-	aClass := self getSelectedEntityClassType: 'Social'.
-	aClass isNil ifFalse: [self editAttributesClass: aClass]
-]
-
-{ #category : #'model entities' }
-Cormas >> modifySpatialEntityClassAttributes [
-	
-	| aClass |
-	aClass := self getSelectedEntityClassType: 'Spatial'.
-	aClass isNil ifFalse: [self editAttributesClass: aClass]
-]
-
-{ #category : #'model scheduling' }
-Cormas >> openParametersWin [
-	
-	^self simManager isNil
-		ifTrue: [nil]
-		ifFalse: [self simManager open]
-]
-
 { #category : #'user messages' }
 Cormas >> openedSpatialGridsForHabitus: aString [
 	
 	^self cormasModel openedSpatialGridsForHabitus: aString
-]
-
-{ #category : #'user messages' }
-Cormas >> openedSpatialsGrids [
-	"access the actual openened space interfaces"
-	
-	^self cormasModel openedSpatialsGrids
 ]
 
 { #category : #accessing }
@@ -1728,61 +1661,6 @@ Cormas >> process [
 { #category : #accessing }
 Cormas >> process: aProcess [
 	process := aProcess
-]
-
-{ #category : #'interface actions' }
-Cormas >> reduceWindowToMinSize [
-	"set the window size to its min"
-	
-	
-]
-
-{ #category : #simulation }
-Cormas >> releaseProcess [
-	
-	process isNil
-		ifFalse:
-			[process terminate.
-			process := nil].	"self runButtonLabel: 'Run'"
-	self runButtonRun
-]
-
-{ #category : #util }
-Cormas >> removeBrackets: aNom [
-	"inutile avec Cormas2000"
-	
-	| index unNom |
-	aNom isNil ifTrue: [^nil].
-	index := aNom findFirst: [:aChar | aChar = $(].
-	unNom := aNom
-		changeFrom: index - 1
-		to: aNom size
-		with: ''.
-	^unNom
-]
-
-{ #category : #'model entities' }
-Cormas >> removeModelAccessors: aName [
-	| pop |
-	pop := self cormasModelClass getterForEntityClass: aName.
-	(self cormasModelClass instVarNames includes: pop)
-		ifTrue: [ self cormasModelClass removeInstVarName: pop ].
-	(self cormasModelClass selectors includes: pop asSymbol)
-		ifTrue: [ self cormasModelClass removeSelector: pop asSymbol ].
-	(self cormasModelClass selectors includes: (pop , ':') asSymbol)
-		ifTrue: [ self cormasModelClass removeSelector: (pop , ':') asSymbol ].
-	(self cormasModelClass selectors
-		includes: ('allThe' , aName , 's') asSymbol)
-		ifTrue: [ self cormasModelClass
-				removeSelector: ('allThe' , aName , 's') asSymbol ]
-]
-
-{ #category : #accessing }
-Cormas >> removeSpaceInterface: aSpaceInterface [
-	
-	self spaceInterfaces
-		remove: aSpaceInterface
-		ifAbsent: []
 ]
 
 { #category : #simulation }
@@ -1920,12 +1798,6 @@ Cormas >> symbolNameOfSelector: selector [
 	stream := selector readStream.
 	stream upTo: $_.
 	^stream upToEnd asSymbol
-]
-
-{ #category : #'interface actions' }
-Cormas >> toggleDelayChanges [
-	
-	self isChangesDelayed: self isChangesDelayed not
 ]
 
 { #category : #accessing }

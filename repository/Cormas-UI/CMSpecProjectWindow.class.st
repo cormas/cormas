@@ -355,7 +355,8 @@ CMSpecProjectWindow >> menuDisableToolsGroup [
 		#tDisplayModelVersions .
 		#tDistributeAsServer .
 		#tDistributeAsClient .
-		#tPackageClient
+		#tPackageClient .
+		#tInspectModel
 	} do: [ : itemSel | self menuDisableItem: itemSel ]
 ]
 
@@ -366,7 +367,7 @@ CMSpecProjectWindow >> menuDisableVisualizationGroup [
 	{ 
 		#tProbes .
 		#tMessages .
-		#tSpaceEntities
+		#tSpace
 	} do: [ : itemSel | self menuDisableItem: itemSel ]
 
 ]
@@ -415,7 +416,9 @@ CMSpecProjectWindow >> menuEnableProgrammingGroup [
 		#tEditAttributes .
 		#tEditSteps .
 		#tEditActivityDiagrams .
-		#tClassEditor
+		#tClassEditor .
+		#tMessagesProgramming .
+		#tProbesProgramming
 	} do: [ : itemSel | self menuEnableItem: itemSel ]
 ]
 
@@ -452,7 +455,8 @@ CMSpecProjectWindow >> menuEnableToolsGroup [
 		#tDistributeAsServer .
 		#tDistributeAsClient .
 		#tPackageClient .
-		#tPreferences
+		#tPreferences .
+		#tInspectModel
 	} do: [ : itemSel | self menuEnableItem: itemSel ]
 ]
 
@@ -463,7 +467,7 @@ CMSpecProjectWindow >> menuEnableVisualizationGroup [
 	{ 
 		#tProbes .
 		#tMessages .
-		#tSpaceEntities
+		#tSpace
 	} do: [ : itemSel | self menuEnableItem: itemSel ]
 ]
 
@@ -487,18 +491,21 @@ CMSpecProjectWindow >> openCormasSystemBrowser [
 { #category : #'submenu-tools-developer' }
 CMSpecProjectWindow >> openDependenciesGraph [
 
-	| matchingPackages |
+	| matchingPackages model |
 
 	matchingPackages := self cormasPackages.
 	matchingPackages := { 'Cormas-Core' . 'Cormas-UI' }.
-	(DAPackageRelationGraphGenerator 
-		newWith: ((DAPackageRelationGraph 
-				onPackages: (matchingPackages collect: [ :packageName | (DAPackage onPackageNamed: packageName) ]))
-				build) 
-		named: 'CORMAS Dependencies')
-			graphviz 
-			make: 'dot';
-			openInWindow. 
+	model := UrImageDependenciesMainModel new
+		internalPackageNames: matchingPackages;
+		yourself.
+	^ (UrMainPresenter new
+		setModelBeforeInitialization: model;
+		openWithSpec)
+			withWindowDo: [ : w | 
+				w
+					extent: 1200 @ 800;
+					title: 'CORMAS Dependencies' ]
+
 ]
 
 { #category : #'submenu-tools-developer' }
@@ -555,11 +562,9 @@ CMSpecProjectWindow >> openHelpAboutThisModel [
 { #category : #callbacks }
 CMSpecProjectWindow >> openPovSetterGUI [
 
-	| setter |
-	
-	self cormasModelClass isNil ifTrue: [ ^ self alertMessage: self translator tNoModel ].
-	self cormasModelClass cellClass isNil ifTrue: [ ^ self alertMessage: self translator tWhichAttribute ].
-	setter := CMSpecPovSetterNotebook openFor: self projectManager.
+"	| setter |
+	setter := CMSpecPovSetterNotebook openFor: self projectManager."
+	self alertMessage: 'Not implemented'.
 
 ]
 
@@ -594,16 +599,10 @@ CMSpecProjectWindow >> openVizProbes [
 
 { #category : #callbacks }
 CMSpecProjectWindow >> openVizSpace [
+	" Private - Callback for user request to open the Space Model interface "
 
-	| aModel viz |
-	aModel := self projectManager cormasModel.
-	aModel spaceModel ifNil: [ 
-		^ self alertMessage: self translator tNoSpaceModel ].
-	viz := (Smalltalk at: #CMR3SpaceInterface) openFor: self projectManager.
-"	viz spaceView: viz specSpaceView spec instance view.
-	viz window extent: viz spaceView canvas extent + (20 @ 20).
-	viz spaceView canvas focusOnCenterScaled.
-	viz spaceView signalUpdate"
+	CMR3SpaceInterface openFor: self projectManager.
+
 ]
 
 { #category : #accessing }
@@ -903,7 +902,7 @@ CMSpecProjectWindow >> subMenuProgrammingMessages [
 CMSpecProjectWindow >> subMenuProgrammingMessages: item [
 
 	item
-		name: self translator tMessages;
+		name: self translator tMessagesProgramming;
 		icon: (self iconNamed: #smallObjects);
 		shortcut: $M command;
 		action: [ self openProgrammingMessages ]
@@ -938,7 +937,7 @@ CMSpecProjectWindow >> subMenuProgrammingObserver: item [
 CMSpecProjectWindow >> subMenuProgrammingProbes: item [
 
 	item
-		name: self translator tProbes;
+		name: self translator tProbesProgramming;
 		icon: (self iconNamed: #group);
 		shortcut: $P command;
 		action: [ self openProgrammingProbes ]

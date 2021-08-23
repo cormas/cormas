@@ -62,7 +62,7 @@ CMSpAboutWindow >> parseMicrodownText [
 			do: [ builder contents ].
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 CMSpAboutWindow >> styleConfiguration [ 
 	" Private - See superimplementor's comment "
 

@@ -256,10 +256,11 @@ BaselineOfCormas >> specForPharo9: spec [
 			spec
 				baseline: 'Tabular' 							with: [ spec repository: 'github://VincentBlondeau/Tabular' ];
 				baseline: 'ClassEditor'						with: [ spec repository: 'github://hernanmd/class-editor/repository'; loads: 'complete' ];
-				baseline: 'Roassal3' 							with: [ spec repository: 'github://ObjectProfile/Roassal3'; loads: 'Full' ];
+				baseline: 'Roassal3' 							with: [ spec repository: 'github://ObjectProfile/Roassal3' ];
 				baseline: 'Roassal3Exporters' 				with: [ spec repository: 'github://ObjectProfile/Roassal3Exporters' ];
+				baseline: 'UrucuNavigator' 					with: [ spec repository: 'github://tinchodias/pharo-urucu-navigator' ];
 
-				package: 'Cormas-UI'							with: [ spec requires: #('Cormas-Core' 'ClassEditor' 'SpecUIAddOns' 'FileDialog' 'ProjectFramework' 'CodeGenerator') ];
+				package: 'Cormas-UI'							with: [ spec requires: #('Cormas-Core' 'ClassEditor' 'SpecUIAddOns' 'FileDialog' 'ProjectFramework' 'CodeGenerator' 'UrucuNavigator') ];
 				package: 'Cormas-UI-Tests' 					with: [ spec requires: #('Cormas-Tests' 'Cormas-UI' 'Cormas-Mocks') ];
 				package: 'Cormas-UI-Roassal3' 				with: [ spec requires: #('Cormas-UI' 'Roassal3' 'Roassal3Exporters') ];
 				package: 'Cormas-Model-ECEC-Roassal3' 	with: [ spec requires: #('Cormas-Model-ECEC' 'Roassal3' 'Cormas-UI-Roassal3') ].

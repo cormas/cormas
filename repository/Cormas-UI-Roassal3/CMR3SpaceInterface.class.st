@@ -54,6 +54,12 @@ CMR3SpaceInterface class >> openFor: aCMProjectManager [
 		yourself
 ]
 
+{ #category : #initialization }
+CMR3SpaceInterface >> appSettingsClass [ 
+
+	^ CMApplicationPreferences
+]
+
 { #category : #accessing }
 CMR3SpaceInterface >> canvas [
 	" Private - Answer a <RSCanvas> "
@@ -249,7 +255,7 @@ CMR3SpaceInterface >> initializePOVMenuToolbar [
 CMR3SpaceInterface >> initializePresenters [
 
 	menuToolbar := self mainMenuToolbar.
-	diagram := self instantiate: CMR3SpaceView on: self cormasModel.
+	diagram := self instantiate: self appSettingsClass settingSpaceViewer on: self cormasModel.
  	self canvas 
 		addInteraction: RSCanvasController new;
 		addInteraction: RSZoomToFitCanvasInteraction new;

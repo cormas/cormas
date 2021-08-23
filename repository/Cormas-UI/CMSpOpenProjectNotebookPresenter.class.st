@@ -45,11 +45,10 @@ CMSpOpenProjectNotebookPresenter >> initializeProjectPanel [
 
 	notebookPanel
 		addPage: (infoPage := self newProjectInfoPage);
-		addPage: (sourceCodePage := self newSourceCodePage);
+		addPage: (sourceCodePage := self newSourceCodePage)
 	"	addPage: (resourcesPage := self newResourcesPage 
 			title: 'Resources';
 			presenterProvider: [ self resourcesPresenter ];"
-			yourself
 ]
 
 { #category : #initialization }
