@@ -57,7 +57,7 @@ CMCellsLoader >> connectivity: aString [
 	gridSelector := self gridShapeSelectors:numberOfNeighbours.
 	self spaceModelDo: [ :spaceModel | 
 		spaceModel 
-			nbConfiguration: (CMSpaceNeighbourhood forNeighbours: numberOfNeighbours spaceModel: spaceModel);
+			nbCount: numberOfNeighbours;
 			gridCellShape: gridSelector ]
 ]
 
@@ -142,10 +142,10 @@ CMCellsLoader >> load: aFileReference [
 				at: 'dimensions'
 				ifAbsent: [ ^ self error: 'dimensions field is mandatory' ]).
 	self connectivity: (metadata at: 'connectivity' ifAbsent: [ self defaultConnectivity ]).
-	self spaceModelDo: [ :spaceModel | 
+"	self spaceModelDo: [ :spaceModel | 
 			spaceModel
 				resetSpatialEntities;
-				createCells ].
+				createCells ]."
 	self closed: (metadata at: 'closed' ifAbsent: [ self defaultClosed ]).
 	metadata
 		at: 'attributes'

@@ -44,6 +44,13 @@ Class {
 	#category : #'Cormas-Core-Space'
 }
 
+{ #category : #defaults }
+CMSpaceModel class >> defaultLines [
+	" Answer the <Number> of default lines to create in the receiver's grid "
+	
+	^ 10
+]
+
 { #category : #'instance creation' }
 CMSpaceModel class >> forModel: aCormasModel [
 
@@ -439,8 +446,8 @@ colNumber   <Integer> colNumber = Positive Integer"
 
 { #category : #'ESE (regular) - special locations' }
 CMSpaceModel >> cellsOfLine: lineNumber [
-	"Return the cells in the lineNumber of the spatial grid.
-lineNumber   <Integer> lineNumber = Positive Integer"
+	" Answer a <Collection> of <> cells in the lineNumber of the spatial grid.
+	lineNumber   <Integer> lineNumber = Positive Integer"
 
 	^ self elementaryEntities select: [ :cell | cell numLine = lineNumber ]
 ]
@@ -693,7 +700,7 @@ CMSpaceModel >> defaultIsNotTorroidal [
 CMSpaceModel >> defaultLines [
 	" Answer the <Number> of default lines to create in the receiver's grid "
 	
-	^ 10
+	^ self class defaultLines 
 ]
 
 { #category : #accessing }
@@ -703,6 +710,13 @@ CMSpaceModel >> deleteSpatialEntitySet: aSpatialEntitySetClass [
 	<aSpatialEntitySetClass = a subclass of SpatialEntitySet> "
 
 	self spaceModel resetCompoundSpatialEntity: aSpatialEntitySetClass
+]
+
+{ #category : #'ESE (regular) - special locations' }
+CMSpaceModel >> dimensions: aCollectionOrAssociation [
+	" Configure the receiver's dimension taking the first element of aCollectionOrAssociation (or key if Association) as the lines and the second element (or value) as the number of columns "
+	
+	aCollectionOrAssociation spaceModelDimensionsFor: self
 ]
 
 { #category : #'private - dispatch' }
@@ -842,11 +856,11 @@ CMSpaceModel >> eightconnexe [
 	self gridCellShape ~= #squared
 		ifTrue: [
 			self gridCellShape: #squared.
-			self createRectangularCellsFigure].
+			self createRectangularCellsFigure ].
 	self nbNeighbours ~= 8
-		ifTrue:
-			[self nbConfiguration: (CMSpaceNeighbourhood forNeighbours: #eight spaceModel: self).
-			self initNeighbourhood].
+		ifTrue: [ 
+			self nbCount: #eight.
+			self initNeighbourhood ].
 	self changed: #shapeHasChanged with: 8	"dispatch the info to all spaceInterfaces"
 ]
 
@@ -1084,7 +1098,7 @@ CMSpaceModel >> fourconnexe [
 			self createRectangularCellsFigure ].
 	self nbNeighbours ~= #four
 		ifTrue: [ 
-			self nbConfiguration: (CMSpaceNeighbourhood forNeighbours: #four spaceModel: self).
+			self nbCount: #four.
 			self initNeighbourhood ].
 	self changed: #shapeHasChanged with: 4	"dispatch the info to other spaceInterfaces"
 ]
@@ -1428,7 +1442,7 @@ CMSpaceModel >> hexagonal [
 	self gridCellShape ~= #hexagonal
 		ifTrue: [ 
 			self gridCellShape: #hexagonal.
-			self nbConfiguration: (CMSpaceNeighbourhood forNeighbours: #six spaceModel: self).
+			self nbCount: #six.
 			self createHexagonalCellsFigure.	"the spaceInterfaces are automatically refreshed"
 			self initNeighbourhood.
 			self changed: #shapeHasChanged]	"set the menu and title to the spaceInterfaces"
@@ -1532,7 +1546,7 @@ CMSpaceModel >> initializeRegularLines: lines columns: columns nbType: aNumber c
 	self resetSpatialEntities.
 	self line: lines column: columns.
 	torroidal := aBoolean.
-	self nbType: aNumber.
+	self nbCount: aNumber.
 	self createCells.
 
 
@@ -1577,7 +1591,8 @@ CMSpaceModel >> line [
 
 { #category : #'private - accessing' }
 CMSpaceModel >> line: i column: j [
-	
+	" Configure receiver's number of lines to be i and number of columns to be j "
+
 	line := i.
 	column := j.
 	gridSize := i * j
@@ -1611,6 +1626,7 @@ Now there is a 'Sample.cells' directory with the following 'spaceModel.yml
 	9,2,6,...
  "
 	| cellsFile |
+	
 	cellsFile := aStringOrFileReference isString
 		ifTrue: [ self cellFileDirectory / aStringOrFileReference ]
 		ifFalse: [ aStringOrFileReference ].
@@ -1776,6 +1792,14 @@ CMSpaceModel >> nbConfiguration: aCMSpaceNeighbourhood [
 	nbConfiguration := aCMSpaceNeighbourhood
 ]
 
+{ #category : #accessing }
+CMSpaceModel >> nbCount: anIntegerOrSymbol [
+	" Set the receiver's neighbourhood configuration to contain anIntegerOrSymbol neighbours "
+	
+	self nbConfiguration: (CMSpaceNeighbourhood forNeighbours: anIntegerOrSymbol spaceModel: self)
+
+]
+
 { #category : #'landscape indices' }
 CMSpaceModel >> nbDistinctValuesOf: anAttribute [
 	"Return the number of different values for anAttribute"
@@ -1790,24 +1814,14 @@ CMSpaceModel >> nbNeighbours [
 	^ self nbConfiguration nbNeighbours
 ]
 
-{ #category : #'private - init' }
-CMSpaceModel >> nbType: aNumber [
-	" Configure the receiver's neighbourhood type according to aNumber and set remaining attributes "
-
-	self nbConfiguration: (CMSpaceNeighbourhood forNeighbours: aNumber spaceModel: self).
-
-]
-
 { #category : #'landscape indices' }
 CMSpaceModel >> nearestNeighbourProbaAttribute: anAttribute state1: x1 state2: x2 [
 	"return the data (a number) to be recorded"
 	
 	| c1 c2 |
 	c1 := self cormasModel theESE select: [:a | (a perform: anAttribute) = x1].
-	c2 := c1
-		select:
-			[:a | a neighbourhood anySatisfy: [:b | (a perform: anAttribute) = x2]].
-	^c2 size / c1 size
+	c2 := c1 select: [:a | a neighbourhood anySatisfy: [:b | (a perform: anAttribute) = x2 ] ].
+	^ c2 size / c1 size
 ]
 
 { #category : #'private - init' }
@@ -1820,32 +1834,6 @@ CMSpaceModel >> newEntity: aClass [
 		"anEntity collector: self cormasModel collector.
 	self cormasModel collect: anEntity."
 			yourself
-]
-
-{ #category : #'private - display' }
-CMSpaceModel >> openedSpatialGrid [
-	"Purpose: Return the last opened spatial grid"
-	
-	| spatialGrids |
-	spatialGrids := self openedSpatialGrids.
-	^spatialGrids isEmpty
-		ifTrue: [nil]
-		ifFalse: [spatialGrids last]
-]
-
-{ #category : #'private - display' }
-CMSpaceModel >> openedSpatialGrids [
-	"Purpose: return a collection of all opened spatial grids.
-	hack because of opentalk and distributed : looking for SpatialGrid in the dependents is wrong because :
-	- some spatialGrids are remote
-      - in this case, the registered object is a ClientSpaceModel and not a SpaceInterface
-	- Opentalk register a LocalDependent in order to optimize communication
-      the actual hack is simple : send a normal update to dependents with #openedSpatialGrid, asking them to register iteself in the result collection.
-	Since simple collection have a #value passMode, force a #reference passMode for this result.
-	
-	"
-	
-	^self openedSpatialGridsForHabitus: nil
 ]
 
 { #category : #'private - irregular polygons aggregation' }
@@ -1925,14 +1913,6 @@ CMSpaceModel >> patchDensity: aClass totalArea: aNumber [
 	aggregates := self cormasModel
 		perform: (self cormasModel getterForEntityClass: aClass).
 	^ aggregates size / aNumber
-]
-
-{ #category : #'private - notification' }
-CMSpaceModel >> ping: anObject [
-	
-	^[anObject ping]
-		on: Exception
-		do: [:ex | false]
 ]
 
 { #category : #printing }
@@ -2056,321 +2036,6 @@ CMSpaceModel >> resourceLocator [
 	" Answer the receiver's <CMResourceLocator>, an object to locate resources on the disk"
 
 	^ self cormasModel resourceLocator
-]
-
-{ #category : #'private - import - export' }
-CMSpaceModel >> saveAttributesMIFMID: attributes fileParameters: aList class: aClass [
-	
-	| stream firstValue type firstPatch dicoAttConv c maxX maxY minX minY |
-	maxX := 0.
-	maxY := 0.
-	minX := 1000000000000.
-	minY := 1000000000000.
-	(self openedSpatialGrid drawing components
-		select: [:f | f entityType = aClass])
-		do:
-			[:a | 
-			a points
-				do:
-					[:aPoint | 
-					aPoint x > maxX ifTrue: [maxX := aPoint x asFloat].
-					aPoint y > maxY ifTrue: [maxY := aPoint y asFloat].
-					aPoint x < minX ifTrue: [minX := aPoint x asFloat].
-					aPoint y < minY ifTrue: [minY := aPoint y asFloat]]].	"(self spatialEntities at: aClass name)
-		do: [:a | a image component vertices"
-	stream := ((Cormas mapsPath: self cormasModelClass name) asString , '\'
-		, aClass name printString , 'Cormas.mif') asFilename writeStream.
-	stream
-		nextPutAll: 'Version 300';
-		nextPutAll: '\' withCRs.
-	stream
-		nextPutAll: 'Charset "WindowsLatin1"';
-		nextPutAll: '\' withCRs.
-	stream
-		nextPutAll: 'Delimiter ","';
-		nextPutAll: '\' withCRs.
-	stream
-		nextPutAll: 'CoordSys ';
-		nextPutAll: (aList at: 1);
-		nextPutAll: ' Units ';
-		nextPutAll: (aList at: 2);
-		nextPutAll: ' Bounds (';
-		nextPutAll: minX printString;
-		nextPutAll: ', ';
-		nextPutAll: minY printString;
-		nextPutAll: ') (';
-		nextPutAll: maxX printString;
-		nextPutAll: ', ';
-		nextPutAll: maxY printString;
-		nextPutAll: ')';
-		nextPutAll: '\' withCRs.
-	stream
-		nextPutAll: 'Columns ';
-		nextPutAll: attributes selections size printString;
-		nextPutAll: '\' withCRs.
-	dicoAttConv := Dictionary new.
-	attributes selections
-		do:
-			[:att | 
-			firstPatch := (self spatialEntities at: aClass name)
-				detect: [:p | (p perform: att asSymbol) isNil not]
-				ifNone: [nil].
-			firstPatch isNil
-				ifTrue: [firstValue := nil]
-				ifFalse: [firstValue := firstPatch perform: att asSymbol].
-			firstValue isSymbol
-				ifTrue:
-					[type := 'Text'.
-					dicoAttConv
-						at: att asSymbol
-						put: #asString]
-				ifFalse:
-					[(firstValue isKindOf: Integer)
-						ifTrue:
-							[type := 'Integer'.
-							dicoAttConv
-								at: att asSymbol
-								put: #printString]
-						ifFalse:
-							[(firstValue isKindOf: Float)
-								ifTrue:
-									[type := 'Float'.
-									dicoAttConv
-										at: att asSymbol
-										put: #printString]
-								ifFalse:
-									[firstValue isString
-										ifTrue:
-											[type := 'char (20)'.
-											dicoAttConv
-												at: att asSymbol
-												put: #asString]
-										ifFalse:
-											[(firstValue isKindOf: Boolean)
-												ifTrue:
-													[type := 'char (20)'.
-													dicoAttConv
-														at: att asSymbol
-														put: #printString]
-												ifFalse:
-													[type := '(nil)'.
-													dicoAttConv
-														at: att asSymbol
-														put: #printString]]]]].
-			stream
-				nextPutAll: att;
-				nextPutAll: ' ';
-				nextPutAll: type;
-				nextPutAll: '\' withCRs].
-	stream
-		nextPutAll: 'Data ';
-		nextPutAll: '\' withCRs.
-	(self openedSpatialGrid drawing components
-		select: [:f | f entityType = aClass])
-		do:
-			[:a | 
-			"(self spatialEntities at: aClass name)
-		do: 
-			[:a | "
-			stream
-				nextPutAll: 'Region 1 ';
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: a points size printString;
-				nextPutAll: '\' withCRs.
-			a points
-				do:
-					[:aPoint | 
-					stream
-						nextPutAll: aPoint x asFloat printString;
-						nextPutAll: ' ';
-						nextPutAll: (minY + maxY - aPoint y asFloat) printString;
-						nextPutAll: '\' withCRs]].
-	stream close.
-	stream := ((Cormas mapsPath: self cormasModelClass name) asString , '\'
-		, aClass name printString , 'Cormas.mid') asFilename writeStream.
-	(self spatialEntities at: aClass name)
-		do:
-			[:a | 
-			attributes selections
-				do:
-					[:b | 
-					c := dicoAttConv
-						at: b asSymbol
-						ifAbsent: [nil].
-					c isNil
-						ifTrue: [stream nextPutAll: '0']
-						ifFalse: [stream nextPutAll: ((a perform: b asSymbol) perform: c)].
-					attributes selections last = b ifFalse: [stream nextPutAll: ',']].
-			stream nextPutAll: '\' withCRs].
-	stream close
-]
-
-{ #category : #'import - export' }
-CMSpaceModel >> saveAttributesRSTRDC: attributes fileParameters: aList [
-	
-	| stream firstPatch firstValue typeAtt a typeData |
-	attributes selections
-		do:
-			[:att | 
-			stream := ((Cormas mapsPath: self cormasModelClass name) asString , '\' ,
-					att , 'Cormas.rst') asFilename writeStream.
-			firstPatch := self elementaryEntities
-				detect: [:p | (p perform: att asSymbol) isNil not]
-				ifNone: [nil].
-			firstPatch isNil
-				ifTrue: [firstValue := nil]
-				ifFalse: [firstValue := firstPatch perform: att asSymbol].
-			firstValue isSymbol
-				ifTrue:
-					[self cormas
-						warn:
-							'The type can only be byte, integer of real.' , att , ' is not exportable'.
-					stream close.
-					^nil]
-				ifFalse:
-					[(firstValue isKindOf: Number)
-						ifTrue:
-							[typeAtt := #printString.
-							firstValue isInteger
-								ifTrue: [typeData := 'integer']
-								ifFalse: [typeData := 'real']]
-						ifFalse:
-							[self cormas
-								warn:
-									'The type can only be byte, integer of real.' , att , ' is not exportable'.
-							stream close.
-							^nil]].
-			self elementaryEntities
-				do:
-					[:patch | 
-					a := att asSymbol.
-					stream nextPutAll: ((patch perform: a) perform: typeAtt).
-					stream nextPutAll: '\' withCRs].
-			stream close.
-			stream := ((Cormas mapsPath: self cormasModelClass name) asString , '\'
-				, att , 'Cormas.rdc') asFilename writeStream.
-			stream
-				nextPutAll: 'file format ';
-				nextPutAll: ': ';
-				nextPutAll: (aList at: 1);
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'file title  ';
-				nextPutAll: ': ';
-				nextPutAll: (aList at: 2);
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'data type   ';
-				nextPutAll: ': ';
-				nextPutAll: typeData;
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'file type   ';
-				nextPutAll: ': ';
-				nextPutAll: 'ascii';
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'columns     ';
-				nextPutAll: ': ';
-				nextPutAll: column printString;
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'rows        ';
-				nextPutAll: ': ';
-				nextPutAll: line printString;
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'ref. system ';
-				nextPutAll: ': ';
-				nextPutAll: (aList at: 3);
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'ref. units  ';
-				nextPutAll: ': ';
-				nextPutAll: (aList at: 4);
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'unit dist.  ';
-				nextPutAll: ': ';
-				nextPutAll: (aList at: 5);
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'min. X      ';
-				nextPutAll: ': ';
-				nextPutAll: (aList at: 6);
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'max. X      ';
-				nextPutAll: ': ';
-				nextPutAll: (aList at: 7);
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'min. Y      ';
-				nextPutAll: ': ';
-				nextPutAll: (aList at: 8);
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'max. Y      ';
-				nextPutAll: ': ';
-				nextPutAll: (aList at: 9);
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'pos''n error ';
-				nextPutAll: ': ';
-				nextPutAll: (aList at: 10);
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'resolution  ';
-				nextPutAll: ': ';
-				nextPutAll: (aList at: 11);
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'min. value  ';
-				nextPutAll: ': ';
-				nextPutAll: (aList at: 12);
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'max. value  ';
-				nextPutAll: ': ';
-				nextPutAll: (aList at: 13);
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'display min ';
-				nextPutAll: ': ';
-				nextPutAll: (aList at: 14);
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'display max ';
-				nextPutAll: ': ';
-				nextPutAll: (aList at: 15);
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'value units ';
-				nextPutAll: ': ';
-				nextPutAll: (aList at: 16);
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'value error ';
-				nextPutAll: ': ';
-				nextPutAll: (aList at: 17);
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'flag value  ';
-				nextPutAll: ': ';
-				nextPutAll: (aList at: 18);
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'flag def''n ';
-				nextPutAll: ': ';
-				nextPutAll: (aList at: 19);
-				nextPutAll: '\' withCRs.
-			stream
-				nextPutAll: 'legend cats ';
-				nextPutAll: ': ';
-				nextPutAll: (aList at: 20);
-				nextPutAll: '\' withCRs.
-			stream close]
 ]
 
 { #category : #'CSE (general) - import - export' }

@@ -291,10 +291,8 @@ CMSpatialEntitySet >> deleteComponents: aCollec [
 Argument: aCollec = <Collection(SpatialEntity)>
 Example: self removeComponents: self getEpidermis"
 	
-	self components: self components - aCollec.
-	aCollec
-		do:
-			[:c | 
+	self components: (self components difference: aCollec).
+	aCollec do: [ : c | 
 			c compoundSpatialClasses
 				at: self class name
 				put: nil]

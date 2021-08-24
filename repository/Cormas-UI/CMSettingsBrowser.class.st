@@ -52,6 +52,12 @@ CMSettingsBrowser >> buildWindowIn: aWindow [
 	^ aWindow
 ]
 
+{ #category : #accessing }
+CMSettingsBrowser >> isCloseableByCormas [
+	
+	^ true
+]
+
 { #category : #opening }
 CMSettingsBrowser >> toolBarIn: aMorph [ 
 	| toolBar |

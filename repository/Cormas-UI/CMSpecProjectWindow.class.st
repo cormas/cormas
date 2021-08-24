@@ -569,6 +569,20 @@ CMSpecProjectWindow >> openPovSetterGUI [
 ]
 
 { #category : #callbacks }
+CMSpecProjectWindow >> openProbesInterface [
+	" Private - Open a window with the chart visualizer configured for the receiver's application "
+
+	self chartVisualizer openOn: self projectManager cormasModel
+]
+
+{ #category : #callbacks }
+CMSpecProjectWindow >> openProbesInterface: aCollectionOfProbes [
+	" Private - Open a window with the chart visualizer configured for the receiver's application "
+
+	self chartVisualizer openOn: self projectManager cormasModel with: aCollectionOfProbes
+]
+
+{ #category : #callbacks }
 CMSpecProjectWindow >> openProgrammingEntityClass [
 	" Private - Open an entities browser "
 
@@ -583,26 +597,19 @@ CMSpecProjectWindow >> openProjectProperties [
 ]
 
 { #category : #callbacks }
+CMSpecProjectWindow >> openSpaceInterface [
+	" Private - Callback for user request to open the Space Model interface "
+
+	CMR3SpaceInterface openFor: self projectManager.
+
+]
+
+{ #category : #callbacks }
 CMSpecProjectWindow >> openVizMessages [
 self alertMessage: 'No implemented yet'
 	"CMSpecVizSpaceWindow new
 		owner: self;
 		openWithSpec"
-]
-
-{ #category : #callbacks }
-CMSpecProjectWindow >> openVizProbes [
-	" Private - Open a window with the chart visualizer configured for the receiver's application "
-
-	self chartVisualizer openOn: self projectManager cormasModel
-]
-
-{ #category : #callbacks }
-CMSpecProjectWindow >> openVizSpace [
-	" Private - Callback for user request to open the Space Model interface "
-
-	CMR3SpaceInterface openFor: self projectManager.
-
 ]
 
 { #category : #accessing }
@@ -1410,7 +1417,7 @@ CMSpecProjectWindow >> subMenuVizProbes: item [
 		name: self translator tProbes;
 "		icon: Smalltalk ui icons openIcon;"
 		shortcut: $P command;
-		action: [ self openVizProbes ]
+		action: [ self openProbesInterface ]
 ]
 
 { #category : #'submenu-visualization' }
@@ -1420,7 +1427,7 @@ CMSpecProjectWindow >> subMenuVizSpace: item [
 		name: self translator tSpace;
 "		icon: Smalltalk ui icons openIcon;"
 		shortcut: $S command;
-		action: [ self openVizSpace ]
+		action: [ self openSpaceInterface ]
 ]
 
 { #category : #callbacks }
@@ -1455,7 +1462,7 @@ CMSpecProjectWindow >> updateUIOpenedProject: aString [
 		menuEnableToolsGroup;
 		menuEnableVisualizationGroup;
 		menuEnableHelpGroup;
-		updateSimulationWindow.
+		updateSimulationWindow
 ]
 
 { #category : #callbacks }

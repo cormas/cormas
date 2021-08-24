@@ -66,17 +66,9 @@ CMConwayModelTest >> testThereIsTwoClassesInConwayPackage [
 { #category : #tests }
 CMConwayModelTest >> testWhenThereIsNoNearestCell [
 
-	| tmp1 tmp2 tmp3 |
-	tmp3 := CMConwayModel.
-	tmp3 initialize.
-	tmp1 := tmp3 new.
-	tmp1
-		activeInit: #initSmallGrid;
-		initSimulation.
-	tmp2 := (tmp1 allTheEntities: CMConwayCell) atRandom.
-	self
-		should: [ 
-			tmp2 shortestDistanceToCellsVerifying: [ :arg1 | 
-				arg1 state = #zork ] ]
-		raise: Error
+	| m randomEntity |
+	m := (CMConwayModel newWithActiveInit: #initSmallGrid).
+	m initSimulation.
+	randomEntity := (m allTheEntities: CMConwayCell) atRandom.
+	self should: [ randomEntity shortestDistanceToCellsVerifying: [ :arg1 | arg1 state = #zork ] ] raise: Error
 ]
