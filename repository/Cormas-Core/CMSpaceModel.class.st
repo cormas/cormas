@@ -725,7 +725,7 @@ CMSpaceModel >> dispatchCompoundSpatialEntity: class [
 	
 	self cormasModel
 		setTheEntity: class
-		with: (self spatialEntities at: class name).
+		with: (self spatialEntitiesAt: class name).
 	self cormasModel registerSpaceModelChange: #newAggregates with: class
 ]
 
@@ -1180,15 +1180,11 @@ CMSpaceModel >> getAggregatesFrom: baseEntity verifying: aBlock [
 { #category : #'private - accessing' }
 CMSpaceModel >> getInstanceOfClass: aClass fromId: anId [
 	
-	(self spatialEntities isNil
-		or:
-			[self spatialEntities isEmpty
-				or:
-					[(self spatialEntities includesKey: aClass name) not
-						or: [(self spatialEntities at: aClass name) isEmpty]]])
-		ifTrue: [^nil]
-		ifFalse:
-			[^(self spatialEntities at: aClass name)
+	^ (self spatialEntities isNil or: [ self spatialEntities isEmpty or: [
+			(self spatialEntities includesKey: aClass name) not or: [(self spatialEntities at: aClass name) isEmpty]]])
+		ifTrue: [ nil]
+		ifFalse: [ 
+			(self spatialEntitiesAt: aClass name)
 				detect: [:i | i id = anId]
 				ifNone: [nil]]
 ]
@@ -1321,7 +1317,7 @@ CMSpaceModel >> getSetsOfContiguous: baseEntity conditionalBlocks: blocks condit
 	| collec seed setOfContiguousComponents neighbours newNeighbours baseEntities valuesB2 valuesB3 |
 	self isNotTorroidal
 		ifFalse: [ ^ self warningBoundaries ].
-	baseEntities := ((self spatialEntities at: baseEntity name)
+	baseEntities := ((self spatialEntitiesAt: baseEntity name)
 		select:
 			[ :c | blocks first value: c value: arguments first value: arguments last ])
 		copy asOrderedCollection.
@@ -1377,7 +1373,7 @@ CMSpaceModel >> getSetsOfContiguous: baseEntity horizontalDividers: i verticalDi
 			allComponents
 				at: n
 				put: OrderedCollection new].
-	(self spatialEntities at: baseEntity name)
+	(self spatialEntitiesAt: baseEntity name)
 		do:
 			[:cc | 
 			line := (cc id / nbCG) ceiling.
@@ -1466,7 +1462,7 @@ CMSpaceModel >> initAggregates: compoundEntity fromSeeds: aCollec [
 			(s isComponentOf: compoundEntity)
 				ifFalse: [ self createSilentlyAggregate: compoundEntity from: (Set with: s) ] ].
 	self dispatchCompoundSpatialEntity: compoundEntity.
-	^ self spatialEntities at: compoundEntity name
+	^ self spatialEntitiesAt: compoundEntity name
 ]
 
 { #category : #'CSE (regular) - instance creation' }
@@ -1507,7 +1503,7 @@ CMSpaceModel >> initAggregates: compoundEntity fromSeeds: aCollecOfCells sizeDis
 						ifTrue: [ counter := 0.
 							subsetIndice := subsetIndice + 1 ] ] ].
 	self dispatchCompoundSpatialEntity: compoundEntity.
-	^ self spatialEntities at: compoundEntity name
+	^ self spatialEntitiesAt: compoundEntity name
 ]
 
 { #category : #'private - regular cells - instance creation' }
@@ -1964,16 +1960,16 @@ CMSpaceModel >> release [
 CMSpaceModel >> release: aClass [
 	
 	super release.
-	(self spatialEntities at: aClass name) do: [:e | e spaceModel: nil]
+	(self spatialEntitiesAt: aClass name) do: [:e | e spaceModel: nil]
 ]
 
 { #category : #accessing }
 CMSpaceModel >> resetCompoundSpatialEntity: compoundClass [
 
-	(self spatialEntities at: compoundClass name)
+	(self spatialEntitiesAt: compoundClass name)
 		do: [: agg | agg components do:[: c | (c theCSE includesKey: compoundClass name)
 				ifTrue: [c theCSE at: compoundClass name put: nil]]].
-	self spatialEntities at: compoundClass name put: OrderedCollection new.
+	self spatialEntitiesAt: compoundClass name put: OrderedCollection new.
 	self cormasModel resetEntities: compoundClass.
 	"self changed: #createRegularAggregatesImagesFor: with: compoundClass"
 ]
@@ -1981,17 +1977,13 @@ CMSpaceModel >> resetCompoundSpatialEntity: compoundClass [
 { #category : #'private - init' }
 CMSpaceModel >> resetCompoundSpatialEntity: compoundClass andTheirComponents: componentClass [
 	
-	(self spatialEntities at: componentClass name)
-		do:
-			[:c | 
-			(c theCSE includesKey: compoundClass name)
-				ifTrue:
-					[c theCSE
+	(self spatialEntitiesAt: componentClass name)
+		do: [:c | (c theCSE includesKey: compoundClass name)
+				ifTrue: [
+					c theCSE
 						at: compoundClass name
 						put: nil]].
-	self spatialEntities
-		at: compoundClass name
-		put: OrderedCollection new.
+	self spatialEntitiesAt: compoundClass name put: OrderedCollection new.
 	self cormasModel resetEntities: compoundClass	"self changed: #createRegularAggregatesImagesFor: with: compoundClass"
 ]
 
@@ -2002,12 +1994,9 @@ CMSpaceModel >> resetSpatialEntities [
 	self spatialEntities: Dictionary new. 
 	self cormasModel ifNil: [ ^nil ].
 	self cormasModelClass spatialClasses
-		do:
-			[:aSpatialClass | 
+		do: [ : aSpatialClass | 
 			newColl := self cormasModel resetEntities: aSpatialClass.
-			self spatialEntities
-				at: aSpatialClass name
-				put: newColl].
+			self spatialEntitiesAt: aSpatialClass name 	put: newColl].
 	"self changed: #removeAllFigures"	"all the figures of the spaceInterfaces have to be deleted"
 ]
 
@@ -2025,8 +2014,8 @@ CMSpaceModel >> resetSpatialEntitiesButCells [
 	self spatialEntities: Dictionary new.
 	self cormasModel class spatialClasses do: [ : se | 
 			se name = self cormasModel class cellClass name
-				ifTrue: [ self spatialEntities at: se name 	put: theCells ]
-				ifFalse: [ self spatialEntities at: se name put: OrderedCollection new.
+				ifTrue: [ self spatialEntitiesAt: se name 	put: theCells ]
+				ifFalse: [ self spatialEntitiesAt: se name put: OrderedCollection new.
 					"RemotableOrderedCollection new. ** changed to OrderedCollection new. (RemotableOrderedCollection is used for marshalling in remote distributed visualization)" 
 					self cormasModel resetEntities: se ] ]
 ]
@@ -2044,19 +2033,11 @@ CMSpaceModel >> saveNeighboorsClass: class separator: aChar [
 Each line contains the id of the instance as first element and the id of all its neighboors separated by aChar"
 	
 	| stream filename |
-	filename := (Cormas mapsPath: self cormasModelClass name)
-		construct: class name asString , '_Neighboors.agg'.
+	filename := (Cormas mapsPath: self cormasModelClass name) construct: class name asString , '_Neighboors.agg'.
 	stream := filename asFilename writeStream.
-	(self spatialEntities notNil
-		and:
-			[self spatialEntities isEmpty not
-				and:
-					[(self spatialEntities includesKey: class name)
-						and: [(self spatialEntities at: class name) isEmpty not]]])
-		ifTrue:
-			[(self spatialEntities at: class name)
-				do:
-					[:a | stream nextPutAll: ((a neighborsStringWithSeparator: aChar) , '\') withCRs]].
+	(self spatialEntities notNil and: [self spatialEntities isEmpty not
+		and: [ (self spatialEntities includesKey: class name) and: [(self spatialEntities at: class name) isEmpty not]]])
+			ifTrue: [(self spatialEntitiesAt: class name) do: [ : a | stream nextPutAll: ((a neighborsStringWithSeparator: aChar) , '\') withCRs]].
 	stream close
 ]
 
@@ -2091,7 +2072,7 @@ CMSpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attrib
 	(self getAggregatesFrom: baseEntity attribute: attributeName)
 		do: [ :set | self createSilentlyAggregate: compoundEntity from: set ].
 	self dispatchCompoundSpatialEntity: compoundEntity.
-	^ self spatialEntities at: compoundEntity name
+	^ self spatialEntitiesAt: compoundEntity name
 ]
 
 { #category : #'CSE (regular) - instance creation' }
@@ -2113,7 +2094,7 @@ CMSpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attrib
 		attribute: attributeName2)
 		do: [ :set | self createSilentlyAggregate: compoundEntity from: set ].
 	self dispatchCompoundSpatialEntity: compoundEntity.
-	^ self spatialEntities at: compoundEntity name
+	^ self spatialEntitiesAt: compoundEntity name
 ]
 
 { #category : #'CSE (regular) - instance creation' }
@@ -2136,7 +2117,7 @@ CMSpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attrib
 		excludingValue: aValue)
 		do: [ :set | self createSilentlyAggregate: compoundEntity from: set ].
 	self dispatchCompoundSpatialEntity: compoundEntity.
-	^ self spatialEntities at: compoundEntity name
+	^ self spatialEntitiesAt: compoundEntity name
 ]
 
 { #category : #'CSE (regular) - instance creation' }
@@ -2158,7 +2139,7 @@ The aggregates will  occupy the whole grid.
 		verticalDividers: yRatio)
 		do: [ :set | self createSilentlyAggregate: compoundEntity from: set ].
 	self dispatchCompoundSpatialEntity: compoundEntity.
-	^ self spatialEntities at: compoundEntity name
+	^ self spatialEntitiesAt: compoundEntity name
 ]
 
 { #category : #'CSE (regular) - instance creation' }
@@ -2197,7 +2178,7 @@ Example: self createAggregates: Forest fromSeeds: (self theCells select:[:c| c i
 	self initAggregates: compoundEntity fromSeeds: aCollec.
 	haveSpread := true.
 	[haveSpread] whileTrue: [haveSpread := self swell: compoundEntity].
-	^self spatialEntities at: compoundEntity name
+	^self spatialEntitiesAt: compoundEntity name
 ]
 
 { #category : #'CSE (regular) - instance creation' }
@@ -2226,21 +2207,20 @@ CMSpaceModel >> setAggregates: compoundEntity fromSeeds: aCollec verifying: aBlo
 	| haveSpread |
 	self initAggregates: compoundEntity fromSeeds: aCollec.
 	haveSpread := true.
-	[haveSpread]
-		whileTrue: [haveSpread := self swell: compoundEntity verifying: aBlock].
-	^self spatialEntities at: compoundEntity name
+	[ haveSpread ] whileTrue: [haveSpread := self swell: compoundEntity verifying: aBlock].
+	^ self spatialEntitiesAt: compoundEntity name
 ]
 
 { #category : #'CSE (regular) - instance creation' }
 CMSpaceModel >> setAggregates: compoundEntity fromSeeds: aCollec verifying: aBlock sizeDistribution: dis [
 	
 	| haveSpread |
-	self initAggregates: compoundEntity fromSeeds: aCollec sizeDistribution:
-			dis.
+
+	self initAggregates: compoundEntity fromSeeds: aCollec sizeDistribution: dis.
 	haveSpread := true.
-	[haveSpread]
-		whileTrue: [haveSpread := self swell: compoundEntity verifying: aBlock].
-	^self spatialEntities at: compoundEntity name
+	[ haveSpread ]
+		whileTrue: [ haveSpread := self swell: compoundEntity verifying: aBlock ].
+	^ self spatialEntitiesAt: compoundEntity name
 ]
 
 { #category : #'private - regular polygons - deprecated' }
@@ -2260,17 +2240,13 @@ CMSpaceModel >> setAggregatesFrom: baseEntity verifying: aBlock into: compoundEn
 CMSpaceModel >> setAggregatsBounds: agregat [
 	
 	| origin corner aComponent |
-	(self spatialEntities at: agregat name)
-		do:
-			[:ag | 
+	(self spatialEntitiesAt: agregat name) do: [ : ag | 
 			aComponent := ag components asOrderedCollection first.
 			origin := aComponent bounds origin.
 			corner := aComponent bounds corner.
-			ag components
-				do:
-					[:b | 
-					origin := b bounds origin min: origin.
-					corner := b bounds corner max: corner].
+			ag components do: [ : b | 
+				origin := b bounds origin min: origin.
+				corner := b bounds corner max: corner].
 			ag bounds: (Rectangle origin: origin corner: corner)]
 ]
 
@@ -2321,10 +2297,10 @@ CMSpaceModel >> setFragmentedEntities: compoundEntity from: baseEntity attribute
 			fragmentedEntity := compoundEntity new: self.
 			fragmentedEntity addSilentlyComponents: collec.
 			fragmentedEntity type: (collec first perform: attributeName).
-			(self spatialEntities at: compoundEntity name)
+			(self spatialEntitiesAt: compoundEntity name)
 				add: fragmentedEntity ].
 	self dispatchCompoundSpatialEntity: compoundEntity.
-	^ self spatialEntities at: compoundEntity name
+	^ self spatialEntitiesAt: compoundEntity name
 ]
 
 { #category : #'CSE (regular) - instance creation' }
@@ -2340,14 +2316,13 @@ CMSpaceModel >> setFragmentedEntities: compoundEntity from: baseEntity verifying
 	self
 		resetCompoundSpatialEntity: compoundEntity
 		andTheirComponents: baseEntity.
-	beInstances := (
-		(self cormasModel perform: baseEntity asGetterForEntityClass asSymbol)
+	beInstances := ((self cormasModel perform: baseEntity asGetterForEntityClass asSymbol)
 			select: [ :c | aBlock value: c ]) copy asOrderedCollection.
 	fragmentedEntity := compoundEntity new: self.
 	fragmentedEntity addSilentlyComponents: beInstances.
-	(self spatialEntities at: compoundEntity name) add: fragmentedEntity.
+	(self spatialEntitiesAt: compoundEntity name) add: fragmentedEntity.
 	self dispatchCompoundSpatialEntity: compoundEntity.
-	^ self spatialEntities at: compoundEntity name
+	^ self spatialEntitiesAt: compoundEntity name
 ]
 
 { #category : #'CSE (regular) - instance creation' }
@@ -2370,7 +2345,7 @@ CMSpaceModel >> setFragmentedEntity: compoundEntity fromCollection: aCollecOfSpa
 				ifTrue: [ aSet add: s ] ].
 	self createSilentlyAggregate: compoundEntity from: aSet.
 	self dispatchCompoundSpatialEntity: compoundEntity.
-	^ self spatialEntities at: compoundEntity name
+	^ self spatialEntitiesAt: compoundEntity name
 ]
 
 { #category : #'private - regular polygons' }
@@ -2381,22 +2356,20 @@ CMSpaceModel >> setGivenSizes: dis toAggregates: compoundEntity [
 	"The sum of all Xi should be the same than aCollec size"
 	
 	| aCollec counter subsetIndice |
-	aCollec := self spatialEntities at: compoundEntity name.
+	aCollec := self spatialEntitiesAt: compoundEntity name.
 	((dis collect: [:pair | pair first])
 		inject: 0
 		into: [:sum :i | sum + i]) ~= aCollec size
 		ifTrue: [self error: 'Inconsistency in the number of aggregates !!!'].
 	counter := 0.
 	subsetIndice := 1.
-	aCollec
-		do:
-			[:s | 
-			s givenSize: (dis at: subsetIndice) last.
-			counter := counter + 1.
-			counter = (dis at: subsetIndice) first
-				ifTrue:
-					[counter := 0.
-					subsetIndice := subsetIndice + 1]]
+	aCollec do: [ : s | 
+		s givenSize: (dis at: subsetIndice) last.
+		counter := counter + 1.
+		counter = (dis at: subsetIndice) first
+			ifTrue: [
+				counter := 0.
+				subsetIndice := subsetIndice + 1]]
 ]
 
 { #category : #'CSE (regular) - instance creation' }
@@ -2466,7 +2439,7 @@ CMSpaceModel >> setSingletonAggregates: compoundEntity fromSeeds: aCollec [
 			(s isComponentOf: compoundEntity)
 				ifFalse: [ self createSilentlyAggregate: compoundEntity from: (Set with: s) ] ].
 	self dispatchCompoundSpatialEntity: compoundEntity.
-	^ self spatialEntities at: compoundEntity name
+	^ self spatialEntitiesAt: compoundEntity name
 ]
 
 { #category : #'ESE initialize-release' }
@@ -2636,11 +2609,19 @@ CMSpaceModel >> spatialEntitiesAt: aSpatialEntityName [
 ]
 
 { #category : #accessing }
+CMSpaceModel >> spatialEntitiesAt: aSpatialEntityName put: anObject [
+
+	^ self spatialEntities 
+		at: aSpatialEntityName
+		put: anObject
+]
+
+{ #category : #accessing }
 CMSpaceModel >> spatialEntitiesAt: aSpatialEntityName withPovResultFor: povSelector [
 	"return spatialEntities associated with their povResult for a povSelector.
 	this is an optimised method sp√©cially for remote access"
 	
-	^(self spatialEntities at: aSpatialEntityName) asOrderedCollection
+	^(self spatialEntitiesAt: aSpatialEntityName) asOrderedCollection
 		collect: [:each | each -> (each getPovResultFor: povSelector)]
 ]
 
@@ -2652,7 +2633,7 @@ CMSpaceModel >> swell: compoundEntityClass [
 	
 	| haveSpread |
 	haveSpread := false.
-	(Cormas mix: (self spatialEntities at: compoundEntityClass name))
+	(Cormas mix: (self spatialEntitiesAt: compoundEntityClass name))
 		do: [:aggregate | aggregate swell ifTrue: [haveSpread := true]].
 	^haveSpread
 ]
@@ -2665,23 +2646,17 @@ CMSpaceModel >> swell: compoundEntityClass verifying: aConditionBlock [
 	
 	| newCells haveSpread |
 	haveSpread := false.
-	(self spatialEntities at: compoundEntityClass name)
-		do:
-			[:aggregate | 
-			newCells := aggregate surround
-				select:
-					[:c | (c isComponentOf: compoundEntityClass) not and: [aConditionBlock value: c]].
+	(self spatialEntitiesAt: compoundEntityClass name) do: [ : aggregate | 
+			newCells := aggregate surround select: [:c | (c isComponentOf: compoundEntityClass) not and: [aConditionBlock value: c]].
 			newCells isEmpty
-				ifFalse:
-					[(Cormas mix: newCells)
-						do:
-							[:nc | 
+				ifFalse: [
+					(Cormas mix: newCells) do: [ : nc | 
 							aggregate size < aggregate givenSize
-								ifTrue:
-									[haveSpread := true.
+								ifTrue: [ 
+									haveSpread := true.
 									aggregate addSilentlyComponent: nc]].
 					aggregate setSurround]].
-	(self spatialEntities at: compoundEntityClass name) do: [:c | c show].
+	(self spatialEntitiesAt: compoundEntityClass name) do: [:c | c show].
 	^haveSpread
 ]
 
