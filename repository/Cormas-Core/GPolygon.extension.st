@@ -7,6 +7,14 @@ GPolygon >> asPolyline [
 ]
 
 { #category : #'*Cormas-Core' }
+GPolygon >> scaledBy: amount [ 
+	"Answer a new object scaled by the argument amount, which can be
+	a Point or a scalar value."
+
+	^ self species vertices: (vertices collect: [ : v | v * amount])
+]
+
+{ #category : #'*Cormas-Core' }
 GPolygon >> translatedBy: amount [ 
 	"Answer a new object translated by amount, which can be
 	a Point or a scalar value."
