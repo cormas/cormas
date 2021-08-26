@@ -38,6 +38,15 @@ CMProjectManager >> cleanEnvironment [
 	3 timesRepeat: [ Smalltalk garbageCollect ].
 ]
 
+{ #category : #callbacks }
+CMProjectManager >> closeProject [
+	" Close the current opened project. Answer <true> if project was closed, <false> otherwise "
+
+	self hasProject ifTrue: [ self doPostCloseActions ].
+	^ true
+
+]
+
 { #category : #'code-generation' }
 CMProjectManager >> codeGenerator [
 	" Answer the receiver's Code Generator "
@@ -252,7 +261,6 @@ CMProjectManager >> deleteProject [
 CMProjectManager >> doPostCloseActions [
 	" Private - See superimplementor's comment "
 
-	self querySaveProject.
 	Cursor wait showWhile: [
 		| icePackage cormasRepo |
 		cormasRepo := IceLibgitRepository registry detect: [ : repo | repo name = 'cormas' ].
