@@ -524,16 +524,13 @@ Return value: <SpatialEntity | nil>
 Example := self nearestCellVerifying: [:aCell | aCell hasWater] constraintOnPath: [:aCell | aCell isClosed not]"
 	
 	| collec minimum d target |
-	collec := (self spaceModel spatialEntities at: self class name)
-		select: [:c | condition1 value: c].
+	collec := (self spaceModel spatialEntitiesAt: self class name) select: [:c | condition1 value: c].
 	collec isEmpty ifTrue: [^nil].
 	minimum := self spaceModel line * self spaceModel column.
-	collec
-		do:
-			[:c | 
+	collec do: [ : c | 
 			c ~= self
-				ifTrue:
-					[d := self distanceTo: c constraintOnPath: condition2.
+				ifTrue: [
+					d := self distanceTo: c constraintOnPath: condition2.
 					d < minimum
 						ifTrue:
 							[minimum := d.

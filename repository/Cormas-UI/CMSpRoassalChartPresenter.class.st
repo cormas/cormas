@@ -9,7 +9,8 @@ Class {
 		'title',
 		'titleSize',
 		'numberOfHorizontalTicks',
-		'numberOfVerticalTicks'
+		'numberOfVerticalTicks',
+		'xAxisLabelOffset'
 	],
 	#category : #'Cormas-UI-Spec2-Probes'
 }
@@ -131,7 +132,14 @@ CMSpRoassalChartPresenter >> defaultTitle [
 CMSpRoassalChartPresenter >> defaultTitleSize [
 	" Private - Answer a <Number> with the receiver's default title size to appear inside the canvas "
 	
-	^ 18
+	^ 15
+]
+
+{ #category : #defaults }
+CMSpRoassalChartPresenter >> defaultXAxisLabelOffset [
+	" Answer a <Point> representing the receiver's X axis offset "
+	
+	^ 0 @ 5
 ]
 
 { #category : #'accessing - chart' }
@@ -142,7 +150,7 @@ CMSpRoassalChartPresenter >> newBasicChartBuilder [
 		maxValueY: 1;
 		addDecoration: self newHorizontalTick;
 		addDecoration: self newVerticalTick;
-		addDecoration: (RSXLabelDecoration new title: 'Time'; offset: 0 @ 10);
+		addDecoration: (RSXLabelDecoration new title: 'Time'; offset: self xAxisLabelOffset);
 		addDecoration: (RSYLabelDecoration new title: 'Value'; offset: -20 @ 0);
 		yourself.
 ]
@@ -243,19 +251,12 @@ CMSpRoassalChartPresenter >> refresh [
 	"hard method rebuilding all datasets at each refresh."
 
 	probeNum := 1.
-"	self cormasModelClass allEntityClasses
-		do: [ :c | c activeProbes do: [ :p | self addProbe: p ofClass: c name ] ]."
 	self cormasModelClass activeProbes do: [ : ap | 
 		self 
 			addProbe: ap
 			ofClass: self cormasModelClass
 			color: (self cormasModel colorOfProbe: ap) ]
-"	self cormasModelClass activeProbesWithColors 
-		associationsDo: [ : probeAssoc | 
-			self 
-				addProbe: probeAssoc key 
-				ofClass: self cormasModelClass name 
-				color: probeAssoc value ]."
+
 
 ]
 
@@ -337,4 +338,11 @@ CMSpRoassalChartPresenter >> updateProbe: probeName ofClass: className [
 	"	ds connectColor: (Color colorFrom: (Color defaultColors2 at: 1 + (4 * probeNum)))"
 
 	"self add: ds"
+]
+
+{ #category : #'accessing - chart' }
+CMSpRoassalChartPresenter >> xAxisLabelOffset [
+
+	^ xAxisLabelOffset
+		ifNil: [ xAxisLabelOffset := self defaultXAxisLabelOffset ]
 ]

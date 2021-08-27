@@ -74,7 +74,8 @@ CMSpecConfirmBeforeLaunch >> applyActiveProbesChanges [
 	self flag: #toBeRevised.
 	"CMFireAutomataModel>>nbTrees'."
 	"refactoredProbesList := 'CMFireAutomataModel>>nbTrees'."
-	self cormasModelClass setActiveProbes: self probesList selectedItems
+	self cormasModelClass setActiveProbes: self probesList selectedItems.
+
 ]
 
 { #category : #actions }
@@ -92,6 +93,8 @@ CMSpecConfirmBeforeLaunch >> applyScenarioSettings [
 
 	self delete.
 	self cormasModel initSimulation.
+	self halt.
+	self owner openSpaceInterface.
 ]
 
 { #category : #accessing }

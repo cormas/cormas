@@ -92,6 +92,26 @@ CMSpaceModelTest >> testAllOccupants [
 ]
 
 { #category : #test }
+CMSpaceModelTest >> testCellsOfLine [
+
+	| result |
+
+	self spaceModel 
+		nbCount: 4;
+		dimensions: #(2 2).
+	result := self spaceModel cellsOfLine: 1.
+	
+	self assert: (result first isKindOf: CMMockCell).
+	self assert: (result second isKindOf: CMMockCell).
+
+	self assert: result first id equals: 1.
+	self assert: result second id equals: 2.
+
+	self assert: result first neighbourhood size equals: 2.
+	self assert: result second neighbourhood size equals: 3.	
+]
+
+{ #category : #test }
 CMSpaceModelTest >> testColumn [
 
 	self spaceModel line: 2 column: 3.
@@ -109,13 +129,12 @@ CMSpaceModelTest >> testConnexity [
 		line: 10 column: 10;	
 		gridCellShape: #regular.
 
-	self spaceModel nbConfiguration: (CMSpaceNeighbourhood forNeighbours: #eight spaceModel: self spaceModel).
+	self spaceModel nbCount: #eight.
 	self assert: self spaceModel connexity equals: 8.
-	self spaceModel nbConfiguration: (CMSpaceNeighbourhood forNeighbours: #four spaceModel: self spaceModel).
+	self spaceModel nbCount: #four.
 	self assert: self spaceModel connexity equals: 4.
-"	self spaceModel nbConfiguration: (CMSpaceNeighbourhood forNeighbours: #six spaceModel: self spaceModel).
-	self assert: self spaceModel connexity equals: 6."
-
+	self spaceModel nbCount: #six.
+	self assert: self spaceModel connexity equals: 6.
 ]
 
 { #category : #test }
@@ -136,6 +155,17 @@ CMSpaceModelTest >> testIsNotTorroidal [
 ]
 
 { #category : #test }
+CMSpaceModelTest >> testLine [
+
+	self assert: self spaceModel line equals: CMSpaceModel defaultLines.
+	self spaceModel dimensions: 2 -> 2.
+	self assert: self spaceModel line equals: 2.
+	
+
+
+]
+
+{ #category : #test }
 CMSpaceModelTest >> testLineColumn [
 
 	self spaceModel line: 2 column: 3.
@@ -147,15 +177,41 @@ CMSpaceModelTest >> testLineColumn [
 { #category : #test }
 CMSpaceModelTest >> testNbConfiguration [
 
-	self spaceModel nbType: 4.
+	self spaceModel nbCount: 4.
 	self assert: (self spaceModel nbConfiguration isKindOf: CMSpace4Neighbourhood).
 	
-	self spaceModel nbType: 8.
+	self spaceModel nbCount: 8.
 	self assert: (self spaceModel nbConfiguration isKindOf: CMSpace8Neighbourhood). 
 
-	self spaceModel nbType: 3.
+	self spaceModel nbCount: 3.
 	self assert: (self spaceModel nbConfiguration isKindOf: CMSpace3Neighbourhood). 
 	
 	self spaceModel nbConfiguration: nil.
 	self assert: self spaceModel nbConfiguration isNil.
+]
+
+{ #category : #test }
+CMSpaceModelTest >> testNbCount [
+
+	self spaceModel nbCount: 4.
+	self assert: self spaceModel nbNeighbours equals: 4.
+	self spaceModel nbCount: 3.
+	self assert: self spaceModel nbNeighbours equals: 3.
+
+	self spaceModel nbCount: #four.
+	self assert: self spaceModel nbNeighbours equals: 4.
+	self spaceModel nbCount: #six.
+	self assert: self spaceModel nbNeighbours equals: 6.
+]
+
+{ #category : #test }
+CMSpaceModelTest >> testNbNeighbours [
+
+	self spaceModel nbCount: 4.
+	self assert: self spaceModel nbNeighbours equals: 4.
+	self spaceModel nbCount: 3.
+	self assert: self spaceModel nbNeighbours equals: 3.
+	
+
+
 ]

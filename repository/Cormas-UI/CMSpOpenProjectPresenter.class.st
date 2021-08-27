@@ -257,7 +257,9 @@ CMSpOpenProjectPresenter >> metaInfoPresenter [
 CMSpOpenProjectPresenter >> openSelectedProject [
 	" Private - Callback for the Ok to open button in the Open Project Dialog and close the receiver  "
 
-	self projectManager openProject: self selectedProject.
+	self projectManager 
+		closeProject;
+		openProject: self selectedProject.
 	self delete.
 
 ]

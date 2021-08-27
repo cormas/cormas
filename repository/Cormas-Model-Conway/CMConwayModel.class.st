@@ -69,25 +69,24 @@ CMConwayModel class >> defaultInit [
 { #category : #examples }
 CMConwayModel class >> example1 [
 
-	| tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 |
-	tmp5 := self.
-	tmp5 initialize.
-	tmp1 := tmp5 new.
+	| tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 |
+	self initialize.
+	tmp1 := self new.
 	tmp1 initializeSpaceModel.
 	tmp2 := RTView new.
 	tmp1
 		initSimulation;
 		runStep.
 	tmp2 clean.
-	tmp6 := RTBox new.
-	tmp6 color: [ :arg1 | 
+	tmp5 := RTBox new.
+	tmp5 color: [ :arg1 | 
 		arg1 state == #dead
 			ifTrue: [ Color white ]
 			ifFalse: [ Color black ] ].
-	tmp3 := (tmp6 size: 25) elementsOn: tmp1 theCells.
+	tmp3 := (tmp5 size: 25) elementsOn: tmp1 theCells.
 	tmp2 addAll: tmp3.
-	tmp7 := RTGridLayout new.
-	tmp7
+	tmp6 := RTGridLayout new.
+	tmp6
 		gapSize: 0;
 		lineItemsCount: tmp1 spaceModel column;
 		on: tmp2 elements.
@@ -151,10 +150,9 @@ CMConwayModel class >> example2 [
 { #category : #examples }
 CMConwayModel class >> example3 [
 
-	| tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 tmp8 |
-	tmp6 := self.
-	tmp6 initialize.
-	tmp1 := tmp6 new.
+	| tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 |
+	self initialize.
+	tmp1 := self new.
 	tmp2 := 100.
 	tmp1
 		initializeSpaceModel;
@@ -167,15 +165,15 @@ CMConwayModel class >> example3 [
 		initSimulation;
 		runStep.
 	tmp3 clean.
-	tmp7 := RTBox new.
-	tmp7 color: [ :arg1 | 
+	tmp6 := RTBox new.
+	tmp6 color: [ :arg1 | 
 		arg1 state == #dead
 			ifTrue: [ Color white ]
 			ifFalse: [ Color black ] ].
-	tmp4 := (tmp7 size: 25) elementsOn: tmp1 theCells.
+	tmp4 := (tmp6 size: 25) elementsOn: tmp1 theCells.
 	tmp3 addAll: tmp4.
-	tmp8 := RTGridLayout new.
-	tmp8
+	tmp7 := RTGridLayout new.
+	tmp7
 		gapSize: 0;
 		lineItemsCount: tmp1 spaceModel column;
 		on: tmp3 elements.
@@ -188,6 +186,17 @@ CMConwayModel class >> example3 [
 			tmp3 elements do: #updateShape ];
 		inView: tmp3.
 	tmp3 openWithToolbar
+]
+
+{ #category : #examples }
+CMConwayModel class >> example4 [
+
+	| tmp1 |
+	tmp1 := self initialize new initSimulation.
+	(CMSimulationGrid initialize new
+		 on: tmp1
+		 withCells: tmp1 theESE
+		 withSituatedEntities: tmp1 allTheSituatedEntities) runAndVisualize
 ]
 
 { #category : #examples }
@@ -207,10 +216,9 @@ CMConwayModel class >> example5 [
 { #category : #examples }
 CMConwayModel class >> exampleGlidersGun [
 
-	| tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 |
-	tmp5 := self.
-	tmp5 initialize.
-	tmp1 := tmp5 new.
+	| tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 |
+	self initialize.
+	tmp1 := self new.
 	tmp1
 		initializeSpaceModel;
 		activeInit: #initGlidersGun.
@@ -219,15 +227,15 @@ CMConwayModel class >> exampleGlidersGun [
 		initSimulation;
 		runStep.
 	tmp2 clean.
-	tmp6 := RTBox new.
-	tmp6 color: [ :arg1 | 
+	tmp5 := RTBox new.
+	tmp5 color: [ :arg1 | 
 		arg1 state == #dead
 			ifTrue: [ Color white ]
 			ifFalse: [ Color black ] ].
-	tmp3 := (tmp6 size: 25) elementsOn: tmp1 theCells.
+	tmp3 := (tmp5 size: 25) elementsOn: tmp1 theCells.
 	tmp2 addAll: tmp3.
-	tmp7 := RTGridLayout new.
-	tmp7
+	tmp6 := RTGridLayout new.
+	tmp6
 		gapSize: 0;
 		lineItemsCount: tmp1 spaceModel column;
 		on: tmp2 elements.
