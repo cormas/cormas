@@ -69,75 +69,42 @@ Class {
 	#category : #'Cormas-UI-Spec1-Simulation-Controls'
 }
 
-{ #category : #specs }
+{ #category : #spec }
 CMSpecSimulationWindow class >> defaultSpec [
 	<spec>
 	^ SpecLayout composed
 		newColumn: [ :c | 
-			c
+			c 
+				newRow: [ :r | ] height: 10;
 				newRow: [ :r | 
 					r
-						newColumn: [ :ec |  ] width: 80;
-						add: #initializeLabel width: 80;
-						add: #backwardLabel width: 100;
-						newColumn: [ :ec |  ] width: 100;
+						newColumn: [ :ec |  ] width: 10;					
+						add: #initializeLabel width: 70;
+						newColumn: [ :ec |  ] width: 20;						
 						add: #forwardLabel width: 70;
+						newColumn: [ :ec |  ] width: 145;	
+						add: #currentStepLabel width: 130;
+						add: #finalStepLabel width: 80;						
 						add: #closeButton width: 30 ]
-					height: self toolbarHeight - 5;
+					height: self toolbarHeight;
 				newRow: [ :r | 
 					r
-						newColumn: [ :col | 
-							col
-								add: #simulateLabel;
-								add: #replayLabel ]
-							width: 70;
-						newColumn: [ :col | 
-							col
-								add: #initializeSimButton;
-								add: #replayButton ]
-							width: 70;
-						newColumn: [ :col | 
-							col
-								newRow: [ :er | 
-									er
-										add: #backwardAllButton;
-										add: #backwardStepButton ] ]
-							width: 100;
+						newColumn: [ :col | col add: #initializeSimButton ] width: 70;
+						newColumn: [ :ec |  ] width: 30;
+						add: #runStepByStepButton;
 						newColumn: [ :ec |  ] width: 10;
-						newColumn: [ :col | 
-							col
-								add: #currentStepLabel;
-								add: #currentStepInputText height: self inputTextHeight;
-								newRow: [ :ec |  ] ]
-							width: 70;
-						newColumn: [ :ec |  ] width: 10;
-						newColumn: [ :col | 
-							col
-								newRow: [ :er | 
-									er
-										add: #runStepByStepButton;
-										add: #runButton ];
-								newRow: [ :er | 
-									er
-										add: #replayStepForwardButton;
-										add: #replayRunForwardButton ] ]
-							width: 100;
-						newColumn: [ :ec |  ] width: 10;
-						newColumn: [ :col | 
-							col
-								add: #finalStepLabel;
-								newRow: [ :er |  ] height: self inputTextHeight;
-								add: #finalStepInputText height: self inputTextHeight;
-								newRow: [ :er |  ] height: self inputTextHeight - 4;
-								add: #changeButton height: self inputTextHeight - 4 ]
-							width: 70 ] ]
+						add: #runButton;
+						newColumn: [ :ec |  ] width: 20;
+						add: #currentStepInputText;
+						add: #finalStepInputText ];
+				newRow: [ :r | ] height: 10 ]
 ]
 
 { #category : #example }
 CMSpecSimulationWindow class >> example [
-
+	<example>
 	^ self basicNew 
-		projectManager: (CMProjectManager new projectWindow: self);
+		projectManager: CMProjectManager new;
 		translator: (CMTranslator newForLanguage: #EN);
 		initialize;
 		openWithSpec
@@ -382,6 +349,7 @@ CMSpecSimulationWindow >> initializeInputs [
 
 	self currentStepInputText
 		text: 0;
+		disable;
 		help: self translator tSimStepHelp.
 	self finalStepInputText
 		text: 0;

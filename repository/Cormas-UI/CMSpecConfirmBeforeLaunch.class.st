@@ -68,6 +68,12 @@ CMSpecConfirmBeforeLaunch class >> defaultSpec [
 		yourself
 ]
 
+{ #category : #accessing }
+CMSpecConfirmBeforeLaunch >> announcer [
+
+	^ self projectManager announcer
+]
+
 { #category : #callbacks }
 CMSpecConfirmBeforeLaunch >> applyActiveProbesChanges [
 
@@ -93,8 +99,8 @@ CMSpecConfirmBeforeLaunch >> applyScenarioSettings [
 
 	self delete.
 	self cormasModel initSimulation.
-	self halt.
-	self owner openSpaceInterface.
+	self announcer announce: CMScenarioUpdateAnnouncement new
+
 ]
 
 { #category : #accessing }

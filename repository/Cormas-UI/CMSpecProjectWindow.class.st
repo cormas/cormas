@@ -21,7 +21,7 @@ CMSpecProjectWindow class >> defaultSpec [
 		newColumn: [ :c | 
 			c 
 				add: #menuToolbar height: self toolbarHeight;
-				add: #simWindow ];
+				add: #simWindow height: 105 ];
 		yourself
 ]
 
@@ -155,7 +155,7 @@ CMSpecProjectWindow >> fsmState [
 CMSpecProjectWindow >> initialExtent [
 	"Answer the initial extent for the receiver."
 	
-	^ 600 @ 300
+	^ 600 @ 180
 ]
 
 { #category : #initialization }
@@ -227,6 +227,10 @@ CMSpecProjectWindow >> initializeSubscriptions [
 		when: CMEditAttributesAnnouncement
 		send: #openEditAttributesFor: 
 		to: self.
+	self projectAnnouncer
+		when: 	CMScenarioUpdateAnnouncement
+		send: #openSpaceInterfaceUpdateScenario
+		to: self
 ]
 
 { #category : #initialization }
@@ -601,6 +605,18 @@ CMSpecProjectWindow >> openSpaceInterface [
 	" Private - Callback for user request to open the Space Model interface "
 
 	CMR3SpaceInterface openFor: self projectManager.
+
+]
+
+{ #category : #callbacks }
+CMSpecProjectWindow >> openSpaceInterfaceUpdateScenario [
+	" Private - Open a space model interface. Close all opened space model windows if any "
+
+	CMR3SpaceInterface allInstances
+		ifEmpty: [ self openSpaceInterface ]
+		ifNotEmpty: [ : spaces | 
+			spaces do: #delete.
+			self openSpaceInterface ]
 
 ]
 
