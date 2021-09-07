@@ -6,5 +6,6 @@ Class {
 
 { #category : #tests }
 CMECECVegetationUnitTest >> testEntityName [
+
 	self assert: CMECECVegetationUnit entityName equals: 'VegetationUnit'
 ]

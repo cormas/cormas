@@ -86,6 +86,10 @@ BaselineOfCormas >> postLoad [
 	self unloadPackages.
 	"self openPlaygroundWindow."
 
+	" https://github.com/ObjectProfile/Roassal3/issues/408 
+	https://github.com/ObjectProfile/Roassal3/issues/413
+	"
+	RSWorldMenu loadFullVersion.
 ]
 
 { #category : #doits }
