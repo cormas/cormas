@@ -2914,11 +2914,12 @@ CMAbstractModel >> resetEntities: aClass [
 	"Initialize the Entity classes of the model and creates the new collector (OrderedCollection)"
 	
 	| entities |
+	
 	entities := self theEntities: aClass.
 	entities reverseDo: [:anEntity | anEntity delete].
 	aClass CurrentId: 0.
 	aClass isAbstract ifTrue: [^OrderedCollection new: 0].
-	^entities removeAll
+	^ entities removeAll
 ]
 
 { #category : #scheduling }
@@ -3262,7 +3263,7 @@ CMAbstractModel >> theCSE: aSet [
 CMAbstractModel >> theESE [
 	"Purpose: Returns the collection of SpatialEntityElements (equivalent to theCells in case your model ESE class is named Cell)"
 	
-	^self theEntities: self class cellClass
+	^ self theEntities: self class cellClass
 ]
 
 { #category : #'accessing - entities' }
@@ -3283,7 +3284,8 @@ CMAbstractModel >> theEntities: aClass [
 	getter := aClass asGetterForEntityClass.
 	collection := self perform: getter.
 	collection
-		ifNil: [ self class createReaderAccessor: aClass.
+		ifNil: [
+			self class createReaderAccessor: aClass.
 			collection := self perform: getter ].
 	^ collection
 ]

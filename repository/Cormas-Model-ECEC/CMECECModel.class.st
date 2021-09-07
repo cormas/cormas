@@ -251,14 +251,14 @@ CMECECModel >> randomEnv [
 CMECECModel >> restrainedInitialNumber [
 
 	| tmp1 |
-	tmp1 := unrestrainedInitialNumber.
-	^ tmp1 ifNil: [ unrestrainedInitialNumber := 10 ] ifNotNil: [ tmp1 ]
+	tmp1 := restrainedInitialNumber.
+	^ tmp1 ifNil: [ restrainedInitialNumber := 10 ] ifNotNil: [ tmp1 ]
 ]
 
 { #category : #accessing }
 CMECECModel >> restrainedInitialNumber: arg1 [
 
-	unrestrainedInitialNumber := arg1
+	restrainedInitialNumber := arg1
 ]
 
 { #category : #probes }
@@ -285,40 +285,34 @@ CMECECModel >> theCMECECForagers [
 { #category : #accessing }
 CMECECModel >> theRestraineds [
 
-	| tmp1 |
-	tmp1 := theUnrestraineds.
-	^ tmp1
-		  ifNil: [ theUnrestraineds := OrderedCollection new ]
-		  ifNotNil: [ tmp1 ]
+	^ theRestraineds 
+		ifNil:[ theRestraineds := OrderedCollection new ]
 ]
 
 { #category : #accessing }
 CMECECModel >> theRestraineds: arg1 [
 
-	theUnrestraineds := arg1
+	theRestraineds := arg1
 ]
 
 { #category : #accessing }
 CMECECModel >> theUnrestraineds [
 
-	| tmp1 |
-	tmp1 := theVegetationUnits.
-	^ tmp1
-		  ifNil: [ theVegetationUnits := OrderedCollection new ]
-		  ifNotNil: [ tmp1 ]
+	^ theUnrestraineds 
+		ifNil:[ theUnrestraineds := OrderedCollection new ]
 ]
 
 { #category : #accessing }
 CMECECModel >> theUnrestraineds: arg1 [
 
-	theVegetationUnits := arg1
+	theUnrestraineds := arg1
 ]
 
 { #category : #accessing }
 CMECECModel >> theVegetationUnits [
 
 	^ theVegetationUnits 
-		ifNil:[ theVegetationUnits := IndexedSet new ]
+		ifNil:[ theVegetationUnits := OrderedCollection new ]
 ]
 
 { #category : #accessing }
@@ -331,14 +325,14 @@ CMECECModel >> theVegetationUnits: anObject [
 CMECECModel >> unrestrainedInitialNumber [
 
 	| tmp1 |
-	tmp1 := theRestraineds.
-	^ tmp1 ifNil: [ theRestraineds := 10 ] ifNotNil: [ tmp1 ]
+	tmp1 := unrestrainedInitialNumber.
+	^ tmp1 ifNil: [ unrestrainedInitialNumber := 10 ] ifNotNil: [ tmp1 ]
 ]
 
 { #category : #accessing }
 CMECECModel >> unrestrainedInitialNumber: arg1 [
 
-	theRestraineds := arg1
+	unrestrainedInitialNumber := arg1
 ]
 
 { #category : #probes }
