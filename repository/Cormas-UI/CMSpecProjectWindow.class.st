@@ -172,7 +172,7 @@ CMSpecProjectWindow >> initializeButtonToolbar [
 
 ]
 
-{ #category : #initialization }
+{ #category : #'initialization-submenus' }
 CMSpecProjectWindow >> initializeMenuToolbar [
 	" Private - See superimplementor's commen "
 
@@ -190,7 +190,7 @@ CMSpecProjectWindow >> initializeMenuToolbar [
 	menuToolbar applyTo: self.
 ]
 
-{ #category : #initialization }
+{ #category : #'initialization-submenus' }
 CMSpecProjectWindow >> initializeProgrammingSubMenu: group [
 
 	group
@@ -200,7 +200,7 @@ CMSpecProjectWindow >> initializeProgrammingSubMenu: group [
 				subMenu: self subMenuForProgramming ]
 ]
 
-{ #category : #initialization }
+{ #category : #'initialization-submenus' }
 CMSpecProjectWindow >> initializeSimulationSubMenu: group [
 
 	group
@@ -233,7 +233,7 @@ CMSpecProjectWindow >> initializeSubscriptions [
 		to: self
 ]
 
-{ #category : #initialization }
+{ #category : #'initialization-submenus' }
 CMSpecProjectWindow >> initializeVisualizationSubMenu: group [
 
 	group
@@ -257,7 +257,7 @@ CMSpecProjectWindow >> initializeWidgets [
 
 ]
 
-{ #category : #initialization }
+{ #category : #'initialization-submenus' }
 CMSpecProjectWindow >> intializeToolsSubMenu: group [
 
 	group

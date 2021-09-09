@@ -763,9 +763,8 @@ CMSpaceModel >> displayPov: aSymbol of: aClass [
 	"Purpose: set the POV of aClass to be displayed on the opened spatial grid
 Example : self displayPov: #landUse of: Cell"
 	
-	self
-		changed: #changePov
-		with: (CMDisplayPovChange forPov: aSymbol ofEntity: aClass)
+	self announcer announce: (CMSChangePoVAnnouncement forPov: aSymbol ofEntity: aClass)
+
 ]
 
 { #category : #'landscape indices' }
@@ -2725,6 +2724,7 @@ CMSpaceModel >> traiterChaineDeCaractere: aString [
 CMSpaceModel >> update: aSymbol with: aValue [
 	"propagate time changes to the dependents"
 	
+	self halt.
 	aSymbol == #timeChanged ifTrue: [self changed: aSymbol with: aValue].
 	super update: aSymbol with: aValue
 ]

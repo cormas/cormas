@@ -14,7 +14,7 @@ Class {
 		'povName',
 		'entityClass'
 	],
-	#category : #'Cormas-Core-Space'
+	#category : #'Cormas-Core-Deprecate'
 }
 
 { #category : #'instance creation' }
