@@ -195,7 +195,7 @@ CMECECModel >> fragmentedEnv [
 
 { #category : #init }
 CMECECModel >> homogeneousEnv2 [
-
+	" Load Homogeneous Envitonment "
 	self
 		createGridLines: 27
 		columns: 27
