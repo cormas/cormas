@@ -196,12 +196,12 @@ CMECECModel >> fragmentedEnv [
 { #category : #init }
 CMECECModel >> homogeneousEnv2 [
 
-	self spaceModel
+	self
 		createGridLines: 27
 		columns: 27
-		neighbourhood: #eight
+		neighbourhood: 8
 		closed: false.
-	self theVegetationUnits do: [ : cell | cell initRandomBiomass ].
+	self theVegetationUnits do: [ :arg1 | arg1 initRandomBiomass ].
 	self initAgents
 ]
 

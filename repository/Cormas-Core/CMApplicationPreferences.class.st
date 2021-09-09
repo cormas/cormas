@@ -34,7 +34,7 @@ CMApplicationPreferences class >> availableSettingSpaceViewer [
 	" Answer a <Collection> with classes representing available Space Interfaces implementations "
 
 	^ { 
-		Smalltalk at: #CMR3SpaceView .
+		Smalltalk at: #CMR3SpacePresenter .
 	 	"Smalltalk at: #CMR2SpaceAnimationRecorder "
 		}.
 ]
@@ -230,7 +230,7 @@ CMApplicationPreferences class >> defaultSettingFixedVerticalTick [
 { #category : #defaults }
 CMApplicationPreferences class >> defaultSettingSpaceViewer [
 	
-	^ Smalltalk at: #CMR3SpaceView
+	^ Smalltalk at: #CMR3SpacePresenter
 ]
 
 { #category : #settings }
