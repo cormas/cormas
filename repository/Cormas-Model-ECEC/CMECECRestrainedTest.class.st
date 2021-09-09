@@ -6,5 +6,6 @@ Class {
 
 { #category : #tests }
 CMECECRestrainedTest >> testEntityName [
+
 	self assert: CMECECRestrained entityName equals: 'Restrained'
 ]

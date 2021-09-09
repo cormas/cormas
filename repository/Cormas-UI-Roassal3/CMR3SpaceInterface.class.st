@@ -101,6 +101,27 @@ CMR3SpaceInterface >> exportSpaceWith: aRoassalExporter [
 ]
 
 { #category : #initialization }
+CMR3SpaceInterface >> initializeCanvasInteractions [
+
+	self canvas
+		addInteraction: RSCanvasController new;
+		addInteraction: RSZoomToFitCanvasInteraction new;
+		addInteraction: RSZoomableCanvasInteraction new;
+		addInteraction: RSKeyNavigationCanvasInteraction new
+]
+
+{ #category : #initialization }
+CMR3SpaceInterface >> initializeDiagram [
+	" Private - Create the configured receiver's diagram "
+	
+	diagram := self
+		           instantiate: self appSettingsClass settingSpaceViewer
+		           on: self cormasModel.
+	self cormasModel initActivePoV: self diagram.
+
+]
+
+{ #category : #initialization }
 CMR3SpaceInterface >> initializeDisplaysMenuToolbar [
 	" Private - See superimplementor's commen "
 
@@ -253,14 +274,11 @@ CMR3SpaceInterface >> initializePOVMenuToolbar [
 
 { #category : #initialization }
 CMR3SpaceInterface >> initializePresenters [
+	" Private - See superimplementor's comment "
 
 	menuToolbar := self mainMenuToolbar.
-	diagram := self instantiate: self appSettingsClass settingSpaceViewer on: self cormasModel.
- 	self canvas 
-		addInteraction: RSCanvasController new;
-		addInteraction: RSZoomToFitCanvasInteraction new;
-		addInteraction: RSZoomableCanvasInteraction new;
-		addInteraction: RSKeyNavigationCanvasInteraction new.
+	self initializeDiagram.
+	self initializeCanvasInteractions
 ]
 
 { #category : #initialization }
@@ -386,16 +404,13 @@ CMR3SpaceInterface >> spaceView: anObject [
 
 { #category : #private }
 CMR3SpaceInterface >> subMenuForClassPov: aClass [
-	^ self newMenu 
-		addGroup: [ :group | 
-			(aClass methodsInProtocol: #pov)
-				do: [ :povName | 
-					group
-						addItem: [ :item | 
-							item
-								name: povName selector;
-								action: [ self diagram setAndRefreshActivePovSelectorOf: aClass with: item name.
-									" Changer le pov de cette classe dans la vue spaceView. en utilisant l'argument (item name) " ] ] ] ]
+
+	^ self newMenu addGroup: [ :group | 
+		(aClass methodsInProtocol: #pov) do: [ :povName | 
+			group addItem: [ :item | 
+				item
+					name: povName selector;
+					action: [ self diagram setAndRefreshActivePovSelectorOf: aClass with: item name ] ] ] ]
 ]
 
 { #category : #private }

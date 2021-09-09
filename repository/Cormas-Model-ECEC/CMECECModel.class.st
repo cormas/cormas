@@ -188,67 +188,89 @@ CMECECModel class >> unrestrainedInitialNumber_default [
 
 { #category : #init }
 CMECECModel >> fragmentedEnv [
+
 	self spaceModel loadEnvironmentFromDirectory: 'fragmented.cells'.
 	self initAgents
 ]
 
 { #category : #init }
 CMECECModel >> homogeneousEnv2 [
+
 	self spaceModel
-		initializeRegularLines: 27
+		createGridLines: 27
 		columns: 27
-		nbType: #eight		
+		neighbourhood: #eight
 		closed: false.
-	self theVegetationUnits do: [ :arg1 | arg1 initRandomBiomass ].
+	self theVegetationUnits do: [ : cell | cell initRandomBiomass ].
 	self initAgents
+]
+
+{ #category : #init }
+CMECECModel >> initActivePoVClass [
+	" See superimplementor's comment "
+
+	^ CMECECVegetationUnit 
+]
+
+{ #category : #init }
+CMECECModel >> initActivePoVSelector [
+	" See superimplementor's comment "
+
+	^ #povBiomass 
 ]
 
 { #category : #'init entities' }
 CMECECModel >> initAgents [
+
 	self
 		createN: self restrainedInitialNumber
-			randomlyLocatedAloneEntities: CMECECRestrained;
+		randomlyLocatedAloneEntities: CMECECRestrained;
 		createN: self unrestrainedInitialNumber
-			randomlyLocatedAloneEntities: CMECECUnrestrained
+		randomlyLocatedAloneEntities: CMECECUnrestrained
 ]
 
 { #category : #init }
 CMECECModel >> noAgent [
-	
+
 	self spaceModel loadEnvironmentFromDirectory: 'poor.cells'
 ]
 
 { #category : #init }
 CMECECModel >> randomEnv [
+
 	self
 		createGridLines: 27
 		columns: 15
 		neighbourhood: 8
 		closed: true.
-	self theVegetationUnits do: [ :arg1 | arg1 initRandomBiomass ].
+	self theVegetationUnits do: [ : cell | cell initRandomBiomass ].
 	self initAgents
 ]
 
 { #category : #accessing }
 CMECECModel >> restrainedInitialNumber [
-	| tmp2 |
-	tmp2 := restrainedInitialNumber.
-	^ tmp2 ifNil: [ restrainedInitialNumber := 10 ] ifNotNil: [ tmp2 ]
+
+	| tmp1 |
+	tmp1 := restrainedInitialNumber.
+	^ tmp1 ifNil: [ restrainedInitialNumber := 10 ] ifNotNil: [ tmp1 ]
 ]
 
 { #category : #accessing }
 CMECECModel >> restrainedInitialNumber: arg1 [
+
 	restrainedInitialNumber := arg1
 ]
 
 { #category : #probes }
 CMECECModel >> restrainedSize [
+
 	<probe>
 	^ self theRestraineds size
 ]
 
 { #category : #control }
 CMECECModel >> step: arg1 [
+
 	self
 		stepEntities: self theVegetationUnits;
 		askRandom: CMECECForager toDo: #step
@@ -256,73 +278,75 @@ CMECECModel >> step: arg1 [
 
 { #category : #accessing }
 CMECECModel >> theCMECECForagers [
+
 	^ self allTheEntities: CMECECForager
 ]
 
 { #category : #accessing }
 CMECECModel >> theRestraineds [
-	| tmp2 |
-	tmp2 := theRestraineds.
-	^ tmp2
-		ifNil: [ theRestraineds := OrderedCollection new ]
-		ifNotNil: [ tmp2 ]
+
+	^ theRestraineds 
+		ifNil:[ theRestraineds := OrderedCollection new ]
 ]
 
 { #category : #accessing }
 CMECECModel >> theRestraineds: arg1 [
+
 	theRestraineds := arg1
 ]
 
 { #category : #accessing }
 CMECECModel >> theUnrestraineds [
-	| tmp2 |
-	tmp2 := theUnrestraineds.
-	^ tmp2
-		ifNil: [ theUnrestraineds := OrderedCollection new ]
-		ifNotNil: [ tmp2 ]
+
+	^ theUnrestraineds 
+		ifNil:[ theUnrestraineds := OrderedCollection new ]
 ]
 
 { #category : #accessing }
 CMECECModel >> theUnrestraineds: arg1 [
+
 	theUnrestraineds := arg1
 ]
 
 { #category : #accessing }
 CMECECModel >> theVegetationUnits [
-	| tmp2 |
-	tmp2 := theVegetationUnits.
-	^ tmp2
-		ifNil: [ theVegetationUnits := OrderedCollection new ]
-		ifNotNil: [ tmp2 ]
+
+	^ theVegetationUnits 
+		ifNil:[ theVegetationUnits := OrderedCollection new ]
 ]
 
 { #category : #accessing }
-CMECECModel >> theVegetationUnits: arg1 [
-	theVegetationUnits := arg1
+CMECECModel >> theVegetationUnits: anObject [
+
+	^ theVegetationUnits := anObject
 ]
 
 { #category : #accessing }
 CMECECModel >> unrestrainedInitialNumber [
-	| tmp2 |
-	tmp2 := unrestrainedInitialNumber.
-	^ tmp2 ifNil: [ unrestrainedInitialNumber := 10 ] ifNotNil: [ tmp2 ]
+
+	| tmp1 |
+	tmp1 := unrestrainedInitialNumber.
+	^ tmp1 ifNil: [ unrestrainedInitialNumber := 10 ] ifNotNil: [ tmp1 ]
 ]
 
 { #category : #accessing }
 CMECECModel >> unrestrainedInitialNumber: arg1 [
+
 	unrestrainedInitialNumber := arg1
 ]
 
 { #category : #probes }
 CMECECModel >> unrestrainedSize [
+
 	<probe>
 	^ self theUnrestraineds size
 ]
 
 { #category : #probes }
 CMECECModel >> vegetationBiomass [
+
 	<probe>
 	^ self theVegetationUnits
-		inject: 0
-		into: [ :arg1 :arg2 | arg1 + arg2 biomass ]
+		  inject: 0
+		  into: [ :arg1 :arg2 | arg1 + arg2 biomass ]
 ]

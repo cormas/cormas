@@ -44,7 +44,6 @@ Class {
 		'data',
 		'simManager',
 		'projectManager',
-		'database',
 		'collector',
 		'defaultAttributesSetter',
 		'sensitivitySetter',
@@ -1317,12 +1316,6 @@ CMAbstractModel >> channel: aCanal [
 	channel := aCanal
 ]
 
-{ #category : #'accessing - entities' }
-CMAbstractModel >> classFromSymbol: aSymbol [
-	self deprecated: 'Use class method on Symbol instead of classFromSymbol:'.
-	^ aSymbol class
-]
-
 { #category : #'interface closing' }
 CMAbstractModel >> closeRequest [
 	"When the model is closing, you may redefine this method If you want to finalise some things, as for example, to close a specific window of the model"
@@ -1833,22 +1826,6 @@ Example: self createSingletonAggregates: Forest fromSeeds: (self theCells select
 			aCollecOfCells
 ]
 
-{ #category : #ODBC }
-CMAbstractModel >> createTable: aTable withParameters: parametersArray primaryKey: primaryKey [
-	"create a table: aTable <String> withParameters: parameters <Array or OrederedCollection> on primaryKey: primaryKey <String>"
-	
-	self simManager createTable: aTable withParameters: parametersArray
-		primaryKey: primaryKey
-]
-
-{ #category : #ODBC }
-CMAbstractModel >> createTable: aTable withParametersAndProbes: parametersArray primaryKey: primaryKey [
-	"create a table: aTable <String> withParameters: parameters <Array or OrederedCollection> and selectedProbes on primaryKey: primaryKey <String>"
-	
-	self simManager createTable: aTable withParametersAndProbes:
-			parametersArray primaryKey: primaryKey
-]
-
 { #category : #'probes - recording' }
 CMAbstractModel >> data [
 	"Returns probes results collected during one simulation"
@@ -1862,16 +1839,6 @@ CMAbstractModel >> data [
 { #category : #'probes - recording' }
 CMAbstractModel >> data: aDictionary [
 	data := aDictionary
-]
-
-{ #category : #accessing }
-CMAbstractModel >> database [
-	^ database
-]
-
-{ #category : #accessing }
-CMAbstractModel >> database: anObject [
-	database := anObject
 ]
 
 { #category : #'default values' }
@@ -2113,45 +2080,6 @@ CMAbstractModel >> getAttributesType: attributes fromInstances: instanceCollecti
 	^dicoAttConv
 ]
 
-{ #category : #'utilities - files' }
-CMAbstractModel >> getDataFromFile: aStringOrFilename separator: aChar [
-	"Returns a collection of collections containing the elements of one line of the file. The elements are separated by aChar. 
-	Creates a 'read' connexion to a file (aStringOrFilename) located into the current model 'data' 
-	directory and copy all data from this file into a collection. 
-	ex: self getDataFromFile: 'aFile.txt' separator: ';' (or Character tab or $, ...)
-	Rq: self getDataFromFile: 'cormas.env' separator: Character cr is equivalent to self getDataLinesFromFile: 'cormas.env'"
-	
-	| stream aFilename result line |
-	aFilename := self stringToFilename: aStringOrFilename.
-	stream := aFilename readStream.	"On devine le format des lignes"
-	stream lineEndAuto.
-	result := OrderedCollection new.
-	[stream atEnd]
-		whileFalse:
-			[line := Cormas splitLine: stream sep: aChar.
-			result add: line].
-	stream close.
-	^result
-]
-
-{ #category : #'utilities - files' }
-CMAbstractModel >> getDataLinesFromFile: aStringOrFilename [
-	"Returns a collection of data. Returns a collection of elements from the 'aStringOrFilename 'file. An element = a line of the file.
-	Creates a 'read' connexion to a file (aStringOrFilename) located into the current model 'data' directory and copy all data from this file into a collection.
-	ex: self getDataFromFile: 'aFile.txt' 
-	Rq: see also getDataFromFile: aStringOrFilename separator: aChar"
-	
-	^self
-		getDataFromFile: aStringOrFilename
-		separator: Character cr
-]
-
-{ #category : #'binary storage' }
-CMAbstractModel >> getFileOf: aClassName from: fileNameString [
-	
-	^(fileNameString tokensBasedOn: $.) first , '.' , aClassName asString
-]
-
 { #category : #'user interface' }
 CMAbstractModel >> getSimDescriptionText [
 	"returns a text describing the information of the current simulation"
@@ -2310,17 +2238,6 @@ CMAbstractModel >> initEntities [
 					self resetEntities: aClass ] ].
 	self spaceModel isNil
 		ifFalse: [ self spaceModel resetSpatialEntities "ButCells" ]
-]
-
-{ #category : #'utilities - files' }
-CMAbstractModel >> initFile: aStringOrFilename dataCollection: aCollec separator: aChar [
-	"Create a file in the current model 'data' directory and writes in it a tupple separated by aChar.
-	ex: self initFile: 'aFile.txt' dataCollection: #('time' 'value1' 'value2') separator: ';'."
-	
-	| aFilename |
-	aFilename := self stringToFilename: aStringOrFilename.
-	aFilename exists ifTrue: [aFilename delete].
-	self updateFile: aFilename dataCollection: aCollec separator: aChar
 ]
 
 { #category : #scheduling }
@@ -2840,18 +2757,6 @@ CMAbstractModel >> readCsvFile: file [
 		myModel: self class name asString
 ]
 
-{ #category : #'utilities - files' }
-CMAbstractModel >> readMatrix: fileName sep: aSepChar [
-	"Returns a collection of collections, each one containing the values between the separator of the file.
-The file name is just a string containing the name of the file (with extension) that is stored in the /data directory of the model.
-fileName = <String> or <Filename>
-Ex: self readMatrix: 'test.csv' sep: ';'   "
-	
-	| filename |
-	filename := self stringToFilename: fileName.
-	^Cormas readMatrix: filename sep: aSepChar
-]
-
 { #category : #'private - notification' }
 CMAbstractModel >> registerChange: aChange [
 	"register a Change (transmit the change immediatly or in a group later"
@@ -2997,18 +2902,6 @@ CMAbstractModel >> removeMultipleChanges [
 	delayedChanges addAll: lastChanges reverse
 ]
 
-{ #category : #'binary storage' }
-CMAbstractModel >> removeOldEntities: aClass [
-	"Delete the entities of aClass, stored into 'theXXXs' collection.
-	entities = <Class>"
-	
-	| entities |
-	entities := self perform: (self getterForEntityClass: aClass).
-	entities reverseDo: [:inst | inst delete].
-	self removeDestroyedEntities: aClass.
-	aClass CurrentId: nil
-]
-
 { #category : #update }
 CMAbstractModel >> resetCells [
 	"Purpose: reset all the generic attributes of the cells"
@@ -3021,11 +2914,12 @@ CMAbstractModel >> resetEntities: aClass [
 	"Initialize the Entity classes of the model and creates the new collector (OrderedCollection)"
 	
 	| entities |
+	
 	entities := self theEntities: aClass.
 	entities reverseDo: [:anEntity | anEntity delete].
 	aClass CurrentId: 0.
 	aClass isAbstract ifTrue: [^OrderedCollection new: 0].
-	^entities removeAll
+	^ entities removeAll
 ]
 
 { #category : #scheduling }
@@ -3043,98 +2937,6 @@ CMAbstractModel >> runStep [
 	self updateEntities.
 	self channel notNil ifTrue: [self channel flush].
 	self updateDataForChart.
-]
-
-{ #category : #'utilities - save load attributes' }
-CMAbstractModel >> saveAttributes: attributes fromClass: aClass inFile: aStringOrFilename [
-	"Save the attributes of the intances of aClass on a file 'aStringOrFilename'  
-attributes <OrderedCollection> ex: OrderedCollection ('seed' 'context')
-file <Filename> ex: aFATFilename('d:\vw7nc\cormas\Models\TSE\data\titi.txt') or
-file <String> ex: 'titi.txt'  it will be save into data/"
-	
-	self
-		saveAttributes: attributes
-		fromClass: aClass
-		inFile: aStringOrFilename
-		separator: Character tab
-]
-
-{ #category : #'private - util_files' }
-CMAbstractModel >> saveAttributes: attributes fromClass: aClass inFile: aStringOrFilename separator: aChar [
-	"Save the attributes of the intances of aClass on a file 'aStringOrFilename'  
-attributes <OrderedCollection> ex: OrderedCollection ('seed' 'context')
-file <Filename> ex: aFATFilename('d:\vw7nc\cormas\Models\TSE\data\titi.txt') or
-file <String> ex: 'titi.txt'  it will be save into data/"
-	
-	| stream dicoAttConv instance a c filename instances |
-	filename := self stringToFilename: aStringOrFilename.
-	instances := self perform: (self getterForEntityClass: aClass).
-	instances isEmpty ifTrue: [^nil].
-	stream := filename appendStream.	" attributs a sauver, ainsi que leur type (on perd cette info car on les sauve au format string "	"stream nextPutAll: 'attributes	'."
-	dicoAttConv := self getAttributesType: attributes fromInstances: instances.
-	attributes
-		do:
-			[:att | 
-			| typ |
-			typ := (dicoAttConv at: att asSymbol) last.
-			stream
-				nextPutAll: att asSymbol , typ;
-				nextPutAll:
-						(att = attributes last
-								ifFalse: [aChar asSymbol asString]
-								ifTrue: ['\' withCRs])].	" Fin du fichier : 1 ligne pour les valeurs des attributs de chaque instance "
-	1
-		to: instances size - 1
-		do:
-			[:i | 
-			instance := instances at: i.
-			attributes
-				do:
-					[:att | 
-					a := att asSymbol.
-					c := (dicoAttConv at: a) first.
-					stream
-						nextPutAll: ((instance perform: a) perform: c);
-						nextPutAll:
-								(att = attributes last
-										ifFalse: [aChar asSymbol asString]
-										ifTrue: ['\' withCRs])]].
-	instance := instances last.
-	attributes
-		do:
-			[:att | 
-			a := att asSymbol.
-			c := (dicoAttConv at: a) first.
-			stream
-				nextPutAll: ((instance perform: a) perform: c);
-				nextPutAll:
-						(att = attributes last
-								ifFalse: [aChar asSymbol asString]
-								ifTrue: ['\' withCRs])].
-	stream close
-]
-
-{ #category : #'utilities - files' }
-CMAbstractModel >> saveCollec: aCollec inCsvFile: aString [
-	"Save in /data directory a Collection of literals (characters, numbers, strings...) as csv file (easily openable with Excel.
-	aString = the name of the file (with or without .csv extention)
-	aString = <String> or <Filename> (with or without .csv extention)"
-	
-	Cormas
-		saveCollec: aCollec
-		inCsvFile: (self stringToFilename: aString)
-]
-
-{ #category : #'utilities - save load attributes' }
-CMAbstractModel >> saveLocatedAgent: aClass withAttributs: attributes inFile: aStringOrFilename [
-	"Save the attributes of the intances of aClass (SituatedAgent or LocatedObject) on a file 'aStringOrFilename'  
-attributes <OrderedCollection> ex: OrderedCollection ('seed' 'context')
-file <Filename> ex: aFATFilename('d:\vw7nc\cormas\Models\TSE\data\titi.txt') or
-file <String> ex: 'titi.txt'  it will be save into data/"
-	
-	attributes add: 'patchID'.
-	self saveAttributes: attributes fromClass: aClass inFile:
-			aStringOrFilename
 ]
 
 { #category : #'accessing - entities' }
@@ -3194,48 +2996,12 @@ CMAbstractModel >> setActiveProbes: aCollection [
 	self class setActiveProbes: aCollection
 ]
 
-{ #category : #'binary storage' }
-CMAbstractModel >> setAttributesOf: aClass [
-	
-	| theInstances attributes assos attribValue |
-	theInstances := self theEntities: aClass.
-	attributes := aClass allInstVarNames.
-	theInstances
-		do:
-			[:inst | 
-			1
-				to: attributes size
-				do:
-					[:i | 
-					((inst instVarAt: i) isKindOf: Association)
-						ifTrue:
-							[assos := inst instVarAt: i.
-							attribValue := (self theEntities: assos key)
-								detect: [:o | o id = assos value]
-								ifNone: [nil].
-							attribValue isNil
-								ifFalse:
-									["inst perform: ((attributes at: i), ':') asSymbol with: attribValue."
-									inst instVarAt: i put: attribValue]]]]
-]
-
 { #category : #'probes color' }
 CMAbstractModel >> setColor: aColorValue forProbe: aSymbol [
 	"Method is defined by the class
            ->creates a color method at class level"
 	
 	^self class setColor: aColorValue forProbe: aSymbol
-]
-
-{ #category : #'binary storage' }
-CMAbstractModel >> setCurrentID_from: arrayOfEntities [
-	
-	| lastId |
-	(Set withAll: (arrayOfEntities collect: [:inst | inst class]))
-		do:
-			[:aClass | 
-			lastId := (arrayOfEntities select: [:inst | inst class = aClass]) size.
-			aClass CurrentId: lastId]
 ]
 
 { #category : #'probes - recording' }
@@ -3437,20 +3203,6 @@ Example: See the models Conway http://cormas.cirad.fr/en/applica/conway.htm or F
 	self theESE do: [:a | a updateState]
 ]
 
-{ #category : #'utilities - files' }
-CMAbstractModel >> stringToFilename: aStringOrFilename [
-	"Returns a Filename from (aStringOrFilename) located into the current model 'data' 
-	directory (ex: 'cormas.env') "
-	
-	| aFilename |
-	aStringOrFilename isString
-		ifTrue:
-			[aFilename := (Cormas dataPath: self class name) construct:
-					aStringOrFilename]
-		ifFalse: [aFilename := aStringOrFilename].
-	^aFilename
-]
-
 { #category : #'utilities - population metrics' }
 CMAbstractModel >> sumOfAttribute: att of: aCollecOrClass [
 	"Purpose: returns the sum of values of an attribute for a collection of entities (aCollecOrClass)
@@ -3511,7 +3263,7 @@ CMAbstractModel >> theCSE: aSet [
 CMAbstractModel >> theESE [
 	"Purpose: Returns the collection of SpatialEntityElements (equivalent to theCells in case your model ESE class is named Cell)"
 	
-	^self theEntities: self class cellClass
+	^ self theEntities: self class cellClass
 ]
 
 { #category : #'accessing - entities' }
@@ -3532,7 +3284,8 @@ CMAbstractModel >> theEntities: aClass [
 	getter := aClass asGetterForEntityClass.
 	collection := self perform: getter.
 	collection
-		ifNil: [ self class createReaderAccessor: aClass.
+		ifNil: [
+			self class createReaderAccessor: aClass.
 			collection := self perform: getter ].
 	^ collection
 ]
@@ -3632,23 +3385,6 @@ CMAbstractModel >> updateEntities: aClass [
 	self removeDeadEntities: aClass
 ]
 
-{ #category : #'utilities - files' }
-CMAbstractModel >> updateFile: aStringOrFilename dataCollection: aCollec separator: aChar [
-	"Updates a file in the current model 'data' directory and writes in it a tupple separated by aChar, at the end of the previous data.
-	ex: self updateFile: 'aFile.txt' dataCollection: #(0 11 67) separator: ';'."
-	
-	| stream aFilename |
-	aFilename := self stringToFilename: aStringOrFilename.
-	stream := aFilename appendStream.
-	1
-		to: aCollec size - 1
-		do:
-			[:i | stream nextPutAll: (aCollec at: i) printString , aChar asSymbol asString].
-	stream nextPutAll: aCollec last printString.
-	stream nextPutAll: '\' withCRs.
-	stream close
-]
-
 { #category : #'probes - recording' }
 CMAbstractModel >> updateGlobalData [
 	
@@ -3696,12 +3432,6 @@ CMAbstractModel >> updateLocalData [
 									dict
 										at: x last
 										put: collec]]]]
-]
-
-{ #category : #ODBC }
-CMAbstractModel >> updateTable: aTable withValues: anArrayOfValues [
-	
-	self simManager updateTable: aTable withValues: anArrayOfValues
 ]
 
 { #category : #'accessing - entities' }
