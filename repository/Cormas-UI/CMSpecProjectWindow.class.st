@@ -87,25 +87,30 @@ CMSpecProjectWindow >> closeSimulationWindow [
 CMSpecProjectWindow >> cormasExpressions [
 	" Answer a <String> with useful Cormas expressions to debug/develop/cleanup "
 	
-	^ 'CMConwayModel spatialClasses.
+	^ '"================= Inspect utilities ================="
+CMProjectManager allInstances.
+CMProjectManager allInstances first.
+CMProjectManager allInstances first pointersTo.
+
+CMSpecProjectWindow allInstances.
+CMSpecProjectWindow allInstances first.
+CMSpecProjectWindow allInstances first pointersTo.
+
+CMProjectModel allInstances.
+CMProjectModel allInstances first.
+CMProjectModel allInstances first pointersTo.
+
+CMConwayModel spatialClasses.
 CMConwayModel passiveClasses.
 CMConwayModel socialClasses.
+
+"================= Reset utilities ================="
+
+CMModel2ProjectMigrator rebuildModels.
 
 CMConwayModel passiveClasses: nil.
 CMConwayModel socialClasses: nil.
 CMConwayModel spatialClasses: nil.
-		
-CMProjectModel allInstances isEmpty.
-CMProjectManager allInstances.
-CMSpecProjectWindow allInstances.
-
-CMProjectModel allInstances first.
-CMProjectManager allInstances first.
-CMSpecProjectWindow allInstances first.
-
-CMProjectModel allInstances first pointersTo.
-CMProjectManager allInstances first pointersTo.
-CMSpecProjectWindow allInstances first pointersTo.
 
 CMSpecProjectWindow allInstances first projectAnnouncer subscriptions reset.
 CMProjectManager allInstances first announcer subscriptions reset.
@@ -602,7 +607,7 @@ CMSpecProjectWindow >> openProjectProperties [
 
 { #category : #callbacks }
 CMSpecProjectWindow >> openSpaceInterface [
-	" Private - Callback for user request to open the Space Model interface "
+	" Private - Callback for user request to open a new Space Model interface for the receiver's project "
 
 	CMR3SpaceInterface openFor: self projectManager.
 
@@ -615,6 +620,7 @@ CMSpecProjectWindow >> openSpaceInterfaceUpdateScenario [
 	CMR3SpaceInterface allInstances
 		ifEmpty: [ self openSpaceInterface ]
 		ifNotEmpty: [ : spaces | 
+			"self announcer announce: (CMSChangePoVAnnouncement forPov: aSymbol ofEntity: aClass)."
 			spaces do: #delete.
 			self openSpaceInterface ]
 

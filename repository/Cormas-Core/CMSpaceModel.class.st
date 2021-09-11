@@ -53,6 +53,7 @@ CMSpaceModel class >> defaultLines [
 
 { #category : #'instance creation' }
 CMSpaceModel class >> forModel: aCormasModel [
+	" Answer a new space configured for aCormasModel "
 
 	^ self basicNew 
 		cormasModel: aCormasModel;
@@ -499,12 +500,10 @@ CMSpaceModel >> cormasModel [
 
 { #category : #'private - accessing' }
 CMSpaceModel >> cormasModel: aCormasModel [
-	"The cormasModel is some kind of model for the spaceModel (receive notification)"
+	" The cormasModel is some kind of model for the spaceModel (receive notification) "
 	
-	cormasModel == aCormasModel ifTrue: [^self].
-	cormasModel ifNotNil: [cormasModel removeDependent: self].
 	cormasModel := aCormasModel.
-	cormasModel ifNotNil: [cormasModel addDependent: self]
+
 ]
 
 { #category : #accessing }
@@ -763,7 +762,7 @@ CMSpaceModel >> displayPov: aSymbol of: aClass [
 	"Purpose: set the POV of aClass to be displayed on the opened spatial grid
 Example : self displayPov: #landUse of: Cell"
 	
-	self announcer announce: (CMSChangePoVAnnouncement forPov: aSymbol ofEntity: aClass)
+ 	self projectAnnouncer announce: (CMSChangePoVAnnouncement forPov: aSymbol ofEntity: aClass)
 
 ]
 
@@ -1433,15 +1432,33 @@ CMSpaceModel >> gridSize: anInteger [
 
 { #category : #'private - regularCells - shapes' }
 CMSpaceModel >> hexagonal [
-	"received from SpaceInterface menu, when the user want to change the shape of the cells"
+	" Received from SpaceInterface menu, when the user want to change the shape of the cells "
+
+	self gridCellShape ~= #hexagonal ifFalse: [ ^ self ].
+	self gridCellShape: #hexagonal.
+	self nbCount: #six.
+	self createHexagonalCellsFigure.
+	self initNeighbourhood.
+	self changed: #shapeHasChanged
+]
+
+{ #category : #printing }
+CMSpaceModel >> humanReadableString [
+	" Answer a <String> with receiver's details suitable for titles "
 	
-	self gridCellShape ~= #hexagonal
-		ifTrue: [ 
-			self gridCellShape: #hexagonal.
-			self nbCount: #six.
-			self createHexagonalCellsFigure.	"the spaceInterfaces are automatically refreshed"
-			self initNeighbourhood.
-			self changed: #shapeHasChanged]	"set the menu and title to the spaceInterfaces"
+	^ String streamContents: [ : stream |
+		stream
+			space;
+			<< self line asString;
+			<< $x;
+			<< self column asString;
+			<< $(;
+			<< self gridSize asString;
+			<< $);
+			space;
+			<< self gridCellShape asString ]
+
+		
 ]
 
 { #category : #'CSE (regular) - instance creation' }
@@ -1916,18 +1933,16 @@ CMSpaceModel >> printOn: aStream [
 	" Private - See superimplementor's comment "
 	
 	super printOn: aStream.
-	aStream
-		space;
-		<< self line asString;
-		<< $x;
-		<< self column asString;
-		<< $(;
-		<< self gridSize asString;
-		<< $);
-		space;
-		<< self gridCellShape asString
+	aStream << self humanReadableString.
 
 		
+]
+
+{ #category : #accessing }
+CMSpaceModel >> projectAnnouncer [
+	" Answer the receiver's model <Announcer> "
+	
+	^ self cormasModel projectAnnouncer
 ]
 
 { #category : #'ESE (regular) - special locations' }
@@ -1993,10 +2008,9 @@ CMSpaceModel >> resetSpatialEntities [
 	| newColl |
 	self spatialEntities: Dictionary new. 
 	self cormasModel ifNil: [ ^nil ].
-	self cormasModelClass spatialClasses
-		do: [ : aSpatialClass | 
+	self cormasModelClass spatialClasses do: [ : aSpatialClass | 
 			newColl := self cormasModel resetEntities: aSpatialClass.
-			self spatialEntitiesAt: aSpatialClass name 	put: newColl].
+			self spatialEntitiesAt: aSpatialClass name 	put: newColl ].
 	"self changed: #removeAllFigures"	"all the figures of the spaceInterfaces have to be deleted"
 ]
 
@@ -2599,8 +2613,10 @@ CMSpaceModel >> spatialEntities [
 ]
 
 { #category : #'private - accessing' }
-CMSpaceModel >> spatialEntities: anObject [
-	spatialEntities := anObject
+CMSpaceModel >> spatialEntities: aDictionary [
+	" The spatial entities is a <Dictionary> of the receiver's cells "
+
+	spatialEntities := aDictionary
 ]
 
 { #category : #accessing }

@@ -23,12 +23,24 @@ Class {
 
 { #category : #examples }
 CMModel2ProjectMigrator class >> migrateModels [ 
-	<example>
+	<script>
 	
 	Cursor wait showWhile: [ 
 		self new 
 			destinationPath: CMResourceLocator demosPath;
 			buildProjects;
+			moveProjects ]
+]
+
+{ #category : #examples }
+CMModel2ProjectMigrator class >> rebuildModels [ 
+	" Removes all existing demos and rebuild the project files from the code in the current image "
+	<script>
+	
+	Cursor wait showWhile: [ 
+		self new 
+			destinationPath: CMResourceLocator demosPath;
+			rebuildProjects;
 			moveProjects ]
 ]
 
@@ -177,8 +189,10 @@ CMModel2ProjectMigrator >> destinationPath [
 ]
 
 { #category : #accessing }
-CMModel2ProjectMigrator >> destinationPath: anObject [
-	destinationPath := anObject
+CMModel2ProjectMigrator >> destinationPath: aFileReference [
+	" Set the receiver's path where the destination files will be written "
+
+	destinationPath := aFileReference
 ]
 
 { #category : #writing }
@@ -257,6 +271,18 @@ CMModel2ProjectMigrator >> outputDirectory [
 	
 	^ outputDirectory
 		ifNil: [ outputDirectory := self defaultOutputDirectory ]
+]
+
+{ #category : #building }
+CMModel2ProjectMigrator >> rebuildProjects [
+	" Rebuild project files. Remove and generate all project files from the models in this image "
+
+	'Model2Project: Rebuilding project files...' traceCr.
+	CMResourceLocator demosPath ensureDeleteAllChildren.
+	CMAbstractModel subclassesDo: [ :modelClass |
+			self buildForModelInstance: modelClass new.
+			self buildProjectFile ].
+	'Model2Project: Done rebuilding project files...' traceCr.
 ]
 
 { #category : #defaults }

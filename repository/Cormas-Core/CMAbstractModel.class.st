@@ -2300,11 +2300,10 @@ CMAbstractModel >> initializeProbes [
 
 { #category : #'initalize release' }
 CMAbstractModel >> initializeSpaceModel [
+	" Private - Setup the receiver's space model only if the model has a spatial entity cell class defined "
 
 	self class cellClass ifNil: [ ^ nil ].
-	self spaceModel: CMSpaceModel basicNew.
-	self spaceModel cormasModel: self.
-	self spaceModel initialize.
+	self spaceModel: (CMSpaceModel forModel: self).
 
 ]
 

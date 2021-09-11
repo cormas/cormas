@@ -337,9 +337,10 @@ CMR3SpacePresenter >> setAndRefreshActivePovSelectorOf: aClass with: aSymbol [
 ]
 
 { #category : #initialization }
-CMR3SpacePresenter >> setModelBeforeInitialization: aModel [
+CMR3SpacePresenter >> setModelBeforeInitialization: aCMAbstractModel [
+	" Private - Set the receiver's CORMAS model to aCMAbstractModel "
 
-	model := aModel.
+	self model: aCMAbstractModel.
 ]
 
 { #category : #accessing }

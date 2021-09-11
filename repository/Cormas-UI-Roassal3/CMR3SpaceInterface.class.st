@@ -125,7 +125,7 @@ CMR3SpaceInterface >> initializeDiagram [
 	diagram := self
 		           instantiate: self appSettingsClass settingSpaceViewer
 		           on: self cormasModel.
-	self announcer
+	self projectAnnouncer
 		when: CMSChangePoVAnnouncement 
 		send: #changePoV:
 		to: self.
@@ -335,8 +335,16 @@ CMR3SpaceInterface >> initializeToolsMenuToolbar [
 { #category : #initialization }
 CMR3SpaceInterface >> initializeWindow: w [
 
+	| windowTitle |
+	windowTitle := String streamContents: [ : stream |
+		stream
+			<< self formattedWindowTitle;
+			<< ' - ';
+			<< self translator tSpaceInterface;
+			space;
+			<< self spaceModel humanReadableString ].
 	w 
-		title: self formattedWindowTitle , ' - ' , self translator tSpaceInterface;
+		title: windowTitle;
 		initialExtent: 800 @ 500;
 		centered
 ]
@@ -390,6 +398,12 @@ CMR3SpaceInterface >> menuToolbar: anObject [
 	menuToolbar := anObject
 ]
 
+{ #category : #initialization }
+CMR3SpaceInterface >> projectAnnouncer [
+
+	^ self cormasModel projectAnnouncer
+]
+
 { #category : #accessing }
 CMR3SpaceInterface >> projectManager [
 
@@ -400,6 +414,13 @@ CMR3SpaceInterface >> projectManager [
 CMR3SpaceInterface >> projectManager: anObject [
 
 	projectManager := anObject
+]
+
+{ #category : #accessing }
+CMR3SpaceInterface >> spaceModel [
+	" Answer a <CMSpaceModel>, the receiver's model configured space "
+	
+	^ self cormasModel spaceModel
 ]
 
 { #category : #accessing }
