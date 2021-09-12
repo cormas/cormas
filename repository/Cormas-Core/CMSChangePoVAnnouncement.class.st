@@ -2,8 +2,7 @@ Class {
 	#name : #CMSChangePoVAnnouncement,
 	#superclass : #Announcement,
 	#instVars : [
-		'povName',
-		'entityClass'
+		'povDictionary'
 	],
 	#category : #'Cormas-Core-Announcements'
 }
@@ -12,42 +11,39 @@ Class {
 CMSChangePoVAnnouncement class >> forPov: aSymbol ofEntity: aClass [
 	
 	^ self new
-		povName: aSymbol;
-		entityClass: aClass;
+		atEntityClass: aClass putPoV: aSymbol;
 		yourself
 ]
 
-{ #category : #accessing }
-CMSChangePoVAnnouncement >> entityClass [
-
-	^ entityClass
-]
-
-{ #category : #accessing }
-CMSChangePoVAnnouncement >> entityClass: anObject [
-
-	entityClass := anObject
-]
-
-{ #category : #accessing }
-CMSChangePoVAnnouncement >> povName [
-
-	^ povName
-]
-
-{ #category : #accessing }
-CMSChangePoVAnnouncement >> povName: anObject [
-
-	povName := anObject
-]
-
-{ #category : #printing }
-CMSChangePoVAnnouncement >> printOn: aStream [
+{ #category : #'instance creation' }
+CMSChangePoVAnnouncement class >> forPovs: aCollectionOfAssociations [
 	
-	super printOn: aStream.
-	aStream
-		<< ' pov: ';
-		<< povName asString;
-		<< ' ofEntity: ';
-		<< entityClass asString
+	^ self new
+		povDictionary: aCollectionOfAssociations;
+		yourself
+]
+
+{ #category : #adding }
+CMSChangePoVAnnouncement >> addPoV: aSymbol [
+	" Add aSymbol as a PoV to be set in a space interface "
+	
+	self povNames add: aSymbol
+]
+
+{ #category : #accessing }
+CMSChangePoVAnnouncement >> atEntityClass: aClass putPoV: aSymbol [
+
+	self povDictionary at: aClass put: aSymbol
+]
+
+{ #category : #accessing }
+CMSChangePoVAnnouncement >> povDictionary [
+
+	^ povDictionary
+]
+
+{ #category : #accessing }
+CMSChangePoVAnnouncement >> povDictionary: anObject [
+
+	povDictionary := anObject
 ]

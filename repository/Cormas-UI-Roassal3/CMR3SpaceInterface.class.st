@@ -67,14 +67,6 @@ CMR3SpaceInterface >> canvas [
 	^ self diagram canvas
 ]
 
-{ #category : #initialization }
-CMR3SpaceInterface >> changePoV: aCMChangePoVAnnouncement [
-
-	self diagram
-		setAndRefreshActivePovSelectorOf: aCMChangePoVAnnouncement entityClass 
-		with: aCMChangePoVAnnouncement povName
-]
-
 { #category : #private }
 CMR3SpaceInterface >> closeAfterCreateProject [
 	^ true
@@ -127,8 +119,9 @@ CMR3SpaceInterface >> initializeDiagram [
 		           on: self cormasModel.
 	self projectAnnouncer
 		when: CMSChangePoVAnnouncement 
-		send: #changePoV:
-		to: self.
+		send: #setAndRefreshActivePovs
+		to: self diagram.
+	
 ]
 
 { #category : #initialization }

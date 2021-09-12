@@ -8,10 +8,10 @@ Class {
 		'origin',
 		'speed',
 		'cellViews',
-		'activePovsSelector',
 		'layoutClass',
 		'elemClass',
-		'sevClass'
+		'sevClass',
+		'activePoVsDictionary'
 	],
 	#category : #'Cormas-UI-Roassal3'
 }
@@ -40,13 +40,18 @@ CMR3SpacePresenter class >> openOn: aCMCormasModel [
 ]
 
 { #category : #'accessing - pov' }
-CMR3SpacePresenter >> activePovsSelector [
-	^ activePovsSelector ifNil: [ activePovsSelector := Dictionary new ]
+CMR3SpacePresenter >> activePoVSelectorAtClass: aClass [
+
+	^ self activePoVsDictionary at: aClass ifAbsent: [ nil ]
+	
 ]
 
 { #category : #'accessing - pov' }
-CMR3SpacePresenter >> activePovsSelector: anObject [
-	activePovsSelector := anObject
+CMR3SpacePresenter >> activePoVsDictionary [
+	" Each presenter could have customized PoV's. If this Dictionary is empty, we use the PoV's defined in the receiver's space model "
+
+	activePoVsDictionary ifNil: [ activePoVsDictionary := Dictionary new ].
+	^ activePoVsDictionary ifEmpty: [ activePoVsDictionary := self defaultActivePoVs ]
 ]
 
 { #category : #refreshing }
@@ -92,6 +97,12 @@ CMR3SpacePresenter >> addViewForCells: cells [
 	self canvas addAll: theCellViews.
 	self configurePopUpOn: theCellViews.
 	self configureLayoutOn: theCellViews.
+]
+
+{ #category : #'accessing - pov' }
+CMR3SpacePresenter >> atClass: aClass putActivePovSelector: aSymbol [
+
+	self activePoVsDictionary at: aClass put: aSymbol
 ]
 
 { #category : #accessing }
@@ -165,6 +176,20 @@ CMR3SpacePresenter >> configurePopUpOn: theCellViews [
 		when: RSMouseLeftClick do: [ : aRSMouseClick | aRSMouseClick shape model inspect ].
 ]
 
+{ #category : #accessing }
+CMR3SpacePresenter >> cormasModel [
+	" Answer the receiver's <CMAbstractModel> "
+	
+	^ model
+]
+
+{ #category : #defaults }
+CMR3SpacePresenter >> defaultActivePoVs [
+	" Answer a <Dictionary> of receiver's model active points of view "
+	
+	^ self spaceModel activePoVsDictionary
+]
+
 { #category : #defaults }
 CMR3SpacePresenter >> defaultCellSize [
 
@@ -200,13 +225,6 @@ CMR3SpacePresenter >> elemClass [
 CMR3SpacePresenter >> elemClass: anObject [
 
 	elemClass := anObject
-]
-
-{ #category : #'accessing - pov' }
-CMR3SpacePresenter >> getActivePovSelectorOf: aClass [
-
-	^ self activePovsSelector at: aClass ifAbsent: [ nil ]
-	
 ]
 
 { #category : #initialization }
@@ -318,21 +336,20 @@ CMR3SpacePresenter >> removeObsoleteSituatedEntities [
 ]
 
 { #category : #'accessing - pov' }
-CMR3SpacePresenter >> setActivePovSelectorOf: aClass with: aSymbol [
+CMR3SpacePresenter >> setAndRefreshActivePovSelectorOf: aClass with: aSymbol [
+	" Configure a single point of view with selector aSymbol in model class aClass "
 
-	self activePovsSelector at: aClass put: aSymbol
+	self halt.
+	self atClass: aClass putActivePovSelector: aSymbol.
+	self updateNodesOf: aClass.
+	self canvas signalUpdate
 ]
 
 { #category : #'accessing - pov' }
-CMR3SpacePresenter >> setAndRefreshActivePovSelectorOf: aClass with: aSymbol [ 
+CMR3SpacePresenter >> setAndRefreshActivePovs [
+	" Configure the receiver's point of views in all classes in the active PoVs Dictionary "
 
-	self setActivePovSelectorOf: aClass with: aSymbol.
-	self nodes 
-		select: [ : roassalNode | roassalNode model isKindOf: aClass ]
-		thenDo: [ : roassalNode | 
-			| shapeSelector |
-			shapeSelector := self getActivePovSelectorOf: aClass.
-			roassalNode color: (roassalNode model getColorForPov: shapeSelector) ].
+	self activePoVsDictionary keysDo: [ : classPoV | self updateNodesOf: classPoV ].
 	self canvas signalUpdate
 ]
 
@@ -368,6 +385,13 @@ CMR3SpacePresenter >> situatedEntitiesViews: anObject [
 ]
 
 { #category : #accessing }
+CMR3SpacePresenter >> spaceModel [
+	" Answer the receiver's <CMSpaceModel> "
+
+	^ self cormasModel spaceModel
+]
+
+{ #category : #accessing }
 CMR3SpacePresenter >> speed [
 
 	^ speed
@@ -390,4 +414,15 @@ CMR3SpacePresenter >> timeChanged: aNewTimeStep [
 	self moveSituatedEntities.
 	self nodes do: #signalUpdate.
 	self canvas signalUpdate
+]
+
+{ #category : #'accessing - pov' }
+CMR3SpacePresenter >> updateNodesOf: modelClass [
+
+	^ self nodes
+		  select: [ :roassalNode | roassalNode model isKindOf: modelClass ]
+		  thenDo: [ :roassalNode | 
+			  | shapeSelector |
+			  shapeSelector := self activePoVSelectorAtClass: modelClass.
+			  roassalNode color: (roassalNode model getColorForPov: shapeSelector) ]
 ]

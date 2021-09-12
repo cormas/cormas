@@ -1074,6 +1074,7 @@ CMAbstractModel >> allEntitiesFrom: aClass getInfoFor: infoSymbol [
 CMAbstractModel >> allEntitiesFrom: aClass povAt: povSelector [
 	"return a collection of povs from all entities inheriting from aClass"
 	
+	self flag: #toReview.
 	^(self allTheEntities: aClass) collect: [:each | each povAt: povSelector]
 ]
 
@@ -3114,6 +3115,8 @@ CMAbstractModel >> situatedEntitiesFrom: aClass povAt: povSelector [
 	"return a collection of povs from all entities inheriting from aClass"
 	
 	| coll |
+	
+	self flag: #toReview.
 	coll := OrderedCollection new.
 	(self theEntities: aClass)
 		do:

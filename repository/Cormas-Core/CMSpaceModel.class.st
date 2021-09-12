@@ -39,7 +39,8 @@ Class {
 		'autoResizeBounds',
 		'torroidal',
 		'nbConfiguration',
-		'gridSize'
+		'gridSize',
+		'activePoVsDictionary'
 	],
 	#category : #'Cormas-Core-Space'
 }
@@ -89,6 +90,14 @@ CMSpaceModel >> absoluteWidth [
 	" Answer an <Integer> representing the receiver's width from the absolute bounds "
 
 	^ self absoluteBounds width
+]
+
+{ #category : #accessing }
+CMSpaceModel >> activePoVsDictionary [
+	" Answer a <Dictionary> containing the initial active points of view of the receiver's model "
+
+	^ activePoVsDictionary
+		ifNil: [ activePoVsDictionary := Dictionary new ]
 ]
 
 { #category : #deprecated }
@@ -228,6 +237,13 @@ CMSpaceModel >> allTheSituatedEntities: aClass [
 CMSpaceModel >> arrayOrigins: anArray [
 	
 	arrayOrigins := anArray
+]
+
+{ #category : #accessing }
+CMSpaceModel >> atClass: aCMSpatialEntityClass putActivePovSelector: aSelector [ 
+	" Set a Point of View defined in aSelector <Symbol> at class aCMSpatialEntityClass "
+
+	self activePoVsDictionary at: aCMSpatialEntityClass put: aSelector
 ]
 
 { #category : #accessing }
@@ -760,9 +776,9 @@ Example : self displayInfo: #landUse of: Cell"
 { #category : #'private - display' }
 CMSpaceModel >> displayPov: aSymbol of: aClass [
 	"Purpose: set the POV of aClass to be displayed on the opened spatial grid
-Example : self displayPov: #landUse of: Cell"
+	Example : self displayPov: #landUse of: Cell"
 	
- 	self projectAnnouncer announce: (CMSChangePoVAnnouncement forPov: aSymbol ofEntity: aClass)
+	self atClass: aClass putActivePovSelector: aSymbol.
 
 ]
 
@@ -897,6 +913,8 @@ CMSpaceModel >> envSpecStringFor: spatialEntityName [
 	"compute the description of the environnment (for the spaceInterface title)"
 
 	| s nb |
+	
+	self flag: #toReview.
 	s := (String new: 100) writeStream.
 	s
 		nextPutAll:
@@ -1193,6 +1211,8 @@ CMSpaceModel >> getPovsDataOfArcEntity: aClass forSelector: povSelector andInfo:
 	"direct access to the pov spec of a set of entities"
 	
 	| entities |
+	
+	self flag: #toReview.	
 	entities := self cormasModel allTheSituatedEntities: aClass.
 	^entities
 		collect:
@@ -1209,6 +1229,8 @@ CMSpaceModel >> getPovsDataOfEntity: aClass forSelector: povSelector andInfo: in
 	"direct access to the pov spec of a set of entities"
 	
 	| entities |
+	
+	self flag: #toReview.
 	entities := (aClass inheritsFrom: CMSpatialEntity)
 		ifTrue: [self spatialEntitiesAt: aClass name]
 		ifFalse: [self cormasModel allTheSituatedEntities: aClass].
@@ -1233,6 +1255,8 @@ CMSpaceModel >> getPovsDataOfOccupantEntity: aClass forSelector: povSelector and
 	"direct access to the pov spec of a set of entities"
 	
 	| entities |
+	
+	self flag: #toReview.
 	entities := (aClass inheritsFrom: CMSpatialEntity)
 		ifTrue: [self spatialEntitiesAt: aClass name]
 		ifFalse: [self cormasModel allTheSituatedEntities: aClass].

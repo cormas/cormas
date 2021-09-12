@@ -610,19 +610,16 @@ CMSpecProjectWindow >> openSpaceInterface [
 	" Private - Callback for user request to open a new Space Model interface for the receiver's project "
 
 	CMR3SpaceInterface openFor: self projectManager.
-
+ 	self projectAnnouncer announce: CMSChangePoVAnnouncement new.
 ]
 
 { #category : #callbacks }
 CMSpecProjectWindow >> openSpaceInterfaceUpdateScenario [
 	" Private - Open a space model interface. Close all opened space model windows if any "
 
-	CMR3SpaceInterface allInstances
-		ifEmpty: [ self openSpaceInterface ]
-		ifNotEmpty: [ : spaces | 
-			"self announcer announce: (CMSChangePoVAnnouncement forPov: aSymbol ofEntity: aClass)."
-			spaces do: #delete.
-			self openSpaceInterface ]
+	CMR3SpaceInterface allInstancesDo: #delete.
+	self openSpaceInterface.
+
 
 ]
 
@@ -632,6 +629,13 @@ self alertMessage: 'No implemented yet'
 	"CMSpecVizSpaceWindow new
 		owner: self;
 		openWithSpec"
+]
+
+{ #category : #accessing }
+CMSpecProjectWindow >> povClass [
+	" Answer a <CMSpatial> class "
+	
+	^ self spaceModel povClass
 ]
 
 { #category : #accessing }
@@ -685,6 +689,12 @@ CMSpecProjectWindow >> spPresenter [
 	" This is used while migrating to Spec2, which needs presenters with an owner with SpApplication linked "
 
 	^ CMSpPresenter new
+]
+
+{ #category : #accessing }
+CMSpecProjectWindow >> spaceModel [
+
+	^ self cormasModel spaceModel.
 ]
 
 { #category : #'submenu-help' }
