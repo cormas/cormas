@@ -775,10 +775,13 @@ Example : self displayInfo: #landUse of: Cell"
 
 { #category : #'private - display' }
 CMSpaceModel >> displayPov: aSymbol of: aClass [
-	"Purpose: set the POV of aClass to be displayed on the opened spatial grid
+	"Purpose: set the POV of aClass to be displayed on the opened spatial grid.
+	For efficency add subclasses of aClass.
 	Example : self displayPov: #landUse of: Cell"
 	
 	self atClass: aClass putActivePovSelector: aSymbol.
+	aClass concreteSubclasses do: [ : concreteClass |
+		self atClass: concreteClass putActivePovSelector: aSymbol ]
 
 ]
 

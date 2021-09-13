@@ -257,20 +257,14 @@ CMAbstractModel class >> allInstanceSelectors [
 CMAbstractModel class >> allTerminalClasses [
 	"Return a collection of classes without superclasses"
 
-	^ OrderedCollection
-		streamContents: [ :stream | 
+	^ OrderedCollection streamContents: [ :stream | 
 			(self spatialClasses_sorted ifNil: [ #() ])
-				do: [ :spatialClass | 
-					(Cormas isTerminal: spatialClass)
-						ifTrue: [ stream nextPut: spatialClass ] ].
+				do: [ :spatialClass | spatialClass ifTerminal: [ stream nextPut: spatialClass ] ].
 			(self socialClasses ifNil: [ #() ])
-				do: [ :socialClass | 
-					(Cormas isTerminal: socialClass)
-						ifTrue: [ stream nextPut: socialClass ] ].
+				do: [ :socialClass | socialClass ifTerminal: [ stream nextPut: socialClass ] ].
 			(self passiveClasses ifNil: [ #() ])
 				do: [ :passiveClass | 
-					((Cormas isTerminal: passiveClass)
-						and: [ passiveClass inheritsFrom: CMEntity ])
+					(passiveClass isTerminal and: [ passiveClass inheritsFrom: CMEntity ])
 						ifTrue: [ stream nextPut: passiveClass ] ] ]
 ]
 

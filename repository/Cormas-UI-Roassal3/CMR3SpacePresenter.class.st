@@ -41,8 +41,12 @@ CMR3SpacePresenter class >> openOn: aCMCormasModel [
 
 { #category : #'accessing - pov' }
 CMR3SpacePresenter >> activePoVSelectorAtClass: aClass [
+	" Answer a <Symbol> which is a selector to access the PoV of an entity of aClass "
 
-	^ self activePoVsDictionary at: aClass ifAbsent: [ nil ]
+	^ self activePoVsDictionary at: aClass ifAbsent: [ 
+			aClass superClassesUntilEntity  
+				ifEmpty: [ Color gray ] 
+				ifNotEmpty: [ self halt  ] ]
 	
 ]
 
@@ -300,12 +304,12 @@ CMR3SpacePresenter >> newElementViewForModel: cellModel [
 CMR3SpacePresenter >> newSEViewForModel: aCMEntity [
 	" Answer a <RSShape> for the receiver's situated entities "
 
-"	| shapeSelector |
+	| colorSelector |
 	
-	shapeSelector := self getActivePovSelectorOf: aCMEntity class."
+	colorSelector := self activePoVSelectorAtClass: aCMEntity class.
 	^ self sevClass new
 		model: aCMEntity;
-	"	color: (aCMEntity getColorForPov: shapeSelector);"
+		color: (aCMEntity perform: colorSelector);
 		size: aCMEntity sizeOfPOV;
 		yourself
 ]

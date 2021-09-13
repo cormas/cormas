@@ -351,7 +351,7 @@ CMEntity class >> allTerminalClasses [
 Return value: anOrderedCollection
 Example: LandCover allTerminalClasses"
 	
-	^self withAllSubclasses select: [:aClass | Cormas isTerminal: aClass]
+	^ self withAllSubclasses select: #isTerminal
 ]
 
 { #category : #accessing }

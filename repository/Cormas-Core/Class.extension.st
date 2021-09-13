@@ -23,3 +23,23 @@ Class >> concreteSubclasses [
 	^ self allSubclasses select: [ : cls | cls subclasses isEmpty ]
 
 ]
+
+{ #category : #'*Cormas-Core' }
+Class >> ifTerminal: aBlock [
+	" Perform aBlock if the receiver is a terminal (or concrete) class (has no subclasses) "
+	
+	^ self isTerminal ifTrue: aBlock
+	
+]
+
+{ #category : #'*Cormas-Core' }
+Class >> isTerminal [
+	" Answer <true> if the receiver is a terminal (or concrete) class (has no subclasses)
+
+	Object isTerminal.
+	SystemOrganizer isTerminal.
+	"
+	
+	^ self hasSubclasses not
+	
+]

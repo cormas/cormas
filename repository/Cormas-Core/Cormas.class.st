@@ -45,14 +45,6 @@ Class {
 	#category : #'Cormas-Core-Legacy'
 }
 
-{ #category : #'utilities - code management' }
-Cormas class >> allTerminalClassesOf: aClass [
-	"Purpose: Returns a collection of all the terminal classes of aClass
-	Example: Cormas allTerminalClassesOf: CMECECForager"
-
-	^ aClass withAllSubclasses select: [ :each | self isTerminal: each ]
-]
-
 { #category : #'utilities - files' }
 Cormas class >> application [
 	^ CMApplicationProject uniqueInstance 
@@ -326,19 +318,6 @@ Cormas class >> isModelUserMode [
 { #category : #'runtime mode accessing' }
 Cormas class >> isModelerMode [
 	^ self runtimeMode == #modeler
-]
-
-{ #category : #'utilities - code management' }
-Cormas class >> isTerminal: aClass [
-	"test efficiently if aClass is a terminal (or concrete) class (has no subclasses)
-	use the getSubclasses which return nil or Array of subclasses without any copy.
-	use the well known hack size = 0 for testing nil or empty collection
-
-	self isTerminal: Object.
-	self isTerminal: UndefinedObject.
-	"
-
-	^ aClass hasSubclasses not
 ]
 
 { #category : #accessing }
