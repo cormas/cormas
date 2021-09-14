@@ -85,9 +85,7 @@ CMR3SpacePresenter >> addViewForAgents: theSituatedEntities [
 		"9@6 / (3@2)"
 		cellSize := (windowSize - origin) / (model spaceModel column @ model spaceModel line).
 		situatedEntitiesViews := atse collect: [ : se | self newSEViewForModel: se ].
-		self canvas addAll: situatedEntitiesViews.
-		"Adding property to be draggable"
-		situatedEntitiesViews do: [ :situatedEntityEl | situatedEntityEl @ RSDraggable ] ].
+		self canvas addAll: situatedEntitiesViews ].
 	self moveSituatedEntities
 
 ]
@@ -244,6 +242,7 @@ CMR3SpacePresenter >> initializePresenters [
 	" Private - This method initializes a simulationGrid for a specific cormasModel , without specifyin any animation behaviour "
 
 	self addViewForCells: self model theESE.
+	self halt.
 	self addViewForAgents: self model allTheSituatedEntities.
 	
 	model projectAnnouncer
@@ -281,10 +280,13 @@ CMR3SpacePresenter >> model: anObject [
 
 { #category : #initialization }
 CMR3SpacePresenter >> moveSituatedEntities [
+	" Position the already created entities views to the location determined by each view's patch "
 
-	situatedEntitiesViews do: [ :e | 
-		e translateTo:
-			e model patch numCol @ e model patch numLine * cellSize ]
+	self situatedEntitiesViews ifNotEmpty: [ : eViews |
+		eViews do: [ : e | 
+			"Adding property to be draggable"
+			e @ RSDraggable.
+			e translateTo: e model patch numCol @ e model patch numLine * cellSize ] ]
 ]
 
 { #category : #'instance creation' }

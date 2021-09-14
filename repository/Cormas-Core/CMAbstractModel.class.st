@@ -1155,9 +1155,9 @@ CMAbstractModel >> allThePassiveObjects [
 
 { #category : #'accessing - entities' }
 CMAbstractModel >> allTheSituatedEntities [
-	"Returns a collection of all the instances of AgentLocation and of ObjectLocation (and sub classes) collected by cormasModel, which are situated on a patch"
+	" Answer a <Collection> of all the instances of AgentLocation and of ObjectLocation (and sub classes) collected by cormasModel, which are situated on a patch "
 	
-	^self allTheEntities select: [:entity | entity isSituated]
+	^ self allTheEntities select: #isSituated
 ]
 
 { #category : #'accessing - entities' }
@@ -1861,6 +1861,7 @@ CMAbstractModel >> displayDefaultPovOf: aClass [
 	"Purpose: set the default POV of aClass to be displayed on the first opened spatial grid
 Example : self displayDefaultPovOf: Cell"
 	
+	self flag: #toReview.
 	self displayPov: #povClassName of: aClass
 ]
 
@@ -1870,11 +1871,7 @@ CMAbstractModel >> displayInfo: aSymbol of: aClass [
 Example : self displayInfo: #info_ID of: Cell"
 	
 	(aClass availableInfo includes: aSymbol)
-		ifFalse:
-			[self cormas
-				warn: 'The class <1s> does not have a info called <2s>'
-				with: aClass name
-				with: aSymbol].
+		ifFalse: [ self inform: ('The class {1} does not have a info called {2}' format: { aClass name . aSymbol }) ].
 	self spaceModel displayInfo: aSymbol of: aClass
 ]
 
@@ -2334,12 +2331,12 @@ CMAbstractModel >> lastValueOfGlobalDataNamed: name [
 ]
 
 { #category : #'instance creation - spatial grid' }
-CMAbstractModel >> loadEnvironmentFromDirectory: aName [
+CMAbstractModel >> loadEnvironmentFromDirectory: aStringOrFileReference [
 	"Purpose: create a spatial grid of cells and load attributes value specified in a defined .cell directory.
-	Argument: aName = <String> or aName = <FileReference> . If aName = <String>, it creates a directory named aName in the maps directory.
+	If aStringOrFileReference = <String>, it creates a directory named aName in the maps directory.
 	Example:	CMECECModel new loadEnvironmentFromDirectory: 'poor.cells' "
 
-	self spaceModel loadEnvironmentFromDirectory: aName
+	self spaceModel loadEnvironmentFromDirectory: aStringOrFileReference
 ]
 
 { #category : #'instance creation - spatial grid' }
@@ -2350,8 +2347,7 @@ aSymbol is the name of the cell pov to be displayed
 Example:	self configureWithCellFile: 'test.cells' withPov: #state
 Example: self configureWithCellFile: (FileLocator workingDirectory / 'assets' / 'models' / self modelPrefix withExtension: 'cells') withPov: #state"
 
-	self spaceModel loadEnvironmentFromDirectory: aName.
-	self displayPov: aSymbol of: self class cellClass
+	self spaceModel loadEnvironmentFromDirectory: aName withPov: aSymbol
 ]
 
 { #category : #'user interface' }

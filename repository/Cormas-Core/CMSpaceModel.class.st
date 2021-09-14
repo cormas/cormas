@@ -343,13 +343,6 @@ CMSpaceModel >> cellClass [
 	^ self cormasModelClass cellClass
 ]
 
-{ #category : #'CSE (general) - import - export' }
-CMSpaceModel >> cellFileDirectory [
-"Returns a FileReference to the maps subdirectory of the model.
-Ex: /Users/.../cormas/assets/models/ECEC/maps"
-	^ self resourceLocator mapsPath: self cormasModelClass shortName
-]
-
 { #category : #'ESE (regular) - special locations' }
 CMSpaceModel >> cellsBetweenColumn1: colNumber1 andColumn2: colNumber2 [
 	"Return the cells between the colNumber1 and the colNumber2 of the spatial grid.
@@ -1640,54 +1633,26 @@ CMSpaceModel >> line: i column: j [
 
 { #category : #'CSE (general) - import - export' }
 CMSpaceModel >> loadEnvironmentFromDirectory: aStringOrFileReference [
-"Purpose: Create a grid from a cells directory.
- Example of string: 'poor.cells' 
- See ISSUE #311 from Tomooda: https://github.com/cormas/cormas/issues/311:
-The old .env file is split into multiple files in a directory with a YAML file for parameters of the space model and CSV files corresponding to its attributes.
-For example, assuming that we have the following Sample.env file:
-		dimensions      27 27
-		cloture closed
-		connexite       eight
-		delimiteur      0
-		attributs       biomass(Number)
-		2
-		3
-		1
-		...
-Now there is a 'Sample.cells' directory with the following 'spaceModel.yml
-		version: 0.0.1
-		dimensions: [27, 27]
-		closed: false
-		connectivity: eight
-		attributes:
- 			biomass: Number
-+ a biomass.csv file of 27 lines and 27 columns:
-	2,3,1,...
-	9,2,6,...
- "
-	| cellsFile |
-	
-	cellsFile := aStringOrFileReference isString
-		ifTrue: [ self cellFileDirectory / aStringOrFileReference ]
-		ifFalse: [ aStringOrFileReference ].
-	cellsFile exists
-		ifFalse: [ | envFile |
-			envFile := cellsFile withExtension: 'env'.
-			envFile exists
-				ifTrue: [ CMEnv2CellsConverter fromFile: envFile ]
-				ifFalse: [ ^ self error: 'No such a file.' ] ].
+	" Load aStringOrFileReference representing a file with cells information in YAML format, or raise an <Exception> if not valid. 
+	Set the receiver's model default PoV of the cellClass "
+
 	CMCellsLoader new
 		spaceModel: self;
-		load: cellsFile
+		load: aStringOrFileReference.
+	self
+		displayPov: #defaultPOV
+		of: self cellClass
 ]
 
 { #category : #'ESE initialize-release' }
-CMSpaceModel >> loadEnvironmentFromDirectory: aName withPov: aSymbol [
+CMSpaceModel >> loadEnvironmentFromDirectory: aStringOrFileReference withPov: aSymbol [
 	"Load a grid stored as filename and display a POV on each opened grid.
-	aName = <String> or aName = <FileReference> . If aName = <String>, it creates a directory in the maps directory.
+	If aStringOrFileReference = <String>, it creates a directory in the maps directory.
 	Example:	aName = 'test.cells' "
 	
-	self loadEnvironmentFromDirectory: aName.
+	CMCellsLoader new
+		spaceModel: self;
+		load: aStringOrFileReference.
 	self
 		displayPov: aSymbol
 		of: self cellClass
