@@ -72,20 +72,25 @@ CMR3SpacePresenter >> addNewSituatedEntities [
 ]
 
 { #category : #'instance creation' }
+CMR3SpacePresenter >> addViewForAgent: atse [
+	" Private - Create a view for each agent in aCollectionOfEntities and add it to the receiver's canvas "
+	| windowSize axisXPos axisYPos |
+
+	axisXPos := self collectXAxisPositions.
+	axisYPos := self collectYAxisPositions.
+	origin := axisXPos min @ axisYPos min.
+	windowSize := axisXPos max @ axisYPos max.
+
+	cellSize := (windowSize - origin) / (model spaceModel column @ model spaceModel line).
+	situatedEntitiesViews := atse collect: [ : se | self newSEViewForModel: se ].
+]
+
+{ #category : #'instance creation' }
 CMR3SpacePresenter >> addViewForAgents: theSituatedEntities [
 	" Private - Create views for situated entities (agents) "
 
-	| windowSize |
-
-
-	theSituatedEntities ifNotEmpty: [ : atse |
-
-		origin := self collectXAxisPositions min @ self collectYAxisPositions min.
-		windowSize := self collectXAxisPositions max @ self collectYAxisPositions max.
-		"9@6 / (3@2)"
-		cellSize := (windowSize - origin) / (model spaceModel column @ model spaceModel line).
-		situatedEntitiesViews := atse collect: [ : se | self newSEViewForModel: se ].
-		self canvas addAll: situatedEntitiesViews ].
+	theSituatedEntities ifNotEmpty: [ : atse | self addViewForAgent: atse ].
+	self canvas addAll: situatedEntitiesViews.
 	self moveSituatedEntities
 
 ]
@@ -214,6 +219,14 @@ CMR3SpacePresenter >> defaultLayoutClass [
 CMR3SpacePresenter >> defaultSituatedEntityViewClass [
 
 	^ RSEllipse
+]
+
+{ #category : #refreshing }
+CMR3SpacePresenter >> delete [ 
+	" Release all instance variables. See https://github.com/cormas/cormas/issues/493 "
+
+	self release.
+	super delete.
 ]
 
 { #category : #'instance creation' }
