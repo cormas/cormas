@@ -183,7 +183,7 @@ CMR3SpaceInterface >> initializeEnvironmentMenuToolbar [
 				addItem: [ : item | 
 					item 
 						name: self translator tClose;
-						action: [ self close ] ] ]
+						action: [ self delete ] ] ]
 ]
 
 { #category : #initialization }

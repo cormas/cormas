@@ -313,7 +313,7 @@ CMConwayModel >> initGliders [
 { #category : #init }
 CMConwayModel >> initGlidersGun [
 
-	self loadEnvironmentFromDirectory: 'glidersGun.cells'
+	self spaceModel loadEnvironmentFromDirectory: 'glidersGun.cells'
 ]
 
 { #category : #init }

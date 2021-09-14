@@ -242,7 +242,6 @@ CMR3SpacePresenter >> initializePresenters [
 	" Private - This method initializes a simulationGrid for a specific cormasModel , without specifyin any animation behaviour "
 
 	self addViewForCells: self model theESE.
-	self halt.
 	self addViewForAgents: self model allTheSituatedEntities.
 	
 	model projectAnnouncer

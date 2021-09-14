@@ -1462,7 +1462,7 @@ aSelectorName could be the name of a method or a Symbol for which an EntityImage
 				at: aSelectorName
 				ifAbsentPut: [ Color veryLightGray ] ].	"aSelectorName is a method for a changeable color"
 
-	^ (self perform: aSelectorName) asColorForPoV.
+	^ (self perform: aSelectorName) asColorForPoV: self
 
 ]
 

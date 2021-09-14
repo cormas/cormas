@@ -1,7 +1,7 @@
 Extension { #name : #Color }
 
 { #category : #'*Cormas-UI' }
-Color >> asColorForPoV [
+Color >> asColorForPoV: anEntityClass [
 
 	^ self
 ]
