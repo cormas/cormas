@@ -721,6 +721,13 @@ CMSpaceModel >> deleteSpatialEntitySet: aSpatialEntitySetClass [
 	self spaceModel resetCompoundSpatialEntity: aSpatialEntitySetClass
 ]
 
+{ #category : #'as yet unclassified' }
+CMSpaceModel >> dimensions [
+	" Answer a <Point> with the receiver's lines and columns "
+	
+	^ self column @ self line
+]
+
 { #category : #'ESE (regular) - special locations' }
 CMSpaceModel >> dimensions: aCollectionOrAssociation [
 	" Configure the receiver's dimension taking the first element of aCollectionOrAssociation (or key if Association) as the lines and the second element (or value) as the number of columns "

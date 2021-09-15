@@ -11,7 +11,9 @@ Class {
 		'layoutClass',
 		'elemClass',
 		'sevClass',
-		'activePoVsDictionary'
+		'activePoVsDictionary',
+		'scaleInterpolator',
+		'theCellViews'
 	],
 	#category : #'Cormas-UI-Roassal3'
 }
@@ -74,14 +76,8 @@ CMR3SpacePresenter >> addNewSituatedEntities [
 { #category : #'instance creation' }
 CMR3SpacePresenter >> addViewForAgent: atse [
 	" Private - Create a view for each agent in aCollectionOfEntities and add it to the receiver's canvas "
-	| windowSize axisXPos axisYPos |
 
-	axisXPos := self collectXAxisPositions.
-	axisYPos := self collectYAxisPositions.
-	origin := axisXPos min @ axisYPos min.
-	windowSize := axisXPos max @ axisYPos max.
-
-	cellSize := (windowSize - origin) / (model spaceModel column @ model spaceModel line).
+	cellSize := self canvas encompassingRectangle extent / model spaceModel dimensions.
 	situatedEntitiesViews := atse collect: [ : se | self newSEViewForModel: se ].
 ]
 
@@ -98,12 +94,10 @@ CMR3SpacePresenter >> addViewForAgents: theSituatedEntities [
 { #category : #'instance creation' }
 CMR3SpacePresenter >> addViewForCells: cells [
 
-	| theCellViews |
-	
 	theCellViews := cells collect: [ : cell | self newElementViewForModel: cell ] as: RSGroup.
 	self canvas addAll: theCellViews.
-	self configurePopUpOn: theCellViews.
-	self configureLayoutOn: theCellViews.
+	self configurePopUp.
+	self configureLayout.
 ]
 
 { #category : #'accessing - pov' }
@@ -161,26 +155,23 @@ CMR3SpacePresenter >> configureLayout [
 	self layoutClass new
 		gapSize: 0;
 		lineItemsCount: model spaceModel column;
-		on: self nodes	
-]
-
-{ #category : #'accessing - layouts' }
-CMR3SpacePresenter >> configureLayoutOn: aRSGroup [
-
-	self layoutClass new
-		gapSize: 0;
-		lineItemsCount: model spaceModel column;
-		on: self canvas nodes
+		on: self canvas nodes	
 ]
 
 { #category : #'instance creation' }
-CMR3SpacePresenter >> configurePopUpOn: theCellViews [
+CMR3SpacePresenter >> configurePopUp [
 
 	| popUp |
 	popUp := RSPopup text: [ : aCMEntity | aCMEntity asString ].
-	theCellViews
+	self canvas nodes
 		@ popUp;
-		when: RSMouseLeftClick do: [ : aRSMouseClick | aRSMouseClick shape model inspect ].
+		when: RSMouseLeftClick do: [ : aRSMouseClick |
+			| position |
+			
+			position := aRSMouseClick shape position.
+			self canvas nodes 
+				select: [ : v | v encompassingRectangle containsPoint: position ]
+				thenDo: [ : s | s model inspect ] ].
 ]
 
 { #category : #accessing }
@@ -213,6 +204,14 @@ CMR3SpacePresenter >> defaultElementClass [
 CMR3SpacePresenter >> defaultLayoutClass [
 
 	^ RSGridLayout
+]
+
+{ #category : #defaults }
+CMR3SpacePresenter >> defaultScaleInterpolator [
+
+	^ NSScale linear
+		domain: (0 to: 5 by: 0.1);
+		range: RSColorPalette sequential greens9 range
 ]
 
 { #category : #defaults }
@@ -294,11 +293,12 @@ CMR3SpacePresenter >> model: anObject [
 CMR3SpacePresenter >> moveSituatedEntities [
 	" Position the already created entities views to the location determined by each view's patch "
 
-	self situatedEntitiesViews ifNotEmpty: [ : eViews |
-		eViews do: [ : e | 
+	self situatedEntitiesViews do: [ : e | 
 			"Adding property to be draggable"
 			e @ RSDraggable.
-			e translateTo: e model patch numCol @ e model patch numLine * cellSize ] ]
+			e
+				size: e model sizeOfPOV;
+				translateTo: (e model patch numCol @ e model patch numLine * cellSize) - (cellSize / 2) ] 
 ]
 
 { #category : #'instance creation' }
@@ -344,20 +344,26 @@ CMR3SpacePresenter >> origin: anObject [
 ]
 
 { #category : #refreshing }
-CMR3SpacePresenter >> removeObsoleteSituatedEntities [
+CMR3SpacePresenter >> removeDeadSituatedEntities [
 
-	| obsoleteSituatedEntities |
+	| deadSituatedEntities  |
 	self situatedEntitiesViews isEmpty ifTrue: [ ^ self ].
-	obsoleteSituatedEntities := self situatedEntitiesViews reject: [ :e | e model isSituated ].
-	obsoleteSituatedEntities do: [ :e | e remove ].
-	self situatedEntitiesViews removeAll: obsoleteSituatedEntities
+	deadSituatedEntities := self situatedEntitiesViews reject: [ :e | e model isSituated ].
+	deadSituatedEntities do: [ :e | e remove ].
+	self situatedEntitiesViews removeAll: deadSituatedEntities
+]
+
+{ #category : #accessing }
+CMR3SpacePresenter >> scaleInterpolator [
+
+	^ scaleInterpolator 
+		ifNil: [ scaleInterpolator := self defaultScaleInterpolator ]
 ]
 
 { #category : #'accessing - pov' }
 CMR3SpacePresenter >> setAndRefreshActivePovSelectorOf: aClass with: aSymbol [
 	" Configure a single point of view with selector aSymbol in model class aClass "
 
-	self halt.
 	self atClass: aClass putActivePovSelector: aSymbol.
 	self updateNodesOf: aClass.
 	self canvas signalUpdate
@@ -421,16 +427,31 @@ CMR3SpacePresenter >> speed: anObject [
 	speed := anObject
 ]
 
+{ #category : #accessing }
+CMR3SpacePresenter >> theCellViews [
+
+	^ theCellViews
+		ifNil: [ theCellViews := OrderedCollection new ]
+]
+
+{ #category : #accessing }
+CMR3SpacePresenter >> theCellViews: anObject [
+
+	theCellViews := anObject
+]
+
 { #category : #refreshing }
 CMR3SpacePresenter >> timeChanged: aNewTimeStep [
 
 	aNewTimeStep = 0
 		ifTrue: [ self clearView.
 			self addViewForCells: model theESE ]
-		ifFalse: [ self removeObsoleteSituatedEntities ].
+		ifFalse: [ self removeDeadSituatedEntities ].
 	self addNewSituatedEntities.
 	self moveSituatedEntities.
-	self nodes do: #signalUpdate.
+	self theCellViews do: [ : node | 
+		node color: (self scaleInterpolator scale: node model biomass / 10.0).
+		node signalUpdate ].
 	self canvas signalUpdate
 ]
 
