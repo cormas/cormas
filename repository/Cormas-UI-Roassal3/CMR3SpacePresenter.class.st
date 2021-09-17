@@ -60,6 +60,17 @@ CMR3SpacePresenter >> activePoVsDictionary [
 	^ activePoVsDictionary ifEmpty: [ activePoVsDictionary := self defaultActivePoVs ]
 ]
 
+{ #category : #'accessing - pov' }
+CMR3SpacePresenter >> activeSpatialEntityPov [
+	" Answer a <Symbol> representing the selector of the active PoV which is a Spatial Entity "
+	
+	| spatialEntitySelections |
+	
+	spatialEntitySelections := self activePoVsDictionary associationsSelect: [ : assoc | assoc key isKindOf: CMSpatialEntityElement class ].
+	self assert: spatialEntitySelections size equals: 1.
+	^ spatialEntitySelections anyOne value
+]
+
 { #category : #refreshing }
 CMR3SpacePresenter >> addNewSituatedEntities [
 
@@ -85,10 +96,10 @@ CMR3SpacePresenter >> addViewForAgent: atse [
 CMR3SpacePresenter >> addViewForAgents: theSituatedEntities [
 	" Private - Create views for situated entities (agents) "
 
-	theSituatedEntities ifNotEmpty: [ : atse | self addViewForAgent: atse ].
-	self canvas addAll: situatedEntitiesViews.
+	theSituatedEntities ifNotEmpty: [ : atse | 
+		self addViewForAgent: atse.
+		self canvas addAll: situatedEntitiesViews ].
 	self moveSituatedEntities
-
 ]
 
 { #category : #'instance creation' }
@@ -371,7 +382,9 @@ CMR3SpacePresenter >> setAndRefreshActivePovSelectorOf: aClass with: aSymbol [
 
 { #category : #'accessing - pov' }
 CMR3SpacePresenter >> setAndRefreshActivePovs [
-	" Configure the receiver's point of views in all classes in the active PoVs Dictionary "
+	" Configure the receiver's point of views in all classes in the active PoVs Dictionary.
+	
+	This method is only called in response of Apply Scenario settings button "
 
 	self activePoVsDictionary keysDo: [ : classPoV | self updateNodesOf: classPoV ].
 	self canvas signalUpdate
@@ -449,9 +462,7 @@ CMR3SpacePresenter >> timeChanged: aNewTimeStep [
 		ifFalse: [ self removeDeadSituatedEntities ].
 	self addNewSituatedEntities.
 	self moveSituatedEntities.
-	self theCellViews do: [ : node | 
-		node color: (self scaleInterpolator scale: node model biomass / 10.0).
-		node signalUpdate ].
+	self theCellViews do: [ : node | node updateEntityAspectIn: self ].
 	self canvas signalUpdate
 ]
 

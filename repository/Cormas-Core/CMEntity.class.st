@@ -1450,10 +1450,11 @@ CMEntity >> flag: aValue [
 
 { #category : #'utilities - color' }
 CMEntity >> getColorForPov: aSelectorName [
-	"Returns a Color according to the POV (aSelectorName).
-aSelectorName = <Symbol>.
-A color may be define to see an entity on the grid but also on another space (ex: communication space).
-aSelectorName could be the name of a method or a Symbol for which an EntityImage is assign"
+	" Returns a Color according to the POV (aSelectorName). aSelectorName = <Symbol>.
+	A color may be define to see an entity on the grid but also on another space (ex: communication space). 
+	aSelectorName could be the name of a method or a Symbol for which an EntityImage is assign.
+	
+	This method is only called in response of Apply Scenario settings button "
 	
 	aSelectorName ifNil: [ ^ Color veryLightGray ].	"aSelectorName is a key for a fixed color defined at the class level"
 	(self class colorsDict includesKey: aSelectorName)
@@ -1461,7 +1462,6 @@ aSelectorName could be the name of a method or a Symbol for which an EntityImage
 			^ self class colorsDict
 				at: aSelectorName
 				ifAbsentPut: [ Color veryLightGray ] ].	"aSelectorName is a method for a changeable color"
-
 	^ (self perform: aSelectorName) asColorForPoV: self
 
 ]

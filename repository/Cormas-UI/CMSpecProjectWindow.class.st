@@ -618,7 +618,7 @@ CMSpecProjectWindow >> openSpaceInterfaceUpdateScenario [
 	" Private - Open a space model interface. Close all opened space model windows if any "
 
 	CMR3SpaceInterface allInstancesDo: #delete.
-	self openSpaceInterface.
+	self spaceModel activePoVsDictionary ifNotEmpty: [ self openSpaceInterface ]
 
 
 ]
