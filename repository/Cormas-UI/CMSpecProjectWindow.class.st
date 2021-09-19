@@ -104,6 +104,8 @@ CMConwayModel spatialClasses.
 CMConwayModel passiveClasses.
 CMConwayModel socialClasses.
 
+SystemNavigation default obsoleteClasses.
+
 "================= Reset utilities ================="
 
 CMModel2ProjectMigrator rebuildModels.
@@ -113,12 +115,37 @@ CMConwayModel socialClasses: nil.
 CMConwayModel spatialClasses: nil.
 
 CMSpecProjectWindow allInstances first projectAnnouncer subscriptions reset.
-CMProjectManager allInstances first announcer subscriptions reset.
+CMProjectManager allInstances anyOne announcer subscriptions reset.
+CMProjectManager allInstances anyOne announcer subscriptions.
+
+CMR3SpaceInterface allInstances.
+CMR3SpaceInterface allInstances anyOne.
+CMR3SpaceInterface allInstances anyOne announcer.
+
+CMProjectOpener allInstances.
+CMProjectOpener allInstances anyOne.
+CMProjectOpener allInstances anyOne projectManager: nil.
+
+"================= Clean script ================="
 
 3 timesRepeat: [ Smalltalk garbageCollect ].
-{ CMProjectModel allInstances.
+
+CMProjectManager allInstances ifNotEmpty: [ : cpms | 
+	cpms do: [ : cpm | cpm fsm: nil ] ].
+CMR3SpaceInterface allInstances ifNotEmpty: [ : csps |
+	csps do: [ : csp | csp projectManager: nil; diagram: nil ] ].
+ 
+SmalltalkImage current fixObsoleteBindings.
+SmalltalkImage current fixObsoleteReferences.
+	SystemNavigation new obsoleteBehaviors size > 0
+		ifTrue: [ SystemNavigation new obsoleteBehaviors inspect.
+			self error: ''Still have obsolete behaviors. See inspector'' ].
+
+{ 
+CMProjectModel allInstances.
 CMProjectManager allInstances.
-CMSpecProjectWindow allInstances } allSatisfy: #isEmpty.'
+CMSpecProjectWindow allInstances 
+} allSatisfy: #isEmpty.'
 
 ]
 
@@ -618,6 +645,8 @@ CMSpecProjectWindow >> openSpaceInterfaceUpdateScenario [
 	" Private - Open a space model interface. Close all opened space model windows if any "
 
 	CMR3SpaceInterface allInstancesDo: #delete.
+"	self projectAnnouncer hasSubscriptions
+		ifTrue: [ self halt. self projectAnnouncer unsubscribeCormasSpaces ]."
 	self spaceModel activePoVsDictionary ifNotEmpty: [ self openSpaceInterface ]
 
 

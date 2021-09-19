@@ -48,7 +48,7 @@ CMR3SpacePresenter >> activePoVSelectorAtClass: aClass [
 	^ self activePoVsDictionary at: aClass ifAbsent: [ 
 			aClass superClassesUntilEntity  
 				ifEmpty: [ Color gray ] 
-				ifNotEmpty: [ self halt  ] ]
+				ifNotEmpty: [ #pov ] ]
 	
 ]
 
@@ -67,8 +67,9 @@ CMR3SpacePresenter >> activeSpatialEntityPov [
 	| spatialEntitySelections |
 	
 	spatialEntitySelections := self activePoVsDictionary associationsSelect: [ : assoc | assoc key isKindOf: CMSpatialEntityElement class ].
-	self assert: spatialEntitySelections size equals: 1.
-	^ spatialEntitySelections anyOne value
+	^ spatialEntitySelections size = 1
+		ifTrue: [ spatialEntitySelections anyOne value ]
+		ifFalse: [ spatialEntitySelections ifEmpty: [ #pov ] ifNotEmpty: [ self error ] ]
 ]
 
 { #category : #refreshing }
@@ -267,7 +268,7 @@ CMR3SpacePresenter >> initializePresenters [
 	self addViewForCells: self model theESE.
 	self addViewForAgents: self model allTheSituatedEntities.
 	
-	model projectAnnouncer
+	self projectAnnouncer
 		when: CMTimeChangedAnnouncement do: [ :aAnnounce | 
 			aAnnounce timeStep = 0 
 				ifFalse: [ self timeChanged: aAnnounce timeStep ] ];
@@ -352,6 +353,13 @@ CMR3SpacePresenter >> origin [
 { #category : #accessing }
 CMR3SpacePresenter >> origin: anObject [
 	origin := anObject
+]
+
+{ #category : #accessing }
+CMR3SpacePresenter >> projectAnnouncer [
+	" Private - Answer the <Announcer> used by the receiver's project "
+	
+	^ self cormasModel projectAnnouncer
 ]
 
 { #category : #refreshing }

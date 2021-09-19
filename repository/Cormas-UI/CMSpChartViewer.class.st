@@ -43,7 +43,7 @@ CMSpChartViewer class >> defaultSpec [
 CMSpChartViewer >> initializePresenters [
 
 	optionsPresenter := CMSpChartOptionsPresenter owner: self on: self cormasModel.
-	roassalChartPresenter := CMSpRoassalChartPresenter owner: self on: self cormasModel.
+	roassalChartPresenter := CMR3ChartPresenter owner: self on: self cormasModel.
 	self roassalChartPresenter plotChart: self roassalChartPresenter currentCanvas. 
 ]
 

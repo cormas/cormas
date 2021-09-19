@@ -79,6 +79,13 @@ CMR3SpaceInterface >> cormasModel [
 	^ self projectManager cormasModel.
 ]
 
+{ #category : #'submorphs - add/remove' }
+CMR3SpaceInterface >> delete [ 
+
+	self projectAnnouncer unsubscribe: self.
+	super delete.
+]
+
 { #category : #accessing }
 CMR3SpaceInterface >> diagram [
 
@@ -328,18 +335,23 @@ CMR3SpaceInterface >> initializeToolsMenuToolbar [
 { #category : #initialization }
 CMR3SpaceInterface >> initializeWindow: w [
 
-	| windowTitle |
-	windowTitle := String streamContents: [ : stream |
+	w 
+		title: self initializeWindowTitle;
+		initialExtent: 800 @ 500;
+		whenClosedDo: [ self projectAnnouncer unsubscribe: self ];
+		centered
+]
+
+{ #category : #initialization }
+CMR3SpaceInterface >> initializeWindowTitle [
+
+	^ String streamContents: [ : stream |
 		stream
 			<< self formattedWindowTitle;
 			<< ' - ';
 			<< self translator tSpaceInterface;
 			space;
 			<< self spaceModel humanReadableString ].
-	w 
-		title: windowTitle;
-		initialExtent: 800 @ 500;
-		centered
 ]
 
 { #category : #'initialization - menu' }

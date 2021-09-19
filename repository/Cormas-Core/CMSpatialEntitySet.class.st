@@ -306,17 +306,6 @@ CMSpatialEntitySet >> destroyed: aBoolean [
 	super destroyed: aBoolean
 ]
 
-{ #category : #obsolete }
-CMSpatialEntitySet >> displayString: aString [
-	
-	| x y |
-	x := self components asOrderedCollection first center x.
-	y := self components asOrderedCollection first center y.
-	self view graphicsContext
-		displayString: aString
-		at: x @ y
-]
-
 { #category : #'environment - distance' }
 CMSpatialEntitySet >> distanceTo: aSpatialEntity [
 	"Purpose: returns the Manhattan distance (in cells) between the receiver and aSpatialEntity
@@ -508,22 +497,6 @@ retourne la collection des noeuds de la ligne brisee"
 					aCollecOfLineSegments remove: segment]
 				ifFalse: [self halt]].
 	^vertices
-]
-
-{ #category : #obsolete }
-CMSpatialEntitySet >> keepImageAndAddComponent: cell [
-	"Purpose: silently adds a given component (do not notify the change to dependents)
-Argument: aSpatialEntity = <SpatialEntity>"
-	
-	self addSilentlyComponent: cell
-]
-
-{ #category : #obsolete }
-CMSpatialEntitySet >> keepImageAndAddComponents: aCollec [
-	"Purpose: silently adds a given set of components (do not notify the change to dependents)
-Argument: aCollec = <Collection(SpatialEntity)>"
-	
-	self addSilentlyComponents: aCollec
 ]
 
 { #category : #'environment - sensing - space' }
