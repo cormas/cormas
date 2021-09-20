@@ -160,10 +160,11 @@ BaselineOfCormas >> specForBaselines: spec [
 
 { #category : #specs }
 BaselineOfCormas >> specForPackages: spec [
+	" Private - Do not load the models in the image. Use the Open Project from the main UI instead "
 
 	spec
 		package: 'Cormas-Core' with: [ self specForPackagesInCore: spec ];
-		package: 'Cormas-Model-Conway' with: [ spec requires: #('Cormas-Core') ];
+"		package: 'Cormas-Model-Conway' with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Model-Conway-Tests' with: [ spec requires: #('Cormas-Model-Conway') ];	
 		package: 'Cormas-Model-DemoAggregates'  with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Model-Diffuse'  with: [ spec requires: #('Cormas-Core') ];
@@ -171,7 +172,7 @@ BaselineOfCormas >> specForPackages: spec [
 		package: 'Cormas-Model-FireAutomata' with: [ spec requires: #('Cormas-Core' 'Cormas-Tests') ];
 		package: 'Cormas-Model-PlotsRental' with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Model-ReHab' with: [ spec requires: #('Cormas-Core') ];
-		package: 'Cormas-Model-Stupid' with: [ spec requires: #('Cormas-Core') ];
+		package: 'Cormas-Model-Stupid' with: [ spec requires: #('Cormas-Core') ];"
 		package: 'Cormas-Mocks' with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Tests' with: [ spec requires: #('Cormas-Core' 'Cormas-Mocks') ];
 		package: 'Cormas-OpenMole' with: [ spec requires: #('Cormas-Core' 'NeoJSON') ]

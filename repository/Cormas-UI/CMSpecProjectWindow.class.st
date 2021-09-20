@@ -508,6 +508,19 @@ CMSpecProjectWindow >> menuEnableVisualizationGroup [
 ]
 
 { #category : #'submenu-tools-developer' }
+CMSpecProjectWindow >> openCormasBaselineBrowser [
+
+	Smalltalk tools browser openWithState: [ : browser | 
+		browser 
+			setUpScopedModeWith: (ClyPackageScope 
+				of: BaselineOfCormas package
+				in: ClyNavigationEnvironment currentImage 
+				named: 'CORMAS Metacello Baseline');
+			selectPackage: BaselineOfCormas package;
+			selectClass: BaselineOfCormas ]
+]
+
+{ #category : #'submenu-tools-developer' }
 CMSpecProjectWindow >> openCormasIssue [
 
 	Cursor wait showWhile: [ WebBrowser openOn: 'https://github.com/cormas/cormas/issues/new/choose' ]
@@ -783,11 +796,14 @@ CMSpecProjectWindow >> subMenuDevTools [
 		addGroup: [ : group |
 			group 
 				addItem: [ : item | self subMenuDependenciesTool: item ];
-				addItem: [ : item | self subMenuDependenciesGraph: item ] ];
+				addItem: [ : item | self subMenuDependenciesGraph: item ];
+				addItem: [ : item | self subMenuToolsBrowseBaseline: item ] ];			
 		addGroup: [ : group | 
 			group
 				addItem: [ : item | self subMenuToolsExpressions: item ];
 				addItem: [ : item | self subMenuToolsCormasBrowser: item ];
+				addItem: [ : item | self subMenuToolsBrowseFlags: item ];
+				addItem: [ : item | self subMenuToolsBrowseHalts: item ];
 				addItem: [ : item | self subMenuOpenCormasIssue: item ];
 				addItem: [ : item | self subMenuRunCormasTests: item ] ]
 ]
@@ -1308,6 +1324,36 @@ CMSpecProjectWindow >> subMenuStopWSR: item [
 { #category : #'submenu-tools' }
 CMSpecProjectWindow >> subMenuToolsAddOns: item [
 
+]
+
+{ #category : #'submenu-tools-developer' }
+CMSpecProjectWindow >> subMenuToolsBrowseBaseline: item [
+
+	item
+		name: 'Browse CORMAS Baseline';
+		icon: (self iconNamed: #smallHierarchyBrowser);
+		shortcut: $P command;
+		action: [ self openCormasBaselineBrowser ]
+]
+
+{ #category : #'submenu-tools-developer' }
+CMSpecProjectWindow >> subMenuToolsBrowseFlags: item [
+
+	item
+		name: 'CORMAS Methods with #flag:';
+		icon: (self iconNamed: #flag);
+		shortcut: $F command;
+		action: [ self openCormasFlagMethods ]
+]
+
+{ #category : #'submenu-tools-developer' }
+CMSpecProjectWindow >> subMenuToolsBrowseHalts: item [
+
+	item
+		name: 'CORMAS Methods with #halt';
+		icon: (self iconNamed: #halt);
+		shortcut: $H command;
+		action: [ self openCormasHaltMethods ]
 ]
 
 { #category : #'submenu-tools-developer' }
