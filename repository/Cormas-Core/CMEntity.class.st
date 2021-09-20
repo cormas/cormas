@@ -351,7 +351,7 @@ CMEntity class >> allTerminalClasses [
 Return value: anOrderedCollection
 Example: LandCover allTerminalClasses"
 	
-	^self withAllSubclasses select: [:aClass | Cormas isTerminal: aClass]
+	^ self withAllSubclasses select: #isTerminal
 ]
 
 { #category : #accessing }
@@ -1396,10 +1396,9 @@ CMEntity >> currentTime [
 
 { #category : #pov }
 CMEntity >> defaultPOV [
-	"Purpose: returns the class name, to be added as an associated symbol in the Pov Setter Interface
-	Return value: <ByteSymbol>"
+	" Answer a <Color> representing the receiver "
 
-	^ self class name
+	^ self pov
 ]
 
 { #category : #displaying }
@@ -1433,6 +1432,7 @@ CMEntity >> destroyed: aBoolean [
 CMEntity >> figureAt: selectorName [
 	"Returns the figure for a selectorName"
 	
+	self flag: #toReview.
 	^(self povAt: selectorName) asFigure
 ]
 
@@ -1450,32 +1450,20 @@ CMEntity >> flag: aValue [
 
 { #category : #'utilities - color' }
 CMEntity >> getColorForPov: aSelectorName [
-	"Returns a Color according to the POV (aSelectorName).
-aSelectorName = <Symbol>.
-A color may be define to see an entity on the grid but also on another space (ex: communication space).
-aSelectorName could be the name of a method or a Symbol for which an EntityImage is assign"
+	" Returns a Color according to the POV (aSelectorName). aSelectorName = <Symbol>.
+	A color may be define to see an entity on the grid but also on another space (ex: communication space). 
+	aSelectorName could be the name of a method or a Symbol for which an EntityImage is assign.
 	
-	| aColor |
-
+	This method is only called in response of Apply Scenario settings button "
+	
 	aSelectorName ifNil: [ ^ Color veryLightGray ].	"aSelectorName is a key for a fixed color defined at the class level"
 	(self class colorsDict includesKey: aSelectorName)
 		ifTrue: [ 
 			^ self class colorsDict
 				at: aSelectorName
 				ifAbsentPut: [ Color veryLightGray ] ].	"aSelectorName is a method for a changeable color"
+	^ (self perform: aSelectorName) asColorForPoV: self
 
-	aColor := self perform: aSelectorName.
-	aColor class = Color
-		ifTrue: [ ^ aColor ]
-		ifFalse: [
-			(Color class selectors includes: aColor)
-				ifTrue: [ ^ Color perform: aColor ]
-				ifFalse: [
-					(self class class selectors includes: ('SpatialEntityPOV_',aColor) asSymbol)
-						ifTrue:[^Color fromArray: (self class perform: ('SpatialEntityPOV_',aColor) asSymbol)]
-						ifFalse:[^self class colorsDict
-										at: aColor
-										ifAbsent: [Color veryLightGray]]]]
 ]
 
 { #category : #displaying }
@@ -1510,6 +1498,8 @@ CMEntity >> getPovSpecForSelector: selectorName andInfo: aInfoName [
 	"Returns the Pov Spec for a pov selectorName and a infoName "
 	
 	| spec |
+	
+	self flag: #toReview.
 	spec := EntityPOVSpec new.
 	spec povSelector: selectorName.
 	spec povResult: (self getPovResultFor: selectorName).
@@ -1725,6 +1715,7 @@ CMEntity >> povAt: selectorName [
 	"Returns the povSymbol for a selectorName"
 	" ^(self class imageAtPov: selectorName) copy."
 	
+	self flag: #toReview.	
 	^self class
 		createEntityPOVwithSpec:
 			(self getPovSpecForSelector: selectorName andInfo: #nil)

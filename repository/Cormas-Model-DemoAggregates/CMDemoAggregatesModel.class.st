@@ -275,7 +275,7 @@ CMDemoAggregatesModel >> seeds: arg1 [
 { #category : #init }
 CMDemoAggregatesModel >> setAggregatesFifthFourth [
 
-	self spaceModel loadEnvironmentFromDirectory: '3forests.cells'.
+	self loadEnvironmentFromDirectory: '3forests.cells'.
 	self
 		createAggregates: CMDemoAggregatesGrove
 		from: CMDemoAggregatesPlot

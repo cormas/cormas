@@ -79,6 +79,13 @@ CMR3SpaceInterface >> cormasModel [
 	^ self projectManager cormasModel.
 ]
 
+{ #category : #'submorphs - add/remove' }
+CMR3SpaceInterface >> delete [ 
+
+	self projectAnnouncer unsubscribe: self.
+	super delete.
+]
+
 { #category : #accessing }
 CMR3SpaceInterface >> diagram [
 
@@ -117,8 +124,11 @@ CMR3SpaceInterface >> initializeDiagram [
 	diagram := self
 		           instantiate: self appSettingsClass settingSpaceViewer
 		           on: self cormasModel.
-	self cormasModel initActivePoV: self diagram.
-
+	self projectAnnouncer
+		when: CMSChangePoVAnnouncement 
+		send: #setAndRefreshActivePovs
+		to: self diagram.
+	
 ]
 
 { #category : #initialization }
@@ -180,7 +190,7 @@ CMR3SpaceInterface >> initializeEnvironmentMenuToolbar [
 				addItem: [ : item | 
 					item 
 						name: self translator tClose;
-						action: [ self close ] ] ]
+						action: [ self delete ] ] ]
 ]
 
 { #category : #initialization }
@@ -326,9 +336,22 @@ CMR3SpaceInterface >> initializeToolsMenuToolbar [
 CMR3SpaceInterface >> initializeWindow: w [
 
 	w 
-		title: self formattedWindowTitle , ' - ' , self translator tSpaceInterface;
+		title: self initializeWindowTitle;
 		initialExtent: 800 @ 500;
+		whenClosedDo: [ self projectAnnouncer unsubscribe: self ];
 		centered
+]
+
+{ #category : #initialization }
+CMR3SpaceInterface >> initializeWindowTitle [
+
+	^ String streamContents: [ : stream |
+		stream
+			<< self formattedWindowTitle;
+			<< ' - ';
+			<< self translator tSpaceInterface;
+			space;
+			<< self spaceModel humanReadableString ].
 ]
 
 { #category : #'initialization - menu' }
@@ -380,6 +403,12 @@ CMR3SpaceInterface >> menuToolbar: anObject [
 	menuToolbar := anObject
 ]
 
+{ #category : #initialization }
+CMR3SpaceInterface >> projectAnnouncer [
+
+	^ self cormasModel projectAnnouncer
+]
+
 { #category : #accessing }
 CMR3SpaceInterface >> projectManager [
 
@@ -390,6 +419,13 @@ CMR3SpaceInterface >> projectManager [
 CMR3SpaceInterface >> projectManager: anObject [
 
 	projectManager := anObject
+]
+
+{ #category : #accessing }
+CMR3SpaceInterface >> spaceModel [
+	" Answer a <CMSpaceModel>, the receiver's model configured space "
+	
+	^ self cormasModel spaceModel
 ]
 
 { #category : #accessing }

@@ -38,7 +38,8 @@ CMReHabFamily class >> activeProbes [
 
 { #category : #probes }
 CMReHabFamily class >> colorOfProbe_cumulatedHarvest [
-  ^ ColorValue red
+
+  ^ Color red
 ]
 
 { #category : #'default value' }

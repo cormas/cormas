@@ -257,20 +257,14 @@ CMAbstractModel class >> allInstanceSelectors [
 CMAbstractModel class >> allTerminalClasses [
 	"Return a collection of classes without superclasses"
 
-	^ OrderedCollection
-		streamContents: [ :stream | 
+	^ OrderedCollection streamContents: [ :stream | 
 			(self spatialClasses_sorted ifNil: [ #() ])
-				do: [ :spatialClass | 
-					(Cormas isTerminal: spatialClass)
-						ifTrue: [ stream nextPut: spatialClass ] ].
+				do: [ :spatialClass | spatialClass ifTerminal: [ stream nextPut: spatialClass ] ].
 			(self socialClasses ifNil: [ #() ])
-				do: [ :socialClass | 
-					(Cormas isTerminal: socialClass)
-						ifTrue: [ stream nextPut: socialClass ] ].
+				do: [ :socialClass | socialClass ifTerminal: [ stream nextPut: socialClass ] ].
 			(self passiveClasses ifNil: [ #() ])
 				do: [ :passiveClass | 
-					((Cormas isTerminal: passiveClass)
-						and: [ passiveClass inheritsFrom: CMEntity ])
+					(passiveClass isTerminal and: [ passiveClass inheritsFrom: CMEntity ])
 						ifTrue: [ stream nextPut: passiveClass ] ] ]
 ]
 
@@ -1074,6 +1068,7 @@ CMAbstractModel >> allEntitiesFrom: aClass getInfoFor: infoSymbol [
 CMAbstractModel >> allEntitiesFrom: aClass povAt: povSelector [
 	"return a collection of povs from all entities inheriting from aClass"
 	
+	self flag: #toReview.
 	^(self allTheEntities: aClass) collect: [:each | each povAt: povSelector]
 ]
 
@@ -1160,9 +1155,9 @@ CMAbstractModel >> allThePassiveObjects [
 
 { #category : #'accessing - entities' }
 CMAbstractModel >> allTheSituatedEntities [
-	"Returns a collection of all the instances of AgentLocation and of ObjectLocation (and sub classes) collected by cormasModel, which are situated on a patch"
+	" Answer a <Collection> of all the instances of AgentLocation and of ObjectLocation (and sub classes) collected by cormasModel, which are situated on a patch "
 	
-	^self allTheEntities select: [:entity | entity isSituated]
+	^ self allTheEntities select: #isSituated
 ]
 
 { #category : #'accessing - entities' }
@@ -1866,6 +1861,7 @@ CMAbstractModel >> displayDefaultPovOf: aClass [
 	"Purpose: set the default POV of aClass to be displayed on the first opened spatial grid
 Example : self displayDefaultPovOf: Cell"
 	
+	self flag: #toReview.
 	self displayPov: #povClassName of: aClass
 ]
 
@@ -1875,11 +1871,7 @@ CMAbstractModel >> displayInfo: aSymbol of: aClass [
 Example : self displayInfo: #info_ID of: Cell"
 	
 	(aClass availableInfo includes: aSymbol)
-		ifFalse:
-			[self cormas
-				warn: 'The class <1s> does not have a info called <2s>'
-				with: aClass name
-				with: aSymbol].
+		ifFalse: [ self inform: ('The class {1} does not have a info called {2}' format: { aClass name . aSymbol }) ].
 	self spaceModel displayInfo: aSymbol of: aClass
 ]
 
@@ -1889,12 +1881,9 @@ CMAbstractModel >> displayPov: aSymbol of: aClass [
 Example : self displayPov: #landUse of: Cell"
 	
 	(aClass availablePov includes: aSymbol)
-		ifFalse:
-			[self cormas
-				warn: 'The class <1s> does not have a pov called <2s>'
-				with: aClass name
-				with: aSymbol].
+		ifFalse: [ ^ self inform: 'The class ' , aClass name , ' does not have a pov called ' , aSymbol ].
 	self spaceModel displayPov: aSymbol of: aClass
+
 ]
 
 { #category : #'utilities - space metrics' }
@@ -2303,11 +2292,10 @@ CMAbstractModel >> initializeProbes [
 
 { #category : #'initalize release' }
 CMAbstractModel >> initializeSpaceModel [
+	" Private - Setup the receiver's space model only if the model has a spatial entity cell class defined "
 
 	self class cellClass ifNil: [ ^ nil ].
-	self spaceModel: CMSpaceModel basicNew.
-	self spaceModel cormasModel: self.
-	self spaceModel initialize.
+	self spaceModel: (CMSpaceModel forModel: self).
 
 ]
 
@@ -2343,12 +2331,12 @@ CMAbstractModel >> lastValueOfGlobalDataNamed: name [
 ]
 
 { #category : #'instance creation - spatial grid' }
-CMAbstractModel >> loadEnvironmentFromDirectory: aName [
+CMAbstractModel >> loadEnvironmentFromDirectory: aStringOrFileReference [
 	"Purpose: create a spatial grid of cells and load attributes value specified in a defined .cell directory.
-	Argument: aName = <String> or aName = <FileReference> . If aName = <String>, it creates a directory named aName in the maps directory.
+	If aStringOrFileReference = <String>, it creates a directory named aName in the maps directory.
 	Example:	CMECECModel new loadEnvironmentFromDirectory: 'poor.cells' "
 
-	self spaceModel loadEnvironmentFromDirectory: aName
+	self spaceModel loadEnvironmentFromDirectory: aStringOrFileReference
 ]
 
 { #category : #'instance creation - spatial grid' }
@@ -2359,8 +2347,7 @@ aSymbol is the name of the cell pov to be displayed
 Example:	self configureWithCellFile: 'test.cells' withPov: #state
 Example: self configureWithCellFile: (FileLocator workingDirectory / 'assets' / 'models' / self modelPrefix withExtension: 'cells') withPov: #state"
 
-	self spaceModel loadEnvironmentFromDirectory: aName.
-	self displayPov: aSymbol of: self class cellClass
+	self spaceModel loadEnvironmentFromDirectory: aName withPov: aSymbol
 ]
 
 { #category : #'user interface' }
@@ -3118,6 +3105,8 @@ CMAbstractModel >> situatedEntitiesFrom: aClass povAt: povSelector [
 	"return a collection of povs from all entities inheriting from aClass"
 	
 	| coll |
+	
+	self flag: #toReview.
 	coll := OrderedCollection new.
 	(self theEntities: aClass)
 		do:

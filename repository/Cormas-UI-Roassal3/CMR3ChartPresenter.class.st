@@ -1,5 +1,5 @@
 Class {
-	#name : #CMSpRoassalChartPresenter,
+	#name : #CMR3ChartPresenter,
 	#superclass : #SpRoassalPresenter,
 	#instVars : [
 		'chartBuilder',
@@ -12,11 +12,11 @@ Class {
 		'numberOfVerticalTicks',
 		'xAxisLabelOffset'
 	],
-	#category : #'Cormas-UI-Spec2-Probes'
+	#category : #'Cormas-UI-Roassal3'
 }
 
 { #category : #'instance creation' }
-CMSpRoassalChartPresenter class >> owner: anOwningPresenter on: aDomainObject [
+CMR3ChartPresenter class >> owner: anOwningPresenter on: aDomainObject [
 
 	^ self basicNew
 		owner: anOwningPresenter;
@@ -26,7 +26,7 @@ CMSpRoassalChartPresenter class >> owner: anOwningPresenter on: aDomainObject [
 ]
 
 { #category : #'accessing - chart' }
-CMSpRoassalChartPresenter >> addAZeroDataSet [
+CMR3ChartPresenter >> addAZeroDataSet [
 	| xValue initialPlot |
 
 	initialPlot := RSLinePlot new.
@@ -42,7 +42,7 @@ CMSpRoassalChartPresenter >> addAZeroDataSet [
 ]
 
 { #category : #accessing }
-CMSpRoassalChartPresenter >> addControllers: aCanvas [
+CMR3ChartPresenter >> addControllers: aCanvas [
 
 	aCanvas
 		addInteraction: RSCanvasController new";
@@ -55,7 +55,7 @@ CMSpRoassalChartPresenter >> addControllers: aCanvas [
 ]
 
 { #category : #'accessing - chart' }
-CMSpRoassalChartPresenter >> addProbe: probeName ofClass: className color: aColor [
+CMR3ChartPresenter >> addProbe: probeName ofClass: className color: aColor [
 	" Private - Create a new line for the argument probeName with aColor. Obtain its y value from the cormas model "
 
 	| linePlot xValues yValues probeValues |
@@ -78,7 +78,7 @@ CMSpRoassalChartPresenter >> addProbe: probeName ofClass: className color: aColo
 ]
 
 { #category : #'accessing - chart' }
-CMSpRoassalChartPresenter >> addProbeLine: linePlot [
+CMR3ChartPresenter >> addProbeLine: linePlot [
 	" Add linePlot <RSLinePlot> to the receiver's probes to be displayed "
 
 	self probeLines add: linePlot
@@ -86,64 +86,64 @@ CMSpRoassalChartPresenter >> addProbeLine: linePlot [
 ]
 
 { #category : #accessing }
-CMSpRoassalChartPresenter >> chartBuilder [
+CMR3ChartPresenter >> chartBuilder [
 
 	^ chartBuilder
 ]
 
 { #category : #accessing }
-CMSpRoassalChartPresenter >> chartBuilder: anObject [
+CMR3ChartPresenter >> chartBuilder: anObject [
 
 	chartBuilder := anObject
 ]
 
 { #category : #accessing }
-CMSpRoassalChartPresenter >> cormasModel [
+CMR3ChartPresenter >> cormasModel [
 
 	^ cormasModel
 ]
 
 { #category : #accessing }
-CMSpRoassalChartPresenter >> cormasModel: anObject [
+CMR3ChartPresenter >> cormasModel: anObject [
 
 	cormasModel := anObject
 ]
 
 { #category : #accessing }
-CMSpRoassalChartPresenter >> cormasModelClass [ 
+CMR3ChartPresenter >> cormasModelClass [ 
 
 	^ self cormasModel class
 ]
 
 { #category : #defaults }
-CMSpRoassalChartPresenter >> defaultNumberOfVerticalTicks [
+CMR3ChartPresenter >> defaultNumberOfVerticalTicks [
 	
 	^ 2
 ]
 
 { #category : #defaults }
-CMSpRoassalChartPresenter >> defaultTitle [
+CMR3ChartPresenter >> defaultTitle [
 	" Private - Answer a <String> with the receiver's default title to appear inside the canvas "
 	
 	^ 'Probes for ' , self cormasModelClass name
 ]
 
 { #category : #defaults }
-CMSpRoassalChartPresenter >> defaultTitleSize [
+CMR3ChartPresenter >> defaultTitleSize [
 	" Private - Answer a <Number> with the receiver's default title size to appear inside the canvas "
 	
 	^ 15
 ]
 
 { #category : #defaults }
-CMSpRoassalChartPresenter >> defaultXAxisLabelOffset [
+CMR3ChartPresenter >> defaultXAxisLabelOffset [
 	" Answer a <Point> representing the receiver's X axis offset "
 	
 	^ 0 @ 5
 ]
 
 { #category : #'accessing - chart' }
-CMSpRoassalChartPresenter >> newBasicChartBuilder [
+CMR3ChartPresenter >> newBasicChartBuilder [
 	" Private - Answer a new <RSChart> with the basic decorations and settings "
 	
 	^ RSChart new
@@ -156,7 +156,7 @@ CMSpRoassalChartPresenter >> newBasicChartBuilder [
 ]
 
 { #category : #'accessing - chart' }
-CMSpRoassalChartPresenter >> newChartBuilder: ticksAssoc [
+CMR3ChartPresenter >> newChartBuilder: ticksAssoc [
 	" Private - Answer a new <RSChart> with ticksAssoc as the number of X ticks"
 	| newChart |
 	
@@ -167,7 +167,7 @@ CMSpRoassalChartPresenter >> newChartBuilder: ticksAssoc [
 ]
 
 { #category : #'accessing - ticks' }
-CMSpRoassalChartPresenter >> newHorizontalTick [
+CMR3ChartPresenter >> newHorizontalTick [
 	" Answer a new <RSHorizontalTick> with default or applied settings "
 
 	| hTick |
@@ -181,7 +181,7 @@ CMSpRoassalChartPresenter >> newHorizontalTick [
 ]
 
 { #category : #'accessing - ticks' }
-CMSpRoassalChartPresenter >> newVerticalTick [
+CMR3ChartPresenter >> newVerticalTick [
 	" Answer a new <RSVerticalTick> with default or applied settings "
 
 	| verticalTick |
@@ -196,58 +196,58 @@ CMSpRoassalChartPresenter >> newVerticalTick [
 ]
 
 { #category : #'accessing - ticks' }
-CMSpRoassalChartPresenter >> numberOfHorizontalTicks [
+CMR3ChartPresenter >> numberOfHorizontalTicks [
 
 	^ numberOfHorizontalTicks
 ]
 
 { #category : #'accessing - ticks' }
-CMSpRoassalChartPresenter >> numberOfHorizontalTicks: anObject [
+CMR3ChartPresenter >> numberOfHorizontalTicks: anObject [
 
 	numberOfHorizontalTicks := anObject
 ]
 
 { #category : #'accessing - ticks' }
-CMSpRoassalChartPresenter >> numberOfVerticalTicks [
+CMR3ChartPresenter >> numberOfVerticalTicks [
 
 	^ numberOfVerticalTicks
 		ifNil: [ numberOfVerticalTicks := self defaultNumberOfVerticalTicks ]
 ]
 
 { #category : #'accessing - ticks' }
-CMSpRoassalChartPresenter >> numberOfVerticalTicks: anObject [
+CMR3ChartPresenter >> numberOfVerticalTicks: anObject [
 
 	numberOfVerticalTicks := anObject
 ]
 
 { #category : #accessing }
-CMSpRoassalChartPresenter >> plotChart: aCanvas [
+CMR3ChartPresenter >> plotChart: aCanvas [
 
 	self chartBuilder container: aCanvas.
 	self addControllers: aCanvas.
 ]
 
 { #category : #accessing }
-CMSpRoassalChartPresenter >> probeLines [
+CMR3ChartPresenter >> probeLines [
 
 	^ probeLines
 		ifNil: [ probeLines := OrderedCollection new ]
 ]
 
 { #category : #accessing }
-CMSpRoassalChartPresenter >> probeNum [
+CMR3ChartPresenter >> probeNum [
 
 	^ probeNum
 ]
 
 { #category : #accessing }
-CMSpRoassalChartPresenter >> probeNum: anObject [
+CMR3ChartPresenter >> probeNum: anObject [
 
 	probeNum := anObject
 ]
 
 { #category : #public }
-CMSpRoassalChartPresenter >> refresh [
+CMR3ChartPresenter >> refresh [
 	"hard method rebuilding all datasets at each refresh."
 
 	probeNum := 1.
@@ -261,7 +261,7 @@ CMSpRoassalChartPresenter >> refresh [
 ]
 
 { #category : #initialization }
-CMSpRoassalChartPresenter >> setModelBeforeInitialization: aDomainObject [
+CMR3ChartPresenter >> setModelBeforeInitialization: aDomainObject [
 
 	cormasModel := aDomainObject.
 	self cormasModel announcer
@@ -274,7 +274,7 @@ CMSpRoassalChartPresenter >> setModelBeforeInitialization: aDomainObject [
 ]
 
 { #category : #'accessing - chart' }
-CMSpRoassalChartPresenter >> timeChanged: aNewTimeStep [
+CMR3ChartPresenter >> timeChanged: aNewTimeStep [
 
 	| newMaxX |
 		
@@ -291,7 +291,7 @@ CMSpRoassalChartPresenter >> timeChanged: aNewTimeStep [
 ]
 
 { #category : #'accessing - chart' }
-CMSpRoassalChartPresenter >> title [
+CMR3ChartPresenter >> title [
 	" Answer a <String> with the receiver's title shown inside the canvas "
 	
 	^ title
@@ -299,26 +299,26 @@ CMSpRoassalChartPresenter >> title [
 ]
 
 { #category : #accessing }
-CMSpRoassalChartPresenter >> title: aString [
+CMR3ChartPresenter >> title: aString [
 
 	title := aString
 ]
 
 { #category : #accessing }
-CMSpRoassalChartPresenter >> titleSize [
+CMR3ChartPresenter >> titleSize [
 
 	^ titleSize
 		ifNil: [ titleSize := self defaultTitleSize ]
 ]
 
 { #category : #accessing }
-CMSpRoassalChartPresenter >> titleSize: anObject [
+CMR3ChartPresenter >> titleSize: anObject [
 
 	titleSize := anObject
 ]
 
 { #category : #roassal2 }
-CMSpRoassalChartPresenter >> updateProbe: probeName ofClass: className [
+CMR3ChartPresenter >> updateProbe: probeName ofClass: className [
 	| ds yValues xValues cn pn |
 	self halt. "this method does not work"
 	cn := className asString.
@@ -341,7 +341,7 @@ CMSpRoassalChartPresenter >> updateProbe: probeName ofClass: className [
 ]
 
 { #category : #'accessing - chart' }
-CMSpRoassalChartPresenter >> xAxisLabelOffset [
+CMR3ChartPresenter >> xAxisLabelOffset [
 
 	^ xAxisLabelOffset
 		ifNil: [ xAxisLabelOffset := self defaultXAxisLabelOffset ]

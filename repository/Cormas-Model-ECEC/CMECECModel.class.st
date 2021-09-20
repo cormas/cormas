@@ -13,42 +13,48 @@ Class {
 
 { #category : #probes }
 CMECECModel class >> colorOfProbe_restrainedSize [
+
 	^ Color red: 0.104993 green: 0.104993 blue: 0.839458
 ]
 
 { #category : #probes }
 CMECECModel class >> colorOfProbe_unrestrainedSize [
+
 	^ Color r: 0.839458 g: 0.0 b: 0.0
 ]
 
 { #category : #probes }
 CMECECModel class >> colorOfProbe_vegetationBiomass [
+
 	^ Color red: 0.0 green: 0.839458 blue: 0.0
 ]
 
 { #category : #default }
 CMECECModel class >> defaultInit [
+
 	^ #randomEnv
 ]
 
 { #category : #default }
 CMECECModel class >> defaultProbes [
+
 	^ self probes
 ]
 
 { #category : #'examples - with SimManager' }
 CMECECModel class >> displayRunDuration: arg1 simName: arg2 [
-	| tmp1 tmp2 tmp4 |
+
+	| tmp1 tmp2 tmp3 |
 	tmp1 := 'Simulation [' , arg2 , ']was run in ' , arg1 printString
-		, ' milliseconds'.
-	arg1 > 1000
-		ifTrue: [ tmp1 := tmp1 , ', ie. '.
-			tmp2 := Time fromSeconds: arg1 / 1000.
-			tmp1 := tmp1 , tmp2 hours printString , ' h: '
-				, tmp2 minutes printString , ' m: '
-				, tmp2 seconds asFloat printString , ' s.' ].
-	tmp4 := Transcript.
-	tmp4
+	        , ' milliseconds'.
+	arg1 > 1000 ifTrue: [ 
+		tmp1 := tmp1 , ', ie. '.
+		tmp2 := Time fromSeconds: arg1 / 1000.
+		tmp1 := tmp1 , tmp2 hours printString , ' h: '
+		        , tmp2 minutes printString , ' m: '
+		        , tmp2 seconds asFloat printString , ' s.' ].
+	tmp3 := Transcript.
+	tmp3
 		cr;
 		show: tmp1
 ]
@@ -196,27 +202,16 @@ CMECECModel >> fragmentedEnv [
 { #category : #init }
 CMECECModel >> homogeneousEnv2 [
 
-	self spaceModel
+	self
 		createGridLines: 27
 		columns: 27
-		neighbourhood: #eight
+		neighbourhood: 8
 		closed: false.
-	self theVegetationUnits do: [ : cell | cell initRandomBiomass ].
-	self initAgents
-]
-
-{ #category : #init }
-CMECECModel >> initActivePoVClass [
-	" See superimplementor's comment "
-
-	^ CMECECVegetationUnit 
-]
-
-{ #category : #init }
-CMECECModel >> initActivePoVSelector [
-	" See superimplementor's comment "
-
-	^ #povBiomass 
+	self theVegetationUnits do: [ :arg1 | arg1 initRandomBiomass ].
+	self
+		initAgents;
+		displayPov: #povBiomass of: CMECECVegetationUnit;
+		displayPov: #defaultPOV of: CMECECForager
 ]
 
 { #category : #'init entities' }
@@ -285,8 +280,9 @@ CMECECModel >> theCMECECForagers [
 { #category : #accessing }
 CMECECModel >> theRestraineds [
 
-	^ theRestraineds 
-		ifNil:[ theRestraineds := OrderedCollection new ]
+	^ theRestraineds
+		  ifNil: [ theRestraineds := OrderedCollection new ]
+		  ifNotNil: [ theRestraineds ]
 ]
 
 { #category : #accessing }
@@ -311,14 +307,15 @@ CMECECModel >> theUnrestraineds: arg1 [
 { #category : #accessing }
 CMECECModel >> theVegetationUnits [
 
-	^ theVegetationUnits 
-		ifNil:[ theVegetationUnits := OrderedCollection new ]
+	^ theVegetationUnits
+		  ifNil: [ theVegetationUnits := OrderedCollection new ]
+		  ifNotNil: [ theVegetationUnits ]
 ]
 
 { #category : #accessing }
-CMECECModel >> theVegetationUnits: anObject [
+CMECECModel >> theVegetationUnits: arg1 [
 
-	^ theVegetationUnits := anObject
+	^ theVegetationUnits := arg1
 ]
 
 { #category : #accessing }

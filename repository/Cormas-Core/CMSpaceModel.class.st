@@ -39,7 +39,8 @@ Class {
 		'autoResizeBounds',
 		'torroidal',
 		'nbConfiguration',
-		'gridSize'
+		'gridSize',
+		'activePoVsDictionary'
 	],
 	#category : #'Cormas-Core-Space'
 }
@@ -53,6 +54,7 @@ CMSpaceModel class >> defaultLines [
 
 { #category : #'instance creation' }
 CMSpaceModel class >> forModel: aCormasModel [
+	" Answer a new space configured for aCormasModel "
 
 	^ self basicNew 
 		cormasModel: aCormasModel;
@@ -88,6 +90,14 @@ CMSpaceModel >> absoluteWidth [
 	" Answer an <Integer> representing the receiver's width from the absolute bounds "
 
 	^ self absoluteBounds width
+]
+
+{ #category : #accessing }
+CMSpaceModel >> activePoVsDictionary [
+	" Answer a <Dictionary> containing the initial active points of view of the receiver's model "
+
+	^ activePoVsDictionary
+		ifNil: [ activePoVsDictionary := Dictionary new ]
 ]
 
 { #category : #deprecated }
@@ -230,6 +240,13 @@ CMSpaceModel >> arrayOrigins: anArray [
 ]
 
 { #category : #accessing }
+CMSpaceModel >> atClass: aCMSpatialEntityClass putActivePovSelector: aSelector [ 
+	" Set a Point of View defined in aSelector <Symbol> at class aCMSpatialEntityClass "
+
+	self activePoVsDictionary at: aCMSpatialEntityClass put: aSelector
+]
+
+{ #category : #accessing }
 CMSpaceModel >> autoResizeBounds [
 	^ autoResizeBounds ifNil: [ autoResizeBounds := true ]
 ]
@@ -324,13 +341,6 @@ CMSpaceModel >> cellClass [
 	"return the SpatialEntityElement class of the current model"
 
 	^ self cormasModelClass cellClass
-]
-
-{ #category : #'CSE (general) - import - export' }
-CMSpaceModel >> cellFileDirectory [
-"Returns a FileReference to the maps subdirectory of the model.
-Ex: /Users/.../cormas/assets/models/ECEC/maps"
-	^ self resourceLocator mapsPath: self cormasModelClass shortName
 ]
 
 { #category : #'ESE (regular) - special locations' }
@@ -499,12 +509,10 @@ CMSpaceModel >> cormasModel [
 
 { #category : #'private - accessing' }
 CMSpaceModel >> cormasModel: aCormasModel [
-	"The cormasModel is some kind of model for the spaceModel (receive notification)"
+	" The cormasModel is some kind of model for the spaceModel (receive notification) "
 	
-	cormasModel == aCormasModel ifTrue: [^self].
-	cormasModel ifNotNil: [cormasModel removeDependent: self].
 	cormasModel := aCormasModel.
-	cormasModel ifNotNil: [cormasModel addDependent: self]
+
 ]
 
 { #category : #accessing }
@@ -713,6 +721,13 @@ CMSpaceModel >> deleteSpatialEntitySet: aSpatialEntitySetClass [
 	self spaceModel resetCompoundSpatialEntity: aSpatialEntitySetClass
 ]
 
+{ #category : #'as yet unclassified' }
+CMSpaceModel >> dimensions [
+	" Answer a <Point> with the receiver's lines and columns "
+	
+	^ self column @ self line
+]
+
 { #category : #'ESE (regular) - special locations' }
 CMSpaceModel >> dimensions: aCollectionOrAssociation [
 	" Configure the receiver's dimension taking the first element of aCollectionOrAssociation (or key if Association) as the lines and the second element (or value) as the number of columns "
@@ -760,12 +775,14 @@ Example : self displayInfo: #landUse of: Cell"
 
 { #category : #'private - display' }
 CMSpaceModel >> displayPov: aSymbol of: aClass [
-	"Purpose: set the POV of aClass to be displayed on the opened spatial grid
-Example : self displayPov: #landUse of: Cell"
+	"Purpose: set the POV of aClass to be displayed on the opened spatial grid.
+	For efficency add subclasses of aClass.
+	Example : self displayPov: #landUse of: Cell"
 	
-	self
-		changed: #changePov
-		with: (CMDisplayPovChange forPov: aSymbol ofEntity: aClass)
+	self atClass: aClass putActivePovSelector: aSymbol.
+	aClass concreteSubclasses do: [ : concreteClass |
+		self atClass: concreteClass putActivePovSelector: aSymbol ]
+
 ]
 
 { #category : #'landscape indices' }
@@ -899,6 +916,8 @@ CMSpaceModel >> envSpecStringFor: spatialEntityName [
 	"compute the description of the environnment (for the spaceInterface title)"
 
 	| s nb |
+	
+	self flag: #toReview.
 	s := (String new: 100) writeStream.
 	s
 		nextPutAll:
@@ -1195,6 +1214,8 @@ CMSpaceModel >> getPovsDataOfArcEntity: aClass forSelector: povSelector andInfo:
 	"direct access to the pov spec of a set of entities"
 	
 	| entities |
+	
+	self flag: #toReview.	
 	entities := self cormasModel allTheSituatedEntities: aClass.
 	^entities
 		collect:
@@ -1211,6 +1232,8 @@ CMSpaceModel >> getPovsDataOfEntity: aClass forSelector: povSelector andInfo: in
 	"direct access to the pov spec of a set of entities"
 	
 	| entities |
+	
+	self flag: #toReview.
 	entities := (aClass inheritsFrom: CMSpatialEntity)
 		ifTrue: [self spatialEntitiesAt: aClass name]
 		ifFalse: [self cormasModel allTheSituatedEntities: aClass].
@@ -1235,6 +1258,8 @@ CMSpaceModel >> getPovsDataOfOccupantEntity: aClass forSelector: povSelector and
 	"direct access to the pov spec of a set of entities"
 	
 	| entities |
+	
+	self flag: #toReview.
 	entities := (aClass inheritsFrom: CMSpatialEntity)
 		ifTrue: [self spatialEntitiesAt: aClass name]
 		ifFalse: [self cormasModel allTheSituatedEntities: aClass].
@@ -1434,15 +1459,33 @@ CMSpaceModel >> gridSize: anInteger [
 
 { #category : #'private - regularCells - shapes' }
 CMSpaceModel >> hexagonal [
-	"received from SpaceInterface menu, when the user want to change the shape of the cells"
+	" Received from SpaceInterface menu, when the user want to change the shape of the cells "
+
+	self gridCellShape ~= #hexagonal ifFalse: [ ^ self ].
+	self gridCellShape: #hexagonal.
+	self nbCount: #six.
+	self createHexagonalCellsFigure.
+	self initNeighbourhood.
+	self changed: #shapeHasChanged
+]
+
+{ #category : #printing }
+CMSpaceModel >> humanReadableString [
+	" Answer a <String> with receiver's details suitable for titles "
 	
-	self gridCellShape ~= #hexagonal
-		ifTrue: [ 
-			self gridCellShape: #hexagonal.
-			self nbCount: #six.
-			self createHexagonalCellsFigure.	"the spaceInterfaces are automatically refreshed"
-			self initNeighbourhood.
-			self changed: #shapeHasChanged]	"set the menu and title to the spaceInterfaces"
+	^ String streamContents: [ : stream |
+		stream
+			space;
+			<< self line asString;
+			<< $x;
+			<< self column asString;
+			<< $(;
+			<< self gridSize asString;
+			<< $);
+			space;
+			<< self gridCellShape asString ]
+
+		
 ]
 
 { #category : #'CSE (regular) - instance creation' }
@@ -1597,54 +1640,26 @@ CMSpaceModel >> line: i column: j [
 
 { #category : #'CSE (general) - import - export' }
 CMSpaceModel >> loadEnvironmentFromDirectory: aStringOrFileReference [
-"Purpose: Create a grid from a cells directory.
- Example of string: 'poor.cells' 
- See ISSUE #311 from Tomooda: https://github.com/cormas/cormas/issues/311:
-The old .env file is split into multiple files in a directory with a YAML file for parameters of the space model and CSV files corresponding to its attributes.
-For example, assuming that we have the following Sample.env file:
-		dimensions      27 27
-		cloture closed
-		connexite       eight
-		delimiteur      0
-		attributs       biomass(Number)
-		2
-		3
-		1
-		...
-Now there is a 'Sample.cells' directory with the following 'spaceModel.yml
-		version: 0.0.1
-		dimensions: [27, 27]
-		closed: false
-		connectivity: eight
-		attributes:
- 			biomass: Number
-+ a biomass.csv file of 27 lines and 27 columns:
-	2,3,1,...
-	9,2,6,...
- "
-	| cellsFile |
-	
-	cellsFile := aStringOrFileReference isString
-		ifTrue: [ self cellFileDirectory / aStringOrFileReference ]
-		ifFalse: [ aStringOrFileReference ].
-	cellsFile exists
-		ifFalse: [ | envFile |
-			envFile := cellsFile withExtension: 'env'.
-			envFile exists
-				ifTrue: [ CMEnv2CellsConverter fromFile: envFile ]
-				ifFalse: [ ^ self error: 'No such a file.' ] ].
+	" Load aStringOrFileReference representing a file with cells information in YAML format, or raise an <Exception> if not valid. 
+	Set the receiver's model default PoV of the cellClass "
+
 	CMCellsLoader new
 		spaceModel: self;
-		load: cellsFile
+		load: aStringOrFileReference.
+	self
+		displayPov: #defaultPOV
+		of: self cellClass
 ]
 
 { #category : #'ESE initialize-release' }
-CMSpaceModel >> loadEnvironmentFromDirectory: aName withPov: aSymbol [
+CMSpaceModel >> loadEnvironmentFromDirectory: aStringOrFileReference withPov: aSymbol [
 	"Load a grid stored as filename and display a POV on each opened grid.
-	aName = <String> or aName = <FileReference> . If aName = <String>, it creates a directory in the maps directory.
+	If aStringOrFileReference = <String>, it creates a directory in the maps directory.
 	Example:	aName = 'test.cells' "
 	
-	self loadEnvironmentFromDirectory: aName.
+	CMCellsLoader new
+		spaceModel: self;
+		load: aStringOrFileReference.
 	self
 		displayPov: aSymbol
 		of: self cellClass
@@ -1917,18 +1932,16 @@ CMSpaceModel >> printOn: aStream [
 	" Private - See superimplementor's comment "
 	
 	super printOn: aStream.
-	aStream
-		space;
-		<< self line asString;
-		<< $x;
-		<< self column asString;
-		<< $(;
-		<< self gridSize asString;
-		<< $);
-		space;
-		<< self gridCellShape asString
+	aStream << self humanReadableString.
 
 		
+]
+
+{ #category : #accessing }
+CMSpaceModel >> projectAnnouncer [
+	" Answer the receiver's model <Announcer> "
+	
+	^ self cormasModel projectAnnouncer
 ]
 
 { #category : #'ESE (regular) - special locations' }
@@ -1994,10 +2007,9 @@ CMSpaceModel >> resetSpatialEntities [
 	| newColl |
 	self spatialEntities: Dictionary new. 
 	self cormasModel ifNil: [ ^nil ].
-	self cormasModelClass spatialClasses
-		do: [ : aSpatialClass | 
+	self cormasModelClass spatialClasses do: [ : aSpatialClass | 
 			newColl := self cormasModel resetEntities: aSpatialClass.
-			self spatialEntitiesAt: aSpatialClass name 	put: newColl].
+			self spatialEntitiesAt: aSpatialClass name 	put: newColl ].
 	"self changed: #removeAllFigures"	"all the figures of the spaceInterfaces have to be deleted"
 ]
 
@@ -2600,8 +2612,10 @@ CMSpaceModel >> spatialEntities [
 ]
 
 { #category : #'private - accessing' }
-CMSpaceModel >> spatialEntities: anObject [
-	spatialEntities := anObject
+CMSpaceModel >> spatialEntities: aDictionary [
+	" The spatial entities is a <Dictionary> of the receiver's cells "
+
+	spatialEntities := aDictionary
 ]
 
 { #category : #accessing }
@@ -2725,6 +2739,7 @@ CMSpaceModel >> traiterChaineDeCaractere: aString [
 CMSpaceModel >> update: aSymbol with: aValue [
 	"propagate time changes to the dependents"
 	
+	self halt.
 	aSymbol == #timeChanged ifTrue: [self changed: aSymbol with: aValue].
 	super update: aSymbol with: aValue
 ]

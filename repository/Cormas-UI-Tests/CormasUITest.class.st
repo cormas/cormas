@@ -7,7 +7,7 @@ Class {
 	#category : #'Cormas-UI-Tests-Core'
 }
 
-{ #category : #'create CMProjet' }
+{ #category : #tests }
 CormasUITest >> newProjectManagerWithInitializedUIOnModel: modelName [
 
 	| aProject |
@@ -23,6 +23,7 @@ CormasUITest >> newProjectManagerWithInitializedUIOnModel: modelName [
 
 { #category : #accessing }
 CormasUITest >> pWindow [
+
 	^ pWindow
 ]
 
@@ -31,7 +32,7 @@ CormasUITest >> pWindow: anObject [
 	pWindow := anObject
 ]
 
-{ #category : #running }
+{ #category : #initialization }
 CormasUITest >> setUp [
 	"Hooks that subclasses may override to define the fixture of test."
 
@@ -39,7 +40,7 @@ CormasUITest >> setUp [
 
 ]
 
-{ #category : #'create CMProjet' }
+{ #category : #accessing }
 CormasUITest >> simWindow [
 
 	^ self pWindow simWindow simWindow
@@ -54,7 +55,7 @@ CormasUITest >> tearDown [
 
 ]
 
-{ #category : #test }
+{ #category : #tests }
 CormasUITest >> testCanOpenModelFromImage [
 	| p |
 	p := CMProjectManager new.
@@ -62,7 +63,7 @@ CormasUITest >> testCanOpenModelFromImage [
 	self assert: p currentProject cormasModel class name equals: #CMMockModel
 ]
 
-{ #category : #test }
+{ #category : #tests }
 CormasUITest >> testCurrentStepInputTextOfSimWindowIsResetAfterOpeningAModel [
 
 	| aCMProjectManager |
@@ -77,12 +78,12 @@ CormasUITest >> testCurrentStepInputTextOfSimWindowIsResetAfterOpeningAModel [
 		equals: 0.
 ]
 
-{ #category : #test }
+{ #category : #tests }
 CormasUITest >> testCurrentStepInputTextOfSimWindowIsUpdatedWhenRuningSimulation [
 
 	| aCMProjectManager |
 	
-	aCMProjectManager := self newProjectManagerWithInitializedUIOnModel: #CMConwayModel.
+	aCMProjectManager := self newProjectManagerWithInitializedUIOnModel: #CMMockModel.
 	"simWindow openWithSpec."
 	20 timesRepeat: [ aCMProjectManager currentProject cormasModel runStep ].
 	self

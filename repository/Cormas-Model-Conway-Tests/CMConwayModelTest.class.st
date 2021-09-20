@@ -1,6 +1,9 @@
 Class {
 	#name : #CMConwayModelTest,
 	#superclass : #TestCase,
+	#instVars : [
+		'pWindow'
+	],
 	#category : #'Cormas-Model-Conway-Tests'
 }
 
@@ -31,12 +34,12 @@ CMConwayModelTest >> testAfterInitializationAConwayModelHas10000Cells [
 { #category : #tests }
 CMConwayModelTest >> testAfterInitializationAConwayModelHas10000Entities [
 
-	| tmp1 tmp2 |
-	tmp2 := CMConwayModel.
-	tmp2 initialize.
-	tmp1 := tmp2 new.
-	tmp1 initSimulation.
-	self assert: tmp1 allTheEntities size equals: 10000
+	| model modelClass |
+	modelClass := CMConwayModel.
+	modelClass initialize.
+	model := modelClass new.
+	model initSimulation.
+	self assert: model allTheEntities size equals: 10000
 ]
 
 { #category : #tests }

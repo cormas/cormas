@@ -1,6 +1,6 @@
 Class {
 	#name : #CMECECVegetationUnit,
-	#superclass : #CMSpatialEntityCell,
+	#superclass : #CMSpatialEntityElement,
 	#instVars : [
 		'biomass'
 	],

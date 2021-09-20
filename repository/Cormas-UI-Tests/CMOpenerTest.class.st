@@ -38,7 +38,7 @@ CMOpenerTest >> openerClass [
 	self subclassResponsibility 
 ]
 
-{ #category : #accessing }
+{ #category : #running }
 CMOpenerTest >> setUp [ 
 
 	CMApplicationProject release.

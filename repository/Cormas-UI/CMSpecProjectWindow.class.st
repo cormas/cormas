@@ -87,33 +87,65 @@ CMSpecProjectWindow >> closeSimulationWindow [
 CMSpecProjectWindow >> cormasExpressions [
 	" Answer a <String> with useful Cormas expressions to debug/develop/cleanup "
 	
-	^ 'CMConwayModel spatialClasses.
+	^ '"================= Inspect utilities ================="
+CMProjectManager allInstances.
+CMProjectManager allInstances first.
+CMProjectManager allInstances first pointersTo.
+
+CMSpecProjectWindow allInstances.
+CMSpecProjectWindow allInstances first.
+CMSpecProjectWindow allInstances first pointersTo.
+
+CMProjectModel allInstances.
+CMProjectModel allInstances first.
+CMProjectModel allInstances first pointersTo.
+
+CMConwayModel spatialClasses.
 CMConwayModel passiveClasses.
 CMConwayModel socialClasses.
+
+SystemNavigation default obsoleteClasses.
+
+"================= Reset utilities ================="
+
+CMModel2ProjectMigrator rebuildModels.
 
 CMConwayModel passiveClasses: nil.
 CMConwayModel socialClasses: nil.
 CMConwayModel spatialClasses: nil.
-		
-CMProjectModel allInstances isEmpty.
-CMProjectManager allInstances.
-CMSpecProjectWindow allInstances.
-
-CMProjectModel allInstances first.
-CMProjectManager allInstances first.
-CMSpecProjectWindow allInstances first.
-
-CMProjectModel allInstances first pointersTo.
-CMProjectManager allInstances first pointersTo.
-CMSpecProjectWindow allInstances first pointersTo.
 
 CMSpecProjectWindow allInstances first projectAnnouncer subscriptions reset.
-CMProjectManager allInstances first announcer subscriptions reset.
+CMProjectManager allInstances anyOne announcer subscriptions reset.
+CMProjectManager allInstances anyOne announcer subscriptions.
+
+CMR3SpaceInterface allInstances.
+CMR3SpaceInterface allInstances anyOne.
+CMR3SpaceInterface allInstances anyOne announcer.
+
+CMProjectOpener allInstances.
+CMProjectOpener allInstances anyOne.
+CMProjectOpener allInstances anyOne projectManager: nil.
+
+"================= Clean script ================="
 
 3 timesRepeat: [ Smalltalk garbageCollect ].
-{ CMProjectModel allInstances.
+
+CMProjectManager allInstances ifNotEmpty: [ : cpms | 
+	cpms do: [ : cpm | cpm fsm: nil ] ].
+CMR3SpaceInterface allInstances ifNotEmpty: [ : csps |
+	csps do: [ : csp | csp projectManager: nil; diagram: nil ] ].
+ 
+SmalltalkImage current fixObsoleteBindings.
+SmalltalkImage current fixObsoleteReferences.
+	SystemNavigation new obsoleteBehaviors size > 0
+		ifTrue: [ SystemNavigation new obsoleteBehaviors inspect.
+			self error: ''Still have obsolete behaviors. See inspector'' ].
+
+{ 
+CMProjectModel allInstances.
 CMProjectManager allInstances.
-CMSpecProjectWindow allInstances } allSatisfy: #isEmpty.'
+CMSpecProjectWindow allInstances 
+} allSatisfy: #isEmpty.'
 
 ]
 
@@ -172,7 +204,7 @@ CMSpecProjectWindow >> initializeButtonToolbar [
 
 ]
 
-{ #category : #initialization }
+{ #category : #'initialization-submenus' }
 CMSpecProjectWindow >> initializeMenuToolbar [
 	" Private - See superimplementor's commen "
 
@@ -190,7 +222,7 @@ CMSpecProjectWindow >> initializeMenuToolbar [
 	menuToolbar applyTo: self.
 ]
 
-{ #category : #initialization }
+{ #category : #'initialization-submenus' }
 CMSpecProjectWindow >> initializeProgrammingSubMenu: group [
 
 	group
@@ -200,7 +232,7 @@ CMSpecProjectWindow >> initializeProgrammingSubMenu: group [
 				subMenu: self subMenuForProgramming ]
 ]
 
-{ #category : #initialization }
+{ #category : #'initialization-submenus' }
 CMSpecProjectWindow >> initializeSimulationSubMenu: group [
 
 	group
@@ -233,7 +265,7 @@ CMSpecProjectWindow >> initializeSubscriptions [
 		to: self
 ]
 
-{ #category : #initialization }
+{ #category : #'initialization-submenus' }
 CMSpecProjectWindow >> initializeVisualizationSubMenu: group [
 
 	group
@@ -257,7 +289,7 @@ CMSpecProjectWindow >> initializeWidgets [
 
 ]
 
-{ #category : #initialization }
+{ #category : #'initialization-submenus' }
 CMSpecProjectWindow >> intializeToolsSubMenu: group [
 
 	group
@@ -476,6 +508,19 @@ CMSpecProjectWindow >> menuEnableVisualizationGroup [
 ]
 
 { #category : #'submenu-tools-developer' }
+CMSpecProjectWindow >> openCormasBaselineBrowser [
+
+	Smalltalk tools browser openWithState: [ : browser | 
+		browser 
+			setUpScopedModeWith: (ClyPackageScope 
+				of: BaselineOfCormas package
+				in: ClyNavigationEnvironment currentImage 
+				named: 'CORMAS Metacello Baseline');
+			selectPackage: BaselineOfCormas package;
+			selectClass: BaselineOfCormas ]
+]
+
+{ #category : #'submenu-tools-developer' }
 CMSpecProjectWindow >> openCormasIssue [
 
 	Cursor wait showWhile: [ WebBrowser openOn: 'https://github.com/cormas/cormas/issues/new/choose' ]
@@ -602,21 +647,21 @@ CMSpecProjectWindow >> openProjectProperties [
 
 { #category : #callbacks }
 CMSpecProjectWindow >> openSpaceInterface [
-	" Private - Callback for user request to open the Space Model interface "
+	" Private - Callback for user request to open a new Space Model interface for the receiver's project "
 
 	CMR3SpaceInterface openFor: self projectManager.
-
+ 	self projectAnnouncer announce: CMSChangePoVAnnouncement new.
 ]
 
 { #category : #callbacks }
 CMSpecProjectWindow >> openSpaceInterfaceUpdateScenario [
 	" Private - Open a space model interface. Close all opened space model windows if any "
 
-	CMR3SpaceInterface allInstances
-		ifEmpty: [ self openSpaceInterface ]
-		ifNotEmpty: [ : spaces | 
-			spaces do: #delete.
-			self openSpaceInterface ]
+	CMR3SpaceInterface allInstancesDo: #delete.
+"	self projectAnnouncer hasSubscriptions
+		ifTrue: [ self halt. self projectAnnouncer unsubscribeCormasSpaces ]."
+	self spaceModel activePoVsDictionary ifNotEmpty: [ self openSpaceInterface ]
+
 
 ]
 
@@ -626,6 +671,13 @@ self alertMessage: 'No implemented yet'
 	"CMSpecVizSpaceWindow new
 		owner: self;
 		openWithSpec"
+]
+
+{ #category : #accessing }
+CMSpecProjectWindow >> povClass [
+	" Answer a <CMSpatial> class "
+	
+	^ self spaceModel povClass
 ]
 
 { #category : #accessing }
@@ -679,6 +731,12 @@ CMSpecProjectWindow >> spPresenter [
 	" This is used while migrating to Spec2, which needs presenters with an owner with SpApplication linked "
 
 	^ CMSpPresenter new
+]
+
+{ #category : #accessing }
+CMSpecProjectWindow >> spaceModel [
+
+	^ self cormasModel spaceModel.
 ]
 
 { #category : #'submenu-help' }
@@ -738,11 +796,14 @@ CMSpecProjectWindow >> subMenuDevTools [
 		addGroup: [ : group |
 			group 
 				addItem: [ : item | self subMenuDependenciesTool: item ];
-				addItem: [ : item | self subMenuDependenciesGraph: item ] ];
+				addItem: [ : item | self subMenuDependenciesGraph: item ];
+				addItem: [ : item | self subMenuToolsBrowseBaseline: item ] ];			
 		addGroup: [ : group | 
 			group
 				addItem: [ : item | self subMenuToolsExpressions: item ];
 				addItem: [ : item | self subMenuToolsCormasBrowser: item ];
+				addItem: [ : item | self subMenuToolsBrowseFlags: item ];
+				addItem: [ : item | self subMenuToolsBrowseHalts: item ];
 				addItem: [ : item | self subMenuOpenCormasIssue: item ];
 				addItem: [ : item | self subMenuRunCormasTests: item ] ]
 ]
@@ -1263,6 +1324,36 @@ CMSpecProjectWindow >> subMenuStopWSR: item [
 { #category : #'submenu-tools' }
 CMSpecProjectWindow >> subMenuToolsAddOns: item [
 
+]
+
+{ #category : #'submenu-tools-developer' }
+CMSpecProjectWindow >> subMenuToolsBrowseBaseline: item [
+
+	item
+		name: 'Browse CORMAS Baseline';
+		icon: (self iconNamed: #smallHierarchyBrowser);
+		shortcut: $P command;
+		action: [ self openCormasBaselineBrowser ]
+]
+
+{ #category : #'submenu-tools-developer' }
+CMSpecProjectWindow >> subMenuToolsBrowseFlags: item [
+
+	item
+		name: 'CORMAS Methods with #flag:';
+		icon: (self iconNamed: #flag);
+		shortcut: $F command;
+		action: [ self openCormasFlagMethods ]
+]
+
+{ #category : #'submenu-tools-developer' }
+CMSpecProjectWindow >> subMenuToolsBrowseHalts: item [
+
+	item
+		name: 'CORMAS Methods with #halt';
+		icon: (self iconNamed: #halt);
+		shortcut: $H command;
+		action: [ self openCormasHaltMethods ]
 ]
 
 { #category : #'submenu-tools-developer' }

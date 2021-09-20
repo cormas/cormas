@@ -196,7 +196,7 @@ CMECECForager >> reproduce [
 { #category : #povSize }
 CMECECForager >> sizeOfPOV [
 
-	^ 15 + (self energy / self class fertilityThreshold * 40)
+	^ 2 + (self energy / self class fertilityThreshold * 20)
 ]
 
 { #category : #control }

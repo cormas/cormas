@@ -8,7 +8,7 @@ Class {
 	#classInstVars : [
 		'referencedBounds'
 	],
-	#category : #'Cormas-Core-Entities'
+	#category : #'Cormas-Core-Deprecate'
 }
 
 { #category : #accessing }

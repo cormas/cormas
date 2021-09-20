@@ -160,10 +160,11 @@ BaselineOfCormas >> specForBaselines: spec [
 
 { #category : #specs }
 BaselineOfCormas >> specForPackages: spec [
+	" Private - Do not load the models in the image. Use the Open Project from the main UI instead "
 
 	spec
 		package: 'Cormas-Core' with: [ self specForPackagesInCore: spec ];
-		package: 'Cormas-Model-Conway' with: [ spec requires: #('Cormas-Core') ];
+"		package: 'Cormas-Model-Conway' with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Model-Conway-Tests' with: [ spec requires: #('Cormas-Model-Conway') ];	
 		package: 'Cormas-Model-DemoAggregates'  with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Model-Diffuse'  with: [ spec requires: #('Cormas-Core') ];
@@ -171,7 +172,7 @@ BaselineOfCormas >> specForPackages: spec [
 		package: 'Cormas-Model-FireAutomata' with: [ spec requires: #('Cormas-Core' 'Cormas-Tests') ];
 		package: 'Cormas-Model-PlotsRental' with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Model-ReHab' with: [ spec requires: #('Cormas-Core') ];
-		package: 'Cormas-Model-Stupid' with: [ spec requires: #('Cormas-Core') ];
+		package: 'Cormas-Model-Stupid' with: [ spec requires: #('Cormas-Core') ];"
 		package: 'Cormas-Mocks' with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Tests' with: [ spec requires: #('Cormas-Core' 'Cormas-Mocks') ];
 		package: 'Cormas-OpenMole' with: [ spec requires: #('Cormas-Core' 'NeoJSON') ]
@@ -266,10 +267,9 @@ BaselineOfCormas >> specForPharo9: spec [
 
 				package: 'Cormas-UI'							with: [ spec requires: #('Cormas-Core' 'ClassEditor' 'SpecUIAddOns' 'FileDialog' 'ProjectFramework' 'CodeGenerator' 'UrucuNavigator') ];
 				package: 'Cormas-UI-Tests' 					with: [ spec requires: #('Cormas-Tests' 'Cormas-UI' 'Cormas-Mocks') ];
-				package: 'Cormas-UI-Roassal3' 				with: [ spec requires: #('Cormas-UI' 'Roassal3' 'Roassal3Exporters') ];
-				package: 'Cormas-Model-ECEC-Roassal3' 	with: [ spec requires: #('Cormas-Model-ECEC' 'Roassal3' 'Cormas-UI-Roassal3') ].
+				package: 'Cormas-UI-Roassal3' 				with: [ spec requires: #('Cormas-UI' 'Roassal3' 'Roassal3Exporters') ].
+				"package: 'Cormas-Model-ECEC-Roassal3' 	with: [ spec requires: #('Cormas-Model-ECEC' 'Roassal3' 'Cormas-UI-Roassal3') ]"
 			self specForPharo9Groups: spec. ]
-
 ]
 
 { #category : #specs }
@@ -279,22 +279,11 @@ BaselineOfCormas >> specForPharo9Groups: spec [
 		group: 'Core' 		with: #('Cormas-Core');
 		group: 'UI' 			with: #(#'Cormas-UI' 'Core' 'Cormas-UI-Roassal3');
 
-		group: 'Tests' 		with: #('Core' 'Cormas-Mocks' 'Cormas-Tests' 'Cormas-UI-Tests' 'Cormas-Model-Conway-Tests');
+		group: 'Tests' 		with: #('Core' 'Cormas-Mocks' 'Cormas-Tests' 'Cormas-UI-Tests');
 
-		group: 'Models' 	with: 	#(
-						'Cormas-Model-Conway' 
-						'Cormas-Model-ReHab' 
-						'Cormas-Core' 
-						'Cormas-Model-ECEC'
-						'Cormas-Model-ECEC-Roassal3'
-						'Cormas-Model-FireAutomata' 
-						'Cormas-Model-PlotsRental' 
-						'Cormas-Model-Diffuse' 
-						'Cormas-Model-DemoAggregates' 
-						'Cormas-Model-Stupid');
 		group: 'OpenMole'	with: #('Cormas-OpenMole' 'Core');
 
-		group: 'All'			with: #('UI' 'Tests' 'Core' 'Models' 'OpenMole');
+		group: 'All'			with: #('UI' 'Tests' 'Core' 'OpenMole');
 		group: 'default' 	with: #('All')	
 ]
 
