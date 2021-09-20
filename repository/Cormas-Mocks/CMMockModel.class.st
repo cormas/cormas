@@ -1,3 +1,15 @@
+"
+A model to use as example, even more stupid than StupidModel!
+ 
+Internal Representation and Key Implementation Points.
+
+    Instance Variables
+	theAgentLocations:		<Object>
+	theCells:		<Object>
+
+
+    Implementation Points
+"
 Class {
 	#name : #CMMockModel,
 	#superclass : #CMAbstractModel,
