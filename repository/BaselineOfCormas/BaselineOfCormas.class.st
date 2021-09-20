@@ -267,10 +267,9 @@ BaselineOfCormas >> specForPharo9: spec [
 
 				package: 'Cormas-UI'							with: [ spec requires: #('Cormas-Core' 'ClassEditor' 'SpecUIAddOns' 'FileDialog' 'ProjectFramework' 'CodeGenerator' 'UrucuNavigator') ];
 				package: 'Cormas-UI-Tests' 					with: [ spec requires: #('Cormas-Tests' 'Cormas-UI' 'Cormas-Mocks') ];
-				package: 'Cormas-UI-Roassal3' 				with: [ spec requires: #('Cormas-UI' 'Roassal3' 'Roassal3Exporters') ];
-				package: 'Cormas-Model-ECEC-Roassal3' 	with: [ spec requires: #('Cormas-Model-ECEC' 'Roassal3' 'Cormas-UI-Roassal3') ].
+				package: 'Cormas-UI-Roassal3' 				with: [ spec requires: #('Cormas-UI' 'Roassal3' 'Roassal3Exporters') ].
+				"package: 'Cormas-Model-ECEC-Roassal3' 	with: [ spec requires: #('Cormas-Model-ECEC' 'Roassal3' 'Cormas-UI-Roassal3') ]"
 			self specForPharo9Groups: spec. ]
-
 ]
 
 { #category : #specs }
@@ -280,22 +279,11 @@ BaselineOfCormas >> specForPharo9Groups: spec [
 		group: 'Core' 		with: #('Cormas-Core');
 		group: 'UI' 			with: #(#'Cormas-UI' 'Core' 'Cormas-UI-Roassal3');
 
-		group: 'Tests' 		with: #('Core' 'Cormas-Mocks' 'Cormas-Tests' 'Cormas-UI-Tests' 'Cormas-Model-Conway-Tests');
+		group: 'Tests' 		with: #('Core' 'Cormas-Mocks' 'Cormas-Tests' 'Cormas-UI-Tests');
 
-		group: 'Models' 	with: 	#(
-						'Cormas-Model-Conway' 
-						'Cormas-Model-ReHab' 
-						'Cormas-Core' 
-						'Cormas-Model-ECEC'
-						'Cormas-Model-ECEC-Roassal3'
-						'Cormas-Model-FireAutomata' 
-						'Cormas-Model-PlotsRental' 
-						'Cormas-Model-Diffuse' 
-						'Cormas-Model-DemoAggregates' 
-						'Cormas-Model-Stupid');
 		group: 'OpenMole'	with: #('Cormas-OpenMole' 'Core');
 
-		group: 'All'			with: #('UI' 'Tests' 'Core' 'Models' 'OpenMole');
+		group: 'All'			with: #('UI' 'Tests' 'Core' 'OpenMole');
 		group: 'default' 	with: #('All')	
 ]
 
