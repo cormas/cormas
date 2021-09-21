@@ -150,6 +150,7 @@ CMModel2ProjectMigrator >> buildProjects [
 	" Hopefully this method should be run only once, and to reformat project directory structure for example "
 
 	'Model2Project: Building project files...' traceCr.
+	self loadModelPackages.
 	CMAbstractModel subclassesDo: [ :modelClass |
 			self buildForModelInstance: modelClass new.
 			self buildProjectFile ].
@@ -213,11 +214,51 @@ CMModel2ProjectMigrator >> handleFileEx: ex [
 					ex retry ] ]
 ]
 
+{ #category : #building }
+CMModel2ProjectMigrator >> loadModelPackage: aPackageName [
+
+	| cormasRepo icePackage |
+
+	cormasRepo := IceLibgitRepository registry detect: [ : repo | repo name = 'cormas' ].
+	icePackage := IcePackage named: aPackageName repository: cormasRepo.
+	IceTipStandardAction new 
+		repository: cormasRepo;
+		message: ('Loading package {1}' format: { icePackage name });
+		onSuccessRepositoryModified;
+		execute: [ 
+			Iceberg announcer
+				suspendAllForRepository: cormasRepo
+				while: [ icePackage load ] ]
+]
+
+{ #category : #building }
+CMModel2ProjectMigrator >> loadModelPackages [
+	" Private - Load packages which are CORMAS models "
+
+	self modelPackageNames do: [ : cmPkgName | self loadModelPackage: cmPkgName ]
+]
+
 { #category : #defaults }
 CMModel2ProjectMigrator >> metadataFilename [
 	" Answer a <String> with the name of the file which stores metadata information about a project "
 
 	^ CMProjectFile metadataFilename 
+]
+
+{ #category : #building }
+CMModel2ProjectMigrator >> modelPackageNames [
+	" Answer a <Collection> of <String> with CORMAS model package names "
+	
+	^ #(
+	'Cormas-Model-ECEC'
+	'Cormas-Model-Conway'
+	'Cormas-Model-DemoAggregates'
+	'Cormas-Model-Diffuse'
+	'Cormas-Model-FireAutomata'
+	'Cormas-Model-PlotsRental'
+	'Cormas-Model-ReHab'
+	'Cormas-Model-Stupid'
+	)
 ]
 
 { #category : #private }

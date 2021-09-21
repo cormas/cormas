@@ -1,7 +1,7 @@
 Extension { #name : #Symbol }
 
 { #category : #'*Cormas-UI' }
-Symbol >> asColorForPoV: aCMEntity [
+Symbol >> asColorForPoVIn: aCMEntity [
 
 	| colorSelector entityMetaclass |
 	
