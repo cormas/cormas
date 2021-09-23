@@ -8,7 +8,7 @@ Class {
 CMProjectOpenerTest >> createSampleProject [
 	" Create a new sample CORMAS project in the Pharo image directory "
 
-	CMModel2ProjectMigrator new
+	CMProjectBuilder new
 		buildForModel: CMMockModel;
 		buildProjectFile.
 ]

@@ -177,13 +177,7 @@ CMR3SpacePresenter >> configurePopUp [
 	popUp := RSPopup text: [ : aCMEntity | aCMEntity asString ].
 	self canvas nodes
 		@ popUp;
-		when: RSMouseLeftClick do: [ : aRSMouseClick |
-			| position |
-			
-			position := aRSMouseClick shape position.
-			self canvas nodes 
-				select: [ : v | v encompassingRectangle containsPoint: position ]
-				thenDo: [ : s | s model inspect ] ].
+		when: RSMouseLeftClick do: [ : aRSMouseClick | self onMouseClick: aRSMouseClick ].
 ]
 
 { #category : #accessing }
@@ -253,6 +247,13 @@ CMR3SpacePresenter >> elemClass: anObject [
 	elemClass := anObject
 ]
 
+{ #category : #callbacks }
+CMR3SpacePresenter >> entitiesAt: aPosition [
+	" Answer a <RSGroup> of entities at mouse position <Point> aPosition "
+
+	^ self canvas nodes select: [ : v | v encompassingRectangle containsPoint: aPosition ]
+]
+
 { #category : #initialization }
 CMR3SpacePresenter >> initialize [
 	" Private - Set the receiver's Spec application "
@@ -306,11 +307,21 @@ CMR3SpacePresenter >> moveSituatedEntities [
 	" Position the already created entities views to the location determined by each view's patch "
 
 	self situatedEntitiesViews do: [ : e | 
-			"Adding property to be draggable"
-			e @ RSDraggable.
+		"Adding property to be draggable"
+		| entityModel eModelPatch |
+			
+		entityModel := e model.
+		eModelPatch := entityModel patch.
+		e @ RSDraggable;
+			when: RSMouseDragStart do: [ :evt | 
+				self inform: 'Start dragging' ];
+			when: RSMouseDragging do: [ :evt |
+				self inform: evt position asString ];
+			when: RSMouseDragEnd do:[:evt | evt shape model patch: (self cellAt: evt position) ].
+	
 			e
-				size: e model sizeOfPOV;
-				translateTo: (e model patch numCol @ e model patch numLine * cellSize) - (cellSize / 2) ] 
+				size: entityModel sizeOfPOV;
+				translateTo: (eModelPatch numCol @ eModelPatch numLine * cellSize) - (cellSize / 2) ] 
 ]
 
 { #category : #'instance creation' }
@@ -343,6 +354,12 @@ CMR3SpacePresenter >> newSEViewForModel: aCMEntity [
 { #category : #accessing }
 CMR3SpacePresenter >> nodes [
 	^ self canvas nodes.
+]
+
+{ #category : #callbacks }
+CMR3SpacePresenter >> onMouseClick: aRSMouseClick [
+
+	(self entitiesAt: aRSMouseClick shape position) do: self onLeftClickActionBlock
 ]
 
 { #category : #accessing }

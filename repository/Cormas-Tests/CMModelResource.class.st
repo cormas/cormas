@@ -38,7 +38,7 @@ CMModelResource >> buildCormasModelHierarchyFor: aModelName [
 { #category : #running }
 CMModelResource >> cormasModelHierarchy [
 
-	^ (CMModel2ProjectMigrator resourceDirectoryNames) collect: [ : each | { each } ]
+	^ (CMProjectBuilder resourceDirectoryNames) collect: [ : each | { each } ]
 
 ]
 

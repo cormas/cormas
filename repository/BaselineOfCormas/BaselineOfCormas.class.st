@@ -90,6 +90,9 @@ BaselineOfCormas >> postLoad [
 	https://github.com/ObjectProfile/Roassal3/issues/413
 	"
 	RSWorldMenu loadFullVersion.
+	
+	" Build user projects and un-load models from the image "
+	CMProjectBuilder buildProjectModels.
 ]
 
 { #category : #doits }
