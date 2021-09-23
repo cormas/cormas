@@ -222,7 +222,7 @@ CMSpOpenProjectPresenter >> initializeVersionsPresenter [
 	versionsListPresenter
 		"enableItemSubstringFilter;"
 		headerTitle: 'Versions';
-		display: [ :item | item userProvidedName ].
+		display: [ :item | item versionString ].
 
 
 ]

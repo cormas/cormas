@@ -1462,7 +1462,7 @@ CMEntity >> getColorForPov: aSelectorName [
 			^ self class colorsDict
 				at: aSelectorName
 				ifAbsentPut: [ Color veryLightGray ] ].	"aSelectorName is a method for a changeable color"
-	^ (self perform: aSelectorName) asColorForPoV: self
+	^ (self perform: aSelectorName) asColorForPoVIn: self
 
 ]
 

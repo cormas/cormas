@@ -70,12 +70,15 @@ CMECECVegetationUnit class >> state_default [
 CMECECVegetationUnit >> asString [
 	" Private - See superimplementor's comment "
 
-	^ String streamContents: [ : stream |
-		stream 
-			<< super asString;
-			cr;
-			<< 'biomass: ';
-			<< (biomass truncateTo: 0.005) asString ]
+ 	^ String streamContents: [ : stream | 
+ 		  stream
+ 			  << self className;
+ 				crtab; tab;
+ 				<< 'id: ';
+ 				<< id asString;
+ 				crtab; tab;
+ 			 	<< 'biomass: ';
+ 				<< (biomass truncateTo: 0.005) asString ]
 ]
 
 { #category : #accessing }
@@ -102,8 +105,8 @@ CMECECVegetationUnit >> initRandomBiomass [
 
 { #category : #growth }
 CMECECVegetationUnit >> logisticGrowth [
-	self
-		biomass: (Cormas logisticGrowth: self biomass r: self class r K: self class K)
+
+	self biomass: (Cormas logisticGrowth: self biomass r: self class r K: self class K)
 ]
 
 { #category : #control }
