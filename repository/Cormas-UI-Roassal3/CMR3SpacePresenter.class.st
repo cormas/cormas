@@ -13,7 +13,8 @@ Class {
 		'sevClass',
 		'activePoVsDictionary',
 		'scaleInterpolator',
-		'theCellViews'
+		'theCellViews',
+		'leftClickActionBlock'
 	],
 	#category : #'Cormas-UI-Roassal3'
 }
@@ -119,6 +120,15 @@ CMR3SpacePresenter >> atClass: aClass putActivePovSelector: aSymbol [
 ]
 
 { #category : #accessing }
+CMR3SpacePresenter >> cellAt: aPoint ifAbsent: absentBlock [
+	" Answer the <RSShape> which contains aPoint in the receiver "
+
+	^ self theCellViews
+		detect: [ : roassalNode | roassalNode encompassingRectangle containsPoint: aPoint ]
+		ifNone: absentBlock
+]
+
+{ #category : #accessing }
 CMR3SpacePresenter >> cellSize [
 
 	^ cellSize 
@@ -128,17 +138,6 @@ CMR3SpacePresenter >> cellSize [
 { #category : #accessing }
 CMR3SpacePresenter >> cellSize: anObject [
 	cellSize := anObject
-]
-
-{ #category : #accessing }
-CMR3SpacePresenter >> cellViews [
-	^ cellViews ifNil: [ situatedEntitiesViews := OrderedCollection new ]
-]
-
-{ #category : #accessing }
-CMR3SpacePresenter >> cellViews: anObject [
-
-	cellViews := anObject
 ]
 
 { #category : #refreshing }
@@ -167,7 +166,7 @@ CMR3SpacePresenter >> configureLayout [
 	self layoutClass new
 		gapSize: 0;
 		lineItemsCount: model spaceModel column;
-		on: self canvas nodes	
+		on: self nodes	
 ]
 
 { #category : #'instance creation' }
@@ -175,7 +174,7 @@ CMR3SpacePresenter >> configurePopUp [
 
 	| popUp |
 	popUp := RSPopup text: [ : aCMEntity | aCMEntity asString ].
-	self canvas nodes
+	self nodes
 		@ popUp;
 		when: RSMouseLeftClick do: [ : aRSMouseClick | self onMouseClick: aRSMouseClick ].
 ]
@@ -210,6 +209,18 @@ CMR3SpacePresenter >> defaultElementClass [
 CMR3SpacePresenter >> defaultLayoutClass [
 
 	^ RSGridLayout
+]
+
+{ #category : #defaults }
+CMR3SpacePresenter >> defaultLeftClickActionBlock [
+
+	^ 	[ : rsShape |
+			| position |
+			position := rsShape position.
+			self canvas nodes 
+				select: [ : v | v encompassingRectangle containsPoint: position ]
+				thenDo: [ : s | s model inspect ] 
+		]
 ]
 
 { #category : #defaults }
@@ -251,7 +262,7 @@ CMR3SpacePresenter >> elemClass: anObject [
 CMR3SpacePresenter >> entitiesAt: aPosition [
 	" Answer a <RSGroup> of entities at mouse position <Point> aPosition "
 
-	^ self canvas nodes select: [ : v | v encompassingRectangle containsPoint: aPosition ]
+	^ self nodes select: [ : v | v encompassingRectangle containsPoint: aPosition ]
 ]
 
 { #category : #initialization }
@@ -291,6 +302,13 @@ CMR3SpacePresenter >> layoutClass: anObject [
 ]
 
 { #category : #accessing }
+CMR3SpacePresenter >> leftClickActionBlock [
+	
+	^ leftClickActionBlock
+		ifNil: [ leftClickActionBlock := self defaultLeftClickActionBlock ]
+]
+
+{ #category : #accessing }
 CMR3SpacePresenter >> model [
 
 	^ model
@@ -315,9 +333,10 @@ CMR3SpacePresenter >> moveSituatedEntities [
 		e @ RSDraggable;
 			when: RSMouseDragStart do: [ :evt | 
 				self inform: 'Start dragging' ];
-			when: RSMouseDragging do: [ :evt |
-				self inform: evt position asString ];
-			when: RSMouseDragEnd do:[:evt | evt shape model patch: (self cellAt: evt position) ].
+"			when: RSMouseDragging do: [ :evt |
+				self inform: evt position asString ];"
+			when: RSMouseDragEnd do: [ : evt | 
+				evt cormasEntity patch: (self cellAt: evt position ifAbsent: [ evt cormasEntity patch ]) ].
 	
 			e
 				size: entityModel sizeOfPOV;
@@ -359,7 +378,7 @@ CMR3SpacePresenter >> nodes [
 { #category : #callbacks }
 CMR3SpacePresenter >> onMouseClick: aRSMouseClick [
 
-	(self entitiesAt: aRSMouseClick shape position) do: self onLeftClickActionBlock
+	(self entitiesAt: aRSMouseClick shape position) do: self leftClickActionBlock
 ]
 
 { #category : #accessing }
@@ -439,11 +458,6 @@ CMR3SpacePresenter >> sevClass: anObject [
 CMR3SpacePresenter >> situatedEntitiesViews [
 	^ situatedEntitiesViews
 		ifNil: [ situatedEntitiesViews := OrderedCollection new ]
-]
-
-{ #category : #accessing }
-CMR3SpacePresenter >> situatedEntitiesViews: anObject [
-	situatedEntitiesViews := anObject
 ]
 
 { #category : #accessing }
