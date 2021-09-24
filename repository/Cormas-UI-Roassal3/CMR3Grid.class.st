@@ -7,7 +7,7 @@ Class {
 		'text',
 		'button'
 	],
-	#category : #'Cormas-UI-Roassal3'
+	#category : #'Cormas-UI-Roassal3-Chart'
 }
 
 { #category : #specs }

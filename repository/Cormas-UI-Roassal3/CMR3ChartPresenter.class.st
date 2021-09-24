@@ -12,7 +12,7 @@ Class {
 		'numberOfVerticalTicks',
 		'xAxisLabelOffset'
 	],
-	#category : #'Cormas-UI-Roassal3'
+	#category : #'Cormas-UI-Roassal3-Chart'
 }
 
 { #category : #'instance creation' }

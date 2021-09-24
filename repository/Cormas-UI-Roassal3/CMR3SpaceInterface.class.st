@@ -23,7 +23,7 @@ Class {
 		'diagram',
 		'menuToolbar'
 	],
-	#category : #'Cormas-UI-Roassal3'
+	#category : #'Cormas-UI-Roassal3-Space'
 }
 
 { #category : #specs }
@@ -320,8 +320,8 @@ CMR3SpaceInterface >> initializeToolsMenuToolbar [
 						action: [  ] ];
 				addItem: [ :item | 
 					item
-						name: self translator tClickTo;
-						action: [  ] ];
+						name: self translator tPreferences;
+						action: [ CMSpaceSettingsBrowser openFor: self ] ];
 					
 				addItem: [ :item | 
 					item

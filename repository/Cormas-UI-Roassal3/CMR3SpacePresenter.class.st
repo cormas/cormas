@@ -16,7 +16,7 @@ Class {
 		'theCellViews',
 		'leftClickActionBlock'
 	],
-	#category : #'Cormas-UI-Roassal3'
+	#category : #'Cormas-UI-Roassal3-Space'
 }
 
 { #category : #'instance creation' }
@@ -142,8 +142,9 @@ CMR3SpacePresenter >> cellSize: anObject [
 
 { #category : #refreshing }
 CMR3SpacePresenter >> clearView [
-	self situatedEntitiesViews removeAll.
-	self clean
+
+	self nodes removeAll.
+
 ]
 
 { #category : #'instance creation' }
@@ -164,7 +165,7 @@ CMR3SpacePresenter >> collectYAxisPositions [
 CMR3SpacePresenter >> configureLayout [
 
 	self layoutClass new
-		gapSize: 0;
+		gapSize: CMSpacePreferences spaceGapSetting;
 		lineItemsCount: model spaceModel column;
 		on: self nodes	
 ]
@@ -200,12 +201,6 @@ CMR3SpacePresenter >> defaultCellSize [
 ]
 
 { #category : #defaults }
-CMR3SpacePresenter >> defaultElementClass [
-
-	^ RSBox
-]
-
-{ #category : #defaults }
 CMR3SpacePresenter >> defaultLayoutClass [
 
 	^ RSGridLayout
@@ -231,31 +226,12 @@ CMR3SpacePresenter >> defaultScaleInterpolator [
 		range: RSColorPalette sequential greens9 range
 ]
 
-{ #category : #defaults }
-CMR3SpacePresenter >> defaultSituatedEntityViewClass [
-
-	^ RSEllipse
-]
-
 { #category : #refreshing }
 CMR3SpacePresenter >> delete [ 
 	" Release all instance variables. See https://github.com/cormas/cormas/issues/493 "
 
 	self release.
 	super delete.
-]
-
-{ #category : #'instance creation' }
-CMR3SpacePresenter >> elemClass [
-
-	^ elemClass 
-		ifNil: [ elemClass := self defaultElementClass ]
-]
-
-{ #category : #accessing }
-CMR3SpacePresenter >> elemClass: anObject [
-
-	elemClass := anObject
 ]
 
 { #category : #callbacks }
@@ -331,8 +307,7 @@ CMR3SpacePresenter >> moveSituatedEntities [
 		entityModel := e model.
 		eModelPatch := entityModel patch.
 		e @ RSDraggable;
-			when: RSMouseDragStart do: [ :evt | 
-				self inform: 'Start dragging' ];
+			when: RSMouseDragStart do: [ :evt | self inform: 'Start dragging' ];
 "			when: RSMouseDragging do: [ :evt |
 				self inform: evt position asString ];"
 			when: RSMouseDragEnd do: [ : evt | 
@@ -346,10 +321,10 @@ CMR3SpacePresenter >> moveSituatedEntities [
 { #category : #'instance creation' }
 CMR3SpacePresenter >> newElementViewForModel: cellModel [
 
-"	| povSelector |
-
-	povSelector := self getActivePovSelectorOf: cellModel class."
-	^ self elemClass new
+	| roassalShape |
+	
+	roassalShape := self shapeFromString: CMSpacePreferences spaceElementTypeSetting asLowercase.
+	^  roassalShape 
 		model: cellModel;
 		"color: (cellModel getColorForPov: povSelector);"
 		size: self cellSize;
@@ -444,8 +419,7 @@ CMR3SpacePresenter >> setModelBeforeInitialization: aCMAbstractModel [
 { #category : #accessing }
 CMR3SpacePresenter >> sevClass [
 
-	^ sevClass
-		ifNil: [ sevClass := self defaultSituatedEntityViewClass ]
+	^ CMSpacePreferences spaceSituatedEntityTypeSetting
 ]
 
 { #category : #accessing }
@@ -454,8 +428,25 @@ CMR3SpacePresenter >> sevClass: anObject [
 	sevClass := anObject
 ]
 
+{ #category : #utilities }
+CMR3SpacePresenter >> shapeFromString: aString [
+
+	| roassalShapeKey |
+	
+	roassalShapeKey := (Dictionary newFromPairs: { 'o' . 'circle' .
+	'^' . 'arrow' .
+	's' . 'square' .
+	'p' . 'pentagon' .
+	'h' . 'hexagon' .
+	'+' . 'plus' .
+	'd' . 'diamond' .
+	'*' . 'star' }) keyAtValue: aString.
+	^ RSShapeFactory shapeFromString: roassalShapeKey
+]
+
 { #category : #accessing }
 CMR3SpacePresenter >> situatedEntitiesViews [
+
 	^ situatedEntitiesViews
 		ifNil: [ situatedEntitiesViews := OrderedCollection new ]
 ]

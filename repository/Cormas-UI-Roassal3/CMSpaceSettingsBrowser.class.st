@@ -12,6 +12,14 @@ CMSpaceSettingsBrowser class >> open [
 	(CMSpaceSettingsBrowser forKeywords: #('cormasSpacePreferences')) open; expandAll.
 ]
 
+{ #category : #opening }
+CMSpaceSettingsBrowser class >> openFor: aSpaceInterface [
+	" Open the receiver's window "
+	<script>
+
+	(CMSpaceSettingsBrowser forKeywords: #('cormasSpacePreferences')) open; expandAll.
+]
+
 { #category : #private }
 CMSpaceSettingsBrowser class >> pragmaKeywords [
 
@@ -42,6 +50,12 @@ CMSpaceSettingsBrowser >> buildWindowIn: aWindow [
 		fullFrame: ((0 @ 0.99 corner: 1 @ 1) asLayoutFrame 
 				topOffset: statusViewHeight negated).
 	^ aWindow
+]
+
+{ #category : #accessing }
+CMSpaceSettingsBrowser >> isCloseableByCormas [
+
+	^ true
 ]
 
 { #category : #opening }

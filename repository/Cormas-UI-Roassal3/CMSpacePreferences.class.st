@@ -5,28 +5,23 @@ Class {
 		'SpaceCellColorSetting',
 		'SpaceCellSizeSetting',
 		'SpaceElementTypeSetting',
-		'SpaceLayoutSetting',
+		'SpaceGapSetting',
 		'SpaceSituatedEntityTypeSetting'
 	],
 	#category : #'Cormas-UI-Roassal3-Settings'
 }
 
 { #category : #settings }
-CMSpacePreferences class >> availableSpaceCellColorSetting [
-	
-	^ { #red . #blue . #green }.
-]
-
-{ #category : #settings }
 CMSpacePreferences class >> availableSpaceElementTypeSetting [
 	
-	^ { RSCircle . RSBox . RSPolygon }.
-]
-
-{ #category : #settings }
-CMSpacePreferences class >> availableSpaceLayoutSetting [
-	
-	^ { RSGridLayout . RSVerticalGridLayout . RSRadialTreeLayout . RSCellLayout . RSFlowLayout . RSHorizontalFlowLayout . RSTreeLayout . RSClusterLayout }.
+	^ #(Circle
+	Arrow
+	Square
+	Pentagon
+	Hexagon
+	Plus
+	Diamond
+	Star)
 ]
 
 { #category : #settings }
@@ -39,14 +34,10 @@ CMSpacePreferences class >> availableSpaceSituatedEntityTypeSetting [
 CMSpacePreferences class >> cmSpaceCellColorSettingOn: aBuilder [
 	<cormasSpacePreferences>
 	
-	(aBuilder pickOne: #spaceCellColorSetting)
-		label: 'General Space Settings';
-		parent: #cMSpaceSetting;
-		description: 'Base color of the cell in the space';
-		target: self;
-		order: 5;
-		domainValues: self availableSpaceCellColorSetting;
-		default: self defaultSpaceCellColorSetting
+	(aBuilder group: #cmSpaceSetting)
+		label: 'General Settings';
+		description: 'Settings related with Space Interface visualization';
+		order: 1
 ]
 
 { #category : #settings }
@@ -54,8 +45,8 @@ CMSpacePreferences class >> cmSpaceCellSizeSettingOn: aBuilder [
 	<cormasSpacePreferences>
 	
 	(aBuilder range: #spaceCellSizeSetting)
-		label: 'General Space Settings';
-		parent: #cMSpaceSetting;
+		label: 'Cell size';
+		parent: #cmSpaceSetting;
 		description: 'Size of the cell in the space';
 		target: self;
 		order: 1;
@@ -68,27 +59,27 @@ CMSpacePreferences class >> cmSpaceElementTypeSettingOn: aBuilder [
 	<cormasSpacePreferences>
 	
 	(aBuilder pickOne: #spaceElementTypeSetting)
-		label: 'General Space Settings';
-		parent: #cMSpaceSetting;
+		label: 'Shape type';
+		parent: #cmSpaceSetting;
 		description: 'Type of the shape of the space';
 		target: self;
 		order: 2;
 		domainValues: self availableSpaceElementTypeSetting;
-		default: self defaultSpaceElementTypeSetting
+		default: self availableSpaceElementTypeSetting first
 ]
 
 { #category : #settings }
-CMSpacePreferences class >> cmSpaceLayoutSettingOn: aBuilder [
+CMSpacePreferences class >> cmSpaceGapSettingOn: aBuilder [
 	<cormasSpacePreferences>
 	
-	(aBuilder pickOne: #spaceLayoutSetting)
-		label: 'General Space Settings';
-		parent: #cMSpaceSetting;
-		description: 'Layout of the space';
+	(aBuilder range: #spaceGapSetting)
+		label: 'Space gap';
+		parent: #cmSpaceSetting;
+		description: 'Gap of the space cells';
 		target: self;
 		order: 3;
-		domainValues: self availableSpaceLayoutSetting;
-		default: self defaultSpaceLayoutSetting
+		range: (0 to: 50);
+		default: 0
 ]
 
 { #category : #settings }
@@ -96,31 +87,13 @@ CMSpacePreferences class >> cmSpaceSituatedEntityTypeSettingOn: aBuilder [
 	<cormasSpacePreferences>
 	
 	(aBuilder pickOne: #spaceSituatedEntityTypeSetting)
-		label: 'General Space Settings';
-		parent: #cMSpaceSetting;
+		label: 'Shape type of situated entities';
+		parent: #cmSpaceSetting;
 		description: 'Shape of the situated entities of the space';
 		target: self;
 		order: 4;
 		domainValues: self availableSpaceSituatedEntityTypeSetting;
 		default: self defaultSpaceSituatedEntityTypeSetting
-]
-
-{ #category : #defaults }
-CMSpacePreferences class >> defaultSpaceCellColorSetting [
-	
-	^ self availableSpaceCellColorSetting first
-]
-
-{ #category : #defaults }
-CMSpacePreferences class >> defaultSpaceElementTypeSetting [
-	
-	^ self availableSpaceElementTypeSetting first
-]
-
-{ #category : #defaults }
-CMSpacePreferences class >> defaultSpaceLayoutSetting [
-	
-	^ self availableSpaceLayoutSetting first
 ]
 
 { #category : #defaults }
@@ -162,6 +135,7 @@ CMSpacePreferences class >> spaceElementTypeSetting [
 	" Answer the spaceElementTypeSetting of this CMSpacePreferences "
 
 	^ SpaceElementTypeSetting
+		ifNil: [ SpaceElementTypeSetting := self availableSpaceElementTypeSetting first ]
 ]
 
 { #category : #accessing }
@@ -172,17 +146,25 @@ CMSpacePreferences class >> spaceElementTypeSetting: anObject [
 ]
 
 { #category : #accessing }
-CMSpacePreferences class >> spaceLayoutSetting [
+CMSpacePreferences class >> spaceGapSetting [
 	" Answer the spaceLayoutSetting of this CMSpacePreferences "
 
-	^ SpaceLayoutSetting
+	^ SpaceGapSetting
+		ifNil: [ SpaceGapSetting := 0 ]
 ]
 
 { #category : #accessing }
-CMSpacePreferences class >> spaceLayoutSetting: anObject [
+CMSpacePreferences class >> spaceGapSetting: anObject [
 	" Sets the spaceLayoutSetting of this CMSpacePreferences "
 
-	SpaceLayoutSetting := anObject
+	SpaceGapSetting := anObject.
+"	CMR3SpacePresenter allInstancesDo: [ : sp | 
+		sp 
+			clearView;
+			addViewForCells: sp model theESE;
+			addViewForAgents: sp model allTheSituatedEntities.		
+		sp canvas signalUpdate ]."
+		
 ]
 
 { #category : #accessing }
@@ -196,5 +178,6 @@ CMSpacePreferences class >> spaceSituatedEntityTypeSetting [
 CMSpacePreferences class >> spaceSituatedEntityTypeSetting: anObject [
 	" Sets the spaceSituatedEntityTypeSetting of this CMSpacePreferences "
 
-	SpaceSituatedEntityTypeSetting := anObject
+	SpaceSituatedEntityTypeSetting := anObject.
+
 ]
