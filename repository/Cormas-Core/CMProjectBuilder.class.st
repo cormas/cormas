@@ -16,7 +16,8 @@ Class {
 	#instVars : [
 		'outputDirectory',
 		'destinationPath',
-		'cormasModel'
+		'cormasModel',
+		'cormasProject'
 	],
 	#category : #'Cormas-Core-Project'
 }
@@ -30,7 +31,7 @@ CMProjectBuilder class >> buildProjectModels [
 			destinationPath: CMResourceLocator demosPath;
 			buildProjects;
 			moveProjects;
-			unloadPackages ]
+			unLoadModelPackages ]
 ]
 
 { #category : #examples }
@@ -88,7 +89,8 @@ CMProjectBuilder >> buildForModelClass: modelClass [
 CMProjectBuilder >> buildForModelInstance: modelInstance [
 	" Creates a CORMAS project file, answer a <FileReference> to the new created project "
 
-	cormasModel := CMProjectModel basicNew
+	cormasModel := modelInstance.
+	cormasProject := CMProjectModel basicNew
 		initializeForModel: modelInstance named: modelInstance friendlyName;
 		yourself.
 	self 
@@ -105,7 +107,7 @@ CMProjectBuilder >> buildProjectFile [
 	self buildProjectResources.
 	CMProjectFile 
 		archiveAllFromPharo: self outputDirectory asFileReference children
-		as: self cormasModel projectFilename
+		as: self cormasProject projectFilename
 
 ]
 
@@ -166,6 +168,18 @@ CMProjectBuilder >> cormasModel [
 { #category : #accessing }
 CMProjectBuilder >> cormasModel: anObject [
 	cormasModel := anObject
+]
+
+{ #category : #accessing }
+CMProjectBuilder >> cormasProject [
+
+	^ cormasProject
+]
+
+{ #category : #accessing }
+CMProjectBuilder >> cormasProject: anObject [
+
+	cormasProject := anObject
 ]
 
 { #category : #testing }
