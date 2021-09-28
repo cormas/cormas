@@ -172,6 +172,7 @@ CMSpacePreferences class >> spaceSituatedEntityTypeSetting [
 	" Answer the spaceSituatedEntityTypeSetting of this CMSpacePreferences "
 
 	^ SpaceSituatedEntityTypeSetting
+		ifNil: [ SpaceSituatedEntityTypeSetting := self defaultSpaceSituatedEntityTypeSetting ]
 ]
 
 { #category : #accessing }

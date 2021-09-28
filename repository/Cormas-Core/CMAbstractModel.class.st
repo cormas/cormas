@@ -1183,12 +1183,6 @@ CMAbstractModel >> announceProbesDataUpdated [
 ]
 
 { #category : #announcement }
-CMAbstractModel >> announceTimeChange [
-
-	^ self projectAnnouncer announce: (CMTimeChangedAnnouncement timeStep: self timeStep)
-]
-
-{ #category : #announcement }
 CMAbstractModel >> announcer [
     ^ announcer ifNil: [ announcer := Announcer new ]
 ]
@@ -3284,10 +3278,7 @@ CMAbstractModel >> timeChanged [
 	"the time has changed (time step). Method is called whenever a modification of #timeStepValue.
 	Propagate the new time to the class (to be easily accessible from the agents: #currentTime) and all dependents"
 
-	| newTime |
-	newTime := self timeStep.
-	"self simWindow ifNotNil: [ :sw | sw newCurrentStepValue: newTime ]."
-	self announceTimeChange.
+	self projectAnnouncer announce: (CMTimeChangedAnnouncement timeStep: self timeStep).
 	self flag: #toClean.
 	"self changed: #timeChanged with: newTime."
 	"newTime = 0 ifTrue: [^self simManager setButtonsForTime0].
@@ -3317,7 +3308,11 @@ Ex:
 timeUnitName
 	^'days'     "
 	
-	^self timeStep printString , ' ' , self timeUnitName
+	^ String streamContents: [ : stream |
+		stream 
+			<< self timeStep printString;
+			space;
+			<< self timeUnitName ]
 ]
 
 { #category : #'user interface' }
@@ -3472,12 +3467,14 @@ CMAbstractModel >> wayFromCell: cell1 toCell: cell2 [
 
 { #category : #scheduling }
 CMAbstractModel >> whenTimeStepChangedDo: aBlock [
-	self announcer when: CMTimeChangedAnnouncement do: aBlock
+
+	self projectAnnouncer when: CMTimeChangedAnnouncement do: aBlock
 ]
 
 { #category : #scheduling }
 CMAbstractModel >> whenTimeStepChangedSend: aSymbol to: anObject [
-	self announcer
+
+	self projectAnnouncer
 		when: CMTimeChangedAnnouncement
 		send: aSymbol
 		to: anObject

@@ -98,8 +98,10 @@ CMSpecConfirmBeforeLaunch >> applyScenarioSettings [
 	self projectAnnouncer announce: (CMFinalStepChangedAnnouncement new finalStep: self getFinalStep).
 
 	self delete.
+	'Scenario Settings: Init CORMAS model simulation...' traceCr.
 	self cormasModel initSimulation.
-	self announcer announce: CMScenarioUpdateAnnouncement new
+	'Scenario Settings: Announcing update' traceCr.
+	self projectAnnouncer announce: CMScenarioUpdateAnnouncement new
 
 ]
 

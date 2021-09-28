@@ -1,9 +1,6 @@
 Class {
 	#name : #CMTimeChangedAnnouncement,
-	#superclass : #Announcement,
-	#instVars : [
-		'timeStep'
-	],
+	#superclass : #CMTimeAnnouncement,
 	#category : #'Cormas-Core-Announcements'
 }
 
@@ -11,15 +8,4 @@ Class {
 CMTimeChangedAnnouncement class >> timeStep: t [
 
 ^self new timeStep: t ; yourself 
-]
-
-{ #category : #accessing }
-CMTimeChangedAnnouncement >> timeStep [
-	" Answer a positive <Number> representing the receiver's current time step "
-	^ timeStep
-]
-
-{ #category : #accessing }
-CMTimeChangedAnnouncement >> timeStep: anObject [
-	timeStep := anObject
 ]

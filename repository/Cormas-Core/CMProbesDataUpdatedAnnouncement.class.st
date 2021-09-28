@@ -1,9 +1,6 @@
 Class {
 	#name : #CMProbesDataUpdatedAnnouncement,
-	#superclass : #Announcement,
-	#instVars : [
-		'timeStep'
-	],
+	#superclass : #CMTimeAnnouncement,
 	#category : #'Cormas-Core-Announcements'
 }
 
@@ -12,14 +9,4 @@ CMProbesDataUpdatedAnnouncement class >> timeStep: t [
 	^ self new
 		timeStep: t;
 		yourself
-]
-
-{ #category : #accessing }
-CMProbesDataUpdatedAnnouncement >> timeStep [
-	^ timeStep
-]
-
-{ #category : #accessing }
-CMProbesDataUpdatedAnnouncement >> timeStep: anObject [
-	timeStep := anObject
 ]

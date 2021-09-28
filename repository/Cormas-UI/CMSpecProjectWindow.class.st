@@ -100,6 +100,10 @@ CMProjectModel allInstances.
 CMProjectModel allInstances first.
 CMProjectModel allInstances first pointersTo.
 
+CMR3SpaceInterface allInstances.
+CMR3SpaceInterface allInstances first.
+CMR3SpaceInterface allInstances pointersTo.
+
 CMConwayModel spatialClasses.
 CMConwayModel passiveClasses.
 CMConwayModel socialClasses.
@@ -144,7 +148,8 @@ SmalltalkImage current fixObsoleteReferences.
 { 
 CMProjectModel allInstances.
 CMProjectManager allInstances.
-CMSpecProjectWindow allInstances 
+CMSpecProjectWindow allInstances.
+CMR3SpaceInterface allInstances.
 } allSatisfy: #isEmpty.'
 
 ]
@@ -261,7 +266,7 @@ CMSpecProjectWindow >> initializeSubscriptions [
 		to: self.
 	self projectAnnouncer
 		when: 	CMScenarioUpdateAnnouncement
-		send: #openSpaceInterfaceUpdateScenario
+		send: #openSpacePresenterUpdateScenario
 		to: self
 ]
 
@@ -646,21 +651,25 @@ CMSpecProjectWindow >> openProjectProperties [
 ]
 
 { #category : #callbacks }
-CMSpecProjectWindow >> openSpaceInterface [
+CMSpecProjectWindow >> openSpacePresenter [
 	" Private - Callback for user request to open a new Space Model interface for the receiver's project "
 
-	CMR3SpaceInterface openFor: self projectManager.
+	'Project Window: Open Space Presenter' traceCr.
+	CMR3SpacePresenter openFor: self projectManager.
+	'Project Window: Announce Changed PoV' traceCr.
  	self projectAnnouncer announce: CMSChangePoVAnnouncement new.
 ]
 
 { #category : #callbacks }
-CMSpecProjectWindow >> openSpaceInterfaceUpdateScenario [
+CMSpecProjectWindow >> openSpacePresenterUpdateScenario [
 	" Private - Open a space model interface. Close all opened space model windows if any "
 
-	CMR3SpaceInterface allInstancesDo: #delete.
+	'Project Window: Deleting Space Presenters...' traceCr.
+	CMR3SpacePresenter allInstancesDo: #delete.
 "	self projectAnnouncer hasSubscriptions
 		ifTrue: [ self halt. self projectAnnouncer unsubscribeCormasSpaces ]."
-	self spaceModel activePoVsDictionary ifNotEmpty: [ self openSpaceInterface ]
+	'Project Window: Opening Space Presenter' traceCr.
+	self spaceModel activePoVsDictionary ifNotEmpty: [ self openSpacePresenter ]
 
 
 ]
@@ -1534,7 +1543,7 @@ CMSpecProjectWindow >> subMenuVizSpace: item [
 		name: self translator tSpace;
 "		icon: Smalltalk ui icons openIcon;"
 		shortcut: $S command;
-		action: [ self openSpaceInterface ]
+		action: [ self openSpacePresenter ]
 ]
 
 { #category : #callbacks }

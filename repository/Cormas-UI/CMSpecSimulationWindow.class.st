@@ -431,7 +431,7 @@ CMSpecSimulationWindow >> initializeSubscriptions [
 
 	self projectAnnouncer
 		when: CMTimeChangedAnnouncement
-		do: [ : ann | self newCurrentStepValue: ann timeStep ]
+		do: [ : ann | self updateStepValue: ann timeStep ]
 ]
 
 { #category : #initialization }
@@ -446,13 +446,6 @@ CMSpecSimulationWindow >> initializeWidgets [
 		initializeInputs;
 		initializeSubscriptions.
 
-]
-
-{ #category : #changes }
-CMSpecSimulationWindow >> newCurrentStepValue: anInteger [
-
-	anInteger isInteger ifFalse: [ self halt ].
-	self currentStepInputText text: anInteger asString.
 ]
 
 { #category : #morphic }
@@ -804,6 +797,13 @@ CMSpecSimulationWindow >> title [
 	" Private - See superimplementor's comment "
 
 	^ ''
+]
+
+{ #category : #changes }
+CMSpecSimulationWindow >> updateStepValue: anInteger [
+
+	anInteger isInteger ifFalse: [ self halt ].
+	self currentStepInputText text: anInteger asString.
 ]
 
 { #category : #testing }
