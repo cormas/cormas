@@ -541,12 +541,11 @@ CMR3SpaceDiagram >> timeChanged: aNewTimeStep [
 
 { #category : #callbacks }
 CMR3SpaceDiagram >> unsubscribeListeners [ 
+	" Private - Unregister all node events "
 
-	"self situatedEntitiesViews do: [ : se |
-		se announcer unsubscribe: self ]."
 	'Space Presenter: Unsubscribing diagram before deleting presenter...' traceCr.
 	self nodes do: [ : node | node announcer subscriptions reset ].
-	self halt.
+
 ]
 
 { #category : #'accessing - pov' }

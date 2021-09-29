@@ -25,6 +25,12 @@ Class {
 }
 
 { #category : #accessing }
+CMProjectManager >> applicationClass [
+
+	^ CMApplicationProject
+]
+
+{ #category : #accessing }
 CMProjectManager >> applicationExtension [
 	" See comment in #applicationExtension "
 

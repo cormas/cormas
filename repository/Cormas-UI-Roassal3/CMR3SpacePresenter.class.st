@@ -356,12 +356,15 @@ CMR3SpacePresenter >> initializeWindow: w [
 	w 
 		title: self initializeWindowTitle;
 		initialExtent: 800 @ 500;
-		whenClosedDo: [ self halt. 
+		whenWillCloseDo: [
 			w isDisplayed
 				ifTrue: [ 
 					'Space Presenter: Unsubscribing diagram before deleting presenter...' traceCr.
-					self diagram unsubscribeListeners.
-					self projectAnnouncer unsubscribe: self diagram ] ];
+					self diagram ifNotNil: [ : d | 
+						d unsubscribeListeners.
+						self projectAnnouncer unsubscribe: d ].
+					self release.
+					self defer: [ 3 timesRepeat: [ Smalltalk garbageCollect ] ] ] ];
 		centered
 ]
 
