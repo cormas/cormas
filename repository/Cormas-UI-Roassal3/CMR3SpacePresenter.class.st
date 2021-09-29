@@ -19,7 +19,6 @@ Class {
 	#classTraits : 'TCMUIUtils classTrait',
 	#instVars : [
 		'projectManager',
-		'spaceView',
 		'diagram',
 		'menuToolbar'
 	],
@@ -92,14 +91,6 @@ CMR3SpacePresenter >> cormasModel [
 	^ self projectManager cormasModel.
 ]
 
-{ #category : #'submorphs - add/remove' }
-CMR3SpacePresenter >> delete [ 
-
-	'Space Presenter: Unsubscribing diagram before deleting presenter...' traceCr.
-	self projectAnnouncer unsubscribe: self diagram.
-	super delete.
-]
-
 { #category : #accessing }
 CMR3SpacePresenter >> diagram [
 
@@ -144,14 +135,11 @@ CMR3SpacePresenter >> initializeDiagram [
 	diagram := self
 		           instantiate: self appSettingsClass settingSpaceViewer
 		           on: self cormasModel.
-	self projectAnnouncer
-		when: CMSChangePoVAnnouncement 
-		send: #setAndRefreshActivePovs
-		to: self diagram.
+	self initializeEvents.
 	
 ]
 
-{ #category : #initialization }
+{ #category : #'initialization - menu' }
 CMR3SpacePresenter >> initializeDisplaysMenuToolbar [
 	" Private - See superimplementor's commen "
 
@@ -180,7 +168,7 @@ CMR3SpacePresenter >> initializeDisplaysMenuToolbar [
 						subMenu: self subMenuForCellVsAggregates ] ]
 ]
 
-{ #category : #initialization }
+{ #category : #'initialization - menu' }
 CMR3SpacePresenter >> initializeEnvironmentMenuToolbar [
 	" Private - See superimplementor's commen "
 
@@ -214,6 +202,16 @@ CMR3SpacePresenter >> initializeEnvironmentMenuToolbar [
 ]
 
 { #category : #initialization }
+CMR3SpacePresenter >> initializeEvents [
+
+	self projectAnnouncer
+		when: CMSChangePoVAnnouncement 
+		send: #setAndRefreshActivePovs
+		to: self diagram.
+
+]
+
+{ #category : #'initialization - menu' }
 CMR3SpacePresenter >> initializeExportMenuToolbar [
 	" Private - See superimplementor's commen "
 
@@ -234,7 +232,7 @@ CMR3SpacePresenter >> initializeExportMenuToolbar [
 			yourself
 ]
 
-{ #category : #initialization }
+{ #category : #'initialization - menu' }
 CMR3SpacePresenter >> initializeOptionMenuToolbar [
 	" Private - See superimplementor's commen "
 
@@ -269,7 +267,7 @@ CMR3SpacePresenter >> initializeOptionMenuToolbar [
 
 ]
 
-{ #category : #initialization }
+{ #category : #'initialization - menu' }
 CMR3SpacePresenter >> initializePOVMenuToolbar [
 	" Private - See superimplementor's commen "
 
@@ -311,7 +309,7 @@ CMR3SpacePresenter >> initializePresenters [
 	self initializeCanvasInteractions
 ]
 
-{ #category : #initialization }
+{ #category : #'initialization - menu' }
 CMR3SpacePresenter >> initializeToolsMenuToolbar [
 	" Private - See superimplementor's commen "
 
@@ -358,7 +356,12 @@ CMR3SpacePresenter >> initializeWindow: w [
 	w 
 		title: self initializeWindowTitle;
 		initialExtent: 800 @ 500;
-		whenClosedDo: [ self projectAnnouncer unsubscribe: self ];
+		whenClosedDo: [ self halt. 
+			w isDisplayed
+				ifTrue: [ 
+					'Space Presenter: Unsubscribing diagram before deleting presenter...' traceCr.
+					self diagram unsubscribeListeners.
+					self projectAnnouncer unsubscribe: self diagram ] ];
 		centered
 ]
 
@@ -424,7 +427,7 @@ CMR3SpacePresenter >> menuToolbar: anObject [
 	menuToolbar := anObject
 ]
 
-{ #category : #initialization }
+{ #category : #accessing }
 CMR3SpacePresenter >> projectAnnouncer [
 
 	^ self cormasModel projectAnnouncer
@@ -442,21 +445,21 @@ CMR3SpacePresenter >> projectManager: anObject [
 	projectManager := anObject
 ]
 
+{ #category : #dependencies }
+CMR3SpacePresenter >> release [
+
+	menuToolbar := nil.
+	announcer := nil.
+	diagram := nil.
+	self projectManager: nil.
+	super release.
+]
+
 { #category : #accessing }
 CMR3SpacePresenter >> spaceModel [
 	" Answer a <CMSpaceModel>, the receiver's model configured space "
 	
 	^ self cormasModel spaceModel
-]
-
-{ #category : #accessing }
-CMR3SpacePresenter >> spaceView [
-	^ spaceView
-]
-
-{ #category : #accessing }
-CMR3SpacePresenter >> spaceView: anObject [
-	spaceView := anObject
 ]
 
 { #category : #private }

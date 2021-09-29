@@ -14,9 +14,10 @@ Class {
 { #category : #settings }
 CMSpacePreferences class >> availableSpaceElementTypeSetting [
 	
-	^ #(Circle
-	Arrow
+	^ #(
 	Square
+	Circle
+	Arrow
 	Pentagon
 	Hexagon
 	Plus

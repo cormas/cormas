@@ -61,6 +61,12 @@ CMR3SpaceDiagram >> activePoVsDictionary [
 	^ activePoVsDictionary ifEmpty: [ activePoVsDictionary := self defaultActivePoVs ]
 ]
 
+{ #category : #accessing }
+CMR3SpaceDiagram >> activePoVsDictionary: anObject [
+
+	activePoVsDictionary := anObject
+]
+
 { #category : #'accessing - pov' }
 CMR3SpaceDiagram >> activeSpatialEntityPov [
 	" Answer a <Symbol> representing the selector of the active PoV which is a Spatial Entity "
@@ -172,12 +178,14 @@ CMR3SpaceDiagram >> configureLayout [
 
 { #category : #'instance creation' }
 CMR3SpaceDiagram >> configurePopUp [
+	" Private - Configure receiver's popup behavior and click callbacks for each receiver's node "
 
 	| popUp |
 	popUp := RSPopup text: [ : aCMEntity | aCMEntity asString ].
-	self nodes
-		@ popUp;
-		when: RSMouseLeftClick do: [ : aRSMouseClick | self onMouseClick: aRSMouseClick ].
+	self nodes @ popUp.
+	self nodes 
+		when: RSMouseLeftClick 
+		do: [ : aRSMouseClick | (self entitiesAt: aRSMouseClick shape position) do: self leftClickActionBlock ].
 ]
 
 { #category : #accessing }
@@ -250,12 +258,8 @@ CMR3SpaceDiagram >> initialize [
 ]
 
 { #category : #initialization }
-CMR3SpaceDiagram >> initializePresenters [
-	" Private - This method initializes a simulationGrid for a specific cormasModel , without specifyin any animation behaviour "
+CMR3SpaceDiagram >> initializeEvents [
 
-	self addViewForCells: self model theESE.
-	self addViewForAgents: self model allTheSituatedEntities.
-	
 	self projectAnnouncer
 		when: CMTimeChangedAnnouncement do: [ :aAnnounce | 
 			aAnnounce timeStep = 0 
@@ -266,6 +270,15 @@ CMR3SpaceDiagram >> initializePresenters [
 		self canvas signalUpdate.
 		self extent: self canvas extent. ].
 	self canvas signalUpdate
+]
+
+{ #category : #initialization }
+CMR3SpaceDiagram >> initializePresenters [
+	" Private - This method initializes a simulationGrid for a specific cormasModel , without specifyin any animation behaviour "
+
+	self addViewForCells: self model theESE.
+	self addViewForAgents: self model allTheSituatedEntities.
+	self initializeEvents.
 ]
 
 { #category : #'accessing - layouts' }
@@ -286,6 +299,12 @@ CMR3SpaceDiagram >> leftClickActionBlock [
 	
 	^ leftClickActionBlock
 		ifNil: [ leftClickActionBlock := self defaultLeftClickActionBlock ]
+]
+
+{ #category : #accessing }
+CMR3SpaceDiagram >> leftClickActionBlock: anObject [
+
+	leftClickActionBlock := anObject
 ]
 
 { #category : #accessing }
@@ -310,7 +329,8 @@ CMR3SpaceDiagram >> moveSituatedEntities [
 			
 		entityModel := e model.
 		eModelPatch := entityModel patch.
-		e @ RSDraggable;
+		e @ RSDraggable.
+		e
 			when: RSMouseDragStart do: [ :evt | self inform: 'Start dragging' ];
 "			when: RSMouseDragging do: [ :evt |
 				self inform: evt position asString ];"
@@ -375,6 +395,19 @@ CMR3SpaceDiagram >> projectAnnouncer [
 	" Private - Answer the <Announcer> used by the receiver's project "
 	
 	^ self cormasModel projectAnnouncer
+]
+
+{ #category : #initialization }
+CMR3SpaceDiagram >> release [ 
+
+	self 
+		model: nil;
+		theCellViews: nil; 
+		activePoVsDictionary: nil; 
+		situatedEntitiesViews: nil;
+		leftClickActionBlock: nil.
+	currentCanvas := nil.
+	super release.
 ]
 
 { #category : #refreshing }
@@ -456,6 +489,12 @@ CMR3SpaceDiagram >> situatedEntitiesViews [
 ]
 
 { #category : #accessing }
+CMR3SpaceDiagram >> situatedEntitiesViews: anObject [
+
+	situatedEntitiesViews := anObject
+]
+
+{ #category : #accessing }
 CMR3SpaceDiagram >> spaceModel [
 	" Answer the receiver's <CMSpaceModel> "
 
@@ -498,6 +537,16 @@ CMR3SpaceDiagram >> timeChanged: aNewTimeStep [
 	self moveSituatedEntities.
 	self theCellViews do: [ : node | node updateEntityAspectIn: self ].
 	self canvas signalUpdate
+]
+
+{ #category : #callbacks }
+CMR3SpaceDiagram >> unsubscribeListeners [ 
+
+	"self situatedEntitiesViews do: [ : se |
+		se announcer unsubscribe: self ]."
+	'Space Presenter: Unsubscribing diagram before deleting presenter...' traceCr.
+	self nodes do: [ : node | node announcer subscriptions reset ].
+	self halt.
 ]
 
 { #category : #'accessing - pov' }

@@ -376,6 +376,17 @@ CMProjectManager >> querySaveProject [
 		ifTrue: [ self saveProject ].
 ]
 
+{ #category : #initialization }
+CMProjectManager >> release [
+
+	self 
+		fsm: nil;
+		opener: nil;
+		settingsClass: nil;
+		applicationClass: nil.
+	super release.
+]
+
 { #category : #callbacks }
 CMProjectManager >> reloadProject: icePackage repository: anIceRepository [
 

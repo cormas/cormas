@@ -100,9 +100,15 @@ CMProjectModel allInstances.
 CMProjectModel allInstances first.
 CMProjectModel allInstances first pointersTo.
 
-CMR3SpaceInterface allInstances.
-CMR3SpaceInterface allInstances first.
-CMR3SpaceInterface allInstances pointersTo.
+CMR3SpaceDiagram allInstances.
+CMR3SpaceDiagram allInstances first.
+CMR3SpaceDiagram allInstances first pointersTo.
+CMR3SpaceDiagram allInstances first announcer.
+
+CMR3SpacePresenter allInstances.
+CMR3SpacePresenter allInstances first.
+CMR3SpacePresenter allInstances first pointersTo.
+CMR3SpacePresenter allInstances first announcer.
 
 CMConwayModel spatialClasses.
 CMConwayModel passiveClasses.
@@ -112,7 +118,7 @@ SystemNavigation default obsoleteClasses.
 
 "================= Reset utilities ================="
 
-CMModel2ProjectMigrator rebuildModels.
+CMProjectBuilder rebuildModels.
 
 CMConwayModel passiveClasses: nil.
 CMConwayModel socialClasses: nil.
@@ -122,10 +128,6 @@ CMSpecProjectWindow allInstances first projectAnnouncer subscriptions reset.
 CMProjectManager allInstances anyOne announcer subscriptions reset.
 CMProjectManager allInstances anyOne announcer subscriptions.
 
-CMR3SpaceInterface allInstances.
-CMR3SpaceInterface allInstances anyOne.
-CMR3SpaceInterface allInstances anyOne announcer.
-
 CMProjectOpener allInstances.
 CMProjectOpener allInstances anyOne.
 CMProjectOpener allInstances anyOne projectManager: nil.
@@ -134,10 +136,9 @@ CMProjectOpener allInstances anyOne projectManager: nil.
 
 3 timesRepeat: [ Smalltalk garbageCollect ].
 
-CMProjectManager allInstances ifNotEmpty: [ : cpms | 
-	cpms do: [ : cpm | cpm fsm: nil ] ].
-CMR3SpaceInterface allInstances ifNotEmpty: [ : csps |
-	csps do: [ : csp | csp projectManager: nil; diagram: nil ] ].
+CMProjectManager allInstancesDo: #release.
+CMR3SpaceDiagram allInstancesDo: #release.
+CMR3SpacePresenter allInstancesDo: #release.
  
 SmalltalkImage current fixObsoleteBindings.
 SmalltalkImage current fixObsoleteReferences.
@@ -666,9 +667,6 @@ CMSpecProjectWindow >> openSpacePresenterUpdateScenario [
 
 	'Project Window: Deleting Space Presenters...' traceCr.
 	CMR3SpacePresenter allInstancesDo: #delete.
-"	self projectAnnouncer hasSubscriptions
-		ifTrue: [ self halt. self projectAnnouncer unsubscribeCormasSpaces ]."
-	'Project Window: Opening Space Presenter' traceCr.
 	self spaceModel activePoVsDictionary ifNotEmpty: [ self openSpacePresenter ]
 
 
