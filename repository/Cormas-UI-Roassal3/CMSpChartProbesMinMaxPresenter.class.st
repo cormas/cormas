@@ -9,7 +9,7 @@ Class {
 		'fixMinInputPresenter',
 		'minTime'
 	],
-	#category : #'Cormas-UI-Spec2-Probes'
+	#category : #'Cormas-UI-Roassal3-Chart'
 }
 
 { #category : #specs }

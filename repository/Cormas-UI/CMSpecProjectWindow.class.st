@@ -110,6 +110,11 @@ CMR3SpacePresenter allInstances first.
 CMR3SpacePresenter allInstances first pointersTo.
 CMR3SpacePresenter allInstances first announcer.
 
+CMR3ChartPresenter allInstances.
+CMR3ChartPresenter allInstances first.
+CMR3ChartPresenter allInstances first pointersTo.
+CMR3ChartPresenter allInstances first announcer.
+
 CMConwayModel spatialClasses.
 CMConwayModel passiveClasses.
 CMConwayModel socialClasses.
@@ -150,7 +155,7 @@ SmalltalkImage current fixObsoleteReferences.
 CMProjectModel allInstances.
 CMProjectManager allInstances.
 CMSpecProjectWindow allInstances.
-CMR3SpaceInterface allInstances.
+CMR3SpacePresenter allInstances.
 } allSatisfy: #isEmpty.'
 
 ]
@@ -285,9 +290,7 @@ CMSpecProjectWindow >> initializeVisualizationSubMenu: group [
 CMSpecProjectWindow >> initializeWidgets [
 	" Private - See superimplementor's comment "
 
-	self 
-		initializeApplication;
-		initializeSubscriptions.
+	self initializeSubscriptions.
 	super initializeWidgets.
 	self simWindow: ((CMSpecSimulationContainer for: self projectManager)
 		owner: self;
@@ -708,6 +711,12 @@ CMSpecProjectWindow >> quitSubApplicationWindows [
 	World submorphs
 		select: [ :sm | sm isCormasSubApplicationWindow ]
 		thenDo: [ :w | w delete ].
+	UIManager default defer: [ 
+		"(Delay forSeconds: 1) wait."
+		self projectAnnouncer subscriptions reset.
+		CMApplicationProject allInstancesDo: #release.
+		CMApplicationProject release. 
+		3 timesRepeat: [ Smalltalk garbageCollect ] ]
 ]
 
 { #category : #'submenu-tools-developer' }

@@ -1,348 +1,105 @@
+"
+This is the main Probes window, which contains:
+
+- A presenter with settings for visualization of probes
+- The Roassal 3 presenter with the canvas.
+
+
+Internal Representation and Key Implementation Points.
+
+    Instance Variables
+	optionsPresenter:		<Object>
+	roassalChartPresenter:		<Object>
+
+
+    Implementation Points
+"
 Class {
 	#name : #CMR3ChartPresenter,
-	#superclass : #SpRoassalPresenter,
+	#superclass : #CMSpPresenter,
+	#traits : 'TCMUIUtils',
+	#classTraits : 'TCMUIUtils classTrait',
 	#instVars : [
-		'chartBuilder',
-		'cormasModel',
-		'probeNum',
-		'probeLines',
-		'title',
-		'titleSize',
-		'numberOfHorizontalTicks',
-		'numberOfVerticalTicks',
-		'xAxisLabelOffset'
+		'optionsPresenter',
+		'roassalChartPresenter'
 	],
 	#category : #'Cormas-UI-Roassal3-Chart'
 }
 
-{ #category : #'instance creation' }
-CMR3ChartPresenter class >> owner: anOwningPresenter on: aDomainObject [
+{ #category : #specs }
+CMR3ChartPresenter class >> defaultSpec [
 
-	^ self basicNew
-		owner: anOwningPresenter;
-		setModelBeforeInitialization: aDomainObject;
-		initialize;
-		yourself
-]
-
-{ #category : #'accessing - chart' }
-CMR3ChartPresenter >> addAZeroDataSet [
-	| xValue initialPlot |
-
-	initialPlot := RSLinePlot new.
-	xValue := {0} asOrderedCollection.
-	initialPlot 
-		x: xValue
-		y: { 0 };
-		color:  Color blue trans.
-	
-	self chartBuilder: (self newChartBuilder: (1 -> 1)).
-	self chartBuilder addPlot: initialPlot.
-	self chartBuilder renderIn: self canvas.
-]
-
-{ #category : #accessing }
-CMR3ChartPresenter >> addControllers: aCanvas [
-
-	aCanvas
-		addInteraction: RSCanvasController new";
-		addInteraction: RSZoomToFitCanvasInteraction new;
-		addInteraction: RSZoomableCanvasInteraction new;
-		addInteraction: RSKeyNavigationCanvasInteraction new.
-	aCanvas when: RSExtentChangedEvent do: [ 
-		aCanvas camera zoomToFit: aCanvas extent.
-		aCanvas signalUpdate ]."
-]
-
-{ #category : #'accessing - chart' }
-CMR3ChartPresenter >> addProbe: probeName ofClass: className color: aColor [
-	" Private - Create a new line for the argument probeName with aColor. Obtain its y value from the cormas model "
-
-	| linePlot xValues yValues probeValues |
-
-	self flag: #todo. 
-		" Why do we need the className ? "
-		" Do we need to count probeNum ? "
-		" How to connect lines with points as in R2 connectColor: ? "
-	probeNum := probeNum + 1.
-	linePlot := RSLinePlot new.
-	probeValues := cormasModel probeAt: probeName.
-	xValues := 0 to: probeValues size - 1 by: 1.
-	yValues := xValues collect: [ : x | probeValues at: x + 1 ].
-	linePlot 
-		x: xValues
-		y: yValues;
-		color: aColor.
-	self addProbeLine: linePlot.
-
-]
-
-{ #category : #'accessing - chart' }
-CMR3ChartPresenter >> addProbeLine: linePlot [
-	" Add linePlot <RSLinePlot> to the receiver's probes to be displayed "
-
-	self probeLines add: linePlot
-
-]
-
-{ #category : #accessing }
-CMR3ChartPresenter >> chartBuilder [
-
-	^ chartBuilder
-]
-
-{ #category : #accessing }
-CMR3ChartPresenter >> chartBuilder: anObject [
-
-	chartBuilder := anObject
-]
-
-{ #category : #accessing }
-CMR3ChartPresenter >> cormasModel [
-
-	^ cormasModel
-]
-
-{ #category : #accessing }
-CMR3ChartPresenter >> cormasModel: anObject [
-
-	cormasModel := anObject
-]
-
-{ #category : #accessing }
-CMR3ChartPresenter >> cormasModelClass [ 
-
-	^ self cormasModel class
-]
-
-{ #category : #defaults }
-CMR3ChartPresenter >> defaultNumberOfVerticalTicks [
-	
-	^ 2
-]
-
-{ #category : #defaults }
-CMR3ChartPresenter >> defaultTitle [
-	" Private - Answer a <String> with the receiver's default title to appear inside the canvas "
-	
-	^ 'Probes for ' , self cormasModelClass name
-]
-
-{ #category : #defaults }
-CMR3ChartPresenter >> defaultTitleSize [
-	" Private - Answer a <Number> with the receiver's default title size to appear inside the canvas "
-	
-	^ 15
-]
-
-{ #category : #defaults }
-CMR3ChartPresenter >> defaultXAxisLabelOffset [
-	" Answer a <Point> representing the receiver's X axis offset "
-	
-	^ 0 @ 5
-]
-
-{ #category : #'accessing - chart' }
-CMR3ChartPresenter >> newBasicChartBuilder [
-	" Private - Answer a new <RSChart> with the basic decorations and settings "
-	
-	^ RSChart new
-		maxValueY: 1;
-		addDecoration: self newHorizontalTick;
-		addDecoration: self newVerticalTick;
-		addDecoration: (RSXLabelDecoration new title: 'Time'; offset: self xAxisLabelOffset);
-		addDecoration: (RSYLabelDecoration new title: 'Value'; offset: -20 @ 0);
+	^ SpPanedLayout newLeftToRight
+		add: #optionsPresenter;
+		positionOfSlider: 25 percent;
+		add: #roassalChartPresenter;
 		yourself.
-]
 
-{ #category : #'accessing - chart' }
-CMR3ChartPresenter >> newChartBuilder: ticksAssoc [
-	" Private - Answer a new <RSChart> with ticksAssoc as the number of X ticks"
-	| newChart |
-	
-	newChart := self newBasicChartBuilder.
-	CMApplicationPreferences settingShowProbesTitle
-		ifTrue: [ newChart addDecoration: (RSChartTitleDecoration new title: self title; fontSize: self titleSize) ].
-	^ newChart.
-]
-
-{ #category : #'accessing - ticks' }
-CMR3ChartPresenter >> newHorizontalTick [
-	" Answer a new <RSHorizontalTick> with default or applied settings "
-
-	| hTick |
-	
-	hTick := RSHorizontalTick new 
-			integer;
-			yourself.
-	CMApplicationPreferences settingFixedHorizontalTick
-		ifTrue: [ hTick numberOfTicks: self numberOfHorizontalTicks ].
-	^ hTick
-]
-
-{ #category : #'accessing - ticks' }
-CMR3ChartPresenter >> newVerticalTick [
-	" Answer a new <RSVerticalTick> with default or applied settings "
-
-	| verticalTick |
-	
-	verticalTick := RSVerticalTick new 
-		doNotUseNiceLabel;
-		yourself.
-	verticalTick numberOfTicks: (CMApplicationPreferences settingFixedVerticalTick
-		ifTrue: [  2 ]
-		ifFalse: [ self numberOfVerticalTicks ]).
-	^ verticalTick
-]
-
-{ #category : #'accessing - ticks' }
-CMR3ChartPresenter >> numberOfHorizontalTicks [
-
-	^ numberOfHorizontalTicks
-]
-
-{ #category : #'accessing - ticks' }
-CMR3ChartPresenter >> numberOfHorizontalTicks: anObject [
-
-	numberOfHorizontalTicks := anObject
-]
-
-{ #category : #'accessing - ticks' }
-CMR3ChartPresenter >> numberOfVerticalTicks [
-
-	^ numberOfVerticalTicks
-		ifNil: [ numberOfVerticalTicks := self defaultNumberOfVerticalTicks ]
-]
-
-{ #category : #'accessing - ticks' }
-CMR3ChartPresenter >> numberOfVerticalTicks: anObject [
-
-	numberOfVerticalTicks := anObject
-]
-
-{ #category : #accessing }
-CMR3ChartPresenter >> plotChart: aCanvas [
-
-	self chartBuilder container: aCanvas.
-	self addControllers: aCanvas.
-]
-
-{ #category : #accessing }
-CMR3ChartPresenter >> probeLines [
-
-	^ probeLines
-		ifNil: [ probeLines := OrderedCollection new ]
-]
-
-{ #category : #accessing }
-CMR3ChartPresenter >> probeNum [
-
-	^ probeNum
-]
-
-{ #category : #accessing }
-CMR3ChartPresenter >> probeNum: anObject [
-
-	probeNum := anObject
-]
-
-{ #category : #public }
-CMR3ChartPresenter >> refresh [
-	"hard method rebuilding all datasets at each refresh."
-
-	probeNum := 1.
-	self cormasModelClass activeProbes do: [ : ap | 
-		self 
-			addProbe: ap
-			ofClass: self cormasModelClass
-			color: (self cormasModel colorOfProbe: ap) ]
 
 
 ]
 
 { #category : #initialization }
-CMR3ChartPresenter >> setModelBeforeInitialization: aDomainObject [
+CMR3ChartPresenter >> initializePresenters [
 
-	cormasModel := aDomainObject.
-	self cormasModel announcer
-		when: CMProbesDataUpdatedAnnouncement
-		do: [ :aAnnounce | aAnnounce timeStep = 0 ifFalse: [ self timeChanged: aAnnounce timeStep ] ];
+	optionsPresenter := CMSpChartOptionsPresenter owner: self on: self cormasModel.
+	roassalChartPresenter := CMR3ChartDiagram owner: self on: self cormasModel.
+	self roassalChartPresenter plotChart: self roassalChartPresenter currentCanvas.
 
-		when: CMSimInitializationAnnouncement 
-		do: [ self timeChanged: 0 ].
-	self addAZeroDataSet
 ]
 
-{ #category : #'accessing - chart' }
-CMR3ChartPresenter >> timeChanged: aNewTimeStep [
+{ #category : #initialization }
+CMR3ChartPresenter >> initializeWindow: aWindowPresenter [
+	"override this to set window values before opening. 
+	 You may want to add a menu, a toolbar or a statusbar"
 
-	| newMaxX |
-		
-	newMaxX := (aNewTimeStep max: 1) min: 10.
-	self canvas removeAllElements.
-	self refresh.
-	self chartBuilder maxValueX: newMaxX + 1.
-	self chartBuilder: (self newChartBuilder: newMaxX -> 1).
-	self "selected"probeLines do: [ : probeLine | self chartBuilder addPlot: probeLine ].
-	self chartBuilder renderIn: self canvas.
-	self canvas 
-		zoomToFit;
-		signalUpdate
+	aWindowPresenter
+		title: self title;
+		initialExtent: 1000 @ 600;
+		windowIcon: self windowIcon;
+		whenWillCloseDo: [ :  w | 
+			self halt.
+			'Chart Presenter: Unsubscribing chart before deleting presenter...' traceCr.
+			self roassalChartPresenter ifNotNil: [ : chartPresenter | 
+				self projectManager announcer unsubscribe: chartPresenter ].
+			self release.
+			self defer: [ 3 timesRepeat: [ Smalltalk garbageCollect ] ] ]
 ]
 
-{ #category : #'accessing - chart' }
+{ #category : #accessing }
+CMR3ChartPresenter >> optionsPresenter [
+
+	^ optionsPresenter
+]
+
+{ #category : #accessing }
+CMR3ChartPresenter >> optionsPresenter: anObject [
+
+	optionsPresenter := anObject
+]
+
+{ #category : #initialization }
+CMR3ChartPresenter >> release [
+
+	super release.
+	optionsPresenter := nil.
+	roassalChartPresenter := nil.
+]
+
+{ #category : #accessing }
+CMR3ChartPresenter >> roassalChartPresenter [
+
+	^ roassalChartPresenter
+]
+
+{ #category : #accessing }
+CMR3ChartPresenter >> roassalChartPresenter: anObject [
+
+	roassalChartPresenter := anObject
+]
+
+{ #category : #initialization }
 CMR3ChartPresenter >> title [
-	" Answer a <String> with the receiver's title shown inside the canvas "
-	
-	^ title
-		ifNil: [ title := self defaultTitle ]
-]
 
-{ #category : #accessing }
-CMR3ChartPresenter >> title: aString [
-
-	title := aString
-]
-
-{ #category : #accessing }
-CMR3ChartPresenter >> titleSize [
-
-	^ titleSize
-		ifNil: [ titleSize := self defaultTitleSize ]
-]
-
-{ #category : #accessing }
-CMR3ChartPresenter >> titleSize: anObject [
-
-	titleSize := anObject
-]
-
-{ #category : #roassal2 }
-CMR3ChartPresenter >> updateProbe: probeName ofClass: className [
-	| ds yValues xValues cn pn |
-	self halt. "this method does not work"
-	cn := className asString.
-	pn := probeName asString.
-	yValues := [ :y | ((cormasModel data at: cn) at: pn) asOrderedCollection at: y + 1 ].
-	xValues := 0 to: ((cormasModel data at: cn) at: pn) asOrderedCollection size - 1 by: 1.
-
-
-	"	ds dotShape circle color: Color blue trans."
-	ds := self datasets first.
-	ds addPoint: xValues last.
-	ds maxX: ds maxX + 1.
-	xValues setFrom: 0 to: xValues last + 1 by: 1.
-	"self halt."
-	ds y: yValues.
-	ds x: #yourself
-	"	ds connectColor: (Color colorFrom: (Color defaultColors2 at: 1 + (4 * probeNum)))"
-
-	"self add: ds"
-]
-
-{ #category : #'accessing - chart' }
-CMR3ChartPresenter >> xAxisLabelOffset [
-
-	^ xAxisLabelOffset
-		ifNil: [ xAxisLabelOffset := self defaultXAxisLabelOffset ]
+	^  self formattedWindowTitle: 'Probes'
 ]

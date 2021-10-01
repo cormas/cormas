@@ -352,6 +352,7 @@ CMR3SpacePresenter >> initializeToolsMenuToolbar [
 
 { #category : #initialization }
 CMR3SpacePresenter >> initializeWindow: w [
+	" Private - This method is sent by the Spec2 Framework "
 
 	w 
 		title: self initializeWindowTitle;

@@ -2792,11 +2792,14 @@ CMAbstractModel >> registerSpaceModelChange: aSymbol with: aParameter [
 
 { #category : #'initalize release' }
 CMAbstractModel >> release [
-super release.
+
+	super release.
 	self spaceModel release.
 	self spaceModel: nil.
 	self channel ifNotNil: [ self channel population: nil ].
-	self channel: nil
+	self channel: nil.
+	self resetCells.
+	self projectManager: nil.
 ]
 
 { #category : #'referencing entities' }
