@@ -185,7 +185,11 @@ CMSpecConfirmBeforeLaunch >> initializeActiveControl [
 CMSpecConfirmBeforeLaunch >> initializeActiveInit [
 	" If there is a init method already selected, select it "
 
-	self initMethodList items: (self projectManager modelInitMethods collect: #asSymbol).
+	self initMethodList 
+			label: self translator tSelectInitMethod;
+			items: (self projectManager modelInitMethods collect: #asSymbol);
+			menu: [ :aMenu :shifted | self menu: aMenu shifted: shifted ]
+			"doubleClickAction: [ self initMethodList selectedItem ifNotNil: [ : sel | self browse: sel ] ]".
 	self cormasModel hasActiveInit 
 		ifTrue: [ self initMethodList selectItem: self cormasModel activeInit ].
 ]
@@ -226,8 +230,6 @@ CMSpecConfirmBeforeLaunch >> initializeWidgets [
 		instantiateModels:
 			#(initMethodList SpcLabeledList controlMethodList SpcLabeledList finalStep SpcLabeledTextField fixRandomSeedCheck CheckBoxModel fixRandomTextField TextInputFieldModel probesList SpcLabeledList releaseRandomCheck CheckBoxModel stepBackCheck CheckBoxModel toolbar SpcTwoButtonToolbar).
 
-	self initMethodList 
-		label: self translator tSelectInitMethod.
 	self controlMethodList
 		label: self translator tSelectControlMethod.
 	self probesList 
@@ -248,6 +250,16 @@ CMSpecConfirmBeforeLaunch >> initializeWidgets [
 		firstButtonLabel: self translator tCancel;
 		firstButtonAction: [ self delete ];
 		secondButtonAction: [ self applyScenarioSettings ]
+]
+
+{ #category : #initialization }
+CMSpecConfirmBeforeLaunch >> menu: aMenu shifted: shifted [
+
+	aMenu
+		add: 'Browse (b)'
+		target: self
+		selector: #browseMethod.
+
 ]
 
 { #category : #accessing }

@@ -82,7 +82,9 @@ BaselineOfCormas >> postLoad [
 	self loadBgImage.	
 	FDMorphicUIManager new beDefault.
 	ShortcutReminder enabled: false.
-	TaskbarMorph showTaskbar: false.
+	TaskbarMorph showTaskbar: true.
+	MenubarMorph showMenubar: false.
+	
 	self unloadPackages.
 	"self openPlaygroundWindow."
 
@@ -94,16 +96,6 @@ BaselineOfCormas >> postLoad [
 	" Build user projects and un-load models from the image "
 	CMProjectBuilder buildProjectModels.
 
-]
-
-{ #category : #doits }
-BaselineOfCormas >> preLoadForPharo7 [
-	" Private - Execute post install actions "
-
-	Smalltalk tools debugger
-		alwaysOpenFullDebugger: true;
-		filterCommonMessageSends: true.
-	PharoLightTheme beCurrent
 ]
 
 { #category : #doits }

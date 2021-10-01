@@ -47,6 +47,7 @@ CMR3SpaceDiagram >> activePoVSelectorAtClass: aClass [
 	" Answer a <Symbol> which is a selector to access the PoV of an entity of aClass "
 
 	^ self activePoVsDictionary at: aClass ifAbsent: [ 
+			self halt.
 			aClass superClassesUntilEntity  
 				ifEmpty: [ Color gray ] 
 				ifNotEmpty: [ #pov ] ]

@@ -64,6 +64,11 @@ CMSpecProjectWindow >> appSettingsClass [
 	^ CMApplicationPreferences
 ]
 
+{ #category : #'as yet unclassified' }
+CMSpecProjectWindow >> canDiscardEdits [
+		^ false
+]
+
 { #category : #callbacks }
 CMSpecProjectWindow >> chartVisualizer [
 	" Answer a <Class> responsible to display a UI for charting "

@@ -1177,12 +1177,6 @@ Example: (self allTheSituatedEntities: Forager) is returning all the instances o
 ]
 
 { #category : #announcement }
-CMAbstractModel >> announceProbesDataUpdated [
-
-	self announcer announce: (CMProbesDataUpdatedAnnouncement timeStep: self timeStep)
-]
-
-{ #category : #announcement }
 CMAbstractModel >> announcer [
     ^ announcer ifNil: [ announcer := Announcer new ]
 ]
@@ -3350,7 +3344,7 @@ CMAbstractModel >> updateDataForChart [
 	self
 		updateGlobalData;
 		updateLocalData.
-	self announceProbesDataUpdated
+
 ]
 
 { #category : #update }

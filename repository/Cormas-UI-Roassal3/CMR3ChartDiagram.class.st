@@ -263,10 +263,11 @@ CMR3ChartDiagram >> refresh [
 
 { #category : #initialization }
 CMR3ChartDiagram >> setModelBeforeInitialization: aDomainObject [
-
+	" Private - See superimplementor's comment "
+	
 	cormasModel := aDomainObject.
-	self cormasModel announcer
-		when: CMProbesDataUpdatedAnnouncement
+	self projectAnnouncer
+		when: CMTimeChangedAnnouncement
 		do: [ :aAnnounce | aAnnounce timeStep = 0 ifFalse: [ self timeChanged: aAnnounce timeStep ] ];
 
 		when: CMSimInitializationAnnouncement 
