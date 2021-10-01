@@ -155,6 +155,17 @@ CMSpecConfirmBeforeLaunch >> getFinalStep [
 
 ]
 
+{ #category : #initialization }
+CMSpecConfirmBeforeLaunch >> initControlListMenu: aMenu [
+
+	aMenu
+		add: 'Browse'
+		target: self
+		selector: #openControlMethodBrowser.
+	^ aMenu
+
+]
+
 { #category : #accessing }
 CMSpecConfirmBeforeLaunch >> initMethodList [
 	^ initMethodList
@@ -163,6 +174,17 @@ CMSpecConfirmBeforeLaunch >> initMethodList [
 { #category : #accessing }
 CMSpecConfirmBeforeLaunch >> initMethodList: anObject [
 	initMethodList := anObject
+]
+
+{ #category : #initialization }
+CMSpecConfirmBeforeLaunch >> initMethodListMenu: aMenu [
+
+	aMenu
+		add: 'Browse'
+		target: self
+		selector: #openInitMethodBrowser.
+	^ aMenu
+
 ]
 
 { #category : #initialization }
@@ -176,7 +198,11 @@ CMSpecConfirmBeforeLaunch >> initialExtent [
 CMSpecConfirmBeforeLaunch >> initializeActiveControl [
 	" If there is a control method already selected or the model only has one active control method available, select it "
 
-	self controlMethodList items: (self projectManager modelControlInitMethods collect: #asSymbol).
+	self controlMethodList 
+		items: (self projectManager modelControlInitMethods collect: #asSymbol);
+		label: self translator tSelectControlMethod;
+		menu: [ :aMenu | self initControlListMenu: aMenu ].
+
 	(self cormasModel hasControlInit or: [ self projectManager modelControlInitMethods size = 1 ])
 		ifTrue: [ self controlMethodList selectItem: self cormasModel activeControl ].
 ]
@@ -188,10 +214,12 @@ CMSpecConfirmBeforeLaunch >> initializeActiveInit [
 	self initMethodList 
 			label: self translator tSelectInitMethod;
 			items: (self projectManager modelInitMethods collect: #asSymbol);
-			menu: [ :aMenu :shifted | self menu: aMenu shifted: shifted ]
-			"doubleClickAction: [ self initMethodList selectedItem ifNotNil: [ : sel | self browse: sel ] ]".
+			menu: [ :aMenu | self initMethodListMenu: aMenu ].
+
 	self cormasModel hasActiveInit 
 		ifTrue: [ self initMethodList selectItem: self cormasModel activeInit ].
+	self initMethodList isEmpty 
+		ifTrue: [ self alertMessage: self translator tMissingInitMethods ].
 ]
 
 { #category : #initialization }
@@ -218,8 +246,6 @@ CMSpecConfirmBeforeLaunch >> initializePresenter [
 	self initializeActiveControl.
 	self initializeActiveProbes.
 	
-	self initMethodList isEmpty 
-		ifTrue: [ self alertMessage: self translator tMissingInitMethods ].
 	self controlMethodList isEmpty 
 		ifTrue: [ self alertMessage: self translator tMissingControlMethods ].
 ]
@@ -230,8 +256,6 @@ CMSpecConfirmBeforeLaunch >> initializeWidgets [
 		instantiateModels:
 			#(initMethodList SpcLabeledList controlMethodList SpcLabeledList finalStep SpcLabeledTextField fixRandomSeedCheck CheckBoxModel fixRandomTextField TextInputFieldModel probesList SpcLabeledList releaseRandomCheck CheckBoxModel stepBackCheck CheckBoxModel toolbar SpcTwoButtonToolbar).
 
-	self controlMethodList
-		label: self translator tSelectControlMethod.
 	self probesList 
 		beMultipleSelection;
 		label: self translator tSelectProbesToRecord.
@@ -253,13 +277,15 @@ CMSpecConfirmBeforeLaunch >> initializeWidgets [
 ]
 
 { #category : #initialization }
-CMSpecConfirmBeforeLaunch >> menu: aMenu shifted: shifted [
+CMSpecConfirmBeforeLaunch >> openControlMethodBrowser [
 
-	aMenu
-		add: 'Browse (b)'
-		target: self
-		selector: #browseMethod.
+	self openBrowserAt: self cormasModelClass selector: self controlMethodList selectedItem
+]
 
+{ #category : #initialization }
+CMSpecConfirmBeforeLaunch >> openInitMethodBrowser [
+
+	self openBrowserAt: self cormasModelClass selector: self initMethodList selectedItem
 ]
 
 { #category : #accessing }
