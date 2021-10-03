@@ -338,7 +338,7 @@ CMProjectBuilder >> moveProject: aFileReference [
 CMProjectBuilder >> moveProjectFile [
 	" Private - Move aFileReference to the system demos/ path "
 	
-	self moveProject: FileSystem workingDirectory / self cormasModel fileName
+	self moveProject: FileSystem workingDirectory / self cormasProject fileName
 ]
 
 { #category : #'accessing - building' }

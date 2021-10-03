@@ -82,3 +82,10 @@ CMSpChartOptionsPresenter >> probesMinMaxOptionsPresenter: anObject [
 
 	probesMinMaxOptionsPresenter := anObject
 ]
+
+{ #category : #accessing }
+CMSpChartOptionsPresenter >> scaleToMinMax [
+	" Answer <true> if the receiver option to scale to entered min and max values is checked "
+
+	^ self probesMinMaxOptionsPresenter scaleToMinMax
+]

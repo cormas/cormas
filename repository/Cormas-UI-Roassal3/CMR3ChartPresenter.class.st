@@ -112,6 +112,13 @@ CMR3ChartPresenter >> roassalChartPresenter: anObject [
 	roassalChartPresenter := anObject
 ]
 
+{ #category : #accessing }
+CMR3ChartPresenter >> scaleToMinMax [
+	" Answer <true> if the receiver option to scale to entered min and max values is checked "
+
+	^ self optionsPresenter scaleToMinMax.
+]
+
 { #category : #initialization }
 CMR3ChartPresenter >> title [
 

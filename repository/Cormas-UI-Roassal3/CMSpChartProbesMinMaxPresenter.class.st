@@ -101,7 +101,7 @@ CMSpChartProbesMinMaxPresenter >> initializePresenter [
 CMSpChartProbesMinMaxPresenter >> maxYValue [ 
 	" Answer a <Number> entered for the maximum Y value in the chart "
 	
-	^ self fixMaxInputPresenter textValue asNumber
+	^ self fixMaxInputPresenter text asNumber
 ]
 
 { #category : #'accessing - time' }
@@ -121,7 +121,7 @@ CMSpChartProbesMinMaxPresenter >> minTime: anObject [
 CMSpChartProbesMinMaxPresenter >> minYValue [ 
 	" Answer a <Number> entered for the minimum Y value in the chart "
 
-	^ self fixMinInputPresenter textValue asNumber
+	^ self fixMinInputPresenter text asNumber
 ]
 
 { #category : #accessing }
@@ -140,7 +140,7 @@ CMSpChartProbesMinMaxPresenter >> scalePresenter: anObject [
 CMSpChartProbesMinMaxPresenter >> scaleToMinMax [
 	" Answer <true> if the receiver option to scale to entered min and max values is checked "
 
-	^ scalePresenter value
+	^ scalePresenter state
 
 ]
 

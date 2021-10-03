@@ -68,10 +68,7 @@ CMR3ChartDiagram >> addProbe: probeName ofClass: className color: aColor [
 	linePlot := RSLinePlot new.
 	probeValues := cormasModel probeAt: probeName.
 	xValues := 0 to: probeValues size - 1 by: 1.
-	yValues := xValues collect: [ : x | 
-		| yValue |
-		yValue := (probeValues at: x + 1) asFloat. 
-		yValue / (1.0 + yValue) ].
+	yValues := xValues collect: [ : x | self probeYValuesAt: x in: probeValues ].
 	linePlot 
 		x: xValues
 		y: yValues;
@@ -160,9 +157,9 @@ CMR3ChartDiagram >> newBasicChartBuilder [
 		addDecoration: self newHorizontalTick;
 		addDecoration: self newVerticalTick;
 		addDecoration: (RSXLabelDecoration new title: 'Time'; offset: self xAxisLabelOffset);
-		addDecoration: (RSYLabelDecoration new title: 'Value'; offset: self yAxisLabelOffset);
-		"minValueY: 0;
-		maxValueY: 1;"		
+		addDecoration: (RSYLabelDecoration new title: 'Value'; offset: 0 @ self maxYValue);
+		minValueY: self minYValue;
+		maxValueY: self maxYValue;
 		yourself.
 ]
 
@@ -255,6 +252,14 @@ CMR3ChartDiagram >> probeNum [
 CMR3ChartDiagram >> probeNum: anObject [
 
 	probeNum := anObject
+]
+
+{ #category : #'accessing - chart' }
+CMR3ChartDiagram >> probeYValuesAt: x in: probeValues [
+
+	| yValue |
+	yValue := (probeValues at: x + 1) asFloat. 
+	^ yValue / (self maxYValue + yValue)
 ]
 
 { #category : #public }
