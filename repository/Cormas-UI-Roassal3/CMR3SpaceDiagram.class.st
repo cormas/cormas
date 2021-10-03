@@ -1,9 +1,8 @@
 Class {
 	#name : #CMR3SpaceDiagram,
-	#superclass : #SpRoassalPresenter,
+	#superclass : #CMSpRoassalPresenter,
 	#instVars : [
 		'cellSize',
-		'model',
 		'situatedEntitiesViews',
 		'origin',
 		'speed',
@@ -84,9 +83,7 @@ CMR3SpaceDiagram >> activeSpatialEntityPov [
 CMR3SpaceDiagram >> addNewSituatedEntities [
 
 	| newSituatedEntities newSituatedEntitiesViews |
-	newSituatedEntities := model allTheSituatedEntities reject: [ :a | 
-		                       (situatedEntitiesViews collect: [ :e | 
-			                        e model ]) includes: a ].
+	newSituatedEntities := self cormasModel allTheSituatedEntities reject: [ :a | (situatedEntitiesViews collect: #model) includes: a ].
 	newSituatedEntitiesViews := newSituatedEntities collect: [ : se | self newSEViewForModel: se ].
 	situatedEntitiesViews addAll: newSituatedEntitiesViews.
 	self canvas addAll: newSituatedEntitiesViews.
@@ -97,7 +94,7 @@ CMR3SpaceDiagram >> addNewSituatedEntities [
 CMR3SpaceDiagram >> addViewForAgent: atse [
 	" Private - Create a view for each agent in aCollectionOfEntities and add it to the receiver's canvas "
 
-	cellSize := self canvas encompassingRectangle extent / model spaceModel dimensions.
+	cellSize := self canvas encompassingRectangle extent / self cormasModel spaceModel dimensions.
 	situatedEntitiesViews := atse collect: [ : se | self newSEViewForModel: se ].
 ]
 
@@ -173,7 +170,7 @@ CMR3SpaceDiagram >> configureLayout [
 
 	self layoutClass new
 		gapSize: CMSpacePreferences spaceGapSetting;
-		lineItemsCount: model spaceModel column;
+		lineItemsCount: self spaceModel column;
 		on: self nodes	
 ]
 
@@ -187,13 +184,6 @@ CMR3SpaceDiagram >> configurePopUp [
 	self nodes 
 		when: RSMouseLeftClick 
 		do: [ : aRSMouseClick | (self entitiesAt: aRSMouseClick shape position) do: self leftClickActionBlock ].
-]
-
-{ #category : #accessing }
-CMR3SpaceDiagram >> cormasModel [
-	" Answer the receiver's <CMAbstractModel> "
-	
-	^ model
 ]
 
 { #category : #defaults }
@@ -223,7 +213,7 @@ CMR3SpaceDiagram >> defaultLeftClickActionBlock [
 			position := rsShape position.
 			self canvas nodes 
 				select: [ : v | v encompassingRectangle containsPoint: position ]
-				thenDo: [ : s | s model inspect ] 
+				thenDo: [ : s | s cormasModel inspect ] 
 		]
 ]
 
@@ -277,8 +267,8 @@ CMR3SpaceDiagram >> initializeEvents [
 CMR3SpaceDiagram >> initializePresenters [
 	" Private - This method initializes a simulationGrid for a specific cormasModel , without specifyin any animation behaviour "
 
-	self addViewForCells: self model theESE.
-	self addViewForAgents: self model allTheSituatedEntities.
+	self addViewForCells: self cormasModel theESE.
+	self addViewForAgents: self cormasModel allTheSituatedEntities.
 	self initializeEvents.
 ]
 
@@ -306,18 +296,6 @@ CMR3SpaceDiagram >> leftClickActionBlock [
 CMR3SpaceDiagram >> leftClickActionBlock: anObject [
 
 	leftClickActionBlock := anObject
-]
-
-{ #category : #accessing }
-CMR3SpaceDiagram >> model [
-
-	^ model
-]
-
-{ #category : #accessing }
-CMR3SpaceDiagram >> model: anObject [
-
-	model := anObject
 ]
 
 { #category : #initialization }
@@ -389,13 +367,6 @@ CMR3SpaceDiagram >> origin [
 { #category : #accessing }
 CMR3SpaceDiagram >> origin: anObject [
 	origin := anObject
-]
-
-{ #category : #accessing }
-CMR3SpaceDiagram >> projectAnnouncer [
-	" Private - Answer the <Announcer> used by the receiver's project "
-	
-	^ self cormasModel projectAnnouncer
 ]
 
 { #category : #initialization }
@@ -496,13 +467,6 @@ CMR3SpaceDiagram >> situatedEntitiesViews: anObject [
 ]
 
 { #category : #accessing }
-CMR3SpaceDiagram >> spaceModel [
-	" Answer the receiver's <CMSpaceModel> "
-
-	^ self cormasModel spaceModel
-]
-
-{ #category : #accessing }
 CMR3SpaceDiagram >> speed [
 
 	^ speed
@@ -531,8 +495,9 @@ CMR3SpaceDiagram >> theCellViews: anObject [
 CMR3SpaceDiagram >> timeChanged: aNewTimeStep [
 
 	aNewTimeStep = 0
-		ifTrue: [ self clearView.
-			self addViewForCells: model theESE ]
+		ifTrue: [ 
+			self clearView.
+			self addViewForCells: self cormasModel theESE ]
 		ifFalse: [ self removeDeadSituatedEntities ].
 	self addNewSituatedEntities.
 	self moveSituatedEntities.

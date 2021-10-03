@@ -14,19 +14,31 @@ Class {
 { #category : #probes }
 CMECECModel class >> colorOfProbe_restrainedSize [
 
-	^ Color red: 0.104993 green: 0.104993 blue: 0.839458
+	^ Color blue
+]
+
+{ #category : #probes }
+CMECECModel class >> colorOfProbe_restrainedsEnergy [
+
+	^ Color lightBlue
 ]
 
 { #category : #probes }
 CMECECModel class >> colorOfProbe_unrestrainedSize [
 
-	^ Color r: 0.839458 g: 0.0 b: 0.0
+	^ Color red
+]
+
+{ #category : #probes }
+CMECECModel class >> colorOfProbe_unrestrainedsEnergy [
+
+	^ Color orange
 ]
 
 { #category : #probes }
 CMECECModel class >> colorOfProbe_vegetationBiomass [
 
-	^ Color red: 0.0 green: 0.839458 blue: 0.0
+	^ Color green
 ]
 
 { #category : #default }
@@ -269,12 +281,6 @@ CMECECModel >> step: arg1 [
 	self
 		stepEntities: self theVegetationUnits;
 		askRandom: CMECECForager toDo: #step
-]
-
-{ #category : #accessing }
-CMECECModel >> theCMECECForagers [
-
-	^ self allTheEntities: CMECECForager
 ]
 
 { #category : #accessing }

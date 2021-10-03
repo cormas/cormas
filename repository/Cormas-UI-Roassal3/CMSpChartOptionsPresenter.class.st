@@ -45,6 +45,20 @@ CMSpChartOptionsPresenter >> initializePresenters [
 	probesMinMaxOptionsPresenter := CMSpChartProbesMinMaxPresenter owner: self on: self cormasModel.
 ]
 
+{ #category : #initialization }
+CMSpChartOptionsPresenter >> maxYValue [ 
+	" Answer a <Number> entered for the maximum Y value in the chart "
+
+	^ self probesMinMaxOptionsPresenter maxYValue
+]
+
+{ #category : #initialization }
+CMSpChartOptionsPresenter >> minYValue [ 
+	" Answer a <Number> entered for the minimum Y value in the chart "
+
+	^ self probesMinMaxOptionsPresenter minYValue
+]
+
 { #category : #accessing }
 CMSpChartOptionsPresenter >> probesListPresenter [
 

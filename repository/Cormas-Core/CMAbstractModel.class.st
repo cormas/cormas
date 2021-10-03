@@ -804,6 +804,8 @@ CMAbstractModel class >> prefixName [
 
 { #category : #'accessing - probes' }
 CMAbstractModel class >> probes [
+	" Answer a <Collection> of <Symbol> representing receiver's selectors probes to observe "
+	
 	^ (Pragma allNamed: #probe in: self) collect: #methodSelector
 ]
 

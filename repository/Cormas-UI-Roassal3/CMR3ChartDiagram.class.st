@@ -1,16 +1,16 @@
 Class {
 	#name : #CMR3ChartDiagram,
-	#superclass : #SpRoassalPresenter,
+	#superclass : #CMSpRoassalPresenter,
 	#instVars : [
 		'chartBuilder',
-		'cormasModel',
 		'probeNum',
 		'probeLines',
 		'title',
 		'titleSize',
 		'numberOfHorizontalTicks',
 		'numberOfVerticalTicks',
-		'xAxisLabelOffset'
+		'xAxisLabelOffset',
+		'yAxisLabelOffset'
 	],
 	#category : #'Cormas-UI-Roassal3-Chart'
 }
@@ -68,7 +68,10 @@ CMR3ChartDiagram >> addProbe: probeName ofClass: className color: aColor [
 	linePlot := RSLinePlot new.
 	probeValues := cormasModel probeAt: probeName.
 	xValues := 0 to: probeValues size - 1 by: 1.
-	yValues := xValues collect: [ : x | probeValues at: x + 1 ].
+	yValues := xValues collect: [ : x | 
+		| yValue |
+		yValue := (probeValues at: x + 1) asFloat. 
+		yValue / (1.0 + yValue) ].
 	linePlot 
 		x: xValues
 		y: yValues;
@@ -95,18 +98,6 @@ CMR3ChartDiagram >> chartBuilder [
 CMR3ChartDiagram >> chartBuilder: anObject [
 
 	chartBuilder := anObject
-]
-
-{ #category : #accessing }
-CMR3ChartDiagram >> cormasModel [
-
-	^ cormasModel
-]
-
-{ #category : #accessing }
-CMR3ChartDiagram >> cormasModel: anObject [
-
-	cormasModel := anObject
 ]
 
 { #category : #accessing }
@@ -137,9 +128,28 @@ CMR3ChartDiagram >> defaultTitleSize [
 
 { #category : #defaults }
 CMR3ChartDiagram >> defaultXAxisLabelOffset [
-	" Answer a <Point> representing the receiver's X axis offset "
+	" Answer a <Point> representing the receiver's default X axis offset "
 	
 	^ 0 @ 5
+]
+
+{ #category : #defaults }
+CMR3ChartDiagram >> defaultYAxisLabelOffset [
+	" Answer a <Point> representing the receiver's default Y axis offset "
+	
+	^ self minYValue @ self maxYValue
+]
+
+{ #category : #defaults }
+CMR3ChartDiagram >> maxYValue [
+
+	^ self owner maxYValue
+]
+
+{ #category : #defaults }
+CMR3ChartDiagram >> minYValue [
+
+	^ self owner minYValue
 ]
 
 { #category : #'accessing - chart' }
@@ -150,9 +160,9 @@ CMR3ChartDiagram >> newBasicChartBuilder [
 		addDecoration: self newHorizontalTick;
 		addDecoration: self newVerticalTick;
 		addDecoration: (RSXLabelDecoration new title: 'Time'; offset: self xAxisLabelOffset);
-		addDecoration: (RSYLabelDecoration new title: 'Value'; offset: 0 @ 1);
-		minValueY: 0;
-		maxValueY: 1;		
+		addDecoration: (RSYLabelDecoration new title: 'Value'; offset: self yAxisLabelOffset);
+		"minValueY: 0;
+		maxValueY: 1;"		
 		yourself.
 ]
 
@@ -261,6 +271,13 @@ CMR3ChartDiagram >> refresh [
 
 ]
 
+{ #category : #'accessing - chart' }
+CMR3ChartDiagram >> scaleToMinMax [
+	" Answer <true> if the receiver option to scale to entered min and max values is checked "
+	
+	^ self owner scaleToMinMax
+]
+
 { #category : #initialization }
 CMR3ChartDiagram >> setModelBeforeInitialization: aDomainObject [
 	" Private - See superimplementor's comment "
@@ -348,4 +365,13 @@ CMR3ChartDiagram >> xAxisLabelOffset [
 
 	^ xAxisLabelOffset
 		ifNil: [ xAxisLabelOffset := self defaultXAxisLabelOffset ]
+]
+
+{ #category : #'accessing - chart' }
+CMR3ChartDiagram >> yAxisLabelOffset [
+	" Answer a <Point> used to determine the minimum and maximum offsets of the Y axis "
+
+	^ yAxisLabelOffset := self scaleToMinMax
+		ifTrue: [ self minYValue @ self maxYValue ]
+		ifFalse: [  self defaultYAxisLabelOffset ]
 ]

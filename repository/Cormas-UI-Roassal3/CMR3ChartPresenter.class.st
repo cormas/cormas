@@ -66,6 +66,20 @@ CMR3ChartPresenter >> initializeWindow: aWindowPresenter [
 			self defer: [ 3 timesRepeat: [ Smalltalk garbageCollect ] ] ]
 ]
 
+{ #category : #initialization }
+CMR3ChartPresenter >> maxYValue [ 
+	" Answer a <Number> entered for the minimum Y value in the chart "
+	
+	^ self optionsPresenter maxYValue
+]
+
+{ #category : #initialization }
+CMR3ChartPresenter >> minYValue [ 
+	" Answer a <Number> entered for the minimum Y value in the chart "
+	
+	^ self optionsPresenter minYValue
+]
+
 { #category : #accessing }
 CMR3ChartPresenter >> optionsPresenter [
 
