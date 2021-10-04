@@ -79,6 +79,12 @@ CMSpecEditAttributes >> classAttributesTable: anObject [
 	classAttributesTable := anObject
 ]
 
+{ #category : #accessing }
+CMSpecEditAttributes >> codeGenerator [
+
+	^ self projectManager codeGenerator 
+]
+
 { #category : #private }
 CMSpecEditAttributes >> configureTable: aTable for: attAssoc [
 
@@ -92,9 +98,12 @@ CMSpecEditAttributes >> configureTable: aTable for: attAssoc [
 { #category : #callbacks }
 CMSpecEditAttributes >> editSelectedCell: index inTable: anAttributesTable [
 
-	| morph ed |
-
-	morph :=anAttributesTable visibleRowMorphAtIndex: index.
+	CMSpecEditInitialValueChooser 
+		on: (anAttributesTable dataSource elementAt: index)
+		for: self projectManager 
+		owner: self
+	
+"	morph :=anAttributesTable visibleRowMorphAtIndex: index.
 	ed := RubFloatingEditorBuilder new 
 		customizeEditorWith: [ :editor | 
 			editor scrollbarsShowNever.
@@ -107,7 +116,7 @@ CMSpecEditAttributes >> editSelectedCell: index inTable: anAttributesTable [
 		withEditedContentsDo: [ : editedContents | 
 			(anAttributesTable dataSource elementAt: index) currentValue: editedContents.
 			anAttributesTable listWidget refresh].
-	^ ed
+	^ ed"
 ]
 
 { #category : #initialization }
@@ -136,10 +145,8 @@ CMSpecEditAttributes >> initializeClassAttributeTable [
 		dataSource: (CMClassAttributeValueDataSource forClass: self targetClass);
 		beCellSelection;
 		onAnnouncement: FTStrongSelectionChanged do: [ : ann | 
-			| ed index |
-			index := ann selectedIndex first.
-			ed := self editSelectedCell: index inTable: self classAttributesTable.
-			ed openEditorWithContents: (self classAttributesTable dataSource elementAt: index) currentValueAsString ].
+			ann selectedIndex first
+				ifNotNil: [ : index | self editSelectedCell: index inTable: self classAttributesTable ] ].
 "		display: [ : attItem | self morphForItemAt: attItem ];
 		menu: [ self menuMorphForSelectedItems ]."
 
@@ -168,19 +175,19 @@ CMSpecEditAttributes >> initializeSuperclassAttributeTable [
 		dataSource: (CMClassAttributeValueDataSource forSuperclass: self targetClass);
 		beCellSelection;
 		onAnnouncement: FTStrongSelectionChanged do: [ : ann | 
-			| ed index |
-			index := ann selectedIndex first.
-			ed := self editSelectedCell: index inTable: self superclassesAttributesTable.
-			ed openEditorWithContents: (self superclassesAttributesTable dataSource elementAt: index) currentValueAsString ].
+			self inform: 'Superclasses attributes are not editable' ].
 
 ]
 
 { #category : #initialization }
 CMSpecEditAttributes >> initializeToolbar [
 
+	self toolbarAttributeActions owner: self.
 	self toolbar 
-		firstButtonLabel: self translator tReset;
-		secondButtonLabel: self translator tApply.
+		firstButtonLabel: self translator tCancel;
+		firstButtonAction: [ self delete ];
+		secondButtonLabel: self translator tClose;
+		secondButtonAction: [ self close ]
 ]
 
 { #category : #initialization }
@@ -259,8 +266,10 @@ CMSpecEditAttributes >> targetClass [
 ]
 
 { #category : #accessing }
-CMSpecEditAttributes >> targetClass: anObject [
-	targetClass := anObject
+CMSpecEditAttributes >> targetClass: aClass [
+
+	targetClass := aClass.
+	self codeGenerator targetClass: aClass
 ]
 
 { #category : #initialization }

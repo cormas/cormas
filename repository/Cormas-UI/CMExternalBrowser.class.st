@@ -13,6 +13,18 @@ CMExternalBrowser class >> on: aFileReferene [
 		yourself
 ]
 
+{ #category : #'structure accessing' }
+CMExternalBrowser >> adapter [
+
+	^ self widget
+]
+
+{ #category : #'structure accessing' }
+CMExternalBrowser >> hasAdapter [
+
+	^ false
+]
+
 { #category : #initialization }
 CMExternalBrowser >> initializeWithModel: aReadStream [
 	" Private - Initialize the receiver's model with source code contained in aReadStream "
@@ -24,4 +36,10 @@ CMExternalBrowser >> initializeWithModel: aReadStream [
 	self 
 		initializePrivateHooks;
 		initializePrivateAnnouncements.
+]
+
+{ #category : #'structure accessing' }
+CMExternalBrowser >> showClassDefinition [
+
+	method text: (self classes selectedItem definitionSource ifNil: [ '' ])
 ]

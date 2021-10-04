@@ -64,11 +64,6 @@ CMSpecProjectWindow >> appSettingsClass [
 	^ CMApplicationPreferences
 ]
 
-{ #category : #'as yet unclassified' }
-CMSpecProjectWindow >> canDiscardEdits [
-		^ false
-]
-
 { #category : #callbacks }
 CMSpecProjectWindow >> chartVisualizer [
 	" Answer a <Class> responsible to display a UI for charting "
@@ -653,6 +648,12 @@ CMSpecProjectWindow >> openProgrammingEntityClass [
 ]
 
 { #category : #callbacks }
+CMSpecProjectWindow >> openProgrammingMessages [
+
+	self inform: 'shouldBeImplemented'.
+]
+
+{ #category : #callbacks }
 CMSpecProjectWindow >> openProjectProperties [
 	" Private - Open a window to set receiver's properties "
 
@@ -1045,7 +1046,7 @@ CMSpecProjectWindow >> subMenuProgrammingProbes: item [
 		name: self translator tProbesProgramming;
 		icon: (self iconNamed: #group);
 		shortcut: $P command;
-		action: [ self openProgrammingProbes ]
+		action: [ self inform: 'shouldBeImplemented' ]
 ]
 
 { #category : #'submenu-programming' }

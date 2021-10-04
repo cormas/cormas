@@ -45,7 +45,7 @@ Class {
 		'newEntityTextField',
 		'initialValueLabel'
 	],
-	#category : 'Cormas-UI-Core'
+	#category : #'Cormas-UI-Core'
 }
 
 { #category : #specs }
@@ -99,6 +99,21 @@ CMSpecInitialValueSetter >> arrayTextField: anObject [
 	arrayTextField := anObject
 ]
 
+{ #category : #'accessing - values' }
+CMSpecInitialValueSetter >> arrayTextValue [
+
+	^ self arrayTextField text 
+		ifEmpty: [ self arrayTextField pendingText ]
+		ifNotEmpty: [ : textVal | textVal ].
+	
+]
+
+{ #category : #'accessing - values' }
+CMSpecInitialValueSetter >> arrayTextValue: aString [ 
+	
+	self arrayTextValue text: aString asString
+]
+
 { #category : #accessing }
 CMSpecInitialValueSetter >> booleanList [
 	^ booleanList
@@ -119,6 +134,18 @@ CMSpecInitialValueSetter >> booleanRadioButton: anObject [
 	booleanRadioButton := anObject
 ]
 
+{ #category : #'accessing - values' }
+CMSpecInitialValueSetter >> booleanValue [
+
+	^ self booleanList selectedItem
+]
+
+{ #category : #'accessing - values' }
+CMSpecInitialValueSetter >> booleanValue: aBoolean [ 
+
+	self booleanList setSelectedItem: aBoolean
+]
+
 { #category : #accessing }
 CMSpecInitialValueSetter >> collectionList [
 	^ collectionList
@@ -137,6 +164,32 @@ CMSpecInitialValueSetter >> collectionRadioButton [
 { #category : #accessing }
 CMSpecInitialValueSetter >> collectionRadioButton: anObject [
 	collectionRadioButton := anObject
+]
+
+{ #category : #'accessing - values' }
+CMSpecInitialValueSetter >> collectionValue [
+
+	^ self collectionList selectedItem.
+]
+
+{ #category : #'accessing - values' }
+CMSpecInitialValueSetter >> collectionValue: aValue [
+
+	^ self collectionList setSelectedItem: aValue.
+]
+
+{ #category : #private }
+CMSpecInitialValueSetter >> edit: anObject [
+	" Set anObject to be editable in the receiever "
+
+	| widget widgetAccessor |
+	
+	widgetAccessor := self typesMapAt: anObject class.
+	widget := self perform: widgetAccessor.
+	self 
+		perform: (self selectorMap at: widgetAccessor) asMutator
+		with: anObject.
+	widget click.
 ]
 
 { #category : #accessing }
@@ -166,8 +219,7 @@ CMSpecInitialValueSetter >> initializeLabels [
 { #category : #initialization }
 CMSpecInitialValueSetter >> initializePresenter [
 
-	self booleanList 
-		items: #(true false).
+	self booleanList items: #(true false).
 	self collectionList items: #(#OrderedCollection #Set #Dictionary).
 	
 
@@ -220,6 +272,26 @@ CMSpecInitialValueSetter >> newEntityTextField: anObject [
 	newEntityTextField := anObject
 ]
 
+{ #category : #'accessing - values' }
+CMSpecInitialValueSetter >> newEntityValue [
+
+	| enteredText |
+	
+	enteredText := self newEntityTextField text 
+		ifEmpty: [ self newEntityTextField pendingText ]
+		ifNotEmpty: [ : textVal | textVal ].
+	^ enteredText
+
+]
+
+{ #category : #'accessing - values' }
+CMSpecInitialValueSetter >> newEntityValue: aValue [
+
+	newEntityTextField text: aValue asString
+
+
+]
+
 { #category : #accessing }
 CMSpecInitialValueSetter >> noValueRadioButton [
 	^ noValueRadioButton
@@ -250,6 +322,25 @@ CMSpecInitialValueSetter >> numberTextField: anObject [
 	numberTextField := anObject
 ]
 
+{ #category : #'accessing - values' }
+CMSpecInitialValueSetter >> numberTextValue [
+
+	| enteredText |
+	
+	enteredText := self numberTextField text 
+		ifEmpty: [ self numberTextField pendingText ]
+		ifNotEmpty: [ : textVal | textVal ].
+	enteredText isNumeric
+		ifFalse: [ ^ self inform: 'Please enter a Number' ].
+	^ enteredText asNumber
+]
+
+{ #category : #'accessing - values' }
+CMSpecInitialValueSetter >> numberTextValue: anInteger [ 
+	
+	self numberTextField text: anInteger asString
+]
+
 { #category : #initialization }
 CMSpecInitialValueSetter >> on: button show: aMorph [
 
@@ -275,6 +366,19 @@ CMSpecInitialValueSetter >> randomTextField [
 { #category : #accessing }
 CMSpecInitialValueSetter >> randomTextField: anObject [
 	randomTextField := anObject
+]
+
+{ #category : #private }
+CMSpecInitialValueSetter >> selectorMap [
+
+	^ Dictionary new
+		at: 'numberRadioButton' put: #numberTextValue;
+		at: 'stringRadioButton' put: #stringValue;
+		at: 'booleanRadioButton' put: #booleanValue;
+		at: 'collectionRadioButton' put: #collectionValue;
+		at: 'arrayRadioButton' put: #arrayTextValue;
+		at: 'newEntityRadioButton' put: #newEntityValue;
+		yourself
 ]
 
 { #category : #initialization }
@@ -320,4 +424,53 @@ CMSpecInitialValueSetter >> stringTextField [
 { #category : #accessing }
 CMSpecInitialValueSetter >> stringTextField: anObject [
 	stringTextField := anObject
+]
+
+{ #category : #'accessing - values' }
+CMSpecInitialValueSetter >> stringValue [
+
+	| enteredText |
+	
+	enteredText := self stringTextField text 
+		ifEmpty: [ self stringTextField pendingText ]
+		ifNotEmpty: [ : textVal | textVal ].
+	enteredText isNumeric
+		ifTrue: [ ^ self inform: 'Please enter a String' ].
+	^ enteredText string
+]
+
+{ #category : #'accessing - values' }
+CMSpecInitialValueSetter >> stringValue: aString [ 
+	
+	self stringTextField text: aString asString
+]
+
+{ #category : #private }
+CMSpecInitialValueSetter >> typesMap [
+
+	^ Dictionary new
+		at: Number put: #numberRadioButton;
+		at: String put: #stringRadioButton;
+		at: Boolean put: #booleanRadioButton;
+		at: OrderedCollection put: #collectionRadioButton;
+		at: Array put: #arrayRadioButton;
+		at: Object put: #newEntityRadioButton;
+		yourself
+]
+
+{ #category : #private }
+CMSpecInitialValueSetter >> typesMapAt: aClass [
+	" Answer the selector <Symbol> associated to the radio button matching aClass 'type' "
+
+	self typesMap keysDo: [ : classType |
+		((aClass isKindOf: classType class) and: [ classType ~= Object ])
+			ifTrue: [ ^ self typesMap at: classType ] ].
+	^ self typesMap at: Object
+]
+
+{ #category : #accessing }
+CMSpecInitialValueSetter >> valueAccessorAt: aString [ 
+	" Anwer <anOject> with the receiver's entered value at widget identified by aString "
+
+	^ self perform: (self selectorMap at: aString)
 ]

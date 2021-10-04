@@ -8,7 +8,8 @@ Class {
 		'resourcesPage',
 		'selectedModel',
 		'sourceCodeTabContainer',
-		'resourcesTabContainer'
+		'resourcesTabContainer',
+		'umlPage'
 	],
 	#category : #'Cormas-UI-Spec2-Project'
 }
@@ -45,7 +46,8 @@ CMSpOpenProjectNotebookPresenter >> initializeProjectPanel [
 
 	notebookPanel
 		addPage: (infoPage := self newProjectInfoPage);
-		addPage: (sourceCodePage := self newSourceCodePage)
+		addPage: (sourceCodePage := self newSourceCodePage);
+		addPage: (umlPage := self newUMLPage)		
 	"	addPage: (resourcesPage := self newResourcesPage 
 			title: 'Resources';
 			presenterProvider: [ self resourcesPresenter ];"
@@ -78,6 +80,15 @@ CMSpOpenProjectNotebookPresenter >> newSourceCodePage [
 ]
 
 { #category : #initialization }
+CMSpOpenProjectNotebookPresenter >> newUMLPage [
+
+	^ SpNotebookPage  
+		title: 'UML'
+		icon: (self iconNamed: #morph)
+		provider: [ self projectUMLPresenter ]
+]
+
+{ #category : #initialization }
 CMSpOpenProjectNotebookPresenter >> projectInfoPresenter [
 
 	selectedModel ifNil: [ ^ self newEmpty ].
@@ -92,6 +103,16 @@ CMSpOpenProjectNotebookPresenter >> projectSourcePresenter [
 
 	selectedModel ifNil: [ ^ self newEmpty ].
 	^ CMExternalBrowser on: selectedModel fileReference
+]
+
+{ #category : #initialization }
+CMSpOpenProjectNotebookPresenter >> projectUMLPresenter [
+	" Answer a <ComposablePresenter> to browse source code in the receiver's selected model "
+
+	selectedModel ifNil: [ ^ self newEmpty ].
+
+	^ CMR3UMLPresenter on: selectedModel
+
 ]
 
 { #category : #accessing }

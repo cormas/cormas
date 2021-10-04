@@ -392,18 +392,18 @@ CMR3SpacePresenter >> mainMenuToolbar [
 	aMenu := self newMenuBar
 		addGroup: [ :group | 
 			group
-				addItem: [ :item | 
+"				addItem: [ :item | 
 					item
 						name: self translator tEnvironment;
-						subMenu: self initializeEnvironmentMenuToolbar ];
+						subMenu: self initializeEnvironmentMenuToolbar ];"
 				addItem: [ :item | 
 					item
 						name: self translator tPoV;
 						subMenu: self initializePOVMenuToolbar ];
-				addItem: [ :item | 
+"				addItem: [ :item | 
 					item
 						name: self translator tOptions;
-						subMenu: self initializeOptionMenuToolbar ];
+						subMenu: self initializeOptionMenuToolbar ];"
 				addItem: [ :item | 
 					item
 						name: self translator tTools;
@@ -416,7 +416,7 @@ CMR3SpacePresenter >> mainMenuToolbar [
 							self canvas signalUpdate ] ];
 				addItem: [ :item | 
 					item
-						icon: (self iconNamed: #glamorousSave);
+						icon: (self iconNamed: #smallSave);
 						subMenu: self initializeExportMenuToolbar ] ].
 	^ aMenu
 ]

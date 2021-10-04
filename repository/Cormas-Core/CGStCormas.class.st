@@ -88,6 +88,24 @@ CGStCormas >> cormasModelClass [
 ]
 
 { #category : #'code-generation' }
+CGStCormas >> createAttribute: attributeName defaultValue: anObject [
+	
+	| srcTemplate |
+	
+	(self targetClass hasInstVarNamed: attributeName)
+		ifFalse: [ self targetClass addInstVarNamed: attributeName ].
+	srcTemplate := anObject
+		ifNotNil: [ self templateForAttribute: attributeName default: anObject ]
+		ifNil: [ self templateForAttribute: attributeName ].
+
+	self 
+		targetMethodCategory: 'accessing';
+		sourceString: srcTemplate;
+		generateMethod.
+
+]
+
+{ #category : #'code-generation' }
 CGStCormas >> createInit [
 	
 	self 
@@ -262,6 +280,35 @@ CGStCormas >> renameClass: oldClassname to: newClassname [
 ]
 
 { #category : #'code-generation' }
+CGStCormas >> templateForAttribute: attributeName [
+
+	^ (String streamContents: [ : stream |
+		stream 
+			<< attributeName;
+			<< '\	"Getter accessor without default value.\';
+			<< self automaticCommentString;
+			<< '"\	^';
+			<< attributeName ]) withCRs
+]
+
+{ #category : #'code-generation' }
+CGStCormas >> templateForAttribute: attributeName default: anObject [
+
+	^ (String streamContents: [ : stream |
+		stream
+			<< attributeName;
+			<< '\	"Getter accessor with default value';
+			<< self automaticCommentString;
+			<< '"\	^';
+			<< attributeName;
+			<< ' ifNil:[';
+			<< attributeName; 
+			<< ' := ';
+			<< (self transformAsString: anObject);
+			<< ']']) withCRs
+]
+
+{ #category : #'code-generation' }
 CGStCormas >> templateForInstanceAccessors: pop in: aClass [
 
 	^ String streamContents: [ : stream |
@@ -314,4 +361,41 @@ CGStCormas >> templateForSetterAccessor: pop [
 			<< $"; cr; crtab;
 			<< pop;
 			<< ' := aNewCollection.' ]
+]
+
+{ #category : #'code-generation' }
+CGStCormas >> transformAsString: defaultValue [
+	"return the defaultValue as a string.
+	defaultValue: <Number or String or Boolean or Dictionary or Array or Collection>"
+	
+	| defaultString coll |
+	defaultValue isNil ifTrue: [^'nil'].
+	defaultValue isString
+		ifTrue:
+			["((defaultValue findString: 'randomFloat' startingAt: 1) = 1) ifTrue:[^defaultValue].
+((defaultValue findString: 'randomInteger' startingAt: 1) = 1) ifTrue:[^defaultValue]."
+			^defaultValue printString].
+	(defaultValue isKindOf: Boolean) ifTrue: [^defaultValue asString].
+	(defaultValue isKindOf: Number) ifTrue: [^defaultValue asString].
+	(defaultValue isKindOf: Dictionary)
+		ifTrue:
+			[defaultValue isEmpty
+				ifTrue: [defaultString := defaultValue class name asString , ' new']
+				ifFalse: [self halt].
+			^defaultString].
+	(defaultValue isKindOf: Array)
+		ifTrue:
+			[defaultString := 'Array withAll: ' , defaultValue asString.
+			^defaultString].	"because Array is immutable in VW7.6, cannot write  defaultValue asString !"
+	(defaultValue isKindOf: Collection)
+		ifTrue:
+			[defaultValue isEmpty
+				ifTrue: [defaultString := defaultValue class name asString , ' new']
+				ifFalse:
+					[defaultString := ''.
+					coll := defaultValue asString substrings asOrderedCollection.
+					coll add: 'withAll:' beforeIndex: 2.
+					coll do: [:sub | defaultString := defaultString , sub , ' ']].
+			^defaultString].
+	^defaultValue asString
 ]

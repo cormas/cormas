@@ -104,7 +104,9 @@ CMSpecObject >> iconNamed: aSymbol [
 { #category : #accessing }
 CMSpecObject >> openBrowserAt: aClass selector: aSymbol [
 
-	Smalltalk tools browserTool openOnClass: self cormasModelClass selector: aSymbol
+	Smalltalk tools browserTool 
+		openOnClass: aClass 
+		selector: aSymbol asSymbol
 ]
 
 { #category : #accessing }

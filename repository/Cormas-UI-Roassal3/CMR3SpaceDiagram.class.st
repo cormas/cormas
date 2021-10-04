@@ -373,7 +373,7 @@ CMR3SpaceDiagram >> origin: anObject [
 CMR3SpaceDiagram >> release [ 
 
 	self 
-		model: nil;
+		cormasModel: nil;
 		theCellViews: nil; 
 		activePoVsDictionary: nil; 
 		situatedEntitiesViews: nil;
@@ -422,7 +422,7 @@ CMR3SpaceDiagram >> setAndRefreshActivePovs [
 CMR3SpaceDiagram >> setModelBeforeInitialization: aCMAbstractModel [
 	" Private - Set the receiver's CORMAS model to aCMAbstractModel "
 
-	self model: aCMAbstractModel.
+	self cormasModel: aCMAbstractModel.
 ]
 
 { #category : #accessing }

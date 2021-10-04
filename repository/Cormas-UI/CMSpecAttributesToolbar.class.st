@@ -49,32 +49,43 @@ CMSpecAttributesToolbar class >> defaultSpec [
 
 { #category : #callbacks }
 CMSpecAttributesToolbar >> addAttributeCallback [
+
 	" Callback for adding attribute in the target class "
-	
-	| userAnswer |
-	userAnswer := self 
-		requestText: self translator tEnterAttName
-		title: self translator tAppTitle.
-	(self validateAttributeName: userAnswer)
-	 	ifTrue: [ CMSpecInitialValueChooser openFor: self projectManager ]
+
+	| attName |
+	attName := self
+		           requestText: self translator tEnterAttName
+		           title: self translator tAppTitle.
+
+	(self validateAttributeName: attName)
+		ifTrue: [ 
+			self codeGenerator targetClass:
+				self codeGenerator targetClass instanceSide.
+			CMSpecAddInitialValueChooser
+				on: attName
+				for: self projectManager
+				owner: self owner ]
 		ifFalse: [ 
-			userAnswer 
-				ifNotNil: [ self informMessage: userAnswer , self translator tInvalidName ] ]
+			attName ifNotNil: [ 
+				self informMessage: attName , self translator tInvalidName ] ]
 ]
 
 { #category : #callbacks }
 CMSpecAttributesToolbar >> addClassAttributeCallback [
 	" Callback for adding attribute in the target class "
 	
-	| userAnswer |
-	userAnswer := self 
+	| attName |
+	attName := self 
 		requestText: self translator tEnterAttName
 		title: self translator tAppTitle.
-	(self validateAttributeName: userAnswer)
-	 	ifTrue: [ CMSpecInitialValueChooser openFor: self projectManager ]
+
+	(self validateAttributeName: attName)
+	 	ifTrue: [ 
+			self codeGenerator targetClass: self codeGenerator targetClass class.
+			CMSpecAddInitialValueChooser on: attName for: self projectManager owner: self owner ]
 		ifFalse: [ 
-			userAnswer 
-				ifNotNil: [ self informMessage: userAnswer , self translator tInvalidName ] ]
+			attName 
+				ifNotNil: [ self informMessage: attName , self translator tInvalidName ] ]
 ]
 
 { #category : #accessing }
@@ -173,6 +184,12 @@ CMSpecAttributesToolbar >> classVarRemoveButton: anObject [
 
 ]
 
+{ #category : #accessing }
+CMSpecAttributesToolbar >> codeGenerator [ 
+
+	^ self projectManager codeGenerator
+]
+
 { #category : #initialization }
 CMSpecAttributesToolbar >> initialExtent [
 	" Private - See superimplementor's comment "
@@ -242,31 +259,35 @@ CMSpecAttributesToolbar >> initializeWidgets [
 ]
 
 { #category : #callbacks }
-CMSpecAttributesToolbar >> openInitialValueChooser [
-
-	self shouldBeImplemented
-]
-
-{ #category : #callbacks }
 CMSpecAttributesToolbar >> removeAttributeCallback [
 	" Private - User clicked in the remove attribute button, confirm and remove "
 
-	(self owner superclassesAttributesTable hasSelection and: [ self confirm: self translator tConfirmDeleteAttribute  ])
-		ifTrue: [ self halt ]
+	(self confirm: self translator tConfirmDeleteAttribute)
+		ifTrue: [ 
+			self halt.
+			self codeGenerator removeIVar: self selectedItemWrapper targetAttribute.
+			self updateDataSource.
+			self inform: 'Attribute removed' ]
 ]
 
 { #category : #callbacks }
 CMSpecAttributesToolbar >> removeClassAttributeCallback [
 	" Private - User clicked in the remove attribute button, confirm and remove "
 
+self halt
 	(self owner superclassesAttributesTable hasSelection and: [ self confirm: self translator tConfirmDeleteAttribute  ])
 		ifTrue: [ self halt ]
+]
+
+{ #category : #accessing }
+CMSpecAttributesToolbar >> selectedItemWrapper [
+
+	^ self owner classAttributesTable selectedItem
 ]
 
 { #category : #initialization }
 CMSpecAttributesToolbar >> validateAttributeName: userAnswer [
 	" Answer <true> if provided userAnswer is valid as attribute name "
 
-	^ userAnswer notNil and: [ userAnswer notEmpty and: 
-		[ userAnswer isValidInstVarName ] ]
+	^ userAnswer notNil and: [ userAnswer notEmpty and: [ userAnswer isValidInstVarName ] ]
 ]

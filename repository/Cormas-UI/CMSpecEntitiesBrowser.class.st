@@ -91,7 +91,8 @@ CMSpecEntitiesBrowser >> entityClassesFor: entityTypeString [
 
 { #category : #callbacks }
 CMSpecEntitiesBrowser >> entityEditActivityDiagrams [
-	self shouldBeImplemented.
+
+	self inform: 'shouldBeImplemented'.
 ]
 
 { #category : #callbacks }
@@ -111,7 +112,8 @@ CMSpecEntitiesBrowser >> entityEditPassiveMethods [
 
 { #category : #callbacks }
 CMSpecEntitiesBrowser >> entityEditPoVSetter [
-	self shouldBeImplemented.
+
+	self inform: 'shouldBeImplemented'.
 ]
 
 { #category : #callbacks }
