@@ -664,10 +664,12 @@ CMSpecProjectWindow >> openProjectProperties [
 CMSpecProjectWindow >> openSpacePresenter [
 	" Private - Callback for user request to open a new Space Model interface for the receiver's project "
 
-	'Project Window: Open Space Presenter' traceCr.
-	CMR3SpacePresenter openFor: self projectManager.
-	'Project Window: Announce Changed PoV' traceCr.
- 	self projectAnnouncer announce: CMSChangePoVAnnouncement new.
+	(self cormasModelClass methodsOfProtocol: #init)
+		ifNotEmpty: [ 
+			'Project Window: Open Space Presenter' traceCr.
+			CMR3SpacePresenter openFor: self projectManager.
+			'Project Window: Announce Changed PoV' traceCr.
+		 	self projectAnnouncer announce: CMSChangePoVAnnouncement new ]
 ]
 
 { #category : #callbacks }
@@ -679,6 +681,30 @@ CMSpecProjectWindow >> openSpacePresenterUpdateScenario [
 	self spaceModel activePoVsDictionary ifNotEmpty: [ self openSpacePresenter ]
 
 
+]
+
+{ #category : #'submenu-programming' }
+CMSpecProjectWindow >> openUMLPresenter [
+
+	| packageForLoadedModel |
+
+	packageForLoadedModel :=RPackageOrganizer default packageOfClassNamed: self cormasModelClass name.
+	(CMProjectBuilder new modelPackageNames includes: packageForLoadedModel name)
+		ifTrue: [ self openUMLViewer ]
+		ifFalse: [ OPProject openOnModel: (OPUMLPackage new name: self projectManager cormasModelName) ]
+	
+]
+
+{ #category : #callbacks }
+CMSpecProjectWindow >> openUMLViewer [
+
+	| package builder |
+
+	builder := RSUMLClassBuilder new.
+	package := RPackage organizer packageOfClassNamed: self cormasModelClass asString.
+	builder classes: package classes.
+	builder build.
+	builder canvas open
 ]
 
 { #category : #callbacks }
@@ -1109,7 +1135,7 @@ CMSpecProjectWindow >> subMenuProgrammingUML: item [
 		name: self translator tClassEditor;
 		icon: (self iconNamed: #openIcon);
 		shortcut: $U command;
-		action: [ OPProject openOnModel: (OPUMLPackage new name: self projectManager cormasModelName) ]
+		action: [ self openUMLPresenter ]
 ]
 
 { #category : #'submenu-tools-developer' }

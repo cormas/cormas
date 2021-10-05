@@ -48,7 +48,6 @@ Class {
 		'defaultAttributesSetter',
 		'sensitivitySetter',
 		'delayedChanges',
-		'allClassVarBOSS',
 		'announcer',
 		'initStatus'
 	],
