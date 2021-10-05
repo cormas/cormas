@@ -185,9 +185,7 @@ CMSpecEditAttributes >> initializeToolbar [
 	self toolbarAttributeActions owner: self.
 	self toolbar 
 		firstButtonLabel: self translator tCancel;
-		firstButtonAction: [ self delete ];
-		secondButtonLabel: self translator tClose;
-		secondButtonAction: [ self close ]
+		firstButtonAction: [ self delete ]
 ]
 
 { #category : #initialization }
@@ -201,7 +199,7 @@ CMSpecEditAttributes >> initializeWidgets [
 			#classAttributesTable 			SpcTablePresenter 
 			tAttributesLabel 					LabelModel
 			toolbarAttributeActions 			CMSpecAttributesToolbar
-			toolbar 								SpcTwoButtonToolbar).
+			toolbar 								SpcOneButtonToolbar).
 	self 
 		initializeAttributeTables; 
 		initializeToolbar;
