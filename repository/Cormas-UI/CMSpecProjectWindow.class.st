@@ -400,7 +400,7 @@ CMSpecProjectWindow >> menuDisableToolsGroup [
 		#tDisplayModelVersions .
 		#tDistributeAsServer .
 		#tDistributeAsClient .
-		#tPackageClient .
+		#tBrowseModel .
 		#tInspectModel
 	} do: [ : itemSel | self menuDisableItem: itemSel ]
 ]
@@ -499,7 +499,7 @@ CMSpecProjectWindow >> menuEnableToolsGroup [
 		#tDisplayModelVersions .
 		#tDistributeAsServer .
 		#tDistributeAsClient .
-		#tPackageClient .
+		#tBrowseModel .
 		#tPreferences .
 		#tInspectModel
 	} do: [ : itemSel | self menuEnableItem: itemSel ]
@@ -939,7 +939,7 @@ CMSpecProjectWindow >> subMenuForTools [
 			group
 				addItem: [ :item | self subMenuToolsDistributeAsClient: item ];
 				addItem: [ :item | self subMenuToolsDistributeAsServer: item ];
-				addItem: [ :item | self subMenuToolsPackageClient: item ] ;
+				addItem: [ :item | self subMenuToolsBrowseScoped: item ] ;
 				addItem: [ :item | self subMenuToolsInspectUI: item ];
 				addItem: [ :item | self subMenuToolsPreferences: item ] ]
 ]
@@ -1378,6 +1378,16 @@ CMSpecProjectWindow >> subMenuToolsBrowseHalts: item [
 		action: [ self openCormasHaltMethods ]
 ]
 
+{ #category : #'submenu-tools' }
+CMSpecProjectWindow >> subMenuToolsBrowseScoped: item [
+
+	item
+		name: self translator tBrowseModel;
+		icon: (self iconNamed: #class);
+		shortcut: $K command;
+		action: [ Smalltalk tools browserTool openOnPackage: (RPackage organizer packageOfClassNamed: self cormasModelClass name) ]
+]
+
 { #category : #'submenu-tools-developer' }
 CMSpecProjectWindow >> subMenuToolsCormasBrowser: item [
 
@@ -1486,16 +1496,6 @@ CMSpecProjectWindow >> subMenuToolsModelListing: item [
 "		icon: Smalltalk ui icons openIcon;"
 		shortcut: $L command;
 		action: [ self openToolsModelListing ]
-]
-
-{ #category : #'submenu-tools' }
-CMSpecProjectWindow >> subMenuToolsPackageClient: item [
-
-	item
-		name: self translator tPackageClient;
-"		icon: Smalltalk ui icons openIcon;"
-		shortcut: $K command;
-		action: [ self openToolsPackageClient ]
 ]
 
 { #category : #'submenu-tools' }

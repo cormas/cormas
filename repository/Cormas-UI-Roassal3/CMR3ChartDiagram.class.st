@@ -258,7 +258,7 @@ CMR3ChartDiagram >> probeNum: anObject [
 CMR3ChartDiagram >> probeYValuesAt: x in: probeValues [
 
 	| yValue |
-	yValue := (probeValues at: x + 1) asFloat. 
+	yValue := (probeValues at: x + 1) asFloat.
 	^ yValue / (self maxYValue + yValue)
 ]
 

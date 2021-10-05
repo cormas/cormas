@@ -130,7 +130,7 @@ We recommend you:
 		at: #tManipulateInstances put: 'Manipulate Instances';
 		at: #tModelGlossary put: 'Model Glossary';
 		at: #tModelListing put: 'Model listing as text file';
-		at: #tPackageClient put: 'Package client';
+		at: #tBrowseModel put: 'Browse scoped model';
 		at: #tSpace put: 'Space';
 		at: #tDisplayModelVersions put: 'Display model versions';
 		at: #tSnapshot put: 'Snapshot current state';
@@ -429,7 +429,7 @@ Le recomendamos que:
 		at: #tManipulateInstances 			put: 'Manipular Instancias';
 		at: #tModelGlossary 					put: 'Glosario de Modelo';
 		at: #tModelListing 					put: 'Listado de Modelo como archivo de texto';
-		at: #tPackageClient 					put: 'Empaquetar cliente';
+		at: #tBrowseModel 					put: 'Navegar modelo';
 		at: #tSpace 								put: 'Espacio';
 		at: #tDisplayModelVersions 			put: 'Visualizar versiones de modelo';
 		at: #tSnapshot 							put: 'Guardar estado actual';
@@ -722,7 +722,7 @@ Nous vous recommandons :
 		at: #tManipulateInstances put: 'Manipuler les instances';
 		at: #tModelGlossary put: 'Model Glossary';
 		at: #tModelListing put: 'Liste de modèles fichier texte';
-		at: #tPackageClient put: 'Package client';
+		at: #tBrowseModel put: 'Browse model';
 		at: #tSpace put: 'Space';
 		at: #tDisplayModelVersions put: 'Display model versions';
 		at: #tSnapshot put: 'Snapshot current state';
