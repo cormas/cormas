@@ -213,6 +213,17 @@ CMSpecInitialValueChooser >> notifyObsCheckbox: anObject [
 ]
 
 { #category : #accessing }
+CMSpecInitialValueChooser >> setInitialValue: anObject [ 
+	
+	self codeGenerator 
+		createAttribute: self attributeName 
+		defaultValue: anObject.
+	self openBrowserAt: self targetClass selector: self attributeName.
+	self updateDataSource.
+	self delete.
+]
+
+{ #category : #accessing }
 CMSpecInitialValueChooser >> setterAccessorCheckbox [
 	" Answer the setterAccessorCheckbox of this CMSpecInitialValueChooser "
 

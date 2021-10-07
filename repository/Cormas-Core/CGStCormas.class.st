@@ -25,7 +25,7 @@ CGStCormas >> addNewClassType: aType inheritingFrom: aSuperclass name: aName ini
 	" aType is a <String> and could be : Social , 
 	aName is a validated CORMAS entity (class) name in the format CM<ModelName>UserProvidedEntityName"
 
-	| selector theClass |
+	| selector theClass cmClass |
 	[ self generateClass: aName superclass: aSuperclass ]
 		on: CircularHierarchyError
 		do: [ :ex | ^ self inform: 'Trying to build a circular hierarchy' ].
@@ -33,9 +33,12 @@ CGStCormas >> addNewClassType: aType inheritingFrom: aSuperclass name: aName ini
 	theClass := self class environment at: aName.
 	selector := (aType asLowercase , 'Classes') asSymbol.
 
-	(self cormasModelClass perform: selector) add: theClass.
+	(cmClass := (self cormasModelClass = UndefinedObject
+		ifTrue: [ self targetClass ]
+		ifFalse: [ self cormasModelClass ].
+	(cmClass perform: selector) add: theClass.
 	(theClass inheritsFrom: CMSpatialEntityElement) 
-		ifTrue: [ self cormasModelClass cellClass: aName ].
+		ifTrue: [ cmClass cellClass: aName ].
 	self createModelAccessorsIn: theClass.
 	self addProtocolNamed: #control.
 	createInit ifTrue: [ self createInit ].

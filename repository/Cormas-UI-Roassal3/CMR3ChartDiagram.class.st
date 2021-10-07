@@ -140,7 +140,10 @@ CMR3ChartDiagram >> defaultYAxisLabelOffset [
 { #category : #defaults }
 CMR3ChartDiagram >> maxYValue [
 
-	^ self owner maxYValue
+	^ self scaleToMinMax
+		ifTrue: [ self owner maxYValue ]x
+		ifFalse: [  self halt  ]
+
 ]
 
 { #category : #defaults }

@@ -102,7 +102,9 @@ CMSpOpenProjectNotebookPresenter >> projectSourcePresenter [
 	" Answer a <ComposablePresenter> to browse source code in the receiver's selected model "
 
 	selectedModel ifNil: [ ^ self newEmpty ].
-	^ CMExternalBrowser on: selectedModel fileReference
+	selectedModel fileReference
+		ifNotNil: [ : fileRef | ^ CMExternalBrowser on: selectedModel fileReference ]
+		ifNil: [ self inform: 'Cannot preview the model' ]
 ]
 
 { #category : #initialization }
