@@ -33,7 +33,7 @@ CGStCormas >> addNewClassType: aType inheritingFrom: aSuperclass name: aName ini
 	theClass := self class environment at: aName.
 	selector := (aType asLowercase , 'Classes') asSymbol.
 
-	(cmClass := (self cormasModelClass = UndefinedObject
+	cmClass := self cormasModelClass = UndefinedObject
 		ifTrue: [ self targetClass ]
 		ifFalse: [ self cormasModelClass ].
 	(cmClass perform: selector) add: theClass.
