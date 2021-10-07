@@ -223,7 +223,6 @@ CMSpecAttributesToolbar >> removeAttributeCallback [
 CMSpecAttributesToolbar >> removeClassAttributeCallback [
 	" Private - User clicked in the remove attribute button, confirm and remove "
 
-self halt
 	(self owner superclassesAttributesTable hasSelection and: [ self confirm: self translator tConfirmDeleteAttribute  ])
 		ifTrue: [ self halt ]
 ]
