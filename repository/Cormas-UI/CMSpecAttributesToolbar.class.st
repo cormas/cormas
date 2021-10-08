@@ -207,6 +207,8 @@ CMSpecAttributesToolbar >> initializeWidgets [
 CMSpecAttributesToolbar >> removeAttributeCallback [
 	" Private - User clicked in the remove attribute button, confirm and remove "
 
+	self classAttributesTable hasSelection 
+		ifFalse: [ ^ self inform: 'Please select an attribute first' ].
 	(self confirm: self translator tConfirmDeleteAttribute)
 		ifTrue: [ 
 			[ 

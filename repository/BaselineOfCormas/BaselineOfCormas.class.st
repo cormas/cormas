@@ -94,7 +94,8 @@ BaselineOfCormas >> postLoad [
 	RSWorldMenu loadFullVersion.
 	
 	" Build user projects and un-load models from the image "
-	CMProjectBuilder buildProjectModels.
+	CMApplicationProject cormasRepository 
+		ifNotNil: [ CMProjectBuilder buildProjectModels ].
 
 ]
 

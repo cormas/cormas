@@ -148,6 +148,13 @@ CMProjectManager >> cormasProjectName [
 	^ self currentProject userProvidedName
 ]
 
+{ #category : #callbacks }
+CMProjectManager >> cormasRepository [
+	" See comment in CMApplicationProject "
+
+	^ CMApplicationProject cormasRepository
+]
+
 { #category : #accessing }
 CMProjectManager >> createClassModelNamed: modelName [
  	" Private - See delegated method implementor. Answer a new <Class> "
@@ -268,15 +275,15 @@ CMProjectManager >> doPostCloseActions [
 	" Private - See superimplementor's comment "
 
 	Cursor wait showWhile: [
-		| icePackage cormasRepo |
-		cormasRepo := IceLibgitRepository registry detect: [ : repo | repo name = 'cormas' ].
-		icePackage := IcePackage named: self cormasModelClass package name repository: cormasRepo.
-		self announcer unsubscribe: self currentProject.
-		self fsm handleEvent: #actionClose.
-		self deleteProject.	
-		self cleanEnvironment.
-		(RPackageOrganizer default includesPackageNamed: icePackage package)
-			ifTrue: [ self reloadProject: icePackage repository: cormasRepo ] ].
+		self cormasRepository ifNotNil: [ : cormasRepo |
+			| icePackage |
+			icePackage := IcePackage named: self cormasModelClass package name repository: cormasRepo.
+			self announcer unsubscribe: self currentProject.
+			self fsm handleEvent: #actionClose.
+			self deleteProject.	
+			self cleanEnvironment.
+			(RPackageOrganizer default includesPackageNamed: icePackage package)
+				ifTrue: [ self reloadProject: icePackage repository: cormasRepo ] ] ].
 ]
 
 { #category : #callbacks }

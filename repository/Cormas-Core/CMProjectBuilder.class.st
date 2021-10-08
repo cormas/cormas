@@ -182,11 +182,11 @@ CMProjectBuilder >> cormasProject: anObject [
 	cormasProject := anObject
 ]
 
-{ #category : #testing }
+{ #category : #'accessing - unloading' }
 CMProjectBuilder >> cormasRepository [
 	" Answer the receiver's CORMAS Iceberg repository  "
 
-	^ IceLibgitRepository registry detect: [ : repo | repo name = 'cormas' ]
+	^ CMApplicationProject cormasRepository
 ]
 
 { #category : #defaults }
@@ -399,18 +399,19 @@ CMProjectBuilder >> tempLocation [
 { #category : #'accessing - unloading' }
 CMProjectBuilder >> unLoadModelPackage: aPackageName [
 
-	| cormasRepo icePackage |
-
-	cormasRepo := IceLibgitRepository registry detect: [ : repo | repo name = 'cormas' ].
-	icePackage := IcePackage named: aPackageName repository: cormasRepo.
-	IceTipStandardAction new 
-		repository: cormasRepo;
-		message: ('Unloading package {1}' format: { icePackage name });
-		onSuccessRepositoryModified;
-		execute: [ 
-			Iceberg announcer
-				suspendAllForRepository: cormasRepo
-				while: [ icePackage unload ] ]
+	self cormasRepository 
+		ifNotNil: [ : cormasRepo |
+			| icePackage |
+			icePackage := IcePackage named: aPackageName repository: cormasRepo.
+			IceTipStandardAction new 
+				repository: cormasRepo;
+				message: ('Unloading package {1}' format: { icePackage name });
+				onSuccessRepositoryModified;
+				execute: [ 
+					Iceberg announcer
+						suspendAllForRepository: cormasRepo
+						while: [ icePackage unload ] ] ]
+			ifNil: [ self inform: 'Cannot find CORMAS repository' ]
 ]
 
 { #category : #'accessing - unloading' }
