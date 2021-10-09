@@ -64,6 +64,7 @@ CMProjectBuilderTest >> setUp [
 	super setUp.
 	self timeLimit: self defaultTimeLimit + 25 seconds.
 	self builder: CMProjectBuilder new.
+	CMResourceLocator useGitBridge: false.
 ]
 
 { #category : #running }
@@ -71,6 +72,7 @@ CMProjectBuilderTest >> tearDown [
 
 	super tearDown.
 	self builder unLoadModelPackages.
+	CMResourceLocator useGitBridge: true.
 ]
 
 { #category : #test }
@@ -150,6 +152,8 @@ CMProjectBuilderTest >> testUnLoadModelPackage [
 
 	| testPackageName |
 	
+	CMResourceLocator useGitBridge 
+		ifFalse: [ ^ self ].
 	testPackageName := self sampleModelName.
 	self builder lazyLoadModelPackage: testPackageName.
 	self assert: (self builder isModelLoaded: testPackageName).
@@ -161,6 +165,8 @@ CMProjectBuilderTest >> testUnLoadModelPackage [
 { #category : #test }
 CMProjectBuilderTest >> testUnLoadModelPackages [
 
+	CMResourceLocator useGitBridge 
+		ifFalse: [ ^ self ].
 	self builder lazyLoadModelPackages.
 	self assert: self builder hasAllModelsLoaded.
 	self builder unLoadModelPackages.
@@ -171,7 +177,10 @@ CMProjectBuilderTest >> testUnLoadModelPackages [
 CMProjectBuilderTest >> testWriteSourceCode [
 
 	| newFileRef outputFileRef |
-	self builder lazyLoadModelPackage: self sampleModelName.
+	
+	CMResourceLocator useGitBridge 
+		ifFalse: [ ^ self ].
+	(self builder lazyLoadModelPackage: self sampleModelName).
 	self builder writeSourceCode: self sampleModelClass.
 	newFileRef := self builder tempLocation / CMProjectFile sourceCodeFilenameWithExtension.
 	outputFileRef := self builder defaultOutputDirectory asFileReference / newFileRef basename.

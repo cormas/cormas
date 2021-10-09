@@ -249,7 +249,9 @@ CMProjectBuilder >> isModelLoaded: aPackageName [
 	
 	^ (IcePackage 
 		named: aPackageName 
-		repository: self cormasRepository) isLoaded.
+		repository: self cormasRepository) repository
+			ifNotNil: #isLoaded
+			ifNil: [ false ]
 ]
 
 { #category : #'accessing - loading' }
