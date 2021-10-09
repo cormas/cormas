@@ -67,7 +67,9 @@ CMApplicationProject class >> contributors [
 CMApplicationProject class >> cormasRepository [
 	" Answer the receiver's CORMAS Iceberg repository  "
 
-	^ IceLibgitRepository registry detect: [ : repo | repo name = 'cormas' ]
+	^ IceLibgitRepository registry 
+		detect: [ : repo | repo name = 'cormas' ]
+		ifNone: [ nil ]
 ]
 
 { #category : #accessing }
