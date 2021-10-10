@@ -47,7 +47,7 @@ CMSpecProjectWindow class >> open [
 	PFProjectSettings currentApplicationClass: CMApplicationProject.
 	" Check models are available or should be migrated from the image "
 	CMApplicationProject hasUserProjects
-		ifFalse: [ CMModel2ProjectMigrator migrateModels ].
+		ifFalse: [ CMProjectBuilder buildProjectModels ].
 	" Rebuild translator table "
 	CMApplicationProject uniqueInstance translator: nil.		
 	win := self new 
@@ -100,6 +100,21 @@ CMProjectModel allInstances.
 CMProjectModel allInstances first.
 CMProjectModel allInstances first pointersTo.
 
+CMR3SpaceDiagram allInstances.
+CMR3SpaceDiagram allInstances first.
+CMR3SpaceDiagram allInstances first pointersTo.
+CMR3SpaceDiagram allInstances first announcer.
+
+CMR3SpacePresenter allInstances.
+CMR3SpacePresenter allInstances first.
+CMR3SpacePresenter allInstances first pointersTo.
+CMR3SpacePresenter allInstances first announcer.
+
+CMR3ChartPresenter allInstances.
+CMR3ChartPresenter allInstances first.
+CMR3ChartPresenter allInstances first pointersTo.
+CMR3ChartPresenter allInstances first announcer.
+
 CMConwayModel spatialClasses.
 CMConwayModel passiveClasses.
 CMConwayModel socialClasses.
@@ -108,7 +123,7 @@ SystemNavigation default obsoleteClasses.
 
 "================= Reset utilities ================="
 
-CMModel2ProjectMigrator rebuildModels.
+CMProjectBuilder rebuildModels.
 
 CMConwayModel passiveClasses: nil.
 CMConwayModel socialClasses: nil.
@@ -118,10 +133,6 @@ CMSpecProjectWindow allInstances first projectAnnouncer subscriptions reset.
 CMProjectManager allInstances anyOne announcer subscriptions reset.
 CMProjectManager allInstances anyOne announcer subscriptions.
 
-CMR3SpaceInterface allInstances.
-CMR3SpaceInterface allInstances anyOne.
-CMR3SpaceInterface allInstances anyOne announcer.
-
 CMProjectOpener allInstances.
 CMProjectOpener allInstances anyOne.
 CMProjectOpener allInstances anyOne projectManager: nil.
@@ -130,10 +141,9 @@ CMProjectOpener allInstances anyOne projectManager: nil.
 
 3 timesRepeat: [ Smalltalk garbageCollect ].
 
-CMProjectManager allInstances ifNotEmpty: [ : cpms | 
-	cpms do: [ : cpm | cpm fsm: nil ] ].
-CMR3SpaceInterface allInstances ifNotEmpty: [ : csps |
-	csps do: [ : csp | csp projectManager: nil; diagram: nil ] ].
+CMProjectManager allInstancesDo: #release.
+CMR3SpaceDiagram allInstancesDo: #release.
+CMR3SpacePresenter allInstancesDo: #release.
  
 SmalltalkImage current fixObsoleteBindings.
 SmalltalkImage current fixObsoleteReferences.
@@ -144,7 +154,8 @@ SmalltalkImage current fixObsoleteReferences.
 { 
 CMProjectModel allInstances.
 CMProjectManager allInstances.
-CMSpecProjectWindow allInstances 
+CMSpecProjectWindow allInstances.
+CMR3SpacePresenter allInstances.
 } allSatisfy: #isEmpty.'
 
 ]
@@ -261,7 +272,7 @@ CMSpecProjectWindow >> initializeSubscriptions [
 		to: self.
 	self projectAnnouncer
 		when: 	CMScenarioUpdateAnnouncement
-		send: #openSpaceInterfaceUpdateScenario
+		send: #openSpacePresenterUpdateScenario
 		to: self
 ]
 
@@ -279,9 +290,7 @@ CMSpecProjectWindow >> initializeVisualizationSubMenu: group [
 CMSpecProjectWindow >> initializeWidgets [
 	" Private - See superimplementor's comment "
 
-	self 
-		initializeApplication;
-		initializeSubscriptions.
+	self initializeSubscriptions.
 	super initializeWidgets.
 	self simWindow: ((CMSpecSimulationContainer for: self projectManager)
 		owner: self;
@@ -391,7 +400,7 @@ CMSpecProjectWindow >> menuDisableToolsGroup [
 		#tDisplayModelVersions .
 		#tDistributeAsServer .
 		#tDistributeAsClient .
-		#tPackageClient .
+		#tBrowseModel .
 		#tInspectModel
 	} do: [ : itemSel | self menuDisableItem: itemSel ]
 ]
@@ -490,7 +499,7 @@ CMSpecProjectWindow >> menuEnableToolsGroup [
 		#tDisplayModelVersions .
 		#tDistributeAsServer .
 		#tDistributeAsClient .
-		#tPackageClient .
+		#tBrowseModel .
 		#tPreferences .
 		#tInspectModel
 	} do: [ : itemSel | self menuEnableItem: itemSel ]
@@ -639,6 +648,12 @@ CMSpecProjectWindow >> openProgrammingEntityClass [
 ]
 
 { #category : #callbacks }
+CMSpecProjectWindow >> openProgrammingMessages [
+
+	self inform: 'shouldBeImplemented'.
+]
+
+{ #category : #callbacks }
 CMSpecProjectWindow >> openProjectProperties [
 	" Private - Open a window to set receiver's properties "
 
@@ -646,23 +661,50 @@ CMSpecProjectWindow >> openProjectProperties [
 ]
 
 { #category : #callbacks }
-CMSpecProjectWindow >> openSpaceInterface [
+CMSpecProjectWindow >> openSpacePresenter [
 	" Private - Callback for user request to open a new Space Model interface for the receiver's project "
 
-	CMR3SpaceInterface openFor: self projectManager.
- 	self projectAnnouncer announce: CMSChangePoVAnnouncement new.
+	(self cormasModelClass methodsOfProtocol: #init)
+		ifNotEmpty: [ 
+			'Project Window: Open Space Presenter' traceCr.
+			CMR3SpacePresenter openFor: self projectManager.
+			'Project Window: Announce Changed PoV' traceCr.
+		 	self projectAnnouncer announce: CMSChangePoVAnnouncement new ]
 ]
 
 { #category : #callbacks }
-CMSpecProjectWindow >> openSpaceInterfaceUpdateScenario [
+CMSpecProjectWindow >> openSpacePresenterUpdateScenario [
 	" Private - Open a space model interface. Close all opened space model windows if any "
 
-	CMR3SpaceInterface allInstancesDo: #delete.
-"	self projectAnnouncer hasSubscriptions
-		ifTrue: [ self halt. self projectAnnouncer unsubscribeCormasSpaces ]."
-	self spaceModel activePoVsDictionary ifNotEmpty: [ self openSpaceInterface ]
+	'Project Window: Deleting Space Presenters...' traceCr.
+	CMR3SpacePresenter allInstancesDo: #delete.
+	self spaceModel activePoVsDictionary ifNotEmpty: [ self openSpacePresenter ]
 
 
+]
+
+{ #category : #'submenu-programming' }
+CMSpecProjectWindow >> openUMLPresenter [
+
+	| packageForLoadedModel |
+
+	packageForLoadedModel :=RPackageOrganizer default packageOfClassNamed: self cormasModelClass name.
+	(CMProjectBuilder new modelPackageNames includes: packageForLoadedModel name)
+		ifTrue: [ self openUMLViewer ]
+		ifFalse: [ OPProject openOnModel: (OPUMLPackage new name: self projectManager cormasModelName) ]
+	
+]
+
+{ #category : #callbacks }
+CMSpecProjectWindow >> openUMLViewer [
+
+	| package builder |
+
+	builder := RSUMLClassBuilder new.
+	package := RPackage organizer packageOfClassNamed: self cormasModelClass asString.
+	builder classes: package classes.
+	builder build.
+	builder canvas open
 ]
 
 { #category : #callbacks }
@@ -701,6 +743,12 @@ CMSpecProjectWindow >> quitSubApplicationWindows [
 	World submorphs
 		select: [ :sm | sm isCormasSubApplicationWindow ]
 		thenDo: [ :w | w delete ].
+	UIManager default defer: [ 
+		"(Delay forSeconds: 1) wait."
+		self projectAnnouncer subscriptions reset.
+		CMApplicationProject allInstancesDo: #release.
+		CMApplicationProject release. 
+		3 timesRepeat: [ Smalltalk garbageCollect ] ]
 ]
 
 { #category : #'submenu-tools-developer' }
@@ -917,7 +965,7 @@ CMSpecProjectWindow >> subMenuForTools [
 			group
 				addItem: [ :item | self subMenuToolsDistributeAsClient: item ];
 				addItem: [ :item | self subMenuToolsDistributeAsServer: item ];
-				addItem: [ :item | self subMenuToolsPackageClient: item ] ;
+				addItem: [ :item | self subMenuToolsBrowseScoped: item ] ;
 				addItem: [ :item | self subMenuToolsInspectUI: item ];
 				addItem: [ :item | self subMenuToolsPreferences: item ] ]
 ]
@@ -1024,7 +1072,7 @@ CMSpecProjectWindow >> subMenuProgrammingProbes: item [
 		name: self translator tProbesProgramming;
 		icon: (self iconNamed: #group);
 		shortcut: $P command;
-		action: [ self openProgrammingProbes ]
+		action: [ self inform: 'shouldBeImplemented' ]
 ]
 
 { #category : #'submenu-programming' }
@@ -1087,7 +1135,7 @@ CMSpecProjectWindow >> subMenuProgrammingUML: item [
 		name: self translator tClassEditor;
 		icon: (self iconNamed: #openIcon);
 		shortcut: $U command;
-		action: [ OPProject openOnModel: (OPUMLPackage new name: self projectManager cormasModelName) ]
+		action: [ self openUMLPresenter ]
 ]
 
 { #category : #'submenu-tools-developer' }
@@ -1356,6 +1404,16 @@ CMSpecProjectWindow >> subMenuToolsBrowseHalts: item [
 		action: [ self openCormasHaltMethods ]
 ]
 
+{ #category : #'submenu-tools' }
+CMSpecProjectWindow >> subMenuToolsBrowseScoped: item [
+
+	item
+		name: self translator tBrowseModel;
+		icon: (self iconNamed: #class);
+		shortcut: $K command;
+		action: [ Smalltalk tools browserTool openOnPackage: (RPackage organizer packageOfClassNamed: self cormasModelClass name) ]
+]
+
 { #category : #'submenu-tools-developer' }
 CMSpecProjectWindow >> subMenuToolsCormasBrowser: item [
 
@@ -1467,16 +1525,6 @@ CMSpecProjectWindow >> subMenuToolsModelListing: item [
 ]
 
 { #category : #'submenu-tools' }
-CMSpecProjectWindow >> subMenuToolsPackageClient: item [
-
-	item
-		name: self translator tPackageClient;
-"		icon: Smalltalk ui icons openIcon;"
-		shortcut: $K command;
-		action: [ self openToolsPackageClient ]
-]
-
-{ #category : #'submenu-tools' }
 CMSpecProjectWindow >> subMenuToolsPreferences: item [
 
 	item
@@ -1534,7 +1582,7 @@ CMSpecProjectWindow >> subMenuVizSpace: item [
 		name: self translator tSpace;
 "		icon: Smalltalk ui icons openIcon;"
 		shortcut: $S command;
-		action: [ self openSpaceInterface ]
+		action: [ self openSpacePresenter ]
 ]
 
 { #category : #callbacks }

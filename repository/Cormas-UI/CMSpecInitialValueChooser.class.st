@@ -37,9 +37,10 @@ Class {
 		'getterAccessorCheckbox',
 		'notifyObsCheckbox',
 		'toolbar',
-		'initialRBGroup'
+		'initialRBGroup',
+		'attributeName'
 	],
-	#category : #'Cormas-UI-Core'
+	#category : #'Cormas-UI-Spec1-Attributes'
 }
 
 { #category : #specs }
@@ -58,6 +59,57 @@ CMSpecInitialValueChooser class >> defaultSpec [
 			origin: 0.05 @ 0.15 corner: 0.95 @ 1;
 			newRow: [ : r | r add: #toolbar ] origin: 0 @ 0.9 corner: 1 @ 1;
 			yourself.
+]
+
+{ #category : #adding }
+CMSpecInitialValueChooser class >> on: attributeName for: aCMProjectManager [
+
+	(self for: aCMProjectManager)
+		attributeName: attributeName;
+		openWithSpec
+
+]
+
+{ #category : #adding }
+CMSpecInitialValueChooser class >> on: attributeName for: aCMProjectManager owner: aPresenter [
+
+	(self for: aCMProjectManager)
+		owner: aPresenter;
+		attributeName: attributeName;
+		openWithSpec
+
+]
+
+{ #category : #callbacks }
+CMSpecInitialValueChooser >> applyInitialValueChooserSetting [
+	" Private - Obtain the selected radio button and its value "
+
+	| settingRBClass |
+	settingRBClass := self initialRBGroup class.
+	((settingRBClass organization listAtCategoryNamed: #accessing) reject: #isKeyword)
+		detect: [ : widgetAccessor | 
+			| rb | 
+			(rb := self initialRBGroup perform: widgetAccessor) isRadioButton and: [ rb state ] ]
+		ifFound: [ : rb | self setInitialValue: (self initialRBGroup valueAccessorAt: rb) ]
+		ifNone: [ self informMessage: 'Please select an option' ]
+]
+
+{ #category : #accessing }
+CMSpecInitialValueChooser >> attributeName [
+
+	^ attributeName
+]
+
+{ #category : #accessing }
+CMSpecInitialValueChooser >> attributeName: anObject [
+
+	attributeName := anObject
+]
+
+{ #category : #accessing }
+CMSpecInitialValueChooser >> codeGenerator [
+
+	^ self projectManager codeGenerator.
 ]
 
 { #category : #accessing }
@@ -114,7 +166,9 @@ CMSpecInitialValueChooser >> initializeLabels [
 	self notifyObsCheckbox label: self translator tNotifyObs.
 	self toolbar
 		firstButtonLabel: self translator tCancel;
-		secondButtonLabel: self translator tOk.
+		firstButtonAction: [ self delete ];
+		secondButtonLabel: self translator tOk;
+		secondButtonAction: [ self applyInitialValueChooserSetting ]
 
 
 ]
@@ -159,6 +213,17 @@ CMSpecInitialValueChooser >> notifyObsCheckbox: anObject [
 ]
 
 { #category : #accessing }
+CMSpecInitialValueChooser >> setInitialValue: anObject [ 
+	
+	self codeGenerator 
+		createAttribute: self attributeName 
+		defaultValue: anObject.
+	self openBrowserAt: self targetClass selector: self attributeName.
+	self updateDataSource.
+	self delete.
+]
+
+{ #category : #accessing }
 CMSpecInitialValueChooser >> setterAccessorCheckbox [
 	" Answer the setterAccessorCheckbox of this CMSpecInitialValueChooser "
 
@@ -170,6 +235,13 @@ CMSpecInitialValueChooser >> setterAccessorCheckbox: anObject [
 	" Sets the setterAccessorCheckbox of this CMSpecInitialValueChooser "
 
 	setterAccessorCheckbox := anObject
+]
+
+{ #category : #accessing }
+CMSpecInitialValueChooser >> targetClass [
+	" Answer the <Class> where the code is targeted "
+
+	^ self codeGenerator targetClass.
 ]
 
 { #category : #api }
@@ -191,4 +263,10 @@ CMSpecInitialValueChooser >> toolbar: anObject [
 	" Sets the toolbar of this CMSpecInitialValueChooser "
 
 	toolbar := anObject
+]
+
+{ #category : #initialization }
+CMSpecInitialValueChooser >> updateDataSource [
+
+	self owner classAttributesTable dataSource: (CMClassAttributeValueDataSource forClass: self targetClass).
 ]

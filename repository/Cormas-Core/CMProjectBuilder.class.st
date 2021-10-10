@@ -11,29 +11,31 @@ CMModel2ProjectMigrator new buildProjects.
 
 "
 Class {
-	#name : #CMModel2ProjectMigrator,
+	#name : #CMProjectBuilder,
 	#superclass : #CMObject,
 	#instVars : [
-		'currentModel',
 		'outputDirectory',
-		'destinationPath'
+		'destinationPath',
+		'cormasModel',
+		'cormasProject'
 	],
 	#category : #'Cormas-Core-Project'
 }
 
 { #category : #examples }
-CMModel2ProjectMigrator class >> migrateModels [ 
+CMProjectBuilder class >> buildProjectModels [ 
 	<script>
 	
 	Cursor wait showWhile: [ 
 		self new 
 			destinationPath: CMResourceLocator demosPath;
 			buildProjects;
-			moveProjects ]
+			moveProjects;
+			unLoadModelPackages ]
 ]
 
 { #category : #examples }
-CMModel2ProjectMigrator class >> rebuildModels [ 
+CMProjectBuilder class >> rebuildModels [ 
 	" Removes all existing demos and rebuild the project files from the code in the current image "
 	<script>
 	
@@ -45,7 +47,7 @@ CMModel2ProjectMigrator class >> rebuildModels [
 ]
 
 { #category : #defaults }
-CMModel2ProjectMigrator class >> resourceDirectoryNames [
+CMProjectBuilder class >> resourceDirectoryNames [
 	" Answer a <Collection> with the names of subdirectories of a CORMAS project "
 
 	^ #(
@@ -62,18 +64,18 @@ CMModel2ProjectMigrator class >> resourceDirectoryNames [
 		)
 ]
 
-{ #category : #building }
-CMModel2ProjectMigrator >> buildForModel: aCMProjectModel [
+{ #category : #'accessing - building' }
+CMProjectBuilder >> buildForModel: aCMProjectModel [
 	" Creates a CORMAS project file, answer a <FileReference> to the new created project "
 
 	self buildForModelClass: aCMProjectModel cormasModelClass
 ]
 
-{ #category : #building }
-CMModel2ProjectMigrator >> buildForModelClass: modelClass [
+{ #category : #'accessing - building' }
+CMProjectBuilder >> buildForModelClass: modelClass [
 	" Creates a CORMAS project file, answer a <FileReference> to the new created project "
 
-	currentModel := CMProjectModel basicNew
+	cormasModel := CMProjectModel basicNew
 		initializeForModel: modelClass named: modelClass friendlyName;
 		yourself.
 	self 
@@ -83,11 +85,12 @@ CMModel2ProjectMigrator >> buildForModelClass: modelClass [
 
 ]
 
-{ #category : #building }
-CMModel2ProjectMigrator >> buildForModelInstance: modelInstance [
+{ #category : #'accessing - building' }
+CMProjectBuilder >> buildForModelInstance: modelInstance [
 	" Creates a CORMAS project file, answer a <FileReference> to the new created project "
 
-	currentModel := CMProjectModel basicNew
+	cormasModel := modelInstance.
+	cormasProject := CMProjectModel basicNew
 		initializeForModel: modelInstance named: modelInstance friendlyName;
 		yourself.
 	self 
@@ -97,24 +100,24 @@ CMModel2ProjectMigrator >> buildForModelInstance: modelInstance [
 
 ]
 
-{ #category : #building }
-CMModel2ProjectMigrator >> buildProjectFile [
+{ #category : #'accessing - building' }
+CMProjectBuilder >> buildProjectFile [
 	" Creates a CORMAS project file in the receiver's path. Assume the directory structure is already created and populated in outputDirectory "
 	
 	self buildProjectResources.
 	CMProjectFile 
 		archiveAllFromPharo: self outputDirectory asFileReference children
-		as: self currentModel projectFilename
+		as: self cormasProject projectFilename
 
 ]
 
-{ #category : #building }
-CMModel2ProjectMigrator >> buildProjectMetadataSTON [
+{ #category : #'accessing - building' }
+CMProjectBuilder >> buildProjectMetadataSTON [
 	" Answer a <String> with project meta-data information in STON format "
 
 	| cmModelClass cmMetadata |
 	
-	cmModelClass := self currentModel cormasModelClass.
+	cmModelClass := self cormasModel class.
 	cmMetadata := Dictionary new.
 	cmMetadata 
 		at: 'Name' put: cmModelClass friendlyName;
@@ -136,16 +139,16 @@ CMModel2ProjectMigrator >> buildProjectMetadataSTON [
 
 ]
 
-{ #category : #private }
-CMModel2ProjectMigrator >> buildProjectResources [
+{ #category : #'accessing - building' }
+CMProjectBuilder >> buildProjectResources [
 	" Private - Locate the current model resources and copy them into the output directory to be archived "
 	
-	(self resourceLocator mapsPath: self currentModel friendlyName) hasFiles
+	(self resourceLocator mapsPath: self cormasModel friendlyName) hasFiles
 		ifTrue: [ self halt. ]
 ]
 
-{ #category : #building }
-CMModel2ProjectMigrator >> buildProjects [
+{ #category : #'accessing - building' }
+CMProjectBuilder >> buildProjects [
 	" Main entry point for generating project files. Generate all project files from the models in this image "
 	" Hopefully this method should be run only once, and to reformat project directory structure for example "
 
@@ -158,31 +161,50 @@ CMModel2ProjectMigrator >> buildProjects [
 ]
 
 { #category : #accessing }
-CMModel2ProjectMigrator >> currentModel [
-	^ currentModel
+CMProjectBuilder >> cormasModel [
+	^ cormasModel
 ]
 
 { #category : #accessing }
-CMModel2ProjectMigrator >> currentModel: anObject [
-	currentModel := anObject
+CMProjectBuilder >> cormasModel: anObject [
+	cormasModel := anObject
+]
+
+{ #category : #accessing }
+CMProjectBuilder >> cormasProject [
+
+	^ cormasProject
+]
+
+{ #category : #accessing }
+CMProjectBuilder >> cormasProject: anObject [
+
+	cormasProject := anObject
+]
+
+{ #category : #'accessing - unloading' }
+CMProjectBuilder >> cormasRepository [
+	" Answer the receiver's CORMAS Iceberg repository  "
+
+	^ CMApplicationProject cormasRepository
 ]
 
 { #category : #defaults }
-CMModel2ProjectMigrator >> defaultDestinationPath [
+CMProjectBuilder >> defaultDestinationPath [
 	" Private - By default the destination path it is the user projects directory "
 	
 	^ CMResourceLocator userProjectsPath
 ]
 
 { #category : #defaults }
-CMModel2ProjectMigrator >> defaultOutputDirectory [
+CMProjectBuilder >> defaultOutputDirectory [
 	" Private - Answer the default <String> with the name of the directory serving as temporary location where to write project files before being compressed "
 	
 	^ (self tempLocation / 'cormas_project') fullName
 ]
 
 { #category : #private }
-CMModel2ProjectMigrator >> destinationPath [
+CMProjectBuilder >> destinationPath [
 	" Answer a <FileReference> with the destination where projects should be migrated/written "
 
 	^ destinationPath
@@ -190,14 +212,14 @@ CMModel2ProjectMigrator >> destinationPath [
 ]
 
 { #category : #accessing }
-CMModel2ProjectMigrator >> destinationPath: aFileReference [
+CMProjectBuilder >> destinationPath: aFileReference [
 	" Set the receiver's path where the destination files will be written "
 
 	destinationPath := aFileReference
 ]
 
-{ #category : #writing }
-CMModel2ProjectMigrator >> handleFileEx: ex [ 
+{ #category : #'accessing - writing' }
+CMProjectBuilder >> handleFileEx: ex [ 
 
 	(ex isKindOf: FileExists)
 		ifTrue: [ 
@@ -214,12 +236,47 @@ CMModel2ProjectMigrator >> handleFileEx: ex [
 					ex retry ] ]
 ]
 
-{ #category : #building }
-CMModel2ProjectMigrator >> loadModelPackage: aPackageName [
+{ #category : #testing }
+CMProjectBuilder >> hasAllModelsLoaded [
+	" Answer <true> if aPackageName <String> is loaded into the receiver's image "
+	
+	^ self modelPackageNames allSatisfy: [ : cmPackageName | self isModelLoaded: cmPackageName ]
+]
+
+{ #category : #testing }
+CMProjectBuilder >> isModelLoaded: aPackageName [
+	" Answer <true> if aPackageName <String> is loaded into the receiver's image "
+	
+	^ (IcePackage 
+		named: aPackageName 
+		repository: self cormasRepository) repository
+			ifNotNil: #isLoaded
+			ifNil: [ false ]
+]
+
+{ #category : #'accessing - loading' }
+CMProjectBuilder >> lazyLoadModelPackage: aPackageName [
+	" Load aPackageName <String> CORMAS package only if is not already loaded in the image "
+	
+	(self isModelLoaded: aPackageName)
+		ifFalse: [ self loadModelPackage: aPackageName ]
+]
+
+{ #category : #'accessing - loading' }
+CMProjectBuilder >> lazyLoadModelPackages [
+	" Private - Lazy load all defined packages which are CORMAS models "
+
+	self modelPackageNames 
+		do: [ : cmPkgName | self lazyLoadModelPackage: cmPkgName ]
+		displayingProgress: 'Lazy loading model packages'
+]
+
+{ #category : #'accessing - loading' }
+CMProjectBuilder >> loadModelPackage: aPackageName [
 
 	| cormasRepo icePackage |
 
-	cormasRepo := IceLibgitRepository registry detect: [ : repo | repo name = 'cormas' ].
+	cormasRepo := self cormasRepository.
 	icePackage := IcePackage named: aPackageName repository: cormasRepo.
 	IceTipStandardAction new 
 		repository: cormasRepo;
@@ -231,22 +288,24 @@ CMModel2ProjectMigrator >> loadModelPackage: aPackageName [
 				while: [ icePackage load ] ]
 ]
 
-{ #category : #building }
-CMModel2ProjectMigrator >> loadModelPackages [
-	" Private - Load packages which are CORMAS models "
+{ #category : #'accessing - loading' }
+CMProjectBuilder >> loadModelPackages [
+	" Private - Load all defined packages which are CORMAS models "
 
-	self modelPackageNames do: [ : cmPkgName | self loadModelPackage: cmPkgName ]
+	self modelPackageNames 
+		do: [ : cmPkgName | self loadModelPackage: cmPkgName ]
+		displayingProgress: 'Loading model packages'
 ]
 
 { #category : #defaults }
-CMModel2ProjectMigrator >> metadataFilename [
+CMProjectBuilder >> metadataFilename [
 	" Answer a <String> with the name of the file which stores metadata information about a project "
 
 	^ CMProjectFile metadataFilename 
 ]
 
-{ #category : #building }
-CMModel2ProjectMigrator >> modelPackageNames [
+{ #category : #accessing }
+CMProjectBuilder >> modelPackageNames [
 	" Answer a <Collection> of <String> with CORMAS model package names "
 	
 	^ #(
@@ -262,7 +321,7 @@ CMModel2ProjectMigrator >> modelPackageNames [
 ]
 
 { #category : #private }
-CMModel2ProjectMigrator >> moveProject: aFileReference [ 
+CMProjectBuilder >> moveProject: aFileReference [ 
 	" Private - Move aFileReference to the system demos/ path "
 	
 	[	
@@ -278,14 +337,14 @@ CMModel2ProjectMigrator >> moveProject: aFileReference [
 ]
 
 { #category : #private }
-CMModel2ProjectMigrator >> moveProjectFile [
+CMProjectBuilder >> moveProjectFile [
 	" Private - Move aFileReference to the system demos/ path "
 	
-	self moveProject: FileSystem workingDirectory / self currentModel fileName
+	self moveProject: FileSystem workingDirectory / self cormasProject fileName
 ]
 
-{ #category : #building }
-CMModel2ProjectMigrator >> moveProjects [
+{ #category : #'accessing - building' }
+CMProjectBuilder >> moveProjects [
 	" Move recently generated projects to base location "
 
 	'Model2Project: Moving project files...' traceCr.
@@ -295,8 +354,8 @@ CMModel2ProjectMigrator >> moveProjects [
 	'Model2Project: Done moving project files...' traceCr.
 ]
 
-{ #category : #building }
-CMModel2ProjectMigrator >> osSystemInformation [
+{ #category : #accessing }
+CMProjectBuilder >> osSystemInformation [
 	" Answer a <String> with the OS system information of this host "
 
 	^ String streamContents: [ : stream |
@@ -307,15 +366,15 @@ CMModel2ProjectMigrator >> osSystemInformation [
 ]
 
 { #category : #accessing }
-CMModel2ProjectMigrator >> outputDirectory [
+CMProjectBuilder >> outputDirectory [
 	" Answer a <String> with the name of the directory serving as temporary location where to write project files before being compressed "
 	
 	^ outputDirectory
 		ifNil: [ outputDirectory := self defaultOutputDirectory ]
 ]
 
-{ #category : #building }
-CMModel2ProjectMigrator >> rebuildProjects [
+{ #category : #'accessing - building' }
+CMProjectBuilder >> rebuildProjects [
 	" Rebuild project files. Remove and generate all project files from the models in this image "
 
 	'Model2Project: Rebuilding project files...' traceCr.
@@ -327,20 +386,47 @@ CMModel2ProjectMigrator >> rebuildProjects [
 ]
 
 { #category : #defaults }
-CMModel2ProjectMigrator >> resourceDirectoryNames [
+CMProjectBuilder >> resourceDirectoryNames [
 	" Answer a <Collection> with the names of subdirectories of a CORMAS project "
 
 	^ self class resourceDirectoryNames
 ]
 
 { #category : #defaults }
-CMModel2ProjectMigrator >> tempLocation [
+CMProjectBuilder >> tempLocation [
 
 	^ FileLocator imageDirectory
 ]
 
-{ #category : #writing }
-CMModel2ProjectMigrator >> writeDirectoryStructure [
+{ #category : #'accessing - unloading' }
+CMProjectBuilder >> unLoadModelPackage: aPackageName [
+
+	self cormasRepository 
+		ifNotNil: [ : cormasRepo |
+			| icePackage |
+			icePackage := IcePackage named: aPackageName repository: cormasRepo.
+			IceTipStandardAction new 
+				repository: cormasRepo;
+				message: ('Unloading package {1}' format: { icePackage name });
+				onSuccessRepositoryModified;
+				execute: [ 
+					Iceberg announcer
+						suspendAllForRepository: cormasRepo
+						while: [ icePackage unload ] ] ]
+			ifNil: [ self inform: 'Cannot find CORMAS repository' ]
+]
+
+{ #category : #'accessing - unloading' }
+CMProjectBuilder >> unLoadModelPackages [
+	" Private - Unload packages which are CORMAS models from the image "
+
+	self modelPackageNames 
+		do: [ : cmPkgName | self unLoadModelPackage: cmPkgName ]
+		displayingProgress: 'Unloading models from the image'
+]
+
+{ #category : #'accessing - writing' }
+CMProjectBuilder >> writeDirectoryStructure [
 	" Private - Write directory names for the receiver's target project "
 
 	| outDirRef |
@@ -351,8 +437,8 @@ CMModel2ProjectMigrator >> writeDirectoryStructure [
 
 ]
 
-{ #category : #writing }
-CMModel2ProjectMigrator >> writeMetadata [
+{ #category : #'accessing - writing' }
+CMProjectBuilder >> writeMetadata [
 	" Private - Write receiver's model metadata in a file "
 	
 	self outputDirectory asFileReference / self metadataFilename  
@@ -360,8 +446,8 @@ CMModel2ProjectMigrator >> writeMetadata [
 
 ]
 
-{ #category : #writing }
-CMModel2ProjectMigrator >> writeSourceCode: modelClass [
+{ #category : #'accessing - writing' }
+CMProjectBuilder >> writeSourceCode: modelClass [
 	" Private - Create and store a file in Smalltalk Chunk format with modelClass source code "
 
 	| newFile |
@@ -370,13 +456,13 @@ CMModel2ProjectMigrator >> writeSourceCode: modelClass [
 	modelClass package 
 		fileOutOn: (WriteStream on: (String new: 4000))
 		named: CMProjectFile sourceCodeFilename.
-	newFile := self tempLocation / (CMProjectFile sourceCodeFilename , '.st').
+	newFile := self tempLocation / CMProjectFile sourceCodeFilenameWithExtension.
 	self writeSourceCodeInTempLocation: newFile.
 	self traceCrTab: 'Model2Project: Done writing source code ' , modelClass asString. 
 ]
 
-{ #category : #writing }
-CMModel2ProjectMigrator >> writeSourceCodeInTempLocation: newFile [
+{ #category : #'accessing - writing' }
+CMProjectBuilder >> writeSourceCodeInTempLocation: newFile [
 
 	| dest |
 	

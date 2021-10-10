@@ -8,25 +8,32 @@ Class {
 }
 
 { #category : #accessing }
+CMClassAttributeValueDataSource class >> attributeHasAccessor: attributeName in: aClass [
+
+	^ ((aClass canUnderstand: attributeName) or: [ aClass canUnderstand: attributeName asMutator ])
+		or: [ (aClass class canUnderstand: attributeName) or: [ aClass class canUnderstand: attributeName asMutator ] ]
+
+]
+
+{ #category : #accessing }
 CMClassAttributeValueDataSource class >> attributsFromClass: aClass [
 	"returns a list of ClassAttributeValues of Entities"
 	"Add the attributs"
 	
 	| set |
+	
 	set := OrderedCollection new.
 	aClass superclass = CMSpatialEntityCell
-		ifTrue:
-			[set add: 'state'	"Parmis les attributs herites, il n'y a que state qui puisse etre un nombre"].
-	(aClass superclass = ProtoObject "CormasModelGameInterface"
-		or: [aClass superclass = CMAbstractModel])
-		ifTrue:
-			[set add: 'periodicity'	"Parmis les attributs herites, il n'y a que periodicity qui puisse etre un nombre a analyser"].
+		ifTrue: [ set add: 'state'	"Parmis les attributs herites, il n'y a que state qui puisse etre un nombre"].
+	(aClass superclass = ProtoObject "CormasModelGameInterface" or: [aClass superclass = CMAbstractModel])
+		ifTrue: [ set add: 'periodicity'	"Parmis les attributs herites, il n'y a que periodicity qui puisse etre un nombre a analyser"].
 	set addAll: aClass instVarNames.	"and add attributs superclasses except from Entities"
-	set addAll: (self inheritedInstVarNamesForClass: aClass).	"Remove all collections of CormasModel automaticaly buid from a model classes . i.e: theCells  "	"(aClass superclass = CormasModelGameInterface or:[aClass superclass = CormasModel])
+	set addAll: (self inheritedInstVarNamesForClass: aClass).	
+		"Remove all collections of CormasModel automaticaly buid from a model classes . i.e: theCells  "	"(aClass superclass = CormasModelGameInterface or:[aClass superclass = CormasModel])
 		ifTrue: [aClass spatialClasses do: [:c | set remove: (CMAbstractModel getterForEntityClass: c)  ifAbsent:[]].
 			    aClass socialClasses do: [:c | set remove: (CMAbstractModel getterForEntityClass: c) ifAbsent:[]].
 			    aClass passiveClasses do: [:c | set remove: (CMAbstractModel getterForEntityClass: c) ifAbsent:[]]   ]."
-	^set
+	^ set
 ]
 
 { #category : #accessing }
@@ -63,42 +70,34 @@ CMClassAttributeValueDataSource class >> forSuperclass: aClass [
 
 { #category : #accessing }
 CMClassAttributeValueDataSource class >> getDefaultValueOfAttribut: anAttribut ofClass: aClass [
-	"Returns the default value of anAttribut (static or instance) of aClass, using the  'anAttribut_default' accessor  located into the ' - default value ' protocol.
-Compatibility with previous Cormas version: before changing, it tests if the default class method exists otherwise compiles it
 
+	" Returns the default value of anAttribut (static or instance) of aClass, using the  'anAttribut_default' accessor  located into the ' - default value ' protocol.
+Compatibility with previous Cormas version: before changing, it tests if the default class method exists otherwise compiles it
 	anAttribut = <Symbol>
 	aClass = <Class>"
-	
-	| default classLevel inst |
-	aClass isMeta
-		ifTrue: [classLevel := aClass soleInstance]
-		ifFalse: [classLevel := aClass].
-	default := self
-		tryMethod: (anAttribut , '_default') asSymbol
-		onClass: classLevel.
-	default = 'Non ca n a pas marche du tout. VA falloir traiter ca'
-		ifTrue:
-			[classLevel isGenericEntity ifTrue: [^nil].
-			aClass isMeta
-				ifTrue:
-					[default := self
-						tryMethod: anAttribut asSymbol
-						onClass: classLevel]
-				ifFalse:
-					[inst := aClass basicNew.
-					default := self
-						tryMethod: anAttribut asSymbol
-						onClass: inst].
-			default = 'Non ca n a pas marche du tout. VA falloir traiter ca'
-				ifTrue: [^nil]
-				ifFalse:
-					[default isLiteral
-						ifTrue:
-							[self
-								defineDefaultClassMethod: anAttribut asString
-								ofClass: aClass
-								withDefaultValue: default]]].
-	^default
+
+	| default classOrInstanceLevel |
+	classOrInstanceLevel := aClass isMeta
+		                        ifTrue: [ aClass instanceSide ]
+		                        ifFalse: [ aClass ].
+	classOrInstanceLevel isGenericEntity ifTrue: [ ^ nil ].
+
+	default := (self
+		            tryMethod: (anAttribut , '_default') asSymbol
+		            onClass: classOrInstanceLevel)
+		           ifNil: [ 
+			           (self
+				            tryMethod: anAttribut asSymbol
+				            onClass: classOrInstanceLevel)
+				           ifNil: [ 
+					           (self
+						            tryMethod: anAttribut asSymbol
+						            onClass: classOrInstanceLevel basicNew)
+						           ifNil: [ nil ]
+						           ifNotNil: [ :d | d ] ]
+				           ifNotNil: [ :e | self halt ] ]
+		           ifNotNil: [ :d | d ].
+	^ default
 ]
 
 { #category : #accessing }
@@ -151,16 +150,15 @@ CMClassAttributeValueDataSource class >> inheritedInstVarNamesForClass: aClass [
 
 { #category : #accessing }
 CMClassAttributeValueDataSource class >> staticAttributsFromClass: aClass [
-	"Return a set containing the static variable names (as string) of aClass and all its super classes until the Cormas entity classes."
-	
-	| set |
-	set := OrderedCollection new.	"Add the class variables"
-	set addAll: aClass class instVarNames.	"list addAll: aClass classVarNames."	"ne marche pas !"	"and add attributs superclasses except from Entities"
-	set addAll: (self inheritedInstVarNamesForClass: aClass class).
-	set
-		remove: 'CurrentId'
-		ifAbsent: [].
-	^set
+	"Return a set containing the static variable names (as string) of aClass and all its super classes until the Cormas entity classes.
+	Add attributs superclasses except from Entities "
+
+	^ OrderedCollection new 
+		addAll: aClass instVarNames;
+		addAll: 	aClass class instVarNames;
+		addAll: (self inheritedInstVarNamesForClass: aClass class);
+		remove: 'CurrentId' ifAbsent: [];
+		yourself
 ]
 
 { #category : #accessing }
@@ -171,12 +169,8 @@ CMClassAttributeValueDataSource class >> staticAttributsWithAccessorsFromClass: 
 	| set |
 	set := Set new.
 	(self staticAttributsFromClass: aClass)
-		do:
-			[:anAttribut | 
-			((aClass class compiledMethodAt: anAttribut asSymbol ifAbsent: [nil]) isNil
-				or: [(aClass class compiledMethodAt: (anAttribut , ':') asSymbol ifAbsent: [nil]) isNil])
-				ifFalse: [set add: anAttribut asString]].
-	^set
+		do: [ : anAttribut | (self attributeHasAccessor: anAttribut in: aClass) ifTrue: [ set add: anAttribut asString ] ].
+	^ set
 ]
 
 { #category : #accessing }
@@ -186,7 +180,7 @@ CMClassAttributeValueDataSource class >> tryMethod: aMethod onClass: aClassOrIns
 	
 	^ [ result := aClassOrInstance perform: aMethod]
 	on: Exception
-	do: [ : ex | ex return: 'Non ca n a pas marche du tout. VA falloir traiter ca' ]
+	do: [ : ex | nil  ]
 ]
 
 { #category : #accessing }
@@ -264,11 +258,11 @@ CMClassAttributeValueDataSource >> initializeForClass: aClass [
 
 	attributColl := OrderedCollection new.
 	attributs := self class staticAttributsWithAccessorsFromClass: aClass.
-	attributColl addAll: (self class
-		getDefaultValuesForClass: aClass class
-		attributs: attributs).
-	attributs := self class attributsWithAccessorsFromClass: aClass.
-	attributColl addAll: (self class getDefaultValuesForClass: aClass attributs: attributs).
+	attributColl 
+		addAll: (self class getDefaultValuesForClass: aClass class attributs: attributs);
+		addAll: (self class getDefaultValuesForClass: aClass attributs: attributs).
+"	attributs := self class attributsWithAccessorsFromClass: aClass.
+	attributColl addAll: (self class getDefaultValuesForClass: aClass attributs: attributs)."
 	self elements: (self collectUnmodifiedClassAttributesFrom: attributColl).
 	self initialize
 ]

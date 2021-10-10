@@ -1,486 +1,511 @@
+"
+This is the main container for Space Interface. It holds a Roassal presenter and manages menu instantiation and configuration.
+
+Internal Representation and Key Implementation Points.
+
+Instance Variables
+	diagram:		<Object>
+	menuToolbar:		<Object>
+	projectManager:		<Object>
+	spaceView:		<Object>
+
+
+    Implementation Points
+"
 Class {
 	#name : #CMR3SpacePresenter,
-	#superclass : #SpRoassalPresenter,
+	#superclass : #SpPresenter,
+	#traits : 'TCMUIUtils',
+	#classTraits : 'TCMUIUtils classTrait',
 	#instVars : [
-		'cellSize',
-		'model',
-		'situatedEntitiesViews',
-		'origin',
-		'speed',
-		'cellViews',
-		'layoutClass',
-		'elemClass',
-		'sevClass',
-		'activePoVsDictionary',
-		'scaleInterpolator',
-		'theCellViews'
+		'projectManager',
+		'diagram',
+		'menuToolbar'
 	],
-	#category : #'Cormas-UI-Roassal3'
+	#category : #'Cormas-UI-Roassal3-Space'
 }
 
-{ #category : #'instance creation' }
-CMR3SpacePresenter class >> newOn: aCMCormasModel [
-	"This method is called by the CMSpecProjectWindow. It creates, subscribes and opens a simulationGrid on a cormasModel"
+{ #category : #specs }
+CMR3SpacePresenter class >> defaultSpec [
 
-	| instance |
-	instance := self new.
-	instance initializeOn: aCMCormasModel.
-	instance subscribeOn: aCMCormasModel.
-	^ instance
+	^ SpBoxLayout newTopToBottom
+			add: #menuToolbar height: self toolbarHeight;
+			add: #diagram;
+			yourself
 ]
 
 { #category : #'instance creation' }
-CMR3SpacePresenter class >> openOn: aCMCormasModel [
-	"This method is called by the CMSpecProjectWindow. It creates, subscribes and opens a simulationGrid on a cormasModel"
-
-	| instance |
-	instance := self new.
-	instance initializeOn: aCMCormasModel.
-	instance subscribeOn: aCMCormasModel.
-	instance openWithToolbar.
-	^ instance
-]
-
-{ #category : #'accessing - pov' }
-CMR3SpacePresenter >> activePoVSelectorAtClass: aClass [
-	" Answer a <Symbol> which is a selector to access the PoV of an entity of aClass "
-
-	^ self activePoVsDictionary at: aClass ifAbsent: [ 
-			aClass superClassesUntilEntity  
-				ifEmpty: [ Color gray ] 
-				ifNotEmpty: [ #pov ] ]
+CMR3SpacePresenter class >> for: aCMProjectManager [ 
+	" Answer a new instance of the receiver using aCMProjectManager as model "
 	
+	^ self basicNew 
+		projectManager: aCMProjectManager;
+		initialize;
+		yourself
 ]
 
-{ #category : #'accessing - pov' }
-CMR3SpacePresenter >> activePoVsDictionary [
-	" Each presenter could have customized PoV's. If this Dictionary is empty, we use the PoV's defined in the receiver's space model "
+{ #category : #'instance creation' }
+CMR3SpacePresenter class >> openFor: aCMProjectManager [
+	" Create and open a new instance of the receiver, configuring its controller with aCMProjectManager"
 
-	activePoVsDictionary ifNil: [ activePoVsDictionary := Dictionary new ].
-	^ activePoVsDictionary ifEmpty: [ activePoVsDictionary := self defaultActivePoVs ]
+	^ (self for: aCMProjectManager)
+		openWithSpec;
+		yourself
 ]
 
-{ #category : #'accessing - pov' }
-CMR3SpacePresenter >> activeSpatialEntityPov [
-	" Answer a <Symbol> representing the selector of the active PoV which is a Spatial Entity "
+{ #category : #initialization }
+CMR3SpacePresenter >> appSettingsClass [ 
+
+	^ CMApplicationPreferences
+]
+
+{ #category : #accessing }
+CMR3SpacePresenter >> buildExportFilenameWithExtension: aString [ 
+	" Answer a timestamped <String> representing the receiver's exported canvas "
 	
-	| spatialEntitySelections |
-	
-	spatialEntitySelections := self activePoVsDictionary associationsSelect: [ : assoc | assoc key isKindOf: CMSpatialEntityElement class ].
-	^ spatialEntitySelections size = 1
-		ifTrue: [ spatialEntitySelections anyOne value ]
-		ifFalse: [ spatialEntitySelections ifEmpty: [ #pov ] ifNotEmpty: [ self error ] ]
-]
-
-{ #category : #refreshing }
-CMR3SpacePresenter >> addNewSituatedEntities [
-
-	| newSituatedEntities newSituatedEntitiesViews |
-	newSituatedEntities := model allTheSituatedEntities reject: [ :a | 
-		                       (situatedEntitiesViews collect: [ :e | 
-			                        e model ]) includes: a ].
-	newSituatedEntitiesViews := newSituatedEntities collect: [ : se | self newSEViewForModel: se ].
-	situatedEntitiesViews addAll: newSituatedEntitiesViews.
-	self canvas addAll: newSituatedEntitiesViews.
-	newSituatedEntitiesViews do: [ :nse | nse @ RSDraggable ]
-]
-
-{ #category : #'instance creation' }
-CMR3SpacePresenter >> addViewForAgent: atse [
-	" Private - Create a view for each agent in aCollectionOfEntities and add it to the receiver's canvas "
-
-	cellSize := self canvas encompassingRectangle extent / model spaceModel dimensions.
-	situatedEntitiesViews := atse collect: [ : se | self newSEViewForModel: se ].
-]
-
-{ #category : #'instance creation' }
-CMR3SpacePresenter >> addViewForAgents: theSituatedEntities [
-	" Private - Create views for situated entities (agents) "
-
-	theSituatedEntities ifNotEmpty: [ : atse | 
-		self addViewForAgent: atse.
-		self canvas addAll: situatedEntitiesViews ].
-	self moveSituatedEntities
-]
-
-{ #category : #'instance creation' }
-CMR3SpacePresenter >> addViewForCells: cells [
-
-	theCellViews := cells collect: [ : cell | self newElementViewForModel: cell ] as: RSGroup.
-	self canvas addAll: theCellViews.
-	self configurePopUp.
-	self configureLayout.
-]
-
-{ #category : #'accessing - pov' }
-CMR3SpacePresenter >> atClass: aClass putActivePovSelector: aSymbol [
-
-	self activePoVsDictionary at: aClass put: aSymbol
+	^ String streamContents: [ : stream |
+			stream 
+				<< self cormasModel friendlyName;
+				<< '-Space-';
+				<< DateAndTime now asFileNameCompatibleString;
+				<< $.;
+				<< aString ]
 ]
 
 { #category : #accessing }
-CMR3SpacePresenter >> cellSize [
+CMR3SpacePresenter >> canvas [
+	" Private - Answer a <RSCanvas> "
 
-	^ cellSize 
-		ifNil: [ cellSize := self defaultCellSize ]
+	^ self diagram canvas
 ]
 
-{ #category : #accessing }
-CMR3SpacePresenter >> cellSize: anObject [
-	cellSize := anObject
-]
-
-{ #category : #accessing }
-CMR3SpacePresenter >> cellViews [
-	^ cellViews ifNil: [ situatedEntitiesViews := OrderedCollection new ]
-]
-
-{ #category : #accessing }
-CMR3SpacePresenter >> cellViews: anObject [
-
-	cellViews := anObject
-]
-
-{ #category : #refreshing }
-CMR3SpacePresenter >> clearView [
-	self situatedEntitiesViews removeAll.
-	self clean
-]
-
-{ #category : #'instance creation' }
-CMR3SpacePresenter >> collectXAxisPositions [
-	" Answer a <Collection> of ..."
-
-	^ self nodes collect: [ :e | e position x ]
-]
-
-{ #category : #'instance creation' }
-CMR3SpacePresenter >> collectYAxisPositions [
-	" Answer a <Collection> of ..."
-
-	^ self nodes collect: [ :e | e position y ]
-]
-
-{ #category : #'accessing - layouts' }
-CMR3SpacePresenter >> configureLayout [
-
-	self layoutClass new
-		gapSize: 0;
-		lineItemsCount: model spaceModel column;
-		on: self canvas nodes	
-]
-
-{ #category : #'instance creation' }
-CMR3SpacePresenter >> configurePopUp [
-
-	| popUp |
-	popUp := RSPopup text: [ : aCMEntity | aCMEntity asString ].
-	self canvas nodes
-		@ popUp;
-		when: RSMouseLeftClick do: [ : aRSMouseClick |
-			| position |
-			
-			position := aRSMouseClick shape position.
-			self canvas nodes 
-				select: [ : v | v encompassingRectangle containsPoint: position ]
-				thenDo: [ : s | s model inspect ] ].
+{ #category : #private }
+CMR3SpacePresenter >> closeAfterCreateProject [
+	^ true
 ]
 
 { #category : #accessing }
 CMR3SpacePresenter >> cormasModel [
 	" Answer the receiver's <CMAbstractModel> "
-	
-	^ model
-]
 
-{ #category : #defaults }
-CMR3SpacePresenter >> defaultActivePoVs [
-	" Answer a <Dictionary> of receiver's model active points of view "
-	
-	^ self spaceModel activePoVsDictionary
-]
-
-{ #category : #defaults }
-CMR3SpacePresenter >> defaultCellSize [
-
-	^ 25
-]
-
-{ #category : #defaults }
-CMR3SpacePresenter >> defaultElementClass [
-
-	^ RSBox
-]
-
-{ #category : #defaults }
-CMR3SpacePresenter >> defaultLayoutClass [
-
-	^ RSGridLayout
-]
-
-{ #category : #defaults }
-CMR3SpacePresenter >> defaultScaleInterpolator [
-
-	^ NSScale linear
-		domain: (0 to: 5 by: 0.1);
-		range: RSColorPalette sequential greens9 range
-]
-
-{ #category : #defaults }
-CMR3SpacePresenter >> defaultSituatedEntityViewClass [
-
-	^ RSEllipse
-]
-
-{ #category : #refreshing }
-CMR3SpacePresenter >> delete [ 
-	" Release all instance variables. See https://github.com/cormas/cormas/issues/493 "
-
-	self release.
-	super delete.
-]
-
-{ #category : #'instance creation' }
-CMR3SpacePresenter >> elemClass [
-
-	^ elemClass 
-		ifNil: [ elemClass := self defaultElementClass ]
+	^ self projectManager cormasModel.
 ]
 
 { #category : #accessing }
-CMR3SpacePresenter >> elemClass: anObject [
+CMR3SpacePresenter >> diagram [
 
-	elemClass := anObject
+	^ diagram
+]
+
+{ #category : #accessing }
+CMR3SpacePresenter >> diagram: anObject [
+
+	diagram := anObject
 ]
 
 { #category : #initialization }
-CMR3SpacePresenter >> initialize [
-	" Private - Set the receiver's Spec application "
+CMR3SpacePresenter >> exportSpaceWith: aRSExporter [
+	" Private - Export the receiver's canvas using aRSExporter "
 
-	super initialize.
-	application := CMSpApplication new
+	| outFileRef |
+	
+	outFileRef := (self buildExportFilenameWithExtension: aRSExporter extension) asFileReference.
+	aRSExporter 
+		canvas: self canvas;
+		exportToFile: outFileRef.
+	self inform: (outFileRef exists
+		ifTrue: [ 'Exported to file: ' , outFileRef fullName ]
+		ifFalse: [ 'Failed exporting the space : ' , aRSExporter asString ])
+]
+
+{ #category : #initialization }
+CMR3SpacePresenter >> initializeCanvasInteractions [
+
+	self canvas
+		addInteraction: RSCanvasController new;
+		addInteraction: RSZoomToFitCanvasInteraction new;
+		addInteraction: RSZoomableCanvasInteraction new;
+		addInteraction: RSKeyNavigationCanvasInteraction new
+]
+
+{ #category : #initialization }
+CMR3SpacePresenter >> initializeDiagram [
+	" Private - Create the configured receiver's diagram "
+	
+	diagram := self
+		           instantiate: self appSettingsClass settingSpaceViewer
+		           on: self cormasModel.
+	self initializeEvents.
+	
+]
+
+{ #category : #'initialization - menu' }
+CMR3SpacePresenter >> initializeDisplaysMenuToolbar [
+	" Private - See superimplementor's commen "
+
+	^ self newMenu
+		addGroup: [ : group | 
+			group
+				addItem: [ : item | 
+					item 
+						name: self translator tInfo;
+						subMenu: self subMenuForInfo ] ];
+		addGroup: [ : group | 
+			group
+				addItem: [ : item | 
+					item 
+						name: self translator tSpatialDelimitor;
+						subMenu: self subMenuForSpatialDelimitor ];
+			addItem: [ : item | 
+					item 
+						name: self translator tTime;
+						subMenu: self subMenuForTime ] ];
+		addGroup: [ : group | 
+			group
+				addItem: [ : item | 
+					item 
+						name: self translator tCellVsAggregates;
+						subMenu: self subMenuForCellVsAggregates ] ]
+]
+
+{ #category : #'initialization - menu' }
+CMR3SpacePresenter >> initializeEnvironmentMenuToolbar [
+	" Private - See superimplementor's commen "
+
+	^ self newMenu
+		addGroup: [ : group | 
+			group
+				addItem: [ : item | 
+					item 
+						name: self translator tNew;
+						subMenu: self subMenuForNew ];
+				addItem: [ : item | 
+					item 
+						name: self translator tLoad;
+						subMenu: self subMenuForLoad ] ];
+		addGroup: [ : group | 
+			group
+				addItem: [ : item | 
+					item 
+						name: self translator tModify;
+						subMenu: self subMenuForModify ];
+				addItem: [ : item | 
+					item 
+						name: self translator tReOpen;
+						action: [ self reOpen ] ] ];
+		addGroup: [ : group | 
+			group
+				addItem: [ : item | 
+					item 
+						name: self translator tClose;
+						action: [ self delete ] ] ]
+]
+
+{ #category : #initialization }
+CMR3SpacePresenter >> initializeEvents [
+
+	self projectAnnouncer
+		when: CMSChangePoVAnnouncement 
+		send: #setAndRefreshActivePovs
+		to: self diagram.
+
+]
+
+{ #category : #'initialization - menu' }
+CMR3SpacePresenter >> initializeExportMenuToolbar [
+	" Private - See superimplementor's commen "
+
+	^ self newMenu addGroup: [ : group | 
+		group
+			addItem: [ :item | 
+				item
+					name: 'PDF';
+					action: [ self exportSpaceWith: RSPDFExporter new ] ];
+			addItem: [ :item | 
+				item
+					name: 'SVG';
+					action: [ self exportSpaceWith: RSSVGExporter new ] ];
+			addItem: [ :item | 
+				item
+					name: 'PNG';
+					action: [ self exportSpaceWith: RSPNGExporter new ] ] ];
+			yourself
+]
+
+{ #category : #'initialization - menu' }
+CMR3SpacePresenter >> initializeOptionMenuToolbar [
+	" Private - See superimplementor's commen "
+
+	^ self newMenu
+		addGroup: [ : group | 
+			group
+				addItem: [ : item | 
+					item 
+						name: self translator tUnmoveableZoom;
+						action: [  ] ];
+				addItem: [ : item | 
+					item 
+						name: self translator tMoveableZoom;
+						action: [  ] ] ];
+		addGroup: [ : group |
+			group
+				addItem: [ : item | 
+					item 
+						name: self translator tSetTrackLength;
+						action: [  ] ];
+				addItem: [ : item | 
+					item 
+						name: self translator tEnableUndoRedo;
+						action: [  ] ] ];
+		addGroup: [ : group | 
+			group
+				addItem: [ : item | 
+					item 
+						name: self translator tTouchpad;
+						action: [  ] ] ];
+		yourself
+
+]
+
+{ #category : #'initialization - menu' }
+CMR3SpacePresenter >> initializePOVMenuToolbar [
+	" Private - See superimplementor's commen "
+
+	| cormasModel |
+	cormasModel := self projectManager cormasModel.
+	^ self newMenu
+		addGroup: [ :group | 
+			cormasModel class socialClasses
+				do: [ :socialClass | 
+					group
+						addItem: [ :item | 
+							item
+								name: socialClass name;
+								subMenu: (self subMenuForClassPov: socialClass) ] ] ];
+		addGroup: [ :group | 
+			cormasModel class spatialClasses_sorted
+				do: [ :spatialClasse | 
+					group
+						addItem: [ :item | 
+							item
+								name: spatialClasse name;
+								subMenu: (self subMenuForClassPov: spatialClasse) ] ] ];
+		addGroup: [ :group | 
+			cormasModel class passiveObjectClasses
+				do: [ :passiveClass | 
+					group
+						addItem: [ :item | 
+							item
+								name: passiveClass name;
+								subMenu: (self subMenuForClassPov: passiveClass) ] ] ]
 ]
 
 { #category : #initialization }
 CMR3SpacePresenter >> initializePresenters [
-	" Private - This method initializes a simulationGrid for a specific cormasModel , without specifyin any animation behaviour "
+	" Private - See superimplementor's comment "
 
-	self addViewForCells: self model theESE.
-	self addViewForAgents: self model allTheSituatedEntities.
-	
-	self projectAnnouncer
-		when: CMTimeChangedAnnouncement do: [ :aAnnounce | 
-			aAnnounce timeStep = 0 
-				ifFalse: [ self timeChanged: aAnnounce timeStep ] ];
-		when: CMSimInitializationAnnouncement do: [ self timeChanged: 0 ].
-	self canvas zoomToFit.
+	menuToolbar := self mainMenuToolbar.
+	self initializeDiagram.
+	self initializeCanvasInteractions
 ]
 
-{ #category : #'accessing - layouts' }
-CMR3SpacePresenter >> layoutClass [
+{ #category : #'initialization - menu' }
+CMR3SpacePresenter >> initializeToolsMenuToolbar [
+	" Private - See superimplementor's commen "
 
-	^ layoutClass
-		ifNil: [ layoutClass := self defaultLayoutClass ]
-]
-
-{ #category : #'accessing - layouts' }
-CMR3SpacePresenter >> layoutClass: anObject [
-
-	layoutClass := anObject
-]
-
-{ #category : #accessing }
-CMR3SpacePresenter >> model [
-
-	^ model
-]
-
-{ #category : #accessing }
-CMR3SpacePresenter >> model: anObject [
-
-	model := anObject
+	^ self newMenu
+		addGroup: [ :group | 
+			group
+				addItem: [ :item | 
+					item
+						name: self translator tDisplayLegends;
+						action: [  ] ];
+				addItem: [ :item | 
+					item
+						name: self translator tPhoto;
+						action: [  ] ];
+				addItem: [ :item | 
+					item
+						name: self translator tVideo;
+						action: [  ] ];
+				addItem: [ :item | 
+					item
+						name: self translator tManipulateInstances;
+						action: [  ] ];
+				addItem: [ :item | 
+					item
+						name: self translator tCreateInstances;
+						action: [  ] ];
+				addItem: [ :item | 
+					item
+						name: self translator tPreferences;
+						action: [ CMSpaceSettingsBrowser openFor: self ] ];
+					
+				addItem: [ :item | 
+					item
+						name: self translator tInspectModel;
+						icon: (self iconNamed: #smallObjects);
+						shortcut: $I command;
+						action: [ self cormasModel inspect ] ] ];
+		yourself
 ]
 
 { #category : #initialization }
-CMR3SpacePresenter >> moveSituatedEntities [
-	" Position the already created entities views to the location determined by each view's patch "
+CMR3SpacePresenter >> initializeWindow: w [
+	" Private - This method is sent by the Spec2 Framework "
 
-	self situatedEntitiesViews do: [ : e | 
-			"Adding property to be draggable"
-			e @ RSDraggable.
-			e
-				size: e model sizeOfPOV;
-				translateTo: (e model patch numCol @ e model patch numLine * cellSize) - (cellSize / 2) ] 
+	w 
+		title: self initializeWindowTitle;
+		initialExtent: 800 @ 500;
+		whenWillCloseDo: [
+			w isDisplayed
+				ifTrue: [ 
+					| clean |
+					'Space Presenter: Unsubscribing diagram before deleting presenter...' traceCr.
+					self diagram ifNotNil: [ : d | 
+						d unsubscribeListeners.
+						self projectAnnouncer unsubscribe: d ].
+					self release.
+					self defer: [ 3 timesRepeat: [ Smalltalk garbageCollect ] ].
+				] ];
+		centered
 ]
 
-{ #category : #'instance creation' }
-CMR3SpacePresenter >> newElementViewForModel: cellModel [
+{ #category : #initialization }
+CMR3SpacePresenter >> initializeWindowTitle [
 
-"	| povSelector |
-
-	povSelector := self getActivePovSelectorOf: cellModel class."
-	^ self elemClass new
-		model: cellModel;
-		"color: (cellModel getColorForPov: povSelector);"
-		size: self cellSize;
-		yourself
+	^ String streamContents: [ : stream |
+		stream
+			<< self formattedWindowTitle;
+			<< ' - ';
+			<< self translator tSpaceInterface;
+			space;
+			<< self spaceModel humanReadableString ].
 ]
 
-{ #category : #'instance creation' }
-CMR3SpacePresenter >> newSEViewForModel: aCMEntity [
-	" Answer a <RSShape> for the receiver's situated entities "
+{ #category : #'initialization - menu' }
+CMR3SpacePresenter >> mainMenuToolbar [
+	" Private - See superimplementor's commen "
 
-	| colorSelector |
+	| aMenu |
 	
-	colorSelector := self activePoVSelectorAtClass: aCMEntity class.
-	^ self sevClass new
-		model: aCMEntity;
-		color: (aCMEntity perform: colorSelector);
-		size: aCMEntity sizeOfPOV;
-		yourself
+	aMenu := self newMenuBar
+		addGroup: [ :group | 
+			group
+"				addItem: [ :item | 
+					item
+						name: self translator tEnvironment;
+						subMenu: self initializeEnvironmentMenuToolbar ];"
+				addItem: [ :item | 
+					item
+						name: self translator tPoV;
+						subMenu: self initializePOVMenuToolbar ];
+"				addItem: [ :item | 
+					item
+						name: self translator tOptions;
+						subMenu: self initializeOptionMenuToolbar ];"
+				addItem: [ :item | 
+					item
+						name: self translator tTools;
+						subMenu: self initializeToolsMenuToolbar ];
+				addItem: [ :item | 
+					item
+						icon: (self iconNamed: #glamorousZoomToFit);
+						action: [ 
+							self canvas camera zoomToFit.
+							self canvas signalUpdate ] ];
+				addItem: [ :item | 
+					item
+						icon: (self iconNamed: #smallSave);
+						subMenu: self initializeExportMenuToolbar ] ].
+	^ aMenu
 ]
 
 { #category : #accessing }
-CMR3SpacePresenter >> nodes [
-	^ self canvas nodes.
+CMR3SpacePresenter >> menuToolbar [
+
+	^ menuToolbar
 ]
 
 { #category : #accessing }
-CMR3SpacePresenter >> origin [
-	^ origin
-]
+CMR3SpacePresenter >> menuToolbar: anObject [
 
-{ #category : #accessing }
-CMR3SpacePresenter >> origin: anObject [
-	origin := anObject
+	menuToolbar := anObject
 ]
 
 { #category : #accessing }
 CMR3SpacePresenter >> projectAnnouncer [
-	" Private - Answer the <Announcer> used by the receiver's project "
-	
+
 	^ self cormasModel projectAnnouncer
 ]
 
-{ #category : #refreshing }
-CMR3SpacePresenter >> removeDeadSituatedEntities [
+{ #category : #accessing }
+CMR3SpacePresenter >> projectManager [
 
-	| deadSituatedEntities  |
-	self situatedEntitiesViews isEmpty ifTrue: [ ^ self ].
-	deadSituatedEntities := self situatedEntitiesViews reject: [ :e | e model isSituated ].
-	deadSituatedEntities do: [ :e | e remove ].
-	self situatedEntitiesViews removeAll: deadSituatedEntities
+	^ projectManager
 ]
 
 { #category : #accessing }
-CMR3SpacePresenter >> scaleInterpolator [
+CMR3SpacePresenter >> projectManager: anObject [
 
-	^ scaleInterpolator 
-		ifNil: [ scaleInterpolator := self defaultScaleInterpolator ]
+	projectManager := anObject
 ]
 
-{ #category : #'accessing - pov' }
-CMR3SpacePresenter >> setAndRefreshActivePovSelectorOf: aClass with: aSymbol [
-	" Configure a single point of view with selector aSymbol in model class aClass "
+{ #category : #dependencies }
+CMR3SpacePresenter >> release [
 
-	self atClass: aClass putActivePovSelector: aSymbol.
-	self updateNodesOf: aClass.
-	self canvas signalUpdate
-]
-
-{ #category : #'accessing - pov' }
-CMR3SpacePresenter >> setAndRefreshActivePovs [
-	" Configure the receiver's point of views in all classes in the active PoVs Dictionary.
-	
-	This method is only called in response of Apply Scenario settings button "
-
-	self activePoVsDictionary keysDo: [ : classPoV | self updateNodesOf: classPoV ].
-	self canvas signalUpdate
-]
-
-{ #category : #initialization }
-CMR3SpacePresenter >> setModelBeforeInitialization: aCMAbstractModel [
-	" Private - Set the receiver's CORMAS model to aCMAbstractModel "
-
-	self model: aCMAbstractModel.
-]
-
-{ #category : #accessing }
-CMR3SpacePresenter >> sevClass [
-
-	^ sevClass
-		ifNil: [ sevClass := self defaultSituatedEntityViewClass ]
-]
-
-{ #category : #accessing }
-CMR3SpacePresenter >> sevClass: anObject [
-
-	sevClass := anObject
-]
-
-{ #category : #accessing }
-CMR3SpacePresenter >> situatedEntitiesViews [
-	^ situatedEntitiesViews
-		ifNil: [ situatedEntitiesViews := OrderedCollection new ]
-]
-
-{ #category : #accessing }
-CMR3SpacePresenter >> situatedEntitiesViews: anObject [
-	situatedEntitiesViews := anObject
+	menuToolbar := nil.
+	announcer := nil.
+	diagram := nil.
+	self projectManager: nil.
+	super release.
 ]
 
 { #category : #accessing }
 CMR3SpacePresenter >> spaceModel [
-	" Answer the receiver's <CMSpaceModel> "
-
+	" Answer a <CMSpaceModel>, the receiver's model configured space "
+	
 	^ self cormasModel spaceModel
 ]
 
-{ #category : #accessing }
-CMR3SpacePresenter >> speed [
+{ #category : #private }
+CMR3SpacePresenter >> subMenuForClassPov: aClass [
 
-	^ speed
+	^ self newMenu addGroup: [ :group | 
+		(aClass methodsInProtocol: #pov) do: [ :povName | 
+			group addItem: [ :item | 
+				item
+					name: povName selector;
+					action: [ self diagram setAndRefreshActivePovSelectorOf: aClass with: item name ] ] ] ]
+]
+
+{ #category : #private }
+CMR3SpacePresenter >> subMenuForLoad [
+	
+	^ MenuModel new
+]
+
+{ #category : #private }
+CMR3SpacePresenter >> subMenuForModify [
+
+	^ MenuModel new
+]
+
+{ #category : #private }
+CMR3SpacePresenter >> subMenuForNew [
+
+	^ self newMenu
+		addGroup: [ : group |
+			group 
+				addItem: [ : item | 				
+					item
+						name: self translator tGridSize;
+						action: [ self openDimensionChooser ] ] ]
 ]
 
 { #category : #accessing }
-CMR3SpacePresenter >> speed: anObject [
+CMR3SpacePresenter >> translator [
+	" Answer the receiver's <PFTranslator> "
 
-	speed := anObject
-]
-
-{ #category : #accessing }
-CMR3SpacePresenter >> theCellViews [
-
-	^ theCellViews
-		ifNil: [ theCellViews := OrderedCollection new ]
-]
-
-{ #category : #accessing }
-CMR3SpacePresenter >> theCellViews: anObject [
-
-	theCellViews := anObject
-]
-
-{ #category : #refreshing }
-CMR3SpacePresenter >> timeChanged: aNewTimeStep [
-
-	aNewTimeStep = 0
-		ifTrue: [ self clearView.
-			self addViewForCells: model theESE ]
-		ifFalse: [ self removeDeadSituatedEntities ].
-	self addNewSituatedEntities.
-	self moveSituatedEntities.
-	self theCellViews do: [ : node | node updateEntityAspectIn: self ].
-	self canvas signalUpdate
-]
-
-{ #category : #'accessing - pov' }
-CMR3SpacePresenter >> updateNodesOf: modelClass [
-
-	^ self nodes
-		  select: [ :roassalNode | roassalNode model isKindOf: modelClass ]
-		  thenDo: [ :roassalNode | 
-			  | shapeSelector |
-			  shapeSelector := self activePoVSelectorAtClass: modelClass.
-			  roassalNode color: (roassalNode model getColorForPov: shapeSelector) ]
+	^ self projectManager translator.
 ]

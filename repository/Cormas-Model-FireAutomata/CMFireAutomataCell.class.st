@@ -4,28 +4,25 @@ I'm a cell of a FireAutomata. Four states are possible: #tree, #empty, #ash, #fi
 Class {
 	#name : #CMFireAutomataCell,
 	#superclass : #CMSpatialEntityCell,
-	#category : 'Cormas-Model-FireAutomata'
+	#category : #'Cormas-Model-FireAutomata'
 }
 
-{ #category : #pov }
+{ #category : #colors }
 CMFireAutomataCell >> ash [
-	"^#empty ^#tree ^#fire ^#ash"
 
 	^ Color gray
 ]
 
-{ #category : #pov }
+{ #category : #colors }
 CMFireAutomataCell >> empty [
-	"^#empty ^#tree ^#fire ^#ash"
 
 	^ Color black
 ]
 
-{ #category : #pov }
+{ #category : #colors }
 CMFireAutomataCell >> fire [
-	"^#empty ^#tree ^#fire ^#ash"
 
-	^ Color red 
+	^ Color red
 ]
 
 { #category : #init }
@@ -89,9 +86,8 @@ CMFireAutomataCell >> pov [
 	^ self perform: self state
 ]
 
-{ #category : #pov }
+{ #category : #colors }
 CMFireAutomataCell >> tree [
-	"^#empty ^#tree ^#fire ^#ash"
 
 	^ Color green
 ]

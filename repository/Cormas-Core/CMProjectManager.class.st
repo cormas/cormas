@@ -25,6 +25,12 @@ Class {
 }
 
 { #category : #accessing }
+CMProjectManager >> applicationClass [
+
+	^ CMApplicationProject
+]
+
+{ #category : #accessing }
 CMProjectManager >> applicationExtension [
 	" See comment in #applicationExtension "
 
@@ -140,6 +146,13 @@ CMProjectManager >> cormasProjectName [
 	" Answer a <String> which is a Cormas model name "
 
 	^ self currentProject userProvidedName
+]
+
+{ #category : #callbacks }
+CMProjectManager >> cormasRepository [
+	" See comment in CMApplicationProject "
+
+	^ CMApplicationProject cormasRepository
 ]
 
 { #category : #accessing }
@@ -262,15 +275,15 @@ CMProjectManager >> doPostCloseActions [
 	" Private - See superimplementor's comment "
 
 	Cursor wait showWhile: [
-		| icePackage cormasRepo |
-		cormasRepo := IceLibgitRepository registry detect: [ : repo | repo name = 'cormas' ].
-		icePackage := IcePackage named: self cormasModelClass package name repository: cormasRepo.
-		self announcer unsubscribe: self currentProject.
-		self fsm handleEvent: #actionClose.
-		self deleteProject.	
-		self cleanEnvironment.
-		(RPackageOrganizer default includesPackageNamed: icePackage package)
-			ifTrue: [ self reloadProject: icePackage repository: cormasRepo ] ].
+		self cormasRepository ifNotNil: [ : cormasRepo |
+			| icePackage |
+			icePackage := IcePackage named: self cormasModelClass package name repository: cormasRepo.
+			self announcer unsubscribe: self currentProject.
+			self fsm handleEvent: #actionClose.
+			self deleteProject.	
+			self cleanEnvironment.
+			(RPackageOrganizer default includesPackageNamed: icePackage package)
+				ifTrue: [ self reloadProject: icePackage repository: cormasRepo ] ] ].
 ]
 
 { #category : #callbacks }
@@ -374,6 +387,17 @@ CMProjectManager >> querySaveProject [
 	self currentProject ifNil:[ ^ false ]. 
 	(self currentProject requiresSaving and: [ self confirm: self translator tQuerySaveProject ])
 		ifTrue: [ self saveProject ].
+]
+
+{ #category : #initialization }
+CMProjectManager >> release [
+
+	self 
+		fsm: nil;
+		opener: nil;
+		settingsClass: nil;
+		applicationClass: nil.
+	super release.
 ]
 
 { #category : #callbacks }

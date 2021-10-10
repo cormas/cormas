@@ -1,6 +1,6 @@
 Class {
 	#name : #CMSChangePoVAnnouncement,
-	#superclass : #Announcement,
+	#superclass : #CMAnnouncement,
 	#instVars : [
 		'povDictionary'
 	],
@@ -21,13 +21,6 @@ CMSChangePoVAnnouncement class >> forPovs: aCollectionOfAssociations [
 	^ self new
 		povDictionary: aCollectionOfAssociations;
 		yourself
-]
-
-{ #category : #adding }
-CMSChangePoVAnnouncement >> addPoV: aSymbol [
-	" Add aSymbol as a PoV to be set in a space interface "
-	
-	self povNames add: aSymbol
 ]
 
 { #category : #accessing }

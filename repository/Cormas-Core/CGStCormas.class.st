@@ -25,7 +25,7 @@ CGStCormas >> addNewClassType: aType inheritingFrom: aSuperclass name: aName ini
 	" aType is a <String> and could be : Social , 
 	aName is a validated CORMAS entity (class) name in the format CM<ModelName>UserProvidedEntityName"
 
-	| selector theClass |
+	| selector theClass cmClass |
 	[ self generateClass: aName superclass: aSuperclass ]
 		on: CircularHierarchyError
 		do: [ :ex | ^ self inform: 'Trying to build a circular hierarchy' ].
@@ -33,9 +33,12 @@ CGStCormas >> addNewClassType: aType inheritingFrom: aSuperclass name: aName ini
 	theClass := self class environment at: aName.
 	selector := (aType asLowercase , 'Classes') asSymbol.
 
-	(self cormasModelClass perform: selector) add: theClass.
+	cmClass := self cormasModelClass = UndefinedObject
+		ifTrue: [ self targetClass ]
+		ifFalse: [ self cormasModelClass ].
+	(cmClass perform: selector) add: theClass.
 	(theClass inheritsFrom: CMSpatialEntityElement) 
-		ifTrue: [ self cormasModelClass cellClass: aName ].
+		ifTrue: [ cmClass cellClass: aName ].
 	self createModelAccessorsIn: theClass.
 	self addProtocolNamed: #control.
 	createInit ifTrue: [ self createInit ].
@@ -85,6 +88,24 @@ CGStCormas >> cormasModelClass [
 	^ self cormasModel class
 
 	
+]
+
+{ #category : #'code-generation' }
+CGStCormas >> createAttribute: attributeName defaultValue: anObject [
+	
+	| srcTemplate |
+	
+	(self targetClass hasInstVarNamed: attributeName)
+		ifFalse: [ self targetClass addInstVarNamed: attributeName ].
+	srcTemplate := anObject
+		ifNotNil: [ self templateForAttribute: attributeName default: anObject ]
+		ifNil: [ self templateForAttribute: attributeName ].
+
+	self 
+		targetMethodCategory: 'accessing';
+		sourceString: srcTemplate;
+		generateMethod.
+
 ]
 
 { #category : #'code-generation' }
@@ -262,6 +283,35 @@ CGStCormas >> renameClass: oldClassname to: newClassname [
 ]
 
 { #category : #'code-generation' }
+CGStCormas >> templateForAttribute: attributeName [
+
+	^ (String streamContents: [ : stream |
+		stream 
+			<< attributeName;
+			<< '\	"Getter accessor without default value.\';
+			<< self automaticCommentString;
+			<< '"\	^';
+			<< attributeName ]) withCRs
+]
+
+{ #category : #'code-generation' }
+CGStCormas >> templateForAttribute: attributeName default: anObject [
+
+	^ (String streamContents: [ : stream |
+		stream
+			<< attributeName;
+			<< '\	"Getter accessor with default value';
+			<< self automaticCommentString;
+			<< '"\	^';
+			<< attributeName;
+			<< ' ifNil:[';
+			<< attributeName; 
+			<< ' := ';
+			<< (self transformAsString: anObject);
+			<< ']']) withCRs
+]
+
+{ #category : #'code-generation' }
 CGStCormas >> templateForInstanceAccessors: pop in: aClass [
 
 	^ String streamContents: [ : stream |
@@ -314,4 +364,41 @@ CGStCormas >> templateForSetterAccessor: pop [
 			<< $"; cr; crtab;
 			<< pop;
 			<< ' := aNewCollection.' ]
+]
+
+{ #category : #'code-generation' }
+CGStCormas >> transformAsString: defaultValue [
+	"return the defaultValue as a string.
+	defaultValue: <Number or String or Boolean or Dictionary or Array or Collection>"
+	
+	| defaultString coll |
+	defaultValue isNil ifTrue: [^'nil'].
+	defaultValue isString
+		ifTrue:
+			["((defaultValue findString: 'randomFloat' startingAt: 1) = 1) ifTrue:[^defaultValue].
+((defaultValue findString: 'randomInteger' startingAt: 1) = 1) ifTrue:[^defaultValue]."
+			^defaultValue printString].
+	(defaultValue isKindOf: Boolean) ifTrue: [^defaultValue asString].
+	(defaultValue isKindOf: Number) ifTrue: [^defaultValue asString].
+	(defaultValue isKindOf: Dictionary)
+		ifTrue:
+			[defaultValue isEmpty
+				ifTrue: [defaultString := defaultValue class name asString , ' new']
+				ifFalse: [self halt].
+			^defaultString].
+	(defaultValue isKindOf: Array)
+		ifTrue:
+			[defaultString := 'Array withAll: ' , defaultValue asString.
+			^defaultString].	"because Array is immutable in VW7.6, cannot write  defaultValue asString !"
+	(defaultValue isKindOf: Collection)
+		ifTrue:
+			[defaultValue isEmpty
+				ifTrue: [defaultString := defaultValue class name asString , ' new']
+				ifFalse:
+					[defaultString := ''.
+					coll := defaultValue asString substrings asOrderedCollection.
+					coll add: 'withAll:' beforeIndex: 2.
+					coll do: [:sub | defaultString := defaultString , sub , ' ']].
+			^defaultString].
+	^defaultValue asString
 ]

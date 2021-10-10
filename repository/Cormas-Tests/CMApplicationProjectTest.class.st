@@ -22,10 +22,18 @@ CMApplicationProjectTest >> application: anObject [
 
 { #category : #running }
 CMApplicationProjectTest >> setUp [
-	"Hooks that subclasses may override to define the fixture of test."
+	" Hooks that subclasses may override to define the fixture of test. "
 
 	super setUp.
 	application := CMApplicationProject new.
+	CMResourceLocator useGitBridge: false.
+]
+
+{ #category : #running }
+CMApplicationProjectTest >> tearDown [ 
+
+	super tearDown.
+	CMResourceLocator useGitBridge: true.
 ]
 
 { #category : #test }
@@ -53,7 +61,9 @@ CMApplicationProjectTest >> testDefaultTranslatorClass [
 { #category : #test }
 CMApplicationProjectTest >> testModelNames [
 
-	self assertCollection: self application modelNames hasSameElements: self cormasModelNamesForTests
+	CMResourceLocator useGitBridge
+		ifTrue: [ self assertCollection: self application modelNames hasSameElements: self cormasModelNamesForTests ]
+		ifFalse: [ self assertCollection: self application modelNames hasSameElements: { 'MockModel' } ]
 ]
 
 { #category : #test }

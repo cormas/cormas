@@ -58,8 +58,7 @@ BaselineOfCormas >> loadBgImage [
 	" Load background CORMAS image "
 
 	| logoFileref app |
-	app := (Smalltalk at: #PFProjectApplication) applicationClass
-		uniqueInstance.
+	app := (Smalltalk at: #PFProjectApplication) applicationClass uniqueInstance.
 	logoFileref := app resourceLocator imagesPath / 'CormasLogoFull.png'.
 	logoFileref exists
 		ifTrue: [ PolymorphSystemSettings desktopLogoFileName: logoFileref fullName ]
@@ -81,8 +80,11 @@ BaselineOfCormas >> postLoad [
 	self closePharoWelcomeWindow.
 	(Smalltalk at: #PFProjectApplication) applicationClass: (Smalltalk at: #CMApplicationProject).
 	self loadBgImage.	
-	(Smalltalk at: #FDMorphicUIManager) new beDefault.
-	"TaskbarMorph showTaskbar: false."
+	FDMorphicUIManager new beDefault.
+	ShortcutReminder enabled: false.
+	TaskbarMorph showTaskbar: true.
+	MenubarMorph showMenubar: false.
+	
 	self unloadPackages.
 	"self openPlaygroundWindow."
 
@@ -90,16 +92,11 @@ BaselineOfCormas >> postLoad [
 	https://github.com/ObjectProfile/Roassal3/issues/413
 	"
 	RSWorldMenu loadFullVersion.
-]
+	
+	" Build user projects and un-load models from the image "
+	CMApplicationProject cormasRepository 
+		ifNotNil: [ CMProjectBuilder buildProjectModels ].
 
-{ #category : #doits }
-BaselineOfCormas >> preLoadForPharo7 [
-	" Private - Execute post install actions "
-
-	Smalltalk tools debugger
-		alwaysOpenFullDebugger: true;
-		filterCommonMessageSends: true.
-	PharoLightTheme beCurrent
 ]
 
 { #category : #doits }

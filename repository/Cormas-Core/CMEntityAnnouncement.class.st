@@ -4,7 +4,7 @@ This hierarchy implements announcements related with the CORMAS Entities Browser
 "
 Class {
 	#name : #CMEntityAnnouncement,
-	#superclass : #Announcement,
+	#superclass : #CMAnnouncement,
 	#instVars : [
 		'entityName',
 		'type',

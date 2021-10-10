@@ -1,6 +1,6 @@
 Class {
 	#name : #CMTimeChangedAnnouncement,
-	#superclass : #Announcement,
+	#superclass : #CMAnnouncement,
 	#instVars : [
 		'timeStep'
 	],

@@ -1,5 +1,5 @@
 Class {
 	#name : #CMScenarioUpdateAnnouncement,
-	#superclass : #Announcement,
+	#superclass : #CMAnnouncement,
 	#category : #'Cormas-Core-Announcements'
 }

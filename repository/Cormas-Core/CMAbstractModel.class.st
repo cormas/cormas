@@ -48,7 +48,6 @@ Class {
 		'defaultAttributesSetter',
 		'sensitivitySetter',
 		'delayedChanges',
-		'allClassVarBOSS',
 		'announcer',
 		'initStatus'
 	],
@@ -804,6 +803,8 @@ CMAbstractModel class >> prefixName [
 
 { #category : #'accessing - probes' }
 CMAbstractModel class >> probes [
+	" Answer a <Collection> of <Symbol> representing receiver's selectors probes to observe "
+	
 	^ (Pragma allNamed: #probe in: self) collect: #methodSelector
 ]
 
@@ -1174,18 +1175,6 @@ Example: (self allTheSituatedEntities: Forager) is returning all the instances o
 				ifFalse:
 					[coll addAll: ((self theEntities: cl) select: [:e | e isSituated])]].
 	^coll
-]
-
-{ #category : #announcement }
-CMAbstractModel >> announceProbesDataUpdated [
-
-	self announcer announce: (CMProbesDataUpdatedAnnouncement timeStep: self timeStep)
-]
-
-{ #category : #announcement }
-CMAbstractModel >> announceTimeChange [
-
-	^ self projectAnnouncer announce: (CMTimeChangedAnnouncement timeStep: self timeStep)
 ]
 
 { #category : #announcement }
@@ -2798,11 +2787,14 @@ CMAbstractModel >> registerSpaceModelChange: aSymbol with: aParameter [
 
 { #category : #'initalize release' }
 CMAbstractModel >> release [
-super release.
+
+	super release.
 	self spaceModel release.
 	self spaceModel: nil.
 	self channel ifNotNil: [ self channel population: nil ].
-	self channel: nil
+	self channel: nil.
+	self resetCells.
+	self projectManager: nil.
 ]
 
 { #category : #'referencing entities' }
@@ -3284,10 +3276,7 @@ CMAbstractModel >> timeChanged [
 	"the time has changed (time step). Method is called whenever a modification of #timeStepValue.
 	Propagate the new time to the class (to be easily accessible from the agents: #currentTime) and all dependents"
 
-	| newTime |
-	newTime := self timeStep.
-	"self simWindow ifNotNil: [ :sw | sw newCurrentStepValue: newTime ]."
-	self announceTimeChange.
+	self projectAnnouncer announce: (CMTimeChangedAnnouncement timeStep: self timeStep).
 	self flag: #toClean.
 	"self changed: #timeChanged with: newTime."
 	"newTime = 0 ifTrue: [^self simManager setButtonsForTime0].
@@ -3317,7 +3306,11 @@ Ex:
 timeUnitName
 	^'days'     "
 	
-	^self timeStep printString , ' ' , self timeUnitName
+	^ String streamContents: [ : stream |
+		stream 
+			<< self timeStep printString;
+			space;
+			<< self timeUnitName ]
 ]
 
 { #category : #'user interface' }
@@ -3352,7 +3345,7 @@ CMAbstractModel >> updateDataForChart [
 	self
 		updateGlobalData;
 		updateLocalData.
-	self announceProbesDataUpdated
+
 ]
 
 { #category : #update }
@@ -3472,12 +3465,14 @@ CMAbstractModel >> wayFromCell: cell1 toCell: cell2 [
 
 { #category : #scheduling }
 CMAbstractModel >> whenTimeStepChangedDo: aBlock [
-	self announcer when: CMTimeChangedAnnouncement do: aBlock
+
+	self projectAnnouncer when: CMTimeChangedAnnouncement do: aBlock
 ]
 
 { #category : #scheduling }
 CMAbstractModel >> whenTimeStepChangedSend: aSymbol to: anObject [
-	self announcer
+
+	self projectAnnouncer
 		when: CMTimeChangedAnnouncement
 		send: aSymbol
 		to: anObject

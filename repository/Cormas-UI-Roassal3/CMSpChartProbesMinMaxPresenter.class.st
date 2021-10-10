@@ -9,7 +9,7 @@ Class {
 		'fixMinInputPresenter',
 		'minTime'
 	],
-	#category : #'Cormas-UI-Spec2-Probes'
+	#category : #'Cormas-UI-Roassal3-Chart'
 }
 
 { #category : #specs }
@@ -97,6 +97,13 @@ CMSpChartProbesMinMaxPresenter >> initializePresenter [
 
 ]
 
+{ #category : #accessing }
+CMSpChartProbesMinMaxPresenter >> maxYValue [ 
+	" Answer a <Number> entered for the maximum Y value in the chart "
+	
+	^ self fixMaxInputPresenter text asNumber
+]
+
 { #category : #'accessing - time' }
 CMSpChartProbesMinMaxPresenter >> minTime [
 
@@ -111,6 +118,13 @@ CMSpChartProbesMinMaxPresenter >> minTime: anObject [
 ]
 
 { #category : #accessing }
+CMSpChartProbesMinMaxPresenter >> minYValue [ 
+	" Answer a <Number> entered for the minimum Y value in the chart "
+
+	^ self fixMinInputPresenter text asNumber
+]
+
+{ #category : #accessing }
 CMSpChartProbesMinMaxPresenter >> scalePresenter [
 
 	^ scalePresenter
@@ -120,6 +134,14 @@ CMSpChartProbesMinMaxPresenter >> scalePresenter [
 CMSpChartProbesMinMaxPresenter >> scalePresenter: anObject [
 
 	scalePresenter := anObject
+]
+
+{ #category : #initialization }
+CMSpChartProbesMinMaxPresenter >> scaleToMinMax [
+	" Answer <true> if the receiver option to scale to entered min and max values is checked "
+
+	^ scalePresenter state
+
 ]
 
 { #category : #accessing }

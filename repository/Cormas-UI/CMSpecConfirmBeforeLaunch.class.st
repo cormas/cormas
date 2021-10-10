@@ -98,8 +98,10 @@ CMSpecConfirmBeforeLaunch >> applyScenarioSettings [
 	self projectAnnouncer announce: (CMFinalStepChangedAnnouncement new finalStep: self getFinalStep).
 
 	self delete.
+	'Scenario Settings: Init CORMAS model simulation...' traceCr.
 	self cormasModel initSimulation.
-	self announcer announce: CMScenarioUpdateAnnouncement new
+	'Scenario Settings: Announcing update' traceCr.
+	self projectAnnouncer announce: CMScenarioUpdateAnnouncement new
 
 ]
 
@@ -153,6 +155,17 @@ CMSpecConfirmBeforeLaunch >> getFinalStep [
 
 ]
 
+{ #category : #initialization }
+CMSpecConfirmBeforeLaunch >> initControlListMenu: aMenu [
+
+	aMenu
+		add: 'Browse'
+		target: self
+		selector: #openControlMethodBrowser.
+	^ aMenu
+
+]
+
 { #category : #accessing }
 CMSpecConfirmBeforeLaunch >> initMethodList [
 	^ initMethodList
@@ -161,6 +174,17 @@ CMSpecConfirmBeforeLaunch >> initMethodList [
 { #category : #accessing }
 CMSpecConfirmBeforeLaunch >> initMethodList: anObject [
 	initMethodList := anObject
+]
+
+{ #category : #initialization }
+CMSpecConfirmBeforeLaunch >> initMethodListMenu: aMenu [
+
+	aMenu
+		add: 'Browse'
+		target: self
+		selector: #openInitMethodBrowser.
+	^ aMenu
+
 ]
 
 { #category : #initialization }
@@ -174,7 +198,11 @@ CMSpecConfirmBeforeLaunch >> initialExtent [
 CMSpecConfirmBeforeLaunch >> initializeActiveControl [
 	" If there is a control method already selected or the model only has one active control method available, select it "
 
-	self controlMethodList items: (self projectManager modelControlInitMethods collect: #asSymbol).
+	self controlMethodList 
+		items: (self projectManager modelControlInitMethods collect: #asSymbol);
+		label: self translator tSelectControlMethod;
+		menu: [ :aMenu | self initControlListMenu: aMenu ].
+
 	(self cormasModel hasControlInit or: [ self projectManager modelControlInitMethods size = 1 ])
 		ifTrue: [ self controlMethodList selectItem: self cormasModel activeControl ].
 ]
@@ -183,9 +211,15 @@ CMSpecConfirmBeforeLaunch >> initializeActiveControl [
 CMSpecConfirmBeforeLaunch >> initializeActiveInit [
 	" If there is a init method already selected, select it "
 
-	self initMethodList items: (self projectManager modelInitMethods collect: #asSymbol).
+	self initMethodList 
+			label: self translator tSelectInitMethod;
+			items: (self projectManager modelInitMethods collect: #asSymbol);
+			menu: [ :aMenu | self initMethodListMenu: aMenu ].
+
 	self cormasModel hasActiveInit 
 		ifTrue: [ self initMethodList selectItem: self cormasModel activeInit ].
+	self initMethodList isEmpty 
+		ifTrue: [ self alertMessage: self translator tMissingInitMethods ].
 ]
 
 { #category : #initialization }
@@ -212,8 +246,6 @@ CMSpecConfirmBeforeLaunch >> initializePresenter [
 	self initializeActiveControl.
 	self initializeActiveProbes.
 	
-	self initMethodList isEmpty 
-		ifTrue: [ self alertMessage: self translator tMissingInitMethods ].
 	self controlMethodList isEmpty 
 		ifTrue: [ self alertMessage: self translator tMissingControlMethods ].
 ]
@@ -224,10 +256,6 @@ CMSpecConfirmBeforeLaunch >> initializeWidgets [
 		instantiateModels:
 			#(initMethodList SpcLabeledList controlMethodList SpcLabeledList finalStep SpcLabeledTextField fixRandomSeedCheck CheckBoxModel fixRandomTextField TextInputFieldModel probesList SpcLabeledList releaseRandomCheck CheckBoxModel stepBackCheck CheckBoxModel toolbar SpcTwoButtonToolbar).
 
-	self initMethodList 
-		label: self translator tSelectInitMethod.
-	self controlMethodList
-		label: self translator tSelectControlMethod.
 	self probesList 
 		beMultipleSelection;
 		label: self translator tSelectProbesToRecord.
@@ -246,6 +274,18 @@ CMSpecConfirmBeforeLaunch >> initializeWidgets [
 		firstButtonLabel: self translator tCancel;
 		firstButtonAction: [ self delete ];
 		secondButtonAction: [ self applyScenarioSettings ]
+]
+
+{ #category : #initialization }
+CMSpecConfirmBeforeLaunch >> openControlMethodBrowser [
+
+	self openBrowserAt: self cormasModelClass selector: self controlMethodList selectedItem
+]
+
+{ #category : #initialization }
+CMSpecConfirmBeforeLaunch >> openInitMethodBrowser [
+
+	self openBrowserAt: self cormasModelClass selector: self initMethodList selectedItem
 ]
 
 { #category : #accessing }

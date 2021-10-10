@@ -55,8 +55,21 @@ CMApplicationProject class >> baseDirectory [
 
 { #category : #about }
 CMApplicationProject class >> contributors [
-	^ 'Thank you to the following contributors: \' , String cr
-		, self developerNames
+
+	^ String streamContents: [ : stream | 
+		stream 
+			<< 'Thank you to the following contributors: \';
+			cr;
+			<< self developerNames ]
+]
+
+{ #category : #callbacks }
+CMApplicationProject class >> cormasRepository [
+	" Answer the receiver's CORMAS Iceberg repository  "
+
+	^ IceLibgitRepository registry 
+		detect: [ : repo | repo name = 'cormas' ]
+		ifNone: [ nil ]
 ]
 
 { #category : #accessing }

@@ -18,12 +18,9 @@ Class {
 	#name : #CMSpecAttributesToolbar,
 	#superclass : #CMSpecObject,
 	#instVars : [
-		'attributeLabel',
 		'attributeAddButton',
 		'attributeRemoveButton',
-		'classVarLabel',
-		'classVarAddButton',
-		'classVarRemoveButton'
+		'classVarAddButton'
 	],
 	#category : #'Cormas-UI-Spec1-Attributes'
 }
@@ -35,13 +32,9 @@ CMSpecAttributesToolbar class >> defaultSpec [
 	^ SpecLayout composed
 		newRow: [ : r | 
 			r
-				add: #attributeLabel;
 				add: #attributeAddButton;
 				add: #attributeRemoveButton ;
-				addSplitter;
-				add: #classVarLabel;
-				add: #classVarAddButton;
-				add: #classVarRemoveButton  ]
+				add: #classVarAddButton ]
 			height: 25;			
 			yourself			
 
@@ -49,32 +42,43 @@ CMSpecAttributesToolbar class >> defaultSpec [
 
 { #category : #callbacks }
 CMSpecAttributesToolbar >> addAttributeCallback [
+
 	" Callback for adding attribute in the target class "
-	
-	| userAnswer |
-	userAnswer := self 
-		requestText: self translator tEnterAttName
-		title: self translator tAppTitle.
-	(self validateAttributeName: userAnswer)
-	 	ifTrue: [ CMSpecInitialValueChooser openFor: self projectManager ]
+
+	| attName |
+	attName := self
+		           requestText: self translator tEnterAttName
+		           title: self translator tAppTitle.
+
+	(self validateAttributeName: attName)
+		ifTrue: [ 
+			self codeGenerator targetClass:
+				self codeGenerator targetClass instanceSide.
+			CMSpecAddInitialValueChooser
+				on: attName
+				for: self projectManager
+				owner: self owner ]
 		ifFalse: [ 
-			userAnswer 
-				ifNotNil: [ self informMessage: userAnswer , self translator tInvalidName ] ]
+			attName ifNotNil: [ 
+				self informMessage: attName , self translator tInvalidName ] ]
 ]
 
 { #category : #callbacks }
 CMSpecAttributesToolbar >> addClassAttributeCallback [
 	" Callback for adding attribute in the target class "
 	
-	| userAnswer |
-	userAnswer := self 
+	| attName |
+	attName := self 
 		requestText: self translator tEnterAttName
 		title: self translator tAppTitle.
-	(self validateAttributeName: userAnswer)
-	 	ifTrue: [ CMSpecInitialValueChooser openFor: self projectManager ]
+
+	(self validateAttributeName: attName)
+	 	ifTrue: [ 
+			self codeGenerator targetClass: self codeGenerator targetClass class.
+			CMSpecAddInitialValueChooser on: attName for: self projectManager owner: self owner ]
 		ifFalse: [ 
-			userAnswer 
-				ifNotNil: [ self informMessage: userAnswer , self translator tInvalidName ] ]
+			attName 
+				ifNotNil: [ self informMessage: attName , self translator tInvalidName ] ]
 ]
 
 { #category : #accessing }
@@ -90,22 +94,6 @@ CMSpecAttributesToolbar >> attributeAddButton: anObject [
 	" Sets the attributeAddButton of this CMSpecAttributesToolbar "
 
 	attributeAddButton := anObject
-
-]
-
-{ #category : #accessing }
-CMSpecAttributesToolbar >> attributeLabel [
-	" Answer the attributeLabel of this CMSpecAttributesToolbar "
-
-	^ attributeLabel
-
-]
-
-{ #category : #accessing }
-CMSpecAttributesToolbar >> attributeLabel: anObject [
-	" Sets the attributeLabel of this CMSpecAttributesToolbar "
-
-	attributeLabel := anObject
 
 ]
 
@@ -126,6 +114,12 @@ CMSpecAttributesToolbar >> attributeRemoveButton: anObject [
 ]
 
 { #category : #accessing }
+CMSpecAttributesToolbar >> classAttributesTable [
+
+	^ self owner classAttributesTable
+]
+
+{ #category : #accessing }
 CMSpecAttributesToolbar >> classVarAddButton [
 	" Answer the classVarAddButton of this CMSpecAttributesToolbar "
 
@@ -142,35 +136,9 @@ CMSpecAttributesToolbar >> classVarAddButton: anObject [
 ]
 
 { #category : #accessing }
-CMSpecAttributesToolbar >> classVarLabel [
-	" Answer the classVarLabel of this CMSpecAttributesToolbar "
+CMSpecAttributesToolbar >> codeGenerator [ 
 
-	^ classVarLabel
-
-]
-
-{ #category : #accessing }
-CMSpecAttributesToolbar >> classVarLabel: anObject [
-	" Sets the classVarLabel of this CMSpecAttributesToolbar "
-
-	classVarLabel := anObject
-
-]
-
-{ #category : #accessing }
-CMSpecAttributesToolbar >> classVarRemoveButton [
-	" Answer the classVarRemoveButton of this CMSpecAttributesToolbar "
-
-	^ classVarRemoveButton
-
-]
-
-{ #category : #accessing }
-CMSpecAttributesToolbar >> classVarRemoveButton: anObject [
-	" Sets the classVarRemoveButton of this CMSpecAttributesToolbar "
-
-	classVarRemoveButton := anObject
-
+	^ self projectManager codeGenerator
 ]
 
 { #category : #initialization }
@@ -186,8 +154,7 @@ CMSpecAttributesToolbar >> initializeFocus [
 	self focusOrder
 		add: self attributeAddButton;
 		add: self attributeRemoveButton;
-		add: self classVarAddButton;
-		add: self classVarRemoveButton
+		add: self classVarAddButton
 
 ]
 
@@ -195,21 +162,20 @@ CMSpecAttributesToolbar >> initializeFocus [
 CMSpecAttributesToolbar >> initializeLabels [
 	" Private - See superimplementor's comment "
 
-	self attributeLabel label: self translator tAttribute.
 	self attributeAddButton 
+		label: 'Instance attribute';
 		icon: (self iconNamed: #addIcon);
 		help: self translator tHelpAddInstAtt.
 	self attributeRemoveButton
+		label: 'Attribute';
 		icon: (self iconNamed: #removeIcon);
 		help: self translator tHelpRemoveInstAtt.
 
-	self classVarLabel label: self translator tClassVariable.
 	self classVarAddButton 
+		label: 'Class attribute';	
 		icon: (self iconNamed: #addIcon);
 		help: self translator tHelpAddClassAttr.
-	self classVarRemoveButton
-		icon: (self iconNamed: #removeIcon);
-		help: self translator tHelpRemoveClassAtt.	
+
 ]
 
 { #category : #initialization }
@@ -218,9 +184,8 @@ CMSpecAttributesToolbar >> initializePresenter [
 
 	self attributeAddButton action: [ self addAttributeCallback ].
 	self attributeRemoveButton action: [ self removeAttributeCallback ].
-
 	self classVarAddButton action: [ self addClassAttributeCallback ].
-	self classVarRemoveButton action: [ self removeClassAttributeCallback ].
+
 ]
 
 { #category : #initialization }
@@ -229,12 +194,9 @@ CMSpecAttributesToolbar >> initializeWidgets [
 
 	self
 		instantiateModels: #(
-			attributeLabel 				LabelModel 
 			attributeAddButton 		ButtonModel 
 			attributeRemoveButton 	ButtonModel 
-			classVarLabel 				LabelModel 
-			classVarAddButton 			ButtonModel 
-			classVarRemoveButton 		ButtonModel).
+			classVarAddButton 			ButtonModel).
 	
 	self initializeLabels.
 	self initializeFocus.
@@ -242,17 +204,21 @@ CMSpecAttributesToolbar >> initializeWidgets [
 ]
 
 { #category : #callbacks }
-CMSpecAttributesToolbar >> openInitialValueChooser [
-
-	self shouldBeImplemented
-]
-
-{ #category : #callbacks }
 CMSpecAttributesToolbar >> removeAttributeCallback [
 	" Private - User clicked in the remove attribute button, confirm and remove "
 
-	(self owner superclassesAttributesTable hasSelection and: [ self confirm: self translator tConfirmDeleteAttribute  ])
-		ifTrue: [ self halt ]
+	self classAttributesTable hasSelection 
+		ifFalse: [ ^ self inform: 'Please select an attribute first' ].
+	(self confirm: self translator tConfirmDeleteAttribute)
+		ifTrue: [ 
+			[ 
+				self targetClass removeInstVarNamed: self selectedItemWrapper targetAttribute.
+				self classAttributesTable dataSource: (CMClassAttributeValueDataSource forClass: self targetClass).
+				self inform: 'Attribute removed'
+			 ]
+			on: SlotNotFound 
+			do: [ : ex | self inform: 'Slot not found' ].
+ 		]
 ]
 
 { #category : #callbacks }
@@ -263,10 +229,21 @@ CMSpecAttributesToolbar >> removeClassAttributeCallback [
 		ifTrue: [ self halt ]
 ]
 
+{ #category : #accessing }
+CMSpecAttributesToolbar >> selectedItemWrapper [
+
+	^ self classAttributesTable selectedItem
+]
+
+{ #category : #accessing }
+CMSpecAttributesToolbar >> targetClass [
+
+	^ self selectedItemWrapper targetClass
+]
+
 { #category : #initialization }
 CMSpecAttributesToolbar >> validateAttributeName: userAnswer [
 	" Answer <true> if provided userAnswer is valid as attribute name "
 
-	^ userAnswer notNil and: [ userAnswer notEmpty and: 
-		[ userAnswer isValidInstVarName ] ]
+	^ userAnswer notNil and: [ userAnswer notEmpty and: [ userAnswer isValidInstVarName ] ]
 ]

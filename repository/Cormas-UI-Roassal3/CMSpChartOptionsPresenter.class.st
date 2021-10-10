@@ -22,7 +22,7 @@ Class {
 		'probesListPresenter',
 		'probesMinMaxOptionsPresenter'
 	],
-	#category : #'Cormas-UI-Spec2-Probes'
+	#category : #'Cormas-UI-Roassal3-Chart'
 }
 
 { #category : #specs }
@@ -43,6 +43,20 @@ CMSpChartOptionsPresenter >> initializePresenters [
 
 	probesListPresenter := CMSpChartProbesListPresenter owner: self on: self cormasModel.
 	probesMinMaxOptionsPresenter := CMSpChartProbesMinMaxPresenter owner: self on: self cormasModel.
+]
+
+{ #category : #initialization }
+CMSpChartOptionsPresenter >> maxYValue [ 
+	" Answer a <Number> entered for the maximum Y value in the chart "
+
+	^ self probesMinMaxOptionsPresenter maxYValue
+]
+
+{ #category : #initialization }
+CMSpChartOptionsPresenter >> minYValue [ 
+	" Answer a <Number> entered for the minimum Y value in the chart "
+
+	^ self probesMinMaxOptionsPresenter minYValue
 ]
 
 { #category : #accessing }
@@ -67,4 +81,11 @@ CMSpChartOptionsPresenter >> probesMinMaxOptionsPresenter [
 CMSpChartOptionsPresenter >> probesMinMaxOptionsPresenter: anObject [
 
 	probesMinMaxOptionsPresenter := anObject
+]
+
+{ #category : #accessing }
+CMSpChartOptionsPresenter >> scaleToMinMax [
+	" Answer <true> if the receiver option to scale to entered min and max values is checked "
+
+	^ self probesMinMaxOptionsPresenter scaleToMinMax
 ]

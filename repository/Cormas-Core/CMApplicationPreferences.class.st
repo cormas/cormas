@@ -24,17 +24,17 @@ CMApplicationPreferences class >> availableSettingChartViewer [
 	" Answer a <Collection> with classes representing available Chart Viewers implementations "
 
 	^ { 
-		Smalltalk at: #CMSpChartViewer
+		Smalltalk at: #CMR3ChartPresenter
 	 	"Smalltalk at: #CMR2SimpleChart"
 		}.
 ]
 
 { #category : #settings }
-CMApplicationPreferences class >> availableSettingSpaceViewer [
+CMApplicationPreferences class >> availableSettingSpaceDiagram [
 	" Answer a <Collection> with classes representing available Space Interfaces implementations "
 
 	^ { 
-		Smalltalk at: #CMR3SpacePresenter .
+		Smalltalk at: #CMR3SpaceDiagram .
 	 	"Smalltalk at: #CMR2SpaceAnimationRecorder "
 		}.
 ]
@@ -165,8 +165,8 @@ CMApplicationPreferences class >> cmSettingSpaceViewerOn: aBuilder [
 		description: 'You can use multiple types of space viewers, for example, one viewer could just record agent positions in different files, or screenshot each step to produce an animation.';
 		target: self;
 		order: 6;
-		domainValues: self availableSettingSpaceViewer;
-		default: self defaultSettingSpaceViewer
+		domainValues: self availableSettingSpaceDiagram;
+		default: self defaultSettingSpaceDiagram
 ]
 
 { #category : #settings }
@@ -212,7 +212,7 @@ CMApplicationPreferences class >> defaultProjectNotifications [
 { #category : #defaults }
 CMApplicationPreferences class >> defaultSettingChartViewer [
 	
-	^ Smalltalk at: #CMSpChartViewer
+	^ Smalltalk at: #CMR3ChartPresenter
 ]
 
 { #category : #defaults }
@@ -228,9 +228,9 @@ CMApplicationPreferences class >> defaultSettingFixedVerticalTick [
 ]
 
 { #category : #defaults }
-CMApplicationPreferences class >> defaultSettingSpaceViewer [
+CMApplicationPreferences class >> defaultSettingSpaceDiagram [
 	
-	^ Smalltalk at: #CMR3SpacePresenter
+	^ Smalltalk at: #CMR3SpaceDiagram
 ]
 
 { #category : #settings }
@@ -342,7 +342,7 @@ CMApplicationPreferences class >> settingShowProbesTitle: anObject [
 CMApplicationPreferences class >> settingSpaceViewer [
 
 	^ SettingSpaceViewer
-		ifNil: [ SettingSpaceViewer := self defaultSettingSpaceViewer ]
+		ifNil: [ SettingSpaceViewer := self defaultSettingSpaceDiagram ]
 ]
 
 { #category : #accessing }

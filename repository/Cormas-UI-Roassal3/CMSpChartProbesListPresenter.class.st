@@ -6,7 +6,7 @@ Class {
 		'probesListLabel',
 		'selectedProbes'
 	],
-	#category : #'Cormas-UI-Spec2-Probes'
+	#category : #'Cormas-UI-Roassal3-Chart'
 }
 
 { #category : #specs }
@@ -23,6 +23,7 @@ CMSpChartProbesListPresenter class >> defaultSpec [
 
 { #category : #initialization }
 CMSpChartProbesListPresenter >> colorOfProbe: aSymbol [
+	" Answer a <Morph> representing a color for aSymbol to display in the receiver's list of probes "
 
 	^ (self cormasModelClass colorOfProbe: aSymbol) 
 			ifNil: [ self iconNamed: #smallQuestion ]
