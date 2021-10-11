@@ -281,7 +281,7 @@ CMProjectManager >> doPostCloseActions [
 			| icePackage |
 			icePackage := IcePackage named: self cormasModelClass package name repository: cormasRepo.
 			self announcer unsubscribe: self currentProject.
-			self fsm handleEvent: #actionClose.
+			[ self fsm handleEvent: #actionClose ] on: SsEventNotSupposed do: [: ex | self inform: 'CORMAS project was not cleanly closed' ].
 			self deleteProject.	
 			self cleanEnvironment.
 			(RPackageOrganizer default includesPackageNamed: icePackage package)
