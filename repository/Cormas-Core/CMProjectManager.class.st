@@ -265,7 +265,9 @@ CMProjectManager >> currentProjectVersion [
 CMProjectManager >> deleteProject [
 	" Private - Delete the current project from this system and unset its references "
 
-	self currentProject ifNotNil: [ (RGContainer packageOfClass: self cormasModelClass) realPackage removeFromSystem ].
+	self currentProject ifNotNil: [ 
+		(RGContainer packageOfClass: self cormasModelClass) 
+			ifNotNil: [ : rgObject | rgObject realPackage removeFromSystem ] ].
 	self currentProject release.
 	self currentProject: nil.
 ]
@@ -408,9 +410,11 @@ CMProjectManager >> reloadProject: icePackage repository: anIceRepository [
 		message: ('Loading package {1}' format: { icePackage name });
 		onSuccessRepositoryModified;
 		execute: [ 
-			Iceberg announcer
-				suspendAllForRepository: anIceRepository
-				while: [ icePackage load ] ].
+			icePackage name = #_UnpackagedPackage
+				ifFalse: [ 
+					Iceberg announcer
+						suspendAllForRepository: anIceRepository
+						while: [ icePackage load ] ] ].
 	Iceberg announcer announce: (IceRepositoryModified for: anIceRepository)
 
 ]

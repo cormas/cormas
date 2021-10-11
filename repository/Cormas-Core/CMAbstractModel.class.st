@@ -959,8 +959,8 @@ CMAbstractModel class >> socialClasses: aCollection [
 
 { #category : #'managing classes' }
 CMAbstractModel class >> spatialClasses [
-	" Answer a <Collection> of spatial classes of the model. Aldready configured in #initializeWithoutVS (??)"
-	"self allClassesInPackage select: [ :aClass | aClass inheritsFrom: CMSpatialEntityCell ]"
+	" Answer a <Collection> of spatial classes of the model. "
+	" self allClassesInPackage select: [ :aClass | aClass inheritsFrom: CMSpatialEntityCell ] "
 	
 	^ spatialClasses
 		ifNil: [ 

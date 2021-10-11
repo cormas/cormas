@@ -140,7 +140,7 @@ BaselineOfCormas >> specForBaselines: spec [
 				
 		baseline: 'SpecUIAddOns'
 		with: [ spec repository: 'github://hernanmd/SpecUIAddOns/repository' ];
-
+		
 		baseline: 'CodeGenerator'
 		with: [ spec repository: 'github://hernanmd/CodeGenerator/repository' ];
 

@@ -84,9 +84,14 @@ CMSpecEntitiesBrowser >> entityAbstractAction: selectedEntity [
 
 { #category : #accessing }
 CMSpecEntitiesBrowser >> entityClassesFor: entityTypeString [
-	" Answer a <Collection> of classes of entityTypeString type "
+	" Answer a <Collection> of classes of entityTypeString type. If we have no entities we initialize the lists because code could be filed in without using the CORMAS UI (proper initialization) "
 
-	^ self cormasModelClass perform: (entityTypeString asLowercase , 'Classes') asSymbol
+	| entitiesAccessor |
+	
+	entitiesAccessor := (entityTypeString asLowercase , 'Classes') asSymbol.
+	(self cormasModelClass perform: entitiesAccessor)
+		ifEmpty: [ self cormasModelClass initialize  ].
+	^ self cormasModelClass perform: entitiesAccessor
 ]
 
 { #category : #callbacks }
@@ -511,7 +516,7 @@ CMSpecEntitiesBrowser >> passiveListSelectionRealClass [
 		ifAbsent: [ 
 			self passiveList clickOnSelectedItem.
 			self class environment 
-				at: selection asSymbol
+				at: selection trimBoth asSymbol
 				ifAbsent: [ self class environment at: cmFormattedSelection ] ]
 
 ]
@@ -590,7 +595,7 @@ CMSpecEntitiesBrowser >> socialListSelectionRealClass [
 		ifAbsent: [ 
 			self socialList clickOnSelectedItem.
 			self class environment 
-				at: selection asSymbol
+				at: selection trimBoth asSymbol
 				ifAbsent: [ self class environment at: cmFormattedSelection ] ]
 			
 		
@@ -632,7 +637,7 @@ CMSpecEntitiesBrowser >> spatialListSelectionRealClass [
 		ifAbsent: [ 
 			self spatialList clickOnSelectedItem.
 			self class environment 
-				at: selection asSymbol
+				at: selection trimBoth asSymbol
 				ifAbsent: [ self class environment at: cmFormattedSelection ] ]
 		
 ]
