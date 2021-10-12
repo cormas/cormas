@@ -1759,6 +1759,48 @@ CMAbstractModel >> createN: aNumber randomlyLocatedEntities: aClass initMethod: 
 	^newEntities
 ]
 
+{ #category : #'instance creation - agents & objects' }
+CMAbstractModel >> createN: aNumber randomlyLocatedEntitiesFrom: aCollectionOfClasses [
+	"Return a collection of aNumber of entities of aClass for wich the 'init' method 'has been send.
+	The new entities are randomly located on the grid.
+	ex: self createN: 10 randomlyLocatedEntities: Predator"
+	
+	^ self 
+		createN: aNumber 
+		randomlyLocatedEntitiesFrom: aCollectionOfClasses 
+		initMethod: #init
+]
+
+{ #category : #'instance creation - agents & objects' }
+CMAbstractModel >> createN: aNumber randomlyLocatedEntitiesFrom: aCollectionOfClasses initMethod: aSymbol [
+	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' has been send.
+	The new entities are randomly located on the grid.
+	ex: self createN: 10 randomlyLocatedEntities: Predator initMethod: #initAge "
+
+	^ self
+		createN: aNumber 
+		randomlyLocatedEntitiesFrom: aCollectionOfClasses 
+		initMethod: aSymbol 
+		arguments: #()
+]
+
+{ #category : #'instance creation - agents & objects' }
+CMAbstractModel >> createN: aNumber randomlyLocatedEntitiesFrom: aCollectionOfClasses initMethod: aSymbol arguments: aCollec [
+	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' with a set of arguments 'aCollec' has been send. 
+	The new entities are randomly located on the grid.
+	ex: self createN: 10 randomlyLocatedEntities: Predator initMethod: #initAge:energy: arguments: #(0 50) "
+
+	| anAgent newEntities |
+	newEntities := OrderedCollection new.
+	aNumber
+		timesRepeat: [ 
+			anAgent := self newEntity: aCollectionOfClasses atRandom.
+			anAgent moveTo: self pickCell.
+			anAgent perform: aSymbol withArguments: aCollec.
+			newEntities add: anAgent ].
+	^ newEntities
+]
+
 { #category : #'instance creation - nodes & arcs' }
 CMAbstractModel >> createNetworkOfArcs: anArcClass onCells: listOfCells [
 	"create a Network of arcs (instances of anArcClass) located on the listOfCells"
@@ -2200,22 +2242,32 @@ CMAbstractModel >> initEntities [
 
 	"Remove all the PassiveObjects and Located Objects"
 
-	self class passiveClasses
-		do: [ :aClass | 
-			((aClass inheritsFrom: CMMsg) or: [ aClass isAbstract ])
-				ifFalse: [ (aClass inheritsFrom: CMObjectLocation)
-						ifTrue: [ (self theEntities: aClass) isNil
-								ifFalse: [ (self theEntities: aClass) do: [ :LO | LO leave ] ] ].
-					self resetEntities: aClass ] ].	"Remove all the Agents from previous simulation"
-	self class socialClasses
-		do: [ :aClass | 
-			aClass isAbstract
-				ifFalse: [ (aClass inheritsFrom: CMAgentLocation)
-						ifTrue: [ (self theEntities: aClass) isNil
-								ifFalse: [ (self theEntities: aClass) do: [ :LO | LO leave ] ] ].
-					self resetEntities: aClass ] ].
+	self class passiveClasses do: [ :aClass | self initEntitiesForPassiveClass: aClass ].	"Remove all the Agents from previous simulation"
+	self class socialClasses do: [ :aClass | self initEntitiesForSocialClass: aClass ].
 	self spaceModel isNil
 		ifFalse: [ self spaceModel resetSpatialEntities "ButCells" ]
+]
+
+{ #category : #accessing }
+CMAbstractModel >> initEntitiesForPassiveClass: aClass [
+
+	((aClass inheritsFrom: CMMsg) or: [ aClass isAbstract ]) 
+		ifTrue: [ ^ self ].
+	(aClass inheritsFrom: CMObjectLocation) 
+		ifTrue: [ 
+			(self theEntities: aClass) ifNotNil: [ 
+				(self theEntities: aClass) do: [ :lO | lO leave ] ] ].
+	self resetEntities: aClass
+]
+
+{ #category : #accessing }
+CMAbstractModel >> initEntitiesForSocialClass: aClass [ 
+
+	(aClass isAbstract not and: [ aClass inheritsFrom: CMAgentLocation ])
+		ifTrue: [ 
+			(self theEntities: aClass) isNil
+				ifFalse: [ (self theEntities: aClass) do: #leave ] ].
+	self resetEntities: aClass
 ]
 
 { #category : #scheduling }
@@ -3263,11 +3315,10 @@ CMAbstractModel >> theEntities: aClass [
 	aClass isAbstract
 		ifTrue: [ ^ OrderedCollection new ].
 	getter := aClass asGetterForEntityClass.
-	collection := self perform: getter.
-	collection
+	collection := (self perform: getter)
 		ifNil: [
 			self class createReaderAccessor: aClass.
-			collection := self perform: getter ].
+			self perform: getter ].
 	^ collection
 ]
 

@@ -8,6 +8,12 @@ Class {
 	#category : #'Cormas-Model-BushmeatHunt-Core'
 }
 
+{ #category : #converting }
+CMBushmeatCell class >> asGetterForEntityClass [
+
+	^ #cells
+]
+
 { #category : #accessing }
 CMBushmeatCell >> area [
 	^ area
