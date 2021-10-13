@@ -1826,6 +1826,12 @@ CMSpaceModel >> nbNeighbours [
 	^ self nbConfiguration nbNeighbours
 ]
 
+{ #category : #accessing }
+CMSpaceModel >> nearestEmptyCellFor: aCMAgentLocation [
+
+	^ self nbConfiguration nearestEmptyCellFor: aCMAgentLocation.
+]
+
 { #category : #'landscape indices' }
 CMSpaceModel >> nearestNeighbourProbaAttribute: anAttribute state1: x1 state2: x2 [
 	"return the data (a number) to be recorded"

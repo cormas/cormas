@@ -23,6 +23,30 @@ Class {
 }
 
 { #category : #examples }
+CMProjectBuilder class >> buildProjectModel: aModelName [
+	<script>
+	
+	Cursor wait showWhile: [ 
+		self new 
+			destinationPath: CMResourceLocator demosPath;
+			buildProject: aModelName;
+			moveProject: aModelName;
+			unLoadModelPackage ]
+]
+
+{ #category : #examples }
+CMProjectBuilder class >> buildProjectModel: aModelName modelClass: aModelClass [
+	<script>
+	
+	Cursor wait showWhile: [ 
+		self new 
+			destinationPath: CMResourceLocator demosPath;
+			buildProject: aModelName modelClass: aModelClass;
+			moveProject: aModelName;
+			unLoadModelPackage ]
+]
+
+{ #category : #examples }
 CMProjectBuilder class >> buildProjectModels [ 
 	<script>
 	
@@ -98,6 +122,30 @@ CMProjectBuilder >> buildForModelInstance: modelInstance [
 		writeMetadata;
 		writeSourceCode: modelInstance class
 
+]
+
+{ #category : #'accessing - building' }
+CMProjectBuilder >> buildProject: aModelName [
+	" Main entry point for generating project files. Generate all project files from the models in this image "
+	" Hopefully this method should be run only once, and to reformat project directory structure for example "
+
+	'Model2Project: Building project...' traceCr.
+	self loadModelPackage: aModelName.
+	self buildForModelInstance: aModelName new.
+	self buildProjectFile.
+	'Model2Project: Done building project...' traceCr.
+]
+
+{ #category : #'accessing - building' }
+CMProjectBuilder >> buildProject: aModelName modelClass: aModelClass [
+	" Main entry point for generating project files. Generate all project files from the models in this image "
+	" Hopefully this method should be run only once, and to reformat project directory structure for example "
+
+	'Model2Project: Building project...' traceCr.
+	self loadModelPackage: aModelName.
+	self buildForModelInstance: aModelClass new.
+	self buildProjectFile.
+	'Model2Project: Done building project...' traceCr.
 ]
 
 { #category : #'accessing - building' }
