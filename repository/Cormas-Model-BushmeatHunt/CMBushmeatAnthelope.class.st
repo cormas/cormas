@@ -70,6 +70,12 @@ CMBushmeatAnthelope >> partner: anAString [
 ]
 
 { #category : #pov }
+CMBushmeatAnthelope >> povPartner [ 
+
+	^ Color red
+]
+
+{ #category : #pov }
 CMBushmeatAnthelope >> povStage [ 
 
 	^ Color red

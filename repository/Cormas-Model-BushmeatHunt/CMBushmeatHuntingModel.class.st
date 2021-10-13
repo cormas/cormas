@@ -11,6 +11,12 @@ Class {
 }
 
 { #category : #accessing }
+CMBushmeatHuntingModel class >> maximumAllowedTrapsPerCell [
+
+	^ 20
+]
+
+{ #category : #accessing }
 CMBushmeatHuntingModel >> anthelopes [
 	^ anthelopes
 		ifNil: [ anthelopes := OrderedCollection new ]
@@ -59,12 +65,15 @@ CMBushmeatHuntingModel >> initScenarioWith1000Anthelopes [
 { #category : #init }
 CMBushmeatHuntingModel >> initScenarioWith100Anthelopes [
 
+	self halt.
 	self initSpace.
 	self anthelopes: (self 
 		createN: 100
 		randomlyLocatedEntitiesFrom: { CMBushmeatFemaleAnthelope . CMBushmeatMaleAnthelope });
-		displayPov: #povStage of: CMBushmeatAnthelope;
-		displayPov: #povPartner of: CMBushmeatMaleAnthelope
+		displayPov: #pov of: CMBushmeatMaleAnthelope;
+		displayPov: #pov of: CMBushmeatFemaleAnthelope;
+		displayPov: #povTrap of: CMBushmeatCell
+		"displayPov: #povPartner of: CMBushmeatMaleAnthelope"
 ]
 
 { #category : #'initialize-release' }

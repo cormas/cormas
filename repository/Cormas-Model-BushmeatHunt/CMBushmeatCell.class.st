@@ -3,7 +3,8 @@ Class {
 	#superclass : #CMSpatialEntityCell,
 	#instVars : [
 		'area',
-		'attribute'
+		'trap',
+		'traps'
 	],
 	#category : #'Cormas-Model-BushmeatHunt-Core'
 }
@@ -24,12 +25,56 @@ CMBushmeatCell >> area: anAString [
 	area := anAString
 ]
 
-{ #category : #accessing }
-CMBushmeatCell >> attribute [
-	^ attribute
+{ #category : #testing }
+CMBushmeatCell >> hasTrap [ 
+
+	^ trap
+]
+
+{ #category : #pov }
+CMBushmeatCell >> pov [
+
+	^ Color green
+]
+
+{ #category : #pov }
+CMBushmeatCell >> povTrap [
+
+	^ self hasTrap 
+		ifFalse: [ Color green ] 
+		ifTrue: [ Color black ]
+]
+
+{ #category : #pov }
+CMBushmeatCell >> povTraps [
+
+	^ self
+		  povAttribute: #traps
+		  min: 0
+		  max: CMBushmeatHuntingModel maximumAllowedTrapsPerCell
+		  color: Color black
 ]
 
 { #category : #accessing }
-CMBushmeatCell >> attribute: anAString [
-	attribute := anAString
+CMBushmeatCell >> trap [
+
+	^ trap
+		ifNil: [ trap := { true . false } atRandom ]
+]
+
+{ #category : #accessing }
+CMBushmeatCell >> trap: anObject [
+
+	trap := anObject
+]
+
+{ #category : #accessing }
+CMBushmeatCell >> traps [
+	^ traps
+		ifNil: [ traps := OrderedCollection new ]
+]
+
+{ #category : #accessing }
+CMBushmeatCell >> traps: anAString [
+	traps := anAString
 ]

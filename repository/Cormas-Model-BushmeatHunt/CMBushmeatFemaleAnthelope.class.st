@@ -29,9 +29,3 @@ CMBushmeatFemaleAnthelope >> pov [
 
 	^ Color pink
 ]
-
-{ #category : #pov }
-CMBushmeatFemaleAnthelope >> povPartner [ 
-
-	^ Color red
-]
