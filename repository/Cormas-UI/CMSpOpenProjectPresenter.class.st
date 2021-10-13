@@ -104,7 +104,7 @@ CMSpOpenProjectPresenter >> cormasLocations [
 	^ OrderedDictionary newFromPairs: { 
 		'Demos'	 		. [ self projectsDemos ] .
 		'In-image' 		. [ self projectsInImage ].
-		'Browse...'  	. [ self projectsBrowse ]
+		'User models'	. [ self projectsBrowse ]
 		}
 ]
 
@@ -272,7 +272,7 @@ CMSpOpenProjectPresenter >> previewPresenter [
 { #category : #callbacks }
 CMSpOpenProjectPresenter >> projectsBrowse [
 	
-	^ CMResourceLocator cormasHomeProjects
+	^ CMResourceLocator cormasUserProjects
 ]
 
 { #category : #callbacks }
