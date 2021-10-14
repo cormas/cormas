@@ -5,7 +5,6 @@ Class {
 		'anthelopes',
 		'cells',
 		'huntingFamilies',
-		'maximumNumberOffspring',
 		'catchesNumber'
 	],
 	#category : #'Cormas-Model-BushmeatHunt-Core'
@@ -133,7 +132,8 @@ CMBushmeatHuntingModel >> initScenarioWith15Anthelopes [
 						 CMBushmeatFemaleAnthelope.
 						 CMBushmeatMaleAnthelope });
 		displayPov: #pov of: CMBushmeatMaleAnthelope;
-		displayPov: #pov of: CMBushmeatFemaleAnthelope
+		displayPov: #pov of: CMBushmeatFemaleAnthelope;
+		displayPov: #pov of: CMBushmeatCell
 ]
 
 { #category : #'initialize-release' }
@@ -149,14 +149,7 @@ CMBushmeatHuntingModel >> initSpace [
 { #category : #accessing }
 CMBushmeatHuntingModel >> maximumNumberOffspring [
 
-	maximumNumberOffspring ifNil: [ ^ maximumNumberOffspring := 10 ].
-	^ maximumNumberOffspring
-]
-
-{ #category : #accessing }
-CMBushmeatHuntingModel >> maximumNumberOffspring: arg1 [
-
-	maximumNumberOffspring := arg1
+	^ self class maximumNumberOffspring
 ]
 
 { #category : #init }

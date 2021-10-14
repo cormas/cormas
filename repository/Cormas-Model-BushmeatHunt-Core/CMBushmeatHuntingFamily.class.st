@@ -51,18 +51,6 @@ CMBushmeatHuntingFamily >> initialize [
 
 ]
 
-{ #category : #accessing }
-CMBushmeatHuntingFamily >> maximumAllowedAnthelopePerFamily [
-
-	^ maximumAllowedAnthelopePerFamily
-]
-
-{ #category : #accessing }
-CMBushmeatHuntingFamily >> maximumAllowedAnthelopePerFamily: arg1 [
-
-	maximumAllowedAnthelopePerFamily := arg1
-]
-
 { #category : #initialization }
 CMBushmeatHuntingFamily >> maximumAllowedTrapsPerCell [
 

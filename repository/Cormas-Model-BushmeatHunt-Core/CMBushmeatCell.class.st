@@ -53,12 +53,13 @@ CMBushmeatCell >> hasTrap [
 { #category : #pov }
 CMBushmeatCell >> pov [
 
-	^ Color green
+	^ Color fromHexString: '247008'
 ]
 
 { #category : #pov }
 CMBushmeatCell >> povTrap [
 
+	self halt.
 	^ self hasTrap
 		  ifTrue: [ Color black ]
 		  ifFalse: [ Color green ]
@@ -67,6 +68,7 @@ CMBushmeatCell >> povTrap [
 { #category : #pov }
 CMBushmeatCell >> povTraps [
 
+	self halt.
 	^ self
 		  povAttribute: #traps
 		  min: 0

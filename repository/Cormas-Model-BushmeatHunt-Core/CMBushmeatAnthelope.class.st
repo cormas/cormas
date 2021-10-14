@@ -33,13 +33,45 @@ CMBushmeatAnthelope >> age: arg1 [
 	age := arg1
 ]
 
+{ #category : #testing }
+CMBushmeatAnthelope >> customShapeSelector [
+
+	^ self hasPartner 
+		ifTrue:[ self halt. #bitmap ]
+		ifFalse: [ #ellipse ]
+]
+
+{ #category : #'population dynamics' }
+CMBushmeatAnthelope >> findPartner [
+	
+	self subclassResponsibility
+]
+
+{ #category : #testing }
+CMBushmeatAnthelope >> hasCustomShape [
+
+	^ self hasPartner
+]
+
+{ #category : #testing }
+CMBushmeatAnthelope >> hasNoPartner [
+
+	^ partner isNil
+]
+
+{ #category : #testing }
+CMBushmeatAnthelope >> hasPartner [
+
+	^ partner notNil
+]
+
 { #category : #'initialize-release' }
 CMBushmeatAnthelope >> init [
 
 	self
 		dead: false;
 		age: (0 to: 200) atRandom;
-		stage: self updateStage
+		stage: (CMBushmeatStage updateStageFrom: self)
 ]
 
 { #category : #'initialize-release' }
@@ -57,6 +89,12 @@ CMBushmeatAnthelope >> isAdult [
 	^ self stage isAdult
 ]
 
+{ #category : #testing }
+CMBushmeatAnthelope >> isAlive [ 
+
+	^ self isDead not
+]
+
 { #category : #accessing }
 CMBushmeatAnthelope >> maxAgeLimit [
 
@@ -67,6 +105,25 @@ CMBushmeatAnthelope >> maxAgeLimit [
 CMBushmeatAnthelope >> minAgeLimit [
 
 	^ self class minAgeLimit
+]
+
+{ #category : #'population dynamics' }
+CMBushmeatAnthelope >> move [
+
+	self findPartner
+		ifNil: [ self moveToEmptyPlace ] 
+		ifNotNil: [ : foundPartner | 
+			partner := foundPartner.
+			self moveTo: foundPartner patch.
+			partner partner: self ]
+]
+
+{ #category : #'population dynamics' }
+CMBushmeatAnthelope >> moveToEmptyPlace [
+
+	self nearestEmptyLocation
+		ifNotNil: [ : newLocation | self moveTo: newLocation ]
+		ifNil: [ ('No empty location for: ' , self id asString) traceCr ]
 ]
 
 { #category : #accessing }
@@ -82,15 +139,39 @@ CMBushmeatAnthelope >> partner: arg1 [
 ]
 
 { #category : #pov }
-CMBushmeatAnthelope >> povPartner [
-
-	^ Color red
-]
-
-{ #category : #pov }
 CMBushmeatAnthelope >> povStage [
 
-	^ Color red
+	^ self isDead 
+		ifTrue: [ Color black ] 
+		ifFalse: [ self hasPartner 
+			ifTrue: [ Color red ]
+			ifFalse: [ self pov ] ]
+]
+
+{ #category : #printing }
+CMBushmeatAnthelope >> printOn: aStream [
+
+	aStream
+		<< 'Id: ';
+		<< self id asString;
+		space;
+		<< 'Stage: ';
+		<< self stage asString;
+		space;
+		<< 'Sex: ';
+		<< self sexString
+]
+
+{ #category : #printing }
+CMBushmeatAnthelope >> sexString [
+
+	self subclassResponsibility 
+]
+
+{ #category : #accessing }
+CMBushmeatAnthelope >> sizeOfPOV [
+
+	^ self stage sizeOfPOV
 ]
 
 { #category : #accessing }
@@ -100,9 +181,9 @@ CMBushmeatAnthelope >> stage [
 ]
 
 { #category : #accessing }
-CMBushmeatAnthelope >> stage: arg1 [
+CMBushmeatAnthelope >> stage: aBushmeatStage [
 
-	stage := arg1
+	stage := aBushmeatStage
 ]
 
 { #category : #control }
@@ -110,24 +191,19 @@ CMBushmeatAnthelope >> step [
 
 	self
 		age: self age + 1;
-		updateMortality;
+		updateStage;
 		updateBehavior
 ]
 
-{ #category : #'initialize-release' }
+{ #category : #'population dynamics' }
 CMBushmeatAnthelope >> updateBehavior [
 
-	
+	(self isAdult and: [ self hasPartner not ])
+		ifTrue: [ self move ].
 ]
 
-{ #category : #'initialize-release' }
-CMBushmeatAnthelope >> updateMortality [
-
-	self stage isProbablyDying
-]
-
-{ #category : #'initialize-release' }
+{ #category : #'population dynamics' }
 CMBushmeatAnthelope >> updateStage [
 
-	^ self stage: (CMBushmeatStage updateStageFrom: self)
+	self stage: (CMBushmeatStage updateStageFrom: self)
 ]

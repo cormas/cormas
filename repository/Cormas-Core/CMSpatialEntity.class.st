@@ -325,12 +325,13 @@ Return value: <Collection(SpatialElementEntity)>"
 
 { #category : #'star testing' }
 CMSpatialEntity >> hasOccupantType: locatedEntityName [
-"Purpose: test if there is an occupant of a given type.
+
+	"Purpose: test if there is an occupant of a given type.
 Argument: locatedEntityName = <Symbol | AgentLocation | ObjectLocation>
 Return value: <Boolean>
 Example: self hasOccupantType: #Tree"
-	
-	^(self occupantsAt: locatedEntityName) isEmpty not
+
+	^ (self occupantsAt: locatedEntityName) isNotEmpty
 ]
 
 { #category : #accessing }
@@ -773,10 +774,10 @@ Note that the instances of subclasses ARE CONSIDERED by this method, contrarily 
 Return value: <Collection(AgentLocation & ObjectLocation)>"
 	
 	| aClass |
-	aClass := locatedEntityName isSymbol
-		ifTrue: [locatedEntityName class]
-		ifFalse: [locatedEntityName].
-	^self occupantsType: aClass
+	aClass := locatedEntityName isLiteral
+		ifTrue: [ Smalltalk at: locatedEntityName asSymbol ifAbsent: [ nil ] ]
+		ifFalse: [ locatedEntityName ].
+	^ self occupantsType: aClass
 ]
 
 { #category : #'environment - sensing - agents' }

@@ -1509,6 +1509,12 @@ CMEntity >> getPovSpecForSelector: selectorName andInfo: aInfoName [
 ]
 
 { #category : #accessing }
+CMEntity >> hasCustomShape [
+
+	^ false
+]
+
+{ #category : #accessing }
 CMEntity >> id [
 	"Purpose: integer value, assigned at creation, used to identify the instance"
 	

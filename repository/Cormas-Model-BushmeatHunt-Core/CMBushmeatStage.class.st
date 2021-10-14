@@ -107,3 +107,9 @@ CMBushmeatStage >> printOn: aStream [
 		<< self friendlyName;
 		<< ']'
 ]
+
+{ #category : #testing }
+CMBushmeatStage >> sizeOfPOV [
+
+	^ self dyingProbability * 500
+]

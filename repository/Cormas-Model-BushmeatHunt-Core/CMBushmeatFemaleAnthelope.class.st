@@ -13,10 +13,24 @@ CMBushmeatFemaleAnthelope class >> minAgeLimit [
 	^ 72
 ]
 
+{ #category : #'population dynamics' }
+CMBushmeatFemaleAnthelope >> findPartner [
+	" do nothing "
+	
+	^ nil
+]
+
 { #category : #accessing }
 CMBushmeatFemaleAnthelope >> gestationLength [
 
-	^ 30
+	^ gestationLength
+		ifNil: [ gestationLength := 0 ]
+]
+
+{ #category : #accessing }
+CMBushmeatFemaleAnthelope >> gestationLength: anObject [
+
+	gestationLength := anObject
 ]
 
 { #category : #'initialize - release' }
@@ -26,10 +40,10 @@ CMBushmeatFemaleAnthelope >> init0 [
 	gestationLength := 0.
 ]
 
-{ #category : #testing }
-CMBushmeatFemaleAnthelope >> isMature [
+{ #category : #accessing }
+CMBushmeatFemaleAnthelope >> isPatchingWithAdultMale [
 
-	^ self age > 72
+	^ ((patch occupantsType: CMBushmeatMaleAnthelope) anySatisfy: [:a | a age < 21]) not
 ]
 
 { #category : #pov }
@@ -44,14 +58,32 @@ CMBushmeatFemaleAnthelope >> pregnancyTime [
 	^ 30
 ]
 
-{ #category : #accessing }
+{ #category : #printing }
+CMBushmeatFemaleAnthelope >> printOn: aStream [
+
+	super printOn: aStream.
+	aStream 
+		space;
+		<< ' - ';
+		<< 'Gest(';
+		<< self gestationLength asString;
+		<< ')'.
+]
+
+{ #category : #printing }
+CMBushmeatFemaleAnthelope >> sexString [
+
+	^ 'Female'
+]
+
+{ #category : #'population dynamics' }
 CMBushmeatFemaleAnthelope >> updateBehavior [ 
 
 	super updateBehavior.
 	self updateGestationBehavior.
 ]
 
-{ #category : #accessing }
+{ #category : #'population dynamics' }
 CMBushmeatFemaleAnthelope >> updateGestationBehavior [
 
 	| petit |
@@ -64,6 +96,6 @@ CMBushmeatFemaleAnthelope >> updateGestationBehavior [
 			petit := self class new init0.
 			petit patch: patch ]
 		ifFalse: [
-			(partner notNil and: [ gestationLength = 0 and: [((patch theOccupants at: self class name) anySatisfy: [:a | a age < 21]) not]])
+			(self hasPartner and: [ gestationLength = 0 and: [ self isPatchingWithAdultMale ]])
 				ifTrue: [ gestationLength := 1 ] ].
 ]
