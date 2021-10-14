@@ -316,25 +316,19 @@ CMR3SpaceDiagram >> makeDraggableEntity: e [
 { #category : #initialization }
 CMR3SpaceDiagram >> moveExistingEntity: e [
 
-	| entityModel eModelPatch labeled labelInt |
+	| entityModel eModelPatch |
 			
 	entityModel := e model.
 	eModelPatch := entityModel patch.
 	self makeDraggableEntity: e.
-	labelInt := RSLabeled new.
-	labelInt shapeBuilder: [ :model |
-		 RSLabel new 
-			color: Color white; 
-			text: model age asString;
-			yourself ].
 "	labeled := RSLabeled new
 		highlightable;
 		fontSize: 12;
 		text: [ : aCMEntity | aCMEntity age asString ];
 		yourself."
 	e
-		@ (RSPopup text: [ : aCMEntity | aCMEntity age asString ]);
-		@ (RSLabeled text: [ : aCMEntity | aCMEntity age asString ]);
+		@ (RSPopup text: entityModel age asString);
+		@ (RSLabeled text: entityModel age asString);
 		size: entityModel sizeOfPOV;
 		color: entityModel povStage;
 		translateTo: (eModelPatch numCol @ eModelPatch numLine * cellSize) - (cellSize / 2)

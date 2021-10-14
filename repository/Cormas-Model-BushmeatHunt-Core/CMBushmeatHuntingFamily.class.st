@@ -15,12 +15,11 @@ Class {
 CMBushmeatHuntingFamily class >> asGetterForEntityClass [
 
 	^ #huntingFamilies
-
 ]
 
 { #category : #testing }
 CMBushmeatHuntingFamily >> currentTrapNumber [
-	
+
 	^ self traps size
 ]
 
@@ -47,22 +46,19 @@ CMBushmeatHuntingFamily >> hasTrap [
 CMBushmeatHuntingFamily >> initialize [
 
 	super initialize.
-	self setupTraps.
-
+	self setupTraps
 ]
 
 { #category : #initialization }
 CMBushmeatHuntingFamily >> maximumAllowedTrapsPerCell [
 
-	^ CMBushmeatHuntingModel maximumAllowedTrapsPerCell 
-
+	^ CMBushmeatHuntingModel maximumAllowedTrapsPerCell
 ]
 
 { #category : #initialization }
 CMBushmeatHuntingFamily >> maximumNumberAllowedGlobalTraps [
 
-	^ CMBushmeatHuntingModel maximumNumberAllowedGlobalTraps 
-
+	^ CMBushmeatHuntingModel maximumNumberAllowedGlobalTraps
 ]
 
 { #category : #accessing }
@@ -74,18 +70,16 @@ CMBushmeatHuntingFamily >> maximumNumberAllowedGlobalTraps: arg1 [
 { #category : #initialization }
 CMBushmeatHuntingFamily >> setupNewTrap [
 
-	traps add: (CMTrap 
-		forFamily: self
-		location: self chooseTrapLocation)
+	traps add: (CMTrap forFamily: self location: self chooseTrapLocation)
 ]
 
 { #category : #initialization }
 CMBushmeatHuntingFamily >> setupTraps [
 
-	[ self currentTrapNumber <= self maximumAllowedTrapsPerCell and: [ 
-		self currentTrapNumber <= self maximumNumberAllowedGlobalTraps ] ]
-			whileTrue: [ self setupNewTrap ]
-		
+	[ 
+	self currentTrapNumber <= self maximumAllowedTrapsPerCell and: [ 
+		self currentTrapNumber <= self maximumNumberAllowedGlobalTraps ] ] 
+		whileTrue: [ self setupNewTrap ]
 ]
 
 { #category : #initialization }

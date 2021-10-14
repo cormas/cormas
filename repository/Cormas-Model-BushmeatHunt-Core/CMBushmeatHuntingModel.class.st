@@ -161,5 +161,5 @@ CMBushmeatHuntingModel >> noAgent [
 { #category : #control }
 CMBushmeatHuntingModel >> step [
 
-	self stepEntities: CMBushmeatAnthelope.
+	self stepEntities: CMBushmeatAnthelope
 ]

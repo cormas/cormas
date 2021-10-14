@@ -39,3 +39,9 @@ CMBushmeatAdultStage >> isAdult [
 
 	^ true
 ]
+
+{ #category : #accessing }
+CMBushmeatAdultStage >> sizeOfPOV [
+
+	^ 25
+]

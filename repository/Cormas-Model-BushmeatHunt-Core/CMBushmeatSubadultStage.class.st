@@ -27,3 +27,9 @@ CMBushmeatSubadultStage >> friendlyName [
 
 	^ 'Newborn'
 ]
+
+{ #category : #accessing }
+CMBushmeatSubadultStage >> sizeOfPOV [
+
+	^ 15
+]

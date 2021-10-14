@@ -27,3 +27,9 @@ CMBushmeatJuvenileStage >> friendlyName [
 
 	^ 'Adult'
 ]
+
+{ #category : #accessing }
+CMBushmeatJuvenileStage >> sizeOfPOV [
+
+	^ 9
+]

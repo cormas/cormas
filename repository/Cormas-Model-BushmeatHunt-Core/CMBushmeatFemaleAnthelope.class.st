@@ -24,26 +24,28 @@ CMBushmeatFemaleAnthelope >> findPartner [
 CMBushmeatFemaleAnthelope >> gestationLength [
 
 	^ gestationLength
-		ifNil: [ gestationLength := 0 ]
+		  ifNil: [ gestationLength := 0 ]
+		  ifNotNil: [ gestationLength ]
 ]
 
 { #category : #accessing }
-CMBushmeatFemaleAnthelope >> gestationLength: anObject [
+CMBushmeatFemaleAnthelope >> gestationLength: arg1 [
 
-	gestationLength := anObject
+	gestationLength := arg1
 ]
 
 { #category : #'initialize - release' }
 CMBushmeatFemaleAnthelope >> init0 [
 
 	super init0.
-	gestationLength := 0.
+	gestationLength := 0
 ]
 
 { #category : #accessing }
 CMBushmeatFemaleAnthelope >> isPatchingWithAdultMale [
 
-	^ ((patch occupantsType: CMBushmeatMaleAnthelope) anySatisfy: [:a | a age < 21]) not
+	^ ((patch occupantsType: CMBushmeatMaleAnthelope) anySatisfy: [ :arg1 | 
+		   arg1 age < 21 ]) not
 ]
 
 { #category : #pov }
@@ -77,25 +79,24 @@ CMBushmeatFemaleAnthelope >> sexString [
 ]
 
 { #category : #'population dynamics' }
-CMBushmeatFemaleAnthelope >> updateBehavior [ 
+CMBushmeatFemaleAnthelope >> updateBehavior [
 
 	super updateBehavior.
-	self updateGestationBehavior.
+	self updateGestationBehavior
 ]
 
 { #category : #'population dynamics' }
 CMBushmeatFemaleAnthelope >> updateGestationBehavior [
 
-	| petit |
-
-	self gestationLength > 0 
-		ifTrue: [ gestationLength := gestationLength + 1 ].
-	gestationLength = self pregnancyTime 
-		ifTrue: [
+	self gestationLength > 0 ifTrue: [ 
+		gestationLength := gestationLength + 1 ].
+	gestationLength = self pregnancyTime
+		ifTrue: [ 
+			| newAnthelope |
 			gestationLength := 0.
-			petit := self class new init0.
-			petit patch: patch ]
-		ifFalse: [
-			(self hasPartner and: [ gestationLength = 0 and: [ self isPatchingWithAdultMale ]])
-				ifTrue: [ gestationLength := 1 ] ].
+			newAnthelope := self class new init0.
+			newAnthelope patch: patch ]
+		ifFalse: [ 
+			(self hasPartner and: [ gestationLength = 0 and: [ self isPatchingWithAdultMale ] ]) 
+				ifTrue: [ gestationLength := 1 ] ]
 ]

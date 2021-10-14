@@ -28,10 +28,10 @@ CMBushmeatStage class >> minAgeLimit [
 { #category : #'instance creation' }
 CMBushmeatStage class >> newFor: arg1 [
 
-	| tmp2 |
-	tmp2 := self new.
-	tmp2 initializeWith: arg1.
-	^ tmp2 yourself
+	| tmp1 |
+	tmp1 := self new.
+	tmp1 initializeWith: arg1.
+	^ tmp1 yourself
 ]
 
 { #category : #'instance creation' }
@@ -111,5 +111,5 @@ CMBushmeatStage >> printOn: aStream [
 { #category : #testing }
 CMBushmeatStage >> sizeOfPOV [
 
-	^ self dyingProbability * 500
+	^ self subclassResponsibility
 ]

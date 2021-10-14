@@ -24,12 +24,6 @@ CMBushmeatMaleAnthelope >> findPartner [
 	^ found
 ]
 
-{ #category : #testing }
-CMBushmeatMaleAnthelope >> isMature [
-
-	^ self age > 95
-]
-
 { #category : #accessing }
 CMBushmeatMaleAnthelope >> matchPartnerConditions: femaleAnthelope [
 

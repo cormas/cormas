@@ -1,9 +1,8 @@
 Class {
 	#name : #CMBushmeatCell,
-	#superclass : #CMSpatialEntityCell,
+	#superclass : #CMSpatialEntityElement,
 	#instVars : [
 		'area',
-		'trap',
 		'traps'
 	],
 	#category : #'Cormas-Model-BushmeatHunt-Core'
@@ -16,9 +15,9 @@ CMBushmeatCell class >> asGetterForEntityClass [
 ]
 
 { #category : #accessing }
-CMBushmeatCell >> addTrap: aCMTrap [
+CMBushmeatCell >> addTrap: arg1 [
 
-	self traps add: aCMTrap
+	self traps add: arg1
 ]
 
 { #category : #accessing }
@@ -77,15 +76,9 @@ CMBushmeatCell >> povTraps [
 ]
 
 { #category : #accessing }
-CMBushmeatCell >> trap [
+CMBushmeatCell >> sizeOfPOV [
 
-	^ trap ifNil: [ trap := { true. false } atRandom ] ifNotNil: [ trap ]
-]
-
-{ #category : #accessing }
-CMBushmeatCell >> trap: arg1 [
-
-	trap := arg1
+	^ 25
 ]
 
 { #category : #accessing }
