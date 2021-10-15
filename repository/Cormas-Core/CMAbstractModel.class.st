@@ -2648,12 +2648,19 @@ CMAbstractModel >> pickCell [
 ]
 
 { #category : #'accessing - entities' }
+CMAbstractModel >> pickCellAt: aPointLocation [
+	"Purpose: return a spatialEntityElement (aCell) picked randomly from the spatial grid.
+	Example: self pickCell"
+
+	^ self theESE detect: [ : cellEntity | cellEntity coordinates = aPointLocation ]
+]
+
+{ #category : #'accessing - entities' }
 CMAbstractModel >> pickCellConstrainedBy: aBlock [
 	"Purpose: return a random cell of the grid. The cell verifies the block condition.
 	Example:  self pickCellConstrainedBy: [:cell | state=#land] or self pickCellConstrainedBy: [: cell | cell energy > 1] "
 
-	^ Cormas
-		selectRandomlyFrom: (self theESE asArray select: [ :c | aBlock value: c ])
+	^ Cormas selectRandomlyFrom: (self theESE asArray select: [ :c | aBlock value: c ])
 ]
 
 { #category : #'accessing - entities' }
@@ -3203,9 +3210,12 @@ CMAbstractModel >> stepAsynchronouslyCA: t [
 
 { #category : #control }
 CMAbstractModel >> stepEntities: aCollecOrClass [
-	"Purpose: Iteration over aCollec or the entities of a class. In case aCollecOrClass is a class, the entities are ordered according to their id. In case aCollecOrClass is a collection of instances, the order of the collection is kept.
-Example: self stepEntities: Farmer
-Example: self stepEntities: (self theForagers select:[:f| f energy > 10])"
+	"Purpose: Iteration over aCollec or the entities of a class. 
+	In case aCollecOrClass is a class, the entities are ordered according to their id. 
+	In case aCollecOrClass is a collection of instances, the order of the collection is kept.
+	
+	Example: self stepEntities: Farmer
+	Example: self stepEntities: (self theForagers select:[:f| f energy > 10]) "
 	
 	self ask: aCollecOrClass toDo: #step
 ]

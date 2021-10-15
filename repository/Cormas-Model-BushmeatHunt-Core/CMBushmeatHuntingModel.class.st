@@ -43,11 +43,7 @@ CMBushmeatHuntingModel class >> maximumNumberOffspring [
 { #category : #accessing }
 CMBushmeatHuntingModel >> addHuntingFamily: famId [ 
 
-	self huntingFamilies add: 
-		(CMBushmeatHuntingFamily new 
-			id: famId; 
-			space: self spaceModel;
-			yourself)
+	self huntingFamilies add: (CMBushmeatHuntingFamily newWithId: famId forSpace: self spaceModel)
 ]
 
 { #category : #accessing }
@@ -90,14 +86,31 @@ CMBushmeatHuntingModel >> huntingFamilies: arg1 [
 	huntingFamilies := arg1
 ]
 
+{ #category : #'initialize-release' }
+CMBushmeatHuntingModel >> initAnthelopes: anthNumber [
+
+	self anthelopes: (self createN: anthNumber randomlyLocatedEntitiesFrom: CMBushmeatAnthelope subclasses)
+]
+
+{ #category : #'initialize-release' }
+CMBushmeatHuntingModel >> initFamilies [
+
+	1 
+		to: self class maximumHuntingFamilies 
+		do: [ : famId | self addHuntingFamily: famId ]
+]
+
 { #category : #init }
-CMBushmeatHuntingModel >> initScenarioHuntingSeason [
+CMBushmeatHuntingModel >> initScenarioWholeSeason [
 
 	catchesNumber := 0.
-	1 to: self class maximumHuntingFamilies do: [ : famId |
-		self addHuntingFamily: famId ].
-
-	self displayPov: #povTrap of: CMBushmeatCell
+	self
+		initSpace;
+		initAnthelopes: 15.
+	self 
+		displayPov: #pov of: CMBushmeatCell;
+		displayPov: #pov of: CMBushmeatMaleAnthelope;
+		displayPov: #pov of: CMBushmeatFemaleAnthelope
 	
 ]
 
@@ -106,9 +119,7 @@ CMBushmeatHuntingModel >> initScenarioWith1000Anthelopes [
 
 	self
 		initSpace;
-		createN: 1000 randomlyLocatedEntitiesFrom: { 
-				CMBushmeatFemaleAnthelope.
-				CMBushmeatMaleAnthelope }
+		initAnthelopes: 1000
 ]
 
 { #category : #init }
@@ -116,9 +127,7 @@ CMBushmeatHuntingModel >> initScenarioWith100Anthelopes [
 
 	self
 		initSpace;
-		anthelopes: (self createN: 100 randomlyLocatedEntitiesFrom: { 
-						 CMBushmeatFemaleAnthelope.
-						 CMBushmeatMaleAnthelope });
+		initAnthelopes: 100;
 		displayPov: #pov of: CMBushmeatMaleAnthelope;
 		displayPov: #pov of: CMBushmeatFemaleAnthelope
 ]
@@ -128,9 +137,7 @@ CMBushmeatHuntingModel >> initScenarioWith15Anthelopes [
 
 	self
 		initSpace;
-		anthelopes: (self createN: 15 randomlyLocatedEntitiesFrom: { 
-						 CMBushmeatFemaleAnthelope.
-						 CMBushmeatMaleAnthelope });
+		initAnthelopes: 15;
 		displayPov: #pov of: CMBushmeatMaleAnthelope;
 		displayPov: #pov of: CMBushmeatFemaleAnthelope;
 		displayPov: #pov of: CMBushmeatCell
@@ -144,6 +151,13 @@ CMBushmeatHuntingModel >> initSpace [
 		columns: 30
 		neighbourhood: 8
 		closed: true
+]
+
+{ #category : #'initialize-release' }
+CMBushmeatHuntingModel >> initTraps [
+	
+	self traps do: [ : trap |
+		(self pickCellAt: trap location) addTrap: trap ]
 ]
 
 { #category : #accessing }
@@ -161,5 +175,23 @@ CMBushmeatHuntingModel >> noAgent [
 { #category : #control }
 CMBushmeatHuntingModel >> step [
 
+	(self timeStep \\ 26) isZero
+		ifTrue: [ 
+			self
+			initFamilies;
+			initTraps ]
+		ifFalse: [ self stepEntities: CMBushmeatAnthelope ]
+]
+
+{ #category : #control }
+CMBushmeatHuntingModel >> stepAnthelopes [
+
 	self stepEntities: CMBushmeatAnthelope
+]
+
+{ #category : #'initialize-release' }
+CMBushmeatHuntingModel >> traps [
+	" Answer a <Collection> of <CMTrap> "
+
+	^ self huntingFamilies gather: #traps
 ]

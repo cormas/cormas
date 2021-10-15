@@ -46,22 +46,15 @@ CMBushmeatCell >> asString [
 CMBushmeatCell >> hasTrap [
 	" Answer <true> if the receiver contains at least one trap "
 
-	^ traps notNil and: [ traps notEmpty ]
+	^ self traps notEmpty
 ]
 
 { #category : #pov }
 CMBushmeatCell >> pov [
 
-	^ Color fromHexString: '247008'
-]
-
-{ #category : #pov }
-CMBushmeatCell >> povTrap [
-
-	self halt.
 	^ self hasTrap
-		  ifTrue: [ Color black ]
-		  ifFalse: [ Color green ]
+		  ifTrue: [ self traps anyOne color ]
+		  ifFalse: [ Color fromHexString: '247008' ]
 ]
 
 { #category : #pov }
@@ -84,7 +77,8 @@ CMBushmeatCell >> sizeOfPOV [
 { #category : #accessing }
 CMBushmeatCell >> traps [
 
-	^ traps ifNil: [ traps := OrderedCollection new ] ifNotNil: [ traps ]
+	^ traps 
+		ifNil: [ traps := OrderedCollection new ]
 ]
 
 { #category : #accessing }
