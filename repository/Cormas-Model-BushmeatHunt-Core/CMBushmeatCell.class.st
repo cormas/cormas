@@ -15,9 +15,10 @@ CMBushmeatCell class >> asGetterForEntityClass [
 ]
 
 { #category : #accessing }
-CMBushmeatCell >> addTrap: arg1 [
-
-	self traps add: arg1
+CMBushmeatCell >> addTrap: aCMTrap [
+	" The receiver could contain multiple traps. Add aCMTrap to the receiver's traps "
+	
+	self traps add: aCMTrap
 ]
 
 { #category : #accessing }
@@ -66,6 +67,13 @@ CMBushmeatCell >> povTraps [
 		  min: 0
 		  max: CMBushmeatHuntingModel maximumAllowedTrapsPerCell
 		  color: Color black
+]
+
+{ #category : #accessing }
+CMBushmeatCell >> removeTrap: aCMTrap [
+	" The receiver could contain multiple traps. Remove aCMTrap from the receiver's traps "
+	
+	self traps remove: aCMTrap
 ]
 
 { #category : #accessing }

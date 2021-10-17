@@ -22,7 +22,8 @@ CMPassiveObject >> delete [
 CMPassiveObject >> destroyed [
 	"Answer if the entity is destroyed or not"
 	
-	^destroyed ifNil: [destroyed := false]
+	self deprecated: 'Should use #isDestroyed or #isDead '.
+	^ destroyed ifNil: [ destroyed := false ]
 ]
 
 { #category : #'initialize-release' }
@@ -30,6 +31,13 @@ CMPassiveObject >> destroyed: aBoolean [
 	
 	destroyed := aBoolean.
 	(aBoolean and: [self isSituated]) ifTrue: [self leave]
+]
+
+{ #category : #testing }
+CMPassiveObject >> isDead [
+	" See superimplementor's comment "
+
+	^ destroyed
 ]
 
 { #category : #testing }

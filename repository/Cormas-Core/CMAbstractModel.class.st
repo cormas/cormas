@@ -1085,14 +1085,15 @@ CMAbstractModel >> allTheEntities [
 
 { #category : #'accessing - entities' }
 CMAbstractModel >> allTheEntities: aClass [
-	"Purpose: Returns a collection of all the instances of aClass (and sub classes) collected by cormasModel. Usefull for abstract classes
-Example: (self allTheEntities: Forager) is returning all the instances of restrained and unrestrained foragers"
+	" Answer a <Collection> of all the instances of aClass (and sub classes) collected by cormasModel. 
+	Usefull for abstract classes
+
+	Example: (self allTheEntities: Forager) is returning all the instances of restrained and unrestrained foragers "
 	
 	| coll |
 	coll := OrderedCollection new.
-	aClass withAllSubclasses
-		do: [:cl | cl isAbstract ifFalse: [coll addAll: (self theEntities: cl)]].
-	^coll
+	aClass withAllSubclasses do: [:cl | cl isAbstract ifFalse: [coll addAll: (self theEntities: cl)]].
+	^ coll
 ]
 
 { #category : #'accessing - entities' }
@@ -2865,18 +2866,14 @@ CMAbstractModel >> removeDeadEntities [
 
 { #category : #'referencing entities' }
 CMAbstractModel >> removeDeadEntities: aClass [
-	"removes all the dead or destroyed intances of type: aClass"
-	
-	| theEntities destroyedEntities |
-	theEntities := self theEntities: aClass.
-	theEntities isNil
-		ifFalse:
-			[destroyedEntities := theEntities select: [:a | a destroyed].
-			destroyedEntities
-				do:
-					[:a | 
-					(self class occupantClasses includes: aClass) ifTrue: [a leave].
-					theEntities remove: a]]
+	" Removes all the dead or destroyed intances of type: aClass "
+
+	(self theEntities: aClass) ifNotNil: [ : theEntities |
+		| destroyedEntities |
+		destroyedEntities := theEntities select: [ :a | a destroyed ].
+		destroyedEntities do: [ :a | 
+			(self class occupantClasses includes: aClass) ifTrue: [ a leave ].
+			theEntities remove: a ] ]
 ]
 
 { #category : #'referencing entities' }
@@ -2888,18 +2885,16 @@ CMAbstractModel >> removeDestroyedEntities [
 
 { #category : #'referencing entities' }
 CMAbstractModel >> removeDestroyedEntities: aClass [
+
 	"removes all the dead or destroyed intances of type: aClass"
-	
+
 	| theEntities destroyedEntities |
 	theEntities := self theEntities: aClass.
-	theEntities isNil
-		ifFalse:
-			[destroyedEntities := theEntities select: [:a | a destroyed].
-			destroyedEntities
-				do:
-					[:a | 
-					a isSituated ifTrue: [a leave].
-					theEntities remove: a]]
+	theEntities ifNotNil: [ 
+		destroyedEntities := theEntities select: [ :a | a isDead ].
+		destroyedEntities do: [ :a | 
+			a isSituated ifTrue: [ a leave ].
+			theEntities remove: a ] ]
 ]
 
 { #category : #'referencing entities' }
@@ -3222,9 +3217,11 @@ CMAbstractModel >> stepEntities: aCollecOrClass [
 
 { #category : #control }
 CMAbstractModel >> stepEntitiesRandom: aCollecOrClass [
-	"Purpose: Iteration over aCollec or the entities of a class. The elements of aCollec / or the instances of the class, are randomly mixed.
-Example: self stepEntities: Farmer
-Example: self stepEntities: (self theForagers select:[:f| f energy > 10])"
+	" Iterate over aCollecOrClass or the entities of a class. 
+	The elements of aCollec / or the instances of the class, are randomly mixed.
+
+	Example: self stepEntities: Farmer
+	Example: self stepEntities: (self theForagers select:[:f| f energy > 10]) "
 	
 	self askRandom: aCollecOrClass toDo: #step
 ]

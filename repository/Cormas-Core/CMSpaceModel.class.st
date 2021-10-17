@@ -613,6 +613,8 @@ CMSpaceModel >> createRectangularCellsFigure [
 	" Private - Create coordinates of the set of square cells of the grid "
 	
 	| cote rect aPov i |
+	
+	self flag: #toReview.
 	self elementaryEntitiesDefaultPovs: nil.
 	self setAbsoluteBounds.
 	cote := self absoluteBounds height / self line.	

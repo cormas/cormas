@@ -1523,6 +1523,7 @@ CMEntity >> id [
 
 { #category : #accessing }
 CMEntity >> id: aNumber [
+
 	id := aNumber
 ]
 
@@ -1534,7 +1535,8 @@ CMEntity >> init [
 
 { #category : #'initialize-release' }
 CMEntity >> initId [
-	
+	" Private - Set the receiver's internal identifier. "
+
 	self id: (self class CurrentId: self class CurrentId + 1)
 ]
 

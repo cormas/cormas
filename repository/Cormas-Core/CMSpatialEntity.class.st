@@ -245,7 +245,8 @@ CMSpatialEntity >> delimitors [
 CMSpatialEntity >> destroyed [
 	"Answer if the entity is destroyed or not"
 	
-	^destroyed ifNil: [destroyed := false]
+	self deprecated: 'Should use #isDestroyed or #isDead '.
+	^ destroyed ifNil: [destroyed := false]
 ]
 
 { #category : #'initialize-release' }
@@ -348,6 +349,8 @@ CMSpatialEntity >> includedEntities: x [
 
 { #category : #'initialize-release' }
 CMSpatialEntity >> init: aSpaceModel [
+
+	self flag: #toReview. "no senders?"
 	"self spaceModel: aSpaceModel.
 	self privateInit.
 	self spaceModel cormasModel class locatedClasses isEmpty ifFalse: [self initOcc: self spaceModel cormasModel class locatedClasses]"
@@ -364,6 +367,14 @@ CMSpatialEntity >> initOccupants [
 			theOccupants := Dictionary new.
 			self spaceModel cormasModel class occupantClasses 
 				do: [:e | theOccupants at: (e name) put: OrderedCollection new]]"
+]
+
+{ #category : #'initialize-release' }
+CMSpatialEntity >> initialize [
+	" Private - Set the receiver's internal state. Initally a spatial entity is not dead "
+
+	super initialize.
+	destroyed := false.
 ]
 
 { #category : #'star testing' }
@@ -383,6 +394,13 @@ CMSpatialEntity >> isCrossedByArc: anArc [
 	"answer if the SpatialEntity is crossed by anArc"
 	
 	self subclassResponsibility
+]
+
+{ #category : #testing }
+CMSpatialEntity >> isDead [
+	" See superimplementor's comment "
+
+	^ destroyed
 ]
 
 { #category : #testing }
@@ -663,18 +681,17 @@ Example: self nearestNeighborsWithoutAny: #Tree withinRadius: 5 "
 
 { #category : #'environment - sensing - space' }
 CMSpatialEntity >> neighborsStringWithSeparator: aChar [
+
 	"Purpose: returns a string made of 'self id' as first element and the id of all neighbors separated by aChar
 Argument: aChar = <Character>
 Return value: <ByteString>"
-	
+
 	| string |
 	string := self id printString.
-	self neighbourhood isNil
-		ifFalse:
-			[self neighbourhood
-				do:
-					[:i | string := string , aChar asSymbol asString , i id printString]].
-	^string
+	self neighbourhood ifNotNil: [ 
+		self neighbourhood do: [ :i | 
+			string := string , aChar asSymbol asString , i id printString ] ].
+	^ string
 ]
 
 { #category : #'environment - sensing - space' }
@@ -921,7 +938,7 @@ CMSpatialEntity >> reset [
 { #category : #'environment - sensing - space' }
 CMSpatialEntity >> select: aPoint [
 	
-	^self outline regionIntersects: (aPoint extent: 1)
+	^ self outline intersects: (aPoint extent: 1)
 ]
 
 { #category : #'environment - distance' }

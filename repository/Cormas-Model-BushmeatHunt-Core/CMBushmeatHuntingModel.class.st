@@ -1,3 +1,25 @@
+"
+How to manage a hunted population of small antelopes through the organization of the hunting activity between villagers ?
+
+In central Africa, bushmeat is the main source of protein and one of the most important sources of income for rural people, but intensive hunting of bushmeat species is also a major concern for conservationists, due to unselective hunting practices. In Djemiong, a forest village of eastern-Cameroon, the main species hunted is a small antelope, the blue duiker (Cephalophus monticola, Thunberg). 
+The behaviour and the mortality rate of a blue duiker depends on its stage (newborn; juvenile; subadult and adult) and on its sex. Above the age of sexual maturity (72 weeks for female, 95 weeks for male), individuals become adult and search for a mating partner to establish in a 3ha territory in the forest. From that time, the couple will remain in their territory until one dies.The gestation lasts 30 weeks, and a weaning period (i.e. the time that a female can not conceive after each birth and still very close to the calf) of 21 weeks. Newborns (calves) till age of weaning (21 weeks) are moving together with their mothers. After the weaning and till 40 weeks old, a juvenile is still under parental care but can move randomly within parental territory. From 40 weeks to the age of sexual maturity, subadult individuals freely wander around in the forest.
+During the main agricultural season (6 consecutive months), villagers are busy in their crop fields so there is no hunting. Hunting takes place along hunting paths that are known and used by members of kinship networks. Every year, each of the 90 hunters identified in the village changes the location of his traps according to the decision made by the family group he belongs to. 
+
+To what extent the social organization of the hunting activity might influence the viability of the blue duikers population and the hunting efficiency ?
+
+ 
+Internal Representation and Key Implementation Points.
+
+    Instance Variables
+	anthelopes:		<Object>
+	catchesNumber:		<Object>
+	cells:		<Object>
+	huntingFamilies:		<Object>
+	isHuntingSeason:		<Object>
+
+
+    Implementation Points
+"
 Class {
 	#name : #CMBushmeatHuntingModel,
 	#superclass : #CMAbstractModel,
@@ -5,7 +27,8 @@ Class {
 		'anthelopes',
 		'cells',
 		'huntingFamilies',
-		'catchesNumber'
+		'catchesNumber',
+		'isHuntingSeason'
 	],
 	#category : #'Cormas-Model-BushmeatHunt-Core'
 }
@@ -25,7 +48,7 @@ CMBushmeatHuntingModel class >> maximumAllowedTrapsPerCell [
 { #category : #accessing }
 CMBushmeatHuntingModel class >> maximumHuntingFamilies [
 
-	^ 5
+	^ 2
 ]
 
 { #category : #accessing }
@@ -61,6 +84,18 @@ CMBushmeatHuntingModel >> anthelopes: arg1 [
 ]
 
 { #category : #accessing }
+CMBushmeatHuntingModel >> catchesNumber [
+
+	^ catchesNumber
+]
+
+{ #category : #accessing }
+CMBushmeatHuntingModel >> catchesNumber: anObject [
+
+	catchesNumber := anObject
+]
+
+{ #category : #accessing }
 CMBushmeatHuntingModel >> cells [
 
 	^ cells ifNil: [ cells := OrderedCollection new ] ifNotNil: [ cells ]
@@ -70,6 +105,13 @@ CMBushmeatHuntingModel >> cells [
 CMBushmeatHuntingModel >> cells: arg1 [
 
 	cells := arg1
+]
+
+{ #category : #accessing }
+CMBushmeatHuntingModel >> femaleAnthelopes [
+	" Answer a <Collection> of the receiver's female anthelopes "
+	
+	^ self anthelopes select: #isFemale
 ]
 
 { #category : #accessing }
@@ -104,14 +146,15 @@ CMBushmeatHuntingModel >> initFamilies [
 CMBushmeatHuntingModel >> initScenarioWholeSeason [
 
 	catchesNumber := 0.
+	self isHuntingSeason: false.
 	self
 		initSpace;
-		initAnthelopes: 15.
+		initAnthelopes: 15;
+		initFamilies.
 	self 
-		displayPov: #pov of: CMBushmeatCell;
 		displayPov: #pov of: CMBushmeatMaleAnthelope;
-		displayPov: #pov of: CMBushmeatFemaleAnthelope
-	
+		displayPov: #pov of: CMBushmeatFemaleAnthelope;
+		displayPov: #pov of: CMBushmeatCell
 ]
 
 { #category : #init }
@@ -156,11 +199,45 @@ CMBushmeatHuntingModel >> initSpace [
 { #category : #'initialize-release' }
 CMBushmeatHuntingModel >> initTraps [
 	
-	self traps do: [ : trap |
-		(self pickCellAt: trap location) addTrap: trap ]
+	self isHuntingSeason
+		ifFalse: [ 
+			self toggleHuntingSeason.			
+			self huntingFamilies do: #setupTraps.
+			self traps do: [ : trap | (self pickCellAt: trap location) addTrap: trap ] ]
+		ifTrue: [ 
+			self toggleHuntingSeason.
+			self huntingFamilies do: #removeTraps.
+			self traps do: [ : trap | (self pickCellAt: trap location) removeTrap: trap ] ]
+]
+
+{ #category : #testing }
+CMBushmeatHuntingModel >> isChangingSeason [
+	" Answer <true> if time has come for a new season (hunting or growing) "
+	
+	^ (self timeStep \\ 26) isZero
+]
+
+{ #category : #testing }
+CMBushmeatHuntingModel >> isHuntingSeason [
+
+	^ isHuntingSeason
+		ifNil: [ isHuntingSeason := false ]
 ]
 
 { #category : #accessing }
+CMBushmeatHuntingModel >> isHuntingSeason: anObject [
+
+	isHuntingSeason := anObject
+]
+
+{ #category : #accessing }
+CMBushmeatHuntingModel >> maleAnthelopes [
+	" Answer a <Collection> of the receiver's female anthelopes "
+	
+	^ self anthelopes reject: #isFemale
+]
+
+{ #category : #private }
 CMBushmeatHuntingModel >> maximumNumberOffspring [
 
 	^ self class maximumNumberOffspring
@@ -175,18 +252,22 @@ CMBushmeatHuntingModel >> noAgent [
 { #category : #control }
 CMBushmeatHuntingModel >> step [
 
-	(self timeStep \\ 26) isZero
-		ifTrue: [ 
-			self
-			initFamilies;
-			initTraps ]
-		ifFalse: [ self stepEntities: CMBushmeatAnthelope ]
+	self isChangingSeason
+		ifTrue: [ self initTraps ]
+		ifFalse: [ self stepAnthelopes ]
 ]
 
 { #category : #control }
 CMBushmeatHuntingModel >> stepAnthelopes [
 
-	self stepEntities: CMBushmeatAnthelope
+	self stepEntities: CMBushmeatAnthelope.
+	"self updateAllEntities: CMBushmeatAnthelope."
+]
+
+{ #category : #accessing }
+CMBushmeatHuntingModel >> toggleHuntingSeason [
+
+	self isHuntingSeason: self isHuntingSeason not
 ]
 
 { #category : #'initialize-release' }

@@ -25,7 +25,7 @@ CMBushmeatJuvenileStage >> dyingProbability [
 { #category : #accessing }
 CMBushmeatJuvenileStage >> friendlyName [
 
-	^ 'Adult'
+	^ 'Juvenile'
 ]
 
 { #category : #accessing }

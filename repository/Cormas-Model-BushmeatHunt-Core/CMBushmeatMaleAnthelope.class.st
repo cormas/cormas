@@ -4,6 +4,12 @@ Class {
 	#category : #'Cormas-Model-BushmeatHunt-Core'
 }
 
+{ #category : #converting }
+CMBushmeatMaleAnthelope class >> asGetterForEntityClass [
+
+	^ #maleAnthelopes
+]
+
 { #category : #accessing }
 CMBushmeatMaleAnthelope class >> minAgeLimit [
 
@@ -13,7 +19,7 @@ CMBushmeatMaleAnthelope class >> minAgeLimit [
 { #category : #accessing }
 CMBushmeatMaleAnthelope >> findPartner [
 	| found |
-"	tmp := patch extensiveNeighbourhood select: [:unP | (unP theOccupants at: self class name) notNil & (self estAccueillant: unP)]."
+
 	patch ifNil: [ ^ nil ].
 	patch neighbourhood 
 		select: [: bushmeatCell | bushmeatCell hasOccupantType: CMBushmeatFemaleAnthelope ]

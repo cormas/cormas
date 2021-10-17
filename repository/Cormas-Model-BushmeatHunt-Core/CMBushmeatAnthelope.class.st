@@ -12,7 +12,7 @@ Class {
 { #category : #converting }
 CMBushmeatAnthelope class >> asGetterForEntityClass [
 
-	^ #anthelopes
+	self subclassResponsibility 
 ]
 
 { #category : #accessing }
@@ -95,6 +95,12 @@ CMBushmeatAnthelope >> isAdult [
 CMBushmeatAnthelope >> isAlive [
 
 	^ self isDead not
+]
+
+{ #category : #testing }
+CMBushmeatAnthelope >> isFemale [ 
+
+	^ false
 ]
 
 { #category : #accessing }
@@ -184,9 +190,9 @@ CMBushmeatAnthelope >> stage [
 ]
 
 { #category : #accessing }
-CMBushmeatAnthelope >> stage: arg1 [
+CMBushmeatAnthelope >> stage: aCMBushmeatStage [
 
-	stage := arg1
+	stage := aCMBushmeatStage
 ]
 
 { #category : #control }
@@ -195,17 +201,28 @@ CMBushmeatAnthelope >> step [
 	self
 		age: self age + 1;
 		updateStage;
+		updateLivingStatus;
 		updateBehavior
 ]
 
 { #category : #'population dynamics' }
 CMBushmeatAnthelope >> updateBehavior [
 
-	(self isAdult and: [ self hasPartner not ]) ifTrue: [ self move ]
+	(self isDead not and: [ self isAdult and: [ self hasPartner not ] ])
+		ifTrue: [ self move ]
+]
+
+{ #category : #'population dynamics' }
+CMBushmeatAnthelope >> updateLivingStatus [
+	" Update the receiver's dead or alive status using a random probability according to its stage "
+	
+	self stage updateLivingStatus
+	
 ]
 
 { #category : #'population dynamics' }
 CMBushmeatAnthelope >> updateStage [
-
+	" Update the receiver's stage "
+	
 	self stage: (CMBushmeatStage updateStageFrom: self)
 ]

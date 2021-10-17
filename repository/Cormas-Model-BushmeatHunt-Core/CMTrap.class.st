@@ -3,7 +3,9 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'family',
-		'location'
+		'location',
+		'totalCatches',
+		'seasonCatches'
 	],
 	#category : #'Cormas-Model-BushmeatHunt-Core'
 }
@@ -15,6 +17,13 @@ CMTrap class >> forFamily: aCMBushmeatHuntingFamily location: aPoint [
 		family: aCMBushmeatHuntingFamily;
 		location: aPoint;
 		yourself
+]
+
+{ #category : #accessing }
+CMTrap >> addCatch [
+	" The receiver catched a located entity, increment the seasonal catches "
+	
+	self seasonCatches: self seasonCatches + 1
 ]
 
 { #category : #accessing }
@@ -49,9 +58,47 @@ CMTrap >> location: aPoint [
 CMTrap >> printOn: aStream [
 
 	aStream
-		<< 'Trap: ';
+		<< 'Trap of family: ';
 		<< self family asString;
 		space;
-		<< self location asString
+		<< 'Location: ';
+		<< self location asString;
+		space;
+		<< 'Season catches: ';
+		<< self seasonCatches asString.
 
+]
+
+{ #category : #accessing }
+CMTrap >> removeTrap [
+	" Configure the receiver to be removed from its current location "
+	
+	self totalCatches: self totalCatches + self seasonCatches.
+	self seasonCatches: 0.
+]
+
+{ #category : #accessing }
+CMTrap >> seasonCatches [
+
+	^ seasonCatches
+		ifNil: [ seasonCatches := 0 ]
+]
+
+{ #category : #accessing }
+CMTrap >> seasonCatches: anObject [
+
+	seasonCatches := anObject
+]
+
+{ #category : #accessing }
+CMTrap >> totalCatches [
+
+	^ totalCatches 
+		ifNil: [ totalCatches := 0 ]
+]
+
+{ #category : #accessing }
+CMTrap >> totalCatches: anObject [
+
+	totalCatches := anObject
 ]

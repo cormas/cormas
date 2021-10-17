@@ -25,7 +25,7 @@ CMBushmeatSubadultStage >> dyingProbability [
 { #category : #accessing }
 CMBushmeatSubadultStage >> friendlyName [
 
-	^ 'Newborn'
+	^ 'Subadult'
 ]
 
 { #category : #accessing }

@@ -38,8 +38,10 @@ CMAgent >> delete [
 
 { #category : #testing }
 CMAgent >> destroyed [
-"Answer if the agent is dead"
-	^self dead
+	" Answer if the agent is dead "
+	
+	self deprecated: 'Should use #isDestroyed or #isDead '.
+	^ self dead
 ]
 
 { #category : #accessing }
@@ -64,6 +66,13 @@ self deprecated:'Should be deprecated in the next CORMAS version'.
 
 { #category : #testing }
 CMAgent >> isDead [
+	^ self dead
+]
+
+{ #category : #testing }
+CMAgent >> isDestroyed [
+	" Answer if the agent is dead "
+	
 	^ self dead
 ]
 

@@ -2,15 +2,33 @@ Class {
 	#name : #CMBushmeatFemaleAnthelope,
 	#superclass : #CMBushmeatAnthelope,
 	#instVars : [
-		'gestationLength'
+		'gestationLength',
+		'newBorns'
 	],
 	#category : #'Cormas-Model-BushmeatHunt-Core'
 }
+
+{ #category : #converting }
+CMBushmeatFemaleAnthelope class >> asGetterForEntityClass [
+
+	^ #femaleAnthelopes
+]
 
 { #category : #accessing }
 CMBushmeatFemaleAnthelope class >> minAgeLimit [
 
 	^ 72
+]
+
+{ #category : #'population dynamics' }
+CMBushmeatFemaleAnthelope >> addNewborn [
+
+	| newAnthelope |			
+
+	newAnthelope := self class new init0.
+	newAnthelope patch: patch.
+	self newBorns add: newAnthelope
+
 ]
 
 { #category : #'population dynamics' }
@@ -41,11 +59,24 @@ CMBushmeatFemaleAnthelope >> init0 [
 	gestationLength := 0
 ]
 
+{ #category : #testing }
+CMBushmeatFemaleAnthelope >> isFemale [ 
+
+	^ true
+]
+
 { #category : #accessing }
 CMBushmeatFemaleAnthelope >> isPatchingWithAdultMale [
 
 	^ ((patch occupantsType: CMBushmeatMaleAnthelope) anySatisfy: [ :arg1 | 
 		   arg1 age < 21 ]) not
+]
+
+{ #category : #accessing }
+CMBushmeatFemaleAnthelope >> newBorns [
+
+	^ newBorns
+		ifNil: [ newBorns := OrderedCollection new ]
 ]
 
 { #category : #pov }
@@ -69,7 +100,11 @@ CMBushmeatFemaleAnthelope >> printOn: aStream [
 		<< ' - ';
 		<< 'Gest(';
 		<< self gestationLength asString;
-		<< ')'.
+		<< ')';
+		space;
+		<< 'New borns: [';
+		<< self newBorns size asString;
+		<< ']'
 ]
 
 { #category : #printing }
@@ -82,7 +117,8 @@ CMBushmeatFemaleAnthelope >> sexString [
 CMBushmeatFemaleAnthelope >> updateBehavior [
 
 	super updateBehavior.
-	self updateGestationBehavior
+	self isDead not
+		ifTrue: [ self updateGestationBehavior ]
 ]
 
 { #category : #'population dynamics' }
@@ -92,10 +128,8 @@ CMBushmeatFemaleAnthelope >> updateGestationBehavior [
 		gestationLength := gestationLength + 1 ].
 	gestationLength = self pregnancyTime
 		ifTrue: [ 
-			| newAnthelope |
 			gestationLength := 0.
-			newAnthelope := self class new init0.
-			newAnthelope patch: patch ]
+			self addNewborn ]
 		ifFalse: [ 
 			(self hasPartner and: [ gestationLength = 0 and: [ self isPatchingWithAdultMale ] ]) 
 				ifTrue: [ gestationLength := 1 ] ]

@@ -26,12 +26,11 @@ CMBushmeatStage class >> minAgeLimit [
 ]
 
 { #category : #'instance creation' }
-CMBushmeatStage class >> newFor: arg1 [
+CMBushmeatStage class >> newFor: anAnthelope [
 
-	| tmp1 |
-	tmp1 := self new.
-	tmp1 initializeWith: arg1.
-	^ tmp1 yourself
+	^ self new
+		initializeWith: anAnthelope;
+		yourself
 ]
 
 { #category : #'instance creation' }
@@ -45,10 +44,15 @@ CMBushmeatStage class >> stageFor: arg1 [
 ]
 
 { #category : #'instance creation' }
-CMBushmeatStage class >> updateStageFrom: arg1 [
-
-	^ (self subclasses detect: [ :arg2 | arg2 stageFor: arg1 ]) newFor:
-		  arg1
+CMBushmeatStage class >> updateStageFrom: anAnthelope [
+	" Answer a new receiver's instance for anAnthelope "
+	
+	(self subclasses 
+		detect: [ : stageSubclass | stageSubclass stageFor: anAnthelope ]
+		ifFound: [ : stageSubclass | 
+			^ anAnthelope stage class = stageSubclass
+				ifTrue: [ anAnthelope stage ]
+				ifFalse: [ stageSubclass newFor: anAnthelope ] ]) 
 ]
 
 { #category : #accessing }
@@ -76,21 +80,15 @@ CMBushmeatStage >> friendlyName [
 ]
 
 { #category : #initialization }
-CMBushmeatStage >> initializeWith: arg1 [
+CMBushmeatStage >> initializeWith: anAnthelope [
 
-	self anthelope: arg1
+	self anthelope: anAnthelope
 ]
 
 { #category : #testing }
 CMBushmeatStage >> isAdult [
 
 	^ false
-]
-
-{ #category : #testing }
-CMBushmeatStage >> isDead [
-
-	self isProbablyDying ifTrue: [ self anthelope dead: true ]
 ]
 
 { #category : #testing }
@@ -112,4 +110,11 @@ CMBushmeatStage >> printOn: aStream [
 CMBushmeatStage >> sizeOfPOV [
 
 	^ self subclassResponsibility
+]
+
+{ #category : #testing }
+CMBushmeatStage >> updateLivingStatus [
+
+	self isProbablyDying 
+		ifTrue: [ self anthelope dead: true ]
 ]
