@@ -130,7 +130,16 @@ CMBushmeatHuntingModel >> huntingFamilies: arg1 [
 
 { #category : #'initialize-release' }
 CMBushmeatHuntingModel >> initAnthelopes: anthNumber [
+	" Private - Create anthNumber randomly located anthelopes, with a random sex ratio "
 
+	self anthelopes: (self createN: anthNumber randomlyLocatedEntitiesFrom: CMBushmeatAnthelope subclasses)
+]
+
+{ #category : #'initialize-release' }
+CMBushmeatHuntingModel >> initAnthelopes: anthNumber sexRatio: anAssociation [
+	" Private - Create anthNumber randomly located anthelopes, with a random sex ratio "
+
+	self shouldBeImplemented.
 	self anthelopes: (self createN: anthNumber randomlyLocatedEntitiesFrom: CMBushmeatAnthelope subclasses)
 ]
 

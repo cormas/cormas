@@ -141,8 +141,8 @@ CMR3ChartDiagram >> defaultYAxisLabelOffset [
 CMR3ChartDiagram >> maxYValue [
 
 	^ self scaleToMinMax
-		ifTrue: [ self owner maxYValue ]x
-		ifFalse: [  self halt  ]
+		ifTrue: [ self owner maxYValue ]
+		ifFalse: [ "self cormasModel anthelopes size" ]
 
 ]
 
@@ -309,8 +309,8 @@ CMR3ChartDiagram >> timeChanged: aNewTimeStep [
 	newMaxX := (aNewTimeStep max: 1) min: 10.
 	self canvas removeAllElements.
 	self refresh.
-	self chartBuilder maxValueX: newMaxX + 1.
 	self chartBuilder: (self newChartBuilder: newMaxX -> 1).
+	self chartBuilder maxValueX: newMaxX + 1.
 	self "selected"probeLines do: [ : probeLine | self chartBuilder addPlot: probeLine ].
 	self chartBuilder renderIn: self canvas.
 	self canvas 

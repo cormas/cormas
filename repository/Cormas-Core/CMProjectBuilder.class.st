@@ -271,16 +271,16 @@ CMProjectBuilder >> handleFileEx: ex [
 
 	(ex isKindOf: FileExists)
 		ifTrue: [ 
-			self traceCrTab: 'Model2Project: Deleting existing project ' , ex fullName. 
+			self traceCrTab: 'CORMAS Project Builder: Deleting existing project ' , ex fullName. 
 			ex ensureDelete.
-			self traceCrTab: 'Model2Project: Done deleting existing project ' , ex fullName. 
+			self traceCrTab: 'CORMAS Project Builder: Done deleting existing project ' , ex fullName. 
 			ex retry ]
 		ifFalse: [ 
 			(ex isKindOf: FileDoesNotExistException)
 				ifTrue: [ 
-					self traceCrTab: 'Model2Project: Creating projects directory' , self defaultOutputDirectory. 
+					self traceCrTab: 'CORMAS Project Builder: Creating projects directory' , self defaultOutputDirectory. 
 					self defaultOutputDirectory asFileReference ensureCreateDirectory.
-					self traceCrTab: 'Model2Project: Done creating projects directory' , self defaultOutputDirectory.
+					self traceCrTab: 'CORMAS Project Builder: Done creating projects directory' , self defaultOutputDirectory.
 					ex retry ] ]
 ]
 
@@ -500,13 +500,13 @@ CMProjectBuilder >> writeSourceCode: modelClass [
 
 	| newFile |
 
-	self traceCrTab: 'Model2Project: Writing source code ' , modelClass asString. 
+	self traceCrTab: 'CORMAS Project Builder: Writing source code ' , modelClass asString. 
 	modelClass package 
 		fileOutOn: (WriteStream on: (String new: 4000))
 		named: CMProjectFile sourceCodeFilename.
 	newFile := self tempLocation / CMProjectFile sourceCodeFilenameWithExtension.
 	self writeSourceCodeInTempLocation: newFile.
-	self traceCrTab: 'Model2Project: Done writing source code ' , modelClass asString. 
+	self traceCrTab: 'CORMAS Project Builder: Done writing source code ' , modelClass asString. 
 ]
 
 { #category : #'accessing - writing' }
