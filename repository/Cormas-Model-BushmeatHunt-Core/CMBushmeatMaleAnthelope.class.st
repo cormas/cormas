@@ -37,7 +37,7 @@ CMBushmeatMaleAnthelope >> matchPartnerConditions: femaleAnthelope [
 ]
 
 { #category : #pov }
-CMBushmeatMaleAnthelope >> pov [
+CMBushmeatMaleAnthelope >> povColor [
 
 	^ Color blue
 ]

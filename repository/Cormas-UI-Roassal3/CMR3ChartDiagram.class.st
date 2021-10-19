@@ -312,10 +312,12 @@ CMR3ChartDiagram >> timeChanged: aNewTimeStep [
 	self chartBuilder: (self newChartBuilder: newMaxX -> 1).
 	self chartBuilder maxValueX: newMaxX + 1.
 	self "selected"probeLines do: [ : probeLine | self chartBuilder addPlot: probeLine ].
-	self chartBuilder renderIn: self canvas.
-	self canvas 
-		"zoomToFit;"
-		signalUpdate
+	self chartBuilder plots
+		ifNotEmpty: [ 
+			self chartBuilder renderIn: self canvas.
+			self canvas 
+				"zoomToFit;"
+				signalUpdate ]
 ]
 
 { #category : #'accessing - chart' }

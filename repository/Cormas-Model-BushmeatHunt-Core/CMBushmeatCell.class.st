@@ -40,7 +40,16 @@ CMBushmeatCell >> asString [
 	^ String streamContents: [ : stream |
 		stream 
 			<< 'Traps: ';
-			<< self trapsCount asString ]
+			<< self trapsCount asString.
+		self traps ifNotEmpty: [ 
+			stream
+				cr;
+				<< '---';
+				cr.
+				self traps do: [ : trap | stream << trap asString ].
+			stream
+				cr;
+				<< '---' ] ]
 ]
 
 { #category : #accessing }

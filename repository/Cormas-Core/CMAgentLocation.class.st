@@ -199,6 +199,14 @@ CMAgentLocation >> isSituated [
 	^patch notNil
 ]
 
+{ #category : #accessing }
+CMAgentLocation >> labelOfPOV [
+	" Answer a <String> displayed to describe the receiver. 
+	To be overwritten if needed"
+
+	^ String empty
+]
+
 { #category : #'star moving' }
 CMAgentLocation >> leave [
 "Purpose: moves the agent away from the spatial grid (sets his patch attribute to nil): the situated agent is not located any more, but it is still 'alive'  "
@@ -948,8 +956,10 @@ Example: self similarAgentsWithinRadius: 3"
 
 { #category : #accessing }
 CMAgentLocation >> sizeOfPOV [
-"To be overwritten if needed"
- ^ 20
+	" Answer a <Number> to visually distinguish the receiver in a space.
+		To be overwritten if needed"
+
+	^ 20
 ]
 
 { #category : #moving }

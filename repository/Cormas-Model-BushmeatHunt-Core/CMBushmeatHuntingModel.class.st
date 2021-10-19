@@ -119,7 +119,6 @@ CMBushmeatHuntingModel >> huntingFamilies [
 
 	^ huntingFamilies
 		  ifNil: [ huntingFamilies := OrderedCollection new ]
-		  ifNotNil: [ huntingFamilies ]
 ]
 
 { #category : #accessing }
@@ -167,14 +166,6 @@ CMBushmeatHuntingModel >> initScenarioWholeSeason [
 ]
 
 { #category : #init }
-CMBushmeatHuntingModel >> initScenarioWith1000Anthelopes [
-
-	self
-		initSpace;
-		initAnthelopes: 1000
-]
-
-{ #category : #init }
 CMBushmeatHuntingModel >> initScenarioWith100Anthelopes [
 
 	self
@@ -185,11 +176,14 @@ CMBushmeatHuntingModel >> initScenarioWith100Anthelopes [
 ]
 
 { #category : #init }
-CMBushmeatHuntingModel >> initScenarioWith15Anthelopes [
+CMBushmeatHuntingModel >> initScenarioWith60Anthelopes [
 
+	catchesNumber := 0.
 	self
+		isHuntingSeason: false;
 		initSpace;
-		initAnthelopes: 15;
+		initAnthelopes: 120;
+		initFamilies;
 		displayPov: #pov of: CMBushmeatMaleAnthelope;
 		displayPov: #pov of: CMBushmeatFemaleAnthelope;
 		displayPov: #pov of: CMBushmeatCell
@@ -207,16 +201,17 @@ CMBushmeatHuntingModel >> initSpace [
 
 { #category : #'initialize-release' }
 CMBushmeatHuntingModel >> initTraps [
-	
+
+	self toggleHuntingSeason.
 	self isHuntingSeason
 		ifFalse: [ 
-			self toggleHuntingSeason.			
-			self huntingFamilies do: #setupTraps.
-			self traps do: [ : trap | (self pickCellAt: trap location) addTrap: trap ] ]
-		ifTrue: [ 
-			self toggleHuntingSeason.
 			self huntingFamilies do: #removeTraps.
-			self traps do: [ : trap | (self pickCellAt: trap location) removeTrap: trap ] ]
+			self traps do: [ :trap | 
+				(self pickCellAt: trap location) removeTrap: trap ] ]
+		ifTrue: [ 
+			self huntingFamilies do: #setupTraps.
+			self traps do: [ :trap | 
+				(self pickCellAt: trap location) addTrap: trap ] ]
 ]
 
 { #category : #testing }

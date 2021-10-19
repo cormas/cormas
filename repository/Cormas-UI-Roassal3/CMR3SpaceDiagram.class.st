@@ -326,11 +326,11 @@ CMR3SpaceDiagram >> moveExistingEntity: e [
 		fontSize: 12;
 		text: [ : aCMEntity | aCMEntity age asString ];
 		yourself."
+	(e propertyAt: #RSLabeled) text: entityModel labelOfPOV.
 	e
-		@ (RSPopup text: entityModel age asString);
-		@ (RSLabeled text: entityModel age asString);
+		@ (RSPopup text: entityModel labelOfPOV);
 		size: entityModel sizeOfPOV;
-		color: entityModel povStage;
+		color: entityModel pov;
 		translateTo: (eModelPatch numCol @ eModelPatch numLine * cellSize) - (cellSize / 2)
 ]
 

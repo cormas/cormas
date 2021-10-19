@@ -103,6 +103,19 @@ CMBushmeatAnthelope >> isFemale [
 	^ false
 ]
 
+{ #category : #testing }
+CMBushmeatAnthelope >> isNewborn [
+
+	^ self stage isNewborn
+]
+
+{ #category : #accessing }
+CMBushmeatAnthelope >> labelOfPOV [
+	" Answer a <Number> to visually distinguish the receiver in a space "
+
+	^ self age asString
+]
+
 { #category : #accessing }
 CMBushmeatAnthelope >> maxAgeLimit [
 
@@ -147,14 +160,17 @@ CMBushmeatAnthelope >> partner: arg1 [
 ]
 
 { #category : #pov }
-CMBushmeatAnthelope >> povStage [
+CMBushmeatAnthelope >> pov [
 
 	^ self isDead
 		  ifTrue: [ Color black ]
 		  ifFalse: [ 
-			  self hasPartner
+				self hasPartner
 				  ifTrue: [ Color red ]
-				  ifFalse: [ self pov ] ]
+				  ifFalse: [ 
+						self isNewborn
+							ifTrue: [ Color white ]
+							ifFalse: [ self povColor ] ] ]
 ]
 
 { #category : #printing }
@@ -179,6 +195,7 @@ CMBushmeatAnthelope >> sexString [
 
 { #category : #accessing }
 CMBushmeatAnthelope >> sizeOfPOV [
+	" Answer a <Number> to visually distinguish the receiver in a space "
 
 	^ self stage sizeOfPOV
 ]

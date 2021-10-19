@@ -26,6 +26,23 @@ CMTrap >> addCatch [
 	self seasonCatches: self seasonCatches + 1
 ]
 
+{ #category : #printing }
+CMTrap >> asString [
+
+	^ String << [ : stream | 
+		stream
+			<< 'Trap of family: ';
+			<< self family asString;
+			cr;
+			<< 'Location: ';
+			<< self location asString;
+			cr;
+			<< 'Season catches: ';
+			<< self seasonCatches asString;
+			cr ]
+
+]
+
 { #category : #accessing }
 CMTrap >> color [
 
@@ -57,16 +74,7 @@ CMTrap >> location: aPoint [
 { #category : #printing }
 CMTrap >> printOn: aStream [
 
-	aStream
-		<< 'Trap of family: ';
-		<< self family asString;
-		space;
-		<< 'Location: ';
-		<< self location asString;
-		space;
-		<< 'Season catches: ';
-		<< self seasonCatches asString.
-
+	aStream << self asString
 ]
 
 { #category : #accessing }

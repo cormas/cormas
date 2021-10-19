@@ -92,6 +92,12 @@ CMBushmeatStage >> isAdult [
 ]
 
 { #category : #testing }
+CMBushmeatStage >> isNewborn [ 
+
+	^ false
+]
+
+{ #category : #testing }
 CMBushmeatStage >> isProbablyDying [
 
 	^ Cormas random < self dyingProbability

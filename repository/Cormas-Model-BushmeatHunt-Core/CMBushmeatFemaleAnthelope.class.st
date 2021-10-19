@@ -80,7 +80,7 @@ CMBushmeatFemaleAnthelope >> newBorns [
 ]
 
 { #category : #pov }
-CMBushmeatFemaleAnthelope >> pov [
+CMBushmeatFemaleAnthelope >> povColor [
 
 	^ Color pink
 ]
