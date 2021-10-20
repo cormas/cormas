@@ -28,7 +28,7 @@ aBoolean < Boolean >"
 	dead := aBoolean
 ]
 
-{ #category : #control }
+{ #category : #controlling }
 CMAgent >> delete [
 "Purpose: gets rid of this object. The collectGarbage is IMMEDIATELY performed  (ie. the receiver of class X is removed from 'theXXXs' collection)"
 

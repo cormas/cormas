@@ -122,5 +122,5 @@ CMBushmeatStage >> sizeOfPOV [
 CMBushmeatStage >> updateLivingStatus [
 
 	self isProbablyDying 
-		ifTrue: [ self anthelope dead: true ]
+		ifTrue: [ self anthelope delete ]
 ]

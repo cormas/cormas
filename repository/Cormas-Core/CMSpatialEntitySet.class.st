@@ -256,20 +256,17 @@ CMSpatialEntitySet >> containsCell: aCell [
 		ifFalse: [^self components containsCell: aCell]	"!! recursiv"
 ]
 
-{ #category : #'star testing' }
+{ #category : #controlling }
 CMSpatialEntitySet >> delete [
+
 	"Purpose: gets rid of this object. The collectGarbage is IMMEDIATELY performed  (ie. the receiver of class X is removed from 'theXXXs' collection)"
 
-	self components isEmpty
-		ifFalse: [ self deleteComponents: self components ].
+	self components isEmpty ifFalse: [ 
+		self deleteComponents: self components ].
 	self
 		reset;
 		destroyed: true.
-	self collector isNil
-		ifFalse: [ self collector removeEntity: self ].
-	"self cormasModel
-		registerEntityChange: #removeEntity
-		from: (EntityReference on: self)"
+	self collector ifNotNil: [ self collector removeEntity: self ]
 ]
 
 { #category : #control }
