@@ -313,7 +313,6 @@ CMR3ChartDiagram >> timeChanged: aNewTimeStep [
 	probesToDisplay := self cormasModelClass activeProbes asOrderedCollection.
 	(self owner selectedProbes hasEqualElements: probesToDisplay)
 		ifFalse: [ probesToDisplay addAll: (self owner selectedProbes difference: probesToDisplay) ].
-	self halt.
 	self probeLines: (probesToDisplay collect: [ : probeName | 
 		| linePlot xValues yValues probeValues |
 		linePlot := RSLinePlot new.

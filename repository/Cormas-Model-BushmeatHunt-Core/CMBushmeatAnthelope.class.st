@@ -36,11 +36,11 @@ CMBushmeatAnthelope >> age: arg1 [
 { #category : #testing }
 CMBushmeatAnthelope >> customShapeSelector [
 
-	^ self hasPartner
+	^ #ellipse "self hasPartner
 		  ifTrue: [ 
 			  self halt.
 			  #bitmap ]
-		  ifFalse: [ #ellipse ]
+		  ifFalse: [ #ellipse ]"
 ]
 
 { #category : #accessing }
