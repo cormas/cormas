@@ -92,7 +92,7 @@ CMBushmeatHuntingModel >> anthelopes: arg1 [
 CMBushmeatHuntingModel >> anthelopesSize [
 	<probe>
 
-	^ (self theEntities: CMBushmeatAnthelope) size
+	^ (self allTheEntities: CMBushmeatAnthelope) size
 ]
 
 { #category : #accessing }
