@@ -254,9 +254,9 @@ CMR3SpaceDiagram >> initialize [
 CMR3SpaceDiagram >> initializeEvents [
 
 	self projectAnnouncer
-		when: CMTimeChangedAnnouncement do: [ :aAnnounce | 
-			aAnnounce timeStep = 0 
-				ifFalse: [ self timeChanged: aAnnounce timeStep ] ];
+		when: CMTimeChangedAnnouncement do: [ : ann | 
+			ann timeStep = 0 
+				ifFalse: [ self timeChanged: ann timeStep ] ];
 		when: CMSimInitializationAnnouncement do: [ self timeChanged: 0 ].
 	self canvas when: RSExtentChangedEvent do: [ 
 		self canvas camera zoomToFit: self canvas extent.

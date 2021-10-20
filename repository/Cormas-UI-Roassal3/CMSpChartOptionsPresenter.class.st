@@ -89,3 +89,10 @@ CMSpChartOptionsPresenter >> scaleToMinMax [
 
 	^ self probesMinMaxOptionsPresenter scaleToMinMax
 ]
+
+{ #category : #accessing }
+CMSpChartOptionsPresenter >> selectedProbes [
+	" Answer a <Collection> with the receiver's currently selected probes "
+
+	^ self probesListPresenter selectedProbes
+]

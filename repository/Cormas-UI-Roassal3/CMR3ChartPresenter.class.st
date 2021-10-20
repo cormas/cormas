@@ -58,7 +58,6 @@ CMR3ChartPresenter >> initializeWindow: aWindowPresenter [
 		initialExtent: 1000 @ 600;
 		windowIcon: self windowIcon;
 		whenWillCloseDo: [ :  w | 
-			self halt.
 			'Chart Presenter: Unsubscribing chart before deleting presenter...' traceCr.
 			self roassalChartPresenter ifNotNil: [ : chartPresenter | 
 				self projectManager announcer unsubscribe: chartPresenter ].
@@ -117,6 +116,13 @@ CMR3ChartPresenter >> scaleToMinMax [
 	" Answer <true> if the receiver option to scale to entered min and max values is checked "
 
 	^ self optionsPresenter scaleToMinMax.
+]
+
+{ #category : #accessing }
+CMR3ChartPresenter >> selectedProbes [
+	" Answer a <Collection> with the receiver's currently selected probes "
+
+	^ self optionsPresenter selectedProbes
 ]
 
 { #category : #initialization }

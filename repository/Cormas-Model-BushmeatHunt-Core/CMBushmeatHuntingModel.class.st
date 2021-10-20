@@ -33,6 +33,11 @@ Class {
 	#category : #'Cormas-Model-BushmeatHunt-Core'
 }
 
+{ #category : #'- probes' }
+CMBushmeatHuntingModel class >> colorOfProbe_anthelopesSize [
+  ^ (Color r: 0.6422287390029325 g: 0.3870967741935484 b: 0.14565004887585534 alpha: 1.0)
+]
+
 { #category : #accessing }
 CMBushmeatHuntingModel class >> maximumAllowedAnthelopePerFamily [
 
@@ -81,6 +86,13 @@ CMBushmeatHuntingModel >> anthelopes [
 CMBushmeatHuntingModel >> anthelopes: arg1 [
 
 	anthelopes := arg1
+]
+
+{ #category : #probes }
+CMBushmeatHuntingModel >> anthelopesSize [
+	<probe>
+
+	^ self anthelopes size
 ]
 
 { #category : #accessing }

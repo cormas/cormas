@@ -127,6 +127,7 @@ CMSpChartProbesListPresenter >> refreshProbeNameSelection [
 
 { #category : #accessing }
 CMSpChartProbesListPresenter >> selectedProbes [
+	" Answer a <Collection> with the receiver's currently selected probes "
 
 	^ selectedProbes
 		ifNil: [ selectedProbes := OrderedCollection new ]

@@ -2318,21 +2318,52 @@ CMAbstractModel >> initialize [
 
 ]
 
-{ #category : #'initalize release' }
+{ #category : #'probes - recording' }
+CMAbstractModel >> initializeActiveProbes [ 
+
+	self class activeProbes ifNotEmpty: [ : activeProbes | 
+		self data
+			at: self class name
+			put: Dictionary new.
+		activeProbes do: [ : p | 
+			(self data at: self class name)
+					at: p
+					put: OrderedCollection  new] ].
+]
+
+{ #category : #initialization }
 CMAbstractModel >> initializeChannel [
 	
 	self channel: CMChannel new
 ]
 
-{ #category : #'probes - recording' }
+{ #category : #initialization }
+CMAbstractModel >> initializeEntitiesActiveProbes [
+	
+	self class allEntityClasses do: [ : c | 
+		c activeProbes isEmpty
+			ifFalse: [
+				self data
+					at: c name
+					put: Dictionary new.
+				c activeProbes do: [  :p | 
+					(self data at: c name)
+							at: p
+							put: Dictionary new ] ] ]
+]
+
+{ #category : #initialization }
 CMAbstractModel >> initializeProbes [
+
 	data := Dictionary new.
-	self setDataStructures.
+	self 
+		initializeActiveProbes;
+		initializeEntitiesActiveProbes.
 	self cormas ifNil: [ ^ nil ].
 	"self cormas refreshCharts"
 ]
 
-{ #category : #'initalize release' }
+{ #category : #initialization }
 CMAbstractModel >> initializeSpaceModel [
 	" Private - Setup the receiver's space model only if the model has a spatial entity cell class defined "
 
@@ -2732,7 +2763,7 @@ CMAbstractModel >> pickUnoccupiedCell [
 	^ self pickCellConstrainedBy: [ :cell | cell noOccupant ]
 ]
 
-{ #category : #'initalize release' }
+{ #category : #initialization }
 CMAbstractModel >> prepareCommunicationFor: anAgent [
 	
 	anAgent channel: self channel.
@@ -2845,7 +2876,7 @@ CMAbstractModel >> registerSpaceModelChange: aSymbol with: aParameter [
 		registerChange: (CMSpaceModelChange newChange: aSymbol with: aParameter)
 ]
 
-{ #category : #'initalize release' }
+{ #category : #initialization }
 CMAbstractModel >> release [
 
 	super release.
@@ -2907,7 +2938,7 @@ CMAbstractModel >> removeEntity: anEntity [
 		ifAbsent: [nil]
 ]
 
-{ #category : #'initalize release' }
+{ #category : #initialization }
 CMAbstractModel >> removeFromChannel: anAgent [
 	
 	self channel observerFunctions
@@ -3035,36 +3066,6 @@ CMAbstractModel >> setColor: aColorValue forProbe: aSymbol [
            ->creates a color method at class level"
 	
 	^self class setColor: aColorValue forProbe: aSymbol
-]
-
-{ #category : #'probes - recording' }
-CMAbstractModel >> setDataStructures [
-	
-	self class activeProbes isEmpty
-		ifFalse:
-			[self data
-				at: self class name
-				put: Dictionary new.
-			self class activeProbes
-				do:
-					[:p | 
-					(self data at: self class name)
-						at: p
-						put: OrderedCollection  new]].
-	self class allEntityClasses
-		do:
-			[:c | 
-			c activeProbes isEmpty
-				ifFalse:
-					[self data
-						at: c name
-						put: Dictionary new.
-					c activeProbes
-						do:
-							[:p | 
-							(self data at: c name)
-								at: p
-								put: Dictionary new]]]
 ]
 
 { #category : #'init - spatial entities' }
