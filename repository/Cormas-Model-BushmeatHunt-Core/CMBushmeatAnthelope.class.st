@@ -43,6 +43,22 @@ CMBushmeatAnthelope >> customShapeSelector [
 		  ifFalse: [ #ellipse ]
 ]
 
+{ #category : #accessing }
+CMBushmeatAnthelope >> detailsOfPOV [
+	" Answer a <String> to visually distinguish the receiver in a space "
+
+	^ String << [ : stream |
+		stream 
+			<< 'Sex: '; << self sexString; cr; 
+			<< 'Stage: '; << self stage friendlyName; cr;
+			<< 'Age: '; << self age asString; cr;
+			<< 'Location: '; << self coordinates asString.
+		self hasPartner 
+			ifTrue: [ 
+				stream cr; << 'Partner: ';
+					<< self partner asString ] ]
+]
+
 { #category : #'population dynamics' }
 CMBushmeatAnthelope >> findPartner [
 
@@ -111,9 +127,13 @@ CMBushmeatAnthelope >> isNewborn [
 
 { #category : #accessing }
 CMBushmeatAnthelope >> labelOfPOV [
-	" Answer a <Number> to visually distinguish the receiver in a space "
+	" Answer a <String> to visually distinguish the receiver in a space "
 
-	^ self age asString
+	^ String << [ : stream |
+		stream 
+			<< self sexString first;
+			space; 
+			<< self age asString ]
 ]
 
 { #category : #accessing }

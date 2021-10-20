@@ -36,9 +36,9 @@ CMSpatialEntityElement >> boundaryDirections [
 { #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> coordinates [
 	"Purpose: Returns the coordinates x and y as a Point instance.
-Example: self coordinates dist: (self neighbourNE coordinates)"
+	Example: self coordinates dist: (self neighbourNE coordinates)"
 	
-	^Point
+	^ Point
 		x: self numCol
 		y: self numLine
 ]

@@ -16,8 +16,9 @@ CMBushmeatMaleAnthelope class >> minAgeLimit [
 	^ 95
 ]
 
-{ #category : #accessing }
+{ #category : #'population dynamics' }
 CMBushmeatMaleAnthelope >> findPartner [
+	" Answer a <CMBushmeatFemaleAnthelope> matching partnership for the receiver or nil if not found "
 	| found |
 
 	patch ifNil: [ ^ nil ].

@@ -31,6 +31,15 @@ CMBushmeatFemaleAnthelope >> addNewborn [
 
 ]
 
+{ #category : #accessing }
+CMBushmeatFemaleAnthelope >> detailsOfPOV [
+
+	^ String << [ : stream | 
+		stream 
+			<< super detailsOfPOV; cr;
+			<< self offspringDetails ]
+]
+
 { #category : #'population dynamics' }
 CMBushmeatFemaleAnthelope >> findPartner [
 	" do nothing "
@@ -79,6 +88,23 @@ CMBushmeatFemaleAnthelope >> newBorns [
 		ifNil: [ newBorns := OrderedCollection new ]
 ]
 
+{ #category : #printing }
+CMBushmeatFemaleAnthelope >> offspringDetails [
+	" Answer a <String> with offspring details of the receiver "
+	
+	^ String << [ : stream | 
+		stream
+			space;
+			<< ' - ';
+			<< 'Gest(';
+			<< self gestationLength asString;
+			<< ')';
+			space;
+			<< 'New borns: [';
+			<< self newBorns size asString;
+			<< ']' ]
+]
+
 { #category : #pov }
 CMBushmeatFemaleAnthelope >> povColor [
 
@@ -93,18 +119,10 @@ CMBushmeatFemaleAnthelope >> pregnancyTime [
 
 { #category : #printing }
 CMBushmeatFemaleAnthelope >> printOn: aStream [
+	" Private - See superimplementor's comment "
 
 	super printOn: aStream.
-	aStream 
-		space;
-		<< ' - ';
-		<< 'Gest(';
-		<< self gestationLength asString;
-		<< ')';
-		space;
-		<< 'New borns: [';
-		<< self newBorns size asString;
-		<< ']'
+	aStream << self offspringDetails
 ]
 
 { #category : #printing }

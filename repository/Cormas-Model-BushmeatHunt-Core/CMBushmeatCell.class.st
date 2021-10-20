@@ -41,15 +41,18 @@ CMBushmeatCell >> asString [
 		stream 
 			<< 'Traps: ';
 			<< self trapsCount asString.
-		self traps ifNotEmpty: [ 
-			stream
-				cr;
-				<< '---';
-				cr.
-				self traps do: [ : trap | stream << trap asString ].
-			stream
-				cr;
-				<< '---' ] ]
+		self traps 
+			ifEmpty: [ 
+				stream 
+					cr; << '---'; cr;
+					<< 'Location: '; cr;
+					<< self coordinates asString ]
+			ifNotEmpty: [ 
+				stream
+					cr; << '---'; cr.
+					self traps do: [ : trap | stream << trap asString ].
+				stream
+					cr; << '---' ] ]
 ]
 
 { #category : #accessing }
