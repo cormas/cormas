@@ -62,6 +62,13 @@ CMBushmeatCell >> hasTrap [
 	^ self traps notEmpty
 ]
 
+{ #category : #accessing }
+CMBushmeatCell >> increaseTrapCatches [
+	" For now we increase the trap count of all traps in the receiver "
+
+	self traps do: #increaseCatch
+]
+
 { #category : #pov }
 CMBushmeatCell >> pov [
 

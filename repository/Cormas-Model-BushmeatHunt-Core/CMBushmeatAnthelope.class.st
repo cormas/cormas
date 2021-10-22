@@ -43,6 +43,14 @@ CMBushmeatAnthelope >> customShapeSelector [
 		  ifFalse: [ #ellipse ]"
 ]
 
+{ #category : #moving }
+CMBushmeatAnthelope >> delete [
+
+	self cormasModel removeAnthelope: self.
+	super delete.
+
+]
+
 { #category : #accessing }
 CMBushmeatAnthelope >> detailsOfPOV [
 	" Answer a <String> to visually distinguish the receiver in a space "
@@ -157,6 +165,16 @@ CMBushmeatAnthelope >> move [
 			partner := candidateAnthelope.
 			self moveTo: candidateAnthelope patch.
 			partner partner: self ]
+]
+
+{ #category : #moving }
+CMBushmeatAnthelope >> moveTo: nearestEmptyLoc [
+
+	super moveTo: nearestEmptyLoc.
+	nearestEmptyLoc hasTrap ifFalse: [ ^ self ].
+	self cormasModel increaseCatchesNumber.
+	nearestEmptyLoc increaseTrapCatches.
+	self delete
 ]
 
 { #category : #'population dynamics' }

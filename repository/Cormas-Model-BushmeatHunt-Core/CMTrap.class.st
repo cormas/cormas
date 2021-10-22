@@ -60,6 +60,28 @@ CMTrap >> family: aCMBushmeatHuntingFamily [
 	family := aCMBushmeatHuntingFamily
 ]
 
+{ #category : #testing }
+CMTrap >> hasLocation [
+	" Answer <true> if the receiver is configured with a specific location "
+
+	^ location notNil
+]
+
+{ #category : #accessing }
+CMTrap >> increaseCatch [ 
+
+	self totalCatches: self totalCatches + 1.
+	self seasonCatches: self seasonCatches + 1.
+]
+
+{ #category : #initialization }
+CMTrap >> initialize [
+
+	super initialize.
+	self hasLocation
+		ifTrue: [ self seasonCatches: self seasonCatches + 1 ]
+]
+
 { #category : #accessing }
 CMTrap >> location [
 

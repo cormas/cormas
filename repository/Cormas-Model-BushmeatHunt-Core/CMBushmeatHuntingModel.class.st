@@ -139,6 +139,13 @@ CMBushmeatHuntingModel >> huntingFamilies: arg1 [
 	huntingFamilies := arg1
 ]
 
+{ #category : #accessing }
+CMBushmeatHuntingModel >> increaseCatchesNumber [
+	" Increase the globals catches number "
+
+	catchesNumber := catchesNumber + 1
+]
+
 { #category : #'initialize-release' }
 CMBushmeatHuntingModel >> initAnthelopes: anthNumber [
 	" Private - Create anthNumber randomly located anthelopes, with a random sex ratio "
@@ -263,6 +270,12 @@ CMBushmeatHuntingModel >> maximumNumberOffspring [
 CMBushmeatHuntingModel >> noAgent [
 
 	self initSpace
+]
+
+{ #category : #accessing }
+CMBushmeatHuntingModel >> removeAnthelope: anAnthelope [
+
+	self anthelopes remove: anAnthelope
 ]
 
 { #category : #control }
