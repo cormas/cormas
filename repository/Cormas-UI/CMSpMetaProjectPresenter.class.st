@@ -1,6 +1,6 @@
 Class {
 	#name : #CMSpMetaProjectPresenter,
-	#superclass : #CMSpPManagedPresenter,
+	#superclass : #CMSpPresenter,
 	#instVars : [
 		'name',
 		'language',

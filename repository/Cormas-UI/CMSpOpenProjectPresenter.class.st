@@ -3,7 +3,7 @@ CMOpenProjectWindow new openWithSpec
 "
 Class {
 	#name : #CMSpOpenProjectPresenter,
-	#superclass : #CMSpPManagedPresenter,
+	#superclass : #CMSpPresenter,
 	#instVars : [
 		'projectsListPresenter',
 		'versionsListPresenter',

@@ -14,6 +14,26 @@ Class {
 }
 
 { #category : #'instance creation' }
+CMSpPresenter class >> for: aCMProjectManager [ 
+	" Answer a new instance of the receiver using aCMProjectManager as model "
+	
+	^ self basicNew 
+		projectManager: aCMProjectManager;
+		initialize;
+		yourself
+]
+
+{ #category : #'instance creation' }
+CMSpPresenter class >> openFor: aCMProjectManager [ 
+	" Create and open a new instance of the receiver, configuring its controller with aCMProjectManager"
+
+	^ (self for: aCMProjectManager)
+		openWithSpec;
+		centered;
+		yourself
+]
+
+{ #category : #'instance creation' }
 CMSpPresenter class >> openOn: aCormasModel [
 	" Open the receiver using aCormasModel as Spec2 presenter model "
 	
@@ -56,6 +76,13 @@ CMSpPresenter >> cormasModelClass [
 	^ self cormasModel class
 ]
 
+{ #category : #accessing }
+CMSpPresenter >> currentProject [
+	" Answer the receiver's <CMProjectModel> "
+
+	^ self projectManager currentProject
+]
+
 { #category : #initialization }
 CMSpPresenter >> initialize [
 
@@ -85,5 +112,14 @@ CMSpPresenter >> styleConfiguration [
 
 { #category : #accessing }
 CMSpPresenter >> translator [
-	^ self projectManager translator.
+	" Answer the project <PFTranslator> "
+
+	^ self projectManager translator
+]
+
+{ #category : #accessing }
+CMSpPresenter >> translator: aPFTranslator [
+	" Answer the project <PFTranslator> "
+
+	^ self projectManager translator: aPFTranslator
 ]

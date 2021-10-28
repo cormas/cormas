@@ -14,13 +14,13 @@ CMSpecSimulationContainer class >> defaultSpec [
 			c add: #simWindow ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 CMSpecSimulationContainer >> fsmState [
 
 	^ self owner fsmState
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 CMSpecSimulationContainer >> fsmStateName [
 
 	^ self fsmState name

@@ -64,7 +64,11 @@ BaselineOfCormas >> loadBgImage [
 		ifTrue: [ 
 			[ PolymorphSystemSettings desktopLogoFileName: logoFileref fullName ]
 			on: NotFound 
-			do: [ : ex | ] ]
+			do: [ : ex | 
+				MenubarMorph showMenubar: true.
+				PolymorphSystemSettings desktopLogoChanged.
+				MenubarMorph showMenubar: false.
+				] ]
 ]
 
 { #category : #doits }
