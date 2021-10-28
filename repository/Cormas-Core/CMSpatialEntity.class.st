@@ -110,22 +110,19 @@ CMSpatialEntity class >> neighbourhood_default [
 ]
 
 { #category : #'instance creation' }
-CMSpatialEntity class >> new [
-	"Each subclass (Class) of SpatialEntity should use 'Class new: aSpaceModel' "
-	
-	self error: 'Should use ''new: '' with a spaceModel as argument !'
-]
-
-{ #category : #'instance creation' }
 CMSpatialEntity class >> new: aSpaceModel [
-	| anEntity |
-	anEntity := super new.
-	aSpaceModel notNil
-		ifTrue: [ anEntity spaceModel: aSpaceModel.
-			anEntity collector: aSpaceModel cormasModel collector.
-			aSpaceModel cormasModel collect: anEntity.
-			anEntity initOccupants ].
-	^ anEntity
+
+	| newEntity |
+	newEntity := self new
+		spaceModel: aSpaceModel;
+		cormasModel: aSpaceModel cormasModel;
+		collector: aSpaceModel cormasModel collector;
+		yourself.
+				
+	aSpaceModel cormasModel collect: newEntity.
+	newEntity initOccupants.
+	
+	^ newEntity
 ]
 
 { #category : #'default value' }

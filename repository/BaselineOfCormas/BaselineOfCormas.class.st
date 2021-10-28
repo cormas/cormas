@@ -61,7 +61,10 @@ BaselineOfCormas >> loadBgImage [
 	app := (Smalltalk at: #PFProjectApplication) applicationClass uniqueInstance.
 	logoFileref := app resourceLocator imagesPath / 'CormasLogoFull.png'.
 	logoFileref exists
-		ifTrue: [ PolymorphSystemSettings desktopLogoFileName: logoFileref fullName ]
+		ifTrue: [ 
+			[ PolymorphSystemSettings desktopLogoFileName: logoFileref fullName ]
+			on: NotFound 
+			do: [ : ex | ] ]
 ]
 
 { #category : #doits }
@@ -83,7 +86,9 @@ BaselineOfCormas >> postLoad [
 	FDMorphicUIManager new beDefault.
 	ShortcutReminder enabled: false.
 	TaskbarMorph showTaskbar: true.
-	MenubarMorph showMenubar: false.
+	" https://github.com/cormas/cormas/issues/511
+	
+	MenubarMorph showMenubar: false."
 	
 	self unloadPackages.
 	"self openPlaygroundWindow."
