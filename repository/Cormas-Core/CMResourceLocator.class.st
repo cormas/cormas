@@ -69,6 +69,13 @@ CMResourceLocator class >> demosPath [
 	^ CMApplicationProject baseDirectory / 'demos'
 ]
 
+{ #category : #accessing }
+CMResourceLocator class >> imagesPath [
+	" Answer a <FileReference> with the receiver's path to the images directory "
+
+	^ self assetsPath / 'images'
+]
+
 { #category : #'class initialization' }
 CMResourceLocator class >> initialize [
 	SessionManager default registerSystemClassNamed: self name
