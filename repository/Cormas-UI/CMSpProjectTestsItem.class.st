@@ -15,3 +15,8 @@ CMSpProjectTestsItem class >> label [
 
 	^ 'Tests'
 ]
+
+{ #category : #accessing }
+CMSpProjectTestsItem class >> priority [
+	^ 22
+]

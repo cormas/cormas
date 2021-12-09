@@ -9,3 +9,8 @@ CMSpProjectLibraryItem class >> label [
 
 	^ 'Library'
 ]
+
+{ #category : #accessing }
+CMSpProjectLibraryItem class >> priority [
+	^ 28
+]

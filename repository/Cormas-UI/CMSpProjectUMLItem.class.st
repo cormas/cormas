@@ -9,3 +9,8 @@ CMSpProjectUMLItem class >> label [
 
 	^ 'UML'
 ]
+
+{ #category : #accessing }
+CMSpProjectUMLItem class >> priority [
+	^ 26
+]

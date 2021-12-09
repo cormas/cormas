@@ -15,3 +15,9 @@ CMSpProjectDataItem class >> label [
 
 	^ 'Data'
 ]
+
+{ #category : #initialization }
+CMSpProjectDataItem >> folderFileReference [
+
+	^ super folderFileReference / 'dumps'
+]

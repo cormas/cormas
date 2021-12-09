@@ -9,3 +9,9 @@ CMSpProjectDocumentationItem class >> label [
 
 	^ 'Documentation'
 ]
+
+{ #category : #initialization }
+CMSpProjectDocumentationItem >> folderFileReference [
+
+	^ super folderFileReference / 'doc'
+]

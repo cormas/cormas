@@ -15,3 +15,8 @@ CMSpProjectModelItem class >> label [
 
 	^ 'Model'
 ]
+
+{ #category : #accessing }
+CMSpProjectModelItem class >> priority [
+	^ 14
+]

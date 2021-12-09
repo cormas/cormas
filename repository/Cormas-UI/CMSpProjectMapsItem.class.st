@@ -15,3 +15,9 @@ CMSpProjectMapsItem class >> label [
 
 	^ 'Maps'
 ]
+
+{ #category : #initialization }
+CMSpProjectMapsItem >> folderFileReference [
+
+	^ super folderFileReference / 'maps'
+]

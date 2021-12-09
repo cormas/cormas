@@ -9,3 +9,14 @@ CMSpProjectEntitiesItem class >> label [
 
 	^ 'Entities'
 ]
+
+{ #category : #accessing }
+CMSpProjectEntitiesItem class >> priority [
+	^ 12
+]
+
+{ #category : #initialization }
+CMSpProjectEntitiesItem >> pageClass [
+
+	^ CMSpEntitiesPage
+]

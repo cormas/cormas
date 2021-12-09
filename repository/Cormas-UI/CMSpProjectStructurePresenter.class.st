@@ -115,3 +115,15 @@ CMSpProjectStructurePresenter >> title [
 
 	^ 'Project Browser'
 ]
+
+{ #category : #accessing }
+CMSpProjectStructurePresenter >> tree [
+
+	^ tree
+]
+
+{ #category : #accessing }
+CMSpProjectStructurePresenter >> tree: anObject [
+
+	tree := anObject
+]

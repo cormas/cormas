@@ -15,3 +15,8 @@ CMSpProjectSimulationItem class >> label [
 
 	^ 'Simulation'
 ]
+
+{ #category : #accessing }
+CMSpProjectSimulationItem class >> priority [
+	^ 20
+]

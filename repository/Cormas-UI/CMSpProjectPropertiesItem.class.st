@@ -15,3 +15,14 @@ CMSpProjectPropertiesItem class >> label [
 
 	^ 'Properties'
 ]
+
+{ #category : #accessing }
+CMSpProjectPropertiesItem class >> priority [
+	^ 16
+]
+
+{ #category : #initialization }
+CMSpProjectPropertiesItem >> pageClass [
+
+	^ CMSpMetaProjectPresenter
+]

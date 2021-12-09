@@ -15,3 +15,8 @@ CMSpProjectUIsItem class >> label [
 
 	^ 'UIs'
 ]
+
+{ #category : #accessing }
+CMSpProjectUIsItem class >> priority [
+	^ 24
+]

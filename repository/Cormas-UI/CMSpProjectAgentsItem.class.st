@@ -9,3 +9,8 @@ CMSpProjectAgentsItem class >> label [
 
 	^ 'Agents'
 ]
+
+{ #category : #accessing }
+CMSpProjectAgentsItem class >> priority [
+	^ 11
+]

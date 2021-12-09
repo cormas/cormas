@@ -15,3 +15,9 @@ CMSpProjectImagesItem class >> label [
 
 	^ 'Images'
 ]
+
+{ #category : #initialization }
+CMSpProjectImagesItem >> folderFileReference [
+
+	^ super folderFileReference / 'images'
+]

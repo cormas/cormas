@@ -15,3 +15,15 @@ CMSpProjectInfoItem class >> label [
 
 	^ 'Information'
 ]
+
+{ #category : #accessing }
+CMSpProjectInfoItem class >> priority [
+	^ 10
+]
+
+{ #category : #initialization }
+CMSpProjectInfoItem >> pageClass [
+
+	^ SpTextPresenter
+
+]
