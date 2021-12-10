@@ -61,7 +61,9 @@ CMProjectOpener >> getProjectFrom: aFileReferenceOrProjectModel [
 			self tryOpenFromFile: aFileReferenceOrProjectModel.
 			openStatus := true.
 			self createProjectFor: aFileReferenceOrProjectModel ]
-		ifTrue: [ aFileReferenceOrProjectModel ].
+		ifTrue: [ 
+			openStatus := true.			
+			aFileReferenceOrProjectModel ].
 ]
 
 { #category : #accessing }

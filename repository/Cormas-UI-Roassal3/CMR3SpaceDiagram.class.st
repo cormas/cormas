@@ -183,7 +183,9 @@ CMR3SpaceDiagram >> configurePopUp [
 	self nodes @ popUp.
 	self nodes 
 		when: RSMouseLeftClick 
-		do: [ : aRSMouseClick | (self entitiesAt: aRSMouseClick shape position) do: self leftClickActionBlock ].
+		do: [ : aRSMouseClick |
+			('Selected entities ' , aRSMouseClick asString) traceCr.
+			(self entitiesAt: aRSMouseClick shape position) do: self leftClickActionBlock ].
 ]
 
 { #category : #defaults }
@@ -252,9 +254,9 @@ CMR3SpaceDiagram >> initialize [
 CMR3SpaceDiagram >> initializeEvents [
 
 	self projectAnnouncer
-		when: CMTimeChangedAnnouncement do: [ :aAnnounce | 
-			aAnnounce timeStep = 0 
-				ifFalse: [ self timeChanged: aAnnounce timeStep ] ];
+		when: CMTimeChangedAnnouncement do: [ : ann | 
+			ann timeStep = 0 
+				ifFalse: [ self timeChanged: ann timeStep ] ];
 		when: CMSimInitializationAnnouncement do: [ self timeChanged: 0 ].
 	self canvas when: RSExtentChangedEvent do: [ 
 		self canvas camera zoomToFit: self canvas extent.
@@ -299,26 +301,44 @@ CMR3SpaceDiagram >> leftClickActionBlock: anObject [
 ]
 
 { #category : #initialization }
+CMR3SpaceDiagram >> makeDraggableEntity: e [
+
+	"Adding property to be draggable"
+	e @ RSDraggable.
+	e
+		when: RSMouseDragStart do: [ :evt | self inform: 'Start dragging' ];
+"			when: RSMouseDragging do: [ :evt |
+				self inform: evt position asString ];"
+		when: RSMouseDragEnd do: [ : evt | 
+			evt cormasEntity patch: (self cellAt: evt position ifAbsent: [ evt cormasEntity patch ]) ].
+]
+
+{ #category : #initialization }
+CMR3SpaceDiagram >> moveExistingEntity: e [
+
+	| entityModel eModelPatch |
+			
+	entityModel := e model.
+	eModelPatch := entityModel patch.
+	self makeDraggableEntity: e.
+"	labeled := RSLabeled new
+		highlightable;
+		fontSize: 12;
+		text: [ : aCMEntity | aCMEntity age asString ];
+		yourself."
+	(e propertyAt: #RSLabeled) text: entityModel labelOfPOV.
+	e
+		@ (RSPopup text: entityModel detailsOfPOV);
+		size: entityModel sizeOfPOV;
+		color: entityModel pov;
+		translateTo: (eModelPatch numCol @ eModelPatch numLine * cellSize) - (cellSize / 2)
+]
+
+{ #category : #initialization }
 CMR3SpaceDiagram >> moveSituatedEntities [
 	" Position the already created entities views to the location determined by each view's patch "
 
-	self situatedEntitiesViews do: [ : e | 
-		"Adding property to be draggable"
-		| entityModel eModelPatch |
-			
-		entityModel := e model.
-		eModelPatch := entityModel patch.
-		e @ RSDraggable.
-		e
-			when: RSMouseDragStart do: [ :evt | self inform: 'Start dragging' ];
-"			when: RSMouseDragging do: [ :evt |
-				self inform: evt position asString ];"
-			when: RSMouseDragEnd do: [ : evt | 
-				evt cormasEntity patch: (self cellAt: evt position ifAbsent: [ evt cormasEntity patch ]) ].
-	
-			e
-				size: entityModel sizeOfPOV;
-				translateTo: (eModelPatch numCol @ eModelPatch numLine * cellSize) - (cellSize / 2) ] 
+	self situatedEntitiesViews do: [ : e | self moveExistingEntity: e ] 
 ]
 
 { #category : #'instance creation' }
@@ -338,13 +358,22 @@ CMR3SpaceDiagram >> newElementViewForModel: cellModel [
 CMR3SpaceDiagram >> newSEViewForModel: aCMEntity [
 	" Answer a <RSShape> for the receiver's situated entities "
 
-	| colorSelector |
+	| colorSelector labeled |
 	
 	colorSelector := self activePoVSelectorAtClass: aCMEntity class.
-	^ self sevClass new
+"	newEntityShapeSelector := aCMEntity hasCustomShape
+		ifTrue: [ self halt. self perform: aCMEntity customShape ]
+		ifFalse: [ #ellipse ""self sevClass new"" ]."
+	labeled := RSLabeled new
+		highlightable;
+		fontSize: 14;
+		text: aCMEntity age asString;
+		yourself.
+	^ (RSShapeFactory perform: aCMEntity customShapeSelector)
 		model: aCMEntity;
 		color: (aCMEntity perform: colorSelector);
 		size: aCMEntity sizeOfPOV;
+		addInteraction: labeled;
 		yourself
 ]
 

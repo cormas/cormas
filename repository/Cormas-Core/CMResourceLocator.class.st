@@ -63,6 +63,13 @@ CMResourceLocator class >> cormasHomeProjects [
 ]
 
 { #category : #accessing }
+CMResourceLocator class >> cormasUserProjects [
+	" Answer a <Collection> of <FileReference> each one representing a user defined project in the CORMAS directory for projects "
+
+	^ (CMApplicationProject baseDirectory / 'projects') allChildrenMatching: '*' , CMApplicationProject applicationExtension.
+]
+
+{ #category : #accessing }
 CMResourceLocator class >> demosPath [
 	" Answer a <FileReference> with the receiver's path to the demos directory "
 

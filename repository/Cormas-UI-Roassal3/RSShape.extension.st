@@ -1,6 +1,12 @@
 Extension { #name : #RSShape }
 
 { #category : #'*Cormas-UI-Roassal3' }
+RSShape >> cormasModel [
+	
+	^ self model.
+]
+
+{ #category : #'*Cormas-UI-Roassal3' }
 RSShape >> updateEntityAspectIn: aCMR3SpacePresenter [ 
 
 	| colorSymbolOrNumber |

@@ -23,6 +23,30 @@ Class {
 }
 
 { #category : #examples }
+CMProjectBuilder class >> buildProjectModel: aModelName [
+	<script>
+	
+	Cursor wait showWhile: [ 
+		self new 
+			destinationPath: CMResourceLocator demosPath;
+			buildProject: aModelName;
+			moveProject: aModelName;
+			unLoadModelPackage ]
+]
+
+{ #category : #examples }
+CMProjectBuilder class >> buildProjectModel: aModelName modelClass: aModelClass [
+	<script>
+	
+	Cursor wait showWhile: [ 
+		self new 
+			destinationPath: CMResourceLocator demosPath;
+			buildProject: aModelName modelClass: aModelClass;
+			moveProject: aModelName;
+			unLoadModelPackage ]
+]
+
+{ #category : #examples }
 CMProjectBuilder class >> buildProjectModels [ 
 	<script>
 	
@@ -98,6 +122,30 @@ CMProjectBuilder >> buildForModelInstance: modelInstance [
 		writeMetadata;
 		writeSourceCode: modelInstance class
 
+]
+
+{ #category : #'accessing - building' }
+CMProjectBuilder >> buildProject: aModelName [
+	" Main entry point for generating project files. Generate all project files from the models in this image "
+	" Hopefully this method should be run only once, and to reformat project directory structure for example "
+
+	'Model2Project: Building project...' traceCr.
+	self loadModelPackage: aModelName.
+	self buildForModelInstance: aModelName new.
+	self buildProjectFile.
+	'Model2Project: Done building project...' traceCr.
+]
+
+{ #category : #'accessing - building' }
+CMProjectBuilder >> buildProject: aModelName modelClass: aModelClass [
+	" Main entry point for generating project files. Generate all project files from the models in this image "
+	" Hopefully this method should be run only once, and to reformat project directory structure for example "
+
+	'Model2Project: Building project...' traceCr.
+	self loadModelPackage: aModelName.
+	self buildForModelInstance: aModelClass new.
+	self buildProjectFile.
+	'Model2Project: Done building project...' traceCr.
 ]
 
 { #category : #'accessing - building' }
@@ -223,16 +271,16 @@ CMProjectBuilder >> handleFileEx: ex [
 
 	(ex isKindOf: FileExists)
 		ifTrue: [ 
-			self traceCrTab: 'Model2Project: Deleting existing project ' , ex fullName. 
+			self traceCrTab: 'CORMAS Project Builder: Deleting existing project ' , ex fullName. 
 			ex ensureDelete.
-			self traceCrTab: 'Model2Project: Done deleting existing project ' , ex fullName. 
+			self traceCrTab: 'CORMAS Project Builder: Done deleting existing project ' , ex fullName. 
 			ex retry ]
 		ifFalse: [ 
 			(ex isKindOf: FileDoesNotExistException)
 				ifTrue: [ 
-					self traceCrTab: 'Model2Project: Creating projects directory' , self defaultOutputDirectory. 
+					self traceCrTab: 'CORMAS Project Builder: Creating projects directory' , self defaultOutputDirectory. 
 					self defaultOutputDirectory asFileReference ensureCreateDirectory.
-					self traceCrTab: 'Model2Project: Done creating projects directory' , self defaultOutputDirectory.
+					self traceCrTab: 'CORMAS Project Builder: Done creating projects directory' , self defaultOutputDirectory.
 					ex retry ] ]
 ]
 
@@ -452,13 +500,13 @@ CMProjectBuilder >> writeSourceCode: modelClass [
 
 	| newFile |
 
-	self traceCrTab: 'Model2Project: Writing source code ' , modelClass asString. 
+	self traceCrTab: 'CORMAS Project Builder: Writing source code ' , modelClass asString. 
 	modelClass package 
 		fileOutOn: (WriteStream on: (String new: 4000))
 		named: CMProjectFile sourceCodeFilename.
 	newFile := self tempLocation / CMProjectFile sourceCodeFilenameWithExtension.
 	self writeSourceCodeInTempLocation: newFile.
-	self traceCrTab: 'Model2Project: Done writing source code ' , modelClass asString. 
+	self traceCrTab: 'CORMAS Project Builder: Done writing source code ' , modelClass asString. 
 ]
 
 { #category : #'accessing - writing' }

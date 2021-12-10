@@ -155,12 +155,28 @@ Example: self colocatedSimilarAgentsVerifying: [:a | a sex ~= self sex] "
 		ifFalse: [self colocatedSimilarAgents select: [:a | aBlock value: a]]
 ]
 
+{ #category : #displaying }
+CMAgentLocation >> coordinates [
+	" Answer a <Point> with the receiver's coordinates "
+	
+	^ self patch coordinates
+]
+
 { #category : #'star control' }
 CMAgentLocation >> delete [
 "Purpose: gets rid of this object. The collectGarbage is IMMEDIATELY performed  (ie. the receiver of class X is removed from 'theXXXs' collection)"
 
 	self leave.
 	super delete
+]
+
+{ #category : #accessing }
+CMAgentLocation >> detailsOfPOV [
+	" Answer a <String> to visually distinguish the receiver in a space. 
+	This is displayed in the popup when the mouse is over a grid.
+	To be overwritten if needed"
+
+	^ String empty
 ]
 
 { #category : #deprecated }
@@ -197,6 +213,14 @@ CMAgentLocation >> isClassLocation [
 CMAgentLocation >> isSituated [
 "Purpose: tests the location somewhere in the spatial grid"
 	^patch notNil
+]
+
+{ #category : #accessing }
+CMAgentLocation >> labelOfPOV [
+	" Answer a <String> displayed to describe the receiver. 
+	To be overwritten if needed"
+
+	^ String empty
 ]
 
 { #category : #'star moving' }
@@ -948,8 +972,10 @@ Example: self similarAgentsWithinRadius: 3"
 
 { #category : #accessing }
 CMAgentLocation >> sizeOfPOV [
-"To be overwritten if needed"
- ^ 20
+	" Answer a <Number> to visually distinguish the receiver in a space.
+		To be overwritten if needed"
+
+	^ 20
 ]
 
 { #category : #moving }

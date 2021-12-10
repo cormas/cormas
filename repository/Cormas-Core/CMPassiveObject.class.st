@@ -11,18 +11,21 @@ Class {
 	#category : #'Cormas-Core-Entities'
 }
 
-{ #category : #'star control' }
+{ #category : #controlling }
 CMPassiveObject >> delete [
-"Purpose: gets rid of this object. The collectGarbage is IMMEDIATELY performed  (ie. the receiver of class X is removed from 'theXXXs' collection)"
+
+	"Purpose: gets rid of this object. The collectGarbage is IMMEDIATELY performed  (ie. the receiver of class X is removed from 'theXXXs' collection)"
+
 	self destroyed: true.
-	self collector isNil ifFalse:[self collector removeEntity: self]
+	self collector ifNotNil: [ self collector removeEntity: self ]
 ]
 
 { #category : #'initialize-release' }
 CMPassiveObject >> destroyed [
 	"Answer if the entity is destroyed or not"
 	
-	^destroyed ifNil: [destroyed := false]
+	self deprecated: 'Should use #isDestroyed or #isDead '.
+	^ destroyed ifNil: [ destroyed := false ]
 ]
 
 { #category : #'initialize-release' }
@@ -30,6 +33,13 @@ CMPassiveObject >> destroyed: aBoolean [
 	
 	destroyed := aBoolean.
 	(aBoolean and: [self isSituated]) ifTrue: [self leave]
+]
+
+{ #category : #testing }
+CMPassiveObject >> isDead [
+	" See superimplementor's comment "
+
+	^ destroyed
 ]
 
 { #category : #testing }

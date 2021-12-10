@@ -613,6 +613,8 @@ CMSpaceModel >> createRectangularCellsFigure [
 	" Private - Create coordinates of the set of square cells of the grid "
 	
 	| cote rect aPov i |
+	
+	self flag: #toReview.
 	self elementaryEntitiesDefaultPovs: nil.
 	self setAbsoluteBounds.
 	cote := self absoluteBounds height / self line.	
@@ -1824,6 +1826,12 @@ CMSpaceModel >> nbNeighbours [
 	" Answer a <Number> representing the receiver configured number of neighbours of regular cells "
 
 	^ self nbConfiguration nbNeighbours
+]
+
+{ #category : #accessing }
+CMSpaceModel >> nearestEmptyCellFor: aCMAgentLocation [
+
+	^ self nbConfiguration nearestEmptyCellFor: aCMAgentLocation.
 ]
 
 { #category : #'landscape indices' }

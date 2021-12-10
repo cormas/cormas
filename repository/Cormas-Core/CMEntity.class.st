@@ -1509,6 +1509,12 @@ CMEntity >> getPovSpecForSelector: selectorName andInfo: aInfoName [
 ]
 
 { #category : #accessing }
+CMEntity >> hasCustomShape [
+
+	^ false
+]
+
+{ #category : #accessing }
 CMEntity >> id [
 	"Purpose: integer value, assigned at creation, used to identify the instance"
 	
@@ -1517,6 +1523,7 @@ CMEntity >> id [
 
 { #category : #accessing }
 CMEntity >> id: aNumber [
+
 	id := aNumber
 ]
 
@@ -1528,28 +1535,9 @@ CMEntity >> init [
 
 { #category : #'initialize-release' }
 CMEntity >> initId [
-	
-	self id: (self class CurrentId: self class CurrentId + 1)
-]
+	" Private - Set the receiver's internal identifier. "
 
-{ #category : #displaying }
-CMEntity >> inspect [
-	"Open an inspector, but previously set the default value of the parameters"
-	
-	self class allSpecificClassVariables
-		do:
-			[:att | 
-			[self class perform: att asSymbol]
-				on: Error
-				do: [:ex | nil]].
-	self class allSpecificAttributes
-		do:
-			[:att | 
-			[self perform: att asSymbol]
-				on: Error
-				do: [:ex | nil]].
-	self class genericEntities.
-	super inspect
+	self id: (self class CurrentId: self class CurrentId + 1)
 ]
 
 { #category : #testing }

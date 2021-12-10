@@ -11,6 +11,14 @@ CMSquaredSpaceNeighbourhood >> createCellsFigure [
 	self spaceModel createRectangularCellsFigure.
 ]
 
+{ #category : #'environment - sensing - space' }
+CMSquaredSpaceNeighbourhood >> nearestEmptyCellFor: aCMAgentLocation [
+	
+	^ (aCMAgentLocation nearestEmptyNeighborsWithinRadius: (self spaceModel line max: self spaceModel column))
+		ifNotEmpty: [ : locations |  Cormas selectRandomlyFrom: locations ]
+		ifEmpty: [ nil ]
+]
+
 { #category : #initialization }
 CMSquaredSpaceNeighbourhood >> setBoundaryDirectionsFor: aCMSpatialEntityElement [
 

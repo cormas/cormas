@@ -36,9 +36,9 @@ CMSpatialEntityElement >> boundaryDirections [
 { #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> coordinates [
 	"Purpose: Returns the coordinates x and y as a Point instance.
-Example: self coordinates dist: (self neighbourNE coordinates)"
+	Example: self coordinates dist: (self neighbourNE coordinates)"
 	
-	^Point
+	^ Point
 		x: self numCol
 		y: self numLine
 ]
@@ -655,9 +655,8 @@ If none: returns nil; if more than one at the minimum radius: random selection
 Valid only for regular grids (square or hexagonal cells). For polygonal cells, use the generic but slower method #nearestCellVerifying: in super class SpatialEntity 
 Return value: <SpatialEntityElement | nil>"
 	
-	| locations |
-	^(self spaceModel gridCellShape = #squared
-		or: [self spaceModel gridCellShape = #hexagonal])
+	^ self spaceModel nearestEmptyCellFor: self
+"	^(self spaceModel gridCellShape = #squared 	or: [self spaceModel gridCellShape = #hexagonal])
 		ifTrue:
 			[locations := self
 				nearestEmptyNeighborsWithinRadius:
@@ -665,7 +664,7 @@ Return value: <SpatialEntityElement | nil>"
 			locations isEmpty
 				ifFalse: [Cormas selectRandomlyFrom: locations]
 				ifTrue: [nil]]
-		ifFalse: [super nearestCellVerifying: [:p | p noOccupant]]
+		ifFalse: [super nearestCellVerifying: [:p | p noOccupant]]"
 ]
 
 { #category : #'environment - sensing - space' }

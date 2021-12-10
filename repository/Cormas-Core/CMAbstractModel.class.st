@@ -959,8 +959,8 @@ CMAbstractModel class >> socialClasses: aCollection [
 
 { #category : #'managing classes' }
 CMAbstractModel class >> spatialClasses [
-	" Answer a <Collection> of spatial classes of the model. Aldready configured in #initializeWithoutVS (??)"
-	"self allClassesInPackage select: [ :aClass | aClass inheritsFrom: CMSpatialEntityCell ]"
+	" Answer a <Collection> of spatial classes of the model. "
+	" self allClassesInPackage select: [ :aClass | aClass inheritsFrom: CMSpatialEntityCell ] "
 	
 	^ spatialClasses
 		ifNil: [ 
@@ -1085,14 +1085,15 @@ CMAbstractModel >> allTheEntities [
 
 { #category : #'accessing - entities' }
 CMAbstractModel >> allTheEntities: aClass [
-	"Purpose: Returns a collection of all the instances of aClass (and sub classes) collected by cormasModel. Usefull for abstract classes
-Example: (self allTheEntities: Forager) is returning all the instances of restrained and unrestrained foragers"
+	" Answer a <Collection> of all the instances of aClass (and sub classes) collected by cormasModel. 
+	Usefull for abstract classes
+
+	Example: (self allTheEntities: Forager) is returning all the instances of restrained and unrestrained foragers "
 	
 	| coll |
 	coll := OrderedCollection new.
-	aClass withAllSubclasses
-		do: [:cl | cl isAbstract ifFalse: [coll addAll: (self theEntities: cl)]].
-	^coll
+	aClass withAllSubclasses do: [:cl | cl isAbstract ifFalse: [coll addAll: (self theEntities: cl)]].
+	^ coll
 ]
 
 { #category : #'accessing - entities' }
@@ -1759,6 +1760,48 @@ CMAbstractModel >> createN: aNumber randomlyLocatedEntities: aClass initMethod: 
 	^newEntities
 ]
 
+{ #category : #'instance creation - agents & objects' }
+CMAbstractModel >> createN: aNumber randomlyLocatedEntitiesFrom: aCollectionOfClasses [
+	"Return a collection of aNumber of entities of aClass for wich the 'init' method 'has been send.
+	The new entities are randomly located on the grid.
+	ex: self createN: 10 randomlyLocatedEntities: Predator"
+	
+	^ self 
+		createN: aNumber 
+		randomlyLocatedEntitiesFrom: aCollectionOfClasses 
+		initMethod: #init
+]
+
+{ #category : #'instance creation - agents & objects' }
+CMAbstractModel >> createN: aNumber randomlyLocatedEntitiesFrom: aCollectionOfClasses initMethod: aSymbol [
+	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' has been send.
+	The new entities are randomly located on the grid.
+	ex: self createN: 10 randomlyLocatedEntities: Predator initMethod: #initAge "
+
+	^ self
+		createN: aNumber 
+		randomlyLocatedEntitiesFrom: aCollectionOfClasses 
+		initMethod: aSymbol 
+		arguments: #()
+]
+
+{ #category : #'instance creation - agents & objects' }
+CMAbstractModel >> createN: aNumber randomlyLocatedEntitiesFrom: aCollectionOfClasses initMethod: aSymbol arguments: aCollec [
+	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' with a set of arguments 'aCollec' has been send. 
+	The new entities are randomly located on the grid.
+	ex: self createN: 10 randomlyLocatedEntities: Predator initMethod: #initAge:energy: arguments: #(0 50) "
+
+	| anAgent newEntities |
+	newEntities := OrderedCollection new.
+	aNumber
+		timesRepeat: [ 
+			anAgent := self newEntity: aCollectionOfClasses atRandom.
+			anAgent moveTo: self pickCell.
+			anAgent perform: aSymbol withArguments: aCollec.
+			newEntities add: anAgent ].
+	^ newEntities
+]
+
 { #category : #'instance creation - nodes & arcs' }
 CMAbstractModel >> createNetworkOfArcs: anArcClass onCells: listOfCells [
 	"create a Network of arcs (instances of anArcClass) located on the listOfCells"
@@ -2200,22 +2243,32 @@ CMAbstractModel >> initEntities [
 
 	"Remove all the PassiveObjects and Located Objects"
 
-	self class passiveClasses
-		do: [ :aClass | 
-			((aClass inheritsFrom: CMMsg) or: [ aClass isAbstract ])
-				ifFalse: [ (aClass inheritsFrom: CMObjectLocation)
-						ifTrue: [ (self theEntities: aClass) isNil
-								ifFalse: [ (self theEntities: aClass) do: [ :LO | LO leave ] ] ].
-					self resetEntities: aClass ] ].	"Remove all the Agents from previous simulation"
-	self class socialClasses
-		do: [ :aClass | 
-			aClass isAbstract
-				ifFalse: [ (aClass inheritsFrom: CMAgentLocation)
-						ifTrue: [ (self theEntities: aClass) isNil
-								ifFalse: [ (self theEntities: aClass) do: [ :LO | LO leave ] ] ].
-					self resetEntities: aClass ] ].
+	self class passiveClasses do: [ :aClass | self initEntitiesForPassiveClass: aClass ].	"Remove all the Agents from previous simulation"
+	self class socialClasses do: [ :aClass | self initEntitiesForSocialClass: aClass ].
 	self spaceModel isNil
 		ifFalse: [ self spaceModel resetSpatialEntities "ButCells" ]
+]
+
+{ #category : #accessing }
+CMAbstractModel >> initEntitiesForPassiveClass: aClass [
+
+	((aClass inheritsFrom: CMMsg) or: [ aClass isAbstract ]) 
+		ifTrue: [ ^ self ].
+	(aClass inheritsFrom: CMObjectLocation) 
+		ifTrue: [ 
+			(self theEntities: aClass) ifNotNil: [ 
+				(self theEntities: aClass) do: [ :lO | lO leave ] ] ].
+	self resetEntities: aClass
+]
+
+{ #category : #accessing }
+CMAbstractModel >> initEntitiesForSocialClass: aClass [ 
+
+	(aClass isAbstract not and: [ aClass inheritsFrom: CMAgentLocation ])
+		ifTrue: [ 
+			(self theEntities: aClass) isNil
+				ifFalse: [ (self theEntities: aClass) do: #leave ] ].
+	self resetEntities: aClass
 ]
 
 { #category : #scheduling }
@@ -2265,21 +2318,52 @@ CMAbstractModel >> initialize [
 
 ]
 
-{ #category : #'initalize release' }
+{ #category : #'probes - recording' }
+CMAbstractModel >> initializeActiveProbes [ 
+
+	self class activeProbes ifNotEmpty: [ : activeProbes | 
+		self data
+			at: self class name
+			put: Dictionary new.
+		activeProbes do: [ : p | 
+			(self data at: self class name)
+					at: p
+					put: OrderedCollection  new] ].
+]
+
+{ #category : #initialization }
 CMAbstractModel >> initializeChannel [
 	
 	self channel: CMChannel new
 ]
 
-{ #category : #'probes - recording' }
+{ #category : #initialization }
+CMAbstractModel >> initializeEntitiesActiveProbes [
+	
+	self class allEntityClasses do: [ : c | 
+		c activeProbes isEmpty
+			ifFalse: [
+				self data
+					at: c name
+					put: Dictionary new.
+				c activeProbes do: [  :p | 
+					(self data at: c name)
+							at: p
+							put: Dictionary new ] ] ]
+]
+
+{ #category : #initialization }
 CMAbstractModel >> initializeProbes [
+
 	data := Dictionary new.
-	self setDataStructures.
+	self 
+		initializeActiveProbes;
+		initializeEntitiesActiveProbes.
 	self cormas ifNil: [ ^ nil ].
 	"self cormas refreshCharts"
 ]
 
-{ #category : #'initalize release' }
+{ #category : #initialization }
 CMAbstractModel >> initializeSpaceModel [
 	" Private - Setup the receiver's space model only if the model has a spatial entity cell class defined "
 
@@ -2596,12 +2680,19 @@ CMAbstractModel >> pickCell [
 ]
 
 { #category : #'accessing - entities' }
+CMAbstractModel >> pickCellAt: aPointLocation [
+	"Purpose: return a spatialEntityElement (aCell) picked randomly from the spatial grid.
+	Example: self pickCell"
+
+	^ self theESE detect: [ : cellEntity | cellEntity coordinates = aPointLocation ]
+]
+
+{ #category : #'accessing - entities' }
 CMAbstractModel >> pickCellConstrainedBy: aBlock [
 	"Purpose: return a random cell of the grid. The cell verifies the block condition.
 	Example:  self pickCellConstrainedBy: [:cell | state=#land] or self pickCellConstrainedBy: [: cell | cell energy > 1] "
 
-	^ Cormas
-		selectRandomlyFrom: (self theESE asArray select: [ :c | aBlock value: c ])
+	^ Cormas selectRandomlyFrom: (self theESE asArray select: [ :c | aBlock value: c ])
 ]
 
 { #category : #'accessing - entities' }
@@ -2672,7 +2763,7 @@ CMAbstractModel >> pickUnoccupiedCell [
 	^ self pickCellConstrainedBy: [ :cell | cell noOccupant ]
 ]
 
-{ #category : #'initalize release' }
+{ #category : #initialization }
 CMAbstractModel >> prepareCommunicationFor: anAgent [
 	
 	anAgent channel: self channel.
@@ -2785,7 +2876,7 @@ CMAbstractModel >> registerSpaceModelChange: aSymbol with: aParameter [
 		registerChange: (CMSpaceModelChange newChange: aSymbol with: aParameter)
 ]
 
-{ #category : #'initalize release' }
+{ #category : #initialization }
 CMAbstractModel >> release [
 
 	super release.
@@ -2806,18 +2897,14 @@ CMAbstractModel >> removeDeadEntities [
 
 { #category : #'referencing entities' }
 CMAbstractModel >> removeDeadEntities: aClass [
-	"removes all the dead or destroyed intances of type: aClass"
-	
-	| theEntities destroyedEntities |
-	theEntities := self theEntities: aClass.
-	theEntities isNil
-		ifFalse:
-			[destroyedEntities := theEntities select: [:a | a destroyed].
-			destroyedEntities
-				do:
-					[:a | 
-					(self class occupantClasses includes: aClass) ifTrue: [a leave].
-					theEntities remove: a]]
+	" Removes all the dead or destroyed intances of type: aClass "
+
+	(self theEntities: aClass) ifNotNil: [ : theEntities |
+		| destroyedEntities |
+		destroyedEntities := theEntities select: [ :a | a destroyed ].
+		destroyedEntities do: [ :a | 
+			(self class occupantClasses includes: aClass) ifTrue: [ a leave ].
+			theEntities remove: a ] ]
 ]
 
 { #category : #'referencing entities' }
@@ -2829,18 +2916,16 @@ CMAbstractModel >> removeDestroyedEntities [
 
 { #category : #'referencing entities' }
 CMAbstractModel >> removeDestroyedEntities: aClass [
+
 	"removes all the dead or destroyed intances of type: aClass"
-	
+
 	| theEntities destroyedEntities |
 	theEntities := self theEntities: aClass.
-	theEntities isNil
-		ifFalse:
-			[destroyedEntities := theEntities select: [:a | a destroyed].
-			destroyedEntities
-				do:
-					[:a | 
-					a isSituated ifTrue: [a leave].
-					theEntities remove: a]]
+	theEntities ifNotNil: [ 
+		destroyedEntities := theEntities select: [ :a | a isDead ].
+		destroyedEntities do: [ :a | 
+			a isSituated ifTrue: [ a leave ].
+			theEntities remove: a ] ]
 ]
 
 { #category : #'referencing entities' }
@@ -2853,7 +2938,7 @@ CMAbstractModel >> removeEntity: anEntity [
 		ifAbsent: [nil]
 ]
 
-{ #category : #'initalize release' }
+{ #category : #initialization }
 CMAbstractModel >> removeFromChannel: anAgent [
 	
 	self channel observerFunctions
@@ -2981,36 +3066,6 @@ CMAbstractModel >> setColor: aColorValue forProbe: aSymbol [
            ->creates a color method at class level"
 	
 	^self class setColor: aColorValue forProbe: aSymbol
-]
-
-{ #category : #'probes - recording' }
-CMAbstractModel >> setDataStructures [
-	
-	self class activeProbes isEmpty
-		ifFalse:
-			[self data
-				at: self class name
-				put: Dictionary new.
-			self class activeProbes
-				do:
-					[:p | 
-					(self data at: self class name)
-						at: p
-						put: OrderedCollection  new]].
-	self class allEntityClasses
-		do:
-			[:c | 
-			c activeProbes isEmpty
-				ifFalse:
-					[self data
-						at: c name
-						put: Dictionary new.
-					c activeProbes
-						do:
-							[:p | 
-							(self data at: c name)
-								at: p
-								put: Dictionary new]]]
 ]
 
 { #category : #'init - spatial entities' }
@@ -3151,18 +3206,23 @@ CMAbstractModel >> stepAsynchronouslyCA: t [
 
 { #category : #control }
 CMAbstractModel >> stepEntities: aCollecOrClass [
-	"Purpose: Iteration over aCollec or the entities of a class. In case aCollecOrClass is a class, the entities are ordered according to their id. In case aCollecOrClass is a collection of instances, the order of the collection is kept.
-Example: self stepEntities: Farmer
-Example: self stepEntities: (self theForagers select:[:f| f energy > 10])"
+	"Purpose: Iteration over aCollec or the entities of a class. 
+	In case aCollecOrClass is a class, the entities are ordered according to their id. 
+	In case aCollecOrClass is a collection of instances, the order of the collection is kept.
+	
+	Example: self stepEntities: Farmer
+	Example: self stepEntities: (self theForagers select:[:f| f energy > 10]) "
 	
 	self ask: aCollecOrClass toDo: #step
 ]
 
 { #category : #control }
 CMAbstractModel >> stepEntitiesRandom: aCollecOrClass [
-	"Purpose: Iteration over aCollec or the entities of a class. The elements of aCollec / or the instances of the class, are randomly mixed.
-Example: self stepEntities: Farmer
-Example: self stepEntities: (self theForagers select:[:f| f energy > 10])"
+	" Iterate over aCollecOrClass or the entities of a class. 
+	The elements of aCollec / or the instances of the class, are randomly mixed.
+
+	Example: self stepEntities: Farmer
+	Example: self stepEntities: (self theForagers select:[:f| f energy > 10]) "
 	
 	self askRandom: aCollecOrClass toDo: #step
 ]
@@ -3263,11 +3323,10 @@ CMAbstractModel >> theEntities: aClass [
 	aClass isAbstract
 		ifTrue: [ ^ OrderedCollection new ].
 	getter := aClass asGetterForEntityClass.
-	collection := self perform: getter.
-	collection
+	collection := (self perform: getter)
 		ifNil: [
 			self class createReaderAccessor: aClass.
-			collection := self perform: getter ].
+			self perform: getter ].
 	^ collection
 ]
 

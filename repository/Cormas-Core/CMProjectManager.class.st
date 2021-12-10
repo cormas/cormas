@@ -265,7 +265,9 @@ CMProjectManager >> currentProjectVersion [
 CMProjectManager >> deleteProject [
 	" Private - Delete the current project from this system and unset its references "
 
-	self currentProject ifNotNil: [ (RGContainer packageOfClass: self cormasModelClass) realPackage removeFromSystem ].
+	self currentProject ifNotNil: [ 
+		(RGContainer packageOfClass: self cormasModelClass) 
+			ifNotNil: [ : rgObject | rgObject realPackage removeFromSystem ] ].
 	self currentProject release.
 	self currentProject: nil.
 ]
@@ -279,7 +281,7 @@ CMProjectManager >> doPostCloseActions [
 			| icePackage |
 			icePackage := IcePackage named: self cormasModelClass package name repository: cormasRepo.
 			self announcer unsubscribe: self currentProject.
-			self fsm handleEvent: #actionClose.
+			[ self fsm handleEvent: #actionClose ] on: SsEventNotSupposed do: [: ex | self inform: 'CORMAS project was not cleanly closed' ].
 			self deleteProject.	
 			self cleanEnvironment.
 			(RPackageOrganizer default includesPackageNamed: icePackage package)
@@ -408,9 +410,11 @@ CMProjectManager >> reloadProject: icePackage repository: anIceRepository [
 		message: ('Loading package {1}' format: { icePackage name });
 		onSuccessRepositoryModified;
 		execute: [ 
-			Iceberg announcer
-				suspendAllForRepository: anIceRepository
-				while: [ icePackage load ] ].
+			icePackage name = #_UnpackagedPackage
+				ifFalse: [ 
+					Iceberg announcer
+						suspendAllForRepository: anIceRepository
+						while: [ icePackage load ] ] ].
 	Iceberg announcer announce: (IceRepositoryModified for: anIceRepository)
 
 ]

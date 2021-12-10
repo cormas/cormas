@@ -19,3 +19,9 @@ Class {
 	#superclass : #CMSpaceNeighbourhood,
 	#category : #'Cormas-Core-Space'
 }
+
+{ #category : #'environment - sensing - space' }
+CMNonSquaredSpaceNeighbourhood >> nearestEmptyCellFor: aCMAgentLocation [
+
+	^ aCMAgentLocation nearestCellVerifying: [:p | p noOccupant]
+]
