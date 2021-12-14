@@ -16,9 +16,10 @@ CMBushmeatCell class >> asGetterForEntityClass [
 ]
 
 { #category : #accessing }
-CMBushmeatCell >> addTrap: arg1 [
-
-	self traps add: arg1
+CMBushmeatCell >> addTrap: aCMTrap [
+	" The receiver could contain multiple traps. Add aCMTrap to the receiver's traps "
+	
+	self traps add: aCMTrap
 ]
 
 { #category : #accessing }
@@ -33,13 +34,26 @@ CMBushmeatCell >> area: arg1 [
 	area := arg1
 ]
 
-{ #category : #accessing }
-CMBushmeatCell >> asString [
+{ #category : #converting }
+CMBushmeatCell >> asString [ 
+	" Private - See superimplementor's comment "
 
-	^ String streamContents: [ :arg1 | 
-		  arg1
-			  << 'Traps: ';
-			  << self trapsCount asString ]
+	^ String streamContents: [ : stream |
+		stream 
+			<< 'Traps: ';
+			<< self trapsCount asString.
+		self traps 
+			ifEmpty: [ 
+				stream 
+					cr; << '---'; cr;
+					<< 'Location: '; cr;
+					<< self coordinates asString ]
+			ifNotEmpty: [ 
+				stream
+					cr; << '---'; cr.
+					self traps do: [ : aTrap | stream << aTrap asString ].
+				stream
+					cr; << '---' ] ]
 ]
 
 { #category : #accessing }
@@ -58,7 +72,9 @@ CMBushmeatCell >> increaseTrapCatches [
 { #category : #pov }
 CMBushmeatCell >> pov [
 
-	^ Color fromHexString: '247008'
+	^ self hasTrap
+		  ifTrue: [ self traps anyOne color ]
+		  ifFalse: [ Color fromHexString: '247008' ]
 ]
 
 { #category : #pov }
@@ -97,13 +113,16 @@ CMBushmeatCell >> sizeOfPOV [
 { #category : #accessing }
 CMBushmeatCell >> trap [
 
+	self flag: #toReview.
 	^ trap ifNil: [ trap := { true. false } atRandom ] ifNotNil: [ trap ]
 ]
 
 { #category : #accessing }
 CMBushmeatCell >> trap: arg1 [
 
+	self flag: #toReview.
 	trap := arg1
+	
 ]
 
 { #category : #accessing }

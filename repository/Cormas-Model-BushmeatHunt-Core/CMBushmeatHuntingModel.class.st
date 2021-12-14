@@ -27,7 +27,8 @@ Class {
 		'anthelopes',
 		'cells',
 		'huntingFamilies',
-		'catchesNumber'
+		'catchesNumber',
+		'isHuntingSeason'
 	],
 	#category : #'Cormas-Model-BushmeatHunt-Core'
 }
@@ -68,14 +69,9 @@ CMBushmeatHuntingModel class >> maximumNumberOffspring [
 ]
 
 { #category : #accessing }
-CMBushmeatHuntingModel >> addHuntingFamily: arg1 [
+CMBushmeatHuntingModel >> addHuntingFamily: famId [ 
 
-	| tmp2 |
-	tmp2 := CMBushmeatHuntingFamily new.
-	tmp2
-		id: arg1;
-		space: self spaceModel.
-	self huntingFamilies add: tmp2 yourself
+	self huntingFamilies add: (CMBushmeatHuntingFamily newWithId: famId forSpace: self spaceModel)
 ]
 
 { #category : #accessing }
@@ -135,7 +131,6 @@ CMBushmeatHuntingModel >> huntingFamilies [
 
 	^ huntingFamilies
 		  ifNil: [ huntingFamilies := OrderedCollection new ]
-		  ifNotNil: [ huntingFamilies ]
 ]
 
 { #category : #accessing }
@@ -177,10 +172,11 @@ CMBushmeatHuntingModel >> initFamilies [
 { #category : #init }
 CMBushmeatHuntingModel >> initScenarioHuntingSeason [
 
-	| tmp1 |
+	| tmp1 tmp2 |
 	catchesNumber := 0.
 	tmp1 := self class maximumHuntingFamilies.
-	1 to: tmp1 do: [ :tmp2 | self addHuntingFamily: tmp2 ].
+	tmp2 := tmp1.
+	1 to: tmp2 do: [ :tmp3 | self addHuntingFamily: tmp3 ].
 	self displayPov: #povTrap of: CMBushmeatCell
 ]
 

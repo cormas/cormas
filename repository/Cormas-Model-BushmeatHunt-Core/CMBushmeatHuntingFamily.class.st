@@ -2,9 +2,8 @@ Class {
 	#name : #CMBushmeatHuntingFamily,
 	#superclass : #CMGroup,
 	#instVars : [
-		'families',
-		'maximumAllowedAnthelopePerFamily',
-		'maximumNumberAllowedGlobalTraps',
+		'familyColor',
+		'trapLocationStrategy',
 		'traps',
 		'space'
 	],
@@ -26,6 +25,12 @@ CMBushmeatHuntingFamily class >> newWithId: anInteger forSpace: aCMSpaceModel [
 		initialize;
 		yourself
 	
+]
+
+{ #category : #initialization }
+CMBushmeatHuntingFamily >> addNewFamilyTraps [
+
+	self traps add: (CMTrap forFamily: self location: self chooseTrapLocation)
 ]
 
 { #category : #testing }
@@ -56,18 +61,6 @@ CMBushmeatHuntingFamily >> defaultTrapLocationStrategy [
 ]
 
 { #category : #accessing }
-CMBushmeatHuntingFamily >> families [
-
-	^ families
-]
-
-{ #category : #accessing }
-CMBushmeatHuntingFamily >> families: arg1 [
-
-	families := arg1
-]
-
-{ #category : #accessing }
 CMBushmeatHuntingFamily >> familyColor [
 
 	^ familyColor
@@ -89,7 +82,7 @@ CMBushmeatHuntingFamily >> hasTrap [
 CMBushmeatHuntingFamily >> initialize [
 
 	super initialize.
-	self setupTraps
+	self familyColor: Color random.
 ]
 
 { #category : #initialization }
@@ -98,16 +91,10 @@ CMBushmeatHuntingFamily >> maximumAllowedTrapsPerCell [
 	^ CMBushmeatHuntingModel maximumAllowedTrapsPerCell
 ]
 
-{ #category : #initialization }
+{ #category : #accessing }
 CMBushmeatHuntingFamily >> maximumNumberAllowedGlobalTraps [
 
 	^ CMBushmeatHuntingModel maximumNumberAllowedGlobalTraps
-]
-
-{ #category : #accessing }
-CMBushmeatHuntingFamily >> maximumNumberAllowedGlobalTraps: arg1 [
-
-	maximumNumberAllowedGlobalTraps := arg1
 ]
 
 { #category : #accessing }
@@ -117,24 +104,12 @@ CMBushmeatHuntingFamily >> removeTraps [
 ]
 
 { #category : #initialization }
-CMBushmeatHuntingFamily >> setupFamilyTraps [
-
-	self traps add: (CMTrap forFamily: self location: self chooseTrapLocation)
-]
-
-{ #category : #initialization }
-CMBushmeatHuntingFamily >> setupNewTrap [
-
-	traps add: (CMTrap forFamily: self location: self chooseTrapLocation)
-]
-
-{ #category : #initialization }
 CMBushmeatHuntingFamily >> setupTraps [
 
-	[ 
-	self currentTrapNumber <= self maximumAllowedTrapsPerCell and: [ 
-		self currentTrapNumber <= self maximumNumberAllowedGlobalTraps ] ] 
-		whileTrue: [ self setupNewTrap ]
+	[ self allowedToAddTraps ] 
+		whileTrue: [ self addNewFamilyTraps ].
+"	self shouldUpdateTrapLocations
+		ifTrue: [ self updateFamilyTrapLocations ]"
 ]
 
 { #category : #initialization }

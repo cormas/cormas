@@ -274,7 +274,8 @@ CMBushmeatAnthelope >> step [
 { #category : #'population dynamics' }
 CMBushmeatAnthelope >> updateBehavior [
 
-	(self isAdult and: [ self hasPartner not ]) ifTrue: [ self move ]
+	(self isDead not and: [ self isAdult and: [ self hasPartner not ] ])
+		ifTrue: [ self move ]
 ]
 
 { #category : #'population dynamics' }

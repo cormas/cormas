@@ -3,7 +3,9 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'family',
-		'location'
+		'location',
+		'totalCatches',
+		'seasonCatches'
 	],
 	#category : #'Cormas-Model-BushmeatHunt-Core'
 }

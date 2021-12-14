@@ -26,29 +26,31 @@ CMBushmeatStage class >> minAgeLimit [
 ]
 
 { #category : #'instance creation' }
-CMBushmeatStage class >> newFor: arg1 [
+CMBushmeatStage class >> newFor: anAnthelope [
 
-	| tmp1 |
-	tmp1 := self new.
-	tmp1 initializeWith: arg1.
-	^ tmp1 yourself
+	^ self new
+		initializeWith: anAnthelope;
+		yourself
 ]
 
 { #category : #'instance creation' }
 CMBushmeatStage class >> stageFor: arg1 [
 
 	^ self ageDifferenceBetweenSex
-		  ifTrue: [ 
-		  arg1 age between: arg1 minAgeLimit and: arg1 maxAgeLimit ]
-		  ifFalse: [ 
-		  arg1 age between: self minAgeLimit and: self maxAgeLimit ]
+		  ifTrue: [  arg1 age between: arg1 minAgeLimit and: arg1 maxAgeLimit ]
+		  ifFalse: [ arg1 age between: self minAgeLimit and: self maxAgeLimit ]
 ]
 
 { #category : #'instance creation' }
-CMBushmeatStage class >> updateStageFrom: arg1 [
-
-	^ (self subclasses detect: [ :arg2 | arg2 stageFor: arg1 ]) newFor:
-		  arg1
+CMBushmeatStage class >> updateStageFrom: anAnthelope [
+	" Answer a new receiver's instance for anAnthelope "
+	
+	(self subclasses 
+		detect: [ : stageSubclass | stageSubclass stageFor: anAnthelope ]
+		ifFound: [ : stageSubclass | 
+			^ anAnthelope stage class = stageSubclass
+				ifTrue: [ anAnthelope stage ]
+				ifFalse: [ stageSubclass newFor: anAnthelope ] ]) 
 ]
 
 { #category : #accessing }
@@ -76,9 +78,9 @@ CMBushmeatStage >> friendlyName [
 ]
 
 { #category : #initialization }
-CMBushmeatStage >> initializeWith: arg1 [
+CMBushmeatStage >> initializeWith: anAnthelope [
 
-	self anthelope: arg1
+	self anthelope: anAnthelope
 ]
 
 { #category : #testing }
@@ -106,11 +108,10 @@ CMBushmeatStage >> isProbablyDying [
 ]
 
 { #category : #printing }
-CMBushmeatStage >> printOn: arg1 [
+CMBushmeatStage >> printOn: aStream [
 
-	| tmp2 |
-	tmp2 := arg1 << '['.
-	tmp2
+	aStream
+		<< '['
 		<< self friendlyName;
 		<< ']'
 ]
