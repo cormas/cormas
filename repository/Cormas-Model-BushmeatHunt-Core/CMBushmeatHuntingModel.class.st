@@ -170,17 +170,6 @@ CMBushmeatHuntingModel >> initFamilies [
 ]
 
 { #category : #init }
-CMBushmeatHuntingModel >> initScenarioHuntingSeason [
-
-	| tmp1 tmp2 |
-	catchesNumber := 0.
-	tmp1 := self class maximumHuntingFamilies.
-	tmp2 := tmp1.
-	1 to: tmp2 do: [ :tmp3 | self addHuntingFamily: tmp3 ].
-	self displayPov: #povTrap of: CMBushmeatCell
-]
-
-{ #category : #init }
 CMBushmeatHuntingModel >> initScenarioWholeSeason [
 
 	catchesNumber := 0.
