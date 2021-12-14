@@ -12,7 +12,7 @@ Class {
 { #category : #converting }
 CMBushmeatAnthelope class >> asGetterForEntityClass [
 
-	self subclassResponsibility 
+	^ #anthelopes
 ]
 
 { #category : #accessing }
@@ -36,11 +36,11 @@ CMBushmeatAnthelope >> age: arg1 [
 { #category : #testing }
 CMBushmeatAnthelope >> customShapeSelector [
 
-	^ #ellipse "self hasPartner
+	^ self hasPartner
 		  ifTrue: [ 
 			  self halt.
 			  #bitmap ]
-		  ifFalse: [ #ellipse ]"
+		  ifFalse: [ #ellipse ]
 ]
 
 { #category : #moving }
@@ -159,11 +159,12 @@ CMBushmeatAnthelope >> minAgeLimit [
 { #category : #'population dynamics' }
 CMBushmeatAnthelope >> move [
 
-	self findPartner
+	| tmp1 |
+	(tmp1 := self findPartner)
 		ifNil: [ self moveToEmptyPlace ]
-		ifNotNil: [ : candidateAnthelope |
-			partner := candidateAnthelope.
-			self moveTo: candidateAnthelope patch.
+		ifNotNil: [ 
+			partner := tmp1.
+			self moveTo: tmp1 patch.
 			partner partner: self ]
 ]
 
@@ -180,9 +181,10 @@ CMBushmeatAnthelope >> moveTo: nearestEmptyLoc [
 { #category : #'population dynamics' }
 CMBushmeatAnthelope >> moveToEmptyPlace [
 
-	 self nearestEmptyLocation
+	| tmp1 |
+	(tmp1 := self nearestEmptyLocation)
 		ifNil: [ ('No empty location for: ' , self id asString) traceCr ]
-		ifNotNil: [ : nearestEmptyLoc | self moveTo: nearestEmptyLoc ]
+		ifNotNil: [ self moveTo: tmp1 ]
 ]
 
 { #category : #accessing }
@@ -211,10 +213,21 @@ CMBushmeatAnthelope >> pov [
 							ifFalse: [ self povColor ] ] ]
 ]
 
-{ #category : #printing }
-CMBushmeatAnthelope >> printOn: aStream [
+{ #category : #pov }
+CMBushmeatAnthelope >> povStage [
 
-	aStream
+	^ self isDead
+		  ifTrue: [ Color black ]
+		  ifFalse: [ 
+			  self hasPartner
+				  ifTrue: [ Color red ]
+				  ifFalse: [ self pov ] ]
+]
+
+{ #category : #printing }
+CMBushmeatAnthelope >> printOn: arg1 [
+
+	arg1
 		<< 'Id: ';
 		<< self id asString;
 		space;
@@ -233,7 +246,6 @@ CMBushmeatAnthelope >> sexString [
 
 { #category : #accessing }
 CMBushmeatAnthelope >> sizeOfPOV [
-	" Answer a <Number> to visually distinguish the receiver in a space "
 
 	^ self stage sizeOfPOV
 ]
@@ -245,9 +257,9 @@ CMBushmeatAnthelope >> stage [
 ]
 
 { #category : #accessing }
-CMBushmeatAnthelope >> stage: aCMBushmeatStage [
+CMBushmeatAnthelope >> stage: arg1 [
 
-	stage := aCMBushmeatStage
+	stage := arg1
 ]
 
 { #category : #control }
@@ -256,15 +268,13 @@ CMBushmeatAnthelope >> step [
 	self
 		age: self age + 1;
 		updateStage;
-		updateLivingStatus;
 		updateBehavior
 ]
 
 { #category : #'population dynamics' }
 CMBushmeatAnthelope >> updateBehavior [
 
-	(self isDead not and: [ self isAdult and: [ self hasPartner not ] ])
-		ifTrue: [ self move ]
+	(self isAdult and: [ self hasPartner not ]) ifTrue: [ self move ]
 ]
 
 { #category : #'population dynamics' }
@@ -277,7 +287,6 @@ CMBushmeatAnthelope >> updateLivingStatus [
 
 { #category : #'population dynamics' }
 CMBushmeatAnthelope >> updateStage [
-	" Update the receiver's stage "
-	
+
 	self stage: (CMBushmeatStage updateStageFrom: self)
 ]

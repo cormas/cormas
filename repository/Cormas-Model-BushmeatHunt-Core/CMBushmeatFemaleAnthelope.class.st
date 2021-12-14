@@ -2,8 +2,7 @@ Class {
 	#name : #CMBushmeatFemaleAnthelope,
 	#superclass : #CMBushmeatAnthelope,
 	#instVars : [
-		'gestationLength',
-		'newBorns'
+		'gestationLength'
 	],
 	#category : #'Cormas-Model-BushmeatHunt-Core'
 }
@@ -42,8 +41,7 @@ CMBushmeatFemaleAnthelope >> detailsOfPOV [
 
 { #category : #'population dynamics' }
 CMBushmeatFemaleAnthelope >> findPartner [
-	" do nothing "
-	
+
 	^ nil
 ]
 
@@ -106,6 +104,12 @@ CMBushmeatFemaleAnthelope >> offspringDetails [
 ]
 
 { #category : #pov }
+CMBushmeatFemaleAnthelope >> pov [
+
+	^ Color pink
+]
+
+{ #category : #pov }
 CMBushmeatFemaleAnthelope >> povColor [
 
 	^ Color pink
@@ -118,11 +122,15 @@ CMBushmeatFemaleAnthelope >> pregnancyTime [
 ]
 
 { #category : #printing }
-CMBushmeatFemaleAnthelope >> printOn: aStream [
-	" Private - See superimplementor's comment "
+CMBushmeatFemaleAnthelope >> printOn: arg1 [
 
-	super printOn: aStream.
-	aStream << self offspringDetails
+	super printOn: arg1.
+	arg1
+		space;
+		<< ' - ';
+		<< 'Gest(';
+		<< self gestationLength asString;
+		<< ')'
 ]
 
 { #category : #printing }
@@ -135,20 +143,22 @@ CMBushmeatFemaleAnthelope >> sexString [
 CMBushmeatFemaleAnthelope >> updateBehavior [
 
 	super updateBehavior.
-	self isDead not
-		ifTrue: [ self updateGestationBehavior ]
+	self updateGestationBehavior
 ]
 
 { #category : #'population dynamics' }
 CMBushmeatFemaleAnthelope >> updateGestationBehavior [
 
+	| tmp1 |
 	self gestationLength > 0 ifTrue: [ 
 		gestationLength := gestationLength + 1 ].
 	gestationLength = self pregnancyTime
 		ifTrue: [ 
 			gestationLength := 0.
-			self addNewborn ]
+			tmp1 := self class new init0.
+			tmp1 patch: patch ]
 		ifFalse: [ 
-			(self hasPartner and: [ gestationLength = 0 and: [ self isPatchingWithAdultMale ] ]) 
+			(self hasPartner and: [ 
+				 gestationLength = 0 and: [ self isPatchingWithAdultMale ] ]) 
 				ifTrue: [ gestationLength := 1 ] ]
 ]

@@ -1,8 +1,9 @@
 Class {
 	#name : #CMBushmeatCell,
-	#superclass : #CMSpatialEntityElement,
+	#superclass : #CMSpatialEntityCell,
 	#instVars : [
 		'area',
+		'trap',
 		'traps'
 	],
 	#category : #'Cormas-Model-BushmeatHunt-Core'
@@ -15,10 +16,9 @@ CMBushmeatCell class >> asGetterForEntityClass [
 ]
 
 { #category : #accessing }
-CMBushmeatCell >> addTrap: aCMTrap [
-	" The receiver could contain multiple traps. Add aCMTrap to the receiver's traps "
-	
-	self traps add: aCMTrap
+CMBushmeatCell >> addTrap: arg1 [
+
+	self traps add: arg1
 ]
 
 { #category : #accessing }
@@ -34,32 +34,18 @@ CMBushmeatCell >> area: arg1 [
 ]
 
 { #category : #accessing }
-CMBushmeatCell >> asString [ 
-	" Private - See superimplementor's comment "
+CMBushmeatCell >> asString [
 
-	^ String streamContents: [ : stream |
-		stream 
-			<< 'Traps: ';
-			<< self trapsCount asString.
-		self traps 
-			ifEmpty: [ 
-				stream 
-					cr; << '---'; cr;
-					<< 'Location: '; cr;
-					<< self coordinates asString ]
-			ifNotEmpty: [ 
-				stream
-					cr; << '---'; cr.
-					self traps do: [ : trap | stream << trap asString ].
-				stream
-					cr; << '---' ] ]
+	^ String streamContents: [ :arg1 | 
+		  arg1
+			  << 'Traps: ';
+			  << self trapsCount asString ]
 ]
 
 { #category : #accessing }
 CMBushmeatCell >> hasTrap [
-	" Answer <true> if the receiver contains at least one trap "
 
-	^ self traps notEmpty
+	^ traps notNil and: [ traps notEmpty ]
 ]
 
 { #category : #accessing }
@@ -72,9 +58,16 @@ CMBushmeatCell >> increaseTrapCatches [
 { #category : #pov }
 CMBushmeatCell >> pov [
 
+	^ Color fromHexString: '247008'
+]
+
+{ #category : #pov }
+CMBushmeatCell >> povTrap [
+
+	self halt.
 	^ self hasTrap
-		  ifTrue: [ self traps anyOne color ]
-		  ifFalse: [ Color fromHexString: '247008' ]
+		  ifTrue: [ Color black ]
+		  ifFalse: [ Color green ]
 ]
 
 { #category : #pov }
@@ -102,10 +95,21 @@ CMBushmeatCell >> sizeOfPOV [
 ]
 
 { #category : #accessing }
+CMBushmeatCell >> trap [
+
+	^ trap ifNil: [ trap := { true. false } atRandom ] ifNotNil: [ trap ]
+]
+
+{ #category : #accessing }
+CMBushmeatCell >> trap: arg1 [
+
+	trap := arg1
+]
+
+{ #category : #accessing }
 CMBushmeatCell >> traps [
 
-	^ traps 
-		ifNil: [ traps := OrderedCollection new ]
+	^ traps ifNil: [ traps := OrderedCollection new ] ifNotNil: [ traps ]
 ]
 
 { #category : #accessing }

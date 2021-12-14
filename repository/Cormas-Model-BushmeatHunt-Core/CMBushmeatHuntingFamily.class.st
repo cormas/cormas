@@ -2,10 +2,11 @@ Class {
 	#name : #CMBushmeatHuntingFamily,
 	#superclass : #CMGroup,
 	#instVars : [
+		'families',
+		'maximumAllowedAnthelopePerFamily',
+		'maximumNumberAllowedGlobalTraps',
 		'traps',
-		'space',
-		'trapLocationStrategy',
-		'familyColor'
+		'space'
 	],
 	#category : #'Cormas-Model-BushmeatHunt-Core'
 }
@@ -42,7 +43,7 @@ CMBushmeatHuntingFamily >> chooseTrapLocation [
 	^ self trapLocationStrategy chooseTrapLocation
 ]
 
-{ #category : #accessing }
+{ #category : #testing }
 CMBushmeatHuntingFamily >> currentTrapNumber [
 
 	^ self traps size
@@ -52,6 +53,18 @@ CMBushmeatHuntingFamily >> currentTrapNumber [
 CMBushmeatHuntingFamily >> defaultTrapLocationStrategy [
 
 	^ CMRandomTrapLocationStategy 
+]
+
+{ #category : #accessing }
+CMBushmeatHuntingFamily >> families [
+
+	^ families
+]
+
+{ #category : #accessing }
+CMBushmeatHuntingFamily >> families: arg1 [
+
+	families := arg1
 ]
 
 { #category : #accessing }
@@ -68,7 +81,6 @@ CMBushmeatHuntingFamily >> familyColor: anObject [
 
 { #category : #testing }
 CMBushmeatHuntingFamily >> hasTrap [
-	" Answer <true> if the receiver contains at least one trap "
 
 	^ traps notNil and: [ traps notEmpty ]
 ]
@@ -77,19 +89,25 @@ CMBushmeatHuntingFamily >> hasTrap [
 CMBushmeatHuntingFamily >> initialize [
 
 	super initialize.
-	self familyColor: Color random.
+	self setupTraps
 ]
 
-{ #category : #private }
+{ #category : #initialization }
 CMBushmeatHuntingFamily >> maximumAllowedTrapsPerCell [
 
 	^ CMBushmeatHuntingModel maximumAllowedTrapsPerCell
 ]
 
-{ #category : #private }
+{ #category : #initialization }
 CMBushmeatHuntingFamily >> maximumNumberAllowedGlobalTraps [
 
 	^ CMBushmeatHuntingModel maximumNumberAllowedGlobalTraps
+]
+
+{ #category : #accessing }
+CMBushmeatHuntingFamily >> maximumNumberAllowedGlobalTraps: arg1 [
+
+	maximumNumberAllowedGlobalTraps := arg1
 ]
 
 { #category : #accessing }
@@ -105,24 +123,30 @@ CMBushmeatHuntingFamily >> setupFamilyTraps [
 ]
 
 { #category : #initialization }
-CMBushmeatHuntingFamily >> setupTraps [
-	" Add or update the receiver's traps verifying conditions "
+CMBushmeatHuntingFamily >> setupNewTrap [
 
-	[ self allowedToAddTraps ] 
-		whileTrue: [ self setupFamilyTraps ].
-"	self shouldUpdateTrapLocations
-		ifTrue: [ self updateFamilyTrapLocations ]"
+	traps add: (CMTrap forFamily: self location: self chooseTrapLocation)
 ]
 
-{ #category : #accessing }
+{ #category : #initialization }
+CMBushmeatHuntingFamily >> setupTraps [
+
+	[ 
+	self currentTrapNumber <= self maximumAllowedTrapsPerCell and: [ 
+		self currentTrapNumber <= self maximumNumberAllowedGlobalTraps ] ] 
+		whileTrue: [ self setupNewTrap ]
+]
+
+{ #category : #initialization }
 CMBushmeatHuntingFamily >> space [
 
 	^ space
 ]
 
-{ #category : #accessing }
-CMBushmeatHuntingFamily >> space: aCMSpaceModel [ 
-	space := aCMSpaceModel
+{ #category : #initialization }
+CMBushmeatHuntingFamily >> space: arg1 [
+
+	space := arg1
 ]
 
 { #category : #accessing }
@@ -142,7 +166,6 @@ CMBushmeatHuntingFamily >> trapLocationStrategy: anObject [
 CMBushmeatHuntingFamily >> traps [
 
 	^ traps
-		ifNil: [ traps := OrderedCollection new ]
 ]
 
 { #category : #accessing }
