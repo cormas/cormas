@@ -1,9 +1,8 @@
 Class {
 	#name : #CMBushmeatCell,
-	#superclass : #CMSpatialEntityCell,
+	#superclass : #CMSpatialEntityElement,
 	#instVars : [
 		'area',
-		'trap',
 		'traps'
 	],
 	#category : #'Cormas-Model-BushmeatHunt-Core'
@@ -34,7 +33,7 @@ CMBushmeatCell >> area: arg1 [
 	area := arg1
 ]
 
-{ #category : #converting }
+{ #category : #accessing }
 CMBushmeatCell >> asString [ 
 	" Private - See superimplementor's comment "
 
@@ -51,15 +50,16 @@ CMBushmeatCell >> asString [
 			ifNotEmpty: [ 
 				stream
 					cr; << '---'; cr.
-					self traps do: [ : aTrap | stream << aTrap asString ].
+					self traps do: [ : trap | stream << trap asString ].
 				stream
 					cr; << '---' ] ]
 ]
 
 { #category : #accessing }
 CMBushmeatCell >> hasTrap [
+	" Answer <true> if the receiver contains at least one trap "
 
-	^ traps notNil and: [ traps notEmpty ]
+	^ self traps notEmpty
 ]
 
 { #category : #accessing }
@@ -111,24 +111,10 @@ CMBushmeatCell >> sizeOfPOV [
 ]
 
 { #category : #accessing }
-CMBushmeatCell >> trap [
-
-	self flag: #toReview.
-	^ trap ifNil: [ trap := { true. false } atRandom ] ifNotNil: [ trap ]
-]
-
-{ #category : #accessing }
-CMBushmeatCell >> trap: arg1 [
-
-	self flag: #toReview.
-	trap := arg1
-	
-]
-
-{ #category : #accessing }
 CMBushmeatCell >> traps [
 
-	^ traps ifNil: [ traps := OrderedCollection new ] ifNotNil: [ traps ]
+	^ traps 
+		ifNil: [ traps := OrderedCollection new ]
 ]
 
 { #category : #accessing }

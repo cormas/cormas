@@ -7,6 +7,5 @@ Class {
 { #category : #accessing }
 CMLinearTrapLocationStategy >> chooseTrapLocation [ 
 
-	self flag: #toReview.
 	^ self space "???" coordinates
 ]

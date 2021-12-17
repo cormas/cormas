@@ -16,18 +16,19 @@ CMBushmeatMaleAnthelope class >> minAgeLimit [
 	^ 95
 ]
 
-{ #category : #accessing }
+{ #category : #'population dynamics' }
 CMBushmeatMaleAnthelope >> findPartner [
+	" Answer a <CMBushmeatFemaleAnthelope> matching partnership for the receiver or nil if not found "
+	| found |
 
-	| tmp2 |
 	patch ifNil: [ ^ nil ].
-	patch neighbourhood
-		select: [ :arg1 | arg1 hasOccupantType: CMBushmeatFemaleAnthelope ]
-		thenDo: [ :arg2 | 
-			tmp2 := (arg2 occupants: CMBushmeatFemaleAnthelope)
-				        detect: [ :arg3 | self matchPartnerConditions: arg3 ]
-				        ifNone: [  ] ].
-	^ tmp2
+	patch neighbourhood 
+		select: [: bushmeatCell | bushmeatCell hasOccupantType: CMBushmeatFemaleAnthelope ]
+		thenDo: [ : bushmeatCell |
+			found := (bushmeatCell occupants: CMBushmeatFemaleAnthelope)
+				detect: [ : femaleAnthelope | self matchPartnerConditions: femaleAnthelope ]
+				ifNone: [ nil ] ].
+	^ found
 ]
 
 { #category : #testing }
@@ -37,15 +38,9 @@ CMBushmeatMaleAnthelope >> isMature [
 ]
 
 { #category : #accessing }
-CMBushmeatMaleAnthelope >> matchPartnerConditions: arg1 [
+CMBushmeatMaleAnthelope >> matchPartnerConditions: femaleAnthelope [
 
-	^ arg1 hasNoPartner & arg1 isAlive & arg1 isAdult
-]
-
-{ #category : #pov }
-CMBushmeatMaleAnthelope >> pov [
-
-	^ Color blue
+	^ femaleAnthelope hasNoPartner & femaleAnthelope isAlive & femaleAnthelope isAdult
 ]
 
 { #category : #pov }

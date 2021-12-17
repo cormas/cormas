@@ -2,10 +2,10 @@ Class {
 	#name : #CMBushmeatHuntingFamily,
 	#superclass : #CMGroup,
 	#instVars : [
-		'familyColor',
-		'trapLocationStrategy',
 		'traps',
-		'space'
+		'space',
+		'trapLocationStrategy',
+		'familyColor'
 	],
 	#category : #'Cormas-Model-BushmeatHunt-Core'
 }
@@ -48,7 +48,7 @@ CMBushmeatHuntingFamily >> chooseTrapLocation [
 	^ self trapLocationStrategy chooseTrapLocation
 ]
 
-{ #category : #testing }
+{ #category : #accessing }
 CMBushmeatHuntingFamily >> currentTrapNumber [
 
 	^ self traps size
@@ -74,6 +74,7 @@ CMBushmeatHuntingFamily >> familyColor: anObject [
 
 { #category : #testing }
 CMBushmeatHuntingFamily >> hasTrap [
+	" Answer <true> if the receiver contains at least one trap "
 
 	^ traps notNil and: [ traps notEmpty ]
 ]
@@ -85,13 +86,13 @@ CMBushmeatHuntingFamily >> initialize [
 	self familyColor: Color random.
 ]
 
-{ #category : #initialization }
+{ #category : #private }
 CMBushmeatHuntingFamily >> maximumAllowedTrapsPerCell [
 
 	^ CMBushmeatHuntingModel maximumAllowedTrapsPerCell
 ]
 
-{ #category : #accessing }
+{ #category : #private }
 CMBushmeatHuntingFamily >> maximumNumberAllowedGlobalTraps [
 
 	^ CMBushmeatHuntingModel maximumNumberAllowedGlobalTraps
@@ -104,24 +105,30 @@ CMBushmeatHuntingFamily >> removeTraps [
 ]
 
 { #category : #initialization }
+CMBushmeatHuntingFamily >> setupFamilyTraps [
+
+	self traps add: (CMTrap forFamily: self location: self chooseTrapLocation)
+]
+
+{ #category : #initialization }
 CMBushmeatHuntingFamily >> setupTraps [
+	" Add or update the receiver's traps verifying conditions "
 
 	[ self allowedToAddTraps ] 
-		whileTrue: [ self addNewFamilyTraps ].
+		whileTrue: [ self setupFamilyTraps ].
 "	self shouldUpdateTrapLocations
 		ifTrue: [ self updateFamilyTrapLocations ]"
 ]
 
-{ #category : #initialization }
+{ #category : #accessing }
 CMBushmeatHuntingFamily >> space [
 
 	^ space
 ]
 
-{ #category : #initialization }
-CMBushmeatHuntingFamily >> space: arg1 [
-
-	space := arg1
+{ #category : #accessing }
+CMBushmeatHuntingFamily >> space: aCMSpaceModel [ 
+	space := aCMSpaceModel
 ]
 
 { #category : #accessing }
@@ -141,6 +148,7 @@ CMBushmeatHuntingFamily >> trapLocationStrategy: anObject [
 CMBushmeatHuntingFamily >> traps [
 
 	^ traps
+		ifNil: [ traps := OrderedCollection new ]
 ]
 
 { #category : #accessing }

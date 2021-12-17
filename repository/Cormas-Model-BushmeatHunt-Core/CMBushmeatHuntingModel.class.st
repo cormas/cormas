@@ -53,7 +53,7 @@ CMBushmeatHuntingModel class >> maximumAllowedTrapsPerCell [
 { #category : #accessing }
 CMBushmeatHuntingModel class >> maximumHuntingFamilies [
 
-	^ 5
+	^ 2
 ]
 
 { #category : #accessing }
@@ -170,50 +170,14 @@ CMBushmeatHuntingModel >> initFamilies [
 ]
 
 { #category : #init }
-CMBushmeatHuntingModel >> initScenarioWholeSeason [
-
-	catchesNumber := 0.
-	self isHuntingSeason: false.
-	self
-		initSpace;
-		initAnthelopes: 15;
-		initFamilies.
-	self 
-		displayPov: #pov of: CMBushmeatMaleAnthelope;
-		displayPov: #pov of: CMBushmeatFemaleAnthelope;
-		displayPov: #pov of: CMBushmeatCell
-]
-
-{ #category : #init }
-CMBushmeatHuntingModel >> initScenarioWith1000Anthelopes [
-
-	self
-		initSpace;
-		createN: 1000 randomlyLocatedEntitiesFrom: { 
-				CMBushmeatFemaleAnthelope.
-				CMBushmeatMaleAnthelope }
-]
-
-{ #category : #init }
-CMBushmeatHuntingModel >> initScenarioWith100Anthelopes [
-
-	self
-		initSpace;
-		anthelopes: (self createN: 100 randomlyLocatedEntitiesFrom: { 
-						 CMBushmeatFemaleAnthelope.
-						 CMBushmeatMaleAnthelope });
-		displayPov: #pov of: CMBushmeatMaleAnthelope;
-		displayPov: #pov of: CMBushmeatFemaleAnthelope
-]
-
-{ #category : #init }
 CMBushmeatHuntingModel >> initScenarioWith15Anthelopes [
 
+	catchesNumber := 0.
 	self
+		isHuntingSeason: false;
 		initSpace;
-		anthelopes: (self createN: 15 randomlyLocatedEntitiesFrom: { 
-						 CMBushmeatFemaleAnthelope.
-						 CMBushmeatMaleAnthelope });
+		initAnthelopes: 15;
+		initFamilies;
 		displayPov: #pov of: CMBushmeatMaleAnthelope;
 		displayPov: #pov of: CMBushmeatFemaleAnthelope;
 		displayPov: #pov of: CMBushmeatCell
@@ -226,7 +190,7 @@ CMBushmeatHuntingModel >> initScenarioWith60Anthelopes [
 	self
 		isHuntingSeason: false;
 		initSpace;
-		initAnthelopes: 120;
+		initAnthelopes: 60;
 		initFamilies;
 		displayPov: #pov of: CMBushmeatMaleAnthelope;
 		displayPov: #pov of: CMBushmeatFemaleAnthelope;
@@ -285,7 +249,7 @@ CMBushmeatHuntingModel >> maleAnthelopes [
 	^ self anthelopes reject: #isFemale
 ]
 
-{ #category : #accessing }
+{ #category : #private }
 CMBushmeatHuntingModel >> maximumNumberOffspring [
 
 	^ self class maximumNumberOffspring
@@ -306,7 +270,9 @@ CMBushmeatHuntingModel >> removeAnthelope: anAnthelope [
 { #category : #control }
 CMBushmeatHuntingModel >> step [
 
-	self stepEntities: CMBushmeatAnthelope
+	self isChangingSeason
+		ifTrue: [ self initTraps ]
+		ifFalse: [ self stepAnthelopes ]
 ]
 
 { #category : #control }

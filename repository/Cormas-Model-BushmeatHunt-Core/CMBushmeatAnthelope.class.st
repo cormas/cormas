@@ -12,7 +12,7 @@ Class {
 { #category : #converting }
 CMBushmeatAnthelope class >> asGetterForEntityClass [
 
-	^ #anthelopes
+	self subclassResponsibility 
 ]
 
 { #category : #accessing }
@@ -36,11 +36,11 @@ CMBushmeatAnthelope >> age: arg1 [
 { #category : #testing }
 CMBushmeatAnthelope >> customShapeSelector [
 
-	^ self hasPartner
+	^ #ellipse "self hasPartner
 		  ifTrue: [ 
 			  self halt.
 			  #bitmap ]
-		  ifFalse: [ #ellipse ]
+		  ifFalse: [ #ellipse ]"
 ]
 
 { #category : #moving }
@@ -159,12 +159,11 @@ CMBushmeatAnthelope >> minAgeLimit [
 { #category : #'population dynamics' }
 CMBushmeatAnthelope >> move [
 
-	| tmp1 |
-	(tmp1 := self findPartner)
+	self findPartner
 		ifNil: [ self moveToEmptyPlace ]
-		ifNotNil: [ 
-			partner := tmp1.
-			self moveTo: tmp1 patch.
+		ifNotNil: [ : candidateAnthelope |
+			partner := candidateAnthelope.
+			self moveTo: candidateAnthelope patch.
 			partner partner: self ]
 ]
 
@@ -181,10 +180,9 @@ CMBushmeatAnthelope >> moveTo: nearestEmptyLoc [
 { #category : #'population dynamics' }
 CMBushmeatAnthelope >> moveToEmptyPlace [
 
-	| tmp1 |
-	(tmp1 := self nearestEmptyLocation)
+	 self nearestEmptyLocation
 		ifNil: [ ('No empty location for: ' , self id asString) traceCr ]
-		ifNotNil: [ self moveTo: tmp1 ]
+		ifNotNil: [ : nearestEmptyLoc | self moveTo: nearestEmptyLoc ]
 ]
 
 { #category : #accessing }
@@ -225,9 +223,9 @@ CMBushmeatAnthelope >> povStage [
 ]
 
 { #category : #printing }
-CMBushmeatAnthelope >> printOn: arg1 [
+CMBushmeatAnthelope >> printOn: aStream [
 
-	arg1
+	aStream
 		<< 'Id: ';
 		<< self id asString;
 		space;
@@ -246,6 +244,7 @@ CMBushmeatAnthelope >> sexString [
 
 { #category : #accessing }
 CMBushmeatAnthelope >> sizeOfPOV [
+	" Answer a <Number> to visually distinguish the receiver in a space "
 
 	^ self stage sizeOfPOV
 ]
@@ -257,9 +256,9 @@ CMBushmeatAnthelope >> stage [
 ]
 
 { #category : #accessing }
-CMBushmeatAnthelope >> stage: arg1 [
+CMBushmeatAnthelope >> stage: aCMBushmeatStage [
 
-	stage := arg1
+	stage := aCMBushmeatStage
 ]
 
 { #category : #control }
@@ -268,6 +267,7 @@ CMBushmeatAnthelope >> step [
 	self
 		age: self age + 1;
 		updateStage;
+		updateLivingStatus;
 		updateBehavior
 ]
 
@@ -288,6 +288,7 @@ CMBushmeatAnthelope >> updateLivingStatus [
 
 { #category : #'population dynamics' }
 CMBushmeatAnthelope >> updateStage [
-
+	" Update the receiver's stage "
+	
 	self stage: (CMBushmeatStage updateStageFrom: self)
 ]

@@ -42,7 +42,8 @@ CMBushmeatFemaleAnthelope >> detailsOfPOV [
 
 { #category : #'population dynamics' }
 CMBushmeatFemaleAnthelope >> findPartner [
-
+	" do nothing "
+	
 	^ nil
 ]
 
@@ -105,12 +106,6 @@ CMBushmeatFemaleAnthelope >> offspringDetails [
 ]
 
 { #category : #pov }
-CMBushmeatFemaleAnthelope >> pov [
-
-	^ Color pink
-]
-
-{ #category : #pov }
 CMBushmeatFemaleAnthelope >> povColor [
 
 	^ Color pink
@@ -140,7 +135,8 @@ CMBushmeatFemaleAnthelope >> sexString [
 CMBushmeatFemaleAnthelope >> updateBehavior [
 
 	super updateBehavior.
-	self isDead ifFalse: [ self updateGestationBehavior ]
+	self isDead not
+		ifTrue: [ self updateGestationBehavior ]
 ]
 
 { #category : #'population dynamics' }

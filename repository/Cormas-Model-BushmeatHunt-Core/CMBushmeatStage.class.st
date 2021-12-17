@@ -37,8 +37,10 @@ CMBushmeatStage class >> newFor: anAnthelope [
 CMBushmeatStage class >> stageFor: arg1 [
 
 	^ self ageDifferenceBetweenSex
-		  ifTrue: [  arg1 age between: arg1 minAgeLimit and: arg1 maxAgeLimit ]
-		  ifFalse: [ arg1 age between: self minAgeLimit and: self maxAgeLimit ]
+		  ifTrue: [ 
+		  arg1 age between: arg1 minAgeLimit and: arg1 maxAgeLimit ]
+		  ifFalse: [ 
+		  arg1 age between: self minAgeLimit and: self maxAgeLimit ]
 ]
 
 { #category : #'instance creation' }
@@ -119,7 +121,7 @@ CMBushmeatStage >> printOn: aStream [
 { #category : #testing }
 CMBushmeatStage >> sizeOfPOV [
 
-	^ self dyingProbability * 500
+	^ self subclassResponsibility
 ]
 
 { #category : #testing }
