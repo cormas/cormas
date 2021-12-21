@@ -1,6 +1,6 @@
 Class {
 	#name : #CMSpMainContainerPresenter,
-	#superclass : #CMSpPresenter,
+	#superclass : #CMProjectSpPresenter,
 	#instVars : [
 		'projectStructurePresenter',
 		'selectionContainerPresenter',
@@ -10,11 +10,30 @@ Class {
 	#category : #'Cormas-UI-Spec2-ProjectBrowser'
 }
 
+{ #category : #'world menu' }
+CMSpMainContainerPresenter class >> menuCommandOn: aBuilder [ 
+	<worldMenu> 
+	(aBuilder item: #'CORMAS Mock Project Browser')
+		parent: #'Tools';
+		help: 'Spec2 Project Browser';
+		action: [ self openForMock ]; 
+		order: 4.0;
+		icon: CMIcons smallCormasLogoIcon
+	
+]
+
 { #category : #'instance creation' }
 CMSpMainContainerPresenter class >> open [ 
 	<script>
 
 	self new openWithSpec 
+]
+
+{ #category : #'instance creation' }
+CMSpMainContainerPresenter class >> openForMock [
+	<script>
+
+	(self for: (CMProjectManager newMockProjectNamed: 'Mock1')) openWithSpec 
 ]
 
 { #category : #initialization }
@@ -34,7 +53,7 @@ CMSpMainContainerPresenter >> connectPresenters [
 						self selectedPresenter: newPageClass.
 						selectionContainerPresenter 
 							removeAll; 
-							add: (self instantiate: newPageClass);
+							add: (self instantiate: newPageClass on: self projectManager);
 							yourself ] ]
 			ifNil: [ 
 				"Avoid the user to have no page selected at all." 
@@ -74,7 +93,7 @@ CMSpMainContainerPresenter >> initializeProjectStructure [
 CMSpMainContainerPresenter >> initializeSelectionContainer [
 
 	self selectionContainerPresenter: (SpBoxLayout newTopToBottom
-		add: (self instantiate: self availablePages first);
+		add: (self instantiate: self availablePages first on: self projectManager);
 		yourself)
 ]
 

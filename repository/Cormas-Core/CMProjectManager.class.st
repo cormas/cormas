@@ -24,6 +24,15 @@ Class {
 	#category : #'Cormas-Core-Project'
 }
 
+{ #category : #'instance creation' }
+CMProjectManager class >> newMockProjectNamed: aString [
+	" Answer a new <CMProjectModel> set with a project named aString "
+
+	^ self new 
+		currentProject: (CMProjectModel newMockNamed: aString);
+		yourself
+]
+
 { #category : #accessing }
 CMProjectManager >> applicationClass [
 

@@ -1,6 +1,6 @@
 Class {
 	#name : #CMSpCreateInstancesPresenter,
-	#superclass : #CMSpPresenter,
+	#superclass : #CMModelSpPresenter,
 	#instVars : [
 		'entitySelector',
 		'initializationOptionsPresenter',

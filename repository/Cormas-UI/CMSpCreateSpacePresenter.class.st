@@ -1,6 +1,6 @@
 Class {
 	#name : #CMSpCreateSpacePresenter,
-	#superclass : #CMSpPresenter,
+	#superclass : #CMModelSpPresenter,
 	#traits : 'TCMUIUtils',
 	#classTraits : 'TCMUIUtils classTrait',
 	#instVars : [
@@ -269,7 +269,7 @@ CMSpCreateSpacePresenter >> submitButton: anObject [
 { #category : #accessing }
 CMSpCreateSpacePresenter >> title [ 
 
-	^ "self formattedWindowTitle: "'Space Creator'
+	^ "self formattedWindowTitle: "'Grid Configuration'
 ]
 
 { #category : #accessing }

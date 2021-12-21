@@ -11,7 +11,7 @@ Internal Representation and Key Implementation Points.
 "
 Class {
 	#name : #CMSpProjectStructurePresenter,
-	#superclass : #CMSpPresenter,
+	#superclass : #CMModelSpPresenter,
 	#instVars : [
 		'tree'
 	],
@@ -65,7 +65,7 @@ CMSpProjectStructurePresenter >> initializeWidgets [
 		expandRoots;		
 		contextMenu: self projectContextMenu;
 		activateOnDoubleClick;
-		whenActivatedDo: [ :selection | selection selectedItem browse ];
+		whenActivatedDo: [ :selection | self halt. selection selectedItem browse ];
 		"whenSelectedItemChangedDo: [ :item | item ifNotNil: [ self elementChanged ] ];"
 		"whenBuiltDo: [ self initializeShortcuts ];"
 		beResizable.
@@ -79,12 +79,6 @@ CMSpProjectStructurePresenter >> projectContextMenu [
 		addGroup: [ :group | group
 			addItem: [ :item | item name: 'Explore';  action: [ self browseFolder ]]
 		])
-]
-
-{ #category : #accessing }
-CMSpProjectStructurePresenter >> projectManager [
-
-	^ self cormasModel projectManager
 ]
 
 { #category : #accessing }

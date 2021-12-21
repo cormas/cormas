@@ -1,6 +1,6 @@
 Class {
 	#name : #CMSpAboutWindow,
-	#superclass : #CMSpPresenter,
+	#superclass : #CMModelSpPresenter,
 	#instVars : [
 		'morphPresenter'
 	],

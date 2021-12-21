@@ -1,6 +1,6 @@
 Class {
 	#name : #CMSpCreateInstancesSelectorPresenter,
-	#superclass : #CMSpPresenter,
+	#superclass : #CMModelSpPresenter,
 	#instVars : [
 		'entityDropListPresenter',
 		'numberOfEntriesTextPresenter',

@@ -17,7 +17,7 @@ Internal Representation and Key Implementation Points.
 "
 Class {
 	#name : #CMSpChartOptionsPresenter,
-	#superclass : #CMSpPresenter,
+	#superclass : #CMModelSpPresenter,
 	#instVars : [
 		'probesListPresenter',
 		'probesMinMaxOptionsPresenter'

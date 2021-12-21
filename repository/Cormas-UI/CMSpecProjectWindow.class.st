@@ -778,7 +778,7 @@ CMSpecProjectWindow >> simWindow: anObject [
 CMSpecProjectWindow >> spPresenter [
 	" This is used while migrating to Spec2, which needs presenters with an owner with SpApplication linked "
 
-	^ CMSpPresenter new
+	^ CMModelSpPresenter new
 ]
 
 { #category : #accessing }

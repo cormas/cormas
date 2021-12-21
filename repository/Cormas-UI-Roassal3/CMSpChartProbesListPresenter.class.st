@@ -1,6 +1,6 @@
 Class {
 	#name : #CMSpChartProbesListPresenter,
-	#superclass : #CMSpPresenter,
+	#superclass : #CMModelSpPresenter,
 	#instVars : [
 		'probesListPresenter',
 		'probesListLabel',

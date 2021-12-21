@@ -1,6 +1,6 @@
 Class {
 	#name : #CMSpNeighboursListPresenter,
-	#superclass : #CMSpPresenter,
+	#superclass : #CMModelSpPresenter,
 	#instVars : [
 		'neighboursListInput'
 	],

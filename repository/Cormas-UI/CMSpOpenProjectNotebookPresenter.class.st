@@ -1,6 +1,6 @@
 Class {
 	#name : #CMSpOpenProjectNotebookPresenter,
-	#superclass : #CMSpPresenter,
+	#superclass : #CMModelSpPresenter,
 	#instVars : [
 		'notebookPanel',
 		'infoPage',

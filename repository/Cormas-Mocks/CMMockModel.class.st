@@ -30,6 +30,16 @@ CMMockModel class >> friendlyName [
 	^ 'TestModel'
 ]
 
+{ #category : #accessing }
+CMMockModel class >> newMock1 [
+	" Answer a new <CMAbstractModel> with predefined settings "
+
+	^ (self newWithActiveInit: #initAlive)
+			initSimulation;
+			createGridLines: 20 columns: 10 neighbourhood: 4 closed: true;
+			yourself
+]
+
 { #category : #'initialize-release' }
 CMMockModel >> init [ 
 

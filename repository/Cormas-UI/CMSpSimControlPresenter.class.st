@@ -1,6 +1,6 @@
 Class {
 	#name : #CMSpSimControlPresenter,
-	#superclass : #CMSpPresenter,
+	#superclass : #CMModelSpPresenter,
 	#instVars : [
 		'runUntilLabel',
 		'runUntilTime',

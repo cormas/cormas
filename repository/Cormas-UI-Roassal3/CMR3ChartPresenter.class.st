@@ -16,7 +16,7 @@ Internal Representation and Key Implementation Points.
 "
 Class {
 	#name : #CMR3ChartPresenter,
-	#superclass : #CMSpPresenter,
+	#superclass : #CMModelSpPresenter,
 	#traits : 'TCMUIUtils',
 	#classTraits : 'TCMUIUtils classTrait',
 	#instVars : [

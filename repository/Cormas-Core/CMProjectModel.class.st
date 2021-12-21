@@ -38,14 +38,6 @@ CMProjectModel class >> for: aCormasModel [
 ]
 
 { #category : #'instance creation' }
-CMProjectModel class >> for: aCormasModel named: aString [
-	" Answer a new instance of the receiver configured for aCormasModel "
-	^ self basicNew 
-		initializeForModel: aCormasModel 
-		named: aString
-]
-
-{ #category : #'instance creation' }
 CMProjectModel class >> forMetadata: metadataDictionary [
 	" Answer a new instance of the receiver filled with metadaDictionary "
 	
@@ -71,10 +63,19 @@ CMProjectModel class >> forMetadata: metadataDictionary [
 
 { #category : #'instance creation' }
 CMProjectModel class >> forModel: aCormasModel [
-	" Answer a new instance of the receiver configured for aCormasModel "
+	" Answer a new instance of the receiver configured for aCormasModel with a default name matching its class "
+
 	^ self basicNew 
 		initializeForModel: aCormasModel 
 		named: aCormasModel friendlyName
+]
+
+{ #category : #'instance creation' }
+CMProjectModel class >> forModel: aCormasModel named: aString [
+	" Answer a new instance of the receiver configured for aCormasModel "
+	^ self basicNew 
+		initializeForModel: aCormasModel 
+		named: aString
 ]
 
 { #category : #'instance creation' }
@@ -84,6 +85,13 @@ CMProjectModel class >> forProjectFile: aCormasProjectFileReference [
 	^ self basicNew 
 		yourself
 		
+]
+
+{ #category : #'instance creation' }
+CMProjectModel class >> newMockNamed: aString [
+	" Answer a new project model for a mock named aString "
+
+	^ self forModel: CMMockModel newMock1 named: aString
 ]
 
 { #category : #accessing }
@@ -560,7 +568,7 @@ CMProjectModel >> shouldRemoveSubclasses: theClass [
 	theClass withAllSubclasses size > 1
 		ifTrue: [ 
 			| subClasses |
-			subClasses := String streamContents: [ : stream |
+			subClasses := String << [ : stream |
 				theClass allSubclasses do: [ : cl |
 					stream 
 						<< '   ';

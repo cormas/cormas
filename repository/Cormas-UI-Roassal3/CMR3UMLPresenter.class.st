@@ -1,6 +1,6 @@
 Class {
 	#name : #CMR3UMLPresenter,
-	#superclass : #CMSpPresenter,
+	#superclass : #CMModelSpPresenter,
 	#traits : 'TCMUIUtils',
 	#classTraits : 'TCMUIUtils classTrait',
 	#instVars : [

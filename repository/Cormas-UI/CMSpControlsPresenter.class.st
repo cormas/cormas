@@ -1,6 +1,6 @@
 Class {
 	#name : #CMSpControlsPresenter,
-	#superclass : #CMSpPresenter,
+	#superclass : #CMModelSpPresenter,
 	#instVars : [
 		'initializeSimButton',
 		'runStepButton',

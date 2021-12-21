@@ -1,6 +1,6 @@
 Class {
 	#name : #CMSpProjectItem,
-	#superclass : #CMSpPresenter,
+	#superclass : #CMProjectSpPresenter,
 	#instVars : [
 		'tabManager'
 	],
@@ -100,5 +100,6 @@ CMSpProjectItem >> workspaceTab [
 
 	^ SpNotebookPage 
 		title: 'Workspace' 
-		icon: (self iconNamed: #workspace) provider: [ self instantiate: self pageClass ]
+		icon: (self iconNamed: #workspace) 
+		provider: [ self instantiate: self pageClass on: self projectManager ]
 ]

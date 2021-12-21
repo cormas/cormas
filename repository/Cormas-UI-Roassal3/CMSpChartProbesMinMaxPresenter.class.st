@@ -1,6 +1,6 @@
 Class {
 	#name : #CMSpChartProbesMinMaxPresenter,
-	#superclass : #CMSpPresenter,
+	#superclass : #CMModelSpPresenter,
 	#instVars : [
 		'fixMinCheckPresenter',
 		'fixMaxCheckPresenter',

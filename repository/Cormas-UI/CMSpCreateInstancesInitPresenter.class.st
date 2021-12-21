@@ -1,6 +1,6 @@
 Class {
 	#name : #CMSpCreateInstancesInitPresenter,
-	#superclass : #CMSpPresenter,
+	#superclass : #CMModelSpPresenter,
 	#instVars : [
 		'locateInstancesRandomlyRadioPresenter',
 		'locateInstancesConstrainedRadioPresenter',
