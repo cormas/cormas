@@ -75,12 +75,6 @@ CMSpMetaProjectPresenter >> creator: anObject [
 	creator := anObject
 ]
 
-{ #category : #'accessing model' }
-CMSpMetaProjectPresenter >> defineInputPorts [
-	
-	^ { SpModelPort new }
-]
-
 { #category : #accessing }
 CMSpMetaProjectPresenter >> demo [
 	^ demo

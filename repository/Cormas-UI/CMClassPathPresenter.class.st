@@ -8,8 +8,13 @@ Class {
 }
 
 { #category : #examples }
-CMClassPathPresenter class >> example [
+CMClassPathPresenter class >> example1 [
 	^ (self on: SystemDictionary) openWithSpec
+]
+
+{ #category : #examples }
+CMClassPathPresenter class >> example2 [
+	^ (self on: String empty) openWithSpec
 ]
 
 { #category : #initialization }
@@ -25,6 +30,7 @@ CMClassPathPresenter >> addPathElement: cls [
 	self layout 
 		add: (self newLink 
 			label: cls asString;
+			help: cls comment;
 			action: [ cls browse ]) 
 		expand: false
 ]
@@ -32,10 +38,13 @@ CMClassPathPresenter >> addPathElement: cls [
 { #category : #initialization }
 CMClassPathPresenter >> initializeLayout [
 
-	self topClass withAllSuperclasses reversed do: [ : cls |.
-		self 
-			addPathDelimiter; 
-			addPathElement: cls ]
+	self topClass isClassOrTrait
+		ifTrue: [ 
+			self topClass withAllSuperclasses reversed do: [ : cls |.
+			self 
+				addPathDelimiter; 
+				addPathElement: cls ] ]
+		ifFalse: [ self layout add: (self newLabel label: 'no selection') expand: false ]
 ]
 
 { #category : #initialization }

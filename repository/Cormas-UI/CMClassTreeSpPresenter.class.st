@@ -1,6 +1,9 @@
+"
+Provides a tree presenter able to display a hierarchy of classes, provided with a root class `Collection`
+"
 Class {
 	#name : #CMClassTreeSpPresenter,
-	#superclass : #CMModelSpPresenter,
+	#superclass : #CMSpPresenter,
 	#instVars : [
 		'titlePresenter',
 		'classTreePresenter',
@@ -47,13 +50,14 @@ CMClassTreeSpPresenter >> classTreePresenter: anObject [
 CMClassTreeSpPresenter >> initializeClassTree [
 
 	(classTreePresenter := self newTree)
+		activateOnSingleClick;
 		roots: self roots;
 		beResizable;
 		children: #subclasses;
 		displayIcon: #systemIcon;
 		display: [ :aClass | aClass name ];
 		expandRoots;
-		whenSelectionChangedDo: [ : sel | sel halt ];
+		whenSelectionChangedDo: [ : sel | sel selectedItem ];
 		contextMenu: (self classTreeContextMenu: classTreePresenter).
 ]
 

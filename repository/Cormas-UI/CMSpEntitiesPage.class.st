@@ -37,9 +37,32 @@ CMSpEntitiesPage >> classPath: anObject [
 ]
 
 { #category : #initialization }
+CMSpEntitiesPage >> connectPresenters [
+
+	self spatialTreePresenter
+		whenSelectedItemChangedDo: [ : cormasClass | 
+			self socialTreePresenter unselectAll.
+			self passiveTreePresenter unselectAll.
+			self updateSelectedClass: cormasClass ].
+	self socialTreePresenter
+		whenSelectedItemChangedDo: [ : cormasClass | 
+			self spatialTreePresenter unselectAll.
+			self passiveTreePresenter unselectAll.		
+			self updateSelectedClass: cormasClass ].
+	self passiveTreePresenter
+		whenSelectedItemChangedDo: [ : cormasClass | 
+			self spatialTreePresenter unselectAll.
+			self socialTreePresenter unselectAll.			
+			self updateSelectedClass: cormasClass ].
+
+		"transmitTo: classPath
+		transform: [ : cormasClass | self updateSelectedClass: cormasClass ]"
+]
+
+{ #category : #initialization }
 CMSpEntitiesPage >> initializePresenters [
 
-	classPath := self newLabel.
+	self classPath: (self instantiate: CMClassPathPresenter on: String empty).
 	spatialList := self instantiate: CMClassTreeSpPresenter on: ('Spatial' -> self spatialClasses).
 	socialList := self instantiate: CMClassTreeSpPresenter on: ('Social' -> self socialClasses).
 	passiveList := self instantiate: CMClassTreeSpPresenter on: ('Passive' -> self passiveClasses).
@@ -57,6 +80,12 @@ CMSpEntitiesPage >> passiveList: anObject [
 	passiveList := anObject
 ]
 
+{ #category : #'accessing - helpers' }
+CMSpEntitiesPage >> passiveTreePresenter [
+
+	^ self passiveList classTreePresenter
+]
+
 { #category : #accessing }
 CMSpEntitiesPage >> socialList [
 
@@ -67,6 +96,12 @@ CMSpEntitiesPage >> socialList [
 CMSpEntitiesPage >> socialList: anObject [
 
 	socialList := anObject
+]
+
+{ #category : #'accessing - helpers' }
+CMSpEntitiesPage >> socialTreePresenter [
+
+	^ self socialList classTreePresenter
 ]
 
 { #category : #accessing }
@@ -81,8 +116,15 @@ CMSpEntitiesPage >> spatialList: anObject [
 	spatialList := anObject
 ]
 
-{ #category : #callbacks }
-CMSpEntitiesPage >> updateClassPath: newTopClass [
+{ #category : #'accessing - helpers' }
+CMSpEntitiesPage >> spatialTreePresenter [
 
-	self classPath: (self instantiate: CMClassPathPresenter on: newTopClass)
+	^ self spatialList classTreePresenter
+]
+
+{ #category : #callbacks }
+CMSpEntitiesPage >> updateSelectedClass: newTopClass [
+
+	self classPath: (self instantiate: CMClassPathPresenter on: newTopClass).
+	self update.
 ]
