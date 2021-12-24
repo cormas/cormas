@@ -1,6 +1,10 @@
 Class {
 	#name : #CMMockCell,
 	#superclass : #CMSpatialEntityCell,
+	#instVars : [
+		'mockAttribute1',
+		'mockAttribute2'
+	],
 	#category : #'Cormas-Mocks'
 }
 
@@ -21,6 +25,30 @@ CMMockCell >> initRandom [
 			(Cormas random < 0.1
 				ifTrue: [ #alive ]
 				ifFalse: [ #dead ])
+]
+
+{ #category : #accessing }
+CMMockCell >> mockAttribute1 [
+
+	^ mockAttribute1
+]
+
+{ #category : #accessing }
+CMMockCell >> mockAttribute1: anObject [
+
+	mockAttribute1 := anObject
+]
+
+{ #category : #accessing }
+CMMockCell >> mockAttribute2 [
+
+	^ mockAttribute2
+]
+
+{ #category : #accessing }
+CMMockCell >> mockAttribute2: anObject [
+
+	mockAttribute2 := anObject
 ]
 
 { #category : #control }

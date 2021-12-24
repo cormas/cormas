@@ -1,5 +1,5 @@
 Class {
-	#name : #CMSpEntitiesPage,
+	#name : #CMSpEntitiesPresenter,
 	#superclass : #CMProjectSpPresenter,
 	#instVars : [
 		'spatialList',
@@ -11,7 +11,7 @@ Class {
 }
 
 { #category : #specs }
-CMSpEntitiesPage class >> defaultSpec [
+CMSpEntitiesPresenter class >> defaultSpec [
 	<spec>
 	^ SpBoxLayout newTopToBottom 
 		add: #classPath height: self labelHeight;
@@ -25,19 +25,19 @@ CMSpEntitiesPage class >> defaultSpec [
 ]
 
 { #category : #accessing }
-CMSpEntitiesPage >> classPath [
+CMSpEntitiesPresenter >> classPath [
 
 	^ classPath
 ]
 
 { #category : #accessing }
-CMSpEntitiesPage >> classPath: anObject [
+CMSpEntitiesPresenter >> classPath: anObject [
 
 	classPath := anObject
 ]
 
 { #category : #initialization }
-CMSpEntitiesPage >> connectPresenters [
+CMSpEntitiesPresenter >> connectPresenters [
 
 	self spatialTreePresenter
 		whenSelectedItemChangedDo: [ : cormasClass | 
@@ -60,7 +60,7 @@ CMSpEntitiesPage >> connectPresenters [
 ]
 
 { #category : #initialization }
-CMSpEntitiesPage >> initializePresenters [
+CMSpEntitiesPresenter >> initializePresenters [
 
 	self classPath: (self instantiate: CMClassPathPresenter on: String empty).
 	spatialList := self instantiate: CMClassTreeSpPresenter on: ('Spatial' -> self spatialClasses).
@@ -69,62 +69,73 @@ CMSpEntitiesPage >> initializePresenters [
 ]
 
 { #category : #accessing }
-CMSpEntitiesPage >> passiveList [
+CMSpEntitiesPresenter >> passiveList [
 
 	^ passiveList
 ]
 
 { #category : #accessing }
-CMSpEntitiesPage >> passiveList: anObject [
+CMSpEntitiesPresenter >> passiveList: anObject [
 
 	passiveList := anObject
 ]
 
 { #category : #'accessing - helpers' }
-CMSpEntitiesPage >> passiveTreePresenter [
+CMSpEntitiesPresenter >> passiveTreePresenter [
 
 	^ self passiveList classTreePresenter
 ]
 
 { #category : #accessing }
-CMSpEntitiesPage >> socialList [
+CMSpEntitiesPresenter >> socialList [
 
 	^ socialList
 ]
 
 { #category : #accessing }
-CMSpEntitiesPage >> socialList: anObject [
+CMSpEntitiesPresenter >> socialList: anObject [
 
 	socialList := anObject
 ]
 
 { #category : #'accessing - helpers' }
-CMSpEntitiesPage >> socialTreePresenter [
+CMSpEntitiesPresenter >> socialTreePresenter [
 
 	^ self socialList classTreePresenter
 ]
 
 { #category : #accessing }
-CMSpEntitiesPage >> spatialList [
+CMSpEntitiesPresenter >> spatialList [
 
 	^ spatialList
 ]
 
 { #category : #accessing }
-CMSpEntitiesPage >> spatialList: anObject [
+CMSpEntitiesPresenter >> spatialList: anObject [
 
 	spatialList := anObject
 ]
 
 { #category : #'accessing - helpers' }
-CMSpEntitiesPage >> spatialTreePresenter [
+CMSpEntitiesPresenter >> spatialTreePresenter [
 
 	^ self spatialList classTreePresenter
 ]
 
 { #category : #callbacks }
-CMSpEntitiesPage >> updateSelectedClass: newTopClass [
+CMSpEntitiesPresenter >> updateSelectedClass: newTopClass [
 
 	self classPath: (self instantiate: CMClassPathPresenter on: newTopClass).
 	self update.
+]
+
+{ #category : #enumerating }
+CMSpEntitiesPresenter >> whenSelectedItemChangedDo: aBlock [
+	"Inform when selected index has changed. 
+	 `aBlock` receives one optional argument (the new element)."
+	
+	self spatialTreePresenter whenSelectionChangedDo: aBlock.
+	self passiveTreePresenter whenSelectionChangedDo: aBlock.
+	self socialTreePresenter whenSelectionChangedDo: aBlock.
+
 ]

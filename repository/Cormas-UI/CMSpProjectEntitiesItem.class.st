@@ -18,5 +18,5 @@ CMSpProjectEntitiesItem class >> priority [
 { #category : #initialization }
 CMSpProjectEntitiesItem >> pageClass [
 
-	^ CMSpEntitiesPage
+	^ CMSpEntitiesWorkspacePage
 ]
