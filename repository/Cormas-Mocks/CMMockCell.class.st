@@ -5,8 +5,21 @@ Class {
 		'mockAttribute1',
 		'mockAttribute2'
 	],
+	#classVars : [
+		'MockClassAttribute1',
+		'MockClassAttribute2'
+	],
+	#classInstVars : [
+		'mockClassInstAttribute1'
+	],
 	#category : #'Cormas-Mocks'
 }
+
+{ #category : #defaults }
+CMMockCell class >> mockClassAttribute2_default [
+
+	^ true
+]
 
 { #category : #init }
 CMMockCell >> initAlive [
@@ -37,6 +50,12 @@ CMMockCell >> mockAttribute1 [
 CMMockCell >> mockAttribute1: anObject [
 
 	mockAttribute1 := anObject
+]
+
+{ #category : #accessing }
+CMMockCell >> mockAttribute1_default [
+
+	^ 20
 ]
 
 { #category : #accessing }

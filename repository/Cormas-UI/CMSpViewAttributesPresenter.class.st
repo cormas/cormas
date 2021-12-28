@@ -3,7 +3,8 @@ Class {
 	#superclass : #CMProjectSpPresenter,
 	#instVars : [
 		'classAttributesTable',
-		'classAttributesLabel'
+		'classAttributesLabel',
+		'selectedClass'
 	],
 	#category : #'Cormas-UI-Spec2-Attributes'
 }
@@ -21,6 +22,23 @@ CMSpViewAttributesPresenter class >> defaultSpec [
 CMSpViewAttributesPresenter class >> example [
 
 	^ (self on: (CMProjectManager newMockProjectNamed: 'Mock1')) openWithSpec
+]
+
+{ #category : #initialization }
+CMSpViewAttributesPresenter >> candidateSetters: varName [
+	" Private - Answer a <Collection> of possible setters pairs for instVarName in receiver's class, both in class and instance sides "
+
+	^ { 
+		((varName , '_default') asSymbol) -> self selectedClass .
+		varName asSymbol -> self selectedClass .
+		
+		((varName uncapitalized , '_default') asSymbol) -> self selectedClass .
+		varName uncapitalized asSymbol -> self selectedClass .
+
+		((varName , '_default') asSymbol) -> self selectedClass basicNew .
+		varName asSymbol -> self selectedClass basicNew
+		}
+		
 ]
 
 { #category : #accessing }
@@ -47,16 +65,37 @@ CMSpViewAttributesPresenter >> classAttributesTable: anObject [
 	classAttributesTable := anObject
 ]
 
+{ #category : #private }
+CMSpViewAttributesPresenter >> collectAttributes [
+
+	^ self selectedClass instVarNames , self selectedClass classVarNames
+]
+
+{ #category : #initialization }
+CMSpViewAttributesPresenter >> defaultValueFor: instVarName [
+	" Answer the default value of anAttribut (static or instance) of aClass, using the  'anAttribut_default' accessor  located into the ' - default value ' protocol.
+Compatibility with previous Cormas version: before changing, it tests if the default class method exists otherwise compiles it
+	anAttribut = <Symbol>
+	aClass = <Class>"
+
+	self selectedClass isGenericEntity ifTrue: [ ^ nil ].
+	^ (self candidateSetters: instVarName)
+		detect: [ : assocSelectorClass | (self tryMethod: assocSelectorClass key onClass: assocSelectorClass value) notNil ]
+		ifFound: [ : assocSelectorClass | (self tryMethod: assocSelectorClass key onClass: assocSelectorClass value) ]
+		ifNone: [ nil ].
+
+]
+
 { #category : #initialization }
 CMSpViewAttributesPresenter >> initializePresenters [ 
 
 	classAttributesLabel := self newLabel label: self label.
 	classAttributesTable := self newTable
-		addColumn: (SpStringTableColumn title: 'Attribute' evaluated: #asString);
-		addColumn: (SpStringTableColumn title: 'Value' evaluated: #asString);
+		beResizable;
+		addColumn: (SpStringTableColumn title: 'Type' evaluated: [ : instVarName | self typeValueFor: instVarName ]);
+		addColumn: (SpStringTableColumn title: 'Attribute' evaluated: [ : each | each asString ]);
+		addColumn: (SpStringTableColumn title: 'Initial Value' evaluated: [ : instVarName | (self defaultValueFor: instVarName) asString ]);
 		yourself
-
-
 ]
 
 { #category : #initialization }
@@ -65,8 +104,42 @@ CMSpViewAttributesPresenter >> label [
 	^ self translator tAttributesSuperLabel.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
+CMSpViewAttributesPresenter >> selectedClass [
+
+	^ selectedClass
+]
+
+{ #category : #accessing }
+CMSpViewAttributesPresenter >> selectedClass: anObject [
+
+	selectedClass := anObject
+]
+
+{ #category : #private }
+CMSpViewAttributesPresenter >> tryMethod: aSelector onClass: aClassOrInstance [
+	
+	| result |
+	
+	^ [ result := aClassOrInstance perform: aSelector ]
+	on: Exception
+	do: [ : ex | nil  ]
+]
+
+{ #category : #initialization }
+CMSpViewAttributesPresenter >> typeValueFor: instVarName [
+
+	^ (self selectedClass hasClassVarNamed: instVarName)
+		ifTrue: [ 'class' ]
+		ifFalse: [ 
+			(self selectedClass hasInstVarNamed: instVarName)
+				ifTrue: [ 'instance' ]
+				ifFalse: [ 'class instance' ] ]
+]
+
+{ #category : #callbacks }
 CMSpViewAttributesPresenter >> updateAttributesFrom: aClass [
 
-	self classAttributesTable items: aClass
+	self selectedClass: aClass.
+	self classAttributesTable items: self collectAttributes
 ]
