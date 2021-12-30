@@ -5,7 +5,8 @@ Class {
 		'spatialList',
 		'socialList',
 		'passiveList',
-		'classPath'
+		'classPath',
+		'selectedClass'
 	],
 	#category : #'Cormas-UI-Spec2-Entities'
 }
@@ -87,6 +88,18 @@ CMSpEntitiesPresenter >> passiveTreePresenter [
 ]
 
 { #category : #accessing }
+CMSpEntitiesPresenter >> selectedClass [
+	
+	^ selectedClass
+]
+
+{ #category : #accessing }
+CMSpEntitiesPresenter >> selectedClass: aClass [ 
+	
+	selectedClass := aClass
+]
+
+{ #category : #accessing }
 CMSpEntitiesPresenter >> socialList [
 
 	^ socialList
@@ -126,6 +139,7 @@ CMSpEntitiesPresenter >> spatialTreePresenter [
 CMSpEntitiesPresenter >> updateSelectedClass: newTopClass [
 
 	self classPath: (self instantiate: CMClassPathPresenter on: newTopClass).
+	self selectedClass: newTopClass.
 	self update.
 ]
 

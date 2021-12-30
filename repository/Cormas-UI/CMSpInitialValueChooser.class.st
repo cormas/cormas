@@ -29,8 +29,8 @@ CMSpInitialValueChooser class >> defaultSpec [
 
     <spec>
     ^ SpBoxLayout newTopToBottom
-			add: #accessorOps expand: false fill: true;
-			add: #initialRBGroup;
+			add: #accessorOps height: 75;
+			add: #initialRBGroup expand: true ;
 			add: #toolbar height: self toolbarHeight;
 			yourself.
 ]

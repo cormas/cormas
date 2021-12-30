@@ -45,7 +45,7 @@ CMSpEntitiesWorkspacePage >> codeTab [
 	^ SpNotebookPage 
 		title: 'Source' 
 		icon: (self iconNamed: #hierarchy) 
-		provider: [ self instantiate: CMSpClassMethodBrowser on: self projectManager ]
+		provider: [ self instantiate: CMSpClassMethodBrowser on: self selectedClass ]
 ]
 
 { #category : #initialization }
@@ -115,6 +115,12 @@ CMSpEntitiesWorkspacePage >> povTab [
 		title: 'PoV' 
 		icon: (self iconNamed: #workspace) 
 		provider: [ self instantiate: SpClassMethodBrowser on: self projectManager ]
+]
+
+{ #category : #accessing }
+CMSpEntitiesWorkspacePage >> selectedClass [
+
+	^ self entitiesPresenter selectedClass
 ]
 
 { #category : #'accessing - helpers' }
