@@ -45,7 +45,7 @@ CMSpEntitiesWorkspacePage >> codeTab [
 	^ SpNotebookPage 
 		title: 'Source' 
 		icon: (self iconNamed: #hierarchy) 
-		provider: [ self instantiate: SpClassMethodBrowser on: self projectManager ]
+		provider: [ self instantiate: CMSpClassMethodBrowser on: self projectManager ]
 ]
 
 { #category : #initialization }
@@ -86,13 +86,20 @@ CMSpEntitiesWorkspacePage >> initializePresenters [
 		addPage: self attributesTab;
 		addPage: self codeTab;
 		addPage: self povTab;
-		addPage: self historyTab
+		addPage: self historyTab;
+		whenSelectedPageChangedDo: [ :page | self updateSelectedPage: page ].
 ]
 
 { #category : #private }
 CMSpEntitiesWorkspacePage >> pageNamed: aString [
 
 	^ self tabManager pages detect: [ : p | p title = aString ]
+]
+
+{ #category : #private }
+CMSpEntitiesWorkspacePage >> pagePresenterNamed: aString [
+
+	^ (self pageNamed: aString) activePresenter
 ]
 
 { #category : #'accessing - helpers' }
@@ -126,4 +133,11 @@ CMSpEntitiesWorkspacePage >> tabManager [
 CMSpEntitiesWorkspacePage >> tabManager: anObject [
 
 	tabManager := anObject
+]
+
+{ #category : #callbacks }
+CMSpEntitiesWorkspacePage >> updateSelectedPage: aSpNotebookPage [ 
+
+	(self pagePresenterNamed: aSpNotebookPage title) 
+		ifNotNil: #beSelected
 ]

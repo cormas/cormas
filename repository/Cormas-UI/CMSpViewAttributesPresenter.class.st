@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'classAttributesTable',
 		'classAttributesLabel',
-		'selectedClass'
+		'selectedClass',
+		'initialChooserPresenter'
 	],
 	#category : #'Cormas-UI-Spec2-Attributes'
 }
@@ -22,6 +23,15 @@ CMSpViewAttributesPresenter class >> defaultSpec [
 CMSpViewAttributesPresenter class >> example [
 
 	^ (self on: (CMProjectManager newMockProjectNamed: 'Mock1')) openWithSpec
+]
+
+{ #category : #accessing }
+CMSpViewAttributesPresenter >> beSelected [
+
+	self classAttributesTable selectedItem
+		ifNotNil: [ : sel | 
+			self classAttributesTable update.		
+			self classAttributesTable unselectAll. ].
 ]
 
 { #category : #initialization }
@@ -95,6 +105,7 @@ CMSpViewAttributesPresenter >> initializePresenters [
 		addColumn: (SpStringTableColumn title: 'Type' evaluated: [ : instVarName | self typeValueFor: instVarName ]);
 		addColumn: (SpStringTableColumn title: 'Attribute' evaluated: [ : each | each asString ]);
 		addColumn: (SpStringTableColumn title: 'Initial Value' evaluated: [ : instVarName | (self defaultValueFor: instVarName) asString ]);
+		whenSelectionChangedDo: [ : sel | sel isEmpty ifFalse: [ self selectionChanged: sel ] ];
 		yourself
 ]
 
@@ -114,6 +125,16 @@ CMSpViewAttributesPresenter >> selectedClass [
 CMSpViewAttributesPresenter >> selectedClass: anObject [
 
 	selectedClass := anObject
+]
+
+{ #category : #initialization }
+CMSpViewAttributesPresenter >> selectionChanged: sel [
+
+	initialChooserPresenter := self instantiate: CMSpInitialValueChooser on: self projectManager.
+	self layout: (SpBoxLayout newLeftToRight 
+			add: self class defaultSpec;
+			add: #initialChooserPresenter);
+			yourself
 ]
 
 { #category : #private }

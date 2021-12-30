@@ -53,15 +53,21 @@ CMSpEditAttributesPresenter >> initializeToolbar [
 
 	toolbarClassAttributeActions := self newToolbar
 		addItem: (SpToolbarButtonPresenter new
-			label: 'Add';
+			label: 'Instance Attribute';
 			icon: (self iconNamed: #smallAdd);
-			help: 'Ok';
+			help: 'Add an instance attribute';
+			action: [ self addAttributeCallback ];
+			yourself);
+		addItem: (SpToolbarButtonPresenter new
+			label: 'Class Attribute';
+			icon: (self iconNamed: #smallAdd);
+			help: 'Add a class attribute';
 			action: [ self addAttributeCallback ];
 			yourself);
 		addItem: (SpToolbarButtonPresenter new
 			label: 'Remove';
 			icon: (self iconNamed: #smallDelete);
-			help: 'Cancel';
+			help: 'Remove the selected attribute';
 			action: [ self removeAttributeCallback ];
 			yourself);
 		yourself.
@@ -101,4 +107,11 @@ CMSpEditAttributesPresenter >> toolbarClassAttributeActions [
 CMSpEditAttributesPresenter >> toolbarClassAttributeActions: anObject [
 
 	toolbarClassAttributeActions := anObject
+]
+
+{ #category : #callbacks }
+CMSpEditAttributesPresenter >> validateAttributeName: userAnswer [ 
+	" Answer <true> if provided userAnswer is valid as attribute name "
+
+	^ userAnswer notNil and: [ userAnswer notEmpty and: [ userAnswer isValidInstVarName ] ]
 ]
