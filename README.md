@@ -63,7 +63,8 @@ EpMonitor disableDuring: [
 
 ```
 
-All packages load into the Cormas-* package names.
+All packages load into the Cormas-* package names:
+<p align="center"><img alt="Loading..." src="assets/images/loadingCormas.jpg" style="width: 15%; height: 15%">
 
 ## CLI Installation
 
