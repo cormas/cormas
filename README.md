@@ -27,6 +27,7 @@
   - [Standard Installation](#standard-installation)
   - [CLI Installation](#cli-installation)
   - [Troubleshooting](#troubleshooting)
+  - [Saving your image](#saving-your-image)
 - [Features](#features)
 - [Documentation](#documentation)
 - [Contributors](#contributors)
