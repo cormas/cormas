@@ -123,6 +123,12 @@ Please add an issue if the installation expression above does not work due to on
   - IceGenericError: SecureTransport error: connection closed via error
   - IceGenericError: unexpected return value from ssl handshake -9806
 
+## Saving your image
+
+As the loading process is rather slow, we recommend to save your image once the installation procedure has been successfully concluded.
+For that, select 'Save As...' from the 'Pharo' menu:
+<p align="center"><img alt="SaveAs" src="assets/logos/saveAs.jpg" style="width: 15%; height: 15%">
+
 # Features
 
 Work in progress
