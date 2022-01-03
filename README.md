@@ -127,7 +127,7 @@ Please add an issue if the installation expression above does not work due to on
 
 As the loading process is rather slow, we recommend to save your image once the installation procedure has been successfully concluded.
 For that, select 'Save As...' from the 'Pharo' menu:
-<p align="center"><img alt="SaveAs" src="assets/logos/saveAs.jpg" style="width: 15%; height: 15%">
+<p align="center"><img alt="SaveAs" src="assets/images/saveAs.jpg" style="width: 15%; height: 15%">
 
 # Features
 
