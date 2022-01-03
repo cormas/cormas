@@ -1,6 +1,6 @@
 Class {
 	#name : #CMSpCreateInstancesSelectorPresenter,
-	#superclass : #CMModelSpPresenter,
+	#superclass : #CMProjectSpPresenter,
 	#instVars : [
 		'entityDropListPresenter',
 		'numberOfEntriesTextPresenter',
@@ -14,9 +14,9 @@ CMSpCreateInstancesSelectorPresenter class >> defaultSpec [
 	<spec>
 
 	^ SpBoxLayout newVertical
-		add: #entityDropListPresenter;
-		add: #numberOfEntriesTextPresenter;
-		addLast: #entityViewPresenter;
+		add: #entityDropListPresenter expand: false;
+		add: #numberOfEntriesTextPresenter expand: true;
+		"addLast: #entityViewPresenter;"
 		yourself
 
 ]
@@ -50,7 +50,7 @@ CMSpCreateInstancesSelectorPresenter >> initializeEntitySelectorPresenter [
 
 	entityDropListPresenter := self newDropList.
 	self entityDropListPresenter
-		items: { 1 . 2 . 3 };
+		items: self selectableEntities;
 		help: 'Select a Class to be instantiated';
 		display: [ : entityClass | entityClass name ];
 		whenSelectedItemChangedDo: [ : entityClass | self halt ]
@@ -68,7 +68,7 @@ CMSpCreateInstancesSelectorPresenter >> initializeNumberOfEntitiesTextPresenter 
 	numberOfEntriesTextPresenter := self newText.
 	numberOfEntriesTextPresenter 
 		beNotEditable;
-		label: (self tNumberOfEntities format: self numberOfEntities asString).
+		text: (self tNumberOfEntities format: self numberOfEntities asString).
 		
 
 ]
@@ -86,7 +86,7 @@ CMSpCreateInstancesSelectorPresenter >> initializePresenters [
 CMSpCreateInstancesSelectorPresenter >> numberOfEntities [
 	" Answer the <Number> of entities already present in the space of the selected entities list "
 	
-	^ self cormasModel halt
+	^ self cormasModelClass allInstances size
 ]
 
 { #category : #accessing }
@@ -99,6 +99,13 @@ CMSpCreateInstancesSelectorPresenter >> numberOfEntriesTextPresenter [
 CMSpCreateInstancesSelectorPresenter >> numberOfEntriesTextPresenter: anObject [
 
 	numberOfEntriesTextPresenter := anObject
+]
+
+{ #category : #initialization }
+CMSpCreateInstancesSelectorPresenter >> selectableEntities [
+	" Answer a <Collection> of <String> with class names representing entities which could be created by the user "
+	
+	^ self socialConcreteClasses , self passiveConcreteClasses 
 ]
 
 { #category : #initialization }

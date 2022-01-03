@@ -73,6 +73,13 @@ CMProjectSpPresenter >> passiveClasses [
 	^ self cormasModelClass passiveClasses asArray
 ]
 
+{ #category : #'accessing - entities' }
+CMProjectSpPresenter >> passiveConcreteClasses [
+	" Answer a <Collection> of final passive model classes "
+
+	^ self passiveClasses select: [ : cls | cls subclasses isEmpty ]
+]
+
 { #category : #accessing }
 CMProjectSpPresenter >> projectManager [
 	" Answer the receiver's <CMProjectManager> "
@@ -94,12 +101,27 @@ CMProjectSpPresenter >> setModelBeforeInitialization: aDomainObject [
 
 { #category : #'accessing - entities' }
 CMProjectSpPresenter >> socialClasses [
+	" Answer a <Collection> of social model classes "
 
 	^ self cormasModelClass socialClasses asArray
+]
+
+{ #category : #'accessing - entities' }
+CMProjectSpPresenter >> socialConcreteClasses [
+	" Answer a <Collection> of final social model classes "
+
+	^ self socialClasses select: [ : cls | cls subclasses isEmpty ]
 ]
 
 { #category : #'accessing - entities' }
 CMProjectSpPresenter >> spatialClasses [
 
 	^ self cormasModelClass spatialClasses asArray
+]
+
+{ #category : #'accessing - entities' }
+CMProjectSpPresenter >> spatialConcreteClasses [
+	" Answer a <Collection> of final spatial model classes "
+
+	^ self socialClasses select: [ : cls | cls subclasses isEmpty ]
 ]

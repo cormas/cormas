@@ -1,10 +1,9 @@
 Class {
 	#name : #CMSpCreateInstancesPresenter,
-	#superclass : #CMModelSpPresenter,
+	#superclass : #CMProjectSpPresenter,
 	#instVars : [
 		'entitySelector',
 		'initializationOptionsPresenter',
-		'entityViewPresenter',
 		'actionbar'
 	],
 	#category : #'Cormas-UI-Spec2-CreateInstances'
@@ -17,10 +16,16 @@ CMSpCreateInstancesPresenter class >> defaultSpec [
 	^ SpBoxLayout newVertical
 		add: #entitySelector expand: false;
 		add: #initializationOptionsPresenter;
-		addLast: #entityViewPresenter;
-		addLast: #toolbar;
+		"add: #entityViewPresenter;"
+		addLast: #actionbar;
 		yourself
 
+]
+
+{ #category : #examples }
+CMSpCreateInstancesPresenter class >> example [
+
+	^ (self on: (CMProjectManager newMockProjectNamed: 'Mock1')) openWithSpec
 ]
 
 { #category : #accessing }
@@ -45,18 +50,6 @@ CMSpCreateInstancesPresenter >> entitySelector [
 CMSpCreateInstancesPresenter >> entitySelector: anObject [
 
 	entitySelector := anObject
-]
-
-{ #category : #accessing }
-CMSpCreateInstancesPresenter >> entityViewPresenter [
-
-	^ entityViewPresenter
-]
-
-{ #category : #accessing }
-CMSpCreateInstancesPresenter >> entityViewPresenter: anObject [
-
-	entityViewPresenter := anObject
 ]
 
 { #category : #accessing }
@@ -95,7 +88,7 @@ CMSpCreateInstancesPresenter >> initializeButtonBar [
 { #category : #initialization }
 CMSpCreateInstancesPresenter >> initializeEntitySelectorPresenter [
 
-	entitySelector := CMSpCreateInstancesSelectorPresenter new.
+	entitySelector := self instantiate: CMSpCreateInstancesSelectorPresenter on: self projectManager.
 
 
 ]
@@ -104,7 +97,7 @@ CMSpCreateInstancesPresenter >> initializeEntitySelectorPresenter [
 CMSpCreateInstancesPresenter >> initializeOptionsPresenter [
 
 	initializationOptionsPresenter := self newList.
-	entityViewPresenter := self newList.
+	"entityViewPresenter := self newList."
 
 
 ]
