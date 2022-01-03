@@ -128,10 +128,10 @@ Please add an issue if the installation expression above does not work due to on
 ## Saving your image
 
 As the loading process is rather slow, we recommend to save your image once the installation procedure has been successfully concluded.
-For that, select 'Save As...' from the 'Pharo' menu:
+For that, select `Save As...` from the 'Pharo' menu:
 <p><img alt="SaveAs" src="assets/images/saveAs.jpg" style="width: 12%; height: 12%">
 
-Then write the name of your choice (ex: 'cormasPharo.im'):
+Then write the name of your choice (ex: `cormasPharo.im`):
 <p><img alt="Loading..." src="assets/images/saveImage.jpg" style="width: 40%; height: 40%">
 
 # Features
