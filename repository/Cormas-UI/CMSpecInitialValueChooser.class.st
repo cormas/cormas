@@ -268,5 +268,7 @@ CMSpecInitialValueChooser >> toolbar: anObject [
 { #category : #initialization }
 CMSpecInitialValueChooser >> updateDataSource [
 
-	self owner classAttributesTable dataSource: (CMClassAttributeValueDataSource forClass: self targetClass).
+	self owner classAttributesTable dataSource: (CMClassAttributeValueDataSource forClass: self targetClass instanceSide).
+	
+
 ]

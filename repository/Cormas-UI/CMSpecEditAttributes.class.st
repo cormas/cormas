@@ -98,10 +98,18 @@ CMSpecEditAttributes >> configureTable: aTable for: attAssoc [
 { #category : #callbacks }
 CMSpecEditAttributes >> editSelectedCell: index inTable: anAttributesTable [
 
-	CMSpecEditInitialValueChooser 
-		on: (anAttributesTable dataSource elementAt: index)
-		for: self projectManager 
-		owner: self
+	| cmAttributeWrapper |
+	(cmAttributeWrapper := anAttributesTable dataSource elementAt: index) isClassSide
+		ifFalse: [ 
+			CMSpecEditInitialValueChooser 
+				on: cmAttributeWrapper
+				for: self projectManager 
+				owner: self ]
+		ifTrue: [ 
+			CMSpecEditInitialValueChooser 
+				onClass: cmAttributeWrapper
+				for: self projectManager 
+				owner: self ]
 	
 "	morph :=anAttributesTable visibleRowMorphAtIndex: index.
 	ed := RubFloatingEditorBuilder new 
@@ -184,7 +192,7 @@ CMSpecEditAttributes >> initializeToolbar [
 
 	self toolbarAttributeActions owner: self.
 	self toolbar 
-		firstButtonLabel: self translator tCancel;
+		firstButtonLabel: self translator tClose;
 		firstButtonAction: [ self delete ]
 ]
 

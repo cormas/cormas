@@ -6,7 +6,8 @@ Class {
 	#name : #CGStCormas,
 	#superclass : #CGStTemplate,
 	#instVars : [
-		'cormasModel'
+		'cormasModel',
+		'isMeta'
 	],
 	#category : #'Cormas-Core-Tools'
 }
@@ -92,20 +93,29 @@ CGStCormas >> cormasModelClass [
 
 { #category : #'code-generation' }
 CGStCormas >> createAttribute: attributeName defaultValue: anObject [
-	
-	| srcTemplate |
-	
-	(self targetClass hasInstVarNamed: attributeName)
-		ifFalse: [ self targetClass addInstVarNamed: attributeName ].
-	srcTemplate := anObject
-		ifNotNil: [ self templateForAttribute: attributeName default: anObject ]
-		ifNil: [ self templateForAttribute: attributeName ].
+	" Private - Create attributeName <String> in the receiver's targetClass with default value anObject <Object> "
 
+	| srcTemplate |
+
+	(self targetClass hasInstVarNamed: attributeName)
+		ifFalse: [ self pvtCreateAttribute: attributeName value: anObject ].
+		
+	srcTemplate := anObject
+		ifNotNil: [ self templateForAttributeWithDefault: attributeName ]
+		ifNil: [ self templateForAttribute: attributeName ].
 	self 
 		targetMethodCategory: 'accessing';
+		targetSelector: attributeName;		
 		sourceString: srcTemplate;
 		generateMethod.
 
+	self isMeta
+		ifTrue: [ self targetClass: self targetClass class ].
+	self 
+		targetMethodCategory: 'defaults';
+		targetSelector: attributeName , '_default';		
+		sourceString: (self templateForAttribute: attributeName default: anObject);
+		generateMethod.
 ]
 
 { #category : #'code-generation' }
@@ -269,9 +279,31 @@ CGStCormas >> installConcreteMethodIn: aClass [
 ]
 
 { #category : #accessing }
+CGStCormas >> isMeta [
+	" If <true>, set the receiver to compile methods using 'self class' where applicable "
+	
+	^ isMeta
+		ifNil: [ isMeta := true ]
+]
+
+{ #category : #accessing }
+CGStCormas >> isMeta: anObject [
+
+	isMeta := anObject
+]
+
+{ #category : #accessing }
 CGStCormas >> projectManager [ 
 
 	^ self cormasModel projectManager
+]
+
+{ #category : #private }
+CGStCormas >> pvtCreateAttribute: attributeName value: anObject [
+	" Private - Create the accessor method for attributeName <String> in the receiver's targetClass. "
+
+	self targetClass addInstVarNamed: attributeName.
+
 ]
 
 { #category : #accessing }
@@ -284,31 +316,52 @@ CGStCormas >> renameClass: oldClassname to: newClassname [
 
 { #category : #'code-generation' }
 CGStCormas >> templateForAttribute: attributeName [
+	" Answer a <String> representing an accessor method for attributeName "
 
 	^ (String streamContents: [ : stream |
 		stream 
 			<< attributeName;
 			<< '\	"Getter accessor without default value.\';
 			<< self automaticCommentString;
-			<< '"\	^';
+			<< '"\	^ ';
 			<< attributeName ]) withCRs
 ]
 
 { #category : #'code-generation' }
 CGStCormas >> templateForAttribute: attributeName default: anObject [
+	" Answer a <String> representing an accessor method for attributeName "
 
 	^ (String streamContents: [ : stream |
+		stream 
+			<< attributeName;		
+			<< '_default';
+			<< '\	" Answer a default value for the ';
+			<< attributeName;
+			crtab;
+			<< self automaticCommentString;
+			<< '"\	^ ';
+			<< (self transformAsString: anObject) ]) withCRs
+]
+
+{ #category : #'code-generation' }
+CGStCormas >> templateForAttributeWithDefault: attributeName [
+	" Answer a <String> which is just a template method returning anObject "
+
+	^ (String << [ : stream |
 		stream
 			<< attributeName;
 			<< '\	"Getter accessor with default value';
 			<< self automaticCommentString;
-			<< '"\	^';
+			<< '"\	^ ';
 			<< attributeName;
-			<< ' ifNil:[';
-			<< attributeName; 
-			<< ' := ';
-			<< (self transformAsString: anObject);
-			<< ']']) withCRs
+			<< ' ifNil: [ ';
+			<< attributeName;
+			<< 	(self isMeta
+					ifTrue: [ ' := self class ' ]
+					ifFalse: [ ' := self ' ]);
+			<< attributeName;
+			<< '_default';
+			<< ' ]']) withCRs
 ]
 
 { #category : #'code-generation' }
@@ -317,7 +370,7 @@ CGStCormas >> templateForInstanceAccessors: pop in: aClass [
 	^ String streamContents: [ : stream |
 		stream 
 			<< pop; crtab;
-			<< 	'"Returns a collection of all the instances of aClass (and sub classes) collected by cormasModel.'; crtab;
+			<< 	'" Returns a collection of all the instances of aClass (and sub classes) collected by cormasModel.'; crtab;
 			<< self automaticCommentString; cr; crtab;
 			<< '" ^ self allTheEntities: ';
 			<< aClass name asString ]
