@@ -112,7 +112,8 @@ CMSpChartOptionsPresenter >> probesMinMaxOptionsPresenter: anObject [
 CMSpChartOptionsPresenter >> refreshProbesChart [
 	" Private - See comment in #refreshProbesChart "
 
-	self roassalChartPresenter updateProbes
+	self roassalChartPresenter refreshProbesChart.
+
 ]
 
 { #category : #helpers }

@@ -295,6 +295,25 @@ CMR3ChartDiagram >> probeYValuesAt: x in: probeValues [
 	^ probeValues at: x + 1
 ]
 
+{ #category : #callbacks }
+CMR3ChartDiagram >> refreshProbesChart [
+	" Private - A probe has been selected/deselected. Update the receiver including the Y Axis "
+
+	self removeAllElements.
+	self chartBuilder removeAllPlots.	
+	self canvas signalUpdate.
+	self updateYAxis.	
+	self updateProbes
+]
+
+{ #category : #'accessing - chart' }
+CMR3ChartDiagram >> removeAllElements [
+	" Remove all the receiver's chart elements "
+
+	self canvas removeAllElements.
+
+]
+
 { #category : #'accessing - chart' }
 CMR3ChartDiagram >> scaleToMinMax [
 	" Answer <true> if the receiver option to scale to entered min and max values is checked "
@@ -329,7 +348,7 @@ CMR3ChartDiagram >> timeChanged: aNewTimeStep [
 
 	"newMaxX := (aNewTimeStep max: 1) min: 10."
 	newMaxX := aNewTimeStep.
-	self canvas removeAllElements.
+	self removeAllElements.
 
 	self chartBuilder maxValueX: newMaxX + 1.
 	self updateYAxis.
@@ -372,6 +391,7 @@ CMR3ChartDiagram >> updateProbes [
 	"probesToDisplay := self cormasModelClass activeProbes asOrderedCollection.
 	(self owner selectedProbes hasEqualElements: probesToDisplay)
 		ifFalse: [ probesToDisplay addAll: (self selectedProbes difference: probesToDisplay) ]."
+
 	probesToDisplay := self selectedProbes.
 	self probeLines: (probesToDisplay collect: [ : probeName | 
 		| linePlot xValues yValues probeValues |
@@ -384,7 +404,8 @@ CMR3ChartDiagram >> updateProbes [
 			y: yValues;
 			color: (self cormasModel colorOfProbe: probeName);
 			yourself ]).
-	self "selected"probeLines do: [ : probeLine | self chartBuilder addPlot: probeLine ].
+		
+	self probeLines do: [ : probeLine | self chartBuilder addPlot: probeLine ].
 	self chartBuilder plots
 		ifNotEmpty: [ 
 			self chartBuilder renderIn: self canvas.
