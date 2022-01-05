@@ -35,7 +35,10 @@ CMSpChartProbesListPresenter >> colorOfProbe: aSymbol [
 
 { #category : #initialization }
 CMSpChartProbesListPresenter >> initializePresenters [
+	" Private - Initially we display all available model probes (see #probes method). 
+	If the color is not recognizable, then display a question mark "
 
+	self selectedProbes addAll: self cormasModelClass probes.
 	probesListLabel := 'Probes' asPresenter. "self translator tProbesListNames."
 	probesListPresenter := self newTable
 		items: self cormasModelClass probes;
@@ -55,6 +58,13 @@ CMSpChartProbesListPresenter >> menuForSelectedProbes [
 				item
 					name: self translator tChangeColor;
 					action: [ self openColorSelector] ];
+			addItem: [ :item | 
+				item
+					name: 'Browse';
+					action: [ 
+						Smalltalk tools browser 
+							openOnClass: self cormasModelClass 
+							selector: self probesListPresenter selectedItem ] ];
 			yourself
 ]
 
@@ -78,9 +88,15 @@ CMSpChartProbesListPresenter >> probeNameForItemAt: probeReference [
 { #category : #initialization }
 CMSpChartProbesListPresenter >> probesCheckBoxesColumn [
 
-	^ (SpCheckBoxTableColumn title: '   ' evaluated: [ : probe | self selectedProbes includes: probe ])
-			onActivation: [ : probe | self selectedProbes add: probe];
-			onDeactivation: [ : probe | self selectedProbes remove: probe ];
+	^ (SpCheckBoxTableColumn 
+		title: '   ' 
+		evaluated: [ : probe | self selectedProbes includes: probe ])
+			onActivation: [ : probe | 
+				self selectedProbes add: probe.
+				self refreshProbesChart ];
+			onDeactivation: [ : probe | 
+				self selectedProbes remove: probe.
+				self refreshProbesChart ];
 			width: 20;
 			yourself
 ]
@@ -123,6 +139,13 @@ CMSpChartProbesListPresenter >> probesListPresenter: anObject [
 CMSpChartProbesListPresenter >> refreshProbeNameSelection [
 
 
+]
+
+{ #category : #initialization }
+CMSpChartProbesListPresenter >> refreshProbesChart [
+	" Private - User selected or deselected a probe. Regenerate the whole chart updated with selected probes "
+	
+	self owner refreshProbesChart
 ]
 
 { #category : #accessing }

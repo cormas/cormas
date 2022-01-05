@@ -11,7 +11,8 @@ Class {
 		'numberOfVerticalTicks',
 		'xAxisLabelOffset',
 		'yAxisLabelOffset',
-		'newMaxX'
+		'newMaxX',
+		'oldMaxProbeValue'
 	],
 	#category : #'Cormas-UI-Roassal3-Chart'
 }
@@ -150,12 +151,20 @@ CMR3ChartDiagram >> defaultYAxisLabelOffset [
 	^ self minYValue @ self maxYValue
 ]
 
+{ #category : #private }
+CMR3ChartDiagram >> detectMaxProbeValue [
+	" Private - Select and answer a <Number> with the maximum between all receiver's model selected probes "
+
+	^ (self cormasModelClass probes collect: [ : p | self cormasModel perform: p ]) max
+]
+
 { #category : #defaults }
 CMR3ChartDiagram >> maxYValue [
+	" Private - Answer a <Number> of the maximum value for the Y axis in the receiver "
 
 	^ self scaleToMinMax
-		ifTrue: [ self owner maxYValue ]
-		ifFalse: [ self cormasModel perform: self cormasModelClass probes anyOne ]
+		ifTrue: [ self halt. self owner maxYValue ]
+		ifFalse: [ self detectMaxProbeValue ]
 
 ]
 
@@ -173,7 +182,7 @@ CMR3ChartDiagram >> newBasicChartBuilder [
 		addDecoration: self newHorizontalTick;
 		addDecoration: self newVerticalTick;
 		addDecoration: (RSXLabelDecoration new title: 'Time'; offset: 0 @ self newMaxX);
-		addDecoration: (RSYLabelDecoration new title: 'Value'; offset: 0 @ self maxYValue);
+		"addDecoration: (RSYLabelDecoration new title: 'Value'; offset: 0 @ 0);"
 		minValueY: self minYValue;
 		maxValueY: self maxYValue;
 		yourself.
@@ -252,6 +261,12 @@ CMR3ChartDiagram >> numberOfVerticalTicks: anObject [
 ]
 
 { #category : #accessing }
+CMR3ChartDiagram >> optionsPresenter [
+
+	^ self owner optionsPresenter.
+]
+
+{ #category : #accessing }
 CMR3ChartDiagram >> plotChart: aCanvas [
 
 	self chartBuilder container: aCanvas.
@@ -287,11 +302,19 @@ CMR3ChartDiagram >> scaleToMinMax [
 	^ self owner scaleToMinMax
 ]
 
+{ #category : #'accessing - chart' }
+CMR3ChartDiagram >> selectedProbes [
+
+	^ self owner selectedProbes
+]
+
 { #category : #initialization }
 CMR3ChartDiagram >> setModelBeforeInitialization: aDomainObject [
 	" Private - See superimplementor's comment "
 	
+	oldMaxProbeValue := 0.
 	cormasModel := aDomainObject.
+
 	self projectAnnouncer
 		when: CMTimeChangedAnnouncement
 		do: [ : ann | ann timeStep = 0 ifFalse: [ self timeChanged: ann timeStep ] ];
@@ -304,33 +327,14 @@ CMR3ChartDiagram >> setModelBeforeInitialization: aDomainObject [
 { #category : #'accessing - chart' }
 CMR3ChartDiagram >> timeChanged: aNewTimeStep [
 
-	| probesToDisplay |
-
 	"newMaxX := (aNewTimeStep max: 1) min: 10."
 	newMaxX := aNewTimeStep.
 	self canvas removeAllElements.
-	self chartBuilder maxValueX: newMaxX + 1.	
-	probesToDisplay := self cormasModelClass activeProbes asOrderedCollection.
-	(self owner selectedProbes hasEqualElements: probesToDisplay)
-		ifFalse: [ probesToDisplay addAll: (self owner selectedProbes difference: probesToDisplay) ].
-	self probeLines: (probesToDisplay collect: [ : probeName | 
-		| linePlot xValues yValues probeValues |
-		linePlot := RSLinePlot new.
-		probeValues := cormasModel probeAt: probeName.
-		xValues := (0 to: probeValues size - 1) asArray.
-		yValues := xValues collect: [ : x | probeValues at: x + 1 ].
-		linePlot 
-			x: xValues
-			y: yValues;
-			color: (self cormasModel colorOfProbe: probeName);
-			yourself ]).
-	self "selected"probeLines do: [ : probeLine | self chartBuilder addPlot: probeLine ].
-	self chartBuilder plots
-		ifNotEmpty: [ 
-			self chartBuilder renderIn: self canvas.
-			self canvas 
-				"zoomToFit;"
-				signalUpdate ]
+
+	self chartBuilder maxValueX: newMaxX + 1.
+	self updateYAxis.
+
+	self updateProbes.
 ]
 
 { #category : #'accessing - chart' }
@@ -358,6 +362,55 @@ CMR3ChartDiagram >> titleSize [
 CMR3ChartDiagram >> titleSize: anObject [
 
 	titleSize := anObject
+]
+
+{ #category : #'accessing - chart' }
+CMR3ChartDiagram >> updateProbes [
+
+	| probesToDisplay |
+	
+	"probesToDisplay := self cormasModelClass activeProbes asOrderedCollection.
+	(self owner selectedProbes hasEqualElements: probesToDisplay)
+		ifFalse: [ probesToDisplay addAll: (self selectedProbes difference: probesToDisplay) ]."
+	probesToDisplay := self selectedProbes.
+	self probeLines: (probesToDisplay collect: [ : probeName | 
+		| linePlot xValues yValues probeValues |
+		linePlot := RSLinePlot new.
+		probeValues := cormasModel probeAt: probeName.
+		xValues := (0 to: probeValues size - 1) asArray.
+		yValues := xValues collect: [ : x | probeValues at: x + 1 ].
+		linePlot 
+			x: xValues
+			y: yValues;
+			color: (self cormasModel colorOfProbe: probeName);
+			yourself ]).
+	self "selected"probeLines do: [ : probeLine | self chartBuilder addPlot: probeLine ].
+	self chartBuilder plots
+		ifNotEmpty: [ 
+			self chartBuilder renderIn: self canvas.
+			self canvas 
+				"zoomToFit;"
+				signalUpdate ]
+]
+
+{ #category : #'accessing - chart' }
+CMR3ChartDiagram >> updateYAxis [
+
+	| roundToMaxVal |
+	self optionsPresenter hasFixedMax
+		ifFalse: [ 
+			| maxProbeValue digitCount |
+			maxProbeValue := self detectMaxProbeValue.
+			roundToMaxVal := (digitCount := maxProbeValue log ceiling) >= 2
+				ifTrue: [ 10 raisedTo: digitCount ]
+				ifFalse: [ 10 ] .
+			roundToMaxVal > oldMaxProbeValue
+				ifTrue: [ 
+					self chartBuilder maxValueY: roundToMaxVal.
+					oldMaxProbeValue := roundToMaxVal ] ]
+		ifTrue: [ 
+			self chartBuilder maxValueY: self optionsPresenter fixedMaxYValue.
+			oldMaxProbeValue := self optionsPresenter fixedMaxYValue ].
 ]
 
 { #category : #'accessing - chart' }

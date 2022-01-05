@@ -38,25 +38,50 @@ CMSpChartOptionsPresenter class >> defaultSpec [
 
 ]
 
+{ #category : #accessing }
+CMSpChartOptionsPresenter >> fixMaxCheckPresenter [
+
+	^ self probesMinMaxOptionsPresenter fixMaxCheckPresenter
+]
+
+{ #category : #accessing }
+CMSpChartOptionsPresenter >> fixMinCheckPresenter [
+
+	^ self probesMinMaxOptionsPresenter fixMinCheckPresenter
+]
+
+{ #category : #helpers }
+CMSpChartOptionsPresenter >> fixedMaxYValue [ 
+	" Answer a <Number> entered for the maximum Y value in the chart "
+
+	^ self probesMinMaxOptionsPresenter fixedMaxYValue
+]
+
+{ #category : #helpers }
+CMSpChartOptionsPresenter >> fixedMinYValue [ 
+	" Answer a <Number> entered for the minimum Y value in the chart "
+
+	^ self probesMinMaxOptionsPresenter fixedMinYValue
+]
+
+{ #category : #accessing }
+CMSpChartOptionsPresenter >> hasFixedMax [
+	" Answer <true> if the receiver's check for fixing the max value was checked "
+
+	^ self fixMaxCheckPresenter state
+]
+
+{ #category : #accessing }
+CMSpChartOptionsPresenter >> hasFixedMin [
+
+	^ self fixMinCheckPresenter state
+]
+
 { #category : #initialization }
 CMSpChartOptionsPresenter >> initializePresenters [
 
 	probesListPresenter := CMSpChartProbesListPresenter owner: self on: self cormasModel.
 	probesMinMaxOptionsPresenter := CMSpChartProbesMinMaxPresenter owner: self on: self cormasModel.
-]
-
-{ #category : #initialization }
-CMSpChartOptionsPresenter >> maxYValue [ 
-	" Answer a <Number> entered for the maximum Y value in the chart "
-
-	^ self probesMinMaxOptionsPresenter maxYValue
-]
-
-{ #category : #initialization }
-CMSpChartOptionsPresenter >> minYValue [ 
-	" Answer a <Number> entered for the minimum Y value in the chart "
-
-	^ self probesMinMaxOptionsPresenter minYValue
 ]
 
 { #category : #accessing }
@@ -81,6 +106,19 @@ CMSpChartOptionsPresenter >> probesMinMaxOptionsPresenter [
 CMSpChartOptionsPresenter >> probesMinMaxOptionsPresenter: anObject [
 
 	probesMinMaxOptionsPresenter := anObject
+]
+
+{ #category : #callbacks }
+CMSpChartOptionsPresenter >> refreshProbesChart [
+	" Private - See comment in #refreshProbesChart "
+
+	self roassalChartPresenter updateProbes
+]
+
+{ #category : #helpers }
+CMSpChartOptionsPresenter >> roassalChartPresenter [
+
+	^ self owner roassalChartPresenter
 ]
 
 { #category : #accessing }
