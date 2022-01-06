@@ -76,7 +76,7 @@ CMR3ChartPresenter >> maxYValue [
 CMR3ChartPresenter >> minYValue [ 
 	" Answer a <Number> entered for the minimum Y value in the chart "
 	
-	^ self optionsPresenter minYValue
+	^ self optionsPresenter fixedMinYValue
 ]
 
 { #category : #accessing }

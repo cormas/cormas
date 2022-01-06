@@ -326,7 +326,7 @@ CMR3SpaceDiagram >> moveExistingEntity: e [
 		fontSize: 12;
 		text: [ : aCMEntity | aCMEntity age asString ];
 		yourself."
-	(e propertyAt: #RSLabeled) text: entityModel labelOfPOV.
+	(e propertyAt: #RSLabeled) ifNotNil: [ : p | p text: entityModel labelOfPOV ].
 	e
 		@ (RSPopup text: entityModel detailsOfPOV);
 		size: entityModel sizeOfPOV;
@@ -358,22 +358,13 @@ CMR3SpaceDiagram >> newElementViewForModel: cellModel [
 CMR3SpaceDiagram >> newSEViewForModel: aCMEntity [
 	" Answer a <RSShape> for the receiver's situated entities "
 
-	| colorSelector labeled |
+	| colorSelector |
 	
 	colorSelector := self activePoVSelectorAtClass: aCMEntity class.
-"	newEntityShapeSelector := aCMEntity hasCustomShape
-		ifTrue: [ self halt. self perform: aCMEntity customShape ]
-		ifFalse: [ #ellipse ""self sevClass new"" ]."
-	labeled := RSLabeled new
-		highlightable;
-		fontSize: 14;
-		text: aCMEntity age asString;
-		yourself.
-	^ (RSShapeFactory perform: aCMEntity customShapeSelector)
+	^ self sevClass new
 		model: aCMEntity;
 		color: (aCMEntity perform: colorSelector);
 		size: aCMEntity sizeOfPOV;
-		addInteraction: labeled;
 		yourself
 ]
 

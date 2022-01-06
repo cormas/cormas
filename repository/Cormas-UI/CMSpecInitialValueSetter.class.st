@@ -102,9 +102,18 @@ CMSpecInitialValueSetter >> arrayTextField: anObject [
 { #category : #'accessing - values' }
 CMSpecInitialValueSetter >> arrayTextValue [
 
-	^ self arrayTextField text 
-		ifEmpty: [ self arrayTextField pendingText ]
-		ifNotEmpty: [ : textVal | textVal ].
+	| enteredText |
+	
+	enteredText := self arrayTextField hasUnacceptedEdits 
+		ifTrue: [ self arrayTextField pendingText ]
+		ifFalse: [ 
+			self arrayTextField text
+				ifEmpty: [ self arrayTextField pendingText ]
+				ifNotEmpty: [ : textVal | textVal ] ].
+	(RBParser parseExpression: enteredText) isLiteralArray
+		ifFalse: [ ^ self inform: 'Please enter an Array, e.g.: #(1 2 3 4)' ].
+	^ enteredText
+
 	
 ]
 
@@ -277,11 +286,13 @@ CMSpecInitialValueSetter >> newEntityValue [
 
 	| enteredText |
 	
-	enteredText := self newEntityTextField text 
-		ifEmpty: [ self newEntityTextField pendingText ]
-		ifNotEmpty: [ : textVal | textVal ].
+	enteredText := self newEntityTextField hasUnacceptedEdits 
+		ifTrue: [ self newEntityTextField pendingText ]
+		ifFalse: [ 
+			self newEntityTextField text
+				ifEmpty: [ self newEntityTextField pendingText ]
+				ifNotEmpty: [ : textVal | textVal ] ].
 	^ enteredText
-
 ]
 
 { #category : #'accessing - values' }
@@ -327,9 +338,12 @@ CMSpecInitialValueSetter >> numberTextValue [
 
 	| enteredText |
 	
-	enteredText := self numberTextField text 
-		ifEmpty: [ self numberTextField pendingText ]
-		ifNotEmpty: [ : textVal | textVal ].
+	enteredText := self numberTextField hasUnacceptedEdits 
+		ifTrue: [ self numberTextField pendingText ]
+		ifFalse: [ 
+			self numberTextField text
+				ifEmpty: [ self numberTextField pendingText ]
+				ifNotEmpty: [ : textVal | textVal ] ].
 	enteredText isNumeric
 		ifFalse: [ ^ self inform: 'Please enter a Number' ].
 	^ enteredText asNumber
@@ -431,9 +445,12 @@ CMSpecInitialValueSetter >> stringValue [
 
 	| enteredText |
 	
-	enteredText := self stringTextField text 
-		ifEmpty: [ self stringTextField pendingText ]
-		ifNotEmpty: [ : textVal | textVal ].
+	enteredText := self stringTextField hasUnacceptedEdits 
+		ifTrue: [ self stringTextField pendingText ]
+		ifFalse: [ 
+			self stringTextField text
+				ifEmpty: [ self stringTextField pendingText ]
+				ifNotEmpty: [ : textVal | textVal ] ].
 	enteredText isNumeric
 		ifTrue: [ ^ self inform: 'Please enter a String' ].
 	^ enteredText string

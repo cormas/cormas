@@ -84,24 +84,39 @@ CMSpChartProbesMinMaxPresenter >> fixMinInputPresenter: anObject [
 	fixMinInputPresenter := anObject
 ]
 
+{ #category : #accessing }
+CMSpChartProbesMinMaxPresenter >> fixedMaxYValue [ 
+	" Answer a <Number> entered for the maximum Y value in the chart "
+	
+	^ self fixMaxInputPresenter text asNumber
+]
+
+{ #category : #accessing }
+CMSpChartProbesMinMaxPresenter >> fixedMinYValue [ 
+	" Answer a <Number> entered for the minimum Y value in the chart "
+
+	^ self fixMinInputPresenter text asNumber
+]
+
 { #category : #initialization }
 CMSpChartProbesMinMaxPresenter >> initializePresenter [ 
  
-	fixMinCheckPresenter := self newCheckBox label: 'Fix min to'; yourself.
+	fixMinCheckPresenter := self newCheckBox 
+		label: 'Fix min to'; 
+		state: false;
+		whenChangedDo: [ fixMinCheckPresenter toggleState ];
+		yourself.
 	fixMinInputPresenter := self newTextInput text: self minTime asString; yourself.
 	
-	fixMaxCheckPresenter := self newCheckBox label: 'Fix max to'; yourself.
+	fixMaxCheckPresenter := self newCheckBox 
+		label: 'Fix max to'; 
+		state: false;
+		whenChangedDo: [ fixMaxCheckPresenter toggleState ];		
+		yourself.
 	fixMaxInputPresenter := self newTextInput text: self finalTime asString; yourself.
 	
 	scalePresenter := self newCheckBox label: 'Scale to min max'; yourself.
 
-]
-
-{ #category : #accessing }
-CMSpChartProbesMinMaxPresenter >> maxYValue [ 
-	" Answer a <Number> entered for the maximum Y value in the chart "
-	
-	^ self fixMaxInputPresenter text asNumber
 ]
 
 { #category : #'accessing - time' }
@@ -115,13 +130,6 @@ CMSpChartProbesMinMaxPresenter >> minTime [
 CMSpChartProbesMinMaxPresenter >> minTime: anObject [
 
 	minTime := anObject
-]
-
-{ #category : #accessing }
-CMSpChartProbesMinMaxPresenter >> minYValue [ 
-	" Answer a <Number> entered for the minimum Y value in the chart "
-
-	^ self fixMinInputPresenter text asNumber
 ]
 
 { #category : #accessing }

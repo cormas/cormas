@@ -2,7 +2,8 @@ Class {
 	#name : #CMSpecEditInitialValueChooser,
 	#superclass : #CMSpecInitialValueChooser,
 	#instVars : [
-		'editedValue'
+		'editedValue',
+		'isMetaEdit'
 	],
 	#category : #'Cormas-UI-Spec1-Attributes'
 }
@@ -12,6 +13,18 @@ CMSpecEditInitialValueChooser class >> on: attributeSpec for: aCMProjectManager 
 
 	(self for: aCMProjectManager)
 		owner: aPresenter;	
+		isMetaEdit: false;			
+		attributeName: attributeSpec attributeAsString;
+		openWithSpec;
+		editedValue: attributeSpec currentValue
+]
+
+{ #category : #'instance creation' }
+CMSpecEditInitialValueChooser class >> onClass: attributeSpec for: aCMProjectManager owner: aPresenter [
+
+	(self for: aCMProjectManager)
+		owner: aPresenter;	
+		isMetaEdit: true;
 		attributeName: attributeSpec attributeAsString;
 		openWithSpec;
 		editedValue: attributeSpec currentValue
@@ -31,9 +44,23 @@ CMSpecEditInitialValueChooser >> editedValue: anObject [
 	
 ]
 
+{ #category : #accessing }
+CMSpecEditInitialValueChooser >> isMetaEdit [
+
+	^ isMetaEdit
+]
+
+{ #category : #accessing }
+CMSpecEditInitialValueChooser >> isMetaEdit: anObject [
+
+	isMetaEdit := anObject
+]
+
 { #category : #initialization }
 CMSpecEditInitialValueChooser >> setInitialValue: anObject [ 
 	
+	self isMetaEdit
+		ifTrue: [ self codeGenerator isMeta: false  ].
 	self codeGenerator 
 		createAttribute: self attributeName 
 		defaultValue: anObject.

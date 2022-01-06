@@ -213,7 +213,7 @@ CMSpecAttributesToolbar >> removeAttributeCallback [
 		ifTrue: [ 
 			[ 
 				self targetClass removeInstVarNamed: self selectedItemWrapper targetAttribute.
-				self classAttributesTable dataSource: (CMClassAttributeValueDataSource forClass: self targetClass).
+				self classAttributesTable dataSource: (CMClassAttributeValueDataSource forClass: self targetClass instanceSide).
 				self inform: 'Attribute removed'
 			 ]
 			on: SlotNotFound 
