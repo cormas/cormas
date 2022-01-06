@@ -11,8 +11,7 @@ Class {
 		'numberOfVerticalTicks',
 		'xAxisLabelOffset',
 		'yAxisLabelOffset',
-		'newMaxX',
-		'oldMaxProbeValue'
+		'newMaxX'
 	],
 	#category : #'Cormas-UI-Roassal3-Chart'
 }
@@ -155,15 +154,18 @@ CMR3ChartDiagram >> defaultYAxisLabelOffset [
 CMR3ChartDiagram >> detectMaxProbeValue [
 	" Private - Select and answer a <Number> with the maximum between all receiver's model selected probes "
 
-	^ (self cormasModelClass probes collect: [ : p | self cormasModel perform: p ]) max
+	^ (self selectedProbes 
+		collect: [ : p | (self cormasModel probeAt: p) max ]) max
+
 ]
 
 { #category : #defaults }
 CMR3ChartDiagram >> maxYValue [
 	" Private - Answer a <Number> of the maximum value for the Y axis in the receiver "
 
+	self flag: #toReviewIfTrue.
 	^ self scaleToMinMax
-		ifTrue: [ self halt. self owner maxYValue ]
+		ifTrue: [ self owner maxYValue ]
 		ifFalse: [ self detectMaxProbeValue ]
 
 ]
@@ -331,7 +333,6 @@ CMR3ChartDiagram >> selectedProbes [
 CMR3ChartDiagram >> setModelBeforeInitialization: aDomainObject [
 	" Private - See superimplementor's comment "
 	
-	oldMaxProbeValue := 0.
 	cormasModel := aDomainObject.
 
 	self projectAnnouncer
@@ -422,16 +423,12 @@ CMR3ChartDiagram >> updateYAxis [
 		ifFalse: [ 
 			| maxProbeValue digitCount |
 			maxProbeValue := self detectMaxProbeValue.
-			roundToMaxVal := (digitCount := maxProbeValue log ceiling) >= 2
+			roundToMaxVal := (digitCount := maxProbeValue asInteger decimalDigitLength) >= 2
 				ifTrue: [ 10 raisedTo: digitCount ]
-				ifFalse: [ 10 ] .
-			roundToMaxVal > oldMaxProbeValue
-				ifTrue: [ 
-					self chartBuilder maxValueY: roundToMaxVal.
-					oldMaxProbeValue := roundToMaxVal ] ]
+				ifFalse: [ 10 ].
+			self chartBuilder maxValueY: roundToMaxVal ]
 		ifTrue: [ 
-			self chartBuilder maxValueY: self optionsPresenter fixedMaxYValue.
-			oldMaxProbeValue := self optionsPresenter fixedMaxYValue ].
+			self chartBuilder maxValueY: self optionsPresenter fixedMaxYValue ].
 ]
 
 { #category : #'accessing - chart' }
