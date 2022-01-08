@@ -269,8 +269,9 @@ CMR3SpaceDiagram >> initializeEvents [
 CMR3SpaceDiagram >> initializePresenters [
 	" Private - This method initializes a simulationGrid for a specific cormasModel , without specifyin any animation behaviour "
 
-	self addViewForCells: self cormasModel theESE.
-	self addViewForAgents: self cormasModel allTheSituatedEntities.
+	self halt.
+	"self addViewForCells: self cormasModel theESE.
+	self addViewForAgents: self cormasModel allTheSituatedEntities."
 	self initializeEvents.
 ]
 
@@ -517,8 +518,10 @@ CMR3SpaceDiagram >> timeChanged: aNewTimeStep [
 	aNewTimeStep = 0
 		ifTrue: [ 
 			self clearView.
-			self addViewForCells: self cormasModel theESE ]
+			self addViewForCells: self cormasModel theESE.
+			self addViewForAgents: self cormasModel allTheSituatedEntities ]
 		ifFalse: [ self removeDeadSituatedEntities ].
+
 	self addNewSituatedEntities.
 	self moveSituatedEntities.
 	self theCellViews do: [ : node | node updateEntityAspectIn: self ].

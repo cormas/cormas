@@ -86,7 +86,11 @@ CMSpecConfirmBeforeLaunch >> applyActiveProbesChanges [
 
 { #category : #actions }
 CMSpecConfirmBeforeLaunch >> applyScenarioSettings [
-
+	" Callback for the Apply scenario operation. 
+	Space Interface should be created before initialization of simulation.
+	This is because agents should be located when they are created, otherwise the Space Diagram gets their CMSimInitializationAnnouncement callback registered **after** simulation init, and the 'timeChanged: 0' callback is never executed. This event causes the first Step does not move the agents, because UI update agents positions for the previous step values for each agent.
+	
+	"   
 	self initMethodList selectedItem
 		ifNotNil: [ :aInitMethod | self cormasModel activeInit: aInitMethod asSymbol ]
 		ifNil: [ ^ self alertMessage: 'Choose a init method' ].
@@ -98,11 +102,17 @@ CMSpecConfirmBeforeLaunch >> applyScenarioSettings [
 	self projectAnnouncer announce: (CMFinalStepChangedAnnouncement new finalStep: self getFinalStep).
 
 	self delete.
-	'Scenario Settings: Init CORMAS model simulation...' traceCr.
-	self cormasModel initSimulation.
-	'Scenario Settings: Announcing update' traceCr.
-	self projectAnnouncer announce: CMScenarioUpdateAnnouncement new
-
+	
+	self halt.
+	'Scenario Settings: Init CORMAS model simulation = initializeProbes + initEntities + activeInit' traceCr.
+	self cormasModel initSimulationModel.
+	
+	self halt.
+	'Scenario Settings: Re-open Space Interface (openSpacePresenterUpdateScenario)' traceCr.
+	self projectAnnouncer announce: CMScenarioUpdateAnnouncement new.
+	
+	'Scenario Settings: Init CORMAS model simulation = initializeEvents' traceCr.
+	self cormasModel initSimulationComms.
 ]
 
 { #category : #accessing }

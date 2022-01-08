@@ -2274,6 +2274,7 @@ CMAbstractModel >> initEntitiesForSocialClass: aClass [
 { #category : #scheduling }
 CMAbstractModel >> initSimulation [
 
+	self deprecated: 'example of a deprecated method'.
 	self timeStep: 0.
 	self initializeProbes.
 	"store the instances of entities in a collection and request an update of the space views at the end of the initialization"
@@ -2292,6 +2293,34 @@ CMAbstractModel >> initSimulation [
 	"announce to all the subscribers that simulation is beeing initialized"
 	self announcer announce: CMSimInitializationAnnouncement.
 	self initStatus: true.
+]
+
+{ #category : #scheduling }
+CMAbstractModel >> initSimulationComms [
+
+	self updateEntities.	"updates theXXXs collections"
+	self updateDataForChart.
+	self channel ifNil: [ self initializeChannel ].
+	self theAgentsComm do: [ :p | p channel: self channel ].
+	self theAgentsComm ifNotEmpty: [ : agentsComm | self channel population: agentsComm ].
+	"announce to all the subscribers that simulation is beeing initialized"
+	self projectAnnouncer announce: CMSimInitializationAnnouncement.
+	self initStatus: true.
+]
+
+{ #category : #scheduling }
+CMAbstractModel >> initSimulationModel [
+
+	self timeStep: 0.
+	self initializeProbes.
+	"store the instances of entities in a collection and request an update of the space views at the end of the initialization"
+	self setNewCollector.
+	"remove the previous entities of the collections (theXXXs), except for theCells"
+	self initEntities.
+	"set default attributes values of entities"
+	self defaultAttributesSetter reApplyNewValues.	"setAttributeNewValue"	"reApplyNewValues"
+	"Call the selected INIT method"
+	self perform: self activeInit.	"launch the selected INIT method"
 ]
 
 { #category : #accessing }

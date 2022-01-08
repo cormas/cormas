@@ -891,6 +891,15 @@ CMAgentLocation >> perception: aRayon [
 	^self locationsWithinRadius: aRayon
 ]
 
+{ #category : #printing }
+CMAgentLocation >> printOn: aStream [
+
+	super printOn: aStream.
+	aStream 
+		<< '-coord: ';
+		<< self coordinates asString
+]
+
 { #category : #'star moving' }
 CMAgentLocation >> randomJump [
 "Purpose: moves to a spatial entity randomly picked from the whole grid "
