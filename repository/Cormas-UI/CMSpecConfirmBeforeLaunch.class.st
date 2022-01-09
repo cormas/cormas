@@ -103,11 +103,9 @@ CMSpecConfirmBeforeLaunch >> applyScenarioSettings [
 
 	self delete.
 	
-	self halt.
 	'Scenario Settings: Init CORMAS model simulation = initializeProbes + initEntities + activeInit' traceCr.
 	self cormasModel initSimulationModel.
 	
-	self halt.
 	'Scenario Settings: Re-open Space Interface (openSpacePresenterUpdateScenario)' traceCr.
 	self projectAnnouncer announce: CMScenarioUpdateAnnouncement new.
 	

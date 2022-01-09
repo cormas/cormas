@@ -3018,15 +3018,16 @@ CMAbstractModel >> resetEntities: aClass [
 { #category : #scheduling }
 CMAbstractModel >> runStep [
 	"The main step method that activates the agents:
-		- INCREMENT the timeStep
+		- INCREMENT the timeStep (DO NOT USE the #incrementTimeStep as updates the UI before agents get a new patch)
 		- EXECUTE the selected #Step method (of the ScenarioBuilder Interface) for the new timeStep,
 		- UPDATE the Entities (remove the dead ones and add the new ones in theXXs collections).
 	(For display: Store the changed entities in a collection and request an update of the space views at the end of the timestep)"
 	
-	self incrementTimeStep.
+	timeStep := timeStep + 1.
 	self activeControl last = $:
 		ifTrue: [ self perform: self activeControl with: self timeStep ]
 		ifFalse: [ self perform: self activeControl ].
+	self timeChanged.
 	self updateEntities.
 	self channel notNil ifTrue: [self channel flush].
 	self updateDataForChart.

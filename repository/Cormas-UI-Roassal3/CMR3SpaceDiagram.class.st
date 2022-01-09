@@ -269,9 +269,6 @@ CMR3SpaceDiagram >> initializeEvents [
 CMR3SpaceDiagram >> initializePresenters [
 	" Private - This method initializes a simulationGrid for a specific cormasModel , without specifyin any animation behaviour "
 
-	self halt.
-	"self addViewForCells: self cormasModel theESE.
-	self addViewForAgents: self cormasModel allTheSituatedEntities."
 	self initializeEvents.
 ]
 
@@ -357,7 +354,7 @@ CMR3SpaceDiagram >> newElementViewForModel: cellModel [
 
 { #category : #'instance creation' }
 CMR3SpaceDiagram >> newSEViewForModel: aCMEntity [
-	" Answer a <RSShape> for the receiver's situated entities "
+	" Answer a new <RSShape> for the receiver's situated entities "
 
 	| colorSelector |
 	
