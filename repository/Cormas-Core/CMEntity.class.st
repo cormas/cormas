@@ -1286,6 +1286,8 @@ CMEntity >> asString [
 
 	^ String streamContents: [ : stream |
 		stream 
+			<< super asString;
+			crtab;		
 			<< 'id: ';
 			<< id asString ]
 	

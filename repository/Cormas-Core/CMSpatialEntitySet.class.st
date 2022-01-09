@@ -338,10 +338,8 @@ Return value: <Number>"
 	
 	| sortColl |
 	sortColl := SortedCollection new.
-	self components
-		do:
-			[:aComponent | sortColl add: (aComponent euclideanDistanceTo: aSpatialEntity)].
-	^sortColl first
+	self components do: [ : aComponent | sortColl add: (aComponent euclideanDistanceTo: aSpatialEntity)].
+	^ sortColl first
 ]
 
 { #category : #accessing }
