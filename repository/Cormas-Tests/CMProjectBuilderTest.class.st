@@ -125,8 +125,8 @@ CMProjectBuilderTest >> testModelPackageNames [
 { #category : #test }
 CMProjectBuilderTest >> testOutputDirectory [
 
-	self assert: (self builder outputDirectory isKindOf: String).
-	self deny: self builder outputDirectory isEmpty.
+	self assert: (self builder localBuildDir isKindOf: String).
+	self deny: self builder localBuildDir isEmpty.
 
 ]
 

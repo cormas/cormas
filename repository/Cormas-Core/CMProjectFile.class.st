@@ -35,7 +35,7 @@ CMProjectFile class >> archiveAllFromPharo: aCollectionOfFileReferencesOrMatchin
     zipArchive := self new.
     aCollectionOfFileReferencesOrMatchingPatterns do: [ :each |
         self archive: each in: zipArchive ].
-    zipArchive writeToFile: aZipArchiveName.
+    ^ zipArchive writeToFile: aZipArchiveName.
 ]
 
 { #category : #accessing }
@@ -48,7 +48,7 @@ CMProjectFile class >> archiveDirectoryRecursively: aFileReference relativeTo: r
 			subFiles do: [ :eachFileReference | 
             eachFileReference isDirectory
                 ifTrue: [ self archiveDirectoryRecursively: eachFileReference relativeTo: relativeFileReference in: aZipArchive ]
-                ifFalse: [ aZipArchive addFile: eachFileReference pathString as: relativePath ] ] ]
+                ifFalse: [ aZipArchive addFile: eachFileReference pathString as: (relativePath asFileReference / eachFileReference basename) path fullName  ] ] ]
 		ifEmpty: [ 
 			aFileReference isDirectory
 				ifTrue: [ 
@@ -130,4 +130,16 @@ CMProjectFile >> addTree: aFileNameOrDirectory removingFirstCharacters: n match:
 		e isDirectory ifTrue: [ self addTree: e fullName removingFirstCharacters: n match: aBlock ].
 	]
 
+]
+
+{ #category : #writing }
+CMProjectFile >> writeToFile: aFileReferenceOrFileName [
+	" See superimplementor's comment. Override to answer the <FileReference> result "
+
+	(self canWriteToFile: aFileReferenceOrFileName)
+		ifFalse: [ ^self error: (aFileReferenceOrFileName asString, ' is needed by one or more members in this archive') ].
+	
+	aFileReferenceOrFileName asFileReference
+		binaryWriteStreamDo: [ :stream | self writeTo: stream ].
+	^ aFileReferenceOrFileName asFileReference
 ]

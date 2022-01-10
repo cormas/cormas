@@ -2842,8 +2842,10 @@ CMAbstractModel >> projectManager [
 ]
 
 { #category : #accessing }
-CMAbstractModel >> projectManager: anObject [
-	projectManager := anObject
+CMAbstractModel >> projectManager: aCMProjectManager [
+	" Each model has a reference to its project manager. "
+
+	projectManager := aCMProjectManager
 ]
 
 { #category : #'utilities - files' }
