@@ -1030,13 +1030,6 @@ CMAbstractModel class >> visualizableClasses [
 	^coll
 ]
 
-{ #category : #'managing classes' }
-CMAbstractModel class >> visualizedClasses [
-	"Return a list of the model' classes inheriting from Entity for whom a 'pov' protocol exists"
-	
-	^self allEntityClasses	"select: [:cl | (cl organization listAtCategoryNamed: #pov) isEmpty not]"
-]
-
 { #category : #accessing }
 CMAbstractModel >> activeControl [
 	^ activeControl ifNil: [ activeControl := self class defaultControl ]
@@ -2230,6 +2223,13 @@ CMAbstractModel >> hasControlInit [
 	^ activeControl notNil
 ]
 
+{ #category : #testing }
+CMAbstractModel >> hasData [
+	" Answer <true> if the receiver already has simulation data "
+	
+	^ data notNil
+]
+
 { #category : #'default values' }
 CMAbstractModel >> hasSpatialClasses [
 	" Answer <true> if the receiver's model has a Simple Cell or Cellular Automaton already defined "
@@ -2244,14 +2244,17 @@ CMAbstractModel >> incrementTimeStep [
 
 { #category : #'init entities' }
 CMAbstractModel >> initEntities [
+
 	"Initialize all the Entity classes of the model"
 
 	"Remove all the PassiveObjects and Located Objects"
 
-	self class passiveClasses do: [ :aClass | self initEntitiesForPassiveClass: aClass ].	"Remove all the Agents from previous simulation"
-	self class socialClasses do: [ :aClass | self initEntitiesForSocialClass: aClass ].
-	self spaceModel isNil
-		ifFalse: [ self spaceModel resetSpatialEntities "ButCells" ]
+	self class passiveClasses do: [ :aClass | 
+		self initEntitiesForPassiveClass: aClass ]. "Remove all the Agents from previous simulation"
+	self class socialClasses do: [ :aClass | 
+		self initEntitiesForSocialClass: aClass ].
+	self spaceModel ifNotNil: [ 
+		self spaceModel resetSpatialEntities "ButCells" ]
 ]
 
 { #category : #accessing }
@@ -2267,12 +2270,12 @@ CMAbstractModel >> initEntitiesForPassiveClass: aClass [
 ]
 
 { #category : #accessing }
-CMAbstractModel >> initEntitiesForSocialClass: aClass [ 
+CMAbstractModel >> initEntitiesForSocialClass: aClass [
 
-	(aClass isAbstract not and: [ aClass inheritsFrom: CMAgentLocation ])
+	(aClass isAbstract not and: [ aClass inheritsFrom: CMAgentLocation ]) 
 		ifTrue: [ 
-			(self theEntities: aClass) isNil
-				ifFalse: [ (self theEntities: aClass) do: #leave ] ].
+			(self theEntities: aClass) ifNotNil: [ 
+				(self theEntities: aClass) do: #leave ] ].
 	self resetEntities: aClass
 ]
 

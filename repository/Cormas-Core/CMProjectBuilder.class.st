@@ -60,16 +60,34 @@ CMProjectBuilder class >> buildProjectNamed: aPackageName modelClass: aModelClas
 			unLoadModelPackage: aPackageName ]
 ]
 
+{ #category : #accessing }
+CMProjectBuilder class >> modelPackageNames [
+	" Answer a <Collection> of <String> with CORMAS model package names "
+	
+	^ #(
+	'Cormas-Model-ECEC'
+	'Cormas-Model-Conway'
+	'Cormas-Model-DemoAggregates'
+	'Cormas-Model-Diffuse'
+	'Cormas-Model-FireAutomata'
+	'Cormas-Model-PlotsRental'
+	'Cormas-Model-ReHab'
+	'Cormas-Model-Stupid'
+	)
+]
+
 { #category : #examples }
 CMProjectBuilder class >> rebuildModels [ 
-	" Removes all existing demos and rebuild the project files from the code in the current image "
+	" Removes all existing demos and rebuild the project files from the code in the current image.
+	All the models source code should be loaded into the image "
 	<script>
 	
 	Cursor wait showWhile: [ 
 		self new 
 			destinationPath: CMResourceLocator demosPath;
 			rebuildProjects;
-			moveProjects ]
+			moveProjects ].
+	self inform: 'CORMAS Project Builder: Models built'
 ]
 
 { #category : #defaults }
@@ -101,7 +119,7 @@ CMProjectBuilder >> buildForModel: aCMProjectModel [
 CMProjectBuilder >> buildForModelClass: modelClass [
 	" Creates a CORMAS project file, answer a <FileReference> to the new created project "
 
-	cormasModel := CMProjectModel basicNew
+	cormasProject := CMProjectModel basicNew
 		initializeForModel: modelClass named: modelClass friendlyName;
 		yourself.
 	self 
@@ -115,12 +133,12 @@ CMProjectBuilder >> buildForModelClass: modelClass [
 CMProjectBuilder >> buildForModelInstance: modelInstance [
 	" Creates a CORMAS project file, answer a <FileReference> to the new created project "
 
-	cormasModel := modelInstance.
+	self halt.
 	cormasProject := CMProjectModel basicNew
 		initializeForModel: modelInstance named: modelInstance friendlyName;
 		yourself.
 	self 
-		writeDirectoriesStructure;
+		writeProjectTree;
 		writeMetadata;
 		writeSourceCode: modelInstance class
 
@@ -145,7 +163,7 @@ CMProjectBuilder >> buildProject: aModelName modelClass: aModelClass [
 
 	'CORMAS Project Builder: Building project...' traceCr.
 	self loadModelPackage: aModelName.
-	self buildForModelInstance: (Smalltalk image classNamed: aModelClass) new.
+	self buildForModelClass: (Smalltalk image classNamed: aModelClass asSymbol).
 	'CORMAS Project Builder: Done building project...' traceCr.	
 	builtFileRef := self buildProjectFile.
 ]
@@ -215,7 +233,9 @@ CMProjectBuilder >> builtFileRef: anObject [
 
 { #category : #accessing }
 CMProjectBuilder >> cormasModel [
-	^ cormasModel
+	" Answer an instance of <CMAbstractModel> associated to the receiver's project "
+
+	^ self cormasProject cormasModel
 ]
 
 { #category : #accessing }
@@ -375,16 +395,7 @@ CMProjectBuilder >> metadataFilename [
 CMProjectBuilder >> modelPackageNames [
 	" Answer a <Collection> of <String> with CORMAS model package names "
 	
-	^ #(
-	'Cormas-Model-ECEC'
-	'Cormas-Model-Conway'
-	'Cormas-Model-DemoAggregates'
-	'Cormas-Model-Diffuse'
-	'Cormas-Model-FireAutomata'
-	'Cormas-Model-PlotsRental'
-	'Cormas-Model-ReHab'
-	'Cormas-Model-Stupid'
-	)
+	^ self class modelPackageNames
 ]
 
 { #category : #private }
@@ -441,14 +452,17 @@ CMProjectBuilder >> osSystemInformation [
 
 { #category : #'accessing - building' }
 CMProjectBuilder >> rebuildProjects [
-	" Rebuild project files. Remove and generate all project files from the models in this image "
+	" Rebuild demo project files. Iceberg packages should be already loaded in this image. 
+	Remove and generate all project files using the model class found for each demo package. "
 
-	'Model2Project: Rebuilding project files...' traceCr.
+	'CORMAS Project Builder: Rebuilding projects...' traceCr.
 	CMResourceLocator demosPath ensureDeleteAllChildren.
-	CMAbstractModel subclassesDo: [ :modelClass |
-			self buildForModelInstance: modelClass new.
-			self buildProjectFile ].
-	'Model2Project: Done rebuilding project files...' traceCr.
+	self modelPackageNames do: [ : modelPackageName |
+		| modelClassName |
+		modelClassName := modelPackageName asPackage classes detect: [ : c | c superclass = CMAbstractModel ].
+		self buildProject: modelPackageName modelClass: modelClassName.
+		self buildProjectFile ].
+	'CORMAS Project Builder: Done rebuilding projects...' traceCr.
 ]
 
 { #category : #defaults }
@@ -491,28 +505,18 @@ CMProjectBuilder >> unLoadModelPackages [
 		displayingProgress: 'Unloading models from the image'
 ]
 
-{ #category : #accessing }
-CMProjectBuilder >> writeDirectoriesStructure [
-
-	" Private - Write directory structure for the receiver's target project. Resources (files) are taken from the local project's path. 
-	If the project is named 'Lala' then this directory looks like  	/Users/<username>/git_projects/CORMAS_image_dir/pharo-local/iceberg/cormas/cormas/assets/models/Lala/animations "
-
-	| resSelectors |
-	self hasLocalBuild 
-		ifTrue: [ self localBuildDir deleteAll ].
-	resSelectors := (CMResourceLocator organization listAtCategoryNamed:
-		                 'utilities - path - models') select: #isKeyword.
-	resSelectors
-		do: [ :resSelector | self writeProjectTree: resSelector ]
-		displayingProgress: [ :each | each ]
-]
-
 { #category : #'accessing - writing' }
 CMProjectBuilder >> writeMetadata [
 	" Private - Write receiver's model metadata in a file "
 	
-	self localBuildDir asFileReference / self metadataFilename  
-		writeStreamDo: [ :outputStream | outputStream << self buildProjectMetadataSTON ].
+	[ 
+		self localBuildDir asFileReference / self metadataFilename  
+			writeStreamDo: [ :outputStream | outputStream << self buildProjectMetadataSTON ] 
+	]
+	on: FileDoesNotExistException
+	do: [ : ex | 
+		(self localBuildDir asFileReference / self metadataFilename) ensureCreateFile.
+		ex retry ].
 
 ]
 
@@ -521,18 +525,14 @@ CMProjectBuilder >> writeProjectTree [
 	" Private - Write directory structure for the receiver's target project. Resources (files) are taken from the local project's path. 
 	If the project is named 'Lala' then this directory looks like  	/Users/<username>/git_projects/CORMAS_image_dir/pharo-local/iceberg/cormas/cormas/assets/models/Lala/animations "
 
-	| outDirRef resSelectors |
+	| resSelectors |
 	
-	self halt.
-	(outDirRef := self defaultOutputDirectory asFileReference) exists
-		ifTrue: [ outDirRef deleteAll ].
+	self hasLocalBuild 
+		ifTrue: [ self localBuildDir asFileReference deleteAll ].
 	resSelectors := (CMResourceLocator organization listAtCategoryNamed: 'utilities - path - models') select: #isKeyword.
-	resSelectors do: [ : resSelector |
-		| resLocator resTypeDir |
-		
-		resLocator := self cormasProject resourceLocator.
-		resTypeDir := resLocator perform: resSelector with: self cormasModel class shortName.
-		(self cormasProject saveResourcesAt: resTypeDir) ].
+	resSelectors
+		do: [ :resSelector | self writeProjectTree: resSelector ]
+		displayingProgress: [ :each | each ]
 
 ]
 
@@ -542,14 +542,15 @@ CMProjectBuilder >> writeProjectTree: resSelector [
 	| resLocator resTypeDir |
 		
 	resLocator := self cormasProject resourceLocator.
-	resTypeDir := resLocator 
+	(resTypeDir := resLocator 
 		perform: resSelector asSymbol 
-		with: self cormasModel class shortName.
-	[ resTypeDir copyAllTo: ((self localBuildDir asFileReference / resTypeDir basename) ensureCreateDirectory) ]
-	on: FileExists
-	do: [ : ex | 
-		ex ensureDelete.
-		ex retry.]
+		with: self cormasModel class shortName) exists 
+			ifTrue: [ 
+				[ resTypeDir copyAllTo: ((self localBuildDir asFileReference / resTypeDir basename) ensureCreateDirectory) ]
+				on: FileExists
+				do: [ : ex | 
+					ex ensureDelete.
+					ex retry.] ]
 
 ]
 

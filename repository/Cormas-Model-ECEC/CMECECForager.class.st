@@ -110,29 +110,26 @@ CMECECForager >> die [
 
 { #category : #biology }
 CMECECForager >> eat [
-	"The forager eats a quatity of biomass of its current location. The quantity depends on the harvestRate: a proportion of biomass (50% or 99% according to forager type)"
-	
-	| qty |
+
+	| tmp1 |
 	patch ifNil: [ ^ nil ].
-	qty := self patch biomass * self class harvestRate.
-	self energy: self energy + qty.
-	self patch biomass: self patch biomass - qty
+	tmp1 := self patch biomass * self class harvestRate.
+	self energy: self energy + tmp1.
+	self patch biomass: self patch biomass - tmp1
 ]
 
 { #category : #probes }
 CMECECForager >> energy [
-	" Getter accessor with initial value = 50 energyPoint. "
-	<probe>
 
-	^ energy ifNil: [ energy := 50 ]
+	<probe>
+	^ energy ifNil: [ energy := 50 ] ifNotNil: [ energy ]
 ]
 
 { #category : #accessing }
-CMECECForager >> energy: anObject [
+CMECECForager >> energy: arg1 [
 
-	energy = anObject 
-		ifTrue: [ ^ nil ].
-	energy := anObject.
+	energy = arg1 ifTrue: [ ^ nil ].
+	energy := arg1.
 	self changed
 ]
 
@@ -156,16 +153,18 @@ CMECECForager >> isEnergyTooLow [
 
 { #category : #biology }
 CMECECForager >> move [
-	" The Forager examines its current location and around. From those not occupied, he chooses the one containing the plant with the highest energy. If the chosen plant would yield enough food to meet their catabolic rate (2 units), he moves there. If not, he moves instead to a randomly chosen adjacent free place (not occupied by another forager)"	
 
-	| goodCells |
-	patch ifNil: [^nil].
-	goodCells := self patch neighbourhoodAndSelf select: 
-		[:cell | cell biomass > self class catabolicRate and: [cell noOccupant]].
-	goodCells isEmpty
-		ifTrue: [self randomWalkConstrainedBy: [:c | c noOccupant]]
-		ifFalse: [self moveTo: (goodCells asSortedCollection: [:c1 :c2 | c1 biomass > c2 biomass]) first].
-	"self changePovPerceptionRange"
+	| tmp1 |
+	patch ifNil: [ ^ nil ].
+	tmp1 := self patch neighbourhoodAndSelf select: [ :arg1 | 
+		        arg1 biomass > self class catabolicRate and: [ 
+			        arg1 noOccupant ] ].
+	tmp1 isEmpty
+		ifTrue: [ self randomWalkConstrainedBy: [ :arg2 | arg2 noOccupant ] ]
+		ifFalse: [ 
+			self moveTo:
+				(tmp1 asSortedCollection: [ :arg3 :arg4 | 
+					 arg3 biomass > arg4 biomass ]) first ]
 ]
 
 { #category : #pov }
@@ -182,15 +181,14 @@ CMECECForager >> povEnergy [
 
 { #category : #biology }
 CMECECForager >> reproduce [
-	" The forager reproduces asexually, creating an offspring with the same heritable traits as itself (e.g., feeding strategy). At the same time the parent's energy is reduced by the offspring's initial energy (50).  Newborn offspring occupies the nearest free place to its parent. "
-	
-	| newForager freePlace |
+
+	| tmp1 tmp2 |
 	patch ifNil: [ ^ nil ].
-	freePlace := self nearestEmptyLocationWithinRadius: 1.
-	freePlace ifNil: [ ^ nil ].
-	newForager := self newEntity: self class.
-	self energy: self energy - newForager energy.
-	newForager moveTo: freePlace
+	tmp2 := self nearestEmptyLocationWithinRadius: 1.
+	tmp2 ifNil: [ ^ nil ].
+	tmp1 := self newEntity: self class.
+	self energy: self energy - tmp1 energy.
+	tmp1 moveTo: tmp2
 ]
 
 { #category : #povSize }

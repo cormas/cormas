@@ -41,6 +41,7 @@ CMR3ChartPresenter class >> defaultSpec [
 
 { #category : #initialization }
 CMR3ChartPresenter >> initializePresenters [
+	" Private - Setup the options and chart presenters. If there's already data in the receiver's model, then update it otherwise use an empty chart "
 
 	optionsPresenter := CMSpChartOptionsPresenter owner: self on: self cormasModel.
 	roassalChartPresenter := CMR3ChartDiagram owner: self on: self cormasModel.

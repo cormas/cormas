@@ -28,6 +28,8 @@ CMR3ChartDiagram class >> owner: anOwningPresenter on: aDomainObject [
 
 { #category : #'accessing - chart' }
 CMR3ChartDiagram >> addAZeroDataSet [
+	" Private - The receiver was opened but there is no simulation data yet. Add an initial line plot "
+
 	| xValue initialPlot |
 
 	initialPlot := RSLinePlot new.
@@ -54,6 +56,16 @@ CMR3ChartDiagram >> addControllers: aCanvas [
 	aCanvas when: RSExtentChangedEvent do: [ 
 		aCanvas camera zoomToFit: aCanvas extent.
 		aCanvas signalUpdate ]."
+]
+
+{ #category : #'accessing - chart' }
+CMR3ChartDiagram >> addDataSet [
+	" Private - The receiver was opened but the model already has simulation data. Replicate into the diagram "
+
+	self chartBuilder maxValueX: self cormasModel timeStep.
+	self updateYAxis.
+
+	self updateProbes.
 ]
 
 { #category : #'accessing - chart' }
@@ -341,7 +353,10 @@ CMR3ChartDiagram >> setModelBeforeInitialization: aDomainObject [
 
 		when: CMSimInitializationAnnouncement 
 		do: [ self timeChanged: 0 ].
-	self addAZeroDataSet
+		
+	self cormasModel hasData
+		ifFalse: [ self addAZeroDataSet ]
+		ifTrue: [ self addDataSet ]
 ]
 
 { #category : #'accessing - chart' }
@@ -417,11 +432,11 @@ CMR3ChartDiagram >> updateProbes [
 
 { #category : #'accessing - chart' }
 CMR3ChartDiagram >> updateYAxis [
+	" Private - Dinamically detect the model's maximum probe (between all currently selected) and use a multiplier to draw Y axis free space above "
 
-	| roundToMaxVal |
 	self optionsPresenter hasFixedMax
 		ifFalse: [ 
-			| maxProbeValue digitCount |
+			| maxProbeValue digitCount  roundToMaxVal |
 			maxProbeValue := self detectMaxProbeValue.
 			roundToMaxVal := (digitCount := maxProbeValue asInteger decimalDigitLength) >= 2
 				ifTrue: [ 10 raisedTo: digitCount ]

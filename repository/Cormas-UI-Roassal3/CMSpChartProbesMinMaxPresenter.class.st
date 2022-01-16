@@ -17,14 +17,14 @@ CMSpChartProbesMinMaxPresenter class >> defaultSpec [
 
 	^ SpBoxLayout newVertical 
 		add: #scalePresenter height: self inputTextHeight;
-		add: (SpBoxLayout newLeftToRight 
-			add: #fixMinCheckPresenter height: self inputTextHeight;
-			add: #fixMinInputPresenter height: self inputTextHeight;
+		add: (SpPanedLayout newHorizontal 
+			add: #fixMinCheckPresenter;
+			add: #fixMinInputPresenter;
 			yourself);
-		add: (SpBoxLayout newLeftToRight 
-			add: #fixMaxCheckPresenter height: self inputTextHeight;
-			add: #fixMaxInputPresenter height: self inputTextHeight;
-			yourself)
+		add: (SpPanedLayout newHorizontal 
+			add: #fixMaxCheckPresenter;
+			add: #fixMaxInputPresenter;
+			yourself);
 		yourself
 
 ]
