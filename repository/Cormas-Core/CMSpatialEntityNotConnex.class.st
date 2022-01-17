@@ -10,18 +10,6 @@ Class {
 	#category : #'Cormas-Core-Entities'
 }
 
-{ #category : #obsolete }
-CMSpatialEntityNotConnex >> displayImageOn: aGC [
-	
-	self components do: [:c | c displayImageOn: (aGC paint: self color)]
-]
-
-{ #category : #obsolete }
-CMSpatialEntityNotConnex >> displayOn: aGC withColor: aSymbol [
-	
-	self components do: [:c | c displayOn: aGC withColor: aSymbol]
-]
-
 { #category : #displaying }
 CMSpatialEntityNotConnex >> getSkinE [
 	"Returns a collection of cells belonging to the 'internal skin' of the aggregate"
@@ -31,7 +19,7 @@ CMSpatialEntityNotConnex >> getSkinE [
 	^elementaryComponents
 		select:
 			[:c | 
-			(c neighbourhood contains: [:n | (elementaryComponents includes: n) not])
+			(c neighbourhood anySatisfy: [:n | (elementaryComponents includes: n) not])
 				or: [c edge]]
 ]
 
@@ -43,15 +31,14 @@ CMSpatialEntityNotConnex >> initEdge [
 
 { #category : #obsolete }
 CMSpatialEntityNotConnex >> setImage [
+
 	"a collec of components images"
-	
+
 	| collec |
 	collec := OrderedCollection new.
-	self components
-		do:
-			[:c | 
-			c image isNil ifTrue: [c setImage].
-			collec add: c image].
+	self components do: [ :c | 
+		c image ifNil: [ c setImage ].
+		collec add: c image ].
 	self image: collec
 ]
 

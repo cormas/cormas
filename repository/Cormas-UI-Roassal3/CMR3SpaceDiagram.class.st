@@ -267,9 +267,16 @@ CMR3SpaceDiagram >> initializeEvents [
 
 { #category : #initialization }
 CMR3SpaceDiagram >> initializePresenters [
-	" Private - This method initializes a simulationGrid for a specific cormasModel , without specifyin any animation behaviour "
 
 	self initializeEvents.
+	self cormasModel hasData ifFalse: [ ^ self ].
+	" Space Interface has been re-opened "
+	self addViewForCells: self cormasModel theESE.
+	self addViewForAgents: self cormasModel allTheSituatedEntities.
+	self addNewSituatedEntities.
+	self moveSituatedEntities.
+	self theCellViews do: [ :node | node updateEntityAspectIn: self ].
+	self canvas signalUpdate
 ]
 
 { #category : #'accessing - layouts' }

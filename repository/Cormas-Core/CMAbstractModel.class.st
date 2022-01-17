@@ -76,6 +76,8 @@ CMAbstractModel class >> aboutThisModel [
 
 { #category : #'accessing - probes' }
 CMAbstractModel class >> activeProbes [
+	" Answer a <Collection> with the receiver's currently selected probes in the scenario initialization interface "
+
 	^ activeProbes
 		ifNil: [ self defaultProbes ]
 		ifNotNil: [ activeProbes ]
@@ -728,21 +730,6 @@ CMAbstractModel class >> occupantClasses [
 	"return a collection of classes for which intances are located on the grid"
 	
 	^self allEntityClasses select: [:cl | cl isSituatedClass]
-]
-
-{ #category : #activityEditor }
-CMAbstractModel class >> openActivityDiagram: operationName [
-	" Agent openActivityDiagram: #exampleTest   "
-	
-	| ad |
-	"le diagramme en m√©moire s'ouvre mais les activit√©s ne sont plus connect√©es. Il faut donc recr√©er"
-	self activityDiagrams
-		removeKey: operationName
-		ifAbsent: [nil].
-	ad := self activityDiagramsAt: operationName.
-	ad open.
-	ad setTitle.
-	^ad
 ]
 
 { #category : #'managing classes' }
@@ -2227,7 +2214,7 @@ CMAbstractModel >> hasControlInit [
 CMAbstractModel >> hasData [
 	" Answer <true> if the receiver already has simulation data "
 	
-	^ data notNil
+	^ data notNil and: [ self timeStep > 0 ]
 ]
 
 { #category : #'default values' }
@@ -2829,6 +2816,15 @@ CMAbstractModel >> probeAt: probeName [
 	" Answer a <Collection> with the receiver's values for probeName "
 
 	^ (self data at: self className) at: probeName
+]
+
+{ #category : #'probes - recording' }
+CMAbstractModel >> probeAt: probeName ifAbsent: aBlock [
+	" Answer a <Collection> with the receiver's values for probeName "
+
+	^ (self data at: self className) 
+		at: probeName
+		ifAbsent: aBlock
 ]
 
 { #category : #accessing }

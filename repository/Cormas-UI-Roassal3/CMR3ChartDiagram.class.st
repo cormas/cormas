@@ -3,7 +3,6 @@ Class {
 	#superclass : #CMSpRoassalPresenter,
 	#instVars : [
 		'chartBuilder',
-		'probeNum',
 		'probeLines',
 		'title',
 		'titleSize',
@@ -66,47 +65,6 @@ CMR3ChartDiagram >> addDataSet [
 	self updateYAxis.
 
 	self updateProbes.
-]
-
-{ #category : #'accessing - chart' }
-CMR3ChartDiagram >> addProbe: probeName ofClass: className color: aColor [
-	" Private - Create a new line for the argument probeName with aColor. Obtain its y value from the cormas model "
-
-	| linePlot xValues yValues probeValues |
-
-	self flag: #todo. 
-		" Why do we need the className ? "
-		" Do we need to count probeNum ? "
-		" How to connect lines with points as in R2 connectColor: ? "
-	probeNum := probeNum + 1.
-	linePlot := RSLinePlot new.
-	probeValues := cormasModel probeAt: probeName.
-	xValues := 0 to: probeValues size - 1.
-	yValues := xValues collect: [ : x | self probeYValuesAt: x in: probeValues ].
-	linePlot 
-		x: xValues
-		y: yValues;
-		color: aColor.
-	self probeLines add: linePlot.
-
-]
-
-{ #category : #public }
-CMR3ChartDiagram >> addProbes [
-	"hard method rebuilding all datasets at each refresh."
-
-	| probesToDisplay |
-	probeNum := 1.
-	probesToDisplay := self cormasModelClass activeProbes asOrderedCollection.
-	(self owner selectedProbes hasEqualElements: probesToDisplay)
-		ifFalse: [ probesToDisplay addAll: (self owner selectedProbes difference: probesToDisplay) ].
-	probesToDisplay do: [ : ap | 
-		self 
-			addProbe: ap
-			ofClass: self cormasModelClass
-			color: (self cormasModel colorOfProbe: ap) ]
-
-
 ]
 
 { #category : #accessing }
@@ -337,11 +295,12 @@ CMR3ChartDiagram >> scaleToMinMax [
 
 { #category : #'accessing - chart' }
 CMR3ChartDiagram >> selectedProbes [
+	" Answer a <Collection> with the receiver's model selected probes "
 
 	^ self owner selectedProbes
 ]
 
-{ #category : #initialization }
+{ #category : #'accessing - model' }
 CMR3ChartDiagram >> setModelBeforeInitialization: aDomainObject [
 	" Private - See superimplementor's comment "
 	
