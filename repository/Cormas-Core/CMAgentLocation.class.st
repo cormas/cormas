@@ -202,6 +202,15 @@ Return value: <Integer>"
 		ifTrue: [^self patch distanceTo: aSpatialEntityOrSituatedEntity]
 ]
 
+{ #category : #printing }
+CMAgentLocation >> interestingDetails [
+	" Answer a <Collection> of interesting receiver's attributes, from a modeler point of view, to display in a popup for example "
+
+	^ super interestingDetails , { 
+		'Coordinates ' -> (self coordinates asString)
+		}
+]
+
 { #category : #testing }
 CMAgentLocation >> isClassLocation [
 	"Answer if the entity is a kind of AgentLocation or of ObjectLocation"
@@ -323,6 +332,17 @@ Example: self locationsWithoutAny: Predator withinRadius: self perceptionRangePr
 			[self patch recursiveNeighbourhood: range withoutAny: locatedEntityName]
 ]
 
+{ #category : #accessing }
+CMAgentLocation >> logMovementTo: aSpatialEntity [
+	"Log the movement"	
+
+	"aSpatialEntity spaceModel 
+		logMovementOf: self
+		from: patch
+		to: aSpatialEntity.   
+	temporary inactivated "
+]
+
 { #category : #deprecated }
 CMAgentLocation >> moveAndTrackTo: aPatch [
 	"Move to aPatch and display a line from origin center to aPatch center"
@@ -429,27 +449,11 @@ CMAgentLocation >> moveTo: aSpatialEntity [
 Argument: aSpatialEntity = <SpatialEntity>
 Example: self moveTo: self patch neighbourN"
 	
-	| alreadySituated |
-	aSpatialEntity isSpatialEntity ifFalse: [^nil].
-	alreadySituated := self isSituated.	"Log the movement"	"aSpatialEntity spaceModel 
-		logMovementOf: self
-		from: patch
-		to: aSpatialEntity.   temporary inactivated"
+	aSpatialEntity isSpatialEntity ifFalse: [ ^ nil ].
+	self logMovementTo: aSpatialEntity.
 	self leaveWhileMoving: true.
 	self patch: aSpatialEntity.
 	(self patch occupants: self class name) add: self.
-	"alreadySituated
-		ifFalse:
-			[""the agent is arriving on the grid for the first time, the SpaceInterfaces should be aware""
-			self currentSimulation
-				registerEntityChange: #newOccupant
-				with: (EntityReference on: aSpatialEntity)
-				from: (EntityReference on: self)]
-		ifTrue:
-			[self currentSimulation
-				registerEntityChange: #movingOccupant
-				with: (EntityReference on: aSpatialEntity)
-				from: (EntityReference on: self)]"
 ]
 
 { #category : #moving }
@@ -891,6 +895,15 @@ CMAgentLocation >> perception: aRayon [
 	^self locationsWithinRadius: aRayon
 ]
 
+{ #category : #printing }
+CMAgentLocation >> printOn: aStream [
+
+	super printOn: aStream.
+	aStream 
+		<< '-coord: ';
+		<< self coordinates asString
+]
+
 { #category : #'star moving' }
 CMAgentLocation >> randomJump [
 "Purpose: moves to a spatial entity randomly picked from the whole grid "
@@ -901,9 +914,10 @@ CMAgentLocation >> randomJump [
 
 { #category : #'star moving' }
 CMAgentLocation >> randomWalk [
-"Purpose: moves to a spatial entity randomly picked from the direct neighbourhood (relative distance = 1) of the current location "
+	" Moves to a spatial entity randomly picked from the direct neighbourhood (relative distance = 1) of the current location "
 
 	| destination |
+	
 	patch ifNil: [^nil].
 	( patch neighbourhood isNil or: [ patch neighbourhood isEmpty])
 		ifTrue: [ ^ nil ].
@@ -930,6 +944,7 @@ CMAgentLocation >> randomWalkConstrainedBy: aBlock [
 	"
 
 	| destination destinations |
+	
 	patch ifNil: [ ^ nil ].
 	destinations := patch neighbourhood select: [ :c | aBlock value: c ].
 	destinations isEmpty

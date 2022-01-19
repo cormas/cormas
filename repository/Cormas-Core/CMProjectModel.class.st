@@ -26,7 +26,8 @@ Class {
 		'cormasModelClass',
 		'codeGenerator',
 		'cormasVersion',
-		'tracker'
+		'tracker',
+		'resourceDictionary'
 	],
 	#category : #'Cormas-Core-Project'
 }
@@ -102,6 +103,15 @@ CMProjectModel >> abstractEntity: aCMEntityAnnouncement [
 		ifTrue: [ self codeGenerator installAbstractMethod ]
 		ifFalse: [ self codeGenerator installConcreteMethod ]
 
+]
+
+{ #category : #'accessing - resources' }
+CMProjectModel >> addAnimation: aFileReference [
+
+	self assert: aFileReference basename equals: CMProjectFile demoImageFilenameWithExtension.
+	
+	aFileReference copyTo: (self resourceLocator animationsPath: self cormasModelName).
+	self inform: 'Animation added'
 ]
 
 { #category : #callbacks }
@@ -532,7 +542,7 @@ CMProjectModel >> renameEntity: aCMEntityRenameAnnouncement [
 
 ]
 
-{ #category : #accessing }
+{ #category : #'accessing - resources' }
 CMProjectModel >> resourceLocator [
 	" Answer the application's resource locator "
 	
@@ -544,13 +554,12 @@ CMProjectModel >> saveProjectFile [
 
 	| modelSaver |
 	
-	'Saving project file...' traceCr.
 	modelSaver := CMProjectBuilder new.
 	modelSaver 
 		buildForModelInstance: self cormasModel;
 		buildProjectFile;
 		moveProjectFile.
-	'Done saving project.'
+
 ]
 
 { #category : #callbacks }

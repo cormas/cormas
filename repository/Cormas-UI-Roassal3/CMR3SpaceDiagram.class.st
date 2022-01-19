@@ -41,6 +41,25 @@ CMR3SpaceDiagram class >> openOn: aCMCormasModel [
 	^ instance
 ]
 
+{ #category : #defaults }
+CMR3SpaceDiagram >> actOnCandidateSelection: aRSGroupOrRSObject [
+
+	aRSGroupOrRSObject size = 1
+		ifTrue: [ 
+			| singleSelection |
+			singleSelection := aRSGroupOrRSObject anyOne.
+			singleSelection cormasModel inspect.
+			singleSelection propertyAt: #cmAlreadyInspected ifAbsentPut: true ] 
+		ifFalse: [ 
+			(SpFilteringSelectableListPresenter new
+				matchSubstring;
+				items: aRSGroupOrRSObject;
+				display: [ : anEntity | anEntity cormasModel friendlyName ];
+				onActivation: [ : selected | selected cormasModel inspect ];
+				onDeactivation: [ : unselected | unselected propertyAt: #cmAlreadyInspected ifAbsentPut: false  ];
+				openWithSpec) title: 'Please select entity to inspect' ]
+]
+
 { #category : #'accessing - pov' }
 CMR3SpaceDiagram >> activePoVSelectorAtClass: aClass [
 	" Answer a <Symbol> which is a selector to access the PoV of an entity of aClass "
@@ -105,7 +124,8 @@ CMR3SpaceDiagram >> addViewForAgents: theSituatedEntities [
 	theSituatedEntities ifNotEmpty: [ : atse | 
 		self addViewForAgent: atse.
 		self canvas addAll: situatedEntitiesViews ].
-	self moveSituatedEntities
+	self moveSituatedEntities.
+
 ]
 
 { #category : #'instance creation' }
@@ -113,8 +133,15 @@ CMR3SpaceDiagram >> addViewForCells: cells [
 
 	theCellViews := cells collect: [ : cell | self newElementViewForModel: cell ] as: RSGroup.
 	self canvas addAll: theCellViews.
-	self configurePopUp.
+	self configurePopUpFor: self nodes.
 	self configureLayout.
+]
+
+{ #category : #callbacks }
+CMR3SpaceDiagram >> agents [
+	" Answer a <RSGroup> of receiver's agents "
+
+	^ self nodes select: [ : v | v model isAgent ]
 ]
 
 { #category : #'accessing - pov' }
@@ -165,6 +192,31 @@ CMR3SpaceDiagram >> collectYAxisPositions [
 	^ self nodes collect: [ :e | e position y ]
 ]
 
+{ #category : #'instance creation' }
+CMR3SpaceDiagram >> configureAdaptivePopup [
+
+	"RSPopup text: [ : aCMEntity | aCMEntity asString ]"
+	^ RSPopup new shapeBuilder: [ : aCMEntity |
+		| composite lb colors |
+		composite := RSComposite new.
+		colors := NSScale category20c.
+		lb := RSLegend new.
+		lb container: composite.
+		lb title: aCMEntity friendlyName.
+		aCMEntity interestingDetails do: [ : att | 
+			lb 
+				text: (self formatEntityDetail: aCMEntity attribute: att)
+				withShape: (RSEllipse new size: 8; color: Color black) ].
+		lb build.
+		composite adjustToChildren.
+		composite
+			color: (Color white alpha: 0.7);
+			withBorder;
+			padding: 5;
+			yourself.
+		 ].
+]
+
 { #category : #'accessing - layouts' }
 CMR3SpaceDiagram >> configureLayout [
 
@@ -175,16 +227,15 @@ CMR3SpaceDiagram >> configureLayout [
 ]
 
 { #category : #'instance creation' }
-CMR3SpaceDiagram >> configurePopUp [
+CMR3SpaceDiagram >> configurePopUpFor: aCollection [
 	" Private - Configure receiver's popup behavior and click callbacks for each receiver's node "
 
 	| popUp |
-	popUp := RSPopup text: [ : aCMEntity | aCMEntity asString ].
-	self nodes @ popUp.
-	self nodes 
+	popUp := self configureAdaptivePopup.
+	aCollection @ popUp.
+	aCollection
 		when: RSMouseLeftClick 
 		do: [ : aRSMouseClick |
-			('Selected entities ' , aRSMouseClick asString) traceCr.
 			(self entitiesAt: aRSMouseClick shape position) do: self leftClickActionBlock ].
 ]
 
@@ -211,11 +262,12 @@ CMR3SpaceDiagram >> defaultLayoutClass [
 CMR3SpaceDiagram >> defaultLeftClickActionBlock [
 
 	^ 	[ : rsShape |
-			| position |
-			position := rsShape position.
-			self canvas nodes 
-				select: [ : v | v encompassingRectangle containsPoint: position ]
-				thenDo: [ : s | s cormasModel inspect ] 
+			"(rsShape propertyAt: #cmAlreadyInspected ifAbsent: [ false ])"
+			SpFilteringSelectableListPresenter allInstances isEmpty
+				ifTrue: [ 
+					| position |
+					position := rsShape position.
+					self actOnCandidateSelection: (self entitiesAt: position) ]
 		]
 ]
 
@@ -240,6 +292,17 @@ CMR3SpaceDiagram >> entitiesAt: aPosition [
 	" Answer a <RSGroup> of entities at mouse position <Point> aPosition "
 
 	^ self nodes select: [ : v | v encompassingRectangle containsPoint: aPosition ]
+]
+
+{ #category : #'instance creation' }
+CMR3SpaceDiagram >> formatEntityDetail: aCMEntity attribute: att [
+
+	^ String << [ : stream |
+		stream 
+			<< att key;
+			space;
+			<< att value asString ]
+	
 ]
 
 { #category : #initialization }
@@ -267,11 +330,17 @@ CMR3SpaceDiagram >> initializeEvents [
 
 { #category : #initialization }
 CMR3SpaceDiagram >> initializePresenters [
-	" Private - This method initializes a simulationGrid for a specific cormasModel , without specifyin any animation behaviour "
 
+	self initializeEvents.
+	self cormasModel hasData ifFalse: [ ^ self ].
+	" Space Interface has been re-opened "
 	self addViewForCells: self cormasModel theESE.
 	self addViewForAgents: self cormasModel allTheSituatedEntities.
-	self initializeEvents.
+	self addNewSituatedEntities.
+	self moveSituatedEntities.
+	self theCellViews do: [ :node | node updateEntityAspectIn: self ].
+	"self configurePopUpFor: self agents. "
+	self canvas signalUpdate
 ]
 
 { #category : #'accessing - layouts' }
@@ -328,7 +397,7 @@ CMR3SpaceDiagram >> moveExistingEntity: e [
 		yourself."
 	(e propertyAt: #RSLabeled) ifNotNil: [ : p | p text: entityModel labelOfPOV ].
 	e
-		@ (RSPopup text: entityModel detailsOfPOV);
+		"@ (RSPopup text: entityModel detailsOfPOV);"
 		size: entityModel sizeOfPOV;
 		color: entityModel pov;
 		translateTo: (eModelPatch numCol @ eModelPatch numLine * cellSize) - (cellSize / 2)
@@ -356,7 +425,7 @@ CMR3SpaceDiagram >> newElementViewForModel: cellModel [
 
 { #category : #'instance creation' }
 CMR3SpaceDiagram >> newSEViewForModel: aCMEntity [
-	" Answer a <RSShape> for the receiver's situated entities "
+	" Answer a new <RSShape> for the receiver's situated entities "
 
 	| colorSelector |
 	
@@ -517,11 +586,14 @@ CMR3SpaceDiagram >> timeChanged: aNewTimeStep [
 	aNewTimeStep = 0
 		ifTrue: [ 
 			self clearView.
-			self addViewForCells: self cormasModel theESE ]
+			self addViewForCells: self cormasModel theESE.
+			self addViewForAgents: self cormasModel allTheSituatedEntities ]
 		ifFalse: [ self removeDeadSituatedEntities ].
+
 	self addNewSituatedEntities.
 	self moveSituatedEntities.
 	self theCellViews do: [ : node | node updateEntityAspectIn: self ].
+	self configurePopUpFor: self agents.	
 	self canvas signalUpdate
 ]
 

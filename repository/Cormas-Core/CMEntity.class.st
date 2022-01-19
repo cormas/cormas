@@ -32,6 +32,8 @@ Class Instance Variables:
 Class {
 	#name : #CMEntity,
 	#superclass : #CMObject,
+	#traits : 'TCMUtils',
+	#classTraits : 'TCMUtils classTrait',
 	#instVars : [
 		'id',
 		'flag',
@@ -1286,6 +1288,8 @@ CMEntity >> asString [
 
 	^ String streamContents: [ : stream |
 		stream 
+			<< super asString;
+			crtab;		
 			<< 'id: ';
 			<< id asString ]
 	
@@ -1538,6 +1542,15 @@ CMEntity >> initId [
 	" Private - Set the receiver's internal identifier. "
 
 	self id: (self class CurrentId: self class CurrentId + 1)
+]
+
+{ #category : #printing }
+CMEntity >> interestingDetails [
+	" Answer a <Collection> of interesting receiver's attributes, from a modeler point of view, to display in a popup for example "
+
+	^ { 
+		'Id: ' -> (self id)
+		}
 ]
 
 { #category : #testing }

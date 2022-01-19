@@ -25,6 +25,19 @@ CMSpatialEntityElement class >> isSpatialEntityElementClass [
 	^true
 ]
 
+{ #category : #accessing }
+CMSpatialEntityElement >> asString [
+	" Private - See superimplementor's comment "
+
+	^ String streamContents: [ : stream |
+		stream 
+			<< super asString;
+			crtab;		
+			<< 'coordinates: ';
+			<< self coordinates asString ]
+	
+]
+
 { #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> boundaryDirections [
 	"Returns a collection of direction (ex: (#E #SE #NE)) of the cell, without cell => the edge of the grid"

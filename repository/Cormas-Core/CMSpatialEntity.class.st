@@ -374,6 +374,16 @@ CMSpatialEntity >> initialize [
 	destroyed := false.
 ]
 
+{ #category : #printing }
+CMSpatialEntity >> interestingDetails [
+	" Answer a <Collection> of interesting receiver's attributes, from a modeler point of view, to display in a popup for example "
+
+	^ super interestingDetails , { 
+		'Occupants: ' -> (self theOccupants size) . 
+		'Neighbours: ' -> (self neighbourhood size)
+		}
+]
+
 { #category : #'star testing' }
 CMSpatialEntity >> isComponentOf: aSpatialEntity [ 
 "Purpose: tests if the receiver belongs to the components of a given compound spatial entity
@@ -972,14 +982,6 @@ Example: self shortestDistanceToCellVerifying: [:c | c landCover = #forest] cons
 	^ targetCell isNil
 		ifTrue: [ self cormas warn: 'there is no nearest cell' ]
 		ifFalse: [ self distanceTo: targetCell ]
-]
-
-{ #category : #obsolete }
-CMSpatialEntity >> show [
-	"	DEPRECATED. Should 'nt be used anymore.
-	The only way to ask an entity to be displayed is FLASH"
-	
-	
 ]
 
 { #category : #accessing }

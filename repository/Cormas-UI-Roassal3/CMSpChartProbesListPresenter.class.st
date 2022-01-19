@@ -35,13 +35,13 @@ CMSpChartProbesListPresenter >> colorOfProbe: aSymbol [
 
 { #category : #initialization }
 CMSpChartProbesListPresenter >> initializePresenters [
-	" Private - Initially we display all available model probes (see #probes method). 
+	" Private - Initially we display all active model probes (see #probes method). 
 	If the color is not recognizable, then display a question mark "
 
-	self selectedProbes addAll: self cormasModelClass probes.
+	self selectedProbes addAll: self cormasModelClass activeProbes.
 	probesListLabel := 'Probes' asPresenter. "self translator tProbesListNames."
 	probesListPresenter := self newTable
-		items: self cormasModelClass probes;
+		items: self cormasModelClass activeProbes;
 		addColumn: self probesCheckBoxesColumn;
 		addColumn: self probesColorColumn;
 		addColumn: (SpStringTableColumn title: 'Name' evaluated: #asString);
@@ -133,12 +133,6 @@ CMSpChartProbesListPresenter >> probesListPresenter [
 CMSpChartProbesListPresenter >> probesListPresenter: anObject [
 
 	probesListPresenter := anObject
-]
-
-{ #category : #callbacks }
-CMSpChartProbesListPresenter >> refreshProbeNameSelection [
-
-
 ]
 
 { #category : #initialization }

@@ -72,10 +72,7 @@ CMECECVegetationUnit >> asString [
 
  	^ String streamContents: [ : stream | 
  		  stream
- 			  << self className;
- 				crtab; tab;
- 				<< 'id: ';
- 				<< id asString;
+ 			  << super asString;
  				crtab; tab;
  			 	<< 'biomass: ';
  				<< (biomass truncateTo: 0.005) asString ]
@@ -101,6 +98,15 @@ CMECECVegetationUnit >> biomass: anObject [
 { #category : #init }
 CMECECVegetationUnit >> initRandomBiomass [
 	self biomass: Cormas random
+]
+
+{ #category : #printing }
+CMECECVegetationUnit >> interestingDetails [
+	" Answer a <Collection> of interesting receiver's attributes, from a modeler point of view, to display in a popup for example "
+
+	^ super interestingDetails , { 
+		'Biomass' -> ((biomass truncateTo: 0.005) asString)
+		}
 ]
 
 { #category : #growth }

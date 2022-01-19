@@ -3,7 +3,6 @@ Class {
 	#superclass : #CMSpRoassalPresenter,
 	#instVars : [
 		'chartBuilder',
-		'probeNum',
 		'probeLines',
 		'title',
 		'titleSize',
@@ -28,6 +27,8 @@ CMR3ChartDiagram class >> owner: anOwningPresenter on: aDomainObject [
 
 { #category : #'accessing - chart' }
 CMR3ChartDiagram >> addAZeroDataSet [
+	" Private - The receiver was opened but there is no simulation data yet. Add an initial line plot "
+
 	| xValue initialPlot |
 
 	initialPlot := RSLinePlot new.
@@ -57,44 +58,13 @@ CMR3ChartDiagram >> addControllers: aCanvas [
 ]
 
 { #category : #'accessing - chart' }
-CMR3ChartDiagram >> addProbe: probeName ofClass: className color: aColor [
-	" Private - Create a new line for the argument probeName with aColor. Obtain its y value from the cormas model "
+CMR3ChartDiagram >> addDataSet [
+	" Private - The receiver was opened but the model already has simulation data. Replicate into the diagram "
 
-	| linePlot xValues yValues probeValues |
+	self chartBuilder maxValueX: self cormasModel timeStep.
+	self updateYAxis.
 
-	self flag: #todo. 
-		" Why do we need the className ? "
-		" Do we need to count probeNum ? "
-		" How to connect lines with points as in R2 connectColor: ? "
-	probeNum := probeNum + 1.
-	linePlot := RSLinePlot new.
-	probeValues := cormasModel probeAt: probeName.
-	xValues := 0 to: probeValues size - 1.
-	yValues := xValues collect: [ : x | self probeYValuesAt: x in: probeValues ].
-	linePlot 
-		x: xValues
-		y: yValues;
-		color: aColor.
-	self probeLines add: linePlot.
-
-]
-
-{ #category : #public }
-CMR3ChartDiagram >> addProbes [
-	"hard method rebuilding all datasets at each refresh."
-
-	| probesToDisplay |
-	probeNum := 1.
-	probesToDisplay := self cormasModelClass activeProbes asOrderedCollection.
-	(self owner selectedProbes hasEqualElements: probesToDisplay)
-		ifFalse: [ probesToDisplay addAll: (self owner selectedProbes difference: probesToDisplay) ].
-	probesToDisplay do: [ : ap | 
-		self 
-			addProbe: ap
-			ofClass: self cormasModelClass
-			color: (self cormasModel colorOfProbe: ap) ]
-
-
+	self updateProbes.
 ]
 
 { #category : #accessing }
@@ -325,11 +295,12 @@ CMR3ChartDiagram >> scaleToMinMax [
 
 { #category : #'accessing - chart' }
 CMR3ChartDiagram >> selectedProbes [
+	" Answer a <Collection> with the receiver's model selected probes "
 
 	^ self owner selectedProbes
 ]
 
-{ #category : #initialization }
+{ #category : #'accessing - model' }
 CMR3ChartDiagram >> setModelBeforeInitialization: aDomainObject [
 	" Private - See superimplementor's comment "
 	
@@ -341,7 +312,10 @@ CMR3ChartDiagram >> setModelBeforeInitialization: aDomainObject [
 
 		when: CMSimInitializationAnnouncement 
 		do: [ self timeChanged: 0 ].
-	self addAZeroDataSet
+		
+	self cormasModel hasData
+		ifFalse: [ self addAZeroDataSet ]
+		ifTrue: [ self addDataSet ]
 ]
 
 { #category : #'accessing - chart' }
@@ -417,11 +391,11 @@ CMR3ChartDiagram >> updateProbes [
 
 { #category : #'accessing - chart' }
 CMR3ChartDiagram >> updateYAxis [
+	" Private - Dinamically detect the model's maximum probe (between all currently selected) and use a multiplier to draw Y axis free space above "
 
-	| roundToMaxVal |
 	self optionsPresenter hasFixedMax
 		ifFalse: [ 
-			| maxProbeValue digitCount |
+			| maxProbeValue digitCount  roundToMaxVal |
 			maxProbeValue := self detectMaxProbeValue.
 			roundToMaxVal := (digitCount := maxProbeValue asInteger decimalDigitLength) >= 2
 				ifTrue: [ 10 raisedTo: digitCount ]

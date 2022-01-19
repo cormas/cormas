@@ -34,6 +34,8 @@ Instance Variables
 Class {
 	#name : #CMAbstractModel,
 	#superclass : #CMObject,
+	#traits : 'TCMUtils',
+	#classTraits : 'TCMUtils classTrait',
 	#instVars : [
 		'cormas',
 		'timeStep',
@@ -76,6 +78,8 @@ CMAbstractModel class >> aboutThisModel [
 
 { #category : #'accessing - probes' }
 CMAbstractModel class >> activeProbes [
+	" Answer a <Collection> with the receiver's currently selected probes in the scenario initialization interface "
+
 	^ activeProbes
 		ifNil: [ self defaultProbes ]
 		ifNotNil: [ activeProbes ]
@@ -458,15 +462,6 @@ CMAbstractModel class >> defaultSteppingBackSetting [
 	^false
 ]
 
-{ #category : #accessing }
-CMAbstractModel class >> friendlyName [
-	" Answer a <String> with the receiver's name without any Cormas prefix "
-
-	^ (self name beginsWith: 'CM')
-		ifTrue: [ self name allButFirst: 2 ]
-		ifFalse: [ self name ]
-]
-
 { #category : #compiling }
 CMAbstractModel class >> getterForEntityClass: aClass [
 	"Create the getter selector for the entity class aClass.
@@ -728,21 +723,6 @@ CMAbstractModel class >> occupantClasses [
 	"return a collection of classes for which intances are located on the grid"
 	
 	^self allEntityClasses select: [:cl | cl isSituatedClass]
-]
-
-{ #category : #activityEditor }
-CMAbstractModel class >> openActivityDiagram: operationName [
-	" Agent openActivityDiagram: #exampleTest   "
-	
-	| ad |
-	"le diagramme en m√©moire s'ouvre mais les activit√©s ne sont plus connect√©es. Il faut donc recr√©er"
-	self activityDiagrams
-		removeKey: operationName
-		ifAbsent: [nil].
-	ad := self activityDiagramsAt: operationName.
-	ad open.
-	ad setTitle.
-	^ad
 ]
 
 { #category : #'managing classes' }
@@ -1028,13 +1008,6 @@ CMAbstractModel class >> visualizableClasses [
 	coll := OrderedCollection withAll: self occupantClasses.
 	coll addAll: self spatialClasses.
 	^coll
-]
-
-{ #category : #'managing classes' }
-CMAbstractModel class >> visualizedClasses [
-	"Return a list of the model' classes inheriting from Entity for whom a 'pov' protocol exists"
-	
-	^self allEntityClasses	"select: [:cl | (cl organization listAtCategoryNamed: #pov) isEmpty not]"
 ]
 
 { #category : #accessing }
@@ -1671,41 +1644,50 @@ CMAbstractModel >> createN: aNumber randomlyLocatedAloneEntities: aClass initMet
 
 { #category : #'instance creation - agents & objects' }
 CMAbstractModel >> createN: aNumber randomlyLocatedAloneEntities: aClass initMethod: aSymbol arguments: aCollec [
+
 	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' with a set of arguments 'aCollec' has been send.
 	The new entities are randomly located on the free cells of the grid.
 	ex: self createN: 10 randomlyLocatedAloneEntities: Predator initMethod: #initAge:energy: arguments: #(0 50) "
 
 	| a freeCell newEntities |
 	newEntities := OrderedCollection new.
-	aNumber
-		timesRepeat: [ freeCell := self pickUnoccupiedCell.
-			freeCell isNil
-				ifTrue: [ self cormas warn: 'No free cell. The simulation will stop'.
-					self halt ].
-			a := self newEntity: aClass.
-			a moveTo: freeCell.
-			a perform: aSymbol withArguments: aCollec.
-			newEntities add: a ].
+	aNumber timesRepeat: [ 
+		(freeCell := self pickUnoccupiedCell) ifNil: [ self cormas error: 'No free cell. The simulation will stop' ].
+		a := self newEntity: aClass.
+		a moveTo: freeCell.
+		a perform: aSymbol withArguments: aCollec.
+		newEntities add: a ].
 	^ newEntities
 ]
 
 { #category : #'instance creation - agents & objects' }
 CMAbstractModel >> createN: aNumber randomlyLocatedEntities: aClass [
-	"Return a collection of aNumber of entities of aClass for wich the 'init' method 'has been send.
-	The new entities are randomly located on the grid.
-	ex: self createN: 10 randomlyLocatedEntities: Predator"
+	" Answer a <Collection> of aNumber of entities of aClass for wich the 'init' method 'has been send.
+	The new entities are randomly located on the grid. ex: 
 	
-	^self createN: aNumber randomlyLocatedEntities: aClass initMethod: #init
+	self createN: 10 randomlyLocatedEntities: Predator
+	"
+	
+	^ self 
+		createN: aNumber 
+		randomlyLocatedEntities: aClass 
+		initMethod: #init
 ]
 
 { #category : #'instance creation - agents & objects' }
 CMAbstractModel >> createN: aNumber randomlyLocatedEntities: aClass constrainedBy: aBlock [
-	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' has been send.
-	The new entities are randomly located on the grid on cells that verify the constraint.
-	ex: self createN: 10 randomlyLocatedEntities: Predator constrainedBy: [:c | c noOccupant and: [c energy > 1]]"
+	" Answer a <Collection> of aNumber of entities of aClass for wich the init method 'aSymbol' has been send.
+	The new entities are randomly located on the grid on cells that verify the constraint. ex: 
 	
-	^self createN: aNumber randomlyLocatedEntities: aClass initMethod: #init
-		arguments: #() constrainedBy: aBlock
+	self createN: 10 randomlyLocatedEntities: Predator constrainedBy: [:c | c noOccupant and: [c energy > 1]]
+	"
+	
+	^ self 
+		createN: aNumber 
+		randomlyLocatedEntities: aClass 
+		initMethod: #init
+		arguments: #() 
+		constrainedBy: aBlock
 ]
 
 { #category : #'instance creation - agents & objects' }
@@ -1739,25 +1721,21 @@ CMAbstractModel >> createN: aNumber randomlyLocatedEntities: aClass initMethod: 
 
 { #category : #'instance creation - agents & objects' }
 CMAbstractModel >> createN: aNumber randomlyLocatedEntities: aClass initMethod: aSymbol arguments: aCollec constrainedBy: aBlock [
+
 	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' with a set of arguments 'aCollec' has been send.
 	The new entities are randomly located on the free cells of the grid.
 	ex: self createN: 10 randomlyLocatedEntities: Predator initMethod: #initAge constrainedBy: [:cell | cell energy > 1] "
-	
+
 	| a targetCell newEntities |
 	newEntities := OrderedCollection new.
-	aNumber
-		timesRepeat:
-			[targetCell := self pickCellConstrainedBy: aBlock.
-			targetCell isNil
-				ifTrue:
-					[self cormas warn:
-							'No available cell for the constraint. The simulation will stop'.
-					self halt].
-			a := self newEntity: aClass.
-			a moveTo: targetCell.
-			a perform: aSymbol withArguments: aCollec.
-			newEntities add: a].
-	^newEntities
+	aNumber timesRepeat: [ 
+		(targetCell := self pickCellConstrainedBy: aBlock) 
+			ifNil: [ self error: 'No available cell for the constraint. The simulation will stop' ].
+		a := self newEntity: aClass.
+		a moveTo: targetCell.
+		a perform: aSymbol withArguments: aCollec.
+		newEntities add: a ].
+	^ newEntities
 ]
 
 { #category : #'instance creation - agents & objects' }
@@ -1998,13 +1976,6 @@ Argument: aClass is an aggregate"
 	^ self spaceModel fractalDimension: aClass
 ]
 
-{ #category : #accessing }
-CMAbstractModel >> friendlyName [
-	" See comment in class side "
-
-	^ self class friendlyName
-]
-
 { #category : #'init - social network' }
 CMAbstractModel >> generateAsymetricNetworkDensity: x forAgents: aClass [
 	"Purpose: As a result of this method, the acquaintances attribute of each agent is set with a collection of other agents, randomly picked. The size of this collection is the ratio x of the total population. The method loops on each agent and link it with the requested number of other agents of the same class.
@@ -2225,6 +2196,13 @@ CMAbstractModel >> hasControlInit [
 	^ activeControl notNil
 ]
 
+{ #category : #testing }
+CMAbstractModel >> hasData [
+	" Answer <true> if the receiver already has simulation data "
+	
+	^ data notNil and: [ self timeStep > 0 ]
+]
+
 { #category : #'default values' }
 CMAbstractModel >> hasSpatialClasses [
 	" Answer <true> if the receiver's model has a Simple Cell or Cellular Automaton already defined "
@@ -2239,14 +2217,17 @@ CMAbstractModel >> incrementTimeStep [
 
 { #category : #'init entities' }
 CMAbstractModel >> initEntities [
+
 	"Initialize all the Entity classes of the model"
 
 	"Remove all the PassiveObjects and Located Objects"
 
-	self class passiveClasses do: [ :aClass | self initEntitiesForPassiveClass: aClass ].	"Remove all the Agents from previous simulation"
-	self class socialClasses do: [ :aClass | self initEntitiesForSocialClass: aClass ].
-	self spaceModel isNil
-		ifFalse: [ self spaceModel resetSpatialEntities "ButCells" ]
+	self class passiveClasses do: [ :aClass | 
+		self initEntitiesForPassiveClass: aClass ]. "Remove all the Agents from previous simulation"
+	self class socialClasses do: [ :aClass | 
+		self initEntitiesForSocialClass: aClass ].
+	self spaceModel ifNotNil: [ 
+		self spaceModel resetSpatialEntities "ButCells" ]
 ]
 
 { #category : #accessing }
@@ -2262,13 +2243,41 @@ CMAbstractModel >> initEntitiesForPassiveClass: aClass [
 ]
 
 { #category : #accessing }
-CMAbstractModel >> initEntitiesForSocialClass: aClass [ 
+CMAbstractModel >> initEntitiesForSocialClass: aClass [
 
-	(aClass isAbstract not and: [ aClass inheritsFrom: CMAgentLocation ])
+	(aClass isAbstract not and: [ aClass inheritsFrom: CMAgentLocation ]) 
 		ifTrue: [ 
-			(self theEntities: aClass) isNil
-				ifFalse: [ (self theEntities: aClass) do: #leave ] ].
+			(self theEntities: aClass) ifNotNil: [ 
+				(self theEntities: aClass) do: #leave ] ].
 	self resetEntities: aClass
+]
+
+{ #category : #scheduling }
+CMAbstractModel >> initSimFromScnrStage1 [
+
+	self timeStep: 0.
+	self initializeProbes.
+	"store the instances of entities in a collection and request an update of the space views at the end of the initialization"
+	self setNewCollector.
+	"remove the previous entities of the collections (theXXXs), except for theCells"
+	self initEntities.
+	"set default attributes values of entities"
+	self defaultAttributesSetter reApplyNewValues.	"setAttributeNewValue"	"reApplyNewValues"
+	"Call the selected INIT method"
+	self perform: self activeInit.	"launch the selected INIT method"
+]
+
+{ #category : #scheduling }
+CMAbstractModel >> initSimFromScnrStage2 [
+
+	self updateEntities.	"updates theXXXs collections"
+	self updateDataForChart.
+	self channel ifNil: [ self initializeChannel ].
+	self theAgentsComm do: [ :p | p channel: self channel ].
+	self theAgentsComm ifNotEmpty: [ : agentsComm | self channel population: agentsComm ].
+	"announce to all the subscribers that simulation is beeing initialized"
+	self projectAnnouncer announce: CMSimInitializationAnnouncement.
+	self initStatus: true.
 ]
 
 { #category : #scheduling }
@@ -2795,6 +2804,15 @@ CMAbstractModel >> probeAt: probeName [
 	^ (self data at: self className) at: probeName
 ]
 
+{ #category : #'probes - recording' }
+CMAbstractModel >> probeAt: probeName ifAbsent: aBlock [
+	" Answer a <Collection> with the receiver's values for probeName "
+
+	^ (self data at: self className) 
+		at: probeName
+		ifAbsent: aBlock
+]
+
 { #category : #accessing }
 CMAbstractModel >> projectAnnouncer [
 	" Private - See commments in #projectAnnouncer "
@@ -2809,8 +2827,10 @@ CMAbstractModel >> projectManager [
 ]
 
 { #category : #accessing }
-CMAbstractModel >> projectManager: anObject [
-	projectManager := anObject
+CMAbstractModel >> projectManager: aCMProjectManager [
+	" Each model has a reference to its project manager. "
+
+	projectManager := aCMProjectManager
 ]
 
 { #category : #'utilities - files' }
@@ -2989,15 +3009,16 @@ CMAbstractModel >> resetEntities: aClass [
 { #category : #scheduling }
 CMAbstractModel >> runStep [
 	"The main step method that activates the agents:
-		- INCREMENT the timeStep
+		- INCREMENT the timeStep (DO NOT USE the #incrementTimeStep as updates the UI before agents get a new patch)
 		- EXECUTE the selected #Step method (of the ScenarioBuilder Interface) for the new timeStep,
 		- UPDATE the Entities (remove the dead ones and add the new ones in theXXs collections).
 	(For display: Store the changed entities in a collection and request an update of the space views at the end of the timestep)"
 	
-	self incrementTimeStep.
+	timeStep := timeStep + 1.
 	self activeControl last = $:
 		ifTrue: [ self perform: self activeControl with: self timeStep ]
 		ifFalse: [ self perform: self activeControl ].
+	self timeChanged.
 	self updateEntities.
 	self channel notNil ifTrue: [self channel flush].
 	self updateDataForChart.
@@ -3430,8 +3451,8 @@ CMAbstractModel >> updateEntities: aClass [
 CMAbstractModel >> updateGlobalData [
 	
 	(self data includesKey: self class name)
-		ifTrue:
-			[(self data at: self class name)
+		ifTrue: [ 
+			(self data at: self class name)
 				keysAndValuesDo: [:name :list | list add: (self perform: name)]]
 ]
 
@@ -3439,40 +3460,29 @@ CMAbstractModel >> updateGlobalData [
 CMAbstractModel >> updateLocalData [
 	
 	| res collec className aValue |
-	self class allEntityClasses
-		do:
-			[:cl | 
-			className := cl name.
-			(self data includesKey: className)
-				ifTrue:
-					[(self data at: className)
-						keysAndValuesDo:
-							[:name :dict | 
-							res := OrderedCollection new.
-							(self perform: cl asGetterForEntityClass)
-								do: [:c |  
-									aValue := c class perform: name.
-									aValue isSymbol
-										ifTrue: [ 
-											"The local probe is a reference to a global probe"
-											aValue := self lastValueOfGlobalDataNamed: name].
-									res
-										add:
-											(Array
-												with: aValue
-												with: c id)].
-							res
-								do:
-									[:x | 
-									(dict keys includes: x last)
-										ifFalse:
-											[collec := OrderedCollection new.
-											self timeStep timesRepeat: [collec add: 0]]
-										ifTrue: [collec := dict at: x last].
-									collec add: x first.
-									dict
-										at: x last
-										put: collec]]]]
+	self class allEntityClasses do: [ : cl | 
+		className := cl name.
+		(self data includesKey: className)
+			ifTrue: [ 
+				(self data at: className) keysAndValuesDo: [ : name : dict | 
+					res := OrderedCollection new.
+					(self perform: cl asGetterForEntityClass) do: [ : c |  
+						(aValue := c class perform: name) isSymbol
+							ifTrue: [ 
+								"The local probe is a reference to a global probe"
+								aValue := self lastValueOfGlobalDataNamed: name].
+								res add: (Array with: aValue with: c id)].
+							res do: [:x | 
+								(dict keys includes: x last)
+									ifFalse: [ 
+										collec := OrderedCollection new.
+										self timeStep timesRepeat: [ collec add: 0 ] ]
+									ifTrue: [
+										collec := dict at: x last].
+										collec add: x first.
+										dict
+											at: x last
+											put: collec ] ] ] ]
 ]
 
 { #category : #'accessing - entities' }
@@ -3509,8 +3519,7 @@ Argument: aCollecOrClass can be a collection of entities or the name of class, i
 Examples: self varianceOfAttribute: #age of: Person
 			 self varianceOfAttribute: #age of: (self theBirds)"
 	
-	^Cormas
-		variance:
+	^ Cormas variance:
 			((self allTheEntitiesOfClassOrCollec: aCollecOrClass) asOrderedCollection
 				collect: [:e | e perform: att])
 ]

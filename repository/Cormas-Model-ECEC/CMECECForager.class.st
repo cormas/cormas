@@ -142,6 +142,15 @@ CMECECForager >> info_energy [
 	^ self energy rounded printString
 ]
 
+{ #category : #printing }
+CMECECForager >> interestingDetails [
+	" Answer a <Collection> of interesting receiver's attributes, from a modeler point of view, to display in a popup for example "
+
+	^ super interestingDetails , { 
+		'Energy: ' -> (self energy asString)
+		}
+]
+
 { #category : #testing }
 CMECECForager >> isEnergyHigh [
 

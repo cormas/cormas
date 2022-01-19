@@ -529,6 +529,21 @@ CMSpecProjectWindow >> openCormasBaselineBrowser [
 			selectClass: BaselineOfCormas ]
 ]
 
+{ #category : #callbacks }
+CMSpecProjectWindow >> openCormasHaltMethods [
+
+	| query basisObjects |
+
+	basisObjects := RPackageOrganizer default packageNames 
+		select: [ : each | each beginsWith: 'Cormas' ]
+		thenCollect: #asPackage.
+	query := ClyActiveBreakpointsQuery
+	         from: ClyPackageScope
+	         ofAll: basisObjects 
+	         in: ClyNavigationEnvironment currentImage.
+	^ ClyQueryBrowserMorph openOn: query
+]
+
 { #category : #'submenu-tools-developer' }
 CMSpecProjectWindow >> openCormasIssue [
 
