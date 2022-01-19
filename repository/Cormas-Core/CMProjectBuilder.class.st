@@ -235,7 +235,7 @@ CMProjectBuilder >> builtFileRef: anObject [
 CMProjectBuilder >> cormasModel [
 	" Answer an instance of <CMAbstractModel> associated to the receiver's project "
 
-	^ self cormasProject cormasModel
+	^ cormasModel
 ]
 
 { #category : #accessing }
