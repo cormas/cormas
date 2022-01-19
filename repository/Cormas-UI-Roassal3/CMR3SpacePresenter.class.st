@@ -220,7 +220,7 @@ CMR3SpacePresenter >> initializeExportMenuToolbar [
 			addItem: [ :item | 
 				item
 					name: 'PDF';
-					action: [ self exportSpaceWith: RSPDFExporter new ] ];
+					action: [ self exportSpaceWith: RSPDFCairoExporter new ] ];
 			addItem: [ :item | 
 				item
 					name: 'SVG';

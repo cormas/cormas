@@ -64,6 +64,21 @@ self deprecated:'Should be deprecated in the next CORMAS version'.
 			self class image displayOn: aGC at: unPoint]"
 ]
 
+{ #category : #printing }
+CMAgent >> interestingDetails [
+	" Answer a <Collection> of interesting receiver's attributes, from a modeler point of view, to display in a popup for example "
+
+	^ super interestingDetails , { 
+		'Dead: ' -> (self dead asString)
+		}
+]
+
+{ #category : #testing }
+CMAgent >> isAgent [
+	
+	^ true
+]
+
 { #category : #testing }
 CMAgent >> isDead [
 	^ self dead

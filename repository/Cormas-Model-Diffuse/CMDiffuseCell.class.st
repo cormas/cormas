@@ -206,16 +206,12 @@ CMDiffuseCell >> qty [
 ]
 
 { #category : #accessing }
-CMDiffuseCell >> qty: arg1 [
-	| tmp2 |
-	qty := arg1.
-	qty > 0
+CMDiffuseCell >> qty: aNumber [
+
+	aNumber > 0
 		ifTrue: [ CMDiffuseCell scheduler newActiveCells add: self ]
 		ifFalse: [ CMDiffuseCell scheduler noMoreActiveCells add: self ].
-	tmp2 := self.
-	tmp2
-		defineVisualState;
-		show
+
 ]
 
 { #category : #control }

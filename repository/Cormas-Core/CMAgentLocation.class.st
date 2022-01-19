@@ -202,6 +202,15 @@ Return value: <Integer>"
 		ifTrue: [^self patch distanceTo: aSpatialEntityOrSituatedEntity]
 ]
 
+{ #category : #printing }
+CMAgentLocation >> interestingDetails [
+	" Answer a <Collection> of interesting receiver's attributes, from a modeler point of view, to display in a popup for example "
+
+	^ super interestingDetails , { 
+		'Coordinates ' -> (self coordinates asString)
+		}
+]
+
 { #category : #testing }
 CMAgentLocation >> isClassLocation [
 	"Answer if the entity is a kind of AgentLocation or of ObjectLocation"

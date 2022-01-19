@@ -73,134 +73,135 @@ CMECECModel class >> displayRunDuration: arg1 simName: arg2 [
 
 { #category : #'examples - with SimManager' }
 CMECECModel class >> exampleSM1 [
+	"In this example the SimManager is not used at all"
 
-	| tmp1 tmp2 tmp3 |
-	tmp1 := self initialize new initSimulation.
-	tmp2 := 200.
-	tmp3 := Time millisecondsToRun: [ tmp2 timesRepeat: [ tmp1 runStep ] ].
-	self
-		displayRunDuration: tmp3 simName: 'a exampleSM1';
-		transcriptShow_simulationTime: tmp1 timeStep
-		nbRestrainedForagers: tmp1 restrainedSize
+	| aModel finalTime chrono |
+	aModel := self initialize new initSimulation.
+	finalTime := 200.
+	chrono := Time millisecondsToRun: [ finalTime timesRepeat: [ aModel runStep ] ].
+	self displayRunDuration: chrono simName: 'a exampleSM1'.
+	self transcriptShow_simulationTime: aModel timeStep nbRestrainedForagers: aModel restrainedSize
 ]
 
 { #category : #'examples - with SimManager' }
 CMECECModel class >> exampleSM2 [
+	"In this example the run of the simulation is managed by the SimManager"
 
-	| tmp1 tmp3 |
-	tmp1 := self initialize new initSimulation.
-	tmp3 := tmp1 simManager.
-	tmp3
+	| aModel |
+	aModel := self initialize new initSimulation.
+	aModel simManager
 		finalTime: 200;
 		runSimulation.
-	self
-		transcriptShow_simulationTime: tmp1 simManager currentTime
-		nbRestrainedForagers: tmp1 restrainedSize
+			self transcriptShow_simulationTime:  aModel simManager currentTime nbRestrainedForagers: aModel restrainedSize 
+	
 ]
 
 { #category : #'examples - with SimManager' }
 CMECECModel class >> exampleSM3 [
+	"In this example the initialization and the run of the simulation is managed by the SimManager"
 
-	| tmp1 tmp3 |
-	tmp1 := self initialize new.
-	tmp3 := tmp1 simManager.
-	tmp3
+	| aModel |
+	aModel := self initialize new.
+	aModel simManager
 		initializeSimulation;
 		finalTime: 200;
 		runSimulation.
 	self
-		transcriptShow_simulationTime: tmp1 simManager currentTime
-		nbRestrainedForagers: tmp1 restrainedSize
+		transcriptShow_simulationTime: aModel simManager currentTime
+		nbRestrainedForagers: aModel restrainedSize
 ]
 
 { #category : #'examples - with SimManager' }
 CMECECModel class >> exampleSM4 [
+	"This example compares the performance of using SimManager or not using it"
 
-	| tmp1 tmp2 tmp3 tmp4 tmp5 |
-	tmp1 := 10.
-	tmp3 := 20.
-	tmp2 := OrderedCollection new.
-	tmp4 := tmp1.
-	1 to: tmp4 do: [ :tmp6 | 
-		tmp5 := nil.
-		tmp5 := Time millisecondsToRun: [ 
-			        | tmp8 |
-			        tmp8 := self initialize new initSimulation.
-			        tmp3 timesRepeat: [ tmp8 runStep ] ].
-		tmp2 add: tmp5 ].
+	| nbRepetitions chronoRecords finalTime |
+	nbRepetitions := 10.
+	finalTime := 20.
+	"exampleSM1"
+	chronoRecords := OrderedCollection new.
+	1 to: nbRepetitions do: [ :idRepetition | 
+		| chrono |
+		chrono := Time
+			millisecondsToRun: [ | aModel |
+				aModel := self initialize new initSimulation.
+				finalTime timesRepeat: [ aModel runStep ] ].
+		chronoRecords add: chrono
+		"	self displayRunDuration: chrono simName: 'exampleSM1 - repetition' , idRepetition asString " ].
 	Transcript
 		cr;
 		show: 'exampleSM1 (no SimManager) - average time over ';
-		show: tmp1;
+		show: nbRepetitions;
 		show: ' repetitions: ';
-		show: (tmp2 sum / tmp1) rounded;
+		show: (chronoRecords sum / nbRepetitions) rounded;
 		show: ' ms'.
-	tmp2 := OrderedCollection new.
-	tmp4 := tmp1.
-	1 to: tmp4 do: [ :tmp6 | 
-		tmp5 := nil.
-		tmp5 := Time millisecondsToRun: [ 
-			        | tmp9 tmp11 |
-			        tmp9 := self initialize new initSimulation.
-			        tmp11 := tmp9 simManager.
-			        tmp11
-				        finalTime: tmp3;
-				        runSimulation ].
-		tmp2 add: tmp5 ].
+	"exampleSM2"
+	chronoRecords := OrderedCollection new.
+	1 to: nbRepetitions do: [ :idRepetition | 
+		| chrono |
+		chrono := Time
+			millisecondsToRun: [ | aModel |
+				aModel := self initialize new initSimulation.
+				aModel simManager
+					finalTime: finalTime;
+					runSimulation ].
+		chronoRecords add: chrono
+		"	self displayRunDuration: chrono simName: 'exampleSM2 - repetition' , idRepetition asString " ].
 	Transcript
 		cr;
-		show: 'exampleSM2 (SimManager used for run) - average time over ';
-		show: tmp1;
+		show: 	'exampleSM2 (SimManager used for run) - average time over ';
+		show: nbRepetitions;
 		show: ' repetitions: ';
-		show: (tmp2 sum / tmp1) rounded;
+		show: (chronoRecords sum / nbRepetitions) rounded;
 		show: ' ms'.
-	tmp2 := OrderedCollection new.
-	tmp4 := tmp1.
-	1 to: tmp4 do: [ :tmp6 | 
-		tmp5 := nil.
-		tmp5 := Time millisecondsToRun: [ 
-			        | tmp12 tmp14 |
-			        tmp12 := self initialize new.
-			        tmp14 := tmp12 simManager.
-			        tmp14
-				        initializeSimulation;
-				        finalTime: tmp3;
-				        runSimulation ].
-		tmp2 add: tmp5 ].
+	"exampleSM3"
+	chronoRecords := OrderedCollection new.
+	1 to: nbRepetitions do: [ :idRepetition | 
+		| chrono |
+		chrono := Time
+			millisecondsToRun: [ | aModel |
+				aModel := self initialize new.
+				aModel simManager
+					initializeSimulation;
+					finalTime: finalTime;
+					runSimulation ].
+		chronoRecords add: chrono
+		"	self displayRunDuration: chrono simName: 'exampleSM3 - repetition' , idRepetition asString " ].
 	Transcript
 		cr;
-		show:
-			'exampleSM3 (SimManager used for init and run) - average time over ';
-		show: tmp1;
+		show: 'exampleSM3 (SimManager used for init and run) - average time over ';
+		show: nbRepetitions;
 		show: ' repetitions: ';
-		show: (tmp2 sum / tmp1) rounded;
-		show: ' ms';
-		open
+		show: (chronoRecords sum / nbRepetitions) rounded;
+		show: ' ms'.
+	Transcript open
 ]
 
 { #category : #'default value' }
 CMECECModel class >> restrainedInitialNumber_default [
-
-	^ 10
+	"Return the default value of restrainedInitialNumber attribute"
+	
+	^10
 ]
 
 { #category : #'examples - with SimManager' }
-CMECECModel class >> transcriptShow_simulationTime: arg1 nbRestrainedForagers: arg2 [
+CMECECModel class >> transcriptShow_simulationTime: nbTimeStep nbRestrainedForagers: aNbRestrainedForagers [
 
 	Transcript
 		cr;
 		show: 'Number of steps : ';
-		show: arg1 asString;
+		show: nbTimeStep asString;
 		cr;
 		show: 'Number of restrained foragers: ';
-		show: arg2 asString;
+		show: aNbRestrainedForagers asString;
 		open
 ]
 
 { #category : #'default value' }
 CMECECModel class >> unrestrainedInitialNumber_default [
-
-	^ 10
+	"Return the default value of unrestrainedInitialNumber attribute"
+	
+	^10
 ]
 
 { #category : #init }
@@ -249,7 +250,7 @@ CMECECModel >> randomEnv [
 		columns: 15
 		neighbourhood: 8
 		closed: true.
-	self theVegetationUnits do: [ :arg1 | arg1 initRandomBiomass ].
+	self theVegetationUnits do: [ : cell | cell initRandomBiomass ].
 	self initAgents
 ]
 
@@ -299,9 +300,8 @@ CMECECModel >> theRestraineds: arg1 [
 { #category : #accessing }
 CMECECModel >> theUnrestraineds [
 
-	^ theUnrestraineds
-		  ifNil: [ theUnrestraineds := OrderedCollection new ]
-		  ifNotNil: [ theUnrestraineds ]
+	^ theUnrestraineds 
+		ifNil:[ theUnrestraineds := OrderedCollection new ]
 ]
 
 { #category : #accessing }

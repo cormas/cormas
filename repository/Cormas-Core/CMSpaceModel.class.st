@@ -723,7 +723,7 @@ CMSpaceModel >> deleteSpatialEntitySet: aSpatialEntitySetClass [
 	self spaceModel resetCompoundSpatialEntity: aSpatialEntitySetClass
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 CMSpaceModel >> dimensions [
 	" Answer a <Point> with the receiver's lines and columns "
 	
@@ -756,14 +756,6 @@ CMSpaceModel >> dispatchOneCompoundSpatialEntity: anEntity [
 		registerEntityChange: #addAggregate
 		with: (EntityReference onEntities: anEntity components)
 		from: (EntityReference on: anEntity)
-]
-
-{ #category : #'private - display' }
-CMSpaceModel >> display: aCollec on: aGC [
-	
-	aGC paint: self vue backgroundColor.
-	aGC displayRectangle: aGC clippingBounds.
-	(aCollec isNil or: [aCollec isEmpty]) ifFalse: [aCollec do: [:e | e show]]
 ]
 
 { #category : #'private - display' }
@@ -1957,14 +1949,6 @@ CMSpaceModel >> randomCell [
 	"Purpose: Return a spatialEntityElement (aCell) picked randomly from the spatial grid."
 
 	^ Cormas selectRandomlyFrom: self elementaryEntities
-]
-
-{ #category : #'private - display' }
-CMSpaceModel >> redisplay: aCollec on: aGC [
-	"aGC paint: self vue backgroundColor.
-	aGC displayRectangle: aGC clippingBounds."
-	
-	(aCollec isNil or: [aCollec isEmpty]) ifFalse: [aCollec do: [:e | e show]]
 ]
 
 { #category : #'ESE initialize-release' }

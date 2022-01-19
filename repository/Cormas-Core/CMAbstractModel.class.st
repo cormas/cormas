@@ -34,6 +34,8 @@ Instance Variables
 Class {
 	#name : #CMAbstractModel,
 	#superclass : #CMObject,
+	#traits : 'TCMUtils',
+	#classTraits : 'TCMUtils classTrait',
 	#instVars : [
 		'cormas',
 		'timeStep',
@@ -458,15 +460,6 @@ CMAbstractModel class >> defaultProbes [
 CMAbstractModel class >> defaultSteppingBackSetting [
 	
 	^false
-]
-
-{ #category : #accessing }
-CMAbstractModel class >> friendlyName [
-	" Answer a <String> with the receiver's name without any Cormas prefix "
-
-	^ (self name beginsWith: 'CM')
-		ifTrue: [ self name allButFirst: 2 ]
-		ifFalse: [ self name ]
 ]
 
 { #category : #compiling }
@@ -1981,13 +1974,6 @@ CMAbstractModel >> fractalDimension: aClass [
 Argument: aClass is an aggregate"
 
 	^ self spaceModel fractalDimension: aClass
-]
-
-{ #category : #accessing }
-CMAbstractModel >> friendlyName [
-	" See comment in class side "
-
-	^ self class friendlyName
 ]
 
 { #category : #'init - social network' }
