@@ -133,10 +133,10 @@ CMProjectBuilder >> buildForModelClass: modelClass [
 CMProjectBuilder >> buildForModelInstance: modelInstance [
 	" Creates a CORMAS project file, answer a <FileReference> to the new created project "
 
-	self halt.
 	cormasProject := CMProjectModel basicNew
 		initializeForModel: modelInstance named: modelInstance friendlyName;
 		yourself.
+	self cormasModel: modelInstance.
 	self 
 		writeProjectTree;
 		writeMetadata;
