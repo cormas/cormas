@@ -15,6 +15,7 @@ Class {
 
 { #category : #accessing }
 CMProjectFile class >> archive: aFilePattern in: aZipArchive [
+
     aFilePattern isString
         ifTrue: [ 
 				self 
@@ -24,7 +25,10 @@ CMProjectFile class >> archive: aFilePattern in: aZipArchive [
         ifFalse: [ 
             "then is expected to be a fileReference"
             aFilePattern isDirectory
-                ifTrue: [ self archiveDirectoryRecursively: aFilePattern relativeTo: FileSystem workingDirectory in: aZipArchive ]
+                ifTrue: [ self 
+							archiveDirectoryRecursively: aFilePattern 
+							relativeTo: FileSystem workingDirectory / CMProjectBuilder outputDirName
+							in: aZipArchive ]
                 ifFalse: [ self archiveFile: aFilePattern in: aZipArchive ] ]
 ]
 

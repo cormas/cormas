@@ -17,20 +17,47 @@ Class {
 CMProjectOpener class >> demoImageFromProjectFile: aFileReference [
 	" Answer a <Morph> which serves as demo for the CORMAS project in aFileReference "
 
-	| zipFileSys zipFile reader |
-	zipFileSys := (ZipStore reference: aFileReference) open root.
-	zipFile := (zipFileSys fileEntryAt: 'images') 
-		fileEntryAt: CMProjectFile demoImageFilenameWithExtension
-		ifAbsent: [ ^ self cormasDemoImage ].
-	"^ Form fromBinaryStream: zipFile binaryReadStream"
-	reader := GIFReadWriter on: zipFile binaryReadStream .
-	reader
-		readHeader;
-		readBody.
-	^ (AnimatedImageMorph fromGIFReader: reader)
-			hResizing: #spaceFill;
-			vResizing: #spaceFill;
-			yourself
+	| zipDemoFile |
+	
+	zipDemoFile := self findDemoResource: ((ZipStore reference: aFileReference) open root).
+	^ zipDemoFile forCormasProjectDemo
+]
+
+{ #category : #private }
+CMProjectOpener class >> findDemoResource: zipFileSys [
+	" A demo could be an image or animation, try to find one for the project being opened "
+
+	| candidateLocations validZipDirEntries |
+	
+	candidateLocations := #('animations' 'images').
+	
+	validZipDirEntries := candidateLocations 
+		collect: [ : locationString | (zipFileSys fileEntryAt: locationString) entries ]
+		thenSelect: [ : zipEntry | zipEntry notEmpty ].
+	^ ((self selectImageResources: validZipDirEntries)  
+		detect: [ : zipDirDict | (self findLatestDemoResource: zipDirDict) notNil ]
+		ifNone: [ self cormasDemoImage ]) anyOne
+		
+
+]
+
+{ #category : #private }
+CMProjectOpener class >> findLatestDemoResource: aCollection [ 
+	" Answer a  with the last modification time "
+	
+	| now older zipDemoFile |
+	now := TRPlatform current dateAndTimeClass now.
+	older := TRPlatform current dateAndTimeClass year: 1900 day: 1.
+	aCollection associationsDo: [ : assoc | 
+		| zipFile |
+		zipFile := assoc value.
+		(now - zipFile creationTime) < (now - older)
+			ifTrue: [ 
+				older := zipFile creationTime.
+				zipDemoFile := zipFile ] ].
+	^ zipDemoFile
+	
+
 ]
 
 { #category : #accessing }
@@ -38,6 +65,15 @@ CMProjectOpener class >> metadataFromProjectFile: aZipFileSystemFile [
 	" Answer a <Dictionary> with metadata for CORMAS project at aZipFileSystemFile "
 
 	^ STON fromStream: (aZipFileSystemFile fileEntryAt: CMProjectFile metadataFilename) readStream
+]
+
+{ #category : #private }
+CMProjectOpener class >> selectImageResources: aCollection [ 
+
+	^ aCollection 
+		collect: [ : entryValueDict | 
+			entryValueDict select: [ : zipFile | zipFile basename endsWithAnyOf: #('gif' 'png' 'jpg' 'jpeg') ] ]
+		thenSelect: #notEmpty
 ]
 
 { #category : #private }

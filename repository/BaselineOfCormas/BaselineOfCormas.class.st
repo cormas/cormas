@@ -100,7 +100,7 @@ BaselineOfCormas >> postLoad [
 	
 	" Build user projects and un-load models from the image "
 	CMApplicationProject cormasRepository 
-		ifNotNil: [ CMProjectBuilder buildProjectModels ].
+		ifNotNil: [ CMProjectBuilder buildProjectDemos ].
 
 ]
 
