@@ -143,6 +143,8 @@ CMProjectBuilderTest >> testDestinationPath [
 { #category : #test }
 CMProjectBuilderTest >> testIsModelLoaded [
 
+	CMResourceLocator useGitBridge 
+		ifFalse: [ ^ self ].
 	self deny: (self builder isModelLoaded: 'CMInvalidXYZ123Model') description: 'Nonexistent model is not loaded'.
 	self loadSampleModel.
 	self assert: (self builder isModelLoaded: self sampleModelName) description: 'It should verify model is loaded'.

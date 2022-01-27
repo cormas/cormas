@@ -770,7 +770,7 @@ CMSpecProjectWindow >> quitSubApplicationWindows [
 CMSpecProjectWindow >> runCormasTests [
 
 	^ Cursor wait showWhile: [ 
-		(SubunitRunner runAndCollectPackages: #('Cormas-Tests')) anyOne inspect ]
+		(SubunitRunner runAndCollectCormasPackages: #('Cormas-Tests')) anyOne inspect ]
 ]
 
 { #category : #callbacks }
