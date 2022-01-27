@@ -166,13 +166,14 @@ ex: collResult =
 
 { #category : #'environment - sensing - agents' }
 CMSpatialEntity >> allOccupants [
+
 	"Purpose: returns all the entities located there
 Return value: <Collection(AgentLocation & ObjectLocation)>"
-	
+
 	| collec |
 	collec := OrderedCollection new.
-	self theOccupants values do: [:v | collec addAll: v].
-	^collec
+	self theOccupants valuesDo: [ :v | collec addAll: v ].
+	^ collec
 ]
 
 { #category : #'star testing' }
@@ -198,22 +199,24 @@ CMSpatialEntity >> color: aColorSymbol [
 
 { #category : #displaying }
 CMSpatialEntity >> colorI: aColorSymbol [
+
 	"Purpose: for each included spatial entities, changes background color to a given color (to draw observer attention to the neighbourhood)
 Argument: aColorSymbol = <ByteSymbol>
 Example: self colorI: #pink"
-	
-	self includedEntities isNil
-		ifFalse: [self includedEntities do: [:v | v color: aColorSymbol]]
+
+	self includedEntities ifNotNil: [ 
+		self includedEntities do: [ :v | v color: aColorSymbol ] ]
 ]
 
 { #category : #displaying }
 CMSpatialEntity >> colorN: aColorSymbol [
+
 	"Purpose: for each neighours, changes background color to a given color (to draw observer attention to the neighbourhood)
 Argument: aColorSymbol = <ByteSymbol>
 Example: self colorN: #pink"
-	
-	self neighbourhood isNil
-		ifFalse: [self neighbourhood do: [:v | v color: aColorSymbol]]
+
+	self neighbourhood ifNotNil: [ 
+		self neighbourhood do: [ :v | v color: aColorSymbol ] ]
 ]
 
 { #category : #accessing }
@@ -307,10 +310,11 @@ CMSpatialEntity >> flashColor: aColorValue [
 
 { #category : #'star displaying' }
 CMSpatialEntity >> flashN [
-"Purpose: for each neighours, changes background color to yellow (to draw observer attention to the neighbourhood)"
 
-	self neighbourhood isNil 
-		ifFalse: [self neighbourhood do: [:v | v flash]]
+	"Purpose: for each neighours, changes background color to yellow (to draw observer attention to the neighbourhood)"
+
+	self neighbourhood ifNotNil: [ 
+		self neighbourhood do: [ :v | v flash ] ]
 ]
 
 { #category : #'environment - sensing - space' }
@@ -451,20 +455,21 @@ Return value: <Collection(SpatialEntity)>"
 
 { #category : #'environment - sensing - space' }
 CMSpatialEntity >> myCSE: aClassOrClassName [
+
 	"Purpose: returns the instance of a given higher level spatialEntity the receiver belongs to.
 Argument:  aClassOrClassName can be an entity class or the name of an entity <ByteSymbol>
 Return value: <SpatialEntitySet | nil>
 Example: self myCSE: Forest
 Example: self myCSE: #Plot"
-	
+
 	| aClassName |
-	aClassOrClassName isSymbol
-		ifTrue: [aClassName := aClassOrClassName]
-		ifFalse: [aClassName := aClassOrClassName name].
-	^((self theCSE includesKey: aClassName) not
-		or: [(self theCSE at: aClassName) isNil])
-		ifTrue: [nil]
-		ifFalse: [self theCSE at: aClassName]
+	aClassName := aClassOrClassName isSymbol
+		              ifTrue: [ aClassOrClassName ]
+		              ifFalse: [ aClassOrClassName name ].
+	^ ((self theCSE includesKey: aClassName) not or: [ 
+		   (self theCSE at: aClassName) isNil ])
+		  ifTrue: [ nil ]
+		  ifFalse: [ self theCSE at: aClassName ]
 ]
 
 { #category : #deprecated }
@@ -739,29 +744,32 @@ CMSpatialEntity >> neighboursMaxOf: aMagnitudeName [
 
 { #category : #'star testing' }
 CMSpatialEntity >> noOccupant [
-"Purpose: tests if there is no occupant of any kind.
+
+	"Purpose: tests if there is no occupant of any kind.
 Return value: <Boolean>"
 
 	| test |
 	test := true.
-	self theOccupants notNil ifTrue: [self theOccupants values do: [:list | list isEmpty ifFalse: [test := false]]].
-	^test
+	self theOccupants notNil ifTrue: [ 
+		self theOccupants valuesDo: [ :list | 
+			list isEmpty ifFalse: [ test := false ] ] ].
+	^ test
 ]
 
 { #category : #'star testing' }
 CMSpatialEntity >> noOccupantBut: anAgent [
+
 	"Purpose: tests if there is no occupant of any kind, excepted anAgent.
 Useful from an agent perspective, to test if there are other agents on the cell: self patch noOccupantBut: self.
 Return value: <Boolean>"
-	
+
 	| test |
 	test := true.
-	self theOccupants notNil
-		ifTrue:
-			[self theOccupants values
-				do:
-					[:list | list isEmpty ifFalse: [(list includes: anAgent) ifFalse: [test := false]]]].
-	^test
+	self theOccupants notNil ifTrue: [ 
+		self theOccupants valuesDo: [ :list | 
+			list isEmpty ifFalse: [ 
+				(list includes: anAgent) ifFalse: [ test := false ] ] ] ].
+	^ test
 ]
 
 { #category : #'star testing' }
@@ -776,18 +784,19 @@ Example: self noOccupantType: #Tree"
 
 { #category : #'environment - sensing - agents' }
 CMSpatialEntity >> occupants: aClassOrClassName [
+
 	"Purpose: returns all the entities of a given class name located there
 Argument: aClassOrClassName = <ByteSymbol> or a Cormas Entity Class
 Note that the instances of subclasses are NOT considered by this method, contrarily to #occupantsAt: and #occupantsType: 
 Return value: <Collection(AgentLocation & ObjectLocation)>"
-	
+
 	| aClassName |
-	aClassOrClassName isSymbol
-		ifTrue: [aClassName := aClassOrClassName]
-		ifFalse: [aClassName := aClassOrClassName name].
-	^self theOccupants
-		at: aClassName
-		ifAbsentPut: [OrderedCollection new]
+	aClassName := aClassOrClassName isSymbol
+		              ifTrue: [ aClassOrClassName ]
+		              ifFalse: [ aClassOrClassName name ].
+	^ self theOccupants
+		  at: aClassName
+		  ifAbsentPut: [ OrderedCollection new ]
 ]
 
 { #category : #'environment - sensing - agents' }
@@ -971,6 +980,7 @@ Example: self shortestDistanceToCellVerifying: [:c | c landCover = #forest]"
 
 { #category : #'environment - distance' }
 CMSpatialEntity >> shortestDistanceToCellsVerifying: aCondition constraintOnPath: aBlock [
+
 	"Purpose: gets the shortest distance (in cell unit) to a cell verifying a specified condition, taking a specified constraint on the path into account.
 Arguments: aCondition = <BlockClosure>
 			aBlock = <BlockClosure>
@@ -978,10 +988,12 @@ Return value: <Integer>
 Example: self shortestDistanceToCellVerifying: [:c | c landCover = #forest] constraintOnPath: [:c | c isClosed not]"
 
 	| targetCell |
-	targetCell := self nearestCellVerifying: aCondition constraintOnPath: aBlock.
-	^ targetCell isNil
-		ifTrue: [ self cormas warn: 'there is no nearest cell' ]
-		ifFalse: [ self distanceTo: targetCell ]
+	targetCell := self
+		              nearestCellVerifying: aCondition
+		              constraintOnPath: aBlock.
+	^ targetCell
+		  ifNil: [ self cormas warn: 'there is no nearest cell' ]
+		  ifNotNil: [ self distanceTo: targetCell ]
 ]
 
 { #category : #accessing }

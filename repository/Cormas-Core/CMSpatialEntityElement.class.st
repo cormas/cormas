@@ -66,18 +66,6 @@ CMSpatialEntityElement >> directionNeighbour: v [
 		ifNone: [ nil ]
 ]
 
-{ #category : #'displaying - obsolete' }
-CMSpatialEntityElement >> displaySegment: aDirection [
-	
-	| readAccessSelector |
-	
-	readAccessSelector := ('lineSegment' , aDirection) asSymbol.
-	(self perform: readAccessSelector) notNil
-		ifTrue:
-			[(self perform: readAccessSelector)
-				displayStrokedOn: self view graphicsContext]
-]
-
 { #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> distanceCell: aSpatialEntityElement [
 	"returns a distance in cells, between the sender and aSpatialEntityElement. 

@@ -162,6 +162,8 @@ CMProjectBuilderTest >> testLocalBuildDir [
 { #category : #test }
 CMProjectBuilderTest >> testLocalBuildDirRef [
 
+	CMResourceLocator useGitBridge 
+		ifFalse: [ ^ self ].
 	self assert: (self builder localBuildDirRef isKindOf: FileReference) description: 'It should get the local build FileReference'.
 	self assert: (self builder localBuildDirRef isDirectory) description: 'Local build location should be a directory'.
 
