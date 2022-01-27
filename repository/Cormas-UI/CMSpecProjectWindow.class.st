@@ -47,7 +47,7 @@ CMSpecProjectWindow class >> open [
 	PFProjectSettings currentApplicationClass: CMApplicationProject.
 	" Check models are available or should be migrated from the image "
 	CMApplicationProject hasUserProjects
-		ifFalse: [ CMProjectBuilder buildProjectModels ].
+		ifFalse: [ CMProjectBuilder buildProjectDemos ].
 	" Rebuild translator table "
 	CMApplicationProject uniqueInstance translator: nil.		
 	win := self new 

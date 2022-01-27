@@ -5,11 +5,11 @@ Class {
 }
 
 { #category : #accessing }
-CMProjectOpenerTest >> createSampleProject [
+CMProjectOpenerTest >> createSampleProjectFile [
 	" Create a new sample CORMAS project in the Pharo image directory "
 
 	CMProjectBuilder new
-		buildForModel: CMMockModel;
+		buildForModelInstance: CMMockModel new;
 		buildProjectFile.
 ]
 
@@ -23,7 +23,7 @@ CMProjectOpenerTest >> openerClass [
 CMProjectOpenerTest >> sampleProjectFile [
 
 	self sampleProjectReference exists
-		ifFalse: [ self createSampleProject  ].
+		ifFalse: [ self createSampleProjectFile  ].
 	^ self sampleProjectReference
 ]
 

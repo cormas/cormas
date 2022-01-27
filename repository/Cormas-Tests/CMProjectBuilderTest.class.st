@@ -5,7 +5,8 @@ Class {
 	#name : #CMProjectBuilderTest,
 	#superclass : #CMAbstractModelTest,
 	#instVars : [
-		'builder'
+		'builder',
+		'sampleProject'
 	],
 	#category : #'Cormas-Tests-Project'
 }
@@ -20,6 +21,15 @@ CMProjectBuilderTest >> builder [
 CMProjectBuilderTest >> builder: anObject [
 
 	builder := anObject
+]
+
+{ #category : #test }
+CMProjectBuilderTest >> createSampleProject [
+	" Create a new sample CORMAS project in the Pharo image directory "
+
+	self sampleProject: (self builder
+		buildForModelInstance: CMMockModel new;
+		yourself)
 ]
 
 { #category : #test }
@@ -46,6 +56,14 @@ CMProjectBuilderTest >> expectedMetadata [
 ]
 
 { #category : #test }
+CMProjectBuilderTest >> loadSampleModel [
+
+	EpMonitor disableDuring: [ 
+		self builder loadModelPackage:	self sampleModelName ]
+
+]
+
+{ #category : #test }
 CMProjectBuilderTest >> sampleModelClass [
 
 	^ Smalltalk at: #CMECECModel
@@ -56,6 +74,18 @@ CMProjectBuilderTest >> sampleModelName [
 
 	^ 'Cormas-Model-ECEC'
 	
+]
+
+{ #category : #accessing }
+CMProjectBuilderTest >> sampleProject [
+
+	^ sampleProject
+]
+
+{ #category : #accessing }
+CMProjectBuilderTest >> sampleProject: anObject [
+
+	sampleProject := anObject
 ]
 
 { #category : #running }
@@ -95,11 +125,43 @@ CMProjectBuilderTest >> testCormasModel [
 ]
 
 { #category : #test }
+CMProjectBuilderTest >> testDefaultOutputDirectory [
+
+	self assert: (self builder defaultOutputDirectory isKindOf: String) description: 'It should get the String directory where project files are written'.
+	self deny: self builder defaultOutputDirectory isEmpty description: 'Default output directory should not be empty'.
+]
+
+{ #category : #test }
 CMProjectBuilderTest >> testDestinationPath [
 
 	self flag: #toDo.
 	"self assert: (self migrator destinationPath isKindOf: FileReference).
 	self assert: self migrator destinationPath isDirectory."
+
+]
+
+{ #category : #test }
+CMProjectBuilderTest >> testIsModelLoaded [
+
+	self deny: (self builder isModelLoaded: 'CMInvalidXYZ123Model') description: 'Nonexistent model is not loaded'.
+	self loadSampleModel.
+	self assert: (self builder isModelLoaded: self sampleModelName) description: 'It should verify model is loaded'.
+	self unloadSampleModel.
+]
+
+{ #category : #test }
+CMProjectBuilderTest >> testLocalBuildDir [
+
+	self assert: (self builder localBuildDir isKindOf: String) description: 'Local build directory should be a String'.
+	self deny: self builder localBuildDir isEmpty description: 'Local build directory should not be empty'.
+
+]
+
+{ #category : #test }
+CMProjectBuilderTest >> testLocalBuildDirRef [
+
+	self assert: (self builder localBuildDirRef isKindOf: FileReference) description: 'It should get the local build FileReference'.
+	self assert: (self builder localBuildDirRef isDirectory) description: 'Local build location should be a directory'.
 
 ]
 
@@ -174,6 +236,17 @@ CMProjectBuilderTest >> testUnLoadModelPackages [
 ]
 
 { #category : #test }
+CMProjectBuilderTest >> testWriteProjectTree [
+
+	self createSampleProject.
+	self builder cormasModel: self sampleProject cormasModel.
+	self builder writeProjectTree.
+	self 
+		assertCollection: (self builder localBuildDirRef children collect: #basename) 
+		hasSameElements: CMResourceLocator resourceDirectoryNames
+]
+
+{ #category : #test }
 CMProjectBuilderTest >> testWriteSourceCode [
 
 	| newFileRef outputFileRef |
@@ -188,4 +261,12 @@ CMProjectBuilderTest >> testWriteSourceCode [
 	self assert: outputFileRef basename equals: CMProjectFile sourceCodeFilenameWithExtension.
 	self deny: outputFileRef contents isEmpty.
 	
+]
+
+{ #category : #test }
+CMProjectBuilderTest >> unloadSampleModel [
+
+	EpMonitor disableDuring: [ 
+		self builder unLoadModelPackage:	self sampleModelName ]
+
 ]

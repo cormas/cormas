@@ -88,7 +88,6 @@ CMSpOpenProjectPresenter >> connectPresenters [
 		postTransmission: [ :destination | destination ifNotNil: [ destination selectIndex: 1 ] ];
 		
 		transmitTo: previewPresenter
-"		transform: [ : fileReference | CMProjectOpener demoImageFromProjectFile: fileReference ]"
 		transform: [ : aCormasObject | self demoImageFor: aCormasObject ]
 		postTransmission: [ :destination | destination adapter buildWidget ].
 
@@ -187,7 +186,7 @@ CMSpOpenProjectPresenter >> initializePresenters [
 	projectsLocationsPresenter := self newDropList.
 	projectsListPresenter := self newList.
 	versionsListPresenter := self newList.
-	metaInfoPresenter := self instantiate: CMSpOpenProjectNotebookPresenter. "self newText".
+	metaInfoPresenter := self instantiate: CMSpOpenProjectNotebookPresenter.
 	previewPresenter := self newMorph.
 	toolbar := self newButtonBar.
 	self setFocus.

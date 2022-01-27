@@ -97,6 +97,22 @@ CMResourceLocator class >> preferencesPath [
 ]
 
 { #category : #accessing }
+CMResourceLocator class >> resourceDirectoryNames [
+	" Answer a <Collection> of <String> representing each a subdirectory of a CORMAS project "
+	| locator |
+	
+	locator := self new.
+	^ self resourceSelectors collect: [ : selector | (locator perform: selector with: String empty) basename ]
+]
+
+{ #category : #accessing }
+CMResourceLocator class >> resourceSelectors [
+
+	^ (self organization listAtCategoryNamed: 'utilities - path - models') 
+		select: [ : selector | selector isKeyword and: [ selector ~= #modelPath: ] ]
+]
+
+{ #category : #accessing }
 CMResourceLocator class >> useGitBridge [
 	" Read comment in #root method "
 

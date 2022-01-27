@@ -12,12 +12,12 @@ Class {
 CMResourceOpener class >> cormasDemoImage [
 	" Answer a basic <Morph> to display when a project does not have a GIF demo image "
 
-	^ Morph new
+	^ { Morph new
 		color: Color black;
 		useGradientFill;
 		hResizing: #spaceFill;
 		vResizing: #spaceFill;
-		yourself
+		yourself }
 ]
 
 { #category : #'instance creation' }
