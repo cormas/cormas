@@ -212,7 +212,10 @@ CMSpecAttributesToolbar >> removeAttributeCallback [
 	(self confirm: self translator tConfirmDeleteAttribute)
 		ifTrue: [ 
 			[ 
-				self targetClass removeInstVarNamed: self selectedItemWrapper targetAttribute.
+				self codeGenerator isMeta: self targetClass isMeta.
+				self codeGenerator 
+					targetClass: self targetClass;
+					removeAttribute: self selectedItemWrapper targetAttribute.
 				self classAttributesTable dataSource: (CMClassAttributeValueDataSource forClass: self targetClass instanceSide).
 				self inform: 'Attribute removed'
 			 ]
