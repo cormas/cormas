@@ -307,6 +307,41 @@ CGStCormas >> pvtCreateAttribute: attributeName value: anObject [
 ]
 
 { #category : #accessing }
+CGStCormas >> removeAccessors: instVarName [ 
+	" Remove both getter and setter for instVarName instance variable name from the receiver's targetClass. Do nothing if there are no accessors in the target class  "
+
+	(self targetClass includesSelector: instVarName)
+		ifTrue: [ self targetClass removeSelector: instVarName ].
+	(self targetClass includesSelector: instVarName asMutator)
+		ifTrue: [ self targetClass removeSelector: instVarName asMutator ]
+]
+
+{ #category : #'code-generation' }
+CGStCormas >> removeAttribute: attributeName [
+	" Private - Remove attributeName <String> in the receiver's targetClass. 
+	Also remove the accessors and <attributeName>_default methods if present "
+
+	self removeAccessors: attributeName.
+	self removeDefaultMethod: attributeName.
+	(self targetClass hasInstVarNamed: attributeName)
+		ifTrue: [ self removeIVar: attributeName ].
+
+
+
+]
+
+{ #category : #accessing }
+CGStCormas >> removeDefaultMethod: instVarName [ 
+
+	self targetSelector: instVarName , '_default'.
+	(self targetClass class includesSelector: self targetSelector)
+		ifTrue: [ self targetClass: self targetClass class ].
+	(self targetClass includesSelector: self targetSelector)
+		ifFalse: [ ^ self ].
+	self targetClass removeSelector: self targetSelector.
+]
+
+{ #category : #accessing }
 CGStCormas >> renameClass: oldClassname to: newClassname [ 
 
 	^ self codeTransformer 
