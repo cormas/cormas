@@ -97,9 +97,7 @@ CGStCormas >> createAttribute: attributeName defaultValue: anObject [
 
 	| srcTemplate |
 
-	(self targetClass hasInstVarNamed: attributeName)
-		ifFalse: [ self pvtCreateAttribute: attributeName value: anObject ].
-		
+	self pvtCreateInstanceOrClassAttribute: attributeName defaultValue: anObject.		
 	srcTemplate := anObject
 		ifNotNil: [ self templateForAttributeWithDefault: attributeName ]
 		ifNil: [ self templateForAttribute: attributeName ].
@@ -109,8 +107,6 @@ CGStCormas >> createAttribute: attributeName defaultValue: anObject [
 		sourceString: srcTemplate;
 		generateMethod.
 
-	self isMeta
-		ifTrue: [ self targetClass: self targetClass class ].
 	self 
 		targetMethodCategory: 'defaults';
 		targetSelector: attributeName , '_default';		
@@ -299,11 +295,17 @@ CGStCormas >> projectManager [
 ]
 
 { #category : #private }
-CGStCormas >> pvtCreateAttribute: attributeName value: anObject [
+CGStCormas >> pvtCreateInstanceOrClassAttribute: attributeName defaultValue: anObject [
 	" Private - Create the accessor method for attributeName <String> in the receiver's targetClass. "
 
-	self targetClass addInstVarNamed: attributeName.
-
+	self targetClass isMeta
+		ifTrue: [ 
+			(self targetClass instanceSide hasClassVarNamed: attributeName) 
+				ifFalse: [ self targetClass instanceSide addClassVarNamed: attributeName ].
+			self isMeta: false ]
+		ifFalse: [ 
+			(self targetClass hasInstVarNamed: attributeName) ifFalse: [ 
+				self targetClass addInstVarNamed: attributeName ] ]
 ]
 
 { #category : #accessing }
@@ -381,6 +383,7 @@ CGStCormas >> templateForAttribute: attributeName default: anObject [
 { #category : #'code-generation' }
 CGStCormas >> templateForAttributeWithDefault: attributeName [
 	" Answer a <String> which is just a template method returning anObject "
+
 
 	^ (String << [ : stream |
 		stream

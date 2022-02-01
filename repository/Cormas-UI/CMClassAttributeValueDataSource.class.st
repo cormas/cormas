@@ -70,8 +70,7 @@ CMClassAttributeValueDataSource class >> forSuperclass: aClass [
 
 { #category : #accessing }
 CMClassAttributeValueDataSource class >> getDefaultValueOfAttribut: anAttribut ofClass: aClass [
-
-	" Returns the default value of anAttribut (static or instance) of aClass, using the  'anAttribut_default' accessor  located into the ' - default value ' protocol.
+	" Returns the default value of anAttribut (static or instance) of aClass, using the  'anAttribut_default' accessor located into the ' - default value ' protocol.
 Compatibility with previous Cormas version: before changing, it tests if the default class method exists otherwise compiles it
 	anAttribut = <Symbol>
 	aClass = <Class>"
@@ -95,7 +94,7 @@ Compatibility with previous Cormas version: before changing, it tests if the def
 						            onClass: classOrInstanceLevel basicNew)
 						           ifNil: [ nil ]
 						           ifNotNil: [ :d | d ] ]
-				           ifNotNil: [ :e | self halt ] ]
+				           ifNotNil: [ :e | e ] ]
 		           ifNotNil: [ :d | d ].
 	^ default
 ]
@@ -155,7 +154,8 @@ CMClassAttributeValueDataSource class >> staticAttributsFromClass: aClass [
 
 	^ OrderedCollection new 
 		addAll: aClass instVarNames;
-		addAll: 	aClass class instVarNames;
+		addAll: aClass class instVarNames;
+		addAll: aClass classVarNames;
 		addAll: (self inheritedInstVarNamesForClass: aClass class);
 		remove: 'CurrentId' ifAbsent: [];
 		yourself

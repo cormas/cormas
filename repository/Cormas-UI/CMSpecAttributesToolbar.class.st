@@ -72,7 +72,7 @@ CMSpecAttributesToolbar >> addClassAttributeCallback [
 		requestText: self translator tEnterAttName
 		title: self translator tAppTitle.
 
-	(self validateAttributeName: attName)
+	(self validateClassAttributeName: attName)
 	 	ifTrue: [ 
 			self codeGenerator targetClass: self codeGenerator targetClass class.
 			CMSpecAddInitialValueChooser on: attName for: self projectManager owner: self owner ]
@@ -249,4 +249,11 @@ CMSpecAttributesToolbar >> validateAttributeName: userAnswer [
 	" Answer <true> if provided userAnswer is valid as attribute name "
 
 	^ userAnswer notNil and: [ userAnswer notEmpty and: [ userAnswer isValidInstVarName ] ]
+]
+
+{ #category : #initialization }
+CMSpecAttributesToolbar >> validateClassAttributeName: userAnswer [
+	" Answer <true> if provided userAnswer is valid as attribute name "
+
+	^ userAnswer notNil and: [ userAnswer notEmpty and: [ userAnswer isValidClassVarName ] ]
 ]
