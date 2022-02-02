@@ -129,6 +129,28 @@ CMECECVegetationUnit >> povBiomass [
 		color: Color green
 ]
 
+{ #category : #pov }
+CMECECVegetationUnit >> povBiomassForager [
+	" Answer a Green Color gradient, according to #biomass "
+	
+	^ self biomass < CMECECForager catabolicRate
+		ifTrue: [ Color white ]
+		ifFalse: [ self povBiomass ]
+]
+
+{ #category : #pov }
+CMECECVegetationUnit >> povForagersVision [
+	"return a symbol or a ColorValue"
+	
+	^ (self occupantsType: CMECECForager) isEmpty
+		ifFalse: [ self povBiomassForager ]
+		ifTrue: [
+			self neighbourhood
+				detect: [:c | c hasOccupantType: CMECECForager ]
+				ifNone: [ ^ Color black].
+			self povBiomassForager ]
+]
+
 { #category : #control }
 CMECECVegetationUnit >> step [
 	self logisticGrowth
