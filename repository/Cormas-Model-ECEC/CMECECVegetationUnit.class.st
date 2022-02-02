@@ -115,11 +115,6 @@ CMECECVegetationUnit >> logisticGrowth [
 	self biomass: (Cormas logisticGrowth: self biomass r: self class r K: self class K)
 ]
 
-{ #category : #control }
-CMECECVegetationUnit >> pov [
-	^ self class palette rtValue: self biomass / 10.0
-]
-
 { #category : #pov }
 CMECECVegetationUnit >> povBiomass [
 	^ self
