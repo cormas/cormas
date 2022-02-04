@@ -1711,6 +1711,13 @@ CMEntity >> patch [
 	^nil
 ]
 
+{ #category : #accessing }
+CMEntity >> pov [
+	" For compatibility we answer a <Color> which could be considered neutral "
+
+	^ Color gray
+]
+
 { #category : #displaying }
 CMEntity >> povAt: selectorName [
 	"Returns the povSymbol for a selectorName"

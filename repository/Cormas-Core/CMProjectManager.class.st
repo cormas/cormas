@@ -276,6 +276,7 @@ CMProjectManager >> deleteProject [
 CMProjectManager >> doPostCloseActions [
 	" Private - See superimplementor's comment "
 
+	self flag: #toReview.
 	Cursor wait showWhile: [
 		self cormasRepository ifNotNil: [ : cormasRepo |
 			| icePackage |
@@ -284,8 +285,11 @@ CMProjectManager >> doPostCloseActions [
 			[ self fsm handleEvent: #actionClose ] on: SsEventNotSupposed do: [: ex | self inform: 'CORMAS project was not cleanly closed' ].
 			self deleteProject.	
 			self cleanEnvironment.
-			(RPackageOrganizer default includesPackageNamed: icePackage package)
-				ifTrue: [ self reloadProject: icePackage repository: cormasRepo ] ] ].
+			" This seems to be not necessary anymore. It was included because at some point 
+			closing projects also unloaded the Iceberg package, making it unavailable for
+			re-opening again "
+			"(RPackageOrganizer default includesPackageNamed: icePackage package)
+				ifTrue: [ self reloadProject: icePackage repository: cormasRepo ]" ] ].
 ]
 
 { #category : #callbacks }
@@ -427,6 +431,17 @@ CMProjectManager >> resourceLocator [
 ]
 
 { #category : #callbacks }
+CMProjectManager >> resubscribeUIEvents [
+	" Patch: Subscriptions lost after closing a project. Reinitialize "
+
+	| uiWindowClass |
+	self flag: #toReview.
+	uiWindowClass := self classFor: #CMSpecProjectWindow.
+	(self announcer subscriptionsForClass: uiWindowClass)
+		ifEmpty: [ uiWindowClass allInstancesDo: [ : w | w initializeSubscriptions ] ].
+]
+
+{ #category : #callbacks }
 CMProjectManager >> updateNewProject: modelName [
 	" See superimplementor's comment "
 
@@ -456,6 +471,7 @@ CMProjectManager >> updateStateClosed [
 			yourself).
 	CMApplicationPreferences settingProjectNotifications 
 		ifTrue: [ self informMessage: self translator tProjectCloseSuccess ].
+
 ]
 
 { #category : #callbacks }
@@ -463,6 +479,7 @@ CMProjectManager >> updateStateOpened [
 	" Private - This callback evaluate after the handleEvent: was fired "
 
 	self notifyEvent:	'Action: Opened'.
+	self resubscribeUIEvents.	
 	self announcer announce: PFOpenedProject new.
 	CMApplicationPreferences settingProjectNotifications 
 		ifTrue: [ self informMessage: self translator tProjectOpenSuccess ].

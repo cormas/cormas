@@ -1623,7 +1623,7 @@ CMSpecProjectWindow >> updateUINewProject: aString [
 
 { #category : #callbacks }
 CMSpecProjectWindow >> updateUIOpenedProject: aString [
-	" Private - See superimplementor's comment "
+	" Private - Callback's response to project manager #updateStateOpened "
 
 	super updateUIOpenedProject: aString.
 	self 
