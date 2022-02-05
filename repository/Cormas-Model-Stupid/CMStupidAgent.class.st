@@ -27,6 +27,15 @@ CMStupidAgent >> gowing [
 	self patch food: 0 .
 ]
 
+{ #category : #accessing }
+CMStupidAgent >> interestingDetails [
+	" Answer a <Collection> of interesting receiver's attributes, from a modeler point of view, to display in a popup for example "
+
+	^ super interestingDetails , { 
+		'Size: ' -> (self agsize asString)
+		}
+]
+
 { #category : #running }
 CMStupidAgent >> move [
 	"move to an empty cell... if not don't move"

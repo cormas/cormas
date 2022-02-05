@@ -8,26 +8,16 @@ Class {
 		'food'
 	],
 	#classVars : [
-		'maxFoodProductionRate',
-		'pallete'
+		'MaxFoodProductionRate'
 	],
 	#category : #'Cormas-Model-Stupid'
 }
 
 { #category : #accessing }
 CMStupidCell class >> maxFoodProductionRate [
-	^ maxFoodProductionRate ifNil: [ maxFoodProductionRate := 0.01 ]
-]
 
-{ #category : #accessing }
-CMStupidCell class >> maxFoodProductionRate: aFloat [
-	maxFoodProductionRate := aFloat
-]
-
-{ #category : #accessing }
-CMStupidCell class >> palette [
-
-	^ RSColorPalette sequential greens6 
+	^ MaxFoodProductionRate
+		  ifNil: [ MaxFoodProductionRate := 0.01 ]
 ]
 
 { #category : #converting }
@@ -52,10 +42,23 @@ CMStupidCell >> food: anObject [
 	food := anObject
 ]
 
+{ #category : #converting }
+CMStupidCell >> interestingDetails [
+	" Answer a <Collection> of interesting receiver's attributes, from a modeler point of view, to display in a popup for example "
+
+	^ super interestingDetails , { 
+		'Food: ' -> (self food asString)
+		}
+]
+
 { #category : #pov }
 CMStupidCell >> pov [
 
-	^ self class palette scale: self food
+	^ self
+		  povAttribute: #food
+		  min: 0.1
+		  max: 0.3
+		  color: Color green
 ]
 
 { #category : #control }

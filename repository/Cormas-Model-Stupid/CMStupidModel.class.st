@@ -42,10 +42,10 @@ CMStupidModel class >> defaultInit: aSelector [
 { #category : #'instance creation' }
 CMStupidModel class >> newWithProgrammableScenario [
 
-	^ self 
+	self
 		defaultInit: #initWithProgrammableScenario;
-		initialize;
-		new.
+		initialize.
+	^ self new
 ]
 
 { #category : #probes }
@@ -77,7 +77,7 @@ CMStupidModel >> initWithSmallScenario [
 		columns: 10
 		neighbourhood: 4
 		closed: false;
-		createN: self numberOfStupidAgent
+		createN: 3
 		randomlyLocatedEntities: CMStupidAgent
 ]
 
