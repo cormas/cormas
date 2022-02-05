@@ -63,8 +63,9 @@ CMStupidCell >> step [
 	self updateFood.
 ]
 
-{ #category : #pov }
+{ #category : #accessing }
 CMStupidCell >> updateFood [
-	self
-		food: self food + (self food * (Cormas randomFloatFrom: 0 to: self class maxFoodProductionRate))
+
+	self food: self food + (self food
+		 * (Cormas randomFloatFrom: 0 to: self class maxFoodProductionRate))
 ]
