@@ -12,6 +12,11 @@ Class {
 	#category : #'Cormas-Model-Stupid'
 }
 
+{ #category : #'- probes' }
+CMStupidModel class >> colorOfProbe_foodAverage [
+  ^ (Color r: 0.10263929618768329 g: 0.5474095796676441 b: 0.4750733137829912 alpha: 1.0)
+]
+
 { #category : #gui }
 CMStupidModel class >> defaultControl [
 	^ #step:
@@ -60,6 +65,18 @@ CMStupidModel >> initWithProgrammableScenario [
 		neighbourhood: 4
 		closed: false.
 	self 
+		createN: self numberOfStupidAgent
+		randomlyLocatedEntities: CMStupidAgent
+]
+
+{ #category : #init }
+CMStupidModel >> initWithSmallScenario [
+
+	self
+		createGridLines: 10
+		columns: 10
+		neighbourhood: 4
+		closed: false;
 		createN: self numberOfStupidAgent
 		randomlyLocatedEntities: CMStupidAgent
 ]
