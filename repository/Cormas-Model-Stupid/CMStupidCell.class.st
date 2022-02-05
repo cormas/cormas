@@ -24,7 +24,7 @@ CMStupidCell class >> maxFoodProductionRate: aFloat [
 	maxFoodProductionRate := aFloat
 ]
 
-{ #category : #accessing }
+{ #category : #converting }
 CMStupidCell >> asString [
 	" Private - See superimplementor's comment "
 
@@ -51,7 +51,7 @@ CMStupidCell >> pov [
 	^ self class palette rtValue: self food
 ]
 
-{ #category : #pov }
+{ #category : #control }
 CMStupidCell >> step [
 	self updateFood.
 ]

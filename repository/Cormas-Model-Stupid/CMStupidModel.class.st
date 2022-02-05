@@ -51,14 +51,16 @@ CMStupidModel >> foodAverage [
 	^ count / (self theCells size)
 ]
 
-{ #category : #'programmable scenario' }
+{ #category : #init }
 CMStupidModel >> initWithProgrammableScenario [
+
 	self
 		createGridLines: 100
 		columns: 100
 		neighbourhood: 4
 		closed: false.
-		self createN: self numberOfStupidAgent
+	self 
+		createN: self numberOfStupidAgent
 		randomlyLocatedEntities: CMStupidAgent
 ]
 
@@ -72,7 +74,7 @@ CMStupidModel >> numberOfStupidAgent: anInteger [
 	numberOfStupidAgent := anInteger
 ]
 
-{ #category : #'programmable scenario' }
+{ #category : #control }
 CMStupidModel >> step: t [
 	"To be completed"
 
