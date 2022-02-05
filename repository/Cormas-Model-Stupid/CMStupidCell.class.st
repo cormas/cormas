@@ -24,6 +24,12 @@ CMStupidCell class >> maxFoodProductionRate: aFloat [
 	maxFoodProductionRate := aFloat
 ]
 
+{ #category : #accessing }
+CMStupidCell class >> palette [
+
+	^ RSColorPalette sequential greens6 
+]
+
 { #category : #converting }
 CMStupidCell >> asString [
 	" Private - See superimplementor's comment "
@@ -48,7 +54,8 @@ CMStupidCell >> food: anObject [
 
 { #category : #pov }
 CMStupidCell >> pov [
-	^ self class palette rtValue: self food
+
+	^ self class palette scale: self food
 ]
 
 { #category : #control }
