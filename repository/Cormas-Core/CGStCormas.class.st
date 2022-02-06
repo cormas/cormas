@@ -323,13 +323,15 @@ CGStCormas >> removeAttribute: attributeName [
 	" Private - Remove attributeName <String> in the receiver's targetClass. 
 	Also remove the accessors and <attributeName>_default methods if present "
 
-	self removeAccessors: attributeName.
-	self removeDefaultMethod: attributeName.
+	| attName |
+	
+	attName := attributeName uncapitalized.
+	self removeAccessors: attName.
+	self removeDefaultMethod: attName.
 	(self targetClass hasInstVarNamed: attributeName)
-		ifTrue: [ self removeIVar: attributeName ].
-
-
-
+		ifTrue: [ self removeIVar: attributeName ]
+		ifFalse: [ (self targetClass classVarNames includes: attributeName)
+			ifTrue: [ self targetClass instanceSide removeClassVarNamed: attributeName ] ]
 ]
 
 { #category : #accessing }

@@ -1615,6 +1615,12 @@ CMEntity >> isClassLocation [
 ]
 
 { #category : #testing }
+CMEntity >> isGenericEntity [ 
+
+	^ self class isGenericEntity
+]
+
+{ #category : #testing }
 CMEntity >> isObjectLocation [
 	
 	^false

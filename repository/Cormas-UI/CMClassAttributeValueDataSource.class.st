@@ -9,9 +9,12 @@ Class {
 
 { #category : #accessing }
 CMClassAttributeValueDataSource class >> attributeHasAccessor: attributeName in: aClass [
+	" Private - We first should 'normalize' accessors from attributeName since we enforce method names should be uncapitalized "
 
-	^ ((aClass canUnderstand: attributeName) or: [ aClass canUnderstand: attributeName asMutator ])
-		or: [ (aClass class canUnderstand: attributeName) or: [ aClass class canUnderstand: attributeName asMutator ] ]
+	| attName |
+	attName := attributeName uncapitalized.
+	^ ((aClass canUnderstand: attName) or: [ aClass canUnderstand: attName asMutator ])
+		or: [ (aClass class canUnderstand: attName) or: [ aClass class canUnderstand: attName asMutator ] ]
 
 ]
 
@@ -76,9 +79,12 @@ Compatibility with previous Cormas version: before changing, it tests if the def
 	aClass = <Class>"
 
 	| default classOrInstanceLevel |
+	
 	classOrInstanceLevel := aClass isMeta
 		                        ifTrue: [ aClass instanceSide ]
-		                        ifFalse: [ aClass ].
+		                        ifFalse: [ (aClass respondsTo: #basicNew)
+														ifTrue: [ aClass basicNew ]
+														ifFalse: [ aClass ] ].
 	classOrInstanceLevel isGenericEntity ifTrue: [ ^ nil ].
 
 	default := (self
@@ -109,10 +115,12 @@ CMClassAttributeValueDataSource class >> getDefaultValuesForClass: aClass attrib
 	| infoList default defaultParameters |
 	defaultParameters := OrderedCollection new: attributs size.
 	attributs do: [:anAttribut | 
-		(aClass methodDictionary at: anAttribut asSymbol ifAbsent: [ nil ]) isNil
+		| selector |
+		selector := anAttribut uncapitalized asSymbol.
+		(aClass methodDictionary at: selector ifAbsent: [ nil ]) isNil
 			ifFalse: 	[
 				infoList := Array new: 3.
-				default := self getDefaultValueOfAttribut: anAttribut ofClass: aClass.
+				default := self getDefaultValueOfAttribut: selector ofClass: aClass.
 				infoList
 					at: 1 put: aClass;
 					at: 2 put: anAttribut asSymbol;
