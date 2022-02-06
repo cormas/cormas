@@ -21,10 +21,10 @@ CMSpecSpatialEntityAddInterface class >> defaultSpec [
 		newColumn: [ : r | 
 			r 
 				newRow: [ : col | col 
-					add: #rbEntityElementType;
-					add: #rbCellGroup ] height: 60;
-				newRow: [ : col | col
-					add: #rbConfigGroup ];
+					"add: #rbEntityElementType;"
+					add: #rbCellGroup ];
+				"newRow: [ : col | col
+					add: #rbConfigGroup ];"
 				add: #entityName height: self toolbarHeight + 5;
 				add: #toolbar height: self toolbarHeight ];	
 
@@ -39,7 +39,7 @@ CMSpecSpatialEntityAddInterface >> addActionBlock: aBlockClosure [
 	self owner addActionBlock: aBlockClosure.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #callbacks }
 CMSpecSpatialEntityAddInterface >> entityType [
 
 	^ 'Spatial'
@@ -48,7 +48,7 @@ CMSpecSpatialEntityAddInterface >> entityType [
 { #category : #initialization }
 CMSpecSpatialEntityAddInterface >> initialExtent [
 
-	^ 400 @ 300
+	^ 400 @ 200
 ]
 
 { #category : #initialization }
@@ -62,8 +62,8 @@ CMSpecSpatialEntityAddInterface >> initializeEntityOptions [
 			self rbSimpleCell enable.
 			self rbCellularAutomaton enable.
 			"(aBuilder componentAt: #LabelSpecialize) disable."
-			self rbAggregate disable.
-			self rbSetNoConnex disable ]
+			"self rbAggregate disable.
+			self rbSetNoConnex disable" ]
 ]
 
 { #category : #initialization }
@@ -80,9 +80,9 @@ CMSpecSpatialEntityAddInterface >> initializePresenter [
 { #category : #initialization }
 CMSpecSpatialEntityAddInterface >> initializeRbItems [
 
-	self rbEntityElementType
+"	self rbEntityElementType
 		label: self translator tElement;
-		help: self translator tSpatialEntityCellHelp.
+		help: self translator tSpatialEntityCellHelp."
 		
 	self rbSimpleCell
 		label: self translator tSimpleCell;
@@ -92,13 +92,13 @@ CMSpecSpatialEntityAddInterface >> initializeRbItems [
 		label: self translator tCellularAutomaton;
 		help: self translator tCellAutomatonHelp.
 		
-	self rbAggregate 
+"	self rbAggregate 
 		label: self translator tAggregate;
 		help: self translator tSpatialEntityHelp.
 		
 	self rbSetNoConnex 
 		label: self translator tSetNotConnex;
-		help: self translator tSetNotConnexHelp
+		help: self translator tSetNotConnexHelp"
 ]
 
 { #category : #initialization }
@@ -107,17 +107,17 @@ CMSpecSpatialEntityAddInterface >> initializeRbStatus [
 
 	self cormasModel hasSpatialClasses
 		ifTrue: [ 
-			self rbEntityElementType disable.
+			"self rbEntityElementType disable."
 			self rbSimpleCell disable.
 			self rbCellularAutomaton disable.
-			self rbAggregate enable.
-			self rbSetNoConnex enable. ]
+			"self rbAggregate enable.
+			self rbSetNoConnex enable." ]
 		ifFalse: [ 
-			self rbEntityElementType enable.
+			"self rbEntityElementType enable."
 			self rbSimpleCell enable.
 			self rbCellularAutomaton enable.
-			self rbAggregate disable.
-			self rbSetNoConnex disable ]
+			"self rbAggregate disable.
+			self rbSetNoConnex disable" ]
 ]
 
 { #category : #initialization }
@@ -137,10 +137,10 @@ CMSpecSpatialEntityAddInterface >> initializeToolbar [
 CMSpecSpatialEntityAddInterface >> initializeWidgets [
 
 	super initializeWidgets.
+		"rbConfigGroup 			SpcRadioButtonGroup"	
 	self instantiateModels: #(
 		rbEntityElementType 	RadioButtonModel
 		rbCellGroup 				SpcRadioButtonGroup
-		rbConfigGroup 			SpcRadioButtonGroup
 		toolbar 					SpcThreeButtonToolbar).
 
 	self setFocus;
@@ -213,8 +213,8 @@ CMSpecSpatialEntityAddInterface >> setActionsForRb [
 
 	self rbSimpleCell whenActivatedDo: [ self entitySuperclass: CMSpatialEntityElement ].
 	self rbCellularAutomaton whenActivatedDo: [ self entitySuperclass: CMSpatialEntityCell ].
-	self rbAggregate whenActivatedDo: [ self entitySuperclass: CMSpatialEntityAggregate ].
-	self rbSetNoConnex whenActivatedDo: [ self entitySuperclass: CMSpatialEntityNotConnex ]
+"	self rbAggregate whenActivatedDo: [ self entitySuperclass: CMSpatialEntityAggregate ].
+	self rbSetNoConnex whenActivatedDo: [ self entitySuperclass: CMSpatialEntityNotConnex ]"
 
 ]
 

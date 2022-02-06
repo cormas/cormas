@@ -276,6 +276,7 @@ CGStCormas >> installConcreteMethodIn: aClass [
 	self class new
 		targetClass: aClass;
 		targetMethodCategory: 'testing';
+		targetSelector: #isAbstract;	" For compatibility with Code Generator "
 		sourceString: 'isAbstract \	^ false' withCRs;
 		generateMethod.
 ]
