@@ -207,10 +207,11 @@ aClassName = <String> or <Symbol>.
 ]
 
 { #category : #'code-generation' }
-CGStCormas >> createPovOnAttribute [
+CGStCormas >> createPoV [
 	
 	self 
 		targetMethodCategory: 'pov';
+		targetSelector: #pov;
 		sourceString: 'pov
 	" To be completed "
 	
@@ -255,6 +256,7 @@ CGStCormas >> installAbstractMethodIn: aClass [
 
 	self class new
 		targetClass: aClass;
+		targetSelector: #isAbstract; 	" For compatibility with code generator "
 		targetMethodCategory: 'testing';
 		sourceString: 'isAbstract \	^ true' withCRs;
 		generateMethod.
