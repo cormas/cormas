@@ -370,7 +370,7 @@ CGStCormas >> templateForAttribute: attributeName default: anObject [
 
 	^ (String streamContents: [ : stream |
 		stream 
-			<< attributeName;		
+			<< attributeName uncapitalized;		
 			<< '_default';
 			<< '\	" Answer a default value for the ';
 			<< attributeName;
@@ -387,7 +387,7 @@ CGStCormas >> templateForAttributeWithDefault: attributeName [
 
 	^ (String << [ : stream |
 		stream
-			<< attributeName;
+			<< attributeName uncapitalized;
 			<< '\	"Getter accessor with default value';
 			<< self automaticCommentString;
 			<< '"\	^ ';
@@ -397,7 +397,7 @@ CGStCormas >> templateForAttributeWithDefault: attributeName [
 			<< 	(self isMeta
 					ifTrue: [ ' := self class ' ]
 					ifFalse: [ ' := self ' ]);
-			<< attributeName;
+			<< attributeName uncapitalized;
 			<< '_default';
 			<< ' ]']) withCRs
 ]
