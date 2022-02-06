@@ -95,11 +95,15 @@ Compatibility with previous Cormas version: before changing, it tests if the def
 				            tryMethod: anAttribut asSymbol
 				            onClass: classOrInstanceLevel)
 				           ifNil: [ 
-					           (self
-						            tryMethod: anAttribut asSymbol
-						            onClass: classOrInstanceLevel basicNew)
-						           ifNil: [ nil ]
-						           ifNotNil: [ :d | d ] ]
+									(classOrInstanceLevel respondsTo: #basicNew)
+										ifTrue: [ 
+											(self
+						     			       tryMethod: anAttribut asSymbol
+						        			    onClass: classOrInstanceLevel basicNew)
+										           ifNil: [ nil ]
+										           ifNotNil: [ :d | d ] ]
+										ifFalse: [ " There is no _default method " 
+											nil ] ]
 				           ifNotNil: [ :e | e ] ]
 		           ifNotNil: [ :d | d ].
 	^ default

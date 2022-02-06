@@ -3346,7 +3346,7 @@ CMAbstractModel >> theEntities: aClass [
 	getter := aClass asGetterForEntityClass.
 	collection := (self perform: getter)
 		ifNil: [
-			self class createReaderAccessor: aClass.
+			self class createModelReaderAccessor: aClass.
 			self perform: getter ].
 	^ collection
 ]
