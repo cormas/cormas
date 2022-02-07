@@ -663,7 +663,9 @@ CMSpecProjectWindow >> openPovSetterGUI [
 CMSpecProjectWindow >> openProbesInterface [
 	" Private - Open a window with the chart visualizer configured for the receiver's application "
 
-	self chartVisualizer openOn: self projectManager cormasModel
+	self cormasModelClass hasProbes
+		ifTrue: [ self chartVisualizer openOn: self cormasModel ]
+		ifFalse: [ self informMessage: 'Please define at least a method to be used as a probe' ]
 ]
 
 { #category : #callbacks }

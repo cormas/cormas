@@ -479,6 +479,13 @@ CMAbstractModel class >> getterForEntityClass: aClass [
 ]
 
 { #category : #testing }
+CMAbstractModel class >> hasProbes [
+	" Answer <true> if the receiver's contains any methods to be used as probes "
+	
+	^ self probes notEmpty
+]
+
+{ #category : #testing }
 CMAbstractModel class >> hasRandomAttribute: anAttributeName [
 	"' Answer if anAttributeName defined at class or instance level is a random attribute"
 	
