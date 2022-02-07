@@ -407,9 +407,7 @@ CGStCormas >> templateForAttributeGetterWithCormasDefault: attributeName [
 			<< attributeName;
 			<< ' ifNil: [ ';
 			<< attributeName;
-			<< 	(self isMeta
-					ifTrue: [ ' := self class ' ]
-					ifFalse: [ ' := self ' ]);
+			<< ' := self ';
 			<< attributeName uncapitalized;
 			<< '_default';
 			<< ' ]']) withCRs
