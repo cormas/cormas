@@ -39,7 +39,7 @@ CGStCormas >> addNewClassType: aType inheritingFrom: aSuperclass name: aName ini
 		ifFalse: [ self cormasModelClass ].
 	(cmClass perform: selector) add: theClass.
 	(theClass inheritsFrom: CMSpatialEntityElement) 
-		ifTrue: [ cmClass cellClass: aName ].
+		ifTrue: [ cmClass cellClass: theClass ].
 	self createModelAccessorsIn: theClass.
 	self addProtocolNamed: #control.
 	createInit ifTrue: [ self createInit ].
@@ -147,7 +147,9 @@ CGStCormas >> createModelAccessorsIn: aClass [
 	yes, then creates an accessing methods 'theNewClass' that will returns a collection of all entities of newClass and its subclasses"
 	
 	(aClass inheritsFrom: CMSpatialEntityElement)
-		ifTrue: [ self installConcreteMethodIn: aClass ]
+		ifTrue: [ 
+			self installConcreteMethodIn: aClass.
+			self createModelInstancesAccessorsIn: aClass ]
 		ifFalse: [ (self confirmIsAbstractClass: aClass) 
 			ifTrue: [ self installAbstractMethodIn: aClass ]
 			ifFalse: [ self createModelInstancesAccessorsIn: aClass ] ].

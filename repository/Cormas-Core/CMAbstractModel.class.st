@@ -2394,6 +2394,11 @@ Examples: self interquartileRangeOfAttribute: #age of: Person
 				collect: [:e | e perform: att])
 ]
 
+{ #category : #accessing }
+CMAbstractModel >> isGenericEntity [
+	^ self class isGenericEntity 
+]
+
 { #category : #testing }
 CMAbstractModel >> isInitialized [
 	" Answer <true> if the receiver does not have any control or init method defined "
