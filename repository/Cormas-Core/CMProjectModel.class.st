@@ -118,13 +118,16 @@ CMProjectModel >> addAnimation: aFileReference [
 CMProjectModel >> addNewEntity: aCMEntityNewAnnouncement [ 
 	" Add a new entity to the receiver "
 	
+	| createInit |
+	
+	createInit := aCMEntityNewAnnouncement superclass = CMAbstractModel.
 	self codeGenerator 
 		targetClass: self cormasModelClass;
 		targetClassCategory: self cormasModelClass category;
 		addNewClassType: aCMEntityNewAnnouncement type
 		inheritingFrom: aCMEntityNewAnnouncement superclass
 		name: aCMEntityNewAnnouncement entityName
-		initProtocol: false 
+		initProtocol: createInit 
 		stepProtocol: false
 ]
 
@@ -605,7 +608,7 @@ CMProjectModel >> specializeEntity: aCMEntityAnnouncement [
 		inheritingFrom: aCMEntityAnnouncement superclass
 		name: aCMEntityAnnouncement entityName
 		initProtocol: false 
-		stepProtocol: false.
+		stepProtocol: true.
 
 ]
 

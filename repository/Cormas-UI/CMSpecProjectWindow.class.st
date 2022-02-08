@@ -84,6 +84,12 @@ CMSpecProjectWindow >> closeSimulationWindow [
 ]
 
 { #category : #private }
+CMSpecProjectWindow >> codeGenerator [
+
+	^ self projectManager codeGenerator
+]
+
+{ #category : #private }
 CMSpecProjectWindow >> cormasExpressions [
 	" Answer a <String> with useful Cormas expressions to debug/develop/cleanup "
 	
@@ -608,16 +614,28 @@ CMSpecProjectWindow >> openEditAttributesFor: aCMEditAttributesAnnouncement [
 CMSpecProjectWindow >> openEditInitialization [
 	" Open a browser tool to edit the receiver's model initialization "
 
-	Smalltalk tools browser openWithState: [ : browser | 
-		browser selectClass: self cormasModelClass atMethodTag: #init ]
+	(self cormasModel respondsTo: #init)
+		ifFalse: [ 
+			self codeGenerator
+				targetClass: self cormasModelClass;
+				createInit ].
+	Smalltalk tools browser 
+		openOnClass: self cormasModelClass 
+		selector: #init
 ]
 
 { #category : #callbacks }
 CMSpecProjectWindow >> openEditSteps [
 	" Open a browser tool to edit the model steps "
 
-	Smalltalk tools browser openWithState: [ : browser | 
-		browser selectClass: self cormasModelClass atMethodTag: #control ]
+	(self cormasModel respondsTo: #step)
+		ifFalse: [ 
+			self codeGenerator
+				targetClass: self cormasModelClass;
+				createStep ].
+	Smalltalk tools browser 
+		openOnClass: self cormasModelClass 
+		selector: #step
 
 		
 ]
@@ -645,7 +663,9 @@ CMSpecProjectWindow >> openPovSetterGUI [
 CMSpecProjectWindow >> openProbesInterface [
 	" Private - Open a window with the chart visualizer configured for the receiver's application "
 
-	self chartVisualizer openOn: self projectManager cormasModel
+	self cormasModelClass hasProbes
+		ifTrue: [ self chartVisualizer openOn: self cormasModel ]
+		ifFalse: [ self informMessage: 'Please define at least a method to be used as a probe' ]
 ]
 
 { #category : #callbacks }

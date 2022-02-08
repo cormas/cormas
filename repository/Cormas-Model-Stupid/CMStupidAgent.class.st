@@ -27,13 +27,21 @@ CMStupidAgent >> gowing [
 	self patch food: 0 .
 ]
 
+{ #category : #accessing }
+CMStupidAgent >> interestingDetails [
+	" Answer a <Collection> of interesting receiver's attributes, from a modeler point of view, to display in a popup for example "
+
+	^ super interestingDetails , { 
+		'Size: ' -> (self agsize asString)
+		}
+]
+
 { #category : #running }
 CMStupidAgent >> move [
 	"move to an empty cell... if not don't move"
 
 	self randomWalkConstrainedBy: [
-			:c | c noOccupant 
-		].
+			:c | c noOccupant ].
 ]
 
 { #category : #pov }
@@ -42,12 +50,13 @@ CMStupidAgent >> pov [
 	^ Color blue
 ]
 
-{ #category : #pov }
+{ #category : #accessing }
 CMStupidAgent >> sizeOfPOV [
-^ self agsize
+	
+	^ self agsize
 ]
 
-{ #category : #scheduling }
+{ #category : #control }
 CMStupidAgent >> step [
 
 	self move.

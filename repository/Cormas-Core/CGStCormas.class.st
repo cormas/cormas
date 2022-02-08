@@ -39,7 +39,7 @@ CGStCormas >> addNewClassType: aType inheritingFrom: aSuperclass name: aName ini
 		ifFalse: [ self cormasModelClass ].
 	(cmClass perform: selector) add: theClass.
 	(theClass inheritsFrom: CMSpatialEntityElement) 
-		ifTrue: [ cmClass cellClass: aName ].
+		ifTrue: [ cmClass cellClass: theClass ].
 	self createModelAccessorsIn: theClass.
 	self addProtocolNamed: #control.
 	createInit ifTrue: [ self createInit ].
@@ -99,18 +99,24 @@ CGStCormas >> createAttribute: attributeName defaultValue: anObject [
 
 	self pvtCreateInstanceOrClassAttribute: attributeName defaultValue: anObject.		
 	srcTemplate := anObject
-		ifNotNil: [ self templateForAttributeWithDefault: attributeName ]
+		ifNotNil: [ self templateForAttributeGetterWithCormasDefault: attributeName ]
 		ifNil: [ self templateForAttribute: attributeName ].
 	self 
 		targetMethodCategory: 'accessing';
 		targetSelector: attributeName;		
 		sourceString: srcTemplate;
 		generateMethod.
+	srcTemplate := self templateForAttributeSetter: attributeName.
+	self 
+		targetMethodCategory: 'accessing';
+		targetSelector: attributeName , ':';		
+		sourceString: srcTemplate;
+		generateMethod.
 
 	self 
 		targetMethodCategory: 'defaults';
 		targetSelector: attributeName , '_default';		
-		sourceString: (self templateForAttribute: attributeName default: anObject);
+		sourceString: (self templateForAttributeGetter: attributeName default: anObject);
 		generateMethod.
 ]
 
@@ -135,51 +141,40 @@ CGStCormas >> createInitAgents [
 ]
 
 { #category : #'code-generation' }
-CGStCormas >> createInstancesAccessorsIn: aClass [
-	| pop |
-	
-	pop := aClass asGetterForEntityClass.
-	aClass isAbstract
-		ifTrue: [ 
-			self targetClass 
-				compile: (self templateForInstanceAccessors: pop in: aClass)
-				classified: 'accessing'
-				notifying: nil ]
-		ifFalse: [ 
-			(self targetClass hasInstVarNamed: pop)
-				ifFalse: [ self targetClass addInstVarNamed: pop ].
-			self createReaderAccessor: aClass.
-			self createSetterAccessor: aClass ]
-]
-
-{ #category : #'code-generation' }
 CGStCormas >> createModelAccessorsIn: aClass [
 	" Private - Ask if newClass is Abstract, 
 	no, then creates the attribut 'theNewClasss' and the accesors at the level of cormasModel,
 	yes, then creates an accessing methods 'theNewClass' that will returns a collection of all entities of newClass and its subclasses"
 	
 	(aClass inheritsFrom: CMSpatialEntityElement)
-		ifTrue: [ self installConcreteMethodIn: aClass ]
+		ifTrue: [ 
+			self installConcreteMethodIn: aClass.
+			self createModelInstancesAccessorsIn: aClass ]
 		ifFalse: [ (self confirmIsAbstractClass: aClass) 
 			ifTrue: [ self installAbstractMethodIn: aClass ]
-			ifFalse: [ self createInstancesAccessorsIn: aClass ] ].
+			ifFalse: [ self createModelInstancesAccessorsIn: aClass ] ].
 ]
 
 { #category : #'code-generation' }
-CGStCormas >> createPovOnAttribute [
+CGStCormas >> createModelInstancesAccessorsIn: aClass [
+	| pop |
 	
-	self 
-		targetMethodCategory: 'pov';
-		sourceString: 'pov
-	" To be completed "
-	
-' withCRs;
-		generateMethod.
-
+	pop := aClass asGetterForEntityClass.
+	aClass isAbstract
+		ifTrue: [ 
+			self targetClass 
+				compile: (self templateForModelInstanceAccessors: pop in: aClass)
+				classified: 'accessing'
+				notifying: nil ]
+		ifFalse: [ 
+			(self targetClass hasInstVarNamed: pop)
+				ifFalse: [ self targetClass addInstVarNamed: pop ].
+			self createModelReaderAccessor: aClass.
+			self createModelSetterAccessor: aClass ]
 ]
 
 { #category : #'code-generation' }
-CGStCormas >> createReaderAccessor: aClass [
+CGStCormas >> createModelReaderAccessor: aClass [
 	"creates a reader accessor that returns a Collection. 
 aClassName = <String> or <Symbol>.
 
@@ -192,13 +187,13 @@ Ex: #theXXXs
 	
 	pop := aClass asGetterForEntityClass.
 	self targetClass 
-		compile: (self templateForReaderAccessor: pop)
+		compile: (self templateForModelReaderAccessor: pop)
 		classified: 'accessing'
 		notifying: nil
 ]
 
 { #category : #'code-generation' }
-CGStCormas >> createSetterAccessor: aClass [
+CGStCormas >> createModelSetterAccessor: aClass [
 	"creates a setter accessor such as :
 theXXXs: aNewCollection 
 	theXXXs := aNewCollection.
@@ -208,9 +203,23 @@ aClassName = <String> or <Symbol>.
 	| pop |
 	pop := aClass asGetterForEntityClass.
 	self targetClass 
-		compile: (self templateForSetterAccessor: pop)
+		compile: (self templateForModelSetterAccessor: pop)
 		classified: 'accessing'
 		notifying: nil
+]
+
+{ #category : #'code-generation' }
+CGStCormas >> createPoV [
+	
+	self 
+		targetMethodCategory: 'pov';
+		targetSelector: #pov;
+		sourceString: 'pov
+	" To be completed "
+	
+' withCRs;
+		generateMethod.
+
 ]
 
 { #category : #'code-generation' }
@@ -249,6 +258,7 @@ CGStCormas >> installAbstractMethodIn: aClass [
 
 	self class new
 		targetClass: aClass;
+		targetSelector: #isAbstract; 	" For compatibility with code generator "
 		targetMethodCategory: 'testing';
 		sourceString: 'isAbstract \	^ true' withCRs;
 		generateMethod.
@@ -270,6 +280,7 @@ CGStCormas >> installConcreteMethodIn: aClass [
 	self class new
 		targetClass: aClass;
 		targetMethodCategory: 'testing';
+		targetSelector: #isAbstract;	" For compatibility with Code Generator "
 		sourceString: 'isAbstract \	^ false' withCRs;
 		generateMethod.
 ]
@@ -323,13 +334,15 @@ CGStCormas >> removeAttribute: attributeName [
 	" Private - Remove attributeName <String> in the receiver's targetClass. 
 	Also remove the accessors and <attributeName>_default methods if present "
 
-	self removeAccessors: attributeName.
-	self removeDefaultMethod: attributeName.
+	| attName |
+	
+	attName := attributeName uncapitalized.
+	self removeAccessors: attName.
+	self removeDefaultMethod: attName.
 	(self targetClass hasInstVarNamed: attributeName)
-		ifTrue: [ self removeIVar: attributeName ].
-
-
-
+		ifTrue: [ self removeIVar: attributeName ]
+		ifFalse: [ (self targetClass classVarNames includes: attributeName)
+			ifTrue: [ self targetClass instanceSide removeClassVarNamed: attributeName ] ]
 ]
 
 { #category : #accessing }
@@ -365,12 +378,12 @@ CGStCormas >> templateForAttribute: attributeName [
 ]
 
 { #category : #'code-generation' }
-CGStCormas >> templateForAttribute: attributeName default: anObject [
+CGStCormas >> templateForAttributeGetter: attributeName default: anObject [
 	" Answer a <String> representing an accessor method for attributeName "
 
 	^ (String streamContents: [ : stream |
 		stream 
-			<< attributeName;		
+			<< attributeName uncapitalized;		
 			<< '_default';
 			<< '\	" Answer a default value for the ';
 			<< attributeName;
@@ -381,29 +394,44 @@ CGStCormas >> templateForAttribute: attributeName default: anObject [
 ]
 
 { #category : #'code-generation' }
-CGStCormas >> templateForAttributeWithDefault: attributeName [
+CGStCormas >> templateForAttributeGetterWithCormasDefault: attributeName [
 	" Answer a <String> which is just a template method returning anObject "
 
 
 	^ (String << [ : stream |
 		stream
-			<< attributeName;
+			<< attributeName uncapitalized;
 			<< '\	"Getter accessor with default value';
 			<< self automaticCommentString;
 			<< '"\	^ ';
 			<< attributeName;
 			<< ' ifNil: [ ';
 			<< attributeName;
-			<< 	(self isMeta
-					ifTrue: [ ' := self class ' ]
-					ifFalse: [ ' := self ' ]);
-			<< attributeName;
+			<< ' := self ';
+			<< attributeName uncapitalized;
 			<< '_default';
 			<< ' ]']) withCRs
 ]
 
 { #category : #'code-generation' }
-CGStCormas >> templateForInstanceAccessors: pop in: aClass [
+CGStCormas >> templateForAttributeSetter: attributeName [
+	" Answer a <String> representing an accessor method for attributeName "
+
+	^ (String streamContents: [ : stream |
+		stream 
+			<< attributeName uncapitalized ;
+			<< ': anObject';
+			<< '\	" Set a value for the receiver''s ';
+			<< attributeName;
+			crtab;
+			<< self automaticCommentString;
+			<< '"\	 ';
+			<< attributeName;
+			<< ' := anObject' ]) withCRs
+]
+
+{ #category : #'code-generation' }
+CGStCormas >> templateForModelInstanceAccessors: pop in: aClass [
 
 	^ String streamContents: [ : stream |
 		stream 
@@ -415,18 +443,8 @@ CGStCormas >> templateForInstanceAccessors: pop in: aClass [
 
 ]
 
-{ #category : #'mustache-templates' }
-CGStCormas >> templateForPovOnAttribute: attribute [
-
-	^ 'pov' , attribute capitalized ,
-					'\"return the value of the attribute\if the value is a string, converts it to a symbol\if the value is a number, converts it to a symbol, precede by the word {1} "
-	self {1} isString ifTrue:[ ^ self {1} asSymbol ].
-	self {1}	isLiteral ifTrue:[ ^ (''{1}'' , self {1} printString) asSymbol ].
-	^ self {1}' format: { attribute }
-]
-
 { #category : #'code-generation' }
-CGStCormas >> templateForReaderAccessor: pop [
+CGStCormas >> templateForModelReaderAccessor: pop [
 
 	^ String streamContents: [ : stream | 
 			stream 
@@ -444,7 +462,7 @@ CGStCormas >> templateForReaderAccessor: pop [
 ]
 
 { #category : #'code-generation' }
-CGStCormas >> templateForSetterAccessor: pop [
+CGStCormas >> templateForModelSetterAccessor: pop [
 
 	^ String streamContents: [ : stream |
 		stream 
@@ -455,6 +473,16 @@ CGStCormas >> templateForSetterAccessor: pop [
 			<< $"; cr; crtab;
 			<< pop;
 			<< ' := aNewCollection.' ]
+]
+
+{ #category : #'mustache-templates' }
+CGStCormas >> templateForPovOnAttribute: attribute [
+
+	^ 'pov' , attribute capitalized ,
+					'\"return the value of the attribute\if the value is a string, converts it to a symbol\if the value is a number, converts it to a symbol, precede by the word {1} "
+	self {1} isString ifTrue:[ ^ self {1} asSymbol ].
+	self {1}	isLiteral ifTrue:[ ^ (''{1}'' , self {1} printString) asSymbol ].
+	^ self {1}' format: { attribute }
 ]
 
 { #category : #'code-generation' }

@@ -50,6 +50,12 @@ CMSpecEntitiesBrowser class >> defaultSpec [
 ]
 
 { #category : #accessing }
+CMSpecEntitiesBrowser >> codeGenerator [
+
+	^ self projectManager codeGenerator
+]
+
+{ #category : #accessing }
 CMSpecEntitiesBrowser >> defineEntitiesLabel [
 	" Answer the defineEntitiesLabel of this CMSpecEntitiesBrowser "
 
@@ -116,9 +122,18 @@ CMSpecEntitiesBrowser >> entityEditPassiveMethods [
 ]
 
 { #category : #callbacks }
-CMSpecEntitiesBrowser >> entityEditPoVSetter [
+CMSpecEntitiesBrowser >> entityEditPassivePoVMethods [
 
-	self inform: 'shouldBeImplemented'.
+	| targetClass |
+	targetClass := self classFor: self selectedPassiveListItem.
+	(targetClass respondsTo: #pov)
+		ifFalse: [ 
+			self codeGenerator
+				targetClass: targetClass;
+				createPoV ].
+	Smalltalk tools browser 
+		openOnClass: targetClass
+		selector: #pov.
 ]
 
 { #category : #callbacks }
@@ -131,12 +146,42 @@ CMSpecEntitiesBrowser >> entityEditSocialMethods [
 ]
 
 { #category : #callbacks }
+CMSpecEntitiesBrowser >> entityEditSocialPoVMethods [
+
+	| targetClass |
+	targetClass := self classFor: self selectedSocialListItem.
+	(targetClass respondsTo: #pov)
+		ifFalse: [ 
+			self codeGenerator
+				targetClass: targetClass;
+				createPoV ].
+	Smalltalk tools browser 
+		openOnClass: targetClass
+		selector: #pov.
+]
+
+{ #category : #callbacks }
 CMSpecEntitiesBrowser >> entityEditSpatialMethods [
 	" Open a browser tool to edit the receiver's model initialization "
 
 	self openBrowserAt: self spatialListSelectionRealClass tag: #control
 
 	
+]
+
+{ #category : #callbacks }
+CMSpecEntitiesBrowser >> entityEditSpatialPoVMethods [
+
+	| targetClass |
+	targetClass := self classFor: self selectedSpatialListItem.
+	(targetClass respondsTo: #pov)
+		ifFalse: [ 
+			self codeGenerator
+				targetClass: targetClass;
+				createPoV ].
+	Smalltalk tools browser 
+		openOnClass: targetClass
+		selector: #pov.
 ]
 
 { #category : #'accessing - specialization' }
@@ -670,7 +715,7 @@ CMSpecEntitiesBrowser >> subMenuForEditPassiveEntity [
 				addItem: [ : item | 
 					item 
 						name: self translator tPoVSetter;
-						action: [ self entityEditPoVSetter ] ] ]
+						action: [ self entityEditPassivePoVMethods ] ] ]
 
 ]
 
@@ -695,7 +740,7 @@ CMSpecEntitiesBrowser >> subMenuForEditSocialEntity [
 				addItem: [ : item | 
 					item 
 						name: self translator tPoVSetter;
-						action: [ self entityEditPoVSetter ] ] ]
+						action: [ self entityEditSocialPoVMethods ] ] ]
 
 ]
 
@@ -720,7 +765,7 @@ CMSpecEntitiesBrowser >> subMenuForEditSpatialEntity [
 				addItem: [ : item | 
 					item 
 						name: self translator tPoVSetter;
-						action: [ self entityEditPoVSetter ] ] ]
+						action: [ self entityEditSpatialPoVMethods ] ] ]
 
 ]
 

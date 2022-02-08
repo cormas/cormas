@@ -479,6 +479,13 @@ CMAbstractModel class >> getterForEntityClass: aClass [
 ]
 
 { #category : #testing }
+CMAbstractModel class >> hasProbes [
+	" Answer <true> if the receiver's contains any methods to be used as probes "
+	
+	^ self probes notEmpty
+]
+
+{ #category : #testing }
 CMAbstractModel class >> hasRandomAttribute: anAttributeName [
 	"' Answer if anAttributeName defined at class or instance level is a random attribute"
 	
@@ -2394,6 +2401,11 @@ Examples: self interquartileRangeOfAttribute: #age of: Person
 				collect: [:e | e perform: att])
 ]
 
+{ #category : #accessing }
+CMAbstractModel >> isGenericEntity [
+	^ self class isGenericEntity 
+]
+
 { #category : #testing }
 CMAbstractModel >> isInitialized [
 	" Answer <true> if the receiver does not have any control or init method defined "
@@ -3346,7 +3358,7 @@ CMAbstractModel >> theEntities: aClass [
 	getter := aClass asGetterForEntityClass.
 	collection := (self perform: getter)
 		ifNil: [
-			self class createReaderAccessor: aClass.
+			self class createModelReaderAccessor: aClass.
 			self perform: getter ].
 	^ collection
 ]

@@ -8,23 +8,19 @@ Class {
 		'food'
 	],
 	#classVars : [
-		'maxFoodProductionRate',
-		'pallete'
+		'MaxFoodProductionRate'
 	],
 	#category : #'Cormas-Model-Stupid'
 }
 
 { #category : #accessing }
 CMStupidCell class >> maxFoodProductionRate [
-	^ maxFoodProductionRate ifNil: [ maxFoodProductionRate := 0.01 ]
+
+	^ MaxFoodProductionRate
+		  ifNil: [ MaxFoodProductionRate := 0.01 ]
 ]
 
-{ #category : #accessing }
-CMStupidCell class >> maxFoodProductionRate: aFloat [
-	maxFoodProductionRate := aFloat
-]
-
-{ #category : #accessing }
+{ #category : #converting }
 CMStupidCell >> asString [
 	" Private - See superimplementor's comment "
 
@@ -46,18 +42,33 @@ CMStupidCell >> food: anObject [
 	food := anObject
 ]
 
-{ #category : #pov }
-CMStupidCell >> pov [
-	^ self class palette rtValue: self food
+{ #category : #converting }
+CMStupidCell >> interestingDetails [
+	" Answer a <Collection> of interesting receiver's attributes, from a modeler point of view, to display in a popup for example "
+
+	^ super interestingDetails , { 
+		'Food: ' -> (self food asString)
+		}
 ]
 
 { #category : #pov }
+CMStupidCell >> pov [
+
+	^ self
+		  povAttribute: #food
+		  min: 0.1
+		  max: 0.3
+		  color: Color green
+]
+
+{ #category : #control }
 CMStupidCell >> step [
 	self updateFood.
 ]
 
-{ #category : #pov }
+{ #category : #accessing }
 CMStupidCell >> updateFood [
-	self
-		food: self food + (self food * (Cormas randomFloatFrom: 0 to: self class maxFoodProductionRate))
+
+	self food: self food + (self food
+		 * (Cormas randomFloatFrom: 0 to: self class maxFoodProductionRate))
 ]
