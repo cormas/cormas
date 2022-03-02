@@ -17,15 +17,15 @@ Class {
 CMProjectOpener class >> demoImageFromProjectFile: aFileReference [
 	" Answer a <Morph> which serves as demo for the CORMAS project in aFileReference "
 
-	| zipDemoFile |
+	| zipDemoFileAssoc |
 	
-	zipDemoFile := self findDemoResource: ((ZipStore reference: aFileReference) open root).
-	^ zipDemoFile forCormasProjectDemo
+	zipDemoFileAssoc := self findDemoResource: ((ZipStore reference: aFileReference) open root).
+	^ zipDemoFileAssoc forCormasProjectDemo
 ]
 
 { #category : #private }
 CMProjectOpener class >> findDemoResource: zipFileSys [
-	" A demo could be an image or animation, try to find one for the project being opened "
+	" Answer a <ZipFileSystemFile>. A demo could be an image or animation, try to find one for the project being opened "
 
 	| candidateLocations validZipDirEntries |
 	
@@ -34,9 +34,9 @@ CMProjectOpener class >> findDemoResource: zipFileSys [
 	validZipDirEntries := candidateLocations 
 		collect: [ : locationString | (zipFileSys fileEntryAt: locationString) entries ]
 		thenSelect: [ : zipEntry | zipEntry notEmpty ].
-	^ ((self selectImageResources: validZipDirEntries)  
+	^ (self selectImageResources: validZipDirEntries)  
 		detect: [ : zipDirDict | (self findLatestDemoResource: zipDirDict) notNil ]
-		ifNone: [ self cormasDemoImage ]) anyOne
+		ifNone: [ self cormasDemoImage ]
 		
 
 ]

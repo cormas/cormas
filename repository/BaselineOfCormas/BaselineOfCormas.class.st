@@ -257,7 +257,7 @@ BaselineOfCormas >> specForPharo8Groups: spec [
 BaselineOfCormas >> specForPharo9: spec [
 
 	spec
-		for: #'pharo9.x'
+		for: #('pharo9.x' 'pharo10.x')
 		do: [ 
 			spec preLoadDoIt: #preLoadForPharo9.
 			spec

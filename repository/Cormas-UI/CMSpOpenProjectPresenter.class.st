@@ -84,15 +84,15 @@ CMSpOpenProjectPresenter >> connectPresenters [
 
 	projectsListPresenter
 		transmitTo: versionsListPresenter
-		transform: [ : aCormasObject |  self versionsFor: aCormasObject ]
+		transform: [ : aCormasObject | self versionsFor: aCormasObject ]
 		postTransmission: [ :destination | destination ifNotNil: [ destination selectIndex: 1 ] ];
 		
 		transmitTo: previewPresenter
-		transform: [ : aCormasObject | self demoImageFor: aCormasObject ]
-		postTransmission: [ :destination | destination adapter buildWidget ].
+		transform: [ : aCormasObject | self demoImageFor: aCormasObject ].
+		"postTransmission: [ :destination | self halt. destination adapter buildWidget ]"
 
 	versionsListPresenter 
-		whenSelectionChangedDo: [ :aSelection | self metaInfoFor: aSelection ].	
+		whenSelectionChangedDo: [ :aSelection | self metaInfoFor: aSelection ].
 
 ]
 
@@ -135,7 +135,7 @@ CMSpOpenProjectPresenter >> defaultSpecSelector [
 
 { #category : #private }
 CMSpOpenProjectPresenter >> demoImageFor: aCormasObject [
-	" Answer a <Collection> of versions for aCormasObject "
+	" Answer a <Morph> of representing a demo image or animation for aCormasObject "
 
 	^ aCormasObject 
 		ifNotNil: [ : cmObj | cmObj cormasDemoImage ]
