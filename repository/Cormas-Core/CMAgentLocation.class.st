@@ -163,6 +163,15 @@ CMAgentLocation >> delete [
 	super delete
 ]
 
+{ #category : #accessing }
+CMAgentLocation >> detailsOfPOV [
+	" Answer a <String> to visually distinguish the receiver in a space. 
+	This is displayed in the popup when the mouse is over a grid.
+	To be overwritten if needed"
+
+	^ String empty
+]
+
 { #category : #deprecated }
 CMAgentLocation >> displayOn: aGC [
 	
@@ -197,6 +206,14 @@ CMAgentLocation >> isClassLocation [
 CMAgentLocation >> isSituated [
 "Purpose: tests the location somewhere in the spatial grid"
 	^patch notNil
+]
+
+{ #category : #accessing }
+CMAgentLocation >> labelOfPOV [
+	" Answer a <String> displayed to describe the receiver. 
+	To be overwritten if needed"
+
+	^ String empty
 ]
 
 { #category : #'star moving' }

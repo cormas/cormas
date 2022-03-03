@@ -299,26 +299,44 @@ CMR3SpaceDiagram >> leftClickActionBlock: anObject [
 ]
 
 { #category : #initialization }
+CMR3SpaceDiagram >> makeDraggableEntity: e [
+
+	"Adding property to be draggable"
+	e @ RSDraggable.
+	e
+		when: RSMouseDragStart do: [ :evt | self inform: 'Start dragging' ];
+"			when: RSMouseDragging do: [ :evt |
+				self inform: evt position asString ];"
+		when: RSMouseDragEnd do: [ : evt | 
+			evt cormasEntity patch: (self cellAt: evt position ifAbsent: [ evt cormasEntity patch ]) ].
+]
+
+{ #category : #initialization }
+CMR3SpaceDiagram >> moveExistingEntity: e [
+
+	| entityModel eModelPatch |
+			
+	entityModel := e model.
+	eModelPatch := entityModel patch.
+	self makeDraggableEntity: e.
+"	labeled := RSLabeled new
+		highlightable;
+		fontSize: 12;
+		text: [ : aCMEntity | aCMEntity age asString ];
+		yourself."
+	(e propertyAt: #RSLabeled) ifNotNil: [ : p | p text: entityModel labelOfPOV ].
+	e
+		@ (RSPopup text: entityModel detailsOfPOV);
+		size: entityModel sizeOfPOV;
+		color: entityModel pov;
+		translateTo: (eModelPatch numCol @ eModelPatch numLine * cellSize) - (cellSize / 2)
+]
+
+{ #category : #initialization }
 CMR3SpaceDiagram >> moveSituatedEntities [
 	" Position the already created entities views to the location determined by each view's patch "
 
-	self situatedEntitiesViews do: [ : e | 
-		"Adding property to be draggable"
-		| entityModel eModelPatch |
-			
-		entityModel := e model.
-		eModelPatch := entityModel patch.
-		e @ RSDraggable.
-		e
-			when: RSMouseDragStart do: [ :evt | self inform: 'Start dragging' ];
-"			when: RSMouseDragging do: [ :evt |
-				self inform: evt position asString ];"
-			when: RSMouseDragEnd do: [ : evt | 
-				evt cormasEntity patch: (self cellAt: evt position ifAbsent: [ evt cormasEntity patch ]) ].
-	
-			e
-				size: entityModel sizeOfPOV;
-				translateTo: (eModelPatch numCol @ eModelPatch numLine * cellSize) - (cellSize / 2) ] 
+	self situatedEntitiesViews do: [ : e | self moveExistingEntity: e ] 
 ]
 
 { #category : #'instance creation' }
