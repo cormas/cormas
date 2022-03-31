@@ -257,9 +257,10 @@ CMSpatialEntity >> destroyed: aBoolean [
 
 { #category : #deprecated }
 CMSpatialEntity >> distCenter: aSpatialEntity [
-	"DEPRECATED. You shouldn't use this method: the result depend of the size of the displayed grid ! If you modify the size of the windows, the result will change !!  :o(
-So, be carefull. You should rather use 'distCell: aSpatialEntity' .
-returns a distance in cells, between the sender and aSpatialEntity."
+	
+	self deprecated: 'You shouldn''t use this method: the result depend of the size of the displayed grid ! If you modify the size of the windows, the result will change !!  :o(
+So, be carefull. You should rather use #distCell: aSpatialEntity.
+returns a distance in cells, between the sender and aSpatialEntity.'.
 	
 	^self center dist: aSpatialEntity center
 ]
@@ -473,17 +474,23 @@ Example: self myCSE: #Plot"
 ]
 
 { #category : #deprecated }
-CMSpatialEntity >> myOccupantAt: className [
-	"deprecated. should use #occupantsAt:"
+CMSpatialEntity >> myOccupantAt: aClassName [
+
+	self
+		deprecated: 'Use #occupantsAt: instead'
+		transformWith: '`@rec myOccupantAt: `@arg' -> '`@arg occupantsAt: `@arg'.
 	
-	^self occupantsAt: className
+	^self occupantsAt: aClassName
 ]
 
 { #category : #deprecated }
-CMSpatialEntity >> myOccupants: className [
-	"deprecated. should use #occupantsAt:"
+CMSpatialEntity >> myOccupants: aClassName [
 	
-	^self occupantsAt: className
+	self
+		deprecated: 'Use #occupantsAt: instead'
+		transformWith: '`@rec myOccupants: `@arg' -> '`@arg occupantsAt: `@arg'.
+	
+	^self occupantsAt: aClassName
 ]
 
 { #category : #'environment - sensing - space' }
@@ -841,10 +848,13 @@ CMSpatialEntity >> outline: a [
 ]
 
 { #category : #deprecated }
-CMSpatialEntity >> peripherieRayon: n [
-	"DEPRECATED. Should use 'layerOfRadius: radius' "
+CMSpatialEntity >> peripherieRayon: aNumber [
 	
-	^self layerOfRadius: n
+	self
+		deprecated: 'Use #layerOfRadius: instead'
+		transformWith: '`@rec peripherieRayon: `@arg' -> '`@rec layerOfRadius: `@arg'.
+	
+	^self layerOfRadius: aNumber
 ]
 
 { #category : #printing }
