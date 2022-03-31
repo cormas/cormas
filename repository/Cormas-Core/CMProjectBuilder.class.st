@@ -30,7 +30,6 @@ Class {
 CMProjectBuilder class >> buildECEC [
 	<example>
 	
-	self halt.
 	"CMProjectModel new addAnimation: ''."
 	self buildProjectNamed: 'Cormas-Model-ECEC' modelClass: #CMECECModel
 ]

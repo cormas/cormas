@@ -86,7 +86,7 @@ CMSpCreateInstancesSelectorPresenter >> initializePresenters [
 CMSpCreateInstancesSelectorPresenter >> numberOfEntities [
 	" Answer the <Number> of entities already present in the space of the selected entities list "
 	
-	^ self cormasModel halt
+	
 ]
 
 { #category : #accessing }

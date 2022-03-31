@@ -118,13 +118,15 @@ ArcPOV >> lineWidth: anObject [
 { #category : #obsolete }
 ArcPOV >> newStartPosition [
 	
-	self halt	"supposed to be obsolete"	"self changed: #moveStartTo: with: entity patch defaultPOV bounds center."
+	"supposed to be obsolete"
+	"self changed: #moveStartTo: with: entity patch defaultPOV bounds center."
 ]
 
 { #category : #obsolete }
 ArcPOV >> newStopPosition [
 	
-	self halt	"supposed to be obsolete"	"self changed: #moveStopTo: with: entity stopCell defaultPOV bounds center."
+	"supposed to be obsolete"
+	"self changed: #moveStopTo: with: entity stopCell defaultPOV bounds center."
 ]
 
 { #category : #display }

@@ -589,7 +589,6 @@ CMSpecSimulationWindow >> replayStepButton: anObject [
 { #category : #callbacks }
 CMSpecSimulationWindow >> replayStepForwardAction [
 
-	self halt.
 	
 ]
 
