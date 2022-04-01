@@ -2731,7 +2731,6 @@ CMSpaceModel >> traiterChaineDeCaractere: aString [
 CMSpaceModel >> update: aSymbol with: aValue [
 	"propagate time changes to the dependents"
 	
-	self halt.
 	aSymbol == #timeChanged ifTrue: [self changed: aSymbol with: aValue].
 	super update: aSymbol with: aValue
 ]

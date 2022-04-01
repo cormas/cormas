@@ -138,7 +138,7 @@ ModeleObs >> performRedButton: unPoint [
 { #category : #'initialize-release' }
 ModeleObs >> removeData [
 	
-	self halt	"obsolete"	"	RandomNumber := nil.
+	"obsolete"	"	RandomNumber := nil.
 
 
 

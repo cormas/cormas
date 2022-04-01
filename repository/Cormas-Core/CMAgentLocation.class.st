@@ -182,7 +182,6 @@ CMAgentLocation >> detailsOfPOV [
 { #category : #deprecated }
 CMAgentLocation >> displayOn: aGC [
 	
-	self halt.
 	self
 		displayOn: aGC
 		at: self center

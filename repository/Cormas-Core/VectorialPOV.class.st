@@ -194,7 +194,7 @@ VectorialPOV >> lineWidth: v [
 { #category : #obsolete }
 VectorialPOV >> loadFrom: uneImage [
 	
-	self halt	"isStroked := uneImage isStroked.
+	"isStroked := uneImage isStroked.
 	imagePatch := uneImage imagePatch.
 	nbSegments := uneImage nbSegments.
 	sizeRatio := uneImage size.
