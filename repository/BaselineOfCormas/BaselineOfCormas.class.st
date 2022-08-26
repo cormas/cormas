@@ -83,7 +83,7 @@ BaselineOfCormas >> postLoad [
 	self closePharoWelcomeWindow.
 	(Smalltalk at: #PFProjectApplication) applicationClass: (Smalltalk at: #CMApplicationProject).
 	self loadBgImage.	
-	FDMorphicUIManager new beDefault.
+	(Smalltalk at: #FDMorphicUIManager) new beDefault.
 	ShortcutReminder enabled: false.
 	TaskbarMorph showTaskbar: true.
 	" https://github.com/cormas/cormas/issues/511
@@ -99,8 +99,8 @@ BaselineOfCormas >> postLoad [
 	RSWorldMenu loadFullVersion.
 	
 	" Build user projects and un-load models from the image "
-	CMApplicationProject cormasRepository 
-		ifNotNil: [ CMProjectBuilder buildProjectDemos ].
+	(Smalltalk at: #CMApplicationProject) cormasRepository 
+		ifNotNil: [ (Smalltalk at: #CMProjectBuilder) buildProjectDemos ].
 
 ]
 
@@ -138,7 +138,7 @@ BaselineOfCormas >> specForBaselines: spec [
 		with: [ spec repository: 'github://moosetechnology/PetitParser/src'; loads: #('YAML') ];
 			
 		baseline: 'FileDialog'
-		with: [ spec repository: 'github://peteruhnak/file-dialog:v1.x/repository' ];
+		with: [ spec repository: 'github://hernanmd/file-dialog/repository' ];
 
 		baseline: 'ProjectFramework'
 		with: [ spec repository: 'github://hernanmd/ProjectFramework/repository' ];
