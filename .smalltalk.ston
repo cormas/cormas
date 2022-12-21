@@ -10,6 +10,9 @@ SmalltalkCISpec {
     }
   ],
   #testing : {
-    #categories : [ 'Cormas-*' ]
+    #coverage : {
+      #packages : [ 'Cormas-*' ],
+      #format: #lcov
+    }
   }
 }
