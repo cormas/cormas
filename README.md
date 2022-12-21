@@ -14,6 +14,7 @@
 
 [![Pharo version](https://img.shields.io/badge/Pharo-8.0-%23aac9ff.svg)](https://pharo.org/download)
 ![CI](https://github.com/cormas/cormas/workflows/CI/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/cormas/cormas/badge.svg?branch=master)](https://coveralls.io/github/cormas/cormas?branch=master)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/cormas/cormas/master/LICENSE)
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
