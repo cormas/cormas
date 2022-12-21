@@ -11,8 +11,7 @@ SmalltalkCISpec {
   ],
   #testing : {
     #coverage : {
-      #packages : [ 'Cormas-*' ],
-      #format: #lcov
+      #packages : [ 'Cormas-*' ]
     }
   }
 }
