@@ -15,10 +15,7 @@
 ![CI](https://github.com/cormas/cormas/workflows/CI/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/cormas/cormas/badge.svg?branch=master)](https://coveralls.io/github/cormas/cormas?branch=master)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/cormas/cormas/master/LICENSE)
-
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 # Table of Contents
 
