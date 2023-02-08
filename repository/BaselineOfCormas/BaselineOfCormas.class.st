@@ -14,17 +14,17 @@ Class {
 BaselineOfCormas >> baseline: spec [
 	<baseline>
 	spec
-		for: #common do: [ 
+		for: #common do: [
 			spec blessing: #baseline.
 			spec postLoadDoIt: #postLoad.
-			self 
+			self
 				specForBaselines: spec;
 				specForPackages: spec ].
 
-	self 
+	self
 		specForPharo8: spec;
-		specForPharo9: spec.
-
+		specForPharo9: spec;
+		specForPharoX: spec
 ]
 
 { #category : #doits }
@@ -118,7 +118,16 @@ BaselineOfCormas >> preLoadForPharo9 [
 
 	"Smalltalk tools debugger filterCommonMessageSends: true."
 	PharoLightTheme beCurrent.
-	RSUMLCalypsoSettings useCalypsoUML: false.
+	(Smalltalk at: #RSUMLCalypsoSettings) useCalypsoUML: false.
+]
+
+{ #category : #doits }
+BaselineOfCormas >> preLoadForPharoX [
+	" Private - Execute post install actions "
+
+	"Smalltalk tools debugger filterCommonMessageSends: true."
+	PharoLightTheme beCurrent.
+
 ]
 
 { #category : #specs }
@@ -129,23 +138,23 @@ BaselineOfCormas >> specForBaselines: spec [
 		with: [ spec loads: 'Core'; repository: 'github://pharo-contributions/CollectionExtensions:v1.x.x/src' ];
 
 		baseline: 'SMark'
-		with: [ spec repository: 'github://smarr/SMark:v1.0.4' ];	
+		with: [ spec repository: 'github://smarr/SMark:v1.0.4' ];
 
-		baseline: 'NeoJSON' 	
+		baseline: 'NeoJSON'
 		with: [ spec repository: 'github://svenvc/NeoJSON/repository' ];
-	
+
 		baseline: 'PetitParser'
 		with: [ spec repository: 'github://moosetechnology/PetitParser/src'; loads: #('YAML') ];
-			
+
 		baseline: 'FileDialog'
 		with: [ spec repository: 'github://hernanmd/file-dialog/repository' ];
 
 		baseline: 'ProjectFramework'
 		with: [ spec repository: 'github://hernanmd/ProjectFramework/repository' ];
-				
+
 		baseline: 'SpecUIAddOns'
 		with: [ spec repository: 'github://hernanmd/SpecUIAddOns/repository' ];
-		
+
 		baseline: 'CodeGenerator'
 		with: [ spec repository: 'github://hernanmd/CodeGenerator/repository' ];
 
@@ -156,8 +165,7 @@ BaselineOfCormas >> specForBaselines: spec [
 		with: [ spec repository: 'github://jecisc/GitBridge/src' ];
 
 		baseline: 'ESRIASCIIRaster'
-		with: [ spec repository: 'github://pharo-GIS/ESRI-ASCII-Raster/' ].
-
+		with: [ spec repository: 'github://pharo-GIS/ESRI-ASCII-Raster/' ]
 ]
 
 { #category : #specs }
@@ -293,12 +301,12 @@ BaselineOfCormas >> specForPharo9Groups: spec [
 BaselineOfCormas >> specForPharoX: spec [
 
 	spec
-		for: #('pharo10.x')
-		do: [ 
-			spec preLoadDoIt: #preLoadForPharo9.
+		for: #('pharo10.x' 'pharo11.x')
+		do: [
+			spec preLoadDoIt: #preLoadForPharoX.
 			spec
 				baseline: 'Tabular' 							with: [ spec repository: 'github://VincentBlondeau/Tabular' ];
-				"baseline: 'ClassEditor'						with: [ spec repository: 'github://hernanmd/class-editor/repository'; loads: 'complete' ];"
+				baseline: 'ClassEditor'						with: [ spec repository: 'github://hernanmd/class-editor/repository'; loads: 'complete' ];
 				baseline: 'Roassal3' 							with: [ spec repository: 'github://ObjectProfile/Roassal3' ];
 				baseline: 'Roassal3Exporters' 				with: [ spec repository: 'github://ObjectProfile/Roassal3Exporters' ];
 				baseline: 'UrucuNavigator' 					with: [ spec repository: 'github://tinchodias/pharo-urucu-navigator' ];
