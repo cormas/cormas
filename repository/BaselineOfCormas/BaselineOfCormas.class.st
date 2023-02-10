@@ -140,8 +140,8 @@ BaselineOfCormas >> specForBaselines: spec [
 		baseline: 'FileDialog'
 		with: [ spec repository: 'github://peteruhnak/file-dialog:v1.x/repository' ];
 
-		baseline: 'ProjectFramework'
-		with: [ spec repository: 'github://hernanmd/ProjectFramework:0a3dfb813fca440800c18d2d70dfe4a73b9c690b/repository' ];
+		"baseline: 'ProjectFramework'
+		with: [ spec repository: 'github://hernanmd/ProjectFramework:0a3dfb813fca440800c18d2d70dfe4a73b9c690b/repository' ];"
 				
 		baseline: 'SpecUIAddOns'
 		with: [ spec repository: 'github://hernanmd/SpecUIAddOns/repository' ];
@@ -197,7 +197,7 @@ BaselineOfCormas >> specForPackagesInCore: spec [
 			" Required by the Entity Browser "
 			'CodeGenerator' 
 			" Required for project management "
-			'ProjectFramework'
+			"'ProjectFramework'"
 			" Required some String methods "
 			'CollectionExtensions' 
 			)
@@ -267,7 +267,8 @@ BaselineOfCormas >> specForPharo9: spec [
 				baseline: 'Roassal3Exporters' 				with: [ spec repository: 'github://ObjectProfile/Roassal3Exporters' ];
 				baseline: 'UrucuNavigator' 					with: [ spec repository: 'github://tinchodias/pharo-urucu-navigator' ];
 
-				package: 'Cormas-UI'							with: [ spec requires: #('Cormas-Core' 'ClassEditor' 'SpecUIAddOns' 'FileDialog' 'ProjectFramework' 'CodeGenerator' 'UrucuNavigator') ];
+				"package: 'Cormas-UI'							with: [ spec requires: #('Cormas-Core' 'ClassEditor' 'SpecUIAddOns' 'FileDialog' 'ProjectFramework' 'CodeGenerator' 'UrucuNavigator') ];"
+				package: 'Cormas-UI'							with: [ spec requires: #('Cormas-Core' 'ClassEditor' 'SpecUIAddOns' 'FileDialog' 'CodeGenerator' 'UrucuNavigator') ];
 				package: 'Cormas-UI-Tests' 					with: [ spec requires: #('Cormas-Tests' 'Cormas-UI' 'Cormas-Mocks') ];
 				package: 'Cormas-UI-Roassal3' 				with: [ spec requires: #('Cormas-UI' 'Roassal3' 'Roassal3Exporters') ].
 				"package: 'Cormas-Model-ECEC-Roassal3' 	with: [ spec requires: #('Cormas-Model-ECEC' 'Roassal3' 'Cormas-UI-Roassal3') ]"
