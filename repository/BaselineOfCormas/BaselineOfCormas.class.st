@@ -141,7 +141,7 @@ BaselineOfCormas >> specForBaselines: spec [
 		with: [ spec repository: 'github://peteruhnak/file-dialog:v1.x/repository' ];
 
 		baseline: 'ProjectFramework'
-		with: [ spec repository: 'github://hernanmd/ProjectFramework/repository' ];
+		with: [ spec repository: 'github://hernanmd/ProjectFramework:0a3dfb813fca440800c18d2d70dfe4a73b9c690b/repository' ];
 				
 		baseline: 'SpecUIAddOns'
 		with: [ spec repository: 'github://hernanmd/SpecUIAddOns/repository' ];
