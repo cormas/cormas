@@ -147,7 +147,7 @@ BaselineOfCormas >> specForBaselines: spec [
 		with: [ spec repository: 'github://hernanmd/SpecUIAddOns/repository' ];
 		
 		baseline: 'CodeGenerator'
-		with: [ spec repository: 'github://hernanmd/CodeGenerator/repository' ];
+		with: [ spec repository: 'github://hernanmd/CodeGenerator:083361bea35dca5a29cc1576970ab2b65628d7fa/repository' ];
 
 		baseline: 'PolyMath'
 		with: [ spec repository: 'github://PolyMathOrg/PolyMath:v1.0.3';	loads: #('Core') ];
