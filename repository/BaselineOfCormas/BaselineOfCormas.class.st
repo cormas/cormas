@@ -141,13 +141,13 @@ BaselineOfCormas >> specForBaselines: spec [
 		with: [ spec repository: 'github://peteruhnak/file-dialog:v1.x/repository' ];
 
 		baseline: 'ProjectFramework'
-		with: [ spec repository: 'github://hernanmd/ProjectFramework:0a3dfb813fca440800c18d2d70dfe4a73b9c690b/repository' ];
+		with: [ spec repository: 'github://hernanmd/ProjectFramework/repository' ];
 				
 		baseline: 'SpecUIAddOns'
 		with: [ spec repository: 'github://hernanmd/SpecUIAddOns/repository' ];
 		
 		baseline: 'CodeGenerator'
-		with: [ spec repository: 'github://hernanmd/CodeGenerator:083361bea35dca5a29cc1576970ab2b65628d7fa/repository' ];
+		with: [ spec repository: 'github://hernanmd/CodeGenerator/repository' ];
 
 		baseline: 'PolyMath'
 		with: [ spec repository: 'github://PolyMathOrg/PolyMath:v1.0.3';	loads: #('Core') ];
