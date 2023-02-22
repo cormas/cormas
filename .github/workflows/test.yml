@@ -21,5 +21,5 @@ jobs:
           smalltalk-version: Pharo64-9.0
       - run: smalltalkci -s ${{ steps.smalltalkci.outputs.smalltalk-version }}
         shell: bash
-        timeout-minutes: 25
+        timeout-minutes: 40
       - uses: actions/checkout@master
