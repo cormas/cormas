@@ -267,6 +267,7 @@ BaselineOfCormas >> specForPharo9: spec [
 				baseline: 'Roassal3Exporters' 				with: [ spec repository: 'github://ObjectProfile/Roassal3Exporters' ];
 				baseline: 'UrucuNavigator' 					with: [ spec repository: 'github://tinchodias/pharo-urucu-navigator' ];
 
+				package: 'Cormas-UI-Pharo9';
 				package: 'Cormas-UI'							with: [ spec requires: #('Cormas-Core' 'ClassEditor' 'SpecUIAddOns' 'FileDialog' 'ProjectFramework' 'CodeGenerator' 'UrucuNavigator') ];
 				package: 'Cormas-UI-Tests' 					with: [ spec requires: #('Cormas-Tests' 'Cormas-UI' 'Cormas-Mocks') ];
 				package: 'Cormas-UI-Roassal3' 				with: [ spec requires: #('Cormas-UI' 'Roassal3' 'Roassal3Exporters') ].
