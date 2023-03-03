@@ -149,8 +149,8 @@ BaselineOfCormas >> specForBaselines: spec [
 		baseline: 'CodeGenerator'
 		with: [ spec repository: 'github://hernanmd/CodeGenerator/repository' ];
 
-		baseline: 'PolyMath'
-		with: [ spec repository: 'github://PolyMathOrg/PolyMath:v1.0.3';	loads: #('Core') ];
+		baseline: 'MathRandomNumbers'
+		with: [ spec repository: 'github://PolyMathOrg/random-numbers:v1.x.x/src' ];
 
 		baseline: 'GitBridge'
 		with: [ spec repository: 'github://jecisc/GitBridge/src' ];
@@ -185,7 +185,7 @@ BaselineOfCormas >> specForPackagesInCore: spec [
 
 	spec requires: #(
 			" Required by ???? "
-			'PolyMath' 
+			'MathRandomNumbers' 
 			" Required by YAML "
 			'PetitParser' 
 			" Required by ??? "
@@ -267,6 +267,7 @@ BaselineOfCormas >> specForPharo9: spec [
 				baseline: 'Roassal3Exporters' 				with: [ spec repository: 'github://ObjectProfile/Roassal3Exporters' ];
 				baseline: 'UrucuNavigator' 					with: [ spec repository: 'github://tinchodias/pharo-urucu-navigator' ];
 
+				package: 'Cormas-UI-Pharo9';
 				package: 'Cormas-UI'							with: [ spec requires: #('Cormas-Core' 'ClassEditor' 'SpecUIAddOns' 'FileDialog' 'ProjectFramework' 'CodeGenerator' 'UrucuNavigator') ];
 				package: 'Cormas-UI-Tests' 					with: [ spec requires: #('Cormas-Tests' 'Cormas-UI' 'Cormas-Mocks') ];
 				package: 'Cormas-UI-Roassal3' 				with: [ spec requires: #('Cormas-UI' 'Roassal3' 'Roassal3Exporters') ].
