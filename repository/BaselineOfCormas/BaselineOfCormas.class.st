@@ -149,8 +149,8 @@ BaselineOfCormas >> specForBaselines: spec [
 		baseline: 'CodeGenerator'
 		with: [ spec repository: 'github://hernanmd/CodeGenerator/repository' ];
 
-		baseline: 'PolyMath'
-		with: [ spec repository: 'github://PolyMathOrg/PolyMath:v1.0.3';	loads: #('Core') ];
+		baseline: 'MathRandomNumbers'
+		with: [ spec repository: 'github://PolyMathOrg/random-numbers:v1.x.x/src' ];
 
 		baseline: 'GitBridge'
 		with: [ spec repository: 'github://jecisc/GitBridge/src' ];
@@ -185,7 +185,7 @@ BaselineOfCormas >> specForPackagesInCore: spec [
 
 	spec requires: #(
 			" Required by ???? "
-			'PolyMath' 
+			'MathRandomNumbers' 
 			" Required by YAML "
 			'PetitParser' 
 			" Required by ??? "
