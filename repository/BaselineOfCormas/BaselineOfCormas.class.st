@@ -96,7 +96,10 @@ BaselineOfCormas >> postLoad [
 	" https://github.com/ObjectProfile/Roassal3/issues/408 
 	https://github.com/ObjectProfile/Roassal3/issues/413
 	"
+	Transcript traceCr: 'Before loading Roassal'.
 	RSWorldMenu loadFullVersion.
+	
+	Transcript traceCr: 'After loading Roassal'.
 	
 	" Build user projects and un-load models from the image "
 	CMApplicationProject cormasRepository 
