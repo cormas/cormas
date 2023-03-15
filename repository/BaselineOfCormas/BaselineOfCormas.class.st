@@ -92,11 +92,6 @@ BaselineOfCormas >> postLoad [
 	
 	self unloadPackages.
 	"self openPlaygroundWindow."
-
-	" https://github.com/ObjectProfile/Roassal3/issues/408 
-	https://github.com/ObjectProfile/Roassal3/issues/413
-	"
-	RSWorldMenu loadFullVersion.
 	
 	" Build user projects and un-load models from the image "
 	CMApplicationProject cormasRepository 
@@ -263,7 +258,7 @@ BaselineOfCormas >> specForPharo9: spec [
 			spec
 				baseline: 'Tabular' 							with: [ spec repository: 'github://VincentBlondeau/Tabular' ];
 				baseline: 'ClassEditor'						with: [ spec repository: 'github://hernanmd/class-editor/repository'; loads: 'complete' ];
-				baseline: 'Roassal3' 							with: [ spec repository: 'github://ObjectProfile/Roassal3' ];
+				baseline: 'Roassal3' 							with: [ spec loads: #('Full'); repository: 'github://ObjectProfile/Roassal3' ];
 				baseline: 'Roassal3Exporters' 				with: [ spec repository: 'github://ObjectProfile/Roassal3Exporters' ];
 				baseline: 'UrucuNavigator' 					with: [ spec repository: 'github://tinchodias/pharo-urucu-navigator' ];
 
