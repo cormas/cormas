@@ -143,21 +143,24 @@ CMCellsLoader >> defaultConnectivity: aString [
 
 { #category : #loading }
 CMCellsLoader >> dimensions: anArray [
+	"TODO: Use point instead and avoid checking the correctness of each argument"
 	| numLines numColumns |
-	self assert: anArray isSequenceable.
-	self assert: anArray size equals: 2.
-	numLines := anArray first asInteger
-		ifNil: [ ^ self
-				warning:
-					'number of lines must be a positive integer, but found "'
-						, anArray first asString , '"' ].
-	numColumns := anArray second asInteger
-		ifNil: [ ^ self
-				warning:
-					'number of columns must be a positive integer, but found "'
-						, anArray second asString , '"' ].
-	self
-		spaceModelDo: [ :spaceModel | spaceModel line: numLines column: numColumns ]
+	
+	anArray isSequenceable ifFalse: [ 
+		self error: 'The argument should be a sequenceable collection' ].
+	
+	anArray size = 2 ifFalse: [
+		self error: 'The size of the collection must be 2' ].
+	
+	numLines := anArray first asInteger ifNil: [
+		self error: 'number of lines must be a positive integer, but found "',
+			anArray first asString , '"' ].
+	
+	numColumns := anArray second asInteger ifNil: [
+		self error: 'number of columns must be a positive integer, but found "',
+			anArray second asString , '"' ].
+		
+	self spaceModelDo: [ :spaceModel | spaceModel line: numLines column: numColumns ]
 ]
 
 { #category : #loading }
