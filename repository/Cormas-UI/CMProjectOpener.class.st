@@ -46,8 +46,8 @@ CMProjectOpener class >> findLatestDemoResource: aCollection [
 	" Answer a  with the last modification time "
 	
 	| now older zipDemoFile |
-	now := TRPlatform current dateAndTimeClass now.
-	older := TRPlatform current dateAndTimeClass year: 1900 day: 1.
+	now := DateAndTime now.
+	older := DateAndTime year: 1900 day: 1.
 	aCollection associationsDo: [ : assoc | 
 		| zipFile |
 		zipFile := assoc value.
