@@ -121,11 +121,7 @@ CMR3SpacePresenter >> exportSpaceWith: aRSExporter [
 { #category : #initialization }
 CMR3SpacePresenter >> initializeCanvasInteractions [
 
-	self canvas
-		addInteraction: RSCanvasController new;
-		addInteraction: RSZoomToFitCanvasInteraction new;
-		addInteraction: RSZoomableCanvasInteraction new;
-		addInteraction: RSKeyNavigationCanvasInteraction new
+	self canvas addInteraction: RSCanvasController new.
 ]
 
 { #category : #initialization }
