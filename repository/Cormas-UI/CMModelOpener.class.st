@@ -68,44 +68,55 @@ CMModelOpener >> openProject [
 CMModelOpener >> requestNameLocation [
 	" Open request dialog to select a load model location "
 	
-	| widget |
-	widget := SpcListModel new.
-	widget
+	| listPresenter |
+	
+	listPresenter := SpListPresenter new
+		items: self cormasOpenLocations;
+		yourself.
+	
+	"Open modal dialog and wait for user response"	
+	listPresenter asModalWindow 
 		title: self translator tWhichOpeningLocation;
-		items: self cormasOpenLocations.
-	widget openDialogWithSpec 
-		cancelAction: [ widget selectItem: nil ];	
-		modalRelativeTo: self currentWorld.
-	^ widget selectedItem		
+		open.
+		
+	^ listPresenter selectedItem		
 		
 ]
 
 { #category : #callbacks }
 CMModelOpener >> requestOpenDialogFromLocalDisk [
 	" Open a Cormas model. Answer project creation status, <true> if project was opened successfully "
-
-	| widget |
-	widget := SpcListModel new.
-	widget
+	
+	| listPresenter |
+	
+	listPresenter := SpListPresenter new
+		items: self projectManager cormasModels;
+		yourself.
+	
+	"Open modal dialog and wait for user response"	
+	listPresenter asModalWindow 
 		title: self translator tWhichModel;
-		items: self projectManager cormasModels.
-	widget openDialogWithSpec modalRelativeTo: self currentWorld.
-	^ widget selectedItem
+		open.
+		
+	^ listPresenter selectedItem	
 ]
 
 { #category : #callbacks }
 CMModelOpener >> requestOpenDialogFromLocalImage [
 	" Open a Cormas model. Answer a <String> with the project name it it was opened successfully, nil otherwise "
-
-	| widget |
-	widget := SpcListModel new.
-	widget
+	
+	| listPresenter |
+	
+	listPresenter := SpListPresenter new
+		items: CMAbstractModel subclasses;
+		yourself.
+	
+	"Open modal dialog and wait for user response"	
+	listPresenter asModalWindow 
 		title: self translator tWhichModel;
-		items: CMAbstractModel subclasses.
-	widget openDialogWithSpec modalRelativeTo: self currentWorld.
-	^ widget selectedItem 
-		ifNotNil: [ : selection | selection name ]
-		ifNil: [ widget selectedItem ]
+		open.
+		
+	^ listPresenter selectedItem ifNotNil: [ :selection | selection name ].
 ]
 
 { #category : #callbacks }
