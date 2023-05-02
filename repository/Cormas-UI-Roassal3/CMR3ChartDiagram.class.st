@@ -36,7 +36,7 @@ CMR3ChartDiagram >> addAZeroDataSet [
 	initialPlot 
 		x: xValue
 		y: { 0 };
-		color: Color blue trans.
+		color: Color blue "trans".
 	
 	self chartBuilder 
 		maxValueX: self newMaxX;

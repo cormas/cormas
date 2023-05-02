@@ -399,7 +399,7 @@ CMR3SpaceDiagram >> moveExistingEntity: e [
 		"@ (RSPopup text: entityModel detailsOfPOV);"
 		size: entityModel sizeOfPOV;
 		color: entityModel pov;
-		translateTo: (eModelPatch numCol @ eModelPatch numLine * cellSize) - (cellSize / 2)
+		translateTo: (eModelPatch numCol @ eModelPatch numLine * self cellSize) - (self cellSize / 2)
 ]
 
 { #category : #initialization }
