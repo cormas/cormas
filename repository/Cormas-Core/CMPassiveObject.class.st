@@ -39,7 +39,7 @@ CMPassiveObject >> destroyed: aBoolean [
 CMPassiveObject >> isDead [
 	" See superimplementor's comment "
 
-	^ destroyed
+	^ destroyed ifNil: [ destroyed := false ]
 ]
 
 { #category : #testing }
