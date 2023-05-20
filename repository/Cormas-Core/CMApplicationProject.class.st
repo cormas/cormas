@@ -68,7 +68,7 @@ CMApplicationProject class >> cormasRepository [
 	" Answer the receiver's CORMAS Iceberg repository  "
 
 	^ IceLibgitRepository registry 
-		detect: [ : repo | repo name = 'cormas' ]
+		detect: [ : repo | repo name asLowercase = 'cormas' ]
 		ifNone: [ nil ]
 ]
 
