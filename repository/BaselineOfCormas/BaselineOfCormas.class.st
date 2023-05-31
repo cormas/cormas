@@ -254,7 +254,7 @@ BaselineOfCormas >> specForPharo9: spec [
 			spec preLoadDoIt: #preLoadForPharo9.
 			spec
 				baseline: 'Tabular' 							with: [ spec repository: 'github://VincentBlondeau/Tabular' ];
-				baseline: 'Roassal3' 							with: [ spec loads: #('Full'); repository: 'github://ObjectProfile/Roassal3' ];
+				baseline: 'Roassal3' 							with: [ spec loads: #('Full'); repository: 'github://ObjectProfile/Roassal3:v0.9.9m' ];
 				baseline: 'Roassal3Exporters' 				with: [ spec repository: 'github://ObjectProfile/Roassal3Exporters' ];
 				baseline: 'UrucuNavigator' 					with: [ spec repository: 'github://tinchodias/pharo-urucu-navigator' ];
 
