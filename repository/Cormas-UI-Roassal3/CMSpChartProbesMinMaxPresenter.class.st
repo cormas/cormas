@@ -33,7 +33,7 @@ CMSpChartProbesMinMaxPresenter class >> defaultSpec [
 CMSpChartProbesMinMaxPresenter >> finalTime [
 	" Answer a <Number> with the final simluation step time of the receiver's model "
 
-	^ self simManager finalTime
+	^ self simulationManager finalTime
 ]
 
 { #category : #accessing }
@@ -153,9 +153,9 @@ CMSpChartProbesMinMaxPresenter >> scaleToMinMax [
 ]
 
 { #category : #accessing }
-CMSpChartProbesMinMaxPresenter >> simManager [
+CMSpChartProbesMinMaxPresenter >> simulationManager [
 	" Answer the receiver's <CMSimManager> "
 	
-	^ self cormasModel simManager
+	^ self cormasModel simulationManager
 
 ]

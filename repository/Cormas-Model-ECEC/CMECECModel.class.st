@@ -89,10 +89,10 @@ CMECECModel class >> exampleSM2 [
 
 	| aModel |
 	aModel := self initialize new initSimulation.
-	aModel simManager
+	aModel simulationManager
 		finalTime: 200;
 		runSimulation.
-			self transcriptShow_simulationTime:  aModel simManager currentTime nbRestrainedForagers: aModel restrainedSize 
+			self transcriptShow_simulationTime:  aModel simulationManager currentTime nbRestrainedForagers: aModel restrainedSize 
 	
 ]
 
@@ -102,12 +102,12 @@ CMECECModel class >> exampleSM3 [
 
 	| aModel |
 	aModel := self initialize new.
-	aModel simManager
+	aModel simulationManager
 		initializeSimulation;
 		finalTime: 200;
 		runSimulation.
 	self
-		transcriptShow_simulationTime: aModel simManager currentTime
+		transcriptShow_simulationTime: aModel simulationManager currentTime
 		nbRestrainedForagers: aModel restrainedSize
 ]
 
@@ -142,7 +142,7 @@ CMECECModel class >> exampleSM4 [
 		chrono := Time
 			millisecondsToRun: [ | aModel |
 				aModel := self initialize new initSimulation.
-				aModel simManager
+				aModel simulationManager
 					finalTime: finalTime;
 					runSimulation ].
 		chronoRecords add: chrono
@@ -161,7 +161,7 @@ CMECECModel class >> exampleSM4 [
 		chrono := Time
 			millisecondsToRun: [ | aModel |
 				aModel := self initialize new.
-				aModel simManager
+				aModel simulationManager
 					initializeSimulation;
 					finalTime: finalTime;
 					runSimulation ].

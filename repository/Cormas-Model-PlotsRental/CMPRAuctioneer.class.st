@@ -1,6 +1,6 @@
 Class {
 	#name : #CMPRAuctioneer,
-	#superclass : #CMAgentCommLocation,
+	#superclass : #CMLocatedCommunicatingAgent,
 	#classVars : [
 		'CurrentId'
 	],

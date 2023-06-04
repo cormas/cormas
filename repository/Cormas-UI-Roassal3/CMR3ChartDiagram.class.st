@@ -310,7 +310,7 @@ CMR3ChartDiagram >> setModelBeforeInitialization: aDomainObject [
 		when: CMTimeChangedAnnouncement
 		do: [ : ann | ann timeStep = 0 ifFalse: [ self timeChanged: ann timeStep ] ];
 
-		when: CMSimInitializationAnnouncement 
+		when: CMSimulationInitializationAnnouncement 
 		do: [ self timeChanged: 0 ].
 		
 	self cormasModel hasData

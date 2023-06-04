@@ -652,7 +652,7 @@ CMReHabModel class >> simuOpenMole [
 		strategy_ParkManager: (conf at: #strategy_ParkManager);
 		activeControl: #step:;
 		initSimulation.
-	aModel simManager
+	aModel simulationManager
 		initializeSimulation;
 		finalTime: 6;
 		runSimulation.

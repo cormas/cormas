@@ -1,6 +1,6 @@
 Class {
 	#name : #CMECECForager,
-	#superclass : #CMAgentLocation,
+	#superclass : #CMLocatedAgent,
 	#instVars : [
 		'energy'
 	],

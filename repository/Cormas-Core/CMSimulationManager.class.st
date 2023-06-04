@@ -1,5 +1,5 @@
 Class {
-	#name : #CMSimManager,
+	#name : #CMSimulationManager,
 	#superclass : #Object,
 	#instVars : [
 		'cormasModel',
@@ -25,32 +25,32 @@ Class {
 }
 
 { #category : #accessing }
-CMSimManager class >> bosExtension [
+CMSimulationManager class >> bosExtension [
 	
 	^'.bos'
 ]
 
 { #category : #time }
-CMSimManager class >> defaultFinalTime [
+CMSimulationManager class >> defaultFinalTime [
 	" Answer an <Integer> representing the default final step time "
 
 	^ 100
 ]
 
 { #category : #accessing }
-CMSimManager class >> newFolder [
+CMSimulationManager class >> newFolder [
 	
 	^newFolder ifNil: [newFolder := 'A new folder']
 ]
 
 { #category : #accessing }
-CMSimManager class >> newFolder: aFilenmaFolder [
+CMSimulationManager class >> newFolder: aFilenmaFolder [
 	
 	^newFolder := aFilenmaFolder
 ]
 
 { #category : #accessing }
-CMSimManager class >> newFolderName [
+CMSimulationManager class >> newFolderName [
 	"return a String for newFolder (starting at model's name"
 	
 	| i listComp str |
@@ -67,20 +67,20 @@ CMSimManager class >> newFolderName [
 ]
 
 { #category : #accessing }
-CMSimManager class >> separator [
+CMSimulationManager class >> separator [
 	
 	^'-------'
 ]
 
 { #category : #'replay-private' }
-CMSimManager class >> simNameStart [
+CMSimulationManager class >> simNameStart [
 	"Return the begining part of each simName (=> 'sim_' )  "
 	
 	^'sim_'
 ]
 
 { #category : #'replay-private' }
-CMSimManager >> allReplayButtonsTo: bool [
+CMSimulationManager >> allReplayButtonsTo: bool [
 	"bool = false => all replay buttons are grey and inactivate.
 	buttonName = <Symbol> = #step #stepBack #run #runBack #replayRunForward #replayStepForward  "
 	
@@ -91,7 +91,7 @@ CMSimManager >> allReplayButtonsTo: bool [
 ]
 
 { #category : #actions }
-CMSimManager >> applyUserChangeForFinalStep: aNewFinalStep [
+CMSimulationManager >> applyUserChangeForFinalStep: aNewFinalStep [
 	"this method is call from Cormas when user have manually change the inputField current step"
 	
 	aNewFinalStep < 0 ifTrue: [^false].
@@ -106,7 +106,7 @@ CMSimManager >> applyUserChangeForFinalStep: aNewFinalStep [
 ]
 
 { #category : #actions }
-CMSimManager >> applyUserChangeForStep: aNewStep [
+CMSimulationManager >> applyUserChangeForStep: aNewStep [
 	"this method is call from Cormas when user have manually change the inputField current step"
 	
 	self enableBackward ifFalse: [^false].
@@ -124,21 +124,21 @@ CMSimManager >> applyUserChangeForStep: aNewStep [
 ]
 
 { #category : #accessing }
-CMSimManager >> buttonsForwardAreOn [
+CMSimulationManager >> buttonsForwardAreOn [
 	
 	^ buttonsForwardAreOn 
 		ifNil: [ buttonsForwardAreOn := false ]
 ]
 
 { #category : #actions }
-CMSimManager >> cancel [
+CMSimulationManager >> cancel [
 	
 	self closeRequest.
 	^false
 ]
 
 { #category : #'replay-forward' }
-CMSimManager >> confirmDeviation [
+CMSimulationManager >> confirmDeviation [
 	"check if bos file for next step exists. If not, then continue to simulate and to save into the same folder (continue the same simulation process).
 	If exists, then proposes to save the sim history (from 0 to currentStep) into a new folder"
 	
@@ -159,7 +159,7 @@ CMSimManager >> confirmDeviation [
 ]
 
 { #category : #'replay-forward' }
-CMSimManager >> copyPreviousBackStepsInNewFolder [
+CMSimulationManager >> copyPreviousBackStepsInNewFolder [
 	
 	| stepFiles previousFolder |
 	stepFiles := (self simFolder directories select: [ : st | st beginsWith: self stepNameStart ])
@@ -178,55 +178,55 @@ CMSimManager >> copyPreviousBackStepsInNewFolder [
 ]
 
 { #category : #accessing }
-CMSimManager >> cormas [
+CMSimulationManager >> cormas [
 	
 	^self cormasModel cormas
 ]
 
 { #category : #accessing }
-CMSimManager >> cormasModel [
+CMSimulationManager >> cormasModel [
 	
 	^cormasModel
 ]
 
 { #category : #accessing }
-CMSimManager >> cormasModel: anObject [
+CMSimulationManager >> cormasModel: anObject [
 	
 	cormasModel := anObject
 ]
 
 { #category : #accessing }
-CMSimManager >> cormasModelClass [
+CMSimulationManager >> cormasModelClass [
 	
 	^self cormasModel class
 ]
 
 { #category : #time }
-CMSimManager >> currentSimEnded [
+CMSimulationManager >> currentSimEnded [
 	
 	^ self finalTime <= self currentTime
 ]
 
 { #category : #time }
-CMSimManager >> currentTime [
+CMSimulationManager >> currentTime [
 	
 	^ self cormasModel timeStep
 ]
 
 { #category : #time }
-CMSimManager >> currentTime: anInteger [
+CMSimulationManager >> currentTime: anInteger [
 	self cormasModel timeStep: anInteger
 ]
 
 { #category : #time }
-CMSimManager >> defaultFinalTime [
+CMSimulationManager >> defaultFinalTime [
 	" Answer an <Integer> representing the default final step time "
 
 	^ self class defaultFinalTime
 ]
 
 { #category : #simulate }
-CMSimManager >> displayRunDuration: duration [
+CMSimulationManager >> displayRunDuration: duration [
 	"display on the Transcript, the duration time of the simulation"
 
 	| txt |
@@ -244,14 +244,14 @@ CMSimManager >> displayRunDuration: duration [
 ]
 
 { #category : #'replay-backward' }
-CMSimManager >> enableBackward [
+CMSimulationManager >> enableBackward [
 	self flag: #shouldBeRevised.
 	"not yet implemented in cormas-pharo"
 		^ false
 ]
 
 { #category : #ui }
-CMSimManager >> enableBackward: bool [
+CMSimulationManager >> enableBackward: bool [
 	
 	enableBackward := bool.
 	bool
@@ -263,33 +263,33 @@ CMSimManager >> enableBackward: bool [
 ]
 
 { #category : #time }
-CMSimManager >> finalTime [
+CMSimulationManager >> finalTime [
 	^ finalTime ifNil: [ finalTime := self defaultFinalTime]
 ]
 
 { #category : #time }
-CMSimManager >> finalTime: anInteger [
+CMSimulationManager >> finalTime: anInteger [
 	finalTime := anInteger
 	
 ]
 
 { #category : #time }
-CMSimManager >> finishSimulation [
+CMSimulationManager >> finishSimulation [
 	self cormasModel timeStep: self finalTime
 ]
 
 { #category : #accessing }
-CMSimManager >> fixedRandomSeedValue [
+CMSimulationManager >> fixedRandomSeedValue [
 	^ fixedRandomSeedValue
 ]
 
 { #category : #accessing }
-CMSimManager >> fixedRandomSeedValue: anObject [
+CMSimulationManager >> fixedRandomSeedValue: anObject [
 	fixedRandomSeedValue := anObject
 ]
 
 { #category : #accessing }
-CMSimManager >> getStepNumberOfBosFilename: aFilename [
+CMSimulationManager >> getStepNumberOfBosFilename: aFilename [
 	"Return the number from the name of the bosFile.
 	Example: 'step_26.bos' => 26
 	aFilename = <String>"
@@ -303,7 +303,7 @@ CMSimManager >> getStepNumberOfBosFilename: aFilename [
 ]
 
 { #category : #simulate }
-CMSimManager >> initRandomSeed [
+CMSimulationManager >> initRandomSeed [
 	
 	self isRandomSeedFixed
 		ifTrue: [Cormas randomSeed: self fixedRandomSeedValue]
@@ -311,7 +311,7 @@ CMSimManager >> initRandomSeed [
 ]
 
 { #category : #init }
-CMSimManager >> initScenario [
+CMSimulationManager >> initScenario [
 	
 	self cormas cycle value: self finalStep value.
 	self enableBackward: self enableBackwardValue value.	"*** initialize the simulation ***"
@@ -320,7 +320,7 @@ CMSimManager >> initScenario [
 ]
 
 { #category : #init }
-CMSimManager >> initializeSimulation [
+CMSimulationManager >> initializeSimulation [
 	self setSimName.
 	self simFolder: nil.
 	self simNumero: self simNumero + 1.
@@ -340,29 +340,29 @@ CMSimManager >> initializeSimulation [
 ]
 
 { #category : #time }
-CMSimManager >> intoASimulation [
+CMSimulationManager >> intoASimulation [
 	"return if the current sim is between the time range (0 - final time) "
 	
 	^(self currentTime = 0 or: [self finalTime <= self currentTime]) not
 ]
 
 { #category : #accessing }
-CMSimManager >> isRandomSeedFixed [
+CMSimulationManager >> isRandomSeedFixed [
 	^ isRandomSeedFixed ifNil: [ isRandomSeedFixed := false ]
 ]
 
 { #category : #accessing }
-CMSimManager >> isRandomSeedFixed: aBoolean [
+CMSimulationManager >> isRandomSeedFixed: aBoolean [
 	 isRandomSeedFixed := aBoolean
 ]
 
 { #category : #simulate }
-CMSimManager >> loopRunStep_untilFinalTime [
+CMSimulationManager >> loopRunStep_untilFinalTime [
 	[[ self currentTime < self finalTime ] whileTrue: [ self runStepByStep ]] fork
 ]
 
 { #category : #init }
-CMSimManager >> newSimName [
+CMSimulationManager >> newSimName [
 	"Return a new simName defined from the current clock time. 
 	Ex:    self basicNew newSimName  =>   sim_2014.04.22-14.09.43"
 	
@@ -392,7 +392,7 @@ CMSimManager >> newSimName [
 ]
 
 { #category : #ui }
-CMSimManager >> openNewDeviationWin [
+CMSimulationManager >> openNewDeviationWin [
 	
 	| resp |
 	(self openDialogInterface: #windowNewDeviation) ifFalse: [^false].
@@ -407,7 +407,7 @@ CMSimManager >> openNewDeviationWin [
 ]
 
 { #category : #'undo/redo' }
-CMSimManager >> redo [
+CMSimulationManager >> redo [
 	"reload the last redo BOS File from the redoList"
 	
 	| filename currentFile |
@@ -421,19 +421,19 @@ CMSimManager >> redo [
 ]
 
 { #category : #accessing }
-CMSimManager >> redoList [
+CMSimulationManager >> redoList [
 	
 	^redoList ifNil: [redoList := OrderedCollection new]
 ]
 
 { #category : #accessing }
-CMSimManager >> redoList: anObject [
+CMSimulationManager >> redoList: anObject [
 	
 	redoList := anObject
 ]
 
 { #category : #'replay-forward' }
-CMSimManager >> replayRunForward [
+CMSimulationManager >> replayRunForward [
 	"Replay the stored simulation history forward using BOS file.
 	Threaded process"
 	
@@ -468,14 +468,14 @@ CMSimManager >> replayRunForward [
 ]
 
 { #category : #'replay-forward' }
-CMSimManager >> replayStepForward [
+CMSimulationManager >> replayStepForward [
 	"Replay a step forward using BOS file"
 	
 	^ self replayStepForward: self currentTime + 1
 ]
 
 { #category : #'replay-forward' }
-CMSimManager >> replayStepForward: newStep [
+CMSimulationManager >> replayStepForward: newStep [
 	"Replay a newStep forward using BOS file"
 	
 	| filename resp |
@@ -500,7 +500,7 @@ for simulation ' , self simName.
 ]
 
 { #category : #'replay-store/restore' }
-CMSimManager >> restoreOrganizationAt: aStep [
+CMSimulationManager >> restoreOrganizationAt: aStep [
 	" Restore the stored model state at aStep "
 	
 	| finename |
@@ -519,7 +519,7 @@ for simulation ' , self simName.
 ]
 
 { #category : #'replay-backward' }
-CMSimManager >> runBack [
+CMSimulationManager >> runBack [
 	"Replay the story of the stored simulation backwards, using BOS file.
 Threaded process"
 
@@ -548,7 +548,7 @@ Threaded process"
 ]
 
 { #category : #simulate }
-CMSimManager >> runSimulation [
+CMSimulationManager >> runSimulation [
 	"  Loop over the STEPs until simulation end. This take place into a treaded process (called from runSimulationThreaded).
 	Display the Duration time on the Transcript"
 
@@ -561,7 +561,7 @@ CMSimManager >> runSimulation [
 ]
 
 { #category : #simulate }
-CMSimManager >> runSimulationThreaded [
+CMSimulationManager >> runSimulationThreaded [
 	"  Loop over the STEPs until simulation end. Threaded process.
 	Method called from Cormas' runButton [>II]"
 	
@@ -595,7 +595,7 @@ CMSimManager >> runSimulationThreaded [
 ]
 
 { #category : #simulate }
-CMSimManager >> runSimulation_Basic [
+CMSimulationManager >> runSimulation_Basic [
 	"Run one simulation step by step.
 	Do not display the Duration time on the Transcript.
 	Method called from #runSimulation but also from SensitivityAnalysisAbstract #runOneSimulation"
@@ -613,7 +613,7 @@ CMSimManager >> runSimulation_Basic [
 ]
 
 { #category : #simulate }
-CMSimManager >> runStepByStep [
+CMSimulationManager >> runStepByStep [
 	
 	self buttonsForwardAreOn ifTrue: [buttonsForwardAreOn := false].
 	undoList := nil.
@@ -633,7 +633,7 @@ CMSimManager >> runStepByStep [
 ]
 
 { #category : #'replay-private' }
-CMSimManager >> setButtonsForTime0 [
+CMSimulationManager >> setButtonsForTime0 [
 	
 	self simButtonAt: #stepBack displayActivated: false.
 	self simButtonAt: #runBack displayActivated: false.
@@ -644,7 +644,7 @@ CMSimManager >> setButtonsForTime0 [
 ]
 
 { #category : #'replay-private' }
-CMSimManager >> setButtonsForTime1 [
+CMSimulationManager >> setButtonsForTime1 [
 	
 	enableBackward value
 		ifTrue:
@@ -653,7 +653,7 @@ CMSimManager >> setButtonsForTime1 [
 ]
 
 { #category : #'replay-private' }
-CMSimManager >> setSimName [
+CMSimulationManager >> setSimName [
 	"set the simName attribute to the current time"
 	
 	self simName: self newSimName.
@@ -661,7 +661,7 @@ CMSimManager >> setSimName [
 ]
 
 { #category : #'replay-forward' }
-CMSimManager >> setStepMethod [
+CMSimulationManager >> setStepMethod [
 	" Answer a <Boolean> "
 	| resp |
 	(self enableBackward isKindOf: Boolean)
@@ -691,7 +691,7 @@ CMSimManager >> setStepMethod [
 ]
 
 { #category : #'replay-private' }
-CMSimManager >> simButtonAt: buttonName displayActivated: bool [
+CMSimulationManager >> simButtonAt: buttonName displayActivated: bool [
 	"bool = false => display the buttonName in grey color and inactivate it, 
 			otherwise, display the button in red or green and activate it.
 	buttonName = <Symbol> = #step #stepBack #run #runBack #replayRunForward #replayStepForward 
@@ -725,7 +725,7 @@ List of icons :
 ]
 
 { #category : #'replay-private' }
-CMSimManager >> simFolder [
+CMSimulationManager >> simFolder [
 	"return the appropriate Dump folder = simName"
 	
 	simFolder
@@ -735,19 +735,19 @@ CMSimManager >> simFolder [
 ]
 
 { #category : #'replay-private' }
-CMSimManager >> simFolder: aFilename [
+CMSimulationManager >> simFolder: aFilename [
 	"Set the simFolder = aFilename"
 	
 	^simFolder := aFilename
 ]
 
 { #category : #accessing }
-CMSimManager >> simName [
+CMSimulationManager >> simName [
 	^ simName ifNil: [ simName := 'unnamed' ]
 ]
 
 { #category : #accessing }
-CMSimManager >> simName: aName [
+CMSimulationManager >> simName: aName [
 	
 	simName := aName.
 	
@@ -757,20 +757,20 @@ CMSimManager >> simName: aName [
 ]
 
 { #category : #'replay-private' }
-CMSimManager >> simNameStart [
+CMSimulationManager >> simNameStart [
 	" Return the begining part of each simName (=> 'sim_' )  "
 	
 	^ self class simNameStart 
 ]
 
 { #category : #accessing }
-CMSimManager >> simNumero [
+CMSimulationManager >> simNumero [
 	
 	^simNumero ifNil: [simNumero := 0]
 ]
 
 { #category : #accessing }
-CMSimManager >> simNumero: nb [
+CMSimulationManager >> simNumero: nb [
 	
 	undoList := nil.
 	redoList := nil.
@@ -781,7 +781,7 @@ CMSimManager >> simNumero: nb [
 ]
 
 { #category : #ui }
-CMSimManager >> simRunButton_Pause: bool [
+CMSimulationManager >> simRunButton_Pause: bool [
 	"bool = false => display the run button [ I> II ] 
 			otherwise, display as [ II ].
 	buttonName = <Symbol> =  #run 
@@ -801,7 +801,7 @@ CMSimManager >> simRunButton_Pause: bool [
 ]
 
 { #category : #'replay-store/restore' }
-CMSimManager >> snapshotCurrentState [
+CMSimulationManager >> snapshotCurrentState [
 	"Snapshot the current simulation state as BOS file. Time is temporary set to 0, in order to use the BOS file as initial state of further simulations"
 	
 	| finename currentTime text |
@@ -828,7 +828,7 @@ CMSimManager >> snapshotCurrentState [
 ]
 
 { #category : #'replay-backward' }
-CMSimManager >> stepBack [
+CMSimulationManager >> stepBack [
 	"Replay a step backward using BOS file"
 	
 	self currentTime <= 0 ifTrue: [ ^ false ].
@@ -836,7 +836,7 @@ CMSimManager >> stepBack [
 ]
 
 { #category : #'replay-private' }
-CMSimManager >> stepFileNameAtStep: aTimeStep [
+CMSimulationManager >> stepFileNameAtStep: aTimeStep [
 	"return a string for the file, with its extension. 
 	aTimeStep: <Integer>
 	Example:   stepFileNameAtStep: 22 =>   'step_22.bos'   "
@@ -845,7 +845,7 @@ CMSimManager >> stepFileNameAtStep: aTimeStep [
 ]
 
 { #category : #'replay-private' }
-CMSimManager >> stepNameStart [
+CMSimulationManager >> stepNameStart [
 	"Return the begining part of each stepFilename (=> 'step_' )  "
 	"return a string for the file"
 	
@@ -853,7 +853,7 @@ CMSimManager >> stepNameStart [
 ]
 
 { #category : #'undo/redo' }
-CMSimManager >> storeBeforeManipulation [
+CMSimulationManager >> storeBeforeManipulation [
 	"Store the whole state of the current model as BOS file into the appropriate simFolder . This is done before manipulation from the user, in order to enable the Undo.
 The #storeBeforeManipulation is called when the manipulation tool is activated, for 
  - the moving of a figure (Figure isMovedTo: point)
@@ -870,7 +870,7 @@ The #storeBeforeManipulation is called when the manipulation tool is activated, 
 ]
 
 { #category : #'replay-store/restore' }
-CMSimManager >> storeCurrentStep [
+CMSimulationManager >> storeCurrentStep [
 	"store the current step into the appropriate Dump folder (store After the step execution)"
 	
 	| filename |
@@ -884,7 +884,7 @@ CMSimManager >> storeCurrentStep [
 ]
 
 { #category : #init }
-CMSimManager >> terminateAllProcesses [
+CMSimulationManager >> terminateAllProcesses [
 	processReplayForward isNil
 		ifFalse: [ processReplayForward terminate.
 			processReplayForward := nil ].
@@ -898,19 +898,19 @@ CMSimManager >> terminateAllProcesses [
 ]
 
 { #category : #accessing }
-CMSimManager >> traceSize [
+CMSimulationManager >> traceSize [
 	
 	^traceSize ifNil: [traceSize := 0]
 ]
 
 { #category : #accessing }
-CMSimManager >> traceSize: anObject [
+CMSimulationManager >> traceSize: anObject [
 	
 	traceSize := anObject
 ]
 
 { #category : #'undo/redo' }
-CMSimManager >> undo [
+CMSimulationManager >> undo [
 	"reload the last BOS File from the undoList"
 	
 	| filename |
@@ -928,13 +928,13 @@ CMSimManager >> undo [
 ]
 
 { #category : #accessing }
-CMSimManager >> undoList [
+CMSimulationManager >> undoList [
 	
 	^undoList ifNil: [undoList := OrderedCollection new]
 ]
 
 { #category : #accessing }
-CMSimManager >> undoList: anObject [
+CMSimulationManager >> undoList: anObject [
 	
 	undoList := anObject
 ]

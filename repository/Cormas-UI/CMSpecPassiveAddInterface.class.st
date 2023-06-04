@@ -137,11 +137,11 @@ CMSpecPassiveAddInterface >> rbTypeGroup: anObject [
 CMSpecPassiveAddInterface >> setActionsForRb [
 
 	self rbTypeGroup buttonObject whenActivatedDo: [ self entitySuperclass: CMPassiveObject ].
-	self rbTypeGroup buttonLocatedObject whenActivatedDo: [ self entitySuperclass: CMObjectLocation ].
+	self rbTypeGroup buttonLocatedObject whenActivatedDo: [ self entitySuperclass: CMLocatedObject ].
 	self rbTypeGroup buttonNetworkNode whenActivatedDo: [ self entitySuperclass: CMNodeEntity ].
 	self rbTypeGroup buttonNetworkArc whenActivatedDo: [ self entitySuperclass: CMArcEntity ].
 	self rbTypeGroup buttonFullNetwork whenActivatedDo: [ self entitySuperclass: CMNetworkEntity ].
-	self rbTypeGroup buttonMessage whenActivatedDo: [ self entitySuperclass: CMObjectLocation ].
+	self rbTypeGroup buttonMessage whenActivatedDo: [ self entitySuperclass: CMLocatedObject ].
 
 
 

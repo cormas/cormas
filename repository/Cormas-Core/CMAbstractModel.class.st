@@ -400,8 +400,8 @@ CMAbstractModel class >> colorOfProbe: aProbeSymbol [
 CMAbstractModel class >> commClasses [
 	^ self allEntityClasses
 		select: [ :i | 
-			(i inheritsFrom: CMAgentComm) | (i inheritsFrom: CMAgentCommLocation)
-				| (i inheritsFrom: CMMsg) ]
+			(i inheritsFrom: CMCommunicatingAgent) | (i inheritsFrom: CMLocatedCommunicatingAgent)
+				| (i inheritsFrom: CMMessage) ]
 ]
 
 { #category : #'managing classes' }
@@ -564,7 +564,7 @@ CMAbstractModel class >> initializeModelClasses [
 	classes := self allClassesInPackage.
 	self spatialClasses: (classes select: [ : each | each inheritsFrom: CMSpatialEntity ]).
 	self socialClasses: (classes select: [ : each | each inheritsFrom: CMAgent ]).
-	self passiveClasses: (classes select: [ : each | (each inheritsFrom: CMPassiveObject) or: [ each inheritsFrom: CMMsg ]])
+	self passiveClasses: (classes select: [ : each | (each inheritsFrom: CMPassiveObject) or: [ each inheritsFrom: CMMessage ]])
 ]
 
 { #category : #activityEditor }
@@ -613,12 +613,12 @@ CMAbstractModel class >> isSituatedClass [
 { #category : #'managing classes' }
 CMAbstractModel class >> locatedObjectClasses [
 	
-	^self passiveClasses select: [:i | i inheritsFrom: CMObjectLocation]
+	^self passiveClasses select: [:i | i inheritsFrom: CMLocatedObject]
 ]
 
 { #category : #'managing classes' }
 CMAbstractModel class >> messages [
-	^ self passiveClasses select: [ :i | i inheritsFrom: CMMsg ]
+	^ self passiveClasses select: [ :i | i inheritsFrom: CMMessage ]
 ]
 
 { #category : #activityEditor }
@@ -867,7 +867,7 @@ CMAbstractModel class >> setActiveProbes: listProbes [
 		do: [ :c | c activeProbes: OrderedCollection new ].
 	listProbes
 		do: [ :s | 
-			s = CMSimManager separator
+			s = CMSimulationManager separator
 				ifFalse: [ selectedClassName := (s findTokens: $>) first asSymbol.
 					selectedClassName = #Global
 						ifTrue: [ selectedClassName := self name ].
@@ -1965,14 +1965,14 @@ CMAbstractModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 { #category : #'accessing - scheduling' }
 CMAbstractModel >> finalTime [
 	
-	^self simManager finalTime
+	^self simulationManager finalTime
 ]
 
 { #category : #'control - scheduling' }
 CMAbstractModel >> finishSimulation [
 	"Stop the current simulation: the current time is set equal to final time"
 	
-	self simManager finishSimulation
+	self simulationManager finishSimulation
 ]
 
 { #category : #'utilities - space metrics' }
@@ -2240,9 +2240,9 @@ CMAbstractModel >> initEntities [
 { #category : #accessing }
 CMAbstractModel >> initEntitiesForPassiveClass: aClass [
 
-	((aClass inheritsFrom: CMMsg) or: [ aClass isAbstract ]) 
+	((aClass inheritsFrom: CMMessage) or: [ aClass isAbstract ]) 
 		ifTrue: [ ^ self ].
-	(aClass inheritsFrom: CMObjectLocation) 
+	(aClass inheritsFrom: CMLocatedObject) 
 		ifTrue: [ 
 			(self theEntities: aClass) ifNotNil: [ 
 				(self theEntities: aClass) do: [ :lO | lO leave ] ] ].
@@ -2252,7 +2252,7 @@ CMAbstractModel >> initEntitiesForPassiveClass: aClass [
 { #category : #accessing }
 CMAbstractModel >> initEntitiesForSocialClass: aClass [
 
-	(aClass isAbstract not and: [ aClass inheritsFrom: CMAgentLocation ]) 
+	(aClass isAbstract not and: [ aClass inheritsFrom: CMLocatedAgent ]) 
 		ifTrue: [ 
 			(self theEntities: aClass) ifNotNil: [ 
 				(self theEntities: aClass) do: #leave ] ].
@@ -2283,7 +2283,7 @@ CMAbstractModel >> initSimFromScnrStage2 [
 	self theAgentsComm do: [ :p | p channel: self channel ].
 	self theAgentsComm ifNotEmpty: [ : agentsComm | self channel population: agentsComm ].
 	"announce to all the subscribers that simulation is beeing initialized"
-	self projectAnnouncer announce: CMSimInitializationAnnouncement.
+	self projectAnnouncer announce: CMSimulationInitializationAnnouncement.
 	self initStatus: true.
 ]
 
@@ -2306,7 +2306,7 @@ CMAbstractModel >> initSimulation [
 	self theAgentsComm do: [ :p | p channel: self channel ].
 	self theAgentsComm ifNotEmpty: [ : agentsComm | self channel population: agentsComm ].
 	"announce to all the subscribers that simulation is beeing initialized"
-	self announcer announce: CMSimInitializationAnnouncement.
+	self announcer announce: CMSimulationInitializationAnnouncement.
 	self initStatus: true.
 ]
 
@@ -3159,25 +3159,25 @@ Example: self shannon: #state"
 ]
 
 { #category : #accessing }
-CMAbstractModel >> simManager [
+CMAbstractModel >> simNumero [
+	
+	^self simulationManager simNumero
+]
+
+{ #category : #accessing }
+CMAbstractModel >> simulationManager [
 	
 	^ simManager
 		ifNil: [
-			simManager := CMSimManager new 
+			simManager := CMSimulationManager new 
 				cormasModel: self;
 				yourself ]
 ]
 
 { #category : #accessing }
-CMAbstractModel >> simManager: anObject [
+CMAbstractModel >> simulationManager: anObject [
 	
 	simManager := anObject
-]
-
-{ #category : #accessing }
-CMAbstractModel >> simNumero [
-	
-	^self simManager simNumero
 ]
 
 { #category : #'pov and info' }

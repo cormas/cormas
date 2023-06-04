@@ -273,7 +273,7 @@ CMSpecConfirmBeforeLaunch >> initializeWidgets [
 
 	self finalStep 
 		label: self translator tFinalStepChoice;
-		text: self cormasModel simManager finalTime;
+		text: self cormasModel simulationManager finalTime;
 		help: self translator tSimFinalStepHelp.
 
 	self finalStep acceptBlock: [  ].

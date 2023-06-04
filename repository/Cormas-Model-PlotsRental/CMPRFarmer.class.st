@@ -1,6 +1,6 @@
 Class {
 	#name : #CMPRFarmer,
-	#superclass : #CMAgentCommLocation,
+	#superclass : #CMLocatedCommunicatingAgent,
 	#instVars : [
 		'plotsOfLand',
 		'productivity',

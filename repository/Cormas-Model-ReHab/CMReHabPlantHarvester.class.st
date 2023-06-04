@@ -1,6 +1,6 @@
 Class {
 	#name : #CMReHabPlantHarvester,
-	#superclass : #CMAgentLocation,
+	#superclass : #CMLocatedAgent,
 	#instVars : [
 		'label',
 		'harvest',
