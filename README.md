@@ -17,7 +17,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/cormas/cormas/master/LICENSE)
 [![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors-)
 
-# Table of Contents
+# Table of Contents 
 
 - [Description](#description)
 - [Installation](#installation)
