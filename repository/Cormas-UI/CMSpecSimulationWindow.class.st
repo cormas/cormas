@@ -689,8 +689,8 @@ CMSpecSimulationWindow >> runAction [
 
 	self validateRunStep
 		ifFalse: [ self cormasModel initSimulation ].
-	self simManager finalTime: self finalStepInputText text asInteger.
-	self simManager loopRunStep_untilFinalTime.
+	self simulationManager finalTime: self finalStepInputText text asInteger.
+	self simulationManager loopRunStep_untilFinalTime.
 	self currentStepInputText text: self finalStepInputText text.
 ]
 
@@ -737,7 +737,7 @@ CMSpecSimulationWindow >> runStepByStepAction [
 
 	self validateRunStep
 		ifFalse: [ self cormasModel initSimulation ].
-	self simManager runStepByStep.
+	self simulationManager runStepByStep.
 	self currentStepInputText text: (self cormasModel timeStep asString)
 ]
 
@@ -766,11 +766,6 @@ CMSpecSimulationWindow >> runStepByStepButtonMorph [
 ]
 
 { #category : #accessing }
-CMSpecSimulationWindow >> simManager [
-	^ self cormasModel simManager
-]
-
-{ #category : #accessing }
 CMSpecSimulationWindow >> simulateLabel [
 	" Answer the simulateLabel of this CMSpecSimulationWindow "
 
@@ -782,6 +777,11 @@ CMSpecSimulationWindow >> simulateLabel: anObject [
 	" Sets the simulateLabel of this CMSpecSimulationWindow "
 
 	simulateLabel := anObject
+]
+
+{ #category : #accessing }
+CMSpecSimulationWindow >> simulationManager [
+	^ self cormasModel simulationManager
 ]
 
 { #category : #callbacks }

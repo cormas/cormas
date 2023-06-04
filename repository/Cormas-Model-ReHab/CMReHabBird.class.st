@@ -1,6 +1,6 @@
 Class {
 	#name : #CMReHabBird,
-	#superclass : #CMAgentLocation,
+	#superclass : #CMLocatedAgent,
 	#instVars : [
 		'testReproduction',
 		'mySpaceUnits',

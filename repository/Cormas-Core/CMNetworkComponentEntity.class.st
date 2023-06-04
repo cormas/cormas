@@ -5,7 +5,7 @@ NetworkComponentEntity is the superclass of NodeEntity and AcrEntity belonging t
 "
 Class {
 	#name : #CMNetworkComponentEntity,
-	#superclass : #CMObjectLocation,
+	#superclass : #CMLocatedObject,
 	#category : #'Cormas-Core-Entities'
 }
 

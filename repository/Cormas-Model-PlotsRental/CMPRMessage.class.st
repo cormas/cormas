@@ -1,6 +1,6 @@
 Class {
 	#name : #CMPRMessage,
-	#superclass : #CMMsg,
+	#superclass : #CMMessage,
 	#instVars : [
 		'object',
 		'amount'

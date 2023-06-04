@@ -3,7 +3,7 @@ A stupid agent
 "
 Class {
 	#name : #CMStupidAgent,
-	#superclass : #CMAgentLocation,
+	#superclass : #CMLocatedAgent,
 	#instVars : [
 		'agsize'
 	],

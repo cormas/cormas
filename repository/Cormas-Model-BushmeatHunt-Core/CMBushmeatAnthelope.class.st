@@ -1,6 +1,6 @@
 Class {
 	#name : #CMBushmeatAnthelope,
-	#superclass : #CMAgentLocation,
+	#superclass : #CMLocatedAgent,
 	#instVars : [
 		'age',
 		'partner',

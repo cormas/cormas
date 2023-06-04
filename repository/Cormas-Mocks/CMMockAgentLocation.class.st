@@ -1,6 +1,6 @@
 Class {
 	#name : #CMMockAgentLocation,
-	#superclass : #CMAgentLocation,
+	#superclass : #CMLocatedAgent,
 	#category : #'Cormas-Mocks'
 }
 

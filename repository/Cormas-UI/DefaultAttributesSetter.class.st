@@ -315,7 +315,7 @@ the Cormas entity classes.
 	| list list2 |
 	"Add the static variables"
 	list := (self staticAttributsFromClass: aClass) asSortedCollection asList.	"Add a separator"
-	list add: CMSimManager separator.	"Add the attributs"
+	list add: CMSimulationManager separator.	"Add the attributs"
 	list2 := self attributsFromClass: aClass.
 	list addAll: list2 asSortedCollection asList.
 	^list
@@ -1224,7 +1224,7 @@ DefaultAttributesSetter >> setDefaultValuesAndApply [
 ]
 
 { #category : #accessing }
-DefaultAttributesSetter >> simManager [
+DefaultAttributesSetter >> simulationManager [
 	
-	^self cormasModel simManager
+	^self cormasModel simulationManager
 ]

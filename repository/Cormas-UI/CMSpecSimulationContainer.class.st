@@ -87,6 +87,6 @@ CMSpecSimulationContainer >> toggleSimInterface [
 	self fsmStateName = #stateWaitNewOrOpen
 		ifTrue: [ 
 			self simWindow currentStepInputText text: '0'.
-			self simWindow finalStepInputText text: CMSimManager defaultFinalTime asString  ]
+			self simWindow finalStepInputText text: CMSimulationManager defaultFinalTime asString  ]
 	
 ]

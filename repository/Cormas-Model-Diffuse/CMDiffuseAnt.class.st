@@ -4,7 +4,7 @@ I diffuse hormons
 "
 Class {
 	#name : #CMDiffuseAnt,
-	#superclass : #CMAgentLocation,
+	#superclass : #CMLocatedAgent,
 	#classVars : [
 		'CurrentId'
 	],

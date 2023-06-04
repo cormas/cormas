@@ -9,7 +9,7 @@ Instance Variables:
 	center	<?type?>  comment
 "
 Class {
-	#name : #CMObjectLocation,
+	#name : #CMLocatedObject,
 	#superclass : #CMPassiveObject,
 	#instVars : [
 		'patch',
@@ -19,19 +19,19 @@ Class {
 }
 
 { #category : #testing }
-CMObjectLocation class >> isObjectLocationClass [
+CMLocatedObject class >> isObjectLocationClass [
 	
 	^true
 ]
 
 { #category : #testing }
-CMObjectLocation class >> isSituatedClass [
+CMLocatedObject class >> isSituatedClass [
 	
 	^true
 ]
 
 { #category : #displaying }
-CMObjectLocation >> center [
+CMLocatedObject >> center [
 	
 	^patch isNil
 		ifTrue: [nil]
@@ -39,7 +39,7 @@ CMObjectLocation >> center [
 ]
 
 { #category : #'star control' }
-CMObjectLocation >> delete [
+CMLocatedObject >> delete [
 "Purpose: gets rid of this object. The collectGarbage is IMMEDIATELY performed  (ie. the receiver of class X is removed from 'theXXXs' collection)"
 
 	self leave.
@@ -47,7 +47,7 @@ CMObjectLocation >> delete [
 ]
 
 { #category : #displaying }
-CMObjectLocation >> displayOn: aGC [
+CMLocatedObject >> displayOn: aGC [
 	
 	self
 		displayOn: aGC
@@ -55,7 +55,7 @@ CMObjectLocation >> displayOn: aGC [
 ]
 
 { #category : #displaying }
-CMObjectLocation >> displayOn: aGC at: unPoint [
+CMLocatedObject >> displayOn: aGC at: unPoint [
 	
 	"self povs2 isNil
 		ifFalse: 
@@ -64,7 +64,7 @@ CMObjectLocation >> displayOn: aGC at: unPoint [
 ]
 
 { #category : #'environment - distance' }
-CMObjectLocation >> distanceTo: aSpatialEntityOrSituatedEntity [
+CMLocatedObject >> distanceTo: aSpatialEntityOrSituatedEntity [
 	"Purpose: returns the Manhattan distance (in cells) between the patch of the agent and aSpatialEntityOrSituatedEntity
 If it is the distance to a situatedEntity, returrns the distance to the patch of this entity.
 Argument: aSpatialEntityOrSituatedEntity = <SpatialEntity> or <AgentLocation> or <ObjectLocation>
@@ -78,14 +78,14 @@ Return value: <Integer>"
 ]
 
 { #category : #testing }
-CMObjectLocation >> isClassLocation [
+CMLocatedObject >> isClassLocation [
 	"Answer if the entity is a kind of AgentLocation or of ObjectLocation"
 	
 	^true
 ]
 
 { #category : #moving }
-CMObjectLocation >> isMovedTo: aSpatialEntity [
+CMLocatedObject >> isMovedTo: aSpatialEntity [
 	"Purpose: moves to a given location.
 Argument: aSpatialEntity = <SpatialEntity>
 Example: self isMovedTo: self patch neighbourN"
@@ -111,26 +111,26 @@ Example: self isMovedTo: self patch neighbourN"
 ]
 
 { #category : #testing }
-CMObjectLocation >> isObjectLocation [
+CMLocatedObject >> isObjectLocation [
 	
 	^true
 ]
 
 { #category : #'star testing' }
-CMObjectLocation >> isSituated [
+CMLocatedObject >> isSituated [
 "Purpose: tests the location somewhere in the spatial grid"
 	^patch notNil
 ]
 
 { #category : #'star moving' }
-CMObjectLocation >> leave [
+CMLocatedObject >> leave [
 "Purpose: moves the agent away from the spatial grid (sets his patch attribute to nil): the situated agent is not located any more, but it is still 'alive'  "	
 
 	self leaveWhileMoving: false.
 ]
 
 { #category : #moving }
-CMObjectLocation >> leaveWhileMoving: isBeingMoved [
+CMLocatedObject >> leaveWhileMoving: isBeingMoved [
 	"The situated object is not located any more. But it is still 'alive'  "
 
 	self patch isNil
@@ -150,7 +150,7 @@ CMObjectLocation >> leaveWhileMoving: isBeingMoved [
 ]
 
 { #category : #moving }
-CMObjectLocation >> moveTo: aSpatialEntity [
+CMLocatedObject >> moveTo: aSpatialEntity [
 	"Purpose: moves to a given location.
 Argument: aSpatialEntity = <SpatialEntity>
 Example: self moveTo: self patch neighbourN"
@@ -159,19 +159,19 @@ Example: self moveTo: self patch neighbourN"
 ]
 
 { #category : #accessing }
-CMObjectLocation >> patch [
+CMLocatedObject >> patch [
 	
 	^patch
 ]
 
 { #category : #accessing }
-CMObjectLocation >> patch: unPatch [
+CMLocatedObject >> patch: unPatch [
 	
 	patch := unPatch
 ]
 
 { #category : #accessing }
-CMObjectLocation >> patchID [
+CMLocatedObject >> patchID [
 	"return ID of patch"
 	
 	self patch ifNil: [^0].
@@ -179,7 +179,7 @@ CMObjectLocation >> patchID [
 ]
 
 { #category : #'star moving' }
-CMObjectLocation >> randomMove [
+CMLocatedObject >> randomMove [
 "Purpose: moves to a spatial entity randomly picked from the direct neighbourhood (relative distance = 1) of the current location "
 
 | destination |
@@ -191,7 +191,7 @@ CMObjectLocation >> randomMove [
 ]
 
 { #category : #accessing }
-CMObjectLocation >> sizeOfPOV [
+CMLocatedObject >> sizeOfPOV [
 "To be overwritten if needed"
  ^ 20
 ]

@@ -175,7 +175,7 @@ CMFireAutomataModel class >> simuOpenMole [
         dimensions: (conf at: #dimensionMin) -> (conf at: #dimensionMax);
         activeControl: #step:;
         initSimulation.
-    aModel simManager
+    aModel simulationManager
         initializeSimulation;
         finalTime: 100;
         runSimulation.
@@ -194,7 +194,7 @@ CMFireAutomataModel class >> simuOpenMole2 [
         dimensions: (conf at: #dimensionMin) -> (conf at: #dimensionMax);
         activeControl: #step:;
         initSimulation.
-    aModel simManager
+    aModel simulationManager
         initializeSimulation;
         finalTime: 100;
         runSimulation.

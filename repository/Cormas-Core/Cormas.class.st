@@ -1551,14 +1551,14 @@ Cormas >> process: aProcess [
 Cormas >> replayRunForward [
 	"Replay the stored simulation history forward using BOS file"
 
-	^ self simManager replayRunForward
+	^ self simulationManager replayRunForward
 ]
 
 { #category : #simulation }
 Cormas >> replayStepForward [
 	"Replay a step forward using BOS file"
 
-	^ self simManager replayStepForward
+	^ self simulationManager replayStepForward
 ]
 
 { #category : #'main menu' }
@@ -1572,7 +1572,7 @@ Cormas >> resetSimulation [
 Cormas >> runBack [
 	"Perform a run back to 0 using BOS file"
 
-	^ self simManager runBack
+	^ self simulationManager runBack
 ]
 
 { #category : #'model scheduling' }
@@ -1603,13 +1603,13 @@ Cormas >> runButtonRun [
 Cormas >> setStepMethod [
 	"Open a #step methods chooser, in order for the user to change the #step operation that is called at each time step"
 	
-	^self simManager setStepMethod
+	^self simulationManager setStepMethod
 ]
 
 { #category : #accessing }
-Cormas >> simManager [
+Cormas >> simulationManager [
 	
-	^self cormasModel simManager
+	^self cormasModel simulationManager
 ]
 
 { #category : #accessing }
@@ -1622,7 +1622,7 @@ Cormas >> spaceModel [
 Cormas >> stepBack [
 	"Perform a step back using BOS file"
 
-	^ self simManager stepBack
+	^ self simulationManager stepBack
 ]
 
 { #category : #'model saving&loading POV' }

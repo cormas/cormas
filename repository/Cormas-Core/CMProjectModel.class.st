@@ -617,7 +617,7 @@ CMProjectModel >> storedSimulations [
 	" Answer a <Collection> with the receiver's current model stored simulations "
 
 	^ (self resourceLocator dumpPath: self cormasModel class name) 
-		allChildrenMatching: CMSimManager simNameStart , '*'
+		allChildrenMatching: CMSimulationManager simNameStart , '*'
 
 ]
 

@@ -90,19 +90,19 @@ CMSpecAgentAddInterface >> entitySuperclass [
 	self cbComm state not & self cbLocation state not & self cbGroup state not
 		ifTrue: [ ^ CMAgent ].
 	self cbComm state & self cbLocation state not & self cbGroup state not
-		ifTrue: [ ^ CMAgentComm ].
+		ifTrue: [ ^ CMCommunicatingAgent ].
 	self cbComm state not & self cbLocation state & self cbGroup state not
-		ifTrue: [ ^ CMAgentLocation ].
+		ifTrue: [ ^ CMLocatedAgent ].
 	self cbComm state & self cbLocation state & self cbGroup state not
-		ifTrue: [ ^ CMAgentCommLocation ].
+		ifTrue: [ ^ CMLocatedCommunicatingAgent ].
 	self cbComm state not & self cbLocation state not & self cbGroup state
 		ifTrue: [ ^ CMGroup ].
 	self cbComm state & self cbLocation state not & self cbGroup state
-		ifTrue: [ ^ CMGroupComm ].
+		ifTrue: [ ^ CMCommunicatingGroup ].
 	self cbComm state not & self cbLocation state & self cbGroup state
-		ifTrue: [ ^ CMGroupLocation ].
+		ifTrue: [ ^ CMLocatedGroup ].
 	self cbComm state & self cbLocation state & self cbGroup state
-		ifTrue: [ ^ CMGroupCommLocation ]
+		ifTrue: [ ^ CMLocatedCommunicatingGroup ]
 ]
 
 { #category : #accessing }

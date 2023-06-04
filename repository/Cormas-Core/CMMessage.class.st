@@ -20,7 +20,7 @@ isObserved set the active pov.
 
 "
 Class {
-	#name : #CMMsg,
+	#name : #CMMessage,
 	#superclass : #CMObject,
 	#instVars : [
 		'sender',
@@ -36,13 +36,13 @@ Class {
 }
 
 { #category : #'instance creation' }
-CMMsg class >> from: unAgent [
+CMMessage class >> from: unAgent [
 	
 	^self new from: unAgent
 ]
 
 { #category : #'instance creation' }
-CMMsg class >> from: unAgent to: unAutre [
+CMMessage class >> from: unAgent to: unAutre [
 	"Purpose: Creates a message with a sender and a receiver. The message can be sent by a communicant agent using the method sendMessageSynchronously:  or sendMessageAsynchronously:
 Argument: aSymbol = <anObject>
 			anObject = <anObject>
@@ -52,7 +52,7 @@ Example: Msg topic: #comeHere content: aSpatialEntity)"
 ]
 
 { #category : #deprecated }
-CMMsg class >> from: anAgent to: anotherOne content: anObject [
+CMMessage class >> from: anAgent to: anotherOne content: anObject [
 	"Purpose: Creates a message with a sender, a receiver and a content. The message can be sent by a communicant agent using the method sendMessageSynchronously:  or sendMessageAsynchronously:
 Argument: anAgent = <AgentComm or AgentCommLocation
 			anotherOne = <AgentComm or AgentCommLocation	
@@ -64,7 +64,7 @@ Example: Msg from: anAgent1 to: anAgent2 content: aGift)"
 ]
 
 { #category : #communication }
-CMMsg class >> from: anAgent to: anotherOne topic: anObject [
+CMMessage class >> from: anAgent to: anotherOne topic: anObject [
 	"Purpose: Creates a message with a sender, a receiver and a topic. The message can be sent by a communicant agent using the method sendMessageSynchronously:  or sendMessageAsynchronously:
 Argument: anAgent = <AgentComm or AgentCommLocation
 			anotherOne = <AgentComm or AgentCommLocation	
@@ -75,7 +75,7 @@ Example: Msg from: anAgent1 to: anAgent2 topic: #hello)"
 ]
 
 { #category : #communication }
-CMMsg class >> from: anAgent to: anotherOne topic: aSymbol content: anObject [
+CMMessage class >> from: anAgent to: anotherOne topic: aSymbol content: anObject [
 	"Purpose: Creates a message with a sender, a receiver, a topic and a content. The message can be sent by a communicant agent using the method sendMessageSynchronously:  or sendMessageAsynchronously:
 Argument: anAgent = <AgentComm or AgentCommLocation
 			anotherOne = <AgentComm or AgentCommLocation	
@@ -87,31 +87,31 @@ Example: Msg from: anAgent1 to: anAgent2 topic: #comeHere content: aSpatialEntit
 ]
 
 { #category : #accessing }
-CMMsg class >> isObserved [
+CMMessage class >> isObserved [
 	
 	^isObserved
 ]
 
 { #category : #accessing }
-CMMsg class >> isObserved: aSymbol [
+CMMessage class >> isObserved: aSymbol [
 	
 	isObserved := aSymbol
 ]
 
 { #category : #testing }
-CMMsg class >> isSituatedClass [
+CMMessage class >> isSituatedClass [
 	
 	^false
 ]
 
 { #category : #'instance creation' }
-CMMsg class >> new: x [
+CMMessage class >> new: x [
 	
 	^self new
 ]
 
 { #category : #printing }
-CMMsg class >> printHierarchy [
+CMMessage class >> printHierarchy [
 	"Answer a description containing the names of all of the subclasses and superclasses of the receiver."
 	
 	| s |
@@ -121,7 +121,7 @@ CMMsg class >> printHierarchy [
 ]
 
 { #category : #activityEditor }
-CMMsg class >> superClassesUntil: aSuperClass [
+CMMessage class >> superClassesUntil: aSuperClass [
 	"Return the super classes of the class sender until aSuperClass"
 	
 	| coll |
@@ -132,14 +132,14 @@ CMMsg class >> superClassesUntil: aSuperClass [
 ]
 
 { #category : #util }
-CMMsg class >> superClassesUntilEntity [
+CMMessage class >> superClassesUntilEntity [
 	"Return the super classes of the class sender until Msg"
 
-	^ self superClassesUntil: CMMsg
+	^ self superClassesUntil: CMMessage
 ]
 
 { #category : #deprecated }
-CMMsg class >> to: anAgent content: anObject [
+CMMessage class >> to: anAgent content: anObject [
 	"Purpose: Creates a message with a receiver and a content. The message can be sent by a communicant agent using the method sendMessageSynchronously:  or sendMessageAsynchronously:
 Argument: anAgent = <AgentComm or AgentCommLocation
 			aContent = <anObject>
@@ -150,7 +150,7 @@ Example: Msg to: anAgent content: aGift)"
 ]
 
 { #category : #communication }
-CMMsg class >> to: anotherOne topic: aSymbol [
+CMMessage class >> to: anotherOne topic: aSymbol [
 	"Purpose: Creates a message with a receiver and a topic. The message can be sent by a communicant agent using the method sendMessageSynchronously:  or sendMessageAsynchronously:
 Argument: anAgent = <AgentComm or AgentCommLocation
 			aSymbol = <anObject>
@@ -160,7 +160,7 @@ Example: Msg to: anAgent topic: #hello)"
 ]
 
 { #category : #communication }
-CMMsg class >> to: anotherOne topic: aSymbol content: anObject [
+CMMessage class >> to: anotherOne topic: aSymbol content: anObject [
 	"Purpose: Creates a message with a receiver, a topic and a content. The message can be sent by a communicant agent using the method sendMessageSynchronously:  or sendMessageAsynchronously:
 Argument: anAgent = <AgentComm or AgentCommLocation
 			aSymbol = <anObject>
@@ -171,32 +171,32 @@ Example: Msg to: anAgent topic: #comeHere content: aSpatialEntity)"
 ]
 
 { #category : #pov }
-CMMsg >> always [
+CMMessage >> always [
 	
 	^true
 ]
 
 { #category : #accessing }
-CMMsg >> content [
+CMMessage >> content [
 	
 	^self content
 ]
 
 { #category : #accessing }
-CMMsg >> content: aValue [
+CMMessage >> content: aValue [
 	
 	content := aValue
 ]
 
 { #category : #private }
-CMMsg >> from: anAgent [
+CMMessage >> from: anAgent [
 	"method to fulfill the sender attribute"
 	
 	self sender: anAgent
 ]
 
 { #category : #private }
-CMMsg >> from: anAgent to: anotherOne [
+CMMessage >> from: anAgent to: anotherOne [
 	"method to fulfill the sender and receiver attributes"
 	
 	self sender: anAgent.
@@ -204,7 +204,7 @@ CMMsg >> from: anAgent to: anotherOne [
 ]
 
 { #category : #private }
-CMMsg >> from: anAgent to: anotherOne content: anObject [
+CMMessage >> from: anAgent to: anotherOne content: anObject [
 	"method to fulfill the sender and receiver attributes"
 	
 	self sender: anAgent.
@@ -213,7 +213,7 @@ CMMsg >> from: anAgent to: anotherOne content: anObject [
 ]
 
 { #category : #private }
-CMMsg >> from: anAgent to: anotherOne topic: aSymbol [
+CMMessage >> from: anAgent to: anotherOne topic: aSymbol [
 	"method to fulfill the sender and receiver attributes"
 	
 	self sender: anAgent.
@@ -222,7 +222,7 @@ CMMsg >> from: anAgent to: anotherOne topic: aSymbol [
 ]
 
 { #category : #private }
-CMMsg >> from: anAgent to: anotherOne topic: aSymbol content: anObject [
+CMMessage >> from: anAgent to: anotherOne topic: aSymbol content: anObject [
 	"method to fulfill the sender and receiver attributes"
 	
 	self sender: anAgent.
@@ -232,45 +232,45 @@ CMMsg >> from: anAgent to: anotherOne topic: aSymbol content: anObject [
 ]
 
 { #category : #pov }
-CMMsg >> never [
+CMMessage >> never [
 	
 	^false
 ]
 
 { #category : #accessing }
-CMMsg >> receiver [
+CMMessage >> receiver [
 	^ receiver
 ]
 
 { #category : #accessing }
-CMMsg >> receiver: aReceiver [
+CMMessage >> receiver: aReceiver [
 	receiver := aReceiver
 ]
 
 { #category : #accessing }
-CMMsg >> sender [
+CMMessage >> sender [
 	^ sender
 ]
 
 { #category : #accessing }
-CMMsg >> sender: aSender [
+CMMessage >> sender: aSender [
 	sender := aSender
 ]
 
 { #category : #accessing }
-CMMsg >> symbol [
+CMMessage >> symbol [
 	
 	^symbol
 ]
 
 { #category : #accessing }
-CMMsg >> symbol: aSymbol [
+CMMessage >> symbol: aSymbol [
 	
 	symbol := aSymbol
 ]
 
 { #category : #private }
-CMMsg >> to: anAgent content: aSymbol [
+CMMessage >> to: anAgent content: aSymbol [
 	"method to fulfill the sender and receiver attributes"
 	
 	self receiver: anAgent.
@@ -278,7 +278,7 @@ CMMsg >> to: anAgent content: aSymbol [
 ]
 
 { #category : #private }
-CMMsg >> to: anotherOne topic: aSymbol [
+CMMessage >> to: anotherOne topic: aSymbol [
 	"method to fulfill the sender and receiver attributes"
 	
 	self receiver: anotherOne.
@@ -286,7 +286,7 @@ CMMsg >> to: anotherOne topic: aSymbol [
 ]
 
 { #category : #private }
-CMMsg >> to: anotherOne topic: aSymbol content: anObject [
+CMMessage >> to: anotherOne topic: aSymbol content: anObject [
 	"method to fulfill the sender and receiver attributes"
 	
 	self receiver: anotherOne.
@@ -295,13 +295,13 @@ CMMsg >> to: anotherOne topic: aSymbol content: anObject [
 ]
 
 { #category : #accessing }
-CMMsg >> topic [
+CMMessage >> topic [
 	
 	^topic
 ]
 
 { #category : #accessing }
-CMMsg >> topic: anObject [
+CMMessage >> topic: anObject [
 	
 	topic := anObject
 ]

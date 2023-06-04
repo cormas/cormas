@@ -10,8 +10,8 @@ Instance Variables:
 
 "
 Class {
-	#name : #CMGroupComm,
-	#superclass : #CMAgentComm,
+	#name : #CMCommunicatingGroup,
+	#superclass : #CMCommunicatingAgent,
 	#instVars : [
 		'components',
 		'newComponents',
@@ -21,7 +21,7 @@ Class {
 }
 
 { #category : #'components - managing' }
-CMGroupComm >> addComponent: anItem [
+CMCommunicatingGroup >> addComponent: anItem [
 	"Purpose: add IMMEDIATELY a given item as a new component of the group
 Argument: anItem = <Agent>"
 	
@@ -29,7 +29,7 @@ Argument: anItem = <Agent>"
 ]
 
 { #category : #'components - managing' }
-CMGroupComm >> addComponents: aCollec [
+CMCommunicatingGroup >> addComponents: aCollec [
 	"Purpose: add IMMEDIATELY a collection of agents as new components of the group
 Argument: aCollec = <Collection(Agent)>"
 	
@@ -37,7 +37,7 @@ Argument: aCollec = <Collection(Agent)>"
 ]
 
 { #category : #'components - managing' }
-CMGroupComm >> addSynchronouslyComponent: anItem [
+CMCommunicatingGroup >> addSynchronouslyComponent: anItem [
 	"Purpose: the given item will be added as a new component of the group when 'updateComponents' will be send to the receiver. Meanwhile, it is stored in the buffer attribute 'newComponents'
 Argument: anItem = <Agent>"
 	
@@ -45,25 +45,25 @@ Argument: anItem = <Agent>"
 ]
 
 { #category : #'components - accessing' }
-CMGroupComm >> components [
+CMCommunicatingGroup >> components [
 	
 	^components ifNil: [components := Set new]
 ]
 
 { #category : #'components - accessing' }
-CMGroupComm >> components: uneValeur [
+CMCommunicatingGroup >> components: uneValeur [
 	
 	components := uneValeur
 ]
 
 { #category : #deprecated }
-CMGroupComm >> contain: anItem [
+CMCommunicatingGroup >> contain: anItem [
 	
 	^self components includes: anItem
 ]
 
 { #category : #'components - managing' }
-CMGroupComm >> deleteComponent: anItem [
+CMCommunicatingGroup >> deleteComponent: anItem [
 	"Purpose: remove IMMEDIATELY a given item from the group components
 Argument: anItem = <Agent>"
 	
@@ -73,7 +73,7 @@ Argument: anItem = <Agent>"
 ]
 
 { #category : #'components - managing' }
-CMGroupComm >> deleteComponents: aCollec [
+CMCommunicatingGroup >> deleteComponents: aCollec [
 	"Purpose: remove IMMEDIATELY a collection of agents from the group components
 Argument: aCollec = <Collection(Agent)>"
 	
@@ -84,7 +84,7 @@ Argument: aCollec = <Collection(Agent)>"
 ]
 
 { #category : #'components - managing' }
-CMGroupComm >> deleteSynchronouslyComponent: anItem [
+CMCommunicatingGroup >> deleteSynchronouslyComponent: anItem [
 	"Purpose: the given item will be removed from the group components when 'updateComponents' will be send to the receiver. Meanwhile, it is stored in the buffer attribute 'removedComponents'
 Argument: anItem = <Agent>"
 	
@@ -92,7 +92,7 @@ Argument: anItem = <Agent>"
 ]
 
 { #category : #'initialize - release' }
-CMGroupComm >> initWith: anAgentsCollection [
+CMCommunicatingGroup >> initWith: anAgentsCollection [
 	"Purpose: resets and fills with new components"
 	
 	self reset.
@@ -100,19 +100,19 @@ CMGroupComm >> initWith: anAgentsCollection [
 ]
 
 { #category : #'components - accessing' }
-CMGroupComm >> newComponents [
+CMCommunicatingGroup >> newComponents [
 	
 	^newComponents ifNil: [newComponents := Set new]
 ]
 
 { #category : #'components - accessing' }
-CMGroupComm >> newComponents: uneValeur [
+CMCommunicatingGroup >> newComponents: uneValeur [
 	
 	newComponents := uneValeur
 ]
 
 { #category : #'components - accessing' }
-CMGroupComm >> othersBut: x [
+CMCommunicatingGroup >> othersBut: x [
 	
 	| collection |
 	collection := OrderedCollection new.
@@ -121,19 +121,19 @@ CMGroupComm >> othersBut: x [
 ]
 
 { #category : #'components - accessing' }
-CMGroupComm >> removedComponents [
+CMCommunicatingGroup >> removedComponents [
 	
 	^removedComponents ifNil: [removedComponents := Set new]
 ]
 
 { #category : #'components - accessing' }
-CMGroupComm >> removedComponents: uneValeur [
+CMCommunicatingGroup >> removedComponents: uneValeur [
 	
 	removedComponents := uneValeur
 ]
 
 { #category : #'initialize - release' }
-CMGroupComm >> reset [
+CMCommunicatingGroup >> reset [
 	"Purpose: resets inherited and specific attributes"
 	
 	super reset.
@@ -143,13 +143,13 @@ CMGroupComm >> reset [
 ]
 
 { #category : #accessing }
-CMGroupComm >> size [
+CMCommunicatingGroup >> size [
 	
 	^self components size
 ]
 
 { #category : #control }
-CMGroupComm >> stepDynPop [
+CMCommunicatingGroup >> stepDynPop [
 	"Purpose: activate the biological life cycle of each agent of the group. 
 Nota: the 'step' method of the Agent must return a collection either empty if there is no successuful reproduction or made of newborn instances to be added as new components of the group"
 
@@ -167,7 +167,7 @@ Nota: the 'step' method of the Agent must return a collection either empty if th
 ]
 
 { #category : #control }
-CMGroupComm >> updateAgents [
+CMCommunicatingGroup >> updateAgents [
 	"Purpose: get rid of dead components"
 	
 	| theDeadAgents |
@@ -180,7 +180,7 @@ CMGroupComm >> updateAgents [
 ]
 
 { #category : #'components - managing' }
-CMGroupComm >> updateComponents [
+CMCommunicatingGroup >> updateComponents [
 	"Purpose: use the buffered collections 'newComponents' and 'removedComponents' to update the group components instantaneously"
 	
 	self components addAll: self newComponents.
@@ -190,7 +190,7 @@ CMGroupComm >> updateComponents [
 ]
 
 { #category : #control }
-CMGroupComm >> updateWith: aCollec [
+CMCommunicatingGroup >> updateWith: aCollec [
 	"Purpose: get rid of dead components and add new ones"
 
 	self updateAgents.
