@@ -486,7 +486,7 @@ CMClassAttributeValue >> testIfModified [
 						ifTrue:
 							[self
 								hasBeenModified:
-									(default cormasHelper elementsOf: default equalElemenstOf: initial) not]
+									(default hasEqualElements: initial) not]
 						ifFalse: [self hasBeenModified: true]]].
 	^self hasBeenModified
 ]
