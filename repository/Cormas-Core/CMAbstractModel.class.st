@@ -1087,9 +1087,9 @@ self  entitiesFromACollecOrClass: self theFarmers"
 	aCollecOrClass isSymbol
 		ifTrue: [^self allTheEntities: aCollecOrClass class].
 	aCollecOrClass isCollection ifTrue: [^aCollecOrClass].
-	aCollecOrClass cormasHelper isTypeEntity
+	aCollecOrClass isCormasEntity
 		ifTrue: [^Array with: aCollecOrClass].
-	aCollecOrClass cormasHelper isTypeEntityClass
+	(aCollecOrClass isKindOf: CMEntity class)
 		ifTrue: [^self allTheEntities: aCollecOrClass].
 	^nil
 ]
@@ -1294,7 +1294,7 @@ CMAbstractModel >> collect: anEntity [
 	
 	| collection |
 	collection := self theEntities: anEntity class.
-	collection cormasHelper isTypeArrayNotChars
+	collection isArray
 		ifTrue:
 			[self
 				setTheEntity: anEntity class
@@ -2051,7 +2051,7 @@ CMAbstractModel >> getAttributesType: attributes fromInstances: instanceCollecti
 						at: att asSymbol
 						put: #(#asString '(Symbol)')]
 				ifFalse:
-					[firstValue cormasHelper isTypeNumber
+					[firstValue isNumber
 						ifTrue:
 							[type := '(Number)'.
 							dicoAttConv
@@ -2065,7 +2065,7 @@ CMAbstractModel >> getAttributesType: attributes fromInstances: instanceCollecti
 										at: att asSymbol
 										put: #(#asString '(String)')]
 								ifFalse:
-									[firstValue cormasHelper isTypeBoolean
+									[(firstValue isKindOf: Boolean)
 										ifTrue:
 											[type := '(Boolean)'.
 											dicoAttConv

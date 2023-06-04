@@ -493,13 +493,6 @@ CMEntity class >> cormas [
 	^ Cormas current
 ]
 
-{ #category : #'cormas helper' }
-CMEntity class >> cormasHelper [
-	"return the helper class for this class"
-	
-	^ CMEntityClassHelper
-]
-
 { #category : #displaying }
 CMEntity class >> createEntityPOVwithSpec: aSpec [
 	"Returns an EntityPOV according to selectorName and aSymbolOrColorValue"
@@ -507,7 +500,7 @@ CMEntity class >> createEntityPOVwithSpec: aSpec [
 	| anEntityPOV aSymbolOrColorValue selectorName |
 	aSymbolOrColorValue := aSpec povResult.
 	selectorName := aSpec povSelector.
-	aSymbolOrColorValue cormasHelper isTypeColorValue
+	aSymbolOrColorValue isColor
 		ifTrue:
 			[anEntityPOV := (self imageAtPov: selectorName) copy.
 			anEntityPOV color: aSymbolOrColorValue]
@@ -1366,13 +1359,6 @@ CMEntity >> cormas [
 	^Cormas current
 ]
 
-{ #category : #'cormas helper' }
-CMEntity >> cormasHelper [
-	"return the helper class for this class"
-	
-	^ CMEntityHelper
-]
-
 { #category : #accessing }
 CMEntity >> cormasModel [
 	^ cormasModel
@@ -1615,6 +1601,12 @@ CMEntity >> isClassLocation [
 ]
 
 { #category : #testing }
+CMEntity >> isCormasEntity [
+
+	^ true
+]
+
+{ #category : #testing }
 CMEntity >> isGenericEntity [ 
 
 	^ self class isGenericEntity
@@ -1816,7 +1808,7 @@ ECEC example :
 	povValue: (self energy) min: 0 color: (Color yellow) max: (self class K) color: Color red"
 	
 	| alpha rv gv bv value start_Color stop_Color |
-	(aValue isNil or: [aValue cormasHelper isTypeNumber not])
+	(aValue isNil or: [aValue isNumber not])
 		ifTrue: [^Color white].
 	value := aValue <= minValue
 		ifTrue: [minValue]
@@ -1846,7 +1838,7 @@ ECEC example :
 	povAttribute: #energy min: 0 max: self class K color: ColorValue green"
 
 	| index value color |
-	(aValue isNil or: [ aValue cormasHelper isTypeNumber not ]) ifTrue: [ 
+	(aValue isNil or: [ aValue isNumber not ]) ifTrue: [ 
 		^ Color white ].
 	value := aValue.
 	value := value max: minValue.

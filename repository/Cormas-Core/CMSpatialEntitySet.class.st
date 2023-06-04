@@ -32,7 +32,7 @@ CMSpatialEntitySet class >> createEntityPOVwithSpec: aSpec componentsPovs: compo
 					[anEntityPOV isStroked: true.
 					anEntityPOV lineWidth: 3]
 				ifFalse:
-					[aSymbolOrColorValue cormasHelper isTypeColorValue
+					[aSymbolOrColorValue isColor
 						ifTrue: [anEntityPOV color: aSymbolOrColorValue]
 						ifFalse: [anEntityPOV color: (self colorAtPov: aSymbolOrColorValue)]]].
 	anEntityPOV name: selectorName.

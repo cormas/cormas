@@ -1031,7 +1031,7 @@ CMSpaceModel >> exportToMapInfo: attributes inFile: file [
 						at: att asSymbol
 						put: #asString]
 				ifFalse:
-					[firstValue cormasHelper isTypeNumber
+					[firstValue isNumber
 						ifTrue:
 							[dicoAttConv
 								at: att asSymbol

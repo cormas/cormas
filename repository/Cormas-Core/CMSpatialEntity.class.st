@@ -78,7 +78,7 @@ CMSpatialEntity class >> createEntityPOVwithSpec: aSpec defaultPov: aDefaultPov 
 	anEntityPOV := aDefaultPov copy.
 	anEntityPOV
 		color:
-			(aSymbolOrColorValue cormasHelper isTypeColorValue
+			(aSymbolOrColorValue isColor
 				ifTrue: [aSymbolOrColorValue]
 				ifFalse: [self colorAtPov: aSymbolOrColorValue]).
 	anEntityPOV name: selectorName.
