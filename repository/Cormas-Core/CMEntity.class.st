@@ -1816,7 +1816,7 @@ ECEC example :
 	povValue: (self energy) min: 0 color: (Color yellow) max: (self class K) color: Color red"
 	
 	| alpha rv gv bv value start_Color stop_Color |
-	(aValue isNil or: [aValue cormasHelper isTypeNumber not])
+	(aValue isNil or: [aValue isNumber not])
 		ifTrue: [^Color white].
 	value := aValue <= minValue
 		ifTrue: [minValue]
@@ -1846,7 +1846,7 @@ ECEC example :
 	povAttribute: #energy min: 0 max: self class K color: ColorValue green"
 
 	| index value color |
-	(aValue isNil or: [ aValue cormasHelper isTypeNumber not ]) ifTrue: [ 
+	(aValue isNil or: [ aValue isNumber not ]) ifTrue: [ 
 		^ Color white ].
 	value := aValue.
 	value := value max: minValue.

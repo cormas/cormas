@@ -2051,7 +2051,7 @@ CMAbstractModel >> getAttributesType: attributes fromInstances: instanceCollecti
 						at: att asSymbol
 						put: #(#asString '(Symbol)')]
 				ifFalse:
-					[firstValue cormasHelper isTypeNumber
+					[firstValue isNumber
 						ifTrue:
 							[type := '(Number)'.
 							dicoAttConv
