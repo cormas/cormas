@@ -493,13 +493,6 @@ CMEntity class >> cormas [
 	^ Cormas current
 ]
 
-{ #category : #'cormas helper' }
-CMEntity class >> cormasHelper [
-	"return the helper class for this class"
-	
-	^ CMEntityClassHelper
-]
-
 { #category : #displaying }
 CMEntity class >> createEntityPOVwithSpec: aSpec [
 	"Returns an EntityPOV according to selectorName and aSymbolOrColorValue"
