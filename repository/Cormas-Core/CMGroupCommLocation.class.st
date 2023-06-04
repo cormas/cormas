@@ -163,7 +163,7 @@ Nota: the 'step' method of the Agent must return a collection either empty if th
 	| newBorns repro firstComp |
 	(self components notNil and: [ self components isNotEmpty ])
 		ifTrue: [ firstComp := self components first.
-			(firstComp cormasHelper isTypeEntity and: [ firstComp isAgent ])
+			(firstComp isCormasEntity and: [ firstComp isAgent ])
 				ifTrue: [ newBorns := OrderedCollection new.
 					(Cormas mix: self components)
 						do: [ :anAgent | 

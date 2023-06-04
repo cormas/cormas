@@ -1087,7 +1087,7 @@ self  entitiesFromACollecOrClass: self theFarmers"
 	aCollecOrClass isSymbol
 		ifTrue: [^self allTheEntities: aCollecOrClass class].
 	aCollecOrClass isCollection ifTrue: [^aCollecOrClass].
-	aCollecOrClass cormasHelper isTypeEntity
+	aCollecOrClass isCormasEntity
 		ifTrue: [^Array with: aCollecOrClass].
 	aCollecOrClass cormasHelper isTypeEntityClass
 		ifTrue: [^self allTheEntities: aCollecOrClass].

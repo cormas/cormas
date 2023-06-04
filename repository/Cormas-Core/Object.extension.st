@@ -6,3 +6,9 @@ Object >> cormasHelper [
 	
 	^ CMObjectHelper
 ]
+
+{ #category : #'*Cormas-Core' }
+Object >> isCormasEntity [
+
+	^ false
+]

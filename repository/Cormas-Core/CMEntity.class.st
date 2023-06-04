@@ -1366,13 +1366,6 @@ CMEntity >> cormas [
 	^Cormas current
 ]
 
-{ #category : #'cormas helper' }
-CMEntity >> cormasHelper [
-	"return the helper class for this class"
-	
-	^ CMEntityHelper
-]
-
 { #category : #accessing }
 CMEntity >> cormasModel [
 	^ cormasModel
@@ -1612,6 +1605,12 @@ CMEntity >> isClassLocation [
 	"Answer if the entity is a kind of AgentLocation or of ObjectLocation"
 	
 	^false
+]
+
+{ #category : #testing }
+CMEntity >> isCormasEntity [
+
+	^ true
 ]
 
 { #category : #testing }
