@@ -500,7 +500,7 @@ CMEntity class >> createEntityPOVwithSpec: aSpec [
 	| anEntityPOV aSymbolOrColorValue selectorName |
 	aSymbolOrColorValue := aSpec povResult.
 	selectorName := aSpec povSelector.
-	aSymbolOrColorValue cormasHelper isTypeColorValue
+	aSymbolOrColorValue isColor
 		ifTrue:
 			[anEntityPOV := (self imageAtPov: selectorName) copy.
 			anEntityPOV color: aSymbolOrColorValue]

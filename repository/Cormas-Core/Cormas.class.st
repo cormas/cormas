@@ -52,14 +52,16 @@ Cormas class >> application [
 Cormas class >> arrayFrom: anElementOrArray [
 	"return an array for the argument"
 	
-	^anElementOrArray cormasHelper arrayFrom: anElementOrArray
+	^ anElementOrArray isArray
+		ifTrue: [ anElementOrArray ]
+		ifFalse: [ Array with: anElementOrArray ]
 ]
 
 { #category : #'utilities - value types' }
 Cormas class >> arrayOrNilFrom: anElementOrArray [
 	"return an array or a nil for the argument"
 	
-	^anElementOrArray cormasHelper arrayOrNilFrom: anElementOrArray
+	^ Array with: anElementOrArray
 ]
 
 { #category : #'runtime mode accessing' }
@@ -101,14 +103,14 @@ We suggest to use 'newAndCollect: aCollector' to create and collect an entity"
 Cormas class >> colorFrom: aSymbolOrColorValue [
 	"return a color value for the argument"
 	
-	^aSymbolOrColorValue cormasHelper colorFrom: aSymbolOrColorValue
+	^ Color colorFrom: aSymbolOrColorValue
 ]
 
 { #category : #'utilities - value types' }
 Cormas class >> colorOrBlackFrom: aColorValueOrElse [
 	"return either the argument if it is a colorValue or a black colorValue"
 	
-	^aColorValueOrElse cormasHelper colorOrBlackFrom: aColorValueOrElse
+	^ Color black
 ]
 
 { #category : #'utilities - mathematics' }
@@ -1353,8 +1355,7 @@ Example: Cormas upperQuartile: #(2 4 7 -20 22 -1 0 -1 7 15 8 4 -4 11 11 12 3 12 
 Cormas class >> valueFrom: anObjectOrMenuItemOrValueHolder [
 	"return either the value of the argument if it is a MenuItem or a ValueHolder or the argument itself "
 	
-	^anObjectOrMenuItemOrValueHolder cormasHelper valueFrom:
-			anObjectOrMenuItemOrValueHolder
+	^ anObjectOrMenuItemOrValueHolder
 ]
 
 { #category : #deprecated }

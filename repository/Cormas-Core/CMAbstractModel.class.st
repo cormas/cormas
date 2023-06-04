@@ -1294,7 +1294,7 @@ CMAbstractModel >> collect: anEntity [
 	
 	| collection |
 	collection := self theEntities: anEntity class.
-	collection cormasHelper isTypeArrayNotChars
+	collection isArray
 		ifTrue:
 			[self
 				setTheEntity: anEntity class
@@ -2065,7 +2065,7 @@ CMAbstractModel >> getAttributesType: attributes fromInstances: instanceCollecti
 										at: att asSymbol
 										put: #(#asString '(String)')]
 								ifFalse:
-									[firstValue cormasHelper isTypeBoolean
+									[(firstValue isKindOf: Boolean)
 										ifTrue:
 											[type := '(Boolean)'.
 											dicoAttConv

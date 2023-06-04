@@ -193,8 +193,13 @@ CormasModelGameInterface >> nullDecisionsSheet: playerName [
 
 { #category : #blocks }
 CormasModelGameInterface >> nullValueForSpec: aSpecName [
+
+	| nullValue |
 	
-	^(self perform: aSpecName) value cormasHelper nullValue ifNil: [self halt]
+	nullValue := (self perform: aSpecName) value isNumber
+		ifTrue: [ 0 ] ifFalse: [ nil ].
+	
+	^ nullValue
 ]
 
 { #category : #aspects }
