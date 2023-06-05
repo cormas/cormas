@@ -757,21 +757,21 @@ exports the class name, the attributes names and the values into a CSV file"
 	file ifNil: [^nil].
 	stream := file writeStream.
 	stream nextPutAll: 'Class'.
-	stream nextPutAll: DataSaver_Asci separatorAsString.
+	stream nextPutAll: Cormas separator asString.
 	stream nextPutAll: 'Attribute'.
-	stream nextPutAll: DataSaver_Asci separatorAsString.
+	stream nextPutAll: Cormas separator asString.
 	stream nextPutAll: 'Value'.
-	stream nextPutAll: DataSaver_Asci separatorAsString.
+	stream nextPutAll: Cormas separator asString.
 	stream nextPutAll: '\' withCRs.
 	self classAttribValue_List list
 		do:
 			[:defAttrib | 
 			stream nextPutAll: defAttrib targetClass name.
-			stream nextPutAll: DataSaver_Asci separatorAsString.
+			stream nextPutAll: Cormas separator asString.
 			stream nextPutAll: defAttrib targetAttribute asString.
-			stream nextPutAll: DataSaver_Asci separatorAsString.
+			stream nextPutAll: Cormas separator asString.
 			stream nextPutAll: defAttrib currentValue printString.
-			stream nextPutAll: DataSaver_Asci separatorAsString.
+			stream nextPutAll: Cormas separator asString.
 			stream nextPutAll: '\' withCRs].
 	stream close
 ]

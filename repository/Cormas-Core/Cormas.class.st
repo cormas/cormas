@@ -38,7 +38,8 @@ Class {
 		'simpleRand',
 		'current',
 		'runtimeMode',
-		'randomGenerator'
+		'randomGenerator',
+		'separator'
 	],
 	#category : #'Cormas-Core-Legacy'
 }
@@ -1000,13 +1001,14 @@ ex: Cormas selectSimpleRandomlyFrom: (Set withAll: #(1 2 3 4 5))"
 { #category : #'util_files' }
 Cormas class >> separator [
 	
-	^DataSaver_Asci separator
+	separator ifNil: [separator := $;].
+	^separator
 ]
 
 { #category : #'util_files' }
 Cormas class >> separator: aSeparator [
 	
-	DataSaver_Asci separator: aSeparator
+	separator := aSeparator
 ]
 
 { #category : #'private_aleat' }
