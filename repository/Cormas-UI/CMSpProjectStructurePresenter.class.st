@@ -32,16 +32,6 @@ CMSpProjectStructurePresenter class >> open [
 	self new openWithSpec 
 ]
 
-{ #category : #specs }
-CMSpProjectStructurePresenter class >> openOnSample [
-
-	<script>
-	self basicNew 
-		cormasModel: CMMockModel new;
-		initialize;
-		openWithSpec 
-]
-
 { #category : #initialization }
 CMSpProjectStructurePresenter >> initializeWidgets [
 
