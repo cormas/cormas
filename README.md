@@ -10,7 +10,7 @@
     |
     <a href="https://github.com/cormas/cormas/issues/new?labels=Type%3A+Feature">Request feature</a>
   </p>
-</p>
+</p> 
 
 ![CI](https://github.com/cormas/cormas/workflows/CI/badge.svg) 
 [![Coverage Status](https://coveralls.io/repos/github/cormas/cormas/badge.svg?branch=master)](https://coveralls.io/github/cormas/cormas?branch=master)
