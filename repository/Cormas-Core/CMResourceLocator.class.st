@@ -327,7 +327,7 @@ Ex: Cormas readCsv: 'D:\vw7.6\cormas\Models\Ecec\data\test.csv' "
 	Its better to use readCSVFile'.
 	^self
 		readMatrix: filename
-		sep: DataSaver_Asci separator
+		sep: Cormas separator
 ]
 
 { #category : #'utilities - csv' }
@@ -345,7 +345,7 @@ The file name is just a string containing the name of the file (with or without 
 		ifNotEmpty: [ fileName := file ].	
 	^ self
 		readMatrix: ((self inputsPath: modelName) / fileName) fullName
-		sep: DataSaver_Asci separator
+		sep: Cormas separator
 ]
 
 { #category : #private }
