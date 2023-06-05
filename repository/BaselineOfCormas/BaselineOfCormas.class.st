@@ -126,8 +126,8 @@ BaselineOfCormas >> specForBaselines: spec [
 		baseline: 'SMark'
 		with: [ spec repository: 'github://smarr/SMark:v1.0.4' ];	
 
-		baseline: 'NeoJSON' 	
-		with: [ spec repository: 'github://svenvc/NeoJSON/repository' ];
+		"baseline: 'NeoJSON' 	
+		with: [ spec repository: 'github://svenvc/NeoJSON/repository' ];"
 	
 		baseline: 'PetitParser'
 		with: [ spec repository: 'github://moosetechnology/PetitParser/src'; loads: #('YAML') ];
@@ -168,8 +168,7 @@ BaselineOfCormas >> specForPackages: spec [
 		package: 'Cormas-Model-ReHab' with: [ spec requires: #('Cormas-Core') ];
 		package: 'Cormas-Model-Stupid' with: [ spec requires: #('Cormas-Core') ];"
 		package: 'Cormas-Mocks' with: [ spec requires: #('Cormas-Core') ];
-		package: 'Cormas-Tests' with: [ spec requires: #('Cormas-Core' 'Cormas-Mocks') ];
-		package: 'Cormas-OpenMole' with: [ spec requires: #('Cormas-Core' 'NeoJSON') ]
+		package: 'Cormas-Tests' with: [ spec requires: #('Cormas-Core' 'Cormas-Mocks') ].
 ]
 
 { #category : #specs }
@@ -274,9 +273,7 @@ BaselineOfCormas >> specForPharo9Groups: spec [
 
 		group: 'Tests' 		with: #('Core' 'Cormas-Mocks' 'Cormas-Tests' 'Cormas-UI-Tests');
 
-		group: 'OpenMole'	with: #('Cormas-OpenMole' 'Core');
-
-		group: 'All'			with: #('UI' 'Tests' 'Core' 'OpenMole');
+		group: 'All'			with: #('UI' 'Tests' 'Core');
 		group: 'default' 	with: #('All')	
 ]
 
