@@ -27,7 +27,7 @@ Class {
 		'allAttributsList',
 		'hiddenParametersInterface'
 	],
-	#category : #'Cormas-UI-Core'
+	#category : #'Cormas-Core-Legacy'
 }
 
 { #category : #getAttributes }

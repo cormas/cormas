@@ -1866,6 +1866,12 @@ CMAbstractModel >> defaultAttributesSetter: aDefaultSetter [
 	^defaultAttributesSetter := aDefaultSetter
 ]
 
+{ #category : #'default values' }
+CMAbstractModel >> defaultAttributesSetterClass [
+
+	^ DefaultAttributesSetter
+]
+
 { #category : #accessing }
 CMAbstractModel >> deleteSpatialEntitySet: aClass [ 
 	" See comment in Space Model class "
