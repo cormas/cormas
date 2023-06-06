@@ -72,7 +72,7 @@ CMModelResource >> setUp [
 CMModelResource >> setUpPathReferences [
 	" Create a sample directory structure for a mock model "
 
-	self modelPath: FileSystem memory root / CMResourceLocator assetsFilesDirectoryName.
+	self modelPath: FileSystem memory root / CMGitBridge assetsFilesDirectoryName.
 	self modelPath createDirectory.
 	self 
 		buildCormasAssetsHierarchy;
@@ -86,6 +86,6 @@ CMModelResource >> tearDown [
 	[ self modelPath ensureDeleteAll ]
 	on: FileDoesNotExistException
 	do: [ : ex | ].	
-	CMResourceLocator useGitBridge: true.
+	CMGitBridge useGitBridge: true.
 	super tearDown.
 ]

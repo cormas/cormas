@@ -271,14 +271,14 @@ CMSpOpenProjectPresenter >> previewPresenter [
 { #category : #callbacks }
 CMSpOpenProjectPresenter >> projectsBrowse [
 	
-	^ CMResourceLocator cormasUserProjects
+	^ CMGitBridge cormasUserProjects
 ]
 
 { #category : #callbacks }
 CMSpOpenProjectPresenter >> projectsDemos [
 	" Answer a <Collection> of <FileReference> in the default built-in location "
 	
-	^ CMResourceLocator demosPath allChildrenMatching: '*.' , CMProjectModel projectFileExtension
+	^ CMGitBridge demosPath allChildrenMatching: '*.' , CMProjectModel projectFileExtension
 ]
 
 { #category : #private }

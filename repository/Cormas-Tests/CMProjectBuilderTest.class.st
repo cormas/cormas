@@ -94,7 +94,7 @@ CMProjectBuilderTest >> setUp [
 	super setUp.
 	self timeLimit: self defaultTimeLimit + 25 seconds.
 	self builder: CMProjectBuilder new.
-	CMResourceLocator useGitBridge: false.
+	CMGitBridge useGitBridge: false.
 ]
 
 { #category : #running }
@@ -102,7 +102,7 @@ CMProjectBuilderTest >> tearDown [
 
 	super tearDown.
 	self builder unLoadModelPackages.
-	CMResourceLocator useGitBridge: true.
+	CMGitBridge useGitBridge: true.
 ]
 
 { #category : #test }
@@ -143,7 +143,7 @@ CMProjectBuilderTest >> testDestinationPath [
 { #category : #test }
 CMProjectBuilderTest >> testIsModelLoaded [
 
-	CMResourceLocator useGitBridge 
+	CMGitBridge useGitBridge 
 		ifFalse: [ ^ self ].
 	self deny: (self builder isModelLoaded: 'CMInvalidXYZ123Model') description: 'Nonexistent model is not loaded'.
 	self loadSampleModel.
@@ -162,7 +162,7 @@ CMProjectBuilderTest >> testLocalBuildDir [
 { #category : #test }
 CMProjectBuilderTest >> testLocalBuildDirRef [
 
-	CMResourceLocator useGitBridge 
+	CMGitBridge useGitBridge 
 		ifFalse: [ ^ self ].
 	self assert: (self builder localBuildDirRef isKindOf: FileReference) description: 'It should get the local build FileReference'.
 	self assert: (self builder localBuildDirRef isDirectory) description: 'Local build location should be a directory'.
@@ -218,7 +218,7 @@ CMProjectBuilderTest >> testUnLoadModelPackage [
 
 	| testPackageName |
 	
-	CMResourceLocator useGitBridge 
+	CMGitBridge useGitBridge 
 		ifFalse: [ ^ self ].
 	testPackageName := self sampleModelName.
 	self builder lazyLoadModelPackage: testPackageName.
@@ -231,7 +231,7 @@ CMProjectBuilderTest >> testUnLoadModelPackage [
 { #category : #test }
 CMProjectBuilderTest >> testUnLoadModelPackages [
 
-	CMResourceLocator useGitBridge 
+	CMGitBridge useGitBridge 
 		ifFalse: [ ^ self ].
 	self builder lazyLoadModelPackages.
 	self assert: self builder hasAllModelsLoaded.
@@ -247,7 +247,7 @@ CMProjectBuilderTest >> testWriteProjectTree [
 	self builder writeProjectTree.
 	self 
 		assertCollection: (self builder localBuildDirRef children collect: #basename) 
-		hasSameElements: CMResourceLocator resourceDirectoryNames
+		hasSameElements: CMGitBridge resourceDirectoryNames
 ]
 
 { #category : #test }
@@ -255,7 +255,7 @@ CMProjectBuilderTest >> testWriteSourceCode [
 
 	| newFileRef outputFileRef |
 	
-	CMResourceLocator useGitBridge 
+	CMGitBridge useGitBridge 
 		ifFalse: [ ^ self ].
 	(self builder lazyLoadModelPackage: self sampleModelName).
 	self builder writeSourceCode: self sampleModelClass.

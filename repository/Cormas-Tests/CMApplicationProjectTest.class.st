@@ -26,14 +26,14 @@ CMApplicationProjectTest >> setUp [
 
 	super setUp.
 	application := CMApplicationProject new.
-	CMResourceLocator useGitBridge: false.
+	CMGitBridge useGitBridge: false.
 ]
 
 { #category : #running }
 CMApplicationProjectTest >> tearDown [ 
 
 	super tearDown.
-	CMResourceLocator useGitBridge: true.
+	CMGitBridge useGitBridge: true.
 ]
 
 { #category : #test }
@@ -61,7 +61,7 @@ CMApplicationProjectTest >> testDefaultTranslatorClass [
 { #category : #test }
 CMApplicationProjectTest >> testModelNames [
 
-	CMResourceLocator useGitBridge
+	CMGitBridge useGitBridge
 		ifTrue: [ self assertCollection: self application modelNames hasSameElements: self cormasModelNamesForTests ]
 		ifFalse: [ self assertCollection: self application modelNames hasSameElements: { 'MockModel' } ]
 ]
@@ -69,5 +69,5 @@ CMApplicationProjectTest >> testModelNames [
 { #category : #test }
 CMApplicationProjectTest >> testResourceLocator [
 
-	self assert: (self application resourceLocator isKindOf: CMResourceLocator)
+	self assert: (self application resourceLocator isKindOf: CMGitBridge)
 ]

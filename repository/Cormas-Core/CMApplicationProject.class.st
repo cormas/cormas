@@ -78,7 +78,7 @@ CMApplicationProject class >> createUserDirectories [
 
 	self baseDirectory ensureCreateDirectory.
 	#(#demosPath #userProjectsPath #preferencesPath) 
-		do: [ : pathSym | (CMResourceLocator perform: pathSym) ensureCreateDirectory ]
+		do: [ : pathSym | (CMGitBridge perform: pathSym) ensureCreateDirectory ]
 ]
 
 { #category : #about }
@@ -116,15 +116,15 @@ CMApplicationProject class >> downloadString [
 CMApplicationProject class >> hasCormasDemos [
 	" Answer <true> if the system has CORMAS project files in the demos path "
 
-	^ CMResourceLocator demosPath hasFiles and: [ 
-		CMResourceLocator demosPath children anySatisfy: #isZipFile ]
+	^ CMGitBridge demosPath hasFiles and: [ 
+		CMGitBridge demosPath children anySatisfy: #isZipFile ]
 ]
 
 { #category : #accessing }
 CMApplicationProject class >> hasDemos [
 	" Answer <true> if this system already has a directory where CORMAS projects "
 
-	^ CMResourceLocator demosPath exists and: [ self hasCormasDemos ]
+	^ CMGitBridge demosPath exists and: [ self hasCormasDemos ]
 
 ]
 
@@ -231,7 +231,7 @@ CMApplicationProject >> modelNames [
 { #category : #accessing }
 CMApplicationProject >> resourceLocator [
 	^ resourceLocator
-		ifNil: [ resourceLocator := CMResourceLocator new ]
+		ifNil: [ resourceLocator := CMGitBridge new ]
 ]
 
 { #category : #accessing }

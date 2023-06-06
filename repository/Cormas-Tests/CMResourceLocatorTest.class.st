@@ -72,7 +72,7 @@ CMResourceLocatorTest >> sampleModelName [
 CMResourceLocatorTest >> setUp [
 
 	super setUp.
-	self resourceLocator: CMResourceLocator new.
+	self resourceLocator: CMGitBridge new.
 	self resourceLocator class useGitBridge: false.
 ]
 

@@ -2857,7 +2857,7 @@ CMAbstractModel >> readCsvFile: file [
 	The file name is just a string containing the name of the file (with or without extension) that is stored in the *** /data *** directory of a model.
 	Ex:    self readCsvFile: 'palaya1973'  or  self readCsvFile: 'palaya1973.cvs'     "
 	
-	^ CMResourceLocator new
+	^ CMGitBridge new
 		readCsvFile: file
 		myModel: self class name asString
 ]

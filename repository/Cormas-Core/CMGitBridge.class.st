@@ -15,7 +15,7 @@ Internal Representation and Key Implementation Points.
     Implementation Points
 "
 Class {
-	#name : #CMResourceLocator,
+	#name : #CMGitBridge,
 	#superclass : #GitBridge,
 	#classInstVars : [
 		'useGitBridge'
@@ -24,14 +24,14 @@ Class {
 }
 
 { #category : #public }
-CMResourceLocator class >> assetsFilesDirectoryName [
+CMGitBridge class >> assetsFilesDirectoryName [
 	" Answe a <String> with the name of the directoy where CORMAS resources are found "
 
 	^ 'assets'
 ]
 
 { #category : #public }
-CMResourceLocator class >> assetsPath [
+CMGitBridge class >> assetsPath [
 	"Return the assets path of Cormas
 	Ex: {localDirectory}/iceberg/cormas/cormas/assets"
 
@@ -42,14 +42,14 @@ CMResourceLocator class >> assetsPath [
 ]
 
 { #category : #accessing }
-CMResourceLocator class >> assetsPathForCI [
+CMGitBridge class >> assetsPathForCI [
 	" The model path from the resource already contains the assets directory "
 
 	^ CMModelResource current modelPath
 ]
 
 { #category : #accessing }
-CMResourceLocator class >> assetsPathForIceberg [
+CMGitBridge class >> assetsPathForIceberg [
 
 	^ ([ self root ]
 		on: GBError
@@ -57,20 +57,20 @@ CMResourceLocator class >> assetsPathForIceberg [
 ]
 
 { #category : #accessing }
-CMResourceLocator class >> cormasHomeProjects [
+CMGitBridge class >> cormasHomeProjects [
 
 	^ (FileLocator home / 'CORMAS') allChildrenMatching: CMApplicationProject applicationExtension.
 ]
 
 { #category : #accessing }
-CMResourceLocator class >> cormasUserProjects [
+CMGitBridge class >> cormasUserProjects [
 	" Answer a <Collection> of <FileReference> each one representing a user defined project in the CORMAS directory for projects "
 
 	^ self userProjectsPath allChildrenMatching: '*' , CMApplicationProject applicationExtension.
 ]
 
 { #category : #accessing }
-CMResourceLocator class >> demosPath [
+CMGitBridge class >> demosPath [
 	" Answer a <FileReference> with the receiver's path to the demos directory.
 	For ex: aFileReference on: /Users/<username>/CORMAS/demos "
 
@@ -78,26 +78,26 @@ CMResourceLocator class >> demosPath [
 ]
 
 { #category : #accessing }
-CMResourceLocator class >> imagesPath [
+CMGitBridge class >> imagesPath [
 	" Answer a <FileReference> with the receiver's path to the images directory "
 
 	^ self assetsPath / 'images'
 ]
 
 { #category : #'class initialization' }
-CMResourceLocator class >> initialize [
+CMGitBridge class >> initialize [
 	SessionManager default registerSystemClassNamed: self name
 ]
 
 { #category : #accessing }
-CMResourceLocator class >> preferencesPath [
+CMGitBridge class >> preferencesPath [
 	" Answer a <FileReference> with the receiver's path to the preferences directory "
 
 	^ CMApplicationProject baseDirectory / 'preferences'
 ]
 
 { #category : #accessing }
-CMResourceLocator class >> resourceDirectoryNames [
+CMGitBridge class >> resourceDirectoryNames [
 	" Answer a <Collection> of <String> representing each a subdirectory of a CORMAS project "
 	| locator |
 	
@@ -106,14 +106,14 @@ CMResourceLocator class >> resourceDirectoryNames [
 ]
 
 { #category : #accessing }
-CMResourceLocator class >> resourceSelectors [
+CMGitBridge class >> resourceSelectors [
 
 	^ (self organization listAtCategoryNamed: 'utilities - path - models') 
 		select: [ : selector | selector isKeyword and: [ selector ~= #modelPath: ] ]
 ]
 
 { #category : #accessing }
-CMResourceLocator class >> useGitBridge [
+CMGitBridge class >> useGitBridge [
 	" Read comment in #root method "
 
 	^ useGitBridge
@@ -121,27 +121,27 @@ CMResourceLocator class >> useGitBridge [
 ]
 
 { #category : #accessing }
-CMResourceLocator class >> useGitBridge: anObject [
+CMGitBridge class >> useGitBridge: anObject [
 
 	useGitBridge := anObject
 ]
 
 { #category : #accessing }
-CMResourceLocator class >> userProjectsPath [
+CMGitBridge class >> userProjectsPath [
 	" Answer a <FileReference> with the receiver's path to the user projects directory "
 
 	^ CMApplicationProject baseDirectory / 'projects'
 ]
 
 { #category : #public }
-CMResourceLocator class >> workingDirectory [
+CMGitBridge class >> workingDirectory [
 	" Answer a <String> with the default directory "
 	
 	^ FileSystem disk workingDirectory fullName
 ]
 
 { #category : #'utilities - path - global' }
-CMResourceLocator >> addOnsPath [
+CMGitBridge >> addOnsPath [
 	" Answer a <FileReference> corresponding to the path of 'Add-ons' directory "
 	
 	^ self cormasPath / 'Add-ons'.
@@ -150,14 +150,14 @@ CMResourceLocator >> addOnsPath [
 ]
 
 { #category : #'utilities - path - models' }
-CMResourceLocator >> animationsPath: shortModelName [
+CMGitBridge >> animationsPath: shortModelName [
 	" Answer a <FileReference> corresponding to the path of stored Animations directory. "
 
 	^ (self modelPath: shortModelName) asFileReference / 'animations'.
 ]
 
 { #category : #'utilities - csv' }
-CMResourceLocator >> assetNamed: aFilename [
+CMGitBridge >> assetNamed: aFilename [
 	" Answer a <FileReference> found at the assets location, where aFilename is a <String>
 	example: CMResourceLocator new assetNamed: 'models'
 	"
@@ -167,14 +167,14 @@ CMResourceLocator >> assetNamed: aFilename [
 ]
 
 { #category : #'utilities - path - global' }
-CMResourceLocator >> assetsFilesDirectoryName [
+CMGitBridge >> assetsFilesDirectoryName [
 	" Answe a <String> with the name of the directoy where CORMAS resources are found "
 
 	^ self class assetsFilesDirectoryName
 ]
 
 { #category : #'utilities - path - global' }
-CMResourceLocator >> assetsPath [
+CMGitBridge >> assetsPath [
 	" Answer a <FileReference> specifying a directory where CORMAS assets are found.
 	Ex: /Users/Bommel/Pharo/images/Pharo 8.0 - 64bit (stable)/pharo-local/iceberg/cormas/cormas/assets"
 
@@ -182,7 +182,7 @@ CMResourceLocator >> assetsPath [
 ]
 
 { #category : #'utilities - path - global' }
-CMResourceLocator >> cormasPath [
+CMGitBridge >> cormasPath [
 	" Answer a <FileReference> corresponding to the path of Cormas directory. "
 
 	^ self workingDirectory asFileReference
@@ -190,7 +190,7 @@ CMResourceLocator >> cormasPath [
 ]
 
 { #category : #'utilities - path - models' }
-CMResourceLocator >> diagramsPath: aModelClassName [
+CMGitBridge >> diagramsPath: aModelClassName [
 	" Answer a <FileReference> corresponding to the path of the current model 'dump' directory.
 	aModelClassName = <String>"
 	
@@ -199,7 +199,7 @@ CMResourceLocator >> diagramsPath: aModelClassName [
 ]
 
 { #category : #'utilities - path - models' }
-CMResourceLocator >> docPath: aModelClassName [
+CMGitBridge >> docPath: aModelClassName [
 	" Answer a <FileReference> corresponding to the path of the current model 'doc' directory.
 	aModelClassName = <String>"
 	
@@ -208,7 +208,7 @@ CMResourceLocator >> docPath: aModelClassName [
 ]
 
 { #category : #'utilities - path - models' }
-CMResourceLocator >> dumpPath: aModelClassName [
+CMGitBridge >> dumpPath: aModelClassName [
 	" Answer a <FileReference> corresponding to the path of the current model 'dump' directory.
 	aModelClassName = <String>"
 	
@@ -217,7 +217,7 @@ CMResourceLocator >> dumpPath: aModelClassName [
 ]
 
 { #category : #'utilities - path - global' }
-CMResourceLocator >> imagesPath [
+CMGitBridge >> imagesPath [
 	" Answer a <FileReference> corresponding to the path of the current 'images' directory.
 	aModelClassName = <String>"
 	
@@ -226,7 +226,7 @@ CMResourceLocator >> imagesPath [
 ]
 
 { #category : #'utilities - path - models' }
-CMResourceLocator >> imagesPath: shortModelName [
+CMGitBridge >> imagesPath: shortModelName [
 	" Answer a <FileReference> corresponding to the path of the images directory of shortModelName.
 	Argument: shortModelName = <String>	"
 	
@@ -235,7 +235,7 @@ CMResourceLocator >> imagesPath: shortModelName [
 ]
 
 { #category : #'utilities - path - models' }
-CMResourceLocator >> inputsPath: aModelClassName [
+CMGitBridge >> inputsPath: aModelClassName [
 	" Answer a <FileReference> corresponding to the path of the current model 'inputs' directory.
 	aModelClassName = <String>"
 	
@@ -244,7 +244,7 @@ CMResourceLocator >> inputsPath: aModelClassName [
 ]
 
 { #category : #'utilities - path - global' }
-CMResourceLocator >> mapsPath [
+CMGitBridge >> mapsPath [
 	" Answer a FileReference corresponding to the path of the current path directory.
 	Argument: aModelClassName = <String>
 	Example: 
@@ -255,7 +255,7 @@ CMResourceLocator >> mapsPath [
 ]
 
 { #category : #'utilities - path - models' }
-CMResourceLocator >> mapsPath: shortModelName [
+CMGitBridge >> mapsPath: shortModelName [
 	" Answer a <FileReference> corresponding to the path of the maps directory of the current model.
 	Argument: shortModelName = <String>
 	Example: 
@@ -267,7 +267,7 @@ CMResourceLocator >> mapsPath: shortModelName [
 ]
 
 { #category : #'utilities - path - models' }
-CMResourceLocator >> modelNames [
+CMGitBridge >> modelNames [
 	" Answer a <Collection> of <String> with receiver's available models "
 
 	^ (self modelsPath entries collect: #basename)
@@ -275,7 +275,7 @@ CMResourceLocator >> modelNames [
 ]
 
 { #category : #'utilities - path - models' }
-CMResourceLocator >> modelPath: shortModelName [
+CMGitBridge >> modelPath: shortModelName [
 	" Answer a FileReference corresponding to the path of the current model directory.
 	Argument: shortModelName = <String>
 	Example: 
@@ -287,7 +287,7 @@ CMResourceLocator >> modelPath: shortModelName [
 ]
 
 { #category : #'utilities - path - models' }
-CMResourceLocator >> modelsPath [
+CMGitBridge >> modelsPath [
 	" Answer a <FileReference> corresponding to the path of 'Models' directory 
 	Ex: File @ /Users/.../iceberg/cormas/cormas/assets/models"
 	
@@ -296,7 +296,7 @@ CMResourceLocator >> modelsPath [
 ]
 
 { #category : #'utilities - path - models' }
-CMResourceLocator >> oldVersionsPath: aModelClassName [
+CMGitBridge >> oldVersionsPath: aModelClassName [
 	" Answer a <FileReference> corresponding to the path of the current model 'old_versions' directory.
 	aModelClassName = <String>"
 	
@@ -305,7 +305,7 @@ CMResourceLocator >> oldVersionsPath: aModelClassName [
 ]
 
 { #category : #'utilities - path - models' }
-CMResourceLocator >> outputsPath: aModelClassName [
+CMGitBridge >> outputsPath: aModelClassName [
 	" Answer a <FileReference> corresponding to the path of the current model 'outputs' directory.
 	aModelClassName = <String>"
 	
@@ -314,7 +314,7 @@ CMResourceLocator >> outputsPath: aModelClassName [
 ]
 
 { #category : #'utilities - csv' }
-CMResourceLocator >> readCsv: filename [
+CMGitBridge >> readCsv: filename [
 	"
 	HOW IT WORK ?  
 	readMatrix: '/home/user/Documents/Quantif_atelier_general1.csv' sep: $,.
@@ -331,7 +331,7 @@ Ex: Cormas readCsv: 'D:\vw7.6\cormas\Models\Ecec\data\test.csv' "
 ]
 
 { #category : #'utilities - csv' }
-CMResourceLocator >> readCsvFile: file myModel: modelName [
+CMGitBridge >> readCsvFile: file myModel: modelName [
 	" Answer a collection of collections, each one containing the values of the csv file (separator is ';').
 The file name is just a string containing the name of the file (with or without extension) that is stored in the /data directory of a model.
 	Ex: 	CMResourceLocator new readCsvFile: 'palaya1973' myModel: 'Thunupa'    		
@@ -349,7 +349,7 @@ The file name is just a string containing the name of the file (with or without 
 ]
 
 { #category : #private }
-CMResourceLocator >> readCsvLine: aLine [ 
+CMGitBridge >> readCsvLine: aLine [ 
 	" Answer a <Collection> with elements from aLine converted into its matching Smalltalk 'type'. nil objects are added as nil "
 
 	^ aLine collect: [ : elem | 
@@ -359,7 +359,7 @@ CMResourceLocator >> readCsvLine: aLine [
 ]
 
 { #category : #'utilities - csv' }
-CMResourceLocator >> readMatrix: fileName sep: aSepChar [
+CMGitBridge >> readMatrix: fileName sep: aSepChar [
 	"
 	HOW IT WORK ?  
 	readMatrix: '/home/user/Documents/Quantif_atelier_general1.csv' sep: $,.
@@ -395,7 +395,7 @@ Ex: Cormas readMatrix: 'D:\vw7.6\cormas\Models\Ecec\data\test.csv' sep: ';'   "
 ]
 
 { #category : #'utilities - path - models' }
-CMResourceLocator >> videoPath: aModelClassName [
+CMGitBridge >> videoPath: aModelClassName [
 	" Answer a <FileReference> corresponding to the path of the current model 'video' directory.
 	aModelClassName = <String>"
 	
@@ -404,7 +404,7 @@ CMResourceLocator >> videoPath: aModelClassName [
 ]
 
 { #category : #'utilities - path - global' }
-CMResourceLocator >> workingDirectory [
+CMGitBridge >> workingDirectory [
 	" Answer a <String> representing the current working directory "
 	
 	^ self class workingDirectory
