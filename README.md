@@ -1,7 +1,7 @@
-<p align="center"><img alt="CORMAS" src="assets/logos/CormasLogoBig.png" style="width: 15%; height: 15%">
+<p align="center"><img alt="CORMAS" src="assets/logos/CormasLogoBig.png" style="width: 25%; height: 25%">
 <h1 align="center">CORMAS</h1>
   <p align="center">
-    COmmon pool Ressources and Multi-Agent Simulations
+    <b>CO</b>mmon pool <b>R</b>essources and <b>M</b>ulti-<b>A</b>gent <b>S</b>imulations
     <br>
     <a href="https://github.com/cormas/cormas/wiki"><strong>Explore the docs »</strong></a>
     <br>
@@ -10,13 +10,15 @@
     |
     <a href="https://github.com/cormas/cormas/issues/new?labels=Type%3A+Feature">Request feature</a>
   </p>
-</p> 
+</p>
 
-![CI](https://github.com/cormas/cormas/workflows/CI%20Core/badge.svg) 
-![CI](https://github.com/cormas/cormas/workflows/CI%20Full/badge.svg) 
-[![Coverage Status](https://coveralls.io/repos/github/cormas/cormas/badge.svg?branch=master)](https://coveralls.io/github/cormas/cormas?branch=master)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/cormas/cormas/master/LICENSE)
-[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors-)
+<p align="center">
+<img alt="CI Core" src="https://github.com/cormas/cormas/workflows/CI%20Core/badge.svg">
+<img alt="CI Full" src="https://github.com/cormas/cormas/workflows/CI%20Full/badge.svg">
+<a href="https://coveralls.io/github/cormas/cormas?branch=master"><img alt="Coverage Status" src="https://coveralls.io/repos/github/cormas/cormas/badge.svg?branch=master"></a>
+<a href="https://raw.githubusercontent.com/cormas/cormas/master/LICENSE"><img alt="Licence" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-13-orange.svg"></a>
+</p>
 
 # Table of Contents 
 
