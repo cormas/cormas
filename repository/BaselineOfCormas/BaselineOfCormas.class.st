@@ -113,13 +113,9 @@ BaselineOfCormas >> specForBaselines: spec [
 BaselineOfCormas >> specForGroups: spec [
 
 	spec
-		group: 'Core' 		with: #('Cormas-Core');
-		group: 'UI' 			with: #(#'Cormas-UI' 'Core' 'Cormas-UI-Roassal3');
-
-		group: 'Tests' 		with: #('Core' 'Cormas-Mocks' 'Cormas-Tests' 'Cormas-UI-Tests');
-
-		group: 'All'			with: #('UI' 'Tests' 'Core');
-		group: 'default' 	with: #('All')	
+		group: 'Core' with: #('Cormas-Core' 'Cormas-Tests' 'Cormas-Mocks');
+		group: 'UI' with: #('Core' 'Cormas-UI' 'Cormas-UI-Roassal3' 'Cormas-UI-Tests');
+		group: 'default' with: #('UI')
 ]
 
 { #category : #specs }
