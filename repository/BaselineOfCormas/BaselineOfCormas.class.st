@@ -37,16 +37,6 @@ BaselineOfCormas >> closePharoWelcomeWindow [
 ]
 
 { #category : #doits }
-BaselineOfCormas >> findCurrentOwner [
-	" Answer a <String> with the name of the current CORMAS repository 'owner', this is the username from where the current image clone of cormas was installed. If no registry entries are detected, defaults to the cormas repository name "
-
-	^ IceRepository registry 
-			detect: [ :each | each name asLowercase = 'cormas' ]
-			ifFound: [ : found | found origin owner ]
-			ifNone: [ 'hernanmd' ]
-]
-
-{ #category : #doits }
 BaselineOfCormas >> isWelcomeWindow: sm [
 	" Answer <true> if sm matches the Pharo Welcome window "
 
