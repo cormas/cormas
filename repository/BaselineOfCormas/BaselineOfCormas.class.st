@@ -113,7 +113,7 @@ BaselineOfCormas >> specForBaselines: spec [
 BaselineOfCormas >> specForGroups: spec [
 
 	spec
-		group: 'Core' with: #('Cormas-Core' 'Cormas-Tests' 'Cormas-Mocks');
+		group: 'Core' with: #('Cormas-Core' 'Cormas-Tests' 'Cormas-Mocks' 'Cormas-Deprecated');
 		group: 'UI' with: #('Core' 'Cormas-UI' 'Cormas-UI-Roassal3' 'Cormas-UI-Tests');
 		group: 'default' with: #('UI')
 ]
@@ -126,6 +126,9 @@ BaselineOfCormas >> specForPackages: spec [
 		with: [ spec requires: #(
 			'MathRandomNumbers' 'PetitParser' 'GitBridge' 'ESRIASCIIRaster' 'SMark'
 			'CodeGenerator' 'ProjectFramework' 'CollectionExtensions') ];
+		
+		package: 'Cormas-Deprecated'
+		with: [ spec requires: #('Cormas-Core') ];
 		
 		package: 'Cormas-Mocks'
 		with: [ spec requires: #('Cormas-Core') ];
