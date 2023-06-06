@@ -1,0 +1,15 @@
+SmalltalkCISpec {
+  #loading : [
+    SCIMetacelloLoadSpec {
+      #baseline : 'Cormas',
+      #directory : 'repository',
+      #onWarningLog: true,
+      #onConflict : #useLoaded,
+      #load : [ 'Core' ],
+      #platforms : [ #pharo ]
+    }
+  ],
+  #testing : {
+    #categories : [ 'Cormas-*' ]
+  }
+}
