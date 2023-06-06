@@ -21,9 +21,7 @@ BaselineOfCormas >> baseline: spec [
 				specForBaselines: spec;
 				specForPackages: spec ].
 
-	self 
-		specForPharo8: spec;
-		specForPharo9: spec.
+	self specForPharo9: spec.
 
 ]
 
@@ -78,14 +76,6 @@ BaselineOfCormas >> postLoad [
 	CMApplicationProject cormasRepository 
 		ifNotNil: [ CMProjectBuilder buildProjectDemos ].
 
-]
-
-{ #category : #doits }
-BaselineOfCormas >> preLoadForPharo8 [
-	" Private - Execute post install actions "
-
-	Smalltalk tools debugger filterCommonMessageSends: true.
-	PharoLightTheme beCurrent
 ]
 
 { #category : #doits }
@@ -173,56 +163,6 @@ BaselineOfCormas >> specForPackagesInCore: spec [
 			" Required some String methods "
 			'CollectionExtensions' 
 			)
-]
-
-{ #category : #specs }
-BaselineOfCormas >> specForPharo8: spec [
-
-	spec
-		for: #'pharo8.x'
-		do: [ 
-			spec preLoadDoIt: #preLoadForPharo8.
-			spec
-				baseline: 'Tabular' 	with: [ spec repository: 'github://VincentBlondeau/Tabular' ];
-				baseline: 'Roassal2' 	with: [ spec repository: 'github://ObjectProfile/Roassal2' ];
-
-				package: 'Cormas-UI' with: [ spec requires: #('Cormas-Core' 'FileDialog' 'ProjectFramework' 'CodeGenerator') ];
-				package: 'Cormas-UI-Tests' with: [ spec requires: #('Cormas-Tests' 'Cormas-UI') ];
-				package: 'Cormas-UI-Roassal2' with: [ spec requires: #('Cormas-Core' 'Cormas-UI' 'Roassal2') ];
-				package: 'Cormas-UI-Roassal2-Tests' with: [ spec requires: #('Cormas-Tests' 'ProjectFramework' 'Cormas-Core' 'Cormas-UI' 'Cormas-UI-Roassal2') ];
-				
-				package: 'Cormas-Model-Conway-Roassal2' with: [ spec requires: #('Cormas-Model-Conway' 'Cormas-UI-Roassal2') ];
-				package: 'Cormas-Model-Diffuse-Roassal2'  with: [ spec requires: #('Cormas-Model-Diffuse' 'Cormas-UI-Roassal2') ];
-				package: 'Cormas-Model-ECEC-Roassal2' with: [ spec requires: #('Cormas-Model-ECEC' 'Cormas-UI-Roassal2') ];
-				package: 'Cormas-Model-FireAutomata-Roassal2' with: [ spec requires: #('Cormas-Model-FireAutomata' 'Cormas-UI-Roassal2') ];
-				package: 'Cormas-Model-Stupid-Roassal2' with: [ spec requires: #('Roassal2' 'Cormas-Model-Stupid' 'Cormas-UI-Roassal2') ].
-
-			self specForPharo8Groups: spec ]
-]
-
-{ #category : #specs }
-BaselineOfCormas >> specForPharo8Groups: spec [
-
-	spec
-		group: 'Core' 		with: #('Cormas-Core');
-		group: 'UI' 			with: #(#'Cormas-UI' 'Core');
-
-		group: 'Tests' 		with: #('Core' 'Cormas-Mocks' 'Cormas-Tests' 'Cormas-UI-Tests');
-
-		group: 'Models' 	with: 	#(
-						'Cormas-Model-Conway' 
-						'Cormas-Model-ReHab' 
-						'Cormas-Core' 
-						'Cormas-Model-ECEC' 
-						'Cormas-Model-FireAutomata' 
-						'Cormas-Model-PlotsRental' 
-						'Cormas-Model-Diffuse' 
-						'Cormas-Model-DemoAggregates' 
-						'Cormas-Model-Stupid');
-		group: 'OpenMole'	with: #('Cormas-OpenMole' 'Core');
-
-		group: 'All'			with: #('UI' 'Tests' 'Core' 'Models' 'OpenMole');
-		group: 'default' 	with: #('All')	
 ]
 
 { #category : #specs }
