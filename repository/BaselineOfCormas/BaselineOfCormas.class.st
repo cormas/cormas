@@ -68,15 +68,6 @@ BaselineOfCormas >> loadBgImage [
 ]
 
 { #category : #doits }
-BaselineOfCormas >> platformAssetsUrls [
-	" Answer a <Collection> of <String> representing each one an asset base URL "
-	
-	^ {
-		('https://github.com/' , self findCurrentOwner , '/cormas/raw/master/resources/')
-		}
-]
-
-{ #category : #doits }
 BaselineOfCormas >> postLoad [
 	" Private - Execute post install actions "
 
