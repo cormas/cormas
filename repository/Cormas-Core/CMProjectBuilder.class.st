@@ -43,7 +43,7 @@ CMProjectBuilder class >> buildProjectDemos [
 	
 	Cursor wait showWhile: [ 
 		self new 
-			destinationPath: CMResourceLocator demosPath;
+			destinationPath: CMGitBridge demosPath;
 			buildDemoProjects;
 			moveProjects;
 			unLoadModelPackages ].
@@ -57,7 +57,7 @@ CMProjectBuilder class >> buildProjectNamed: aPackageName modelClass: aModelClas
 	
 	Cursor wait showWhile: [ 
 		self new 
-			destinationPath: CMResourceLocator demosPath;
+			destinationPath: CMGitBridge demosPath;
 			buildProject: aPackageName modelClass: aModelClass;
 			moveProject;
 			unLoadModelPackage: aPackageName;
@@ -94,7 +94,7 @@ CMProjectBuilder class >> rebuildModels [
 	
 	Cursor wait showWhile: [ 
 		self new 
-			destinationPath: CMResourceLocator demosPath;
+			destinationPath: CMGitBridge demosPath;
 			rebuildProjects;
 			moveProjects ].
 	self inform: 'CORMAS Project Builder: Models built'
@@ -104,7 +104,7 @@ CMProjectBuilder class >> rebuildModels [
 CMProjectBuilder class >> resourceDirectoryNames [
 	" Answer a <Collection> with the names of subdirectories of a CORMAS project "
 
-	^ CMResourceLocator resourceDirectoryNames
+	^ CMGitBridge resourceDirectoryNames
 ]
 
 { #category : #'accessing - building' }
@@ -203,7 +203,7 @@ CMProjectBuilder >> builtFileRef: anObject [
 { #category : #'accessing - cleaning' }
 CMProjectBuilder >> cleanDemosProjectDir [
 
-	CMResourceLocator demosPath ensureDeleteAllChildren.
+	CMGitBridge demosPath ensureDeleteAllChildren.
 ]
 
 { #category : #'accessing - cleaning' }
@@ -248,7 +248,7 @@ CMProjectBuilder >> cormasRepository [
 CMProjectBuilder >> defaultDestinationPath [
 	" Private - By default the destination path it is the user projects directory "
 	
-	^ CMResourceLocator userProjectsPath
+	^ CMGitBridge userProjectsPath
 ]
 
 { #category : #defaults }
@@ -447,7 +447,7 @@ CMProjectBuilder >> rebuildProjects [
 	Remove and generate all project files using the model class found for each demo package. "
 
 	'CORMAS Project Builder: Rebuilding projects...' traceCr.
-	CMResourceLocator demosPath ensureDeleteAllChildren.
+	CMGitBridge demosPath ensureDeleteAllChildren.
 	self modelPackageNames do: [ : modelPackageName |
 		| modelClassName |
 		modelClassName := modelPackageName asPackage classes detect: [ : c | c superclass = CMAbstractModel ].
@@ -520,7 +520,7 @@ CMProjectBuilder >> writeProjectTree [
 	self hasLocalBuild 
 		ifTrue: [ self localBuildDirRef deleteAll ].
 	self localBuildDirRef ensureCreateDirectory.
-	CMResourceLocator resourceSelectors
+	CMGitBridge resourceSelectors
 		do: [ :resSelector | self writeProjectTree: resSelector ]
 		displayingProgress: [ :each | each ]
 

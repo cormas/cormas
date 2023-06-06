@@ -1,6 +1,6 @@
 Class {
 	#name : #CMResourceCreator,
-	#superclass : #CMResourceLocator,
+	#superclass : #CMGitBridge,
 	#category : #'Cormas-Core-Kernel'
 }
 

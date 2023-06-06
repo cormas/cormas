@@ -196,7 +196,7 @@ CMProjectModelTest >> testProjectName [
 { #category : #test }
 CMProjectModelTest >> testResourceLocator [
 
-	self assert: (self projectModel resourceLocator isKindOf: CMResourceLocator)
+	self assert: (self projectModel resourceLocator isKindOf: CMGitBridge)
 ]
 
 { #category : #test }

@@ -31,7 +31,7 @@ CMProjectManagerTest >> setUp [
 	PFProjectSettings currentApplicationClass: CMApplicationProject.
 	model := self newTestModel.
 	projectManager := self newProjectManager.
-	CMResourceLocator useGitBridge: false.
+	CMGitBridge useGitBridge: false.
 ]
 
 { #category : #test }
@@ -40,7 +40,7 @@ CMProjectManagerTest >> tearDown [
 
 	self cleanGeneratedMethods.
 	super tearDown.	
-	CMResourceLocator useGitBridge: true.
+	CMGitBridge useGitBridge: true.
 
 ]
 
@@ -121,7 +121,7 @@ CMProjectManagerTest >> testCormasModelVersion [
 { #category : #test }
 CMProjectManagerTest >> testCormasModels [
 
-	CMResourceLocator useGitBridge
+	CMGitBridge useGitBridge
 		ifTrue: [ self assertCollection: self projectManager cormasModels hasSameElements: self cormasModelNamesForTests ]
 		ifFalse: [ self assertCollection: self projectManager cormasModels hasSameElements: { 'MockModel' } ]
 ]
@@ -210,5 +210,5 @@ CMProjectManagerTest >> testProjectClass [
 { #category : #test }
 CMProjectManagerTest >> testResourceLocator [
 
-	self assert: (self projectManager resourceLocator isKindOf: CMResourceLocator)
+	self assert: (self projectManager resourceLocator isKindOf: CMGitBridge)
 ]
