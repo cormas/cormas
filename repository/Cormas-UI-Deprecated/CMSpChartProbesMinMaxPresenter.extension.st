@@ -1,6 +1,6 @@
 Extension { #name : #CMSpChartProbesMinMaxPresenter }
 
-{ #category : #'*Cormas-Deprecated' }
+{ #category : #'*Cormas-UI-Deprecated' }
 CMSpChartProbesMinMaxPresenter >> simManager [
 	"This method was renamed to simulationManager
 	It is now deprecated and will be removed in the future releases"

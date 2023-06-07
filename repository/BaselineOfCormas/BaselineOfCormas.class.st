@@ -113,8 +113,8 @@ BaselineOfCormas >> specForBaselines: spec [
 BaselineOfCormas >> specForGroups: spec [
 
 	spec
-		group: 'Core' with: #('Cormas-Core' 'Cormas-Tests' 'Cormas-Mocks');
-		group: 'UI' with: #('Core' 'Cormas-UI' 'Cormas-UI-Roassal3' 'Cormas-UI-Tests');
+		group: 'Core' with: #('Cormas-Core' 'Cormas-Tests' 'Cormas-Mocks' 'Cormas-Deprecated');
+		group: 'UI' with: #('Core' 'Cormas-UI' 'Cormas-UI-Roassal3' 'Cormas-UI-Tests' 'Cormas-UI-Deprecated');
 		group: 'default' with: #('UI')
 ]
 
@@ -127,6 +127,9 @@ BaselineOfCormas >> specForPackages: spec [
 			'MathRandomNumbers' 'PetitParser' 'GitBridge' 'ESRIASCIIRaster' 'SMark'
 			'CodeGenerator' 'ProjectFramework' 'CollectionExtensions') ];
 		
+		package: 'Cormas-Deprecated'
+		with: [ spec requires: #('Cormas-Core') ];
+		
 		package: 'Cormas-Mocks'
 		with: [ spec requires: #('Cormas-Core') ];
 		
@@ -138,11 +141,14 @@ BaselineOfCormas >> specForPackages: spec [
 			'Cormas-Core' 'FileDialog' 'ProjectFramework'
 			'CodeGenerator' 'UrucuNavigator') ];
 		
-		package: 'Cormas-UI-Tests'
-		with: [ spec requires: #('Cormas-Tests' 'Cormas-UI' 'Cormas-Mocks') ];
-		
 		package: 'Cormas-UI-Roassal3'
-		with: [ spec requires: #('Cormas-UI' 'Roassal3' 'Roassal3Exporters') ].
+		with: [ spec requires: #('Cormas-UI' 'Roassal3' 'Roassal3Exporters') ];
+		
+		package: 'Cormas-UI-Deprecated'
+		with: [ spec requires: #('Cormas-Core' 'Cormas-UI' 'Cormas-UI-Roassal3') ];
+		
+		package: 'Cormas-UI-Tests'
+		with: [ spec requires: #('Cormas-Tests' 'Cormas-UI' 'Cormas-Mocks') ].
 ]
 
 { #category : #doits }
