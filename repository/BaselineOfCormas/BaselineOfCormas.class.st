@@ -141,14 +141,14 @@ BaselineOfCormas >> specForPackages: spec [
 			'Cormas-Core' 'FileDialog' 'ProjectFramework'
 			'CodeGenerator' 'UrucuNavigator') ];
 		
+		package: 'Cormas-UI-Roassal3'
+		with: [ spec requires: #('Cormas-UI' 'Roassal3' 'Roassal3Exporters') ];
+		
 		package: 'Cormas-UI-Deprecated'
-		with: [ spec requires: #('Cormas-Core' 'Cormas-UI') ];
+		with: [ spec requires: #('Cormas-Core' 'Cormas-UI' 'Cormas-UI-Roassal3') ];
 		
 		package: 'Cormas-UI-Tests'
-		with: [ spec requires: #('Cormas-Tests' 'Cormas-UI' 'Cormas-Mocks') ];
-		
-		package: 'Cormas-UI-Roassal3'
-		with: [ spec requires: #('Cormas-UI' 'Roassal3' 'Roassal3Exporters') ].
+		with: [ spec requires: #('Cormas-Tests' 'Cormas-UI' 'Cormas-Mocks') ].
 ]
 
 { #category : #doits }
