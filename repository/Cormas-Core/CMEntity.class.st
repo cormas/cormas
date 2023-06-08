@@ -366,7 +366,7 @@ CMEntity class >> asGetterForEntityClass [
 	^ (String streamContents: [ : stream | 
 		stream 
 			<< 'the';
-			<< self entityName pluralize capitalized]) asSymbol
+			<< self entityName asPlural capitalized]) asSymbol
 ]
 
 { #category : #accessing }
