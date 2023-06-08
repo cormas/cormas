@@ -3,12 +3,7 @@ name: CI Full
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-on:
-  push:
-    branches:
-      - master
-  pull_request:
-    types: [assigned, opened, synchronize, reopened]
+on: [ push, pull_request ]
 
 jobs:
   build:
