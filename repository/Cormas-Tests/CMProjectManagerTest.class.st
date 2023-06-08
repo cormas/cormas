@@ -31,7 +31,6 @@ CMProjectManagerTest >> setUp [
 	PFProjectSettings currentApplicationClass: CMApplicationProject.
 	model := self newTestModel.
 	projectManager := self newProjectManager.
-	CMGitBridge useGitBridge: false.
 ]
 
 { #category : #test }
@@ -40,7 +39,6 @@ CMProjectManagerTest >> tearDown [
 
 	self cleanGeneratedMethods.
 	super tearDown.	
-	CMGitBridge useGitBridge: true.
 
 ]
 

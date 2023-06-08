@@ -94,7 +94,6 @@ CMProjectBuilderTest >> setUp [
 	super setUp.
 	self timeLimit: self defaultTimeLimit + 25 seconds.
 	self builder: CMProjectBuilder new.
-	CMGitBridge useGitBridge: false.
 ]
 
 { #category : #running }
@@ -102,7 +101,6 @@ CMProjectBuilderTest >> tearDown [
 
 	super tearDown.
 	self builder unLoadModelPackages.
-	CMGitBridge useGitBridge: true.
 ]
 
 { #category : #test }

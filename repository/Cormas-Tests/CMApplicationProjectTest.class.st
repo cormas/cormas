@@ -26,14 +26,6 @@ CMApplicationProjectTest >> setUp [
 
 	super setUp.
 	application := CMApplicationProject new.
-	CMGitBridge useGitBridge: false.
-]
-
-{ #category : #running }
-CMApplicationProjectTest >> tearDown [ 
-
-	super tearDown.
-	CMGitBridge useGitBridge: true.
 ]
 
 { #category : #test }
