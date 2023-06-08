@@ -121,7 +121,7 @@ BaselineOfCormas >> specForPackages: spec [
 		package: 'Cormas-Core'
 		with: [ spec requires: #(
 			'MathRandomNumbers' 'PetitParser' 'GitBridge' 'ESRIASCIIRaster' 'SMark'
-			'CodeGenerator' 'ProjectFramework' 'CollectionExtensions') ];
+			'CodeGenerator' 'ProjectFramework' 'CollectionExtensions' 'SingularizePluralize') ];
 		
 		package: 'Cormas-Deprecated'
 		with: [ spec requires: #('Cormas-Core') ];
