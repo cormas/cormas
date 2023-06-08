@@ -36,7 +36,7 @@ _(all the original class and method names in this list were retained as deprecat
 - Removed Pharo 8 from baseline
 - Added `Cormas-Tests` and `Cormas-Mocks` to the `Core` baseline group
 
-### CI
+### Continuous Integration (CI)
 
 - Created a separate workflow for `Cormas Core`
 
