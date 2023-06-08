@@ -141,8 +141,6 @@ CMProjectBuilderTest >> testDestinationPath [
 { #category : #test }
 CMProjectBuilderTest >> testIsModelLoaded [
 
-	CMGitBridge useGitBridge 
-		ifFalse: [ ^ self ].
 	self deny: (self builder isModelLoaded: 'CMInvalidXYZ123Model') description: 'Nonexistent model is not loaded'.
 	self loadSampleModel.
 	self assert: (self builder isModelLoaded: self sampleModelName) description: 'It should verify model is loaded'.
@@ -160,8 +158,6 @@ CMProjectBuilderTest >> testLocalBuildDir [
 { #category : #test }
 CMProjectBuilderTest >> testLocalBuildDirRef [
 
-	CMGitBridge useGitBridge 
-		ifFalse: [ ^ self ].
 	self assert: (self builder localBuildDirRef isKindOf: FileReference) description: 'It should get the local build FileReference'.
 	self assert: (self builder localBuildDirRef isDirectory) description: 'Local build location should be a directory'.
 
@@ -216,8 +212,6 @@ CMProjectBuilderTest >> testUnLoadModelPackage [
 
 	| testPackageName |
 	
-	CMGitBridge useGitBridge 
-		ifFalse: [ ^ self ].
 	testPackageName := self sampleModelName.
 	self builder lazyLoadModelPackage: testPackageName.
 	self assert: (self builder isModelLoaded: testPackageName).
@@ -229,8 +223,6 @@ CMProjectBuilderTest >> testUnLoadModelPackage [
 { #category : #test }
 CMProjectBuilderTest >> testUnLoadModelPackages [
 
-	CMGitBridge useGitBridge 
-		ifFalse: [ ^ self ].
 	self builder lazyLoadModelPackages.
 	self assert: self builder hasAllModelsLoaded.
 	self builder unLoadModelPackages.
@@ -253,8 +245,6 @@ CMProjectBuilderTest >> testWriteSourceCode [
 
 	| newFileRef outputFileRef |
 	
-	CMGitBridge useGitBridge 
-		ifFalse: [ ^ self ].
 	(self builder lazyLoadModelPackage: self sampleModelName).
 	self builder writeSourceCode: self sampleModelClass.
 	newFileRef := self builder tempLocation / CMProjectFile sourceCodeFilenameWithExtension.

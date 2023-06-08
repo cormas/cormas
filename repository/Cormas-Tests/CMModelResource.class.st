@@ -2,10 +2,22 @@ Class {
 	#name : #CMModelResource,
 	#superclass : #TestResource,
 	#instVars : [
-		'modelPath'
+		'assetsPath'
 	],
 	#category : #'Cormas-Tests-Helpers'
 }
+
+{ #category : #accessing }
+CMModelResource >> assetsPath [
+
+	^ assetsPath
+]
+
+{ #category : #accessing }
+CMModelResource >> assetsPath: anObject [
+
+	assetsPath := anObject
+]
 
 { #category : #running }
 CMModelResource >> buildCormasAssetsHierarchy [
@@ -19,19 +31,17 @@ CMModelResource >> buildCormasAssetsHierarchy [
 		{'logos'} .
 		{ 'models' . self sampleModelName } } do: [ : d | 
   			d
-				inject: self modelPath
+				inject: self assetsPath
 				into: [ : acc : cmDir | (acc / cmDir) asFileReference ensureCreateDirectory ] ].
 ]
 
 { #category : #running }
-CMModelResource >> buildCormasModelHierarchyFor: aModelName [
+CMModelResource >> buildCormasModelHierarchy [
 	" Answer a <Collection> with the subdirectories of a single CORMAS model "
 
-	| baseModelDir |
-	baseModelDir := self modelPath / 'models' / aModelName.
 	self cormasModelHierarchy do: [ : d | 
   		d
-			inject: baseModelDir
+			inject: self modelPath
 			into: [ : acc : cmDir | (acc / cmDir) asFileReference ensureCreateDirectory ] ].
 ]
 
@@ -43,16 +53,10 @@ CMModelResource >> cormasModelHierarchy [
 
 ]
 
-{ #category : #accessing }
+{ #category : #running }
 CMModelResource >> modelPath [
 
-	^ modelPath
-]
-
-{ #category : #accessing }
-CMModelResource >> modelPath: anObject [
-
-	modelPath := anObject
+	^ self assetsPath / 'models' / self sampleModelName
 ]
 
 { #category : #running }
@@ -72,11 +76,11 @@ CMModelResource >> setUp [
 CMModelResource >> setUpPathReferences [
 	" Create a sample directory structure for a mock model "
 
-	self modelPath: FileSystem memory root / CMGitBridge assetsFilesDirectoryName.
-	self modelPath createDirectory.
+	self assetsPath: CMGitBridge assetsPath.
+	"self modelPath createDirectory."
 	self 
-		buildCormasAssetsHierarchy;
-		buildCormasModelHierarchyFor: self sampleModelName.
+		"buildCormasAssetsHierarchy;"
+		buildCormasModelHierarchy.
 	
 ]
 
@@ -86,6 +90,5 @@ CMModelResource >> tearDown [
 	[ self modelPath ensureDeleteAll ]
 	on: FileDoesNotExistException
 	do: [ : ex | ].	
-	CMGitBridge useGitBridge: true.
 	super tearDown.
 ]
