@@ -471,11 +471,7 @@ CMAbstractModel class >> getterForEntityClass: aClass [
 	"
 
 	self deprecated: 'Use aClass asGetterForEntityClass'.
-	^ ('the'
-		,
-			(aClass isString
-				ifTrue: [ aClass ]
-				ifFalse: [ aClass entityName ]) asPlural capitalized) asSymbol
+	^ aClass asGetterForEntityClass
 ]
 
 { #category : #testing }
