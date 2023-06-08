@@ -78,6 +78,9 @@ BaselineOfCormas >> specForBaselines: spec [
 		
 		baseline: 'CodeGenerator'
 		with: [ spec repository: 'github://cormas/CodeGenerator' ];
+		
+		baseline: 'PharoCodeGenerator'
+		with: [ spec repository: 'github://juliendelplanque/PharoCodeGenerator' ];
 
 		baseline: 'MathRandomNumbers'
 		with: [ spec repository: 'github://PolyMathOrg/random-numbers:v1.x.x/src' ];
@@ -121,7 +124,8 @@ BaselineOfCormas >> specForPackages: spec [
 		package: 'Cormas-Core'
 		with: [ spec requires: #(
 			'MathRandomNumbers' 'PetitParser' 'GitBridge' 'ESRIASCIIRaster' 'SMark'
-			'CodeGenerator' 'ProjectFramework' 'CollectionExtensions' 'SingularizePluralize') ];
+			'CodeGenerator' 'PharoCodeGenerator' 'ProjectFramework' 'CollectionExtensions'
+			'SingularizePluralize') ];
 		
 		package: 'Cormas-Deprecated'
 		with: [ spec requires: #('Cormas-Core') ];
