@@ -74,10 +74,10 @@ BaselineOfCormas >> specForBaselines: spec [
 		with: [ spec repository: 'github://peteruhnak/file-dialog:v1.x/repository' ];
 
 		baseline: 'ProjectFramework'
-		with: [ spec repository: 'github://hernanmd/ProjectFramework/repository' ];
+		with: [ spec repository: 'github://cormas/ProjectFramework/repository' ];
 		
 		baseline: 'CodeGenerator'
-		with: [ spec repository: 'github://hernanmd/CodeGenerator/repository' ];
+		with: [ spec repository: 'github://cormas/CodeGenerator' ];
 
 		baseline: 'MathRandomNumbers'
 		with: [ spec repository: 'github://PolyMathOrg/random-numbers:v1.x.x/src' ];
