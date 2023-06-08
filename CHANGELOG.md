@@ -1,18 +1,18 @@
-# v0.5 (tomorrow)
+# [v0.5](https://github.com/cormas/cormas/compare/pre-v0.5...master) (tomorrow)
 
 ### Removed 
 
 _(those classes and methods have been removed because they were outdated, broken, and never used)_
 
-- Helper classes (`CMHelper`, `CMObjectHelper`, `CMBooleanHelper`, ect.)
-- Classes in the Analysis tag (`CrossedSensitivity`, `DistributionListCrossedAnalysis`, `MonteCarloCrossedAnalysis`, `SequentialCrossedAnalysis`)
-- Classes in the Observer tag (`BBaseVisuel`, `AgentObs`, `ControllerObs`, `FonctionObs`, `ModeleObs`, `Pref`)
-- Classes in the Connector tag (`CMToExcel`, `ExcelSheet`)
-- Cormas-OpenMole package (`CMOpenMoleExchange`, `CormasOpenMoleTest`)
-- `DataSaver` and `DataSaver_Asci`
-- `CormasModelGameInterface`
-- `ManifestOfCormas`
-- Some Baseleine methods (`platformAssetsUrls`, `findCurrentOwner`)
+- [PR https://github.com/cormas/cormas/pull/592] Helper classes (`CMHelper`, `CMObjectHelper`, `CMBooleanHelper`, ect.)
+- [PR https://github.com/cormas/cormas/pull/603] Classes in the Analysis tag (`CrossedSensitivity`, `DistributionListCrossedAnalysis`, `MonteCarloCrossedAnalysis`, `SequentialCrossedAnalysis`)
+- [PR https://github.com/cormas/cormas/pull/594] Classes in the Observer tag (`BBaseVisuel`, `AgentObs`, `ControllerObs`, `FonctionObs`, `ModeleObs`, `Pref`)
+- [PR https://github.com/cormas/cormas/pull/604] Classes in the Connector tag (`CMToExcel`, `ExcelSheet`)
+- [PR https://github.com/cormas/cormas/pull/611] Cormas-OpenMole package (`CMOpenMoleExchange`, `CormasOpenMoleTest`)
+- [PR https://github.com/cormas/cormas/pull/608] `DataSaver` and `DataSaver_Asci`
+- [PR https://github.com/cormas/cormas/pull/605] `CormasModelGameInterface`
+- [PR https://github.com/cormas/cormas/pull/610] `ManifestOfCormas`
+- [PR https://github.com/cormas/cormas/pull/619] Some Baseleine methods (`platformAssetsUrls`, `findCurrentOwner`)
 
 ### Renamed
 
