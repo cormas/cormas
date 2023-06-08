@@ -1,6 +1,9 @@
 # v0.5 (tomorrow)
 
 ### Removed 
+
+_(those classes and methods have been removed because they were outdated, broken, and never used)_
+
 - Helper classes (`CMHelper`, `CMObjectHelper`, `CMBooleanHelper`, ect.)
 - Classes in the Analysis tag (`CrossedSensitivity`, `DistributionListCrossedAnalysis`, `MonteCarloCrossedAnalysis`, `SequentialCrossedAnalysis`)
 - Classes in the Observer tag (`BBaseVisuel`, `AgentObs`, `ControllerObs`, `FonctionObs`, `ModeleObs`, `Pref`)
@@ -9,6 +12,7 @@
 - `DataSaver` and `DataSaver_Asci`
 - `CormasModelGameInterface`
 - `ManifestOfCormas`
+- Some Baseleine methods (`platformAssetsUrls`, `findCurrentOwner`)
 
 ### Renamed
 
@@ -35,6 +39,7 @@ _(all the original class and method names in this list were retained as deprecat
 
 - Removed Pharo 8 from baseline
 - Added `Cormas-Tests` and `Cormas-Mocks` to the `Core` baseline group
+- Removed methods for closing Pharo Welcome window (`isWelcomeWindow:`, `closePharoWelcomeWindow`)
 
 ### Continuous Integration (CI)
 
@@ -42,6 +47,7 @@ _(all the original class and method names in this list were retained as deprecat
 
 ### Decoupling
 
+- Moved `DefaultAttributeSetter` from `Cormas-UI` to `Cormas-Core`
 - Removed the dependency from `Cormas-UI` to `Cormas-Mocks`
 - The `Core` group (`Cormas-Core`, `Cormas-Tests`, and `Cormas-Mocks`) is now fully independent from the `UI` group (`Cormas-UI`, `Cormas-UI-Roassal3`, and `Cormas-UI-Tests`)
 
