@@ -98,7 +98,10 @@ BaselineOfCormas >> specForBaselines: spec [
 		with: [ spec repository: 'github://ObjectProfile/Roassal3Exporters' ];
 		
 		baseline: 'UrucuNavigator'
-		with: [ spec repository: 'github://tinchodias/pharo-urucu-navigator' ].
+		with: [ spec repository: 'github://tinchodias/pharo-urucu-navigator' ];
+		
+		baseline: 'SingularizePluralize'
+		with: [ spec repository: 'github://pharo-contributions/SingularizePluralize:v1.1' ].
 
 ]
 
