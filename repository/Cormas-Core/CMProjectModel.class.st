@@ -110,7 +110,7 @@ CMProjectModel >> addAnimation: aFileReference [
 
 	self assert: aFileReference basename equals: CMProjectFile demoImageFilenameWithExtension.
 	
-	aFileReference copyTo: (self resourceLocator animationsPath: self cormasModelName).
+	aFileReference copyTo: (self gitBridge animationsPath: self cormasModelName).
 	self inform: 'Animation added'
 ]
 
@@ -340,6 +340,13 @@ CMProjectModel >> friendlyName [
 	^ self cormasModel friendlyName.
 ]
 
+{ #category : #'accessing - resources' }
+CMProjectModel >> gitBridge [
+	" Answer the application's resource locator "
+	
+	^ self application gitBridge
+]
+
 { #category : #testing }
 CMProjectModel >> hasCormasModelClass [
 	" Answer <true> if receiver has configured a Cormas model "
@@ -549,13 +556,6 @@ CMProjectModel >> renameEntity: aCMEntityRenameAnnouncement [
 
 ]
 
-{ #category : #'accessing - resources' }
-CMProjectModel >> resourceLocator [
-	" Answer the application's resource locator "
-	
-	^ self application resourceLocator
-]
-
 { #category : #private }
 CMProjectModel >> saveProjectFile [
 
@@ -620,7 +620,7 @@ CMProjectModel >> specializeEntity: aCMEntityAnnouncement [
 CMProjectModel >> storedSimulations [
 	" Answer a <Collection> with the receiver's current model stored simulations "
 
-	^ (self resourceLocator dumpPath: self cormasModel class name) 
+	^ (self gitBridge dumpPath: self cormasModel class name) 
 		allChildrenMatching: CMSimulationManager simNameStart , '*'
 
 ]

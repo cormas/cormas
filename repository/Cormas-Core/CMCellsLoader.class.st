@@ -92,7 +92,7 @@ CMCellsLoader >> cellFileDirectory [
 	" Answer a <FileReference> to the maps subdirectory of the model.
 	Ex: /Users/.../cormas/assets/models/ECEC/maps"
 
-	^ self resourceLocator mapsPath: self cormasModelClass shortName
+	^ self gitBridge mapsPath: self cormasModelClass shortName
 ]
 
 { #category : #loading }

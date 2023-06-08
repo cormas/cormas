@@ -531,7 +531,7 @@ CMProjectBuilder >> writeProjectTree: resSelector [
 	" Private - Write all the resources (file tree) specified by resSelector found in the receiver's model local directory to aFileDirectory "
 	| resLocator resTypeDir newResourceDir |
 		
-	resLocator := self cormasProject resourceLocator.
+	resLocator := self cormasProject gitBridge.
 	resTypeDir := resLocator 
 		perform: resSelector asSymbol 
 		with: self cormasModel class shortName.

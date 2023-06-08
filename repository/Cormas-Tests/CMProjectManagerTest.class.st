@@ -171,7 +171,7 @@ CMProjectManagerTest >> testCurrentProjectVersion [
 { #category : #test }
 CMProjectManagerTest >> testGitBridge [
 
-	self assert: (self projectManager resourceLocator isKindOf: CMGitBridge)
+	self assert: (self projectManager gitBridge isKindOf: CMGitBridge)
 ]
 
 { #category : #test }

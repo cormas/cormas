@@ -61,7 +61,7 @@ CMApplicationProjectTest >> testDefaultTranslatorClass [
 { #category : #test }
 CMApplicationProjectTest >> testGitBridge [
 
-	self assert: (self application resourceLocator isKindOf: CMGitBridge)
+	self assert: (self application gitBridge isKindOf: CMGitBridge)
 ]
 
 { #category : #test }

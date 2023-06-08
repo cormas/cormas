@@ -61,17 +61,17 @@ CMObject >> application [
 ]
 
 { #category : #accessing }
+CMObject >> gitBridge [ 
+	" Answer the receiver's <CMResourceLocator>, an object to locate resources on the disk"
+
+	^ self application gitBridge
+]
+
+{ #category : #accessing }
 CMObject >> projectManager [ 
 	" Probably should be deleted "
 
 	^ CMProjectManager allInstances anyOne
-]
-
-{ #category : #accessing }
-CMObject >> resourceLocator [ 
-	" Answer the receiver's <CMResourceLocator>, an object to locate resources on the disk"
-
-	^ self application resourceLocator
 ]
 
 { #category : #accessing }

@@ -169,7 +169,7 @@ CMProjectModelTest >> testFindSimulationNamed [
 { #category : #test }
 CMProjectModelTest >> testGitBridge [
 
-	self assert: (self projectModel resourceLocator isKindOf: CMGitBridge)
+	self assert: (self projectModel gitBridge isKindOf: CMGitBridge)
 ]
 
 { #category : #test }
