@@ -47,7 +47,8 @@ Class {
 		'image',
 		'activeProbes',
 		'povDict',
-		'activityDiagrams'
+		'activityDiagrams',
+		'getter'
 	],
 	#category : #'Cormas-Core-Entities'
 }
@@ -358,15 +359,10 @@ Example: LandCover allTerminalClasses"
 
 { #category : #accessing }
 CMEntity class >> asGetterForEntityClass [
-	" Create the getter selector for the entity class aClass.
+	"Create the getter selector for the entity class aClass.
+	CMEntity asGetterForEntityClass -> #theEntities"
 
-	CMEntity asGetterForEntityClass -> #theEntities
-	"
-
-	^ (String streamContents: [ : stream | 
-		stream 
-			<< 'the';
-			<< self entityName asPlural capitalized]) asSymbol
+	^ getter ifNil: [ getter := self buildGetterForEntityClass ].
 ]
 
 { #category : #accessing }
@@ -405,6 +401,17 @@ CMEntity class >> availablePov [
 		ifTrue: [ collec addFirst: #delimitors ].
 	collec addFirst: #nil.
 	^ collec
+]
+
+{ #category : #accessing }
+CMEntity class >> buildGetterForEntityClass [
+	" Create the getter selector for the entity class aClass.
+	CMEntity asGetterForEntityClass -> #theEntities"
+
+	^ (String streamContents: [ : stream | 
+		stream 
+			<< 'the';
+			<< self entityName asPlural capitalized]) asSymbol
 ]
 
 { #category : #deprecated }
