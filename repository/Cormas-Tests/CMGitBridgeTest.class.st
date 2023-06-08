@@ -1,5 +1,5 @@
 Class {
-	#name : #CMResourceLocatorTest,
+	#name : #CMGitBridgeTest,
 	#superclass : #TestCase,
 	#instVars : [
 		'resourceLocator',
@@ -9,29 +9,29 @@ Class {
 }
 
 { #category : #accessing }
-CMResourceLocatorTest class >> resources [
+CMGitBridgeTest class >> resources [
 
 	^ Array with: CMModelResource.
 ]
 
 { #category : #accessing }
-CMResourceLocatorTest >> resourceBuilder [
+CMGitBridgeTest >> resourceBuilder [
 
 	^ CMModelResource current
 ]
 
 { #category : #accessing }
-CMResourceLocatorTest >> resourceLocator [
+CMGitBridgeTest >> resourceLocator [
 	^ resourceLocator
 ]
 
 { #category : #accessing }
-CMResourceLocatorTest >> resourceLocator: arg1 [
+CMGitBridgeTest >> resourceLocator: arg1 [
 	resourceLocator := arg1
 ]
 
 { #category : #testing }
-CMResourceLocatorTest >> sampleMatrixContents [
+CMGitBridgeTest >> sampleMatrixContents [
 
 	^ '1;2;10
 2;0;0
@@ -46,7 +46,7 @@ CMResourceLocatorTest >> sampleMatrixContents [
 ]
 
 { #category : #testing }
-CMResourceLocatorTest >> sampleMatrixFile [
+CMGitBridgeTest >> sampleMatrixFile [
 
 	| tempFilename |
 	
@@ -56,20 +56,20 @@ CMResourceLocatorTest >> sampleMatrixFile [
 ]
 
 { #category : #accessing }
-CMResourceLocatorTest >> sampleModel [
+CMGitBridgeTest >> sampleModel [
 
 	^ self resourceBuilder modelPath 
 ]
 
 { #category : #accessing }
-CMResourceLocatorTest >> sampleModelName [
+CMGitBridgeTest >> sampleModelName [
 	" Answer a <String> with the name of the mock model used for testing "
 
 	^ self resourceBuilder sampleModelName 
 ]
 
 { #category : #running }
-CMResourceLocatorTest >> setUp [
+CMGitBridgeTest >> setUp [
 
 	super setUp.
 	self resourceLocator: CMGitBridge new.
@@ -77,7 +77,7 @@ CMResourceLocatorTest >> setUp [
 ]
 
 { #category : #accessing }
-CMResourceLocatorTest >> tempFileFor: aName suffix: aSuffixString [
+CMGitBridgeTest >> tempFileFor: aName suffix: aSuffixString [
 
 	^ (FileLocator temp asFileReference
 		/ (FileReference newTempFilePrefix: aName suffix: aSuffixString) basename)
@@ -85,7 +85,7 @@ CMResourceLocatorTest >> tempFileFor: aName suffix: aSuffixString [
 ]
 
 { #category : #testing }
-CMResourceLocatorTest >> testAnimationsPath [
+CMGitBridgeTest >> testAnimationsPath [
 	| cmFileRef |
 	cmFileRef := self resourceLocator animationsPath: self sampleModelName.
 	self
@@ -94,32 +94,32 @@ CMResourceLocatorTest >> testAnimationsPath [
 ]
 
 { #category : #testing }
-CMResourceLocatorTest >> testAssetNamed [
+CMGitBridgeTest >> testAssetNamed [
 
 	self assert: ((self resourceLocator assetNamed: 'simpleMap.csv') isKindOf: FileReference)
 ]
 
 { #category : #testing }
-CMResourceLocatorTest >> testAssetsFilesDirectoryName [
+CMGitBridgeTest >> testAssetsFilesDirectoryName [
 
 	self assert: (self resourceLocator assetsFilesDirectoryName isKindOf: String).
 	self deny: self resourceLocator assetsFilesDirectoryName isEmpty 
 ]
 
 { #category : #testing }
-CMResourceLocatorTest >> testAssetsPath [
+CMGitBridgeTest >> testAssetsPath [
 
 	self assert: (self resourceLocator assetsPath isKindOf: FileReference).
 	self assert: self resourceLocator assetsPath isDirectory.
 ]
 
 { #category : #testing }
-CMResourceLocatorTest >> testCormasPath [
+CMGitBridgeTest >> testCormasPath [
 	self assert: (self resourceLocator cormasPath isKindOf: FileReference)
 ]
 
 { #category : #testing }
-CMResourceLocatorTest >> testDiagramsPath [
+CMGitBridgeTest >> testDiagramsPath [
 
 	| cmFileRef |
 	
@@ -131,7 +131,7 @@ CMResourceLocatorTest >> testDiagramsPath [
 ]
 
 { #category : #testing }
-CMResourceLocatorTest >> testDocPath [
+CMGitBridgeTest >> testDocPath [
 
 	| cmFileRef |
 	
@@ -143,7 +143,7 @@ CMResourceLocatorTest >> testDocPath [
 ]
 
 { #category : #testing }
-CMResourceLocatorTest >> testDumpPath [
+CMGitBridgeTest >> testDumpPath [
 	| cmFileRef |
 	cmFileRef := self resourceLocator dumpPath: self sampleModelName.
 	self
@@ -153,7 +153,7 @@ CMResourceLocatorTest >> testDumpPath [
 ]
 
 { #category : #testing }
-CMResourceLocatorTest >> testImagesPath [
+CMGitBridgeTest >> testImagesPath [
 
 	| cmFileRef |
 	
@@ -164,7 +164,7 @@ CMResourceLocatorTest >> testImagesPath [
 ]
 
 { #category : #testing }
-CMResourceLocatorTest >> testInputsPath [
+CMGitBridgeTest >> testInputsPath [
 	| cmFileRef |
 	cmFileRef := self resourceLocator inputsPath: self sampleModelName.
 	self
@@ -174,7 +174,7 @@ CMResourceLocatorTest >> testInputsPath [
 ]
 
 { #category : #testing }
-CMResourceLocatorTest >> testMapsPath [
+CMGitBridgeTest >> testMapsPath [
 
 	| cmFileRef |
 	
@@ -186,7 +186,7 @@ CMResourceLocatorTest >> testMapsPath [
 ]
 
 { #category : #testing }
-CMResourceLocatorTest >> testModelNames [
+CMGitBridgeTest >> testModelNames [
 
 	self assert: (self resourceLocator modelNames isKindOf: Collection).
 	self deny: self resourceLocator modelNames isEmpty.
@@ -195,7 +195,7 @@ CMResourceLocatorTest >> testModelNames [
 ]
 
 { #category : #testing }
-CMResourceLocatorTest >> testModelPath [
+CMGitBridgeTest >> testModelPath [
 
 	| cmFileRef |
 	cmFileRef := self resourceLocator modelPath: self sampleModelName.
@@ -205,7 +205,7 @@ CMResourceLocatorTest >> testModelPath [
 ]
 
 { #category : #testing }
-CMResourceLocatorTest >> testModelsPath [
+CMGitBridgeTest >> testModelsPath [
 
 	self 
 		assert: (self resourceLocator modelsPath isKindOf: FileReference);
@@ -213,7 +213,7 @@ CMResourceLocatorTest >> testModelsPath [
 ]
 
 { #category : #testing }
-CMResourceLocatorTest >> testOldVersionsPath [
+CMGitBridgeTest >> testOldVersionsPath [
 
 	| cmFileRef |
 	
@@ -225,7 +225,7 @@ CMResourceLocatorTest >> testOldVersionsPath [
 ]
 
 { #category : #testing }
-CMResourceLocatorTest >> testOutputsPath [
+CMGitBridgeTest >> testOutputsPath [
 	| cmFileRef |
 	cmFileRef := self resourceLocator outputsPath: self sampleModelName.
 	self
@@ -235,7 +235,7 @@ CMResourceLocatorTest >> testOutputsPath [
 ]
 
 { #category : #testing }
-CMResourceLocatorTest >> testReadCsvFileMyModel [
+CMGitBridgeTest >> testReadCsvFileMyModel [
 
 	| matrix |
 	
@@ -249,7 +249,7 @@ CMResourceLocatorTest >> testReadCsvFileMyModel [
 ]
 
 { #category : #testing }
-CMResourceLocatorTest >> testReadMatrixSep [
+CMGitBridgeTest >> testReadMatrixSep [
 
 	| matrix |
 	
@@ -262,7 +262,7 @@ CMResourceLocatorTest >> testReadMatrixSep [
 ]
 
 { #category : #testing }
-CMResourceLocatorTest >> testVideoPath [
+CMGitBridgeTest >> testVideoPath [
 	| cmFileRef |
 	cmFileRef := self resourceLocator videoPath: self sampleModelName.
 	self
@@ -272,7 +272,7 @@ CMResourceLocatorTest >> testVideoPath [
 ]
 
 { #category : #testing }
-CMResourceLocatorTest >> testWorkingDirectory [
+CMGitBridgeTest >> testWorkingDirectory [
 
 	self assert: (self resourceLocator workingDirectory isKindOf: String) 
 ]
