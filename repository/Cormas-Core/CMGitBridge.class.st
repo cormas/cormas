@@ -17,9 +17,6 @@ Internal Representation and Key Implementation Points.
 Class {
 	#name : #CMGitBridge,
 	#superclass : #GitBridge,
-	#classInstVars : [
-		'useGitBridge'
-	],
 	#category : #'Cormas-Core-Kernel'
 }
 
@@ -35,25 +32,10 @@ CMGitBridge class >> assetsPath [
 	"Return the assets path of Cormas
 	Ex: {localDirectory}/iceberg/cormas/cormas/assets"
 
-	^ self useGitBridge
-		ifTrue: [ self assetsPathForIceberg ]
-		ifFalse: [ self assetsPathForCI ]
-
-]
-
-{ #category : #accessing }
-CMGitBridge class >> assetsPathForCI [
-	" The model path from the resource already contains the assets directory "
-
-	^ CMModelResource current assetsPath
-]
-
-{ #category : #accessing }
-CMGitBridge class >> assetsPathForIceberg [
-
 	^ ([ self root ]
 		on: GBError
 		do: [ :ex | FileLocator workingDirectory ]) / self assetsFilesDirectoryName
+
 ]
 
 { #category : #accessing }
@@ -110,20 +92,6 @@ CMGitBridge class >> resourceSelectors [
 
 	^ (self organization listAtCategoryNamed: 'utilities - path - models') 
 		select: [ : selector | selector isKeyword and: [ selector ~= #modelPath: ] ]
-]
-
-{ #category : #accessing }
-CMGitBridge class >> useGitBridge [
-	" Read comment in #root method "
-
-	^ useGitBridge
-		ifNil: [ useGitBridge := true ]
-]
-
-{ #category : #accessing }
-CMGitBridge class >> useGitBridge: anObject [
-
-	useGitBridge := anObject
 ]
 
 { #category : #accessing }
