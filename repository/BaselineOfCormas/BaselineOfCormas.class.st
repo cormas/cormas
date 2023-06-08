@@ -38,7 +38,8 @@ BaselineOfCormas >> postLoad [
 	
 	PFProjectApplication applicationClass: CMApplicationProject.
 	
-	self loadBackgroundImage.	
+	self class environment at: #CMSpApplication ifPresent: [ 
+		self loadBackgroundImage ].	
 		
 	FDMorphicUIManager new beDefault.
 	ShortcutReminder enabled: false.
