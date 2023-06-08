@@ -101,7 +101,10 @@ BaselineOfCormas >> specForBaselines: spec [
 		with: [ spec repository: 'github://tinchodias/pharo-urucu-navigator' ];
 		
 		baseline: 'SingularizePluralize'
-		with: [ spec repository: 'github://pharo-contributions/SingularizePluralize:v1.1' ].
+		with: [ spec repository: 'github://pharo-contributions/SingularizePluralize:v1.1' ];
+		
+		baseline: 'PharoCodeGenerator'
+		with: [ spec repository: 'github://juliendelplanque/PharoCodeGenerator' ].
 
 ]
 
