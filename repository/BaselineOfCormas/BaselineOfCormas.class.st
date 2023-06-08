@@ -29,14 +29,8 @@ BaselineOfCormas >> baseline: spec [
 BaselineOfCormas >> loadBackgroundImage [
 	"Load Cormas logo as background image"
 
-	| file app |
-	
-	app := PFProjectApplication applicationClass uniqueInstance.
-	file := app resourceLocator imagesPath / 'CormasLogoFull.png'.
-	
-	file exists ifTrue: [ 
-		[ PolymorphSystemSettings desktopLogoFileName: file fullName ]
-			on: NotFound do: [ :ex | "do nothing" ] ]
+	(CMGitBridge imagesPath / 'CormasLogoFull.png') ifExists: [ :file |
+		PolymorphSystemSettings desktopLogoFileName: file fullName ].
 ]
 
 { #category : #doits }
