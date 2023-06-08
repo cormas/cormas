@@ -169,6 +169,12 @@ CMProjectManagerTest >> testCurrentProjectVersion [
 ]
 
 { #category : #test }
+CMProjectManagerTest >> testGitBridge [
+
+	self assert: (self projectManager resourceLocator isKindOf: CMGitBridge)
+]
+
+{ #category : #test }
 CMProjectManagerTest >> testIsValidCormasEntityName [
 
 	| entityName |
@@ -205,10 +211,4 @@ CMProjectManagerTest >> testModelProbesMethods [
 CMProjectManagerTest >> testProjectClass [
 
 	self assert: self projectManager projectClass equals: CMProjectModel
-]
-
-{ #category : #test }
-CMProjectManagerTest >> testResourceLocator [
-
-	self assert: (self projectManager resourceLocator isKindOf: CMGitBridge)
 ]
