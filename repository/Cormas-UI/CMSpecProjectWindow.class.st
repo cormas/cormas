@@ -21,7 +21,7 @@ CMSpecProjectWindow class >> defaultSpec [
 		newColumn: [ :c | 
 			c 
 				add: #menuToolbar height: self toolbarHeight;
-				add: #simWindow height: 105 ];
+				add: #simulationWindow height: 105 ];
 		yourself
 ]
 
@@ -54,7 +54,7 @@ CMSpecProjectWindow class >> open [
 		openWithSpec;
 		startFSM;
 		yourself.
-	win simWindow hideSimInterface
+	win simulationWindow hideSimInterface
 ]
 
 { #category : #callbacks }
@@ -80,7 +80,7 @@ CMSpecProjectWindow >> closeAfterCreateProject [
 CMSpecProjectWindow >> closeSimulationWindow [
 	" Close the receiver's simulation interface "
 	
-	self simWindow delete
+	self simulationWindow delete
 ]
 
 { #category : #private }
@@ -266,7 +266,7 @@ CMSpecProjectWindow >> initializeSubscriptions [
 	super initializeSubscriptions.
 	self projectAnnouncer
 		when: CMFinalStepChangedAnnouncement
-		do: [ : ann | self simWindow simWindow finalStepInputText text: ann finalStep. ].
+		do: [ : ann | self simulationWindow simulationWindow finalStepInputText text: ann finalStep. ].
 	self projectAnnouncer
 		when: CMProjectUpdateAnnouncement, CMProjectRenameAnnouncement
 		do: [ : ann | 
@@ -796,17 +796,17 @@ CMSpecProjectWindow >> runCormasTests [
 { #category : #callbacks }
 CMSpecProjectWindow >> showSimulationWindow [
 
-	self simWindow showSimInterface
-]
-
-{ #category : #accessing }
-CMSpecProjectWindow >> simWindow [
-	^ simWindow
+	self simulationWindow showSimInterface
 ]
 
 { #category : #accessing }
 CMSpecProjectWindow >> simWindow: anObject [
 	simWindow := anObject
+]
+
+{ #category : #accessing }
+CMSpecProjectWindow >> simulationWindow [
+	^ simWindow
 ]
 
 { #category : #accessing }
@@ -1321,7 +1321,7 @@ CMSpecProjectWindow >> subMenuSimInterface: item [
 		name: self translator tSimInterface;
 		icon: (self iconNamed: #window);
 		shortcut: $I command;
-		action: [ self simWindow toggleSimInterface ]
+		action: [ self simulationWindow toggleSimInterface ]
 ]
 
 { #category : #'submenu-simulation' }
@@ -1624,7 +1624,7 @@ CMSpecProjectWindow >> subMenuVizSpace: item [
 CMSpecProjectWindow >> updateSimulationWindow [
 	" Open or update the receiver's simulation interface "
 	
-	self simWindow toggleSimInterface
+	self simulationWindow toggleSimInterface
 ]
 
 { #category : #callbacks }
