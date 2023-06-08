@@ -45,7 +45,7 @@ CMGitBridge class >> assetsPath [
 CMGitBridge class >> assetsPathForCI [
 	" The model path from the resource already contains the assets directory "
 
-	^ CMModelResource current modelPath
+	^ CMModelResource current assetsPath
 ]
 
 { #category : #accessing }

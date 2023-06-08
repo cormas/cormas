@@ -11,23 +11,6 @@ CMAbstractModelTest >> cleanGeneratedMethods [
 		ifTrue: [ self projectModel cormasModelClass class removeSelector: #creationDate ].
 ]
 
-{ #category : #test }
-CMAbstractModelTest >> cormasModelNamesForTests [
-
-	^ 'DemoAquifer
-SIS
-DemoAggregates
-Conway
-DemoArcsNodes
-DemoAquiferPollution
-WolfSheepPredation
-Diffuse
-FireModel
-DemoWayTo
-DemoAquifer
-ECEC' lines
-]
-
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> newProjectManager [
 

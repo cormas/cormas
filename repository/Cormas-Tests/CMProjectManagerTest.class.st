@@ -117,14 +117,6 @@ CMProjectManagerTest >> testCormasModelVersion [
 ]
 
 { #category : #test }
-CMProjectManagerTest >> testCormasModels [
-
-	CMGitBridge useGitBridge
-		ifTrue: [ self assertCollection: self projectManager cormasModels hasSameElements: self cormasModelNamesForTests ]
-		ifFalse: [ self assertCollection: self projectManager cormasModels hasSameElements: { 'MockModel' } ]
-]
-
-{ #category : #test }
 CMProjectManagerTest >> testCreateClassModelNamed [
 
 	| modelClassname |

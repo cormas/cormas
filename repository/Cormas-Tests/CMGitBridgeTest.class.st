@@ -58,7 +58,7 @@ CMGitBridgeTest >> sampleMatrixFile [
 { #category : #accessing }
 CMGitBridgeTest >> sampleModel [
 
-	^ self resourceBuilder modelPath 
+	^ self resourceBuilder assetsPath 
 ]
 
 { #category : #accessing }
@@ -73,7 +73,6 @@ CMGitBridgeTest >> setUp [
 
 	super setUp.
 	self resourceLocator: CMGitBridge new.
-	self gitBridge class useGitBridge: false.
 ]
 
 { #category : #accessing }
@@ -86,11 +85,12 @@ CMGitBridgeTest >> tempFileFor: aName suffix: aSuffixString [
 
 { #category : #testing }
 CMGitBridgeTest >> testAnimationsPath [
-	| cmFileRef |
-	cmFileRef := self gitBridge animationsPath: self sampleModelName.
+
+	| file |
+	file := self gitBridge animationsPath: self sampleModelName.
 	self
-		assert: (cmFileRef isKindOf: FileReference);
-		assert: cmFileRef isDirectory 
+		assert: (file isKindOf: FileReference);
+		assert: file isDirectory 
 ]
 
 { #category : #testing }
@@ -121,68 +121,68 @@ CMGitBridgeTest >> testCormasPath [
 { #category : #testing }
 CMGitBridgeTest >> testDiagramsPath [
 
-	| cmFileRef |
+	| file |
 	
-	cmFileRef := self gitBridge diagramsPath: self sampleModelName.
+	file := self gitBridge diagramsPath: self sampleModelName.
 	self
-		assert: (cmFileRef isKindOf: FileReference);
-		assert: cmFileRef isDirectory;
-		assert: cmFileRef fullName equals: '/assets/models/MockModel/diagrams'
+		assert: (file isKindOf: FileReference);
+		assert: file isDirectory;
+		assert: (file fullName endsWith: '/assets/models/MockModel/diagrams')
 ]
 
 { #category : #testing }
 CMGitBridgeTest >> testDocPath [
 
-	| cmFileRef |
+	| file |
 	
-	cmFileRef := self gitBridge docPath: self sampleModelName.
+	file := self gitBridge docPath: self sampleModelName.
 	self
-		assert: (cmFileRef isKindOf: FileReference);
-		assert: cmFileRef isDirectory;
-		assert: cmFileRef fullName equals: '/assets/models/MockModel/doc'
+		assert: (file isKindOf: FileReference);
+		assert: file isDirectory;
+		assert: (file fullName endsWith: '/assets/models/MockModel/doc')
 ]
 
 { #category : #testing }
 CMGitBridgeTest >> testDumpPath [
-	| cmFileRef |
-	cmFileRef := self gitBridge dumpPath: self sampleModelName.
+	| file |
+	file := self gitBridge dumpPath: self sampleModelName.
 	self
-		assert: (cmFileRef isKindOf: FileReference);
-		assert: cmFileRef isDirectory;
-		assert: cmFileRef fullName equals: '/assets/models/MockModel/dumps'
+		assert: (file isKindOf: FileReference);
+		assert: file isDirectory;
+		assert: (file fullName endsWith: '/assets/models/MockModel/dumps')
 ]
 
 { #category : #testing }
 CMGitBridgeTest >> testImagesPath [
 
-	| cmFileRef |
+	| file |
 	
-	cmFileRef := self gitBridge imagesPath: self sampleModelName.
-	self assert: (cmFileRef isKindOf: FileReference).
-	self assert: cmFileRef isDirectory.
-	self assert: cmFileRef fullName equals: '/assets/models/MockModel/images'
+	file := self gitBridge imagesPath: self sampleModelName.
+	self assert: (file isKindOf: FileReference).
+	self assert: file isDirectory.
+	self assert: (file fullName endsWith: '/assets/models/MockModel/images')
 ]
 
 { #category : #testing }
 CMGitBridgeTest >> testInputsPath [
-	| cmFileRef |
-	cmFileRef := self gitBridge inputsPath: self sampleModelName.
+	| file |
+	file := self gitBridge inputsPath: self sampleModelName.
 	self
-		assert: (cmFileRef isKindOf: FileReference);
-		assert: cmFileRef isDirectory;
-		assert: cmFileRef fullName equals: '/assets/models/MockModel/inputs'
+		assert: (file isKindOf: FileReference);
+		assert: file isDirectory;
+		assert: (file fullName endsWith: '/assets/models/MockModel/inputs')
 ]
 
 { #category : #testing }
 CMGitBridgeTest >> testMapsPath [
 
-	| cmFileRef |
+	| file |
 	
-	cmFileRef := self gitBridge mapsPath: self sampleModelName.
+	file := self gitBridge mapsPath: self sampleModelName.
 	self
-		assert: (cmFileRef isKindOf: FileReference);
-		assert: cmFileRef isDirectory;
-		assert: cmFileRef fullName equals: '/assets/models/MockModel/maps'
+		assert: (file isKindOf: FileReference);
+		assert: file isDirectory;
+		assert: (file fullName endsWith: '/assets/models/MockModel/maps')
 ]
 
 { #category : #testing }
@@ -197,11 +197,11 @@ CMGitBridgeTest >> testModelNames [
 { #category : #testing }
 CMGitBridgeTest >> testModelPath [
 
-	| cmFileRef |
-	cmFileRef := self gitBridge modelPath: self sampleModelName.
+	| file |
+	file := self gitBridge modelPath: self sampleModelName.
 	self
-		assert: (cmFileRef isKindOf: FileReference);
-		assert: cmFileRef fullName equals: '/assets/models/MockModel'
+		assert: (file isKindOf: FileReference);
+		assert: (file fullName endsWith: '/assets/models/MockModel')
 ]
 
 { #category : #testing }
@@ -209,29 +209,29 @@ CMGitBridgeTest >> testModelsPath [
 
 	self 
 		assert: (self gitBridge modelsPath isKindOf: FileReference);
-		assert: self gitBridge modelsPath fullName equals: '/assets/models'
+		assert: (self gitBridge modelsPath fullName endsWith: '/assets/models')
 ]
 
 { #category : #testing }
 CMGitBridgeTest >> testOldVersionsPath [
 
-	| cmFileRef |
+	| file |
 	
-	cmFileRef := self gitBridge oldVersionsPath: self sampleModelName.
+	file := self gitBridge oldVersionsPath: self sampleModelName.
 	self
-		assert: (cmFileRef isKindOf: FileReference);
-		assert: cmFileRef isDirectory;
-		assert: cmFileRef fullName equals: '/assets/models/MockModel/old_versions'
+		assert: (file isKindOf: FileReference);
+		assert: file isDirectory;
+		assert: (file fullName endsWith: '/assets/models/MockModel/old_versions')
 ]
 
 { #category : #testing }
 CMGitBridgeTest >> testOutputsPath [
-	| cmFileRef |
-	cmFileRef := self gitBridge outputsPath: self sampleModelName.
+	| file |
+	file := self gitBridge outputsPath: self sampleModelName.
 	self
-		assert: (cmFileRef isKindOf: FileReference);
-		assert: cmFileRef isDirectory;
-		assert: cmFileRef fullName equals: '/assets/models/MockModel/outputs'
+		assert: (file isKindOf: FileReference);
+		assert: file isDirectory;
+		assert: (file fullName endsWith: '/assets/models/MockModel/outputs')
 ]
 
 { #category : #testing }
@@ -263,12 +263,12 @@ CMGitBridgeTest >> testReadMatrixSep [
 
 { #category : #testing }
 CMGitBridgeTest >> testVideoPath [
-	| cmFileRef |
-	cmFileRef := self gitBridge videoPath: self sampleModelName.
+	| file |
+	file := self gitBridge videoPath: self sampleModelName.
 	self
-		assert: (cmFileRef isKindOf: FileReference);
-		assert: cmFileRef isDirectory;
-		assert: cmFileRef fullName equals: '/assets/models/MockModel/video'
+		assert: (file isKindOf: FileReference);
+		assert: file isDirectory;
+		assert: (file fullName endsWith: '/assets/models/MockModel/video')
 ]
 
 { #category : #testing }

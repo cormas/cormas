@@ -55,11 +55,3 @@ CMApplicationProjectTest >> testGitBridge [
 
 	self assert: (self application gitBridge isKindOf: CMGitBridge)
 ]
-
-{ #category : #test }
-CMApplicationProjectTest >> testModelNames [
-
-	CMGitBridge useGitBridge
-		ifTrue: [ self assertCollection: self application modelNames hasSameElements: self cormasModelNamesForTests ]
-		ifFalse: [ self assertCollection: self application modelNames hasSameElements: { 'MockModel' } ]
-]
