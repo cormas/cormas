@@ -475,7 +475,7 @@ CMAbstractModel class >> getterForEntityClass: aClass [
 		,
 			(aClass isString
 				ifTrue: [ aClass ]
-				ifFalse: [ aClass entityName ]) pluralize capitalized) asSymbol
+				ifFalse: [ aClass entityName ]) asPlural capitalized) asSymbol
 ]
 
 { #category : #testing }

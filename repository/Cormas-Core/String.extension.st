@@ -19,7 +19,7 @@ String >> asGetterForEntityClass [
 	^ (String streamContents: [ : stream | 
 		stream 
 			<< 'the';
-			<< self pluralize capitalized]) asSymbol
+			<< self asPlural capitalized]) asSymbol
 ]
 
 { #category : #'*Cormas-Core' }
