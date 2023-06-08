@@ -6,20 +6,23 @@ env:
 on:
   push:
     branches:
-      - master
+      - '**'
   pull_request:
     types: [assigned, opened, synchronize, reopened]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        smalltalk: [ Pharo64-9.0, Pharo64-10, Pharo64-11, Pharo64-12 ]
     steps:
       - uses: actions/checkout@v2
       - uses: hpi-swa/setup-smalltalkCI@v1
         id: smalltalkci
         with:
-          smalltalk-version: Pharo64-9.0
-      - run: smalltalkci -s ${{ steps.smalltalkci.outputs.smalltalk-version }} .smalltalkCore.ston
+          smalltalk-version: ${{ matrix.smalltalk }}
+      - run: smalltalkci -s ${{ matrix.smalltalk }} .smalltalkCore.ston
         shell: bash
         timeout-minutes: 40
       - uses: actions/checkout@master
