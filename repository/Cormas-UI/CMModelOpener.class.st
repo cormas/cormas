@@ -156,7 +156,7 @@ CMModelOpener >> requestOpenNamed: aString [
 	(FDOpenFileDialog new
 		title: self translator tChooseStFile;
 		extensionFilters: 	{ self translator tStFiles -> #(st) };
-		defaultFolder: self resourceLocator modelsPath;
+		defaultFolder: self gitBridge modelsPath;
 		openModal)	
 			
 		ifNotNil: [ : fileRef | 

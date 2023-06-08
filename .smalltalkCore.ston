@@ -3,6 +3,7 @@ SmalltalkCISpec {
     SCIMetacelloLoadSpec {
       #baseline : 'Cormas',
       #directory : 'repository',
+      #registerInIceberg : true,
       #onWarningLog: true,
       #onConflict : #useLoaded,
       #load : [ 'Core' ],

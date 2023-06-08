@@ -37,6 +37,13 @@ CMResourceOpener >> currentProject: aCMProjectModel [
 ]
 
 { #category : #callbacks }
+CMResourceOpener >> gitBridge [
+	" Answer a <CMResourceLocator>, an object to locate receiver resources "
+
+	^ self projectManager gitBridge
+]
+
+{ #category : #callbacks }
 CMResourceOpener >> handleFileInException: ex [
 	" Private - There was an exception while loading a file. Handle it accordingly to preferences "
 
@@ -63,13 +70,6 @@ CMResourceOpener >> projectManager [
 { #category : #accessing }
 CMResourceOpener >> projectManager: anObject [
 	projectManager := anObject
-]
-
-{ #category : #callbacks }
-CMResourceOpener >> resourceLocator [
-	" Answer a <CMResourceLocator>, an object to locate receiver resources "
-
-	^ self projectManager resourceLocator
 ]
 
 { #category : #callbacks }

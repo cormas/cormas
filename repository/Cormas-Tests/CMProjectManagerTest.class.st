@@ -31,7 +31,6 @@ CMProjectManagerTest >> setUp [
 	PFProjectSettings currentApplicationClass: CMApplicationProject.
 	model := self newTestModel.
 	projectManager := self newProjectManager.
-	CMGitBridge useGitBridge: false.
 ]
 
 { #category : #test }
@@ -40,7 +39,6 @@ CMProjectManagerTest >> tearDown [
 
 	self cleanGeneratedMethods.
 	super tearDown.	
-	CMGitBridge useGitBridge: true.
 
 ]
 
@@ -169,6 +167,12 @@ CMProjectManagerTest >> testCurrentProjectVersion [
 ]
 
 { #category : #test }
+CMProjectManagerTest >> testGitBridge [
+
+	self assert: (self projectManager gitBridge isKindOf: CMGitBridge)
+]
+
+{ #category : #test }
 CMProjectManagerTest >> testIsValidCormasEntityName [
 
 	| entityName |
@@ -205,10 +209,4 @@ CMProjectManagerTest >> testModelProbesMethods [
 CMProjectManagerTest >> testProjectClass [
 
 	self assert: self projectManager projectClass equals: CMProjectModel
-]
-
-{ #category : #test }
-CMProjectManagerTest >> testResourceLocator [
-
-	self assert: (self projectManager resourceLocator isKindOf: CMGitBridge)
 ]

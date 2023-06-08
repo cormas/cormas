@@ -222,16 +222,16 @@ CMApplicationProject >> defaultTranslatorClass [
 ]
 
 { #category : #accessing }
-CMApplicationProject >> modelNames [
-	" Answer a <Collection> of <String> with receiver's available models "
-	
-	^ self resourceLocator modelNames
+CMApplicationProject >> gitBridge [
+	^ resourceLocator
+		ifNil: [ resourceLocator := CMGitBridge new ]
 ]
 
 { #category : #accessing }
-CMApplicationProject >> resourceLocator [
-	^ resourceLocator
-		ifNil: [ resourceLocator := CMGitBridge new ]
+CMApplicationProject >> modelNames [
+	" Answer a <Collection> of <String> with receiver's available models "
+	
+	^ self gitBridge modelNames
 ]
 
 { #category : #accessing }

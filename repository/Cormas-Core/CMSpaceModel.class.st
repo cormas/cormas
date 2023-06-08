@@ -1422,6 +1422,13 @@ CMSpaceModel >> getSetsOfContiguous: baseEntity verifying: aBlock [
 		conditionalArguments: (Array with: nil with: nil)
 ]
 
+{ #category : #accessing }
+CMSpaceModel >> gitBridge [
+	" Answer the receiver's <CMResourceLocator>, an object to locate resources on the disk"
+
+	^ self cormasModel gitBridge
+]
+
 { #category : #'private - accessing' }
 CMSpaceModel >> gridCellShape [
 	
@@ -2023,13 +2030,6 @@ CMSpaceModel >> resetSpatialEntitiesButCells [
 				ifFalse: [ self spatialEntitiesAt: se name put: OrderedCollection new.
 					"RemotableOrderedCollection new. ** changed to OrderedCollection new. (RemotableOrderedCollection is used for marshalling in remote distributed visualization)" 
 					self cormasModel resetEntities: se ] ]
-]
-
-{ #category : #accessing }
-CMSpaceModel >> resourceLocator [
-	" Answer the receiver's <CMResourceLocator>, an object to locate resources on the disk"
-
-	^ self cormasModel resourceLocator
 ]
 
 { #category : #'CSE (general) - import - export' }

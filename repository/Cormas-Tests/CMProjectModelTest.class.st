@@ -167,6 +167,12 @@ CMProjectModelTest >> testFindSimulationNamed [
 ]
 
 { #category : #test }
+CMProjectModelTest >> testGitBridge [
+
+	self assert: (self projectModel gitBridge isKindOf: CMGitBridge)
+]
+
+{ #category : #test }
 CMProjectModelTest >> testHasCormasModelClass [
 
 	self assert: self projectModel hasCormasModelClass.
@@ -191,12 +197,6 @@ CMProjectModelTest >> testProjectName [
 	self assert: (self projectModel projectName isKindOf: String).
 	self assert: self projectModel projectName equals: 'CMMockModel'.
 
-]
-
-{ #category : #test }
-CMProjectModelTest >> testResourceLocator [
-
-	self assert: (self projectModel resourceLocator isKindOf: CMGitBridge)
 ]
 
 { #category : #test }

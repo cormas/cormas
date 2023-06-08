@@ -311,6 +311,13 @@ CMProjectManager >> findModelClass: aFilename [
 		
 ]
 
+{ #category : #accessing }
+CMProjectManager >> gitBridge [ 
+	" Answer a <CMResourceLocator>, an object to locate receiver resources "
+
+	^ self application gitBridge
+]
+
 { #category : #initialization }
 CMProjectManager >> initialize [
 	" Set the receiver's inital state "
@@ -421,13 +428,6 @@ CMProjectManager >> reloadProject: icePackage repository: anIceRepository [
 						while: [ icePackage load ] ] ].
 	Iceberg announcer announce: (IceRepositoryModified for: anIceRepository)
 
-]
-
-{ #category : #accessing }
-CMProjectManager >> resourceLocator [ 
-	" Answer a <CMResourceLocator>, an object to locate receiver resources "
-
-	^ self application resourceLocator
 ]
 
 { #category : #callbacks }
