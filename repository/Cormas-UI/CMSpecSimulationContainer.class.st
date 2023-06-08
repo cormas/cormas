@@ -11,7 +11,7 @@ Class {
 CMSpecSimulationContainer class >> defaultSpec [
     <spec>
     ^ SpecLayout composed newColumn: [ : c | 
-			c add: #simWindow ]
+			c add: #simulationWindow ]
 ]
 
 { #category : #'as yet unclassified' }
@@ -62,11 +62,6 @@ CMSpecSimulationContainer >> simInterfaceIsDisplayed [
 ]
 
 { #category : #accessing }
-CMSpecSimulationContainer >> simWindow [
-	^ simWindow
-]
-
-{ #category : #accessing }
 CMSpecSimulationContainer >> simWindow: anObject [
 	simWindow := anObject
 ]
@@ -78,6 +73,11 @@ CMSpecSimulationContainer >> simulationWidget [
 ]
 
 { #category : #accessing }
+CMSpecSimulationContainer >> simulationWindow [
+	^ simWindow
+]
+
+{ #category : #accessing }
 CMSpecSimulationContainer >> toggleSimInterface [
 	" If the user closed the project, then clean the input controls in the receiver "
 
@@ -86,7 +86,7 @@ CMSpecSimulationContainer >> toggleSimInterface [
 		ifFalse: [ self showSimInterface ].
 	self fsmStateName = #stateWaitNewOrOpen
 		ifTrue: [ 
-			self simWindow currentStepInputText text: '0'.
-			self simWindow finalStepInputText text: CMSimulationManager defaultFinalTime asString  ]
+			self simulationWindow currentStepInputText text: '0'.
+			self simulationWindow finalStepInputText text: CMSimulationManager defaultFinalTime asString  ]
 	
 ]
