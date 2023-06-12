@@ -2,8 +2,7 @@ Trait {
 	#name : #TCMCommunicating,
 	#instVars : [
 		'mailBox',
-		'channel',
-		'acquaintances'
+		'channel'
 	],
 	#category : #'Cormas-Core-Entities'
 }
@@ -12,19 +11,6 @@ Trait {
 TCMCommunicating classSide >> isAgentCommClass [
 	
 	^ true
-]
-
-{ #category : #accessing }
-TCMCommunicating >> acquaintances [
-
-	^ acquaintances 
-		ifNil: [ acquaintances := OrderedCollection new ]
-]
-
-{ #category : #accessing }
-TCMCommunicating >> acquaintances: anObject [
-
-	acquaintances := anObject
 ]
 
 { #category : #accessing }
@@ -98,7 +84,6 @@ TCMCommunicating >> reset [
 	
 	super reset.
 	self mailBox: OrderedCollection new.
-	self acquaintances: Set new
 ]
 
 { #category : #'control - communication' }

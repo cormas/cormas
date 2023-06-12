@@ -139,7 +139,6 @@ CMLocatedCommunicatingAgent >> reset [
 	
 	super reset.
 	self mailBox: OrderedCollection new.
-	self acquaintances: Set new
 ]
 
 { #category : #'control - communication' }
