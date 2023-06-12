@@ -398,10 +398,9 @@ CMAbstractModel class >> colorOfProbe: aProbeSymbol [
 
 { #category : #'managing classes' }
 CMAbstractModel class >> commClasses [
-	^ self allEntityClasses
-		select: [ :i | 
-			(i inheritsFrom: CMCommunicatingAgent) | (i inheritsFrom: CMLocatedCommunicatingAgent)
-				| (i inheritsFrom: CMMessage) ]
+
+	^ self allEntityClasses select: [ :each | 
+		each isAgentComm or: [ each inheritsFrom: CMMessage ] ]
 ]
 
 { #category : #'managing classes' }
@@ -2254,10 +2253,10 @@ CMAbstractModel >> initEntitiesForPassiveClass: aClass [
 { #category : #accessing }
 CMAbstractModel >> initEntitiesForSocialClass: aClass [
 
-	(aClass isAbstract not and: [ aClass inheritsFrom: CMLocatedAgent ]) 
-		ifTrue: [ 
-			(self theEntities: aClass) ifNotNil: [ 
-				(self theEntities: aClass) do: #leave ] ].
+	(aClass isAbstract not and: [ aClass isClassLocation ]) ifTrue: [ 
+		(self theEntities: aClass) ifNotNil: [ 
+			(self theEntities: aClass) leave ] ].
+		
 	self resetEntities: aClass
 ]
 
