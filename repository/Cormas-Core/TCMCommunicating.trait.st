@@ -3,7 +3,6 @@ Trait {
 	#instVars : [
 		'mailBox',
 		'channel',
-		'agentObs',
 		'acquaintances'
 	],
 	#category : #'Cormas-Core-Entities'
@@ -26,18 +25,6 @@ TCMCommunicating >> acquaintances [
 TCMCommunicating >> acquaintances: anObject [
 
 	acquaintances := anObject
-]
-
-{ #category : #accessing }
-TCMCommunicating >> agentObs [
-
-	^ agentObs
-]
-
-{ #category : #accessing }
-TCMCommunicating >> agentObs: anObject [
-
-	agentObs := anObject
 ]
 
 { #category : #accessing }
