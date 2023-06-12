@@ -6,6 +6,12 @@ Trait {
 	#category : #'Cormas-Core-Entities'
 }
 
+{ #category : #testing }
+TCMLocated classSide >> isSituatedClass [
+	
+	^true
+]
+
 { #category : #'environment - sensing - space' }
 TCMLocated >> aggregates: aClassOrClassName withinRadius: range [
 	"Purpose: returns an OrderedCollection of ComponentSpatialEntities (aggregate or not connex) located within a given radius of the current position of the agent.
