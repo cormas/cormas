@@ -1,6 +1,8 @@
 Class {
 	#name : #CMMockLocatedAgent,
-	#superclass : #CMLocatedAgent,
+	#superclass : #CMAgent,
+	#traits : 'TCMLocated',
+	#classTraits : 'TCMLocated classTrait',
 	#category : #'Cormas-Mocks'
 }
 

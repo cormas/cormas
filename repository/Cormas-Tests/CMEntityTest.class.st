@@ -53,7 +53,7 @@ CMEntityTest >> testCormasModel [
 { #category : #tests }
 CMEntityTest >> testEntityName [
 	self assert: CMMockCell entityName equals: 'Cell'.
-	self assert: CMMockLocatedAgent entityName equals: 'AgentLocation'
+	self assert: CMMockLocatedAgent entityName equals: 'LocatedAgent'
 ]
 
 { #category : #tests }
