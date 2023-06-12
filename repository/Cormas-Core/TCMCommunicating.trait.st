@@ -80,130 +80,106 @@ TCMCommunicating >> reset [
 	self mailBox: OrderedCollection new.
 ]
 
-{ #category : #'control - communication' }
-TCMCommunicating >> sendAsynchronouslyMsgTo: anAgent topic: aSymbol [
-	"Purpose: sends and delivers IMMEDIATELY a message (with a topic) 
-Arguments: anAgent = <AgentComm or AgentCommLocation
-			aSymbol = <anObject>
-Example: self sendAsynchronouslyMsgTo: self myFriend topic  #hello)"
-	
-	| aMessage |
-	aMessage := CMMessage from: self to: anAgent topic: aSymbol.
-	self channel transmit: aMessage
-]
-
-{ #category : #'control - communication' }
-TCMCommunicating >> sendAsynchronouslyMsgTo: anAgent topic: aSymbol content: anObject [
-	"Purpose: sends and delivers IMMEDIATELY a message (with a topic and a content)
-Arguments: anAgent = <AgentComm or AgentCommLocation
-			aSymbol = <anObject>
-			anObject = <anObject>
-Example: self sendAsynchronouslyMsgTo: self myFriend topic  #wantToBuy content: aLand )"
-	
-	| aMessage |
-	aMessage := CMMessage from: self to: anAgent topic: aSymbol.
-	self channel transmit: aMessage
-]
-
-{ #category : #'control - communication' }
-TCMCommunicating >> sendAsynchronouslyMsgToAll: aCollection topic: aSymbol [
-	"Purpose: sends and delivers IMMEDIATLY to many agents a same message (with a topic)
-Arguments: aCollection =  <a collection of AgentComm or AgentCommLocation>
-			aSymbol = <anObject>
-Example: self sendAsynchronouslyMsgToAll: self acquaintances  topic  #hello)"
-	
-	| aMessage |
-	
-	aCollection do: [ :anAgent | 
-		aMessage := CMMessage from: self to: anAgent topic: aSymbol.
-		self channel transmit: aMessage ]
-]
-
-{ #category : #'control - communication' }
-TCMCommunicating >> sendAsynchronouslyMsgToAll: aCollection topic: aSymbol content: anObject [
-	"Purpose: sends and delivers IMMEDIATLY to many agents a same message (with a topic and a content)
-Arguments: anAgent = aCollection =  <a collection of AgentComm or AgentCommLocation>
-			aSymbol = <anObject>
-			anObject = <anObject>
-Example: self sendAsynchronouslyMsgToAll: self acquaintances topic  #fireHere content: aCell )"
-	
-	| aMessage |
-	
-	aCollection do: [ :anAgent | 
-		aMessage := CMMessage from: self to: anAgent topic: aSymbol content: anObject.
-		self channel transmit: aMessage ]
-]
-
 { #category : #control }
 TCMCommunicating >> sendMessageAsynchronously: aMessage [
-	"Purpose: sends and delivers IMMEDIATELY a given message
-Argument: amessage = <CMMessage>
-Example: self sendMessageAsynchronously: (Msg to: self myFriend topic: #hello)"
+	"Purpose: sends and delivers IMMEDIATELY a given message"
 	
 	aMessage sender: self.
 	self channel transmit: aMessage
+]
+
+{ #category : #'control - communication' }
+TCMCommunicating >> sendMessageAsynchronouslyTo: anAgent topic: aSymbol [
+	"Purpose: sends and delivers IMMEDIATELY a message (with a topic)"
+
+	self sendMessageAsynchronously: (
+		CMMessage
+			to: anAgent
+			topic: aSymbol)
+]
+
+{ #category : #'control - communication' }
+TCMCommunicating >> sendMessageAsynchronouslyTo: anAgent topic: aSymbol content: anObject [
+	"Purpose: sends and delivers IMMEDIATELY a message (with a topic and a content)"
+
+	self sendMessageAsynchronously: (
+		CMMessage
+			to: anAgent
+			topic: aSymbol
+			content: anObject)
+]
+
+{ #category : #'control - communication' }
+TCMCommunicating >> sendMessageAsynchronouslyToAll: aCollectionOfAgents topic: aSymbol [
+	"Purpose: sends and delivers IMMEDIATLY to many agents a same message (with a topic)"
+	
+	aCollectionOfAgents do: [ :each | 
+		self sendMessageAsynchronously: (
+			CMMessage
+				to: each
+				topic: aSymbol) ]
+]
+
+{ #category : #'control - communication' }
+TCMCommunicating >> sendMessageAsynchronouslyToAll: aCollection topic: aSymbol content: anObject [
+	"Purpose: sends and delivers IMMEDIATLY to many agents a same message (with a topic and a content)"
+	
+	aCollection do: [ :anAgent | 
+		self sendMessageAsynchronously: (
+			CMMessage
+				to: anAgent
+				topic: aSymbol
+				content: anObject) ]
 ]
 
 { #category : #control }
 TCMCommunicating >> sendMessageSynchronously: aMessage [
-	"Purpose: sends and delivers a given message at the end of the simulation timestep 
-Argument: aMessage = <CMMessage>
-Example: self sendMessageSynchronously: (CMMessage to: self myFriend topic  #hello)"
+	"Purpose: sends and delivers a given message at the end of the simulation timestep"
 	
 	aMessage sender: self.
 	self channel stock: aMessage
 ]
 
 { #category : #'control - communication' }
-TCMCommunicating >> sendSynchronouslyMsgTo: anAgent topic: aSymbol [
-	"Purpose: sends and delivers a message (with a topic) at the end of the simulation timestep 
-Arguments: anAgent = <AgentComm or AgentCommLocation
-			aSymbol = <anObject>
-Example: self sendSynchronouslyMsgTo: self myFriend topic  #hello)"
+TCMCommunicating >> sendMessageSynchronouslyTo: anAgent topic: aSymbol [
+	"Purpose: sends and delivers a message (with a topic) at the end of the simulation timestep"
 	
-	| aMessage |
-	aMessage := CMMessage from: self to: anAgent topic: aSymbol.
-	self channel stock: aMessage
+	self sendMessageSynchronously: (
+		CMMessage
+			to: anAgent
+			topic: aSymbol)
 ]
 
 { #category : #'control - communication' }
-TCMCommunicating >> sendSynchronouslyMsgTo: anAgent topic: aSymbol content: anObject [
-	"Purpose: sends and delivers  a message (with a topic and a content) at the end of the simulation timestep 
-Arguments: anAgent = <AgentComm or AgentCommLocation
-			aSymbol = <anObject>
-			anObject = <anObject>
-Example: self sendSynchronouslyMsgTo: self myFriend topic  #wantToBuy content: aLand )"
+TCMCommunicating >> sendMessageSynchronouslyTo: anAgent topic: aSymbol content: anObject [
+	"Purpose: sends and delivers  a message (with a topic and a content) at the end of the simulation timestep"
 	
-	| aMessage |
-	aMessage := CMMessage from: self to: anAgent topic: aSymbol.
-	self channel stock: aMessage
+	self sendMessageSynchronously: (
+		CMMessage
+			to: anAgent
+			topic: aSymbol
+			content: anObject)
 ]
 
 { #category : #'control - communication' }
-TCMCommunicating >> sendSynchronouslyMsgToAll: aCollection topic: aSymbol [
-	"Purpose: sends and delivers to many agents a same message (with a topic) at the end of the simulation timestep 
-Arguments: aCollection =  <a collection of AgentComm or AgentCommLocation>
-			aSymbol = <anObject>
-Example: self sendSynchronouslyMsgToAll: self acquaintances  topic  #hello)"
+TCMCommunicating >> sendMessageSynchronouslyToAll: aCollectionOfAgents topic: aSymbol [
+	"Purpose: sends and delivers to many agents a same message (with a topic) at the end of the simulation timestep"
 	
-	| aMessage |
-	
-	aCollection do: [ :anAgent | 
-		aMessage := CMMessage from: self to: anAgent topic: aSymbol.
-		self channel stock: aMessage ]
+	aCollectionOfAgents do: [ :each | 
+		self sendMessageSynchronously: (
+			CMMessage
+				to: each
+				topic: aSymbol) ]
 ]
 
 { #category : #'control - communication' }
-TCMCommunicating >> sendSynchronouslyMsgToAll: aCollection topic: aSymbol content: anObject [
-	"Purpose: sends and delivers to many agents a same message (with a topic and a content) at the end of the simulation timestep 
-Arguments: anAgent = aCollection =  <a collection of AgentComm or AgentCommLocation>
-			aSymbol = <anObject>
-			anObject = <anObject>
-Example: self sendSynchronouslyMsgToAll: self acquaintances topic  #fireHere content: aCell )"
+TCMCommunicating >> sendMessageSynchronouslyToAll: aCollectionOfAgents topic: aSymbol content: anObject [
+	"Purpose: sends and delivers to many agents a same message (with a topic and a content) at the end of the simulation timestep"
 	
-	| aMessage |
-	
-	aCollection do: [ :anAgent |
-		aMessage := CMMessage from: self to: anAgent topic: aSymbol content: anObject.
-		self channel stock: aMessage ]
+	aCollectionOfAgents do: [ :each |
+		self sendMessageSynchronously: (
+			CMMessage
+				to: each
+				topic: aSymbol
+				content: anObject) ]
 ]

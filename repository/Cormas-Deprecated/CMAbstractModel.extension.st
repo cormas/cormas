@@ -5,7 +5,7 @@ CMAbstractModel >> initSimulation [
 	"This method was renamed to initializeSimulation
 	It is now deprecated and will be removed in the future releases"
 	
-	self deprecated: 'Use #initializeSimulation insread'.
+	self deprecated: 'Use #initializeSimulation instead'.
 	^ self initializeSimulation.
 ]
 
@@ -14,7 +14,7 @@ CMAbstractModel >> simManager [
 	"This method was renamed to simulationManager
 	It is now deprecated and will be removed in the future releases"
 	
-	self deprecated: 'Use #simulationManager insread'.
+	self deprecated: 'Use #simulationManager instead'.
 	^ self simulationManager.
 ]
 
@@ -23,6 +23,6 @@ CMAbstractModel >> simManager: anObject [
 	"This method was renamed to simulationManager:
 	It is now deprecated and will be removed in the future releases"
 	
-	self deprecated: 'Use #simulationManager: insread'.
+	self deprecated: 'Use #simulationManager: instead'.
 	self simulationManager: anObject.
 ]

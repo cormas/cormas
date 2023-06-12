@@ -51,18 +51,6 @@ Example: Msg topic: #comeHere content: aSpatialEntity)"
 	^self new from: unAgent to: unAutre
 ]
 
-{ #category : #deprecated }
-CMMessage class >> from: anAgent to: anotherOne content: anObject [
-	"Purpose: Creates a message with a sender, a receiver and a content. The message can be sent by a communicant agent using the method sendMessageSynchronously:  or sendMessageAsynchronously:
-Argument: anAgent = <AgentComm or AgentCommLocation
-			anotherOne = <AgentComm or AgentCommLocation	
-			anObject = <anObject>
-Example: Msg from: anAgent1 to: anAgent2 content: aGift)"
-	
-	self deprecated: 'Deprecated during Pharo 4.0 migration'.
-	^super new from: anAgent to: anotherOne content: anObject
-]
-
 { #category : #communication }
 CMMessage class >> from: anAgent to: anotherOne topic: anObject [
 	"Purpose: Creates a message with a sender, a receiver and a topic. The message can be sent by a communicant agent using the method sendMessageSynchronously:  or sendMessageAsynchronously:
@@ -136,17 +124,6 @@ CMMessage class >> superClassesUntilEntity [
 	"Return the super classes of the class sender until Msg"
 
 	^ self superClassesUntil: CMMessage
-]
-
-{ #category : #deprecated }
-CMMessage class >> to: anAgent content: anObject [
-	"Purpose: Creates a message with a receiver and a content. The message can be sent by a communicant agent using the method sendMessageSynchronously:  or sendMessageAsynchronously:
-Argument: anAgent = <AgentComm or AgentCommLocation
-			aContent = <anObject>
-Example: Msg to: anAgent content: aGift)"
-	
-	self deprecated: 'Deprecated during Pharo 4.0 migration'.
-	^super new to: anAgent content: anObject
 ]
 
 { #category : #communication }
