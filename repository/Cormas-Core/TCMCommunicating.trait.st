@@ -20,7 +20,7 @@ TCMCommunicating >> channel: anObject [
 ]
 
 { #category : #testing }
-TCMCommunicating >> isCommunicating [
+TCMCommunicating >> isCommunicatingEntity [
 	
 	^ true
 ]

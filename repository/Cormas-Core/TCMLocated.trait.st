@@ -200,8 +200,7 @@ TCMLocated >> interestingDetails [
 ]
 
 { #category : #testing }
-TCMLocated >> isClassLocation [
-	"Answer if the entity is a kind of AgentLocation or of ObjectLocation"
+TCMLocated >> isLocatedEntity [
 	
 	^ true
 ]
