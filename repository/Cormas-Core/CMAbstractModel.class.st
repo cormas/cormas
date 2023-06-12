@@ -398,10 +398,9 @@ CMAbstractModel class >> colorOfProbe: aProbeSymbol [
 
 { #category : #'managing classes' }
 CMAbstractModel class >> commClasses [
-	^ self allEntityClasses
-		select: [ :i | 
-			(i inheritsFrom: CMCommunicatingAgent) | (i inheritsFrom: CMLocatedCommunicatingAgent)
-				| (i inheritsFrom: CMMessage) ]
+
+	^ self allEntityClasses select: [ :each | 
+		each isCommunicatingEntity or: [ each inheritsFrom: CMMessage ] ]
 ]
 
 { #category : #'managing classes' }
@@ -1094,7 +1093,7 @@ self  entitiesFromACollecOrClass: self theFarmers"
 CMAbstractModel >> allTheLocatedEntities [
 	"Returns a collection of all the instances of AgentLocation and of ObjectLocation (and sub classes) collected by cormasModel"
 	
-	^self allTheEntities select: [:entity | entity isClassLocation]
+	^self allTheEntities select: [:entity | entity isLocatedEntity]
 ]
 
 { #category : #'accessing - entities' }
@@ -2254,10 +2253,10 @@ CMAbstractModel >> initEntitiesForPassiveClass: aClass [
 { #category : #accessing }
 CMAbstractModel >> initEntitiesForSocialClass: aClass [
 
-	(aClass isAbstract not and: [ aClass inheritsFrom: CMLocatedAgent ]) 
-		ifTrue: [ 
-			(self theEntities: aClass) ifNotNil: [ 
-				(self theEntities: aClass) do: #leave ] ].
+	(aClass isAbstract not and: [ aClass new isLocatedEntity ]) ifTrue: [ 
+		(self theEntities: aClass) ifNotNil: [ 
+			(self theEntities: aClass) do: [ :each | each leave ] ] ].
+		
 	self resetEntities: aClass
 ]
 
@@ -3316,7 +3315,7 @@ CMAbstractModel >> theAgents [
 CMAbstractModel >> theAgentsComm [
 	"Returns a collection of all the communicating agents (social agents) of the model"
 	
-	^self theAgents select: [:ag | ag isAgentComm]
+	^self theAgents select: [:ag | ag isCommunicatingEntity]
 ]
 
 { #category : #'accessing - entities' }
