@@ -176,14 +176,6 @@ TCMLocated >> detailsOfPOV [
 	^ String empty
 ]
 
-{ #category : #deprecated }
-TCMLocated >> displayOn: aGC [
-	
-	self
-		displayOn: aGC
-		at: self center
-]
-
 { #category : #'environment - distance' }
 TCMLocated >> distanceTo: aSpatialEntityOrSituatedEntity [
 	"Purpose: returns the Manhattan distance (in cells) between the patch of the agent and aSpatialEntityOrSituatedEntity
@@ -324,14 +316,6 @@ Example: self locationsWithoutAny: Predator withinRadius: self perceptionRangePr
 	^self patch
 		ifNil: [ nil ]
 		ifNotNil: [ self patch recursiveNeighbourhood: range withoutAny: locatedEntityName ]
-]
-
-{ #category : #deprecated }
-TCMLocated >> moveAndTrackTo: aPatch [
-	"Move to aPatch and display a line from origin center to aPatch center"
-	"Deprecated"
-	
-	self moveTo: aPatch
 ]
 
 { #category : #'star moving' }
@@ -478,13 +462,6 @@ Return value: <SpatialEntity | nil>"
 	^ self patch
 		ifNil: [ nil ]
 		ifNotNil: [ self patch nearestEmptyCell ]
-]
-
-{ #category : #deprecated }
-TCMLocated >> nearestEmptyLocation: range [
-	"DEPRECATED"
-	
-	^self nearestEmptyLocationWithinRadius: range
 ]
 
 { #category : #'environment - picking - space' }
@@ -844,34 +821,6 @@ Return value: <Integer>"
 	
 	self patch ifNil: [^0].
 	^self patch id
-]
-
-{ #category : #deprecated }
-TCMLocated >> perceivedCellsWithinRange: anInteger [
-	"DEPRECATED"
-	
-	^self locationsWithinRadius: anInteger
-]
-
-{ #category : #deprecated }
-TCMLocated >> perceivedEntities: locatedEntityName withinRange: range [
-	"DEPRECATED"
-	
-	^self locatedEntities: locatedEntityName withinRadius: range
-]
-
-{ #category : #deprecated }
-TCMLocated >> perceivedSimilarAgentsWithinRange: aRayon [
-	"DEPRECATED"
-	
-	^self similarAgentsWithinRadius: aRayon
-]
-
-{ #category : #deprecated }
-TCMLocated >> perception: aRayon [
-	"Return a collection of cells belonging to aRayon (it contains also its current patch)"
-	
-	^self locationsWithinRadius: aRayon
 ]
 
 { #category : #printing }

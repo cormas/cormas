@@ -51,19 +51,6 @@ CMAgent >> destroyed: aBoolean [
 	(aBoolean and:[self isSituated]) ifTrue:[self leave].
 ]
 
-{ #category : #deprecated }
-CMAgent >> displayOn: aGC at: unPoint [
-
-self deprecated:'Should be deprecated in the next CORMAS version'.
-
-	"| couleur |
-	couleur := self color.
-	couleur notNil ifTrue: 
-			[self class image class = EntityPOV
-				ifTrue: [self class image color: couleur]. 
-			self class image displayOn: aGC at: unPoint]"
-]
-
 { #category : #printing }
 CMAgent >> interestingDetails [
 	" Answer a <Collection> of interesting receiver's attributes, from a modeler point of view, to display in a popup for example "
