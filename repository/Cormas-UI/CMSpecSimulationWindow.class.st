@@ -688,7 +688,7 @@ CMSpecSimulationWindow >> runAction [
 	" Callback for the run all steps button "
 
 	self validateRunStep
-		ifFalse: [ self cormasModel initSimulation ].
+		ifFalse: [ self cormasModel initializeSimulation ].
 	self simulationManager finalTime: self finalStepInputText text asInteger.
 	self simulationManager loopRunStep_untilFinalTime.
 	self currentStepInputText text: self finalStepInputText text.
@@ -736,7 +736,7 @@ CMSpecSimulationWindow >> runStepByStepAction [
 	" Private - Request simulation manager to execute 1 step. Initialize the simulation if not set. Update the UI "
 
 	self validateRunStep
-		ifFalse: [ self cormasModel initSimulation ].
+		ifFalse: [ self cormasModel initializeSimulation ].
 	self simulationManager runStepByStep.
 	self currentStepInputText text: (self cormasModel timeStep asString)
 ]

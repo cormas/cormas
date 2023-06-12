@@ -17,7 +17,7 @@ CormasUITest >> newProjectManagerWithInitializedUIOnModel: modelName [
 		translator: (CMTranslator newForLanguage: #EN);
 		initialize.
 	project openModel: modelName.
-	project cormasModel initSimulation.
+	project cormasModel initializeSimulation.
 	^ project
 ]
 

@@ -17,7 +17,7 @@ CMEntityTest >> testCollector [
 			columns: 3
 			neighbourhood: 8
 			closed: true;
-		initSimulation;
+		initializeSimulation;
 		yourself.
 	self assert: (model collector isKindOf: CMCollector).
 
@@ -37,7 +37,7 @@ CMEntityTest >> testCormasEntityIsAbstract [
 CMEntityTest >> testCormasModel [
 	| model |
 	model := (CMMockModel newWithActiveInit: #initRandom)
-		initSimulation;
+		initializeSimulation;
 		createGridLines: 3
 			columns: 3
 			neighbourhood: 4
