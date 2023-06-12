@@ -1553,12 +1553,6 @@ CMEntity >> isAgent [
 ]
 
 { #category : #testing }
-CMEntity >> isAgentComm [
-	
-	^false
-]
-
-{ #category : #testing }
 CMEntity >> isArcEntity [
 	
 	^false
@@ -1603,6 +1597,12 @@ CMEntity >> isCellularAutomatonCell [
 { #category : #testing }
 CMEntity >> isClassLocation [
 	"Answer if the entity is a kind of AgentLocation or of ObjectLocation"
+	
+	^false
+]
+
+{ #category : #testing }
+CMEntity >> isCommunicating [
 	
 	^false
 ]

@@ -71,7 +71,7 @@ CMLocatedCommunicatingAgent >> channel: val [
 ]
 
 { #category : #testing }
-CMLocatedCommunicatingAgent >> isAgentComm [
+CMLocatedCommunicatingAgent >> isCommunicating [
 	
 	^true
 ]

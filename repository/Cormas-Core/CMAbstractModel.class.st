@@ -400,7 +400,7 @@ CMAbstractModel class >> colorOfProbe: aProbeSymbol [
 CMAbstractModel class >> commClasses [
 
 	^ self allEntityClasses select: [ :each | 
-		each isAgentComm or: [ each inheritsFrom: CMMessage ] ]
+		each isCommunicating or: [ each inheritsFrom: CMMessage ] ]
 ]
 
 { #category : #'managing classes' }
@@ -3315,7 +3315,7 @@ CMAbstractModel >> theAgents [
 CMAbstractModel >> theAgentsComm [
 	"Returns a collection of all the communicating agents (social agents) of the model"
 	
-	^self theAgents select: [:ag | ag isAgentComm]
+	^self theAgents select: [:ag | ag isCommunicating]
 ]
 
 { #category : #'accessing - entities' }
