@@ -326,17 +326,6 @@ Example: self locationsWithoutAny: Predator withinRadius: self perceptionRangePr
 		ifNotNil: [ self patch recursiveNeighbourhood: range withoutAny: locatedEntityName ]
 ]
 
-{ #category : #accessing }
-TCMLocated >> logMovementTo: aSpatialEntity [
-	"Log the movement"	
-
-	"aSpatialEntity spaceModel 
-		logMovementOf: self
-		from: patch
-		to: aSpatialEntity.   
-	temporary inactivated "
-]
-
 { #category : #deprecated }
 TCMLocated >> moveAndTrackTo: aPatch [
 	"Move to aPatch and display a line from origin center to aPatch center"
