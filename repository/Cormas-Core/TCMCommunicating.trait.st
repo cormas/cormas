@@ -7,12 +7,6 @@ Trait {
 	#category : #'Cormas-Core-Entities'
 }
 
-{ #category : #testing }
-TCMCommunicating classSide >> isAgentCommClass [
-	
-	^ true
-]
-
 { #category : #accessing }
 TCMCommunicating >> channel [
 
