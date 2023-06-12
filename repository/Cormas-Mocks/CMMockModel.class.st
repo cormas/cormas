@@ -80,11 +80,11 @@ CMMockModel >> numDeads [
 ]
 
 { #category : #accessing }
-CMMockModel >> theAgentLocations [
-	^ theAgentLocations ifNil: [ theAgentLocations := OrderedCollection new ]
+CMMockModel >> theCells [
+	^ theCells ifNil: [ theCells := OrderedCollection new ]
 ]
 
 { #category : #accessing }
-CMMockModel >> theCells [
-	^ theCells ifNil: [ theCells := OrderedCollection new ]
+CMMockModel >> theLocatedAgents [
+	^ theAgentLocations ifNil: [ theAgentLocations := OrderedCollection new ]
 ]
