@@ -11,7 +11,7 @@ Class {
 CMCellsLoaderTest >> newTestModel [
 
 	^ (CMMockModel  newWithActiveInit: #initAlive)
-		initSimulation;
+		initializeSimulation;
 		createGridLines: 20
 			columns: 10
 			neighbourhood: 4
