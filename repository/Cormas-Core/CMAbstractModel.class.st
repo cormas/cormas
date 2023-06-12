@@ -2253,9 +2253,9 @@ CMAbstractModel >> initEntitiesForPassiveClass: aClass [
 { #category : #accessing }
 CMAbstractModel >> initEntitiesForSocialClass: aClass [
 
-	(aClass isAbstract not and: [ aClass isLocatedEntity ]) ifTrue: [ 
+	(aClass isAbstract not and: [ aClass new isLocatedEntity ]) ifTrue: [ 
 		(self theEntities: aClass) ifNotNil: [ 
-			(self theEntities: aClass) leave ] ].
+			(self theEntities: aClass) do: [ :each | each leave ] ] ].
 		
 	self resetEntities: aClass
 ]
