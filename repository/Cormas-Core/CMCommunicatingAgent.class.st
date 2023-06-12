@@ -15,12 +15,8 @@ Class Instance Variables:
 Class {
 	#name : #CMCommunicatingAgent,
 	#superclass : #CMAgent,
-	#instVars : [
-		'mailBox',
-		'channel',
-		'agentObs',
-		'acquaintances'
-	],
+	#traits : 'TCMCommunicating',
+	#classTraits : 'TCMCommunicating classTrait',
 	#category : #'Cormas-Core-Entities'
 }
 
@@ -30,73 +26,10 @@ CMCommunicatingAgent class >> isAgentCommClass [
 	^ true
 ]
 
-{ #category : #accessing }
-CMCommunicatingAgent >> acquaintances [
-	
-	^ acquaintances 
-		ifNil: [ acquaintances := OrderedCollection new ]
-]
-
-{ #category : #accessing }
-CMCommunicatingAgent >> acquaintances: x [
-	
-	acquaintances := x
-]
-
-{ #category : #accessing }
-CMCommunicatingAgent >> agentObs [
-	
-	^ agentObs
-]
-
-{ #category : #accessing }
-CMCommunicatingAgent >> agentObs: unAgent [
-	
-	agentObs := unAgent
-]
-
-{ #category : #accessing }
-CMCommunicatingAgent >> channel [
-	
-	^channel
-]
-
-{ #category : #accessing }
-CMCommunicatingAgent >> channel: val [
-	
-	channel := val
-]
-
 { #category : #testing }
 CMCommunicatingAgent >> isAgentComm [
 	
 	^ true
-]
-
-{ #category : #accessing }
-CMCommunicatingAgent >> latestMessage [
-	"Purpose: picks the latest message received in the mailbox, removes it from the mailbox and returns it
-	Return value: <Msg>"
-	
-	| aMsg |
-	mailBox isEmpty 
-		ifTrue: [ ^ nil ].
-	aMsg := mailBox last.
-	mailBox removeLast.
-	^ aMsg
-]
-
-{ #category : #accessing }
-CMCommunicatingAgent >> mailBox [
-	
-	^ mailBox 
-		ifNil: [ mailBox := OrderedCollection new ]
-]
-
-{ #category : #accessing }
-CMCommunicatingAgent >> mailBox: anOrderedCollection [
-	
-	mailBox := anOrderedCollection
 ]
 
 { #category : #utilities }
@@ -104,18 +37,6 @@ CMCommunicatingAgent >> messageFromChannel: aMsg [
 	"used by channel"
 	
 	self mailBox addLast: aMsg
-]
-
-{ #category : #accessing }
-CMCommunicatingAgent >> oldestMessage [
-	"Purpose: picks the oldest message still stored in the mailbox, removes it from the mailbox and returns it
-Return value: <Msg>"
-	
-	| aMsg |
-	mailBox isEmpty ifTrue: [^nil].
-	aMsg := mailBox first.
-	mailBox removeFirst.
-	^aMsg
 ]
 
 { #category : #'initialize - release' }
