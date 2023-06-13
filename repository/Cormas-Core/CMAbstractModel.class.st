@@ -2282,7 +2282,6 @@ CMAbstractModel >> initSimFromScnrStage2 [
 	self updateDataForChart.
 	self channel ifNil: [ self initializeChannel ].
 	self theAgentsComm do: [ :p | p channel: self channel ].
-	self theAgentsComm ifNotEmpty: [ : agentsComm | self channel population: agentsComm ].
 	"announce to all the subscribers that simulation is beeing initialized"
 	self projectAnnouncer announce: CMSimulationInitializationAnnouncement.
 	self initStatus: true.
@@ -2374,7 +2373,6 @@ CMAbstractModel >> initializeSimulation [
 	self updateDataForChart.
 	self channel ifNil: [ self initializeChannel ].
 	self theAgentsComm do: [ :p | p channel: self channel ].
-	self theAgentsComm ifNotEmpty: [ : agentsComm | self channel population: agentsComm ].
 	"announce to all the subscribers that simulation is beeing initialized"
 	self announcer announce: CMSimulationInitializationAnnouncement.
 	self initStatus: true.
@@ -2785,15 +2783,6 @@ CMAbstractModel >> pickUnoccupiedCell [
 	^ self pickCellConstrainedBy: [ :cell | cell noOccupant ]
 ]
 
-{ #category : #initialization }
-CMAbstractModel >> prepareCommunicationFor: anAgent [
-	
-	anAgent channel: self channel.
-	self channel population add: anAgent.
-	self channel observerFunctions
-		do: [:a | a populationSourceAddAgent: anAgent]
-]
-
 { #category : #printing }
 CMAbstractModel >> printOn: aStream [
 	" Private - See superimplementor's comment "
@@ -2915,7 +2904,6 @@ CMAbstractModel >> release [
 	super release.
 	self spaceModel release.
 	self spaceModel: nil.
-	self channel ifNotNil: [ self channel population: nil ].
 	self channel: nil.
 	self resetCells.
 	self projectManager: nil.
@@ -2969,13 +2957,6 @@ CMAbstractModel >> removeEntity: anEntity [
 	(self theEntities: anEntity class)
 		remove: anEntity
 		ifAbsent: [nil]
-]
-
-{ #category : #initialization }
-CMAbstractModel >> removeFromChannel: anAgent [
-	
-	self channel observerFunctions
-		do: [:a | a populationSourceRemoveAgent: anAgent]
 ]
 
 { #category : #'private - notification' }
@@ -3033,7 +3014,7 @@ CMAbstractModel >> runStep [
 		ifFalse: [ self perform: self activeControl ].
 	self timeChanged.
 	self updateEntities.
-	self channel notNil ifTrue: [self channel flush].
+	self channel ifNotNil: [ self channel sendAllMessages ].
 	self updateDataForChart.
 ]
 

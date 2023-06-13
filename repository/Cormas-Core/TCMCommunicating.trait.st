@@ -19,6 +19,14 @@ TCMCommunicating >> channel: anObject [
 	channel := anObject
 ]
 
+{ #category : #initialization }
+TCMCommunicating >> initialize [
+
+	super initialize.
+	channel := CMChannel new.
+	mailBox := OrderedCollection new.
+]
+
 { #category : #testing }
 TCMCommunicating >> isCommunicatingEntity [
 	
@@ -27,8 +35,6 @@ TCMCommunicating >> isCommunicatingEntity [
 
 { #category : #accessing }
 TCMCommunicating >> latestMessage [
-	"Purpose: picks the latest message received in the mailbox, removes it from the mailbox and returns it
-	Return value: <Msg>"
 	
 	| latestMessage |
 	self mailBox ifEmpty: [ ^ nil ].
@@ -41,21 +47,13 @@ TCMCommunicating >> latestMessage [
 { #category : #accessing }
 TCMCommunicating >> mailBox [
 
-	^ mailBox 
-		ifNil: [ mailBox := OrderedCollection new ]
+	^ mailBox
 ]
 
 { #category : #accessing }
 TCMCommunicating >> mailBox: anObject [
 
 	mailBox := anObject
-]
-
-{ #category : #utilities }
-TCMCommunicating >> messageFromChannel: aMsg [
-	"used by channel"
-	
-	self mailBox addLast: aMsg
 ]
 
 { #category : #accessing }
@@ -72,6 +70,12 @@ Return value: <Msg>"
 	^ oldestMessage
 ]
 
+{ #category : #utilities }
+TCMCommunicating >> receiveMessage: aMessage [
+	
+	self mailBox addLast: aMessage
+]
+
 { #category : #'initialize - release' }
 TCMCommunicating >> reset [
 	"Purpose: resets inherited and specific attributes"
@@ -85,7 +89,7 @@ TCMCommunicating >> sendMessageAsynchronously: aMessage [
 	"Purpose: sends and delivers IMMEDIATELY a given message"
 	
 	aMessage sender: self.
-	self channel transmit: aMessage
+	aMessage send.
 ]
 
 { #category : #'control - communication' }
@@ -137,7 +141,7 @@ TCMCommunicating >> sendMessageSynchronously: aMessage [
 	"Purpose: sends and delivers a given message at the end of the simulation timestep"
 	
 	aMessage sender: self.
-	self channel stock: aMessage
+	self channel addMessageToQueue: aMessage
 ]
 
 { #category : #'control - communication' }
