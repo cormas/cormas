@@ -96,6 +96,14 @@ CMMessage class >> superClassesUntilEntity [
 	^ self superClassesUntil: CMMessage
 ]
 
+{ #category : #'instance creation' }
+CMMessage class >> to: anAgent [
+	
+	^ self new
+		receiver: anAgent;
+		yourself.
+]
+
 { #category : #communication }
 CMMessage class >> to: anAgent topic: aSymbol [
 	
@@ -118,7 +126,7 @@ CMMessage class >> to: anAgent topic: aSymbol content: anObject [
 { #category : #accessing }
 CMMessage >> content [
 	
-	^ self content
+	^ content
 ]
 
 { #category : #accessing }
