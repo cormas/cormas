@@ -29,6 +29,36 @@ CMCommunicatingAgentTest >> testAgentHasMailBox [
 ]
 
 { #category : #tests }
+CMCommunicatingAgentTest >> testIsCommunicatingEntity [
+
+	self assert: senderAgent isCommunicatingEntity.
+	self assert: receiverAgent isCommunicatingEntity.
+]
+
+{ #category : #tests }
+CMCommunicatingAgentTest >> testLatestMessage [
+
+	| message1 message2 |
+	
+	message1 := CMMessage
+		from: senderAgent
+		to: receiverAgent
+		content: 'Hello'.
+	
+	message2 := CMMessage
+		from: senderAgent
+		to: receiverAgent
+		content: 'Hi there!'.
+	
+	message1 send.
+	message2 send.
+	
+	self assert: receiverAgent latestMessage equals: message2.
+	self assert: receiverAgent latestMessage equals: message1.
+	self assert: receiverAgent mailBox isEmpty.
+]
+
+{ #category : #tests }
 CMCommunicatingAgentTest >> testNewChannelIsEmpty [
 
 	self assert: senderAgent channel isEmpty.

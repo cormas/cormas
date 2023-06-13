@@ -35,8 +35,6 @@ TCMCommunicating >> isCommunicatingEntity [
 
 { #category : #accessing }
 TCMCommunicating >> latestMessage [
-	"Purpose: picks the latest message received in the mailbox, removes it from the mailbox and returns it
-	Return value: <Msg>"
 	
 	| latestMessage |
 	self mailBox ifEmpty: [ ^ nil ].
