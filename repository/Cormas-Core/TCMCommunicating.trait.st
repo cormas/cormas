@@ -58,13 +58,6 @@ TCMCommunicating >> mailBox: anObject [
 	mailBox := anObject
 ]
 
-{ #category : #utilities }
-TCMCommunicating >> messageFromChannel: aMsg [
-	"used by channel"
-	
-	self mailBox addLast: aMsg
-]
-
 { #category : #accessing }
 TCMCommunicating >> oldestMessage [
 	"Purpose: picks the oldest message still stored in the mailbox, removes it from the mailbox and returns it
@@ -77,6 +70,12 @@ Return value: <Msg>"
 	self mailBox removeFirst.
 	
 	^ oldestMessage
+]
+
+{ #category : #utilities }
+TCMCommunicating >> receiveMessage: aMessage [
+	
+	self mailBox addLast: aMessage
 ]
 
 { #category : #'initialize - release' }
@@ -92,7 +91,7 @@ TCMCommunicating >> sendMessageAsynchronously: aMessage [
 	"Purpose: sends and delivers IMMEDIATELY a given message"
 	
 	aMessage sender: self.
-	self channel transmit: aMessage
+	aMessage send.
 ]
 
 { #category : #'control - communication' }
@@ -144,7 +143,7 @@ TCMCommunicating >> sendMessageSynchronously: aMessage [
 	"Purpose: sends and delivers a given message at the end of the simulation timestep"
 	
 	aMessage sender: self.
-	self channel stock: aMessage
+	self channel addMessageToQueue: aMessage
 ]
 
 { #category : #'control - communication' }

@@ -15,8 +15,8 @@ CMMessageTest >> setUp [
 
 	super setUp.
 	
-	senderAgent := CMAgent new.
-	receiverAgent := CMAgent new.
+	senderAgent := CMFixtureCommunicatingAgent new.
+	receiverAgent := CMFixtureCommunicatingAgent new.
 	
 	topic := #lipsum.
 	content := 'Lorem ipsum dolor sit amet'.
@@ -73,6 +73,21 @@ CMMessageTest >> testFromToTopicContent [
 	self assert: message receiver equals: receiverAgent.
 	self assert: message topic equals: topic.
 	self assert: message content equals: content.
+]
+
+{ #category : #tests }
+CMMessageTest >> testSend [
+
+	| message |
+	
+	message := CMMessage
+		from: senderAgent
+		to: receiverAgent
+		topic: topic
+		content: content.
+		
+	message send.
+	self assert: receiverAgent latestMessage equals: message.
 ]
 
 { #category : #tests }

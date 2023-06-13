@@ -147,6 +147,12 @@ CMMessage >> receiver: aReceiverAgent [
 	receiver := aReceiverAgent
 ]
 
+{ #category : #sending }
+CMMessage >> send [
+	
+	receiver receiveMessage: self
+]
+
 { #category : #accessing }
 CMMessage >> sender [
 
