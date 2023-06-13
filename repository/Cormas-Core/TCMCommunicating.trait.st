@@ -19,6 +19,14 @@ TCMCommunicating >> channel: anObject [
 	channel := anObject
 ]
 
+{ #category : #initialization }
+TCMCommunicating >> initialize [
+
+	super initialize.
+	channel := CMChannel new.
+	mailBox := OrderedCollection new.
+]
+
 { #category : #testing }
 TCMCommunicating >> isCommunicatingEntity [
 	
@@ -41,8 +49,7 @@ TCMCommunicating >> latestMessage [
 { #category : #accessing }
 TCMCommunicating >> mailBox [
 
-	^ mailBox 
-		ifNil: [ mailBox := OrderedCollection new ]
+	^ mailBox
 ]
 
 { #category : #accessing }

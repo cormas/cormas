@@ -45,6 +45,12 @@ CMChannel >> initialize [
 	messages := OrderedCollection new
 ]
 
+{ #category : #testing }
+CMChannel >> isEmpty [
+
+	^ messages isEmpty
+]
+
 { #category : #accessing }
 CMChannel >> messages [
 	^ messages

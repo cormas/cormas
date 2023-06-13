@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'assetsPath'
 	],
-	#category : #'Cormas-Tests-Helpers'
+	#category : #'Cormas-Tests-Fixtures'
 }
 
 { #category : #accessing }
