@@ -44,6 +44,21 @@ CMMessageTest >> testFromTo [
 ]
 
 { #category : #tests }
+CMMessageTest >> testFromToContent [
+
+	| message |
+	
+	message := CMMessage
+		from: senderAgent
+		to: receiverAgent
+		content: content.
+		
+	self assert: message sender equals: senderAgent.
+	self assert: message receiver equals: receiverAgent.
+	self assert: message content equals: content.
+]
+
+{ #category : #tests }
 CMMessageTest >> testFromToTopic [
 
 	| message |
@@ -96,6 +111,19 @@ CMMessageTest >> testTo [
 	| message |
 	message := CMMessage to: receiverAgent.
 	self assert: message receiver equals: receiverAgent
+]
+
+{ #category : #tests }
+CMMessageTest >> testToContent [
+
+	| message |
+	
+	message := CMMessage
+		to: receiverAgent
+		content: content.
+		
+	self assert: message receiver equals: receiverAgent.
+	self assert: message content equals: content.
 ]
 
 { #category : #tests }

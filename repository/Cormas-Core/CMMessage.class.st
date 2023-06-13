@@ -51,6 +51,16 @@ CMMessage class >> from: aSenderAgent to: aReceiverAgent [
 		yourself.
 ]
 
+{ #category : #'instance creation' }
+CMMessage class >> from: aSenderAgent to: aReceiverAgent content: anObject [
+	
+	^ self new
+		sender: aSenderAgent;
+		receiver: aReceiverAgent;
+		content: anObject;
+		yourself.
+]
+
 { #category : #communication }
 CMMessage class >> from: aSenderAgent to: aReceiverAgent topic: aSymbol [
 	
@@ -101,6 +111,15 @@ CMMessage class >> to: anAgent [
 	
 	^ self new
 		receiver: anAgent;
+		yourself.
+]
+
+{ #category : #'instance creation' }
+CMMessage class >> to: anAgent content: anObject [
+	
+	^ self new
+		receiver: anAgent;
+		content: anObject;
 		yourself.
 ]
 
