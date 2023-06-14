@@ -64,7 +64,6 @@ CMProjectBuilder class >> modelPackageNames [
 	'Cormas-Model-Conway'
 	'Cormas-Model-DemoAggregates'
 	'Cormas-Model-Diffuse'
-	'Cormas-Model-FireAutomata'
 	'Cormas-Model-PlotsRental'
 	'Cormas-Model-ReHab'
 	'Cormas-Model-Stupid'
