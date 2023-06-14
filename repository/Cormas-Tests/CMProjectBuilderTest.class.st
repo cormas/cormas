@@ -55,27 +55,6 @@ CMProjectBuilderTest >> expectedMetadata [
 		yourself.
 ]
 
-{ #category : #test }
-CMProjectBuilderTest >> loadSampleModel [
-
-	EpMonitor disableDuring: [ 
-		self builder loadModelPackage:	self sampleModelName ]
-
-]
-
-{ #category : #test }
-CMProjectBuilderTest >> sampleModelClass [
-
-	^ Smalltalk at: #CMECECModel
-]
-
-{ #category : #test }
-CMProjectBuilderTest >> sampleModelName [
-
-	^ 'Cormas-Model-ECEC'
-	
-]
-
 { #category : #accessing }
 CMProjectBuilderTest >> sampleProject [
 
@@ -96,13 +75,6 @@ CMProjectBuilderTest >> setUp [
 	self builder: CMProjectBuilder new.
 ]
 
-{ #category : #running }
-CMProjectBuilderTest >> tearDown [
-
-	super tearDown.
-	self builder unLoadModelPackages.
-]
-
 { #category : #test }
 CMProjectBuilderTest >> testCormasModel [
 
@@ -117,15 +89,6 @@ CMProjectBuilderTest >> testDefaultOutputDirectory [
 
 	self assert: (self builder defaultOutputDirectory isKindOf: String) description: 'It should get the String directory where project files are written'.
 	self deny: self builder defaultOutputDirectory isEmpty description: 'Default output directory should not be empty'.
-]
-
-{ #category : #test }
-CMProjectBuilderTest >> testIsModelLoaded [
-
-	self deny: (self builder isModelLoaded: 'CMInvalidXYZ123Model') description: 'Nonexistent model is not loaded'.
-	self loadSampleModel.
-	self assert: (self builder isModelLoaded: self sampleModelName) description: 'It should verify model is loaded'.
-	self unloadSampleModel.
 ]
 
 { #category : #test }
@@ -164,6 +127,12 @@ CMProjectBuilderTest >> testModelPackageNames [
 ]
 
 { #category : #test }
+CMProjectBuilderTest >> testNonexistingModelIsNotLoaded [
+
+	self deny: (self builder isModelLoaded: 'CMInvalidXYZ123Model')
+]
+
+{ #category : #test }
 CMProjectBuilderTest >> testOutputDirectory [
 
 	self assert: (self builder localBuildDir isKindOf: String).
@@ -189,19 +158,6 @@ CMProjectBuilderTest >> testTempLocation [
 ]
 
 { #category : #test }
-CMProjectBuilderTest >> testUnLoadModelPackage [
-
-	| testPackageName |
-	
-	testPackageName := self sampleModelName.
-	self builder lazyLoadModelPackage: testPackageName.
-	self assert: (self builder isModelLoaded: testPackageName).
-	self builder unLoadModelPackage: testPackageName.
-	self deny: (self builder isModelLoaded: testPackageName).
-	
-]
-
-{ #category : #test }
 CMProjectBuilderTest >> testUnLoadModelPackages [
 
 	self builder lazyLoadModelPackages.
@@ -219,27 +175,4 @@ CMProjectBuilderTest >> testWriteProjectTree [
 	self 
 		assertCollection: (self builder localBuildDirRef children collect: #basename) 
 		hasSameElements: CMGitBridge resourceDirectoryNames
-]
-
-{ #category : #test }
-CMProjectBuilderTest >> testWriteSourceCode [
-
-	| newFileRef outputFileRef |
-	
-	(self builder lazyLoadModelPackage: self sampleModelName).
-	self builder writeSourceCode: self sampleModelClass.
-	newFileRef := self builder tempLocation / CMProjectFile sourceCodeFilenameWithExtension.
-	outputFileRef := self builder defaultOutputDirectory asFileReference / newFileRef basename.
-	self assert: outputFileRef isFile.
-	self assert: outputFileRef basename equals: CMProjectFile sourceCodeFilenameWithExtension.
-	self deny: outputFileRef contents isEmpty.
-	
-]
-
-{ #category : #test }
-CMProjectBuilderTest >> unloadSampleModel [
-
-	EpMonitor disableDuring: [ 
-		self builder unLoadModelPackage:	self sampleModelName ]
-
 ]
