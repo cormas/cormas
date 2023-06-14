@@ -69,7 +69,6 @@ CMProjectBuilder class >> modelPackageNames [
 	" Answer a <Collection> of <String> with CORMAS model package names "
 	
 	^ #(
-	'Cormas-Model-ECEC'
 	'Cormas-Model-Conway'
 	'Cormas-Model-DemoAggregates'
 	'Cormas-Model-Diffuse'
