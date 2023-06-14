@@ -27,14 +27,6 @@ Class {
 }
 
 { #category : #examples }
-CMProjectBuilder class >> buildECEC [
-	<example>
-	
-	"CMProjectModel new addAnimation: ''."
-	self buildProjectNamed: 'Cormas-Model-ECEC' modelClass: #CMECECModel
-]
-
-{ #category : #examples }
 CMProjectBuilder class >> buildProjectDemos [
 	" Removes all existing demos and rebuild the project files from the code in the current image.
 	All the models source code should be loaded into the image "
@@ -69,7 +61,6 @@ CMProjectBuilder class >> modelPackageNames [
 	" Answer a <Collection> of <String> with CORMAS model package names "
 	
 	^ #(
-	'Cormas-Model-ECEC'
 	'Cormas-Model-Conway'
 	'Cormas-Model-DemoAggregates'
 	'Cormas-Model-Diffuse'
