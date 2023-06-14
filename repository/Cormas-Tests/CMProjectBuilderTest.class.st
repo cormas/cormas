@@ -104,16 +104,6 @@ CMProjectBuilderTest >> tearDown [
 ]
 
 { #category : #test }
-CMProjectBuilderTest >> testBuildProjectMetadataSTON [
-
-"	| expected |
-	
-	self builder cormasModel: self model.
-	expected := STON toStringPretty: self expectedMetadata.
-	self assert: self builder buildProjectMetadataSTON equals: expected."
-]
-
-{ #category : #test }
 CMProjectBuilderTest >> testCormasModel [
 
 	self builder cormasModel: CMMockModel new.
@@ -127,15 +117,6 @@ CMProjectBuilderTest >> testDefaultOutputDirectory [
 
 	self assert: (self builder defaultOutputDirectory isKindOf: String) description: 'It should get the String directory where project files are written'.
 	self deny: self builder defaultOutputDirectory isEmpty description: 'Default output directory should not be empty'.
-]
-
-{ #category : #test }
-CMProjectBuilderTest >> testDestinationPath [
-
-	self flag: #toDo.
-	"self assert: (self migrator destinationPath isKindOf: FileReference).
-	self assert: self migrator destinationPath isDirectory."
-
 ]
 
 { #category : #test }
