@@ -1,3 +1,16 @@
+# [v0.6](https://github.com/cormas/cormas/compare/v0.5...v0.6) (16 June 2023)
+
+- Introduced `TCMLocated` trait to replace the class hierarchy of located agents and groups
+- Introduced `TCMCommunicating` trait to replace the class hierarchy of communicating agents and groups
+
+### Renamed
+
+_(all the original class and method names in this list were retained as deprecations)_
+
+**Methods:**
+
+- (https://github.com/cormas/cormas/issues/654) All implementors of `initSimulation` ---> `initializeSimulation`
+
 # [v0.5](https://github.com/cormas/cormas/compare/pre-v0.5...v0.5) (9 June 2023)
 
 ### Removed 
