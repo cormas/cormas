@@ -25,6 +25,12 @@ CMMockModel class >> defaultControl [
 	^ #stepSynchronously:
 ]
 
+{ #category : #default }
+CMMockModel class >> defaultNumberOfAgents [
+
+	^ 5
+]
+
 { #category : #accessing }
 CMMockModel class >> friendlyName [
 	^ 'TestModel'
@@ -39,7 +45,9 @@ CMMockModel >> init [
 		neighbourhood: 8
 		closed: false.
 		
-	self createN: 5 randomlyLocatedAloneEntities: CMMockAgent.
+	self
+		createN: self class defaultNumberOfAgents
+		randomlyLocatedAloneEntities: CMMockAgent.
 		
 	self initRandom
 ]
