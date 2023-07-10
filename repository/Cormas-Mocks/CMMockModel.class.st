@@ -14,7 +14,7 @@ Class {
 	#name : #CMMockModel,
 	#superclass : #CMAbstractModel,
 	#instVars : [
-		'theAgentLocations',
+		'theAgents',
 		'theCells'
 	],
 	#category : #'Cormas-Mocks'
@@ -80,8 +80,8 @@ CMMockModel >> numDeads [
 ]
 
 { #category : #accessing }
-CMMockModel >> theAgentLocations [
-	^ theAgentLocations ifNil: [ theAgentLocations := OrderedCollection new ]
+CMMockModel >> theAgents [
+	^ theAgents ifNil: [ theAgents := OrderedCollection new ]
 ]
 
 { #category : #accessing }

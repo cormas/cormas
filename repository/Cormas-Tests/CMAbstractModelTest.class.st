@@ -254,9 +254,9 @@ CMAbstractModelTest >> testPickCellConstrainedBy [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testPickCellWithoutAny [
 
-	model createN: 50 randomlyLocatedAloneEntities: CMMockAgentLocation.
-	self assert: ((model pickCellWithoutAny: CMMockAgentLocation)
-				occupantsAt: CMMockAgentLocation) isEmpty
+	model createN: 50 randomlyLocatedAloneEntities: CMMockAgent.
+	self assert: ((model pickCellWithoutAny: CMMockAgent)
+				occupantsAt: CMMockAgent) isEmpty
 ]
 
 { #category : #'tests-accessing-entities' }
@@ -317,7 +317,7 @@ CMAbstractModelTest >> testPickNEntitiesConstrainedBy [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testPickUnoccupiedCell [
 
-	model createN: 50 randomlyLocatedAloneEntities: CMMockAgentLocation.
+	model createN: 50 randomlyLocatedAloneEntities: CMMockAgent.
 	self assert: model pickUnoccupiedCell theOccupants isEmpty
 ]
 
@@ -415,12 +415,12 @@ CMAbstractModelTest >> testSpacialClasses [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testTheAgents [
 	| agents |
-	model createN: 50 randomlyLocatedAloneEntities: CMMockAgentLocation.
+	model createN: 50 randomlyLocatedAloneEntities: CMMockAgent.
 	agents := model theAgents.
 	self assert: agents size equals: 50.
 	agents
 		do:
-			[ :agent | self assert: agent class identicalTo: CMMockAgentLocation ]
+			[ :agent | self assert: agent class identicalTo: CMMockAgent ]
 ]
 
 { #category : #'tests-accessing-entities' }
