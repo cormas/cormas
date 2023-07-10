@@ -3,7 +3,7 @@ I am a deprecated class CMAgentCommLocation. I am introduced for backward compat
 "
 Class {
 	#name : #CMAgentCommLocation,
-	#superclass : #CMLocatedCommunicatingAgent,
+	#superclass : #AnObsoleteCMLocatedCommunicatingAgent,
 	#category : #'Cormas-Deprecated'
 }
 

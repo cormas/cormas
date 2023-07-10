@@ -3403,7 +3403,7 @@ CMAbstractModel >> update: aCollec with: newCollec [
 	"DEPRECATED. You should rather use newAndCollect to create and collect new entities"
 	
 	| theDeadAgents |
-	theDeadAgents := aCollec select: [:a | a dead].
+	theDeadAgents := aCollec select: [:a | a isDead].
 	theDeadAgents
 		do:
 			[:a | 

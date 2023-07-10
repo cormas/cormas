@@ -164,7 +164,7 @@ CMGroup >> updateAgents [
 	"Get rid of dead components"
 
 	| theDeadAgents |
-	theDeadAgents := self components select: [ :a | a dead ].
+	theDeadAgents := self components select: [ :a | a isDead ].
 	theDeadAgents
 		do: [ :a | 
 			a patch notNil

@@ -4,7 +4,7 @@ Instead of subclassing me, please subclass CMAgent and use the trait TCMLocated.
 "
 Class {
 	#name : #CMAgentLocation,
-	#superclass : #CMLocatedAgent,
+	#superclass : #AnObsoleteCMLocatedAgent,
 	#category : #'Cormas-Deprecated'
 }
 

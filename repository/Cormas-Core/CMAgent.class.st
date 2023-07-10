@@ -5,7 +5,7 @@ Class {
 	#name : #CMAgent,
 	#superclass : #CMEntity,
 	#instVars : [
-		'dead'
+		'isDead'
 	],
 	#category : #'Cormas-Core-Entities'
 }
@@ -14,18 +14,6 @@ Class {
 CMAgent class >> dead_default [
 self deprecated:'Should be deprecated in the next CORMAS version'.
 	^false
-]
-
-{ #category : #accessing }
-CMAgent >> dead [
-	^dead ifNil: [dead := false]
-]
-
-{ #category : #accessing }
-CMAgent >> dead: aBoolean [ 
-"Set the dead variable to True or False
-aBoolean < Boolean >"
-	dead := aBoolean
 ]
 
 { #category : #controlling }
@@ -41,13 +29,13 @@ CMAgent >> destroyed [
 	" Answer if the agent is dead "
 	
 	self deprecated: 'Should use #isDestroyed or #isDead '.
-	^ self dead
+	^ self isDead
 ]
 
 { #category : #accessing }
 CMAgent >> destroyed: aBoolean [
 "Set the dead variable to True or False and delete the figures"
-	dead := aBoolean.
+	isDead := aBoolean.
 	(aBoolean and:[self isSituated]) ifTrue:[self leave].
 ]
 
@@ -56,7 +44,7 @@ CMAgent >> interestingDetails [
 	" Answer a <Collection> of interesting receiver's attributes, from a modeler point of view, to display in a popup for example "
 
 	^ super interestingDetails , { 
-		'Dead: ' -> (self dead asString)
+		'Dead: ' -> (self isDead asString)
 		}
 ]
 
@@ -66,16 +54,31 @@ CMAgent >> isAgent [
 	^ true
 ]
 
-{ #category : #testing }
+{ #category : #accessing }
+CMAgent >> isAlive [
+
+	^ isDead not
+]
+
+{ #category : #accessing }
 CMAgent >> isDead [
-	^ self dead
+
+	^ isDead ifNil: [ isDead := false ]
+]
+
+{ #category : #accessing }
+CMAgent >> isDead: aBoolean [ 
+	"Set the dead variable to True or False
+	aBoolean < Boolean >"
+	
+	isDead := aBoolean
 ]
 
 { #category : #testing }
 CMAgent >> isDestroyed [
 	" Answer if the agent is dead "
 	
-	^ self dead
+	^ self isDead
 ]
 
 { #category : #control }
