@@ -3,7 +3,7 @@ I am a deprecated class CMGroupCommLocation. I am introduced for backward compat
 "
 Class {
 	#name : #CMGroupCommLocation,
-	#superclass : #AnObsoleteCMLocatedCommunicatingGroup,
+	#superclass : #CMLocatedCommunicatingGroup,
 	#category : #'Cormas-Deprecated'
 }
 
