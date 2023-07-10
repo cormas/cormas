@@ -1,5 +1,5 @@
 Class {
-	#name : #CMMockLocatedAgent,
+	#name : #CMMockAgent,
 	#superclass : #CMAgent,
 	#traits : 'TCMLocated',
 	#classTraits : 'TCMLocated classTrait',
@@ -7,6 +7,6 @@ Class {
 }
 
 { #category : #control }
-CMMockLocatedAgent >> step [
+CMMockAgent >> step [
 	
 ]
