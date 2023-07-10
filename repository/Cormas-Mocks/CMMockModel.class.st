@@ -33,6 +33,14 @@ CMMockModel class >> friendlyName [
 { #category : #'initialize-release' }
 CMMockModel >> init [ 
 
+	self
+		createGridLines: 4
+		columns: 4
+		neighbourhood: 8
+		closed: false.
+		
+	self createN: 5 randomlyLocatedAloneEntities: CMMockAgent.
+		
 	self initRandom
 ]
 
