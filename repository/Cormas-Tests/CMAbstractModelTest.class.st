@@ -50,7 +50,7 @@ CMAbstractModelTest >> setUp [
 CMAbstractModelTest >> testCentralCell [
 	| m |
 	m := (CMMockModel	newWithActiveInit: #initRandom)
-		initSimulation;
+		initializeSimulation;
 		createGridLines: 3
 			columns: 3
 			neighbourhood: 4
@@ -80,7 +80,7 @@ CMAbstractModelTest >> testCreateGridXYNeighborHoodClosed [
 CMAbstractModelTest >> testDominance [
 	| m |
 	m := (CMMockModel	newWithActiveInit: #initRandom)
-		initSimulation;
+		initializeSimulation;
 		createGridLines: 100
 			columns: 100
 			neighbourhood: 4
@@ -94,7 +94,7 @@ CMAbstractModelTest >> testDominance [
 CMAbstractModelTest >> testDominance1 [
 	| m |
 	m := (CMMockModel	newWithActiveInit: #initRandom)
-		initSimulation;
+		initializeSimulation;
 		createGridLines: 100
 			columns: 100
 			neighbourhood: 4
@@ -144,7 +144,7 @@ CMAbstractModelTest >> testInitSimulation [
 		activeControl: #step:;
 		yourself.
 	self deny: model initStatus.
-	model initSimulation.
+	model initializeSimulation.
 	self assert: model initStatus.
 ]
 
@@ -166,7 +166,7 @@ CMAbstractModelTest >> testIsInitialized [
 		activeInit: #initAlive;
 		activeControl: #step:.
 	self deny: model isInitialized.
-	model initSimulation.
+	model initializeSimulation.
 	self assert: model isInitialized.
 	model activeInit: nil.
 	self deny: model isInitialized.
@@ -180,7 +180,7 @@ CMAbstractModelTest >> testIsInitialized [
 CMAbstractModelTest >> testLowerLeftCell [
 	| m |
 	m := (CMMockModel newWithActiveInit: #initRandom)
-		initSimulation;
+		initializeSimulation;
 		createGridLines: 3
 			columns: 3
 			neighbourhood: 4
@@ -195,7 +195,7 @@ CMAbstractModelTest >> testLowerLeftCell [
 CMAbstractModelTest >> testLowerRightCell [
 	| m |
 	m := (CMMockModel newWithActiveInit: #initRandom)
-		initSimulation;
+		initializeSimulation;
 		createGridLines: 3
 			columns: 3
 			neighbourhood: 4
@@ -235,7 +235,7 @@ CMAbstractModelTest >> testPickCell [
 CMAbstractModelTest >> testPickCellConstrainedBy [
 	| m |
 	m := (CMMockModel newWithActiveInit: #initRandom)
-		initSimulation;
+		initializeSimulation;
 		createGridLines: 9
 			columns: 9
 			neighbourhood: 4
@@ -334,7 +334,7 @@ CMAbstractModelTest >> testSelectCellsBetweenLine1Line2AndColumn1Column2 [
 	| m cells |
 	
 	m := (CMMockModel newWithActiveInit: #initAlive)
-		initSimulation;
+		initializeSimulation;
 		createGridLines: 20
 			columns: 10
 			neighbourhood: 4
@@ -355,7 +355,7 @@ CMAbstractModelTest >> testSelectCellsBetweenLine1Line2AndColumn1Column2 [
 CMAbstractModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
 	| m cells |
 	m := (CMMockModel newWithActiveInit: #initAlive)
-		initSimulation;
+		initializeSimulation;
 		createGridLines: 9
 			columns: 5
 			neighbourhood: 4
@@ -398,7 +398,7 @@ CMAbstractModelTest >> testShortestDistanceToCellsVerifying [
 	m := CMMockModel
 		initialize;
 		new.
-	m initSimulation.
+	m initializeSimulation.
 	(m allTheEntities: CMMockCell)
 		do: [ :cell | 
 			self assert: (cell shortestDistanceToCellsVerifying: [ :c | c state = #dead | (c state = #alive) ])
@@ -427,7 +427,7 @@ CMAbstractModelTest >> testTheAgents [
 CMAbstractModelTest >> testUpperLeftCell [
 	| m |
 	m := (CMMockModel newWithActiveInit: #initRandom)
-		initSimulation;
+		initializeSimulation;
 		createGridLines: 3
 			columns: 3
 			neighbourhood: 4
@@ -442,7 +442,7 @@ CMAbstractModelTest >> testUpperLeftCell [
 CMAbstractModelTest >> testUpperRightCell [
 	| m |
 	m := (CMMockModel newWithActiveInit: #initRandom)
-		initSimulation;
+		initializeSimulation;
 		createGridLines: 3
 			columns: 3
 			neighbourhood: 4

@@ -398,10 +398,9 @@ CMAbstractModel class >> colorOfProbe: aProbeSymbol [
 
 { #category : #'managing classes' }
 CMAbstractModel class >> commClasses [
-	^ self allEntityClasses
-		select: [ :i | 
-			(i inheritsFrom: CMCommunicatingAgent) | (i inheritsFrom: CMLocatedCommunicatingAgent)
-				| (i inheritsFrom: CMMessage) ]
+
+	^ self allEntityClasses select: [ :each | 
+		each isCommunicatingEntity or: [ each inheritsFrom: CMMessage ] ]
 ]
 
 { #category : #'managing classes' }
@@ -1094,7 +1093,7 @@ self  entitiesFromACollecOrClass: self theFarmers"
 CMAbstractModel >> allTheLocatedEntities [
 	"Returns a collection of all the instances of AgentLocation and of ObjectLocation (and sub classes) collected by cormasModel"
 	
-	^self allTheEntities select: [:entity | entity isClassLocation]
+	^self allTheEntities select: [:entity | entity isLocatedEntity]
 ]
 
 { #category : #'accessing - entities' }
@@ -2254,10 +2253,10 @@ CMAbstractModel >> initEntitiesForPassiveClass: aClass [
 { #category : #accessing }
 CMAbstractModel >> initEntitiesForSocialClass: aClass [
 
-	(aClass isAbstract not and: [ aClass inheritsFrom: CMLocatedAgent ]) 
-		ifTrue: [ 
-			(self theEntities: aClass) ifNotNil: [ 
-				(self theEntities: aClass) do: #leave ] ].
+	(aClass isAbstract not and: [ aClass new isLocatedEntity ]) ifTrue: [ 
+		(self theEntities: aClass) ifNotNil: [ 
+			(self theEntities: aClass) do: [ :each | each leave ] ] ].
+		
 	self resetEntities: aClass
 ]
 
@@ -2283,32 +2282,8 @@ CMAbstractModel >> initSimFromScnrStage2 [
 	self updateDataForChart.
 	self channel ifNil: [ self initializeChannel ].
 	self theAgentsComm do: [ :p | p channel: self channel ].
-	self theAgentsComm ifNotEmpty: [ : agentsComm | self channel population: agentsComm ].
 	"announce to all the subscribers that simulation is beeing initialized"
 	self projectAnnouncer announce: CMSimulationInitializationAnnouncement.
-	self initStatus: true.
-]
-
-{ #category : #scheduling }
-CMAbstractModel >> initSimulation [
-
-	self timeStep: 0.
-	self initializeProbes.
-	"store the instances of entities in a collection and request an update of the space views at the end of the initialization"
-	self setNewCollector.
-	"remove the previous entities of the collections (theXXXs), except for theCells"
-	self initEntities.
-	"set default attributes values of entities"
-	self defaultAttributesSetter reApplyNewValues.	"setAttributeNewValue"	"reApplyNewValues"
-	"Call the selected INIT method"
-	self perform: self activeInit.	"launch the selected INIT method"
-	self updateEntities.	"updates theXXXs collections"
-	self updateDataForChart.
-	self channel ifNil: [ self initializeChannel ].
-	self theAgentsComm do: [ :p | p channel: self channel ].
-	self theAgentsComm ifNotEmpty: [ : agentsComm | self channel population: agentsComm ].
-	"announce to all the subscribers that simulation is beeing initialized"
-	self announcer announce: CMSimulationInitializationAnnouncement.
 	self initStatus: true.
 ]
 
@@ -2379,6 +2354,28 @@ CMAbstractModel >> initializeProbes [
 		initializeEntitiesActiveProbes.
 	self cormas ifNil: [ ^ nil ].
 	"self cormas refreshCharts"
+]
+
+{ #category : #scheduling }
+CMAbstractModel >> initializeSimulation [
+
+	self timeStep: 0.
+	self initializeProbes.
+	"store the instances of entities in a collection and request an update of the space views at the end of the initialization"
+	self setNewCollector.
+	"remove the previous entities of the collections (theXXXs), except for theCells"
+	self initEntities.
+	"set default attributes values of entities"
+	self defaultAttributesSetter reApplyNewValues.	"setAttributeNewValue"	"reApplyNewValues"
+	"Call the selected INIT method"
+	self perform: self activeInit.	"launch the selected INIT method"
+	self updateEntities.	"updates theXXXs collections"
+	self updateDataForChart.
+	self channel ifNil: [ self initializeChannel ].
+	self theAgentsComm do: [ :p | p channel: self channel ].
+	"announce to all the subscribers that simulation is beeing initialized"
+	self announcer announce: CMSimulationInitializationAnnouncement.
+	self initStatus: true.
 ]
 
 { #category : #initialization }
@@ -2786,15 +2783,6 @@ CMAbstractModel >> pickUnoccupiedCell [
 	^ self pickCellConstrainedBy: [ :cell | cell noOccupant ]
 ]
 
-{ #category : #initialization }
-CMAbstractModel >> prepareCommunicationFor: anAgent [
-	
-	anAgent channel: self channel.
-	self channel population add: anAgent.
-	self channel observerFunctions
-		do: [:a | a populationSourceAddAgent: anAgent]
-]
-
 { #category : #printing }
 CMAbstractModel >> printOn: aStream [
 	" Private - See superimplementor's comment "
@@ -2916,7 +2904,6 @@ CMAbstractModel >> release [
 	super release.
 	self spaceModel release.
 	self spaceModel: nil.
-	self channel ifNotNil: [ self channel population: nil ].
 	self channel: nil.
 	self resetCells.
 	self projectManager: nil.
@@ -2970,13 +2957,6 @@ CMAbstractModel >> removeEntity: anEntity [
 	(self theEntities: anEntity class)
 		remove: anEntity
 		ifAbsent: [nil]
-]
-
-{ #category : #initialization }
-CMAbstractModel >> removeFromChannel: anAgent [
-	
-	self channel observerFunctions
-		do: [:a | a populationSourceRemoveAgent: anAgent]
 ]
 
 { #category : #'private - notification' }
@@ -3034,7 +3014,7 @@ CMAbstractModel >> runStep [
 		ifFalse: [ self perform: self activeControl ].
 	self timeChanged.
 	self updateEntities.
-	self channel notNil ifTrue: [self channel flush].
+	self channel ifNotNil: [ self channel sendAllMessages ].
 	self updateDataForChart.
 ]
 
@@ -3316,7 +3296,7 @@ CMAbstractModel >> theAgents [
 CMAbstractModel >> theAgentsComm [
 	"Returns a collection of all the communicating agents (social agents) of the model"
 	
-	^self theAgents select: [:ag | ag isAgentComm]
+	^self theAgents select: [:ag | ag isCommunicatingEntity]
 ]
 
 { #category : #'accessing - entities' }

@@ -17,73 +17,33 @@ Class {
 	#name : #CMChannel,
 	#superclass : #Object,
 	#instVars : [
-		'population',
-		'messages',
-		'observerFunctions'
+		'messages'
 	],
 	#category : #'Cormas-Core-Communication'
 }
 
-{ #category : #observer }
-CMChannel >> addObserverFunction: anObserverFunction [
-	anObserverFunction addCanal: self.
-	observerFunctions add: anObserverFunction
-]
+{ #category : #adding }
+CMChannel >> addMessageToQueue: aMessage [
 
-{ #category : #procedures }
-CMChannel >> flush [
-	"flush will transmit the set of messages in the message collection to the receivers."
-	
-	self messages do: [ : a | self transmit: a].
-	messages := OrderedCollection new
+	messages add: aMessage
 ]
 
 { #category : #initialization }
 CMChannel >> initialize [
 	
-	observerFunctions := OrderedCollection new.
+	super initialize.
 	messages := OrderedCollection new
 ]
 
-{ #category : #accessing }
-CMChannel >> messages [
-	^ messages
+{ #category : #testing }
+CMChannel >> isEmpty [
+
+	^ messages isEmpty
 ]
 
-{ #category : #accessing }
-CMChannel >> observerFunctions [
+{ #category : #sending }
+CMChannel >> sendAllMessages [
 	
-	^observerFunctions
-]
-
-{ #category : #accessing }
-CMChannel >> population [
-	^ population
-]
-
-{ #category : #accessing }
-CMChannel >> population: aCollection [
-	population := aCollection.
-	observerFunctions do: [ :f | f populationSource: aCollection ]
-]
-
-{ #category : #observer }
-CMChannel >> removeObserverFunction: anObserverFunction [
-	observerFunctions isEmpty
-		ifFalse: [ observerFunctions remove: anObserverFunction ]
-]
-
-{ #category : #procedures }
-CMChannel >> stock: aMsg [
-	"will record the receiving argument which is supposed to be an instance of subclass of CMMsg in the messages attribute."
-
-	self messages add: aMsg
-]
-
-{ #category : #procedures }
-CMChannel >> transmit: aMsg [
-	"will immediately deliver the message to the receiver of the message. "
-	
-	aMsg receiver messageFromChannel: aMsg.
-	observerFunctions do: [ : fobs | fobs message: aMsg ]
+	messages do: [ :each | each send ].
+	messages removeAll.
 ]
