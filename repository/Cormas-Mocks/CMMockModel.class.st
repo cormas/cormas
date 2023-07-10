@@ -60,29 +60,29 @@ CMMockModel >> initRandom [
 ]
 
 { #category : #probes }
-CMMockModel >> numAlives [
+CMMockModel >> numberOfAliveAgents [
 	"return the population size of the alive"
 
 	<probe>
 	| count |
 	count := 0.
-	self allTheEntities
-		do: [ :cell | 
-			cell state = #alive
+	self theAgents 
+		do: [ :agent | 
+			agent isAlive
 				ifTrue: [ count := count + 1 ] ].
 	^ count
 ]
 
 { #category : #probes }
-CMMockModel >> numDeads [
+CMMockModel >> numberOfDeadAgents [
 	"return the population size of the dead"
 
 	<probe>
 	| count |
 	count := 0.
-	self allTheEntities
-		do: [ :cell | 
-			cell state = #dead
+	self theAgents
+		do: [ :agent | 
+			agent isDead
 				ifTrue: [ count := count + 1 ] ].
 	^ count
 ]

@@ -20,7 +20,7 @@ self deprecated:'Should be deprecated in the next CORMAS version'.
 CMAgent >> delete [
 "Purpose: gets rid of this object. The collectGarbage is IMMEDIATELY performed  (ie. the receiver of class X is removed from 'theXXXs' collection)"
 
-	self dead: true.
+	self isDead: true.
 	self collector ifNotNil: [ : c | c removeEntity: self ]
 ]
 
