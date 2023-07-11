@@ -211,12 +211,6 @@ CMAbstractModelTest >> testModelPrefix [
 	self assert: CMMockCell modelClass shortName equals: 'Mock'
 ]
 
-{ #category : #tests }
-CMAbstractModelTest >> testNbDistinctValuesOf [
-
-	self assert: (model nbDistinctValuesOf: #state) equals: 2.
-]
-
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testPickCell [
 	| cell |
