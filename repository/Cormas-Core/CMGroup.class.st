@@ -164,12 +164,11 @@ CMGroup >> updateAgents [
 	"Get rid of dead components"
 
 	| theDeadAgents |
-	theDeadAgents := self components select: [ :a | a dead ].
-	theDeadAgents
-		do: [ :a | 
-			a patch notNil
-				ifTrue: [ a leave ].
-			self deleteComponent: a ]
+	theDeadAgents := self components select: [ :agent | agent isDead ].
+	
+	theDeadAgents do: [ :agent | 
+		agent patch ifNotNil: [ agent leave ].
+		self deleteComponent: agent ]
 ]
 
 { #category : #'components - managing' }
