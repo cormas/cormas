@@ -78,13 +78,7 @@ CMMockModel >> numberOfAliveAgents [
 	"return the population size of the alive"
 
 	<probe>
-	| count |
-	count := 0.
-	self allTheEntities
-		do: [ :cell | 
-			cell state = #alive
-				ifTrue: [ count := count + 1 ] ].
-	^ count
+	^ (theAgents select: [ :agent | agent isAlive ]) size
 ]
 
 { #category : #probes }
@@ -92,13 +86,7 @@ CMMockModel >> numberOfDeadAgents [
 	"return the population size of the dead"
 
 	<probe>
-	| count |
-	count := 0.
-	self allTheEntities
-		do: [ :cell | 
-			cell state = #dead
-				ifTrue: [ count := count + 1 ] ].
-	^ count
+	^ (theAgents select: [ :agent | agent isDead ]) size
 ]
 
 { #category : #'as yet unclassified' }
