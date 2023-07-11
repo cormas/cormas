@@ -84,10 +84,7 @@ CMSpaceModelTest >> testAbsoluteWidth [
 { #category : #test }
 CMSpaceModelTest >> testAllOccupants [
 
-	| expected |
-	
-	expected := OrderedCollection empty.
-	self assert: self spaceModel allOccupants equals: expected.
+	self assert: self spaceModel allOccupants size equals: 5.
 
 ]
 

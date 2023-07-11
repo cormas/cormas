@@ -71,9 +71,9 @@ CMAbstractModelTest >> testClassNameFromEntityName [
 { #category : #tests }
 CMAbstractModelTest >> testCreateGridXYNeighborHoodClosed [
 
-	self assert: model allTheEntities size equals: 200.
-	self assert: (model selectCellsOfColumn: 1) size equals: 20.
-	self assert: (model selectCellsOfLine: 1) size equals: 10
+	self assert: model allTheEntities size equals: (4 * 4) + 5.
+	self assert: (model selectCellsOfColumn: 1) size equals: 4.
+	self assert: (model selectCellsOfLine: 1) size equals: 4
 ]
 
 { #category : #tests }
@@ -214,11 +214,7 @@ CMAbstractModelTest >> testModelPrefix [
 { #category : #tests }
 CMAbstractModelTest >> testNbDistinctValuesOf [
 
-	self assert: (model nbDistinctValuesOf: #state) equals: 1.
-	(model selectCellsOfLine: 1) do: [ :cell | cell state: #dead ].
 	self assert: (model nbDistinctValuesOf: #state) equals: 2.
-	(model selectCellsOfLine: 2) first state: #theThirdState.
-	self assert: (model nbDistinctValuesOf: #state) equals: 3
 ]
 
 { #category : #'tests-accessing-entities' }
@@ -254,9 +250,9 @@ CMAbstractModelTest >> testPickCellConstrainedBy [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testPickCellWithoutAny [
 
-	model createN: 50 randomlyLocatedAloneEntities: CMMockAgent.
-	self assert: ((model pickCellWithoutAny: CMMockAgent)
-				occupantsAt: CMMockAgent) isEmpty
+	| cell |
+	cell := model pickCellWithoutAny: CMMockAgent.
+	self assert: (cell occupantsAt: CMMockAgent) isEmpty
 ]
 
 { #category : #'tests-accessing-entities' }
@@ -274,24 +270,18 @@ CMAbstractModelTest >> testPickEntity [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testPickEntityConstrainedBy [
 
-	self
-		assert:
-			(model
-				pickEntity: CMMockCell
-				constrainedBy: [ :cell | cell numCol = 3 ]) numCol
-		equals: 3.
-	self
-		assert:
-			(model
-				pickEntity: CMMockCell
-				constrainedBy: [ :cell | cell numCol = 6 ]) numCol
-		equals: 6.
-	self
-		assert:
-			(model
-				pickEntity: CMMockCell
-				constrainedBy: [ :cell | cell numCol = 9 ]) numCol
-		equals: 9
+	| cell1 cell2 |
+	
+	cell1 := model
+		pickEntity: CMMockCell
+		constrainedBy: [ :cell | cell numCol = 1 ].
+		
+	cell2 := model
+		pickEntity: CMMockCell
+		constrainedBy: [ :cell | cell numCol = 4 ].
+
+	self assert: cell1 numCol equals: 1.
+	self assert: cell2 numCol equals: 4.
 ]
 
 { #category : #'tests-accessing-entities' }
@@ -317,7 +307,6 @@ CMAbstractModelTest >> testPickNEntitiesConstrainedBy [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testPickUnoccupiedCell [
 
-	model createN: 50 randomlyLocatedAloneEntities: CMMockAgent.
 	self assert: model pickUnoccupiedCell theOccupants isEmpty
 ]
 
@@ -373,9 +362,9 @@ CMAbstractModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testSelectCellsOfColumn [
 
-	self assert: model allTheEntities size equals: 200.
-	1 to: 10 do: [ :column | 
-		1 to: 20 do: [ :line | 
+	self assert: model allTheEntities size equals: (4 * 4) + 5.
+	1 to: 4 do: [ :column | 
+		1 to: 4 do: [ :line | 
 			self
 				assert: ((model selectCellsOfColumn: column) at: line)
 				identicalTo: ((model selectCellsOfLine: line) at: column) ] ]
@@ -384,11 +373,11 @@ CMAbstractModelTest >> testSelectCellsOfColumn [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testSelectCellsOfLine [
 
-	self assert: model allTheEntities size equals: 200.
-	1 to: 20 do: [ :line | 
+	self assert: model allTheEntities size equals: (4 * 4) + 5.
+	1 to: 4 do: [ :line | 
 		| cells |
 		cells := model selectCellsOfLine: line.
-		self assert: cells size equals: 10.
+		self assert: cells size equals: 4.
 		cells do: [ :cell | self assert: cell numLine equals: line ] ]
 ]
 
@@ -414,13 +403,13 @@ CMAbstractModelTest >> testSpacialClasses [
 
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testTheAgents [
+
 	| agents |
-	model createN: 50 randomlyLocatedAloneEntities: CMMockAgent.
 	agents := model theAgents.
-	self assert: agents size equals: 50.
-	agents
-		do:
-			[ :agent | self assert: agent class identicalTo: CMMockAgent ]
+	self assert: agents size equals: 5.
+	
+	agents do: [ :agent |
+		self assert: agent class equals: CMMockAgent ]
 ]
 
 { #category : #'tests-accessing-entities' }

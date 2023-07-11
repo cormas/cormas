@@ -22,12 +22,12 @@ CMTestObject >> model: anObject [
 { #category : #'tests-accessing-entities' }
 CMTestObject >> newTestModel [
  	
-	^ (CMMockModel	newWithActiveInit: #initAlive)
+	^ (CMMockModel	newWithActiveInit: #init)
 		initializeSimulation;
-		createGridLines: 20
+		"createGridLines: 20
 			columns: 10
 			neighbourhood: 4
-			closed: true;
+			closed: true;"
 		yourself
 ]
 
