@@ -25,6 +25,18 @@ CMMockModel class >> defaultControl [
 	^ #stepSynchronously:
 ]
 
+{ #category : #default }
+CMMockModel class >> defaultGridSize [
+
+	^ 4@4
+]
+
+{ #category : #default }
+CMMockModel class >> defaultNumberOfAgents [
+
+	^ 5
+]
+
 { #category : #accessing }
 CMMockModel class >> friendlyName [
 	^ 'TestModel'
@@ -34,12 +46,14 @@ CMMockModel class >> friendlyName [
 CMMockModel >> init [ 
 
 	self
-		createGridLines: 4
-		columns: 4
+		createGridLines: self class defaultGridSize x
+		columns: self class defaultGridSize y
 		neighbourhood: 8
 		closed: false.
 		
-	self createN: 5 randomlyLocatedAloneEntities: CMMockAgent.
+	self
+		createN: self class defaultNumberOfAgents
+		randomlyLocatedAloneEntities: CMMockAgent.
 		
 	self initRandom
 ]
