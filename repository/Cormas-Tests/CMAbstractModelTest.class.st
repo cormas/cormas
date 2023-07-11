@@ -325,7 +325,7 @@ CMAbstractModelTest >> testPickUnoccupiedCell [
 CMAbstractModelTest >> testProbes [
 	self
 		assert: CMMockModel probes asSet
-		equals: (Set with: #numAlives with: #numDeads)
+		equals: (Set with: #numberOfAliveAgents with: #numberOfDeadAgents)
 ]
 
 { #category : #'tests-accessing-entities' }

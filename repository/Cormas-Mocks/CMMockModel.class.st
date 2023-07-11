@@ -74,7 +74,7 @@ CMMockModel >> initRandom [
 ]
 
 { #category : #probes }
-CMMockModel >> numAlives [
+CMMockModel >> numberOfAliveAgents [
 	"return the population size of the alive"
 
 	<probe>
@@ -88,7 +88,7 @@ CMMockModel >> numAlives [
 ]
 
 { #category : #probes }
-CMMockModel >> numDeads [
+CMMockModel >> numberOfDeadAgents [
 	"return the population size of the dead"
 
 	<probe>
