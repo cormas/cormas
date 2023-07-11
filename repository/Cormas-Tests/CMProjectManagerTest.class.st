@@ -194,7 +194,7 @@ CMProjectManagerTest >> testModelInitMethods [
 CMProjectManagerTest >> testModelProbesMethods [
 
 	self assert: (self projectManager modelProbesMethods isKindOf: Array).
-	self assertCollection: self projectManager modelProbesMethods hasSameElements: #('Global>>numDeads' 'Global>>numAlives').
+	self assertCollection: self projectManager modelProbesMethods hasSameElements: #('Global>>numberOfDeadAgents' 'Global>>numberOfAliveAgents').
 ]
 
 { #category : #test }
