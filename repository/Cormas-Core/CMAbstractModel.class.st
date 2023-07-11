@@ -3399,17 +3399,17 @@ timeUnitName
 ]
 
 { #category : #Olddeprecated }
-CMAbstractModel >> update: aCollec with: newCollec [
+CMAbstractModel >> update: aCollection with: newCollection [
 	"DEPRECATED. You should rather use newAndCollect to create and collect new entities"
 	
 	| theDeadAgents |
-	theDeadAgents := aCollec select: [:a | a dead].
-	theDeadAgents
-		do:
-			[:a | 
-			(self class occupantClasses includes: a class) ifTrue: [a leave].
-			aCollec remove: a].
-	aCollec addAll: newCollec
+	theDeadAgents := aCollection select: [ :agent | agent isDead ].
+	
+	theDeadAgents do: [ :agent | 
+		(self class occupantClasses includes: agent class) ifTrue: [agent leave].
+		aCollection remove: agent ].
+	
+	aCollection addAll: newCollection
 ]
 
 { #category : #'probes - recording' }
