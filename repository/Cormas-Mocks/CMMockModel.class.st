@@ -15,7 +15,10 @@ Class {
 	#superclass : #CMAbstractModel,
 	#instVars : [
 		'theAgents',
-		'theCells'
+		'theCells',
+		'numberOfRows',
+		'numberOfColumns',
+		'initialNumberOfAgents'
 	],
 	#category : #'Cormas-Mocks'
 }
@@ -26,15 +29,21 @@ CMMockModel class >> defaultControl [
 ]
 
 { #category : #default }
-CMMockModel class >> defaultGridSize [
+CMMockModel class >> defaultInitialNumberOfAgents [
 
-	^ 4@4
+	^ 5
 ]
 
 { #category : #default }
-CMMockModel class >> defaultNumberOfAgents [
+CMMockModel class >> defaultNumberOfColumns [
 
-	^ 5
+	^ 4
+]
+
+{ #category : #default }
+CMMockModel class >> defaultNumberOfRows [
+
+	^ 4
 ]
 
 { #category : #accessing }
@@ -46,13 +55,13 @@ CMMockModel class >> friendlyName [
 CMMockModel >> init [ 
 
 	self
-		createGridLines: self class defaultGridSize x
-		columns: self class defaultGridSize y
+		createGridLines: numberOfRows
+		columns: numberOfColumns
 		neighbourhood: 8
 		closed: false.
 		
 	self
-		createN: self class defaultNumberOfAgents
+		createN: initialNumberOfAgents
 		randomlyLocatedAloneEntities: CMMockAgent.
 		
 	self initRandom
@@ -73,12 +82,46 @@ CMMockModel >> initRandom [
 	self theCells do: #initRandom
 ]
 
+{ #category : #'accessing - parameters' }
+CMMockModel >> initialNumberOfAgents [
+
+	^ initialNumberOfAgents
+]
+
+{ #category : #'accessing - parameters' }
+CMMockModel >> initialNumberOfAgents: aNumber [
+
+	initialNumberOfAgents := aNumber
+]
+
+{ #category : #initialization }
+CMMockModel >> initialize [
+
+	super initialize.
+	
+	numberOfRows := self class defaultNumberOfRows.
+	numberOfColumns := self class defaultNumberOfColumns.
+	initialNumberOfAgents := self class defaultInitialNumberOfAgents.
+]
+
 { #category : #probes }
 CMMockModel >> numberOfAliveAgents [
 	"return the population size of the alive"
 
 	<probe>
 	^ (theAgents select: [ :agent | agent isAlive ]) size
+]
+
+{ #category : #'accessing - parameters' }
+CMMockModel >> numberOfColumns [
+
+	^ numberOfColumns
+]
+
+{ #category : #'accessing - parameters' }
+CMMockModel >> numberOfColumns: aNumber [
+
+	numberOfColumns := aNumber
 ]
 
 { #category : #probes }
@@ -89,7 +132,19 @@ CMMockModel >> numberOfDeadAgents [
 	^ (theAgents select: [ :agent | agent isDead ]) size
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'accessing - parameters' }
+CMMockModel >> numberOfRows [
+
+	^ numberOfRows
+]
+
+{ #category : #'accessing - parameters' }
+CMMockModel >> numberOfRows: aNumber [
+
+	numberOfRows := aNumber
+]
+
+{ #category : #accessing }
 CMMockModel >> theAgents [
 	^ theAgents ifNil: [ theAgents := OrderedCollection new ]
 ]
