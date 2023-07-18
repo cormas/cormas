@@ -1,6 +1,6 @@
 Extension { #name : #RSCanvas }
 
-{ #category : #'*Cormas-UI' }
+{ #category : #'*Cormas-UI-Roassal3' }
 RSCanvas >> removeAllElements [
 
 	self shapes do: [ : s | s remove ].

@@ -731,18 +731,6 @@ CMSpecProjectWindow >> openUMLPresenter [
 ]
 
 { #category : #callbacks }
-CMSpecProjectWindow >> openUMLViewer [
-
-	| package builder |
-
-	builder := RSUMLClassBuilder new.
-	package := RPackage organizer packageOfClassNamed: self cormasModelClass asString.
-	builder classes: package classes.
-	builder build.
-	builder canvas open
-]
-
-{ #category : #callbacks }
 CMSpecProjectWindow >> openVizMessages [
 self alertMessage: 'No implemented yet'
 	"CMSpecVizSpaceWindow new
