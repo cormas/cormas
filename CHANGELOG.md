@@ -1,7 +1,17 @@
-# [v0.6](https://github.com/cormas/cormas/compare/v0.5...v0.6) (16 June 2023)
+# [v0.6](https://github.com/cormas/cormas/compare/v0.5...v0.6) (24 July 2023)
 
 - Introduced `TCMLocated` trait to replace the class hierarchy of located agents and groups
 - Introduced `TCMCommunicating` trait to replace the class hierarchy of communicating agents and groups
+
+### Removed
+
+- (https://github.com/cormas/cormas/issues/657) `CMLocatedAgent >> logMovementTo:`
+- (https://github.com/cormas/cormas/issues/658) All implementors of `displayOn:` and `displayOn:at:`
+- (https://github.com/cormas/cormas/issues/658) Deprecated methods of `TCMLocated`: `moveAndTrackTo:`, `nearestEmptyLocation:`, `perceivedCellsWithinRange:`, `perceivedEntities:withinRange:`, `perceivedSimilarAgentsWithinRange:`, `perception:`
+- (https://github.com/cormas/cormas/issues/659) `agentObs` property and accessors from `TCMCommunicating`
+- (https://github.com/cormas/cormas/issues/665) `acquaintances` property and accessors from `TCMCommunicating`
+- (https://github.com/cormas/cormas/issues/662) `TCMCommunicating >> isAgentCommClass`
+- (https://github.com/cormas/cormas/issues/661) Deprecated methods of `CMMessage class`: `from: to: content:` and `to: content:`
 
 ### Renamed
 
@@ -9,7 +19,18 @@ _(all the original class and method names in this list were retained as deprecat
 
 **Methods:**
 
-- (https://github.com/cormas/cormas/issues/654) All implementors of `initSimulation` ---> `initializeSimulation`
+- (https://github.com/cormas/cormas/pull/655) All implementors of `initSimulation` ---> `initializeSimulation`
+- (https://github.com/cormas/cormas/issues/660, https://github.com/cormas/cormas/issues/663) All implementors of `isAgentComm` ---> `isCommunicatingEntity`
+- (https://github.com/cormas/cormas/issues/663) All implementors of `isClassLocation` ---> `isLocatedEntity`
+- (https://github.com/cormas/cormas/issues/661) Message-sending methods of `TCMCommunicating`:
+    - `sendAsynchronouslyMsgTo: topic:` ---> `sendMessageAsynchronouslyTo: topic:`
+    - `sendAsynchronouslyMsgTo: topic: content:` ---> `sendMessageAsynchronouslyTo: topic: content:`
+    - `sendAsynchronouslyMsgToAll: topic:` ---> `sendMessageAsynchronouslyToAll: topic:`
+    - `sendAsynchronouslyMsgToAll: topic: content:` ---> `sendMessageAsynchronouslyToAll: topic: content:`
+    - `sendSynchronouslyMsgTo: topic:` ---> `sendMessageSynchronouslyTo: topic:`
+    - `sendSynchronouslyMsgTo: topic: content:` ---> `sendMessageSynchronouslyTo: topic: content:`
+    - `sendSynchronouslyMsgToAll: topic:` ---> `sendMessageSynchronouslyToAll: topic:`
+    - `sendSynchronouslyMsgToAll: topic: content:` ---> `sendMessageSynchronouslyToAll: topic: content:`
 
 # [v0.5](https://github.com/cormas/cormas/compare/pre-v0.5...v0.5) (9 June 2023)
 
