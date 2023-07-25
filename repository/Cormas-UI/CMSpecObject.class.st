@@ -95,13 +95,6 @@ CMSpecObject >> currentProject [
 ]
 
 { #category : #accessing }
-CMSpecObject >> iconNamed: aSymbol [
-	" Answer a <Form> representing a Cormas icon "
-
-	^ CMIcons perform: aSymbol
-]
-
-{ #category : #accessing }
 CMSpecObject >> openBrowserAt: aClass selector: aSymbol [
 
 	Smalltalk tools browserTool 
