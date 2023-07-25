@@ -44,10 +44,6 @@ BaselineOfCormas >> postLoad [
 	FDMorphicUIManager new beDefault.
 	ShortcutReminder enabled: false.
 	TaskbarMorph showTaskbar: true.
-	
-	" Build user projects and un-load models from the image "
-	CMApplicationProject cormasRepository 
-		ifNotNil: [ CMProjectBuilder buildProjectDemos ].
 
 ]
 
