@@ -113,26 +113,13 @@ CMApplicationProject class >> downloadString [
 ]
 
 { #category : #accessing }
-CMApplicationProject class >> hasCormasDemos [
-	" Answer <true> if the system has CORMAS project files in the demos path "
-
-	^ CMGitBridge demosPath hasFiles and: [ 
-		CMGitBridge demosPath children anySatisfy: #isZipFile ]
-]
-
-{ #category : #accessing }
-CMApplicationProject class >> hasDemos [
-	" Answer <true> if this system already has a directory where CORMAS projects "
-
-	^ CMGitBridge demosPath exists and: [ self hasCormasDemos ]
-
-]
-
-{ #category : #accessing }
 CMApplicationProject class >> hasUserProjects [
 	" Answer <true> if this system already has a directory where CORMAS projects and preferences were created "
 
-	^ self baseDirectory exists and: [ self hasDemos ]
+	^ self baseDirectory exists and: [
+		CMGitBridge demosPath exists and: [
+			CMGitBridge demosPath hasFiles and: [ 
+				CMGitBridge demosPath children anySatisfy: #isZipFile ] ] ]
 
 ]
 

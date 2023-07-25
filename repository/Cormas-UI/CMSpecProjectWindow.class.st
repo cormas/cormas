@@ -45,9 +45,7 @@ CMSpecProjectWindow class >> open [
 	
 	CMApplicationProject release.
 	PFProjectSettings currentApplicationClass: CMApplicationProject.
-	" Check models are available or should be migrated from the image "
-	CMApplicationProject hasUserProjects
-		ifFalse: [ CMProjectBuilder buildProjectDemos ].
+	
 	" Rebuild translator table "
 	CMApplicationProject uniqueInstance translator: nil.		
 	win := self new 
@@ -370,8 +368,7 @@ CMSpecProjectWindow >> menuDisableProgrammingGroup [
 		#tEditInit .
 		#tEditAttributes .
 		#tEditSteps .
-		#tEditActivityDiagrams .
-		#tClassEditor
+		#tEditActivityDiagrams
 	} do: [ : itemSel | self menuDisableItem: itemSel ]
 ]
 
@@ -467,7 +464,6 @@ CMSpecProjectWindow >> menuEnableProgrammingGroup [
 		#tEditAttributes .
 		#tEditSteps .
 		#tEditActivityDiagrams .
-		#tClassEditor .
 		#tMessagesProgramming .
 		#tProbesProgramming
 	} do: [ : itemSel | self menuEnableItem: itemSel ]
@@ -718,18 +714,6 @@ CMSpecProjectWindow >> openSpacePresenterUpdateScenario [
 
 ]
 
-{ #category : #'submenu-programming' }
-CMSpecProjectWindow >> openUMLPresenter [
-
-	| packageForLoadedModel |
-
-	packageForLoadedModel :=RPackageOrganizer default packageOfClassNamed: self cormasModelClass name.
-	(CMProjectBuilder new modelPackageNames includes: packageForLoadedModel name)
-		ifTrue: [ self openUMLViewer ]
-		ifFalse: [ OPProject openOnModel: (OPUMLPackage new name: self projectManager cormasModelName) ]
-	
-]
-
 { #category : #callbacks }
 CMSpecProjectWindow >> openVizMessages [
 self alertMessage: 'No implemented yet'
@@ -899,9 +883,7 @@ CMSpecProjectWindow >> subMenuForProgramming [
 		addGroup: [ : group | 
 			group addItem: [ : item | self subMenuProgrammingSimulationOrganisation: item ] ];
 		addGroup: [ : group | 
-			group addItem: [ : item | self subMenuProgrammingObserver: item ] ];
-		addGroup: [ : group |
-			group addItem: [ : item | self subMenuProgrammingUML: item ] ]
+			group addItem: [ : item | self subMenuProgrammingObserver: item ] ].
 ]
 
 { #category : #'submenu-simulation' }
@@ -1149,16 +1131,6 @@ CMSpecProjectWindow >> subMenuProgrammingSpaceAndEntities: item [
 "		icon: Smalltalk ui icons openIcon;"
 		shortcut: $S command;
 		action: [ self openPovSetterGUI ]
-]
-
-{ #category : #'submenu-programming' }
-CMSpecProjectWindow >> subMenuProgrammingUML: item [
-
-	item
-		name: self translator tClassEditor;
-		icon: (self iconNamed: #openIcon);
-		shortcut: $U command;
-		action: [ self openUMLPresenter ]
 ]
 
 { #category : #'submenu-tools-developer' }

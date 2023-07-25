@@ -171,7 +171,6 @@ We recommend you:
 			put: 'Add a new class attribute to the target class';
 		at: #tHelpRemoveClassAtt
 			put: 'Remove an attribute from the target class';
-		at: #tClassEditor put: 'UML - Class Editor';
 		yourself
 ]
 
@@ -462,8 +461,7 @@ Le recomendamos que:
 		at: #tHelpAddInstAtt 					put: 'Agregar un nuevo atributo a la clase destino';
 		at: #tHelpRemoveInstAtt 				put: 'Eliminar un atributo de la clase destino';
 		at: #tHelpAddClassAttr				put: 'Agregar un nuevo atributo de clase a la clase destino';
-		at: #tHelpRemoveClassAtt 			put: 'Eliminar un atributo de clase de la clase destino';
-		at: #tClassEditor 						put: 'UML - Editor de Clases';																																				
+		at: #tHelpRemoveClassAtt 			put: 'Eliminar un atributo de clase de la clase destino';																																		
 		yourself
 ]
 
@@ -756,6 +754,5 @@ Nous vous recommandons :
 		at: #tHelpRemoveInstAtt put: 'Supprimer un attribut de la instance cible';
 		at: #tHelpAddClassAttr put: 'Add a new class attribute to the target class';
 		at: #tHelpRemoveClassAtt put: 'Supprimer un attribut de la classe cible';
-		at: #tClassEditor put: 'UML - Class Editor';
 		yourself
 ]

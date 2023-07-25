@@ -101,9 +101,8 @@ CMProjectBuilderTest >> testLocalBuildDir [
 
 { #category : #test }
 CMProjectBuilderTest >> testLocalBuildDirRef [
-
+	
 	self assert: (self builder localBuildDirRef isKindOf: FileReference) description: 'It should get the local build FileReference'.
-	self assert: (self builder localBuildDirRef isDirectory) description: 'Local build location should be a directory'.
 
 ]
 
@@ -126,15 +125,6 @@ CMProjectBuilderTest >> testOutputDirectory [
 
 	self assert: (self builder localBuildDir isKindOf: String).
 	self deny: self builder localBuildDir isEmpty.
-
-]
-
-{ #category : #test }
-CMProjectBuilderTest >> testResourceDirectoryNames [
-
-	self assert: (self builder resourceDirectoryNames isKindOf: Collection).
-	self deny: self builder resourceDirectoryNames isEmpty.
-	self assert: (self builder resourceDirectoryNames allSatisfy: [ : rdn | rdn isKindOf: String ])
 
 ]
 
