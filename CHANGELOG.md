@@ -32,6 +32,7 @@
 - ([77c902b](https://github.com/cormas/cormas/commit/77c902b55c582c07349f2d2836de8c7b6a3d7370)) `CMProjectBuilder class >> resourceDirectoryNames`, because it is redundant and simply calls the `CMGitBridge class >> resourceDirectoryNames`
 - ([38279f2](https://github.com/cormas/cormas/commit/38279f2a705de3cf1c788657dcd5f183a9e907be), [46b71c0](https://github.com/cormas/cormas/commit/46b71c049a5a01836ac26a54178be47794d2f4ec)) Methods related to building demo projects: `CMApplicationProject class >> hasCormasDemos` and `hasDemos`, `CMProjectBuilder class >> buildProjectDemos`, `CMProjectBuilder >> buildDemoProjects`, and `CMApplicationProject >> hasUserProjects`
 - ([b002bff](https://github.com/cormas/cormas/commit/b002bff1b78427e4c0e5890682ec931b2397dded)) Methods of `CMProjectBuilder` that were never called
+- ([4eb3f61](https://github.com/cormas/cormas/commit/4eb3f61925227e0c42d6daae7d2a40ffaf2e0fca)) `CMSpecObject >> iconNamed:` - bad case of polymorphism
 
 ### Renamed
 
