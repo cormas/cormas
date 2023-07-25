@@ -27,45 +27,9 @@ Class {
 }
 
 { #category : #examples }
-CMProjectBuilder class >> buildProjectNamed: aPackageName modelClass: aModelClass [
-	" Store into demos path a new CORMAS project named aPackageName <String> representing aModelClass <CMAbstractModel>. aModelClass could be a <Class> or a <Symbol> for convenience "
-	<script>
-	
-	Cursor wait showWhile: [ 
-		self new 
-			destinationPath: CMGitBridge demosPath;
-			buildProject: aPackageName modelClass: aModelClass;
-			moveProject;
-			unLoadModelPackage: aPackageName;
-			cleanLocalBuildDir ]
-]
-
-{ #category : #accessing }
-CMProjectBuilder class >> modelPackageNames [
-	" Answer a <Collection> of <String> with CORMAS model package names "
-	
-	^ #(
-	)
-]
-
-{ #category : #examples }
 CMProjectBuilder class >> outputDirName [
 
 	^ 'cormas_project'
-]
-
-{ #category : #examples }
-CMProjectBuilder class >> rebuildModels [ 
-	" Removes all existing demos and rebuild the project files from the code in the current image.
-	All the models source code should be loaded into the image "
-	<script>
-	
-	Cursor wait showWhile: [ 
-		self new 
-			destinationPath: CMGitBridge demosPath;
-			rebuildProjects;
-			moveProjects ].
-	self inform: 'CORMAS Project Builder: Models built'
 ]
 
 { #category : #'accessing - building' }
@@ -81,18 +45,6 @@ CMProjectBuilder >> buildForModelInstance: modelInstance [
 		writeMetadata;
 		writeSourceCode: modelInstance class
 
-]
-
-{ #category : #'accessing - building' }
-CMProjectBuilder >> buildProject: aModelName modelClass: aModelClass [
-	" Main entry point for generating project files. Generate all project files from the models in this image.
-	Answer the <FileReference> of the built project "
-
-	'CORMAS Project Builder: Building project...' traceCr.
-	self loadModelPackage: aModelName.
-	self buildForModelInstance: aModelClass new.
-	'CORMAS Project Builder: Done building project...' traceCr.	
-	builtFileRef := self buildProjectFile.
 ]
 
 { #category : #'accessing - building' }
@@ -131,31 +83,6 @@ CMProjectBuilder >> buildProjectMetadataSTON [
 		at: 'Stars' put: 5.
 	^ STON toStringPretty: cmMetadata
 
-]
-
-{ #category : #accessing }
-CMProjectBuilder >> builtFileRef [
-
-	^ builtFileRef
-]
-
-{ #category : #accessing }
-CMProjectBuilder >> builtFileRef: anObject [
-
-	builtFileRef := anObject
-]
-
-{ #category : #'accessing - cleaning' }
-CMProjectBuilder >> cleanDemosProjectDir [
-
-	CMGitBridge demosPath ensureDeleteAllChildren.
-]
-
-{ #category : #'accessing - cleaning' }
-CMProjectBuilder >> cleanLocalBuildDir [
-	" Answer a <FileReference> to the receiver's project local build directory "
-
-	self localBuildDirRef ensureDeleteAll
 ]
 
 { #category : #accessing }
@@ -237,13 +164,6 @@ CMProjectBuilder >> handleFileEx: ex [
 ]
 
 { #category : #testing }
-CMProjectBuilder >> hasAllModelsLoaded [
-	" Answer <true> if aPackageName <String> is loaded into the receiver's image "
-	
-	^ self modelPackageNames allSatisfy: [ : cmPackageName | self isModelLoaded: cmPackageName ]
-]
-
-{ #category : #testing }
 CMProjectBuilder >> hasLocalBuild [
 	" Answer <true> if there is a path like /Users/<username>/<my_pharo_dir>/cormas_project which represents the path where projects are built "
 	
@@ -259,50 +179,6 @@ CMProjectBuilder >> isModelLoaded: aPackageName [
 		repository: self cormasRepository)
 			ifNotNil: #isLoaded
 			ifNil: [ false ]
-]
-
-{ #category : #'accessing - loading' }
-CMProjectBuilder >> lazyLoadModelPackage: aPackageName [
-	" Load aPackageName <String> CORMAS package only if is not already loaded in the image "
-	
-	(self isModelLoaded: aPackageName)
-		ifFalse: [ self loadModelPackage: aPackageName ]
-]
-
-{ #category : #'accessing - loading' }
-CMProjectBuilder >> lazyLoadModelPackages [
-	" Private - Lazy load all defined packages which are CORMAS models "
-
-	self modelPackageNames 
-		do: [ : cmPkgName | self lazyLoadModelPackage: cmPkgName ]
-		displayingProgress: 'Lazy loading model packages'
-]
-
-{ #category : #'accessing - loading' }
-CMProjectBuilder >> loadModelPackage: aPackageName [
-	" Load an Iceberg package named aPackageName <String> (for ex. 'Cormas-Model-ECEC' from the receiver's Iceberg repository location "
-	| cormasRepo icePackage |
-
-	cormasRepo := self cormasRepository.
-	icePackage := IcePackage named: aPackageName repository: cormasRepo.
-	IceTipStandardAction new 
-		repository: cormasRepo;
-		message: ('Loading package {1}' format: { icePackage name });
-		onSuccessRepositoryModified;
-		execute: [ 
-			Iceberg announcer
-				suspendAllForRepository: cormasRepo
-				while: [ icePackage load ] ]
-]
-
-{ #category : #'accessing - loading' }
-CMProjectBuilder >> loadModelPackages [
-	" Private - Load all defined packages which are CORMAS models "
-
-	EpMonitor disableDuring: [ 
-		self modelPackageNames 
-			do: [ : cmPkgName | self loadModelPackage: cmPkgName ]
-			displayingProgress: [ : cmPkgName | 'Loading model package: ' , cmPkgName ] ]
 ]
 
 { #category : #accessing }
@@ -325,20 +201,6 @@ CMProjectBuilder >> metadataFilename [
 	" Answer a <String> with the name of the file which stores metadata information about a project "
 
 	^ CMProjectFile metadataFilename 
-]
-
-{ #category : #accessing }
-CMProjectBuilder >> modelPackageNames [
-	" Answer a <Collection> of <String> with CORMAS model package names "
-	
-	^ self class modelPackageNames
-]
-
-{ #category : #private }
-CMProjectBuilder >> moveProject [ 
-	" Private - Move the receiver's built <FileReference> to the system demos/ path "
-	
-	self moveProject: self builtFileRef
 ]
 
 { #category : #private }
@@ -364,17 +226,6 @@ CMProjectBuilder >> moveProjectFile [
 	self moveProject: FileSystem workingDirectory / self cormasProject fileName.
 ]
 
-{ #category : #'accessing - building' }
-CMProjectBuilder >> moveProjects [
-	" Move recently generated projects to base location "
-
-	'CORMAS Project Builder: Moving project files...' traceCr.
-	CMApplicationProject createUserDirectories.
-	(self tempLocation allChildrenMatching: '*Model.zip') do: [ : modelRef |
-		self moveProject: modelRef ].
-	'CORMAS Project Builder: Done moving project files...' traceCr.
-]
-
 { #category : #accessing }
 CMProjectBuilder >> osSystemInformation [
 	" Answer a <String> with the OS system information of this host "
@@ -386,53 +237,10 @@ CMProjectBuilder >> osSystemInformation [
 			nextPutAll: Smalltalk os subtype ]
 ]
 
-{ #category : #'accessing - building' }
-CMProjectBuilder >> rebuildProjects [
-	" Rebuild demo project files. Iceberg packages should be already loaded in this image. 
-	Remove and generate all project files using the model class found for each demo package. "
-
-	'CORMAS Project Builder: Rebuilding projects...' traceCr.
-	CMGitBridge demosPath ensureDeleteAllChildren.
-	self modelPackageNames do: [ : modelPackageName |
-		| modelClassName |
-		modelClassName := modelPackageName asPackage classes detect: [ : c | c superclass = CMAbstractModel ].
-		self buildProject: modelPackageName modelClass: modelClassName.
-		self buildProjectFile ].
-	'CORMAS Project Builder: Done rebuilding projects...' traceCr.
-]
-
 { #category : #defaults }
 CMProjectBuilder >> tempLocation [
 
 	^ FileLocator imageDirectory
-]
-
-{ #category : #'accessing - unloading' }
-CMProjectBuilder >> unLoadModelPackage: aPackageName [
-
-	self cormasRepository 
-		ifNotNil: [ : cormasRepo |
-			| icePackage |
-			icePackage := IcePackage named: aPackageName repository: cormasRepo.
-			IceTipStandardAction new 
-				repository: cormasRepo;
-				message: ('Unloading package {1}' format: { icePackage name });
-				onSuccessRepositoryModified;
-				execute: [ 
-					Iceberg announcer
-						suspendAllForRepository: cormasRepo
-						while: [ icePackage unload ] ] ]
-			ifNil: [ self inform: 'Cannot find CORMAS repository' ]
-]
-
-{ #category : #'accessing - unloading' }
-CMProjectBuilder >> unLoadModelPackages [
-	" Private - Unload packages which are CORMAS models from the image "
-
-	EpMonitor disableDuring: [ 
-		self modelPackageNames 
-			do: [ : cmPkgName | self unLoadModelPackage: cmPkgName ]
-			displayingProgress: [ : cmPkgName | 'Unloading model: ' , cmPkgName ] ]
 ]
 
 { #category : #'accessing - writing' }
