@@ -224,7 +224,7 @@ CMSpecSimulationWindow >> defineScenarioButtonMorph [
 	^ IconicButton new
 		target: self;
 		actionSelector: #defineScenarioAction;
-		labelGraphic: (self iconNamed: #defineScenarioIcon);
+		labelGraphic: CMIcons defineScenarioIcon;
 		color: Color transparent;
 		borderColor: Color red;
 		borderWidth: 1;
@@ -238,7 +238,7 @@ CMSpecSimulationWindow >> exec1StepButtonMorph [
 	^ IconicButton new
 		target: self;
 		actionSelector: #exec1StepAction;
-		labelGraphic: (self iconNamed: #exec1StepIcon);
+		labelGraphic: CMIcons exec1StepIcon;
 		color: Color transparent;
 		borderColor: Color red;
 		borderWidth: 1;
@@ -454,7 +454,7 @@ CMSpecSimulationWindow >> replay1StoredStepButtonMorph [
 	^ IconicButton new
 		target: self;
 		actionSelector: #replay1StoredStepAction;
-		labelGraphic: (self iconNamed: #replay1StoredStepIcon);
+		labelGraphic: CMIcons replay1StoredStepIcon;
 		color: Color transparent;
 		borderColor: Color purple;
 		borderWidth: 1;
@@ -478,7 +478,7 @@ CMSpecSimulationWindow >> replayAStoredSimButtonMorph [
 	^ IconicButton new
 		target: self;
 		actionSelector: #replayAStoredSimAction;
-		labelGraphic: (self iconNamed: #replayAStoredSimIcon);
+		labelGraphic: CMIcons replayAStoredSimIcon;
 		color: Color transparent;
 		borderColor: Color purple;
 		borderWidth: 1;
@@ -554,7 +554,7 @@ CMSpecSimulationWindow >> replayRunForwardButtonMorph [
 	^ IconicButton new
 		target: self;
 		actionSelector: #replayRunForwardAction;
-		labelGraphic: (self iconNamed: #replayRunForwardIcon);
+		labelGraphic: CMIcons replayRunForwardIcon;
 		color: Color transparent;
 		borderColor: Color purple;
 		borderWidth: 1;
@@ -568,7 +568,7 @@ CMSpecSimulationWindow >> replaySimBackwardButtonMorph [
 	^ IconicButton new
 		target: self;
 		actionSelector: #replaySimBackwardAction;
-		labelGraphic: (self iconNamed: #replaySimBackwardIcon);
+		labelGraphic: CMIcons replaySimBackwardIcon;
 		color: Color transparent;
 		borderColor: Color purple;
 		borderWidth: 1;
@@ -607,7 +607,7 @@ CMSpecSimulationWindow >> replayStepForwardButtonMorph [
 	^ IconicButton new
 		target: self;
 		actionSelector: #replayStepForwardAction;
-		labelGraphic: (self iconNamed: #replayStepForwardIcon);
+		labelGraphic: CMIcons replayStepForwardIcon;
 		color: Color transparent;
 		borderColor: Color purple;
 		borderWidth: 1;
@@ -621,7 +621,7 @@ CMSpecSimulationWindow >> replayStoredSimButtonMorph [
 	^ IconicButton new
 		target: self;
 		actionSelector: #replayStoredSimAction;
-		labelGraphic: (self iconNamed: #replayStoredSimIcon);
+		labelGraphic: CMIcons replayStoredSimIcon;
 		color: Color transparent;
 		borderColor: Color purple;
 		borderWidth: 1;
@@ -675,7 +675,7 @@ CMSpecSimulationWindow >> run1StepBackwardButtonMorph [
 	^ IconicButton new
 		target: self;
 		actionSelector: #run1StepBackwardAction;
-		labelGraphic: (self iconNamed: #run1StepBackwardIcon);
+		labelGraphic: CMIcons run1StepBackwardIcon;
 		color: Color transparent;
 		borderColor: Color purple;
 		borderWidth: 1;
@@ -700,7 +700,7 @@ CMSpecSimulationWindow >> runAllSimButtonMorph [
 	^ IconicButton new
 		target: self;
 		actionSelector: #runAllSimAction;
-		labelGraphic: (self iconNamed: #runAllSimIcon);
+		labelGraphic: CMIcons runAllSimIcon;
 		color: Color transparent;
 		borderColor: Color red;
 		borderWidth: 1;
@@ -723,7 +723,7 @@ CMSpecSimulationWindow >> runButtonMorph [
 	^ IconicButton new
 		target: self;
 		actionSelector: #runAction;
-		labelGraphic: (self iconNamed: #runSimIcon);
+		labelGraphic: CMIcons runSimIcon;
 		color: Color transparent;
 		borderColor: Color red;
 		borderWidth: 1;
@@ -757,7 +757,7 @@ CMSpecSimulationWindow >> runStepByStepButtonMorph [
 	^ IconicButton new
 		target: self;
 		actionSelector: #runStepByStepAction;
-		labelGraphic: (self iconNamed: #runStepByStepSimIcon);
+		labelGraphic: CMIcons runStepByStepSimIcon;
 		color: Color transparent;
 		borderColor: Color red;
 		borderWidth: 1;
