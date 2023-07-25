@@ -27,22 +27,6 @@ Class {
 }
 
 { #category : #examples }
-CMProjectBuilder class >> buildProjectDemos [
-	" Removes all existing demos and rebuild the project files from the code in the current image.
-	All the models source code should be loaded into the image "
-
-	<script>
-	
-	Cursor wait showWhile: [ 
-		self new 
-			destinationPath: CMGitBridge demosPath;
-			buildDemoProjects;
-			moveProjects;
-			unLoadModelPackages ].
-	self inform: 'CORMAS Project Builder: Models built'
-]
-
-{ #category : #examples }
 CMProjectBuilder class >> buildProjectNamed: aPackageName modelClass: aModelClass [
 	" Store into demos path a new CORMAS project named aPackageName <String> representing aModelClass <CMAbstractModel>. aModelClass could be a <Class> or a <Symbol> for convenience "
 	<script>
@@ -82,22 +66,6 @@ CMProjectBuilder class >> rebuildModels [
 			rebuildProjects;
 			moveProjects ].
 	self inform: 'CORMAS Project Builder: Models built'
-]
-
-{ #category : #'accessing - building' }
-CMProjectBuilder >> buildDemoProjects [
-	" Rebuild demo project files. Iceberg packages should be already loaded in this image. 
-	Remove and generate all project files using the model class found for each demo package. "
-
-	'CORMAS Project Builder: Rebuilding demo projects...' traceCr.
-	self cleanDemosProjectDir.
-	self loadModelPackages.	
-	self modelPackageNames do: [ : modelPackageName |
-		| modelClassName |
-		modelClassName := modelPackageName asPackage classes detect: [ : c | c superclass = CMAbstractModel ].
-		self buildProject: modelPackageName modelClass: modelClassName.
-		self buildProjectFile ].
-	'CORMAS Project Builder: Done rebuilding demo projects...' traceCr.
 ]
 
 { #category : #'accessing - building' }
