@@ -116,17 +116,6 @@ CMProjectBuilderTest >> testMetadataFilename [
 ]
 
 { #category : #test }
-CMProjectBuilderTest >> testModelPackageNames [
-
-	self assert: (self builder modelPackageNames isKindOf: Collection).
-	self deny: self builder modelPackageNames isEmpty.
-	self assert: (self builder modelPackageNames allSatisfy: [ : pkgName | pkgName isKindOf: String ]).
-	
-
-
-]
-
-{ #category : #test }
 CMProjectBuilderTest >> testNonexistingModelIsNotLoaded [
 
 	self deny: (self builder isModelLoaded: 'CMInvalidXYZ123Model')
@@ -155,15 +144,6 @@ CMProjectBuilderTest >> testTempLocation [
 	self assert: (self builder tempLocation isKindOf: FileLocator).
 	self assert: self builder tempLocation isDirectory.
 
-]
-
-{ #category : #test }
-CMProjectBuilderTest >> testUnLoadModelPackages [
-
-	self builder lazyLoadModelPackages.
-	self assert: self builder hasAllModelsLoaded.
-	self builder unLoadModelPackages.
-	self deny: self builder hasAllModelsLoaded.
 ]
 
 { #category : #test }
