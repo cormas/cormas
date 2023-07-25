@@ -21,6 +21,7 @@ CMSpOpenProjectPresenter class >> defaultSpec [
 
 	<spec>
 	^ SpBoxLayout newHorizontal
+		  spacing: 4;
 		  add: (SpBoxLayout newVertical
 				   add: #projectsLocationsPresenter
 				   withConstraints: [ :constraints | 
@@ -101,7 +102,6 @@ CMSpOpenProjectPresenter >> cormasLocations [
 	" Private - Answer a <Dictionary> of CORMAS project opening locations along with a <Closure> specifying the action to retrieve the projects for each location "
 
 	^ OrderedDictionary newFromPairs: { 
-		'Demos'	 		. [ self projectsDemos ] .
 		'In-image' 		. [ self projectsInImage ].
 		'User models'	. [ self projectsBrowse ]
 		}
@@ -272,13 +272,6 @@ CMSpOpenProjectPresenter >> previewPresenter [
 CMSpOpenProjectPresenter >> projectsBrowse [
 	
 	^ CMGitBridge cormasUserProjects
-]
-
-{ #category : #callbacks }
-CMSpOpenProjectPresenter >> projectsDemos [
-	" Answer a <Collection> of <FileReference> in the default built-in location "
-	
-	^ CMGitBridge demosPath allChildrenMatching: '*.' , CMProjectModel projectFileExtension
 ]
 
 { #category : #private }
