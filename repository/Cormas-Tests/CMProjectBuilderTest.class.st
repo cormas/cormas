@@ -102,6 +102,9 @@ CMProjectBuilderTest >> testLocalBuildDir [
 { #category : #test }
 CMProjectBuilderTest >> testLocalBuildDirRef [
 
+	"A trick to deal with nasty effects of lazy initialization :("
+	self builder localBuildDirRef.
+	
 	self assert: (self builder localBuildDirRef isKindOf: FileReference) description: 'It should get the local build FileReference'.
 	self assert: (self builder localBuildDirRef isDirectory) description: 'Local build location should be a directory'.
 
