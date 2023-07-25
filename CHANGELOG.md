@@ -19,6 +19,7 @@
 
 ### Removed
 
+- ([ca1a04a](https://github.com/cormas/cormas/commit/ca1a04a2113dc984696aa04797f9afde7e618bf7)) `Programming > UML` menu item and all the dedicated methods
 - (https://github.com/cormas/cormas/issues/657) `CMLocatedAgent >> logMovementTo:`
 - (https://github.com/cormas/cormas/issues/658) All implementors of `displayOn:` and `displayOn:at:`
 - (https://github.com/cormas/cormas/issues/658) Deprecated methods of `TCMLocated`: `moveAndTrackTo:`, `nearestEmptyLocation:`, `perceivedCellsWithinRange:`, `perceivedEntities:withinRange:`, `perceivedSimilarAgentsWithinRange:`, `perception:`
@@ -28,6 +29,9 @@
 - (https://github.com/cormas/cormas/issues/661) Deprecated methods of `CMMessage class`: `from: to: content:` and `to: content:`
 - ([3adf408](https://github.com/cormas/cormas/commit/3adf408a8184675c501ddd9606b841ac52f4b9dc)) Removed unused parameters and accessors of `CMChannel`: `messages`, `observerFunctions`, `population`
 - ([c4ab3c0](https://github.com/cormas/cormas/commit/c4ab3c0c7f961a3fd58c3e8c2c8bf1951183824d)) `ConfigurationOfCormas` package
+- ([77c902b](https://github.com/cormas/cormas/commit/77c902b55c582c07349f2d2836de8c7b6a3d7370)) `CMProjectBuilder class >> resourceDirectoryNames`, because it is redundant and simply calls the `CMGitBridge class >> resourceDirectoryNames`
+- ([38279f2](https://github.com/cormas/cormas/commit/38279f2a705de3cf1c788657dcd5f183a9e907be), [46b71c0](https://github.com/cormas/cormas/commit/46b71c049a5a01836ac26a54178be47794d2f4ec)) Methods related to building demo projects: `CMApplicationProject class >> hasCormasDemos` and `hasDemos`, `CMProjectBuilder class >> buildProjectDemos`, `CMProjectBuilder >> buildDemoProjects`, and `CMApplicationProject >> hasUserProjects`
+- ([b002bff](https://github.com/cormas/cormas/commit/b002bff1b78427e4c0e5890682ec931b2397dded)) Methods of `CMProjectBuilder` that were never called
 
 ### Renamed
 
@@ -53,6 +57,10 @@ _(all the original class and method names in this list were retained as deprecat
     - `sendSynchronouslyMsgToAll: topic: content:` ---> `sendMessageSynchronouslyToAll: topic: content:`
 - ([3adf408](https://github.com/cormas/cormas/commit/3adf408a8184675c501ddd9606b841ac52f4b9dc)) `TCMCommunicating >> messageFromChannel:` ---> `receiveMessage:`
 - ([3adf408](https://github.com/cormas/cormas/commit/3adf408a8184675c501ddd9606b841ac52f4b9dc)) `CMChannel >> flush` ---> `sendAllMessages`
+
+### Replaced
+
+- ([ba2e185](https://github.com/cormas/cormas/commit/ba2e185d92fefbfdc5fac299432314c068ba446e)) Introduced `CMAgent >> isAlive`, `isDead`, and `die` instead of `isDestroyed`, `dead`, and `dead:`. Deprecated the old messages.
 
 # [v0.5](https://github.com/cormas/cormas/compare/pre-v0.5...v0.5) (9 June 2023)
 
