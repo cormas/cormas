@@ -49,7 +49,7 @@ CMModelResource >> buildCormasModelHierarchy [
 CMModelResource >> cormasModelHierarchy [
 	" Answer a <Collection> of <String> with the folder hierarchy contained in a model "
 	
-	^ (CMProjectBuilder resourceDirectoryNames) collect: [ : each | { each } ]
+	^ (CMGitBridge resourceDirectoryNames) collect: [ : each | { each } ]
 
 ]
 

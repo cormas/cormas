@@ -84,13 +84,6 @@ CMProjectBuilder class >> rebuildModels [
 	self inform: 'CORMAS Project Builder: Models built'
 ]
 
-{ #category : #defaults }
-CMProjectBuilder class >> resourceDirectoryNames [
-	" Answer a <Collection> with the names of subdirectories of a CORMAS project "
-
-	^ CMGitBridge resourceDirectoryNames
-]
-
 { #category : #'accessing - building' }
 CMProjectBuilder >> buildDemoProjects [
 	" Rebuild demo project files. Iceberg packages should be already loaded in this image. 
@@ -438,13 +431,6 @@ CMProjectBuilder >> rebuildProjects [
 		self buildProject: modelPackageName modelClass: modelClassName.
 		self buildProjectFile ].
 	'CORMAS Project Builder: Done rebuilding projects...' traceCr.
-]
-
-{ #category : #defaults }
-CMProjectBuilder >> resourceDirectoryNames [
-	" Answer a <Collection> with the names of subdirectories of a CORMAS project "
-
-	^ self class resourceDirectoryNames
 ]
 
 { #category : #defaults }

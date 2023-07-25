@@ -130,15 +130,6 @@ CMProjectBuilderTest >> testOutputDirectory [
 ]
 
 { #category : #test }
-CMProjectBuilderTest >> testResourceDirectoryNames [
-
-	self assert: (self builder resourceDirectoryNames isKindOf: Collection).
-	self deny: self builder resourceDirectoryNames isEmpty.
-	self assert: (self builder resourceDirectoryNames allSatisfy: [ : rdn | rdn isKindOf: String ])
-
-]
-
-{ #category : #test }
 CMProjectBuilderTest >> testTempLocation [
 
 	self assert: (self builder tempLocation isKindOf: FileLocator).

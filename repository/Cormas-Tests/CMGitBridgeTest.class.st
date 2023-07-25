@@ -261,6 +261,15 @@ CMGitBridgeTest >> testReadMatrixSep [
 	
 ]
 
+{ #category : #test }
+CMGitBridgeTest >> testResourceDirectoryNames [
+
+	self assert: (CMGitBridge resourceDirectoryNames isKindOf: Collection).
+	self deny: CMGitBridge resourceDirectoryNames isEmpty.
+	self assert: (CMGitBridge resourceDirectoryNames allSatisfy: [ : rdn | rdn isKindOf: String ])
+
+]
+
 { #category : #testing }
 CMGitBridgeTest >> testVideoPath [
 	| file |
