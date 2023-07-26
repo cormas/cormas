@@ -13,27 +13,10 @@ Class {
 		'SettingProjectNotifications',
 		'SettingShowProbesTitle',
 		'SettingSpaceViewer',
-		'SettingWaitLimit',
 		'SettingWarnUsing'
 	],
 	#category : #'Cormas-Core-Kernel'
 }
-
-{ #category : #settings }
-CMApplicationPreferences class >> availableSettingChartViewer [
-	" Answer a <Collection> with classes representing available Chart Viewers implementations "
-
-	^ { 
-		Smalltalk at: #CMR3ChartPresenter
-	 	"Smalltalk at: #CMR2SimpleChart"
-		}.
-]
-
-{ #category : #settings }
-CMApplicationPreferences class >> availableSettingWarnUsing [
-	
-	^ CMLoadException allSubclasses 
-]
 
 { #category : #defaults }
 CMApplicationPreferences class >> defaultBaseLocation [
@@ -187,20 +170,6 @@ CMApplicationPreferences class >> settingSpaceViewer [
 CMApplicationPreferences class >> settingSpaceViewer: anObject [
 
 	SettingSpaceViewer := anObject
-]
-
-{ #category : #accessing }
-CMApplicationPreferences class >> settingWaitLimit [
-	" Answer the settingWaitLimit of this CMPreferences "
-
-	^ SettingWaitLimit
-]
-
-{ #category : #accessing }
-CMApplicationPreferences class >> settingWaitLimit: anObject [
-	" Sets the settingWaitLimit of this CMPreferences "
-
-	SettingWaitLimit := anObject
 ]
 
 { #category : #accessing }
