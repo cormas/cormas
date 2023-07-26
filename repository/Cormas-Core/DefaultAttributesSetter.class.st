@@ -613,12 +613,6 @@ DefaultAttributesSetter class >> transformAsString: defaultValue [
 	^defaultValue asString
 ]
 
-{ #category : #actions }
-DefaultAttributesSetter >> _LabelPressed [
-	
-	
-]
-
 { #category : #'initialize-release' }
 DefaultAttributesSetter >> allAttributesList [
 	
