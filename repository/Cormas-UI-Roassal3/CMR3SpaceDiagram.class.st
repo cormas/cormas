@@ -378,7 +378,7 @@ CMR3SpaceDiagram >> makeDraggableEntity: e [
 "			when: RSMouseDragging do: [ :evt |
 				self inform: evt position asString ];"
 		when: RSMouseDragEnd do: [ : evt | 
-			evt cormasEntity patch: (self cellAt: evt position ifAbsent: [ evt cormasEntity patch ]) ].
+			evt shape model patch: (self cellAt: evt position ifAbsent: [ evt shape model patch ]) ].
 ]
 
 { #category : #initialization }

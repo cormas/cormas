@@ -215,7 +215,7 @@ CMR3ChartDiagram >> refreshProbesChart [
 	" Private - A probe has been selected/deselected. Update the receiver including the Y Axis "
 
 	self removeAllElements.
-	self chartBuilder removeAllPlots.	
+	self chartBuilder plots removeAll.	
 	self canvas signalUpdate.
 	self updateYAxis.	
 	self updateProbes
@@ -225,7 +225,7 @@ CMR3ChartDiagram >> refreshProbesChart [
 CMR3ChartDiagram >> removeAllElements [
 	" Remove all the receiver's chart elements "
 
-	self canvas removeAllElements.
+	self canvas shapes do: [ : s | s remove ].
 
 ]
 
