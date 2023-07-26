@@ -66,7 +66,7 @@ CMSpecProjectWindow >> appSettingsClass [
 CMSpecProjectWindow >> chartVisualizer [
 	" Answer a <Class> responsible to display a UI for charting "
 
-	^ self appSettingsClass settingChartViewer
+	^ CMR3ChartPresenter
 ]
 
 { #category : #private }

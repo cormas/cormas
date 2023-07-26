@@ -7,7 +7,6 @@ Class {
 	#superclass : #Object,
 	#classVars : [
 		'SettingBaseLocation',
-		'SettingChartViewer',
 		'SettingFixedHorizontalTick',
 		'SettingFixedVerticalTick',
 		'SettingProjectNotifications',
@@ -26,12 +25,6 @@ CMApplicationPreferences class >> defaultBaseLocation [
 CMApplicationPreferences class >> defaultProjectNotifications [
 
 	^ false
-]
-
-{ #category : #defaults }
-CMApplicationPreferences class >> defaultSettingChartViewer [
-	
-	^ Smalltalk at: #CMR3ChartPresenter
 ]
 
 { #category : #defaults }
@@ -69,20 +62,6 @@ CMApplicationPreferences class >> settingBaseLocation: anObject [
 	" Sets the settingBaseLocation of this CMPreferences "
 
 	SettingBaseLocation := anObject
-]
-
-{ #category : #accessing }
-CMApplicationPreferences class >> settingChartViewer [
-	" Answer a <Class> with the currently selected Chart Viewers implementation "
-
-	^ SettingChartViewer
-		ifNil: [ SettingChartViewer := self defaultSettingChartViewer ]
-]
-
-{ #category : #accessing }
-CMApplicationPreferences class >> settingChartViewer: anObject [
-
-	SettingChartViewer := anObject
 ]
 
 { #category : #accessing }
