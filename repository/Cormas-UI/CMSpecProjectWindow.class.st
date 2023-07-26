@@ -964,8 +964,7 @@ CMSpecProjectWindow >> subMenuForTools [
 				addItem: [ :item | self subMenuToolsDistributeAsClient: item ];
 				addItem: [ :item | self subMenuToolsDistributeAsServer: item ];
 				addItem: [ :item | self subMenuToolsBrowseScoped: item ] ;
-				addItem: [ :item | self subMenuToolsInspectUI: item ];
-				addItem: [ :item | self subMenuToolsPreferences: item ] ]
+				addItem: [ :item | self subMenuToolsInspectUI: item ] ]
 ]
 
 { #category : #'submenu-visualization' }
@@ -1510,17 +1509,6 @@ CMSpecProjectWindow >> subMenuToolsModelListing: item [
 "		icon: Smalltalk ui icons openIcon;"
 		shortcut: $L command;
 		action: [ self openToolsModelListing ]
-]
-
-{ #category : #'submenu-tools' }
-CMSpecProjectWindow >> subMenuToolsPreferences: item [
-
-	item
-		name: self translator tPreferences;
-		icon: (self iconNamed: #configuration);
-		shortcut: $O command;
-		action: [ CMSettingsBrowser open ]
-
 ]
 
 { #category : #'submenu-tools' }
