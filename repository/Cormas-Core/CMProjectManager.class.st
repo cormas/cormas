@@ -324,7 +324,6 @@ CMProjectManager >> initialize [
 
 	super initialize.
 	self applicationClass: CMApplicationProject.
-	self settingsClass: CMApplicationPreferences.
 	openStatus := false.
 
 ]
