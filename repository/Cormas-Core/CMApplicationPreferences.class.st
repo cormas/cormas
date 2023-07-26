@@ -30,16 +30,6 @@ CMApplicationPreferences class >> availableSettingChartViewer [
 ]
 
 { #category : #settings }
-CMApplicationPreferences class >> availableSettingSpaceDiagram [
-	" Answer a <Collection> with classes representing available Space Interfaces implementations "
-
-	^ { 
-		Smalltalk at: #CMR3SpaceDiagram .
-	 	"Smalltalk at: #CMR2SpaceAnimationRecorder "
-		}.
-]
-
-{ #category : #settings }
 CMApplicationPreferences class >> availableSettingWarnUsing [
 	
 	^ CMLoadException allSubclasses 
