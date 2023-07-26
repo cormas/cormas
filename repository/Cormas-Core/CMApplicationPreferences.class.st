@@ -19,12 +19,6 @@ CMApplicationPreferences class >> defaultBaseLocation [
 	^ (FileLocator home / 'CORMAS') asFileReference fullName
 ]
 
-{ #category : #defaults }
-CMApplicationPreferences class >> defaultProjectNotifications [
-
-	^ false
-]
-
 { #category : #'initialize - release' }
 CMApplicationPreferences class >> release [
 	" Clean receiver's class variables "
@@ -48,19 +42,4 @@ CMApplicationPreferences class >> settingBaseLocation: anObject [
 	" Sets the settingBaseLocation of this CMPreferences "
 
 	SettingBaseLocation := anObject
-]
-
-{ #category : #accessing }
-CMApplicationPreferences class >> settingProjectNotifications [
-	" Answer the settingProjectNotifications of this CMApplicationPreferences "
-
-	^ SettingProjectNotifications
-		ifNil: [ SettingProjectNotifications := self defaultProjectNotifications ]
-]
-
-{ #category : #accessing }
-CMApplicationPreferences class >> settingProjectNotifications: anObject [
-	" Sets the settingProjectNotifications of this CMApplicationPreferences "
-
-	SettingProjectNotifications := anObject
 ]

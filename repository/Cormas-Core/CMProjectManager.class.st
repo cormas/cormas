@@ -469,8 +469,6 @@ CMProjectManager >> updateStateClosed [
 			projectName: self currentProjectName;
 			projectLocation: fileName;
 			yourself).
-	CMApplicationPreferences settingProjectNotifications 
-		ifTrue: [ self informMessage: self translator tProjectCloseSuccess ].
 
 ]
 
@@ -481,8 +479,6 @@ CMProjectManager >> updateStateOpened [
 	self notifyEvent:	'Action: Opened'.
 	self resubscribeUIEvents.	
 	self announcer announce: PFOpenedProject new.
-	CMApplicationPreferences settingProjectNotifications 
-		ifTrue: [ self informMessage: self translator tProjectOpenSuccess ].
 ]
 
 { #category : #utilities }
