@@ -129,7 +129,7 @@ CMR3SpacePresenter >> initializeDiagram [
 	" Private - Create the configured receiver's diagram "
 	
 	diagram := self
-		           instantiate: self appSettingsClass settingSpaceViewer
+		           instantiate: CMR3SpaceDiagram
 		           on: self cormasModel.
 	self initializeEvents.
 	

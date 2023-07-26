@@ -12,7 +12,6 @@ Class {
 		'SettingFixedVerticalTick',
 		'SettingProjectNotifications',
 		'SettingShowProbesTitle',
-		'SettingSpaceViewer',
 		'SettingWarnUsing'
 	],
 	#category : #'Cormas-Core-Kernel'
@@ -46,12 +45,6 @@ CMApplicationPreferences class >> defaultSettingFixedHorizontalTick [
 CMApplicationPreferences class >> defaultSettingFixedVerticalTick [
 
 	^ true
-]
-
-{ #category : #defaults }
-CMApplicationPreferences class >> defaultSettingSpaceDiagram [
-	
-	^ Smalltalk at: #CMR3SpaceDiagram
 ]
 
 { #category : #settings }
@@ -157,19 +150,6 @@ CMApplicationPreferences class >> settingShowProbesTitle: anObject [
 	" Sets the settingShowProbesTitle of this CMApplicationPreferences "
 
 	SettingShowProbesTitle := anObject
-]
-
-{ #category : #accessing }
-CMApplicationPreferences class >> settingSpaceViewer [
-
-	^ SettingSpaceViewer
-		ifNil: [ SettingSpaceViewer := self defaultSettingSpaceDiagram ]
-]
-
-{ #category : #accessing }
-CMApplicationPreferences class >> settingSpaceViewer: anObject [
-
-	SettingSpaceViewer := anObject
 ]
 
 { #category : #accessing }
