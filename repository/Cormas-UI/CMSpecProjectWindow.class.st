@@ -56,13 +56,6 @@ CMSpecProjectWindow class >> open [
 ]
 
 { #category : #callbacks }
-CMSpecProjectWindow >> appSettingsClass [
-	" Private - Answer the <Class> responsible to provide application settings "
-
-	^ CMApplicationPreferences
-]
-
-{ #category : #callbacks }
 CMSpecProjectWindow >> chartVisualizer [
 	" Answer a <Class> responsible to display a UI for charting "
 

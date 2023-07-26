@@ -53,12 +53,6 @@ CMR3SpacePresenter class >> openFor: aCMProjectManager [
 		yourself
 ]
 
-{ #category : #initialization }
-CMR3SpacePresenter >> appSettingsClass [ 
-
-	^ CMApplicationPreferences
-]
-
 { #category : #accessing }
 CMR3SpacePresenter >> buildExportFilenameWithExtension: aString [ 
 	" Answer a timestamped <String> representing the receiver's exported canvas "
