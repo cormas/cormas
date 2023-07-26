@@ -788,7 +788,7 @@ CMSpecSimulationWindow >> simulationManager [
 CMSpecSimulationWindow >> spaceViewClass [
 	" Private - Answer a <Class> responsible to display simulations "
 
-	^ self appSettingsClass spaceViewClass
+	^ CMR3SpaceDiagram
 ]
 
 { #category : #initialization }
