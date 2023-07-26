@@ -50,7 +50,7 @@ CMApplicationProject class >> applicationVersion [
 CMApplicationProject class >> baseDirectory [
 	" Answer a <FileReference> with the directory of CORMAS where projects and settings are located "
 
-	^ CMApplicationPreferences settingBaseLocation asFileReference
+	^ (FileLocator home / 'CORMAS') asFileReference
 ]
 
 { #category : #about }

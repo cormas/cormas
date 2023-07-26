@@ -5,19 +5,8 @@ These are global Cormas settings. For each specific project settings, see class 
 Class {
 	#name : #CMApplicationPreferences,
 	#superclass : #Object,
-	#classVars : [
-		'SettingBaseLocation',
-		'SettingFixedVerticalTick',
-		'SettingProjectNotifications'
-	],
 	#category : #'Cormas-Core-Kernel'
 }
-
-{ #category : #defaults }
-CMApplicationPreferences class >> defaultBaseLocation [
-
-	^ (FileLocator home / 'CORMAS') asFileReference fullName
-]
 
 { #category : #'initialize - release' }
 CMApplicationPreferences class >> release [
@@ -27,19 +16,4 @@ CMApplicationPreferences class >> release [
 	(self class organization listAtCategoryNamed: #accessing)
 		select: #isKeyword
 		thenDo: [ : selector | self perform: selector with: nil ]
-]
-
-{ #category : #accessing }
-CMApplicationPreferences class >> settingBaseLocation [
-	" Answer the settingBaseLocation of this CMPreferences "
-
-	^ SettingBaseLocation
-		ifNil: [ SettingBaseLocation := self defaultBaseLocation ]
-]
-
-{ #category : #accessing }
-CMApplicationPreferences class >> settingBaseLocation: anObject [
-	" Sets the settingBaseLocation of this CMPreferences "
-
-	SettingBaseLocation := anObject
 ]
