@@ -454,7 +454,6 @@ DefaultAttributesSetter class >> inheritedInstVarNamesForClass: aClass [
 	| list entityClasses allEntityClasses aSuperclass |
 	list := OrderedCollection new.
 	entityClasses := ('Cormas-Core' asPackage classTagNamed: 'Entities') classes.
-	entityClasses addAll: (('Cormas-Core' asPackage classTagNamed: 'Interface') classes).
 	entityClasses addAll: (('Cormas-Core' asPackage classTagNamed: 'Communication') classes).
 	allEntityClasses := entityClasses copy.
 	entityClasses do: [:c | allEntityClasses add: c class].
