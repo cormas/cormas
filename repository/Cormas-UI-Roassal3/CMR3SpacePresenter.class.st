@@ -326,10 +326,6 @@ CMR3SpacePresenter >> initializeToolsMenuToolbar [
 					item
 						name: self translator tCreateInstances;
 						action: [  ] ];
-				addItem: [ :item | 
-					item
-						name: self translator tPreferences;
-						action: [ CMSpaceSettingsBrowser openFor: self ] ];
 					
 				addItem: [ :item | 
 					item
