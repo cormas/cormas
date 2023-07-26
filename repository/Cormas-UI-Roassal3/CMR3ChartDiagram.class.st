@@ -4,10 +4,6 @@ Class {
 	#instVars : [
 		'chartBuilder',
 		'probeLines',
-		'title',
-		'titleSize',
-		'numberOfHorizontalTicks',
-		'numberOfVerticalTicks',
 		'xAxisLabelOffset',
 		'yAxisLabelOffset',
 		'newMaxX'
@@ -157,14 +153,9 @@ CMR3ChartDiagram >> newChartBuilder [
 CMR3ChartDiagram >> newHorizontalTick [
 	" Answer a new <RSHorizontalTick> with default or applied settings "
 
-	| hTick |
-	
-	hTick := RSHorizontalTick new 
+	^ RSHorizontalTick new 
 			integer;
 			yourself.
-	CMApplicationPreferences settingFixedHorizontalTick
-		ifTrue: [ hTick numberOfTicks: self numberOfHorizontalTicks ].
-	^ hTick
 ]
 
 { #category : #'accessing - chart' }
@@ -178,40 +169,10 @@ CMR3ChartDiagram >> newMaxX [
 CMR3ChartDiagram >> newVerticalTick [
 	" Answer a new <RSVerticalTick> with default or applied settings "
 
-	| verticalTick |
-	
-	verticalTick := RSVerticalTick new 
+	^ RSVerticalTick new 
 		doNotUseNiceLabel;
+		numberOfTicks: 2;
 		yourself.
-	verticalTick numberOfTicks: (CMApplicationPreferences settingFixedVerticalTick
-		ifTrue: [  2 ]
-		ifFalse: [ self numberOfVerticalTicks ]).
-	^ verticalTick
-]
-
-{ #category : #'accessing - ticks' }
-CMR3ChartDiagram >> numberOfHorizontalTicks [
-
-	^ numberOfHorizontalTicks
-]
-
-{ #category : #'accessing - ticks' }
-CMR3ChartDiagram >> numberOfHorizontalTicks: anObject [
-
-	numberOfHorizontalTicks := anObject
-]
-
-{ #category : #'accessing - ticks' }
-CMR3ChartDiagram >> numberOfVerticalTicks [
-
-	^ numberOfVerticalTicks
-		ifNil: [ numberOfVerticalTicks := self defaultNumberOfVerticalTicks ]
-]
-
-{ #category : #'accessing - ticks' }
-CMR3ChartDiagram >> numberOfVerticalTicks: anObject [
-
-	numberOfVerticalTicks := anObject
 ]
 
 { #category : #accessing }

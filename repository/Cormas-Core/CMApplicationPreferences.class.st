@@ -7,10 +7,8 @@ Class {
 	#superclass : #Object,
 	#classVars : [
 		'SettingBaseLocation',
-		'SettingFixedHorizontalTick',
 		'SettingFixedVerticalTick',
-		'SettingProjectNotifications',
-		'SettingShowProbesTitle'
+		'SettingProjectNotifications'
 	],
 	#category : #'Cormas-Core-Kernel'
 }
@@ -25,18 +23,6 @@ CMApplicationPreferences class >> defaultBaseLocation [
 CMApplicationPreferences class >> defaultProjectNotifications [
 
 	^ false
-]
-
-{ #category : #defaults }
-CMApplicationPreferences class >> defaultSettingFixedHorizontalTick [
-
-	^ false
-]
-
-{ #category : #defaults }
-CMApplicationPreferences class >> defaultSettingFixedVerticalTick [
-
-	^ true
 ]
 
 { #category : #'initialize - release' }
@@ -62,36 +48,6 @@ CMApplicationPreferences class >> settingBaseLocation: anObject [
 	" Sets the settingBaseLocation of this CMPreferences "
 
 	SettingBaseLocation := anObject
-]
-
-{ #category : #accessing }
-CMApplicationPreferences class >> settingFixedHorizontalTick [
-	" Answer the settingFixedHorizontalTick of this CMApplicationPreferences "
-
-	^ SettingFixedHorizontalTick
-		ifNil: [ SettingFixedHorizontalTick := self defaultSettingFixedHorizontalTick ]
-]
-
-{ #category : #accessing }
-CMApplicationPreferences class >> settingFixedHorizontalTick: anObject [
-	" Sets the settingFixedHorizontalTick of this CMApplicationPreferences "
-
-	SettingFixedHorizontalTick := anObject
-]
-
-{ #category : #accessing }
-CMApplicationPreferences class >> settingFixedVerticalTick [
-	" Answer the settingFixedVerticalTick of this CMApplicationPreferences "
-
-	^ SettingFixedVerticalTick
-		ifNil: [ SettingFixedVerticalTick := self defaultSettingFixedVerticalTick ]
-]
-
-{ #category : #accessing }
-CMApplicationPreferences class >> settingFixedVerticalTick: anObject [
-	" Sets the settingFixedVerticalTick of this CMApplicationPreferences "
-
-	SettingFixedVerticalTick := anObject
 ]
 
 { #category : #accessing }
