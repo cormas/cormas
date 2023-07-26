@@ -108,18 +108,3 @@ CMApplicationPreferences class >> settingProjectNotifications: anObject [
 
 	SettingProjectNotifications := anObject
 ]
-
-{ #category : #accessing }
-CMApplicationPreferences class >> settingShowProbesTitle [
-	" Answer the settingShowProbesTitle of this CMApplicationPreferences "
-
-	^ SettingShowProbesTitle
-		ifNil: [ SettingShowProbesTitle := false ]
-]
-
-{ #category : #accessing }
-CMApplicationPreferences class >> settingShowProbesTitle: anObject [
-	" Sets the settingShowProbesTitle of this CMApplicationPreferences "
-
-	SettingShowProbesTitle := anObject
-]
