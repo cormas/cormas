@@ -11,8 +11,7 @@ Class {
 		'SettingFixedHorizontalTick',
 		'SettingFixedVerticalTick',
 		'SettingProjectNotifications',
-		'SettingShowProbesTitle',
-		'SettingWarnUsing'
+		'SettingShowProbesTitle'
 	],
 	#category : #'Cormas-Core-Kernel'
 }
@@ -45,12 +44,6 @@ CMApplicationPreferences class >> defaultSettingFixedHorizontalTick [
 CMApplicationPreferences class >> defaultSettingFixedVerticalTick [
 
 	^ true
-]
-
-{ #category : #settings }
-CMApplicationPreferences class >> defaultSettingWarnUsing [
-	
-	^ CMLoadIgnoreException
 ]
 
 { #category : #'initialize - release' }
@@ -150,19 +143,4 @@ CMApplicationPreferences class >> settingShowProbesTitle: anObject [
 	" Sets the settingShowProbesTitle of this CMApplicationPreferences "
 
 	SettingShowProbesTitle := anObject
-]
-
-{ #category : #accessing }
-CMApplicationPreferences class >> settingWarnUsing [
-	" Answer the settingWarnUsing of this CMPreferences "
-
-	^ SettingWarnUsing
-		ifNil: [ SettingWarnUsing := self defaultSettingWarnUsing ]
-]
-
-{ #category : #accessing }
-CMApplicationPreferences class >> settingWarnUsing: anObject [
-	" Sets the settingWarnUsing of this CMPreferences "
-
-	SettingWarnUsing := anObject
 ]
