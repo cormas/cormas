@@ -167,15 +167,6 @@ TCMLocated >> delete [
 	super delete
 ]
 
-{ #category : #accessing }
-TCMLocated >> detailsOfPOV [
-	" Answer a <String> to visually distinguish the receiver in a space. 
-	This is displayed in the popup when the mouse is over a grid.
-	To be overwritten if needed"
-
-	^ String empty
-]
-
 { #category : #'environment - distance' }
 TCMLocated >> distanceTo: aSpatialEntityOrSituatedEntity [
 	"Purpose: returns the Manhattan distance (in cells) between the patch of the agent and aSpatialEntityOrSituatedEntity

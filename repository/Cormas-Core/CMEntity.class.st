@@ -67,13 +67,6 @@ CMEntity class >> CurrentId: anInteger [
 	^anInteger
 ]
 
-{ #category : #deprecated }
-CMEntity class >> activePov: aSymbol [
-	"pov can not be called from the model"
-	
-	
-]
-
 { #category : #probes }
 CMEntity class >> activeProbes [
 	^ activeProbes
@@ -450,21 +443,6 @@ CMEntity class >> colorOfProbe: aProbeSymbol [
 		at: selectorName
 		ifAbsent: [^nil].
 	^self perform: selectorName
-]
-
-{ #category : #'utilities - colors' }
-CMEntity class >> colorOfVectorialPOV: aPov [
-	"Returns a Color, according to VectorialPOV. A VectorialPOV is an array containing the settings of a Situated entity vectorial pov symbol in the following order:
-(color red) (color green) (color blue) (lineColor red) (lineColor green) (lineColor blue) lineWidth sizeratio position (array of outline vertices).
-aPov = <Symbol>
-
-self colorOfVectorialPOV: #VectorialPOV_A"
-
-	| array |
-	[ array := self perform: aPov ]
-		on: Error
-		do: [ :ex | ^ self cormas warn: 'There is no POV for : <1p>' with: aPov ].
-	^ Color red: (array at: 1) green: (array at: 2) blue: (array at: 3)
 ]
 
 { #category : #'utilities - colors' }

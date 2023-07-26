@@ -58,13 +58,12 @@ Class {
 		'spatialClasses',
 		'socialClasses',
 		'passiveClasses',
-		'povColorsDict',
 		'visualStateIsOpen',
 		'charts',
 		'activeProbes',
 		'activityDiagrams'
 	],
-	#category : #'Cormas-Core-Interface'
+	#category : #'Cormas-Core-Kernel'
 }
 
 { #category : #accessing }
@@ -757,17 +756,6 @@ CMAbstractModel class >> postfixName [
 	"Answer a the postfix name of this model: 'Model' "
 	
 	^ 'Model'
-]
-
-{ #category : #accessing }
-CMAbstractModel class >> povColorsDict [
-	^ povColorsDict
-]
-
-{ #category : #accessing }
-CMAbstractModel class >> povColorsDict: aDictionary [
-	
-	povColorsDict := aDictionary
 ]
 
 { #category : #activityEditor }
