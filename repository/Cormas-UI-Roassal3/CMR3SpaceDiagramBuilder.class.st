@@ -15,10 +15,12 @@ CMR3SpaceDiagramBuilder class >> example [
 
 	<example>
 	| model builder |
-	model := ECECModel allInstances anyOne.
+	
+	model := CMMockModel new initializeSimulation.
 
 	builder := self new
 		cormasModel: model;
+		inspect;
 		asPresenter.
 	
 	builder openWithSpec.

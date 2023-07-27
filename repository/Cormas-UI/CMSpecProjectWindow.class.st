@@ -185,6 +185,13 @@ CMSpecProjectWindow >> defaultProjectManagerClass [
 	^ CMProjectManager
 ]
 
+{ #category : #menu }
+CMSpecProjectWindow >> enablePreferences [
+	"This method only exists to 'turn off' the enabling of preferences that is done by ProjectFramework. Once we remove the dependency on ProjectFramework, this method can also be removed"
+
+	"do nothing"
+]
+
 { #category : #accessing }
 CMSpecProjectWindow >> fsmState [
 
@@ -483,7 +490,6 @@ CMSpecProjectWindow >> menuEnableSimulationGroup [
 
 { #category : #menu }
 CMSpecProjectWindow >> menuEnableToolsGroup [
-	" Private - Enable all menu items within the Tools group "
 
 	{ 
 		#tManipulateInstances .
@@ -495,7 +501,7 @@ CMSpecProjectWindow >> menuEnableToolsGroup [
 		#tDistributeAsServer .
 		#tDistributeAsClient .
 		#tBrowseModel .
-		#tPreferences .
+		"#tPreferences ."
 		#tInspectModel
 	} do: [ : itemSel | self menuEnableItem: itemSel ]
 ]
