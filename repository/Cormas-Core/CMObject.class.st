@@ -48,12 +48,6 @@ CMObject class >> printSubclassesOn: aStream level: level [
 ]
 
 { #category : #accessing }
-CMObject >> appSettingsClass [ 
-
-	^ CMApplicationPreferences
-]
-
-{ #category : #accessing }
 CMObject >> application [ 
 	" Answer a <CMApplicationProject> the unique instance representing the CORMAS application "
 

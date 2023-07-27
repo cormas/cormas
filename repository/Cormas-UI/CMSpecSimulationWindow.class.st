@@ -110,13 +110,6 @@ CMSpecSimulationWindow class >> example [
 		openWithSpec
 ]
 
-{ #category : #callbacks }
-CMSpecSimulationWindow >> appSettingsClass [
-	" Private - Answer the <Class> responsible to provide application settings "
-
-	^ CMApplicationPreferences
-]
-
 { #category : #accessing }
 CMSpecSimulationWindow >> backwardAllButton [
 	" Answer the backwardAllButton of this CMSpecSimulationWindow "
@@ -788,7 +781,7 @@ CMSpecSimulationWindow >> simulationManager [
 CMSpecSimulationWindow >> spaceViewClass [
 	" Private - Answer a <Class> responsible to display simulations "
 
-	^ self appSettingsClass spaceViewClass
+	^ CMR3SpaceDiagram
 ]
 
 { #category : #initialization }

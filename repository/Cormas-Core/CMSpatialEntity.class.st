@@ -68,26 +68,6 @@ CMSpatialEntity class >> bounds: x [
 	bounds := x
 ]
 
-{ #category : #displaying }
-CMSpatialEntity class >> createEntityPOVwithSpec: aSpec defaultPov: aDefaultPov [
-	"Returns an EntityPOV according to selectorName and aSymbolOrColorValue"
-	
-	| anEntityPOV aSymbolOrColorValue selectorName |
-	aSymbolOrColorValue := aSpec povResult.
-	selectorName := aSpec povSelector.
-	anEntityPOV := aDefaultPov copy.
-	anEntityPOV
-		color:
-			(aSymbolOrColorValue isColor
-				ifTrue: [aSymbolOrColorValue]
-				ifFalse: [self colorAtPov: aSymbolOrColorValue]).
-	anEntityPOV name: selectorName.
-	anEntityPOV povResult: aSymbolOrColorValue.
-	anEntityPOV infoName: aSpec infoName.
-	anEntityPOV infoResult: aSpec infoResult.
-	^anEntityPOV
-]
-
 { #category : #'utilities - colors' }
 CMSpatialEntity class >> defaultColor [
 	"Purpose: return the default color of the current class name.

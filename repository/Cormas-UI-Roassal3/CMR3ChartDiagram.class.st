@@ -4,10 +4,6 @@ Class {
 	#instVars : [
 		'chartBuilder',
 		'probeLines',
-		'title',
-		'titleSize',
-		'numberOfHorizontalTicks',
-		'numberOfVerticalTicks',
 		'xAxisLabelOffset',
 		'yAxisLabelOffset',
 		'newMaxX'
@@ -93,20 +89,6 @@ CMR3ChartDiagram >> defaultNumberOfVerticalTicks [
 ]
 
 { #category : #defaults }
-CMR3ChartDiagram >> defaultTitle [
-	" Private - Answer a <String> with the receiver's default title to appear inside the canvas "
-	
-	^ 'Probes for ' , self cormasModelClass name
-]
-
-{ #category : #defaults }
-CMR3ChartDiagram >> defaultTitleSize [
-	" Private - Answer a <Number> with the receiver's default title size to appear inside the canvas "
-	
-	^ 15
-]
-
-{ #category : #defaults }
 CMR3ChartDiagram >> defaultXAxisLabelOffset [
 	" Answer a <Point> representing the receiver's default X axis offset "
 	
@@ -163,26 +145,17 @@ CMR3ChartDiagram >> newBasicChartBuilder [
 { #category : #'accessing - chart' }
 CMR3ChartDiagram >> newChartBuilder [
 	" Private - Answer a new <RSChart> with ticksAssoc as the number of X ticks"
-	| newChart |
 	
-	newChart := self newBasicChartBuilder.
-	CMApplicationPreferences settingShowProbesTitle
-		ifTrue: [ newChart addDecoration: (RSChartTitleDecoration new title: self title; fontSize: self titleSize) ].
-	^ newChart.
+	^ self newBasicChartBuilder
 ]
 
 { #category : #'accessing - ticks' }
 CMR3ChartDiagram >> newHorizontalTick [
 	" Answer a new <RSHorizontalTick> with default or applied settings "
 
-	| hTick |
-	
-	hTick := RSHorizontalTick new 
+	^ RSHorizontalTick new 
 			integer;
 			yourself.
-	CMApplicationPreferences settingFixedHorizontalTick
-		ifTrue: [ hTick numberOfTicks: self numberOfHorizontalTicks ].
-	^ hTick
 ]
 
 { #category : #'accessing - chart' }
@@ -196,40 +169,10 @@ CMR3ChartDiagram >> newMaxX [
 CMR3ChartDiagram >> newVerticalTick [
 	" Answer a new <RSVerticalTick> with default or applied settings "
 
-	| verticalTick |
-	
-	verticalTick := RSVerticalTick new 
+	^ RSVerticalTick new 
 		doNotUseNiceLabel;
+		numberOfTicks: 2;
 		yourself.
-	verticalTick numberOfTicks: (CMApplicationPreferences settingFixedVerticalTick
-		ifTrue: [  2 ]
-		ifFalse: [ self numberOfVerticalTicks ]).
-	^ verticalTick
-]
-
-{ #category : #'accessing - ticks' }
-CMR3ChartDiagram >> numberOfHorizontalTicks [
-
-	^ numberOfHorizontalTicks
-]
-
-{ #category : #'accessing - ticks' }
-CMR3ChartDiagram >> numberOfHorizontalTicks: anObject [
-
-	numberOfHorizontalTicks := anObject
-]
-
-{ #category : #'accessing - ticks' }
-CMR3ChartDiagram >> numberOfVerticalTicks [
-
-	^ numberOfVerticalTicks
-		ifNil: [ numberOfVerticalTicks := self defaultNumberOfVerticalTicks ]
-]
-
-{ #category : #'accessing - ticks' }
-CMR3ChartDiagram >> numberOfVerticalTicks: anObject [
-
-	numberOfVerticalTicks := anObject
 ]
 
 { #category : #accessing }
@@ -272,7 +215,7 @@ CMR3ChartDiagram >> refreshProbesChart [
 	" Private - A probe has been selected/deselected. Update the receiver including the Y Axis "
 
 	self removeAllElements.
-	self chartBuilder removeAllPlots.	
+	self chartBuilder plots removeAll.	
 	self canvas signalUpdate.
 	self updateYAxis.	
 	self updateProbes
@@ -282,7 +225,7 @@ CMR3ChartDiagram >> refreshProbesChart [
 CMR3ChartDiagram >> removeAllElements [
 	" Remove all the receiver's chart elements "
 
-	self canvas removeAllElements.
+	self canvas shapes do: [ : s | s remove ].
 
 ]
 
@@ -329,33 +272,6 @@ CMR3ChartDiagram >> timeChanged: aNewTimeStep [
 	self updateYAxis.
 
 	self updateProbes.
-]
-
-{ #category : #'accessing - chart' }
-CMR3ChartDiagram >> title [
-	" Answer a <String> with the receiver's title shown inside the canvas "
-	
-	^ title
-		ifNil: [ title := self defaultTitle ]
-]
-
-{ #category : #accessing }
-CMR3ChartDiagram >> title: aString [
-
-	title := aString
-]
-
-{ #category : #accessing }
-CMR3ChartDiagram >> titleSize [
-
-	^ titleSize
-		ifNil: [ titleSize := self defaultTitleSize ]
-]
-
-{ #category : #accessing }
-CMR3ChartDiagram >> titleSize: anObject [
-
-	titleSize := anObject
 ]
 
 { #category : #'accessing - chart' }

@@ -53,12 +53,6 @@ CMR3SpacePresenter class >> openFor: aCMProjectManager [
 		yourself
 ]
 
-{ #category : #initialization }
-CMR3SpacePresenter >> appSettingsClass [ 
-
-	^ CMApplicationPreferences
-]
-
 { #category : #accessing }
 CMR3SpacePresenter >> buildExportFilenameWithExtension: aString [ 
 	" Answer a timestamped <String> representing the receiver's exported canvas "
@@ -129,7 +123,7 @@ CMR3SpacePresenter >> initializeDiagram [
 	" Private - Create the configured receiver's diagram "
 	
 	diagram := self
-		           instantiate: self appSettingsClass settingSpaceViewer
+		           instantiate: CMR3SpaceDiagram
 		           on: self cormasModel.
 	self initializeEvents.
 	
@@ -332,10 +326,6 @@ CMR3SpacePresenter >> initializeToolsMenuToolbar [
 					item
 						name: self translator tCreateInstances;
 						action: [  ] ];
-				addItem: [ :item | 
-					item
-						name: self translator tPreferences;
-						action: [ CMSpaceSettingsBrowser openFor: self ] ];
 					
 				addItem: [ :item | 
 					item

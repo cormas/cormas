@@ -47,7 +47,7 @@ CMResourceOpener >> gitBridge [
 CMResourceOpener >> handleFileInException: ex [
 	" Private - There was an exception while loading a file. Handle it accordingly to preferences "
 
-	self appSettingsClass settingWarnUsing signal: ex messageText
+	CMLoadIgnoreException signal: ex messageText
 ]
 
 { #category : #accessing }

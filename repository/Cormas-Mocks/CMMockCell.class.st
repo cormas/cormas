@@ -18,7 +18,7 @@ CMMockCell >> initDead [
 CMMockCell >> initRandom [
 	self
 		state:
-			(Cormas random < 0.1
+			(Cormas random < 0.4
 				ifTrue: [ #alive ]
 				ifFalse: [ #dead ])
 ]
@@ -31,4 +31,12 @@ Example: self bufferState: (test ifTrue: [value1] ifFalse: [value2])"
 	self state = #dead
 		ifTrue: [ ^ self bufferState: #alive ].
 	^ self bufferState: #dead
+]
+
+{ #category : #pov }
+CMMockCell >> pov [
+
+	^ state = #dead
+		ifTrue: [ Color black ]
+		ifFalse: [ Color white ]
 ]
