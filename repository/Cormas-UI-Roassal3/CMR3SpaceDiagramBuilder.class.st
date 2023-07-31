@@ -16,7 +16,9 @@ CMR3SpaceDiagramBuilder class >> example [
 	<example>
 	| model builder |
 	
-	model := CMMockModel new initializeSimulation.
+	model := CMMockModel new
+		initializeSimulation;
+		yourself.
 
 	builder := self new
 		cormasModel: model;
