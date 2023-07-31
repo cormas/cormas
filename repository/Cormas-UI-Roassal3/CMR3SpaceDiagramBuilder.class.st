@@ -46,6 +46,12 @@ CMR3SpaceDiagramBuilder >> activeSpatialEntityPov [
 ]
 
 { #category : #accessing }
+CMR3SpaceDiagramBuilder >> cellShapes [
+
+	^ cellShapes
+]
+
+{ #category : #accessing }
 CMR3SpaceDiagramBuilder >> cormasModel [
 
 	^ cormasModel
