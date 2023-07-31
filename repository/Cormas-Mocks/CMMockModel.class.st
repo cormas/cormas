@@ -144,6 +144,12 @@ CMMockModel >> numberOfRows: aNumber [
 	numberOfRows := aNumber
 ]
 
+{ #category : #'utilities - random' }
+CMMockModel >> randomSeed: aNumber [
+
+	Cormas seed: aNumber
+]
+
 { #category : #accessing }
 CMMockModel >> theAgents [
 	^ theAgents ifNil: [ theAgents := OrderedCollection new ]
