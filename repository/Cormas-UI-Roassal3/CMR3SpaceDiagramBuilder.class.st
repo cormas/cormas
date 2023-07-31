@@ -16,7 +16,9 @@ CMR3SpaceDiagramBuilder class >> example [
 	<example>
 	| model builder |
 	
-	model := CMMockModel new initializeSimulation.
+	model := CMMockModel new
+		initializeSimulation;
+		yourself.
 
 	builder := self new
 		cormasModel: model;
@@ -43,6 +45,12 @@ CMR3SpaceDiagramBuilder >> activeSpatialEntityPov [
 	^ spatialEntitySelections size = 1
 		ifTrue: [ spatialEntitySelections anyOne value ]
 		ifFalse: [ spatialEntitySelections ifEmpty: [ #pov ] ifNotEmpty: [ self error ] ]
+]
+
+{ #category : #accessing }
+CMR3SpaceDiagramBuilder >> cellShapes [
+
+	^ cellShapes
 ]
 
 { #category : #accessing }
