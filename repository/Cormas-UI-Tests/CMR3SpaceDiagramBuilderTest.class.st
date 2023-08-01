@@ -69,6 +69,23 @@ CMR3SpaceDiagramBuilderTest >> testActiveSpatialEntityPovDefaultValue [
 	self assert: builder activeSpatialEntityPov equals: #pov.
 ]
 
+{ #category : #tests }
+CMR3SpaceDiagramBuilderTest >> testChangeAgentShapeToTriangle [
+
+	| canvas shape |
+	
+	builder masterAgent: RSShapeFactory triangle.
+	
+	canvas := RSCanvas new.
+	builder container: canvas.
+	builder build.
+	
+	shape := builder agentShapes anyOne.
+	
+	self assert: shape class equals: RSPolygon.
+	self assert: shape points size equals: 3.
+]
+
 { #category : #'as yet unclassified' }
 CMR3SpaceDiagramBuilderTest >> testCormasModel [
 
