@@ -30,18 +30,9 @@ CMR3SpaceAgentsBuilder >> cellAt: aPoint ifAbsent: absentBlock [
 { #category : #'as yet unclassified' }
 CMR3SpaceAgentsBuilder >> defaultMasterShape [
 
-	| popUp shape |
-	
-	popUp := self createAdaptivePopup.
-
-	shape := RSShapeFactory star
+	^ RSShapeFactory star
 		size: 25;
-		@ popUp;
-		when: RSMouseLeftClick send: #inspectEntity: to: self;
 		yourself.
-		
-	self makeAgentShapeDraggable: shape.
-	^ shape
 ]
 
 { #category : #'as yet unclassified' }
@@ -51,6 +42,13 @@ CMR3SpaceAgentsBuilder >> makeAgentShapeDraggable: anAgentShape [
 	anAgentShape @ RSDraggable.
 	
 	anAgentShape when: RSMouseDragEnd send: #mouseEnd: to: self.
+]
+
+{ #category : #accessing }
+CMR3SpaceAgentsBuilder >> masterShape: aShape [
+
+	super masterShape: aShape.
+	self makeAgentShapeDraggable: aShape.
 ]
 
 { #category : #events }

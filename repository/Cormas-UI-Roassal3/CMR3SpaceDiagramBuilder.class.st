@@ -73,6 +73,18 @@ CMR3SpaceDiagramBuilder >> initialize [
 	agentsBuilder := CMR3SpaceAgentsBuilder for: self.
 ]
 
+{ #category : #accessing }
+CMR3SpaceDiagramBuilder >> masterShapeForAgents: aShape [
+
+	agentsBuilder masterShape: aShape
+]
+
+{ #category : #accessing }
+CMR3SpaceDiagramBuilder >> masterShapeForCells: aShape [
+
+	cellsBuilder masterShape: aShape
+]
+
 { #category : #rendering }
 CMR3SpaceDiagramBuilder >> renderIn: aCanvas [
 

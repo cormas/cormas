@@ -7,14 +7,8 @@ Class {
 { #category : #'as yet unclassified' }
 CMR3SpaceCellsBuilder >> defaultMasterShape [
 
-	| popUp |
-	
-	popUp := self createAdaptivePopup.
-
 	^ RSBox new
 		size: 25;
-		@ popUp;
-		when: RSMouseLeftClick send: #inspectEntity: to: self;
 		yourself.
 ]
 

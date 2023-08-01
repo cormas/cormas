@@ -95,13 +95,26 @@ CMR3SpaceShapeBuilder >> initialize [
 
 	super initialize.
 	
-	masterShape := self defaultMasterShape.
+	self masterShape: self defaultMasterShape.
 ]
 
 { #category : #'as yet unclassified' }
 CMR3SpaceShapeBuilder >> inspectEntity: anEvent [
 
 	anEvent shape model inspect
+]
+
+{ #category : #accessing }
+CMR3SpaceShapeBuilder >> masterShape: aShape [
+
+	| popUp |
+	
+	popUp := self createAdaptivePopup.
+
+	masterShape := aShape 
+		@ popUp;
+		when: RSMouseLeftClick send: #inspectEntity: to: self;
+		yourself.
 ]
 
 { #category : #rendering }
