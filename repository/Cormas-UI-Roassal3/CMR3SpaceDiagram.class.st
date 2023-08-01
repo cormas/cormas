@@ -516,7 +516,7 @@ CMR3SpaceDiagram >> setModelBeforeInitialization: aCMAbstractModel [
 { #category : #accessing }
 CMR3SpaceDiagram >> sevClass [
 
-	^ CMSpacePreferences spaceSituatedEntityTypeSetting
+	^ RSEllipse
 ]
 
 { #category : #accessing }

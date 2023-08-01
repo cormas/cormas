@@ -3,8 +3,7 @@ Class {
 	#superclass : #CMObject,
 	#classVars : [
 		'SpaceElementTypeSetting',
-		'SpaceGapSetting',
-		'SpaceSituatedEntityTypeSetting'
+		'SpaceGapSetting'
 	],
 	#category : #'Cormas-UI-Roassal3-Settings'
 }
@@ -21,18 +20,6 @@ CMSpacePreferences class >> availableSpaceElementTypeSetting [
 	Plus
 	Diamond
 	Star)
-]
-
-{ #category : #settings }
-CMSpacePreferences class >> availableSpaceSituatedEntityTypeSetting [
-	
-	^ { RSEllipse . RSCircle . RSBox . RSBitmap . RSPieSlice }.
-]
-
-{ #category : #defaults }
-CMSpacePreferences class >> defaultSpaceSituatedEntityTypeSetting [
-	
-	^ self availableSpaceSituatedEntityTypeSetting first
 ]
 
 { #category : #accessing }
@@ -70,20 +57,4 @@ CMSpacePreferences class >> spaceGapSetting: anObject [
 			addViewForAgents: sp model allTheSituatedEntities.		
 		sp canvas signalUpdate ]."
 		
-]
-
-{ #category : #accessing }
-CMSpacePreferences class >> spaceSituatedEntityTypeSetting [
-	" Answer the spaceSituatedEntityTypeSetting of this CMSpacePreferences "
-
-	^ SpaceSituatedEntityTypeSetting
-		ifNil: [ SpaceSituatedEntityTypeSetting := self defaultSpaceSituatedEntityTypeSetting ]
-]
-
-{ #category : #accessing }
-CMSpacePreferences class >> spaceSituatedEntityTypeSetting: anObject [
-	" Sets the spaceSituatedEntityTypeSetting of this CMSpacePreferences "
-
-	SpaceSituatedEntityTypeSetting := anObject.
-
 ]
