@@ -5,7 +5,9 @@ Class {
 		'cormasModel',
 		'masterCell',
 		'cellShapes',
-		'activePoVsDictionary'
+		'activePoVsDictionary',
+		'masterAgent',
+		'agentShapes'
 	],
 	#category : #'Cormas-UI-Roassal3-Space'
 }
@@ -45,6 +47,15 @@ CMR3SpaceDiagramBuilder >> activeSpatialEntityPov [
 	^ spatialEntitySelections size = 1
 		ifTrue: [ spatialEntitySelections anyOne value ]
 		ifFalse: [ spatialEntitySelections ifEmpty: [ #pov ] ifNotEmpty: [ self error ] ]
+]
+
+{ #category : #accessing }
+CMR3SpaceDiagramBuilder >> cellAt: aPoint ifAbsent: absentBlock [
+	" Answer the <RSShape> which contains aPoint in the receiver "
+
+	^ self cellShapes
+		detect: [ :roassalNode | roassalNode encompassingRectangle containsPoint: aPoint ]
+		ifNone: absentBlock
 ]
 
 { #category : #accessing }
@@ -91,10 +102,17 @@ CMR3SpaceDiagramBuilder >> createAdaptivePopup [
 ]
 
 { #category : #'as yet unclassified' }
+CMR3SpaceDiagramBuilder >> createAgentShapes [
+
+	^ cormasModel theAgents collect: [ :agent |
+		self newAgentShapeForModel: agent ]
+]
+
+{ #category : #'as yet unclassified' }
 CMR3SpaceDiagramBuilder >> createCellShapes [
 
-	^ cormasModel theESE collect: [ :cell |
-		self newCellShapeForModel: cell ]
+	^ cormasModel theESE collect: [ :agent |
+		self newCellShapeForModel: agent ]
 ]
 
 { #category : #accessing }
@@ -112,6 +130,20 @@ CMR3SpaceDiagramBuilder >> defaultContainer [
 	canvas addInteraction: RSCanvasController.
 	
 	^ canvas
+]
+
+{ #category : #'as yet unclassified' }
+CMR3SpaceDiagramBuilder >> defaultMasterAgent [
+
+	| popUp |
+	
+	popUp := self createAdaptivePopup.
+
+	^ RSEllipse new
+		size: 25;
+		@ popUp;
+		when: RSMouseLeftClick send: #inspectEntity: to: self;
+		yourself.
 ]
 
 { #category : #'as yet unclassified' }
@@ -142,7 +174,9 @@ CMR3SpaceDiagramBuilder >> formatEntityDetail: aCMEntity attribute: att [
 CMR3SpaceDiagramBuilder >> initialize [
 
 	super initialize.
+	
 	masterCell := self defaultMasterCell.
+	masterAgent := self defaultMasterAgent.
 ]
 
 { #category : #'as yet unclassified' }
@@ -152,9 +186,63 @@ CMR3SpaceDiagramBuilder >> inspectEntity: anEvent [
 ]
 
 { #category : #'as yet unclassified' }
+CMR3SpaceDiagramBuilder >> makeAgentShapeDraggable: anAgentShape [
+
+	| agent |
+
+	"Adding property to be draggable"
+	anAgentShape @ RSDraggable.
+	
+	anAgentShape when: RSMouseDragEnd do: [ :evt |
+		agent := evt shape model.
+		agent patch: (self cellAt: evt position ifAbsent: [ agent patch ]) ].
+]
+
+{ #category : #'as yet unclassified' }
+CMR3SpaceDiagramBuilder >> masterAgent [
+
+	^ masterAgent
+]
+
+{ #category : #'as yet unclassified' }
 CMR3SpaceDiagramBuilder >> masterCell [
 
 	^ masterCell
+]
+
+{ #category : #'as yet unclassified' }
+CMR3SpaceDiagramBuilder >> moveAgentShape: anAgentShape [
+
+	| agent cell cellSize |
+			
+	agent := anAgentShape model.
+	cell := agent patch.
+	cellSize := cellShapes anyOne encompassingRectangle extent.
+	
+	self makeAgentShapeDraggable: anAgentShape.
+
+	(anAgentShape propertyAt: #RSLabeled) ifNotNil: [ :p |
+		p text: agent labelOfPOV ].
+	
+	anAgentShape
+		"@ (RSPopup text: agent detailsOfPOV);"
+		size: agent sizeOfPOV;
+		color: agent pov;
+		translateTo: (cell numCol @ cell numLine * cellSize) - (cellSize / 2)
+]
+
+{ #category : #'as yet unclassified' }
+CMR3SpaceDiagramBuilder >> moveAgentShapes [
+
+	agentShapes do: [ :each | self moveAgentShape: each ]
+]
+
+{ #category : #'instance creation' }
+CMR3SpaceDiagramBuilder >> newAgentShapeForModel: anAgentModel [
+
+	^ self masterAgent copyWithAnnouncer
+		model: anAgentModel;
+		yourself
 ]
 
 { #category : #'instance creation' }
@@ -176,6 +264,9 @@ CMR3SpaceDiagramBuilder >> renderIn: aCanvas [
 		lineItemsCount: cormasModel spaceModel column;
 		on: aCanvas nodes.
 		
+	agentShapes := self createAgentShapes.
+	aCanvas addAll: agentShapes.
+		
 	self update.
 ]
 
@@ -183,6 +274,7 @@ CMR3SpaceDiagramBuilder >> renderIn: aCanvas [
 CMR3SpaceDiagramBuilder >> update [
 
 	self updateCellShapes.
+	self moveAgentShapes.
 ]
 
 { #category : #updating }
