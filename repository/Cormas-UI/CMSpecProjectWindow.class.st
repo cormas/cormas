@@ -696,9 +696,9 @@ CMSpecProjectWindow >> openSpacePresenter [
 
 	(self cormasModelClass methodsOfProtocol: #init)
 		ifNotEmpty: [ 
-			'Project Window: Open Space Presenter' traceCr.
-			CMR3SpacePresenter openFor: self projectManager.
-			'Project Window: Announce Changed PoV' traceCr.
+			CMR3SpacePresenter
+				openForModel: self projectManager cormasModel
+				withTranslator: self projectManager translator.
 		 	self projectAnnouncer announce: CMSChangePoVAnnouncement new ]
 ]
 

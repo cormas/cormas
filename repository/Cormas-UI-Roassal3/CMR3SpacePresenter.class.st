@@ -18,7 +18,8 @@ Class {
 	#traits : 'TCMUIUtils',
 	#classTraits : 'TCMUIUtils classTrait',
 	#instVars : [
-		'projectManager',
+		'cormasModel',
+		'translator',
 		'diagram',
 		'menuToolbar'
 	],
@@ -35,20 +36,12 @@ CMR3SpacePresenter class >> defaultSpec [
 ]
 
 { #category : #'instance creation' }
-CMR3SpacePresenter class >> for: aCMProjectManager [ 
-	" Answer a new instance of the receiver using aCMProjectManager as model "
-	
+CMR3SpacePresenter class >> openForModel: aCormasModel withTranslator: aTranslator [
+
 	^ self basicNew 
-		projectManager: aCMProjectManager;
+		cormasModel: aCormasModel;
+		translator: aTranslator;
 		initialize;
-		yourself
-]
-
-{ #category : #'instance creation' }
-CMR3SpacePresenter class >> openFor: aCMProjectManager [
-	" Create and open a new instance of the receiver, configuring its controller with aCMProjectManager"
-
-	^ (self for: aCMProjectManager)
 		openWithSpec;
 		yourself
 ]
@@ -73,16 +66,16 @@ CMR3SpacePresenter >> canvas [
 	^ self diagram canvas
 ]
 
-{ #category : #private }
-CMR3SpacePresenter >> closeAfterCreateProject [
-	^ true
+{ #category : #accessing }
+CMR3SpacePresenter >> cormasModel [
+
+	^ cormasModel
 ]
 
 { #category : #accessing }
-CMR3SpacePresenter >> cormasModel [
-	" Answer the receiver's <CMAbstractModel> "
+CMR3SpacePresenter >> cormasModel: anObject [
 
-	^ self projectManager cormasModel.
+	cormasModel := anObject
 ]
 
 { #category : #accessing }
@@ -121,74 +114,14 @@ CMR3SpacePresenter >> initializeCanvasInteractions [
 { #category : #initialization }
 CMR3SpacePresenter >> initializeDiagram [
 	" Private - Create the configured receiver's diagram "
+		
+	diagram := CMR3SpaceDiagramBuilder new
+		cormasModel: self cormasModel;
+		asPresenter.
+		
+	diagram owner: self.
+	self update.
 	
-	diagram := self
-		           instantiate: CMR3SpaceDiagram
-		           on: self cormasModel.
-	self initializeEvents.
-	
-]
-
-{ #category : #'initialization - menu' }
-CMR3SpacePresenter >> initializeDisplaysMenuToolbar [
-	" Private - See superimplementor's commen "
-
-	^ self newMenu
-		addGroup: [ : group | 
-			group
-				addItem: [ : item | 
-					item 
-						name: self translator tInfo;
-						subMenu: self subMenuForInfo ] ];
-		addGroup: [ : group | 
-			group
-				addItem: [ : item | 
-					item 
-						name: self translator tSpatialDelimitor;
-						subMenu: self subMenuForSpatialDelimitor ];
-			addItem: [ : item | 
-					item 
-						name: self translator tTime;
-						subMenu: self subMenuForTime ] ];
-		addGroup: [ : group | 
-			group
-				addItem: [ : item | 
-					item 
-						name: self translator tCellVsAggregates;
-						subMenu: self subMenuForCellVsAggregates ] ]
-]
-
-{ #category : #'initialization - menu' }
-CMR3SpacePresenter >> initializeEnvironmentMenuToolbar [
-	" Private - See superimplementor's commen "
-
-	^ self newMenu
-		addGroup: [ : group | 
-			group
-				addItem: [ : item | 
-					item 
-						name: self translator tNew;
-						subMenu: self subMenuForNew ];
-				addItem: [ : item | 
-					item 
-						name: self translator tLoad;
-						subMenu: self subMenuForLoad ] ];
-		addGroup: [ : group | 
-			group
-				addItem: [ : item | 
-					item 
-						name: self translator tModify;
-						subMenu: self subMenuForModify ];
-				addItem: [ : item | 
-					item 
-						name: self translator tReOpen;
-						action: [ self reOpen ] ] ];
-		addGroup: [ : group | 
-			group
-				addItem: [ : item | 
-					item 
-						name: self translator tClose;
-						action: [ self delete ] ] ]
 ]
 
 { #category : #initialization }
@@ -196,8 +129,17 @@ CMR3SpacePresenter >> initializeEvents [
 
 	self projectAnnouncer
 		when: CMSChangePoVAnnouncement 
-		send: #setAndRefreshActivePovs
-		to: self diagram.
+		do: [ self initializeDiagram ].
+		
+	self projectAnnouncer
+		when: CMTimeChangedAnnouncement
+		do: [ self initializeDiagram ].
+			
+	"self projectAnnouncer
+		when: CMSimulationInitializationAnnouncement
+		do: [ self timeChanged: 0 ]"
+		
+		
 
 ]
 
@@ -223,46 +165,11 @@ CMR3SpacePresenter >> initializeExportMenuToolbar [
 ]
 
 { #category : #'initialization - menu' }
-CMR3SpacePresenter >> initializeOptionMenuToolbar [
-	" Private - See superimplementor's commen "
-
-	^ self newMenu
-		addGroup: [ : group | 
-			group
-				addItem: [ : item | 
-					item 
-						name: self translator tUnmoveableZoom;
-						action: [  ] ];
-				addItem: [ : item | 
-					item 
-						name: self translator tMoveableZoom;
-						action: [  ] ] ];
-		addGroup: [ : group |
-			group
-				addItem: [ : item | 
-					item 
-						name: self translator tSetTrackLength;
-						action: [  ] ];
-				addItem: [ : item | 
-					item 
-						name: self translator tEnableUndoRedo;
-						action: [  ] ] ];
-		addGroup: [ : group | 
-			group
-				addItem: [ : item | 
-					item 
-						name: self translator tTouchpad;
-						action: [  ] ] ];
-		yourself
-
-]
-
-{ #category : #'initialization - menu' }
 CMR3SpacePresenter >> initializePOVMenuToolbar [
 	" Private - See superimplementor's commen "
 
 	| cormasModel |
-	cormasModel := self projectManager cormasModel.
+	cormasModel := self cormasModel.
 	^ self newMenu
 		addGroup: [ :group | 
 			cormasModel class socialClasses
@@ -295,8 +202,10 @@ CMR3SpacePresenter >> initializePresenters [
 	" Private - See superimplementor's comment "
 
 	menuToolbar := self mainMenuToolbar.
+	
 	self initializeDiagram.
-	self initializeCanvasInteractions
+	self initializeCanvasInteractions.
+	self initializeEvents.
 ]
 
 { #category : #'initialization - menu' }
@@ -337,20 +246,15 @@ CMR3SpacePresenter >> initializeToolsMenuToolbar [
 ]
 
 { #category : #initialization }
-CMR3SpacePresenter >> initializeWindow: w [
+CMR3SpacePresenter >> initializeWindow: aWindow [
 	" Private - This method is sent by the Spec2 Framework "
 
-	w 
+	aWindow 
 		title: self initializeWindowTitle;
 		initialExtent: 800 @ 500;
 		whenWillCloseDo: [
-			w isDisplayed
-				ifTrue: [ 
-					| clean |
-					'Space Presenter: Unsubscribing diagram before deleting presenter...' traceCr.
-					self diagram ifNotNil: [ : d | 
-						d unsubscribeListeners.
-						self projectAnnouncer unsubscribe: d ].
+			aWindow isDisplayed
+				ifTrue: [
 					self release.
 					self defer: [ 3 timesRepeat: [ Smalltalk garbageCollect ] ].
 				] ];
@@ -362,11 +266,13 @@ CMR3SpacePresenter >> initializeWindowTitle [
 
 	^ String streamContents: [ : stream |
 		stream
-			<< self formattedWindowTitle;
+			<< 'CORMAS';
+			<< ' - ';
+			<< self cormasModel class cormasModelName;
 			<< ' - ';
 			<< self translator tSpaceInterface;
 			space;
-			<< self spaceModel humanReadableString ].
+			<< self cormasModel spaceModel humanReadableString ].
 ]
 
 { #category : #'initialization - menu' }
@@ -425,35 +331,6 @@ CMR3SpacePresenter >> projectAnnouncer [
 	^ self cormasModel projectAnnouncer
 ]
 
-{ #category : #accessing }
-CMR3SpacePresenter >> projectManager [
-
-	^ projectManager
-]
-
-{ #category : #accessing }
-CMR3SpacePresenter >> projectManager: anObject [
-
-	projectManager := anObject
-]
-
-{ #category : #dependencies }
-CMR3SpacePresenter >> release [
-
-	menuToolbar := nil.
-	announcer := nil.
-	diagram := nil.
-	self projectManager: nil.
-	super release.
-]
-
-{ #category : #accessing }
-CMR3SpacePresenter >> spaceModel [
-	" Answer a <CMSpaceModel>, the receiver's model configured space "
-	
-	^ self cormasModel spaceModel
-]
-
 { #category : #private }
 CMR3SpacePresenter >> subMenuForClassPov: aClass [
 
@@ -462,36 +339,19 @@ CMR3SpacePresenter >> subMenuForClassPov: aClass [
 			group addItem: [ :item | 
 				item
 					name: povName selector;
-					action: [ self diagram setAndRefreshActivePovSelectorOf: aClass with: item name ] ] ] ]
-]
-
-{ #category : #private }
-CMR3SpacePresenter >> subMenuForLoad [
-	
-	^ MenuModel new
-]
-
-{ #category : #private }
-CMR3SpacePresenter >> subMenuForModify [
-
-	^ MenuModel new
-]
-
-{ #category : #private }
-CMR3SpacePresenter >> subMenuForNew [
-
-	^ self newMenu
-		addGroup: [ : group |
-			group 
-				addItem: [ : item | 				
-					item
-						name: self translator tGridSize;
-						action: [ self openDimensionChooser ] ] ]
+					action: [ 
+						self cormasModel spaceModel activePoVsDictionary at: aClass put: item name.
+						self initializeDiagram ] ] ] ]
 ]
 
 { #category : #accessing }
 CMR3SpacePresenter >> translator [
-	" Answer the receiver's <PFTranslator> "
 
-	^ self projectManager translator.
+	^ translator.
+]
+
+{ #category : #accessing }
+CMR3SpacePresenter >> translator: anObject [
+
+	translator := anObject
 ]
