@@ -63,7 +63,7 @@ CMR3SpaceAgentsBuilder >> mouseEnd: anEvent [
 	
 	oldPatch := agent patch.
 		
-	agent patch: (cell
+	agent moveTo: (cell
 		ifNotNil: [
 			self
 				animateMove: anEvent shape

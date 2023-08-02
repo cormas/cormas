@@ -116,11 +116,13 @@ CMR3SpacePresenter >> initializeCanvasInteractions [
 { #category : #initialization }
 CMR3SpacePresenter >> initializeDiagram [
 	" Private - Create the configured receiver's diagram "
-	
-	diagram := self
-		           instantiate: CMR3SpaceDiagram
-		           on: self cormasModel.
-	self initializeEvents.
+		
+	diagram := CMR3SpaceDiagramBuilder new
+		cormasModel: self cormasModel;
+		asPresenter.
+		
+	diagram owner: self.
+	self update.
 	
 ]
 
@@ -129,8 +131,17 @@ CMR3SpacePresenter >> initializeEvents [
 
 	self projectAnnouncer
 		when: CMSChangePoVAnnouncement 
-		send: #setAndRefreshActivePovs
-		to: self diagram.
+		do: [ self initializeDiagram ].
+		
+	self projectAnnouncer
+		when: CMTimeChangedAnnouncement
+		do: [ self initializeDiagram ].
+			
+	"self projectAnnouncer
+		when: CMSimulationInitializationAnnouncement
+		do: [ self timeChanged: 0 ]"
+		
+		
 
 ]
 
@@ -193,8 +204,10 @@ CMR3SpacePresenter >> initializePresenters [
 	" Private - See superimplementor's comment "
 
 	menuToolbar := self mainMenuToolbar.
+	
 	self initializeDiagram.
-	self initializeCanvasInteractions
+	self initializeCanvasInteractions.
+	self initializeEvents.
 ]
 
 { #category : #'initialization - menu' }
@@ -235,20 +248,15 @@ CMR3SpacePresenter >> initializeToolsMenuToolbar [
 ]
 
 { #category : #initialization }
-CMR3SpacePresenter >> initializeWindow: w [
+CMR3SpacePresenter >> initializeWindow: aWindow [
 	" Private - This method is sent by the Spec2 Framework "
 
-	w 
+	aWindow 
 		title: self initializeWindowTitle;
 		initialExtent: 800 @ 500;
 		whenWillCloseDo: [
-			w isDisplayed
-				ifTrue: [ 
-					| clean |
-					'Space Presenter: Unsubscribing diagram before deleting presenter...' traceCr.
-					self diagram ifNotNil: [ : d | 
-						d unsubscribeListeners.
-						self projectAnnouncer unsubscribe: d ].
+			aWindow isDisplayed
+				ifTrue: [
 					self release.
 					self defer: [ 3 timesRepeat: [ Smalltalk garbageCollect ] ].
 				] ];
@@ -333,16 +341,6 @@ CMR3SpacePresenter >> projectManager [
 CMR3SpacePresenter >> projectManager: anObject [
 
 	projectManager := anObject
-]
-
-{ #category : #dependencies }
-CMR3SpacePresenter >> release [
-
-	menuToolbar := nil.
-	announcer := nil.
-	diagram := nil.
-	self projectManager: nil.
-	super release.
 ]
 
 { #category : #accessing }
