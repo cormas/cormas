@@ -3,7 +3,6 @@ Class {
 	#superclass : #RSAbstractShapesBuilder,
 	#instVars : [
 		'diagramBuilder',
-		'activePoVsDictionary',
 		'masterShape'
 	],
 	#category : #'Cormas-UI-Roassal3-Space'
@@ -15,25 +14,6 @@ CMR3SpaceShapeBuilder class >> for: aBuilder [
 	^ self new
 		diagramBuilder: aBuilder;
 		yourself
-]
-
-{ #category : #accessing }
-CMR3SpaceShapeBuilder >> activePoVsDictionary [
-	" Each presenter could have customized PoV's. If this Dictionary is empty, we use the PoV's defined in the receiver's space model "
-
-	^ activePoVsDictionary ifNil: [ activePoVsDictionary := self defaultActivePoVs ]
-]
-
-{ #category : #'accessing - pov' }
-CMR3SpaceShapeBuilder >> activeSpatialEntityPov [
-	" Answer a <Symbol> representing the selector of the active PoV which is a Spatial Entity "
-	
-	| spatialEntitySelections |
-	
-	spatialEntitySelections := self activePoVsDictionary associationsSelect: [ : assoc | assoc key isKindOf: CMSpatialEntityElement class ].
-	^ spatialEntitySelections size = 1
-		ifTrue: [ spatialEntitySelections anyOne value ]
-		ifFalse: [ spatialEntitySelections ifEmpty: [ #pov ] ifNotEmpty: [ self error ] ]
 ]
 
 { #category : #'as yet unclassified' }
@@ -59,13 +39,6 @@ CMR3SpaceShapeBuilder >> createAdaptivePopup [
 			padding: 5;
 			yourself.
 		 ].
-]
-
-{ #category : #accessing }
-CMR3SpaceShapeBuilder >> defaultActivePoVs [
-	" Answer a <Dictionary> of receiver's model active points of view "
-	
-	^ diagramBuilder cormasModel spaceModel activePoVsDictionary
 ]
 
 { #category : #'as yet unclassified' }

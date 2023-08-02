@@ -31,6 +31,24 @@ CMR3SpaceDiagramBuilder class >> example [
 ]
 
 { #category : #accessing }
+CMR3SpaceDiagramBuilder >> activePoVsDictionary [
+
+	^ self cormasModel spaceModel activePoVsDictionary
+]
+
+{ #category : #'accessing - pov' }
+CMR3SpaceDiagramBuilder >> activeSpatialEntityPov [
+	" Answer a <Symbol> representing the selector of the active PoV which is a Spatial Entity "
+	
+	| spatialEntitySelections |
+	
+	spatialEntitySelections := self activePoVsDictionary associationsSelect: [ : assoc | assoc key isKindOf: CMSpatialEntityElement class ].
+	^ spatialEntitySelections size = 1
+		ifTrue: [ spatialEntitySelections anyOne value ]
+		ifFalse: [ spatialEntitySelections ifEmpty: [ #pov ] ifNotEmpty: [ self error ] ]
+]
+
+{ #category : #accessing }
 CMR3SpaceDiagramBuilder >> agentShapes [
 
 	^ agentsBuilder shapes

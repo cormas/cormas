@@ -351,7 +351,9 @@ CMR3SpacePresenter >> subMenuForClassPov: aClass [
 			group addItem: [ :item | 
 				item
 					name: povName selector;
-					action: [ self diagram setAndRefreshActivePovSelectorOf: aClass with: item name ] ] ] ]
+					action: [ 
+						self cormasModel spaceModel activePoVsDictionary at: aClass put: item name.
+						self initializeDiagram ] ] ] ]
 ]
 
 { #category : #accessing }

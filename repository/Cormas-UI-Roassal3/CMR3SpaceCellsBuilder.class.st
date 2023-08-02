@@ -35,7 +35,7 @@ CMR3SpaceCellsBuilder >> updateShape: aShape [
 	| model colorSymbolOrNumber |
 	model := aShape model.
 	
-	colorSymbolOrNumber := model perform: self activeSpatialEntityPov.
+	colorSymbolOrNumber := model perform: diagramBuilder activeSpatialEntityPov.
 
 	aShape color: (colorSymbolOrNumber asColorForPoVIn: model).
 ]
