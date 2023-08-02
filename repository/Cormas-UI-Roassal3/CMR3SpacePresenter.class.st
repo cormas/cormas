@@ -18,7 +18,8 @@ Class {
 	#traits : 'TCMUIUtils',
 	#classTraits : 'TCMUIUtils classTrait',
 	#instVars : [
-		'projectManager',
+		'cormasModel',
+		'translator',
 		'diagram',
 		'menuToolbar'
 	],
