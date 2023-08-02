@@ -73,11 +73,6 @@ CMR3SpacePresenter >> canvas [
 	^ self diagram canvas
 ]
 
-{ #category : #private }
-CMR3SpacePresenter >> closeAfterCreateProject [
-	^ true
-]
-
 { #category : #accessing }
 CMR3SpacePresenter >> cormasModel [
 	" Answer the receiver's <CMAbstractModel> "
@@ -129,68 +124,6 @@ CMR3SpacePresenter >> initializeDiagram [
 	
 ]
 
-{ #category : #'initialization - menu' }
-CMR3SpacePresenter >> initializeDisplaysMenuToolbar [
-	" Private - See superimplementor's commen "
-
-	^ self newMenu
-		addGroup: [ : group | 
-			group
-				addItem: [ : item | 
-					item 
-						name: self translator tInfo;
-						subMenu: self subMenuForInfo ] ];
-		addGroup: [ : group | 
-			group
-				addItem: [ : item | 
-					item 
-						name: self translator tSpatialDelimitor;
-						subMenu: self subMenuForSpatialDelimitor ];
-			addItem: [ : item | 
-					item 
-						name: self translator tTime;
-						subMenu: self subMenuForTime ] ];
-		addGroup: [ : group | 
-			group
-				addItem: [ : item | 
-					item 
-						name: self translator tCellVsAggregates;
-						subMenu: self subMenuForCellVsAggregates ] ]
-]
-
-{ #category : #'initialization - menu' }
-CMR3SpacePresenter >> initializeEnvironmentMenuToolbar [
-	" Private - See superimplementor's commen "
-
-	^ self newMenu
-		addGroup: [ : group | 
-			group
-				addItem: [ : item | 
-					item 
-						name: self translator tNew;
-						subMenu: self subMenuForNew ];
-				addItem: [ : item | 
-					item 
-						name: self translator tLoad;
-						subMenu: self subMenuForLoad ] ];
-		addGroup: [ : group | 
-			group
-				addItem: [ : item | 
-					item 
-						name: self translator tModify;
-						subMenu: self subMenuForModify ];
-				addItem: [ : item | 
-					item 
-						name: self translator tReOpen;
-						action: [ self reOpen ] ] ];
-		addGroup: [ : group | 
-			group
-				addItem: [ : item | 
-					item 
-						name: self translator tClose;
-						action: [ self delete ] ] ]
-]
-
 { #category : #initialization }
 CMR3SpacePresenter >> initializeEvents [
 
@@ -220,41 +153,6 @@ CMR3SpacePresenter >> initializeExportMenuToolbar [
 					name: 'PNG';
 					action: [ self exportSpaceWith: RSPNGExporter new ] ] ];
 			yourself
-]
-
-{ #category : #'initialization - menu' }
-CMR3SpacePresenter >> initializeOptionMenuToolbar [
-	" Private - See superimplementor's commen "
-
-	^ self newMenu
-		addGroup: [ : group | 
-			group
-				addItem: [ : item | 
-					item 
-						name: self translator tUnmoveableZoom;
-						action: [  ] ];
-				addItem: [ : item | 
-					item 
-						name: self translator tMoveableZoom;
-						action: [  ] ] ];
-		addGroup: [ : group |
-			group
-				addItem: [ : item | 
-					item 
-						name: self translator tSetTrackLength;
-						action: [  ] ];
-				addItem: [ : item | 
-					item 
-						name: self translator tEnableUndoRedo;
-						action: [  ] ] ];
-		addGroup: [ : group | 
-			group
-				addItem: [ : item | 
-					item 
-						name: self translator tTouchpad;
-						action: [  ] ] ];
-		yourself
-
 ]
 
 { #category : #'initialization - menu' }
@@ -463,30 +361,6 @@ CMR3SpacePresenter >> subMenuForClassPov: aClass [
 				item
 					name: povName selector;
 					action: [ self diagram setAndRefreshActivePovSelectorOf: aClass with: item name ] ] ] ]
-]
-
-{ #category : #private }
-CMR3SpacePresenter >> subMenuForLoad [
-	
-	^ MenuModel new
-]
-
-{ #category : #private }
-CMR3SpacePresenter >> subMenuForModify [
-
-	^ MenuModel new
-]
-
-{ #category : #private }
-CMR3SpacePresenter >> subMenuForNew [
-
-	^ self newMenu
-		addGroup: [ : group |
-			group 
-				addItem: [ : item | 				
-					item
-						name: self translator tGridSize;
-						action: [ self openDimensionChooser ] ] ]
 ]
 
 { #category : #accessing }
