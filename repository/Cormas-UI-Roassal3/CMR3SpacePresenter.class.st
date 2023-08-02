@@ -171,7 +171,7 @@ CMR3SpacePresenter >> initializePOVMenuToolbar [
 	" Private - See superimplementor's commen "
 
 	| cormasModel |
-	cormasModel := self projectManager cormasModel.
+	cormasModel := self cormasModel.
 	^ self newMenu
 		addGroup: [ :group | 
 			cormasModel class socialClasses
@@ -272,7 +272,7 @@ CMR3SpacePresenter >> initializeWindowTitle [
 			<< ' - ';
 			<< self translator tSpaceInterface;
 			space;
-			<< self spaceModel humanReadableString ].
+			<< self cormasModel spaceModel humanReadableString ].
 ]
 
 { #category : #'initialization - menu' }
@@ -341,13 +341,6 @@ CMR3SpacePresenter >> projectManager [
 CMR3SpacePresenter >> projectManager: anObject [
 
 	projectManager := anObject
-]
-
-{ #category : #accessing }
-CMR3SpacePresenter >> spaceModel [
-	" Answer a <CMSpaceModel>, the receiver's model configured space "
-	
-	^ self cormasModel spaceModel
 ]
 
 { #category : #private }
