@@ -105,6 +105,12 @@ CMR3SpaceShapeBuilder >> inspectEntity: anEvent [
 ]
 
 { #category : #accessing }
+CMR3SpaceShapeBuilder >> masterShape [
+
+	^ masterShape
+]
+
+{ #category : #accessing }
 CMR3SpaceShapeBuilder >> masterShape: aShape [
 
 	| popUp |
