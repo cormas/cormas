@@ -777,13 +777,6 @@ CMSpecSimulationWindow >> simulationManager [
 	^ self cormasModel simulationManager
 ]
 
-{ #category : #callbacks }
-CMSpecSimulationWindow >> spaceViewClass [
-	" Private - Answer a <Class> responsible to display simulations "
-
-	^ CMR3SpaceDiagram
-]
-
 { #category : #initialization }
 CMSpecSimulationWindow >> title [
 	" Private - See superimplementor's comment "
