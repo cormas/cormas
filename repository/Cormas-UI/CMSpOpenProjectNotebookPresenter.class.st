@@ -45,9 +45,9 @@ CMSpOpenProjectNotebookPresenter >> initializeProjectPanel [
 	"This will be initialised in fact on the first refresh"
 
 	notebookPanel
-		addPage: (infoPage := self newProjectInfoPage);
+		addPage: (infoPage := self newProjectInfoPage)";
 		addPage: (sourceCodePage := self newSourceCodePage);
-		addPage: (umlPage := self newUMLPage)		
+		addPage: (umlPage := self newUMLPage)"		
 	"	addPage: (resourcesPage := self newResourcesPage 
 			title: 'Resources';
 			presenterProvider: [ self resourcesPresenter ];"
@@ -71,50 +71,12 @@ CMSpOpenProjectNotebookPresenter >> newProjectInfoPage [
 ]
 
 { #category : #initialization }
-CMSpOpenProjectNotebookPresenter >> newSourceCodePage [
-
-	^ SpNotebookPage  
-		title: 'Source'
-		icon: (self iconNamed: #smallHierarchyBrowser)
-		provider: [ self projectSourcePresenter ]
-]
-
-{ #category : #initialization }
-CMSpOpenProjectNotebookPresenter >> newUMLPage [
-
-	^ SpNotebookPage  
-		title: 'UML'
-		icon: (self iconNamed: #morph)
-		provider: [ self projectUMLPresenter ]
-]
-
-{ #category : #initialization }
 CMSpOpenProjectNotebookPresenter >> projectInfoPresenter [
 
 	selectedModel ifNil: [ ^ self newEmpty ].
 	^ CMSpReadOnlyFormBuilder 
 		newBuiltFor: selectedModel infoDictionary
 		application: self application
-]
-
-{ #category : #initialization }
-CMSpOpenProjectNotebookPresenter >> projectSourcePresenter [
-	" Answer a <ComposablePresenter> to browse source code in the receiver's selected model "
-
-	selectedModel ifNil: [ ^ self newEmpty ].
-	selectedModel fileReference
-		ifNotNil: [ : fileRef | ^ CMExternalBrowser on: selectedModel fileReference ]
-		ifNil: [ self inform: 'Cannot preview the model' ]
-]
-
-{ #category : #initialization }
-CMSpOpenProjectNotebookPresenter >> projectUMLPresenter [
-	" Answer a <ComposablePresenter> to browse source code in the receiver's selected model "
-
-	selectedModel ifNil: [ ^ self newEmpty ].
-
-	^ CMR3UMLPresenter on: selectedModel
-
 ]
 
 { #category : #accessing }
