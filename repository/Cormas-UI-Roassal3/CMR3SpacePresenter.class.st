@@ -35,20 +35,12 @@ CMR3SpacePresenter class >> defaultSpec [
 ]
 
 { #category : #'instance creation' }
-CMR3SpacePresenter class >> for: aCMProjectManager [ 
-	" Answer a new instance of the receiver using aCMProjectManager as model "
-	
+CMR3SpacePresenter class >> openForModel: aCormasModel withTranslator: aTranslator [
+
 	^ self basicNew 
-		projectManager: aCMProjectManager;
+		cormasModel: aCormasModel;
+		translator: aTranslator;
 		initialize;
-		yourself
-]
-
-{ #category : #'instance creation' }
-CMR3SpacePresenter class >> openFor: aCMProjectManager [
-	" Create and open a new instance of the receiver, configuring its controller with aCMProjectManager"
-
-	^ (self for: aCMProjectManager)
 		openWithSpec;
 		yourself
 ]
@@ -75,9 +67,14 @@ CMR3SpacePresenter >> canvas [
 
 { #category : #accessing }
 CMR3SpacePresenter >> cormasModel [
-	" Answer the receiver's <CMAbstractModel> "
 
-	^ self projectManager cormasModel.
+	^ cormasModel
+]
+
+{ #category : #accessing }
+CMR3SpacePresenter >> cormasModel: anObject [
+
+	cormasModel := anObject
 ]
 
 { #category : #accessing }
@@ -268,7 +265,9 @@ CMR3SpacePresenter >> initializeWindowTitle [
 
 	^ String streamContents: [ : stream |
 		stream
-			<< self formattedWindowTitle;
+			<< 'CORMAS';
+			<< ' - ';
+			<< self cormasModel class cormasModelName;
 			<< ' - ';
 			<< self translator tSpaceInterface;
 			space;
@@ -331,18 +330,6 @@ CMR3SpacePresenter >> projectAnnouncer [
 	^ self cormasModel projectAnnouncer
 ]
 
-{ #category : #accessing }
-CMR3SpacePresenter >> projectManager [
-
-	^ projectManager
-]
-
-{ #category : #accessing }
-CMR3SpacePresenter >> projectManager: anObject [
-
-	projectManager := anObject
-]
-
 { #category : #private }
 CMR3SpacePresenter >> subMenuForClassPov: aClass [
 
@@ -358,7 +345,12 @@ CMR3SpacePresenter >> subMenuForClassPov: aClass [
 
 { #category : #accessing }
 CMR3SpacePresenter >> translator [
-	" Answer the receiver's <PFTranslator> "
 
-	^ self projectManager translator.
+	^ translator.
+]
+
+{ #category : #accessing }
+CMR3SpacePresenter >> translator: anObject [
+
+	translator := anObject
 ]
