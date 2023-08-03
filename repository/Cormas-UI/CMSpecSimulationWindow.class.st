@@ -105,7 +105,7 @@ CMSpecSimulationWindow class >> example [
 	<example>
 	^ self basicNew 
 		projectManager: CMProjectManager new;
-		translator: (CMTranslator newForLanguage: #EN);
+		translator: CMEnglishTranslator new;
 		initialize;
 		openWithSpec
 ]

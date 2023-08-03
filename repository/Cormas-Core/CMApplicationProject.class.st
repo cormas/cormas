@@ -202,16 +202,16 @@ CMApplicationProject >> defaultProjectClass [
 ]
 
 { #category : #accessing }
-CMApplicationProject >> defaultTranslatorClass [
-	" Answer the default translation class for the receiver "
-
-	^ CMTranslator
-]
-
-{ #category : #accessing }
 CMApplicationProject >> gitBridge [
 	^ resourceLocator
 		ifNil: [ resourceLocator := CMGitBridge new ]
+]
+
+{ #category : #initialization }
+CMApplicationProject >> initialize [
+
+	super initialize.
+	translator := CMEnglishTranslator new.
 ]
 
 { #category : #accessing }
@@ -239,4 +239,10 @@ CMApplicationProject >> terminateAllProcesses [
 	processRun
 		ifNotNil: [ processRun terminate.
 			processRun := nil ]
+]
+
+{ #category : #accessing }
+CMApplicationProject >> translator [
+
+	^ translator
 ]

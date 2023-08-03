@@ -5,6 +5,12 @@ Class {
 }
 
 { #category : #translations }
+CMEnglishTranslator >> tAbout [
+
+	^ 'About'
+]
+
+{ #category : #translations }
 CMEnglishTranslator >> tAboutModel [
 
 	^ 'About this model'
@@ -377,6 +383,12 @@ CMEnglishTranslator >> tExplore [
 ]
 
 { #category : #translations }
+CMEnglishTranslator >> tFile [
+
+	^ 'File'
+]
+
+{ #category : #translations }
 CMEnglishTranslator >> tFillArray [
 
 	^ 'Fill the Array with values'
@@ -641,6 +653,12 @@ CMEnglishTranslator >> tNetworkNodeHelp [
 ]
 
 { #category : #translations }
+CMEnglishTranslator >> tNew [
+
+	^ 'New'
+]
+
+{ #category : #translations }
 CMEnglishTranslator >> tNewEntity [
 
 	^ 'New Entity'
@@ -740,6 +758,12 @@ CMEnglishTranslator >> tObserver [
 CMEnglishTranslator >> tOk [
 
 	^ 'Ok'
+]
+
+{ #category : #translations }
+CMEnglishTranslator >> tOpen [
+
+	^ 'Open'
 ]
 
 { #category : #translations }
@@ -866,6 +890,12 @@ CMEnglishTranslator >> tProperties [
 CMEnglishTranslator >> tQuerySaveProject [
 
 	^ 'Project was changed, do you want to save?'
+]
+
+{ #category : #translations }
+CMEnglishTranslator >> tQuit [
+
+	^ 'Quit'
 ]
 
 { #category : #translations }

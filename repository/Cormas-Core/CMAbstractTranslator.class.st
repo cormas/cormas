@@ -5,6 +5,12 @@ Class {
 }
 
 { #category : #translations }
+CMAbstractTranslator >> tAbout [
+
+	self subclassResponsibility
+]
+
+{ #category : #translations }
 CMAbstractTranslator >> tAboutModel [
 
 	self subclassResponsibility
@@ -377,6 +383,12 @@ CMAbstractTranslator >> tExplore [
 ]
 
 { #category : #translations }
+CMAbstractTranslator >> tFile [
+
+	self subclassResponsibility
+]
+
+{ #category : #translations }
 CMAbstractTranslator >> tFillArray [
 
 	self subclassResponsibility
@@ -641,6 +653,12 @@ CMAbstractTranslator >> tNetworkNodeHelp [
 ]
 
 { #category : #translations }
+CMAbstractTranslator >> tNew [
+
+	self subclassResponsibility
+]
+
+{ #category : #translations }
 CMAbstractTranslator >> tNewEntity [
 
 	self subclassResponsibility
@@ -738,6 +756,12 @@ CMAbstractTranslator >> tObserver [
 
 { #category : #translations }
 CMAbstractTranslator >> tOk [
+
+	self subclassResponsibility
+]
+
+{ #category : #translations }
+CMAbstractTranslator >> tOpen [
 
 	self subclassResponsibility
 ]
@@ -864,6 +888,12 @@ CMAbstractTranslator >> tProperties [
 
 { #category : #translations }
 CMAbstractTranslator >> tQuerySaveProject [
+
+	self subclassResponsibility
+]
+
+{ #category : #translations }
+CMAbstractTranslator >> tQuit [
 
 	self subclassResponsibility
 ]
