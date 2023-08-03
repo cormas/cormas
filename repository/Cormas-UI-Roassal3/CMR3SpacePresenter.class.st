@@ -15,8 +15,6 @@ Instance Variables
 Class {
 	#name : #CMR3SpacePresenter,
 	#superclass : #SpPresenter,
-	#traits : 'TCMUIUtils',
-	#classTraits : 'TCMUIUtils classTrait',
 	#instVars : [
 		'cormasModel',
 		'translator',
