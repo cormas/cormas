@@ -14,7 +14,7 @@ CormasUITest >> newProjectManagerWithInitializedUIOnModel: modelName [
 
 	project := self projectWindow projectManager.
 	self simulationWindow
-		translator: (CMTranslator newForLanguage: #EN);
+		translator: CMEnglishTranslator new;
 		initialize.
 	project openModel: modelName.
 	project cormasModel initializeSimulation.

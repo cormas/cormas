@@ -45,13 +45,13 @@ CMApplicationProjectTest >> testDefaultProjectClass [
 ]
 
 { #category : #test }
-CMApplicationProjectTest >> testDefaultTranslatorClass [
-
-	self assert: self application defaultTranslatorClass equals: CMTranslator.
-]
-
-{ #category : #test }
 CMApplicationProjectTest >> testGitBridge [
 
 	self assert: (self application gitBridge isKindOf: CMGitBridge)
+]
+
+{ #category : #test }
+CMApplicationProjectTest >> testTranslator [
+
+	self assert: (application translator isKindOf: CMAbstractTranslator)
 ]

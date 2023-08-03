@@ -29,7 +29,7 @@ CMSpecStepMethodChoice class >> example [
 
 	^ self basicNew 
 		projectManager: (CMProjectManager new projectWindow: self);
-		translator: (CMTranslator newForLanguage: #EN);
+		translator: CMEnglishTranslator new;
 		initialize;
 		openWithSpec
 ]
