@@ -311,17 +311,6 @@ CMSpecProjectWindow >> initializeWidgets [
 
 ]
 
-{ #category : #'as yet unclassified' }
-CMSpecProjectWindow >> intializeHelpSubMenu: group [
-
-	group
-		addItem: [ : item | 
-			item
-				name: self translator tHelp;
-				icon: (self iconNamed: #helpIcon);
-				subMenu: self subMenuForHelp ]
-]
-
 { #category : #'initialization-submenus' }
 CMSpecProjectWindow >> intializeToolsSubMenu: group [
 
