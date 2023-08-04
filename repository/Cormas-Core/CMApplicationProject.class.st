@@ -223,3 +223,9 @@ CMApplicationProject >> translator [
 
 	^ translator
 ]
+
+{ #category : #accessing }
+CMApplicationProject >> translator: anObject [
+
+	translator := anObject
+]

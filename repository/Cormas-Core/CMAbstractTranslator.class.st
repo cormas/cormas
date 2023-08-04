@@ -524,6 +524,12 @@ CMAbstractTranslator >> tInvalidName [
 ]
 
 { #category : #translations }
+CMAbstractTranslator >> tLanguage [
+
+	self subclassResponsibility
+]
+
+{ #category : #translations }
 CMAbstractTranslator >> tLocalImage [
 
 	self subclassResponsibility

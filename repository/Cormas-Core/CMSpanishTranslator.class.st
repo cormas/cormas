@@ -515,6 +515,12 @@ CMSpanishTranslator >> tInvalidName [
 ]
 
 { #category : #translations }
+CMSpanishTranslator >> tLanguage [
+
+	^ 'Idioma'
+]
+
+{ #category : #translations }
 CMSpanishTranslator >> tLocalImage [
 
 	^ 'Imagen local'

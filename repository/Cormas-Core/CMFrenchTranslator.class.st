@@ -515,6 +515,12 @@ CMFrenchTranslator >> tInvalidName [
 ]
 
 { #category : #translations }
+CMFrenchTranslator >> tLanguage [
+
+	^ 'Langue'
+]
+
+{ #category : #translations }
 CMFrenchTranslator >> tLocalImage [
 
 	^ 'Image locale'
