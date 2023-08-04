@@ -46,8 +46,6 @@ CMSpecProjectWindow class >> open [
 	CMApplicationProject release.
 	PFProjectSettings currentApplicationClass: CMApplicationProject.
 	
-	" Rebuild translator table "
-	CMApplicationProject uniqueInstance translator: nil.		
 	win := self new 
 		openWithSpec;
 		startFSM;
