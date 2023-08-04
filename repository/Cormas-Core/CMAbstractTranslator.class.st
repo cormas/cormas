@@ -4,6 +4,15 @@ Class {
 	#category : #'Cormas-Core-Project'
 }
 
+{ #category : #'as yet unclassified' }
+CMAbstractTranslator class >> languageName [
+
+	| className |
+	className := self name.
+	
+	^ className copyFrom: 3 to: (className size - 10).
+]
+
 { #category : #translations }
 CMAbstractTranslator >> tAbout [
 
