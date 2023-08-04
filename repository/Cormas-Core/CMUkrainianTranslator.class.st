@@ -515,6 +515,12 @@ CMUkrainianTranslator >> tInvalidName [
 ]
 
 { #category : #translations }
+CMUkrainianTranslator >> tLanguage [
+
+	^ 'Mова'
+]
+
+{ #category : #translations }
 CMUkrainianTranslator >> tLocalImage [
 
 	^ 'Локальне зображення'

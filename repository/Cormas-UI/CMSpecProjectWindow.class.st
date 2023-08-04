@@ -218,6 +218,17 @@ CMSpecProjectWindow >> initializeButtonToolbar [
 ]
 
 { #category : #'initialization-submenus' }
+CMSpecProjectWindow >> initializeHelpSubMenu: group [
+
+	group
+		addItem: [ : item | 
+			item
+				name: self translator tHelp;
+				icon: (self iconNamed: #helpIcon);
+				subMenu: self subMenuForHelp ]
+]
+
+{ #category : #'initialization-submenus' }
 CMSpecProjectWindow >> initializeMenuToolbar [
 	" Private - See superimplementor's commen "
 
@@ -228,7 +239,7 @@ CMSpecProjectWindow >> initializeMenuToolbar [
 			self initializeVisualizationSubMenu: group.
 			self initializeSimulationSubMenu: group.
 			self intializeToolsSubMenu: group.
-			self initializeHelpMenu: group ];
+			self initializeHelpSubMenu: group ];
 		addGroup: [ : group |
 			"self initializeFileToolbarButtons: group.			"
 			self initializeActionsButtons: group ].
@@ -868,6 +879,7 @@ CMSpecProjectWindow >> subMenuForHelp [
 				addItem: [ :item | self subMenuAboutThisModel: item ];
 				addItem: [ :item | self subMenuHowToRunThisModel: item ];
 				addItem: [ :item | self subMenuChangeModelComments: item ];
+				addItem: [ :item | self subMenuLanguage: item ];
 				addItem: [ :item | self subMenuAbout: item ]]
 ]
 
@@ -994,6 +1006,30 @@ CMSpecProjectWindow >> subMenuHowToRunThisModel: anItem [
 "		icon: Smalltalk ui icons openIcon;"
 		shortcut: $R command;
 		action: [ self openHelpHowToRunModel ]
+]
+
+{ #category : #'submenu-help' }
+CMSpecProjectWindow >> subMenuItem: item forTranslator: aTranslatorClass [
+	
+	item
+		name: aTranslatorClass languageName;
+		action: [ self projectManager application translator: aTranslatorClass new ]
+]
+
+{ #category : #'submenu-help' }
+CMSpecProjectWindow >> subMenuLanguage [
+	^ MenuModel new
+		addGroup: [ :group | 
+			CMAbstractTranslator subclasses do: [ :translatorClass |
+				group addItem: [ :item | self subMenuItem: item forTranslator: translatorClass ] ] ]
+]
+
+{ #category : #'submenu-help' }
+CMSpecProjectWindow >> subMenuLanguage: item [
+
+	item
+		name: self translator tLanguage;
+		subMenu: self subMenuLanguage
 ]
 
 { #category : #'submenu-tools-developer' }

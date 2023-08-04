@@ -515,6 +515,12 @@ CMNorwegianTranslator >> tInvalidName [
 ]
 
 { #category : #translations }
+CMNorwegianTranslator >> tLanguage [
+
+	^ 'Språk'
+]
+
+{ #category : #translations }
 CMNorwegianTranslator >> tLocalImage [
 
 	^ 'Lokalt bilde'
