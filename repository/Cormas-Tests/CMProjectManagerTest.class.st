@@ -202,3 +202,9 @@ CMProjectManagerTest >> testProjectClass [
 
 	self assert: self projectManager projectClass equals: CMProjectModel
 ]
+
+{ #category : #test }
+CMProjectManagerTest >> testTranslator [
+
+	self assert: (projectManager translator isKindOf: CMAbstractTranslator)
+]
