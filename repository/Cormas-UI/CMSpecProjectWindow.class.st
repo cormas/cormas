@@ -218,6 +218,17 @@ CMSpecProjectWindow >> initializeButtonToolbar [
 ]
 
 { #category : #'initialization-submenus' }
+CMSpecProjectWindow >> initializeHelpSubMenu: group [
+
+	group
+		addItem: [ : item | 
+			item
+				name: self translator tHelp;
+				icon: (self iconNamed: #helpIcon);
+				subMenu: self subMenuForHelp ]
+]
+
+{ #category : #'initialization-submenus' }
 CMSpecProjectWindow >> initializeMenuToolbar [
 	" Private - See superimplementor's commen "
 
@@ -228,7 +239,7 @@ CMSpecProjectWindow >> initializeMenuToolbar [
 			self initializeVisualizationSubMenu: group.
 			self initializeSimulationSubMenu: group.
 			self intializeToolsSubMenu: group.
-			self initializeHelpMenu: group ];
+			self initializeHelpSubMenu: group ];
 		addGroup: [ : group |
 			"self initializeFileToolbarButtons: group.			"
 			self initializeActionsButtons: group ].
@@ -298,6 +309,17 @@ CMSpecProjectWindow >> initializeWidgets [
 		owner: self;
 		yourself)
 
+]
+
+{ #category : #'as yet unclassified' }
+CMSpecProjectWindow >> intializeHelpSubMenu: group [
+
+	group
+		addItem: [ : item | 
+			item
+				name: self translator tHelp;
+				icon: (self iconNamed: #helpIcon);
+				subMenu: self subMenuForHelp ]
 ]
 
 { #category : #'initialization-submenus' }
