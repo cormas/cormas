@@ -26,13 +26,6 @@ Class {
 }
 
 { #category : #accessing }
-CMApplicationProject class >> applicationExtension [
-	" See comment in #applicationExtension "
-
-	^ 'zip'
-]
-
-{ #category : #accessing }
 CMApplicationProject class >> applicationName [
 	" Answer a <String> with receiver's name "
 	
@@ -46,13 +39,6 @@ CMApplicationProject class >> applicationVersion [
 	^ GRVersion major: 0 minor: 1 revision: 0
 ]
 
-{ #category : #accessing }
-CMApplicationProject class >> baseDirectory [
-	" Answer a <FileReference> with the directory of CORMAS where projects and settings are located "
-
-	^ (FileLocator home / 'CORMAS') asFileReference
-]
-
 { #category : #about }
 CMApplicationProject class >> contributors [
 
@@ -63,22 +49,13 @@ CMApplicationProject class >> contributors [
 			<< self developerNames ]
 ]
 
-{ #category : #callbacks }
-CMApplicationProject class >> cormasRepository [
-	" Answer the receiver's CORMAS Iceberg repository  "
-
-	^ IceLibgitRepository registry 
-		detect: [ : repo | repo name asLowercase = 'cormas' ]
-		ifNone: [ nil ]
-]
-
 { #category : #accessing }
 CMApplicationProject class >> createUserDirectories [
 	" Create directories for storing CORMAS files in this system "
 
-	self baseDirectory ensureCreateDirectory.
+	CMGitBridge baseDirectory ensureCreateDirectory.
 	#(#demosPath #userProjectsPath #preferencesPath) 
-		do: [ : pathSym | (CMGitBridge perform: pathSym) ensureCreateDirectory ]
+		do: [ :pathSym | (CMGitBridge perform: pathSym) ensureCreateDirectory ]
 ]
 
 { #category : #about }
@@ -116,7 +93,7 @@ CMApplicationProject class >> downloadString [
 CMApplicationProject class >> hasUserProjects [
 	" Answer <true> if this system already has a directory where CORMAS projects and preferences were created "
 
-	^ self baseDirectory exists and: [
+	^ CMGitBridge baseDirectory exists and: [
 		CMGitBridge demosPath exists and: [
 			CMGitBridge demosPath hasFiles and: [ 
 				CMGitBridge demosPath children anySatisfy: #isZipFile ] ] ]
@@ -156,19 +133,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 { #category : #accessing }
 CMApplicationProject class >> removeUserDirectories [
 
-	self baseDirectory exists
+	CMGitBridge baseDirectory exists
 		ifFalse: [ ^ self ].
-	(self confirm: 'Warning: You are about to remove all directories and files under ' , self baseDirectory fullName)
-		ifTrue: [ self baseDirectory deleteAll ].
+	(self confirm: 'Warning: You are about to remove all directories and files under ' , CMGitBridge baseDirectory fullName)
+		ifTrue: [ CMGitBridge baseDirectory deleteAll ].
 
 ]
 
 { #category : #accessing }
 CMApplicationProject class >> removeUserDirectoriesNoConfirmation [
 
-	self baseDirectory
+	CMGitBridge baseDirectory
 		ifFalse: [ ^ self ].
-	self baseDirectory deleteAll.
+	CMGitBridge baseDirectory deleteAll.
 
 ]
 

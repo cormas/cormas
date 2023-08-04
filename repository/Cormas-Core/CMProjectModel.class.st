@@ -91,7 +91,7 @@ CMProjectModel class >> forProjectFile: aCormasProjectFileReference [
 CMProjectModel class >> projectFileExtension [
 	" Answer a <String> with the receiver's file extension "
 
-	^ CMApplicationProject applicationExtension
+	^ CMGitBridge applicationExtension
 ]
 
 { #category : #callbacks }

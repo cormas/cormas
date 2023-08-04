@@ -109,13 +109,6 @@ CMProjectBuilder >> cormasProject: anObject [
 	cormasProject := anObject
 ]
 
-{ #category : #'accessing - unloading' }
-CMProjectBuilder >> cormasRepository [
-	" Answer the receiver's CORMAS Iceberg repository  "
-
-	^ CMApplicationProject cormasRepository
-]
-
 { #category : #defaults }
 CMProjectBuilder >> defaultDestinationPath [
 	" Private - By default the destination path it is the user projects directory "
@@ -176,7 +169,7 @@ CMProjectBuilder >> isModelLoaded: aPackageName [
 	
 	^ (IcePackage 
 		named: aPackageName 
-		repository: self cormasRepository)
+		repository: CMGitBridge cormasRepository)
 			ifNotNil: #isLoaded
 			ifNil: [ false ]
 ]

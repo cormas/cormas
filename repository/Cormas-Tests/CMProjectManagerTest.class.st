@@ -46,7 +46,7 @@ CMProjectManagerTest >> tearDown [
 CMProjectManagerTest >> testApplicationExtension [
 
 	self assert: (self projectManager applicationExtension isKindOf: String).
-	self assert: self projectManager applicationExtension equals: CMApplicationProject applicationExtension.
+	self assert: self projectManager applicationExtension equals: CMGitBridge applicationExtension.
 ]
 
 { #category : #test }

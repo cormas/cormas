@@ -20,6 +20,12 @@ Class {
 	#category : #'Cormas-Core-Kernel'
 }
 
+{ #category : #accessing }
+CMGitBridge class >> applicationExtension [
+
+	^ 'zip'
+]
+
 { #category : #public }
 CMGitBridge class >> assetsFilesDirectoryName [
 	" Answe a <String> with the name of the directoy where CORMAS resources are found "
@@ -39,16 +45,32 @@ CMGitBridge class >> assetsPath [
 ]
 
 { #category : #accessing }
+CMGitBridge class >> baseDirectory [
+	" Answer a <FileReference> with the directory of CORMAS where projects and settings are located "
+
+	^ (FileLocator home / 'CORMAS') asFileReference
+]
+
+{ #category : #accessing }
 CMGitBridge class >> cormasHomeProjects [
 
-	^ (FileLocator home / 'CORMAS') allChildrenMatching: CMApplicationProject applicationExtension.
+	^ (FileLocator home / 'CORMAS') allChildrenMatching: self applicationExtension.
+]
+
+{ #category : #callbacks }
+CMGitBridge class >> cormasRepository [
+	" Answer the receiver's CORMAS Iceberg repository  "
+
+	^ IceLibgitRepository registry 
+		detect: [ :repo | repo name asLowercase = 'cormas' ]
+		ifNone: [ nil ]
 ]
 
 { #category : #accessing }
 CMGitBridge class >> cormasUserProjects [
 	" Answer a <Collection> of <FileReference> each one representing a user defined project in the CORMAS directory for projects "
 
-	^ self userProjectsPath allChildrenMatching: '*' , CMApplicationProject applicationExtension.
+	^ self userProjectsPath allChildrenMatching: '*' , self applicationExtension.
 ]
 
 { #category : #accessing }
@@ -56,7 +78,7 @@ CMGitBridge class >> demosPath [
 	" Answer a <FileReference> with the receiver's path to the demos directory.
 	For ex: aFileReference on: /Users/<username>/CORMAS/demos "
 
-	^ CMApplicationProject baseDirectory / 'demos'
+	^ self baseDirectory / 'demos'
 ]
 
 { #category : #accessing }
@@ -75,7 +97,7 @@ CMGitBridge class >> initialize [
 CMGitBridge class >> preferencesPath [
 	" Answer a <FileReference> with the receiver's path to the preferences directory "
 
-	^ CMApplicationProject baseDirectory / 'preferences'
+	^ self baseDirectory / 'preferences'
 ]
 
 { #category : #accessing }
@@ -98,7 +120,7 @@ CMGitBridge class >> resourceSelectors [
 CMGitBridge class >> userProjectsPath [
 	" Answer a <FileReference> with the receiver's path to the user projects directory "
 
-	^ CMApplicationProject baseDirectory / 'projects'
+	^ self baseDirectory / 'projects'
 ]
 
 { #category : #public }
