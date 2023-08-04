@@ -5,6 +5,12 @@ Class {
 }
 
 { #category : #translations }
+CMSpanishTranslator >> tAbout [
+
+	^ 'Acerca de'
+]
+
+{ #category : #translations }
 CMSpanishTranslator >> tAboutModel [
 
 	^ 'Sobre este modelo'
@@ -155,6 +161,12 @@ CMSpanishTranslator >> tChooseStFile [
 ]
 
 { #category : #translations }
+CMSpanishTranslator >> tChooseTokenColor [
+
+	^ 'Elegir el color del token'
+]
+
+{ #category : #translations }
 CMSpanishTranslator >> tClassifyByParams [
 
 	^ 'Classify by parameters'
@@ -247,7 +259,13 @@ CMSpanishTranslator >> tCrossSensAnalysis [
 { #category : #translations }
 CMSpanishTranslator >> tCrossedPredefValues [
 
-	^ 'Predefinido por lista de valores'
+	^ 'Cruzados predefinido por lista de valores'
+]
+
+{ #category : #translations }
+CMSpanishTranslator >> tCrossedSeqValues [
+
+	^ 'Valores secuenciales cruzados'
 ]
 
 { #category : #translations }
@@ -362,6 +380,12 @@ CMSpanishTranslator >> tEntities [
 CMSpanishTranslator >> tExplore [
 
 	^ 'Explorar'
+]
+
+{ #category : #translations }
+CMSpanishTranslator >> tFile [
+
+	^ 'Archivo'
 ]
 
 { #category : #translations }
@@ -629,6 +653,12 @@ CMSpanishTranslator >> tNetworkNodeHelp [
 ]
 
 { #category : #translations }
+CMSpanishTranslator >> tNew [
+
+	^ 'Nuevo'
+]
+
+{ #category : #translations }
 CMSpanishTranslator >> tNewEntity [
 
 	^ 'Nueva Entidad'
@@ -728,6 +758,12 @@ CMSpanishTranslator >> tObserver [
 CMSpanishTranslator >> tOk [
 
 	^ 'Aceptar'
+]
+
+{ #category : #translations }
+CMSpanishTranslator >> tOpen [
+
+	^ 'Abrir'
 ]
 
 { #category : #translations }
@@ -854,6 +890,12 @@ CMSpanishTranslator >> tProperties [
 CMSpanishTranslator >> tQuerySaveProject [
 
 	^ 'El proyecto fue modificado. ¿Desea guardarlo?'
+]
+
+{ #category : #translations }
+CMSpanishTranslator >> tQuit [
+
+	^ 'Salir'
 ]
 
 { #category : #translations }

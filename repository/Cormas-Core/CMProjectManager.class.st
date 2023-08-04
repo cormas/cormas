@@ -34,7 +34,7 @@ CMProjectManager >> applicationClass [
 CMProjectManager >> applicationExtension [
 	" See comment in #applicationExtension "
 
-	^ self applicationClass applicationExtension  
+	^ CMGitBridge applicationExtension  
 ]
 
 { #category : #callbacks }
@@ -146,13 +146,6 @@ CMProjectManager >> cormasProjectName [
 	" Answer a <String> which is a Cormas model name "
 
 	^ self currentProject userProvidedName
-]
-
-{ #category : #callbacks }
-CMProjectManager >> cormasRepository [
-	" See comment in CMApplicationProject "
-
-	^ CMApplicationProject cormasRepository
 ]
 
 { #category : #accessing }
@@ -278,7 +271,7 @@ CMProjectManager >> doPostCloseActions [
 
 	self flag: #toReview.
 	Cursor wait showWhile: [
-		self cormasRepository ifNotNil: [ : cormasRepo |
+		CMGitBridge cormasRepository ifNotNil: [ : cormasRepo |
 			| icePackage |
 			icePackage := IcePackage named: self cormasModelClass package name repository: cormasRepo.
 			self announcer unsubscribe: self currentProject.

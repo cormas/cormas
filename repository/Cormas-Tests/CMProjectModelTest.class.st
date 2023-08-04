@@ -206,6 +206,12 @@ CMProjectModelTest >> testStoredSimulations [
 	"self assert: self projectModel storedSimulations isEmpty"
 ]
 
+{ #category : #tests }
+CMProjectModelTest >> testTranslator [
+
+	self assert: (projectModel translator isKindOf: CMAbstractTranslator)
+]
+
 { #category : #test }
 CMProjectModelTest >> testUserProvidedName [
 

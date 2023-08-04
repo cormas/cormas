@@ -46,7 +46,7 @@ CMProjectManagerTest >> tearDown [
 CMProjectManagerTest >> testApplicationExtension [
 
 	self assert: (self projectManager applicationExtension isKindOf: String).
-	self assert: self projectManager applicationExtension equals: CMApplicationProject applicationExtension.
+	self assert: self projectManager applicationExtension equals: CMGitBridge applicationExtension.
 ]
 
 { #category : #test }
@@ -201,4 +201,10 @@ CMProjectManagerTest >> testModelProbesMethods [
 CMProjectManagerTest >> testProjectClass [
 
 	self assert: self projectManager projectClass equals: CMProjectModel
+]
+
+{ #category : #test }
+CMProjectManagerTest >> testTranslator [
+
+	self assert: (projectManager translator isKindOf: CMAbstractTranslator)
 ]
