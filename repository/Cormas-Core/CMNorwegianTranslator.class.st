@@ -677,6 +677,12 @@ CMNorwegianTranslator >> tNewProjectName [
 ]
 
 { #category : #translations }
+CMNorwegianTranslator >> tNoStoredSim [
+
+	^ '"Dump"-katalogen inneholder ikke lagrede simuleringer.'
+]
+
+{ #category : #translations }
 CMNorwegianTranslator >> tNoStoredSimFolder [
 
 	^ ' katalogen inneholder ikke lagrede simuleringer'
