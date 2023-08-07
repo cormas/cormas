@@ -427,21 +427,21 @@ cell2   <SpatialEntityElement> "
 			lastCell := cell1.
 			invert := true].
 	cells := OrderedCollection new.
-	firstCell numCol < lastCell numCol
+	firstCell columnNumber < lastCell columnNumber
 		ifTrue:
-			[firstCell numLine
-				to: lastCell numLine
+			[firstCell rowNumber
+				to: lastCell rowNumber
 				do: [:i | cells addAll: (self cellsOfLine: i)]]
 		ifFalse:
-			[firstCell numLine
-				to: lastCell numLine
+			[firstCell rowNumber
+				to: lastCell rowNumber
 				do: [:i | cells addAll: (self cellsOfLine: i) reverse]].
 	cells := cells
 		select:
 			[:c | 
-			c numCol
-				between: (firstCell numCol min: lastCell numCol)
-				and: (firstCell numCol max: lastCell numCol)].
+			c columnNumber
+				between: (firstCell columnNumber min: lastCell columnNumber)
+				and: (firstCell columnNumber max: lastCell columnNumber)].
 	invert ifTrue: [cells := cells reverse].
 	^cells
 ]
@@ -451,7 +451,7 @@ CMSpaceModel >> cellsOfColumn: colNumber [
 	"Return the cells in the colNumber of the spatial grid.
 colNumber   <Integer> colNumber = Positive Integer"
 
-	^ self elementaryEntities select: [ :cell | cell numCol = colNumber ]
+	^ self elementaryEntities select: [ :cell | cell columnNumber = colNumber ]
 ]
 
 { #category : #'ESE (regular) - special locations' }
@@ -459,7 +459,7 @@ CMSpaceModel >> cellsOfLine: lineNumber [
 	" Answer a <Collection> of <> cells in the lineNumber of the spatial grid.
 	lineNumber   <Integer> lineNumber = Positive Integer"
 
-	^ self elementaryEntities select: [ :cell | cell numLine = lineNumber ]
+	^ self elementaryEntities select: [ :cell | cell rowNumber = lineNumber ]
 ]
 
 { #category : #'ESE (regular) - special locations' }
@@ -784,8 +784,8 @@ CMSpaceModel >> distanceFromCell: cell1 toCell: cell2 [
 	"return the distance in number of cells (also known as Manhattan distance)"
 
 	| nbLines nbCols |
-	nbLines := (cell1 numLine - cell2 numLine) abs.
-	nbCols := (cell1 numCol - cell2 numCol) abs.
+	nbLines := (cell1 rowNumber - cell2 rowNumber) abs.
+	nbCols := (cell1 columnNumber - cell2 columnNumber) abs.
 	self isNotTorroidal
 		ifFalse: [ nbLines > (self line - 2)
 				ifTrue: [ nbLines := nbLines - self line + 2 ].
@@ -804,8 +804,8 @@ CMSpaceModel >> distanceFromHexagonalCell: cell1 toCell: cell2 [
 	self flag: #toReview.
 	self nbNeighbours = 6
 		ifFalse: [ self halt ].
-	nbLines := (cell1 numLine - cell2 numLine) abs.
-	nbCols := (cell1 numCol - cell2 numCol) abs.
+	nbLines := (cell1 rowNumber - cell2 rowNumber) abs.
+	nbCols := (cell1 columnNumber - cell2 columnNumber) abs.
 	self isNotTorroidal
 		ifFalse: [ nbLines := nbLines min: self line - nbLines.
 			nbCols := nbCols min: self column - nbCols.
@@ -949,8 +949,8 @@ CMSpaceModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 	"return the euclidian distance (unit = cell) using the Euclidean distance formula : square root of [(Xa - Xb)^2 + (Ya - Yb)^2)]"
 
 	| nbLines nbCols |
-	nbLines := (cell1 numLine - cell2 numLine) abs.
-	nbCols := (cell1 numCol - cell2 numCol) abs.
+	nbLines := (cell1 rowNumber - cell2 rowNumber) abs.
+	nbCols := (cell1 columnNumber - cell2 columnNumber) abs.
 	self isNotTorroidal
 		ifFalse: [ nbLines > (self line - 2)
 				ifTrue: [ nbLines := nbLines - self line + 2 ].
@@ -1054,8 +1054,8 @@ CMSpaceModel >> exportToMapInfo: attributes inFile: file [
 								ifTrue: ['\' withCRs])].
 	collec := Cormas
 		sort: self elementaryEntities
-		byIncreasing: #numLine
-		thenByIncreasing: #numCol.
+		byIncreasing: #rowNumber
+		thenByIncreasing: #columnNumber.
 	1
 		to: collec size - 1
 		do:
@@ -2860,8 +2860,8 @@ CMSpaceModel >> wayFromCell: cell1 toCell: cell2 [
 	self flag: #toReview. "Refactor!!"
 	"for irregular cells, the calculus is much more longer"
 	self gridCellShape = #irregular ifTrue: [^cell1 wayTo: cell2].	"Calculus for regular cells"
-	nbLines := (cell1 numLine - cell2 numLine) abs.
-	nbCols := (cell1 numCol - cell2 numCol) abs.
+	nbLines := (cell1 rowNumber - cell2 rowNumber) abs.
+	nbCols := (cell1 columnNumber - cell2 columnNumber) abs.
 	cell1 id = (cell1 id min: cell2 id)
 		ifTrue:
 			[firstCell := cell1.
@@ -2876,7 +2876,7 @@ CMSpaceModel >> wayFromCell: cell1 toCell: cell2 [
 	self nbNeighbours = 8
 		ifTrue:
 			[| by |
-			firstCell numCol < lastCell numCol
+			firstCell columnNumber < lastCell columnNumber
 				ifTrue: [by := 1]
 				ifFalse: [by := -1].
 			0
@@ -2888,28 +2888,28 @@ CMSpaceModel >> wayFromCell: cell1 toCell: cell2 [
 							(cellsIntoRectangle
 								detect:
 									[:c | 
-									c numLine = (firstCell numLine + i)
-										and: [c numCol = (firstCell numCol + (i * by))]])].
+									c rowNumber = (firstCell rowNumber + i)
+										and: [c columnNumber = (firstCell columnNumber + (i * by))]])].
 			nbLines > (nbLines min: nbCols)
 				ifTrue:
 					[way
 						addAll:
 							(cellsIntoRectangle
 								select:
-									[:c | c numCol = lastCell numCol and: [c numLine > way last numLine]])]
+									[:c | c columnNumber = lastCell columnNumber and: [c rowNumber > way last rowNumber]])]
 				ifFalse:
 					[way
 						addAll:
 							(cellsIntoRectangle
 								select:
-									[:c | c numLine = lastCell numLine and: [by * c numCol > (by * way last numCol)]])]].
+									[:c | c rowNumber = lastCell rowNumber and: [by * c columnNumber > (by * way last columnNumber)]])]].
 	self nbNeighbours = 4
 		ifTrue:
 			[way
 				addAll:
-					(cellsIntoRectangle select: [:c | c numLine = firstCell numLine]).
+					(cellsIntoRectangle select: [:c | c rowNumber = firstCell rowNumber]).
 			way
-				addAll: (cellsIntoRectangle select: [:c | c numCol = lastCell numCol])].
+				addAll: (cellsIntoRectangle select: [:c | c columnNumber = lastCell columnNumber])].
 	self nbNeighbours = 6
 		ifTrue:
 			[| by |
@@ -2923,7 +2923,7 @@ CMSpaceModel >> wayFromCell: cell1 toCell: cell2 [
 			"ne fonctionne pas encore... a finir !"
 			gridCellShape := #irregular.
 			true ifTrue: [^cell1 wayTo: cell2].
-			firstCell numCol < lastCell numCol
+			firstCell columnNumber < lastCell columnNumber
 				ifTrue: [by := 1]
 				ifFalse: [by := -1].
 			0
@@ -2935,13 +2935,13 @@ CMSpaceModel >> wayFromCell: cell1 toCell: cell2 [
 							(cellsIntoRectangle
 								detect:
 									[:c | 
-									c numLine = (firstCell numLine + i)
+									c rowNumber = (firstCell rowNumber + i)
 										and:
-											[c numCol
+											[c columnNumber
 												=
-													(firstCell numCol
+													(firstCell columnNumber
 														+
-															((firstCell numLine + i) odd
+															((firstCell rowNumber + i) odd
 																ifTrue: [(i - 1) / 2 * by]
 																ifFalse: [i / 2 * by]))]])].
 			nbLines > (nbLines min: nbCols)
@@ -2950,13 +2950,13 @@ CMSpaceModel >> wayFromCell: cell1 toCell: cell2 [
 						addAll:
 							(cellsIntoRectangle
 								select:
-									[:c | c numCol = lastCell numCol and: [c numLine > way last numLine]])]
+									[:c | c columnNumber = lastCell columnNumber and: [c rowNumber > way last rowNumber]])]
 				ifFalse:
 					[way
 						addAll:
 							(cellsIntoRectangle
 								select:
-									[:c | c numLine = lastCell numLine and: [by * c numCol > (by * way last numCol)]])]].
+									[:c | c rowNumber = lastCell rowNumber and: [by * c columnNumber > (by * way last columnNumber)]])]].
 	invert ifTrue: [way := way reverse].
 	^way
 ]

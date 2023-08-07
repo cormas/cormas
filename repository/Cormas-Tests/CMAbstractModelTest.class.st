@@ -217,8 +217,8 @@ CMAbstractModelTest >> testPickCell [
 
 	cell := model pickCell.
 	self assert: cell isSpatialEntity.
-	self assert: (cell numCol between: 1 and: 10).
-	self assert: (cell numLine between: 1 and: 20)
+	self assert: (cell columnNumber between: 1 and: 10).
+	self assert: (cell rowNumber between: 1 and: 20)
 ]
 
 { #category : #'tests-accessing-entities' }
@@ -268,14 +268,14 @@ CMAbstractModelTest >> testPickEntityConstrainedBy [
 	
 	cell1 := model
 		pickEntity: CMMockCell
-		constrainedBy: [ :cell | cell numCol = 1 ].
+		constrainedBy: [ :cell | cell columnNumber = 1 ].
 		
 	cell2 := model
 		pickEntity: CMMockCell
-		constrainedBy: [ :cell | cell numCol = 4 ].
+		constrainedBy: [ :cell | cell columnNumber = 4 ].
 
-	self assert: cell1 numCol equals: 1.
-	self assert: cell2 numCol equals: 4.
+	self assert: cell1 columnNumber equals: 1.
+	self assert: cell2 columnNumber equals: 4.
 ]
 
 { #category : #'tests-accessing-entities' }
@@ -294,8 +294,8 @@ CMAbstractModelTest >> testPickNEntitiesConstrainedBy [
 			((model
 				pickN: 5
 				entities: CMMockCell
-				constrainedBy: [ :cell | cell numCol = 5 ])
-				allSatisfy: [ :cell | cell numCol = 5 ])
+				constrainedBy: [ :cell | cell columnNumber = 5 ])
+				allSatisfy: [ :cell | cell columnNumber = 5 ])
 ]
 
 { #category : #'tests-accessing-entities' }
@@ -330,8 +330,8 @@ CMAbstractModelTest >> testSelectCellsBetweenLine1Line2AndColumn1Column2 [
 		column2: 8.
 	self assert: cells size equals: 9.
 	cells do: [ :cell | 
-		self assert: (cell numCol between: 6 and: 8).
-		self assert: (cell numLine between: 13 and: 15) ]
+		self assert: (cell columnNumber between: 6 and: 8).
+		self assert: (cell rowNumber between: 13 and: 15) ]
 ]
 
 { #category : #'tests-accessing-entities' }
@@ -349,8 +349,8 @@ CMAbstractModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
 		cornerCell: m centralCell.
 	self assert: cells size equals: 15.
 	cells do: [ :cell | 
-			self assert: (cell numCol between: 1 and: 3).
-			self assert: (cell numLine between: 1 and: 5) ]
+			self assert: (cell columnNumber between: 1 and: 3).
+			self assert: (cell rowNumber between: 1 and: 5) ]
 ]
 
 { #category : #'tests-accessing-entities' }
@@ -372,7 +372,7 @@ CMAbstractModelTest >> testSelectCellsOfLine [
 		| cells |
 		cells := model selectCellsOfLine: line.
 		self assert: cells size equals: 4.
-		cells do: [ :cell | self assert: cell numLine equals: line ] ]
+		cells do: [ :cell | self assert: cell rowNumber equals: line ] ]
 ]
 
 { #category : #tests }
