@@ -966,27 +966,3 @@ Example: self wayTo: self spaceModel centralLocation constraint: [:c | c isClose
 			road add: step].
 	^road
 ]
-
-{ #category : #deprecated }
-CMSpatialEntityElement >> x [
-	"This method is not supported because numCol is more explicit. Please use numCol instead."
-
-	"Purpose: returns the X coordinate of the cell in a regular spatial grid"
-
-	self
-		deprecated: 'Please use "numCol" instead.'
-		transformWith: '`@receiver x' -> '`@receiver numCol'.
-	^ self numCol
-]
-
-{ #category : #deprecated }
-CMSpatialEntityElement >> y [
-	"This method is not supported because numCol is more explicit. Please use numCol instead."
-
-	"Purpose: returns the Y coordinate of the cell in a regular spatial grid"
-
-	self
-		deprecated: 'Please use "numLine" instead.'
-		transformWith: '`@receiver y' -> '`@receiver numLine'.
-	^ self numLine
-]
