@@ -246,7 +246,7 @@ CMAbstractModelTest >> testPickCellWithoutAny [
 
 	| cell |
 	cell := model pickCellWithoutAny: CMMockAgent.
-	self assert: (cell occupantsAt: CMMockAgent) isEmpty
+	self assert: (cell occupantsOfClass: CMMockAgent) isEmpty
 ]
 
 { #category : #'tests-accessing-entities' }

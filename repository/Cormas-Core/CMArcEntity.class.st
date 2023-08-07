@@ -225,12 +225,12 @@ CMArcEntity >> initFrom: initNode to: endNode [
 CMArcEntity >> initFromCell: startCell toCell: endCell [
 	
 	| previousNodes initNode endNode |
-	previousNodes := startCell occupants: self nodeType name.
+	previousNodes := startCell occupantsOfClassNamed: self nodeType name.
 	previousNodes isEmpty
 		ifTrue: [initNode := self newNode	"initNode isMovedTo: startCell"]
 		ifFalse: [initNode := previousNodes first].
 	self startNode: initNode.
-	previousNodes := endCell occupants: self nodeType name.
+	previousNodes := endCell occupantsOfClassNamed: self nodeType name.
 	previousNodes isEmpty
 		ifTrue: [endNode := self newNode	"endNode isMovedTo: endCell"]
 		ifFalse: [endNode := previousNodes first].
@@ -282,8 +282,8 @@ CMArcEntity >> isMovedFrom: startCell to: endCell [
 	self moveStartNodeTo: startCell.
 	patch := startCell.
 	self moveStopNodeTo: endCell.
-	(startCell occupants: self class name) add: self.
-	(endCell occupants: self class name) add: self.
+	(startCell occupantsOfClassNamed: self class name) add: self.
+	(endCell occupantsOfClassNamed: self class name) add: self.
 	alreadySituated_start
 		ifTrue: [ self halt.
 			self flag:#TODO.
@@ -310,7 +310,7 @@ CMArcEntity >> isMovedTo: startCell [
 	alreadySituated_start := self isSituated.	"Log the movement"
 	startCell spaceModel logMovementOf: self from: patch to: startCell.
 	self moveStartNodeTo: startCell.
-	(startCell occupants: self class name) add: self.
+	(startCell occupantsOfClassNamed: self class name) add: self.
 	stopNode patch ifNil: [ ^ nil ].
 	alreadySituated_start
 		ifTrue: [ "self halt."
@@ -371,13 +371,13 @@ CMArcEntity >> leaveWhileMoving: isBeingMoved [
 	patch := nil.
 	startNode isNil
 		ifFalse: [ startNode patch isNil
-				ifFalse: [ (startNode patch occupants: self class name)
+				ifFalse: [ (startNode patch occupantsOfClassNamed: self class name)
 						remove: self
 						ifAbsent: [  ] ].
 			startNode removeArc: self ].
 	stopNode isNil
 		ifFalse: [ stopNode patch isNil
-				ifFalse: [ (stopNode patch occupants: self class name)
+				ifFalse: [ (stopNode patch occupantsOfClassNamed: self class name)
 						remove: self
 						ifAbsent: [  ] ].
 			stopNode removeArc: self ].
@@ -435,7 +435,7 @@ CMArcEntity >> newIncomingArcFromCell: initCell [
 	"creates and add a new instance of Arc from initCell until my startNode. If there is no node on initCell, it creates it, otherwise it uses the current node  already located on initCell"
 	
 	| nodes initNode |
-	nodes := initCell occupants: self nodeType name.
+	nodes := initCell occupantsOfClassNamed: self nodeType name.
 	nodes isEmpty
 		ifTrue:
 			[initNode := self newNode.
@@ -468,7 +468,7 @@ CMArcEntity >> newOutgoingArcToCell: endCell [
 	"creates and add a new instance of Arc from my stopNode to another cell by creating a new instance of stopNode on endCell if there is none or using the current node if already located on endCell"
 	
 	| endNode endNodes |
-	endNodes := endCell occupants: self nodeType name.
+	endNodes := endCell occupantsOfClassNamed: self nodeType name.
 	endNodes isEmpty
 		ifTrue:
 			[endNode := self newNode.

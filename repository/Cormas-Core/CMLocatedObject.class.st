@@ -78,7 +78,7 @@ Example: self isMovedTo: self patch neighbourN"
 	alreadySituated := self isSituated.
 	self leaveWhileMoving: true.
 	self patch: aSpatialEntity.
-	(self patch occupants: self class name) add: self.
+	(self patch occupantsOfClassNamed: self class name) add: self.
 	alreadySituated
 		ifFalse:
 			[ "the agent is arriving on the grid for the first time, the SpaceInterfaces should be aware"

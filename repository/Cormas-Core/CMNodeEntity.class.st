@@ -122,7 +122,7 @@ CMNodeEntity >> checkToReplaceNode [
 	| sameNodes |
 	self replaceNodeWhileMoving ifFalse: [^nil].
 	patch ifNil: [^nil].
-	sameNodes := (self patch occupants: self class) copy.
+	sameNodes := (self patch occupantsOfClassNamed: self class) copy.
 	sameNodes
 		remove: self
 		ifAbsent: [nil].

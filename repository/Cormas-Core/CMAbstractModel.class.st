@@ -2711,7 +2711,7 @@ CMAbstractModel >> pickCellWithoutAny: aClass [
 	Example2: self pickCellWithoutAny: #Building"
 
 	^ self
-		pickCellConstrainedBy: [ :cell | (cell occupantsAt: aClass) isEmpty ]
+		pickCellConstrainedBy: [ :cell | (cell occupantsOfClass: aClass) isEmpty ]
 ]
 
 { #category : #'accessing - entities' }

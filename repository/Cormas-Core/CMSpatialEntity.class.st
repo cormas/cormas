@@ -307,14 +307,14 @@ Return value: <Collection(SpatialElementEntity)>"
 ]
 
 { #category : #'star testing' }
-CMSpatialEntity >> hasOccupantType: locatedEntityName [
+CMSpatialEntity >> hasOccupantType: aClass [
 
 	"Purpose: test if there is an occupant of a given type.
 Argument: locatedEntityName = <Symbol | AgentLocation | ObjectLocation>
 Return value: <Boolean>
 Example: self hasOccupantType: #Tree"
 
-	^ (self occupantsAt: locatedEntityName) isNotEmpty
+	^ (self occupantsOfClass: aClass) isNotEmpty
 ]
 
 { #category : #accessing }
@@ -760,53 +760,37 @@ Return value: <Boolean>"
 ]
 
 { #category : #'star testing' }
-CMSpatialEntity >> noOccupantType: locatedEntityName [
+CMSpatialEntity >> noOccupantType: aClass [
 "Purpose: tests if there is no occupant of given type.
-Argument: locatedEntityName = <Symbol | AgentLocation | ObjectLocation>
 Return value: <Boolean>
 Example: self noOccupantType: #Tree"
 	
-	^(self occupantsAt: locatedEntityName) isEmpty
+	^(self occupantsOfClass: aClass) isEmpty
 ]
 
 { #category : #'environment - sensing - agents' }
-CMSpatialEntity >> occupants: aClassName [
+CMSpatialEntity >> occupantsOfClass: aClass [
 
-	"Purpose: returns all the entities of a given class name located there
-Argument: aClassOrClassName = <ByteSymbol> or a Cormas Entity Class
-Note that the instances of subclasses are NOT considered by this method, contrarily to #occupantsAt: and #occupantsType: 
-Return value: <Collection(AgentLocation & ObjectLocation)>"
-
-	^ self theOccupants
-		  at: aClassName
-		  ifAbsent: [ OrderedCollection new ]
-]
-
-{ #category : #'environment - sensing - agents' }
-CMSpatialEntity >> occupantsAt: locatedEntityName [
 	"Purpose: returns all the entities of a given type located there
-Argument: locatedEntityName = <ByteSymbol | AgentLocation | ObjectLocation>
-Note that the instances of subclasses ARE CONSIDERED by this method, contrarily to #occupants:
-Return value: <Collection(AgentLocation & ObjectLocation)>"
-	
-	| aClass |
-	aClass := locatedEntityName isLiteral
-		ifTrue: [ Smalltalk at: locatedEntityName asSymbol ifAbsent: [ nil ] ]
-		ifFalse: [ locatedEntityName ].
-	^ self occupantsType: aClass
-]
-
-{ #category : #'environment - sensing - agents' }
-CMSpatialEntity >> occupantsType: aClass [
-	"Purpose: returns all the entities of a given type located there
-Argument: locatedEntityName = <AgentLocation | ObjectLocation>
 Note that the instances of subclasses ARE CONSIDERED by this method, contrarily to #occupants:
 Return value: <Collection(AgentLocation & ObjectLocation)>"
 	
 	aClass ifNil: [ ^ OrderedCollection new ].
 	
 	^ aClass withAllSubclasses flatCollect: [ :eachClass |
-		self occupants: eachClass name].
+		self occupantsOfClassNamed: eachClass name].
+]
+
+{ #category : #'environment - sensing - agents' }
+CMSpatialEntity >> occupantsOfClassNamed: aClassName [
+
+	"Purpose: returns all the entities of a given class name located there
+Note that the instances of subclasses are NOT considered by this method, contrarily to #occupantsAt: and #occupantsType: 
+Return value: <Collection(AgentLocation & ObjectLocation)>"
+
+	^ self theOccupants
+		  at: aClassName
+		  ifAbsent: [ OrderedCollection new ]
 ]
 
 { #category : #accessing }
