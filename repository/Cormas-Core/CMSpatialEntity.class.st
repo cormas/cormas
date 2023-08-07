@@ -770,20 +770,16 @@ Example: self noOccupantType: #Tree"
 ]
 
 { #category : #'environment - sensing - agents' }
-CMSpatialEntity >> occupants: aClassOrClassName [
+CMSpatialEntity >> occupants: aClassName [
 
 	"Purpose: returns all the entities of a given class name located there
 Argument: aClassOrClassName = <ByteSymbol> or a Cormas Entity Class
 Note that the instances of subclasses are NOT considered by this method, contrarily to #occupantsAt: and #occupantsType: 
 Return value: <Collection(AgentLocation & ObjectLocation)>"
 
-	| aClassName |
-	aClassName := aClassOrClassName isSymbol
-		              ifTrue: [ aClassOrClassName ]
-		              ifFalse: [ aClassOrClassName name ].
 	^ self theOccupants
 		  at: aClassName
-		  ifAbsentPut: [ OrderedCollection new ]
+		  ifAbsent: [ OrderedCollection new ]
 ]
 
 { #category : #'environment - sensing - agents' }
@@ -807,12 +803,10 @@ Argument: locatedEntityName = <AgentLocation | ObjectLocation>
 Note that the instances of subclasses ARE CONSIDERED by this method, contrarily to #occupants:
 Return value: <Collection(AgentLocation & ObjectLocation)>"
 	
-	| instances |
-	instances := OrderedCollection new.
-	aClass ifNil: [^instances].
-	aClass withAllSubclasses
-		do: [:class | instances addAll: (self occupants: class name)].
-	^instances
+	aClass ifNil: [ ^ OrderedCollection new ].
+	
+	^ aClass withAllSubclasses flatCollect: [ :eachClass |
+		self occupants: eachClass name].
 ]
 
 { #category : #accessing }
