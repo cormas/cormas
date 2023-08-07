@@ -23,5 +23,5 @@ Class {
 { #category : #'environment - sensing - space' }
 CMNonSquaredSpaceNeighbourhood >> nearestEmptyCellFor: aCMAgentLocation [
 
-	^ aCMAgentLocation nearestCellVerifying: [:p | p noOccupant]
+	^ aCMAgentLocation nearestCellVerifying: [:p | p hasNoOccupants]
 ]

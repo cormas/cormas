@@ -156,7 +156,7 @@ Return value: <Collection(AgentLocation & ObjectLocation)>"
 	^ collec
 ]
 
-{ #category : #'star testing' }
+{ #category : #testing }
 CMSpatialEntity >> belongsToAggregate: aSpatialEntity [
 "Purpose: tests if the receiver belongs to a higher level spatial entity, even if theCSE is nil. 
 This method is valid whatever the aggregate level and even if theCSE is nil. It will return 'true' if the receiver is a component of a component of aSpatialEntity
@@ -306,8 +306,32 @@ Return value: <Collection(SpatialElementEntity)>"
 	^self spaceModel elementaryEntities
 ]
 
-{ #category : #'star testing' }
-CMSpatialEntity >> hasOccupantType: aClass [
+{ #category : #testing }
+CMSpatialEntity >> hasNoOccupants [
+
+	^ self hasOccupants not
+]
+
+{ #category : #testing }
+CMSpatialEntity >> hasNoOccupantsExcept: anObject [
+
+	self theOccupants ifNil: [ ^ true ].
+
+	^ self theOccupants allSatisfy: [ :list | 
+		(list copyWithout: anObject) isEmpty ].
+]
+
+{ #category : #testing }
+CMSpatialEntity >> hasOccupants [
+
+	self theOccupants ifNil: [ ^ false ].
+
+	^ self theOccupants values anySatisfy: [ :list | 
+		list isNotEmpty ].
+]
+
+{ #category : #testing }
+CMSpatialEntity >> hasOccupantsOfClass: aClass [
 
 	"Purpose: test if there is an occupant of a given type.
 Argument: locatedEntityName = <Symbol | AgentLocation | ObjectLocation>
@@ -369,7 +393,7 @@ CMSpatialEntity >> interestingDetails [
 		}
 ]
 
-{ #category : #'star testing' }
+{ #category : #testing }
 CMSpatialEntity >> isComponentOf: aSpatialEntity [ 
 "Purpose: tests if the receiver belongs to the components of a given compound spatial entity
 It will return 'false' if the receiver is a component of a component of aSpatialEntity (cf. belongsToAggregate:)
@@ -530,7 +554,7 @@ Argument: range = <Integer>
 Return value: <Collection(SpatialEntity)>"
 	
 	^self
-		nearestNeighborsVerifying: [:n | n noOccupant]
+		nearestNeighborsVerifying: [ :n | n hasNoOccupants ]
 		withinRadius: range
 ]
 
@@ -666,15 +690,13 @@ Example: self nearestNeighborsWithMaxOf: #water withinRadius: 5"
 ]
 
 { #category : #'environment - sensing - space' }
-CMSpatialEntity >> nearestNeighborsWithoutAny: locatedEntityName withinRadius: range [
+CMSpatialEntity >> nearestNeighborsWithoutAny: aClass withinRadius: range [
 	"Purpose: returns the nearest spatial entities within a given radius and without any occupant of a given type.
-Arguments: range = <Integer>
-			locatedEntityName = <Symbol | Class>
 Return value: <Collection(SpatialEntity)>
 Example: self nearestNeighborsWithoutAny: #Tree withinRadius: 5 "
 	
 	^self
-		nearestNeighborsVerifying: [:p | p noOccupantType: locatedEntityName]
+		nearestNeighborsVerifying: [:p | (p hasOccupantsOfClass: aClass) not ]
 		withinRadius: range
 ]
 
@@ -727,45 +749,6 @@ CMSpatialEntity >> neighboursMaxOf: aMagnitudeName [
 	^Cormas
 		maxOf: aMagnitudeName
 		amongObjects: self neighbourhood
-]
-
-{ #category : #'star testing' }
-CMSpatialEntity >> noOccupant [
-
-	"Purpose: tests if there is no occupant of any kind.
-Return value: <Boolean>"
-
-	| test |
-	test := true.
-	self theOccupants notNil ifTrue: [ 
-		self theOccupants valuesDo: [ :list | 
-			list isEmpty ifFalse: [ test := false ] ] ].
-	^ test
-]
-
-{ #category : #'star testing' }
-CMSpatialEntity >> noOccupantBut: anAgent [
-
-	"Purpose: tests if there is no occupant of any kind, excepted anAgent.
-Useful from an agent perspective, to test if there are other agents on the cell: self patch noOccupantBut: self.
-Return value: <Boolean>"
-
-	| test |
-	test := true.
-	self theOccupants notNil ifTrue: [ 
-		self theOccupants valuesDo: [ :list | 
-			list isEmpty ifFalse: [ 
-				(list includes: anAgent) ifFalse: [ test := false ] ] ] ].
-	^ test
-]
-
-{ #category : #'star testing' }
-CMSpatialEntity >> noOccupantType: aClass [
-"Purpose: tests if there is no occupant of given type.
-Return value: <Boolean>
-Example: self noOccupantType: #Tree"
-	
-	^(self occupantsOfClass: aClass) isEmpty
 ]
 
 { #category : #'environment - sensing - agents' }
@@ -889,16 +872,14 @@ Example: self recursiveNeighbourhood: 5 verifying: [:c | c isClosed not] "
 ]
 
 { #category : #'environment - sensing - space' }
-CMSpatialEntity >> recursiveNeighbourhood: range withoutAny: locatedEntityName [
+CMSpatialEntity >> recursiveNeighbourhood: range withoutAny: aClass [
 	"Purpose: returns the spatial entities within a given radius and without any occupant of a given type.
-Arguments: range = <Integer>
-			locatedEntityName = <Symbol | Class>
 Return value: <Collection(SpatialEntity)>
 Example: self recursiveNeighbourhood: 5 withoutAny: #Tree"
 	
 	^self
 		recursiveNeighbourhood: range
-		verifying: [:p | p noOccupantType: locatedEntityName]
+		verifying: [:p | (p hasOccupantsOfClass: aClass) not ]
 ]
 
 { #category : #'initialize-release' }
