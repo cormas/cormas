@@ -557,6 +557,12 @@ Examples:
 ]
 
 { #category : #'utilities - random' }
+Cormas class >> nextInteger: anInteger [
+
+	^ self randomIntegerFrom: 1 to: anInteger
+]
+
+{ #category : #'utilities - random' }
 Cormas class >> normal: mu sigma: sigma [
 	"Purpose: Return a random number from a normal distribution. polar method, Law et Kelton
 Arguments: mu = mean; sigma = standard deviation."
@@ -943,9 +949,9 @@ Example: Cormas selectEntitiesWithMaxOf: #water amongEntities self theCells veri
 
 { #category : #'utilities - random' }
 Cormas class >> selectRandomlyFrom: aCollection [
-	aCollection isEmpty
-		ifTrue: [ ^ nil ].
-	^ aCollection atRandom
+
+	aCollection ifEmpty: [ ^ nil ].
+	^ aCollection atRandom: self
 ]
 
 { #category : #'utilities - random' }
