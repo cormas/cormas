@@ -46,14 +46,21 @@ CMSpatialEntityElement >> boundaryDirections [
 
 ]
 
+{ #category : #accessing }
+CMSpatialEntityElement >> columnNumber [
+	"Purpose: returns the X coordinate of the cell in a regular spatial grid"
+	
+	^self id - ((self rowNumber - 1) * self spaceModel column)
+]
+
 { #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> coordinates [
 	"Purpose: Returns the coordinates x and y as a Point instance.
 	Example: self coordinates dist: (self neighbourNE coordinates)"
 	
 	^ Point
-		x: self numCol
-		y: self numLine
+		x: self columnNumber
+		y: self rowNumber
 ]
 
 { #category : #'environment - sensing - space' }
@@ -156,8 +163,8 @@ CMSpatialEntityElement >> lineCol [
 	"Return an array containing the coordinates Y and X of the Cell"
 	
 	^Array
-		with: self numLine
-		with: self numCol
+		with: self rowNumber
+		with: self columnNumber
 ]
 
 { #category : #'displaying - obsolete' }
@@ -190,15 +197,15 @@ CMSpatialEntityElement >> lineSegmentEfh [
 	starts := (Array with: self lineSegmentE start) asOrderedCollection.
 	ends := (Array with: self lineSegmentE end) asOrderedCollection.
 	nE := self neighbourE.
-	(nE isNil or: [nE numCol - self numCol ~= 1])
+	(nE isNil or: [nE columnNumber - self columnNumber ~= 1])
 		ifFalse:
 			[starts add: nE lineSegmentW end.
 			ends add: nE lineSegmentW start].
 	nSE := self neighbourSE.
-	(nSE isNil or: [nSE numLine - self numLine ~= 1])
+	(nSE isNil or: [nSE rowNumber - self rowNumber ~= 1])
 		ifFalse: [ends add: nSE lineSegmentNE start].
 	nNE := self neighbourNE.
-	(nNE isNil or: [self numLine - nNE numLine ~= 1])
+	(nNE isNil or: [self rowNumber - nNE rowNumber ~= 1])
 		ifFalse: [starts add: nNE lineSegmentSE end].
 	^LineSegment
 		from:
@@ -241,15 +248,15 @@ CMSpatialEntityElement >> lineSegmentNEfh [
 	starts := (Array with: self lineSegmentNE start) asOrderedCollection.
 	ends := (Array with: self lineSegmentNE end) asOrderedCollection.
 	nE := self neighbourE.
-	(nE isNil or: [nE numCol - self numCol ~= 1])
+	(nE isNil or: [nE columnNumber - self columnNumber ~= 1])
 		ifFalse: [ends add: nE lineSegmentNW start].
 	nNE := self neighbourNE.
-	(nNE isNil or: [self numLine - nNE numLine ~= 1])
+	(nNE isNil or: [self rowNumber - nNE rowNumber ~= 1])
 		ifFalse:
 			[starts add: nNE lineSegmentSW end.
 			ends add: nNE lineSegmentSW start].
 	nNW := self neighbourNW.
-	(nNW isNil or: [self numLine - nNW numLine ~= 1])
+	(nNW isNil or: [self rowNumber - nNW rowNumber ~= 1])
 		ifFalse: [starts add: nNW lineSegmentE end].
 	^LineSegment
 		from:
@@ -284,13 +291,13 @@ CMSpatialEntityElement >> lineSegmentNWfh [
 	starts := (Array with: self lineSegmentNW start) asOrderedCollection.
 	ends := (Array with: self lineSegmentNW end) asOrderedCollection.
 	nW := self neighbourW.
-	(nW isNil or: [self numCol - nW numCol ~= 1])
+	(nW isNil or: [self columnNumber - nW columnNumber ~= 1])
 		ifFalse: [starts add: nW lineSegmentE start].
 	nNE := self neighbourNE.
-	(nNE isNil or: [self numLine - nNE numLine ~= 1])
+	(nNE isNil or: [self rowNumber - nNE rowNumber ~= 1])
 		ifFalse: [ends add: nNE lineSegmentSW end].
 	nNW := self neighbourNW.
-	(nNW isNil or: [self numLine - nNW numLine ~= 1])
+	(nNW isNil or: [self rowNumber - nNW rowNumber ~= 1])
 		ifFalse:
 			[starts add: nNW lineSegmentSE end.
 			ends add: nNW lineSegmentE end].
@@ -349,15 +356,15 @@ CMSpatialEntityElement >> lineSegmentSEfh [
 	starts := (Array with: self lineSegmentSE start) asOrderedCollection.
 	ends := (Array with: self lineSegmentSE end) asOrderedCollection.
 	nE := self neighbourE.
-	(nE isNil or: [nE numCol - self numCol ~= 1])
+	(nE isNil or: [nE columnNumber - self columnNumber ~= 1])
 		ifFalse: [starts add: nE lineSegmentW start].
 	nSE := self neighbourSE.
-	(nSE isNil or: [nSE numLine - self numLine ~= 1])
+	(nSE isNil or: [nSE rowNumber - self rowNumber ~= 1])
 		ifFalse:
 			[starts add: nSE lineSegmentNW end.
 			ends add: nSE lineSegmentNW start].
 	nSW := self neighbourSW.
-	(nSW isNil or: [nSW numLine - self numLine ~= 1])
+	(nSW isNil or: [nSW rowNumber - self rowNumber ~= 1])
 		ifFalse: [ends add: nSW lineSegmentNE end].
 	^LineSegment
 		from:
@@ -392,13 +399,13 @@ CMSpatialEntityElement >> lineSegmentSWfh [
 	starts := (Array with: self lineSegmentSW start) asOrderedCollection.
 	ends := (Array with: self lineSegmentSW end) asOrderedCollection.
 	nW := self neighbourW.
-	(nW isNil or: [self numCol - nW numCol ~= 1])
+	(nW isNil or: [self columnNumber - nW columnNumber ~= 1])
 		ifFalse: [ends add: nW lineSegmentE end].
 	nSE := self neighbourSE.
-	(nSE isNil or: [nSE numLine - self numLine ~= 1])
+	(nSE isNil or: [nSE rowNumber - self rowNumber ~= 1])
 		ifFalse: [starts add: nSE lineSegmentNW start].
 	nSW := self neighbourSW.
-	(nSW isNil or: [nSW numLine - self numLine ~= 1])
+	(nSW isNil or: [nSW rowNumber - self rowNumber ~= 1])
 		ifFalse:
 			[starts add: nSW lineSegmentNE end.
 			ends add: nSW lineSegmentNW end].
@@ -458,15 +465,15 @@ CMSpatialEntityElement >> lineSegmentWfh [
 	starts := (Array with: self lineSegmentW start) asOrderedCollection.
 	ends := (Array with: self lineSegmentW end) asOrderedCollection.
 	nW := self neighbourW.
-	(nW isNil or: [self numCol - nW numCol ~= 1])
+	(nW isNil or: [self columnNumber - nW columnNumber ~= 1])
 		ifFalse:
 			[starts add: nW lineSegmentSE start.
 			ends add: nW lineSegmentE start].
 	nSW := self neighbourSW.
-	(nSW isNil or: [nSW numLine - self numLine ~= 1])
+	(nSW isNil or: [nSW rowNumber - self rowNumber ~= 1])
 		ifFalse: [starts add: nSW lineSegmentNW end].
 	nNW := self neighbourNW.
-	(nNW isNil or: [self numLine - nNW numLine ~= 1])
+	(nNW isNil or: [self rowNumber - nNW rowNumber ~= 1])
 		ifFalse: [ends add: nNW lineSegmentSW start].
 	^LineSegment
 		from:
@@ -786,20 +793,6 @@ Return value: <SpatialEntityElement | nil>"
 ]
 
 { #category : #accessing }
-CMSpatialEntityElement >> numCol [
-	"Purpose: returns the X coordinate of the cell in a regular spatial grid"
-	
-	^self id - ((self numLine - 1) * self spaceModel column)
-]
-
-{ #category : #accessing }
-CMSpatialEntityElement >> numLine [
-	"Purpose: returns the Y coordinate of the cell in a regular spatial grid"
-	
-	^(self id / self spaceModel column) ceiling
-]
-
-{ #category : #accessing }
 CMSpatialEntityElement >> orderedNeighbourhood [
 	" Assume the receiver's space model neighbouhoods were already initialized. "
 	
@@ -820,12 +813,11 @@ CMSpatialEntityElement >> outlinePatch [
 	^self image component translatedBy: self center
 ]
 
-{ #category : #deprecated }
-CMSpatialEntityElement >> relativeDistanceTo: anotherCell constraint: aBlock [
-	"DEPRECATED. Should use: distanceTo: anotherCell constraintOnPath: aBlock
-Return an integer : the distance (in cell unit) to anotherCell according to constraint  (aBlock)."
+{ #category : #accessing }
+CMSpatialEntityElement >> rowNumber [
+	"Purpose: returns the Y coordinate of the cell in a regular spatial grid"
 	
-	^self shortestDistanceTo: anotherCell constraintOnPath: aBlock
+	^(self id / self spaceModel column) ceiling
 ]
 
 { #category : #'displaying - obsolete' }
@@ -836,19 +828,6 @@ CMSpatialEntityElement >> segments [
 	(self image component translatedBy: self center) asPolyline
 		edgesDo: [:i :j | segments add: (LineSegment from: i to: j)].
 	^segments
-]
-
-{ #category : #deprecated }
-CMSpatialEntityElement >> shortestDistanceTo: anotherCell constraintOnPath: aBlock [
-	"DEPRECATED. Should use: distanceTo: anotherCell constraintOnPath: aBlock
-
-Purpose: gets the shortest distance (in cell unit) to anotherCell, taking a specified constraint into account.
-Arguments: anotherCell = <SpatialEntityElement>
-			aBlock = <BlockClosure>
-Return value: <Integer>
-Example: self shortestDistanceTo: self spaceModel centralLocation constraintOnPath: [:aCell | aCell isClosed not]"
-	
-	^(self wayTo: anotherCell constraint: aBlock) size - 1
 ]
 
 { #category : #'environment - distance' }
@@ -914,16 +893,6 @@ Example: self wayTo: self spaceModel centralLocation"
 	^path
 ]
 
-{ #category : #deprecated }
-CMSpatialEntityElement >> wayTo: anotherCell constrainedBy: aCondition [
-	"DEPRECATED. Should use #wayTo: anotherCell constraint: aCondition
-Return an OrderedCollection of cells describing the shortest way to anotherCell according to the constraint aBlock.
-path := self wayTo: anotherCell constraint: [:aCell | aCell landCover ~= #ditch].
-See example in 'DemoWayTo' model"
-	
-	^self wayTo: anotherCell constraint: aCondition
-]
-
 { #category : #'environment - sensing - space' }
 CMSpatialEntityElement >> wayTo: anotherCell constraint: aBlock [
 	"Purpose: gets the shortest way satisfying a constraint to anotherCell 
@@ -965,28 +934,4 @@ Example: self wayTo: self spaceModel centralLocation constraint: [:c | c isClose
 						asSortedCollection: [:p :s | p flag < s flag]) first].
 			road add: step].
 	^road
-]
-
-{ #category : #deprecated }
-CMSpatialEntityElement >> x [
-	"This method is not supported because numCol is more explicit. Please use numCol instead."
-
-	"Purpose: returns the X coordinate of the cell in a regular spatial grid"
-
-	self
-		deprecated: 'Please use "numCol" instead.'
-		transformWith: '`@receiver x' -> '`@receiver numCol'.
-	^ self numCol
-]
-
-{ #category : #deprecated }
-CMSpatialEntityElement >> y [
-	"This method is not supported because numCol is more explicit. Please use numCol instead."
-
-	"Purpose: returns the Y coordinate of the cell in a regular spatial grid"
-
-	self
-		deprecated: 'Please use "numLine" instead.'
-		transformWith: '`@receiver y' -> '`@receiver numLine'.
-	^ self numLine
 ]

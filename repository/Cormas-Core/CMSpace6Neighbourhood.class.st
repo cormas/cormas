@@ -77,10 +77,10 @@ CMSpace6Neighbourhood class >> distanceFromCell: cell1 toCell: cell2 nbLines: nb
 	^ nbLines odd
 		ifTrue: [ 
 			"celui des 2 qui est √† droite, s'il est sur la partie droite de sa colonne  (ligne impaire), je rajoute 1 √† dC"
-			cell1 numCol > cell2 numCol
-				ifTrue: [ cell1 numLine odd
+			cell1 columnNumber > cell2 columnNumber
+				ifTrue: [ cell1 rowNumber odd
 								ifTrue: [ columns := columns + 1 ] ]
-				ifFalse: [ cell2 numLine odd
+				ifFalse: [ cell2 rowNumber odd
 								ifTrue: [ columns := columns + 1 ] ].
 			nbLines + (0 max: (2 * columns - nbLines - 1) / 2) ]
 		ifFalse: [ nbLines + (0 max: (2 * columns - nbLines) / 2) ]
