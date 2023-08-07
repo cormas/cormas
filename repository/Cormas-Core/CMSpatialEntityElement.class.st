@@ -813,14 +813,6 @@ CMSpatialEntityElement >> outlinePatch [
 	^self image component translatedBy: self center
 ]
 
-{ #category : #deprecated }
-CMSpatialEntityElement >> relativeDistanceTo: anotherCell constraint: aBlock [
-	"DEPRECATED. Should use: distanceTo: anotherCell constraintOnPath: aBlock
-Return an integer : the distance (in cell unit) to anotherCell according to constraint  (aBlock)."
-	
-	^self shortestDistanceTo: anotherCell constraintOnPath: aBlock
-]
-
 { #category : #accessing }
 CMSpatialEntityElement >> rowNumber [
 	"Purpose: returns the Y coordinate of the cell in a regular spatial grid"
@@ -836,19 +828,6 @@ CMSpatialEntityElement >> segments [
 	(self image component translatedBy: self center) asPolyline
 		edgesDo: [:i :j | segments add: (LineSegment from: i to: j)].
 	^segments
-]
-
-{ #category : #deprecated }
-CMSpatialEntityElement >> shortestDistanceTo: anotherCell constraintOnPath: aBlock [
-	"DEPRECATED. Should use: distanceTo: anotherCell constraintOnPath: aBlock
-
-Purpose: gets the shortest distance (in cell unit) to anotherCell, taking a specified constraint into account.
-Arguments: anotherCell = <SpatialEntityElement>
-			aBlock = <BlockClosure>
-Return value: <Integer>
-Example: self shortestDistanceTo: self spaceModel centralLocation constraintOnPath: [:aCell | aCell isClosed not]"
-	
-	^(self wayTo: anotherCell constraint: aBlock) size - 1
 ]
 
 { #category : #'environment - distance' }
@@ -912,16 +891,6 @@ Example: self wayTo: self spaceModel centralLocation"
 	nextCell := Cormas selectRandomlyFrom: nearestCells.	"nextCell flash."
 	path addAllFirst: (self wayTo: nextCell).	"Recursivity call"
 	^path
-]
-
-{ #category : #deprecated }
-CMSpatialEntityElement >> wayTo: anotherCell constrainedBy: aCondition [
-	"DEPRECATED. Should use #wayTo: anotherCell constraint: aCondition
-Return an OrderedCollection of cells describing the shortest way to anotherCell according to the constraint aBlock.
-path := self wayTo: anotherCell constraint: [:aCell | aCell landCover ~= #ditch].
-See example in 'DemoWayTo' model"
-	
-	^self wayTo: anotherCell constraint: aCondition
 ]
 
 { #category : #'environment - sensing - space' }

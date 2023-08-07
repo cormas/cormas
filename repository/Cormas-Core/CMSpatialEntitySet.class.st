@@ -508,15 +508,14 @@ Example := self nearestCellVerifying: [:aCell | aCell hasWater] constraintOnPath
 		select: [:c | aBlock1 value: c].
 	collec ifNil: [^nil].
 	target := collec first.
-	minimum := self surround first shortestDistanceTo: target
-		constraintOnPath: aBlock2.
+	minimum := self surround first distanceTo: target constraintOnPath: aBlock2.
 	collec
 		do:
 			[:c | 
 			self surround
 				do:
 					[:cs | 
-					d := cs shortestDistanceTo: c constraintOnPath: aBlock2.
+					d := cs distanceTo: c constraintOnPath: aBlock2.
 					d = 0 ifTrue: [^c].
 					d < minimum
 						ifTrue:
