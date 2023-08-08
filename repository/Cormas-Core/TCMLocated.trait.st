@@ -406,7 +406,7 @@ Example: self moveTo: self patch neighbourN"
 	aSpatialEntity isSpatialEntity ifFalse: [ ^ nil ].
 	self leaveWhileMoving: true.
 	self patch: aSpatialEntity.
-	(self patch occupantsOfClassNamed: self class name) add: self.
+	self patch addOccupant: self.
 ]
 
 { #category : #moving }

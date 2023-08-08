@@ -117,6 +117,13 @@ CMSpatialEntity class >> theOccupants_default [
 	^Dictionary new
 ]
 
+{ #category : #adding }
+CMSpatialEntity >> addOccupant: anObject [
+
+	(self theOccupants at: anObject class
+		ifAbsentPut: [ OrderedCollection new ]) add: anObject
+]
+
 { #category : #'environment - sensing - space' }
 CMSpatialEntity >> allLayersTo: radius [
 	"returns a collection (collResult) of layers :
