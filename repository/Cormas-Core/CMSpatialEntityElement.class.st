@@ -58,6 +58,8 @@ CMSpatialEntityElement >> coordinates [
 	"Purpose: Returns the coordinates x and y as a Point instance.
 	Example: self coordinates dist: (self neighbourNE coordinates)"
 	
+	spaceModel ifNil: [ ^ nil ].
+	
 	^ Point
 		x: self columnNumber
 		y: self rowNumber
