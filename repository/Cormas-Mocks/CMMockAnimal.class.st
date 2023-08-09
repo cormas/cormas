@@ -1,5 +1,5 @@
 Class {
-	#name : #CMMockAgent,
+	#name : #CMMockAnimal,
 	#superclass : #CMAgent,
 	#traits : 'TCMLocated',
 	#classTraits : 'TCMLocated classTrait',
@@ -10,25 +10,19 @@ Class {
 }
 
 { #category : #initialization }
-CMMockAgent >> initialize [
+CMMockAnimal >> initialize [
 
 	super initialize.
 	energy := Cormas randomFloatFrom: 0 to: 1 
 ]
 
 { #category : #pov }
-CMMockAgent >> pov [
-
-	^ Color red
-]
-
-{ #category : #pov }
-CMMockAgent >> sizeOfPOV [
+CMMockAnimal >> sizeOfPOV [
 
 	^ 2 + (energy * 10)
 ]
 
 { #category : #control }
-CMMockAgent >> step [
+CMMockAnimal >> step [
 	
 ]
