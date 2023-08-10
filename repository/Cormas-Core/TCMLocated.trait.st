@@ -149,6 +149,9 @@ Example: self colocatedSimilarAgentsVerifying: [:a | a sex ~= self sex] "
 TCMLocated >> coordinates [
 	" Answer a <Point> with the receiver's coordinates "
 	
+	self isSituated ifFalse: [ 
+		self error: 'The entity must be placed on a cell in order to have coordinates' ].
+	
 	^ self patch coordinates
 ]
 
@@ -813,9 +816,11 @@ Return value: <Integer>"
 TCMLocated >> printOn: aStream [
 
 	super printOn: aStream.
-	aStream 
-		<< '-coord: ';
-		<< self coordinates asString
+	
+	self isSituated ifTrue: [
+		aStream 
+			<< '-coord: ';
+			<< self coordinates asString ]
 ]
 
 { #category : #'star moving' }
