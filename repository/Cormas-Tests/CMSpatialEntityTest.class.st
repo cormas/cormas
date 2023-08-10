@@ -42,6 +42,14 @@ CMSpatialEntityTest >> setUp [
 ]
 
 { #category : #tests }
+CMSpatialEntityTest >> testAllOccupants [
+
+	self
+		assert: cellWithTwoAgentsOfDifferentClasses allOccupants
+		equals: { cowJudy . goatBob } asOrderedCollection
+]
+
+{ #category : #tests }
 CMSpatialEntityTest >> testHasNoOccupants [
 
 	self assert: cellWithNoAgents hasNoOccupants.
@@ -67,4 +75,31 @@ CMSpatialEntityTest >> testHasOccupants [
 	self assert: cellWithOneAgent hasOccupants.
 	self assert: cellWithTwoAgentsOfSameClass hasOccupants.
 	self assert: cellWithTwoAgentsOfDifferentClasses hasOccupants.
+]
+
+{ #category : #tests }
+CMSpatialEntityTest >> testHasOccupantsOfClass [
+
+	self deny: (cellWithNoAgents hasOccupantsOfClass: CMMockCow).
+	self assert: (cellWithOneAgent hasOccupantsOfClass: CMMockCow).
+	self deny: (cellWithOneAgent hasOccupantsOfClass: CMMockGoat).
+	self assert: (cellWithTwoAgentsOfDifferentClasses hasOccupantsOfClass: CMMockCow).
+	self assert: (cellWithTwoAgentsOfDifferentClasses hasOccupantsOfClass: CMMockGoat).
+	
+]
+
+{ #category : #tests }
+CMSpatialEntityTest >> testOccupantsOfClass [
+
+	self
+		assert: (cellWithTwoAgentsOfDifferentClasses occupantsOfClass: CMMockCow)
+		equals: { cowJudy } asOrderedCollection
+]
+
+{ #category : #tests }
+CMSpatialEntityTest >> testOccupantsOfClassNamed [
+
+	self
+		assert: (cellWithTwoAgentsOfDifferentClasses occupantsOfClassNamed: 'CMMockGoat')
+		equals: { goatBob } asOrderedCollection
 ]

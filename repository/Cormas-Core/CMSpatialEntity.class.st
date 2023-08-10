@@ -762,25 +762,26 @@ CMSpatialEntity >> neighboursMaxOf: aMagnitudeName [
 CMSpatialEntity >> occupantsOfClass: aClass [
 
 	"Purpose: returns all the entities of a given type located there
-Note that the instances of subclasses ARE CONSIDERED by this method, contrarily to #occupants:
+Note that the instances of subclasses ARE CONSIDERED by this method
 Return value: <Collection(AgentLocation & ObjectLocation)>"
 	
 	aClass ifNil: [ ^ OrderedCollection new ].
 	
 	^ aClass withAllSubclasses flatCollect: [ :eachClass |
-		self occupantsOfClassNamed: eachClass name].
+		self theOccupants
+			at: eachClass
+			ifAbsent: [ OrderedCollection new ] ].
 ]
 
 { #category : #'environment - sensing - agents' }
 CMSpatialEntity >> occupantsOfClassNamed: aClassName [
 
 	"Purpose: returns all the entities of a given class name located there
-Note that the instances of subclasses are NOT considered by this method, contrarily to #occupantsAt: and #occupantsType: 
 Return value: <Collection(AgentLocation & ObjectLocation)>"
 
-	^ self theOccupants
-		  at: aClassName
-		  ifAbsent: [ OrderedCollection new ]
+	| aClass |
+	aClass := self class environment at: aClassName asSymbol.
+	^ self occupantsOfClass: aClass
 ]
 
 { #category : #accessing }
