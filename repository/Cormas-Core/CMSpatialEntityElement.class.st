@@ -58,6 +58,8 @@ CMSpatialEntityElement >> coordinates [
 	"Purpose: Returns the coordinates x and y as a Point instance.
 	Example: self coordinates dist: (self neighbourNE coordinates)"
 	
+	spaceModel ifNil: [ ^ nil ].
+	
 	^ Point
 		x: self columnNumber
 		y: self rowNumber
@@ -581,11 +583,10 @@ Example: self nearestCellWithMaxOf: #sugar"
 ]
 
 { #category : #'environment - sensing - space' }
-CMSpatialEntityElement >> nearestCellWithoutAny: locatedEntityName [
+CMSpatialEntityElement >> nearestCellWithoutAny: aClass [
 	"Purpose: returns the nearest cell without any occupant of a given type. 
 If none: returns nil; if more than one at the minimum radius: random selection
 Valid only for regular grids (square or hexagonal cells). For polygonal cells, use the generic but slower method #nearestCellVerifying: in super class SpatialEntity 
-Argument: locatedEntityName = <Symbol | Class>
 Return value: <SpatialEntityElement | nil>
 Example: self nearestCellWithoutAny: #Tree"
 	
@@ -593,12 +594,12 @@ Example: self nearestCellWithoutAny: #Tree"
 	^(self spaceModel gridCellShape = #squared
 		or: [self spaceModel gridCellShape = #hexagonal])
 		ifTrue:
-			[locations := self nearestCellsWithoutAny: locatedEntityName.
+			[locations := self nearestCellsWithoutAny: aClass.
 			locations isEmpty
 				ifFalse: [Cormas selectRandomlyFrom: locations]
 				ifTrue: [nil]]
 		ifFalse:
-			[super nearestCellVerifying: [:p | p noOccupantType: locatedEntityName]]
+			[super nearestCellVerifying: [ :p | (p hasOccupantsOfClass: aClass) not ]]
 ]
 
 { #category : #'environment - sensing - space' }
@@ -644,15 +645,14 @@ Example: self nearestNeighborsWithMaxOf: #water"
 ]
 
 { #category : #'environment - sensing - space' }
-CMSpatialEntityElement >> nearestCellsWithoutAny: locatedEntityName [
+CMSpatialEntityElement >> nearestCellsWithoutAny: aClass [
 	"Purpose: returns the nearest cells without any occupant of a given type.
 Valid only for regular grids (square or hexagonal cells).  
-Argument: locatedEntityName = <Symbol | Class>
 Return value: <Collection(SpatialEntityElement)>
 Example: self nearestCellsWithoutAny: #Predator"
 	
 	^self
-		nearestNeighborsVerifying: [:p | p noOccupantType: locatedEntityName]
+		nearestNeighborsVerifying: [:p | (p hasOccupantsOfClass: aClass) not ]
 		withinRadius: (self spaceModel line max: self spaceModel column)
 ]
 

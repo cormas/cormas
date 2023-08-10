@@ -34,14 +34,13 @@ TCMLocated >> center [
 { #category : #'environment - sensing - agents' }
 TCMLocated >> colocatedEntities: locatedEntityName [
 	"Purpose: returns all entities (except the sender) of a given type located in the same location as the receiver. (all locatedEntityName subclasses are considered).
-	Argument: 	locatedEntityName = <Symbol | Class>
 	Return value: <Collection(AgentLocation | ObjectLocation)>
 	Example: self colocatedEntities: #Predator 
 	"
 	
 	| occupants |
 	self patch ifNil: [ ^ nil ].
-	occupants := self patch occupantsAt: locatedEntityName.
+	occupants := self patch occupantsOfClassNamed: locatedEntityName.
 	(occupants includes: self) 
 		ifTrue: [ occupants remove: self ].
 	^ occupants
@@ -150,6 +149,9 @@ Example: self colocatedSimilarAgentsVerifying: [:a | a sex ~= self sex] "
 TCMLocated >> coordinates [
 	" Answer a <Point> with the receiver's coordinates "
 	
+	self isSituated ifFalse: [ 
+		self error: 'The entity must be placed on a cell in order to have coordinates' ].
+	
 	^ self patch coordinates
 ]
 
@@ -253,8 +255,6 @@ Example: self locatedEntities: #Predator verifying: [:a | a isHungry] withinRadi
 { #category : #'environment - sensing - agents' }
 TCMLocated >> locatedEntities: locatedEntityName withinRadius: range [
 	"Purpose: returns all located entities of a given type withing a given radius of the current location (all locatedEntityName subclasses are considered).
-Arguments: 	locatedEntityName = <Symbol | Class>
-			range = <Integer>
 Return value: <Collection(AgentLocation | ObjectLocation)>
 Example: self locatedEntities: #Predator withinRadius: self perceptionRangePredators"
 	
@@ -262,7 +262,7 @@ Example: self locatedEntities: #Predator withinRadius: self perceptionRangePreda
 	self patch ifNil: [ ^ nil ].
 	
 	occupants := (self locationsWithinRadius: range) flatCollect: [ :cell |
-		cell occupantsAt: locatedEntityName ].
+		cell occupantsOfClassNamed: locatedEntityName ].
 	
 	(occupants includes: self) ifTrue: [ occupants remove: self ].
 	^ occupants
@@ -409,7 +409,7 @@ Example: self moveTo: self patch neighbourN"
 	aSpatialEntity isSpatialEntity ifFalse: [ ^ nil ].
 	self leaveWhileMoving: true.
 	self patch: aSpatialEntity.
-	(self patch occupants: self class name) add: self.
+	self patch addOccupant: self.
 ]
 
 { #category : #moving }
@@ -744,14 +744,13 @@ Example: self neighboringLocationsVerifying: [:c | c isClosed not]"
 TCMLocated >> neighbouringLocatedEntities: locatedEntityName [
 	"Purpose: returns all entities of a given type located in the direct neighbourhood of the receiver current location.
 The co-located entities are not considered here (for that, use locatedEntities: locatedEntityName withinRadius: 1)
-Arguments: 	locatedEntityName = <Symbol | Class>
 Return value: <Collection(AgentLocation | ObjectLocation)>
 Example: self neighbouringLocatedEntities: #Predator"
 	
 	self patch ifNil: [ ^ nil ].
 	
 	^ self patch neighbourhood flatCollect: [ :cell |
-		cell occupantsAt: locatedEntityName ].
+		cell occupantsOfClassNamed: locatedEntityName ].
 ]
 
 { #category : #'environment - sensing - agents' }
@@ -817,9 +816,11 @@ Return value: <Integer>"
 TCMLocated >> printOn: aStream [
 
 	super printOn: aStream.
-	aStream 
-		<< '-coord: ';
-		<< self coordinates asString
+	
+	self isSituated ifTrue: [
+		aStream 
+			<< '-coord: ';
+			<< self coordinates asString ]
 ]
 
 { #category : #'star moving' }

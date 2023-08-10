@@ -71,7 +71,7 @@ CMAbstractModelTest >> testClassNameFromEntityName [
 { #category : #tests }
 CMAbstractModelTest >> testCreateGridXYNeighborHoodClosed [
 
-	self assert: model allTheEntities size equals: (4 * 4) + 5.
+	self assert: model allTheEntities size equals: (4 * 4) + 6.
 	self assert: (model selectCellsOfColumn: 1) size equals: 4.
 	self assert: (model selectCellsOfLine: 1) size equals: 4
 ]
@@ -245,8 +245,8 @@ CMAbstractModelTest >> testPickCellConstrainedBy [
 CMAbstractModelTest >> testPickCellWithoutAny [
 
 	| cell |
-	cell := model pickCellWithoutAny: CMMockAgent.
-	self assert: (cell occupantsAt: CMMockAgent) isEmpty
+	cell := model pickCellWithoutAny: CMMockCow.
+	self assert: (cell occupantsOfClass: CMMockCow) isEmpty
 ]
 
 { #category : #'tests-accessing-entities' }
@@ -356,7 +356,7 @@ CMAbstractModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testSelectCellsOfColumn [
 
-	self assert: model allTheEntities size equals: (4 * 4) + 5.
+	self assert: model allTheEntities size equals: (4 * 4) + 6.
 	1 to: 4 do: [ :column | 
 		1 to: 4 do: [ :line | 
 			self
@@ -367,7 +367,7 @@ CMAbstractModelTest >> testSelectCellsOfColumn [
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testSelectCellsOfLine [
 
-	self assert: model allTheEntities size equals: (4 * 4) + 5.
+	self assert: model allTheEntities size equals: (4 * 4) + 6.
 	1 to: 4 do: [ :line | 
 		| cells |
 		cells := model selectCellsOfLine: line.
@@ -400,10 +400,10 @@ CMAbstractModelTest >> testTheAgents [
 
 	| agents |
 	agents := model theAgents.
-	self assert: agents size equals: 5.
+	self assert: agents size equals: 6.
 	
 	agents do: [ :agent |
-		self assert: agent class equals: CMMockAgent ]
+		self assert: (agent isKindOf: CMMockAnimal) ]
 ]
 
 { #category : #'tests-accessing-entities' }

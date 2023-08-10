@@ -2711,7 +2711,7 @@ CMAbstractModel >> pickCellWithoutAny: aClass [
 	Example2: self pickCellWithoutAny: #Building"
 
 	^ self
-		pickCellConstrainedBy: [ :cell | (cell occupantsAt: aClass) isEmpty ]
+		pickCellConstrainedBy: [ :cell | (cell occupantsOfClass: aClass) isEmpty ]
 ]
 
 { #category : #'accessing - entities' }
@@ -2768,7 +2768,7 @@ CMAbstractModel >> pickUnoccupiedCell [
 	"Purpose: return a random cell not occuppied of the grid
 	Return Value: a cell"
 
-	^ self pickCellConstrainedBy: [ :cell | cell noOccupant ]
+	^ self pickCellConstrainedBy: [ :cell | cell hasNoOccupants ]
 ]
 
 { #category : #printing }

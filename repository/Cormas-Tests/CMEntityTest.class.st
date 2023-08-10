@@ -46,14 +46,15 @@ CMEntityTest >> testCormasModel [
 	self assert: model centralCell cormasModel identicalTo: model.
 	model
 		createN: 5
-		randomlyLocatedAloneEntities: CMMockAgent.
+		randomlyLocatedAloneEntities: CMMockCow.
 	model theAgents do: [ :agent | self assert: agent cormasModel identicalTo: model ]
 ]
 
 { #category : #tests }
 CMEntityTest >> testEntityName [
 	self assert: CMMockCell entityName equals: 'Cell'.
-	self assert: CMMockAgent entityName equals: 'Agent'
+	self assert: CMMockCow entityName equals: 'Cow'.
+	self assert: CMMockGoat entityName equals: 'Goat'.
 ]
 
 { #category : #tests }

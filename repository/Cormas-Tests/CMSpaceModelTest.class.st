@@ -84,7 +84,7 @@ CMSpaceModelTest >> testAbsoluteWidth [
 { #category : #test }
 CMSpaceModelTest >> testAllOccupants [
 
-	self assert: self spaceModel allOccupants size equals: 5.
+	self assert: self spaceModel allOccupants size equals: 6.
 
 ]
 
