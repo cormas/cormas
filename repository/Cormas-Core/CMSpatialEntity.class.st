@@ -120,7 +120,7 @@ CMSpatialEntity class >> theOccupants_default [
 { #category : #adding }
 CMSpatialEntity >> addOccupant: anObject [
 
-	(self theOccupants at: anObject class
+	(self theOccupants at: anObject class name
 		ifAbsentPut: [ OrderedCollection new ]) add: anObject
 ]
 
@@ -769,7 +769,7 @@ Return value: <Collection(AgentLocation & ObjectLocation)>"
 	
 	^ aClass withAllSubclasses flatCollect: [ :eachClass |
 		self theOccupants
-			at: eachClass
+			at: eachClass name
 			ifAbsent: [ OrderedCollection new ] ].
 ]
 
