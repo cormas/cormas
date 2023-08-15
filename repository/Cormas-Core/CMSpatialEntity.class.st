@@ -361,17 +361,6 @@ CMSpatialEntity >> includedEntities: x [
 ]
 
 { #category : #'initialize-release' }
-CMSpatialEntity >> init: aSpaceModel [
-
-	self flag: #toReview. "no senders?"
-	"self spaceModel: aSpaceModel.
-	self privateInit.
-	self spaceModel cormasModel class locatedClasses isEmpty ifFalse: [self initOcc: self spaceModel cormasModel class locatedClasses]"
-	
-	
-]
-
-{ #category : #'initialize-release' }
 CMSpatialEntity >> initOccupants [
 	
 	self allOccupants do: [:a | a leave]	"self spaceModel cormasModel class occupantClasses isEmpty 

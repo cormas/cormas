@@ -269,7 +269,6 @@ CMProjectManager >> deleteProject [
 CMProjectManager >> doPostCloseActions [
 	" Private - See superimplementor's comment "
 
-	self flag: #toReview.
 	Cursor wait showWhile: [
 		CMGitBridge cormasRepository ifNotNil: [ : cormasRepo |
 			| icePackage |
@@ -288,7 +287,6 @@ CMProjectManager >> doPostCloseActions [
 { #category : #callbacks }
 CMProjectManager >> exploreProject [
 
-	self flag: #toBeReviewed.
 	self currentProject explore.
 ]
 
@@ -297,7 +295,6 @@ CMProjectManager >> findModelClass: aFilename [
 	" Answer a <String> with the model class name found in aFilename"
  
 	| ckDecl |
-	self flag: #toReview.
 	ckDecl := ((ChunkFileFormatParser for: aFilename asFileReference readStream) parseChunks
 		select: [ : c | c isDoItDeclaration and: [ c contents beginsWith: 'CormasModel subclass:' ] ]) anyOne.
 	^ ckDecl contents substrings third
@@ -427,7 +424,6 @@ CMProjectManager >> resubscribeUIEvents [
 	" Patch: Subscriptions lost after closing a project. Reinitialize "
 
 	| uiWindowClass |
-	self flag: #toReview.
 	uiWindowClass := self classFor: #CMSpecProjectWindow.
 	(self announcer subscriptionsForClass: uiWindowClass)
 		ifEmpty: [ uiWindowClass allInstancesDo: [ : w | w initializeSubscriptions ] ].

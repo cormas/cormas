@@ -245,7 +245,6 @@ CMSimulationManager >> displayRunDuration: duration [
 
 { #category : #'replay-backward' }
 CMSimulationManager >> enableBackward [
-	self flag: #shouldBeRevised.
 	"not yet implemented in cormas-pharo"
 		^ false
 ]
@@ -325,7 +324,6 @@ CMSimulationManager >> initializeSimulation [
 	self simFolder: nil.
 	self simNumero: self simNumero + 1.
 	self traceSize: 0.
-	self flag: #shouldBeRevised.
 	"the 2 following instructions are the responsability of the CMSpecSimulationWindow  isn't it?
 	self allReplayButtonsTo: false.
 	self finalTime > 0 ifTrue: [self simButtonAt: #run displayActivated: true]."
@@ -334,7 +332,6 @@ CMSimulationManager >> initializeSimulation [
 	self cormasModel activeInit isNil
 		ifTrue: [ ^ self cormas alert_NoInit ].
 	Cursor wait showWhile: [ self cormasModel initializeSimulation ].
-	self flag: #shouldBeRevised
 	"the  following instruction is not yet operational with cormas-pharo
 	self enableBackward ifTrue: [self storeCurrentStep]"
 ]
@@ -561,40 +558,6 @@ CMSimulationManager >> runSimulation [
 ]
 
 { #category : #simulate }
-CMSimulationManager >> runSimulationThreaded [
-	"  Loop over the STEPs until simulation end. Threaded process.
-	Method called from Cormas' runButton [>II]"
-	
-	Processor yield.	"Terminate the others processes"
-	processReplayForward isNil
-		ifFalse:
-			[processReplayForward terminate.
-			processReplayForward := nil].
-	processReplayBackward isNil
-		ifFalse:
-			[processReplayBackward terminate.
-			processReplayBackward := nil].	"Suspend or resume current process"
-	processRun isNil
-		ifFalse:
-			[processRun suspendedContext isNil
-				ifFalse:
-					[processRun suspendingList isNil
-						ifFalse:
-							[self simRunButton_Pause: false.
-							^processRun suspend]
-						ifTrue:
-							[self simRunButton_Pause: true.
-							^processRun resume]]].	"Create the process"	"*******************************************************************"	"**********************     RUN  threaded    *********************"
-	processRun := [self runSimulation]
-		forkAt: Processor userBackgroundPriority.	"  ********************       END LOOP        ********************"	"*******************************************************************"	"The instructions below are, normaly, not called, because #terminate (called on process) will leave this current method"
-	self finalTime = self currentTime
-		ifTrue:
-			[processRun terminate.
-			processRun := nil.
-			self simButtonAt: #run displayActivated: false]
-]
-
-{ #category : #simulate }
 CMSimulationManager >> runSimulation_Basic [
 	"Run one simulation step by step.
 	Do not display the Duration time on the Transcript.
@@ -607,7 +570,6 @@ CMSimulationManager >> runSimulation_Basic [
 				ifTrue: [ continue := false ]
 				ifFalse:
 					[ " *********   One Step  ***********" " *********     Done  ***********" self runStepByStep ifNil: [ continue := false ] ] ].
-	self flag: #shouldBeRevised
 	"what is the need of having  'continue' temporary variable here ?
 	why the method is not written as siply as    [self currentSimEnded] whileFalse: [ self runStepByStep ]"
 ]
@@ -750,10 +712,6 @@ CMSimulationManager >> simName [
 CMSimulationManager >> simName: aName [
 	
 	simName := aName.
-	
-		self flag: #shouldBeRevised.
-	"the following instruction is obsolete isn't it?
-	self cormas simName value: 'Sim name: ' , simName"
 ]
 
 { #category : #'replay-private' }
@@ -775,29 +733,6 @@ CMSimulationManager >> simNumero: nb [
 	undoList := nil.
 	redoList := nil.
 	simNumero := nb.
-	self flag: #shouldBeRevised.
-	"the following instruction is obsolete isn't it?
-	self cormas simNum value: 'Sim number: ' , nb printString"
-]
-
-{ #category : #ui }
-CMSimulationManager >> simRunButton_Pause: bool [
-	"bool = false => display the run button [ I> II ] 
-			otherwise, display as [ II ].
-	buttonName = <Symbol> =  #run 
-	bool = <Bollean>
-		run_offIcon   -      runIcon  "
-	
-	| aLabel |
-	
-	self flag: #shouldBeRevised.
-	"bool
-		ifFalse: [aLabel := #runIcon]
-		ifTrue: [aLabel := #pauseIcon].
-	(self cormas mainBuilder componentAt: #runButton) isNil
-		ifFalse:
-			[(self cormas mainBuilder componentAt: #runButton)
-				label: (Cormas perform: aLabel)]"
 ]
 
 { #category : #'replay-store/restore' }

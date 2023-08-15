@@ -27,7 +27,6 @@ CMClassAttributeValueAnalysisRandomness >> getRandomValue [
 	"This method calculates the new value of a parameter."
 	
 	| factor |
-	self flag:#shouldBeRevised.
 	(self randomType = 'random'
 		or: [self randomType = '' or: [self randomType isNil]])
 		ifFalse:

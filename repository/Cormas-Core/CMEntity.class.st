@@ -1407,8 +1407,7 @@ CMEntity >> destroyed: aBoolean [
 CMEntity >> figureAt: selectorName [
 	"Returns the figure for a selectorName"
 	
-	self flag: #toReview.
-	^(self povAt: selectorName) asFigure
+	^ (self povAt: selectorName) asFigure
 ]
 
 { #category : #accessing }
@@ -1474,7 +1473,6 @@ CMEntity >> getPovSpecForSelector: selectorName andInfo: aInfoName [
 	
 	| spec |
 	
-	self flag: #toReview.
 	spec := EntityPOVSpec new.
 	spec povSelector: selectorName.
 	spec povResult: (self getPovResultFor: selectorName).
@@ -1705,8 +1703,7 @@ CMEntity >> povAt: selectorName [
 	"Returns the povSymbol for a selectorName"
 	" ^(self class imageAtPov: selectorName) copy."
 	
-	self flag: #toReview.	
-	^self class
+	^ self class
 		createEntityPOVwithSpec:
 			(self getPovSpecForSelector: selectorName andInfo: #nil)
 ]

@@ -1032,7 +1032,6 @@ CMAbstractModel >> allEntitiesFrom: aClass getInfoFor: infoSymbol [
 CMAbstractModel >> allEntitiesFrom: aClass povAt: povSelector [
 	"return a collection of povs from all entities inheriting from aClass"
 	
-	self flag: #toReview.
 	^(self allTheEntities: aClass) collect: [:each | each povAt: povSelector]
 ]
 
@@ -1867,7 +1866,6 @@ CMAbstractModel >> displayDefaultPovOf: aClass [
 	"Purpose: set the default POV of aClass to be displayed on the first opened spatial grid
 Example : self displayDefaultPovOf: Cell"
 	
-	self flag: #toReview.
 	self displayPov: #povClassName of: aClass
 ]
 
@@ -3156,7 +3154,6 @@ CMAbstractModel >> situatedEntitiesFrom: aClass povAt: povSelector [
 	
 	| coll |
 	
-	self flag: #toReview.
 	coll := OrderedCollection new.
 	(self theEntities: aClass)
 		do:
@@ -3339,7 +3336,6 @@ CMAbstractModel >> timeChanged [
 	Propagate the new time to the class (to be easily accessible from the agents: #currentTime) and all dependents"
 
 	self projectAnnouncer announce: (CMTimeChangedAnnouncement timeStep: self timeStep).
-	self flag: #toClean.
 	"self changed: #timeChanged with: newTime."
 	"newTime = 0 ifTrue: [^self simManager setButtonsForTime0].
 	newTime = 1 ifTrue: [^self simManager setButtonsForTime1]"

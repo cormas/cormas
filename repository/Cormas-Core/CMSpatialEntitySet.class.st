@@ -299,7 +299,6 @@ Example: self removeComponents: self getEpidermis"
 CMSpatialEntitySet >> destroyed: aBoolean [
 	"for the moment, it is a non destructive method for the components. "
 
-	self flag:#TODO. "To be changed ?"
 	super destroyed: aBoolean
 ]
 
