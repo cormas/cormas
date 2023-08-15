@@ -785,6 +785,12 @@ CMNorwegianTranslator >> tOpenPharoMenu [
 ]
 
 { #category : #translations }
+CMNorwegianTranslator >> tOpenSystemBrowser [
+
+	^ 'Åpne systembrowseren'
+]
+
+{ #category : #translations }
 CMNorwegianTranslator >> tPackageDepedenciesGraph [
 
 	^ 'Åpne grafen for pakkeavhengigheter'

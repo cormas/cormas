@@ -785,6 +785,12 @@ CMFrenchTranslator >> tOpenPharoMenu [
 ]
 
 { #category : #translations }
+CMFrenchTranslator >> tOpenSystemBrowser [
+
+	^ 'Ouvrir le navigateur du système'
+]
+
+{ #category : #translations }
 CMFrenchTranslator >> tPackageDepedenciesGraph [
 
 	^ 'Ouvrir le graphique des dépendances des paquets'

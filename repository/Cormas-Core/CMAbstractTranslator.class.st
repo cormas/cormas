@@ -794,6 +794,12 @@ CMAbstractTranslator >> tOpenPharoMenu [
 ]
 
 { #category : #translations }
+CMAbstractTranslator >> tOpenSystemBrowser [
+
+	self subclassResponsibility
+]
+
+{ #category : #translations }
 CMAbstractTranslator >> tPackageDepedenciesGraph [
 
 	self subclassResponsibility
