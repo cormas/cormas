@@ -1544,7 +1544,7 @@ Example: 	self createGridNeighbourhood: 8 closed: true fromMatrixCsvFile: 'map.c
 	collec := OrderedCollection new.
 	matrix do: [ :line | collec addAll: line ].
 	collec
-		with: self theESE
+		with: self theCells
 		do: [ :string :c | 
 			c
 				perform: (aName , ':') asSymbol
@@ -2682,7 +2682,7 @@ CMAbstractModel >> pickCell [
 	"Purpose: return a spatialEntityElement (aCell) picked randomly from the spatial grid.
 	Example: self pickCell"
 
-	^ Cormas selectRandomlyFrom: self theESE
+	^ Cormas selectRandomlyFrom: self theCells
 ]
 
 { #category : #'accessing - entities' }
@@ -2690,7 +2690,7 @@ CMAbstractModel >> pickCellAt: aPointLocation [
 	"Purpose: return a spatialEntityElement (aCell) picked randomly from the spatial grid.
 	Example: self pickCell"
 
-	^ self theESE detect: [ : cellEntity | cellEntity coordinates = aPointLocation ]
+	^ self theCells detect: [ : cellEntity | cellEntity coordinates = aPointLocation ]
 ]
 
 { #category : #'accessing - entities' }
@@ -2698,7 +2698,7 @@ CMAbstractModel >> pickCellConstrainedBy: aBlock [
 	"Purpose: return a random cell of the grid. The cell verifies the block condition.
 	Example:  self pickCellConstrainedBy: [:cell | state=#land] or self pickCellConstrainedBy: [: cell | cell energy > 1] "
 
-	^ Cormas selectRandomlyFrom: (self theESE asArray select: [ :c | aBlock value: c ])
+	^ Cormas selectRandomlyFrom: (self theCells asArray select: [ :c | aBlock value: c ])
 ]
 
 { #category : #'accessing - entities' }
@@ -2717,7 +2717,7 @@ CMAbstractModel >> pickCellsN: anInteger [
 	"Purpose: return a collection of spatialEntityElements (some Cells) picked randomly from the spatial grid (without replacement).
 	Example: self pickCellsN: 5"
 
-	^ Cormas selectRandomlyFrom: self theESE subCollectionSize: anInteger
+	^ Cormas selectRandomlyFrom: self theCells subCollectionSize: anInteger
 ]
 
 { #category : #'accessing - entities' }
@@ -2970,7 +2970,7 @@ CMAbstractModel >> removeMultipleChanges [
 CMAbstractModel >> resetCells [
 	"Purpose: reset all the generic attributes of the cells"
 
-	self theESE do: #reset
+	self theCells do: #reset
 ]
 
 { #category : #'init entities' }
@@ -3196,7 +3196,7 @@ Examples: self stDevOfAttribute: #age of: Person
 CMAbstractModel >> stepAsynchronouslyCA: t [
 	"Purpose: To active the transition function and to update asynchronously a cellular automata"
 	
-	self theESE
+	self theCells
 		do:
 			[:a | 
 			a
@@ -3240,8 +3240,8 @@ CMAbstractModel >> stepSynchronouslyCA: t [
 	"Purpose: To active the transition function and to update synchronously a cellular automata
 Example: See the models Conway http://cormas.cirad.fr/en/applica/conway.htm or Fire http://cormas.cirad.fr/en/applica/fireautomata.htm"
 	
-	self theESE do: [:a | a newState].
-	self theESE do: [:a | a updateState]
+	self theCells do: [:a | a newState].
+	self theCells do: [:a | a updateState]
 ]
 
 { #category : #'utilities - population metrics' }
@@ -3301,14 +3301,13 @@ CMAbstractModel >> theCSE: aSet [
 ]
 
 { #category : #'accessing - entities' }
-CMAbstractModel >> theESE [
-	"Purpose: Returns the collection of SpatialEntityElements (equivalent to theCells in case your model ESE class is named Cell)"
+CMAbstractModel >> theCells [
 	
 	^ self theEntities: self class cellClass
 ]
 
 { #category : #'accessing - entities' }
-CMAbstractModel >> theESE: aSet [
+CMAbstractModel >> theCells: aSet [
 	
 	^self
 		setTheEntity: self class cellClass

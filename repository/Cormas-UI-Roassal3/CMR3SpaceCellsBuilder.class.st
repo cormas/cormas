@@ -15,7 +15,7 @@ CMR3SpaceCellsBuilder >> defaultMasterShape [
 { #category : #accessing }
 CMR3SpaceCellsBuilder >> objects [
 
-	^ diagramBuilder cormasModel theESE
+	^ diagramBuilder cormasModel theCells
 ]
 
 { #category : #rendering }

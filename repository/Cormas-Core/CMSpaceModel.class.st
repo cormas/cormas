@@ -827,11 +827,11 @@ CMSpaceModel >> dominance: attribute [
 	| numberCells sum n pi classes |
 	numberCells := self line * self column.
 	sum := 0.
-	classes := (self cormasModel theESE collect: [ :a | a perform: attribute ]) asSet.
+	classes := (self cormasModel theCells collect: [ :a | a perform: attribute ]) asSet.
 	n := classes size.
 	classes
 		do: [ :i | 
-			pi := (self cormasModel theESE select: [ :a | (a perform: attribute) = i ]) size
+			pi := (self cormasModel theCells select: [ :a | (a perform: attribute) = i ]) size
 				/ numberCells.
 			sum := sum + (pi * pi ln) ].
 	^ n ln + sum
@@ -846,7 +846,7 @@ CMSpaceModel >> edgeDensity: aClass [
 	(self cormasModel
 		perform: (self cormasModel getterForEntityClass: aClass) asSymbol)
 		do: [ :a | size := size + a surround size ].
-	^ size / self cormasModel theESE size
+	^ size / self cormasModel theCells size
 ]
 
 { #category : #'landscape indices' }
@@ -1817,7 +1817,7 @@ CMSpaceModel >> nbCount: anIntegerOrSymbol [
 CMSpaceModel >> nbDistinctValuesOf: anAttribute [
 	"Return the number of different values for anAttribute"
 
-	^ (self cormasModel theESE collect: [ :a | a perform: anAttribute ]) asSet size
+	^ (self cormasModel theCells collect: [ :a | a perform: anAttribute ]) asSet size
 ]
 
 { #category : #'private - accessing' }
@@ -1838,7 +1838,7 @@ CMSpaceModel >> nearestNeighbourProbaAttribute: anAttribute state1: x1 state2: x
 	"return the data (a number) to be recorded"
 	
 	| c1 c2 |
-	c1 := self cormasModel theESE select: [:a | (a perform: anAttribute) = x1].
+	c1 := self cormasModel theCells select: [:a | (a perform: anAttribute) = x1].
 	c2 := c1 select: [:a | a neighbourhood anySatisfy: [:b | (a perform: anAttribute) = x2 ] ].
 	^ c2 size / c1 size
 ]
@@ -2572,7 +2572,7 @@ CMSpaceModel >> shannon: attribute [
     attribute = <Symbol>"
 	
 	| cells totCells sum pi setOfValues |
-	cells := self cormasModel theESE asArray.	"pour optimisation"
+	cells := self cormasModel theCells asArray.	"pour optimisation"
 	totCells := cells size.
 	totCells = 0 ifTrue: [^0].
 	sum := 0.
