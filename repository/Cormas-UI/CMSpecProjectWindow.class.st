@@ -889,7 +889,9 @@ CMSpecProjectWindow >> subMenuForProgramming [
 	^ MenuModel new
 		addGroup: [ : group |
 			group addItem: [ : item | self subMenuProgrammingEntityClass: item ] ];
-		addGroup: [ : group | 
+		addGroup: [ : group |
+			group addItem: [ : item | self subMenuProgrammingOpenSystemBrowser: item ] ];
+		addGroup: [ : group |
 			group addItem: [ : item | self subMenuProgrammingSimulationOrganisation: item ] ];
 		addGroup: [ : group | 
 			group addItem: [ : item | self subMenuProgrammingObserver: item ] ].
@@ -1100,6 +1102,15 @@ CMSpecProjectWindow >> subMenuProgrammingObserver: item [
 "		icon: Smalltalk ui icons openIcon;"
 		shortcut: $O command;
 		subMenu: self subMenuProgrammingObserver
+]
+
+{ #category : #'submenu-programming' }
+CMSpecProjectWindow >> subMenuProgrammingOpenSystemBrowser: item [
+
+	item
+		name: self translator tOpenSystemBrowser;
+		icon: (self iconNamed: #nautilus);
+		action: [ self openSystemBrowser ]
 ]
 
 { #category : #'submenu-programming' }
