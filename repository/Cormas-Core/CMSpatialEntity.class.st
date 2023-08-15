@@ -47,8 +47,7 @@ Class {
 		'outline',
 		'edge',
 		'theOccupants',
-		'theCSE',
-		'includedEntities'
+		'theCSE'
 	],
 	#classInstVars : [
 		'bounds'
@@ -182,28 +181,6 @@ CMSpatialEntity >> color: aColorSymbol [
 	(Color registeredColorNames includes: aColorSymbol asSymbol)
 		ifTrue: [ self flashColor: (Color perform: aColorSymbol asSymbol) ]
 		ifFalse: [ self flashColor: Color red ]
-]
-
-{ #category : #displaying }
-CMSpatialEntity >> colorI: aColorSymbol [
-
-	"Purpose: for each included spatial entities, changes background color to a given color (to draw observer attention to the neighbourhood)
-Argument: aColorSymbol = <ByteSymbol>
-Example: self colorI: #pink"
-
-	self includedEntities ifNotNil: [ 
-		self includedEntities do: [ :v | v color: aColorSymbol ] ]
-]
-
-{ #category : #displaying }
-CMSpatialEntity >> colorN: aColorSymbol [
-
-	"Purpose: for each neighours, changes background color to a given color (to draw observer attention to the neighbourhood)
-Argument: aColorSymbol = <ByteSymbol>
-Example: self colorN: #pink"
-
-	self neighbourhood ifNotNil: [ 
-		self neighbourhood do: [ :v | v color: aColorSymbol ] ]
 ]
 
 { #category : #accessing }
@@ -346,18 +323,6 @@ Return value: <Boolean>
 Example: self hasOccupantType: #Tree"
 
 	^ (self occupantsOfClass: aClass) isNotEmpty
-]
-
-{ #category : #accessing }
-CMSpatialEntity >> includedEntities [
-	
-	^includedEntities ifNil: [includedEntities := Set new]
-]
-
-{ #category : #accessing }
-CMSpatialEntity >> includedEntities: x [
-	
-	includedEntities := x
 ]
 
 { #category : #'initialize-release' }
@@ -893,7 +858,6 @@ CMSpatialEntity >> reset [
 	
 	super reset.
 	theCSE := nil.
-	includedEntities := nil.
 	self initOccupants
 ]
 

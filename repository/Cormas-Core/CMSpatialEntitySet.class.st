@@ -623,7 +623,6 @@ CMSpatialEntitySet >> reset [
 	
 	self resetFlag.
 	theCSE := nil.
-	includedEntities := nil.
 	components := nil.
 	type := #unknow.
 	outline := nil
