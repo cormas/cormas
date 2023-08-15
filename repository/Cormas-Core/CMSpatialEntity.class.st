@@ -47,7 +47,7 @@ Class {
 		'outline',
 		'edge',
 		'theOccupants',
-		'theCSE'
+		'theAggregates'
 	],
 	#classInstVars : [
 		'bounds'
@@ -186,7 +186,7 @@ CMSpatialEntity >> color: aColorSymbol [
 { #category : #accessing }
 CMSpatialEntity >> compoundSpatialClasses [
 	
-	^theCSE
+	^theAggregates
 ]
 
 { #category : #control }
@@ -362,8 +362,8 @@ Argument: aSpatialEntity = <SpatialEntitySet>
 Return value: <Boolean>
 Example: self isComponentOf: Forest"
 
-	^(self theCSE keys includes: aSpatialEntity name)
-		and: [(self theCSE at: aSpatialEntity name) isNil not]
+	^(self theAggregates keys includes: aSpatialEntity name)
+		and: [(self theAggregates at: aSpatialEntity name) isNil not]
 ]
 
 { #category : #testing }
@@ -432,10 +432,10 @@ Example: self myCSE: #Plot"
 	aClassName := aClassOrClassName isSymbol
 		              ifTrue: [ aClassOrClassName ]
 		              ifFalse: [ aClassOrClassName name ].
-	^ ((self theCSE includesKey: aClassName) not or: [ 
-		   (self theCSE at: aClassName) isNil ])
+	^ ((self theAggregates includesKey: aClassName) not or: [ 
+		   (self theAggregates at: aClassName) isNil ])
 		  ifTrue: [ nil ]
-		  ifFalse: [ self theCSE at: aClassName ]
+		  ifFalse: [ self theAggregates at: aClassName ]
 ]
 
 { #category : #deprecated }
@@ -857,7 +857,7 @@ CMSpatialEntity >> reset [
 	"Purpose: resets inherited and specific attributes"
 	
 	super reset.
-	theCSE := nil.
+	theAggregates := nil.
 	self initOccupants
 ]
 
@@ -919,15 +919,15 @@ CMSpatialEntity >> spaceModel: aSpaceModel [
 ]
 
 { #category : #accessing }
-CMSpatialEntity >> theCSE [
+CMSpatialEntity >> theAggregates [
 	
-	^theCSE ifNil: [theCSE := Dictionary new]
+	^ theAggregates ifNil: [theAggregates := Dictionary new]
 ]
 
 { #category : #accessing }
-CMSpatialEntity >> theCSE: aDict [
+CMSpatialEntity >> theAggregates: aDictionary [
 	
-	theCSE := aDict
+	theAggregates := aDictionary
 ]
 
 { #category : #accessing }

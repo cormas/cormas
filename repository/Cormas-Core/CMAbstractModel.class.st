@@ -3285,7 +3285,7 @@ CMAbstractModel >> theAgentsComm [
 ]
 
 { #category : #'accessing - entities' }
-CMAbstractModel >> theCSE: aSet [
+CMAbstractModel >> theAggregates: aSet [
 	
 	| coll |
 	coll := self class compoundSpatialClasses.

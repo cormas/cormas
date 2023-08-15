@@ -1980,8 +1980,8 @@ CMSpaceModel >> release: aClass [
 CMSpaceModel >> resetCompoundSpatialEntity: compoundClass [
 
 	(self spatialEntitiesAt: compoundClass name)
-		do: [: agg | agg components do:[: c | (c theCSE includesKey: compoundClass name)
-				ifTrue: [c theCSE at: compoundClass name put: nil]]].
+		do: [: agg | agg components do:[: c | (c theAggregates includesKey: compoundClass name)
+				ifTrue: [c theAggregates at: compoundClass name put: nil]]].
 	self spatialEntitiesAt: compoundClass name put: OrderedCollection new.
 	self cormasModel resetEntities: compoundClass.
 	"self changed: #createRegularAggregatesImagesFor: with: compoundClass"
@@ -1991,9 +1991,9 @@ CMSpaceModel >> resetCompoundSpatialEntity: compoundClass [
 CMSpaceModel >> resetCompoundSpatialEntity: compoundClass andTheirComponents: componentClass [
 	
 	(self spatialEntitiesAt: componentClass name)
-		do: [:c | (c theCSE includesKey: compoundClass name)
+		do: [:c | (c theAggregates includesKey: compoundClass name)
 				ifTrue: [
-					c theCSE
+					c theAggregates
 						at: compoundClass name
 						put: nil]].
 	self spatialEntitiesAt: compoundClass name put: OrderedCollection new.
