@@ -896,13 +896,11 @@ CMSpecProjectWindow >> subMenuForProgramming [
 
 	^ MenuModel new
 		addGroup: [ : group |
-			group addItem: [ : item | self subMenuProgrammingEntityClass: item ] ];
-		addGroup: [ : group |
-			group addItem: [ : item | self subMenuProgrammingOpenSystemBrowser: item ] ];
-		addGroup: [ : group |
-			group addItem: [ : item | self subMenuProgrammingSimulationOrganisation: item ] ];
-		addGroup: [ : group | 
-			group addItem: [ : item | self subMenuProgrammingObserver: item ] ].
+			group
+				addItem: [ : item | self subMenuProgrammingEntityClass: item ];
+				addItem: [ : item | self subMenuProgrammingOpenSystemBrowser: item ];
+				addItem: [ : item | self subMenuProgrammingSimulationOrganisation: item ];
+				addItem: [ : item | self subMenuProgrammingObserver: item ] ].
 ]
 
 { #category : #'submenu-simulation' }
