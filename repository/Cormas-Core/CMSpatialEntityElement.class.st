@@ -7,8 +7,7 @@ Class {
 	#name : #CMSpatialEntityElement,
 	#superclass : #CMSpatialEntity,
 	#instVars : [
-		'orderedNeighbourhood',
-		'default'
+		'orderedNeighbourhood'
 	],
 	#category : #'Cormas-Core-Entities'
 }
