@@ -722,6 +722,14 @@ CMSpecProjectWindow >> openSpacePresenterUpdateScenario [
 
 ]
 
+{ #category : #keymaps }
+CMSpecProjectWindow >> openSystemBrowser [
+
+	[ self cormasModel class browse ]
+		on: Error
+		do: [ Smalltalk tools browser open ]
+]
+
 { #category : #callbacks }
 CMSpecProjectWindow >> openVizMessages [
 self alertMessage: 'No implemented yet'
