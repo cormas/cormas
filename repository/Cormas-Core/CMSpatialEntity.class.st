@@ -414,7 +414,7 @@ Return value: <Collection(SpatialEntity)>"
 ]
 
 { #category : #'environment - sensing - space' }
-CMSpatialEntity >> myCSE: aClassOrClassName [
+CMSpatialEntity >> myAggregateOfClass: aClassOrClassName [
 
 	"Purpose: returns the instance of a given higher level spatialEntity the receiver belongs to.
 Argument:  aClassOrClassName can be an entity class or the name of an entity <ByteSymbol>
