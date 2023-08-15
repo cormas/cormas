@@ -29,19 +29,6 @@ CMSpatialEntityNotConnex >> initEdge [
 	self edge: (self components anySatisfy: #edge)
 ]
 
-{ #category : #obsolete }
-CMSpatialEntityNotConnex >> setImage [
-
-	"a collec of components images"
-
-	| collec |
-	collec := OrderedCollection new.
-	self components do: [ :c | 
-		c image ifNil: [ c setImage ].
-		collec add: c image ].
-	self image: collec
-]
-
 { #category : #displaying }
 CMSpatialEntityNotConnex >> setOutline [
 	"original setOutline method for SptialEntityNotConnex

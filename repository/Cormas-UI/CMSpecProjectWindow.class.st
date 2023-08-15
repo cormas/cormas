@@ -873,7 +873,6 @@ CMSpecProjectWindow >> subMenuDevTools [
 			group
 				addItem: [ : item | self subMenuToolsExpressions: item ];
 				addItem: [ : item | self subMenuToolsCormasBrowser: item ];
-				addItem: [ : item | self subMenuToolsBrowseFlags: item ];
 				addItem: [ : item | self subMenuToolsBrowseHalts: item ];
 				addItem: [ : item | self subMenuOpenCormasIssue: item ];
 				addItem: [ : item | self subMenuRunCormasTests: item ] ]
@@ -1426,16 +1425,6 @@ CMSpecProjectWindow >> subMenuToolsBrowseBaseline: item [
 		icon: (self iconNamed: #smallHierarchyBrowser);
 		shortcut: $P command;
 		action: [ self openCormasBaselineBrowser ]
-]
-
-{ #category : #'submenu-tools-developer' }
-CMSpecProjectWindow >> subMenuToolsBrowseFlags: item [
-
-	item
-		name: 'CORMAS Methods with #flag:';
-		icon: (self iconNamed: #flag);
-		shortcut: $F command;
-		action: [ self openCormasFlagMethods ]
 ]
 
 { #category : #'submenu-tools-developer' }

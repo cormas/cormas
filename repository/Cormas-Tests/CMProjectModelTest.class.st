@@ -160,13 +160,6 @@ CMProjectModelTest >> testDefaultStdCormasModelName [
 ]
 
 { #category : #test }
-CMProjectModelTest >> testFindSimulationNamed [
-
-	self flag: #toDo. "Get simulation files "
-	"self should: [ self projectModel findSimulationNamed: 'noname' ] raise: Error."
-]
-
-{ #category : #test }
 CMProjectModelTest >> testGitBridge [
 
 	self assert: (self projectModel gitBridge isKindOf: CMGitBridge)
@@ -181,29 +174,11 @@ CMProjectModelTest >> testHasCormasModelClass [
 ]
 
 { #category : #test }
-CMProjectModelTest >> testHasStoredSimulations [
-
-	self flag: #toDo. "Get simulation files "
-"	self deny: self projectModel hasStoredSimulations.
-	self application currentProject: (CMProjectModel basicNew
-				initializeForModel: model named: 'Sample Model';
-				yourself).
-	self deny: self application hasStoredSimulations."
-]
-
-{ #category : #test }
 CMProjectModelTest >> testProjectName [
 
 	self assert: (self projectModel projectName isKindOf: String).
 	self assert: self projectModel projectName equals: 'CMMockModel'.
 
-]
-
-{ #category : #test }
-CMProjectModelTest >> testStoredSimulations [
-
-	self flag: #toDo. "Get simulation files "
-	"self assert: self projectModel storedSimulations isEmpty"
 ]
 
 { #category : #tests }

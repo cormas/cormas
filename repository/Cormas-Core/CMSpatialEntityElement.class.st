@@ -7,8 +7,7 @@ Class {
 	#name : #CMSpatialEntityElement,
 	#superclass : #CMSpatialEntity,
 	#instVars : [
-		'orderedNeighbourhood',
-		'default'
+		'orderedNeighbourhood'
 	],
 	#category : #'Cormas-Core-Entities'
 }
@@ -139,7 +138,6 @@ CMSpatialEntityElement >> isCrossedByArc: anArc [
 	"does not work anymore. an ESE does not know directly it bounds."
 
 	| arcLine |
-	self flag:#TODO.
 			"Il faudrait justement que ca fonctionne !
 L idee initiale était d avoir un espace par défaut (non affiché) sur lequel on pourrait plus facilement faire ce genre de calcul"
 	arcLine := LineSegment

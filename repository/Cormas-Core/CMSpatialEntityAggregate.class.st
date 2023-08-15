@@ -27,37 +27,6 @@ CMSpatialEntityAggregate >> compactness: uneValeur [
 	compactness := uneValeur
 ]
 
-{ #category : #obsolete }
-CMSpatialEntityAggregate >> connexityTest [
-	"teste si les cellules de l' agreg (self) sont ttes connexes: a partir d'une cellule quelconque de l'agreg, la procedure determine un Agregat (agreg2). 
-Retourne la liste des cells de l'agreg qui n'appartiennent pas a agreg2. Si cette liste est vide = ok"
-	
-	| agreg2 listeVoisins listTempo test agreg1 |
-	test := OrderedCollection new.
-	agreg1 := Set new.
-	agreg1 addAll: self components.
-	agreg1 do: [:c | c flag: false].
-	agreg2 := Set new.
-	agreg2 add: ((self at: 1) flag: true).
-	listeVoisins := agreg2.
-	[listeVoisins isEmpty]
-		whileFalse:
-			[listTempo := Set new.
-			listeVoisins
-				do:
-					[:cell | 
-					listTempo
-						addAll:
-							(cell neighbourhood
-								select: [:v | (agreg1 includes: v) and: [v flag = false]])].
-			listeVoisins := listTempo.
-			listeVoisins do: [:c | c flag: true].
-			agreg2 addAll: listeVoisins].
-	agreg2 do: [:c | c flag: false].	"tester uniquement sur la taille ne suffit pas :"
-	test := agreg1 - agreg2.
-	^test
-]
-
 { #category : #'components - managing' }
 CMSpatialEntityAggregate >> deleteComponents: aCollec [
 	"Purpose: removes a given set of components and tests if some components have effectively been removed before computing the surround again
@@ -352,71 +321,6 @@ CMSpatialEntityAggregate >> segment: direction from6: segments [
 	direction = #NE ifTrue: [^segments at: 4].
 	direction = #E ifTrue: [^segments at: 5].
 	direction = #SE ifTrue: [^segments last]
-]
-
-{ #category : #obsolete }
-CMSpatialEntityAggregate >> setImage [
-	
-	| p segments vertices newSegment thePolylines mainPolyline ie |
-	self setOutline.
-	self outline isNil not
-		ifTrue:
-			["Recuperation de tous les segments"
-			segments := OrderedCollection new.
-			self outline
-				do:
-					[:c | 
-					p := self spaceModel elementaryEntities
-						detect: [:cc | cc id = c first]
-						ifNone: [self halt].
-					c last
-						do:
-							[:dir | 
-							newSegment := p perform: ('lineSegment' , dir asString , 'f') asSymbol.
-							newSegment isNil ifFalse: [segments add: newSegment]]].	"Il faut ensuite les recoudre...pour creer les vertices des polylines"
-			thePolylines := OrderedCollection new.
-			[segments isEmpty]
-				whileFalse:
-					[vertices := self joinSegments: segments.
-					(vertices isNil not and: [vertices isEmpty not])
-						ifTrue: [thePolylines add: (Polyline vertices: vertices)]].	"Creation de l'image, mise a jour affichage si necessaire"
-			thePolylines isEmpty
-				ifFalse:
-					[thePolylines := thePolylines
-						asSortedCollection: [:a :b | a vertices size > b vertices size].
-					mainPolyline := thePolylines first.
-					thePolylines remove: mainPolyline.
-					self image: mainPolyline asFiller.
-					self center: (self at: 1) center.	"le centre de l'agregat correspond au centre du 1er element"
-					self includedEntities: Set new.
-					thePolylines
-						do:
-							[:polyL | 
-							ie := self class new: self spaceModel.
-							ie image: polyL asFiller.
-							self includedEntities add: ie]]]
-]
-
-{ #category : #obsolete }
-CMSpatialEntityAggregate >> setImage4 [
-	
-	| vertices mainPolyline epiderme |
-	OrderedCollection new.
-
-	epiderme := self getEpidermis.
-	vertices := OrderedCollection new.
-	epiderme do: [:c | vertices addAll: c image component asPolyline vertices].
-	mainPolyline := Polyline vertices: vertices.
-	self image: mainPolyline
-]
-
-{ #category : #obsolete }
-CMSpatialEntityAggregate >> setImageFromIrregularCells [
-	
-	| mainPolyline |
-	mainPolyline := Polyline vertices: self outline.
-	self image: mainPolyline.	"le centre de l'agregat correspond au centre du 1er element"	"self includedEntities addAll: thePolylines"
-	self center: (self at: 1) center
 ]
 
 { #category : #displaying }
