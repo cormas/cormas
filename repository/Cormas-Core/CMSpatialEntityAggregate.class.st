@@ -190,7 +190,7 @@ CMSpatialEntityAggregate >> initNeighbourhood [
 	neighbourhood := (surround
 		collect:
 			[:a | 
-			a theCSE
+			a theAggregates
 				at: self class name
 				ifAbsent: [nil]]) asSet.	"To get rid of duplicates, a Set is used..."
 	neighbourhood := neighbourhood asOrderedCollection	"...and then made as an OrderedCollection once the job is done..."

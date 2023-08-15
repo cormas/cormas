@@ -20,7 +20,7 @@ Argument:  aClassOrClassName can be an entity class or the name of an entity <By
 Return value: <OrderedCollection(SpatialEntity) | nil>"
 	
 	^ (self locationsWithinRadius: range) asOrderedCollection collect: [ :cell |
-		cell myCSE: aClassOrClassName ]
+		cell myAggregateOfClass: aClassOrClassName ]
 ]
 
 { #category : #displaying }

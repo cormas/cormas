@@ -90,7 +90,7 @@ Example: self addComponents: self surround"
 
 	self components addAll: aCollecOfSpatialEntities.
 	aCollecOfSpatialEntities
-		do: [ :c | c theCSE at: self class name put: self ].
+		do: [ :c | c theAggregates at: self class name put: self ].
 	self setSurround.
 	self cormasModel
 		registerEntityChange: #compositionChanged
@@ -120,7 +120,7 @@ Example: self addSilentlyComponents: self surround"
 	aCollecOfSpatialEntities
 		do:
 			[:c | 
-			c theCSE
+			c theAggregates
 				at: self class name
 				put: self]
 ]
@@ -622,7 +622,7 @@ CMSpatialEntitySet >> reset [
 	"on reprend donc du coup les appellent d''un reset en ometant le initOcc"
 	
 	self resetFlag.
-	theCSE := nil.
+	theAggregates := nil.
 	components := nil.
 	type := #unknow.
 	outline := nil
