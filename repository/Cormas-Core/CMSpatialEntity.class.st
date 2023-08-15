@@ -105,12 +105,6 @@ CMSpatialEntity class >> new: aSpaceModel [
 ]
 
 { #category : #'default value' }
-CMSpatialEntity class >> theCSE_default [
-	
-	^Dictionary new
-]
-
-{ #category : #'default value' }
 CMSpatialEntity class >> theOccupants_default [
 	
 	^Dictionary new
