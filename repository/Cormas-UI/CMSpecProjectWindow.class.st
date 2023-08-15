@@ -722,6 +722,14 @@ CMSpecProjectWindow >> openSpacePresenterUpdateScenario [
 
 ]
 
+{ #category : #keymaps }
+CMSpecProjectWindow >> openSystemBrowser [
+
+	[ self cormasModel class browse ]
+		on: Error
+		do: [ Smalltalk tools browser open ]
+]
+
 { #category : #callbacks }
 CMSpecProjectWindow >> openVizMessages [
 self alertMessage: 'No implemented yet'
@@ -888,11 +896,11 @@ CMSpecProjectWindow >> subMenuForProgramming [
 
 	^ MenuModel new
 		addGroup: [ : group |
-			group addItem: [ : item | self subMenuProgrammingEntityClass: item ] ];
-		addGroup: [ : group | 
-			group addItem: [ : item | self subMenuProgrammingSimulationOrganisation: item ] ];
-		addGroup: [ : group | 
-			group addItem: [ : item | self subMenuProgrammingObserver: item ] ].
+			group
+				addItem: [ : item | self subMenuProgrammingEntityClass: item ];
+				addItem: [ : item | self subMenuProgrammingOpenSystemBrowser: item ];
+				addItem: [ : item | self subMenuProgrammingSimulationOrganisation: item ];
+				addItem: [ : item | self subMenuProgrammingObserver: item ] ].
 ]
 
 { #category : #'submenu-simulation' }
@@ -1100,6 +1108,15 @@ CMSpecProjectWindow >> subMenuProgrammingObserver: item [
 "		icon: Smalltalk ui icons openIcon;"
 		shortcut: $O command;
 		subMenu: self subMenuProgrammingObserver
+]
+
+{ #category : #'submenu-programming' }
+CMSpecProjectWindow >> subMenuProgrammingOpenSystemBrowser: item [
+
+	item
+		name: self translator tOpenSystemBrowser;
+		icon: (self iconNamed: #nautilus);
+		action: [ self openSystemBrowser ]
 ]
 
 { #category : #'submenu-programming' }

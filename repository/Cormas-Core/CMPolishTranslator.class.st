@@ -785,6 +785,12 @@ CMPolishTranslator >> tOpenPharoMenu [
 ]
 
 { #category : #translations }
+CMPolishTranslator >> tOpenSystemBrowser [
+
+	^ 'Otwórz przeglądarkę systemową'
+]
+
+{ #category : #translations }
 CMPolishTranslator >> tPackageDepedenciesGraph [
 
 	^ 'Otwarty wykres zależności pakietów'

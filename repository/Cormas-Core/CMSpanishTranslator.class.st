@@ -785,6 +785,12 @@ CMSpanishTranslator >> tOpenPharoMenu [
 ]
 
 { #category : #translations }
+CMSpanishTranslator >> tOpenSystemBrowser [
+
+	^ 'Abrir el navegador del sistema'
+]
+
+{ #category : #translations }
 CMSpanishTranslator >> tPackageDepedenciesGraph [
 
 	^ 'Abrir Visualización de Dependencias de Paquetes'

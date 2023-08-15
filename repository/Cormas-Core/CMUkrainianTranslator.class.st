@@ -785,6 +785,12 @@ CMUkrainianTranslator >> tOpenPharoMenu [
 ]
 
 { #category : #translations }
+CMUkrainianTranslator >> tOpenSystemBrowser [
+
+	^ 'Відкрити системний браузер'
+]
+
+{ #category : #translations }
 CMUkrainianTranslator >> tPackageDepedenciesGraph [
 
 	^ 'Відкрити графік залежностей пакунків'

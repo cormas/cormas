@@ -785,6 +785,12 @@ CMEnglishTranslator >> tOpenPharoMenu [
 ]
 
 { #category : #translations }
+CMEnglishTranslator >> tOpenSystemBrowser [
+
+	^ 'Open System Browser'
+]
+
+{ #category : #translations }
 CMEnglishTranslator >> tPackageDepedenciesGraph [
 
 	^ 'Open Package Dependencies Graph'
