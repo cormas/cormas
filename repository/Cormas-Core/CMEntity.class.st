@@ -38,7 +38,6 @@ Class {
 		'id',
 		'flag',
 		'collector',
-		'request',
 		'cormasModel'
 	],
 	#classInstVars : [
@@ -1846,52 +1845,10 @@ CMEntity >> printOn: aStream [
 		<< self id asString
 ]
 
-{ #category : #'common-pool resources' }
-CMEntity >> receiveRequestAbout: anAttribute qty: qty from: aRequester [
-	"Purpose: stores the request (a quantity of an attribute) made by a requester
-Arguments: anAttribute = <Symbol>
-			qty = <Number>
-			aRequester = <Entity>
-Example: self receiveRequestAbout: #surfaceWater qty: 2 from: aFarmer"
-	
-	self request addLast: (Array with: anAttribute with: qty with: aRequester)
-]
-
-{ #category : #'common-pool resources' }
-CMEntity >> receiveResource: anAtt qty: x [
-	"Purpose: adds a quantity of resource (x) to an attribute representing a common-pool resource. 
-Arguments: anAtt = <Symbol> Warning : anAtt has to be an instance variable of the class, with a couple of accessing methods
-			x = <Number>
-Example: self receiveResource: #surfaceWater qty: 10.3"
-	
-	| att newValue |
-	anAtt isSymbol
-		ifTrue: [att := anAtt asString]
-		ifFalse: [att := anAtt].
-	(self class instVarNames includes: att) ifFalse: [self halt].
-	newValue := (self perform: att asSymbol) + x.
-	self
-		perform: (att , ':') asSymbol
-		with: newValue
-]
-
-{ #category : #'common-pool resources' }
-CMEntity >> request [
-	
-	^request ifNil: [request := OrderedCollection new]
-]
-
-{ #category : #'common-pool resources' }
-CMEntity >> request: x [
-	
-	request := x
-]
-
 { #category : #'initialize-release' }
 CMEntity >> reset [
 	"Purpose: to reset all the attributes that have to be cleaned by the beginning of a new simulation"
 	
-	request := nil.
 	self resetFlag
 ]
 
@@ -1899,160 +1856,4 @@ CMEntity >> reset [
 CMEntity >> resetFlag [
 	
 	flag := nil
-]
-
-{ #category : #'common-pool resources' }
-CMEntity >> treatRequestOrder [
-	"Purpose: for all kind of common-pool resources, perform the sharing among requesters according to the rule 'first demand first served'"
-	
-	| theKindOfResources |
-	theKindOfResources := Set new.	"create a set of all kind of resources"
-	self request
-		do:
-			[:table | 
-			(theKindOfResources includes: table first)
-				ifFalse: [theKindOfResources add: table first]].
-	theKindOfResources do: [:res | self treatRequestOrder: res]
-]
-
-{ #category : #'common-pool resources' }
-CMEntity >> treatRequestOrder: res [
-	"Purpose: for a givern common-pool resource, perform the sharing among requesters according to the rule 'first demand first served'
-Argument: res = <Symbol>
-Example: self treatRequestOrder: #surfaceWater"
-	
-	| demandesTraitees ressource quantiteDemandee demandeur v aTraiter |
-	demandesTraitees := OrderedCollection new.
-	aTraiter := self request select: [:a | a first = res].
-	aTraiter
-		do:
-			[:tableau | 
-			ressource := self perform: res.
-			quantiteDemandee := tableau at: 2.
-			demandeur := tableau last.
-			ressource > quantiteDemandee
-				ifTrue: [v := quantiteDemandee]
-				ifFalse: [v := ressource].
-			ressource := ressource - v.
-			self
-				perform: (tableau first asString , ':') asSymbol
-				with: ressource.
-			demandeur
-				receiveResource: tableau first
-				qty: v.
-			demandesTraitees add: tableau].
-	self request removeAll: demandesTraitees
-]
-
-{ #category : #'common-pool resources' }
-CMEntity >> treatRequestProrata [
-	"Purpose: for all kind of common-pool resources, perform the sharing among requesters according to the rule 'pro rata'"
-	
-	| lesTypesDeRessource |
-	lesTypesDeRessource := Set new.	"create a set of all kind of resources"
-	self request
-		do:
-			[:tableau | 
-			(lesTypesDeRessource includes: tableau first)
-				ifFalse: [lesTypesDeRessource add: tableau first]].
-	lesTypesDeRessource do: [:res | self treatRequestProrata: res]
-]
-
-{ #category : #'common-pool resources' }
-CMEntity >> treatRequestProrata: res [
-	"Purpose: for a givern common-pool resource, perform the sharing among requesters according to the rule 'pro rata'
-Argument: res = <Symbol>
-Example: self treatRequestProrata: #surfaceWater"
-	
-	| demandesTraitees ressource quantiteDemandee demandeur v aTraiter totDemande accorde |
-	aTraiter := self request select: [:a | a first = res].
-	totDemande := aTraiter
-		inject: 0
-		into: [:tot :b | tot + (b at: 2)].
-	demandesTraitees := OrderedCollection new.
-	ressource := self perform: res.
-	ressource = 0
-		ifFalse:
-			[totDemande <= ressource
-				ifTrue: [accorde := totDemande]
-				ifFalse: [accorde := ressource].
-			aTraiter
-				do:
-					[:tableau | 
-					quantiteDemandee := tableau at: 2.
-					demandeur := tableau last.
-					v := accorde * quantiteDemandee / totDemande.
-					ressource := ressource - v.
-					self
-						perform: (tableau first asString , ':') asSymbol
-						with: ressource.
-					demandeur receiveResource: res qty: v.
-					demandesTraitees add: tableau]].
-	self request removeAll: demandesTraitees
-]
-
-{ #category : #'common-pool resources' }
-CMEntity >> treatRequestProrataSatisfaction [
-	"Purpose: for all kinds of common-pool resources, performs the sharing among unsatisfied requesters according to the rule 'pro rata'
-the requesting entities must have 
-	- an attribute 'satisfaction', 
-	- an attribute 'potentialConsumption',
-	- an attribute 'consumption',
-	- a procedure 'calculSatisafaction'"
-	
-	| lesTypesDeRessource |
-	lesTypesDeRessource := Set new.
-	self request
-		do:
-			[:tableau | 
-			(lesTypesDeRessource includes: tableau first)
-				ifFalse: [lesTypesDeRessource add: tableau first]].
-	lesTypesDeRessource do: [:res | self treatRequestProrataSatisfaction: res]
-]
-
-{ #category : #'common-pool resources' }
-CMEntity >> treatRequestProrataSatisfaction: res [
-	"Purpose: for a given common-pool resource, performs the sharing among unsatisfied requesters according to the rule 'pro rata'
-the requesting entities must have 
-	- an attribute 'satisfaction', 
-	- an attribute 'potentialConsumption',
-	- an attribute 'consumption',
-	- a procedure 'calculSatisafaction'
-Argument: res = <Symbol>
-Example: self treatRequestProrataSatisfaction: #surfaceWater"
-	
-	| demandesTraitees ressource quantiteDemandee demandeur v aTraiter totDemande accorde agent |
-	aTraiter := self request
-		select: [:a | a first = res and: [a last satisfaction not]].
-	totDemande := 0.
-	aTraiter
-		do:
-			[:b | 
-			agent := b at: 3.
-			b
-				at: 2
-				put: agent potentialConsumption - agent consumption.
-			totDemande := totDemande
-				+ (agent potentialConsumption - agent consumption)].
-	demandesTraitees := OrderedCollection new.
-	ressource := self perform: res.
-	ressource = 0
-		ifFalse:
-			[totDemande <= ressource
-				ifTrue: [accorde := totDemande]
-				ifFalse: [accorde := ressource].
-			aTraiter
-				do:
-					[:tableau | 
-					quantiteDemandee := tableau at: 2.
-					demandeur := tableau last.
-					v := accorde * quantiteDemandee / totDemande.
-					ressource := ressource - v.
-					self
-						perform: (tableau first asString , ':') asSymbol
-						with: ressource.
-					demandeur receiveResource: res qty: v.
-					demandeur calculSatisfaction.
-					demandesTraitees add: tableau]].
-	self request removeAll: demandesTraitees
 ]
