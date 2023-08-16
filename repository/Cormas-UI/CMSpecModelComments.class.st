@@ -82,20 +82,6 @@ CMSpecModelComments >> creationDate: anObject [
 	creationDate := anObject
 ]
 
-{ #category : #initialization }
-CMSpecModelComments >> currentProjectClass [
-	" See comment in ProjectManager #currentProjectVersion method "
-	
-	^ self currentProject cormasModelClass
-]
-
-{ #category : #initialization }
-CMSpecModelComments >> currentProjectVersion [
-	" See comment in ProjectManager #currentProjectVersion method "
-	
-	^ self projectManager currentProjectVersion
-]
-
 { #category : #defaults }
 CMSpecModelComments >> defaultAuthorList [
 	" Answer a <String> with some default text for authors list "
@@ -179,8 +165,9 @@ CMSpecModelComments >> initializeVersionField [
 	self versionName
 		label: self translator tVersionName;
 		ghostText: self defaultVersionName.
+		
 	self projectManager currentProjectHasVersion
-		ifTrue: [ self versionName textValue: self currentProjectVersion ].
+		ifTrue: [ self versionName textValue: self projectManager currentProjectVersion ].
 ]
 
 { #category : #initialization }
