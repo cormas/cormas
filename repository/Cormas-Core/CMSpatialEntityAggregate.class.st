@@ -126,7 +126,7 @@ CMSpatialEntityAggregate >> getSkinOld [
 		select:
 			[:c | 
 			(c neighbourhood select: [:n | self components includes: n]) size
-				< c orderedNeighbourhood size]
+				< c neighbourhood size]
 ]
 
 { #category : #accessing }

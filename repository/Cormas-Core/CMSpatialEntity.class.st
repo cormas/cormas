@@ -672,17 +672,14 @@ Return value: <ByteString>"
 
 { #category : #'environment - sensing - space' }
 CMSpatialEntity >> neighbourhood [
-	"Return a collection of spatialEntities (without the nil)"
-	"^self orderedNeighbourhood select: [:spEnt | spEnt notNil]"
 	
-	^neighbourhood ifNil: [  neighbourhood := OrderedCollection new: 8] 
+	^ neighbourhood ifNil: [  neighbourhood := OrderedCollection new: 8] 
 ]
 
 { #category : #'environment - sensing - space' }
-CMSpatialEntity >> neighbourhood: something [
-	"self subclassResponsibility ???"
+CMSpatialEntity >> neighbourhood: aCollection [
 	
-	neighbourhood := something
+	neighbourhood := aCollection
 ]
 
 { #category : #'environment - sensing - space' }

@@ -35,5 +35,5 @@ CMSpace4Neighbourhood >> initializeOrderedNeighbourhood: k [
 		v at: 3 put: (self elementaryEntitiesAt: i) ].
 	(i := self eastCell: k) > 0 ifTrue: [ 
 		v at: 4 put: (self elementaryEntitiesAt: i) ].
-	^ (self elementaryEntitiesAt: k) orderedNeighbourhood: v
+	^ (self elementaryEntitiesAt: k) neighbourhood: v
 ]
