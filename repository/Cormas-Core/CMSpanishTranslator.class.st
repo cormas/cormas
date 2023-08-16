@@ -83,6 +83,12 @@ CMSpanishTranslator >> tAttributesTargetLabel [
 ]
 
 { #category : #translations }
+CMSpanishTranslator >> tAuthors [
+
+	^ 'Autores'
+]
+
+{ #category : #translations }
 CMSpanishTranslator >> tBackwardLabel [
 
 	^ 'Reversa'
@@ -356,6 +362,12 @@ CMSpanishTranslator >> tEditInit [
 CMSpanishTranslator >> tEditSteps [
 
 	^ 'editar pasos'
+]
+
+{ #category : #translations }
+CMSpanishTranslator >> tEmail [
+
+	^ 'Correo electrónico'
 ]
 
 { #category : #translations }

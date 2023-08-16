@@ -83,6 +83,12 @@ CMFrenchTranslator >> tAttributesTargetLabel [
 ]
 
 { #category : #translations }
+CMFrenchTranslator >> tAuthors [
+
+	^ 'Auteurs'
+]
+
+{ #category : #translations }
 CMFrenchTranslator >> tBackwardLabel [
 
 	^ 'Retour en arrière'
@@ -356,6 +362,12 @@ CMFrenchTranslator >> tEditInit [
 CMFrenchTranslator >> tEditSteps [
 
 	^ 'modifier les étapes'
+]
+
+{ #category : #translations }
+CMFrenchTranslator >> tEmail [
+
+	^ 'Courriel'
 ]
 
 { #category : #translations }

@@ -12,7 +12,7 @@ CMProjectManager >> doPostNewActions [
 	" Basic post new actions. Redefine in subclasses if necessary "
 
 	super doPostNewActions.
-	(CMSpecModelComments for: self) openWithSpec.
+	(CMSpModelComments for: self cormasModel) openWithSpec.
 
 ]
 

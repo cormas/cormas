@@ -83,6 +83,12 @@ CMUkrainianTranslator >> tAttributesTargetLabel [
 ]
 
 { #category : #translations }
+CMUkrainianTranslator >> tAuthors [
+
+	^ 'Автори'
+]
+
+{ #category : #translations }
 CMUkrainianTranslator >> tBackwardLabel [
 
 	^ 'Назад'
@@ -356,6 +362,12 @@ CMUkrainianTranslator >> tEditInit [
 CMUkrainianTranslator >> tEditSteps [
 
 	^ 'кроки редагування'
+]
+
+{ #category : #translations }
+CMUkrainianTranslator >> tEmail [
+
+	^ 'Електронна пошта'
 ]
 
 { #category : #translations }

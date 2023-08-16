@@ -83,6 +83,12 @@ CMPolishTranslator >> tAttributesTargetLabel [
 ]
 
 { #category : #translations }
+CMPolishTranslator >> tAuthors [
+
+	^ 'Autorzy'
+]
+
+{ #category : #translations }
 CMPolishTranslator >> tBackwardLabel [
 
 	^ 'Do tyłu'
@@ -356,6 +362,12 @@ CMPolishTranslator >> tEditInit [
 CMPolishTranslator >> tEditSteps [
 
 	^ 'edytuj kroki'
+]
+
+{ #category : #translations }
+CMPolishTranslator >> tEmail [
+
+	^ 'Email'
 ]
 
 { #category : #translations }
