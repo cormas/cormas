@@ -83,6 +83,12 @@ CMNorwegianTranslator >> tAttributesTargetLabel [
 ]
 
 { #category : #translations }
+CMNorwegianTranslator >> tAuthors [
+
+	^ 'Forfattere'
+]
+
+{ #category : #translations }
 CMNorwegianTranslator >> tBackwardLabel [
 
 	^ 'Bakover'
@@ -356,6 +362,12 @@ CMNorwegianTranslator >> tEditInit [
 CMNorwegianTranslator >> tEditSteps [
 
 	^ 'redigere trinn'
+]
+
+{ #category : #translations }
+CMNorwegianTranslator >> tEmail [ 
+
+	^ 'E-post'
 ]
 
 { #category : #translations }

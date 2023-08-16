@@ -92,6 +92,12 @@ CMAbstractTranslator >> tAttributesTargetLabel [
 ]
 
 { #category : #translations }
+CMAbstractTranslator >> tAuthors [
+
+	self subclassResponsibility
+]
+
+{ #category : #translations }
 CMAbstractTranslator >> tBackwardLabel [
 
 	self subclassResponsibility
@@ -363,6 +369,12 @@ CMAbstractTranslator >> tEditInit [
 
 { #category : #translations }
 CMAbstractTranslator >> tEditSteps [
+
+	self subclassResponsibility
+]
+
+{ #category : #translations }
+CMAbstractTranslator >> tEmail [
 
 	self subclassResponsibility
 ]

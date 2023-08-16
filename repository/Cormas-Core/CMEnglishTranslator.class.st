@@ -83,6 +83,12 @@ CMEnglishTranslator >> tAttributesTargetLabel [
 ]
 
 { #category : #translations }
+CMEnglishTranslator >> tAuthors [
+
+	^ 'Authors'
+]
+
+{ #category : #translations }
 CMEnglishTranslator >> tBackwardLabel [
 
 	^ 'Backward'
@@ -356,6 +362,12 @@ CMEnglishTranslator >> tEditInit [
 CMEnglishTranslator >> tEditSteps [
 
 	^ 'edit steps'
+]
+
+{ #category : #translations }
+CMEnglishTranslator >> tEmail [
+
+	^ 'Email'
 ]
 
 { #category : #translations }
