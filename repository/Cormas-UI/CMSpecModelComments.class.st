@@ -133,10 +133,10 @@ CMSpecModelComments >> initializeCreationDateField [
 
 	self creationDate 
 		label: self translator tCreationDate;
-		ghostText: Date today asString.
+		textValue: Date today asString.
+		
 	self projectManager currentProjectHasCreationDate
 		ifTrue: [ self creationDate textValue: self projectManager currentProjectCreationDate ].
-	self creationDate disable
 ]
 
 { #category : #initialization }
