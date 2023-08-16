@@ -17,3 +17,21 @@ CMSpatialEntityElement >> numLine [
 	self deprecated: 'Use #rowNumber instead'.
 	^ self rowNumber
 ]
+
+{ #category : #'*Cormas-Deprecated' }
+CMSpatialEntityElement >> orderedNeighbourhood [
+	"Use neighbourhood instead of this method. They are the same thing
+	orderedNeighbourhood is now deprecated and will be removed in the future releases"
+	
+	self deprecated: 'Use #neighbourhood instead'.
+	^ self neighbourhood
+]
+
+{ #category : #'*Cormas-Deprecated' }
+CMSpatialEntityElement >> orderedNeighbourhood: aCollection [
+	"Use neighbourhood: instead of this method. They are the same thing
+	orderedNeighbourhood: is now deprecated and will be removed in the future releases"
+	
+	self deprecated: 'Use #neighbourhood: instead'.
+	^ self neighbourhood: aCollection
+]

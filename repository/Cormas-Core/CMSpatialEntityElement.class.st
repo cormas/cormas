@@ -6,9 +6,6 @@ Instance Variables:
 Class {
 	#name : #CMSpatialEntityElement,
 	#superclass : #CMSpatialEntity,
-	#instVars : [
-		'orderedNeighbourhood'
-	],
 	#category : #'Cormas-Core-Entities'
 }
 
@@ -122,8 +119,8 @@ Return value: <Number>"
 { #category : #'initialize-release' }
 CMSpatialEntityElement >> initNeighbourhood [
 
-	self orderedNeighbourhood ifEmpty: [ ^ nil ].
-	self neighbourhood: (self orderedNeighbourhood select: [ : c | c notNil ])
+	self neighbourhood ifEmpty: [ ^ nil ].
+	self neighbourhood: (self neighbourhood select: [ : c | c notNil ])
 ]
 
 { #category : #testing }
@@ -221,7 +218,7 @@ CMSpatialEntityElement >> lineSegmentEfh [
 { #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentN [
 	
-	^(self segments isNil or: [self orderedNeighbourhood size = 6])
+	^(self segments isNil or: [self neighbourhood size = 6])
 		ifTrue: [nil]
 		ifFalse: [self segments first]
 ]
@@ -229,7 +226,7 @@ CMSpatialEntityElement >> lineSegmentN [
 { #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentNE [
 	
-	^(self segments isNil or: [self orderedNeighbourhood size ~= 6])
+	^(self segments isNil or: [self neighbourhood size ~= 6])
 		ifTrue: [nil]
 		ifFalse: [self segments first]
 ]
@@ -272,7 +269,7 @@ CMSpatialEntityElement >> lineSegmentNEfh [
 { #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentNW [
 	
-	^(self segments isNil or: [self orderedNeighbourhood size ~= 6])
+	^(self segments isNil or: [self neighbourhood size ~= 6])
 		ifTrue: [nil]
 		ifFalse: [self segments last]
 ]
@@ -329,7 +326,7 @@ CMSpatialEntityElement >> lineSegmentNf [
 { #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentS [
 	
-	^(self segments isNil or: [self orderedNeighbourhood size = 6])
+	^(self segments isNil or: [self neighbourhood size = 6])
 		ifTrue: [nil]
 		ifFalse: [self segments at: 3]
 ]
@@ -337,7 +334,7 @@ CMSpatialEntityElement >> lineSegmentS [
 { #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentSE [
 	
-	^(self segments isNil or: [self orderedNeighbourhood size ~= 6])
+	^(self segments isNil or: [self neighbourhood size ~= 6])
 		ifTrue: [nil]
 		ifFalse: [self segments at: 3]
 ]
@@ -380,7 +377,7 @@ CMSpatialEntityElement >> lineSegmentSEfh [
 { #category : #'displaying - obsolete' }
 CMSpatialEntityElement >> lineSegmentSW [
 	
-	^(self segments isNil or: [self orderedNeighbourhood size ~= 6])
+	^(self segments isNil or: [self neighbourhood size ~= 6])
 		ifTrue: [nil]
 		ifFalse: [self segments at: 4]
 ]
@@ -438,7 +435,7 @@ CMSpatialEntityElement >> lineSegmentSf [
 CMSpatialEntityElement >> lineSegmentW [
 	
 	self segments isNil ifTrue: [^nil].
-	^self orderedNeighbourhood size = 6
+	^self neighbourhood size = 6
 		ifTrue: [self segments at: 5]
 		ifFalse: [self segments last]
 ]
@@ -691,11 +688,11 @@ Not nil only for square and hexagonal cells (regular spatial grid).
 Return value: <SpatialEntityElement | nil>"
 	
 	self spaceModel nbNeighbours = 4
-		ifTrue: [^self orderedNeighbourhood at: 4].
+		ifTrue: [^self neighbourhood at: 4].
 	self spaceModel nbNeighbours = 8
-		ifTrue: [^self orderedNeighbourhood at: 7].
+		ifTrue: [^self neighbourhood at: 7].
 	self spaceModel nbNeighbours = 6
-		ifTrue: [^self orderedNeighbourhood at: 5].
+		ifTrue: [^self neighbourhood at: 5].
 	^nil
 ]
 
@@ -706,7 +703,7 @@ Not nil only for square cells (regular spatial grid).
 Return value: <SpatialEntityElement | nil>"
 	
 	self spaceModel nbNeighbours = 4 | (self spaceModel nbNeighbours = 8)
-		ifTrue: [ ^ self orderedNeighbourhood at: 1 ].
+		ifTrue: [ ^ self neighbourhood at: 1 ].
 	^ nil
 ]
 
@@ -717,9 +714,9 @@ Not nil only for square (8 neighbors) and hexagonal cells (regular spatial grid)
 Return value: <SpatialEntityElement | nil>"
 	
 	self spaceModel nbNeighbours = 8
-		ifTrue: [^self orderedNeighbourhood at: 8].
+		ifTrue: [^self neighbourhood at: 8].
 	self spaceModel nbNeighbours = 6
-		ifTrue: [^self orderedNeighbourhood at: 6].
+		ifTrue: [^self neighbourhood at: 6].
 	^nil
 ]
 
@@ -730,9 +727,9 @@ Not nil only for square (8 neighbors) and hexagonal cells (regular spatial grid)
 Return value: <SpatialEntityElement | nil>"
 	
 	self spaceModel nbNeighbours = 8
-		ifTrue: [^self orderedNeighbourhood at: 2].
+		ifTrue: [^self neighbourhood at: 2].
 	self spaceModel nbNeighbours = 6
-		ifTrue: [^self orderedNeighbourhood at: 1].
+		ifTrue: [^self neighbourhood at: 1].
 	^nil
 ]
 
@@ -743,9 +740,9 @@ Not nil only fore square cells (regular spatial grid).
 Return value: <SpatialEntityElement | nil>"
 	
 	self spaceModel nbNeighbours = 4
-		ifTrue: [^self orderedNeighbourhood at: 3].
+		ifTrue: [^self neighbourhood at: 3].
 	self spaceModel nbNeighbours = 8
-		ifTrue: [^self orderedNeighbourhood at: 5].
+		ifTrue: [^self neighbourhood at: 5].
 	^nil
 ]
 
@@ -756,9 +753,9 @@ Not nil only for square (8 neighbors) and hexagonal cells (regular spatial grid)
 Return value: <SpatialEntityElement | nil>"
 	
 	self spaceModel nbNeighbours = 8
-		ifTrue: [^self orderedNeighbourhood at: 6].
+		ifTrue: [^self neighbourhood at: 6].
 	self spaceModel nbNeighbours = 6
-		ifTrue: [^self orderedNeighbourhood at: 4].
+		ifTrue: [^self neighbourhood at: 4].
 	^nil
 ]
 
@@ -769,9 +766,9 @@ Not nil only for square (8 neighbors) and hexagonal cells (regular spatial grid)
 Return value: <SpatialEntityElement | nil>"
 	
 	self spaceModel nbNeighbours = 8
-		ifTrue: [^self orderedNeighbourhood at: 4].
+		ifTrue: [^self neighbourhood at: 4].
 	self spaceModel nbNeighbours = 6
-		ifTrue: [^self orderedNeighbourhood at: 3].
+		ifTrue: [^self neighbourhood at: 3].
 	^nil
 ]
 
@@ -782,27 +779,12 @@ Not nil only for square and hexagonal cells (regular spatial grid).
 Return value: <SpatialEntityElement | nil>"
 	
 	self spaceModel nbNeighbours = 4
-		ifTrue: [^self orderedNeighbourhood at: 2].
+		ifTrue: [^self neighbourhood at: 2].
 	self spaceModel nbNeighbours = 8
-		ifTrue: [^self orderedNeighbourhood at: 3].
+		ifTrue: [^self neighbourhood at: 3].
 	self spaceModel nbNeighbours = 6
-		ifTrue: [^self orderedNeighbourhood at: 2].
+		ifTrue: [^self neighbourhood at: 2].
 	^nil
-]
-
-{ #category : #accessing }
-CMSpatialEntityElement >> orderedNeighbourhood [
-	" Assume the receiver's space model neighbouhoods were already initialized. "
-	
-	orderedNeighbourhood 
-		ifNil: [ orderedNeighbourhood := OrderedCollection new ].
-	^ orderedNeighbourhood
-]
-
-{ #category : #accessing }
-CMSpatialEntityElement >> orderedNeighbourhood: aList [
-	
-	orderedNeighbourhood := aList
 ]
 
 { #category : #'displaying - obsolete' }
