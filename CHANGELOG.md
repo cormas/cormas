@@ -1,6 +1,7 @@
 # [v0.7](https://github.com/cormas/cormas/compare/v0.6...v0.7) (17 August 2023)
 
 - (https://github.com/cormas/cormas/pull/692) Created a new translator class hierarchy to replace the old l18N translator.
+- ([1ecc9e9](https://github.com/cormas/cormas/pull/710/commits/1ecc9e96f8b6b8dea4b1ca81077066a5e386e04f)) Fixed the randomness of `Cormas class >> selectRandomlyFrom: aCollection`
 
 ### Improved Roassal3 implementation of space diagram
 
@@ -11,6 +12,8 @@
 
 - ([81fa227](https://github.com/cormas/cormas/commit/81fa22772a235cc90a75d52ef80b73001958693f)) Remove UML and Source tabs from project opener because they were broken and trivial
 - (https://github.com/cormas/cormas/pull/694) Added Language menu item to switch between translators
+- (https://github.com/cormas/cormas/pull/711) Added a Programming menu item to open System Browser
+- ([3fd9805](https://github.com/cormas/cormas/pull/714/commits/3fd9805f20f243e1db35ef6b7412266e672a783e)) Removed the menu item to show the list of methods with flags
 
 ### Removed
 
@@ -21,6 +24,10 @@
 - ([7bdf11b](https://github.com/cormas/cormas/pull/687/commits/7bdf11be835fc40da6264da57dd4cce1724db054)) Redundand extension methods: `RSCanvas >> removeAllElements`, `RSCanvas >> removeAllPlots`, and `RSEvent >> cormasEntity`
 - ([77e4494](https://github.com/cormas/cormas/pull/709/commits/77e4494658c19520514405a77a1cbf95bad2bf3f), [707944a](https://github.com/cormas/cormas/pull/709/commits/707944a9f3835b3c52df9d0513c44289a922f4af)) Old deprecated methods of `CMSpatialEntityElement`: `x`, `y`, `relativeDistanceTo:constraint:`, `shortestDistanceTo:constraintOnPath:`, and `wayTo:constrainedBy:`
 - ([4125eca](https://github.com/cormas/cormas/pull/710/commits/4125eca4fcc70d56ce658346d29213b21e050de6)) `CMSpatialEntity >> noOccupantType:`
+- ([e48431d](https://github.com/cormas/cormas/pull/714/commits/e48431d77a78a500094e967b3eac3d6e47509f58)) `CMSpatialEntityAggregate >> connexityTest` because it was poorly implemented and never used
+- ([df3c3d5](https://github.com/cormas/cormas/pull/714/commits/df3c3d54d9c4ba811bb6422da7a8972ea6c4ae23)) Removed flags from methods (TODO, to be revised, etc.)
+- ([834aa88](https://github.com/cormas/cormas/pull/714/commits/834aa887927c1902676a22113b0cbc365e2bc11e)) `request` instance variable from `CMEntity` and all methods that were using it. Those methods were never called
+- ([4fc0b32](https://github.com/cormas/cormas/pull/714/commits/4fc0b327151435f0d79ab6fb8f78ede4c33a87a7)) Methods of `CMSpatialEntityAggregate` that were never called: `setImage`, `setImage4`, `setImageFromIrregularCells`, as well as `CMSpatialEntityNotConnex >> setImage`
 
 ### Renamed
 
@@ -37,6 +44,7 @@
 
 - ([f0d82c2](https://github.com/cormas/cormas/pull/687/commits/f0d82c2f4847ed00275117edd3abe5dc86565016)) Added pov
 - ([57f86dd](https://github.com/cormas/cormas/pull/688/commits/57f86ddf439cca86c1ed09c52ef7fc2601083f3b)) Added random seed
+- ([769fb8c](https://github.com/cormas/cormas/pull/710/commits/769fb8ce8a7a70756d0c843b0a3ff5ba8290d11a)) Replaced `CMMockAgent` with `CMMockAnimal` and two subclasses: `CMMockCow` and `CMMockGoat`
 
 ### Decoupling
 
