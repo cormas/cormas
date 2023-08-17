@@ -157,7 +157,7 @@ CMProjectManager >> createNewProject [
 	
 	(self isValidProjectName: name)
 		ifTrue: [
-			self createAppProject: name.
+			self createAppProject: name capitalized.
 			self doPostNewActions ]
 		ifFalse: [
 			self informMessage: self translator tNewProjectInvalidName ].
