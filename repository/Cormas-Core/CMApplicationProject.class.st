@@ -17,8 +17,6 @@ Class {
 	#name : #CMApplicationProject,
 	#superclass : #PFProjectApplication,
 	#instVars : [
-		'processReplayForward',
-		'processReplayBackward',
 		'processRun',
 		'gitBridge'
 	],
@@ -89,21 +87,6 @@ CMApplicationProject >> modelNames [
 	" Answer a <Collection> of <String> with receiver's available models "
 	
 	^ self gitBridge modelNames
-]
-
-{ #category : #accessing }
-CMApplicationProject >> terminateAllProcesses [
-	"Terminate all the processes"
-
-	processReplayForward
-		ifNotNil: [ processReplayForward terminate.
-			processReplayForward := nil ].
-	processReplayBackward
-		ifNotNil: [ processReplayBackward terminate.
-			processReplayBackward := nil ].
-	processRun
-		ifNotNil: [ processRun terminate.
-			processRun := nil ]
 ]
 
 { #category : #accessing }
