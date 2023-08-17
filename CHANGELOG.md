@@ -1,3 +1,27 @@
+# [v0.7](https://github.com/cormas/cormas/compare/v0.6...v0.7) (17 August 2023)
+
+### Improved Roassal3 implementation of space diagram
+
+- (https://github.com/cormas/cormas/pull/687) Replaced CMR3SpaceDiagram with CMR3SpaceDiagramBuilder. This clearly separates Roassal code from Spec code.
+- ([29471d8](https://github.com/cormas/cormas/commit/29471d820c8da01195493d02b411c441183aa371)) Implemented animation of dragging'n'dropping agents
+
+### Spec User Interface
+
+- ([81fa227](https://github.com/cormas/cormas/commit/81fa22772a235cc90a75d52ef80b73001958693f)) Remove UML and Source tabs from project opener because they were broken and trivial
+
+### Removed
+
+- (https://github.com/cormas/cormas/pull/687) CMApplicationPreferences class
+- ([c5e2514](https://github.com/cormas/cormas/pull/687/commits/c5e2514ae6dfdd351041dc1e125de58bf9cb9644)) CMSpaceSettingsBrowser class
+- ([9256b2a](https://github.com/cormas/cormas/pull/687/commits/9256b2ad6835a37ab4e72bbefc8b6632e2643a86)) CMSettingsBrowser class
+- ([3e7ce77](https://github.com/cormas/cormas/pull/690/commits/3e7ce772a0f4ced2c5d2e10a3db9d7a4ce987841)) CMSpacePreferences class
+- ([7bdf11b](https://github.com/cormas/cormas/pull/687/commits/7bdf11be835fc40da6264da57dd4cce1724db054)) Redundand extension methods: `RSCanvas >> removeAllElements`, `RSCanvas >> removeAllPlots`, and `RSEvent >> cormasEntity`
+
+### Improved the Mock model
+
+- ([f0d82c2](https://github.com/cormas/cormas/pull/687/commits/f0d82c2f4847ed00275117edd3abe5dc86565016)) Added pov
+- ([57f86dd](https://github.com/cormas/cormas/pull/688/commits/57f86ddf439cca86c1ed09c52ef7fc2601083f3b)) Added random seed
+
 # [v0.6](https://github.com/cormas/cormas/compare/v0.5...v0.6) (25 July 2023)
 
 - Introduced `TCMLocated` trait to replace the class hierarchy of located agents and groups
