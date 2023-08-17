@@ -148,6 +148,24 @@ CMProjectManagerTest >> testIsValidCormasEntityName [
 	(self class environment at: (entityName asValidCormasClassName: self sampleModelNameWithoutPrefix)) removeFromSystem
 ]
 
+{ #category : #tests }
+CMProjectManagerTest >> testIsValidProjectName [
+
+	self deny: (self projectManager isValidProjectName: nil).
+	self deny: (self projectManager isValidProjectName: '').
+	self deny: (self projectManager isValidProjectName: '.').
+	self deny: (self projectManager isValidProjectName: '').
+	self deny: (self projectManager isValidProjectName: ' ').
+	self deny: (self projectManager isValidProjectName: '  ').
+	self deny: (self projectManager isValidProjectName: 'Project Name').
+	self deny: (self projectManager isValidProjectName: '_').
+	self deny: (self projectManager isValidProjectName: '\').
+	self deny: (self projectManager isValidProjectName: '''').
+	self deny: (self projectManager isValidProjectName: '33').
+	
+	self assert: (self projectManager isValidProjectName: 'ValidName').
+]
+
 { #category : #test }
 CMProjectManagerTest >> testModelControlInitMethods [
 

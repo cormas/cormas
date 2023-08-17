@@ -152,13 +152,15 @@ CMProjectManager >> createClassModelNamed: modelName [
 CMProjectManager >> createNewProject [
 	" Ask for a new project name and create it if valid name was provided "
 
-	| answer |
-
-	(answer := self requestedInvalidProjectName: self translator tNewProjectName) value
-		ifTrue: [ self informMessage: self translator tNewProjectInvalidName ]
-		ifFalse: [
-			self createAppProject: answer key.
+	| name |
+	name := self requestMessage: self translator tNewProjectName.
+	
+	(self isValidProjectName: name)
+		ifTrue: [
+			self createAppProject: name capitalized.
 			self doPostNewActions ]
+		ifFalse: [
+			self informMessage: self translator tNewProjectInvalidName ].
 
 ]
 
@@ -309,6 +311,17 @@ CMProjectManager >> isValidCormasEntityName: aString [
 	" Answer <true> if aString is a valid name for an entity in the context of CORMAS "
 	
 	^ (self class environment hasClassNamed: (aString asValidCormasClassName: self cormasProjectName)) not
+]
+
+{ #category : #testing }
+CMProjectManager >> isValidProjectName: aString [
+
+	aString ifNil: [ ^ false ].
+	aString ifEmpty: [ ^ false ].
+	aString isAllDigits ifTrue: [ ^ false ].
+	aString isAllAlphaNumerics ifFalse: [ ^ false ].
+	
+	^ true
 ]
 
 { #category : #accessing }
