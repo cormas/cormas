@@ -32,6 +32,30 @@ CMApplicationProject class >> applicationName [
 	^ 'CORMAS Application'
 ]
 
+{ #category : #initialization }
+CMApplicationProject class >> initializeApplication [
+	" Set the class' initial state "
+	
+	AppSingleton := self new.
+]
+
+{ #category : #initialization }
+CMApplicationProject class >> release [
+	" Prepare the class to be deleted "
+	
+	AppSingleton := nil.
+]
+
+{ #category : #accessing }
+CMApplicationProject class >> uniqueInstance [
+	" Answer the class' primary instance "
+	
+	^ AppSingleton
+		ifNil: [ 
+			self initializeApplication.
+			AppSingleton ]	
+]
+
 { #category : #accessing }
 CMApplicationProject >> cormasModel [
 	" Answer the receiver's current project model, a <CMAbstractModel> instance "
