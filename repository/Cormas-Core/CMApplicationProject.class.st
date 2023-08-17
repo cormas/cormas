@@ -62,10 +62,39 @@ CMApplicationProject >> cormasModel [
 ]
 
 { #category : #accessing }
+CMApplicationProject >> createProjectNamed: aNameString [
+	" Set a new project named aNameString, setting its user to the default user. Answer a <PFProjectBase> "
+
+	self currentProject: (self projectClass 
+		named: aNameString 
+		author: (PFProjectUser named: self defaultUsername)).
+	^ self currentProject
+
+]
+
+{ #category : #accessing }
+CMApplicationProject >> currentProject [
+
+	^ currentProject
+]
+
+{ #category : #accessing }
+CMApplicationProject >> currentProject: anObject [
+
+	currentProject := anObject
+]
+
+{ #category : #accessing }
 CMApplicationProject >> defaultProjectClass [
 	" Private - See superimplementor's comment "
 
 	^ CMProjectModel
+]
+
+{ #category : #accessing }
+CMApplicationProject >> defaultUsername [
+
+	^ 'Unknown'
 ]
 
 { #category : #accessing }
@@ -79,6 +108,7 @@ CMApplicationProject >> initialize [
 
 	super initialize.
 	translator := CMEnglishTranslator new.
+	projectClass := CMProjectModel.
 	gitBridge := CMGitBridge new.
 ]
 
@@ -87,6 +117,27 @@ CMApplicationProject >> modelNames [
 	" Answer a <Collection> of <String> with receiver's available models "
 	
 	^ self gitBridge modelNames
+]
+
+{ #category : #accessing }
+CMApplicationProject >> projectClass [
+
+	^ projectClass
+]
+
+{ #category : #accessing }
+CMApplicationProject >> projectClass: aClass [
+	" Associate receiver's (an application) with a project aClass "
+
+	projectClass := aClass
+]
+
+{ #category : #callbacks }
+CMApplicationProject >> releaseProject [
+	" Release the receiver's current project. "
+
+	self currentProject: nil.
+	self projectClass: nil
 ]
 
 { #category : #accessing }
