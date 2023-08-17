@@ -17,7 +17,6 @@ Class {
 	#name : #CMApplicationProject,
 	#superclass : #PFProjectApplication,
 	#instVars : [
-		'processRun',
 		'gitBridge'
 	],
 	#category : #'Cormas-Core-Project'
