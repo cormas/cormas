@@ -20,7 +20,7 @@ Class {
 		'processReplayForward',
 		'processReplayBackward',
 		'processRun',
-		'resourceLocator'
+		'gitBridge'
 	],
 	#category : #'Cormas-Core-Project'
 }
@@ -72,8 +72,8 @@ CMApplicationProject >> defaultProjectClass [
 
 { #category : #accessing }
 CMApplicationProject >> gitBridge [
-	^ resourceLocator
-		ifNil: [ resourceLocator := CMGitBridge new ]
+
+	^ gitBridge
 ]
 
 { #category : #initialization }
@@ -81,6 +81,7 @@ CMApplicationProject >> initialize [
 
 	super initialize.
 	translator := CMEnglishTranslator new.
+	gitBridge := CMGitBridge new.
 ]
 
 { #category : #accessing }
@@ -88,11 +89,6 @@ CMApplicationProject >> modelNames [
 	" Answer a <Collection> of <String> with receiver's available models "
 	
 	^ self gitBridge modelNames
-]
-
-{ #category : #accessing }
-CMApplicationProject >> resourceLocator: anObject [
-	resourceLocator := anObject
 ]
 
 { #category : #accessing }

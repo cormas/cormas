@@ -2,8 +2,7 @@ Class {
 	#name : #CMGitBridgeTest,
 	#superclass : #TestCase,
 	#instVars : [
-		'resourceLocator',
-		'resourceBuilder'
+		'gitBridge'
 	],
 	#category : #'Cormas-Tests-Helpers'
 }
@@ -16,18 +15,14 @@ CMGitBridgeTest class >> resources [
 
 { #category : #accessing }
 CMGitBridgeTest >> gitBridge [
-	^ resourceLocator
+
+	^ gitBridge
 ]
 
 { #category : #accessing }
 CMGitBridgeTest >> resourceBuilder [
 
 	^ CMModelResource current
-]
-
-{ #category : #accessing }
-CMGitBridgeTest >> resourceLocator: arg1 [
-	resourceLocator := arg1
 ]
 
 { #category : #testing }
@@ -72,7 +67,7 @@ CMGitBridgeTest >> sampleModelName [
 CMGitBridgeTest >> setUp [
 
 	super setUp.
-	self resourceLocator: CMGitBridge new.
+	gitBridge := CMGitBridge new.
 ]
 
 { #category : #accessing }
