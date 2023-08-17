@@ -15,9 +15,15 @@ CMApplicationProject removeUserDirectories.
 "
 Class {
 	#name : #CMApplicationProject,
-	#superclass : #PFProjectApplication,
+	#superclass : #Object,
 	#instVars : [
-		'gitBridge'
+		'gitBridge',
+		'translator',
+		'currentProject',
+		'projectClass'
+	],
+	#classVars : [
+		'AppSingleton'
 	],
 	#category : #'Cormas-Core-Project'
 }
