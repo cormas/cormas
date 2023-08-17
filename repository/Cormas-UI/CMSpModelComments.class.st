@@ -82,11 +82,12 @@ CMSpModelComments >> addAuthorRow [
 CMSpModelComments >> addModelComments [
 	" Private - User has clicked Ok to add model comments "
 
-	self projectManager 
-		cormasModelCreationDate: self creationDate text;
-		cormasModelVersion: self versionName text;
-		cormasModelAuthors: self authorsTableAsString;
-		cormasModelComment: self modelCommentText text.
+	self cormasModel 
+		creationDate: self creationDate text;
+		version: self versionName text;
+		authors: self authorsTableAsString;
+		comment: self modelCommentText text.
+		
 	self projectAnnouncer announce: CMProjectUpdateAnnouncement new
 
 ]
@@ -177,8 +178,8 @@ CMSpModelComments >> initializePresenters [
 		text: Date today asString;
 		yourself.
 		
-	self projectManager currentProjectHasCreationDate
-		ifTrue: [ creationDate text: self projectManager currentProjectCreationDate ].
+	self cormasModel creationDate ifNotNil: [ :aString |
+		creationDate text: aString ].
 	
 	authorsLabel := self newLabel
 		label: self translator tAuthors;

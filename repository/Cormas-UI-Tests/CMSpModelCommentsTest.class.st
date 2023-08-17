@@ -23,7 +23,7 @@ CMSpModelCommentsTest >> testAuthorsAreSaved [
 	presenter okButton click.
 	
 	self
-		assert: fixture cormasModel projectManager currentProject info history authors
+		assert: fixture cormasModel authors
 		equals: fixture authorsString.
 ]
 
@@ -44,7 +44,7 @@ CMSpModelCommentsTest >> testCommentIsSaved [
 	presenter okButton click.
 	
 	self
-		assert: fixture cormasModel projectManager currentProject info comment
+		assert: fixture cormasModel comment
 		equals: fixture comment.
 ]
 
@@ -55,7 +55,7 @@ CMSpModelCommentsTest >> testCreationDateIsSaved [
 	presenter okButton click.
 	
 	self
-		assert: fixture cormasModel class creationDate
+		assert: fixture cormasModel creationDate
 		equals: fixture creationDate.
 ]
 
@@ -66,6 +66,6 @@ CMSpModelCommentsTest >> testVersionIsSaved [
 	presenter okButton click.
 	
 	self
-		assert: fixture cormasModel projectManager currentProject info version
+		assert: fixture cormasModel version
 		equals: fixture version.
 ]

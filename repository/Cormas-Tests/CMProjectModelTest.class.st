@@ -43,7 +43,6 @@ CMProjectModelTest >> tearDown [
 	"Hooks that subclasses may override to define the fixture of test."
 
 	CGSmalltalk new removeClass: self sampleModelName.
-	self cleanGeneratedMethods.
 	super tearDown.	
 
 ]
@@ -92,17 +91,6 @@ CMProjectModelTest >> testCormasModelComment [
 	self projectModel cormasModelComment: modelComment.
 	self assert: (self projectModel respondsTo: #cormasModelComment).
 	self assert: self projectModel cormasModelComment equals: modelComment.
-]
-
-{ #category : #test }
-CMProjectModelTest >> testCormasModelCreationDate [
-
-	| modelDate |
-	
-	modelDate := '01/01/1970'.
-	self projectModel cormasModelCreationDate: modelDate.
-	self assert: (self projectModel cormasModelClass respondsTo: #creationDate).
-	self assert: self projectModel cormasModelClass creationDate equals: modelDate.
 ]
 
 { #category : #test }

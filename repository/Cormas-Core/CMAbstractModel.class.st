@@ -51,7 +51,11 @@ Class {
 		'sensitivitySetter',
 		'delayedChanges',
 		'announcer',
-		'initStatus'
+		'initStatus',
+		'creationDate',
+		'version',
+		'authors',
+		'comment'
 	],
 	#classInstVars : [
 		'cellClass',
@@ -1224,6 +1228,18 @@ Example: self askRandom: (self theAnimals select:[:f | f energy > 10]) toDo: #ea
 		ifFalse:[ (Cormas mix: collecEntities) do: [:c | c perform: aSymbol withArguments: allArguments]]
 ]
 
+{ #category : #accessing }
+CMAbstractModel >> authors [
+
+	^ authors
+]
+
+{ #category : #accessing }
+CMAbstractModel >> authors: anObject [
+
+	authors := anObject
+]
+
 { #category : #'accessing - spatial grid' }
 CMAbstractModel >> autoResizeGrids: aBoolean [
 	"Purpose: automatically resize all the opened spatial grids when aBoolean = true, otherwise, do not resize"
@@ -1304,6 +1320,18 @@ CMAbstractModel >> colorOfProbe: aProbeSymbol [
 	 ->answer the color of a probe (to display the curve in ChartsInterface)"
 	
 	^self class colorOfProbe: aProbeSymbol
+]
+
+{ #category : #accessing }
+CMAbstractModel >> comment [
+
+	^ comment
+]
+
+{ #category : #accessing }
+CMAbstractModel >> comment: anObject [
+
+	comment := anObject
 ]
 
 { #category : #'accessing - entities' }
@@ -1818,6 +1846,18 @@ Example: self createSingletonAggregates: Forest fromSeeds: (self theCells select
 	
 	^self spaceModel setSingletonAggregates: compoundEntity fromSeeds:
 			aCollecOfCells
+]
+
+{ #category : #accessing }
+CMAbstractModel >> creationDate [
+
+	^ creationDate
+]
+
+{ #category : #accessing }
+CMAbstractModel >> creationDate: anObject [
+
+	creationDate := anObject
 ]
 
 { #category : #'probes - recording' }
@@ -3499,6 +3539,18 @@ Examples: self varianceOfAttribute: #age of: Person
 	^ Cormas variance:
 			((self allTheEntitiesOfClassOrCollec: aCollecOrClass) asOrderedCollection
 				collect: [:e | e perform: att])
+]
+
+{ #category : #accessing }
+CMAbstractModel >> version [
+
+	^ version
+]
+
+{ #category : #accessing }
+CMAbstractModel >> version: anObject [
+
+	version := anObject
 ]
 
 { #category : #'utilities - space metrics' }
