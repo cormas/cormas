@@ -28,6 +28,8 @@
 - ([df3c3d5](https://github.com/cormas/cormas/pull/714/commits/df3c3d54d9c4ba811bb6422da7a8972ea6c4ae23)) Removed flags from methods (TODO, to be revised, etc.)
 - ([834aa88](https://github.com/cormas/cormas/pull/714/commits/834aa887927c1902676a22113b0cbc365e2bc11e)) `request` instance variable from `CMEntity` and all methods that were using it. Those methods were never called
 - ([4fc0b32](https://github.com/cormas/cormas/pull/714/commits/4fc0b327151435f0d79ab6fb8f78ede4c33a87a7)) Methods of `CMSpatialEntityAggregate` that were never called: `setImage`, `setImage4`, `setImageFromIrregularCells`, as well as `CMSpatialEntityNotConnex >> setImage`
+- ([289ba64](https://github.com/cormas/cormas/pull/714/commits/289ba643be58f7fda32edbd82aed66ca86ea5e00)) `includedEntities` instance variable from `CMSpatialEntity` and all methods that were using it but were never called: `CMSpaceModel >> updateIncludedEntities:`, `CMSpatialEntity >> colorI:`, and `CMSpatialEntity >> colorN:`
+- ([9b90747](https://github.com/cormas/cormas/pull/714/commits/9b907478c3df643755fcb65ef2ee03f660937ee4)) `default` instance variable from `CMSpatialEntityElement` class
 
 ### Renamed
 
