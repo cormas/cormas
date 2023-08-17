@@ -48,11 +48,13 @@ CMModelOpener >> open: modelName fileName: fileName [
 CMModelOpener >> openModel: modelName [
 	" Open the project of the modelClass "
 
-	^ self currentProject: (CMProjectModel basicNew
+	self currentProject: (CMProjectModel basicNew
 		projectManager: self projectManager;
 		initializeForModel: (self class environment at: modelName) new
 			named: modelName;
-			yourself)
+			yourself).
+			
+	^ self currentProject
 ]
 
 { #category : #callbacks }

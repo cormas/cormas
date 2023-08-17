@@ -51,7 +51,7 @@ CMObject class >> printSubclassesOn: aStream level: level [
 CMObject >> application [ 
 	" Answer a <CMApplicationProject> the unique instance representing the CORMAS application "
 
-	^ CMApplicationProject uniqueInstance
+	^ CMApplicationProject new
 ]
 
 { #category : #accessing }

@@ -15,12 +15,15 @@ CMApplicationProject removeUserDirectories.
 "
 Class {
 	#name : #CMApplicationProject,
-	#superclass : #PFProjectApplication,
+	#superclass : #Object,
 	#instVars : [
-		'processReplayForward',
-		'processReplayBackward',
-		'processRun',
-		'resourceLocator'
+		'gitBridge',
+		'translator',
+		'currentProject',
+		'projectClass'
+	],
+	#classVars : [
+		'AppSingleton'
 	],
 	#category : #'Cormas-Core-Project'
 }
@@ -32,136 +35,28 @@ CMApplicationProject class >> applicationName [
 	^ 'CORMAS Application'
 ]
 
-{ #category : #accessing }
-CMApplicationProject class >> applicationVersion [
-	"Answer the current CORMAS version"
-
-	^ GRVersion major: 0 minor: 1 revision: 0
-]
-
-{ #category : #about }
-CMApplicationProject class >> contributors [
-
-	^ String streamContents: [ : stream | 
-		stream 
-			<< 'Thank you to the following contributors: \';
-			cr;
-			<< self developerNames ]
-]
-
-{ #category : #accessing }
-CMApplicationProject class >> createUserDirectories [
-	" Create directories for storing CORMAS files in this system "
-
-	CMGitBridge baseDirectory ensureCreateDirectory.
-	#(#demosPath #userProjectsPath #preferencesPath) 
-		do: [ :pathSym | (CMGitBridge perform: pathSym) ensureCreateDirectory ]
-]
-
-{ #category : #about }
-CMApplicationProject class >> currentVersion [
-		
-	^ '0.1'
-]
-
-{ #category : #about }
-CMApplicationProject class >> developerNames [
-^ 'Innocent Bakam
-François Bousquet
-Christophe Le Page
-Pierre Bommel
-Alassane Bah
-Nicolas Bécu
-Emmanuel Lieurain
-Jean-Christophe Soulié
-Paul Guyot
-Jean François Lefevre
-Hernán Morales Durand'
-]
-
-{ #category : #about }
-CMApplicationProject class >> downloadString [
-^ 
-'Visit the Cormas web site :  
-      in French = http://cormas.cirad.fr
-      in English = http://cormas.cirad.fr/indexeng.htm
-'
-
-]
-
-{ #category : #accessing }
-CMApplicationProject class >> hasUserProjects [
-	" Answer <true> if this system already has a directory where CORMAS projects and preferences were created "
-
-	^ CMGitBridge baseDirectory exists and: [
-		CMGitBridge demosPath exists and: [
-			CMGitBridge demosPath hasFiles and: [ 
-				CMGitBridge demosPath children anySatisfy: #isZipFile ] ] ]
-
-]
-
-{ #category : #about }
-CMApplicationProject class >> licenseString [
-	^ self licenseStringTemplate format: (Array with: Date today year asString)
-]
-
-{ #category : #about }
-CMApplicationProject class >> licenseStringTemplate [
-	^ 'LICENSE
+{ #category : #initialization }
+CMApplicationProject class >> initializeApplication [
+	" Set the class' initial state "
 	
-Licensed under the MIT License.
+	AppSingleton := self new.
+]
 
-Copyright (c) 1996-{1} CIRAD - Green Research Unit, and CORMAS Contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this
-software and associated documentation files (the "Software"), to deal in the Software
-without restriction, including without limitation the rights to use, copy, modify, merge,
-publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons
-to whom the Software is furnished to do so, subject to the following conditions: The
-above copyright notice and this permission notice shall be included in all copies or
-substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
-OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-'
+{ #category : #initialization }
+CMApplicationProject class >> release [
+	" Prepare the class to be deleted "
+	
+	AppSingleton := nil.
 ]
 
 { #category : #accessing }
-CMApplicationProject class >> removeUserDirectories [
-
-	CMGitBridge baseDirectory exists
-		ifFalse: [ ^ self ].
-	(self confirm: 'Warning: You are about to remove all directories and files under ' , CMGitBridge baseDirectory fullName)
-		ifTrue: [ CMGitBridge baseDirectory deleteAll ].
-
-]
-
-{ #category : #accessing }
-CMApplicationProject class >> removeUserDirectoriesNoConfirmation [
-
-	CMGitBridge baseDirectory
-		ifFalse: [ ^ self ].
-	CMGitBridge baseDirectory deleteAll.
-
-]
-
-{ #category : #about }
-CMApplicationProject class >> systemInformationString [
-
-	^ String streamContents: [ : stream |
-		stream 
-			cr;
-			nextPutAll: self currentVersion;
-			cr; cr;
-			nextPutAll: self licenseString;
-			cr; cr;
-			nextPutAll: self downloadString;
-			cr; cr;
-			nextPutAll: self contributors ]
+CMApplicationProject class >> uniqueInstance [
+	" Answer the class' primary instance "
+	
+	^ AppSingleton
+		ifNil: [ 
+			self initializeApplication.
+			AppSingleton ]	
 ]
 
 { #category : #accessing }
@@ -172,6 +67,29 @@ CMApplicationProject >> cormasModel [
 ]
 
 { #category : #accessing }
+CMApplicationProject >> createProjectNamed: aNameString [
+	" Set a new project named aNameString, setting its user to the default user. Answer a <PFProjectBase> "
+
+	self currentProject: (self projectClass 
+		named: aNameString 
+		author: (PFProjectUser named: self defaultUsername)).
+	^ self currentProject
+
+]
+
+{ #category : #accessing }
+CMApplicationProject >> currentProject [
+
+	^ currentProject
+]
+
+{ #category : #accessing }
+CMApplicationProject >> currentProject: anObject [
+
+	currentProject := anObject
+]
+
+{ #category : #accessing }
 CMApplicationProject >> defaultProjectClass [
 	" Private - See superimplementor's comment "
 
@@ -179,9 +97,15 @@ CMApplicationProject >> defaultProjectClass [
 ]
 
 { #category : #accessing }
+CMApplicationProject >> defaultUsername [
+
+	^ 'Unknown'
+]
+
+{ #category : #accessing }
 CMApplicationProject >> gitBridge [
-	^ resourceLocator
-		ifNil: [ resourceLocator := CMGitBridge new ]
+
+	^ gitBridge
 ]
 
 { #category : #initialization }
@@ -189,6 +113,8 @@ CMApplicationProject >> initialize [
 
 	super initialize.
 	translator := CMEnglishTranslator new.
+	projectClass := CMProjectModel.
+	gitBridge := CMGitBridge new.
 ]
 
 { #category : #accessing }
@@ -199,23 +125,24 @@ CMApplicationProject >> modelNames [
 ]
 
 { #category : #accessing }
-CMApplicationProject >> resourceLocator: anObject [
-	resourceLocator := anObject
+CMApplicationProject >> projectClass [
+
+	^ projectClass
 ]
 
 { #category : #accessing }
-CMApplicationProject >> terminateAllProcesses [
-	"Terminate all the processes"
+CMApplicationProject >> projectClass: aClass [
+	" Associate receiver's (an application) with a project aClass "
 
-	processReplayForward
-		ifNotNil: [ processReplayForward terminate.
-			processReplayForward := nil ].
-	processReplayBackward
-		ifNotNil: [ processReplayBackward terminate.
-			processReplayBackward := nil ].
-	processRun
-		ifNotNil: [ processRun terminate.
-			processRun := nil ]
+	projectClass := aClass
+]
+
+{ #category : #callbacks }
+CMApplicationProject >> releaseProject [
+	" Release the receiver's current project. "
+
+	self currentProject: nil.
+	self projectClass: nil
 ]
 
 { #category : #accessing }

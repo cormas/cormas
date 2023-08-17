@@ -149,6 +149,12 @@ CMSpanishTranslator >> tChangeModelComments [
 ]
 
 { #category : #translations }
+CMSpanishTranslator >> tChooseAnotherName [
+
+	^ 'Elija otro nombre'
+]
+
+{ #category : #translations }
 CMSpanishTranslator >> tChooseColor [
 
 	^ 'Seleccione un color'

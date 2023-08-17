@@ -30,6 +30,13 @@ CMResourceOpener class >> newFrom: aCMProjectManager [
 ]
 
 { #category : #callbacks }
+CMResourceOpener >> currentProject [
+	" Refer to comment in CMProjectManager currentProject: "
+
+	^ self projectManager currentProject
+]
+
+{ #category : #callbacks }
 CMResourceOpener >> currentProject: aCMProjectModel [
 	" Refer to comment in CMProjectManager currentProject: "
 

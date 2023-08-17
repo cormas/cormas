@@ -149,6 +149,12 @@ CMPolishTranslator >> tChangeModelComments [
 ]
 
 { #category : #translations }
+CMPolishTranslator >> tChooseAnotherName [
+
+	^ 'Wybierz inną nazwę'
+]
+
+{ #category : #translations }
 CMPolishTranslator >> tChooseColor [
 
 	^ 'Wybierz kolor'

@@ -149,6 +149,12 @@ CMEnglishTranslator >> tChangeModelComments [
 ]
 
 { #category : #translations }
+CMEnglishTranslator >> tChooseAnotherName [
+
+	^ 'Choose another name'
+]
+
+{ #category : #translations }
 CMEnglishTranslator >> tChooseColor [
 
 	^ 'Choose a color'

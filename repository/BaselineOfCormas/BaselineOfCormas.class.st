@@ -36,8 +36,6 @@ BaselineOfCormas >> loadBackgroundImage [
 { #category : #doits }
 BaselineOfCormas >> postLoad [
 	
-	PFProjectApplication applicationClass: CMApplicationProject.
-	
 	self class environment at: #CMSpApplication ifPresent: [ 
 		self loadBackgroundImage ].	
 		

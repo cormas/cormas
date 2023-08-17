@@ -35,6 +35,7 @@ Class {
 { #category : #'instance creation' }
 CMProjectModel class >> for: aCormasModel [
 	" Answer a new instance of the receiver configured for aCormasModel "
+	
 	^ self new initializeForModel: aCormasModel 
 ]
 
@@ -129,6 +130,12 @@ CMProjectModel >> addNewEntity: aCMEntityNewAnnouncement [
 		name: aCMEntityNewAnnouncement entityName
 		initProtocol: createInit 
 		stepProtocol: false
+]
+
+{ #category : #accessing }
+CMProjectModel >> application [
+
+	^ CMApplicationProject uniqueInstance
 ]
 
 { #category : #accessing }

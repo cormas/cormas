@@ -149,6 +149,12 @@ CMUkrainianTranslator >> tChangeModelComments [
 ]
 
 { #category : #translations }
+CMUkrainianTranslator >> tChooseAnotherName [
+
+	^ 'Оберіть інше імʼя'
+]
+
+{ #category : #translations }
 CMUkrainianTranslator >> tChooseColor [
 
 	^ 'Виберіть колір'
