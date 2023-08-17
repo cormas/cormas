@@ -34,15 +34,6 @@ CMProjectManagerTest >> setUp [
 ]
 
 { #category : #test }
-CMProjectManagerTest >> tearDown [
-	"Hooks that subclasses may override to define the fixture of test."
-
-	self cleanGeneratedMethods.
-	super tearDown.	
-
-]
-
-{ #category : #test }
 CMProjectManagerTest >> testApplicationExtension [
 
 	self assert: (self projectManager applicationExtension isKindOf: String).
@@ -89,17 +80,6 @@ CMProjectManagerTest >> testCormasModelComment [
 ]
 
 { #category : #test }
-CMProjectManagerTest >> testCormasModelCreationDate [
-
-	| modelDate |
-	
-	modelDate := Date today asString.
-	self projectModel cormasModelCreationDate: modelDate.
-	self assert: (self projectManager cormasModelClass respondsTo: #creationDate).
-	self assert: self projectManager cormasModelClass creationDate equals: modelDate.
-]
-
-{ #category : #test }
 CMProjectManagerTest >> testCormasModelName [
 
 	self assert: self projectManager cormasModelName equals: 'CMMockModel'
@@ -131,14 +111,6 @@ CMProjectManagerTest >> testCurrentProjectHasAuthor [
 
 	self projectManager cormasModelAuthors: 'author_name'.
 	self assert: self projectManager currentProjectHasAuthor.
-
-]
-
-{ #category : #test }
-CMProjectManagerTest >> testCurrentProjectHasCreationDate [
-
-	self projectManager cormasModelCreationDate: Date today asString.
-	self assert: self projectManager currentProjectHasCreationDate.
 
 ]
 

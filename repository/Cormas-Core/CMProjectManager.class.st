@@ -112,13 +112,6 @@ CMProjectManager >> cormasModelComment: aString [
 ]
 
 { #category : #accessing }
-CMProjectManager >> cormasModelCreationDate: aString [
-
-	self currentProject cormasModelCreationDate: aString
-
-]
-
-{ #category : #accessing }
 CMProjectManager >> cormasModelName [
 	" Answer a <String> which is a Cormas model name "
 
@@ -221,13 +214,6 @@ CMProjectManager >> currentProjectHasControlMethods [
 	" Answer <true> if receiver's model contains at least one initialization method "
 
 	^  self modelControlInitMethods notEmpty
-]
-
-{ #category : #testing }
-CMProjectManager >> currentProjectHasCreationDate [
-	" Answer <true> if receiver's contains a version name "
-
-	^  self currentProject cormasModelClass respondsTo: #creationDate
 ]
 
 { #category : #testing }
