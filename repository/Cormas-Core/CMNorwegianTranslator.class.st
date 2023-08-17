@@ -149,6 +149,12 @@ CMNorwegianTranslator >> tChangeModelComments [
 ]
 
 { #category : #translations }
+CMNorwegianTranslator >> tChooseAnotherName [
+
+	^ 'Velg et annet navn'
+]
+
+{ #category : #translations }
 CMNorwegianTranslator >> tChooseColor [
 
 	^ 'Velg en farge'

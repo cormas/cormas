@@ -158,6 +158,12 @@ CMAbstractTranslator >> tChangeModelComments [
 ]
 
 { #category : #translations }
+CMAbstractTranslator >> tChooseAnotherName [
+
+	self subclassResponsibility
+]
+
+{ #category : #translations }
 CMAbstractTranslator >> tChooseColor [
 
 	self subclassResponsibility

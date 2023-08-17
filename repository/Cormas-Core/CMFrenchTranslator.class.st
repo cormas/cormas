@@ -149,6 +149,12 @@ CMFrenchTranslator >> tChangeModelComments [
 ]
 
 { #category : #translations }
+CMFrenchTranslator >> tChooseAnotherName [
+
+	^ 'Choisir un autre nom'
+]
+
+{ #category : #translations }
 CMFrenchTranslator >> tChooseColor [
 
 	^ 'Choisissez une couleur'
