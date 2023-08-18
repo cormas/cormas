@@ -13,7 +13,7 @@
   <p align="center">
     <a href="https://github.com/cormas/cormas/actions/workflows/testCore.yml"><img alt="CI Core" src="https://github.com/cormas/cormas/workflows/CI%20Core/badge.svg"></a>
     <a href="https://github.com/cormas/cormas/actions/workflows/test.yml"><img alt="CI Full" src="https://github.com/cormas/cormas/workflows/CI%20Full/badge.svg"></a>
-    <a href="https://coveralls.io/github/cormas/cormas?branch=master"><img alt="Coverage Status" src="https://coveralls.io/repos/github/cormas/cormas/badge.svg?branch=master"></a>
+    <a href='https://coveralls.io/github/cormas/cormas?branch=master'><img src='https://coveralls.io/repos/github/cormas/cormas/badge.svg?branch=master' alt='Coverage Status' /></a>
     <a href="https://raw.githubusercontent.com/cormas/cormas/master/LICENSE"><img alt="Licence" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
     <a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-13-orange.svg"></a>
   </p>
