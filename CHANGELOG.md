@@ -2,6 +2,8 @@
 
 - (https://github.com/cormas/cormas/pull/692) Created a new translator class hierarchy to replace the old l18N translator.
 - ([1ecc9e9](https://github.com/cormas/cormas/pull/710/commits/1ecc9e96f8b6b8dea4b1ca81077066a5e386e04f)) Fixed the randomness of `Cormas class >> selectRandomlyFrom: aCollection`
+- (https://github.com/cormas/cormas/pull/717) The default model creation date is now properly saved
+- (https://github.com/cormas/cormas/pull/721) Fixed the capitalization of a new model name
 
 ### Improved Roassal3 implementation of space diagram
 
@@ -14,6 +16,7 @@
 - (https://github.com/cormas/cormas/pull/694) Added Language menu item to switch between translators
 - (https://github.com/cormas/cormas/pull/711) Added a Programming menu item to open System Browser
 - ([3fd9805](https://github.com/cormas/cormas/pull/714/commits/3fd9805f20f243e1db35ef6b7412266e672a783e)) Removed the menu item to show the list of methods with flags
+- ([a388f6a](https://github.com/cormas/cormas/commit/a388f6a7256cad95b47a89b91e644a57ad8b61de)) Migrated CMSpecModelComments to Spec2
 
 ### Removed
 
@@ -30,6 +33,9 @@
 - ([4fc0b32](https://github.com/cormas/cormas/pull/714/commits/4fc0b327151435f0d79ab6fb8f78ede4c33a87a7)) Methods of `CMSpatialEntityAggregate` that were never called: `setImage`, `setImage4`, `setImageFromIrregularCells`, as well as `CMSpatialEntityNotConnex >> setImage`
 - ([289ba64](https://github.com/cormas/cormas/pull/714/commits/289ba643be58f7fda32edbd82aed66ca86ea5e00)) `includedEntities` instance variable from `CMSpatialEntity` and all methods that were using it but were never called: `CMSpaceModel >> updateIncludedEntities:`, `CMSpatialEntity >> colorI:`, and `CMSpatialEntity >> colorN:`
 - ([9b90747](https://github.com/cormas/cormas/pull/714/commits/9b907478c3df643755fcb65ef2ee03f660937ee4)) `default` instance variable from `CMSpatialEntityElement` class
+- ([085c908](https://github.com/cormas/cormas/pull/715/commits/085c908b6cec5abf366bd6a7f382048e023e06eb)) `CMSpatialEntity class >> theCSE_default`
+- (https://github.com/cormas/cormas/pull/716) Removed `orderedNeighbourhood` and used `neighbourhood` instead
+- ([30dd507](https://github.com/cormas/cormas/commit/30dd5078a817c8869929217fd9fc5ea1224d61eb)) `currentProjectVersion` and `currentProjectClass` from `CMSpecModelComments`
 
 ### Renamed
 
@@ -40,6 +46,9 @@
 - ([4125eca](https://github.com/cormas/cormas/pull/710/commits/4125eca4fcc70d56ce658346d29213b21e050de6)) `hasOccupantType:` ---> `hasOccupantOfClass:`
 - ([4125eca](https://github.com/cormas/cormas/pull/710/commits/4125eca4fcc70d56ce658346d29213b21e050de6)) `noOccupant` ---> `hasNoOccupants`
 - ([4125eca](https://github.com/cormas/cormas/pull/710/commits/4125eca4fcc70d56ce658346d29213b21e050de6)) `noOccupantBut:` ---> `hasNoOccupantsExcept:`
+- ([6b366e2](https://github.com/cormas/cormas/pull/715/commits/6b366e20ec9ac152a00583905e6f6f250fdfbb43)) `theESE` ---> `theCells` (variable and accessors)
+- ([a657463](https://github.com/cormas/cormas/pull/715/commits/a6574634b6b6db07f796fab9594d3c7d2dfb8e6d)) `theCSE` ---> `theAggregates` (variable and accessors)
+- ([d68f6e5](https://github.com/cormas/cormas/pull/715/commits/d68f6e5800966b129644c3bad3e97594a8f852dc)) `myCSE:` ---> `myAggregateOfClass:`
 
 
 ### Improved the Mock model
@@ -51,6 +60,8 @@
 ### Decoupling
 
 - ([e2c000c](https://github.com/cormas/cormas/commit/e2c000c75fd24e55518d1e3b2a0efbf0e38df79f)) Moved `applicationExtension`, `baseDirectory`, and `cormasRepository` from `CMApplicationProject` to `CMGitBridge` to reduce dependency on ProjectFramework
+- ([594e0a4](https://github.com/cormas/cormas/commit/594e0a4715cdd7016daf5d65a73587218a85fbf4)) Moved model metadata to AbstractModel to reduce dependency on ProjectFramework
+- (https://github.com/cormas/cormas/pull/724) `CMApplicationProject` does not inherit from `PFApplicationProject` anymore
 
 # [v0.6](https://github.com/cormas/cormas/compare/v0.5...v0.6) (25 July 2023)
 
