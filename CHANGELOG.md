@@ -1,4 +1,4 @@
-# [v0.7](https://github.com/cormas/cormas/compare/v0.6...v0.7) (17 August 2023)
+# [v0.7](https://github.com/cormas/cormas/compare/v0.6...v0.7) (18 August 2023)
 
 - (https://github.com/cormas/cormas/pull/692) Created a new translator class hierarchy to replace the old l18N translator.
 - ([1ecc9e9](https://github.com/cormas/cormas/pull/710/commits/1ecc9e96f8b6b8dea4b1ca81077066a5e386e04f)) Fixed the randomness of `Cormas class >> selectRandomlyFrom: aCollection`
