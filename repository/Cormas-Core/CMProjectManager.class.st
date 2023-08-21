@@ -182,6 +182,12 @@ CMProjectManager >> createProject: projectName in: aCMApplicationProject [
 ]
 
 { #category : #accessing }
+CMProjectManager >> currentProject [
+
+	^ self application currentProject
+]
+
+{ #category : #accessing }
 CMProjectManager >> currentProjectAuthors [
 	" Answer a <String> containing receiver's project authors, opposed to model authors "
 
