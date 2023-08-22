@@ -1,7 +1,7 @@
 Class {
 	#name : #CMSpanishTranslator,
 	#superclass : #CMAbstractTranslator,
-	#category : #'Cormas-Core-Project'
+	#category : #'Cormas-Core-Translator'
 }
 
 { #category : #translations }
