@@ -27,8 +27,8 @@ CMProjectManagerTest >> projectModel [
 CMProjectManagerTest >> setUp [ 
 
 	super setUp.
-	CMApplicationProject release.
-	PFProjectSettings currentApplicationClass: CMApplicationProject.
+	CMApplication release.
+	PFProjectSettings currentApplicationClass: CMApplication.
 	model := self newTestModel.
 	projectManager := self newProjectManager.
 ]

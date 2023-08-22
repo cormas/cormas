@@ -14,7 +14,7 @@ CMApplicationProject createUserDirectories.
 CMApplicationProject removeUserDirectories.
 "
 Class {
-	#name : #CMApplicationProject,
+	#name : #CMApplication,
 	#superclass : #Object,
 	#instVars : [
 		'gitBridge',
@@ -29,28 +29,28 @@ Class {
 }
 
 { #category : #accessing }
-CMApplicationProject class >> applicationName [
+CMApplication class >> applicationName [
 	" Answer a <String> with receiver's name "
 	
 	^ 'CORMAS Application'
 ]
 
 { #category : #initialization }
-CMApplicationProject class >> initializeApplication [
+CMApplication class >> initializeApplication [
 	" Set the class' initial state "
 	
 	AppSingleton := self new.
 ]
 
 { #category : #initialization }
-CMApplicationProject class >> release [
+CMApplication class >> release [
 	" Prepare the class to be deleted "
 	
 	AppSingleton := nil.
 ]
 
 { #category : #accessing }
-CMApplicationProject class >> uniqueInstance [
+CMApplication class >> uniqueInstance [
 	" Answer the class' primary instance "
 	
 	^ AppSingleton
@@ -60,14 +60,14 @@ CMApplicationProject class >> uniqueInstance [
 ]
 
 { #category : #accessing }
-CMApplicationProject >> cormasModel [
+CMApplication >> cormasModel [
 	" Answer the receiver's current project model, a <CMAbstractModel> instance "
 
 	^ self currentProject cormasModel 
 ]
 
 { #category : #accessing }
-CMApplicationProject >> createProjectNamed: aNameString [
+CMApplication >> createProjectNamed: aNameString [
 	" Set a new project named aNameString, setting its user to the default user. Answer a <PFProjectBase> "
 
 	self currentProject: (self projectClass 
@@ -78,38 +78,38 @@ CMApplicationProject >> createProjectNamed: aNameString [
 ]
 
 { #category : #accessing }
-CMApplicationProject >> currentProject [
+CMApplication >> currentProject [
 
 	^ currentProject
 ]
 
 { #category : #accessing }
-CMApplicationProject >> currentProject: anObject [
+CMApplication >> currentProject: anObject [
 
 	currentProject := anObject
 ]
 
 { #category : #accessing }
-CMApplicationProject >> defaultProjectClass [
+CMApplication >> defaultProjectClass [
 	" Private - See superimplementor's comment "
 
 	^ CMProjectModel
 ]
 
 { #category : #accessing }
-CMApplicationProject >> defaultUsername [
+CMApplication >> defaultUsername [
 
 	^ 'Unknown'
 ]
 
 { #category : #accessing }
-CMApplicationProject >> gitBridge [
+CMApplication >> gitBridge [
 
 	^ gitBridge
 ]
 
 { #category : #initialization }
-CMApplicationProject >> initialize [
+CMApplication >> initialize [
 
 	super initialize.
 	translator := CMEnglishTranslator new.
@@ -118,27 +118,27 @@ CMApplicationProject >> initialize [
 ]
 
 { #category : #accessing }
-CMApplicationProject >> modelNames [
+CMApplication >> modelNames [
 	" Answer a <Collection> of <String> with receiver's available models "
 	
 	^ self gitBridge modelNames
 ]
 
 { #category : #accessing }
-CMApplicationProject >> projectClass [
+CMApplication >> projectClass [
 
 	^ projectClass
 ]
 
 { #category : #accessing }
-CMApplicationProject >> projectClass: aClass [
+CMApplication >> projectClass: aClass [
 	" Associate receiver's (an application) with a project aClass "
 
 	projectClass := aClass
 ]
 
 { #category : #callbacks }
-CMApplicationProject >> releaseProject [
+CMApplication >> releaseProject [
 	" Release the receiver's current project. "
 
 	self currentProject: nil.
@@ -146,13 +146,13 @@ CMApplicationProject >> releaseProject [
 ]
 
 { #category : #accessing }
-CMApplicationProject >> translator [
+CMApplication >> translator [
 
 	^ translator
 ]
 
 { #category : #accessing }
-CMApplicationProject >> translator: anObject [
+CMApplication >> translator: anObject [
 
 	translator := anObject
 ]

@@ -1,7 +1,7 @@
 Class {
 	#name : #CMAbstractTranslator,
 	#superclass : #Object,
-	#category : #'Cormas-Core-Project'
+	#category : #'Cormas-Core-Translator'
 }
 
 { #category : #'as yet unclassified' }

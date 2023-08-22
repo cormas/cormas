@@ -1153,7 +1153,7 @@ CMAbstractModel >> announcer [
 CMAbstractModel >> application [
 	" Answer the receiver's application object "
 	
-	^ CMApplicationProject uniqueInstance
+	^ CMApplication uniqueInstance
 ]
 
 { #category : #control }

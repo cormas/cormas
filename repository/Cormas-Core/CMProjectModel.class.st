@@ -135,7 +135,7 @@ CMProjectModel >> addNewEntity: aCMEntityNewAnnouncement [
 { #category : #accessing }
 CMProjectModel >> application [
 
-	^ CMApplicationProject uniqueInstance
+	^ CMApplication uniqueInstance
 ]
 
 { #category : #accessing }
@@ -546,6 +546,13 @@ CMProjectModel >> renameEntity: aCMEntityRenameAnnouncement [
 	(self perform: entitiesGetter) remove: oldClass ifAbsent: [ ].
 	(self perform: entitiesGetter) add: newClass.
 
+]
+
+{ #category : #callbacks }
+CMProjectModel >> saveProject [
+	"Serialize the receiver"
+
+	[ self saveProjectFile ] ensure: [ self info beSaved ]
 ]
 
 { #category : #private }

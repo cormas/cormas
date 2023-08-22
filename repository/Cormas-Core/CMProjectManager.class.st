@@ -27,7 +27,7 @@ Class {
 { #category : #accessing }
 CMProjectManager >> applicationClass [
 
-	^ CMApplicationProject
+	^ CMApplication
 ]
 
 { #category : #accessing }
@@ -307,7 +307,7 @@ CMProjectManager >> initialize [
 	" Set the receiver's inital state "
 
 	super initialize.
-	self applicationClass: CMApplicationProject.
+	self applicationClass: CMApplication.
 	openStatus := false.
 
 ]
@@ -432,6 +432,14 @@ CMProjectManager >> resubscribeUIEvents [
 	uiWindowClass := self classFor: #CMSpecProjectWindow.
 	(self announcer subscriptionsForClass: uiWindowClass)
 		ifEmpty: [ uiWindowClass allInstancesDo: [ : w | w initializeSubscriptions ] ].
+]
+
+{ #category : #callbacks }
+CMProjectManager >> saveProject [
+	"Private - Serialize current opened project"
+
+	self currentProject saveProject.
+	PFSuccessSave signal.
 ]
 
 { #category : #callbacks }

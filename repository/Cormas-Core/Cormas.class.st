@@ -46,7 +46,7 @@ Class {
 
 { #category : #'utilities - files' }
 Cormas class >> application [
-	^ CMApplicationProject uniqueInstance 
+	^ CMApplication uniqueInstance 
 ]
 
 { #category : #'utilities - value types' }
