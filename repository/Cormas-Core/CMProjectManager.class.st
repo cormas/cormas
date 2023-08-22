@@ -435,6 +435,14 @@ CMProjectManager >> resubscribeUIEvents [
 ]
 
 { #category : #callbacks }
+CMProjectManager >> saveProject [
+	"Private - Serialize current opened project"
+
+	self currentProject saveProject.
+	PFSuccessSave signal.
+]
+
+{ #category : #callbacks }
 CMProjectManager >> updateNewProject: modelName [
 	" See superimplementor's comment "
 

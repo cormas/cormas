@@ -548,6 +548,13 @@ CMProjectModel >> renameEntity: aCMEntityRenameAnnouncement [
 
 ]
 
+{ #category : #callbacks }
+CMProjectModel >> saveProject [
+	"Serialize the receiver"
+
+	[ self saveProjectFile ] ensure: [ self info beSaved ]
+]
+
 { #category : #private }
 CMProjectModel >> saveProjectFile [
 
