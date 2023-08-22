@@ -43,8 +43,8 @@ CMSpecProjectWindow class >> open [
 
 	| win |
 	
-	CMApplicationProject release.
-	PFProjectSettings currentApplicationClass: CMApplicationProject.
+	CMApplication release.
+	PFProjectSettings currentApplicationClass: CMApplication.
 	
 	win := self new 
 		openWithSpec;
@@ -769,8 +769,8 @@ CMSpecProjectWindow >> quitSubApplicationWindows [
 	UIManager default defer: [ 
 		"(Delay forSeconds: 1) wait."
 		self projectAnnouncer subscriptions reset.
-		CMApplicationProject allInstancesDo: #release.
-		CMApplicationProject release. 
+		CMApplication allInstancesDo: #release.
+		CMApplication release. 
 		3 timesRepeat: [ Smalltalk garbageCollect ] ]
 ]
 

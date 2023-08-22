@@ -27,7 +27,7 @@ Class {
 { #category : #accessing }
 CMProjectManager >> applicationClass [
 
-	^ CMApplicationProject
+	^ CMApplication
 ]
 
 { #category : #accessing }
@@ -307,7 +307,7 @@ CMProjectManager >> initialize [
 	" Set the receiver's inital state "
 
 	super initialize.
-	self applicationClass: CMApplicationProject.
+	self applicationClass: CMApplication.
 	openStatus := false.
 
 ]

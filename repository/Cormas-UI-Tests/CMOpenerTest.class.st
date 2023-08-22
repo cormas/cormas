@@ -41,8 +41,8 @@ CMOpenerTest >> openerClass [
 { #category : #running }
 CMOpenerTest >> setUp [ 
 
-	CMApplicationProject release.
-	PFProjectSettings currentApplicationClass: CMApplicationProject.
+	CMApplication release.
+	PFProjectSettings currentApplicationClass: CMApplication.
 	model := self newTestModel.
 	opener := self newOpener.
 ]

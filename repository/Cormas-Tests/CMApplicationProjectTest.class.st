@@ -25,7 +25,7 @@ CMApplicationProjectTest >> setUp [
 	" Hooks that subclasses may override to define the fixture of test. "
 
 	super setUp.
-	application := CMApplicationProject new.
+	application := CMApplication new.
 ]
 
 { #category : #test }

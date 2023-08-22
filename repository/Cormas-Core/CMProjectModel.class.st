@@ -135,7 +135,7 @@ CMProjectModel >> addNewEntity: aCMEntityNewAnnouncement [
 { #category : #accessing }
 CMProjectModel >> application [
 
-	^ CMApplicationProject uniqueInstance
+	^ CMApplication uniqueInstance
 ]
 
 { #category : #accessing }
