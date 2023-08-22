@@ -782,6 +782,14 @@ CMSpecProjectWindow >> runCormasTests [
 ]
 
 { #category : #callbacks }
+CMSpecProjectWindow >> saveProject [
+
+	self projectManager saveProject.
+	self fsm handleEvent: #actionSave.
+	self doPostSaveActions.
+]
+
+{ #category : #callbacks }
 CMSpecProjectWindow >> showSimulationWindow [
 
 	self simulationWindow showSimInterface
