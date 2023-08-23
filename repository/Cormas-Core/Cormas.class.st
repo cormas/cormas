@@ -512,7 +512,7 @@ Cormas class >> mix: aCollection [
 	"Purpose: Returns a randomly mixed collection
 Argument: aCollection is a collection to be mixed"
 
-	^ aCollection asOrderedCollection shuffleBy: self randomGenerator
+	^ aCollection asOrderedCollection shuffledBy: self randomGenerator
 ]
 
 { #category : #'utilities - mathematics' }

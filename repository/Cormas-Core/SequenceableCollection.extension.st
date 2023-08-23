@@ -1,6 +1,12 @@
 Extension { #name : #SequenceableCollection }
 
 { #category : #'*Cormas-Core' }
+SequenceableCollection >> shuffledBy: aRandomNumberGenerator [
+
+	^ self copy shuffleBy: aRandomNumberGenerator
+]
+
+{ #category : #'*Cormas-Core' }
 SequenceableCollection >> spaceModelDimensionsFor: aCMSpaceModel [ 
 	" Private - See #dimensions: in aCMSpaceModel for comments "
 	
