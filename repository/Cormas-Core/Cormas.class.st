@@ -661,14 +661,6 @@ Cormas class >> randomBoolean [
 ]
 
 { #category : #'utilities - random' }
-Cormas class >> randomCell [
-	| x y |
-	x := self randomFrom: 1 to: 100.
-	y := self randomFrom: 1 to: 100.
-	^ x @ y
-]
-
-{ #category : #'utilities - random' }
 Cormas class >> randomColor [
 "Purpose: Returns a random ColorValue
 Example: Cormas randomColor"
