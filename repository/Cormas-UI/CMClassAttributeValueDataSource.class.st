@@ -139,15 +139,22 @@ CMClassAttributeValueDataSource class >> getDefaultValuesForClass: aClass attrib
 CMClassAttributeValueDataSource class >> inheritedInstVarNamesForClass: aClass [
 	"Return an array of the attributs of the superclass"
 	
-	| list entityClasses allEntityClasses aSuperclass |
+	| list tag entityClasses allEntityClasses aSuperclass |
 	list := OrderedCollection new.
-	entityClasses := ('Cormas-Core' asPackage classTagNamed: 'Entities') classes.
-	entityClasses
-		addAll:
-			(('Cormas-Core' asPackage classTagNamed: 'Interface') classes).
-	entityClasses
-		addAll:
-			(('Cormas-Core' asPackage classTagNamed: 'Communication') classes).
+	
+	tag := 'Cormas-Core' asPackage classTagNamed: 'Entities'
+		ifAbsent: [ nil ].
+		
+	entityClasses := tag
+		ifNil: [ OrderedCollection new ]
+		ifNotNil: [ :each | each classes ].
+		
+	'Cormas-Core' asPackage classTagNamed: 'Interface'
+		ifPresent: [ :each | entityClasses addAll: each classes ].
+		
+	'Cormas-Core' asPackage classTagNamed: 'Communication'
+		ifPresent: [ :each | entityClasses addAll: each classes ].
+	
 	allEntityClasses := entityClasses copy.
 	entityClasses do: [:c | allEntityClasses add: c class].
 	aSuperclass := aClass superclass.	"I just want the attributs of the super class until the Entities class"
