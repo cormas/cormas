@@ -225,9 +225,13 @@ CormasTest >> testSeed [
 
 { #category : #tests }
 CormasTest >> testSelectRandomlyFrom [
-	| aCollection |
-	aCollection := #(1 2 3 4 5).
-	self assert: (aCollection includes: (Cormas selectRandomlyFrom: aCollection))
+
+	| collection selectedElement |
+	collection := #(a b c d e).
+	
+	selectedElement := Cormas selectRandomlyFrom: collection.
+	
+	self assert: (collection includes: selectedElement)
 ]
 
 { #category : #tests }
