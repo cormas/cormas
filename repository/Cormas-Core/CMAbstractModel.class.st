@@ -1539,7 +1539,7 @@ CMAbstractModel >> createGridLines: numLines columns: numColumns neighbourhood: 
 Arguments:  numColumns : number of columns ; numLines : number of lines of the grid.
 Arguments: aNumber is the neighbourhood type. It must 4, 6 or 8
 Arguments: aBoolean : closed or torroidal space.
-Example: self createGridColumns: 20 lines: 20 neighbourhood: 8 closed: true "
+Example: self createGridLines: 30 columns: 30 neighbourhood: 4 closed: true "
 
 	self spaceModel
 		initializeRegularLines: numLines
