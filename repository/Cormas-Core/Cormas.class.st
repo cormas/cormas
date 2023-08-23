@@ -988,14 +988,6 @@ Examples: Cormas selectRandomlyFrom: (Set withAll: #(1 2 3 4 5)) subCollectionSi
 	^randomCollection copyFrom: 1 to: anInteger
 ]
 
-{ #category : #'private_aleat' }
-Cormas class >> selectSimpleRandomlyFrom: aCollection [
-	"Returns an item at randomly position of the collection 'aCollection'. 
-ex: Cormas selectSimpleRandomlyFrom: (Set withAll: #(1 2 3 4 5))"
-
-	^ aCollection atRandom
-]
-
 { #category : #'util_files' }
 Cormas class >> separator [
 	
