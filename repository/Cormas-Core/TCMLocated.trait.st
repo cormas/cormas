@@ -831,6 +831,19 @@ TCMLocated >> randomJump [
 ]
 
 { #category : #'star moving' }
+TCMLocated >> randomJumpConstrainedBy: aBlock [
+
+	| destination candidates |
+	patch ifNil: [ ^ nil ].
+	
+	candidates := patch grid select: [ :cell | aBlock value: cell ].
+	candidates isEmpty ifTrue: [ ^ self ].
+	
+	destination := Cormas selectRandomlyFrom: candidates.
+	self moveTo: destination
+]
+
+{ #category : #'star moving' }
 TCMLocated >> randomWalk [
 	" Moves to a spatial entity randomly picked from the direct neighbourhood (relative distance = 1) of the current location "
 
