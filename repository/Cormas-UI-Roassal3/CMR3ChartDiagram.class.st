@@ -76,6 +76,15 @@ CMR3ChartDiagram >> chartBuilder: anObject [
 	chartBuilder := anObject
 ]
 
+{ #category : #initialization }
+CMR3ChartDiagram >> configureCanvas: canvas [
+
+	| interaction |
+	interaction := RSCanvasController new.
+	interaction noLegend.
+	canvas addInteraction: interaction
+]
+
 { #category : #accessing }
 CMR3ChartDiagram >> cormasModelClass [ 
 
@@ -133,6 +142,8 @@ CMR3ChartDiagram >> newBasicChartBuilder [
 	" Private - Answer a new <RSChart> with the basic decorations and settings "
 	
 	^ RSChart new
+		extent: 400@300;
+		padding: 5;
 		addDecoration: self newHorizontalTick;
 		addDecoration: self newVerticalTick;
 		addDecoration: (RSXLabelDecoration new title: 'Time'; offset: 0 @ self newMaxX);
@@ -155,6 +166,7 @@ CMR3ChartDiagram >> newHorizontalTick [
 
 	^ RSHorizontalTick new 
 			integer;
+			numberOfTicks: 10;
 			yourself.
 ]
 
@@ -171,7 +183,7 @@ CMR3ChartDiagram >> newVerticalTick [
 
 	^ RSVerticalTick new 
 		doNotUseNiceLabel;
-		numberOfTicks: 2;
+		numberOfTicks: 10;
 		yourself.
 ]
 
@@ -221,12 +233,15 @@ CMR3ChartDiagram >> refreshProbesChart [
 	self updateProbes
 ]
 
-{ #category : #'accessing - chart' }
-CMR3ChartDiagram >> removeAllElements [
-	" Remove all the receiver's chart elements "
+{ #category : #initialization }
+CMR3ChartDiagram >> renderIn: canvas [
 
-	self canvas shapes do: [ : s | s remove ].
-
+	| chart |
+	chart := self newBasicChartBuilder.
+	self probeLines do: [ :linePlot | chart addPlot: linePlot ].
+	chart plots ifNotEmpty: [ chart renderIn: canvas. ].
+	
+	self configureCanvas: canvas
 ]
 
 { #category : #'accessing - chart' }
@@ -264,21 +279,21 @@ CMR3ChartDiagram >> setModelBeforeInitialization: aDomainObject [
 { #category : #'accessing - chart' }
 CMR3ChartDiagram >> timeChanged: aNewTimeStep [
 
-	"newMaxX := (aNewTimeStep max: 1) min: 10."
 	newMaxX := aNewTimeStep.
-	self removeAllElements.
+	self refresh.
+	"self removeAllElements.
 
 	self chartBuilder maxValueX: newMaxX + 1.
 	self updateYAxis.
 
-	self updateProbes.
+	self updateProbes."
 ]
 
 { #category : #'accessing - chart' }
 CMR3ChartDiagram >> updateProbes [
 
 	| probesToDisplay |
-	
+	self halt.
 	"probesToDisplay := self cormasModelClass activeProbes asOrderedCollection.
 	(self owner selectedProbes hasEqualElements: probesToDisplay)
 		ifFalse: [ probesToDisplay addAll: (self selectedProbes difference: probesToDisplay) ]."

@@ -19,7 +19,8 @@ Class {
 		'cormasModel',
 		'translator',
 		'diagram',
-		'menuToolbar'
+		'menuToolbar',
+		'builder'
 	],
 	#category : #'Cormas-UI-Roassal3-Space'
 }
@@ -112,10 +113,14 @@ CMR3SpacePresenter >> initializeCanvasInteractions [
 { #category : #initialization }
 CMR3SpacePresenter >> initializeDiagram [
 	" Private - Create the configured receiver's diagram "
-		
-	diagram := CMR3SpaceDiagramBuilder new
-		cormasModel: self cormasModel;
-		asPresenter.
+	
+	builder := CMR3SpaceDiagramBuilder new
+		cormasModel: self cormasModel.
+	
+	"diagram := self newRoassal.
+	diagram script: [ :canvas | builder renderIn: canvas ].
+	"
+	diagram := builder asPresenter.
 		
 	diagram owner: self.
 	self update.
@@ -127,11 +132,11 @@ CMR3SpacePresenter >> initializeEvents [
 
 	self projectAnnouncer
 		when: CMSChangePoVAnnouncement 
-		do: [ self initializeDiagram ].
-		
+		do: [ builder update ].
+	
 	self projectAnnouncer
 		when: CMTimeChangedAnnouncement
-		do: [ self initializeDiagram ].
+		do: [ builder update ].
 			
 	"self projectAnnouncer
 		when: CMSimulationInitializationAnnouncement
@@ -200,6 +205,7 @@ CMR3SpacePresenter >> initializePresenters [
 	" Private - See superimplementor's comment "
 
 	menuToolbar := self mainMenuToolbar.
+	
 	
 	self initializeDiagram.
 	self initializeCanvasInteractions.

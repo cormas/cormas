@@ -88,7 +88,10 @@ CMR3SpaceAgentsBuilder >> moveAgentShape: anAgentShape [
 	| agent cell cellSize |
 			
 	agent := anAgentShape model.
+	
 	cell := agent patch.
+	cell ifNil: [ ^ self ].
+	
 	cellSize := diagramBuilder cellShapes anyOne encompassingRectangle extent.
 
 	(anAgentShape propertyAt: #RSLabeled) ifNotNil: [ :p |
@@ -108,7 +111,18 @@ CMR3SpaceAgentsBuilder >> objects [
 ]
 
 { #category : #updating }
+CMR3SpaceAgentsBuilder >> update [
+	
+	shapes do:#remove.
+	self container
+		addAll: (shapes := self shapesFor: self objects).
+	shapes do: [ :each | self updateShape: each ].
+]
+
+{ #category : #updating }
 CMR3SpaceAgentsBuilder >> updateShape: aShape [
 
-	self moveAgentShape: aShape
+	self moveAgentShape: aShape.
+	
+	Transcript show: diagramBuilder cormasModel theAgents size; cr.
 ]
