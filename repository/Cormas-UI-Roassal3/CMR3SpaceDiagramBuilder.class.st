@@ -75,9 +75,13 @@ CMR3SpaceDiagramBuilder >> cormasModel: anObject [
 { #category : #'as yet unclassified' }
 CMR3SpaceDiagramBuilder >> defaultContainer [
 
-	| canvas |
+	| canvas interaction |
 	canvas := RSCanvas new.
-	canvas addInteraction: RSCanvasController.
+	
+	interaction := RSCanvasController new.
+	interaction noLegend.
+	
+	canvas addInteraction: interaction.
 	
 	^ canvas
 ]
@@ -105,7 +109,13 @@ CMR3SpaceDiagramBuilder >> masterShapeForCells: aShape [
 
 { #category : #rendering }
 CMR3SpaceDiagramBuilder >> renderIn: aCanvas [
-
 	cellsBuilder renderIn: aCanvas.
 	agentsBuilder renderIn: aCanvas.
+]
+
+{ #category : #accessing }
+CMR3SpaceDiagramBuilder >> update [
+	cellsBuilder update.
+	agentsBuilder update.
+	self container signalUpdate.
 ]

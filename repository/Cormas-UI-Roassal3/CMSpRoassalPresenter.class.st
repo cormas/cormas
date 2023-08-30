@@ -20,11 +20,22 @@ CMSpRoassalPresenter >> cormasModel: anObject [
 	cormasModel := anObject
 ]
 
+{ #category : #initialization }
+CMSpRoassalPresenter >> initialize [
+	super initialize.
+	self script: [ :canvas | self renderIn: canvas ].
+]
+
 { #category : #accessing }
 CMSpRoassalPresenter >> projectAnnouncer [
 	" Private - Answer the <Announcer> used by the receiver's project "
 	
 	^ self cormasModel projectAnnouncer
+]
+
+{ #category : #initialization }
+CMSpRoassalPresenter >> renderIn: canvas [
+	self subclassResponsibility
 ]
 
 { #category : #accessing }

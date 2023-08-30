@@ -16,8 +16,8 @@ CMR3ChartDiagram class >> owner: anOwningPresenter on: aDomainObject [
 
 	^ self basicNew
 		owner: anOwningPresenter;
-		setModelBeforeInitialization: aDomainObject;
 		initialize;
+		setModel: aDomainObject;
 		yourself
 ]
 
@@ -32,9 +32,9 @@ CMR3ChartDiagram >> addAZeroDataSet [
 	initialPlot 
 		x: xValue
 		y: { 0 };
-		color: Color blue "trans".
+		color: Color blue.
 	
-	self chartBuilder 
+	chartBuilder 
 		maxValueX: self newMaxX;
 		addPlot: initialPlot;
 		renderIn: self canvas.
@@ -57,7 +57,7 @@ CMR3ChartDiagram >> addControllers: aCanvas [
 CMR3ChartDiagram >> addDataSet [
 	" Private - The receiver was opened but the model already has simulation data. Replicate into the diagram "
 
-	self chartBuilder maxValueX: self cormasModel timeStep.
+	chartBuilder maxValueX: self cormasModel timeStep.
 	self updateYAxis.
 
 	self updateProbes.
@@ -67,13 +67,22 @@ CMR3ChartDiagram >> addDataSet [
 CMR3ChartDiagram >> chartBuilder [
 
 	^ chartBuilder
-		ifNil: [ chartBuilder := self newChartBuilder ]
 ]
 
 { #category : #accessing }
 CMR3ChartDiagram >> chartBuilder: anObject [
 
 	chartBuilder := anObject
+]
+
+{ #category : #private }
+CMR3ChartDiagram >> configureCanvas: canvas [
+	canvas shapes first borderColor: Color black.
+	canvas shapes 
+		reject: [ :each | each class = RSPolyline or: [ each class = RSBox ] ]"there are plots"
+		thenDo: [ :each | each color: Color black ].
+	"we need css"
+
 ]
 
 { #category : #accessing }
@@ -111,6 +120,12 @@ CMR3ChartDiagram >> detectMaxProbeValue [
 
 ]
 
+{ #category : #initialization }
+CMR3ChartDiagram >> initialize [
+	super initialize.
+	chartBuilder := self newChartBuilder.
+]
+
 { #category : #defaults }
 CMR3ChartDiagram >> maxYValue [
 	" Private - Answer a <Number> of the maximum value for the Y axis in the receiver "
@@ -129,24 +144,20 @@ CMR3ChartDiagram >> minYValue [
 ]
 
 { #category : #'accessing - chart' }
-CMR3ChartDiagram >> newBasicChartBuilder [
-	" Private - Answer a new <RSChart> with the basic decorations and settings "
-	
+CMR3ChartDiagram >> newChartBuilder [
+	" Private - Answer a new <RSChart> with ticksAssoc as the number of X ticks"
 	^ RSChart new
+		extent: 400@300;
+		padding: 5;
 		addDecoration: self newHorizontalTick;
 		addDecoration: self newVerticalTick;
-		addDecoration: (RSXLabelDecoration new title: 'Time'; offset: 0 @ self newMaxX);
-		"addDecoration: (RSYLabelDecoration new title: 'Value'; offset: 0 @ 0);"
+		addDecoration: (RSXLabelDecoration new
+			in: [ :label | label baseShape color: Color black ];
+			title: 'Time'; 
+			fontSize: 12);
 		minValueY: self minYValue;
 		maxValueY: self maxYValue;
 		yourself.
-]
-
-{ #category : #'accessing - chart' }
-CMR3ChartDiagram >> newChartBuilder [
-	" Private - Answer a new <RSChart> with ticksAssoc as the number of X ticks"
-	
-	^ self newBasicChartBuilder
 ]
 
 { #category : #'accessing - ticks' }
@@ -154,7 +165,8 @@ CMR3ChartDiagram >> newHorizontalTick [
 	" Answer a new <RSHorizontalTick> with default or applied settings "
 
 	^ RSHorizontalTick new 
-			integer;
+			fontSize: 10;
+			numberOfTicks: 10;
 			yourself.
 ]
 
@@ -170,8 +182,8 @@ CMR3ChartDiagram >> newVerticalTick [
 	" Answer a new <RSVerticalTick> with default or applied settings "
 
 	^ RSVerticalTick new 
-		doNotUseNiceLabel;
-		numberOfTicks: 2;
+		numberOfTicks: 10;
+		fontSize: 10;
 		yourself.
 ]
 
@@ -210,23 +222,22 @@ CMR3ChartDiagram >> probeYValuesAt: x in: probeValues [
 	^ probeValues at: x + 1
 ]
 
-{ #category : #callbacks }
-CMR3ChartDiagram >> refreshProbesChart [
-	" Private - A probe has been selected/deselected. Update the receiver including the Y Axis "
-
-	self removeAllElements.
-	self chartBuilder plots removeAll.	
-	self canvas signalUpdate.
-	self updateYAxis.	
-	self updateProbes
-]
-
-{ #category : #'accessing - chart' }
-CMR3ChartDiagram >> removeAllElements [
-	" Remove all the receiver's chart elements "
-
-	self canvas shapes do: [ : s | s remove ].
-
+{ #category : #rendering }
+CMR3ChartDiagram >> renderIn: canvas [
+	| group interaction |
+	chartBuilder := self newChartBuilder.
+	
+	self probeLines do: [ :linePlot | chartBuilder addPlot: linePlot ].
+	group := RSGroup new.
+	chartBuilder plots 
+		ifNotEmpty: [ chartBuilder renderIn: group. ].
+	
+	canvas addAll: group.
+	self configureCanvas: canvas.
+	
+	interaction := RSCanvasController new.
+	interaction noLegend.
+	canvas addInteraction: interaction.
 ]
 
 { #category : #'accessing - chart' }
@@ -244,7 +255,7 @@ CMR3ChartDiagram >> selectedProbes [
 ]
 
 { #category : #'accessing - model' }
-CMR3ChartDiagram >> setModelBeforeInitialization: aDomainObject [
+CMR3ChartDiagram >> setModel: aDomainObject [
 	" Private - See superimplementor's comment "
 	
 	cormasModel := aDomainObject.
@@ -264,21 +275,18 @@ CMR3ChartDiagram >> setModelBeforeInitialization: aDomainObject [
 { #category : #'accessing - chart' }
 CMR3ChartDiagram >> timeChanged: aNewTimeStep [
 
-	"newMaxX := (aNewTimeStep max: 1) min: 10."
 	newMaxX := aNewTimeStep.
-	self removeAllElements.
-
-	self chartBuilder maxValueX: newMaxX + 1.
+	chartBuilder maxValueX: newMaxX + 1.
 	self updateYAxis.
-
 	self updateProbes.
+	
+	self refresh.
 ]
 
 { #category : #'accessing - chart' }
 CMR3ChartDiagram >> updateProbes [
 
 	| probesToDisplay |
-	
 	"probesToDisplay := self cormasModelClass activeProbes asOrderedCollection.
 	(self owner selectedProbes hasEqualElements: probesToDisplay)
 		ifFalse: [ probesToDisplay addAll: (self selectedProbes difference: probesToDisplay) ]."

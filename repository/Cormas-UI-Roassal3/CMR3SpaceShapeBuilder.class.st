@@ -13,6 +13,7 @@ CMR3SpaceShapeBuilder class >> for: aBuilder [
 
 	^ self new
 		diagramBuilder: aBuilder;
+		container: aBuilder container;
 		yourself
 ]
 
@@ -113,7 +114,6 @@ CMR3SpaceShapeBuilder >> shapeFor: anObject index: aNumber [
 
 { #category : #'as yet unclassified' }
 CMR3SpaceShapeBuilder >> update [
-
 	shapes do: [ :shape |
 		self updateShape: shape ].
 ]
