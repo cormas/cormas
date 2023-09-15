@@ -297,8 +297,8 @@ CMProjectModel >> defaultStdCormasCategoryName [
 	
 	^ String streamContents: [ : stream |
 			stream
-				<< 'Cormas-Model-';
-				<< self userProvidedName ]
+				<< self userProvidedName
+				<< '-Model' ]
 ]
 
 { #category : #defaults }
