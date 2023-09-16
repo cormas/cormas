@@ -32,26 +32,17 @@ String >> asValidCormasClassName: aCMProjectName [
 	- Begins with CM
 	- It is a Symbol "
 
-	| validName prjName |
+	| validName |
 	
 	self assert: (aCMProjectName notEmpty and: [ self notEmpty ]).
 	validName := self capitalized.
 	validName := validName withoutBlanks.
 	validName := validName withoutLeadingDigits.
 	validName := validName withoutQuoting.
-	prjName := (aCMProjectName beginsWith: 'CM')
-		ifTrue: [ aCMProjectName allButFirst: 2 ]
-		ifFalse: [ aCMProjectName ].
-	(validName asUppercase beginsWith: 'CM')
-		ifFalse: [ validName := validName asUppercase = prjName asUppercase
-				ifFalse: [ 'CM' , prjName , validName ]
-				ifTrue: [ 'CM' , validName ] ]
-		ifTrue: [ | nameWithoutPrefix |
-			nameWithoutPrefix := validName allButFirst: 2.
-			validName := (nameWithoutPrefix asUppercase
-				beginsWith: prjName asUppercase)
-				ifTrue: [ 'CM' , nameWithoutPrefix ]
-				ifFalse: [ 'CM' , prjName , nameWithoutPrefix ] ].
+	
+	(validName asUppercase beginsWith: aCMProjectName asUppercase) ifFalse: [
+		validName := aCMProjectName, validName ].
+			
 	^ validName asSymbol
 	
 ]
