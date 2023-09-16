@@ -177,7 +177,7 @@ CMProjectManager >> createProject: projectName in: aCMApplicationProject [
 		yourself.
 	aCMApplicationProject currentProject: newProject.
 	self updateNewProject: projectName.
-	self fsm handleEvent: #actionNew.
+	"self fsm handleEvent: #actionNew."
 
 ]
 

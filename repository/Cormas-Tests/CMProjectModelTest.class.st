@@ -135,7 +135,7 @@ CMProjectModelTest >> testDefaultCormasModelName [
 CMProjectModelTest >> testDefaultStdCormasCategoryName [
 
 	self assert: (self projectModel defaultStdCormasCategoryName isKindOf: String).
-	self assert: self projectModel defaultStdCormasCategoryName equals: 'Cormas-Model-' , self projectModel defaultCormasModelName.
+	self assert: self projectModel defaultStdCormasCategoryName equals: self projectModel defaultCormasModelName, '-Model'.
 
 ]
 

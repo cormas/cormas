@@ -262,12 +262,16 @@ CMProjectModel >> cormasVersion: aString [
 
 { #category : #accessing }
 CMProjectModel >> createClassModelNamed: modelName [
-	" Generate a new class named modelName. modelName should be in the format CMXXXModel. See defaultCormasModelName for details.
+	" Generate a new class named modelName. modelName should be in the format XXXModel. See defaultCormasModelName for details.
 	Answer the new generated <Class> "
 	
 	| validClassName |
 	
 	validClassName := self validateCormasModelName: modelName.
+	
+	(validClassName endsWith: 'Model') ifFalse: [
+		validClassName := validClassName, 'Model' ].
+	
 	self codeGenerator
 		targetClassCategory: self defaultStdCormasCategoryName;
 		targetClass: validClassName;
@@ -297,8 +301,8 @@ CMProjectModel >> defaultStdCormasCategoryName [
 	
 	^ String streamContents: [ : stream |
 			stream
-				<< 'Cormas-Model-';
-				<< self userProvidedName ]
+				<< self userProvidedName
+				<< '-Model' ]
 ]
 
 { #category : #defaults }
