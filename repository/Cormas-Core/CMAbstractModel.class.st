@@ -2355,7 +2355,7 @@ CMAbstractModel >> initializeEntityGetters [
 	| pragmas className selector |
 	pragmas := Pragma allNamed: #getterFor: in: self class.
 	
-	entityGetters := Dictionary newFromAssociations: (pragmas collect: [ :pragma |
+	entityGetters := Dictionary newFrom: (pragmas collect: [ :pragma |
 		className := pragma arguments first.
 		selector := pragma method selector.
 		
