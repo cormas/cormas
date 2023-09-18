@@ -186,17 +186,20 @@ CMMockModel >> randomSeed: aNumber [
 { #category : #accessing }
 CMMockModel >> theCells [
 
+	<getterFor: #CMMockCell>
 	^ theCells
 ]
 
 { #category : #accessing }
 CMMockModel >> theCows [
 
+	<getterFor: #CMMockCow>
 	^ theCows
 ]
 
 { #category : #accessing }
 CMMockModel >> theGoats [
-
+	
+	<getterFor: #CMMockGoat>
 	^ theGoats
 ]
