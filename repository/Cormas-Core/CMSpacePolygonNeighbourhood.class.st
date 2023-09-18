@@ -49,7 +49,7 @@ CMSpacePolygonNeighbourhood >> initializeOrderedNeighbourhood: polygones [
 	| allPolygones |
 	
 	polygones isEmpty ifTrue: [ ^ self ].
-	allPolygones := self cormasModel perform: (self cormasModel getterForEntityClass: polygones first).
+	allPolygones := self cormasModel perform: polygones first asGetterForEntityClass.
 	polygones do: [ : b | self initializePolygone: b in: allPolygones ]
 ]
 
