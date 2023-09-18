@@ -1164,13 +1164,18 @@ CMSpaceModel >> getAggregatesFrom: baseEntity attribute: attributeName [
 
 { #category : #'private - regular polygons' }
 CMSpaceModel >> getAggregatesFrom: baseEntity verifying: aBlock [
-	| eeInstances set seed neighbours newNeighbours collec |
-	self isNotTorroidal
-		ifFalse: [ ^ self warningBoundaries ].
-	eeInstances := ((self cormasModel
-		perform: baseEntity asGetterForEntityClass)
+
+	| selector eeInstances set seed neighbours newNeighbours collec |
+	
+	self isNotTorroidal ifFalse: [ ^ self warningBoundaries ].
+	
+	selector := self cormasModel getterForEntityClass: baseEntity.
+		
+	eeInstances := ((self cormasModel perform: selector)
 		select: [ :c | aBlock value: c ]) copy asOrderedCollection.
+		
 	collec := OrderedCollection new.	"collec est une collection de set (composants des agregats)"
+		
 	[ eeInstances isEmpty ]
 		whileFalse: [ set := IndexedSet new.
 			seed := eeInstances first.
@@ -1188,6 +1193,7 @@ CMSpaceModel >> getAggregatesFrom: baseEntity verifying: aBlock [
 					neighbours := newNeighbours ].
 			set do: [ :c | eeInstances remove: c ].
 			collec add: set ].
+		
 	^ collec
 ]
 
@@ -1730,15 +1736,16 @@ CMSpaceModel >> lowerRightLocation [
 
 { #category : #'landscape indices' }
 CMSpaceModel >> meanCompactness: aClass [
-	| sum aggregates |
-	aggregates := self cormasModel
-		perform: aClass asGetterForEntityClass.
-	sum := aggregates
-		inject: 0
-		into: [ :cumul :aggreg | cumul + aggreg updateCompactness ].
-	^ aggregates size = 0
-		ifTrue: [ 0 ]
-		ifFalse: [ sum / aggregates size ]
+
+	| selector aggregates sum |
+	
+	selector := self cormasModel getterForEntityClass: aClass.
+	aggregates := self cormasModel perform: selector.
+	
+	aggregates ifEmpty: [ ^ 0 ].
+		
+	sum := aggregates sum: [ :each | each updateCompactness ].
+	^ sum / aggregates size
 ]
 
 { #category : #'landscape indices' }
@@ -2315,18 +2322,25 @@ CMSpaceModel >> setFragmentedEntities: compoundEntity from: baseEntity verifying
 	aBlock (example = [:cell | cell isTree] or [:aggregat | aggregat type = #forest] ) 
 	compoundEntity = a Class name inheriting from <SpatialEntityNotConnex>"
 
-	| fragmentedEntity beInstances |
-	self isNotTorroidal
-		ifFalse: [ ^ self warningBoundaries ].
+	| getter fragmentedEntity beInstances |
+	
+	self isNotTorroidal ifFalse: [ ^ self warningBoundaries ].
+	
 	self
 		resetCompoundSpatialEntity: compoundEntity
 		andTheirComponents: baseEntity.
-	beInstances := ((self cormasModel perform: baseEntity asGetterForEntityClass asSymbol)
-			select: [ :c | aBlock value: c ]) copy asOrderedCollection.
+		
+	getter := self cormasModel getterForEntityClass: baseEntity.
+	
+	beInstances := ((self cormasModel perform: getter)
+		select: [ :c | aBlock value: c ]) copy asOrderedCollection.
+			
 	fragmentedEntity := compoundEntity new: self.
 	fragmentedEntity addSilentlyComponents: beInstances.
+	
 	(self spatialEntitiesAt: compoundEntity name) add: fragmentedEntity.
 	self dispatchCompoundSpatialEntity: compoundEntity.
+	
 	^ self spatialEntitiesAt: compoundEntity name
 ]
 

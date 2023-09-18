@@ -46,10 +46,13 @@ CMSpacePolygonNeighbourhood >> gridCellShapeType [
 { #category : #'private - irregular polygons creation' }
 CMSpacePolygonNeighbourhood >> initializeOrderedNeighbourhood: polygones [
 
-	| allPolygones |
+	| getter allPolygones |
 	
 	polygones isEmpty ifTrue: [ ^ self ].
-	allPolygones := self cormasModel perform: (self cormasModel getterForEntityClass: polygones first).
+	
+	getter := self cormasModel getterForEntityClass: polygones first.
+	allPolygones := self cormasModel perform: getter.
+	
 	polygones do: [ : b | self initializePolygone: b in: allPolygones ]
 ]
 

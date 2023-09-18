@@ -40,6 +40,7 @@ Class {
 		'cormas',
 		'timeStep',
 		'channel',
+		'entityGetters',
 		'activeInit',
 		'activeControl',
 		'spaceModel',
@@ -464,18 +465,6 @@ CMAbstractModel class >> defaultSteppingBackSetting [
 	^false
 ]
 
-{ #category : #compiling }
-CMAbstractModel class >> getterForEntityClass: aClass [
-	"Create the getter selector for the entity class aClass.
-	Example: self getterForEntityClass: Object -> #theObjects
-
-	self basicNew getterForEntityClass: Object
-	"
-
-	self deprecated: 'Use aClass asGetterForEntityClass'.
-	^ aClass asGetterForEntityClass
-]
-
 { #category : #testing }
 CMAbstractModel class >> hasProbes [
 	" Answer <true> if the receiver's contains any methods to be used as probes "
@@ -889,17 +878,6 @@ CMAbstractModel class >> setDescriptionFor: method withText: text [
 ^ ''' , textWithoutQuote , '''	'
 		classified: 'description'
 		notifying: nil
-]
-
-{ #category : #compiling }
-CMAbstractModel class >> setterForEntityClass: aClass [
-	"efficiently create the setter selector for the entity class aClass (avoid concatenation).
-	ex : Object -> #theObjects:
-
-	self setterForEntityClass: CMEntity
-	"
-
-	^ aClass  asSetterForEntityClass 
 ]
 
 { #category : #accessing }
@@ -1337,15 +1315,17 @@ CMAbstractModel >> comment: anObject [
 { #category : #'accessing - entities' }
 CMAbstractModel >> compoundSpatialClasses [
 	
-	| coll |
-	coll := self class compoundSpatialClasses.
-	coll size = 0
-		ifTrue: [^self cormas warn: 'Pas d''entites spatiales composees !'].
-	coll size > 1
-		ifTrue:
-			[^self cormas warn:
-					'Il y a plusieurs classes d''entites spatiales composees !'].
-	^self perform: (self getterForEntityClass: coll first)
+	| classes getter |
+	classes := self class compoundSpatialClasses.
+	
+	classes ifEmpty: [
+		^ self cormas warn: 'There are no compound spatial entity classes!' ].
+	
+	classes size > 1 ifTrue: [
+		^ self cormas warn: 'There is more than one compound spatial entity class!'].
+	
+	getter := self getterForEntityClass: classes first.
+	^ self perform: getter
 ]
 
 { #category : #accessing }
@@ -2135,14 +2115,9 @@ CMAbstractModel >> getSimDescriptionText [
 
 { #category : #'accessing - entities' }
 CMAbstractModel >> getterForEntityClass: aClass [
-	"efficiently create the getter selector for the entity class aClass (avoid concatenation).
-	ex : Object -> #theObjects
-
-	self basicNew getterForEntityClass: Object
-	"
 	
-	self deprecated: 'Use aClass asGetterForEntityClass'.
-	^self class getterForEntityClass: aClass
+	^ entityGetters at: aClass name
+		ifAbsent: [ self error: 'Getter for class #', aClass name, ' was not found in the dictionary' ].
 ]
 
 { #category : #'utilities - population metrics' }
@@ -2334,6 +2309,8 @@ CMAbstractModel >> initialize [
 	super initialize.
 	self projectManager: CMProjectManager new.
 	self class socialClasses ifNotEmpty: [ self initializeChannel ].
+	
+	self initializeEntityGetters.
 
 ]
 
@@ -2369,6 +2346,20 @@ CMAbstractModel >> initializeEntitiesActiveProbes [
 					(self data at: c name)
 							at: p
 							put: Dictionary new ] ] ]
+]
+
+{ #category : #initialization }
+CMAbstractModel >> initializeEntityGetters [
+	"Create a dictionary of getters for entity classes based on accessors with pragmas"
+
+	| pragmas className selector |
+	pragmas := Pragma allNamed: #getterFor: in: self class.
+	
+	entityGetters := Dictionary newFrom: (pragmas collect: [ :pragma |
+		className := pragma arguments first.
+		selector := pragma method selector.
+		
+		className -> selector ])
 ]
 
 { #category : #initialization }
@@ -3153,7 +3144,7 @@ CMAbstractModel >> setterForEntityClass: aClass [
 	self basicNew setterForEntityClass: Object
 	"
 	
-	^self class setterForEntityClass: aClass 
+	^ (self getterForEntityClass: aClass) asMutator
 ]
 
 { #category : #'utilities - space metrics' }
@@ -3359,13 +3350,17 @@ CMAbstractModel >> theEntities: aClass [
 	"Returns a collection of all the instances of aClass"
 
 	| collection getter |
+	
 	aClass isAbstract
 		ifTrue: [ ^ OrderedCollection new ].
-	getter := aClass asGetterForEntityClass.
+		
+	getter := self getterForEntityClass: aClass.
+	
 	collection := (self perform: getter)
 		ifNil: [
 			self class createModelReaderAccessor: aClass.
 			self perform: getter ].
+		
 	^ collection
 ]
 
@@ -3483,7 +3478,7 @@ CMAbstractModel >> updateLocalData [
 			ifTrue: [ 
 				(self data at: className) keysAndValuesDo: [ : name : dict | 
 					res := OrderedCollection new.
-					(self perform: cl asGetterForEntityClass) do: [ : c |  
+					(self perform: (self getterForEntityClass: cl)) do: [ : c |  
 						(aValue := c class perform: name) isSymbol
 							ifTrue: [ 
 								"The local probe is a reference to a global probe"
