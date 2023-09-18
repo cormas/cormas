@@ -67,7 +67,7 @@ CGStCormas >> confirmIsAbstractClass: aClass [
 			<< ' a concret class will have instances and ';
 			<< self cormasModelClass name;
 			<< ' will define an attribut called ';
-			<< aClass asGetterForEntityClass;
+			<< aClass buildGetterForEntityClass;
 			<< ').' ]).
 ]
 
@@ -159,7 +159,7 @@ CGStCormas >> createModelAccessorsIn: aClass [
 CGStCormas >> createModelInstancesAccessorsIn: aClass [
 	| pop |
 	
-	pop := aClass asGetterForEntityClass.
+	pop := aClass buildGetterForEntityClass.
 	aClass isAbstract
 		ifTrue: [ 
 			self targetClass 
@@ -185,7 +185,7 @@ Ex: #theXXXs
 
 	| pop |
 	
-	pop := aClass asGetterForEntityClass.
+	pop := aClass buildGetterForEntityClass.
 	self targetClass 
 		compile: (self templateForModelReaderAccessor: pop)
 		classified: 'accessing'
@@ -201,7 +201,7 @@ aClassName = <String> or <Symbol>.
 (aClassName ('XXX') is completed as theXXXs)"
 	
 	| pop |
-	pop := aClass asGetterForEntityClass.
+	pop := aClass buildGetterForEntityClass.
 	self targetClass 
 		compile: (self templateForModelSetterAccessor: pop)
 		classified: 'accessing'

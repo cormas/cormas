@@ -485,7 +485,7 @@ CMProjectModel >> removeEntity: aCMEntityAnnouncement [
 	| theClass theGetter |
 	
 	theClass := self classFor: aCMEntityAnnouncement entityName.
-	theGetter := theClass asGetterForEntityClass.
+	theGetter := self cormasModel getterForEntityClass: theClass.
 
 	self removeEntitySubclasses: aCMEntityAnnouncement.
 
@@ -524,7 +524,7 @@ CMProjectModel >> removeEntitySubclasses: aCMEntityAnnouncement [
 
 	(OrderedCollection withAll: theClass allSubclasses)
 		do: [ : cl | 	
-				theGetter := cl asGetterForEntityClass.
+				theGetter := self cormasModel getterForEntityClass: cl.
 				(self perform: (aCMEntityAnnouncement type asLowercase , 'Classes') asSymbol)
 					remove: cl
 					ifAbsent: [ self error ].

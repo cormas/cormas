@@ -880,17 +880,6 @@ CMAbstractModel class >> setDescriptionFor: method withText: text [
 		notifying: nil
 ]
 
-{ #category : #compiling }
-CMAbstractModel class >> setterForEntityClass: aClass [
-	"efficiently create the setter selector for the entity class aClass (avoid concatenation).
-	ex : Object -> #theObjects:
-
-	self setterForEntityClass: CMEntity
-	"
-
-	^ aClass  asSetterForEntityClass 
-]
-
 { #category : #accessing }
 CMAbstractModel class >> shortName [
 	"Answer the model name as short string (without 'CM' nor 'Model').
@@ -1326,7 +1315,7 @@ CMAbstractModel >> comment: anObject [
 { #category : #'accessing - entities' }
 CMAbstractModel >> compoundSpatialClasses [
 	
-	| classes |
+	| classes getter |
 	classes := self class compoundSpatialClasses.
 	
 	classes ifEmpty: [
@@ -1335,7 +1324,8 @@ CMAbstractModel >> compoundSpatialClasses [
 	classes size > 1 ifTrue: [
 		^ self cormas warn: 'There is more than one compound spatial entity class!'].
 	
-	^ self perform: classes first asGetterForEntityClass
+	getter := self getterForEntityClass: classes first.
+	^ self perform: getter
 ]
 
 { #category : #accessing }
@@ -3154,7 +3144,7 @@ CMAbstractModel >> setterForEntityClass: aClass [
 	self basicNew setterForEntityClass: Object
 	"
 	
-	^self class setterForEntityClass: aClass 
+	^ (self getterForEntityClass: aClass) asMutator
 ]
 
 { #category : #'utilities - space metrics' }
@@ -3360,13 +3350,17 @@ CMAbstractModel >> theEntities: aClass [
 	"Returns a collection of all the instances of aClass"
 
 	| collection getter |
+	
 	aClass isAbstract
 		ifTrue: [ ^ OrderedCollection new ].
-	getter := aClass asGetterForEntityClass.
+		
+	getter := self getterForEntityClass: aClass.
+	
 	collection := (self perform: getter)
 		ifNil: [
 			self class createModelReaderAccessor: aClass.
 			self perform: getter ].
+		
 	^ collection
 ]
 
@@ -3484,7 +3478,7 @@ CMAbstractModel >> updateLocalData [
 			ifTrue: [ 
 				(self data at: className) keysAndValuesDo: [ : name : dict | 
 					res := OrderedCollection new.
-					(self perform: cl asGetterForEntityClass) do: [ : c |  
+					(self perform: (self getterForEntityClass: cl)) do: [ : c |  
 						(aValue := c class perform: name) isSymbol
 							ifTrue: [ 
 								"The local probe is a reference to a global probe"

@@ -46,8 +46,7 @@ Class {
 		'image',
 		'activeProbes',
 		'povDict',
-		'activityDiagrams',
-		'getter'
+		'activityDiagrams'
 	],
 	#category : #'Cormas-Core-Entities'
 }
@@ -347,19 +346,6 @@ Return value: anOrderedCollection
 Example: LandCover allTerminalClasses"
 	
 	^ self withAllSubclasses select: #isTerminal
-]
-
-{ #category : #accessing }
-CMEntity class >> asGetterForEntityClass [
-	"Create the getter selector for the entity class aClass.
-	CMEntity asGetterForEntityClass -> #theEntities"
-
-	^ getter ifNil: [ getter := self buildGetterForEntityClass ].
-]
-
-{ #category : #accessing }
-CMEntity class >> asSetterForEntityClass [
-	^self asGetterForEntityClass asMutator 
 ]
 
 { #category : #'accessing - methods & classes' }
