@@ -24,7 +24,7 @@ Instance Variables:
 "
 Class {
 	#name : #CMSpaceModel,
-	#superclass : #Model,
+	#superclass : #Object,
 	#instVars : [
 		'activeSpatialEntity',
 		'line',
