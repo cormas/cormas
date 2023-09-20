@@ -60,14 +60,10 @@ CMMockModel class >> friendlyName [
 	^ 'MockModel'
 ]
 
-{ #category : #'initialize-release' }
+{ #category : #init }
 CMMockModel >> init [ 
 
-	self
-		createGridLines: numberOfRows
-		columns: numberOfColumns
-		neighbourhood: 8
-		closed: false.
+	self initEmpty.
 		
 	self
 		createN: initialNumberOfCows
@@ -76,22 +72,32 @@ CMMockModel >> init [
 	self
 		createN: initialNumberOfGoats
 		randomlyLocatedAloneEntities: CMMockGoat.
-		
-	self initRandom
 ]
 
-{ #category : #initialization }
+{ #category : #init }
 CMMockModel >> initAlive [
 
 	self theCells do: #initAlive
 ]
 
-{ #category : #initialization }
+{ #category : #init }
 CMMockModel >> initDead [
 	self theCells do: #initDead
 ]
 
-{ #category : #initialization }
+{ #category : #init }
+CMMockModel >> initEmpty [
+
+	self
+		createGridLines: numberOfRows
+		columns: numberOfColumns
+		neighbourhood: 8
+		closed: false.
+		
+	self initRandom
+]
+
+{ #category : #init }
 CMMockModel >> initRandom [
 
 	self theCells do: #initRandom
