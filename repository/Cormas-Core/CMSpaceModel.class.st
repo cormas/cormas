@@ -336,6 +336,12 @@ CMSpaceModel >> buildFragmentedEntity: compoundEntity fromCollection: aCollecOfS
 	^ agg
 ]
 
+{ #category : #'ESE (regular) - special locations' }
+CMSpaceModel >> cellAt: aRowIndex at: aColumnIndex [
+	
+	^ self elementaryEntities at: (aRowIndex - 1) * column + aColumnIndex
+]
+
 { #category : #accessing }
 CMSpaceModel >> cellClass [
 	"return the SpatialEntityElement class of the current model"

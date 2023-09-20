@@ -35,10 +35,8 @@ CMSpaceModelTest >> newTorroidalSpaceModel [
 { #category : #running }
 CMSpaceModelTest >> setUp [
 
-	super setUp.
-	spaceModel := CMSpaceModel new
-		cormasModel: self newTestModel;
-		yourself.
+	super setUp.		
+	spaceModel := self newTestModel spaceModel.
 ]
 
 { #category : #accessing }
@@ -58,7 +56,7 @@ CMSpaceModelTest >> testAbsoluteBounds [
 
 	| expected| 
 	
-	expected := Rectangle origin: 0 @ 0 extent: 50 @ 50.
+	expected := Rectangle origin: 0 @ 0 extent: 200 @ 200.
 	self assert: self spaceModel absoluteBounds equals: expected.
 	expected := Rectangle origin: 0 @ 0 extent: 30 @ 30.	
 	self spaceModel absoluteBounds: expected.
@@ -69,7 +67,7 @@ CMSpaceModelTest >> testAbsoluteBounds [
 { #category : #test }
 CMSpaceModelTest >> testAbsoluteHeight [
 
-	self assert: self spaceModel absoluteHeight equals: 50.
+	self assert: self spaceModel absoluteHeight equals: 200.
 
 	
 ]
@@ -77,7 +75,7 @@ CMSpaceModelTest >> testAbsoluteHeight [
 { #category : #test }
 CMSpaceModelTest >> testAbsoluteWidth [
 
-	self assert: self spaceModel absoluteWidth equals: 50.
+	self assert: self spaceModel absoluteWidth equals: 200.
 
 ]
 
@@ -89,23 +87,32 @@ CMSpaceModelTest >> testAllOccupants [
 ]
 
 { #category : #test }
+CMSpaceModelTest >> testCellAtAt [
+
+	self assert: (spaceModel cellAt: 1 at: 1) id equals: 1.
+	self assert: (spaceModel cellAt: 1 at: 4) id equals: 4.
+	
+	self assert: (spaceModel cellAt: 2 at: 1) id equals: 5.
+	self assert: (spaceModel cellAt: 2 at: 4) id equals: 8.
+	
+	self assert: (spaceModel cellAt: 3 at: 1) id equals: 9.
+	self assert: (spaceModel cellAt: 3 at: 4) id equals: 12.
+	
+	self assert: (spaceModel cellAt: 4 at: 1) id equals: 13.
+	self assert: (spaceModel cellAt: 4 at: 4) id equals: 16.
+]
+
+{ #category : #test }
 CMSpaceModelTest >> testCellsOfLine [
 
-	| result |
-
-	self spaceModel 
-		nbCount: 4;
-		dimensions: #(2 2).
-	result := self spaceModel cellsOfLine: 1.
+	| cells |
+	cells := self spaceModel cellsOfLine: 1.
 	
-	self assert: (result first isKindOf: CMMockCell).
-	self assert: (result second isKindOf: CMMockCell).
-
-	self assert: result first id equals: 1.
-	self assert: result second id equals: 2.
-
-	self assert: result first neighbourhood size equals: 2.
-	self assert: result second neighbourhood size equals: 3.	
+	self assert: cells size equals: 4.
+	
+	cells withIndexDo: [ :each :i |
+		self assert: (each isKindOf: CMMockCell).
+		self assert: each id equals: i ].
 ]
 
 { #category : #test }
@@ -154,7 +161,7 @@ CMSpaceModelTest >> testIsNotTorroidal [
 { #category : #test }
 CMSpaceModelTest >> testLine [
 
-	self assert: self spaceModel line equals: CMSpaceModel defaultLines.
+	self assert: self spaceModel line equals: 4.
 	self spaceModel dimensions: 2 -> 2.
 	self assert: self spaceModel line equals: 2.
 	

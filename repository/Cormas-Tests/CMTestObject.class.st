@@ -23,6 +23,7 @@ CMTestObject >> model: anObject [
 CMTestObject >> newTestModel [
  	
 	^ (CMMockModel	newWithActiveInit: #init)
+		randomSeed: 42;
 		initializeSimulation;
 		"createGridLines: 20
 			columns: 10
