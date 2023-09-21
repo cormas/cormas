@@ -30,7 +30,7 @@ CMR3SpaceAgentsBuilder >> cellAt: aPoint ifAbsent: absentBlock [
 { #category : #'as yet unclassified' }
 CMR3SpaceAgentsBuilder >> defaultMasterShape [
 
-	^ RSShapeFactory star
+	^ (RSShapeFactory perform: #circle)
 		size: 25;
 		yourself.
 ]
@@ -108,6 +108,21 @@ CMR3SpaceAgentsBuilder >> moveAgentShape: anAgentShape [
 CMR3SpaceAgentsBuilder >> objects [
 
 	^ diagramBuilder cormasModel theAgents
+]
+
+{ #category : #hooks }
+CMR3SpaceAgentsBuilder >> shapeFor: anObject index: aNumber [
+
+	| shape |
+	
+	shape := (RSShapeFactory perform: anObject shapeOfPOV)
+		color: Color red;
+		size: 25;
+		model: anObject;
+		yourself.
+		
+	self makeAgentShapeDraggable: shape.
+	^ shape
 ]
 
 { #category : #updating }
