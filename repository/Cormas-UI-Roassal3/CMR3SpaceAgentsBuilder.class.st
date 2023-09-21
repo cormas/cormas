@@ -107,7 +107,22 @@ CMR3SpaceAgentsBuilder >> moveAgentShape: anAgentShape [
 { #category : #accessing }
 CMR3SpaceAgentsBuilder >> objects [
 
-	^ diagramBuilder cormasModel theAgents
+	^ diagramBuilder cormasModel theAgents select: [ :each | each isSituated ]
+]
+
+{ #category : #hooks }
+CMR3SpaceAgentsBuilder >> shapeFor: anObject index: aNumber [
+
+	| shape |
+	
+	shape := (RSShapeFactory perform: anObject shapeOfPOV)
+		color: Color red;
+		size: 25;
+		model: anObject;
+		yourself.
+		
+	self makeAgentShapeDraggable: shape.
+	^ shape
 ]
 
 { #category : #updating }
