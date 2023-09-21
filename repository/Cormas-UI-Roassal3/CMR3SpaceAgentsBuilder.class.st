@@ -107,7 +107,7 @@ CMR3SpaceAgentsBuilder >> moveAgentShape: anAgentShape [
 { #category : #accessing }
 CMR3SpaceAgentsBuilder >> objects [
 
-	^ diagramBuilder cormasModel theAgents
+	^ diagramBuilder cormasModel theAgents select: [ :each | each isSituated ]
 ]
 
 { #category : #hooks }
