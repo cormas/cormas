@@ -914,7 +914,7 @@ Cormas class >> seed [
 
 { #category : #accessing }
 Cormas class >> seed: anInteger [
-	randomGenerator seed: anInteger
+	self randomGenerator seed: anInteger
 ]
 
 { #category : #'utilities - collection' }

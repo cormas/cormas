@@ -177,7 +177,7 @@ CMProjectManagerTest >> testModelControlInitMethods [
 CMProjectManagerTest >> testModelInitMethods [
 
 	self assert: (self projectManager modelInitMethods isKindOf: Array).
-	self assert: self projectManager modelInitMethods isEmpty.
+	self assert: self projectManager modelInitMethods size equals: 5.
 ]
 
 { #category : #test }

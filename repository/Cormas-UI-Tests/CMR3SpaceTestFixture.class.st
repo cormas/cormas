@@ -32,10 +32,10 @@ CMR3SpaceTestFixture >> initialCellStates [
 	"Initial cell states of a mock model with a fixed random seed"
 	
 	^ OrderedCollection withAll: #(
-		dead dead dead dead
-		dead alive dead dead
-		dead alive dead alive
-		dead alive dead dead).
+		alive alive alive dead
+		dead dead alive dead
+		alive dead dead alive
+		dead dead dead dead).
 ]
 
 { #category : #initialization }
@@ -84,8 +84,8 @@ CMR3SpaceTestFixture >> updatedCellStates [
 	"Cell states of a mock model with a fixed random seed after one simulation step"
 	
 	^ OrderedCollection withAll: #(
-		alive alive alive alive
-		alive dead alive alive
-		alive dead alive dead
-		alive dead alive alive).
+		dead dead dead alive
+		alive alive dead alive
+		dead alive alive dead
+		alive alive alive alive).
 ]
