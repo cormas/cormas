@@ -30,7 +30,7 @@ CMR3SpaceAgentsBuilder >> cellAt: aPoint ifAbsent: absentBlock [
 { #category : #'as yet unclassified' }
 CMR3SpaceAgentsBuilder >> defaultMasterShape [
 
-	^ (RSShapeFactory perform: #circle)
+	^ RSShapeFactory star
 		size: 25;
 		yourself.
 ]
