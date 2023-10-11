@@ -130,7 +130,7 @@ TCMLocated >> colocatedSimilarAgents [
 	"Purpose: returns all receiver-like entities located in the same location as the receiver.
 Return value: <Collection(AgentLocation)>"
 	
-	^ self colocatedEntities: self class
+	^ self colocatedEntities: self class name
 ]
 
 { #category : #'environment - sensing - agents' }
