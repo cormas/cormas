@@ -16,6 +16,7 @@
     <a href='https://coveralls.io/github/cormas/cormas?branch=master'><img src='https://coveralls.io/repos/github/cormas/cormas/badge.svg?branch=master' alt='Coverage Status' /></a>
     <a href="https://raw.githubusercontent.com/cormas/cormas/master/LICENSE"><img alt="Licence" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
     <a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-13-orange.svg"></a>
+    <a href="https://archive.softwareheritage.org/swh:1:dir:7861db8c1b3c19b867c665d86a0b47a8770f1db0;origin=https://github.com/cormas/cormas;visit=swh:1:snp:3de370824e0a4f98589a349bfb1cdecc9c924c41;anchor=swh:1:rev:2fefa18603a0be909aa1701f13050ce105b9fdbd"><img src="https://archive.softwareheritage.org/badge/swh:1:dir:7861db8c1b3c19b867c665d86a0b47a8770f1db0/" alt="Archived | swh:1:dir:7861db8c1b3c19b867c665d86a0b47a8770f1db0"/></a>
   </p>
 </p>
 
