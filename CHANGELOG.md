@@ -19,6 +19,7 @@
 - (https://github.com/cormas/cormas/pull/727) Fixed a bug with saving a project to a file
 - ([8c810ce](https://github.com/cormas/cormas/commit/8c810ce6691bb1dff603a5206b12dd765ed55a8c)) Fixed a bug with opening the attributes interface
 - ([035d1e2](https://github.com/cormas/cormas/commit/035d1e26922498c05fa8665650131f87908cc224)) Fixed the problem with `Cormas >> mix:` (it was modifying the original collection)
+- (https://github.com/cormas/cormas/pull/730) Cormas space view was blinking
 
 # [v0.7](https://github.com/cormas/cormas/compare/v0.6...v0.7) (18 August 2023)
 
