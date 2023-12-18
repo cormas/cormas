@@ -1,3 +1,15 @@
+# [v0.8](https://github.com/cormas/cormas/compare/v0.7..v0.8) (18 December 2023)
+
+### Renamed
+
+- ([6536508](https://github.com/cormas/cormas/commit/6536508de7958f62e694b11b6da43964421a788c)) class `CMApplicationProject` ---> `CMApplication` (and deprecated the old name)
+
+### Fixed Bugs
+
+- ([48c6462](https://github.com/cormas/cormas/commit/48c64626cce66a9d613762a9285b2c466f36d949)) Fixed a bug with currentProject reference
+- (https://github.com/cormas/cormas/pull/727) Fixed a bug with saving a project to a file
+- ([8c810ce](https://github.com/cormas/cormas/commit/8c810ce6691bb1dff603a5206b12dd765ed55a8c)) Fixed a bug with opening the attributes interface
+
 # [v0.7](https://github.com/cormas/cormas/compare/v0.6...v0.7) (18 August 2023)
 
 - (https://github.com/cormas/cormas/pull/692) Created a new translator class hierarchy to replace the old l18N translator.
