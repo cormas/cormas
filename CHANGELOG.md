@@ -1,5 +1,14 @@
 # [v0.8](https://github.com/cormas/cormas/compare/v0.7..v0.8) (18 December 2023)
 
+### Added
+
+- ([24fba8b](https://github.com/cormas/cormas/commit/24fba8be4cdf006c3a3151380cbfcfc21d1b7837)) `TCMLocated >> randomJumpConstrainedBy:`
+
+### Removed
+
+- ([f5a2084](https://github.com/cormas/cormas/commit/f5a20842ac869733d17d5eb03c2ef8121cd72605)) `Cormas class >> randomCell`
+- ([66d5921](https://github.com/cormas/cormas/commit/66d5921f9e78adb9ca09205b3a5d6b8b15256770)) `Cormas class >> selectSimpleRandomlyFrom:`
+
 ### Renamed
 
 - ([6536508](https://github.com/cormas/cormas/commit/6536508de7958f62e694b11b6da43964421a788c)) class `CMApplicationProject` ---> `CMApplication` (and deprecated the old name)
@@ -9,6 +18,7 @@
 - ([48c6462](https://github.com/cormas/cormas/commit/48c64626cce66a9d613762a9285b2c466f36d949)) Fixed a bug with currentProject reference
 - (https://github.com/cormas/cormas/pull/727) Fixed a bug with saving a project to a file
 - ([8c810ce](https://github.com/cormas/cormas/commit/8c810ce6691bb1dff603a5206b12dd765ed55a8c)) Fixed a bug with opening the attributes interface
+- ([035d1e2](https://github.com/cormas/cormas/commit/035d1e26922498c05fa8665650131f87908cc224)) Fixed the problem with `Cormas >> mix:` (it was modifying the original collection)
 
 # [v0.7](https://github.com/cormas/cormas/compare/v0.6...v0.7) (18 August 2023)
 
