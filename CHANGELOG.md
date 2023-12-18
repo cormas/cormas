@@ -1,12 +1,17 @@
 # [v0.8](https://github.com/cormas/cormas/compare/v0.7..v0.8) (18 December 2023)
 
+_(those are mostly the changes introduced during [MISS ABMS 2023](https://www.agropolis.fr/MISS-ABMS-2023))_
+
 - ([cac44eb](https://github.com/cormas/cormas/commit/cac44ebe302f7a30917aa54d4e3a152fe674b93e)) Changed package generation: Removed the `Cormas-Model-` package prefix and added a `-Model` suffix instead
 - ([304b693](https://github.com/cormas/cormas/commit/304b693bc3d499afe7aa5a2343fd5505dc17fc6b)) Changed class generation: Removed the `CM` prefix from generated class names
 - (https://github.com/cormas/cormas/pull/734) Removed `asGetterForEntityClass` and added `<getterFor: #ClassName>` pragmas instead. The latter was a bad practice based on lazy initialization of a class variable and it forced us to depend on correct pluralization
+- (https://github.com/cormas/cormas/pull/736) Removed dependency on `Model` which was an old Morphic class and had nothing to do with Cormas
+- (https://github.com/cormas/cormas/pull/740) Added a possibility to have multiple shapes for agent pov
 
 ### Added
 
 - ([24fba8b](https://github.com/cormas/cormas/commit/24fba8be4cdf006c3a3151380cbfcfc21d1b7837)) `TCMLocated >> randomJumpConstrainedBy:`
+- ([d159565](https://github.com/cormas/cormas/commit/d1595655ba2860e7d5b40dd41d8c17530509bbf6)) `CMSpaceModel >> cellAt:at:`
 
 ### Removed
 
@@ -25,6 +30,8 @@
 - ([035d1e2](https://github.com/cormas/cormas/commit/035d1e26922498c05fa8665650131f87908cc224)) Fixed the problem with `Cormas >> mix:` (it was modifying the original collection)
 - (https://github.com/cormas/cormas/pull/730) Cormas space view was blinking
 - ([86cf178](https://github.com/cormas/cormas/commit/86cf17865796016350b6382318138af4920e19b5)) Fixed an error when creating project name
+- ([4d261ec](https://github.com/cormas/cormas/commit/4d261ec2dbe5d02d8763fb1b3db83dc0974b94f6)) Fixed a bug with random number generator
+- ([2fefa18](https://github.com/cormas/cormas/commit/2fefa18603a0be909aa1701f13050ce105b9fdbd)) Fixed a bug with collocated entities
 
 # [v0.7](https://github.com/cormas/cormas/compare/v0.6...v0.7) (18 August 2023)
 
