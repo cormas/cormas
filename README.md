@@ -57,7 +57,7 @@ EpMonitor disableDuring: [
     Metacello new
         onConflictUseLoaded;
         onWarningLog;
-        repository: 'github://cormas/cormas:v0.7';
+        repository: 'github://cormas/cormas:v0.8';
         baseline: 'Cormas';
         load ].
 ```
