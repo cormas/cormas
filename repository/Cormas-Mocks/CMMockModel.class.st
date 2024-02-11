@@ -60,6 +60,41 @@ CMMockModel class >> friendlyName [
 	^ 'MockModel'
 ]
 
+{ #category : #examples }
+CMMockModel class >> showEmpty [
+	<example>
+	self showModelWithInit: #initEmpty
+]
+
+{ #category : #examples }
+CMMockModel class >> showFixed [
+	<example>
+	self showModelWithInit: #initFixed
+]
+
+{ #category : #examples }
+CMMockModel class >> showInit [
+	<example>
+	self showModelWithInit: #init
+]
+
+{ #category : #examples }
+CMMockModel class >> showModelWithInit: aSymbol [
+
+	| model builder |
+	
+	model := self new
+		activeInit: aSymbol;
+		initializeSimulation;
+		yourself.
+	
+	builder := CMR3SpaceDiagramBuilder new
+		cormasModel: model;
+		asPresenter.
+	
+	builder openWithSpec.
+]
+
 { #category : #'as yet unclassified' }
 CMMockModel >> cellMatrix [
 	| matrix |
