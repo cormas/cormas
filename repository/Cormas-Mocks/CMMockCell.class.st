@@ -23,12 +23,24 @@ CMMockCell >> initRandom [
 				ifFalse: [ #dead ])
 ]
 
+{ #category : #testing }
+CMMockCell >> isAliveCell [
+
+	^ state = #alive
+]
+
+{ #category : #testing }
+CMMockCell >> isDeadCell [
+
+	^ state = #dead
+]
+
 { #category : #control }
 CMMockCell >> newState [
 	"Purpose: the specific transition function of the automaton should be written here
 Example: self bufferState: (test ifTrue: [value1] ifFalse: [value2])"
 
-	self state = #dead
+	self isDeadCell
 		ifTrue: [ ^ self bufferState: #alive ].
 	^ self bufferState: #dead
 ]

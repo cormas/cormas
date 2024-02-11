@@ -18,7 +18,7 @@ CMR3SpaceTestFixture >> builder [
 { #category : #states }
 CMR3SpaceTestFixture >> initialCellColors [
 
-	"Shape colors of a grid for the cells of the initial mock model with a fixed random seed"
+	"Shape colors of a grid for the cells of the initial mock model"
 	
 	^ self initialCellStates collect: [ :each |
 		each = #alive
@@ -29,13 +29,12 @@ CMR3SpaceTestFixture >> initialCellColors [
 { #category : #states }
 CMR3SpaceTestFixture >> initialCellStates [
 
-	"Initial cell states of a mock model with a fixed random seed"
-	
-	^ OrderedCollection withAll: #(
-		alive alive alive dead
-		dead dead alive dead
-		alive dead dead alive
-		dead dead dead dead).
+	"Initial cell states of a mock model"
+
+	^ model cellMatrix flattened asOrderedCollection collect: [ :each |
+		each = 1
+			ifTrue: [ #alive ]
+			ifFalse: [ #dead ] ].
 ]
 
 { #category : #initialization }
@@ -44,7 +43,7 @@ CMR3SpaceTestFixture >> initialize [
 	super initialize.
 	
 	model := CMMockModel new
-		randomSeed: 42;
+		activeInit: #initFixed;
 		initializeSimulation;
 		yourself.
 
@@ -83,9 +82,8 @@ CMR3SpaceTestFixture >> updatedCellStates [
 
 	"Cell states of a mock model with a fixed random seed after one simulation step"
 	
-	^ OrderedCollection withAll: #(
-		dead dead dead alive
-		alive alive dead alive
-		dead alive alive dead
-		alive alive alive alive).
+	^ self initialCellStates collect: [ :each |
+		each = #alive
+			ifTrue: [ #dead ]
+			ifFalse: [ #alive ] ]
 ]
