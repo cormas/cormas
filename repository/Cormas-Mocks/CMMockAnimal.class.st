@@ -13,7 +13,7 @@ Class {
 CMMockAnimal >> initialize [
 
 	super initialize.
-	energy := Cormas randomFloatFrom: 0 to: 1 
+	energy := 0.5
 ]
 
 { #category : #pov }
@@ -25,4 +25,5 @@ CMMockAnimal >> sizeOfPOV [
 { #category : #control }
 CMMockAnimal >> step [
 	
+	self randomWalk
 ]
