@@ -100,7 +100,7 @@ CMMockModel >> cellMatrix [
 	| matrix |
 	
 	matrix := #(
-		(0 1 1 1)
+		(0 0 1 1)
 		(1 0 1 1)
 		(1 0 1 1)
 		(1 1 1 0)).
@@ -144,7 +144,7 @@ CMMockModel >> initEmpty [
 		createGridLines: numberOfRows
 		columns: numberOfColumns
 		neighbourhood: 8
-		closed: false.
+		closed: true.
 		
 	self initRandom
 ]
