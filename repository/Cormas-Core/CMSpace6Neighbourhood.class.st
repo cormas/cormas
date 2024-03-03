@@ -119,7 +119,7 @@ CMSpace6Neighbourhood >> initializeOrderedNeighbourhood: k [
 		v at: 5 put: (self elementaryEntitiesAt: i) ].
 	(i := self eastCellHexa: (self northCell: k)) > 0 ifTrue: [ 
 		v at: 6 put: (self elementaryEntitiesAt: i) ].
-	^ (self elementaryEntitiesAt: k) neighbourhood: v
+	^ (self elementaryEntitiesAt: k) neighbourhoodWithNils: v
 ]
 
 { #category : #initialization }

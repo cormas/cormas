@@ -119,8 +119,7 @@ Return value: <Number>"
 { #category : #'initialize-release' }
 CMSpatialEntityElement >> initNeighbourhood [
 
-	self neighbourhood ifEmpty: [ ^ nil ].
-	self neighbourhood: (self neighbourhood select: [ : c | c notNil ])
+	"do nothing"
 ]
 
 { #category : #testing }
@@ -686,14 +685,16 @@ CMSpatialEntityElement >> neighbourE [
 	"Purpose: returns the neighbour to the East
 Not nil only for square and hexagonal cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
+
+	| index neighbour |
 	
-	self spaceModel nbNeighbours = 4
-		ifTrue: [^self neighbourhood at: 4].
-	self spaceModel nbNeighbours = 8
-		ifTrue: [^self neighbourhood at: 7].
-	self spaceModel nbNeighbours = 6
-		ifTrue: [^self neighbourhood at: 5].
-	^nil
+	self spaceModel nbNeighbours = 4 ifTrue: [ index := 4 ].
+	self spaceModel nbNeighbours = 8 ifTrue: [ index := 7 ].
+	self spaceModel nbNeighbours = 6 ifTrue: [ index := 5 ].
+	
+	neighbour := neighbourhoodWithNils at: index.
+	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the East' ].
+	^ neighbour
 ]
 
 { #category : #'environment - sensing - space' }
@@ -702,9 +703,12 @@ CMSpatialEntityElement >> neighbourN [
 Not nil only for square cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
 	
-	self spaceModel nbNeighbours = 4 | (self spaceModel nbNeighbours = 8)
-		ifTrue: [ ^ self neighbourhood at: 1 ].
-	^ nil
+	| index neighbour |
+	
+	index := 1.
+	neighbour := neighbourhoodWithNils at: index.
+	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the North' ].
+	^ neighbour
 ]
 
 { #category : #'environment - sensing - space' }
@@ -712,12 +716,18 @@ CMSpatialEntityElement >> neighbourNE [
 	"Purpose: returns the neighbour to the NorthEast
 Not nil only for square (8 neighbors) and hexagonal cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
+
+	| index neighbour |
 	
-	self spaceModel nbNeighbours = 8
-		ifTrue: [^self neighbourhood at: 8].
-	self spaceModel nbNeighbours = 6
-		ifTrue: [^self neighbourhood at: 6].
-	^nil
+	self spaceModel nbNeighbours = 4 ifTrue: [ 
+		self error: 'The number of neighbours was set to 4. There is no neighbour to the North-East' ].
+	
+	self spaceModel nbNeighbours = 8 ifTrue: [ index := 8 ].
+	self spaceModel nbNeighbours = 6 ifTrue: [ index := 6 ].
+	
+	neighbour := neighbourhoodWithNils at: index.
+	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the North-East' ].
+	^ neighbour
 ]
 
 { #category : #'environment - sensing - space' }
@@ -725,12 +735,18 @@ CMSpatialEntityElement >> neighbourNW [
 	"Purpose: returns the neighbour to the NorthWest
 Not nil only for square (8 neighbors) and hexagonal cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
+
+	| index neighbour |
 	
-	self spaceModel nbNeighbours = 8
-		ifTrue: [^self neighbourhood at: 2].
-	self spaceModel nbNeighbours = 6
-		ifTrue: [^self neighbourhood at: 1].
-	^nil
+	self spaceModel nbNeighbours = 4 ifTrue: [ 
+		self error: 'The number of neighbours was set to 4. There is no neighbour to the North-West' ].
+	
+	self spaceModel nbNeighbours = 8 ifTrue: [ index := 2 ].
+	self spaceModel nbNeighbours = 6 ifTrue: [ index := 1 ].
+	
+	neighbour := neighbourhoodWithNils at: index.
+	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the North-West' ].
+	^ neighbour
 ]
 
 { #category : #'environment - sensing - space' }
@@ -738,12 +754,15 @@ CMSpatialEntityElement >> neighbourS [
 	"Purpose: returns the neighbour to the South
 Not nil only fore square cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
+
+	| index neighbour |
 	
-	self spaceModel nbNeighbours = 4
-		ifTrue: [^self neighbourhood at: 3].
-	self spaceModel nbNeighbours = 8
-		ifTrue: [^self neighbourhood at: 5].
-	^nil
+	self spaceModel nbNeighbours = 4 ifTrue: [ index := 3 ].
+	self spaceModel nbNeighbours = 8 ifTrue: [ index := 5 ].
+	
+	neighbour := neighbourhoodWithNils at: index.
+	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the South' ].
+	^ neighbour
 ]
 
 { #category : #'environment - sensing - space' }
@@ -751,12 +770,18 @@ CMSpatialEntityElement >> neighbourSE [
 	"Purpose: returns the neighbour to the SouthEast
 Not nil only for square (8 neighbors) and hexagonal cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
+
+	| index neighbour |
 	
-	self spaceModel nbNeighbours = 8
-		ifTrue: [^self neighbourhood at: 6].
-	self spaceModel nbNeighbours = 6
-		ifTrue: [^self neighbourhood at: 4].
-	^nil
+	self spaceModel nbNeighbours = 4 ifTrue: [ 
+		self error: 'The number of neighbours was set to 4. There is no neighbour to the South-East' ].
+	
+	self spaceModel nbNeighbours = 8 ifTrue: [ index := 6 ].
+	self spaceModel nbNeighbours = 6 ifTrue: [ index := 4 ].
+	
+	neighbour := neighbourhoodWithNils at: index.
+	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the South-East' ].
+	^ neighbour
 ]
 
 { #category : #'environment - sensing - space' }
@@ -764,12 +789,18 @@ CMSpatialEntityElement >> neighbourSW [
 	"Purpose: returns the neighbour to the SouthWest
 Not nil only for square (8 neighbors) and hexagonal cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
+
+	| index neighbour |
 	
-	self spaceModel nbNeighbours = 8
-		ifTrue: [^self neighbourhood at: 4].
-	self spaceModel nbNeighbours = 6
-		ifTrue: [^self neighbourhood at: 3].
-	^nil
+	self spaceModel nbNeighbours = 4 ifTrue: [ 
+		self error: 'The number of neighbours was set to 4. There is no neighbour to the South-West' ].
+
+	self spaceModel nbNeighbours = 8 ifTrue: [ index := 4 ].
+	self spaceModel nbNeighbours = 6 ifTrue: [ index := 3 ].
+	
+	neighbour := neighbourhoodWithNils at: index.
+	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the South-West' ].
+	^ neighbour
 ]
 
 { #category : #'environment - sensing - space' }
@@ -777,14 +808,16 @@ CMSpatialEntityElement >> neighbourW [
 	"Purpose: returns the neighbour to the West
 Not nil only for square and hexagonal cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
+
+	| index neighbour |
 	
-	self spaceModel nbNeighbours = 4
-		ifTrue: [^self neighbourhood at: 2].
-	self spaceModel nbNeighbours = 8
-		ifTrue: [^self neighbourhood at: 3].
-	self spaceModel nbNeighbours = 6
-		ifTrue: [^self neighbourhood at: 2].
-	^nil
+	self spaceModel nbNeighbours = 4 ifTrue: [ index := 2 ].
+	self spaceModel nbNeighbours = 8 ifTrue: [ index := 3 ].
+	self spaceModel nbNeighbours = 6 ifTrue: [ index := 2 ].
+	
+	neighbour := neighbourhoodWithNils at: index.
+	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the West' ].
+	^ neighbour
 ]
 
 { #category : #'displaying - obsolete' }

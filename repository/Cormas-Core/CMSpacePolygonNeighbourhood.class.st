@@ -62,7 +62,7 @@ CMSpacePolygonNeighbourhood >> initializePolygone: b in: allPolygones [
 	| boundingRectangle p pPrec pCour |
 
 	b neighbourhood isNil
-		ifTrue: [ b neighbourhood: Set new ].
+		ifTrue: [ b neighbourhoodWithNils: Set new ].
 	b nodes: Dictionary new.
 	boundingRectangle := self boundingRectangleFor: b.
 

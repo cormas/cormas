@@ -39,6 +39,20 @@ CMAbstractModelTest >> setUp [
 	model := self newTestModel.
 ]
 
+{ #category : #tests }
+CMAbstractModelTest >> testCellAtAt [
+
+	| expectedCell expectedId actualCell |
+	
+	expectedCell := model spaceModel cellAt: 3 at: 2.
+	expectedId := 10.
+	
+	actualCell := model cellAt: 3 at: 2.
+
+	self assert: actualCell equals: expectedCell.
+	self assert: actualCell id equals: expectedId.
+]
+
 { #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testCentralCell [
 	| m |

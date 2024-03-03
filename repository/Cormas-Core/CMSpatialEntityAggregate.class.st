@@ -187,13 +187,13 @@ CMSpatialEntityAggregate >> initNeighbourhood [
 	
 	self edge: (self components contains: [:c | c edge]).
 	self setSurround.
-	neighbourhood := (surround
+	neighbourhoodWithNils := (surround
 		collect:
 			[:a | 
 			a theAggregates
 				at: self class name
 				ifAbsent: [nil]]) asSet.	"To get rid of duplicates, a Set is used..."
-	neighbourhood := neighbourhood asOrderedCollection	"...and then made as an OrderedCollection once the job is done..."
+	neighbourhoodWithNils := neighbourhoodWithNils asOrderedCollection	"...and then made as an OrderedCollection once the job is done..."
 ]
 
 { #category : #displaying }

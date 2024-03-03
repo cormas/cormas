@@ -33,5 +33,5 @@ CMSpatialEntityElement >> orderedNeighbourhood: aCollection [
 	orderedNeighbourhood: is now deprecated and will be removed in the future releases"
 	
 	self deprecated: 'Use #neighbourhood: instead'.
-	^ self neighbourhood: aCollection
+	^ self neighbourhoodWithNils: aCollection
 ]

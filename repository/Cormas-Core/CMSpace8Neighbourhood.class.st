@@ -43,7 +43,7 @@ CMSpace8Neighbourhood >> initializeOrderedNeighbourhood: k [
 		v at: 7 put: (self elementaryEntitiesAt: i) ].
 	(i := self northCell: (self eastCell: k)) > 0 ifTrue: [ 
 		v at: 8 put: (self elementaryEntitiesAt: i) ].
-	^ (self elementaryEntitiesAt: k) neighbourhood: v
+	^ (self elementaryEntitiesAt: k) neighbourhoodWithNils: v
 ]
 
 { #category : #initialization }
