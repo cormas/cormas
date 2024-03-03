@@ -11,18 +11,7 @@ Class {
 }
 
 { #category : #test }
-CMSpaceModelTest >> newNotTorroidalSpaceModel [
-
-	^ self spaceModel 
-		initializeRegularLines: 9
-		columns: 5
-		nbType: 4
-		closed: false;
-		yourself
-]
-
-{ #category : #test }
-CMSpaceModelTest >> newTorroidalSpaceModel [
+CMSpaceModelTest >> newModelWithClosedEnvironment [
 
 	^ self spaceModel 
 		initializeRegularLines: 9
@@ -32,11 +21,22 @@ CMSpaceModelTest >> newTorroidalSpaceModel [
 		yourself
 ]
 
+{ #category : #test }
+CMSpaceModelTest >> newModelWithOpenEnvironment [
+
+	^ self spaceModel 
+		initializeRegularLines: 9
+		columns: 5
+		nbType: 4
+		closed: false;
+		yourself
+]
+
 { #category : #running }
 CMSpaceModelTest >> setUp [
 
 	super setUp.		
-	spaceModel := self newTestModel spaceModel.
+	spaceModel := model spaceModel.
 ]
 
 { #category : #accessing }
@@ -154,8 +154,8 @@ CMSpaceModelTest >> testIsIrregular [
 { #category : #test }
 CMSpaceModelTest >> testIsNotTorroidal [
 
-	self assert: self newTorroidalSpaceModel isClosedEnvironment.
-	self deny: self newNotTorroidalSpaceModel isClosedEnvironment.	
+	self assert: self newModelWithClosedEnvironment isClosedEnvironment.
+	self deny: self newModelWithOpenEnvironment isClosedEnvironment.	
 ]
 
 { #category : #test }

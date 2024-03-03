@@ -692,7 +692,7 @@ Return value: <Collection(SpatialEntity)>"
 	| collec |
 	collec := self neighbourhood asOrderedCollection.
 	collec addFirst: self.
-	^collec
+	^collec asArray
 ]
 
 { #category : #deprecated }

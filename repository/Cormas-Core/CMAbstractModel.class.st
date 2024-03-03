@@ -1238,6 +1238,12 @@ Examples: self averageOfAttribute: #age of: Person
 				collect: [:e | e perform: att])
 ]
 
+{ #category : #accessing }
+CMAbstractModel >> cellAt: aRowIndex at: aColumnIndex [ 
+	
+	^ self spaceModel cellAt: aRowIndex at: aColumnIndex
+]
+
 { #category : #'accessing - entities' }
 CMAbstractModel >> centralCell [
 	"Purpose: returns the cell located at the center of the spatial grid. Number of lines and number of columns of the spatial grid have to be odd"
