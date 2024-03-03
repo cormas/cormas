@@ -48,9 +48,9 @@ CMCellsLoaderTest >> testClosed [
 	model := self newTestModel.
 	loader spaceModel: model spaceModel.
 	loader closed: 'true'.
-	self assert: model spaceModel isNotTorroidal equals: true.
+	self assert: model spaceModel isClosedEnvironment equals: true.
 	loader closed: 'false'.
-	self assert: model spaceModel isNotTorroidal equals: false.
+	self assert: model spaceModel isClosedEnvironment equals: false.
 	self should: [ loader closed: 'error' ] raise: Error
 ]
 

@@ -92,7 +92,7 @@ CMSpaceNeighbourhood >> distanceFromCell: cell1 toCell: cell2 nbLines: nbLines n
 CMSpaceNeighbourhood >> eastCell: k [
 	k \\ self column = 0
 		ifFalse: [ ^ k + 1 ].
-	^ self isNotTorroidal
+	^ self isClosedEnvironment
 		ifTrue: [ 0 ]
 		ifFalse: [ k - (self column - 1) ]
 ]
@@ -125,7 +125,7 @@ CMSpaceNeighbourhood >> gridCellShapeType [
 { #category : #accessing }
 CMSpaceNeighbourhood >> initEdges [
 
-	self isNotTorroidal
+	self isClosedEnvironment
 		ifFalse: [ ^ self ]
 		ifTrue: [ 
 			| n |
@@ -165,10 +165,10 @@ CMSpaceNeighbourhood >> initializeOrderedNeighbourhood: k [
 ]
 
 { #category : #'private - regular cells - instance creation' }
-CMSpaceNeighbourhood >> isNotTorroidal [
+CMSpaceNeighbourhood >> isClosedEnvironment [
 	" Answer a <Boolean>. See comment in #isNotTorroidal "
 
-	^ self spaceModel isNotTorroidal
+	^ self spaceModel isClosedEnvironment
 ]
 
 { #category : #'private - regular cells - instance creation' }
@@ -189,7 +189,7 @@ CMSpaceNeighbourhood >> northCell: k [
 		ifTrue: [ ^ 0 ].
 	k > self column
 		ifTrue: [ ^ k - self column ].
-	^ self isNotTorroidal
+	^ self isClosedEnvironment
 		ifTrue: [ 0 ]
 		ifFalse: [ self column * (self line - 1) + k ]
 ]
@@ -200,7 +200,7 @@ CMSpaceNeighbourhood >> southCell: k [
 		ifTrue: [ ^ 0 ].
 	k <= (self column * (self line - 1))
 		ifTrue: [ ^ k + self column ].
-	^ self isNotTorroidal
+	^ self isClosedEnvironment
 		ifTrue: [ 0 ]
 		ifFalse: [ k - (self column * (self line - 1)) ]
 ]
@@ -222,7 +222,7 @@ CMSpaceNeighbourhood >> westCell: k [
 
 	k \\ self column = 1
 		ifFalse: [ ^ k - 1 ].
-	^ self isNotTorroidal
+	^ self isClosedEnvironment
 		ifTrue: [ 0 ]
 		ifFalse: [ k + self column - 1 ]
 ]
