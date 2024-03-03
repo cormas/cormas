@@ -122,9 +122,9 @@ CMSpaceModel >> aggregate: listPolygons [
 				perform:
 					(self cormasModel getterForEntityClass: listPolygons first class).
 			allPolygons removeAll: theOthers.	"Reconstruction of the neighbourhood of the new polygon"
-			fusion neighbourhood: nil.
+			fusion neighbourhoodWithNils: nil.
 			self voisinsPolygonesNoeuds: (Array with: fusion).	"Reconstruction of the neighbourhood of the neighbours of the new polygon"
-			fusion neighbourhood do: [ :p | p neighbourhood: nil ].
+			fusion neighbourhood do: [ :p | p neighbourhoodWithNils: nil ].
 			self
 				voisinsPolygonesNoeuds: fusion neighbourhood asOrderedCollection.	"Updating the components of the new spatial entity, in case it is composed of"
 			(fusion class inheritsFrom: CMSpatialEntityElement)
@@ -143,9 +143,9 @@ CMSpaceModel >> aggregate: listPolygons new: entityC [
 		ifFalse: [ newEntityC := entityC new init.	"Calcul des coordonnees d'origine"
 			newEntityC outline: (self outlineAggregatedFrom: listPolygons).	"Updating the coordinates of the polygon image in the drawing window"
 			self setImagesPolygons: (Array with: newEntityC).	"Construction of the neighbourhood of the new polygon"
-			newEntityC neighbourhood: nil.
+			newEntityC neighbourhoodWithNils: nil.
 			self voisinsPolygonesNoeuds: (Array with: newEntityC).	"Reconstruction of the neighbourhood of the neighbours of the new polygon"
-			newEntityC neighbourhood do: [ :p | p neighbourhood: nil ].
+			newEntityC neighbourhood do: [ :p | p neighbourhoodWithNils: nil ].
 			self
 				voisinsPolygonesNoeuds: newEntityC neighbourhood asOrderedCollection.	"Updating the components of the new spatial entity"
 			newEntityC addComponents: listPolygons.
@@ -1716,7 +1716,7 @@ CMSpaceModel >> loadNeighboorsClass: class separator: aChar [
 			ligne close.
 			id := dataVector first.
 			anEntity := self getInstanceOfClass: class fromId: id.
-			anEntity neighbourhood: OrderedCollection new.
+			anEntity neighbourhoodWithNils: OrderedCollection new.
 			dataVector remove: id.
 			dataVector
 				do: [ :anID | 
@@ -2771,7 +2771,7 @@ CMSpaceModel >> voisinsPolygonesNoeuds: lesPolygones [
 	lesPolygones
 		do: [ :b | 
 			b neighbourhood isNil
-				ifTrue: [ b neighbourhood: Set new ].
+				ifTrue: [ b neighbourhoodWithNils: Set new ].
 			b nodes: Dictionary new.
 			boundingRectangle := Rectangle
 				origin: b bounds origin

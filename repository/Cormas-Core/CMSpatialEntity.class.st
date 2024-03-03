@@ -42,12 +42,12 @@ Class {
 	#superclass : #CMEntity,
 	#instVars : [
 		'spaceModel',
-		'neighbourhood',
 		'destroyed',
 		'outline',
 		'edge',
 		'theOccupants',
-		'theAggregates'
+		'theAggregates',
+		'neighbourhoodWithNils'
 	],
 	#classInstVars : [
 		'bounds'
@@ -335,7 +335,9 @@ CMSpatialEntity >> initialize [
 	" Private - Set the receiver's internal state. Initally a spatial entity is not dead "
 
 	super initialize.
+	
 	destroyed := false.
+	neighbourhoodWithNils := OrderedCollection new: 8.
 ]
 
 { #category : #printing }
@@ -672,14 +674,9 @@ Return value: <ByteString>"
 
 { #category : #'environment - sensing - space' }
 CMSpatialEntity >> neighbourhood [
+	"If the cell is located at the edge or in the corner of a closed (non-torroidal) envionment, the missing neighbours are represented as nils. Here we remove them to get only the list of neighbours"
 	
-	^ neighbourhood ifNil: [  neighbourhood := OrderedCollection new: 8] 
-]
-
-{ #category : #'environment - sensing - space' }
-CMSpatialEntity >> neighbourhood: aCollection [
-	
-	neighbourhood := aCollection
+	^ neighbourhoodWithNils reject: [ :each | each isNil ]
 ]
 
 { #category : #'environment - sensing - space' }
@@ -693,6 +690,13 @@ Return value: <Collection(SpatialEntity)>"
 	collec := self neighbourhood asOrderedCollection.
 	collec addFirst: self.
 	^collec asArray
+]
+
+{ #category : #'environment - sensing - space' }
+CMSpatialEntity >> neighbourhoodWithNils: aCollection [
+	"If the cell is located at the edge or in the corner of a closed (non-torroidal) envionment, the missing neighbours are represented as nils"
+	
+	neighbourhoodWithNils := aCollection
 ]
 
 { #category : #deprecated }
