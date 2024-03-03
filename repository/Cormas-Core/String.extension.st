@@ -10,19 +10,6 @@ String >> asBoolean [
 ]
 
 { #category : #'*Cormas-Core' }
-String >> asGetterForEntityClass [
-	" Create the getter selector for the entity class aClass.
-
-	'Object' asGetterForEntityClass -> #theObjects
-	"
-
-	^ (String streamContents: [ : stream | 
-		stream 
-			<< 'the';
-			<< self asPlural capitalized]) asSymbol
-]
-
-{ #category : #'*Cormas-Core' }
 String >> asValidCormasClassName: aCMProjectName [
 	" Answer the receiver <Symbol> as valid as CORMAS class name along with the project name . 
 	Currently a CORMAS class name is valid if :
