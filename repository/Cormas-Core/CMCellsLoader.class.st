@@ -99,7 +99,7 @@ CMCellsLoader >> cellFileDirectory [
 CMCellsLoader >> closed: aString [
 
 	self assert: (#('true' 'false') includes: aString).
-	self spaceModelDo: [ : spaceModel | spaceModel torroidal: aString ~= 'false' ]
+	self spaceModelDo: [ : spaceModel | spaceModel isClosedEnvironment: aString ~= 'false' ]
 ]
 
 { #category : #loading }

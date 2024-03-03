@@ -37,13 +37,19 @@ Class {
 		'gridCellShape',
 		'absoluteBounds',
 		'autoResizeBounds',
-		'torroidal',
 		'nbConfiguration',
 		'gridSize',
-		'activePoVsDictionary'
+		'activePoVsDictionary',
+		'isClosedEnvironment'
 	],
 	#category : #'Cormas-Core-Space'
 }
+
+{ #category : #defaults }
+CMSpaceModel class >> defaultIsClosedEnvironment [
+
+	^ true
+]
 
 { #category : #defaults }
 CMSpaceModel class >> defaultLines [
@@ -290,7 +296,7 @@ compoundEntity =a subClass of  <SpatialEntitySet>
 ms= <integer> must be >= 1"
 
 	| coll |
-	self isNotTorroidal
+	self isClosedEnvironment
 		ifFalse: [ ^ self warningBoundaries ].
 	coll := IndexedSet new.
 	(self getAggregatesFrom: baseEntity verifying: aBlock)
@@ -324,7 +330,7 @@ CMSpaceModel >> buildFragmentedEntity: compoundEntity fromCollection: aCollecOfS
 	compoundEntity = a subClass of  <SpatialEntityNotConnex>"
 
 	| aSet agg |
-	self isNotTorroidal
+	self isClosedEnvironment
 		ifFalse: [ ^ self warningBoundaries ].
 	aSet := Set new.
 	aCollecOfSpatialEntityElement
@@ -708,12 +714,6 @@ CMSpaceModel >> defaultGridSize [
 ]
 
 { #category : #defaults }
-CMSpaceModel >> defaultIsNotTorroidal [
-
-	^ true
-]
-
-{ #category : #defaults }
 CMSpaceModel >> defaultLines [
 	" Answer the <Number> of default lines to create in the receiver's grid "
 	
@@ -792,7 +792,7 @@ CMSpaceModel >> distanceFromCell: cell1 toCell: cell2 [
 	| nbLines nbCols |
 	nbLines := (cell1 rowNumber - cell2 rowNumber) abs.
 	nbCols := (cell1 columnNumber - cell2 columnNumber) abs.
-	self isNotTorroidal
+	self isClosedEnvironment
 		ifFalse: [ nbLines > (self line - 2)
 				ifTrue: [ nbLines := nbLines - self line + 2 ].
 			nbCols > (self column - 2)
@@ -812,7 +812,7 @@ CMSpaceModel >> distanceFromHexagonalCell: cell1 toCell: cell2 [
 		ifFalse: [ self halt ].
 	nbLines := (cell1 rowNumber - cell2 rowNumber) abs.
 	nbCols := (cell1 columnNumber - cell2 columnNumber) abs.
-	self isNotTorroidal
+	self isClosedEnvironment
 		ifFalse: [ nbLines := nbLines min: self line - nbLines.
 			nbCols := nbCols min: self column - nbCols.
 			nbLines odd
@@ -921,7 +921,7 @@ CMSpaceModel >> envSpecStringFor: spatialEntityName [
 	s := (String new: 100) writeStream.
 	s
 		nextPutAll:
-			(self isNotTorroidal
+			(self isClosedEnvironment
 				ifTrue: [ 'Closed ' ]
 				ifFalse: [ 'Torroidal ' ]).
 	(spatialEntityName = self cellClass name
@@ -957,7 +957,7 @@ CMSpaceModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 	| nbLines nbCols |
 	nbLines := (cell1 rowNumber - cell2 rowNumber) abs.
 	nbCols := (cell1 columnNumber - cell2 columnNumber) abs.
-	self isNotTorroidal
+	self isClosedEnvironment
 		ifFalse: [ nbLines > (self line - 2)
 				ifTrue: [ nbLines := nbLines - self line + 2 ].
 			nbCols > (self column - 2)
@@ -1138,7 +1138,7 @@ CMSpaceModel >> getAggregatesFrom: baseEntity attribute: attributeName [
 	"Return a collection of sets of contiguous components holding the same attributeName value"
 
 	| newCollection seed setOfComponents neighbours newNeighbours theLLEntities |
-	self isNotTorroidal
+	self isClosedEnvironment
 		ifFalse: [ ^ self warningBoundaries ].
 	newCollection := OrderedCollection new.
 	theLLEntities := ((self cormasModel
@@ -1173,7 +1173,7 @@ CMSpaceModel >> getAggregatesFrom: baseEntity verifying: aBlock [
 
 	| selector eeInstances set seed neighbours newNeighbours collec |
 	
-	self isNotTorroidal ifFalse: [ ^ self warningBoundaries ].
+	self isClosedEnvironment ifFalse: [ ^ self warningBoundaries ].
 	
 	selector := self cormasModel getterForEntityClass: baseEntity.
 		
@@ -1347,7 +1347,7 @@ CMSpaceModel >> getSetsOfContiguous: baseEntity conditionalBlocks: blocks condit
 	"Return a collection of sets of contiguous components"
 
 	| collec seed setOfContiguousComponents neighbours newNeighbours baseEntities valuesB2 valuesB3 |
-	self isNotTorroidal
+	self isClosedEnvironment
 		ifFalse: [ ^ self warningBoundaries ].
 	baseEntities := ((self spatialEntitiesAt: baseEntity name)
 		select:
@@ -1509,7 +1509,7 @@ CMSpaceModel >> initAggregates: compoundEntity fromSeeds: aCollec [
 	aCollec = a collection of base entities (inheriting from <SpatialEntityElement>) 
 	compoundEntity = a subClass of  <SpatialEntitySet> "
 
-	self isNotTorroidal
+	self isClosedEnvironment
 		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
@@ -1536,7 +1536,7 @@ CMSpaceModel >> initAggregates: compoundEntity fromSeeds: aCollecOfCells sizeDis
 	This method uses the attribute called givenSize defined for SpatialEntityAggregate"
 
 	| counter subsetIndice |
-	self isNotTorroidal
+	self isClosedEnvironment
 		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
@@ -1571,17 +1571,19 @@ CMSpaceModel >> initNeighbourhood [
 
 ]
 
-{ #category : #'private - init' }
+{ #category : #initialization }
 CMSpaceModel >> initialize [
 	super initialize.
-	self resetSpatialEntities
+	self resetSpatialEntities.
+	
+	isClosedEnvironment := self class defaultIsClosedEnvironment
 ]
 
 { #category : #'private - init' }
 CMSpaceModel >> initializeIrregular [
 	
 	gridCellShape := #irregular.
-	torroidal := true.
+	isClosedEnvironment := true.
 	line := nil.
 	column := nil.
 	gridSize := 0	"arrayOrigins := Array new: cardinal."
@@ -1598,11 +1600,29 @@ CMSpaceModel >> initializeRegularLines: lines columns: columns nbType: aNumber c
 
 	self resetSpatialEntities.
 	self line: lines column: columns.
-	torroidal := aBoolean.
+	isClosedEnvironment := aBoolean.
 	self nbCount: aNumber.
 	self createCells.
 
 
+]
+
+{ #category : #'private - accessing' }
+CMSpaceModel >> isClosedEnvironment [
+	"Open environment is torroidal. If you go over the edge, you come back from the other side
+	Closed environment is not torroidal. The edges have 'walls' and you can't cross them"
+	
+	^ isClosedEnvironment
+]
+
+{ #category : #'private - accessing' }
+CMSpaceModel >> isClosedEnvironment: aBoolean [
+	" Requires the receiver already has a number of neighbourhood configured "
+
+	isClosedEnvironment = aBoolean ifTrue: [ ^ self ].
+	isClosedEnvironment := aBoolean.
+	self initNeighbourhood.
+	self cormasModel registerSpaceModelChange: #boundariesChanged	"dispatch the info to other spaceInterfaces"
 ]
 
 { #category : #testing }
@@ -1617,14 +1637,6 @@ CMSpaceModel >> isIrregular [
 	"Answer if the spaceModel is irregular (or regular), meaning that the cells are not uniform, but have different shapes (vectorial)"
 	
 	^gridCellShape = #irregular
-]
-
-{ #category : #'private - accessing' }
-CMSpaceModel >> isNotTorroidal [
-	" Answer a <Boolean> whether the receiver hasn't torroidal form "
-	
-	^ torroidal
-		ifNil: [ torroidal := self defaultIsNotTorroidal ]
 ]
 
 { #category : #'private - regular polygons' }
@@ -1685,7 +1697,7 @@ CMSpaceModel >> loadNeighboorsClass: class separator: aChar [
 		construct: class name asString , '_Neighboors.agg'.
 	portableFilename asFilename exists
 		ifFalse: [ ^ self cormas warn: portableFilename asString , ' is missing !!!' ].
-	self isNotTorroidal
+	self isClosedEnvironment
 		ifFalse: [ ^ self warningBoundaries ].
 	(self spatialEntities isNil
 		or: [ self spatialEntities isEmpty
@@ -2082,7 +2094,7 @@ CMSpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attrib
 	attributeName = #context for example 
 	compoundEntity = a subClass of  <SpatialEntitySet>"
 
-	self isNotTorroidal
+	self isClosedEnvironment
 		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
@@ -2101,7 +2113,7 @@ CMSpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attrib
 	attributeName = #context for example 
 	compoundEntity = a subClass of  <SpatialEntitySet>"
 
-	self isNotTorroidal
+	self isClosedEnvironment
 		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
@@ -2124,7 +2136,7 @@ CMSpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attrib
 	aValue is a specific value of the attribute, for instance #notDefined, or 0
 	compoundEntity = a subClass of  <SpatialEntitySet>"
 
-	self isNotTorroidal
+	self isClosedEnvironment
 		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
@@ -2146,7 +2158,7 @@ The aggregates will  occupy the whole grid.
 	baseEntity = a subClass of  <SpatialEntity> 
 	compoundEntity = a subClass of  <SpatialEntitySet>"
 
-	self isNotTorroidal
+	self isClosedEnvironment
 		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
@@ -2298,7 +2310,7 @@ CMSpaceModel >> setFragmentedEntities: compoundEntity from: baseEntity attribute
 	compoundEntity = a Class name inheriting from <SpatialEntityNotConnex>"
 
 	| fragmentedEntity beInstances collec |
-	self isNotTorroidal
+	self isClosedEnvironment
 		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
@@ -2330,7 +2342,7 @@ CMSpaceModel >> setFragmentedEntities: compoundEntity from: baseEntity verifying
 
 	| getter fragmentedEntity beInstances |
 	
-	self isNotTorroidal ifFalse: [ ^ self warningBoundaries ].
+	self isClosedEnvironment ifFalse: [ ^ self warningBoundaries ].
 	
 	self
 		resetCompoundSpatialEntity: compoundEntity
@@ -2358,7 +2370,7 @@ CMSpaceModel >> setFragmentedEntity: compoundEntity fromCollection: aCollecOfSpa
 	compoundEntity = a Class name inheriting from <SpatialEntityNotConnex>"
 
 	| aSet |
-	self isNotTorroidal
+	self isClosedEnvironment
 		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
@@ -2454,7 +2466,7 @@ CMSpaceModel >> setSingletonAggregates: compoundEntity fromSeeds: aCollec [
 	aCollec = a collection of base entities (inheriting from <SpatialEntity>) 
 	compoundEntity = a Class name inheriting from <SpatialEntitySet>"
 
-	self isNotTorroidal
+	self isClosedEnvironment
 		ifFalse: [ ^ self warningBoundaries ].
 	self
 		resetCompoundSpatialEntity: compoundEntity
@@ -2582,7 +2594,7 @@ CMSpaceModel >> settingsFrom: aClone [
 				initializeRegularLines: aClone line
 				columns: aClone column
 				nbType: aClone nbNeighbours
-				closed: aClone isNotTorroidal ]
+				closed: aClone isClosedEnvironment ]
 ]
 
 { #category : #'landscape indices' }
@@ -2696,22 +2708,6 @@ CMSpaceModel >> timeStep [
 CMSpaceModel >> timeUnitName [
 	
 	^self cormasModel timeUnitName
-]
-
-{ #category : #'private - accessing' }
-CMSpaceModel >> torroidal [
-	
-	^torroidal
-]
-
-{ #category : #'private - accessing' }
-CMSpaceModel >> torroidal: aBoolean [
-	" Requires the receiver already has a number of neighbourhood configured "
-
-	torroidal = aBoolean ifTrue: [ ^ self ].
-	torroidal := aBoolean.
-	self initNeighbourhood.
-	self cormasModel registerSpaceModelChange: #boundariesChanged	"dispatch the info to other spaceInterfaces"
 ]
 
 { #category : #'private - irregular polygons creation' }

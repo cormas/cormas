@@ -154,8 +154,8 @@ CMSpaceModelTest >> testIsIrregular [
 { #category : #test }
 CMSpaceModelTest >> testIsNotTorroidal [
 
-	self assert: self newTorroidalSpaceModel isNotTorroidal.
-	self deny: self newNotTorroidalSpaceModel isNotTorroidal.	
+	self assert: self newTorroidalSpaceModel isClosedEnvironment.
+	self deny: self newNotTorroidalSpaceModel isClosedEnvironment.	
 ]
 
 { #category : #test }
