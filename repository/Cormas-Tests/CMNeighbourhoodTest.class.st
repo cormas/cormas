@@ -43,6 +43,112 @@ CMNeighbourhoodTest >> setUp [
 ]
 
 { #category : #tests }
+CMNeighbourhoodTest >> testBottomLeftNeighbourE [
+	
+	| expectedNeighbour actualNeighbour |
+	
+	expectedNeighbour := model cellAt: 4 at: 2.
+	actualNeighbour := cellInTheBottomLeftCorner neighbourE.
+
+	self assert: actualNeighbour equals: expectedNeighbour.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testBottomLeftNeighbourN [
+	
+	| expectedNeighbour actualNeighbour |
+	
+	expectedNeighbour := model cellAt: 3 at: 1.
+	actualNeighbour := cellInTheBottomLeftCorner neighbourN.
+
+	self assert: actualNeighbour equals: expectedNeighbour.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testBottomLeftNeighbourNE [
+	
+	| expectedNeighbour actualNeighbour |
+	
+	expectedNeighbour := model cellAt: 3 at: 2.
+	actualNeighbour := cellInTheBottomLeftCorner neighbourNE.
+
+	self assert: actualNeighbour equals: expectedNeighbour.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testBottomLeftNeighbourNW [
+	
+	self
+		should: [ cellInTheBottomLeftCorner neighbourNW ]
+		raise: Error.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testBottomLeftNeighbourS [
+	
+	self
+		should: [ cellInTheBottomLeftCorner neighbourS ]
+		raise: Error.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testBottomLeftNeighbourSE [
+	
+	self
+		should: [ cellInTheBottomLeftCorner neighbourSE ]
+		raise: Error.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testBottomLeftNeighbourSW [
+	
+	self
+		should: [ cellInTheBottomLeftCorner neighbourSW ]
+		raise: Error.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testBottomLeftNeighbourW [
+	
+	self
+		should: [ cellInTheBottomLeftCorner neighbourW ]
+		raise: Error.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testBottomLeftNeighbourhood [
+	
+	| expectedNeighbourhood actualNeighbourhood |
+	
+	expectedNeighbourhood := Set withAll: { 
+		model cellAt: 3 at: 1 .
+		model cellAt: 4 at: 2 .
+		model cellAt: 3 at: 2 }.
+	
+	actualNeighbourhood := cellInTheBottomLeftCorner neighbourhood asSet.
+
+	self assert: actualNeighbourhood size equals: 3.
+	self assert: actualNeighbourhood equals: expectedNeighbourhood.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testBottomLeftNeighbourhoodAndSelf [
+	
+	| expectedNeighbourhood actualNeighbourhood |
+	
+	expectedNeighbourhood := Set withAll: { 
+		model cellAt: 4 at: 1 .
+		model cellAt: 3 at: 1 .
+		model cellAt: 4 at: 2 .
+		model cellAt: 3 at: 2 }.
+	
+	actualNeighbourhood := cellInTheBottomLeftCorner neighbourhoodAndSelf asSet.
+
+	self assert: actualNeighbourhood size equals: 4.
+	self assert: actualNeighbourhood equals: expectedNeighbourhood.
+]
+
+{ #category : #tests }
 CMNeighbourhoodTest >> testBottomNeighbourE [
 	
 	| expectedNeighbour actualNeighbour |
@@ -155,6 +261,112 @@ CMNeighbourhoodTest >> testBottomNeighbourhoodAndSelf [
 	actualNeighbourhood := cellOnTheBottomEdge neighbourhoodAndSelf asSet.
 
 	self assert: actualNeighbourhood size equals: 6.
+	self assert: actualNeighbourhood equals: expectedNeighbourhood.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testBottomRightNeighbourE [
+	
+	self
+		should: [ cellInTheBottomRightCorner neighbourE ]
+		raise: Error.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testBottomRightNeighbourN [
+	
+	| expectedNeighbour actualNeighbour |
+	
+	expectedNeighbour := model cellAt: 3 at: 4.
+	actualNeighbour := cellInTheBottomRightCorner neighbourN.
+
+	self assert: actualNeighbour equals: expectedNeighbour.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testBottomRightNeighbourNE [
+	
+	self
+		should: [ cellInTheBottomRightCorner neighbourNE ]
+		raise: Error.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testBottomRightNeighbourNW [
+	
+	| expectedNeighbour actualNeighbour |
+	
+	expectedNeighbour := model cellAt: 3 at: 3.
+	actualNeighbour := cellInTheBottomRightCorner neighbourNW.
+
+	self assert: actualNeighbour equals: expectedNeighbour.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testBottomRightNeighbourS [
+	
+	self
+		should: [ cellInTheBottomRightCorner neighbourS ]
+		raise: Error.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testBottomRightNeighbourSE [
+	
+	self
+		should: [ cellInTheBottomRightCorner neighbourSE ]
+		raise: Error.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testBottomRightNeighbourSW [
+	
+	self
+		should: [ cellInTheBottomRightCorner neighbourSW ]
+		raise: Error.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testBottomRightNeighbourW [
+	
+	| expectedNeighbour actualNeighbour |
+	
+	expectedNeighbour := model cellAt: 4 at: 3.
+	actualNeighbour := cellInTheBottomRightCorner neighbourW.
+
+	self assert: actualNeighbour equals: expectedNeighbour.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testBottomRightNeighbourhood [
+	
+	| expectedNeighbourhood actualNeighbourhood |
+	
+	expectedNeighbourhood := Set withAll: { 
+		model cellAt: 3 at: 4 .
+		model cellAt: 3 at: 3 .
+		model cellAt: 4 at: 3 }.
+	
+	actualNeighbourhood := cellInTheBottomRightCorner neighbourhood asSet.
+
+	self assert: actualNeighbourhood size equals: 3.
+	self assert: actualNeighbourhood equals: expectedNeighbourhood.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testBottomRightNeighbourhoodAndSelf [
+	
+	| expectedNeighbourhood actualNeighbourhood |
+	
+	expectedNeighbourhood := Set withAll: { 
+		model cellAt: 4 at: 4 .
+		model cellAt: 3 at: 4 .
+		model cellAt: 3 at: 3 .
+		model cellAt: 4 at: 3 }.
+	
+	actualNeighbourhood := cellInTheBottomRightCorner neighbourhoodAndSelf asSet.
+
+	self assert: actualNeighbourhood size equals: 4.
 	self assert: actualNeighbourhood equals: expectedNeighbourhood.
 ]
 
@@ -522,6 +734,112 @@ CMNeighbourhoodTest >> testRightNeighbourhoodAndSelf [
 ]
 
 { #category : #tests }
+CMNeighbourhoodTest >> testTopLeftNeighbourE [
+	
+	| expectedNeighbour actualNeighbour |
+	
+	expectedNeighbour := model cellAt: 1 at: 2.
+	actualNeighbour := cellInTheTopLeftCorner neighbourE.
+
+	self assert: actualNeighbour equals: expectedNeighbour.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testTopLeftNeighbourN [
+	
+	self
+		should: [ cellInTheTopLeftCorner neighbourN ]
+		raise: Error.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testTopLeftNeighbourNE [
+	
+	self
+		should: [ cellInTheTopLeftCorner neighbourNE ]
+		raise: Error.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testTopLeftNeighbourNW [
+	
+	self
+		should: [ cellInTheTopLeftCorner neighbourNW ]
+		raise: Error.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testTopLeftNeighbourS [
+	
+	| expectedNeighbour actualNeighbour |
+	
+	expectedNeighbour := model cellAt: 2 at: 1.
+	actualNeighbour := cellInTheTopLeftCorner neighbourS.
+
+	self assert: actualNeighbour equals: expectedNeighbour.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testTopLeftNeighbourSE [
+	
+	| expectedNeighbour actualNeighbour |
+	
+	expectedNeighbour := model cellAt: 2 at: 2.
+	actualNeighbour := cellInTheTopLeftCorner neighbourSE.
+
+	self assert: actualNeighbour equals: expectedNeighbour.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testTopLeftNeighbourSW [
+	
+	self
+		should: [ cellInTheTopLeftCorner neighbourSW ]
+		raise: Error.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testTopLeftNeighbourW [
+	
+	self
+		should: [ cellInTheTopLeftCorner neighbourW ]
+		raise: Error.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testTopLeftNeighbourhood [
+	
+	| expectedNeighbourhood actualNeighbourhood |
+	
+	expectedNeighbourhood := Set withAll: { 
+		model cellAt: 2 at: 1 .
+		model cellAt: 2 at: 2 .
+		model cellAt: 1 at: 2 }.
+	
+	actualNeighbourhood := cellInTheTopLeftCorner neighbourhood asSet.
+
+	self assert: actualNeighbourhood size equals: 3.
+	self assert: actualNeighbourhood equals: expectedNeighbourhood.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testTopLeftNeighbourhoodAndSelf [
+	
+	| expectedNeighbourhood actualNeighbourhood |
+	
+	expectedNeighbourhood := Set withAll: { 
+		model cellAt: 1 at: 1 .
+		model cellAt: 2 at: 1 .
+		model cellAt: 2 at: 2 .
+		model cellAt: 1 at: 2 }.
+	
+	actualNeighbourhood := cellInTheTopLeftCorner neighbourhoodAndSelf asSet.
+
+	self assert: actualNeighbourhood size equals: 4.
+	self assert: actualNeighbourhood equals: expectedNeighbourhood.
+]
+
+{ #category : #tests }
 CMNeighbourhoodTest >> testTopNeighbourE [
 	
 	| expectedNeighbour actualNeighbour |
@@ -634,5 +952,111 @@ CMNeighbourhoodTest >> testTopNeighbourhoodAndSelf [
 	actualNeighbourhood := cellOnTheTopEdge neighbourhoodAndSelf asSet.
 
 	self assert: actualNeighbourhood size equals: 6.
+	self assert: actualNeighbourhood equals: expectedNeighbourhood.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testTopRightNeighbourE [
+	
+	self
+		should: [ cellInTheTopRightCorner neighbourE ]
+		raise: Error.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testTopRightNeighbourN [
+	
+	self
+		should: [ cellInTheTopRightCorner neighbourN ]
+		raise: Error.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testTopRightNeighbourNE [
+	
+	self
+		should: [ cellInTheTopRightCorner neighbourNE ]
+		raise: Error.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testTopRightNeighbourNW [
+	
+	self
+		should: [ cellInTheTopRightCorner neighbourNW ]
+		raise: Error.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testTopRightNeighbourS [
+	
+	| expectedNeighbour actualNeighbour |
+	
+	expectedNeighbour := model cellAt: 2 at: 4.
+	actualNeighbour := cellInTheTopRightCorner neighbourS.
+
+	self assert: actualNeighbour equals: expectedNeighbour.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testTopRightNeighbourSE [
+	
+	self
+		should: [ cellInTheTopRightCorner neighbourSE ]
+		raise: Error.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testTopRightNeighbourSW [
+	
+	| expectedNeighbour actualNeighbour |
+	
+	expectedNeighbour := model cellAt: 2 at: 3.
+	actualNeighbour := cellInTheTopRightCorner neighbourSW.
+
+	self assert: actualNeighbour equals: expectedNeighbour.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testTopRightNeighbourW [
+	
+	| expectedNeighbour actualNeighbour |
+	
+	expectedNeighbour := model cellAt: 1 at: 3.
+	actualNeighbour := cellInTheTopRightCorner neighbourW.
+
+	self assert: actualNeighbour equals: expectedNeighbour.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testTopRightNeighbourhood [
+	
+	| expectedNeighbourhood actualNeighbourhood |
+	
+	expectedNeighbourhood := Set withAll: { 
+		model cellAt: 1 at: 3 .
+		model cellAt: 2 at: 3 .
+		model cellAt: 2 at: 4 }.
+	
+	actualNeighbourhood := cellInTheTopRightCorner neighbourhood asSet.
+
+	self assert: actualNeighbourhood size equals: 3.
+	self assert: actualNeighbourhood equals: expectedNeighbourhood.
+]
+
+{ #category : #tests }
+CMNeighbourhoodTest >> testTopRightNeighbourhoodAndSelf [
+	
+	| expectedNeighbourhood actualNeighbourhood |
+	
+	expectedNeighbourhood := Set withAll: { 
+		model cellAt: 1 at: 4 .
+		model cellAt: 1 at: 3 .
+		model cellAt: 2 at: 3 .
+		model cellAt: 2 at: 4 }.
+	
+	actualNeighbourhood := cellInTheTopRightCorner neighbourhoodAndSelf asSet.
+
+	self assert: actualNeighbourhood size equals: 4.
 	self assert: actualNeighbourhood equals: expectedNeighbourhood.
 ]
