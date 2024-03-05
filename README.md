@@ -37,7 +37,7 @@
 
 # Description
 
-This is an ongoing effort to port CORMAS to [Pharo ecosystem](http://www.pharo.org/). Current stable version of CORMAS is based on VisualWorks 7.6 and still can be found on: http://cormas.cirad.fr/indexeng.htm
+This is an ongoing effort to port CORMAS to [Pharo ecosystem](http://www.pharo.org/).
 
 Some documentation (to be cleaned and reorganized) about Cormas is available on the Wiki here:
 https://github.com/cormas/documentation
