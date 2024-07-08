@@ -64,15 +64,6 @@ BaselineOfCormas >> specForBaselines: spec [
 		baseline: 'PetitParser'
 		with: [ spec repository: 'github://moosetechnology/PetitParser/src'; loads: #('YAML') ];
 
-		baseline: 'ProjectFramework'
-		with: [ spec repository: 'github://cormas/ProjectFramework/repository' ];
-		
-		baseline: 'CodeGenerator'
-		with: [ spec repository: 'github://cormas/CodeGenerator' ];
-		
-		baseline: 'PharoCodeGenerator'
-		with: [ spec repository: 'github://juliendelplanque/PharoCodeGenerator' ];
-
 		baseline: 'MathRandomNumbers'
 		with: [ spec repository: 'github://PolyMathOrg/random-numbers:v1.x.x/src' ];
 
@@ -109,8 +100,7 @@ BaselineOfCormas >> specForPackages: spec [
 		package: 'Cormas-Core'
 		with: [ spec requires: #(
 			'MathRandomNumbers' 'PetitParser' 'GitBridge' 'ESRIASCIIRaster' 'SMark'
-			'CodeGenerator' 'PharoCodeGenerator' 'ProjectFramework' 'CollectionExtensions'
-			'SingularizePluralize') ];
+			'CollectionExtensions' 'SingularizePluralize') ];
 		
 		package: 'Cormas-Mocks'
 		with: [ spec requires: #('Cormas-Core') ];
