@@ -662,6 +662,6 @@ CMProjectModel >> validateCormasModelName: modelName [
 
 	| validClassName |
 	(validClassName := self codeGenerator validateClassName: modelName) ~= modelName
-		ifTrue: [ self crTrace: modelName , ': ' , self translator tModifiedModelName , validClassName ].
+		ifTrue: [ self crTrace: modelName , ': The name has been renamed as ', validClassName ].
 	^ validClassName
 ]

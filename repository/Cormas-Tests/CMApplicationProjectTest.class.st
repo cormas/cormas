@@ -49,9 +49,3 @@ CMApplicationProjectTest >> testGitBridge [
 
 	self assert: (self application gitBridge isKindOf: CMGitBridge)
 ]
-
-{ #category : #test }
-CMApplicationProjectTest >> testTranslator [
-
-	self assert: (application translator isKindOf: CMAbstractTranslator)
-]

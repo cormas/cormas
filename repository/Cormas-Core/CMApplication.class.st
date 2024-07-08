@@ -18,7 +18,6 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'gitBridge',
-		'translator',
 		'currentProject',
 		'projectClass'
 	],
@@ -112,7 +111,6 @@ CMApplication >> gitBridge [
 CMApplication >> initialize [
 
 	super initialize.
-	translator := CMEnglishTranslator new.
 	projectClass := CMProjectModel.
 	gitBridge := CMGitBridge new.
 ]
@@ -143,16 +141,4 @@ CMApplication >> releaseProject [
 
 	self currentProject: nil.
 	self projectClass: nil
-]
-
-{ #category : #accessing }
-CMApplication >> translator [
-
-	^ translator
-]
-
-{ #category : #accessing }
-CMApplication >> translator: anObject [
-
-	translator := anObject
 ]
