@@ -63,9 +63,6 @@ BaselineOfCormas >> specForBaselines: spec [
 	
 		baseline: 'PetitParser'
 		with: [ spec repository: 'github://moosetechnology/PetitParser/src'; loads: #('YAML') ];
-			
-		baseline: 'FileDialog'
-		with: [ spec repository: 'github://peteruhnak/file-dialog:v1.x/repository' ];
 
 		baseline: 'ProjectFramework'
 		with: [ spec repository: 'github://cormas/ProjectFramework/repository' ];
@@ -85,17 +82,11 @@ BaselineOfCormas >> specForBaselines: spec [
 		baseline: 'ESRIASCIIRaster'
 		with: [ spec repository: 'github://pharo-GIS/ESRI-ASCII-Raster/' ];
 		
-		baseline: 'Tabular'
-		with: [ spec repository: 'github://VincentBlondeau/Tabular' ];
-		
 		baseline: 'Roassal3'
 		with: [ spec loads: #('Full'); repository: 'github://ObjectProfile/Roassal3:v0.9.9m' ];
 		
 		baseline: 'Roassal3Exporters'
 		with: [ spec repository: 'github://ObjectProfile/Roassal3Exporters' ];
-		
-		baseline: 'UrucuNavigator'
-		with: [ spec repository: 'github://tinchodias/pharo-urucu-navigator' ];
 		
 		baseline: 'SingularizePluralize'
 		with: [ spec repository: 'github://pharo-contributions/SingularizePluralize:v1.1' ].
@@ -106,8 +97,8 @@ BaselineOfCormas >> specForBaselines: spec [
 BaselineOfCormas >> specForGroups: spec [
 
 	spec
-		group: 'Core' with: #('Cormas-Core' 'Cormas-Tests' 'Cormas-Mocks' 'Cormas-Deprecated');
-		group: 'UI' with: #('Core' 'Cormas-UI' 'Cormas-UI-Roassal3' 'Cormas-UI-Tests' 'Cormas-UI-Deprecated');
+		group: 'Core' with: #('Cormas-Core' 'Cormas-Tests' 'Cormas-Mocks');
+		group: 'UI' with: #('Core' 'Cormas-UI-Roassal3' 'Cormas-UI-Tests');
 		group: 'default' with: #('UI')
 ]
 
@@ -121,26 +112,15 @@ BaselineOfCormas >> specForPackages: spec [
 			'CodeGenerator' 'PharoCodeGenerator' 'ProjectFramework' 'CollectionExtensions'
 			'SingularizePluralize') ];
 		
-		package: 'Cormas-Deprecated'
-		with: [ spec requires: #('Cormas-Core') ];
-		
 		package: 'Cormas-Mocks'
 		with: [ spec requires: #('Cormas-Core') ];
 		
 		package: 'Cormas-Tests'
 		with: [ spec requires: #('Cormas-Core' 'Cormas-Mocks') ];
 		
-		package: 'Cormas-UI'
-		with: [ spec requires: #(
-			'Cormas-Core' 'FileDialog' 'ProjectFramework'
-			'CodeGenerator' 'UrucuNavigator') ];
-		
 		package: 'Cormas-UI-Roassal3'
-		with: [ spec requires: #('Cormas-UI' 'Roassal3' 'Roassal3Exporters') ];
-		
-		package: 'Cormas-UI-Deprecated'
-		with: [ spec requires: #('Cormas-Core' 'Cormas-UI' 'Cormas-UI-Roassal3') ];
+		with: [ spec requires: #('Roassal3' 'Roassal3Exporters') ];
 		
 		package: 'Cormas-UI-Tests'
-		with: [ spec requires: #('Cormas-Tests' 'Cormas-UI' 'Cormas-Mocks') ].
+		with: [ spec requires: #('Cormas-Tests' 'Cormas-Mocks') ].
 ]
