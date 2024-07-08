@@ -46,7 +46,6 @@ Class {
 		'spaceModel',
 		'data',
 		'simManager',
-		'projectManager',
 		'collector',
 		'defaultAttributesSetter',
 		'sensitivitySetter',
@@ -1125,13 +1124,6 @@ Example: (self allTheSituatedEntities: Forager) is returning all the instances o
 { #category : #announcement }
 CMAbstractModel >> announcer [
     ^ announcer ifNil: [ announcer := Announcer new ]
-]
-
-{ #category : #accessing }
-CMAbstractModel >> application [
-	" Answer the receiver's application object "
-	
-	^ CMApplication uniqueInstance
 ]
 
 { #category : #control }
@@ -2282,18 +2274,6 @@ CMAbstractModel >> initSimFromScnrStage1 [
 	self perform: self activeInit.	"launch the selected INIT method"
 ]
 
-{ #category : #scheduling }
-CMAbstractModel >> initSimFromScnrStage2 [
-
-	self updateEntities.	"updates theXXXs collections"
-	self updateDataForChart.
-	self channel ifNil: [ self initializeChannel ].
-	self theAgentsComm do: [ :p | p channel: self channel ].
-	"announce to all the subscribers that simulation is beeing initialized"
-	self projectAnnouncer announce: CMSimulationInitializationAnnouncement.
-	self initStatus: true.
-]
-
 { #category : #accessing }
 CMAbstractModel >> initStatus [
 	" Answer <true> if the receiver was initialized through #initSimulation, <false> otherwise "
@@ -2313,7 +2293,6 @@ CMAbstractModel >> initialize [
 	"NB ->retire pour que les cells ne demandent pas le currentSimulation spaceModel alors qu''il n''est pas encore fini d''initialise"
 
 	super initialize.
-	self projectManager: CMProjectManager new.
 	self class socialClasses ifNotEmpty: [ self initializeChannel ].
 	
 	self initializeEntityGetters.
@@ -2444,26 +2423,6 @@ CMAbstractModel >> lastValueOfGlobalDataNamed: name [
 				ifTrue: [^((self data at: self class name) at: name) last]
 				ifFalse: [^0]]
 		ifFalse: [^0]
-]
-
-{ #category : #'instance creation - spatial grid' }
-CMAbstractModel >> loadEnvironmentFromDirectory: aStringOrFileReference [
-	"Purpose: create a spatial grid of cells and load attributes value specified in a defined .cell directory.
-	If aStringOrFileReference = <String>, it creates a directory named aName in the maps directory.
-	Example:	CMECECModel new loadEnvironmentFromDirectory: 'poor.cells' "
-
-	self spaceModel loadEnvironmentFromDirectory: aStringOrFileReference
-]
-
-{ #category : #'instance creation - spatial grid' }
-CMAbstractModel >> loadEnvironmentFromDirectory: aName withPov: aSymbol [
-	"Purpose: create spatial elements, load attributes value specified in a defined cells directory and set the point of view of the elementary spatial entity to a defined pov
-Argument: aName = <String> or aName = <FileReference> . If aName = <String>, it creates a directory named aName in the maps directory.
-aSymbol is the name of the cell pov to be displayed
-Example:	self configureWithCellFile: 'test.cells' withPov: #state
-Example: self configureWithCellFile: (FileLocator workingDirectory / 'assets' / 'models' / self modelPrefix withExtension: 'cells') withPov: #state"
-
-	self spaceModel loadEnvironmentFromDirectory: aName withPov: aSymbol
 ]
 
 { #category : #'user interface' }
@@ -2838,26 +2797,6 @@ CMAbstractModel >> probeAt: probeName ifAbsent: aBlock [
 		ifAbsent: aBlock
 ]
 
-{ #category : #accessing }
-CMAbstractModel >> projectAnnouncer [
-	" Private - See commments in #projectAnnouncer "
-
-	^ self projectManager announcer
-]
-
-{ #category : #accessing }
-CMAbstractModel >> projectManager [
-	^ projectManager
-
-]
-
-{ #category : #accessing }
-CMAbstractModel >> projectManager: aCMProjectManager [
-	" Each model has a reference to its project manager. "
-
-	projectManager := aCMProjectManager
-]
-
 { #category : #'utilities - files' }
 CMAbstractModel >> readCsvFile: file [
 	" Returns a <Collection> of collections, each one containing the values of the csv file (separator is ';').
@@ -2929,7 +2868,6 @@ CMAbstractModel >> release [
 	self spaceModel: nil.
 	self channel: nil.
 	self resetCells.
-	self projectManager: nil.
 ]
 
 { #category : #'referencing entities' }
@@ -3035,7 +2973,6 @@ CMAbstractModel >> runStep [
 	self activeControl last = $:
 		ifTrue: [ self perform: self activeControl with: self timeStep ]
 		ifFalse: [ self perform: self activeControl ].
-	self timeChanged.
 	self updateEntities.
 	self channel ifNotNil: [ self channel sendAllMessages ].
 	self updateDataForChart.
@@ -3370,17 +3307,6 @@ CMAbstractModel >> theEntities: aClass [
 	^ collection
 ]
 
-{ #category : #scheduling }
-CMAbstractModel >> timeChanged [
-	"the time has changed (time step). Method is called whenever a modification of #timeStepValue.
-	Propagate the new time to the class (to be easily accessible from the agents: #currentTime) and all dependents"
-
-	self projectAnnouncer announce: (CMTimeChangedAnnouncement timeStep: self timeStep).
-	"self changed: #timeChanged with: newTime."
-	"newTime = 0 ifTrue: [^self simManager setButtonsForTime0].
-	newTime = 1 ifTrue: [^self simManager setButtonsForTime1]"
-]
-
 { #category : #'accessing - scheduling' }
 CMAbstractModel >> timeStep [
 	"Purpose: returns the current time step of the simulation
@@ -3393,7 +3319,6 @@ CMAbstractModel >> timeStep [
 CMAbstractModel >> timeStep: anInteger [
 
 	timeStep := anInteger.
-	self timeChanged
 ]
 
 { #category : #'user interface' }
@@ -3559,19 +3484,4 @@ CMAbstractModel >> wayFromCell: cell1 toCell: cell2 [
 	"Purpose: return a collection of cells from cell1 to cell2 (including cell1 and cell2)"
 	
 	^self spaceModel wayFromCell: cell1 toCell: cell2
-]
-
-{ #category : #scheduling }
-CMAbstractModel >> whenTimeStepChangedDo: aBlock [
-
-	self projectAnnouncer when: CMTimeChangedAnnouncement do: aBlock
-]
-
-{ #category : #scheduling }
-CMAbstractModel >> whenTimeStepChangedSend: aSymbol to: anObject [
-
-	self projectAnnouncer
-		when: CMTimeChangedAnnouncement
-		send: aSymbol
-		to: anObject
 ]

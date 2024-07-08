@@ -1434,13 +1434,6 @@ CMSpaceModel >> getSetsOfContiguous: baseEntity verifying: aBlock [
 		conditionalArguments: (Array with: nil with: nil)
 ]
 
-{ #category : #accessing }
-CMSpaceModel >> gitBridge [
-	" Answer the receiver's <CMResourceLocator>, an object to locate resources on the disk"
-
-	^ self cormasModel gitBridge
-]
-
 { #category : #'private - accessing' }
 CMSpaceModel >> gridCellShape [
 	
@@ -1661,33 +1654,6 @@ CMSpaceModel >> line: i column: j [
 	line := i.
 	column := j.
 	gridSize := i * j
-]
-
-{ #category : #'CSE (general) - import - export' }
-CMSpaceModel >> loadEnvironmentFromDirectory: aStringOrFileReference [
-	" Load aStringOrFileReference representing a file with cells information in YAML format, or raise an <Exception> if not valid. 
-	Set the receiver's model default PoV of the cellClass "
-
-	CMCellsLoader new
-		spaceModel: self;
-		load: aStringOrFileReference.
-	self
-		displayPov: #defaultPOV
-		of: self cellClass
-]
-
-{ #category : #'ESE initialize-release' }
-CMSpaceModel >> loadEnvironmentFromDirectory: aStringOrFileReference withPov: aSymbol [
-	"Load a grid stored as filename and display a POV on each opened grid.
-	If aStringOrFileReference = <String>, it creates a directory in the maps directory.
-	Example:	aName = 'test.cells' "
-	
-	CMCellsLoader new
-		spaceModel: self;
-		load: aStringOrFileReference.
-	self
-		displayPov: aSymbol
-		of: self cellClass
 ]
 
 { #category : #'CSE (general) - import - export' }
@@ -1967,13 +1933,6 @@ CMSpaceModel >> printOn: aStream [
 	aStream << self humanReadableString.
 
 		
-]
-
-{ #category : #accessing }
-CMSpaceModel >> projectAnnouncer [
-	" Answer the receiver's model <Announcer> "
-	
-	^ self cormasModel projectAnnouncer
 ]
 
 { #category : #'ESE (regular) - special locations' }
@@ -2741,14 +2700,6 @@ CMSpaceModel >> traiterChaineDeCaractere: aString [
 				add: objetGraphique;
 				add: nombreElement ].
 	^ listeTemp
-]
-
-{ #category : #updating }
-CMSpaceModel >> update: aSymbol with: aValue [
-	"propagate time changes to the dependents"
-	
-	aSymbol == #timeChanged ifTrue: [self changed: aSymbol with: aValue].
-	super update: aSymbol with: aValue
 ]
 
 { #category : #'ESE (regular) - special locations' }

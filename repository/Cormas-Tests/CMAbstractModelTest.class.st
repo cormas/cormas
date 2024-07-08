@@ -4,16 +4,6 @@ Class {
 	#category : #'Cormas-Tests-Model'
 }
 
-{ #category : #'tests-accessing-entities' }
-CMAbstractModelTest >> newProjectManager [
-
-	^ CMProjectManager new 
-		currentProject: (CMProjectModel basicNew
-				initializeForModel: model named: self sampleModelNameWithoutPrefix;
-				yourself);
-		yourself
-]
-
 { #category : #test }
 CMAbstractModelTest >> newValidEntityNamed: entityName [
 

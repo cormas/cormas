@@ -1,9 +1,6 @@
 Class {
 	#name : #CMObject,
 	#superclass : #Object,
-	#instVars : [
-		'translator'
-	],
 	#category : #'Cormas-Core-Kernel'
 }
 
@@ -45,25 +42,4 @@ CMObject class >> printSubclassesOn: aStream level: level [
 	"Print subclasses in alphabetical order"
 	(subs asSortedCollection: [ : a : b | a name <= b name ])
 			do: [ : sub | sub printSubclassesOn: aStream level: level + 1 ]
-]
-
-{ #category : #accessing }
-CMObject >> application [ 
-	" Answer a <CMApplicationProject> the unique instance representing the CORMAS application "
-
-	^ CMApplication new
-]
-
-{ #category : #accessing }
-CMObject >> gitBridge [ 
-	" Answer the receiver's <CMResourceLocator>, an object to locate resources on the disk"
-
-	^ self application gitBridge
-]
-
-{ #category : #accessing }
-CMObject >> projectManager [ 
-	" Probably should be deleted "
-
-	^ CMProjectManager allInstances anyOne
 ]

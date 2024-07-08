@@ -299,12 +299,6 @@ CGStCormas >> isMeta: anObject [
 	isMeta := anObject
 ]
 
-{ #category : #accessing }
-CGStCormas >> projectManager [ 
-
-	^ self cormasModel projectManager
-]
-
 { #category : #private }
 CGStCormas >> pvtCreateInstanceOrClassAttribute: attributeName defaultValue: anObject [
 	" Private - Create the accessor method for attributeName <String> in the receiver's targetClass. "

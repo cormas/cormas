@@ -44,11 +44,6 @@ Class {
 	#category : #'Cormas-Core-Legacy'
 }
 
-{ #category : #'utilities - files' }
-Cormas class >> application [
-	^ CMApplication uniqueInstance 
-]
-
 { #category : #'utilities - value types' }
 Cormas class >> arrayFrom: anElementOrArray [
 	"return an array for the argument"
