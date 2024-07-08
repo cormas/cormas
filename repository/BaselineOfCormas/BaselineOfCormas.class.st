@@ -36,13 +36,7 @@ BaselineOfCormas >> loadBackgroundImage [
 { #category : #doits }
 BaselineOfCormas >> postLoad [
 	
-	self class environment at: #CMSpApplication ifPresent: [ 
-		self loadBackgroundImage ].	
-		
-	FDMorphicUIManager new beDefault.
-	ShortcutReminder enabled: false.
-	TaskbarMorph showTaskbar: true.
-
+	self loadBackgroundImage.
 ]
 
 { #category : #doits }
