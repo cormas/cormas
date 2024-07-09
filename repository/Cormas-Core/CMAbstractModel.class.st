@@ -1009,13 +1009,6 @@ CMAbstractModel >> allEntitiesFrom: aClass getInfoFor: infoSymbol [
 		collect: [:each | each getInfoFor: infoSymbol]
 ]
 
-{ #category : #'pov and info' }
-CMAbstractModel >> allEntitiesFrom: aClass povAt: povSelector [
-	"return a collection of povs from all entities inheriting from aClass"
-	
-	^(self allTheEntities: aClass) collect: [:each | each povAt: povSelector]
-]
-
 { #category : #'accessing - entities' }
 CMAbstractModel >> allTheEntities [
 	"Returns a collection of all the instances of the Entity (and sub classes) collected by cormasModel"
@@ -2918,27 +2911,6 @@ CMAbstractModel >> removeEntity: anEntity [
 		ifAbsent: [nil]
 ]
 
-{ #category : #'private - notification' }
-CMAbstractModel >> removeMultipleChanges [
-	"remove all the overlapping changes for the entities (before displaying). Just keep the last change"
-	
-	| lastChanges otherChanges |
-	"otherChanges := delayedChanges removeAllSuchThat: [: e | e class ~= EntityChange]."
-	lastChanges := OrderedCollection new.
-	otherChanges := OrderedCollection new.
-	delayedChanges
-		reverseDo:
-			[:ent | 
-			ent class ~= EntityChange
-				ifTrue: [otherChanges add: ent]
-				ifFalse:
-					[(lastChanges
-						contains: [:e | e entity = ent entity and: [e symbol = ent symbol]])
-						ifFalse: [lastChanges add: ent]]].
-	delayedChanges := otherChanges reverse.
-	delayedChanges addAll: lastChanges reverse
-]
-
 { #category : #update }
 CMAbstractModel >> resetCells [
 	"Purpose: reset all the generic attributes of the cells"
@@ -3118,19 +3090,6 @@ CMAbstractModel >> simulationManager [
 CMAbstractModel >> simulationManager: anObject [
 	
 	simManager := anObject
-]
-
-{ #category : #'pov and info' }
-CMAbstractModel >> situatedEntitiesFrom: aClass povAt: povSelector [
-	"return a collection of povs from all entities inheriting from aClass"
-	
-	| coll |
-	
-	coll := OrderedCollection new.
-	(self theEntities: aClass)
-		do:
-			[:each | each isSituated ifTrue: [coll add: (each povAt: povSelector)]].
-	^coll
 ]
 
 { #category : #accessing }

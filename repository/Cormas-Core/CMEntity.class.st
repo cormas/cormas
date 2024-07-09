@@ -1388,13 +1388,6 @@ CMEntity >> destroyed: aBoolean [
 	aBoolean ifTrue: [self release]
 ]
 
-{ #category : #displaying }
-CMEntity >> figureAt: selectorName [
-	"Returns the figure for a selectorName"
-	
-	^ (self povAt: selectorName) asFigure
-]
-
 { #category : #accessing }
 CMEntity >> flag [
 	
@@ -1450,20 +1443,6 @@ CMEntity >> getPovResultFor: selectorName [
 					[Dialog warn: 'The pov metod #' , selectorName , ' did not return a symbol or a colorValue, but a nil value.
 This is not allowed!']"]
 		ifTrue: [selectorName]
-]
-
-{ #category : #displaying }
-CMEntity >> getPovSpecForSelector: selectorName andInfo: aInfoName [
-	"Returns the Pov Spec for a pov selectorName and a infoName "
-	
-	| spec |
-	
-	spec := EntityPOVSpec new.
-	spec povSelector: selectorName.
-	spec povResult: (self getPovResultFor: selectorName).
-	spec infoName: aInfoName.
-	spec infoResult: (self getInfoFor: aInfoName).
-	^spec
 ]
 
 { #category : #accessing }
@@ -1681,16 +1660,6 @@ CMEntity >> pov [
 	" For compatibility we answer a <Color> which could be considered neutral "
 
 	^ Color gray
-]
-
-{ #category : #displaying }
-CMEntity >> povAt: selectorName [
-	"Returns the povSymbol for a selectorName"
-	" ^(self class imageAtPov: selectorName) copy."
-	
-	^ self class
-		createEntityPOVwithSpec:
-			(self getPovSpecForSelector: selectorName andInfo: #nil)
 ]
 
 { #category : #pov }

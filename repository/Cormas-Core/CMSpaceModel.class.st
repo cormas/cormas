@@ -1215,69 +1215,6 @@ CMSpaceModel >> getInstanceOfClass: aClass fromId: anId [
 				ifNone: [nil]]
 ]
 
-{ #category : #'accessing povs' }
-CMSpaceModel >> getPovsDataOfArcEntity: aClass forSelector: povSelector andInfo: infoName [
-	"direct access to the pov spec of a set of entities"
-	
-	| entities |
-	
-	self flag: #toReview.	
-	entities := self cormasModel allTheSituatedEntities: aClass.
-	^entities
-		collect:
-			[:e | 
-			Array
-				with: (EntityReference on: e)
-				with: (e getPovSpecForSelector: povSelector andInfo: infoName)
-				with: (EntityReference on: e startNode patch)
-				with: (EntityReference on: e stopNode patch)]
-]
-
-{ #category : #'accessing povs' }
-CMSpaceModel >> getPovsDataOfEntity: aClass forSelector: povSelector andInfo: infoName [
-	"direct access to the pov spec of a set of entities"
-	
-	| entities |
-	
-	self flag: #toReview.
-	entities := (aClass inheritsFrom: CMSpatialEntity)
-		ifTrue: [self spatialEntitiesAt: aClass name]
-		ifFalse: [self cormasModel allTheSituatedEntities: aClass].
-	aClass isSpatialEntitySetClass
-		ifTrue:
-			[^entities
-				collect:
-					[:e | 
-					(EntityReference on: e)
-						->
-							(e getPovSpecWithComponentsForSelector: povSelector andInfo: infoName)]]
-		ifFalse:
-			[^entities
-				collect:
-					[:e | 
-					(EntityReference on: e)
-						-> (e getPovSpecForSelector: povSelector andInfo: infoName)]]
-]
-
-{ #category : #'accessing povs' }
-CMSpaceModel >> getPovsDataOfOccupantEntity: aClass forSelector: povSelector andInfo: infoName [
-	"direct access to the pov spec of a set of entities"
-	
-	| entities |
-	
-	self flag: #toReview.
-	entities := (aClass inheritsFrom: CMSpatialEntity)
-		ifTrue: [self spatialEntitiesAt: aClass name]
-		ifFalse: [self cormasModel allTheSituatedEntities: aClass].
-	^entities
-		collect:
-			[:e | 
-			Array
-				with: (EntityReference on: e)
-				with: (e getPovSpecForSelector: povSelector andInfo: infoName)
-				with: (EntityReference on: e patch)]
-]
-
 { #category : #'private - regular polygons' }
 CMSpaceModel >> getSetsOfContiguous: baseEntity attribute: attributeName [
 	"Return a collection of sets of contiguous components holding the same attributeName value"

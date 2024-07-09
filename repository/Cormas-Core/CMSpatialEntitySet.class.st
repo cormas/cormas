@@ -388,21 +388,6 @@ CMSpatialEntitySet >> getLinkedCellsOf: aCollectionOfCells [
 	^bigColl
 ]
 
-{ #category : #displaying }
-CMSpatialEntitySet >> getPovSpecWithComponentsForSelector: selectorName andInfo: aInfoName [
-	"Returns the Pov Spec for a pov selectorName and a infoName "
-	
-	| spec |
-	spec := EntityPOVSpec new.
-	spec povSelector: selectorName.
-	spec povResult: (self getPovResultFor: selectorName).
-	spec infoName: aInfoName.
-	spec infoResult: (self getInfoFor: aInfoName).
-	spec
-		elementaryComponentsId: (self elementaryComponents collect: [:e | e id]).
-	^spec
-]
-
 { #category : #accessing }
 CMSpatialEntitySet >> idsWithSeparator: aChar [
 	"Purpose: returns the id of receiver and all the id of the components
