@@ -67,12 +67,6 @@ BaselineOfCormas >> specForBaselines: spec [
 		baseline: 'ESRIASCIIRaster'
 		with: [ spec repository: 'github://pharo-GIS/ESRI-ASCII-Raster/' ];
 		
-		baseline: 'Roassal3'
-		with: [ spec loads: #('Full'); repository: 'github://ObjectProfile/Roassal3:v0.9.9m' ];
-		
-		baseline: 'Roassal3Exporters'
-		with: [ spec repository: 'github://ObjectProfile/Roassal3Exporters' ];
-		
 		baseline: 'SingularizePluralize'
 		with: [ spec repository: 'github://pharo-contributions/SingularizePluralize:v1.1' ].
 
@@ -102,8 +96,7 @@ BaselineOfCormas >> specForPackages: spec [
 		package: 'Cormas-Tests'
 		with: [ spec requires: #('Cormas-Core' 'Cormas-Mocks') ];
 		
-		package: 'Cormas-UI-Roassal3'
-		with: [ spec requires: #('Roassal3' 'Roassal3Exporters') ];
+		package: 'Cormas-UI-Roassal3';
 		
 		package: 'Cormas-UI-Tests'
 		with: [ spec requires: #('Cormas-Tests' 'Cormas-Mocks') ].
