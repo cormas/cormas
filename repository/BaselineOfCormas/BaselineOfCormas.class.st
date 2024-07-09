@@ -49,9 +49,6 @@ BaselineOfCormas >> preLoad [
 BaselineOfCormas >> specForBaselines: spec [
 
 	spec
-		baseline: 'CollectionExtensions'
-		with: [ spec loads: 'Core'; repository: 'github://pharo-contributions/CollectionExtensions:v1.x.x/src' ];
-
 		baseline: 'MathRandomNumbers'
 		with: [ spec repository: 'github://PolyMathOrg/random-numbers:v1.x.x/src' ];
 
@@ -74,8 +71,7 @@ BaselineOfCormas >> specForPackages: spec [
 
 	spec
 		package: 'Cormas-Core'
-		with: [ spec requires: #(
-			'MathRandomNumbers' 'GitBridge' 'CollectionExtensions') ];
+		with: [ spec requires: #('MathRandomNumbers' 'GitBridge') ];
 		
 		package: 'Cormas-Mocks'
 		with: [ spec requires: #('Cormas-Core') ];
