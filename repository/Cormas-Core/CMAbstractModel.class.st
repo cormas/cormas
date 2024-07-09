@@ -2375,8 +2375,6 @@ CMAbstractModel >> initializeSimulation [
 	self updateDataForChart.
 	self channel ifNil: [ self initializeChannel ].
 	self theAgentsComm do: [ :p | p channel: self channel ].
-	"announce to all the subscribers that simulation is beeing initialized"
-	self announcer announce: CMSimulationInitializationAnnouncement.
 	self initStatus: true.
 ]
 
