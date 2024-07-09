@@ -52,23 +52,11 @@ BaselineOfCormas >> specForBaselines: spec [
 		baseline: 'CollectionExtensions'
 		with: [ spec loads: 'Core'; repository: 'github://pharo-contributions/CollectionExtensions:v1.x.x/src' ];
 
-		baseline: 'SMark'
-		with: [ spec repository: 'github://smarr/SMark:v1.0.4' ];	
-	
-		baseline: 'PetitParser'
-		with: [ spec repository: 'github://moosetechnology/PetitParser/src'; loads: #('YAML') ];
-
 		baseline: 'MathRandomNumbers'
 		with: [ spec repository: 'github://PolyMathOrg/random-numbers:v1.x.x/src' ];
 
 		baseline: 'GitBridge'
-		with: [ spec repository: 'github://jecisc/GitBridge/src' ];
-
-		baseline: 'ESRIASCIIRaster'
-		with: [ spec repository: 'github://pharo-GIS/ESRI-ASCII-Raster/' ];
-		
-		baseline: 'SingularizePluralize'
-		with: [ spec repository: 'github://pharo-contributions/SingularizePluralize:v1.1' ].
+		with: [ spec repository: 'github://jecisc/GitBridge/src' ].
 
 ]
 
@@ -87,8 +75,7 @@ BaselineOfCormas >> specForPackages: spec [
 	spec
 		package: 'Cormas-Core'
 		with: [ spec requires: #(
-			'MathRandomNumbers' 'PetitParser' 'GitBridge' 'ESRIASCIIRaster' 'SMark'
-			'CollectionExtensions' 'SingularizePluralize') ];
+			'MathRandomNumbers' 'GitBridge' 'CollectionExtensions') ];
 		
 		package: 'Cormas-Mocks'
 		with: [ spec requires: #('Cormas-Core') ];
