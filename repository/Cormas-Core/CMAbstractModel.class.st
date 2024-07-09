@@ -1519,37 +1519,6 @@ Example: self createGridLines: 30 columns: 30 neighbourhood: 4 closed: true "
 		closed: aBoolean
 ]
 
-{ #category : #'instance creation - spatial grid' }
-CMAbstractModel >> createGridNeighbourhood: anInteger closed: aBoolean fromMatrixCsvFile: aString attribute: aName [
-	"Purpose: Create a spatial grid made of cells from a csv file in a matrix format providing values for a given attribute.
-The file has to be located into /data folder.
-Arguments: 
-	anInteger <Integer> is the neighbourhood type. It must 4, 6 or 8
-	aBoolean <Boolean> to inform if it is closed or torroidal space.
-	aString <String>: the name of the csv datafile. The file has to be located in the 'data' subdirectory of the model.
-	anAttributeName <String>: attribute's name.
-
-Example: 	self createGridNeighbourhood: 8 closed: true fromMatrixCsvFile: 'map.csv' attribute: 'cover'. "
-
-	| matrix nbLines nbCols collec |
-	matrix := self readCsvFile: aString.
-	nbLines := matrix size.
-	nbCols := matrix first size.
-	self
-		createGridLines: nbLines
-		columns: nbCols
-		neighbourhood: anInteger
-		closed: aBoolean.
-	collec := OrderedCollection new.
-	matrix do: [ :line | collec addAll: line ].
-	collec
-		with: self theCells
-		do: [ :string :c | 
-			c
-				perform: (aName , ':') asSymbol
-				with: (Cormas stringAsObjectType: string) ]
-]
-
 { #category : #'instance creation - agents & objects' }
 CMAbstractModel >> createN: aNumber entity: aClass [
 	"Return a collection of aNumber of entities of aClass for wich the init method has been send.
@@ -2786,17 +2755,6 @@ CMAbstractModel >> probeAt: probeName ifAbsent: aBlock [
 	^ (self data at: self className) 
 		at: probeName
 		ifAbsent: aBlock
-]
-
-{ #category : #'utilities - files' }
-CMAbstractModel >> readCsvFile: file [
-	" Returns a <Collection> of collections, each one containing the values of the csv file (separator is ';').
-	The file name is just a string containing the name of the file (with or without extension) that is stored in the *** /data *** directory of a model.
-	Ex:    self readCsvFile: 'palaya1973'  or  self readCsvFile: 'palaya1973.cvs'     "
-	
-	^ CMGitBridge new
-		readCsvFile: file
-		myModel: self class name asString
 ]
 
 { #category : #'private - notification' }
