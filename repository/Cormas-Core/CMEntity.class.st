@@ -41,26 +41,11 @@ Class {
 		'cormasModel'
 	],
 	#classInstVars : [
-		'CurrentId',
 		'activeProbes',
 		'activityDiagrams'
 	],
 	#category : #'Cormas-Core-Entities'
 }
-
-{ #category : #accessing }
-CMEntity class >> CurrentId [
-	"Getter accessor with default value = 0 "
-	
-	^CurrentId ifNil: [CurrentId := 0]
-]
-
-{ #category : #accessing }
-CMEntity class >> CurrentId: anInteger [
-	
-	CurrentId := anInteger.
-	^anInteger
-]
 
 { #category : #probes }
 CMEntity class >> activeProbes [
@@ -1368,13 +1353,6 @@ CMEntity >> id: aNumber [
 CMEntity >> init [
 	
 	
-]
-
-{ #category : #'initialize-release' }
-CMEntity >> initId [
-	" Private - Set the receiver's internal identifier. "
-
-	self id: (self class CurrentId: self class CurrentId + 1)
 ]
 
 { #category : #printing }
