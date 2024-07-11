@@ -43,7 +43,6 @@ Class {
 	#classInstVars : [
 		'CurrentId',
 		'activeProbes',
-		'povDict',
 		'activityDiagrams'
 	],
 	#category : #'Cormas-Core-Entities'
@@ -932,12 +931,6 @@ Example: CormasNS.Kernel.Agent openActivityDiagram: #exampleTest   "
 	ad open.
 	ad setTitle.	"le diagramme ouvert ne doit pas interf√©rer avec le diagramme utilis√© par l'agent qui tourne, donc on l'oublie (l'agent le recr√©era si besoin)"	"	self activityDiagrams removeKey: operationName ifAbsent: [nil]."
 	^ad
-]
-
-{ #category : #accessing }
-CMEntity class >> povDict [
-	
-	^povDict ifNil: [povDict := Dictionary new]
 ]
 
 { #category : #activityDiagram }
