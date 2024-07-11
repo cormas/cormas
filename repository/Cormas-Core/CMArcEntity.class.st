@@ -19,14 +19,6 @@ Class {
 	#category : #'Cormas-Core-Entities'
 }
 
-{ #category : #image }
-CMArcEntity class >> defaultImage [
-	
-	| im |
-	im := ArcPOV new.
-	^im
-]
-
 { #category : #testing }
 CMArcEntity class >> isArcClass [
 	

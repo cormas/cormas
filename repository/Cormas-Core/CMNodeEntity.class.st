@@ -17,15 +17,6 @@ Class {
 	#category : #'Cormas-Core-Entities'
 }
 
-{ #category : #image }
-CMNodeEntity class >> defaultImage [
-	
-	| im |
-	im := super defaultImage.
-	im sizeRatio: 0.1.
-	^im
-]
-
 { #category : #testing }
 CMNodeEntity class >> isNodeClass [
 	

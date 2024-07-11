@@ -42,7 +42,6 @@ Class {
 	],
 	#classInstVars : [
 		'CurrentId',
-		'colorsDict',
 		'image',
 		'activeProbes',
 		'povDict',
@@ -445,41 +444,10 @@ CMEntity class >> colorWithout: aColorName OfNumber: aNumber [
 ]
 
 { #category : #accessing }
-CMEntity class >> colorsDict [
-	
-	^colorsDict ifNil: [colorsDict := Dictionary new]
-]
-
-{ #category : #accessing }
-CMEntity class >> colorsDict: aDico [
-	
-	colorsDict := aDico
-]
-
-{ #category : #accessing }
 CMEntity class >> cormas [
 	"Direct access to the cormas instance"
 
 	^ Cormas current
-]
-
-{ #category : #displaying }
-CMEntity class >> createEntityPOVwithSpec: aSpec [
-	"Returns an EntityPOV according to selectorName and aSymbolOrColorValue"
-	
-	| anEntityPOV aSymbolOrColorValue selectorName |
-	aSymbolOrColorValue := aSpec povResult.
-	selectorName := aSpec povSelector.
-	aSymbolOrColorValue isColor
-		ifTrue:
-			[anEntityPOV := (self imageAtPov: selectorName) copy.
-			anEntityPOV color: aSymbolOrColorValue]
-		ifFalse: [anEntityPOV := (self imageAtPov: aSymbolOrColorValue) copy].
-	anEntityPOV name: selectorName.
-	anEntityPOV povResult: aSymbolOrColorValue.
-	anEntityPOV infoName: aSpec infoName.
-	anEntityPOV infoResult: aSpec infoResult.
-	^anEntityPOV
 ]
 
 { #category : #'utilities - colors' }
@@ -515,16 +483,6 @@ CMEntity class >> defaultColor [
 	Example: CMEntity defaultColor => Color lightBrown ; CMFireman defaultColor => Color paleRed"
 
 	^ self colorOfNumber: self hash
-]
-
-{ #category : #image }
-CMEntity class >> defaultImage [
-	
-	| im |
-	im := VectorialElementaryPOV hexagon.
-	im color: self defaultColor.
-	im sizeRatio: 0.5.
-	^im
 ]
 
 { #category : #probes }
@@ -648,26 +606,6 @@ CMEntity class >> image [
 CMEntity class >> image: anObject [
 	
 	image := anObject
-]
-
-{ #category : #image }
-CMEntity class >> imageAtPov: selectorName [
-	"Returns an EntityPOV according to the a Symbol (selectorName).
-selectorName = <Symbol>.ex: #povId.
-An EntityPOV, stored in povs, may be defined to see an entity on the grid but also on another space (ex: communication space)"
-	
-	| currentClass im |
-	currentClass := self.
-	[currentClass == CMEntity]
-		whileFalse:
-			[im := currentClass povDict
-				at: selectorName
-				ifAbsent: [nil].
-			im ifNotNil: [^im].
-			currentClass := currentClass superclass].
-	^self povDict
-		at: selectorName
-		put: self defaultImage
 ]
 
 { #category : #activityDiagram }
@@ -1398,24 +1336,6 @@ CMEntity >> flag [
 CMEntity >> flag: aValue [
 	
 	flag := aValue
-]
-
-{ #category : #'utilities - color' }
-CMEntity >> getColorForPov: aSelectorName [
-	" Returns a Color according to the POV (aSelectorName). aSelectorName = <Symbol>.
-	A color may be define to see an entity on the grid but also on another space (ex: communication space). 
-	aSelectorName could be the name of a method or a Symbol for which an EntityImage is assign.
-	
-	This method is only called in response of Apply Scenario settings button "
-	
-	aSelectorName ifNil: [ ^ Color veryLightGray ].	"aSelectorName is a key for a fixed color defined at the class level"
-	(self class colorsDict includesKey: aSelectorName)
-		ifTrue: [ 
-			^ self class colorsDict
-				at: aSelectorName
-				ifAbsentPut: [ Color veryLightGray ] ].	"aSelectorName is a method for a changeable color"
-	^ (self perform: aSelectorName) asColorForPoVIn: self
-
 ]
 
 { #category : #displaying }

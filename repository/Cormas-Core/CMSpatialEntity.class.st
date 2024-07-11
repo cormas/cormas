@@ -67,16 +67,6 @@ CMSpatialEntity class >> bounds: x [
 	bounds := x
 ]
 
-{ #category : #'utilities - colors' }
-CMSpatialEntity class >> defaultColor [
-	"Purpose: return the default color of the current class name.
-	Ex: CMEntity defaultColor => ColorValue lightGray ; CMECECForager defaultColor => ColorValue veryLightGray"
-
-	self colorsDict isEmpty
-		ifTrue: [ ^ super defaultColor ]
-		ifFalse: [ ^ self colorsDict at: self name ifAbsent: [ super defaultColor ] ]
-]
-
 { #category : #testing }
 CMSpatialEntity class >> isSpatialClass [
 	^ true
