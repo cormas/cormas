@@ -2874,6 +2874,7 @@ CMAbstractModel >> resetEntities: aClass [
 	
 	entities := self theEntities: aClass.
 	entities reverseDo: [:anEntity | anEntity delete].
+	aClass CurrentId: 0.
 	aClass isAbstract ifTrue: [^OrderedCollection new: 0].
 	^ entities removeAll
 ]
