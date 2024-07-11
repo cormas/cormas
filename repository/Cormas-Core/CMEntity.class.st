@@ -42,7 +42,6 @@ Class {
 	],
 	#classInstVars : [
 		'CurrentId',
-		'image',
 		'activeProbes',
 		'povDict',
 		'activityDiagrams'
@@ -594,18 +593,6 @@ randomAttributes = #(#bioma #instance #randomFloat 0 1). "
 CMEntity class >> id_default [
 	
 	^0
-]
-
-{ #category : #image }
-CMEntity class >> image [
-	
-	^image
-]
-
-{ #category : #image }
-CMEntity class >> image: anObject [
-	
-	image := anObject
 ]
 
 { #category : #activityDiagram }

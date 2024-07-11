@@ -173,14 +173,6 @@ CMSpatialEntityAggregate >> givenSize: aValue [
 	givenSize := aValue
 ]
 
-{ #category : #obsolete }
-CMSpatialEntityAggregate >> imageIncludes: aPoint [
-	
-	^self image notNil
-		ifTrue: [self image component regionIntersects: (aPoint extent: 1)]
-		ifFalse: [false]
-]
-
 { #category : #'initialize-release' }
 CMSpatialEntityAggregate >> initNeighbourhood [
 	"Purpose: builds and store the neighbourhood of the receiver as the collection of same kind of aggregates whose components include at least one element the receiver surround"
