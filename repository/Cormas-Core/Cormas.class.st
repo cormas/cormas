@@ -1232,7 +1232,6 @@ Bonjour le monde
 Buenos Dias Mundo' withCRs "
 	
 	| stream list |
-	self flag:#curiousMethod.
 	list := OrderedCollection new.
 	stream := ReadStream on: aText asString.
 	[stream atEnd] whileFalse: [list add: (stream upTo: Character cr)].
@@ -1492,7 +1491,6 @@ Cormas >> listMethodsChanged [
 Cormas >> logLeaveOf: anAgentLocation from: srcSpatialEntity [
 	"Log the disparition of an agent from a spatial entity"
 	
-	self flag: #toReview.
 	self useExternalVisualization
 		ifTrue:
 			[xmlModel sendLeaveToExternalVisualizerOf: anAgentLocation from:
@@ -1506,7 +1504,6 @@ Cormas >> logLeaveOf: anAgentLocation from: srcSpatialEntity [
 Cormas >> logMovementOf: anAgentLocation from: srcSpatialEntity to: dstSpatialEntity [
 	"Log the movement of an agent from a spatial entity to another entity"
 	
-	self flag: #toReview.
 	useExternalVisualization
 		ifTrue:
 			[xmlModel sendMoveToExternalVisualizerOf: anAgentLocation from:
@@ -1624,14 +1621,12 @@ Cormas >> symbolNameOfSelector: selector [
 { #category : #accessing }
 Cormas >> useExternalVisualization [
 	
-	self flag: #toReview.
 	^useExternalVisualization ifNil: [useExternalVisualization := false]
 ]
 
 { #category : #accessing }
 Cormas >> useExternalVisualization: anObject [
 	
-	self flag: #toReview.
 	useExternalVisualization := anObject
 ]
 

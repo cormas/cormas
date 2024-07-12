@@ -111,7 +111,6 @@ CMSpaceModel >> aggregate: listPolygons [
 	"merge-aggregation of the other polygons on the first of the list"
 
 	| fusion allPolygons theOthers |
-	self flag: #shouldBeRevised.
 	listPolygons isEmpty
 		ifFalse: [ "Beware of listPolygons ordering !!!"
 			theOthers := listPolygons copyFrom: 2 to: listPolygons size.
@@ -138,7 +137,6 @@ CMSpaceModel >> aggregate: listPolygons new: entityC [
 	"!!! The elements of listPolygons must be adjacent. !!!"
 
 	| newEntityC |
-	self flag: #shouldBeRevised.
 	listPolygons isEmpty
 		ifFalse: [ newEntityC := entityC new init.	"Calcul des coordonnees d'origine"
 			newEntityC outline: (self outlineAggregatedFrom: listPolygons).	"Updating the coordinates of the polygon image in the drawing window"
@@ -178,7 +176,6 @@ CMSpaceModel >> aggregatesEntities [
 { #category : #deprecated }
 CMSpaceModel >> aggregatesInstancesOf: entityE condition: methodName [
 	| nameEntitiesE theInterestingEntitiesE setOfComponents seed neighbours newNeighbours |
-	self flag: #shouldBeRevised.
 	nameEntitiesE := self cormasModel getterForEntityClass: entityE.
 	theInterestingEntitiesE := ((self cormasModel
 		perform: nameEntitiesE asSymbol)
@@ -604,8 +601,6 @@ CMSpaceModel >> createHexagonalCellsFigure [
 					i := i + 1 ].
 			hexagone := hexagone
 				translatedBy: (self column * translation x negated) @ translation y ].
-	self flag:#TODO.
-	"c''est ici qu''il faut corriger le bug de decalage des cellules en bas à droite sous vw7.9"
 ]
 
 { #category : #'private - regular polygons' }
@@ -626,7 +621,6 @@ CMSpaceModel >> createRectangularCellsFigure [
 	
 	| cote rect aPov i |
 	
-	self flag: #toReview.
 	self elementaryEntitiesDefaultPovs: nil.
 	self setAbsoluteBounds.
 	cote := self absoluteBounds height / self line.	
@@ -807,7 +801,6 @@ CMSpaceModel >> distanceFromHexagonalCell: cell1 toCell: cell2 [
 
 	| nbLines nbCols add colTheoriq |
 	
-	self flag: #toReview.
 	self nbNeighbours = 6
 		ifFalse: [ self halt ].
 	nbLines := (cell1 rowNumber - cell2 rowNumber) abs.
@@ -917,7 +910,6 @@ CMSpaceModel >> envSpecStringFor: spatialEntityName [
 
 	| s nb |
 	
-	self flag: #toReview.
 	s := (String new: 100) writeStream.
 	s
 		nextPutAll:
@@ -1381,7 +1373,6 @@ CMSpaceModel >> gridCellShape [
 CMSpaceModel >> gridCellShape: x [
 	" This is not needed anymore, it is already provided by CMSpaceNeighourhood "
 
-	self flag: #toRemove.
 	gridCellShape := x
 ]
 
@@ -2321,7 +2312,6 @@ CMSpaceModel >> setGridAsAggregat: compoundEntity [
 CMSpaceModel >> setIrregularEntitiesEdge [
 
 	| outlineTempo |
-	self flag: #toReview.
 	self elementaryEntities isEmpty ifTrue: [ ^ self halt ].
 	self elementaryEntities do: [ :aCell | 
 		aCell neighbourhood ifNil: [ ^ self halt ].
@@ -2724,7 +2714,6 @@ CMSpaceModel >> wayFromCell: cell1 toCell: cell2 [
 	
 	| nbLines nbCols firstCell lastCell invert cellsIntoRectangle way |
 	
-	self flag: #toReview. "Refactor!!"
 	"for irregular cells, the calculus is much more longer"
 	self gridCellShape = #irregular ifTrue: [^cell1 wayTo: cell2].	"Calculus for regular cells"
 	nbLines := (cell1 rowNumber - cell2 rowNumber) abs.
