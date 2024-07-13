@@ -730,13 +730,6 @@ CMSpaceModel >> dimensions [
 	^ self column @ self line
 ]
 
-{ #category : #'ESE (regular) - special locations' }
-CMSpaceModel >> dimensions: aCollectionOrAssociation [
-	" Configure the receiver's dimension taking the first element of aCollectionOrAssociation (or key if Association) as the lines and the second element (or value) as the number of columns "
-	
-	aCollectionOrAssociation spaceModelDimensionsFor: self
-]
-
 { #category : #'private - dispatch' }
 CMSpaceModel >> dispatchCompoundSpatialEntity: class [
 	"Gives the new entities to cormasModel and alarm the spaceInterfaces"
@@ -2084,62 +2077,6 @@ This method resets all aggregats 'compoundEntity' and rebuids them"
 		minimumSize: ms
 ]
 
-{ #category : #'CSE (regular) - instance creation' }
-CMSpaceModel >> setAggregates: compoundEntity fromSeeds: aCollec [
-	"Purpose: Create n aggregates that will occupy the whole grid. The number n of aggregates correspond to the size of aCollecOfCells. Each aggregate is made of an element of aCollecOfCells (a seed) and of its surrounding cells. This method resets all aggregates 'compoundEntity' and rebuilds them.
-Arguments: aCollecOfCells is a collection of cells (SpatialEntityElement). compoundEntity is a Class name inheriting from SpatialEntitySet.
-Example: self createAggregates: VitalArea fromSeeds: (self theDens collect:[:c | c patch])
-Example: self createAggregates: Forest fromSeeds: (self theCells select:[:c| c isForestSeed]."
-	
-	| haveSpread |
-	self initAggregates: compoundEntity fromSeeds: aCollec.
-	haveSpread := true.
-	[haveSpread] whileTrue: [haveSpread := self swell: compoundEntity].
-	^self spatialEntitiesAt: compoundEntity name
-]
-
-{ #category : #'CSE (regular) - instance creation' }
-CMSpaceModel >> setAggregates: compoundEntity fromSeeds: aCollecOfCells sizeDistribution: aDistribution [
-	"Create aggregates from a collection of cells according to a size distribution. 
-	This method resets all aggregates 'compoundEntity' and rebuids them. 
-	aCollecOfCells = a collection of base entities (inheriting from <SpatialEntityElement>) 
-	compoundEntity = a subClass of  <SpatialEntitySet> 
-	this method is supposed to receive a size distribution 
-	aDistribution = Collection ( (n1,s1), (n2,s2)) , n being the number of aggregates of size s. 
-	Example: to generate 3 aggregates size 1, 5 aggregates size 2, and 2 aggregates size 3, this has to be (#(3 1) #(5 2) #(2 3)). 
-		self spaceModel setAggregates: Forest fromSeeds: self theCells sizeDistribution: #(#(3 1) #(5 2) #(2 3)) 
-	This method uses the attribute called givenSize defined for SpatialEntityAggregate"
-	
-	| haveSpread coll |
-	coll := self initAggregates: compoundEntity fromSeeds: aCollecOfCells
-		sizeDistribution: aDistribution.
-	haveSpread := true.
-	[haveSpread] whileTrue: [haveSpread := self swell: compoundEntity].
-	^coll
-]
-
-{ #category : #'CSE (regular) - instance creation' }
-CMSpaceModel >> setAggregates: compoundEntity fromSeeds: aCollec verifying: aBlock [
-	
-	| haveSpread |
-	self initAggregates: compoundEntity fromSeeds: aCollec.
-	haveSpread := true.
-	[ haveSpread ] whileTrue: [haveSpread := self swell: compoundEntity verifying: aBlock].
-	^ self spatialEntitiesAt: compoundEntity name
-]
-
-{ #category : #'CSE (regular) - instance creation' }
-CMSpaceModel >> setAggregates: compoundEntity fromSeeds: aCollec verifying: aBlock sizeDistribution: dis [
-	
-	| haveSpread |
-
-	self initAggregates: compoundEntity fromSeeds: aCollec sizeDistribution: dis.
-	haveSpread := true.
-	[ haveSpread ]
-		whileTrue: [ haveSpread := self swell: compoundEntity verifying: aBlock ].
-	^ self spatialEntitiesAt: compoundEntity name
-]
-
 { #category : #'private - regular polygons - deprecated' }
 CMSpaceModel >> setAggregatesFrom: baseEntity verifying: aBlock into: compoundEntity [
 	
@@ -2339,12 +2276,6 @@ CMSpaceModel >> setPartitionsFrom: baseEntity xRatio: i yRatio: j into: compound
 		verticalDividers: j
 ]
 
-{ #category : #'private - regular polygons - deprecated' }
-CMSpaceModel >> setPartitionsFromSeeds: seeds into: compoundEntity [
-	
-	^self setAggregates: compoundEntity fromSeeds: seeds
-]
-
 { #category : #'CSE (regular) - instance creation' }
 CMSpaceModel >> setSingletonAggregates: compoundEntity fromSeeds: aCollec [
 	"create n (aCollec size) aggregates made of a single component which is an element of aCollec.
@@ -2363,64 +2294,6 @@ CMSpaceModel >> setSingletonAggregates: compoundEntity fromSeeds: aCollec [
 				ifFalse: [ self createSilentlyAggregate: compoundEntity from: (Set with: s) ] ].
 	self dispatchCompoundSpatialEntity: compoundEntity.
 	^ self spatialEntitiesAt: compoundEntity name
-]
-
-{ #category : #'ESE initialize-release' }
-CMSpaceModel >> setSpatialEntitiesAttributsValueFromStream: aStream [
-	"lecture des valeurs des attributs, et maj des entites spatiales a 
-	partir de ces valeurs"
-	"balayage de gauche a droite et de bas en haut"
-	"Lecture de la 5e ligne: noms des attributs et leur type pour 
-	conversion"
-	
-	| numLigne dataLine i valeur attype label couple name type aCell |
-	attype := OrderedCollection new.
-	aStream skipSeparators.
-	dataLine := (aStream upTo: Character cr) readStream.	
-	label := dataLine upTo: Character tab.
-	label ~= 'attributs'
-		ifTrue: [ ^ self error: 'Error while reading input stream. We expected "attributs" line'].
-	[dataLine atEnd]
-		whileFalse:
-			[couple := OrderedCollection new.
-			name := dataLine upTo: $(.
-			name := (name , ':') asSymbol.
-			type := dataLine upTo: $).
-			type := ('as' , type) asSymbol.
-			dataLine skipSeparators.
-			couple
-				add: name;
-				add: type.
-			attype add: couple].
-	dataLine close.
-	numLigne := 0.
-	[aStream atEnd]
-		whileFalse:
-			[dataLine skipSeparators.
-			 dataLine := (aStream upTo: Character cr) readStream.
-			numLigne := numLigne + 1.
-			i := 0.
-			[dataLine atEnd]
-				whileFalse:
-					[i := i + 1.
-					dataLine skipSeparators.
-					valeur := dataLine upTo: $,.
-					aCell := self elementaryEntities at: numLigne.
-					(attype at: i) last = #asEntity
-						ifTrue:
-							[valeur := (valeur tokensBasedOn: $.) last asSymbol.
-							aCell
-								perform: (attype at: i) first
-								with: valeur]
-						ifFalse:
-							[aCell
-								perform: (attype at: i) first
-								with:
-									(valeur = 'nil'
-										ifFalse: [valeur perform: (attype at: i) last]
-										ifTrue: [nil])]].
-			dataLine close].
-	aStream close
 ]
 
 { #category : #parsing }
@@ -2548,41 +2421,6 @@ CMSpaceModel >> spatialEntitiesAt: aSpatialEntityName withPovResultFor: povSelec
 	
 	^(self spatialEntitiesAt: aSpatialEntityName) asOrderedCollection
 		collect: [:each | each -> (each getPovResultFor: povSelector)]
-]
-
-{ #category : #'CSE (regular) - dynamics' }
-CMSpaceModel >> swell: compoundEntityClass [
-	"Each instance of compoundEntityClass swells on its surround layer. It swells if there is enough space arround it. The order of the compoundEntities is randomly mixed. 
-	Returns a boolean indicating if at least one aggregate has spread.
-	compoundEntityClass = aClass, subclass of SpatialEntitySet"
-	
-	| haveSpread |
-	haveSpread := false.
-	(Cormas mix: (self spatialEntitiesAt: compoundEntityClass name))
-		do: [:aggregate | aggregate swell ifTrue: [haveSpread := true]].
-	^haveSpread
-]
-
-{ #category : #'CSE (regular) - dynamics' }
-CMSpaceModel >> swell: compoundEntityClass verifying: aConditionBlock [
-	"Each instance of compoundEntityClass swells on its surround layer. According to aConditionBlock on the surrounded cells, it swells if its size equals to its given size and if there is enough space arround it. 
-	Returns a boolean indicating if at least one aggregate has spread.
-	compoundEntityClass = aClass, subclass of SpatialEntitySet"
-	
-	| newCells haveSpread |
-	haveSpread := false.
-	(self spatialEntitiesAt: compoundEntityClass name) do: [ : aggregate | 
-			newCells := aggregate surround select: [:c | (c isComponentOf: compoundEntityClass) not and: [aConditionBlock value: c]].
-			newCells isEmpty
-				ifFalse: [
-					(Cormas mix: newCells) do: [ : nc | 
-							aggregate size < aggregate givenSize
-								ifTrue: [ 
-									haveSpread := true.
-									aggregate addSilentlyComponent: nc]].
-					aggregate setSurround]].
-	(self spatialEntitiesAt: compoundEntityClass name) do: [:c | c show].
-	^haveSpread
 ]
 
 { #category : #accessing }

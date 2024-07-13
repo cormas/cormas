@@ -159,17 +159,6 @@ CMSpaceModelTest >> testIsNotTorroidal [
 ]
 
 { #category : #test }
-CMSpaceModelTest >> testLine [
-
-	self assert: self spaceModel line equals: 4.
-	self spaceModel dimensions: 2 -> 2.
-	self assert: self spaceModel line equals: 2.
-	
-
-
-]
-
-{ #category : #test }
 CMSpaceModelTest >> testLineColumn [
 
 	self spaceModel line: 2 column: 3.

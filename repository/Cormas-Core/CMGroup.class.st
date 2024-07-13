@@ -142,24 +142,6 @@ CMGroup >> size [
 ]
 
 { #category : #control }
-CMGroup >> stepDynPop [
-	"Activate the biological life cycle of each agent of the group. 
-Nota: the 'step' method of the Agent must return a collection either empty if there is no successuful reproduction or made of newborn instances to be added as new components of the group"
-
-	| newBorns repro firstComp |
-	(self components notNil and: [ self components isNotEmpty ])
-		ifTrue: [ firstComp := self components first.
-			(firstComp isCormasEntity and: [ firstComp isAgent ])
-				ifTrue: [ newBorns := OrderedCollection new.
-					(Cormas mix: self components)
-						do: [ :anAgent | 
-							repro := anAgent step.
-							newBorns addAll: repro ].
-					self updateWith: newBorns ] ].
-	^ newBorns
-]
-
-{ #category : #control }
 CMGroup >> updateAgents [
 	"Get rid of dead components"
 

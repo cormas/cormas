@@ -322,16 +322,6 @@ CMAbstractModel class >> chooseActivityDiagramEditorToRemove [
 ]
 
 { #category : #accessing }
-CMAbstractModel class >> classNameFromEntityName: aString [
-	| validName prefixName |
-	validName := aString capitalized withoutBlanks withoutLeadingDigits withoutQuoting.
-	prefixName := 'CM' , self shortName.
-	(validName beginsWith: prefixName)
-		ifFalse: [ validName := prefixName , validName ].
-	^ validName asSymbol
-]
-
-{ #category : #accessing }
 CMAbstractModel class >> cmAuthors [
 	"WARNING: This is code generated automatically.
  On: 24 March 2021 - 7:59:38.162493 pm"
@@ -1133,32 +1123,6 @@ Example: self ask: (self theAnimals select:[:f | f energy > 10]) toDo: #eatQuant
 ]
 
 { #category : #control }
-CMAbstractModel >> askRandom: aClass select: aBlockCondition toDo: aSymbol [
-	"Purpose: To ask a collection of instances or all the instances of a class to execute a method named by aSymbol. The instances are randomly mixed.
-Arguments: aBlockCondition is aBlock which use the following syntax [:x | x message ]  wherer x message should return true or false
-Example: self askRandom: Animal with: [:f | f energy > 10] toDo: #reproduce"
-	
-	self askRandom: aClass select: aBlockCondition toDo: aSymbol with: #()
-]
-
-{ #category : #control }
-CMAbstractModel >> askRandom: aClass select: aBlockCondition toDo: aSymbol with: aValueOrArrayOfValues [
-	"Purpose: To ask a collection of instances or all the instances of a class to execute a method which requires arguments and named by aSymbol which should end by ':'. The instances are randomly mixed.
-Arguments: aBlockCondition is aBlock which use the following syntax [:x | x message ]  wherer x message should return true or false
-Example: self askRandom: Fireman with:[:f| f isOccupied not] toDo: #moveWithinRange: with: 10
-Example: self askRandom: Animal with: [:a | a energy > 10] toDo: #eatQuantity: with: 5"
-	
-	| allArguments collecEntities |
-	"Check if the argument is a collection or array and rebuilts the list of arguments"
-	allArguments := (aValueOrArrayOfValues isCollection and: [ aValueOrArrayOfValues allSatisfy: [ : v | v isCharacter not ]])
-		ifTrue: [ aValueOrArrayOfValues ]
-		ifFalse: [ Array with: aValueOrArrayOfValues ].
-	collecEntities := (self allTheEntitiesOfClassOrCollec: aClass) select: aBlockCondition.
-	collecEntities isEmpty
-		ifFalse: [ (Cormas mix: collecEntities) do: [:c | c perform: aSymbol withArguments: allArguments] ]
-]
-
-{ #category : #control }
 CMAbstractModel >> askRandom: aCollecOrClass toDo: aSymbol [
 	"Purpose: To ask a collection of instances or all the instances of a class to execute a method named by aSymbol. The instances are randomly mixed.
 Example: self askRandom: Fireman toDo: #move
@@ -1397,72 +1361,6 @@ Example: self createAggregates: Forest from: Cell verifying: [:aCell | aCell sta
 ]
 
 { #category : #'instance creation - spatial entities' }
-CMAbstractModel >> createAggregates: compoundEntity fromSeeds: aCollecOfCells [
-	"Purpose: Create n aggregates that will occupy the whole grid. The number n of aggregates correspond to the size of aCollecOfCells. Each aggregate is made of an element of aCollecOfCells (a seed) and of its surrounding cells. This method resets all aggregates 'compoundEntity' and rebuilds them.
-Arguments: aCollecOfCells is a collection of cells (SpatialEntityElement). compoundEntity is a Class name inheriting from SpatialEntitySet.
-Example: self createAggregates: VitalArea fromSeeds: (self theDens collect:[:c | c patch])
-Example: self createAggregates: Forest fromSeeds: (self theCells select:[:c| c isForestSeed]."
-	
-	^self spaceModel setAggregates: compoundEntity fromSeeds: aCollecOfCells
-]
-
-{ #category : #'instance creation - spatial entities' }
-CMAbstractModel >> createAggregates: compoundEntity fromSeeds: aCollecOfCells maxSize: anInteger [
-	"Purpose: Create aggregates from a collection of cells but the expansion of aggregates is constrained by a maximum size This method resets all aggregates 'compoundEntity' and rebuids them. 
-Arguments:	aCollecOfCells = a collection of base entities (inheriting from <SpatialEntityElement>) 
-compoundEntity = a subClass of  <SpatialEntitySet> 
-anInteger is the maximum size an aggregate may have .
-Example: self createAggregates: Forest fromSeeds: (self pickN: 5 entities: Cell) maxSize: 12   -> Will create 5 forests of a maximum size of 12"
-	
-	^self
-		createAggregates: compoundEntity
-		fromSeeds: aCollecOfCells
-		sizeDistribution:
-			(Array
-				with:
-					(Array
-						with: aCollecOfCells size
-						with: anInteger))
-]
-
-{ #category : #'instance creation - spatial entities' }
-CMAbstractModel >> createAggregates: compoundEntity fromSeeds: aCollecOfCells sizeDistribution: aDistribution [
-	"Purpose: Create aggregates from a collection of cells but the expansion of aggregates is constrained by a size distribution. This method requieres that the aggregate owns an attribute called givenSize. This method resets all aggregates 'compoundEntity' and rebuids them. 
-Arguments:	aCollecOfCells = a collection of base entities (inheriting from <SpatialEntityElement>) 
-compoundEntity = a subClass of  <SpatialEntitySet> 
-aDistribution is a collection ( (n1,s1), (n2,s2)) , n being the number of aggregates of size s.
-Example: self createAggregates: Forest fromSeeds: (self theCells select:[:c| c isForestSeed] sizeDistribution: (#(3 1) #(5 2) #(2 3)). --> create 3 aggregates of size 1, 5  aggregates of size 2, and 2 aggregates of size 3"
-	
-	^self spaceModel setAggregates: compoundEntity fromSeeds: aCollecOfCells
-		sizeDistribution: aDistribution
-]
-
-{ #category : #'instance creation - spatial entities' }
-CMAbstractModel >> createAggregates: compoundEntity fromSeeds: aCollecOfCells verifying: aBlock [
-	"Purpose: Create n aggregates made of an element of aCollecOfCells (a seed) and surrounding cells verifying a defined condition (aBlock). This method resets all aggregates 'compoundEntity' and rebuilds them.
-Arguments: compoundEntity is a Class name inheriting from SpatialEntitySet.
-aCollecOfCells is a collection of cells (SpatialEntityElement).
-aBlock represnts the condition 
-Example: self createAggregates: Forest fromSeeds: (self theCells select:[:c| c isForestSeed] verifying: [:c | c landCover ~= #water]"
-	
-	^self spaceModel setAggregates: compoundEntity fromSeeds: aCollecOfCells
-		verifying: aBlock
-]
-
-{ #category : #'instance creation - spatial entities' }
-CMAbstractModel >> createAggregates: compoundEntity fromSeeds: aCollecOfCells verifying: aBlock sizeDistribution: dis [
-	"Purpose: Create n aggregates made of an element of aCollecOfCells (a seed) and surrounding cells verifying a defined condition (aBlock). The expansion of aggregates is constrained by a size distribution. This method resets all aggregates 'compoundEntity' and rebuilds them.
-Arguments: compoundEntity is a Class name inheriting from SpatialEntitySet.
-aCollecOfCells is a collection of cells (SpatialEntityElement).
-aBlock represnts the condition 
-aDistribution is a collection ( (n1,s1), (n2,s2)) , n being the number of aggregates of size s.
-Example: self createAggregates: Forest fromSeeds: (self theCells select:[:c| c isForestSeed] verifying: [:c | c state isNil not] sizeDistribution: (#(3 1) #(5 2) #(2 3))"
-	
-	^self spaceModel setAggregates: compoundEntity fromSeeds: aCollecOfCells
-		verifying: aBlock sizeDistribution: dis
-]
-
-{ #category : #'instance creation - spatial entities' }
 CMAbstractModel >> createFragmentedEntities: compoundEntity from: baseEntity attribute: attributeName [
 	"Purpose: Create n fragmented spatial entities <SpatialEntityNotConnex>. Each fragmented spatial entity is composed of spatial elements that have the same value of anAttribute. This method resets all fragmented spatial entities 'compoundEntity' and rebuilds them.
 Arguments: baseEntity is a Class name inheriting from <SpatialEntity> (can be <SpatialEntityElement>, <SpatialEntityCell>, <SpatialEntityAggregate> or <SpatialEntityNotConnex>).
@@ -1537,36 +1435,6 @@ CMAbstractModel >> createN: aNumber entity: aCMEntityClass initMethod: aSymbol a
 			(self newEntity: aCMEntityClass)
 				perform: aSymbol withArguments: args;
 				yourself ]
-]
-
-{ #category : #'instance creation - groups' }
-CMAbstractModel >> createN: n groups: classGroup from: aCollec [
-	"Purpose: Creates and returns n instances of classGroup. Each group is composed of X agents (X=aCollec size / n). The agents (included into aCollec) are randomly distributed into the groups
-Example: self createN: 5 groups: Village from: self theIndividuals"
-	
-	| collection groupSize index newGroup groupsCollec |
-	groupsCollec := OrderedCollection new.
-	collection := Cormas mix: aCollec.
-	groupSize := (aCollec size / n) asInteger.
-	index := 1.
-	1
-		to: n - 1
-		do:
-			[:i | 
-			newGroup := self newEntity: classGroup.
-			newGroup init.
-			index
-				to: groupSize * i
-				do: [:j | newGroup addComponent: (collection at: j)].
-			groupsCollec add: newGroup.
-			index := groupSize * i + 1].
-	newGroup := self newEntity: classGroup.
-	newGroup init.
-	index
-		to: collection size
-		do: [:j | newGroup addComponent: (collection at: j)].
-	groupsCollec add: newGroup.
-	^groupsCollec
 ]
 
 { #category : #'instance creation - agents & objects' }
@@ -1938,53 +1806,6 @@ CMAbstractModel >> fractalDimension: aClass [
 Argument: aClass is an aggregate"
 
 	^ self spaceModel fractalDimension: aClass
-]
-
-{ #category : #'init - social network' }
-CMAbstractModel >> generateAsymetricNetworkDensity: x forAgents: aClass [
-	"Purpose: As a result of this method, the acquaintances attribute of each agent is set with a collection of other agents, randomly picked. The size of this collection is the ratio x of the total population. The method loops on each agent and link it with the requested number of other agents of the same class.
-The relation is not symetric, it means agent A may know agent B but B may not know A
-Argument: x is a ratio of the total population of agents of aClass. Its value is between 0 and 1.
-Example: self generateAsymetricNetworkDensity: 0.6 forAgents: Citizen"
-	
-	| allAgents n otherAgents |
-	allAgents := self theEntities: aClass.
-	n := (x * allAgents size) truncated.
-	allAgents
-		do:
-			[:a | 
-			a acquaintances size < n
-				ifTrue:
-					[otherAgents := Cormas mix: (self otherAgentsButMe: a).
-					1
-						to: n
-						do: [:i | a acquaintances add: (otherAgents at: i)]]]
-]
-
-{ #category : #'init - social network' }
-CMAbstractModel >> generateSymetricNetworkDensity: x forAgents: aClass [
-	"Purpose: As a result of this method, the acquaintances attribute of each agent is set with a collection of other agents, randomly picked. The size of this collection is the ratio x of the total population. The method loops on each agent and link it with the requested number of other agents of the same class.
-The relation is  symetric, it means if agent A knows agent B, B will know A.
-Argument: x is a ratio of the total population of agents of aClass. Its value is between 0 and 1.
-Example: self generateSymetricNetworkDensity: 0.3 forAgents: Citizen"
-	
-	| allAgents n otherAgents |
-	allAgents := Cormas mix: (self theEntities: aClass).
-	n := (x * allAgents size) truncated.
-	allAgents
-		do:
-			[:a | 
-			otherAgents := Cormas
-				mix:
-					((self otherAgentsButMe: a) select: [:o | o acquaintances size < n]).
-			1
-				to: (n min: otherAgents size)
-				do:
-					[:i | 
-					a acquaintances size < n
-						ifTrue:
-							[a acquaintances add: (otherAgents at: i).
-							(otherAgents at: i) acquaintances add: a]]]
 ]
 
 { #category : #'utilities - files' }

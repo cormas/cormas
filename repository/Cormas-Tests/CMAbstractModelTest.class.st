@@ -5,12 +5,6 @@ Class {
 }
 
 { #category : #test }
-CMAbstractModelTest >> newValidEntityNamed: entityName [
-
-	CMSpatialEntityAggregate subclass: (entityName asValidCormasClassName: self sampleModelNameWithoutPrefix)
-]
-
-{ #category : #test }
 CMAbstractModelTest >> sampleModelName [
 
 	^ 'CMXXXModel'
@@ -56,13 +50,6 @@ CMAbstractModelTest >> testCentralCell [
 	self
 		assert: m centralCell
 		identicalTo: (m selectCellsOfColumn: 2) second
-]
-
-{ #category : #'tests-accessing-entities' }
-CMAbstractModelTest >> testClassNameFromEntityName [
-	self
-		assert: (CMMockCell modelClass classNameFromEntityName: CMMockCell entityName)
-		equals: CMMockCell name
 ]
 
 { #category : #tests }
