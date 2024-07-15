@@ -125,7 +125,7 @@ CMSimulationPresenter >> initializePresenters [
 		yourself.
 		
 	progressBar := self newProgressBar
-		fixedAt: 0.3;
+		fixedAt: 0.0;
 		yourself.
 	
 	self initializeDiagram.
@@ -212,7 +212,9 @@ CMSimulationPresenter >> runSimulationUntilEnd [
 { #category : #actions }
 CMSimulationPresenter >> stepSimulation [
 
-	"do nothing"
+	cormasModel runStep.
+	builder update.
+	self updateProgressBar.
 ]
 
 { #category : #'as yet unclassified' }
@@ -232,4 +234,10 @@ CMSimulationPresenter >> subMenuForClassPov: aClass [
 CMSimulationPresenter >> translator: anObject [
 
 	translator := anObject
+]
+
+{ #category : #'as yet unclassified' }
+CMSimulationPresenter >> updateProgressBar [
+
+	progressBar fixedAt: (cormasModel timeStep / cormasModel finalTime) asFloat.
 ]
