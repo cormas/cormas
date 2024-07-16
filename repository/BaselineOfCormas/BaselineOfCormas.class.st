@@ -22,6 +22,8 @@ BaselineOfCormas >> baseline: spec [
 			specForBaselines: spec;
 			specForPackages: spec;
 			specForGroups: spec ].
+		
+	spec for: #'pharo11.x' do: [ spec package: 'Cormas-Pharo11' ].
 
 ]
 
