@@ -1,6 +1,6 @@
 Class {
-	#name : #EntityPOV,
-	#superclass : #Model,
+	#name : 'EntityPOV',
+	#superclass : 'Model',
 	#instVars : [
 		'name',
 		'entityReference',
@@ -12,84 +12,86 @@ Class {
 	#classInstVars : [
 		'rMax'
 	],
-	#category : 'Cormas-Core-Legacy'
+	#category : 'Cormas-Core-Legacy',
+	#package : 'Cormas-Core',
+	#tag : 'Legacy'
 }
 
-{ #category : #viewCorrespondance }
+{ #category : 'viewCorrespondance' }
 EntityPOV class >> asFigure [
 	self subclassResponsibility
 ]
 
-{ #category : #'instance-creation' }
+{ #category : 'instance-creation' }
 EntityPOV class >> new [
 	
 	^super new
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 EntityPOV class >> rMax [
 	
 	^rMax ifNil: [rMax := 83]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 EntityPOV class >> rMax: anObject [
 	
 	rMax := anObject
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 EntityPOV >> asFigure [
 	self subclassResponsibility
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 EntityPOV >> bounds [
 	self subclassResponsibility
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 EntityPOV >> center [
 	self subclassResponsibility
 ]
 
-{ #category : #changed }
+{ #category : 'changed' }
 EntityPOV >> changeColor [
 	self subclassResponsibility
 ]
 
-{ #category : #changed }
+{ #category : 'changed' }
 EntityPOV >> changeWith: anOtherImage [
 	"This message is sent when a figure (self) is being deleted and replaced by anOtherCoordinate. The old one (self) is removed from SpaceView and the new one is added"
 	
 	self changed: #replace with: anOtherImage
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 EntityPOV >> color: aColor [
 	self subclassResponsibility
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 EntityPOV >> entity [
 	
 	entityReference isNil ifTrue: [^nil].
 	^entityReference entity
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 EntityPOV >> entityReference [
 	
 	^entityReference
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 EntityPOV >> entityReference: anObject [
 	
 	entityReference := anObject
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 EntityPOV >> getInfoFor: infoSelectorName [
 	"Returns another String according to infoSelectorName.
 infoSelectorName = <Symbol>."
@@ -98,7 +100,7 @@ infoSelectorName = <Symbol>."
 	^self entity getInfoFor: infoSelectorName
 ]
 
-{ #category : #info }
+{ #category : 'info' }
 EntityPOV >> getTextFor: infoSelectorName [
 	"this method is called from a Figure, to display an information text"
 	
@@ -107,37 +109,37 @@ EntityPOV >> getTextFor: infoSelectorName [
 	^infoResult
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 EntityPOV >> infoName [
 	
 	^infoName ifNil: [#nil]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 EntityPOV >> infoName: anObject [
 	
 	infoName := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 EntityPOV >> infoResult [
 	
 	^infoResult
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 EntityPOV >> infoResult: anObject [
 	
 	infoResult := anObject
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 EntityPOV >> init [
 	
 	self sizeRatio
 ]
 
-{ #category : #'user interface' }
+{ #category : 'user interface' }
 EntityPOV >> inspectEntity [
 	"Create and schedule an Inspector in which the user can examine the
 	model's variables."
@@ -145,68 +147,68 @@ EntityPOV >> inspectEntity [
 	^self entity inspect
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 EntityPOV >> isArcPOV [
 	
 	^false
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 EntityPOV >> isBitmapPOV [
 	
 	^false
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 EntityPOV >> isVectorialCompositePOV [
 	
 	^false
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 EntityPOV >> isVectorialPOV [
 	
 	^false
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 EntityPOV >> name [
 	
 	^name
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 EntityPOV >> name: anObject [
 	
 	name := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 EntityPOV >> povResult [
 	
 	^povResult
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 EntityPOV >> povResult: anObject [
 	
 	povResult := anObject
 ]
 
-{ #category : #display }
+{ #category : 'display' }
 EntityPOV >> show [
 	
 	self subclassResponsibility
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 EntityPOV >> sizeRatio [
 	"sizeRatio is an information on the actual size of the vectorial figure"
 	
 	^sizeRatio ifNil: [sizeRatio := 1]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 EntityPOV >> sizeRatio: unNombre [
 	
 	sizeRatio := unNombre

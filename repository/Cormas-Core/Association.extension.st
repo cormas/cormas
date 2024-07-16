@@ -1,6 +1,6 @@
-Extension { #name : #Association }
+Extension { #name : 'Association' }
 
-{ #category : #'*Cormas-Core' }
+{ #category : '*Cormas-Core' }
 Association >> spaceModelDimensionsFor: aCMSpaceModel [ 
 	" Private - See #dimensions: in aCMSpaceModel for comments "
 		
