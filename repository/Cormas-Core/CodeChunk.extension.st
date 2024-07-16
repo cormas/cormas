@@ -1,6 +1,6 @@
-Extension { #name : 'CodeChunk' }
+Extension { #name : #CodeChunk }
 
-{ #category : '*Cormas-Core' }
+{ #category : #'*Cormas-Core' }
 CodeChunk >> = aCodeChunk [
 
 	self == aCodeChunk 
@@ -10,7 +10,7 @@ CodeChunk >> = aCodeChunk [
 	^ self contents lines = aCodeChunk contents lines
 ]
 
-{ #category : '*Cormas-Core' }
+{ #category : #'*Cormas-Core' }
 CodeChunk >> hash [
 
 	^  self class hash bitXor: self contents hash

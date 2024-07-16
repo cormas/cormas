@@ -1,6 +1,6 @@
-Extension { #name : 'RPackage' }
+Extension { #name : #RPackage }
 
-{ #category : '*Cormas-Core' }
+{ #category : #'*Cormas-Core' }
 RPackage >> fileOutOn: aStream [
 	
 	self classTags do: [ :each | 
@@ -21,7 +21,7 @@ RPackage >> fileOutOn: aStream [
 	^ CodeExporter writeSourceCodeFrom: aStream baseName: self name isSt: true.
 ]
 
-{ #category : '*Cormas-Core' }
+{ #category : #'*Cormas-Core' }
 RPackage >> fileOutOn: aStream named: outFilename [
 	
 	self classTags do: [ :each | 

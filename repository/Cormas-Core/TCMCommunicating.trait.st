@@ -1,27 +1,25 @@
 Trait {
-	#name : 'TCMCommunicating',
+	#name : #TCMCommunicating,
 	#instVars : [
 		'mailBox',
 		'channel'
 	],
-	#category : 'Cormas-Core-Entities',
-	#package : 'Cormas-Core',
-	#tag : 'Entities'
+	#category : 'Cormas-Core-Entities'
 }
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 TCMCommunicating >> channel [
 
 	^ channel
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 TCMCommunicating >> channel: anObject [
 
 	channel := anObject
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 TCMCommunicating >> initialize [
 
 	super initialize.
@@ -29,13 +27,13 @@ TCMCommunicating >> initialize [
 	mailBox := OrderedCollection new.
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 TCMCommunicating >> isCommunicatingEntity [
 	
 	^ true
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 TCMCommunicating >> latestMessage [
 	
 	| latestMessage |
@@ -46,19 +44,19 @@ TCMCommunicating >> latestMessage [
 	^ latestMessage
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 TCMCommunicating >> mailBox [
 
 	^ mailBox
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 TCMCommunicating >> mailBox: anObject [
 
 	mailBox := anObject
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 TCMCommunicating >> oldestMessage [
 	"Purpose: picks the oldest message still stored in the mailbox, removes it from the mailbox and returns it
 Return value: <Msg>"
@@ -72,13 +70,13 @@ Return value: <Msg>"
 	^ oldestMessage
 ]
 
-{ #category : 'utilities' }
+{ #category : #utilities }
 TCMCommunicating >> receiveMessage: aMessage [
 	
 	self mailBox addLast: aMessage
 ]
 
-{ #category : 'initialize - release' }
+{ #category : #'initialize - release' }
 TCMCommunicating >> reset [
 	"Purpose: resets inherited and specific attributes"
 	
@@ -86,7 +84,7 @@ TCMCommunicating >> reset [
 	self mailBox: OrderedCollection new.
 ]
 
-{ #category : 'control' }
+{ #category : #control }
 TCMCommunicating >> sendMessageAsynchronously: aMessage [
 	"Purpose: sends and delivers IMMEDIATELY a given message"
 	
@@ -94,7 +92,7 @@ TCMCommunicating >> sendMessageAsynchronously: aMessage [
 	aMessage send.
 ]
 
-{ #category : 'control - communication' }
+{ #category : #'control - communication' }
 TCMCommunicating >> sendMessageAsynchronouslyTo: anAgent topic: aSymbol [
 	"Purpose: sends and delivers IMMEDIATELY a message (with a topic)"
 
@@ -104,7 +102,7 @@ TCMCommunicating >> sendMessageAsynchronouslyTo: anAgent topic: aSymbol [
 			topic: aSymbol)
 ]
 
-{ #category : 'control - communication' }
+{ #category : #'control - communication' }
 TCMCommunicating >> sendMessageAsynchronouslyTo: anAgent topic: aSymbol content: anObject [
 	"Purpose: sends and delivers IMMEDIATELY a message (with a topic and a content)"
 
@@ -115,7 +113,7 @@ TCMCommunicating >> sendMessageAsynchronouslyTo: anAgent topic: aSymbol content:
 			content: anObject)
 ]
 
-{ #category : 'control - communication' }
+{ #category : #'control - communication' }
 TCMCommunicating >> sendMessageAsynchronouslyToAll: aCollectionOfAgents topic: aSymbol [
 	"Purpose: sends and delivers IMMEDIATLY to many agents a same message (with a topic)"
 	
@@ -126,7 +124,7 @@ TCMCommunicating >> sendMessageAsynchronouslyToAll: aCollectionOfAgents topic: a
 				topic: aSymbol) ]
 ]
 
-{ #category : 'control - communication' }
+{ #category : #'control - communication' }
 TCMCommunicating >> sendMessageAsynchronouslyToAll: aCollection topic: aSymbol content: anObject [
 	"Purpose: sends and delivers IMMEDIATLY to many agents a same message (with a topic and a content)"
 	
@@ -138,7 +136,7 @@ TCMCommunicating >> sendMessageAsynchronouslyToAll: aCollection topic: aSymbol c
 				content: anObject) ]
 ]
 
-{ #category : 'control' }
+{ #category : #control }
 TCMCommunicating >> sendMessageSynchronously: aMessage [
 	"Purpose: sends and delivers a given message at the end of the simulation timestep"
 	
@@ -146,7 +144,7 @@ TCMCommunicating >> sendMessageSynchronously: aMessage [
 	self channel addMessageToQueue: aMessage
 ]
 
-{ #category : 'control - communication' }
+{ #category : #'control - communication' }
 TCMCommunicating >> sendMessageSynchronouslyTo: anAgent topic: aSymbol [
 	"Purpose: sends and delivers a message (with a topic) at the end of the simulation timestep"
 	
@@ -156,7 +154,7 @@ TCMCommunicating >> sendMessageSynchronouslyTo: anAgent topic: aSymbol [
 			topic: aSymbol)
 ]
 
-{ #category : 'control - communication' }
+{ #category : #'control - communication' }
 TCMCommunicating >> sendMessageSynchronouslyTo: anAgent topic: aSymbol content: anObject [
 	"Purpose: sends and delivers  a message (with a topic and a content) at the end of the simulation timestep"
 	
@@ -167,7 +165,7 @@ TCMCommunicating >> sendMessageSynchronouslyTo: anAgent topic: aSymbol content: 
 			content: anObject)
 ]
 
-{ #category : 'control - communication' }
+{ #category : #'control - communication' }
 TCMCommunicating >> sendMessageSynchronouslyToAll: aCollectionOfAgents topic: aSymbol [
 	"Purpose: sends and delivers to many agents a same message (with a topic) at the end of the simulation timestep"
 	
@@ -178,7 +176,7 @@ TCMCommunicating >> sendMessageSynchronouslyToAll: aCollectionOfAgents topic: aS
 				topic: aSymbol) ]
 ]
 
-{ #category : 'control - communication' }
+{ #category : #'control - communication' }
 TCMCommunicating >> sendMessageSynchronouslyToAll: aCollectionOfAgents topic: aSymbol content: anObject [
 	"Purpose: sends and delivers to many agents a same message (with a topic and a content) at the end of the simulation timestep"
 	

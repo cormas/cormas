@@ -2,14 +2,12 @@
 SpaceModelChange represents a delayed change from the spaceModel.
 "
 Class {
-	#name : 'CMSpaceModelChange',
-	#superclass : 'CMGenericChange',
-	#category : 'Cormas-Core-Space',
-	#package : 'Cormas-Core',
-	#tag : 'Space'
+	#name : #CMSpaceModelChange,
+	#superclass : #CMGenericChange,
+	#category : 'Cormas-Core-Space'
 }
 
-{ #category : 'printing' }
+{ #category : #printing }
 CMSpaceModelChange >> printOn: aStream [
 	
 	super printOn: aStream.

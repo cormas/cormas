@@ -8,24 +8,22 @@ Thus, by recursivity, a NodeEntity is connected to an oriented graph (#fullNetwo
 
 "
 Class {
-	#name : 'CMNodeEntity',
-	#superclass : 'CMNetworkComponentEntity',
+	#name : #CMNodeEntity,
+	#superclass : #CMNetworkComponentEntity,
 	#instVars : [
 		'arcs',
 		'replaceNodeWhileMoving'
 	],
-	#category : 'Cormas-Core-Entities',
-	#package : 'Cormas-Core',
-	#tag : 'Entities'
+	#category : 'Cormas-Core-Entities'
 }
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMNodeEntity class >> isNodeClass [
 	
 	^true
 ]
 
-{ #category : 'way' }
+{ #category : #way }
 CMNodeEntity >> addCyclicNodesOf: cw forArc: arc waysToMe: waysToMe fullWays: fullWays [
 	| bifurcationNodes waysToNextBifurcation noneCyclicNodes |
 	arc stopNode = (cw at: (cw indexOf: self) + 1)
@@ -57,19 +55,19 @@ CMNodeEntity >> addCyclicNodesOf: cw forArc: arc waysToMe: waysToMe fullWays: fu
 		ifFalse: [ fullWays addAll: (arc stopNode downstreamWays: waysToMe) ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMNodeEntity >> arcs [
 	
 	^arcs ifNil: [arcs := OrderedCollection new]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMNodeEntity >> arcs: anObject [
 	
 	arcs := anObject
 ]
 
-{ #category : 'star testing' }
+{ #category : #'star testing' }
 CMNodeEntity >> belongsToCyclicWay [
 	"answers if the Node is part of a cyclic way of nodes"
 	self isNetworkStartNode ifTrue:[^false].
@@ -77,7 +75,7 @@ CMNodeEntity >> belongsToCyclicWay [
 	^self belongsToCyclicWay: OrderedCollection new
 ]
 
-{ #category : 'way' }
+{ #category : #way }
 CMNodeEntity >> belongsToCyclicWay: previousWay [
 	"answers if the Node is part of a cyclic way of nodes.
 	Recursivity"
@@ -94,7 +92,7 @@ CMNodeEntity >> belongsToCyclicWay: previousWay [
 			arc stopNode belongsToCyclicWay: previousWay ]
 ]
 
-{ #category : 'way' }
+{ #category : #way }
 CMNodeEntity >> checkOrientedWay: aCollOfNodes [
 	
 	| nodeCurrent nodeNext |
@@ -108,7 +106,7 @@ CMNodeEntity >> checkOrientedWay: aCollOfNodes [
 	^true
 ]
 
-{ #category : 'add-remove' }
+{ #category : #'add-remove' }
 CMNodeEntity >> checkToReplaceNode [
 	"Verify if the node must be replaced by previous node (and does it if necessary)"
 	
@@ -129,7 +127,7 @@ CMNodeEntity >> checkToReplaceNode [
 					self outgoingArcs reverseDo: [:arc | arc replaceStartNodeBy: nod]]]
 ]
 
-{ #category : 'network' }
+{ #category : #network }
 CMNodeEntity >> cyclicWays [
 	"return a collection of cyclic ways that the Node belongs to. Each cyclic way is an ordered collection of nodes, starting with the receiver node.
 	An empty collection means that the node doesn't belong to any cyclic way. But one node may belong to several cyclic ways"
@@ -142,7 +140,7 @@ CMNodeEntity >> cyclicWays [
 	^ways
 ]
 
-{ #category : 'way' }
+{ #category : #way }
 CMNodeEntity >> cyclicWays: previousWay [
 	"return a collection of cyclic ways that the Node belongs to"
 	
@@ -166,13 +164,13 @@ CMNodeEntity >> cyclicWays: previousWay [
 	^nextWays
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMNodeEntity >> cyclicsArcs [
 	
 	^ self arcs select: #isCyclic
 ]
 
-{ #category : 'network' }
+{ #category : #network }
 CMNodeEntity >> downstreamWay [
 	"returns the shortest way from this Node towards the down stream direction (taking into account the orientation of the network).
 	The way is an ordered collection of nodes, starting with the receiver node.
@@ -185,7 +183,7 @@ CMNodeEntity >> downstreamWay [
 	^sortedWays first
 ]
 
-{ #category : 'network' }
+{ #category : #network }
 CMNodeEntity >> downstreamWays [
 	"returns a collection of all the ways from this Node towards the down stream direction (taking into account the orientation of the network). Each way is an ordered collection of nodes, starting with the receiver node. "
 	
@@ -198,7 +196,7 @@ CMNodeEntity >> downstreamWays [
 	^ waysWithoutDuplicated
 ]
 
-{ #category : 'way' }
+{ #category : #way }
 CMNodeEntity >> downstreamWays: previousWays [
 	"returns a collection of ways towards the down stream direction (taking into account the orientation of the network) .
 	Recursivity ! "
@@ -229,14 +227,14 @@ CMNodeEntity >> downstreamWays: previousWays [
 	^fullWays
 ]
 
-{ #category : 'network' }
+{ #category : #network }
 CMNodeEntity >> fullNetwork [
 	"returns an instance of NetworkEntity containing all the connected arcs of the network it belongs to, as well as all the nodes"
 	
 	^ CMNetworkEntity newFromNode: self
 ]
 
-{ #category : 'network' }
+{ #category : #network }
 CMNodeEntity >> fullNetworkType: aNetworkClass [
 	"returns an instance of aNetworkClass containing all the connected arcs of the network it belongs to, as well as all the nodes.
 aNetworkClass is a subclass of NetworkEntity"
@@ -244,7 +242,7 @@ aNetworkClass is a subclass of NetworkEntity"
 	^aNetworkClass newFromNode: self
 ]
 
-{ #category : 'star testing' }
+{ #category : #'star testing' }
 CMNodeEntity >> hasNoneCyclicOutput [
 	"Answer if the node has none cyclic output nodes  (ie. nodes that do not belongs to the cycles of the node receiver)"
 
@@ -264,28 +262,28 @@ CMNodeEntity >> hasNoneCyclicOutput [
 	^ false
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMNodeEntity >> incomingArcs [
 	"return a list of arcs for whom this node is an endNode"
 	
 	^self arcs select: [:arc | arc stopNode = self]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMNodeEntity >> incomingNodes [
 	"return a list of nodes for whom this node is a endNode"
 	
 	^self incomingArcs collect: [:arc | arc startNode]
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMNodeEntity >> isConnectedTo: anotherNode [
 	"answers if anotherNode is a component of its network (without taking into account the orientation of the network)"
 	
 	^self fullNetwork nodes includes: anotherNode
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMNodeEntity >> isDownstreamFrom: anotherNode [
 	"answers if anotherNode is a component of its network towards the down stream direction (taking into account the orientation of the network)"
 
@@ -296,7 +294,7 @@ CMNodeEntity >> isDownstreamFrom: anotherNode [
 	^ anotherNode downstreamWays anySatisfy: [ :w | w includes: self ]
 ]
 
-{ #category : 'moving' }
+{ #category : #moving }
 CMNodeEntity >> isMovedTo: aSpatialEntity [
 	"Purpose: moves to a given location. If replaceNodeWhileMoving = true, then it will replace its own nodes by the previous ones.
 Argument: aSpatialEntity = <SpatialEntity>
@@ -308,17 +306,17 @@ Example: self isMovedTo: self patch neighbourN"
 	self checkToReplaceNode
 ]
 
-{ #category : 'star testing' }
+{ #category : #'star testing' }
 CMNodeEntity >> isNetworkStartNode [
 	^self incomingArcs isEmpty
 ]
 
-{ #category : 'star testing' }
+{ #category : #'star testing' }
 CMNodeEntity >> isNetworkStopNode [
 	^self outgoingArcs isEmpty
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMNodeEntity >> isUpstreamOf: anotherNode [
 	"answers if anotherNode is a component of its network towards the down stream direction (taking into account the orientation of the network)"
 
@@ -329,7 +327,7 @@ CMNodeEntity >> isUpstreamOf: anotherNode [
 	^ self downstreamWays anySatisfy: [ :w | w includes: anotherNode ]
 ]
 
-{ #category : 'network' }
+{ #category : #network }
 CMNodeEntity >> noneCyclicOutputs [
 	"Returns a collection of nodes that are none cyclic output nodes (ie. nodes that do not belongs to the cycles of the node receiver)"
 	
@@ -350,21 +348,21 @@ CMNodeEntity >> noneCyclicOutputs [
 	^noneCyclicOutputs
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMNodeEntity >> outgoingArcs [
 	"return a list of arcs for whom this node is a startNode"
 	
 	^self arcs select: [:arc | arc startNode = self]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMNodeEntity >> outgoingNodes [
 	"return a list of nodes for whom this node is a startNode"
 	
 	^self outgoingArcs collect: [:arc | arc stopNode]
 ]
 
-{ #category : 'add-remove' }
+{ #category : #'add-remove' }
 CMNodeEntity >> removeArc: anArc [
 	
 	self arcs
@@ -378,20 +376,20 @@ CMNodeEntity >> removeArc: anArc [
 	self changed
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMNodeEntity >> replaceNodeWhileMoving [
 	"If true, then "
 	
 	^replaceNodeWhileMoving ifNil: [replaceNodeWhileMoving := true]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMNodeEntity >> replaceNodeWhileMoving: aBoolean [
 	
 	replaceNodeWhileMoving := aBoolean
 ]
 
-{ #category : 'network' }
+{ #category : #network }
 CMNodeEntity >> upstreamWay [
 	"returns the shortest way from this Node towards the up stream direction (taking into account the orientation of the network).
 	The way is an ordered collection of nodes, starting with the receiver node.
@@ -404,7 +402,7 @@ CMNodeEntity >> upstreamWay [
 	^sortedWays first
 ]
 
-{ #category : 'network' }
+{ #category : #network }
 CMNodeEntity >> upstreamWays [
 	"returns a collection of all the ways from this Node towards the up stream direction (taking into account the orientation of the network). Each way is an ordered collection of nodes, starting with the receiver node. "
 	
@@ -419,7 +417,7 @@ CMNodeEntity >> upstreamWays [
 	^waysWithoutDuplicated
 ]
 
-{ #category : 'way' }
+{ #category : #way }
 CMNodeEntity >> upstreamWays: previousWays [
 	"returns a collection of ways towards the up stream direction (taking into account the orientation of the network) .
 	Recursivity ! "

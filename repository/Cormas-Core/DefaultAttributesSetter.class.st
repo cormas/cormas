@@ -17,8 +17,8 @@ Instance Variables:
 
 "
 Class {
-	#name : 'DefaultAttributesSetter',
-	#superclass : 'Object',
+	#name : #DefaultAttributesSetter,
+	#superclass : #Object,
 	#instVars : [
 		'selectedRow',
 		'classAttribValue_List',
@@ -27,12 +27,10 @@ Class {
 		'allAttributsList',
 		'hiddenParametersInterface'
 	],
-	#category : 'Cormas-Core-Legacy',
-	#package : 'Cormas-Core',
-	#tag : 'Legacy'
+	#category : 'Cormas-Core-Legacy'
 }
 
-{ #category : 'getAttributes' }
+{ #category : #getAttributes }
 DefaultAttributesSetter class >> attributsFromClass: aClass [
 	"returns a list of ClassAttributeValues of Entities"
 	"Add the attributs"
@@ -53,7 +51,7 @@ DefaultAttributesSetter class >> attributsFromClass: aClass [
 	^set
 ]
 
-{ #category : 'getAttributes' }
+{ #category : #getAttributes }
 DefaultAttributesSetter class >> attributsWithAccessorsFromClass: aClass [
 	"returns a list of ClassAttributeValues of Entities that present the two accessors (setter & getter).
 	!! All attributs without accessors are removed from the set "
@@ -69,7 +67,7 @@ DefaultAttributesSetter class >> attributsWithAccessorsFromClass: aClass [
 	^set
 ]
 
-{ #category : 'compiling' }
+{ #category : #compiling }
 DefaultAttributesSetter class >> defineDefaultClassMethod: attributName ofClass: aClass withDefaultValue: defaultValue [
 	"Compile the default getter class method code with defaultValue (a String) into '- default value' protocol.
 The new method is written at class level for instance attributes as well as for class variable.
@@ -101,7 +99,7 @@ defaultValue = <Number or String or Boolean or Dictionary or Array or Collection
 		notifying: nil
 ]
 
-{ #category : 'compiling' }
+{ #category : #compiling }
 DefaultAttributesSetter class >> defineGetterMethod: attributName ofClass: aClass withDefaultDictionary: defaultValue protocol: protocol [
 	"Build the getter accessor method code with defaultValue (a Dictionary)
 ex: self defineGetterMethod: 'truc' ofClass: Agent withDefaultDictionary: aDico protocol: 'accessing'  		
@@ -133,7 +131,7 @@ protocol = <String> "
 		notifying: nil
 ]
 
-{ #category : 'compiling' }
+{ #category : #compiling }
 DefaultAttributesSetter class >> defineGetterMethod: attributName ofClass: aClass withDefaultValue: defaultValue protocol: protocol [
 	"Build the getter accessor method code with defaultValue
 
@@ -183,7 +181,7 @@ protocol = <String> "
 		notifying: nil
 ]
 
-{ #category : 'compiling' }
+{ #category : #compiling }
 DefaultAttributesSetter class >> defineGetterMethod: attributName ofClass: aClass withRandom: defaultValue protocol: protocol [
 	"Build the getter accessor method code with random generator
 
@@ -220,7 +218,7 @@ protocol = <String> "
 		notifying: nil
 ]
 
-{ #category : 'compiling' }
+{ #category : #compiling }
 DefaultAttributesSetter class >> defineGetterMethodFrom: aCAV protocol: protocol [
 	"Build the getter accessor method code with defaultValue
 ex: self defineGetterMethod: 'truc' ofClass: Agent withDefaultValue: 22 protocol: 'accessing'  		
@@ -255,7 +253,7 @@ attributName = <String> ; aClass = <Class> ; defaultValue = <Object> ; protocol 
 		notifying: nil
 ]
 
-{ #category : 'compiling' }
+{ #category : #compiling }
 DefaultAttributesSetter class >> defineGetterRandomMethodFrom: aCAV protocol: protocol [
 	"Build the getter accessor method code with default random Value.
 truc
@@ -282,7 +280,7 @@ attributName = <String> ; aClass = <Class> ; defaultValue = <Object> ; protocol 
 		notifying: nil
 ]
 
-{ #category : 'compiling' }
+{ #category : #compiling }
 DefaultAttributesSetter class >> defineSetterMethod: attributName ofClass: aClass protocol: protocol [
 	"Build the setter accessor method code.
 
@@ -307,7 +305,7 @@ protocol = <String> "
 			protocol
 ]
 
-{ #category : 'getAttributes' }
+{ #category : #getAttributes }
 DefaultAttributesSetter class >> getAllAttributsFromClass: aClass [
 	"Return a list containing the static variable names (as string) + a separator string + the attributs names (as string) of aClass and all its super classes until
 the Cormas entity classes.
@@ -322,7 +320,7 @@ the Cormas entity classes.
 	^list
 ]
 
-{ #category : 'getParameters' }
+{ #category : #getParameters }
 DefaultAttributesSetter class >> getDefaultValueOfAttribut: anAttribut ofClass: aClass [
 	"Returns the default value of anAttribut (static or instance) of aClass, using the  'anAttribut_default' accessor  located into the ' - default value ' protocol.
 Compatibility with previous Cormas version: before changing, it tests if the default class method exists otherwise compiles it
@@ -362,7 +360,7 @@ Compatibility with previous Cormas version: before changing, it tests if the def
 	^default
 ]
 
-{ #category : 'getParameters' }
+{ #category : #getParameters }
 DefaultAttributesSetter class >> getDefaultValuesForClass: aClass attributs: attributs [
 	"attributs is a Set of static attributs or instance attributs"
 	"Returns the default value of anAttribut (static or instance) of aClass, using the  'anAttribut_default' accessor  located into the ' - default value ' protocol.
@@ -388,7 +386,7 @@ DefaultAttributesSetter class >> getDefaultValuesForClass: aClass attributs: att
 	^defaultParameters
 ]
 
-{ #category : 'getParameters' }
+{ #category : #getParameters }
 DefaultAttributesSetter class >> getInitialValueOfAttribut: anAttribut ofClass: aClass [
 	"Returns the Initial value of anAttribut (static or instance) of aClass, using #anAttribut accessor of aClass.
 	anAttribut = <Symbol>
@@ -424,7 +422,7 @@ DefaultAttributesSetter class >> getInitialValueOfAttribut: anAttribut ofClass: 
 	^initialValue
 ]
 
-{ #category : 'getParameters' }
+{ #category : #getParameters }
 DefaultAttributesSetter class >> getInitialValuesForClass: aClass attributs: attributs [
 	"Returns the Initial value of anAttribut (static or instance) of aClass, using the  #anAttribut accessor.
 	anAttribut = <Symbol> attributs is a Set of static attributs or instance attributs
@@ -449,7 +447,7 @@ DefaultAttributesSetter class >> getInitialValuesForClass: aClass attributs: att
 	^initialParameters
 ]
 
-{ #category : 'getParameters' }
+{ #category : #getParameters }
 DefaultAttributesSetter class >> inheritedInstVarNamesForClass: aClass [
 	"Return an array of the attributs of the superclass"
 	
@@ -467,7 +465,7 @@ DefaultAttributesSetter class >> inheritedInstVarNamesForClass: aClass [
 	^list
 ]
 
-{ #category : 'getParameters' }
+{ #category : #getParameters }
 DefaultAttributesSetter class >> isChangedPerformedForAttribut: anAttribut ofClass: aClass [
 	"Returns a Boolean depending if the instuction 'self changed' is written or not in the setter accessor of anAttibut.
 	anAttribut = <Symbol>
@@ -477,7 +475,7 @@ DefaultAttributesSetter class >> isChangedPerformedForAttribut: anAttribut ofCla
 		findString: 'self changed' startingAt: 1) ~= 0
 ]
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 DefaultAttributesSetter class >> newFromPreviousSetter: anAttributeSetter [
 	
 	| inst |
@@ -488,7 +486,7 @@ DefaultAttributesSetter class >> newFromPreviousSetter: anAttributeSetter [
 	^inst
 ]
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 DefaultAttributesSetter class >> newOn: aCormasModelInstance [
 	
 	| inst |
@@ -498,7 +496,7 @@ DefaultAttributesSetter class >> newOn: aCormasModelInstance [
 	^inst
 ]
 
-{ #category : 'compiling' }
+{ #category : #compiling }
 DefaultAttributesSetter class >> silentlyDefineSetterMethod: attributName ofClass: aClass protocol: protocol [
 	"Build the setter accessor method code.
 
@@ -522,7 +520,7 @@ protocol = <String> "
 		notifying: nil
 ]
 
-{ #category : 'compiling' }
+{ #category : #compiling }
 DefaultAttributesSetter class >> silentlyDefineSetterMethodWithObserverNotification: attributName ofClass: aClass protocol: protocol [
 	"Build the setter accessor method code and adds a 'self changed' command to notify the oberservers when changed.
 
@@ -547,7 +545,7 @@ protocol = <String> "
 		notifying: nil
 ]
 
-{ #category : 'getAttributes' }
+{ #category : #getAttributes }
 DefaultAttributesSetter class >> staticAttributsFromClass: aClass [
 	"Return a set containing the static variable names (as string) of aClass and all its super classes until the Cormas entity classes."
 	
@@ -561,7 +559,7 @@ DefaultAttributesSetter class >> staticAttributsFromClass: aClass [
 	^set
 ]
 
-{ #category : 'getAttributes' }
+{ #category : #getAttributes }
 DefaultAttributesSetter class >> staticAttributsWithAccessorsFromClass: aClass [
 	"Return a set containing the static variable names (as string) of aClass and all its super classes until the Cormas entity classes.
 !! All attributs without accessors are removed from the set "
@@ -577,7 +575,7 @@ DefaultAttributesSetter class >> staticAttributsWithAccessorsFromClass: aClass [
 	^set
 ]
 
-{ #category : 'compiling' }
+{ #category : #compiling }
 DefaultAttributesSetter class >> transformAsString: defaultValue [
 	"return the defaultValue as a string.
 	defaultValue: <Number or String or Boolean or Dictionary or Array or Collection>"
@@ -614,19 +612,19 @@ DefaultAttributesSetter class >> transformAsString: defaultValue [
 	^defaultValue asString
 ]
 
-{ #category : 'initialize-release' }
+{ #category : #'initialize-release' }
 DefaultAttributesSetter >> allAttributesList [
 	
 	^allAttributsList ifNil: [allAttributsList := self getAllAttributesList]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 DefaultAttributesSetter >> allAttributsList: anObject [
 	
 	allAttributsList := anObject
 ]
 
-{ #category : 'actions_elementaries' }
+{ #category : #'actions_elementaries' }
 DefaultAttributesSetter >> applyNewValue: aClassAttribValue [
 	" set a the new value of the attribute of aClassAttribValue.
 	The attributes of the existing objects are associated to the new values and the attributes accessors are redefined.
@@ -651,7 +649,7 @@ DefaultAttributesSetter >> applyNewValue: aClassAttribValue [
 		protocol: 'accessing'
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 DefaultAttributesSetter >> applyNewValues [
 	" set a the new values of the attributes when user has changed them and has clicked on 'applyNewValues' button.
 	The attributes of the existing objects are associated to the new values (InitialValues) and the attributes accessors are redefined:
@@ -676,7 +674,7 @@ DefaultAttributesSetter >> applyNewValues [
 			self applyNewValue: aClassAttribValue]
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 DefaultAttributesSetter >> backToDefaultValues [
 	" set a the default values of the attributes when user have clicked on 'Back to Default Values'.
 	The attributes of the existing objects are associated to the default values and the attributes accessors are redefined using the default value accessors at class level"
@@ -688,18 +686,18 @@ DefaultAttributesSetter >> backToDefaultValues [
 	self classAttribValue_List list: list
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 DefaultAttributesSetter >> classAttribValue_List [
 	^ classAttribValue_List
 ]
 
-{ #category : 'aspects' }
+{ #category : #aspects }
 DefaultAttributesSetter >> classAttribValue_List: anObject [
 	
 	classAttribValue_List := anObject
 ]
 
-{ #category : 'getParameters' }
+{ #category : #getParameters }
 DefaultAttributesSetter >> classVariablesToNil [
 	"get the defaultParameters.
 	defaultParameters is an OrderedCollection containing OrderedCollections as following : 
@@ -716,32 +714,32 @@ DefaultAttributesSetter >> classVariablesToNil [
 	^defaultParameters
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 DefaultAttributesSetter >> cormas [
 	"Direct acces to the cormas instance"
 	
 	^Cormas current
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 DefaultAttributesSetter >> cormasModel [
 	
 	^cormasModel
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 DefaultAttributesSetter >> cormasModel: anObject [
 	
 	cormasModel := anObject
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 DefaultAttributesSetter >> cormasModelClass [
 	
 	^self cormasModel class
 ]
 
-{ #category : 'export' }
+{ #category : #export }
 DefaultAttributesSetter >> exportAttributsValues [
 	"Save the content of the 'Parameters windows'
 exports the class name, the attributes names and the values into a CSV file"
@@ -771,14 +769,14 @@ exports the class name, the attributes names and the values into a CSV file"
 	stream close
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 DefaultAttributesSetter >> finalize [
 	
 	self applyNewValues.
 	self closeAndUnschedule
 ]
 
-{ #category : 'initialize-release' }
+{ #category : #'initialize-release' }
 DefaultAttributesSetter >> getAllAttributesList [
 	
 	| aList defaultParameters cav |
@@ -800,7 +798,7 @@ DefaultAttributesSetter >> getAllAttributesList [
 	^aList
 ]
 
-{ #category : 'getParameters' }
+{ #category : #getParameters }
 DefaultAttributesSetter >> getDefaultParametersValues [
 	"get the defaultParameters.
 	defaultParameters is an OrderedCollection containing OrderedCollections as following : 
@@ -827,7 +825,7 @@ DefaultAttributesSetter >> getDefaultParametersValues [
 	^defaultParameters
 ]
 
-{ #category : 'getParameters' }
+{ #category : #getParameters }
 DefaultAttributesSetter >> getInitialParametersValues [
 	"get the Initial Parameters.
 	initialParameters is an OrderedCollection containing OrderedCollections as following : 
@@ -854,46 +852,46 @@ DefaultAttributesSetter >> getInitialParametersValues [
 	^defaultParameters
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 DefaultAttributesSetter >> hiddenParametersInterface [
 	
 	^hiddenParametersInterface
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 DefaultAttributesSetter >> hiddenParametersInterface: anObject [
 	
 	hiddenParametersInterface := anObject
 ]
 
-{ #category : 'initialize-release' }
+{ #category : #'initialize-release' }
 DefaultAttributesSetter >> init [
 	
 	self initFull.
 	"self removeHiddenAttributes"
 ]
 
-{ #category : 'initialize-release' }
+{ #category : #'initialize-release' }
 DefaultAttributesSetter >> initFull [
 	
 	self classAttribValue_List: self allAttributesList copy.
 	super initialize
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 DefaultAttributesSetter >> listOfDefaultAttributes [
 	
 	^self classAttribValue_List listHolder value
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 DefaultAttributesSetter >> modifiedAttribute [
 	
 	^self classAttribValue_List list
 		select: [:defAttrib | defAttrib hasBeenModified]
 ]
 
-{ #category : 'getParameters' }
+{ #category : #getParameters }
 DefaultAttributesSetter >> parametersForReInitialization [
 	"return a list of ClassAttributeValues containg all the parameters, without the Entity instances' attributs"
 
@@ -927,7 +925,7 @@ DefaultAttributesSetter >> parametersForReInitialization [
 	^ parameters
 ]
 
-{ #category : 'getParameters' }
+{ #category : #getParameters }
 DefaultAttributesSetter >> parametersWithAccessors [
 	"return a list of ClassAttributeValues containg all the parameters."
 
@@ -959,7 +957,7 @@ DefaultAttributesSetter >> parametersWithAccessors [
 	^ parameters
 ]
 
-{ #category : 'getParameters' }
+{ #category : #getParameters }
 DefaultAttributesSetter >> purgeClassAttribValue: aList [
 	"Removes elements of aList (ClassAttributeValues of Entities) that are not Number, Boolean, String, Symbol or Class"
 	
@@ -976,7 +974,7 @@ DefaultAttributesSetter >> purgeClassAttribValue: aList [
 										and: [(defaultAttrib currentValue class inheritsFrom: Array) not]]]]]
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 DefaultAttributesSetter >> reApplyNewValues [
 	" set a the new values of the attributes whitout compiling the getter accessors"
 	
@@ -989,7 +987,7 @@ DefaultAttributesSetter >> reApplyNewValues [
 	aList do: [:aClassAttribValue | aClassAttribValue setAttributeNewValue]
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 DefaultAttributesSetter >> removeAttributeName: attributSymbol fromClassOrInstance: aClassOrInstance [
 	"returns a list of ClassAttributeValues of Entities that can be easily modified by user interface.
 It means that the attributes must have both accessors available (setter & getter), and that they are Number, Boolean, String, Symbol or Class"
@@ -1002,7 +1000,7 @@ It means that the attributes must have both accessors available (setter & getter
 	^self classAttribValue_List
 ]
 
-{ #category : 'initialize-release' }
+{ #category : #'initialize-release' }
 DefaultAttributesSetter >> resetInitialValue: defAttrib [
 	" Set a the initial values of the attributes to re-initialzise a simulation.
 	Each attribute is set to nil then reader accessor is called that set the initialValue.
@@ -1015,7 +1013,7 @@ DefaultAttributesSetter >> resetInitialValue: defAttrib [
 			self resetInitialValue: defAttrib]
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 DefaultAttributesSetter >> resetInitialValues [
 	" Set a the initial values of the attributes to re-initialzise a simulation.
 	Each attribute is set to nil then reader accessor is called that set the initialValue.
@@ -1028,7 +1026,7 @@ DefaultAttributesSetter >> resetInitialValues [
 			self resetInitialValue: defAttrib]
 ]
 
-{ #category : 'initialize-release' }
+{ #category : #'initialize-release' }
 DefaultAttributesSetter >> resetParameters [
 	"reset the parameters of the classes of the model to nil, then calls the attribut reader accessors to set the default value"
 	
@@ -1036,7 +1034,7 @@ DefaultAttributesSetter >> resetParameters [
 		do: [:cav | cav setAttributeInitialValue]
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 DefaultAttributesSetter >> saveAsDefaultValues [
 	"Save definitively the changed parameters with the Initial value: compiles the attribute reader accessor and compiles the attribute_default method"
 	
@@ -1052,7 +1050,7 @@ DefaultAttributesSetter >> saveAsDefaultValues [
 			aCAV hasBeenModified: false]
 ]
 
-{ #category : 'aspects' }
+{ #category : #aspects }
 DefaultAttributesSetter >> selectedRow [
 	"This method was generated by UIDefiner.  Any edits made here
 	may be lost whenever methods are automatically defined.  The
@@ -1064,7 +1062,7 @@ DefaultAttributesSetter >> selectedRow [
 		ifFalse: [selectedRow]
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 DefaultAttributesSetter >> selectedRowAttributeAsStringLabelPressed [
 	"This method was generated by UIDefiner.  Any edits made here
 	may be lost whenever methods are automatically defined."
@@ -1093,7 +1091,7 @@ DefaultAttributesSetter >> selectedRowAttributeAsStringLabelPressed [
 				sortBlock: sortBlock) asList
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 DefaultAttributesSetter >> selectedRowClassNameAsStringLabelPressed [
 	"This method was generated by UIDefiner.  Any edits made here
 	may be lost whenever methods are automatically defined."
@@ -1122,7 +1120,7 @@ DefaultAttributesSetter >> selectedRowClassNameAsStringLabelPressed [
 				sortBlock: sortBlock) asList
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 DefaultAttributesSetter >> selectedRowCurrentValueAsStringLabelPressed [
 	"This method was generated by UIDefiner.  Any edits made here
 	may be lost whenever methods are automatically defined."
@@ -1155,7 +1153,7 @@ DefaultAttributesSetter >> selectedRowCurrentValueAsStringLabelPressed [
 				sortBlock: sortBlock) asList
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 DefaultAttributesSetter >> selectedRowCurrentValueLabelPressed [
 	"This method was generated by UIDefiner.  Any edits made here
 	may be lost whenever methods are automatically defined."
@@ -1184,7 +1182,7 @@ DefaultAttributesSetter >> selectedRowCurrentValueLabelPressed [
 				sortBlock: sortBlock) asList
 ]
 
-{ #category : 'actions_elementaries' }
+{ #category : #'actions_elementaries' }
 DefaultAttributesSetter >> setDefaultValue: aClassAttribValue [
 	" set a the default value of the attribute into aClassAttribValue .
 	The attributes of the existing objects are associated to the default values and the attributes accessors are redefined using the default value accessors at class level"
@@ -1205,7 +1203,7 @@ DefaultAttributesSetter >> setDefaultValue: aClassAttribValue [
 	aClassAttribValue setAttributeNewValue
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 DefaultAttributesSetter >> setDefaultValuesAndApply [
 	" set a the default values of the attributes when user have clicked on 'Back to Default Values'.
 	The attributes of the existing objects are associated to the default values and the attributes accessors are redefined using the default value accessors at class level"
@@ -1217,7 +1215,7 @@ DefaultAttributesSetter >> setDefaultValuesAndApply [
 	self classAttribValue_List list: list
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 DefaultAttributesSetter >> simulationManager [
 	
 	^self cormasModel simulationManager

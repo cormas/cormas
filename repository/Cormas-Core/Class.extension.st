@@ -1,6 +1,6 @@
-Extension { #name : 'Class' }
+Extension { #name : #Class }
 
-{ #category : '*Cormas-Core' }
+{ #category : #'*Cormas-Core' }
 Class >> chunkOut [
 	"Create a file whose name is the name of the receiver with '.st' as the 
 	extension, and file a description of the receiver onto it."
@@ -17,14 +17,14 @@ Class >> chunkOut [
 	^ internalStream reset
 ]
 
-{ #category : '*Cormas-Core' }
+{ #category : #'*Cormas-Core' }
 Class >> concreteSubclasses [
 
 	^ self allSubclasses select: [ : cls | cls subclasses isEmpty ]
 
 ]
 
-{ #category : '*Cormas-Core' }
+{ #category : #'*Cormas-Core' }
 Class >> ifTerminal: aBlock [
 	" Perform aBlock if the receiver is a terminal (or concrete) class (has no subclasses) "
 	
@@ -32,7 +32,7 @@ Class >> ifTerminal: aBlock [
 	
 ]
 
-{ #category : '*Cormas-Core' }
+{ #category : #'*Cormas-Core' }
 Class >> isTerminal [
 	" Answer <true> if the receiver is a terminal (or concrete) class (has no subclasses)
 
