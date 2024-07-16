@@ -83,8 +83,8 @@ BaselineOfCormas >> specForPackages: spec [
 		
 		package: 'Cormas-UI-Roassal3';
 		
-		package: 'Cormas-Translator';
-		package: 'Cormas-UI' with: [ spec requires: #('Cormas-Core' 'Cormas-UI-Roassal3' 'Cormas-Translator') ];
+		package: 'Cormas-UI-Translator';
+		package: 'Cormas-UI' with: [ spec requires: #('Cormas-Core' 'Cormas-UI-Roassal3' 'Cormas-UI-Translator') ];
 		
 		package: 'Cormas-UI-Tests'
 		with: [ spec requires: #('Cormas-UI' 'Cormas-Tests') ].
