@@ -1,17 +1,19 @@
 Class {
-	#name : #CMObject,
-	#superclass : #Object,
-	#category : 'Cormas-Core-Kernel'
+	#name : 'CMObject',
+	#superclass : 'Object',
+	#category : 'Cormas-Core-Kernel',
+	#package : 'Cormas-Core',
+	#tag : 'Kernel'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMObject class >> cmEnvironment [
 	" Answer a <Collection> or receiver's package as replacement for VW Namespaces "
 	
 	^ self package classes
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 CMObject class >> cmPrintHierarchy [
 	"Purpose: to show the hierarchy of all the subclasses of the receiver
 	Return value: a byteString"
@@ -21,7 +23,7 @@ CMObject class >> cmPrintHierarchy [
 	^ String streamContents: [ :stream | self printSubclassesOn: stream level: 0 ]
 ]
 
-{ #category : #'printing - documentation' }
+{ #category : 'printing - documentation' }
 CMObject class >> printSubclassesOn: aStream level: level [
 	"As part of the algorithm for printing a description of the receiver, print the
 	subclass on the file stream, aStream, indenting level times."

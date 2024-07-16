@@ -1,6 +1,6 @@
-Extension { #name : #GPoint }
+Extension { #name : 'GPoint' }
 
-{ #category : #'*Cormas-Core' }
+{ #category : '*Cormas-Core' }
 GPoint >> * arg [ 
 	"Answer a Point that is the product of the receiver and arg."
 	"((2@2) * (100@200)) >>> (200@400)"

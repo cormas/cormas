@@ -1,29 +1,31 @@
 Class {
-	#name : #CMSpacePolygonNeighbourhood,
-	#superclass : #CMNonSquaredSpaceNeighbourhood,
-	#category : 'Cormas-Core-Space'
+	#name : 'CMSpacePolygonNeighbourhood',
+	#superclass : 'CMNonSquaredSpaceNeighbourhood',
+	#category : 'Cormas-Core-Space',
+	#package : 'Cormas-Core',
+	#tag : 'Space'
 }
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 CMSpacePolygonNeighbourhood class >> cardinal [ 
 
 	^ 0
 ]
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 CMSpacePolygonNeighbourhood class >> cardinalSymbol [ 
 
 	^ #zero
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMSpacePolygonNeighbourhood class >> isStartConditionFor: aSymbolOrNumber [
 	" See superimplementor's comment "
 
 	^ (#(3 4 6 8 #three #four #six #eight) includes: aSymbolOrNumber) not
 ]
 
-{ #category : #'private - irregular polygons creation' }
+{ #category : 'private - irregular polygons creation' }
 CMSpacePolygonNeighbourhood >> boundingRectangleFor: b [
 
 	| boundingRectangle |
@@ -37,13 +39,13 @@ CMSpacePolygonNeighbourhood >> boundingRectangleFor: b [
 	^ boundingRectangle
 ]
 
-{ #category : #'private - irregular polygons creation' }
+{ #category : 'private - irregular polygons creation' }
 CMSpacePolygonNeighbourhood >> gridCellShapeType [
 
 	^ #irregular
 ]
 
-{ #category : #'private - irregular polygons creation' }
+{ #category : 'private - irregular polygons creation' }
 CMSpacePolygonNeighbourhood >> initializeOrderedNeighbourhood: polygones [
 
 	| getter allPolygones |
@@ -56,7 +58,7 @@ CMSpacePolygonNeighbourhood >> initializeOrderedNeighbourhood: polygones [
 	polygones do: [ : b | self initializePolygone: b in: allPolygones ]
 ]
 
-{ #category : #'private - irregular polygons creation' }
+{ #category : 'private - irregular polygons creation' }
 CMSpacePolygonNeighbourhood >> initializePolygone: b in: allPolygones [
 
 	| boundingRectangle p pPrec pCour |
