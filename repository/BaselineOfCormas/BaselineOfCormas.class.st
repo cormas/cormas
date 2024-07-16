@@ -63,8 +63,8 @@ BaselineOfCormas >> specForBaselines: spec [
 BaselineOfCormas >> specForGroups: spec [
 
 	spec
-		group: 'Core' with: #('Cormas-Core' 'Cormas-Tests' 'Cormas-Mocks');
-		group: 'UI' with: #('Core' 'Cormas-UI-Roassal3' 'Cormas-UI-Tests');
+		group: 'Core' with: #('Cormas-Tests');
+		group: 'UI' with: #('Cormas-UI-Tests');
 		group: 'default' with: #('UI')
 ]
 
@@ -83,6 +83,9 @@ BaselineOfCormas >> specForPackages: spec [
 		
 		package: 'Cormas-UI-Roassal3';
 		
+		package: 'Cormas-Translator';
+		package: 'Cormas-UI' with: [ spec requires: #('Cormas-Core' 'Cormas-UI-Roassal3' 'Cormas-Translator') ];
+		
 		package: 'Cormas-UI-Tests'
-		with: [ spec requires: #('Cormas-Tests' 'Cormas-Mocks') ].
+		with: [ spec requires: #('Cormas-UI' 'Cormas-Tests') ].
 ]
