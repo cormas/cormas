@@ -6,17 +6,19 @@ Instance Variables:
 
 "
 Class {
-	#name : #CMSpatialEntitySet,
-	#superclass : #CMSpatialEntity,
+	#name : 'CMSpatialEntitySet',
+	#superclass : 'CMSpatialEntity',
 	#instVars : [
 		'components',
 		'type',
 		'surround'
 	],
-	#category : #'Cormas-Core-Entities'
+	#category : 'Cormas-Core-Entities',
+	#package : 'Cormas-Core',
+	#tag : 'Entities'
 }
 
-{ #category : #displaying }
+{ #category : 'displaying' }
 CMSpatialEntitySet class >> createEntityPOVwithSpec: aSpec componentsPovs: componentsPovs [
 	"Returns an EntityPOV according to aSpec and set of povs of component spatial entity
 	componentsPovs should be -> aCollecOfEntities collect: [:spatialEntity | spatialEntity defaultPOV]."
@@ -42,19 +44,19 @@ CMSpatialEntitySet class >> createEntityPOVwithSpec: aSpec componentsPovs: compo
 	^anEntityPOV
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMSpatialEntitySet class >> isElementary [
 	
 	^false
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMSpatialEntitySet class >> isSpatialEntitySetClass [
 	
 	^true
 ]
 
-{ #category : #'instance-creation' }
+{ #category : 'instance-creation' }
 CMSpatialEntitySet class >> newWith: aSetOfSpatialEntitiesOrAnObject [
 	"Return a new instance of SpatialEntitySet, made of aSetOfSpatialEntitiesOrAnObject
 aSetOfSpatialEntitiesOrAnObject = aSpatialEntity  or a Collection of SpatialEntities"
@@ -68,7 +70,7 @@ aSetOfSpatialEntitiesOrAnObject = aSpatialEntity  or a Collection of SpatialEnti
 	^theSpaceModel createOneAggregate: self from: coll
 ]
 
-{ #category : #'components - managing' }
+{ #category : 'components - managing' }
 CMSpatialEntitySet >> addComponent: aSpatialEntity [
 	"Purpose: adds a given component and notifies the change to dependents
 Argument: aSpatialEntity = <SpatialEntity>"
@@ -82,7 +84,7 @@ Argument: aSpatialEntity = <SpatialEntity>"
 		from: (EntityReference on: self)
 ]
 
-{ #category : #'components - managing' }
+{ #category : 'components - managing' }
 CMSpatialEntitySet >> addComponents: aCollecOfSpatialEntities [
 	"Purpose: adds a given aCollecOfSpatialEntities of components and notifies the change to dependents
 Argument: aCollecOfSpatialEntities = <Collection(SpatialEntity)>
@@ -98,7 +100,7 @@ Example: self addComponents: self surround"
 		from: (EntityReference on: self)
 ]
 
-{ #category : #'components - managing' }
+{ #category : 'components - managing' }
 CMSpatialEntitySet >> addSilentlyComponent: cell [
 	"Purpose: silently adds a given component (do not notify the change to dependents and do not recalulate the surrounding)
 Argument: aSpatialEntity = <SpatialEntity>
@@ -110,7 +112,7 @@ Example: self addSilentlyComponent: aCell"
 	self components add: cell
 ]
 
-{ #category : #'components - managing' }
+{ #category : 'components - managing' }
 CMSpatialEntitySet >> addSilentlyComponents: aCollecOfSpatialEntities [
 	"Purpose: adds silently a given aCollecOfSpatialEntities of components (do not notify the change to dependents and do not recalulate the surrounding)
 Argument: aCollecOfSpatialEntities = <Collection(SpatialEntity)>
@@ -125,7 +127,7 @@ Example: self addSilentlyComponents: self surround"
 				put: self]
 ]
 
-{ #category : #'components - managing' }
+{ #category : 'components - managing' }
 CMSpatialEntitySet >> addSurroundings [
 	"Purpose: swells on its outer perimeter by the surrounding components 
 Return value: <Boolean> (has it spread or not)"
@@ -133,7 +135,7 @@ Return value: <Boolean> (has it spread or not)"
 	^self addSurroundingsVerifying: [:c | true]
 ]
 
-{ #category : #'components - managing' }
+{ #category : 'components - managing' }
 CMSpatialEntitySet >> addSurroundingsN: nbNewCells [
 	"Purpose: swells on its outer perimeter by a givent number of new components
 Argument: nbNewCells = <Integer>
@@ -145,7 +147,7 @@ Example: self swellWithNbCells: 10"
 		verifying: [:c | true]
 ]
 
-{ #category : #'components - managing' }
+{ #category : 'components - managing' }
 CMSpatialEntitySet >> addSurroundingsN: nbNewCells verifying: aCondition [
 	"Purpose: swells on its outer perimeter by a givent number of new components verifying a specified condition
 Arguments: nbNewCells = <Integer>
@@ -169,7 +171,7 @@ Example: self swellWithNbCells: 10 verifying: [:c | c isClosed not]"
 	^ newCells isNotEmpty
 ]
 
-{ #category : #'components - managing' }
+{ #category : 'components - managing' }
 CMSpatialEntitySet >> addSurroundingsVerifying: aCondition [
 	"Purpose: swells on its outer perimeter by the surrounding components verifying a specified condition
 Argument: aCondition = <BlockClosure>
@@ -183,7 +185,7 @@ Example: self addSurroundingsVerifying: [:c | c isClosed not]"
 	^ newCells isNotEmpty
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntitySet >> at: index [
 	"Purpose: answers the value of an indexable component in the receiver
 Argument: index = <Integer>
@@ -192,14 +194,14 @@ Return value: <SpatialEntity>"
 	^self components asOrderedCollection at: index
 ]
 
-{ #category : #obsolete }
+{ #category : 'obsolete' }
 CMSpatialEntitySet >> changedWithNewComponents: aCollecOfComponents [
 	"the shape of the aggregate has changed, then new POVs must be created"
 	self deprecated: 'not used anymore, the direct notification to the POVs has been replaced by a notification via the spaceModel Old method : self povs do: [: aPov | aPov addAll: aCollecOfComponents]. This method will disappear in the next version'.
 	self cormasModel spaceModel dispatchOneCompoundSpatialEntity: self
 ]
 
-{ #category : #displaying }
+{ #category : 'displaying' }
 CMSpatialEntitySet >> colorC: aColor [
 	"Purpose: for each component, changes background color to a given color (to draw observer attention to the components)
 Argument: aColorSymbol = <ByteSymbol>
@@ -209,7 +211,7 @@ Example: self colorC: #pink"
 		ifFalse: [self components do: [:v | v color: aColor]]
 ]
 
-{ #category : #displaying }
+{ #category : 'displaying' }
 CMSpatialEntitySet >> colorE: aColor [
 	"Purpose: for each element of the epidermis, changes background color to a given color (to draw observer attention to the surround)
 Argument: aColorSymbol = <ByteSymbol>
@@ -218,7 +220,7 @@ Example: self colorS: #pink"
 	self getEpidermis do: [:v | v color: aColor]
 ]
 
-{ #category : #displaying }
+{ #category : 'displaying' }
 CMSpatialEntitySet >> colorS: aColor [
 	"Purpose: for each element of the surround, changes background color to a given color (to draw observer attention to the surround)
 Argument: aColorSymbol = <ByteSymbol>
@@ -227,14 +229,14 @@ Example: self colorS: #pink"
 	self surround isNil ifFalse: [self surround do: [:v | v color: aColor]]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntitySet >> components [
 	"collection of constituent elements"
 	
 	^components ifNil: [components := OrderedCollection new]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntitySet >> components: aList [
 	
 	aList
@@ -246,7 +248,7 @@ CMSpatialEntitySet >> components: aList [
 	components := aList
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMSpatialEntitySet >> containsCell: aCell [
 	"Purpose: "
 	
@@ -256,7 +258,7 @@ CMSpatialEntitySet >> containsCell: aCell [
 		ifFalse: [^self components containsCell: aCell]	"!! recursiv"
 ]
 
-{ #category : #controlling }
+{ #category : 'controlling' }
 CMSpatialEntitySet >> delete [
 
 	"Purpose: gets rid of this object. The collectGarbage is IMMEDIATELY performed  (ie. the receiver of class X is removed from 'theXXXs' collection)"
@@ -269,7 +271,7 @@ CMSpatialEntitySet >> delete [
 	self collector ifNotNil: [ self collector removeEntity: self ]
 ]
 
-{ #category : #control }
+{ #category : 'control' }
 CMSpatialEntitySet >> deleteComponent: anItem [
 	"Purpose: removes a given component and notifies the change to dependents
 Argument: anItem = <SpatialEntity>"
@@ -282,7 +284,7 @@ Argument: anItem = <SpatialEntity>"
 		put: nil
 ]
 
-{ #category : #control }
+{ #category : 'control' }
 CMSpatialEntitySet >> deleteComponents: aCollec [
 	"Purpose: removes a given collection of components and notifies the change to dependents
 Argument: aCollec = <Collection(SpatialEntity)>
@@ -295,14 +297,14 @@ Example: self removeComponents: self getEpidermis"
 				put: nil]
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 CMSpatialEntitySet >> destroyed: aBoolean [
 	"for the moment, it is a non destructive method for the components. "
 
 	super destroyed: aBoolean
 ]
 
-{ #category : #'environment - distance' }
+{ #category : 'environment - distance' }
 CMSpatialEntitySet >> distanceTo: aSpatialEntity [
 	"Purpose: returns the Manhattan distance (in cells) between the receiver and aSpatialEntity
 Argument: aSpatialEntity = <SpatialEntity>
@@ -315,7 +317,7 @@ Return value: <Integer>"
 	^sortColl first
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntitySet >> elementaryComponents [
 	"Purpose: returns the elementary components. 
 Use to collect the components of components when the receiver is an aggregate of aggregates"
@@ -329,7 +331,7 @@ Use to collect the components of components when the receiver is an aggregate of
 			^allComponents]
 ]
 
-{ #category : #'environment - distance' }
+{ #category : 'environment - distance' }
 CMSpatialEntitySet >> euclideanDistanceTo: aSpatialEntity [
 	"Purpose: returns the distance between the receiver and a given spatial entity, using the Euclidean distance formula : square root of [(Xa - Xb)^2 + (Ya - Yb)^2)]
 Argument: aSpatialEntity = <SpatialEntity>
@@ -341,7 +343,7 @@ Return value: <Number>"
 	^ sortColl first
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntitySet >> externalSurround [
 	"Returns a collection of cells that surround the aggregate, WITHOUT included cells located into the aggregate"
 	
@@ -359,7 +361,7 @@ CMSpatialEntitySet >> externalSurround [
 	^externalSurround
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntitySet >> getEpidermis [
 	"Purpose: returns the components belonging to the inner perimeter, i.e. components of the receiver with at least one neighbour not component of the receiver
 Return value: <Collection(SpatialEntity)>"
@@ -367,7 +369,7 @@ Return value: <Collection(SpatialEntity)>"
 	^self getSkins first
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntitySet >> getLinkedCellsOf: aCollectionOfCells [
 	"returns a collection of collections. Each subcollection contains connected cells"
 	
@@ -388,7 +390,7 @@ CMSpatialEntitySet >> getLinkedCellsOf: aCollectionOfCells [
 	^bigColl
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntitySet >> idsWithSeparator: aChar [
 	"Purpose: returns the id of receiver and all the id of the components
 Argument: aChar = <Character>
@@ -402,7 +404,7 @@ ReturnValue: <ByteString>"
 	^string
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntitySet >> internalLines [
 	"Returns a collection containing the internal contours of this spatialEntity. 
 For example, a ring-like aggregate will return a collection with 1 polyline, when an 8-like aggregate will returns 2 polylines"
@@ -410,7 +412,7 @@ For example, a ring-like aggregate will return a collection with 1 polyline, whe
 	^ self defaultPOV internalLines
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntitySet >> internalSurrounds [
 	"Returns a collection of internal cells that surround the aggregate (only the cells located into the aggregate)"
 	
@@ -425,7 +427,7 @@ CMSpatialEntitySet >> internalSurrounds [
 	^linkedCells
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMSpatialEntitySet >> isCrossedByArc: anArc [
 	"answer if the Aggregate is crossed by anArc"
 	"does not work anymore. an ESE does not know directly it bounds."
@@ -440,19 +442,19 @@ CMSpatialEntitySet >> isCrossedByArc: anArc [
 	^false
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMSpatialEntitySet >> isElementary [
 	
 	^false
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMSpatialEntitySet >> isSpatialEntitySet [
 	
 	^true
 ]
 
-{ #category : #displaying }
+{ #category : 'displaying' }
 CMSpatialEntitySet >> joinSegments: aCollecOfLineSegments [
 	"clp juin 2000"
 	"Prend en parametre une collection de LineSegments et
@@ -479,7 +481,7 @@ retourne la collection des noeuds de la ligne brisee"
 	^vertices
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 CMSpatialEntitySet >> nearestCellVerifying: aBlock1 constraintOnPath: aBlock2 [
 	"Purpose: returns the nearest cell verifying a specified condition1, the cells in between verifying another specified condition2.
 Arguments: condition1 = <BlockClosure>
@@ -508,7 +510,7 @@ Example := self nearestCellVerifying: [:aCell | aCell hasWater] constraintOnPath
 	^target
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntitySet >> neighborsOf: aCollectionOfCells [
 	"returns a collection of cells that all are neighbors of each element of aCollectionOfCells"
 	
@@ -518,7 +520,7 @@ CMSpatialEntitySet >> neighborsOf: aCollectionOfCells [
 	^OrderedSet withAll: neighbors - aCollectionOfCells
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntitySet >> outline [
 	" return a Polyline arround the spatialEntity"
 	
@@ -526,7 +528,7 @@ CMSpatialEntitySet >> outline [
 		ifNil: [ outline := self setOutline ]
 ]
 
-{ #category : #'components - managing' }
+{ #category : 'components - managing' }
 CMSpatialEntitySet >> receiveComponent: x fromEntity: y [
 	"Purpose: performs an exchange of component among the receiver and another spatial entity made of same kind of lower level spatial entities
 Arguments: x = <SpatialEntity>
@@ -536,7 +538,7 @@ Arguments: x = <SpatialEntity>
 	self addComponent: x
 ]
 
-{ #category : #'components - managing' }
+{ #category : 'components - managing' }
 CMSpatialEntitySet >> receiveComponents: aCollec fromEntity: y [
 	"Purpose: performs an exchange of components among the receiver and another spatial entity made of same kind of lower level spatial entities
 Arguments: aCollec = <Collection(SpatialEntity)>
@@ -546,7 +548,7 @@ Arguments: aCollec = <Collection(SpatialEntity)>
 	self addComponents: aCollec
 ]
 
-{ #category : #'components - managing' }
+{ #category : 'components - managing' }
 CMSpatialEntitySet >> receiveOneSurroundingComponentFromEntity: y [
 	"Purpose: performs an exchange of component among the receiver and another spatial entity made of same kind of lower level spatial entities
 The two spatial entities have to be neighbours.
@@ -568,7 +570,7 @@ Arguments: y = <SpatialEntitySet>"
 	^winner
 ]
 
-{ #category : #'components - managing' }
+{ #category : 'components - managing' }
 CMSpatialEntitySet >> removeComponent: anItem [
 	"Purpose: removes a given component and notifies the change to dependents
 Argument: anItem = <SpatialEntity>"
@@ -585,7 +587,7 @@ Argument: anItem = <SpatialEntity>"
 				from: (EntityReference on: self) ]
 ]
 
-{ #category : #'components - managing' }
+{ #category : 'components - managing' }
 CMSpatialEntitySet >> removeComponents: aCollec [
 	"Purpose: removes a given collection of components and notifies the change to dependents
 Argument: aCollec = <Collection(SpatialEntity)>
@@ -600,7 +602,7 @@ Example: self removeComponents: self getEpidermis"
 		ifTrue: [ self delete ]
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 CMSpatialEntitySet >> reset [
 	"super reset."
 	"-> il ne faut pas faire un super reset sinon ca envoi un leave √† allOccupants"
@@ -613,7 +615,7 @@ CMSpatialEntitySet >> reset [
 	outline := nil
 ]
 
-{ #category : #displaying }
+{ #category : 'displaying' }
 CMSpatialEntitySet >> setDelimitors [
 	"outline = external Polyline.
 internalLines  = collection of Polylines. nbSegments lineWidth "
@@ -665,7 +667,7 @@ internalLines  = collection of Polylines. nbSegments lineWidth "
 	segments removeAll: duplicates
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 CMSpatialEntitySet >> setSurround [
 	"Returns a collection of cells that surround the aggregate, including the cells located into the aggregate"
 	"Faut dire c'qui est, c'est du brutal !
@@ -680,7 +682,7 @@ CMSpatialEntitySet >> setSurround [
 	^surround
 ]
 
-{ #category : #'environment - distance' }
+{ #category : 'environment - distance' }
 CMSpatialEntitySet >> shortestDistanceToCells: aCollecOfCells constraintOnPath: aBlock [
 	"Purpose: gets the shortest distance (in cell unit) to a collection of other cells, taking a specified constraint into account.
 Arguments: aCollecOfCells = <Collection(SpatialEntityElement)>
@@ -693,33 +695,33 @@ Example: self shortestDistanceToCells: self myPlots constraintOnPath: [:aCell | 
 			(self nearestCellFromCells: aCollecOfCells constraintOnPath: aBlock)
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntitySet >> size [
 	
 	^self components size
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntitySet >> surface [
 	
 	^self size
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntitySet >> surround [
 	"Returns a collection of cells that surround the aggregate, including the cells located into the aggregate"
 	
 	^surround ifNil: [surround := self setSurround]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntitySet >> surround: aCollectionOfCells [
 	"aCollectionOfCells <aCollection of SpatialEntityElements>"
 	
 	surround := aCollectionOfCells
 ]
 
-{ #category : #obsolete }
+{ #category : 'obsolete' }
 CMSpatialEntitySet >> swell [
 	"The aggregat swells on its surround layer. It swells if there is enough space arround it.
 Returns a boolean indicating if it has spread"
@@ -732,7 +734,7 @@ Returns a boolean indicating if it has spread"
 	^true
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntitySet >> theOccupants [
 	"redefined to collect the occupants registered in all the components"
 	
@@ -749,20 +751,20 @@ CMSpatialEntitySet >> theOccupants [
 	^theOccupants
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntitySet >> type [
 	"descriptor"
 	
 	^type ifNil: [type := #unknow]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntitySet >> type: something [
 	
 	type := something
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 CMSpatialEntitySet >> wayTo: aSpatialEntity [
 	"Purpose: gets the shortest way to another spatial entity
 Argument: aSpatialEntity = <SpatialEntity>
@@ -781,7 +783,7 @@ Example: self wayTo: self spaceModel centralLocation"
 	^path
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 CMSpatialEntitySet >> wayToCell: aCell [
 	"Purpose: returns one of the shortest paths to aCell
 Argument: aCell = <SpatialEntityElement>

@@ -3,15 +3,17 @@ PassiveObject is an empty class.
 An instance of this class or its subclass should be a simple entity of the model, but should belong to the 'world' (it should have a sense in term of the model).
 "
 Class {
-	#name : #CMPassiveObject,
-	#superclass : #CMEntity,
+	#name : 'CMPassiveObject',
+	#superclass : 'CMEntity',
 	#instVars : [
 		'destroyed'
 	],
-	#category : #'Cormas-Core-Entities'
+	#category : 'Cormas-Core-Entities',
+	#package : 'Cormas-Core',
+	#tag : 'Entities'
 }
 
-{ #category : #controlling }
+{ #category : 'controlling' }
 CMPassiveObject >> delete [
 
 	"Purpose: gets rid of this object. The collectGarbage is IMMEDIATELY performed  (ie. the receiver of class X is removed from 'theXXXs' collection)"
@@ -20,7 +22,7 @@ CMPassiveObject >> delete [
 	self collector ifNotNil: [ self collector removeEntity: self ]
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 CMPassiveObject >> destroyed [
 	"Answer if the entity is destroyed or not"
 	
@@ -28,21 +30,21 @@ CMPassiveObject >> destroyed [
 	^ destroyed ifNil: [ destroyed := false ]
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 CMPassiveObject >> destroyed: aBoolean [
 	
 	destroyed := aBoolean.
 	(aBoolean and: [self isSituated]) ifTrue: [self leave]
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMPassiveObject >> isDead [
 	" See superimplementor's comment "
 
 	^ destroyed ifNil: [ destroyed := false ]
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMPassiveObject >> isPassiveObject [
 	
 	^true

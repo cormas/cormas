@@ -10,22 +10,24 @@ ArcEntity defines the #nodeType method that returns the class of the node. By de
 
 "
 Class {
-	#name : #CMArcEntity,
-	#superclass : #CMNetworkComponentEntity,
+	#name : 'CMArcEntity',
+	#superclass : 'CMNetworkComponentEntity',
 	#instVars : [
 		'startNode',
 		'stopNode'
 	],
-	#category : #'Cormas-Core-Entities'
+	#category : 'Cormas-Core-Entities',
+	#package : 'Cormas-Core',
+	#tag : 'Entities'
 }
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMArcEntity class >> isArcClass [
 	
 	^true
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CMArcEntity class >> newFromCell: startCell toCell: endCell [
 	
 	| inst |
@@ -34,7 +36,7 @@ CMArcEntity class >> newFromCell: startCell toCell: endCell [
 	^inst
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CMArcEntity class >> newFromNode: startNode toNode: endNode [
 	
 	| inst |
@@ -43,7 +45,7 @@ CMArcEntity class >> newFromNode: startNode toNode: endNode [
 	^inst
 ]
 
-{ #category : #'add-arc' }
+{ #category : 'add-arc' }
 CMArcEntity >> changeStartNode: anotherStartNode [
 	"change the previous endNode to another node: anotherEndNode.
 Remove the old Node if it doesn't contains other arc"
@@ -56,7 +58,7 @@ Remove the old Node if it doesn't contains other arc"
 	oldStartNode removeArc: self
 ]
 
-{ #category : #'add-arc' }
+{ #category : 'add-arc' }
 CMArcEntity >> changeStopNode: anotherStopNode [
 	"change the previous endNode to another node: anotherEndNode.
 Remove the old Node if it doesn't contains other arc"
@@ -68,7 +70,7 @@ Remove the old Node if it doesn't contains other arc"
 	oldStopNode removeArc: self
 ]
 
-{ #category : #network }
+{ #category : 'network' }
 CMArcEntity >> cyclicWays [
 	"return a collection of cyclic ways that the Arc belongs to. Each cyclic way is an ordered collection of arcs, starting with the receiver arc.
 	An empty collection means that the arc doesn't belong to any cyclic way. But one arc may belong to several cyclic ways"
@@ -99,7 +101,7 @@ CMArcEntity >> cyclicWays [
 	^cyclicArcWays
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 CMArcEntity >> destroyed: aBoolean [
 	
 	super destroyed: aBoolean.
@@ -109,14 +111,14 @@ CMArcEntity >> destroyed: aBoolean [
 			stopNode isNil ifFalse: [self stopNode removeArc: self]]
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMArcEntity >> doesCrossCell: aCell [
 	"answer if aCell is crossed by this Arc"
 	
 	^aCell isCrossedByArc: self
 ]
 
-{ #category : #network }
+{ #category : 'network' }
 CMArcEntity >> downstreamWay [
 	"returns the shortest way from this Arc towards the down stream direction (taking into account the orientation of the network).
 	The way is an ordered collection of arcs, starting with the receiver node.
@@ -129,7 +131,7 @@ CMArcEntity >> downstreamWay [
 	^sortedWays first
 ]
 
-{ #category : #network }
+{ #category : 'network' }
 CMArcEntity >> downstreamWays [
 	"returns a collection of all the ways from this Arc towards the down stream direction (taking into account the orientation of the network). Each way is an ordered collection of arcs, starting with the receiver arc. "
 	
@@ -152,7 +154,7 @@ CMArcEntity >> downstreamWays [
 	^arcWays
 ]
 
-{ #category : #network }
+{ #category : 'network' }
 CMArcEntity >> fullNetwork [
 	"returns an instance of NetworkEntity containing all the connected arcs of the network I belong to, as well as all the nodes"
 	
@@ -163,7 +165,7 @@ CMArcEntity >> fullNetwork [
 	^network
 ]
 
-{ #category : #network }
+{ #category : 'network' }
 CMArcEntity >> fullNetworkType: aNetworkClass [
 	"returns an instance of aNetworkClass containing all the connected arcs of the network it belongs to, as well as all the nodes.
 aNetworkClass is a subclass of NetworkEntity"
@@ -175,7 +177,7 @@ aNetworkClass is a subclass of NetworkEntity"
 	^network
 ]
 
-{ #category : #ways }
+{ #category : 'ways' }
 CMArcEntity >> fullNetworkWithout: rejectedNetworkSet [
 	"returns the main network. 
 	rejectedCellsSet = <Set>
@@ -196,14 +198,14 @@ CMArcEntity >> fullNetworkWithout: rejectedNetworkSet [
 	^aMainNetwork
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMArcEntity >> incomingArcs [
 	"returns a collection of adjacent arcs incoming to my startNode"
 	
 	^self startNode incomingArcs
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 CMArcEntity >> initFrom: initNode to: endNode [
 	
 	self startNode: initNode.
@@ -213,7 +215,7 @@ CMArcEntity >> initFrom: initNode to: endNode [
 		to: endNode patch
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 CMArcEntity >> initFromCell: startCell toCell: endCell [
 	
 	| previousNodes initNode endNode |
@@ -230,27 +232,27 @@ CMArcEntity >> initFromCell: startCell toCell: endCell [
 	self isMovedFrom: startCell to: endCell
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMArcEntity >> isArcEntity [
 	
 	^true
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMArcEntity >> isConnectedTo: anotherArc [
 	"answers if anotherArc is a component of its network (without taking into account the orientation of the network)"
 	
 	^self fullNetwork arcs includes: anotherArc
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMArcEntity >> isCyclic [
 	"answer if the Arc has the same target and source node"
 	
 	^self startNode = self stopNode
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMArcEntity >> isDownstreamFrom: anotherArc [
 	"answers if anotherArc is a component of its network towards the down stream direction (taking into account the orientation of the network)"
 	
@@ -261,7 +263,7 @@ CMArcEntity >> isDownstreamFrom: anotherArc [
 	^false
 ]
 
-{ #category : #procedures }
+{ #category : 'procedures' }
 CMArcEntity >> isMovedFrom: startCell to: endCell [
 	"the startNode of the Arc is moved to aSpatialEntityElement.
 	the stopNode of the Arc is moved to aSpatialEntityElement.
@@ -289,7 +291,7 @@ CMArcEntity >> isMovedFrom: startCell to: endCell [
 				from: (EntityReference on: self) ]
 ]
 
-{ #category : #procedures }
+{ #category : 'procedures' }
 CMArcEntity >> isMovedTo: startCell [
 	"the startNode of the Arc is moved to aSpatialEntityElement.
 	aSpatialEntityElement = <SpatialEntityElement>"
@@ -320,19 +322,19 @@ CMArcEntity >> isMovedTo: startCell [
 				from: (EntityReference on: self) ]
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMArcEntity >> isNetworkStartArc [
 	
 	^self startNode isNetworkStartNode
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMArcEntity >> isNetworkStopArc [
 	
 	^self stopNode isNetworkStopNode
 ]
 
-{ #category : #'star testing' }
+{ #category : 'star testing' }
 CMArcEntity >> isSituated [
 	"Purpose: tests the location somewhere in the spatial grid"
 	^super isSituated.
@@ -341,7 +343,7 @@ CMArcEntity >> isSituated [
 	^(self startNode isSituated and:[self stopNode isSituated ])"
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMArcEntity >> isUpstreamOf: anotherArc [
 	"answers if anotherArc is a component of its network towards the up stream direction (taking into account the orientation of the network)"
 	
@@ -352,7 +354,7 @@ CMArcEntity >> isUpstreamOf: anotherArc [
 	^false
 ]
 
-{ #category : #procedures }
+{ #category : 'procedures' }
 CMArcEntity >> leaveWhileMoving: isBeingMoved [
 	"The situated Arc is not located any more. But it is still 'alive'  "
 
@@ -377,26 +379,26 @@ CMArcEntity >> leaveWhileMoving: isBeingMoved [
 				from: (EntityReference on: self) ]
 ]
 
-{ #category : #measures }
+{ #category : 'measures' }
 CMArcEntity >> length_direct [
 	"returns the euclidian distance between startNode and endNode"
 	
 	^self startNode patch euclideanDistanceTo: self stopNode patch
 ]
 
-{ #category : #measures }
+{ #category : 'measures' }
 CMArcEntity >> length_inCells [
 	"returns the distance between startNode and endNode, as a number of cells (also known as Manhattan distance)"
 	
 	^self startNode patch distanceTo: self stopNode patch
 ]
 
-{ #category : #'star moving' }
+{ #category : 'star moving' }
 CMArcEntity >> moveStartNodeRandomly [
 	self moveStartNodeTo: self startNode patch randomNeighbour
 ]
 
-{ #category : #procedures }
+{ #category : 'procedures' }
 CMArcEntity >> moveStartNodeTo: aSpatialEntityElement [
 	"the startNode of the Arc is moved to aSpatialEntityElement.
 	aSpatialEntityElement = <SpatialEntityElement>"
@@ -406,12 +408,12 @@ CMArcEntity >> moveStartNodeTo: aSpatialEntityElement [
 	self startNode isMovedTo: aSpatialEntityElement
 ]
 
-{ #category : #'star moving' }
+{ #category : 'star moving' }
 CMArcEntity >> moveStopNodeRandomly [
 	self moveStopNodeTo: self stopNode patch randomNeighbour
 ]
 
-{ #category : #procedures }
+{ #category : 'procedures' }
 CMArcEntity >> moveStopNodeTo: aSpatialEntityElement [
 	"the startNode of the Arc is moved to aSpatialEntityElement.
 	aSpatialEntityElement = <SpatialEntityElement>"
@@ -420,7 +422,7 @@ CMArcEntity >> moveStopNodeTo: aSpatialEntityElement [
 	self stopNode isMovedTo: aSpatialEntityElement
 ]
 
-{ #category : #'add-arc' }
+{ #category : 'add-arc' }
 CMArcEntity >> newIncomingArcFromCell: initCell [
 	"creates and add a new instance of Arc from initCell until my startNode. If there is no node on initCell, it creates it, otherwise it uses the current node  already located on initCell"
 	
@@ -434,7 +436,7 @@ CMArcEntity >> newIncomingArcFromCell: initCell [
 	self newIncomingArcFromNode: initNode
 ]
 
-{ #category : #'add-arc' }
+{ #category : 'add-arc' }
 CMArcEntity >> newIncomingArcFromNode: initNode [
 	"creates and add a new instance of Arc from initNode until my startNode"
 	
@@ -445,7 +447,7 @@ CMArcEntity >> newIncomingArcFromNode: initNode [
 		to: self startNode
 ]
 
-{ #category : #'add-arc' }
+{ #category : 'add-arc' }
 CMArcEntity >> newNode [
 	
 	self nodeType = CMNodeEntity
@@ -453,7 +455,7 @@ CMArcEntity >> newNode [
 		ifFalse: [^self newEntity: self nodeType]
 ]
 
-{ #category : #'add-arc' }
+{ #category : 'add-arc' }
 CMArcEntity >> newOutgoingArcToCell: endCell [
 	"creates and add a new instance of Arc from my stopNode to another cell by creating a new instance of stopNode on endCell if there is none or using the current node if already located on endCell"
 	
@@ -467,7 +469,7 @@ CMArcEntity >> newOutgoingArcToCell: endCell [
 	self newOutgoingArcToNode: endNode
 ]
 
-{ #category : #'add-arc' }
+{ #category : 'add-arc' }
 CMArcEntity >> newOutgoingArcToNode: endNode [
 	"creates and add a new instance of Arc from my stopNode to another node: endNode"
 	
@@ -478,7 +480,7 @@ CMArcEntity >> newOutgoingArcToNode: endNode [
 		to: endNode
 ]
 
-{ #category : #dispatch }
+{ #category : 'dispatch' }
 CMArcEntity >> newStartPosition: aCell [
 	self cormasModel
 		registerEntityChange: #newStartPosition
@@ -486,7 +488,7 @@ CMArcEntity >> newStartPosition: aCell [
 		from: (EntityReference on: self)
 ]
 
-{ #category : #dispatch }
+{ #category : 'dispatch' }
 CMArcEntity >> newStopPosition: aCell [
 	self cormasModel
 		registerEntityChange: #newStopPosition
@@ -494,28 +496,28 @@ CMArcEntity >> newStopPosition: aCell [
 		from: (EntityReference on: self)
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMArcEntity >> nodeType [
 	"return the type of Node of the model. May be redefined"
 	
 	^CMNodeEntity
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMArcEntity >> outgoingArcs [
 	"returns a collection of adjacent arcs starting from my endNode"
 	
 	^self stopNode outgoingArcs
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMArcEntity >> patch [
 	"redefines #patch as the patch of the startNode"
 	
 	^self startNode patch
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMArcEntity >> patch: aCell [
 	"redefines #patch as the patch of the startNode"
 	
@@ -523,7 +525,7 @@ CMArcEntity >> patch: aCell [
 	^self startNode patch: aCell
 ]
 
-{ #category : #procedures }
+{ #category : 'procedures' }
 CMArcEntity >> replaceStartNodeBy: anotherStartNode [
 	"change the previous endNode to another node: anotherEndNode.
 Remove the old Node if it doesn't contains other arc"
@@ -537,7 +539,7 @@ Remove the old Node if it doesn't contains other arc"
 	oldStartNode isNil ifFalse: [oldStartNode removeArc: self]
 ]
 
-{ #category : #procedures }
+{ #category : 'procedures' }
 CMArcEntity >> replaceStopNodeBy: anotherStopNode [
 	"change the previous endNode to another node: anotherEndNode.
 Remove the old Node if it doesn't contains other arc"
@@ -550,7 +552,7 @@ Remove the old Node if it doesn't contains other arc"
 	oldStopNode isNil ifFalse: [oldStopNode removeArc: self]
 ]
 
-{ #category : #procedures }
+{ #category : 'procedures' }
 CMArcEntity >> reverseDirection [
 	"Reverse the direction of the arc (downstream -> upstream)"
 	
@@ -566,19 +568,19 @@ CMArcEntity >> reverseDirection [
 	self newStopPosition: self stopNode patch
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMArcEntity >> startCell [
 	
 	^self startNode patch
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMArcEntity >> startNode [
 	
 	^startNode
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMArcEntity >> startNode: aNode [
 	
 	startNode isNil ifFalse: [self startNode removeArc: self].
@@ -587,7 +589,7 @@ CMArcEntity >> startNode: aNode [
 	aNode changed	"self changed"
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMArcEntity >> startNodeType [
 	"return the Node type of the startNode of the model. May be redefined, ex:
 	startNodeType
@@ -596,19 +598,19 @@ CMArcEntity >> startNodeType [
 	^self nodeType
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMArcEntity >> stopCell [
 	
 	^self stopNode patch
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMArcEntity >> stopNode [
 	
 	^stopNode
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMArcEntity >> stopNode: aNode [
 	
 	stopNode isNil ifFalse: [self stopNode removeArc: self].
@@ -616,14 +618,14 @@ CMArcEntity >> stopNode: aNode [
 	aNode arcs add: self
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMArcEntity >> stopNodeType [
 	"return the Node type of the stopNode of the model. May be redefined"
 	
 	^self nodeType
 ]
 
-{ #category : #network }
+{ #category : 'network' }
 CMArcEntity >> upstreamWay [
 	"returns the shortest way from this Arc towards the up stream direction (taking into account the orientation of the network).
 	The way is an ordered collection of arcs, starting with the receiver arc.
@@ -636,7 +638,7 @@ CMArcEntity >> upstreamWay [
 	^sortedWays first
 ]
 
-{ #category : #network }
+{ #category : 'network' }
 CMArcEntity >> upstreamWays [
 	"returns a collection of all the ways from this Arc towards the up stream direction (taking into account the orientation of the network). Each way is an ordered collection of arcs, starting with the receiver arc. "
 	

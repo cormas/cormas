@@ -1,6 +1,6 @@
 Class {
-	#name : #VectorialPOV,
-	#superclass : #EntityPOV,
+	#name : 'VectorialPOV',
+	#superclass : 'EntityPOV',
 	#instVars : [
 		'outline',
 		'internalLines',
@@ -12,23 +12,25 @@ Class {
 		'position',
 		'isDistortable'
 	],
-	#category : #'Cormas-Core-Legacy'
+	#category : 'Cormas-Core-Legacy',
+	#package : 'Cormas-Core',
+	#tag : 'Legacy'
 }
 
-{ #category : #viewCorrespondance }
+{ #category : 'viewCorrespondance' }
 VectorialPOV class >> asFigure [
 	"^SpatialEntityFigure"
 	
 	self subclassResponsibility
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 VectorialPOV >> asFigure_basic [
 	
 	self subclassResponsibility
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 VectorialPOV >> calculPolyline: nbreSegments [
 	"Set the outline attribut = to a Polyline"
 	
@@ -47,19 +49,19 @@ VectorialPOV >> calculPolyline: nbreSegments [
 	outline := GPolygon newVertices: points
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 VectorialPOV >> center [
 	
 	^self bounds center
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 VectorialPOV >> color [
 	
 	^color	"ifNil:[color := ColorValue red]"
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 VectorialPOV >> color: aColor [
 	
 	aColor isNil 
@@ -69,7 +71,7 @@ VectorialPOV >> color: aColor [
 	color := aColor
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 VectorialPOV >> exportIn: aStream [
 	"Methode modifi√©e par NB le 10/1/2010"
 	"Export the atributes value of the VectorialPOV into a stream, to save it on the disk (in .EV file)
@@ -97,7 +99,7 @@ The attribute values saved are (in order)
 	aStream nextPutAll: '\' withCRs
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 VectorialPOV >> init [
 	
 	self
@@ -110,78 +112,78 @@ VectorialPOV >> init [
 	super init
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 VectorialPOV >> internalLines [
 	"internalLines = the internal contours of a ring-like aggregate."
 	
 	^internalLines ifNil: [internalLines := OrderedCollection new]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 VectorialPOV >> internalLines: anObject [
 	
 	internalLines := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 VectorialPOV >> isDistortable [
 	
 	^isDistortable ifNil: [isDistortable := true]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 VectorialPOV >> isDistortable: anObject [
 	
 	isDistortable := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 VectorialPOV >> isStroked [
 	
 	^isStroked ifNil: [isStroked := false]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 VectorialPOV >> isStroked: b [
 	
 	isStroked := b.
 	self changed: #stroked with: b
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 VectorialPOV >> isVectorialPOV [
 	
 	^true
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 VectorialPOV >> lineColor [
 	
 	^ lineColor 
 		ifNil: [ lineColor := Color black ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 VectorialPOV >> lineColor: aColor [
 	
 	lineColor := aColor.
 	self changed: #lineColor with: aColor
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 VectorialPOV >> lineWidth [
 	
 	^lineWidth ifNil: [lineWidth := 1]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 VectorialPOV >> lineWidth: v [
 	
 	lineWidth := v.
 	self changed: #lineWidth with: v
 ]
 
-{ #category : #obsolete }
+{ #category : 'obsolete' }
 VectorialPOV >> loadFrom: uneImage [
 	
 	"isStroked := uneImage isStroked.
@@ -192,45 +194,45 @@ VectorialPOV >> loadFrom: uneImage [
 	self calculWrapper"
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 VectorialPOV >> nbSegments [
 	
 	^nbSegments ifNil: [nbSegments := self polyline]
 ]
 
-{ #category : #transforming }
+{ #category : 'transforming' }
 VectorialPOV >> nbSegments: n [
 	
 	nbSegments := n.
 	self calculPolyline: n
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 VectorialPOV >> outline [
 	" = a Polyline"
 	
 	^outline
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 VectorialPOV >> outline: aPolyline [
 	
 	outline := aPolyline
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 VectorialPOV >> position [
 	
 	^position ifNil: [position := #center]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 VectorialPOV >> position: anObject [
 	
 	position := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 VectorialPOV >> roundedOutline [
 	" = a Polyline"
 	
@@ -240,13 +242,13 @@ VectorialPOV >> roundedOutline [
 	^ GPolygon newVertices: newPoints
 ]
 
-{ #category : #transforming }
+{ #category : 'transforming' }
 VectorialPOV >> scaledBy: aScaleFactor [
 	
 	self subclassResponsibility
 ]
 
-{ #category : #display }
+{ #category : 'display' }
 VectorialPOV >> show [
 	"Open an inspector showing self as figure"
 	
@@ -261,7 +263,7 @@ VectorialPOV >> show [
 	fig inspect
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 VectorialPOV >> standardCellBounds [
 	
 	^ Rectangle

@@ -1,18 +1,20 @@
 Trait {
-	#name : #TCMLocated,
+	#name : 'TCMLocated',
 	#instVars : [
 		'patch'
 	],
-	#category : #'Cormas-Core-Entities'
+	#category : 'Cormas-Core-Entities',
+	#package : 'Cormas-Core',
+	#tag : 'Entities'
 }
 
-{ #category : #testing }
+{ #category : 'testing' }
 TCMLocated classSide >> isSituatedClass [
 	
 	^true
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 TCMLocated >> aggregates: aClassOrClassName withinRadius: range [
 	"Purpose: returns an OrderedCollection of ComponentSpatialEntities (aggregate or not connex) located within a given radius of the current position of the agent.
 Argument: range = <Integer>
@@ -23,7 +25,7 @@ Return value: <OrderedCollection(SpatialEntity) | nil>"
 		cell myAggregateOfClass: aClassOrClassName ]
 ]
 
-{ #category : #displaying }
+{ #category : 'displaying' }
 TCMLocated >> center [
 	
 	^ patch isNil
@@ -31,7 +33,7 @@ TCMLocated >> center [
 		ifFalse: [ patch center ]
 ]
 
-{ #category : #'environment - sensing - agents' }
+{ #category : 'environment - sensing - agents' }
 TCMLocated >> colocatedEntities: locatedEntityName [
 	"Purpose: returns all entities (except the sender) of a given type located in the same location as the receiver. (all locatedEntityName subclasses are considered).
 	Return value: <Collection(AgentLocation | ObjectLocation)>
@@ -46,7 +48,7 @@ TCMLocated >> colocatedEntities: locatedEntityName [
 	^ occupants
 ]
 
-{ #category : #'environment - sensing - agents' }
+{ #category : 'environment - sensing - agents' }
 TCMLocated >> colocatedEntities: locatedEntityName verifying: aBlock [
 	"Purpose: returns all entities of a given type located in the same location as the receiver and verifying a specified condition.
 Arguments: 	locatedEntityName = <Symbol | Class>
@@ -59,7 +61,7 @@ Example: self colocatedEntities: #Prey verifying: [:p | p isWeak]"
 		ifNotNil: [ (self colocatedEntities: locatedEntityName) select: [:a | aBlock value: a] ]
 ]
 
-{ #category : #'environment - picking - agents' }
+{ #category : 'environment - picking - agents' }
 TCMLocated >> colocatedEntity: locatedEntityName [
 	"Purpose: picks RANDOMLY one among the co-located entities of a given type. 
 If none: returns nil; if more than one: random selection
@@ -76,7 +78,7 @@ Example: self colocatedEntity: #Prey"
 	^ Cormas selectRandomlyFrom: candidates
 ]
 
-{ #category : #'environment - picking - agents' }
+{ #category : 'environment - picking - agents' }
 TCMLocated >> colocatedEntity: locatedEntityName verifying: aCondition [
 	"Purpose: picks RANDOMLY one among the co-located entities of a given type verifying a specified condition. 
 If none: returns nil; if more than one: random selection
@@ -93,7 +95,7 @@ Example: self colocatedEntity: #Prey verifying: [:a | a isWeak]"
 	^ Cormas selectRandomlyFrom: candidates
 ]
 
-{ #category : #'environment - picking - agents' }
+{ #category : 'environment - picking - agents' }
 TCMLocated >> colocatedSimilarAgent [
 	"Purpose: picks RANDOMLY one among the co-located receiver-like entities. 
 If none: returns nil; if more than one: random selection
@@ -108,7 +110,7 @@ Return value: <AgentLocation | nil>"
 	^ Cormas selectRandomlyFrom: candidates
 ]
 
-{ #category : #'environment - picking - agents' }
+{ #category : 'environment - picking - agents' }
 TCMLocated >> colocatedSimilarAgentVerifying: aCondition [
 	"Purpose: picks RANDOMLY one among the co-located receiver-like entities verifying a specified condition. 
 If none: returns nil; if more than one: random selection
@@ -125,7 +127,7 @@ Example: self colocatedSimilarAgentVerifying: [:a | a sex ~= self sex]"
 	^ Cormas selectRandomlyFrom: candidates
 ]
 
-{ #category : #'environment - sensing - agents' }
+{ #category : 'environment - sensing - agents' }
 TCMLocated >> colocatedSimilarAgents [
 	"Purpose: returns all receiver-like entities located in the same location as the receiver.
 Return value: <Collection(AgentLocation)>"
@@ -133,7 +135,7 @@ Return value: <Collection(AgentLocation)>"
 	^ self colocatedEntities: self class name
 ]
 
-{ #category : #'environment - sensing - agents' }
+{ #category : 'environment - sensing - agents' }
 TCMLocated >> colocatedSimilarAgentsVerifying: aBlock [
 	"Purpose: returns all receiver-like entities located in the same location as the receiver and verifying a specified condition.
 Argument: aBlock = <BlockClosure>
@@ -145,7 +147,7 @@ Example: self colocatedSimilarAgentsVerifying: [:a | a sex ~= self sex] "
 		ifNotNil: [ self colocatedSimilarAgents select: [ :a | aBlock value: a ] ]
 ]
 
-{ #category : #displaying }
+{ #category : 'displaying' }
 TCMLocated >> coordinates [
 	" Answer a <Point> with the receiver's coordinates "
 	
@@ -155,13 +157,13 @@ TCMLocated >> coordinates [
 	^ self patch coordinates
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TCMLocated >> cormasModel [
 
 	self explicitRequirement
 ]
 
-{ #category : #'star control' }
+{ #category : 'star control' }
 TCMLocated >> delete [
 "Purpose: gets rid of this object. The collectGarbage is IMMEDIATELY performed  (ie. the receiver of class X is removed from 'theXXXs' collection)"
 
@@ -169,7 +171,7 @@ TCMLocated >> delete [
 	super delete
 ]
 
-{ #category : #'environment - distance' }
+{ #category : 'environment - distance' }
 TCMLocated >> distanceTo: aSpatialEntityOrSituatedEntity [
 	"Purpose: returns the Manhattan distance (in cells) between the patch of the agent and aSpatialEntityOrSituatedEntity
 If it is the distance to a situatedEntity, returrns the distance to the patch of this entity.
@@ -183,7 +185,7 @@ Return value: <Integer>"
 		ifTrue: [^self patch distanceTo: aSpatialEntityOrSituatedEntity]
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 TCMLocated >> interestingDetails [
 	" Answer a <Collection> of interesting receiver's attributes, from a modeler point of view, to display in a popup for example "
 
@@ -192,19 +194,19 @@ TCMLocated >> interestingDetails [
 		}
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 TCMLocated >> isLocatedEntity [
 	
 	^ true
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 TCMLocated >> isSituated [
 "Purpose: tests the location somewhere in the spatial grid"
 	^patch notNil
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TCMLocated >> labelOfPOV [
 	" Answer a <String> displayed to describe the receiver. 
 	To be overwritten if needed"
@@ -212,13 +214,13 @@ TCMLocated >> labelOfPOV [
 	^ String empty
 ]
 
-{ #category : #'star moving' }
+{ #category : 'star moving' }
 TCMLocated >> leave [
 "Purpose: moves the agent away from the spatial grid (sets his patch attribute to nil): the situated agent is not located any more, but it is still 'alive'  "
 	self leaveWhileMoving: false.
 ]
 
-{ #category : #moving }
+{ #category : 'moving' }
 TCMLocated >> leaveWhileMoving: isMoving [
 	"isMoving = <Boolean>"
 
@@ -236,7 +238,7 @@ TCMLocated >> leaveWhileMoving: isMoving [
 	self patch: nil
 ]
 
-{ #category : #'environment - sensing - agents' }
+{ #category : 'environment - sensing - agents' }
 TCMLocated >> locatedEntities: locatedEntityName verifying: aBlock withinRadius: range [
 	"Purpose: returns all located entities of a given type withing a given radius of the current location and fulfilling a specified contraint.
 Arguments: 	locatedEntityName = <Symbol | Class>
@@ -252,7 +254,7 @@ Example: self locatedEntities: #Predator verifying: [:a | a isHungry] withinRadi
 				select: [ :a | aBlock value: a ] ]
 ]
 
-{ #category : #'environment - sensing - agents' }
+{ #category : 'environment - sensing - agents' }
 TCMLocated >> locatedEntities: locatedEntityName withinRadius: range [
 	"Purpose: returns all located entities of a given type withing a given radius of the current location (all locatedEntityName subclasses are considered).
 Return value: <Collection(AgentLocation | ObjectLocation)>
@@ -268,7 +270,7 @@ Example: self locatedEntities: #Predator withinRadius: self perceptionRangePreda
 	^ occupants
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 TCMLocated >> locationsVerifying: aBlock withinRadius: range [
 	"Purpose: returns the spatial entities within a given radius of the receiver current location and verifying the condition specified in aBlock. 
 The current location is considered
@@ -282,7 +284,7 @@ Example: self locationsVerifying: [:c | c isClosed not] withinRadius: 5"
 		ifNotNil: [ self patch recursiveNeighbourhood: range verifying: aBlock ]
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 TCMLocated >> locationsWithinRadius: range [
 	"Purpose: returns a collection a cells within a given radius of the current position
 The current location is considered
@@ -294,7 +296,7 @@ Return value: <Collection(SpatialEntity) | nil>"
 		ifNotNil: [ self patch recursiveNeighbourhood: range ]
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 TCMLocated >> locationsWithoutAny: locatedEntityName withinRadius: range [
 	"Purpose: returns the spatial entities in a given range without any occupant of a given type. 
 The current location is considered
@@ -308,7 +310,7 @@ Example: self locationsWithoutAny: Predator withinRadius: self perceptionRangePr
 		ifNotNil: [ self patch recursiveNeighbourhood: range withoutAny: locatedEntityName ]
 ]
 
-{ #category : #'star moving' }
+{ #category : 'star moving' }
 TCMLocated >> moveE [
 "Purpose: moves eastward if neighbourE exists (raster grid), do not move otherwise"
 	
@@ -316,7 +318,7 @@ TCMLocated >> moveE [
 		ifTrue: [self moveTo: self patch neighbourE]
 ]
 
-{ #category : #'star moving' }
+{ #category : 'star moving' }
 TCMLocated >> moveN [
 "Purpose: moves northward if neighbourN exists (raster grid with square cells), do not move otherwise"
 	
@@ -324,7 +326,7 @@ TCMLocated >> moveN [
 		ifTrue: [self moveTo: self patch neighbourN]
 ]
 
-{ #category : #'star moving' }
+{ #category : 'star moving' }
 TCMLocated >> moveNE [
 "Purpose: moves northeastward if neighbourNE exists (raster grid with hexagons or 8-neighbours squares), do not move otherwise"
 	
@@ -332,7 +334,7 @@ TCMLocated >> moveNE [
 		ifTrue: [self moveTo: self patch neighbourNE]
 ]
 
-{ #category : #'star moving' }
+{ #category : 'star moving' }
 TCMLocated >> moveNW [
 "Purpose: moves northwestward if neighbourNW exists (raster grid with hexagons or 8-neighbours squares), do not move otherwise"
 	
@@ -340,7 +342,7 @@ TCMLocated >> moveNW [
 		ifTrue: [self moveTo: self patch neighbourNW]
 ]
 
-{ #category : #moving }
+{ #category : 'moving' }
 TCMLocated >> moveNcells: n towards: aCell [
 	"Purpose: moves n cells in direction of a given location.
 Argument: aCell = <SpatialEntityElement>
@@ -358,7 +360,7 @@ Example: self moveNcells: 5 towards: self house patch"
 				ifFalse: [ self moveTo: (path at: n) ] ] ]
 ]
 
-{ #category : #moving }
+{ #category : 'moving' }
 TCMLocated >> moveNcells: n towards: aCell constraintOnPath: aBlock [
 	"Purpose: moves n cells in direction of a given location, taking a specified constraint on each cell of the path to destination.
 Argument: aCell = <SpatialEntityElement>
@@ -376,7 +378,7 @@ Example: self moveNcells: 3 towards: self house patch constraintOnPath: [:c | c 
 				ifFalse: [ self moveTo: (path at: n) ] ] ]
 ]
 
-{ #category : #'star moving' }
+{ #category : 'star moving' }
 TCMLocated >> moveS [
 "Purpose: moves southward if neighbourS exists (raster grid with square cells), do not move otherwise"
 	
@@ -384,7 +386,7 @@ TCMLocated >> moveS [
 		ifTrue: [self moveTo: self patch neighbourS]
 ]
 
-{ #category : #'star moving' }
+{ #category : 'star moving' }
 TCMLocated >> moveSE [
 "Purpose: moves southeastward if neighbourSE exists (raster grid with hexagons or 8-neighbours squares), do not move otherwise"
 	
@@ -392,7 +394,7 @@ TCMLocated >> moveSE [
 		ifTrue: [self moveTo: self patch neighbourSE]
 ]
 
-{ #category : #'star moving' }
+{ #category : 'star moving' }
 TCMLocated >> moveSW [
 "Purpose: moves southwestward if neighbourSW exists (raster grid with hexagons or 8-neighbours squares), do not move otherwise"
 	
@@ -400,7 +402,7 @@ TCMLocated >> moveSW [
 		ifTrue: [self moveTo: self patch neighbourSW]
 ]
 
-{ #category : #moving }
+{ #category : 'moving' }
 TCMLocated >> moveTo: aSpatialEntity [
 	"Purpose: moves to a given location.
 Argument: aSpatialEntity = <SpatialEntity>
@@ -412,7 +414,7 @@ Example: self moveTo: self patch neighbourN"
 	self patch addOccupant: self.
 ]
 
-{ #category : #moving }
+{ #category : 'moving' }
 TCMLocated >> moveTowards: aCell [
 	"Purpose: moves one cell in direction of a given location.
 Argument: aCell = <SpatialEntityElement>
@@ -423,7 +425,7 @@ Example: self moveTowards: self house patch"
 			self moveTo: (self patch wayTo: aCell) first ] ]
 ]
 
-{ #category : #moving }
+{ #category : 'moving' }
 TCMLocated >> moveTowards: aCell constraintOnPath: aBlock [
 	"Purpose: moves one cell in direction of a given location, taking a specified constraint on each cell of the path to destination.
 Argument: aCell = <SpatialEntityElement>
@@ -441,7 +443,7 @@ Example: self moveTowards: self house patch constraintOnPath: [:c | c isClosed n
 			self moveTo: path second ] ]
 ]
 
-{ #category : #'star moving' }
+{ #category : 'star moving' }
 TCMLocated >> moveW [
 "Purpose: moves westward if neighbourW exists (raster grid), do not move otherwise"
 	
@@ -449,7 +451,7 @@ TCMLocated >> moveW [
 		ifTrue: [self moveTo: self patch neighbourW]
 ]
 
-{ #category : #'environment - picking - space' }
+{ #category : 'environment - picking - space' }
 TCMLocated >> nearestEmptyLocation [
 	"Purpose: returns the nearest spatial entity with no occupant of any kind. 
 The current location is NOT considered
@@ -461,7 +463,7 @@ Return value: <SpatialEntity | nil>"
 		ifNotNil: [ self patch nearestEmptyCell ]
 ]
 
-{ #category : #'environment - picking - space' }
+{ #category : 'environment - picking - space' }
 TCMLocated >> nearestEmptyLocationWithinRadius: range [
 	"Purpose: returns the nearest spatial entity within a given radius of the current location and with no occupant of any kind. 
 The current location is NOT considered
@@ -474,7 +476,7 @@ Return value: <SpatialEntity | nil>"
 		ifNotNil: [ self patch nearestEmptyNeighborWithinRadius: range ]
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 TCMLocated >> nearestEmptyLocations [
 	"Purpose: returns the nearest spatial entities with no occupant of any kind.
 The current location is NOT considered
@@ -485,7 +487,7 @@ Return value: <Collection(SpatialEntity) | nil>"
 		ifNotNil: [ self patch nearestEmptyCells ]
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 TCMLocated >> nearestEmptyLocationsWithinRadius: range [
 	"Purpose: returns the nearest spatial entities with no occupant of any kind and within a given radius of the current location.
 The current location is NOT considered
@@ -497,7 +499,7 @@ Return value: <Collection(SpatialEntity) | nil>"
 		ifNotNil: [ self patch nearestEmptyNeighborsWithinRadius: range ]
 ]
 
-{ #category : #'environment - sensing - agents' }
+{ #category : 'environment - sensing - agents' }
 TCMLocated >> nearestLocatedEntities: locatedEntityName verifying: aBlock withinRadius: range [
 	"Purpose: returns the nearest located entities of a given type withing a given radius of the current location and fulfilling a specified contraint.
 Arguments: 	locatedEntityName = <Symbol | Class>
@@ -513,7 +515,7 @@ Example: self nearestLocatedEntities: #Predator verifying: [:a | a isHungry] wit
 				select: [ :entity | aBlock value: entity ] ]
 ]
 
-{ #category : #'environment - sensing - agents' }
+{ #category : 'environment - sensing - agents' }
 TCMLocated >> nearestLocatedEntities: locatedEntityName withinRadius: range [
 	"Purpose: returns the nearest located entities of a given type withing a given radius of the current location.
 Arguments: 	locatedEntityName = <Symbol | Class>
@@ -534,7 +536,7 @@ Example: self nearestLocatedEntities: #Predator withinRadius: self perceptionRan
 	^ entities
 ]
 
-{ #category : #'environment - picking - space' }
+{ #category : 'environment - picking - space' }
 TCMLocated >> nearestLocationVerifying: aBlock [
 	"Purpose: returns the nearest spatial entity fulfilling the constraint specified in aBlock. 
 The current location is NOT considered
@@ -547,7 +549,7 @@ Example: self nearestLocationVerifying: [:c | c isClosed not]"
 		ifNotNil: [ self patch nearestCellVerifying: aBlock ]
 ]
 
-{ #category : #'environment - picking - space' }
+{ #category : 'environment - picking - space' }
 TCMLocated >> nearestLocationVerifying: aBlock withinRadius: range [
 	"Purpose: returns the nearest spatial entity within a given radius of the current location and fulfilling the constraint specified in aBlock. 
 The current location is NOT considered
@@ -562,7 +564,7 @@ Example: self nearestLocationVerifying: [:c | c isClosed not] withinRadius: 5"
 		ifNotNil: [ self patch nearestNeighborVerifying: aBlock withinRadius: range ]
 ]
 
-{ #category : #'environment - picking - space' }
+{ #category : 'environment - picking - space' }
 TCMLocated >> nearestLocationWithoutAny: locatedEntityName [
 	"Purpose: returns the nearest spatial entity without any occupant of a given type.
 The current location is NOT considered
@@ -576,7 +578,7 @@ Example: self nearestLocationWithoutAny: #Predator"
 		ifNotNil: [ self patch nearestCellWithoutAny: locatedEntityName ]
 ]
 
-{ #category : #'environment - picking - space' }
+{ #category : 'environment - picking - space' }
 TCMLocated >> nearestLocationWithoutAny: locatedEntityName withinRadius: range [
 	"Purpose: returns the nearest spatial entity in a given range without any occupant of a given type. 
 The current location is NOT considered
@@ -591,7 +593,7 @@ Example: self nearestLocationWithoutAny: #Predator withinRadius: self perception
 		ifNotNil: [ self patch nearestNeighborWithoutAny: locatedEntityName withinRadius: range ]
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 TCMLocated >> nearestLocationsVerifying: aBlock [
 	"Purpose: returns the nearest spatial entities fulfilling the constraint specified in aBlock.
 The current location is NOT considered
@@ -603,7 +605,7 @@ Example: self nearestLocationsVerifying: [:c | c isClosed not]"
 		ifNotNil: [ self patch nearestCellsVerifying: aBlock ]
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 TCMLocated >> nearestLocationsVerifying: aCondition withMaxOf: aMagnitudeName withinRadius: range [
 	"Purpose: returns the nearest spatial entities within a given radius of the current location with the maximum value of a given magnitude and verifying a specified condition . 
 The current location is NOT considered
@@ -622,7 +624,7 @@ Example: self nearestLocationsWithMaxOf: #water verifying: [:c | c isPolluted no
 				withinRadius: range ]
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 TCMLocated >> nearestLocationsVerifying: aBlock withinRadius: range [
 	"Purpose: returns the nearest spatial entities within a given radius of the current location and fulfilling the constraint specified in aBlock. 
 The current location is NOT considered
@@ -636,7 +638,7 @@ Example: self nearestLocationsVerifying: [:c | c isClosed not] withinRadius: 5"
 		ifNotNil: [ self patch nearestNeighborsVerifying: aBlock withinRadius: range ]
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 TCMLocated >> nearestLocationsWithMaxOf: aMagnitudeName withinRadius: range [
 	"Purpose: returns the nearest spatial entities within a given radius of the current location with the maximum value of a given magnitude. 
 The current location is NOT considered
@@ -650,7 +652,7 @@ Example: self nearestLocationsWithMaxOf: #water verifying: [:c | c isPolluted no
 		ifNotNil: [ self patch nearestNeighborsWithMaxOf: aMagnitudeName withinRadius: range ]
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 TCMLocated >> nearestLocationsWithoutAny: locatedEntityName [
 	"Purpose: returns the nearest spatial entities without any occupant of a given type.
 The current location is NOT considered
@@ -663,7 +665,7 @@ Example: self nearestLocationsWithoutAny: #Predator"
 		ifNotNil: [ self patch nearestCellsWithoutAny: locatedEntityName ]
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 TCMLocated >> nearestLocationsWithoutAny: locatedEntityName withinRadius: range [
 	"Purpose: returns the nearest spatial entity in a given range without any occupant of a given type. 
 The current location is NOT considered
@@ -680,7 +682,7 @@ Example: self nearestLocationsWithoutAny: #Predator withinRadius: self perceptio
 				withinRadius: range ]
 ]
 
-{ #category : #'environment - picking - agents' }
+{ #category : 'environment - picking - agents' }
 TCMLocated >> nearestSimilarAgentWithingRadius: range [
 	"Purpose: picks RANDOMLY one among the nearest receiver-like entities located withing a given radius of the receiver current location.
 If none: returns nil; if more than one: random selection
@@ -697,7 +699,7 @@ Example: self nearestSimilarAgentWithinRadius: 2"
 	^ Cormas selectRandomlyFrom: candidates
 ]
 
-{ #category : #'environment - sensing - agents' }
+{ #category : 'environment - sensing - agents' }
 TCMLocated >> nearestSimilarAgentsVerifying: aBlock withinRadius: range [
 	"Purpose: returns the nearest receiver-like instances located withing a given radius of the receiver location and fulfilling a specified constraint
 Arguments: aBlock = <BlockClosure>
@@ -711,7 +713,7 @@ Example: self nearestSimilarAgentsVerifying: [:a | a sex ~= self sex] withinRadi
 		withinRadius: range
 ]
 
-{ #category : #'environment - sensing - agents' }
+{ #category : 'environment - sensing - agents' }
 TCMLocated >> nearestSimilarAgentsWithinRadius: range [
 	"Purpose: returns the nearest receiver-like entities located withing a given radius of the receiver current location.
 Argument: 	lrange = <Integer>
@@ -723,7 +725,7 @@ Example: self nearestSimilarAgentsWithinRadius: 2"
 		withinRadius: range
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 TCMLocated >> neighboringLocations [
 	"Purpose: return direct neighbours of current location
 The current location is NOT considered
@@ -734,7 +736,7 @@ Return value: <Collection(SpatialEntity) | nil>"
 		ifNotNil: [ self patch neighbourhood ]
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 TCMLocated >> neighboringLocationsVerifying: aBlock [
 	"Purpose: returns direct neighbours of current location fulfilling the constraint specified in aBlock. 
 The current location is NOT considered
@@ -747,7 +749,7 @@ Example: self neighboringLocationsVerifying: [:c | c isClosed not]"
 		ifNotNil: [ self patch neighbourhood select: [ :cell | aBlock value: cell ] ]
 ]
 
-{ #category : #'environment - sensing - agents' }
+{ #category : 'environment - sensing - agents' }
 TCMLocated >> neighbouringLocatedEntities: locatedEntityName [
 	"Purpose: returns all entities of a given type located in the direct neighbourhood of the receiver current location.
 The co-located entities are not considered here (for that, use locatedEntities: locatedEntityName withinRadius: 1)
@@ -760,7 +762,7 @@ Example: self neighbouringLocatedEntities: #Predator"
 		cell occupantsOfClassNamed: locatedEntityName ].
 ]
 
-{ #category : #'environment - sensing - agents' }
+{ #category : 'environment - sensing - agents' }
 TCMLocated >> neighbouringLocatedEntities: locatedEntityName verifying: aCondition [
 	"Purpose: returns all entities of a given type located in the direct neighbourhood of the receiver current location and verifying a specified condition.
 The co-located entities are not considered here (for that, use locatedEntities: locatedEntityName verifying: aCondition withinRadius: 1)
@@ -776,7 +778,7 @@ Example: self neighbouringLocatedEntities: #Prey verifying: [:p | p isWeak]"
 				select: [ :entity | aCondition value: entity ] ]
 ]
 
-{ #category : #'environment - sensing - agents' }
+{ #category : 'environment - sensing - agents' }
 TCMLocated >> neighbouringSimilarAgents [
 	"Purpose: returns all receiver-like entities located in the direct neighbourhood of the receiver current location.
 The co-located entities are not considered here (#neighbouringSimilarAgents is equivalent to #similarAgentsWithinRadius: 1)
@@ -785,7 +787,7 @@ Return value: <Collection(AgentLocation)>"
 	^ self neighbouringLocatedEntities: self class name
 ]
 
-{ #category : #'environment - sensing - agents' }
+{ #category : 'environment - sensing - agents' }
 TCMLocated >> neighbouringSimilarAgentsVerifying: aCondition [
 	"Purpose: returns all receiver-like entities located in the direct neighbourhood of the receiver current location and verifying a specified condition.
 The co-located entities are not considered here (#neighbouringSimilarAgentsVerifying: aCondition is equivalent to #similarAgentsVerifying: aCondition withinRadius: 1)
@@ -798,19 +800,19 @@ Example: self neighbouringSimilarAgentsVerifying: [:a | a sex ~= self sex]"
 		ifNotNil: [ self neighbouringSimilarAgents select: [ :agent | aCondition value: agent ] ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TCMLocated >> patch [
 
 	^ patch
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TCMLocated >> patch: anObject [
 
 	patch := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TCMLocated >> patchID [
 	"Purpose: returns ID of patch
 Return value: <Integer>"
@@ -819,7 +821,7 @@ Return value: <Integer>"
 	^self patch id
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 TCMLocated >> printOn: aStream [
 
 	super printOn: aStream.
@@ -830,14 +832,14 @@ TCMLocated >> printOn: aStream [
 			<< self coordinates asString ]
 ]
 
-{ #category : #'star moving' }
+{ #category : 'star moving' }
 TCMLocated >> randomJump [
 "Purpose: moves to a spatial entity randomly picked from the whole grid "
 
 	self moveTo: (Cormas selectRandomlyFrom: patch grid)
 ]
 
-{ #category : #'star moving' }
+{ #category : 'star moving' }
 TCMLocated >> randomJumpConstrainedBy: aBlock [
 
 	| destination candidates |
@@ -850,7 +852,7 @@ TCMLocated >> randomJumpConstrainedBy: aBlock [
 	self moveTo: destination
 ]
 
-{ #category : #'star moving' }
+{ #category : 'star moving' }
 TCMLocated >> randomWalk [
 	" Moves to a spatial entity randomly picked from the direct neighbourhood (relative distance = 1) of the current location "
 
@@ -866,7 +868,7 @@ TCMLocated >> randomWalk [
 	self moveTo: destination
 ]
 
-{ #category : #moving }
+{ #category : 'moving' }
 TCMLocated >> randomWalk: radius [
 	"Purpose: moves to aSpatialEntityElement randomly picked among a radius.
 Argument: radius = <positive Integer>
@@ -875,7 +877,7 @@ Example: self randomWalk: 2 "
 	self moveTo: (Cormas selectRandomlyFrom: (self patch recursiveNeighbourhood: radius))
 ]
 
-{ #category : #moving }
+{ #category : 'moving' }
 TCMLocated >> randomWalkConstrainedBy: aBlock [
 	" Purpose: moves to aSpatialEntityElement randomly picked among the direct neighbours (relative distance = 1) fulfilling the constraint specified in aBlock.  If there is no neighbouring cells fulfilling the constraint, the agent does not move.
 	Argument: aBlock = <BlockClosure>
@@ -892,7 +894,7 @@ TCMLocated >> randomWalkConstrainedBy: aBlock [
 	self moveTo: destination
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TCMLocated >> shapeOfPOV [
 	" Answer a <Symbol> to specify the shape the will be displayed in a space.
 	This must be a selector understood by the RSShapeFactory class"
@@ -900,7 +902,7 @@ TCMLocated >> shapeOfPOV [
 	^ #circle
 ]
 
-{ #category : #'environment - sensing - agents' }
+{ #category : 'environment - sensing - agents' }
 TCMLocated >> similarAgentsVerifying: aBlock withinRadius: range [
 	"Purpose: returns the receiver-like instances located withing a given radius of the receiver location and fulfilling a specified constraint
 Arguments: aBlock = <BlockClosure>
@@ -917,7 +919,7 @@ Example: self similarAgentsVerifying: [:a | a sex ~= self sex] withinRadius: sel
 				withinRadius: range ]
 ]
 
-{ #category : #'environment - sensing - agents' }
+{ #category : 'environment - sensing - agents' }
 TCMLocated >> similarAgentsWithinRadius: range [
 	"Purpose: returns the receiver-like instances located withing a given radius of the receiver location
 Argument: range = <Integer>
@@ -932,7 +934,7 @@ Example: self similarAgentsWithinRadius: 3"
 				withinRadius: range ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TCMLocated >> sizeOfPOV [
 	" Answer a <Number> to visually distinguish the receiver in a space.
 		To be overwritten if needed"
@@ -940,7 +942,7 @@ TCMLocated >> sizeOfPOV [
 	^ 20
 ]
 
-{ #category : #moving }
+{ #category : 'moving' }
 TCMLocated >> walkToMaxOf: aSymbol [
 	"Purpose: moves to the spatial entity in the direct neighbourhood (relative distance = 1) with the higher value for a given magnitude.
 In case several destinations share the same maximum value, the tie is randomly broken.
@@ -964,7 +966,7 @@ Example: self walkToMaxOf: #sugar"
 	self moveTo: destination
 ]
 
-{ #category : #moving }
+{ #category : 'moving' }
 TCMLocated >> walkToMaxOf: aSymbol constrainedBy: aBlock [
 	"Purpose: moves to the spatial entity in the direct neighbourhood (relative distance = 1) with the higher value for a given magnitude and fulfilling the constraint specified in aBlock.
 In case several possible destinations share the same maximum value, the tie is randomly broken.

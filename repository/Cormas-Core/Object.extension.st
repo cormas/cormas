@@ -1,6 +1,6 @@
-Extension { #name : #Object }
+Extension { #name : 'Object' }
 
-{ #category : #'*Cormas-Core' }
+{ #category : '*Cormas-Core' }
 Object >> isCormasEntity [
 
 	^ false

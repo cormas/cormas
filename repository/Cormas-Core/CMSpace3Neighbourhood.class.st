@@ -1,21 +1,23 @@
 Class {
-	#name : #CMSpace3Neighbourhood,
-	#superclass : #CMNonSquaredSpaceNeighbourhood,
-	#category : #'Cormas-Core-Space'
+	#name : 'CMSpace3Neighbourhood',
+	#superclass : 'CMNonSquaredSpaceNeighbourhood',
+	#category : 'Cormas-Core-Space',
+	#package : 'Cormas-Core',
+	#tag : 'Space'
 }
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 CMSpace3Neighbourhood class >> cardinal [
 
 	^ 3
 ]
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 CMSpace3Neighbourhood class >> cardinalSymbol [
 
 	^ #three
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSpace3Neighbourhood >> initializeOrderedNeighbourhood: k [
 ]
