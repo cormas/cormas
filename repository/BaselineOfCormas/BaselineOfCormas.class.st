@@ -11,7 +11,7 @@ Class {
 }
 
 { #category : #baselines }
-BaselineOfCormas >> baseline: spec
+BaselineOfCormas >> baseline: spec [
 
 	<baseline>
 	spec for: #'pharo11.x' do: [
