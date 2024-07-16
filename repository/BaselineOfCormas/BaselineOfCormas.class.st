@@ -11,17 +11,20 @@ Class {
 }
 
 { #category : #baselines }
-BaselineOfCormas >> baseline: spec [
-	<baseline>
+BaselineOfCormas >> baseline: spec
 
-	spec for: #'pharo11.x' do: [ spec package: 'Cormas-Pharo11' ].
-	
-	spec for: #common do: [ 
-		
+	<baseline>
+	spec for: #'pharo11.x' do: [
+		spec
+			package: 'Cormas-Pharo11';
+			package: 'Cormas-Core'
+			with: [ spec requires: #( 'Cormas-Pharo11' ) ] ].
+
+	spec for: #common do: [
 		spec preLoadDoIt: #preLoad.
 		spec postLoadDoIt: #postLoad.
-		
-		self 
+
+		self
 			specForBaselines: spec;
 			specForPackages: spec;
 			specForGroups: spec ].
