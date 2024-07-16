@@ -1,14 +1,16 @@
 Class {
-	#name : #BitmapPOV,
-	#superclass : #EntityPOV,
+	#name : 'BitmapPOV',
+	#superclass : 'EntityPOV',
 	#instVars : [
 		'bitmap',
 		'position'
 	],
-	#category : #'Cormas-Core-Legacy'
+	#category : 'Cormas-Core-Legacy',
+	#package : 'Cormas-Core',
+	#tag : 'Legacy'
 }
 
-{ #category : #'instance-creation' }
+{ #category : 'instance-creation' }
 BitmapPOV class >> newFrom: image [
 	"image must be a kind of PixelArray"
 	
@@ -18,7 +20,7 @@ BitmapPOV class >> newFrom: image [
 	^bi
 ]
 
-{ #category : #adjust }
+{ #category : 'adjust' }
 BitmapPOV >> adjustedBitmapTo: aRectangle [
 	"return a positive Integer if aWindowSize > (sizeRatio * self preferredBounds) otherwise a negative Integer"
 	
@@ -29,7 +31,7 @@ BitmapPOV >> adjustedBitmapTo: aRectangle [
 	^v	"rounded"
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 BitmapPOV >> asFigure [
 	
 	| inst |
@@ -40,56 +42,56 @@ BitmapPOV >> asFigure [
 	^inst
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BitmapPOV >> bitmap [
 	
 	^bitmap
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BitmapPOV >> bitmap: anObject [
 	
 	bitmap := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BitmapPOV >> bounds [
 	
 	^self bitmap bounds
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BitmapPOV >> center [
 	
 	^self bitmap bounds center
 ]
 
-{ #category : #transforming }
+{ #category : 'transforming' }
 BitmapPOV >> color: color [
 	"do nothing"
 	
 	
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 BitmapPOV >> isBitmapPOV [
 	
 	^true
 ]
 
-{ #category : #transforming }
+{ #category : 'transforming' }
 BitmapPOV >> isDistortable [
 	
 	^false
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BitmapPOV >> position [
 	
 	^position ifNil: [position := #center]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BitmapPOV >> position: anObject [
 	
 	position := anObject

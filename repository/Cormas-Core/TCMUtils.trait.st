@@ -1,9 +1,11 @@
 Trait {
-	#name : #TCMUtils,
-	#category : #'Cormas-Core-Tools'
+	#name : 'TCMUtils',
+	#category : 'Cormas-Core-Tools',
+	#package : 'Cormas-Core',
+	#tag : 'Tools'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TCMUtils classSide >> friendlyName [
 	" Answer a <String> with the receiver's name without any Cormas prefix "
 
@@ -12,7 +14,7 @@ TCMUtils classSide >> friendlyName [
 		ifFalse: [ self name ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 TCMUtils >> friendlyName [
 	" See comment in class side "
 

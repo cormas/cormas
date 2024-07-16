@@ -1,6 +1,6 @@
-Extension { #name : #PMFishmanMooreRandomGenerator }
+Extension { #name : 'PMFishmanMooreRandomGenerator' }
 
-{ #category : #'*Cormas-Core' }
+{ #category : '*Cormas-Core' }
 PMFishmanMooreRandomGenerator >> nextInteger: anInteger [
 	" For compatibility with Pharo 9 "
 
