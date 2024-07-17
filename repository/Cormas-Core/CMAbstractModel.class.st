@@ -227,16 +227,6 @@ CMAbstractModel class >> allActivitySelectors [
 ]
 
 { #category : #'managing classes' }
-CMAbstractModel class >> allClassesInPackage [
-	"Returns all classes of the package in the same tag than the model (include the model)"
-
-	^ self package tags
-		  detect: [ :tag | tag includesClass: self ]
-		  ifFound: [ :tag | tag classes ]
-		  ifNone: [ OrderedCollection empty ]
-]
-
-{ #category : #'managing classes' }
 CMAbstractModel class >> allClassesNames [
 	"return all the Entity class names of the model (except the my self, Msg and other classes like Interface etc)"
 
@@ -247,7 +237,7 @@ CMAbstractModel class >> allClassesNames [
 CMAbstractModel class >> allEntityClasses [
 	"return all the classes of the model (except the classes that inheriting from Msg and other classes like Interface etc"
 
-	^ self allClassesInPackage
+	^ self package classes
 		removeAllSuchThat: [ :class | (class inheritsFrom: CMEntity) not ]
 ]
 
@@ -529,7 +519,7 @@ CMAbstractModel class >> initializeModelClasses [
 
 	| classes |
 	
-	classes := self allClassesInPackage.
+	classes := self package classes.
 	self spatialClasses: (classes select: [ : each | each inheritsFrom: CMSpatialEntity ]).
 	self socialClasses: (classes select: [ : each | each inheritsFrom: CMAgent ]).
 	self passiveClasses: (classes select: [ : each | (each inheritsFrom: CMPassiveObject) or: [ each inheritsFrom: CMMessage ]])

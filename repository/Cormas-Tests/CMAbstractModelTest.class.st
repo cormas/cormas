@@ -24,24 +24,6 @@ CMAbstractModelTest >> setUp [
 ]
 
 { #category : #tests }
-CMAbstractModelTest >> testAllClassesInPackageAbstractModel [
-
-	| expected |
-	expected := { CMSimulationManager . CMCollector . CMAbstractModel . CMObject . CMGitBridge } asSet.
-	
-	self assert: CMAbstractModel allClassesInPackage equals: expected
-]
-
-{ #category : #tests }
-CMAbstractModelTest >> testAllClassesInPackageMockModel [
-
-	| expected |
-	expected := { CMMockGoat . CMMockModel . CMMockCell . CMMockAnimal . CMMockCow } asSet.
-	
-	self assert: CMMockModel allClassesInPackage equals: expected
-]
-
-{ #category : #tests }
 CMAbstractModelTest >> testCellAtAt [
 
 	| expectedCell expectedId actualCell |
