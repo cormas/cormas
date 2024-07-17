@@ -1,3 +1,22 @@
+# [v0.9](https://github.com/cormas/cormas/compare/v0.8..v0.9) (17 July 2024)
+
+(an intermediate release before introducing major breaking changes)
+
+### Removed
+
+- (https://github.com/cormas/cormas/pull/748) `CMSpaceModel >> isNotTorroidal`
+- (https://github.com/cormas/cormas/pull/746) `String >> asGetterForEntityClass`
+
+### Renamed
+
+- (https://github.com/cormas/cormas/pull/748) `torroidal` --> `isClosedEnvironment`
+
+### Bug fixes
+
+- ([ef2336d](https://github.com/cormas/cormas/pull/751/commits/ef2336da3e162b86e5b532d62fb9a8b233e725eb)) Added extension method to fix the open of I18NTranslationView class
+- (https://github.com/cormas/cormas/pull/749) neighbour e neighbour n etc dont work properly on edges
+- (https://github.com/cormas/cormas/pull/745) `moveTowards:constraintOnPath:` is throwing SubscriptOutOfBounds exception
+
 # [v0.8](https://github.com/cormas/cormas/compare/v0.7..v0.8) (18 December 2023)
 
 _(those are mostly the changes introduced during [MISS ABMS 2023](https://www.agropolis.fr/MISS-ABMS-2023))_
