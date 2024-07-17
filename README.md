@@ -53,25 +53,21 @@ Join us on the cormas-dev mailing-list: http://groups.google.com/group/cormas-de
 * Load Cormas: Open Pharo 9.0 image then click anywhere to open the main menu. Choose Playground (Ctrl + OW or Cmd + OW) to execute the following script to install the latest stable version of Cormas. Paste the script below in Playground, select all then right-click and choose Do it (Ctrl+D or Cmd+D) to execute it:
 
 ```st
-EpMonitor disableDuring: [
-    Metacello new
-        onConflictUseLoaded;
-        onWarningLog;
-        repository: 'github://cormas/cormas:v0.9';
-        baseline: 'Cormas';
-        load ].
+Metacello new
+    onConflictUseLoaded;
+    onWarningLog;
+    repository: 'github://cormas/cormas';
+    baseline: 'Cormas';
+    load.
 ```
 
 Use this script if you want the latest development version of Cormas:
 
 ```st
-EpMonitor disableDuring: [
-    Metacello new
-        onConflictUseLoaded;
-        onWarningLog;
-        repository: 'github://cormas/cormas';
-        baseline: 'Cormas';
-        load ].
+Metacello new
+    repository: 'github://cormas/cormas:dev';
+    baseline: 'Cormas';
+    load.
 ```
 
 All packages load into the Cormas-* package names:
