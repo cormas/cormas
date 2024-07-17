@@ -1,28 +1,29 @@
 Class {
-	#name : #CMMockAnimal,
-	#superclass : #CMAgent,
+	#name : 'CMMockAnimal',
+	#superclass : 'CMAgent',
 	#traits : 'TCMLocated',
 	#classTraits : 'TCMLocated classTrait',
 	#instVars : [
 		'energy'
 	],
-	#category : #'Cormas-Mocks'
+	#category : 'Cormas-Mocks',
+	#package : 'Cormas-Mocks'
 }
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMMockAnimal >> initialize [
 
 	super initialize.
 	energy := 0.5
 ]
 
-{ #category : #pov }
+{ #category : 'pov' }
 CMMockAnimal >> sizeOfPOV [
 
 	^ 2 + (energy * 10)
 ]
 
-{ #category : #control }
+{ #category : 'control' }
 CMMockAnimal >> step [
 	
 	self randomWalk

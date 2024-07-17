@@ -50,24 +50,26 @@ Internal Representation and Key Implementation Points.
     Implementation Points
 "
 Class {
-	#name : #CMSpace6Neighbourhood,
-	#superclass : #CMNonSquaredSpaceNeighbourhood,
-	#category : 'Cormas-Core-Space'
+	#name : 'CMSpace6Neighbourhood',
+	#superclass : 'CMNonSquaredSpaceNeighbourhood',
+	#category : 'Cormas-Core-Space',
+	#package : 'Cormas-Core',
+	#tag : 'Space'
 }
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 CMSpace6Neighbourhood class >> cardinal [
 
 	^ 6
 ]
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 CMSpace6Neighbourhood class >> cardinalSymbol [
 
 	^ #six
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpace6Neighbourhood class >> distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols [
 	" for irregular cells, the calculus is much more longer "
 	" See class side comment "
@@ -86,14 +88,14 @@ CMSpace6Neighbourhood class >> distanceFromCell: cell1 toCell: cell2 nbLines: nb
 		ifFalse: [ nbLines + (0 max: (2 * columns - nbLines) / 2) ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpace6Neighbourhood >> createCellsFigure [
 
 	super createCellsFigure.
 	self spaceModel createHexagonalCellsFigure.
 ]
 
-{ #category : #'private - regular cells - instance creation' }
+{ #category : 'private - regular cells - instance creation' }
 CMSpace6Neighbourhood >> eastCellHexa: k [
 	
 	k = 0 ifTrue: [ ^ 0 ].
@@ -102,7 +104,7 @@ CMSpace6Neighbourhood >> eastCellHexa: k [
 		ifFalse: [ self eastCell: k ] "ligne paire"
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSpace6Neighbourhood >> initializeOrderedNeighbourhood: k [
 
 	| v i |
@@ -122,7 +124,7 @@ CMSpace6Neighbourhood >> initializeOrderedNeighbourhood: k [
 	^ (self elementaryEntitiesAt: k) neighbourhoodWithNils: v
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSpace6Neighbourhood >> setBoundaryDirectionsFor: aCMSpatialEntityElement [
 
 	| dirCollection |
@@ -136,7 +138,7 @@ CMSpace6Neighbourhood >> setBoundaryDirectionsFor: aCMSpatialEntityElement [
 	^ dirCollection
 ]
 
-{ #category : #'private - regular cells - instance creation' }
+{ #category : 'private - regular cells - instance creation' }
 CMSpace6Neighbourhood >> westCellHexa: k [
 	
 	k = 0 ifTrue: [ ^ 0 ].

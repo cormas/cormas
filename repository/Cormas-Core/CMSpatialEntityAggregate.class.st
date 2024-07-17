@@ -5,29 +5,31 @@ Instance Variables:
 
 "
 Class {
-	#name : #CMSpatialEntityAggregate,
-	#superclass : #CMSpatialEntitySet,
+	#name : 'CMSpatialEntityAggregate',
+	#superclass : 'CMSpatialEntitySet',
 	#instVars : [
 		'compactness',
 		'givenSize'
 	],
-	#category : 'Cormas-Core-Entities'
+	#category : 'Cormas-Core-Entities',
+	#package : 'Cormas-Core',
+	#tag : 'Entities'
 }
 
-{ #category : #metrics }
+{ #category : 'metrics' }
 CMSpatialEntityAggregate >> compactness [
 	"(4* pi *area / perimeter squared)"
 	
 	^compactness
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntityAggregate >> compactness: uneValeur [
 	
 	compactness := uneValeur
 ]
 
-{ #category : #'components - managing' }
+{ #category : 'components - managing' }
 CMSpatialEntityAggregate >> deleteComponents: aCollec [
 	"Purpose: removes a given set of components and tests if some components have effectively been removed before computing the surround again
 Argument: aCollec = <Collection(SpatialEntity)>
@@ -45,7 +47,7 @@ Example: self removeComponents: self getEpidermis"
 	initialSize ~= self components size ifTrue: [self setSurround]
 ]
 
-{ #category : #obsolete }
+{ #category : 'obsolete' }
 CMSpatialEntityAggregate >> displaySegment: aDirection [
 	
 	| readAccessSelector aGC |
@@ -56,7 +58,7 @@ CMSpatialEntityAggregate >> displaySegment: aDirection [
 		ifTrue: [(self perform: readAccessSelector) displayStrokedOn: aGC]
 ]
 
-{ #category : #deprecated }
+{ #category : 'deprecated' }
 CMSpatialEntityAggregate >> distSurroundAggregatePixel: anAg [
 	"Deprecated"
 	
@@ -73,7 +75,7 @@ CMSpatialEntityAggregate >> distSurroundAggregatePixel: anAg [
 	^distMin
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntityAggregate >> getEndodermis [
 	"Returns a collection of collections of cells belonging to the 'endodermis skin' of the aggregate"
 	
@@ -82,7 +84,7 @@ CMSpatialEntityAggregate >> getEndodermis [
 	^collections
 ]
 
-{ #category : #deprecated }
+{ #category : 'deprecated' }
 CMSpatialEntityAggregate >> getSkin [
 	"clp feb 2001"
 	"renvoie les cellules en lisiere interne"
@@ -94,7 +96,7 @@ CMSpatialEntityAggregate >> getSkin [
 				or: [c edge]]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntityAggregate >> getSkinE [
 	"Returns a collection of cells belonging to the 'internal skin' of the aggregate"
 	
@@ -107,7 +109,7 @@ CMSpatialEntityAggregate >> getSkinE [
 				or: [c edge]]
 ]
 
-{ #category : #deprecated }
+{ #category : 'deprecated' }
 CMSpatialEntityAggregate >> getSkinNew [
 	"clp feb 2001"
 	"renvoie les cellules en lisiere interne"
@@ -117,7 +119,7 @@ CMSpatialEntityAggregate >> getSkinNew [
 			[:c | c neighbourhood contains: [:n | (self components includes: n) not]]
 ]
 
-{ #category : #deprecated }
+{ #category : 'deprecated' }
 CMSpatialEntityAggregate >> getSkinOld [
 	"clp mars 2000"
 	"renvoie les cellules en lisiere interne"
@@ -129,7 +131,7 @@ CMSpatialEntityAggregate >> getSkinOld [
 				< c neighbourhood size]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntityAggregate >> getSkins [
 	"Returns a collection of collections of connected cells belonging 
 	to the 'internal skin' of the aggregate"
@@ -157,7 +159,7 @@ CMSpatialEntityAggregate >> getSkins [
 	^allSkins
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntityAggregate >> givenSize [
 	"Purpose: stores the target size.
 by default, a very large givenSize"
@@ -167,13 +169,13 @@ by default, a very large givenSize"
 		ifFalse: [givenSize]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntityAggregate >> givenSize: aValue [
 	
 	givenSize := aValue
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 CMSpatialEntityAggregate >> initNeighbourhood [
 	"Purpose: builds and store the neighbourhood of the receiver as the collection of same kind of aggregates whose components include at least one element the receiver surround"
 	
@@ -188,7 +190,7 @@ CMSpatialEntityAggregate >> initNeighbourhood [
 	neighbourhoodWithNils := neighbourhoodWithNils asOrderedCollection	"...and then made as an OrderedCollection once the job is done..."
 ]
 
-{ #category : #displaying }
+{ #category : 'displaying' }
 CMSpatialEntityAggregate >> joinSegments: aCollecOfLineSegments [
 	"clp juin 2000"
 	"Prend en parametre une collection de LineSegments et
@@ -215,7 +217,7 @@ retourne la collection des noeuds de la ligne brisee"
 	^vertices
 ]
 
-{ #category : #displaying }
+{ #category : 'displaying' }
 CMSpatialEntityAggregate >> joinSegments_PB: aCollecOfLineSegments [
 	"clp juin 2000, revu PB Fev 2002"
 	"Prend en parametre une collection de LineSegments et 
@@ -245,7 +247,7 @@ CMSpatialEntityAggregate >> joinSegments_PB: aCollecOfLineSegments [
 	^vertices
 ]
 
-{ #category : #'components - managing' }
+{ #category : 'components - managing' }
 CMSpatialEntityAggregate >> mergeWith: otherAggregate [
 	"Purpose: merges a givern aggregate with the receiver whose surround is then reset
 Argument: otherAggregate = <SpatialEntityAggregate>"
@@ -254,7 +256,7 @@ Argument: otherAggregate = <SpatialEntityAggregate>"
 	self setSurround
 ]
 
-{ #category : #metrics }
+{ #category : 'metrics' }
 CMSpatialEntityAggregate >> perimeter [
 	"return the number of segments of the skin"
 	
@@ -275,7 +277,7 @@ CMSpatialEntityAggregate >> perimeter [
 	^counter
 ]
 
-{ #category : #displaying }
+{ #category : 'displaying' }
 CMSpatialEntityAggregate >> segment: direction from4: segments [
 	"Selon la m√©thode de fabrication d'une image rectangulaire (cf createTopLeftRectangularCellImage), on a l'ordre suivant:
                  1
@@ -294,7 +296,7 @@ CMSpatialEntityAggregate >> segment: direction from4: segments [
 	direction = #W ifTrue: [^segments last]
 ]
 
-{ #category : #displaying }
+{ #category : 'displaying' }
 CMSpatialEntityAggregate >> segment: direction from6: segments [
 	"Selon la m√©thode de fabrication d'une image hexagonale (cf createTopLeftHexagonalCellImage), on a l'ordre suivant:
 			    #
@@ -315,7 +317,7 @@ CMSpatialEntityAggregate >> segment: direction from6: segments [
 	direction = #SE ifTrue: [^segments last]
 ]
 
-{ #category : #displaying }
+{ #category : 'displaying' }
 CMSpatialEntityAggregate >> setOutline [
 	"clp mars 2000"
 	
@@ -333,7 +335,7 @@ CMSpatialEntityAggregate >> setOutline [
 	^ outline
 ]
 
-{ #category : #displaying }
+{ #category : 'displaying' }
 CMSpatialEntityAggregate >> setOutline2 [
 	"clp mars 2000 - PB mai 2002"
 	"Pour les cells regulieres : outline est une collection de couples 
@@ -366,7 +368,7 @@ CMSpatialEntityAggregate >> setOutline2 [
 								with: directions)]]
 ]
 
-{ #category : #displaying }
+{ #category : 'displaying' }
 CMSpatialEntityAggregate >> setOutline3 [
 	"outine est une collection de points"
 	
@@ -385,7 +387,7 @@ CMSpatialEntityAggregate >> setOutline3 [
 	self outline add: (self outline at: 1)
 ]
 
-{ #category : #control }
+{ #category : 'control' }
 CMSpatialEntityAggregate >> swell [
 	"The aggregat swells on its surround layer. It swells if there is enough space arround it and if its size is below givenSize.
 	Returns a boolean indicating if it has spread"
@@ -404,7 +406,7 @@ CMSpatialEntityAggregate >> swell [
 	^true
 ]
 
-{ #category : #metrics }
+{ #category : 'metrics' }
 CMSpatialEntityAggregate >> updateCompactness [
 	"Purpose: computes and stores the compactness index of the receiver (4* pi *area / perimeter squared)
 Return value: <Float>"

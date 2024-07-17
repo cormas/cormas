@@ -1,10 +1,12 @@
 Class {
-	#name : #CMR3SpaceCellsBuilder,
-	#superclass : #CMR3SpaceShapeBuilder,
-	#category : #'Cormas-UI-Roassal3-Space'
+	#name : 'CMR3SpaceCellsBuilder',
+	#superclass : 'CMR3SpaceShapeBuilder',
+	#category : 'Cormas-UI-Roassal3-Space',
+	#package : 'Cormas-UI-Roassal3',
+	#tag : 'Space'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMR3SpaceCellsBuilder >> defaultMasterShape [
 
 	^ RSBox new
@@ -12,13 +14,13 @@ CMR3SpaceCellsBuilder >> defaultMasterShape [
 		yourself.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMR3SpaceCellsBuilder >> objects [
 
 	^ diagramBuilder cormasModel theCells
 ]
 
-{ #category : #rendering }
+{ #category : 'rendering' }
 CMR3SpaceCellsBuilder >> renderIn: aCanvas [
 
 	super renderIn: aCanvas.
@@ -29,7 +31,7 @@ CMR3SpaceCellsBuilder >> renderIn: aCanvas [
 		on: aCanvas nodes.
 ]
 
-{ #category : #updating }
+{ #category : 'updating' }
 CMR3SpaceCellsBuilder >> updateShape: aShape [
 
 	| model colorSymbolOrNumber |

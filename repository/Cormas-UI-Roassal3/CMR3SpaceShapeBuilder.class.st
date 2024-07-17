@@ -1,14 +1,16 @@
 Class {
-	#name : #CMR3SpaceShapeBuilder,
-	#superclass : #RSAbstractShapesBuilder,
+	#name : 'CMR3SpaceShapeBuilder',
+	#superclass : 'RSAbstractShapesBuilder',
 	#instVars : [
 		'diagramBuilder',
 		'masterShape'
 	],
-	#category : #'Cormas-UI-Roassal3-Space'
+	#category : 'Cormas-UI-Roassal3-Space',
+	#package : 'Cormas-UI-Roassal3',
+	#tag : 'Space'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CMR3SpaceShapeBuilder class >> for: aBuilder [
 
 	^ self new
@@ -17,7 +19,7 @@ CMR3SpaceShapeBuilder class >> for: aBuilder [
 		yourself
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMR3SpaceShapeBuilder >> createAdaptivePopup [
 
 	"RSPopup text: [ : aCMEntity | aCMEntity asString ]"
@@ -42,29 +44,29 @@ CMR3SpaceShapeBuilder >> createAdaptivePopup [
 		 ].
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMR3SpaceShapeBuilder >> defaultMasterShape [
 
 	self subclassResponsibility
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMR3SpaceShapeBuilder >> diagramBuilder: anObject [
 
 	diagramBuilder := anObject
 ]
 
-{ #category : #formatting }
+{ #category : 'formatting' }
 CMR3SpaceShapeBuilder >> formatEntityDetail: aCMEntity attribute: att [
 
-	^ String << [ : stream |
+	^ String streamContents: [ : stream |
 		stream 
 			<< att key;
 			space;
 			<< att value asString ]
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMR3SpaceShapeBuilder >> initialize [ 
 
 	super initialize.
@@ -72,19 +74,19 @@ CMR3SpaceShapeBuilder >> initialize [
 	self masterShape: self defaultMasterShape.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMR3SpaceShapeBuilder >> inspectEntity: anEvent [
 
 	anEvent shape model inspect
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMR3SpaceShapeBuilder >> masterShape [
 
 	^ masterShape
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMR3SpaceShapeBuilder >> masterShape: aShape [
 
 	| popUp |
@@ -97,14 +99,14 @@ CMR3SpaceShapeBuilder >> masterShape: aShape [
 		yourself.
 ]
 
-{ #category : #rendering }
+{ #category : 'rendering' }
 CMR3SpaceShapeBuilder >> renderIn: aCanvas [
 
 	super renderIn: aCanvas.
 	self update.
 ]
 
-{ #category : #hooks }
+{ #category : 'hooks' }
 CMR3SpaceShapeBuilder >> shapeFor: anObject index: aNumber [
 
 	^ masterShape copyWithAnnouncer
@@ -112,13 +114,13 @@ CMR3SpaceShapeBuilder >> shapeFor: anObject index: aNumber [
 		yourself
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMR3SpaceShapeBuilder >> update [
 	shapes do: [ :shape |
 		self updateShape: shape ].
 ]
 
-{ #category : #updating }
+{ #category : 'updating' }
 CMR3SpaceShapeBuilder >> updateShape: aShape [
 
 	self subclassResponsibility.

@@ -1,6 +1,6 @@
-Extension { #name : #Rectangle }
+Extension { #name : 'Rectangle' }
 
-{ #category : #'*Cormas-Core' }
+{ #category : '*Cormas-Core' }
 Rectangle >> asPolyline [
 
 	"Answer a point array representing myself as a polyline."

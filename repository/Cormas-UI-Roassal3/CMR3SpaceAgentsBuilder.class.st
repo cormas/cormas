@@ -1,10 +1,12 @@
 Class {
-	#name : #CMR3SpaceAgentsBuilder,
-	#superclass : #CMR3SpaceShapeBuilder,
-	#category : #'Cormas-UI-Roassal3-Space'
+	#name : 'CMR3SpaceAgentsBuilder',
+	#superclass : 'CMR3SpaceShapeBuilder',
+	#category : 'Cormas-UI-Roassal3-Space',
+	#package : 'Cormas-UI-Roassal3',
+	#tag : 'Space'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMR3SpaceAgentsBuilder >> animateMove: anShape from: oldPosition to: newPosition duration: aDuration [
 
 
@@ -18,7 +20,7 @@ CMR3SpaceAgentsBuilder >> animateMove: anShape from: oldPosition to: newPosition
 				anShape signalUpdate ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMR3SpaceAgentsBuilder >> cellAt: aPoint ifAbsent: absentBlock [
 	" Answer the <RSShape> which contains aPoint in the receiver "
 
@@ -27,7 +29,7 @@ CMR3SpaceAgentsBuilder >> cellAt: aPoint ifAbsent: absentBlock [
 		ifNone: absentBlock
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMR3SpaceAgentsBuilder >> defaultMasterShape [
 
 	^ RSShapeFactory star
@@ -35,7 +37,7 @@ CMR3SpaceAgentsBuilder >> defaultMasterShape [
 		yourself.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMR3SpaceAgentsBuilder >> makeAgentShapeDraggable: anAgentShape [
 
 	"Adding property to be draggable"
@@ -44,14 +46,14 @@ CMR3SpaceAgentsBuilder >> makeAgentShapeDraggable: anAgentShape [
 	anAgentShape when: RSMouseDragEnd send: #mouseEnd: to: self.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMR3SpaceAgentsBuilder >> masterShape: aShape [
 
 	super masterShape: aShape.
 	self makeAgentShapeDraggable: aShape.
 ]
 
-{ #category : #events }
+{ #category : 'events' }
 CMR3SpaceAgentsBuilder >> mouseEnd: anEvent [
 
 	| position agent cell oldPatch |
@@ -82,7 +84,7 @@ CMR3SpaceAgentsBuilder >> mouseEnd: anEvent [
 			oldPatch ]).
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMR3SpaceAgentsBuilder >> moveAgentShape: anAgentShape [
 
 	| agent cell cellSize |
@@ -104,13 +106,13 @@ CMR3SpaceAgentsBuilder >> moveAgentShape: anAgentShape [
 		translateTo: (cell columnNumber @ cell rowNumber * cellSize) - (cellSize / 2)
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMR3SpaceAgentsBuilder >> objects [
 
 	^ diagramBuilder cormasModel theAgents select: [ :each | each isSituated ]
 ]
 
-{ #category : #hooks }
+{ #category : 'hooks' }
 CMR3SpaceAgentsBuilder >> shapeFor: anObject index: aNumber [
 
 	| shape |
@@ -125,7 +127,7 @@ CMR3SpaceAgentsBuilder >> shapeFor: anObject index: aNumber [
 	^ shape
 ]
 
-{ #category : #updating }
+{ #category : 'updating' }
 CMR3SpaceAgentsBuilder >> update [
 	
 	shapes do:#remove.
@@ -134,7 +136,7 @@ CMR3SpaceAgentsBuilder >> update [
 	shapes do: [ :each | self updateShape: each ].
 ]
 
-{ #category : #updating }
+{ #category : 'updating' }
 CMR3SpaceAgentsBuilder >> updateShape: aShape [
 
 	self moveAgentShape: aShape.

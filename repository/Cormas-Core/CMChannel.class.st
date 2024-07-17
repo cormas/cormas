@@ -14,34 +14,36 @@ messages attribute.
 - flush will transmit the set of messages in the message collection to the receivers.
 "
 Class {
-	#name : #CMChannel,
-	#superclass : #Object,
+	#name : 'CMChannel',
+	#superclass : 'Object',
 	#instVars : [
 		'messages'
 	],
-	#category : 'Cormas-Core-Communication'
+	#category : 'Cormas-Core-Communication',
+	#package : 'Cormas-Core',
+	#tag : 'Communication'
 }
 
-{ #category : #adding }
+{ #category : 'adding' }
 CMChannel >> addMessageToQueue: aMessage [
 
 	messages add: aMessage
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMChannel >> initialize [
 	
 	super initialize.
 	messages := OrderedCollection new
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMChannel >> isEmpty [
 
 	^ messages isEmpty
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 CMChannel >> sendAllMessages [
 	
 	messages do: [ :each | each send ].

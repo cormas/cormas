@@ -11,8 +11,8 @@ Internal Representation and Key Implementation Points.
     Implementation Points
 "
 Class {
-	#name : #CMMockModel,
-	#superclass : #CMAbstractModel,
+	#name : 'CMMockModel',
+	#superclass : 'CMAbstractModel',
 	#instVars : [
 		'theCells',
 		'theCows',
@@ -22,63 +22,64 @@ Class {
 		'initialNumberOfCows',
 		'initialNumberOfGoats'
 	],
-	#category : #'Cormas-Mocks'
+	#category : 'Cormas-Mocks',
+	#package : 'Cormas-Mocks'
 }
 
-{ #category : #default }
+{ #category : 'default' }
 CMMockModel class >> defaultControl [
 	^ #stepSynchronously:
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 CMMockModel class >> defaultInitialNumberOfCows [
 
 	^ 3
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 CMMockModel class >> defaultInitialNumberOfGoats [
 
 	^ 3
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 CMMockModel class >> defaultNumberOfColumns [
 
 	^ 4
 ]
 
-{ #category : #default }
+{ #category : 'default' }
 CMMockModel class >> defaultNumberOfRows [
 
 	^ 4
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMMockModel class >> friendlyName [
 
 	^ 'MockModel'
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 CMMockModel class >> showEmpty [
 	<example>
 	self showModelWithInit: #initEmpty
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 CMMockModel class >> showFixed [
 	<example>
 	self showModelWithInit: #initFixed
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 CMMockModel class >> showInit [
 	<example>
 	self showModelWithInit: #init
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 CMMockModel class >> showModelWithInit: aSymbol [
 
 	| model builder |
@@ -95,7 +96,7 @@ CMMockModel class >> showModelWithInit: aSymbol [
 	builder openWithSpec.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMMockModel >> cellMatrix [
 	| matrix |
 	
@@ -111,7 +112,7 @@ CMMockModel >> cellMatrix [
 	^ matrix
 ]
 
-{ #category : #init }
+{ #category : 'init' }
 CMMockModel >> init [ 
 
 	self initEmpty.
@@ -125,19 +126,19 @@ CMMockModel >> init [
 		randomlyLocatedAloneEntities: CMMockGoat.
 ]
 
-{ #category : #init }
+{ #category : 'init' }
 CMMockModel >> initAlive [
 
 	self theCells do: #initAlive
 ]
 
-{ #category : #init }
+{ #category : 'init' }
 CMMockModel >> initDead [
 
 	self theCells do: #initDead
 ]
 
-{ #category : #init }
+{ #category : 'init' }
 CMMockModel >> initEmpty [
 
 	self
@@ -149,7 +150,7 @@ CMMockModel >> initEmpty [
 	self initRandom
 ]
 
-{ #category : #init }
+{ #category : 'init' }
 CMMockModel >> initFixed [
 
 	| cow goat |
@@ -164,37 +165,37 @@ CMMockModel >> initFixed [
 	goat moveTo: (self pickCellAt: 3 @ 3).
 ]
 
-{ #category : #init }
+{ #category : 'init' }
 CMMockModel >> initRandom [
 
 	self theCells do: #initRandom
 ]
 
-{ #category : #'accessing - parameters' }
+{ #category : 'accessing - parameters' }
 CMMockModel >> initialNumberOfCows [
 
 	^ initialNumberOfCows
 ]
 
-{ #category : #'accessing - parameters' }
+{ #category : 'accessing - parameters' }
 CMMockModel >> initialNumberOfCows: aNumber [
 
 	initialNumberOfCows := aNumber
 ]
 
-{ #category : #'accessing - parameters' }
+{ #category : 'accessing - parameters' }
 CMMockModel >> initialNumberOfGoats [
 
 	^ initialNumberOfGoats
 ]
 
-{ #category : #'accessing - parameters' }
+{ #category : 'accessing - parameters' }
 CMMockModel >> initialNumberOfGoats: aNumber [
 
 	initialNumberOfGoats := aNumber
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMMockModel >> initialize [
 
 	super initialize.
@@ -210,7 +211,7 @@ CMMockModel >> initialize [
 	theCells := OrderedCollection new.
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMMockModel >> initializeCellsFromMatrix [
 
 	| matrixCellValue modelCell |
@@ -224,7 +225,7 @@ CMMockModel >> initializeCellsFromMatrix [
 			matrixCellValue = 1 ifTrue: [ modelCell initAlive ] ] ]
 ]
 
-{ #category : #probes }
+{ #category : 'probes' }
 CMMockModel >> numberOfAliveAgents [
 	"return the population size of the alive"
 
@@ -232,19 +233,19 @@ CMMockModel >> numberOfAliveAgents [
 	^ (self theAgents select: [ :agent | agent isAlive ]) size
 ]
 
-{ #category : #'accessing - parameters' }
+{ #category : 'accessing - parameters' }
 CMMockModel >> numberOfColumns [
 
 	^ numberOfColumns
 ]
 
-{ #category : #'accessing - parameters' }
+{ #category : 'accessing - parameters' }
 CMMockModel >> numberOfColumns: aNumber [
 
 	numberOfColumns := aNumber
 ]
 
-{ #category : #probes }
+{ #category : 'probes' }
 CMMockModel >> numberOfDeadAgents [
 	"return the population size of the dead"
 
@@ -252,45 +253,45 @@ CMMockModel >> numberOfDeadAgents [
 	^ (self theAgents select: [ :agent | agent isDead ]) size
 ]
 
-{ #category : #'accessing - parameters' }
+{ #category : 'accessing - parameters' }
 CMMockModel >> numberOfRows [
 
 	^ numberOfRows
 ]
 
-{ #category : #'accessing - parameters' }
+{ #category : 'accessing - parameters' }
 CMMockModel >> numberOfRows: aNumber [
 
 	numberOfRows := aNumber
 ]
 
-{ #category : #'utilities - random' }
+{ #category : 'utilities - random' }
 CMMockModel >> randomSeed: aNumber [
 
 	Cormas seed: aNumber
 ]
 
-{ #category : #control }
+{ #category : 'control' }
 CMMockModel >> step: t [
 
 	self askRandom: CMMockAnimal toDo: #step.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMMockModel >> theCells [
 
 	<getterFor: #CMMockCell>
 	^ theCells
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMMockModel >> theCows [
 
 	<getterFor: #CMMockCow>
 	^ theCows
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMMockModel >> theGoats [
 	
 	<getterFor: #CMMockGoat>

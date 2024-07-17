@@ -1,11 +1,13 @@
 Class {
-	#name : #CMMockCow,
-	#superclass : #CMMockAnimal,
-	#category : #'Cormas-Mocks'
+	#name : 'CMMockCow',
+	#superclass : 'CMMockAnimal',
+	#category : 'Cormas-Mocks',
+	#package : 'Cormas-Mocks'
 }
 
-{ #category : #pov }
+{ #category : 'pov' }
 CMMockCow >> pov [
 
+	<pov>
 	^ Color red
 ]

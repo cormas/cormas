@@ -1,16 +1,18 @@
 Class {
-	#name : #CMMessageTest,
-	#superclass : #TestCase,
+	#name : 'CMMessageTest',
+	#superclass : 'TestCase',
 	#instVars : [
 		'senderAgent',
 		'receiverAgent',
 		'topic',
 		'content'
 	],
-	#category : #'Cormas-Tests-Communication'
+	#category : 'Cormas-Tests-Communication',
+	#package : 'Cormas-Tests',
+	#tag : 'Communication'
 }
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMMessageTest >> setUp [
 
 	super setUp.
@@ -22,7 +24,7 @@ CMMessageTest >> setUp [
 	content := 'Lorem ipsum dolor sit amet'.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMMessageTest >> testFrom [
 
 	| message |
@@ -30,7 +32,7 @@ CMMessageTest >> testFrom [
 	self assert: message sender equals: senderAgent
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMMessageTest >> testFromTo [
 
 	| message |
@@ -43,7 +45,7 @@ CMMessageTest >> testFromTo [
 	self assert: message receiver equals: receiverAgent.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMMessageTest >> testFromToContent [
 
 	| message |
@@ -58,7 +60,7 @@ CMMessageTest >> testFromToContent [
 	self assert: message content equals: content.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMMessageTest >> testFromToTopic [
 
 	| message |
@@ -73,7 +75,7 @@ CMMessageTest >> testFromToTopic [
 	self assert: message topic equals: topic.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMMessageTest >> testFromToTopicContent [
 
 	| message |
@@ -90,7 +92,7 @@ CMMessageTest >> testFromToTopicContent [
 	self assert: message content equals: content.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMMessageTest >> testSend [
 
 	| message |
@@ -105,7 +107,7 @@ CMMessageTest >> testSend [
 	self assert: receiverAgent latestMessage equals: message.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMMessageTest >> testTo [
 
 	| message |
@@ -113,7 +115,7 @@ CMMessageTest >> testTo [
 	self assert: message receiver equals: receiverAgent
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMMessageTest >> testToContent [
 
 	| message |
@@ -126,7 +128,7 @@ CMMessageTest >> testToContent [
 	self assert: message content equals: content.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMMessageTest >> testToTopic [
 
 	| message |
@@ -139,7 +141,7 @@ CMMessageTest >> testToTopic [
 	self assert: message topic equals: topic.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMMessageTest >> testToTopicContent [
 
 	| message |

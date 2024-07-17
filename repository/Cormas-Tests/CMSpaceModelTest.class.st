@@ -2,15 +2,17 @@
 A CMSpaceModelTest is a test class for testing the behavior of CMSpaceModel
 "
 Class {
-	#name : #CMSpaceModelTest,
-	#superclass : #CMTestObject,
+	#name : 'CMSpaceModelTest',
+	#superclass : 'CMTestObject',
 	#instVars : [
 		'spaceModel'
 	],
-	#category : #'Cormas-Tests-Space'
+	#category : 'Cormas-Tests-Space',
+	#package : 'Cormas-Tests',
+	#tag : 'Space'
 }
 
-{ #category : #test }
+{ #category : 'test' }
 CMSpaceModelTest >> newModelWithClosedEnvironment [
 
 	^ self spaceModel 
@@ -21,7 +23,7 @@ CMSpaceModelTest >> newModelWithClosedEnvironment [
 		yourself
 ]
 
-{ #category : #test }
+{ #category : 'test' }
 CMSpaceModelTest >> newModelWithOpenEnvironment [
 
 	^ self spaceModel 
@@ -32,26 +34,26 @@ CMSpaceModelTest >> newModelWithOpenEnvironment [
 		yourself
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 CMSpaceModelTest >> setUp [
 
 	super setUp.		
 	spaceModel := model spaceModel.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpaceModelTest >> spaceModel [
 
 	^ spaceModel
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpaceModelTest >> spaceModel: anObject [
 
 	spaceModel := anObject
 ]
 
-{ #category : #test }
+{ #category : 'test' }
 CMSpaceModelTest >> testAbsoluteBounds [
 
 	| expected| 
@@ -64,7 +66,7 @@ CMSpaceModelTest >> testAbsoluteBounds [
 	
 ]
 
-{ #category : #test }
+{ #category : 'test' }
 CMSpaceModelTest >> testAbsoluteHeight [
 
 	self assert: self spaceModel absoluteHeight equals: 200.
@@ -72,21 +74,21 @@ CMSpaceModelTest >> testAbsoluteHeight [
 	
 ]
 
-{ #category : #test }
+{ #category : 'test' }
 CMSpaceModelTest >> testAbsoluteWidth [
 
 	self assert: self spaceModel absoluteWidth equals: 200.
 
 ]
 
-{ #category : #test }
+{ #category : 'test' }
 CMSpaceModelTest >> testAllOccupants [
 
 	self assert: self spaceModel allOccupants size equals: 6.
 
 ]
 
-{ #category : #test }
+{ #category : 'test' }
 CMSpaceModelTest >> testCellAtAt [
 
 	self assert: (spaceModel cellAt: 1 at: 1) id equals: 1.
@@ -102,7 +104,7 @@ CMSpaceModelTest >> testCellAtAt [
 	self assert: (spaceModel cellAt: 4 at: 4) id equals: 16.
 ]
 
-{ #category : #test }
+{ #category : 'test' }
 CMSpaceModelTest >> testCellsOfLine [
 
 	| cells |
@@ -115,7 +117,7 @@ CMSpaceModelTest >> testCellsOfLine [
 		self assert: each id equals: i ].
 ]
 
-{ #category : #test }
+{ #category : 'test' }
 CMSpaceModelTest >> testColumn [
 
 	self spaceModel line: 2 column: 3.
@@ -123,7 +125,7 @@ CMSpaceModelTest >> testColumn [
 
 ]
 
-{ #category : #test }
+{ #category : 'test' }
 CMSpaceModelTest >> testConnexity [
 
 	self spaceModel initializeIrregular.
@@ -141,7 +143,7 @@ CMSpaceModelTest >> testConnexity [
 	self assert: self spaceModel connexity equals: 6.
 ]
 
-{ #category : #test }
+{ #category : 'test' }
 CMSpaceModelTest >> testIsIrregular [
 
 	self spaceModel initializeIrregular.
@@ -151,14 +153,14 @@ CMSpaceModelTest >> testIsIrregular [
 
 ]
 
-{ #category : #test }
+{ #category : 'test' }
 CMSpaceModelTest >> testIsNotTorroidal [
 
 	self assert: self newModelWithClosedEnvironment isClosedEnvironment.
 	self deny: self newModelWithOpenEnvironment isClosedEnvironment.	
 ]
 
-{ #category : #test }
+{ #category : 'test' }
 CMSpaceModelTest >> testLineColumn [
 
 	self spaceModel line: 2 column: 3.
@@ -167,7 +169,7 @@ CMSpaceModelTest >> testLineColumn [
 	self assert: self spaceModel gridSize equals: 6.
 ]
 
-{ #category : #test }
+{ #category : 'test' }
 CMSpaceModelTest >> testNbConfiguration [
 
 	self spaceModel nbCount: 4.
@@ -183,7 +185,7 @@ CMSpaceModelTest >> testNbConfiguration [
 	self assert: self spaceModel nbConfiguration isNil.
 ]
 
-{ #category : #test }
+{ #category : 'test' }
 CMSpaceModelTest >> testNbCount [
 
 	self spaceModel nbCount: 4.
@@ -197,7 +199,7 @@ CMSpaceModelTest >> testNbCount [
 	self assert: self spaceModel nbNeighbours equals: 6.
 ]
 
-{ #category : #test }
+{ #category : 'test' }
 CMSpaceModelTest >> testNbNeighbours [
 
 	self spaceModel nbCount: 4.
