@@ -5,10 +5,40 @@ Class {
 }
 
 { #category : #tests }
+CormasTest >> testAllClassesInPackageAbstractModel [
+
+	| expected |
+	expected := { CMSimulationManager . CMCollector . CMAbstractModel . CMObject . CMGitBridge } asSet.
+	
+	self assert: CMAbstractModel allClassesInPackage equals: expected
+]
+
+{ #category : #tests }
+CormasTest >> testAllClassesInPackageMockModel [
+
+	| expected |
+	expected := { CMMockGoat . CMMockModel . CMMockCell . CMMockAnimal . CMMockCow } asSet.
+	
+	self assert: CMMockModel allClassesInPackage equals: expected
+]
+
+{ #category : #tests }
 CormasTest >> testAverage [
 	| n |
 	n := #(1 2 3 4 5 6 7 8 9 10).
 	self assert: (Cormas average: n) equals:  5.5.
+]
+
+{ #category : #tests }
+CormasTest >> testCellClassAbstractModel [
+
+	self assert: CMMockModel cellClass isNil
+]
+
+{ #category : #tests }
+CormasTest >> testCellClassMockModel [
+
+	self assert: CMMockModel cellClass equals: CMMockCell
 ]
 
 { #category : #tests }
