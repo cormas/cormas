@@ -15,21 +15,19 @@ Internal Representation and Key Implementation Points.
     Implementation Points
 "
 Class {
-	#name : 'CMGitBridge',
-	#superclass : 'GitBridge',
-	#category : 'Cormas-Core-Kernel',
-	#package : 'Cormas-Core',
-	#tag : 'Kernel'
+	#name : #CMGitBridge,
+	#superclass : #GitBridge,
+	#category : 'Cormas-Core-Kernel'
 }
 
-{ #category : 'public' }
+{ #category : #public }
 CMGitBridge class >> assetsFilesDirectoryName [
 	" Answe a <String> with the name of the directoy where CORMAS resources are found "
 
 	^ 'assets'
 ]
 
-{ #category : 'public' }
+{ #category : #public }
 CMGitBridge class >> assetsPath [
 	"Return the assets path of Cormas
 	Ex: {localDirectory}/iceberg/cormas/cormas/assets"
@@ -40,7 +38,7 @@ CMGitBridge class >> assetsPath [
 
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMGitBridge class >> imagesPath [
 	" Answer a <FileReference> with the receiver's path to the images directory "
 

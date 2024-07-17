@@ -1,1 +1,1 @@
-Package { #name : 'Cormas-Core' }
+Package { #name : #'Cormas-Core' }

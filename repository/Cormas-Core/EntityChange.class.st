@@ -7,36 +7,34 @@ Instance Variables:
 	entityId	<Integer>	the id of this entity (computed on the server in case of remotly distributed change)
 "
 Class {
-	#name : 'EntityChange',
-	#superclass : 'Object',
+	#name : #EntityChange,
+	#superclass : #Object,
 	#instVars : [
 		'entity'
 	],
-	#category : 'Cormas-Core-Deprecate',
-	#package : 'Cormas-Core',
-	#tag : 'Deprecate'
+	#category : 'Cormas-Core-Deprecate'
 }
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 EntityChange class >> newChange: aSymbol with: aParameter from: anEntity [
 	"create a new instance for remembering the change information"
 	
 	^self new newChange: aSymbol with: aParameter from: anEntity
 ]
 
-{ #category : 'dispatching' }
+{ #category : #dispatching }
 EntityChange >> dispatchOn: anObject [
 	
 	anObject noticeEntityChange: self
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 EntityChange >> entity [
 	
 	^entity
 ]
 
-{ #category : 'printing' }
+{ #category : #printing }
 EntityChange >> printOn: aStream [
 	
 	super printOn: aStream.

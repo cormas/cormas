@@ -15,14 +15,12 @@ Internal Representation and Key Implementation Points.
     Implementation Points
 "
 Class {
-	#name : 'CMNonSquaredSpaceNeighbourhood',
-	#superclass : 'CMSpaceNeighbourhood',
-	#category : 'Cormas-Core-Space',
-	#package : 'Cormas-Core',
-	#tag : 'Space'
+	#name : #CMNonSquaredSpaceNeighbourhood,
+	#superclass : #CMSpaceNeighbourhood,
+	#category : 'Cormas-Core-Space'
 }
 
-{ #category : 'environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMNonSquaredSpaceNeighbourhood >> nearestEmptyCellFor: aCMAgentLocation [
 
 	^ aCMAgentLocation nearestCellVerifying: [:p | p hasNoOccupants]

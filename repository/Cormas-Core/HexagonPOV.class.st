@@ -1,12 +1,10 @@
 Class {
-	#name : 'HexagonPOV',
-	#superclass : 'VectorialElementaryPOV',
-	#category : 'Cormas-Core-Legacy',
-	#package : 'Cormas-Core',
-	#tag : 'Legacy'
+	#name : #HexagonPOV,
+	#superclass : #VectorialElementaryPOV,
+	#category : 'Cormas-Core-Legacy'
 }
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 HexagonPOV class >> fromRadius: radius [
 	"Return a regular hexagonal HexagonFigure  calculated from radius.
 test:  (HexagonPOV fromRadius: 30) asFigure   "
@@ -14,7 +12,7 @@ test:  (HexagonPOV fromRadius: 30) asFigure   "
 	^self new: (self polylineFromRadius: radius)
 ]
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 HexagonPOV class >> fromSideLength: aLength [
 	"Return a regular hexagonal HexagonFigure  calculated from the length of a side.
 test:  (HexagonPOV fromSideLength: 30) asFigure"
@@ -22,7 +20,7 @@ test:  (HexagonPOV fromSideLength: 30) asFigure"
 	^self fromRadius: aLength
 ]
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 HexagonPOV class >> height: heigth length: length [
 	"Return an irregular HexagonFigure, calculated from the heigth radius and length radius.
 test: (HexagonPOV height: 80 length: 50) asFigure    "
@@ -34,7 +32,7 @@ test: (HexagonPOV height: 80 length: 50) asFigure    "
 	^(self fromRadius: radius) scaledBy: (length / radius) @ (heigth / radius)
 ]
 
-{ #category : 'polyline' }
+{ #category : #polyline }
 HexagonPOV class >> polylineFromHeight: length length: heigth [
 	"Return a hexagonal Polyline.
 test:  (HexagonPOV polylineFromHeight: 30 length: 50)    "
@@ -42,7 +40,7 @@ test:  (HexagonPOV polylineFromHeight: 30 length: 50)    "
 	^(self height: heigth length: length) asGeometric
 ]
 
-{ #category : 'polyline' }
+{ #category : #polyline }
 HexagonPOV class >> polylineFromRadius: radius [
 	"Return a regular hexagonal Polyline.
 test:  HexagonFigure polylineFromRadius: 30   "
@@ -51,13 +49,13 @@ test:  HexagonFigure polylineFromRadius: 30   "
 	^self polylineFromRadius: radius angleBetweenPoints: 60
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 HexagonPOV >> nbSegments [
 	
 	^nbSegments ifNil: [nbSegments := 6]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 HexagonPOV >> radius [
 	
 	^(LineSegment

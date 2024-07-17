@@ -1,19 +1,17 @@
 Class {
-	#name : 'IndexedSet',
-	#superclass : 'OrderedCollection',
-	#category : 'Cormas-Core-Space',
-	#package : 'Cormas-Core',
-	#tag : 'Space'
+	#name : #IndexedSet,
+	#superclass : #OrderedCollection,
+	#category : 'Cormas-Core-Space'
 }
 
-{ #category : 'private' }
+{ #category : #private }
 IndexedSet >> - aSet [
 	"Answer those elements present in the receiver and absent from aSet."
 
 	^ self reject: [ :i | aSet includes: i ]
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 IndexedSet >> addFirst: newObject [ 
 	"Add newObject to the beginning of the receiver.  Answer newObject."
 
@@ -22,7 +20,7 @@ IndexedSet >> addFirst: newObject [
 	^ newObject
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 IndexedSet >> addLast: newObject [ 
 	"Add newObject to the end of the receiver.  Answer newObject."
 
@@ -31,7 +29,7 @@ IndexedSet >> addLast: newObject [
 	^ newObject
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 IndexedSet >> collect: aBlock [ 
 	"Evaluate aBlock with each of the values of the receiver as the  
 	argument.  Collect the resulting values into a new OrderedCollection.
@@ -41,7 +39,7 @@ IndexedSet >> collect: aBlock [
 	^ self asOrderedCollection collect: aBlock
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 IndexedSet >> insert: anObject before: spot [
 
 	(self includes: anObject)

@@ -1,13 +1,13 @@
-Extension { #name : 'DoItChunk' }
+Extension { #name : #DoItChunk }
 
-{ #category : '*Cormas-Core' }
+{ #category : #'*Cormas-Core' }
 DoItChunk >> <= aMethodChunk [
 	" Use sorting by description as the default sort order "
 
 	^ self description <= aMethodChunk description
 ]
 
-{ #category : '*Cormas-Core' }
+{ #category : #'*Cormas-Core' }
 DoItChunk >> = aCodeChunk [
 	
 	self == aCodeChunk 
@@ -19,7 +19,7 @@ DoItChunk >> = aCodeChunk [
 	^ self contents lines = aCodeChunk contents lines
 ]
 
-{ #category : '*Cormas-Core' }
+{ #category : #'*Cormas-Core' }
 DoItChunk >> hash [ 
 
 	^ self class hash bitXor: self contents hash

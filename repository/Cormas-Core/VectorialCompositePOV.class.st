@@ -1,15 +1,13 @@
 Class {
-	#name : 'VectorialCompositePOV',
-	#superclass : 'VectorialPOV',
+	#name : #VectorialCompositePOV,
+	#superclass : #VectorialPOV,
 	#instVars : [
 		'components'
 	],
-	#category : 'Cormas-Core-Legacy',
-	#package : 'Cormas-Core',
-	#tag : 'Legacy'
+	#category : 'Cormas-Core-Legacy'
 }
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 VectorialCompositePOV class >> newFrom: aSetOfPovs [
 	
 	| inst |
@@ -19,19 +17,19 @@ VectorialCompositePOV class >> newFrom: aSetOfPovs [
 	^inst
 ]
 
-{ #category : 'private' }
+{ #category : #private }
 VectorialCompositePOV >> asFigure_basic [
 	
 	^self class asFigure newFromPOV: self
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 VectorialCompositePOV >> bounds [
 	
 	^self asFigure_basic bounds
 ]
 
-{ #category : 'changed' }
+{ #category : #changed }
 VectorialCompositePOV >> changeWith: anOtherCompositePOV [
 	"This message is sent when a figure (self) is being deleted or if shape has changed with anOtherCompositePOV. The old one (self) is removed from SpaceView and the new one is added"
 	
@@ -39,26 +37,26 @@ VectorialCompositePOV >> changeWith: anOtherCompositePOV [
 	super changeWith: anOtherCompositePOV
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 VectorialCompositePOV >> color [
 	
 	^ color 
 		ifNil: [ color := Color green ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 VectorialCompositePOV >> components [
 	
 	^components ifNil: [components := OrderedCollection new]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 VectorialCompositePOV >> components: anObject [
 	
 	components := anObject
 ]
 
-{ #category : 'delimitors' }
+{ #category : #delimitors }
 VectorialCompositePOV >> getPointsFromSegments: segmentsColl [
 	"returns a collection of points from a collectin of connected segments. The segmentsColl is reduced"
 	
@@ -83,13 +81,13 @@ VectorialCompositePOV >> getPointsFromSegments: segmentsColl [
 	^points
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 VectorialCompositePOV >> isVectorialCompositePOV [
 	
 	^true
 ]
 
-{ #category : 'delimitors' }
+{ #category : #delimitors }
 VectorialCompositePOV >> setDelimitors [
 	"outline = external Polyline.
 internalLines  = collection of Polylines. nbSegments lineWidth "

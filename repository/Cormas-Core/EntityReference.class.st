@@ -10,25 +10,23 @@ Instance Variables:
 
 "
 Class {
-	#name : 'EntityReference',
-	#superclass : 'Object',
+	#name : #EntityReference,
+	#superclass : #Object,
 	#instVars : [
 		'entity',
 		'entityClass',
 		'entityId'
 	],
-	#category : 'Cormas-Core-Deprecate',
-	#package : 'Cormas-Core',
-	#tag : 'Deprecate'
+	#category : 'Cormas-Core-Deprecate'
 }
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 EntityReference class >> entity: anEntity class: aClass id: anId [
 	
 	^self new entity: anEntity class: aClass id: anId
 ]
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 EntityReference class >> on: anEntity [
 	
 	^self
@@ -37,13 +35,13 @@ EntityReference class >> on: anEntity [
 		id: anEntity id
 ]
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 EntityReference class >> onEntities: aCollec [
 	
 	^aCollec collect: [:e | self on: e]
 ]
 
-{ #category : 'comparing' }
+{ #category : #comparing }
 EntityReference >> = anObject [
 	
 	^anObject class == EntityReference
@@ -52,13 +50,13 @@ EntityReference >> = anObject [
 				and: [anObject entityClass == self entityClass]]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 EntityReference >> entity [
 	
 	^entity
 ]
 
-{ #category : 'initialize-release' }
+{ #category : #'initialize-release' }
 EntityReference >> entity: anEntity class: aClass id: anInteger [
 	
 	entity := anEntity.
@@ -66,19 +64,19 @@ EntityReference >> entity: anEntity class: aClass id: anInteger [
 	entityId := anInteger
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 EntityReference >> entityClass [
 	
 	^entityClass
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 EntityReference >> entityId [
 	
 	^entityId
 ]
 
-{ #category : 'printing' }
+{ #category : #printing }
 EntityReference >> printOn: aStream [
 	
 	self class printOn: aStream.
@@ -89,7 +87,7 @@ EntityReference >> printOn: aStream [
 	aStream nextPut: $)
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 EntityReference >> refersId: anEntityId andClass: anEntityClass [
 	
 	^entityId = anEntityId and: [entityClass == anEntityClass]
