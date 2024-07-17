@@ -38,13 +38,7 @@ CMAbstractModelTest >> testCellAtAt [
 ]
 
 { #category : #tests }
-CMAbstractModelTest >> testCellClassAbstractModel [
-
-	self assert: CMAbstractModel cellClass isNil
-]
-
-{ #category : #tests }
-CMAbstractModelTest >> testCellClassMockModel [
+CMAbstractModelTest >> testCellClass [
 
 	self assert: CMMockModel cellClass equals: CMMockCell
 ]
