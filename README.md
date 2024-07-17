@@ -50,14 +50,14 @@ Join us on the cormas-dev mailing-list: http://groups.google.com/group/cormas-de
 ## Standard Installation
 
 * Download a Pharo 9.0 image+VM depending of your platform: http://pharo.org/download
-* Load Cormas: Open Pharo 9.0 image then click anywhere to open the main menu. Choose Playground (Ctrl + OW or Cmd + OW) to execute the following script to install the latest stable version of Cormas (`pre-v0.5`). Paste the script below in Playground, select all then right-click and choose Do it (Ctrl+D or Cmd+D) to execute it:
+* Load Cormas: Open Pharo 9.0 image then click anywhere to open the main menu. Choose Playground (Ctrl + OW or Cmd + OW) to execute the following script to install the latest stable version of Cormas. Paste the script below in Playground, select all then right-click and choose Do it (Ctrl+D or Cmd+D) to execute it:
 
 ```st
 EpMonitor disableDuring: [
     Metacello new
         onConflictUseLoaded;
         onWarningLog;
-        repository: 'github://cormas/cormas:v0.8';
+        repository: 'github://cormas/cormas:v0.9';
         baseline: 'Cormas';
         load ].
 ```
