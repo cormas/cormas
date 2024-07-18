@@ -34,8 +34,6 @@ Instance Variables
 Class {
 	#name : 'CMAbstractModel',
 	#superclass : 'CMObject',
-	#traits : 'TCMUtils',
-	#classTraits : 'TCMUtils classTrait',
 	#instVars : [
 		'cormas',
 		'timeStep',
@@ -196,23 +194,6 @@ CMAbstractModel class >> allTerminalClasses [
 				do: [ :passiveClass | 
 					(passiveClass isTerminal and: [ passiveClass inheritsFrom: CMEntity ])
 						ifTrue: [ stream nextPut: passiveClass ] ] ]
-]
-
-{ #category : 'accessing' }
-CMAbstractModel class >> buildMicroDownUsing: aBuilder [ 
-
-	aBuilder
-		header: [ :b | b text: self friendlyName ] withLevel: 1;
-		horizontalLine;
-
-		header: [ :b | b text: 'Description' ] withLevel: 3;
-		horizontalLine;
-		text: self aboutThisModel;
-		newLine;
-
-		header: [ :b | b text: 'How to run it' ] withLevel: 3;
-		horizontalLine;
-		text: self howToRunIt
 ]
 
 { #category : 'managing classes' }
