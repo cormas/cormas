@@ -12,12 +12,6 @@ Class {
 	#tag : 'Entities'
 }
 
-{ #category : 'deprecated' }
-CMAgent class >> dead_default [
-self deprecated:'Should be deprecated in the next CORMAS version'.
-	^false
-]
-
 { #category : 'controlling' }
 CMAgent >> delete [
 "Purpose: gets rid of this object. The collectGarbage is IMMEDIATELY performed  (ie. the receiver of class X is removed from 'theXXXs' collection)"
