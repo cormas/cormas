@@ -890,7 +890,7 @@ Example: self shortestDistanceToCellVerifying: [:c | c landCover = #forest] cons
 		              nearestCellVerifying: aCondition
 		              constraintOnPath: aBlock.
 	^ targetCell
-		  ifNil: [ self cormas warn: 'there is no nearest cell' ]
+		  ifNil: [ self error: 'there is no nearest cell' ]
 		  ifNotNil: [ self distanceTo: targetCell ]
 ]
 

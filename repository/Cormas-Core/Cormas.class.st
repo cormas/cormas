@@ -1602,8 +1602,3 @@ Cormas >> useExternalVisualization: anObject [
 	
 	useExternalVisualization := anObject
 ]
-
-{ #category : 'user messages' }
-Cormas >> warn: aString [
-	self error: aString
-]

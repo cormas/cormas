@@ -1026,10 +1026,10 @@ CMAbstractModel >> compoundSpatialClasses [
 	classes := self class compoundSpatialClasses.
 	
 	classes ifEmpty: [
-		^ self cormas warn: 'There are no compound spatial entity classes!' ].
+		^ self error: 'There are no compound spatial entity classes!' ].
 	
 	classes size > 1 ifTrue: [
-		^ self cormas warn: 'There is more than one compound spatial entity class!'].
+		^ self error: 'There is more than one compound spatial entity class!'].
 	
 	getter := self getterForEntityClass: classes first.
 	^ self perform: getter
@@ -2749,16 +2749,15 @@ CMAbstractModel >> theAgentsComm [
 { #category : 'accessing - entities' }
 CMAbstractModel >> theAggregates: aSet [
 	
-	| coll |
-	coll := self class compoundSpatialClasses.
-	coll size = 0
-		ifTrue: [^self cormas warn: 'Pas d''entites spatiales composees !'].
-	coll size > 1
-		ifTrue:
-			[^self cormas warn:
-					'Il y a plusieurs classes d''entites spatiales composees !'].
-	^self
-		setTheEntity: self class compoundSpatialClasses first
+	| classes |
+	classes := self class compoundSpatialClasses.
+	classes ifEmpty: [ ^ self error: 'There are no compound spatial entities!' ].
+	
+	classes size > 1 ifTrue: [
+		^ self error: 'There are multiple classes of compound spatial entities!' ].
+	
+	^ self
+		setTheEntity: classes first
 		with: aSet
 ]
 
