@@ -29,7 +29,7 @@ CMR3SpaceShapeBuilder >> createAdaptivePopup [
 		colors := NSScale category20c.
 		lb := RSLegend new.
 		lb container: composite.
-		lb title: aCMEntity name.
+		lb title: aCMEntity class name.
 		aCMEntity interestingDetails do: [ : att | 
 			lb 
 				text: (self formatEntityDetail: aCMEntity attribute: att)
