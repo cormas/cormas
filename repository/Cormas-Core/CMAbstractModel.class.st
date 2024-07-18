@@ -96,44 +96,6 @@ CMAbstractModel class >> activeProbes: anObject [
 	activeProbes := anObject
 ]
 
-{ #category : 'activityEditor' }
-CMAbstractModel class >> activityDiagrams [
-	
-	^activityDiagrams ifNil: [activityDiagrams := Dictionary new]
-]
-
-{ #category : 'activityEditor' }
-CMAbstractModel class >> activityDiagrams: anObject [
-	
-	activityDiagrams := anObject
-]
-
-{ #category : 'activityEditor' }
-CMAbstractModel class >> activityDiagramsAt: instanceOperationName [
-	" (Entity activityDiagramsAt: #exampleTest) open   "
-	
-	| ad |
-	ad := self activityDiagrams
-		at: instanceOperationName
-		ifAbsent:
-			[ad := [self perform: (self activitySelectorOf: instanceOperationName)]
-				on: Error
-				do:
-					[:ex | 
-					^Cormas current warn: 'No Activity Diagram found for <1p>' with:
-							instanceOperationName].
-			self activityDiagrams at: instanceOperationName put: ad].
-	^ad
-]
-
-{ #category : 'activityEditor' }
-CMAbstractModel class >> activitySelectorOf: instanceSelector [
-	"Return the activity_selector name from #instanceSelector with 'activity_'.
-	ex: Agent activitySelectorOf: #exampleTest     --> #activity_exampleTest"
-	
-	^(self preStringForActivitySelector , instanceSelector) asSymbol
-]
-
 { #category : 'description - primitives' }
 CMAbstractModel class >> addClassComment [
 	"Set the comment of the class"
@@ -206,28 +168,6 @@ CMAbstractModel class >> addRandomAttributes: anArray [
 		notifying: nil
 ]
 
-{ #category : 'activityEditor' }
-CMAbstractModel class >> allActivityDiagramSelectors [
-	"Return the selectors starting with 'activity_'.
-	ex: Agent allActivityDiagramSelectors"
-	
-	^self class allSelectors
-		select:
-			[:n | 
-			(n asString
-				indexOfSubCollection: self preStringForActivitySelector
-				startingAt: 1) = 1]
-]
-
-{ #category : 'activityEditor' }
-CMAbstractModel class >> allActivitySelectors [
-	"Return the instance selectors defined for the activityDiagrams '.
-	ex: Agent allActivitySelectors"
-	
-	^self allActivityDiagramSelectors
-		collect: [:as | self instanceSelectorFrom: as]
-]
-
 { #category : 'managing classes' }
 CMAbstractModel class >> allClassesNames [
 	"return all the Entity class names of the model (except the my self, Msg and other classes like Interface etc)"
@@ -241,16 +181,6 @@ CMAbstractModel class >> allEntityClasses [
 
 	^ self package classes
 		removeAllSuchThat: [ :class | (class inheritsFrom: CMEntity) not ]
-]
-
-{ #category : 'activityEditor' }
-CMAbstractModel class >> allInstanceSelectors [
-	
-	| coll |
-	coll := OrderedCollection new.
-	(self superClassesUntil: Object)
-		do: [:aClass | coll addAll: aClass selectors].
-	^coll
 ]
 
 { #category : 'managing classes' }
@@ -295,24 +225,6 @@ CMAbstractModel class >> cellClass: aCMSpatialEntityCellClass [
 	" Set the receiver's spatial entity class to aCMSpatialEntityCellClass. This class must exists in the same package of the model class to be properly detected by initialization process "
 	
 	cellClass := aCMSpatialEntityCellClass
-]
-
-{ #category : 'activityEditor' }
-CMAbstractModel class >> chooseActivityDiagramEditorToRemove [
-	" Purpose: user can choose and remove an ActivityDiagramEditor.
-	Example: Entity chooseActivityDiagramEditorToRemove   "
-
-	| selectors |
-	selectors := self allActivitySelectors asSortedCollection.
-	^ (UIManager default
-		chooseFrom: selectors
-		lines: selectors
-		message: 'Which activity diagram to remove?'
-		title: '* Select an activity diagram *')
-		in: [ :index | 
-			index = 0
-				ifTrue: [ nil ]
-				ifFalse: [ self removeActivityDiagram: (selectors at: index) ] ]
 ]
 
 { #category : 'accessing' }
@@ -527,16 +439,6 @@ CMAbstractModel class >> initializeModelClasses [
 	self passiveClasses: (classes select: [ : each | (each inheritsFrom: CMPassiveObject) or: [ each inheritsFrom: CMMessage ]])
 ]
 
-{ #category : 'activityEditor' }
-CMAbstractModel class >> instanceSelectorFrom: activity_selector [
-	"Return the selector name from #activity_selector without 'activity_'.
-	ex: Agent instanceSelectorFrom: #activity_bidon     --> #bidon"
-	
-	^(activity_selector
-		copyFrom: self preStringForActivitySelector size + 1
-		to: activity_selector size) asSymbol
-]
-
 { #category : 'testing' }
 CMAbstractModel class >> isGenericEntity [
 	
@@ -579,102 +481,6 @@ CMAbstractModel class >> locatedObjectClasses [
 { #category : 'managing classes' }
 CMAbstractModel class >> messages [
 	^ self passiveClasses select: [ :i | i inheritsFrom: CMMessage ]
-]
-
-{ #category : 'activityEditor' }
-CMAbstractModel class >> methodsForControl [
-	"Return a set of manipulation methods of this class which are neither in #init, #testing, #pov #accessing #probes or #info protocols
-	This is usefull if you want to manipulate your agent from a graphic interface or with the Manipulate Instances and Create Instances tools.
-	The modeler can redefine this method in order to get the desired selectors. 
-Example :
-	methodsForControl
-		^#(#step #reproduce #randomWalk)	"
-	
-	| coll |
-	coll := self modelMethodsForManipulation
-		- self methodsForTesting asOrderedCollection.
-	^coll
-]
-
-{ #category : 'activityEditor' }
-CMAbstractModel class >> methodsForControlNoArg [
-	"Purpose: returns a list of all the control methods with no argument
-Return value: a collection of symbols"
-	
-	^self methodsForControl select: [:selector | (selector includes: $:) not]
-]
-
-{ #category : 'activityEditor' }
-CMAbstractModel class >> methodsForTesting [
-	"Return a set of all the methods which are in protocols starting by '* testing'
-	This is usefull if you want to manipulate your agent with Manipulate Instances tool
-	The modeler can redefine this method in order to get the desired selectors. 
-Example :
-	methodsForTesting
-		^#(#isRich #isLandOwner)	"
-	
-	| coll |
-	coll := self methodsOfProtocol: #testing.
-	coll addAll: (self methodsOfProtocol: '+ testing - scheduling' asSymbol).
-	^coll
-]
-
-{ #category : 'activityEditor' }
-CMAbstractModel class >> methodsOfProtocol: protocolName [
-	"Return a set of all the methods of model classes which are in the given protocol and of all the methods of cormas entity classes which are in the protocol '* protocolName'"
-	
-	| collModel |
-	collModel := OrderedCollection new.
-	(self superClassesUntil: CMAbstractModel)
-		do:
-			[:aClass | 
-			collModel
-				addAll: (aClass organization listAtCategoryNamed: protocolName) sorted].
-	^collModel
-]
-
-{ #category : 'activityEditor' }
-CMAbstractModel class >> modelMethodsForManipulation [
-	"Return a set of all instance methods of this class and model upperclasses which are not in protocols #pov #accessing #probes #info.
-Ex: CormasModel modelMethodsForManipulation"
-	
-	| coll categories |
-	coll := OrderedCollection new.
-	(self superClassesUntil: CMAbstractModel)
-		do: [ : aClass | 
-			(self cmEnvironment includes: aClass)
-				ifTrue:
-					[categories := (aClass organization categories
-						select: [:cat | (cat first = $-) not]) asOrderedCollection.
-					categories
-						remove: #'default values'
-						ifAbsent: [].
-					coll
-						addAll:
-							(aClass selectors
-								select:
-									[:method | categories includes: (aClass organization categoryOfElement: method)])
-								sorted]
-				ifFalse:
-					[categories := (aClass organization categories
-						select: [:cat | cat first = $+]) asOrderedCollection.
-					categories
-						removeAllSuchThat:
-							[:p | (p findString: 'utilities' startingAt: 1) ~= 0].
-					#(#'+ pov' #'+ utilities - ODBC')
-						do:
-							[:cat | 
-							categories
-								remove: cat
-								ifAbsent: []].
-					coll
-						addAll:
-							(aClass selectors
-								select:
-									[:method | categories includes: (aClass organization categoryOfElement: method)])
-								sorted]].
-	coll removeAllSuchThat: [:s | s includes: $:].
-	^coll
 ]
 
 { #category : 'instance creation' }
@@ -724,12 +530,6 @@ CMAbstractModel class >> postfixName [
 	^ 'Model'
 ]
 
-{ #category : 'activityEditor' }
-CMAbstractModel class >> preStringForActivitySelector [
-	
-	^'activity_'
-]
-
 { #category : 'accessing' }
 CMAbstractModel class >> prefixName [
 	"Answer a the prefix name of this model: 'CM' "
@@ -750,20 +550,6 @@ CMAbstractModel class >> randomAttributes [
 	This method is automatically redefined when creating new random attributes"
 	
 	^#()
-]
-
-{ #category : 'activityEditor' }
-CMAbstractModel class >> removeActivityDiagram: instanceOperationName [
-	"Removes the diagram store into activityDiagrams dictionnary, but also deletes the 2 methods defining the diagram"
-	
-	self activityDiagrams
-		removeKey: instanceOperationName
-		ifAbsent: [nil].
-	self removeSelector: instanceOperationName asSymbol.
-	self class
-		removeSelector:
-			(self preStringForActivitySelector , instanceOperationName asString)
-				asSymbol
 ]
 
 { #category : 'accessing' }
@@ -908,24 +694,6 @@ CMAbstractModel class >> spatialClasses_sorted [
 	coll := self compoundSpatialClasses asOrderedCollection.
 	coll addFirst: self cellClass.
 	^coll
-]
-
-{ #category : 'activityEditor' }
-CMAbstractModel class >> superClassesUntil: aSuperClass [
-	"Return the super classes of the class sender until aSuperClass"
-	
-	| coll |
-	coll := self withAllSuperclasses
-		select: [:aClass | aClass inheritsFrom: aSuperClass].
-	coll add: aSuperClass.
-	^coll
-]
-
-{ #category : 'activityEditor' }
-CMAbstractModel class >> superClassesUntilEntity [
-	"Return the super classes of the class sender until CormasModel"
-	
-	^self superClassesUntil: CMAbstractModel
 ]
 
 { #category : 'testing - scheduling' }

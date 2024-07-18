@@ -101,13 +101,6 @@ CMMessage class >> superClassesUntil: aSuperClass [
 	^coll
 ]
 
-{ #category : 'util' }
-CMMessage class >> superClassesUntilEntity [
-	"Return the super classes of the class sender until Msg"
-
-	^ self superClassesUntil: CMMessage
-]
-
 { #category : 'instance creation' }
 CMMessage class >> to: anAgent [
 	

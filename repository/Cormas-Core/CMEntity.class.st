@@ -77,68 +77,6 @@ CMEntity class >> activeProbes: anObject [
 	activeProbes := anObject
 ]
 
-{ #category : 'activityDiagram' }
-CMEntity class >> activityDiagrams [
-	
-	^activityDiagrams ifNil: [activityDiagrams := Dictionary new]
-]
-
-{ #category : 'activityDiagram' }
-CMEntity class >> activityDiagrams: anObject [
-	
-	activityDiagrams := anObject
-]
-
-{ #category : 'activityDiagram' }
-CMEntity class >> activityDiagramsAt: instanceOperationName [
-	" (Entity activityDiagramsAt: #exampleTest) open   "
-	
-	| ad |
-	ad := self activityDiagrams
-		at: instanceOperationName
-		ifAbsent:
-			[ad := [self perform: (self activitySelectorOf: instanceOperationName)]
-				on: Error
-				do:
-					[:ex | 
-					(ex isKindOf: MessageNotUnderstood)
-						ifTrue:
-							[^self cormas warn: 'No Activity Diagram found for <1p>' with:
-									instanceOperationName]
-						ifFalse:
-							[(self class
-								whichClassIncludesSelector:
-									(self activitySelectorOf: instanceOperationName)) isNil
-								ifTrue:
-									[^self cormas warn: 'No Activity Diagram found for <1p>' with:
-											instanceOperationName]
-								ifFalse:
-									[self
-										refactorActivityDiagram:
-											(self activitySelectorOf: instanceOperationName)
-										forClass: self.
-									(Cormas current
-										confirm:
-											'Bug in Activity Diagram '
-												, (self activitySelectorOf: instanceOperationName) printString
-												,
-													'. 
-The diagram has been refactored. 
-Please try again?')
-										ifTrue: [^self activityDiagramsAt: instanceOperationName]
-										ifFalse: [^false]]]].
-			self activityDiagrams at: instanceOperationName put: ad].
-	^ad
-]
-
-{ #category : 'activityDiagram' }
-CMEntity class >> activitySelectorOf: instanceSelector [
-	"Return the activity_selector name from #instanceSelector with 'activity_'.
-	ex: Agent activitySelectorOf: #exampleTest     --> #activity_exampleTest"
-	
-	^(self preStringForActivitySelector , instanceSelector) asSymbol
-]
-
 { #category : 'accessing' }
 CMEntity class >> addRandomAttributes: anArray [
 	"' Compile #randomAttributes by adding anArray: #(#attribute scopeLevel #randFloat min max) "
@@ -175,167 +113,6 @@ CMEntity class >> addRandomAttributes: anArray [
 		compile: code
 		classified: '- accessing' asString
 		notifying: nil
-]
-
-{ #category : 'activityDiagram' }
-CMEntity class >> allActivityDiagramSelectors [
-	"Return the selectors starting with 'activity_'.
-	ex: Agent allActivityDiagramSelectors"
-	
-	^self class allSelectors
-		select:
-			[:n | 
-			(n asString
-				indexOfSubCollection: self preStringForActivitySelector
-				startingAt: 1) = 1]
-]
-
-{ #category : 'activityDiagram' }
-CMEntity class >> allActivitySelectors [
-	"Return the instance selectors defined for the activityDiagrams '.
-	ex: Agent allActivitySelectors"
-	
-	^self allActivityDiagramSelectors
-		collect: [:as | self instanceSelectorFrom: as]
-]
-
-{ #category : 'accessing - methods & classes' }
-CMEntity class >> allAttributesUntil: aSuperClass [
-	"Purpose: returns the list of attributes of the receiver up to aSuperClass
-Return value: an orderedCollection
-Example: GroupLocation allAttributesUntil: Agent"
-	
-	| coll |
-	coll := OrderedCollection new.
-	(self superClassesUntil: aSuperClass)
-		do: [:cl | coll addAll: cl instVarNames].
-	^coll
-]
-
-{ #category : 'accessing - methods & classes' }
-CMEntity class >> allAttributesUntilEntity [
-	"Purpose: returns the list of attributes of the receiver up to aSuperClass
-Return value: an orderedCollection
-Example: GroupLocation allAttributesUntilEntity"
-	
-	^self allAttributesUntil: CMEntity
-]
-
-{ #category : 'accessing - methods & classes' }
-CMEntity class >> allClassSelectors [
-	"Purpose: returns the list of all methods defined at class level
-Return value: an orderedCollection
-Example: CormasNS.Kernel.Agent allClassSelectors"
-	
-	| coll |
-	coll := OrderedCollection new.
-	(self superClassesUntil: Object)
-		do: [:aClass | coll addAll: aClass class selectors].
-	^coll
-]
-
-{ #category : 'accessing - methods & classes' }
-CMEntity class >> allClassSelectorsInProtocol: aProtocolName [
-	"Purpose: returns the list of all methods defined at class level in a given protocol
-Return value: an orderedCollection
-Example: CormasNS.Kernel.Entity allClassSelectorsInProtocol: #'+ util_Color'  "
-	
-	| coll |
-	coll := OrderedCollection new.
-	(self superClassesUntil: Object)
-		do:
-			[:aClass | coll addAll: (aClass class organization listAtCategoryNamed: aProtocolName)].
-	^coll
-]
-
-{ #category : 'accessing - methods & classes' }
-CMEntity class >> allClassVariablesUntil: aSuperClass [
-	"Purpose: returns the list of ClassVariables of the receiver up to aSuperClass
-Return value: an orderedCollection
-Example: AgentLocation allClassVariablesUntil: Object"
-	
-	| coll |
-	coll := OrderedCollection new.
-	(self superClassesUntil: aSuperClass)
-		do: [:cl | coll addAll: cl class instVarNames	"classVarNames"].
-	^coll
-]
-
-{ #category : 'accessing - methods & classes' }
-CMEntity class >> allClassVariablesUntilEntity [
-	"Purpose: returns the list of ClassVariables of the receiver up to aSuperClass
-Return value: an orderedCollection
-Example: AgentLocation allClassVariablesUntilEntity"
-	
-	^self allClassVariablesUntil: CMEntity
-]
-
-{ #category : 'accessing - methods & classes' }
-CMEntity class >> allInstanceSelectors [
-	"Purpose:returns the list of all methods defined at instance level
-Return value: an orderedCollection
-Example: CormasNS.Kernel.Agent allInstanceSelectors"
-	
-	| coll |
-	coll := OrderedCollection new.
-	(self superClassesUntil: Object)
-		do: [:aClass | coll addAll: aClass selectors].
-	^coll
-]
-
-{ #category : 'accessing - methods & classes' }
-CMEntity class >> allMethodsBut: aProtocolName [
-	"Return a set of all instance methods of this class and upperclasses which are not in the given protocols aProtocolName.
-	aProtocolName = <Symbol or String>"
-	
-	^self
-		allMethodsButProtocols: (OrderedCollection with: aProtocolName asString)
-]
-
-{ #category : 'accessing - methods & classes' }
-CMEntity class >> allMethodsButProtocols: aProtocolList [
-	"Return a set of all instance methods of this class and upperclasses which are not in the given aProtocolList.
-	aProtocolList = <Collection of string>, ex: #('* pov' '+ pov' '+ accessing' 'probes' '* info')"
-	
-	| coll |
-	coll := OrderedCollection new.
-	self superClassesUntilEntity
-		do: [ : aClass | 
-			(self cmEnvironment includes: aClass)
-				ifTrue: [
-					| cat |
-					cat := aClass organization categories asOrderedCollection.
-					cat removeAllSuchThat: [:st | aProtocolList includes: st asString].
-					cat do: [ : categ | coll addAll: (aClass organization listAtCategoryNamed: categ) ] ] ].
-	^ coll sorted
-]
-
-{ #category : 'accessing - methods & classes' }
-CMEntity class >> allSpecificAttributes [
-	"Purpose: returns the list of attributes of this class and its SuperClass that are not from the Kernel (ie. classes that are not genericEntities)
-Return value: an orderedCollection
-Example: GroupLocation allSpecificAttributes"
-	
-	| superClasses |
-	superClasses := self withAllSuperclasses copy.
-	superClasses remove: Object.
-	superClasses removeAllSuchThat: [:cl | self genericEntities includes: cl].
-	superClasses isEmpty ifTrue: [^#()].
-	^self allAttributesUntil: superClasses last
-]
-
-{ #category : 'accessing - methods & classes' }
-CMEntity class >> allSpecificClassVariables [
-	"Purpose: returns the list of classVars of this class and its SuperClass that are not from the Kernel (ie. classes that are not genericEntities)
-Return value: an orderedCollection
-Example: GroupLocation allSpecificClassVariables"
-	
-	| superClasses |
-	superClasses := self withAllSuperclasses copy.
-	superClasses remove: Object.
-	superClasses removeAllSuchThat: [:cl | self genericEntities includes: cl].
-	superClasses isEmpty ifTrue: [^#()].
-	^self allClassVariablesUntil: superClasses last
 ]
 
 { #category : 'utilities - classes' }
@@ -513,36 +290,6 @@ CMEntity class >> genericEntities [
 	^ CMEntity withAllSubclasses select: [ : cl | cl cmEnvironment = kernel]
 ]
 
-{ #category : 'activityDiagram' }
-CMEntity class >> getActivityDiagram: operationName [
-	"Purpose: return an activity diagram from operationName symbol.
-Argument: operationName = <Symbol>
-Example: CormasNS.Kernel.Agent getActivityDiagram: #exampleTest   "
-	
-	| ad |
-	ad := [self perform: (self activitySelectorOf: operationName)]
-		on: Error
-		do:
-			[:ex | 
-			| s |
-			(ex isKindOf: MessageNotUnderstood)
-				ifTrue:
-					[^self cormas warn: 'No Activity Diagram found for <1p>' with:
-							operationName].
-			s := self activitySelectorOf: operationName.
-			(self class whichClassIncludesSelector: s)
-				ifNil:
-					[^self cormas warn: 'No Activity Diagram found for <1p> ' with:
-							operationName].
-			self refactorActivityDiagram: s forClass: self.
-			^(self cormas confirm:
-					'Bug in Activity Diagram <1p><n>The diagram has been refactored. <n>Please try again?'
-				with: s)
-				ifTrue: [self getActivityDiagram: operationName]
-				ifFalse: [false]].
-	^ad
-]
-
 { #category : 'instance creation' }
 CMEntity class >> ghostInstance [
 	
@@ -590,16 +337,6 @@ randomAttributes = #(#bioma #instance #randomFloat 0 1). "
 CMEntity class >> id_default [
 	
 	^0
-]
-
-{ #category : 'activityDiagram' }
-CMEntity class >> instanceSelectorFrom: activity_selector [
-	"Return the selector name from #activity_selector without 'activity_'.
-	ex: Agent instanceSelectorFrom: #activity_bidon     --> #bidon"
-	
-	^(activity_selector
-		copyFrom: self preStringForActivitySelector size + 1
-		to: activity_selector size) asSymbol
 ]
 
 { #category : 'testing' }
@@ -745,122 +482,6 @@ CMEntity class >> listing: fileName [
 	stream close
 ]
 
-{ #category : 'utilities - methods - manipulation' }
-CMEntity class >> methodsForControl [
-	"Purpose: returns a list of method names that are NOT in the protocols #init, #testing, #pov #accessing #probes or #info.
-This is usefull if you want to manipulate the agents from a graphic interface or with the 'Manipulate Instances' and 'Create Instances' tools.
-Return value: <a collection of symbols>
-To customize the contextual menu, this method can be overwritten as following.
-Example :
-	methodsForControl
-		^#(#step #reproduce #randomWalk)	"
-	
-	| coll |
-	coll := self modelMethodsForManipulation - self methodsForInit
-		- self methodsForTesting asOrderedCollection.
-	coll
-		addAll:
-			(self methodsOfProtocolStartingWith: 'star ') - self methodsForInit
-				- self methodsForTesting
-				- (self methodsOfProtocolStartingWith: 'star accessing')
-				- (self methodsOfProtocolStartingWith: 'star info')
-				- (self methodsOfProtocolStartingWith: 'star pov').
-	^ coll
-]
-
-{ #category : 'utilities - methods - manipulation' }
-CMEntity class >> methodsForControlNoArg [
-	"Purpose: returns a list of all the control methods with no argument
-Return value: a collection of symbols"
-	
-	^self methodsForControl select: [:selector | (selector includes: $:) not]
-]
-
-{ #category : 'utilities - methods - manipulation' }
-CMEntity class >> methodsForInit [
-	"Purpose: returns a list of init method names
-This is usefull if you want to manipulate the agents from a graphic interface or with the 'Manipulate Instances' and 'Create Instances' tools.
-Return value: a collection of symbols
-This method can be overwritten. 
-Example :
-	methodsForInit
-		^#(#initWithRandomEnergy #initWithMaxEnergy)	"
-	
-	^self methodsOfProtocol: #init
-]
-
-{ #category : 'utilities - methods - manipulation' }
-CMEntity class >> methodsForInitNoArg [
-	"Purpose: returns a list of all the init methods with no argument
-Return value: a collection of symbols"
-	
-	^self methodsForInit select: [:selector | (selector includes: $:) not]
-]
-
-{ #category : 'utilities - methods - manipulation' }
-CMEntity class >> methodsForTesting [
-	"Purpose: returns a list of all the methods in protocols starting by '* testing'
-This is used by the interactive 'Manipulate Instances' tool
-Return value: a collection of symbols
-This method can be overwritten. 
-Example :
-	methodsForTesting
-		^#(#isRich #isLandOwner)	"
-	
-	^self methodsOfProtocol: #testing
-]
-
-{ #category : 'utilities - methods - manipulation' }
-CMEntity class >> methodsForTestingNoArg [
-	"Purpose: returns a list of all the testing methods with no argument
-Return value: a collection of symbols"
-	
-	^self methodsForTesting select: [:selector | (selector includes: $:) not]
-]
-
-{ #category : 'accessing - methods & classes' }
-CMEntity class >> methodsOfProtocol: protocolName [
-	"Return a set of all the methods of model classes which are in the given protocol and of all the methods of cormas entity classes which are in the protocol '* protocolName'"
-	
-	| protocolNameForCormasClasses collModel collCormas |
-	protocolNameForCormasClasses := '* ' , protocolName.
-	collModel := OrderedCollection new.
-	collCormas := OrderedCollection new.
-	(self superClassesUntil: CMEntity)
-		do: [ : aClass | 
-			(self cmEnvironment includes: aClass)
-				ifTrue:
-					[collModel
-						addAll:
-							(aClass organization listAtCategoryNamed: protocolName) sorted]
-				ifFalse:
-					[(aClass organization categories
-						select:
-							[:aSymbol | 
-							(aSymbol asString findString: protocolNameForCormasClasses startingAt: 1) =
-									1])
-						do:
-							[:aP | collCormas addAll: (aClass organization listAtCategoryNamed: aP)]]	"methods of model classes"	"methods of cormas entity classes"].
-	collModel addAll: collCormas sorted.
-	^collModel
-]
-
-{ #category : 'accessing - methods & classes' }
-CMEntity class >> methodsOfProtocolStartingWith: aString [
-	"Return a set of all the methods which are in protocols which name starts with aString"
-	
-	| coll |
-	coll := OrderedCollection new.
-	(self superClassesUntil: CMEntity)
-		do:
-			[:aClass | 
-			(aClass organization categories
-				select:
-					[:aSymbol | (aSymbol asString findString: aString startingAt: 1) = 1])
-				do: [:aP | coll addAll: (aClass organization listAtCategoryNamed: aP)]].
-	^coll sorted
-]
-
 { #category : 'utilities - classes' }
 CMEntity class >> modelClass [
 	"Purpose: returns the Class of the current model.
@@ -870,14 +491,6 @@ CMEntity class >> modelClass [
 	^ self package classes
 		detect: [ :cl | cl superclass = CMAbstractModel ]
 		ifNone: [ nil ]
-]
-
-{ #category : 'accessing - methods & classes' }
-CMEntity class >> modelMethodsForManipulation [
-	"Return a set of all instance methods of this class and model upperclasses which are not in protocols #pov #accessing #probes #info"
-	
-	^self allMethodsButProtocols:
-			#('star pov' '+ pov' 'pov' 'accessing' 'star accessing' '+ accessing' 'probes' '+ probes' 'star probes' 'star info' 'info' '+ info' 'obsolete' 'Obsolete' 'deprecated' 'Deprecated')
 ]
 
 { #category : 'instance creation' }
@@ -916,27 +529,6 @@ CMEntity class >> newAndCollect: aCollector [
 	^anInstance
 ]
 
-{ #category : 'activityDiagram - editor' }
-CMEntity class >> openActivityDiagram: operationName [
-	"Purpose: to edit a given activity diagram 
-Argument: operationName = <Symbol>
-Example: CormasNS.Kernel.Agent openActivityDiagram: #exampleTest   "
-	
-	| ad |
-	"le diagramme en m√©moire s'ouvre mais les activit√©s ne sont plus connect√©es. Il faut donc recr√©er"
-	"self activityDiagrams removeKey: operationName ifAbsent: [nil]."
-	ad := self getActivityDiagram: operationName.
-	ad open.
-	ad setTitle.	"le diagramme ouvert ne doit pas interf√©rer avec le diagramme utilis√© par l'agent qui tourne, donc on l'oublie (l'agent le recr√©era si besoin)"	"	self activityDiagrams removeKey: operationName ifAbsent: [nil]."
-	^ad
-]
-
-{ #category : 'activityDiagram' }
-CMEntity class >> preStringForActivitySelector [
-	
-	^'activity_'
-]
-
 { #category : 'probes' }
 CMEntity class >> probes [
 	"self superClassesUntilEntity"
@@ -956,127 +548,6 @@ CMEntity class >> randomAttributes [
 	This method is automatically redefined when creating new random attributes"
 	
 	^#()
-]
-
-{ #category : 'activityDiagram' }
-CMEntity class >> refactorActivityDiagram: aSelector forClass: aClass [
-	"compatibilit√© pour version anterieure des activityDiagrams"
-	
-	| metaClass source listing index activities collOfNews newActivities newColl newSource editor |
-	metaClass := aClass class whichClassIncludesSelector: aSelector.
-	source := (metaClass sourceCodeAt: aSelector) string.	"this old code does not work in packaged image : source := (metaClass methodSourcesAt: aSelector) source string."
-	listing := Cormas
-		splitString: source
-		with: Character cr.
-	activities := listing
-		detect:
-			[:t | (t indexOfSubCollection: 'virtualActivities :=' startingAt: 1) > 0]
-		ifNone: [^nil].
-	collOfNews := OrderedCollection new.
-	index := activities indexOfSubCollection: 'add: (' startingAt: 1.
-	index := 1.
-	[index > 0]
-		whileTrue:
-			[| index1 |
-			index1 := index.
-			index := activities
-				indexOfSubCollection: 'add: ('
-				startingAt: index1 + 1.
-			index > 0
-				ifTrue:
-					[collOfNews
-						add:
-							(activities
-								copyFrom: index1
-								to: index - 1)]
-				ifFalse:
-					[collOfNews
-						add:
-							(activities
-								copyFrom: index1
-								to: activities size)]].
-	newColl := OrderedCollection new.
-	collOfNews
-		do:
-			[:str | 
-			| indA |
-			(str indexOfSubCollection: 'ActivityFigure' startingAt: 1) > 0
-				ifTrue:
-					[indA := str indexOfSubCollection: 'instVarAt: 15 put: nil; ' startingAt: 1.
-					newColl
-						add:
-							(str
-								changeFrom: indA
-								to: indA + 'instVarAt: 15 put: nil; ' size - 1
-								with: '').
-					indA := newColl last indexOfSubCollection: 'instVarAt: 16 put:'
-						startingAt: 1.
-					newColl
-						at: newColl size
-						put:
-							(newColl last
-								changeFrom: indA
-								to: indA + 'instVarAt: 16 put:' size - 1
-								with: 'instVarAt: 14 put:')]
-				ifFalse:
-					[(str indexOfSubCollection: 'DiamondFigure' startingAt: 1) > 0
-						ifTrue:
-							[indA := str indexOfSubCollection: 'instVarAt: 16 put:' startingAt: 1.
-							newColl
-								add:
-									(str
-										changeFrom: indA
-										to: indA + 'instVarAt: 16 put:' size - 1
-										with: 'instVarAt: 15 put:')]
-						ifFalse: [newColl add: str]]].
-	newActivities := ''.
-	newColl do: [:str | newActivities := newActivities , str].
-	listing
-		at:
-			(listing
-				indexOf:
-					(listing
-						detect:
-							[:t | (t indexOfSubCollection: 'virtualActivities :=' startingAt: 1) > 0]))
-		put: newActivities.
-	newSource := ''.
-	listing
-		do:
-			[:str | 
-			newSource := newSource , str ,
-					'
-'].
-	metaClass compile: newSource classified: '+ activityDiagram' notifying:
-			nil.	"on modifie les couleurs"
-	editor := aClass perform: aSelector.
-	editor open.
-	editor drawing components
-		do: [:fig | fig isLineFigure ifFalse: [fig defaultAttributes]].
-	editor closeRequest.
-	editor
-		compileForClass: aClass
-		selector: (aClass instanceSelectorFrom: aSelector)
-]
-
-{ #category : 'activityDiagram' }
-CMEntity class >> removeActivityDiagram: instanceOperationName [
-	"Removes the diagram store into activityDiagrams dictionnary, but also deletes the 2 methods defining the diagram"
-	
-	self activityDiagrams
-		removeKey: instanceOperationName
-		ifAbsent: [nil].
-	(methodDict includesKey: instanceOperationName)
-		ifFalse:
-			[self cormas
-				warn:
-					'The #<1s> belongs to a super class.<n>Please remove it from this super class'
-				with: instanceOperationName asString.
-			^nil].
-	self removeSelector: instanceOperationName asSymbol.
-	self class
-		removeSelector:
-			(self preStringForActivitySelector , instanceOperationName asString)
-				asSymbol
 ]
 
 { #category : 'accessing' }
@@ -1150,15 +621,6 @@ Example: GroupLocation superClassesUntil: Agent"
 		select: [:aClass | aClass inheritsFrom: aSuperClass].
 	coll add: aSuperClass.
 	^coll
-]
-
-{ #category : 'accessing - methods & classes' }
-CMEntity class >> superClassesUntilEntity [
-	"Purpose: returns the list of super classes of the receiver up to Entity
-Return value: an orderedCollection
-Example: GroupLocation superClassesUntilEntity"
-	
-	^self superClassesUntil: CMEntity
 ]
 
 { #category : 'converting' }
@@ -1491,25 +953,6 @@ CMEntity >> isSpatialEntityElement [
 CMEntity >> isSpatialEntitySet [
 	
 	^false
-]
-
-{ #category : 'manipulation' }
-CMEntity >> manipulationMenu: aMenuBuilder [
-	" Add to the menu the set of methods defined into 'methodsForManipulation' method. 
-	The key will appear as the menu item. The selected method will be executed by the agent if the item is selected."
-	
-	self class methodsForControl
-		do: [:aSymbol | aMenuBuilder add: aSymbol asString -> aSymbol].
-	^aMenuBuilder
-]
-
-{ #category : 'manipulation' }
-CMEntity >> manipulationMenuItems [
-	" Returns a collection of associations corresponding to the methods defined into 'methodsForManipulation' method. 
-	The key will appear as the menu item. The selected method will be executed by the agent if the item is selected."
-	
-	^self class methodsForControl
-		collect: [:aSymbol | aSymbol asString -> (self class -> aSymbol)]
 ]
 
 { #category : 'accessing' }
