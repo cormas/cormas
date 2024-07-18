@@ -8,6 +8,9 @@ on: [ push, pull_request ]
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        smalltalk: [ Pharo64-11, Pharo64-12, Pharo64-13 ]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -15,8 +18,8 @@ jobs:
       - uses: hpi-swa/setup-smalltalkCI@v1
         id: smalltalkci
         with:
-          smalltalk-version: Pharo64-9.0
-      - run: smalltalkci -s ${{ steps.smalltalkci.outputs.smalltalk-version }}
+          smalltalk-version: ${{ matrix.smalltalk }}
+      - run: smalltalkci -s ${{ matrix.smalltalk }} .smalltalk.ston
         shell: bash
         timeout-minutes: 40
       - uses: actions/checkout@master
