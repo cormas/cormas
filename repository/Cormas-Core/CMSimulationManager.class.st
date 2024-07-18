@@ -140,27 +140,6 @@ CMSimulationManager >> cancel [
 ]
 
 { #category : 'replay-forward' }
-CMSimulationManager >> confirmDeviation [
-	"check if bos file for next step exists. If not, then continue to simulate and to save into the same folder (continue the same simulation process).
-	If exists, then proposes to save the sim history (from 0 to currentStep) into a new folder"
-	
-	| finename resp |
-	(finename := self simFolder / (self stepFileNameAtStep: self currentTime + 1)) exists
-		ifTrue: [ 
-			self class newFolder: ((Cormas dumpPath: self cormasModel class name) / self newSimName).
-			(resp := self openNewDeviationWin)
-				ifTrue: [
-					self simNumero: self simNumero + 1.
-					self enableBackward
-						ifTrue: [
-							self copyPreviousBackStepsInNewFolder.
-							self traceSize: self currentTime ]
-						ifFalse: [ self traceSize: 0 ] ].
-			^ resp]
-		ifFalse: [ ^ true ]
-]
-
-{ #category : 'replay-forward' }
 CMSimulationManager >> copyPreviousBackStepsInNewFolder [
 	
 	| stepFiles previousFolder |
@@ -312,15 +291,6 @@ CMSimulationManager >> initRandomSeed [
 ]
 
 { #category : 'init' }
-CMSimulationManager >> initScenario [
-	
-	self cormas cycle value: self finalStep value.
-	self enableBackward: self enableBackwardValue value.	"*** initialize the simulation ***"
-	self initializeSimulation.
-	self keepOrReleaseRandomSeed
-]
-
-{ #category : 'init' }
 CMSimulationManager >> initializeSimulation [
 	self setSimName.
 	self simFolder: nil.
@@ -355,11 +325,6 @@ CMSimulationManager >> isRandomSeedFixed: aBoolean [
 	 isRandomSeedFixed := aBoolean
 ]
 
-{ #category : 'simulate' }
-CMSimulationManager >> loopRunStep_untilFinalTime [
-	[[ self currentTime < self finalTime ] whileTrue: [ self runStepByStep ]] fork
-]
-
 { #category : 'init' }
 CMSimulationManager >> newSimName [
 	"Return a new simName defined from the current clock time. 
@@ -388,21 +353,6 @@ CMSimulationManager >> newSimName [
 			(d second < 10
 				ifTrue: [ '0' , d second printString ]
 				ifFalse: [ d second printString ])
-]
-
-{ #category : 'ui' }
-CMSimulationManager >> openNewDeviationWin [
-	
-	| resp |
-	(self openDialogInterface: #windowNewDeviation) ifFalse: [^false].
-	resp := self deviationChoice value.
-	resp = #noDeviation.
-	resp = #deviationRandom ifTrue: [Cormas initRandomSeed].
-	resp = #newDeviation
-		ifTrue:
-			[releaseRandomSeed value: true.
-			^self setStepMethod].
-	^true
 ]
 
 { #category : 'undo/redo' }
@@ -546,56 +496,6 @@ Threaded process"
 			processReplayBackward := nil ]
 ]
 
-{ #category : 'simulate' }
-CMSimulationManager >> runSimulation [
-	"  Loop over the STEPs until simulation end. This take place into a treaded process (called from runSimulationThreaded).
-	Display the Duration time on the Transcript"
-
-	| chrono |
-	chrono := Time millisecondsToRun: [ self runSimulation_Basic ].
-	"self simButtonAt: #run displayActivated: false."
-	self displayRunDuration: chrono.
-	processRun ifNotNil: [:p| p terminate.
-	processRun := nil]
-]
-
-{ #category : 'simulate' }
-CMSimulationManager >> runSimulation_Basic [
-	"Run one simulation step by step.
-	Do not display the Duration time on the Transcript.
-	Method called from #runSimulation but also from SensitivityAnalysisAbstract #runOneSimulation"
-
-	| continue |
-	continue := true.
-	[ continue ]
-		whileTrue: [ self currentSimEnded
-				ifTrue: [ continue := false ]
-				ifFalse:
-					[ " *********   One Step  ***********" " *********     Done  ***********" self runStepByStep ifNil: [ continue := false ] ] ].
-	"what is the need of having  'continue' temporary variable here ?
-	why the method is not written as siply as    [self currentSimEnded] whileFalse: [ self runStepByStep ]"
-]
-
-{ #category : 'simulate' }
-CMSimulationManager >> runStepByStep [
-	
-	self buttonsForwardAreOn ifTrue: [buttonsForwardAreOn := false].
-	undoList := nil.
-	redoList := nil.
-	self enableBackward
-		ifTrue:
-			[self confirmDeviation
-				ifFalse: [^nil]
-				ifTrue:
-					[self cormasModel activeControl isNil
-						ifTrue: [self setStepMethod ifFalse: [^nil]]]]
-		ifFalse:
-			[self cormasModel activeControl isNil
-				ifTrue: [^self cormas alert_NoDynamic]].	"  **********   RUN Step   ********"
-	self cormasModel runStep.	"  **********    Done   ********"
-	self enableBackward ifTrue: [self storeCurrentStep]
-]
-
 { #category : 'replay-private' }
 CMSimulationManager >> setButtonsForTime0 [
 	
@@ -622,36 +522,6 @@ CMSimulationManager >> setSimName [
 	
 	self simName: self newSimName.
 	^simName
-]
-
-{ #category : 'replay-forward' }
-CMSimulationManager >> setStepMethod [
-	" Answer a <Boolean> "
-	| resp |
-	(self enableBackward isKindOf: Boolean)
-		ifTrue: [ enableBackwardValue := self enableBackward asValue ].
-	self listControle list: (self cormasModel class organization listAtCategoryNamed: #control).
-	self listControle isEmpty
-		ifTrue: [ 
-			self alertMessage: 'The model does not define any method for control !'.
-			^ false].
-	self cormasModel activeControl notNil
-		ifTrue: [self listControle selection: self cormasModel activeControl]
-		ifFalse: [
-			self listControle notEmpty
-				ifTrue: [ self listControle selection: self listControle list first ] ].
-	self finalStep value: self cormasModel finalTime.
-	resp := self openDialogInterface: #changeStepInterface.
-	resp ifFalse: [ ^ false ].
-	self listControle selection isNil
-		ifTrue: [ 
-			self alertMessage: 'Please, select a method of #control'.
-			^ self setStepMethod]
-		ifFalse: [ self cormasModel activeControl: self listControle selection ].
-	self cormas cycle value: self finalStep value.
-	self enableBackward: self enableBackwardValue value.
-	self keepOrReleaseRandomSeed.
-	^ true
 ]
 
 { #category : 'replay-private' }
