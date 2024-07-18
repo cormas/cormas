@@ -1855,17 +1855,12 @@ CMAbstractModel >> initializeChannel [
 
 { #category : 'initialization' }
 CMAbstractModel >> initializeEntitiesActiveProbes [
-	
-	self class allEntityClasses do: [ : c | 
-		c activeProbes isEmpty
-			ifFalse: [
-				self data
-					at: c name
-					put: Dictionary new.
-				c activeProbes do: [  :p | 
-					(self data at: c name)
-							at: p
-							put: Dictionary new ] ] ]
+
+	self class allEntityClasses do: [ :c |
+		c activeProbes ifNotEmpty: [
+			self data at: c name put: Dictionary new.
+			c activeProbes do: [ :p |
+				(self data at: c name) at: p put: Dictionary new ] ] ] 
 ]
 
 { #category : 'initialization' }
@@ -2457,7 +2452,7 @@ CMAbstractModel >> resetEntities: aClass [
 	
 	entities := self theEntities: aClass.
 	entities reverseDo: [:anEntity | anEntity delete].
-	aClass CurrentId: 0.
+	aClass currentId: 0.
 	aClass isAbstract ifTrue: [^OrderedCollection new: 0].
 	^ entities removeAll
 ]

@@ -566,7 +566,7 @@ CMSpaceModel >> createElementaryEntities [
 	| allEse |
 
 	allEse := Array new: self gridSize.
-	self cormasModelClass cellClass CurrentId: 0.
+	self cormasModelClass cellClass currentId: 0.
 	(1 to: self gridSize) 
 		do: [ :i | allEse at: i put: (self newEntity: self cormasModelClass cellClass) ]
 		displayingProgress: 'Creating cells...'.

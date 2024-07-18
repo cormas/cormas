@@ -41,28 +41,13 @@ Class {
 		'cormasModel'
 	],
 	#classInstVars : [
-		'CurrentId',
-		'activeProbes',
-		'activityDiagrams'
+		'currentId',
+		'activeProbes'
 	],
 	#category : 'Cormas-Core-Entities',
 	#package : 'Cormas-Core',
 	#tag : 'Entities'
 }
-
-{ #category : 'accessing' }
-CMEntity class >> CurrentId [
-	"Getter accessor with default value = 0 "
-	
-	^CurrentId ifNil: [CurrentId := 0]
-]
-
-{ #category : 'accessing' }
-CMEntity class >> CurrentId: anInteger [
-	
-	CurrentId := anInteger. 
-	^anInteger
-]
 
 { #category : 'probes' }
 CMEntity class >> activeProbes [
@@ -221,6 +206,20 @@ CMEntity class >> cormas [
 	"Direct access to the cormas instance"
 
 	^ Cormas current
+]
+
+{ #category : 'accessing' }
+CMEntity class >> currentId [
+	"Getter accessor with default value = 0 "
+	
+	^ currentId ifNil: [ currentId := 0]
+]
+
+{ #category : 'accessing' }
+CMEntity class >> currentId: anInteger [
+	
+	currentId := anInteger. 
+	^ anInteger
 ]
 
 { #category : 'utilities - colors' }
@@ -835,7 +834,7 @@ CMEntity >> init [
 CMEntity >> initId [
 	" Private - Set the receiver's internal identifier. "
 
-	self id: (self class CurrentId: self class CurrentId + 1)
+	self id: (self class currentId: self class currentId + 1)
 ]
 
 { #category : 'printing' }
