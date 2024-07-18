@@ -22,10 +22,10 @@ Class {
 }
 
 { #category : 'instance creation' }
-CMGroup class >> newWith: anAgentCollection [
+CMGroup class >> withAll: anAgentCollection [
 	"Return a new instance of Group, composed with anAgentCollection."
 
-	^ self new initWith: anAgentCollection
+	^ self new initializeWithAll: anAgentCollection
 ]
 
 { #category : 'components - managing' }
@@ -89,7 +89,7 @@ Argument: anItem = <Agent>"
 ]
 
 { #category : 'initialize - release' }
-CMGroup >> initWith: anAgentsCollection [
+CMGroup >> initializeWithAll: anAgentsCollection [
 	"Purpose: resets and fills with new components"
 	
 	self reset.
