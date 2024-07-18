@@ -42,13 +42,6 @@ CMSpatialEntityCell >> bufferState: aValue [
 	bufferState := aValue
 ]
 
-{ #category : 'initialize - release' }
-CMSpatialEntityCell >> initWith: aValue [
-	"Purpose: assigns a given value to the 'state' attribute"
-	
-	self state: aValue
-]
-
 { #category : 'control' }
 CMSpatialEntityCell >> newState [
 	"Purpose: the specific transition function of the automaton should be written here
