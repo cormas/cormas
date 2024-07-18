@@ -1856,7 +1856,7 @@ bFrQFAMpBlIMpBhIMZBiIMVAioEg+H+JAnx5urZDlwAAAABJRU5ErkJggg=='
 BaselineOfCormas >> loadBackgroundImage [
 	"Load Cormas logo as background image"
 			
-	PolymorphSystemSettings desktopLogo: self cormasLogo
+	PolymorphSystemSettings setDesktopLogoWith:  self cormasLogo
 ]
 
 { #category : 'doits' }
