@@ -54,34 +54,6 @@ CMSpaceModelTest >> spaceModel: anObject [
 ]
 
 { #category : 'test' }
-CMSpaceModelTest >> testAbsoluteBounds [
-
-	| expected| 
-	
-	expected := Rectangle origin: 0 @ 0 extent: 200 @ 200.
-	self assert: self spaceModel absoluteBounds equals: expected.
-	expected := Rectangle origin: 0 @ 0 extent: 30 @ 30.	
-	self spaceModel absoluteBounds: expected.
-	self assert: self spaceModel absoluteBounds equals: expected.
-	
-]
-
-{ #category : 'test' }
-CMSpaceModelTest >> testAbsoluteHeight [
-
-	self assert: self spaceModel absoluteHeight equals: 200.
-
-	
-]
-
-{ #category : 'test' }
-CMSpaceModelTest >> testAbsoluteWidth [
-
-	self assert: self spaceModel absoluteWidth equals: 200.
-
-]
-
-{ #category : 'test' }
 CMSpaceModelTest >> testAllOccupants [
 
 	self assert: self spaceModel allOccupants size equals: 6.

@@ -71,33 +71,9 @@ CMSpaceModel class >> forModel: aCormasModel [
 ]
 
 { #category : 'private - absoluteWorld' }
-CMSpaceModel >> absoluteBounds [
-	" The absolute default space is a square space of 50x50. It has been defined for a 10x10 cells space.
-	It is never display, only copied by the SpaceViews.
-	It can be modified (setAbsoluteBounds) when for exemple there is 3 lines and 10 column. Then, absoluteBounds = 3/10 * 50 @ 50 "
-	
-	^ absoluteBounds 
-		ifNil: [ absoluteBounds := Rectangle origin: 0 @ 0 extent: 50 @ 50 ]
-]
-
-{ #category : 'private - absoluteWorld' }
 CMSpaceModel >> absoluteBounds: aRectangle [
 	
 	absoluteBounds := aRectangle
-]
-
-{ #category : 'private - absoluteWorld' }
-CMSpaceModel >> absoluteHeight [
-	" Answer an <Integer> representing the receiver's height from the absolute bounds "
-
-	^ self absoluteBounds height
-]
-
-{ #category : 'private - absoluteWorld' }
-CMSpaceModel >> absoluteWidth [
-	" Answer an <Integer> representing the receiver's width from the absolute bounds "
-
-	^ self absoluteBounds width
 ]
 
 { #category : 'accessing' }
@@ -409,38 +385,6 @@ CMSpaceModel >> createElementaryEntities [
 	self elementaryEntities: cells asArray.
 ]
 
-{ #category : 'private - regular cells - instance creation' }
-CMSpaceModel >> createHexagonalCellsFigure [
-	"On enleve le nombre de poly a hauteur et largeur afin de laisser une 
-	bordure"
-
-	"calcul du diametre du cercle"
-
-	| hexagone translation hexagoneInfo delay lineCounter aPov i |
-	self elementaryEntitiesDefaultPovs: nil.
-	hexagoneInfo := self createTopLeftHexagonalCellsFigure.	"SpatialEntityCoordinates new: (hexagoneInfo at: 'object') =>pour inspecter la tete que √ßa a"
-	hexagone := hexagoneInfo at: 'object'.
-	translation := hexagoneInfo at: 'translation'.
-	delay := hexagoneInfo at: 'delay'.
-	lineCounter := 1.
-	i := 1.
-	self line
-		timesRepeat: [ lineCounter odd
-				ifTrue: [ hexagone := hexagone translatedBy: delay @ 0 ]
-				ifFalse: [ hexagone := hexagone translatedBy: delay negated @ 0 ].
-			lineCounter := lineCounter + 1.
-			self column
-				timesRepeat: [ aPov := VectorialElementaryPOV new: hexagone asPolyline.
-					aPov name: #nil.
-					aPov
-						entityReference: (EntityReference on: (self elementaryEntities at: i)).
-					self elementaryEntitiesDefaultPovs add: aPov.
-					hexagone := hexagone translatedBy: translation x @ 0.	"SpatialEntityCoordinates new: (hexagone) =>pour inspecter la tete que √ßa a"
-					i := i + 1 ].
-			hexagone := hexagone
-				translatedBy: (self column * translation x negated) @ translation y ].
-]
-
 { #category : 'private - regular polygons' }
 CMSpaceModel >> createOneAggregate: compoundEntity from: aSet [
 	"Creates and returns an instance of compoundEntity composed with a set of cells. 
@@ -451,32 +395,6 @@ CMSpaceModel >> createOneAggregate: compoundEntity from: aSet [
 	aggregate := self createAggregate: compoundEntity from: aSet.	"alarm the other"
 	self dispatchOneCompoundSpatialEntity: aggregate.
 	^aggregate
-]
-
-{ #category : 'private - regular cells - instance creation' }
-CMSpaceModel >> createRectangularCellsFigure [
-	" Private - Create coordinates of the set of square cells of the grid "
-	
-	| cote rect aPov i |
-	
-	self elementaryEntitiesDefaultPovs: nil.
-	self setAbsoluteBounds.
-	cote := self absoluteBounds height / self line.	
-	"cote := self absoluteBounds width / self column.  c'est pareil"
-	rect := Rectangle
-		origin: (cote * -1) @ 0
-		corner: 0 @ cote.
-	i := 1.
-	self line timesRepeat: [ 
-		self column timesRepeat: [
-			rect := rect translateBy: rect width @ 0.
-			aPov := VectorialElementaryPOV new: rect asPolyline.
-			aPov name: #nil.
-			aPov entityReference: (EntityReference on: (self elementaryEntities at: i)).
-			self elementaryEntitiesDefaultPovs add: aPov.
-			i := i + 1 ].
-		rect := rect translateBy: (self column negated * rect width) @ rect height ].
-
 ]
 
 { #category : 'private - regular polygons' }
@@ -495,40 +413,6 @@ CMSpaceModel >> createSilentlyAggregate: compoundEntity from: aSet [
 	(self spatialEntities at: compoundEntity name) add: anAggregate.
 	anAggregate init.
 	^anAggregate
-]
-
-{ #category : 'private - regular cells - instance creation' }
-CMSpaceModel >> createTopLeftHexagonalCellsFigure [
-	"return a Dictionary ('translation'->47.619@41.2393 'delay'->23.8095 'object'->a Polyline ) where a Polyline is a perfect hexagon"
-	"soit r le rayon du cercle passant par tous les sommets de l'hexagone, alors, la hauteur de l'hexagone 
-	est de 2r, et la largeur de 2r cos 30¬∞ ( note: cos 30¬∞ = (3 sqrt)/2 = 0.866025 ), et un c√¥t√© mesure r. 
-	- Pour rentre n hexagones sur une ligne (n=self column), il nous faut une longueur (absoluteLength) de (n+ 1/2)*largeur d'hexagone.
-cad : absoluteLength = (n+ 0.5) * 2r cos 30¬∞ = (column + 0.5) * 2r cos 30¬∞
-	- Pour rentrer p hexagones sur une colonne (p=self line), il nous faut une hauteur (absoluteLength) de (3.p+ 1)*largeur d'hexagone/4.
-cad : absoluteLength = (3.p + 1)*(2r) / 4
-	On conna√Æt la largeur et la hauteur de la fen√™tre. On calcule le 
-	 - rLine = le 	rayon de l'hexagone n√©c√©ssaire pour rentrer n hexagones sur une ligne, et 
-	- rColumn = le rayon de l'hexagone n√©c√©ssaire pour rentrer p hexagones sur une colonne. "
-	
-	| rLine rColumn thePoints hexagone hexagoneInfo rMax |
-	"absoluteLength = (n+ 0.5) * 2rLine cos 30¬∞ => rLine =  absoluteLength / ((n+0.5).2 cos30) = absoluteLength / ((n+0.5). V3)"
-	rLine := self absoluteWidth / ((self column + 0.5) * 3 sqrt).	"absoluteLength = (3.p + 1)*(2r) / 4 => rColumn = 2*absoluteLength /(3.p+1)"
-	rColumn := 2 * (self absoluteHeight / (self line * 3 + 1)).
-	hexagone := HexagonPOV polylineFromHeight: rLine length: rColumn.
-	rMax := (rLine * 30 degreesToRadians cos) rounded.	"la largeur de l'hexagon = 2r cos 30¬∞"
-	hexagone := hexagone translatedBy: rMax @ rColumn.	"on d√©place l'h√©xagone de la moitier de sa largeur et de sa heuteur"
-	hexagoneInfo := Dictionary new.
-	hexagoneInfo at: 'object' put: hexagone.
-	thePoints := hexagone vertices.
-	hexagoneInfo
-		at: 'translation'
-		put:
-			((thePoints at: 6) x - (thePoints at: 2) x)
-				@ ((thePoints at: 1) y - (thePoints at: 3) y).
-	hexagoneInfo
-		at: 'delay'
-		put: (thePoints at: 1) x - (thePoints at: 2) x.
-	^hexagoneInfo
 ]
 
 { #category : 'defaults' }
@@ -1102,18 +986,6 @@ CMSpaceModel >> gridSize: anInteger [
 	arrayOrigins := Array new: anInteger
 ]
 
-{ #category : 'private - regularCells - shapes' }
-CMSpaceModel >> hexagonal [
-	" Received from SpaceInterface menu, when the user want to change the shape of the cells "
-
-	self gridCellShape ~= #hexagonal ifFalse: [ ^ self ].
-	self gridCellShape: #hexagonal.
-	self nbCount: #six.
-	self createHexagonalCellsFigure.
-	self initNeighbourhood.
-	self changed: #shapeHasChanged
-]
-
 { #category : 'printing' }
 CMSpaceModel >> humanReadableString [
 	" Answer a <String> with receiver's details suitable for titles "
@@ -1555,21 +1427,6 @@ Each line contains the id of the instance as first element and the id of all its
 	stream close
 ]
 
-{ #category : 'private - absoluteWorld' }
-CMSpaceModel >> setAbsoluteBounds [
-	"the absolute default space is a square space of 50x50 pixels. It has been defined for a 10x10 cells space.
-It is never display, only copied by the SpaceViews.
-It can be modified (setAbsoluteBounds) when for exemple there is 3 lines and 10 column. Then, absoluteBounds = 3/10 * 50 @ 50 pixels"
-	
-	| absoluteWidth absoluteHeight |
-	absoluteBounds := nil.
-	absoluteWidth := self absoluteBounds width * self column.
-	absoluteHeight := self absoluteBounds height * self line.
-	self absoluteBounds: (Rectangle
-			origin: 0 @ 0
-			extent: absoluteWidth @ absoluteHeight)
-]
-
 { #category : 'CSE (regular) - instance creation' }
 CMSpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attributeName [
 	"The aggregates occupy the whole grid. 
@@ -1872,25 +1729,6 @@ aColl at: 1 put: aColl first asNumber. aColl at: 2 put: aColl last asNumber. ]] 
 		allCells :=self elementaryEntities asOrderedCollection.
 		allCells removeAll: livingCells.
 		allCells reverseDo: [: c | c delete]
-]
-
-{ #category : 'utilities - binary storage' }
-CMSpaceModel >> settingsFrom: aClone [
-	" This behavior is related with restoring organization (i.e. the redo, replay, etc) in the spatial grid "
-
-	(self absoluteBounds = aClone absoluteBounds
-		and: [ self column = aClone column
-				and: [ self line = aClone line
-						and: [ self nbNeighbours = aClone nbNeighbours ] ] ])
-		ifTrue: [ aClone isIrregular
-				ifFalse: [ ^ self ] ].
-	self autoResizeBounds: aClone autoResizeBounds.
-	aClone isIrregular
-		ifFalse: [ self
-				initializeRegularLines: aClone line
-				columns: aClone column
-				nbType: aClone nbNeighbours
-				closed: aClone isClosedEnvironment ]
 ]
 
 { #category : 'accessing' }

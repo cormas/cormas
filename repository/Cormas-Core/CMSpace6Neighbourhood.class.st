@@ -88,13 +88,6 @@ CMSpace6Neighbourhood class >> distanceFromCell: cell1 toCell: cell2 nbLines: nb
 		ifFalse: [ nbLines + (0 max: (2 * columns - nbLines) / 2) ]
 ]
 
-{ #category : 'accessing' }
-CMSpace6Neighbourhood >> createCellsFigure [
-
-	super createCellsFigure.
-	self spaceModel createHexagonalCellsFigure.
-]
-
 { #category : 'private - regular cells - instance creation' }
 CMSpace6Neighbourhood >> eastCellHexa: k [
 	

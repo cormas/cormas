@@ -6,13 +6,6 @@ Class {
 	#tag : 'Space'
 }
 
-{ #category : 'accessing' }
-CMSquaredSpaceNeighbourhood >> createCellsFigure [
-
-	super createCellsFigure.
-	self spaceModel createRectangularCellsFigure.
-]
-
 { #category : 'environment - sensing - space' }
 CMSquaredSpaceNeighbourhood >> nearestEmptyCellFor: aCMAgentLocation [
 	
