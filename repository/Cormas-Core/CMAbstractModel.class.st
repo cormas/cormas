@@ -1001,18 +1001,6 @@ CMAbstractModel >> compoundSpatialClasses [
 	^ self perform: getter
 ]
 
-{ #category : 'accessing' }
-CMAbstractModel >> cormas [
-	
-	^cormas ifNil: [cormas := Cormas current]
-]
-
-{ #category : 'accessing' }
-CMAbstractModel >> cormas: anObject [
-	
-	cormas := anObject
-]
-
 { #category : 'instance creation - spatial entities' }
 CMAbstractModel >> createAggregate: compoundEntity from: aSet [
 	"Purpose: Creates and returns an instance of compoundEntity composed with a set of cells.

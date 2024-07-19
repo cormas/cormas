@@ -191,13 +191,6 @@ CMEntity class >> colorWithout: aColorName OfNumber: aNumber [
 ]
 
 { #category : 'accessing' }
-CMEntity class >> cormas [
-	"Direct access to the cormas instance"
-
-	^ Cormas current
-]
-
-{ #category : 'accessing' }
 CMEntity class >> currentId [
 	"Getter accessor with default value = 0 "
 	
@@ -664,13 +657,6 @@ CMEntity >> colorOfNumber: aNumber [
 	"Returns a Color for aNumber (there is only 38 colors)."
 
 	^ self class colorOfNumber: aNumber
-]
-
-{ #category : 'accessing' }
-CMEntity >> cormas [
-	"Direct access to the cormas instance"
-	
-	^Cormas current
 ]
 
 { #category : 'accessing' }

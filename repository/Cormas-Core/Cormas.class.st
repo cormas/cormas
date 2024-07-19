@@ -1313,8 +1313,6 @@ Cormas >> cormasModel: aCormasModel [
 	"set the new simulation and give a reference to cormas"
 
 	cormasModel := aCormasModel.
-	aCormasModel ifNil: [ ^ nil ].
-	aCormasModel cormas: self
 ]
 
 { #category : 'accessing' }

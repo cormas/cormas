@@ -111,8 +111,7 @@ CMLocatedObject >> leaveWhileMoving: isBeingMoved [
 	isBeingMoved
 		ifFalse:
 			[ "The situated agent doesn't move; it is not located any more. But it is still 'alive'  "
-			self cormasModel spaceModel ifNil: [ ^ nil ].
-			self cormasModel spaceModel logLeaveOf: self from: patch ].
+			self cormasModel spaceModel ifNil: [ ^ nil ] ].
 	(self patch theOccupants at: self class name)
 		remove: self
 		ifAbsent: [  ].

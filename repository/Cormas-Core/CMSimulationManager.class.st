@@ -79,12 +79,6 @@ CMSimulationManager >> cancel [
 ]
 
 { #category : 'accessing' }
-CMSimulationManager >> cormas [
-	
-	^self cormasModel cormas
-]
-
-{ #category : 'accessing' }
 CMSimulationManager >> cormasModel [
 	
 	^cormasModel

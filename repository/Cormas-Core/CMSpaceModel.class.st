@@ -318,12 +318,6 @@ CMSpaceModel >> connexity [
 ]
 
 { #category : 'private - accessing' }
-CMSpaceModel >> cormas [
-	
-	^cormasModel cormas
-]
-
-{ #category : 'private - accessing' }
 CMSpaceModel >> cormasModel [
 	" Answer the receiver's configured <CMAbstractModel> or nil "
 
@@ -1165,23 +1159,6 @@ CMSpaceModel >> line: i column: j [
 	line := i.
 	column := j.
 	gridSize := i * j
-]
-
-{ #category : 'playback-log' }
-CMSpaceModel >> logLeaveOf: anAgentLocation from: aSpatialEntity [
-	"Log the fact that an agent left a spatial entity"
-	"Ask the instance of Cormas"
-	
-	cormasModel cormas logLeaveOf: anAgentLocation from: aSpatialEntity
-]
-
-{ #category : 'playback-log' }
-CMSpaceModel >> logMovementOf: anAgentLocation from: srcSpatialEntity to: dstSpatialEntity [
-	"Log the movement of an agent from a spatial entity to another entity"
-	"Ask the instance of Cormas"
-	
-	cormasModel cormas logMovementOf: anAgentLocation from: srcSpatialEntity
-		to: dstSpatialEntity
 ]
 
 { #category : 'ESE (regular) - special locations' }
