@@ -2636,21 +2636,6 @@ CMAbstractModel >> theAgentsComm [
 ]
 
 { #category : 'accessing - entities' }
-CMAbstractModel >> theAggregates: aSet [
-	
-	| classes |
-	classes := self class compoundSpatialClasses.
-	classes ifEmpty: [ ^ self error: 'There are no compound spatial entities!' ].
-	
-	classes size > 1 ifTrue: [
-		^ self error: 'There are multiple classes of compound spatial entities!' ].
-	
-	^ self
-		setTheEntity: classes first
-		with: aSet
-]
-
-{ #category : 'accessing - entities' }
 CMAbstractModel >> theCells [
 	
 	^ self theEntities: self class cellClass

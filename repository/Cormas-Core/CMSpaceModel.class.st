@@ -108,27 +108,6 @@ CMSpaceModel >> activePoVsDictionary [
 		ifNil: [ activePoVsDictionary := Dictionary new ]
 ]
 
-{ #category : 'accessing' }
-CMSpaceModel >> aggregateClasses [
-	^ self cormasModelClass compoundSpatialClasses
-]
-
-{ #category : 'accessing' }
-CMSpaceModel >> aggregatesEntities [
-	
-	| aCollection |
-	aCollection := OrderedCollection new.
-	self aggregateClasses
-		do:
-			[:cl | 
-			aCollection
-				addAll:
-					(self spatialEntities
-						at: cl name
-						ifAbsent: [OrderedCollection new])].
-	^aCollection
-]
-
 { #category : 'private - irregular polygons creation' }
 CMSpaceModel >> ajouterAutresAttribut: cel objet: objet attribut: attrib [
 	"Ex: cel = 0.49018@13.7327   objet = a Cell   attrib = 'center'"
@@ -1560,26 +1539,6 @@ CMSpaceModel >> resetSpatialEntities [
 			newColl := self cormasModel resetEntities: aSpatialClass.
 			self spatialEntitiesAt: aSpatialClass name 	put: newColl ].
 	"self changed: #removeAllFigures"	"all the figures of the spaceInterfaces have to be deleted"
-]
-
-{ #category : 'private - init' }
-CMSpaceModel >> resetSpatialEntitiesButCells [
-	
-	| theCells |
-	self spatialEntities isEmpty ifTrue: [ ^ nil ].
-	theCells := self elementaryEntities.
-	self aggregatesEntities do: [ : agg | 
-			agg
-				reset;
-				destroyed: true].
-	self changed: #removeAllCompoundSpatialEntityFigures.
-	self spatialEntities: Dictionary new.
-	self cormasModel class spatialClasses do: [ : se | 
-			se name = self cormasModel class cellClass name
-				ifTrue: [ self spatialEntitiesAt: se name 	put: theCells ]
-				ifFalse: [ self spatialEntitiesAt: se name put: OrderedCollection new.
-					"RemotableOrderedCollection new. ** changed to OrderedCollection new. (RemotableOrderedCollection is used for marshalling in remote distributed visualization)" 
-					self cormasModel resetEntities: se ] ]
 ]
 
 { #category : 'CSE (general) - import - export' }
