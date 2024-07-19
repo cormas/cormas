@@ -48,7 +48,6 @@ Class {
 		'defaultAttributesSetter',
 		'sensitivitySetter',
 		'delayedChanges',
-		'announcer',
 		'initStatus',
 		'creationDate',
 		'version',
@@ -813,11 +812,6 @@ Example: (self allTheSituatedEntities: Forager) is returning all the instances o
 				ifFalse:
 					[coll addAll: ((self theEntities: cl) select: [:e | e isSituated])]].
 	^coll
-]
-
-{ #category : 'announcement' }
-CMAbstractModel >> announcer [
-    ^ announcer ifNil: [ announcer := Announcer new ]
 ]
 
 { #category : 'control' }
