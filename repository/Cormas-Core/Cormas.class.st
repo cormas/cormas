@@ -1457,27 +1457,6 @@ Cormas >> process: aProcess [
 	process := aProcess
 ]
 
-{ #category : 'simulation' }
-Cormas >> replayRunForward [
-	"Replay the stored simulation history forward using BOS file"
-
-	^ self simulationManager replayRunForward
-]
-
-{ #category : 'simulation' }
-Cormas >> replayStepForward [
-	"Replay a step forward using BOS file"
-
-	^ self simulationManager replayStepForward
-]
-
-{ #category : 'simulation' }
-Cormas >> runBack [
-	"Perform a run back to 0 using BOS file"
-
-	^ self simulationManager runBack
-]
-
 { #category : 'accessing' }
 Cormas >> simulationManager [
 	
@@ -1488,13 +1467,6 @@ Cormas >> simulationManager [
 Cormas >> spaceModel [
 	
 	^self cormasModel ifNotNil: [:sim | sim spaceModel]
-]
-
-{ #category : 'simulation' }
-Cormas >> stepBack [
-	"Perform a step back using BOS file"
-
-	^ self simulationManager stepBack
 ]
 
 { #category : 'model saving&loading POV' }

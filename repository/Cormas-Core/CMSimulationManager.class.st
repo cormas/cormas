@@ -81,50 +81,6 @@ CMSimulationManager class >> simNameStart [
 	^'sim_'
 ]
 
-{ #category : 'replay-private' }
-CMSimulationManager >> allReplayButtonsTo: bool [
-	"bool = false => all replay buttons are grey and inactivate.
-	buttonName = <Symbol> = #step #stepBack #run #runBack #replayRunForward #replayStepForward  "
-	
-	self simButtonAt: #stepBack displayActivated: bool.
-	self simButtonAt: #runBack displayActivated: bool.
-	self simButtonAt: #replayRunForward displayActivated: bool.
-	self simButtonAt: #replayStepForward displayActivated: bool
-]
-
-{ #category : 'actions' }
-CMSimulationManager >> applyUserChangeForFinalStep: aNewFinalStep [
-	"this method is call from Cormas when user have manually change the inputField current step"
-	
-	aNewFinalStep < 0 ifTrue: [^false].
-	self finalTime = aNewFinalStep ifTrue: [^true].
-	self currentTime < aNewFinalStep
-		ifTrue:
-			[self simButtonAt: #run displayActivated: true.
-			^true]
-		ifFalse:
-			[self simButtonAt: #run displayActivated: false.
-			^false]
-]
-
-{ #category : 'actions' }
-CMSimulationManager >> applyUserChangeForStep: aNewStep [
-	"this method is call from Cormas when user have manually change the inputField current step"
-	
-	self enableBackward ifFalse: [^false].
-	aNewStep < 0 ifTrue: [^false].
-	self currentTime = aNewStep ifTrue: [^true].
-	aNewStep = 0
-		ifTrue: [self setButtonsForTime0]
-		ifFalse: [self setButtonsForTime1].
-	self currentTime < aNewStep ifTrue: [^self replayStepForward: aNewStep].
-	self currentTime > aNewStep
-		ifTrue:
-			[buttonsForwardAreOn := false.
-			^self restoreOrganizationAt: aNewStep].
-	^false
-]
-
 { #category : 'accessing' }
 CMSimulationManager >> buttonsForwardAreOn [
 	
@@ -228,18 +184,6 @@ CMSimulationManager >> displayRunDuration: duration [
 CMSimulationManager >> enableBackward [
 	"not yet implemented in cormas-pharo"
 		^ false
-]
-
-{ #category : 'ui' }
-CMSimulationManager >> enableBackward: bool [
-	
-	enableBackward := bool.
-	bool
-		ifFalse: [self allReplayButtonsTo: false]
-		ifTrue:
-			[self currentTime = 0
-				ifTrue: [self allReplayButtonsTo: false]
-				ifFalse: [self allReplayButtonsTo: true]]
 ]
 
 { #category : 'time' }
@@ -381,181 +325,12 @@ CMSimulationManager >> redoList: anObject [
 	redoList := anObject
 ]
 
-{ #category : 'replay-forward' }
-CMSimulationManager >> replayRunForward [
-	"Replay the stored simulation history forward using BOS file.
-	Threaded process"
-	
-	Processor yield.	"Terminate the others processes"
-	processRun isNil
-		ifFalse:
-			[processRun terminate.
-			processRun := nil].
-	processReplayBackward isNil
-		ifFalse:
-			[processReplayBackward terminate.
-			processReplayBackward := nil].	"Suspend or resume current process"
-	processReplayForward isNil
-		ifFalse:
-			[processReplayForward suspendedContext isNil
-				ifFalse:
-					[processReplayForward suspendingList isNil
-						ifFalse: [^processReplayForward suspend]
-						ifTrue: [^processReplayForward resume]]].	"Create the process"	"*********************************************************************************"	"**********************     RUN  Step Forward threaded    *********************"
-	processReplayForward := ["***"
-	[self currentTime < self traceSize or: [processReplayForward = nil]]
-		whileTrue:
-			[self replayStepForward
-				ifFalse:
-					[processReplayForward terminate.
-					processReplayForward := nil.
-					^nil]]	"***"] forkAt: Processor userBackgroundPriority.	"  *********************       END PROCESS ***        ************************"	"*********************************************************************************"	"Normaly, the instructions below are not called, because #terminate (called on process) will leave this current method"
-	self finalTime = self currentTime
-		ifTrue:
-			[processReplayForward terminate.
-			processReplayForward := nil]
-]
-
-{ #category : 'replay-forward' }
-CMSimulationManager >> replayStepForward [
-	"Replay a step forward using BOS file"
-	
-	^ self replayStepForward: self currentTime + 1
-]
-
-{ #category : 'replay-forward' }
-CMSimulationManager >> replayStepForward: newStep [
-	"Replay a newStep forward using BOS file"
-	
-	| filename resp |
-	(filename := self simFolder / (self stepFileNameAtStep: newStep)) exists
-		ifFalse: [
-			self simButtonAt: #replayRunForward displayActivated: false.
-			self simButtonAt: #replayStepForward displayActivated: false.
-			buttonsForwardAreOn := false.
-			self alertMessage: 'Sorry, there is no bos file at time ' , newStep printString ,
-							'
-for simulation ' , self simName.
-			^ false].
-	undoList := nil.
-	redoList := nil.
-	resp := self cormasModel restoreOrganizationFromFile: filename.
-	(filename := self simFolder / (self stepFileNameAtStep: newStep + 1)) exists
-		ifFalse: [
-			self simButtonAt: #replayRunForward displayActivated: false.
-			self simButtonAt: #replayStepForward displayActivated: false.
-			buttonsForwardAreOn := false ].
-	^ resp
-]
-
-{ #category : 'replay-store/restore' }
-CMSimulationManager >> restoreOrganizationAt: aStep [
-	" Restore the stored model state at aStep "
-	
-	| finename |
-	(finename := self simFolder / (self stepFileNameAtStep: aStep)) exists
-		ifFalse: [ self alertMessage: 'Sorry, there is no bos file at time ' , aStep printString ,
-							'
-for simulation ' , self simName.
-			^ false].
-	self buttonsForwardAreOn
-		ifFalse: [
-			self simButtonAt: #replayRunForward displayActivated: true.
-			self simButtonAt: #replayStepForward displayActivated: true.
-			self simButtonAt: #run displayActivated: true.
-			buttonsForwardAreOn := true ].
-	^ self cormasModel restoreOrganizationFromFile: finename
-]
-
-{ #category : 'replay-backward' }
-CMSimulationManager >> runBack [
-	"Replay the story of the stored simulation backwards, using BOS file.
-Threaded process"
-
-	Processor yield.	"Terminate the others processes"
-	processRun isNil
-		ifFalse: [ processRun terminate.
-			processRun := nil ].
-	processReplayForward isNil
-		ifFalse: [ processReplayForward terminate.
-			processReplayForward := nil ].	"Suspend or resume current process"
-	processReplayBackward isNil
-		ifFalse: [ processReplayBackward suspendedContext isNil
-				ifFalse: [ processReplayBackward suspendingList isNil
-						ifFalse: [ ^ processReplayBackward suspend ]
-						ifTrue: [ ^ processReplayBackward resume ] ] ].	"Create the process"	"*********************************************************************************"	"**********************     RUN  Step Back threaded    *********************"
-	processReplayBackward := [ "***"
-	[ self currentTime <= 0 or: [ processReplayBackward isNil ] ]
-		whileFalse: [ "***"
-			self stepBack
-				ifFalse: [ processReplayBackward terminate.
-					processReplayBackward := nil.
-					^ nil ] ] ] forkAt: Processor userBackgroundPriority.	"  ********************       END PROCESS ***        ********************"	"*******************************************************************"	"The instructions below are, normaly, not called, because #terminate (called on process) will leave this current method"
-	self currentTime = 0
-		ifTrue: [ processReplayBackward terminate.
-			processReplayBackward := nil ]
-]
-
-{ #category : 'replay-private' }
-CMSimulationManager >> setButtonsForTime0 [
-	
-	self simButtonAt: #stepBack displayActivated: false.
-	self simButtonAt: #runBack displayActivated: false.
-	enableBackward value
-		ifFalse:
-			[self simButtonAt: #replayRunForward displayActivated: false.
-			self simButtonAt: #replayStepForward displayActivated: false]
-]
-
-{ #category : 'replay-private' }
-CMSimulationManager >> setButtonsForTime1 [
-	
-	enableBackward value
-		ifTrue:
-			[self simButtonAt: #stepBack displayActivated: true.
-			self simButtonAt: #runBack displayActivated: true]
-]
-
 { #category : 'replay-private' }
 CMSimulationManager >> setSimName [
 	"set the simName attribute to the current time"
 	
 	self simName: self newSimName.
 	^simName
-]
-
-{ #category : 'replay-private' }
-CMSimulationManager >> simButtonAt: buttonName displayActivated: bool [
-	"bool = false => display the buttonName in grey color and inactivate it, 
-			otherwise, display the button in red or green and activate it.
-	buttonName = <Symbol> = #step #stepBack #run #runBack #replayRunForward #replayStepForward 
-	bool = <Bollean>
-
-List of buttons : runBackButton stepBackButton <--  Time  --> replayStepForwardButton replayRunForwardButton stepButton runButton 
-List of icons : 
-		runBack_offIcon     -     runBackIcon
-		stepBack_offIcon   -   stepBackIcon
-		replayStepForwardIcon  - ->   replayStepForward_offIcon (= step_offIcon)
-		replayRunForwardIcon   - ->  replayRunForward_offIcon (= run_offIcon)
-		step_offIcon    -    stepIcon
-		run_offIcon   -      runIcon
-"
-	
-	| aLabel aButtonName |
-	(#(#step #stepBack #run #runBack #replayRunForward #replayStepForward)
-		includes: buttonName) ifFalse: [self halt].
-	aLabel := buttonName.
-	aButtonName := buttonName.
-	bool ifFalse: [aLabel := aLabel , '_off'].
-	aLabel := (aLabel , #Icon) asSymbol.
-	aButtonName := (aButtonName , #Button) asSymbol.	"Dev todo: 'Ancienne m√©thode pour simInterface independante'.  "	"self cormas simulationWin controller notNil 
-		ifTrue: 
-			[self simulationWin controller closeAndUnschedule.
-			self simulationWin: nil]."
-	(self cormas mainBuilder componentAt: aButtonName) isNil
-		ifFalse:
-			[(self cormas mainBuilder componentAt: aButtonName)
-				label: (Cormas perform: aLabel)]
 ]
 
 { #category : 'replay-private' }
@@ -632,14 +407,6 @@ CMSimulationManager >> snapshotCurrentState [
 				asText emphasizeAllWith: #bold).
 	self alertMessage: text.
 	Cormas println: text
-]
-
-{ #category : 'replay-backward' }
-CMSimulationManager >> stepBack [
-	"Replay a step backward using BOS file"
-	
-	self currentTime <= 0 ifTrue: [ ^ false ].
-	^ self restoreOrganizationAt: self currentTime - 1
 ]
 
 { #category : 'replay-private' }
