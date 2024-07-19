@@ -1837,13 +1837,6 @@ CMAbstractModel >> openedSpatialGrids [
 	^self spaceModel openedSpatialGrids
 ]
 
-{ #category : 'accessing - spatial grid' }
-CMAbstractModel >> openedSpatialGridsForHabitus: aString [
-	"Purpose: return a collection of all opened spatial grids corresponding to the habitus named aString"
-	
-	^self spaceModel openedSpatialGridsForHabitus: aString
-]
-
 { #category : 'accessing - entities' }
 CMAbstractModel >> otherAgentsButMe: anAgent [
 	"Purpose: Return a collection of all agents from anAgent class, except itself"

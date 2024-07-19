@@ -1028,8 +1028,8 @@ ECEC example :
 	value := aValue >= maxValue
 		ifTrue: [maxValue]
 		ifFalse: [aValue].
-	start_Color := Cormas colorFrom: startColor.
-	stop_Color := Cormas colorFrom: stopColor.
+	start_Color := Color colorFrom: startColor.
+	stop_Color := Color colorFrom: stopColor.
 	alpha := (value - minValue) / (maxValue - minValue).
 	rv := (stop_Color red * alpha) rounded
 		+ (start_Color red * (1 - alpha)) rounded.
@@ -1058,7 +1058,7 @@ ECEC example :
 	index := maxValue = minValue
 		         ifTrue: [ 0.8 ]
 		         ifFalse: [ maxValue - value / (maxValue - minValue) ].
-	color := Cormas colorFrom: baseColor.
+	color := Color colorFrom: baseColor.
 	^ Color
 		  h: color hue
 		  s: color saturation * (1 - (index raisedTo: 10))
