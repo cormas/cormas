@@ -182,21 +182,6 @@ CMAbstractModel class >> allEntityClasses [
 ]
 
 { #category : 'managing classes' }
-CMAbstractModel class >> allTerminalClasses [
-	"Return a collection of classes without superclasses"
-
-	^ OrderedCollection streamContents: [ :stream | 
-			(self spatialClasses_sorted ifNil: [ #() ])
-				do: [ :spatialClass | spatialClass ifTerminal: [ stream nextPut: spatialClass ] ].
-			(self socialClasses ifNil: [ #() ])
-				do: [ :socialClass | socialClass ifTerminal: [ stream nextPut: socialClass ] ].
-			(self passiveClasses ifNil: [ #() ])
-				do: [ :passiveClass | 
-					(passiveClass isTerminal and: [ passiveClass inheritsFrom: CMEntity ])
-						ifTrue: [ stream nextPut: passiveClass ] ] ]
-]
-
-{ #category : 'managing classes' }
 CMAbstractModel class >> cellClass [
 	^ cellClass
 ]

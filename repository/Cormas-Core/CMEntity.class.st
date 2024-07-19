@@ -98,15 +98,6 @@ CMEntity class >> addRandomAttributes: anArray [
 		notifying: nil
 ]
 
-{ #category : 'utilities - classes' }
-CMEntity class >> allTerminalClasses [
-	"Purpose: returns the terminal classes of the class sender
-Return value: anOrderedCollection
-Example: LandCover allTerminalClasses"
-	
-	^ self withAllSubclasses select: #isTerminal
-]
-
 { #category : 'accessing - methods & classes' }
 CMEntity class >> availableInfo [
 	"Purpose: returns the list of available info methods
