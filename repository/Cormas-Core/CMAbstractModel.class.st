@@ -2578,12 +2578,6 @@ Example: self shannon: #state"
 ]
 
 { #category : 'accessing' }
-CMAbstractModel >> simNumero [
-	
-	^self simulationManager simNumero
-]
-
-{ #category : 'accessing' }
 CMAbstractModel >> simulationManager [
 	
 	^ simManager

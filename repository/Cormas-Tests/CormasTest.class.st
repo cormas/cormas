@@ -222,7 +222,7 @@ CormasTest >> testRoundToNdigits [
 CormasTest >> testSeed [
 	Cormas seed: 0.
 	self assert: Cormas seed equals: 0.
-	Cormas initRandomSeed
+	Cormas releaseRandomSeed
 ]
 
 { #category : 'tests' }

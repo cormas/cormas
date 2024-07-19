@@ -262,14 +262,6 @@ Cormas class >> initRandom [
 	
 ]
 
-{ #category : 'private_aleat' }
-Cormas class >> initRandomSeed [
-	"Release the randomSeed. 
-For example, if the initilizations of the simulations were done with fixed random seed (identical initial state for each simulation), then with #initRandomSeed called after initilization, the  simulations may be different"
-
-	randomGenerator := nil
-]
-
 { #category : 'class initialization' }
 Cormas class >> initialize [
 	"Build the singleton when Cormas class is loaded"
@@ -773,6 +765,14 @@ Cormas class >> recordMethod: sel category: cat class: aClass [
 			(header string , '& [' , aClass name asString , ' >> ' , cat asString , ']')
 				asSymbol
 		value: thisComment
+]
+
+{ #category : 'private_aleat' }
+Cormas class >> releaseRandomSeed [
+	"Release the randomSeed. 
+For example, if the initilizations of the simulations were done with fixed random seed (identical initial state for each simulation), then with #initRandomSeed called after initilization, the  simulations may be different"
+
+	randomGenerator := nil
 ]
 
 { #category : 'util_files' }
