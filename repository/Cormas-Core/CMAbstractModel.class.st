@@ -1384,22 +1384,9 @@ CMAbstractModel >> data: aDictionary [
 ]
 
 { #category : 'default values' }
-CMAbstractModel >> defaultAttributesSetter [
-	
-	^defaultAttributesSetter
-		ifNil: [defaultAttributesSetter := self defaultAttributesSetterClass newOn: self]
-]
-
-{ #category : 'default values' }
 CMAbstractModel >> defaultAttributesSetter: aDefaultSetter [
 	
 	^defaultAttributesSetter := aDefaultSetter
-]
-
-{ #category : 'default values' }
-CMAbstractModel >> defaultAttributesSetterClass [
-
-	^ DefaultAttributesSetter
 ]
 
 { #category : 'accessing' }
@@ -1824,7 +1811,6 @@ CMAbstractModel >> initializeSimulation [
 	"remove the previous entities of the collections (theXXXs), except for theCells"
 	self initEntities.
 	"set default attributes values of entities"
-	self defaultAttributesSetter reApplyNewValues.	"setAttributeNewValue"	"reApplyNewValues"
 	"Call the selected INIT method"
 	self perform: self activeInit.	"launch the selected INIT method"
 	self updateEntities.	"updates theXXXs collections"
