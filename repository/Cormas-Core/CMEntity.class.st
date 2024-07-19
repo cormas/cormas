@@ -160,7 +160,7 @@ CMEntity class >> colorOfNumber: aNumber [
 	^ Color
 		perform:
 			(self colorNames
-				at: (Cormas number: aNumber onCycle: self colorNames size))
+				at: (aNumber - 1) \\ self colorNames size + 1)
 				asSymbol
 ]
 
@@ -174,20 +174,6 @@ CMEntity class >> colorOfProbe: aProbeSymbol [
 		at: selectorName
 		ifAbsent: [^nil].
 	^self perform: selectorName
-]
-
-{ #category : 'utilities - colors' }
-CMEntity class >> colorWithout: aColorName OfNumber: aNumber [
-	"Purpose: Returns a Color from the existing constant names: #(#black #veryVeryDarkGray #veryDarkGray #darkGray #gray #lightGray #veryLightGray #veryVeryLightGray #white #red #yellow #green #cyan #blue #magenta #brown #orange #lightRed #lightYellow #lightGreen #lightCyan #lightBlue #lightMagenta #lightBrown #lightOrange #pink #purple #tan #veryPaleRed #paleYellow #paleTan #paleRed #palePeach #paleOrange #paleMagenta #paleGreen #paleBuff #paleBlue) except the one given as the first argument.
-	Arguments: aColorName : <Symbol>
-			aNumber = <Integer> is the index at which the color name is picked in the array. It can be greater than 38.
-	Example: CMEntity colorWithout: #white OfNumber: 30  -> Color gray "
-
-	| colors |
-	colors := Color registeredColorNames asOrderedCollection.
-	colors remove: aColorName ifAbsent: [ nil ].
-	^ Color
-		perform: (colors at: (Cormas number: aNumber onCycle: colors size) asSymbol)
 ]
 
 { #category : 'accessing' }
@@ -205,33 +191,6 @@ CMEntity class >> currentId: anInteger [
 ]
 
 { #category : 'utilities - colors' }
-CMEntity class >> darkColorOfNumber: aNumber [
-	"Purpose: Returns a dark Color from the existing 38 constant names: #(#black #veryVeryDarkGray #veryDarkGray #darkGray #gray #lightGray #veryLightGray #veryVeryLightGray #white #red #yellow #green #cyan #blue #magenta #brown #orange #lightRed #lightYellow #lightGreen #lightCyan #lightBlue #lightMagenta #lightBrown #lightOrange #pink #purple #tan #veryPaleRed #paleYellow #paleTan #paleRed #palePeach #paleOrange #paleMagenta #paleGreen #paleBuff #paleBlue).
-Argument: aNumber = <Integer> is the index at which the color name is picked in the array. It can be greater than 25.
-Example: CMEntity darkColorOfNumber:  30 -> Color brown"
-
-	| colors |
-	colors := self darkColors.
-	^ Color
-		perform: (colors at: (Cormas number: aNumber onCycle: colors size)) asSymbol
-]
-
-{ #category : 'utilities - colors' }
-CMEntity class >> darkColors [
-	"Purpose: Returns the dark ColorValues from the existing constant color values.
-Example: CMEntity darkColors -> an OrderedCollection('veryPaleRed' 'magenta' 'brown' 'red' 'paleBlue' 'darkGray' 'palePeach' 'transparent' 'blue' 'purple' 'paleGreen' 'paleYellow' 'paleBuff' 'tan' 'paleOrange' 'veryVeryDarkGray' 'paleRed' 'orange' 'paleMagenta' 'black' 'pink' 'paleTan' 'gray' 'green' 'veryDarkGray' 'cyan' 'brickDarken')"
-	| colors |
-	colors := Color registeredColorNames asOrderedCollection.
-	colors
-		removeAllSuchThat: [ :symb | 
-			(symb indexOfSubCollection: 'light' startingAt: 1) ~= 0
-				or: [ (symb indexOfSubCollection: 'Light' startingAt: 1) ~= 0 ] ].
-	colors remove: #white.
-	colors remove: #yellow.
-	^ colors
-]
-
-{ #category : 'utilities - colors' }
 CMEntity class >> defaultColor [
 	"Purpose: return the default color of the current class name.
 	Example: CMEntity defaultColor => Color lightBrown ; CMFireman defaultColor => Color paleRed"
@@ -243,12 +202,6 @@ CMEntity class >> defaultColor [
 CMEntity class >> defaultProbes [
 	
 	^Array new
-]
-
-{ #category : 'default value' }
-CMEntity class >> destroyed_default [
-	
-	^false
 ]
 
 { #category : 'accessing' }
@@ -412,18 +365,6 @@ CMEntity class >> isSpatialEntityElementClass [
 CMEntity class >> isSpatialEntitySetClass [
 	
 	^false
-]
-
-{ #category : 'utilities - colors' }
-CMEntity class >> lightColorOfNumber: aNumber [
-	"Purpose: Returns a light ColorValue from the existing 38 constant names: #(#black #veryVeryDarkGray #veryDarkGray #darkGray #gray #lightGray #veryLightGray #veryVeryLightGray #white #red #yellow #green #cyan #blue #magenta #brown #orange #lightRed #lightYellow #lightGreen #lightCyan #lightBlue #lightMagenta #lightBrown #lightOrange #pink #purple #tan #veryPaleRed #paleYellow #paleTan #paleRed #palePeach #paleOrange #paleMagenta #paleGreen #paleBuff #paleBlue).
-Argument: aNumber = <Integer> is the index at which the color name is picked in the array. It can be greater than 38.
-Example: CMEntity lightColorOfNumber:  30 => Color lightMagenta"
-
-	| colors |
-	colors := self lightColors.
-	^ Color
-		perform: (colors at: (Cormas number: aNumber onCycle: colors size)) asSymbol
 ]
 
 { #category : 'utilities - colors' }

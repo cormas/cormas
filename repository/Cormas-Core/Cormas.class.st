@@ -46,34 +46,6 @@ Cormas class >> arrayFrom: anElementOrArray [
 		ifFalse: [ Array with: anElementOrArray ]
 ]
 
-{ #category : 'utilities - mathematics' }
-Cormas class >> average: aCollectionOfNumbers [
-	"Purpose: Returns the average of set of numbers
-	Argument: aCollectionOfNumbers = < OrderedCollection> or <Array>
-	Example: Cormas averageOf: #( 1 2 3)  	=> 2.0 "
-
-	^ aCollectionOfNumbers averageIfEmpty: [ ^0 ]
-]
-
-{ #category : 'collector' }
-Cormas class >> collect: anEntity [
-	"this add anEntity to cormasModel collection (theXXXs).
-This works but this is not the best way to do !
-We suggest to use 'newAndCollect: aCollector' to create and collect an entity"
-	
-	| cormasForModel instOfCormasModel |
-	cormasForModel := Cormas allInstances
-		select: [:corm | corm cormasModelClass = anEntity modelClass].
-	cormasForModel size = 1
-		ifTrue:
-			[instOfCormasModel := cormasForModel first cormasModel.
-			anEntity collector: instOfCormasModel collector.
-			instOfCormasModel collector collect: anEntity.
-			^anEntity]
-		ifFalse:
-			[self inform: 'Only ONE simulation is possible']
-]
-
 { #category : 'private_aleat' }
 Cormas class >> initRandom [
 	"seed := nil.
@@ -106,51 +78,6 @@ Cormas class >> logisticIncrease: x r: r K: K [
 	^r * x * (K - x) / K
 ]
 
-{ #category : 'utilities - mathematics' }
-Cormas class >> max: aCollectionOfNumbers [
-	"Answer the maximum of a set of numbers. 
-aCollectionOfNumbers = < OrderedCollection> or <Array>
-ex:		Cormas max: #( 1 2 3) => 3"
-
-	^ aCollectionOfNumbers max
-]
-
-{ #category : 'utilities - mathematics' }
-Cormas class >> maxOf: aMagnitudeName amongObjects: aCollection [
-	"Purpose: returns the highest value of a given function among a collection of objects understanding this function
-Arguments: aName = <ByteSymbol>
-			aCollection = <Collection(Object)>
-Return value: <Magnitude>
-Example: Cormas maxOf: #elevation amongObject: self theCells"
-	
-	| collec |
-	collec := aCollection
-		select: [:c | (c perform: aMagnitudeName) respondsTo: #>].
-	^collec isEmpty
-		ifFalse: [self max: (collec collect: [:c | c perform: aMagnitudeName])]
-		ifTrue: [nil]
-]
-
-{ #category : 'utilities - mathematics' }
-Cormas class >> median: aCollectionOfNumbers [
-	"Answer the median of a numbers distribution. 
-	The median is defined by :
-		the element whose index is (N+1)/2, if N is odd	or
-		the average of elements whose indexes are N/2 and 1+N/2, if N is even
-aCollectionOfNumbers = < OrderedCollection> or <Array>
-ex:		Cormas median: #( 1 2 3) 	=> 2
-		Cormas median: #( 1 2 3 5) 	=> 2.5"
-	
-	| sortedColl |
-	aCollectionOfNumbers size = 0 ifTrue: [^0].
-	sortedColl := aCollectionOfNumbers asSortedCollection: [:a :b | a > b].
-	sortedColl size odd
-		ifTrue: [^sortedColl at: (sortedColl size + 1) / 2]
-		ifFalse:
-			[^((sortedColl at: sortedColl size / 2)
-				+ (sortedColl at: sortedColl size / 2 + 1)) / 2]
-]
-
 { #category : 'accessing' }
 Cormas class >> mix: aCollection [
 	"Purpose: Returns a randomly mixed collection
@@ -163,21 +90,6 @@ Argument: aCollection is a collection to be mixed"
 Cormas class >> nextInteger: anInteger [
 
 	^ self randomIntegerFrom: 1 to: anInteger
-]
-
-{ #category : 'utilities - mathematics' }
-Cormas class >> number: aNumber onCycle: aCycleBase [
-	"Purpose : return a new number from aNumber transformed in aCycleBase. 
-If aNumber exceeds aCycleBase, return to 1
-Arguments: aNumber = <Integer>
-aCycleBase = <Integer>.
-Examples: 
-	Cormas number: 4 onCycle: 5 => 4
-	Cormas number: 5 onCycle: 5 => 5
-	Cormas number: 6 onCycle: 5 => 1
-	Cormas number: 7 onCycle: 5 => 2"
-
-	^ (aNumber - 1) \\ aCycleBase + 1
 ]
 
 { #category : 'utilities - random' }
@@ -258,25 +170,6 @@ For example, if the initilizations of the simulations were done with fixed rando
 	randomGenerator := nil
 ]
 
-{ #category : 'utilities - string' }
-Cormas class >> removeFirstCharacterOfString: aString [
-	"Purpose: Remove the first character of aString. Answer a new String that is a copy of the argument, aString without the first character."
-
-	^ aString copy allButFirst
-]
-
-{ #category : 'utilities - mathematics' }
-Cormas class >> round: aNumber toNdigits: x [
-	"Purpose: Returns a float value rounded with a specified number of decimals
-Argument: aNumber to be rounded   ; x the number of decimals wanted
-Example: Cormas round: 5.1675634  toNdigits: 2	=> 5.17
-Cormas round: 4/3 toNdigits: 1	=> 1.3"
-	
-	aNumber isInteger ifTrue: [^aNumber].
-	x = 0 ifTrue: [^aNumber rounded].
-	^(aNumber * (10 raisedTo: x)) rounded / (10 raisedTo: x) asFloat
-]
-
 { #category : 'accessing' }
 Cormas class >> seed [
 	^ self randomGenerator seed
@@ -348,19 +241,6 @@ Cormas class >> simpleRandomFrom: start to: end [
 	^end min: (Cormas simpleRandom * extent) truncated + start
 ]
 
-{ #category : 'utilities - mathematics' }
-Cormas class >> sin: x min: min max: max phase: phase period: period [
-	"return the sinus function of x, according to min value, max value, phase and period.
-example: Environment updateTemperature: time 
-	temperatureMin= -10 	temperatureMax = 20	period = 24
- 	self temperature: self temperatureMin + Cormas sin: time min: -10 max: 20 phase: 0 period: 24"
-	
-	| delta omega |
-	delta := max - min.
-	omega := 2 * Float pi / period.
-	^delta / 2 + (delta / 2 * (omega * (x + phase)) sin)
-]
-
 { #category : 'utilities - value types' }
 Cormas class >> splitString: aString with: aChar [
 	"Purpose: Splits a string according to a given separator character and returns a collection of the splited portions of the string
@@ -372,15 +252,6 @@ Examples: Cormas splitString: 'Hello world;Bonjour le monde;Bom dia Mundo;Buenos
 	[stream atEnd] whileFalse: [collec add: (stream upTo: aChar)].
 	stream close.
 	^collec
-]
-
-{ #category : 'utilities - mathematics' }
-Cormas class >> sum: aCollectionOfNumbers [
-	"Purpose: Answer the summation of a set of numbers. 
-	Argument: aCollectionOfNumbers = < OrderedCollection> or <Array>
-	Example: Cormas sum: #( 1 2 3)	=> 6"
-
-	^ aCollectionOfNumbers sum
 ]
 
 { #category : 'accessing' }
