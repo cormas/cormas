@@ -130,11 +130,12 @@ CMSpaceNeighbourhood >> initEdges [
 	self isClosedEnvironment
 		ifFalse: [ ^ self ]
 		ifTrue: [ 
-			| n |
-			self gridCellShape = #irregular ifTrue: [ ^ self setIrregularEntitiesEdge ].
-			n := self cardinal.
+			self gridCellShape = #irregular ifTrue: [
+				"not working"
+				^ self ].
+			
 			self elementaryEntities do: [ : p | 
-				p neighbourhood size = n
+				p neighbourhood size = self cardinal
 					ifTrue: [ p edge: false ]
 					ifFalse: [ p edge: true ] ] ]
 ]

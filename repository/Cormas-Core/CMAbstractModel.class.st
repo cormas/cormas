@@ -1445,13 +1445,6 @@ CMAbstractModel >> distanceFromCell: cell1 toCell: cell2 [
 	^self spaceModel distanceFromCell: cell1 toCell: cell2
 ]
 
-{ #category : 'utilities - space metrics' }
-CMAbstractModel >> distanceFromHexagonalCell: cell1 toCell: cell2 [
-	"Purpose: return the distance in number of hexagonal cells"
-	
-	^self spaceModel distanceFromHexagonalCell: cell1 toCell: cell2
-]
-
 { #category : 'user interface' }
 CMAbstractModel >> doesHabitusExists: aString [
 	
@@ -2503,16 +2496,6 @@ CMAbstractModel >> setterForEntityClass: aClass [
 	^ (self getterForEntityClass: aClass) asMutator
 ]
 
-{ #category : 'utilities - space metrics' }
-CMAbstractModel >> shannon: anAttribute [
-	"Purpose : Returns the Shannon index of the attribute of SpatialEntity suchThat:
-Ha = - SumOf [ occuranceOf(attribut) . ln(occuranceOf(attribut)) ] 
-Argument: anAttribute  <Symbol> is the name of the attribute
-Example: self shannon: #state"
-	
-	^self spaceModel shannon: anAttribute
-]
-
 { #category : 'accessing' }
 CMAbstractModel >> simulationManager [
 	
@@ -2712,32 +2695,6 @@ CMAbstractModel >> timeStep [
 CMAbstractModel >> timeStep: anInteger [
 
 	timeStep := anInteger.
-]
-
-{ #category : 'user interface' }
-CMAbstractModel >> timeStepWithUnit [
-	"return a String describing the current time + the time unit name.
-the modelers may redefine timeUnitName.
-Ex: 
-timeUnitName
-	^'days'     "
-	
-	^ String streamContents: [ : stream |
-		stream 
-			<< self timeStep printString;
-			space;
-			<< self timeUnitName ]
-]
-
-{ #category : 'user interface' }
-CMAbstractModel >> timeUnitName [
-	"return a String describing the time unit name.
- the modelers may redefine it.
-Ex: 
-timeUnitName
-	^'days'     "
-	
-	^'steps'
 ]
 
 { #category : 'Olddeprecated' }

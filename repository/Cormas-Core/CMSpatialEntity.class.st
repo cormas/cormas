@@ -926,18 +926,6 @@ CMSpatialEntity >> theOccupants: aDict [
 	theOccupants := aDict
 ]
 
-{ #category : 'displaying' }
-CMSpatialEntity >> view [
-	
-	^self spaceModel vue
-]
-
-{ #category : 'displaying' }
-CMSpatialEntity >> views [
-	
-	^self spaceModel vues
-]
-
 { #category : 'environment - sensing - space' }
 CMSpatialEntity >> wayTo: anotherSpatialEntity [
 	"Purpose: returns one of the shortest path to another spatial entity

@@ -108,52 +108,6 @@ CMSpaceModel >> activePoVsDictionary [
 		ifNil: [ activePoVsDictionary := Dictionary new ]
 ]
 
-{ #category : 'deprecated' }
-CMSpaceModel >> aggregate: listPolygons [
-	"merge-aggregation of the other polygons on the first of the list"
-
-	| fusion allPolygons theOthers |
-	listPolygons isEmpty
-		ifFalse: [ "Beware of listPolygons ordering !!!"
-			theOthers := listPolygons copyFrom: 2 to: listPolygons size.
-			fusion := listPolygons first.	"Calculation of the new origin coordinates"
-			fusion outline: (self outlineAggregatedFrom: listPolygons).	"Updating the coordinates of the polygon image in the drawing window"
-			self setImagesPolygons: (Array with: fusion).	"we need to remove polygons that are supposed to no longer exist before attacking the neighborhood"
-			allPolygons := self cormasModel
-				perform:
-					(self cormasModel getterForEntityClass: listPolygons first class).
-			allPolygons removeAll: theOthers.	"Reconstruction of the neighbourhood of the new polygon"
-			fusion neighbourhoodWithNils: nil.
-			self voisinsPolygonesNoeuds: (Array with: fusion).	"Reconstruction of the neighbourhood of the neighbours of the new polygon"
-			fusion neighbourhood do: [ :p | p neighbourhoodWithNils: nil ].
-			self
-				voisinsPolygonesNoeuds: fusion neighbourhood asOrderedCollection.	"Updating the components of the new spatial entity, in case it is composed of"
-			(fusion class inheritsFrom: CMSpatialEntityElement)
-				ifFalse: [ theOthers do: [ :p | fusion addComponents: p components ] ] ]
-]
-
-{ #category : 'deprecated' }
-CMSpaceModel >> aggregate: listPolygons new: entityC [
-	"Creation of an N+1 level integer by aggregation of N level polygons"
-
-	"!!! The elements of listPolygons must be adjacent. !!!"
-
-	| newEntityC |
-	listPolygons isEmpty
-		ifFalse: [ newEntityC := entityC new init.	"Calcul des coordonnees d'origine"
-			newEntityC outline: (self outlineAggregatedFrom: listPolygons).	"Updating the coordinates of the polygon image in the drawing window"
-			self setImagesPolygons: (Array with: newEntityC).	"Construction of the neighbourhood of the new polygon"
-			newEntityC neighbourhoodWithNils: nil.
-			self voisinsPolygonesNoeuds: (Array with: newEntityC).	"Reconstruction of the neighbourhood of the neighbours of the new polygon"
-			newEntityC neighbourhood do: [ :p | p neighbourhoodWithNils: nil ].
-			self
-				voisinsPolygonesNoeuds: newEntityC neighbourhood asOrderedCollection.	"Updating the components of the new spatial entity"
-			newEntityC addComponents: listPolygons.
-			(self cormasModel
-				perform: (self cormasModel getterForEntityClass: entityC))
-				add: newEntityC ]
-]
-
 { #category : 'accessing' }
 CMSpaceModel >> aggregateClasses [
 	^ self cormasModelClass compoundSpatialClasses
@@ -173,39 +127,6 @@ CMSpaceModel >> aggregatesEntities [
 						at: cl name
 						ifAbsent: [OrderedCollection new])].
 	^aCollection
-]
-
-{ #category : 'deprecated' }
-CMSpaceModel >> aggregatesInstancesOf: entityE condition: methodName [
-	| nameEntitiesE theInterestingEntitiesE setOfComponents seed neighbours newNeighbours |
-	nameEntitiesE := self cormasModel getterForEntityClass: entityE.
-	theInterestingEntitiesE := ((self cormasModel
-		perform: nameEntitiesE asSymbol)
-		select: [ :c | c perform: methodName ]) copy asOrderedCollection.
-	[ theInterestingEntitiesE isEmpty ]
-		whileFalse: [ setOfComponents := Set new.
-			seed := theInterestingEntitiesE first.
-			setOfComponents add: seed.
-			neighbours := seed neighbourhood
-				select: [ :v | v perform: methodName ].
-			[ neighbours isEmpty ]
-				whileFalse: [ setOfComponents addAll: neighbours.
-					newNeighbours := Set new.
-					neighbours
-						do: [ :v | 
-							newNeighbours
-								addAll:
-									(v neighbourhood
-										select:
-											[ :u | (u perform: methodName) and: [ (setOfComponents includes: u) not ] ]) ].
-					neighbours := newNeighbours ].
-			setOfComponents size > 1
-				ifTrue: [ setOfComponents := setOfComponents asOrderedCollection.
-					setOfComponents
-						remove: seed;
-						addFirst: seed.
-					self aggregate: setOfComponents ].
-			setOfComponents do: [ :c | theInterestingEntitiesE remove: c ] ]
 ]
 
 { #category : 'private - irregular polygons creation' }
@@ -355,24 +276,6 @@ Example:  cellsBetweenLine1: 1 line2: 6 andColumn1: 2 column2: 3  ->  a collecti
 	cellsCol := self cellsBetweenColumn1: c1 andColumn2: c2.
 	^ (self cellsBetweenLine1: l1 andLine2: l2)
 		select: [ :c | cellsCol includes: c ]
-]
-
-{ #category : 'ESE (regular) - special locations' }
-CMSpaceModel >> cellsIntoRectangle: aRectangle [
-	"This method is deprecated. Please use cellsBetwenLine1:line2:andColumn1:column2: instead.
-Purpose: Return the cells between the lineNumber and the colNumber of the spatial grid. The Cells are sorted by id.
-Argument: aRectangle   <Rectangle> where origin < corner.
-Example:  cellsIntoRectangle: (Rectangle origin: 1@2 corner: 6@3)  ->  a collection of cells between columns 2 and 3, and between lines 1 and 6, and ordered from line 1 to line 6"
-
-	| cellsCol |
-	self
-		deprecated: 'Please use cellsBetwenLine1:line2:andColumn1:column2: instead.'.
-	cellsCol := self
-		cellsBetweenColumn1: aRectangle origin y
-		andColumn2: aRectangle corner y.
-	^ (self
-		cellsBetweenLine1: aRectangle origin x
-		andLine2: aRectangle corner x) select: [ :c | cellsCol includes: c ]
 ]
 
 { #category : 'ESE (regular) - special locations' }
@@ -741,30 +644,6 @@ CMSpaceModel >> distanceFromCell: cell1 toCell: cell2 [
 ]
 
 { #category : 'landscape indices' }
-CMSpaceModel >> distanceFromHexagonalCell: cell1 toCell: cell2 [
-	"return the distance in number of hexagonal cells"
-
-	| nbLines nbCols add colTheoriq |
-	
-	self nbNeighbours = 6
-		ifFalse: [ self halt ].
-	nbLines := (cell1 rowNumber - cell2 rowNumber) abs.
-	nbCols := (cell1 columnNumber - cell2 columnNumber) abs.
-	self isClosedEnvironment
-		ifFalse: [ nbLines := nbLines min: self line - nbLines.
-			nbCols := nbCols min: self column - nbCols.
-			nbLines odd
-				ifTrue: [ nbCols := nbCols + 1 ] ].
-	add := 0.
-	colTheoriq := nbLines even
-		ifTrue: [ nbLines / 2 ]
-		ifFalse: [ (nbLines + 1) / 2 ].
-	colTheoriq < nbCols
-		ifTrue: [ add := nbCols - colTheoriq ].
-	^ nbLines + add
-]
-
-{ #category : 'landscape indices' }
 CMSpaceModel >> dominance: attribute [
 	"Compute dominance according to the attribute"
 
@@ -885,33 +764,6 @@ CMSpaceModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 			nbCols > (self column - 2)
 				ifTrue: [ nbCols := nbCols - self column + 2 ] ].
 	^ (nbLines squared + nbCols squared) sqrt
-]
-
-{ #category : 'import - export' }
-CMSpaceModel >> exportAggregateClass: class separator: aChar filename: aStringOrFileName [
-	"Creates in maps directory a file named 'class.agg' which contains lines representing each intance of class 'class'. 
-Each line contains the id of the instance as first element and the id of all its components separated by aChar"
-	
-	| stream filePath |
-	(aStringOrFileName isString and: [aStringOrFileName isEmpty])
-		ifFalse:
-			[aStringOrFileName isString
-				ifTrue:
-					[filePath := (Cormas mapsPath: self cormasModelClass name) construct:
-							aStringOrFileName]
-				ifFalse: [filePath := aStringOrFileName].
-			stream := filePath asFilename writeStream.
-			(self spatialEntities notNil
-				and:
-					[self spatialEntities isEmpty not
-						and:
-							[(self spatialEntities includesKey: class name)
-								and: [(self spatialEntities at: class name) isEmpty not]]])
-				ifTrue:
-					[(self spatialEntities at: class name)
-						do:
-							[:a | stream nextPutAll: ((a stringWithSeparator: aChar) , '\') withCRs]].
-			stream close]
 ]
 
 { #category : 'import - export' }
@@ -1619,65 +1471,6 @@ CMSpaceModel >> newEntity: aClass [
 			yourself
 ]
 
-{ #category : 'private - irregular polygons aggregation' }
-CMSpaceModel >> outlineAggregatedFrom: listPolygons [
-	
-	| newOutline voisinsConcernes listeNoeuds newSegment listeSegments followingSegment |
-	listeSegments := OrderedCollection new.
-	newOutline := OrderedCollection new.
-	listPolygons
-		do:
-			[:poly1 | 
-			listeNoeuds := OrderedCollection new.
-			voisinsConcernes := poly1 neighbourhood
-				select: [:v | listPolygons includes: v].
-			voisinsConcernes isEmpty ifTrue: [self halt].
-			voisinsConcernes
-				do:
-					[:v | 
-					listeNoeuds
-						add: (poly1 nodes at: v) first;
-						add: (poly1 nodes at: v) last].
-			listeNoeuds := listeNoeuds asSortedCollection asOrderedCollection.
-			listeNoeuds
-				addLast: listeNoeuds first;
-				remove: listeNoeuds first.
-			1
-				to: listeNoeuds size
-				by: 2
-				do:
-					[:i | 
-					newSegment := OrderedCollection new.
-					((listeNoeuds at: i + 1) < (listeNoeuds at: i)
-						and:
-							[(listeNoeuds at: i) ~= poly1 outline size | ((listeNoeuds at: i + 1) ~= 1)])
-						ifTrue:
-							[(listeNoeuds at: i)
-								to: poly1 outline size - 1
-								do: [:ii | newSegment add: (poly1 outline at: ii)].
-							1
-								to: (listeNoeuds at: i + 1)
-								do: [:ii | newSegment add: (poly1 outline at: ii)]].
-					(listeNoeuds at: i + 1) > (listeNoeuds at: i)
-						ifTrue:
-							[(listeNoeuds at: i)
-								to: (listeNoeuds at: i + 1)
-								do: [:ii | newSegment add: (poly1 outline at: ii)]].
-					newSegment isEmpty ifFalse: [listeSegments add: newSegment]]].
-	newOutline := listeSegments first.
-	[newOutline first = newOutline last]
-		whileFalse:
-			[followingSegment := listeSegments
-				detect: [:s | s first = newOutline last]
-				ifNone: [nil].
-			followingSegment isNil
-				ifTrue: [self halt]
-				ifFalse:
-					[followingSegment removeFirst.
-					newOutline addAll: followingSegment]].
-	^newOutline
-]
-
 { #category : 'landscape indices' }
 CMSpaceModel >> patchDensity: aClass [
 	"return the data (a number) to be recorded"
@@ -2047,23 +1840,6 @@ CMSpaceModel >> setGivenSizes: dis toAggregates: compoundEntity [
 				subsetIndice := subsetIndice + 1]]
 ]
 
-{ #category : 'private - irregular polygons creation' }
-CMSpaceModel >> setIrregularEntitiesEdge [
-
-	| outlineTempo |
-	self elementaryEntities isEmpty ifTrue: [ ^ self halt ].
-	self elementaryEntities do: [ :aCell | 
-		aCell neighbourhood ifNil: [ ^ self halt ].
-		(aCell neighbourhood anySatisfy: [ :neigh | neigh edge ~= false ])
-			ifFalse: [ aCell edge: false ]
-			ifTrue: [ 
-				outlineTempo := aCell outline copy.
-				aCell neighbourhood do: [ :c | 
-					outlineTempo removeAllSuchThat: [ :point | 
-						c outline includes: point ] ].
-				aCell edge: outlineTempo isNotEmpty ] ]
-]
-
 { #category : 'private - regular polygons - deprecated' }
 CMSpaceModel >> setPartitionsFrom: baseEntity attribute: attributeName into: compoundEntity [
 	
@@ -2158,26 +1934,6 @@ CMSpaceModel >> settingsFrom: aClone [
 				closed: aClone isClosedEnvironment ]
 ]
 
-{ #category : 'landscape indices' }
-CMSpaceModel >> shannon: attribute [
-	"Answer the Shannon index of the attribute of SpatialEntity suchThat:
-    Ha = - SumOf [ occuranceOf(attribut) . ln(occuranceOf(attribut)) ] 
-    attribute = <Symbol>"
-	
-	| cells totCells sum pi setOfValues |
-	cells := self cormasModel theCells asArray.	"pour optimisation"
-	totCells := cells size.
-	totCells = 0 ifTrue: [^0].
-	sum := 0.
-	setOfValues := (cells collect: [:a | a perform: attribute]) asSet.
-	setOfValues
-		do:
-			[:val | 
-			pi := (cells select: [:c | (c perform: attribute) = val]) size / totCells.
-			sum := sum + (pi * pi ln)].
-	^sum negated
-]
-
 { #category : 'accessing' }
 CMSpaceModel >> spaceModel [
 	^ self
@@ -2230,45 +1986,6 @@ CMSpaceModel >> timeStep [
 	^ self cormasModel timeStep
 ]
 
-{ #category : 'user interface' }
-CMSpaceModel >> timeUnitName [
-	
-	^self cormasModel timeUnitName
-]
-
-{ #category : 'private - irregular polygons creation' }
-CMSpaceModel >> traiterAccesParticulier: val [
-	
-	| point listePoint |
-	listePoint := self traiterChaineDeCaractere: val.
-	point := (listePoint at: 1) asNumber @ (listePoint at: 2) asNumber.
-	^point
-]
-
-{ #category : 'private - irregular polygons creation' }
-CMSpaceModel >> traiterAutreChaineDeCaractere: chaine [
-	"ex: chaine = '    Pen (1,2,0) '   et retourne une coll du genre : OrderedCollection ('Pen' '(1,2,0) ')  "
-	
-	| objet liste |
-	objet := chaine copyReplaceFrom: 1 to: 4 with: ''.
-	liste := self traiterChaineDeCaractere: objet.
-	^liste
-]
-
-{ #category : 'private - irregular polygons creation' }
-CMSpaceModel >> traiterChaineDeCaractere: aString [
-	| spaceIndex objetGraphique nombreElement listeTemp |
-	listeTemp := OrderedCollection new.
-	spaceIndex := aString indexOf: Character space.
-	spaceIndex = 0
-		ifFalse: [ objetGraphique := aString copyFrom: 1 to: spaceIndex - 1.
-			nombreElement := aString copyFrom: spaceIndex + 1 to: aString size.
-			listeTemp
-				add: objetGraphique;
-				add: nombreElement ].
-	^ listeTemp
-]
-
 { #category : 'ESE (regular) - special locations' }
 CMSpaceModel >> upperLeftLocation [
 	^ self elementaryEntities at: 1
@@ -2277,75 +1994,6 @@ CMSpaceModel >> upperLeftLocation [
 { #category : 'ESE (regular) - special locations' }
 CMSpaceModel >> upperRightLocation [
 	^ self elementaryEntities at: column
-]
-
-{ #category : 'private - irregular polygons creation' }
-CMSpaceModel >> voisinsPolygonesNoeuds: lesPolygones [
-	| boundingRectangle p pPrec pCour allPolygones |
-	lesPolygones isEmpty
-		ifTrue: [ ^ self ].
-	allPolygones := self cormasModel
-		perform: (self cormasModel getterForEntityClass: lesPolygones first).
-	lesPolygones
-		do: [ :b | 
-			b neighbourhood isNil
-				ifTrue: [ b neighbourhoodWithNils: Set new ].
-			b nodes: Dictionary new.
-			boundingRectangle := Rectangle
-				origin: b bounds origin
-				corner: b bounds corner.
-			boundingRectangle origin x: boundingRectangle origin x - 1.
-			boundingRectangle origin y: boundingRectangle origin y - 1.
-			boundingRectangle corner x: boundingRectangle corner x + 1.
-			boundingRectangle corner y: boundingRectangle corner y + 1.
-			allPolygones
-				do: [ :c | 
-					b ~= c
-						ifTrue: [ (c bounds intersects: boundingRectangle)
-								ifTrue:
-									[ "c est POTENTIELLEMENT voisin... on le verifie ici rigoureusement..."
-									"et par la meme occasion, on memorise les noeuds !!!"
-									pPrec := c outline includes: (b outline at: 1).	"Point precedent inclus ?"
-									1 to: b outline size do: [ :i | 
-										p := b outline at: i.
-										pCour := c outline includes: p.
-										pPrec & pCour not
-											ifTrue: [ b neighbourhood add: c.
-												(b nodes keys includes: c)
-													ifFalse: [ b nodes at: c put: OrderedCollection new ].
-												(b nodes at: c)
-													add:
-														(i = 2
-															ifFalse: [ i - 1 ]
-															ifTrue: [ b outline size ]) ].	"(b nodes at: c) add: i-1]."
-										pPrec not & pCour
-											ifTrue: [ b neighbourhood add: c.
-												(b nodes keys includes: c)
-													ifFalse: [ b nodes at: c put: OrderedCollection new ].
-												(b nodes at: c)
-													add:
-														(i = b outline size
-															ifFalse: [ i ]
-															ifTrue: [ 1 ]) ].	"(b nodes at: c) add: i]."
-										pPrec := pCour ].
-									(b nodes keys includes: c)
-										ifTrue: [ b nodes at: c put: (b nodes at: c) asSortedCollection ] ] ] ] ]
-]
-
-{ #category : 'deprecated' }
-CMSpaceModel >> vue [
-	"en principe le modele n'a pas a manipuler directement sa vue !!!"
-	
-	^self dependents isEmpty
-		ifTrue: [nil]
-		ifFalse: [self dependents first]
-]
-
-{ #category : 'deprecated' }
-CMSpaceModel >> vues [
-	"DEPRECATED. Should use :"
-	
-	^self dependents
 ]
 
 { #category : 'landscape indices' }
