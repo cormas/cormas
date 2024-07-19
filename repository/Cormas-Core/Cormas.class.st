@@ -122,15 +122,6 @@ Examples: Cormas count: 3 into: #( 1 2 3 3 3 3 3) 	 => 5
 ]
 
 { #category : 'accessing' }
-Cormas class >> current [
-	"acces to the single current Cormas  (pattern singleton)
-	Conveniently retrieve the already created instance
-	"
-	
-	^current ifNil: [current := self allInstances first]
-]
-
-{ #category : 'accessing' }
 Cormas class >> current: aCormas [
 	"acces to the single current Cormas  (pattern singleton).
 	Used by the initialize during cormas initialisation"
@@ -158,21 +149,6 @@ Cormas class >> dropBlanksFromString: aString [
 Example: Cormas dropBlanksFromString: 'Hello World    ' => 'HelloWorld'"
 
 	^ aString copyWithRegex: ' ' matchesReplacedWith: ''
-]
-
-{ #category : 'utilities - code management' }
-Cormas class >> findSelector: selector in: aClass [
-
-"Answer an Array with the class and method for this selector,
-	or nil if the selector is not found.
-	NicolasBecu 5/28/2015 19:38 -> copy from VW for Pharo integration"
-
-	| meth |
-	meth := aClass class compiledMethodAt: selector ifAbsent: [nil].
-	meth == nil ifFalse: [^Array with: self with: meth].
-	^aClass superclass == nil
-		ifTrue: [nil]
-		ifFalse: [Cormas findSelector: selector in: aClass superclass]
 ]
 
 { #category : 'utilities - mathematics' }
@@ -542,25 +518,6 @@ Cormas class >> nextInteger: anInteger [
 	^ self randomIntegerFrom: 1 to: anInteger
 ]
 
-{ #category : 'utilities - random' }
-Cormas class >> normal: mu sigma: sigma [
-	"Purpose: Return a random number from a normal distribution. polar method, Law et Kelton
-Arguments: mu = mean; sigma = standard deviation."
-
-	| w u1 u2 v1 v2 y x1 |
-	w := 2.
-	[ w > 1 ]
-		whileTrue: [ u1 := Cormas random.
-			u2 := Cormas random.
-			v1 := 2 * u1 - 1.
-			v2 := 2 * u2 - 1.
-			w := v1 squared + v2 squared ].
-	y := (-2 * w ln / w) sqrt.
-	x1 := v1 * y.
-	x1 := mu + (sigma * x1).
-	^ x1
-]
-
 { #category : 'utilities - mathematics' }
 Cormas class >> number: aNumber onCycle: aCycleBase [
 	"Purpose : return a new number from aNumber transformed in aCycleBase. 
@@ -594,26 +551,6 @@ Cormas class >> openVisualInspectorOn: anObject [
 	"display anObject on a VisualInspector"
 	
 	anObject psiVisualInspect
-]
-
-{ #category : 'utilities - string' }
-Cormas class >> print: aString [
-	"Purpose: A Java-like print method. Writes aString on the Transcript Withour carriage return.
-Example: Cormas print: 'Hello World'   "
-	
-	(Cormas objectTypeAsString: aString) printOn: Transcript.
-	Transcript flush
-]
-
-{ #category : 'utilities - string' }
-Cormas class >> println: aString [
-	"Purpose: A Java-like println method. Writes aString on the Transcript
-Example: Cormas println: 'Hello World'   "
-	
-	(Cormas objectTypeAsString: aString) printOn: Transcript.
-	Transcript
-		flush;
-		cr
 ]
 
 { #category : 'utilities - random' }

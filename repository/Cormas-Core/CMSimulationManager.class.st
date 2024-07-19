@@ -190,16 +190,6 @@ CMSimulationManager >> setSimName [
 ]
 
 { #category : 'replay-private' }
-CMSimulationManager >> simFolder [
-	"return the appropriate Dump folder = simName"
-	
-	simFolder
-		ifNil: [ simFolder := (Cormas dumpPath: self cormasModel class name) / self simName ].
-	simFolder ensureCreateDirectory. 
-	^ simFolder
-]
-
-{ #category : 'replay-private' }
 CMSimulationManager >> simFolder: aFilename [
 	"Set the simFolder = aFilename"
 	
@@ -239,20 +229,6 @@ CMSimulationManager >> stepNameStart [
 	"return a string for the file"
 	
 	^'step_'
-]
-
-{ #category : 'replay-store/restore' }
-CMSimulationManager >> storeCurrentStep [
-	"store the current step into the appropriate Dump folder (store After the step execution)"
-	
-	| filename |
-	(filename := self simFolder / (self stepFileNameAtStep: self currentTime)) exists
-		ifTrue: [ 
-			self simFolder: self class newFolder.
-			^ self storeCurrentStep ].
-	self cormasModel dumpOrganizationOnFile: filename.
-	self traceSize < self currentTime 
-		ifTrue: [ traceSize := self currentTime ]
 ]
 
 { #category : 'accessing' }

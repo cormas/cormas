@@ -282,13 +282,6 @@ CMAbstractModel class >> cormasModelName [
 ]
 
 { #category : 'accessing' }
-CMAbstractModel class >> current [
-	"Direct acces to the current cormasModel"
-	
-	^Cormas current cormasModel
-]
-
-{ #category : 'accessing' }
 CMAbstractModel class >> currentSimulation [
 	self deprecated: 'currentSimulation is no longer supported.'
 ]
@@ -892,19 +885,6 @@ CMAbstractModel >> autoResizeGrids: aBoolean [
 	self spaceModel autoResizeBounds: aBoolean
 ]
 
-{ #category : 'utilities - population metrics' }
-CMAbstractModel >> averageOfAttribute: att of: aCollecOrClass [
-	"Purpose: returns the average value of an attribute for a collection of entities (aCollecOrClass)
-Argument: aCollecOrClass can be a collection of entities or the name of class, in which case all the entities of that class (including subclasses entities) will be included in the collection
-Examples: self averageOfAttribute: #age of: Person
-			 self averageOfAttribute: #age of: (self theBirds)"
-	
-	^Cormas
-		average:
-			((self allTheEntitiesOfClassOrCollec: aCollecOrClass) asOrderedCollection
-				collect: [:e | e perform: att])
-]
-
 { #category : 'accessing' }
 CMAbstractModel >> cellAt: aRowIndex at: aColumnIndex [ 
 	
@@ -1451,14 +1431,6 @@ CMAbstractModel >> finishSimulation [
 	"Stop the current simulation: the current time is set equal to final time"
 	
 	self simulationManager finishSimulation
-]
-
-{ #category : 'utilities - space metrics' }
-CMAbstractModel >> fractalDimension: aClass [
-	"Purpose: Return the fractal dimension of an aggregate class instances.
-Argument: aClass is an aggregate"
-
-	^ self spaceModel fractalDimension: aClass
 ]
 
 { #category : 'utilities - files' }
@@ -2334,19 +2306,6 @@ CMAbstractModel >> spaceModelEntities [
 	^ self spaceModel ifNotNil: [:sm| sm spatialEntities values flattened asOrderedCollection]
 ]
 
-{ #category : 'utilities - population metrics' }
-CMAbstractModel >> stDevOfAttribute: att of: aCollecOrClass [
-	"Purpose: returns the standard Deviation  of an attribute for a collection of entities (aCollecOrClass)
-Argument: aCollecOrClass can be a collection of entities or the name of class, in which case all the entities of that class (including subclasses entities) will be included in the collection
-Examples: self stDevOfAttribute: #age of: Person
-			 self stDevOfAttribute: #age of: (self theBirds)"
-	
-	^Cormas
-		standardDeviation:
-			((self allTheEntitiesOfClassOrCollec: aCollecOrClass) asOrderedCollection
-				collect: [:e | e perform: att])
-]
-
 { #category : 'control' }
 CMAbstractModel >> stepAsynchronouslyCA: t [
 	"Purpose: To active the transition function and to update asynchronously a cellular automata"
@@ -2397,19 +2356,6 @@ Example: See the models Conway http://cormas.cirad.fr/en/applica/conway.htm or F
 	
 	self theCells do: [:a | a newState].
 	self theCells do: [:a | a updateState]
-]
-
-{ #category : 'utilities - population metrics' }
-CMAbstractModel >> sumOfAttribute: att of: aCollecOrClass [
-	"Purpose: returns the sum of values of an attribute for a collection of entities (aCollecOrClass)
-Argument: aCollecOrClass can be a collection of entities or the name of class, in which case all the entities of that class (including subclasses entities) will be included in the collection
-Examples: self sumOfAttribute: #age of: Person
-			 self sumOfAttribute: #age of: (self theBirds)"
-	
-	^Cormas
-		sum:
-			((self allTheEntitiesOfClassOrCollec: aCollecOrClass) asOrderedCollection
-				collect: [:e | e perform: att])
 ]
 
 { #category : 'testing - scheduling' }
@@ -2574,36 +2520,11 @@ CMAbstractModel >> upperLeftCell [
 	^ self spaceModel upperLeftLocation
 ]
 
-{ #category : 'utilities - population metrics' }
-CMAbstractModel >> upperQuartileOfAttribute: att of: aCollecOrClass [
-	"Purpose: returns the upper quartile of the values of an attribute for a collection of entities (aCollecOrClass)
-Argument: aCollecOrClass can be a collection of entities or the name of class, in which case all the entities of that class (including subclasses entities) will be included in the collection
-Examples: self upperQuartileOfAttribute: #age of: Person
-			 self upperQuartileOfAttribute: #age of: (self theBirds)"
-	
-	^Cormas
-		upperQuartile:
-			((self allTheEntitiesOfClassOrCollec: aCollecOrClass) asOrderedCollection
-				collect: [:e | e perform: att])
-]
-
 { #category : 'accessing - entities' }
 CMAbstractModel >> upperRightCell [
 	"Purpose: return the cell located at the upper right location of the spatial grid"
 
 	^ self spaceModel upperRightLocation
-]
-
-{ #category : 'utilities - population metrics' }
-CMAbstractModel >> varianceOfAttribute: att of: aCollecOrClass [
-	"Purpose: returns the variance of an attribute for a collection of entities (aCollecOrClass)
-Argument: aCollecOrClass can be a collection of entities or the name of class, in which case all the entities of that class (including subclasses entities) will be included in the collection
-Examples: self varianceOfAttribute: #age of: Person
-			 self varianceOfAttribute: #age of: (self theBirds)"
-	
-	^ Cormas variance:
-			((self allTheEntitiesOfClassOrCollec: aCollecOrClass) asOrderedCollection
-				collect: [:e | e perform: att])
 ]
 
 { #category : 'accessing' }

@@ -623,109 +623,6 @@ CMSpaceModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 	^ (nbLines squared + nbCols squared) sqrt
 ]
 
-{ #category : 'import - export' }
-CMSpaceModel >> exportAttribute: attributeName fromClass: className [
-	
-	| stream filename |
-	filename := (Cormas mapsPath: self cormasModelClass name)
-		construct: className asString , attributeName asString , '.txt'.
-	stream := filename asFilename writeStream.
-	(self spatialEntities notNil
-		and:
-			[self spatialEntities isEmpty not
-				and:
-					[(self spatialEntities includesKey: className)
-						and: [(self spatialEntities at: className) isEmpty not]]])
-		ifTrue:
-			[(self spatialEntities at: className)
-				do:
-					[:a | 
-					stream
-						store: (a perform: attributeName);
-						cr]].
-	stream close
-]
-
-{ #category : 'private - import - export' }
-CMSpaceModel >> exportToMapInfo: attributes inFile: file [
-	
-	| stream firstValue firstPatch dicoAttConv patch a c collec |
-	stream := file asFilename writeStream.
-	stream nextPutAll: 'num,'.
-	dicoAttConv := Dictionary new.
-	attributes
-		do:
-			[:att | 
-			firstPatch := self elementaryEntities
-				detect: [:p | (p perform: att asSymbol) isNil not]
-				ifNone: [nil].
-			firstPatch isNil
-				ifTrue: [firstValue := nil]
-				ifFalse: [firstValue := firstPatch perform: att asSymbol].
-			firstValue isSymbol
-				ifTrue:
-					[dicoAttConv
-						at: att asSymbol
-						put: #asString]
-				ifFalse:
-					[firstValue isNumber
-						ifTrue:
-							[dicoAttConv
-								at: att asSymbol
-								put: #printString]
-						ifFalse:
-							[firstValue isString
-								ifTrue:
-									[dicoAttConv
-										at: att asSymbol
-										put: #asString]
-								ifFalse:
-									[dicoAttConv
-										at: att asSymbol
-										put: #printString]]].
-			stream
-				nextPutAll: att;
-				nextPutAll:
-						(att = attributes last
-								ifFalse: [',']
-								ifTrue: ['\' withCRs])].
-	collec := Cormas
-		sort: self elementaryEntities
-		byIncreasing: #rowNumber
-		thenByIncreasing: #columnNumber.
-	1
-		to: collec size - 1
-		do:
-			[:i | 
-			patch := collec at: i.
-			stream nextPutAll: i printString , ','.
-			attributes
-				do:
-					[:att | 
-					a := att asSymbol.
-					c := dicoAttConv at: a.
-					stream
-						nextPutAll: ((patch perform: a) perform: c);
-						nextPutAll:
-								(att = attributes last
-										ifFalse: [',']
-										ifTrue: ['\' withCRs])]].
-	patch := self elementaryEntities last.
-	stream nextPutAll: collec size printString , ','.
-	attributes
-		do:
-			[:att | 
-			a := att asSymbol.
-			c := dicoAttConv at: a.
-			stream
-				nextPutAll: ((patch perform: a) perform: c);
-				nextPutAll:
-						(att = attributes last
-								ifFalse: [',']
-								ifTrue: [''])].
-	stream close
-]
-
 { #category : 'private - display' }
 CMSpaceModel >> findIndexForEntityClass: entityClass id: entityId in: someEntities [
 	"sent by a remote spaceInterface to identify a specific entity identified by its id and class among a 
@@ -737,16 +634,6 @@ CMSpaceModel >> findIndexForEntityClass: entityClass id: entityId in: someEntiti
 			e
 				ifNil: [false]
 				ifNotNil: [e id = entityId and: [e class = entityClass]]]
-]
-
-{ #category : 'landscape indices' }
-CMSpaceModel >> fractalDimension: aClass [
-	| aCollection aggregates |
-	aggregates := self cormasModel
-		perform: (self cormasModel getterForEntityClass: aClass).
-	aCollection := aggregates
-		collect: [ :a | Array with: a size ln with: (a perimeter / 4) ln ].
-	^ ((Cormas linearRegression: aCollection) at: 2) * 2
 ]
 
 { #category : 'private - regular polygons' }
@@ -1388,20 +1275,6 @@ CMSpaceModel >> resetSpatialEntities [
 			newColl := self cormasModel resetEntities: aSpatialClass.
 			self spatialEntitiesAt: aSpatialClass name 	put: newColl ].
 	"self changed: #removeAllFigures"	"all the figures of the spaceInterfaces have to be deleted"
-]
-
-{ #category : 'CSE (general) - import - export' }
-CMSpaceModel >> saveNeighboorsClass: class separator: aChar [
-	"Creates in maps directory a file named 'class_Neighboors.agg' which contains lines representing each intance of class 'class'. 
-Each line contains the id of the instance as first element and the id of all its neighboors separated by aChar"
-	
-	| stream filename |
-	filename := (Cormas mapsPath: self cormasModelClass name) construct: class name asString , '_Neighboors.agg'.
-	stream := filename asFilename writeStream.
-	(self spatialEntities notNil and: [self spatialEntities isEmpty not
-		and: [ (self spatialEntities includesKey: class name) and: [(self spatialEntities at: class name) isEmpty not]]])
-			ifTrue: [(self spatialEntitiesAt: class name) do: [ : a | stream nextPutAll: ((a neighborsStringWithSeparator: aChar) , '\') withCRs]].
-	stream close
 ]
 
 { #category : 'CSE (regular) - instance creation' }

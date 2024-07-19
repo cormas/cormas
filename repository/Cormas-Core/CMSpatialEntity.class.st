@@ -687,14 +687,6 @@ CMSpatialEntity >> neighbourhoodWithNils: aCollection [
 	neighbourhoodWithNils := aCollection
 ]
 
-{ #category : 'deprecated' }
-CMSpatialEntity >> neighboursMaxOf: aMagnitudeName [
-	
-	^Cormas
-		maxOf: aMagnitudeName
-		amongObjects: self neighbourhood
-]
-
 { #category : 'environment - sensing - agents' }
 CMSpatialEntity >> occupantsOfClass: aClass [
 
