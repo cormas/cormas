@@ -399,14 +399,14 @@ CMSpaceModel >> createCells [
 CMSpaceModel >> createElementaryEntities [
 	"create all the cells and their connexions, and collect them as elementaryEntities collection"
 
-	| allEse |
+	| cells |
 
-	allEse := Array new: self gridSize.
 	self cormasModelClass cellClass currentId: 0.
-	(1 to: self gridSize) 
-		do: [ :i | allEse at: i put: (self newEntity: self cormasModelClass cellClass) ]
-		displayingProgress: 'Creating cells...'.
-	self elementaryEntities: allEse.
+	
+	cells := (1 to: self gridSize) collect: [ :i |
+		self newEntity: self cormasModelClass cellClass ].
+	
+	self elementaryEntities: cells asArray.
 ]
 
 { #category : 'private - regular cells - instance creation' }
