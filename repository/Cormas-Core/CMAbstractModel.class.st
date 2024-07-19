@@ -1171,7 +1171,7 @@ CMAbstractModel >> createN: aNumber randomlyLocatedAloneEntities: aClass initMet
 	| a freeCell newEntities |
 	newEntities := OrderedCollection new.
 	aNumber timesRepeat: [ 
-		(freeCell := self pickUnoccupiedCell) ifNil: [ self cormas error: 'No free cell. The simulation will stop' ].
+		(freeCell := self pickUnoccupiedCell) ifNil: [ self error: 'No free cell. The simulation will stop' ].
 		a := self newEntity: aClass.
 		a moveTo: freeCell.
 		a perform: aSymbol withArguments: aCollec.
@@ -1417,16 +1417,6 @@ CMAbstractModel >> distanceFromCell: cell1 toCell: cell2 [
 	^self spaceModel distanceFromCell: cell1 toCell: cell2
 ]
 
-{ #category : 'user interface' }
-CMAbstractModel >> doesHabitusExists: aString [
-	
-	^(self class respondsTo: ('SIconfig_' , aString) asSymbol)
-		ifFalse:
-			[self cormas warn: 'No habitus named <1s> exists' with: aString.
-			false]
-		ifTrue: [true]
-]
-
 { #category : 'utilities - space metrics' }
 CMAbstractModel >> dominance: anAttribute [
 	"Purpose: Return the Dominance-Index of SpatialEntityElements instances (theCells for example). The Dominance-Index is used as an index of biodiversity. It gives the information if there is one dominant category of cells in the spatial grid or if all categories have more or less the same relative proportions. Categories of cells are cells that have a different value of anAttribute (see the method nClasses: anAttribute).
@@ -1532,80 +1522,11 @@ CMAbstractModel >> getAttributesType: attributes fromInstances: instanceCollecti
 	^dicoAttConv
 ]
 
-{ #category : 'user interface' }
-CMAbstractModel >> getSimDescriptionText [
-	"returns a text describing the information of the current simulation"
-
-	^ Text
-		streamContents: [ :stream | 
-			stream
-				nextPutAll: 'Model name : ';
-				nextPutAll: (self class shortName asText allBold addAttribute: TextColor red);
-				cr;
-				cr;
-				nextPutAll: 'Initialization: ';
-				tab;
-				nextPutAll: '#';
-				nextPutAll: (self activeInit asText addAttribute: TextEmphasis italic);
-				cr;
-				nextPutAll: 'Control:           ';
-				tab;
-				nextPutAll: '#';
-				nextPutAll: (self activeControl asText addAttribute: TextEmphasis italic);
-				cr;
-				nextPutAll: 'Random seed: ';
-				tab;
-				nextPutAll: (Cormas seed printString asText addAttribute: TextEmphasis italic);
-				cr ]
-]
-
 { #category : 'accessing - entities' }
 CMAbstractModel >> getterForEntityClass: aClass [
 	
 	^ entityGetters at: aClass name
 		ifAbsent: [ self error: 'Getter for class #', aClass name, ' was not found in the dictionary' ].
-]
-
-{ #category : 'utilities - population metrics' }
-CMAbstractModel >> giniIndexOfAttribute: att absoluteCorrection: aNumber of: aCollecOrClass [
-	"Purpose: Returns the gini for an attribute (which can include negative values) on a collection of entities (aCollecOrClass) 
-See the 'giniIndexOfAttribute:of: method for more details on Gini index.
-As the calculation of the Gini index requieres that individuals cannot have a negative value for the assessed attribute, and in  case the attribute you want to assess has negative values, the following method operates a translation of the attribute value.
-Enter in the absoluteCorrection argument an amount equals or higher to the minimum negative value that your attribute may take.
-Beware that this translation affects the absolute value of the Gini index.
-(e.g. the Gini index calculated with an ''absoluteCorrection'' value of 1000 will not be the same than one calculated with a  ''absoluteCorrection'' value of 5000).
-Arguments:
-- aCollecOrClass can be a collection of entities or the name of class, in which case all the entities of that class (including subclasses entities) will be included in the collection
-- att is the name of the attribute <aSymbol> Negative value are accepted .
-- aNumber is a number
-Examples: self giniIndexOfAttribute: #accountBalance absoluteCorrection: 5000 of: Person"
-	
-	^Cormas
-		giniIndexOf:
-			((self allTheEntitiesOfClassOrCollec: aCollecOrClass) asOrderedCollection
-				collect: [:e | e perform: att])
-		absoluteCorrection: aNumber
-]
-
-{ #category : 'utilities - population metrics' }
-CMAbstractModel >> giniIndexOfAttribute: att of: aCollecOrClass [
-	"Purpose: Returns the gini for an attribute on a collection of entities (aCollecOrClass)
-The Gini coefficient is a number between 0 and 1, where 0 corresponds with perfect equality (where everyone has the same income) and 1 corresponds with perfect inequality (where one person has all the income, and everyone else has zero income). The Gini index is the Gini coefficient expressed in percentage form, and is equal to the Gini coefficient multiplied by 100.
-Arguments:
-- aCollecOrClass can be a collection of entities or the name of class, in which case all the entities of that class (including subclasses entities) will be included in the collection
-- att is the name of the attribute <aSymbol> Negative values for that attribute are not allowed.
-Examples: self giniIndexOfAttribute: #money of: Person
-			 self giniIndexOfAttribute: #money of: (self thePersons select: [:p| p age between: 30 and:55)]
-
-More: The Gini coefficient is a measure of inequality developed by the Italian statistician Corrado Gini and published in 1912.
-It is a commonly used coefficient to measure income inequality in a society by institutions such as the World Bank and others.
-While the Gini coefficient is mostly used to measure income inequality, it can also be used to measure other types of inequality.
-For more details on the calculation and use of the Gini coefficient and index see http://en.wikipedia.org/wiki/Gini_coefficient"
-	
-	^Cormas
-		giniIndexOf:
-			((self allTheEntitiesOfClassOrCollec: aCollecOrClass) asOrderedCollection
-				collect: [:e | e perform: att])
 ]
 
 { #category : 'user interface' }
@@ -1782,8 +1703,6 @@ CMAbstractModel >> initializeProbes [
 	self 
 		initializeActiveProbes;
 		initializeEntitiesActiveProbes.
-	self cormas ifNil: [ ^ nil ].
-	"self cormas refreshCharts"
 ]
 
 { #category : 'scheduling' }
@@ -1814,19 +1733,6 @@ CMAbstractModel >> initializeSpaceModel [
 
 ]
 
-{ #category : 'utilities - population metrics' }
-CMAbstractModel >> interquartileRangeOfAttribute: att of: aCollecOrClass [
-	"Purpose: returns the interquartile range of teh values of an attribute for a collection of entities (aCollecOrClass)
-Argument: aCollecOrClass can be a collection of entities or the name of class, in which case all the entities of that class (including subclasses entities) will be included in the collection
-Examples: self interquartileRangeOfAttribute: #age of: Person
-			 self interquartileRangeOfAttribute: #age of: (self theBirds)"
-	
-	^Cormas
-		interquartileRange:
-			((self allTheEntitiesOfClassOrCollec: aCollecOrClass) asOrderedCollection
-				collect: [:e | e perform: att])
-]
-
 { #category : 'accessing' }
 CMAbstractModel >> isGenericEntity [
 	^ self class isGenericEntity 
@@ -1850,15 +1756,6 @@ CMAbstractModel >> lastValueOfGlobalDataNamed: name [
 		ifFalse: [^0]
 ]
 
-{ #category : 'user interface' }
-CMAbstractModel >> loadHabitusName: aString forInterface: aSI [
-	
-	(self doesHabitusExists: aString) ifFalse: [^nil].
-	self
-		registerSpaceModelChange: #loadSilentltySIConfigName
-		with: aSI -> aString
-]
-
 { #category : 'probes - charts' }
 CMAbstractModel >> localCharts [
 	
@@ -1879,37 +1776,11 @@ CMAbstractModel >> lowerLeftCell [
 	^ self spaceModel lowerLeftLocation
 ]
 
-{ #category : 'utilities - population metrics' }
-CMAbstractModel >> lowerQuartileOfAttribute: att of: aCollecOrClass [
-	"Purpose: returns the lower quartile of the values of an attribute for a collection of entities (aCollecOrClass)
-Argument: aCollecOrClass can be a collection of entities or the name of class, in which case all the entities of that class (including subclasses entities) will be included in the collection
-Examples: self lowerQuartileOfAttribute: #age of: Person
-			 self lowerQuartileOfAttribute: #age of: (self theBirds)"
-	
-	^Cormas
-		lowerQuartile:
-			((self allTheEntitiesOfClassOrCollec: aCollecOrClass) asOrderedCollection
-				collect: [:e | e perform: att])
-]
-
 { #category : 'accessing - entities' }
 CMAbstractModel >> lowerRightCell [
 	"Purpose: returns the cell located at the lower right location of the spatial grid"
 
 	^ self spaceModel lowerRightLocation
-]
-
-{ #category : 'utilities - population metrics' }
-CMAbstractModel >> maxOfAttribute: att of: aCollecOrClass [
-	"Purpose: returns the max value of an attribute for a collection of entities (aCollecOrClass)
-Argument: aCollecOrClass can be a collection of entities or the name of class, in which case all the entities of that class (including subclasses entities) will be included in the collection
-Examples: self maxOfAttribute: #age of: Person
-			 self maxOfAttribute: #age of: (self theBirds)"
-	
-	^Cormas
-		max:
-			((self allTheEntitiesOfClassOrCollec: aCollecOrClass) asOrderedCollection
-				collect: [:e | e perform: att])
 ]
 
 { #category : 'utilities - space metrics' }
@@ -1936,32 +1807,6 @@ Argument: aClass is an aggregate.
 Example: self meanPatchSize: ForestAggregate"
 	
 	^self spaceModel meanPatchSize: aClass
-]
-
-{ #category : 'utilities - population metrics' }
-CMAbstractModel >> medianOfAttribute: att of: aCollecOrClass [
-	"Purpose: returns the median of an attribute for a collection of entities (aCollecOrClass)
-Argument: aCollecOrClass can be a collection of entities or the name of class, in which case all the entities of that class (including subclasses entities) will be included in the collection
-Examples: self medianOfAttribute: #age of: Person
-			 self medianOfAttribute: #age of: (self theBirds)"
-	
-	^Cormas
-		median:
-			((self allTheEntitiesOfClassOrCollec: aCollecOrClass) asOrderedCollection
-				collect: [:e | e perform: att])
-]
-
-{ #category : 'utilities - population metrics' }
-CMAbstractModel >> minOfAttribute: att of: aCollecOrClass [
-	"Purpose: returns the min value of an attribute for a collection of entities (aCollecOrClass)
-Argument: aCollecOrClass can be a collection of entities or the name of class, in which case all the entities of that class (including subclasses entities) will be included in the collection
-Examples: self minOfAttribute: #age of: Person
-			 self minOfAttribute: #age of: (self theBirds)"
-	
-	^Cormas
-		min:
-			((self allTheEntitiesOfClassOrCollec: aCollecOrClass) asOrderedCollection
-				collect: [:e | e perform: att])
 ]
 
 { #category : 'utilities - space metrics' }
