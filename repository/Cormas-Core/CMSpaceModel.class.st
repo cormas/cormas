@@ -805,21 +805,6 @@ CMSpaceModel >> edgeDensity: aClass totalArea: aNumber [
 	^ size / aNumber
 ]
 
-{ #category : 'private - regularCells - shapes' }
-CMSpaceModel >> eightconnexe [
-	"received from SpaceInterface menu, when the user want to change the shape of the cells"
-	
-	self gridCellShape ~= #squared
-		ifTrue: [
-			self gridCellShape: #squared.
-			self createRectangularCellsFigure ].
-	self nbNeighbours ~= 8
-		ifTrue: [ 
-			self nbCount: #eight.
-			self initNeighbourhood ].
-	self changed: #shapeHasChanged with: 8	"dispatch the info to all spaceInterfaces"
-]
-
 { #category : 'accessing' }
 CMSpaceModel >> elementaryEntities [
 	" Answer a <Collection> of the receiver's cells "
@@ -1043,21 +1028,6 @@ CMSpaceModel >> findIndexForEntityClass: entityClass id: entityId in: someEntiti
 			e
 				ifNil: [false]
 				ifNotNil: [e id = entityId and: [e class = entityClass]]]
-]
-
-{ #category : 'private - regularCells - shapes' }
-CMSpaceModel >> fourconnexe [
-	"received from SpaceInterface menu, when the user want to change the shape of the cells"
-	
-	self gridCellShape ~= #squared
-		ifTrue: [
-			self gridCellShape: #squared.
-			self createRectangularCellsFigure ].
-	self nbNeighbours ~= #four
-		ifTrue: [ 
-			self nbCount: #four.
-			self initNeighbourhood ].
-	self changed: #shapeHasChanged with: 4	"dispatch the info to other spaceInterfaces"
 ]
 
 { #category : 'landscape indices' }
