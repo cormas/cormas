@@ -106,8 +106,8 @@ CMLocatedObject >> leave [
 CMLocatedObject >> leaveWhileMoving: isBeingMoved [
 	"The situated object is not located any more. But it is still 'alive'  "
 
-	self patch isNil
-		ifTrue: [ ^ self ].
+	self patch ifNil: [ ^ self ].
+	
 	isBeingMoved
 		ifFalse:
 			[ "The situated agent doesn't move; it is not located any more. But it is still 'alive'  "
