@@ -2313,22 +2313,6 @@ CMAbstractModel >> registerChange: aChange [
 ]
 
 { #category : 'private - notification' }
-CMAbstractModel >> registerEntityChange: aSymbol from: anEntityReference [
-	"report a change from anEntity (sent encapsulated in an entityReference). These changes can be delayed in order to make one remote call with many changes"
-	
-	^self registerEntityChange: aSymbol with: nil from: anEntityReference
-]
-
-{ #category : 'private - notification' }
-CMAbstractModel >> registerEntityChange: aSymbol with: aParameter from: anEntity [
-	"report a change from anEntity. These changes can be delayed in order to make one remote call with many changes"
-	
-	self
-		registerChange:
-			(EntityChange newChange: aSymbol with: aParameter from: anEntity)
-]
-
-{ #category : 'private - notification' }
 CMAbstractModel >> registerSpaceModelChange: aSymbol [
 	"report a change from the spaceModel. These changes can be delayed in order to make one remote call with many changes"
 	

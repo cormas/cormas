@@ -253,10 +253,6 @@ CMSpatialEntity >> flashColor: aColorValue [
 
 	aColorValue isString
 		ifTrue: [ ^ self flashColor: (Color perform: aColorValue asSymbol) ].
-	self cormasModel
-		registerEntityChange: #flash
-		with: aColorValue
-		from: (EntityReference on: self)
 ]
 
 { #category : 'star displaying' }

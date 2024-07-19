@@ -54,7 +54,6 @@ Remove the old Node if it doesn't contains other arc"
 	anotherStartNode patch ifNil: [^nil].
 	oldStartNode := self startNode.
 	self startNode: anotherStartNode.
-	self newStartPosition: anotherStartNode patch.
 	oldStartNode removeArc: self
 ]
 
@@ -66,7 +65,6 @@ Remove the old Node if it doesn't contains other arc"
 	| oldStopNode |
 	oldStopNode := self stopNode.
 	self stopNode: anotherStopNode.
-	self newStopPosition: anotherStopNode patch.
 	oldStopNode removeArc: self
 ]
 
@@ -269,8 +267,6 @@ CMArcEntity >> isMovedFrom: startCell to: endCell [
 	the stopNode of the Arc is moved to aSpatialEntityElement.
 	aSpatialEntityElement = <SpatialEntityElement>"
 
-	| alreadySituated_start |
-	alreadySituated_start := self isSituated.	"Log the movement"
 	startCell spaceModel logMovementOf: self from: patch to: startCell.
 	endCell spaceModel logMovementOf: self from: patch to: endCell.
 	self moveStartNodeTo: startCell.
@@ -278,17 +274,6 @@ CMArcEntity >> isMovedFrom: startCell to: endCell [
 	self moveStopNodeTo: endCell.
 	(startCell occupantsOfClassNamed: self class name) add: self.
 	(endCell occupantsOfClassNamed: self class name) add: self.
-	alreadySituated_start
-		ifTrue: [
-"a priori ca ne marche pas car la notification renvoi √† un moveOccupant qui n''a pas √©t√© pr√©vu pour des Arcs. D''un autre cot√© je ne vois pas pouquoi on devrait avoir des moving arcs puisqu''ils ne bougent pas d''eux memes, mais que lorsqu''un de leur node bouge'"
-			self cormasModel
-				registerEntityChange: #movingArc
-				with: (EntityReference on: startCell) -> (EntityReference on: endCell)
-				from: (EntityReference on: self) ]
-		ifFalse: [ self cormasModel
-				registerEntityChange: #newArc
-				with: (EntityReference on: startCell) -> (EntityReference on: endCell)
-				from: (EntityReference on: self) ]
 ]
 
 { #category : 'procedures' }
@@ -299,27 +284,10 @@ CMArcEntity >> isMovedTo: startCell [
 	"the entity is moved to aSpatialEntityElement.
 	aSpatialEntityElement = <SpatialEntityElement>"
 
-	| alreadySituated_start |
-	alreadySituated_start := self isSituated.	"Log the movement"
 	startCell spaceModel logMovementOf: self from: patch to: startCell.
 	self moveStartNodeTo: startCell.
 	(startCell occupantsOfClassNamed: self class name) add: self.
 	stopNode patch ifNil: [ ^ nil ].
-	alreadySituated_start
-		ifTrue: [
-				"a priori ca ne marche pas car la notification renvoi à un moveOccupant qui n a pas été prévu pour des Arcs. D un autre coté je ne vois pas pouquoi on devrait avoir des moving arcs puisqu''ils ne bougent pas d''eux memes, mais que lorsqu''un de leur node bouge"
-			self cormasModel
-				registerEntityChange: #movingArc
-				with:
-					(EntityReference on: startCell)
-						-> (EntityReference on: stopNode patch)
-				from: (EntityReference on: self) ]
-		ifFalse: [ self cormasModel
-				registerEntityChange: #newArc
-				with:
-					(EntityReference on: startCell)
-						-> (EntityReference on: stopNode patch)
-				from: (EntityReference on: self) ]
 ]
 
 { #category : 'testing' }
@@ -373,10 +341,6 @@ CMArcEntity >> leaveWhileMoving: isBeingMoved [
 						remove: self
 						ifAbsent: [  ] ].
 			stopNode removeArc: self ].
-	isBeingMoved
-		ifFalse: [ self cormasModel
-				registerEntityChange: #leavingOccupant
-				from: (EntityReference on: self) ]
 ]
 
 { #category : 'measures' }
@@ -480,22 +444,6 @@ CMArcEntity >> newOutgoingArcToNode: endNode [
 		to: endNode
 ]
 
-{ #category : 'dispatch' }
-CMArcEntity >> newStartPosition: aCell [
-	self cormasModel
-		registerEntityChange: #newStartPosition
-		with: (EntityReference on: aCell)
-		from: (EntityReference on: self)
-]
-
-{ #category : 'dispatch' }
-CMArcEntity >> newStopPosition: aCell [
-	self cormasModel
-		registerEntityChange: #newStopPosition
-		with: (EntityReference on: aCell)
-		from: (EntityReference on: self)
-]
-
 { #category : 'accessing' }
 CMArcEntity >> nodeType [
 	"return the type of Node of the model. May be redefined"
@@ -535,7 +483,6 @@ Remove the old Node if it doesn't contains other arc"
 	anotherStartNode patch ifNil: [^nil].
 	oldStartNode := self startNode.
 	self startNode: anotherStartNode.
-	self newStartPosition: anotherStartNode patch.
 	oldStartNode isNil ifFalse: [oldStartNode removeArc: self]
 ]
 
@@ -548,7 +495,6 @@ Remove the old Node if it doesn't contains other arc"
 	anotherStopNode = self stopNode ifTrue: [^nil].
 	oldStopNode := self stopNode.
 	self stopNode: anotherStopNode.
-	self newStopPosition: anotherStopNode patch.
 	oldStopNode isNil ifFalse: [oldStopNode removeArc: self]
 ]
 
@@ -563,9 +509,7 @@ CMArcEntity >> reverseDirection [
 	self startNode: oldStopNode.
 	startNode changed.
 	stopNode changed.
-	self newStartPosition: self startNode patch.
 	self patch: self startNode patch.
-	self newStopPosition: self stopNode patch
 ]
 
 { #category : 'accessing' }

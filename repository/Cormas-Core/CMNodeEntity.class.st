@@ -303,8 +303,6 @@ Argument: aSpatialEntity = <SpatialEntity>
 Example: self isMovedTo: self patch neighbourN"
 	
 	super isMovedTo: aSpatialEntity.
-	self incomingArcs do: [:anArc | anArc newStopPosition: self patch].
-	self outgoingArcs do: [:anArc | anArc newStartPosition: self patch].
 	self checkToReplaceNode
 ]
 

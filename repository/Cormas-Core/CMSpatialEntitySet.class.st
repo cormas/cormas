@@ -78,10 +78,6 @@ Argument: aSpatialEntity = <SpatialEntity>"
 	aSpatialEntity compoundSpatialClasses at: self class name put: self.
 	self components add: aSpatialEntity.
 	self setSurround.
-	self cormasModel
-		registerEntityChange: #compositionChanged
-		with: (EntityReference onEntities: self components)
-		from: (EntityReference on: self)
 ]
 
 { #category : 'components - managing' }
@@ -94,10 +90,7 @@ Example: self addComponents: self surround"
 	aCollecOfSpatialEntities
 		do: [ :c | c theAggregates at: self class name put: self ].
 	self setSurround.
-	self cormasModel
-		registerEntityChange: #compositionChanged
-		with: (EntityReference onEntities: self components)
-		from: (EntityReference on: self)
+
 ]
 
 { #category : 'components - managing' }
@@ -576,30 +569,17 @@ CMSpatialEntitySet >> removeComponent: anItem [
 Argument: anItem = <SpatialEntity>"
 
 	self deleteComponent: anItem.
-	self components isEmpty
-		ifFalse: [ self cormasModel
-				registerEntityChange: #compositionChanged
-				with: (EntityReference onEntities: self components)
-				from: (EntityReference on: self) ]
-		ifTrue: [ self delete.
-			self cormasModel
-				registerEntityChange: #removeEntity
-				from: (EntityReference on: self) ]
+	self components ifEmpty: [ self delete ]
 ]
 
 { #category : 'components - managing' }
-CMSpatialEntitySet >> removeComponents: aCollec [
+CMSpatialEntitySet >> removeComponents: aCollection [
 	"Purpose: removes a given collection of components and notifies the change to dependents
 Argument: aCollec = <Collection(SpatialEntity)>
 Example: self removeComponents: self getEpidermis"
 
-	self deleteComponents: aCollec.
-	self components isEmpty
-		ifFalse: [ self cormasModel
-				registerEntityChange: #compositionChanged
-				with: (EntityReference onEntities: self components)
-				from: (EntityReference on: self) ]
-		ifTrue: [ self delete ]
+	self deleteComponents: aCollection.
+	self components ifEmpty: [ self delete ]
 ]
 
 { #category : 'initialize-release' }

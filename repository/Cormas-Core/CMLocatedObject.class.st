@@ -81,17 +81,6 @@ Example: self isMovedTo: self patch neighbourN"
 	self leaveWhileMoving: true.
 	self patch: aSpatialEntity.
 	(self patch occupantsOfClassNamed: self class name) add: self.
-	alreadySituated
-		ifFalse:
-			[ "the agent is arriving on the grid for the first time, the SpaceInterfaces should be aware"
-			self cormasModel
-				registerEntityChange: #newOccupant
-				with: (EntityReference on: aSpatialEntity)
-				from: (EntityReference on: self) ]
-		ifTrue: [ self cormasModel
-				registerEntityChange: #movingOccupant
-				with: (EntityReference on: aSpatialEntity)
-				from: (EntityReference on: self) ]
 ]
 
 { #category : 'testing' }
@@ -123,10 +112,7 @@ CMLocatedObject >> leaveWhileMoving: isBeingMoved [
 		ifFalse:
 			[ "The situated agent doesn't move; it is not located any more. But it is still 'alive'  "
 			self cormasModel spaceModel ifNil: [ ^ nil ].
-			self cormasModel spaceModel logLeaveOf: self from: patch.
-			self cormasModel
-				registerEntityChange: #leavingOccupant
-				from: (EntityReference on: self) ].
+			self cormasModel spaceModel logLeaveOf: self from: patch ].
 	(self patch theOccupants at: self class name)
 		remove: self
 		ifAbsent: [  ].
