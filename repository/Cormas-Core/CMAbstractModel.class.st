@@ -1775,21 +1775,6 @@ CMAbstractModel >> initEntitiesForSocialClass: aClass [
 	self resetEntities: aClass
 ]
 
-{ #category : 'scheduling' }
-CMAbstractModel >> initSimFromScnrStage1 [
-
-	self timeStep: 0.
-	self initializeProbes.
-	"store the instances of entities in a collection and request an update of the space views at the end of the initialization"
-	self setNewCollector.
-	"remove the previous entities of the collections (theXXXs), except for theCells"
-	self initEntities.
-	"set default attributes values of entities"
-	self defaultAttributesSetter reApplyNewValues.	"setAttributeNewValue"	"reApplyNewValues"
-	"Call the selected INIT method"
-	self perform: self activeInit.	"launch the selected INIT method"
-]
-
 { #category : 'accessing' }
 CMAbstractModel >> initStatus [
 	" Answer <true> if the receiver was initialized through #initSimulation, <false> otherwise "
