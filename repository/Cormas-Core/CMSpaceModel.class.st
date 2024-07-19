@@ -276,52 +276,6 @@ CMSpaceModel >> basicCreateAggregate: compoundEntity from: aSet [
 ]
 
 { #category : 'CSE (regular) - instance creation' }
-CMSpaceModel >> buildAggregates: compoundEntity from: baseEntity verifying: aBlock [
-	"This method is equivalent to setAggregates: compoundEntity from: baseEntity verifying: aBlock, except that the aggregats are not reset.
-baseEntity = a subClass of <SpatialEntityElement>
-aBlock example = [:cell | cell state = #tree]
-compoundEntity = a subClass of  <SpatialEntitySet>"
-	
-	^self buildAggregates: compoundEntity from: baseEntity verifying: aBlock
-		minimumSize: 1
-]
-
-{ #category : 'CSE (regular) - instance creation' }
-CMSpaceModel >> buildAggregates: compoundEntity from: baseEntity verifying: aBlock minimumSize: ms [
-	"This method is equivalent to setAggregates: compoundEntity from: baseEntity verifying: aBlock minimumSize: ms, except that the previous aggregats are not reset.
-baseEntity = a subClass of  <SpatialEntity>
-aBlock example = [:cell | cell state = #tree]
-compoundEntity =a subClass of  <SpatialEntitySet>
-ms= <integer> must be >= 1"
-
-	| coll |
-	self isClosedEnvironment
-		ifFalse: [ ^ self warningBoundaries ].
-	coll := IndexedSet new.
-	(self getAggregatesFrom: baseEntity verifying: aBlock)
-		do: [ :set | 
-			set size < ms
-				ifFalse: [ coll add: (self createSilentlyAggregate: compoundEntity from: set) ] ].
-	self dispatchCompoundSpatialEntity: compoundEntity.
-	^ coll
-]
-
-{ #category : 'private - regular polygons - deprecated' }
-CMSpaceModel >> buildAggregatesFrom: baseEntity verifying: aBlock into: compoundEntity [
-	" ! Deprecated ! Should use : "
-	
-	self setAggregates: compoundEntity from: baseEntity verifying: aBlock
-]
-
-{ #category : 'private - regular polygons - deprecated' }
-CMSpaceModel >> buildAggregatesFrom: baseEntity verifying: aBlock into: compoundEntity minimumSize: ms [
-	" ! Deprecated ! Should use : "
-	
-	self setAggregates: compoundEntity from: baseEntity verifying: aBlock
-		minimumSize: ms
-]
-
-{ #category : 'CSE (regular) - instance creation' }
 CMSpaceModel >> buildFragmentedEntity: compoundEntity fromCollection: aCollecOfSpatialEntityElement [
 	"create one aggregate <SpatialEntityNotConnex> made of a collection of spatialEntityElements.
 	This method do not resets all aggregates 'compoundEntity' . 
@@ -1149,41 +1103,6 @@ CMSpaceModel >> getAggregatesFrom: baseEntity attribute: attributeName [
 			newCollection add: setOfComponents.
 			setOfComponents do: [ :c | theLLEntities remove: c ] ].
 	^ newCollection
-]
-
-{ #category : 'private - regular polygons' }
-CMSpaceModel >> getAggregatesFrom: baseEntity verifying: aBlock [
-
-	| selector eeInstances set seed neighbours newNeighbours collec |
-	
-	self isClosedEnvironment ifFalse: [ ^ self warningBoundaries ].
-	
-	selector := self cormasModel getterForEntityClass: baseEntity.
-		
-	eeInstances := ((self cormasModel perform: selector)
-		select: [ :c | aBlock value: c ]) copy asOrderedCollection.
-		
-	collec := OrderedCollection new.	"collec est une collection de set (composants des agregats)"
-		
-	[ eeInstances isEmpty ]
-		whileFalse: [ set := IndexedSet new.
-			seed := eeInstances first.
-			set add: seed.
-			neighbours := seed neighbourhood select: [ :v | aBlock value: v ].
-			[ neighbours isEmpty ]
-				whileFalse: [ set addAll: neighbours.
-					newNeighbours := IndexedSet new.
-					neighbours
-						do: [ :v | 
-							newNeighbours
-								addAll:
-									(v neighbourhood
-										select: [ :u | (aBlock value: u) and: [ (set includes: u) not ] ]) ].
-					neighbours := newNeighbours ].
-			set do: [ :c | eeInstances remove: c ].
-			collec add: set ].
-		
-	^ collec
 ]
 
 { #category : 'private - accessing' }
@@ -2015,44 +1934,6 @@ The aggregates will  occupy the whole grid.
 	^ self spatialEntitiesAt: compoundEntity name
 ]
 
-{ #category : 'CSE (regular) - instance creation' }
-CMSpaceModel >> setAggregates: compoundEntity from: baseEntity verifying: aBlock [
-	"baseEntity = a subClass of  <SpatialEntityElement>
-aBlock example = [:cell | cell state = #tree]
-compoundEntity = a subClass of  <SpatialEntitySet>
-This method resets all aggregats 'compoundEntity' and rebuids them"
-	
-	^self setAggregates: compoundEntity from: baseEntity verifying: aBlock
-		minimumSize: 1
-]
-
-{ #category : 'CSE (regular) - instance creation' }
-CMSpaceModel >> setAggregates: compoundEntity from: baseEntity verifying: aBlock minimumSize: ms [
-	"baseEntity = a subClass of  <SpatialEntityElement>
-aBlock example = [:cell | cell state = #tree]
-compoundEntity = a subClass of  <SpatialEntitySet>
-ms= <integer> must be >= 1
-This method resets all aggregats 'compoundEntity' and rebuids them"
-	
-	self resetCompoundSpatialEntity: compoundEntity andTheirComponents:
-			baseEntity.
-	^self buildAggregates: compoundEntity from: baseEntity verifying: aBlock
-		minimumSize: ms
-]
-
-{ #category : 'private - regular polygons - deprecated' }
-CMSpaceModel >> setAggregatesFrom: baseEntity verifying: aBlock into: compoundEntity [
-	
-	self setAggregates: compoundEntity from: baseEntity verifying: aBlock
-]
-
-{ #category : 'private - regular polygons - deprecated' }
-CMSpaceModel >> setAggregatesFrom: baseEntity verifying: aBlock into: compoundEntity minimumSize: ms [
-	
-	self setAggregates: compoundEntity from: baseEntity verifying: aBlock
-		minimumSize: ms
-]
-
 { #category : 'private - irregular polygons aggregation' }
 CMSpaceModel >> setAggregatsBounds: agregat [
 	
@@ -2194,18 +2075,6 @@ CMSpaceModel >> setGivenSizes: dis toAggregates: compoundEntity [
 			ifTrue: [
 				counter := 0.
 				subsetIndice := subsetIndice + 1]]
-]
-
-{ #category : 'CSE (regular) - instance creation' }
-CMSpaceModel >> setGridAsAggregat: compoundEntity [
-	"Creates one instance of compoundEntity from all the cells <SpatialEntityElement> of the grid.
-	This method resets all aggregats 'compoundEntity' and rebuids them.
-	compoundEntity : a Class name inheriting from <SpatialEntitySet>"
-	
-	^self
-		setAggregates: compoundEntity
-		from: self cormasModelClass cellClass
-		verifying: [:c | true]
 ]
 
 { #category : 'private - irregular polygons creation' }
