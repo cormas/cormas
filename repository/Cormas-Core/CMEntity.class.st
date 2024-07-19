@@ -31,7 +31,7 @@ Class Instance Variables:
 "
 Class {
 	#name : 'CMEntity',
-	#superclass : 'CMObject',
+	#superclass : 'Object',
 	#instVars : [
 		'id',
 		'flag',
@@ -283,8 +283,8 @@ CMEntity class >> entityName [
 CMEntity class >> genericEntities [
 	
 	| kernel |
-	kernel := CMEntity cmEnvironment.
-	^ CMEntity withAllSubclasses select: [ : cl | cl cmEnvironment = kernel]
+	kernel := self package classes.
+	^ self withAllSubclasses select: [ :cl | cl package classes = kernel]
 ]
 
 { #category : 'instance creation' }
@@ -586,28 +586,6 @@ colorOfProbe_aSymbol
 ]
 
 { #category : 'accessing - methods & classes' }
-CMEntity class >> superClassesInSameEnvironmentUntil: aSuperClass [
-	"Purpose: returns the list of super classes of the receiver that share the same environment up to aSuperClass
-Return value: an orderedCollection
-Example: FarmerTypeA superClassesInSameEnvironmentUntil: Agent"
-	
-	| coll |
-	coll := self withAllSuperclasses select: [ : aClass | aClass cmEnvironment = self cmEnvironment and: [aClass inheritsFrom: aSuperClass]].
-	aSuperClass cmEnvironment = self cmEnvironment 
-		ifTrue: [ coll add: aSuperClass ].
-	^ coll
-]
-
-{ #category : 'accessing - methods & classes' }
-CMEntity class >> superClassesInSameEnvironmentUntilEntity [
-	"Purpose: returns the list of super classes of the receiver that share the same environment up to Entity
-Return value: an orderedCollection
-Example: FarmerTypeA superClassesInSameEnvironmentUntil: Entity"
-	
-	^self superClassesInSameEnvironmentUntil: CMEntity
-]
-
-{ #category : 'accessing - methods & classes' }
 CMEntity class >> superClassesUntil: aSuperClass [
 	"Purpose: returns the list of super classes of the receiver up to aSuperClass
 Return value: an orderedCollection
@@ -878,12 +856,6 @@ CMEntity >> isAttributeValueASymbol: aSymbol [
 	| aClass |
 	aClass := (self perform: aSymbol) class.
 	^aClass = Symbol or: [aClass inheritsFrom: Symbol]
-]
-
-{ #category : 'utilities - attributes' }
-CMEntity >> isAttributeValueAnAssociation: aSymbol [
-	
-	^ self class cmEnvironment includes: (self perform: aSymbol) class
 ]
 
 { #category : 'testing' }

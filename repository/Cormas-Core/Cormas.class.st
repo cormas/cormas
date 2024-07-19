@@ -294,15 +294,6 @@ Cormas class >> isModelerMode [
 	^ self runtimeMode == #modeler
 ]
 
-{ #category : 'accessing' }
-Cormas class >> kernelClassNames [
-	
-	| collec |
-	collec := OrderedCollection new.
-	self cmEnvironment allClassNames do: [ : s | collec add: (s findTokens: $.) last].
-	^ collec
-]
-
 { #category : 'utilities - mathematics' }
 Cormas class >> linearRegression: data [
 	"Purpose: Return an array containing a, b, and correlation coefficient, that are the parameters of the linear 	regression of a set of data, where y = a + bx.
@@ -603,20 +594,6 @@ Cormas class >> openVisualInspectorOn: anObject [
 	"display anObject on a VisualInspector"
 	
 	anObject psiVisualInspect
-]
-
-{ #category : 'accessing' }
-Cormas class >> passiveEntitiesClassNames [
-	| collec |
-	collec := OrderedCollection new.
-	collec
-		add: 'Msg';
-		add: 'PassiveObject'.
-	self cmEnvironment allEntityClasses
-		do: [ :aClass | 
-			(aClass inheritsFrom: CMPassiveObject)
-				ifTrue: [ collec add: aClass name asString ] ].	"should be allEntityClasses ??"
-	^ collec
 ]
 
 { #category : 'utilities - string' }
@@ -1017,18 +994,6 @@ example: Environment updateTemperature: time
 	^delta / 2 + (delta / 2 * (omega * (x + phase)) sin)
 ]
 
-{ #category : 'accessing' }
-Cormas class >> socialEntitiesClassNames [
-	| collec |
-	collec := OrderedCollection new.
-	collec add: 'Agent'.
-	self cmEnvironment allEntityClasses 
-		do: [ :aClass | 
-			(aClass inheritsFrom: CMAgent)
-				ifTrue: [ collec add: aClass name asString ] ].	"should be allEntityClasses ??"
-	^ collec
-]
-
 { #category : 'utilities - collection' }
 Cormas class >> sort: collec byDecreasing: att1 thenByDecreasing: att2 [
 	"Purpose: Sort a collection of objects (entities) that have the same attributes att1 and att2, first according to an decreasing order of att1, then according to an decreasing value of att2.
@@ -1131,17 +1096,6 @@ Return value: a sorted collection
 Example: Cormas sortIncreasingly: #( 2 1 3)	 => aSortedCollection (1 2 3)"
 
 	^ aCollectionOfNumbers asSortedCollection: [ :a :b | a < b ]
-]
-
-{ #category : 'accessing' }
-Cormas class >> spatialEntitiesClassNames [
-	| collec |
-	collec := OrderedCollection new.
-	self cmEnvironment allEntityClasses 
-		do: [ :aClass | 
-			(aClass inheritsFrom: CMSpatialEntity)
-				ifTrue: [ collec add: aClass name asString ] ].	"should be allEntityClasses ??"
-	^ collec
 ]
 
 { #category : 'utilities - files' }

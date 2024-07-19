@@ -20,7 +20,7 @@ Internal Representation and Key Implementation Points.
 "
 Class {
 	#name : 'CMSpaceNeighbourhood',
-	#superclass : 'CMObject',
+	#superclass : 'Object',
 	#instVars : [
 		'spaceModel'
 	],

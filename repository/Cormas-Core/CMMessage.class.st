@@ -21,7 +21,7 @@ isObserved set the active pov.
 "
 Class {
 	#name : 'CMMessage',
-	#superclass : 'CMObject',
+	#superclass : 'Object',
 	#instVars : [
 		'sender',
 		'receiver',

@@ -33,7 +33,7 @@ Instance Variables
 "
 Class {
 	#name : 'CMAbstractModel',
-	#superclass : 'CMObject',
+	#superclass : 'Object',
 	#instVars : [
 		'cormas',
 		'timeStep',
