@@ -537,22 +537,6 @@ CMAbstractModel class >> renameSelector: oldName by: newName inputParametersNumb
 ]
 
 { #category : 'accessing - probes' }
-CMAbstractModel class >> setActiveProbes: listProbes [
-	| selectedClass selectedClassName |
-	self activeProbes: OrderedCollection new.
-	self allEntityClasses
-		do: [ :c | c activeProbes: OrderedCollection new ].
-	listProbes
-		do: [ :s | 
-			s = CMSimulationManager separator
-				ifFalse: [ selectedClassName := (s findTokens: $>) first asSymbol.
-					selectedClassName = #Global
-						ifTrue: [ selectedClassName := self name ].
-					selectedClass := self class environment at: selectedClassName.
-					selectedClass activeProbes add: (s findTokens: $>) last asSymbol ] ]
-]
-
-{ #category : 'accessing - probes' }
 CMAbstractModel class >> setColor: aColorValue forProbe: aSymbol [
 	"creates a color method at class level, such as :
 colorOfProbe_aSymbol
@@ -1963,13 +1947,6 @@ CMAbstractModel >> selectCellsOfLine: lineNumber [
 CMAbstractModel >> sensitivitySetter: anObject [
 	
 	sensitivitySetter := anObject
-]
-
-{ #category : 'accessing' }
-CMAbstractModel >> setActiveProbes: aCollection [
-	" See class comment "
-	
-	self class setActiveProbes: aCollection
 ]
 
 { #category : 'probes color' }

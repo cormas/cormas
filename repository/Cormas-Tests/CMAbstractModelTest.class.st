@@ -105,15 +105,6 @@ CMAbstractModelTest >> testHasActiveInit [
 ]
 
 { #category : 'test' }
-CMAbstractModelTest >> testHasActiveProbes [
-
-	self deny: model hasActiveProbes.
-	model setActiveProbes: #(#Global).
-	self assert: model hasActiveProbes.
-	model setActiveProbes: Array empty.
-]
-
-{ #category : 'test' }
 CMAbstractModelTest >> testHasControlInit [
 
 	self deny: model hasControlInit.
