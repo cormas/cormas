@@ -265,12 +265,6 @@ CMMockModel >> numberOfRows: aNumber [
 	numberOfRows := aNumber
 ]
 
-{ #category : 'utilities - random' }
-CMMockModel >> randomSeed: aNumber [
-
-	Cormas seed: aNumber
-]
-
 { #category : 'control' }
 CMMockModel >> step: t [
 

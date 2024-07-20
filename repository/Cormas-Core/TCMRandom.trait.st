@@ -21,6 +21,12 @@ TCMRandom >> randomNumberGenerator: aGenerator [
 ]
 
 { #category : 'utilities - random' }
+TCMRandom >> randomSeed: aNumber [
+
+	randomNumberGenerator seed: aNumber
+]
+
+{ #category : 'utilities - random' }
 TCMRandom >> selectRandomlyFrom: aCollection [
 
 	^ aCollection atRandom: randomNumberGenerator
