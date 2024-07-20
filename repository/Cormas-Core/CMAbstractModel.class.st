@@ -35,7 +35,6 @@ Class {
 	#name : 'CMAbstractModel',
 	#superclass : 'Object',
 	#instVars : [
-		'cormas',
 		'timeStep',
 		'channel',
 		'entityGetters',
@@ -59,10 +58,7 @@ Class {
 		'spatialClasses',
 		'socialClasses',
 		'passiveClasses',
-		'visualStateIsOpen',
-		'charts',
-		'activeProbes',
-		'activityDiagrams'
+		'activeProbes'
 	],
 	#category : 'Cormas-Core-Kernel',
 	#package : 'Cormas-Core',
