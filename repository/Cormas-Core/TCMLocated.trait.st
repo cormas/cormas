@@ -3,6 +3,8 @@ Trait {
 	#instVars : [
 		'patch'
 	],
+	#traits : 'TCMRandom',
+	#classTraits : 'TCMRandom classTrait',
 	#category : 'Cormas-Core-Entities',
 	#package : 'Cormas-Core',
 	#tag : 'Entities'
@@ -75,7 +77,7 @@ Example: self colocatedEntity: #Prey"
 	candidates ifNil: [ ^ nil ].
 	candidates ifEmpty: [ ^ nil ].
 	
-	^ Cormas selectRandomlyFrom: candidates
+	^ self selectRandomlyFrom: candidates
 ]
 
 { #category : 'environment - picking - agents' }
@@ -92,7 +94,7 @@ Example: self colocatedEntity: #Prey verifying: [:a | a isWeak]"
 	candidates ifNil: [ ^ nil ].
 	candidates ifEmpty: [ ^ nil ].
 	
-	^ Cormas selectRandomlyFrom: candidates
+	^ self selectRandomlyFrom: candidates
 ]
 
 { #category : 'environment - picking - agents' }
@@ -107,7 +109,7 @@ Return value: <AgentLocation | nil>"
 	candidates ifNil: [ ^ nil ].
 	candidates ifEmpty: [ ^ nil ].
 	
-	^ Cormas selectRandomlyFrom: candidates
+	^ self selectRandomlyFrom: candidates
 ]
 
 { #category : 'environment - picking - agents' }
@@ -124,7 +126,7 @@ Example: self colocatedSimilarAgentVerifying: [:a | a sex ~= self sex]"
 	candidates ifNil: [ ^ nil ].
 	candidates ifEmpty: [ ^ nil ].
 	
-	^ Cormas selectRandomlyFrom: candidates
+	^ self selectRandomlyFrom: candidates
 ]
 
 { #category : 'environment - sensing - agents' }
@@ -695,7 +697,7 @@ Example: self nearestSimilarAgentWithinRadius: 2"
 	candidates ifNil: [ ^ nil ].
 	candidates ifEmpty: [ ^ nil ].
 	
-	^ Cormas selectRandomlyFrom: candidates
+	^ self selectRandomlyFrom: candidates
 ]
 
 { #category : 'environment - sensing - agents' }
@@ -835,7 +837,7 @@ TCMLocated >> printOn: aStream [
 TCMLocated >> randomJump [
 "Purpose: moves to a spatial entity randomly picked from the whole grid "
 
-	self moveTo: (Cormas selectRandomlyFrom: patch grid)
+	self moveTo: (self selectRandomlyFrom: patch grid)
 ]
 
 { #category : 'star moving' }
@@ -847,7 +849,7 @@ TCMLocated >> randomJumpConstrainedBy: aBlock [
 	candidates := patch grid select: [ :cell | aBlock value: cell ].
 	candidates isEmpty ifTrue: [ ^ self ].
 	
-	destination := Cormas selectRandomlyFrom: candidates.
+	destination := self selectRandomlyFrom: candidates.
 	self moveTo: destination
 ]
 
@@ -863,7 +865,7 @@ TCMLocated >> randomWalk [
 	candidates ifNil: [ ^ nil ].
 	candidates ifEmpty: [ ^ nil ].
 		
-	destination := Cormas selectRandomlyFrom: candidates.
+	destination := self selectRandomlyFrom: candidates.
 	self moveTo: destination
 ]
 
@@ -873,7 +875,7 @@ TCMLocated >> randomWalk: radius [
 Argument: radius = <positive Integer>
 Example: self randomWalk: 2 "
 	
-	self moveTo: (Cormas selectRandomlyFrom: (self patch recursiveNeighbourhood: radius))
+	self moveTo: (self selectRandomlyFrom: (self patch recursiveNeighbourhood: radius))
 ]
 
 { #category : 'moving' }
@@ -889,7 +891,7 @@ TCMLocated >> randomWalkConstrainedBy: aBlock [
 	candidates := patch neighbourhood select: [ :cell | aBlock value: cell ].
 	candidates isEmpty ifTrue: [ ^ self ].
 	
-	destination := Cormas selectRandomlyFrom: candidates.
+	destination := self selectRandomlyFrom: candidates.
 	self moveTo: destination
 ]
 
@@ -961,7 +963,7 @@ Example: self walkToMaxOf: #sugar"
 	candidates := candidates select: [ :cell |
 		(cell perform: aSymbol) = (candidates first perform: aSymbol) ].
 	
-	destination := Cormas selectRandomlyFrom: candidates.
+	destination := self selectRandomlyFrom: candidates.
 	self moveTo: destination
 ]
 
@@ -987,6 +989,6 @@ In case several possible destinations share the same maximum value, the tie is r
 	candidates := candidates select: [ :cell |
 		(cell perform: aSymbol) = (candidates first perform: aSymbol) ].
 	
-	destination := Cormas selectRandomlyFrom: candidates.
+	destination := self selectRandomlyFrom: candidates.
 	self moveTo: destination
 ]

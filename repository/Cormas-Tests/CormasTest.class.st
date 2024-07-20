@@ -25,14 +25,6 @@ CormasTest >> testRandom [
 ]
 
 { #category : 'tests' }
-CormasTest >> testRandomFloat [
-	| n |
-	n := Cormas randomFloatFrom: -4.1 to: 2.5.
-	self assert: n >= -4.1.
-	self assert: n < 2.5
-]
-
-{ #category : 'tests' }
 CormasTest >> testRandomGenerator [
 	self
 		assert: (Cormas randomGenerator isKindOf: PMFishmanMooreRandomGenerator)
