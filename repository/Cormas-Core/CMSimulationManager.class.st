@@ -3,13 +3,7 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'cormasModel',
-		'simName',
-		'simFolder',
-		'traceSize',
 		'finalTime'
-	],
-	#classInstVars : [
-		'newFolder'
 	],
 	#category : 'Cormas-Core-Kernel',
 	#package : 'Cormas-Core',
@@ -30,35 +24,6 @@ CMSimulationManager class >> defaultFinalTime [
 ]
 
 { #category : 'accessing' }
-CMSimulationManager class >> newFolder [
-	
-	^newFolder ifNil: [newFolder := 'A new folder']
-]
-
-{ #category : 'accessing' }
-CMSimulationManager class >> newFolder: aFilenmaFolder [
-	
-	^newFolder := aFilenmaFolder
-]
-
-{ #category : 'accessing' }
-CMSimulationManager class >> newFolderName [
-	"return a String for newFolder (starting at model's name"
-	
-	| i listComp str |
-	self newFolder isString ifTrue: [^self newFolder].
-	listComp := self newFolder components.
-	i := listComp
-		indexOf: 'Models'
-		ifAbsent: [^self newFolder asString].
-	str := '..'.
-	(listComp
-		copyFrom: i + 1
-		to: listComp size) do: [:e | str := str , listComp first , e].
-	^str
-]
-
-{ #category : 'accessing' }
 CMSimulationManager class >> separator [
 	
 	^'-------'
@@ -69,13 +34,6 @@ CMSimulationManager class >> simNameStart [
 	"Return the begining part of each simName (=> 'sim_' )  "
 	
 	^'sim_'
-]
-
-{ #category : 'actions' }
-CMSimulationManager >> cancel [
-	
-	self closeRequest.
-	^false
 ]
 
 { #category : 'accessing' }
@@ -138,17 +96,9 @@ CMSimulationManager >> finishSimulation [
 
 { #category : 'init' }
 CMSimulationManager >> initializeSimulation [
-	self setSimName.
-	self simFolder: nil.
-	self traceSize: 0.
-	"the 2 following instructions are the responsability of the CMSpecSimulationWindow  isn't it?
-	self allReplayButtonsTo: false.
-	self finalTime > 0 ifTrue: [self simButtonAt: #run displayActivated: true]."
-	"The 2 following instructions replace the old cormas-vw instruction self cormas initiSimulation ( which was delegating the init simulation to cormas). Now it is the simManger which is in charge of initializing the simulation"
+	
 	self cormasModel activeInit ifNil: [ ^ self error: 'No active init!' ].
 	Cursor wait showWhile: [ self cormasModel initializeSimulation ].
-	"the  following instruction is not yet operational with cormas-pharo
-	self enableBackward ifTrue: [self storeCurrentStep]"
 ]
 
 { #category : 'init' }
@@ -182,32 +132,6 @@ CMSimulationManager >> newSimName [
 ]
 
 { #category : 'replay-private' }
-CMSimulationManager >> setSimName [
-	"set the simName attribute to the current time"
-	
-	self simName: self newSimName.
-	^simName
-]
-
-{ #category : 'replay-private' }
-CMSimulationManager >> simFolder: aFilename [
-	"Set the simFolder = aFilename"
-	
-	^simFolder := aFilename
-]
-
-{ #category : 'accessing' }
-CMSimulationManager >> simName [
-	^ simName ifNil: [ simName := 'unnamed' ]
-]
-
-{ #category : 'accessing' }
-CMSimulationManager >> simName: aName [
-	
-	simName := aName.
-]
-
-{ #category : 'replay-private' }
 CMSimulationManager >> simNameStart [
 	" Return the begining part of each simName (=> 'sim_' )  "
 	
@@ -229,16 +153,4 @@ CMSimulationManager >> stepNameStart [
 	"return a string for the file"
 	
 	^'step_'
-]
-
-{ #category : 'accessing' }
-CMSimulationManager >> traceSize [
-	
-	^traceSize ifNil: [traceSize := 0]
-]
-
-{ #category : 'accessing' }
-CMSimulationManager >> traceSize: anObject [
-	
-	traceSize := anObject
 ]
