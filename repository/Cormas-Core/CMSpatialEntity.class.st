@@ -463,16 +463,14 @@ Example := self nearestCellVerifying: [:aCell | aCell hasWater] constraintOnPath
 
 { #category : 'environment - picking - space' }
 CMSpatialEntity >> nearestEmptyNeighborWithinRadius: range [
-	"Purpose: returns the nearest spatial entity within a given radius and with no occupant of any kind. 
-If none: returns nil; if more than one at the minimum radius: random selection
-Argument: range = <Integer>
-Return value: <SpatialEntity | nil>"
+	"Returns the nearest spatial entity within a given radius and with no occupant of any kind. If none: returns nil; if more than one at the minimum radius: random selection"
 	
 	| locations |
 	locations := self nearestEmptyNeighborsWithinRadius: range.
-	^locations isEmpty
-		ifFalse: [Cormas selectRandomlyFrom: locations]
-		ifTrue: [nil]
+	
+	^ locations
+		ifNotEmpty: [ self selectRandomlyFrom: locations ]
+		ifEmpty: [ nil ]
 ]
 
 { #category : 'environment - sensing - space' }
@@ -488,72 +486,57 @@ Return value: <Collection(SpatialEntity)>"
 
 { #category : 'environment - picking - space' }
 CMSpatialEntity >> nearestNeighborVerifying: aBlock withMaxOf: aMagnitudeName withinRadius: range [
-	"Purpose: returns the nearest spatial entity verifying a specified condition with the higest value of a given function in a given radius. 
-The current location is NOT considered
-If none: returns nil; if more than one with the highest value at the minimum radius: random selection
-Arguments: aBlock = <BlockClosure>
-			aMagnitudeName = <ByteSymbol>
-			range = <Integer>
-Return value: <SpatialEntity | nil>
-Example: self nearestNeighborVerifying: [:c | c isPolluted not] withMaxOf: #water withinRadius: 3 "
+	"Returns the nearest spatial entity verifying a specified condition with the higest value of a given function in a given radius. 
+The current location is NOT considered. If none: returns nil; if more than one with the highest value at the minimum radius: random selection "
 	
 	| locations |
 	locations := self nearestNeighborsVerifying: aBlock withMaxOf:
 			aMagnitudeName withinRadius: range.
-	^locations isEmpty
-		ifFalse: [Cormas selectRandomlyFrom: locations]
-		ifTrue: [nil]
+			
+	^ locations
+		ifNotEmpty: [ self selectRandomlyFrom: locations ]
+		ifEmpty: [ nil ]
 ]
 
 { #category : 'environment - picking - space' }
 CMSpatialEntity >> nearestNeighborVerifying: aBlock withinRadius: range [
-	"Purpose: returns the nearest spatial entity within a given radius and fulfilling a specified constraint. 
-If none: returns nil; if more than one at the minimum radius: random selection
-Arguments: range = <Integer>
-			aBlock = <BlockClosure>
-Return value: <SpatialEntity | nil>
-Example: self nearestNeighborVerifying: [:c | c waterLevel < 2] withinRadius: 3 "
+	"Returns the nearest spatial entity within a given radius and fulfilling a specified constraint. If none: returns nil; if more than one at the minimum radius: random selection"
 	
 	| locations |
 	locations := self nearestNeighborsVerifying: aBlock withinRadius: range.
-	^locations isEmpty
-		ifFalse: [Cormas selectRandomlyFrom: locations]
-		ifTrue: [nil]
+	
+	^ locations
+		ifNotEmpty: [ self selectRandomlyFrom: locations ]
+		ifEmpty: [ nil ]
 ]
 
 { #category : 'environment - picking - space' }
 CMSpatialEntity >> nearestNeighborWithMaxOf: aMagnitudeName withinRadius: range [
-	"Purpose: returns the nearest spatial entity with the higest value of a given function in a given radius. 
+	"Returns the nearest spatial entity with the higest value of a given function in a given radius. 
 The current location is NOT considered
-If none: returns nil; if more than one with the highest value at the minimum radius: random selection
-Arguments: aMagnitudeName = <ByteSymbol>
-			range = <Integer>
-Return value: <SpatialEntity | nil>
-Example: self nearestNeighborWithMaxOf: #biomass withinRadius: 3 "
+If none: returns nil; if more than one with the highest value at the minimum radius: random selection"
 	
 	| locations |
 	locations := self nearestNeighborsWithMaxOf: aMagnitudeName withinRadius:
 			range.
-	^locations isEmpty
-		ifFalse: [Cormas selectRandomlyFrom: locations]
-		ifTrue: [nil]
+			
+	^ locations
+		ifNotEmpty: [ self selectRandomlyFrom: locations ]
+		ifEmpty: [ nil ]
 ]
 
 { #category : 'environment - picking - space' }
 CMSpatialEntity >> nearestNeighborWithoutAny: locatedEntityName withinRadius: range [
-	"Purpose: returns the nearest spatial entity in a given range without any occupant of a given type. 
-If none: returns nil; if more than one at the minimum radius: random selection
-Arguments: range = <Integer>
-			locatedEntityName = <Symbol | Class>
-Return value: <SpatialEntity | nil>
-Example: self nearestNeighborWithoutAny: #Tree withinRadius: 3 "
+	"Returns the nearest spatial entity in a given range without any occupant of a given type. 
+If none: returns nil; if more than one at the minimum radius: random selection"
 	
 	| locations |
 	locations := self nearestNeighborsWithoutAny: locatedEntityName
 		withinRadius: range.
-	^locations isEmpty
-		ifFalse: [Cormas selectRandomlyFrom: locations]
-		ifTrue: [nil]
+		
+	^ locations
+		ifNotEmpty: [ self selectRandomlyFrom: locations ]
+		ifEmpty: [ nil ]
 ]
 
 { #category : 'environment - sensing - space' }
@@ -746,23 +729,20 @@ CMSpatialEntity >> randomColor [
 
 { #category : 'environment - picking - space' }
 CMSpatialEntity >> randomNeighbour [
-	"Purpose: returns a neighbour randomly chosen
-Return value: <SpatialEntity>"
 	
-	^Cormas selectRandomlyFrom: self neighbourhood
+	^ self selectRandomlyFrom: self neighbourhood
 ]
 
 { #category : 'environment - picking - space' }
 CMSpatialEntity >> randomNeighbourVerifying: aCondition [
-	"Purpose: returns a neighbour randomly chosen among those verifying a given condition
-Argument: aCondition = <BlockClosure>
-Return value: <SpatialEntity | nil>"
+	"Returns a neighbour randomly chosen among those verifying a given condition"
 	
 	| candidates |
-	candidates := self neighbourhood select: [:se | aCondition value: se].
-	^candidates isEmpty
-		ifTrue: [nil]
-		ifFalse: [Cormas selectRandomlyFrom: candidates]
+	candidates := self neighbourhood select: [ :each | aCondition value: each ].
+	
+	^ candidates
+		ifEmpty: [ nil ]
+		ifNotEmpty: [ self selectRandomlyFrom: candidates ]
 ]
 
 { #category : 'environment - sensing - space' }

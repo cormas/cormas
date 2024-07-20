@@ -227,56 +227,49 @@ Example := self nearestCellVerifying: [:aCell | aCell hasWater] constraintOnPath
 
 { #category : 'environment - sensing - space' }
 CMSpatialEntityElement >> nearestCellVerifying: aCondition withMaxOf: aMagnitudeName [
-	"Purpose: returns the nearest cell verifying a specified condition and with the highest value of a specified function. 
+	"Returns the nearest cell verifying a specified condition and with the highest value of a specified function. 
 If none: returns nil; if more than one at the minimum radius: random selection
-Valid only for regular grids (square or hexagonal cells).
-Arguments: aCondition = <BlockClosure>
-			aMagnitudeName = <ByteSymbol>
-Return value: <SpatialEntityElement | nil>
-Example: self nearestCellVerifying: [:c | c isPolluted not] withMaxOf: #water"
+Valid only for regular grids (square or hexagonal cells)."
 	
 	| locations |
 	locations := self nearestCellsVerifying: aCondition withMaxOf:
 			aMagnitudeName.
-	^locations isEmpty
-		ifFalse: [Cormas selectRandomlyFrom: locations]
-		ifTrue: [nil]
+			
+	^ locations
+		ifNotEmpty: [ self selectRandomlyFrom: locations ]
+		ifEmpty: [ nil ]
 ]
 
 { #category : 'environment - sensing - space' }
 CMSpatialEntityElement >> nearestCellWithMaxOf: aMagnitudeName [
-	"Purpose: returns the nearest cell with the highest value of a specified function. 
+	"Returns the nearest cell with the highest value of a specified function. 
 If none: returns nil; if more than one at the minimum radius: random selection
-Valid only for regular grids (square or hexagonal cells).
-Argument: aMagnitudeName = <ByteSymbol>
-Return value: <SpatialEntityElement | nil>
-Example: self nearestCellWithMaxOf: #sugar"
+Valid only for regular grids (square or hexagonal cells)"
 	
 	| locations |
 	locations := self nearestCellsWithMaxOf: aMagnitudeName.
-	^locations isEmpty
-		ifFalse: [Cormas selectRandomlyFrom: locations]
-		ifTrue: [nil]
+	
+	^ locations
+		ifNotEmpty: [ self selectRandomlyFrom: locations ]
+		ifEmpty: [ nil ]
 ]
 
 { #category : 'environment - sensing - space' }
 CMSpatialEntityElement >> nearestCellWithoutAny: aClass [
-	"Purpose: returns the nearest cell without any occupant of a given type. 
+	"Returns the nearest cell without any occupant of a given type. 
 If none: returns nil; if more than one at the minimum radius: random selection
-Valid only for regular grids (square or hexagonal cells). For polygonal cells, use the generic but slower method #nearestCellVerifying: in super class SpatialEntity 
-Return value: <SpatialEntityElement | nil>
-Example: self nearestCellWithoutAny: #Tree"
-	
+Valid only for regular grids (square or hexagonal cells). For polygonal cells, use the generic but slower method #nearestCellVerifying: in super class SpatialEntity"
+
 	| locations |
-	^(self spaceModel gridCellShape = #squared
-		or: [self spaceModel gridCellShape = #hexagonal])
-		ifTrue:
-			[locations := self nearestCellsWithoutAny: aClass.
-			locations isEmpty
-				ifFalse: [Cormas selectRandomlyFrom: locations]
-				ifTrue: [nil]]
-		ifFalse:
-			[super nearestCellVerifying: [ :p | (p hasOccupantsOfClass: aClass) not ]]
+	^ (#( squared hexagonal ) includes: self spaceModel gridCellShape)
+		  ifTrue: [
+			  locations := self nearestCellsWithoutAny: aClass.
+			  locations
+				  ifNotEmpty: [ self selectRandomlyFrom: locations ]
+				  ifEmpty: [ nil ] ]
+		  ifFalse: [
+			  super nearestCellVerifying: [ :p |
+				  (p hasOccupantsOfClass: aClass) not ] ] 
 ]
 
 { #category : 'environment - sensing - space' }
@@ -539,10 +532,7 @@ Example: self shortestDistanceToCellVerifying: [:c | c landCover = #forest]"
 
 { #category : 'environment - sensing - space' }
 CMSpatialEntityElement >> wayTo: anotherCell [
-	"Purpose: gets the shortest way to anotherCell
-Argument: anotherCell = <SpatialEntityElement>
-Return value: <Collection(SpatialEntityElement)>
-Example: self wayTo: self spaceModel centralLocation"
+	"Shortest way to anotherCell"
 	
 	| shortestDistance path nearestCells shortestDistance2 nextCell |
 	path := OrderedCollection new.
@@ -568,7 +558,7 @@ Example: self wayTo: self spaceModel centralLocation"
 							[nearestCells := OrderedCollection new.
 							shortestDistance2 := dist].
 					nearestCells add: neighCell]].
-	nextCell := Cormas selectRandomlyFrom: nearestCells.	"nextCell flash."
+	nextCell := self selectRandomlyFrom: nearestCells.	"nextCell flash."
 	path addAllFirst: (self wayTo: nextCell).	"Recursivity call"
 	^path
 ]

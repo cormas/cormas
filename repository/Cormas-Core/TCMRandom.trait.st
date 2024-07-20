@@ -11,7 +11,7 @@ Trait {
 { #category : 'accessing' }
 TCMRandom >> random [
 
-	^ self randomGenerator next
+	^ randomNumberGenerator next
 ]
 
 { #category : 'accessing' }
