@@ -19,7 +19,7 @@ CMMockCell >> initDead [
 CMMockCell >> initRandom [
 	self
 		state:
-			(Cormas random < 0.4
+			(self random < 0.4
 				ifTrue: [ #alive ]
 				ifFalse: [ #dead ])
 ]

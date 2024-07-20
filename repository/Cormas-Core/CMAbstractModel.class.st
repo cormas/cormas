@@ -1577,8 +1577,12 @@ CMAbstractModel >> newEntity: aClass [
 	"Creates a new instance of aClass and collects it, immediately, at the level of theXXXs collection."
 
 	| anEntity |
-	anEntity := aClass new.
-	anEntity cormasModel: self.
+	
+	anEntity := aClass new
+		cormasModel: self;
+		randomNumberGenerator: randomNumberGenerator;
+		yourself.
+	
 	self collectEntity: anEntity.
 	^ anEntity
 ]

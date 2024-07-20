@@ -66,10 +66,11 @@ CMSpaceModel class >> defaultLines [
 CMSpaceModel class >> forModel: aCormasModel [
 	" Answer a new space configured for aCormasModel "
 
-	^ self basicNew 
-		cormasModel: aCormasModel;
-		initialize;
-		yourself.
+	^ self basicNew
+		  cormasModel: aCormasModel;
+		  randomNumberGenerator: aCormasModel randomNumberGenerator;
+		  initialize;
+		  yourself
 ]
 
 { #category : 'accessing' }
@@ -973,8 +974,9 @@ CMSpaceModel >> newEntity: aClass [
 	" Creates a new instance of aClass and collects it at the level of theXXXs collection"
 
 	^ (aClass new: self)
-		cormasModel: self cormasModel;
-		yourself
+		  cormasModel: self cormasModel;
+		  randomNumberGenerator: randomNumberGenerator;
+		  yourself
 ]
 
 { #category : 'landscape indices' }
@@ -1127,47 +1129,6 @@ CMSpaceModel >> setGivenSizes: dis toAggregates: compoundEntity [
 			ifTrue: [
 				counter := 0.
 				subsetIndice := subsetIndice + 1]]
-]
-
-{ #category : 'parsing' }
-CMSpaceModel >> setUncompleteGridFromData: aMatrix forAttributes: listAttr_type [
-	"lecture des valeurs des attributs, et maj des entites spatiales a partir de ces valeurs"
-	"balayage de gauche a droite et de bas en haut"
-	"Lecture de la 5e ligne: noms des attributs et leur type pour conversion"
-	
-	| i  aCell valeur anID livingCells allCells |
-	
-	livingCells := OrderedCollection new.
-	listAttr_type removeFirst.
-	aMatrix
-		do:
-			[:aLine |  |aColl|
-			i := 0.
-			aLine removeAllSuchThat: [:v | v isNil].
-			aLine first isCollection 
-				ifFalse:[aLine size = 1 ifTrue:[aColl := Cormas splitString: aLine first printString with: $. .
-aColl at: 1 put: aColl first asNumber. aColl at: 2 put: aColl last asNumber. ]] "pb avec , et . qui ont été retranscrits en ."
-				ifTrue:[ aColl := (Cormas splitString: aLine first with: $, )].
-			anID := aColl first asNumber. aColl removeFirst.
-			aCell := self elementaryEntities detect: [:c | c id = anID].
-			livingCells add: aCell.
-			aColl do: [:val | |attr_type|
-					i := i + 1.	
-					valeur := val.
-					attr_type := listAttr_type at: i.
-					attr_type value = #asEntity
-						ifTrue:
-							[valeur := (valeur tokensBasedOn: $.) last asSymbol.
-							aCell perform: attr_type key with: valeur]
-						ifFalse:
-							[aCell perform: attr_type key with:
-									(valeur = 'nil'
-										ifFalse: [valeur perform: attr_type value]
-										ifTrue: [nil])]]].
-"Killing the unecessary cells"
-		allCells :=self elementaryEntities asOrderedCollection.
-		allCells removeAll: livingCells.
-		allCells reverseDo: [: c | c delete]
 ]
 
 { #category : 'accessing' }

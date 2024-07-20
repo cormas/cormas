@@ -548,20 +548,19 @@ Arguments: aMagnitudeName = <ByteSymbol>
 			range = <Integer>
 Return value: <Collection(SpatialEntity)>
 Example: self nearestNeighborsWithMaxOf: #water verifying: [:c | c isPolluted not] withinRadius: 5"
-	
+
 	| locations |
-	locations := Cormas
-		selectEntitiesWithMaxOf: aMagnitudeName
-		amongEntities: (self recursiveNeighbourhood: range)
-		verifying: aCondition.
-	locations
-		remove: self
-		ifAbsent: [].
-	locations := locations
-		asSortedCollection: [:i :j | (i distanceTo: self) < (j distanceTo: self)].
-	locations := locations
-		select: [:c | (c distanceTo: self) = (locations first distanceTo: self)].
-	^locations
+	locations := self
+		             selectEntitiesWithMaxOf: aMagnitudeName
+		             amongEntities: (self recursiveNeighbourhood: range)
+		             verifying: aCondition.
+	locations remove: self ifAbsent: [  ].
+	locations := locations asSortedCollection: [ :i :j |
+		             (i distanceTo: self) < (j distanceTo: self) ].
+	locations := locations select: [ :c |
+		             (c distanceTo: self)
+		             = (locations first distanceTo: self) ].
+	^ locations
 ]
 
 { #category : 'environment - sensing - space' }
@@ -719,12 +718,12 @@ CMSpatialEntity >> printOn: aStream [
 
 { #category : 'star pov' }
 CMSpatialEntity >> randomColor [
-	
+
 	<pov>
-	^ Color 
-		r: Cormas simpleRandom
-		g: Cormas simpleRandom
-		b: Cormas simpleRandom
+	^ Color
+		  r: self random
+		  g: self random
+		  b: self random
 ]
 
 { #category : 'environment - picking - space' }
@@ -804,6 +803,23 @@ CMSpatialEntity >> reset [
 CMSpatialEntity >> select: aPoint [
 	
 	^ self outline intersects: (aPoint extent: 1)
+]
+
+{ #category : 'utilities - collection' }
+CMSpatialEntity >> selectEntitiesWithMaxOf: aMagnitudeName amongEntities: aCollection verifying: aCondition [
+	"Selects the entities with the maximum value of a given magnitude and verifying a specified condition"
+
+	| selection |
+	selection := aCollection select: [ :c |
+		             ((c perform: aMagnitudeName) respondsTo: #>) and: [
+			             aCondition value: c ] ].
+	selection := selection asSortedCollection: [ :i :j |
+		             (i perform: aMagnitudeName)
+		             > (j perform: aMagnitudeName) ].
+	selection := selection select: [ :c |
+		             (c perform: aMagnitudeName)
+		             = (selection first perform: aMagnitudeName) ].
+	^ selection
 ]
 
 { #category : 'environment - distance' }

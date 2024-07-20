@@ -15,6 +15,12 @@ TCMRandom >> random [
 ]
 
 { #category : 'accessing' }
+TCMRandom >> randomNumberGenerator [
+	
+	^ randomNumberGenerator 
+]
+
+{ #category : 'accessing' }
 TCMRandom >> randomNumberGenerator: aGenerator [
 
 	randomNumberGenerator := aGenerator
