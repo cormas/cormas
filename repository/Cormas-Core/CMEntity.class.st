@@ -35,7 +35,6 @@ Class {
 	#instVars : [
 		'id',
 		'flag',
-		'collector',
 		'cormasModel'
 	],
 	#classInstVars : [
@@ -536,18 +535,6 @@ The notification is sent not from self but from an entityReference of self which
 				from: (EntityReference on: self)]"
 ]
 
-{ #category : 'accessing' }
-CMEntity >> collector [
-	"Getter accessor without default value "
-	
-	^collector
-]
-
-{ #category : 'accessing' }
-CMEntity >> collector: aCollector [
-	collector := aCollector
-]
-
 { #category : 'utilities - color' }
 CMEntity >> colorFromName: aName [
 	"returns a specific color from a name"
@@ -818,21 +805,6 @@ CMEntity >> modelClass [
 	Example: self modelClass -> ECEC"
 
 	^ cormasModel ifNotNil: #class ifNil: [ self class modelClass ]
-]
-
-{ #category : 'instance creation' }
-CMEntity >> newEntity: aClass [
-	"Purpose: creates a new instance of aClass. This new instance will be collected at the level of the model (theXXXs collection) at the end of the current timestep
-Return value: an instance of aClass
-Example: newBorn := self newEntity: self class"
-
-	| anEntity |
-	anEntity := aClass new.
-	anEntity
-		cormasModel: self cormasModel;
-		collector: self collector.
-	self collector collectEntity: anEntity.
-	^ anEntity
 ]
 
 { #category : 'accessing' }

@@ -295,23 +295,6 @@ CMSpaceModel >> cormasModelClass [
 	^ self cormasModel class
 ]
 
-{ #category : 'private - regular polygons' }
-CMSpaceModel >> createAggregate: compoundEntity from: aSet [
-	"Creates and returns an instance of compoundEntity composed with a set of cells. 
-	aSet = a set of base entities (inheriting from <SpatialEntity>) 
-	compoundEntity = a Class name inheriting from <SpatialEntitySet>"
-	
-	| anAggregate |
-	anAggregate := self newEntity: compoundEntity.
-	anAggregate addSilentlyComponents: aSet asOrderedCollection.
-	self spatialEntities
-		at: compoundEntity name
-		ifAbsentPut: [OrderedCollection new].
-	(self spatialEntities at: compoundEntity name) add: anAggregate.
-	anAggregate init.
-	^anAggregate
-]
-
 { #category : 'private - regular cells - instance creation' }
 CMSpaceModel >> createCells [
 	" Create all the cells and their connexions, and collect them as elementaryEntities collection "
@@ -335,24 +318,6 @@ CMSpaceModel >> createElementaryEntities [
 		self newEntity: self cormasModelClass cellClass ].
 	
 	self elementaryEntities: cells asArray.
-]
-
-{ #category : 'private - regular polygons' }
-CMSpaceModel >> createSilentlyAggregate: compoundEntity from: aSet [
-	"Creates and returns an instance of compoundEntity composed with a set of cells. The new aggregate is not displayed.
-	aSet = a set of base entities (inheriting from <SpatialEntity>) 
-	compoundEntity = a Class name inheriting from <SpatialEntitySet>"
-	
-	| anAggregate |
-	anAggregate := self newEntity: compoundEntity.
-	anAggregate addSilentlyComponents: aSet asOrderedCollection.
-	anAggregate setSurround.
-	self spatialEntities
-		at: compoundEntity name
-		ifAbsentPut: [OrderedCollection new].
-	(self spatialEntities at: compoundEntity name) add: anAggregate.
-	anAggregate init.
-	^anAggregate
 ]
 
 { #category : 'defaults' }
@@ -1003,14 +968,11 @@ CMSpaceModel >> nearestNeighbourProbaAttribute: anAttribute state1: x1 state2: x
 
 { #category : 'private - init' }
 CMSpaceModel >> newEntity: aClass [
-	" Creates a new instance of aClass and collects it at the level of theXXXs collection. 
-	Set also the collector of the new instance"
+	" Creates a new instance of aClass and collects it at the level of theXXXs collection"
 
 	^ (aClass new: self)
 		cormasModel: self cormasModel;
-		"anEntity collector: self cormasModel collector.
-	self cormasModel collect: anEntity."
-			yourself
+		yourself
 ]
 
 { #category : 'landscape indices' }

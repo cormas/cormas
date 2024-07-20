@@ -43,7 +43,6 @@ Class {
 		'spaceModel',
 		'data',
 		'simManager',
-		'collector',
 		'defaultAttributesSetter',
 		'sensitivitySetter',
 		'delayedChanges',
@@ -893,18 +892,6 @@ CMAbstractModel >> collectEntity: anEntity [
 	collection add: anEntity
 ]
 
-{ #category : 'accessing' }
-CMAbstractModel >> collector [
-	"Getter accessor with default value = Collector new model: self "
-	
-	^ collector ifNil: [ collector := CMCollector new ].
-]
-
-{ #category : 'accessing' }
-CMAbstractModel >> collector: aCollector [
-	collector := aCollector
-]
-
 { #category : 'probes color' }
 CMAbstractModel >> colorOfProbe: aProbeSymbol [
 	"Method is defined by the class
@@ -1473,8 +1460,6 @@ CMAbstractModel >> initializeSimulation [
 
 	self timeStep: 0.
 	self initializeProbes.
-	"store the instances of entities in a collection and request an update of the space views at the end of the initialization"
-	collector := CMCollector new.
 	"remove the previous entities of the collections (theXXXs), except for theCells"
 	self initEntities.
 	"set default attributes values of entities"
@@ -1585,14 +1570,11 @@ Example: self nearestNeighbourProbaAttribute: #landUse state1: #field state2: #f
 
 { #category : 'instance creation - agents & objects' }
 CMAbstractModel >> newEntity: aClass [
-	"Creates a new instance of aClass and collects it, immediately, at the level of  theXXXs collection. 
-	Set also the collector of the new instance"
+	"Creates a new instance of aClass and collects it, immediately, at the level of theXXXs collection."
 
 	| anEntity |
 	anEntity := aClass new.
-	anEntity
-		cormasModel: self;
-		collector: self collector.
+	anEntity cormasModel: self.
 	self collectEntity: anEntity.
 	^ anEntity
 ]
@@ -2216,21 +2198,15 @@ CMAbstractModel >> updateDataForChart [
 
 { #category : 'update' }
 CMAbstractModel >> updateEntities [
-	"Purpose: removes all the dead or destroyed intances from all theXXXs collections and adds the new entities stored into collector"
+	"Removes all the dead or destroyed intances from all theXXXs collections"
 	
-	self collector entities keysAndValuesDo: [ : class : collec | (self theEntities: class) addAll: collec ].
-	self collector entities removeAll.	
-	"removes all the dead or destroyed intances"
 	self removeDestroyedEntities
 ]
 
 { #category : 'update' }
 CMAbstractModel >> updateEntities: aClass [
-	"Purpose: removes all the dead or destroyed intances from theClasss collection and adds the new entities stored into collector"
+	"Removes all the dead or destroyed intances from theClass collection"
 	
-	(self theEntities: aClass) addAll: (self collector entities at: aClass).
-	(self collector entities at: aClass) removeAll.
-	"removes all the dead or destroyed intances"
 	self removeDeadEntities: aClass
 ]
 
