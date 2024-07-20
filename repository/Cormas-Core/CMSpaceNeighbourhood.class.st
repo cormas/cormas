@@ -21,6 +21,8 @@ Internal Representation and Key Implementation Points.
 Class {
 	#name : 'CMSpaceNeighbourhood',
 	#superclass : 'Object',
+	#traits : 'TCMRandom',
+	#classTraits : 'TCMRandom classTrait',
 	#instVars : [
 		'spaceModel'
 	],

@@ -25,6 +25,8 @@ Instance Variables:
 Class {
 	#name : 'CMSpaceModel',
 	#superclass : 'Object',
+	#traits : 'TCMRandom',
+	#classTraits : 'TCMRandom classTrait',
 	#instVars : [
 		'activeSpatialEntity',
 		'line',
@@ -1007,9 +1009,9 @@ CMSpaceModel >> printOn: aStream [
 
 { #category : 'ESE (regular) - special locations' }
 CMSpaceModel >> randomCell [
-	"Purpose: Return a spatialEntityElement (aCell) picked randomly from the spatial grid."
+	"Return a spatialEntityElement (aCell) picked randomly from the spatial grid."
 
-	^ Cormas selectRandomlyFrom: self elementaryEntities
+	^ self selectRandomlyFrom: self elementaryEntities
 ]
 
 { #category : 'ESE initialize-release' }

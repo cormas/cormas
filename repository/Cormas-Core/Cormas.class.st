@@ -186,13 +186,6 @@ Example: Cormas selectEntitiesWithMaxOf: #water amongEntities self theCells veri
 	^selection
 ]
 
-{ #category : 'utilities - random' }
-Cormas class >> selectRandomlyFrom: aCollection [
-
-	aCollection ifEmpty: [ ^ nil ].
-	^ aCollection atRandom: self
-]
-
 { #category : 'private_aleat' }
 Cormas class >> simpleRandom [
 	" Return a pseudo-random value according to the Random equation. No seed.

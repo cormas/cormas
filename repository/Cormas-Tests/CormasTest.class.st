@@ -42,30 +42,3 @@ CormasTest >> testSeed [
 	self assert: Cormas seed equals: 0.
 	Cormas releaseRandomSeed
 ]
-
-{ #category : 'tests' }
-CormasTest >> testSelectRandomlyFrom [
-
-	| collection selectedElement |
-	collection := #(a b c d e).
-	
-	selectedElement := Cormas selectRandomlyFrom: collection.
-	
-	self assert: (collection includes: selectedElement)
-]
-
-{ #category : 'tests' }
-CormasTest >> testSelectRandomlyFromWithFixedSeed [
-
-	| collection selectedElements expectedElements |
-	
-	collection := #(a b c d e).
-	Cormas seed: 42.
-	
-	selectedElements := (1 to: 6) collect: [ :each |
-		Cormas selectRandomlyFrom: collection ].
-	
-	expectedElements := #(c c a a b c).
-	
-	self assert: selectedElements equals: expectedElements.
-]

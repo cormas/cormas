@@ -10,7 +10,7 @@ Class {
 CMSquaredSpaceNeighbourhood >> nearestEmptyCellFor: aCMAgentLocation [
 	
 	^ (aCMAgentLocation nearestEmptyNeighborsWithinRadius: (self spaceModel line max: self spaceModel column))
-		ifNotEmpty: [ : locations |  Cormas selectRandomlyFrom: locations ]
+		ifNotEmpty: [ : locations | self selectRandomlyFrom: locations ]
 		ifEmpty: [ nil ]
 ]
 
