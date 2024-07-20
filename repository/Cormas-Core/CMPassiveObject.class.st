@@ -19,7 +19,7 @@ CMPassiveObject >> delete [
 	"Purpose: gets rid of this object. The collectGarbage is IMMEDIATELY performed  (ie. the receiver of class X is removed from 'theXXXs' collection)"
 
 	self destroyed: true.
-	self collector ifNotNil: [ self collector removeEntity: self ]
+	cormasModel removeEntity: self.
 ]
 
 { #category : 'initialize-release' }

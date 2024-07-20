@@ -879,7 +879,7 @@ CMAbstractModel >> closeRequest [
 ]
 
 { #category : 'referencing entities' }
-CMAbstractModel >> collect: anEntity [
+CMAbstractModel >> collectEntity: anEntity [
 	"adds anEntity to the collection called theXXXs (where XXX is equal to the class name)"
 	
 	| collection |
@@ -897,8 +897,7 @@ CMAbstractModel >> collect: anEntity [
 CMAbstractModel >> collector [
 	"Getter accessor with default value = Collector new model: self "
 	
-	collector isNil ifTrue: [self setNewCollector].
-	^collector
+	^ collector ifNil: [ collector := CMCollector new ].
 ]
 
 { #category : 'accessing' }
@@ -1475,7 +1474,7 @@ CMAbstractModel >> initializeSimulation [
 	self timeStep: 0.
 	self initializeProbes.
 	"store the instances of entities in a collection and request an update of the space views at the end of the initialization"
-	self setNewCollector.
+	collector := CMCollector new.
 	"remove the previous entities of the collections (theXXXs), except for theCells"
 	self initEntities.
 	"set default attributes values of entities"
@@ -1594,7 +1593,7 @@ CMAbstractModel >> newEntity: aClass [
 	anEntity
 		cormasModel: self;
 		collector: self collector.
-	self collect: anEntity.
+	self collectEntity: anEntity.
 	^ anEntity
 ]
 
@@ -2027,13 +2026,6 @@ Example: self setLinearGradientForAttribute: #energy centralValue: 10 borderValu
 ]
 
 { #category : 'accessing - entities' }
-CMAbstractModel >> setNewCollector [
-	
-	self collector: CMCollector new.
-	collector cormasModel: self
-]
-
-{ #category : 'accessing - entities' }
 CMAbstractModel >> setTheEntity: aClass with: aSet [
 	
 	^self
@@ -2227,7 +2219,7 @@ CMAbstractModel >> updateEntities [
 	"Purpose: removes all the dead or destroyed intances from all theXXXs collections and adds the new entities stored into collector"
 	
 	self collector entities keysAndValuesDo: [ : class : collec | (self theEntities: class) addAll: collec ].
-	self collector empty.	
+	self collector entities removeAll.	
 	"removes all the dead or destroyed intances"
 	self removeDestroyedEntities
 ]
@@ -2236,8 +2228,9 @@ CMAbstractModel >> updateEntities [
 CMAbstractModel >> updateEntities: aClass [
 	"Purpose: removes all the dead or destroyed intances from theClasss collection and adds the new entities stored into collector"
 	
-	(self theEntities: aClass) addAll: (self collector entitiesAt: aClass).
-	self collector empty: aClass.	"removes all the dead or destroyed intances"
+	(self theEntities: aClass) addAll: (self collector entities at: aClass).
+	(self collector entities at: aClass) removeAll.
+	"removes all the dead or destroyed intances"
 	self removeDeadEntities: aClass
 ]
 

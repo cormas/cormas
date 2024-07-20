@@ -93,7 +93,7 @@ CMMockModel class >> showModelWithInit: aSymbol [
 		cormasModel: model;
 		asPresenter.
 	
-	builder openWithSpec.
+	builder open.
 ]
 
 { #category : 'as yet unclassified' }

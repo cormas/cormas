@@ -427,18 +427,6 @@ CMEntity class >> new: x [
 	^super new initId
 ]
 
-{ #category : 'instance creation' }
-CMEntity class >> newAndCollect: aCollector [
-	"Creates a new instance of Entity and add it immediatelly to cormasModel collection (theXXXs)"
-	
-	| anInstance |
-	anInstance := self new.
-	anInstance collector: aCollector.
-	aCollector collect: anInstance.
-	aCollector updateEntities.
-	^anInstance
-]
-
 { #category : 'probes' }
 CMEntity class >> probes [
 	"self superClassesUntilEntity"
@@ -546,13 +534,6 @@ The notification is sent not from self but from an entityReference of self which
 			[self currentSimulation
 				registerEntityChange: #valueChanged
 				from: (EntityReference on: self)]"
-]
-
-{ #category : 'collector' }
-CMEntity >> collect: anEntity [
-	"Collects anEntity at the level of the model (theXXXs collection)"
-	
-	self collector collect: anEntity
 ]
 
 { #category : 'accessing' }
@@ -840,18 +821,6 @@ CMEntity >> modelClass [
 ]
 
 { #category : 'instance creation' }
-CMEntity >> newAndCollect: aClass [
-	"Purpose: creates a new instance of aClass and IMMEDIATELY collects it at the level of the model (theXXXs collection)
-Return value: an instance of aClass
-Example: newBorn := self newAndCollect: self class"
-	
-	| anEntity |
-	anEntity := self newEntity: aClass.
-	anEntity collector updateEntities.
-	^anEntity
-]
-
-{ #category : 'instance creation' }
 CMEntity >> newEntity: aClass [
 	"Purpose: creates a new instance of aClass. This new instance will be collected at the level of the model (theXXXs collection) at the end of the current timestep
 Return value: an instance of aClass
@@ -862,7 +831,7 @@ Example: newBorn := self newEntity: self class"
 	anEntity
 		cormasModel: self cormasModel;
 		collector: self collector.
-	self collect: anEntity.
+	self collector collectEntity: anEntity.
 	^ anEntity
 ]
 
