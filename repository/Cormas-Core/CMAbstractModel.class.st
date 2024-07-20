@@ -34,6 +34,8 @@ Instance Variables
 Class {
 	#name : 'CMAbstractModel',
 	#superclass : 'Object',
+	#traits : 'TCMRandom',
+	#classTraits : 'TCMRandom classTrait',
 	#instVars : [
 		'timeStep',
 		'channel',
@@ -823,7 +825,7 @@ Example: self askRandom: (self theAnimals select:[:f | f energy > 10]) toDo: #ea
 	"Check if the argument is a collection or array and rebuilts the list of arguments"
 	allArguments := Cormas arrayFrom: aValueOrArrayOfValues.
 	(collecEntities := self allTheEntitiesOfClassOrCollec: aCollecOrClass) isEmpty
-		ifFalse:[ (Cormas mix: collecEntities) do: [:c | c perform: aSymbol withArguments: allArguments]]
+		ifFalse:[ (self shuffled: collecEntities) do: [:c | c perform: aSymbol withArguments: allArguments]]
 ]
 
 { #category : 'accessing' }
@@ -987,7 +989,7 @@ CMAbstractModel >> createN: aNumber randomlyLocatedAloneEntities: aClass initMet
 	| a freeCell newEntities |
 	newEntities := OrderedCollection new.
 	aNumber timesRepeat: [ 
-		(freeCell := self pickUnoccupiedCell) ifNil: [ self error: 'No free cell. The simulation will stop' ].
+		(freeCell := self pickRandomUnoccupiedCell) ifNil: [ self error: 'No free cell. The simulation will stop' ].
 		a := self newEntity: aClass.
 		a moveTo: freeCell.
 		a perform: aSymbol withArguments: aCollec.
@@ -1048,7 +1050,7 @@ CMAbstractModel >> createN: aNumber randomlyLocatedEntities: aClass initMethod: 
 	newEntities := OrderedCollection new.
 	aNumber
 		timesRepeat: [ anAgent := self newEntity: aClass.
-			anAgent moveTo: self pickCell.
+			anAgent moveTo: self pickRandomCell.
 			anAgent perform: aSymbol withArguments: aCollec.
 			newEntities add: anAgent ].
 	^ newEntities
@@ -1064,7 +1066,7 @@ CMAbstractModel >> createN: aNumber randomlyLocatedEntities: aClass initMethod: 
 	| a targetCell newEntities |
 	newEntities := OrderedCollection new.
 	aNumber timesRepeat: [ 
-		(targetCell := self pickCellConstrainedBy: aBlock) 
+		(targetCell := self pickRandomCellConstrainedBy: aBlock) 
 			ifNil: [ self error: 'No available cell for the constraint. The simulation will stop' ].
 		a := self newEntity: aClass.
 		a moveTo: targetCell.
@@ -1109,7 +1111,7 @@ CMAbstractModel >> createN: aNumber randomlyLocatedEntitiesFrom: aCollectionOfCl
 	aNumber
 		timesRepeat: [ 
 			anAgent := self newEntity: aCollectionOfClasses atRandom.
-			anAgent moveTo: self pickCell.
+			anAgent moveTo: self pickRandomCell.
 			anAgent perform: aSymbol withArguments: aCollec.
 			newEntities add: anAgent ].
 	^ newEntities
@@ -1397,6 +1399,8 @@ CMAbstractModel >> initialize [
 	"NB ->retire pour que les cells ne demandent pas le currentSimulation spaceModel alors qu''il n''est pas encore fini d''initialise"
 
 	super initialize.
+	self randomNumberGenerator: PMFishmanMooreRandomGenerator new.
+	
 	self class socialClasses ifNotEmpty: [ self initializeChannel ].
 	
 	self initializeEntityGetters.
@@ -1665,14 +1669,6 @@ CMAbstractModel >> performShiftRedButton: aPoint [
 ]
 
 { #category : 'accessing - entities' }
-CMAbstractModel >> pickCell [
-	"Purpose: return a spatialEntityElement (aCell) picked randomly from the spatial grid.
-	Example: self pickCell"
-
-	^ Cormas selectRandomlyFrom: self theCells
-]
-
-{ #category : 'accessing - entities' }
 CMAbstractModel >> pickCellAt: aPointLocation [
 	"Purpose: return a spatialEntityElement (aCell) picked randomly from the spatial grid.
 	Example: self pickCell"
@@ -1681,79 +1677,73 @@ CMAbstractModel >> pickCellAt: aPointLocation [
 ]
 
 { #category : 'accessing - entities' }
-CMAbstractModel >> pickCellConstrainedBy: aBlock [
+CMAbstractModel >> pickRandomCell [
+	"Purpose: return a spatialEntityElement (aCell) picked randomly from the spatial grid.
+	Example: self pickCell"
+
+	^ self selectRandomlyFrom: self theCells
+]
+
+{ #category : 'accessing - entities' }
+CMAbstractModel >> pickRandomCellConstrainedBy: aBlock [
 	"Purpose: return a random cell of the grid. The cell verifies the block condition.
 	Example:  self pickCellConstrainedBy: [:cell | state=#land] or self pickCellConstrainedBy: [: cell | cell energy > 1] "
 
-	^ Cormas selectRandomlyFrom: (self theCells asArray select: [ :c | aBlock value: c ])
+	^ self selectRandomlyFrom: (self theCells asArray select: [ :cell | aBlock value: cell ])
 ]
 
 { #category : 'accessing - entities' }
-CMAbstractModel >> pickCellWithoutAny: aClass [
-	"Purpose: return a cell (picked randomly) without any instance of aClassName
-	Return Value: a cell
-	Example1: self pickCellWithoutAny: Building
-	Example2: self pickCellWithoutAny: #Building"
+CMAbstractModel >> pickRandomCellWithoutAnyOccupantsOfClass: aClass [
+	"Return a cell (picked randomly) without any instance of aClassName"
+
+	^ self pickRandomCellConstrainedBy: [ :cell | (cell occupantsOfClass: aClass) isEmpty ]
+]
+
+{ #category : 'accessing - entities' }
+CMAbstractModel >> pickRandomCells: anInteger [
+	"Return a collection of spatialEntityElements (some Cells) picked randomly from the spatial grid (without replacement)"
+
+	^ self selectRandomlyFrom: self theCells size: anInteger
+]
+
+{ #category : 'accessing - entities' }
+CMAbstractModel >> pickRandomEntities: anInteger ofClass: aClass [
+	"Return a collection of entities belonging to a class"
 
 	^ self
-		pickCellConstrainedBy: [ :cell | (cell occupantsOfClass: aClass) isEmpty ]
-]
-
-{ #category : 'accessing - entities' }
-CMAbstractModel >> pickCellsN: anInteger [
-	"Purpose: return a collection of spatialEntityElements (some Cells) picked randomly from the spatial grid (without replacement).
-	Example: self pickCellsN: 5"
-
-	^ Cormas selectRandomlyFrom: self theCells subCollectionSize: anInteger
-]
-
-{ #category : 'accessing - entities' }
-CMAbstractModel >> pickEntity: aClass [
-	"Purpose: return an entity belonging to a class, picked randomly.
-	Return Value: an instance of aClass, or nil if there is no instance  
-	Example:  self pickEntity: RestrainedForager "
-
-	^ Cormas selectRandomlyFrom: (self allTheEntities: aClass)
-]
-
-{ #category : 'accessing - entities' }
-CMAbstractModel >> pickEntity: aClass constrainedBy: aBlock [
-	"Purpose: return a random entity belonging to a class and verifying the block condition.
-	Return Value: an instance of aClass, or nil if there is no instance verifying the condition 
-	Example:  self pickEntity: RestrainedForager constrainedBy: [:e| e patch energy <2]"
-
-	^ Cormas
-		selectRandomlyFrom: ((self allTheEntities: aClass) select: [ :c | aBlock value: c ])
-]
-
-{ #category : 'accessing - entities' }
-CMAbstractModel >> pickN: anInteger entities: aClass [
-	"Purpose: return a collection of entities belonging to a class .
-	Return Value: a collection of instances of aClass, or an empty collection if there is no instance
-	Example:  self pickN: 5 entities: Forager"
-
-	^ Cormas
 		selectRandomlyFrom: (self allTheEntities: aClass)
-		subCollectionSize: anInteger
+		size: anInteger
 ]
 
 { #category : 'accessing - entities' }
-CMAbstractModel >> pickN: anInteger entities: aClass constrainedBy: aBlock [
-	"Purpose: return a collection of entities belonging to a class and verifying a condition.
-	Return Value: a collection of instances of aClass, or an empty collection if there is no instance verifying the condition 
-	Example:  self pickN: 5 entities: Forager constrainedBy: [:e| e energy > 50] "
+CMAbstractModel >> pickRandomEntities: anInteger ofClass: aClass constrainedBy: aBlock [
+	"Return a collection of entities belonging to a class and verifying a condition"
 
-	^ Cormas
+	^ self
 		selectRandomlyFrom: ((self allTheEntities: aClass) select: [ :c | aBlock value: c ])
-		subCollectionSize: anInteger
+		size: anInteger
 ]
 
 { #category : 'accessing - entities' }
-CMAbstractModel >> pickUnoccupiedCell [
+CMAbstractModel >> pickRandomEntityOfClass: aClass [
+	"Return an entity belonging to a class, picked randomly"
+
+	^ self selectRandomlyFrom: (self allTheEntities: aClass)
+]
+
+{ #category : 'accessing - entities' }
+CMAbstractModel >> pickRandomEntityOfClass: aClass constrainedBy: aBlock [
+	"Return a random entity belonging to a class and verifying the block condition"
+
+	^ self selectRandomlyFrom: ((self allTheEntities: aClass) select: [ :c | aBlock value: c ])
+]
+
+{ #category : 'accessing - entities' }
+CMAbstractModel >> pickRandomUnoccupiedCell [
 	"Purpose: return a random cell not occuppied of the grid
 	Return Value: a cell"
 
-	^ self pickCellConstrainedBy: [ :cell | cell hasNoOccupants ]
+	^ self pickRandomCellConstrainedBy: [ :cell | cell hasNoOccupants ]
 ]
 
 { #category : 'printing' }

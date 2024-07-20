@@ -198,17 +198,17 @@ CMAbstractModelTest >> testModelPrefix [
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testPickCell [
+CMAbstractModelTest >> testPickRandomCell [
 	| cell |
 
-	cell := model pickCell.
+	cell := model pickRandomCell.
 	self assert: cell isSpatialEntity.
 	self assert: (cell columnNumber between: 1 and: 10).
 	self assert: (cell rowNumber between: 1 and: 20)
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testPickCellConstrainedBy [
+CMAbstractModelTest >> testPickRandomCellConstrainedBy [
 	| m |
 	m := (CMMockModel newWithActiveInit: #initRandom)
 		initializeSimulation;
@@ -219,45 +219,67 @@ CMAbstractModelTest >> testPickCellConstrainedBy [
 		yourself.
 	m centralCell state: #alive.
 	self
-		assert: (m pickCellConstrainedBy: [ :cell | cell state = #alive ]) state
+		assert: (m pickRandomCellConstrainedBy: [ :cell | cell state = #alive ]) state
 		equals: #alive.
 	m centralCell state: #dead.
 	self
-		assert: (m pickCellConstrainedBy: [ :cell | cell state = #dead ]) state
+		assert: (m pickRandomCellConstrainedBy: [ :cell | cell state = #dead ]) state
 		equals: #dead
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testPickCellWithoutAny [
+CMAbstractModelTest >> testPickRandomCellWithoutAnyOccupantsOfClass [
 
 	| cell |
-	cell := model pickCellWithoutAny: CMMockCow.
+	cell := model pickRandomCellWithoutAnyOccupantsOfClass: CMMockCow.
 	self assert: (cell occupantsOfClass: CMMockCow) isEmpty
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testPickCellsN [
+CMAbstractModelTest >> testPickRandomCells [
 
-	self assert: ((model pickCellsN: 5) allSatisfy: #isSpatialEntity)
+	self assert: ((model pickRandomCells: 5) allSatisfy: #isSpatialEntity)
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testPickEntity [
+CMAbstractModelTest >> testPickRandomEntitiesOfClass [
 
-	self assert: (model pickEntity: CMMockCell) isSpatialEntity
+	| collection |
+	collection := model pickRandomEntities: 5 ofClass: CMMockCell.
+	
+	self assert: collection size equals: 5.
+	self assert: (collection allSatisfy: [ :each | each class = CMMockCell ])
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testPickEntityConstrainedBy [
+CMAbstractModelTest >> testPickRandomEntitiesOfClassConstrainedBy [
+
+	self
+		assert:
+			((model
+				pickRandomEntities: 5
+				ofClass: CMMockCell
+				constrainedBy: [ :cell | cell columnNumber = 5 ])
+				allSatisfy: [ :cell | cell columnNumber = 5 ])
+]
+
+{ #category : 'tests-accessing-entities' }
+CMAbstractModelTest >> testPickRandomEntityOfClass [
+
+	self assert: (model pickRandomEntityOfClass: CMMockCell) isSpatialEntity
+]
+
+{ #category : 'tests-accessing-entities' }
+CMAbstractModelTest >> testPickRandomEntityOfClassConstrainedBy [
 
 	| cell1 cell2 |
 	
 	cell1 := model
-		pickEntity: CMMockCell
+		pickRandomEntityOfClass: CMMockCell
 		constrainedBy: [ :cell | cell columnNumber = 1 ].
 		
 	cell2 := model
-		pickEntity: CMMockCell
+		pickRandomEntityOfClass: CMMockCell
 		constrainedBy: [ :cell | cell columnNumber = 4 ].
 
 	self assert: cell1 columnNumber equals: 1.
@@ -265,29 +287,9 @@ CMAbstractModelTest >> testPickEntityConstrainedBy [
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testPickNEntities [
+CMAbstractModelTest >> testPickRandomUnoccupiedCell [
 
-	self
-		assert:
-			((model pickN: 5 entities: CMMockCell) allSatisfy: #isSpatialEntity)
-]
-
-{ #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testPickNEntitiesConstrainedBy [
-
-	self
-		assert:
-			((model
-				pickN: 5
-				entities: CMMockCell
-				constrainedBy: [ :cell | cell columnNumber = 5 ])
-				allSatisfy: [ :cell | cell columnNumber = 5 ])
-]
-
-{ #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testPickUnoccupiedCell [
-
-	self assert: model pickUnoccupiedCell theOccupants isEmpty
+	self assert: model pickRandomUnoccupiedCell theOccupants isEmpty
 ]
 
 { #category : 'tests' }
