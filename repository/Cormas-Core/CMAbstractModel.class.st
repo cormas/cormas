@@ -256,19 +256,6 @@ CMAbstractModel class >> colorOfProbe: aProbeSymbol [
 	^self perform: selectorName
 ]
 
-{ #category : 'managing classes' }
-CMAbstractModel class >> commClasses [
-
-	^ self allEntityClasses select: [ :each | 
-		each isCommunicatingEntity or: [ each inheritsFrom: CMMessage ] ]
-]
-
-{ #category : 'managing classes' }
-CMAbstractModel class >> compoundSpatialClasses [
-	
-	^ self spatialClasses select: [:i | i inheritsFrom: CMSpatialEntitySet]
-]
-
 { #category : 'accessing' }
 CMAbstractModel class >> cormasModelName [
 	" Answer a <String> with the receiver's name "
@@ -624,30 +611,14 @@ CMAbstractModel class >> socialClasses: aCollection [
 
 { #category : 'managing classes' }
 CMAbstractModel class >> spatialClasses [
-	" Answer a <Collection> of spatial classes of the model. "
-	" self allClassesInPackage select: [ :aClass | aClass inheritsFrom: CMSpatialEntityCell ] "
 	
-	^ spatialClasses
-		ifNil: [ 
-			self initialize.
-			spatialClasses ]
-	
+	self cellClass ifNil: [ ^ #() ].
+	^ OrderedCollection with: self cellClass.
 ]
 
 { #category : 'accessing' }
 CMAbstractModel class >> spatialClasses: aCollection [
 	spatialClasses := aCollection
-]
-
-{ #category : 'managing classes' }
-CMAbstractModel class >> spatialClasses_sorted [
-	"return a collection of SpatialClasses of the model, starting with the Cell class"
-	
-	| coll |
-	self cellClass ifNil: [^#()].
-	coll := self compoundSpatialClasses asOrderedCollection.
-	coll addFirst: self cellClass.
-	^coll
 ]
 
 { #category : 'testing - scheduling' }
@@ -955,105 +926,6 @@ CMAbstractModel >> comment: anObject [
 	comment := anObject
 ]
 
-{ #category : 'accessing - entities' }
-CMAbstractModel >> compoundSpatialClasses [
-	
-	| classes getter |
-	classes := self class compoundSpatialClasses.
-	
-	classes ifEmpty: [
-		^ self error: 'There are no compound spatial entity classes!' ].
-	
-	classes size > 1 ifTrue: [
-		^ self error: 'There is more than one compound spatial entity class!'].
-	
-	getter := self getterForEntityClass: classes first.
-	^ self perform: getter
-]
-
-{ #category : 'instance creation - spatial entities' }
-CMAbstractModel >> createAggregate: compoundEntity from: aSet [
-	"Purpose: Creates and returns an instance of compoundEntity composed with a set of cells.
-Arguments: 	aSet = a set of base entities (inheriting from <SpatialEntity>) 
-	compoundEntity = a Class name inheriting from <SpatialEntitySet>
-Example: self createAggregate: Plot from: (self centalCell recursiveNeighbourhood: 5)"
-	
-	^self spaceModel createOneAggregate: compoundEntity from: aSet
-]
-
-{ #category : 'instance creation - spatial entities' }
-CMAbstractModel >> createAggregates: compoundEntity from: baseEntity attribute: attributeName [
-	"Purpose: Create n aggregates that will occupy the whole grid. Each aggregate is composed of cells that have the same value of anAttribute. This method resets all aggregates 'compoundEntity' and rebuilds them.
-Attributes: baseEntity is a Class name inheriting from SpatialEntityElement. anAttribute is a symbol referring to a baseEntity's attribute name. compoundEntity is a Class name inheriting from SpatialEntitySet.
-Example: self createAggregates: ZoneArea from: Cell attribute: #landCover"
-	
-	^self spaceModel setAggregates: compoundEntity from: baseEntity attribute:
-			attributeName
-]
-
-{ #category : 'instance creation - spatial entities' }
-CMAbstractModel >> createAggregates: compoundEntity from: baseEntity attribute: attributeName1 attribute: attributeName2 [
-	"Purpose: Create n aggregates that will occupy the whole grid. Each aggregate is composed of cells that have the same value for anAttributeName1 and anAttributeName2. This method resets all aggregates 'compoundEntity' and rebuilds them.
-Attributes: baseEntity is a Class name inheriting from SpatialEntityElement. attributeName1 and attributeName2 are symbols referring to a baseEntity's attribute name. compoundEntity is a Class name inheriting from SpatialEntitySet.
-Example: self createAggregates: DistrictZoneArea from: Cell attribute: #landCover attribute: #district"
-	
-	^self spaceModel setAggregates: compoundEntity from: baseEntity attribute:
-			attributeName1 attribute: attributeName2
-]
-
-{ #category : 'instance creation - spatial entities' }
-CMAbstractModel >> createAggregates: compoundEntity from: baseEntity attribute: attributeName excludingValue: aValue [
-	"Purpose: Create n aggregates that will not necessarily occupy the whole grid. Cells which have aValue for anAttribute are excluded from the process. Each aggregate is composed of cells that have the same value of anAttribute (except the excluded one). This method resets all aggregates 'compoundEntity' and rebuilds them.
-Attributes: compoundEntity is a Class name inheriting from SpatialEntitySet. baseEntity is a Class name inheriting from SpatialEntityElement. anAttributeName is a symbol referring to a baseEntity's attribute name. aValue is a specific value of the attribute, for instance #notDefined, or 0. 
-Example: self createAggregates: ZoneArea from: Cell attribute: #landCover excludingValue: #water"
-	
-	^self spaceModel setAggregates: compoundEntity from: baseEntity attribute:
-			attributeName excludingValue: aValue
-]
-
-{ #category : 'instance creation - spatial entities' }
-CMAbstractModel >> createAggregates: compoundEntity from: baseEntity horizontalDividers: xRatio verticalDividers: yRatio [
-	"Purpose: Creates (xRatio x yRatio) rectangular aggregates by dividing the grid by yRatio columns and xRatio lines. The aggregates will  occupy the whole grid. This method resets all aggregates 'compoundEntity' and rebuids them. 
-Arguments: baseEntity = a subClass of  <SpatialEntity> 
-	compoundEntity = a subClass of  <SpatialEntitySet>
-Example: self createAggregates: SquareArea from: Cell horizontalDividers: 5 verticalDividers: 4 --> for a spatial grid of 41 * 41, it will create 20 aggregates: 5 along the horizontal direction and in 4 along the vertical direction"
-	
-	^self spaceModel setAggregates: compoundEntity from: baseEntity
-		horizontalDividers: xRatio verticalDividers: yRatio
-]
-
-{ #category : 'instance creation - spatial entities' }
-CMAbstractModel >> createFragmentedEntities: compoundEntity from: baseEntity attribute: attributeName [
-	"Purpose: Create n fragmented spatial entities <SpatialEntityNotConnex>. Each fragmented spatial entity is composed of spatial elements that have the same value of anAttribute. This method resets all fragmented spatial entities 'compoundEntity' and rebuilds them.
-Arguments: baseEntity is a Class name inheriting from <SpatialEntity> (can be <SpatialEntityElement>, <SpatialEntityCell>, <SpatialEntityAggregate> or <SpatialEntityNotConnex>).
-Example: self createFragmentedEntities: ForestGroup from: Forest attribute: #forestType"
-	
-	^self spaceModel setFragmentedEntities: compoundEntity from: baseEntity
-		attribute: attributeName
-]
-
-{ #category : 'instance creation - spatial entities' }
-CMAbstractModel >> createFragmentedEntities: compoundEntity from: baseEntity verifying: aBlock [
-	"Purpose: Create n fragmented spatial entities (SpatialEntityNotConnex) from baseEntities that verify a condition. This method resets all fragmented spatial entities 'compoundEntity' and rebuilds them.
-Arguments: baseEntity is a Class name inheriting from <SpatialEntity> (can be <SpatialEntityElement>, <SpatialEntityCell>, <SpatialEntityAggregate> or <SpatialEntityNotConnex>).
-Example: 	self createFragmentedEntities: Forest from: Cell verifying: [:aCell | aCell state = #tree].
-self createFragmentedEntities: Forest from: Cell verifying: [:aggregat | aggregat type = #forest] "
-	
-	^self spaceModel setFragmentedEntities: compoundEntity from: baseEntity
-		verifying: aBlock
-]
-
-{ #category : 'instance creation - spatial entities' }
-CMAbstractModel >> createFragmentedEntity: compoundEntity fromCollection: aCollecOfSpatialEntityElement [
-	"Purpose: Create one fragmented spatial entity <SpatialEntityNotConnex> made of a collection of spatialEntityElements. This method resets all fragmented spatial entities 'compoundEntity' and rebuilds them. 
-Arguments: aCollecOfSpatialEntityElement is a collection of base entities (inheriting from <SpatialEntityElement>).
-compoundEntity = a Class name inheriting from <SpatialEntityNotConnex>
-Example: self createFragmentedEntity: UrbanArea fromCollection: (self theCells select:[:c | c landUse = #building])"
-	
-	^self spaceModel setFragmentedEntity: compoundEntity fromCollection:
-			aCollecOfSpatialEntityElement
-]
-
 { #category : 'instance creation - spatial grid' }
 CMAbstractModel >> createGridLines: numLines columns: numColumns neighbourhood: aNumber closed: aBoolean [
 	"Purpose: Create a spatial grid made of cells
@@ -1257,48 +1129,6 @@ CMAbstractModel >> createN: aNumber randomlyLocatedEntitiesFrom: aCollectionOfCl
 	^ newEntities
 ]
 
-{ #category : 'instance creation - nodes & arcs' }
-CMAbstractModel >> createNetworkOfArcs: anArcClass onCells: listOfCells [
-	"create a Network of arcs (instances of anArcClass) located on the listOfCells"
-	
-	| anArc network |
-	listOfCells size < 2 ifTrue: [^nil].
-	anArc := (self newEntity: anArcClass)
-		initFromCell: listOfCells first
-		toCell: (listOfCells at: 2).
-	listOfCells size < 3 ifTrue: [^anArc fullNetwork].
-	3
-		to: listOfCells size
-		do:
-			[:i | 
-			anArc := (self newEntity: anArcClass)
-				initFromCell: (listOfCells at: i - 1)
-				toCell: (listOfCells at: i)].
-	network := anArc fullNetwork.
-	self updateEntities.
-	^network
-]
-
-{ #category : 'instance creation - nodes & arcs' }
-CMAbstractModel >> createRandomNetworkOfN: n arcs: anArcClass [
-	"create a random Network of n arcs (instances of anArcClass) randomly located on the grid.
-	n is a value > 2"
-
-	| coll |
-	coll := OrderedCollection new.
-	n timesRepeat: [ coll add: self pickCell ].
-	^ self createNetworkOfArcs: anArcClass onCells: coll
-]
-
-{ #category : 'instance creation - spatial entities' }
-CMAbstractModel >> createSingletonAggregates: compoundEntity fromSeeds: aCollecOfCells [
-	"Purpose: Create n (n correspond to aCollecOfCells size) aggregates made of a single component which is an element of aCollecOfCells. This method resets all aggregates 'compoundEntity' and rebuilds them. Arguments: aCollecOfCells is a collection of cells (SpatialEntityElement). compoundEntity is a Class name inheriting from SpatialEntitySet.
-Example: self createSingletonAggregates: Forest fromSeeds: (self theCells select:[:c| c isForestSeed]."
-	
-	^self spaceModel setSingletonAggregates: compoundEntity fromSeeds:
-			aCollecOfCells
-]
-
 { #category : 'accessing' }
 CMAbstractModel >> creationDate [
 
@@ -1477,22 +1307,6 @@ CMAbstractModel >> getterForEntityClass: aClass [
 	
 	^ entityGetters at: aClass name
 		ifAbsent: [ self error: 'Getter for class #', aClass name, ' was not found in the dictionary' ].
-]
-
-{ #category : 'user interface' }
-CMAbstractModel >> habitusNames [
-	
-	| collec |
-	collec := SortedCollection new.
-	(self class class organization listAtCategoryNamed: #SI_config)
-		do:
-			[:e | 
-			collec
-				add:
-					(e
-						copyFrom: 10
-						to: e size)].
-	^collec
 ]
 
 { #category : 'testing' }
@@ -1731,23 +1545,6 @@ CMAbstractModel >> lowerRightCell [
 	"Purpose: returns the cell located at the lower right location of the spatial grid"
 
 	^ self spaceModel lowerRightLocation
-]
-
-{ #category : 'utilities - space metrics' }
-CMAbstractModel >> meanCompactness: aClass [
-	"Purpose: return the mean compactness of the aggregates of a class. The compactness of an aggregate is defined by 4* pi *area / perimeter squared"
-	
-	^self spaceModel meanCompactness: aClass
-]
-
-{ #category : 'utilities - space metrics' }
-CMAbstractModel >> meanNearestNeighbourDistanceAggregate: aClass attribute: anAttribute [
-	"Purpose: Return the average nearest distance between all aggregates that implement the attribute anAttribute
-Argument: aClass is an aggregate class that has several subclasses. 
-anAttribute is the name of the attribute, ex #state"
-	
-	^self spaceModel meanNearestNeighbourDistanceAggregate: aClass attribute:
-			anAttribute
 ]
 
 { #category : 'utilities - space metrics' }
@@ -2413,20 +2210,6 @@ CMAbstractModel >> timeStep [
 CMAbstractModel >> timeStep: anInteger [
 
 	timeStep := anInteger.
-]
-
-{ #category : 'Olddeprecated' }
-CMAbstractModel >> update: aCollection with: newCollection [
-	"DEPRECATED. You should rather use newAndCollect to create and collect new entities"
-	
-	| theDeadAgents |
-	theDeadAgents := aCollection select: [ :agent | agent isDead ].
-	
-	theDeadAgents do: [ :agent | 
-		(self class occupantClasses includes: agent class) ifTrue: [agent leave].
-		aCollection remove: agent ].
-	
-	aCollection addAll: newCollection
 ]
 
 { #category : 'probes - recording' }

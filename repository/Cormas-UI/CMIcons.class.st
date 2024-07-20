@@ -1,10 +1,11 @@
 Class {
-	#name : #CMIcons,
-	#superclass : #Object,
-	#category : #'Cormas-UI'
+	#name : 'CMIcons',
+	#superclass : 'Object',
+	#category : 'Cormas-UI',
+	#package : 'Cormas-UI'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMIcons class >> runIcon [
 
 	| form |
@@ -21,7 +22,7 @@ CMIcons class >> runIcon [
 	^ form
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMIcons class >> stepIcon [
 
 	| form |

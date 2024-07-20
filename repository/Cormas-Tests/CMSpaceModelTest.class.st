@@ -98,24 +98,6 @@ CMSpaceModelTest >> testColumn [
 ]
 
 { #category : 'test' }
-CMSpaceModelTest >> testConnexity [
-
-	self spaceModel initializeIrregular.
-	self assert: self spaceModel connexity equals: 0.
-	
-	self spaceModel 
-		line: 10 column: 10;	
-		gridCellShape: #regular.
-
-	self spaceModel nbCount: #eight.
-	self assert: self spaceModel connexity equals: 8.
-	self spaceModel nbCount: #four.
-	self assert: self spaceModel connexity equals: 4.
-	self spaceModel nbCount: #six.
-	self assert: self spaceModel connexity equals: 6.
-]
-
-{ #category : 'test' }
 CMSpaceModelTest >> testIsIrregular [
 
 	self spaceModel initializeIrregular.

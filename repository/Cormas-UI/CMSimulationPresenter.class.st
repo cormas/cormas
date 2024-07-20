@@ -1,6 +1,6 @@
 Class {
-	#name : #CMSimulationPresenter,
-	#superclass : #SpPresenter,
+	#name : 'CMSimulationPresenter',
+	#superclass : 'SpPresenter',
 	#instVars : [
 		'cormasModel',
 		'builder',
@@ -11,10 +11,11 @@ Class {
 		'stepButton',
 		'progressBar'
 	],
-	#category : #'Cormas-UI'
+	#category : 'Cormas-UI',
+	#package : 'Cormas-UI'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMSimulationPresenter class >> openForModel: aCormasModel withTranslator: aTranslator [
 
 	^ self basicNew 
@@ -25,20 +26,20 @@ CMSimulationPresenter class >> openForModel: aCormasModel withTranslator: aTrans
 		yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSimulationPresenter >> canvas [
 	" Private - Answer a <RSCanvas> "
 
 	^ diagram canvas
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSimulationPresenter >> cormasModel: aModel [
 
 	cormasModel := aModel
 ]
 
-{ #category : #specs }
+{ #category : 'specs' }
 CMSimulationPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
@@ -52,13 +53,13 @@ CMSimulationPresenter >> defaultLayout [
 		yourself
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSimulationPresenter >> initializeCanvasInteractions [
 
 	self canvas addInteraction: RSCanvasController new.
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSimulationPresenter >> initializeDiagram [
 	" Private - Create the configured receiver's diagram "
 	
@@ -75,7 +76,7 @@ CMSimulationPresenter >> initializeDiagram [
 	
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSimulationPresenter >> initializePOVMenuToolbar [
 	" Private - See superimplementor's commen "
 
@@ -89,7 +90,7 @@ CMSimulationPresenter >> initializePOVMenuToolbar [
 								name: socialClass name;
 								subMenu: (self subMenuForClassPov: socialClass) ] ] ];
 		addGroup: [ :group | 
-			cormasModel class spatialClasses_sorted
+			cormasModel class spatialClasses
 				do: [ :spatialClasse | 
 					group
 						addItem: [ :item | 
@@ -106,7 +107,7 @@ CMSimulationPresenter >> initializePOVMenuToolbar [
 								subMenu: (self subMenuForClassPov: passiveClass) ] ] ]
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSimulationPresenter >> initializePresenters [
 	" Private - See superimplementor's comment "
 
@@ -132,7 +133,7 @@ CMSimulationPresenter >> initializePresenters [
 	self initializeCanvasInteractions.
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSimulationPresenter >> initializeToolsMenuToolbar [
 	" Private - See superimplementor's commen "
 
@@ -169,7 +170,7 @@ CMSimulationPresenter >> initializeToolsMenuToolbar [
 		yourself
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMSimulationPresenter >> mainMenuToolbar [
 	" Private - See superimplementor's commen "
 
@@ -203,13 +204,13 @@ CMSimulationPresenter >> mainMenuToolbar [
 	^ aMenu
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 CMSimulationPresenter >> runSimulationUntilEnd [
 
 	"do nothing"
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 CMSimulationPresenter >> stepSimulation [
 
 	cormasModel runStep.
@@ -217,7 +218,7 @@ CMSimulationPresenter >> stepSimulation [
 	self updateProgressBar.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMSimulationPresenter >> subMenuForClassPov: aClass [
 
 	^ self newMenu addGroup: [ :group | 
@@ -230,13 +231,13 @@ CMSimulationPresenter >> subMenuForClassPov: aClass [
 						self initializeDiagram ] ] ] ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSimulationPresenter >> translator: anObject [
 
 	translator := anObject
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMSimulationPresenter >> updateProgressBar [
 
 	progressBar fixedAt: (cormasModel timeStep / cormasModel finalTime) asFloat.

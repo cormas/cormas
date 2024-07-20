@@ -378,7 +378,7 @@ CMAbstractModelTest >> testShortestDistanceToCellsVerifying [
 CMAbstractModelTest >> testSpacialClasses [
 	self
 		assert: CMMockModel spatialClasses
-		equals: (Set with: CMMockCell)
+		equals: (OrderedCollection with: CMMockCell)
 ]
 
 { #category : 'tests-accessing-entities' }

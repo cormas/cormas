@@ -70,12 +70,6 @@ CMSpaceModel class >> forModel: aCormasModel [
 		yourself.
 ]
 
-{ #category : 'private - absoluteWorld' }
-CMSpaceModel >> absoluteBounds: aRectangle [
-	
-	absoluteBounds := aRectangle
-]
-
 { #category : 'accessing' }
 CMSpaceModel >> activePoVsDictionary [
 	" Answer a <Dictionary> containing the initial active points of view of the receiver's model "
@@ -114,12 +108,6 @@ CMSpaceModel >> allTheSituatedEntities: aClass [
 	^self cormasModel allTheSituatedEntities: aClass
 ]
 
-{ #category : 'private - accessing' }
-CMSpaceModel >> arrayOrigins: anArray [
-	
-	arrayOrigins := anArray
-]
-
 { #category : 'accessing' }
 CMSpaceModel >> atClass: aCMSpatialEntityClass putActivePovSelector: aSelector [ 
 	" Set a Point of View defined in aSelector <Symbol> at class aCMSpatialEntityClass "
@@ -149,26 +137,6 @@ CMSpaceModel >> basicCreateAggregate: compoundEntity from: aSet [
 	anAggregate setSurround.
 	anAggregate init.
 	^anAggregate
-]
-
-{ #category : 'CSE (regular) - instance creation' }
-CMSpaceModel >> buildFragmentedEntity: compoundEntity fromCollection: aCollecOfSpatialEntityElement [
-	"create one aggregate <SpatialEntityNotConnex> made of a collection of spatialEntityElements.
-	This method do not resets all aggregates 'compoundEntity' . 
-	aCollecOfSpatialEntityElement = a collection of base entities (inheriting from <SpatialEntity>) 
-	compoundEntity = a subClass of  <SpatialEntityNotConnex>"
-
-	| aSet agg |
-	self isClosedEnvironment
-		ifFalse: [ ^ self warningBoundaries ].
-	aSet := Set new.
-	aCollecOfSpatialEntityElement
-		do: [ :s | 
-			(s isComponentOf: compoundEntity)
-				ifTrue: [ aSet add: s ] ].
-	agg := self createSilentlyAggregate: compoundEntity from: aSet.
-	self dispatchCompoundSpatialEntity: compoundEntity.
-	^ agg
 ]
 
 { #category : 'ESE (regular) - special locations' }
@@ -308,16 +276,6 @@ CMSpaceModel >> column [
 ]
 
 { #category : 'private - accessing' }
-CMSpaceModel >> connexity [
-	" Answer an <Integer> representing the value of the grid connexity, i.e. 8, 4 or 6.
-	If the grid is irregular, returns 0"
-	
-	self gridCellShape = #irregular
-		ifTrue: [ ^ 0 ].
-	^ self nbConfiguration cardinal
-]
-
-{ #category : 'private - accessing' }
 CMSpaceModel >> cormasModel [
 	" Answer the receiver's configured <CMAbstractModel> or nil "
 
@@ -377,18 +335,6 @@ CMSpaceModel >> createElementaryEntities [
 		self newEntity: self cormasModelClass cellClass ].
 	
 	self elementaryEntities: cells asArray.
-]
-
-{ #category : 'private - regular polygons' }
-CMSpaceModel >> createOneAggregate: compoundEntity from: aSet [
-	"Creates and returns an instance of compoundEntity composed with a set of cells. 
-	aSet = a set of base entities (inheriting from <SpatialEntity>) 
-	compoundEntity = a Class name inheriting from <SpatialEntitySet>"
-	
-	| aggregate |
-	aggregate := self createAggregate: compoundEntity from: aSet.	"alarm the other"
-	self dispatchOneCompoundSpatialEntity: aggregate.
-	^aggregate
 ]
 
 { #category : 'private - regular polygons' }
@@ -671,18 +617,6 @@ CMSpaceModel >> getAggregatesFrom: baseEntity attribute: attributeName [
 	^ newCollection
 ]
 
-{ #category : 'private - accessing' }
-CMSpaceModel >> getInstanceOfClass: aClass fromId: anId [
-	
-	^ (self spatialEntities isNil or: [ self spatialEntities isEmpty or: [
-			(self spatialEntities includesKey: aClass name) not or: [(self spatialEntities at: aClass name) isEmpty]]])
-		ifTrue: [ nil]
-		ifFalse: [ 
-			(self spatialEntitiesAt: aClass name)
-				detect: [:i | i id = anId]
-				ifNone: [nil]]
-]
-
 { #category : 'private - regular polygons' }
 CMSpaceModel >> getSetsOfContiguous: baseEntity attribute: attributeName [
 	"Return a collection of sets of contiguous components holding the same attributeName value"
@@ -886,68 +820,6 @@ CMSpaceModel >> humanReadableString [
 		
 ]
 
-{ #category : 'CSE (regular) - instance creation' }
-CMSpaceModel >> initAggregates: compoundEntity fromSeeds: aCollec [
-	"Create N aggregates from a collection of N cells. 
-	The new aggregates are only composed of one cell (the seed); their 'givenSize' attribut value is determine by the distribution.
-	This method resets all aggregates 'compoundEntity' and rebuids them. 
-	aCollec = a collection of base entities (inheriting from <SpatialEntityElement>) 
-	compoundEntity = a subClass of  <SpatialEntitySet> "
-
-	self isClosedEnvironment
-		ifFalse: [ ^ self warningBoundaries ].
-	self
-		resetCompoundSpatialEntity: compoundEntity
-		andTheirComponents: aCollec first class.
-	aCollec
-		do: [ :s | 
-			(s isComponentOf: compoundEntity)
-				ifFalse: [ self createSilentlyAggregate: compoundEntity from: (Set with: s) ] ].
-	self dispatchCompoundSpatialEntity: compoundEntity.
-	^ self spatialEntitiesAt: compoundEntity name
-]
-
-{ #category : 'CSE (regular) - instance creation' }
-CMSpaceModel >> initAggregates: compoundEntity fromSeeds: aCollecOfCells sizeDistribution: aDistribution [
-	"Create N spatial aggregates from a collection of N cells according to a size distribution. 
-	The new aggregates are only composed of one cell (the seed); their 'givenSize' attribut value is determine by the distribution.
-	This method resets all aggregates 'compoundEntity' and rebuids them. 
-	aCollecOfCells = a collection of base entities (inheriting from <SpatialEntityElement>) 
-	compoundEntity = a subClass of  <SpatialEntitySet> 
-	this method is supposed to receive a size distribution 
-	aDistribution = Collection ( (n1,s1), (n2,s2)) , n being the number of aggregates of size s. 
-
-	Ex: to generate 3 aggregates size 1, 5 aggregates size 2, and 2 aggregates size 3, this has to be (#(3 1) #(5 2) #(2 3)). 
-	This method uses the attribute called givenSize defined for SpatialEntityAggregate"
-
-	| counter subsetIndice |
-	self isClosedEnvironment
-		ifFalse: [ ^ self warningBoundaries ].
-	self
-		resetCompoundSpatialEntity: compoundEntity
-		andTheirComponents: aCollecOfCells first class.
-	((aDistribution collect: [ :pair | pair first ])
-		inject: 0
-		into: [ :sum :i | sum + i ]) ~= aCollecOfCells size
-		ifTrue: [ self
-				error: 'the number of seeds is different from the number of aggregates !!!' ].
-	counter := 0.
-	subsetIndice := 1.
-	aCollecOfCells
-		do: [ :cell | 
-			(cell isComponentOf: compoundEntity)
-				ifFalse: [ (self
-						createSilentlyAggregate: compoundEntity
-						from: (OrderedCollection with: cell))
-						givenSize: (aDistribution at: subsetIndice) last.
-					counter := counter + 1.
-					counter = (aDistribution at: subsetIndice) first
-						ifTrue: [ counter := 0.
-							subsetIndice := subsetIndice + 1 ] ] ].
-	self dispatchCompoundSpatialEntity: compoundEntity.
-	^ self spatialEntitiesAt: compoundEntity name
-]
-
 { #category : 'private - regular cells - instance creation' }
 CMSpaceModel >> initNeighbourhood [
 	" Private - Initalize the receiver's neighbourhood "
@@ -1056,51 +928,6 @@ CMSpaceModel >> lowerLeftLocation [
 { #category : 'ESE (regular) - special locations' }
 CMSpaceModel >> lowerRightLocation [
 	^ self elementaryEntities at: column * line
-]
-
-{ #category : 'landscape indices' }
-CMSpaceModel >> meanCompactness: aClass [
-
-	| selector aggregates sum |
-	
-	selector := self cormasModel getterForEntityClass: aClass.
-	aggregates := self cormasModel perform: selector.
-	
-	aggregates ifEmpty: [ ^ 0 ].
-		
-	sum := aggregates sum: [ :each | each updateCompactness ].
-	^ sum / aggregates size
-]
-
-{ #category : 'landscape indices' }
-CMSpaceModel >> meanNearestNeighbourDistanceAggregate: aClass attribute: anAttribute [
-	"loop on the aggregates with same attribute and select the minimum distance. If the attribute is nil it means that there is only one type of aggregates"
-
-	| classes n sum collec distMin dist aggregates a b |
-	aggregates := self cormasModel
-		perform: (self cormasModel getterForEntityClass: aClass).
-	classes := anAttribute isNil
-		ifFalse: [ (aggregates collect: [ :ag | ag perform: anAttribute ]) asSet ]
-		ifTrue: [ aggregates ].
-	n := classes size.
-	n < 2
-		ifTrue: [ ^ 0 ].
-	sum := 0.
-	classes
-		do: [ :i | 
-			collec := anAttribute isNil
-				ifFalse: [ aggregates select: [ :ag | (ag perform: anAttribute) = i ] ]
-				ifTrue: [ aggregates ].
-			distMin := 10000000.
-			1 to: collec size do: [ :k | 
-				a := collec at: k.
-				k + 1 to: collec size do: [ :j | 
-					b := collec at: j.
-					b ~= a
-						ifTrue: [ dist := a distSurroundAggregatePixel: b.
-							distMin := distMin min: dist ] ] ].
-			sum := sum + distMin ].
-	^ sum / n
 ]
 
 { #category : 'landscape indices' }
@@ -1277,92 +1104,6 @@ CMSpaceModel >> resetSpatialEntities [
 	"self changed: #removeAllFigures"	"all the figures of the spaceInterfaces have to be deleted"
 ]
 
-{ #category : 'CSE (regular) - instance creation' }
-CMSpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attributeName [
-	"The aggregates occupy the whole grid. 
-	This method resets all aggregates 'compoundEntity' and rebuids them. 
-	baseEntity = a subClass of  <SpatialEntity> 
-	attributeName = #context for example 
-	compoundEntity = a subClass of  <SpatialEntitySet>"
-
-	self isClosedEnvironment
-		ifFalse: [ ^ self warningBoundaries ].
-	self
-		resetCompoundSpatialEntity: compoundEntity
-		andTheirComponents: baseEntity.
-	(self getAggregatesFrom: baseEntity attribute: attributeName)
-		do: [ :set | self createSilentlyAggregate: compoundEntity from: set ].
-	self dispatchCompoundSpatialEntity: compoundEntity.
-	^ self spatialEntitiesAt: compoundEntity name
-]
-
-{ #category : 'CSE (regular) - instance creation' }
-CMSpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attributeName1 attribute: attributeName2 [
-	"The aggregates occupy the whole grid. 
-	This method resets all aggregates 'compoundEntity' and rebuids them. 
-	baseEntity = a subClass of  <SpatialEntity> 
-	attributeName = #context for example 
-	compoundEntity = a subClass of  <SpatialEntitySet>"
-
-	self isClosedEnvironment
-		ifFalse: [ ^ self warningBoundaries ].
-	self
-		resetCompoundSpatialEntity: compoundEntity
-		andTheirComponents: baseEntity.
-	(self
-		getSetsOfContiguous: baseEntity
-		attribute: attributeName1
-		attribute: attributeName2)
-		do: [ :set | self createSilentlyAggregate: compoundEntity from: set ].
-	self dispatchCompoundSpatialEntity: compoundEntity.
-	^ self spatialEntitiesAt: compoundEntity name
-]
-
-{ #category : 'CSE (regular) - instance creation' }
-CMSpaceModel >> setAggregates: compoundEntity from: baseEntity attribute: attributeName excludingValue: aValue [
-	"The aggregates do not occupy the whole grid. 
-	This method resets all aggregates 'compoundEntity' and rebuids them. 
-	baseEntity = a subClass of  <SpatialEntity> 
-	attributeName = #context for example 
-	aValue is a specific value of the attribute, for instance #notDefined, or 0
-	compoundEntity = a subClass of  <SpatialEntitySet>"
-
-	self isClosedEnvironment
-		ifFalse: [ ^ self warningBoundaries ].
-	self
-		resetCompoundSpatialEntity: compoundEntity
-		andTheirComponents: baseEntity.
-	(self
-		getSetsOfContiguous: baseEntity
-		attribute: attributeName
-		excludingValue: aValue)
-		do: [ :set | self createSilentlyAggregate: compoundEntity from: set ].
-	self dispatchCompoundSpatialEntity: compoundEntity.
-	^ self spatialEntitiesAt: compoundEntity name
-]
-
-{ #category : 'CSE (regular) - instance creation' }
-CMSpaceModel >> setAggregates: compoundEntity from: baseEntity horizontalDividers: xRatio verticalDividers: yRatio [
-	"Creates (xRatio x yRatio) aggregates by dividing the grid by yRatio columns and xRatio lines.
-The aggregates will  occupy the whole grid. 
-	This method resets all aggregates 'compoundEntity' and rebuids them. 
-	baseEntity = a subClass of  <SpatialEntity> 
-	compoundEntity = a subClass of  <SpatialEntitySet>"
-
-	self isClosedEnvironment
-		ifFalse: [ ^ self warningBoundaries ].
-	self
-		resetCompoundSpatialEntity: compoundEntity
-		andTheirComponents: baseEntity.
-	(self
-		getSetsOfContiguous: baseEntity
-		horizontalDividers: xRatio
-		verticalDividers: yRatio)
-		do: [ :set | self createSilentlyAggregate: compoundEntity from: set ].
-	self dispatchCompoundSpatialEntity: compoundEntity.
-	^ self spatialEntitiesAt: compoundEntity name
-]
-
 { #category : 'private - irregular polygons aggregation' }
 CMSpaceModel >> setAggregatsBounds: agregat [
 	
@@ -1400,88 +1141,6 @@ CMSpaceModel >> setBounds: allPolygons [
 	entity bounds: (Rectangle origin: origin corner: corner)
 ]
 
-{ #category : 'CSE (regular) - instance creation' }
-CMSpaceModel >> setFragmentedEntities: compoundEntity from: baseEntity attribute: attributeName [
-	"baseEntity = a Class name inheriting from <SpatialEntity>	
-		(can be <SpatialEntityCell> or <SpatialEntityAggregate> or <SpatialEntityNotConnex>) 
-	compoundEntity = a Class name inheriting from <SpatialEntityNotConnex>"
-
-	| fragmentedEntity beInstances collec |
-	self isClosedEnvironment
-		ifFalse: [ ^ self warningBoundaries ].
-	self
-		resetCompoundSpatialEntity: compoundEntity
-		andTheirComponents: baseEntity.
-	beInstances := (self cormasModel
-		perform: (self cormasModel getterForEntityClass: baseEntity)) copy
-		asOrderedCollection.
-	[ beInstances isEmpty ]
-		whileFalse: [ collec := beInstances
-				select: [ :c | 
-					(beInstances first perform: attributeName)
-						= (c perform: attributeName) ].
-			beInstances removeAll: collec.
-			fragmentedEntity := compoundEntity new: self.
-			fragmentedEntity addSilentlyComponents: collec.
-			fragmentedEntity type: (collec first perform: attributeName).
-			(self spatialEntitiesAt: compoundEntity name)
-				add: fragmentedEntity ].
-	self dispatchCompoundSpatialEntity: compoundEntity.
-	^ self spatialEntitiesAt: compoundEntity name
-]
-
-{ #category : 'CSE (regular) - instance creation' }
-CMSpaceModel >> setFragmentedEntities: compoundEntity from: baseEntity verifying: aBlock [
-	"baseEntity = a Class name inheriting from <SpatialEntity>
-		(can be <SpatialEntityCell> or <SpatialEntityAggregate> or <SpatialEntityNotConnex>) 
-	aBlock (example = [:cell | cell isTree] or [:aggregat | aggregat type = #forest] ) 
-	compoundEntity = a Class name inheriting from <SpatialEntityNotConnex>"
-
-	| getter fragmentedEntity beInstances |
-	
-	self isClosedEnvironment ifFalse: [ ^ self warningBoundaries ].
-	
-	self
-		resetCompoundSpatialEntity: compoundEntity
-		andTheirComponents: baseEntity.
-		
-	getter := self cormasModel getterForEntityClass: baseEntity.
-	
-	beInstances := ((self cormasModel perform: getter)
-		select: [ :c | aBlock value: c ]) copy asOrderedCollection.
-			
-	fragmentedEntity := compoundEntity new: self.
-	fragmentedEntity addSilentlyComponents: beInstances.
-	
-	(self spatialEntitiesAt: compoundEntity name) add: fragmentedEntity.
-	self dispatchCompoundSpatialEntity: compoundEntity.
-	
-	^ self spatialEntitiesAt: compoundEntity name
-]
-
-{ #category : 'CSE (regular) - instance creation' }
-CMSpaceModel >> setFragmentedEntity: compoundEntity fromCollection: aCollecOfSpatialEntityElement [
-	"create one aggregate <SpatialEntityNotConnex> made of a collection of spatialEntityElements.
-	This method resets all aggregates 'compoundEntity' and rebuids them. 
-	aCollecOfSpatialEntityElement = a collection of base entities (inheriting from <SpatialEntityElement>) 
-	compoundEntity = a Class name inheriting from <SpatialEntityNotConnex>"
-
-	| aSet |
-	self isClosedEnvironment
-		ifFalse: [ ^ self warningBoundaries ].
-	self
-		resetCompoundSpatialEntity: compoundEntity
-		andTheirComponents: aCollecOfSpatialEntityElement first class.
-	aSet := Set new.
-	aCollecOfSpatialEntityElement
-		do: [ :s | 
-			(s isComponentOf: compoundEntity)
-				ifTrue: [ aSet add: s ] ].
-	self createSilentlyAggregate: compoundEntity from: aSet.
-	self dispatchCompoundSpatialEntity: compoundEntity.
-	^ self spatialEntitiesAt: compoundEntity name
-]
-
 { #category : 'private - regular polygons' }
 CMSpaceModel >> setGivenSizes: dis toAggregates: compoundEntity [
 	"dis is an array of pair-values: #(#(X1 GS1) #(X2 GS2) ... #(Xi GSi))"
@@ -1504,40 +1163,6 @@ CMSpaceModel >> setGivenSizes: dis toAggregates: compoundEntity [
 			ifTrue: [
 				counter := 0.
 				subsetIndice := subsetIndice + 1]]
-]
-
-{ #category : 'private - regular polygons - deprecated' }
-CMSpaceModel >> setPartitionsFrom: baseEntity attribute: attributeName into: compoundEntity [
-	
-	self setAggregates: compoundEntity from: baseEntity attribute:
-			attributeName
-]
-
-{ #category : 'private - regular polygons - deprecated' }
-CMSpaceModel >> setPartitionsFrom: baseEntity xRatio: i yRatio: j into: compoundEntity [
-	
-	self setAggregates: compoundEntity from: baseEntity horizontalDividers: i
-		verticalDividers: j
-]
-
-{ #category : 'CSE (regular) - instance creation' }
-CMSpaceModel >> setSingletonAggregates: compoundEntity fromSeeds: aCollec [
-	"create n (aCollec size) aggregates made of a single component which is an element of aCollec.
-	This method resets all aggregates 'compoundEntity' and rebuids them. 
-	aCollec = a collection of base entities (inheriting from <SpatialEntity>) 
-	compoundEntity = a Class name inheriting from <SpatialEntitySet>"
-
-	self isClosedEnvironment
-		ifFalse: [ ^ self warningBoundaries ].
-	self
-		resetCompoundSpatialEntity: compoundEntity
-		andTheirComponents: aCollec first class.
-	aCollec
-		do: [ :s | 
-			(s isComponentOf: compoundEntity)
-				ifFalse: [ self createSilentlyAggregate: compoundEntity from: (Set with: s) ] ].
-	self dispatchCompoundSpatialEntity: compoundEntity.
-	^ self spatialEntitiesAt: compoundEntity name
 ]
 
 { #category : 'parsing' }
