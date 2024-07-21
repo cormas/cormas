@@ -780,7 +780,7 @@ Example: self askRandom: (self theAnimals select:[:f | f energy > 10]) toDo: #re
 	| collecEntities |
 	(collecEntities := self allTheEntitiesOfClassOrCollec:
 		                   aCollectionOrClass) ifNotEmpty: [
-		(self shuffled: collecEntities) do: [ :c | aBlock with: c ] ]
+		(self shuffled: collecEntities) do: [ :c | aBlock value: c ] ]
 ]
 
 { #category : 'accessing' }
