@@ -45,7 +45,6 @@ Class {
 		'spaceModel',
 		'data',
 		'defaultAttributesSetter',
-		'sensitivitySetter',
 		'initStatus',
 		'creationDate',
 		'version',
@@ -1493,20 +1492,6 @@ CMAbstractModel >> newEntity: aClass [
 	^ anEntity
 ]
 
-{ #category : 'default values' }
-CMAbstractModel >> newSensitivitySetter: aSensitivityClass [
-	
-	^sensitivitySetter := aSensitivityClass newOn: self	"sensitivitySetter isNil
-		ifTrue: [sensitivitySetter := aSensitivityClass newOn: self]
-		ifFalse:
-			[(sensitivitySetter isKindOf: SensitivitySetter)
-				ifTrue:
-					[sensitivitySetter := aSensitivityClass newFromPreviousSetter:
-							sensitivitySetter]
-				ifFalse: [sensitivitySetter := aSensitivityClass newOn: self]].
-	^sensitivitySetter"
-]
-
 { #category : 'accessing - entities' }
 CMAbstractModel >> otherAgentsButMe: anAgent [
 	"Purpose: Return a collection of all agents from anAgent class, except itself"
@@ -1809,12 +1794,6 @@ CMAbstractModel >> selectCellsOfLine: lineNumber [
 	Example: self ask: (self selectCellsOfLine: 2) toDo: #flash"
 
 	^ self spaceModel cellsOfLine: lineNumber
-]
-
-{ #category : 'default values' }
-CMAbstractModel >> sensitivitySetter: anObject [
-	
-	sensitivitySetter := anObject
 ]
 
 { #category : 'probes color' }

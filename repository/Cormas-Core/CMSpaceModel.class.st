@@ -28,14 +28,10 @@ Class {
 	#traits : 'TCMRandom',
 	#classTraits : 'TCMRandom classTrait',
 	#instVars : [
-		'activeSpatialEntity',
 		'elementaryEntitiesDefaultPovs',
 		'cormasModel',
-		'arrayOrigins',
-		'rMaxEntityImage',
 		'spatialEntities',
 		'gridCellShape',
-		'absoluteBounds',
 		'autoResizeBounds',
 		'nbConfiguration',
 		'gridSize',
@@ -48,12 +44,6 @@ Class {
 	#package : 'Cormas-Core',
 	#tag : 'Space'
 }
-
-{ #category : 'defaults' }
-CMSpaceModel class >> defaultIsClosedEnvironment [
-
-	^ true
-]
 
 { #category : 'defaults' }
 CMSpaceModel class >> defaultNumberOfColumns [
@@ -435,8 +425,8 @@ CMSpaceModel >> gridSize [
 
 { #category : 'private - accessing' }
 CMSpaceModel >> gridSize: anInteger [
-	gridSize := anInteger.
-	arrayOrigins := Array new: anInteger
+
+	gridSize := anInteger
 ]
 
 { #category : 'private - regular cells - instance creation' }
@@ -452,7 +442,7 @@ CMSpaceModel >> initialize [
 	super initialize.
 	self resetSpatialEntities.
 	
-	isClosedEnvironment := self class defaultIsClosedEnvironment
+	isClosedEnvironment := true
 ]
 
 { #category : 'private - init' }
