@@ -27,7 +27,7 @@ CMR3SpaceCellsBuilder >> renderIn: aCanvas [
 	
 	RSGridLayout new
 		gapSize: 0;
-		lineItemsCount: diagramBuilder cormasModel spaceModel column;
+		lineItemsCount: diagramBuilder cormasModel spaceModel numberOfColumns;
 		on: aCanvas nodes.
 ]
 

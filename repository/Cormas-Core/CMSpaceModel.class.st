@@ -29,8 +29,6 @@ Class {
 	#classTraits : 'TCMRandom classTrait',
 	#instVars : [
 		'activeSpatialEntity',
-		'line',
-		'column',
 		'elementaryEntitiesDefaultPovs',
 		'cormasModel',
 		'arrayOrigins',
@@ -42,7 +40,9 @@ Class {
 		'nbConfiguration',
 		'gridSize',
 		'activePoVsDictionary',
-		'isClosedEnvironment'
+		'isClosedEnvironment',
+		'numberOfRows',
+		'numberOfColumns'
 	],
 	#category : 'Cormas-Core-Space',
 	#package : 'Cormas-Core',
@@ -56,8 +56,15 @@ CMSpaceModel class >> defaultIsClosedEnvironment [
 ]
 
 { #category : 'defaults' }
-CMSpaceModel class >> defaultLines [
-	" Answer the <Number> of default lines to create in the receiver's grid "
+CMSpaceModel class >> defaultNumberOfColumns [
+	" Answer the <Number> of default columns to create in the receiever's grid "
+
+	^ 10 
+]
+
+{ #category : 'defaults' }
+CMSpaceModel class >> defaultNumberOfRows [
+	" Answer the default <Number> of rows to create in the receiver's grid "
 	
 	^ 10
 ]
@@ -145,7 +152,7 @@ CMSpaceModel >> basicCreateAggregate: compoundEntity from: aSet [
 { #category : 'ESE (regular) - special locations' }
 CMSpaceModel >> cellAt: aRowIndex at: aColumnIndex [
 	
-	^ self elementaryEntities at: (aRowIndex - 1) * column + aColumnIndex
+	^ self elementaryEntities at: (aRowIndex - 1) * numberOfColumns + aColumnIndex
 ]
 
 { #category : 'accessing' }
@@ -258,17 +265,9 @@ CMSpaceModel >> cellsOfLine: lineNumber [
 
 { #category : 'ESE (regular) - special locations' }
 CMSpaceModel >> centralLocation [
-	(line even or: [ column even ])
+	(numberOfRows even or: [ numberOfColumns even ])
 		ifTrue: [ ^ self error: 'Grid dimensions is not odd' ].
-	^ self elementaryEntities at: (line * column / 2) asInteger + 1
-]
-
-{ #category : 'private - accessing' }
-CMSpaceModel >> column [
-	" Answer the <Number> of columns in the receiver's grid "
-	
-	^ column
-		ifNil: [ column := self defaultColumns ]
+	^ self elementaryEntities at: (numberOfRows * numberOfColumns / 2) asInteger + 1
 ]
 
 { #category : 'private - accessing' }
@@ -317,24 +316,10 @@ CMSpaceModel >> createElementaryEntities [
 ]
 
 { #category : 'defaults' }
-CMSpaceModel >> defaultColumns [
-	" Answer the <Number> of default columns to create in the receiever's grid "
-
-	^ 10 
-]
-
-{ #category : 'defaults' }
 CMSpaceModel >> defaultGridSize [
 	" Answer a <Number> representing how many cells we create in the grid by default "
 	
 	^ 100
-]
-
-{ #category : 'defaults' }
-CMSpaceModel >> defaultLines [
-	" Answer the <Number> of default lines to create in the receiver's grid "
-	
-	^ self class defaultLines 
 ]
 
 { #category : 'accessing' }
@@ -350,7 +335,7 @@ CMSpaceModel >> deleteSpatialEntitySet: aSpatialEntitySetClass [
 CMSpaceModel >> dimensions [
 	" Answer a <Point> with the receiver's lines and columns "
 	
-	^ self column @ self line
+	^ self numberOfColumns @ self numberOfRows
 ]
 
 { #category : 'private - dispatch' }
@@ -398,10 +383,10 @@ CMSpaceModel >> distanceFromCell: cell1 toCell: cell2 [
 	nbLines := (cell1 rowNumber - cell2 rowNumber) abs.
 	nbCols := (cell1 columnNumber - cell2 columnNumber) abs.
 	self isClosedEnvironment
-		ifFalse: [ nbLines > (self line - 2)
-				ifTrue: [ nbLines := nbLines - self line + 2 ].
-			nbCols > (self column - 2)
-				ifTrue: [ nbCols := nbCols - self column + 2 ] ].
+		ifFalse: [ nbLines > (self numberOfRows - 2)
+				ifTrue: [ nbLines := nbLines - self numberOfRows + 2 ].
+			nbCols > (self numberOfColumns - 2)
+				ifTrue: [ nbCols := nbCols - self numberOfColumns + 2 ] ].
 	^ self nbConfiguration distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols.
 
 ]
@@ -411,7 +396,7 @@ CMSpaceModel >> dominance: attribute [
 	"Compute dominance according to the attribute"
 
 	| numberCells sum n pi classes |
-	numberCells := self line * self column.
+	numberCells := self numberOfRows * self numberOfColumns.
 	sum := 0.
 	classes := (self cormasModel theCells collect: [ :a | a perform: attribute ]) asSet.
 	n := classes size.
@@ -491,11 +476,11 @@ CMSpaceModel >> envSpecStringFor: spatialEntityName [
 	(spatialEntityName = self cellClass name
 		and: [ self gridCellShape ~= #irregular ])
 		ifTrue: [ s
-				print: self line;
+				print: self numberOfRows;
 				nextPutAll: ' x ';
-				print: self column.
+				print: self numberOfColumns.
 			nb := self elementaryEntities size.
-			self line * self column > nb
+			self numberOfRows * self numberOfColumns > nb
 				ifTrue: [ s
 						nextPutAll: ' restricted to ';
 						print: nb ].
@@ -522,10 +507,10 @@ CMSpaceModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 	nbLines := (cell1 rowNumber - cell2 rowNumber) abs.
 	nbCols := (cell1 columnNumber - cell2 columnNumber) abs.
 	self isClosedEnvironment
-		ifFalse: [ nbLines > (self line - 2)
-				ifTrue: [ nbLines := nbLines - self line + 2 ].
-			nbCols > (self column - 2)
-				ifTrue: [ nbCols := nbCols - self column + 2 ] ].
+		ifFalse: [ nbLines > (self numberOfRows - 2)
+				ifTrue: [ nbLines := nbLines - self numberOfRows + 2 ].
+			nbCols > (self numberOfColumns - 2)
+				ifTrue: [ nbCols := nbCols - self numberOfColumns + 2 ] ].
 	^ (nbLines squared + nbCols squared) sqrt
 ]
 
@@ -692,8 +677,8 @@ CMSpaceModel >> getSetsOfContiguous: baseEntity horizontalDividers: i verticalDi
 	
 	| nbLG nbCG nbLP nbCP zone allComponents collec |
 	"dimensions de la grille"
-	nbLG := line.
-	nbCG := column.	"dimensions d'une partition"
+	nbLG := numberOfRows.
+	nbCG := numberOfColumns.	"dimensions d'une partition"
 	nbLP := nbLG / j.
 	nbCP := nbCG / i.	"calcul sous-grille de chaque cellule"
 	allComponents := Dictionary new.
@@ -707,10 +692,10 @@ CMSpaceModel >> getSetsOfContiguous: baseEntity horizontalDividers: i verticalDi
 	(self spatialEntitiesAt: baseEntity name)
 		do:
 			[:cc | 
-			line := (cc id / nbCG) ceiling.
-			column := cc id - ((line - 1) * nbCG).
-			zone := nbCG / nbCP * ((line / nbLP) ceiling - 1)
-				+ (column / nbCP) ceiling.
+			numberOfRows := (cc id / nbCG) ceiling.
+			numberOfColumns := cc id - ((numberOfRows - 1) * nbCG).
+			zone := nbCG / nbCP * ((numberOfRows / nbLP) ceiling - 1)
+				+ (numberOfColumns / nbCP) ceiling.
 			(allComponents at: zone) add: cc].
 	collec := OrderedCollection new.
 	1
@@ -768,9 +753,9 @@ CMSpaceModel >> humanReadableString [
 	^ String streamContents: [ : stream |
 		stream
 			space;
-			<< self line asString;
+			<< self numberOfRows asString;
 			<< $x;
-			<< self column asString;
+			<< self numberOfColumns asString;
 			<< $(;
 			<< self gridSize asString;
 			<< $);
@@ -801,8 +786,8 @@ CMSpaceModel >> initializeIrregular [
 	
 	gridCellShape := #irregular.
 	isClosedEnvironment := true.
-	line := nil.
-	column := nil.
+	numberOfRows := nil.
+	numberOfColumns := nil.
 	gridSize := 0	"arrayOrigins := Array new: cardinal."
 ]
 
@@ -863,30 +848,22 @@ CMSpaceModel >> isPartitionComplete: compoundEntity [
 ]
 
 { #category : 'private - accessing' }
-CMSpaceModel >> line [
-	" Answer the <Number> of lines of the receiver's grid "
-	
-	^ line
-		ifNil: [ line := self defaultLines ]
-]
-
-{ #category : 'private - accessing' }
 CMSpaceModel >> line: i column: j [
 	" Configure receiver's number of lines to be i and number of columns to be j "
 
-	line := i.
-	column := j.
+	numberOfRows := i.
+	numberOfColumns := j.
 	gridSize := i * j
 ]
 
 { #category : 'ESE (regular) - special locations' }
 CMSpaceModel >> lowerLeftLocation [
-	^ self elementaryEntities at: column * (line - 1) + 1
+	^ self elementaryEntities at: numberOfColumns * (numberOfRows - 1) + 1
 ]
 
 { #category : 'ESE (regular) - special locations' }
 CMSpaceModel >> lowerRightLocation [
-	^ self elementaryEntities at: column * line
+	^ self elementaryEntities at: numberOfColumns * numberOfRows
 ]
 
 { #category : 'landscape indices' }
@@ -970,6 +947,22 @@ CMSpaceModel >> newEntity: aClass [
 		  yourself
 ]
 
+{ #category : 'private - accessing' }
+CMSpaceModel >> numberOfColumns [
+	" Answer the <Number> of columns in the receiver's grid "
+	
+	^ numberOfColumns
+		ifNil: [ numberOfColumns := self class defaultNumberOfColumns ]
+]
+
+{ #category : 'private - accessing' }
+CMSpaceModel >> numberOfRows [
+	" Answer the <Number> of rows of the receiver's grid "
+	
+	^ numberOfRows
+		ifNil: [ numberOfRows := self class defaultNumberOfRows ]
+]
+
 { #category : 'landscape indices' }
 CMSpaceModel >> patchDensity: aClass [
 	"return the data (a number) to be recorded"
@@ -977,7 +970,7 @@ CMSpaceModel >> patchDensity: aClass [
 	| aggregates |
 	aggregates := self cormasModel
 		perform: (self cormasModel getterForEntityClass: aClass).
-	^ aggregates size / (self column * self line)
+	^ aggregates size / (self numberOfColumns * self numberOfRows)
 ]
 
 { #category : 'landscape indices' }
@@ -1181,7 +1174,7 @@ CMSpaceModel >> upperLeftLocation [
 
 { #category : 'ESE (regular) - special locations' }
 CMSpaceModel >> upperRightLocation [
-	^ self elementaryEntities at: column
+	^ self elementaryEntities at: numberOfColumns
 ]
 
 { #category : 'landscape indices' }

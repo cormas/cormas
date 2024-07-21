@@ -90,14 +90,6 @@ CMSpaceModelTest >> testCellsOfLine [
 ]
 
 { #category : 'test' }
-CMSpaceModelTest >> testColumn [
-
-	self spaceModel line: 2 column: 3.
-	self assert: self spaceModel column equals: 3.
-
-]
-
-{ #category : 'test' }
 CMSpaceModelTest >> testIsIrregular [
 
 	self spaceModel initializeIrregular.
@@ -118,8 +110,8 @@ CMSpaceModelTest >> testIsNotTorroidal [
 CMSpaceModelTest >> testLineColumn [
 
 	self spaceModel line: 2 column: 3.
-	self assert: self spaceModel line equals: 2.
-	self assert: self spaceModel column equals: 3.
+	self assert: self spaceModel numberOfRows equals: 2.
+	self assert: self spaceModel numberOfColumns equals: 3.
 	self assert: self spaceModel gridSize equals: 6.
 ]
 

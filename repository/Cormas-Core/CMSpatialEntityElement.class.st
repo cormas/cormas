@@ -48,7 +48,7 @@ CMSpatialEntityElement >> boundaryDirections [
 CMSpatialEntityElement >> columnNumber [
 	"Purpose: returns the X coordinate of the cell in a regular spatial grid"
 	
-	^self id - ((self rowNumber - 1) * self spaceModel column)
+	^self id - ((self rowNumber - 1) * self spaceModel numberOfColumns)
 ]
 
 { #category : 'environment - sensing - space' }
@@ -196,7 +196,7 @@ Example: self nearestCellVerifying: [:c | c isClosed not]"
 	^(self spaceModel gridCellShape = #squared 	or: [self spaceModel gridCellShape = #hexagonal])
 		ifTrue: [ self
 				nearestNeighborVerifying: aCondition
-				withinRadius: (self spaceModel line max: self spaceModel column) ]
+				withinRadius: (self spaceModel numberOfRows max: self spaceModel numberOfColumns) ]
 		ifFalse: [ self
 				nearestCellVerifying: aCondition
 				constraintOnPath: [ : aCell | true] ]
@@ -213,7 +213,7 @@ Example := self nearestCellVerifying: [:aCell | aCell hasWater] constraintOnPath
 	| collec minimum d target |
 	collec := (self spaceModel spatialEntitiesAt: self class name) select: [:c | condition1 value: c].
 	collec isEmpty ifTrue: [^nil].
-	minimum := self spaceModel line * self spaceModel column.
+	minimum := self spaceModel numberOfRows * self spaceModel numberOfColumns.
 	collec do: [ : c | 
 			c ~= self
 				ifTrue: [
@@ -282,7 +282,7 @@ Example: self nearestCellsVerifying: [:c | c isClosed not]"
 	
 	^self
 		nearestNeighborsVerifying: aCondition
-		withinRadius: (self spaceModel line max: self spaceModel column)
+		withinRadius: (self spaceModel numberOfRows max: self spaceModel numberOfColumns)
 ]
 
 { #category : 'environment - sensing - space' }
@@ -297,7 +297,7 @@ Example: self nearestCellsVerifying: [:c | c isPolluted not] withMaxOf: #water"
 	^self
 		nearestNeighborsVerifying: [:c | true]
 		withMaxOf: aMagnitudeName
-		withinRadius: (self spaceModel line max: self spaceModel column)
+		withinRadius: (self spaceModel numberOfRows max: self spaceModel numberOfColumns)
 ]
 
 { #category : 'environment - sensing - space' }
@@ -311,7 +311,7 @@ Example: self nearestNeighborsWithMaxOf: #water"
 	^self
 		nearestNeighborsVerifying: [:c | true]
 		withMaxOf: aMagnitudeName
-		withinRadius: (self spaceModel line max: self spaceModel column)
+		withinRadius: (self spaceModel numberOfRows max: self spaceModel numberOfColumns)
 ]
 
 { #category : 'environment - sensing - space' }
@@ -323,7 +323,7 @@ Example: self nearestCellsWithoutAny: #Predator"
 	
 	^self
 		nearestNeighborsVerifying: [:p | (p hasOccupantsOfClass: aClass) not ]
-		withinRadius: (self spaceModel line max: self spaceModel column)
+		withinRadius: (self spaceModel numberOfRows max: self spaceModel numberOfColumns)
 ]
 
 { #category : 'environment - sensing - space' }
@@ -353,7 +353,7 @@ Return value: <Collection(SpatialEntityElement)>"
 	
 	^self
 		nearestEmptyNeighborsWithinRadius:
-			(self spaceModel line max: self spaceModel column)
+			(self spaceModel numberOfRows max: self spaceModel numberOfColumns)
 ]
 
 { #category : 'environment - sensing - space' }
@@ -500,7 +500,7 @@ Return value: <SpatialEntityElement | nil>"
 CMSpatialEntityElement >> rowNumber [
 	"Purpose: returns the Y coordinate of the cell in a regular spatial grid"
 	
-	^(self id / self spaceModel column) ceiling
+	^(self id / self spaceModel numberOfColumns) ceiling
 ]
 
 { #category : 'environment - distance' }

@@ -92,7 +92,7 @@ CMSpace6Neighbourhood class >> distanceFromCell: cell1 toCell: cell2 nbLines: nb
 CMSpace6Neighbourhood >> eastCellHexa: k [
 	
 	k = 0 ifTrue: [ ^ 0 ].
-	^ k < self column | ((k - 1) // self column + 1) odd
+	^ k < self numberOfColumns | ((k - 1) // self numberOfColumns + 1) odd
 		ifTrue: [ k ] "ligne impaire ou premiere"
 		ifFalse: [ self eastCell: k ] "ligne paire"
 ]
@@ -135,7 +135,7 @@ CMSpace6Neighbourhood >> setBoundaryDirectionsFor: aCMSpatialEntityElement [
 CMSpace6Neighbourhood >> westCellHexa: k [
 	
 	k = 0 ifTrue: [ ^ 0 ].
-	^ k < self column | ((k - 1) // self column + 1) odd
+	^ k < self numberOfColumns | ((k - 1) // self numberOfColumns + 1) odd
 		ifTrue: [ self westCell: k ] "ligne impaire ou premiere"
 		ifFalse: [ k ] "ligne paire"
 ]

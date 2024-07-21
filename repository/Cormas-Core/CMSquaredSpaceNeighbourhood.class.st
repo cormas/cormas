@@ -9,7 +9,7 @@ Class {
 { #category : 'environment - sensing - space' }
 CMSquaredSpaceNeighbourhood >> nearestEmptyCellFor: aCMAgentLocation [
 	
-	^ (aCMAgentLocation nearestEmptyNeighborsWithinRadius: (self spaceModel line max: self spaceModel column))
+	^ (aCMAgentLocation nearestEmptyNeighborsWithinRadius: (self spaceModel numberOfRows max: self spaceModel numberOfColumns))
 		ifNotEmpty: [ : locations | self selectRandomlyFrom: locations ]
 		ifEmpty: [ nil ]
 ]

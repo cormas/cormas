@@ -73,12 +73,6 @@ CMSpaceNeighbourhood >> cardinal [
 	^ self class cardinal
 ]
 
-{ #category : 'private - regular cells - instance creation' }
-CMSpaceNeighbourhood >> column [
-
-	^ self spaceModel column
-]
-
 { #category : 'accessing' }
 CMSpaceNeighbourhood >> createCellsFigure [ 
 
@@ -94,11 +88,11 @@ CMSpaceNeighbourhood >> distanceFromCell: cell1 toCell: cell2 nbLines: nbLines n
 
 { #category : 'private - regular cells - instance creation' }
 CMSpaceNeighbourhood >> eastCell: k [
-	k \\ self column = 0
+	k \\ self numberOfColumns = 0
 		ifFalse: [ ^ k + 1 ].
 	^ self isClosedEnvironment
 		ifTrue: [ 0 ]
-		ifFalse: [ k - (self column - 1) ]
+		ifFalse: [ k - (self numberOfColumns - 1) ]
 ]
 
 { #category : 'accessing' }
@@ -176,12 +170,6 @@ CMSpaceNeighbourhood >> isClosedEnvironment [
 	^ self spaceModel isClosedEnvironment
 ]
 
-{ #category : 'private - regular cells - instance creation' }
-CMSpaceNeighbourhood >> line [
-
-	^ self spaceModel line
-]
-
 { #category : 'private - accessing' }
 CMSpaceNeighbourhood >> nbNeighbours [
 
@@ -192,22 +180,34 @@ CMSpaceNeighbourhood >> nbNeighbours [
 CMSpaceNeighbourhood >> northCell: k [
 	k = 0
 		ifTrue: [ ^ 0 ].
-	k > self column
-		ifTrue: [ ^ k - self column ].
+	k > self numberOfColumns
+		ifTrue: [ ^ k - self numberOfColumns ].
 	^ self isClosedEnvironment
 		ifTrue: [ 0 ]
-		ifFalse: [ self column * (self line - 1) + k ]
+		ifFalse: [ self numberOfColumns * (self numberOfRows - 1) + k ]
+]
+
+{ #category : 'private - regular cells - instance creation' }
+CMSpaceNeighbourhood >> numberOfColumns [
+
+	^ self spaceModel numberOfColumns
+]
+
+{ #category : 'private - regular cells - instance creation' }
+CMSpaceNeighbourhood >> numberOfRows [
+
+	^ self spaceModel numberOfRows
 ]
 
 { #category : 'private - regular cells - instance creation' }
 CMSpaceNeighbourhood >> southCell: k [
 	k = 0
 		ifTrue: [ ^ 0 ].
-	k <= (self column * (self line - 1))
-		ifTrue: [ ^ k + self column ].
+	k <= (self numberOfColumns * (self numberOfRows - 1))
+		ifTrue: [ ^ k + self numberOfColumns ].
 	^ self isClosedEnvironment
 		ifTrue: [ 0 ]
-		ifFalse: [ k - (self column * (self line - 1)) ]
+		ifFalse: [ k - (self numberOfColumns * (self numberOfRows - 1)) ]
 ]
 
 { #category : 'accessing' }
@@ -225,9 +225,9 @@ CMSpaceNeighbourhood >> spaceModel: aCMSpaceModel [
 { #category : 'private - regular cells - instance creation' }
 CMSpaceNeighbourhood >> westCell: k [
 
-	k \\ self column = 1
+	k \\ self numberOfColumns = 1
 		ifFalse: [ ^ k - 1 ].
 	^ self isClosedEnvironment
 		ifTrue: [ 0 ]
-		ifFalse: [ k + self column - 1 ]
+		ifFalse: [ k + self numberOfColumns - 1 ]
 ]
