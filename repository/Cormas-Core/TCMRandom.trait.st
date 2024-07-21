@@ -3,9 +3,9 @@ Trait {
 	#instVars : [
 		'randomNumberGenerator'
 	],
-	#category : 'Cormas-Core-Kernel',
+	#category : 'Cormas-Core-Traits',
 	#package : 'Cormas-Core',
-	#tag : 'Kernel'
+	#tag : 'Traits'
 }
 
 { #category : 'accessing' }

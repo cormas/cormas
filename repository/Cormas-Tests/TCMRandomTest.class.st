@@ -4,9 +4,8 @@ Class {
 	#instVars : [
 		'cormasModel'
 	],
-	#category : 'Cormas-Tests-Communication',
-	#package : 'Cormas-Tests',
-	#tag : 'Communication'
+	#category : 'Cormas-Tests',
+	#package : 'Cormas-Tests'
 }
 
 { #category : 'running' }

@@ -32,8 +32,8 @@ Class Instance Variables:
 Class {
 	#name : 'CMEntity',
 	#superclass : 'Object',
-	#traits : 'TCMRandom',
-	#classTraits : 'TCMRandom classTrait',
+	#traits : 'TCMRandom + TCMMath',
+	#classTraits : 'TCMRandom classTrait + TCMMath classTrait',
 	#instVars : [
 		'id',
 		'flag',
