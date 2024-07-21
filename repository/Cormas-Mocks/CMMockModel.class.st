@@ -268,7 +268,7 @@ CMMockModel >> numberOfRows: aNumber [
 { #category : 'control' }
 CMMockModel >> step: t [
 
-	self askRandom: CMMockAnimal toDo: #step.
+	self askRandom: CMMockAnimal toDo: #step
 ]
 
 { #category : 'accessing' }

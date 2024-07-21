@@ -37,15 +37,6 @@ Class {
 	#tag : 'Legacy'
 }
 
-{ #category : 'utilities - value types' }
-Cormas class >> arrayFrom: anElementOrArray [
-	"return an array for the argument"
-	
-	^ anElementOrArray isArray
-		ifTrue: [ anElementOrArray ]
-		ifFalse: [ Array with: anElementOrArray ]
-]
-
 { #category : 'utilities - mathematics' }
 Cormas class >> logisticGrowth: x r: r K: K [
 	"Purpose: Returns the next value of X(t+1), according to the discrete logistic equation :
