@@ -33,8 +33,8 @@ CMEntityTest >> testCormasModel [
 	| model |
 	model := (CMMockModel newWithActiveInit: #initRandom)
 		initializeSimulation;
-		createGridLines: 3
-			columns: 3
+		createGridNumberOfRows: 3
+			numberOfColumns: 3
 			neighbourhood: 4
 			closed: true;
 		yourself.

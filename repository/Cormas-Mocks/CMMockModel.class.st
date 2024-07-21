@@ -142,8 +142,8 @@ CMMockModel >> initDead [
 CMMockModel >> initEmpty [
 
 	self
-		createGridLines: numberOfRows
-		columns: numberOfColumns
+		createGridNumberOfRows: numberOfRows
+		numberOfColumns: numberOfColumns
 		neighbourhood: 8
 		closed: true.
 		

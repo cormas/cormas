@@ -16,9 +16,9 @@ Class {
 CMSpaceModelTest >> newModelWithClosedEnvironment [
 
 	^ self spaceModel 
-		initializeRegularLines: 9
-		columns: 5
-		nbType: 4
+		initializeRegularNumberOfRows: 9
+		numberOfColumns: 5
+		neighbourhood: 4
 		closed: true;
 		yourself
 ]
@@ -27,9 +27,9 @@ CMSpaceModelTest >> newModelWithClosedEnvironment [
 CMSpaceModelTest >> newModelWithOpenEnvironment [
 
 	^ self spaceModel 
-		initializeRegularLines: 9
-		columns: 5
-		nbType: 4
+		initializeRegularNumberOfRows: 9
+		numberOfColumns: 5
+		neighbourhood: 4
 		closed: false;
 		yourself
 ]
@@ -107,15 +107,6 @@ CMSpaceModelTest >> testIsNotTorroidal [
 ]
 
 { #category : 'test' }
-CMSpaceModelTest >> testLineColumn [
-
-	self spaceModel line: 2 column: 3.
-	self assert: self spaceModel numberOfRows equals: 2.
-	self assert: self spaceModel numberOfColumns equals: 3.
-	self assert: self spaceModel gridSize equals: 6.
-]
-
-{ #category : 'test' }
 CMSpaceModelTest >> testNbConfiguration [
 
 	self spaceModel nbCount: 4.
@@ -155,4 +146,13 @@ CMSpaceModelTest >> testNbNeighbours [
 	
 
 
+]
+
+{ #category : 'test' }
+CMSpaceModelTest >> testNumberOfRowsNumberOfColumns [
+
+	self spaceModel numberOfRows: 2 numberOfColumns: 3.
+	self assert: self spaceModel numberOfRows equals: 2.
+	self assert: self spaceModel numberOfColumns equals: 3.
+	self assert: self spaceModel gridSize equals: 6.
 ]

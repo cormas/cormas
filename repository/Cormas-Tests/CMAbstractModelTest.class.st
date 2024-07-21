@@ -50,8 +50,8 @@ CMAbstractModelTest >> testCentralCell [
 	| m |
 	m := (CMMockModel	newWithActiveInit: #initRandom)
 		initializeSimulation;
-		createGridLines: 3
-			columns: 3
+		createGridNumberOfRows: 3
+			numberOfColumns: 3
 			neighbourhood: 4
 			closed: true;
 		yourself.
@@ -73,8 +73,8 @@ CMAbstractModelTest >> testDominance [
 	| m |
 	m := (CMMockModel	newWithActiveInit: #initRandom)
 		initializeSimulation;
-		createGridLines: 100
-			columns: 100
+		createGridNumberOfRows: 100
+			numberOfColumns: 100
 			neighbourhood: 4
 			closed: true;
 		yourself.
@@ -87,8 +87,8 @@ CMAbstractModelTest >> testDominance1 [
 	| m |
 	m := (CMMockModel	newWithActiveInit: #initRandom)
 		initializeSimulation;
-		createGridLines: 100
-			columns: 100
+		createGridNumberOfRows: 100
+			numberOfColumns: 100
 			neighbourhood: 4
 			closed: true;
 		yourself.
@@ -158,8 +158,8 @@ CMAbstractModelTest >> testLowerLeftCell [
 	| m |
 	m := (CMMockModel newWithActiveInit: #initRandom)
 		initializeSimulation;
-		createGridLines: 3
-			columns: 3
+		createGridNumberOfRows: 3
+			numberOfColumns: 3
 			neighbourhood: 4
 			closed: true;
 		yourself.
@@ -173,8 +173,8 @@ CMAbstractModelTest >> testLowerRightCell [
 	| m |
 	m := (CMMockModel newWithActiveInit: #initRandom)
 		initializeSimulation;
-		createGridLines: 3
-			columns: 3
+		createGridNumberOfRows: 3
+			numberOfColumns: 3
 			neighbourhood: 4
 			closed: true;
 		yourself.
@@ -203,8 +203,8 @@ CMAbstractModelTest >> testPickRandomCellConstrainedBy [
 	| m |
 	m := (CMMockModel newWithActiveInit: #initRandom)
 		initializeSimulation;
-		createGridLines: 9
-			columns: 9
+		createGridNumberOfRows: 9
+			numberOfColumns: 9
 			neighbourhood: 4
 			closed: true;
 		yourself.
@@ -297,8 +297,8 @@ CMAbstractModelTest >> testSelectCellsBetweenLine1Line2AndColumn1Column2 [
 	
 	m := (CMMockModel newWithActiveInit: #initAlive)
 		initializeSimulation;
-		createGridLines: 20
-			columns: 10
+		createGridNumberOfRows: 20
+			numberOfColumns: 10
 			neighbourhood: 4
 			closed: true;
 		yourself.
@@ -318,8 +318,8 @@ CMAbstractModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
 	| m cells |
 	m := (CMMockModel newWithActiveInit: #initAlive)
 		initializeSimulation;
-		createGridLines: 9
-			columns: 5
+		createGridNumberOfRows: 9
+			numberOfColumns: 5
 			neighbourhood: 4
 			closed: true;
 		yourself.
@@ -390,8 +390,8 @@ CMAbstractModelTest >> testUpperLeftCell [
 	| m |
 	m := (CMMockModel newWithActiveInit: #initRandom)
 		initializeSimulation;
-		createGridLines: 3
-			columns: 3
+		createGridNumberOfRows: 3
+			numberOfColumns: 3
 			neighbourhood: 4
 			closed: true;
 		yourself.
@@ -405,8 +405,8 @@ CMAbstractModelTest >> testUpperRightCell [
 	| m |
 	m := (CMMockModel newWithActiveInit: #initRandom)
 		initializeSimulation;
-		createGridLines: 3
-			columns: 3
+		createGridNumberOfRows: 3
+			numberOfColumns: 3
 			neighbourhood: 4
 			closed: true;
 		yourself.

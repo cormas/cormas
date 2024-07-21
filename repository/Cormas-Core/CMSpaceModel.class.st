@@ -133,7 +133,7 @@ CMSpaceModel >> cellAt: aRowIndex at: aColumnIndex [
 CMSpaceModel >> cellClass [
 	"return the SpatialEntityElement class of the current model"
 
-	^ self cormasModelClass cellClass
+	^ self cormasModel class cellClass
 ]
 
 { #category : 'ESE (regular) - special locations' }
@@ -259,11 +259,6 @@ CMSpaceModel >> cormasModel: aCormasModel [
 
 ]
 
-{ #category : 'accessing' }
-CMSpaceModel >> cormasModelClass [
-	^ self cormasModel class
-]
-
 { #category : 'private - regular cells - instance creation' }
 CMSpaceModel >> createCells [
 	" Create all the cells and their connexions, and collect them as elementaryEntities collection "
@@ -281,10 +276,10 @@ CMSpaceModel >> createElementaryEntities [
 
 	| cells |
 
-	self cormasModelClass cellClass currentId: 0.
+	self cormasModel class cellClass currentId: 0.
 	
 	cells := (1 to: self gridSize) collect: [ :i |
-		self newEntity: self cormasModelClass cellClass ].
+		self newEntity: self cormasModel class cellClass ].
 	
 	self elementaryEntities: cells asArray.
 ]
@@ -294,15 +289,6 @@ CMSpaceModel >> defaultGridSize [
 	" Answer a <Number> representing how many cells we create in the grid by default "
 	
 	^ 100
-]
-
-{ #category : 'accessing' }
-CMSpaceModel >> deleteSpatialEntitySet: aSpatialEntitySetClass [
-	" Remove the instances of aSpatialEntitySetClass. The instances are destroyed, but not their components.
-	The collectGarbage is immediately performed  (ie. 'theXXXs' collection is emptied)
-	<aSpatialEntitySetClass = a subclass of SpatialEntitySet> "
-
-	self spaceModel resetCompoundSpatialEntity: aSpatialEntitySetClass
 ]
 
 { #category : 'accessing' }
@@ -392,7 +378,7 @@ CMSpaceModel >> elementaryEntities [
 CMSpaceModel >> elementaryEntities: x [
 	
 	self spatialEntities
-		at: self cormasModelClass cellClass name
+		at: self cormasModel class cellClass name
 		put: x	"(self dependents notNil and: [line * column > x size])
 		ifTrue: [self vue mainInterface updateWindowName]"
 ]
@@ -423,19 +409,6 @@ CMSpaceModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 			nbCols > (self numberOfColumns - 2)
 				ifTrue: [ nbCols := nbCols - self numberOfColumns + 2 ] ].
 	^ (nbLines squared + nbCols squared) sqrt
-]
-
-{ #category : 'private - display' }
-CMSpaceModel >> findIndexForEntityClass: entityClass id: entityId in: someEntities [
-	"sent by a remote spaceInterface to identify a specific entity identified by its id and class among a 
-	collection of local entities"
-	
-	^someEntities
-		findFirst:
-			[:e | 
-			e
-				ifNil: [false]
-				ifNotNil: [e id = entityId and: [e class = entityClass]]]
 ]
 
 { #category : 'private - accessing' }
@@ -493,16 +466,11 @@ CMSpaceModel >> initializeIrregular [
 ]
 
 { #category : 'ESE initialize-release' }
-CMSpaceModel >> initializeRegularLines: lines columns: columns nbType: aNumber closed: aBoolean [
-	" Private - Create a grid of regular cells.
-
-	lines = number of lines. 
-	columns = number of columns.
-	aBoolean = <Boolean> (true for closed, false for toroidal).
-	ex, from CormasModel: self spaceModel initializeRegularColumns: 101 lines: 101 toroidal: true."
+CMSpaceModel >> initializeRegularNumberOfRows: aNumberOfRows numberOfColumns: aNumberOfColumns neighbourhood: aNumber closed: aBoolean [
+	" Private - Create a grid of regular cells."
 
 	self resetSpatialEntities.
-	self line: lines column: columns.
+	self numberOfRows: aNumberOfRows numberOfColumns: aNumberOfColumns.
 	isClosedEnvironment := aBoolean.
 	self nbCount: aNumber.
 	self createCells.
@@ -539,15 +507,6 @@ CMSpaceModel >> isIrregular [
 	"Answer if the spaceModel is irregular (or regular), meaning that the cells are not uniform, but have different shapes (vectorial)"
 	
 	^gridCellShape = #irregular
-]
-
-{ #category : 'private - accessing' }
-CMSpaceModel >> line: i column: j [
-	" Configure receiver's number of lines to be i and number of columns to be j "
-
-	numberOfRows := i.
-	numberOfColumns := j.
-	gridSize := i * j
 ]
 
 { #category : 'ESE (regular) - special locations' }
@@ -657,6 +616,14 @@ CMSpaceModel >> numberOfRows [
 		ifNil: [ numberOfRows := self class defaultNumberOfRows ]
 ]
 
+{ #category : 'private - accessing' }
+CMSpaceModel >> numberOfRows: aNumberOfRows numberOfColumns: aNumberOfColumns [
+
+	numberOfRows := aNumberOfRows.
+	numberOfColumns := aNumberOfColumns.
+	gridSize := aNumberOfRows * aNumberOfColumns
+]
+
 { #category : 'landscape indices' }
 CMSpaceModel >> patchDensity: aClass [
 	"return the data (a number) to be recorded"
@@ -703,24 +670,6 @@ CMSpaceModel >> randomCell [
 	^ self selectRandomlyFrom: self elementaryEntities
 ]
 
-{ #category : 'ESE initialize-release' }
-CMSpaceModel >> release [
-	
-	self dependents
-		do:
-			[:spv | 
-			spv closeAndUnschedule.
-			spv release].
-	super release	"	self spatialEntities notNil ifTrue: [self spatialEntities do: [:aCollec | aCollec do: [:e | e release]]]"	"-> Mis en commantaire car les entit√©s n''ont plus de dependents'"
-]
-
-{ #category : 'private - init' }
-CMSpaceModel >> release: aClass [
-	
-	super release.
-	(self spatialEntitiesAt: aClass name) do: [:e | e spaceModel: nil]
-]
-
 { #category : 'accessing' }
 CMSpaceModel >> resetCompoundSpatialEntity: compoundClass [
 
@@ -751,7 +700,7 @@ CMSpaceModel >> resetSpatialEntities [
 	| newColl |
 	self spatialEntities: Dictionary new. 
 	self cormasModel ifNil: [ ^nil ].
-	self cormasModelClass spatialClasses do: [ : aSpatialClass | 
+	self cormasModel class spatialClasses do: [ : aSpatialClass | 
 			newColl := self cormasModel resetEntities: aSpatialClass.
 			self spatialEntitiesAt: aSpatialClass name 	put: newColl ].
 	"self changed: #removeAllFigures"	"all the figures of the spaceInterfaces have to be deleted"
@@ -773,7 +722,7 @@ CMSpaceModel >> spaceModel [
 CMSpaceModel >> spatialClasses [
 	"return a collection of spatial classes"
 
-	^ self cormasModelClass spatialClasses
+	^ self cormasModel class spatialClasses
 ]
 
 { #category : 'private - accessing' }

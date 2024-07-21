@@ -868,17 +868,13 @@ CMAbstractModel >> comment: anObject [
 ]
 
 { #category : 'instance creation - spatial grid' }
-CMAbstractModel >> createGridLines: numLines columns: numColumns neighbourhood: aNumber closed: aBoolean [
-	"Purpose: Create a spatial grid made of cells
-Arguments:  numColumns : number of columns ; numLines : number of lines of the grid.
-Arguments: aNumber is the neighbourhood type. It must 4, 6 or 8
-Arguments: aBoolean : closed or torroidal space.
-Example: self createGridLines: 30 columns: 30 neighbourhood: 4 closed: true "
+CMAbstractModel >> createGridNumberOfRows: aNumberOfRows numberOfColumns: aNumberOfColumns neighbourhood: aNumber closed: aBoolean [
+	"Create a spatial grid made of cells"
 
 	self spaceModel
-		initializeRegularLines: numLines
-		columns: numColumns
-		nbType: aNumber
+		initializeRegularNumberOfRows: aNumberOfRows
+		numberOfColumns: aNumberOfColumns
+		neighbourhood: aNumber
 		closed: aBoolean
 ]
 
@@ -1101,21 +1097,6 @@ CMAbstractModel >> data: aDictionary [
 CMAbstractModel >> defaultAttributesSetter: aDefaultSetter [
 	
 	^defaultAttributesSetter := aDefaultSetter
-]
-
-{ #category : 'accessing' }
-CMAbstractModel >> deleteSpatialEntitySet: aClass [ 
-	" See comment in Space Model class "
-
-	self spaceModel deleteSpatialEntitySet: aClass
-]
-
-{ #category : 'pov' }
-CMAbstractModel >> displayDefaultPovOf: aClass [
-	"Purpose: set the default POV of aClass to be displayed on the first opened spatial grid
-Example : self displayDefaultPovOf: Cell"
-	
-	self displayPov: #povClassName of: aClass
 ]
 
 { #category : 'pov' }
