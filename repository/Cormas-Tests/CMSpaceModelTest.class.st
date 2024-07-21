@@ -53,14 +53,14 @@ CMSpaceModelTest >> spaceModel: anObject [
 	spaceModel := anObject
 ]
 
-{ #category : 'test' }
+{ #category : 'tests' }
 CMSpaceModelTest >> testAllOccupants [
 
 	self assert: self spaceModel allOccupants size equals: 6.
 
 ]
 
-{ #category : 'test' }
+{ #category : 'tests' }
 CMSpaceModelTest >> testCellAtAt [
 
 	self assert: (spaceModel cellAt: 1 at: 1) id equals: 1.
@@ -76,7 +76,7 @@ CMSpaceModelTest >> testCellAtAt [
 	self assert: (spaceModel cellAt: 4 at: 4) id equals: 16.
 ]
 
-{ #category : 'test' }
+{ #category : 'tests' }
 CMSpaceModelTest >> testCellsOfLine [
 
 	| cells |
@@ -89,7 +89,7 @@ CMSpaceModelTest >> testCellsOfLine [
 		self assert: each id equals: i ].
 ]
 
-{ #category : 'test' }
+{ #category : 'tests' }
 CMSpaceModelTest >> testIsIrregular [
 
 	self spaceModel initializeIrregular.
@@ -99,14 +99,14 @@ CMSpaceModelTest >> testIsIrregular [
 
 ]
 
-{ #category : 'test' }
+{ #category : 'tests' }
 CMSpaceModelTest >> testIsNotTorroidal [
 
 	self assert: self newModelWithClosedEnvironment isClosedEnvironment.
 	self deny: self newModelWithOpenEnvironment isClosedEnvironment.	
 ]
 
-{ #category : 'test' }
+{ #category : 'tests' }
 CMSpaceModelTest >> testNbConfiguration [
 
 	self spaceModel nbCount: 4.
@@ -122,7 +122,7 @@ CMSpaceModelTest >> testNbConfiguration [
 	self assert: self spaceModel nbConfiguration isNil.
 ]
 
-{ #category : 'test' }
+{ #category : 'tests' }
 CMSpaceModelTest >> testNbCount [
 
 	self spaceModel nbCount: 4.
@@ -136,7 +136,7 @@ CMSpaceModelTest >> testNbCount [
 	self assert: self spaceModel nbNeighbours equals: 6.
 ]
 
-{ #category : 'test' }
+{ #category : 'tests' }
 CMSpaceModelTest >> testNbNeighbours [
 
 	self spaceModel nbCount: 4.
@@ -148,7 +148,7 @@ CMSpaceModelTest >> testNbNeighbours [
 
 ]
 
-{ #category : 'test' }
+{ #category : 'tests' }
 CMSpaceModelTest >> testNumberOfRowsNumberOfColumns [
 
 	self spaceModel numberOfRows: 2 numberOfColumns: 3.

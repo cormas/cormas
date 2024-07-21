@@ -29,10 +29,8 @@ Return value: <OrderedCollection(SpatialEntity) | nil>"
 
 { #category : 'displaying' }
 TCMLocated >> center [
-	
-	^ patch isNil
-		ifTrue: [ nil ]
-		ifFalse: [ patch center ]
+
+	^ patch ifNil: [ nil ] ifNotNil: [ patch center ]
 ]
 
 { #category : 'environment - sensing - agents' }

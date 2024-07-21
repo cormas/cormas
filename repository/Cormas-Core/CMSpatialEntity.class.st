@@ -301,7 +301,7 @@ CMSpatialEntity >> initOccupants [
 				do: [:e | theOccupants at: (e name) put: OrderedCollection new]]"
 ]
 
-{ #category : 'initialize-release' }
+{ #category : 'initialization' }
 CMSpatialEntity >> initialize [
 	" Private - Set the receiver's internal state. Initally a spatial entity is not dead "
 

@@ -235,7 +235,7 @@ CMEntity class >> ghostInstance [
 CMEntity class >> hasRandomAttribute: anAttributeName [
 	"' Answer if anAttributeName defined at class or instance level is a random attribute"
 	
-	^self randomAttributes contains: [:line | (line at: 1) = anAttributeName]
+	^self randomAttributes anySatisfy: [:line | (line at: 1) = anAttributeName]
 ]
 
 { #category : 'accessing' }
@@ -340,7 +340,7 @@ CMEntity class >> isRandomAttribute: anAttributeName scopeLevel: level [
 	"' Answer if anAttributeName defined at level (#instance or #class) is a random attribute"
 	
 	^self randomAttributes
-		contains:
+		anySatisfy:
 			[:line | (line at: 1) = anAttributeName and: [(line at: 2) = level]]
 ]
 
@@ -566,13 +566,6 @@ CMEntity >> cormasModel [
 { #category : 'accessing' }
 CMEntity >> cormasModel: aCMAbstractModel [
 	cormasModel := aCMAbstractModel
-]
-
-{ #category : 'accessing' }
-CMEntity >> currentSimulation [
-	"Direct access to the current simulation registered by the current cormas"
-
-	^ cormasModel
 ]
 
 { #category : 'accessing - scheduling' }
@@ -902,26 +895,21 @@ aValue = <Number> ; minValue = <Integer> ; maxValue = <Integer> ; startColor = <
 ECEC example : 
 	povValue: 10 min: 0 color: #yellow max: 100 color: #red  or 
 	povValue: (self energy) min: 0 color: (Color yellow) max: (self class K) color: Color red"
-	
+
 	| alpha rv gv bv value start_Color stop_Color |
-	(aValue isNil or: [aValue isNumber not])
-		ifTrue: [^Color white].
-	value := aValue <= minValue
-		ifTrue: [minValue]
-		ifFalse: [aValue].
-	value := aValue >= maxValue
-		ifTrue: [maxValue]
-		ifFalse: [aValue].
+	(aValue isNil or: [ aValue isNumber not ]) ifTrue: [ ^ Color white ].
+	value := aValue max: minValue.
+	value := aValue min: maxValue.
 	start_Color := Color colorFrom: startColor.
 	stop_Color := Color colorFrom: stopColor.
-	alpha := (value - minValue) / (maxValue - minValue).
+	alpha := value - minValue / (maxValue - minValue).
 	rv := (stop_Color red * alpha) rounded
-		+ (start_Color red * (1 - alpha)) rounded.
+	      + (start_Color red * (1 - alpha)) rounded.
 	gv := (stop_Color green * alpha) rounded
-		+ (start_Color green * (1 - alpha)) rounded.
+	      + (start_Color green * (1 - alpha)) rounded.
 	bv := (stop_Color blue * alpha) rounded
-		+ (start_Color blue * (1 - alpha)) rounded.
-	^Color red: rv green: gv blue: bv
+	      + (start_Color blue * (1 - alpha)) rounded.
+	^ Color r: rv g: gv b: bv
 ]
 
 { #category : 'utilities - color' }

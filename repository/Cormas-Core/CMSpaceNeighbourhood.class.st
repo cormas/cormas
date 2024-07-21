@@ -74,13 +74,6 @@ CMSpaceNeighbourhood >> cardinal [
 ]
 
 { #category : 'accessing' }
-CMSpaceNeighbourhood >> createCellsFigure [ 
-
-	self spaceModel createElementaryEntities.
-	
-]
-
-{ #category : 'accessing' }
 CMSpaceNeighbourhood >> distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols [
 
 	^ self class distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols
@@ -153,7 +146,7 @@ CMSpaceNeighbourhood >> initializeOn: aSpaceModel [
 
 	aSpaceModel gridCellShape: self gridCellShapeType.
 	self spaceModel: aSpaceModel.
-	self createCellsFigure.
+	self spaceModel createElementaryEntities.
 	self initializeNeighbourhood.
 ]
 

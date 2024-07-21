@@ -34,10 +34,8 @@ CMLocatedObject class >> isSituatedClass [
 
 { #category : 'displaying' }
 CMLocatedObject >> center [
-	
-	^patch isNil
-		ifTrue: [nil]
-		ifFalse: [patch center]
+
+	^ patch ifNil: [ nil ] ifNotNil: [ patch center ]
 ]
 
 { #category : 'star control' }

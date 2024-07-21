@@ -4,9 +4,6 @@
 Class {
 	#name : 'BaselineOfCormas',
 	#superclass : 'BaselineOf',
-	#classVars : [
-		'LastVersionLoad'
-	],
 	#category : 'BaselineOfCormas',
 	#package : 'BaselineOfCormas'
 }

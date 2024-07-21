@@ -264,11 +264,6 @@ CMAbstractModel class >> cormasModelName [
 ]
 
 { #category : 'accessing' }
-CMAbstractModel class >> currentSimulation [
-	self deprecated: 'currentSimulation is no longer supported.'
-]
-
-{ #category : 'accessing' }
 CMAbstractModel class >> currentSimulation: anObject [
 	self deprecated: 'currentSimulation is no longer supported.'
 ]
@@ -312,7 +307,7 @@ CMAbstractModel class >> hasProbes [
 CMAbstractModel class >> hasRandomAttribute: anAttributeName [
 	"' Answer if anAttributeName defined at class or instance level is a random attribute"
 	
-	^self randomAttributes contains: [:line | (line at: 1) = anAttributeName]
+	^self randomAttributes anySatisfy: [:line | (line at: 1) = anAttributeName]
 ]
 
 { #category : 'accessing' }
@@ -403,7 +398,7 @@ CMAbstractModel class >> isRandomAttribute: anAttributeName scopeLevel: level [
 	"' Answer if anAttributeName defined at level (#instance or #class) is a random attribute"
 	
 	^self randomAttributes
-		contains:
+		anySatisfy:
 			[:line | (line at: 1) = anAttributeName and: [(line at: 2) = level]]
 ]
 
@@ -1081,11 +1076,12 @@ CMAbstractModel >> creationDate: anObject [
 { #category : 'probes - recording' }
 CMAbstractModel >> data [
 	"Returns probes results collected during one simulation"
+
 	"At the moment, data is a dictionary"
+
 	"Should be replaced by DataFrame in the future"
-	^data isNil
-		ifTrue: [data := Dictionary new]
-		ifFalse: [data]
+
+	^ data ifNil: [ data := Dictionary new ] ifNotNil: [ data ]
 ]
 
 { #category : 'probes - recording' }

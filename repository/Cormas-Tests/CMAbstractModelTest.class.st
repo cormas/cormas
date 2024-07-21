@@ -95,7 +95,7 @@ CMAbstractModelTest >> testDominance1 [
 	self assert: (m dominance: #state) < 1.0
 ]
 
-{ #category : 'test' }
+{ #category : 'tests' }
 CMAbstractModelTest >> testHasActiveInit [
 
 	self assert: model hasActiveInit.
@@ -104,7 +104,7 @@ CMAbstractModelTest >> testHasActiveInit [
 	
 ]
 
-{ #category : 'test' }
+{ #category : 'tests' }
 CMAbstractModelTest >> testHasControlInit [
 
 	self deny: model hasControlInit.
@@ -114,7 +114,7 @@ CMAbstractModelTest >> testHasControlInit [
 	
 ]
 
-{ #category : 'test' }
+{ #category : 'tests' }
 CMAbstractModelTest >> testInitSimulation [
 
 	model := (CMMockModel	newWithActiveInit: #initRandom)
@@ -125,7 +125,7 @@ CMAbstractModelTest >> testInitSimulation [
 	self assert: model initStatus.
 ]
 
-{ #category : 'test' }
+{ #category : 'tests' }
 CMAbstractModelTest >> testInitStatus [
 
 	self assert: model initStatus.
@@ -134,7 +134,7 @@ CMAbstractModelTest >> testInitStatus [
 	
 ]
 
-{ #category : 'test' }
+{ #category : 'tests' }
 CMAbstractModelTest >> testIsInitialized [
 
 	model := (CMMockModel
