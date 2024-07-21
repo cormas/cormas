@@ -47,7 +47,6 @@ Class {
 		'simManager',
 		'defaultAttributesSetter',
 		'sensitivitySetter',
-		'delayedChanges',
 		'initStatus',
 		'creationDate',
 		'version',
@@ -1764,42 +1763,6 @@ CMAbstractModel >> probeAt: probeName ifAbsent: aBlock [
 	^ (self data at: self className) 
 		at: probeName
 		ifAbsent: aBlock
-]
-
-{ #category : 'private - notification' }
-CMAbstractModel >> registerChange: aChange [
-	"register a Change (transmit the change immediatly or in a group later"
-	
-	delayedChanges == nil
-		ifTrue:
-			["immediate transmission"
-			"self spaceModel noticeChange: aChange"]
-		ifFalse:
-			["store the change information for delayed transmission"
-			"In case the delaychanges already includes an #updateEntity notice on that same entity ->"
-			"aChange symbol = #valueChanged ifTrue:[coll removeAllSuchThat: [:c| c symbol  = #valueChanged and:[c entity = aChange entity]]]."
-			delayedChanges size >= 200
-				ifTrue:
-					[| coll |
-					coll := delayedChanges.
-					delayedChanges := OrderedCollection new: 200.
-					"self spaceModel noticeChanges: coll"].
-			delayedChanges add: aChange]
-]
-
-{ #category : 'private - notification' }
-CMAbstractModel >> registerSpaceModelChange: aSymbol [
-	"report a change from the spaceModel. These changes can be delayed in order to make one remote call with many changes"
-	
-	^self registerSpaceModelChange: aSymbol with: nil
-]
-
-{ #category : 'private - notification' }
-CMAbstractModel >> registerSpaceModelChange: aSymbol with: aParameter [
-	"report a change from the spaceModel. These changes can be delayed in order to make one remote call with many changes"
-	
-	self
-		registerChange: (CMSpaceModelChange newChange: aSymbol with: aParameter)
 ]
 
 { #category : 'initialization' }

@@ -263,13 +263,6 @@ CMSpaceModel >> centralLocation [
 	^ self elementaryEntities at: (line * column / 2) asInteger + 1
 ]
 
-{ #category : 'private - notification' }
-CMSpaceModel >> changed: anAspectSymbol with: aParameter [
-	"All changes are redirected to cormasModel which can buffer them"
-	
-	self cormasModel registerSpaceModelChange: anAspectSymbol with: aParameter
-]
-
 { #category : 'private - accessing' }
 CMSpaceModel >> column [
 	" Answer the <Number> of columns in the receiver's grid "
@@ -363,11 +356,10 @@ CMSpaceModel >> dimensions [
 { #category : 'private - dispatch' }
 CMSpaceModel >> dispatchCompoundSpatialEntity: class [
 	"Gives the new entities to cormasModel and alarm the spaceInterfaces"
-	
+
 	self cormasModel
 		setTheEntity: class
 		with: (self spatialEntitiesAt: class name).
-	self cormasModel registerSpaceModelChange: #newAggregates with: class
 ]
 
 { #category : 'private - dispatch' }
@@ -847,7 +839,6 @@ CMSpaceModel >> isClosedEnvironment: aBoolean [
 	isClosedEnvironment = aBoolean ifTrue: [ ^ self ].
 	isClosedEnvironment := aBoolean.
 	self initNeighbourhood.
-	self cormasModel registerSpaceModelChange: #boundariesChanged	"dispatch the info to other spaceInterfaces"
 ]
 
 { #category : 'testing' }
