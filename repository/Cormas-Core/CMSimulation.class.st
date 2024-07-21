@@ -1,5 +1,5 @@
 Class {
-	#name : 'CMSimulationManager',
+	#name : 'CMSimulation',
 	#superclass : 'Object',
 	#instVars : [
 		'cormasModel',
@@ -11,72 +11,80 @@ Class {
 }
 
 { #category : 'time' }
-CMSimulationManager class >> defaultFinalTime [
+CMSimulation class >> defaultFinalTime [
 	" Answer an <Integer> representing the default final step time "
 
 	^ 100
 ]
 
+{ #category : 'instance creation' }
+CMSimulation class >> for: aModel [
+
+	^ self new
+		cormasModel: aModel;
+		yourself
+]
+
 { #category : 'accessing' }
-CMSimulationManager >> cormasModel [
+CMSimulation >> cormasModel [
 	
 	^cormasModel
 ]
 
 { #category : 'accessing' }
-CMSimulationManager >> cormasModel: anObject [
+CMSimulation >> cormasModel: anObject [
 	
 	cormasModel := anObject
 ]
 
 { #category : 'accessing' }
-CMSimulationManager >> cormasModelClass [
+CMSimulation >> cormasModelClass [
 	
 	^self cormasModel class
 ]
 
 { #category : 'time' }
-CMSimulationManager >> currentSimEnded [
+CMSimulation >> currentSimEnded [
 	
 	^ self finalTime <= self currentTime
 ]
 
 { #category : 'time' }
-CMSimulationManager >> currentTime [
+CMSimulation >> currentTime [
 	
 	^ self cormasModel timeStep
 ]
 
 { #category : 'time' }
-CMSimulationManager >> currentTime: anInteger [
+CMSimulation >> currentTime: anInteger [
 	self cormasModel timeStep: anInteger
 ]
 
 { #category : 'time' }
-CMSimulationManager >> finalTime [
+CMSimulation >> finalTime [
 	^ finalTime ifNil: [ finalTime := self class defaultFinalTime]
 ]
 
 { #category : 'time' }
-CMSimulationManager >> finalTime: anInteger [
+CMSimulation >> finalTime: anInteger [
 	finalTime := anInteger
 	
 ]
 
 { #category : 'time' }
-CMSimulationManager >> finishSimulation [
+CMSimulation >> finishSimulation [
 	self cormasModel timeStep: self finalTime
 ]
 
 { #category : 'init' }
-CMSimulationManager >> initializeSimulation [
+CMSimulation >> initializeSimulation [
 	
 	self cormasModel activeInit ifNil: [ ^ self error: 'No active init!' ].
 	Cursor wait showWhile: [ self cormasModel initializeSimulation ].
 ]
 
 { #category : 'replay-private' }
-CMSimulationManager >> stepNameStart [
+CMSimulation >> stepNameStart [
 	"Return the begining part of each stepFilename (=> 'step_' )  "
 	"return a string for the file"
 	

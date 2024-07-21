@@ -44,7 +44,6 @@ Class {
 		'activeControl',
 		'spaceModel',
 		'data',
-		'simManager',
 		'defaultAttributesSetter',
 		'sensitivitySetter',
 		'initStatus',
@@ -1148,19 +1147,6 @@ CMAbstractModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 	^self spaceModel euclideanDistanceFromCell: cell1 toCell: cell2
 ]
 
-{ #category : 'accessing - scheduling' }
-CMAbstractModel >> finalTime [
-	
-	^self simulationManager finalTime
-]
-
-{ #category : 'control - scheduling' }
-CMAbstractModel >> finishSimulation [
-	"Stop the current simulation: the current time is set equal to final time"
-	
-	self simulationManager finishSimulation
-]
-
 { #category : 'utilities - files' }
 CMAbstractModel >> getAttributesType: attributes fromInstances: instanceCollection [
 	
@@ -1877,22 +1863,6 @@ CMAbstractModel >> setterForEntityClass: aClass [
 	"
 	
 	^ (self getterForEntityClass: aClass) asMutator
-]
-
-{ #category : 'accessing' }
-CMAbstractModel >> simulationManager [
-	
-	^ simManager
-		ifNil: [
-			simManager := CMSimulationManager new 
-				cormasModel: self;
-				yourself ]
-]
-
-{ #category : 'accessing' }
-CMAbstractModel >> simulationManager: anObject [
-	
-	simManager := anObject
 ]
 
 { #category : 'accessing' }

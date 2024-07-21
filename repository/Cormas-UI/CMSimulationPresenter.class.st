@@ -2,7 +2,7 @@ Class {
 	#name : 'CMSimulationPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'cormasModel',
+		'simulation',
 		'builder',
 		'translator',
 		'diagram',
@@ -16,10 +16,10 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-CMSimulationPresenter class >> openForModel: aCormasModel withTranslator: aTranslator [
+CMSimulationPresenter class >> openForSimulation: aSimulation withTranslator: aTranslator [
 
 	^ self basicNew 
-		cormasModel: aCormasModel;
+		simulation: aSimulation;
 		translator: aTranslator;
 		initialize;
 		open;
@@ -31,12 +31,6 @@ CMSimulationPresenter >> canvas [
 	" Private - Answer a <RSCanvas> "
 
 	^ diagram canvas
-]
-
-{ #category : 'accessing' }
-CMSimulationPresenter >> cormasModel: aModel [
-
-	cormasModel := aModel
 ]
 
 { #category : 'specs' }
@@ -64,7 +58,7 @@ CMSimulationPresenter >> initializeDiagram [
 	" Private - Create the configured receiver's diagram "
 	
 	builder := CMR3SpaceDiagramBuilder new
-		cormasModel: cormasModel.
+		cormasModel: simulation cormasModel.
 	
 	"diagram := self newRoassal.
 	diagram script: [ :canvas | builder renderIn: canvas ].
@@ -82,7 +76,7 @@ CMSimulationPresenter >> initializePOVMenuToolbar [
 
 	^ self newMenu
 		addGroup: [ :group | 
-			cormasModel class socialClasses
+			simulation cormasModel class socialClasses
 				do: [ :socialClass | 
 					group
 						addItem: [ :item | 
@@ -90,7 +84,7 @@ CMSimulationPresenter >> initializePOVMenuToolbar [
 								name: socialClass name;
 								subMenu: (self subMenuForClassPov: socialClass) ] ] ];
 		addGroup: [ :group | 
-			cormasModel class spatialClasses
+			simulation cormasModel class spatialClasses
 				do: [ :spatialClasse | 
 					group
 						addItem: [ :item | 
@@ -98,7 +92,7 @@ CMSimulationPresenter >> initializePOVMenuToolbar [
 								name: spatialClasse name;
 								subMenu: (self subMenuForClassPov: spatialClasse) ] ] ];
 		addGroup: [ :group | 
-			cormasModel class passiveObjectClasses
+			simulation cormasModel class passiveObjectClasses
 				do: [ :passiveClass | 
 					group
 						addItem: [ :item | 
@@ -166,7 +160,7 @@ CMSimulationPresenter >> initializeToolsMenuToolbar [
 						name: translator tInspectModel;
 						icon: (self iconNamed: #smallObjects);
 						shortcut: $I command;
-						action: [ cormasModel inspect ] ] ];
+						action: [ simulation cormasModel inspect ] ] ];
 		yourself
 ]
 
@@ -210,10 +204,16 @@ CMSimulationPresenter >> runSimulationUntilEnd [
 	"do nothing"
 ]
 
+{ #category : 'accessing' }
+CMSimulationPresenter >> simulation: aSimulation [
+
+	simulation := aSimulation
+]
+
 { #category : 'actions' }
 CMSimulationPresenter >> stepSimulation [
 
-	cormasModel runStep.
+	simulation cormasModel runStep.
 	builder update.
 	self updateProgressBar.
 ]
@@ -227,7 +227,7 @@ CMSimulationPresenter >> subMenuForClassPov: aClass [
 				item
 					name: povName selector;
 					action: [ 
-						cormasModel spaceModel activePoVsDictionary at: aClass put: item name.
+						simulation cormasModel spaceModel activePoVsDictionary at: aClass put: item name.
 						self initializeDiagram ] ] ] ]
 ]
 
@@ -240,5 +240,5 @@ CMSimulationPresenter >> translator: anObject [
 { #category : 'as yet unclassified' }
 CMSimulationPresenter >> updateProgressBar [
 
-	progressBar fixedAt: (cormasModel timeStep / cormasModel finalTime) asFloat.
+	progressBar fixedAt: (simulation currentTime / simulation finalTime) asFloat.
 ]
