@@ -88,18 +88,6 @@ CMSpaceModel >> activePoVsDictionary [
 		ifNil: [ activePoVsDictionary := Dictionary new ]
 ]
 
-{ #category : 'private - irregular polygons creation' }
-CMSpaceModel >> ajouterAutresAttribut: cel objet: objet attribut: attrib [
-	"Ex: cel = 0.49018@13.7327   objet = a Cell   attrib = 'center'"
-	
-	| listeAttributs position |
-	listeAttributs := objet class allInstVarNames.
-	1
-		to: listeAttributs size
-		do: [:b | (listeAttributs at: b) = attrib ifTrue: [position := b]].
-	objet instVarAt: position put: cel
-]
-
 { #category : 'accessing' }
 CMSpaceModel >> allOccupants [
 	" Answer a <Collection> of all the located entities"
@@ -133,20 +121,6 @@ CMSpaceModel >> autoResizeBounds [
 { #category : 'accessing' }
 CMSpaceModel >> autoResizeBounds: anObject [
 	autoResizeBounds := anObject
-]
-
-{ #category : 'private - regular polygons' }
-CMSpaceModel >> basicCreateAggregate: compoundEntity from: aSet [
-	"Creates and returns an instance of compoundEntity composed with a set of cells. The new aggregate is not displayed, nor added to theXXs collection and the components are not informed.
-	aSet = a set of base entities (inheriting from <SpatialEntity>) 
-	compoundEntity = a Class name inheriting from <SpatialEntitySet>"
-	
-	| anAggregate |
-	anAggregate := compoundEntity basicNew.
-	anAggregate components addAll: aSet asOrderedCollection.
-	anAggregate setSurround.
-	anAggregate init.
-	^anAggregate
 ]
 
 { #category : 'ESE (regular) - special locations' }
@@ -338,31 +312,6 @@ CMSpaceModel >> dimensions [
 	^ self numberOfColumns @ self numberOfRows
 ]
 
-{ #category : 'private - dispatch' }
-CMSpaceModel >> dispatchCompoundSpatialEntity: class [
-	"Gives the new entities to cormasModel and alarm the spaceInterfaces"
-
-	self cormasModel
-		setTheEntity: class
-		with: (self spatialEntitiesAt: class name).
-]
-
-{ #category : 'private - dispatch' }
-CMSpaceModel >> dispatchOneCompoundSpatialEntity: anEntity [
-	"Gives the new entity to cormasModel and alarm the spaceInterfaces"
-	
-	self cormasModel collect: anEntity.
-]
-
-{ #category : 'private - display' }
-CMSpaceModel >> displayInfo: aSymbol of: aClass [
-	"Purpose: set the INFO of aClass to be displayed on the opened spatial grid
-Example : self displayInfo: #landUse of: Cell"
-	
-	self openedSpatialGrids
-		do: [:interface | interface changeInfo: aSymbol ofEntity: aClass]	"self changed: #changeInfo: with: (DisplayPovChange forPov: aSymbol ofEntity: aClass)"
-]
-
 { #category : 'private - display' }
 CMSpaceModel >> displayPov: aSymbol of: aClass [
 	"Purpose: set the POV of aClass to be displayed on the opened spatial grid.
@@ -461,44 +410,6 @@ CMSpaceModel >> elementaryEntitiesDefaultPovs: anObject [
 	elementaryEntitiesDefaultPovs := anObject
 ]
 
-{ #category : 'user interface' }
-CMSpaceModel >> envSpecStringFor: spatialEntityName [
-	"compute the description of the environnment (for the spaceInterface title)"
-
-	| s nb |
-	
-	s := (String new: 100) writeStream.
-	s
-		nextPutAll:
-			(self isClosedEnvironment
-				ifTrue: [ 'Closed ' ]
-				ifFalse: [ 'Torroidal ' ]).
-	(spatialEntityName = self cellClass name
-		and: [ self gridCellShape ~= #irregular ])
-		ifTrue: [ s
-				print: self numberOfRows;
-				nextPutAll: ' x ';
-				print: self numberOfColumns.
-			nb := self elementaryEntities size.
-			self numberOfRows * self numberOfColumns > nb
-				ifTrue: [ s
-						nextPutAll: ' restricted to ';
-						print: nb ].
-			self nbNeighbours = #eight | (self nbNeighbours = 8)
-				ifTrue: [ s nextPutAll: ' (8)' ].
-			self nbNeighbours = #six | (self nbNeighbours = 6)
-				ifTrue: [ s nextPutAll: ' (6)' ].
-			self nbNeighbours = #four | (self nbNeighbours = 4)
-				ifTrue: [ s nextPutAll: ' (4)' ] ]
-		ifFalse: [ s
-				print:
-					(self cormasModel
-						perform: (self cormasModel getterForEntityClass: spatialEntityName))
-						size ].
-	s nextPutAll: '  '.
-	^ s contents
-]
-
 { #category : 'landscape indices' }
 CMSpaceModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 	"return the euclidian distance (unit = cell) using the Euclidean distance formula : square root of [(Xa - Xb)^2 + (Ya - Yb)^2)]"
@@ -527,197 +438,6 @@ CMSpaceModel >> findIndexForEntityClass: entityClass id: entityId in: someEntiti
 				ifNotNil: [e id = entityId and: [e class = entityClass]]]
 ]
 
-{ #category : 'private - regular polygons' }
-CMSpaceModel >> getAggregatesFrom: baseEntity attribute: attributeName [
-	"Return a collection of sets of contiguous components holding the same attributeName value"
-
-	| newCollection seed setOfComponents neighbours newNeighbours theLLEntities |
-	self isClosedEnvironment
-		ifFalse: [ ^ self warningBoundaries ].
-	newCollection := OrderedCollection new.
-	theLLEntities := ((self cormasModel
-		perform: (self cormasModel getterForEntityClass: baseEntity))
-		select: [ :c | (c perform: attributeName) isNil not ]) copy
-		asOrderedCollection.
-	[ theLLEntities isEmpty ]
-		whileFalse: [ setOfComponents := Set new.
-			seed := theLLEntities first.
-			setOfComponents add: seed.
-			neighbours := seed neighbourhood
-				select: [ :v | (v perform: attributeName) = (seed perform: attributeName) ].
-			[ neighbours isEmpty ]
-				whileFalse: [ setOfComponents addAll: neighbours.
-					newNeighbours := Set new.
-					neighbours
-						do: [ :v | 
-							newNeighbours
-								addAll:
-									(v neighbourhood
-										select: [ :u | 
-											(u perform: attributeName) = (seed perform: attributeName)
-												and: [ (setOfComponents includes: u) not ] ]) ].
-					neighbours := newNeighbours ].
-			newCollection add: setOfComponents.
-			setOfComponents do: [ :c | theLLEntities remove: c ] ].
-	^ newCollection
-]
-
-{ #category : 'private - regular polygons' }
-CMSpaceModel >> getSetsOfContiguous: baseEntity attribute: attributeName [
-	"Return a collection of sets of contiguous components holding the same attributeName value"
-	
-	^self
-		getSetsOfContiguous: baseEntity
-		conditionalBlocks:
-			(Array
-				with: [:be :getAttribute :x | (be perform: getAttribute) isNil not]
-				with:
-					[:be :seed :getAttribute :x | (be perform: getAttribute) = (seed perform: getAttribute)]
-				with:
-					[:be :setOfContiguousBe :seed :getAttribute :x | 
-					(be perform: getAttribute) = (seed perform: getAttribute)
-						and: [(setOfContiguousBe includes: be) not]])
-		conditionalArguments: (Array with: attributeName with: nil)
-]
-
-{ #category : 'private - regular polygons' }
-CMSpaceModel >> getSetsOfContiguous: baseEntity attribute: attributeName1 attribute: attributeName2 [
-	"Return a collection of sets of contiguous components holding the same value for both attributes"
-	
-	^self
-		getSetsOfContiguous: baseEntity
-		conditionalBlocks:
-			(Array
-				with:
-					[:be :getAttribute1 :getAttribute2 | 
-					(be perform: getAttribute1) isNil not
-						and: [(be perform: getAttribute2) isNil not]]
-				with:
-					[:be :seed :getAttribute1 :getAttribute2 | 
-					(be perform: getAttribute1) = (seed perform: getAttribute1)
-						and: [(be perform: getAttribute2) = (seed perform: getAttribute2)]]
-				with:
-					[:be :setOfContiguousBe :seed :getAttribute1 :getAttribute2 | 
-					(be perform: getAttribute1) = (seed perform: getAttribute1)
-						and:
-							[(be perform: getAttribute2) = (seed perform: getAttribute2)
-								and: [(setOfContiguousBe includes: be) not]]])
-		conditionalArguments: (Array with: attributeName1 with: attributeName2)
-]
-
-{ #category : 'private - regular polygons' }
-CMSpaceModel >> getSetsOfContiguous: baseEntity attribute: attributeName excludingValue: aValue [
-	"Return a collection of sets of contiguous components holding the same attributeName value"
-	
-	^self
-		getSetsOfContiguous: baseEntity
-		conditionalBlocks:
-			(Array
-				with:
-					[:be :getAttribute :x | 
-					(be perform: getAttribute) isNil not
-						and: [(be perform: getAttribute) ~= aValue]]
-				with:
-					[:be :seed :getAttribute :x | (be perform: getAttribute) = (seed perform: getAttribute)]
-				with:
-					[:be :setOfContiguousBe :seed :getAttribute :x | 
-					(be perform: getAttribute) = (seed perform: getAttribute)
-						and: [(setOfContiguousBe includes: be) not]])
-		conditionalArguments: (Array with: attributeName with: nil)
-]
-
-{ #category : 'private - regular polygons' }
-CMSpaceModel >> getSetsOfContiguous: baseEntity conditionalBlocks: blocks conditionalArguments: arguments [
-	"Return a collection of sets of contiguous components"
-
-	| collec seed setOfContiguousComponents neighbours newNeighbours baseEntities valuesB2 valuesB3 |
-	self isClosedEnvironment
-		ifFalse: [ ^ self warningBoundaries ].
-	baseEntities := ((self spatialEntitiesAt: baseEntity name)
-		select:
-			[ :c | blocks first value: c value: arguments first value: arguments last ])
-		copy asOrderedCollection.
-	collec := OrderedCollection new.
-	[ baseEntities isEmpty ]
-		whileFalse: [ setOfContiguousComponents := Set new.
-			seed := baseEntities first.
-			setOfContiguousComponents add: seed.
-			neighbours := seed neighbourhood
-				select: [ :v | 
-					valuesB2 := Array new: 4.
-					valuesB2 at: 1 put: v.
-					valuesB2 at: 2 put: seed.
-					valuesB2 at: 3 put: arguments first.
-					valuesB2 at: 4 put: arguments last.
-					(blocks at: 2) valueWithArguments: valuesB2 ].
-			[ neighbours isEmpty ]
-				whileFalse: [ setOfContiguousComponents addAll: neighbours.
-					newNeighbours := Set new.
-					neighbours
-						do: [ :v | 
-							newNeighbours
-								addAll:
-									(v neighbourhood
-										select: [ :u | 
-											valuesB3 := Array new: 5.
-											valuesB3 at: 1 put: u.
-											valuesB3 at: 2 put: setOfContiguousComponents.
-											valuesB3 at: 3 put: seed.
-											valuesB3 at: 4 put: arguments first.
-											valuesB3 at: 5 put: arguments last.
-											blocks last valueWithArguments: valuesB3 ]) ].
-					neighbours := newNeighbours ].
-			collec add: setOfContiguousComponents.
-			setOfContiguousComponents do: [ :c | baseEntities remove: c ] ].
-	^ collec
-]
-
-{ #category : 'private - regular polygons' }
-CMSpaceModel >> getSetsOfContiguous: baseEntity horizontalDividers: i verticalDividers: j [
-	
-	| nbLG nbCG nbLP nbCP zone allComponents collec |
-	"dimensions de la grille"
-	nbLG := numberOfRows.
-	nbCG := numberOfColumns.	"dimensions d'une partition"
-	nbLP := nbLG / j.
-	nbCP := nbCG / i.	"calcul sous-grille de chaque cellule"
-	allComponents := Dictionary new.
-	1
-		to: i * j
-		do:
-			[:n | 
-			allComponents
-				at: n
-				put: OrderedCollection new].
-	(self spatialEntitiesAt: baseEntity name)
-		do:
-			[:cc | 
-			numberOfRows := (cc id / nbCG) ceiling.
-			numberOfColumns := cc id - ((numberOfRows - 1) * nbCG).
-			zone := nbCG / nbCP * ((numberOfRows / nbLP) ceiling - 1)
-				+ (numberOfColumns / nbCP) ceiling.
-			(allComponents at: zone) add: cc].
-	collec := OrderedCollection new.
-	1
-		to: allComponents size
-		do: [:n | collec add: (allComponents at: n)].
-	^collec
-]
-
-{ #category : 'private - regular polygons' }
-CMSpaceModel >> getSetsOfContiguous: baseEntity verifying: aBlock [
-	
-	^self
-		getSetsOfContiguous: baseEntity
-		conditionalBlocks:
-			(Array
-				with: [:be :x1 :x2 | aBlock value: be]
-				with: [:be :x1 :x2 :x3 | aBlock value: be]
-				with:
-					[:be :setOfContiguousBe :x1 :x2 :x3 | (aBlock value: be) and: [(setOfContiguousBe includes: be) not]])
-		conditionalArguments: (Array with: nil with: nil)
-]
-
 { #category : 'private - accessing' }
 CMSpaceModel >> gridCellShape [
 	
@@ -744,25 +464,6 @@ CMSpaceModel >> gridSize [
 CMSpaceModel >> gridSize: anInteger [
 	gridSize := anInteger.
 	arrayOrigins := Array new: anInteger
-]
-
-{ #category : 'printing' }
-CMSpaceModel >> humanReadableString [
-	" Answer a <String> with receiver's details suitable for titles "
-	
-	^ String streamContents: [ : stream |
-		stream
-			space;
-			<< self numberOfRows asString;
-			<< $x;
-			<< self numberOfColumns asString;
-			<< $(;
-			<< self gridSize asString;
-			<< $);
-			space;
-			<< self gridCellShape asString ]
-
-		
 ]
 
 { #category : 'private - regular cells - instance creation' }
@@ -838,13 +539,6 @@ CMSpaceModel >> isIrregular [
 	"Answer if the spaceModel is irregular (or regular), meaning that the cells are not uniform, but have different shapes (vectorial)"
 	
 	^gridCellShape = #irregular
-]
-
-{ #category : 'private - regular polygons' }
-CMSpaceModel >> isPartitionComplete: compoundEntity [
-	
-	^(self elementaryEntities
-		anySatisfy: [:c | (c isComponentOf: compoundEntity) not]) not
 ]
 
 { #category : 'private - accessing' }
@@ -988,8 +682,17 @@ CMSpaceModel >> printOn: aStream [
 	" Private - See superimplementor's comment "
 	
 	super printOn: aStream.
-	aStream << self humanReadableString.
 
+	aStream
+		space;
+		<< self numberOfRows asString;
+		<< $x;
+		<< self numberOfColumns asString;
+		<< $(;
+		<< self gridSize asString;
+		<< $);
+		space;
+		<< self gridCellShape asString
 		
 ]
 
@@ -1054,65 +757,11 @@ CMSpaceModel >> resetSpatialEntities [
 	"self changed: #removeAllFigures"	"all the figures of the spaceInterfaces have to be deleted"
 ]
 
-{ #category : 'private - irregular polygons aggregation' }
-CMSpaceModel >> setAggregatsBounds: agregat [
-	
-	| origin corner aComponent |
-	(self spatialEntitiesAt: agregat name) do: [ : ag | 
-			aComponent := ag components asOrderedCollection first.
-			origin := aComponent bounds origin.
-			corner := aComponent bounds corner.
-			ag components do: [ : b | 
-				origin := b bounds origin min: origin.
-				corner := b bounds corner max: corner].
-			ag bounds: (Rectangle origin: origin corner: corner)]
-]
-
 { #category : 'accessing' }
 CMSpaceModel >> setBoundaryDirectionsFor: aCMSpatialEntity [
 	" Answer a <Collection> of direction (ex: (#E #SE #NE)) of the cell, without cell => the edge of the grid"
 
 	^ self nbConfiguration setBoundaryDirectionsFor: aCMSpatialEntity
-]
-
-{ #category : 'private - irregular polygons creation' }
-CMSpaceModel >> setBounds: allPolygons [
-	
-	| entity origin corner |
-	allPolygons isEmpty ifTrue: [^nil].
-	entity := allPolygons first class.
-	origin := allPolygons first bounds origin.
-	corner := allPolygons first bounds corner.
-	allPolygons
-		do:
-			[:b | 
-			origin := b bounds origin min: origin.
-			corner := b bounds corner max: corner].
-	entity bounds: (Rectangle origin: origin corner: corner)
-]
-
-{ #category : 'private - regular polygons' }
-CMSpaceModel >> setGivenSizes: dis toAggregates: compoundEntity [
-	"dis is an array of pair-values: #(#(X1 GS1) #(X2 GS2) ... #(Xi GSi))"
-	"Xi and GSi are integers, respectively a number of aggregates and the givenSize for these aggregates"
-	"Ex: you want to generate 3 aggregates size 1, 5 size 2, and 2 size 3. dis should be #(#(3 1) #(5 2) #(2 3))"
-	"The sum of all Xi should be the same than aCollec size"
-	
-	| aCollec counter subsetIndice |
-	aCollec := self spatialEntitiesAt: compoundEntity name.
-	((dis collect: [:pair | pair first])
-		inject: 0
-		into: [:sum :i | sum + i]) ~= aCollec size
-		ifTrue: [self error: 'Inconsistency in the number of aggregates !!!'].
-	counter := 0.
-	subsetIndice := 1.
-	aCollec do: [ : s | 
-		s givenSize: (dis at: subsetIndice) last.
-		counter := counter + 1.
-		counter = (dis at: subsetIndice) first
-			ifTrue: [
-				counter := 0.
-				subsetIndice := subsetIndice + 1]]
 ]
 
 { #category : 'accessing' }

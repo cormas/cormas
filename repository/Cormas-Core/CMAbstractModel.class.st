@@ -800,13 +800,6 @@ CMAbstractModel >> authors: anObject [
 	authors := anObject
 ]
 
-{ #category : 'accessing - spatial grid' }
-CMAbstractModel >> autoResizeGrids: aBoolean [
-	"Purpose: automatically resize all the opened spatial grids when aBoolean = true, otherwise, do not resize"
-
-	self spaceModel autoResizeBounds: aBoolean
-]
-
 { #category : 'accessing' }
 CMAbstractModel >> cellAt: aRowIndex at: aColumnIndex [ 
 	
@@ -1123,16 +1116,6 @@ CMAbstractModel >> displayDefaultPovOf: aClass [
 Example : self displayDefaultPovOf: Cell"
 	
 	self displayPov: #povClassName of: aClass
-]
-
-{ #category : 'pov' }
-CMAbstractModel >> displayInfo: aSymbol of: aClass [
-	"Purpose: set the INFO text of aClass to be displayed on the opened spatial grids.
-Example : self displayInfo: #info_ID of: Cell"
-	
-	(aClass availableInfo includes: aSymbol)
-		ifFalse: [ self inform: ('The class {1} does not have a info called {2}' format: { aClass name . aSymbol }) ].
-	self spaceModel displayInfo: aSymbol of: aClass
 ]
 
 { #category : 'pov' }
@@ -1559,24 +1542,6 @@ CMAbstractModel >> newSensitivitySetter: aSensitivityClass [
 							sensitivitySetter]
 				ifFalse: [sensitivitySetter := aSensitivityClass newOn: self]].
 	^sensitivitySetter"
-]
-
-{ #category : 'accessing - spatial grid' }
-CMAbstractModel >> openedSpatialGrid [
-	"Purpose: return the last opened spatial grid"
-
-	| spatialGrids |
-	spatialGrids := self openedSpatialGrids.
-	^ spatialGrids isEmpty
-		ifTrue: [ nil ]
-		ifFalse: [ spatialGrids last ]
-]
-
-{ #category : 'accessing - spatial grid' }
-CMAbstractModel >> openedSpatialGrids [
-	"Purpose: return a collection of all opened spatial grids"
-	
-	^self spaceModel openedSpatialGrids
 ]
 
 { #category : 'accessing - entities' }
