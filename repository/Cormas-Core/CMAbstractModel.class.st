@@ -598,14 +598,6 @@ CMAbstractModel class >> spatialClasses: aCollection [
 	spatialClasses := aCollection
 ]
 
-{ #category : 'testing - scheduling' }
-CMAbstractModel class >> testPeriodicity: anInteger [
-	"This method is moved to the instance side."
-
-	self deprecated: 'This method is moved to the instance side.'.
-	^ self timeStep \\ anInteger = 0
-]
-
 { #category : 'accessing - scheduling' }
 CMAbstractModel class >> timeStep [
 	"Deprecated. If you want to get the current timeStep, try 'self cormasModel timeStep'."
@@ -1241,11 +1233,6 @@ CMAbstractModel >> hasSpatialClasses [
 	" Answer <true> if the receiver's model has a Simple Cell or Cellular Automaton already defined "
 
 	^ self class spatialClasses notEmpty
-]
-
-{ #category : 'scheduling' }
-CMAbstractModel >> incrementTimeStep [
-	self timeStep: self timeStep + 1
 ]
 
 { #category : 'init entities' }
@@ -1909,15 +1896,6 @@ Example: See the models Conway http://cormas.cirad.fr/en/applica/conway.htm or F
 	
 	self theCells do: [:a | a newState].
 	self theCells do: [:a | a updateState]
-]
-
-{ #category : 'testing - scheduling' }
-CMAbstractModel >> testPeriodicity: anInteger [
-	"Purpose: To test if the curent time step is a multiple of the periodicity defined by anInteger
-Return value: aBoolean
-Example: (self testPeriodicity: 12) ifTrue:[self theFarmers do:[:f| f calculateAnnualBalance]]"
-		
-	^self timeStep \\ anInteger = 0
 ]
 
 { #category : 'accessing - entities' }
