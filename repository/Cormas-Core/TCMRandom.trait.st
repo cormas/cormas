@@ -14,6 +14,15 @@ TCMRandom >> random [
 	^ randomNumberGenerator next
 ]
 
+{ #category : 'star pov' }
+TCMRandom >> randomColor [
+
+	^ Color
+		  r: self random
+		  g: self random
+		  b: self random
+]
+
 { #category : 'accessing' }
 TCMRandom >> randomNumberGenerator [
 	

@@ -15,7 +15,7 @@ CMEntityTest >> testAvailablePov [
 	self assertCollection: CMMockAnimal availablePov hasSameElements: #(defaultPOV povId).
 	self assertCollection: CMMockCow availablePov hasSameElements: #(pov defaultPOV povId).
 	self assertCollection: CMMockGoat availablePov hasSameElements: #(pov defaultPOV povId).
-	self assertCollection: CMMockCell availablePov hasSameElements: #(pov randomColor defaultPOV povId).
+	self assertCollection: CMMockCell availablePov hasSameElements: #(pov defaultPOV povId).
 ]
 
 { #category : 'tests' }

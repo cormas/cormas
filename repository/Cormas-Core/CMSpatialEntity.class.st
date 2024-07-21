@@ -716,16 +716,6 @@ CMSpatialEntity >> printOn: aStream [
 		<< self theOccupants size asString
 ]
 
-{ #category : 'star pov' }
-CMSpatialEntity >> randomColor [
-
-	<pov>
-	^ Color
-		  r: self random
-		  g: self random
-		  b: self random
-]
-
 { #category : 'environment - picking - space' }
 CMSpatialEntity >> randomNeighbour [
 	
