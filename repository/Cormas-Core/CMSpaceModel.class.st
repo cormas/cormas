@@ -750,11 +750,6 @@ CMSpaceModel >> spatialEntitiesAt: aSpatialEntityName withPovResultFor: povSelec
 		collect: [:each | each -> (each getPovResultFor: povSelector)]
 ]
 
-{ #category : 'accessing' }
-CMSpaceModel >> timeStep [
-	^ self cormasModel timeStep
-]
-
 { #category : 'ESE (regular) - special locations' }
 CMSpaceModel >> upperLeftLocation [
 	^ self elementaryEntities at: 1

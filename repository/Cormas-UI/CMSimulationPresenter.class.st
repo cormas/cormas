@@ -213,7 +213,7 @@ CMSimulationPresenter >> simulation: aSimulation [
 { #category : 'actions' }
 CMSimulationPresenter >> stepSimulation [
 
-	simulation cormasModel runStep.
+	simulation runStep.
 	builder update.
 	self updateProgressBar.
 ]
@@ -240,5 +240,5 @@ CMSimulationPresenter >> translator: anObject [
 { #category : 'as yet unclassified' }
 CMSimulationPresenter >> updateProgressBar [
 
-	progressBar fixedAt: (simulation currentTime / simulation finalTime) asFloat.
+	progressBar fixedAt: (simulation currentTimeStep / simulation finalTime) asFloat.
 ]

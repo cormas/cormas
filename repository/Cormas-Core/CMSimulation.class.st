@@ -3,6 +3,7 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'cormasModel',
+		'currentTimeStep',
 		'finalTime'
 	],
 	#category : 'Cormas-Core-Kernel',
@@ -28,65 +29,86 @@ CMSimulation class >> for: aModel [
 { #category : 'accessing' }
 CMSimulation >> cormasModel [
 	
-	^cormasModel
+	^ cormasModel
 ]
 
 { #category : 'accessing' }
 CMSimulation >> cormasModel: anObject [
 	
-	cormasModel := anObject
+	cormasModel := anObject.
+	self initializeModel.
 ]
 
 { #category : 'accessing' }
-CMSimulation >> cormasModelClass [
-	
-	^self cormasModel class
-]
+CMSimulation >> currentTimeStep [
 
-{ #category : 'time' }
-CMSimulation >> currentSimEnded [
-	
-	^ self finalTime <= self currentTime
-]
-
-{ #category : 'time' }
-CMSimulation >> currentTime [
-	
-	^ self cormasModel timeStep
-]
-
-{ #category : 'time' }
-CMSimulation >> currentTime: anInteger [
-	self cormasModel timeStep: anInteger
+	^ currentTimeStep 
 ]
 
 { #category : 'time' }
 CMSimulation >> finalTime [
-	^ finalTime ifNil: [ finalTime := self class defaultFinalTime]
+
+	^ finalTime
 ]
 
 { #category : 'time' }
 CMSimulation >> finalTime: anInteger [
+
 	finalTime := anInteger
 	
 ]
 
 { #category : 'time' }
 CMSimulation >> finishSimulation [
-	self cormasModel timeStep: self finalTime
+
+	currentTimeStep := self finalTime
 ]
 
-{ #category : 'init' }
-CMSimulation >> initializeSimulation [
+{ #category : 'time' }
+CMSimulation >> hasEnded [
 	
-	self cormasModel activeInit ifNil: [ ^ self error: 'No active init!' ].
-	Cursor wait showWhile: [ self cormasModel initializeSimulation ].
+	^ self finalTime <= self currentTimeStep
 ]
 
-{ #category : 'replay-private' }
-CMSimulation >> stepNameStart [
-	"Return the begining part of each stepFilename (=> 'step_' )  "
-	"return a string for the file"
+{ #category : 'initialization' }
+CMSimulation >> initialize [
+
+	super initialize.
 	
-	^'step_'
+	currentTimeStep := 0.
+	finalTime := self class defaultFinalTime.
+]
+
+{ #category : 'initialization' }
+CMSimulation >> initializeModel [
+
+	cormasModel initializeProbes.
+	"remove the previous entities of the collections (theXXXs), except for theCells"
+	cormasModel initEntities.
+	"set default attributes values of entities"
+	"Call the selected INIT method"
+	cormasModel perform: cormasModel activeInit.	"launch the selected INIT method"
+	cormasModel updateEntities.	"updates theXXXs collections"
+	cormasModel updateDataForChart.
+	cormasModel channel ifNil: [ cormasModel initializeChannel ].
+	cormasModel theAgentsComm do: [ :p | p channel: cormasModel channel ].
+	cormasModel initStatus: true.
+]
+
+{ #category : 'scheduling' }
+CMSimulation >> runStep [
+	"The main step method that activates the agents:
+		- INCREMENT the timeStep (DO NOT USE the #incrementTimeStep as updates the UI before agents get a new patch)
+		- EXECUTE the selected #Step method (of the ScenarioBuilder Interface) for the new timeStep,
+		- UPDATE the Entities (remove the dead ones and add the new ones in theXXs collections).
+	(For display: Store the changed entities in a collection and request an update of the space views at the end of the timestep)"
+	
+	currentTimeStep := currentTimeStep + 1.
+	
+	cormasModel activeControl last = $:
+		ifTrue: [ cormasModel perform: cormasModel activeControl with: currentTimeStep ]
+		ifFalse: [ cormasModel perform: cormasModel activeControl ].
+	cormasModel updateEntities.
+	cormasModel channel ifNotNil: [ cormasModel channel sendAllMessages ].
+	cormasModel updateDataForChart.
 ]

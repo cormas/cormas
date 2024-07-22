@@ -1,1 +1,1 @@
-Package { #name : #'Cormas-UI-Tests' }
+Package { #name : 'Cormas-UI-Tests' }

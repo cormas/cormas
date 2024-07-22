@@ -9,28 +9,12 @@ Class {
 	#tag : 'Model'
 }
 
-{ #category : 'accessing' }
-CMTestObject >> model [
-
-	^ model
-]
-
-{ #category : 'accessing' }
-CMTestObject >> model: anObject [
-
-	model := anObject
-]
-
 { #category : 'tests-accessing-entities' }
 CMTestObject >> newTestModel [
  	
 	^ (CMMockModel	newWithActiveInit: #init)
 		randomSeed: 42;
 		initializeSimulation;
-		"createGridLines: 20
-			columns: 10
-			neighbourhood: 4
-			closed: true;"
 		yourself
 ]
 
@@ -38,5 +22,5 @@ CMTestObject >> newTestModel [
 CMTestObject >> setUp [
 
 	super setUp.
-	self model: self newTestModel.
+	model := self newTestModel.
 ]

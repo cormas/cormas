@@ -568,14 +568,6 @@ CMEntity >> cormasModel: aCMAbstractModel [
 	cormasModel := aCMAbstractModel
 ]
 
-{ #category : 'accessing - scheduling' }
-CMEntity >> currentTime [
-	"Purpose: returns the current time step of the simulation
-	Return value = <Integer>"
-
-	^ self modelClass timeStep
-]
-
 { #category : 'pov' }
 CMEntity >> defaultPOV [
 	" Answer a <Color> representing the receiver "
