@@ -45,11 +45,13 @@ CMR3SpaceTestFixture >> initialize [
 
 	super initialize.
 	
-	model := CMMockModel new
-		activeInit: #initFixed;
-		yourself.
+	model := CMMockModel new.
 		
-	simulation := CMSimulation for: model.
+	simulation := (CMSimulation for: model)
+		activeInitMethod: (CMMockModel >> #initFixed);
+		activeControlMethod: (CMMockModel >> #step:);
+		initializeSimulation;
+		yourself.
 
 	builder := CMR3SpaceDiagramBuilder new
 		cormasModel: model;

@@ -14,10 +14,8 @@ CMSpatialEntityElementTest >> setUp [
 
 	super setUp.
 	
-	model := CMMockModel new
-		activeInit: #initFixed;
-		initializeSimulation;
-		yourself.
+	model := CMMockModel new.
+	model initFixed.
 ]
 
 { #category : 'tests' }

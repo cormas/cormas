@@ -31,8 +31,7 @@ CMEntityTest >> testCormasEntityIsAbstract [
 { #category : 'tests' }
 CMEntityTest >> testCormasModel [
 	| model |
-	model := (CMMockModel newWithActiveInit: #initRandom)
-		initializeSimulation;
+	model := CMMockModel new
 		createGridNumberOfRows: 3
 			numberOfColumns: 3
 			neighbourhood: 4

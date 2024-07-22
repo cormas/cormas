@@ -18,13 +18,6 @@ CMAbstractModelTest >> sampleModelNameWithoutPrefix [
 	^ 'SampleModel'
 ]
 
-{ #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> setUp [ 
-
-	super setUp.
-	model := self newTestModel.
-]
-
 { #category : 'tests' }
 CMAbstractModelTest >> testCellAtAt [
 
@@ -48,8 +41,7 @@ CMAbstractModelTest >> testCellClass [
 { #category : 'tests-accessing-entities' }
 CMAbstractModelTest >> testCentralCell [
 	| m |
-	m := (CMMockModel	newWithActiveInit: #initRandom)
-		initializeSimulation;
+	m := CMMockModel new
 		createGridNumberOfRows: 3
 			numberOfColumns: 3
 			neighbourhood: 4
@@ -63,7 +55,7 @@ CMAbstractModelTest >> testCentralCell [
 { #category : 'tests' }
 CMAbstractModelTest >> testCreateGridXYNeighborHoodClosed [
 
-	self assert: model allTheEntities size equals: (4 * 4) + 6.
+	self assert: model allTheEntities size equals: (4 * 4) + 2.
 	self assert: (model selectCellsOfColumn: 1) size equals: 4.
 	self assert: (model selectCellsOfLine: 1) size equals: 4
 ]
@@ -71,8 +63,7 @@ CMAbstractModelTest >> testCreateGridXYNeighborHoodClosed [
 { #category : 'tests' }
 CMAbstractModelTest >> testDominance [
 	| m |
-	m := (CMMockModel	newWithActiveInit: #initRandom)
-		initializeSimulation;
+	m := CMMockModel new
 		createGridNumberOfRows: 100
 			numberOfColumns: 100
 			neighbourhood: 4
@@ -85,8 +76,7 @@ CMAbstractModelTest >> testDominance [
 { #category : 'tests' }
 CMAbstractModelTest >> testDominance1 [
 	| m |
-	m := (CMMockModel	newWithActiveInit: #initRandom)
-		initializeSimulation;
+	m := CMMockModel new
 		createGridNumberOfRows: 100
 			numberOfColumns: 100
 			neighbourhood: 4
@@ -95,69 +85,10 @@ CMAbstractModelTest >> testDominance1 [
 	self assert: (m dominance: #state) < 1.0
 ]
 
-{ #category : 'tests' }
-CMAbstractModelTest >> testHasActiveInit [
-
-	self assert: model hasActiveInit.
-	model activeInit: nil.
-	self deny: model hasActiveInit.
-	
-]
-
-{ #category : 'tests' }
-CMAbstractModelTest >> testHasControlInit [
-
-	self deny: model hasControlInit.
-	model activeControl: #step:.
-	self assert: model hasControlInit.
-
-	
-]
-
-{ #category : 'tests' }
-CMAbstractModelTest >> testInitSimulation [
-
-	model := (CMMockModel	newWithActiveInit: #initRandom)
-		activeControl: #step:;
-		yourself.
-	self deny: model initStatus.
-	model initializeSimulation.
-	self assert: model initStatus.
-]
-
-{ #category : 'tests' }
-CMAbstractModelTest >> testInitStatus [
-
-	self assert: model initStatus.
-	model initStatus: false.
-	self deny: model initStatus.
-	
-]
-
-{ #category : 'tests' }
-CMAbstractModelTest >> testIsInitialized [
-
-	model := (CMMockModel
-		initialize;
-		new)
-		activeInit: #initAlive;
-		activeControl: #step:.
-	self deny: model isInitialized.
-	model initializeSimulation.
-	self assert: model isInitialized.
-	model activeInit: nil.
-	self deny: model isInitialized.
-	model activeInit: #initAlive.
-	model activeControl: nil.
-	self deny: model isInitialized.	
-	
-]
-
 { #category : 'tests-accessing-entities' }
 CMAbstractModelTest >> testLowerLeftCell [
 	| m |
-	m := (CMMockModel newWithActiveInit: #initRandom)
-		initializeSimulation;
+	m := CMMockModel new
 		createGridNumberOfRows: 3
 			numberOfColumns: 3
 			neighbourhood: 4
@@ -171,8 +102,7 @@ CMAbstractModelTest >> testLowerLeftCell [
 { #category : 'tests-accessing-entities' }
 CMAbstractModelTest >> testLowerRightCell [
 	| m |
-	m := (CMMockModel newWithActiveInit: #initRandom)
-		initializeSimulation;
+	m := CMMockModel new
 		createGridNumberOfRows: 3
 			numberOfColumns: 3
 			neighbourhood: 4
@@ -196,8 +126,7 @@ CMAbstractModelTest >> testPickRandomCell [
 { #category : 'tests-accessing-entities' }
 CMAbstractModelTest >> testPickRandomCellConstrainedBy [
 	| m |
-	m := (CMMockModel newWithActiveInit: #initRandom)
-		initializeSimulation;
+	m := CMMockModel new
 		createGridNumberOfRows: 9
 			numberOfColumns: 9
 			neighbourhood: 4
@@ -278,20 +207,12 @@ CMAbstractModelTest >> testPickRandomUnoccupiedCell [
 	self assert: model pickRandomUnoccupiedCell theOccupants isEmpty
 ]
 
-{ #category : 'tests' }
-CMAbstractModelTest >> testProbes [
-	self
-		assert: CMMockModel probes asSet
-		equals: (Set with: #numberOfAliveAgents with: #numberOfDeadAgents)
-]
-
 { #category : 'tests-accessing-entities' }
 CMAbstractModelTest >> testSelectCellsBetweenLine1Line2AndColumn1Column2 [
 
 	| m cells |
 	
-	m := (CMMockModel newWithActiveInit: #initAlive)
-		initializeSimulation;
+	m := CMMockModel new
 		createGridNumberOfRows: 20
 			numberOfColumns: 10
 			neighbourhood: 4
@@ -311,8 +232,7 @@ CMAbstractModelTest >> testSelectCellsBetweenLine1Line2AndColumn1Column2 [
 { #category : 'tests-accessing-entities' }
 CMAbstractModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
 	| m cells |
-	m := (CMMockModel newWithActiveInit: #initAlive)
-		initializeSimulation;
+	m := CMMockModel new
 		createGridNumberOfRows: 9
 			numberOfColumns: 5
 			neighbourhood: 4
@@ -330,7 +250,6 @@ CMAbstractModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
 { #category : 'tests-accessing-entities' }
 CMAbstractModelTest >> testSelectCellsOfColumn [
 
-	self assert: model allTheEntities size equals: (4 * 4) + 6.
 	1 to: 4 do: [ :column | 
 		1 to: 4 do: [ :line | 
 			self
@@ -341,7 +260,6 @@ CMAbstractModelTest >> testSelectCellsOfColumn [
 { #category : 'tests-accessing-entities' }
 CMAbstractModelTest >> testSelectCellsOfLine [
 
-	self assert: model allTheEntities size equals: (4 * 4) + 6.
 	1 to: 4 do: [ :line | 
 		| cells |
 		cells := model selectCellsOfLine: line.
@@ -352,10 +270,7 @@ CMAbstractModelTest >> testSelectCellsOfLine [
 { #category : 'tests' }
 CMAbstractModelTest >> testShortestDistanceToCellsVerifying [
 	| m |
-	m := CMMockModel
-		initialize;
-		new.
-	m initializeSimulation.
+	m := CMMockModel new.
 	(m allTheEntities: CMMockCell)
 		do: [ :cell | 
 			self assert: (cell shortestDistanceToCellsVerifying: [ :c | c state = #dead | (c state = #alive) ])
@@ -374,7 +289,7 @@ CMAbstractModelTest >> testTheAgents [
 
 	| agents |
 	agents := model theAgents.
-	self assert: agents size equals: 6.
+	self assert: agents size equals: 2.
 	
 	agents do: [ :agent |
 		self assert: (agent isKindOf: CMMockAnimal) ]
@@ -383,8 +298,7 @@ CMAbstractModelTest >> testTheAgents [
 { #category : 'tests-accessing-entities' }
 CMAbstractModelTest >> testUpperLeftCell [
 	| m |
-	m := (CMMockModel newWithActiveInit: #initRandom)
-		initializeSimulation;
+	m := CMMockModel new
 		createGridNumberOfRows: 3
 			numberOfColumns: 3
 			neighbourhood: 4
@@ -398,8 +312,7 @@ CMAbstractModelTest >> testUpperLeftCell [
 { #category : 'tests-accessing-entities' }
 CMAbstractModelTest >> testUpperRightCell [
 	| m |
-	m := (CMMockModel newWithActiveInit: #initRandom)
-		initializeSimulation;
+	m := CMMockModel new
 		createGridNumberOfRows: 3
 			numberOfColumns: 3
 			neighbourhood: 4

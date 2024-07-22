@@ -40,43 +40,12 @@ Class {
 		'cormasModel'
 	],
 	#classInstVars : [
-		'currentId',
-		'activeProbes'
+		'currentId'
 	],
 	#category : 'Cormas-Core-Entities',
 	#package : 'Cormas-Core',
 	#tag : 'Entities'
 }
-
-{ #category : 'probes' }
-CMEntity class >> activeProbes [
-	^ activeProbes
-		ifNil: [ self defaultProbes ]
-		ifNotNil: [ activeProbes ]
-]
-
-{ #category : 'probes' }
-CMEntity class >> activeProbes: anObject [
-	
-	activeProbes := anObject
-]
-
-{ #category : 'accessing - methods & classes' }
-CMEntity class >> availableInfo [
-	"Purpose: returns the list of available info methods
-Return value: <OrderedCollection>"
-	
-	| collec |
-	collec := OrderedCollection new.
-	self withAllSuperclasses
-		do:
-			[:cl | 
-			collec
-				addAll: (cl organization listAtCategoryNamed: '* info' asSymbol);
-				addAll: (cl organization listAtCategoryNamed: #info)].
-	collec addFirst: #nil.
-	^collec
-]
 
 { #category : 'accessing - methods & classes' }
 CMEntity class >> availablePov [
@@ -88,12 +57,6 @@ CMEntity class >> availablePov [
 
 	^ pragmas collect: [ :pragma |
 		pragma method selector ]
-]
-
-{ #category : 'deprecated' }
-CMEntity class >> classFromSymbol: aSymbol [
-	self deprecated: 'Use class method on Symbol instead of classFromSymbol:'.
-	^ aSymbol class
 ]
 
 { #category : 'utilities - colors' }
@@ -114,18 +77,6 @@ CMEntity class >> colorOfNumber: aNumber [
 			(self colorNames
 				at: (aNumber - 1) \\ self colorNames size + 1)
 				asSymbol
-]
-
-{ #category : 'probes' }
-CMEntity class >> colorOfProbe: aProbeSymbol [
-	"answer the color of a local probe (to display the curve in ChartsInterface)"
-	
-	| selectorName |
-	selectorName := (#colorOfProbe_ , aProbeSymbol) asSymbol.
-	self class methodDictionary
-		at: selectorName
-		ifAbsent: [^nil].
-	^self perform: selectorName
 ]
 
 { #category : 'accessing' }
@@ -150,12 +101,6 @@ CMEntity class >> defaultColor [
 	^ self colorOfNumber: self hash
 ]
 
-{ #category : 'probes' }
-CMEntity class >> defaultProbes [
-	
-	^Array new
-]
-
 { #category : 'accessing - methods & classes' }
 CMEntity class >> genericEntities [
 	
@@ -164,35 +109,11 @@ CMEntity class >> genericEntities [
 	^ self withAllSubclasses select: [ :cl | cl package classes = kernel]
 ]
 
-{ #category : 'instance creation' }
-CMEntity class >> ghostInstance [
-	
-	^super new
-]
-
-{ #category : 'default value' }
-CMEntity class >> id_default [
-	
-	^0
-]
-
 { #category : 'testing' }
 CMEntity class >> isAbstract [
 	"Purpose: to test the existence of subclasses"
 	
 	^self subclasses notEmpty
-]
-
-{ #category : 'testing' }
-CMEntity class >> isAgentCommClass [
-	
-	^false
-]
-
-{ #category : 'testing' }
-CMEntity class >> isArcClass [
-	
-	^false
 ]
 
 { #category : 'testing' }
@@ -264,28 +185,6 @@ Example: CMEntity lightColors => an OrderedCollection('veryPaleRed' 'magenta' 'b
 	^ colors
 ]
 
-{ #category : 'doc' }
-CMEntity class >> listing: fileName [
-	"Creates a simple listing of the attributes and methods of this class into fileName"
-	
-	| bufferText stream |
-	bufferText := Text new.
-	bufferText := bufferText , '***** Attributs'' list *****\' withCRs.
-	self instVarNames
-		do: [:iv | bufferText := bufferText , '  -' , iv asString , '\' withCRs].
-	bufferText := bufferText , '\\\***** Methodes'' list ***** ' withCRs.
-	self organization categories
-		do:
-			[:protoc | 
-			bufferText := bufferText , '\\Protocol: ' , protoc asString , '\\' withCRs.
-			(self organization listAtCategoryNamed: protoc)
-				do:
-					[:meth | bufferText := bufferText , '  #' , meth asString , '\' withCRs]].
-	stream := fileName asFilename writeStream.
-	stream nextPutAll: bufferText withCRs.
-	stream close
-]
-
 { #category : 'utilities - classes' }
 CMEntity class >> modelClass [
 	"Purpose: returns the Class of the current model.
@@ -307,54 +206,6 @@ CMEntity class >> new [
 CMEntity class >> new: x [
 	
 	^super new initId
-]
-
-{ #category : 'probes' }
-CMEntity class >> probes [
-	"self superClassesUntilEntity"
-	
-	| coll |
-	coll := OrderedCollection new.
-	self withAllSuperclasses
-		do: [:cl | coll addAll: ((Pragma allNamed: #probes in: cl) collect: #selector)].
-	^coll asSortedCollection
-	
-
-]
-
-{ #category : 'accessing' }
-CMEntity class >> randomAttributes [
-	"' Returns a list of randomAttributes (List of arrays: #(#attribute scopeLevel #randFloat min max) ).
-	This method is automatically redefined when creating new random attributes"
-	
-	^#()
-]
-
-{ #category : 'probes' }
-CMEntity class >> setColor: aColorValue forProbe: aSymbol [
-	"creates a color mathod at class level, such as :
-colorOfProbe_aSymbol
-	^ ColorValue yellow"
-	
-	self class
-		compile:
-			('colorOfProbe_' , aSymbol asString , '\  ^ ' , aColorValue printString)
-				withCRs
-		classified: '- probes'
-		notifying: nil
-]
-
-{ #category : 'accessing - methods & classes' }
-CMEntity class >> superClassesUntil: aSuperClass [
-	"Purpose: returns the list of super classes of the receiver up to aSuperClass
-Return value: an orderedCollection
-Example: GroupLocation superClassesUntil: Agent"
-	
-	| coll |
-	coll := self withAllSuperclasses
-		select: [:aClass | aClass inheritsFrom: aSuperClass].
-	coll add: aSuperClass.
-	^coll
 ]
 
 { #category : 'converting' }

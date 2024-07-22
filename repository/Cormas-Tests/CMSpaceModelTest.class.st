@@ -56,7 +56,7 @@ CMSpaceModelTest >> spaceModel: anObject [
 { #category : 'tests' }
 CMSpaceModelTest >> testAllOccupants [
 
-	self assert: self spaceModel allOccupants size equals: 6.
+	self assert: self spaceModel allOccupants size equals: 2.
 
 ]
 

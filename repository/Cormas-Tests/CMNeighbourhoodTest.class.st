@@ -20,9 +20,8 @@ Class {
 { #category : 'instance creation' }
 CMNeighbourhoodTest >> newTestModel [
  	
-	^ (CMMockModel	newWithActiveInit: #initEmpty)
+	^ CMMockModel new
 		randomSeed: 42;
-		initializeSimulation;
 		yourself
 ]
 

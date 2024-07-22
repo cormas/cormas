@@ -84,10 +84,8 @@ CMMockModel class >> showModelWithInit: aSymbol [
 
 	| model builder |
 	
-	model := self new
-		activeInit: aSymbol;
-		initializeSimulation;
-		yourself.
+	model := self new.
+	model perform: aSymbol.
 	
 	builder := CMR3SpaceDiagramBuilder new
 		cormasModel: model;
@@ -268,7 +266,8 @@ CMMockModel >> numberOfRows: aNumber [
 { #category : 'control' }
 CMMockModel >> step: t [
 
-	self askRandom: CMMockAnimal toDo: #step
+	self askRandom: CMMockAnimal toDo: #step.
+	self stepSynchronouslyCA: t.
 ]
 
 { #category : 'accessing' }

@@ -37,14 +37,9 @@ Class {
 	#traits : 'TCMRandom',
 	#classTraits : 'TCMRandom classTrait',
 	#instVars : [
-		'timeStep',
 		'channel',
 		'entityGetters',
-		'activeInit',
-		'activeControl',
 		'spaceModel',
-		'data',
-		'initStatus',
 		'creationDate',
 		'version',
 		'authors',
@@ -54,8 +49,7 @@ Class {
 		'cellClass',
 		'spatialClasses',
 		'socialClasses',
-		'passiveClasses',
-		'activeProbes'
+		'passiveClasses'
 	],
 	#category : 'Cormas-Core-Kernel',
 	#package : 'Cormas-Core',
@@ -69,21 +63,6 @@ CMAbstractModel class >> aboutThisModel [
 	self subclassResponsibility
 	
 
-]
-
-{ #category : 'accessing - probes' }
-CMAbstractModel class >> activeProbes [
-	" Answer a <Collection> with the receiver's currently selected probes in the scenario initialization interface "
-
-	^ activeProbes
-		ifNil: [ self defaultProbes ]
-		ifNotNil: [ activeProbes ]
-]
-
-{ #category : 'accessing - probes' }
-CMAbstractModel class >> activeProbes: anObject [
-	
-	activeProbes := anObject
 ]
 
 { #category : 'description - primitives' }
@@ -147,74 +126,6 @@ CMAbstractModel class >> cellClass: aCMSpatialEntityCellClass [
 	cellClass := aCMSpatialEntityCellClass
 ]
 
-{ #category : 'accessing' }
-CMAbstractModel class >> cmAuthors [
-	"WARNING: This is code generated automatically.
- On: 24 March 2021 - 7:59:38.162493 pm"
-
-	^ Dictionary newFromPairs: { 
-		'Author 1' . 'author1@cirad.fr' .
-		'Author 2' . 'author2@cirad.fr' }
-]
-
-{ #category : 'accessing' }
-CMAbstractModel class >> cmComments [
-	"WARNING: This is code generated automatically.
- On: 24 March 2021 - 7:59:38.142784 pm"
-
-	^ 'No comments'
-]
-
-{ #category : 'accessing' }
-CMAbstractModel class >> cmMinimalVersion [
-	" Answer a <String> with the minimal CORMAS version the receiver could be loaded "
-
-	^ '1.0'
-]
-
-{ #category : 'accessing' }
-CMAbstractModel class >> cmOwner [
-	" A model can be 'marked' as invalid to prevent loading "
-
-	^ ''
-]
-
-{ #category : 'accessing' }
-CMAbstractModel class >> cmRelatedProjects [
-	" Answer a <String> with the minimal CORMAS version the receiver could be loaded "
-
-	^ Dictionary newFromPairs: { 
-		'Project 1' . 'http://www.cormas.org' .
-		'Project 2' . 'http://www.cirad.fr' }
-]
-
-{ #category : 'accessing' }
-CMAbstractModel class >> cmValid [
-	" A model can be 'marked' as invalid to prevent loading "
-
-	^ true
-]
-
-{ #category : 'accessing' }
-CMAbstractModel class >> cmVersion [
-	"WARNING: This is code generated automatically.
- On: 24 March 2021 - 7:59:38.142784 pm"
-
-	^ '1.0'
-]
-
-{ #category : 'accessing - probes' }
-CMAbstractModel class >> colorOfProbe: aProbeSymbol [
-	"answer the color of a probe (to display the curve in ChartsInterface)"
-	
-	| selectorName |
-	selectorName := (#colorOfProbe_ , aProbeSymbol) asSymbol.
-	self class methodDictionary
-		at: selectorName
-		ifAbsent: [^nil].
-	^self perform: selectorName
-]
-
 { #category : 'simulation settings' }
 CMAbstractModel class >> defaultControl [
 	
@@ -222,32 +133,8 @@ CMAbstractModel class >> defaultControl [
 ]
 
 { #category : 'simulation settings' }
-CMAbstractModel class >> defaultDelayChangesSetting [
-	
-	^false
-]
-
-{ #category : 'simulation settings' }
 CMAbstractModel class >> defaultInit [
 	^ #init
-]
-
-{ #category : 'simulation settings' }
-CMAbstractModel class >> defaultProbes [
-	^ #()
-]
-
-{ #category : 'simulation settings' }
-CMAbstractModel class >> defaultSteppingBackSetting [
-	
-	^false
-]
-
-{ #category : 'testing' }
-CMAbstractModel class >> hasProbes [
-	" Answer <true> if the receiver's contains any methods to be used as probes "
-	
-	^ self probes notEmpty
 ]
 
 { #category : 'accessing' }
@@ -308,14 +195,6 @@ CMAbstractModel class >> messages [
 	^ self passiveClasses select: [ :i | i inheritsFrom: CMMessage ]
 ]
 
-{ #category : 'instance creation' }
-CMAbstractModel class >> newWithActiveInit: aSymbol [
-
-	^ (self initialize; new)
-		activeInit: aSymbol;
-		yourself
-]
-
 { #category : 'managing classes' }
 CMAbstractModel class >> occupantClasses [
 	"return a collection of classes for which intances are located on the grid"
@@ -348,27 +227,6 @@ CMAbstractModel class >> passiveObjectClasses [
 			passiveClasses ]
 ]
 
-{ #category : 'accessing - probes' }
-CMAbstractModel class >> probes [
-	" Answer a <Collection> of <Symbol> representing receiver's selectors probes to observe "
-	
-	^ (Pragma allNamed: #probe in: self) collect: #methodSelector
-]
-
-{ #category : 'accessing - probes' }
-CMAbstractModel class >> setColor: aColorValue forProbe: aSymbol [
-	"creates a color method at class level, such as :
-colorOfProbe_aSymbol
-	^ ColorValue yellow"
-	
-	self class
-		compile:
-			('colorOfProbe_' , aSymbol asString , '\  ^ ' , aColorValue printString)
-				withCRs
-		classified: '- probes'
-		notifying: nil
-]
-
 { #category : 'managing classes' }
 CMAbstractModel class >> socialClasses [
 	" Answer a <Collection> of social classes of the model. Already configured in #initializeWithoutVS "
@@ -396,34 +254,6 @@ CMAbstractModel class >> spatialClasses [
 { #category : 'accessing' }
 CMAbstractModel class >> spatialClasses: aCollection [
 	spatialClasses := aCollection
-]
-
-{ #category : 'accessing' }
-CMAbstractModel >> activeControl [
-	^ activeControl ifNil: [ activeControl := self class defaultControl ]
-]
-
-{ #category : 'accessing' }
-CMAbstractModel >> activeControl: aSymbol [
-	activeControl := aSymbol
-]
-
-{ #category : 'accessing' }
-CMAbstractModel >> activeInit [
-	^ activeInit ifNil: [ activeInit := self class defaultInit ]
-]
-
-{ #category : 'accessing' }
-CMAbstractModel >> activeInit: aSymbol [
-	activeInit := aSymbol
-]
-
-{ #category : 'pov and info' }
-CMAbstractModel >> allEntitiesFrom: aClass getInfoFor: infoSymbol [
-	"return a collection of info from all entities inheriting from aClass"
-	
-	^(self allTheEntities: aClass)
-		collect: [:each | each getInfoFor: infoSymbol]
 ]
 
 { #category : 'accessing - entities' }
@@ -591,13 +421,6 @@ CMAbstractModel >> channel: aCanal [
 	channel := aCanal
 ]
 
-{ #category : 'interface closing' }
-CMAbstractModel >> closeRequest [
-	"When the model is closing, you may redefine this method If you want to finalise some things, as for example, to close a specific window of the model"
-	
-	super closeRequest
-]
-
 { #category : 'referencing entities' }
 CMAbstractModel >> collectEntity: anEntity [
 	"adds anEntity to the collection called theXXXs (where XXX is equal to the class name)"
@@ -611,14 +434,6 @@ CMAbstractModel >> collectEntity: anEntity [
 				with: (OrderedCollection withAll: collection).
 			collection := self theEntities: anEntity class].
 	collection add: anEntity
-]
-
-{ #category : 'probes color' }
-CMAbstractModel >> colorOfProbe: aProbeSymbol [
-	"Method is defined by the class
-	 ->answer the color of a probe (to display the curve in ChartsInterface)"
-	
-	^self class colorOfProbe: aProbeSymbol
 ]
 
 { #category : 'accessing' }
@@ -844,22 +659,6 @@ CMAbstractModel >> creationDate: anObject [
 	creationDate := anObject
 ]
 
-{ #category : 'probes - recording' }
-CMAbstractModel >> data [
-	"Returns probes results collected during one simulation"
-
-	"At the moment, data is a dictionary"
-
-	"Should be replaced by DataFrame in the future"
-
-	^ data ifNil: [ data := Dictionary new ] ifNotNil: [ data ]
-]
-
-{ #category : 'probes - recording' }
-CMAbstractModel >> data: aDictionary [
-	data := aDictionary
-]
-
 { #category : 'pov' }
 CMAbstractModel >> displayPov: aSymbol of: aClass [
 	"Purpose: set the POV of aClass to be displayed on the opened spatial grids.
@@ -969,34 +768,6 @@ CMAbstractModel >> getterForEntityClass: aClass [
 		ifAbsent: [ self error: 'Getter for class #', aClass name, ' was not found in the dictionary' ].
 ]
 
-{ #category : 'testing' }
-CMAbstractModel >> hasActiveInit [
-	" Answer <true> if the receiver has an activeInit method "
-	
-	^ activeInit notNil
-]
-
-{ #category : 'testing' }
-CMAbstractModel >> hasActiveProbes [
-	" Answer <true> if the receiver has actually active probes selected "
-	
-	^ self class activeProbes notEmpty
-]
-
-{ #category : 'testing' }
-CMAbstractModel >> hasControlInit [
-	" Answer <true> if the receiver has an activeControl method "
-	
-	^ activeControl notNil
-]
-
-{ #category : 'testing' }
-CMAbstractModel >> hasData [
-	" Answer <true> if the receiver already has simulation data "
-	
-	^ data notNil and: [ self timeStep > 0 ]
-]
-
 { #category : 'default values' }
 CMAbstractModel >> hasSpatialClasses [
 	" Answer <true> if the receiver's model has a Simple Cell or Cellular Automaton already defined "
@@ -1041,19 +812,6 @@ CMAbstractModel >> initEntitiesForSocialClass: aClass [
 	self resetEntities: aClass
 ]
 
-{ #category : 'accessing' }
-CMAbstractModel >> initStatus [
-	" Answer <true> if the receiver was initialized through #initSimulation, <false> otherwise "
-	
-	^ initStatus
-		ifNil: [ initStatus := false ]
-]
-
-{ #category : 'accessing' }
-CMAbstractModel >> initStatus: anObject [
-	initStatus := anObject
-]
-
 { #category : 'initialization' }
 CMAbstractModel >> initialize [
 	"self class spatialClasses isEmpty ifFalse: [self initializeSpaceModel]."
@@ -1068,33 +826,10 @@ CMAbstractModel >> initialize [
 
 ]
 
-{ #category : 'probes - recording' }
-CMAbstractModel >> initializeActiveProbes [ 
-
-	self class activeProbes ifNotEmpty: [ : activeProbes | 
-		self data
-			at: self class name
-			put: Dictionary new.
-		activeProbes do: [ : p | 
-			(self data at: self class name)
-					at: p
-					put: OrderedCollection  new] ].
-]
-
 { #category : 'initialization' }
 CMAbstractModel >> initializeChannel [
 	
 	self channel: CMChannel new
-]
-
-{ #category : 'initialization' }
-CMAbstractModel >> initializeEntitiesActiveProbes [
-
-	self class allEntityClasses do: [ :c |
-		c activeProbes ifNotEmpty: [
-			self data at: c name put: Dictionary new.
-			c activeProbes do: [ :p |
-				(self data at: c name) at: p put: Dictionary new ] ] ] 
 ]
 
 { #category : 'initialization' }
@@ -1112,32 +847,6 @@ CMAbstractModel >> initializeEntityGetters [
 ]
 
 { #category : 'initialization' }
-CMAbstractModel >> initializeProbes [
-
-	data := Dictionary new.
-	self 
-		initializeActiveProbes;
-		initializeEntitiesActiveProbes.
-]
-
-{ #category : 'scheduling' }
-CMAbstractModel >> initializeSimulation [
-
-	self timeStep: 0.
-	self initializeProbes.
-	"remove the previous entities of the collections (theXXXs), except for theCells"
-	self initEntities.
-	"set default attributes values of entities"
-	"Call the selected INIT method"
-	self perform: self activeInit.	"launch the selected INIT method"
-	self updateEntities.	"updates theXXXs collections"
-	self updateDataForChart.
-	self channel ifNil: [ self initializeChannel ].
-	self theAgentsComm do: [ :p | p channel: self channel ].
-	self initStatus: true.
-]
-
-{ #category : 'initialization' }
 CMAbstractModel >> initializeSpaceModel [
 	" Private - Setup the receiver's space model only if the model has a spatial entity cell class defined "
 
@@ -1149,24 +858,6 @@ CMAbstractModel >> initializeSpaceModel [
 { #category : 'accessing' }
 CMAbstractModel >> isGenericEntity [
 	^ self class isGenericEntity 
-]
-
-{ #category : 'testing' }
-CMAbstractModel >> isInitialized [
-	" Answer <true> if the receiver does not have any control or init method defined "
-
-	^ 	self initStatus and: [ activeControl notNil and: [ activeInit notNil ] ].
-]
-
-{ #category : 'probes - recording' }
-CMAbstractModel >> lastValueOfGlobalDataNamed: name [
-	
-	(self data includesKey: self class name)
-		ifTrue:
-			[((self data at: self class name) includesKey: name)
-				ifTrue: [^((self data at: self class name) at: name) last]
-				ifFalse: [^0]]
-		ifFalse: [^0]
 ]
 
 { #category : 'accessing - entities' }
@@ -1181,15 +872,6 @@ CMAbstractModel >> lowerRightCell [
 	"Purpose: returns the cell located at the lower right location of the spatial grid"
 
 	^ self spaceModel lowerRightLocation
-]
-
-{ #category : 'utilities - space metrics' }
-CMAbstractModel >> meanPatchSize: aClass [
-	"Purpose: Return the average size of instances of an aggregate class.
-Argument: aClass is an aggregate.
-Example: self meanPatchSize: ForestAggregate"
-	
-	^self spaceModel meanPatchSize: aClass
 ]
 
 { #category : 'utilities - space metrics' }
@@ -1235,13 +917,6 @@ CMAbstractModel >> newEntity: aClass [
 	^ anEntity
 ]
 
-{ #category : 'accessing - entities' }
-CMAbstractModel >> otherAgentsButMe: anAgent [
-	"Purpose: Return a collection of all agents from anAgent class, except itself"
-	
-	^(self theEntities: anAgent class) select: [:other | other ~= anAgent]
-]
-
 { #category : 'utilities - space metrics' }
 CMAbstractModel >> patchDensity: aClass [
 	"Purpose: Return the density of instances of an aggregate class as compared to the total size of the spatial grid (total size of aggregates / grid size).
@@ -1259,33 +934,6 @@ aNumber is the specified total area
 Example: self patchDensity: ForestAggregate totalArea: 4875"
 	
 	^self spaceModel patchDensity: aClass totalArea: aNumber
-]
-
-{ #category : 'deprecated - mouse behavior' }
-CMAbstractModel >> performCtrlRedButton: aPoint [
-	
-	
-]
-
-{ #category : 'deprecated - mouse behavior' }
-CMAbstractModel >> performRedButton: aPoint [
-	"to inspect the spatial which extent includes aPoint"
-	
-	self spaceModel performRedButton: aPoint
-]
-
-{ #category : 'deprecated - mouse behavior' }
-CMAbstractModel >> performShiftCtrlRedButton: aPoint [
-	"to open the charts interface for the occupant located at aPoint"
-	
-	self spaceModel performShiftCtrlRedButton: aPoint
-]
-
-{ #category : 'deprecated - mouse behavior' }
-CMAbstractModel >> performShiftRedButton: aPoint [
-	"to inspect the occupants located at aPoint"
-	
-	self spaceModel performShiftRedButton: aPoint
 ]
 
 { #category : 'accessing - entities' }
@@ -1373,9 +1021,7 @@ CMAbstractModel >> printOn: aStream [
 	super printOn: aStream.
 	aStream
 		space;
-		<< '(init: ';
-		<< self initStatus asString;
-		<< ', entities: ';
+		<< '(entities: ';
 		<< self allTheEntities size asString;
 		<< ')'
 ]
@@ -1502,14 +1148,6 @@ CMAbstractModel >> selectCellsOfLine: lineNumber [
 	Example: self ask: (self selectCellsOfLine: 2) toDo: #flash"
 
 	^ self spaceModel cellsOfLine: lineNumber
-]
-
-{ #category : 'probes color' }
-CMAbstractModel >> setColor: aColorValue forProbe: aSymbol [
-	"Method is defined by the class
-           ->creates a color method at class level"
-	
-	^self class setColor: aColorValue forProbe: aSymbol
 ]
 
 { #category : 'init - spatial entities' }
@@ -1668,82 +1306,6 @@ CMAbstractModel >> theEntities: aClass [
 			self perform: getter ].
 		
 	^ collection
-]
-
-{ #category : 'accessing - scheduling' }
-CMAbstractModel >> timeStep [
-	"Purpose: returns the current time step of the simulation
-	Example: self timeStep = 2 ifTrue:[self doSomething]"
-
-	^ timeStep
-]
-
-{ #category : 'scheduling' }
-CMAbstractModel >> timeStep: anInteger [
-
-	timeStep := anInteger.
-]
-
-{ #category : 'probes - recording' }
-CMAbstractModel >> updateDataForChart [
-	"Update the global and local data and refresh the charts"
-	
-	self
-		updateGlobalData;
-		updateLocalData.
-
-]
-
-{ #category : 'update' }
-CMAbstractModel >> updateEntities [
-	"Removes all the dead or destroyed intances from all theXXXs collections"
-	
-	self removeDestroyedEntities
-]
-
-{ #category : 'update' }
-CMAbstractModel >> updateEntities: aClass [
-	"Removes all the dead or destroyed intances from theClass collection"
-	
-	self removeDeadEntities: aClass
-]
-
-{ #category : 'probes - recording' }
-CMAbstractModel >> updateGlobalData [
-	
-	(self data includesKey: self class name)
-		ifTrue: [ 
-			(self data at: self class name)
-				keysAndValuesDo: [:name :list | list add: (self perform: name)]]
-]
-
-{ #category : 'probes - recording' }
-CMAbstractModel >> updateLocalData [
-	
-	| res collec className aValue |
-	self class allEntityClasses do: [ : cl | 
-		className := cl name.
-		(self data includesKey: className)
-			ifTrue: [ 
-				(self data at: className) keysAndValuesDo: [ : name : dict | 
-					res := OrderedCollection new.
-					(self perform: (self getterForEntityClass: cl)) do: [ : c |  
-						(aValue := c class perform: name) isSymbol
-							ifTrue: [ 
-								"The local probe is a reference to a global probe"
-								aValue := self lastValueOfGlobalDataNamed: name].
-								res add: (Array with: aValue with: c id)].
-							res do: [:x | 
-								(dict keys includes: x last)
-									ifFalse: [ 
-										collec := OrderedCollection new.
-										self timeStep timesRepeat: [ collec add: 0 ] ]
-									ifTrue: [
-										collec := dict at: x last].
-										collec add: x first.
-										dict
-											at: x last
-											put: collec ] ] ] ]
 ]
 
 { #category : 'accessing - entities' }

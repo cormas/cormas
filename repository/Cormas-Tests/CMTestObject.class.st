@@ -12,10 +12,9 @@ Class {
 { #category : 'tests-accessing-entities' }
 CMTestObject >> newTestModel [
  	
-	^ (CMMockModel	newWithActiveInit: #init)
+	^ CMMockModel new
 		randomSeed: 42;
-		initializeSimulation;
-		yourself
+		yourself.
 ]
 
 { #category : 'running' }
@@ -23,4 +22,5 @@ CMTestObject >> setUp [
 
 	super setUp.
 	model := self newTestModel.
+	model initFixed.
 ]

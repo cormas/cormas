@@ -116,7 +116,7 @@ CMSpaceModel >> autoResizeBounds: anObject [
 { #category : 'ESE (regular) - special locations' }
 CMSpaceModel >> cellAt: aRowIndex at: aColumnIndex [
 	
-	^ self elementaryEntities at: (aRowIndex - 1) * numberOfColumns + aColumnIndex
+	^ self elementaryEntities at: ((aRowIndex - 1) * numberOfColumns + aColumnIndex)
 ]
 
 { #category : 'accessing' }
@@ -507,18 +507,6 @@ CMSpaceModel >> lowerLeftLocation [
 { #category : 'ESE (regular) - special locations' }
 CMSpaceModel >> lowerRightLocation [
 	^ self elementaryEntities at: numberOfColumns * numberOfRows
-]
-
-{ #category : 'landscape indices' }
-CMSpaceModel >> meanPatchSize: aClass [
-	"return the data (a number) to be recorded"
-
-	| size aggregates |
-	aggregates := self cormasModel
-		perform: (self cormasModel getterForEntityClass: aClass).
-	size := 0.
-	aggregates do: [ :a | size := size + a components size ].
-	^ size / aggregates size
 ]
 
 { #category : 'landscape indices' }

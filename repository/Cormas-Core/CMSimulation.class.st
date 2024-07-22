@@ -5,7 +5,10 @@ Class {
 		'cormasModel',
 		'currentTimeStep',
 		'data',
-		'finalTimeStep'
+		'finalTimeStep',
+		'activeInitMethod',
+		'activeControlMethod',
+		'probes'
 	],
 	#category : 'Cormas-Core-Kernel',
 	#package : 'Cormas-Core',
@@ -28,6 +31,36 @@ CMSimulation class >> for: aModel [
 ]
 
 { #category : 'accessing' }
+CMSimulation >> activeControlMethod: aCompiledMethod [
+
+	activeControlMethod := aCompiledMethod
+]
+
+{ #category : 'accessing' }
+CMSimulation >> activeInitMethod: aCompiledMethod [
+
+	activeInitMethod := aCompiledMethod
+]
+
+{ #category : 'probes' }
+CMSimulation >> activeProbes [
+
+	^ probes select: [ :probe | probe isActive ]
+]
+
+{ #category : 'available methods' }
+CMSimulation >> availableControlMethods [
+
+	^ (Pragma allNamed: #control in: cormasModel class) collect: #method
+]
+
+{ #category : 'available methods' }
+CMSimulation >> availableInitMethods [
+
+	^ (Pragma allNamed: #init in: cormasModel class) collect: #method
+]
+
+{ #category : 'accessing' }
 CMSimulation >> cormasModel [
 	
 	^ cormasModel
@@ -46,13 +79,13 @@ CMSimulation >> currentTimeStep [
 	^ currentTimeStep 
 ]
 
-{ #category : 'time step' }
+{ #category : 'accessing' }
 CMSimulation >> finalTimeStep [
 
 	^ finalTimeStep
 ]
 
-{ #category : 'time step' }
+{ #category : 'accessing' }
 CMSimulation >> finalTimeStep: anInteger [
 
 	finalTimeStep := anInteger
@@ -65,7 +98,7 @@ CMSimulation >> finishSimulation [
 	currentTimeStep := self finalTimeStep
 ]
 
-{ #category : 'time step' }
+{ #category : 'testing' }
 CMSimulation >> hasEnded [
 	
 	^ self finalTimeStep <= self currentTimeStep
@@ -79,31 +112,53 @@ CMSimulation >> initialize [
 	currentTimeStep := 0.
 	finalTimeStep := self class defaultFinalTimeStep.
 	
-	data := Dictionary new.
-	
-	self initializeProbes.
+	probes := OrderedCollection new.
+	data := OrderedCollection new.
 ]
 
 { #category : 'initialization' }
 CMSimulation >> initializeModel [
 
-	cormasModel initializeProbes.
+	self initializeProbes.
+
 	"remove the previous entities of the collections (theXXXs), except for theCells"
 	cormasModel initEntities.
-	"set default attributes values of entities"
-	"Call the selected INIT method"
-	cormasModel perform: cormasModel activeInit.	"launch the selected INIT method"
-	cormasModel updateEntities.	"updates theXXXs collections"
-	cormasModel updateDataForChart.
+	
+	cormasModel removeDestroyedEntities.
 	cormasModel channel ifNil: [ cormasModel initializeChannel ].
 	cormasModel theAgentsComm do: [ :p | p channel: cormasModel channel ].
-	cormasModel initStatus: true.
+	
+	self recordData.
 ]
 
 { #category : 'initialization' }
 CMSimulation >> initializeProbes [
 
-	"do nothing"
+	probes := (Pragma allNamed: #probeNamed: in: cormasModel class) collect: [ :pragma |
+		CMProbe
+			name: pragma arguments first
+			method: pragma method
+			on: cormasModel ].
+]
+
+{ #category : 'initialization' }
+CMSimulation >> initializeSimulation [
+
+	activeInitMethod valueWithReceiver: cormasModel
+]
+
+{ #category : 'accessing' }
+CMSimulation >> probes [
+
+	^ probes
+]
+
+{ #category : 'data' }
+CMSimulation >> recordData [
+
+	data add:
+		(self activeProbes collect: [ :probe | probe name -> probe value ])
+			asDictionary 
 ]
 
 { #category : 'scheduling' }
@@ -116,10 +171,12 @@ CMSimulation >> runStep [
 	
 	currentTimeStep := currentTimeStep + 1.
 	
-	cormasModel activeControl last = $:
-		ifTrue: [ cormasModel perform: cormasModel activeControl with: currentTimeStep ]
-		ifFalse: [ cormasModel perform: cormasModel activeControl ].
-	cormasModel updateEntities.
+	activeControlMethod selector last = $:
+		ifTrue: [ activeControlMethod valueWithReceiver: cormasModel arguments: { currentTimeStep } ]
+		ifFalse: [ activeControlMethod valueWithReceiver: cormasModel ].
+		
+	cormasModel removeDestroyedEntities.
 	cormasModel channel ifNotNil: [ cormasModel channel sendAllMessages ].
-	cormasModel updateDataForChart.
+	
+	self recordData.
 ]
