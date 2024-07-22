@@ -184,11 +184,6 @@ CMAbstractModelTest >> testLowerRightCell [
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testModelPrefix [
-	self assert: CMMockCell modelClass shortName equals: 'Mock'
-]
-
-{ #category : 'tests-accessing-entities' }
 CMAbstractModelTest >> testPickRandomCell [
 	| cell |
 

@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'cormasModel',
 		'currentTimeStep',
-		'finalTime'
+		'finalTime',
+		'data'
 	],
 	#category : 'Cormas-Core-Kernel',
 	#package : 'Cormas-Core',
@@ -77,6 +78,10 @@ CMSimulation >> initialize [
 	
 	currentTimeStep := 0.
 	finalTime := self class defaultFinalTime.
+	
+	data := Dictionary new.
+	
+	self initializeProbes.
 ]
 
 { #category : 'initialization' }
@@ -93,6 +98,12 @@ CMSimulation >> initializeModel [
 	cormasModel channel ifNil: [ cormasModel initializeChannel ].
 	cormasModel theAgentsComm do: [ :p | p channel: cormasModel channel ].
 	cormasModel initStatus: true.
+]
+
+{ #category : 'initialization' }
+CMSimulation >> initializeProbes [
+
+	"do nothing"
 ]
 
 { #category : 'scheduling' }

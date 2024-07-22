@@ -46,13 +46,6 @@ CMEntityTest >> testCormasModel [
 ]
 
 { #category : 'tests' }
-CMEntityTest >> testEntityName [
-	self assert: CMMockCell entityName equals: 'Cell'.
-	self assert: CMMockCow entityName equals: 'Cow'.
-	self assert: CMMockGoat entityName equals: 'Goat'.
-]
-
-{ #category : 'tests' }
 CMEntityTest >> testModelClass [
 	self
 		assert: CMMockCell modelClass

@@ -44,7 +44,6 @@ Class {
 		'activeControl',
 		'spaceModel',
 		'data',
-		'defaultAttributesSetter',
 		'initStatus',
 		'creationDate',
 		'version',
@@ -119,44 +118,6 @@ containsSubstring: aString
 
 stDocumentation:
 comment:"
-]
-
-{ #category : 'accessing' }
-CMAbstractModel class >> addRandomAttributes: anArray [
-	"' Compile #randomAttributes by adding anArray: #(#attribute scopeLevel #randFloat min max) "
-	
-	| list code oldLine |
-	list := self randomAttributes asList.
-	oldLine := list
-		detect:
-			[:line | (line at: 1) = (anArray at: 1) and: [(line at: 2) = (anArray at: 2)]]
-		ifNone: [nil].
-	oldLine isNil
-		ifTrue: [list add: anArray]
-		ifFalse:
-			[oldLine := oldLine asArray.
-			oldLine
-				at: 3
-				put: (anArray at: 3).
-			oldLine
-				at: 4
-				put: (anArray at: 4).
-			oldLine
-				at: 5
-				put: (anArray at: 5)].
-	code := 'randomAttributes \	"Returns a list of randomAttributes: a List of arrays: [#(#attributeName scopeLevel #randomFloat min max) #(...) #(...) ... ].
-
-	This method is automatically redefined when creating new random attributes" 	\'
-		withCRs.
-	code := code ,
-			'	| list |
-	list := List new. \'.
-	list do: [:line | code := code , '	list add: ' , line printString , '. \'].
-	code := (code , '	^list') withCRs.
-	self class
-		compile: code
-		classified: '- accessing' asString
-		notifying: nil
 ]
 
 { #category : 'managing classes' }
@@ -254,18 +215,6 @@ CMAbstractModel class >> colorOfProbe: aProbeSymbol [
 	^self perform: selectorName
 ]
 
-{ #category : 'accessing' }
-CMAbstractModel class >> cormasModelName [
-	" Answer a <String> with the receiver's name "
-
-	^ self asString
-]
-
-{ #category : 'accessing' }
-CMAbstractModel class >> currentSimulation: anObject [
-	self deprecated: 'currentSimulation is no longer supported.'
-]
-
 { #category : 'simulation settings' }
 CMAbstractModel class >> defaultControl [
 	
@@ -299,43 +248,6 @@ CMAbstractModel class >> hasProbes [
 	" Answer <true> if the receiver's contains any methods to be used as probes "
 	
 	^ self probes notEmpty
-]
-
-{ #category : 'testing' }
-CMAbstractModel class >> hasRandomAttribute: anAttributeName [
-	"' Answer if anAttributeName defined at class or instance level is a random attribute"
-	
-	^self randomAttributes anySatisfy: [:line | (line at: 1) = anAttributeName]
-]
-
-{ #category : 'accessing' }
-CMAbstractModel class >> hasRandomAttribute: anAttributeName classVariable: boolean value: aString [
-	"' Answer if anAttributeName defined at level (#instance or #class) is already defined with the same value as aString.
-randomAttributes = #(#bioma #instance #randomFloat 0 1). "
-	
-	| level anArray otherString include |
-	(self isRandomAttribute: anAttributeName classVariable: boolean)
-		ifFalse: [^false].
-	level := boolean
-		ifTrue: [#class]
-		ifFalse: [#instance].
-	anArray := self randomAttributes
-		detect:
-			[:line | (line at: 1) = anAttributeName and: [(line at: 2) = level]].
-	otherString := (anArray at: 3) asString.
-	otherString = 'randomFloat'
-		ifTrue: [include := false]
-		ifFalse: [include := true].
-	include
-		ifTrue: [otherString := otherString , ': [']
-		ifFalse: [otherString := otherString , ': ]'].
-	otherString := otherString , (anArray at: 4) asString.
-	otherString := otherString , ' ; '.
-	otherString := otherString , (anArray at: 5) asString.
-	include
-		ifTrue: [otherString := otherString , ']']
-		ifFalse: [otherString := otherString , '['].
-	^otherString = aString
 ]
 
 { #category : 'accessing' }
@@ -377,27 +289,6 @@ CMAbstractModel class >> initializeModelClasses [
 CMAbstractModel class >> isGenericEntity [
 	
 	^self = CMAbstractModel	"| self = CormasModelGame"
-]
-
-{ #category : 'testing' }
-CMAbstractModel class >> isRandomAttribute: anAttributeName classVariable: boolean [
-	"' Answer if anAttributeName defined at level (#instance or #class) is a random attribute"
-	
-	^self
-		isRandomAttribute: anAttributeName
-		scopeLevel:
-			(boolean
-				ifTrue: [#class]
-				ifFalse: [#instance])
-]
-
-{ #category : 'testing' }
-CMAbstractModel class >> isRandomAttribute: anAttributeName scopeLevel: level [
-	"' Answer if anAttributeName defined at level (#instance or #class) is a random attribute"
-	
-	^self randomAttributes
-		anySatisfy:
-			[:line | (line at: 1) = anAttributeName and: [(line at: 2) = level]]
 ]
 
 { #category : 'testing' }
@@ -457,75 +348,11 @@ CMAbstractModel class >> passiveObjectClasses [
 			passiveClasses ]
 ]
 
-{ #category : 'accessing' }
-CMAbstractModel class >> postfixName [
-	"Answer a the postfix name of this model: 'Model' "
-	
-	^ 'Model'
-]
-
-{ #category : 'accessing' }
-CMAbstractModel class >> prefixName [
-	"Answer a the prefix name of this model: 'CM' "
-	
-	^ 'CM'
-]
-
 { #category : 'accessing - probes' }
 CMAbstractModel class >> probes [
 	" Answer a <Collection> of <Symbol> representing receiver's selectors probes to observe "
 	
 	^ (Pragma allNamed: #probe in: self) collect: #methodSelector
-]
-
-{ #category : 'accessing' }
-CMAbstractModel class >> randomAttributes [
-	"' Returns a list of randomAttributes (List of arrays: #(#attribute scopeLevel #randFloat min max) ).
-	This method is automatically redefined when creating new random attributes"
-	
-	^#()
-]
-
-{ #category : 'accessing' }
-CMAbstractModel class >> removeRandomAttributes: anArray [
-	"' Compile #randomAttributes by removing anArray: #(#attribute scopeLevel #randFloat min max) "
-	
-	| list code |
-	list := self randomAttributes asList.
-	list
-		remove: anArray
-		ifAbsent: [nil].
-	code := 'randomAttributes \	"Returns a list of randomAttributes: a List of arrays: [#(#attributeName scopeLevel #randFloat min max) #(...) #(...) ... ].
-
-	This method is automatically redefined when creating new random attributes" 	\'
-		withCRs.
-	code := code ,
-			'	| list |
-	list := List new. \'.
-	list do: [:line | code := code , '	list add: ' , line printString , '. \'].
-	code := (code , '	^list') withCRs.
-	self class
-		compile: code
-		classified: '- accessing' asString
-		notifying: nil
-]
-
-{ #category : 'managing classes' }
-CMAbstractModel class >> renameSelector: oldName by: newName inputParametersNumber: nbArgs [
-	"ex: theCells by theLandUnits or 
-	theCells:xx by theLandUnits:xx"
-	
-	| map |
-	map := (1 to: nbArgs) collect: [:i | i].
-	(self allSelectors includes: oldName asSymbol)
-		ifTrue:
-			[Cursor wait
-				showWhile:
-					[(RBChangeMethodNameRefactoring
-						renameMethod: oldName asSymbol
-						in: self
-						to: newName asSymbol
-						permutation: map) execute]]
 ]
 
 { #category : 'accessing - probes' }
@@ -540,33 +367,6 @@ colorOfProbe_aSymbol
 				withCRs
 		classified: '- probes'
 		notifying: nil
-]
-
-{ #category : 'description - primitives' }
-CMAbstractModel class >> setDescriptionFor: method withText: text [
-	"Creates  a method for a CormasModel subclass from the text"
-	
-	| textWithoutQuote |
-	textWithoutQuote := text copyReplaceAll: #($') with: #($").	"embedded quotes get doubled"
-	self class
-		compile:
-			method ,
-					'
-^ ''' , textWithoutQuote , '''	'
-		classified: 'description'
-		notifying: nil
-]
-
-{ #category : 'accessing' }
-CMAbstractModel class >> shortName [
-	"Answer the model name as short string (without 'CM' nor 'Model').
-	Remove CM prefix at the beginning and Model at the end"
-	
-	| mName |
-	mName := self name allButFirst: (self prefixName) size.
-	^ (name endsWith: self postfixName)
-		ifTrue: [ mName allButLast: self postfixName size ]
-		ifFalse: [ mName ]
 ]
 
 { #category : 'managing classes' }
@@ -596,25 +396,6 @@ CMAbstractModel class >> spatialClasses [
 { #category : 'accessing' }
 CMAbstractModel class >> spatialClasses: aCollection [
 	spatialClasses := aCollection
-]
-
-{ #category : 'accessing - scheduling' }
-CMAbstractModel class >> timeStep [
-	"Deprecated. If you want to get the current timeStep, try 'self cormasModel timeStep'."
-
-	self
-		deprecated:
-			'timeStep is moved to the instance side. If you want to get the current time, try "self cormasModel timeStep".'
-]
-
-{ #category : 'managing classes' }
-CMAbstractModel class >> visualizableClasses [
-	"Return a list of the model' classes for whom a 'pov' protocol exists"
-	
-	| coll |
-	coll := OrderedCollection withAll: self occupantClasses.
-	coll addAll: self spatialClasses.
-	^coll
 ]
 
 { #category : 'accessing' }
@@ -1079,12 +860,6 @@ CMAbstractModel >> data: aDictionary [
 	data := aDictionary
 ]
 
-{ #category : 'default values' }
-CMAbstractModel >> defaultAttributesSetter: aDefaultSetter [
-	
-	^defaultAttributesSetter := aDefaultSetter
-]
-
 { #category : 'pov' }
 CMAbstractModel >> displayPov: aSymbol of: aClass [
 	"Purpose: set the POV of aClass to be displayed on the opened spatial grids.
@@ -1206,12 +981,6 @@ CMAbstractModel >> hasActiveProbes [
 	" Answer <true> if the receiver has actually active probes selected "
 	
 	^ self class activeProbes notEmpty
-]
-
-{ #category : 'default values' }
-CMAbstractModel >> hasAttributesSetter [
-	
-	^defaultAttributesSetter isNil not
 ]
 
 { #category : 'testing' }
@@ -1398,19 +1167,6 @@ CMAbstractModel >> lastValueOfGlobalDataNamed: name [
 				ifTrue: [^((self data at: self class name) at: name) last]
 				ifFalse: [^0]]
 		ifFalse: [^0]
-]
-
-{ #category : 'probes - charts' }
-CMAbstractModel >> localCharts [
-	
-	| list |
-	list := OrderedCollection new.
-	self class allEntityClasses
-		do:
-			[:cl | 
-			(self data includesKey: cl name)
-				ifTrue: [list addAll: (self data at: cl name) keys]].
-	^list
 ]
 
 { #category : 'accessing - entities' }
@@ -1622,22 +1378,6 @@ CMAbstractModel >> printOn: aStream [
 		<< ', entities: ';
 		<< self allTheEntities size asString;
 		<< ')'
-]
-
-{ #category : 'probes - recording' }
-CMAbstractModel >> probeAt: probeName [
-	" Answer a <Collection> with the receiver's values for probeName "
-
-	^ (self data at: self className) at: probeName
-]
-
-{ #category : 'probes - recording' }
-CMAbstractModel >> probeAt: probeName ifAbsent: aBlock [
-	" Answer a <Collection> with the receiver's values for probeName "
-
-	^ (self data at: self className) 
-		at: probeName
-		ifAbsent: aBlock
 ]
 
 { #category : 'initialization' }

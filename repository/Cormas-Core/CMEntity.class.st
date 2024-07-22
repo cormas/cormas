@@ -61,44 +61,6 @@ CMEntity class >> activeProbes: anObject [
 	activeProbes := anObject
 ]
 
-{ #category : 'accessing' }
-CMEntity class >> addRandomAttributes: anArray [
-	"' Compile #randomAttributes by adding anArray: #(#attribute scopeLevel #randFloat min max) "
-	
-	| list code oldLine |
-	list := self randomAttributes asList.
-	oldLine := list
-		detect:
-			[:line | (line at: 1) = (anArray at: 1) and: [(line at: 2) = (anArray at: 2)]]
-		ifNone: [nil].
-	oldLine isNil
-		ifTrue: [list add: anArray]
-		ifFalse:
-			[oldLine := oldLine asArray.
-			oldLine
-				at: 3
-				put: (anArray at: 3).
-			oldLine
-				at: 4
-				put: (anArray at: 4).
-			oldLine
-				at: 5
-				put: (anArray at: 5)].
-	code := 'randomAttributes \	"Returns a list of randomAttributes: a List of arrays: [#(#attributeName scopeLevel #randomFloat min max) #(...) #(...) ... ].
-
-	This method is automatically redefined when creating new random attributes" 	\'
-		withCRs.
-	code := code ,
-			'	| list |
-	list := List new. \'.
-	list do: [:line | code := code , '	list add: ' , line printString , '. \'].
-	code := (code , '	^list') withCRs.
-	self class
-		compile: code
-		classified: '- accessing' asString
-		notifying: nil
-]
-
 { #category : 'accessing - methods & classes' }
 CMEntity class >> availableInfo [
 	"Purpose: returns the list of available info methods
@@ -126,17 +88,6 @@ CMEntity class >> availablePov [
 
 	^ pragmas collect: [ :pragma |
 		pragma method selector ]
-]
-
-{ #category : 'accessing' }
-CMEntity class >> buildGetterForEntityClass [
-	" Create the getter selector for the entity class aClass.
-	CMEntity asGetterForEntityClass -> #theEntities"
-
-	^ (String streamContents: [ : stream | 
-		stream 
-			<< 'the';
-			<< self entityName asPlural capitalized]) asSymbol
 ]
 
 { #category : 'deprecated' }
@@ -205,18 +156,6 @@ CMEntity class >> defaultProbes [
 	^Array new
 ]
 
-{ #category : 'accessing' }
-CMEntity class >> entityName [
-	" Answer a <String> with the entity name without prefixes ('CM' and the model name)"
-
-	^ (self name beginsWith: 'CM')
-		ifTrue: [ 
-			((self name allButFirst: 2) beginsWith: self modelClass shortName)
-				ifTrue: [ self name allButFirst: 2 + self modelClass shortName size ]
-				ifFalse: [ self name allButFirst: 2 ] ]
-		ifFalse: [ self name ]
-]
-
 { #category : 'accessing - methods & classes' }
 CMEntity class >> genericEntities [
 	
@@ -229,43 +168,6 @@ CMEntity class >> genericEntities [
 CMEntity class >> ghostInstance [
 	
 	^super new
-]
-
-{ #category : 'accessing' }
-CMEntity class >> hasRandomAttribute: anAttributeName [
-	"' Answer if anAttributeName defined at class or instance level is a random attribute"
-	
-	^self randomAttributes anySatisfy: [:line | (line at: 1) = anAttributeName]
-]
-
-{ #category : 'accessing' }
-CMEntity class >> hasRandomAttribute: anAttributeName classVariable: boolean value: aString [
-	"' Answer if anAttributeName defined at level (#instance or #class) is already defined with the same value as aString.
-randomAttributes = #(#bioma #instance #randomFloat 0 1). "
-	
-	| level anArray otherString include |
-	(self isRandomAttribute: anAttributeName classVariable: boolean)
-		ifFalse: [^false].
-	level := boolean
-		ifTrue: [#class]
-		ifFalse: [#instance].
-	anArray := self randomAttributes
-		detect:
-			[:line | (line at: 1) = anAttributeName and: [(line at: 2) = level]].
-	otherString := (anArray at: 3) asString.
-	otherString = 'randomFloat'
-		ifTrue: [include := false]
-		ifFalse: [include := true].
-	include
-		ifTrue: [otherString := otherString , ': [']
-		ifFalse: [otherString := otherString , ': ]'].
-	otherString := otherString , (anArray at: 4) asString.
-	otherString := otherString , ' ; '.
-	otherString := otherString , (anArray at: 5) asString.
-	include
-		ifTrue: [otherString := otherString , ']']
-		ifFalse: [otherString := otherString , '['].
-	^otherString = aString
 ]
 
 { #category : 'default value' }
@@ -321,27 +223,6 @@ CMEntity class >> isNodeClass [
 CMEntity class >> isObjectLocationClass [
 	
 	^false
-]
-
-{ #category : 'accessing' }
-CMEntity class >> isRandomAttribute: anAttributeName classVariable: boolean [
-	"' Answer if anAttributeName defined at level (#instance or #class) is a random attribute"
-	
-	^self
-		isRandomAttribute: anAttributeName
-		scopeLevel:
-			(boolean
-				ifTrue: [#class]
-				ifFalse: [#instance])
-]
-
-{ #category : 'accessing' }
-CMEntity class >> isRandomAttribute: anAttributeName scopeLevel: level [
-	"' Answer if anAttributeName defined at level (#instance or #class) is a random attribute"
-	
-	^self randomAttributes
-		anySatisfy:
-			[:line | (line at: 1) = anAttributeName and: [(line at: 2) = level]]
 ]
 
 { #category : 'testing' }
@@ -447,30 +328,6 @@ CMEntity class >> randomAttributes [
 	This method is automatically redefined when creating new random attributes"
 	
 	^#()
-]
-
-{ #category : 'accessing' }
-CMEntity class >> removeRandomAttributes: anArray [
-	"' Compile #randomAttributes by removing anArray: #(#attribute scopeLevel #randFloat min max) "
-	
-	| list code |
-	list := self randomAttributes asList.
-	list
-		remove: anArray
-		ifAbsent: [nil].
-	code := 'randomAttributes \	"Returns a list of randomAttributes: a List of arrays: [#(#attributeName scopeLevel #randFloat min max) #(...) #(...) ... ].
-
-	This method is automatically redefined when creating new random attributes" 	\'
-		withCRs.
-	code := code ,
-			'	| list |
-	list := List new. \'.
-	list do: [:line | code := code , '	list add: ' , line printString , '. \'].
-	code := (code , '	^list') withCRs.
-	self class
-		compile: code
-		classified: '- accessing' asString
-		notifying: nil
 ]
 
 { #category : 'probes' }
