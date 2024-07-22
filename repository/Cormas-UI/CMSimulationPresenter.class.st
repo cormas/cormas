@@ -240,5 +240,5 @@ CMSimulationPresenter >> translator: anObject [
 { #category : 'as yet unclassified' }
 CMSimulationPresenter >> updateProgressBar [
 
-	progressBar fixedAt: (simulation currentTimeStep / simulation finalTime) asFloat.
+	progressBar fixedAt: (simulation currentTimeStep / simulation finalTimeStep) asFloat.
 ]

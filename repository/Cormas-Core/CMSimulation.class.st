@@ -4,8 +4,8 @@ Class {
 	#instVars : [
 		'cormasModel',
 		'currentTimeStep',
-		'finalTime',
-		'data'
+		'data',
+		'finalTimeStep'
 	],
 	#category : 'Cormas-Core-Kernel',
 	#package : 'Cormas-Core',
@@ -13,8 +13,8 @@ Class {
 }
 
 { #category : 'time' }
-CMSimulation class >> defaultFinalTime [
-	" Answer an <Integer> representing the default final step time "
+CMSimulation class >> defaultFinalTimeStep [
+	"Answer an <Integer> representing the default final time step"
 
 	^ 100
 ]
@@ -46,29 +46,29 @@ CMSimulation >> currentTimeStep [
 	^ currentTimeStep 
 ]
 
-{ #category : 'time' }
-CMSimulation >> finalTime [
+{ #category : 'time step' }
+CMSimulation >> finalTimeStep [
 
-	^ finalTime
+	^ finalTimeStep
 ]
 
-{ #category : 'time' }
-CMSimulation >> finalTime: anInteger [
+{ #category : 'time step' }
+CMSimulation >> finalTimeStep: anInteger [
 
-	finalTime := anInteger
+	finalTimeStep := anInteger
 	
 ]
 
-{ #category : 'time' }
+{ #category : 'time step' }
 CMSimulation >> finishSimulation [
 
-	currentTimeStep := self finalTime
+	currentTimeStep := self finalTimeStep
 ]
 
-{ #category : 'time' }
+{ #category : 'time step' }
 CMSimulation >> hasEnded [
 	
-	^ self finalTime <= self currentTimeStep
+	^ self finalTimeStep <= self currentTimeStep
 ]
 
 { #category : 'initialization' }
@@ -77,7 +77,7 @@ CMSimulation >> initialize [
 	super initialize.
 	
 	currentTimeStep := 0.
-	finalTime := self class defaultFinalTime.
+	finalTimeStep := self class defaultFinalTimeStep.
 	
 	data := Dictionary new.
 	
