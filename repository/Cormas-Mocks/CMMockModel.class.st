@@ -224,11 +224,10 @@ CMMockModel >> initializeCellsFromMatrix [
 ]
 
 { #category : 'probes' }
-CMMockModel >> numberOfAliveAgents [
-	"return the population size of the alive"
+CMMockModel >> numberOfAliveCells [
 
-	<probeNamed: 'Number of alive agents'>
-	^ (self theAgents select: [ :agent | agent isAlive ]) size
+	<probeNamed: 'Number of alive cells'>
+	^ (self theCells select: [ :cell | cell isAliveCell ]) size
 ]
 
 { #category : 'accessing - parameters' }
@@ -244,11 +243,10 @@ CMMockModel >> numberOfColumns: aNumber [
 ]
 
 { #category : 'probes' }
-CMMockModel >> numberOfDeadAgents [
-	"return the population size of the dead"
+CMMockModel >> numberOfDeadCells [
 
-	<probeNamed: 'Number of dead agents'>
-	^ (self theAgents select: [ :agent | agent isDead ]) size
+	<probeNamed: 'Number of dead cells'>
+	^ (self theCells select: [ :cell | cell isDeadCell ]) size
 ]
 
 { #category : 'accessing - parameters' }

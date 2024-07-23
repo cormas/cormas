@@ -30,13 +30,13 @@ CMSimulationTest >> testProbes [
 	
 	expectedProbes := { 
 		CMProbe
-			name: 'Number of alive agents'
-			method: (CMMockModel >> #numberOfAliveAgents)
+			name: 'Number of alive cells'
+			method: (CMMockModel >> #numberOfAliveCells)
 			on: simulation cormasModel .
 			
 		CMProbe
-			name: 'Number of dead agents'
-			method: (CMMockModel >> #numberOfDeadAgents)
+			name: 'Number of dead cells'
+			method: (CMMockModel >> #numberOfDeadCells)
 			on: simulation cormasModel .
 	}.
 
