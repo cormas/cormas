@@ -80,6 +80,12 @@ CMSimulation >> currentTimeStep [
 ]
 
 { #category : 'accessing' }
+CMSimulation >> data [
+
+	^ data
+]
+
+{ #category : 'accessing' }
 CMSimulation >> finalTimeStep [
 
 	^ finalTimeStep
@@ -123,12 +129,10 @@ CMSimulation >> initializeModel [
 
 	"remove the previous entities of the collections (theXXXs), except for theCells"
 	cormasModel initEntities.
-	
+
 	cormasModel removeDestroyedEntities.
 	cormasModel channel ifNil: [ cormasModel initializeChannel ].
 	cormasModel theAgentsComm do: [ :p | p channel: cormasModel channel ].
-	
-	self recordData.
 ]
 
 { #category : 'initialization' }
@@ -144,7 +148,8 @@ CMSimulation >> initializeProbes [
 { #category : 'initialization' }
 CMSimulation >> initializeSimulation [
 
-	activeInitMethod valueWithReceiver: cormasModel
+	activeInitMethod valueWithReceiver: cormasModel.
+	self recordData.
 ]
 
 { #category : 'accessing' }

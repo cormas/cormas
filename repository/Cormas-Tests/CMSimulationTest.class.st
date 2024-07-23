@@ -24,6 +24,20 @@ CMSimulationTest >> setUp [
 ]
 
 { #category : 'tests' }
+CMSimulationTest >> testData [
+
+	| expectedData |
+	expectedData := #( #( 11 5 ) #( 5 11 ) #( 11 5 ) #( 5 11 ) #( 11 5 )
+	                   #( 5 11 ) ) asOrderedCollection collect: [ :row |
+		                Dictionary newFrom: {
+				                (simulation probes first name -> row first).
+				                (simulation probes second name -> row second) } ].
+
+	5 timesRepeat: [ simulation runStep ].
+	self assert: simulation data equals: expectedData 
+]
+
+{ #category : 'tests' }
 CMSimulationTest >> testProbes [
 
 	| expectedProbes |
