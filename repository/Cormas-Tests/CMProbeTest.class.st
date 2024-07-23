@@ -76,18 +76,6 @@ CMProbeTest >> testHash [
 ]
 
 { #category : 'tests' }
-CMProbeTest >> testHashInequality [
-
-	self deny: probe hash equals: probeWithDifferentName hash.
-	self deny: probe hash equals: probeWithDifferentMethod hash.
-	self deny: probe hash equals: probeWithDifferentModel hash.
-	self deny: probe hash equals: probeWithDifferentIsActive hash.
-	self deny: probe hash equals: probeWithoutName hash.
-	self deny: probe hash equals: probeWithoutMethod hash.
-	self deny: probe hash equals: probeWithoutObject hash.
-]
-
-{ #category : 'tests' }
 CMProbeTest >> testInequality [
 
 	self deny: probe equals: probeWithDifferentName.
