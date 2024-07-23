@@ -22,6 +22,29 @@ CMProbe class >> name: aString method: aCompiledMethod on: anObject [
 		yourself
 ]
 
+{ #category : 'comparing' }
+CMProbe >> = anObject [
+	"for tessting"
+
+	anObject class = self class ifFalse: [ ^ false ].
+		
+	anObject name = name ifFalse: [ ^ false ].
+	anObject method = method ifFalse: [ ^ false ].
+	anObject object = object ifFalse: [ ^ false ].
+	anObject isActive = isActive ifFalse: [ ^ false ].
+	
+	^ true
+]
+
+{ #category : 'comparing' }
+CMProbe >> hash [
+	"for tessting"
+
+	^ name hash bitXor:
+		  (method hash bitXor:
+				(object hash bitXor: isActive hash)) 
+]
+
 { #category : 'initialization' }
 CMProbe >> initialize [
 
@@ -42,6 +65,12 @@ CMProbe >> isActive: anObject [
 ]
 
 { #category : 'accessing' }
+CMProbe >> method [
+
+	^ method
+]
+
+{ #category : 'accessing' }
 CMProbe >> method: aCompiledMethod [
 
 	method := aCompiledMethod
@@ -57,6 +86,12 @@ CMProbe >> name [
 CMProbe >> name: aString [
 
 	name := aString
+]
+
+{ #category : 'accessing' }
+CMProbe >> object [
+
+	^ object
 ]
 
 { #category : 'accessing' }

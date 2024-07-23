@@ -227,7 +227,7 @@ CMMockModel >> initializeCellsFromMatrix [
 CMMockModel >> numberOfAliveAgents [
 	"return the population size of the alive"
 
-	<probe>
+	<probeNamed: 'Number of alive agents'>
 	^ (self theAgents select: [ :agent | agent isAlive ]) size
 ]
 
@@ -247,7 +247,7 @@ CMMockModel >> numberOfColumns: aNumber [
 CMMockModel >> numberOfDeadAgents [
 	"return the population size of the dead"
 
-	<probe>
+	<probeNamed: 'Number of dead agents'>
 	^ (self theAgents select: [ :agent | agent isDead ]) size
 ]
 
