@@ -14,13 +14,21 @@ CMSimulationTest >> setUp [
 	| model |
 	super setUp.
 	
-	model := CMMockModel new.
+	model := CMMockModel new
+		randomSeed: 42;
+		yourself.
 	
 	simulation := (CMSimulation for: model)
 		activeInitMethod: (CMMockModel >> #initFixed);
 		activeControlMethod: (CMMockModel >> #step:);
 		initializeSimulation;
 		yourself.
+]
+
+{ #category : 'tests' }
+CMSimulationTest >> testCurrenTimeStepStartsWithZero [
+
+	self assert: simulation currentTimeStep equals: 0
 ]
 
 { #category : 'tests' }
@@ -55,4 +63,24 @@ CMSimulationTest >> testProbes [
 	}.
 
 	self assertCollection: simulation probes hasSameElements: expectedProbes.
+]
+
+{ #category : 'tests' }
+CMSimulationTest >> testRunStep [
+
+	| cellStateMatrix expectedCellStateMatrix agent1 agent2 |
+	simulation runStep.
+	
+	cellStateMatrix := simulation cormasModel theCells
+		collect: [ :each | each state = #alive ifTrue: [ 1 ] ifFalse: [ 0 ] ].
+		
+	expectedCellStateMatrix := simulation cormasModel invertedCellMatrix flattened asOrderedCollection.
+	
+	agent1 := simulation cormasModel theCows first.
+	agent2 := simulation cormasModel theGoats first.
+	
+	self assert: simulation currentTimeStep equals: 1.
+	self assert: cellStateMatrix equals: expectedCellStateMatrix.
+	self assert: agent1 coordinates equals: 2@2.
+	self assert: agent2 coordinates equals: 4@2.
 ]

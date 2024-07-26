@@ -223,6 +223,12 @@ CMMockModel >> initializeCellsFromMatrix [
 			matrixCellValue = 1 ifTrue: [ modelCell initAlive ] ] ]
 ]
 
+{ #category : 'as yet unclassified' }
+CMMockModel >> invertedCellMatrix [
+	
+	^ self cellMatrix collect: [ :each | 1 - each ].
+]
+
 { #category : 'probes' }
 CMMockModel >> numberOfAliveCells [
 
