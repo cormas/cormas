@@ -201,7 +201,7 @@ CMSimulationPresenter >> mainMenuToolbar [
 { #category : 'actions' }
 CMSimulationPresenter >> runSimulationUntilEnd [
 
-	"do nothing"
+	simulation runAllStepsWithStepDelay: 200 afterEach: 10 do: [ self updateAfterStep ].
 ]
 
 { #category : 'accessing' }
@@ -214,8 +214,7 @@ CMSimulationPresenter >> simulation: aSimulation [
 CMSimulationPresenter >> stepSimulation [
 
 	simulation runStep.
-	builder update.
-	self updateProgressBar.
+	self updateAfterStep.
 ]
 
 { #category : 'as yet unclassified' }
@@ -235,6 +234,13 @@ CMSimulationPresenter >> subMenuForClassPov: aClass [
 CMSimulationPresenter >> translator: anObject [
 
 	translator := anObject
+]
+
+{ #category : 'as yet unclassified' }
+CMSimulationPresenter >> updateAfterStep [
+
+	builder update.
+	self updateProgressBar.
 ]
 
 { #category : 'as yet unclassified' }

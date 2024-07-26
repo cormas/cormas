@@ -166,7 +166,57 @@ CMSimulation >> recordData [
 			asDictionary 
 ]
 
-{ #category : 'scheduling' }
+{ #category : 'running' }
+CMSimulation >> runAllSteps [
+
+	self runAllStepsAfterEachDo: [ "nothing" ]
+]
+
+{ #category : 'running' }
+CMSimulation >> runAllStepsAfterEach: aNumberOfSteps do: aBlock [
+
+	[ currentTimeStep < finalTimeStep ] whileTrue: [
+		(aNumberOfSteps min: (finalTimeStep - currentTimeStep))
+			timesRepeat: [ self runStep ].
+			
+		aBlock value ]
+]
+
+{ #category : 'running' }
+CMSimulation >> runAllStepsAfterEachDo: aBlock [
+
+	[ currentTimeStep < finalTimeStep ] whileTrue: [
+		self runStep.
+		aBlock value ]
+]
+
+{ #category : 'running' }
+CMSimulation >> runAllStepsWithStepDelay: milliseconds [
+
+	self runAllStepsWithStepDelay: milliseconds afterEachDo: [ "nothing" ]
+]
+
+{ #category : 'running' }
+CMSimulation >> runAllStepsWithStepDelay: milliseconds afterEach: aNumberOfSteps do: aBlock [
+
+	[ [ currentTimeStep < finalTimeStep ] whileTrue: [
+		(aNumberOfSteps min: (finalTimeStep - currentTimeStep))
+			timesRepeat: [ self runStep ].
+			
+		aBlock value.
+		(Delay forMilliseconds: milliseconds) wait ] ] fork.
+]
+
+{ #category : 'running' }
+CMSimulation >> runAllStepsWithStepDelay: milliseconds afterEachDo: aBlock [
+
+	[ [ currentTimeStep < finalTimeStep ] whileTrue: [
+		self runStep.
+		aBlock value.
+		(Delay forMilliseconds: milliseconds) wait ] ] fork.
+]
+
+{ #category : 'running' }
 CMSimulation >> runStep [
 	"The main step method that activates the agents:
 		- INCREMENT the timeStep (DO NOT USE the #incrementTimeStep as updates the UI before agents get a new patch)
