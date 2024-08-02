@@ -247,17 +247,10 @@ CMSimulationPresenter >> updateAfterStep [
 
 	builder update.
 	self updateProgressBar.
-	self updateTimeSteps.
 ]
 
 { #category : 'as yet unclassified' }
 CMSimulationPresenter >> updateProgressBar [
 
 	progressBar fixedAt: (simulation currentTimeStep / simulation finalTimeStep) asFloat.
-]
-
-{ #category : 'as yet unclassified' }
-CMSimulationPresenter >> updateTimeSteps [
-
-	finalStep text: simulation finalTimeStep asString.
 ]
