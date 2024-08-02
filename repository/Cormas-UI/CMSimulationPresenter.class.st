@@ -13,7 +13,8 @@ Class {
 		'speedDropList',
 		'displayEvery',
 		'notebook',
-		'diagram'
+		'diagram',
+		'dataTable'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -98,6 +99,18 @@ CMSimulationPresenter >> initializeCanvasInteractions [
 ]
 
 { #category : 'initialization' }
+CMSimulationPresenter >> initializeDataTable [
+	
+	dataTable := self newTable.
+	
+	simulation activeProbes do: [ :probe |
+		dataTable
+			addColumn: (SpStringTableColumn
+				title: probe name
+				evaluated: [ :dataRow | dataRow at: probe name ]) ].
+]
+
+{ #category : 'initialization' }
 CMSimulationPresenter >> initializeDiagram [
 	" Private - Create the configured receiver's diagram "
 	
@@ -157,6 +170,7 @@ CMSimulationPresenter >> initializePresenters [
 	
 	self initializeDiagram.
 	self initializeCanvasInteractions.
+	self initializeDataTable.
 	
 	notebook
 		addPageTitle: 'Space View'
@@ -164,7 +178,7 @@ CMSimulationPresenter >> initializePresenters [
 		
 	notebook
 		addPageTitle: 'Data'
-		provider: [ self newTable ].
+		provider: [ dataTable ].
 ]
 
 { #category : 'initialization' }
@@ -246,6 +260,7 @@ CMSimulationPresenter >> translator: anObject [
 CMSimulationPresenter >> updateAfterStep [
 
 	builder update.
+	dataTable items: simulation data.
 	self updateProgressBar.
 ]
 
