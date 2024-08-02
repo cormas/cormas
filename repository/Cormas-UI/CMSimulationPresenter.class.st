@@ -39,10 +39,6 @@ CMSimulationPresenter >> canvas [
 { #category : 'initialization' }
 CMSimulationPresenter >> connectPresenters [
 
-	self window whenResizingDo: [ 
-		self canvas camera zoomToFit.
-		self canvas signalUpdate ].
-
 	finalStep whenNumberChangedDo: [ :number |
 		simulation finalTimeStep: number ].
 ]
@@ -158,6 +154,19 @@ CMSimulationPresenter >> initializePresenters [
 	
 	self initializeDiagram.
 	self initializeCanvasInteractions.
+]
+
+{ #category : 'initialization' }
+CMSimulationPresenter >> initializeWindow: aWindowPresenter [
+
+	super initializeWindow: aWindowPresenter.
+	
+	aWindowPresenter 
+		title: 'Simulation';
+		initialExtent: 800@500;
+		whenResizingDo: [ 
+			self canvas camera zoomToFit.
+			self canvas signalUpdate ].
 ]
 
 { #category : 'actions' }
