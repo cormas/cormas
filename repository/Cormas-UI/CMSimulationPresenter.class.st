@@ -5,14 +5,15 @@ Class {
 		'simulation',
 		'builder',
 		'translator',
-		'diagram',
 		'runButton',
 		'stepButton',
 		'progressBarLabel',
 		'progressBar',
 		'finalStep',
 		'speedDropList',
-		'displayEvery'
+		'displayEvery',
+		'notebook',
+		'diagram'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -86,7 +87,7 @@ CMSimulationPresenter >> defaultLayout [
 				add: displayEvery height: row2Height;
 				yourself) width: 120;
 			yourself) height: row1Height + row2Height + 3;
-		add: diagram;
+		add: notebook;
 		yourself
 ]
 
@@ -151,9 +152,19 @@ CMSimulationPresenter >> initializePresenters [
 		minimum: 1;
 		number: 1;
 		yourself.
+		
+	notebook := self newNotebook.
 	
 	self initializeDiagram.
 	self initializeCanvasInteractions.
+	
+	notebook
+		addPageTitle: 'Space View'
+		provider: [ diagram ].
+		
+	notebook
+		addPageTitle: 'Data'
+		provider: [ self newTable ].
 ]
 
 { #category : 'initialization' }
