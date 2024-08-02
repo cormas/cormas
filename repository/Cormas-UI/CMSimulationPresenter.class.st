@@ -54,7 +54,7 @@ CMSimulationPresenter >> defaultLayout [
 	row2Height := self class buttonHeight.
 
 	^ SpBoxLayout newTopToBottom
-		spacing: 4;
+		spacing: 10;
 		add: (SpBoxLayout newLeftToRight
 			spacing: 5;
 			add: (SpBoxLayout newTopToBottom
@@ -92,6 +92,13 @@ CMSimulationPresenter >> defaultLayout [
 		yourself
 ]
 
+{ #category : 'as yet unclassified' }
+CMSimulationPresenter >> fitDiagram [
+
+	self canvas camera zoomToFit.
+	self canvas signalUpdate
+]
+
 { #category : 'initialization' }
 CMSimulationPresenter >> initializeCanvasInteractions [
 
@@ -101,7 +108,9 @@ CMSimulationPresenter >> initializeCanvasInteractions [
 { #category : 'initialization' }
 CMSimulationPresenter >> initializeDataTable [
 	
-	dataTable := self newTable.
+	dataTable := self newTable
+		beResizable;
+		yourself.
 	
 	simulation activeProbes do: [ :probe |
 		dataTable
@@ -125,6 +134,30 @@ CMSimulationPresenter >> initializeDiagram [
 	diagram owner: self.
 	self update.
 	
+]
+
+{ #category : 'initialization' }
+CMSimulationPresenter >> initializeNotebookPages [
+	
+	notebook addPage: (SpNotebookPage
+		title: 'Space'
+		icon: (self iconNamed: #paint)
+		provider: [ diagram ]).
+		
+	notebook addPage: (SpNotebookPage
+		title: 'Data'
+		icon: (self iconNamed: #database)
+		provider: [ dataTable ]).
+		
+	notebook addPage: (SpNotebookPage
+		title: 'Charts'
+		icon: (self iconNamed: #references)
+		provider: [ self newTable ]).
+		
+	notebook addPage: (SpNotebookPage
+		title: 'Inspector'
+		icon: (self iconNamed: #smallInspectIt)
+		provider: [ StInspectorPresenter onObject: simulation ]).
 ]
 
 { #category : 'initialization' }
@@ -171,14 +204,7 @@ CMSimulationPresenter >> initializePresenters [
 	self initializeDiagram.
 	self initializeCanvasInteractions.
 	self initializeDataTable.
-	
-	notebook
-		addPageTitle: 'Space View'
-		provider: [ diagram ].
-		
-	notebook
-		addPageTitle: 'Data'
-		provider: [ dataTable ].
+	self initializeNotebookPages.
 ]
 
 { #category : 'initialization' }
@@ -189,9 +215,7 @@ CMSimulationPresenter >> initializeWindow: aWindowPresenter [
 	aWindowPresenter 
 		title: 'Simulation';
 		initialExtent: 800@500;
-		whenResizingDo: [ 
-			self canvas camera zoomToFit.
-			self canvas signalUpdate ].
+		whenResizingDo: [ self fitDiagram ].
 ]
 
 { #category : 'actions' }
