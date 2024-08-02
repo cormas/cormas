@@ -1,1 +1,1 @@
-Package { #name : #'Cormas-UI-Translator' }
+Package { #name : 'Cormas-UI-Translator' }

@@ -6,10 +6,13 @@ Class {
 		'builder',
 		'translator',
 		'diagram',
-		'menuToolbar',
 		'runButton',
 		'stepButton',
-		'progressBar'
+		'progressBarLabel',
+		'progressBar',
+		'finalStep',
+		'speedDropList',
+		'displayEvery'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -33,16 +36,60 @@ CMSimulationPresenter >> canvas [
 	^ diagram canvas
 ]
 
+{ #category : 'initialization' }
+CMSimulationPresenter >> connectPresenters [
+
+	self window whenResizingDo: [ 
+		self canvas camera zoomToFit.
+		self canvas signalUpdate ].
+
+	finalStep whenNumberChangedDo: [ :number |
+		simulation finalTimeStep: number ].
+]
+
 { #category : 'specs' }
 CMSimulationPresenter >> defaultLayout [
 
+	| row1Height row2Height |
+	
+	row1Height := self class labelHeight.
+	row2Height := self class buttonHeight.
+
 	^ SpBoxLayout newTopToBottom
+		spacing: 4;
 		add: (SpBoxLayout newLeftToRight
-			add: runButton width: self class buttonWidth;
-			add: stepButton width: self class buttonWidth;
-			add: progressBar;
-			yourself) height: self class buttonHeight;
-		add: menuToolbar height: self class toolbarHeight;
+			spacing: 5;
+			add: (SpBoxLayout newTopToBottom
+				spacing: 3;
+				add: translator tStepButtonLabel height: row1Height;
+				add: stepButton height: row2Height;
+				yourself) width: 40;
+			add: (SpBoxLayout newTopToBottom
+				spacing: 3;
+				add: translator tRunButtonLabel height: row1Height;
+				add: runButton height: row2Height;
+				yourself) width: 40;
+			add: (SpBoxLayout newTopToBottom 
+				spacing: 3;
+				add: translator tProgressBarLabel height: row1Height;
+				add: progressBar height: self class buttonHeight;
+				yourself);
+			add: (SpBoxLayout newTopToBottom
+				spacing: 3;
+				add: translator tFinalStepLabel height: row1Height;
+				add: finalStep height: row2Height;
+				yourself) width: self class buttonWidth;
+			add: (SpBoxLayout newTopToBottom
+				spacing: 3;
+				add: translator tSpeedLabel height: row1Height;
+				add: speedDropList height: row2Height;
+				yourself) width: 120;
+			add: (SpBoxLayout newTopToBottom
+				spacing: 3;
+				add: translator tDisplayEveryLabel height: row1Height;
+				add: displayEvery height: row2Height;
+				yourself) width: 120;
+			yourself) height: row1Height + row2Height + 3;
 		add: diagram;
 		yourself
 ]
@@ -71,137 +118,57 @@ CMSimulationPresenter >> initializeDiagram [
 ]
 
 { #category : 'initialization' }
-CMSimulationPresenter >> initializePOVMenuToolbar [
-	" Private - See superimplementor's commen "
-
-	^ self newMenu
-		addGroup: [ :group | 
-			simulation cormasModel class socialClasses
-				do: [ :socialClass | 
-					group
-						addItem: [ :item | 
-							item
-								name: socialClass name;
-								subMenu: (self subMenuForClassPov: socialClass) ] ] ];
-		addGroup: [ :group | 
-			simulation cormasModel class spatialClasses
-				do: [ :spatialClasse | 
-					group
-						addItem: [ :item | 
-							item
-								name: spatialClasse name;
-								subMenu: (self subMenuForClassPov: spatialClasse) ] ] ];
-		addGroup: [ :group | 
-			simulation cormasModel class passiveObjectClasses
-				do: [ :passiveClass | 
-					group
-						addItem: [ :item | 
-							item
-								name: passiveClass name;
-								subMenu: (self subMenuForClassPov: passiveClass) ] ] ]
-]
-
-{ #category : 'initialization' }
 CMSimulationPresenter >> initializePresenters [
 	" Private - See superimplementor's comment "
-
-	menuToolbar := self mainMenuToolbar.
 	
 	runButton := self newButton
 		icon: CMIcons runIcon;
 		action: [ self runSimulationUntilEnd ];
-		help: 'Run the simulation to the end';
+		help: translator tRunButtonHelp;
 		yourself.
 		
 	stepButton := self newButton
 		icon: CMIcons stepIcon;
 		action: [ self stepSimulation ];
-		help: 'Run the simulation just one step forward';
+		help: translator tStepButtonHelp;
 		yourself.
 		
 	progressBar := self newProgressBar
 		fixedAt: 0.0;
+		yourself.
+		
+	finalStep := self newNumberInput
+		beInteger;
+		climbRate: 50;
+		minimum: 0;
+		number: simulation finalTimeStep;
+		yourself.
+	
+	speedDropList := self newDropList
+		help: translator tSpeedHelp;
+		items: self speedDropListItems;
+		selectItem: translator tSpeedNormal; 
+		yourself.
+		
+	displayEvery := self newNumberInput
+		beInteger;
+		minimum: 1;
+		number: 1;
 		yourself.
 	
 	self initializeDiagram.
 	self initializeCanvasInteractions.
 ]
 
-{ #category : 'initialization' }
-CMSimulationPresenter >> initializeToolsMenuToolbar [
-	" Private - See superimplementor's commen "
-
-	^ self newMenu
-		addGroup: [ :group | 
-			group
-				addItem: [ :item | 
-					item
-						name: translator tDisplayLegends;
-						action: [  ] ];
-				addItem: [ :item | 
-					item
-						name: translator tPhoto;
-						action: [  ] ];
-				addItem: [ :item | 
-					item
-						name: translator tVideo;
-						action: [  ] ];
-				addItem: [ :item | 
-					item
-						name: translator tManipulateInstances;
-						action: [  ] ];
-				addItem: [ :item | 
-					item
-						name: translator tCreateInstances;
-						action: [  ] ];
-					
-				addItem: [ :item | 
-					item
-						name: translator tInspectModel;
-						icon: (self iconNamed: #smallObjects);
-						shortcut: $I command;
-						action: [ simulation cormasModel inspect ] ] ];
-		yourself
-]
-
-{ #category : 'as yet unclassified' }
-CMSimulationPresenter >> mainMenuToolbar [
-	" Private - See superimplementor's commen "
-
-	| aMenu |
-	
-	aMenu := self newMenuBar
-		addGroup: [ :group | 
-			group
-"				addItem: [ :item | 
-					item
-						name: self translator tEnvironment;
-						subMenu: self initializeEnvironmentMenuToolbar ];"
-				addItem: [ :item | 
-					item
-						name: translator tPoV;
-						subMenu: self initializePOVMenuToolbar ];
-"				addItem: [ :item | 
-					item
-						name: translator tOptions;
-						subMenu: self initializeOptionMenuToolbar ];"
-				addItem: [ :item | 
-					item
-						name: translator tTools;
-						subMenu: self initializeToolsMenuToolbar ];
-				addItem: [ :item | 
-					item
-						icon: (self iconNamed: #glamorousZoomToFit);
-						action: [ 
-							self canvas camera zoomToFit.
-							self canvas signalUpdate ] ] ].
-	^ aMenu
-]
-
 { #category : 'actions' }
 CMSimulationPresenter >> runSimulationUntilEnd [
 
-	simulation runAllStepsWithStepDelay: 200 afterEach: 10 do: [ self updateAfterStep ].
+	[ [ simulation currentTimeStep < simulation finalTimeStep ] whileTrue: [
+		(displayEvery number min: (simulation finalTimeStep - simulation currentTimeStep))
+			timesRepeat: [ simulation runStep ].
+			
+		self updateAfterStep.
+		(Delay forMilliseconds: self speedSelectedItemToMilliseconds) wait ] ] fork.
 ]
 
 { #category : 'accessing' }
@@ -210,24 +177,43 @@ CMSimulationPresenter >> simulation: aSimulation [
 	simulation := aSimulation
 ]
 
+{ #category : 'as yet unclassified' }
+CMSimulationPresenter >> speedDropListItems [
+
+	^ {
+		  translator tSpeed10xSlower.
+		  translator tSpeed5xSlower.
+		  translator tSpeed2xSlower.
+		  translator tSpeedNormal.
+		  translator tSpeed2xFaster.
+		  translator tSpeed5xFaster.
+		  translator tSpeed10xFaster }
+]
+
+{ #category : 'as yet unclassified' }
+CMSimulationPresenter >> speedSelectedItemToMilliseconds [
+
+	| normalSpeed mapping |
+	normalSpeed := 200.
+
+	mapping := {
+		translator tSpeed10xSlower -> (normalSpeed * 10) .
+		translator tSpeed5xSlower -> (normalSpeed * 5) .
+		translator tSpeed2xSlower -> (normalSpeed * 2) .
+		translator tSpeedNormal -> normalSpeed .
+		translator tSpeed2xFaster -> (normalSpeed / 2) .
+		translator tSpeed5xFaster -> (normalSpeed / 5) .
+		translator tSpeed10xFaster -> (normalSpeed / 10)
+	} asDictionary.
+	
+	^ mapping at: speedDropList selectedItem
+]
+
 { #category : 'actions' }
 CMSimulationPresenter >> stepSimulation [
 
 	simulation runStep.
 	self updateAfterStep.
-]
-
-{ #category : 'as yet unclassified' }
-CMSimulationPresenter >> subMenuForClassPov: aClass [
-
-	^ self newMenu addGroup: [ :group | 
-		(aClass methodsInProtocol: #pov) do: [ :povName | 
-			group addItem: [ :item | 
-				item
-					name: povName selector;
-					action: [ 
-						simulation cormasModel spaceModel activePoVsDictionary at: aClass put: item name.
-						self initializeDiagram ] ] ] ]
 ]
 
 { #category : 'accessing' }
@@ -241,10 +227,17 @@ CMSimulationPresenter >> updateAfterStep [
 
 	builder update.
 	self updateProgressBar.
+	self updateTimeSteps.
 ]
 
 { #category : 'as yet unclassified' }
 CMSimulationPresenter >> updateProgressBar [
 
 	progressBar fixedAt: (simulation currentTimeStep / simulation finalTimeStep) asFloat.
+]
+
+{ #category : 'as yet unclassified' }
+CMSimulationPresenter >> updateTimeSteps [
+
+	finalStep text: simulation finalTimeStep asString.
 ]

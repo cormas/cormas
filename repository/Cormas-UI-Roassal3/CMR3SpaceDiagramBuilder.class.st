@@ -20,16 +20,14 @@ CMR3SpaceDiagramBuilder class >> example [
 	<example>
 	| model builder |
 	
-	model := CMMockModel new
-		initializeSimulation;
-		yourself.
+	model := CMMockModel new.
 
 	builder := self new
 		cormasModel: model;
 		inspect;
 		asPresenter.
 	
-	builder openWithSpec.
+	builder open.
 ]
 
 { #category : 'accessing' }

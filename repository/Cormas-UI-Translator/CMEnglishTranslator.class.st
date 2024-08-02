@@ -1,53 +1,102 @@
 Class {
-	#name : #CMEnglishTranslator,
-	#superclass : #CMAbstractTranslator,
-	#category : #'Cormas-UI-Translator'
+	#name : 'CMEnglishTranslator',
+	#superclass : 'CMAbstractTranslator',
+	#category : 'Cormas-UI-Translator',
+	#package : 'Cormas-UI-Translator'
 }
 
-{ #category : #translations }
-CMEnglishTranslator >> tCreateInstances [
+{ #category : 'translations' }
+CMEnglishTranslator >> tDisplayEveryLabel [
 
-	^ 'Create Instances'
+	^ 'Display every'
 ]
 
-{ #category : #translations }
-CMEnglishTranslator >> tDisplayLegends [
+{ #category : 'translations' }
+CMEnglishTranslator >> tFinalStepLabel [
 
-	^ 'Display Legends'
+	^ 'Final step'
 ]
 
-{ #category : #translations }
-CMEnglishTranslator >> tInspectModel [
+{ #category : 'translations' }
+CMEnglishTranslator >> tProgressBarLabel [
 
-	^ 'Inspect model'
+	^ 'Progress'
 ]
 
-{ #category : #translations }
-CMEnglishTranslator >> tManipulateInstances [
+{ #category : 'translations' }
+CMEnglishTranslator >> tRunButtonHelp [
 
-	^ 'Manipulate Instances'
+	^ 'Run the simulation to the end'
 ]
 
-{ #category : #translations }
-CMEnglishTranslator >> tPhoto [
+{ #category : 'translations' }
+CMEnglishTranslator >> tRunButtonLabel [ 
 
-	^ 'Photo'
+	^ 'Run'
 ]
 
-{ #category : #translations }
-CMEnglishTranslator >> tPoV [
+{ #category : 'translations' }
+CMEnglishTranslator >> tSpeed10xFaster [
 
-	^ 'PoV'
+	^ '10x faster'
 ]
 
-{ #category : #translations }
-CMEnglishTranslator >> tTools [
+{ #category : 'translations' }
+CMEnglishTranslator >> tSpeed10xSlower [
 
-	^ 'Tools'
+	^ '10x slower'
 ]
 
-{ #category : #translations }
-CMEnglishTranslator >> tVideo [
+{ #category : 'translations' }
+CMEnglishTranslator >> tSpeed2xFaster [
 
-	^ 'Video'
+	^ '2x faster'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tSpeed2xSlower [
+
+	^ '2x slower'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tSpeed5xFaster [
+
+	^ '5x faster'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tSpeed5xSlower [ 
+
+	^ '5x slower'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tSpeedHelp [
+
+	^ 'Speed of simulation'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tSpeedLabel [
+
+	^ 'Speed'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tSpeedNormal [
+
+	^ 'normal'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tStepButtonHelp [
+
+	^ 'Run the simulation just one step forward'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tStepButtonLabel [ 
+
+	^ 'Step'
 ]
