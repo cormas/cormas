@@ -15,6 +15,18 @@ CMAbstractTranslator class >> languageName [
 ]
 
 { #category : 'translations' }
+CMAbstractTranslator >> tCharts [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tData [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
 CMAbstractTranslator >> tDisplayEveryLabel [
 
 	self subclassResponsibility
@@ -22,6 +34,12 @@ CMAbstractTranslator >> tDisplayEveryLabel [
 
 { #category : 'translations' }
 CMAbstractTranslator >> tFinalStepLabel [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tInspector [
 
 	self subclassResponsibility
 ]
@@ -40,6 +58,12 @@ CMAbstractTranslator >> tRunButtonHelp [
 
 { #category : 'translations' }
 CMAbstractTranslator >> tRunButtonLabel [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tSpace [
 
 	self subclassResponsibility
 ]

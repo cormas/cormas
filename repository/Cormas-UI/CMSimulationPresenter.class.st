@@ -140,22 +140,22 @@ CMSimulationPresenter >> initializeDiagram [
 CMSimulationPresenter >> initializeNotebookPages [
 	
 	notebook addPage: (SpNotebookPage
-		title: 'Space'
+		title: translator tSpace
 		icon: (self iconNamed: #paint)
 		provider: [ diagram ]).
 		
 	notebook addPage: (SpNotebookPage
-		title: 'Data'
+		title: translator tData
 		icon: (self iconNamed: #database)
 		provider: [ dataTable ]).
 		
 	notebook addPage: (SpNotebookPage
-		title: 'Charts'
+		title: translator tCharts
 		icon: (self iconNamed: #references)
 		provider: [ self newTable ]).
 		
 	notebook addPage: (SpNotebookPage
-		title: 'Inspector'
+		title: translator tInspector
 		icon: (self iconNamed: #smallInspectIt)
 		provider: [ StInspectorPresenter onObject: simulation ]).
 ]

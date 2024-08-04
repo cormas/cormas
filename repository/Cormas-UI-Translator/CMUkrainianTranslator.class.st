@@ -6,6 +6,18 @@ Class {
 }
 
 { #category : 'translations' }
+CMUkrainianTranslator >> tCharts [
+
+	^ 'Графіки'
+]
+
+{ #category : 'translations' }
+CMUkrainianTranslator >> tData [
+
+	^ 'Дані'
+]
+
+{ #category : 'translations' }
 CMUkrainianTranslator >> tDisplayEveryLabel [
 
 	^ 'Показувати кожні'
@@ -15,6 +27,12 @@ CMUkrainianTranslator >> tDisplayEveryLabel [
 CMUkrainianTranslator >> tFinalStepLabel [
 
 	^ 'Фінальний крок'
+]
+
+{ #category : 'translations' }
+CMUkrainianTranslator >> tInspector [
+
+	^ 'Інспектор'
 ]
 
 { #category : 'translations' }
@@ -33,6 +51,12 @@ CMUkrainianTranslator >> tRunButtonHelp [
 CMUkrainianTranslator >> tRunButtonLabel [
 
 	^ 'Грати'
+]
+
+{ #category : 'translations' }
+CMUkrainianTranslator >> tSpace [
+
+	^ 'Простір'
 ]
 
 { #category : 'translations' }

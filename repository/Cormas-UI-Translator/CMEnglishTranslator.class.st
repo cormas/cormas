@@ -6,6 +6,18 @@ Class {
 }
 
 { #category : 'translations' }
+CMEnglishTranslator >> tCharts [
+
+	^ 'Charts'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tData [
+
+	^ 'Data'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tDisplayEveryLabel [
 
 	^ 'Display every'
@@ -15,6 +27,12 @@ CMEnglishTranslator >> tDisplayEveryLabel [
 CMEnglishTranslator >> tFinalStepLabel [
 
 	^ 'Final step'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tInspector [
+
+	^ 'Inspector'
 ]
 
 { #category : 'translations' }
@@ -33,6 +51,12 @@ CMEnglishTranslator >> tRunButtonHelp [
 CMEnglishTranslator >> tRunButtonLabel [ 
 
 	^ 'Run'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tSpace [
+
+	^ 'Space'
 ]
 
 { #category : 'translations' }
