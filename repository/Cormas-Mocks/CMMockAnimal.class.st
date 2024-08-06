@@ -6,15 +6,37 @@ Class {
 	#instVars : [
 		'energy'
 	],
+	#classInstVars : [
+		'initialEnergy'
+	],
 	#category : 'Cormas-Mocks',
 	#package : 'Cormas-Mocks'
 }
+
+{ #category : 'accessing' }
+CMMockAnimal class >> initialEnergy [
+
+	^ initialEnergy
+]
+
+{ #category : 'accessing' }
+CMMockAnimal class >> initialEnergy: aNumber [
+
+	initialEnergy := aNumber
+]
+
+{ #category : 'initialization' }
+CMMockAnimal class >> initializeParameters [
+
+	super initializeParameters.
+	initialEnergy := 0.5
+]
 
 { #category : 'initialization' }
 CMMockAnimal >> initialize [
 
 	super initialize.
-	energy := 0.5
+	energy := self class initialEnergy
 ]
 
 { #category : 'pov' }

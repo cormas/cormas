@@ -12,6 +12,12 @@ CMUkrainianTranslator >> tCharts [
 ]
 
 { #category : 'translations' }
+CMUkrainianTranslator >> tClass [
+
+	^ 'Клас'
+]
+
+{ #category : 'translations' }
 CMUkrainianTranslator >> tData [
 
 	^ 'Дані'
@@ -33,6 +39,18 @@ CMUkrainianTranslator >> tFinalStepLabel [
 CMUkrainianTranslator >> tInspector [
 
 	^ 'Інспектор'
+]
+
+{ #category : 'translations' }
+CMUkrainianTranslator >> tParameter [
+
+	^ 'Параметр'
+]
+
+{ #category : 'translations' }
+CMUkrainianTranslator >> tParameters [
+
+	^ 'Параметри'
 ]
 
 { #category : 'translations' }
@@ -123,4 +141,10 @@ CMUkrainianTranslator >> tStepButtonHelp [
 CMUkrainianTranslator >> tStepButtonLabel [
 
 	^ 'Крок'
+]
+
+{ #category : 'translations' }
+CMUkrainianTranslator >> tValue [
+
+	^ 'Значення'
 ]

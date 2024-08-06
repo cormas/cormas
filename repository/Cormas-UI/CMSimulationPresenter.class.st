@@ -14,7 +14,8 @@ Class {
 		'displayEvery',
 		'notebook',
 		'diagram',
-		'dataTable'
+		'dataTable',
+		'parametersTable'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -155,9 +156,22 @@ CMSimulationPresenter >> initializeNotebookPages [
 		provider: [ self newTable ]).
 		
 	notebook addPage: (SpNotebookPage
+		title: translator tParameters
+		icon: (self iconNamed: #configuration)
+		provider: [ parametersTable ]).
+		
+	notebook addPage: (SpNotebookPage
 		title: translator tInspector
 		icon: (self iconNamed: #smallInspectIt)
 		provider: [ StInspectorPresenter onObject: simulation ]).
+]
+
+{ #category : 'initialization' }
+CMSimulationPresenter >> initializeParametersTable [
+	
+	parametersTable := CMParametersEditorPresenter
+		forParameters: simulation cormasModel parameters
+		translator: translator
 ]
 
 { #category : 'initialization' }
@@ -204,6 +218,7 @@ CMSimulationPresenter >> initializePresenters [
 	self initializeDiagram.
 	self initializeCanvasInteractions.
 	self initializeDataTable.
+	self initializeParametersTable.
 	self initializeNotebookPages.
 ]
 

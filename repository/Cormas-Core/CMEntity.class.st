@@ -109,6 +109,12 @@ CMEntity class >> genericEntities [
 	^ self withAllSubclasses select: [ :cl | cl package classes = kernel]
 ]
 
+{ #category : 'initialization' }
+CMEntity class >> initializeParameters [
+
+	"Do nothing. This method can be overriden by subclasses to initialize entity parameters. Implementors should always call super initializeParameters, same as for the initialize method"
+]
+
 { #category : 'testing' }
 CMEntity class >> isAbstract [
 	"Purpose: to test the existence of subclasses"

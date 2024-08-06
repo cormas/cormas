@@ -21,6 +21,12 @@ CMAbstractTranslator >> tCharts [
 ]
 
 { #category : 'translations' }
+CMAbstractTranslator >> tClass [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
 CMAbstractTranslator >> tData [
 
 	self subclassResponsibility
@@ -40,6 +46,18 @@ CMAbstractTranslator >> tFinalStepLabel [
 
 { #category : 'translations' }
 CMAbstractTranslator >> tInspector [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tParameter [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tParameters [
 
 	self subclassResponsibility
 ]
@@ -130,6 +148,12 @@ CMAbstractTranslator >> tStepButtonHelp [
 
 { #category : 'translations' }
 CMAbstractTranslator >> tStepButtonLabel [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tValue [
 
 	self subclassResponsibility
 ]

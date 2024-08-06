@@ -12,6 +12,12 @@ CMEnglishTranslator >> tCharts [
 ]
 
 { #category : 'translations' }
+CMEnglishTranslator >> tClass [
+
+	^ 'Class'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tData [
 
 	^ 'Data'
@@ -33,6 +39,18 @@ CMEnglishTranslator >> tFinalStepLabel [
 CMEnglishTranslator >> tInspector [
 
 	^ 'Inspector'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tParameter [
+
+	^ 'Parameter'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tParameters [
+
+	^ 'Parameters'
 ]
 
 { #category : 'translations' }
@@ -123,4 +141,10 @@ CMEnglishTranslator >> tStepButtonHelp [
 CMEnglishTranslator >> tStepButtonLabel [ 
 
 	^ 'Step'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tValue [
+
+	^ 'Value'
 ]

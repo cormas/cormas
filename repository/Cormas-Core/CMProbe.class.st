@@ -7,9 +7,9 @@ Class {
 		'isActive',
 		'method'
 	],
-	#category : 'Cormas-Core-Kernel',
+	#category : 'Cormas-Core-Analysis',
 	#package : 'Cormas-Core',
-	#tag : 'Kernel'
+	#tag : 'Analysis'
 }
 
 { #category : 'as yet unclassified' }

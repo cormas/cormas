@@ -172,6 +172,12 @@ CMAbstractModel class >> initializeModelClasses [
 	self passiveClasses: (classes select: [ : each | (each inheritsFrom: CMPassiveObject) or: [ each inheritsFrom: CMMessage ]])
 ]
 
+{ #category : 'initialization' }
+CMAbstractModel class >> initializeParameters [
+
+	"Do nothing. This method can be overriden by subclasses to initialize model parameters. Implementors should always call super initializeParameters, same as for the initialize method"
+]
+
 { #category : 'testing' }
 CMAbstractModel class >> isGenericEntity [
 	
@@ -823,6 +829,7 @@ CMAbstractModel >> initialize [
 	self class socialClasses ifNotEmpty: [ self initializeChannel ].
 	
 	self initializeEntityGetters.
+	self initializeParameters.
 
 ]
 
@@ -844,6 +851,13 @@ CMAbstractModel >> initializeEntityGetters [
 		selector := pragma method selector.
 		
 		className -> selector ])
+]
+
+{ #category : 'initialization' }
+CMAbstractModel >> initializeParameters [
+
+	self class initializeParameters.
+	self class allEntityClasses do: #initializeParameters. 
 ]
 
 { #category : 'initialization' }
@@ -915,6 +929,24 @@ CMAbstractModel >> newEntity: aClass [
 	
 	self collectEntity: anEntity.
 	^ anEntity
+]
+
+{ #category : 'parameters' }
+CMAbstractModel >> parameters [
+	"Find all class side variables that have getter and setter accessors in model and all entity classes"
+	| classes |
+	
+	classes := self class allEntityClasses asOrderedCollection.
+	classes add: self class.
+
+	^ classes flatCollect: [ :aClass |
+		aClass class slots flatCollect: [ :slot |
+			((aClass respondsTo: slot name) and: [ aClass respondsTo: slot name, ':' ]) ifTrue: [
+				aClass withAllSubclasses collect: [ :receiverClass |
+					CMParameter
+						getterMethod: aClass class >> slot name
+						setterMethod: aClass class >> (slot name, ':')
+						receiverClass: receiverClass ] ] ] ]
 ]
 
 { #category : 'utilities - space metrics' }
