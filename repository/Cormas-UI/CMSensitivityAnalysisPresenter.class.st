@@ -96,8 +96,6 @@ CMSensitivityAnalysisPresenter >> enableRandomSeedPresenters [
 
 { #category : 'initialization' }
 CMSensitivityAnalysisPresenter >> initializePresenters [
-
-	| probePresenters |
 	
 	fixRandomSeedCheckbox := self newCheckBox
 		label: 'Fix random seed to:';
@@ -134,13 +132,9 @@ CMSensitivityAnalysisPresenter >> initializePresenters [
 
 	numberOfRepetitionsInput := self newNumberInput.
 
-	probePresenters := simulation probes collect: [ :probe |
-		CMSensitivityAnalysisProbePresenter
-			forProbe: probe on: simulation ].
-		
-	probesList := self newComponentList
-		items: probePresenters;
-		yourself.
+	probesList := self
+		instantiate: CMSensitivityAnalysisProbesListPresenter
+		on: simulation.
 		
 	runButton := self newButton
 		label: 'Run';
@@ -155,7 +149,7 @@ CMSensitivityAnalysisPresenter >> initializeWindow: aWindowPresenter [
 	
 	aWindowPresenter 
 		title: 'Sensitivity Analisis';
-		initialExtent: 800@500.
+		initialExtent: 900@500.
 ]
 
 { #category : 'accessing - model' }

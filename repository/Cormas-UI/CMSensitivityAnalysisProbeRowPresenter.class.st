@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'simulation',
 		'dataCollectorDropList',
-		'probeDropList'
+		'probeDropList',
+		'deleteButton'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -25,16 +26,14 @@ CMSensitivityAnalysisProbeRowPresenter class >> example [
 CMSensitivityAnalysisProbeRowPresenter >> defaultLayout [
 
 	^ SpBoxLayout newLeftToRight
-		add: (SpBoxLayout newTopToBottom
-			add: '' height: 1;
-			add: 'Record' height: self class labelHeight;
-			yourself) width: 70;
+		spacing: 10;
+		borderWidth: 2;
+		add: 'Record' expand: false;
 		add: dataCollectorDropList width: 150;
-		add: (SpBoxLayout newTopToBottom
-			add: '' height: 1;
-			add: ' of ';
-			yourself) width: 40;
-		add: probeDropList width: 150;
+		add: 'of' expand: false;
+		add: probeDropList width: 250;
+		add: '';
+		add: deleteButton width: 30;
 		yourself.
 ]
 
@@ -49,6 +48,11 @@ CMSensitivityAnalysisProbeRowPresenter >> initializePresenters [
 	probeDropList := self newDropList
 		items: simulation probes;
 		display: [ :each | each name ];
+		yourself.
+		
+	deleteButton := self newButton
+		icon: (self iconNamed: #remove);
+		action: [ owner items: (owner items copyWithout: self) ];
 		yourself.
 ]
 
