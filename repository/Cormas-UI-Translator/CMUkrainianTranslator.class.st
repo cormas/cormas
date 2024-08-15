@@ -6,6 +6,18 @@ Class {
 }
 
 { #category : 'translations' }
+CMUkrainianTranslator >> tAdd [
+
+	^ 'Додати'
+]
+
+{ #category : 'translations' }
+CMUkrainianTranslator >> tAddMeasurementHelp [
+
+	^ 'Додати нове вимірювання'
+]
+
+{ #category : 'translations' }
 CMUkrainianTranslator >> tCharts [
 
 	^ 'Графіки'
@@ -36,9 +48,27 @@ CMUkrainianTranslator >> tFinalStepLabel [
 ]
 
 { #category : 'translations' }
+CMUkrainianTranslator >> tFixRandomSeed [
+
+	^ 'Випадкове початкове значення:'
+]
+
+{ #category : 'translations' }
 CMUkrainianTranslator >> tInspector [
 
 	^ 'Інспектор'
+]
+
+{ #category : 'translations' }
+CMUkrainianTranslator >> tMeasure [
+
+	^ 'Виміряти'
+]
+
+{ #category : 'translations' }
+CMUkrainianTranslator >> tMeasureOf [
+
+	^ 'від'
 ]
 
 { #category : 'translations' }

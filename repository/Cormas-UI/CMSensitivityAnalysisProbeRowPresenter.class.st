@@ -3,6 +3,7 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'simulation',
+		'translator',
 		'dataCollectorDropList',
 		'probeDropList',
 		'deleteButton'
@@ -19,7 +20,13 @@ CMSensitivityAnalysisProbeRowPresenter class >> example [
 	model := CMMockModel new.
 	simulation := CMSimulation for: model.
 	
-	(self on: simulation) open.
+	(self forSimulation: simulation translator: CMEnglishTranslator new) open.
+]
+
+{ #category : 'as yet unclassified' }
+CMSensitivityAnalysisProbeRowPresenter class >> forSimulation: aSimulation translator: aTranslator [
+	
+	^ self on: { aSimulation . aTranslator }
 ]
 
 { #category : 'layout' }
@@ -28,9 +35,9 @@ CMSensitivityAnalysisProbeRowPresenter >> defaultLayout [
 	^ SpBoxLayout newLeftToRight
 		spacing: 10;
 		borderWidth: 2;
-		add: 'Record' expand: false;
+		add: translator tMeasure expand: false;
 		add: dataCollectorDropList width: 150;
-		add: 'of' expand: false;
+		add: translator tMeasureOf expand: false;
 		add: probeDropList width: 250;
 		add: '';
 		add: deleteButton width: 30;
@@ -57,7 +64,8 @@ CMSensitivityAnalysisProbeRowPresenter >> initializePresenters [
 ]
 
 { #category : 'accessing - model' }
-CMSensitivityAnalysisProbeRowPresenter >> setModelBeforeInitialization: aSimulation [
+CMSensitivityAnalysisProbeRowPresenter >> setModelBeforeInitialization: aCollection [
 
-	simulation := aSimulation
+	simulation := aCollection first.
+	translator :=  aCollection second
 ]

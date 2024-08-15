@@ -15,6 +15,18 @@ CMAbstractTranslator class >> languageName [
 ]
 
 { #category : 'translations' }
+CMAbstractTranslator >> tAdd [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tAddMeasurementHelp [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
 CMAbstractTranslator >> tCharts [
 
 	self subclassResponsibility
@@ -45,7 +57,25 @@ CMAbstractTranslator >> tFinalStepLabel [
 ]
 
 { #category : 'translations' }
+CMAbstractTranslator >> tFixRandomSeed [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
 CMAbstractTranslator >> tInspector [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tMeasure [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tMeasureOf [
 
 	self subclassResponsibility
 ]

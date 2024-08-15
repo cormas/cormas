@@ -3,6 +3,7 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'simulation',
+		'translator',
 		'probesList',
 		'toolbar'
 	],
@@ -16,8 +17,14 @@ CMSensitivityAnalysisProbesListPresenter class >> example [
 	| simulation |
 	simulation := CMSimulation for: CMMockModel new.
 	
-	(self on: simulation) open.
+	(self forSimulation: simulation translator: CMEnglishTranslator new) open.
 
+]
+
+{ #category : 'as yet unclassified' }
+CMSensitivityAnalysisProbesListPresenter class >> forSimulation: aSimulation translator: aTranslator [
+
+	^ self on: { aSimulation . aTranslator }
 ]
 
 { #category : 'layout' }
@@ -37,10 +44,14 @@ CMSensitivityAnalysisProbesListPresenter >> initializePresenters [
 	probesList := self newComponentList.
 		
 	addButton := self newToolbarButton
-		label: 'Add';
+		label: translator tAdd;
 		icon: (self iconNamed: #add);
-		help: 'Add new probe measurement';
-		action: [ probesList addPresenter: (CMSensitivityAnalysisProbeRowPresenter on: simulation) ];
+		help: translator tAddMeasurementHelp;
+		action: [
+			probesList addPresenter: (
+				CMSensitivityAnalysisProbeRowPresenter
+					forSimulation: simulation
+					translator: translator) ];
 		yourself.
 		
 	toolbar := self newToolbar
@@ -51,7 +62,8 @@ CMSensitivityAnalysisProbesListPresenter >> initializePresenters [
 ]
 
 { #category : 'accessing - model' }
-CMSensitivityAnalysisProbesListPresenter >> setModelBeforeInitialization: aSimulation [
+CMSensitivityAnalysisProbesListPresenter >> setModelBeforeInitialization: aCollection [
 
-	simulation := aSimulation
+	simulation := aCollection first.
+	translator := aCollection second
 ]

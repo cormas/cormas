@@ -6,6 +6,18 @@ Class {
 }
 
 { #category : 'translations' }
+CMEnglishTranslator >> tAdd [
+
+	^ 'Add'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tAddMeasurementHelp [
+
+	^ 'Add new probe measurement'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tCharts [
 
 	^ 'Charts'
@@ -36,9 +48,27 @@ CMEnglishTranslator >> tFinalStepLabel [
 ]
 
 { #category : 'translations' }
+CMEnglishTranslator >> tFixRandomSeed [
+
+	^ 'Fix random seed:'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tInspector [
 
 	^ 'Inspector'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tMeasure [
+
+	^ 'Measure'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tMeasureOf [
+
+	^ 'of'
 ]
 
 { #category : 'translations' }

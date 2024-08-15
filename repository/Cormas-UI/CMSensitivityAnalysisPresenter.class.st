@@ -3,6 +3,7 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'simulation',
+		'translator',
 		'fixRandomSeedCheckbox',
 		'randomSeedInput',
 		'releaseRandomSeedCheckbox',
@@ -24,7 +25,13 @@ CMSensitivityAnalysisPresenter class >> example [
 	| model |
 	model := ECECModel new.
 	
-	(self on: model) open.
+	(self forModel: model translator: CMEnglishTranslator new) open.
+]
+
+{ #category : 'as yet unclassified' }
+CMSensitivityAnalysisPresenter class >> forModel: aCormasModel translator: aTranslator [
+
+	^ self on: { aCormasModel . aTranslator }
 ]
 
 { #category : 'layout' }
@@ -98,7 +105,7 @@ CMSensitivityAnalysisPresenter >> enableRandomSeedPresenters [
 CMSensitivityAnalysisPresenter >> initializePresenters [
 	
 	fixRandomSeedCheckbox := self newCheckBox
-		label: 'Fix random seed to:';
+		label: translator tFixRandomSeed;
 		whenActivatedDo: [ self enableRandomSeedPresenters ];
 		whenDeactivatedDo: [ self disableRandomSeedPresenters ];
 		yourself.
@@ -130,11 +137,15 @@ CMSensitivityAnalysisPresenter >> initializePresenters [
 		number: simulation finalTimeStep;
 		yourself.
 
-	numberOfRepetitionsInput := self newNumberInput.
+	numberOfRepetitionsInput := self newNumberInput
+		beInteger;
+		minimum: 1;
+		number: 10;
+		yourself.
 
 	probesList := self
 		instantiate: CMSensitivityAnalysisProbesListPresenter
-		on: simulation.
+		on: { simulation . translator }.
 		
 	runButton := self newButton
 		label: 'Run';
@@ -153,7 +164,10 @@ CMSensitivityAnalysisPresenter >> initializeWindow: aWindowPresenter [
 ]
 
 { #category : 'accessing - model' }
-CMSensitivityAnalysisPresenter >> setModelBeforeInitialization: aCormasModel [
+CMSensitivityAnalysisPresenter >> setModelBeforeInitialization: aCollection [
 
-	simulation := CMSimulation for: aCormasModel
+	| cormasModel |
+	cormasModel := aCollection first.
+	simulation := CMSimulation for: cormasModel.
+	translator := aCollection second
 ]
