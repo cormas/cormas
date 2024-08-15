@@ -30,6 +30,12 @@ CMEnglishTranslator >> tClass [
 ]
 
 { #category : 'translations' }
+CMEnglishTranslator >> tControlMethod [
+
+	^ 'Control method'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tData [
 
 	^ 'Data'
@@ -42,7 +48,7 @@ CMEnglishTranslator >> tDisplayEveryLabel [
 ]
 
 { #category : 'translations' }
-CMEnglishTranslator >> tFinalStepLabel [
+CMEnglishTranslator >> tFinalStep [
 
 	^ 'Final step'
 ]
@@ -51,6 +57,12 @@ CMEnglishTranslator >> tFinalStepLabel [
 CMEnglishTranslator >> tFixRandomSeed [
 
 	^ 'Fix random seed:'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tInitMethod [
+
+	^ 'Init method'
 ]
 
 { #category : 'translations' }
@@ -72,6 +84,12 @@ CMEnglishTranslator >> tMeasureOf [
 ]
 
 { #category : 'translations' }
+CMEnglishTranslator >> tNumberOfRepetitions [
+
+	^ 'Number of repetitions'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tParameter [
 
 	^ 'Parameter'
@@ -84,21 +102,33 @@ CMEnglishTranslator >> tParameters [
 ]
 
 { #category : 'translations' }
+CMEnglishTranslator >> tProbesToBeMeasured [
+
+	^ 'Probes to be measured'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tProgressBarLabel [
 
 	^ 'Progress'
 ]
 
 { #category : 'translations' }
-CMEnglishTranslator >> tRunButtonHelp [
+CMEnglishTranslator >> tReleaseRandomSeedAfterInitialization [
 
-	^ 'Run the simulation to the end'
+	^ 'Release random seed after initialization'
 ]
 
 { #category : 'translations' }
-CMEnglishTranslator >> tRunButtonLabel [ 
+CMEnglishTranslator >> tRun [ 
 
 	^ 'Run'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tRunButtonHelp [
+
+	^ 'Run the simulation to the end'
 ]
 
 { #category : 'translations' }

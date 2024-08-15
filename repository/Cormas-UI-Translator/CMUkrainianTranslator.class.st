@@ -30,6 +30,12 @@ CMUkrainianTranslator >> tClass [
 ]
 
 { #category : 'translations' }
+CMUkrainianTranslator >> tControlMethod [
+
+	^ 'Метод контролю'
+]
+
+{ #category : 'translations' }
 CMUkrainianTranslator >> tData [
 
 	^ 'Дані'
@@ -42,7 +48,7 @@ CMUkrainianTranslator >> tDisplayEveryLabel [
 ]
 
 { #category : 'translations' }
-CMUkrainianTranslator >> tFinalStepLabel [
+CMUkrainianTranslator >> tFinalStep [
 
 	^ 'Фінальний крок'
 ]
@@ -51,6 +57,12 @@ CMUkrainianTranslator >> tFinalStepLabel [
 CMUkrainianTranslator >> tFixRandomSeed [
 
 	^ 'Випадкове початкове значення:'
+]
+
+{ #category : 'translations' }
+CMUkrainianTranslator >> tInitMethod [
+
+	^ 'Метод ініціалізації'
 ]
 
 { #category : 'translations' }
@@ -72,6 +84,12 @@ CMUkrainianTranslator >> tMeasureOf [
 ]
 
 { #category : 'translations' }
+CMUkrainianTranslator >> tNumberOfRepetitions [
+
+	^ 'Кількість повторів'
+]
+
+{ #category : 'translations' }
 CMUkrainianTranslator >> tParameter [
 
 	^ 'Параметр'
@@ -84,21 +102,33 @@ CMUkrainianTranslator >> tParameters [
 ]
 
 { #category : 'translations' }
+CMUkrainianTranslator >> tProbesToBeMeasured [
+
+	^ 'Проби які потрібно виміряти'
+]
+
+{ #category : 'translations' }
 CMUkrainianTranslator >> tProgressBarLabel [
 
 	^ 'Прогрес'
 ]
 
 { #category : 'translations' }
-CMUkrainianTranslator >> tRunButtonHelp [
+CMUkrainianTranslator >> tReleaseRandomSeedAfterInitialization [
 
-	^ 'Грати симуляцію до самого кінця'
+	^ 'Скинути випадкове значення після ініціалізації'
 ]
 
 { #category : 'translations' }
-CMUkrainianTranslator >> tRunButtonLabel [
+CMUkrainianTranslator >> tRun [
 
 	^ 'Грати'
+]
+
+{ #category : 'translations' }
+CMUkrainianTranslator >> tRunButtonHelp [
+
+	^ 'Грати симуляцію до самого кінця'
 ]
 
 { #category : 'translations' }

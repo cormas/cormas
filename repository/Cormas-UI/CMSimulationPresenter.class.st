@@ -65,7 +65,7 @@ CMSimulationPresenter >> defaultLayout [
 				yourself) width: 40;
 			add: (SpBoxLayout newTopToBottom
 				spacing: 3;
-				add: translator tRunButtonLabel height: row1Height;
+				add: translator tRun height: row1Height;
 				add: runButton height: row2Height;
 				yourself) width: 40;
 			add: (SpBoxLayout newTopToBottom 
@@ -75,7 +75,7 @@ CMSimulationPresenter >> defaultLayout [
 				yourself);
 			add: (SpBoxLayout newTopToBottom
 				spacing: 3;
-				add: translator tFinalStepLabel height: row1Height;
+				add: translator tFinalStep height: row1Height;
 				add: finalStep height: row2Height;
 				yourself) width: self class buttonWidth;
 			add: (SpBoxLayout newTopToBottom

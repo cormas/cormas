@@ -39,6 +39,12 @@ CMAbstractTranslator >> tClass [
 ]
 
 { #category : 'translations' }
+CMAbstractTranslator >> tControlMethod [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
 CMAbstractTranslator >> tData [
 
 	self subclassResponsibility
@@ -51,13 +57,19 @@ CMAbstractTranslator >> tDisplayEveryLabel [
 ]
 
 { #category : 'translations' }
-CMAbstractTranslator >> tFinalStepLabel [
+CMAbstractTranslator >> tFinalStep [
 
 	self subclassResponsibility
 ]
 
 { #category : 'translations' }
 CMAbstractTranslator >> tFixRandomSeed [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tInitMethod [
 
 	self subclassResponsibility
 ]
@@ -81,6 +93,12 @@ CMAbstractTranslator >> tMeasureOf [
 ]
 
 { #category : 'translations' }
+CMAbstractTranslator >> tNumberOfRepetitions [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
 CMAbstractTranslator >> tParameter [
 
 	self subclassResponsibility
@@ -93,19 +111,31 @@ CMAbstractTranslator >> tParameters [
 ]
 
 { #category : 'translations' }
+CMAbstractTranslator >> tProbesToBeMeasured [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
 CMAbstractTranslator >> tProgressBarLabel [
 
 	self subclassResponsibility
 ]
 
 { #category : 'translations' }
-CMAbstractTranslator >> tRunButtonHelp [
+CMAbstractTranslator >> tReleaseRandomSeedAfterInitialization [
 
 	self subclassResponsibility
 ]
 
 { #category : 'translations' }
-CMAbstractTranslator >> tRunButtonLabel [
+CMAbstractTranslator >> tRun [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tRunButtonHelp [
 
 	self subclassResponsibility
 ]

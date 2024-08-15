@@ -37,10 +37,11 @@ CMSensitivityAnalysisPresenter class >> forModel: aCormasModel translator: aTran
 { #category : 'layout' }
 CMSensitivityAnalysisPresenter >> defaultLayout [
 
-	| labelHeight buttonHeight |
+	| labelHeight buttonHeight numberInputWidth |
 	
 	labelHeight := self class labelHeight.
 	buttonHeight := self class buttonHeight.
+	numberInputWidth := 90.
 
 	^ SpBoxLayout newTopToBottom
 		spacing: 5;
@@ -51,31 +52,31 @@ CMSensitivityAnalysisPresenter >> defaultLayout [
 				spacing: 12;
 				add: (SpBoxLayout newLeftToRight
 					add: fixRandomSeedCheckbox;
-					add: randomSeedInput width: 100;
+					add: randomSeedInput width: numberInputWidth;
 					yourself) height: 25;
 				add: (SpBoxLayout newTopToBottom
-					add: 'Active init method' height: labelHeight;
+					add: translator tInitMethod height: labelHeight;
 					add: initMethodDropList height: buttonHeight;
 					yourself) height: labelHeight + buttonHeight;
 				add: releaseRandomSeedCheckbox height: 25;
 				add: (SpBoxLayout newTopToBottom
-					add: 'Active control method' height: labelHeight;
+					add: translator tControlMethod height: labelHeight;
 					add: controlMethodDropList height: buttonHeight;
 					yourself) height: labelHeight + buttonHeight;
 				add: (SpBoxLayout newTopToBottom
 					spacing: 5;
 					add: (SpBoxLayout newLeftToRight
-						add: 'Final step:';
-						add: finalStepInput width: 100;
+						add: translator tFinalStep;
+						add: finalStepInput width: numberInputWidth;
 						yourself) height: 25;
 					add: (SpBoxLayout newLeftToRight
-						add: 'Number of repetitions:';
-						add: numberOfRepetitionsInput width: 100;
+						add: translator tNumberOfRepetitions;
+						add: numberOfRepetitionsInput width: numberInputWidth;
 						yourself) height: 25;
 					yourself) height: 55;
-				yourself) width: 250;
+				yourself) width: 300;
 			add: (SpBoxLayout newTopToBottom
-				add: 'Probes to be measured' height: labelHeight;
+				add: translator tProbesToBeMeasured height: labelHeight;
 				add: probesList;
 				yourself);
 			yourself);
@@ -113,7 +114,7 @@ CMSensitivityAnalysisPresenter >> initializePresenters [
 	randomSeedInput := self newNumberInput.
 	
 	releaseRandomSeedCheckbox := self newCheckBox
-		label: 'Release random seed after initialization';
+		label: translator tReleaseRandomSeedAfterInitialization;
 		yourself.
 		
 	self disableRandomSeedPresenters.
@@ -148,7 +149,7 @@ CMSensitivityAnalysisPresenter >> initializePresenters [
 		on: { simulation . translator }.
 		
 	runButton := self newButton
-		label: 'Run';
+		label: translator tRun;
 		yourself.
 
 ]
