@@ -137,7 +137,7 @@ CMMockModel >> cellMatrix [
 
 { #category : 'init' }
 CMMockModel >> init [ 
-
+	<init>
 	self initEmpty.
 		
 	self
@@ -151,19 +151,19 @@ CMMockModel >> init [
 
 { #category : 'init' }
 CMMockModel >> initAlive [
-
+	<init>
 	self theCells do: #initAlive
 ]
 
 { #category : 'init' }
 CMMockModel >> initDead [
-
+	<init>
 	self theCells do: #initDead
 ]
 
 { #category : 'init' }
 CMMockModel >> initEmpty [
-
+	<init>
 	self
 		createGridNumberOfRows: self class numberOfRows
 		numberOfColumns: self class numberOfColumns
@@ -175,7 +175,7 @@ CMMockModel >> initEmpty [
 
 { #category : 'init' }
 CMMockModel >> initFixed [
-
+	<init>
 	| cow goat |
 
 	self initEmpty.
@@ -190,7 +190,7 @@ CMMockModel >> initFixed [
 
 { #category : 'init' }
 CMMockModel >> initRandom [
-
+	<init>
 	self theCells do: #initRandom
 ]
 
@@ -240,7 +240,7 @@ CMMockModel >> numberOfDeadCells [
 
 { #category : 'control' }
 CMMockModel >> step: t [
-
+	<control>
 	self askRandom: CMMockAnimal toDo: #step.
 	self stepSynchronouslyCA: t.
 ]

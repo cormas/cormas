@@ -23,7 +23,7 @@ CMSensitivityAnalysisPresenter class >> example [
 	<example>
 	
 	| model |
-	model := ECECModel new.
+	model := CMMockModel new.
 	
 	(self forModel: model translator: CMUkrainianTranslator new) open.
 ]
@@ -160,7 +160,7 @@ CMSensitivityAnalysisPresenter >> initializeWindow: aWindowPresenter [
 	super initializeWindow: aWindowPresenter.
 	
 	aWindowPresenter 
-		title: 'Sensitivity Analisis';
+		title: translator tSensitivityAnalysis;
 		initialExtent: 920@500.
 ]
 
