@@ -14,8 +14,8 @@ Class {
 		'probesList',
 		'runButton'
 	],
-	#category : 'Cormas-UI',
-	#package : 'Cormas-UI'
+	#category : 'Cormas-SensitivityAnalysis-UI',
+	#package : 'Cormas-SensitivityAnalysis-UI'
 }
 
 { #category : 'examples' }
@@ -25,7 +25,7 @@ CMSensitivityAnalysisPresenter class >> example [
 	| model |
 	model := ECECModel new.
 	
-	(self forModel: model translator: CMEnglishTranslator new) open.
+	(self forModel: model translator: CMUkrainianTranslator new) open.
 ]
 
 { #category : 'as yet unclassified' }
@@ -161,7 +161,7 @@ CMSensitivityAnalysisPresenter >> initializeWindow: aWindowPresenter [
 	
 	aWindowPresenter 
 		title: 'Sensitivity Analisis';
-		initialExtent: 900@500.
+		initialExtent: 920@500.
 ]
 
 { #category : 'accessing - model' }

@@ -18,6 +18,12 @@ CMUkrainianTranslator >> tAddMeasurementHelp [
 ]
 
 { #category : 'translations' }
+CMUkrainianTranslator >> tAverageValue [
+
+	^ 'Середнє значення'
+]
+
+{ #category : 'translations' }
 CMUkrainianTranslator >> tCharts [
 
 	^ 'Графіки'
@@ -54,6 +60,12 @@ CMUkrainianTranslator >> tFinalStep [
 ]
 
 { #category : 'translations' }
+CMUkrainianTranslator >> tFinalValue [
+
+	^ 'Фінальне значення'
+]
+
+{ #category : 'translations' }
 CMUkrainianTranslator >> tFixRandomSeed [
 
 	^ 'Випадкове початкове значення:'
@@ -72,6 +84,12 @@ CMUkrainianTranslator >> tInspector [
 ]
 
 { #category : 'translations' }
+CMUkrainianTranslator >> tMaximumValue [
+
+	^ 'Максимальне значення'
+]
+
+{ #category : 'translations' }
 CMUkrainianTranslator >> tMeasure [
 
 	^ 'Виміряти'
@@ -81,6 +99,12 @@ CMUkrainianTranslator >> tMeasure [
 CMUkrainianTranslator >> tMeasureOf [
 
 	^ 'від'
+]
+
+{ #category : 'translations' }
+CMUkrainianTranslator >> tMinimumValue [
+
+	^ 'Мінімальне значення'
 ]
 
 { #category : 'translations' }
@@ -122,13 +146,19 @@ CMUkrainianTranslator >> tReleaseRandomSeedAfterInitialization [
 { #category : 'translations' }
 CMUkrainianTranslator >> tRun [
 
-	^ 'Грати'
+	^ 'Запустити'
 ]
 
 { #category : 'translations' }
 CMUkrainianTranslator >> tRunButtonHelp [
 
 	^ 'Грати симуляцію до самого кінця'
+]
+
+{ #category : 'translations' }
+CMUkrainianTranslator >> tSensitivityAnalysis [
+
+	^ 'Аналіз Сенситивності'
 ]
 
 { #category : 'translations' }

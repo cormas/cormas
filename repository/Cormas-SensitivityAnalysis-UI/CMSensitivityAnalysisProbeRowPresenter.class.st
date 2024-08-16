@@ -8,8 +8,8 @@ Class {
 		'probeDropList',
 		'deleteButton'
 	],
-	#category : 'Cormas-UI',
-	#package : 'Cormas-UI'
+	#category : 'Cormas-SensitivityAnalysis-UI',
+	#package : 'Cormas-SensitivityAnalysis-UI'
 }
 
 { #category : 'examples' }
@@ -36,7 +36,7 @@ CMSensitivityAnalysisProbeRowPresenter >> defaultLayout [
 		spacing: 10;
 		borderWidth: 2;
 		add: translator tMeasure expand: false;
-		add: dataCollectorDropList width: 150;
+		add: dataCollectorDropList width: 170;
 		add: translator tMeasureOf expand: false;
 		add: probeDropList width: 250;
 		add: '';
@@ -49,7 +49,8 @@ CMSensitivityAnalysisProbeRowPresenter >> initializePresenters [
 		
 	dataCollectorDropList := self newDropList
 		items: (CMDataCollector allSubclasses reject: #hasAbstractMethods);
-		display: [ :aClass | aClass collectorName ];
+		display: [ :aClass |
+			aClass collectorNameFromTranslator: translator ];
 		yourself.
 		
 	probeDropList := self newDropList

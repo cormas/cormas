@@ -7,8 +7,8 @@ Class {
 		'probesList',
 		'toolbar'
 	],
-	#category : 'Cormas-UI',
-	#package : 'Cormas-UI'
+	#category : 'Cormas-SensitivityAnalysis-UI',
+	#package : 'Cormas-SensitivityAnalysis-UI'
 }
 
 { #category : 'examples' }

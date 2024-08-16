@@ -1,9 +1,8 @@
 Class {
 	#name : 'CMAggregatingDataCollector',
 	#superclass : 'CMDataCollector',
-	#category : 'Cormas-Core-Analysis',
-	#package : 'Cormas-Core',
-	#tag : 'Analysis'
+	#category : 'Cormas-SensitivityAnalisis',
+	#package : 'Cormas-SensitivityAnalisis'
 }
 
 { #category : 'data collection' }

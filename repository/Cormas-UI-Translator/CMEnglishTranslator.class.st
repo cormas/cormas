@@ -18,6 +18,12 @@ CMEnglishTranslator >> tAddMeasurementHelp [
 ]
 
 { #category : 'translations' }
+CMEnglishTranslator >> tAverageValue [
+
+	^ 'Average value'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tCharts [
 
 	^ 'Charts'
@@ -54,6 +60,12 @@ CMEnglishTranslator >> tFinalStep [
 ]
 
 { #category : 'translations' }
+CMEnglishTranslator >> tFinalValue [
+
+	^ 'Final value'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tFixRandomSeed [
 
 	^ 'Fix random seed:'
@@ -72,6 +84,12 @@ CMEnglishTranslator >> tInspector [
 ]
 
 { #category : 'translations' }
+CMEnglishTranslator >> tMaximumValue [
+
+	^ 'Maximum value'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tMeasure [
 
 	^ 'Measure'
@@ -81,6 +99,12 @@ CMEnglishTranslator >> tMeasure [
 CMEnglishTranslator >> tMeasureOf [
 
 	^ 'of'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tMinimumValue [
+
+	^ 'Minimum value'
 ]
 
 { #category : 'translations' }
@@ -129,6 +153,12 @@ CMEnglishTranslator >> tRun [
 CMEnglishTranslator >> tRunButtonHelp [
 
 	^ 'Run the simulation to the end'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tSensitivityAnalysis [
+
+	^ 'Sensitivity Analysis'
 ]
 
 { #category : 'translations' }

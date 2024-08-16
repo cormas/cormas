@@ -6,16 +6,9 @@ Class {
 		'simulation',
 		'data'
 	],
-	#category : 'Cormas-Core-Analysis',
-	#package : 'Cormas-Core',
-	#tag : 'Analysis'
+	#category : 'Cormas-SensitivityAnalisis',
+	#package : 'Cormas-SensitivityAnalisis'
 }
-
-{ #category : 'as yet unclassified' }
-CMDataCollector class >> collectorName [
-
-	self subclassResponsibility
-]
 
 { #category : 'as yet unclassified' }
 CMDataCollector class >> forProbe: aProbe on: aSimulation [

@@ -1,16 +1,9 @@
 Class {
 	#name : 'CMAverageValueCollector',
 	#superclass : 'CMAggregatingDataCollector',
-	#category : 'Cormas-Core-Analysis',
-	#package : 'Cormas-Core',
-	#tag : 'Analysis'
+	#category : 'Cormas-SensitivityAnalisis',
+	#package : 'Cormas-SensitivityAnalisis'
 }
-
-{ #category : 'as yet unclassified' }
-CMAverageValueCollector class >> collectorName [
-
-	^ 'Average value'
-]
 
 { #category : 'data collection' }
 CMAverageValueCollector >> aggregate: aCollection [

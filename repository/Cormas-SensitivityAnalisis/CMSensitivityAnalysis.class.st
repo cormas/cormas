@@ -6,9 +6,8 @@ Class {
 		'dataCollectors',
 		'data'
 	],
-	#category : 'Cormas-Core-Analysis',
-	#package : 'Cormas-Core',
-	#tag : 'Analysis'
+	#category : 'Cormas-SensitivityAnalisis',
+	#package : 'Cormas-SensitivityAnalisis'
 }
 
 { #category : 'instance creation' }

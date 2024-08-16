@@ -27,6 +27,12 @@ CMAbstractTranslator >> tAddMeasurementHelp [
 ]
 
 { #category : 'translations' }
+CMAbstractTranslator >> tAverageValue [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
 CMAbstractTranslator >> tCharts [
 
 	self subclassResponsibility
@@ -63,6 +69,12 @@ CMAbstractTranslator >> tFinalStep [
 ]
 
 { #category : 'translations' }
+CMAbstractTranslator >> tFinalValue [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
 CMAbstractTranslator >> tFixRandomSeed [
 
 	self subclassResponsibility
@@ -81,6 +93,12 @@ CMAbstractTranslator >> tInspector [
 ]
 
 { #category : 'translations' }
+CMAbstractTranslator >> tMaximumValue [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
 CMAbstractTranslator >> tMeasure [
 
 	self subclassResponsibility
@@ -88,6 +106,12 @@ CMAbstractTranslator >> tMeasure [
 
 { #category : 'translations' }
 CMAbstractTranslator >> tMeasureOf [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tMinimumValue [
 
 	self subclassResponsibility
 ]
@@ -136,6 +160,12 @@ CMAbstractTranslator >> tRun [
 
 { #category : 'translations' }
 CMAbstractTranslator >> tRunButtonHelp [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tSensitivityAnalysis [
 
 	self subclassResponsibility
 ]
