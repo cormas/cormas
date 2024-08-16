@@ -21,6 +21,28 @@ Class {
 	#package : 'Cormas-UI'
 }
 
+{ #category : 'examples' }
+CMSimulationPresenter class >> example [
+	<example>
+	| model simulation translator |
+	
+	model := CMMockModel new
+		randomSeed: 41;
+		yourself.
+
+	simulation := (CMSimulation for: model)
+		activeInitMethod: (model class >> #initFixed);
+		activeControlMethod: (model class >> #step:);
+		initializeSimulation;
+		yourself.
+
+	translator := CMEnglishTranslator new.
+
+	self
+		openForSimulation: simulation
+		withTranslator: translator.
+]
+
 { #category : 'as yet unclassified' }
 CMSimulationPresenter class >> openForSimulation: aSimulation withTranslator: aTranslator [
 
