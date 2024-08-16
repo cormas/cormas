@@ -14,6 +14,12 @@ TCMRandom >> random [
 	^ randomNumberGenerator next
 ]
 
+{ #category : 'as yet unclassified' }
+TCMRandom >> randomBetween: lowerBound and: higherBound [
+	"Answer a random float number from the range [lowerBound, higherBound)"
+	^ lowerBound + (self random * (higherBound - lowerBound))
+]
+
 { #category : 'star pov' }
 TCMRandom >> randomColor [
 

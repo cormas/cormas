@@ -1,0 +1,113 @@
+Class {
+	#name : 'CMSensitivityAnalysisParameterRowPresenter',
+	#superclass : 'SpPresenter',
+	#instVars : [
+		'cormasModel',
+		'translator',
+		'classDropList',
+		'parameterDropList',
+		'strategyDropList',
+		'inspectButton',
+		'deleteButton'
+	],
+	#category : 'Cormas-SensitivityAnalysis-UI',
+	#package : 'Cormas-SensitivityAnalysis-UI'
+}
+
+{ #category : 'default values' }
+CMSensitivityAnalysisParameterRowPresenter class >> classDropListWidth [
+
+	^ 150
+]
+
+{ #category : 'examples' }
+CMSensitivityAnalysisParameterRowPresenter class >> example [
+	<example>
+	| model translator |
+	
+	model := CMMockModel new.
+	translator := CMEnglishTranslator new.
+	
+	(self forModel: model translator: translator) open
+]
+
+{ #category : 'instance creation' }
+CMSensitivityAnalysisParameterRowPresenter class >> forModel: aCormasModel translator: aTranslator [
+
+	^ self on: { aCormasModel . aTranslator }
+]
+
+{ #category : 'default values' }
+CMSensitivityAnalysisParameterRowPresenter class >> parameterDropListWidth [
+
+	^ 150
+]
+
+{ #category : 'default values' }
+CMSensitivityAnalysisParameterRowPresenter class >> strategyDropListWidth [
+
+	^ 150
+]
+
+{ #category : 'layout' }
+CMSensitivityAnalysisParameterRowPresenter >> defaultLayout [
+
+	^ SpBoxLayout newLeftToRight
+		spacing: 5;
+		borderWidth: 2;
+		add: classDropList width: self class classDropListWidth;
+		add: parameterDropList width: self class parameterDropListWidth;
+		add: strategyDropList width: self class strategyDropListWidth;
+		add: '';
+		add: (SpBoxLayout newLeftToRight
+			spacing: 2;
+			add: inspectButton width: 30;
+			add: deleteButton width: 30;
+			yourself) expand: false;
+		yourself.
+]
+
+{ #category : 'initialization' }
+CMSensitivityAnalysisParameterRowPresenter >> initializePresenters [
+
+	| parameterClassNames generator |
+	
+	generator := CMRangeValueGenerator new.
+	generator from: 0 to: 100 step: 10.
+	
+	parameterClassNames := (cormasModel parameters collect: [ :parameter |
+		parameter receiverClass name ]) asSet asOrderedCollection.
+
+	classDropList := self newDropList
+		items: parameterClassNames;
+		whenSelectedItemChangedDo: [ :className |
+			parameterDropList items: (
+				cormasModel parameters select: [ :p | p receiverClass name = className ]) ]
+		yourself.
+		
+	parameterDropList := self newDropList
+		display: [ :parameter | parameter name ];
+		yourself.
+		
+	strategyDropList := self newDropList 
+		display: [ :strategyClass | strategyClass nameForTranslator: translator ];
+		items: CMParameterValueGenerator allSubclasses;
+		yourself.
+		
+	inspectButton := self newButton
+		icon: (self iconNamed: #smallInspectIt);
+		action: [ generator generate inspect ];
+		yourself.
+		
+	deleteButton := self newButton
+		icon: (self iconNamed: #remove);
+		action: [ owner items: (owner items copyWithout: self) ];
+		yourself.
+]
+
+{ #category : 'accessing - model' }
+CMSensitivityAnalysisParameterRowPresenter >> setModelBeforeInitialization: aCollection [
+
+	cormasModel := aCollection first.
+	translator := aCollection second
+]

@@ -12,6 +12,7 @@ Class {
 		'finalStepInput',
 		'numberOfRepetitionsInput',
 		'probesList',
+		'parametersTable',
 		'runButton'
 	],
 	#category : 'Cormas-SensitivityAnalysis-UI',
@@ -25,7 +26,7 @@ CMSensitivityAnalysisPresenter class >> example [
 	| model |
 	model := CMMockModel new.
 	
-	(self forModel: model translator: CMEnglishTranslator new) open.
+	(self forModel: model translator: CMUkrainianTranslator new) open.
 ]
 
 { #category : 'as yet unclassified' }
@@ -79,7 +80,8 @@ CMSensitivityAnalysisPresenter >> defaultLayout [
 				add: translator tProbesToBeMeasured height: labelHeight;
 				add: probesList;
 				yourself);
-			yourself);
+			yourself) height: 300;
+		add: parametersTable;
 		add: runButton height: buttonHeight;
 		yourself.
 ]
@@ -148,6 +150,10 @@ CMSensitivityAnalysisPresenter >> initializePresenters [
 		instantiate: CMSensitivityAnalysisProbesListPresenter
 		on: { simulation . translator }.
 		
+	parametersTable := self
+		instantiate: CMSensitivityAnalysisParametersListPresenter
+		on: { simulation cormasModel . translator }.
+		
 	runButton := self newButton
 		label: translator tRun;
 		yourself.
@@ -161,7 +167,7 @@ CMSensitivityAnalysisPresenter >> initializeWindow: aWindowPresenter [
 	
 	aWindowPresenter 
 		title: translator tSensitivityAnalysis;
-		initialExtent: 920@500.
+		initialExtent: 920@600.
 ]
 
 { #category : 'accessing - model' }

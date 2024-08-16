@@ -34,6 +34,23 @@ TCMRandomTest >> testRandom [
 ]
 
 { #category : 'tests' }
+TCMRandomTest >> testRandomBetweenAnd [
+
+	| expected actual |
+	
+	expected := #(
+		153.02191304649315
+		146.18074947324618
+		113.66815805140331
+		101.81851917962474
+		120.55001655619127).
+		
+	actual := (1 to: 5) collect: [ :i | cormasModel randomBetween: 100 and: 200 ].
+
+	self assert: expected closeTo: actual precision: 0.00000000001
+]
+
+{ #category : 'tests' }
 TCMRandomTest >> testSelectRandomlyFrom [
 
 	| collection |

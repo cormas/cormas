@@ -117,6 +117,12 @@ CMAbstractTranslator >> tMinimumValue [
 ]
 
 { #category : 'translations' }
+CMAbstractTranslator >> tMonteCarlo [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
 CMAbstractTranslator >> tNumberOfRepetitions [
 
 	self subclassResponsibility
@@ -135,6 +141,12 @@ CMAbstractTranslator >> tParameters [
 ]
 
 { #category : 'translations' }
+CMAbstractTranslator >> tPredefinedList [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
 CMAbstractTranslator >> tProbesToBeMeasured [
 
 	self subclassResponsibility
@@ -142,6 +154,12 @@ CMAbstractTranslator >> tProbesToBeMeasured [
 
 { #category : 'translations' }
 CMAbstractTranslator >> tProgressBarLabel [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tRange [
 
 	self subclassResponsibility
 ]

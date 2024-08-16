@@ -108,6 +108,12 @@ CMUkrainianTranslator >> tMinimumValue [
 ]
 
 { #category : 'translations' }
+CMUkrainianTranslator >> tMonteCarlo [
+
+	^ 'Монте Карло'
+]
+
+{ #category : 'translations' }
 CMUkrainianTranslator >> tNumberOfRepetitions [
 
 	^ 'Кількість повторів'
@@ -126,6 +132,12 @@ CMUkrainianTranslator >> tParameters [
 ]
 
 { #category : 'translations' }
+CMUkrainianTranslator >> tPredefinedList [
+
+	^ 'Список'
+]
+
+{ #category : 'translations' }
 CMUkrainianTranslator >> tProbesToBeMeasured [
 
 	^ 'Проби які потрібно виміряти'
@@ -135,6 +147,12 @@ CMUkrainianTranslator >> tProbesToBeMeasured [
 CMUkrainianTranslator >> tProgressBarLabel [
 
 	^ 'Прогрес'
+]
+
+{ #category : 'translations' }
+CMUkrainianTranslator >> tRange [
+
+	^ 'Діапазон'
 ]
 
 { #category : 'translations' }

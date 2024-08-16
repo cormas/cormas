@@ -108,6 +108,12 @@ CMEnglishTranslator >> tMinimumValue [
 ]
 
 { #category : 'translations' }
+CMEnglishTranslator >> tMonteCarlo [
+
+	^ 'Monte Carlo'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tNumberOfRepetitions [
 
 	^ 'Number of repetitions'
@@ -126,6 +132,12 @@ CMEnglishTranslator >> tParameters [
 ]
 
 { #category : 'translations' }
+CMEnglishTranslator >> tPredefinedList [
+
+	^ 'Predefined list'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tProbesToBeMeasured [
 
 	^ 'Probes to be measured'
@@ -135,6 +147,12 @@ CMEnglishTranslator >> tProbesToBeMeasured [
 CMEnglishTranslator >> tProgressBarLabel [
 
 	^ 'Progress'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tRange [
+
+	^ 'Range'
 ]
 
 { #category : 'translations' }
