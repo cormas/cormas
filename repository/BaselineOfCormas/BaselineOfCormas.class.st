@@ -1921,9 +1921,9 @@ BaselineOfCormas >> specForPackages: spec [
 		package: 'Cormas-SensitivityAnalysis-Tests'
 		with: [ spec requires: #('Cormas-SensitivityAnalysis' 'Cormas-Mocks') ];
 		
-		package: 'Cormas-SensitivityAnalisis-UI'
-		with: [ spec requires: #('Cormas-SensitivityAnalisis' 'Cormas-Mocks' 'Cormas-UI-Translator') ];
+		package: 'Cormas-SensitivityAnalysis-UI'
+		with: [ spec requires: #('Cormas-SensitivityAnalysis' 'Cormas-Mocks' 'Cormas-UI-Translator') ];
 		
-		package: 'Cormas-SensitivityAnalisis-UI-Tests'
-		with: [ spec requires: #('Cormas-SensitivityAnalisis-UI') ].
+		package: 'Cormas-SensitivityAnalysis-UI-Tests'
+		with: [ spec requires: #('Cormas-SensitivityAnalysis-UI') ].
 ]
