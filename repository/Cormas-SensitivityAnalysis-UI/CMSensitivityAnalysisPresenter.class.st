@@ -167,7 +167,7 @@ CMSensitivityAnalysisPresenter >> initializeWindow: aWindowPresenter [
 	
 	aWindowPresenter 
 		title: translator tSensitivityAnalysis;
-		initialExtent: 920@600.
+		initialExtent: 1020@600.
 ]
 
 { #category : 'accessing - model' }

@@ -7,6 +7,7 @@ Class {
 		'classDropList',
 		'parameterDropList',
 		'strategyDropList',
+		'settingsPresenter',
 		'inspectButton',
 		'deleteButton'
 	],
@@ -17,7 +18,7 @@ Class {
 { #category : 'default values' }
 CMSensitivityAnalysisParameterRowPresenter class >> classDropListWidth [
 
-	^ 150
+	^ 180
 ]
 
 { #category : 'examples' }
@@ -40,7 +41,7 @@ CMSensitivityAnalysisParameterRowPresenter class >> forModel: aCormasModel trans
 { #category : 'default values' }
 CMSensitivityAnalysisParameterRowPresenter class >> parameterDropListWidth [
 
-	^ 150
+	^ 200
 ]
 
 { #category : 'default values' }
@@ -58,7 +59,7 @@ CMSensitivityAnalysisParameterRowPresenter >> defaultLayout [
 		add: classDropList width: self class classDropListWidth;
 		add: parameterDropList width: self class parameterDropListWidth;
 		add: strategyDropList width: self class strategyDropListWidth;
-		add: '';
+		add: settingsPresenter;
 		add: (SpBoxLayout newLeftToRight
 			spacing: 2;
 			add: inspectButton width: 30;
@@ -90,9 +91,17 @@ CMSensitivityAnalysisParameterRowPresenter >> initializePresenters [
 		yourself.
 		
 	strategyDropList := self newDropList 
-		display: [ :strategyClass | strategyClass nameForTranslator: translator ];
-		items: CMParameterValueGenerator allSubclasses;
+		display: [ :aClass | aClass nameForTranslator: translator ];
+		items: CMSensitivityAnalysisSettingPresenter allSubclasses;
+		whenSelectedItemChangedDo: [ :strategyClass |
+			settingsPresenter updatePresenter ];
 		yourself.
+		
+	settingsPresenter := self newPresenterSelector
+		when: [ strategyDropList selectedItem isNotNil ]
+		show: [ self instantiate: strategyDropList selectedItem on: translator ];
+		defaultShow: [ self newLabel ];
+		yourself. 
 		
 	inspectButton := self newButton
 		icon: (self iconNamed: #smallInspectIt);
