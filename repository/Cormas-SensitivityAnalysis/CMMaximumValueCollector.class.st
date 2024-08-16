@@ -1,8 +1,8 @@
 Class {
 	#name : 'CMMaximumValueCollector',
 	#superclass : 'CMAggregatingDataCollector',
-	#category : 'Cormas-SensitivityAnalisis',
-	#package : 'Cormas-SensitivityAnalisis'
+	#category : 'Cormas-SensitivityAnalysis',
+	#package : 'Cormas-SensitivityAnalysis'
 }
 
 { #category : 'data collection' }

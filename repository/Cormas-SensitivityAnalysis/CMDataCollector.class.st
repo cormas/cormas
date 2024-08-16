@@ -6,8 +6,8 @@ Class {
 		'simulation',
 		'data'
 	],
-	#category : 'Cormas-SensitivityAnalisis',
-	#package : 'Cormas-SensitivityAnalisis'
+	#category : 'Cormas-SensitivityAnalysis',
+	#package : 'Cormas-SensitivityAnalysis'
 }
 
 { #category : 'as yet unclassified' }

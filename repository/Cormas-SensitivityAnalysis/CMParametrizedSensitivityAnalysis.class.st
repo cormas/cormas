@@ -4,6 +4,6 @@ Class {
 	#instVars : [
 		'parameterValuesDictionary'
 	],
-	#category : 'Cormas-SensitivityAnalisis',
-	#package : 'Cormas-SensitivityAnalisis'
+	#category : 'Cormas-SensitivityAnalysis',
+	#package : 'Cormas-SensitivityAnalysis'
 }
