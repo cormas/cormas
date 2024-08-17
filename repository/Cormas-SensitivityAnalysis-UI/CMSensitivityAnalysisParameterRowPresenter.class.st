@@ -71,10 +71,7 @@ CMSensitivityAnalysisParameterRowPresenter >> defaultLayout [
 { #category : 'initialization' }
 CMSensitivityAnalysisParameterRowPresenter >> initializePresenters [
 
-	| parameterClassNames generator |
-	
-	generator := CMRangeValueGenerator new.
-	generator from: 0 to: 100 step: 10.
+	| parameterClassNames |
 	
 	parameterClassNames := (cormasModel parameters collect: [ :parameter |
 		parameter receiverClass name ]) asSet asOrderedCollection.
@@ -105,7 +102,7 @@ CMSensitivityAnalysisParameterRowPresenter >> initializePresenters [
 		
 	inspectButton := self newButton
 		icon: (self iconNamed: #smallInspectIt);
-		action: [ generator generate inspect ];
+		action: [ settingsPresenter layout children first values inspect ];
 		yourself.
 		
 	deleteButton := self newButton

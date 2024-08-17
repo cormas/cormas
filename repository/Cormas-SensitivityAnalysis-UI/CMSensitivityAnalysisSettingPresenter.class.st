@@ -2,7 +2,8 @@ Class {
 	#name : 'CMSensitivityAnalysisSettingPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator'
+		'translator',
+		'generator'
 	],
 	#category : 'Cormas-SensitivityAnalysis-UI',
 	#package : 'Cormas-SensitivityAnalysis-UI'
@@ -18,4 +19,10 @@ CMSensitivityAnalysisSettingPresenter class >> nameForTranslator: aTranslator [
 CMSensitivityAnalysisSettingPresenter >> setModelBeforeInitialization: aTranslator [
 
 	translator := aTranslator
+]
+
+{ #category : 'accessing' }
+CMSensitivityAnalysisSettingPresenter >> values [
+
+	^ generator values
 ]

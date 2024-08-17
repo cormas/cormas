@@ -44,10 +44,47 @@ CMSensitivityAnalysisRangeSettingPresenter >> defaultLayout [
 ]
 
 { #category : 'initialization' }
+CMSensitivityAnalysisRangeSettingPresenter >> initialize [
+
+	super initialize.
+	generator := CMRangeValueGenerator new.
+]
+
+{ #category : 'initialization' }
 CMSensitivityAnalysisRangeSettingPresenter >> initializePresenters [ 
 
 	lowValueInput := self newNumberInput.
 	highValueInput := self newNumberInput.
-	stepInput := self newNumberInput.
-	numberOfValuesInput := self newNumberInput.
+	
+	stepInput := self newNumberInput
+		number: 1;
+		whenNumberChangedDo: [ :number |
+			number > 0 ifTrue: [
+				generator
+					from: lowValueInput number
+					to: highValueInput number
+					step: number.
+				
+				numberOfValuesInput number: generator numberOfValues ] ];
+		yourself.
+		
+	numberOfValuesInput := self newNumberInput
+		beInteger;
+		minimum: 1;
+		number: 1;
+		whenNumberChangedDo: [ :number |
+			number > 0 ifTrue: [
+				generator
+					from: lowValueInput number
+					to: highValueInput number
+					numberOfValues: number.
+				
+				stepInput number: generator step asFloat ] ];
+		yourself.
+]
+
+{ #category : 'accessing' }
+CMSensitivityAnalysisRangeSettingPresenter >> values [
+
+	^ generator generate
 ]

@@ -32,7 +32,29 @@ CMSensitivityAnalysisPredefinedListSettingPresenter >> defaultLayout [
 ]
 
 { #category : 'initialization' }
+CMSensitivityAnalysisPredefinedListSettingPresenter >> initialize [
+
+	super initialize.
+	generator := CMPredefinedListValueGeneratorTest new.
+]
+
+{ #category : 'initialization' }
 CMSensitivityAnalysisPredefinedListSettingPresenter >> initializePresenters [
 
-	textInput := self newTextInput.
+	textInput := self newTextInput
+		placeholder: '1, 2, 3, ...';
+		yourself.
+]
+
+{ #category : 'accessing' }
+CMSensitivityAnalysisPredefinedListSettingPresenter >> values [
+
+	| values |
+	textInput text ifEmpty: [ self inform: 'The list is empty!' ].
+	
+	[ values := (textInput text splitOn: $,) collect: #trimmed ] onErrorDo: [ 
+		self inform: 'Could not parse the input' ].
+	
+	[ values := values collect: #asNumber ] onErrorDo: [ "nothing" ].
+	^ values
 ]
