@@ -84,6 +84,12 @@ CMEnglishTranslator >> tInspector [
 ]
 
 { #category : 'translations' }
+CMEnglishTranslator >> tInteger [
+
+	^ 'Integer'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tMaximumValue [
 
 	^ 'Maximum value'

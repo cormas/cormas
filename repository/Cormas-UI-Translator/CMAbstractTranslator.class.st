@@ -92,6 +92,12 @@ CMAbstractTranslator >> tInspector [
 	self subclassResponsibility
 ]
 
+{ #category : 'as yet unclassified' }
+CMAbstractTranslator >> tInteger [
+
+	self subclassResponsibility
+]
+
 { #category : 'translations' }
 CMAbstractTranslator >> tMaximumValue [
 

@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'lowValueInput',
 		'highValueInput',
-		'numberOfValuesInput'
+		'numberOfValuesInput',
+		'integerCheckbox'
 	],
 	#category : 'Cormas-SensitivityAnalysis-UI',
 	#package : 'Cormas-SensitivityAnalysis-UI'
@@ -37,6 +38,7 @@ CMSensitivityAnalysisMonteCarloSettingPresenter >> defaultLayout [
 		add: highValueInput width: 60;
 		add: 'size' expand: false;
 		add: numberOfValuesInput width: 60;
+		add: integerCheckbox;
 		yourself.
 ]
 
@@ -48,6 +50,12 @@ CMSensitivityAnalysisMonteCarloSettingPresenter >> initializePresenters [
 	lowValueInput := self newNumberInput.
 	highValueInput := self newNumberInput.
 	numberOfValuesInput := self newNumberInput.
+	
+	integerCheckbox := self newCheckBox
+		label: translator tInteger asLowercase;
+		whenActivatedDo: [ generator beInteger ];
+		whenDeactivatedDo: [ generator beFloat ];
+		yourself.
 ]
 
 { #category : 'accessing' }

@@ -84,6 +84,12 @@ CMUkrainianTranslator >> tInspector [
 ]
 
 { #category : 'translations' }
+CMUkrainianTranslator >> tInteger [
+
+	^ 'Ціле число'
+]
+
+{ #category : 'translations' }
 CMUkrainianTranslator >> tMaximumValue [
 
 	^ 'Максимальне значення'
