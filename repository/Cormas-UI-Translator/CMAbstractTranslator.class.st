@@ -111,6 +111,12 @@ CMAbstractTranslator >> tMeasureOf [
 ]
 
 { #category : 'translations' }
+CMAbstractTranslator >> tMeasurementType [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
 CMAbstractTranslator >> tMinimumValue [
 
 	self subclassResponsibility
@@ -142,6 +148,12 @@ CMAbstractTranslator >> tParameters [
 
 { #category : 'translations' }
 CMAbstractTranslator >> tPredefinedList [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tProbe [
 
 	self subclassResponsibility
 ]
@@ -256,6 +268,12 @@ CMAbstractTranslator >> tStepButtonHelp [
 
 { #category : 'translations' }
 CMAbstractTranslator >> tStepButtonLabel [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tStrategy [
 
 	self subclassResponsibility
 ]

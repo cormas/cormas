@@ -47,13 +47,15 @@ CMSensitivityAnalysisProbeRowPresenter >> defaultLayout [
 { #category : 'initialization' }
 CMSensitivityAnalysisProbeRowPresenter >> initializePresenters [
 		
-	dataCollectorDropList := self newDropList
+	dataCollectorDropList := (self instantiate: CMDropListWithPlaceholderPresenter)
+		placeholder: translator tMeasurementType asLowercase respondingTo: #collectorNameFromTranslator:;
 		items: (CMDataCollector allSubclasses reject: #hasAbstractMethods);
 		display: [ :aClass |
 			aClass collectorNameFromTranslator: translator ];
 		yourself.
 		
-	probeDropList := self newDropList
+	probeDropList := (self instantiate: CMDropListWithPlaceholderPresenter)
+		placeholder: translator tProbe asLowercase respondingTo: #name;
 		items: simulation probes;
 		display: [ :each | each name ];
 		yourself.

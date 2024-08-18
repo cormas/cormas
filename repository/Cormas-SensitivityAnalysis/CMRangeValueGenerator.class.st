@@ -20,10 +20,36 @@ CMRangeValueGenerator >> generate [
 ]
 
 { #category : 'accessing' }
+CMRangeValueGenerator >> highValue: aNumber [
+
+	super highValue: aNumber.
+	
+	(step isNil or: [ step = 0 or: [ lowValue = aNumber ] ]) ifFalse: [ 
+		self inferNumberOfValues ].
+]
+
+{ #category : 'accessing' }
+CMRangeValueGenerator >> inferNumberOfValues [
+
+	numberOfValues := ((highValue - lowValue) / step) floor
+]
+
+{ #category : 'accessing' }
+CMRangeValueGenerator >> lowValue: aNumber [
+
+	super lowValue: aNumber.
+	
+	(step isNil or: [ step = 0 or: [ highValue = aNumber ] ]) ifFalse: [ 
+		self inferNumberOfValues ].
+]
+
+{ #category : 'accessing' }
 CMRangeValueGenerator >> numberOfValues: aNumber [
 
 	super numberOfValues: aNumber.
-	step := (highValue - lowValue) / numberOfValues.
+	
+	(numberOfValues isNil or: [ numberOfValues = 0 ]) ifFalse: [
+		step := (highValue - lowValue) / numberOfValues ].
 ]
 
 { #category : 'accessing' }
@@ -37,5 +63,6 @@ CMRangeValueGenerator >> step: aStep [
 
 	step := aStep.
 	
-	numberOfValues := ((highValue - lowValue) / step) floor.
+	(step isNil or: [ step = 0 ]) ifFalse: [ 
+		 self inferNumberOfValues ].
 ]

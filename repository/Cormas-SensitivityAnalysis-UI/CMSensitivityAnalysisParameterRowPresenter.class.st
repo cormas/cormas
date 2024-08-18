@@ -15,12 +15,6 @@ Class {
 	#package : 'Cormas-SensitivityAnalysis-UI'
 }
 
-{ #category : 'default values' }
-CMSensitivityAnalysisParameterRowPresenter class >> classDropListWidth [
-
-	^ 180
-]
-
 { #category : 'examples' }
 CMSensitivityAnalysisParameterRowPresenter class >> example [
 	<example>
@@ -38,27 +32,15 @@ CMSensitivityAnalysisParameterRowPresenter class >> forModel: aCormasModel trans
 	^ self on: { aCormasModel . aTranslator }
 ]
 
-{ #category : 'default values' }
-CMSensitivityAnalysisParameterRowPresenter class >> parameterDropListWidth [
-
-	^ 200
-]
-
-{ #category : 'default values' }
-CMSensitivityAnalysisParameterRowPresenter class >> strategyDropListWidth [
-
-	^ 150
-]
-
 { #category : 'layout' }
 CMSensitivityAnalysisParameterRowPresenter >> defaultLayout [
 
 	^ SpBoxLayout newLeftToRight
 		spacing: 5;
 		borderWidth: 2;
-		add: classDropList width: self class classDropListWidth;
-		add: parameterDropList width: self class parameterDropListWidth;
-		add: strategyDropList width: self class strategyDropListWidth;
+		add: classDropList width: 180;
+		add: parameterDropList width: 200;
+		add: strategyDropList width: 150;
 		add: settingsPresenter;
 		add: (SpBoxLayout newLeftToRight
 			spacing: 2;
@@ -71,23 +53,27 @@ CMSensitivityAnalysisParameterRowPresenter >> defaultLayout [
 { #category : 'initialization' }
 CMSensitivityAnalysisParameterRowPresenter >> initializePresenters [
 
-	| parameterClassNames |
+	| parameterClasses |
 	
-	parameterClassNames := (cormasModel parameters collect: [ :parameter |
-		parameter receiverClass name ]) asSet asOrderedCollection.
+	parameterClasses := (cormasModel parameters collect: [ :parameter |
+		parameter receiverClass ]) asSet asOrderedCollection.
 
-	classDropList := self newDropList
-		items: parameterClassNames;
-		whenSelectedItemChangedDo: [ :className |
+	classDropList := (self instantiate: CMDropListWithPlaceholderPresenter)
+		items: parameterClasses;
+		display: [ :aClass | aClass name ];
+		placeholder: translator tClass asLowercase respondingTo: #name;
+		whenSelectedItemChangedDo: [ :aClass |
 			parameterDropList items: (
-				cormasModel parameters select: [ :p | p receiverClass name = className ]) ]
+				cormasModel parameters select: [ :p | p receiverClass = aClass ]) ]
 		yourself.
 		
-	parameterDropList := self newDropList
+	parameterDropList := (self instantiate: CMDropListWithPlaceholderPresenter)
+		placeholder: translator tParameter asLowercase respondingTo: #name;
 		display: [ :parameter | parameter name ];
 		yourself.
 		
-	strategyDropList := self newDropList 
+	strategyDropList := (self instantiate: CMDropListWithPlaceholderPresenter)
+		placeholder: translator tStrategy asLowercase respondingTo: #nameForTranslator:;
 		display: [ :aClass | aClass nameForTranslator: translator ];
 		items: CMSensitivityAnalysisSettingPresenter allSubclasses;
 		whenSelectedItemChangedDo: [ :strategyClass |
@@ -95,7 +81,7 @@ CMSensitivityAnalysisParameterRowPresenter >> initializePresenters [
 		yourself.
 		
 	settingsPresenter := self newPresenterSelector
-		when: [ strategyDropList selectedItem isNotNil ]
+		when: [ strategyDropList isPlaceholderSelected not ]
 		show: [ self instantiate: strategyDropList selectedItem on: translator ];
 		defaultShow: [ self newLabel ];
 		yourself. 

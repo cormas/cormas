@@ -102,6 +102,12 @@ CMEnglishTranslator >> tMeasureOf [
 ]
 
 { #category : 'translations' }
+CMEnglishTranslator >> tMeasurementType [
+
+	^ 'Measurement type'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tMinimumValue [
 
 	^ 'Minimum value'
@@ -135,6 +141,12 @@ CMEnglishTranslator >> tParameters [
 CMEnglishTranslator >> tPredefinedList [
 
 	^ 'Predefined list'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tProbe [
+
+	^ 'Probe'
 ]
 
 { #category : 'translations' }
@@ -249,6 +261,12 @@ CMEnglishTranslator >> tStepButtonHelp [
 CMEnglishTranslator >> tStepButtonLabel [ 
 
 	^ 'Step'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tStrategy [
+
+	^ 'Strategy'
 ]
 
 { #category : 'translations' }

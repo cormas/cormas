@@ -102,6 +102,12 @@ CMUkrainianTranslator >> tMeasureOf [
 ]
 
 { #category : 'translations' }
+CMUkrainianTranslator >> tMeasurementType [
+
+	^ 'Тип вимірювання'
+]
+
+{ #category : 'translations' }
 CMUkrainianTranslator >> tMinimumValue [
 
 	^ 'Мінімальне значення'
@@ -135,6 +141,12 @@ CMUkrainianTranslator >> tParameters [
 CMUkrainianTranslator >> tPredefinedList [
 
 	^ 'Список'
+]
+
+{ #category : 'translations' }
+CMUkrainianTranslator >> tProbe [
+
+	^ 'Проба'
 ]
 
 { #category : 'translations' }
@@ -249,6 +261,12 @@ CMUkrainianTranslator >> tStepButtonHelp [
 CMUkrainianTranslator >> tStepButtonLabel [
 
 	^ 'Крок'
+]
+
+{ #category : 'translations' }
+CMUkrainianTranslator >> tStrategy [
+
+	^ 'Стратегія'
 ]
 
 { #category : 'translations' }

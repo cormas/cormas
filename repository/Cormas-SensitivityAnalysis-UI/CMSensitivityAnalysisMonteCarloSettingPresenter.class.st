@@ -41,14 +41,9 @@ CMSensitivityAnalysisMonteCarloSettingPresenter >> defaultLayout [
 ]
 
 { #category : 'initialization' }
-CMSensitivityAnalysisMonteCarloSettingPresenter >> initialize [
-
-	super initialize.
-	generator := CMMonteCarloValueGenerator new.
-]
-
-{ #category : 'initialization' }
 CMSensitivityAnalysisMonteCarloSettingPresenter >> initializePresenters [ 
+
+	generator := CMMonteCarloValueGenerator new.
 
 	lowValueInput := self newNumberInput.
 	highValueInput := self newNumberInput.

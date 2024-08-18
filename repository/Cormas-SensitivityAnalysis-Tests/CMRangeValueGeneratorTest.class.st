@@ -2,11 +2,7 @@ Class {
 	#name : 'CMRangeValueGeneratorTest',
 	#superclass : 'TestCase',
 	#instVars : [
-		'generator',
-		'lowValue',
-		'highValue',
-		'step',
-		'numberOfValues'
+		'generator'
 	],
 	#category : 'Cormas-SensitivityAnalysis-Tests',
 	#package : 'Cormas-SensitivityAnalysis-Tests'
@@ -17,11 +13,6 @@ CMRangeValueGeneratorTest >> setUp [
 
 	super setUp.
 	generator := CMRangeValueGenerator new.
-	
-	lowValue := 1.
-	highValue := 101.
-	step := 20.
-	numberOfValues := 5.
 ]
 
 { #category : 'tests' }
@@ -31,38 +22,16 @@ CMRangeValueGeneratorTest >> testDefaultLowValue [
 ]
 
 { #category : 'tests' }
-CMRangeValueGeneratorTest >> testFromToNumberOfValues [
-
-	generator
-		lowValue: lowValue;
-		highValue: highValue;
-		numberOfValues: numberOfValues.
-		
-	self assert: generator step equals: step 
-]
-
-{ #category : 'tests' }
-CMRangeValueGeneratorTest >> testFromToStep [
-
-	generator
-		lowValue: lowValue;
-		highValue: highValue;
-		step: step.
-		
-	self assert: generator numberOfValues equals: numberOfValues 
-]
-
-{ #category : 'tests' }
 CMRangeValueGeneratorTest >> testGenerate [
 
 	| expected |
 	
 	generator
-		lowValue: lowValue;
-		highValue: highValue;
-		step: step.
+		lowValue: 20;
+		highValue: 120;
+		step: 20.
 		
-	expected := #(1 21 41 61 81).
+	expected := #(20 40 60 80 100).
 	
 	self assert: generator generate equals: expected.
 ]
@@ -80,6 +49,50 @@ CMRangeValueGeneratorTest >> testGenerateFloats [
 	expected := #(0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9).
 	
 	self assert: generator generate closeTo: expected precision: 0.00000000001.
+]
+
+{ #category : 'tests' }
+CMRangeValueGeneratorTest >> testHighValueStepAndLowValueSetNumberOfValues [
+
+	generator
+		highValue: 130;
+		step: 20;
+		lowValue: 30.
+		
+	self assert: generator numberOfValues equals: 5 
+]
+
+{ #category : 'tests' }
+CMRangeValueGeneratorTest >> testLowValueHighValueAndNumberOfValuesSetStep [
+
+	generator
+		lowValue: 30;
+		highValue: 130;
+		numberOfValues: 5.
+		
+	self assert: generator step equals: 20 
+]
+
+{ #category : 'tests' }
+CMRangeValueGeneratorTest >> testLowValueHighValueAndStepSetNumberOfValues [
+
+	generator
+		lowValue: 30;
+		highValue: 130;
+		step: 20.
+		
+	self assert: generator numberOfValues equals: 5 
+]
+
+{ #category : 'tests' }
+CMRangeValueGeneratorTest >> testLowValueStepAndHighValueSetNumberOfValues [
+
+	generator
+		lowValue: 30;
+		step: 20;
+		highValue: 130.
+		
+	self assert: generator numberOfValues equals: 5 
 ]
 
 { #category : 'tests' }
