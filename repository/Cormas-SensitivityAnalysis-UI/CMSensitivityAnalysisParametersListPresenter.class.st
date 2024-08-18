@@ -40,7 +40,7 @@ CMSensitivityAnalysisParametersListPresenter >> defaultLayout [
 { #category : 'initialization' }
 CMSensitivityAnalysisParametersListPresenter >> initializePresenters [
 
-	| addButton |
+	| addButton inspectButton |
 	list := self newComponentList.
 	
 	addButton := self newToolbarButton
@@ -54,9 +54,31 @@ CMSensitivityAnalysisParametersListPresenter >> initializePresenters [
 					translator: translator) ];
 		yourself.
 		
+	inspectButton := self newToolbarButton
+		label: translator tInspector;
+		icon: (self iconNamed: #smallInspectIt);
+		action: [ self parameterValues inspect ];
+		yourself.
+		
 	toolbar := self newToolbar
 		add: addButton;
+		add: inspectButton;
 		yourself.
+]
+
+{ #category : 'accessing' }
+CMSensitivityAnalysisParametersListPresenter >> parameterValues [
+
+	| definedRows parameterValues |
+	definedRows := list items select: #isFullyDefined.
+	
+	parameterValues := Dictionary new.
+	
+	definedRows do: [ :row |
+		(parameterValues at: row parameter ifAbsentPut: OrderedCollection new)
+			addAll: row values ].
+		
+	^ parameterValues
 ]
 
 { #category : 'accessing - model' }

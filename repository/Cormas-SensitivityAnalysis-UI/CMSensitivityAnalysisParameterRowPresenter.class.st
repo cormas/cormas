@@ -97,9 +97,32 @@ CMSensitivityAnalysisParameterRowPresenter >> initializePresenters [
 		yourself.
 ]
 
+{ #category : 'testing' }
+CMSensitivityAnalysisParameterRowPresenter >> isFullyDefined [
+
+	[ self parameter ] onErrorDo: [ ^ false ].
+	[ self values ifEmpty: [ ^ false ] ] onErrorDo: [ ^ false ].
+
+	^ true
+]
+
+{ #category : 'accessing' }
+CMSensitivityAnalysisParameterRowPresenter >> parameter [
+
+	parameterDropList isPlaceholderSelected ifTrue: [ self error: 'Parameter was not selected' ].
+	^ parameterDropList selectedItem
+]
+
 { #category : 'accessing - model' }
 CMSensitivityAnalysisParameterRowPresenter >> setModelBeforeInitialization: aCollection [
 
 	cormasModel := aCollection first.
 	translator := aCollection second
+]
+
+{ #category : 'accessing' }
+CMSensitivityAnalysisParameterRowPresenter >> values [
+
+	strategyDropList isPlaceholderSelected ifTrue: [ self error: 'Values were not specified' ].
+	^ settingsPresenter showingPresenter values
 ]
