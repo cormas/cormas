@@ -8,19 +8,19 @@ Trait {
 	#tag : 'Traits'
 }
 
-{ #category : 'accessing' }
+{ #category : 'random' }
 TCMRandom >> random [
 
 	^ randomNumberGenerator next
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'random' }
 TCMRandom >> randomBetween: lowerBound and: higherBound [
 	"Answer a random float number from the range [lowerBound, higherBound)"
 	^ lowerBound + (self random * (higherBound - lowerBound))
 ]
 
-{ #category : 'star pov' }
+{ #category : 'random' }
 TCMRandom >> randomColor [
 
 	^ Color
@@ -41,19 +41,19 @@ TCMRandom >> randomNumberGenerator: aGenerator [
 	randomNumberGenerator := aGenerator
 ]
 
-{ #category : 'utilities - random' }
+{ #category : 'accessing' }
 TCMRandom >> randomSeed: aNumber [
 
 	randomNumberGenerator seed: aNumber
 ]
 
-{ #category : 'utilities - random' }
+{ #category : 'random' }
 TCMRandom >> selectRandomlyFrom: aCollection [
 
 	^ aCollection atRandom: randomNumberGenerator
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'random' }
 TCMRandom >> selectRandomlyFrom: aCollection size: anInteger [
 	"Returns a subcollection randomly built from a collection (an item may be selected only once). If the collection is empty, or if the collection size is lower than the subcollection size, its returns aCollection randomly mixed."
 	
@@ -65,7 +65,7 @@ TCMRandom >> selectRandomlyFrom: aCollection size: anInteger [
 	^ randomCollection copyFrom: 1 to: anInteger
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'random' }
 TCMRandom >> shuffled: aCollection [
 
 	^ aCollection asOrderedCollection shuffledBy: randomNumberGenerator

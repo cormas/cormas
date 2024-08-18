@@ -25,16 +25,30 @@ CMRangeValueGeneratorTest >> setUp [
 ]
 
 { #category : 'tests' }
+CMRangeValueGeneratorTest >> testDefaultLowValue [
+
+	self assert: generator lowValue equals: 0
+]
+
+{ #category : 'tests' }
 CMRangeValueGeneratorTest >> testFromToNumberOfValues [
 
-	generator from: lowValue to: highValue numberOfValues: numberOfValues.
+	generator
+		lowValue: lowValue;
+		highValue: highValue;
+		numberOfValues: numberOfValues.
+		
 	self assert: generator step equals: step 
 ]
 
 { #category : 'tests' }
 CMRangeValueGeneratorTest >> testFromToStep [
 
-	generator from: lowValue to: highValue step: step.
+	generator
+		lowValue: lowValue;
+		highValue: highValue;
+		step: step.
+		
 	self assert: generator numberOfValues equals: numberOfValues 
 ]
 
@@ -42,7 +56,12 @@ CMRangeValueGeneratorTest >> testFromToStep [
 CMRangeValueGeneratorTest >> testGenerate [
 
 	| expected |
-	generator from: lowValue to: highValue step: step.
+	
+	generator
+		lowValue: lowValue;
+		highValue: highValue;
+		step: step.
+		
 	expected := #(1 21 41 61 81).
 	
 	self assert: generator generate equals: expected.
@@ -52,8 +71,20 @@ CMRangeValueGeneratorTest >> testGenerate [
 CMRangeValueGeneratorTest >> testGenerateFloats [
 
 	| expected |
-	generator from: 0 to: 1 step: 0.1.
+	
+	generator
+		lowValue: 0;
+		highValue: 1;
+		step: 0.1.
+	
 	expected := #(0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9).
 	
 	self assert: generator generate closeTo: expected precision: 0.00000000001.
+]
+
+{ #category : 'tests' }
+CMRangeValueGeneratorTest >> testRejectsInvalidNumberOfValues [
+
+	self should: [ generator numberOfValues: -1 ] raise: Error.
+	self should: [ generator numberOfValues: 0.5 ] raise: Error.
 ]

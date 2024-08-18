@@ -20,9 +20,3 @@ CMSensitivityAnalysisSettingPresenter >> setModelBeforeInitialization: aTranslat
 
 	translator := aTranslator
 ]
-
-{ #category : 'accessing' }
-CMSensitivityAnalysisSettingPresenter >> values [
-
-	^ generator values
-]

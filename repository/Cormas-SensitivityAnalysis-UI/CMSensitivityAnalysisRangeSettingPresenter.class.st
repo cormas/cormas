@@ -61,8 +61,8 @@ CMSensitivityAnalysisRangeSettingPresenter >> initializePresenters [
 		whenNumberChangedDo: [ :number |
 			number > 0 ifTrue: [
 				generator
-					from: lowValueInput number
-					to: highValueInput number
+					lowValue: lowValueInput number;
+					highValue: highValueInput number;
 					step: number.
 				
 				numberOfValuesInput number: generator numberOfValues ] ];
@@ -75,8 +75,8 @@ CMSensitivityAnalysisRangeSettingPresenter >> initializePresenters [
 		whenNumberChangedDo: [ :number |
 			number > 0 ifTrue: [
 				generator
-					from: lowValueInput number
-					to: highValueInput number
+					lowValue: lowValueInput number;
+					highValue: highValueInput number;
 					numberOfValues: number.
 				
 				stepInput number: generator step asFloat ] ];

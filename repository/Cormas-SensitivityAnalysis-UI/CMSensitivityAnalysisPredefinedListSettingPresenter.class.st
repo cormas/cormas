@@ -32,13 +32,6 @@ CMSensitivityAnalysisPredefinedListSettingPresenter >> defaultLayout [
 ]
 
 { #category : 'initialization' }
-CMSensitivityAnalysisPredefinedListSettingPresenter >> initialize [
-
-	super initialize.
-	generator := CMPredefinedListValueGeneratorTest new.
-]
-
-{ #category : 'initialization' }
 CMSensitivityAnalysisPredefinedListSettingPresenter >> initializePresenters [
 
 	textInput := self newTextInput

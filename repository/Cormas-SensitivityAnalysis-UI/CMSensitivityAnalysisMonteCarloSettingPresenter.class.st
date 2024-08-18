@@ -59,8 +59,8 @@ CMSensitivityAnalysisMonteCarloSettingPresenter >> initializePresenters [
 CMSensitivityAnalysisMonteCarloSettingPresenter >> values [
 
 	generator
-		from: lowValueInput number
-		to: highValueInput number
+		lowValue: lowValueInput number;
+		highValue: highValueInput number;
 		numberOfValues: numberOfValuesInput number.
 		
 	^ generator generate

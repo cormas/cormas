@@ -15,7 +15,10 @@ CMMonteCarloValueGeneratorTest >> setUp [
 	generator := CMMonteCarloValueGenerator new.
 	generator randomSeed: 42.
 	
-	generator from: 10 to: 50 numberOfValues: 10.
+	generator
+		lowValue: 10;
+		highValue: 50;
+		numberOfValues: 10.
 ]
 
 { #category : 'tests' }
@@ -42,4 +45,11 @@ CMMonteCarloValueGeneratorTest >> testGenerate [
 CMMonteCarloValueGeneratorTest >> testNumberOfValues [
 
 	self assert: generator numberOfValues equals: 10 
+]
+
+{ #category : 'accessing' }
+CMMonteCarloValueGeneratorTest >> testRejectsInvalidNumberOfValues [
+
+	self should: [ generator numberOfValues: -1 ] raise: Error.
+	self should: [ generator numberOfValues: 0.5 ] raise: Error.
 ]
