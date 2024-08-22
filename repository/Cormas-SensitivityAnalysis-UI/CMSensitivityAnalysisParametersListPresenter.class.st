@@ -37,6 +37,14 @@ CMSensitivityAnalysisParametersListPresenter >> defaultLayout [
 		yourself
 ]
 
+{ #category : 'accessing' }
+CMSensitivityAnalysisParametersListPresenter >> enabled: aBoolean [
+
+	super enabled: aBoolean.
+	list items do: [ :each | each enabled: aBoolean ].
+	toolbar items do: [ :each | each enabled: aBoolean ].
+]
+
 { #category : 'initialization' }
 CMSensitivityAnalysisParametersListPresenter >> initializePresenters [
 

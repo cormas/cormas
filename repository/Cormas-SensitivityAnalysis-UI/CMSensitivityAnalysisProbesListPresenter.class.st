@@ -36,6 +36,14 @@ CMSensitivityAnalysisProbesListPresenter >> defaultLayout [
 		yourself
 ]
 
+{ #category : 'accessing' }
+CMSensitivityAnalysisProbesListPresenter >> enabled: aBoolean [
+
+	super enabled: aBoolean.
+	probesList items do: [ :each | each enabled: aBoolean ].
+	toolbar items do: [ :each | each enabled: aBoolean ]
+]
+
 { #category : 'initialization' }
 CMSensitivityAnalysisProbesListPresenter >> initializePresenters [
 
