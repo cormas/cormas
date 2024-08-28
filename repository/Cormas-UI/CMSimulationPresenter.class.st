@@ -171,7 +171,7 @@ CMSimulationPresenter >> initializeNotebookPages [
 		
 	notebook addPage: (SpNotebookPage
 		title: translator tCharts
-		icon: (self iconNamed: #references)
+		icon: CMIcons chartIcon
 		provider: [ self newTable ]).
 		
 	notebook addPage: (SpNotebookPage
