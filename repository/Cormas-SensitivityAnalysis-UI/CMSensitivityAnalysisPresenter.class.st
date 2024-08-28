@@ -2,7 +2,7 @@ Class {
 	#name : 'CMSensitivityAnalysisPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'simulation',
+		'sensitivityAnalysis',
 		'translator',
 		'fixRandomSeedCheckbox',
 		'randomSeedInput',
@@ -23,16 +23,13 @@ Class {
 CMSensitivityAnalysisPresenter class >> example [
 	<example>
 	
-	| model |
-	model := CMMockModel new.
-	
-	(self forModel: model translator: CMEnglishTranslator new) open.
+	(self forModelClass: CMMockModel translator: CMUkrainianTranslator new) open.
 ]
 
 { #category : 'as yet unclassified' }
-CMSensitivityAnalysisPresenter class >> forModel: aCormasModel translator: aTranslator [
+CMSensitivityAnalysisPresenter class >> forModelClass: aClass translator: aTranslator [
 
-	^ self on: { aCormasModel . aTranslator }
+	^ self on: { aClass . aTranslator }
 ]
 
 { #category : 'layout' }
@@ -121,23 +118,31 @@ CMSensitivityAnalysisPresenter >> initializePresenters [
 		
 	self disableRandomSeedPresenters.
 	
-	initMethodDropList := self newDropList
-		items: simulation availableInitMethods;
+	initMethodDropList := (self instantiate: CMDropListWithPlaceholderPresenter)
+		items: sensitivityAnalysis modelClass availableInitMethods;
 		display: [ :method | method selector ];
-		whenSelectedItemChangedDo: [ :method | simulation activeInitMethod: method ];
+		placeholder: translator tInitMethod asLowercase respondingTo: #selector;
+		whenSelectedItemChangedDo: [ :method |
+			sensitivityAnalysis activeInitMethod: (initMethodDropList isPlaceholderSelected
+				ifTrue: [ nil ]
+				ifFalse: [ method ]) ];
 		yourself.
 		
-	controlMethodDropList := self newDropList
-		items: simulation availableControlMethods;
+	controlMethodDropList := (self instantiate: CMDropListWithPlaceholderPresenter) 
+		items: sensitivityAnalysis modelClass availableControlMethods;
 		display: [ :method | method selector ];
-		whenSelectedItemChangedDo: [ :method | simulation activeControlMethod: method ];
+		placeholder: translator tControlMethod asLowercase respondingTo: #selector;
+		whenSelectedItemChangedDo: [ :method | 
+			sensitivityAnalysis activeControlMethod: (controlMethodDropList isPlaceholderSelected
+				ifTrue: [ nil ]
+				ifFalse: [ method ]) ];
 		yourself.
 		
 	finalStepInput := self newNumberInput
 		beInteger;
 		climbRate: 50;
 		minimum: 0;
-		number: simulation finalTimeStep;
+		number: CMSimulation defaultFinalTimeStep;
 		yourself.
 
 	numberOfRepetitionsInput := self newNumberInput
@@ -148,14 +153,15 @@ CMSensitivityAnalysisPresenter >> initializePresenters [
 
 	probesList := self
 		instantiate: CMSensitivityAnalysisProbesListPresenter
-		on: { simulation . translator }.
+		on: { sensitivityAnalysis modelClass availableProbes . translator }.
 		
 	parametersTable := self
 		instantiate: CMSensitivityAnalysisParametersListPresenter
-		on: { simulation cormasModel . translator }.
+		on: { sensitivityAnalysis modelClass parameters . translator }.
 		
 	runButton := self newButton
 		label: translator tRun;
+		action: [ self openRunner ];
 		yourself.
 
 ]
@@ -170,11 +176,26 @@ CMSensitivityAnalysisPresenter >> initializeWindow: aWindowPresenter [
 		initialExtent: 1020@600.
 ]
 
+{ #category : 'as yet unclassified' }
+CMSensitivityAnalysisPresenter >> openRunner [
+
+	sensitivityAnalysis clearSimulations.
+			
+	parametersTable parameterValues keysAndValuesDo: [ :parameter :values |
+		values do: [ :value |
+			sensitivityAnalysis addSimulationForParameter: parameter value: value ] ].
+			
+	(self
+		instantiate: CMSensitivityAnalysisDataPresenter
+		on: { sensitivityAnalysis . translator })
+		open.
+]
+
 { #category : 'accessing - model' }
 CMSensitivityAnalysisPresenter >> setModelBeforeInitialization: aCollection [
 
-	| cormasModel |
-	cormasModel := aCollection first.
-	simulation := CMSimulation for: cormasModel.
+	| modelClass |
+	modelClass := aCollection first.
+	sensitivityAnalysis := CMSensitivityAnalysis for: modelClass.
 	translator := aCollection second
 ]

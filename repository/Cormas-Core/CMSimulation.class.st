@@ -2,13 +2,16 @@ Class {
 	#name : 'CMSimulation',
 	#superclass : 'Object',
 	#instVars : [
+		'modelClass',
 		'cormasModel',
+		'randomSeed',
 		'currentTimeStep',
 		'data',
 		'finalTimeStep',
 		'activeInitMethod',
 		'activeControlMethod',
-		'probes'
+		'probes',
+		'initialParameterValues'
 	],
 	#category : 'Cormas-Core-Kernel',
 	#package : 'Cormas-Core',
@@ -23,10 +26,10 @@ CMSimulation class >> defaultFinalTimeStep [
 ]
 
 { #category : 'instance creation' }
-CMSimulation class >> for: aModel [
+CMSimulation class >> for: aModelClass [
 
 	^ self new
-		cormasModel: aModel;
+		modelClass: aModelClass;
 		yourself
 ]
 
@@ -48,29 +51,10 @@ CMSimulation >> activeProbes [
 	^ probes select: [ :probe | probe isActive ]
 ]
 
-{ #category : 'available methods' }
-CMSimulation >> availableControlMethods [
-
-	^ (Pragma allNamed: #control in: cormasModel class) collect: #method
-]
-
-{ #category : 'available methods' }
-CMSimulation >> availableInitMethods [
-
-	^ (Pragma allNamed: #init in: cormasModel class) collect: #method
-]
-
 { #category : 'accessing' }
 CMSimulation >> cormasModel [
 	
 	^ cormasModel
-]
-
-{ #category : 'accessing' }
-CMSimulation >> cormasModel: anObject [
-	
-	cormasModel := anObject.
-	self initializeModel.
 ]
 
 { #category : 'accessing' }
@@ -110,21 +94,35 @@ CMSimulation >> hasEnded [
 	^ self finalTimeStep <= self currentTimeStep
 ]
 
+{ #category : 'accessing' }
+CMSimulation >> initialParameterValues [
+
+	^ initialParameterValues
+]
+
 { #category : 'initialization' }
 CMSimulation >> initialize [
 
 	super initialize.
+	
+	"By default random seed is a random number but we still store it to ensure reproducibility"
+	randomSeed := Random new nextInteger: SmallInteger maxVal.
 	
 	currentTimeStep := 0.
 	finalTimeStep := self class defaultFinalTimeStep.
 	
 	probes := OrderedCollection new.
 	data := OrderedCollection new.
+	initialParameterValues := Dictionary new.
 ]
 
 { #category : 'initialization' }
 CMSimulation >> initializeModel [
 
+	cormasModel := modelClass new
+		randomSeed: randomSeed;
+		yourself.
+		
 	self initializeProbes.
 
 	"remove the previous entities of the collections (theXXXs), except for theCells"
@@ -138,24 +136,39 @@ CMSimulation >> initializeModel [
 { #category : 'initialization' }
 CMSimulation >> initializeProbes [
 
-	probes := (Pragma allNamed: #probeNamed: in: cormasModel class) collect: [ :pragma |
-		CMProbe
-			name: pragma arguments first
-			method: pragma method
-			on: cormasModel ].
+	probes := cormasModel class availableProbes.
+	probes do: [ :probe | probe object: cormasModel ].
 ]
 
 { #category : 'initialization' }
 CMSimulation >> initializeSimulation [
 
+	self initializeModel.
+
+	initialParameterValues keysAndValuesDo: [ :parameter :value |
+		parameter value: value ].
+	
 	activeInitMethod valueWithReceiver: cormasModel.
 	self recordData.
+]
+
+{ #category : 'accessing' }
+CMSimulation >> modelClass: aClass [
+	"Model will be instantiated by the initializeSimulation method"
+	
+	modelClass := aClass
 ]
 
 { #category : 'accessing' }
 CMSimulation >> probes [
 
 	^ probes
+]
+
+{ #category : 'accessing' }
+CMSimulation >> randomSeed: aNumber [
+
+	randomSeed := aNumber
 ]
 
 { #category : 'data' }

@@ -114,6 +114,28 @@ CMAbstractModel class >> allEntityClasses [
 		removeAllSuchThat: [ :class | (class inheritsFrom: CMEntity) not ]
 ]
 
+{ #category : 'available methods' }
+CMAbstractModel class >> availableControlMethods [
+
+	^ (Pragma allNamed: #control in: self) collect: #method
+]
+
+{ #category : 'available methods' }
+CMAbstractModel class >> availableInitMethods [
+
+	^ (Pragma allNamed: #init in: self) collect: #method
+]
+
+{ #category : 'available probes' }
+CMAbstractModel class >> availableProbes [
+
+	^ (Pragma allNamed: #probeNamed: in: self) collect: [ :pragma |
+		CMProbe new
+			name: pragma arguments first;
+			method: pragma method;
+			yourself ].
+]
+
 { #category : 'managing classes' }
 CMAbstractModel class >> cellClass [
 	^ cellClass
@@ -206,6 +228,24 @@ CMAbstractModel class >> occupantClasses [
 	"return a collection of classes for which intances are located on the grid"
 	
 	^self allEntityClasses select: [:cl | cl isSituatedClass]
+]
+
+{ #category : 'accessing' }
+CMAbstractModel class >> parameters [
+	"Find all class side variables that have getter and setter accessors in model and all entity classes"
+	| classes |
+	
+	classes := self allEntityClasses asOrderedCollection.
+	classes add: self.
+
+	^ classes flatCollect: [ :aClass |
+		aClass class slots flatCollect: [ :slot |
+			((aClass respondsTo: slot name) and: [ aClass respondsTo: slot name, ':' ]) ifTrue: [
+				aClass withAllSubclasses collect: [ :receiverClass |
+					CMParameter
+						getterMethod: aClass class >> slot name
+						setterMethod: aClass class >> (slot name, ':')
+						receiverClass: receiverClass ] ] ] ]
 ]
 
 { #category : 'managing classes' }
@@ -929,24 +969,6 @@ CMAbstractModel >> newEntity: aClass [
 	
 	self collectEntity: anEntity.
 	^ anEntity
-]
-
-{ #category : 'parameters' }
-CMAbstractModel >> parameters [
-	"Find all class side variables that have getter and setter accessors in model and all entity classes"
-	| classes |
-	
-	classes := self class allEntityClasses asOrderedCollection.
-	classes add: self class.
-
-	^ classes flatCollect: [ :aClass |
-		aClass class slots flatCollect: [ :slot |
-			((aClass respondsTo: slot name) and: [ aClass respondsTo: slot name, ':' ]) ifTrue: [
-				aClass withAllSubclasses collect: [ :receiverClass |
-					CMParameter
-						getterMethod: aClass class >> slot name
-						setterMethod: aClass class >> (slot name, ':')
-						receiverClass: receiverClass ] ] ] ]
 ]
 
 { #category : 'utilities - space metrics' }

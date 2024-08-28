@@ -15,12 +15,11 @@ Class {
 CMParametersEditorPresenter class >> example [
 	<example>
 	
-	| model translator |
-	model := CMMockModel new.
+	| translator |
 	translator := CMEnglishTranslator new.
 	
 	(self
-		forParameters: model parameters
+		forParameters: CMMockModel parameters
 		translator: translator)
 		open
 ]

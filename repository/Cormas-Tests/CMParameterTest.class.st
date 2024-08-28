@@ -11,11 +11,8 @@ Class {
 { #category : 'running' }
 CMParameterTest >> setUp [
 
-	| model |
 	super setUp.
-	
-	model := CMMockModel new.
-	parameters := model parameters.
+	parameters := CMMockModel parameters.
 ]
 
 { #category : 'tests' }

@@ -6,8 +6,8 @@ Class {
 		'sensitivityAnalysis',
 		'progressBar',
 		'runButton',
-		'simulationsTable',
-		'dataNotebook'
+		'dataNotebook',
+		'simulationsList'
 	],
 	#category : 'Cormas-SensitivityAnalysis-UI',
 	#package : 'Cormas-SensitivityAnalysis-UI'
@@ -19,7 +19,15 @@ CMSensitivityAnalysisDataPresenter class >> example [
 	
 	| sensitivityAnalysis translator |
 	
-	sensitivityAnalysis := CMSensitivityAnalysis new.
+	sensitivityAnalysis := (CMSensitivityAnalysis for: CMMockModel)
+		activeInitMethod: (CMMockModel >> #initFixed);
+		activeControlMethod: (CMMockModel >> #step:);
+		yourself.
+	
+	CMMockModel parameters do: [ :parameter |
+		1 to: 5 do: [ :value | 
+			sensitivityAnalysis addSimulationForParameter: parameter value: value ] ].
+	
 	translator := CMEnglishTranslator new.
 	
 	^ (self forAnalysis: sensitivityAnalysis translator: translator) open
@@ -39,7 +47,7 @@ CMSensitivityAnalysisDataPresenter >> defaultLayout [
 		add: (SpBoxLayout newTopToBottom
 			spacing: 2;
 			add: 'Simulations' height: self class labelHeight;
-			add: simulationsTable;
+			add: simulationsList;
 			yourself);
 		add: (SpBoxLayout newLeftToRight
 			spacing: 20;
@@ -65,7 +73,13 @@ CMSensitivityAnalysisDataPresenter >> initializePresenters [
 		
 	progressBar := self newProgressBar.
 	
-	simulationsTable := self newTable.
+	simulationsList := self newComponentList
+		items: (sensitivityAnalysis simulations collect: [ :simulation |
+			self
+				instantiate: CMSensitivityAnalysisSimulationRowPresenter
+				on: { simulation . translator } ]);
+		yourself.
+	
 	dataNotebook := self newNotebook.
 	
 	dataNotebook addPage: (SpNotebookPage

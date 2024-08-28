@@ -11,14 +11,10 @@ Class {
 { #category : 'running' }
 CMSimulationTest >> setUp [
 
-	| model |
 	super setUp.
 	
-	model := CMMockModel new
+	simulation := (CMSimulation for: CMMockModel)
 		randomSeed: 42;
-		yourself.
-	
-	simulation := (CMSimulation for: model)
 		activeInitMethod: (CMMockModel >> #initFixed);
 		activeControlMethod: (CMMockModel >> #step:);
 		initializeSimulation;

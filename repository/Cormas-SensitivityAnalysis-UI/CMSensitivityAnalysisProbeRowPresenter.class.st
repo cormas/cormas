@@ -2,7 +2,7 @@ Class {
 	#name : 'CMSensitivityAnalysisProbeRowPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'simulation',
+		'availableProbes',
 		'translator',
 		'dataCollectorDropList',
 		'probeDropList',
@@ -15,18 +15,16 @@ Class {
 { #category : 'examples' }
 CMSensitivityAnalysisProbeRowPresenter class >> example [
 	<example>
-	| model simulation |
 	
-	model := CMMockModel new.
-	simulation := CMSimulation for: model.
-	
-	(self forSimulation: simulation translator: CMEnglishTranslator new) open.
+	(self
+		forAvailableProbes: CMMockModel availableProbes
+		translator: CMEnglishTranslator new) open.
 ]
 
 { #category : 'as yet unclassified' }
-CMSensitivityAnalysisProbeRowPresenter class >> forSimulation: aSimulation translator: aTranslator [
+CMSensitivityAnalysisProbeRowPresenter class >> forAvailableProbes: aCollectionOfProbes translator: aTranslator [
 	
-	^ self on: { aSimulation . aTranslator }
+	^ self on: { aCollectionOfProbes . aTranslator }
 ]
 
 { #category : 'layout' }
@@ -56,7 +54,7 @@ CMSensitivityAnalysisProbeRowPresenter >> initializePresenters [
 		
 	probeDropList := (self instantiate: CMDropListWithPlaceholderPresenter)
 		placeholder: translator tProbe asLowercase respondingTo: #name;
-		items: simulation probes;
+		items: availableProbes;
 		display: [ :each | each name ];
 		yourself.
 		
@@ -69,6 +67,6 @@ CMSensitivityAnalysisProbeRowPresenter >> initializePresenters [
 { #category : 'accessing - model' }
 CMSensitivityAnalysisProbeRowPresenter >> setModelBeforeInitialization: aCollection [
 
-	simulation := aCollection first.
+	availableProbes := aCollection first.
 	translator :=  aCollection second
 ]

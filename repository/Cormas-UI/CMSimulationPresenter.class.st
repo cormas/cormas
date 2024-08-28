@@ -24,15 +24,12 @@ Class {
 { #category : 'examples' }
 CMSimulationPresenter class >> example [
 	<example>
-	| model simulation translator |
-	
-	model := CMMockModel new
-		randomSeed: 41;
-		yourself.
+	| simulation translator |
 
-	simulation := (CMSimulation for: model)
-		activeInitMethod: (model class >> #initFixed);
-		activeControlMethod: (model class >> #step:);
+	simulation := (CMSimulation for: CMMockModel)
+		randomSeed: 41;
+		activeInitMethod: (CMMockModel >> #initFixed);
+		activeControlMethod: (CMMockModel >> #step:);
 		initializeSimulation;
 		yourself.
 
@@ -192,7 +189,7 @@ CMSimulationPresenter >> initializeNotebookPages [
 CMSimulationPresenter >> initializeParametersTable [
 	
 	parametersTable := CMParametersEditorPresenter
-		forParameters: simulation cormasModel parameters
+		forParameters: simulation cormasModel class parameters
 		translator: translator
 ]
 

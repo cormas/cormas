@@ -2,7 +2,7 @@ Class {
 	#name : 'CMSensitivityAnalysisParameterRowPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'cormasModel',
+		'availableParameters',
 		'translator',
 		'classDropList',
 		'parameterDropList',
@@ -18,18 +18,16 @@ Class {
 { #category : 'examples' }
 CMSensitivityAnalysisParameterRowPresenter class >> example [
 	<example>
-	| model translator |
 	
-	model := CMMockModel new.
-	translator := CMEnglishTranslator new.
-	
-	(self forModel: model translator: translator) open
+	(self
+		forParameters: CMMockModel parameters
+		translator: CMEnglishTranslator new) open
 ]
 
 { #category : 'instance creation' }
-CMSensitivityAnalysisParameterRowPresenter class >> forModel: aCormasModel translator: aTranslator [
+CMSensitivityAnalysisParameterRowPresenter class >> forParameters: aCollectionOfParameters translator: aTranslator [
 
-	^ self on: { aCormasModel . aTranslator }
+	^ self on: { aCollectionOfParameters . aTranslator }
 ]
 
 { #category : 'layout' }
@@ -55,7 +53,7 @@ CMSensitivityAnalysisParameterRowPresenter >> initializePresenters [
 
 	| parameterClasses |
 	
-	parameterClasses := (cormasModel parameters collect: [ :parameter |
+	parameterClasses := (availableParameters collect: [ :parameter |
 		parameter receiverClass ]) asSet asOrderedCollection.
 
 	classDropList := (self instantiate: CMDropListWithPlaceholderPresenter)
@@ -64,7 +62,7 @@ CMSensitivityAnalysisParameterRowPresenter >> initializePresenters [
 		placeholder: translator tClass asLowercase respondingTo: #name;
 		whenSelectedItemChangedDo: [ :aClass |
 			parameterDropList items: (
-				cormasModel parameters select: [ :p | p receiverClass = aClass ]) ]
+				availableParameters select: [ :p | p receiverClass = aClass ]) ]
 		yourself.
 		
 	parameterDropList := (self instantiate: CMDropListWithPlaceholderPresenter)
@@ -116,7 +114,7 @@ CMSensitivityAnalysisParameterRowPresenter >> parameter [
 { #category : 'accessing - model' }
 CMSensitivityAnalysisParameterRowPresenter >> setModelBeforeInitialization: aCollection [
 
-	cormasModel := aCollection first.
+	availableParameters := aCollection first.
 	translator := aCollection second
 ]
 

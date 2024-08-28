@@ -2,7 +2,7 @@ Class {
 	#name : 'CMSensitivityAnalysisParametersListPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'cormasModel',
+		'availableParameters',
 		'translator',
 		'list',
 		'toolbar'
@@ -14,18 +14,16 @@ Class {
 { #category : 'examples' }
 CMSensitivityAnalysisParametersListPresenter class >> example [
 	<example>
-	| model translator |
 	
-	model := CMMockModel new.
-	translator := CMEnglishTranslator new.
-	
-	(self forModel: model translator: translator) open
+	(self
+		forParameters: CMMockModel parameters
+		translator: CMEnglishTranslator new) open
 ]
 
 { #category : 'as yet unclassified' }
-CMSensitivityAnalysisParametersListPresenter class >> forModel: aCormasModel translator: aTranslator [
+CMSensitivityAnalysisParametersListPresenter class >> forParameters: aCollectionOfParameters translator: aTranslator [
 
-	^ self on: { aCormasModel . aTranslator }
+	^ self on: { aCollectionOfParameters . aTranslator }
 ]
 
 { #category : 'layout' }
@@ -58,7 +56,7 @@ CMSensitivityAnalysisParametersListPresenter >> initializePresenters [
 		action: [
 			list addPresenter: (
 				CMSensitivityAnalysisParameterRowPresenter
-					forModel: cormasModel
+					forParameters: availableParameters
 					translator: translator) ];
 		yourself.
 		
@@ -92,6 +90,6 @@ CMSensitivityAnalysisParametersListPresenter >> parameterValues [
 { #category : 'accessing - model' }
 CMSensitivityAnalysisParametersListPresenter >> setModelBeforeInitialization: aCollection [
 
-	cormasModel := aCollection first.
+	availableParameters := aCollection first.
 	translator := aCollection second
 ]
