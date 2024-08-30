@@ -24,6 +24,39 @@ CMSimulationPresenter class >> forModelClass: aClass translator: aTranslator [
 	^ self on: { aClass . aTranslator }
 ]
 
+{ #category : 'as yet unclassified' }
+CMSimulationPresenter >> confirmReinitialize [
+
+	SpConfirmDialog new
+		  title: 'Warning!';
+		  label: (String streamContents: [ :stream |
+				stream 
+					nextPutAll: 'Are you sure you want to reinitialize the simulation?';
+					cr;
+					nextPutAll: 'Current simulation data will be lost' ]);
+		  acceptLabel: 'Yes';
+		  cancelLabel: 'No';
+		  onAccept: [ self initializeSimulation ];
+		  onCancel: [ "do nothing" ];
+		  openModal
+]
+
+{ #category : 'initialization' }
+CMSimulationPresenter >> connectPresenters [
+
+	initializeButton action: [
+		simulationRunner hasSimulationData
+			ifFalse: [ self initializeSimulation ]
+			ifTrue: [ self confirmReinitialize ].
+			
+		self updateInitializeButton ].
+	
+	modelInitializationSettings whenChangedDo: [
+		modelInitializationSettings isDefined
+			ifTrue: [ initializeButton enable ]
+			ifFalse: [ initializeButton disable ] ].
+]
+
 { #category : 'layout' }
 CMSimulationPresenter >> defaultLayout [
 
@@ -48,14 +81,14 @@ CMSimulationPresenter >> initializePresenters [
 	modelInitializationSettings modelClass: modelClass.
 	
 	initializeButton := self newButton
-		label: 'Initialize simulation';
-		icon: (self iconNamed: #smallNew);
-		action: [ self initializeSimulation ];
+		disable;
 		yourself.
 		
 	simulationRunner := self
 		instantiate: CMSimulationRunnerPresenter
 		on: translator.
+		
+	self updateInitializeButton.
 ]
 
 { #category : 'initialization' }
@@ -75,7 +108,7 @@ CMSimulationPresenter >> initializeWindow: aWindowPresenter [
 	
 	aWindowPresenter 
 		title: 'Simulation';
-		initialExtent: 800@500;
+		initialExtent: 1000@600;
 		whenResizingDo: [ simulationRunner fitDiagram ].
 ]
 
@@ -84,4 +117,18 @@ CMSimulationPresenter >> setModelBeforeInitialization: aCollection [
 
 	modelClass := aCollection first.
 	translator := aCollection second
+]
+
+{ #category : 'as yet unclassified' }
+CMSimulationPresenter >> updateInitializeButton [
+
+	simulationRunner hasSimulation
+		ifTrue: [
+			initializeButton
+				label: 'Reinitialize simulation';
+				icon: (self iconNamed: #glamorousRestart) ]
+		ifFalse: [ 
+			initializeButton
+				label: 'Initialize simulation';
+				icon: (self iconNamed: #smallNew) ]
 ]

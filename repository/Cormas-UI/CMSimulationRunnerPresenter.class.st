@@ -94,11 +94,7 @@ CMSimulationRunnerPresenter >> defaultLayout [
 				add: translator tRun height: row1Height;
 				add: runButton height: row2Height;
 				yourself) width: 40;
-			add: (SpBoxLayout newTopToBottom 
-				spacing: 3;
-				add: translator tProgressBarLabel height: row1Height;
-				add: progressBar height: self class buttonHeight;
-				yourself);
+			add: '';
 			add: (SpBoxLayout newTopToBottom
 				spacing: 3;
 				add: translator tFinalStep height: row1Height;
@@ -115,6 +111,14 @@ CMSimulationRunnerPresenter >> defaultLayout [
 				add: displayEvery height: row2Height;
 				yourself) width: 120;
 			yourself) height: row1Height + row2Height + 3;
+		add: (SpBoxLayout newLeftToRight 
+			spacing: 3;
+			add: (SpBoxLayout newTopToBottom
+				add: translator tProgressBarLabel height: self class labelHeight;
+				add: progressBarLabel height: self class labelHeight;
+				yourself) width: 80;
+			add: progressBar;
+			yourself) height: self class labelHeight * 2 + 1;
 		add: notebook;
 		yourself
 ]
@@ -126,6 +130,19 @@ CMSimulationRunnerPresenter >> fitDiagram [
 
 	self canvas camera zoomToFit.
 	self canvas signalUpdate
+]
+
+{ #category : 'testing' }
+CMSimulationRunnerPresenter >> hasSimulation [
+	
+	^ simulation isNotNil
+]
+
+{ #category : 'testing' }
+CMSimulationRunnerPresenter >> hasSimulationData [
+	"Answer true if there is a simulation data that could be lost if presenter is closed"
+	
+	^ simulation isNotNil and: [ simulation data isNotEmpty ]
 ]
 
 { #category : 'initialization' }
@@ -173,6 +190,8 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 	self initializeDataTable.
 	self initializeParametersTable.
 	
+	notebook removeAll.
+	
 	notebook addPage: (SpNotebookPage
 		title: translator tSpace
 		icon: (self iconNamed: #paint)
@@ -197,6 +216,8 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 		title: translator tInspector
 		icon: (self iconNamed: #smallInspectIt)
 		provider: [ StInspectorPresenter onObject: simulation ]).
+		
+	notebook selectPageIndex: 1
 ]
 
 { #category : 'initialization' }
@@ -222,8 +243,10 @@ CMSimulationRunnerPresenter >> initializePresenters [
 		help: translator tStepButtonHelp;
 		yourself.
 		
-	progressBar := self newProgressBar
-		fixedAt: 0.0;
+	progressBar := self newProgressBar.
+		
+	progressBarLabel := self newLabel
+		label: self progressString;
 		yourself.
 		
 	finalStep := self newNumberInput
@@ -256,6 +279,15 @@ CMSimulationRunnerPresenter >> initializeWithSimulation [
 
 	self enabled: true.
 	self initializeNotebookPages.
+	self updateProgressBar.
+]
+
+{ #category : 'as yet unclassified' }
+CMSimulationRunnerPresenter >> progressString [
+
+	^ 'Step ', (simulation
+		ifNil: [ '0' ]
+		ifNotNil: [ simulation currentTimeStep asString ])
 ]
 
 { #category : 'actions' }
@@ -338,5 +370,6 @@ CMSimulationRunnerPresenter >> updateAfterStep [
 { #category : 'as yet unclassified' }
 CMSimulationRunnerPresenter >> updateProgressBar [
 
+	progressBarLabel label: self progressString.
 	progressBar fixedAt: (simulation currentTimeStep / simulation finalTimeStep) asFloat.
 ]
