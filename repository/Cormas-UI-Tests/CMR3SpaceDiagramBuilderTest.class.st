@@ -28,18 +28,6 @@ CMR3SpaceDiagramBuilderTest >> setUp [
 ]
 
 { #category : 'as yet unclassified' }
-CMR3SpaceDiagramBuilderTest >> testActivePoVsDictionaryIsDictionary [
-
-	self assert: builder activePoVsDictionary isDictionary.
-]
-
-{ #category : 'as yet unclassified' }
-CMR3SpaceDiagramBuilderTest >> testActivePoVsDictionaryIsEmpty [
-
-	self assert: builder activePoVsDictionary isEmpty.
-]
-
-{ #category : 'as yet unclassified' }
 CMR3SpaceDiagramBuilderTest >> testActiveSpatialEntityPovDefaultValue [
 
 	self assert: builder activeSpatialEntityPov equals: #pov.

@@ -4,7 +4,6 @@ Class {
 	#instVars : [
 		'translator',
 		'simulation',
-		'builder',
 		'runButton',
 		'stepButton',
 		'progressBarLabel',
@@ -13,7 +12,7 @@ Class {
 		'speedDropList',
 		'displayEvery',
 		'notebook',
-		'diagram',
+		'spacePresenter',
 		'dataTable',
 		'parametersTable'
 	],
@@ -56,13 +55,6 @@ CMSimulationRunnerPresenter class >> openForSimulation: aSimulation withTranslat
 	(self forTranslator: aTranslator)
 		simulation: aSimulation;
 		open
-]
-
-{ #category : 'accessing' }
-CMSimulationRunnerPresenter >> canvas [
-	" Private - Answer a <RSCanvas> "
-
-	^ diagram canvas
 ]
 
 { #category : 'initialization' }
@@ -127,9 +119,7 @@ CMSimulationRunnerPresenter >> defaultLayout [
 CMSimulationRunnerPresenter >> fitDiagram [
 
 	simulation ifNil: [ ^ self ].
-
-	self canvas camera zoomToFit.
-	self canvas signalUpdate
+	spacePresenter fitDiagram.
 ]
 
 { #category : 'testing' }
@@ -143,12 +133,6 @@ CMSimulationRunnerPresenter >> hasSimulationData [
 	"Answer true if there is a simulation data that could be lost if presenter is closed"
 	
 	^ simulation isNotNil and: [ simulation data isNotEmpty ]
-]
-
-{ #category : 'initialization' }
-CMSimulationRunnerPresenter >> initializeCanvasInteractions [
-
-	self canvas addInteraction: RSCanvasController new.
 ]
 
 { #category : 'initialization' }
@@ -166,27 +150,9 @@ CMSimulationRunnerPresenter >> initializeDataTable [
 ]
 
 { #category : 'initialization' }
-CMSimulationRunnerPresenter >> initializeDiagram [
-	" Private - Create the configured receiver's diagram "
-	
-	builder := CMR3SpaceDiagramBuilder new
-		cormasModel: simulation cormasModel.
-	
-	"diagram := self newRoassal.
-	diagram script: [ :canvas | builder renderIn: canvas ].
-	"
-	diagram := builder asPresenter.
-		
-	diagram owner: self.
-	self update.
-	
-]
-
-{ #category : 'initialization' }
 CMSimulationRunnerPresenter >> initializeNotebookPages [
 
-	self initializeDiagram.
-	self initializeCanvasInteractions.
+	self initializeSpacePresenter.
 	self initializeDataTable.
 	self initializeParametersTable.
 	
@@ -195,7 +161,7 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 	notebook addPage: (SpNotebookPage
 		title: translator tSpace
 		icon: (self iconNamed: #paint)
-		provider: [ diagram ]).
+		provider: [ spacePresenter ]).
 		
 	notebook addPage: (SpNotebookPage
 		title: translator tData
@@ -272,6 +238,12 @@ CMSimulationRunnerPresenter >> initializePresenters [
 	
 	"By default this page is disabled. It will be enabled when the simulation: setter is called"
 	self enabled: false
+]
+
+{ #category : 'initialization' }
+CMSimulationRunnerPresenter >> initializeSpacePresenter [
+	
+	spacePresenter := self instantiate: CMSpacePresenter on: simulation cormasModel
 ]
 
 { #category : 'initialization' }
@@ -362,7 +334,7 @@ CMSimulationRunnerPresenter >> translator: anObject [
 { #category : 'as yet unclassified' }
 CMSimulationRunnerPresenter >> updateAfterStep [
 
-	builder update.
+	spacePresenter updateDiagram.
 	dataTable items: simulation data.
 	self updateProgressBar.
 ]

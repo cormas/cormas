@@ -35,7 +35,6 @@ Class {
 		'autoResizeBounds',
 		'nbConfiguration',
 		'gridSize',
-		'activePoVsDictionary',
 		'isClosedEnvironment',
 		'numberOfRows',
 		'numberOfColumns'
@@ -71,14 +70,6 @@ CMSpaceModel class >> forModel: aCormasModel [
 ]
 
 { #category : 'accessing' }
-CMSpaceModel >> activePoVsDictionary [
-	" Answer a <Dictionary> containing the initial active points of view of the receiver's model "
-
-	^ activePoVsDictionary
-		ifNil: [ activePoVsDictionary := Dictionary new ]
-]
-
-{ #category : 'accessing' }
 CMSpaceModel >> allOccupants [
 	" Answer a <Collection> of all the located entities"
 
@@ -94,13 +85,6 @@ CMSpaceModel >> allTheEntities: aClass [
 CMSpaceModel >> allTheSituatedEntities: aClass [
 	
 	^self cormasModel allTheSituatedEntities: aClass
-]
-
-{ #category : 'accessing' }
-CMSpaceModel >> atClass: aCMSpatialEntityClass putActivePovSelector: aSelector [ 
-	" Set a Point of View defined in aSelector <Symbol> at class aCMSpatialEntityClass "
-
-	self activePoVsDictionary at: aCMSpatialEntityClass put: aSelector
 ]
 
 { #category : 'accessing' }
@@ -286,18 +270,6 @@ CMSpaceModel >> dimensions [
 	" Answer a <Point> with the receiver's lines and columns "
 	
 	^ self numberOfColumns @ self numberOfRows
-]
-
-{ #category : 'private - display' }
-CMSpaceModel >> displayPov: aSymbol of: aClass [
-	"Purpose: set the POV of aClass to be displayed on the opened spatial grid.
-	For efficency add subclasses of aClass.
-	Example : self displayPov: #landUse of: Cell"
-	
-	self atClass: aClass putActivePovSelector: aSymbol.
-	aClass concreteSubclasses do: [ : concreteClass |
-		self atClass: concreteClass putActivePovSelector: aSymbol ]
-
 ]
 
 { #category : 'landscape indices' }

@@ -40,12 +40,28 @@ Class {
 		'cormasModel'
 	],
 	#classInstVars : [
-		'currentId'
+		'currentId',
+		'activePovSelector'
 	],
 	#category : 'Cormas-Core-Entities',
 	#package : 'Cormas-Core',
 	#tag : 'Entities'
 }
+
+{ #category : 'accessing' }
+CMEntity class >> activePovSelector [
+
+	^ activePovSelector ifNil: [ activePovSelector := #pov ]
+]
+
+{ #category : 'accessing' }
+CMEntity class >> activePovSelector: aSymbol [
+
+	(self availablePov includes: aSymbol)
+		ifFalse: [ ^ self inform: 'The class ' , self name , ' does not have a pov called ' , aSymbol ].
+
+	activePovSelector := aSymbol
+]
 
 { #category : 'accessing - methods & classes' }
 CMEntity class >> availablePov [
@@ -212,6 +228,12 @@ CMEntity class >> new [
 CMEntity class >> new: x [
 	
 	^super new initId
+]
+
+{ #category : 'accessing' }
+CMEntity class >> resetActivePovSelector [
+
+	activePovSelector := nil
 ]
 
 { #category : 'converting' }
@@ -386,6 +408,13 @@ CMEntity >> initId [
 	" Private - Set the receiver's internal identifier. "
 
 	self id: (self class currentId: self class currentId + 1)
+]
+
+{ #category : 'initialization' }
+CMEntity >> initialize [
+
+	super initialize.
+	self class resetActivePovSelector
 ]
 
 { #category : 'printing' }

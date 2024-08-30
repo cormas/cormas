@@ -1,16 +1,17 @@
 Class {
-	#name : 'CMPoVSelectionPresenter',
+	#name : 'CMPovSelectionPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'cormasModel',
-		'povDictionary'
+		'povTree',
+		'whenChangedBlock'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
 }
 
 { #category : 'examples' }
-CMPoVSelectionPresenter class >> example [
+CMPovSelectionPresenter class >> example [
 	<example>
 	
 	| model |
@@ -19,53 +20,72 @@ CMPoVSelectionPresenter class >> example [
 ]
 
 { #category : 'layout' }
-CMPoVSelectionPresenter >> defaultLayout [
+CMPovSelectionPresenter >> defaultLayout [
 
-	| radioButtonHeight classLabelHeight sectionHeight outerLayout classPoVLayout |
-	
-	radioButtonHeight := 25.
-	classLabelHeight := 25.
-	
-	outerLayout := SpBoxLayout newTopToBottom.
-	
-	povDictionary keysAndValuesDo: [ :classLabel :povRadioButtons |
-		classPoVLayout := SpBoxLayout newTopToBottom.
-		classPoVLayout add: classLabel height: classLabelHeight.
-		
-		povRadioButtons do: [ :radio |
-			classPoVLayout add: radio height: radioButtonHeight ].
-		
-		sectionHeight := povRadioButtons size * radioButtonHeight + classLabelHeight.
-		outerLayout add: classPoVLayout height: sectionHeight  ].
-	
-	outerLayout spacing: 20.
-	^ outerLayout
-		
+	^ SpBoxLayout newTopToBottom
+		add: povTree;
+		yourself
 ]
 
 { #category : 'initialization' }
-CMPoVSelectionPresenter >> initializePresenters [
+CMPovSelectionPresenter >> initializePresenters [
 
-	| classLabel radioButtons |
-
-	povDictionary := (cormasModel class allEntityClasses collect: [ :aClass |
-		classLabel := self newLabel
-			label: aClass name;
-			yourself.
-			
-		radioButtons := aClass availablePov collect: [ :selector |
-			self newRadioButton
-				label: selector;
-				yourself ].
-			
-		radioButtons first associatedRadioButtons: radioButtons allButFirst.
-		classLabel -> radioButtons ]) asDictionary.
+	whenChangedBlock := [ "do nothing" ].
+	povTree := self newTreeTable.
 	
+	povTree
+		addColumn: (SpCompositeTableColumn new
+			addColumn:
+				(SpImageTableColumn
+					evaluated: [ :each |
+						each isClass
+							ifTrue: [ self iconNamed: #class ]
+							ifFalse: [ each key activePovSelector = each value
+								ifTrue: [ self iconNamed: #smallOk ]
+								ifFalse: [ self iconNamed: #bla ] ] ])
+					beNotExpandable;
+			addColumn:
+				(SpStringTableColumn
+					evaluated: [ :each |
+						each isClass
+							ifTrue: [ each name ]
+							ifFalse: [ each value ] ]);
+					yourself);
+		children: [ :item |
+			item isClass
+				ifTrue: [ (item availablePov collect: [ :each | item -> each ]), item subclasses ] 
+				ifFalse: [ OrderedCollection new ] ];
+		whenSelectedItemChangedDo: [ :item |
+			(item isNil or: [ item isClass ]) ifFalse: [ 
+				item key activePovSelector: item value.
+				item key allSubclasses do: [ :subclass | subclass activePovSelector: item value ].
+				self showPovs.
+				whenChangedBlock value ] ].
+		
+	self showPovs
 	
 ]
 
 { #category : 'accessing - model' }
-CMPoVSelectionPresenter >> setModelBeforeInitialization: aCormasModel [
+CMPovSelectionPresenter >> setModelBeforeInitialization: aCormasModel [
 
 	cormasModel := aCormasModel
+]
+
+{ #category : 'as yet unclassified' }
+CMPovSelectionPresenter >> showPovs [
+
+	| roots |
+	
+	roots := cormasModel class allEntityClasses reject: [ :aClass |
+		cormasModel class allEntityClasses includes: aClass superclass ].
+
+	povTree
+		roots: (roots sorted: [ :a :b | a name < b name ])
+]
+
+{ #category : 'announcing' }
+CMPovSelectionPresenter >> whenChangedDo: aBlock [
+
+	whenChangedBlock := aBlock
 ]

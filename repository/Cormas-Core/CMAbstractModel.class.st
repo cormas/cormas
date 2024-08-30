@@ -705,17 +705,6 @@ CMAbstractModel >> creationDate: anObject [
 	creationDate := anObject
 ]
 
-{ #category : 'pov' }
-CMAbstractModel >> displayPov: aSymbol of: aClass [
-	"Purpose: set the POV of aClass to be displayed on the opened spatial grids.
-Example : self displayPov: #landUse of: Cell"
-	
-	(aClass availablePov includes: aSymbol)
-		ifFalse: [ ^ self inform: 'The class ' , aClass name , ' does not have a pov called ' , aSymbol ].
-	self spaceModel displayPov: aSymbol of: aClass
-
-]
-
 { #category : 'utilities - space metrics' }
 CMAbstractModel >> distanceFromCell: cell1 toCell: cell2 [
 	"Purpose: return the distance in number of cells (also known as Manhattan distance)"
