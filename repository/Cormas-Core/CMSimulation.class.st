@@ -5,6 +5,7 @@ Class {
 		'modelClass',
 		'cormasModel',
 		'randomSeed',
+		'currentRunNumber',
 		'currentTimeStep',
 		'data',
 		'finalTimeStep',
@@ -20,7 +21,6 @@ Class {
 
 { #category : 'time' }
 CMSimulation class >> defaultFinalTimeStep [
-	"Answer an <Integer> representing the default final time step"
 
 	^ 100
 ]
@@ -33,13 +33,13 @@ CMSimulation class >> for: aModelClass [
 		yourself
 ]
 
-{ #category : 'accessing' }
+{ #category : 'settings' }
 CMSimulation >> activeControlMethod: aCompiledMethod [
 
 	activeControlMethod := aCompiledMethod
 ]
 
-{ #category : 'accessing' }
+{ #category : 'settings' }
 CMSimulation >> activeInitMethod: aCompiledMethod [
 
 	activeInitMethod := aCompiledMethod
@@ -69,13 +69,13 @@ CMSimulation >> data [
 	^ data
 ]
 
-{ #category : 'accessing' }
+{ #category : 'settings' }
 CMSimulation >> finalTimeStep [
 
 	^ finalTimeStep
 ]
 
-{ #category : 'accessing' }
+{ #category : 'settings' }
 CMSimulation >> finalTimeStep: anInteger [
 
 	finalTimeStep := anInteger
@@ -94,7 +94,7 @@ CMSimulation >> hasEnded [
 	^ self finalTimeStep <= self currentTimeStep
 ]
 
-{ #category : 'accessing' }
+{ #category : 'settings' }
 CMSimulation >> initialParameterValues [
 
 	^ initialParameterValues
@@ -153,6 +153,12 @@ CMSimulation >> initializeSimulation [
 ]
 
 { #category : 'accessing' }
+CMSimulation >> modelClass [
+	
+	^ modelClass
+]
+
+{ #category : 'accessing' }
 CMSimulation >> modelClass: aClass [
 	"Model will be instantiated by the initializeSimulation method"
 	
@@ -165,7 +171,13 @@ CMSimulation >> probes [
 	^ probes
 ]
 
-{ #category : 'accessing' }
+{ #category : 'settings' }
+CMSimulation >> randomSeed [
+
+	^ randomSeed
+]
+
+{ #category : 'settings' }
 CMSimulation >> randomSeed: aNumber [
 
 	randomSeed := aNumber
@@ -231,11 +243,6 @@ CMSimulation >> runAllStepsWithStepDelay: milliseconds afterEachDo: aBlock [
 
 { #category : 'running' }
 CMSimulation >> runStep [
-	"The main step method that activates the agents:
-		- INCREMENT the timeStep (DO NOT USE the #incrementTimeStep as updates the UI before agents get a new patch)
-		- EXECUTE the selected #Step method (of the ScenarioBuilder Interface) for the new timeStep,
-		- UPDATE the Entities (remove the dead ones and add the new ones in theXXs collections).
-	(For display: Store the changed entities in a collection and request an update of the space views at the end of the timestep)"
 	
 	currentTimeStep := currentTimeStep + 1.
 	

@@ -12,6 +12,8 @@ Class {
 CMParameterTest >> setUp [
 
 	super setUp.
+	
+	CMMockModel allEntityClasses do: #initializeParameters.
 	parameters := CMMockModel parameters.
 ]
 
