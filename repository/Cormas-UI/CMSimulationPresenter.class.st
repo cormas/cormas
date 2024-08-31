@@ -4,9 +4,10 @@ Class {
 	#instVars : [
 		'translator',
 		'modelClass',
-		'modelInitializationSettings',
-		'initializeButton',
-		'simulationRunner'
+		'initializer',
+		'simulationRunner',
+		'hideInitializationSettingButton',
+		'isInitializerVisible'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -44,29 +45,28 @@ CMSimulationPresenter >> confirmReinitialize [
 { #category : 'initialization' }
 CMSimulationPresenter >> connectPresenters [
 
-	initializeButton action: [
-		simulationRunner hasSimulationData
-			ifFalse: [ self initializeSimulation ]
-			ifTrue: [ self confirmReinitialize ].
-			
-		self updateInitializeButton ].
-	
-	modelInitializationSettings whenChangedDo: [
-		modelInitializationSettings isDefined
-			ifTrue: [ initializeButton enable ]
-			ifFalse: [ initializeButton disable ] ].
+	initializer
+		whenInitializedDo: [ simulationRunner simulation: initializer simulation ];
+		beReinitializeCondition: [ simulationRunner hasSimulationData ].
+		
+	hideInitializationSettingButton action: [ 
+		isInitializerVisible := isInitializerVisible not.
+		
+		self updateInitializerVisibility.
+		self updateHideInitializationSettingsButtonIcon.
+		self update ]
 ]
 
 { #category : 'layout' }
 CMSimulationPresenter >> defaultLayout [
 
 	^ SpBoxLayout newLeftToRight
-		spacing: 15;
+		spacing: 0;
+		add: initializer width: 250;
 		add: (SpBoxLayout newTopToBottom
-			spacing: 10;
-			add: modelInitializationSettings;
-			add: initializeButton height: self class buttonHeight;
-			yourself) width: 250;
+			vAlignCenter;
+			add: hideInitializationSettingButton height: 70;
+			yourself) width: 25;
 		add: simulationRunner;
 		yourself
 ]
@@ -74,31 +74,19 @@ CMSimulationPresenter >> defaultLayout [
 { #category : 'initialization' }
 CMSimulationPresenter >> initializePresenters [
 	
-	modelInitializationSettings := self
-		instantiate: CMModelInitializationSettingsPresenter
-		on: translator.
-		
-	modelInitializationSettings modelClass: modelClass.
+	isInitializerVisible := true.
 	
-	initializeButton := self newButton
-		disable;
-		yourself.
+	initializer := self
+		instantiate: CMSimulationInitializerPresenter
+		on: { modelClass . translator }.
+		
+	hideInitializationSettingButton := self newButton.
+	self updateHideInitializationSettingsButtonIcon.
+	self updateInitializerVisibility.
 		
 	simulationRunner := self
 		instantiate: CMSimulationRunnerPresenter
 		on: translator.
-		
-	self updateInitializeButton.
-]
-
-{ #category : 'initialization' }
-CMSimulationPresenter >> initializeSimulation [
-
-	simulationRunner simulation: ((CMSimulation for: modelClass)
-		activeInitMethod: modelInitializationSettings initMethod;
-		activeControlMethod: modelInitializationSettings controlMethod;
-		initializeSimulation;
-		yourself)
 ]
 
 { #category : 'initialization' }
@@ -120,15 +108,18 @@ CMSimulationPresenter >> setModelBeforeInitialization: aCollection [
 ]
 
 { #category : 'as yet unclassified' }
-CMSimulationPresenter >> updateInitializeButton [
+CMSimulationPresenter >> updateHideInitializationSettingsButtonIcon [
 
-	simulationRunner hasSimulation
-		ifTrue: [
-			initializeButton
-				label: 'Reinitialize simulation';
-				icon: (self iconNamed: #glamorousRestart) ]
-		ifFalse: [ 
-			initializeButton
-				label: 'Initialize simulation';
-				icon: (self iconNamed: #smallNew) ]
+	hideInitializationSettingButton icon: (
+		isInitializerVisible
+			ifTrue: [ self iconNamed: #overlayRemove ]
+			ifFalse: [ self iconNamed: #overlayAdd ] )
+]
+
+{ #category : 'as yet unclassified' }
+CMSimulationPresenter >> updateInitializerVisibility [
+
+	isInitializerVisible
+		ifTrue: [ initializer show ]
+		ifFalse: [ initializer hide ]
 ]
