@@ -241,12 +241,14 @@ CMAbstractModel class >> parameters [
 
 	^ classes flatCollect: [ :aClass |
 		aClass class slots flatCollect: [ :slot |
-			((aClass respondsTo: slot name) and: [ aClass respondsTo: slot name, ':' ]) ifTrue: [
-				aClass withAllSubclasses collect: [ :receiverClass |
-					CMParameter
-						getterMethod: aClass class >> slot name
-						setterMethod: aClass class >> (slot name, ':')
-						receiverClass: receiverClass ] ] ] ]
+			((aClass respondsTo: slot name) and: [ aClass respondsTo: slot name, ':' ])
+				ifTrue: [
+					aClass withAllSubclasses collect: [ :receiverClass |
+						CMParameter
+							getterMethod: aClass class >> slot name
+							setterMethod: aClass class >> (slot name, ':')
+							receiverClass: receiverClass ] ]
+				ifFalse: [ OrderedCollection new ] ] ]
 ]
 
 { #category : 'managing classes' }

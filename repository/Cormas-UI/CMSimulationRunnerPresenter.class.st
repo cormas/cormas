@@ -289,7 +289,7 @@ CMSimulationRunnerPresenter >> progressString [
 
 { #category : 'actions' }
 CMSimulationRunnerPresenter >> runSimulationUntilEnd [
-
+	
 	[ [ simulation currentTimeStep < simulation finalTimeStep ] whileTrue: [
 		(displayEvery number min: (simulation finalTimeStep - simulation currentTimeStep))
 			timesRepeat: [ simulation runStep ].
