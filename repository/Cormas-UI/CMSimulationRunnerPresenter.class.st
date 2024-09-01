@@ -15,7 +15,10 @@ Class {
 		'spacePresenter',
 		'dataTable',
 		'parametersTable',
-		'chartPresenter'
+		'chartPresenter',
+		'spacePage',
+		'dataPage',
+		'chartsPage'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -58,19 +61,14 @@ CMSimulationRunnerPresenter class >> openForSimulation: aSimulation withTranslat
 		open
 ]
 
-{ #category : 'public' }
-CMSimulationRunnerPresenter >> buildChart [
-
-	chartPresenter := self
-		instantiate: CMChartPresenter
-		on: { simulation . translator } 
-]
-
 { #category : 'initialization' }
 CMSimulationRunnerPresenter >> connectPresenters [
 
 	finalStep whenNumberChangedDo: [ :number |
 		simulation finalTimeStep: number ].
+	
+	notebook whenSelectedPageChangedDo: [ :page |
+		self updateSelectedNotebookPage ].
 ]
 
 { #category : 'specs' }
@@ -144,6 +142,14 @@ CMSimulationRunnerPresenter >> hasSimulationData [
 	^ simulation isNotNil and: [ simulation data isNotEmpty ]
 ]
 
+{ #category : 'public' }
+CMSimulationRunnerPresenter >> initializeCharts [
+
+	chartPresenter := self
+		instantiate: CMChartPresenter
+		on: { simulation . translator } 
+]
+
 { #category : 'initialization' }
 CMSimulationRunnerPresenter >> initializeDataTable [
 	
@@ -164,25 +170,28 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 	self initializeSpacePresenter.
 	self initializeDataTable.
 	self initializeParametersTable.
-	self buildChart.
-	"self updateChart."
+	self initializeCharts.
 	
 	notebook removeAll.
 	
-	notebook addPage: (SpNotebookPage
+	spacePage := SpNotebookPage
 		title: translator tSpace
 		icon: (self iconNamed: #paint)
-		provider: [ spacePresenter ]).
+		provider: [ spacePresenter ].
 		
-	notebook addPage: (SpNotebookPage
+	dataPage := SpNotebookPage
 		title: translator tData
 		icon: (self iconNamed: #database)
-		provider: [ dataTable ]).
+		provider: [ dataTable ].
 		
-	notebook addPage: (SpNotebookPage
+	chartsPage := SpNotebookPage
 		title: translator tCharts
 		icon: CMIcons chartIcon
-		provider: [ chartPresenter ]).
+		provider: [ chartPresenter ].
+		
+	notebook addPage: spacePage.
+	notebook addPage: dataPage.
+	notebook addPage: chartsPage.
 		
 	notebook addPage: (SpNotebookPage
 		title: translator tParameters
@@ -195,7 +204,6 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 		provider: [ StInspectorPresenter onObject: simulation ]).
 		
 	notebook selectPageIndex: 1.
-	self updateAfterStep.
 ]
 
 { #category : 'initialization' }
@@ -247,6 +255,11 @@ CMSimulationRunnerPresenter >> initializePresenters [
 		yourself.
 		
 	notebook := self newNotebook.
+
+	"A hack to overcome an issue with notebook pages that were added to an empty notebook not signalling the event when they are selected"
+	notebook addPage: (SpNotebookPage
+		title: 'Empty'
+		provider: [ self newLabel ]).
 	
 	"By default this page is disabled. It will be enabled when the simulation: setter is called"
 	self enabled: false
@@ -263,7 +276,7 @@ CMSimulationRunnerPresenter >> initializeWithSimulation [
 
 	self enabled: true.
 	self initializeNotebookPages.
-	self updateProgressBar.
+	self updateProgressBar
 ]
 
 { #category : 'as yet unclassified' }
@@ -343,24 +356,45 @@ CMSimulationRunnerPresenter >> translator: anObject [
 	translator := anObject
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'update presenters' }
 CMSimulationRunnerPresenter >> updateAfterStep [
 
-	spacePresenter updateDiagram.
-	dataTable items: simulation data.
 	self updateProgressBar.
-	self updateChart.
+	self updateSelectedNotebookPage.
 ]
 
-{ #category : 'public' }
+{ #category : 'update presenters' }
 CMSimulationRunnerPresenter >> updateChart [
 
 	chartPresenter updateCharts.
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'update presenters' }
+CMSimulationRunnerPresenter >> updateDataTable [
+
+	dataTable items: simulation data
+]
+
+{ #category : 'update presenters' }
 CMSimulationRunnerPresenter >> updateProgressBar [
 
 	progressBarLabel label: self progressString.
 	progressBar fixedAt: (simulation currentTimeStep / simulation finalTimeStep) asFloat.
+]
+
+{ #category : 'update presenters' }
+CMSimulationRunnerPresenter >> updateSelectedNotebookPage [
+	"Only update the page that is currently being displayed. This makes execution much faster because other pages (chart, space, data table) will not be updated when they are not displayed"
+	
+	notebook selectedPage ifNil: [ ^ self ].
+	
+	notebook selectedPage = spacePage ifTrue: [ self updateSpace ].
+	notebook selectedPage = dataPage ifTrue: [ self updateDataTable ].
+	notebook selectedPage = chartsPage ifTrue: [ self updateChart ]
+]
+
+{ #category : 'update presenters' }
+CMSimulationRunnerPresenter >> updateSpace [
+
+	spacePresenter updateDiagram
 ]

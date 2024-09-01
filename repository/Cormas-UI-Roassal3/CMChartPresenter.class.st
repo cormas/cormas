@@ -49,7 +49,7 @@ CMChartPresenter >> defaultLayout [
 { #category : 'public' }
 CMChartPresenter >> drawChart [
 
-	| chartBuilder x y |
+	| chartBuilder size x y |
 	
 	chartBuilder := CMR3ChartBuilder new
 		maxChartValueX: simulation finalTimeStep + 1;
@@ -58,11 +58,12 @@ CMChartPresenter >> drawChart [
 	(isProbeVisibleDictionary values noneSatisfy: #yourself)
 		ifTrue: [ chartBuilder addPlotX: { 0 } y: { 0 } color: Color black ]
 		ifFalse: [
-			x := (1 to: simulation data size) asArray.
+			size := simulation data size.
+			x := (1 to: size) asArray.
 	
 			simulation probes do: [ :probe |
 				(isProbeVisibleDictionary at: probe) ifTrue: [
-					y := simulation data collect: [ :row | row at: probe name ].
+					y := (simulation data first: size) collect: [ :row | row at: probe name ].
 					chartBuilder addPlotX: x y: y color: probe color ] ] ].
 
 	chartBuilder chart build.
