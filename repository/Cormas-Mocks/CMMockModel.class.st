@@ -227,14 +227,14 @@ CMMockModel >> invertedCellMatrix [
 { #category : 'probes' }
 CMMockModel >> numberOfAliveCells [
 
-	<probeNamed: 'Number of alive cells'>
+	<probeNamed: 'Number of alive cells' color: '0000FF'>
 	^ (self theCells select: [ :cell | cell isAliveCell ]) size
 ]
 
 { #category : 'probes' }
 CMMockModel >> numberOfDeadCells [
 
-	<probeNamed: 'Number of dead cells'>
+	<probeNamed: 'Number of dead cells' color: 'FF0000'>
 	^ (self theCells select: [ :cell | cell isDeadCell ]) size
 ]
 

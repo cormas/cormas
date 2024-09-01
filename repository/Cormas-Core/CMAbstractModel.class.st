@@ -129,9 +129,10 @@ CMAbstractModel class >> availableInitMethods [
 { #category : 'available probes' }
 CMAbstractModel class >> availableProbes [
 
-	^ (Pragma allNamed: #probeNamed: in: self) collect: [ :pragma |
+	^ (Pragma allNamed: #probeNamed:color: in: self) collect: [ :pragma |
 		CMProbe new
 			name: pragma arguments first;
+			color: (Color fromHexString: pragma arguments second);
 			method: pragma method;
 			yourself ].
 ]

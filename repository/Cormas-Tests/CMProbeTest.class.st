@@ -9,7 +9,9 @@ Class {
 		'probeWithoutName',
 		'probeWithoutMethod',
 		'probeWithoutObject',
-		'probeWithDifferentName'
+		'probeWithDifferentName',
+		'probeWithDifferentColor',
+		'probeWithoutColor'
 	],
 	#category : 'Cormas-Tests',
 	#package : 'Cormas-Tests'
@@ -28,21 +30,31 @@ CMProbeTest >> setUp [
 	
 	probe := CMProbe
 		name: 'Number of alive cells'
+		color: Color blue
 		method: (CMMockModel >> #numberOfAliveCells)
 		on: model.
 		
 	probeWithDifferentName := CMProbe
 		name: 'Number of living cells'
+		color: Color blue
 		method: (CMMockModel >> #numberOfAliveCells)
 		on: model.
 		
 	probeWithDifferentMethod := CMProbe
 		name: 'Number of alive cells'
+		color: Color blue
 		method: (CMMockModel >> #numberOfDeadCells)
+		on: model.
+		
+	probeWithDifferentColor := CMProbe
+		name: 'Number of alive cells'
+		color: Color red
+		method: (CMMockModel >> #numberOfAliveCells)
 		on: model.
 		
 	probeWithDifferentModel := CMProbe
 		name: 'Number of alive cells'
+		color: Color blue
 		method: (CMMockModel >> #numberOfAliveCells)
 		on: differentModel.
 		
@@ -50,18 +62,27 @@ CMProbeTest >> setUp [
 	probeWithDifferentIsActive isActive: probe isActive not.
 	
 	probeWithoutName := CMProbe new
+		color: Color blue;
 		method: (CMMockModel >> #numberOfAliveCells);
 		object: model;
 		yourself.
 		
 	probeWithoutMethod := CMProbe new
 		name: 'Number of alive cells';
+		color: Color blue;
 		object: model;
 		yourself.
 		
 	probeWithoutObject := CMProbe new
 		name: 'Number of alive cells';
+		color: Color blue;
 		method: (CMMockModel >> #numberOfAliveCells);
+		yourself.
+		
+	probeWithoutColor := CMProbe new
+		name: 'Number of alive cells';
+		method: (CMMockModel >> #numberOfAliveCells);
+		object: model;
 		yourself.
 ]
 
@@ -81,12 +102,14 @@ CMProbeTest >> testHash [
 CMProbeTest >> testInequality [
 
 	self deny: probe equals: probeWithDifferentName.
+	self deny: probe equals: probeWithDifferentColor.
 	self deny: probe equals: probeWithDifferentMethod.
 	self deny: probe equals: probeWithDifferentModel.
 	self deny: probe equals: probeWithDifferentIsActive.
 	self deny: probe equals: probeWithoutName.
 	self deny: probe equals: probeWithoutMethod.
 	self deny: probe equals: probeWithoutObject.
+	self deny: probe equals: probeWithoutColor.
 ]
 
 { #category : 'tests' }

@@ -14,7 +14,8 @@ Class {
 		'notebook',
 		'spacePresenter',
 		'dataTable',
-		'parametersTable'
+		'parametersTable',
+		'chartPresenter'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -55,6 +56,14 @@ CMSimulationRunnerPresenter class >> openForSimulation: aSimulation withTranslat
 	(self forTranslator: aTranslator)
 		simulation: aSimulation;
 		open
+]
+
+{ #category : 'public' }
+CMSimulationRunnerPresenter >> buildChart [
+
+	chartPresenter := self
+		instantiate: CMChartPresenter
+		on: { simulation . translator } 
 ]
 
 { #category : 'initialization' }
@@ -155,6 +164,8 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 	self initializeSpacePresenter.
 	self initializeDataTable.
 	self initializeParametersTable.
+	self buildChart.
+	"self updateChart."
 	
 	notebook removeAll.
 	
@@ -171,7 +182,7 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 	notebook addPage: (SpNotebookPage
 		title: translator tCharts
 		icon: CMIcons chartIcon
-		provider: [ self newTable ]).
+		provider: [ chartPresenter ]).
 		
 	notebook addPage: (SpNotebookPage
 		title: translator tParameters
@@ -183,7 +194,8 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 		icon: (self iconNamed: #smallInspectIt)
 		provider: [ StInspectorPresenter onObject: simulation ]).
 		
-	notebook selectPageIndex: 1
+	notebook selectPageIndex: 1.
+	self updateAfterStep.
 ]
 
 { #category : 'initialization' }
@@ -337,6 +349,13 @@ CMSimulationRunnerPresenter >> updateAfterStep [
 	spacePresenter updateDiagram.
 	dataTable items: simulation data.
 	self updateProgressBar.
+	self updateChart.
+]
+
+{ #category : 'public' }
+CMSimulationRunnerPresenter >> updateChart [
+
+	chartPresenter updateCharts.
 ]
 
 { #category : 'as yet unclassified' }
