@@ -110,7 +110,7 @@ CMSimulationRunnerPresenter >> defaultLayout [
 				spacing: 3;
 				add: translator tDisplayEveryLabel height: row1Height;
 				add: displayEvery height: row2Height;
-				yourself) width: 120;
+				yourself) width: self class buttonWidth;
 			yourself) height: row1Height + row2Height + 3;
 		add: (SpBoxLayout newLeftToRight 
 			spacing: 3;
