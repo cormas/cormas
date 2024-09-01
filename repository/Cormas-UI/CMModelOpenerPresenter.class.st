@@ -16,6 +16,7 @@ Class {
 { #category : 'examples' }
 CMModelOpenerPresenter class >> example [
 	<example>
+	
 	self new open
 ]
 
@@ -100,34 +101,35 @@ CMModelOpenerPresenter >> initializeWindow: aWindowPresenter [
 ]
 
 { #category : 'as yet unclassified' }
-CMModelOpenerPresenter >> openSensitivityAnalysis [
+CMModelOpenerPresenter >> openPresenter: aPresenter [
 
 	modelList selectedItem ifNil: [ ^ self ].
 		
-	(CMSensitivityAnalysisPresenter
+	aPresenter open.
+	aPresenter window centered.
+	self window close
+]
+
+{ #category : 'as yet unclassified' }
+CMModelOpenerPresenter >> openSensitivityAnalysis [
+		
+	self openPresenter: (CMSensitivityAnalysisPresenter
 		forModelClass: modelList selectedItem
 		translator: translator)
-		open.
-	
-	self window close
 ]
 
 { #category : 'as yet unclassified' }
 CMModelOpenerPresenter >> openSimulation [
 
-	modelList selectedItem ifNil: [ ^ self ].
-		
-	(CMSimulationPresenter
+	self openPresenter: (CMSimulationPresenter
 		forModelClass: modelList selectedItem
 		translator: translator)
-		open.
-		
-	self window close.
 ]
 
 { #category : 'as yet unclassified' }
 CMModelOpenerPresenter >> openSystemBrowser [
 		
-	modelList selectedItem ifNotNil: [ modelList selectedItem browse ].
-	self window close.
+	modelList selectedItem ifNotNil: [
+		modelList selectedItem browse.
+		self window close ].
 ]
