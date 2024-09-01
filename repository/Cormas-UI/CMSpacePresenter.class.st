@@ -9,6 +9,7 @@ Class {
 		'diagram',
 		'builder',
 		'povButton',
+		'saveToPngButton',
 		'isPovVisible'
 	],
 	#category : 'Cormas-UI',
@@ -41,7 +42,9 @@ CMSpacePresenter >> connectPresenters [
 		isPovVisible := isPovVisible not.
 		self updatePovSelectionVisibility.
 		self updatePovButtonIcon.
-		self update ]
+		self update ].
+	
+	saveToPngButton action: [ self saveToPng ].
 ]
 
 { #category : 'layout' }
@@ -50,7 +53,7 @@ CMSpacePresenter >> defaultLayout [
 	^ SpBoxLayout newTopToBottom
 		add: toolbar expand: false;
 		add: (SpBoxLayout newLeftToRight
-			spacing: 2;
+			spacing: 5;
 			add: diagram;
 			add: povSelection width: 200;
 			yourself);
@@ -92,9 +95,15 @@ CMSpacePresenter >> initializePresenters [
 		label: 'PoV';
 		yourself.
 		
+	saveToPngButton := self newToolbarButton
+		label: 'Save to PNG';
+		icon: (self iconNamed: #smallSave);
+		yourself.
+		
 	self updatePovButtonIcon.
 		
 	toolbar := self newToolbar
+		add: saveToPngButton;
 		addItemRight: povButton;
 		yourself.
 
@@ -106,6 +115,16 @@ CMSpacePresenter >> initializePresenters [
 		
 	self initializeDiagram.
 	self initializeCanvasInteractions
+]
+
+{ #category : 'as yet unclassified' }
+CMSpacePresenter >> saveToPng [
+
+	(StSaveFilePresenter extensions: {'png'})
+		okAction: [ :fileReference | 
+			RSPNGExporter new
+				canvas: diagram canvas;
+				exportToFile: fileReference ]
 ]
 
 { #category : 'accessing - model' }

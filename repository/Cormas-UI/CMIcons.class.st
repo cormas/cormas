@@ -10,6 +10,7 @@ Class {
 
 { #category : 'icons' }
 CMIcons class >> chartIcon [
+	<script: 'self chartIcon inspect'>
 
 	^ self icons
 		at: #chartIcon
@@ -66,6 +67,7 @@ CMIcons class >> csvIconContents [
 
 { #category : 'icons' }
 CMIcons class >> excelIcon [
+	<script: 'self excelIcon inspect'>
 
 	^ self icons
 		at: #excelIcon
@@ -82,6 +84,7 @@ CMIcons class >> excelIconContents [
 
 { #category : 'icons' }
 CMIcons class >> eyeIcon [
+	<script: 'self eyeIcon inspect'>
 
 	^ self icons
 		at: #eyeIcon
@@ -97,7 +100,25 @@ CMIcons class >> eyeIconContents [
 ]
 
 { #category : 'icons' }
+CMIcons class >> gifIcon [
+	<script: 'self gifIcon inspect'>
+	
+	^ self icons
+		at: #gifIcon
+		ifAbsentPut: [
+			(Form fromBinaryStream: self gifIconContents base64Decoded asByteArray readStream)
+				 scaledToSize: 20@20 ]
+]
+
+{ #category : 'icons - base64' }
+CMIcons class >> gifIconContents [
+	
+	^ 'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAQAAADZc7J/AAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAACYktHRAD/h4/MvwAAAAlwSFlzAAAM3gAADN4BE1AQegAAAAd0SU1FB+gJARI5HfFPoCYAAAI1SURBVEjHrdRLSNRRFMfxz4xOluYDsQLTnhuhNq7CqUVFFERiEEFRCC16CUEQLYLaGOUigigMeqxs1yoiWgQRtBBaKJHQJgyyXSBio4w1859pMePMOI8aq99Z/O+5j+89nHv+h0X1i/npR0UL3LNCiWpzo53G3VJeaStdd9ond1XUY08qL6rzVtqMY8UL4Qrj0khDaHHbvsqAatTunu5/AdBl2JZ/AdDjjrXLBaTEEQgEUnqdySenOi244pF01rto03IBaWPGcl5fuRykc/w/K5TfGwI7HHJYjZdVAg4KPPPCu4zbaUK6yIKSmVKb0JnJQYfNBfQJz70X06jHOXGD5l1Tb9A0CERdEMZmHb5CVCzLTHlsPZq0a7TLnC/arTLus7Vo0qrRqWx8MdHiV3jjsnmXnNBqVlKDabUiQqjRbESXQFNh9RQCUkbMOGlIpGzqwjptFSy9tNCJ+Yi9Ij67YUHIgI0FT/fdGasFzjteKYJEDjVqUsKBfMUh5ZtZgbmlYeXVoBNvpWz3yv5clSwWWrMRo0adqARY4YgaTw2ZKtf9hLVps059pRxw1AfDrhrWYCobQVJCGklJqVJqLYKcV++m3V6alNRtm6g6vea1aNAnobnodPZkm9dFRbogLpktrczN6dw3b6+tWUzTBlEDIh7knsxv/82zEu4bNVU4+fC3bX2pnnhY+grhZfTHgr1/01SLWP8RUH1LK9iZL6SEPe5XBQnp8ap0ul+8ijaWsbj+xWO/AK904/+rLLWpAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDI0LTA5LTAxVDE4OjU3OjI0KzAwOjAwwvtf8AAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyNC0wOS0wMVQxODo1NzoyNCswMDowMLOm50wAAAAodEVYdGRhdGU6dGltZXN0YW1wADIwMjQtMDktMDFUMTg6NTc6MjkrMDA6MDCFZKdTAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAABJRU5ErkJggg=='
+]
+
+{ #category : 'icons' }
 CMIcons class >> grayEyeIcon [
+	<script: 'self grayEyeIcon inspect'>
 
 	^ self icons
 		at: #grayEyeIcon
@@ -139,7 +160,25 @@ CMIcons class >> inspectIcons [
 ]
 
 { #category : 'icons' }
+CMIcons class >> pngIcon [
+	<script: 'self pngIcon inspect'>
+	
+	^ self icons
+		at: #pngIcon
+		ifAbsentPut: [
+			(Form fromBinaryStream: self pngIconContents base64Decoded asByteArray readStream)
+				 scaledToSize: 20@20 ]
+]
+
+{ #category : 'icons - base64' }
+CMIcons class >> pngIconContents [
+	
+	^ 'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAQAAADZc7J/AAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAACYktHRAD/h4/MvwAAAAlwSFlzAAAM3gAADN4BE1AQegAAAAd0SU1FB+gJARI6EKTTj1gAAAKISURBVEjHrdRfaNVlHMfx1+9sc3qOrXnh7M+ONCk3dCpGNHYEoRwko9ArDYTBjJYUgTdeeCNC4EUZrVaGuovCG28CobCoFhERKUyU1fC/otBNiVtnbOr58+vinLNz5tmpc9LPc/F7nu/zPG+e3/f5PF8K6pN0z92KLWPIAmWqn+1tcMZ75ldooXe87pKPVNSwY5UnNfpJ6LZX75+IVOiXnzRAs/f1VAZUoycMWf8gADp8YsWDAOg2qKVWQNYMMjIysl4xUExOdbpjr6PC/Gi3p2oFhEaNzo62zJeDcJb/3wqKawPQ5WVb1TlJfirIQwv9UOmOXhknfOVULhQ3JqyhZfPfMfFcDlq1uWfQqBkNVtum0+8OSttlg4wPXLBPHFeccNqkJi96TZtWNyFhyt+ew1rrRHS6ZEQ9NktKeUnMOaFvdKBFh8dslzIlkfuFhClJXWJ+NmkHhvxooZhGn8no9agxN6wSscdFf7nuulBSYq6RAlFNmpFG1kbLfOgP9ajznXGb7PeMes2apct9cMenQscts9GkrDZrvOu4BmRdxDpRV/SbEDWkc64PSPvC15532LOyQuwU97kJARowgUYr/WlUMnfVpYBFhv3qS1vy957WbsB5Z9UJrBfxg7NaDeue34kRy7WKlkTot8otoawem121wwFHXS5aqwiIiuX9l8vNYo140tseEUOTj/W7Zb+3XNNuSQ4RoMv3on4zrdPiPGDCuBZPY9oY1ogi5aqbUpaIe9y0npyZlxqpycqFNmJp4dEsl/CmBoerfI1vSDnkFzdKg0f+tazP1TFHym8hUkN9LFn7f4rqfayHCKi+pJWsLD6mlBccqgoS6PZtebjPTNUOmNFX2PYPoH0B+MSo9TsAAAAldEVYdGRhdGU6Y3JlYXRlADIwMjQtMDktMDFUMTg6NTg6MTErMDA6MDDvRyw5AAAAJXRFWHRkYXRlOm1vZGlmeQAyMDI0LTA5LTAxVDE4OjU4OjExKzAwOjAwnhqUhQAAACh0RVh0ZGF0ZTp0aW1lc3RhbXAAMjAyNC0wOS0wMVQxODo1ODoxNiswMDowMAyoi9QAAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAAAElFTkSuQmCC'
+]
+
+{ #category : 'icons' }
 CMIcons class >> runIcon [
+	<script: 'self runIcon inspect'>
 
 	| form |
 	icons at: #runIcon ifPresent: [ :icon | ^ icon ].
@@ -160,6 +199,7 @@ CMIcons class >> runIcon [
 
 { #category : 'icons' }
 CMIcons class >> stepIcon [
+	<script: 'self stepIcon inspect'>
 
 	| form |
 	icons at: #stepIcon ifPresent: [ :icon | ^ icon ].

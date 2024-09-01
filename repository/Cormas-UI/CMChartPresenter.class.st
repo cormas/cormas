@@ -4,13 +4,17 @@ Class {
 	#instVars : [
 		'simulation',
 		'translator',
+		'toolbar',
+		'showProbesButton',
+		'saveToPngButton',
+		'saveToGifButton',
 		'probesCheckboxes',
 		'chart',
-		'isProbeVisibleDictionary'
+		'isProbeVisibleDictionary',
+		'isProbesListVisible'
 	],
-	#category : 'Cormas-UI-Roassal3-Space',
-	#package : 'Cormas-UI-Roassal3',
-	#tag : 'Space'
+	#category : 'Cormas-UI',
+	#package : 'Cormas-UI'
 }
 
 { #category : 'examples' }
@@ -36,13 +40,29 @@ CMChartPresenter class >> forSimulation: aSimulation translator: aTranslator [
 	^ self on: { aSimulation . aTranslator }
 ]
 
+{ #category : 'initialization' }
+CMChartPresenter >> connectPresenters [
+
+	showProbesButton action: [
+		isProbesListVisible := isProbesListVisible not.
+		self updateProbesListVisibility.
+		self updateShowProbesButtonIcon.
+		self update ].
+	
+	saveToPngButton action: [ self saveToPng ].
+	"saveToGifButton action: [ ""do nothing"" ]."
+]
+
 { #category : 'layout' }
 CMChartPresenter >> defaultLayout [
 
-	^ SpBoxLayout newLeftToRight
-		spacing: 2;
-		add: probesCheckboxes width: 250;
-		add: chart;
+	^ SpBoxLayout newTopToBottom
+		add: toolbar expand: false;
+		add: (SpBoxLayout newLeftToRight
+			spacing: 5;
+			add: chart;
+			add: probesCheckboxes width: 250;
+			yourself);
 		yourself
 ]
 
@@ -73,10 +93,13 @@ CMChartPresenter >> drawChart [
 { #category : 'initialization' }
 CMChartPresenter >> initializePresenters [
 
+	isProbesListVisible := false.
+
 	isProbeVisibleDictionary := (simulation probes collect: [ :probe |
 		probe -> true ]) asDictionary.
 
 	probesCheckboxes := self newTable
+		hideColumnHeaders;
 		addColumn: ((SpCheckBoxTableColumn evaluated: [ :probe | isProbeVisibleDictionary at: probe ])
 			onActivation: [ :probe |
 				isProbeVisibleDictionary at: probe put: true.
@@ -86,9 +109,39 @@ CMChartPresenter >> initializePresenters [
 				self updateCharts ];
 			width: 20;
 			yourself);
+		addColumn: ((SpImageTableColumn evaluated: [ :probe | 
+			| form |
+			form := Form extent: 16 @ 16 depth: 32.
+			form getCanvas fillColor: probe color.
+			form ])
+			width: 20;
+			yourself);
 		addColumn: (SpStringTableColumn evaluated: [ :probe | probe name ]).
 		
 	probesCheckboxes items: simulation probes.
+	
+	showProbesButton := self newToolbarButton
+		label: 'Probes';
+		yourself.
+		
+	saveToPngButton := self newToolbarButton
+		label: 'Save to PNG';
+		icon: (self iconNamed: #smallSave);
+		yourself.
+		
+	"saveToGifButton := self newToolbarButton
+		label: 'Save to GIF';
+		icon: CMIcons gifIcon;
+		yourself."
+	
+	toolbar := self newToolbar
+		add: saveToPngButton;
+		"add: saveToGifButton;"
+		addItemRight: showProbesButton;
+		yourself.
+		
+	self updateProbesListVisibility.
+	self updateShowProbesButtonIcon.
 
 	chart := SpRoassalInspectorPresenter new.
 	self drawChart.
@@ -111,6 +164,16 @@ CMChartPresenter >> runStep [
 	self updateCharts.
 ]
 
+{ #category : 'as yet unclassified' }
+CMChartPresenter >> saveToPng [
+
+	(StSaveFilePresenter extensions: {'png'})
+		okAction: [ :fileReference | 
+			RSPNGExporter new
+				canvas: chart canvas;
+				exportToFile: fileReference ]
+]
+
 { #category : 'accessing - model' }
 CMChartPresenter >> setModelBeforeInitialization: aCollection [
 
@@ -123,4 +186,20 @@ CMChartPresenter >> updateCharts [
 
 	self drawChart.
 	chart update
+]
+
+{ #category : 'as yet unclassified' }
+CMChartPresenter >> updateProbesListVisibility [
+
+	isProbesListVisible
+		ifTrue: [ probesCheckboxes show ]
+		ifFalse: [ probesCheckboxes hide ].
+]
+
+{ #category : 'as yet unclassified' }
+CMChartPresenter >> updateShowProbesButtonIcon [
+
+	showProbesButton icon: (isProbesListVisible
+		ifTrue: [ CMIcons grayEyeIcon ]
+		ifFalse: [ CMIcons eyeIcon ] )
 ]

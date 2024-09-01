@@ -1874,6 +1874,10 @@ BaselineOfCormas >> specForBaselines: spec [
 	spec
 		baseline: 'MathRandomNumbers'
 		with: [ spec repository: 'github://PolyMathOrg/random-numbers:v1.x.x/src' ].
+		
+	spec
+		baseline: 'RoassalExporters'
+		with: [ spec repository: 'github://pharo-graphics/RoassalExporters:v1.02' ]
 
 ]
 
@@ -1907,7 +1911,9 @@ BaselineOfCormas >> specForPackages: spec [
 		package: 'Cormas-Tests'
 		with: [ spec requires: #('Cormas-Core' 'Cormas-Mocks') ];
 		
-		package: 'Cormas-UI-Roassal3';
+		package: 'Cormas-UI-Roassal3'
+		with: [ spec requires: #('RoassalExporters') ];
+		
 		package: 'Cormas-UI-Translator';
 		
 		package: 'Cormas-UI' with: [ spec requires: #('Cormas-Core' 'Cormas-Mocks' 'Cormas-UI-Roassal3' 'Cormas-UI-Translator') ];
