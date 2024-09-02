@@ -102,7 +102,7 @@ CMR3SpaceAgentsBuilder >> moveAgentShape: anAgentShape [
 	anAgentShape
 		"@ (RSPopup text: agent detailsOfPOV);"
 		size: agent sizeOfPOV;
-		color: agent pov;
+		color: (agent perform: agent class activePovSelector);
 		translateTo: (cell columnNumber @ cell rowNumber * cellSize) - (cellSize / 2)
 ]
 

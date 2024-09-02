@@ -71,8 +71,8 @@ CMEntity class >> availablePov [
 	| pragmas |
 	pragmas := Pragma allNamed: 'pov' from: self to: CMEntity.
 
-	^ pragmas collect: [ :pragma |
-		pragma method selector ]
+	^ (pragmas collect: [ :pragma |
+		pragma method selector ]) asSet asOrderedCollection
 ]
 
 { #category : 'utilities - colors' }
@@ -304,21 +304,6 @@ CMEntity >> cormasModel: aCMAbstractModel [
 	cormasModel := aCMAbstractModel
 ]
 
-{ #category : 'pov' }
-CMEntity >> defaultPOV [
-	" Answer a <Color> representing the receiver "
-
-	<pov>
-	^ self pov
-]
-
-{ #category : 'displaying' }
-CMEntity >> defineVisualState [
-	"DEPRECATED. Should use :"
-	
-	self changed
-]
-
 { #category : 'controlling' }
 CMEntity >> delete [
 	"Purpose: indicates that the instance has to be removed"
@@ -546,7 +531,7 @@ CMEntity >> patch [
 { #category : 'accessing' }
 CMEntity >> pov [
 	" For compatibility we answer a <Color> which could be considered neutral "
-
+	<pov>
 	^ Color gray
 ]
 

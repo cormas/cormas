@@ -34,6 +34,7 @@ CMPovSelectionPresenter >> initializePresenters [
 	povTree := self newTreeTable.
 	
 	povTree
+		hideColumnHeaders;
 		addColumn: (SpCompositeTableColumn new
 			addColumn:
 				(SpImageTableColumn
