@@ -321,7 +321,11 @@ CMSimulationRunnerPresenter >> runSimulationUntilEnd [
 		(displayEvery number min: (simulation finalTimeStep - simulation currentTimeStep))
 			timesRepeat: [ simulation runStep ].
 			
-		self updateAfterStep.
+		[ self updateAfterStep ] onErrorDo: [ :error |
+			"An ugly hack to silence Roassal errors that are caused by parallel execution"
+			error asString = '#intersect: was sent to nil'
+				ifFalse: [ error signal ] ].
+		
 		(Delay forMilliseconds: self speedSelectedItemToMilliseconds) wait ]
 	] onErrorDo: [ :error | 
 		shouldPause := false.
