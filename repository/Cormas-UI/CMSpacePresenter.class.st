@@ -10,7 +10,9 @@ Class {
 		'builder',
 		'povButton',
 		'saveToPngButton',
-		'isPovVisible'
+		'addAgentButton',
+		'isPovVisible',
+		'isCreatingEntities'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -45,6 +47,11 @@ CMSpacePresenter >> connectPresenters [
 		self update ].
 	
 	saveToPngButton action: [ self saveToPng ].
+	
+	addAgentButton action: [
+		isCreatingEntities
+			ifTrue: [ self stopCreatingAgents ]
+			ifFalse: [ self startCreatingAgents ] ].
 ]
 
 { #category : 'layout' }
@@ -77,7 +84,9 @@ CMSpacePresenter >> initializeCanvasInteractions [
 CMSpacePresenter >> initializeDiagram [
 	
 	builder := CMR3SpaceDiagramBuilder new
-		cormasModel: cormasModel.
+		cormasModel: cormasModel;
+		whenLeftClickOnCellDo: [ :cell | self inform: cell asString ];
+		yourself.
 	
 	diagram := builder asPresenter.
 		
@@ -90,6 +99,7 @@ CMSpacePresenter >> initializeDiagram [
 CMSpacePresenter >> initializePresenters [
 
 	isPovVisible := false.
+	isCreatingEntities := false.
 	
 	povButton := self newToolbarButton
 		label: 'PoV';
@@ -100,10 +110,14 @@ CMSpacePresenter >> initializePresenters [
 		icon: (self iconNamed: #smallSave);
 		yourself.
 		
+	addAgentButton := self newToolbarButton.
+	self updateAddAgentButton.
+		
 	self updatePovButtonIcon.
 		
 	toolbar := self newToolbar
 		add: saveToPngButton;
+		add: addAgentButton;
 		addItemRight: povButton;
 		yourself.
 
@@ -131,6 +145,42 @@ CMSpacePresenter >> saveToPng [
 CMSpacePresenter >> setModelBeforeInitialization: aCormasModel [
 	
 	cormasModel := aCormasModel 
+]
+
+{ #category : 'as yet unclassified' }
+CMSpacePresenter >> startCreatingAgents [
+
+	| agentClass |
+	isCreatingEntities := true.
+	self updateAddAgentButton.
+	
+	agentClass := cormasModel class allEntityClasses detect: [ :aClass | (aClass inheritsFrom: CMAgent) and: [ aClass subclasses isEmpty ] ].
+	
+	builder whenLeftClickOnCellDo: [ :cell |
+		cormasModel newEntity: agentClass locatedAt: cell.
+		self updateDiagram ].
+]
+
+{ #category : 'as yet unclassified' }
+CMSpacePresenter >> stopCreatingAgents [
+	
+	isCreatingEntities := false.
+	self updateAddAgentButton.
+	builder whenLeftClickOnCellDo: [ :cell | "do nothing" ].
+]
+
+{ #category : 'as yet unclassified' }
+CMSpacePresenter >> updateAddAgentButton [
+
+	isCreatingEntities
+		ifTrue: [ 
+			addAgentButton
+				icon: (self iconNamed: #changeRemove);
+				label: 'Stop' ]
+		ifFalse: [ 
+			addAgentButton
+				icon: (self iconNamed: #smallAdd);
+				label: 'Create' ]
 ]
 
 { #category : 'TOREMOVE' }

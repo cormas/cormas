@@ -89,13 +89,13 @@ CMR3SpaceShapeBuilder >> masterShape [
 { #category : 'accessing' }
 CMR3SpaceShapeBuilder >> masterShape: aShape [
 
-	| popUp |
+	"| popUp |
 	
-	popUp := self createAdaptivePopup.
+	popUp := self createAdaptivePopup."
 
 	masterShape := aShape 
-		@ popUp;
-		when: RSMouseLeftClick send: #inspectEntity: to: self;
+		"@ popUp;"
+		when: RSMouseRightClick send: #inspectEntity: to: self;
 		yourself.
 ]
 

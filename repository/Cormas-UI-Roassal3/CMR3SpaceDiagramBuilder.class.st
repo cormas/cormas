@@ -111,3 +111,9 @@ CMR3SpaceDiagramBuilder >> update [
 	agentsBuilder update.
 	self container signalUpdate.
 ]
+
+{ #category : 'enumerating' }
+CMR3SpaceDiagramBuilder >> whenLeftClickOnCellDo: aBlock [
+
+	cellsBuilder whenLeftClickDo: aBlock
+]

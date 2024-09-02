@@ -1,6 +1,9 @@
 Class {
 	#name : 'CMR3SpaceCellsBuilder',
 	#superclass : 'CMR3SpaceShapeBuilder',
+	#instVars : [
+		'onLeftClickBlock'
+	],
 	#category : 'Cormas-UI-Roassal3-Space',
 	#package : 'Cormas-UI-Roassal3',
 	#tag : 'Space'
@@ -14,10 +17,32 @@ CMR3SpaceCellsBuilder >> defaultMasterShape [
 		yourself.
 ]
 
+{ #category : 'initialization' }
+CMR3SpaceCellsBuilder >> initialize [
+
+	super initialize.
+	onLeftClickBlock := [ "do nothing" ]
+]
+
+{ #category : 'accessing' }
+CMR3SpaceCellsBuilder >> masterShape: aShape [
+
+	super masterShape: aShape.
+	masterShape when: RSMouseLeftClick send: #processLeftClick: to: self.
+]
+
 { #category : 'accessing' }
 CMR3SpaceCellsBuilder >> objects [
 
 	^ diagramBuilder cormasModel theCells
+]
+
+{ #category : 'enumerating' }
+CMR3SpaceCellsBuilder >> processLeftClick: anEvent [
+
+	| cell |
+	cell := anEvent shape model.
+	onLeftClickBlock value: cell
 ]
 
 { #category : 'rendering' }
@@ -40,4 +65,10 @@ CMR3SpaceCellsBuilder >> updateShape: aShape [
 	colorSymbolOrNumber := model perform: diagramBuilder activeSpatialEntityPov.
 
 	aShape color: (colorSymbolOrNumber asColorForPoVIn: model).
+]
+
+{ #category : 'enumerating' }
+CMR3SpaceCellsBuilder >> whenLeftClickDo: aBlock [
+
+	onLeftClickBlock := aBlock
 ]

@@ -963,6 +963,15 @@ CMAbstractModel >> newEntity: aClass [
 	^ anEntity
 ]
 
+{ #category : 'instance creation - agents & objects' }
+CMAbstractModel >> newEntity: aClass locatedAt: aCell [
+	"Creates a new instance of aClass and collects it, immediately, at the level of theXXXs collection."
+
+	| entity |
+	entity := self newEntity: aClass.
+	entity moveTo: aCell
+]
+
 { #category : 'utilities - space metrics' }
 CMAbstractModel >> patchDensity: aClass [
 	"Purpose: Return the density of instances of an aggregate class as compared to the total size of the spatial grid (total size of aggregates / grid size).
