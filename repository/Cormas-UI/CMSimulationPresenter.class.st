@@ -26,6 +26,18 @@ CMSimulationPresenter class >> forModelClass: aClass translator: aTranslator [
 ]
 
 { #category : 'as yet unclassified' }
+CMSimulationPresenter >> beInNotRunningMode [
+
+	initializer enabled: true
+]
+
+{ #category : 'as yet unclassified' }
+CMSimulationPresenter >> beInRunningMode [
+
+	initializer enabled: false
+]
+
+{ #category : 'as yet unclassified' }
 CMSimulationPresenter >> confirmReinitialize [
 
 	SpConfirmDialog new

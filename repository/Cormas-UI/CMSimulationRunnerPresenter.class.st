@@ -18,7 +18,8 @@ Class {
 		'chartPresenter',
 		'spacePage',
 		'dataPage',
-		'chartsPage'
+		'chartsPage',
+		'shouldPause'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -59,6 +60,28 @@ CMSimulationRunnerPresenter class >> openForSimulation: aSimulation withTranslat
 	(self forTranslator: aTranslator)
 		simulation: aSimulation;
 		open
+]
+
+{ #category : 'as yet unclassified' }
+CMSimulationRunnerPresenter >> beInNotRunningMode [
+
+	runButton
+		icon: CMIcons runIcon;
+		action: [ self runSimulationUntilEnd ].
+		
+	stepButton enabled: true.
+	owner ifNotNil: [ owner beInNotRunningMode ]
+]
+
+{ #category : 'as yet unclassified' }
+CMSimulationRunnerPresenter >> beInRunningMode [
+
+	runButton
+		icon: CMIcons pauseIcon;
+		action: [ shouldPause := true ].
+		
+	stepButton enabled: false.
+	owner ifNotNil: [ owner beInRunningMode ]
 ]
 
 { #category : 'initialization' }
@@ -216,10 +239,10 @@ CMSimulationRunnerPresenter >> initializeParametersTable [
 
 { #category : 'initialization' }
 CMSimulationRunnerPresenter >> initializePresenters [
+
+	shouldPause := false.
 	
 	runButton := self newButton
-		icon: CMIcons runIcon;
-		action: [ self runSimulationUntilEnd ];
 		help: translator tRunButtonHelp;
 		yourself.
 		
@@ -260,6 +283,8 @@ CMSimulationRunnerPresenter >> initializePresenters [
 	notebook addPage: (SpNotebookPage
 		title: 'Empty'
 		provider: [ self newLabel ]).
+		
+	self beInNotRunningMode.
 	
 	"By default this page is disabled. It will be enabled when the simulation: setter is called"
 	self enabled: false
@@ -289,13 +314,22 @@ CMSimulationRunnerPresenter >> progressString [
 
 { #category : 'actions' }
 CMSimulationRunnerPresenter >> runSimulationUntilEnd [
+
+	self beInRunningMode.
 	
-	[ [ simulation currentTimeStep < simulation finalTimeStep ] whileTrue: [
+	[ [ [ simulation currentTimeStep < simulation finalTimeStep and: [ shouldPause not ] ] whileTrue: [
 		(displayEvery number min: (simulation finalTimeStep - simulation currentTimeStep))
 			timesRepeat: [ simulation runStep ].
 			
 		self updateAfterStep.
-		(Delay forMilliseconds: self speedSelectedItemToMilliseconds) wait ] ] fork.
+		(Delay forMilliseconds: self speedSelectedItemToMilliseconds) wait ]
+	] onErrorDo: [ :error | 
+		shouldPause := false.
+		self beInNotRunningMode.
+		error signal ].
+ 
+	shouldPause := false.
+	self beInNotRunningMode ] fork.
 ]
 
 { #category : 'accessing - model' }

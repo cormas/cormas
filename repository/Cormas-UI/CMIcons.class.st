@@ -25,10 +25,16 @@ CMIcons class >> chartIconContents [
 	^ 'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAAGYktHRAD/AP8A/6C9p5MAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfoCBwMCztHmVkiAAAF0ElEQVRYw72XfWxV5R3HP7/nnPtGKbTDFkQdCauE+BqqGZPgSzUBNWTorIQ/jFO4ulHQTYdGBV9B0OggUiq0UF9mMJosEzVRyaYgxqgwdNO5SamKV4WtsK1Ke6+355zn5x/nXHr6ApbE+vvn3nOeJ8/383t78jvyqxsXA1QDDwKjgN8CnxNZ85qHGU5zganAXcAlgACVwC2K7BJ0WMUBDLAMuDT2rg64SdDksKtHEVgO7AKuBCqATcBTQM/w+x8CbAf+DswEUsDvgdwPIV4CgDD3EvuPEBbg/NzH4UvtRdo4oeZ7AzBHWmhe8zDZz/YgqqF4DCD7WfvwA2Rz7bGgcDwidwGTvm8I94grvQ5XA48QFmkdkAU+LkEcazpG7NgBAp7VowAEQVx8bST+f+ACYANw3WAQ2grkY3FVkEW9x5bt3IFBOOR5JBznJAMHB02BvXB6f/HXgcuAP0VR2AD8JJ4ObQW6ohdCBoMDoGv7ifsBjuPU+aoveqr3DQTIFwK9YNpxQGMkvj3yeDuwCNgch/hPj091wsF2mVIvjcOnBY8bSIQQ7z92MgCHfB/HyEVWtVXhdKCsL4Cq6rSzx9GdbwTmRKJZYE+0Yz/QUIJQ2Oip1rzcWcCIBcM4LE0oV6GsoMiN6uJYDN2B4hgzIxKfYOCBpDGL4zWgJJMj7ZTTVgHnDiJOPwgC1ct2579p/dRLzsNyCGhC+QWwG6hCWSE9OGfq7tWImWE1aFY4wQgrU2KW+apFE/eeTKoSN3FulPP5JXElunx6O2O/I9Jglc1dlvNOKrQ/8XWi7MlI/E0MlyMsBLpR7nstc/ZG1/asV2S8Ee5Pm1BcGXAPCHjeNhKJrCLtG/5ZQ/MnNbR8UkOwFZrbeiEO+rL/UzNmQXU+99JDucbpo/zui4smuQOYh+VfbzlnPoPIQk/c4tRD/7jmd/ufPnGEFlfY8lOX5XGLANOr87E2FBEKhf+Zd99frGVl7Ruq5mLTCFAbtVwnCWjeG0KYIuAT5L9I2RHFIttGncXNE35j36s4J8Dr5NSv/saHFVP8uQde0Ydya7j/i3Xc+2WLnyp4Sjr0VW7oGwHB8/Oy64MD4z/YgnUg6oIXgJVAeam3AWyaapvm0RFucZaP8/atP170l/fKJv9Mev7bmhA76aPRZ9Rj/XXPHDcj0zz28k2OtftS1ltKmttxSQJo4yBXsXUTTK7OlcTXAuOBXxNOTOXRtrEoTQj16vKm6we/3DnmoqtF7QsK5/tWn7Oq64DRBr13+U/XX4uhATiAcjc+d+CEEANuwp4goXOnvHqFtTQBZcBq4EJgQeT/I4QzRD3CG1SSJUMbxX/jiizwVVH4OfCNEe4sd8yqU/Y86ePxIgkClGaUpfgIDiv7A8it52+ao8otwEjgdoE1CmcBj0cQFwMTgTcQsji0+acI0uURGHefK9IQqBYQdpUbZ1UhsIHFQAYo8hIOWZQWlCUEVB5OgarY0enucVUjO5dFob4NaNTQ678C84APD4uHd0SbloE5qFSlMlhVLHyZNGZ+xpjVBWsDgHfqrg5PSQEBWxCywEdA0KcGXBM4gJVQfC1gY8s7I9HHgOuBttKCUwcdtbVUJ5OAomi3r+qLQM/UqWFoF0ab00CRP2OYhWFJPAXiWcfv6KpcWnXpV01sC8WdOgi2Ht7zDvAu4MXFS9ZRWwtAwOAmDaCPRpUVsBdAou+CCmArUOVbZ9rEH+3L3Vb3VJ/DYxCHLb4+FJs5u77P85bn/zigC9Q1geQ6xw44/FjFjiwuSJSombPrBx1IFCCKzFFNVek40EGxWCQ2vh1xr2rgAvM0rK1WQPsDGMKGSXGUebGfyVA2GSM2CMxk0CXAGMARpKU/wFjgD0BhqAerqlhrh7SX8OKrICzDBxWtKAFY4CDQSWzUgiF9HA5VvGSZ6HckMKkE0EU4dqUjURmieC+FfCeHBWpUtRWoAlYBy+MR2HuMnhyzWWs/F5FnAQe4Byh8C0TGYHK4EwL/AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDI0LTA4LTI4VDEyOjExOjU1KzAwOjAwN3Qm/wAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyNC0wOC0yOFQxMjoxMTo1NSswMDowMEYpnkMAAAAodEVYdGRhdGU6dGltZXN0YW1wADIwMjQtMDgtMjhUMTI6MTE6NTkrMDA6MDDWnNXoAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAABJRU5ErkJggg=='
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'colors' }
 CMIcons class >> colorGreen [
 
 	^ Color fromHexString: '00b44c'
+]
+
+{ #category : 'colors' }
+CMIcons class >> colorRed [
+
+	^ Color fromHexString: 'C21807'
 ]
 
 { #category : 'icons' }
@@ -157,6 +163,22 @@ CMIcons class >> inspectIcons [
 				 collect: [ :each | each -> (self perform: each) ]);
 		whenSelectedItemChangedDo: [ :assoc | assoc value inspect ];
 		open
+]
+
+{ #category : 'icons' }
+CMIcons class >> pauseIcon [
+	<script: 'self pauseIcon inspect'>
+
+	| form |
+	icons at: #pauseIcon ifPresent: [ :icon | ^ icon ].
+	
+	form := Form extent: 16 @ 16 depth: 32.
+	form getCanvas
+		fillColor: Color transparent;
+		fillRectangle: (4 @ 3 corner: 7 @ 14) color: self colorRed;
+		fillRectangle: (10 @ 3 corner: 13 @ 14) color: self colorRed.
+	
+	^ icons at: #pauseIcon put: form
 ]
 
 { #category : 'icons' }
