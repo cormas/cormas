@@ -70,6 +70,12 @@ CMSpatialEntity class >> bounds: x [
 ]
 
 { #category : 'testing' }
+CMSpatialEntity class >> isCormasCellClass [
+
+	^ true
+]
+
+{ #category : 'testing' }
 CMSpatialEntity class >> isSpatialClass [
 	^ true
 ]

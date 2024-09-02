@@ -151,6 +151,12 @@ CMEntity class >> isCompoundSpatialClass [
 ]
 
 { #category : 'testing' }
+CMEntity class >> isCormasEntityClass [
+
+	^ true
+]
+
+{ #category : 'testing' }
 CMEntity class >> isGenericEntity [
 	
 	^self genericEntities includes: self
@@ -463,12 +469,6 @@ CMEntity >> isCommunicatingEntity [
 CMEntity >> isCormasEntity [
 
 	^ true
-]
-
-{ #category : 'testing' }
-CMEntity >> isGenericEntity [ 
-
-	^ self class isGenericEntity
 ]
 
 { #category : 'testing' }

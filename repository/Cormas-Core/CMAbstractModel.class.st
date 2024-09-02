@@ -202,9 +202,9 @@ CMAbstractModel class >> initializeParameters [
 ]
 
 { #category : 'testing' }
-CMAbstractModel class >> isGenericEntity [
-	
-	^self = CMAbstractModel	"| self = CormasModelGame"
+CMAbstractModel class >> isCormasModelClass [
+
+	^ true
 ]
 
 { #category : 'testing' }
@@ -899,11 +899,6 @@ CMAbstractModel >> initializeSpaceModel [
 	self class cellClass ifNil: [ ^ nil ].
 	self spaceModel: (CMSpaceModel forModel: self).
 
-]
-
-{ #category : 'accessing' }
-CMAbstractModel >> isGenericEntity [
-	^ self class isGenericEntity 
 ]
 
 { #category : 'accessing - entities' }

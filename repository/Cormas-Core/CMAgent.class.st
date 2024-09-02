@@ -12,6 +12,12 @@ Class {
 	#tag : 'Entities'
 }
 
+{ #category : 'testing' }
+CMAgent class >> isCormasAgentClass [
+
+	^ true
+]
+
 { #category : 'controlling' }
 CMAgent >> delete [
 "Purpose: gets rid of this object. The collectGarbage is IMMEDIATELY performed  (ie. the receiver of class X is removed from 'theXXXs' collection)"

@@ -154,7 +154,7 @@ CMSpacePresenter >> startCreatingAgents [
 	isCreatingEntities := true.
 	self updateAddAgentButton.
 	
-	agentClass := cormasModel class allEntityClasses detect: [ :aClass | (aClass inheritsFrom: CMAgent) and: [ aClass subclasses isEmpty ] ].
+	agentClass := cormasModel class allEntityClasses detect: [ :aClass | aClass isCormasAgentClass and: [ aClass subclasses isEmpty ] ].
 	
 	builder whenLeftClickOnCellDo: [ :cell |
 		cormasModel newEntity: agentClass locatedAt: cell.
