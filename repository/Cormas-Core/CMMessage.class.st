@@ -20,8 +20,8 @@ isObserved set the active pov.
 
 "
 Class {
-	#name : #CMMessage,
-	#superclass : #CMObject,
+	#name : 'CMMessage',
+	#superclass : 'Object',
 	#instVars : [
 		'sender',
 		'receiver',
@@ -31,10 +31,12 @@ Class {
 	#classInstVars : [
 		'isObserved'
 	],
-	#category : #'Cormas-Core-Communication'
+	#category : 'Cormas-Core-Communication',
+	#package : 'Cormas-Core',
+	#tag : 'Communication'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CMMessage class >> from: anAgent [
 	
 	^ self new
@@ -42,7 +44,7 @@ CMMessage class >> from: anAgent [
 		yourself.
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CMMessage class >> from: aSenderAgent to: aReceiverAgent [
 	
 	^ self new
@@ -51,7 +53,7 @@ CMMessage class >> from: aSenderAgent to: aReceiverAgent [
 		yourself.
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CMMessage class >> from: aSenderAgent to: aReceiverAgent content: anObject [
 	
 	^ self new
@@ -61,7 +63,7 @@ CMMessage class >> from: aSenderAgent to: aReceiverAgent content: anObject [
 		yourself.
 ]
 
-{ #category : #communication }
+{ #category : 'communication' }
 CMMessage class >> from: aSenderAgent to: aReceiverAgent topic: aSymbol [
 	
 	^ self new
@@ -71,7 +73,7 @@ CMMessage class >> from: aSenderAgent to: aReceiverAgent topic: aSymbol [
 		yourself.
 ]
 
-{ #category : #communication }
+{ #category : 'communication' }
 CMMessage class >> from: aSenderAgent to: aReceiverAgent topic: aSymbol content: anObject [
 	
 	^ self new
@@ -82,13 +84,13 @@ CMMessage class >> from: aSenderAgent to: aReceiverAgent topic: aSymbol content:
 		yourself
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMMessage class >> isSituatedClass [
 	
 	^ false
 ]
 
-{ #category : #activityEditor }
+{ #category : 'activityEditor' }
 CMMessage class >> superClassesUntil: aSuperClass [
 	"Return the super classes of the class sender until aSuperClass"
 	
@@ -99,14 +101,7 @@ CMMessage class >> superClassesUntil: aSuperClass [
 	^coll
 ]
 
-{ #category : #util }
-CMMessage class >> superClassesUntilEntity [
-	"Return the super classes of the class sender until Msg"
-
-	^ self superClassesUntil: CMMessage
-]
-
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CMMessage class >> to: anAgent [
 	
 	^ self new
@@ -114,7 +109,7 @@ CMMessage class >> to: anAgent [
 		yourself.
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CMMessage class >> to: anAgent content: anObject [
 	
 	^ self new
@@ -123,7 +118,7 @@ CMMessage class >> to: anAgent content: anObject [
 		yourself.
 ]
 
-{ #category : #communication }
+{ #category : 'communication' }
 CMMessage class >> to: anAgent topic: aSymbol [
 	
 	^ self new
@@ -132,7 +127,7 @@ CMMessage class >> to: anAgent topic: aSymbol [
 		yourself
 ]
 
-{ #category : #communication }
+{ #category : 'communication' }
 CMMessage class >> to: anAgent topic: aSymbol content: anObject [
 
 	^ self new
@@ -142,55 +137,55 @@ CMMessage class >> to: anAgent topic: aSymbol content: anObject [
 		yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMMessage >> content [
 	
 	^ content
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMMessage >> content: anObject [
 	
 	content := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMMessage >> receiver [
 
 	^ receiver
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMMessage >> receiver: aReceiverAgent [
 
 	receiver := aReceiverAgent
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 CMMessage >> send [
 	
 	receiver receiveMessage: self
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMMessage >> sender [
 
 	^ sender
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMMessage >> sender: aSenderAgent [
 
 	sender := aSenderAgent
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMMessage >> topic [
 	
 	^ topic
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMMessage >> topic: aSymbol [
 	
 	topic := aSymbol

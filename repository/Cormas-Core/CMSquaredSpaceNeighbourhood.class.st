@@ -1,25 +1,20 @@
 Class {
-	#name : #CMSquaredSpaceNeighbourhood,
-	#superclass : #CMSpaceNeighbourhood,
-	#category : #'Cormas-Core-Space'
+	#name : 'CMSquaredSpaceNeighbourhood',
+	#superclass : 'CMSpaceNeighbourhood',
+	#category : 'Cormas-Core-Space',
+	#package : 'Cormas-Core',
+	#tag : 'Space'
 }
 
-{ #category : #accessing }
-CMSquaredSpaceNeighbourhood >> createCellsFigure [
-
-	super createCellsFigure.
-	self spaceModel createRectangularCellsFigure.
-]
-
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 CMSquaredSpaceNeighbourhood >> nearestEmptyCellFor: aCMAgentLocation [
 	
-	^ (aCMAgentLocation nearestEmptyNeighborsWithinRadius: (self spaceModel line max: self spaceModel column))
-		ifNotEmpty: [ : locations |  Cormas selectRandomlyFrom: locations ]
+	^ (aCMAgentLocation nearestEmptyNeighborsWithinRadius: (self spaceModel numberOfRows max: self spaceModel numberOfColumns))
+		ifNotEmpty: [ : locations | self selectRandomlyFrom: locations ]
 		ifEmpty: [ nil ]
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSquaredSpaceNeighbourhood >> setBoundaryDirectionsFor: aCMSpatialEntityElement [
 
 	| dirCollection |

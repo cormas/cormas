@@ -1,6 +1,6 @@
 Class {
-	#name : #CMChannelTest,
-	#superclass : #TestCase,
+	#name : 'CMChannelTest',
+	#superclass : 'TestCase',
 	#instVars : [
 		'channel',
 		'receiver1',
@@ -10,10 +10,12 @@ Class {
 		'message2',
 		'message3'
 	],
-	#category : #'Cormas-Tests-Communication'
+	#category : 'Cormas-Tests-Communication',
+	#package : 'Cormas-Tests',
+	#tag : 'Communication'
 }
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMChannelTest >> setUp [
 
 	| sender1 sender2 |
@@ -33,20 +35,20 @@ CMChannelTest >> setUp [
 	message3 := CMMessage from: sender1 to: receiver3.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMChannelTest >> testAddMessageToQueue [
 
 	channel addMessageToQueue: message1.
 	self deny: channel isEmpty.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMChannelTest >> testIsEmpty [
 
 	self assert: channel isEmpty.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMChannelTest >> testIsEmptyAfterSendingAllMessages [
 
 	channel
@@ -58,7 +60,7 @@ CMChannelTest >> testIsEmptyAfterSendingAllMessages [
 	self assert: channel isEmpty.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMChannelTest >> testSendAllMessages [
 
 	channel

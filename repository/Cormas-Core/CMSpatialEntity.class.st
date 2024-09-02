@@ -38,8 +38,8 @@ ag update: (assoc key asString) to:  assoc value
 
 "
 Class {
-	#name : #CMSpatialEntity,
-	#superclass : #CMEntity,
+	#name : 'CMSpatialEntity',
+	#superclass : 'CMEntity',
 	#instVars : [
 		'spaceModel',
 		'destroyed',
@@ -52,72 +52,63 @@ Class {
 	#classInstVars : [
 		'bounds'
 	],
-	#category : #'Cormas-Core-Entities'
+	#category : 'Cormas-Core-Entities',
+	#package : 'Cormas-Core',
+	#tag : 'Entities'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntity class >> bounds [
 	
 	^bounds
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntity class >> bounds: x [
 	
 	bounds := x
 ]
 
-{ #category : #'utilities - colors' }
-CMSpatialEntity class >> defaultColor [
-	"Purpose: return the default color of the current class name.
-	Ex: CMEntity defaultColor => ColorValue lightGray ; CMECECForager defaultColor => ColorValue veryLightGray"
-
-	self colorsDict isEmpty
-		ifTrue: [ ^ super defaultColor ]
-		ifFalse: [ ^ self colorsDict at: self name ifAbsent: [ super defaultColor ] ]
-]
-
-{ #category : #testing }
+{ #category : 'testing' }
 CMSpatialEntity class >> isSpatialClass [
 	^ true
 ]
 
-{ #category : #'default value' }
+{ #category : 'default value' }
 CMSpatialEntity class >> neighbourhood_default [
 	
 	^OrderedCollection new
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CMSpatialEntity class >> new: aSpaceModel [
 
 	| newEntity |
 	newEntity := self new
 		spaceModel: aSpaceModel;
 		cormasModel: aSpaceModel cormasModel;
-		collector: aSpaceModel cormasModel collector;
 		yourself.
 				
-	aSpaceModel cormasModel collect: newEntity.
+	aSpaceModel cormasModel collectEntity: newEntity.
 	newEntity initOccupants.
 	
 	^ newEntity
 ]
 
-{ #category : #'default value' }
+{ #category : 'default value' }
 CMSpatialEntity class >> theOccupants_default [
 	
 	^Dictionary new
 ]
 
-{ #category : #adding }
+{ #category : 'adding' }
 CMSpatialEntity >> addOccupant: anObject [
 
 	(self theOccupants at: anObject class name
 		ifAbsentPut: [ OrderedCollection new ]) add: anObject
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 CMSpatialEntity >> allLayersTo: radius [
 	"returns a collection (collResult) of layers :
 		- index of collResult is the distance to this layer, 
@@ -144,7 +135,7 @@ ex: collResult =
 	^collResult
 ]
 
-{ #category : #'environment - sensing - agents' }
+{ #category : 'environment - sensing - agents' }
 CMSpatialEntity >> allOccupants [
 
 	"Purpose: returns all the entities located there
@@ -156,7 +147,7 @@ Return value: <Collection(AgentLocation & ObjectLocation)>"
 	^ collec
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMSpatialEntity >> belongsToAggregate: aSpatialEntity [
 "Purpose: tests if the receiver belongs to a higher level spatial entity, even if theCSE is nil. 
 This method is valid whatever the aggregate level and even if theCSE is nil. It will return 'true' if the receiver is a component of a component of aSpatialEntity
@@ -166,7 +157,7 @@ Return value: <Boolean>"
 	^aSpatialEntity containsCell: self
 ]
 
-{ #category : #displaying }
+{ #category : 'displaying' }
 CMSpatialEntity >> color: aColorSymbol [
 	"Purpose: changes background color to a given color (to draw observer attention to the receiver). If aColorSymbol is not a standard Color, it displays the entity in red.
 	Argument: aColorSymbol = <ByteSymbol> or <String>
@@ -177,29 +168,13 @@ CMSpatialEntity >> color: aColorSymbol [
 		ifFalse: [ self flashColor: Color red ]
 ]
 
-{ #category : #accessing }
-CMSpatialEntity >> compoundSpatialClasses [
-	
-	^theAggregates
-]
-
-{ #category : #control }
-CMSpatialEntity >> connexity [
-	"Purpose: returns the value of the grid connexity, i.e. 8, 4 or 6.
-If the grid is irregular, returns the number of neighbors of the current cell"
-	
-	self spaceModel gridCellShape = #irregular
-		ifTrue: [^self neighbourhood size].
-	^self spaceModel connexity
-]
-
-{ #category : #displaying }
+{ #category : 'displaying' }
 CMSpatialEntity >> delimitors [
 	
 	^#nil
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 CMSpatialEntity >> destroyed [
 	"Answer if the entity is destroyed or not"
 	
@@ -207,13 +182,13 @@ CMSpatialEntity >> destroyed [
 	^ destroyed ifNil: [destroyed := false]
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 CMSpatialEntity >> destroyed: aBoolean [
 	
 	destroyed := aBoolean
 ]
 
-{ #category : #deprecated }
+{ #category : 'deprecated' }
 CMSpatialEntity >> distCenter: aSpatialEntity [
 	
 	self deprecated: 'You shouldn''t use this method: the result depend of the size of the displayed grid ! If you modify the size of the windows, the result will change !!  :o(
@@ -223,7 +198,7 @@ returns a distance in cells, between the sender and aSpatialEntity.'.
 	^self center dist: aSpatialEntity center
 ]
 
-{ #category : #'environment - distance' }
+{ #category : 'environment - distance' }
 CMSpatialEntity >> distanceTo: anotherSpatialEntity [
 	"Purpose: returns the Manhattan distance (in cells) between the receiver and aSpatialEntity
 Argument: anotherSpatialEntity = <SpatialEntity>
@@ -232,19 +207,19 @@ Return value: <Integer>"
 	self subclassResponsibility
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntity >> edge [
 	
 	^edge
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntity >> edge: anObject [
 	
 	edge := anObject
 ]
 
-{ #category : #'environment - distance' }
+{ #category : 'environment - distance' }
 CMSpatialEntity >> euclideanDistanceTo: anotherSpatialEntity [
 	"Purpose: returns the distance between the receiver and another spatialEntity, using the Euclidean distance formula: 
 	square root of [(Xa - Xb)^2 + (Ya - Yb)^2)]
@@ -253,7 +228,7 @@ Argument: anotherSpatialEntity = <SpatialEntity>"
 	self subclassResponsibility
 ]
 
-{ #category : #displaying }
+{ #category : 'displaying' }
 CMSpatialEntity >> flashColor: aColorValue [
 	"Purpose: changes background color to a given color (to draw observer attention to the receiver). If aColorValue is not a standard Color, it displays the entity in red.
 	Argument: aColorValue = <ColorValue> or <String> or <Symbol>
@@ -261,13 +236,9 @@ CMSpatialEntity >> flashColor: aColorValue [
 
 	aColorValue isString
 		ifTrue: [ ^ self flashColor: (Color perform: aColorValue asSymbol) ].
-	self cormasModel
-		registerEntityChange: #flash
-		with: aColorValue
-		from: (EntityReference on: self)
 ]
 
-{ #category : #'star displaying' }
+{ #category : 'star displaying' }
 CMSpatialEntity >> flashN [
 
 	"Purpose: for each neighours, changes background color to yellow (to draw observer attention to the neighbourhood)"
@@ -276,7 +247,7 @@ CMSpatialEntity >> flashN [
 		self neighbourhood do: [ :v | v flash ] ]
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 CMSpatialEntity >> grid [
 	"Purpose: returns the grid, i.e. the list of all the spatial element entities.
 Return value: <Collection(SpatialElementEntity)>"
@@ -284,13 +255,13 @@ Return value: <Collection(SpatialElementEntity)>"
 	^self spaceModel elementaryEntities
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMSpatialEntity >> hasNoOccupants [
 
 	^ self hasOccupants not
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMSpatialEntity >> hasNoOccupantsExcept: anObject [
 
 	self theOccupants ifNil: [ ^ true ].
@@ -299,7 +270,7 @@ CMSpatialEntity >> hasNoOccupantsExcept: anObject [
 		(list copyWithout: anObject) isEmpty ].
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMSpatialEntity >> hasOccupants [
 
 	self theOccupants ifNil: [ ^ false ].
@@ -308,7 +279,7 @@ CMSpatialEntity >> hasOccupants [
 		list isNotEmpty ].
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMSpatialEntity >> hasOccupantsOfClass: aClass [
 
 	"Purpose: test if there is an occupant of a given type.
@@ -319,7 +290,7 @@ Example: self hasOccupantType: #Tree"
 	^ (self occupantsOfClass: aClass) isNotEmpty
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 CMSpatialEntity >> initOccupants [
 	
 	self allOccupants do: [:a | a leave]	"self spaceModel cormasModel class occupantClasses isEmpty 
@@ -330,7 +301,7 @@ CMSpatialEntity >> initOccupants [
 				do: [:e | theOccupants at: (e name) put: OrderedCollection new]]"
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialization' }
 CMSpatialEntity >> initialize [
 	" Private - Set the receiver's internal state. Initally a spatial entity is not dead "
 
@@ -340,7 +311,7 @@ CMSpatialEntity >> initialize [
 	neighbourhoodWithNils := OrderedCollection new: 8.
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 CMSpatialEntity >> interestingDetails [
 	" Answer a <Collection> of interesting receiver's attributes, from a modeler point of view, to display in a popup for example "
 
@@ -350,7 +321,7 @@ CMSpatialEntity >> interestingDetails [
 		}
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMSpatialEntity >> isComponentOf: aSpatialEntity [ 
 "Purpose: tests if the receiver belongs to the components of a given compound spatial entity
 It will return 'false' if the receiver is a component of a component of aSpatialEntity (cf. belongsToAggregate:)
@@ -362,33 +333,33 @@ Example: self isComponentOf: Forest"
 		and: [(self theAggregates at: aSpatialEntity name) isNil not]
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMSpatialEntity >> isCrossedByArc: anArc [
 	"answer if the SpatialEntity is crossed by anArc"
 	
 	self subclassResponsibility
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMSpatialEntity >> isDead [
 	" See superimplementor's comment "
 
 	^ destroyed
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMSpatialEntity >> isElementary [
 	
 	self subclassResponsibility
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMSpatialEntity >> isSpatialEntity [
 	
 	^true
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 CMSpatialEntity >> layer3FromLayer2: aSet2 andLayer1: aSet1 [
 	"returns an collection of 2 arrays of cells: layers 3 and 2"
 	
@@ -406,7 +377,7 @@ CMSpatialEntity >> layer3FromLayer2: aSet2 andLayer1: aSet1 [
 	^OrderedCollection with: newLayer with: aSet2
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 CMSpatialEntity >> layerOfRadius: radius [
 	"Purpose: returns the spatial entities belonging to the appropriate layer.of recursive neighbourhood
 Argument: radius = <Integer>
@@ -415,7 +386,7 @@ Return value: <Collection(SpatialEntity)>"
 	^(self allLayersTo: radius) last
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 CMSpatialEntity >> myAggregateOfClass: aClassOrClassName [
 
 	"Purpose: returns the instance of a given higher level spatialEntity the receiver belongs to.
@@ -434,7 +405,7 @@ Example: self myCSE: #Plot"
 		  ifFalse: [ self theAggregates at: aClassName ]
 ]
 
-{ #category : #deprecated }
+{ #category : 'deprecated' }
 CMSpatialEntity >> myOccupantAt: aClassName [
 
 	self
@@ -444,7 +415,7 @@ CMSpatialEntity >> myOccupantAt: aClassName [
 	^self occupantsAt: aClassName
 ]
 
-{ #category : #deprecated }
+{ #category : 'deprecated' }
 CMSpatialEntity >> myOccupants: aClassName [
 	
 	self
@@ -454,7 +425,7 @@ CMSpatialEntity >> myOccupants: aClassName [
 	^self occupantsAt: aClassName
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 CMSpatialEntity >> nciAbout: aCSE [
 	"Purpose: returns the proportion of neighbours belonging to a given compound spatial entity, a kind of neighbourhood coherence index
 Argument: aCSE = <SpatialEntitySet>
@@ -465,7 +436,7 @@ Example: self nciAbout: (self myCSE: #Forest)"
 		/ self neighbourhood size
 ]
 
-{ #category : #'environment - picking - space' }
+{ #category : 'environment - picking - space' }
 CMSpatialEntity >> nearestCellVerifying: aCondition [
 	"Purpose: returns the nearest cell verifying a condition specified as aBlock.
 Argument: aCondition = <BlockClosure>
@@ -478,7 +449,7 @@ Example := self nearestCellVerifying: [:aCell | aCell landCover = #water]"
 		constraintOnPath: [:aCell | true]
 ]
 
-{ #category : #'environment - picking - space' }
+{ #category : 'environment - picking - space' }
 CMSpatialEntity >> nearestCellVerifying: condition1 constraintOnPath: condition2 [
 	"Purpose: returns the nearest cell verifying a specified condition1, the cells in between verifying another specified condition2.
 Arguments: condition1 = <BlockClosure>
@@ -490,21 +461,19 @@ Example := self nearestCellVerifying: [:aCell | aCell hasWater] constraintOnPath
 	self subclassResponsibility
 ]
 
-{ #category : #'environment - picking - space' }
+{ #category : 'environment - picking - space' }
 CMSpatialEntity >> nearestEmptyNeighborWithinRadius: range [
-	"Purpose: returns the nearest spatial entity within a given radius and with no occupant of any kind. 
-If none: returns nil; if more than one at the minimum radius: random selection
-Argument: range = <Integer>
-Return value: <SpatialEntity | nil>"
+	"Returns the nearest spatial entity within a given radius and with no occupant of any kind. If none: returns nil; if more than one at the minimum radius: random selection"
 	
 	| locations |
 	locations := self nearestEmptyNeighborsWithinRadius: range.
-	^locations isEmpty
-		ifFalse: [Cormas selectRandomlyFrom: locations]
-		ifTrue: [nil]
+	
+	^ locations
+		ifNotEmpty: [ self selectRandomlyFrom: locations ]
+		ifEmpty: [ nil ]
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 CMSpatialEntity >> nearestEmptyNeighborsWithinRadius: range [
 	"Purpose: returns the nearest spatial entities within a given radius and with no occupant of any kind.
 Argument: range = <Integer>
@@ -515,77 +484,62 @@ Return value: <Collection(SpatialEntity)>"
 		withinRadius: range
 ]
 
-{ #category : #'environment - picking - space' }
+{ #category : 'environment - picking - space' }
 CMSpatialEntity >> nearestNeighborVerifying: aBlock withMaxOf: aMagnitudeName withinRadius: range [
-	"Purpose: returns the nearest spatial entity verifying a specified condition with the higest value of a given function in a given radius. 
-The current location is NOT considered
-If none: returns nil; if more than one with the highest value at the minimum radius: random selection
-Arguments: aBlock = <BlockClosure>
-			aMagnitudeName = <ByteSymbol>
-			range = <Integer>
-Return value: <SpatialEntity | nil>
-Example: self nearestNeighborVerifying: [:c | c isPolluted not] withMaxOf: #water withinRadius: 3 "
+	"Returns the nearest spatial entity verifying a specified condition with the higest value of a given function in a given radius. 
+The current location is NOT considered. If none: returns nil; if more than one with the highest value at the minimum radius: random selection "
 	
 	| locations |
 	locations := self nearestNeighborsVerifying: aBlock withMaxOf:
 			aMagnitudeName withinRadius: range.
-	^locations isEmpty
-		ifFalse: [Cormas selectRandomlyFrom: locations]
-		ifTrue: [nil]
+			
+	^ locations
+		ifNotEmpty: [ self selectRandomlyFrom: locations ]
+		ifEmpty: [ nil ]
 ]
 
-{ #category : #'environment - picking - space' }
+{ #category : 'environment - picking - space' }
 CMSpatialEntity >> nearestNeighborVerifying: aBlock withinRadius: range [
-	"Purpose: returns the nearest spatial entity within a given radius and fulfilling a specified constraint. 
-If none: returns nil; if more than one at the minimum radius: random selection
-Arguments: range = <Integer>
-			aBlock = <BlockClosure>
-Return value: <SpatialEntity | nil>
-Example: self nearestNeighborVerifying: [:c | c waterLevel < 2] withinRadius: 3 "
+	"Returns the nearest spatial entity within a given radius and fulfilling a specified constraint. If none: returns nil; if more than one at the minimum radius: random selection"
 	
 	| locations |
 	locations := self nearestNeighborsVerifying: aBlock withinRadius: range.
-	^locations isEmpty
-		ifFalse: [Cormas selectRandomlyFrom: locations]
-		ifTrue: [nil]
+	
+	^ locations
+		ifNotEmpty: [ self selectRandomlyFrom: locations ]
+		ifEmpty: [ nil ]
 ]
 
-{ #category : #'environment - picking - space' }
+{ #category : 'environment - picking - space' }
 CMSpatialEntity >> nearestNeighborWithMaxOf: aMagnitudeName withinRadius: range [
-	"Purpose: returns the nearest spatial entity with the higest value of a given function in a given radius. 
+	"Returns the nearest spatial entity with the higest value of a given function in a given radius. 
 The current location is NOT considered
-If none: returns nil; if more than one with the highest value at the minimum radius: random selection
-Arguments: aMagnitudeName = <ByteSymbol>
-			range = <Integer>
-Return value: <SpatialEntity | nil>
-Example: self nearestNeighborWithMaxOf: #biomass withinRadius: 3 "
+If none: returns nil; if more than one with the highest value at the minimum radius: random selection"
 	
 	| locations |
 	locations := self nearestNeighborsWithMaxOf: aMagnitudeName withinRadius:
 			range.
-	^locations isEmpty
-		ifFalse: [Cormas selectRandomlyFrom: locations]
-		ifTrue: [nil]
+			
+	^ locations
+		ifNotEmpty: [ self selectRandomlyFrom: locations ]
+		ifEmpty: [ nil ]
 ]
 
-{ #category : #'environment - picking - space' }
+{ #category : 'environment - picking - space' }
 CMSpatialEntity >> nearestNeighborWithoutAny: locatedEntityName withinRadius: range [
-	"Purpose: returns the nearest spatial entity in a given range without any occupant of a given type. 
-If none: returns nil; if more than one at the minimum radius: random selection
-Arguments: range = <Integer>
-			locatedEntityName = <Symbol | Class>
-Return value: <SpatialEntity | nil>
-Example: self nearestNeighborWithoutAny: #Tree withinRadius: 3 "
+	"Returns the nearest spatial entity in a given range without any occupant of a given type. 
+If none: returns nil; if more than one at the minimum radius: random selection"
 	
 	| locations |
 	locations := self nearestNeighborsWithoutAny: locatedEntityName
 		withinRadius: range.
-	^locations isEmpty
-		ifFalse: [Cormas selectRandomlyFrom: locations]
-		ifTrue: [nil]
+		
+	^ locations
+		ifNotEmpty: [ self selectRandomlyFrom: locations ]
+		ifEmpty: [ nil ]
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 CMSpatialEntity >> nearestNeighborsVerifying: aCondition withMaxOf: aMagnitudeName withinRadius: range [
 	"Purpose: returns the nearest spatial entities within a given radius of the current location with the maximum value of a given magnitude and verifying a specified condition. 
 The current location is NOT considered
@@ -594,23 +548,22 @@ Arguments: aMagnitudeName = <ByteSymbol>
 			range = <Integer>
 Return value: <Collection(SpatialEntity)>
 Example: self nearestNeighborsWithMaxOf: #water verifying: [:c | c isPolluted not] withinRadius: 5"
-	
+
 	| locations |
-	locations := Cormas
-		selectEntitiesWithMaxOf: aMagnitudeName
-		amongEntities: (self recursiveNeighbourhood: range)
-		verifying: aCondition.
-	locations
-		remove: self
-		ifAbsent: [].
-	locations := locations
-		asSortedCollection: [:i :j | (i distanceTo: self) < (j distanceTo: self)].
-	locations := locations
-		select: [:c | (c distanceTo: self) = (locations first distanceTo: self)].
-	^locations
+	locations := self
+		             selectEntitiesWithMaxOf: aMagnitudeName
+		             amongEntities: (self recursiveNeighbourhood: range)
+		             verifying: aCondition.
+	locations remove: self ifAbsent: [  ].
+	locations := locations asSortedCollection: [ :i :j |
+		             (i distanceTo: self) < (j distanceTo: self) ].
+	locations := locations select: [ :c |
+		             (c distanceTo: self)
+		             = (locations first distanceTo: self) ].
+	^ locations
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 CMSpatialEntity >> nearestNeighborsVerifying: aBlock withinRadius: range [
 	"Purpose: returns the nearest spatial entities within a given radius and fulfilling a specified constraint.
 Arguments: range = <Integer>
@@ -631,7 +584,7 @@ Example: self nearestNeighborsVerifying: [:c | c isClosed not] withinRadius: 7"
 	^locations
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 CMSpatialEntity >> nearestNeighborsWithMaxOf: aMagnitudeName withinRadius: range [
 	"Purpose: returns the nearest spatial entities within a given radius of the current location with the maximum value of a given magnitude. 
 The current location is NOT considered
@@ -646,7 +599,7 @@ Example: self nearestNeighborsWithMaxOf: #water withinRadius: 5"
 		withinRadius: range
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 CMSpatialEntity >> nearestNeighborsWithoutAny: aClass withinRadius: range [
 	"Purpose: returns the nearest spatial entities within a given radius and without any occupant of a given type.
 Return value: <Collection(SpatialEntity)>
@@ -657,7 +610,7 @@ Example: self nearestNeighborsWithoutAny: #Tree withinRadius: 5 "
 		withinRadius: range
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 CMSpatialEntity >> neighborsStringWithSeparator: aChar [
 
 	"Purpose: returns a string made of 'self id' as first element and the id of all neighbors separated by aChar
@@ -672,14 +625,14 @@ Return value: <ByteString>"
 	^ string
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 CMSpatialEntity >> neighbourhood [
 	"If the cell is located at the edge or in the corner of a closed (non-torroidal) envionment, the missing neighbours are represented as nils. Here we remove them to get only the list of neighbours"
 	
 	^ neighbourhoodWithNils reject: [ :each | each isNil ]
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 CMSpatialEntity >> neighbourhoodAndSelf [
 	"Purpose: returns the spatial entities belonging to the direct neighbourhood of the receiver
 Also includes the receiver itself
@@ -692,22 +645,14 @@ Return value: <Collection(SpatialEntity)>"
 	^collec asArray
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 CMSpatialEntity >> neighbourhoodWithNils: aCollection [
 	"If the cell is located at the edge or in the corner of a closed (non-torroidal) envionment, the missing neighbours are represented as nils"
 	
 	neighbourhoodWithNils := aCollection
 ]
 
-{ #category : #deprecated }
-CMSpatialEntity >> neighboursMaxOf: aMagnitudeName [
-	
-	^Cormas
-		maxOf: aMagnitudeName
-		amongObjects: self neighbourhood
-]
-
-{ #category : #'environment - sensing - agents' }
+{ #category : 'environment - sensing - agents' }
 CMSpatialEntity >> occupantsOfClass: aClass [
 
 	"Purpose: returns all the entities of a given type located there
@@ -722,7 +667,7 @@ Return value: <Collection(AgentLocation & ObjectLocation)>"
 			ifAbsent: [ OrderedCollection new ] ].
 ]
 
-{ #category : #'environment - sensing - agents' }
+{ #category : 'environment - sensing - agents' }
 CMSpatialEntity >> occupantsOfClassNamed: aClassName [
 
 	"Purpose: returns all the entities of a given class name located there
@@ -733,19 +678,19 @@ Return value: <Collection(AgentLocation & ObjectLocation)>"
 	^ self occupantsOfClass: aClass
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntity >> outline [
 	
 	^outline
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntity >> outline: a [
 	
 	outline := a
 ]
 
-{ #category : #deprecated }
+{ #category : 'deprecated' }
 CMSpatialEntity >> peripherieRayon: aNumber [
 	
 	self
@@ -755,7 +700,7 @@ CMSpatialEntity >> peripherieRayon: aNumber [
 	^self layerOfRadius: aNumber
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 CMSpatialEntity >> printOn: aStream [
 	" Private - See superimplementor's comment "
 	
@@ -771,37 +716,25 @@ CMSpatialEntity >> printOn: aStream [
 		<< self theOccupants size asString
 ]
 
-{ #category : #'star pov' }
-CMSpatialEntity >> randomColor [
-	
-	^ Color 
-		red: Cormas simpleRandom
-		green: Cormas simpleRandom
-		blue: Cormas simpleRandom
-]
-
-{ #category : #'environment - picking - space' }
+{ #category : 'environment - picking - space' }
 CMSpatialEntity >> randomNeighbour [
-	"Purpose: returns a neighbour randomly chosen
-Return value: <SpatialEntity>"
 	
-	^Cormas selectRandomlyFrom: self neighbourhood
+	^ self selectRandomlyFrom: self neighbourhood
 ]
 
-{ #category : #'environment - picking - space' }
+{ #category : 'environment - picking - space' }
 CMSpatialEntity >> randomNeighbourVerifying: aCondition [
-	"Purpose: returns a neighbour randomly chosen among those verifying a given condition
-Argument: aCondition = <BlockClosure>
-Return value: <SpatialEntity | nil>"
+	"Returns a neighbour randomly chosen among those verifying a given condition"
 	
 	| candidates |
-	candidates := self neighbourhood select: [:se | aCondition value: se].
-	^candidates isEmpty
-		ifTrue: [nil]
-		ifFalse: [Cormas selectRandomlyFrom: candidates]
+	candidates := self neighbourhood select: [ :each | aCondition value: each ].
+	
+	^ candidates
+		ifEmpty: [ nil ]
+		ifNotEmpty: [ self selectRandomlyFrom: candidates ]
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 CMSpatialEntity >> recursiveNeighbourhood: radius [
 	"Purpose: returns a collection of receiver-like spatial entities within a given radius of the receiver.
 The receiver itself is included in the collection, which is ordered from the center (self) to the perimeter of the radius.
@@ -817,7 +750,7 @@ Example: self recursiveNeighbourhood: 1 (== self neighbourhoodAndSelf)"
 	^allCells
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 CMSpatialEntity >> recursiveNeighbourhood: range verifying: aBlock [
 	"Purpose: returns the spatial entities within a given radius and fulfilling the constraint specified in aBlock. 
 Arguments: range = <Integer>
@@ -828,7 +761,7 @@ Example: self recursiveNeighbourhood: 5 verifying: [:c | c isClosed not] "
 	^(self recursiveNeighbourhood: range) select: [:p | aBlock value: p]
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 CMSpatialEntity >> recursiveNeighbourhood: range withoutAny: aClass [
 	"Purpose: returns the spatial entities within a given radius and without any occupant of a given type.
 Return value: <Collection(SpatialEntity)>
@@ -839,7 +772,7 @@ Example: self recursiveNeighbourhood: 5 withoutAny: #Tree"
 		verifying: [:p | (p hasOccupantsOfClass: aClass) not ]
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 CMSpatialEntity >> release [
 	"Free my dependents "
 	
@@ -847,7 +780,7 @@ CMSpatialEntity >> release [
 	^super release
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 CMSpatialEntity >> reset [
 	"Purpose: resets inherited and specific attributes"
 	
@@ -856,13 +789,30 @@ CMSpatialEntity >> reset [
 	self initOccupants
 ]
 
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 CMSpatialEntity >> select: aPoint [
 	
 	^ self outline intersects: (aPoint extent: 1)
 ]
 
-{ #category : #'environment - distance' }
+{ #category : 'utilities - collection' }
+CMSpatialEntity >> selectEntitiesWithMaxOf: aMagnitudeName amongEntities: aCollection verifying: aCondition [
+	"Selects the entities with the maximum value of a given magnitude and verifying a specified condition"
+
+	| selection |
+	selection := aCollection select: [ :c |
+		             ((c perform: aMagnitudeName) respondsTo: #>) and: [
+			             aCondition value: c ] ].
+	selection := selection asSortedCollection: [ :i :j |
+		             (i perform: aMagnitudeName)
+		             > (j perform: aMagnitudeName) ].
+	selection := selection select: [ :c |
+		             (c perform: aMagnitudeName)
+		             = (selection first perform: aMagnitudeName) ].
+	^ selection
+]
+
+{ #category : 'environment - distance' }
 CMSpatialEntity >> shortestDistanceToCells: aCollecOfCells constraintOnPath: aBlock [
 	"Purpose: gets the shortest distance (in cell unit) to a collection of other cells, taking a specified constraint into account.
 Arguments: aCollecOfCells = <Collection(SpatialEntityElement)>
@@ -873,7 +823,7 @@ Example: self shortestDistanceToCells: self myPlots constraintOnPath: [:aCell | 
 	self subclassResponsibility
 ]
 
-{ #category : #'environment - distance' }
+{ #category : 'environment - distance' }
 CMSpatialEntity >> shortestDistanceToCellsVerifying: aCondition [
 	"Purpose: gets the shortest distance (in cell unit) to a cell verifying a specified condition.
 Arguments: aCondition = <BlockClosure>
@@ -883,7 +833,7 @@ Example: self shortestDistanceToCellVerifying: [:c | c landCover = #forest]"
 	self subclassResponsibility
 ]
 
-{ #category : #'environment - distance' }
+{ #category : 'environment - distance' }
 CMSpatialEntity >> shortestDistanceToCellsVerifying: aCondition constraintOnPath: aBlock [
 
 	"Purpose: gets the shortest distance (in cell unit) to a cell verifying a specified condition, taking a specified constraint on the path into account.
@@ -897,59 +847,47 @@ Example: self shortestDistanceToCellVerifying: [:c | c landCover = #forest] cons
 		              nearestCellVerifying: aCondition
 		              constraintOnPath: aBlock.
 	^ targetCell
-		  ifNil: [ self cormas warn: 'there is no nearest cell' ]
+		  ifNil: [ self error: 'there is no nearest cell' ]
 		  ifNotNil: [ self distanceTo: targetCell ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntity >> spaceModel [
 	
 	^ spaceModel
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntity >> spaceModel: aSpaceModel [
 	
 	spaceModel := aSpaceModel
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntity >> theAggregates [
 	
 	^ theAggregates ifNil: [theAggregates := Dictionary new]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntity >> theAggregates: aDictionary [
 	
 	theAggregates := aDictionary
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntity >> theOccupants [
 	
 	^theOccupants ifNil: [theOccupants := Dictionary new]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpatialEntity >> theOccupants: aDict [
 	
 	theOccupants := aDict
 ]
 
-{ #category : #displaying }
-CMSpatialEntity >> view [
-	
-	^self spaceModel vue
-]
-
-{ #category : #displaying }
-CMSpatialEntity >> views [
-	
-	^self spaceModel vues
-]
-
-{ #category : #'environment - sensing - space' }
+{ #category : 'environment - sensing - space' }
 CMSpatialEntity >> wayTo: anotherSpatialEntity [
 	"Purpose: returns one of the shortest path to another spatial entity
 Argument: anotherSpatialEntity = <SpatialEntity>"

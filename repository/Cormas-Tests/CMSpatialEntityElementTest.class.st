@@ -1,24 +1,24 @@
 Class {
-	#name : #CMSpatialEntityElementTest,
-	#superclass : #TestCase,
+	#name : 'CMSpatialEntityElementTest',
+	#superclass : 'TestCase',
 	#instVars : [
 		'model'
 	],
-	#category : #'Cormas-Tests-Model'
+	#category : 'Cormas-Tests-Model',
+	#package : 'Cormas-Tests',
+	#tag : 'Model'
 }
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSpatialEntityElementTest >> setUp [
 
 	super setUp.
 	
-	model := CMMockModel new
-		activeInit: #initFixed;
-		initializeSimulation;
-		yourself.
+	model := CMMockModel new.
+	model initFixed.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMSpatialEntityElementTest >> testMoveTowardsConstraintOnPath [
 
 	| agent destination expectedPathOfIds |
@@ -35,7 +35,7 @@ CMSpatialEntityElementTest >> testMoveTowardsConstraintOnPath [
 	self assert: agent patch id equals: destination id.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMSpatialEntityElementTest >> testWayToConstrained [
 
 	| origin destination path pathOfIds expectedPathOfIds |

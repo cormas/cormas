@@ -2,44 +2,38 @@
 A CormasEntityTest is a test class for testing the behavior of CormasEntity
 "
 Class {
-	#name : #CMEntityTest,
-	#superclass : #TestCase,
-	#category : #'Cormas-Tests-Model'
+	#name : 'CMEntityTest',
+	#superclass : 'TestCase',
+	#category : 'Cormas-Tests-Model',
+	#package : 'Cormas-Tests',
+	#tag : 'Model'
 }
 
-{ #category : #tests }
-CMEntityTest >> testCollector [
+{ #category : 'tests' }
+CMEntityTest >> testAvailablePov [
 
-	| model |
-	model := (CMMockModel initialize; new)
-		activeInit: #initRandom;
-		createGridLines: 3
-			columns: 3
-			neighbourhood: 8
-			closed: true;
-		initializeSimulation;
-		yourself.
-	self assert: (model collector isKindOf: CMCollector).
-
+	self assertCollection: CMMockAnimal availablePov hasSameElements: #(defaultPOV povId).
+	self assertCollection: CMMockCow availablePov hasSameElements: #(pov defaultPOV povId).
+	self assertCollection: CMMockGoat availablePov hasSameElements: #(pov defaultPOV povId).
+	self assertCollection: CMMockCell availablePov hasSameElements: #(pov defaultPOV povId).
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMEntityTest >> testColorOfNumber [
 	self assert: (CMEntity colorOfNumber: 65) equals: Color purple
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMEntityTest >> testCormasEntityIsAbstract [
 	self assert: CMEntity isAbstract
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMEntityTest >> testCormasModel [
 	| model |
-	model := (CMMockModel newWithActiveInit: #initRandom)
-		initializeSimulation;
-		createGridLines: 3
-			columns: 3
+	model := CMMockModel new
+		createGridNumberOfRows: 3
+			numberOfColumns: 3
 			neighbourhood: 4
 			closed: true;
 		yourself.
@@ -50,14 +44,7 @@ CMEntityTest >> testCormasModel [
 	model theAgents do: [ :agent | self assert: agent cormasModel identicalTo: model ]
 ]
 
-{ #category : #tests }
-CMEntityTest >> testEntityName [
-	self assert: CMMockCell entityName equals: 'Cell'.
-	self assert: CMMockCow entityName equals: 'Cow'.
-	self assert: CMMockGoat entityName equals: 'Goat'.
-]
-
-{ #category : #tests }
+{ #category : 'tests' }
 CMEntityTest >> testModelClass [
 	self
 		assert: CMMockCell modelClass

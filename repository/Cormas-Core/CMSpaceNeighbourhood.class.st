@@ -19,34 +19,38 @@ Internal Representation and Key Implementation Points.
     Implementation Points
 "
 Class {
-	#name : #CMSpaceNeighbourhood,
-	#superclass : #CMObject,
+	#name : 'CMSpaceNeighbourhood',
+	#superclass : 'Object',
+	#traits : 'TCMRandom',
+	#classTraits : 'TCMRandom classTrait',
 	#instVars : [
 		'spaceModel'
 	],
-	#category : #'Cormas-Core-Space'
+	#category : 'Cormas-Core-Space',
+	#package : 'Cormas-Core',
+	#tag : 'Space'
 }
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMSpaceNeighbourhood class >> cardinal [
 
 	self subclassResponsibility
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMSpaceNeighbourhood class >> cardinalSymbol [
 
 	self subclassResponsibility
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpaceNeighbourhood class >> distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols [
 
 	^ cell1 distanceCell: cell2	
 
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CMSpaceNeighbourhood class >> forNeighbours: aNumberOrSymbol spaceModel: aCMSpaceModel [
 	" Answer a new instance of the receiver accordingly to the number of neighbours specified in aSymborOrNumberNeighbours "
 	
@@ -56,88 +60,76 @@ CMSpaceNeighbourhood class >> forNeighbours: aNumberOrSymbol spaceModel: aCMSpac
 		ifNone: [ self error: 'Should not happen' ]
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMSpaceNeighbourhood class >> isStartConditionFor: aSymbolOrNumber [
 
 	^ aSymbolOrNumber = self cardinal or: [ aSymbolOrNumber == self cardinalSymbol ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpaceNeighbourhood >> cardinal [
 	" See class side comment "
 	
 	^ self class cardinal
 ]
 
-{ #category : #'private - regular cells - instance creation' }
-CMSpaceNeighbourhood >> column [
-
-	^ self spaceModel column
-]
-
-{ #category : #accessing }
-CMSpaceNeighbourhood >> createCellsFigure [ 
-
-	self spaceModel createElementaryEntities.
-	
-]
-
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpaceNeighbourhood >> distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols [
 
 	^ self class distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols
 ]
 
-{ #category : #'private - regular cells - instance creation' }
+{ #category : 'private - regular cells - instance creation' }
 CMSpaceNeighbourhood >> eastCell: k [
-	k \\ self column = 0
+	k \\ self numberOfColumns = 0
 		ifFalse: [ ^ k + 1 ].
 	^ self isClosedEnvironment
 		ifTrue: [ 0 ]
-		ifFalse: [ k - (self column - 1) ]
+		ifFalse: [ k - (self numberOfColumns - 1) ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpaceNeighbourhood >> elementaryEntities [
 
 	^ self spaceModel elementaryEntities.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpaceNeighbourhood >> elementaryEntitiesAt: anInteger [
 	" Answer a <Collection> of <CMSpatialEntity> cells at index anInteger "
 
 	^ self spaceModel elementaryEntities at: anInteger
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpaceNeighbourhood >> gridCellShape [
 
 	^ self spaceModel gridCellShape 
 ]
 
-{ #category : #'private - regular cells - instance creation' }
+{ #category : 'private - regular cells - instance creation' }
 CMSpaceNeighbourhood >> gridCellShapeType [
 
 	^ #regular
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpaceNeighbourhood >> initEdges [
 
 	self isClosedEnvironment
 		ifFalse: [ ^ self ]
 		ifTrue: [ 
-			| n |
-			self gridCellShape = #irregular ifTrue: [ ^ self setIrregularEntitiesEdge ].
-			n := self cardinal.
+			self gridCellShape = #irregular ifTrue: [
+				"not working"
+				^ self ].
+			
 			self elementaryEntities do: [ : p | 
-				p neighbourhood size = n
+				p neighbourhood size = self cardinal
 					ifTrue: [ p edge: false ]
 					ifFalse: [ p edge: true ] ] ]
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSpaceNeighbourhood >> initializeNeighbourhood [
 	" Private - Initialize aSpaceModel neighbourhood values based on the receiver "
 
@@ -148,81 +140,87 @@ CMSpaceNeighbourhood >> initializeNeighbourhood [
 	self initEdges.
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSpaceNeighbourhood >> initializeOn: aSpaceModel [
 	" Private - Initialize aSpaceModel neighbourhood values based on the receiver "
 
 	aSpaceModel gridCellShape: self gridCellShapeType.
 	self spaceModel: aSpaceModel.
-	self createCellsFigure.
+	self spaceModel createElementaryEntities.
 	self initializeNeighbourhood.
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSpaceNeighbourhood >> initializeOrderedNeighbourhood: k [
 
 	self subclassResponsibility
 ]
 
-{ #category : #'private - regular cells - instance creation' }
+{ #category : 'private - regular cells - instance creation' }
 CMSpaceNeighbourhood >> isClosedEnvironment [
 	" Answer a <Boolean>. See comment in #isNotTorroidal "
 
 	^ self spaceModel isClosedEnvironment
 ]
 
-{ #category : #'private - regular cells - instance creation' }
-CMSpaceNeighbourhood >> line [
-
-	^ self spaceModel line
-]
-
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 CMSpaceNeighbourhood >> nbNeighbours [
 
 	^ self class cardinal
 ]
 
-{ #category : #'private - regular cells - instance creation' }
+{ #category : 'private - regular cells - instance creation' }
 CMSpaceNeighbourhood >> northCell: k [
 	k = 0
 		ifTrue: [ ^ 0 ].
-	k > self column
-		ifTrue: [ ^ k - self column ].
+	k > self numberOfColumns
+		ifTrue: [ ^ k - self numberOfColumns ].
 	^ self isClosedEnvironment
 		ifTrue: [ 0 ]
-		ifFalse: [ self column * (self line - 1) + k ]
+		ifFalse: [ self numberOfColumns * (self numberOfRows - 1) + k ]
 ]
 
-{ #category : #'private - regular cells - instance creation' }
+{ #category : 'private - regular cells - instance creation' }
+CMSpaceNeighbourhood >> numberOfColumns [
+
+	^ self spaceModel numberOfColumns
+]
+
+{ #category : 'private - regular cells - instance creation' }
+CMSpaceNeighbourhood >> numberOfRows [
+
+	^ self spaceModel numberOfRows
+]
+
+{ #category : 'private - regular cells - instance creation' }
 CMSpaceNeighbourhood >> southCell: k [
 	k = 0
 		ifTrue: [ ^ 0 ].
-	k <= (self column * (self line - 1))
-		ifTrue: [ ^ k + self column ].
+	k <= (self numberOfColumns * (self numberOfRows - 1))
+		ifTrue: [ ^ k + self numberOfColumns ].
 	^ self isClosedEnvironment
 		ifTrue: [ 0 ]
-		ifFalse: [ k - (self column * (self line - 1)) ]
+		ifFalse: [ k - (self numberOfColumns * (self numberOfRows - 1)) ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpaceNeighbourhood >> spaceModel [
 
 	^ spaceModel
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpaceNeighbourhood >> spaceModel: aCMSpaceModel [
 
 	spaceModel := aCMSpaceModel
 ]
 
-{ #category : #'private - regular cells - instance creation' }
+{ #category : 'private - regular cells - instance creation' }
 CMSpaceNeighbourhood >> westCell: k [
 
-	k \\ self column = 1
+	k \\ self numberOfColumns = 1
 		ifFalse: [ ^ k - 1 ].
 	^ self isClosedEnvironment
 		ifTrue: [ 0 ]
-		ifFalse: [ k + self column - 1 ]
+		ifFalse: [ k + self numberOfColumns - 1 ]
 ]

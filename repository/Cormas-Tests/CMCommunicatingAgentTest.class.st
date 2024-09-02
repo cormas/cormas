@@ -1,14 +1,16 @@
 Class {
-	#name : #CMCommunicatingAgentTest,
-	#superclass : #TestCase,
+	#name : 'CMCommunicatingAgentTest',
+	#superclass : 'TestCase',
 	#instVars : [
 		'senderAgent',
 		'receiverAgent'
 	],
-	#category : #'Cormas-Tests-Agents'
+	#category : 'Cormas-Tests-Agents',
+	#package : 'Cormas-Tests',
+	#tag : 'Agents'
 }
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMCommunicatingAgentTest >> setUp [
 
 	super setUp.
@@ -16,26 +18,26 @@ CMCommunicatingAgentTest >> setUp [
 	receiverAgent := CMFixtureCommunicatingAgent new.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMCommunicatingAgentTest >> testAgentHasChannel [
 
 	self deny: senderAgent channel isNil.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMCommunicatingAgentTest >> testAgentHasMailBox [
 
 	self assert: senderAgent mailBox isCollection.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMCommunicatingAgentTest >> testIsCommunicatingEntity [
 
 	self assert: senderAgent isCommunicatingEntity.
 	self assert: receiverAgent isCommunicatingEntity.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMCommunicatingAgentTest >> testLatestMessage [
 
 	| message1 message2 |
@@ -58,13 +60,13 @@ CMCommunicatingAgentTest >> testLatestMessage [
 	self assert: receiverAgent mailBox isEmpty.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMCommunicatingAgentTest >> testNewChannelIsEmpty [
 
 	self assert: senderAgent channel isEmpty.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMCommunicatingAgentTest >> testNewMailBoxIsEmpty [
 
 	self assert: senderAgent mailBox isEmpty.

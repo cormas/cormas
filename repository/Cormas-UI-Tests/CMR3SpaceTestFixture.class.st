@@ -1,21 +1,24 @@
 Class {
-	#name : #CMR3SpaceTestFixture,
-	#superclass : #Object,
+	#name : 'CMR3SpaceTestFixture',
+	#superclass : 'Object',
 	#instVars : [
 		'model',
 		'builder',
-		'presenter'
+		'presenter',
+		'simulation'
 	],
-	#category : #'Cormas-UI-Tests-Core'
+	#category : 'Cormas-UI-Tests-Core',
+	#package : 'Cormas-UI-Tests',
+	#tag : 'Core'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMR3SpaceTestFixture >> builder [
 
 	^ builder
 ]
 
-{ #category : #states }
+{ #category : 'states' }
 CMR3SpaceTestFixture >> initialCellColors [
 
 	"Shape colors of a grid for the cells of the initial mock model"
@@ -26,7 +29,7 @@ CMR3SpaceTestFixture >> initialCellColors [
 			ifFalse: [ Color black ] ]
 ]
 
-{ #category : #states }
+{ #category : 'states' }
 CMR3SpaceTestFixture >> initialCellStates [
 
 	"Initial cell states of a mock model"
@@ -37,15 +40,18 @@ CMR3SpaceTestFixture >> initialCellStates [
 			ifFalse: [ #dead ] ].
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMR3SpaceTestFixture >> initialize [
 
 	super initialize.
-	
-	model := CMMockModel new
-		activeInit: #initFixed;
+		
+	simulation := (CMSimulation for: CMMockModel)
+		activeInitMethod: (CMMockModel >> #initFixed);
+		activeControlMethod: (CMMockModel >> #step:);
 		initializeSimulation;
 		yourself.
+		
+	model := simulation cormasModel.
 
 	builder := CMR3SpaceDiagramBuilder new
 		cormasModel: model;
@@ -54,19 +60,25 @@ CMR3SpaceTestFixture >> initialize [
 	presenter := builder asPresenter.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMR3SpaceTestFixture >> model [
 
 	^ model
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMR3SpaceTestFixture >> presenter [
 
 	^ presenter
 ]
 
-{ #category : #states }
+{ #category : 'accessing' }
+CMR3SpaceTestFixture >> simulation [
+
+	^ simulation
+]
+
+{ #category : 'states' }
 CMR3SpaceTestFixture >> updatedCellColors [
 
 	"Shape colors of a grid for the cells of the mock model with a fixed random seed after one simulation step"
@@ -77,7 +89,7 @@ CMR3SpaceTestFixture >> updatedCellColors [
 			ifFalse: [ Color black ] ]
 ]
 
-{ #category : #states }
+{ #category : 'states' }
 CMR3SpaceTestFixture >> updatedCellStates [
 
 	"Cell states of a mock model with a fixed random seed after one simulation step"

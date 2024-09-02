@@ -1,16 +1,19 @@
 Class {
-	#name : #CMR3SpaceDiagramBuilderTest,
-	#superclass : #TestCase,
+	#name : 'CMR3SpaceDiagramBuilderTest',
+	#superclass : 'TestCase',
 	#instVars : [
 		'fixture',
 		'model',
 		'builder',
-		'presenter'
+		'presenter',
+		'simulation'
 	],
-	#category : #'Cormas-UI-Tests-Core'
+	#category : 'Cormas-UI-Tests-Core',
+	#package : 'Cormas-UI-Tests',
+	#tag : 'Core'
 }
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMR3SpaceDiagramBuilderTest >> setUp [
 	
 	super setUp.
@@ -18,35 +21,25 @@ CMR3SpaceDiagramBuilderTest >> setUp [
 	fixture := CMR3SpaceTestFixture new.
 	
 	model := fixture model.
+	simulation := fixture simulation.
+	
 	builder := fixture builder.
 	presenter := fixture presenter.
 ]
 
-{ #category : #'as yet unclassified' }
-CMR3SpaceDiagramBuilderTest >> testActivePoVsDictionaryIsDictionary [
-
-	self assert: builder activePoVsDictionary isDictionary.
-]
-
-{ #category : #'as yet unclassified' }
-CMR3SpaceDiagramBuilderTest >> testActivePoVsDictionaryIsEmpty [
-
-	self assert: builder activePoVsDictionary isEmpty.
-]
-
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMR3SpaceDiagramBuilderTest >> testActiveSpatialEntityPovDefaultValue [
 
 	self assert: builder activeSpatialEntityPov equals: #pov.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMR3SpaceDiagramBuilderTest >> testCormasModel [
 
 	self assert: builder cormasModel equals: model.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMR3SpaceDiagramBuilderTest >> testInitialCellColors [
 	
 	| expectedColors actualColors |
@@ -57,7 +50,7 @@ CMR3SpaceDiagramBuilderTest >> testInitialCellColors [
 	self assert: actualColors equals: expectedColors.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMR3SpaceDiagramBuilderTest >> testRandomSeedCells [
 
 	"This test verifies that the random seed is fixed and the mock model is initialized with the expected combination of dead/alive cells."
@@ -70,7 +63,7 @@ CMR3SpaceDiagramBuilderTest >> testRandomSeedCells [
 	self assert: actualStates equals: expectedStates.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMR3SpaceDiagramBuilderTest >> testUpdateCellShapes [
 
 	"Test if cell shapes are updated when model changes"
@@ -79,7 +72,7 @@ CMR3SpaceDiagramBuilderTest >> testUpdateCellShapes [
 	
 	expectedColors := fixture updatedCellColors.
 	
-	model runStep.
+	simulation runStep.
 	builder build.
 	
 	actualColors := builder cellShapes asOrderedCollection collect: [ :shape | shape color ].
