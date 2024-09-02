@@ -7,7 +7,7 @@ Class {
 		'progressBar',
 		'runButton',
 		'dataNotebook',
-		'simulationsList'
+		'simulationsTable'
 	],
 	#category : 'Cormas-SensitivityAnalysis-UI',
 	#package : 'Cormas-SensitivityAnalysis-UI'
@@ -47,7 +47,7 @@ CMSensitivityAnalysisDataPresenter >> defaultLayout [
 		add: (SpBoxLayout newTopToBottom
 			spacing: 2;
 			add: 'Simulations' height: self class labelHeight;
-			add: simulationsList;
+			add: simulationsTable;
 			yourself);
 		add: (SpBoxLayout newLeftToRight
 			spacing: 20;
@@ -68,16 +68,27 @@ CMSensitivityAnalysisDataPresenter >> initializePresenters [
 	runButton := self newButton
 		icon: CMIcons runIcon;
 		label: 'Run all';
-		action: [ "do nothing" ];
+		action: [
+			sensitivityAnalysis run.
+			sensitivityAnalysis inspect ];
 		yourself.
 		
 	progressBar := self newProgressBar.
 	
-	simulationsList := self newComponentList
-		items: (sensitivityAnalysis simulations collect: [ :simulation |
-			self
-				instantiate: CMSensitivityAnalysisSimulationRowPresenter
-				on: { simulation . translator } ]);
+	simulationsTable := self newTable
+		items: sensitivityAnalysis simulations;
+		addColumn: (SpStringTableColumn
+			title: 'Parameter class'
+			evaluated: [ :simulation | simulation initialParameterValues keys anyOne receiverClass name ]);
+		addColumn: (SpStringTableColumn
+			title: 'Parameter name'
+			evaluated: [ :simulation | simulation initialParameterValues keys anyOne name ]);
+		addColumn: (SpStringTableColumn
+			title: 'Parameter value'
+			evaluated: [ :simulation | simulation initialParameterValues values anyOne ]);
+		addColumn: (SpStringTableColumn
+			title: 'Progress'
+			evaluated: [ :simulation | self progressStringFrom: Random new next ] )
 		yourself.
 	
 	dataNotebook := self newNotebook.
@@ -101,6 +112,26 @@ CMSensitivityAnalysisDataPresenter >> initializeWindow: aWindowPresenter [
 	aWindowPresenter 
 		title: translator tSensitivityAnalysis;
 		initialExtent: 800@650.
+]
+
+{ #category : 'as yet unclassified' }
+CMSensitivityAnalysisDataPresenter >> progressStringFrom: aNumber [
+	"Expects value between 0 and 1"
+	
+	| totalNumberOfTicks numberOfCompletedTicks numberOfUncompletedTicks |
+	
+	totalNumberOfTicks := 20.
+	numberOfCompletedTicks := (aNumber * totalNumberOfTicks) rounded.
+	numberOfUncompletedTicks := totalNumberOfTicks - numberOfCompletedTicks.
+	
+	^ String streamContents: [ :stream |
+		stream nextPut: $[.
+		numberOfCompletedTicks timesRepeat: [ stream nextPut: $# ].
+		numberOfUncompletedTicks timesRepeat: [ stream nextPut: $_ ].
+		stream
+			nextPutAll: '] ';
+			nextPutAll: (aNumber * 100) rounded asString;
+			nextPut: $% ].
 ]
 
 { #category : 'accessing - model' }
