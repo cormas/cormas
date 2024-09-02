@@ -54,8 +54,6 @@ Join us on the cormas-dev mailing-list: http://groups.google.com/group/cormas-de
 
 ```st
 Metacello new
-    onConflictUseLoaded;
-    onWarningLog;
     repository: 'github://cormas/cormas';
     baseline: 'Cormas';
     load.
