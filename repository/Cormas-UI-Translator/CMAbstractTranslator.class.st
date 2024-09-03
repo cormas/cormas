@@ -92,7 +92,7 @@ CMAbstractTranslator >> tInspector [
 	self subclassResponsibility
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'translations' }
 CMAbstractTranslator >> tInteger [
 
 	self subclassResponsibility
@@ -160,6 +160,12 @@ CMAbstractTranslator >> tPredefinedList [
 
 { #category : 'translations' }
 CMAbstractTranslator >> tProbe [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tProbes [
 
 	self subclassResponsibility
 ]

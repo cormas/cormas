@@ -156,6 +156,12 @@ CMUkrainianTranslator >> tProbe [
 ]
 
 { #category : 'translations' }
+CMUkrainianTranslator >> tProbes [
+
+	^ 'Проби'
+]
+
+{ #category : 'translations' }
 CMUkrainianTranslator >> tProbesToBeMeasured [
 
 	^ 'Проби які потрібно виміряти'

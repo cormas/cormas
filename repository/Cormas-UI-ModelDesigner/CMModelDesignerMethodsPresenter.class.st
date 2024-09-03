@@ -1,16 +1,6 @@
 Class {
 	#name : 'CMModelDesignerMethodsPresenter',
-	#superclass : 'SpPresenter',
-	#instVars : [
-		'translator',
-		'title',
-		'methods',
-		'titleLabel',
-		'list',
-		'toolbar',
-		'addButton',
-		'removeButton'
-	],
+	#superclass : 'CMModelDesignerListPresenter',
 	#category : 'Cormas-UI-ModelDesigner',
 	#package : 'Cormas-UI-ModelDesigner'
 }
@@ -20,7 +10,7 @@ CMModelDesignerMethodsPresenter class >> example [
 	<example>
 	
 	(self withTitle: 'Custom methods' translator: CMEnglishTranslator new)
-		methods: CMMockModel methods;
+		items: CMMockModel methods;
 		open
 ]
 
@@ -30,80 +20,35 @@ CMModelDesignerMethodsPresenter class >> withTitle: aString translator: aTransla
 	^ self on: { aString . aTranslator }
 ]
 
-{ #category : 'api' }
-CMModelDesignerMethodsPresenter >> contextMenu [
+{ #category : 'as yet unclassified' }
+CMModelDesignerMethodsPresenter >> contextMenuButtons [
 
-	| menu |
-	menu := self newMenu.
-
-	{ removeButton } do: [ :button |
-		menu addItem: [ :item |
-			item
-				name: button help;
-				icon: button icon;
-				action: button action ] ].
-		
-	^ menu
+	^ { removeButton }
 ]
 
-{ #category : 'layout' }
-CMModelDesignerMethodsPresenter >> defaultLayout [
+{ #category : 'examples' }
+CMModelDesignerMethodsPresenter >> example [
 
-	^ SpBoxLayout newTopToBottom
-		add: (SpBoxLayout newLeftToRight
-			vAlignCenter;
-			add: titleLabel;
-			add: toolbar expand: false;
-			yourself) expand: false;
-		add: list;
-		yourself
+	<script: 'self example'>
 ]
 
 { #category : 'initialization' }
-CMModelDesignerMethodsPresenter >> initializePresenters [
+CMModelDesignerMethodsPresenter >> initializeList [
 
-	titleLabel := self newLabel
-		label: title;
-		yourself.
-
-	addButton := self newToolbarButton
-		icon: (self iconNamed: #smallAdd);
-		help: 'Add';
-		yourself.
-		
-	removeButton := self newToolbarButton
-		icon: (self iconNamed: #smallDelete);
-		help: 'Remove';
-		yourself.
-		
-	toolbar := self newToolbar
-		beIcons;
-		add: addButton;
-		add: removeButton;
-		yourself.
-		
-	list := self newList
+	^ self newList
 		display: [ :method | method selector asString ];
-		contextMenu: self contextMenu;
 		yourself
 ]
 
-{ #category : 'accessing' }
-CMModelDesignerMethodsPresenter >> methods: aCollection [
+{ #category : 'as yet unclassified' }
+CMModelDesignerMethodsPresenter >> sortedItems: aCollection [
 
-	list items: (aCollection asOrderedCollection
-		sorted: [ :a :b | a selector < b selector ])
+	^ aCollection sorted: [ :a :b |
+		a selector < b selector ]
 ]
 
-{ #category : 'accessing - model' }
-CMModelDesignerMethodsPresenter >> setModelBeforeInitialization: aCollection [
+{ #category : 'initialization' }
+CMModelDesignerMethodsPresenter >> toolbarButtons [
 
-	title := aCollection first.
-	translator := aCollection second 
-]
-
-{ #category : 'enumerating' }
-CMModelDesignerMethodsPresenter >> whenMethodSelectedDo: aBlock [
-
-	list whenSelectedItemChangedDo: aBlock
+	^ { addButton . removeButton }
 ]

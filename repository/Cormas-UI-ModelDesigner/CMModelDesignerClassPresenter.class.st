@@ -39,7 +39,7 @@ CMModelDesignerClassPresenter >> initializePresenters [
 		
 	parameterList := self
 		instantiate: CMModelDesignerParametersPresenter
-		on: { aClass . translator }. 
+		on: { 'Parameters' . aClass . translator }. 
 		
 	sourceCodeNotebook := self newNotebook
 ]

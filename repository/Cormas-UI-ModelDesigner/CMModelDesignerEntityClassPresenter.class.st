@@ -14,7 +14,7 @@ CMModelDesignerEntityClassPresenter >> connectPresenters [
 
 	super connectPresenters.
 
-	methodList whenMethodSelectedDo: [ :method |
+	methodList whenSelectedItemChangedDo: [ :method |
 		self showSourceCode: method ]
 ]
 
@@ -67,11 +67,11 @@ CMModelDesignerEntityClassPresenter >> initializePresenters [
 		
 	variableList := self
 		instantiate: CMModelDesignerParametersPresenter
-		on: { aClass . translator }.
+		on: { 'Variables' . aClass . translator }.
 		
 	methodList := self
 		instantiate: CMModelDesignerMethodsPresenter
 		on: { 'Custom methods' . translator }.
 		
-	methodList methods: (aClass methods reject: #isFromTrait)
+	methodList items: (aClass methods reject: #isFromTrait)
 ]

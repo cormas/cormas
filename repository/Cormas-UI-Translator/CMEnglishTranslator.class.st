@@ -156,6 +156,12 @@ CMEnglishTranslator >> tProbe [
 ]
 
 { #category : 'translations' }
+CMEnglishTranslator >> tProbes [
+
+	^ 'Probes'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tProbesToBeMeasured [
 
 	^ 'Probes to be measured'

@@ -1,129 +1,123 @@
 Class {
 	#name : 'CMModelDesignerParametersPresenter',
-	#superclass : 'SpPresenter',
+	#superclass : 'CMModelDesignerListPresenter',
 	#instVars : [
-		'translator',
 		'aClass',
-		'classSideCheckbox',
 		'nameColumn',
-		'table',
-		'addButton',
-		'editButton',
-		'removeButton'
+		'classSideButton',
+		'editButton'
 	],
 	#category : 'Cormas-UI-ModelDesigner',
 	#package : 'Cormas-UI-ModelDesigner'
 }
 
-{ #category : 'instance creation' }
-CMModelDesignerParametersPresenter class >> forClass: aClass translator: aTranslator [
+{ #category : 'examples' }
+CMModelDesignerParametersPresenter class >> example [
+	<example>
+	
+	(self
+		withTitle: 'Parameters'
+		forClass: CMMockModel
+		translator: CMEnglishTranslator new) open
+]
 
-	^ self on: { aClass . aTranslator }
+{ #category : 'instance creation' }
+CMModelDesignerParametersPresenter class >> withTitle: aString forClass: aClass translator: aTranslator [
+
+	^ self on: { aString . aClass . aTranslator }
 ]
 
 { #category : 'initialization' }
 CMModelDesignerParametersPresenter >> connectPresenters [
 
-	classSideCheckbox
+	super connectPresenters.
+
+	classSideButton
 		whenActivatedDo: [ self displayClassSideVariables ];
 		whenDeactivatedDo: [ self displayInstanceSideVariables ]
 ]
 
-{ #category : 'api' }
-CMModelDesignerParametersPresenter >> contextMenu [
+{ #category : 'as yet unclassified' }
+CMModelDesignerParametersPresenter >> contextMenuButtons [
 
-	| menu |
-	menu := self newMenu.
-
-	{ editButton . removeButton } do: [ :button |
-		menu addItem: [ :item |
-			item
-				name: button help;
-				icon: button icon;
-				action: button action ] ].
-		
-	^ menu
-]
-
-{ #category : 'layout' }
-CMModelDesignerParametersPresenter >> defaultLayout [
-
-	^ SpBoxLayout newTopToBottom
-		add: (SpBoxLayout newLeftToRight
-			add: 'Parameters';
-			add: classSideCheckbox width: 100;
-			yourself) expand: false;
-		add: table;
-		add: (SpBoxLayout newLeftToRight
-			add: addButton width: 30;
-			add: editButton width: 30;
-			add: removeButton width: 30;
-			yourself) expand: false;
-		yourself
+	^ { editButton . removeButton  }
 ]
 
 { #category : 'as yet unclassified' }
 CMModelDesignerParametersPresenter >> displayClassSideVariables [
 	
 	nameColumn displayUnderline: [ :each | true ].
-	table items: aClass class slots.
+	self items: aClass class slots.
 ]
 
 { #category : 'as yet unclassified' }
 CMModelDesignerParametersPresenter >> displayInstanceSideVariables [
 	
 	nameColumn displayUnderline: [ :each | false ].
-	table items: aClass slots
+	self items: aClass slots
 ]
 
 { #category : 'examples' }
 CMModelDesignerParametersPresenter >> example [
 
-	<script: '(self forClass: CMMockModel translator: CMEnglishTranslator new) open'>
+	<script: 'self example'>
 ]
 
 { #category : 'initialization' }
-CMModelDesignerParametersPresenter >> initializePresenters [
+CMModelDesignerParametersPresenter >> initializeExtraToolbarButtons [
 
-	classSideCheckbox := self newCheckBox
-		label: 'Class side';
+	classSideButton := self newToolbarToggleButton
+		icon: (self iconNamed: #class);
+		help: 'Class side';
 		yourself.
 
-	addButton := self newButton
-		icon: (self iconNamed: #smallAdd);
-		help: 'Add';
-		yourself.
-		
-	editButton := self newButton
+	editButton := self newToolbarButton
 		icon: (self iconNamed: #glamorousEdit);
 		help: 'Edit';
 		yourself.
-		
-	removeButton := self newButton
-		icon: (self iconNamed: #smallDelete);
-		help: 'Remove';
-		yourself.
-		
-	nameColumn := SpStringTableColumn
-			title: 'Name'
-			evaluated: [ :parameter | parameter name ].
+]
 
-	table := self newTable
+{ #category : 'initialization' }
+CMModelDesignerParametersPresenter >> initializeList [
+
+	nameColumn := SpStringTableColumn
+		title: 'Name'
+		evaluated: [ :parameter | parameter name ].
+
+	^ self newTable
 		addColumn: nameColumn;
 		addColumn: ((SpStringTableColumn
 			title: 'Initial value'
 			evaluated: [ '0' ])
 			width: 90;
 			yourself);
-		contextMenu: self contextMenu;
-		yourself.
-		
+		yourself
+]
+
+{ #category : 'initialization' }
+CMModelDesignerParametersPresenter >> initializePresenters [
+
+	super initializePresenters.
 	self displayInstanceSideVariables
 ]
 
 { #category : 'accessing - model' }
 CMModelDesignerParametersPresenter >> setModelBeforeInitialization: aCollection [
 
-	aClass := aCollection first.
-	translator := aCollection second
+	title := aCollection first.
+	aClass := aCollection second.
+	translator := aCollection third
+]
+
+{ #category : 'as yet unclassified' }
+CMModelDesignerParametersPresenter >> sortedItems: aCollection [
+
+	^ aCollection sorted: [ :a :b |
+		a name < b name ]
+]
+
+{ #category : 'initialization' }
+CMModelDesignerParametersPresenter >> toolbarButtons [
+
+	^ { classSideButton . addButton . editButton . removeButton }
 ]

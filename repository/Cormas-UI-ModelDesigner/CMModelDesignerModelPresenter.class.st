@@ -16,9 +16,10 @@ CMModelDesignerModelPresenter >> connectPresenters [
 
 	super connectPresenters.
 	
-	initMethodList whenMethodSelectedDo: [ :method | self showSourceCode: method ].
-	controlMethodList whenMethodSelectedDo: [ :method | self showSourceCode: method ].
-	customMethodList whenMethodSelectedDo: [ :method | self showSourceCode: method ].
+	initMethodList whenSelectedItemChangedDo: [ :method | self showSourceCode: method ].
+	controlMethodList whenSelectedItemChangedDo: [ :method | self showSourceCode: method ].
+	customMethodList whenSelectedItemChangedDo: [ :method | self showSourceCode: method ].
+	probeList whenSelectedItemChangedDo: [ :probe | self showSourceCode: probe method ]
 ]
 
 { #category : 'layout' }
@@ -49,7 +50,7 @@ CMModelDesignerModelPresenter >> defaultLayout [
 		add: (SpPanedLayout newTopToBottom
 			add: (SpBoxLayout newLeftToRight
 				spacing: 5;
-				add: parameterList;
+				add: parameterList width: 280;
 				add: initMethodList;
 				add: controlMethodList;
 				add: customMethodList;
@@ -83,9 +84,11 @@ CMModelDesignerModelPresenter >> initializePresenters [
 		instantiate: CMModelDesignerMethodsPresenter
 		on: { 'Custom methods' . translator }.  
 		
-	probeList := self
-		instantiate: CMModelDesignerParametersPresenter
-		on: { aClass . translator }. 
+	probeList := (self
+		instantiate: CMModelDesignerProbesPresenter
+		on: translator)
+		items: aClass availableProbes;
+		yourself. 
 		
 	self showInitMethods.
 	self showControlMethods.
@@ -95,26 +98,35 @@ CMModelDesignerModelPresenter >> initializePresenters [
 { #category : 'as yet unclassified' }
 CMModelDesignerModelPresenter >> showControlMethods [
 
-	controlMethodList methods: aClass availableControlMethods
+	controlMethodList items: aClass availableControlMethods
 ]
 
 { #category : 'as yet unclassified' }
 CMModelDesignerModelPresenter >> showCustomMethods [
 
-	| initMethods controlMethods probeMethods excludedMethods customMethods |
+	| initMethods controlMethods probeMethods potentialAccessorNames excludedMethods customMethods |
 	
 	initMethods := aClass availableInitMethods.
 	controlMethods := aClass availableControlMethods.
 	probeMethods := aClass availableProbes collect: #method.
 	
 	excludedMethods := initMethods, controlMethods, probeMethods.
-	customMethods := aClass methods reject: [ :method | excludedMethods includes: method ]. 
+	customMethods := aClass methods reject: [ :method | excludedMethods includes: method ].
+	
+	potentialAccessorNames := (aClass slots, aClass class slots) flatCollect: [ :slot |
+		{ slot name asSymbol . (slot name asString, ':') asSymbol } ].
+	 
+	customMethods := customMethods reject: [ :method |
+		potentialAccessorNames includes: method selector ].
+	
+	customMethods := customMethods reject: [ :method |
+		method selector = #initialize ].
 
-	customMethodList methods: customMethods 
+	customMethodList items: customMethods 
 ]
 
 { #category : 'as yet unclassified' }
 CMModelDesignerModelPresenter >> showInitMethods [
 
-	initMethodList methods: aClass availableInitMethods
+	initMethodList items: aClass availableInitMethods
 ]
