@@ -92,6 +92,12 @@ CMMockModel class >> numberOfRows: aNumber [
 	numberOfRows := aNumber
 ]
 
+{ #category : 'tests - printing' }
+CMMockModel class >> prefix [
+
+	^ 'CMMock'
+]
+
 { #category : 'examples' }
 CMMockModel class >> showEmpty [
 	<example>
