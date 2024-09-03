@@ -4,17 +4,23 @@ Class {
 	#instVars : [
 		'translator',
 		'modelClass',
-		'prefix',
 		'notebook'
 	],
 	#category : 'Cormas-UI-ModelDesigner',
 	#package : 'Cormas-UI-ModelDesigner'
 }
 
-{ #category : 'as yet unclassified' }
-CMModelDesignerPresenter class >> forModelClass: aClass prefix: aString translator: aTranslator [
+{ #category : 'examples' }
+CMModelDesignerPresenter class >> example [
+	<example>
+	
+	(self forModelClass: ECECModel translator: CMEnglishTranslator new) open
+]
 
-	^ self on: { aClass . aString . aTranslator }
+{ #category : 'as yet unclassified' }
+CMModelDesignerPresenter class >> forModelClass: aClass translator: aTranslator [
+
+	^ self on: { aClass . aTranslator }
 ]
 
 { #category : 'as yet unclassified' }
@@ -23,7 +29,10 @@ CMModelDesignerPresenter >> addAboutModelNotebookPage [
 	notebook addPage: (SpNotebookPage
 		title: 'About'
 		icon: (self iconNamed: #glamorousBrowse)
-		provider: [ self newTextInput ])
+		provider: [
+			self
+				instantiate: CMModelDesignerAboutPresenter
+				on: { modelClass . translator } ])
 ]
 
 { #category : 'as yet unclassified' }
@@ -36,9 +45,9 @@ CMModelDesignerPresenter >> addClassesNotebookPages [
 
 	classes do: [ :aClass |
 		notebook addPage: ((SpNotebookPage 
-			title: (aClass name withoutPrefix: prefix)
+			title: (aClass name withoutPrefix: modelClass prefix)
 			icon: (self iconForClass: aClass)
-			provider: [ self instantiate: CMModelDesignerClassPresenter on: { aClass . translator } ])
+			provider: [ self instantiate: CMModelDesignerEntityClassPresenter on: { aClass . modelClass prefix . translator } ])
 			beCloseable;
 			yourself) ].
 ]
@@ -49,7 +58,7 @@ CMModelDesignerPresenter >> addModelNotebookPage [
 	notebook addPage: ((SpNotebookPage 
 		title: 'Model'
 		icon: (self iconForClass: modelClass)
-		provider: [ self instantiate: CMModelDesignerClassPresenter on: { modelClass . translator } ])
+		provider: [ self instantiate: CMModelDesignerModelPresenter on: { modelClass . modelClass prefix . translator } ])
 		yourself)
 ]
 
@@ -62,7 +71,7 @@ CMModelDesignerPresenter >> addNewClassNotebookPage [
 		provider: [
 			self
 				instantiate: CMModelDesignerNewClassPresenter
-				on: { modelClass . prefix . translator } ])
+				on: { modelClass . modelClass prefix . translator } ])
 ]
 
 { #category : 'as yet unclassified' }
@@ -82,7 +91,7 @@ CMModelDesignerPresenter >> classRank: aClass [
 CMModelDesignerPresenter >> confirmDeleteClassNamed: aString [
 
 	| aClass |
-	aClass := self class environment at: (prefix, aString) asSymbol.
+	aClass := self class environment at: (modelClass prefix, aString) asSymbol.
 
 	SpConfirmDialog new
 		  title: 'Warning!';
@@ -116,7 +125,7 @@ CMModelDesignerPresenter >> deleteClass: aClass [
 { #category : 'examples' }
 CMModelDesignerPresenter >> example [
 
-	<script: '(self forModelClass: CMMockModel prefix: ''CMMock'' translator: CMEnglishTranslator new) open'>
+	<script: 'self example'>
 ]
 
 { #category : 'as yet unclassified' }
@@ -153,8 +162,7 @@ CMModelDesignerPresenter >> initializeWindow: aWindowPresenter [
 CMModelDesignerPresenter >> setModelBeforeInitialization: aCollection [
 
 	modelClass := aCollection first.
-	prefix := aCollection second.
-	translator := aCollection third
+	translator := aCollection second
 ]
 
 { #category : 'as yet unclassified' }

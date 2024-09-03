@@ -17,9 +17,9 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-CMModelDesignerNewClassPresenter class >> forModelClass: aClass prefix: aString translator: aTranslator [
+CMModelDesignerNewClassPresenter class >> forModelClass: aClass translator: aTranslator [
 
-	^ self on: { aClass . aString . aTranslator }
+	^ self on: { aClass . aTranslator }
 ]
 
 { #category : 'initialization' }
@@ -131,7 +131,7 @@ CMModelDesignerNewClassPresenter >> displaySuperclassesForCustomClass [
 { #category : 'examples' }
 CMModelDesignerNewClassPresenter >> example [
 
-	<script: '(self forModelClass: CMMockModel prefix: ''CMMock'' translator: CMEnglishTranslator new) open'>
+	<script: '(self forModelClass: CMMockModel translator: CMEnglishTranslator new) open'>
 ]
 
 { #category : 'initialization' }
@@ -168,8 +168,7 @@ CMModelDesignerNewClassPresenter >> initializePresenters [
 CMModelDesignerNewClassPresenter >> setModelBeforeInitialization: aCollection [
 
 	modelClass := aCollection first.
-	prefix := aCollection second.
-	translator := aCollection third
+	translator := aCollection second
 ]
 
 { #category : 'as yet unclassified' }

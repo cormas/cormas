@@ -28,9 +28,10 @@ Class {
 	#package : 'Cormas-Mocks'
 }
 
-{ #category : 'default' }
-CMMockModel class >> defaultControl [
-	^ #stepSynchronously:
+{ #category : 'accessing' }
+CMMockModel class >> aboutThisModel [
+
+	^ ''
 ]
 
 { #category : 'parameters' }

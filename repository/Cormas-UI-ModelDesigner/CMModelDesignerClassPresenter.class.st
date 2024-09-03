@@ -3,52 +3,71 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'translator',
+		'prefix',
 		'aClass',
-		'superclassDroplist'
+		'nameInput',
+		'superclassDroplist',
+		'parameterList',
+		'sourceCodeNotebook'
 	],
 	#category : 'Cormas-UI-ModelDesigner',
 	#package : 'Cormas-UI-ModelDesigner'
 }
 
 { #category : 'as yet unclassified' }
-CMModelDesignerClassPresenter class >> forClass: aClass translator: aTranslator [
+CMModelDesignerClassPresenter class >> forClass: aClass prefix: aString translator: aTranslator [
 
-	^ self on: { aClass . aTranslator }
+	^ self on: { aClass . aString . aTranslator }
 ]
 
-{ #category : 'layout' }
-CMModelDesignerClassPresenter >> defaultLayout [
+{ #category : 'initialization' }
+CMModelDesignerClassPresenter >> connectPresenters [
 
-	^ SpBoxLayout newTopToBottom
-		add: (SpBoxLayout newLeftToRight
-			spacing: 10;
-			add: (SpBoxLayout newTopToBottom
-				vAlignCenter;
-				add: 'Superclass';
-				yourself) expand: false;
-			add: superclassDroplist;
-			yourself) expand: false;
-			add: '';
-			yourself
-]
-
-{ #category : 'examples' }
-CMModelDesignerClassPresenter >> example [
-
-	<script: '(self forClass: CMMockGoat translator: CMEnglishTranslator new) open'>
+	"do nothing"
 ]
 
 { #category : 'initialization' }
 CMModelDesignerClassPresenter >> initializePresenters [
 
+	nameInput := self newTextInput
+		text: (aClass name withoutPrefix: prefix);
+		yourself.
+
 	superclassDroplist := self newDropList
 		items: { aClass superclass };
 		yourself.
+		
+	parameterList := self
+		instantiate: CMModelDesignerParametersPresenter
+		on: { aClass . translator }. 
+		
+	sourceCodeNotebook := self newNotebook
 ]
 
 { #category : 'accessing - model' }
 CMModelDesignerClassPresenter >> setModelBeforeInitialization: aCollection [
 
 	aClass := aCollection first.
-	translator := aCollection second
+	prefix := aCollection second.
+	translator := aCollection third
+]
+
+{ #category : 'as yet unclassified' }
+CMModelDesignerClassPresenter >> showSourceCode: aMethod [
+
+	| page |
+	
+	page := (SpNotebookPage
+		title: aMethod selector asString
+		icon: (self iconNamed: #scriptManager)
+		provider: [ self newCode
+			beForMethod: aMethod;
+			text: aMethod sourceCode;
+			yourself ])
+		beCloseable;
+		yourself.
+
+	sourceCodeNotebook pages removeAll.
+	sourceCodeNotebook addPage: page.
+	sourceCodeNotebook selectPage: page
 ]

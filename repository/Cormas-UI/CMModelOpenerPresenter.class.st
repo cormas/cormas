@@ -40,7 +40,7 @@ CMModelOpenerPresenter class >> menu00RoassalOn: aBuilder [
 { #category : 'initialization' }
 CMModelOpenerPresenter >> connectPresenters [
 
-	browseButton action: [ self openSystemBrowser ].
+	browseButton action: [ self openModelDesigner ].
 	openSimulationButton action: [ self openSimulation ].
 	sensitivityAnalysisButton action: [ self openSensitivityAnalysis ].
 ]
@@ -101,6 +101,17 @@ CMModelOpenerPresenter >> initializeWindow: aWindowPresenter [
 ]
 
 { #category : 'as yet unclassified' }
+CMModelOpenerPresenter >> openModelDesigner [
+		
+	modelList selectedItem ifNotNil: [
+		(CMModelDesignerPresenter
+			forModelClass: modelList selectedItem
+			translator: translator) open.
+			
+		self window close ].
+]
+
+{ #category : 'as yet unclassified' }
 CMModelOpenerPresenter >> openPresenter: aPresenter [
 
 	modelList selectedItem ifNil: [ ^ self ].
@@ -124,12 +135,4 @@ CMModelOpenerPresenter >> openSimulation [
 	self openPresenter: (CMSimulationPresenter
 		forModelClass: modelList selectedItem
 		translator: translator)
-]
-
-{ #category : 'as yet unclassified' }
-CMModelOpenerPresenter >> openSystemBrowser [
-		
-	modelList selectedItem ifNotNil: [
-		modelList selectedItem browse.
-		self window close ].
 ]

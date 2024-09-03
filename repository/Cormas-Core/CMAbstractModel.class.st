@@ -149,24 +149,6 @@ CMAbstractModel class >> cellClass: aCMSpatialEntityCellClass [
 	cellClass := aCMSpatialEntityCellClass
 ]
 
-{ #category : 'simulation settings' }
-CMAbstractModel class >> defaultControl [
-	
-	^#step:
-]
-
-{ #category : 'simulation settings' }
-CMAbstractModel class >> defaultInit [
-	^ #init
-]
-
-{ #category : 'accessing' }
-CMAbstractModel class >> howToRunIt [
-	" Answer a <String> with information about how to run the receiver "
-
-	self subclassResponsibility
-]
-
 { #category : 'instance creation' }
 CMAbstractModel class >> initialize [
 
