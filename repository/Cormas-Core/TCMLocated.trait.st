@@ -893,14 +893,6 @@ TCMLocated >> randomWalkConstrainedBy: aBlock [
 	self moveTo: destination
 ]
 
-{ #category : 'accessing' }
-TCMLocated >> shapeOfPOV [
-	" Answer a <Symbol> to specify the shape the will be displayed in a space.
-	This must be a selector understood by the RSShapeFactory class"
-
-	^ #circle
-]
-
 { #category : 'environment - sensing - agents' }
 TCMLocated >> similarAgentsVerifying: aBlock withinRadius: range [
 	"Purpose: returns the receiver-like instances located withing a given radius of the receiver location and fulfilling a specified constraint
@@ -931,14 +923,6 @@ Example: self similarAgentsWithinRadius: 3"
 			self
 				locatedEntities: self class name
 				withinRadius: range ]
-]
-
-{ #category : 'accessing' }
-TCMLocated >> sizeOfPOV [
-	" Answer a <Number> to visually distinguish the receiver in a space.
-		To be overwritten if needed"
-
-	^ 20
 ]
 
 { #category : 'moving' }

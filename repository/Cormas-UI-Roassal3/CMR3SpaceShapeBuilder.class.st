@@ -20,31 +20,6 @@ CMR3SpaceShapeBuilder class >> for: aBuilder [
 ]
 
 { #category : 'as yet unclassified' }
-CMR3SpaceShapeBuilder >> createAdaptivePopup [
-
-	"RSPopup text: [ : aCMEntity | aCMEntity asString ]"
-	^ RSPopup new shapeBuilder: [ : aCMEntity |
-		| composite lb colors |
-		composite := RSComposite new.
-		colors := NSScale category20c.
-		lb := RSLegend new.
-		lb container: composite.
-		lb title: aCMEntity class name.
-		aCMEntity interestingDetails do: [ : att | 
-			lb 
-				text: (self formatEntityDetail: aCMEntity attribute: att)
-				withShape: (RSEllipse new size: 8; color: Color black) ].
-		lb build.
-		composite adjustToChildren.
-		composite
-			color: (Color white alpha: 0.7);
-			withBorder;
-			padding: 5;
-			yourself.
-		 ].
-]
-
-{ #category : 'as yet unclassified' }
 CMR3SpaceShapeBuilder >> defaultMasterShape [
 
 	self subclassResponsibility
@@ -54,16 +29,6 @@ CMR3SpaceShapeBuilder >> defaultMasterShape [
 CMR3SpaceShapeBuilder >> diagramBuilder: anObject [
 
 	diagramBuilder := anObject
-]
-
-{ #category : 'formatting' }
-CMR3SpaceShapeBuilder >> formatEntityDetail: aCMEntity attribute: att [
-
-	^ String streamContents: [ : stream |
-		stream 
-			<< att key;
-			space;
-			<< att value asString ]
 ]
 
 { #category : 'initialization' }
@@ -89,12 +54,7 @@ CMR3SpaceShapeBuilder >> masterShape [
 { #category : 'accessing' }
 CMR3SpaceShapeBuilder >> masterShape: aShape [
 
-	"| popUp |
-	
-	popUp := self createAdaptivePopup."
-
 	masterShape := aShape 
-		"@ popUp;"
 		when: RSMouseRightClick send: #inspectEntity: to: self;
 		yourself.
 ]

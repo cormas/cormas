@@ -39,10 +39,10 @@ CMMockAnimal >> initialize [
 	energy := self class initialEnergy
 ]
 
-{ #category : 'pov' }
-CMMockAnimal >> sizeOfPOV [
+{ #category : 'accessing' }
+CMMockAnimal >> pov [
 
-	^ 2 + (energy * 10)
+	^ CMPointOfView size: 2 + (energy * 10)
 ]
 
 { #category : 'control' }

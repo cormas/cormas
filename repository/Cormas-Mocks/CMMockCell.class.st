@@ -51,6 +51,6 @@ CMMockCell >> pov [
 
 	<pov>
 	^ state = #dead
-		ifTrue: [ Color black ]
-		ifFalse: [ Color white ]
+		ifTrue: [ CMPointOfView color: Color black ]
+		ifFalse: [ CMPointOfView color: Color white ]
 ]

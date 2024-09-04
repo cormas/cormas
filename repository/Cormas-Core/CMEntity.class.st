@@ -280,6 +280,40 @@ The notification is sent not from self but from an entityReference of self which
 ]
 
 { #category : 'utilities - color' }
+CMEntity >> colorAttribute: aSymbol min: minValue color: startColor max: maxValue color: stopColor [
+	"Purpose: returns a color among a palette of colors correlatively to the value of the attribute.
+Arguments: aSymbol = <Symbol>, the name of the attribute
+			minValue = <Integer>, the minimum value of the attribute
+		 	maxValue = <Integer>, the maximum value of the attribute
+			startColor = <ColorValue  or Symbol>, the color associated to the minimum value of the attribute
+			stopColor = <ColorValue  or Symbol>, the color associated to the maximum value of the attribute
+Return value: a colorValue"
+	
+	^self
+		colorValue: (self perform: aSymbol)
+		min: minValue
+		color: startColor
+		max: maxValue
+		color: stopColor
+]
+
+{ #category : 'utilities - color' }
+CMEntity >> colorAttribute: aSymbol min: minValue max: maxValue color: baseColor [
+	"Purpose: returns a color among a gradient correlatively to the value of the attribute.
+Arguments: aSymbol = <Symbol>, the name of the attribute
+			minValue = <Integer>, the minimum value of the attribute
+		 	maxValue = <Integer>, the maximum value of the attribute
+			color = <ColorValue  or Symbol>, the color itself or its name
+Return value: a colorValue"
+	
+	^self
+		colorValue: (self perform: aSymbol)
+		min: minValue
+		max: maxValue
+		color: baseColor
+]
+
+{ #category : 'utilities - color' }
 CMEntity >> colorFromName: aName [
 	"returns a specific color from a name"
 
@@ -298,6 +332,50 @@ CMEntity >> colorOfNumber: aNumber [
 	"Returns a Color for aNumber (there is only 38 colors)."
 
 	^ self class colorOfNumber: aNumber
+]
+
+{ #category : 'utilities - color' }
+CMEntity >> colorValue: aValue min: minValue color: startColor max: maxValue color: stopColor [
+	"Return a Color associated to aValue amongs a palette of colors.
+aValue = <Number> ; minValue = <Integer> ; maxValue = <Integer> ; startColor = <Color or Symbol> ; stopColor = <Color  or Symbol>"
+
+	| alpha rv gv bv value start_Color stop_Color |
+	(aValue isNil or: [ aValue isNumber not ]) ifTrue: [ ^ Color white ].
+	value := aValue max: minValue.
+	value := aValue min: maxValue.
+	start_Color := Color colorFrom: startColor.
+	stop_Color := Color colorFrom: stopColor.
+	alpha := value - minValue / (maxValue - minValue).
+	rv := (stop_Color red * alpha)
+	      + (start_Color red * (1 - alpha)).
+	gv := (stop_Color green * alpha)
+	      + (start_Color green * (1 - alpha)).
+	bv := (stop_Color blue * alpha)
+	      + (start_Color blue * (1 - alpha)).
+	^ Color r: rv g: gv b: bv
+]
+
+{ #category : 'utilities - color' }
+CMEntity >> colorValue: aValue min: minValue max: maxValue color: baseColor [
+
+	"Return a Color for aValue, in the interval of minValue and maxValue. 
+Works even if this value is less or up to minValue or maxValue
+aValue = <Number> ; minValue = <Integer> ; maxValue = <Integer> ; baseColor = <ColorValue  or Symbol>"
+
+	| index value color |
+	(aValue isNil or: [ aValue isNumber not ]) ifTrue: [ 
+		^ Color white ].
+	value := aValue.
+	value := value max: minValue.
+	value := value min: maxValue.
+	index := maxValue = minValue
+		         ifTrue: [ 0.8 ]
+		         ifFalse: [ maxValue - value / (maxValue - minValue) ].
+	color := Color colorFrom: baseColor.
+	^ Color
+		  h: color hue
+		  s: color saturation * (1 - (index raisedTo: 10))
+		  v: color brightness * index
 ]
 
 { #category : 'accessing' }
@@ -530,73 +608,17 @@ CMEntity >> patch [
 
 { #category : 'accessing' }
 CMEntity >> pov [
-	" For compatibility we answer a <Color> which could be considered neutral "
+	"Default point of view"
 	<pov>
-	^ Color gray
-]
-
-{ #category : 'pov' }
-CMEntity >> povAttribute: aSymbol min: minValue color: startColor max: maxValue color: stopColor [
-	"Purpose: returns a color among a palette of colors correlatively to the value of the attribute.
-Arguments: aSymbol = <Symbol>, the name of the attribute
-			minValue = <Integer>, the minimum value of the attribute
-		 	maxValue = <Integer>, the maximum value of the attribute
-			startColor = <ColorValue  or Symbol>, the color associated to the minimum value of the attribute
-			stopColor = <ColorValue  or Symbol>, the color associated to the maximum value of the attribute
-Return value: a colorValue
-Example : self povAttribute: #energy min: 0 color: (ColorValue yellow) max: (self class K) color: ColorValue red
-Example : self povAttribute: #energy min: 0 color: #yellow max: (self class K) color: #red"
-	
-	^self
-		povValue: (self perform: aSymbol)
-		min: minValue
-		color: startColor
-		max: maxValue
-		color: stopColor
-]
-
-{ #category : 'pov' }
-CMEntity >> povAttribute: aSymbol min: minValue max: maxValue color: baseColor [
-	"Purpose: returns a color among a gradient correlatively to the value of the attribute.
-Arguments: aSymbol = <Symbol>, the name of the attribute
-			minValue = <Integer>, the minimum value of the attribute
-		 	maxValue = <Integer>, the maximum value of the attribute
-			color = <ColorValue  or Symbol>, the color itself or its name
-Return value: a colorValue
-Example : self povAttribute: #energy min: 0 max: self class K color: ColorValue green
-Or : 	    self povAttribute: #energy min: 0 max: 10 color: #green"
-	
-	^self
-		povValue: (self perform: aSymbol)
-		min: minValue
-		max: maxValue
-		color: baseColor
-]
-
-{ #category : 'pov' }
-CMEntity >> povAttribute: aSymbol minPalette: startArray maxPalette: stopArray [
-	"Purpose: returns a color among a palette of colors correlatively to the value of the attribute.
-Arguments: aSymbol = <Symbol>, the name of the attribute
-			minPalette = <Array(Nuimber Symbol)> (minimum value of the attribute; name of color) 
-		 	maxPalette = <Array(Number Symbol)> (maximum value of the attribute; name of color)
-			color = <Color  or Symbol>, the color itself or its name
-Return value: a Color
-Example : self povAttribute: #boisMort minPalette:#(1 #red) maxPalette: #(15 #green)"
-
-	^ self
-		povValue: (self perform: aSymbol)
-		min: startArray first
-		color: startArray last
-		max: stopArray first
-		color: stopArray last
+	^ CMPointOfView new
 ]
 
 { #category : 'pov' }
 CMEntity >> povClassName [
-	"Purpose: returns the class name, to be added as an associated symbol in the Pov Setter Interface
-	Return value: <ByteSymbol>"
-
-	^ self class name
+	"Assign unique color to each class name"
+	
+	<pov>
+	^ CMPointOfView color: (self colorFromName: self class name)
 ]
 
 { #category : 'pov' }
@@ -605,56 +627,7 @@ CMEntity >> povId [
 Example: for an instance with id = 65, the returned color will be brown (65= 2*31+3)"
 
 	<pov>
-	^ self class colorOfNumber: self id
-]
-
-{ #category : 'utilities - color' }
-CMEntity >> povValue: aValue min: minValue color: startColor max: maxValue color: stopColor [
-	"Return a Color associated to aValue amongs a palette of colors.
-aValue = <Number> ; minValue = <Integer> ; maxValue = <Integer> ; startColor = <Color or Symbol> ; stopColor = <Color  or Symbol>
-ECEC example : 
-	povValue: 10 min: 0 color: #yellow max: 100 color: #red  or 
-	povValue: (self energy) min: 0 color: (Color yellow) max: (self class K) color: Color red"
-
-	| alpha rv gv bv value start_Color stop_Color |
-	(aValue isNil or: [ aValue isNumber not ]) ifTrue: [ ^ Color white ].
-	value := aValue max: minValue.
-	value := aValue min: maxValue.
-	start_Color := Color colorFrom: startColor.
-	stop_Color := Color colorFrom: stopColor.
-	alpha := value - minValue / (maxValue - minValue).
-	rv := (stop_Color red * alpha) rounded
-	      + (start_Color red * (1 - alpha)) rounded.
-	gv := (stop_Color green * alpha) rounded
-	      + (start_Color green * (1 - alpha)) rounded.
-	bv := (stop_Color blue * alpha) rounded
-	      + (start_Color blue * (1 - alpha)) rounded.
-	^ Color r: rv g: gv b: bv
-]
-
-{ #category : 'utilities - color' }
-CMEntity >> povValue: aValue min: minValue max: maxValue color: baseColor [
-
-	"Return a Color for aValue, in the interval of minValue and maxValue. 
-Works even if this value is less or up to minValue or maxValue
-aValue = <Number> ; minValue = <Integer> ; maxValue = <Integer> ; baseColor = <ColorValue  or Symbol>
-ECEC example : 
-	povAttribute: #energy min: 0 max: self class K color: ColorValue green"
-
-	| index value color |
-	(aValue isNil or: [ aValue isNumber not ]) ifTrue: [ 
-		^ Color white ].
-	value := aValue.
-	value := value max: minValue.
-	value := value min: maxValue.
-	index := maxValue = minValue
-		         ifTrue: [ 0.8 ]
-		         ifFalse: [ maxValue - value / (maxValue - minValue) ].
-	color := Color colorFrom: baseColor.
-	^ Color
-		  h: color hue
-		  s: color saturation * (1 - (index raisedTo: 10))
-		  v: color brightness * index
+	^ CMPointOfView color: (self class colorOfNumber: self id)
 ]
 
 { #category : 'printing' }

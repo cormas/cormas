@@ -59,12 +59,12 @@ CMR3SpaceCellsBuilder >> renderIn: aCanvas [
 { #category : 'updating' }
 CMR3SpaceCellsBuilder >> updateShape: aShape [
 
-	| model colorSymbolOrNumber |
+	| model pov |
 	model := aShape model.
 	
-	colorSymbolOrNumber := model perform: diagramBuilder activeSpatialEntityPov.
+	pov := model perform: diagramBuilder activeSpatialEntityPov.
 
-	aShape color: (colorSymbolOrNumber asColorForPoVIn: model).
+	aShape color: pov color.
 ]
 
 { #category : 'enumerating' }
