@@ -124,6 +124,12 @@ CMModelDesignerListPresenter >> toolbarButtons [
 	self subclassResponsibility
 ]
 
+{ #category : 'api - selection' }
+CMModelDesignerListPresenter >> unselectAll [
+
+	list unselectAll
+]
+
 { #category : 'enumerating' }
 CMModelDesignerListPresenter >> whenSelectedItemChangedDo: aBlock [
 

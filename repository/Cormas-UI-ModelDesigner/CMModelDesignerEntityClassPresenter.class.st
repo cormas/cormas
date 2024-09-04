@@ -3,7 +3,8 @@ Class {
 	#superclass : 'CMModelDesignerClassPresenter',
 	#instVars : [
 		'variableList',
-		'methodList'
+		'customMethodsList',
+		'povList'
 	],
 	#category : 'Cormas-UI-ModelDesigner',
 	#package : 'Cormas-UI-ModelDesigner'
@@ -14,8 +15,17 @@ CMModelDesignerEntityClassPresenter >> connectPresenters [
 
 	super connectPresenters.
 
-	methodList whenSelectedItemChangedDo: [ :method |
-		self showSourceCode: method ]
+	customMethodsList whenSelectedItemChangedDo: [ :method |
+		method ifNotNil: [
+			variableList unselectAll.
+			povList unselectAll.
+			self showSourceCode: method ] ].
+	
+	povList whenSelectedItemChangedDo: [ :method |
+		method ifNotNil: [
+			variableList unselectAll.
+			customMethodsList unselectAll.
+			self showSourceCode: method ] ]
 ]
 
 { #category : 'layout' }
@@ -47,7 +57,8 @@ CMModelDesignerEntityClassPresenter >> defaultLayout [
 			add: (SpBoxLayout newLeftToRight
 				spacing: 5;
 				add: variableList width: 250;
-				add: methodList;
+				add: customMethodsList;
+				add: povList;
 				yourself);
 			add: sourceCodeNotebook;
 			yourself);
@@ -63,15 +74,29 @@ CMModelDesignerEntityClassPresenter >> example [
 { #category : 'initialization' }
 CMModelDesignerEntityClassPresenter >> initializePresenters [
 
+	| povMethods |
 	super initializePresenters.
 		
 	variableList := self
 		instantiate: CMModelDesignerParametersPresenter
 		on: { 'Variables' . aClass . translator }.
 		
-	methodList := self
+	customMethodsList := self
 		instantiate: CMModelDesignerMethodsPresenter
 		on: { 'Custom methods' . translator }.
+	
+	povList := self
+		instantiate: CMModelDesignerMethodsPresenter
+		on: { 'Points of View' . translator }.
 		
-	methodList items: (aClass methods reject: #isFromTrait)
+	povMethods := aClass availablePov
+		select: [ :selector | aClass includesSelector: selector ]
+		thenCollect: [ :selector | aClass >> selector ].
+		
+	customMethodsList items: (
+		(aClass methods
+			reject: #isFromTrait)
+			reject: [ :method | povMethods includes: method ]).
+		
+	povList items: povMethods.
 ]
