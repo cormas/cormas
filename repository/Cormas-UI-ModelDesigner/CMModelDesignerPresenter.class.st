@@ -4,6 +4,8 @@ Class {
 	#instVars : [
 		'translator',
 		'modelClass',
+		'toolbar',
+		'openSimulationButton',
 		'notebook'
 	],
 	#category : 'Cormas-UI-ModelDesigner',
@@ -108,10 +110,21 @@ CMModelDesignerPresenter >> confirmDeleteClassNamed: aString [
 		self updateNotebookPages.
 ]
 
+{ #category : 'initialization' }
+CMModelDesignerPresenter >> connectPresenters [
+
+	openSimulationButton action: [ 
+		(CMSimulationPresenter
+			forModelClass: modelClass
+			translator: translator)
+			open ]
+]
+
 { #category : 'layout' }
 CMModelDesignerPresenter >> defaultLayout [ 
 
 	^ SpBoxLayout newTopToBottom
+		add: toolbar expand: false;
 		add: notebook;
 		yourself
 ]
@@ -140,6 +153,15 @@ CMModelDesignerPresenter >> iconForClass: aClass [
 
 { #category : 'initialization' }
 CMModelDesignerPresenter >> initializePresenters [
+	
+	openSimulationButton := self newToolbarButton
+		label: 'Simulation';
+		icon: CMIcons runIcon;
+		yourself.
+
+	toolbar := self newToolbar
+		add: openSimulationButton;
+		yourself.
 
 	notebook := self newNotebook
 		whenPageRemovedDo: [ :page |
