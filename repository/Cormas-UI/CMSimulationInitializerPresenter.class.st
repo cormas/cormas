@@ -5,6 +5,7 @@ Class {
 		'translator',
 		'modelClass',
 		'modelInitializationSettings',
+		'parametersButton',
 		'initializeButton',
 		'initializeBlock',
 		'isReinitializeBlock'
@@ -52,6 +53,8 @@ CMSimulationInitializerPresenter >> confirmReinitialize [
 { #category : 'initialization' }
 CMSimulationInitializerPresenter >> connectPresenters [
 
+	parametersButton action: [ self openParametersEditor ].
+
 	initializeButton action: [
 		isReinitializeBlock value
 			ifFalse: [ initializeBlock value ]
@@ -71,6 +74,7 @@ CMSimulationInitializerPresenter >> defaultLayout [
 	^ SpBoxLayout newTopToBottom
 		spacing: 10;
 		add: modelInitializationSettings;
+		add: parametersButton height: self class buttonHeight;
 		add: initializeButton height: self class buttonHeight;
 		yourself
 ]
@@ -87,11 +91,26 @@ CMSimulationInitializerPresenter >> initializePresenters [
 		
 	modelInitializationSettings modelClass: modelClass.
 	
+	parametersButton := self newButton
+		label: 'Parameters';
+		icon: (self iconNamed: #configuration);
+		yourself.
+	
 	initializeButton := self newButton
 		disable;
 		yourself.
 		
 	self updateInitializeButton.
+]
+
+{ #category : 'as yet unclassified' }
+CMSimulationInitializerPresenter >> openParametersEditor [
+
+	(CMParametersEditorPresenter
+		forParameters: modelClass parameters
+		translator: translator)
+		open
+	
 ]
 
 { #category : 'accessing - model' }
