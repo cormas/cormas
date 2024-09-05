@@ -104,10 +104,10 @@ CMModelOpenerPresenter >> initializeWindow: aWindowPresenter [
 CMModelOpenerPresenter >> openModelDesigner [
 		
 	modelList selectedItem ifNotNil: [
-		(CMModelDesignerPresenter
+		"(CMModelDesignerPresenter
 			forModelClass: modelList selectedItem
-			translator: translator) open.
-			
+			translator: translator) open."
+		modelList selectedItem browse.
 		self window close ].
 ]
 
