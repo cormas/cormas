@@ -33,6 +33,12 @@ CMAbstractTranslator >> tAverageValue [
 ]
 
 { #category : 'translations' }
+CMAbstractTranslator >> tBrowse [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
 CMAbstractTranslator >> tCharts [
 
 	self subclassResponsibility
@@ -136,6 +142,12 @@ CMAbstractTranslator >> tMonteCarlo [
 
 { #category : 'translations' }
 CMAbstractTranslator >> tNumberOfRepetitions [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tOpenSimulation [
 
 	self subclassResponsibility
 ]

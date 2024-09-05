@@ -24,6 +24,12 @@ CMEnglishTranslator >> tAverageValue [
 ]
 
 { #category : 'translations' }
+CMEnglishTranslator >> tBrowse [
+
+	^ 'Browse'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tCharts [
 
 	^ 'Charts'
@@ -129,6 +135,12 @@ CMEnglishTranslator >> tMonteCarlo [
 CMEnglishTranslator >> tNumberOfRepetitions [
 
 	^ 'Number of repetitions'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tOpenSimulation [
+
+	^ 'Open Simulation'
 ]
 
 { #category : 'translations' }

@@ -24,6 +24,12 @@ CMUkrainianTranslator >> tAverageValue [
 ]
 
 { #category : 'translations' }
+CMUkrainianTranslator >> tBrowse [
+
+	^ 'Браузер'
+]
+
+{ #category : 'translations' }
 CMUkrainianTranslator >> tCharts [
 
 	^ 'Графіки'
@@ -129,6 +135,12 @@ CMUkrainianTranslator >> tMonteCarlo [
 CMUkrainianTranslator >> tNumberOfRepetitions [
 
 	^ 'Кількість повторів'
+]
+
+{ #category : 'translations' }
+CMUkrainianTranslator >> tOpenSimulation [
+
+	^ 'Відкрити симуляцію'
 ]
 
 { #category : 'translations' }
