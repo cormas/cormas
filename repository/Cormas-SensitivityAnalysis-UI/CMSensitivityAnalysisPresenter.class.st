@@ -23,7 +23,7 @@ Class {
 CMSensitivityAnalysisPresenter class >> example [
 	<example>
 	
-	(self forModelClass: CMMockModel translator: CMUkrainianTranslator new) open.
+	(self forModelClass: CMMockModel translator: CMEnglishTranslator new) open.
 ]
 
 { #category : 'as yet unclassified' }

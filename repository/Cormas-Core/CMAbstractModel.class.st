@@ -60,7 +60,9 @@ Class {
 CMAbstractModel class >> aboutThisModel [
 	" Answer a <String> which is the main description of the receiver's purpose "
 	
-	self subclassResponsibility
+	^ '# About this model
+	
+	Edit this file to document your model using [Microdown](https://github.com/pillar-markup/Microdown) - Pharo''s dialect of [Markdown](https://en.wikipedia.org/wiki/Markdown).'
 	
 
 ]
@@ -149,24 +151,6 @@ CMAbstractModel class >> cellClass: aCMSpatialEntityCellClass [
 	cellClass := aCMSpatialEntityCellClass
 ]
 
-{ #category : 'simulation settings' }
-CMAbstractModel class >> defaultControl [
-	
-	^#step:
-]
-
-{ #category : 'simulation settings' }
-CMAbstractModel class >> defaultInit [
-	^ #init
-]
-
-{ #category : 'accessing' }
-CMAbstractModel class >> howToRunIt [
-	" Answer a <String> with information about how to run the receiver "
-
-	self subclassResponsibility
-]
-
 { #category : 'instance creation' }
 CMAbstractModel class >> initialize [
 
@@ -202,9 +186,9 @@ CMAbstractModel class >> initializeParameters [
 ]
 
 { #category : 'testing' }
-CMAbstractModel class >> isGenericEntity [
-	
-	^self = CMAbstractModel	"| self = CormasModelGame"
+CMAbstractModel class >> isCormasModelClass [
+
+	^ true
 ]
 
 { #category : 'testing' }
@@ -899,11 +883,6 @@ CMAbstractModel >> initializeSpaceModel [
 	self class cellClass ifNil: [ ^ nil ].
 	self spaceModel: (CMSpaceModel forModel: self).
 
-]
-
-{ #category : 'accessing' }
-CMAbstractModel >> isGenericEntity [
-	^ self class isGenericEntity 
 ]
 
 { #category : 'accessing - entities' }

@@ -24,6 +24,12 @@ CMEnglishTranslator >> tAverageValue [
 ]
 
 { #category : 'translations' }
+CMEnglishTranslator >> tBrowse [
+
+	^ 'Browse'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tCharts [
 
 	^ 'Charts'
@@ -132,6 +138,12 @@ CMEnglishTranslator >> tNumberOfRepetitions [
 ]
 
 { #category : 'translations' }
+CMEnglishTranslator >> tOpenSimulation [
+
+	^ 'Open Simulation'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tParameter [
 
 	^ 'Parameter'
@@ -153,6 +165,12 @@ CMEnglishTranslator >> tPredefinedList [
 CMEnglishTranslator >> tProbe [
 
 	^ 'Probe'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tProbes [
+
+	^ 'Probes'
 ]
 
 { #category : 'translations' }

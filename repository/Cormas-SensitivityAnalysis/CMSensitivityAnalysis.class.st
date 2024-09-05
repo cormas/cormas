@@ -5,6 +5,7 @@ Class {
 		'modelClass',
 		'activeInitMethod',
 		'activeControlMethod',
+		'numberOfRepetitions',
 		'simulations',
 		'dataCollectors',
 		'data'
@@ -12,6 +13,12 @@ Class {
 	#category : 'Cormas-SensitivityAnalysis',
 	#package : 'Cormas-SensitivityAnalysis'
 }
+
+{ #category : 'as yet unclassified' }
+CMSensitivityAnalysis class >> defaultNumberOfRepetitions [
+
+	^ 10
+]
 
 { #category : 'instance creation' }
 CMSensitivityAnalysis class >> for: aModelClass [
@@ -63,6 +70,8 @@ CMSensitivityAnalysis >> dataCollectors: aCollection [
 CMSensitivityAnalysis >> initialize [
 
 	super initialize.
+	
+	numberOfRepetitions := self class defaultNumberOfRepetitions.
 	simulations := OrderedCollection new.
 ]
 
@@ -78,10 +87,32 @@ CMSensitivityAnalysis >> modelClass: aClass [
 	modelClass := aClass 
 ]
 
+{ #category : 'accessing' }
+CMSensitivityAnalysis >> numberOfRepetitions [
+
+	^ numberOfRepetitions
+]
+
+{ #category : 'accessing' }
+CMSensitivityAnalysis >> numberOfRepetitions: aNumber [
+
+	numberOfRepetitions := aNumber
+]
+
 { #category : 'running' }
 CMSensitivityAnalysis >> run [
 
-	
+	simulations do: [ :simulation |
+		self runSimulation: simulation ]
+]
+
+{ #category : 'accessing' }
+CMSensitivityAnalysis >> runSimulation: aSimulation [
+
+	numberOfRepetitions timesRepeat: [ 
+		dataCollectors do: #activateProbeBeforeSimulation.
+		aSimulation runAllSteps.
+		dataCollectors do: #collectDataAfterSimulation ]
 ]
 
 { #category : 'accessing' }

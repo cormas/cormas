@@ -33,6 +33,12 @@ CMAbstractTranslator >> tAverageValue [
 ]
 
 { #category : 'translations' }
+CMAbstractTranslator >> tBrowse [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
 CMAbstractTranslator >> tCharts [
 
 	self subclassResponsibility
@@ -92,7 +98,7 @@ CMAbstractTranslator >> tInspector [
 	self subclassResponsibility
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'translations' }
 CMAbstractTranslator >> tInteger [
 
 	self subclassResponsibility
@@ -141,6 +147,12 @@ CMAbstractTranslator >> tNumberOfRepetitions [
 ]
 
 { #category : 'translations' }
+CMAbstractTranslator >> tOpenSimulation [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
 CMAbstractTranslator >> tParameter [
 
 	self subclassResponsibility
@@ -160,6 +172,12 @@ CMAbstractTranslator >> tPredefinedList [
 
 { #category : 'translations' }
 CMAbstractTranslator >> tProbe [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tProbes [
 
 	self subclassResponsibility
 ]

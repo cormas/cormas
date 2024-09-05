@@ -1895,7 +1895,7 @@ BaselineOfCormas >> specForGroups: spec [
 			'Cormas-UI-Tests'
 			'Cormas-SensitivityAnalysis-Tests'
 			'Cormas-SensitivityAnalysis-UI-Tests');
-		group: 'default' with: #('SensitivityAnalysisUI')
+		group: 'default' with: #('UI')
 ]
 
 { #category : 'specs' }

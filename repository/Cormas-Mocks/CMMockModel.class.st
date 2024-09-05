@@ -28,9 +28,10 @@ Class {
 	#package : 'Cormas-Mocks'
 }
 
-{ #category : 'default' }
-CMMockModel class >> defaultControl [
-	^ #stepSynchronously:
+{ #category : 'accessing' }
+CMMockModel class >> aboutThisModel [
+
+	^ ''
 ]
 
 { #category : 'parameters' }
@@ -90,6 +91,12 @@ CMMockModel class >> numberOfRows [
 CMMockModel class >> numberOfRows: aNumber [
 
 	numberOfRows := aNumber
+]
+
+{ #category : 'tests - printing' }
+CMMockModel class >> prefix [
+
+	^ 'CMMock'
 ]
 
 { #category : 'examples' }

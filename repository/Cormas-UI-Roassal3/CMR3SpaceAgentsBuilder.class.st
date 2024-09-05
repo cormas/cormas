@@ -87,7 +87,7 @@ CMR3SpaceAgentsBuilder >> mouseEnd: anEvent [
 { #category : 'as yet unclassified' }
 CMR3SpaceAgentsBuilder >> moveAgentShape: anAgentShape [
 
-	| agent cell cellSize |
+	| agent cell cellSize pov |
 			
 	agent := anAgentShape model.
 	
@@ -99,10 +99,12 @@ CMR3SpaceAgentsBuilder >> moveAgentShape: anAgentShape [
 	(anAgentShape propertyAt: #RSLabeled) ifNotNil: [ :p |
 		p text: agent labelOfPOV ].
 	
+	pov := agent perform: agent class activePovSelector.
+	
 	anAgentShape
 		"@ (RSPopup text: agent detailsOfPOV);"
-		size: agent sizeOfPOV;
-		color: (agent perform: agent class activePovSelector);
+		size: pov size;
+		color: pov color;
 		translateTo: (cell columnNumber @ cell rowNumber * cellSize) - (cellSize / 2)
 ]
 
@@ -115,9 +117,11 @@ CMR3SpaceAgentsBuilder >> objects [
 { #category : 'hooks' }
 CMR3SpaceAgentsBuilder >> shapeFor: anObject index: aNumber [
 
-	| shape |
+	| pov shape |
 	
-	shape := (RSShapeFactory perform: anObject shapeOfPOV)
+	pov := anObject perform: anObject class activePovSelector.
+	
+	shape := (RSShapeFactory perform: pov shape)
 		color: Color red;
 		size: 25;
 		model: anObject;

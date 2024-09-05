@@ -4,10 +4,8 @@ Class {
 	#instVars : [
 		'translator',
 		'modelList',
-		'browseButton',
-		'openSimulationButton',
-		'sensitivityAnalysisButton',
-		'parametersTable'
+		'buttonBar',
+		'buttons'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -37,32 +35,40 @@ CMModelOpenerPresenter class >> menu00RoassalOn: aBuilder [
 		order: 1.
 ]
 
-{ #category : 'initialization' }
-CMModelOpenerPresenter >> connectPresenters [
-
-	browseButton action: [ self openSystemBrowser ].
-	openSimulationButton action: [ self openSimulation ].
-	sensitivityAnalysisButton action: [ self openSensitivityAnalysis ].
-]
-
 { #category : 'layout' }
 CMModelOpenerPresenter >> defaultLayout [
+
+	| buttonsLayout |
+	
+	buttonsLayout := SpBoxLayout newLeftToRight.
+	buttons do: [ :button | buttonsLayout add: button ].
 
 	^ SpBoxLayout newTopToBottom
 		spacing: 5;
 		add: modelList;
-		add: (SpBoxLayout newLeftToRight
-			add: browseButton;
-			add: openSimulationButton;
-			add: sensitivityAnalysisButton;
-			yourself) height: self class buttonHeight;
-		yourself
+		add: buttonsLayout height: self class buttonHeight
+		yourself.
 ]
 
 { #category : 'as yet unclassified' }
 CMModelOpenerPresenter >> findAvailableModels [
 
 	^ CMAbstractModel allSubclasses
+]
+
+{ #category : 'initialization' }
+CMModelOpenerPresenter >> initializeButtons [
+	
+	| command |
+	
+	buttons := CMModelOpenerCommand subclasses collect: [ :aCommandClass |
+		command := aCommandClass forOwner: self translator: translator.
+		
+		self newButton
+			label: command name;
+			icon: command icon;
+			action: command action;
+			yourself ]
 ]
 
 { #category : 'initialization' }
@@ -74,20 +80,8 @@ CMModelOpenerPresenter >> initializePresenters [
 		items: self findAvailableModels;
 		yourself.
 		
-	browseButton := self newButton
-		label: 'Browse';
-		icon: (self iconNamed: #smallSystemBrowser);
-		yourself.
-	
-	openSimulationButton := self newButton
-		label: 'Open Simulation';
-		icon: CMIcons runIcon;
-		yourself.
-		
-	sensitivityAnalysisButton := self newButton
-		label: 'Sensitivity Analysis';
-		icon: (self iconNamed: #testRunner);
-		yourself.
+	buttonBar := self newButtonBar.
+	self initializeButtons
 ]
 
 { #category : 'initialization' }
@@ -101,35 +95,7 @@ CMModelOpenerPresenter >> initializeWindow: aWindowPresenter [
 ]
 
 { #category : 'as yet unclassified' }
-CMModelOpenerPresenter >> openPresenter: aPresenter [
+CMModelOpenerPresenter >> selectedModelClass [
 
-	modelList selectedItem ifNil: [ ^ self ].
-		
-	aPresenter open.
-	aPresenter window centered.
-	self window close
-]
-
-{ #category : 'as yet unclassified' }
-CMModelOpenerPresenter >> openSensitivityAnalysis [
-		
-	self openPresenter: (CMSensitivityAnalysisPresenter
-		forModelClass: modelList selectedItem
-		translator: translator)
-]
-
-{ #category : 'as yet unclassified' }
-CMModelOpenerPresenter >> openSimulation [
-
-	self openPresenter: (CMSimulationPresenter
-		forModelClass: modelList selectedItem
-		translator: translator)
-]
-
-{ #category : 'as yet unclassified' }
-CMModelOpenerPresenter >> openSystemBrowser [
-		
-	modelList selectedItem ifNotNil: [
-		modelList selectedItem browse.
-		self window close ].
+	^ modelList selectedItem
 ]

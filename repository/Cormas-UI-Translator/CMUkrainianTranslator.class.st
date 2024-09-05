@@ -24,6 +24,12 @@ CMUkrainianTranslator >> tAverageValue [
 ]
 
 { #category : 'translations' }
+CMUkrainianTranslator >> tBrowse [
+
+	^ 'Браузер'
+]
+
+{ #category : 'translations' }
 CMUkrainianTranslator >> tCharts [
 
 	^ 'Графіки'
@@ -132,6 +138,12 @@ CMUkrainianTranslator >> tNumberOfRepetitions [
 ]
 
 { #category : 'translations' }
+CMUkrainianTranslator >> tOpenSimulation [
+
+	^ 'Відкрити симуляцію'
+]
+
+{ #category : 'translations' }
 CMUkrainianTranslator >> tParameter [
 
 	^ 'Параметр'
@@ -153,6 +165,12 @@ CMUkrainianTranslator >> tPredefinedList [
 CMUkrainianTranslator >> tProbe [
 
 	^ 'Проба'
+]
+
+{ #category : 'translations' }
+CMUkrainianTranslator >> tProbes [
+
+	^ 'Проби'
 ]
 
 { #category : 'translations' }

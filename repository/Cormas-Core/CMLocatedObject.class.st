@@ -144,9 +144,3 @@ CMLocatedObject >> patchID [
 	self patch ifNil: [^0].
 	^self patch id
 ]
-
-{ #category : 'accessing' }
-CMLocatedObject >> sizeOfPOV [
-"To be overwritten if needed"
- ^ 20
-]

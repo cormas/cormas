@@ -9,5 +9,7 @@ Class {
 CMMockGoat >> pov [
 
 	<pov>
-	^ Color blue
+	^ super pov
+		color: Color blue;
+		yourself
 ]

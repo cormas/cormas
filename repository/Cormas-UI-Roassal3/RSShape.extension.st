@@ -9,10 +9,10 @@ RSShape >> cormasModel [
 { #category : '*Cormas-UI-Roassal3' }
 RSShape >> updateEntityAspectIn: aCMR3SpacePresenter [ 
 
-	| colorSymbolOrNumber |
+	| pov |
 	
-	colorSymbolOrNumber := self model perform: aCMR3SpacePresenter activeSpatialEntityPov.
-	self color: (colorSymbolOrNumber asColorForPoVIn: self model).
+	pov := self model perform: aCMR3SpacePresenter activeSpatialEntityPov.
+	self color: pov color.
 	self signalUpdate.
 
 ]
