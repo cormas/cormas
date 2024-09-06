@@ -5,10 +5,11 @@ Class {
 		'translator',
 		'modelClass',
 		'modelInitializationSettings',
-		'parametersButton',
 		'initializeButton',
 		'initializeBlock',
-		'isReinitializeBlock'
+		'isReinitializeBlock',
+		'editParametersButton',
+		'resetParametersButton'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -53,7 +54,8 @@ CMSimulationInitializerPresenter >> confirmReinitialize [
 { #category : 'initialization' }
 CMSimulationInitializerPresenter >> connectPresenters [
 
-	parametersButton action: [ self openParametersEditor ].
+	editParametersButton action: [ self openParametersEditor ].
+	resetParametersButton action: [ modelClass initializeParameters ].
 
 	initializeButton action: [
 		isReinitializeBlock value
@@ -73,10 +75,27 @@ CMSimulationInitializerPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
 		spacing: 10;
-		add: modelInitializationSettings;
-		add: parametersButton height: self class buttonHeight;
+		add: modelInitializationSettings height: 190;
+		add: (SpBoxLayout newLeftToRight
+			add: translator tParameters expand: false;
+			add: '';
+			add: editParametersButton width: self class buttonHeight;
+			add: resetParametersButton width: self class buttonHeight;
+			yourself) height: self class buttonHeight;
+		add: '';
 		add: initializeButton height: self class buttonHeight;
 		yourself
+]
+
+{ #category : 'as yet unclassified' }
+CMSimulationInitializerPresenter >> disableInitialization [
+	
+	| presenters |
+	
+	presenters := self layout allPresenters select: [ :each | each isKindOf: SpPresenter ].
+
+	(presenters copyWithoutAll: { editParametersButton . resetParametersButton })
+		do: [ :each | each enabled: false ].
 ]
 
 { #category : 'initialization' }
@@ -84,6 +103,8 @@ CMSimulationInitializerPresenter >> initializePresenters [
 
 	isReinitializeBlock := [ false ].
 	initializeBlock := [ "do nothing" ].
+	
+	modelClass initializeParameters.
 
 	modelInitializationSettings := self
 		instantiate: CMModelInitializationSettingsPresenter
@@ -91,9 +112,12 @@ CMSimulationInitializerPresenter >> initializePresenters [
 		
 	modelInitializationSettings modelClass: modelClass.
 	
-	parametersButton := self newButton
-		label: 'Parameters';
-		icon: (self iconNamed: #configuration);
+	editParametersButton := self newButton
+		icon: (self iconNamed: #glamorousEdit);
+		yourself.
+		
+	resetParametersButton := self newButton
+		icon: (self iconNamed: #glamorousRestart);
 		yourself.
 	
 	initializeButton := self newButton
@@ -123,11 +147,18 @@ CMSimulationInitializerPresenter >> setModelBeforeInitialization: aCollection [
 { #category : 'accessing' }
 CMSimulationInitializerPresenter >> simulation [
 
-	^ (CMSimulation for: modelClass)
+	| simulation |
+	simulation := CMSimulation for: modelClass.
+
+	modelClass parameters do: [ :parameter |
+		simulation initialParameterValues at: parameter put: parameter value ].
+
+	simulation
 		activeInitMethod: modelInitializationSettings initMethod;
 		activeControlMethod: modelInitializationSettings controlMethod;
-		initializeSimulation;
-		yourself
+		initializeSimulation.
+	
+	^ simulation
 ]
 
 { #category : 'as yet unclassified' }

@@ -182,7 +182,9 @@ CMAbstractModel class >> initializeModelClasses [
 { #category : 'initialization' }
 CMAbstractModel class >> initializeParameters [
 
-	"Do nothing. This method can be overriden by subclasses to initialize model parameters. Implementors should always call super initializeParameters, same as for the initialize method"
+	"Initialize parameters of all entity classes. This method can be overriden by subclasses to initialize model parameters. Implementors should always call super initializeParameters, same as for the initialize method"
+	
+	self allEntityClasses do: #initializeParameters. 
 ]
 
 { #category : 'testing' }
@@ -206,6 +208,14 @@ CMAbstractModel class >> locatedObjectClasses [
 { #category : 'managing classes' }
 CMAbstractModel class >> messages [
 	^ self passiveClasses select: [ :i | i inheritsFrom: CMMessage ]
+]
+
+{ #category : 'instance creation' }
+CMAbstractModel class >> newWithoutParameters [
+
+	^ self basicNew
+		initializeWithoutParameters;
+		yourself
 ]
 
 { #category : 'managing classes' }
@@ -836,15 +846,8 @@ CMAbstractModel >> initEntitiesForSocialClass: aClass [
 
 { #category : 'initialization' }
 CMAbstractModel >> initialize [
-	"self class spatialClasses isEmpty ifFalse: [self initializeSpaceModel]."
-	"NB ->retire pour que les cells ne demandent pas le currentSimulation spaceModel alors qu''il n''est pas encore fini d''initialise"
 
-	super initialize.
-	self randomNumberGenerator: PMFishmanMooreRandomGenerator new.
-	
-	self class socialClasses ifNotEmpty: [ self initializeChannel ].
-	
-	self initializeEntityGetters.
+	self initializeWithoutParameters.
 	self initializeParameters.
 
 ]
@@ -872,8 +875,7 @@ CMAbstractModel >> initializeEntityGetters [
 { #category : 'initialization' }
 CMAbstractModel >> initializeParameters [
 
-	self class initializeParameters.
-	self class allEntityClasses do: #initializeParameters. 
+	self class initializeParameters. 
 ]
 
 { #category : 'initialization' }
@@ -882,6 +884,18 @@ CMAbstractModel >> initializeSpaceModel [
 
 	self class cellClass ifNil: [ ^ nil ].
 	self spaceModel: (CMSpaceModel forModel: self).
+
+]
+
+{ #category : 'initialization' }
+CMAbstractModel >> initializeWithoutParameters [
+
+	super initialize.
+	self randomNumberGenerator: PMFishmanMooreRandomGenerator new.
+	
+	self class socialClasses ifNotEmpty: [ self initializeChannel ].
+	
+	self initializeEntityGetters.
 
 ]
 

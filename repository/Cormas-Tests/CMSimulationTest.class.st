@@ -31,8 +31,8 @@ CMSimulationTest >> testCurrenTimeStepStartsWithZero [
 CMSimulationTest >> testData [
 
 	| expectedData |
-	expectedData := #( #( 11 5 ) #( 5 11 ) #( 11 5 ) #( 5 11 ) #( 11 5 )
-	                   #( 5 11 ) ) asOrderedCollection collect: [ :row |
+	expectedData := #( #( 5 11 ) #( 11 5 ) #( 5 11 ) #( 11 5 ) #( 5 11 )
+	                   #( 11 5 ) ) asOrderedCollection collect: [ :row |
 		                Dictionary newFrom: {
 				                (simulation probes first name -> row first).
 				                (simulation probes second name -> row second) } ].

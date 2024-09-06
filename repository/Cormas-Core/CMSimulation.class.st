@@ -124,13 +124,6 @@ CMSimulation >> initializeModel [
 		yourself.
 		
 	self initializeProbes.
-
-	"remove the previous entities of the collections (theXXXs), except for theCells"
-	cormasModel initEntities.
-
-	cormasModel removeDestroyedEntities.
-	cormasModel channel ifNil: [ cormasModel initializeChannel ].
-	cormasModel theAgentsComm do: [ :p | p channel: cormasModel channel ].
 ]
 
 { #category : 'initialization' }
@@ -144,9 +137,7 @@ CMSimulation >> initializeProbes [
 CMSimulation >> initializeSimulation [
 
 	self initializeModel.
-
-	initialParameterValues keysAndValuesDo: [ :parameter :value |
-		parameter value: value ].
+	self setInitialParameters.
 	
 	activeInitMethod valueWithReceiver: cormasModel.
 	self recordData.
@@ -254,4 +245,32 @@ CMSimulation >> runStep [
 	cormasModel channel ifNotNil: [ cormasModel channel sendAllMessages ].
 	
 	self recordData.
+]
+
+{ #category : 'initialization' }
+CMSimulation >> setInitialParameters [
+
+	self setInitialParametersFor: initialParameterValues keys
+]
+
+{ #category : 'initialization' }
+CMSimulation >> setInitialParametersFor: aCollectionOfParameters [
+
+	| classes parametersWithoutParent otherParameters |
+	
+	aCollectionOfParameters ifEmpty: [ ^ self ].
+	
+	classes := aCollectionOfParameters collect: #receiverClass.
+	
+	"Parameters that do not have a parent in the list of parameters. Roots of the tree"
+	parametersWithoutParent := aCollectionOfParameters reject: [ :parameter |
+		classes includes: parameter receiverClass superclass ].
+	
+	otherParameters := aCollectionOfParameters reject: [ :parameter |
+		parametersWithoutParent includes: parameter ].
+	
+	parametersWithoutParent do: [ :parameter |
+		parameter value: (initialParameterValues at: parameter) ].
+	
+	self setInitialParametersFor: otherParameters 
 ]

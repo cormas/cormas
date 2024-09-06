@@ -48,9 +48,9 @@ CMParametersEditorPresenter >> convertInputType: aString [
 { #category : 'layout' }
 CMParametersEditorPresenter >> defaultLayout [ 
 
-	^ SpBoxLayout newTopToBottom
-		spacing: 5;
-		add: classTree;
+	^ SpBoxLayout newLeftToRight
+		spacing: 2;
+		add: classTree width: 230;
 		add: parametersTable;
 		yourself
 ]
@@ -62,6 +62,7 @@ CMParametersEditorPresenter >> initializeClassTree [
 	receiverClasses := (parameters collect: #receiverClass) asSet.
 	
 	classTree := self newTree
+		showColumnHeaders;
 		displayIcon: [ :each | self iconNamed: #class ];
 		expandAll;
 		yourself.
@@ -95,8 +96,17 @@ CMParametersEditorPresenter >> initializeParametersTable [
 CMParametersEditorPresenter >> initializePresenters [ 
 
 	self initializeClassTree.
-	self initializeParametersTable.
+	self initializeParametersTable
+]
+
+{ #category : 'initialization' }
+CMParametersEditorPresenter >> initializeWindow: aWindowPresenter [
+
+	super initializeWindow: aWindowPresenter.
 	
+	aWindowPresenter 
+		title: 'Parameter Editor';
+		initialExtent: 600@300.
 ]
 
 { #category : 'accessing - model' }

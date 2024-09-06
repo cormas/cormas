@@ -34,7 +34,7 @@ CMSimulationPresenter >> beInNotRunningMode [
 { #category : 'as yet unclassified' }
 CMSimulationPresenter >> beInRunningMode [
 
-	initializer enabled: false
+	initializer disableInitialization.
 ]
 
 { #category : 'as yet unclassified' }

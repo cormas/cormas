@@ -192,7 +192,7 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 
 	self initializeSpacePresenter.
 	self initializeDataTable.
-	self initializeParametersTable.
+	"self initializeParametersTable."
 	self initializeCharts.
 	
 	notebook removeAll.
@@ -216,10 +216,10 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 	notebook addPage: dataPage.
 	notebook addPage: chartsPage.
 		
-	notebook addPage: (SpNotebookPage
+	"notebook addPage: (SpNotebookPage
 		title: translator tParameters
 		icon: (self iconNamed: #configuration)
-		provider: [ parametersTable ]).
+		provider: [ parametersTable ])."
 		
 	notebook addPage: (SpNotebookPage
 		title: translator tInspector

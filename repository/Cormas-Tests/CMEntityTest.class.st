@@ -12,10 +12,10 @@ Class {
 { #category : 'tests' }
 CMEntityTest >> testAvailablePov [
 
-	self assertCollection: CMMockAnimal availablePov hasSameElements: #(defaultPOV povId).
-	self assertCollection: CMMockCow availablePov hasSameElements: #(pov defaultPOV povId).
-	self assertCollection: CMMockGoat availablePov hasSameElements: #(pov defaultPOV povId).
-	self assertCollection: CMMockCell availablePov hasSameElements: #(pov defaultPOV povId).
+	self assertCollection: CMMockAnimal availablePov hasSameElements: #(pov povClassName povId).
+	self assertCollection: CMMockCow availablePov hasSameElements: #(pov povClassName povId).
+	self assertCollection: CMMockGoat availablePov hasSameElements: #(pov povClassName povId).
+	self assertCollection: CMMockCell availablePov hasSameElements: #(pov povClassName povId).
 ]
 
 { #category : 'tests' }
