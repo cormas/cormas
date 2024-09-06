@@ -71,7 +71,7 @@ CMSensitivityAnalysisChartPresenter >> drawChart [
 	| chartBuilder size x |
 	
 	chartBuilder := CMR3ChartBuilder new
-		maxChartValueX: data size / numberOfRepetitions;
+		plotWidth: 0.5;
 		yourself.
 		
 	data
@@ -82,6 +82,8 @@ CMSensitivityAnalysisChartPresenter >> drawChart [
 			x := data
 				select: [ :row | (row at: 'Repetition') = 1 ]
 				thenCollect: [ :row | row at: 'Parameter value' ].
+				
+			chartBuilder maxChartValueX: x max.
 	
 			measurementNames do: [ :each |
 				self

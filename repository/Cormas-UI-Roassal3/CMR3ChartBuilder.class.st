@@ -2,7 +2,8 @@ Class {
 	#name : 'CMR3ChartBuilder',
 	#superclass : 'Object',
 	#instVars : [
-		'chart'
+		'chart',
+		'plotWidth'
 	],
 	#category : 'Cormas-UI-Roassal3-Space',
 	#package : 'Cormas-UI-Roassal3',
@@ -27,7 +28,7 @@ CMR3ChartBuilder >> addPlotX: xCollection y: yCollection color: aColor [
 	| plot |
 	plot := RSLinePlot new x: xCollection y: yCollection.
 	plot color: aColor.
-	plot width: 2.5.
+	plot width: plotWidth.
 		
 	chart add: plot.
 ]
@@ -48,6 +49,8 @@ CMR3ChartBuilder >> clearChart [
 CMR3ChartBuilder >> initialize [
 
 	super initialize.
+	
+	plotWidth := 2.5.
 	self initializeChart
 ]
 
@@ -66,4 +69,16 @@ CMR3ChartBuilder >> initializeChart [
 CMR3ChartBuilder >> maxChartValueX: aNumber [
 
 	chart maxChartValueX: aNumber 
+]
+
+{ #category : 'accessing' }
+CMR3ChartBuilder >> plotWidth [
+
+	^ plotWidth
+]
+
+{ #category : 'accessing' }
+CMR3ChartBuilder >> plotWidth: anObject [
+
+	plotWidth := anObject
 ]

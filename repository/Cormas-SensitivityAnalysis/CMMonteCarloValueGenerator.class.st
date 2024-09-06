@@ -31,7 +31,7 @@ CMMonteCarloValueGenerator >> generate [
 		self randomBetween: lowValue and: highValue ].
 	
 	isInteger ifTrue: [ values := values collect: #rounded ].
-	^ values
+	^ values sorted
 ]
 
 { #category : 'initialization' }
