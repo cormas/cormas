@@ -180,10 +180,15 @@ CMSensitivityAnalysisPresenter >> initializeWindow: aWindowPresenter [
 CMSensitivityAnalysisPresenter >> openRunner [
 
 	sensitivityAnalysis clearSimulations.
+	sensitivityAnalysis clearData.
+	
+	sensitivityAnalysis numberOfRepetitions: numberOfRepetitionsInput number.
 			
 	parametersTable parameterValues keysAndValuesDo: [ :parameter :values |
 		values do: [ :value |
 			sensitivityAnalysis addSimulationForParameter: parameter value: value ] ].
+	
+	sensitivityAnalysis dataCollectors: probesList dataCollectors.
 			
 	(self
 		instantiate: CMSensitivityAnalysisDataPresenter

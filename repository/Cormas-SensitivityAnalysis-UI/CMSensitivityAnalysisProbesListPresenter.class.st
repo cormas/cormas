@@ -27,6 +27,12 @@ CMSensitivityAnalysisProbesListPresenter class >> forAvailableProbes: aCollectio
 	^ self on: { aCollectionOfProbes . aTranslator }
 ]
 
+{ #category : 'as yet unclassified' }
+CMSensitivityAnalysisProbesListPresenter >> dataCollectors [
+
+	^ probesList items select: #isFullyDefined thenCollect: #dataCollector
+]
+
 { #category : 'layout' }
 CMSensitivityAnalysisProbesListPresenter >> defaultLayout [
 

@@ -45,6 +45,12 @@ CMDataCollector >> initialize [
 ]
 
 { #category : 'accessing' }
+CMDataCollector >> probe [
+
+	^ probe
+]
+
+{ #category : 'accessing' }
 CMDataCollector >> probe: aProbe [
 
 	probe := aProbe

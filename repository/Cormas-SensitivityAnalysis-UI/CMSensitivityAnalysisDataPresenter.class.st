@@ -7,7 +7,9 @@ Class {
 		'progressBar',
 		'runButton',
 		'dataNotebook',
-		'simulationsTable'
+		'simulationsTable',
+		'dataTable',
+		'simulationsCountLabel'
 	],
 	#category : 'Cormas-SensitivityAnalysis-UI',
 	#package : 'Cormas-SensitivityAnalysis-UI'
@@ -39,25 +41,58 @@ CMSensitivityAnalysisDataPresenter class >> forAnalysis: aSensitivityAnalysis tr
 	^ self on: { aSensitivityAnalysis . aTranslator }
 ]
 
+{ #category : 'adding' }
+CMSensitivityAnalysisDataPresenter >> addChartsPage [
+	
+	| parameter data measurementNames |
+	
+	parameter := sensitivityAnalysis simulations anyOne initialParameterValues keys anyOne.
+	
+	data := sensitivityAnalysis data select: [ :row |
+		(row at: 'Parameter class') = parameter receiverClass name and: [ 
+			(row at: 'Parameter name') = parameter name ] ].
+	
+	measurementNames := data first keys allButFirst: 4.
+
+	dataNotebook addPage: (SpNotebookPage
+		title: 'Charts'
+		icon: CMIcons chartIcon
+		provider: [ (self instantiate: CMSensitivityAnalysisChartPresenter)
+			data: data;
+			numberOfRepetitions: sensitivityAnalysis numberOfRepetitions;
+			columnName: parameter name;
+			measurementNames: measurementNames;
+			drawChart;
+			yourself ]).
+]
+
+{ #category : 'initialization' }
+CMSensitivityAnalysisDataPresenter >> connectPresenters [
+
+	runButton action: [ self runSimulations ]
+]
+
 { #category : 'layout' }
 CMSensitivityAnalysisDataPresenter >> defaultLayout [
 
-	^ SpBoxLayout newTopToBottom
-		spacing: 10;
+	^ SpPanedLayout newTopToBottom
 		add: (SpBoxLayout newTopToBottom
-			spacing: 2;
-			add: 'Simulations' height: self class labelHeight;
-			add: simulationsTable;
-			yourself);
-		add: (SpBoxLayout newLeftToRight
-			spacing: 20;
-			add: runButton expand: false;
+			spacing: 10;
 			add: (SpBoxLayout newTopToBottom
-				add: 'Progress:';
-				add: 'Finished 10 out of 1000 simulations' expand: false;
-				yourself) expand: false;
-			add: progressBar;
-			yourself) height: self class labelHeight * 2 + 3;
+				spacing: 2;
+				add: 'Simulations' height: self class labelHeight;
+				add: simulationsTable;
+				yourself);
+			add: (SpBoxLayout newLeftToRight
+				spacing: 20;
+				add: runButton expand: false;
+				add: (SpBoxLayout newTopToBottom
+					add: 'Progress:';
+					add: simulationsCountLabel expand: false;
+					yourself) expand: false;
+				add: progressBar;
+				yourself) height: self class labelHeight * 2 + 3;
+			yourself);
 		add: dataNotebook;
 		yourself
 ]
@@ -68,9 +103,6 @@ CMSensitivityAnalysisDataPresenter >> initializePresenters [
 	runButton := self newButton
 		icon: CMIcons runIcon;
 		label: 'Run all';
-		action: [
-			sensitivityAnalysis run.
-			sensitivityAnalysis inspect ];
 		yourself.
 		
 	progressBar := self newProgressBar.
@@ -88,7 +120,7 @@ CMSensitivityAnalysisDataPresenter >> initializePresenters [
 			evaluated: [ :simulation | simulation initialParameterValues values anyOne ]);
 		addColumn: (SpStringTableColumn
 			title: 'Progress'
-			evaluated: [ :simulation | self progressStringFrom: Random new next ] )
+			evaluated: [ :simulation | self progressStringFrom: 0 ] )
 		yourself.
 	
 	dataNotebook := self newNotebook.
@@ -96,12 +128,10 @@ CMSensitivityAnalysisDataPresenter >> initializePresenters [
 	dataNotebook addPage: (SpNotebookPage
 		title: 'Data'
 		icon: (self iconNamed: #database)
-		provider: [ self instantiate: CMSensitivityAnalysisDataTablePresenter ]).
+		provider: [ dataTable := self instantiate: CMSensitivityAnalysisDataTablePresenter ]).
 		
-	dataNotebook addPage: (SpNotebookPage
-		title: 'Charts'
-		icon: CMIcons chartIcon
-		provider: [ self newLabel ]).
+	simulationsCountLabel := self newLabel.
+	self updateSimulationsCountLabel.
 ]
 
 { #category : 'initialization' }
@@ -134,9 +164,38 @@ CMSensitivityAnalysisDataPresenter >> progressStringFrom: aNumber [
 			nextPut: $% ].
 ]
 
+{ #category : 'as yet unclassified' }
+CMSensitivityAnalysisDataPresenter >> runSimulations [
+
+	sensitivityAnalysis runAfterEachRepetitionDo: [
+		self updateSimulationsCountLabel.
+		self updateProgressBar].
+	
+	dataTable showData: sensitivityAnalysis data.
+	self addChartsPage.
+]
+
 { #category : 'accessing - model' }
 CMSensitivityAnalysisDataPresenter >> setModelBeforeInitialization: aCollection [
 
 	sensitivityAnalysis := aCollection first.
 	translator := aCollection second
+]
+
+{ #category : 'as yet unclassified' }
+CMSensitivityAnalysisDataPresenter >> updateProgressBar [
+
+	progressBar fixedAt: (sensitivityAnalysis data size / sensitivityAnalysis totalNumberOfRuns) 
+]
+
+{ #category : 'as yet unclassified' }
+CMSensitivityAnalysisDataPresenter >> updateSimulationsCountLabel [
+
+	simulationsCountLabel label: (String streamContents: [ :stream |
+		stream
+			<< 'Finished '
+			<< (sensitivityAnalysis data size // sensitivityAnalysis numberOfRepetitions) asString
+			<< ' out of '
+			<< sensitivityAnalysis simulations size asString
+			<< ' simulations' ])
 ]

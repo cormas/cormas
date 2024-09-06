@@ -50,3 +50,16 @@ CMSensitivityAnalysisDataTablePresenter >> initializePresenters [
 		add: saveToExcelButton;
 		yourself.
 ]
+
+{ #category : 'as yet unclassified' }
+CMSensitivityAnalysisDataTablePresenter >> showData: aCollection [
+
+	aCollection ifEmpty: [ ^ self ].
+	
+	aCollection first keys collect: [ :name |
+		table addColumn: (SpStringTableColumn
+			title: name
+			evaluated: [ :row | row at: name ]) ].
+		
+	table items: aCollection
+]

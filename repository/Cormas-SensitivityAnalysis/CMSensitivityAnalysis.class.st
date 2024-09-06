@@ -54,10 +54,22 @@ CMSensitivityAnalysis >> addSimulationForParameter: aParameter value: aValue [
 	simulations add: simulation
 ]
 
+{ #category : 'as yet unclassified' }
+CMSensitivityAnalysis >> clearData [
+
+	data := OrderedCollection new
+]
+
 { #category : 'adding' }
 CMSensitivityAnalysis >> clearSimulations [
 
 	simulations removeAll
+]
+
+{ #category : 'accessing' }
+CMSensitivityAnalysis >> data [
+
+	^ data
 ]
 
 { #category : 'accessing' }
@@ -73,6 +85,8 @@ CMSensitivityAnalysis >> initialize [
 	
 	numberOfRepetitions := self class defaultNumberOfRepetitions.
 	simulations := OrderedCollection new.
+	dataCollectors := OrderedCollection new.
+	self clearData 
 ]
 
 { #category : 'accessing' }
@@ -102,21 +116,55 @@ CMSensitivityAnalysis >> numberOfRepetitions: aNumber [
 { #category : 'running' }
 CMSensitivityAnalysis >> run [
 
+	self runAfterEachRepetitionDo: [ "do nothing" ]
+]
+
+{ #category : 'running' }
+CMSensitivityAnalysis >> runAfterEachRepetitionDo: aBlock [
+
+	self clearData.
+
 	simulations do: [ :simulation |
-		self runSimulation: simulation ]
+		self
+			runSimulation: simulation
+			afterEachRepetitionDo: aBlock ].
 ]
 
 { #category : 'accessing' }
-CMSensitivityAnalysis >> runSimulation: aSimulation [
+CMSensitivityAnalysis >> runSimulation: aSimulation afterEachRepetitionDo: aBlock [
 
-	numberOfRepetitions timesRepeat: [ 
+	| dataRecord |
+
+	dataCollectors do: [ :collector | collector simulation: aSimulation ].
+
+	1 to: numberOfRepetitions do: [ :i |
 		dataCollectors do: #activateProbeBeforeSimulation.
+		aSimulation initializeSimulation.
 		aSimulation runAllSteps.
-		dataCollectors do: #collectDataAfterSimulation ]
+		dataCollectors do: #collectDataAfterSimulation.
+		
+		dataRecord := {
+			'Parameter class' -> aSimulation initialParameterValues keys anyOne receiverClass name .
+			'Parameter name' -> aSimulation initialParameterValues keys anyOne name .
+			'Parameter value' -> aSimulation initialParameterValues values anyOne .
+			'Repetition' -> i
+		} asOrderedDictionary.
+		
+		dataCollectors do: [ :collector |
+			dataRecord at: ((collector class collectorNameFromTranslator: CMEnglishTranslator new), ' of ', collector probe name) put: collector data last ].
+		
+		data add: dataRecord.
+		aBlock value ].
 ]
 
 { #category : 'accessing' }
 CMSensitivityAnalysis >> simulations [
 
 	^ simulations
+]
+
+{ #category : 'accessing' }
+CMSensitivityAnalysis >> totalNumberOfRuns [
+
+	^ simulations size * numberOfRepetitions
 ]
