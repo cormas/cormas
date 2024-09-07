@@ -44,25 +44,22 @@ CMSensitivityAnalysisDataPresenter class >> forAnalysis: aSensitivityAnalysis tr
 { #category : 'adding' }
 CMSensitivityAnalysisDataPresenter >> addChartsPage [
 	
-	| parameter data measurementNames |
+	| parameters measurementNames |
 	
-	parameter := sensitivityAnalysis simulations anyOne initialParameterValues keys anyOne.
-	
-	data := sensitivityAnalysis data select: [ :row |
-		(row at: 'Parameter class') = parameter receiverClass name and: [ 
-			(row at: 'Parameter name') = parameter name ] ].
-	
-	measurementNames := data first keys allButFirst: 4.
+	parameters := (sensitivityAnalysis simulations
+		flatCollect: [ :each | each initialParameterValues keys ]) asSet asOrderedCollection.
+		
+	measurementNames := sensitivityAnalysis data first keys allButFirst: 4.
 
 	dataNotebook addPage: (SpNotebookPage
 		title: 'Charts'
 		icon: CMIcons chartIcon
-		provider: [ (self instantiate: CMSensitivityAnalysisChartPresenter)
-			data: data;
+		provider: [ (self instantiate: CMSensitivityAnalysisChartsPresenter)
+			data: sensitivityAnalysis data;
 			numberOfRepetitions: sensitivityAnalysis numberOfRepetitions;
-			columnName: parameter name;
 			measurementNames: measurementNames;
-			drawChart;
+			parameters: parameters;
+			drawCharts;
 			yourself ]).
 ]
 

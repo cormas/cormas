@@ -4,7 +4,6 @@ Class {
 	#instVars : [
 		'data',
 		'numberOfRepetitions',
-		'columnName',
 		'chart',
 		'measurementNames'
 	],
@@ -19,7 +18,6 @@ CMSensitivityAnalysisChartPresenter class >> example [
 	self new
 		data: self exampleData;
 		numberOfRepetitions: 3;
-		columnName: 'Value';
 		measurementNames: { 'Average biomass' . 'Average income' };
 		drawChart;
 		open
@@ -43,12 +41,6 @@ CMSensitivityAnalysisChartPresenter class >> exampleData [
 				'Average income' -> rand next
 			} asOrderedDictionary ] ]
 	) sorted: [ :a :b | (a at: 'Parameter value') < (b at: 'Parameter value') ]
-]
-
-{ #category : 'accessing' }
-CMSensitivityAnalysisChartPresenter >> columnName: aString [
-
-	columnName := aString
 ]
 
 { #category : 'accessing' }
