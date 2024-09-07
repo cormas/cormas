@@ -19,7 +19,7 @@ CMModelOpenerPresenter class >> example [
 ]
 
 { #category : 'menu' }
-CMModelOpenerPresenter class >> menu00RoassalOn: aBuilder [
+CMModelOpenerPresenter class >> menu00CormasOn: aBuilder [
 	<worldMenu>
 	(aBuilder item: #Cormas)
 		label: 'Cormas';
@@ -33,6 +33,26 @@ CMModelOpenerPresenter class >> menu00RoassalOn: aBuilder [
 		help: 'Browse Cormas models that are installed on this image';
 		action: [ self new open ];
 		order: 1.
+		
+	(aBuilder item: #UpdateCormas)
+		parent: #Cormas;
+		label: 'Update Cormas';
+		icon: (self iconNamed: #glamorousRestart);
+		help: 'Pull the latest changes from Cormas repository on GitHub';
+		action: [ self updateCormas ];
+		order: 1.
+]
+
+{ #category : 'as yet unclassified' }
+CMModelOpenerPresenter class >> updateCormas [
+
+	| repo branch remote |
+	
+	repo := IceRepository repositories detect: [ :each | each name = 'cormas' ].
+	branch := repo branch.
+	remote := repo remotes detect: [ :each | each url = 'https://github.com/cormas/cormas.git' ].
+
+	branch pullFrom: remote.
 ]
 
 { #category : 'layout' }
