@@ -118,6 +118,106 @@ Return value: <Number>"
 	^self spaceModel euclideanDistanceFromCell: self toCell: aCell
 ]
 
+{ #category : 'environment - sensing - space' }
+CMSpatialEntityElement >> hasNeighbourE [
+
+	| index |
+	
+	self spaceModel nbNeighbours = 4 ifTrue: [ index := 4 ].
+	self spaceModel nbNeighbours = 8 ifTrue: [ index := 7 ].
+	self spaceModel nbNeighbours = 6 ifTrue: [ index := 5 ].
+	
+	^ (neighbourhoodWithNils at: index) isNotNil
+]
+
+{ #category : 'environment - sensing - space' }
+CMSpatialEntityElement >> hasNeighbourN [
+	
+	| index |
+	
+	index := 1.
+	^ (neighbourhoodWithNils at: index) isNotNil
+]
+
+{ #category : 'environment - sensing - space' }
+CMSpatialEntityElement >> hasNeighbourNE [
+
+	| index |
+	
+	self spaceModel nbNeighbours = 4 ifTrue: [ 
+		self error: 'The number of neighbours was set to 4. There is no neighbour to the North-East' ].
+	
+	self spaceModel nbNeighbours = 8 ifTrue: [ index := 8 ].
+	self spaceModel nbNeighbours = 6 ifTrue: [ index := 6 ].
+	
+	^ (neighbourhoodWithNils at: index) isNotNil
+]
+
+{ #category : 'environment - sensing - space' }
+CMSpatialEntityElement >> hasNeighbourNW [
+
+	| index |
+	
+	self spaceModel nbNeighbours = 4 ifTrue: [ 
+		self error: 'The number of neighbours was set to 4. There is no neighbour to the North-West' ].
+	
+	self spaceModel nbNeighbours = 8 ifTrue: [ index := 2 ].
+	self spaceModel nbNeighbours = 6 ifTrue: [ index := 1 ].
+	
+	^ (neighbourhoodWithNils at: index) isNotNil
+]
+
+{ #category : 'environment - sensing - space' }
+CMSpatialEntityElement >> hasNeighbourS [
+
+	| index |
+	
+	self spaceModel nbNeighbours = 4 ifTrue: [ index := 3 ].
+	self spaceModel nbNeighbours = 8 ifTrue: [ index := 5 ].
+	
+	^ (neighbourhoodWithNils at: index) isNotNil
+]
+
+{ #category : 'environment - sensing - space' }
+CMSpatialEntityElement >> hasNeighbourSE [
+
+	| index |
+	
+	self spaceModel nbNeighbours = 4 ifTrue: [ 
+		self error: 'The number of neighbours was set to 4. There is no neighbour to the South-East' ].
+	
+	self spaceModel nbNeighbours = 8 ifTrue: [ index := 6 ].
+	self spaceModel nbNeighbours = 6 ifTrue: [ index := 4 ].
+	
+	^ (neighbourhoodWithNils at: index) isNotNil
+]
+
+{ #category : 'environment - sensing - space' }
+CMSpatialEntityElement >> hasNeighbourSW [
+
+	| index |
+	
+	self spaceModel nbNeighbours = 4 ifTrue: [ 
+		self error: 'The number of neighbours was set to 4. There is no neighbour to the South-West' ].
+
+	self spaceModel nbNeighbours = 8 ifTrue: [ index := 4 ].
+	self spaceModel nbNeighbours = 6 ifTrue: [ index := 3 ].
+	
+	^ (neighbourhoodWithNils at: index) isNotNil
+]
+
+{ #category : 'environment - sensing - space' }
+CMSpatialEntityElement >> hasNeighbourW [
+
+	| index |
+	
+	self spaceModel nbNeighbours = 4 ifTrue: [ index := 2 ].
+	self spaceModel nbNeighbours = 8 ifTrue: [ index := 3 ].
+	self spaceModel nbNeighbours = 6 ifTrue: [ index := 2 ].
+	
+	^ (neighbourhoodWithNils at: index) isNotNil
+]
+
 { #category : 'initialize-release' }
 CMSpatialEntityElement >> initNeighbourhood [
 
