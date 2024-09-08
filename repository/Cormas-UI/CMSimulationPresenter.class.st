@@ -62,11 +62,7 @@ CMSimulationPresenter >> connectPresenters [
 		beReinitializeCondition: [ simulationRunner hasSimulationData ].
 		
 	hideInitializationSettingButton action: [ 
-		isInitializerVisible := isInitializerVisible not.
-		
-		self updateInitializerVisibility.
-		self updateHideInitializationSettingsButtonIcon.
-		self update ]
+		self updateInitializationSettingsVisibility ]
 ]
 
 { #category : 'layout' }
@@ -83,6 +79,15 @@ CMSimulationPresenter >> defaultLayout [
 		yourself
 ]
 
+{ #category : 'as yet unclassified' }
+CMSimulationPresenter >> hideInitializationSettings [
+
+	isInitializerVisible := false.
+	hideInitializationSettingButton icon: (self iconNamed: #overlayAdd).
+	initializer hide.
+	self update
+]
+
 { #category : 'initialization' }
 CMSimulationPresenter >> initializePresenters [
 	
@@ -92,9 +97,9 @@ CMSimulationPresenter >> initializePresenters [
 		instantiate: CMSimulationInitializerPresenter
 		on: { modelClass . translator }.
 		
-	hideInitializationSettingButton := self newButton.
-	self updateHideInitializationSettingsButtonIcon.
-	self updateInitializerVisibility.
+	hideInitializationSettingButton := self newButton
+		icon: (self iconNamed: #overlayRemove);
+		yourself.
 		
 	simulationRunner := self
 		instantiate: CMSimulationRunnerPresenter
@@ -120,18 +125,18 @@ CMSimulationPresenter >> setModelBeforeInitialization: aCollection [
 ]
 
 { #category : 'as yet unclassified' }
-CMSimulationPresenter >> updateHideInitializationSettingsButtonIcon [
+CMSimulationPresenter >> showInitializationSettings [
 
-	hideInitializationSettingButton icon: (
-		isInitializerVisible
-			ifTrue: [ self iconNamed: #overlayRemove ]
-			ifFalse: [ self iconNamed: #overlayAdd ] )
+	isInitializerVisible := true.
+	hideInitializationSettingButton icon: (self iconNamed: #overlayRemove).
+	initializer show.
+	self update.
 ]
 
 { #category : 'as yet unclassified' }
-CMSimulationPresenter >> updateInitializerVisibility [
+CMSimulationPresenter >> updateInitializationSettingsVisibility [
 
 	isInitializerVisible
-		ifTrue: [ initializer show ]
-		ifFalse: [ initializer hide ]
+		ifTrue: [ self hideInitializationSettings ]
+		ifFalse: [ self showInitializationSettings ]
 ]

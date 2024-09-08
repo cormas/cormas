@@ -70,6 +70,12 @@ CMSpacePresenter >> fitDiagram [
 	diagram canvas signalUpdate
 ]
 
+{ #category : 'as yet unclassified' }
+CMSpacePresenter >> hideSettings [
+
+	owner owner hideSettings
+]
+
 { #category : 'initialization' }
 CMSpacePresenter >> initializeCanvasInteractions [
 
@@ -138,6 +144,12 @@ CMSpacePresenter >> saveToPng [
 CMSpacePresenter >> setModelBeforeInitialization: aCormasModel [
 	
 	cormasModel := aCormasModel 
+]
+
+{ #category : 'as yet unclassified' }
+CMSpacePresenter >> showSettings [
+
+	owner owner showSettings
 ]
 
 { #category : 'accessing' }
