@@ -7,12 +7,9 @@ Class {
 		'cormasModel',
 		'povSelection',
 		'diagram',
-		'builder',
 		'povButton',
-		'saveToPngButton',
-		'addAgentButton',
 		'isPovVisible',
-		'isCreatingEntities'
+		'spaceBuilder'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -45,13 +42,12 @@ CMSpacePresenter >> connectPresenters [
 		self updatePovSelectionVisibility.
 		self updatePovButtonIcon.
 		self update ].
-	
-	saveToPngButton action: [ self saveToPng ].
-	
-	addAgentButton action: [
-		isCreatingEntities
-			ifTrue: [ self stopCreatingAgents ]
-			ifFalse: [ self startCreatingAgents ] ].
+]
+
+{ #category : 'accessing' }
+CMSpacePresenter >> cormasModel [
+
+	^ cormasModel
 ]
 
 { #category : 'layout' }
@@ -83,12 +79,12 @@ CMSpacePresenter >> initializeCanvasInteractions [
 { #category : 'initialization' }
 CMSpacePresenter >> initializeDiagram [
 	
-	builder := CMR3SpaceDiagramBuilder new
+	spaceBuilder := CMR3SpaceDiagramBuilder new
 		cormasModel: cormasModel;
 		whenLeftClickOnCellDo: [ :cell | self inform: cell asString ];
 		yourself.
 	
-	diagram := builder asPresenter.
+	diagram := spaceBuilder asPresenter.
 		
 	diagram owner: self.
 	self update.
@@ -98,37 +94,34 @@ CMSpacePresenter >> initializeDiagram [
 { #category : 'initialization' }
 CMSpacePresenter >> initializePresenters [
 
+	self initializeToolbar.
+	
+	povSelection := (self instantiate: CMPovSelectionPresenter on: cormasModel)
+		whenChangedDo: [ spaceBuilder update ];
+		yourself.
+		
+	self updatePovSelectionVisibility.
+	self initializeDiagram.
+	self initializeCanvasInteractions
+]
+
+{ #category : 'initialization' }
+CMSpacePresenter >> initializeToolbar [
+
 	isPovVisible := false.
-	isCreatingEntities := false.
+	toolbar := self newToolbar.
 	
 	povButton := self newToolbarButton
 		label: 'PoV';
 		yourself.
 		
-	saveToPngButton := self newToolbarButton
-		label: 'Save to PNG';
-		icon: (self iconNamed: #smallSave);
-		yourself.
-		
-	addAgentButton := self newToolbarButton.
-	self updateAddAgentButton.
-		
 	self updatePovButtonIcon.
-		
-	toolbar := self newToolbar
-		add: saveToPngButton;
-		add: addAgentButton;
-		addItemRight: povButton;
-		yourself.
+	toolbar addItemRight: povButton.
 
-	povSelection := (self instantiate: CMPovSelectionPresenter on: cormasModel)
-		whenChangedDo: [ builder update ];
-		yourself.
-		
-	self updatePovSelectionVisibility.
-		
-	self initializeDiagram.
-	self initializeCanvasInteractions
+	CMSpacePresenterCommand sortedSubclasses do: [ :aClass |
+		| command |
+		command := aClass forOwner: self translator: translator.
+		toolbar add: command button ].
 ]
 
 { #category : 'as yet unclassified' }
@@ -147,46 +140,16 @@ CMSpacePresenter >> setModelBeforeInitialization: aCormasModel [
 	cormasModel := aCormasModel 
 ]
 
-{ #category : 'as yet unclassified' }
-CMSpacePresenter >> startCreatingAgents [
+{ #category : 'accessing' }
+CMSpacePresenter >> spaceBuilder [
 
-	| agentClass |
-	isCreatingEntities := true.
-	self updateAddAgentButton.
-	
-	agentClass := cormasModel class allEntityClasses detect: [ :aClass | aClass isCormasAgentClass and: [ aClass subclasses isEmpty ] ].
-	
-	builder whenLeftClickOnCellDo: [ :cell |
-		cormasModel newEntity: agentClass locatedAt: cell.
-		self updateDiagram ].
-]
-
-{ #category : 'as yet unclassified' }
-CMSpacePresenter >> stopCreatingAgents [
-	
-	isCreatingEntities := false.
-	self updateAddAgentButton.
-	builder whenLeftClickOnCellDo: [ :cell | "do nothing" ].
-]
-
-{ #category : 'as yet unclassified' }
-CMSpacePresenter >> updateAddAgentButton [
-
-	isCreatingEntities
-		ifTrue: [ 
-			addAgentButton
-				icon: (self iconNamed: #changeRemove);
-				label: 'Stop' ]
-		ifFalse: [ 
-			addAgentButton
-				icon: (self iconNamed: #smallAdd);
-				label: 'Create' ]
+	^ spaceBuilder
 ]
 
 { #category : 'TOREMOVE' }
 CMSpacePresenter >> updateDiagram [
 
-	builder update
+	spaceBuilder update
 ]
 
 { #category : 'as yet unclassified' }

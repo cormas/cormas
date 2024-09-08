@@ -83,12 +83,7 @@ CMModelOpenerPresenter >> initializeButtons [
 	
 	buttons := CMModelOpenerCommand subclasses collect: [ :aCommandClass |
 		command := aCommandClass forOwner: self translator: translator.
-		
-		self newButton
-			label: command name;
-			icon: command icon;
-			action: command action;
-			yourself ]
+		command button ]
 ]
 
 { #category : 'initialization' }
