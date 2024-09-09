@@ -29,6 +29,12 @@ TCMRandom >> randomColor [
 		  b: self random
 ]
 
+{ #category : 'as yet unclassified' }
+TCMRandom >> randomIntegerBetween: lowNumber and: highNumber [
+
+	^ (self randomBetween: lowNumber and: highNumber) rounded
+]
+
 { #category : 'accessing' }
 TCMRandom >> randomNumberGenerator [
 	
