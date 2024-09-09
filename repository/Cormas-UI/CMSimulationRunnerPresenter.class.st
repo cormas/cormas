@@ -220,10 +220,9 @@ CMSimulationRunnerPresenter >> runSimulationUntilEnd [
 				ifFalse: [ error signal ] ].
 		
 		(Delay forMilliseconds: simulationControls speedInMilliseconds) wait ]
-	] onErrorDo: [ :error | 
+	] ensure: [
 		shouldPause := false.
-		simulationControls beInNotRunningMode.
-		error signal ].
+		simulationControls beInNotRunningMode ].
  
 	shouldPause := false.
 	simulationControls beInNotRunningMode ] fork.
