@@ -129,12 +129,16 @@ CMR3SpaceAgentsBuilder >> shapeFor: anObject index: aNumber [
 	
 	pov := anObject perform: anObject class activePovSelector.
 	
-	"shape := (RSShapeFactory perform: pov shape)"
-	shape := RSBox new
-		color: Color red;
+	shape := pov isForImage
+		ifTrue: [ RSBox new ]
+		ifFalse: [ 
+			(RSShapeFactory perform: pov shape)
+				color: pov color;
+				yourself ].
+	
+	shape
 		size: 25;
-		model: anObject;
-		yourself.
+		model: anObject.
 		
 	self makeAgentShapeDraggable: shape.
 	^ shape
