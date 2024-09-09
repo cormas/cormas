@@ -8,16 +8,15 @@ Class {
 { #category : 'accessing' }
 CMModelOpenerSensitivityAnalysisCommand >> action [
 
-	^ [
-		| presenter |
+	| presenter |
 		
-		presenter := CMSensitivityAnalysisPresenter
-			forModelClass: owner selectedModelClass
-			translator: translator.
+	presenter := CMSensitivityAnalysisPresenter
+		forModelClass: owner selectedModelClass
+		translator: translator.
 		
-		presenter open.
-		presenter window centered.
-		owner window close ]
+	presenter open.
+	presenter window centered.
+	owner window close
 ]
 
 { #category : 'accessing' }
