@@ -9,8 +9,8 @@ Class {
 		'currentTimeStep',
 		'data',
 		'finalTimeStep',
-		'activeInitMethod',
-		'activeControlMethod',
+		'activeInitSelector',
+		'activeControlSelector',
 		'probes',
 		'initialParameterValues'
 	],
@@ -34,15 +34,15 @@ CMSimulation class >> for: aModelClass [
 ]
 
 { #category : 'settings' }
-CMSimulation >> activeControlMethod: aCompiledMethod [
+CMSimulation >> activeControlSelector: aSymbol [
 
-	activeControlMethod := aCompiledMethod
+	activeControlSelector := aSymbol
 ]
 
 { #category : 'settings' }
-CMSimulation >> activeInitMethod: aCompiledMethod [
+CMSimulation >> activeInitSelector: aSymbol [
 
-	activeInitMethod := aCompiledMethod
+	activeInitSelector := aSymbol
 ]
 
 { #category : 'probes' }
@@ -139,7 +139,7 @@ CMSimulation >> initializeSimulation [
 	self initializeModel.
 	self setInitialParameters.
 	
-	activeInitMethod valueWithReceiver: cormasModel.
+	cormasModel perform: activeInitSelector.
 	self recordData.
 ]
 
@@ -237,9 +237,9 @@ CMSimulation >> runStep [
 	
 	currentTimeStep := currentTimeStep + 1.
 	
-	activeControlMethod selector last = $:
-		ifTrue: [ activeControlMethod valueWithReceiver: cormasModel arguments: { currentTimeStep } ]
-		ifFalse: [ activeControlMethod valueWithReceiver: cormasModel ].
+	activeControlSelector last = $:
+		ifTrue: [ cormasModel perform: activeControlSelector with: currentTimeStep ]
+		ifFalse: [ cormasModel perform: activeControlSelector ].
 		
 	cormasModel removeDestroyedEntities.
 	cormasModel channel ifNotNil: [ cormasModel channel sendAllMessages ].

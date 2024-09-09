@@ -43,8 +43,7 @@ CMModelDesignerMethodsPresenter >> initializeList [
 { #category : 'as yet unclassified' }
 CMModelDesignerMethodsPresenter >> sortedItems: aCollection [
 
-	^ aCollection sorted: [ :a :b |
-		a selector < b selector ]
+	^ aCollection sorted: [ :a :b | a selector < b selector ]
 ]
 
 { #category : 'initialization' }

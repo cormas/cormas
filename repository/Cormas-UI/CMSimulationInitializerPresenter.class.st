@@ -154,8 +154,8 @@ CMSimulationInitializerPresenter >> simulation [
 		simulation initialParameterValues at: parameter put: parameter value ].
 
 	simulation
-		activeInitMethod: modelInitializationSettings initMethod;
-		activeControlMethod: modelInitializationSettings controlMethod;
+		activeInitSelector: modelInitializationSettings initSelector;
+		activeControlSelector: modelInitializationSettings controlSelector;
 		initializeSimulation.
 	
 	^ simulation

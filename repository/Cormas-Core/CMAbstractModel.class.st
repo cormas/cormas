@@ -117,15 +117,15 @@ CMAbstractModel class >> allEntityClasses [
 ]
 
 { #category : 'available methods' }
-CMAbstractModel class >> availableControlMethods [
+CMAbstractModel class >> availableControlSelectors [
 
-	^ (Pragma allNamed: #control in: self) collect: #method
+	^ (Pragma allNamed: #control in: self) collect: [ :each | each method selector ]
 ]
 
 { #category : 'available methods' }
-CMAbstractModel class >> availableInitMethods [
+CMAbstractModel class >> availableInitSelectors [
 
-	^ (Pragma allNamed: #init in: self) collect: #method
+	^ (Pragma allNamed: #init in: self) collect: [ :each | each method selector ]
 ]
 
 { #category : 'available probes' }

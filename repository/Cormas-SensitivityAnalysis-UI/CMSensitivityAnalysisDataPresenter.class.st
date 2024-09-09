@@ -22,8 +22,8 @@ CMSensitivityAnalysisDataPresenter class >> example [
 	| sensitivityAnalysis translator |
 	
 	sensitivityAnalysis := (CMSensitivityAnalysis for: CMMockModel)
-		activeInitMethod: (CMMockModel >> #initFixed);
-		activeControlMethod: (CMMockModel >> #step:);
+		activeInitSelector: #initFixed;
+		activeControlSelector: #step:;
 		yourself.
 	
 	CMMockModel parameters do: [ :parameter |

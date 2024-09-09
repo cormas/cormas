@@ -11,6 +11,18 @@ Class {
 	#package : 'Cormas-UI-ModelDesigner'
 }
 
+{ #category : 'as yet unclassified' }
+CMModelDesignerModelPresenter >> availableControlMethods [
+
+	^ aClass availableControlSelectors collect: [ :selector | aClass >> selector ]
+]
+
+{ #category : 'as yet unclassified' }
+CMModelDesignerModelPresenter >> availableInitMethods [
+
+	^ aClass availableInitSelectors collect: [ :selector | aClass >> selector ]
+]
+
 { #category : 'initialization' }
 CMModelDesignerModelPresenter >> connectPresenters [
 
@@ -98,7 +110,7 @@ CMModelDesignerModelPresenter >> initializePresenters [
 { #category : 'as yet unclassified' }
 CMModelDesignerModelPresenter >> showControlMethods [
 
-	controlMethodList items: aClass availableControlMethods
+	controlMethodList items: self availableControlMethods
 ]
 
 { #category : 'as yet unclassified' }
@@ -106,8 +118,8 @@ CMModelDesignerModelPresenter >> showCustomMethods [
 
 	| initMethods controlMethods probeMethods potentialAccessorNames excludedMethods customMethods |
 	
-	initMethods := aClass availableInitMethods.
-	controlMethods := aClass availableControlMethods.
+	initMethods := self availableInitMethods.
+	controlMethods := self availableControlMethods.
 	probeMethods := aClass availableProbes collect: #method.
 	
 	excludedMethods := initMethods, controlMethods, probeMethods.
@@ -128,5 +140,5 @@ CMModelDesignerModelPresenter >> showCustomMethods [
 { #category : 'as yet unclassified' }
 CMModelDesignerModelPresenter >> showInitMethods [
 
-	initMethodList items: aClass availableInitMethods
+	initMethodList items: self availableInitMethods
 ]

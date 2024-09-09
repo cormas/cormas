@@ -21,15 +21,15 @@ CMSpacePresenter class >> example [
 	
 	| simulation |
 	
-	"simulation := (CMSimulation for: CMMockModel)
-		activeInitMethod: (CMMockModel >> #initFixed);
-		activeControlMethod: (CMMockModel >> #step:);
-		initializeSimulation."
-		
-	simulation := (CMSimulation for: ECECModel)
-		activeInitMethod: (ECECModel >> #homogeneousEnvironment);
-		activeControlMethod: (ECECModel >> #step:);
+	simulation := (CMSimulation for: CMMockModel)
+		activeInitSelector: #initFixed;
+		activeControlSelector: #step:;
 		initializeSimulation.
+		
+	"simulation := (CMSimulation for: ECECModel)
+		activeInitSelector: #homogeneousEnvironment;
+		activeControlSelector: #step:;
+		initializeSimulation."
 	
 	(self on: simulation cormasModel) open
 ]

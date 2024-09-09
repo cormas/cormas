@@ -3,8 +3,8 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'modelClass',
-		'activeInitMethod',
-		'activeControlMethod',
+		'activeInitSelector',
+		'activeControlSelector',
 		'numberOfRepetitions',
 		'simulations',
 		'dataCollectors',
@@ -29,15 +29,15 @@ CMSensitivityAnalysis class >> for: aModelClass [
 ]
 
 { #category : 'accessing' }
-CMSensitivityAnalysis >> activeControlMethod: aMethod [
+CMSensitivityAnalysis >> activeControlSelector: aSymbol [
 
-	activeControlMethod := aMethod
+	activeControlSelector := aSymbol
 ]
 
 { #category : 'accessing' }
-CMSensitivityAnalysis >> activeInitMethod: aMethod [
+CMSensitivityAnalysis >> activeInitSelector: aSymbol [
 
-	activeInitMethod := aMethod
+	activeInitSelector := aSymbol
 ]
 
 { #category : 'adding' }
@@ -46,8 +46,8 @@ CMSensitivityAnalysis >> addSimulationForParameter: aParameter value: aValue [
 	| simulation |
 	
 	simulation := (CMSimulation for: modelClass)
-		activeInitMethod: activeInitMethod;
-		activeControlMethod: activeControlMethod;
+		activeInitSelector: activeInitSelector;
+		activeControlSelector: activeControlSelector;
 		yourself.
 		
 	simulation initialParameterValues at: aParameter put: aValue.

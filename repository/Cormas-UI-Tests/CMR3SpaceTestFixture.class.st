@@ -46,8 +46,8 @@ CMR3SpaceTestFixture >> initialize [
 	super initialize.
 		
 	simulation := (CMSimulation for: CMMockModel)
-		activeInitMethod: (CMMockModel >> #initFixed);
-		activeControlMethod: (CMMockModel >> #step:);
+		activeInitSelector: #initFixed;
+		activeControlSelector: #step:;
 		initializeSimulation;
 		yourself.
 		

@@ -15,8 +15,8 @@ CMSimulationTest >> setUp [
 	
 	simulation := (CMSimulation for: CMMockModel)
 		randomSeed: 42;
-		activeInitMethod: (CMMockModel >> #initFixed);
-		activeControlMethod: (CMMockModel >> #step:);
+		activeInitSelector: #initFixed;
+		activeControlSelector: #step:;
 		initializeSimulation;
 		yourself.
 ]

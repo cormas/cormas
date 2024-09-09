@@ -6,8 +6,8 @@ Class {
 		'fixRandomSeedCheckbox',
 		'randomSeedInput',
 		'releaseRandomSeedCheckbox',
-		'initMethodDropList',
-		'controlMethodDropList',
+		'initSelectorDropList',
+		'controlSelectorDropList',
 		'modelClass',
 		'whenChangedBlock'
 	],
@@ -43,14 +43,14 @@ CMModelInitializationSettingsPresenter >> connectPresenters [
 	randomSeedInput whenNumberChangedDo: [ :number | whenChangedBlock value ].
 	releaseRandomSeedCheckbox whenChangedDo: [ :boolean | whenChangedBlock value ].
 		
-	initMethodDropList whenSelectedItemChangedDo: [ :item | whenChangedBlock value ].
-	controlMethodDropList whenSelectedItemChangedDo: [ :item | whenChangedBlock value ].
+	initSelectorDropList whenSelectedItemChangedDo: [ :item | whenChangedBlock value ].
+	controlSelectorDropList whenSelectedItemChangedDo: [ :item | whenChangedBlock value ].
 ]
 
 { #category : 'as yet unclassified' }
-CMModelInitializationSettingsPresenter >> controlMethod [
+CMModelInitializationSettingsPresenter >> controlSelector [
 
-	^ controlMethodDropList selectedItem
+	^ controlSelectorDropList selectedItem
 ]
 
 { #category : 'layout' }
@@ -70,13 +70,13 @@ CMModelInitializationSettingsPresenter >> defaultLayout [
 		  height: 25;
 		  add: (SpBoxLayout newTopToBottom
 				   add: translator tInitMethod height: labelHeight;
-				   add: initMethodDropList height: buttonHeight;
+				   add: initSelectorDropList height: buttonHeight;
 				   yourself)
 		  height: labelHeight + buttonHeight;
 		  add: releaseRandomSeedCheckbox height: 25;
 		  add: (SpBoxLayout newTopToBottom
 				   add: translator tControlMethod height: labelHeight;
-				   add: controlMethodDropList height: buttonHeight;
+				   add: controlSelectorDropList height: buttonHeight;
 				   yourself)
 		  height: labelHeight + buttonHeight;
 		  yourself
@@ -101,9 +101,9 @@ CMModelInitializationSettingsPresenter >> enableRandomSeedPresenters [
 ]
 
 { #category : 'as yet unclassified' }
-CMModelInitializationSettingsPresenter >> initMethod [
+CMModelInitializationSettingsPresenter >> initSelector [
 
-	^ initMethodDropList selectedItem
+	^ initSelectorDropList selectedItem
 ]
 
 { #category : 'initialization' }
@@ -121,30 +121,22 @@ CMModelInitializationSettingsPresenter >> initializePresenters [
 		
 	self disableRandomSeedPresenters.
 	
-	initMethodDropList := (self instantiate: CMDropListWithPlaceholderPresenter)
-		display: [ :method | method selector ];
-		placeholder: translator tInitMethod asLowercase respondingTo: #selector;
-		yourself.
-		
-	controlMethodDropList := (self instantiate: CMDropListWithPlaceholderPresenter)
-		display: [ :method | method selector ];
-		placeholder: translator tControlMethod asLowercase respondingTo: #selector;
-		yourself.
+	initSelectorDropList := self newDropList.
+	controlSelectorDropList := self newDropList.
 ]
 
 { #category : 'initialization' }
 CMModelInitializationSettingsPresenter >> initializeWithModel [
 
-	initMethodDropList items: modelClass availableInitMethods.
-	controlMethodDropList items: modelClass availableControlMethods.
+	initSelectorDropList items: modelClass availableInitSelectors.
+	controlSelectorDropList items: modelClass availableControlSelectors.
 ]
 
 { #category : 'testing' }
 CMModelInitializationSettingsPresenter >> isDefined [
 	"Answer true if simulation is fully defined and can be initialized"
 	
-	^ initMethodDropList isPlaceholderSelected not
-		and: [ controlMethodDropList isPlaceholderSelected not ]
+	^ initSelectorDropList selectedItem isNotNil
 ]
 
 { #category : 'accessing' }

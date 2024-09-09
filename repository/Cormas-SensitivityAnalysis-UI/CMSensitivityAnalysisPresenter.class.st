@@ -4,11 +4,7 @@ Class {
 	#instVars : [
 		'sensitivityAnalysis',
 		'translator',
-		'fixRandomSeedCheckbox',
-		'randomSeedInput',
-		'releaseRandomSeedCheckbox',
-		'initMethodDropList',
-		'controlMethodDropList',
+		'initializationSettings',
 		'finalStepInput',
 		'numberOfRepetitionsInput',
 		'probesList',
@@ -32,6 +28,13 @@ CMSensitivityAnalysisPresenter class >> forModelClass: aClass translator: aTrans
 	^ self on: { aClass . aTranslator }
 ]
 
+{ #category : 'initialization' }
+CMSensitivityAnalysisPresenter >> connectPresenters [
+
+	initializationSettings whenChangedDo: [ 
+		self setModelInitializationSettings ].
+]
+
 { #category : 'layout' }
 CMSensitivityAnalysisPresenter >> defaultLayout [
 
@@ -48,19 +51,7 @@ CMSensitivityAnalysisPresenter >> defaultLayout [
 			spacing: 10;
 			add: (SpBoxLayout newTopToBottom
 				spacing: 12;
-				add: (SpBoxLayout newLeftToRight
-					add: fixRandomSeedCheckbox;
-					add: randomSeedInput width: numberInputWidth;
-					yourself) height: 25;
-				add: (SpBoxLayout newTopToBottom
-					add: translator tInitMethod height: labelHeight;
-					add: initMethodDropList height: buttonHeight;
-					yourself) height: labelHeight + buttonHeight;
-				add: releaseRandomSeedCheckbox height: 25;
-				add: (SpBoxLayout newTopToBottom
-					add: translator tControlMethod height: labelHeight;
-					add: controlMethodDropList height: buttonHeight;
-					yourself) height: labelHeight + buttonHeight;
+				add: initializationSettings height: 190;
 				add: (SpBoxLayout newTopToBottom
 					spacing: 5;
 					add: (SpBoxLayout newLeftToRight
@@ -83,61 +74,16 @@ CMSensitivityAnalysisPresenter >> defaultLayout [
 		yourself.
 ]
 
-{ #category : 'as yet unclassified' }
-CMSensitivityAnalysisPresenter >> disableRandomSeedPresenters [
-	"Will be called when Fix random seed checkbox is deactivated"
-	
-	randomSeedInput beNotEditable.
-	randomSeedInput disable.
-	releaseRandomSeedCheckbox disable.
-]
-
-{ #category : 'as yet unclassified' }
-CMSensitivityAnalysisPresenter >> enableRandomSeedPresenters [
-	"Will be called when Fix random seed checkbox is activated"
-	
-	randomSeedInput beEditable.
-	randomSeedInput enable.
-	releaseRandomSeedCheckbox enable.
-]
-
 { #category : 'initialization' }
 CMSensitivityAnalysisPresenter >> initializePresenters [
+
+	initializationSettings := self
+		instantiate: CMModelInitializationSettingsPresenter
+		on: translator.
+		
+	initializationSettings modelClass: sensitivityAnalysis modelClass.
+	self setModelInitializationSettings.
 	
-	fixRandomSeedCheckbox := self newCheckBox
-		label: translator tFixRandomSeed;
-		whenActivatedDo: [ self enableRandomSeedPresenters ];
-		whenDeactivatedDo: [ self disableRandomSeedPresenters ];
-		yourself.
-		
-	randomSeedInput := self newNumberInput.
-	
-	releaseRandomSeedCheckbox := self newCheckBox
-		label: translator tReleaseRandomSeedAfterInitialization;
-		yourself.
-		
-	self disableRandomSeedPresenters.
-	
-	initMethodDropList := (self instantiate: CMDropListWithPlaceholderPresenter)
-		items: sensitivityAnalysis modelClass availableInitMethods;
-		display: [ :method | method selector ];
-		placeholder: translator tInitMethod asLowercase respondingTo: #selector;
-		whenSelectedItemChangedDo: [ :method |
-			sensitivityAnalysis activeInitMethod: (initMethodDropList isPlaceholderSelected
-				ifTrue: [ nil ]
-				ifFalse: [ method ]) ];
-		yourself.
-		
-	controlMethodDropList := (self instantiate: CMDropListWithPlaceholderPresenter) 
-		items: sensitivityAnalysis modelClass availableControlMethods;
-		display: [ :method | method selector ];
-		placeholder: translator tControlMethod asLowercase respondingTo: #selector;
-		whenSelectedItemChangedDo: [ :method | 
-			sensitivityAnalysis activeControlMethod: (controlMethodDropList isPlaceholderSelected
-				ifTrue: [ nil ]
-				ifFalse: [ method ]) ];
-		yourself.
-		
 	finalStepInput := self newNumberInput
 		beInteger;
 		climbRate: 50;
@@ -203,4 +149,11 @@ CMSensitivityAnalysisPresenter >> setModelBeforeInitialization: aCollection [
 	modelClass := aCollection first.
 	sensitivityAnalysis := CMSensitivityAnalysis for: modelClass.
 	translator := aCollection second
+]
+
+{ #category : 'initialization' }
+CMSensitivityAnalysisPresenter >> setModelInitializationSettings [
+
+	sensitivityAnalysis activeInitSelector: initializationSettings initSelector.
+	sensitivityAnalysis activeControlSelector: initializationSettings controlSelector
 ]
