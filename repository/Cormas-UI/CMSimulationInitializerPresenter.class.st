@@ -7,6 +7,7 @@ Class {
 		'modelInitializationSettings',
 		'initializeButton',
 		'initializeBlock',
+		'shouldWarnWhenReinitializeCheckbox',
 		'isReinitializeBlock',
 		'editParametersButton',
 		'resetParametersButton'
@@ -60,7 +61,10 @@ CMSimulationInitializerPresenter >> connectPresenters [
 	initializeButton action: [
 		isReinitializeBlock value
 			ifFalse: [ initializeBlock value ]
-			ifTrue: [ self confirmReinitialize ].
+			ifTrue: [
+				shouldWarnWhenReinitializeCheckbox state
+					ifTrue: [ self confirmReinitialize ]
+					ifFalse: [ initializeBlock value ] ].
 			
 		self updateInitializeButton ].
 	
@@ -83,6 +87,7 @@ CMSimulationInitializerPresenter >> defaultLayout [
 			add: resetParametersButton width: self class buttonHeight;
 			yourself) height: self class buttonHeight;
 		add: '';
+		add: shouldWarnWhenReinitializeCheckbox height: self class buttonHeight;
 		add: initializeButton height: self class buttonHeight;
 		yourself
 ]
@@ -118,6 +123,11 @@ CMSimulationInitializerPresenter >> initializePresenters [
 		
 	resetParametersButton := self newButton
 		icon: (self iconNamed: #glamorousRestart);
+		yourself.
+		
+	shouldWarnWhenReinitializeCheckbox := self newCheckBox
+		label: 'Ask before reinitializing';
+		state: true;
 		yourself.
 	
 	initializeButton := self newButton
