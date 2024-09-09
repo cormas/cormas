@@ -239,8 +239,8 @@ CMAbstractModel class >> parameters [
 				ifTrue: [
 					aClass withAllSubclasses collect: [ :receiverClass |
 						CMParameter
-							getterMethod: aClass class >> slot name
-							setterMethod: aClass class >> (slot name, ':')
+							getterSelector: slot name
+							setterSelector: (slot name, ':')
 							receiverClass: receiverClass ] ]
 				ifFalse: [ OrderedCollection new ] ] ]
 ]

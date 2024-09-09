@@ -23,13 +23,13 @@ CMParameterTest >> testEquality [
 	| parameter1 parameter2 |
 	
 	parameter1 := CMParameter
-		getterMethod: (CMMockAnimal class >> #initialEnergy)
-		setterMethod: (CMMockAnimal class >> #initialEnergy:)
+		getterSelector: #initialEnergy
+		setterSelector: #initialEnergy:
 		receiverClass: CMMockAnimal.
 		
 	parameter2 := CMParameter
-		getterMethod: (CMMockAnimal class >> #initialEnergy)
-		setterMethod: (CMMockAnimal class >> #initialEnergy:)
+		getterSelector: #initialEnergy
+		setterSelector: #initialEnergy:
 		receiverClass: CMMockAnimal.
 		
 	self assert: parameter1 equals: parameter2.
@@ -41,13 +41,13 @@ CMParameterTest >> testHash [
 	| parameter1 parameter2 |
 	
 	parameter1 := CMParameter
-		getterMethod: (CMMockAnimal class >> #initialEnergy)
-		setterMethod: (CMMockAnimal class >> #initialEnergy:)
+		getterSelector: #initialEnergy
+		setterSelector: #initialEnergy:
 		receiverClass: CMMockAnimal.
 		
 	parameter2 := CMParameter
-		getterMethod: (CMMockAnimal class >> #initialEnergy)
-		setterMethod: (CMMockAnimal class >> #initialEnergy:)
+		getterSelector: #initialEnergy
+		setterSelector: #initialEnergy:
 		receiverClass: CMMockAnimal.
 		
 	self assert: parameter1 hash equals: parameter2 hash.
@@ -59,23 +59,23 @@ CMParameterTest >> testInequality [
 	| parameter1 parameter2 parameter3 parameter4 |
 	
 	parameter1 := CMParameter
-		getterMethod: (CMMockAnimal class >> #initialEnergy)
-		setterMethod: (CMMockAnimal class >> #initialEnergy:)
+		getterSelector: #initialEnergy
+		setterSelector: #initialEnergy:
 		receiverClass: CMMockAnimal.
 		
 	parameter2 := CMParameter
-		getterMethod: (CMMockAnimal class >> #initializeParameters)
-		setterMethod: (CMMockAnimal class >> #initialEnergy:)
+		getterSelector: #initializeParameters
+		setterSelector: #initialEnergy:
 		receiverClass: CMMockAnimal.
 		
 	parameter3 := CMParameter
-		getterMethod: (CMMockAnimal class >> #initialEnergy)
-		setterMethod: (CMMockAnimal class >> #initializeParameters)
+		getterSelector: #initialEnergy
+		setterSelector: #initializeParameters
 		receiverClass: CMMockAnimal.
 		
 	parameter4 := CMParameter
-		getterMethod: (CMMockAnimal class >> #initialEnergy)
-		setterMethod: (CMMockAnimal class >> #initialEnergy:)
+		getterSelector: #initialEnergy
+		setterSelector: #initialEnergy:
 		receiverClass: CMMockCow.
 		
 	self deny: parameter2 equals: parameter1.
@@ -120,8 +120,8 @@ CMParameterTest >> testSetValue [
 	| parameter |
 	
 	parameter := CMParameter
-		getterMethod: (CMMockAnimal class >> #initialEnergy)
-		setterMethod: (CMMockAnimal class >> #initialEnergy:)
+		getterSelector: #initialEnergy
+		setterSelector: #initialEnergy:
 		receiverClass: CMMockAnimal.
 		
 	parameter value: 42.
@@ -137,8 +137,8 @@ CMParameterTest >> testSetValueSubclass [
 	| parameter |
 	
 	parameter := CMParameter
-		getterMethod: (CMMockAnimal class >> #initialEnergy)
-		setterMethod: (CMMockAnimal class >> #initialEnergy:)
+		getterSelector: #initialEnergy
+		setterSelector: #initialEnergy:
 		receiverClass: CMMockGoat.
 		
 	parameter value: 42.
@@ -155,18 +155,18 @@ CMParameterTest >> testSubclassesHaveSuperclassParameters [
 	
 	expectedParameters := { 
 		CMParameter
-			getterMethod: (CMMockAnimal class >> #initialEnergy)
-			setterMethod: (CMMockAnimal class >> #initialEnergy:)
+			getterSelector: #initialEnergy
+			setterSelector: #initialEnergy:
 			receiverClass: CMMockAnimal.
 			
 		CMParameter
-			getterMethod: (CMMockAnimal class >> #initialEnergy)
-			setterMethod: (CMMockAnimal class >> #initialEnergy:)
+			getterSelector: #initialEnergy
+			setterSelector: #initialEnergy:
 			receiverClass: CMMockCow.
 			
 		CMParameter
-			getterMethod: (CMMockAnimal class >> #initialEnergy)
-			setterMethod: (CMMockAnimal class >> #initialEnergy:)
+			getterSelector: #initialEnergy
+			setterSelector: #initialEnergy:
 			receiverClass: CMMockGoat
 	}.
 
@@ -179,8 +179,8 @@ CMParameterTest >> testValue [
 	| parameter |
 	
 	parameter := CMParameter
-		getterMethod: (CMMockAnimal class >> #initialEnergy)
-		setterMethod: (CMMockAnimal class >> #initialEnergy:)
+		getterSelector: #initialEnergy
+		setterSelector: #initialEnergy:
 		receiverClass: CMMockAnimal.
 		
 	self assert: parameter value equals: 0.5.
@@ -192,8 +192,8 @@ CMParameterTest >> testValueSubclass [
 	| parameter |
 	
 	parameter := CMParameter
-		getterMethod: (CMMockAnimal class >> #initialEnergy)
-		setterMethod: (CMMockAnimal class >> #initialEnergy:)
+		getterSelector: #initialEnergy
+		setterSelector: #initialEnergy:
 		receiverClass: CMMockGoat.
 		
 	self assert: parameter value equals: 0.5.
