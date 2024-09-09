@@ -109,7 +109,8 @@ CMSimulationRunnerPresenter >> hideSettings [
 
 	simulationControls hide.
 	owner hideInitializationSettings.
-	self update
+	self update.
+	self fitDiagram
 ]
 
 { #category : 'public' }
@@ -245,7 +246,8 @@ CMSimulationRunnerPresenter >> showSettings [
 
 	simulationControls show.
 	owner showInitializationSettings.
-	self update
+	self update.
+	self fitDiagram
 ]
 
 { #category : 'accessing' }

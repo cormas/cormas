@@ -13,7 +13,7 @@ Class {
 CMR3SpaceCellsBuilder >> defaultMasterShape [
 
 	^ RSBox new
-		size: 25;
+		size: 16;
 		yourself.
 ]
 
@@ -64,7 +64,16 @@ CMR3SpaceCellsBuilder >> updateShape: aShape [
 	
 	pov := model perform: diagramBuilder activeSpatialEntityPov.
 
-	aShape color: pov color.
+	pov isForImage
+		ifTrue: [
+			| newSize |
+			newSize := pov image extent x.
+			
+			aShape
+				paint: (self paintFromImage: pov image);
+				size: newSize;
+				scaleBy: 16 / aShape extent x ]
+		ifFalse: [ aShape color: pov color ].
 ]
 
 { #category : 'enumerating' }

@@ -59,6 +59,15 @@ CMR3SpaceShapeBuilder >> masterShape: aShape [
 		yourself.
 ]
 
+{ #category : 'as yet unclassified' }
+CMR3SpaceShapeBuilder >> paintFromImage: aForm [
+
+	| paint |
+	paint := AthensCairoPatternSurfacePaint createForSurface: (AthensCairoSurface fromForm: aForm).
+	paint origin: aForm extent / -2.
+	^ paint
+]
+
 { #category : 'rendering' }
 CMR3SpaceShapeBuilder >> renderIn: aCanvas [
 

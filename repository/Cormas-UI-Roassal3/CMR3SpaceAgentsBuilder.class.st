@@ -101,10 +101,18 @@ CMR3SpaceAgentsBuilder >> moveAgentShape: anAgentShape [
 	
 	pov := agent perform: agent class activePovSelector.
 	
+	pov isForImage
+		ifTrue: [ 
+			anAgentShape
+				paint: (self paintFromImage: pov image);
+				scaleBy: 0.5  ]
+		ifFalse: [
+			anAgentShape
+				color: pov color ].
+	
 	anAgentShape
 		"@ (RSPopup text: agent detailsOfPOV);"
 		size: pov size;
-		color: pov color;
 		translateTo: (cell columnNumber @ cell rowNumber * cellSize) - (cellSize / 2)
 ]
 
@@ -121,7 +129,8 @@ CMR3SpaceAgentsBuilder >> shapeFor: anObject index: aNumber [
 	
 	pov := anObject perform: anObject class activePovSelector.
 	
-	shape := (RSShapeFactory perform: pov shape)
+	"shape := (RSShapeFactory perform: pov shape)"
+	shape := RSBox new
 		color: Color red;
 		size: 25;
 		model: anObject;

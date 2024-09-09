@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'color',
 		'shape',
-		'size'
+		'size',
+		'image'
 	],
 	#category : 'Cormas-Core-Analysis',
 	#package : 'Cormas-Core',
@@ -48,6 +49,23 @@ CMPointOfView class >> color: aColor size: aNumber [
 ]
 
 { #category : 'accessing' }
+CMPointOfView class >> image: aForm [
+
+	^ self new
+		image: aForm;
+		yourself
+]
+
+{ #category : 'accessing' }
+CMPointOfView class >> image: aForm size: aNumber [
+
+	^ self new
+		image: aForm;
+		size: aNumber;
+		yourself
+]
+
+{ #category : 'accessing' }
 CMPointOfView class >> shape: aSymbol [
 
 	^ self new
@@ -75,6 +93,18 @@ CMPointOfView >> color: aColor [
 	color := aColor
 ]
 
+{ #category : 'accessing' }
+CMPointOfView >> image [
+
+	^ image
+]
+
+{ #category : 'accessing' }
+CMPointOfView >> image: aForm [
+
+	image := aForm
+]
+
 { #category : 'initialization' }
 CMPointOfView >> initialize [
 
@@ -83,6 +113,12 @@ CMPointOfView >> initialize [
 	color := Color gray.
 	size := 20.
 	shape := #circle
+]
+
+{ #category : 'testing' }
+CMPointOfView >> isForImage [
+
+	^ image isNotNil
 ]
 
 { #category : 'accessing' }
