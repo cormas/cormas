@@ -433,5 +433,5 @@ CMTree class >> resetIcons [
 CMTree class >> still [
 
 	<script: 'self still inspect'>
-	^ { self frame00 }
+	^ self frame00
 ]
