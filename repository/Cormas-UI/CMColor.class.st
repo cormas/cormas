@@ -11,6 +11,12 @@ CMColor class >> azure [
 	^ Color fromHexString: '0080FE'
 ]
 
+{ #category : 'constants' }
+CMColor class >> black [
+	<script: 'self black inspect'>
+	^ Color black
+]
+
 { #category : 'accessing' }
 CMColor class >> blue [
 	<script: 'self blue inspect'>
