@@ -27,19 +27,46 @@ CMModelOpenerPresenter class >> menu00CormasOn: aBuilder [
 		help: 'Agent-based modeling and simulations';
 		order: 2.
 		
-	(aBuilder item: #CormasModels)
+	(aBuilder group: #CormasMain)
+		order: 1;
 		parent: #Cormas;
-		label: 'Available models';
+		withSeparatorAfter.
+		
+	(aBuilder group: #CormasRepositories)
+		order: 1;
+		parent: #Cormas;
+		withSeparatorAfter.
+		
+	(aBuilder item: #CormasModels)
+		parent: #CormasMain;
+		label: 'Models';
+		icon: (self iconNamed: #smallOpen);
 		help: 'Browse Cormas models that are installed on this image';
 		action: [ self new open ];
 		order: 1.
 		
+	(aBuilder item: #ExampleModels)
+		parent: #CormasRepositories;
+		label: 'Example Models';
+		icon: (self iconNamed: #box);
+		help: 'Load example models';
+		action: [ CMExampleModelLoaderPresenter new open ];
+		order: 1.
+		
 	(aBuilder item: #UpdateCormas)
-		parent: #Cormas;
+		parent: #CormasRepositories ;
 		label: 'Update Cormas';
-		icon: (self iconNamed: #glamorousRestart);
+		icon: (self iconNamed: #smallUpdate);
 		help: 'Pull the latest changes from Cormas repository on GitHub';
 		action: [ self updateCormas ];
+		order: 1.
+		
+	(aBuilder item: #ColorPicker)
+		parent: #Cormas ;
+		label: 'Color Picker';
+		icon: (self iconNamed: #paint);
+		help: 'Open color picker';
+		action: [ SpColorPickerWindow open ];
 		order: 1.
 ]
 
