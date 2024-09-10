@@ -42,15 +42,7 @@ CMExampleModelLoaderPresenter class >> githubOrganizationName [
 CMExampleModelLoaderPresenter >> connectPresenters [
 
 	table whenSelectedItemChangedDo: [ :assoc |
-		(self isModelLoaded: assoc name)
-			ifTrue: [ 
-				loadButton disable.
-				updateButton enable .
-				deleteButton enable ]
-			ifFalse: [ 
-				loadButton enable.
-				updateButton disable .
-				deleteButton disable ] ].
+		self updateEnabledButtons ].
 
 	openGithubButton action: [
 		WebBrowser openOn: (self githubUrlForModel: table selectedItem key) ].
@@ -80,7 +72,11 @@ CMExampleModelLoaderPresenter >> defaultLayout [
 { #category : 'as yet unclassified' }
 CMExampleModelLoaderPresenter >> deleteSelectedModel [
 
-	self repositoryForSelectedModel delete.
+	| repo |
+	repo := self repositoryForSelectedModel.
+	repo unload.
+	repo delete.
+	self updateEnabledButtons.
 	self update
 ]
 
@@ -97,6 +93,7 @@ CMExampleModelLoaderPresenter >> downloadSelectedModel [
 		repository: (self githubLink: name);
 		load.
 		
+	self updateEnabledButtons.
 	self update
 ]
 
@@ -178,6 +175,8 @@ CMExampleModelLoaderPresenter >> initializePresenters [
 		label: 'Delete';
 		icon: (self iconNamed: #smallDelete);
 		yourself.
+		
+	self updateEnabledButtons.
 ]
 
 { #category : 'initialization' }
@@ -226,6 +225,22 @@ CMExampleModelLoaderPresenter >> sshUrlForModel: aString [
 			<< '/'
 			<< aString
 			<< '.git' ]
+]
+
+{ #category : 'as yet unclassified' }
+CMExampleModelLoaderPresenter >> updateEnabledButtons [
+
+	table selectedItem ifNil: [ ^ self ].
+
+	(self isModelLoaded: table selectedItem key)
+		ifTrue: [ 
+			loadButton disable.
+			updateButton enable .
+			deleteButton enable ]
+		ifFalse: [ 
+			loadButton enable.
+			updateButton disable .
+			deleteButton disable ]
 ]
 
 { #category : 'as yet unclassified' }
