@@ -87,7 +87,6 @@ CMSpacePresenter >> initializeDiagram [
 	
 	spaceBuilder := CMR3SpaceDiagramBuilder new
 		cormasModel: cormasModel;
-		whenLeftClickOnCellDo: [ :cell | self inform: cell asString ];
 		yourself.
 	
 	diagram := spaceBuilder asPresenter.

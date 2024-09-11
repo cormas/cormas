@@ -1,6 +1,9 @@
 Class {
 	#name : 'CMR3SpaceAgentsBuilder',
 	#superclass : 'CMR3SpaceShapeBuilder',
+	#instVars : [
+		'isDraggable'
+	],
 	#category : 'Cormas-UI-Roassal3-Space',
 	#package : 'Cormas-UI-Roassal3',
 	#tag : 'Space'
@@ -30,11 +33,36 @@ CMR3SpaceAgentsBuilder >> cellAt: aPoint ifAbsent: absentBlock [
 ]
 
 { #category : 'as yet unclassified' }
+CMR3SpaceAgentsBuilder >> contextMenuItemsFor: anEntity [
+
+	^ (super contextMenuItemsFor: anEntity), { CMKillSpaceContextMenuCommand forOwner: anEntity }
+]
+
+{ #category : 'as yet unclassified' }
 CMR3SpaceAgentsBuilder >> defaultMasterShape [
 
 	^ RSShapeFactory star
 		size: 25;
 		yourself.
+]
+
+{ #category : 'initialization' }
+CMR3SpaceAgentsBuilder >> initialize [
+
+	super initialize.
+	isDraggable := true
+]
+
+{ #category : 'accessing' }
+CMR3SpaceAgentsBuilder >> isDraggable [
+
+	^ isDraggable
+]
+
+{ #category : 'accessing' }
+CMR3SpaceAgentsBuilder >> isDraggable: aBoolean [
+
+	isDraggable := aBoolean
 ]
 
 { #category : 'as yet unclassified' }
@@ -44,13 +72,6 @@ CMR3SpaceAgentsBuilder >> makeAgentShapeDraggable: anAgentShape [
 	anAgentShape @ RSDraggable.
 	
 	anAgentShape when: RSMouseDragEnd send: #mouseEnd: to: self.
-]
-
-{ #category : 'accessing' }
-CMR3SpaceAgentsBuilder >> masterShape: aShape [
-
-	super masterShape: aShape.
-	self makeAgentShapeDraggable: aShape.
 ]
 
 { #category : 'events' }
@@ -126,21 +147,25 @@ CMR3SpaceAgentsBuilder >> objects [
 CMR3SpaceAgentsBuilder >> shapeFor: anObject index: aNumber [
 
 	| pov shape |
-	
 	pov := anObject perform: anObject class activePovSelector.
 	
-	shape := pov isForImage
-		ifTrue: [ RSBox new ]
+	self masterShape: (pov isForImage
+		ifTrue: [ 
+			RSBox new ]
 		ifFalse: [ 
 			(RSShapeFactory perform: pov shape)
 				color: pov color;
-				yourself ].
+				yourself ]).
+			
+	shape := super shapeFor: anObject index: aNumber.
 	
 	shape
 		size: 25;
 		model: anObject.
 		
-	self makeAgentShapeDraggable: shape.
+	isDraggable ifTrue: [
+		self makeAgentShapeDraggable: shape ].
+	
 	^ shape
 ]
 

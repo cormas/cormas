@@ -242,6 +242,13 @@ CMEntity class >> resetActivePovSelector [
 	activePovSelector := nil
 ]
 
+{ #category : 'as yet unclassified' }
+CMEntity >> actionSelectors [
+
+	^ (Pragma allNamed: 'action' from: self class to: CMEntity)
+		collect: [ :each | each method selector ]
+]
+
 { #category : 'converting' }
 CMEntity >> asString [
 	" Private - See superimplementor's comment "

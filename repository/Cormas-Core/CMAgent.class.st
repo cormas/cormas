@@ -36,7 +36,8 @@ CMAgent >> destroyed: aBoolean [
 { #category : 'controlling' }
 CMAgent >> die [
 
-	isDead := true
+	isDead := true.
+	cormasModel removeDestroyedEntities.
 ]
 
 { #category : 'initialization' }

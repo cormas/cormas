@@ -28,7 +28,7 @@ CMDataCollector >> activateProbeBeforeSimulation [
 { #category : 'data collection' }
 CMDataCollector >> collectDataAfterSimulation [
 
-	self subclassResponsibility
+	data add: self value
 ]
 
 { #category : 'accessing' }
@@ -60,4 +60,10 @@ CMDataCollector >> probe: aProbe [
 CMDataCollector >> simulation: aSimulation [
 
 	simulation := aSimulation
+]
+
+{ #category : 'evaluating' }
+CMDataCollector >> value [
+
+	self subclassResponsibility
 ]

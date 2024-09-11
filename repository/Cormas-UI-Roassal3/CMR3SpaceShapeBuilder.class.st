@@ -20,6 +20,12 @@ CMR3SpaceShapeBuilder class >> for: aBuilder [
 ]
 
 { #category : 'as yet unclassified' }
+CMR3SpaceShapeBuilder >> contextMenuItemsFor: anEntity [
+
+	^ { CMInspectSpaceContextMenuCommand forOwner: anEntity }
+]
+
+{ #category : 'as yet unclassified' }
 CMR3SpaceShapeBuilder >> defaultMasterShape [
 
 	self subclassResponsibility
@@ -55,8 +61,40 @@ CMR3SpaceShapeBuilder >> masterShape [
 CMR3SpaceShapeBuilder >> masterShape: aShape [
 
 	masterShape := aShape 
-		when: RSMouseRightClick send: #inspectEntity: to: self;
+		when: RSMouseRightClick send: #openContextMenu: to: self;
 		yourself.
+]
+
+{ #category : 'as yet unclassified' }
+CMR3SpaceShapeBuilder >> openContextMenu: anEvent [
+
+	| entity menu |
+	entity := anEvent shape model.
+	
+	menu := SpMenuPresenter new
+		title: entity class name;
+		yourself.
+		
+	((self contextMenuItemsFor: entity) sorted: [ :a :b | a class order < b class order ]) do: [ :command |
+		menu addItem: [ :item |
+			item
+				name: command name;
+				icon: command icon;
+				action: [
+					command action.
+					diagramBuilder update ] ] ].
+		
+	menu addGroup: [ :group |
+		entity actionSelectors do: [ :selector |
+			group addItem: [ :item |
+				item
+					name: selector asString;
+					icon: (self iconNamed: #jump);
+					action: [
+						entity perform: selector.
+						diagramBuilder update] ] ] ].
+		
+	menu openWithSpecAt: self currentHand position.
 ]
 
 { #category : 'as yet unclassified' }

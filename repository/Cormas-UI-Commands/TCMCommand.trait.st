@@ -2,12 +2,17 @@ Trait {
 	#name : 'TCMCommand',
 	#instVars : [
 		'translator',
-		'owner',
-		'button'
+		'owner'
 	],
 	#category : 'Cormas-UI-Commands',
 	#package : 'Cormas-UI-Commands'
 }
+
+{ #category : 'as yet unclassified' }
+TCMCommand classSide >> forOwner: anObject [
+
+	^ self forOwner: anObject translator: CMEnglishTranslator new
+]
 
 { #category : 'as yet unclassified' }
 TCMCommand classSide >> forOwner: aPresenter translator: aTranslator [
@@ -41,28 +46,6 @@ TCMCommand >> action [
 	self subclassResponsibility
 ]
 
-{ #category : 'converting' }
-TCMCommand >> button [
-
-	^ button
-]
-
-{ #category : 'as yet unclassified' }
-TCMCommand >> buttonClass [
-
-	^ SpToolbarButtonPresenter
-]
-
-{ #category : 'initialization' }
-TCMCommand >> createButton [
-
-	button := (owner instantiate: self buttonClass)
-		label: self name;
-		icon: self icon;
-		action: [ self action ];
-		yourself
-]
-
 { #category : 'accessing' }
 TCMCommand >> icon [
 
@@ -73,9 +56,7 @@ TCMCommand >> icon [
 TCMCommand >> initializeWithTranslator: aTranslator owner: aPresenter [
 
 	translator := aTranslator.
-	owner := aPresenter.
-	
-	self createButton
+	owner := aPresenter
 ]
 
 { #category : 'accessing' }
