@@ -37,23 +37,6 @@ CMSimulationPresenter >> beInRunningMode [
 	initializer disableInitialization.
 ]
 
-{ #category : 'as yet unclassified' }
-CMSimulationPresenter >> confirmReinitialize [
-
-	SpConfirmDialog new
-		  title: 'Warning!';
-		  label: (String streamContents: [ :stream |
-				stream 
-					nextPutAll: 'Are you sure you want to reinitialize the simulation?';
-					cr;
-					nextPutAll: 'Current simulation data will be lost' ]);
-		  acceptLabel: 'Yes';
-		  cancelLabel: 'No';
-		  onAccept: [ self initializeSimulation ];
-		  onCancel: [ "do nothing" ];
-		  openModal
-]
-
 { #category : 'initialization' }
 CMSimulationPresenter >> connectPresenters [
 
@@ -77,6 +60,12 @@ CMSimulationPresenter >> defaultLayout [
 			yourself) width: 25;
 		add: simulationRunner;
 		yourself
+]
+
+{ #category : 'settings' }
+CMSimulationPresenter >> finalTimeStep [
+	
+	^ simulationRunner finalTimeStep
 ]
 
 { #category : 'as yet unclassified' }

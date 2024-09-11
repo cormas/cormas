@@ -84,6 +84,12 @@ CMSimulationRunnerPresenter >> defaultLayout [
 		yourself
 ]
 
+{ #category : 'settings' }
+CMSimulationRunnerPresenter >> finalTimeStep [
+	
+	^ simulationControls finalTimeStep
+]
+
 { #category : 'as yet unclassified' }
 CMSimulationRunnerPresenter >> fitDiagram [
 

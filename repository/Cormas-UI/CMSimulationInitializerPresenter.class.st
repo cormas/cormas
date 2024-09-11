@@ -167,6 +167,8 @@ CMSimulationInitializerPresenter >> simulation [
 		activeInitSelector: modelInitializationSettings initSelector;
 		activeControlSelector: modelInitializationSettings controlSelector;
 		initializeSimulation.
+		
+	owner finalTimeStep ifNotNil: [ :number | simulation finalTimeStep: number ].
 	
 	^ simulation
 ]

@@ -127,6 +127,14 @@ CMSimulationControlsPresenter >> displayEvery [
 ]
 
 { #category : 'settings' }
+CMSimulationControlsPresenter >> finalTimeStep [
+
+	^ finalStep number = 0
+		ifTrue: [ nil ]
+		ifFalse: [ finalStep number ]
+]
+
+{ #category : 'settings' }
 CMSimulationControlsPresenter >> finalTimeStep: aNumber [
 
 	finalStep number: aNumber
