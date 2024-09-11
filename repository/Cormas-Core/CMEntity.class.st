@@ -630,6 +630,13 @@ Example: for an instance with id = 65, the returned color will be brown (65= 2*3
 	^ CMPointOfView color: (self class colorOfNumber: self id)
 ]
 
+{ #category : 'pov' }
+CMEntity >> povInvisible [
+
+	<pov>
+	^ CMPointOfView color: Color transparent
+]
+
 { #category : 'printing' }
 CMEntity >> printOn: aStream [
 	" Private - See superimplementor's comment "
