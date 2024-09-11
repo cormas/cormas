@@ -262,11 +262,11 @@ CMSimulation >> setInitialParametersFor: aCollectionOfParameters [
 	
 	aCollectionOfParameters ifEmpty: [ ^ self ].
 	
-	classes := aCollectionOfParameters collect: #receiverClass.
+	classes := aCollectionOfParameters collect: #receiver.
 	
 	"Parameters that do not have a parent in the list of parameters. Roots of the tree"
 	parametersWithoutParent := aCollectionOfParameters reject: [ :parameter |
-		classes includes: parameter receiverClass superclass ].
+		classes includes: parameter receiver superclass ].
 	
 	otherParameters := aCollectionOfParameters reject: [ :parameter |
 		parametersWithoutParent includes: parameter ].

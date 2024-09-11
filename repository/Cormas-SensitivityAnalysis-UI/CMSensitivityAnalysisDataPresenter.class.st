@@ -108,7 +108,7 @@ CMSensitivityAnalysisDataPresenter >> initializePresenters [
 		items: sensitivityAnalysis simulations;
 		addColumn: (SpStringTableColumn
 			title: 'Parameter class'
-			evaluated: [ :simulation | simulation initialParameterValues keys anyOne receiverClass name ]);
+			evaluated: [ :simulation | simulation initialParameterValues keys anyOne receiver name ]);
 		addColumn: (SpStringTableColumn
 			title: 'Parameter name'
 			evaluated: [ :simulation | simulation initialParameterValues keys anyOne name ]);

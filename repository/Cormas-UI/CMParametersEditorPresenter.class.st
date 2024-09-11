@@ -34,7 +34,7 @@ CMParametersEditorPresenter class >> forParameters: aCollectionOfParameters tran
 CMParametersEditorPresenter >> connectPresenters [
 
 	classTree whenSelectedItemChangedDo: [ :aClass |
-		parametersTable items: (parameters select: [ :each | each receiverClass = aClass ]) ]
+		parametersTable items: (parameters select: [ :each | each receiver = aClass ]) ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -59,7 +59,7 @@ CMParametersEditorPresenter >> defaultLayout [
 CMParametersEditorPresenter >> initializeClassTree [
 
 	| receiverClasses |
-	receiverClasses := (parameters collect: #receiverClass) asSet.
+	receiverClasses := (parameters collect: #receiver) asSet.
 	
 	classTree := self newTree
 		showColumnHeaders;

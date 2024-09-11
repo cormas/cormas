@@ -144,7 +144,7 @@ CMSensitivityAnalysis >> runSimulation: aSimulation afterEachRepetitionDo: aBloc
 		dataCollectors do: #collectDataAfterSimulation.
 		
 		dataRecord := {
-			'Parameter class' -> aSimulation initialParameterValues keys anyOne receiverClass name .
+			'Parameter class' -> aSimulation initialParameterValues keys anyOne receiver name .
 			'Parameter name' -> aSimulation initialParameterValues keys anyOne name .
 			'Parameter value' -> aSimulation initialParameterValues values anyOne .
 			'Repetition' -> i

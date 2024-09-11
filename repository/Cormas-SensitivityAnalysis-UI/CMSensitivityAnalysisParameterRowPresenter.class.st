@@ -54,7 +54,7 @@ CMSensitivityAnalysisParameterRowPresenter >> initializePresenters [
 	| parameterClasses |
 	
 	parameterClasses := (availableParameters collect: [ :parameter |
-		parameter receiverClass ]) asSet asOrderedCollection.
+		parameter receiver ]) asSet asOrderedCollection.
 
 	classDropList := (self instantiate: CMDropListWithPlaceholderPresenter)
 		items: parameterClasses;
@@ -62,7 +62,7 @@ CMSensitivityAnalysisParameterRowPresenter >> initializePresenters [
 		placeholder: translator tClass asLowercase respondingTo: #name;
 		whenSelectedItemChangedDo: [ :aClass |
 			parameterDropList items: (
-				availableParameters select: [ :p | p receiverClass = aClass ]) ]
+				availableParameters select: [ :p | p receiver = aClass ]) ]
 		yourself.
 		
 	parameterDropList := (self instantiate: CMDropListWithPlaceholderPresenter)

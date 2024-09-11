@@ -248,7 +248,7 @@ CMAbstractModel class >> parameters [
 						CMParameter
 							getterSelector: slot name
 							setterSelector: (slot name, ':')
-							receiverClass: receiverClass ] ]
+							receiver: receiverClass ] ]
 				ifFalse: [ OrderedCollection new ] ] ]
 ]
 

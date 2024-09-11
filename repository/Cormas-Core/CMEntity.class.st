@@ -608,6 +608,34 @@ CMEntity >> modelClass [
 ]
 
 { #category : 'accessing' }
+CMEntity >> parameters [
+	"Find all instance variables that have getter and setter accessors"
+	
+	| relevantClasses slots |
+	
+	relevantClasses := self class withAllSuperclasses
+		select: [ :each | each package = self class package ].
+	
+	slots := relevantClasses flatCollect: #slots.
+	
+	"Must have both getter and setter accessors"
+	slots := slots select: [ :slot |
+		(self respondsTo: slot name) and: [ self respondsTo: slot name, ':' ] ].
+	
+	"Must not be defined by Cormas traits"
+	slots := slots reject: [ :slot |
+		slot definingClass isNotNil and: [
+			slot definingClass isTrait and: [ 
+				slot definingClass package ~= self class package ] ] ].
+
+	^ slots collect: [ :slot |
+		CMInstanceParameter
+			getterSelector: slot name
+			setterSelector: (slot name, ':')
+			receiver: self ]
+]
+
+{ #category : 'accessing' }
 CMEntity >> patch [
 	
 	^nil

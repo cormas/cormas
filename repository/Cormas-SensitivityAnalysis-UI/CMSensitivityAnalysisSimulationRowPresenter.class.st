@@ -59,7 +59,7 @@ CMSensitivityAnalysisSimulationRowPresenter >> defaultLayout [
 CMSensitivityAnalysisSimulationRowPresenter >> initializePresenters [ 
 
 	parameterClassName := self newLabel
-		label: self parameter receiverClass name;
+		label: self parameter receiver name;
 		yourself.
 		
 	parameterName := self newLabel

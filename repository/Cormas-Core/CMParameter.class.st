@@ -2,9 +2,9 @@ Class {
 	#name : 'CMParameter',
 	#superclass : 'Object',
 	#instVars : [
-		'receiverClass',
 		'getterSelector',
-		'setterSelector'
+		'setterSelector',
+		'receiver'
 	],
 	#category : 'Cormas-Core-Analysis',
 	#package : 'Cormas-Core',
@@ -12,12 +12,12 @@ Class {
 }
 
 { #category : 'instance creation' }
-CMParameter class >> getterSelector: aGetterSelector setterSelector: aSetterSelector receiverClass: anObject [
+CMParameter class >> getterSelector: aGetterSelector setterSelector: aSetterSelector receiver: anObject [
 
 	^ self new
 		initailizeGetterSelector: aGetterSelector
 		setterSelector: aSetterSelector
-		receiverClass: anObject;
+		receiver: anObject;
 		yourself
 ]
 
@@ -27,7 +27,7 @@ CMParameter >> = anObject [
 	anObject class = self class
 		ifFalse: [ ^ false ].
 		
-	^ anObject receiverClass = receiverClass
+	^ anObject receiver = receiver
 		and: [ anObject getterSelector = getterSelector
 			and: [ anObject setterSelector = setterSelector ] ]
 ]
@@ -41,15 +41,15 @@ CMParameter >> getterSelector [
 { #category : 'comparing' }
 CMParameter >> hash [
 		
-	^ receiverClass hash bitXor: (getterSelector hash bitXor: setterSelector hash)
+	^ receiver hash bitXor: (getterSelector hash bitXor: setterSelector hash)
 ]
 
 { #category : 'initialization' }
-CMParameter >> initailizeGetterSelector: aGetterSelector setterSelector: aSetterSelector receiverClass: anObject [
+CMParameter >> initailizeGetterSelector: aGetterSelector setterSelector: aSetterSelector receiver: anObject [
 	
 	getterSelector := aGetterSelector.
 	setterSelector := aSetterSelector.
-	receiverClass := anObject.
+	receiver := anObject.
 ]
 
 { #category : 'accessing' }
@@ -64,7 +64,7 @@ CMParameter >> printOn: aStream [
 	super printOn: aStream.
 	aStream
 		<< $(
-		<< receiverClass class name
+		<< receiver class name
 		<< ' >> '
 		<< self name
 		<< ' = '
@@ -73,9 +73,9 @@ CMParameter >> printOn: aStream [
 ]
 
 { #category : 'accessing' }
-CMParameter >> receiverClass [
+CMParameter >> receiver [
 
-	^ receiverClass 
+	^ receiver 
 ]
 
 { #category : 'accessing' }
@@ -87,13 +87,13 @@ CMParameter >> setterSelector [
 { #category : 'evaluating' }
 CMParameter >> value [
 
-	^ receiverClass perform: getterSelector
+	^ receiver perform: getterSelector
 ]
 
 { #category : 'evaluating' }
 CMParameter >> value: anObject [
 	"Set value of a parameter on receiver class and all its subclasses"
 	
-	receiverClass withAllSubclasses do: [ :aClass |
+	receiver withAllSubclasses do: [ :aClass |
 		aClass perform: setterSelector with: anObject ]
 ]

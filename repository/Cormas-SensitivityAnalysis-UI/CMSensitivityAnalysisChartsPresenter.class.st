@@ -18,7 +18,7 @@ CMSensitivityAnalysisChartsPresenter >> chartForParameter: aParameter [
 	| dataSubset |
 	
 	dataSubset := data select: [ :row |
-		(row at: 'Parameter class') = aParameter receiverClass name and: [ 
+		(row at: 'Parameter class') = aParameter receiver name and: [ 
 			(row at: 'Parameter name') = aParameter name ] ].
 		
 	^ (self instantiate: CMSensitivityAnalysisChartPresenter)
@@ -48,7 +48,7 @@ CMSensitivityAnalysisChartsPresenter >> drawCharts [
 	
 	parameters do: [ :parameter |
 		notebook addPage: (SpNotebookPage
-			title: ('(', parameter receiverClass name,  ') ', parameter name)
+			title: ('(', parameter receiver name,  ') ', parameter name)
 			provider: [ self chartForParameter: parameter ]) ]
 ]
 
