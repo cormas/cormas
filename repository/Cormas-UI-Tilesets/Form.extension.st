@@ -7,8 +7,8 @@ Form >> + aForm [
 	
 	| topForm bottomForm xOffset yOffset newBits |
 	
-	topForm := aForm.
-	bottomForm := self.
+	topForm := aForm copy.
+	bottomForm := self copy.
 	
 	topForm extent > bottomForm extent ifTrue: [
 		| maxExtent |

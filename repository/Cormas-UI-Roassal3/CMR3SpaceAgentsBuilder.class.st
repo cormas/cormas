@@ -42,7 +42,7 @@ CMR3SpaceAgentsBuilder >> contextMenuItemsFor: anEntity [
 CMR3SpaceAgentsBuilder >> defaultMasterShape [
 
 	^ RSShapeFactory star
-		size: 25;
+		size: 16;
 		yourself.
 ]
 
@@ -129,7 +129,8 @@ CMR3SpaceAgentsBuilder >> moveAgentShape: anAgentShape [
 				scaleBy: 0.5  ]
 		ifFalse: [
 			anAgentShape
-				color: pov color ].
+				color: pov color;
+				scaleBy: 0.5 ].
 	
 	anAgentShape
 		"@ (RSPopup text: agent detailsOfPOV);"
@@ -160,7 +161,7 @@ CMR3SpaceAgentsBuilder >> shapeFor: anObject index: aNumber [
 	shape := super shapeFor: anObject index: aNumber.
 	
 	shape
-		size: 25;
+		size: 10;
 		model: anObject.
 		
 	isDraggable ifTrue: [
