@@ -12,7 +12,8 @@ Class {
 		'activeInitSelector',
 		'activeControlSelector',
 		'probes',
-		'initialParameterValues'
+		'initialParameterValues',
+		'shouldReleaseRandomSeedAfterInitialization'
 	],
 	#category : 'Cormas-Core-Kernel',
 	#package : 'Cormas-Core',
@@ -171,7 +172,8 @@ CMSimulation >> randomSeed [
 { #category : 'settings' }
 CMSimulation >> randomSeed: aNumber [
 
-	randomSeed := aNumber
+	randomSeed := aNumber.
+	cormasModel ifNotNil: [ cormasModel randomSeed: aNumber ]
 ]
 
 { #category : 'data' }
@@ -273,4 +275,10 @@ CMSimulation >> setInitialParametersFor: aCollectionOfParameters [
 		parameter value: (initialParameterValues at: parameter) ].
 	
 	self setInitialParametersFor: otherParameters 
+]
+
+{ #category : 'testing' }
+CMSimulation >> shouldReleaseRandomSeedAfterInitialization: aBoolean [
+
+	shouldReleaseRandomSeedAfterInitialization := aBoolean
 ]

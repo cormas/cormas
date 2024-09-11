@@ -139,11 +139,29 @@ CMModelInitializationSettingsPresenter >> isDefined [
 	^ initSelectorDropList selectedItem isNotNil
 ]
 
+{ #category : 'settings' }
+CMModelInitializationSettingsPresenter >> isFixRandomSeed [
+
+	^ fixRandomSeedCheckbox state
+]
+
+{ #category : 'settings' }
+CMModelInitializationSettingsPresenter >> isReleaseRandomSeedAfterInitialization [
+
+	^ releaseRandomSeedCheckbox state
+]
+
 { #category : 'accessing' }
 CMModelInitializationSettingsPresenter >> modelClass: aClass [
 
 	modelClass := aClass.
 	self initializeWithModel.
+]
+
+{ #category : 'settings' }
+CMModelInitializationSettingsPresenter >> randomSeed [
+
+	^ randomSeedInput number
 ]
 
 { #category : 'accessing - model' }

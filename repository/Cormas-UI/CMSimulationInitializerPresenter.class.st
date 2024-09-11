@@ -165,10 +165,16 @@ CMSimulationInitializerPresenter >> simulation [
 
 	simulation
 		activeInitSelector: modelInitializationSettings initSelector;
-		activeControlSelector: modelInitializationSettings controlSelector;
-		initializeSimulation.
+		activeControlSelector: modelInitializationSettings controlSelector.
 		
 	owner finalTimeStep ifNotNil: [ :number | simulation finalTimeStep: number ].
+	
+	modelInitializationSettings isFixRandomSeed ifTrue: [ 
+		simulation randomSeed: modelInitializationSettings randomSeed.
+		simulation shouldReleaseRandomSeedAfterInitialization:
+			modelInitializationSettings isReleaseRandomSeedAfterInitialization ].
+		
+	simulation initializeSimulation.
 	
 	^ simulation
 ]
