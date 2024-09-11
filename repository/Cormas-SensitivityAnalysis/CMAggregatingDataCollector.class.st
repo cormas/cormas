@@ -24,3 +24,9 @@ CMAggregatingDataCollector >> collectDataAfterSimulation [
 	value := self aggregate: (simulation data collect: [ :row | row at: probe name ]).
 	data add: value.
 ]
+
+{ #category : 'data collection' }
+CMAggregatingDataCollector >> value [
+
+	^ self aggregate: (simulation data collect: [ :row | row at: probe name ])
+]
