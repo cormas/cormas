@@ -15,5 +15,5 @@ CMFinalValueCollector >> activateProbeBeforeSimulation [
 { #category : 'data collection' }
 CMFinalValueCollector >> collectDataAfterSimulation [
 	
-	data add: simulation data last.
+	data add: (simulation data last at: probe name).
 ]
