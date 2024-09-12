@@ -58,13 +58,15 @@ CMSimulationRunnerPresenter class >> openForSimulation: aSimulation withTranslat
 { #category : 'as yet unclassified' }
 CMSimulationRunnerPresenter >> beInNotRunningMode [
 
-	owner ifNotNil: [ owner beInNotRunningMode ]
+	(owner isNotNil and: [ owner isWindowPresenter not ])
+		ifTrue: [ owner beInNotRunningMode ]
 ]
 
 { #category : 'as yet unclassified' }
 CMSimulationRunnerPresenter >> beInRunningMode [
 
-	owner ifNotNil: [ owner beInRunningMode ]
+	(owner isNotNil and: [ owner isWindowPresenter not ])
+		ifTrue: [ owner beInRunningMode ]
 ]
 
 { #category : 'initialization' }
@@ -201,6 +203,17 @@ CMSimulationRunnerPresenter >> initializePresenters [
 CMSimulationRunnerPresenter >> initializeSpacePresenter [
 	
 	spacePresenter := self instantiate: CMSpacePresenter on: simulation cormasModel
+]
+
+{ #category : 'initialization' }
+CMSimulationRunnerPresenter >> initializeWindow: aWindowPresenter [
+
+	super initializeWindow: aWindowPresenter.
+	
+	aWindowPresenter 
+		title: 'Simulation Runner';
+		initialExtent: 1000@600;
+		whenResizingDo: [ self fitDiagram ].
 ]
 
 { #category : 'initialization' }

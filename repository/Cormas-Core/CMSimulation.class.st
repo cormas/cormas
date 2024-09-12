@@ -52,6 +52,12 @@ CMSimulation >> activeProbes [
 	^ probes select: [ :probe | probe isActive ]
 ]
 
+{ #category : 'as yet unclassified' }
+CMSimulation >> chooseRandomSeedAtRandom [
+	"By default random seed is a random number but we still store it to ensure reproducibility"
+	randomSeed := Random new nextInteger: SmallInteger maxVal.
+]
+
 { #category : 'accessing' }
 CMSimulation >> cormasModel [
 	
@@ -106,15 +112,13 @@ CMSimulation >> initialize [
 
 	super initialize.
 	
-	"By default random seed is a random number but we still store it to ensure reproducibility"
-	randomSeed := Random new nextInteger: SmallInteger maxVal.
-	
-	currentTimeStep := 0.
 	finalTimeStep := self class defaultFinalTimeStep.
 	
 	probes := OrderedCollection new.
 	data := OrderedCollection new.
 	initialParameterValues := Dictionary new.
+	
+	shouldReleaseRandomSeedAfterInitialization := false
 ]
 
 { #category : 'initialization' }
@@ -137,11 +141,21 @@ CMSimulation >> initializeProbes [
 { #category : 'initialization' }
 CMSimulation >> initializeSimulation [
 
+	currentTimeStep := 0.
+	data := OrderedCollection new.
+	
+	randomSeed ifNil: [ 
+		self chooseRandomSeedAtRandom.
+		shouldReleaseRandomSeedAfterInitialization := false ].
+
 	self initializeModel.
 	self setInitialParameters.
 	
 	cormasModel perform: activeInitSelector.
 	self recordData.
+	
+	shouldReleaseRandomSeedAfterInitialization ifTrue: [ 
+		self chooseRandomSeedAtRandom ].
 ]
 
 { #category : 'accessing' }
@@ -172,8 +186,7 @@ CMSimulation >> randomSeed [
 { #category : 'settings' }
 CMSimulation >> randomSeed: aNumber [
 
-	randomSeed := aNumber.
-	cormasModel ifNotNil: [ cormasModel randomSeed: aNumber ]
+	randomSeed := aNumber
 ]
 
 { #category : 'data' }

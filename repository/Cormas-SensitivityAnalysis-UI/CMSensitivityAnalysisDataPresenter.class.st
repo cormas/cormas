@@ -105,6 +105,19 @@ CMSensitivityAnalysisDataPresenter >> initializePresenters [
 	progressBar := self newProgressBar.
 	
 	simulationsTable := self newTable
+		contextMenu: (SpMenuPresenter new 
+			addItem: [ :item | item 
+				name: 'Open simulation'; 
+				icon: CMIcons runIcon;
+				action: [
+					CMSimulationRunnerPresenter
+						openForSimulation: (
+							simulationsTable selectedItem
+								randomSeed: sensitivityAnalysis randomSeed;
+								initializeSimulation;
+								yourself)
+						withTranslator: translator ] ];
+			yourself);
 		items: sensitivityAnalysis simulations;
 		addColumn: (SpStringTableColumn
 			title: 'Parameter class'

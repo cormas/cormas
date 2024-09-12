@@ -49,7 +49,7 @@ TCMRandom >> randomNumberGenerator: aGenerator [
 
 { #category : 'accessing' }
 TCMRandom >> randomSeed: aNumber [
-
+	
 	randomNumberGenerator seed: aNumber
 ]
 

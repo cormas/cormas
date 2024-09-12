@@ -184,7 +184,7 @@ CMMockModel >> initEmpty [
 CMMockModel >> initFixed [
 	<init>
 	| cow goat |
-
+	
 	self initEmpty.
 	self initializeCellsFromMatrix.
 		

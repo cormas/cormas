@@ -128,6 +128,13 @@ CMSensitivityAnalysisPresenter >> openRunner [
 	sensitivityAnalysis clearSimulations.
 	sensitivityAnalysis clearData.
 	
+	initializationSettings isFixRandomSeed
+		ifTrue: [ sensitivityAnalysis randomSeed: initializationSettings randomSeed ]
+		ifFalse: [ sensitivityAnalysis randomSeed: nil ].
+		
+	sensitivityAnalysis shouldReleaseRandomSeedAfterInitialization:
+		initializationSettings isReleaseRandomSeedAfterInitialization.
+	
 	sensitivityAnalysis numberOfRepetitions: numberOfRepetitionsInput number.
 			
 	parametersTable parameterValues keysAndValuesDo: [ :parameter :values |

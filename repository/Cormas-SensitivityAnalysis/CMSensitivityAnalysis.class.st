@@ -8,7 +8,9 @@ Class {
 		'numberOfRepetitions',
 		'simulations',
 		'dataCollectors',
-		'data'
+		'data',
+		'randomSeed',
+		'releaseRandomSeedAfterInit'
 	],
 	#category : 'Cormas-SensitivityAnalysis',
 	#package : 'Cormas-SensitivityAnalysis'
@@ -48,6 +50,7 @@ CMSensitivityAnalysis >> addSimulationForParameter: aParameter value: aValue [
 	simulation := (CMSimulation for: modelClass)
 		activeInitSelector: activeInitSelector;
 		activeControlSelector: activeControlSelector;
+		shouldReleaseRandomSeedAfterInitialization: releaseRandomSeedAfterInit;
 		yourself.
 		
 	simulation initialParameterValues at: aParameter put: aValue.
@@ -113,6 +116,18 @@ CMSensitivityAnalysis >> numberOfRepetitions: aNumber [
 	numberOfRepetitions := aNumber
 ]
 
+{ #category : 'accessing' }
+CMSensitivityAnalysis >> randomSeed [
+
+	^ randomSeed
+]
+
+{ #category : 'accessing' }
+CMSensitivityAnalysis >> randomSeed: aNumber [
+
+	randomSeed := aNumber
+]
+
 { #category : 'running' }
 CMSensitivityAnalysis >> run [
 
@@ -139,6 +154,7 @@ CMSensitivityAnalysis >> runSimulation: aSimulation afterEachRepetitionDo: aBloc
 
 	1 to: numberOfRepetitions do: [ :i |
 		dataCollectors do: #activateProbeBeforeSimulation.
+		aSimulation randomSeed: randomSeed.
 		aSimulation initializeSimulation.
 		aSimulation runAllSteps.
 		dataCollectors do: #collectDataAfterSimulation.
@@ -155,6 +171,12 @@ CMSensitivityAnalysis >> runSimulation: aSimulation afterEachRepetitionDo: aBloc
 		
 		data add: dataRecord.
 		aBlock value ].
+]
+
+{ #category : 'asserting' }
+CMSensitivityAnalysis >> shouldReleaseRandomSeedAfterInitialization: aBoolean [
+
+	releaseRandomSeedAfterInit := aBoolean
 ]
 
 { #category : 'accessing' }
