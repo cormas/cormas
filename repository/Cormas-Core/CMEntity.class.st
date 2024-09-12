@@ -224,18 +224,6 @@ CMEntity class >> modelClass [
 		ifNone: [ nil ]
 ]
 
-{ #category : 'instance creation' }
-CMEntity class >> new [
-	
-	^super new initId
-]
-
-{ #category : 'instance creation' }
-CMEntity class >> new: x [
-	
-	^super new initId
-]
-
 { #category : 'accessing' }
 CMEntity class >> resetActivePovSelector [
 
@@ -490,6 +478,7 @@ CMEntity >> initId [
 CMEntity >> initialize [
 
 	super initialize.
+	self initId.
 	self class resetActivePovSelector
 ]
 
