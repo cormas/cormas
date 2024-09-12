@@ -128,6 +128,8 @@ CMSensitivityAnalysisPresenter >> openRunner [
 	sensitivityAnalysis clearSimulations.
 	sensitivityAnalysis clearData.
 	
+	sensitivityAnalysis finalTimeStep: finalStepInput number.
+	
 	initializationSettings isFixRandomSeed
 		ifTrue: [ sensitivityAnalysis randomSeed: initializationSettings randomSeed ]
 		ifFalse: [ sensitivityAnalysis randomSeed: nil ].
