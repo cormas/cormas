@@ -269,6 +269,12 @@ CMSimulationRunnerPresenter >> showSettings [
 ]
 
 { #category : 'accessing' }
+CMSimulationRunnerPresenter >> simulation [
+
+	^ simulation 
+]
+
+{ #category : 'accessing' }
 CMSimulationRunnerPresenter >> simulation: aSimulation [
 
 	simulation := aSimulation.
