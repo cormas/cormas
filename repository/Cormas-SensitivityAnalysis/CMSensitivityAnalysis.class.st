@@ -9,6 +9,7 @@ Class {
 		'simulations',
 		'dataCollectors',
 		'data',
+		'finalTimeStep',
 		'randomSeed',
 		'releaseRandomSeedAfterInit'
 	],
@@ -50,6 +51,7 @@ CMSensitivityAnalysis >> addSimulationForParameter: aParameter value: aValue [
 	simulation := (CMSimulation for: modelClass)
 		activeInitSelector: activeInitSelector;
 		activeControlSelector: activeControlSelector;
+		finalTimeStep: finalTimeStep;
 		shouldReleaseRandomSeedAfterInitialization: releaseRandomSeedAfterInit;
 		yourself.
 		
@@ -79,6 +81,12 @@ CMSensitivityAnalysis >> data [
 CMSensitivityAnalysis >> dataCollectors: aCollection [
 
 	dataCollectors := aCollection
+]
+
+{ #category : 'accessing' }
+CMSensitivityAnalysis >> finalTimeStep: aNumber [
+
+	finalTimeStep := aNumber 
 ]
 
 { #category : 'initialization' }
