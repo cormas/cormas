@@ -9,10 +9,11 @@ Class {
 CMFinalValueCollector >> activateProbeBeforeSimulation [
 
 	"do nothing"
+	probe isActive: true
 ]
 
 { #category : 'data collection' }
 CMFinalValueCollector >> collectDataAfterSimulation [
 	
-	data add: probe value.
+	data add: simulation data last.
 ]
