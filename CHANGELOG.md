@@ -31,8 +31,9 @@ _(beginning of MISS ABMS 2024 -- very big changes)_
 - ([df6003a](https://github.com/cormas/cormas/commit/df6003a3198e6fae1e63e73f256c205bbff1f68f)) Removed deprecated methods from UI:
     - `CMSpChartProbesMinMaxPresenter >> simManager`
     - `CMSpecSimulationWindow >> simManager`
-- ([d5b3b11](https://github.com/cormas/cormas/commit/d5b3b118f94d4d7507dac0036d9ce44ac55ed6e7)) Removed Spec classes from Roassal-UI package: `CMR3ChartDiagram`, `CMR3ChartPresenter`, `CMSpChartOptionsPresenter`, `CMSpChartProbesListPresenter`, `CMSpChartProbesMinMaxPresenter`, `CMSpRoassalPresenter`
-- ([adcf811](https://github.com/cormas/cormas/commit/adcf8112c7d7cf1c9d334397bdb1f68bcb7c323e)) Removed all the remaining Cormas Spec classes: _(... a long list of 76 classes ...)_
+- ([d5b3b11](https://github.com/cormas/cormas/commit/d5b3b118f94d4d7507dac0036d9ce44ac55ed6e7), [adcf811](https://github.com/cormas/cormas/commit/adcf8112c7d7cf1c9d334397bdb1f68bcb7c323e), [e4f8abb](https://github.com/cormas/cormas/commit/e4f8abbebbdcb6a343b08a5f4143453c7b5e5f06), [ca2c893](https://github.com/cormas/cormas/commit/ca2c893d7c51b1dcf0eb0e57858fc1e47ed6e57b), [b84cb9b](https://github.com/cormas/cormas/commit/b84cb9b7e30e2c97489cab863b50e54d121fa809), [4ce77ad](https://github.com/cormas/cormas/commit/4ce77adbec5b96f1cd66c13add248a6e9b84ef99)) Removed all the old Cormas Spec classes: _(... a long list of 87 classes ...)_ and extension methods
+- ([9fac9d8](https://github.com/cormas/cormas/commit/9fac9d8acb050a90bb94665914f0b9a2206a2514)) Removed the old translator
+- ([9565074](https://github.com/cormas/cormas/commit/9565074edb5fe821c6e4eb9cce0b1b88e3cea231), [98c8cf3](https://github.com/cormas/cormas/commit/98c8cf3731de397d4248f16e0876867c1eec43fa), [a63126f](https://github.com/cormas/cormas/commit/a63126f923375284f90e375b3d9bfad635e922f2)) Removed the dependency on [ProjectFramework](https://github.com/cormas/ProjectFramework) together with all related Project classes: `CMApplication`, `CMCellsLoader`, `CMProjectBuilder`, `CMProjectFile`, `CMProjectManager`, `CMProjectModel`, `CMProjectTracker`
 
 ## [v0.9](https://github.com/cormas/cormas/compare/v0.8..v0.9) (17 July 2024)
 
