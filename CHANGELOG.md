@@ -19,6 +19,20 @@ _(beginning of MISS ABMS 2024 -- very big changes)_
 ### Removed
 
 - ([8b7fb17](https://github.com/cormas/cormas/commit/8b7fb1771dddc7b69d7c82dfcc93f88fe93dd856)) Removed deprecated classes: `CMAgentComm`, `CMApplicationProject`, `CMCommunicatingAgent`, `CMCommunicatingGroup`, `CMGroupComm`
+- ([d9c0ec2](https://github.com/cormas/cormas/commit/d9c0ec2ec0b331079787db1fb0da157c8d565f1c)) Removed deprecated classes: `CMAgentCommLocation`, `CMAgentLocation`, `CMGroupCommLocation`, `CMGroupLocation`, `CMLocatedAgent`, `CMLocatedCommunicatingAgent`, `CMLocatedCommunicatingGroup`, `CMLocatedGroup`, `CMMsg`, `CMObjectLocation`, `CMResourceLocator`, `CMSimInitializationAnnouncement`, `CMSimManager`
+- ([69acf4f](https://github.com/cormas/cormas/commit/69acf4f3ce315fe0398d66f830048d0fc0170094)) Removed deprecated methods from Core
+    - From `CMAbstractModel` class: `initSimulation`, `simManager`, `simManager:`
+    - From `CMAgent` class: `dead`, `dead:`, `destroyed`, `isDestroyed`
+    - From `CMSpatialEntity` class: `hasOccupantType:`, `hasOccupantType:`, `noOccupantBut:`, `noOccupantType:`, `occupants:`, `occupantsAt:`,  `occupantsType:`
+    - From `CMSpatialEntityElement` class: `numCol`, `numLine`, `orderedNeighbourhood`, `orderedNeighbourhood:`
+    - From `TCMCommunicating` trait: `sendAsynchronouslyMsgTo: topic:`, `sendAsynchronouslyMsgTo: topic: content:`, `sendAsynchronouslyMsgToAll: topic:`, `sendAsynchronouslyMsgToAll: topic: content:`, `sendSynchronouslyMsgTo: topic:`, `sendSynchronouslyMsgTo: topic: content:`, `sendSynchronouslyMsgToAll: topic:`, `sendSynchronouslyMsgToAll: topic: content:`
+    - `Cormas >> simManager`
+    - `DefaultAttributesSetter >> simManager`
+- ([df6003a](https://github.com/cormas/cormas/commit/df6003a3198e6fae1e63e73f256c205bbff1f68f)) Removed deprecated methods from UI:
+    - `CMSpChartProbesMinMaxPresenter >> simManager`
+    - `CMSpecSimulationWindow >> simManager`
+- ([d5b3b11](https://github.com/cormas/cormas/commit/d5b3b118f94d4d7507dac0036d9ce44ac55ed6e7)) Removed Spec classes from Roassal-UI package: `CMR3ChartDiagram`, `CMR3ChartPresenter`, `CMSpChartOptionsPresenter`, `CMSpChartProbesListPresenter`, `CMSpChartProbesMinMaxPresenter`, `CMSpRoassalPresenter`
+- ([adcf811](https://github.com/cormas/cormas/commit/adcf8112c7d7cf1c9d334397bdb1f68bcb7c323e)) Removed all the remaining Cormas Spec classes: _(... a long list of 76 classes ...)_
 
 ## [v0.9](https://github.com/cormas/cormas/compare/v0.8..v0.9) (17 July 2024)
 
