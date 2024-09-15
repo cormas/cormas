@@ -18,8 +18,7 @@ _(beginning of MISS ABMS 2024 -- very big changes)_
 
 ### Removed
 
-- ([8b7fb17](https://github.com/cormas/cormas/commit/8b7fb1771dddc7b69d7c82dfcc93f88fe93dd856)) Removed deprecated classes: `CMAgentComm`, `CMApplicationProject`, `CMCommunicatingAgent`, `CMCommunicatingGroup`, `CMGroupComm`
-- ([d9c0ec2](https://github.com/cormas/cormas/commit/d9c0ec2ec0b331079787db1fb0da157c8d565f1c)) Removed deprecated classes: `CMAgentCommLocation`, `CMAgentLocation`, `CMGroupCommLocation`, `CMGroupLocation`, `CMLocatedAgent`, `CMLocatedCommunicatingAgent`, `CMLocatedCommunicatingGroup`, `CMLocatedGroup`, `CMMsg`, `CMObjectLocation`, `CMResourceLocator`, `CMSimInitializationAnnouncement`, `CMSimManager`
+- ([8b7fb17](https://github.com/cormas/cormas/commit/8b7fb1771dddc7b69d7c82dfcc93f88fe93dd856), [d9c0ec2](https://github.com/cormas/cormas/commit/d9c0ec2ec0b331079787db1fb0da157c8d565f1c)) Removed deprecated classes: `CMAgentComm`, `CMApplicationProject`, `CMCommunicatingAgent`, `CMCommunicatingGroup`, `CMGroupComm`, `CMAgentCommLocation`, `CMAgentLocation`, `CMGroupCommLocation`, `CMGroupLocation`, `CMLocatedAgent`, `CMLocatedCommunicatingAgent`, `CMLocatedCommunicatingGroup`, `CMLocatedGroup`, `CMMsg`, `CMObjectLocation`, `CMResourceLocator`, `CMSimInitializationAnnouncement`, `CMSimManager`
 - ([69acf4f](https://github.com/cormas/cormas/commit/69acf4f3ce315fe0398d66f830048d0fc0170094)) Removed deprecated methods from Core
     - From `CMAbstractModel` class: `initSimulation`, `simManager`, `simManager:`
     - From `CMAgent` class: `dead`, `dead:`, `destroyed`, `isDestroyed`
