@@ -1,4 +1,6 @@
-# [v0.9](https://github.com/cormas/cormas/compare/v0.8..v0.9) (17 July 2024)
+# Changelog
+
+## [v0.9](https://github.com/cormas/cormas/compare/v0.8..v0.9) (17 July 2024)
 
 (an intermediate release before introducing major breaking changes)
 
@@ -17,7 +19,7 @@
 - (https://github.com/cormas/cormas/pull/749) neighbour e neighbour n etc dont work properly on edges
 - (https://github.com/cormas/cormas/pull/745) `moveTowards:constraintOnPath:` is throwing SubscriptOutOfBounds exception
 
-# [v0.8](https://github.com/cormas/cormas/compare/v0.7..v0.8) (18 December 2023)
+## [v0.8](https://github.com/cormas/cormas/compare/v0.7..v0.8) (18 December 2023)
 
 _(those are mostly the changes introduced during [MISS ABMS 2023](https://www.agropolis.fr/MISS-ABMS-2023))_
 
@@ -52,7 +54,7 @@ _(those are mostly the changes introduced during [MISS ABMS 2023](https://www.ag
 - ([4d261ec](https://github.com/cormas/cormas/commit/4d261ec2dbe5d02d8763fb1b3db83dc0974b94f6)) Fixed a bug with random number generator
 - ([2fefa18](https://github.com/cormas/cormas/commit/2fefa18603a0be909aa1701f13050ce105b9fdbd)) Fixed a bug with collocated entities
 
-# [v0.7](https://github.com/cormas/cormas/compare/v0.6...v0.7) (18 August 2023)
+## [v0.7](https://github.com/cormas/cormas/compare/v0.6...v0.7) (18 August 2023)
 
 - (https://github.com/cormas/cormas/pull/692) Created a new translator class hierarchy to replace the old l18N translator.
 - ([1ecc9e9](https://github.com/cormas/cormas/pull/710/commits/1ecc9e96f8b6b8dea4b1ca81077066a5e386e04f)) Fixed the randomness of `Cormas class >> selectRandomlyFrom: aCollection`
@@ -117,7 +119,7 @@ _(those are mostly the changes introduced during [MISS ABMS 2023](https://www.ag
 - ([594e0a4](https://github.com/cormas/cormas/commit/594e0a4715cdd7016daf5d65a73587218a85fbf4)) Moved model metadata to AbstractModel to reduce dependency on ProjectFramework
 - (https://github.com/cormas/cormas/pull/724) `CMApplicationProject` does not inherit from `PFApplicationProject` anymore
 
-# [v0.6](https://github.com/cormas/cormas/compare/v0.5...v0.6) (25 July 2023)
+## [v0.6](https://github.com/cormas/cormas/compare/v0.5...v0.6) (25 July 2023)
 
 - Introduced `TCMLocated` trait to replace the class hierarchy of located agents and groups
 - Introduced `TCMCommunicating` trait to replace the class hierarchy of communicating agents and groups
@@ -182,7 +184,7 @@ _(all the original class and method names in this list were retained as deprecat
 
 - ([ba2e185](https://github.com/cormas/cormas/commit/ba2e185d92fefbfdc5fac299432314c068ba446e)) Introduced `CMAgent >> isAlive`, `isDead`, and `die` instead of `isDestroyed`, `dead`, and `dead:`. Deprecated the old messages.
 
-# [v0.5](https://github.com/cormas/cormas/compare/pre-v0.5...v0.5) (9 June 2023)
+## [v0.5](https://github.com/cormas/cormas/compare/pre-v0.5...v0.5) (9 June 2023)
 
 ### Removed 
 
