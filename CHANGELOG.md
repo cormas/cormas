@@ -68,8 +68,13 @@ _(beginning of MISS ABMS 2024 -- very big changes)_
         - `setSpatialEntitiesAttributsValueFromStream:`
         - `swell:`
         - `swell: verifying:`
+    - From `Cormas` class: `selectRandomlyFrom: subCollectionSize: constrainedBy:`, `valueOfValueInString:`
     - `CMSpatialEntitySet >> getPovSpecWithComponentsForSelector: andInfo:`
     - `CMGroup >> stepDynPop`
+    - `OrderedCollection` extension methods: `elementsWithMaxValue:`, `elementsWithMaxValue: verifying:`, `maxOf: verifying:`, `selectRandomlySubCollectionSize:`
+    - `SequenceableCollection` extension method `spaceModelDimensionsFor:`
+    - `String` extension methods: `asBoolean`, `asValidCormasClassName:`, `withoutBlanks`
+    - `ZnCharacterReadStream` extension method `skipSeparators`
 - ([80f91fc](https://github.com/cormas/cormas/commit/80f91fcb1d695e50516ee320118c839e197b6041)) Removed `colorDict` and all related methods
 - ([520bb4c](https://github.com/cormas/cormas/commit/520bb4c13a67ef53a3d883698f9aaa970ee97020)) Removed `povDict` variable and its accessor from `CMEntity`
 - ([3292746](https://github.com/cormas/cormas/commit/32927467af6226123c2722ed7dee37c79db4628d)) Removed `image` class variable from `CMEntity` as well as the related methods: `CMSpatialEntityAggregate >> imageIncludes:`, `CMSpatialEntityElement >> outlinePatch` and all methods or `CMSpatialEntityElement` related to line segments: `lineSegmentE`, `lineSegmentEf`, `lineSegmentEfh`, `lineSegmentN`, `lineSegmentNE`, `lineSegmentNEf`, `lineSegmentNEfh`, `lineSegmentNW`, `lineSegmentNWf`, `lineSegmentNWfh`, `lineSegmentNf`, `lineSegmentS`, `lineSegmentSE`, `lineSegmentSEf`, `lineSegmentSEfh`, `lineSegmentSW`, `lineSegmentSWf`, `lineSegmentSWfh`, `lineSegmentSf`, `lineSegmentW`, `lineSegmentWf`, `lineSegmentWfh`, `segments`
