@@ -36,11 +36,40 @@ _(beginning of MISS ABMS 2024 -- very big changes)_
 - ([9565074](https://github.com/cormas/cormas/commit/9565074edb5fe821c6e4eb9cce0b1b88e3cea231), [98c8cf3](https://github.com/cormas/cormas/commit/98c8cf3731de397d4248f16e0876867c1eec43fa), [a63126f](https://github.com/cormas/cormas/commit/a63126f923375284f90e375b3d9bfad635e922f2)) Removed all Project Framework classes: `CMApplication`, `CMCellsLoader`, `CMProjectBuilder`, `CMProjectFile`, `CMProjectManager`, `CMProjectModel`, `CMProjectTracker`
 - ([e626e46](https://github.com/cormas/cormas/commit/e626e46d456cb954e70b35b514bbfcd6412770da)) Removed all the announcements
 - ([00575f2](https://github.com/cormas/cormas/commit/00575f28d9a57c3ebd2aca23663cae9bba6d6bfb)) Removed Cormas exceptions because they were never used: `CMException`, `CMLoadException`, `CMLoadIgnoreException`, `CMLoadInformException`, `CMLoadLogException`
-- ([7cf3391](https://github.com/cormas/cormas/commit/7cf339130246958aded4500f4290120fbdd059cf), [98785df](https://github.com/cormas/cormas/commit/98785dfcb185569c16aeaac3e21f7f822c221b89), [b86dfee](https://github.com/cormas/cormas/commit/b86dfeea0a00b93321750da478f6329386add363)) Removed dead code. Classes that were never used: `EntityPOVSpec`, `EntityPOVView`, `CMAddOnManager_ListItem`, `CMModelResource` (for tests), `CMEnv2CellsConverter`. Methods that were never used:
-    - From `CMAbstractModel` class: `allEntitiesFrom: povAt:`, `removeMultipleChanges`, `situatedEntitiesFrom: povAt:`, `createGridNeighbourhood: closed: fromMatrixCsvFile: attribute:`, `readCsvFile:`
+- ([7cf3391](https://github.com/cormas/cormas/commit/7cf339130246958aded4500f4290120fbdd059cf), [98785df](https://github.com/cormas/cormas/commit/98785dfcb185569c16aeaac3e21f7f822c221b89), [b86dfee](https://github.com/cormas/cormas/commit/b86dfeea0a00b93321750da478f6329386add363), [6f142ad](https://github.com/cormas/cormas/commit/6f142ada4c371d47df0d80cc0e5268ecb0ffb8f2)) Removed dead code. Classes that were never used: `EntityPOVSpec`, `EntityPOVView`, `CMAddOnManager_ListItem`, `CMModelResource` (for tests), `CMEnv2CellsConverter`. Methods that were never used:
+    - From `CMAbstractModel` class:
+        - `allEntitiesFrom: povAt:`
+        - `removeMultipleChanges`
+        - `situatedEntitiesFrom: povAt:`
+        - `createGridNeighbourhood: closed: fromMatrixCsvFile: attribute:`
+        - `readCsvFile:`
+        - `classNameFromEntityName:`
+        - `askRandom: select: toDo:`
+        - `askRandom: select: toDo: with:`
+        - `createAggregates: fromSeeds:`
+        - `createAggregates: fromSeeds: maxSize:`
+        - `createAggregates: fromSeeds: sizeDistribution:`
+        - `createAggregates: fromSeeds: verifying:`
+        - `createAggregates: fromSeeds: verifying: sizeDistribution:`
+        - `createN: groups: from:`
+        - `generateAsymetricNetworkDensity: forAgents:`
+        - `generateSymetricNetworkDensity: forAgents:`
     - From `CMEntity` class: `figureAt:`, `getPovSpecForSelector: andInfo:`, `povAt:`
-    - From `CMSpaceModel` class: `getPovsDataOfArcEntity: forSelector: andInfo:`, `getPovsDataOfEntity: forSelector: andInfo:`, `getPovsDataOfOccupantEntity: forSelector: andInfo:`
+    - From `CMSpaceModel` class:
+        - `getPovsDataOfArcEntity: forSelector: andInfo:`
+        - `getPovsDataOfEntity: forSelector: andInfo:`
+        - `getPovsDataOfOccupantEntity: forSelector: andInfo:`
+        - `dimensions:`
+        - `setAggregates: fromSeeds:`
+        - `setAggregates: fromSeeds: sizeDistribution:`
+        - `setAggregates: fromSeeds: verifying:`
+        - `setAggregates: fromSeeds: verifying: sizeDistribution:`
+        - `setPartitionsFromSeeds: into:`
+        - `setSpatialEntitiesAttributsValueFromStream:`
+        - `swell:`
+        - `swell: verifying:`
     - `CMSpatialEntitySet >> getPovSpecWithComponentsForSelector: andInfo:`
+    - `CMGroup >> stepDynPop`
 - ([80f91fc](https://github.com/cormas/cormas/commit/80f91fcb1d695e50516ee320118c839e197b6041)) Removed `colorDict` and all related methods
 - ([520bb4c](https://github.com/cormas/cormas/commit/520bb4c13a67ef53a3d883698f9aaa970ee97020)) Removed `povDict` variable and its accessor from `CMEntity`
 - ([3292746](https://github.com/cormas/cormas/commit/32927467af6226123c2722ed7dee37c79db4628d)) Removed `image` class variable from `CMEntity` as well as the related methods: `CMSpatialEntityAggregate >> imageIncludes:`, `CMSpatialEntityElement >> outlinePatch` and all methods or `CMSpatialEntityElement` related to line segments: `lineSegmentE`, `lineSegmentEf`, `lineSegmentEfh`, `lineSegmentN`, `lineSegmentNE`, `lineSegmentNEf`, `lineSegmentNEfh`, `lineSegmentNW`, `lineSegmentNWf`, `lineSegmentNWfh`, `lineSegmentNf`, `lineSegmentS`, `lineSegmentSE`, `lineSegmentSEf`, `lineSegmentSEfh`, `lineSegmentSW`, `lineSegmentSWf`, `lineSegmentSWfh`, `lineSegmentSf`, `lineSegmentW`, `lineSegmentWf`, `lineSegmentWfh`, `segments`
