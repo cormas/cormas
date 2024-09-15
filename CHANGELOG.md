@@ -1,23 +1,43 @@
 # Changelog
 
-## [v0.9](https://github.com/cormas/cormas/compare/v0.8..v0.9) (17 July 2024)
+## [v0.96](https://github.com/cormas/cormas/compare/v0.95..v0.96) (15 September 2024)
 
-(an intermediate release before introducing major breaking changes)
+_(end of MISS ABMS 2024)_
+
+## [v0.95](https://github.com/cormas/cormas/compare/v0.9..v0.95) (2 September 2024)
+
+_(beginning of MISS ABMS 2024 -- very big changes)_
+
+### In a Nutshell
+
+- Reimplemented the entire UI in Spec 2
+- Support all the latest Pharo versions (Pharo 11, 12, 13)
+- Dropped support for the old Pharo versions (Pharo 9, 10)
+- Removed a big portion of dead and broken code
+- Removed dependency on Project Framework 🥳 - now cormas has only one external dependency: [PolyMathOrg/random-numbers](https://github.com/PolyMathOrg/random-numbers)
 
 ### Removed
 
-- (https://github.com/cormas/cormas/pull/748) `CMSpaceModel >> isNotTorroidal`
-- (https://github.com/cormas/cormas/pull/746) `String >> asGetterForEntityClass`
+- ([8b7fb17](https://github.com/cormas/cormas/commit/8b7fb1771dddc7b69d7c82dfcc93f88fe93dd856)) Removed deprecated classes: `CMAgentComm`, `CMApplicationProject`, `CMCommunicatingAgent`, `CMCommunicatingGroup`, `CMGroupComm`
+
+## [v0.9](https://github.com/cormas/cormas/compare/v0.8..v0.9) (17 July 2024)
+
+_(an intermediate release before introducing major breaking changes)_
+
+### Removed
+
+- ([PR #748](https://github.com/cormas/cormas/pull/748)) `CMSpaceModel >> isNotTorroidal`
+- ([PR #746](https://github.com/cormas/cormas/pull/746)) `String >> asGetterForEntityClass`
 
 ### Renamed
 
-- (https://github.com/cormas/cormas/pull/748) `torroidal` --> `isClosedEnvironment`
+- ([PR #748](https://github.com/cormas/cormas/pull/748)) `torroidal` --> `isClosedEnvironment`
 
 ### Bug fixes
 
 - ([ef2336d](https://github.com/cormas/cormas/pull/751/commits/ef2336da3e162b86e5b532d62fb9a8b233e725eb)) Added extension method to fix the open of I18NTranslationView class
-- (https://github.com/cormas/cormas/pull/749) neighbour e neighbour n etc dont work properly on edges
-- (https://github.com/cormas/cormas/pull/745) `moveTowards:constraintOnPath:` is throwing SubscriptOutOfBounds exception
+- ([PR #749](https://github.com/cormas/cormas/pull/749)) neighbour e neighbour n etc dont work properly on edges
+- ([PR #745](https://github.com/cormas/cormas/pull/745)) `moveTowards:constraintOnPath:` is throwing SubscriptOutOfBounds exception
 
 ## [v0.8](https://github.com/cormas/cormas/compare/v0.7..v0.8) (18 December 2023)
 
@@ -25,9 +45,9 @@ _(those are mostly the changes introduced during [MISS ABMS 2023](https://www.ag
 
 - ([cac44eb](https://github.com/cormas/cormas/commit/cac44ebe302f7a30917aa54d4e3a152fe674b93e)) Changed package generation: Removed the `Cormas-Model-` package prefix and added a `-Model` suffix instead
 - ([304b693](https://github.com/cormas/cormas/commit/304b693bc3d499afe7aa5a2343fd5505dc17fc6b)) Changed class generation: Removed the `CM` prefix from generated class names
-- (https://github.com/cormas/cormas/pull/734) Removed `asGetterForEntityClass` and added `<getterFor: #ClassName>` pragmas instead. The latter was a bad practice based on lazy initialization of a class variable and it forced us to depend on correct pluralization
-- (https://github.com/cormas/cormas/pull/736) Removed dependency on `Model` which was an old Morphic class and had nothing to do with Cormas
-- (https://github.com/cormas/cormas/pull/740) Added a possibility to have multiple shapes for agent pov
+- ([PR #734](https://github.com/cormas/cormas/pull/734)) Removed `asGetterForEntityClass` and added `<getterFor: #ClassName>` pragmas instead. The latter was a bad practice based on lazy initialization of a class variable and it forced us to depend on correct pluralization
+- ([PR #736](https://github.com/cormas/cormas/pull/736)) Removed dependency on `Model` which was an old Morphic class and had nothing to do with Cormas
+- ([PR #740](https://github.com/cormas/cormas/pull/740)) Added a possibility to have multiple shapes for agent pov
 
 ### Added
 
