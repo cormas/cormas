@@ -3,7 +3,8 @@
 * [Home](/)
 
 * Getting Started
-	* [Installation Guide](install.md)
+	* [Install Cormas](install.md)
+	* [How to get help](contact.md)
 	* [Robot-Forager Tutorial](robot-forager.md)
 
 * Basics of Pharo
