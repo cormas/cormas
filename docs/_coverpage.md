@@ -11,7 +11,6 @@
 - Highly interactive
 - Built to support the ComMod approach
 
+[Get Started](/?id=welcome-to-cormas)
 [Install](install)
-[Documentation](docs)
-[Community](community)
 [Models](models)
