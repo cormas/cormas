@@ -1,15 +1,15 @@
 <!-- _coverpage.md -->
 
-![logo](_media/logo.png)
+![logo](_media/logo.png ':size=250')
 
-# Cormas <small>v0.95</small>
+# Cormas <small>v0.96</small>
 
 > Participatory agent-based modelling, simulations, and serious games.
 
-- Pure object-oriented
+- Modelling with stakeholders
+- Serious games
+- Object-oriented approach
 - Live programming
-- Highly interactive
-- Built to support the ComMod approach
 
 [Get Started](/?id=welcome-to-cormas)
 [Install](install)
