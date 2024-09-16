@@ -39,11 +39,9 @@
 
 This is an ongoing effort to port CORMAS to [Pharo ecosystem](http://www.pharo.org/).
 
-Some documentation (to be cleaned and reorganized) about Cormas is available on the Wiki here:
-https://github.com/cormas/documentation
+Some documentation (to be cleaned and reorganized) about Cormas is available on our website: https://cormas.org
 
-If you want to contribute to CORMAS please have a look to the [contributing guide](https://github.com/cormas/cormas/blob/master/CONTRIBUTING.md).
-Join us on the cormas-dev mailing-list: http://groups.google.com/group/cormas-dev
+If you want to contribute to CORMAS please have a look to the [contributing guide](https://github.com/cormas/cormas/blob/master/CONTRIBUTING.md).
 
 # Installation
 
