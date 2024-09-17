@@ -15,4 +15,11 @@
 	* [Using GitHub](github.md)
 	* [How to Contribute to Cormas?](contributing.md)
 
+* Models
+
+	* [Our model collection](models.md)
+	* [Loading example models](load-example-models.md)
+	* [ECEC model](ecec-model.md)
+	* [Shelling model](shelling-model.md)
+
 * [Changelog](changelog.md)
