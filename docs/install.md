@@ -38,15 +38,19 @@ If it didn't, or if you are opening Pharo for the second time, you can open your
 
 ![Launch the image](_media/install-cormas/3-pharo-launcher-launch-image.png)
 
-When the image launches, you
+Once your new image opens, it should look like the one in the picture below. The _"Welcome Window"_ provides you with learning resources and allows you to make some basic configurations (e.g., choose the Dark Theme). You can navigate it by clicking the arrow on the right. Once you have familiarized yourself with the "Welcome Window", feel free to close it and continue this tutorial.
 
 ![Pharo image](_media/install-cormas/4-empty-pharo.png)
 
-## Installing Cormas
+## Loading Cormas
+
+You will load Cormas into this image by executing the installation script. To do that, you must open the _Playground_ - a standard Pharo tool for executing code. We do not program in Playground (for that, we use the _System Browser_), but we often use it to play with things, and run different scripts such as the installation script that you will see below.
+
+To open the Playground, click on Browse > Playground in the top menu of your image. You can also use the keyboard shortcut _Ctrl+OP_ if you are using Windows or Linux, or _Cmd+OP_ if you are using Mac. 
 
 ![Open Playground](_media/install-cormas/5-open-playground.png)
 
-![Empty Playgrond](_media/install-cormas/6-empty-playground.png)
+Copy the following installation script into your Playground.
 
 ```smalltalk
 Metacello new
@@ -55,6 +59,18 @@ Metacello new
     load.
 ```
 
+For now, you do not really need to understand this script, but in case you are interested, it specifies that we want to load [Cormas](https://github.com/cormas/cormas) project from GitHub.
+The baseline (installation configuration in the repository) is `Cormas` ([BaselineOfCormas](https://github.com/cormas/cormas/blob/master/repository/BaselineOfCormas/BaselineOfCormas.class.st)).
+If you want to learn more about baselines and Metacello, check out the [Baselines](https://github.com/pharo-open-documentation/pharo-wiki/blob/master/General/Baselines.md) tutorial on [Pharo Wiki](https://github.com/pharo-open-documentation/pharo-wiki/blob/master/README.md).
+
+To execute all the code in your Playground, click on the _"Do It"_ button in the top-left corner, or simply select the entire script and press _Ctrl+D_ (on Mac it's _Cmd+D_).
+
 ![Run Metacello Script](_media/install-cormas/7-run-metacello-script.png)
 
+The installation can take between a couple of seconds up to a minute, depending on the speed of your computer and the internet connection.
+Once the installation is over, the Pharo logo in your image will be replaced with the Cormas logo.
+This means that Cormas ws successfully installed.
+
 ![Cormas is installed](_media/install-cormas/8-cormas-installed.png)
+
+You can now close the Playground and move on to the [Robot-Forager Tutorial](robot-forager) where you will create your first model and run the simulation.
