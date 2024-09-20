@@ -1,4 +1,4 @@
-<p align="center"><img alt="CORMAS" src="assets/logos/CormasLogoBig.png" style="width: 25%; height: 25%">
+<p align="center"><img alt="CORMAS" src="docs/_media/logo.png" style="width: 25%; height: 25%">
 <h1 align="center">CORMAS</h1>
   <p align="center">
     <b>CO</b>mmon pool <b>R</b>essources and <b>M</b>ulti-<b>A</b>gent <b>S</b>imulations
