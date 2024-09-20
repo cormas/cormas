@@ -20,35 +20,25 @@
   </p>
 </p>
 
-# Table of Contents 
-
-- [Description](#description)
-- [Installation](#installation)
-  - [Standard Installation](#standard-installation)
-  - [CLI Installation](#cli-installation)
-  - [Troubleshooting](#troubleshooting)
-  - [Saving your image](#saving-your-image)
-- [Features](#features)
-- [Documentation](#documentation)
-- [Contributors](#contributors)
-  - [Historical contributors](#historical-contributors)  
-- [Change Log](#change-log)
-- [License](./LICENSE)
-
 # Description
 
-This is an ongoing effort to port CORMAS to [Pharo ecosystem](http://www.pharo.org/).
+Cormas is a platform for agent-based modelling and simulations implemented in Pharo - a pure object-oriented programming environment.
 
-Some documentation (to be cleaned and reorganized) about Cormas is available on our website: https://cormas.org
+Cormas was originally developed by the Green research unit (today part of UMR SENS) based on the years of field experience. Cormas was specifically developed to support Companion Modelling (ComMod) - a participatory approach that involves stakeholders in every step of model development and exploration.
 
-If you want to contribute to CORMAS please have a look to the [contributing guide](https://github.com/cormas/cormas/blob/master/CONTRIBUTING.md).
+Documentation and tutorials about Cormas are available on our website: https://cormas.org
+
+If you want to contribute to CORMAS please have a look to the [contributing guide](https://github.com/cormas/cormas/blob/master/CONTRIBUTING.md).
+
 
 # Installation
 
 ## Standard Installation
 
-* Download a Pharo 9.0 image+VM depending of your platform: http://pharo.org/download
-* Load Cormas: Open Pharo 9.0 image then click anywhere to open the main menu. Choose Playground (Ctrl + OW or Cmd + OW) to execute the following script to install the latest stable version of Cormas. Paste the script below in Playground, select all then right-click and choose Do it (Ctrl+D or Cmd+D) to execute it:
+> Read our [Installation Guide](https://cormas.org/#/install) for detailed step-by-step instructions on how to install Cormas
+
+* Download the latest stable Pharo image depending of your platform: http://pharo.org/download
+* Load Cormas: Open Pharo then select `Browse > Playground` in the top menu. Paste the script below in Playground then click on `Do it` (green button in the top-left coirner of Playground) to execute it:
 
 ```st
 Metacello new
@@ -57,7 +47,7 @@ Metacello new
     load.
 ```
 
-Use this script if you want the latest development version of Cormas:
+Use this script if you want the development version of Cormas:
 
 ```st
 Metacello new
@@ -71,78 +61,40 @@ All packages load into the Cormas-* package names:
 
 ## CLI Installation
 
-### Using Standard Unix CLI
-
 You can install CORMAS through Unix command line. It works as follow:
 
-```bash
-mkdir mydir; cd mydir
-curl https://get.pharo.org/90+vm | bash
-./pharo Pharo.image eval "EpMonitor disableDuring: [
-	Metacello new
-		onConflictUseLoaded;
-		onWarningLog;
-		repository: 'github://cormas/cormas/';
-		baseline: 'Cormas';
-		load ]. 
-Smalltalk snapshot: true andQuit: true"
+```console
+# Create a cormas/ directory and navigate into it
+mkdir cormas; cd cormas
+
+# Download Pharo 12 image and virtual machine
+curl https://get.pharo.org/120+vm | bash
+
+# Install Cormas
+./pharo Pharo.image eval "
+    Metacello new
+        repository: 'github://cormas/cormas/';
+        baseline: 'Cormas';
+        load.
+    Smalltalk snapshot: true andQuit: true"
 ```
 
-### Using PI
+Then you can open your Cormas image with user interface:
 
-Make sure you have [pi](https://github.com/hernanmd/pi) installed, and then execute:
-
-```bash
-pi install Cormas
+```console
+./pharo-ui Pharo.image
 ```
-
-## Troubleshooting
-
-There is from time to time, [loading errors with github](https://github.com/cormas/cormas/issues/101). If it happens, execute the following expression from Pharo:
-
-```Smalltalk
-| maxCount count |
-maxCount := 3.
-count := 1.
-Transcript open.
-[ count <= maxCount ] whileTrue: [ [
-	^ Metacello new
-		onWarningLog;
-		repository: 'github://cormas/cormas/';
-		baseline: 'Cormas';
-		load
-	]
-	on: IceGenericError "Failed to connect to github.com: Interrupted system call"
-	do: [ : ex |
-		MetacelloNotification signal: String cr , ex description , String cr , 'RETRYING ', maxCount asString.
-		(Delay forSeconds: 2) wait.
-		ex retry
-	].
-	count := count + 1 ]
-```
-
-Please add an issue if the installation expression above does not work due to one of these known exceptions:
-
-  - IceGenericError: Failed to connect to github.com: Interrupted system call.
-  - IceGenericError: SecureTransport error: connection closed via error
-  - IceGenericError: unexpected return value from ssl handshake -9806
 
 ## Saving your image
 
-As the loading process is rather slow, we recommend to save your image once the installation procedure has been successfully concluded.
-For that, select `Save As...` from the 'Pharo' menu:
+As you use Cormas, you should always save your image (the state of your environment).
+For that, select `Save` from the Pharo menu.
+
+Alternatively, if you want to save your image in a custom location, select `Save As...`:
 <p><img alt="SaveAs" src="assets/images/saveAs.jpg" style="width: 12%; height: 12%">
 
-Then write the name of your choice (ex: `cormasPharo.im`):
+Then write the name of your choice (e.g.: `CormasPharo.image`):
 <p><img alt="Loading..." src="assets/images/saveImage.jpg" style="width: 40%; height: 40%">
-
-# Features
-
-Work in progress
-
-# Documentation
-
-Work in progress
 
 # Contributors ✨
 
