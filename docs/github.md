@@ -56,9 +56,16 @@ After completing those steps, you should have two files on your computer: one wi
 
 ### Step 3. Open Iceberg and Add Your SSH Keys
 
-Working with Git in Pharo is very easy thanks to the Git Repositories Browser tool called Iceberg, which is included in any modern Pharo image.
+To work with GitHub from within Cormas, we use a tool called Iceberg (Git Repositories Browser) which is included in any modern Pharo image.
+Iceberg allows you to load different git repositories, keep track of all your changes, prepare commits, push those commits to a remote server, and pull commits that were made by others.
+Let us start by opening Iceberg.
+To do that, in your Cormas image, you should select _"Browse"_ in the top menu and then click on _"Git Repositories Browser"_.
+Alternatively, you can use a shortcut: _Ctrl+OI_ on Windows and Linux or _Cmd+OI_ on Mac.
 
 ![Open Iceberg](_media/github/2-open-iceberg.png)
+
+Before using Iceberg, you must first specify the location of your SSH keys.
+This way, Iceberg will be able to perform authentication when you push changes to your repositories.
 
 ![Iceberg](_media/github/3-iceberg.png)
 
