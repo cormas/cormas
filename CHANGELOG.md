@@ -45,7 +45,7 @@ _(beginning of MISS ABMS 2024 -- very big changes)_
 - ([9565074](https://github.com/cormas/cormas/commit/9565074edb5fe821c6e4eb9cce0b1b88e3cea231), [98c8cf3](https://github.com/cormas/cormas/commit/98c8cf3731de397d4248f16e0876867c1eec43fa), [a63126f](https://github.com/cormas/cormas/commit/a63126f923375284f90e375b3d9bfad635e922f2)) Removed all Project Framework classes: `CMApplication`, `CMCellsLoader`, `CMProjectBuilder`, `CMProjectFile`, `CMProjectManager`, `CMProjectModel`, `CMProjectTracker`
 - ([e626e46](https://github.com/cormas/cormas/commit/e626e46d456cb954e70b35b514bbfcd6412770da)) Removed all the announcements
 - ([00575f2](https://github.com/cormas/cormas/commit/00575f28d9a57c3ebd2aca23663cae9bba6d6bfb)) Removed Cormas exceptions because they were never used: `CMException`, `CMLoadException`, `CMLoadIgnoreException`, `CMLoadInformException`, `CMLoadLogException`
-- ([7cf3391](https://github.com/cormas/cormas/commit/7cf339130246958aded4500f4290120fbdd059cf), [98785df](https://github.com/cormas/cormas/commit/98785dfcb185569c16aeaac3e21f7f822c221b89), [b86dfee](https://github.com/cormas/cormas/commit/b86dfeea0a00b93321750da478f6329386add363), [6f142ad](https://github.com/cormas/cormas/commit/6f142ada4c371d47df0d80cc0e5268ecb0ffb8f2), [b83df1b](https://github.com/cormas/cormas/commit/4940bbdd8d188429ad9a51f764ced9a4151a91e8)) Removed dead code. Classes that were never used: `EntityPOVSpec`, `EntityPOVView`, `CMAddOnManager_ListItem`, `CMModelResource` (for tests), `CMEnv2CellsConverter`. Methods that were never used:
+- ([7cf3391](https://github.com/cormas/cormas/commit/7cf339130246958aded4500f4290120fbdd059cf), [98785df](https://github.com/cormas/cormas/commit/98785dfcb185569c16aeaac3e21f7f822c221b89), [b86dfee](https://github.com/cormas/cormas/commit/b86dfeea0a00b93321750da478f6329386add363), [6f142ad](https://github.com/cormas/cormas/commit/6f142ada4c371d47df0d80cc0e5268ecb0ffb8f2), [b83df1b](https://github.com/cormas/cormas/commit/4940bbdd8d188429ad9a51f764ced9a4151a91e8), [00b2527](https://github.com/cormas/cormas/commit/00b25273c411ea5e3171a3be364f37da327fb319), [d3ceab1](https://github.com/cormas/cormas/commit/d3ceab15ec2b1bbd1b585949d7dcd2706f0f432d)) Removed dead code. Classes that were never used: `EntityPOVSpec`, `EntityPOVView`, `CMAddOnManager_ListItem`, `CMModelResource` (for tests), `CMEnv2CellsConverter`. Methods that were never used:
     - From `CMAbstractModel` class:
         - `allEntitiesFrom: povAt:`
         - `removeMultipleChanges`
@@ -134,8 +134,12 @@ _(beginning of MISS ABMS 2024 -- very big changes)_
         - `setPartitionsFromSeeds: into:`
         - `setSpatialEntitiesAttributsValueFromStream:`
         - `swell:`
-        - `swell: verifying:`
+        - `swell: verifying:`,
+        - `loadNeighboorsClass: separator:`
     - From `Cormas` class: `selectRandomlyFrom: subCollectionSize: constrainedBy:`, `valueOfValueInString:`
+    - Extension methods:
+        - `RPackage` extension methods: `fileOutOn:`, `fileOutOn: named:`
+        - `OrderedCollection` extension methods: `elementsWithMaxValue:`, `elementsWithMaxValue: verifying:`, `maxOf: verifying:`, `selectRandomlySubCollectionSize:`
     - `CMSpatialEntitySet >> getPovSpecWithComponentsForSelector: andInfo:`
     - `CMGroup >> stepDynPop`
     - `CMMessage class >> superClassesUntilEntity`
@@ -147,7 +151,7 @@ _(beginning of MISS ABMS 2024 -- very big changes)_
 - ([520bb4c](https://github.com/cormas/cormas/commit/520bb4c13a67ef53a3d883698f9aaa970ee97020)) Removed `povDict` variable and its accessor from `CMEntity`
 - ([3292746](https://github.com/cormas/cormas/commit/32927467af6226123c2722ed7dee37c79db4628d)) Removed `image` class variable from `CMEntity` as well as the related methods: `CMSpatialEntityAggregate >> imageIncludes:`, `CMSpatialEntityElement >> outlinePatch` and all methods or `CMSpatialEntityElement` related to line segments: `lineSegmentE`, `lineSegmentEf`, `lineSegmentEfh`, `lineSegmentN`, `lineSegmentNE`, `lineSegmentNEf`, `lineSegmentNEfh`, `lineSegmentNW`, `lineSegmentNWf`, `lineSegmentNWfh`, `lineSegmentNf`, `lineSegmentS`, `lineSegmentSE`, `lineSegmentSEf`, `lineSegmentSEfh`, `lineSegmentSW`, `lineSegmentSWf`, `lineSegmentSWfh`, `lineSegmentSf`, `lineSegmentW`, `lineSegmentWf`, `lineSegmentWfh`, `segments`
 - ([9b3848b](https://github.com/cormas/cormas/commit/9d72696e646bdabf618b0de8aae355f3582b9ff9)) Removed `CMAbstractModel class >> allClassesInPackage` because we should simply use `self package classes` instead
- 
+
 ### Dependencies
 
 - ([a63126f](https://github.com/cormas/cormas/commit/a63126f923375284f90e375b3d9bfad635e922f2)) Removed the dependency on [ProjectFramework](https://github.com/cormas/ProjectFramework)
