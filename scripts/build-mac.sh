@@ -31,7 +31,7 @@ rm -rf pharo
     Smalltalk snapshot: true andQuit: true"
 
 # Copy Cormas logo to be used as app logo
-cp $resources_dir/pharo-local/iceberg/cormas/cormas/docs/_media/logo.png $resources_dir
+cp $resources_dir/pharo-local/iceberg/cormas/cormas/icons/icon_512x512@2x.png $resources_dir/logo.png
 
 # Create a configuration file for the Mac app
 echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
