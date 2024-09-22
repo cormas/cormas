@@ -16,6 +16,16 @@ _(beginning of MISS ABMS 2024 -- very big changes)_
 - Removed a big portion of dead and broken code
 - Removed dependency on Project Framework 🥳 - now cormas has only one external dependency: [PolyMathOrg/random-numbers](https://github.com/PolyMathOrg/random-numbers)
 
+### Language (model definition)
+
+- ([f62612b](https://github.com/cormas/cormas/commit/fb6f79a53618a3f205efd66d32374c268d50fe2a)) pov methods must now be defined with `<pov>` pragma. Before, they had to be placed in the `pov` protocol. Now protocol is now irrelevant.
+
+### Added
+
+#### New UI
+
+- ([6f142ad](https://github.com/cormas/cormas/commit/5cfb78423d33ea709c5498d62b45a921fd900f02)) `CMSimulationPresenter`
+
 ### Removed
 
 - ([8b7fb17](https://github.com/cormas/cormas/commit/8b7fb1771dddc7b69d7c82dfcc93f88fe93dd856), [d9c0ec2](https://github.com/cormas/cormas/commit/d9c0ec2ec0b331079787db1fb0da157c8d565f1c)) Removed deprecated classes: `CMAgentComm`, `CMApplicationProject`, `CMCommunicatingAgent`, `CMCommunicatingGroup`, `CMGroupComm`, `CMAgentCommLocation`, `CMAgentLocation`, `CMGroupCommLocation`, `CMGroupLocation`, `CMLocatedAgent`, `CMLocatedCommunicatingAgent`, `CMLocatedCommunicatingGroup`, `CMLocatedGroup`, `CMMsg`, `CMObjectLocation`, `CMResourceLocator`, `CMSimInitializationAnnouncement`, `CMSimManager`
@@ -35,7 +45,7 @@ _(beginning of MISS ABMS 2024 -- very big changes)_
 - ([9565074](https://github.com/cormas/cormas/commit/9565074edb5fe821c6e4eb9cce0b1b88e3cea231), [98c8cf3](https://github.com/cormas/cormas/commit/98c8cf3731de397d4248f16e0876867c1eec43fa), [a63126f](https://github.com/cormas/cormas/commit/a63126f923375284f90e375b3d9bfad635e922f2)) Removed all Project Framework classes: `CMApplication`, `CMCellsLoader`, `CMProjectBuilder`, `CMProjectFile`, `CMProjectManager`, `CMProjectModel`, `CMProjectTracker`
 - ([e626e46](https://github.com/cormas/cormas/commit/e626e46d456cb954e70b35b514bbfcd6412770da)) Removed all the announcements
 - ([00575f2](https://github.com/cormas/cormas/commit/00575f28d9a57c3ebd2aca23663cae9bba6d6bfb)) Removed Cormas exceptions because they were never used: `CMException`, `CMLoadException`, `CMLoadIgnoreException`, `CMLoadInformException`, `CMLoadLogException`
-- ([7cf3391](https://github.com/cormas/cormas/commit/7cf339130246958aded4500f4290120fbdd059cf), [98785df](https://github.com/cormas/cormas/commit/98785dfcb185569c16aeaac3e21f7f822c221b89), [b86dfee](https://github.com/cormas/cormas/commit/b86dfeea0a00b93321750da478f6329386add363), [6f142ad](https://github.com/cormas/cormas/commit/6f142ada4c371d47df0d80cc0e5268ecb0ffb8f2)) Removed dead code. Classes that were never used: `EntityPOVSpec`, `EntityPOVView`, `CMAddOnManager_ListItem`, `CMModelResource` (for tests), `CMEnv2CellsConverter`. Methods that were never used:
+- ([7cf3391](https://github.com/cormas/cormas/commit/7cf339130246958aded4500f4290120fbdd059cf), [98785df](https://github.com/cormas/cormas/commit/98785dfcb185569c16aeaac3e21f7f822c221b89), [b86dfee](https://github.com/cormas/cormas/commit/b86dfeea0a00b93321750da478f6329386add363), [6f142ad](https://github.com/cormas/cormas/commit/6f142ada4c371d47df0d80cc0e5268ecb0ffb8f2), [b83df1b](https://github.com/cormas/cormas/commit/4940bbdd8d188429ad9a51f764ced9a4151a91e8)) Removed dead code. Classes that were never used: `EntityPOVSpec`, `EntityPOVView`, `CMAddOnManager_ListItem`, `CMModelResource` (for tests), `CMEnv2CellsConverter`. Methods that were never used:
     - From `CMAbstractModel` class:
         - `allEntitiesFrom: povAt:`
         - `removeMultipleChanges`
@@ -52,8 +62,66 @@ _(beginning of MISS ABMS 2024 -- very big changes)_
         - `createAggregates: fromSeeds: verifying: sizeDistribution:`
         - `createN: groups: from:`
         - `generateAsymetricNetworkDensity: forAgents:`
-        - `generateSymetricNetworkDensity: forAgents:`
-    - From `CMEntity` class: `figureAt:`, `getPovSpecForSelector: andInfo:`, `povAt:`
+        - `generateSymetricNetworkDensity: forAgents:
+    - From `CMAbstractModel class` class:
+        - `activityDiagrams`
+        - `activityDiagrams:`
+        - `activityDiagramsAt:`
+        - `activitySelectorOf:`
+        - `allActivityDiagramSelectors`
+        - `allActivitySelectors`
+        - `allInstanceSelectors`
+        - `chooseActivityDiagramEditorToRemove`
+        - `instanceSelectorFrom:`
+        - `methodsForControl`
+        - `methodsForControlNoArg`
+        - `methodsForTesting`
+        - `methodsOfProtocol:`
+        - `modelMethodsForManipulation`
+        - `preStringForActivitySelector`
+        - `removeActivityDiagram:`
+        - `superClassesUntil:`
+        - `superClassesUntilEntity`
+    - From `CMEntity` class:
+        - `figureAt:`
+        - `getPovSpecForSelector: andInfo:`
+        - `povAt:`
+        - `manipulationMenu:`
+        - `manipulationMenuItems`
+    - From `CMEntity class` class:
+        - `activityDiagrams`
+        - `activityDiagrams:`
+        - `activityDiagramsAt:`
+        - `activitySelectorOf:`
+        - `allActivityDiagramSelectors`
+        - `allActivitySelectors`
+        - `allAttributesUntil:`
+        - `allAttributesUntilEntity`
+        - `allClassSelectors`
+        - `allClassSelectorsInProtocol:`
+        - `allClassVariablesUntil:`
+        - `allClassVariablesUntilEntity`
+        - `allInstanceSelectors`
+        - `allMethodsBut:`
+        - `allMethodsButProtocols:`
+        - `allSpecificAttributes`
+        - `allSpecificClassVariables`
+        - `getActivityDiagram:`
+        - `instanceSelectorFrom:`
+        - `methodsForControl`
+        - `methodsForControlNoArg`
+        - `methodsForInit`
+        - `methodsForInitNoArg`
+        - `methodsForTesting`
+        - `methodsForTestingNoArg`
+        - `methodsOfProtocol:`
+        - `methodsOfProtocolStartingWith:`
+        - `modelMethodsForManipulation`
+        - `openActivityDiagram:`
+        - `preStringForActivitySelector`
+        - `refactorActivityDiagram: forClass:`
+        - `removeActivityDiagram:`
+        - `superClassesUntilEntity`
     - From `CMSpaceModel` class:
         - `getPovsDataOfArcEntity: forSelector: andInfo:`
         - `getPovsDataOfEntity: forSelector: andInfo:`
@@ -70,6 +138,7 @@ _(beginning of MISS ABMS 2024 -- very big changes)_
     - From `Cormas` class: `selectRandomlyFrom: subCollectionSize: constrainedBy:`, `valueOfValueInString:`
     - `CMSpatialEntitySet >> getPovSpecWithComponentsForSelector: andInfo:`
     - `CMGroup >> stepDynPop`
+    - `CMMessage class >> superClassesUntilEntity`
     - `OrderedCollection` extension methods: `elementsWithMaxValue:`, `elementsWithMaxValue: verifying:`, `maxOf: verifying:`, `selectRandomlySubCollectionSize:`
     - `SequenceableCollection` extension method `spaceModelDimensionsFor:`
     - `String` extension methods: `asBoolean`, `asValidCormasClassName:`, `withoutBlanks`
@@ -77,12 +146,20 @@ _(beginning of MISS ABMS 2024 -- very big changes)_
 - ([80f91fc](https://github.com/cormas/cormas/commit/80f91fcb1d695e50516ee320118c839e197b6041)) Removed `colorDict` and all related methods
 - ([520bb4c](https://github.com/cormas/cormas/commit/520bb4c13a67ef53a3d883698f9aaa970ee97020)) Removed `povDict` variable and its accessor from `CMEntity`
 - ([3292746](https://github.com/cormas/cormas/commit/32927467af6226123c2722ed7dee37c79db4628d)) Removed `image` class variable from `CMEntity` as well as the related methods: `CMSpatialEntityAggregate >> imageIncludes:`, `CMSpatialEntityElement >> outlinePatch` and all methods or `CMSpatialEntityElement` related to line segments: `lineSegmentE`, `lineSegmentEf`, `lineSegmentEfh`, `lineSegmentN`, `lineSegmentNE`, `lineSegmentNEf`, `lineSegmentNEfh`, `lineSegmentNW`, `lineSegmentNWf`, `lineSegmentNWfh`, `lineSegmentNf`, `lineSegmentS`, `lineSegmentSE`, `lineSegmentSEf`, `lineSegmentSEfh`, `lineSegmentSW`, `lineSegmentSWf`, `lineSegmentSWfh`, `lineSegmentSf`, `lineSegmentW`, `lineSegmentWf`, `lineSegmentWfh`, `segments`
+- ([9b3848b](https://github.com/cormas/cormas/commit/9d72696e646bdabf618b0de8aae355f3582b9ff9)) Removed `CMAbstractModel class >> allClassesInPackage` because we should simply use `self package classes` instead
  
 ### Dependencies
 
 - ([a63126f](https://github.com/cormas/cormas/commit/a63126f923375284f90e375b3d9bfad635e922f2)) Removed the dependency on [ProjectFramework](https://github.com/cormas/ProjectFramework)
 - ([4c716da](https://github.com/cormas/cormas/commit/4c716da0a3d2784437277e1a2c79f013bf5fe022)) Removed the explicit dependency on Roassal3
 - ([a1580c3](https://github.com/cormas/cormas/commit/a1580c3df1886adefc7947c8716a840f62421ef4), [13ab17a](https://github.com/cormas/cormas/commit/13ab17a414b55cd276cee04e537764cb8d3e6a7b)) Removed unused dependencies: SMark, PetitParser, ESRIASCIIRaster, SingularizePluralize, CollectionExtensions
+
+### Compatibility with Pharo 11
+
+_(inside a package `Cormas-Pharo11` that is only loaded for Pharo 11)_
+
+- ([674a701](https://github.com/cormas/cormas/commit/830ba07e169aa18524932fae9ed53deab9c1e791)) Added `RPackage >> tags` as alias for `RPackage >> classTags`
+- ([8517df2](https://github.com/cormas/cormas/commit/cc4c0802146fa51bb5be5f5d53d878b10b8207fd)) Added missing method: `RPackage >> tagNamed:`
 
 ## [v0.9](https://github.com/cormas/cormas/compare/v0.8..v0.9) (17 July 2024)
 
