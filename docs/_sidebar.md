@@ -10,6 +10,7 @@
 * Basics of Pharo
 
 	* [Where to Learn Pharo?](learn-pharo.md)
+	* [Collections](collections.md)
 
 * Advanced Topics
 	* [Using GitHub](github.md)
