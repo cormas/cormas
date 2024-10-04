@@ -66,7 +66,6 @@ BaselineOfCormas >> baseline: spec [
 			with: [ spec requires: #( 'Cormas-Pharo11' ) ] ].
 
 	spec for: #common do: [
-		spec preLoadDoIt: #preLoad.
 		spec postLoadDoIt: #postLoad.
 
 		self
@@ -83,12 +82,6 @@ BaselineOfCormas >> postLoad [
 	
 	SystemAnnouncer uniqueInstance
 		when: UIThemeChanged send: #loadBackgroundImage to: self class.
-]
-
-{ #category : 'doits' }
-BaselineOfCormas >> preLoad [
-
-	PharoLightTheme beCurrent.
 ]
 
 { #category : 'specs' }
