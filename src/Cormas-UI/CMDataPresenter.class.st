@@ -1,22 +1,34 @@
 Class {
-	#name : 'CMSensitivityAnalysisDataTablePresenter',
+	#name : 'CMDataPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'toolbar',
-		'table'
+		'table',
+		'toolbar'
 	],
-	#category : 'Cormas-SensitivityAnalysis-UI',
-	#package : 'Cormas-SensitivityAnalysis-UI'
+	#category : 'Cormas-UI',
+	#package : 'Cormas-UI'
 }
 
 { #category : 'examples' }
-CMSensitivityAnalysisDataTablePresenter class >> example [
+CMDataPresenter class >> example [
 	<example>
 	self new open
 ]
 
+{ #category : 'as yet unclassified' }
+CMDataPresenter >> columnNames: aCollection [
+
+	table columns: #().
+
+	aCollection do: [ :name |
+		table
+			addColumn: (SpStringTableColumn
+				title: name
+				evaluated: [ :dataRow | dataRow at: name ]) ].
+]
+
 { #category : 'layout' }
-CMSensitivityAnalysisDataTablePresenter >> defaultLayout [
+CMDataPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
 		add: toolbar expand: false;
@@ -25,7 +37,7 @@ CMSensitivityAnalysisDataTablePresenter >> defaultLayout [
 ]
 
 { #category : 'initialization' }
-CMSensitivityAnalysisDataTablePresenter >> initializePresenters [
+CMDataPresenter >> initializePresenters [
 
 	| saveToCsvButton saveToExcelButton |
 
@@ -52,14 +64,7 @@ CMSensitivityAnalysisDataTablePresenter >> initializePresenters [
 ]
 
 { #category : 'as yet unclassified' }
-CMSensitivityAnalysisDataTablePresenter >> showData: aCollection [
-
-	aCollection ifEmpty: [ ^ self ].
-	
-	aCollection first keys collect: [ :name |
-		table addColumn: (SpStringTableColumn
-			title: name
-			evaluated: [ :row | row at: name ]) ].
+CMDataPresenter >> showData: aCollection [
 		
 	table items: aCollection
 ]

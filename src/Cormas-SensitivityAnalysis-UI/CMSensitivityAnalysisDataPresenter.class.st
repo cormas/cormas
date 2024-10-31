@@ -138,7 +138,7 @@ CMSensitivityAnalysisDataPresenter >> initializePresenters [
 	dataNotebook addPage: (SpNotebookPage
 		title: 'Data'
 		icon: (self iconNamed: #database)
-		provider: [ dataTable := self instantiate: CMSensitivityAnalysisDataTablePresenter ]).
+		provider: [ dataTable := self instantiate: CMDataPresenter ]).
 		
 	simulationsCountLabel := self newLabel.
 	self updateSimulationsCountLabel.
@@ -181,7 +181,7 @@ CMSensitivityAnalysisDataPresenter >> runSimulations [
 		self updateSimulationsCountLabel.
 		self updateProgressBar].
 	
-	dataTable showData: sensitivityAnalysis data.
+	self showData.
 	self addChartsPage.
 ]
 
@@ -190,6 +190,18 @@ CMSensitivityAnalysisDataPresenter >> setModelBeforeInitialization: aCollection 
 
 	sensitivityAnalysis := aCollection first.
 	translator := aCollection second
+]
+
+{ #category : 'as yet unclassified' }
+CMSensitivityAnalysisDataPresenter >> showData [
+
+	| data |
+	data := sensitivityAnalysis data.
+	
+	data ifEmpty: [ ^ self ].
+	
+	dataTable columnNames: data anyOne keys.
+	dataTable showData: sensitivityAnalysis data.
 ]
 
 { #category : 'as yet unclassified' }

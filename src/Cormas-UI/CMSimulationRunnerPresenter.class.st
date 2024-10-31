@@ -131,16 +131,9 @@ CMSimulationRunnerPresenter >> initializeCharts [
 
 { #category : 'initialization' }
 CMSimulationRunnerPresenter >> initializeDataTable [
-	
-	dataTable := self newTable
-		beResizable;
-		yourself.
-	
-	simulation activeProbes do: [ :probe |
-		dataTable
-			addColumn: (SpStringTableColumn
-				title: probe name
-				evaluated: [ :dataRow | dataRow at: probe name ]) ].
+
+	dataTable := self instantiate: CMDataPresenter.
+	dataTable columnNames: (simulation activeProbes collect: #name)
 ]
 
 { #category : 'initialization' }
@@ -323,7 +316,7 @@ CMSimulationRunnerPresenter >> updateChart [
 { #category : 'update presenters' }
 CMSimulationRunnerPresenter >> updateDataTable [
 
-	dataTable items: simulation data
+	dataTable showData: simulation data
 ]
 
 { #category : 'as yet unclassified' }
