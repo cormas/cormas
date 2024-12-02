@@ -39,6 +39,12 @@ CMAbstractTranslator >> tBrowse [
 ]
 
 { #category : 'translations' }
+CMAbstractTranslator >> tCancel [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
 CMAbstractTranslator >> tCharts [
 
 	self subclassResponsibility
@@ -57,7 +63,25 @@ CMAbstractTranslator >> tControlMethod [
 ]
 
 { #category : 'translations' }
+CMAbstractTranslator >> tCreate [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tCreateTestPackage [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
 CMAbstractTranslator >> tData [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tDescription [
 
 	self subclassResponsibility
 ]
@@ -141,6 +165,12 @@ CMAbstractTranslator >> tMonteCarlo [
 ]
 
 { #category : 'translations' }
+CMAbstractTranslator >> tName [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
 CMAbstractTranslator >> tNumberOfRepetitions [
 
 	self subclassResponsibility
@@ -148,6 +178,12 @@ CMAbstractTranslator >> tNumberOfRepetitions [
 
 { #category : 'translations' }
 CMAbstractTranslator >> tOpenSimulation [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tPackagesClassesToCreate [
 
 	self subclassResponsibility
 ]
@@ -166,6 +202,12 @@ CMAbstractTranslator >> tParameters [
 
 { #category : 'translations' }
 CMAbstractTranslator >> tPredefinedList [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tPrefix [
 
 	self subclassResponsibility
 ]

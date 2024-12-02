@@ -30,6 +30,12 @@ CMUkrainianTranslator >> tBrowse [
 ]
 
 { #category : 'translations' }
+CMUkrainianTranslator >> tCancel [
+
+	^ 'Скасувати'
+]
+
+{ #category : 'translations' }
 CMUkrainianTranslator >> tCharts [
 
 	^ 'Графіки'
@@ -48,9 +54,27 @@ CMUkrainianTranslator >> tControlMethod [
 ]
 
 { #category : 'translations' }
+CMUkrainianTranslator >> tCreate [
+
+	^ 'Створити'
+]
+
+{ #category : 'translations' }
+CMUkrainianTranslator >> tCreateTestPackage [
+
+	^ 'Створити пакет із тестами'
+]
+
+{ #category : 'translations' }
 CMUkrainianTranslator >> tData [
 
 	^ 'Дані'
+]
+
+{ #category : 'translations' }
+CMUkrainianTranslator >> tDescription [
+
+	^ 'Опис'
 ]
 
 { #category : 'translations' }
@@ -132,6 +156,12 @@ CMUkrainianTranslator >> tMonteCarlo [
 ]
 
 { #category : 'translations' }
+CMUkrainianTranslator >> tName [
+
+	^ 'Назва'
+]
+
+{ #category : 'translations' }
 CMUkrainianTranslator >> tNumberOfRepetitions [
 
 	^ 'Кількість повторів'
@@ -141,6 +171,12 @@ CMUkrainianTranslator >> tNumberOfRepetitions [
 CMUkrainianTranslator >> tOpenSimulation [
 
 	^ 'Відкрити симуляцію'
+]
+
+{ #category : 'translations' }
+CMUkrainianTranslator >> tPackagesClassesToCreate [
+
+	^ 'Пакети і класи, що будуть створені'
 ]
 
 { #category : 'translations' }
@@ -159,6 +195,12 @@ CMUkrainianTranslator >> tParameters [
 CMUkrainianTranslator >> tPredefinedList [
 
 	^ 'Список'
+]
+
+{ #category : 'translations' }
+CMUkrainianTranslator >> tPrefix [
+
+	^ 'Префікс'
 ]
 
 { #category : 'translations' }

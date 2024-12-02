@@ -37,9 +37,17 @@ CMModelOpenerPresenter class >> menu00CormasOn: aBuilder [
 		parent: #Cormas;
 		withSeparatorAfter.
 		
+	(aBuilder item: #NewCormasModel)
+		parent: #CormasMain;
+		label: 'New model';
+		icon: (self iconNamed: #smallNew);
+		help: 'Create a new Cormas model';
+		action: [ (CMNewModelPresenter forTranslator: CMEnglishTranslator new) open ];
+		order: 1.
+		
 	(aBuilder item: #CormasModels)
 		parent: #CormasMain;
-		label: 'Models';
+		label: 'Models in this image';
 		icon: (self iconNamed: #smallOpen);
 		help: 'Browse Cormas models that are installed on this image';
 		action: [ self new open ];
@@ -47,7 +55,7 @@ CMModelOpenerPresenter class >> menu00CormasOn: aBuilder [
 		
 	(aBuilder item: #ExampleModels)
 		parent: #CormasRepositories;
-		label: 'Example Models';
+		label: 'Load example Models';
 		icon: (self iconNamed: #box);
 		help: 'Load example models';
 		action: [ CMExampleModelLoaderPresenter new open ];

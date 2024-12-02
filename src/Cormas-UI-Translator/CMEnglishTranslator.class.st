@@ -30,6 +30,12 @@ CMEnglishTranslator >> tBrowse [
 ]
 
 { #category : 'translations' }
+CMEnglishTranslator >> tCancel [
+
+	^ 'Cancel'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tCharts [
 
 	^ 'Charts'
@@ -48,9 +54,27 @@ CMEnglishTranslator >> tControlMethod [
 ]
 
 { #category : 'translations' }
+CMEnglishTranslator >> tCreate [
+
+	^ 'Create'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tCreateTestPackage [
+
+	^ 'Create a test package'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tData [
 
 	^ 'Data'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tDescription [
+
+	^ 'Description'
 ]
 
 { #category : 'translations' }
@@ -132,6 +156,12 @@ CMEnglishTranslator >> tMonteCarlo [
 ]
 
 { #category : 'translations' }
+CMEnglishTranslator >> tName [
+
+	^ 'Name'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tNumberOfRepetitions [
 
 	^ 'Number of repetitions'
@@ -141,6 +171,12 @@ CMEnglishTranslator >> tNumberOfRepetitions [
 CMEnglishTranslator >> tOpenSimulation [
 
 	^ 'Open Simulation'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tPackagesClassesToCreate [
+
+	^ 'Packages and classes that will be created'
 ]
 
 { #category : 'translations' }
@@ -159,6 +195,12 @@ CMEnglishTranslator >> tParameters [
 CMEnglishTranslator >> tPredefinedList [
 
 	^ 'Predefined list'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tPrefix [
+
+	^ 'Prefix'
 ]
 
 { #category : 'translations' }
