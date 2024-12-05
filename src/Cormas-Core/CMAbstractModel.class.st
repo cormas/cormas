@@ -64,13 +64,6 @@ CMAbstractModel class >> aboutThisModel [
 ]
 
 { #category : 'managing classes' }
-CMAbstractModel class >> allClassesNames [
-	"return all the Entity class names of the model (except the my self, Msg and other classes like Interface etc)"
-
-	^ self allEntityClasses collect: [ :c | c name asString ]
-]
-
-{ #category : 'managing classes' }
 CMAbstractModel class >> allEntityClasses [
 	"return all the classes of the model (except the classes that inheriting from Msg and other classes like Interface etc"
 
@@ -825,24 +818,6 @@ CMAbstractModel >> lowerRightCell [
 	"Purpose: returns the cell located at the lower right location of the spatial grid"
 
 	^ self spaceModel lowerRightLocation
-]
-
-{ #category : 'utilities - space metrics' }
-CMAbstractModel >> nPatches: aClass [
-	"Purpose: Return the number of instances of aClass.
-Argument: aClass should be an aggregate.
-Example: self nPatches: ForestAggregate"
-	
-	^self spaceModel nPatches: aClass
-]
-
-{ #category : 'utilities - space metrics' }
-CMAbstractModel >> nbDistinctValuesOf: anAttribute [
-	"Purpose: Return the number of SpatialEntityElements instances (theCells for example) that have a different value for anAttribute.
-Argument: anAttribute is a symbol
-Example: self nClasses: #state"
-
-	^ self spaceModel nbDistinctValuesOf: anAttribute
 ]
 
 { #category : 'utilities - space metrics' }
