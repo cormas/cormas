@@ -205,13 +205,12 @@ TCMLocated >> leave [
 
 { #category : 'moving' }
 TCMLocated >> leaveWhileMoving: isMoving [
-	"isMoving = <Boolean>"
 
 	self patch ifNil: [ ^ self ].
 	
 	isMoving ifFalse: [
 		"The situated agent doesn't move; it is not located any more. But it is still 'alive'  "
-		self cormasModel spaceModel ifNil: [ ^ nil ] ].
+		self cormasModel spaceModel ifNil: [ ^ self ] ].
 			
 	(self patch theOccupants at: self class name)
 		remove: self

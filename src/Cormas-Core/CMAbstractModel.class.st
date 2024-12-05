@@ -656,7 +656,7 @@ CMAbstractModel >> initEntities [
 	
 	"Remove all the Agents from previous simulation"
 	self class agentClasses do: [ :aClass | 
-		self initEntitiesForSocialClass: aClass ].
+		self initializeAgentsOfClass: aClass ].
 	
 	self spaceModel ifNotNil: [ 
 		self spaceModel resetSpatialEntities "ButCells" ]
@@ -671,22 +671,21 @@ CMAbstractModel >> initEntitiesForPassiveClass: aClass [
 	self resetEntities: aClass
 ]
 
-{ #category : 'accessing' }
-CMAbstractModel >> initEntitiesForSocialClass: aClass [
-
-	(aClass isAbstract not and: [ aClass isLocated ]) ifTrue: [ 
-		(self theEntities: aClass) ifNotNil: [ 
-			(self theEntities: aClass) do: [ :each | each leave ] ] ].
-		
-	self resetEntities: aClass
-]
-
 { #category : 'initialization' }
 CMAbstractModel >> initialize [
 
 	self initializeWithoutParameters.
 	self initializeParameters.
 
+]
+
+{ #category : 'accessing' }
+CMAbstractModel >> initializeAgentsOfClass: aClass [
+
+	(aClass isAbstract not and: [ aClass isLocated ]) ifTrue: [ 
+		(self theEntities: aClass) do: [ :each | each leave ] ].
+		
+	self resetEntities: aClass
 ]
 
 { #category : 'initialization' }
