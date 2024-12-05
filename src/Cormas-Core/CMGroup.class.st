@@ -92,7 +92,10 @@ Argument: anItem = <Agent>"
 CMGroup >> initializeWithAll: anAgentsCollection [
 	"Purpose: resets and fills with new components"
 	
-	self reset.
+	self components: Set new.
+	self newComponents: Set new.
+	self removedComponents: Set new.
+	
 	self components: anAgentsCollection
 ]
 
@@ -125,16 +128,6 @@ CMGroup >> removedComponents [
 { #category : 'components - accessing' }
 CMGroup >> removedComponents: anAgentSet [
 	removedComponents := anAgentSet
-]
-
-{ #category : 'initialize - release' }
-CMGroup >> reset [
-	"Resets inherited and specific attributes"
-
-	super reset.
-	self components: Set new.
-	self newComponents: Set new.
-	self removedComponents: Set new
 ]
 
 { #category : 'accessing' }

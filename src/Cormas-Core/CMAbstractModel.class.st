@@ -1088,7 +1088,8 @@ CMAbstractModel >> release [
 	self spaceModel release.
 	self spaceModel: nil.
 	self channel: nil.
-	self resetCells.
+	
+	self theCells do: #initOccupants
 ]
 
 { #category : 'referencing entities' }
@@ -1139,13 +1140,6 @@ CMAbstractModel >> removeEntity: anEntity [
 	(self theEntities: anEntity class)
 		remove: anEntity
 		ifAbsent: [nil]
-]
-
-{ #category : 'update' }
-CMAbstractModel >> resetCells [
-	"Purpose: reset all the generic attributes of the cells"
-
-	self theCells do: #reset
 ]
 
 { #category : 'init entities' }

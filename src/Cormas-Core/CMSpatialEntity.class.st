@@ -713,14 +713,6 @@ CMSpatialEntity >> release [
 	^super release
 ]
 
-{ #category : 'initialize-release' }
-CMSpatialEntity >> reset [
-	"Purpose: resets inherited and specific attributes"
-	
-	super reset.
-	self initOccupants
-]
-
 { #category : 'utilities - collection' }
 CMSpatialEntity >> selectEntitiesWithMaxOf: aMagnitudeName amongEntities: aCollection verifying: aCondition [
 	"Selects the entities with the maximum value of a given magnitude and verifying a specified condition"

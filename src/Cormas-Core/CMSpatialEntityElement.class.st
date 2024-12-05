@@ -651,43 +651,38 @@ CMSpatialEntityElement >> wayTo: anotherCell [
 
 { #category : 'environment - sensing - space' }
 CMSpatialEntityElement >> wayTo: anotherCell constraint: aBlock [
-	"Purpose: gets the shortest way satisfying a constraint to anotherCell 
-Arguments: anotherCell = <SpatialEntityElement>
-			aBlock = <BlockClosure>
-Return value: <Collection(SpatialEntityElement)>
-Example: self wayTo: self spaceModel centralLocation constraint: [:c | c isClosed not]"
+	"Purpose: gets the shortest way satisfying a constraint to anotherCell"
 	
-	| distance newRound road step alreadyComputed newRound2 |
-	self spaceModel elementaryEntities do: [:c | c resetFlag].
-	road := OrderedCollection new.
-	alreadyComputed := Set new.
-	alreadyComputed add: anotherCell.
+	| cellDistanceDict distance newRound path step alreadyComputed |
+	
+	cellDistanceDict := Dictionary new.
+	
+	path := OrderedCollection new.
+	alreadyComputed := Set with: anotherCell.
 	distance := 0.
-	anotherCell flag: 0.
-	newRound := anotherCell neighbourhood select: [:c | aBlock value: c].
-	[newRound isEmpty not and: [(newRound includes: self) not]]
-		whileTrue:
-			[distance := distance + 1.
-			newRound do: [:c | c flag: distance].
-			alreadyComputed addAll: newRound.
-			newRound2 := Set new.
-			newRound
-				do:
-					[:c | 
-					newRound2
-						addAll:
-							(c neighbourhood
-								select:
-									[:cc | (aBlock value: cc) and: [(alreadyComputed includes: cc) not]])].
-			newRound := newRound2].	"S'il y a un chemin possible, on le reconstruit en remontant le gradient, a partir de l'origine"
-	(newRound includes: self)
-		ifTrue:
-			[step := self.
-			[step = anotherCell]
-				whileFalse:
-					[road add: step.
-					step := ((step neighbourhood select: [:c | c flag isNil not])
-						asSortedCollection: [:p :s | p flag < s flag]) first].
-			road add: step].
-	^road
+	cellDistanceDict at: anotherCell put: 0.
+	newRound := anotherCell neighbourhood select: [ :cell | aBlock value: cell ].
+	
+	"If there is a possible path, we reconstruct it by going up the gradient, starting from the origin"
+	[ newRound isNotEmpty and: [ (newRound includes: self) not ] ] whileTrue: [
+		distance := distance + 1.
+		newRound do: [ :cell | cellDistanceDict at: cell put: distance ].
+		alreadyComputed addAll: newRound.
+			
+		newRound := Set withAll: (newRound flatCollect: [ :cell |
+			cell neighbourhood select: [ :neighbour |
+				(aBlock value: neighbour) and: [ (alreadyComputed includes: neighbour) not ] ] ]) ].
+			
+	(newRound includes: self) ifTrue: [
+		step := self.
+		[ step = anotherCell ] whileFalse: [
+			path add: step.
+			
+			step := (step neighbourhood
+				select: [ :cell | cellDistanceDict includesKey: cell ])
+				detectMin: [ :cell | cellDistanceDict at: cell ] ].
+		
+		path add: step ].
+		
+	^path
 ]

@@ -21,6 +21,12 @@ TCMCommunicating >> channel: anObject [
 	channel := anObject
 ]
 
+{ #category : 'initialize - release' }
+TCMCommunicating >> clearMailbox [
+
+	self mailBox: OrderedCollection new.
+]
+
 { #category : 'initialization' }
 TCMCommunicating >> initialize [
 
@@ -76,14 +82,6 @@ Return value: <Msg>"
 TCMCommunicating >> receiveMessage: aMessage [
 	
 	self mailBox addLast: aMessage
-]
-
-{ #category : 'initialize - release' }
-TCMCommunicating >> reset [
-	"Purpose: resets inherited and specific attributes"
-	
-	super reset.
-	self mailBox: OrderedCollection new.
 ]
 
 { #category : 'control' }

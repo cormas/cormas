@@ -36,7 +36,6 @@ Class {
 	#classTraits : 'TCMRandom classTrait + TCMMath classTrait',
 	#instVars : [
 		'id',
-		'flag',
 		'cormasModel'
 	],
 	#classInstVars : [
@@ -403,18 +402,6 @@ CMEntity >> destroyed: aBoolean [
 	aBoolean ifTrue: [self release]
 ]
 
-{ #category : 'accessing' }
-CMEntity >> flag [
-	
-	^flag
-]
-
-{ #category : 'accessing' }
-CMEntity >> flag: aValue [
-	
-	flag := aValue
-]
-
 { #category : 'displaying' }
 CMEntity >> getInfoFor: aSelectorName [
 	"Returns a String according to the aSelectorName.
@@ -671,17 +658,4 @@ CMEntity >> printOn: aStream [
 		<< $-;
 		<< 'id: ';
 		<< self id asString
-]
-
-{ #category : 'initialize-release' }
-CMEntity >> reset [
-	"Purpose: to reset all the attributes that have to be cleaned by the beginning of a new simulation"
-	
-	self resetFlag
-]
-
-{ #category : 'initialize-release' }
-CMEntity >> resetFlag [
-	
-	flag := nil
 ]
