@@ -39,11 +39,7 @@ Class {
 	#instVars : [
 		'channel',
 		'entityGetters',
-		'spaceModel',
-		'creationDate',
-		'version',
-		'authors',
-		'comment'
+		'spaceModel'
 	],
 	#classInstVars : [
 		'cellClass',
@@ -65,40 +61,6 @@ CMAbstractModel class >> aboutThisModel [
 	Edit this file to document your model using [Microdown](https://github.com/pillar-markup/Microdown) - Pharo''s dialect of [Markdown](https://en.wikipedia.org/wiki/Markdown).'
 	
 
-]
-
-{ #category : 'description - primitives' }
-CMAbstractModel class >> addClassComment [
-	"Set the comment of the class"
-	
-	| noComment index classComment |
-	self comments = 'Not yet commented...' ifTrue: [^nil].	"self comment = '' ifTrue:[(Refactory.Browser.BrowserCommentTool codeModel: ((Refactory.Browser.CodeModel navigator: (Refactory.Browser.Navigator new)) setClass: self)) defaultClassComment]. "	"pour que les commentaires par defaut soient g√©n√©r√©s, avec les attributs etc... mais bon..."
-	self comment = '' ifTrue: [^nil].
-	noComment := 'has not been commented.  The comment should state the purpose of the class and also explain any unobvious aspects of the implementation.'.
-	classComment := self comment.
-	index := classComment indexOfSubCollection: noComment startingAt: 1.
-	index = 0
-		ifTrue:
-			[classComment = ''
-				ifTrue: [classComment := self comments]
-				ifFalse:
-					[index := classComment indexOfSubCollection: '***' startingAt: 1.
-					classComment := classComment
-						copyReplaceFrom: 1
-						to: index - 2
-						with: self comments withCRs]]
-		ifFalse:
-			[classComment := classComment
-				copyReplaceFrom: 1
-				to: index + noComment size
-				with: self comments , '\ ***' withCRs].
-	self comment: classComment	"replaceElementsFrom: start to: stop withByteEncodedString: replacement startingAt: repStart 
-startingAt: repStart replaceElementsIn: collection from: start to: stop
-copyReplaceFrom: start to: stop with: replacement
-containsSubstring: aString
-
-stDocumentation:
-comment:"
 ]
 
 { #category : 'managing classes' }
@@ -435,18 +397,6 @@ Example: self askRandom: (self theAnimals select:[:f | f energy > 10]) toDo: #re
 ]
 
 { #category : 'accessing' }
-CMAbstractModel >> authors [
-
-	^ authors
-]
-
-{ #category : 'accessing' }
-CMAbstractModel >> authors: anObject [
-
-	authors := anObject
-]
-
-{ #category : 'accessing' }
 CMAbstractModel >> cellAt: aRowIndex at: aColumnIndex [ 
 	
 	^ self spaceModel cellAt: aRowIndex at: aColumnIndex
@@ -484,18 +434,6 @@ CMAbstractModel >> collectEntity: anEntity [
 				with: (OrderedCollection withAll: collection).
 			collection := self theEntities: anEntity class].
 	collection add: anEntity
-]
-
-{ #category : 'accessing' }
-CMAbstractModel >> comment [
-
-	^ comment
-]
-
-{ #category : 'accessing' }
-CMAbstractModel >> comment: anObject [
-
-	comment := anObject
 ]
 
 { #category : 'instance creation - spatial grid' }
@@ -695,18 +633,6 @@ CMAbstractModel >> createN: aNumber randomlyLocatedEntitiesFrom: aCollectionOfCl
 			anAgent perform: aSymbol withArguments: aCollec.
 			newEntities add: anAgent ].
 	^ newEntities
-]
-
-{ #category : 'accessing' }
-CMAbstractModel >> creationDate [
-
-	^ creationDate
-]
-
-{ #category : 'accessing' }
-CMAbstractModel >> creationDate: anObject [
-
-	creationDate := anObject
 ]
 
 { #category : 'utilities - space metrics' }
@@ -1369,18 +1295,6 @@ CMAbstractModel >> upperRightCell [
 	"Purpose: return the cell located at the upper right location of the spatial grid"
 
 	^ self spaceModel upperRightLocation
-]
-
-{ #category : 'accessing' }
-CMAbstractModel >> version [
-
-	^ version
-]
-
-{ #category : 'accessing' }
-CMAbstractModel >> version: anObject [
-
-	version := anObject
 ]
 
 { #category : 'utilities - space metrics' }
