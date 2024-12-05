@@ -620,30 +620,6 @@ CMSpaceModel >> randomCell [
 	^ self selectRandomlyFrom: self elementaryEntities
 ]
 
-{ #category : 'accessing' }
-CMSpaceModel >> resetCompoundSpatialEntity: compoundClass [
-
-	(self spatialEntitiesAt: compoundClass name)
-		do: [: agg | agg components do:[: c | (c theAggregates includesKey: compoundClass name)
-				ifTrue: [c theAggregates at: compoundClass name put: nil]]].
-	self spatialEntitiesAt: compoundClass name put: OrderedCollection new.
-	self cormasModel resetEntities: compoundClass.
-	"self changed: #createRegularAggregatesImagesFor: with: compoundClass"
-]
-
-{ #category : 'private - init' }
-CMSpaceModel >> resetCompoundSpatialEntity: compoundClass andTheirComponents: componentClass [
-	
-	(self spatialEntitiesAt: componentClass name)
-		do: [:c | (c theAggregates includesKey: compoundClass name)
-				ifTrue: [
-					c theAggregates
-						at: compoundClass name
-						put: nil]].
-	self spatialEntitiesAt: compoundClass name put: OrderedCollection new.
-	self cormasModel resetEntities: compoundClass	"self changed: #createRegularAggregatesImagesFor: with: compoundClass"
-]
-
 { #category : 'private - init' }
 CMSpaceModel >> resetSpatialEntities [
 	

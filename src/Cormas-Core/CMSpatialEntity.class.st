@@ -44,7 +44,6 @@ Class {
 		'spaceModel',
 		'destroyed',
 		'theOccupants',
-		'theAggregates',
 		'neighbourhoodWithNils'
 	],
 	#category : 'Cormas-Core-Entities',
@@ -299,18 +298,6 @@ CMSpatialEntity >> interestingDetails [
 ]
 
 { #category : 'testing' }
-CMSpatialEntity >> isComponentOf: aSpatialEntity [ 
-"Purpose: tests if the receiver belongs to the components of a given compound spatial entity
-It will return 'false' if the receiver is a component of a component of aSpatialEntity (cf. belongsToAggregate:)
-Argument: aSpatialEntity = <SpatialEntitySet>
-Return value: <Boolean>
-Example: self isComponentOf: Forest"
-
-	^(self theAggregates keys includes: aSpatialEntity name)
-		and: [(self theAggregates at: aSpatialEntity name) isNil not]
-]
-
-{ #category : 'testing' }
 CMSpatialEntity >> isCrossedByArc: anArc [
 	"answer if the SpatialEntity is crossed by anArc"
 	
@@ -361,25 +348,6 @@ Argument: radius = <Integer>
 Return value: <Collection(SpatialEntity)>"
 	
 	^(self allLayersTo: radius) last
-]
-
-{ #category : 'environment - sensing - space' }
-CMSpatialEntity >> myAggregateOfClass: aClassOrClassName [
-
-	"Purpose: returns the instance of a given higher level spatialEntity the receiver belongs to.
-Argument:  aClassOrClassName can be an entity class or the name of an entity <ByteSymbol>
-Return value: <SpatialEntitySet | nil>
-Example: self myCSE: Forest
-Example: self myCSE: #Plot"
-
-	| aClassName |
-	aClassName := aClassOrClassName isSymbol
-		              ifTrue: [ aClassOrClassName ]
-		              ifFalse: [ aClassOrClassName name ].
-	^ ((self theAggregates includesKey: aClassName) not or: [ 
-		   (self theAggregates at: aClassName) isNil ])
-		  ifTrue: [ nil ]
-		  ifFalse: [ self theAggregates at: aClassName ]
 ]
 
 { #category : 'deprecated' }
@@ -750,7 +718,6 @@ CMSpatialEntity >> reset [
 	"Purpose: resets inherited and specific attributes"
 	
 	super reset.
-	theAggregates := nil.
 	self initOccupants
 ]
 
@@ -820,18 +787,6 @@ CMSpatialEntity >> spaceModel [
 CMSpatialEntity >> spaceModel: aSpaceModel [
 	
 	spaceModel := aSpaceModel
-]
-
-{ #category : 'accessing' }
-CMSpatialEntity >> theAggregates [
-	
-	^ theAggregates ifNil: [theAggregates := Dictionary new]
-]
-
-{ #category : 'accessing' }
-CMSpatialEntity >> theAggregates: aDictionary [
-	
-	theAggregates := aDictionary
 ]
 
 { #category : 'accessing' }
