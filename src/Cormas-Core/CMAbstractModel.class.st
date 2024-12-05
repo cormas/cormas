@@ -43,7 +43,7 @@ Class {
 	],
 	#classInstVars : [
 		'cellClass',
-		'socialClasses'
+		'agentClasses'
 	],
 	#category : 'Cormas-Core-Kernel',
 	#package : 'Cormas-Core',
@@ -59,6 +59,23 @@ CMAbstractModel class >> aboutThisModel [
 	Edit this file to document your model using [Microdown](https://github.com/pillar-markup/Microdown) - Pharo''s dialect of [Markdown](https://en.wikipedia.org/wiki/Markdown).'
 	
 
+]
+
+{ #category : 'managing classes' }
+CMAbstractModel class >> agentClasses [
+	" Answer a <Collection> of social classes of the model. Already configured in #initializeWithoutVS "
+	" self allClassesInPackage select: [ :e | e inheritsFrom: CMAgent ] "
+
+	^ agentClasses
+		ifNil: [ 
+			self initialize.
+			agentClasses ]
+]
+
+{ #category : 'accessing' }
+CMAbstractModel class >> agentClasses: aCollection [
+
+	agentClasses := aCollection
 ]
 
 { #category : 'managing classes' }
@@ -129,7 +146,7 @@ CMAbstractModel class >> initializeModelClasses [
 		detect: [ :each | each inheritsFrom: CMSpatialEntityElement ]
 		ifNone: [ nil ]).
 	
-	self socialClasses: (classes select: [ : each | each inheritsFrom: CMAgent ]).
+	self agentClasses: (classes select: [ : each | each inheritsFrom: CMAgent ]).
 ]
 
 { #category : 'initialization' }
@@ -172,23 +189,6 @@ CMAbstractModel class >> parameters [
 							setterSelector: (slot name, ':')
 							receiver: receiverClass ] ]
 				ifFalse: [ OrderedCollection new ] ] ]
-]
-
-{ #category : 'managing classes' }
-CMAbstractModel class >> socialClasses [
-	" Answer a <Collection> of social classes of the model. Already configured in #initializeWithoutVS "
-	" self allClassesInPackage select: [ :e | e inheritsFrom: CMAgent ] "
-
-	^ socialClasses
-		ifNil: [ 
-			self initialize.
-			socialClasses ]
-]
-
-{ #category : 'accessing' }
-CMAbstractModel class >> socialClasses: aCollection [
-
-	socialClasses := aCollection
 ]
 
 { #category : 'accessing - entities' }
@@ -655,7 +655,7 @@ CMAbstractModel >> initEntities [
 	"Initialize all the Entity classes of the model"
 	
 	"Remove all the Agents from previous simulation"
-	self class socialClasses do: [ :aClass | 
+	self class agentClasses do: [ :aClass | 
 		self initEntitiesForSocialClass: aClass ].
 	
 	self spaceModel ifNotNil: [ 
@@ -730,7 +730,7 @@ CMAbstractModel >> initializeWithoutParameters [
 	super initialize.
 	self randomNumberGenerator: PMFishmanMooreRandomGenerator new.
 	
-	self class socialClasses ifNotEmpty: [ self initializeChannel ].
+	self class agentClasses ifNotEmpty: [ self initializeChannel ].
 	
 	self initializeEntityGetters.
 
@@ -1109,7 +1109,7 @@ Example: See the models Conway http://cormas.cirad.fr/en/applica/conway.htm or F
 CMAbstractModel >> theAgents [
 	"Returns a collection of all the agents (social entities) of the model"
 
-	^ self class socialClasses flatCollect: [ :eachClass |
+	^ self class agentClasses flatCollect: [ :eachClass |
 		self theEntities: eachClass ].
 ]
 
