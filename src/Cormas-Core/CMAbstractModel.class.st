@@ -189,6 +189,13 @@ CMAbstractModel class >> parameters [
 ]
 
 { #category : 'accessing - entities' }
+CMAbstractModel >> agents [
+
+	^ self class agentClasses flatCollect: [ :eachClass |
+		self entitiesOfClass: eachClass ].
+]
+
+{ #category : 'accessing - entities' }
 CMAbstractModel >> allTheEntities [
 	"Returns a collection of all the instances of the Entity (and sub classes) collected by cormasModel"
 	
@@ -313,6 +320,12 @@ Example: self askRandom: (self theAnimals select:[:f | f energy > 10]) toDo: #re
 CMAbstractModel >> cellAt: aRowIndex at: aColumnIndex [ 
 	
 	^ self spaceModel cellAt: aRowIndex at: aColumnIndex
+]
+
+{ #category : 'accessing - entities' }
+CMAbstractModel >> cells [
+	
+	^ self entitiesOfClass: self class cellClass
 ]
 
 { #category : 'accessing - entities' }
@@ -817,7 +830,7 @@ CMAbstractModel >> pickCellAt: aPointLocation [
 	"Purpose: return a spatialEntityElement (aCell) picked randomly from the spatial grid.
 	Example: self pickCell"
 
-	^ self theCells detect: [ : cellEntity | cellEntity coordinates = aPointLocation ]
+	^ self cells detect: [ : cellEntity | cellEntity coordinates = aPointLocation ]
 ]
 
 { #category : 'accessing - entities' }
@@ -825,7 +838,7 @@ CMAbstractModel >> pickRandomCell [
 	"Purpose: return a spatialEntityElement (aCell) picked randomly from the spatial grid.
 	Example: self pickCell"
 
-	^ self selectRandomlyFrom: self theCells
+	^ self selectRandomlyFrom: self cells
 ]
 
 { #category : 'accessing - entities' }
@@ -833,7 +846,7 @@ CMAbstractModel >> pickRandomCellConstrainedBy: aBlock [
 	"Purpose: return a random cell of the grid. The cell verifies the block condition.
 	Example:  self pickCellConstrainedBy: [:cell | state=#land] or self pickCellConstrainedBy: [: cell | cell energy > 1] "
 
-	^ self selectRandomlyFrom: (self theCells asArray select: [ :cell | aBlock value: cell ])
+	^ self selectRandomlyFrom: (self cells asArray select: [ :cell | aBlock value: cell ])
 ]
 
 { #category : 'accessing - entities' }
@@ -847,7 +860,7 @@ CMAbstractModel >> pickRandomCellWithoutAnyOccupantsOfClass: aClass [
 CMAbstractModel >> pickRandomCells: anInteger [
 	"Return a collection of spatialEntityElements (some Cells) picked randomly from the spatial grid (without replacement)"
 
-	^ self selectRandomlyFrom: self theCells size: anInteger
+	^ self selectRandomlyFrom: self cells size: anInteger
 ]
 
 { #category : 'accessing - entities' }
@@ -910,7 +923,7 @@ CMAbstractModel >> release [
 	self spaceModel: nil.
 	self channel: nil.
 	
-	self theCells do: #initOccupants
+	self cells do: #initOccupants
 ]
 
 { #category : 'referencing entities' }
@@ -1069,7 +1082,7 @@ CMAbstractModel >> spaceModelEntities [
 CMAbstractModel >> stepAsynchronouslyCA: t [
 	"Purpose: To active the transition function and to update asynchronously a cellular automata"
 	
-	self theCells
+	self cells
 		do:
 			[:a | 
 			a
@@ -1110,29 +1123,8 @@ CMAbstractModel >> stepSynchronouslyCA: t [
 	"Purpose: To active the transition function and to update synchronously a cellular automata
 Example: See the models Conway http://cormas.cirad.fr/en/applica/conway.htm or Fire http://cormas.cirad.fr/en/applica/fireautomata.htm"
 	
-	self theCells do: [:a | a newState].
-	self theCells do: [:a | a updateState]
-]
-
-{ #category : 'accessing - entities' }
-CMAbstractModel >> theAgents [
-
-	^ self class agentClasses flatCollect: [ :eachClass |
-		self entitiesOfClass: eachClass ].
-]
-
-{ #category : 'accessing - entities' }
-CMAbstractModel >> theCells [
-	
-	^ self entitiesOfClass: self class cellClass
-]
-
-{ #category : 'accessing - entities' }
-CMAbstractModel >> theCells: aSet [
-	
-	^self
-		setTheEntity: self class cellClass
-		with: aSet
+	self cells do: [:a | a newState].
+	self cells do: [:a | a updateState]
 ]
 
 { #category : 'accessing - entities' }

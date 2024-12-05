@@ -69,7 +69,7 @@ CMSimulationTest >> testRunStep [
 	| cellStateMatrix expectedCellStateMatrix agent1 agent2 |
 	simulation runStep.
 	
-	cellStateMatrix := simulation cormasModel theCells
+	cellStateMatrix := simulation cormasModel cells
 		collect: [ :each | each state = #alive ifTrue: [ 1 ] ifFalse: [ 0 ] ].
 		
 	expectedCellStateMatrix := simulation cormasModel invertedCellMatrix flattened asOrderedCollection.

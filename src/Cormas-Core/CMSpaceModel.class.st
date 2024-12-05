@@ -283,11 +283,11 @@ CMSpaceModel >> dominance: attribute [
 	| numberCells sum n pi classes |
 	numberCells := self numberOfRows * self numberOfColumns.
 	sum := 0.
-	classes := (self cormasModel theCells collect: [ :a | a perform: attribute ]) asSet.
+	classes := (self cormasModel cells collect: [ :a | a perform: attribute ]) asSet.
 	n := classes size.
 	classes
 		do: [ :i | 
-			pi := (self cormasModel theCells select: [ :a | (a perform: attribute) = i ]) size
+			pi := (self cormasModel cells select: [ :a | (a perform: attribute) = i ]) size
 				/ numberCells.
 			sum := sum + (pi * pi ln) ].
 	^ n ln + sum
@@ -302,7 +302,7 @@ CMSpaceModel >> edgeDensity: aClass [
 	(self cormasModel
 		perform: (self cormasModel getterForEntityClass: aClass) asSymbol)
 		do: [ :a | size := size + a surround size ].
-	^ size / self cormasModel theCells size
+	^ size / self cormasModel cells size
 ]
 
 { #category : 'landscape indices' }
@@ -489,7 +489,7 @@ CMSpaceModel >> nbCount: anIntegerOrSymbol [
 CMSpaceModel >> nbDistinctValuesOf: anAttribute [
 	"Return the number of different values for anAttribute"
 
-	^ (self cormasModel theCells collect: [ :a | a perform: anAttribute ]) asSet size
+	^ (self cormasModel cells collect: [ :a | a perform: anAttribute ]) asSet size
 ]
 
 { #category : 'private - accessing' }
@@ -510,7 +510,7 @@ CMSpaceModel >> nearestNeighbourProbaAttribute: anAttribute state1: x1 state2: x
 	"return the data (a number) to be recorded"
 	
 	| c1 c2 |
-	c1 := self cormasModel theCells select: [:a | (a perform: anAttribute) = x1].
+	c1 := self cormasModel cells select: [:a | (a perform: anAttribute) = x1].
 	c2 := c1 select: [:a | a neighbourhood anySatisfy: [:b | (a perform: anAttribute) = x2 ] ].
 	^ c2 size / c1 size
 ]

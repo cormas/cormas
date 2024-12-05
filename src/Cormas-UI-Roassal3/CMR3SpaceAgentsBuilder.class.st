@@ -141,7 +141,7 @@ CMR3SpaceAgentsBuilder >> moveAgentShape: anAgentShape [
 { #category : 'accessing' }
 CMR3SpaceAgentsBuilder >> objects [
 
-	^ diagramBuilder cormasModel theAgents select: [ :each | each isSituated ]
+	^ diagramBuilder cormasModel agents select: [ :each | each isSituated ]
 ]
 
 { #category : 'hooks' }
@@ -184,5 +184,5 @@ CMR3SpaceAgentsBuilder >> updateShape: aShape [
 
 	self moveAgentShape: aShape.
 	
-	Transcript show: diagramBuilder cormasModel theAgents size; cr.
+	Transcript show: diagramBuilder cormasModel agents size; cr.
 ]

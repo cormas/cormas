@@ -18,6 +18,17 @@ CMAbstractModelTest >> sampleModelNameWithoutPrefix [
 	^ 'SampleModel'
 ]
 
+{ #category : 'tests-accessing-entities' }
+CMAbstractModelTest >> testAgents [
+
+	| agents |
+	agents := model agents.
+	self assert: agents size equals: 2.
+	
+	agents do: [ :agent |
+		self assert: (agent isKindOf: CMMockAnimal) ]
+]
+
 { #category : 'tests' }
 CMAbstractModelTest >> testCellAtAt [
 
@@ -36,6 +47,20 @@ CMAbstractModelTest >> testCellAtAt [
 CMAbstractModelTest >> testCellClass [
 
 	self assert: CMMockModel cellClass equals: CMMockCell
+]
+
+{ #category : 'tests-accessing-entities' }
+CMAbstractModelTest >> testCells [
+
+	| cells |
+	cells := model cells.
+	self assert: cells size equals: 16.
+	
+	cells do: [ :cell |
+		self assert: (cell isKindOf: CMMockCell) ].
+	
+	1 to: 16 do: [ :i |
+		self assert: (cells at: i) id equals: i ]
 ]
 
 { #category : 'tests-accessing-entities' }
@@ -275,17 +300,6 @@ CMAbstractModelTest >> testShortestDistanceToCellsVerifying [
 		do: [ :cell | 
 			self assert: (cell shortestDistanceToCellsVerifying: [ :c | c state = #dead | (c state = #alive) ])
 				equals: 1 ]
-]
-
-{ #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testTheAgents [
-
-	| agents |
-	agents := model theAgents.
-	self assert: agents size equals: 2.
-	
-	agents do: [ :agent |
-		self assert: (agent isKindOf: CMMockAnimal) ]
 ]
 
 { #category : 'tests-accessing-entities' }

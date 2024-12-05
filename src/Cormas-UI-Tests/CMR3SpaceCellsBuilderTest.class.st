@@ -32,8 +32,8 @@ CMR3SpaceCellsBuilderTest >> testShapeForIndex [
 
 	| cell shape |
 	
-	cell := model theCells first.
-	shape := builder shapeFor: model theCells first index: 1.
+	cell := model cells first.
+	shape := builder shapeFor: model cells first index: 1.
 	
 	self assert: shape isShape.
 	self assert: shape model equals: cell.
@@ -45,8 +45,8 @@ CMR3SpaceCellsBuilderTest >> testShapeForIndex [
 CMR3SpaceCellsBuilderTest >> testShapesFor [
 
 	| shapes |
-	shapes := builder shapesFor: model theCells.
+	shapes := builder shapesFor: model cells.
 	
-	self assert: shapes size equals: model theCells size.
+	self assert: shapes size equals: model cells size.
 	self assert: shapes anyOne isShape.
 ]

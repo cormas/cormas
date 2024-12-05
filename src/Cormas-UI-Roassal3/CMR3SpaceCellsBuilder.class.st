@@ -34,7 +34,7 @@ CMR3SpaceCellsBuilder >> masterShape: aShape [
 { #category : 'accessing' }
 CMR3SpaceCellsBuilder >> objects [
 
-	^ diagramBuilder cormasModel theCells
+	^ diagramBuilder cormasModel cells
 ]
 
 { #category : 'enumerating' }

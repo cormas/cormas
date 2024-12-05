@@ -58,7 +58,7 @@ CMR3SpaceDiagramBuilderTest >> testRandomSeedCells [
 	| expectedStates actualStates |
 	
 	expectedStates := fixture initialCellStates.
-	actualStates := model theCells collect: [ :cell | cell state ].
+	actualStates := model cells collect: [ :cell | cell state ].
 	
 	self assert: actualStates equals: expectedStates.
 ]

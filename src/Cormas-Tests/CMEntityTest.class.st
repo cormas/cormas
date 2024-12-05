@@ -41,7 +41,7 @@ CMEntityTest >> testCormasModel [
 	model
 		createN: 5
 		randomlyLocatedAloneEntities: CMMockCow.
-	model theAgents do: [ :agent | self assert: agent cormasModel identicalTo: model ]
+	model agents do: [ :agent | self assert: agent cormasModel identicalTo: model ]
 ]
 
 { #category : 'tests' }

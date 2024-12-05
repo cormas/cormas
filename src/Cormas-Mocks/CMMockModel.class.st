@@ -142,6 +142,13 @@ CMMockModel >> cellMatrix [
 		(1 1 1 0))
 ]
 
+{ #category : 'accessing' }
+CMMockModel >> cells [
+
+	<getterFor: #CMMockCell>
+	^ theCells
+]
+
 { #category : 'init' }
 CMMockModel >> init [ 
 	<init>
@@ -159,13 +166,13 @@ CMMockModel >> init [
 { #category : 'init' }
 CMMockModel >> initAlive [
 	<init>
-	self theCells do: #initAlive
+	self cells do: #initAlive
 ]
 
 { #category : 'init' }
 CMMockModel >> initDead [
 	<init>
-	self theCells do: #initDead
+	self cells do: #initDead
 ]
 
 { #category : 'init' }
@@ -198,7 +205,7 @@ CMMockModel >> initFixed [
 { #category : 'init' }
 CMMockModel >> initRandom [
 	<init>
-	self theCells do: #initRandom
+	self cells do: #initRandom
 ]
 
 { #category : 'initialization' }
@@ -235,14 +242,14 @@ CMMockModel >> invertedCellMatrix [
 CMMockModel >> numberOfAliveCells [
 
 	<probeNamed: 'Number of alive cells' color: '0000FF'>
-	^ (self theCells select: [ :cell | cell isAliveCell ]) size
+	^ (self cells select: [ :cell | cell isAliveCell ]) size
 ]
 
 { #category : 'probes' }
 CMMockModel >> numberOfDeadCells [
 
 	<probeNamed: 'Number of dead cells' color: 'FF0000'>
-	^ (self theCells select: [ :cell | cell isDeadCell ]) size
+	^ (self cells select: [ :cell | cell isDeadCell ]) size
 ]
 
 { #category : 'control' }
@@ -250,13 +257,6 @@ CMMockModel >> step: t [
 	<control>
 	self askRandom: CMMockAnimal toDo: #step.
 	self stepSynchronouslyCA: t.
-]
-
-{ #category : 'accessing' }
-CMMockModel >> theCells [
-
-	<getterFor: #CMMockCell>
-	^ theCells
 ]
 
 { #category : 'accessing' }
