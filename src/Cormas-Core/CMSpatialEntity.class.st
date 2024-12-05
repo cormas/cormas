@@ -298,13 +298,6 @@ CMSpatialEntity >> interestingDetails [
 ]
 
 { #category : 'testing' }
-CMSpatialEntity >> isCrossedByArc: anArc [
-	"answer if the SpatialEntity is crossed by anArc"
-	
-	self subclassResponsibility
-]
-
-{ #category : 'testing' }
 CMSpatialEntity >> isDead [
 	" See superimplementor's comment "
 
@@ -348,37 +341,6 @@ Argument: radius = <Integer>
 Return value: <Collection(SpatialEntity)>"
 	
 	^(self allLayersTo: radius) last
-]
-
-{ #category : 'deprecated' }
-CMSpatialEntity >> myOccupantAt: aClassName [
-
-	self
-		deprecated: 'Use #occupantsAt: instead'
-		transformWith: '`@rec myOccupantAt: `@arg' -> '`@arg occupantsAt: `@arg'.
-	
-	^self occupantsAt: aClassName
-]
-
-{ #category : 'deprecated' }
-CMSpatialEntity >> myOccupants: aClassName [
-	
-	self
-		deprecated: 'Use #occupantsAt: instead'
-		transformWith: '`@rec myOccupants: `@arg' -> '`@arg occupantsAt: `@arg'.
-	
-	^self occupantsAt: aClassName
-]
-
-{ #category : 'environment - sensing - space' }
-CMSpatialEntity >> nciAbout: aCSE [
-	"Purpose: returns the proportion of neighbours belonging to a given compound spatial entity, a kind of neighbourhood coherence index
-Argument: aCSE = <SpatialEntitySet>
-Return value: <Fraction>
-Example: self nciAbout: (self myCSE: #Forest)"
-	
-	^(self neighbourhood select: [:c | aCSE components includes: c]) size
-		/ self neighbourhood size
 ]
 
 { #category : 'environment - picking - space' }
