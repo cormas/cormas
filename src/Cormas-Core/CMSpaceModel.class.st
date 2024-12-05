@@ -28,11 +28,9 @@ Class {
 	#traits : 'TCMRandom',
 	#classTraits : 'TCMRandom classTrait',
 	#instVars : [
-		'elementaryEntitiesDefaultPovs',
 		'cormasModel',
 		'spatialEntities',
 		'gridCellShape',
-		'autoResizeBounds',
 		'nbConfiguration',
 		'gridSize',
 		'isClosedEnvironment',
@@ -85,16 +83,6 @@ CMSpaceModel >> allTheEntities: aClass [
 CMSpaceModel >> allTheSituatedEntities: aClass [
 	
 	^self cormasModel allTheSituatedEntities: aClass
-]
-
-{ #category : 'accessing' }
-CMSpaceModel >> autoResizeBounds [
-	^ autoResizeBounds ifNil: [ autoResizeBounds := true ]
-]
-
-{ #category : 'accessing' }
-CMSpaceModel >> autoResizeBounds: anObject [
-	autoResizeBounds := anObject
 ]
 
 { #category : 'ESE (regular) - special locations' }
@@ -343,19 +331,6 @@ CMSpaceModel >> elementaryEntities: x [
 		at: self cormasModel class cellClass name
 		put: x	"(self dependents notNil and: [line * column > x size])
 		ifTrue: [self vue mainInterface updateWindowName]"
-]
-
-{ #category : 'accessing' }
-CMSpaceModel >> elementaryEntitiesDefaultPovs [
-	
-	^elementaryEntitiesDefaultPovs
-		ifNil: [elementaryEntitiesDefaultPovs := OrderedCollection new]
-]
-
-{ #category : 'accessing' }
-CMSpaceModel >> elementaryEntitiesDefaultPovs: anObject [
-	
-	elementaryEntitiesDefaultPovs := anObject
 ]
 
 { #category : 'landscape indices' }
