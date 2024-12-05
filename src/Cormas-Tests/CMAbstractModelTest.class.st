@@ -277,13 +277,6 @@ CMAbstractModelTest >> testShortestDistanceToCellsVerifying [
 				equals: 1 ]
 ]
 
-{ #category : 'tests' }
-CMAbstractModelTest >> testSpacialClasses [
-	self
-		assert: CMMockModel spatialClasses
-		equals: (OrderedCollection with: CMMockCell)
-]
-
 { #category : 'tests-accessing-entities' }
 CMAbstractModelTest >> testTheAgents [
 

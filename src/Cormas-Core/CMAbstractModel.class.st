@@ -43,7 +43,6 @@ Class {
 	],
 	#classInstVars : [
 		'cellClass',
-		'spatialClasses',
 		'socialClasses',
 		'passiveClasses'
 	],
@@ -116,17 +115,7 @@ CMAbstractModel class >> cellClass: aCMSpatialEntityCellClass [
 { #category : 'instance creation' }
 CMAbstractModel class >> initialize [
 
-	self initializeCellClass.
 	self initializeModelClasses.
-]
-
-{ #category : 'instance creation' }
-CMAbstractModel class >> initializeCellClass [
-	" Private - Detect and store the Cell class of the model into cellClass "
-	
-	self cellClass: (self allEntityClasses
-		detect: [ :each | each inheritsFrom: CMSpatialEntityElement ]
-		ifNone: [ nil ])
 ]
 
 { #category : 'instance creation' }
@@ -135,8 +124,12 @@ CMAbstractModel class >> initializeModelClasses [
 
 	| classes |
 	
-	classes := self package classes.
-	self spatialClasses: (classes select: [ : each | each inheritsFrom: CMSpatialEntity ]).
+	classes := self allEntityClasses.
+	
+	self cellClass: (classes
+		detect: [ :each | each inheritsFrom: CMSpatialEntityElement ]
+		ifNone: [ nil ]).
+	
 	self socialClasses: (classes select: [ : each | each inheritsFrom: CMAgent ]).
 	self passiveClasses: (classes select: [ : each | (each inheritsFrom: CMPassiveObject) or: [ each inheritsFrom: CMMessage ]])
 ]
@@ -226,18 +219,6 @@ CMAbstractModel class >> socialClasses [
 CMAbstractModel class >> socialClasses: aCollection [
 
 	socialClasses := aCollection
-]
-
-{ #category : 'managing classes' }
-CMAbstractModel class >> spatialClasses [
-	
-	self cellClass ifNil: [ ^ #() ].
-	^ OrderedCollection with: self cellClass.
-]
-
-{ #category : 'accessing' }
-CMAbstractModel class >> spatialClasses: aCollection [
-	spatialClasses := aCollection
 ]
 
 { #category : 'accessing - entities' }
@@ -705,13 +686,6 @@ CMAbstractModel >> getterForEntityClass: aClass [
 		ifAbsent: [ self error: 'Getter for class #', aClass name, ' was not found in the dictionary' ].
 ]
 
-{ #category : 'default values' }
-CMAbstractModel >> hasSpatialClasses [
-	" Answer <true> if the receiver's model has a Simple Cell or Cellular Automaton already defined "
-
-	^ self class spatialClasses notEmpty
-]
-
 { #category : 'init entities' }
 CMAbstractModel >> initEntities [
 
@@ -1033,8 +1007,7 @@ CMAbstractModel >> resetEntities: aClass [
 	entities := self theEntities: aClass.
 	entities reverseDo: [:anEntity | anEntity delete].
 	aClass currentId: 0.
-	aClass isAbstract ifTrue: [^OrderedCollection new: 0].
-	^ entities removeAll
+	entities removeAll
 ]
 
 { #category : 'accessing - entities' }

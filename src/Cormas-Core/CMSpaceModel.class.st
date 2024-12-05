@@ -598,13 +598,14 @@ CMSpaceModel >> randomCell [
 { #category : 'private - init' }
 CMSpaceModel >> resetSpatialEntities [
 	
-	| newColl |
+	| cellClass |
 	self spatialEntities: Dictionary new. 
-	self cormasModel ifNil: [ ^nil ].
-	self cormasModel class spatialClasses do: [ : aSpatialClass | 
-			newColl := self cormasModel resetEntities: aSpatialClass.
-			self spatialEntitiesAt: aSpatialClass name 	put: newColl ].
-	"self changed: #removeAllFigures"	"all the figures of the spaceInterfaces have to be deleted"
+	self cormasModel ifNil: [ ^ self ].
+	
+	cellClass := self cormasModel class cellClass.
+	
+	self cormasModel resetEntities: cellClass.
+	self spatialEntitiesAt: cellClass name put: OrderedCollection new.
 ]
 
 { #category : 'accessing' }
@@ -617,13 +618,6 @@ CMSpaceModel >> setBoundaryDirectionsFor: aCMSpatialEntity [
 { #category : 'accessing' }
 CMSpaceModel >> spaceModel [
 	^ self
-]
-
-{ #category : 'accessing' }
-CMSpaceModel >> spatialClasses [
-	"return a collection of spatial classes"
-
-	^ self cormasModel class spatialClasses
 ]
 
 { #category : 'private - accessing' }

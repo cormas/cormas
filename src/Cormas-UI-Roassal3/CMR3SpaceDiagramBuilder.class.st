@@ -34,10 +34,7 @@ CMR3SpaceDiagramBuilder class >> example [
 CMR3SpaceDiagramBuilder >> activeSpatialEntityPov [
 	" Answer a <Symbol> representing the selector of the active PoV which is a Spatial Entity "
 	
-	| spatialEntityClass |
-	
-	spatialEntityClass := cormasModel class spatialClasses first.
-	^ spatialEntityClass activePovSelector
+	^ cormasModel class cellClass activePovSelector
 ]
 
 { #category : 'accessing' }
