@@ -20,6 +20,12 @@ Class {
 	#tag : 'Entities'
 }
 
+{ #category : 'testing' }
+CMLocatedObject class >> isLocated [
+
+	^ true
+]
+
 { #category : 'displaying' }
 CMLocatedObject >> center [
 
@@ -46,12 +52,6 @@ Return value: <Integer>"
 		ifTrue: [^self patch distanceTo: aSpatialEntityOrSituatedEntity patch].
 	aSpatialEntityOrSituatedEntity isSpatialEntity
 		ifTrue: [^self patch distanceTo: aSpatialEntityOrSituatedEntity]
-]
-
-{ #category : 'testing' }
-CMLocatedObject >> isLocatedEntity [
-	
-	^true
 ]
 
 { #category : 'moving' }

@@ -11,9 +11,9 @@ Trait {
 }
 
 { #category : 'testing' }
-TCMLocated classSide >> isSituatedClass [
-	
-	^true
+TCMLocated classSide >> isLocated [
+
+	^ true
 ]
 
 { #category : 'displaying' }
@@ -181,12 +181,6 @@ TCMLocated >> interestingDetails [
 	^ super interestingDetails , { 
 		'Coordinates ' -> (self coordinates asString)
 		}
-]
-
-{ #category : 'testing' }
-TCMLocated >> isLocatedEntity [
-	
-	^ true
 ]
 
 { #category : 'testing' }

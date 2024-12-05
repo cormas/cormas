@@ -148,12 +148,6 @@ CMAbstractModel class >> isCormasModelClass [
 	^ true
 ]
 
-{ #category : 'testing' }
-CMAbstractModel class >> isSituatedClass [
-	
-	^false
-]
-
 { #category : 'instance creation' }
 CMAbstractModel class >> newWithoutParameters [
 
@@ -704,7 +698,7 @@ CMAbstractModel >> initEntitiesForPassiveClass: aClass [
 { #category : 'accessing' }
 CMAbstractModel >> initEntitiesForSocialClass: aClass [
 
-	(aClass isAbstract not and: [ aClass new isLocatedEntity ]) ifTrue: [ 
+	(aClass isAbstract not and: [ aClass isLocated ]) ifTrue: [ 
 		(self theEntities: aClass) ifNotNil: [ 
 			(self theEntities: aClass) do: [ :each | each leave ] ] ].
 		

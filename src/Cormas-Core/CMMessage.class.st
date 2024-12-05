@@ -84,12 +84,6 @@ CMMessage class >> from: aSenderAgent to: aReceiverAgent topic: aSymbol content:
 		yourself
 ]
 
-{ #category : 'testing' }
-CMMessage class >> isSituatedClass [
-	
-	^ false
-]
-
 { #category : 'activityEditor' }
 CMMessage class >> superClassesUntil: aSuperClass [
 	"Return the super classes of the class sender until aSuperClass"

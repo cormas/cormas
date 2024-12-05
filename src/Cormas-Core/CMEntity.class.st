@@ -138,6 +138,12 @@ CMEntity class >> isAbstract [
 ]
 
 { #category : 'testing' }
+CMEntity class >> isLocated [
+
+	^ false
+]
+
+{ #category : 'testing' }
 CMEntity class >> isSpatialClass [
 	
 	^false
@@ -482,12 +488,6 @@ CMEntity >> isCommunicatingEntity [
 CMEntity >> isCormasEntity [
 
 	^ true
-]
-
-{ #category : 'testing' }
-CMEntity >> isLocatedEntity [
-	
-	^false
 ]
 
 { #category : 'testing' }
