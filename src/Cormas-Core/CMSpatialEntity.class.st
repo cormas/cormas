@@ -43,8 +43,6 @@ Class {
 	#instVars : [
 		'spaceModel',
 		'destroyed',
-		'outline',
-		'edge',
 		'theOccupants',
 		'theAggregates',
 		'neighbourhoodWithNils'
@@ -211,18 +209,6 @@ Argument: anotherSpatialEntity = <SpatialEntity>
 Return value: <Integer>"
 	
 	self subclassResponsibility
-]
-
-{ #category : 'accessing' }
-CMSpatialEntity >> edge [
-	
-	^edge
-]
-
-{ #category : 'accessing' }
-CMSpatialEntity >> edge: anObject [
-	
-	edge := anObject
 ]
 
 { #category : 'environment - distance' }
@@ -684,18 +670,6 @@ Return value: <Collection(AgentLocation & ObjectLocation)>"
 	^ self occupantsOfClass: aClass
 ]
 
-{ #category : 'accessing' }
-CMSpatialEntity >> outline [
-	
-	^outline
-]
-
-{ #category : 'accessing' }
-CMSpatialEntity >> outline: a [
-	
-	outline := a
-]
-
 { #category : 'deprecated' }
 CMSpatialEntity >> peripherieRayon: aNumber [
 	
@@ -793,12 +767,6 @@ CMSpatialEntity >> reset [
 	super reset.
 	theAggregates := nil.
 	self initOccupants
-]
-
-{ #category : 'environment - sensing - space' }
-CMSpatialEntity >> select: aPoint [
-	
-	^ self outline intersects: (aPoint extent: 1)
 ]
 
 { #category : 'utilities - collection' }

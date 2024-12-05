@@ -113,22 +113,6 @@ CMSpaceNeighbourhood >> gridCellShapeType [
 	^ #regular
 ]
 
-{ #category : 'accessing' }
-CMSpaceNeighbourhood >> initEdges [
-
-	self isClosedEnvironment
-		ifFalse: [ ^ self ]
-		ifTrue: [ 
-			self gridCellShape = #irregular ifTrue: [
-				"not working"
-				^ self ].
-			
-			self elementaryEntities do: [ : p | 
-				p neighbourhood size = self cardinal
-					ifTrue: [ p edge: false ]
-					ifFalse: [ p edge: true ] ] ]
-]
-
 { #category : 'initialization' }
 CMSpaceNeighbourhood >> initializeNeighbourhood [
 	" Private - Initialize aSpaceModel neighbourhood values based on the receiver "
@@ -137,7 +121,6 @@ CMSpaceNeighbourhood >> initializeNeighbourhood [
 		(self elementaryEntitiesAt: k) ifNotNil: [ 
 			self initializeOrderedNeighbourhood: k ] ].
 	self elementaryEntities do: #initNeighbourhood.
-	self initEdges.
 ]
 
 { #category : 'initialization' }
