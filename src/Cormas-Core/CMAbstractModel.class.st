@@ -194,7 +194,7 @@ CMAbstractModel >> allTheEntities [
 	
 	| coll |
 	coll := OrderedCollection new.
-	self class allEntityClasses do: [:cl | coll addAll: (self theEntities: cl)].
+	self class allEntityClasses do: [:cl | coll addAll: (self entitiesOfClass: cl)].
 	^coll
 ]
 
@@ -207,7 +207,7 @@ CMAbstractModel >> allTheEntities: aClass [
 	
 	| coll |
 	coll := OrderedCollection new.
-	aClass withAllSubclasses do: [:cl | cl isAbstract ifFalse: [coll addAll: (self theEntities: cl)]].
+	aClass withAllSubclasses do: [:cl | cl isAbstract ifFalse: [coll addAll: (self entitiesOfClass: cl)]].
 	^ coll
 ]
 
@@ -282,7 +282,7 @@ Example: (self allTheSituatedEntities: Forager) is returning all the instances o
 			[:cl | 
 			cl isAbstract
 				ifFalse:
-					[coll addAll: ((self theEntities: cl) select: [:e | e isSituated])]].
+					[coll addAll: ((self entitiesOfClass: cl) select: [:e | e isSituated])]].
 	^coll
 ]
 
@@ -339,13 +339,13 @@ CMAbstractModel >> collectEntity: anEntity [
 	"adds anEntity to the collection called theXXXs (where XXX is equal to the class name)"
 	
 	| collection |
-	collection := self theEntities: anEntity class.
+	collection := self entitiesOfClass: anEntity class.
 	collection isArray
 		ifTrue:
 			[self
 				setTheEntity: anEntity class
 				with: (OrderedCollection withAll: collection).
-			collection := self theEntities: anEntity class].
+			collection := self entitiesOfClass: anEntity class].
 	collection add: anEntity
 ]
 
@@ -583,6 +583,19 @@ Example: self edgeDensity: ForestAggregate totalArea: 7436"
 	^self spaceModel edgeDensity: aClass totalArea: aNumber
 ]
 
+{ #category : 'accessing - entities' }
+CMAbstractModel >> entitiesOfClass: aClass [
+	"Returns a collection of all the instances of aClass"
+
+	| getter |
+	
+	aClass isAbstract ifTrue: [ ^ OrderedCollection new ].
+	
+	getter := self getterForEntityClass: aClass.
+	
+	^ self perform: getter.
+]
+
 { #category : 'utilities - space metrics' }
 CMAbstractModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 	"Purpose: return the euclidian distance (unit = cell) using the Euclidean distance formula : square root of [(Xa - Xb)^2 + (Ya - Yb)^2)]"
@@ -680,7 +693,7 @@ CMAbstractModel >> initialize [
 CMAbstractModel >> initializeAgentsOfClass: aClass [
 
 	(aClass isAbstract not and: [ aClass isLocated ]) ifTrue: [ 
-		(self theEntities: aClass) do: [ :each | each leave ] ].
+		(self entitiesOfClass: aClass) do: [ :each | each leave ] ].
 		
 	self resetEntities: aClass
 ]
@@ -920,7 +933,7 @@ CMAbstractModel >> removeDestroyedEntities: aClass [
 	"removes all the dead or destroyed intances of type: aClass"
 
 	| theEntities destroyedEntities |
-	theEntities := self theEntities: aClass.
+	theEntities := self entitiesOfClass: aClass.
 	theEntities ifNotNil: [ 
 		destroyedEntities := theEntities select: [ :a | a isDead ].
 		destroyedEntities do: [ :a | 
@@ -933,7 +946,7 @@ CMAbstractModel >> removeEntity: anEntity [
 	"removes the dead or destroyed Entity"
 	
 	anEntity isSituated ifTrue: [anEntity leave].
-	(self theEntities: anEntity class)
+	(self entitiesOfClass: anEntity class)
 		remove: anEntity
 		ifAbsent: [nil]
 ]
@@ -944,7 +957,7 @@ CMAbstractModel >> resetEntities: aClass [
 	
 	| entities |
 	
-	entities := self theEntities: aClass.
+	entities := self entitiesOfClass: aClass.
 	entities reverseDo: [:anEntity | anEntity delete].
 	aClass currentId: 0.
 	entities removeAll
@@ -1105,13 +1118,13 @@ Example: See the models Conway http://cormas.cirad.fr/en/applica/conway.htm or F
 CMAbstractModel >> theAgents [
 
 	^ self class agentClasses flatCollect: [ :eachClass |
-		self theEntities: eachClass ].
+		self entitiesOfClass: eachClass ].
 ]
 
 { #category : 'accessing - entities' }
 CMAbstractModel >> theCells [
 	
-	^ self theEntities: self class cellClass
+	^ self entitiesOfClass: self class cellClass
 ]
 
 { #category : 'accessing - entities' }
@@ -1120,19 +1133,6 @@ CMAbstractModel >> theCells: aSet [
 	^self
 		setTheEntity: self class cellClass
 		with: aSet
-]
-
-{ #category : 'accessing - entities' }
-CMAbstractModel >> theEntities: aClass [
-	"Returns a collection of all the instances of aClass"
-
-	| getter |
-	
-	aClass isAbstract ifTrue: [ ^ OrderedCollection new ].
-	
-	getter := self getterForEntityClass: aClass.
-	
-	^ self perform: getter.
 ]
 
 { #category : 'accessing - entities' }
