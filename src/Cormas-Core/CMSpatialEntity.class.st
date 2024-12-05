@@ -47,25 +47,10 @@ Class {
 		'theAggregates',
 		'neighbourhoodWithNils'
 	],
-	#classInstVars : [
-		'bounds'
-	],
 	#category : 'Cormas-Core-Entities',
 	#package : 'Cormas-Core',
 	#tag : 'Entities'
 }
-
-{ #category : 'accessing' }
-CMSpatialEntity class >> bounds [
-	
-	^bounds
-]
-
-{ #category : 'accessing' }
-CMSpatialEntity class >> bounds: x [
-	
-	bounds := x
-]
 
 { #category : 'testing' }
 CMSpatialEntity class >> isCormasCellClass [
