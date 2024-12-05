@@ -685,15 +685,6 @@ CMAbstractModel >> initEntities [
 		self spaceModel resetSpatialEntities "ButCells" ]
 ]
 
-{ #category : 'accessing' }
-CMAbstractModel >> initEntitiesForPassiveClass: aClass [
-
-	((aClass inheritsFrom: CMMessage) or: [ aClass isAbstract ]) 
-		ifTrue: [ ^ self ].
-
-	self resetEntities: aClass
-]
-
 { #category : 'initialization' }
 CMAbstractModel >> initialize [
 
@@ -709,12 +700,6 @@ CMAbstractModel >> initializeAgentsOfClass: aClass [
 		(self entitiesOfClass: aClass) do: [ :each | each leave ] ].
 		
 	self resetEntities: aClass
-]
-
-{ #category : 'initialization' }
-CMAbstractModel >> initializeChannel [
-	
-	self channel: CMChannel new
 ]
 
 { #category : 'initialization' }
@@ -751,8 +736,6 @@ CMAbstractModel >> initializeWithoutParameters [
 
 	super initialize.
 	self randomNumberGenerator: PMFishmanMooreRandomGenerator new.
-	
-	self class agentClasses ifNotEmpty: [ self initializeChannel ].
 	
 	self initializeEntityGetters.
 
