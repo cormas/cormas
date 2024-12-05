@@ -63,8 +63,6 @@ CMAbstractModel class >> aboutThisModel [
 
 { #category : 'managing classes' }
 CMAbstractModel class >> agentClasses [
-	" Answer a <Collection> of social classes of the model. Already configured in #initializeWithoutVS "
-	" self allClassesInPackage select: [ :e | e inheritsFrom: CMAgent ] "
 
 	^ agentClasses
 		ifNil: [ 
@@ -136,7 +134,6 @@ CMAbstractModel class >> initialize [
 
 { #category : 'instance creation' }
 CMAbstractModel class >> initializeModelClasses [
-	" Private - Decompose classes of the model in spatial, social and passive classes "
 
 	| classes |
 	
@@ -1106,17 +1103,9 @@ Example: See the models Conway http://cormas.cirad.fr/en/applica/conway.htm or F
 
 { #category : 'accessing - entities' }
 CMAbstractModel >> theAgents [
-	"Returns a collection of all the agents (social entities) of the model"
 
 	^ self class agentClasses flatCollect: [ :eachClass |
 		self theEntities: eachClass ].
-]
-
-{ #category : 'accessing - entities' }
-CMAbstractModel >> theAgentsComm [
-	"Returns a collection of all the communicating agents (social agents) of the model"
-	
-	^self theAgents select: [:ag | ag isCommunicatingEntity]
 ]
 
 { #category : 'accessing - entities' }
