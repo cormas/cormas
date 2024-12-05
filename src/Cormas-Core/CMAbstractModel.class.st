@@ -43,8 +43,7 @@ Class {
 	],
 	#classInstVars : [
 		'cellClass',
-		'socialClasses',
-		'passiveClasses'
+		'socialClasses'
 	],
 	#category : 'Cormas-Core-Kernel',
 	#package : 'Cormas-Core',
@@ -131,7 +130,6 @@ CMAbstractModel class >> initializeModelClasses [
 		ifNone: [ nil ]).
 	
 	self socialClasses: (classes select: [ : each | each inheritsFrom: CMAgent ]).
-	self passiveClasses: (classes select: [ : each | (each inheritsFrom: CMPassiveObject) or: [ each inheritsFrom: CMMessage ]])
 ]
 
 { #category : 'initialization' }
@@ -174,21 +172,6 @@ CMAbstractModel class >> parameters [
 							setterSelector: (slot name, ':')
 							receiver: receiverClass ] ]
 				ifFalse: [ OrderedCollection new ] ] ]
-]
-
-{ #category : 'managing classes' }
-CMAbstractModel class >> passiveClasses [
-	"return a collection of passive classes of the model"
-
-	^ passiveClasses 
-		ifNil: [ 
-			self initialize.
-			passiveClasses ]
-]
-
-{ #category : 'accessing' }
-CMAbstractModel class >> passiveClasses: aCollection [
-	passiveClasses := aCollection
 ]
 
 { #category : 'managing classes' }
@@ -670,10 +653,6 @@ CMAbstractModel >> getterForEntityClass: aClass [
 CMAbstractModel >> initEntities [
 
 	"Initialize all the Entity classes of the model"
-
-	"Remove all the PassiveObjects and Located Objects"
-	self class passiveClasses do: [ :aClass | 
-		self initEntitiesForPassiveClass: aClass ].
 	
 	"Remove all the Agents from previous simulation"
 	self class socialClasses do: [ :aClass | 
@@ -688,10 +667,7 @@ CMAbstractModel >> initEntitiesForPassiveClass: aClass [
 
 	((aClass inheritsFrom: CMMessage) or: [ aClass isAbstract ]) 
 		ifTrue: [ ^ self ].
-	(aClass inheritsFrom: CMLocatedObject) 
-		ifTrue: [ 
-			(self theEntities: aClass) ifNotNil: [ 
-				(self theEntities: aClass) do: [ :lO | lO leave ] ] ].
+
 	self resetEntities: aClass
 ]
 
