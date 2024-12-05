@@ -162,13 +162,6 @@ CMAbstractModel class >> newWithoutParameters [
 		yourself
 ]
 
-{ #category : 'managing classes' }
-CMAbstractModel class >> occupantClasses [
-	"return a collection of classes for which intances are located on the grid"
-	
-	^self allEntityClasses select: [:cl | cl isSituatedClass]
-]
-
 { #category : 'accessing' }
 CMAbstractModel class >> parameters [
 	"Find all class side variables that have getter and setter accessors in model and all entity classes"
@@ -260,13 +253,6 @@ self  entitiesFromACollecOrClass: self theFarmers"
 	(aCollecOrClass isKindOf: CMEntity class)
 		ifTrue: [^self allTheEntities: aCollecOrClass].
 	^nil
-]
-
-{ #category : 'accessing - entities' }
-CMAbstractModel >> allTheLocatedEntities [
-	"Returns a collection of all the instances of AgentLocation and of ObjectLocation (and sub classes) collected by cormasModel"
-	
-	^self allTheEntities select: [:entity | entity isLocatedEntity]
 ]
 
 { #category : 'accessing - entities' }
@@ -953,18 +939,6 @@ CMAbstractModel >> removeDeadEntities [
 	"removes all the dead or destroyed intances"
 	
 	self removeDestroyedEntities
-]
-
-{ #category : 'referencing entities' }
-CMAbstractModel >> removeDeadEntities: aClass [
-	" Removes all the dead or destroyed intances of type: aClass "
-
-	(self theEntities: aClass) ifNotNil: [ : theEntities |
-		| destroyedEntities |
-		destroyedEntities := theEntities select: [ :a | a destroyed ].
-		destroyedEntities do: [ :a | 
-			(self class occupantClasses includes: aClass) ifTrue: [ a leave ].
-			theEntities remove: a ] ]
 ]
 
 { #category : 'referencing entities' }

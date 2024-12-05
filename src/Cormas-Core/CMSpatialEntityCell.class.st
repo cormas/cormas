@@ -14,11 +14,6 @@ Class {
 	#tag : 'Entities'
 }
 
-{ #category : 'testing' }
-CMSpatialEntityCell class >> isCellularAutomatonClass [
-	^ true
-]
-
 { #category : 'converting' }
 CMSpatialEntityCell >> asString [
 	" Private - See superimplementor's comment "

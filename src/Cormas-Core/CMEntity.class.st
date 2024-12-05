@@ -138,48 +138,6 @@ CMEntity class >> isAbstract [
 ]
 
 { #category : 'testing' }
-CMEntity class >> isCellularAutomatonClass [
-	
-	^false
-]
-
-{ #category : 'testing' }
-CMEntity class >> isCompoundSpatialClass [
-	
-	^self isSpatialClass and: [self isSpatialEntityElementClass not]
-]
-
-{ #category : 'testing' }
-CMEntity class >> isCormasEntityClass [
-
-	^ true
-]
-
-{ #category : 'testing' }
-CMEntity class >> isGenericEntity [
-	
-	^self genericEntities includes: self
-]
-
-{ #category : 'testing' }
-CMEntity class >> isNodeClass [
-	
-	^false
-]
-
-{ #category : 'testing' }
-CMEntity class >> isObjectLocationClass [
-	
-	^false
-]
-
-{ #category : 'testing' }
-CMEntity class >> isSituatedClass [
-	
-	^false
-]
-
-{ #category : 'testing' }
 CMEntity class >> isSpatialClass [
 	
 	^false
@@ -187,12 +145,6 @@ CMEntity class >> isSpatialClass [
 
 { #category : 'testing' }
 CMEntity class >> isSpatialEntityElementClass [
-	
-	^false
-]
-
-{ #category : 'testing' }
-CMEntity class >> isSpatialEntitySetClass [
 	
 	^false
 ]

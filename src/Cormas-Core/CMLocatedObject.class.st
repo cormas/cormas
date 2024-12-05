@@ -20,18 +20,6 @@ Class {
 	#tag : 'Entities'
 }
 
-{ #category : 'testing' }
-CMLocatedObject class >> isObjectLocationClass [
-	
-	^true
-]
-
-{ #category : 'testing' }
-CMLocatedObject class >> isSituatedClass [
-	
-	^true
-]
-
 { #category : 'displaying' }
 CMLocatedObject >> center [
 

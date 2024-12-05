@@ -19,12 +19,6 @@ Object >> isCormasEntity [
 ]
 
 { #category : '*Cormas-Core' }
-Object class >> isCormasEntityClass [
-
-	^ false
-]
-
-{ #category : '*Cormas-Core' }
 Object class >> isCormasModelClass [
 
 	^ false
