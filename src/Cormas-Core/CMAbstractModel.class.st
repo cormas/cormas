@@ -168,17 +168,6 @@ CMAbstractModel class >> isSituatedClass [
 	^false
 ]
 
-{ #category : 'managing classes' }
-CMAbstractModel class >> locatedObjectClasses [
-	
-	^self passiveClasses select: [:i | i inheritsFrom: CMLocatedObject]
-]
-
-{ #category : 'managing classes' }
-CMAbstractModel class >> messages [
-	^ self passiveClasses select: [ :i | i inheritsFrom: CMMessage ]
-]
-
 { #category : 'instance creation' }
 CMAbstractModel class >> newWithoutParameters [
 
@@ -227,16 +216,6 @@ CMAbstractModel class >> passiveClasses [
 { #category : 'accessing' }
 CMAbstractModel class >> passiveClasses: aCollection [
 	passiveClasses := aCollection
-]
-
-{ #category : 'managing classes' }
-CMAbstractModel class >> passiveObjectClasses [
-	" self passiveClasses select: [:i | i inheritsFrom: PassiveObject] "
-
-	^ passiveClasses 
-		ifNil: [ 
-			self initialize.
-			passiveClasses ]
 ]
 
 { #category : 'managing classes' }
@@ -746,11 +725,13 @@ CMAbstractModel >> initEntities [
 	"Initialize all the Entity classes of the model"
 
 	"Remove all the PassiveObjects and Located Objects"
-
 	self class passiveClasses do: [ :aClass | 
-		self initEntitiesForPassiveClass: aClass ]. "Remove all the Agents from previous simulation"
+		self initEntitiesForPassiveClass: aClass ].
+	
+	"Remove all the Agents from previous simulation"
 	self class socialClasses do: [ :aClass | 
 		self initEntitiesForSocialClass: aClass ].
+	
 	self spaceModel ifNotNil: [ 
 		self spaceModel resetSpatialEntities "ButCells" ]
 ]
@@ -1234,13 +1215,10 @@ Example: See the models Conway http://cormas.cirad.fr/en/applica/conway.htm or F
 
 { #category : 'accessing - entities' }
 CMAbstractModel >> theAgents [
-	"Purpose: returns a collection of all the agents (social entities) of the model
-	Example: self ask: (self theAgents) toDo: #step"
+	"Returns a collection of all the agents (social entities) of the model"
 
-	| collection |
-	collection := OrderedCollection new.
-	self class socialClasses do: [ :cl | collection addAll: (self theEntities: cl) ].
-	^ collection
+	^ self class socialClasses flatCollect: [ :eachClass |
+		self theEntities: eachClass ].
 ]
 
 { #category : 'accessing - entities' }
@@ -1268,19 +1246,13 @@ CMAbstractModel >> theCells: aSet [
 CMAbstractModel >> theEntities: aClass [
 	"Returns a collection of all the instances of aClass"
 
-	| collection getter |
+	| getter |
 	
-	aClass isAbstract
-		ifTrue: [ ^ OrderedCollection new ].
-		
+	aClass isAbstract ifTrue: [ ^ OrderedCollection new ].
+	
 	getter := self getterForEntityClass: aClass.
 	
-	collection := (self perform: getter)
-		ifNil: [
-			self class createModelReaderAccessor: aClass.
-			self perform: getter ].
-		
-	^ collection
+	^ self perform: getter.
 ]
 
 { #category : 'accessing - entities' }
