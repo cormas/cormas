@@ -91,13 +91,6 @@ CMSpaceModel >> cellAt: aRowIndex at: aColumnIndex [
 	^ self elementaryEntities at: ((aRowIndex - 1) * numberOfColumns + aColumnIndex)
 ]
 
-{ #category : 'accessing' }
-CMSpaceModel >> cellClass [
-	"return the SpatialEntityElement class of the current model"
-
-	^ self cormasModel class cellClass
-]
-
 { #category : 'ESE (regular) - special locations' }
 CMSpaceModel >> cellsBetweenColumn1: colNumber1 andColumn2: colNumber2 [
 	"Return the cells between the colNumber1 and the colNumber2 of the spatial grid.
@@ -321,7 +314,7 @@ CMSpaceModel >> edgeDensity: aClass totalArea: aNumber [
 CMSpaceModel >> elementaryEntities [
 	" Answer a <Collection> of the receiver's cells "
 
-	^ self spatialEntitiesAt: self cellClass name
+	^ self spatialEntitiesAt: self cormasModel class cellClass name
 ]
 
 { #category : 'private - accessing' }

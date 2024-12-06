@@ -738,6 +738,7 @@ CMAbstractModel >> initializeWithoutParameters [
 	self randomNumberGenerator: PMFishmanMooreRandomGenerator new.
 	
 	self initializeEntityGetters.
+	self initializeSpaceModel.
 
 ]
 
