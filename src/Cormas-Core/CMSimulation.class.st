@@ -257,7 +257,6 @@ CMSimulation >> runStep [
 		ifFalse: [ cormasModel perform: activeControlSelector ].
 		
 	cormasModel removeDestroyedEntities.
-	cormasModel channel ifNotNil: [ cormasModel channel sendAllMessages ].
 	
 	self recordData.
 ]

@@ -37,7 +37,6 @@ Class {
 	#traits : 'TCMRandom',
 	#classTraits : 'TCMRandom classTrait',
 	#instVars : [
-		'channel',
 		'entityGetters',
 		'spaceModel'
 	],
@@ -333,18 +332,6 @@ CMAbstractModel >> centralCell [
 	"Purpose: returns the cell located at the center of the spatial grid. Number of lines and number of columns of the spatial grid have to be odd"
 
 	^ self spaceModel centralLocation
-]
-
-{ #category : 'accessing' }
-CMAbstractModel >> channel [
-	
-	^channel
-]
-
-{ #category : 'accessing' }
-CMAbstractModel >> channel: aCanal [
-	
-	channel := aCanal
 ]
 
 { #category : 'referencing entities' }
@@ -905,7 +892,6 @@ CMAbstractModel >> release [
 	super release.
 	self spaceModel release.
 	self spaceModel: nil.
-	self channel: nil.
 	
 	self cells do: #initOccupants
 ]
