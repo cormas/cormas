@@ -231,10 +231,10 @@ CMSpaceModel >> createElementaryEntities [
 
 	| cells |
 
-	self cormasModel class cellClass currentId: 0.
+	self cormasModel cellClass currentId: 0.
 	
 	cells := (1 to: self gridSize) collect: [ :i |
-		self newEntity: self cormasModel class cellClass ].
+		self newEntity: self cormasModel cellClass ].
 	
 	self elementaryEntities: cells asArray.
 ]
@@ -314,14 +314,14 @@ CMSpaceModel >> edgeDensity: aClass totalArea: aNumber [
 CMSpaceModel >> elementaryEntities [
 	" Answer a <Collection> of the receiver's cells "
 
-	^ self spatialEntitiesAt: self cormasModel class cellClass name
+	^ self spatialEntitiesAt: self cormasModel cellClass name
 ]
 
 { #category : 'private - accessing' }
 CMSpaceModel >> elementaryEntities: x [
 	
 	self spatialEntities
-		at: self cormasModel class cellClass name
+		at: self cormasModel cellClass name
 		put: x	"(self dependents notNil and: [line * column > x size])
 		ifTrue: [self vue mainInterface updateWindowName]"
 ]
@@ -380,7 +380,7 @@ CMSpaceModel >> initNeighbourhood [
 { #category : 'initialization' }
 CMSpaceModel >> initialize [
 	super initialize.
-	self resetSpatialEntities.
+	"self resetSpatialEntities."
 	
 	isClosedEnvironment := true
 ]
@@ -595,7 +595,7 @@ CMSpaceModel >> resetSpatialEntities [
 	self spatialEntities: Dictionary new. 
 	self cormasModel ifNil: [ ^ self ].
 	
-	cellClass := self cormasModel class cellClass.
+	cellClass := self cormasModel cellClass.
 	
 	self cormasModel resetEntities: cellClass.
 	self spatialEntitiesAt: cellClass name put: OrderedCollection new.

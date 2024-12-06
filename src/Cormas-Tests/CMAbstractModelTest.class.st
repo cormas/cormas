@@ -46,7 +46,7 @@ CMAbstractModelTest >> testCellAtAt [
 { #category : 'tests' }
 CMAbstractModelTest >> testCellClass [
 
-	self assert: CMMockModel cellClass equals: CMMockCell
+	self assert: model cellClass equals: CMMockCell
 ]
 
 { #category : 'tests-accessing-entities' }

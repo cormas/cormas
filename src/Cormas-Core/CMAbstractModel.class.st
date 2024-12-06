@@ -37,8 +37,10 @@ Class {
 	#traits : 'TCMRandom',
 	#classTraits : 'TCMRandom classTrait',
 	#instVars : [
+		'spaceModel',
 		'entityGetters',
-		'spaceModel'
+		'cellClass',
+		'agentClasses'
 	],
 	#classInstVars : [
 		'cellClass',
@@ -58,21 +60,6 @@ CMAbstractModel class >> aboutThisModel [
 	Edit this file to document your model using [Microdown](https://github.com/pillar-markup/Microdown) - Pharo''s dialect of [Markdown](https://en.wikipedia.org/wiki/Markdown).'
 	
 
-]
-
-{ #category : 'managing classes' }
-CMAbstractModel class >> agentClasses [
-
-	^ agentClasses
-		ifNil: [ 
-			self initialize.
-			agentClasses ]
-]
-
-{ #category : 'accessing' }
-CMAbstractModel class >> agentClasses: aCollection [
-
-	agentClasses := aCollection
 ]
 
 { #category : 'managing classes' }
@@ -111,38 +98,6 @@ CMAbstractModel class >> availableProbes [
 			color: color;
 			method: pragma method;
 			yourself ].
-]
-
-{ #category : 'managing classes' }
-CMAbstractModel class >> cellClass [
-	^ cellClass
-]
-
-{ #category : 'accessing' }
-CMAbstractModel class >> cellClass: aCMSpatialEntityCellClass [
-	" Set the receiver's spatial entity class to aCMSpatialEntityCellClass. This class must exists in the same package of the model class to be properly detected by initialization process "
-	
-	cellClass := aCMSpatialEntityCellClass
-]
-
-{ #category : 'instance creation' }
-CMAbstractModel class >> initialize [
-
-	self initializeModelClasses.
-]
-
-{ #category : 'instance creation' }
-CMAbstractModel class >> initializeModelClasses [
-
-	| classes |
-	
-	classes := self allEntityClasses.
-	
-	self cellClass: (classes
-		detect: [ :each | each inheritsFrom: CMSpatialEntityElement ]
-		ifNone: [ nil ]).
-	
-	self agentClasses: (classes select: [ : each | each inheritsFrom: CMAgent ]).
 ]
 
 { #category : 'initialization' }
@@ -187,10 +142,22 @@ CMAbstractModel class >> parameters [
 				ifFalse: [ OrderedCollection new ] ] ]
 ]
 
+{ #category : 'accessing' }
+CMAbstractModel >> agentClasses [
+
+	^ agentClasses
+]
+
+{ #category : 'accessing' }
+CMAbstractModel >> agentClasses: aCollection [
+
+	agentClasses := aCollection
+]
+
 { #category : 'accessing - entities' }
 CMAbstractModel >> agents [
 
-	^ self class agentClasses flatCollect: [ :eachClass |
+	^ self agentClasses flatCollect: [ :eachClass |
 		self entitiesOfClass: eachClass ].
 ]
 
@@ -321,10 +288,22 @@ CMAbstractModel >> cellAt: aRowIndex at: aColumnIndex [
 	^ self spaceModel cellAt: aRowIndex at: aColumnIndex
 ]
 
+{ #category : 'accessing' }
+CMAbstractModel >> cellClass [
+
+	^ cellClass
+]
+
+{ #category : 'accessing' }
+CMAbstractModel >> cellClass: aClass [
+
+	cellClass := aClass
+]
+
 { #category : 'accessing - entities' }
 CMAbstractModel >> cells [
 	
-	^ self entitiesOfClass: self class cellClass
+	^ self entitiesOfClass: self cellClass
 ]
 
 { #category : 'accessing - entities' }
@@ -665,7 +644,7 @@ CMAbstractModel >> initEntities [
 	"Initialize all the Entity classes of the model"
 	
 	"Remove all the Agents from previous simulation"
-	self class agentClasses do: [ :aClass | 
+	self agentClasses do: [ :aClass | 
 		self initializeAgentsOfClass: aClass ].
 	
 	self spaceModel ifNotNil: [ 
@@ -675,9 +654,10 @@ CMAbstractModel >> initEntities [
 { #category : 'initialization' }
 CMAbstractModel >> initialize [
 
+	super initialize.
+	self initializeModelClasses.
 	self initializeWithoutParameters.
 	self initializeParameters.
-
 ]
 
 { #category : 'accessing' }
@@ -704,6 +684,20 @@ CMAbstractModel >> initializeEntityGetters [
 ]
 
 { #category : 'initialization' }
+CMAbstractModel >> initializeModelClasses [
+
+	| classes |
+	
+	classes := self class allEntityClasses.
+	
+	self cellClass: (classes
+		detect: [ :each | each inheritsFrom: CMSpatialEntityElement ]
+		ifNone: [ nil ]).
+	
+	self agentClasses: (classes select: [ : each | each inheritsFrom: CMAgent ]).
+]
+
+{ #category : 'initialization' }
 CMAbstractModel >> initializeParameters [
 
 	self class initializeParameters. 
@@ -713,7 +707,7 @@ CMAbstractModel >> initializeParameters [
 CMAbstractModel >> initializeSpaceModel [
 	" Private - Setup the receiver's space model only if the model has a spatial entity cell class defined "
 
-	self class cellClass ifNil: [ ^ nil ].
+	self cellClass ifNil: [ ^ nil ].
 	self spaceModel: (CMSpaceModel forModel: self).
 
 ]
