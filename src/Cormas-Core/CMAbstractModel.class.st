@@ -208,7 +208,7 @@ CMAbstractModel >> allTheLocatedEntities: aClass [
 	
 	| theLocatedObjects |
 	theLocatedObjects := OrderedCollection new.
-	self spaceModel elementaryEntities
+	self cells
 		do:
 			[:cell | 
 			aClass withAllSubclasses
@@ -647,8 +647,7 @@ CMAbstractModel >> initEntities [
 	self agentClasses do: [ :aClass | 
 		self initializeAgentsOfClass: aClass ].
 	
-	self spaceModel ifNotNil: [ 
-		self spaceModel resetSpatialEntities "ButCells" ]
+	self resetEntities: cellClass
 ]
 
 { #category : 'initialization' }
@@ -1034,12 +1033,6 @@ CMAbstractModel >> spaceModel [
 { #category : 'accessing' }
 CMAbstractModel >> spaceModel: aSpaceModel [
 	spaceModel := aSpaceModel
-]
-
-{ #category : 'accessing' }
-CMAbstractModel >> spaceModelEntities [
-
-	^ self spaceModel ifNotNil: [:sm| sm spatialEntities values flattened asOrderedCollection]
 ]
 
 { #category : 'control' }

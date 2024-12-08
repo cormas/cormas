@@ -123,9 +123,9 @@ CMSpatialEntityElement >> hasNeighbourE [
 
 	| index |
 	
-	self spaceModel nbNeighbours = 4 ifTrue: [ index := 4 ].
-	self spaceModel nbNeighbours = 8 ifTrue: [ index := 7 ].
-	self spaceModel nbNeighbours = 6 ifTrue: [ index := 5 ].
+	self spaceModel numberOfNeighbours = 4 ifTrue: [ index := 4 ].
+	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 7 ].
+	self spaceModel numberOfNeighbours = 6 ifTrue: [ index := 5 ].
 	
 	^ (neighbourhoodWithNils at: index) isNotNil
 ]
@@ -144,11 +144,11 @@ CMSpatialEntityElement >> hasNeighbourNE [
 
 	| index |
 	
-	self spaceModel nbNeighbours = 4 ifTrue: [ 
+	self spaceModel numberOfNeighbours = 4 ifTrue: [ 
 		self error: 'The number of neighbours was set to 4. There is no neighbour to the North-East' ].
 	
-	self spaceModel nbNeighbours = 8 ifTrue: [ index := 8 ].
-	self spaceModel nbNeighbours = 6 ifTrue: [ index := 6 ].
+	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 8 ].
+	self spaceModel numberOfNeighbours = 6 ifTrue: [ index := 6 ].
 	
 	^ (neighbourhoodWithNils at: index) isNotNil
 ]
@@ -158,11 +158,11 @@ CMSpatialEntityElement >> hasNeighbourNW [
 
 	| index |
 	
-	self spaceModel nbNeighbours = 4 ifTrue: [ 
+	self spaceModel numberOfNeighbours = 4 ifTrue: [ 
 		self error: 'The number of neighbours was set to 4. There is no neighbour to the North-West' ].
 	
-	self spaceModel nbNeighbours = 8 ifTrue: [ index := 2 ].
-	self spaceModel nbNeighbours = 6 ifTrue: [ index := 1 ].
+	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 2 ].
+	self spaceModel numberOfNeighbours = 6 ifTrue: [ index := 1 ].
 	
 	^ (neighbourhoodWithNils at: index) isNotNil
 ]
@@ -172,8 +172,8 @@ CMSpatialEntityElement >> hasNeighbourS [
 
 	| index |
 	
-	self spaceModel nbNeighbours = 4 ifTrue: [ index := 3 ].
-	self spaceModel nbNeighbours = 8 ifTrue: [ index := 5 ].
+	self spaceModel numberOfNeighbours = 4 ifTrue: [ index := 3 ].
+	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 5 ].
 	
 	^ (neighbourhoodWithNils at: index) isNotNil
 ]
@@ -183,11 +183,11 @@ CMSpatialEntityElement >> hasNeighbourSE [
 
 	| index |
 	
-	self spaceModel nbNeighbours = 4 ifTrue: [ 
+	self spaceModel numberOfNeighbours = 4 ifTrue: [ 
 		self error: 'The number of neighbours was set to 4. There is no neighbour to the South-East' ].
 	
-	self spaceModel nbNeighbours = 8 ifTrue: [ index := 6 ].
-	self spaceModel nbNeighbours = 6 ifTrue: [ index := 4 ].
+	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 6 ].
+	self spaceModel numberOfNeighbours = 6 ifTrue: [ index := 4 ].
 	
 	^ (neighbourhoodWithNils at: index) isNotNil
 ]
@@ -197,11 +197,11 @@ CMSpatialEntityElement >> hasNeighbourSW [
 
 	| index |
 	
-	self spaceModel nbNeighbours = 4 ifTrue: [ 
+	self spaceModel numberOfNeighbours = 4 ifTrue: [ 
 		self error: 'The number of neighbours was set to 4. There is no neighbour to the South-West' ].
 
-	self spaceModel nbNeighbours = 8 ifTrue: [ index := 4 ].
-	self spaceModel nbNeighbours = 6 ifTrue: [ index := 3 ].
+	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 4 ].
+	self spaceModel numberOfNeighbours = 6 ifTrue: [ index := 3 ].
 	
 	^ (neighbourhoodWithNils at: index) isNotNil
 ]
@@ -211,17 +211,11 @@ CMSpatialEntityElement >> hasNeighbourW [
 
 	| index |
 	
-	self spaceModel nbNeighbours = 4 ifTrue: [ index := 2 ].
-	self spaceModel nbNeighbours = 8 ifTrue: [ index := 3 ].
-	self spaceModel nbNeighbours = 6 ifTrue: [ index := 2 ].
+	self spaceModel numberOfNeighbours = 4 ifTrue: [ index := 2 ].
+	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 3 ].
+	self spaceModel numberOfNeighbours = 6 ifTrue: [ index := 2 ].
 	
 	^ (neighbourhoodWithNils at: index) isNotNil
-]
-
-{ #category : 'initialize-release' }
-CMSpatialEntityElement >> initNeighbourhood [
-
-	"do nothing"
 ]
 
 { #category : 'testing' }
@@ -297,7 +291,7 @@ Return value: <SpatialEntity | nil>
 Example := self nearestCellVerifying: [:aCell | aCell hasWater] constraintOnPath: [:aCell | aCell isClosed not]"
 	
 	| collec minimum d target |
-	collec := (self spaceModel spatialEntitiesAt: self class name) select: [:c | condition1 value: c].
+	collec := cormasModel cells select: [:c | condition1 value: c].
 	collec isEmpty ifTrue: [^nil].
 	minimum := self spaceModel numberOfRows * self spaceModel numberOfColumns.
 	collec do: [ : c | 
@@ -450,9 +444,9 @@ Return value: <SpatialEntityElement | nil>"
 
 	| index neighbour |
 	
-	self spaceModel nbNeighbours = 4 ifTrue: [ index := 4 ].
-	self spaceModel nbNeighbours = 8 ifTrue: [ index := 7 ].
-	self spaceModel nbNeighbours = 6 ifTrue: [ index := 5 ].
+	self spaceModel numberOfNeighbours = 4 ifTrue: [ index := 4 ].
+	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 7 ].
+	self spaceModel numberOfNeighbours = 6 ifTrue: [ index := 5 ].
 	
 	neighbour := neighbourhoodWithNils at: index.
 	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the East' ].
@@ -481,11 +475,11 @@ Return value: <SpatialEntityElement | nil>"
 
 	| index neighbour |
 	
-	self spaceModel nbNeighbours = 4 ifTrue: [ 
+	self spaceModel numberOfNeighbours = 4 ifTrue: [ 
 		self error: 'The number of neighbours was set to 4. There is no neighbour to the North-East' ].
 	
-	self spaceModel nbNeighbours = 8 ifTrue: [ index := 8 ].
-	self spaceModel nbNeighbours = 6 ifTrue: [ index := 6 ].
+	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 8 ].
+	self spaceModel numberOfNeighbours = 6 ifTrue: [ index := 6 ].
 	
 	neighbour := neighbourhoodWithNils at: index.
 	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the North-East' ].
@@ -500,11 +494,11 @@ Return value: <SpatialEntityElement | nil>"
 
 	| index neighbour |
 	
-	self spaceModel nbNeighbours = 4 ifTrue: [ 
+	self spaceModel numberOfNeighbours = 4 ifTrue: [ 
 		self error: 'The number of neighbours was set to 4. There is no neighbour to the North-West' ].
 	
-	self spaceModel nbNeighbours = 8 ifTrue: [ index := 2 ].
-	self spaceModel nbNeighbours = 6 ifTrue: [ index := 1 ].
+	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 2 ].
+	self spaceModel numberOfNeighbours = 6 ifTrue: [ index := 1 ].
 	
 	neighbour := neighbourhoodWithNils at: index.
 	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the North-West' ].
@@ -519,8 +513,8 @@ Return value: <SpatialEntityElement | nil>"
 
 	| index neighbour |
 	
-	self spaceModel nbNeighbours = 4 ifTrue: [ index := 3 ].
-	self spaceModel nbNeighbours = 8 ifTrue: [ index := 5 ].
+	self spaceModel numberOfNeighbours = 4 ifTrue: [ index := 3 ].
+	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 5 ].
 	
 	neighbour := neighbourhoodWithNils at: index.
 	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the South' ].
@@ -535,11 +529,11 @@ Return value: <SpatialEntityElement | nil>"
 
 	| index neighbour |
 	
-	self spaceModel nbNeighbours = 4 ifTrue: [ 
+	self spaceModel numberOfNeighbours = 4 ifTrue: [ 
 		self error: 'The number of neighbours was set to 4. There is no neighbour to the South-East' ].
 	
-	self spaceModel nbNeighbours = 8 ifTrue: [ index := 6 ].
-	self spaceModel nbNeighbours = 6 ifTrue: [ index := 4 ].
+	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 6 ].
+	self spaceModel numberOfNeighbours = 6 ifTrue: [ index := 4 ].
 	
 	neighbour := neighbourhoodWithNils at: index.
 	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the South-East' ].
@@ -554,11 +548,11 @@ Return value: <SpatialEntityElement | nil>"
 
 	| index neighbour |
 	
-	self spaceModel nbNeighbours = 4 ifTrue: [ 
+	self spaceModel numberOfNeighbours = 4 ifTrue: [ 
 		self error: 'The number of neighbours was set to 4. There is no neighbour to the South-West' ].
 
-	self spaceModel nbNeighbours = 8 ifTrue: [ index := 4 ].
-	self spaceModel nbNeighbours = 6 ifTrue: [ index := 3 ].
+	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 4 ].
+	self spaceModel numberOfNeighbours = 6 ifTrue: [ index := 3 ].
 	
 	neighbour := neighbourhoodWithNils at: index.
 	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the South-West' ].
@@ -573,9 +567,9 @@ Return value: <SpatialEntityElement | nil>"
 
 	| index neighbour |
 	
-	self spaceModel nbNeighbours = 4 ifTrue: [ index := 2 ].
-	self spaceModel nbNeighbours = 8 ifTrue: [ index := 3 ].
-	self spaceModel nbNeighbours = 6 ifTrue: [ index := 2 ].
+	self spaceModel numberOfNeighbours = 4 ifTrue: [ index := 2 ].
+	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 3 ].
+	self spaceModel numberOfNeighbours = 6 ifTrue: [ index := 2 ].
 	
 	neighbour := neighbourhoodWithNils at: index.
 	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the West' ].

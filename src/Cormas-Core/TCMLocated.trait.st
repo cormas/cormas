@@ -817,7 +817,7 @@ TCMLocated >> printOn: aStream [
 TCMLocated >> randomJump [
 "Purpose: moves to a spatial entity randomly picked from the whole grid "
 
-	self moveTo: (self selectRandomlyFrom: patch grid)
+	self moveTo: (self selectRandomlyFrom: self cormasModel cells)
 ]
 
 { #category : 'star moving' }
@@ -826,7 +826,7 @@ TCMLocated >> randomJumpConstrainedBy: aBlock [
 	| destination candidates |
 	patch ifNil: [ ^ nil ].
 	
-	candidates := patch grid select: [ :cell | aBlock value: cell ].
+	candidates := self cormasModel cells select: [ :cell | aBlock value: cell ].
 	candidates isEmpty ifTrue: [ ^ self ].
 	
 	destination := self selectRandomlyFrom: candidates.

@@ -29,13 +29,11 @@ Class {
 	#classTraits : 'TCMRandom classTrait',
 	#instVars : [
 		'cormasModel',
-		'spatialEntities',
 		'gridCellShape',
-		'nbConfiguration',
-		'gridSize',
 		'isClosedEnvironment',
 		'numberOfRows',
-		'numberOfColumns'
+		'numberOfColumns',
+		'neighbourhoodConfiguration'
 	],
 	#category : 'Cormas-Core-Space',
 	#package : 'Cormas-Core',
@@ -61,10 +59,10 @@ CMSpaceModel class >> forModel: aCormasModel [
 	" Answer a new space configured for aCormasModel "
 
 	^ self basicNew
-		  cormasModel: aCormasModel;
-		  randomNumberGenerator: aCormasModel randomNumberGenerator;
-		  initialize;
-		  yourself
+		cormasModel: aCormasModel;
+		randomNumberGenerator: aCormasModel randomNumberGenerator;
+		initialize;
+		yourself
 ]
 
 { #category : 'accessing' }
@@ -88,7 +86,13 @@ CMSpaceModel >> allTheSituatedEntities: aClass [
 { #category : 'ESE (regular) - special locations' }
 CMSpaceModel >> cellAt: aRowIndex at: aColumnIndex [
 	
-	^ self elementaryEntities at: ((aRowIndex - 1) * numberOfColumns + aColumnIndex)
+	^ cormasModel cells at: ((aRowIndex - 1) * numberOfColumns + aColumnIndex)
+]
+
+{ #category : 'accessing' }
+CMSpaceModel >> cells [
+
+	^ cormasModel cells
 ]
 
 { #category : 'ESE (regular) - special locations' }
@@ -181,7 +185,7 @@ CMSpaceModel >> cellsOfColumn: colNumber [
 	"Return the cells in the colNumber of the spatial grid.
 colNumber   <Integer> colNumber = Positive Integer"
 
-	^ self elementaryEntities select: [ :cell | cell columnNumber = colNumber ]
+	^ cormasModel cells select: [ :cell | cell columnNumber = colNumber ]
 ]
 
 { #category : 'ESE (regular) - special locations' }
@@ -189,14 +193,14 @@ CMSpaceModel >> cellsOfLine: lineNumber [
 	" Answer a <Collection> of <> cells in the lineNumber of the spatial grid.
 	lineNumber   <Integer> lineNumber = Positive Integer"
 
-	^ self elementaryEntities select: [ :cell | cell rowNumber = lineNumber ]
+	^ cormasModel cells select: [ :cell | cell rowNumber = lineNumber ]
 ]
 
 { #category : 'ESE (regular) - special locations' }
 CMSpaceModel >> centralLocation [
 	(numberOfRows even or: [ numberOfColumns even ])
 		ifTrue: [ ^ self error: 'Grid dimensions is not odd' ].
-	^ self elementaryEntities at: (numberOfRows * numberOfColumns / 2) asInteger + 1
+	^ cormasModel cells at: (numberOfRows * numberOfColumns / 2) asInteger + 1
 ]
 
 { #category : 'private - accessing' }
@@ -214,29 +218,12 @@ CMSpaceModel >> cormasModel: aCormasModel [
 
 ]
 
-{ #category : 'private - regular cells - instance creation' }
+{ #category : 'as yet unclassified' }
 CMSpaceModel >> createCells [
-	" Create all the cells and their connexions, and collect them as elementaryEntities collection "
 
-	self initNeighbourhood.
-	"newCells notification also dispatch the request to remoteSpaceModels to rebuild the cell figures"
-	"self sendCellsToClientSpaceModels: (EntityReference onEntities: allEse)."	
-	"dispatch the info that cells have been modified to all opened spaceInterfaces"
-
-]
-
-{ #category : 'private - regular cells - instance creation' }
-CMSpaceModel >> createElementaryEntities [
-	"create all the cells and their connexions, and collect them as elementaryEntities collection"
-
-	| cells |
-
-	self cormasModel cellClass currentId: 0.
-	
-	cells := (1 to: self gridSize) collect: [ :i |
-		self newEntity: self cormasModel cellClass ].
-	
-	self elementaryEntities: cells asArray.
+	1 to: self gridSize do: [ :i |
+		(cormasModel newEntity: self cormasModel cellClass)
+			spaceModel: self ].
 ]
 
 { #category : 'defaults' }
@@ -265,7 +252,7 @@ CMSpaceModel >> distanceFromCell: cell1 toCell: cell2 [
 				ifTrue: [ nbLines := nbLines - self numberOfRows + 2 ].
 			nbCols > (self numberOfColumns - 2)
 				ifTrue: [ nbCols := nbCols - self numberOfColumns + 2 ] ].
-	^ self nbConfiguration distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols.
+	^ self neighbourhoodConfiguration distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols.
 
 ]
 
@@ -310,22 +297,6 @@ CMSpaceModel >> edgeDensity: aClass totalArea: aNumber [
 	^ size / aNumber
 ]
 
-{ #category : 'accessing' }
-CMSpaceModel >> elementaryEntities [
-	" Answer a <Collection> of the receiver's cells "
-
-	^ self spatialEntitiesAt: self cormasModel cellClass name
-]
-
-{ #category : 'private - accessing' }
-CMSpaceModel >> elementaryEntities: x [
-	
-	self spatialEntities
-		at: self cormasModel cellClass name
-		put: x	"(self dependents notNil and: [line * column > x size])
-		ifTrue: [self vue mainInterface updateWindowName]"
-]
-
 { #category : 'landscape indices' }
 CMSpaceModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 	"return the euclidian distance (unit = cell) using the Euclidean distance formula : square root of [(Xa - Xb)^2 + (Ya - Yb)^2)]"
@@ -356,24 +327,8 @@ CMSpaceModel >> gridCellShape: x [
 
 { #category : 'accessing' }
 CMSpaceModel >> gridSize [
-	" Answer the <Number> of cells of the grid "
 
-	^ gridSize
-		ifNil: [ gridSize := self defaultGridSize ]
-
-]
-
-{ #category : 'private - accessing' }
-CMSpaceModel >> gridSize: anInteger [
-
-	gridSize := anInteger
-]
-
-{ #category : 'private - regular cells - instance creation' }
-CMSpaceModel >> initNeighbourhood [
-	" Private - Initalize the receiver's neighbourhood "
-
-	self elementaryEntities do: #initNeighbourhood.
+	^ numberOfRows * numberOfColumns
 
 ]
 
@@ -385,25 +340,14 @@ CMSpaceModel >> initialize [
 	isClosedEnvironment := true
 ]
 
-{ #category : 'private - init' }
-CMSpaceModel >> initializeIrregular [
-	
-	gridCellShape := #irregular.
-	isClosedEnvironment := true.
-	numberOfRows := nil.
-	numberOfColumns := nil.
-	gridSize := 0	"arrayOrigins := Array new: cardinal."
-]
-
 { #category : 'ESE initialize-release' }
 CMSpaceModel >> initializeRegularNumberOfRows: aNumberOfRows numberOfColumns: aNumberOfColumns neighbourhood: aNumber closed: aBoolean [
 	" Private - Create a grid of regular cells."
 
-	self resetSpatialEntities.
+	self cormasModel resetEntities: self cormasModel cellClass.
 	self numberOfRows: aNumberOfRows numberOfColumns: aNumberOfColumns.
 	isClosedEnvironment := aBoolean.
-	self nbCount: aNumber.
-	self createCells.
+	self numberOfNeighbours: aNumber.
 
 
 ]
@@ -418,18 +362,8 @@ CMSpaceModel >> isClosedEnvironment [
 
 { #category : 'private - accessing' }
 CMSpaceModel >> isClosedEnvironment: aBoolean [
-	" Requires the receiver already has a number of neighbourhood configured "
 
-	isClosedEnvironment = aBoolean ifTrue: [ ^ self ].
 	isClosedEnvironment := aBoolean.
-	self initNeighbourhood.
-]
-
-{ #category : 'testing' }
-CMSpaceModel >> isFull [
-	"Answer if the spaceModel is completely occupied by cells, meaning that some cells are missing or not "
-	
-	^ self gridSize = self elementaryEntities size
 ]
 
 { #category : 'testing' }
@@ -441,12 +375,12 @@ CMSpaceModel >> isIrregular [
 
 { #category : 'ESE (regular) - special locations' }
 CMSpaceModel >> lowerLeftLocation [
-	^ self elementaryEntities at: numberOfColumns * (numberOfRows - 1) + 1
+	^ cormasModel cells at: numberOfColumns * (numberOfRows - 1) + 1
 ]
 
 { #category : 'ESE (regular) - special locations' }
 CMSpaceModel >> lowerRightLocation [
-	^ self elementaryEntities at: numberOfColumns * numberOfRows
+	^ cormasModel cells at: numberOfColumns * numberOfRows
 ]
 
 { #category : 'landscape indices' }
@@ -460,42 +394,9 @@ CMSpaceModel >> nPatches: aClass [
 ]
 
 { #category : 'accessing' }
-CMSpaceModel >> nbConfiguration [
-	^ nbConfiguration
-]
-
-{ #category : 'accessing' }
-CMSpaceModel >> nbConfiguration: aCMSpaceNeighbourhood [ 
-
-	nbConfiguration := aCMSpaceNeighbourhood
-]
-
-{ #category : 'accessing' }
-CMSpaceModel >> nbCount: anIntegerOrSymbol [
-	" Set the receiver's neighbourhood configuration to contain anIntegerOrSymbol neighbours "
-	
-	self nbConfiguration: (CMSpaceNeighbourhood forNeighbours: anIntegerOrSymbol spaceModel: self)
-
-]
-
-{ #category : 'landscape indices' }
-CMSpaceModel >> nbDistinctValuesOf: anAttribute [
-	"Return the number of different values for anAttribute"
-
-	^ (self cormasModel cells collect: [ :a | a perform: anAttribute ]) asSet size
-]
-
-{ #category : 'private - accessing' }
-CMSpaceModel >> nbNeighbours [
-	" Answer a <Number> representing the receiver configured number of neighbours of regular cells "
-
-	^ self nbConfiguration nbNeighbours
-]
-
-{ #category : 'accessing' }
 CMSpaceModel >> nearestEmptyCellFor: aCMAgentLocation [
 
-	^ self nbConfiguration nearestEmptyCellFor: aCMAgentLocation.
+	^ self neighbourhoodConfiguration nearestEmptyCellFor: aCMAgentLocation.
 ]
 
 { #category : 'landscape indices' }
@@ -506,6 +407,17 @@ CMSpaceModel >> nearestNeighbourProbaAttribute: anAttribute state1: x1 state2: x
 	c1 := self cormasModel cells select: [:a | (a perform: anAttribute) = x1].
 	c2 := c1 select: [:a | a neighbourhood anySatisfy: [:b | (a perform: anAttribute) = x2 ] ].
 	^ c2 size / c1 size
+]
+
+{ #category : 'accessing' }
+CMSpaceModel >> neighbourhoodConfiguration [
+	^ neighbourhoodConfiguration
+]
+
+{ #category : 'accessing' }
+CMSpaceModel >> neighbourhoodConfiguration: aCMSpaceNeighbourhood [ 
+
+	neighbourhoodConfiguration := aCMSpaceNeighbourhood
 ]
 
 { #category : 'private - init' }
@@ -527,6 +439,21 @@ CMSpaceModel >> numberOfColumns [
 ]
 
 { #category : 'private - accessing' }
+CMSpaceModel >> numberOfNeighbours [
+	" Answer a <Number> representing the receiver configured number of neighbours of regular cells "
+
+	^ self neighbourhoodConfiguration numberOfNeighbours
+]
+
+{ #category : 'accessing' }
+CMSpaceModel >> numberOfNeighbours: anIntegerOrSymbol [
+	" Set the receiver's neighbourhood configuration to contain anIntegerOrSymbol neighbours "
+	
+	self neighbourhoodConfiguration: (CMSpaceNeighbourhood forNeighbours: anIntegerOrSymbol spaceModel: self)
+
+]
+
+{ #category : 'private - accessing' }
 CMSpaceModel >> numberOfRows [
 	" Answer the <Number> of rows of the receiver's grid "
 	
@@ -539,7 +466,6 @@ CMSpaceModel >> numberOfRows: aNumberOfRows numberOfColumns: aNumberOfColumns [
 
 	numberOfRows := aNumberOfRows.
 	numberOfColumns := aNumberOfColumns.
-	gridSize := aNumberOfRows * aNumberOfColumns
 ]
 
 { #category : 'landscape indices' }
@@ -585,27 +511,14 @@ CMSpaceModel >> printOn: aStream [
 CMSpaceModel >> randomCell [
 	"Return a spatialEntityElement (aCell) picked randomly from the spatial grid."
 
-	^ self selectRandomlyFrom: self elementaryEntities
-]
-
-{ #category : 'private - init' }
-CMSpaceModel >> resetSpatialEntities [
-	
-	| cellClass |
-	self spatialEntities: Dictionary new. 
-	self cormasModel ifNil: [ ^ self ].
-	
-	cellClass := self cormasModel cellClass.
-	
-	self cormasModel resetEntities: cellClass.
-	self spatialEntitiesAt: cellClass name put: OrderedCollection new.
+	^ self selectRandomlyFrom: cormasModel cells
 ]
 
 { #category : 'accessing' }
 CMSpaceModel >> setBoundaryDirectionsFor: aCMSpatialEntity [
 	" Answer a <Collection> of direction (ex: (#E #SE #NE)) of the cell, without cell => the edge of the grid"
 
-	^ self nbConfiguration setBoundaryDirectionsFor: aCMSpatialEntity
+	^ self neighbourhoodConfiguration setBoundaryDirectionsFor: aCMSpatialEntity
 ]
 
 { #category : 'accessing' }
@@ -613,49 +526,14 @@ CMSpaceModel >> spaceModel [
 	^ self
 ]
 
-{ #category : 'private - accessing' }
-CMSpaceModel >> spatialEntities [
-
-	^ spatialEntities ifNil: [ spatialEntities := Dictionary new ]
-]
-
-{ #category : 'private - accessing' }
-CMSpaceModel >> spatialEntities: aDictionary [
-	" The spatial entities is a <Dictionary> of the receiver's cells "
-
-	spatialEntities := aDictionary
-]
-
-{ #category : 'accessing' }
-CMSpaceModel >> spatialEntitiesAt: aSpatialEntityName [
-	^ self spatialEntities at: aSpatialEntityName
-]
-
-{ #category : 'accessing' }
-CMSpaceModel >> spatialEntitiesAt: aSpatialEntityName put: anObject [
-
-	^ self spatialEntities 
-		at: aSpatialEntityName
-		put: anObject
-]
-
-{ #category : 'accessing' }
-CMSpaceModel >> spatialEntitiesAt: aSpatialEntityName withPovResultFor: povSelector [
-	"return spatialEntities associated with their povResult for a povSelector.
-	this is an optimised method sp√©cially for remote access"
-	
-	^(self spatialEntitiesAt: aSpatialEntityName) asOrderedCollection
-		collect: [:each | each -> (each getPovResultFor: povSelector)]
-]
-
 { #category : 'ESE (regular) - special locations' }
 CMSpaceModel >> upperLeftLocation [
-	^ self elementaryEntities at: 1
+	^ cormasModel cells first
 ]
 
 { #category : 'ESE (regular) - special locations' }
 CMSpaceModel >> upperRightLocation [
-	^ self elementaryEntities at: numberOfColumns
+	^ cormasModel cells at: numberOfColumns
 ]
 
 { #category : 'landscape indices' }
@@ -679,7 +557,7 @@ CMSpaceModel >> wayFromCell: cell1 toCell: cell2 [
 			invert := true].
 	cellsIntoRectangle := self cellsIntoRectangleFrom: firstCell to: lastCell.
 	way := OrderedCollection new.
-	self nbNeighbours = 8
+	self numberOfNeighbours = 8
 		ifTrue:
 			[| by |
 			firstCell columnNumber < lastCell columnNumber
@@ -709,14 +587,14 @@ CMSpaceModel >> wayFromCell: cell1 toCell: cell2 [
 							(cellsIntoRectangle
 								select:
 									[:c | c rowNumber = lastCell rowNumber and: [by * c columnNumber > (by * way last columnNumber)]])]].
-	self nbNeighbours = 4
+	self numberOfNeighbours = 4
 		ifTrue:
 			[way
 				addAll:
 					(cellsIntoRectangle select: [:c | c rowNumber = firstCell rowNumber]).
 			way
 				addAll: (cellsIntoRectangle select: [:c | c columnNumber = lastCell columnNumber])].
-	self nbNeighbours = 6
+	self numberOfNeighbours = 6
 		ifTrue:
 			[| by |
 			"nbLines odd 

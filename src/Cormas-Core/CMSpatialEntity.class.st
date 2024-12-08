@@ -223,14 +223,6 @@ CMSpatialEntity >> flashN [
 		self neighbourhood do: [ :v | v flash ] ]
 ]
 
-{ #category : 'environment - sensing - space' }
-CMSpatialEntity >> grid [
-	"Purpose: returns the grid, i.e. the list of all the spatial element entities.
-Return value: <Collection(SpatialElementEntity)>"
-	
-	^self spaceModel elementaryEntities
-]
-
 { #category : 'testing' }
 CMSpatialEntity >> hasNoOccupants [
 
@@ -550,6 +542,12 @@ Return value: <Collection(SpatialEntity)>"
 	collec := self neighbourhood asOrderedCollection.
 	collec addFirst: self.
 	^collec asArray
+]
+
+{ #category : 'environment - sensing - space' }
+CMSpatialEntity >> neighbourhoodWithNils [
+	
+	^ neighbourhoodWithNils
 ]
 
 { #category : 'environment - sensing - space' }

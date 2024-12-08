@@ -89,22 +89,10 @@ CMSpaceNeighbourhood >> eastCell: k [
 ]
 
 { #category : 'accessing' }
-CMSpaceNeighbourhood >> elementaryEntities [
-
-	^ self spaceModel elementaryEntities.
-]
-
-{ #category : 'accessing' }
 CMSpaceNeighbourhood >> elementaryEntitiesAt: anInteger [
 	" Answer a <Collection> of <CMSpatialEntity> cells at index anInteger "
 
-	^ self spaceModel elementaryEntities at: anInteger
-]
-
-{ #category : 'accessing' }
-CMSpaceNeighbourhood >> gridCellShape [
-
-	^ self spaceModel gridCellShape 
+	^ self spaceModel cells at: anInteger
 ]
 
 { #category : 'private - regular cells - instance creation' }
@@ -120,7 +108,6 @@ CMSpaceNeighbourhood >> initializeNeighbourhood [
 	1 to: self spaceModel gridSize do: [ :k | 
 		(self elementaryEntitiesAt: k) ifNotNil: [ 
 			self initializeOrderedNeighbourhood: k ] ].
-	self elementaryEntities do: #initNeighbourhood.
 ]
 
 { #category : 'initialization' }
@@ -129,7 +116,8 @@ CMSpaceNeighbourhood >> initializeOn: aSpaceModel [
 
 	aSpaceModel gridCellShape: self gridCellShapeType.
 	self spaceModel: aSpaceModel.
-	self spaceModel createElementaryEntities.
+	
+	spaceModel createCells.
 	self initializeNeighbourhood.
 ]
 
@@ -146,10 +134,12 @@ CMSpaceNeighbourhood >> isClosedEnvironment [
 	^ self spaceModel isClosedEnvironment
 ]
 
-{ #category : 'private - accessing' }
-CMSpaceNeighbourhood >> nbNeighbours [
-
-	^ self class cardinal
+{ #category : 'environment - sensing - space' }
+CMSpaceNeighbourhood >> nearestEmptyCellFor: aCMAgentLocation [
+	
+	^ (aCMAgentLocation nearestEmptyNeighborsWithinRadius: (self spaceModel numberOfRows max: self spaceModel numberOfColumns))
+		ifNotEmpty: [ : locations | self selectRandomlyFrom: locations ]
+		ifEmpty: [ nil ]
 ]
 
 { #category : 'private - regular cells - instance creation' }
@@ -169,10 +159,28 @@ CMSpaceNeighbourhood >> numberOfColumns [
 	^ self spaceModel numberOfColumns
 ]
 
+{ #category : 'private - accessing' }
+CMSpaceNeighbourhood >> numberOfNeighbours [
+
+	^ self class cardinal
+]
+
 { #category : 'private - regular cells - instance creation' }
 CMSpaceNeighbourhood >> numberOfRows [
 
 	^ self spaceModel numberOfRows
+]
+
+{ #category : 'initialization' }
+CMSpaceNeighbourhood >> setBoundaryDirectionsFor: aCMSpatialEntityElement [
+
+	| dirCollection |
+	dirCollection := Set new.
+	aCMSpatialEntityElement neighbourN ifNil: [ dirCollection add: #N ].
+	aCMSpatialEntityElement neighbourW ifNil: [ dirCollection add: #W ].
+	aCMSpatialEntityElement neighbourS ifNil: [ dirCollection add: #S ].
+	aCMSpatialEntityElement neighbourE ifNil: [ dirCollection add: #E ].
+	^ dirCollection
 ]
 
 { #category : 'private - regular cells - instance creation' }

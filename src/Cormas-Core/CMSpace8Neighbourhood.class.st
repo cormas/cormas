@@ -1,6 +1,6 @@
 Class {
 	#name : 'CMSpace8Neighbourhood',
-	#superclass : 'CMSquaredSpaceNeighbourhood',
+	#superclass : 'CMSpaceNeighbourhood',
 	#category : 'Cormas-Core-Space',
 	#package : 'Cormas-Core',
 	#tag : 'Space'

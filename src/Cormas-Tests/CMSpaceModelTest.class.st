@@ -90,16 +90,6 @@ CMSpaceModelTest >> testCellsOfLine [
 ]
 
 { #category : 'tests' }
-CMSpaceModelTest >> testIsIrregular [
-
-	self spaceModel initializeIrregular.
-	self assert: self spaceModel isIrregular.
-	self spaceModel gridCellShape: #regular.
-	self deny: self spaceModel isIrregular.
-
-]
-
-{ #category : 'tests' }
 CMSpaceModelTest >> testIsNotTorroidal [
 
 	self assert: self newModelWithClosedEnvironment isClosedEnvironment.
@@ -107,42 +97,25 @@ CMSpaceModelTest >> testIsNotTorroidal [
 ]
 
 { #category : 'tests' }
-CMSpaceModelTest >> testNbConfiguration [
+CMSpaceModelTest >> testNeighbourhoodConfiguration [
 
-	self spaceModel nbCount: 4.
-	self assert: (self spaceModel nbConfiguration isKindOf: CMSpace4Neighbourhood).
+	self spaceModel numberOfNeighbours: 4.
+	self assert: (self spaceModel neighbourhoodConfiguration isKindOf: CMSpace4Neighbourhood).
 	
-	self spaceModel nbCount: 8.
-	self assert: (self spaceModel nbConfiguration isKindOf: CMSpace8Neighbourhood). 
-
-	self spaceModel nbCount: 3.
-	self assert: (self spaceModel nbConfiguration isKindOf: CMSpace3Neighbourhood). 
+	self spaceModel numberOfNeighbours: 8.
+	self assert: (self spaceModel neighbourhoodConfiguration isKindOf: CMSpace8Neighbourhood).
 	
-	self spaceModel nbConfiguration: nil.
-	self assert: self spaceModel nbConfiguration isNil.
+	self spaceModel neighbourhoodConfiguration: nil.
+	self assert: self spaceModel neighbourhoodConfiguration isNil.
 ]
 
 { #category : 'tests' }
-CMSpaceModelTest >> testNbCount [
+CMSpaceModelTest >> testNumberOfNeighbours [
 
-	self spaceModel nbCount: 4.
-	self assert: self spaceModel nbNeighbours equals: 4.
-	self spaceModel nbCount: 3.
-	self assert: self spaceModel nbNeighbours equals: 3.
-
-	self spaceModel nbCount: #four.
-	self assert: self spaceModel nbNeighbours equals: 4.
-	self spaceModel nbCount: #six.
-	self assert: self spaceModel nbNeighbours equals: 6.
-]
-
-{ #category : 'tests' }
-CMSpaceModelTest >> testNbNeighbours [
-
-	self spaceModel nbCount: 4.
-	self assert: self spaceModel nbNeighbours equals: 4.
-	self spaceModel nbCount: 3.
-	self assert: self spaceModel nbNeighbours equals: 3.
+	self spaceModel numberOfNeighbours: 4.
+	self assert: self spaceModel numberOfNeighbours equals: 4.
+	self spaceModel numberOfNeighbours: 8.
+	self assert: self spaceModel numberOfNeighbours equals: 8.
 	
 
 
