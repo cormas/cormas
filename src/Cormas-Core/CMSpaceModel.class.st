@@ -65,24 +65,6 @@ CMSpaceModel class >> forModel: aCormasModel [
 		yourself
 ]
 
-{ #category : 'accessing' }
-CMSpaceModel >> allOccupants [
-	" Answer a <Collection> of all the located entities"
-
-	^ self cormasModel allTheEntities select: #isSituated
-]
-
-{ #category : 'accessing' }
-CMSpaceModel >> allTheEntities: aClass [
-	^ self cormasModel allTheEntities: aClass
-]
-
-{ #category : 'accessing' }
-CMSpaceModel >> allTheSituatedEntities: aClass [
-	
-	^self cormasModel allTheSituatedEntities: aClass
-]
-
 { #category : 'ESE (regular) - special locations' }
 CMSpaceModel >> cellAt: aRowIndex at: aColumnIndex [
 	

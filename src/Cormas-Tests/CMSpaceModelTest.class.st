@@ -54,13 +54,6 @@ CMSpaceModelTest >> spaceModel: anObject [
 ]
 
 { #category : 'tests' }
-CMSpaceModelTest >> testAllOccupants [
-
-	self assert: self spaceModel allOccupants size equals: 2.
-
-]
-
-{ #category : 'tests' }
 CMSpaceModelTest >> testCellAtAt [
 
 	self assert: (spaceModel cellAt: 1 at: 1) id equals: 1.

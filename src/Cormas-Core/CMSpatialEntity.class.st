@@ -126,13 +126,7 @@ ex: collResult =
 { #category : 'environment - sensing - agents' }
 CMSpatialEntity >> allOccupants [
 
-	"Purpose: returns all the entities located there
-Return value: <Collection(AgentLocation & ObjectLocation)>"
-
-	| collec |
-	collec := OrderedCollection new.
-	self theOccupants valuesDo: [ :v | collec addAll: v ].
-	^ collec
+	^ self theOccupants values flattened
 ]
 
 { #category : 'testing' }
@@ -261,12 +255,7 @@ Example: self hasOccupantType: #Tree"
 { #category : 'initialize-release' }
 CMSpatialEntity >> initOccupants [
 	
-	self allOccupants do: [:a | a leave]	"self spaceModel cormasModel class occupantClasses isEmpty 
-		ifFalse: 
-			[self allOccupants do: [:a | a leave].
-			theOccupants := Dictionary new.
-			self spaceModel cormasModel class occupantClasses 
-				do: [:e | theOccupants at: (e name) put: OrderedCollection new]]"
+	self allOccupants do: [:a | a leave]
 ]
 
 { #category : 'initialization' }

@@ -48,7 +48,7 @@ CMSpatialEntityTest >> testAllOccupants [
 
 	self
 		assert: cellWithTwoAgentsOfDifferentClasses allOccupants
-		equals: { cowJudy . goatBob } asOrderedCollection
+		equals: { cowJudy . goatBob }
 ]
 
 { #category : 'tests' }

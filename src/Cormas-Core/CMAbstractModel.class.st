@@ -243,22 +243,6 @@ CMAbstractModel >> allTheSituatedEntities [
 	^ self allTheEntities select: #isSituated
 ]
 
-{ #category : 'accessing - entities' }
-CMAbstractModel >> allTheSituatedEntities: aClass [
-	"Purpose: Returns a collection of all the situated instances of aClass (and sub classes) collected by cormasModel. Usefull for abstract classes
-Example: (self allTheSituatedEntities: Forager) is returning all the instances of restrained and unrestrained foragers that are situated on the space"
-	
-	| coll |
-	coll := OrderedCollection new.
-	aClass withAllSubclasses
-		do:
-			[:cl | 
-			cl isAbstract
-				ifFalse:
-					[coll addAll: ((self entitiesOfClass: cl) select: [:e | e isSituated])]].
-	^coll
-]
-
 { #category : 'control' }
 CMAbstractModel >> ask: aCollectionOrClass toDo: aBlock [
 	"Purpose: To ask a collection of instances or all the instances of a class to execute a method named by aSymbol. In case aCollecOrClass is a 	class, the entities are ordered according to their id. In case aCollecOrClass is a collection of instances, the order of the collection is 	kept.
