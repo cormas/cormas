@@ -47,15 +47,3 @@ CMSpace8Neighbourhood >> initializeOrderedNeighbourhood: k [
 		v at: 8 put: (self elementaryEntitiesAt: i) ].
 	^ (self elementaryEntitiesAt: k) neighbourhoodWithNils: v
 ]
-
-{ #category : 'initialization' }
-CMSpace8Neighbourhood >> setBoundaryDirectionsFor: aCMSpatialEntityElement [
-
-	| dirCollection |
-	dirCollection := super setBoundaryDirectionsFor: aCMSpatialEntityElement.
-	aCMSpatialEntityElement neighbourNE ifNil: [ dirCollection add: #NE ].
-	aCMSpatialEntityElement neighbourSE ifNil: [ dirCollection add: #SE ].
-	aCMSpatialEntityElement neighbourNW ifNil: [ dirCollection add: #NW ].
-	aCMSpatialEntityElement neighbourSW ifNil: [ dirCollection add: #SW ].
-	^ dirCollection
-]

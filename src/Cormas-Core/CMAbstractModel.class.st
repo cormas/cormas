@@ -544,24 +544,6 @@ Example: self dominance: #groupNumber"
 	^ self spaceModel dominance: anAttribute
 ]
 
-{ #category : 'utilities - space metrics' }
-CMAbstractModel >> edgeDensity: aClass [
-	"Purpose: Return the density of edges of an aggregate class instances as compared to the total size of the spatial grid.
-Argument: aClass should be an aggregate.
-Example: self edgeDensity: ForestAggregate"
-	
-	^self spaceModel edgeDensity: aClass
-]
-
-{ #category : 'utilities - space metrics' }
-CMAbstractModel >> edgeDensity: aClass totalArea: aNumber [
-	"Purpose: Return the density of edges of an aggregate class instances as compared to the specified total size of the area.
-Argument: aClass should be an aggregate. aNumber is the specified total area
-Example: self edgeDensity: ForestAggregate totalArea: 7436"
-	
-	^self spaceModel edgeDensity: aClass totalArea: aNumber
-]
-
 { #category : 'accessing - entities' }
 CMAbstractModel >> entitiesOfClass: aClass [
 	"Returns a collection of all the instances of aClass"
@@ -768,25 +750,6 @@ CMAbstractModel >> newEntity: aClass locatedAt: aCell [
 	| entity |
 	entity := self newEntity: aClass.
 	entity moveTo: aCell
-]
-
-{ #category : 'utilities - space metrics' }
-CMAbstractModel >> patchDensity: aClass [
-	"Purpose: Return the density of instances of an aggregate class as compared to the total size of the spatial grid (total size of aggregates / grid size).
-Argument: aClass should be an aggregate.
-Example: self patchDensity: ForestAggregate"
-
-	^ self spaceModel patchDensity: aClass
-]
-
-{ #category : 'utilities - space metrics' }
-CMAbstractModel >> patchDensity: aClass totalArea: aNumber [
-	"Purpose: Return the density of instances of an aggregate class as compared to the total specified total area.
-Argument: aClass should be an aggregate.
-aNumber is the specified total area
-Example: self patchDensity: ForestAggregate totalArea: 4875"
-	
-	^self spaceModel patchDensity: aClass totalArea: aNumber
 ]
 
 { #category : 'accessing - entities' }

@@ -171,18 +171,6 @@ CMSpaceNeighbourhood >> numberOfRows [
 	^ self spaceModel numberOfRows
 ]
 
-{ #category : 'initialization' }
-CMSpaceNeighbourhood >> setBoundaryDirectionsFor: aCMSpatialEntityElement [
-
-	| dirCollection |
-	dirCollection := Set new.
-	aCMSpatialEntityElement neighbourN ifNil: [ dirCollection add: #N ].
-	aCMSpatialEntityElement neighbourW ifNil: [ dirCollection add: #W ].
-	aCMSpatialEntityElement neighbourS ifNil: [ dirCollection add: #S ].
-	aCMSpatialEntityElement neighbourE ifNil: [ dirCollection add: #E ].
-	^ dirCollection
-]
-
 { #category : 'private - regular cells - instance creation' }
 CMSpaceNeighbourhood >> southCell: k [
 	k = 0

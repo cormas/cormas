@@ -36,14 +36,6 @@ CMSpatialEntityElement >> asString [
 	
 ]
 
-{ #category : 'environment - sensing - space' }
-CMSpatialEntityElement >> boundaryDirections [
-	"Returns a collection of direction (ex: (#E #SE #NE)) of the cell, without cell => the edge of the grid"
-	
-	^ self spaceModel setBoundaryDirectionsFor: self.
-
-]
-
 { #category : 'accessing' }
 CMSpatialEntityElement >> columnNumber [
 	"Purpose: returns the X coordinate of the cell in a regular spatial grid"

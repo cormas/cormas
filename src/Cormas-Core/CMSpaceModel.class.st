@@ -226,13 +226,6 @@ CMSpaceModel >> createCells [
 			spaceModel: self ].
 ]
 
-{ #category : 'defaults' }
-CMSpaceModel >> defaultGridSize [
-	" Answer a <Number> representing how many cells we create in the grid by default "
-	
-	^ 100
-]
-
 { #category : 'accessing' }
 CMSpaceModel >> dimensions [
 	" Answer a <Point> with the receiver's lines and columns "
@@ -271,30 +264,6 @@ CMSpaceModel >> dominance: attribute [
 				/ numberCells.
 			sum := sum + (pi * pi ln) ].
 	^ n ln + sum
-]
-
-{ #category : 'landscape indices' }
-CMSpaceModel >> edgeDensity: aClass [
-	"return the data (a number) to be recorded"
-
-	| size |
-	size := 0.
-	(self cormasModel
-		perform: (self cormasModel getterForEntityClass: aClass) asSymbol)
-		do: [ :a | size := size + a surround size ].
-	^ size / self cormasModel cells size
-]
-
-{ #category : 'landscape indices' }
-CMSpaceModel >> edgeDensity: aClass totalArea: aNumber [
-	"this method is created for cases where the totalArea is not equal to the total size of the grid"
-
-	| size |
-	size := 0.
-	(self cormasModel
-		perform: (self cormasModel getterForEntityClass: aClass))
-		do: [ :a | size := size + a perimeter ].
-	^ size / aNumber
 ]
 
 { #category : 'landscape indices' }
@@ -383,16 +352,6 @@ CMSpaceModel >> lowerRightLocation [
 	^ cormasModel cells at: numberOfColumns * numberOfRows
 ]
 
-{ #category : 'landscape indices' }
-CMSpaceModel >> nPatches: aClass [
-	"return the data (a number) to be recorded"
-
-	| aggregates |
-	aggregates := self cormasModel
-		perform: (self cormasModel getterForEntityClass: aClass).
-	^ aggregates size
-]
-
 { #category : 'accessing' }
 CMSpaceModel >> nearestEmptyCellFor: aCMAgentLocation [
 
@@ -468,26 +427,6 @@ CMSpaceModel >> numberOfRows: aNumberOfRows numberOfColumns: aNumberOfColumns [
 	numberOfColumns := aNumberOfColumns.
 ]
 
-{ #category : 'landscape indices' }
-CMSpaceModel >> patchDensity: aClass [
-	"return the data (a number) to be recorded"
-
-	| aggregates |
-	aggregates := self cormasModel
-		perform: (self cormasModel getterForEntityClass: aClass).
-	^ aggregates size / (self numberOfColumns * self numberOfRows)
-]
-
-{ #category : 'landscape indices' }
-CMSpaceModel >> patchDensity: aClass totalArea: aNumber [
-	"this method is created for cases where the totalArea is not equal to the total size of the grid"
-
-	| aggregates |
-	aggregates := self cormasModel
-		perform: (self cormasModel getterForEntityClass: aClass).
-	^ aggregates size / aNumber
-]
-
 { #category : 'printing' }
 CMSpaceModel >> printOn: aStream [
 	" Private - See superimplementor's comment "
@@ -512,18 +451,6 @@ CMSpaceModel >> randomCell [
 	"Return a spatialEntityElement (aCell) picked randomly from the spatial grid."
 
 	^ self selectRandomlyFrom: cormasModel cells
-]
-
-{ #category : 'accessing' }
-CMSpaceModel >> setBoundaryDirectionsFor: aCMSpatialEntity [
-	" Answer a <Collection> of direction (ex: (#E #SE #NE)) of the cell, without cell => the edge of the grid"
-
-	^ self neighbourhoodConfiguration setBoundaryDirectionsFor: aCMSpatialEntity
-]
-
-{ #category : 'accessing' }
-CMSpaceModel >> spaceModel [
-	^ self
 ]
 
 { #category : 'ESE (regular) - special locations' }
