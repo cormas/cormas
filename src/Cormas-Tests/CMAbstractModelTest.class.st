@@ -64,6 +64,28 @@ CMAbstractModelTest >> testCells [
 ]
 
 { #category : 'tests-accessing-entities' }
+CMAbstractModelTest >> testCellsBetweenRowAndRowColumnAndColumn [
+
+	| m cells |
+	
+	m := CMMockModel new
+		createGridNumberOfRows: 20
+			numberOfColumns: 10
+			neighbourhood: 4
+			closed: true;
+		yourself.
+	cells := m
+		selectCellsBetweenRow: 13
+		andRow: 15
+		column: 6
+		andColumn: 8.
+	self assert: cells size equals: 9.
+	cells do: [ :cell | 
+		self assert: (cell columnNumber between: 6 and: 8).
+		self assert: (cell rowNumber between: 13 and: 15) ]
+]
+
+{ #category : 'tests-accessing-entities' }
 CMAbstractModelTest >> testCentralCell [
 	| m |
 	m := CMMockModel new
@@ -230,28 +252,6 @@ CMAbstractModelTest >> testPickRandomEntityOfClassConstrainedBy [
 CMAbstractModelTest >> testPickRandomUnoccupiedCell [
 
 	self assert: model pickRandomUnoccupiedCell theOccupants isEmpty
-]
-
-{ #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testSelectCellsBetweenLine1Line2AndColumn1Column2 [
-
-	| m cells |
-	
-	m := CMMockModel new
-		createGridNumberOfRows: 20
-			numberOfColumns: 10
-			neighbourhood: 4
-			closed: true;
-		yourself.
-	cells := m
-		selectCellsBetweenLine1: 13
-		line2: 15
-		andColumn1: 6
-		column2: 8.
-	self assert: cells size equals: 9.
-	cells do: [ :cell | 
-		self assert: (cell columnNumber between: 6 and: 8).
-		self assert: (cell rowNumber between: 13 and: 15) ]
 ]
 
 { #category : 'tests-accessing-entities' }

@@ -80,7 +80,7 @@ CMSpaceModelTest >> testCellAtAt [
 CMSpaceModelTest >> testCellsOfLine [
 
 	| cells |
-	cells := self spaceModel cellsOfLine: 1.
+	cells := self spaceModel cellsOfRow: 1.
 	
 	self assert: cells size equals: 4.
 	

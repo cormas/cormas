@@ -96,7 +96,7 @@ CMSpaceModel >> cells [
 ]
 
 { #category : 'ESE (regular) - special locations' }
-CMSpaceModel >> cellsBetweenColumn1: colNumber1 andColumn2: colNumber2 [
+CMSpaceModel >> cellsBetweenColumn: colNumber1 andColumn: colNumber2 [
 	"Return the cells between the colNumber1 and the colNumber2 of the spatial grid.
 colNumber1   <Integer> lineNumber = Positive Integer
 colNumber2   <Integer> colNumber = Positive Integer"
@@ -111,7 +111,7 @@ colNumber2   <Integer> colNumber = Positive Integer"
 ]
 
 { #category : 'ESE (regular) - special locations' }
-CMSpaceModel >> cellsBetweenLine1: lineNumber1 andLine2: lineNumber2 [
+CMSpaceModel >> cellsBetweenRow: lineNumber1 andRow: lineNumber2 [
 	"Return the cells between the lineNumber1 and the lineNumber2 of the spatial grid.
 lineNumber1   <Integer> lineNumber = Positive Integer
 lineNumber2   <Integer> colNumber = Positive Integer"
@@ -121,31 +121,29 @@ lineNumber2   <Integer> colNumber = Positive Integer"
 		ifTrue: [ -1 ]
 		ifFalse: [ 1 ].
 	cells := OrderedCollection new.
-	lineNumber1 to: lineNumber2 by: byStep do: [ :i | cells addAll: (self cellsOfLine: i) ].
+	lineNumber1 to: lineNumber2 by: byStep do: [ :i | cells addAll: (self cellsOfRow: i) ].
 	^ cells
 ]
 
 { #category : 'ESE (regular) - special locations' }
-CMSpaceModel >> cellsBetweenLine1: lineNumber1 line2: lineNumber2 andColumn1: colNumber1 column2: colNumber2 [
-	"Purpose: Return the cells between the lines lineNumber1 and lineNumber2, and between the columns colNumber1 and colNumber2 of the spatial grid. The Cells are sorted by id.
-Arguments: lineNumber1   <Integer> lineNumber = Positive Integer
-Arguments: lineNumber2   <Integer> colNumber = Positive Integer
-Arguments: colNumber1   <Integer> lineNumber = Positive Integer
-Arguments: colNumber2   <Integer> colNumber = Positive Integer
-Example:  cellsBetweenLine1: 1 line2: 6 andColumn1: 2 column2: 3  ->  a collection of cells between columns 2 and 3, and between lines 1 and 6, and ordered from line 1 to line 6"
+CMSpaceModel >> cellsBetweenRow: aRowNumber1 andRow: aRowNumber2 column: aColumnNumber1 andColumn: aColumnNumber2 [
 
-	| l1 l2 c1 c2 cellsCol |
-	l1 := lineNumber1 min: lineNumber2.
-	l2 := lineNumber1 max: lineNumber2.
-	c1 := colNumber1 min: colNumber2.
-	c2 := colNumber1 max: colNumber2.
-	cellsCol := self cellsBetweenColumn1: c1 andColumn2: c2.
-	^ (self cellsBetweenLine1: l1 andLine2: l2)
-		select: [ :c | cellsCol includes: c ]
+	| topRowNumber bottomRowNumber leftColumnNumber rightColumnNumber result |
+	
+	topRowNumber := aRowNumber1 min: aRowNumber2.
+	bottomRowNumber := aRowNumber1 max: aRowNumber2.
+	
+	leftColumnNumber := aColumnNumber1 min: aColumnNumber2.
+	rightColumnNumber := aColumnNumber1 max: aColumnNumber2.
+	
+	result := self cellsBetweenColumn: leftColumnNumber andColumn: rightColumnNumber.
+	
+	^ (self cellsBetweenRow: topRowNumber andRow: bottomRowNumber)
+		select: [ :cell | result includes: cell ]
 ]
 
 { #category : 'ESE (regular) - special locations' }
-CMSpaceModel >> cellsIntoRectangleFrom: cell1 to: cell2 [
+CMSpaceModel >> cellsInRectangleFrom: cell1 to: cell2 [
 	"Return the cells between the lineNumber and the colNumber of the spatial grid. The Cells are ordered from cell1 to cell2.
 cell1   <SpatialEntityElement>  
 cell2   <SpatialEntityElement> "
@@ -165,11 +163,11 @@ cell2   <SpatialEntityElement> "
 		ifTrue:
 			[firstCell rowNumber
 				to: lastCell rowNumber
-				do: [:i | cells addAll: (self cellsOfLine: i)]]
+				do: [:i | cells addAll: (self cellsOfRow: i)]]
 		ifFalse:
 			[firstCell rowNumber
 				to: lastCell rowNumber
-				do: [:i | cells addAll: (self cellsOfLine: i) reverse]].
+				do: [:i | cells addAll: (self cellsOfRow: i) reverse]].
 	cells := cells
 		select:
 			[:c | 
@@ -189,15 +187,13 @@ colNumber   <Integer> colNumber = Positive Integer"
 ]
 
 { #category : 'ESE (regular) - special locations' }
-CMSpaceModel >> cellsOfLine: lineNumber [
-	" Answer a <Collection> of <> cells in the lineNumber of the spatial grid.
-	lineNumber   <Integer> lineNumber = Positive Integer"
+CMSpaceModel >> cellsOfRow: aRowNumber [
 
-	^ cormasModel cells select: [ :cell | cell rowNumber = lineNumber ]
+	^ cormasModel cells select: [ :cell | cell rowNumber = aRowNumber ]
 ]
 
 { #category : 'ESE (regular) - special locations' }
-CMSpaceModel >> centralLocation [
+CMSpaceModel >> centralCell [
 	(numberOfRows even or: [ numberOfColumns even ])
 		ifTrue: [ ^ self error: 'Grid dimensions is not odd' ].
 	^ cormasModel cells at: (numberOfRows * numberOfColumns / 2) asInteger + 1
@@ -343,12 +339,12 @@ CMSpaceModel >> isIrregular [
 ]
 
 { #category : 'ESE (regular) - special locations' }
-CMSpaceModel >> lowerLeftLocation [
+CMSpaceModel >> lowerLeftCell [
 	^ cormasModel cells at: numberOfColumns * (numberOfRows - 1) + 1
 ]
 
 { #category : 'ESE (regular) - special locations' }
-CMSpaceModel >> lowerRightLocation [
+CMSpaceModel >> lowerRightCell [
 	^ cormasModel cells at: numberOfColumns * numberOfRows
 ]
 
@@ -454,12 +450,12 @@ CMSpaceModel >> randomCell [
 ]
 
 { #category : 'ESE (regular) - special locations' }
-CMSpaceModel >> upperLeftLocation [
+CMSpaceModel >> upperLeftCell [
 	^ cormasModel cells first
 ]
 
 { #category : 'ESE (regular) - special locations' }
-CMSpaceModel >> upperRightLocation [
+CMSpaceModel >> upperRightCell [
 	^ cormasModel cells at: numberOfColumns
 ]
 
@@ -482,7 +478,7 @@ CMSpaceModel >> wayFromCell: cell1 toCell: cell2 [
 			[firstCell := cell2.
 			lastCell := cell1.
 			invert := true].
-	cellsIntoRectangle := self cellsIntoRectangleFrom: firstCell to: lastCell.
+	cellsIntoRectangle := self cellsInRectangleFrom: firstCell to: lastCell.
 	way := OrderedCollection new.
 	self numberOfNeighbours = 8
 		ifTrue:

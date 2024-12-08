@@ -310,7 +310,7 @@ CMAbstractModel >> cells [
 CMAbstractModel >> centralCell [
 	"Purpose: returns the cell located at the center of the spatial grid. Number of lines and number of columns of the spatial grid have to be odd"
 
-	^ self spaceModel centralLocation
+	^ self spaceModel centralCell
 ]
 
 { #category : 'referencing entities' }
@@ -708,14 +708,14 @@ CMAbstractModel >> initializeWithoutParameters [
 CMAbstractModel >> lowerLeftCell [
 	"Purpose: returns the cell located at the lower left location of the spatial grid"
 
-	^ self spaceModel lowerLeftLocation
+	^ self spaceModel lowerLeftCell
 ]
 
 { #category : 'accessing - entities' }
 CMAbstractModel >> lowerRightCell [
 	"Purpose: returns the cell located at the lower right location of the spatial grid"
 
-	^ self spaceModel lowerRightLocation
+	^ self spaceModel lowerRightCell
 ]
 
 { #category : 'utilities - space metrics' }
@@ -903,7 +903,7 @@ CMAbstractModel >> resetEntities: aClass [
 ]
 
 { #category : 'accessing - entities' }
-CMAbstractModel >> selectCellsBetweenLine1: lineNumber1 line2: lineNumber2 andColumn1: colNumber1 column2: colNumber2 [
+CMAbstractModel >> selectCellsBetweenRow: lineNumber1 andRow: lineNumber2 column: colNumber1 andColumn: colNumber2 [
 	"Purpose: Return the cells between the lines lineNumber1 and lineNumber2, and between the columns colNumber1 and colNumber2 of the spatial grid. The Cells are sorted by id.
 Arguments: lineNumber1   <Integer> lineNumber = Positive Integer
 Arguments: lineNumber2   <Integer> colNumber = Positive Integer
@@ -912,10 +912,10 @@ Arguments: colNumber2   <Integer> colNumber = Positive Integer
 Example:  cellsBetweenLine1: 1 line2: 6 andColumn1: 2 column2: 3  ->  a collection of cells between columns 2 and 3, and between lines 1 and 6, and ordered from line 1 to line 6"
 
 	^ self spaceModel
-		cellsBetweenLine1: lineNumber1
-		line2: lineNumber2
-		andColumn1: colNumber1
-		column2: colNumber2
+		cellsBetweenRow: lineNumber1
+		andRow: lineNumber2
+		column: colNumber1
+		andColumn: colNumber2
 ]
 
 { #category : 'accessing - entities' }
@@ -925,7 +925,7 @@ CMAbstractModel >> selectCellsInRectangleOriginCell: cell1 cornerCell: cell2 [
 	Arguments : cell2   <SpatialEntityElement>
 	Example: self createAggregate: City from: (self selectCellsInRectangleOriginCell: self upperLeftCell  cornerCell: self pickCell)"
 
-	^ self spaceModel cellsIntoRectangleFrom: cell1 to: cell2
+	^ self spaceModel cellsInRectangleFrom: cell1 to: cell2
 ]
 
 { #category : 'accessing - entities' }
@@ -943,7 +943,7 @@ CMAbstractModel >> selectCellsOfLine: lineNumber [
 	Arguments : lineNumber   <Integer> lineNumber = Positive Integer
 	Example: self ask: (self selectCellsOfLine: 2) toDo: #flash"
 
-	^ self spaceModel cellsOfLine: lineNumber
+	^ self spaceModel cellsOfRow: lineNumber
 ]
 
 { #category : 'init - spatial entities' }
@@ -1051,14 +1051,14 @@ Example: See the models Conway http://cormas.cirad.fr/en/applica/conway.htm or F
 CMAbstractModel >> upperLeftCell [
 	"Purpose: returns the cell located at the upper left location of the spatial grid"
 
-	^ self spaceModel upperLeftLocation
+	^ self spaceModel upperLeftCell
 ]
 
 { #category : 'accessing - entities' }
 CMAbstractModel >> upperRightCell [
 	"Purpose: return the cell located at the upper right location of the spatial grid"
 
-	^ self spaceModel upperRightLocation
+	^ self spaceModel upperRightCell
 ]
 
 { #category : 'utilities - space metrics' }
