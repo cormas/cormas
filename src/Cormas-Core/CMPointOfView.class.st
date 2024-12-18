@@ -111,7 +111,7 @@ CMPointOfView >> initialize [
 	super initialize.
 	
 	color := Color gray.
-	size := 20.
+	size := 0.3.
 	shape := #circle
 ]
 

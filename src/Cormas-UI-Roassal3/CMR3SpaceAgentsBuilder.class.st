@@ -122,19 +122,13 @@ CMR3SpaceAgentsBuilder >> moveAgentShape: anAgentShape [
 	
 	pov := agent perform: agent class activePovSelector.
 	
-	pov isForImage
-		ifTrue: [ 
-			anAgentShape
-				paint: (self paintFromImage: pov image);
-				scaleBy: 0.5  ]
-		ifFalse: [
-			anAgentShape
-				color: pov color;
-				scaleBy: 0.5 ].
+	pov isForImage ifTrue: [ 
+		anAgentShape
+			paint: (self paintFromImage: pov image);
+			extent: pov image extent ].
 	
 	anAgentShape
-		"@ (RSPopup text: agent detailsOfPOV);"
-		size: pov size;
+		scaleBy: 16 / anAgentShape extent max * pov size;
 		translateTo: (cell columnNumber @ cell rowNumber * cellSize) - (cellSize / 2)
 ]
 
@@ -150,19 +144,14 @@ CMR3SpaceAgentsBuilder >> shapeFor: anObject index: aNumber [
 	| pov shape |
 	pov := anObject perform: anObject class activePovSelector.
 	
-	self masterShape: (pov isForImage
-		ifTrue: [ 
-			RSBox new ]
-		ifFalse: [ 
-			(RSShapeFactory perform: pov shape)
-				color: pov color;
-				yourself ]).
+	self masterShape: ((RSShapeFactory perform: pov shape)
+		color: pov color;
+		extent: 20@20;
+		yourself).
 			
 	shape := super shapeFor: anObject index: aNumber.
 	
-	shape
-		size: 10;
-		model: anObject.
+	shape model: anObject.
 		
 	isDraggable ifTrue: [
 		self makeAgentShapeDraggable: shape ].
