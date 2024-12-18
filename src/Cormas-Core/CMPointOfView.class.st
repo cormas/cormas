@@ -73,6 +73,15 @@ CMPointOfView class >> shape: aSymbol [
 		yourself
 ]
 
+{ #category : 'instanceCreation' }
+CMPointOfView class >> shape: aSymbol size: aNumber [
+
+	^ self new
+		shape: aSymbol;
+		size: aNumber;
+		yourself
+]
+
 { #category : 'accessing' }
 CMPointOfView class >> size: aNumber [
 
