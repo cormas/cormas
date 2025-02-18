@@ -41,3 +41,19 @@ Type the name of your model. In our case, we will call it _"Robot Forager"_. All
 Once you click on _"Create"_ button, Cormas will generate a package _"RobotForager-Model"_ and a class _"RFModel"_. If everything goes well, a System Browser will open on this new class. Now we can start coding!
 
 ![](_media/robot-forager/3-new-model-browser.png)
+
+## Step 2. Create a Cell class
+
+We will start by creating a class for a cell of our spatial grid. Cell will define a location where robots and minerals can be located. To create a new class, you can right-click on any of the existing classes and select _"New class"_ from the menu. You will see a window with a template class definition.
+
+![](_media/robot-forager/4-new-class.png)
+
+Alsternatively, you can edit the definition of any existing class in the bottom part of the System Browser. As soon as you change the name and hit _"Save"_ (_Ctrl+S_ on Windows and Linux or _Cmd+S_ on Mac), the new class will be created.
+
+![](_media/robot-forager/5-new-cell-class.png)
+
+In our case, the cell class will be called _"RFCell"_ (remember to use the prefix!) and it will be the subclass of _"CMSpatialEntityElement"_ - a default superclass for spatial cells in Cormas.
+
+```smalltalk
+CMSpatialEntityElement << #RFCell	slots: {};	package: 'RobotForager-Model'
+```
