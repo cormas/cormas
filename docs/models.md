@@ -11,16 +11,13 @@ Over the years, Cormas community has produced many wonderful models that are ava
 Some of those are simple models to teach agent-based modelling or demonstrate certain features of Cormas.
 Others are more complex models that were created for various research projects and applied in the field in Europe, Africa, South America, or South-East Asia.
 
-You can find the complete list of our published models on the [old Cormas website](http://cormas.cirad.fr/fr/applica/applica.htm).
+You can find the complete list of our published models on the [old Cormas website](https://cormas.cirad.fr/en/applications).
 
-> **Note:** The old website is outdated and does not open on some modern browsers. Make sure that you load it with HTTP and not HTTPS protocol: http://cormas.cirad.fr. If you still can not load the old website, please [contact us](/contact) on Discord.
+The old models collection contains _90 models_ in total. You can look at the [complete list](https://cormas.cirad.fr/en/applications/tous-les-modeles) of browse them by categories:
 
-The old models collection contains _90 models_ in total. You can look at the [complete list](http://cormas.cirad.fr/fr/applica/tousmodeles.htm) of browse them by categories:
-
-- [Models on renewable resource management](http://cormas.cirad.fr/fr/applica/ressource.htm) _(15 models)_
-- [Value chains and exchanges](http://cormas.cirad.fr/fr/applica/economie.htm) _(5 models)_
-- [Common areas and multiple uses](http://cormas.cirad.fr/fr/applica/espace.htm) _(16 models)_
-- [Application of ABM for serious games](http://cormas.cirad.fr/fr/applica/jeuderole.htm) _(16 models)_
-- [Theoretical models](http://cormas.cirad.fr/fr/applica/theorique.htm) _(14 models)_
-- [Didactic models](http://cormas.cirad.fr/fr/applica/didactique.htm) _(19 models)_
-- [Coupled models](http://cormas.cirad.fr/fr/applica/couplage.htm) _(7 models)_
+- [Models on renewable resource management](https://cormas.cirad.fr/en/applications/gestion-de-ressources) _(15 models)_
+- [Supply chains and exchanges](https://cormas.cirad.fr/en/applications/filieres-echanges) _(5 models)_
+- [Common areas and multiple uses](https://cormas.cirad.fr/en/applications/dynamiques-d-occupation-de-l-espace) _(16 models)_
+- [Application of ABM for serious games](https://cormas.cirad.fr/en/applications/jeux-de-roles) _(16 models)_
+- [Theoretical models](https://cormas.cirad.fr/en/applications/modeles-theoriques) _(14 models)_
+- [Didactic models](https://cormas.cirad.fr/en/applications/modeles-didactiques) _(19 models)_
