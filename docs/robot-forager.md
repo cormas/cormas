@@ -183,3 +183,36 @@ RFModel >> initSmall    <init>    self        createGridNumberOfRows: 5     
 Now, when you open (or simply re-initialize) your simulation, you should see two robots located somewhere on the grid.
 
 ![](_media/robot-forager/13-adding-robots.png)
+
+Congratulations! You have created your first agents :) At this point, they are not doing anythig other than simply "exist" in your simulation. In the next step, we will define a first action for our robots.
+
+## Step 6. Make robots move
+
+Actions are special methods that autonomous agents can _"perform"_ during the simulation. The first action that we will define for our robots will be called `moveRandomly` - as the name suggests, it will make robots move randomly on the spatial grid. We add a pragma `<action>` to tell Cormas that this is an _"action"_ method. We will call a method `randomWalk` provided by the trait `TCMLocated`. This method will make simply select a random neighbouring cell and make the robot move there.
+
+```smalltalk
+RFRobot >> moveRandomly
+	<action>
+	self randomWalk
+```
+
+Now we modify the `step` method of `RFModel` to ask all robots to move randomly at each step of the simulation.
+
+```smalltalk
+RFModel >> step    <control>    robots do: [ :each | each moveRandomly ]
+```
+
+You can now come back to your simulation and click on the _"Step"_ button (1) to perform one step. You can also click on the _"Run"_ button (2) to make the simulation run for the given number of steps at a given speed.
+
+![](_media/robot-forager/14-step-run.png)
+
+Since we added the `<action>` pragma to the `moveRandomly` method, Cormas has added it to the list of actions available to robots. If you right-click on any robot on the spatial grid, a menu will pop-up allowing you to perform this action. You can also _"Kill"_ a robot (destroy it and remove it from the simulation) or drag-n-drop it to a different location.
+
+![](_media/robot-forager/15-move-randomly-action.png)
+
+If you run the simulation long enough, you will notice a problem: sometimes robots move randomly into the same cell, even though, at the very beginning of this tutorial, we have specified that "Multiple robots should never appear on the same cell". To ensure that this doesn't happen, we modify the `moveRandomly` method and instead of calling the `randomWalk` method, we will call `randomWalkConstrainedBy:` - this method acceps a block as an argument allowing us to specify a condition for selecting candidate cells to which an agent can move. We will then use a method of cell called `hasOccupantsOfClass:` which returns `true` if the cell has at least one occupant of a given class. We will negate the result using the `not` method, thus specifying theat the candidate cell must **not** have any agents of class `RFRobot` in it.
+
+```smalltalk
+RFRobot >> moveRandomly	<action>	self randomWalkConstrainedBy: [ :cell |		(cell hasOccupantsOfClass: RFRobot) not ]
+```
+If you run the simulation again, the robots should move randomly but never come to the same cell.
