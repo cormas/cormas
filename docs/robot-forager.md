@@ -327,3 +327,39 @@ Now you can re-initialize your simulation (to make sure that the robots are re-c
 If you right-click on any robot and then click on _"Inspect"_, you should be able to explore the `collectedMinerals` collection of that robot and see that it contains all the minerals that the robet has collected. 
 
 ![](_media/robot-forager/17-collected-minerals.png)
+
+## Step 9. Add some probes
+
+Probes are the methods that perform numerical measurements at every step of the simulation. They define the columns of a dataset that will be recorded. In this tutorial, we will add two probes to our model: one to measure the **number of collected minerals** and another one to measure the **number of remaining minerals**.
+
+We start by adding a method `numberOfCollectedMinerals` to `RFModel` and adding a pragma `<probeNamed: color:>` to it. This pragma accepts two arguments: the probe name that will be displayed in the dataset and the hex code of a color that will be used for charting.
+
+```smalltalk
+RFModel >> numberOfCollectedMinerals
+	<probeNamed: 'Collected minerals' color: '00B44C'>
+	^ robots sum: [ :each | each collectedMinerals size ]
+```
+
+The hex code in teh method above corresponds to `CMColor green`. You can get a hex code of any color in Pharo by sending a message `asHexString` to it. For example:
+
+```smalltalk
+CMColor green asHexString. "00B44C"
+```
+
+To implement the second probe, we count the number of minerals that are still located on the grid - the ones that have a `patch` (cell) which is not `nil`.
+
+```smalltalk
+RFModel >> numberOfRemainingMinerals
+	<probeNamed: 'Remaining minerals' color: 'E5B80B'>	^ minerals count: [ :each | each patch isNotNil ]
+```
+You can now run the simulation and click on the _"Data"_ tab to see the dataset that is being collected.
+
+![](_media/robot-forager/18-probes-data.png)
+
+You can also click on the _"Charts"_ tab to get this data visualized.
+
+![](_media/robot-forager/19-probes-charts.png)
+
+By clicking on the _"Probes"_ button (with the eye icon) in the top right corner of the _"Charts"_ page, you can select or unselect the probes that are being visualized.
+
+![](_media/robot-forager/20-probes-select.png)
