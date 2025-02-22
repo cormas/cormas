@@ -153,7 +153,7 @@ RFRobot >> pov
 	<pov>
 	^ CMPointOfView
 		color: CMColor blue
-		shape: #star.
+		shape: #star
 ```
 
 Now we must add robots to our model and tell Cormas how to instantiate them. First, we add an instance variable `robots` to our `RFModel` class.
@@ -177,7 +177,7 @@ RFModel >> robots	<getterFor: #RFRobot>	^ robots
 Now we add one line to the end of our `initSmall` method telling Cormas to create two robots located randomly on the grid but only in those cells that are not occupied by other agents (the cells where robots would be _"alone"_.
 
 ```smalltalk
-RFModel >> initSmall    <init>    self        createGridNumberOfRows: 5        numberOfColumns: 5        neighbourhood: 8        closed: true.	self createN: 2 randomlyLocatedAloneEntities: RFRobot.
+RFModel >> initSmall    <init>    self        createGridNumberOfRows: 5        numberOfColumns: 5        neighbourhood: 8        closed: true.	self createN: 2 randomlyLocatedAloneEntities: RFRobot
 ```
 
 Now, when you open (or simply re-initialize) your simulation, you should see two robots located somewhere on the grid.
@@ -216,3 +216,49 @@ If you run the simulation long enough, you will notice a problem: sometimes robo
 RFRobot >> moveRandomly	<action>	self randomWalkConstrainedBy: [ :cell |		(cell hasOccupantsOfClass: RFRobot) not ]
 ```
 If you run the simulation again, the robots should move randomly but never come to the same cell.
+
+## Step 7: Add minerals
+
+In this tutorial, we will define minerals as agents. They will not do anything but this is just a simple way to locate them on a spatial grid. We start by adding a new subclass or `CMAgent` called `RFMineral` which and adding a trait `TCMLocated` to it.
+
+```smalltalk
+CMAgent << #RFMineral	traits: {TCMLocated};	slots: {};	package: 'RobotForager-Model'
+```
+
+We define a `pov` method to specify that minerals should have the shape of _"diamond"_ their color should be _"gold"_.
+
+```smalltalk
+RFMineral >> pov
+	<pov>
+	^ CMPointOfView
+		color: CMColor gold
+		shape: #diamond
+```
+
+Once again, we must add an instance variable `minerals` to the `RFModel` class and assign an empty `OrderedCollection` to it in the `initialize` method of the model.
+
+```smalltalk
+CMAbstractModel << #RFModel	slots: { #cells . #robots . #minerals };	package: 'RobotForager-Model'
+```
+```smalltalk
+initialize	super initialize.	cells := OrderedCollection new.	robots := OrderedCollection new.	minerals := OrderedCollection new
+```
+
+We must also provide a getter accessor for the collection.
+
+```smalltalk
+RFModel >> minerals
+	<getterFor: #RFMineral>
+	^ minerals
+```
+
+Now we add another line at the end of the `initSmall` method and tell Cormas to create 20 minerals located randomly in the cells that are not occupied by aany other agents.
+
+```smalltalk
+RFModel >> initSmall    <init>    self        createGridNumberOfRows: 5        numberOfColumns: 5        neighbourhood: 8        closed: true.	self createN: 2 randomlyLocatedAloneEntities: RFRobot.
+	self createN: 20 randomlyLocatedAloneEntities: RFMineral
+```
+
+If you re-initialize your simulation now, you should see 20 minerals as well as 2 robots.
+
+![](_media/robot-forager/16-adding-minerals.png)
