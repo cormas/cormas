@@ -138,4 +138,48 @@ You can also select the _"Inspector"_ tab of the Simulation window. This will op
 
 ![](_media/robot-forager/12-simulation-inspector.png)
 
-## Step 5. Add minerals
+## Step 5. Add robots
+
+Open SystemBrowser again and create a new class called `RFRobot`. It should be a subclass of `CMAgent` - a common superclass for all Cormas agents. Since we want our agent to be located on the grid, we will use the trait `TCMLocated` which will insert all the methods for spatial interaction into our class. [Traits](https://github.com/pharo-open-documentation/pharo-wiki/blob/master/General/Traits.md) are composable units of behavior that are used in Pharo as an alternative to multiple inheritance. They allow us to group methods related to certain functionalities and reuse them in classes that belong to different inheritance hierarchies.
+
+```smalltalk
+CMAgent << #RFRobot	traits: {TCMLocated};	slots: {};	package: 'RobotForager-Model'
+```
+
+We add a _"pov"_ (point of view) method to describe how the agent should be visualized on the grid. Cormas allows you to define many different points of view methods and change them while the simulation is running. We will call this method `pov` but you can choose any name you like. The only requirement is to include a `<pov>` pragma. Our method will return an instance of a `CMPointOfView` class specifying that the color of our agents should be blue and the shape should be a _"star"_. We will use the colors defined in `CMColor` class instead of the standard Pharo `Color` because they are more aesthetic.
+
+```smalltalk
+RFRobot >> pov
+	<pov>
+	^ CMPointOfView
+		color: CMColor blue
+		shape: #star.
+```
+
+Now we must add robots to our model and tell Cormas how to instantiate them. First, we add an instance variable `robots` to our `RFModel` class.
+
+```smalltalk
+CMAbstractModel << #RFModel	slots: { #cells . #robots };	package: 'RobotForager-Model'
+```
+
+We update the `initialize` method to assign an empty `OrderedCollection` to this variable.
+
+```smalltalk
+RFModel >> initialize	super initialize.	cells := OrderedCollection new.	robots := OrderedCollection new
+```
+
+Then we define a getter accessor for this collection. Remember to include the `<getterFor:>` pragma.
+
+```smalltalk
+RFModel >> robots	<getterFor: #RFRobot>	^ robots
+```
+
+Now we add one line to the end of our `initSmall` method telling Cormas to create two robots located randomly on the grid but only in those cells that are not occupied by other agents (the cells where robots would be _"alone"_.
+
+```smalltalk
+RFModel >> initSmall    <init>    self        createGridNumberOfRows: 5        numberOfColumns: 5        neighbourhood: 8        closed: true.	self createN: 2 randomlyLocatedAloneEntities: RFRobot.
+```
+
+Now, when you open (or simply re-initialize) your simulation, you should see two robots located somewhere on the grid.
+
+![](_media/robot-forager/13-adding-robots.png)
