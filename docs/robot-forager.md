@@ -7,6 +7,8 @@ This model is composed of three elements:
 2. Minerals that can be located in those cells
 3. Robots that move across the cells and collect minerals
 
+The complete implementation can be found in our [robot-forager-model](https://github.com/cormas/robot-forager-model/tree/main/src/RobotForager-Model) repository.
+
 ![](_media/robot-forager/0-example-space.png)
 
 To make the model description more precise:
@@ -146,7 +148,7 @@ Open SystemBrowser again and create a new class called `RFRobot`. It should be a
 CMAgent << #RFRobot	traits: {TCMLocated};	slots: {};	package: 'RobotForager-Model'
 ```
 
-We add a _"pov"_ (point of view) method to describe how the agent should be visualized on the grid. Cormas allows you to define many different points of view methods and change them while the simulation is running. We will call this method `pov` but you can choose any name you like. The only requirement is to include a `<pov>` pragma. Our method will return an instance of a `CMPointOfView` class specifying that the color of our agents should be blue and the shape should be a _"star"_. We will use the colors defined in `CMColor` class instead of the standard Pharo `Color` because they are more aesthetic.
+We add a _"pov"_ (point of view) method to describe how the agent should be visualized on the grid. Cormas allows you to define many different points of view methods and change them while the simulation is running. We will call this method `pov` but you can choose any name you like. The only requirement is to include a `<pov>` pragma. Our method will return an instance of a `CMPointOfView` class specifying that the color of our agents should be blue, the shape should be a _"star"_, and the size should be 0.6 (60% of the cell; default size is 0.3). We will use the colors defined in `CMColor` class instead of the standard Pharo `Color` because they are more aesthetic.
 
 ```smalltalk
 RFRobot >> pov
@@ -154,6 +156,7 @@ RFRobot >> pov
 	^ CMPointOfView
 		color: CMColor blue
 		shape: #star
+		size: 0.6
 ```
 
 Now we must add robots to our model and tell Cormas how to instantiate them. First, we add an instance variable `robots` to our `RFModel` class.
@@ -241,7 +244,7 @@ Once again, we must add an instance variable `minerals` to the `RFModel` class a
 CMAbstractModel << #RFModel	slots: { #cells . #robots . #minerals };	package: 'RobotForager-Model'
 ```
 ```smalltalk
-initialize	super initialize.	cells := OrderedCollection new.	robots := OrderedCollection new.	minerals := OrderedCollection new
+RFModel >> initialize	super initialize.	cells := OrderedCollection new.	robots := OrderedCollection new.	minerals := OrderedCollection new
 ```
 
 We must also provide a getter accessor for the collection.
@@ -262,3 +265,65 @@ RFModel >> initSmall    <init>    self        createGridNumberOfRows: 5     
 If you re-initialize your simulation now, you should see 20 minerals as well as 2 robots.
 
 ![](_media/robot-forager/16-adding-minerals.png)
+
+We will also add two helper methods to `RFCell` class that will be useful in the next sections. First, we add a method `hasMineral` which answers `true` if the cell has occupants of class `RFMineral`.
+
+```smalltalk
+RFCell >> hasMineral	^ self hasOccupantsOfClass: RFMineral
+```
+
+We also define a method `getMineral` that will return a mineral from the cell. The first line of this method checks if the cell has a mineral on it. If not, it signals an error.
+
+```smalltalk
+RFCell >> getMineral	self hasMineral ifFalse: [ self error: 'This cell has no minerals' ].	^ (self occupantsOfClass: RFMineral) first
+```
+
+## Step 8. Make robots collect the minerals
+
+We start by adding an instance variable `collectedMinerals` to `RFRobot` and adding a new `initialize` method to this class where we assign an empty `OrderedCollection` to `collectedMinerals` variable. We will use this collection to store the minerals that the robot has collected.
+
+```smalltalk
+CMAgent << #RFRobot	traits: {TCMLocated};	slots: { #collectedMinerals };	package: 'RobotForager-Model'
+```
+```smalltalk
+RFRobot >> initialize	super initialize.	collectedMinerals := OrderedCollection new
+```
+
+We provide an accessor for this collection because we will need to access it later to measure the number of collected minerals. Pay attention that in this case, we do not add the`<getterFor:>` pragma. It is only used by the model class to identify collections that should be managed by Cormas and store model entities such as agents or cells.
+
+```smalltalk
+RFRobot >> collectedMinerals	^ collectedMinerals
+```
+
+Now we must define two more actions for our robots: `move` and `collectMineral`.
+
+The `move` action should make the robot look at the neighbouring cells, find one that contains a mineral and move there. If there are no minerals around, robot should move randomly. We access the neighbouring calls by first getting the cell at which a robot is currently located (this cell can be accessed using the `patch` method, patch is just an old name for cell in Cormas) and then calling the `neighbourhood` method of that cell.
+
+```smalltalk
+RFRobot >> move	<action>	self patch neighbourhood		detect: [ :cell | cell hasMineral ]		ifFound: [ :cell | self moveTo: cell ]		ifNone: [ self moveRandomly ]
+```
+The `collectMineral` action should make the robot collect minerals from the cell at which it is currently located. If there are no minerals, the robot should do nothing (`^ self` is a common way to stop the execution of a method). To collect the mineral, we add it to the `collectedMinerals` collection and remove it from the grid using the `leave` method. This method makes the agent leave from its current cell but keeps this agent in the simulation.
+
+```smalltalk
+RFRobot >> collectMineral	<action>	| mineral |
+	self patch hasMineral ifFalse: [ ^ self ]. 	mineral := self patch getMineral.	collectedMinerals add: mineral.	mineral leave
+```
+Finally, we define the `step` action for our robots that will first perform the `move` action and then the `collectMineral` action.
+
+```smalltalk
+RFRobot >> step
+	<action>
+	self move.
+	self collectMineral
+```
+Update the `step` method of `RFModel` to call the `step` method of robots and not the `moveRandomly` method.
+
+```smalltalk
+RFModel >> step    <control>    robots do: [ :each | each step ]
+```
+
+Now you can re-initialize your simulation (to make sure that the robots are re-created and their `collectedMineral` collections are initialized) and click on the _"Run"_ button. Your robots should start collecting minerals now.
+
+If you right-click on any robot and then click on _"Inspect"_, you should be able to explore the `collectedMinerals` collection of that robot and see that it contains all the minerals that the robet has collected. 
+
+![](_media/robot-forager/17-collected-minerals.png)
