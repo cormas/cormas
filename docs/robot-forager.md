@@ -423,3 +423,7 @@ Now you can select the new `init` method from the list, and modify the parameter
 Try it yourself by setting the number of rows to 7, number of columns to 30, number of robots to 5 and number of minerals to 100. Once you have entered the values, you can close the editor, initialize the simulation and run it.
 
 ![](_media/robot-forager/26-custom-init.png)
+
+## Conclusion
+
+This simple tutorial demonstrated the basic functionality of Cormas, teaching you how to create a simple model and run a simulation. Real-life models are often more complex but the underlying principles remain the same. 
