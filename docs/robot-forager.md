@@ -421,3 +421,5 @@ Now you can select the new `init` method from the list, and modify the parameter
 ![](_media/robot-forager/25-parameter-editor.png)
 
 Try it yourself by setting the number of rows to 7, number of columns to 30, number of robots to 5 and number of minerals to 100. Once you have entered the values, you can close the editor, initialize the simulation and run it.
+
+![](_media/robot-forager/26-custom-init.png)
