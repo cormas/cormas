@@ -363,3 +363,61 @@ You can also click on the _"Charts"_ tab to get this data visualized.
 By clicking on the _"Probes"_ button (with the eye icon) in the top right corner of the _"Charts"_ page, you can select or unselect the probes that are being visualized.
 
 ![](_media/robot-forager/20-probes-select.png)
+
+## Step 10. Define a larger environment
+
+We have implemented a simple 5x5 grid with 2 robots and 20 minerals. Let us now implement a second init method that defines a large environment with 27x27 cells, 10 robots, and 200 minerals. To do that, we simply add another method with `<init>` pragma to the `RFModel`.
+
+```smalltalk
+RFModel >> initLarge
+	<init>
+	self        createGridNumberOfRows: 27        numberOfColumns: 27        neighbourhood: 8        closed: true.	self createN: 10 randomlyLocatedAloneEntities: RFRobot.
+	self createN: 200 randomlyLocatedAloneEntities: RFMineral
+```
+
+Now you can open your simulation again and select `initLarge` from the dropdown list of init methods on the left. Initialize the simulation and run the simulation to see the results.
+
+![](_media/robot-forager/21-init-large.png)
+
+## Step 11. Define model parameters
+
+You should have noticed that `initSmall` and `initLarge` have the same implementation but different numerical values (fun fact: such numbers inserted directly into the source code are called [magic numbers](https://en.wikipedia.org/wiki/Magic_number_(programming)), they are usually considered a bad practice).
+
+We will replace them with model parameters - named constant values that can be accessed and dynamically modified during the simulation. To do that, we must first create 4 class side variables for our model: `numberOfRows`, `numberOfColumns`, `numberOfRobots`, and `numberOfMinerals`. Go to the class side by clicking on the _"Class side"_ button in your System Browser. Then add the array of slots to the class definition:
+
+```smalltalk
+CMAbstractModel class << RFModel class	slots: { #numberOfRows . #numberOfColumns . #numberOfRobots . #numberOfMinerals }
+```
+
+![](_media/robot-forager/22-class-side.png)
+
+Now, while still on the class side, create a new method called `initializeParameters`. This is a special method that will be called by Cormas when the model is initialized. The first line of this method must always be `super initializeParameters`, to make sure that the superclass parameters are also initialized (same principle as for the `initialize` method of the instance side). In the following lines, provide the default values for each parameter.
+
+```smalltalk
+RFModel class >> initializeParameters
+	super initializeParameters.
+	numberOfRows := 5.
+	numberOfColumns := 5.
+	numberOfRobots := 2.
+	numberOfMinerals := 20
+```
+
+Make sure that you create this method on the class side and not the instance side (this is a common mistake!). If you do this correctly, you should see a little arrow near the method name indicating that the method is overriding the superclass implementation. You can click on this arrow to see the method of the superclass.
+
+![](_media/robot-forager/23-initialize-parameters.png)
+
+Now we need to create getter and setter accessors for each parameter. You can do this automatically by right-clicking on the class, selecting _"Generate accessors"_ from the menu and applying all the proposed refactoring changes. Once this is done, you should see 8 new methods: `numberOfRows`, `numberOfRows:`, `numberOfColumns`, etc.
+
+![](_media/robot-forager/24-generate-accessors.png)
+
+Now we create a parametrized init method that will use the parameters instead of numbers. To access the paramenters, we simply call the corresponding class side getter accessors. For example, we use `self class numberOfRows` instead of directly writing numbers `5` or `27`.
+
+```smalltalk
+RFModel >> init    <init>    self        createGridNumberOfRows: self class numberOfRows        numberOfColumns: self class numberOfColumns        neighbourhood: 8        closed: true.	self createN: self class numberOfRobots randomlyLocatedAloneEntities: RFRobot.	self createN: self class numberOfMinerals randomlyLocatedAloneEntities: RFMineral
+```
+
+Now you can select the new `init` method from the list, and modify the parameters before initializing your model. To modify the parameter, click on the little pencil icon (1) on the left side of the Simulation window. This will open a _"Parameter Editor"_ allowing you to select the class which defines your parameter (2) and modify its value (3). Those numbers are editable text fields, so you can simply type the new values and they will be saved.
+
+![](_media/robot-forager/25-parameter-editor.png)
+
+Try it yourself by setting the number of rows to 7, number of columns to 30, number of robots to 5 and number of minerals to 100. Once you have entered the values, you can close the editor, initialize the simulation and run it.
