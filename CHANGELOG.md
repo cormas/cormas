@@ -1,31 +1,198 @@
-# [v0.9](https://github.com/cormas/cormas/compare/v0.8..v0.9) (17 July 2024)
+# Changelog
 
-(an intermediate release before introducing major breaking changes)
+## [v0.96](https://github.com/cormas/cormas/compare/v0.95..v0.96) (15 September 2024)
+
+_(end of MISS ABMS 2024)_
+
+## [v0.95](https://github.com/cormas/cormas/compare/v0.9..v0.95) (2 September 2024)
+
+_(beginning of MISS ABMS 2024 -- very big changes)_
+
+### In a Nutshell
+
+- Reimplemented the entire UI in Spec 2
+- Support all the latest Pharo versions (Pharo 11, 12, 13)
+- Dropped support for the old Pharo versions (Pharo 9, 10)
+- Removed a big portion of dead and broken code
+- Removed dependency on Project Framework 🥳 - now cormas has only one external dependency: [PolyMathOrg/random-numbers](https://github.com/PolyMathOrg/random-numbers)
+
+### Language (model definition)
+
+- ([f62612b](https://github.com/cormas/cormas/commit/fb6f79a53618a3f205efd66d32374c268d50fe2a)) pov methods must now be defined with `<pov>` pragma. Before, they had to be placed in the `pov` protocol. Now protocol is now irrelevant.
+
+### Added
+
+#### New UI
+
+- ([6f142ad](https://github.com/cormas/cormas/commit/5cfb78423d33ea709c5498d62b45a921fd900f02)) `CMSimulationPresenter`
 
 ### Removed
 
-- (https://github.com/cormas/cormas/pull/748) `CMSpaceModel >> isNotTorroidal`
-- (https://github.com/cormas/cormas/pull/746) `String >> asGetterForEntityClass`
+- ([8b7fb17](https://github.com/cormas/cormas/commit/8b7fb1771dddc7b69d7c82dfcc93f88fe93dd856), [d9c0ec2](https://github.com/cormas/cormas/commit/d9c0ec2ec0b331079787db1fb0da157c8d565f1c)) Removed deprecated classes: `CMAgentComm`, `CMApplicationProject`, `CMCommunicatingAgent`, `CMCommunicatingGroup`, `CMGroupComm`, `CMAgentCommLocation`, `CMAgentLocation`, `CMGroupCommLocation`, `CMGroupLocation`, `CMLocatedAgent`, `CMLocatedCommunicatingAgent`, `CMLocatedCommunicatingGroup`, `CMLocatedGroup`, `CMMsg`, `CMObjectLocation`, `CMResourceLocator`, `CMSimInitializationAnnouncement`, `CMSimManager`
+- ([69acf4f](https://github.com/cormas/cormas/commit/69acf4f3ce315fe0398d66f830048d0fc0170094)) Removed deprecated methods from Core
+    - From `CMAbstractModel` class: `initSimulation`, `simManager`, `simManager:`
+    - From `CMAgent` class: `dead`, `dead:`, `destroyed`, `isDestroyed`
+    - From `CMSpatialEntity` class: `hasOccupantType:`, `hasOccupantType:`, `noOccupantBut:`, `noOccupantType:`, `occupants:`, `occupantsAt:`,  `occupantsType:`
+    - From `CMSpatialEntityElement` class: `numCol`, `numLine`, `orderedNeighbourhood`, `orderedNeighbourhood:`
+    - From `TCMCommunicating` trait: `sendAsynchronouslyMsgTo: topic:`, `sendAsynchronouslyMsgTo: topic: content:`, `sendAsynchronouslyMsgToAll: topic:`, `sendAsynchronouslyMsgToAll: topic: content:`, `sendSynchronouslyMsgTo: topic:`, `sendSynchronouslyMsgTo: topic: content:`, `sendSynchronouslyMsgToAll: topic:`, `sendSynchronouslyMsgToAll: topic: content:`
+    - `Cormas >> simManager`
+    - `DefaultAttributesSetter >> simManager`
+- ([df6003a](https://github.com/cormas/cormas/commit/df6003a3198e6fae1e63e73f256c205bbff1f68f)) Removed deprecated methods from UI:
+    - `CMSpChartProbesMinMaxPresenter >> simManager`
+    - `CMSpecSimulationWindow >> simManager`
+- ([d5b3b11](https://github.com/cormas/cormas/commit/d5b3b118f94d4d7507dac0036d9ce44ac55ed6e7), [adcf811](https://github.com/cormas/cormas/commit/adcf8112c7d7cf1c9d334397bdb1f68bcb7c323e), [e4f8abb](https://github.com/cormas/cormas/commit/e4f8abbebbdcb6a343b08a5f4143453c7b5e5f06), [ca2c893](https://github.com/cormas/cormas/commit/ca2c893d7c51b1dcf0eb0e57858fc1e47ed6e57b), [b84cb9b](https://github.com/cormas/cormas/commit/b84cb9b7e30e2c97489cab863b50e54d121fa809), [4ce77ad](https://github.com/cormas/cormas/commit/4ce77adbec5b96f1cd66c13add248a6e9b84ef99)) Removed all the old Cormas Spec classes: _(... a long list of 87 classes ...)_ and extension methods
+- ([9fac9d8](https://github.com/cormas/cormas/commit/9fac9d8acb050a90bb94665914f0b9a2206a2514)) Removed the old translator
+- ([9565074](https://github.com/cormas/cormas/commit/9565074edb5fe821c6e4eb9cce0b1b88e3cea231), [98c8cf3](https://github.com/cormas/cormas/commit/98c8cf3731de397d4248f16e0876867c1eec43fa), [a63126f](https://github.com/cormas/cormas/commit/a63126f923375284f90e375b3d9bfad635e922f2)) Removed all Project Framework classes: `CMApplication`, `CMCellsLoader`, `CMProjectBuilder`, `CMProjectFile`, `CMProjectManager`, `CMProjectModel`, `CMProjectTracker`
+- ([e626e46](https://github.com/cormas/cormas/commit/e626e46d456cb954e70b35b514bbfcd6412770da)) Removed all the announcements
+- ([00575f2](https://github.com/cormas/cormas/commit/00575f28d9a57c3ebd2aca23663cae9bba6d6bfb)) Removed Cormas exceptions because they were never used: `CMException`, `CMLoadException`, `CMLoadIgnoreException`, `CMLoadInformException`, `CMLoadLogException`
+- ([7cf3391](https://github.com/cormas/cormas/commit/7cf339130246958aded4500f4290120fbdd059cf), [98785df](https://github.com/cormas/cormas/commit/98785dfcb185569c16aeaac3e21f7f822c221b89), [b86dfee](https://github.com/cormas/cormas/commit/b86dfeea0a00b93321750da478f6329386add363), [6f142ad](https://github.com/cormas/cormas/commit/6f142ada4c371d47df0d80cc0e5268ecb0ffb8f2), [b83df1b](https://github.com/cormas/cormas/commit/4940bbdd8d188429ad9a51f764ced9a4151a91e8), [00b2527](https://github.com/cormas/cormas/commit/00b25273c411ea5e3171a3be364f37da327fb319), [d3ceab1](https://github.com/cormas/cormas/commit/d3ceab15ec2b1bbd1b585949d7dcd2706f0f432d)) Removed dead code. Classes that were never used: `EntityPOVSpec`, `EntityPOVView`, `CMAddOnManager_ListItem`, `CMModelResource` (for tests), `CMEnv2CellsConverter`. Methods that were never used:
+    - From `CMAbstractModel` class:
+        - `allEntitiesFrom: povAt:`
+        - `removeMultipleChanges`
+        - `situatedEntitiesFrom: povAt:`
+        - `createGridNeighbourhood: closed: fromMatrixCsvFile: attribute:`
+        - `readCsvFile:`
+        - `classNameFromEntityName:`
+        - `askRandom: select: toDo:`
+        - `askRandom: select: toDo: with:`
+        - `createAggregates: fromSeeds:`
+        - `createAggregates: fromSeeds: maxSize:`
+        - `createAggregates: fromSeeds: sizeDistribution:`
+        - `createAggregates: fromSeeds: verifying:`
+        - `createAggregates: fromSeeds: verifying: sizeDistribution:`
+        - `createN: groups: from:`
+        - `generateAsymetricNetworkDensity: forAgents:`
+        - `generateSymetricNetworkDensity: forAgents:
+    - From `CMAbstractModel class` class:
+        - `activityDiagrams`
+        - `activityDiagrams:`
+        - `activityDiagramsAt:`
+        - `activitySelectorOf:`
+        - `allActivityDiagramSelectors`
+        - `allActivitySelectors`
+        - `allInstanceSelectors`
+        - `chooseActivityDiagramEditorToRemove`
+        - `instanceSelectorFrom:`
+        - `methodsForControl`
+        - `methodsForControlNoArg`
+        - `methodsForTesting`
+        - `methodsOfProtocol:`
+        - `modelMethodsForManipulation`
+        - `preStringForActivitySelector`
+        - `removeActivityDiagram:`
+        - `superClassesUntil:`
+        - `superClassesUntilEntity`
+    - From `CMEntity` class:
+        - `figureAt:`
+        - `getPovSpecForSelector: andInfo:`
+        - `povAt:`
+        - `manipulationMenu:`
+        - `manipulationMenuItems`
+    - From `CMEntity class` class:
+        - `activityDiagrams`
+        - `activityDiagrams:`
+        - `activityDiagramsAt:`
+        - `activitySelectorOf:`
+        - `allActivityDiagramSelectors`
+        - `allActivitySelectors`
+        - `allAttributesUntil:`
+        - `allAttributesUntilEntity`
+        - `allClassSelectors`
+        - `allClassSelectorsInProtocol:`
+        - `allClassVariablesUntil:`
+        - `allClassVariablesUntilEntity`
+        - `allInstanceSelectors`
+        - `allMethodsBut:`
+        - `allMethodsButProtocols:`
+        - `allSpecificAttributes`
+        - `allSpecificClassVariables`
+        - `getActivityDiagram:`
+        - `instanceSelectorFrom:`
+        - `methodsForControl`
+        - `methodsForControlNoArg`
+        - `methodsForInit`
+        - `methodsForInitNoArg`
+        - `methodsForTesting`
+        - `methodsForTestingNoArg`
+        - `methodsOfProtocol:`
+        - `methodsOfProtocolStartingWith:`
+        - `modelMethodsForManipulation`
+        - `openActivityDiagram:`
+        - `preStringForActivitySelector`
+        - `refactorActivityDiagram: forClass:`
+        - `removeActivityDiagram:`
+        - `superClassesUntilEntity`
+    - From `CMSpaceModel` class:
+        - `getPovsDataOfArcEntity: forSelector: andInfo:`
+        - `getPovsDataOfEntity: forSelector: andInfo:`
+        - `getPovsDataOfOccupantEntity: forSelector: andInfo:`
+        - `dimensions:`
+        - `setAggregates: fromSeeds:`
+        - `setAggregates: fromSeeds: sizeDistribution:`
+        - `setAggregates: fromSeeds: verifying:`
+        - `setAggregates: fromSeeds: verifying: sizeDistribution:`
+        - `setPartitionsFromSeeds: into:`
+        - `setSpatialEntitiesAttributsValueFromStream:`
+        - `swell:`
+        - `swell: verifying:`,
+        - `loadNeighboorsClass: separator:`
+    - From `Cormas` class: `selectRandomlyFrom: subCollectionSize: constrainedBy:`, `valueOfValueInString:`
+    - Extension methods:
+        - `RPackage` extension methods: `fileOutOn:`, `fileOutOn: named:`
+        - `OrderedCollection` extension methods: `elementsWithMaxValue:`, `elementsWithMaxValue: verifying:`, `maxOf: verifying:`, `selectRandomlySubCollectionSize:`
+    - `CMSpatialEntitySet >> getPovSpecWithComponentsForSelector: andInfo:`
+    - `CMGroup >> stepDynPop`
+    - `CMMessage class >> superClassesUntilEntity`
+    - `OrderedCollection` extension methods: `elementsWithMaxValue:`, `elementsWithMaxValue: verifying:`, `maxOf: verifying:`, `selectRandomlySubCollectionSize:`
+    - `SequenceableCollection` extension method `spaceModelDimensionsFor:`
+    - `String` extension methods: `asBoolean`, `asValidCormasClassName:`, `withoutBlanks`
+    - `ZnCharacterReadStream` extension method `skipSeparators`
+- ([80f91fc](https://github.com/cormas/cormas/commit/80f91fcb1d695e50516ee320118c839e197b6041)) Removed `colorDict` and all related methods
+- ([520bb4c](https://github.com/cormas/cormas/commit/520bb4c13a67ef53a3d883698f9aaa970ee97020)) Removed `povDict` variable and its accessor from `CMEntity`
+- ([3292746](https://github.com/cormas/cormas/commit/32927467af6226123c2722ed7dee37c79db4628d)) Removed `image` class variable from `CMEntity` as well as the related methods: `CMSpatialEntityAggregate >> imageIncludes:`, `CMSpatialEntityElement >> outlinePatch` and all methods or `CMSpatialEntityElement` related to line segments: `lineSegmentE`, `lineSegmentEf`, `lineSegmentEfh`, `lineSegmentN`, `lineSegmentNE`, `lineSegmentNEf`, `lineSegmentNEfh`, `lineSegmentNW`, `lineSegmentNWf`, `lineSegmentNWfh`, `lineSegmentNf`, `lineSegmentS`, `lineSegmentSE`, `lineSegmentSEf`, `lineSegmentSEfh`, `lineSegmentSW`, `lineSegmentSWf`, `lineSegmentSWfh`, `lineSegmentSf`, `lineSegmentW`, `lineSegmentWf`, `lineSegmentWfh`, `segments`
+- ([9b3848b](https://github.com/cormas/cormas/commit/9d72696e646bdabf618b0de8aae355f3582b9ff9)) Removed `CMAbstractModel class >> allClassesInPackage` because we should simply use `self package classes` instead
+
+### Dependencies
+
+- ([a63126f](https://github.com/cormas/cormas/commit/a63126f923375284f90e375b3d9bfad635e922f2)) Removed the dependency on [ProjectFramework](https://github.com/cormas/ProjectFramework)
+- ([4c716da](https://github.com/cormas/cormas/commit/4c716da0a3d2784437277e1a2c79f013bf5fe022)) Removed the explicit dependency on Roassal3
+- ([a1580c3](https://github.com/cormas/cormas/commit/a1580c3df1886adefc7947c8716a840f62421ef4), [13ab17a](https://github.com/cormas/cormas/commit/13ab17a414b55cd276cee04e537764cb8d3e6a7b)) Removed unused dependencies: SMark, PetitParser, ESRIASCIIRaster, SingularizePluralize, CollectionExtensions
+
+### Compatibility with Pharo 11
+
+_(inside a package `Cormas-Pharo11` that is only loaded for Pharo 11)_
+
+- ([674a701](https://github.com/cormas/cormas/commit/830ba07e169aa18524932fae9ed53deab9c1e791)) Added `RPackage >> tags` as alias for `RPackage >> classTags`
+- ([8517df2](https://github.com/cormas/cormas/commit/cc4c0802146fa51bb5be5f5d53d878b10b8207fd)) Added missing method: `RPackage >> tagNamed:`
+
+## [v0.9](https://github.com/cormas/cormas/compare/v0.8..v0.9) (17 July 2024)
+
+_(an intermediate release before introducing major breaking changes)_
+
+### Removed
+
+- ([PR #748](https://github.com/cormas/cormas/pull/748)) `CMSpaceModel >> isNotTorroidal`
+- ([PR #746](https://github.com/cormas/cormas/pull/746)) `String >> asGetterForEntityClass`
 
 ### Renamed
 
-- (https://github.com/cormas/cormas/pull/748) `torroidal` --> `isClosedEnvironment`
+- ([PR #748](https://github.com/cormas/cormas/pull/748)) `torroidal` --> `isClosedEnvironment`
 
 ### Bug fixes
 
 - ([ef2336d](https://github.com/cormas/cormas/pull/751/commits/ef2336da3e162b86e5b532d62fb9a8b233e725eb)) Added extension method to fix the open of I18NTranslationView class
-- (https://github.com/cormas/cormas/pull/749) neighbour e neighbour n etc dont work properly on edges
-- (https://github.com/cormas/cormas/pull/745) `moveTowards:constraintOnPath:` is throwing SubscriptOutOfBounds exception
+- ([PR #749](https://github.com/cormas/cormas/pull/749)) neighbour e neighbour n etc dont work properly on edges
+- ([PR #745](https://github.com/cormas/cormas/pull/745)) `moveTowards:constraintOnPath:` is throwing SubscriptOutOfBounds exception
 
-# [v0.8](https://github.com/cormas/cormas/compare/v0.7..v0.8) (18 December 2023)
+## [v0.8](https://github.com/cormas/cormas/compare/v0.7..v0.8) (18 December 2023)
 
 _(those are mostly the changes introduced during [MISS ABMS 2023](https://www.agropolis.fr/MISS-ABMS-2023))_
 
 - ([cac44eb](https://github.com/cormas/cormas/commit/cac44ebe302f7a30917aa54d4e3a152fe674b93e)) Changed package generation: Removed the `Cormas-Model-` package prefix and added a `-Model` suffix instead
 - ([304b693](https://github.com/cormas/cormas/commit/304b693bc3d499afe7aa5a2343fd5505dc17fc6b)) Changed class generation: Removed the `CM` prefix from generated class names
-- (https://github.com/cormas/cormas/pull/734) Removed `asGetterForEntityClass` and added `<getterFor: #ClassName>` pragmas instead. The latter was a bad practice based on lazy initialization of a class variable and it forced us to depend on correct pluralization
-- (https://github.com/cormas/cormas/pull/736) Removed dependency on `Model` which was an old Morphic class and had nothing to do with Cormas
-- (https://github.com/cormas/cormas/pull/740) Added a possibility to have multiple shapes for agent pov
+- ([PR #734](https://github.com/cormas/cormas/pull/734)) Removed `asGetterForEntityClass` and added `<getterFor: #ClassName>` pragmas instead. The latter was a bad practice based on lazy initialization of a class variable and it forced us to depend on correct pluralization
+- ([PR #736](https://github.com/cormas/cormas/pull/736)) Removed dependency on `Model` which was an old Morphic class and had nothing to do with Cormas
+- ([PR #740](https://github.com/cormas/cormas/pull/740)) Added a possibility to have multiple shapes for agent pov
 
 ### Added
 
@@ -52,7 +219,7 @@ _(those are mostly the changes introduced during [MISS ABMS 2023](https://www.ag
 - ([4d261ec](https://github.com/cormas/cormas/commit/4d261ec2dbe5d02d8763fb1b3db83dc0974b94f6)) Fixed a bug with random number generator
 - ([2fefa18](https://github.com/cormas/cormas/commit/2fefa18603a0be909aa1701f13050ce105b9fdbd)) Fixed a bug with collocated entities
 
-# [v0.7](https://github.com/cormas/cormas/compare/v0.6...v0.7) (18 August 2023)
+## [v0.7](https://github.com/cormas/cormas/compare/v0.6...v0.7) (18 August 2023)
 
 - (https://github.com/cormas/cormas/pull/692) Created a new translator class hierarchy to replace the old l18N translator.
 - ([1ecc9e9](https://github.com/cormas/cormas/pull/710/commits/1ecc9e96f8b6b8dea4b1ca81077066a5e386e04f)) Fixed the randomness of `Cormas class >> selectRandomlyFrom: aCollection`
@@ -117,7 +284,7 @@ _(those are mostly the changes introduced during [MISS ABMS 2023](https://www.ag
 - ([594e0a4](https://github.com/cormas/cormas/commit/594e0a4715cdd7016daf5d65a73587218a85fbf4)) Moved model metadata to AbstractModel to reduce dependency on ProjectFramework
 - (https://github.com/cormas/cormas/pull/724) `CMApplicationProject` does not inherit from `PFApplicationProject` anymore
 
-# [v0.6](https://github.com/cormas/cormas/compare/v0.5...v0.6) (25 July 2023)
+## [v0.6](https://github.com/cormas/cormas/compare/v0.5...v0.6) (25 July 2023)
 
 - Introduced `TCMLocated` trait to replace the class hierarchy of located agents and groups
 - Introduced `TCMCommunicating` trait to replace the class hierarchy of communicating agents and groups
@@ -182,7 +349,7 @@ _(all the original class and method names in this list were retained as deprecat
 
 - ([ba2e185](https://github.com/cormas/cormas/commit/ba2e185d92fefbfdc5fac299432314c068ba446e)) Introduced `CMAgent >> isAlive`, `isDead`, and `die` instead of `isDestroyed`, `dead`, and `dead:`. Deprecated the old messages.
 
-# [v0.5](https://github.com/cormas/cormas/compare/pre-v0.5...v0.5) (9 June 2023)
+## [v0.5](https://github.com/cormas/cormas/compare/pre-v0.5...v0.5) (9 June 2023)
 
 ### Removed 
 

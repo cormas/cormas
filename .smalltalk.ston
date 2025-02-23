@@ -2,7 +2,7 @@ SmalltalkCISpec {
   #loading : [
     SCIMetacelloLoadSpec {
       #baseline : 'Cormas',
-      #directory : 'repository',
+      #directory : 'src',
       #registerInIceberg : true,
       #onWarningLog: true,
       #onConflict : #useLoaded,
