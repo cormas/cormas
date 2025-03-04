@@ -21,7 +21,7 @@ CMR3SpaceCellsBuilder >> defaultMasterShape [
 CMR3SpaceCellsBuilder >> initialize [
 
 	super initialize.
-	onLeftClickBlock := [ :cell | "do nothing" ]
+	onLeftClickBlock := [ :cell | "do nothing" ].
 ]
 
 { #category : 'accessing' }
