@@ -2,8 +2,9 @@
 
 Below is the list of example models that are available in the current version of Cormas. Please read our [guide on how to load example models](load-example-models) in a Cormas image.
 
-- [ECEC model](ecec-model)
-- [Shelling model](shelling-model)
+- [ECEC model](ecec-model.md)
+- [Shelling model](shelling-model.md)
+- [Foraging robots](robot-forager.md)
 
 ## Old Models
 
