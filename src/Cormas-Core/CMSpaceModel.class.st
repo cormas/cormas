@@ -204,14 +204,15 @@ CMSpaceModel >> createAggregates: aggregateType from: baseEntityType attribute: 
 	compoundEntity = a subClass of  <SpatialEntitySet>
 	This method is not destructive"
 
+	| coll |
 	self isClosedEnvironment ifFalse: [ ^ self warningBoundaries ].
-
+	coll := OrderedCollection new.
 	(self
 		 getGroupsOfConnectedEntiesFrom: baseEntityType
 		 attribute: attributeName) do: [ :set |
 		set size < integer ifFalse: [
-		self createOneAggregate: aggregateType from: set ]].
-	
+			coll add: (self createOneAggregate: aggregateType from: set) ] ].
+	^coll
 ]
 
 { #category : 'aggregate' }
@@ -231,6 +232,22 @@ integer = <integer> must be >= 1"
 		set size < integer ifFalse: [
 			coll add: (self createOneAggregate: aggregateType from: set) ] ].
 	^ coll
+]
+
+{ #category : 'aggregate' }
+CMSpaceModel >> createAggregates: aggregateType horizontalDividers: xRatio verticalDividers: yRatio [
+	"Creates (xRatio x yRatio) aggregates of cells by dividing the grid by yRatio columns and xRatio lines.
+The aggregates will  occupy the whole grid. 
+	aggregateType = a subClass of  <SpatialEntitySet>
+	This method is not destructive"
+
+	
+	self isClosedEnvironment ifFalse: [ ^ self warningBoundaries ].
+	^(self
+		 getSetsOfContiguousCellsHorizontalDividers: xRatio
+		 verticalDividers: yRatio) collect: [ :set |
+		(self createOneAggregate: aggregateType from: set) ].
+
 ]
 
 { #category : 'ESE initialize-release' }
@@ -323,6 +340,29 @@ CMSpaceModel >> getGroupsOfConnectedEntiesFrom: baseEntityType attribute: attrib
 		newCollection addAll:
 			(CMSpatialEntity connectedCellsAmong: eeInstances) ].
 	^ newCollection
+]
+
+{ #category : 'private - aggregate' }
+CMSpaceModel >> getSetsOfContiguousCellsHorizontalDividers: i verticalDividers: j [
+
+	| nbLP nbCP zone allComponents collec line column |
+	"dimensions d'une partition"
+	nbLP := numberOfRows / j.
+	nbCP := numberOfColumns / i.
+	"calcul sous-grille de chaque zone"
+	allComponents := Dictionary new.
+	1 to: i * j do: [ :n |
+	allComponents at: n put: OrderedCollection new ].
+	self cormasModel cells do: [ :cc |
+		line := (cc id / numberOfColumns) ceiling.
+		column := cc id - (line - 1 * numberOfColumns).
+		zone := numberOfColumns / nbCP * ((line / nbLP) ceiling - 1)
+		        + (column / nbCP) ceiling.
+		(allComponents at: zone) add: cc ].
+	collec := OrderedCollection new.
+	1 to: allComponents size do: [ :n |
+	collec add: (allComponents at: n) ].
+	^ collec
 ]
 
 { #category : 'private - accessing' }

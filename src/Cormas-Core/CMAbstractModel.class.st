@@ -384,6 +384,20 @@ Example: self createAggregates: Forest from: Cell verifying: [:aCell | aCell isT
 		  minimumSize: integer
 ]
 
+{ #category : 'instance creation - aggregates' }
+CMAbstractModel >> createAggregates: aggregateType horizontalDividers: xRatio verticalDividers: yRatio [
+	"Purpose: Creates (xRatio x yRatio) rectangular aggregates by dividing the grid by yRatio columns and xRatio lines. The aggregates will  occupy the whole grid. 
+	aggregateType = a subClass of  <SpatialEntityAggregate>
+Note that this method is not destructive.
+Example: self createAggregates: SquareArea horizontalDividers: 5 verticalDividers: 4 
+		--> for a spatial grid of 41 * 41, it will create 20 aggregates: 5 along the horizontal direction and 4 along the vertical direction"
+
+	^ self spaceModel
+		  createAggregates: aggregateType
+		  horizontalDividers: xRatio
+		  verticalDividers: yRatio
+]
+
 { #category : 'instance creation - spatial grid' }
 CMAbstractModel >> createGridNumberOfRows: aNumberOfRows numberOfColumns: aNumberOfColumns neighbourhood: aNumber closed: aBoolean [
 	"Create a spatial grid made of cells"
