@@ -1,3 +1,7 @@
+"
+This is the random generator for Cormas.
+randomNumberGenerator is by default an instance of PMFishmanMooreRandomGenerator
+"
 Trait {
 	#name : 'TCMRandom',
 	#instVars : [
@@ -29,7 +33,7 @@ TCMRandom >> randomColor [
 		  b: self random
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'random' }
 TCMRandom >> randomIntegerBetween: lowNumber and: highNumber [
 
 	^ (self randomBetween: lowNumber and: highNumber) rounded

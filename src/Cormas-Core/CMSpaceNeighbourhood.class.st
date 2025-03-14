@@ -112,13 +112,13 @@ CMSpaceNeighbourhood >> initializeNeighbourhood [
 
 { #category : 'initialization' }
 CMSpaceNeighbourhood >> initializeOn: aSpaceModel [
-	" Private - Initialize aSpaceModel neighbourhood values based on the receiver "
+	" Private - Create a new instance of grid. Initialize aSpaceModel neighbourhood values based on the receiver "
 
 	aSpaceModel gridCellShape: self gridCellShapeType.
 	self spaceModel: aSpaceModel.
-	
+
 	spaceModel createCells.
-	self initializeNeighbourhood.
+	self initializeNeighbourhood
 ]
 
 { #category : 'initialization' }

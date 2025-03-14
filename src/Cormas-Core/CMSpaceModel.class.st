@@ -196,12 +196,62 @@ CMSpaceModel >> cormasModel: aCormasModel [
 
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'aggregate' }
+CMSpaceModel >> createAggregates: aggregateType from: baseEntityType attribute: attributeName minimumSize: integer [
+	"The aggregates occupy the whole grid. 
+	baseEntityType = a subClass of  <SpatialEntity> 
+	attributeName = #context for example 
+	compoundEntity = a subClass of  <SpatialEntitySet>
+	This method is not destructive"
+
+	self isClosedEnvironment ifFalse: [ ^ self warningBoundaries ].
+
+	(self
+		 getGroupsOfConnectedEntiesFrom: baseEntityType
+		 attribute: attributeName) do: [ :set |
+		set size < integer ifFalse: [
+		self createOneAggregate: aggregateType from: set ]].
+	
+]
+
+{ #category : 'aggregate' }
+CMSpaceModel >> createAggregates: aggregateType from: baseEntityType verifying: aBlock minimumSize: integer [
+	"Return N instances of aggregateType of minimumSize. The previous aggregates are not removed.
+baseEntityType = a subClass of  <SpatialEntity>
+aBlock example = [:cell | cell state = #tree]
+aggregateType = a subClass of  <SpatialEntityAggregate>
+integer = <integer> must be >= 1"
+
+	| coll eeInstances |
+	self isClosedEnvironment ifFalse: [ ^ self warningBoundaries ].
+	coll := OrderedCollection new.
+	eeInstances := (self cormasModel entitiesOfClass: baseEntityType)
+		               select: [ :c | aBlock value: c ].
+	(CMSpatialEntity connectedCellsAmong: eeInstances) do: [ :set |
+		set size < integer ifFalse: [
+			coll add: (self createOneAggregate: aggregateType from: set) ] ].
+	^ coll
+]
+
+{ #category : 'ESE initialize-release' }
 CMSpaceModel >> createCells [
 
 	1 to: self gridSize do: [ :i |
 		(cormasModel newEntity: self cormasModel cellClass)
 			spaceModel: self ].
+]
+
+{ #category : 'aggregate' }
+CMSpaceModel >> createOneAggregate: compoundEntityClass from: aCollectionOfSpatialEntities [
+	"Creates and returns an instance of Aggregat composed with a set of SpatialEntities. 
+	aSet = a set of base entities (inheriting from <SpatialEntity>) 
+	compoundEntityClass = a Class inheriting from <SpatialEntitySet>"
+
+	| anAggregate |
+	anAggregate := self newEntity: compoundEntityClass.
+	anAggregate addComponents:
+		aCollectionOfSpatialEntities asOrderedCollection.
+	^ anAggregate
 ]
 
 { #category : 'accessing' }
@@ -257,6 +307,22 @@ CMSpaceModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 			nbCols > (self numberOfColumns - 2)
 				ifTrue: [ nbCols := nbCols - self numberOfColumns + 2 ] ].
 	^ (nbLines squared + nbCols squared) sqrt
+]
+
+{ #category : 'private - aggregate' }
+CMSpaceModel >> getGroupsOfConnectedEntiesFrom: baseEntityType attribute: attributeName [
+	"Return a collection of sets of contiguous components holding the same attributeName value"
+
+	| newCollection baseEntities attributeValues eeInstances |
+	newCollection := OrderedCollection new.
+	baseEntities := self cormasModel entitiesOfClass: baseEntityType.
+	attributeValues := (baseEntities collect: [ :c | c perform: attributeName ]) asSet.
+
+	attributeValues do: [ :val |
+		eeInstances := baseEntities select: [ :c | (c perform: attributeName) = val ].
+		newCollection addAll:
+			(CMSpatialEntity connectedCellsAmong: eeInstances) ].
+	^ newCollection
 ]
 
 { #category : 'private - accessing' }
@@ -382,12 +448,14 @@ CMSpaceModel >> numberOfNeighbours [
 	^ self neighbourhoodConfiguration numberOfNeighbours
 ]
 
-{ #category : 'accessing' }
+{ #category : 'ESE initialize-release' }
 CMSpaceModel >> numberOfNeighbours: anIntegerOrSymbol [
-	" Set the receiver's neighbourhood configuration to contain anIntegerOrSymbol neighbours "
-	
-	self neighbourhoodConfiguration: (CMSpaceNeighbourhood forNeighbours: anIntegerOrSymbol spaceModel: self)
+	" Create the grid.
+	Set the receiver's neighbourhood configuration to contain anIntegerOrSymbol neighbours "
 
+	self neighbourhoodConfiguration: (CMSpaceNeighbourhood
+			 forNeighbours: anIntegerOrSymbol
+			 spaceModel: self)
 ]
 
 { #category : 'private - accessing' }
@@ -439,6 +507,12 @@ CMSpaceModel >> upperLeftCell [
 { #category : 'ESE (regular) - special locations' }
 CMSpaceModel >> upperRightCell [
 	^ cormasModel cells at: numberOfColumns
+]
+
+{ #category : 'aggregate' }
+CMSpaceModel >> warningBoundaries [
+
+	UIManager default inform: ' The grid boundaries should be closed !'
 ]
 
 { #category : 'landscape indices' }

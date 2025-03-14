@@ -44,12 +44,34 @@ Class {
 		'spaceModel',
 		'destroyed',
 		'theOccupants',
-		'neighbourhoodWithNils'
+		'neighbourhoodWithNils',
+		'aggregates'
 	],
 	#category : 'Cormas-Core-Entities',
 	#package : 'Cormas-Core',
 	#tag : 'Entities'
 }
+
+{ #category : 'utilities' }
+CMSpatialEntity class >> connectedCellsAmong: aListOfCells [
+	"From aListOfCells, returns collections of cells that are connected (= each subcollection contains connected cells)"
+
+	| resultColls allCells subColl coll |
+	resultColls := OrderedCollection new.
+	allCells := aListOfCells copy.
+	subColl := Set new.
+	[ allCells isEmpty ] whileFalse: [
+		subColl isEmpty ifTrue: [ subColl add: allCells first ].
+		coll := (self neighborsOf: subColl) select: [ : aCell |
+			        allCells includes: aCell ].
+		coll isEmpty
+			ifFalse: [ subColl addAll: coll ]
+			ifTrue: [
+				resultColls add: subColl.
+				allCells removeAll: subColl.
+				subColl := Set new ] ].
+	^ resultColls
+]
 
 { #category : 'testing' }
 CMSpatialEntity class >> isCormasCellClass [
@@ -62,6 +84,16 @@ CMSpatialEntity class >> isSpatialClass [
 	^ true
 ]
 
+{ #category : 'utilities' }
+CMSpatialEntity class >> neighborsOf: aCollectionOfCells [
+	"returns a set of cells that are neighbors of each element of aCollectionOfCells without belonging to aCollectionOfCells"
+	
+	| neighbors |
+	neighbors := Set new.
+	aCollectionOfCells do: [:cell | neighbors addAll: cell neighbourhood].
+	^Set withAll: (neighbors \ aCollectionOfCells) "\ is a difference between 2 collections: it returns all the elements that are not in aCollectionOfCells"
+]
+
 { #category : 'default value' }
 CMSpatialEntity class >> neighbourhood_default [
 	
@@ -72,14 +104,15 @@ CMSpatialEntity class >> neighbourhood_default [
 CMSpatialEntity class >> new: aSpaceModel [
 
 	| newEntity |
+
 	newEntity := self new
-		spaceModel: aSpaceModel;
-		cormasModel: aSpaceModel cormasModel;
-		yourself.
-				
+		             spaceModel: aSpaceModel;
+		             cormasModel: aSpaceModel cormasModel;
+		             yourself.
+
 	aSpaceModel cormasModel collectEntity: newEntity.
 	newEntity initOccupants.
-	
+
 	^ newEntity
 ]
 
@@ -94,6 +127,18 @@ CMSpatialEntity >> addOccupant: anObject [
 
 	(self theOccupants at: anObject class name
 		ifAbsentPut: [ OrderedCollection new ]) add: anObject
+]
+
+{ #category : 'accessing' }
+CMSpatialEntity >> aggregates [
+"Returns a collection of SpatialEntityAggregates"
+	^ aggregates
+]
+
+{ #category : 'accessing' }
+CMSpatialEntity >> aggregates: anObject [
+
+	aggregates := anObject
 ]
 
 { #category : 'environment - sensing - space' }
@@ -133,10 +178,20 @@ CMSpatialEntity >> allOccupants [
 CMSpatialEntity >> belongsToAggregate: aSpatialEntity [
 "Purpose: tests if the receiver belongs to a higher level spatial entity, even if theCSE is nil. 
 This method is valid whatever the aggregate level and even if theCSE is nil. It will return 'true' if the receiver is a component of a component of aSpatialEntity
-Argument: aSpatialEntity = <SpatialEntitySet>
+Argument: aSpatialEntity = <SpatialEntityAggregate>
 Return value: <Boolean>"
 	
-	^aSpatialEntity containsCell: self
+	^aSpatialEntity includesCell: self
+]
+
+{ #category : 'accessing' }
+CMSpatialEntity >> belongsToAggregateType: aClass [
+	"Purpose: returns the instance of a given higher level spatialEntity the receiver belongs to.
+Argument:  aClass that must be a subclass of <SpatialEntityAggregate>
+Return value: <SpatialEntityAggregate | nil>
+Example: self aggregateType: Forest"
+
+^ self aggregates detect: [: a | a isKindOf: aClass] ifNone: [nil]
 ]
 
 { #category : 'displaying' }
@@ -168,16 +223,6 @@ CMSpatialEntity >> destroyed [
 CMSpatialEntity >> destroyed: aBoolean [
 	
 	destroyed := aBoolean
-]
-
-{ #category : 'deprecated' }
-CMSpatialEntity >> distCenter: aSpatialEntity [
-	
-	self deprecated: 'You shouldn''t use this method: the result depend of the size of the displayed grid ! If you modify the size of the windows, the result will change !!  :o(
-So, be carefull. You should rather use #distCell: aSpatialEntity.
-returns a distance in cells, between the sender and aSpatialEntity.'.
-	
-	^self center dist: aSpatialEntity center
 ]
 
 { #category : 'environment - distance' }
@@ -263,9 +308,10 @@ CMSpatialEntity >> initialize [
 	" Private - Set the receiver's internal state. Initally a spatial entity is not dead "
 
 	super initialize.
-	
+
 	destroyed := false.
 	neighbourhoodWithNils := OrderedCollection new: 8.
+	aggregates := OrderedCollection new
 ]
 
 { #category : 'printing' }
@@ -570,16 +616,6 @@ Return value: <Collection(AgentLocation & ObjectLocation)>"
 	| aClass |
 	aClass := self class environment at: aClassName asSymbol.
 	^ self occupantsOfClass: aClass
-]
-
-{ #category : 'deprecated' }
-CMSpatialEntity >> peripherieRayon: aNumber [
-	
-	self
-		deprecated: 'Use #layerOfRadius: instead'
-		transformWith: '`@rec peripherieRayon: `@arg' -> '`@rec layerOfRadius: `@arg'.
-	
-	^self layerOfRadius: aNumber
 ]
 
 { #category : 'printing' }

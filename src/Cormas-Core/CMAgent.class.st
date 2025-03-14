@@ -26,6 +26,13 @@ CMAgent >> delete [
 	cormasModel removeEntity: self.
 ]
 
+{ #category : 'initialize-release' }
+CMAgent >> destroyed [
+	"Answer if the entity is destroyed or not"
+	
+	^isDead
+]
+
 { #category : 'accessing' }
 CMAgent >> destroyed: aBoolean [
 "Set the dead variable to True or False and delete the figures"

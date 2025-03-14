@@ -312,6 +312,78 @@ CMAbstractModel >> collectEntity: anEntity [
 	collection add: anEntity
 ]
 
+{ #category : 'instance creation - aggregates' }
+CMAbstractModel >> createAggregate: aggregateClass from: aCollectionOfSpatialEntities [
+	"Purpose: Creates and returns an instance of aggregateClass composed with a set of cells.
+Arguments: 	aCollectionOfSpatialEntities = a collection of base entities (inheriting from <SpatialEntity>) 
+	aggregateClass = a Class inheriting from <SpatialEntityAggregate>
+Note that this method is not destructive.
+
+Example: self createAggregate: Plot from: (self centalCell recursiveNeighbourhood: 5)"
+
+	| anAggregate |
+	anAggregate := self newEntity: aggregateClass.
+	anAggregate addComponents:
+		aCollectionOfSpatialEntities asOrderedCollection.
+	^ anAggregate
+]
+
+{ #category : 'instance creation - aggregates' }
+CMAbstractModel >> createAggregates: aggregateType from: baseEntityType attribute: attributeName [
+	"Purpose: Create n aggregates that will occupy the whole grid. Each aggregate is composed of baseEntities that have the same value for #attributeName. 
+	<baseEntityType> is a Class name inheriting from SpatialEntityElement. 
+	<attributeName> is a symbol referring to a baseEntity's attribute name. 
+	<aggregateType> is a Class name inheriting from SpatialEntitySet.
+Note that this method is not destructive.
+Example: self createAggregates: ZoneArea from: Cell attribute: #landCover"
+
+	^ self spaceModel createAggregates: aggregateType from: baseEntityType attribute: attributeName minimumSize: 1
+]
+
+{ #category : 'instance creation - aggregates' }
+CMAbstractModel >> createAggregates: aggregateType from: baseEntityType attribute: attributeName minimumSize: integer [
+	"Purpose: Create n aggregates that will occupy the whole grid. Each aggregate is composed of baseEntities that have the same value for #attributeName. 
+	<baseEntityType> is a Class name inheriting from SpatialEntityElement. 
+	<attributeName> is a symbol referring to a baseEntity's attribute name. 
+	<aggregateType> is a Class name inheriting from SpatialEntitySet.
+Note that this method is not destructive.
+Example: self createAggregates: ZoneArea from: Cell attribute: #landCover"
+
+	^ self spaceModel
+		  createAggregates: aggregateType
+		  from: baseEntityType
+		  attribute: attributeName
+		  minimumSize: integer
+]
+
+{ #category : 'instance creation - aggregates' }
+CMAbstractModel >> createAggregates: aggregateType from: baseEntityType verifying: aBlock [
+	"Purpose: Create and return N instances of aggregateType of minimumSize = 1, so it is possible to get aggregates made of only 1 component. The previous aggregates are not removed.
+baseEntityType = a subClass of  <SpatialEntity>
+aBlock example = [:cell | cell state = #tree]
+aggregateType = a subClass of  <SpatialEntitySet> "
+
+	^ self createAggregates: aggregateType from: baseEntityType verifying: aBlock minimumSize: 1
+]
+
+{ #category : 'instance creation - aggregates' }
+CMAbstractModel >> createAggregates: aggregateType from: baseEntityType verifying: aBlock minimumSize: integer [
+	"Purpose: Create and return N instances of aggregateType of minimumSize. 
+baseEntityType = a subClass of  <SpatialEntity>
+aBlock is the condition written as a block refering to a test on each of the base entity. 
+	example = [:cell | cell state = #tree]
+aggregateType = a subClass of  <SpatialEntityAggregate>
+integer = <integer> must be >= 1
+Note that this method is not destructive: The previous aggregates are not removed.
+Example: self createAggregates: Forest from: Cell verifying: [:aCell | aCell isTree] minimumSize: 3"
+
+	^ self spaceModel
+		  createAggregates: aggregateType
+		  from: baseEntityType
+		  verifying: aBlock
+		  minimumSize: integer
+]
+
 { #category : 'instance creation - spatial grid' }
 CMAbstractModel >> createGridNumberOfRows: aNumberOfRows numberOfColumns: aNumberOfColumns neighbourhood: aNumber closed: aBoolean [
 	"Create a spatial grid made of cells"
@@ -604,7 +676,7 @@ CMAbstractModel >> getterForEntityClass: aClass [
 		ifAbsent: [ self error: 'Getter for class #', aClass name, ' was not found in the dictionary' ].
 ]
 
-{ #category : 'init entities' }
+{ #category : 'init-release entities' }
 CMAbstractModel >> initEntities [
 
 	"Initialize all the Entity classes of the model"
@@ -836,6 +908,13 @@ CMAbstractModel >> release [
 	self cells do: #initOccupants
 ]
 
+{ #category : 'init-release entities' }
+CMAbstractModel >> releaseAggregateType: aggregateClass [
+"Delete the instances of aggregateClass, and clean up their components"
+	(self entitiesOfClass: aggregateClass) do: [ :agg | agg release ].
+	self resetEntities: aggregateClass
+]
+
 { #category : 'referencing entities' }
 CMAbstractModel >> removeDeadEntities [
 	"removes all the dead or destroyed intances"
@@ -874,7 +953,7 @@ CMAbstractModel >> removeEntity: anEntity [
 		ifAbsent: [nil]
 ]
 
-{ #category : 'init entities' }
+{ #category : 'init-release entities' }
 CMAbstractModel >> resetEntities: aClass [
 	"Initialize the Entity classes of the model and creates the new collector (OrderedCollection)"
 	

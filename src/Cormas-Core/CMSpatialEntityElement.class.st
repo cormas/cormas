@@ -90,13 +90,13 @@ Return value: <Integer>"
 ]
 
 { #category : 'environment - distance' }
-CMSpatialEntityElement >> distanceTo: anotherCell constraintOnPath: aBlock [
-	"Purpose: returns the Manhattan distance (in cells) between the receiver and anotherSpatialEntity, taking a specified constraint into account.
+CMSpatialEntityElement >> distanceTo: anotherCell constraintOnPath: aBlock [ 
+"Purpose: returns the Manhattan distance (in cells) between the receiver and anotherSpatialEntity, taking a specified constraint into account.
 Arguments: anotherCell = <SpatialEntityElement>
 			aBlock = <BlockClosure>
 Return value: <Integer>
 Example: self distanceTo: self spaceModel centralLocation constraintOnPath: [:aCell | aCell isClosed not]"
-	
+
 	^(self wayTo: anotherCell constraint: aBlock) size - 1
 ]
 
@@ -220,6 +220,18 @@ CMSpatialEntityElement >> isConnectedToCells: setOfCells [
 CMSpatialEntityElement >> isElementary [
 	
 	^true
+]
+
+{ #category : 'testing' }
+CMSpatialEntityElement >> isOnTheEdge [
+	"Answer if the cell is on the edge of the grid (false if the grid is torroidal)"
+
+	self spaceModel isClosedEnvironment ifFalse: [ ^ false ]. 
+	(self rowNumber = 1 or: [ self rowNumber = self spaceModel numberOfRows ])
+		ifTrue: [ ^ true ].
+	(self columnNumber = 1 or: [ self columnNumber = self spaceModel numberOfColumns ])
+		ifTrue: [ ^ true ].
+	^ false
 ]
 
 { #category : 'testing' }
