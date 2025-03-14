@@ -13,7 +13,9 @@ This paper is available [here](https://citeseerx.ist.psu.edu/document?repid=rep1
 
 For the first version of this tutorial, the model the model has been made even simpler: the base to recover all the ore is not considered. Robots do not have a maximum capacity and do not leave marks when carrying ore.
 Here is a class diagram for this version:
-![UML class diagram of the model](_media/robot-forager/Foragers-ClassDiag.png)
+
+<img src="_media/robot-forager/Foragers-ClassDiag.png" alt="UML class diagram of the model" style="width:60%; height:auto;"> 
+<sup>UML class diagram of the model</sup> 
 
 As the spatial zone is the full grid of the space, this model is composed of three elements:
 
@@ -23,7 +25,8 @@ As the spatial zone is the full grid of the space, this model is composed of thr
 
 The complete implementation can be found in our [robot-forager-model](https://github.com/cormas/robot-forager-model/tree/main/src/RobotForager-Model) repository.
 
-![](_media/robot-forager/0-example-space.png)
+<img src="_media/robot-forager/0-example-space.png" alt="Example of space" style="width:30%; height:auto;">
+<sup>Example of space with 2 foraging robots</sup> 
 
 To make the model description more precise:
 
@@ -32,7 +35,10 @@ To make the model description more precise:
 - When model is initialized, first we generate robots and then minerals. A mineral cannot be generated on a cell where robot is located.
 
 At each simulation step, all robots perform two actions:
-![Activity diagram of the step of a robot](_media/robot-forager/Foragers-Step.png)
+
+<img src="_media/robot-forager/Foragers-Step.png" alt="Activity diagram of the step of a robot" style="width:40%; height:auto;"> 
+<sup>Activity diagram of the step of a robot</sup> 
+
 
 - **Move.** Look around at 8 neighbor cells, if any one of them contains a mineral, move to that cell. If no neighbor has minerals, then move randomly to any of the 8 neighbors.
 - **Collect minerals.** Look at the cell on which robot is located (after moving). If this cell has a mineral, then collect it (add it to robot’s inventory and remove it from the cell)
@@ -49,25 +55,25 @@ We will implement two environments:
 
 If you haven't donne so already, you can [Install Cormas](install) then open a Cormas image. Click on _"Cormas"_ menu in the top left corner and select _"New Model"_.
 
-![](_media/robot-forager/1-new-model-menu.png)
+<img src="_media/robot-forager/1-new-model-menu.png" alt="new model menu" style="width:60%; height:auto;"> 
 
 Type the name of your model. In our case, we will call it _"Robot Forager"_. All classes in Pharo exist in the same namespace, which means that every class must have a unique name. To ensure this, we follow a good practice of adding a project-specific prefix to every class name. Cormas will automatically suggest a prefix for your model classes, in our case, it suggests _"RF"_. Feel free to edit this prefix. In the bottom part of the window, you will see the packages and classes that will be generated for you. By default, Cormas will also generate test classes, but we will not use them in this tutorial, which is why we uncheck the _"Create a test package"_ checkbox. We also add a simple description for our model using [Microdown](https://github.com/pillar-markup/Microdown) (you can also write it in Markdown or in plain text).
 
-![](_media/robot-forager/2-new-model.png)
+<img src="_media/robot-forager/2-new-model.png" alt="new model menu" style="width:60%; height:auto;"> 
 
 Once you click on _"Create"_ button, Cormas will generate a package `RobotForager-Model` and a class `RFModel`. If everything goes well, a System Browser will open on this new class. Now we can start coding!
 
-![](_media/robot-forager/3-new-model-browser.png)
+<img src="_media/robot-forager/3-new-model-browser.png" alt="new model menu" style="width:60%; height:auto;"> 
 
 ## Step 2. Create a Cell class
 
 We will start by creating a class for a cell of our spatial grid. Cell will define a location where robots and minerals can be located. To create a new class, you can right-click on any of the existing classes and select _"New class"_ from the menu. You will see a window with a template class definition.
 
-![](_media/robot-forager/4-new-class.png)
+<img src="_media/robot-forager/4-new-class.png" alt="new model menu" style="width:60%; height:auto;"> 
 
 Alsternatively, you can edit the definition of any existing class in the bottom part of the System Browser. As soon as you change the name and hit _"Save"_ (`Ctrl+S` on Windows and Linux or `Cmd+S` on Mac), the new class will be created.
 
-![](_media/robot-forager/5-new-cell-class.png)
+<img src="_media/robot-forager/5-new-cell-class.png" alt="new model menu" style="width:60%; height:auto;"> 
 
 In our case, the cell class will be called `RFCell` (remember to use the prefix!) and it will be the subclass of `CMSpatialEntityElement` - a default superclass for spatial cells in Cormas.
 
@@ -89,7 +95,7 @@ CMAbstractModel << #RFModel
 
 Now we will create some methods in `RFModel` class. To add a new method, click on _"instance side"_ in the third pane of the System Browser and then edit the method template in the bottom part. You can also create a new mthod by editing the code of any existing method. As soon as you change the name, the new method will be created.
 
-![](_media/robot-forager/6-new-method.png)
+<img src="_media/robot-forager/6-new-method.png" alt="new model menu" style="width:60%; height:auto;">
 
 First, we create an `initialize` method and initialize the `cells` variable with an empty collection. Cormas will populate this collection with actual cells once we define a spatial grid in the next section. Remember that the `RFModel >>` part is just an indication for you that this method should belond to the `RFModel` class. You must not type this part in the System Browser.
 
@@ -135,11 +141,11 @@ RFModel >> step
 
 Now we can open the simulation view and take a first look at our model. Select _"Models in this image"_ from the _"Cormas"_ menu in the top left corner.
 
-![](_media/robot-forager/7-models-in-image-menu.png)
+<img src="_media/robot-forager/7-models-in-image-menu.png" alt="new model menu" style="width:60%; height:auto;">
 
 Then select your model from the list (in our case, it's `RFModel`) and click on _"Open Simulation"_ button.
 
-![](_media/robot-forager/8-models-in-image.png)
+<img src="_media/robot-forager/8-models-in-image.png" alt="new model menu" style="width:60%; height:auto;">
 
 You will see the Cormas Simulation browser. The left side allows you to initialize the simulation. Here you can select the _"init"_ and _"control"_ methods that will be executed, fix the random seed, modify parameters of the model (we don't have any parameters at this point). The right side of the window is currently empty because the simulation was not initialized yet.
 

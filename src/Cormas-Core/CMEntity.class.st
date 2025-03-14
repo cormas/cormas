@@ -36,7 +36,8 @@ Class {
 	#classTraits : 'TCMRandom classTrait + TCMMath classTrait',
 	#instVars : [
 		'id',
-		'cormasModel'
+		'cormasModel',
+		'group'
 	],
 	#classInstVars : [
 		'currentId',
@@ -385,6 +386,18 @@ CMEntity >> getPovResultFor: selectorName [
 					[Dialog warn: 'The pov metod #' , selectorName , ' did not return a symbol or a colorValue, but a nil value.
 This is not allowed!']"]
 		ifTrue: [selectorName]
+]
+
+{ #category : 'accessing' }
+CMEntity >> group [
+
+	^ group
+]
+
+{ #category : 'accessing' }
+CMEntity >> group: aGroup [
+
+	group := aGroup
 ]
 
 { #category : 'accessing' }

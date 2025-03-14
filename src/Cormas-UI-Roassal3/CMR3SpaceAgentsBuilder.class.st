@@ -32,6 +32,15 @@ CMR3SpaceAgentsBuilder >> cellAt: aPoint ifAbsent: absentBlock [
 		ifNone: absentBlock
 ]
 
+{ #category : 'position in cell' }
+CMR3SpaceAgentsBuilder >> centeredPositionForAgent: anAgent [
+	"Place an agent in the center of the cell"
+
+	^ self
+		positionAgent: anAgent
+		atProportion: 0.5@0.5
+]
+
 { #category : 'as yet unclassified' }
 CMR3SpaceAgentsBuilder >> contextMenuItemsFor: anEntity [
 
@@ -91,7 +100,7 @@ CMR3SpaceAgentsBuilder >> mouseEnd: anEvent [
 			self
 				animateMove: anEvent shape
 				from: position
-				to: cell position
+				to: "cell" position
 				duration: 250 milliSeconds.
 			
 			cell model ]
@@ -108,14 +117,9 @@ CMR3SpaceAgentsBuilder >> mouseEnd: anEvent [
 { #category : 'as yet unclassified' }
 CMR3SpaceAgentsBuilder >> moveAgentShape: anAgentShape [
 
-	| agent cell cellSize pov |
+	| agent pov |
 			
 	agent := anAgentShape model.
-	
-	cell := agent patch.
-	cell ifNil: [ ^ self ].
-	
-	cellSize := diagramBuilder cellShapes anyOne encompassingRectangle extent.
 
 	(anAgentShape propertyAt: #RSLabeled) ifNotNil: [ :p |
 		p text: agent labelOfPOV ].
@@ -129,13 +133,45 @@ CMR3SpaceAgentsBuilder >> moveAgentShape: anAgentShape [
 	
 	anAgentShape
 		scaleBy: 16 / anAgentShape extent max * pov size;
-		translateTo: (cell columnNumber @ cell rowNumber * cellSize) - (cellSize / 2)
+		translateTo: (self positionForAgent: agent)
 ]
 
 { #category : 'accessing' }
 CMR3SpaceAgentsBuilder >> objects [
 
 	^ diagramBuilder cormasModel agents select: [ :each | each isSituated ]
+]
+
+{ #category : 'position in cell' }
+CMR3SpaceAgentsBuilder >> positionAgent: anAgent atProportion: aPoint [
+	"aPoint 0@0 will place the agent in the top-left corner of the cell, 1@1 - bottom-right corner, 0.5@0.5 - center of the cell"
+
+	| cell cellSize |
+	
+	cell := anAgent patch.
+	cellSize := diagramBuilder cellShapes anyOne encompassingRectangle extent.
+
+	^ (((cell columnNumber @ cell rowNumber) - 1) * cellSize)
+		+ ((aPoint x * cellSize x) @ (aPoint y * cellSize y)).
+]
+
+{ #category : 'position in cell' }
+CMR3SpaceAgentsBuilder >> positionForAgent: anAgent [
+	"This method should be modified to define the logic of choosing agent position (for example, based on the POV). For now, we have two options: #centeredPositionForAgent: and #randomPositionForAgent:"
+	
+	^ self centeredPositionForAgent: anAgent
+]
+
+{ #category : 'position in cell' }
+CMR3SpaceAgentsBuilder >> randomPositionForAgent: anAgent [
+	"Place an agent at a random location inside a cell"
+	| x y |
+	x := anAgent random.
+	y := anAgent random.
+
+	^ self
+		positionAgent: anAgent
+		atProportion: x@y
 ]
 
 { #category : 'hooks' }
