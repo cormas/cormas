@@ -1,12 +1,16 @@
 # Changelog
 
-## [v0.96](https://github.com/cormas/cormas/compare/v0.95..v0.96) (15 September 2024)
+## [v0.96](https://github.com/cormas/cormas/compare/v0.95..v0.96) (23 March 2025)
 
-_(end of MISS ABMS 2024)_
+- ([516513c](https://github.com/cormas/cormas/commit/516513ca63cc7682fef2c671e14c85f9f995f612)) Updated the sensitivity analysis presenter
+- ([8587f91](https://github.com/cormas/cormas/commit/8587f91e3a640595fb94c5012c97bda060be8edc), [f2d3e11](https://github.com/cormas/cormas/commit/f2d3e11b83c649df047b0d5977c903313fcf0e80), [9becd42](https://github.com/cormas/cormas/commit/9becd42a4edf7f4b4c520ea435dfdf87e68d67a8), [9dcc791](https://github.com/cormas/cormas/commit/9dcc7911d84fa7563efe51bd9c1e87bbef6d6d63), [c73fb7f](https://github.com/cormas/cormas/commit/c73fb7fc8ca7d46d9b9c4e2d24d1d454c1aaf553), [8659b36](https://github.com/cormas/cormas/commit/8659b36022cf599a3eba610f52b984b18407f12c)) Implemented the first prototype of `CMModeDesigner`
+- ([450e988](https://github.com/cormas/cormas/commit/450e988877d68ec4f13094d8170a55afd0acda4f)) Added prefix method to `CMMockModel`
 
 ## [v0.95](https://github.com/cormas/cormas/compare/v0.9..v0.95) (2 September 2024)
 
 _(beginning of MISS ABMS 2024 -- very big changes)_
+
+_(the detailed list is inclomplete... we did too many changes and it takes too much time to list all of the here)_
 
 ### In a Nutshell
 
