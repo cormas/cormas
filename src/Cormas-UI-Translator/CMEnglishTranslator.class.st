@@ -251,6 +251,18 @@ CMEnglishTranslator >> tRunButtonHelp [
 	^ 'Run the simulation to the end'
 ]
 
+{ #category : 'as yet unclassified' }
+CMEnglishTranslator >> tSaveToCsv [
+
+	^ 'Save to CSV'
+]
+
+{ #category : 'as yet unclassified' }
+CMEnglishTranslator >> tSaveToExcel [
+
+	^ 'Save to Excel'
+]
+
 { #category : 'translations' }
 CMEnglishTranslator >> tSensitivityAnalysis [
 

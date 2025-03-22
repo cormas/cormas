@@ -260,6 +260,18 @@ CMAbstractTranslator >> tRunButtonHelp [
 	self subclassResponsibility
 ]
 
+{ #category : 'as yet unclassified' }
+CMAbstractTranslator >> tSaveToCsv [
+
+	self subclassResponsibility
+]
+
+{ #category : 'as yet unclassified' }
+CMAbstractTranslator >> tSaveToExcel [
+
+	self subclassResponsibility
+]
+
 { #category : 'translations' }
 CMAbstractTranslator >> tSensitivityAnalysis [
 

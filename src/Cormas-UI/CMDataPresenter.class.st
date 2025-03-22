@@ -3,7 +3,8 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'table',
-		'toolbar'
+		'toolbar',
+		'translator'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -12,7 +13,13 @@ Class {
 { #category : 'examples' }
 CMDataPresenter class >> example [
 	<example>
-	self new open
+	(self on: CMEnglishTranslator new) open
+]
+
+{ #category : 'as yet unclassified' }
+CMDataPresenter class >> forTranslator: aTranslator [
+
+	^ self on: aTranslator
 ]
 
 { #category : 'as yet unclassified' }
@@ -39,28 +46,25 @@ CMDataPresenter >> defaultLayout [
 { #category : 'initialization' }
 CMDataPresenter >> initializePresenters [
 
-	| saveToCsvButton saveToExcelButton |
-
 	table := self newTable.
+	self initializeToolbar.
+]
+
+{ #category : 'initialization' }
+CMDataPresenter >> initializeToolbar [
 	
-	saveToCsvButton := self newToolbarButton
-		label: 'Save to CSV';
-		icon: CMIcons csvIcon;
-		help: 'Save data table to CSV file';
-		action: [ "do nothing" ];
-		yourself.
-		
-	saveToExcelButton := self newToolbarButton
-		label: 'Save to Excel';
-		icon: CMIcons excelIcon;
-		help: 'Save data table to Excel file';
-		action: [ "do nothing" ];
-		yourself.
-	
-	toolbar := self newToolbar
-		add: saveToCsvButton;
-		add: saveToExcelButton;
-		yourself.
+	toolbar := self newToolbar.
+
+	CMDataPresenterCommand sortedSubclasses do: [ :aClass |
+		| command |
+		command := aClass forOwner: self translator: translator.
+		toolbar add: command button ].
+]
+
+{ #category : 'accessing - model' }
+CMDataPresenter >> setModelBeforeInitialization: aTranslator [
+
+	translator := aTranslator
 ]
 
 { #category : 'as yet unclassified' }

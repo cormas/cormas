@@ -251,6 +251,18 @@ CMUkrainianTranslator >> tRunButtonHelp [
 	^ 'Грати симуляцію до самого кінця'
 ]
 
+{ #category : 'as yet unclassified' }
+CMUkrainianTranslator >> tSaveToCsv [
+
+	^ 'Зберегти як CSV'
+]
+
+{ #category : 'as yet unclassified' }
+CMUkrainianTranslator >> tSaveToExcel [
+
+	^ 'Зберегти як Exel'
+]
+
 { #category : 'translations' }
 CMUkrainianTranslator >> tSensitivityAnalysis [
 

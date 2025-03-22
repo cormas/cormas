@@ -138,7 +138,7 @@ CMSensitivityAnalysisDataPresenter >> initializePresenters [
 	dataNotebook addPage: (SpNotebookPage
 		title: 'Data'
 		icon: (self iconNamed: #database)
-		provider: [ dataTable := self instantiate: CMDataPresenter ]).
+		provider: [ dataTable := self instantiate: CMDataPresenter on: translator ]).
 		
 	simulationsCountLabel := self newLabel.
 	self updateSimulationsCountLabel.

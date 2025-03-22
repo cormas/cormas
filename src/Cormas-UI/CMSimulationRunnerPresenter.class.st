@@ -132,7 +132,7 @@ CMSimulationRunnerPresenter >> initializeCharts [
 { #category : 'initialization' }
 CMSimulationRunnerPresenter >> initializeDataTable [
 
-	dataTable := self instantiate: CMDataPresenter.
+	dataTable := self instantiate: CMDataPresenter on: translator.
 	dataTable columnNames: (simulation activeProbes collect: #name)
 ]
 
