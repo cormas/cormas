@@ -34,6 +34,12 @@ CMDataPresenter >> columnNames: aCollection [
 				evaluated: [ :dataRow | dataRow at: name ]) ].
 ]
 
+{ #category : 'accessing' }
+CMDataPresenter >> data [
+
+	^ table items
+]
+
 { #category : 'layout' }
 CMDataPresenter >> defaultLayout [
 
