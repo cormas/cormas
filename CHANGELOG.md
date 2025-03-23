@@ -29,6 +29,17 @@
 - ([683e034](https://github.com/cormas/cormas/commit/683e0349a8e2a58140e5b25512779683a6805ecc)) Implemented a UI for creating new models
 - ([70b31e5](https://github.com/cormas/cormas/commit/70b31e5d71291572ede334fbf5d5c325d2a38f40)) Added a helper method `CMAbstractModel >> openSpacePresenter` to quickly open a space presenter
 - ([f33812e](https://github.com/cormas/cormas/commit/f33812e2dee5d86c33c28c26c22aca0e0c6b1d05)) Replaced `isLocatedEntity` with `isLocated` on the class side
+- ([0bba453](https://github.com/cormas/cormas/commit/0bba453874f1de903fd1f8e365e7b46b5a478850)) Do not store cells in space model
+- ([f2823fc](https://github.com/cormas/cormas/commit/f2823fc267fe61b9ebe29e49653d995db641e46c)) Made PoV size proportional to cell size
+- ([6d0c36b](https://github.com/cormas/cormas/commit/6d0c36b04c010cee40f985d0f3659b7c65844619)) Positioning agents at given coordinates inside a cell
+- ([b0334a6](https://github.com/cormas/cormas/commit/b0334a6b11537dfd284624e92f38c583ea750352)) Added a `CMAgentGroup` class
+- ([9392791](https://github.com/cormas/cormas/commit/9392791d49ed5f6a5cd4a3ce1185d51f35470606), [776ba68](https://github.com/cormas/cormas/commit/776ba6859e539db2f04edd5ce486bd2ede33986a)) Added `CMSpatialEntityAggregate` class and associated methods:
+    - In `CMAbstractModel`: `createAggregate: from:`, `createAggregates: from: attribute:`, `createAggregates: from: attribute: minimumSize:`, `createAggregates: from: verifying:`, `createAggregates: from: verifying: minimumSize:`, `releaseAggregateType:`, `createAggregates: horizontalDividers: verticalDividers:`, 
+    - In `CMSpaceModel`: `createAggregates: from: attribute: minimumSize:`, `createAggregates: from: verifying: minimumSize:`, `createOneAggregate: from:`, `getGroupsOfConnectedEntiesFrom: attribute:`, `createAggregates: horizontalDividers: verticalDividers:`, `getSetsOfContiguousCellsHorizontalDividers: verticalDividers:`
+    - In `CMSpatialEntity`: `connectedCellsAmong:`, `neighborsOf:`, `aggregates`, `aggregates:`, `belongsToAggregateType:`
+    - In `CMSpatialEntityElement`: `distanceTo: constraintOnPath:`, `isOnTheEdge`
+- ([55c9f31](https://github.com/cormas/cormas/commit/55c9f3194975e565308b811e5c1b825289f642b2)) Replaced hardcoded toolbar of `CMDataPresenter` with commands
+- ([65b60f8](https://github.com/cormas/cormas/commit/65b60f884056378da535466a2972189767c77575)) Added a helper method `CMDataPresenter >> data` to quickly access the data
 
 ### Removed
 
@@ -37,6 +48,7 @@
     - ([d857221](https://github.com/cormas/cormas/commit/d857221b28436e559d7e8cce3e2cb005aa2d5409)) `CMPassiveObject` and `CMLocatedObject`
     - ([fbd6a1f](https://github.com/cormas/cormas/commit/fbd6a1f3b6276dd307c21edbc5104aeef4ccfa45)) `CMGroup`
     - ([6cdfc21](https://github.com/cormas/cormas/commit/6cdfc21dadafab435c397084876576f4caadd0da)) `CMMessage`, `CMChannel`, and `TCMCommunicating`
+    - ([0bba453](https://github.com/cormas/cormas/commit/0bba453874f1de903fd1f8e365e7b46b5a478850)) `CMSpace3Neighbourhood` and `CMSpace6Neighbourhood`
 - Variables and associated accessors:
     - ([417f264](https://github.com/cormas/cormas/commit/417f2647ef707de330527f59b02dfda5f447fc41)) `edge` and `outline` from `CMSpatialEntity`
     - ([6e2f4ca](https://github.com/cormas/cormas/commit/6e2f4ca291f8a053822751bc7fadd13d6a96d211)) `bounds` from `CMSpatialEntity`
@@ -45,15 +57,26 @@
     - ([2c718b1](https://github.com/cormas/cormas/commit/2c718b1c109e22b5c4426e3a0e73c808e90e8d9d)) `authors`, `comment`, `version`, and `creationDate` from `CMAbstractModel`
     - ([6229185](https://github.com/cormas/cormas/commit/6229185e4f0c8aed85bce4c981c63441ead1e08f)) `spatialClasses` from `CMAbstractModel`
     - ([beaba26](https://github.com/cormas/cormas/commit/beaba26910976a45a3adb0c0251bb22c19d22caa)) `elementaryEntitiesDefaultPovs` and `autoResizeBounds` from `CMSpaceModel`
+    - ([494687d](https://github.com/cormas/cormas/commit/494687d61c4c50549d75ebf891681c49d87cc9d7)) `channel` from `CMAbstractModel`
 - Dead methods from `CMAbstractModel`:
     - ([cadabb3](https://github.com/cormas/cormas/commit/cadabb39642eeb03b6926c3a31d67127585e4cb6)) `locatedObjectClasses`, `messages`, `passiveObjectClasses`
     - ([7919dc9](https://github.com/cormas/cormas/commit/7919dc9715d40d93e8d27d68baadc0aa0c9335da)) `allClassesNames`, `nPatches:`, `nbDistinctValuesOf:`
     - ([28e40bf](https://github.com/cormas/cormas/commit/28e40bffdca7dced27eebd91ff88517e203bb2e9)) `occupantClasses`, `allTheLocatedEntities`, `removeDeadEntities:`
     - ([23135e6](https://github.com/cormas/cormas/commit/23135e69d2718218683ce22b3186c039bea0fe69) `theAgentsComm`
+    - ([ec99c1e](https://github.com/cormas/cormas/commit/ec99c1e59a471c9254f4015ff81807636fba06f1)) `edgeDensity:`, `edgeDensity: totalArea:`, `patchDensity:`, `patchDensity: totalArea:`
+    - ([59d4ab6](https://github.com/cormas/cormas/commit/59d4ab6b64e87ec82255561f35ec3571b8cb2195)) `allTheSituatedEntities:`
  - Dead methods from `CMEntity class`:
     - ([28e40bf](https://github.com/cormas/cormas/commit/28e40bffdca7dced27eebd91ff88517e203bb2e9)) `isCellularAutomatonClass`, `isCompoundSpatialClass`, `isCormasEntityClass`, `isGenericEntity`, `isNodeClass`, `isObjectLocationClass`, `isSituatedClass`, `isSpatialEntitySetClass`
 - Dead methods from `CMSpatialEntity`:
     - ([66d2762](https://github.com/cormas/cormas/commit/66d276207121f909bf14c2a4137438a0a11e9e43)) `isCrossedByArc:`, `myOccupantAt:`, `myOccupants:`, `nciAbout:`
+- Methods from `CMSpatialEntityElement`:
+    - ([ec99c1e](https://github.com/cormas/cormas/commit/ec99c1e59a471c9254f4015ff81807636fba06f1)) `boundaryDirections:`
+- Methods from `CMSpaceModel`:
+    - ([9973c01](https://github.com/cormas/cormas/commit/9973c01b5be1adc4f09661de0b0c996b4e2bd5cf)) `cellClass`
+    - ([ec99c1e](https://github.com/cormas/cormas/commit/ec99c1e59a471c9254f4015ff81807636fba06f1)) `defaultGridSize`, `edgeDensity:`, `edgeDensity: totalArea:`, `nPatches:`, `patchDensity:`, `patchDensity: totalArea:`, setBoundaryDirectionsFor:`, `spaceModel`
+    - ([59d4ab6](https://github.com/cormas/cormas/commit/59d4ab6b64e87ec82255561f35ec3571b8cb2195)) `allOccupants`, `allTheEntities:`, `allTheSituatedEntities:`
+- Methods from `CMSpaceNeighbourhood`:
+    - ([ec99c1e](https://github.com/cormas/cormas/commit/ec99c1e59a471c9254f4015ff81807636fba06f1)) `setBoundaryDirectionsFor:`
 
 ### Renamed
 
@@ -61,6 +84,20 @@
 - ([3bef715](https://github.com/cormas/cormas/commit/3bef7156f39e8fac08cd292db665d8f528fb79f3)) `initEntitiesForSocialClass:` ---> `initializeAgentsOfClass:`
 - ([354b2aa](https://github.com/cormas/cormas/commit/354b2aabdb0d663c56abf9cea8fc9936920ce8c7)) `theEntities:` ---> `entitiesOfClass:`
 - ([edfcdcd](https://github.com/cormas/cormas/commit/edfcdcd163504c45de91a9b35f074efb1aeef7a7)) `theCells` ---> `cells`
+- ([0bba453](https://github.com/cormas/cormas/commit/0bba453874f1de903fd1f8e365e7b46b5a478850)) `nbCount` ---> `numberOfNeighbours`
+- ([0bba453](https://github.com/cormas/cormas/commit/0bba453874f1de903fd1f8e365e7b46b5a478850)) `nbNeighbours` ---> `numberOfNeighbours`
+- ([0bba453](https://github.com/cormas/cormas/commit/0bba453874f1de903fd1f8e365e7b46b5a478850)) `nbConfiguration` ---> `neighbourhoodConfiguration`
+- ([fe398e0](https://github.com/cormas/cormas/commit/fe398e039245230c1c250957983cd9d10ba01c10)) `centralLocation` ---> `centralCell`
+- ([fe398e0](https://github.com/cormas/cormas/commit/fe398e039245230c1c250957983cd9d10ba01c10)) `lowerLeftLocation` ---> `lowerLeftCell`
+- ([fe398e0](https://github.com/cormas/cormas/commit/fe398e039245230c1c250957983cd9d10ba01c10)) `lowerRightLocation` ---> `lowerRightCell`
+- ([fe398e0](https://github.com/cormas/cormas/commit/fe398e039245230c1c250957983cd9d10ba01c10)) `selectCellsBetweenLine1: line2: andColumn1: column2:` ---> `selectCellsBetweenRow: andRow: column: andColumn:`
+- ([fe398e0](https://github.com/cormas/cormas/commit/fe398e039245230c1c250957983cd9d10ba01c10)) `cellsIntoRectangleFrom:` ---> `cellsInRectangleFrom:`
+- ([fe398e0](https://github.com/cormas/cormas/commit/fe398e039245230c1c250957983cd9d10ba01c10)) `cellsOfLine:` ---> `cellsOfRow:`
+- ([fe398e0](https://github.com/cormas/cormas/commit/fe398e039245230c1c250957983cd9d10ba01c10)) `upperLeftLocation` ---> `upperLeftCell`
+- ([fe398e0](https://github.com/cormas/cormas/commit/fe398e039245230c1c250957983cd9d10ba01c10)) `upperRightLocation` ---> `upperRightCell`
+- ([fe398e0](https://github.com/cormas/cormas/commit/fe398e039245230c1c250957983cd9d10ba01c10)) `cellsBetweenColumn1: andColumn2:` ---> `cellsBetweenColumn: andColumn:`
+- ([fe398e0](https://github.com/cormas/cormas/commit/fe398e039245230c1c250957983cd9d10ba01c10)) `cellsBetweenLine1: andLine2:` ---> `cellsBetweenRow: andRow:`
+- ([fe398e0](https://github.com/cormas/cormas/commit/fe398e039245230c1c250957983cd9d10ba01c10)) `cellsBetweenLine1: line2: andColumn1: column2:` ---> `cellsBetweenRow: andRow: column: andColumn:`
 
 ## [v0.95](https://github.com/cormas/cormas/compare/v0.9..v0.95) (2 September 2024)
 
