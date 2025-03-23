@@ -25,6 +25,42 @@
 - ([fb72eb4](https://github.com/cormas/cormas/commit/fb72eb48d46ee6d1e01e289896a6d99c004a1f83)) Wrote a script to generate Cormas app for Mac
 - ([e3903a6](https://github.com/cormas/cormas/commit/e3903a639df995cfea2075171744369b3ad4cad3)) Improved Cormas logo (better resolution, different colors)
 - ([68ae7b6](https://github.com/cormas/cormas/commit/68ae7b6c81ec1941e3eedeadf4beba2de6e6eea7)) Don't force the light theme
+- ([d4e696f](https://github.com/cormas/cormas/commit/d4e696fd52671f29217aa6876ae0b540c271c1dc)) Use the same class for all data tables
+- ([683e034](https://github.com/cormas/cormas/commit/683e0349a8e2a58140e5b25512779683a6805ecc)) Implemented a UI for creating new models
+- ([70b31e5](https://github.com/cormas/cormas/commit/70b31e5d71291572ede334fbf5d5c325d2a38f40)) Added a helper method `CMAbstractModel >> openSpacePresenter` to quickly open a space presenter
+- ([f33812e](https://github.com/cormas/cormas/commit/f33812e2dee5d86c33c28c26c22aca0e0c6b1d05)) Replaced `isLocatedEntity` with `isLocated` on the class side
+
+### Removed
+
+- Classes:
+    - ([243dfc2](https://github.com/cormas/cormas/commit/243dfc2304ecebac0b50e1b7a2f4eb4581fa2876)) `CMSpacePolygonNeighbourhood`
+    - ([d857221](https://github.com/cormas/cormas/commit/d857221b28436e559d7e8cce3e2cb005aa2d5409)) `CMPassiveObject` and `CMLocatedObject`
+    - ([fbd6a1f](https://github.com/cormas/cormas/commit/fbd6a1f3b6276dd307c21edbc5104aeef4ccfa45)) `CMGroup`
+    - ([6cdfc21](https://github.com/cormas/cormas/commit/6cdfc21dadafab435c397084876576f4caadd0da)) `CMMessage`, `CMChannel`, and `TCMCommunicating`
+- Variables and associated accessors:
+    - ([417f264](https://github.com/cormas/cormas/commit/417f2647ef707de330527f59b02dfda5f447fc41)) `edge` and `outline` from `CMSpatialEntity`
+    - ([6e2f4ca](https://github.com/cormas/cormas/commit/6e2f4ca291f8a053822751bc7fadd13d6a96d211)) `bounds` from `CMSpatialEntity`
+    - ([005b541](https://github.com/cormas/cormas/commit/005b541c8e31bc22c5e73e1ec76b2759ec58695d)) `theAggregates` from `CMSpatialEntity`
+    - ([b946813](https://github.com/cormas/cormas/commit/b946813ae8756c83b3a5a838155610eedd02c143)) `flag` from `CMEntity` 
+    - ([2c718b1](https://github.com/cormas/cormas/commit/2c718b1c109e22b5c4426e3a0e73c808e90e8d9d)) `authors`, `comment`, `version`, and `creationDate` from `CMAbstractModel`
+    - ([6229185](https://github.com/cormas/cormas/commit/6229185e4f0c8aed85bce4c981c63441ead1e08f)) `spatialClasses` from `CMAbstractModel`
+    - ([beaba26](https://github.com/cormas/cormas/commit/beaba26910976a45a3adb0c0251bb22c19d22caa)) `elementaryEntitiesDefaultPovs` and `autoResizeBounds` from `CMSpaceModel`
+- Dead methods from `CMAbstractModel`:
+    - ([cadabb3](https://github.com/cormas/cormas/commit/cadabb39642eeb03b6926c3a31d67127585e4cb6)) `locatedObjectClasses`, `messages`, `passiveObjectClasses`
+    - ([7919dc9](https://github.com/cormas/cormas/commit/7919dc9715d40d93e8d27d68baadc0aa0c9335da)) `allClassesNames`, `nPatches:`, `nbDistinctValuesOf:`
+    - ([28e40bf](https://github.com/cormas/cormas/commit/28e40bffdca7dced27eebd91ff88517e203bb2e9)) `occupantClasses`, `allTheLocatedEntities`, `removeDeadEntities:`
+    - ([23135e6](https://github.com/cormas/cormas/commit/23135e69d2718218683ce22b3186c039bea0fe69) `theAgentsComm`
+ - Dead methods from `CMEntity class`:
+    - ([28e40bf](https://github.com/cormas/cormas/commit/28e40bffdca7dced27eebd91ff88517e203bb2e9)) `isCellularAutomatonClass`, `isCompoundSpatialClass`, `isCormasEntityClass`, `isGenericEntity`, `isNodeClass`, `isObjectLocationClass`, `isSituatedClass`, `isSpatialEntitySetClass`
+- Dead methods from `CMSpatialEntity`:
+    - ([66d2762](https://github.com/cormas/cormas/commit/66d276207121f909bf14c2a4137438a0a11e9e43)) `isCrossedByArc:`, `myOccupantAt:`, `myOccupants:`, `nciAbout:`
+
+### Renamed
+
+- ([b0c2137](https://github.com/cormas/cormas/commit/b0c21371234c03623e43c5aee3ad7705f382928c)) `socialClasses` ---> `agentClasses`
+- ([3bef715](https://github.com/cormas/cormas/commit/3bef7156f39e8fac08cd292db665d8f528fb79f3)) `initEntitiesForSocialClass:` ---> `initializeAgentsOfClass:`
+- ([354b2aa](https://github.com/cormas/cormas/commit/354b2aabdb0d663c56abf9cea8fc9936920ce8c7)) `theEntities:` ---> `entitiesOfClass:`
+- ([edfcdcd](https://github.com/cormas/cormas/commit/edfcdcd163504c45de91a9b35f074efb1aeef7a7)) `theCells` ---> `cells`
 
 ## [v0.95](https://github.com/cormas/cormas/compare/v0.9..v0.95) (2 September 2024)
 
