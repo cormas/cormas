@@ -127,7 +127,7 @@ CMSimulationInitializerPresenter >> initializePresenters [
 		
 	shouldWarnWhenReinitializeCheckbox := self newCheckBox
 		label: 'Ask before reinitializing';
-		state: true;
+		state: false;
 		yourself.
 	
 	initializeButton := self newButton
