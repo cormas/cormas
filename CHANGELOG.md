@@ -2,44 +2,44 @@
 
 ## [v0.96](https://github.com/cormas/cormas/compare/v0.95..v0.96) (23 March 2025)
 
-- ([516513c](https://github.com/cormas/cormas/commit/516513ca63cc7682fef2c671e14c85f9f995f612)) Updated the sensitivity analysis presenter
-- ([8587f91](https://github.com/cormas/cormas/commit/8587f91e3a640595fb94c5012c97bda060be8edc), [f2d3e11](https://github.com/cormas/cormas/commit/f2d3e11b83c649df047b0d5977c903313fcf0e80), [9becd42](https://github.com/cormas/cormas/commit/9becd42a4edf7f4b4c520ea435dfdf87e68d67a8), [9dcc791](https://github.com/cormas/cormas/commit/9dcc7911d84fa7563efe51bd9c1e87bbef6d6d63), [c73fb7f](https://github.com/cormas/cormas/commit/c73fb7fc8ca7d46d9b9c4e2d24d1d454c1aaf553), [8659b36](https://github.com/cormas/cormas/commit/8659b36022cf599a3eba610f52b984b18407f12c)) Implemented the first prototype of `CMModeDesigner`
-- ([450e988](https://github.com/cormas/cormas/commit/450e988877d68ec4f13094d8170a55afd0acda4f)) Added prefix method to `CMMockModel`
-- Implemented parameters editor
-- Improved the UI of sensitivity analysis
-- ([5470f90](https://github.com/cormas/cormas/commit/5470f90e076dfd6fa159eb3acc4530c9389c9228)) Added methods to `CMSpatialEntityElement`: `hasNeighbourN`, `hasNeighbourS`, `hasNeighbourE`, `hasNeighbourW`, `hasNeighbourNE`, `hasNeighbourNW`, hasNeighbourSE`, `hasNeighbourSW`
-- ([ec7c49e](https://github.com/cormas/cormas/commit/ec7c49ea2fea84f5573195a2f8058626e28334c1), [b931e3c](https://github.com/cormas/cormas/commit/b931e3cad5c048c1565890f74be9f2405d4389ee)) Extracted menu buttons as commands
-- ([9682e64](https://github.com/cormas/cormas/commit/9682e648b4617cdbfc9b6a4d6e2707672fdfb9b5)) Added a fullscreen button
-- ([249638a](https://github.com/cormas/cormas/commit/249638ab4da3ca97fe4feda2dd3537ce6d15babb)) Implemented PoV with tilesets (image PoV)
-- ([7b6eace](https://github.com/cormas/cormas/commit/7b6eace9ea589ce5172dcf10f1b43edd4bec4bf6), [2426957](https://github.com/cormas/cormas/commit/242695775b76e13e40eb384bcbb4e5ac8fcaf6a7)) Use selectors instead of methods in parameters, init and control
-- ([cebf019](https://github.com/cormas/cormas/commit/cebf01995837c5ac3a1b8d787e868368dd4a2ca4)) Added a checkbox to disable the warning when reinitialized
-- ([fa57860](https://github.com/cormas/cormas/commit/fa57860552ab605148f77dbd3b251f214bd0bf05)) Added `TCMRandom >> randomIntegerBetween:and:`
-- ([fb8d66c](https://github.com/cormas/cormas/commit/fb8d66cf7948d224b6b59567d8d8e4c2f39bf863)) Added `CMColor` class and allowed specifying color by its name in a probe
-- ([58cb9be](https://github.com/cormas/cormas/commit/58cb9be17083bf447b2673a38f92d97160da0086), [c0c75e8](https://github.com/cormas/cormas/commit/c0c75e8fa02589b5afa9ac22bef0a4b077dc114c)) Implemented example model loader
-- ([acfa51d](https://github.com/cormas/cormas/commit/acfa51ddbd2e93ed691c72d1c031dc1d0b5ae1cd)) Retaining the final time step from previous simulation
-- ([c4f5230](https://github.com/cormas/cormas/commit/c4f5230df787061a40d6e674b2c120032cae5173)) Setting the random seed
-- ([497285d](https://github.com/cormas/cormas/commit/497285d28d4a330a7fb9cb32c106dec0712b8784), [225590f](https://github.com/cormas/cormas/commit/225590f2b8937ba362e7f464cbd5ea1babbcbfa8)) Added `povInvisible`
-- ([24e836c](https://github.com/cormas/cormas/commit/24e836c74dc97e75a937406966de1d56151e441b)) Added a context menu for entities in the space view and defined the `<action>` pragma
-- ([cb0783f](https://github.com/cormas/cormas/commit/cb0783fab1da9ef938aefd89014d7de1556838e8)) Implemented instance parameters
 - Created a new website and wrote multiple documentation pages
 - ([fb72eb4](https://github.com/cormas/cormas/commit/fb72eb48d46ee6d1e01e289896a6d99c004a1f83)) Wrote a script to generate Cormas app for Mac
+
+### New UI Tools & Features
+
+- ([58cb9be](https://github.com/cormas/cormas/commit/58cb9be17083bf447b2673a38f92d97160da0086), [c0c75e8](https://github.com/cormas/cormas/commit/c0c75e8fa02589b5afa9ac22bef0a4b077dc114c)) Implemented example model loader
+- ([683e034](https://github.com/cormas/cormas/commit/683e0349a8e2a58140e5b25512779683a6805ecc)) Implemented a UI for creating new models
+- ([8587f91](https://github.com/cormas/cormas/commit/8587f91e3a640595fb94c5012c97bda060be8edc), [f2d3e11](https://github.com/cormas/cormas/commit/f2d3e11b83c649df047b0d5977c903313fcf0e80), [9becd42](https://github.com/cormas/cormas/commit/9becd42a4edf7f4b4c520ea435dfdf87e68d67a8), [9dcc791](https://github.com/cormas/cormas/commit/9dcc7911d84fa7563efe51bd9c1e87bbef6d6d63), [c73fb7f](https://github.com/cormas/cormas/commit/c73fb7fc8ca7d46d9b9c4e2d24d1d454c1aaf553), [8659b36](https://github.com/cormas/cormas/commit/8659b36022cf599a3eba610f52b984b18407f12c)) Implemented the first prototype of `CMModeDesigner`
+- Implemented parameters editor
+- Improved the UI of sensitivity analysis
+- ([24e836c](https://github.com/cormas/cormas/commit/24e836c74dc97e75a937406966de1d56151e441b)) Added a context menu for entities in the space view and defined the `<action>` pragma
+- ([9682e64](https://github.com/cormas/cormas/commit/9682e648b4617cdbfc9b6a4d6e2707672fdfb9b5)) Added a fullscreen button
 - ([e3903a6](https://github.com/cormas/cormas/commit/e3903a639df995cfea2075171744369b3ad4cad3)) Improved Cormas logo (better resolution, different colors)
 - ([68ae7b6](https://github.com/cormas/cormas/commit/68ae7b6c81ec1941e3eedeadf4beba2de6e6eea7)) Don't force the light theme
-- ([d4e696f](https://github.com/cormas/cormas/commit/d4e696fd52671f29217aa6876ae0b540c271c1dc)) Use the same class for all data tables
-- ([683e034](https://github.com/cormas/cormas/commit/683e0349a8e2a58140e5b25512779683a6805ecc)) Implemented a UI for creating new models
-- ([70b31e5](https://github.com/cormas/cormas/commit/70b31e5d71291572ede334fbf5d5c325d2a38f40)) Added a helper method `CMAbstractModel >> openSpacePresenter` to quickly open a space presenter
-- ([f33812e](https://github.com/cormas/cormas/commit/f33812e2dee5d86c33c28c26c22aca0e0c6b1d05)) Replaced `isLocatedEntity` with `isLocated` on the class side
-- ([0bba453](https://github.com/cormas/cormas/commit/0bba453874f1de903fd1f8e365e7b46b5a478850)) Do not store cells in space model
+- ([cebf019](https://github.com/cormas/cormas/commit/cebf01995837c5ac3a1b8d787e868368dd4a2ca4)) Added a checkbox to disable the warning when reinitialized
+- ([c4f5230](https://github.com/cormas/cormas/commit/c4f5230df787061a40d6e674b2c120032cae5173)) Setting the random seed
+
+### Point of View (POV)
+
+- ([249638a](https://github.com/cormas/cormas/commit/249638ab4da3ca97fe4feda2dd3537ce6d15babb)) Implemented PoV with tilesets (image PoV)
+- ([fb8d66c](https://github.com/cormas/cormas/commit/fb8d66cf7948d224b6b59567d8d8e4c2f39bf863)) Added `CMColor` class and allowed specifying color by its name in a probe
 - ([f2823fc](https://github.com/cormas/cormas/commit/f2823fc267fe61b9ebe29e49653d995db641e46c)) Made PoV size proportional to cell size
 - ([6d0c36b](https://github.com/cormas/cormas/commit/6d0c36b04c010cee40f985d0f3659b7c65844619)) Positioning agents at given coordinates inside a cell
+- ([497285d](https://github.com/cormas/cormas/commit/497285d28d4a330a7fb9cb32c106dec0712b8784), [225590f](https://github.com/cormas/cormas/commit/225590f2b8937ba362e7f464cbd5ea1babbcbfa8)) Added `povInvisible`
+
+### Aggregates & Groups
+
 - ([b0334a6](https://github.com/cormas/cormas/commit/b0334a6b11537dfd284624e92f38c583ea750352)) Added a `CMAgentGroup` class
 - ([9392791](https://github.com/cormas/cormas/commit/9392791d49ed5f6a5cd4a3ce1185d51f35470606), [776ba68](https://github.com/cormas/cormas/commit/776ba6859e539db2f04edd5ce486bd2ede33986a)) Added `CMSpatialEntityAggregate` class and associated methods:
     - In `CMAbstractModel`: `createAggregate: from:`, `createAggregates: from: attribute:`, `createAggregates: from: attribute: minimumSize:`, `createAggregates: from: verifying:`, `createAggregates: from: verifying: minimumSize:`, `releaseAggregateType:`, `createAggregates: horizontalDividers: verticalDividers:`, 
     - In `CMSpaceModel`: `createAggregates: from: attribute: minimumSize:`, `createAggregates: from: verifying: minimumSize:`, `createOneAggregate: from:`, `getGroupsOfConnectedEntiesFrom: attribute:`, `createAggregates: horizontalDividers: verticalDividers:`, `getSetsOfContiguousCellsHorizontalDividers: verticalDividers:`
     - In `CMSpatialEntity`: `connectedCellsAmong:`, `neighborsOf:`, `aggregates`, `aggregates:`, `belongsToAggregateType:`
     - In `CMSpatialEntityElement`: `distanceTo: constraintOnPath:`, `isOnTheEdge`
+
+### Better architecture
+
+- ([ec7c49e](https://github.com/cormas/cormas/commit/ec7c49ea2fea84f5573195a2f8058626e28334c1), [b931e3c](https://github.com/cormas/cormas/commit/b931e3cad5c048c1565890f74be9f2405d4389ee)) Extracted menu buttons as commands
 - ([55c9f31](https://github.com/cormas/cormas/commit/55c9f3194975e565308b811e5c1b825289f642b2)) Replaced hardcoded toolbar of `CMDataPresenter` with commands
-- ([65b60f8](https://github.com/cormas/cormas/commit/65b60f884056378da535466a2972189767c77575)) Added a helper method `CMDataPresenter >> data` to quickly access the data
 
 ### Removed
 
@@ -98,6 +98,19 @@
 - ([fe398e0](https://github.com/cormas/cormas/commit/fe398e039245230c1c250957983cd9d10ba01c10)) `cellsBetweenColumn1: andColumn2:` ---> `cellsBetweenColumn: andColumn:`
 - ([fe398e0](https://github.com/cormas/cormas/commit/fe398e039245230c1c250957983cd9d10ba01c10)) `cellsBetweenLine1: andLine2:` ---> `cellsBetweenRow: andRow:`
 - ([fe398e0](https://github.com/cormas/cormas/commit/fe398e039245230c1c250957983cd9d10ba01c10)) `cellsBetweenLine1: line2: andColumn1: column2:` ---> `cellsBetweenRow: andRow: column: andColumn:`
+
+### Minor Changes
+
+- ([7b6eace](https://github.com/cormas/cormas/commit/7b6eace9ea589ce5172dcf10f1b43edd4bec4bf6), [2426957](https://github.com/cormas/cormas/commit/242695775b76e13e40eb384bcbb4e5ac8fcaf6a7)) Use selectors instead of methods in parameters, init and control
+- ([5470f90](https://github.com/cormas/cormas/commit/5470f90e076dfd6fa159eb3acc4530c9389c9228)) Added methods to `CMSpatialEntityElement`: `hasNeighbourN`, `hasNeighbourS`, `hasNeighbourE`, `hasNeighbourW`, `hasNeighbourNE`, `hasNeighbourNW`, hasNeighbourSE`, `hasNeighbourSW`
+- ([70b31e5](https://github.com/cormas/cormas/commit/70b31e5d71291572ede334fbf5d5c325d2a38f40)) Added a helper method `CMAbstractModel >> openSpacePresenter` to quickly open a space presenter
+- ([65b60f8](https://github.com/cormas/cormas/commit/65b60f884056378da535466a2972189767c77575)) Added a helper method `CMDataPresenter >> data` to quickly access the data
+- ([fa57860](https://github.com/cormas/cormas/commit/fa57860552ab605148f77dbd3b251f214bd0bf05)) Added `TCMRandom >> randomIntegerBetween:and:`
+- ([acfa51d](https://github.com/cormas/cormas/commit/acfa51ddbd2e93ed691c72d1c031dc1d0b5ae1cd)) Retaining the final time step from previous simulation
+- ([d4e696f](https://github.com/cormas/cormas/commit/d4e696fd52671f29217aa6876ae0b540c271c1dc)) Use the same class for all data tables
+- ([cb0783f](https://github.com/cormas/cormas/commit/cb0783fab1da9ef938aefd89014d7de1556838e8)) Implemented instance parameters
+- ([f33812e](https://github.com/cormas/cormas/commit/f33812e2dee5d86c33c28c26c22aca0e0c6b1d05)) Replaced `isLocatedEntity` with `isLocated` on the class side
+- ([0bba453](https://github.com/cormas/cormas/commit/0bba453874f1de903fd1f8e365e7b46b5a478850)) Do not store cells in space model
 
 ## [v0.95](https://github.com/cormas/cormas/compare/v0.9..v0.95) (2 September 2024)
 
