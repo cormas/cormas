@@ -1,1 +1,0 @@
-[changelog](https://raw.githubusercontent.com/cormas/cormas/master/CHANGELOG.md ':include')

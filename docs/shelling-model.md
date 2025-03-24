@@ -1,3 +1,0 @@
-# Shelling Model
-
-> TODO
