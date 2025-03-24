@@ -1,3 +1,0 @@
-# ECEC Model
-
-> TODO
