@@ -1,8 +1,7 @@
 # Changelog
 
-## [v0.96](https://github.com/cormas/cormas/compare/v0.95..v0.96) (23 March 2025)
+## [v0.96](https://github.com/cormas/cormas/compare/v0.95..v0.96) (24 March 2025)
 
-- Created a new website and wrote multiple documentation pages
 - ([fb72eb4](https://github.com/cormas/cormas/commit/fb72eb48d46ee6d1e01e289896a6d99c004a1f83)) Wrote a script to generate Cormas app for Mac
 
 ### New UI Tools & Features
