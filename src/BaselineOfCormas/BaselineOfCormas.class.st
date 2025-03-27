@@ -93,7 +93,11 @@ BaselineOfCormas >> specForBaselines: spec [
 		
 	spec
 		baseline: 'RoassalExporters'
-		with: [ spec repository: 'github://pharo-graphics/RoassalExporters:v1.02' ]
+		with: [ spec repository: 'github://pharo-graphics/RoassalExporters:v1.02' ].
+
+	spec
+		baseline: 'Phleeter'
+		with: [ spec repository: 'github://tomooda/Phleeter:main/src' ].
 
 ]
 
@@ -113,7 +117,8 @@ BaselineOfCormas >> specForGroups: spec [
 			'Cormas-UI-Tilesets'
 			'Cormas-SensitivityAnalysis-Tests'
 			'Cormas-SensitivityAnalysis-UI-Tests');
-		group: 'default' with: #('SensitivityAnalysisUI')
+		group: 'default' with: #('SensitivityAnalysisUI');
+		group: 'deploy' with: #('default' 'Cormas-Application')
 ]
 
 { #category : 'specs' }
@@ -157,5 +162,8 @@ BaselineOfCormas >> specForPackages: spec [
 		with: [ spec requires: #('Cormas-SensitivityAnalysis' 'Cormas-Mocks' 'Cormas-UI-Translator') ];
 		
 		package: 'Cormas-SensitivityAnalysis-UI-Tests'
-		with: [ spec requires: #('Cormas-SensitivityAnalysis-UI') ].
+		with: [ spec requires: #('Cormas-SensitivityAnalysis-UI') ];
+
+		package: 'Cormas-Application'
+		with: [ spec requires: #('Phleeter') ].
 ]
