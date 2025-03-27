@@ -41,7 +41,31 @@ CormasCommandLineHandler class >> cormasIcon [
 	^ icon
 ]
 
-{ #category : 'translating' }
+{ #category : 'utilities' }
+CormasCommandLineHandler class >> deploy [
+
+	<script>
+	MCRepositoryGroup allSubInstancesDo: [ :group |
+		group repositories do: [ :repo | group removeRepository: repo ] ].
+	IceRepository registry removeAll.
+	IceCredentialStore current in: [ :store |
+		store allCredentials do: [ :each | each removeFrom: store ] ].
+	self currentWorld closeAllWindowsDiscardingChanges.
+	Deprecation
+		raiseWarning: false;
+		showWarning: false.
+	NoChangesLog install.
+	"NoPharoFilesOpener install."
+	FFICompilerPlugin install.
+	Stdio useNullStreams.
+	MCCacheRepository uniqueInstance disable.
+	EpMonitor reset.
+	SessionManager default registerSystemClassNamed: #FreeTypeFileInfo.
+	5 timesRepeat: [ "PharoCommandLineHandler forcePreferencesOmission: true"
+		Smalltalk garbageCollect ]
+]
+
+{ #category : 'generating' }
 CormasCommandLineHandler class >> generate [
 
 	<script: 'CormasCommandLineHandler generate'>
