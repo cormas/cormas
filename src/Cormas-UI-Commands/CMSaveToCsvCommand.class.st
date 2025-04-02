@@ -8,7 +8,14 @@ Class {
 { #category : 'accessing' }
 CMSaveToCsvCommand >> action [
 
-	"do nothing"
+	<category: 'actions'>
+	| fileReference |
+	fileReference := UIManager default
+		                 chooseForSaveFileReference: 'Save simulation data'
+		                 extensions: #( 'csv' )
+		                 path: FileSystem workingDirectory.
+
+	fileReference ifNotNil: [ self saveDataToFile: fileReference ]
 ]
 
 { #category : 'accessing' }
