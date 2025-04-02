@@ -42,7 +42,7 @@ CMSaveToCsvCommand >> owner: anObject [
 	owner := anObject
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'export' }
 CMSaveToCsvCommand >> saveDataToFile: fileReference [ 
 
 	| writer data headers |
