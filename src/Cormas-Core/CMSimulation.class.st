@@ -149,6 +149,7 @@ CMSimulation >> initializeSimulation [
 		shouldReleaseRandomSeedAfterInitialization := false ].
 
 	self initializeModel.
+	cormasModel initEntities.
 	self setInitialParameters.
 	
 	cormasModel perform: activeInitSelector.
