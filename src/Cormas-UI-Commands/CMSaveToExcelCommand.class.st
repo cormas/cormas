@@ -8,7 +8,7 @@ Class {
 { #category : 'accessing' }
 CMSaveToExcelCommand >> action [
 
-	"do Nothing"
+	"do nothing"
 ]
 
 { #category : 'accessing' }
