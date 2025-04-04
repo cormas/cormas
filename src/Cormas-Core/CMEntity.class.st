@@ -132,10 +132,19 @@ CMEntity class >> initializeParameters [
 ]
 
 { #category : 'testing' }
-CMEntity class >> isAbstract [
+CMEntity class >> hasSubclasses [
 	"Purpose: to test the existence of subclasses"
 	
 	^self subclasses notEmpty
+]
+
+{ #category : 'testing' }
+CMEntity class >> isAbstract [
+	"This method is deprecated as it conflicts with Pharo's standard meaning of 'isAbstract'.
+	Please use #hasSubclasses instead."
+	
+	self deprecated: 'Use #hasSubclasses instead' transformWith: '`@receiver isAbstract' -> '`@receiver hasSubclasses'.
+	^self hasSubclasses
 ]
 
 { #category : 'testing' }
