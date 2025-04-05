@@ -6,7 +6,7 @@ Class {
 		'object',
 		'isActive',
 		'method',
-		'color'
+		'colorString'
 	],
 	#category : 'Cormas-Core-Analysis',
 	#package : 'Cormas-Core',
@@ -14,11 +14,11 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-CMProbe class >> name: aString color: aColor method: aCompiledMethod on: anObject [
+CMProbe class >> name: aString colorString: aColorString method: aCompiledMethod on: anObject [
 
 	^ self new
 		name: aString;
-		color: aColor;
+		colorString: aColorString;
 		method: aCompiledMethod;
 		object: anObject;
 		yourself
@@ -34,21 +34,21 @@ CMProbe >> = anObject [
 	anObject method = method ifFalse: [ ^ false ].
 	anObject object = object ifFalse: [ ^ false ].
 	anObject isActive = isActive ifFalse: [ ^ false ].
-	anObject color = color ifFalse: [ ^ false ].
+	anObject colorString = colorString ifFalse: [ ^ false ].
 	
 	^ true
 ]
 
 { #category : 'accessing' }
-CMProbe >> color [
+CMProbe >> colorString [
 
-	^ color
+	^ colorString
 ]
 
 { #category : 'accessing' }
-CMProbe >> color: aColor [
+CMProbe >> colorString: aString [
 
-	color := aColor
+	colorString := aString
 ]
 
 { #category : 'comparing' }
@@ -58,7 +58,7 @@ CMProbe >> hash [
 	^ name hash bitXor:
 		  (method hash bitXor:
 				(object hash bitXor:
-					(isActive hash bitXor: color hash))) 
+					(isActive hash bitXor: colorString hash))) 
 ]
 
 { #category : 'initialization' }
