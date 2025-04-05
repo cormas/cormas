@@ -1,4 +1,4 @@
-<p align="center"><img alt="CORMAS" src="docs/_media/logo.png" style="width: 25%; height: 25%">
+<p align="center"><img alt="CORMAS" src="./img/CormasLogo.png" style="width: 25%; height: 25%">
 <h1 align="center">CORMAS</h1>
   <p align="center">
     <b>CO</b>mmon pool <b>R</b>essources and <b>M</b>ulti-<b>A</b>gent <b>S</b>imulations
@@ -57,7 +57,7 @@ Metacello new
 ```
 
 All packages load into the Cormas-* package names:
-<p><img alt="Loading..." src="assets/images/loadingCormas.jpg" style="width: 40%; height: 40%">
+<p><img alt="Loading..." src="./img/loadingCormas.jpg" style="width: 40%; height: 40%">
 
 ## CLI Installation
 
@@ -91,10 +91,10 @@ As you use Cormas, you should always save your image (the state of your environm
 For that, select `Save` from the Pharo menu.
 
 Alternatively, if you want to save your image in a custom location, select `Save As...`:
-<p><img alt="SaveAs" src="assets/images/saveAs.jpg" style="width: 12%; height: 12%">
+<p><img alt="SaveAs" src="./img/saveAs.jpg" style="width: 12%; height: 12%">
 
 Then write the name of your choice (e.g.: `CormasPharo.image`):
-<p><img alt="Loading..." src="assets/images/saveImage.jpg" style="width: 40%; height: 40%">
+<p><img alt="Loading..." src="./img/saveImage.jpg" style="width: 40%; height: 40%">
 
 # Contributors ✨
 

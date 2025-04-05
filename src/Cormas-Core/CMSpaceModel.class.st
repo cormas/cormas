@@ -65,7 +65,7 @@ CMSpaceModel class >> forModel: aCormasModel [
 		yourself
 ]
 
-{ #category : 'ESE (regular) - special locations' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> cellAt: aRowIndex at: aColumnIndex [
 	
 	^ cormasModel cells at: ((aRowIndex - 1) * numberOfColumns + aColumnIndex)
@@ -77,7 +77,7 @@ CMSpaceModel >> cells [
 	^ cormasModel cells
 ]
 
-{ #category : 'ESE (regular) - special locations' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> cellsBetweenColumn: colNumber1 andColumn: colNumber2 [
 	"Return the cells between the colNumber1 and the colNumber2 of the spatial grid.
 colNumber1   <Integer> lineNumber = Positive Integer
@@ -92,7 +92,7 @@ colNumber2   <Integer> colNumber = Positive Integer"
 	^ cells
 ]
 
-{ #category : 'ESE (regular) - special locations' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> cellsBetweenRow: lineNumber1 andRow: lineNumber2 [
 	"Return the cells between the lineNumber1 and the lineNumber2 of the spatial grid.
 lineNumber1   <Integer> lineNumber = Positive Integer
@@ -107,7 +107,7 @@ lineNumber2   <Integer> colNumber = Positive Integer"
 	^ cells
 ]
 
-{ #category : 'ESE (regular) - special locations' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> cellsBetweenRow: aRowNumber1 andRow: aRowNumber2 column: aColumnNumber1 andColumn: aColumnNumber2 [
 
 	| topRowNumber bottomRowNumber leftColumnNumber rightColumnNumber result |
@@ -124,7 +124,7 @@ CMSpaceModel >> cellsBetweenRow: aRowNumber1 andRow: aRowNumber2 column: aColumn
 		select: [ :cell | result includes: cell ]
 ]
 
-{ #category : 'ESE (regular) - special locations' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> cellsInRectangleFrom: cell1 to: cell2 [
 	"Return the cells between the lineNumber and the colNumber of the spatial grid. The Cells are ordered from cell1 to cell2.
 cell1   <SpatialEntityElement>  
@@ -160,7 +160,7 @@ cell2   <SpatialEntityElement> "
 	^cells
 ]
 
-{ #category : 'ESE (regular) - special locations' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> cellsOfColumn: colNumber [
 	"Return the cells in the colNumber of the spatial grid.
 colNumber   <Integer> colNumber = Positive Integer"
@@ -168,13 +168,13 @@ colNumber   <Integer> colNumber = Positive Integer"
 	^ cormasModel cells select: [ :cell | cell columnNumber = colNumber ]
 ]
 
-{ #category : 'ESE (regular) - special locations' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> cellsOfRow: aRowNumber [
 
 	^ cormasModel cells select: [ :cell | cell rowNumber = aRowNumber ]
 ]
 
-{ #category : 'ESE (regular) - special locations' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> centralCell [
 	(numberOfRows even or: [ numberOfColumns even ])
 		ifTrue: [ ^ self error: 'Grid dimensions is not odd' ].
@@ -250,7 +250,7 @@ The aggregates will  occupy the whole grid.
 
 ]
 
-{ #category : 'ESE initialize-release' }
+{ #category : 'initialization' }
 CMSpaceModel >> createCells [
 
 	1 to: self gridSize do: [ :i |
@@ -393,7 +393,7 @@ CMSpaceModel >> initialize [
 	isClosedEnvironment := true
 ]
 
-{ #category : 'ESE initialize-release' }
+{ #category : 'initialization' }
 CMSpaceModel >> initializeRegularNumberOfRows: aNumberOfRows numberOfColumns: aNumberOfColumns neighbourhood: aNumber closed: aBoolean [
 	" Private - Create a grid of regular cells."
 
@@ -426,12 +426,12 @@ CMSpaceModel >> isIrregular [
 	^gridCellShape = #irregular
 ]
 
-{ #category : 'ESE (regular) - special locations' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> lowerLeftCell [
 	^ cormasModel cells at: numberOfColumns * (numberOfRows - 1) + 1
 ]
 
-{ #category : 'ESE (regular) - special locations' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> lowerRightCell [
 	^ cormasModel cells at: numberOfColumns * numberOfRows
 ]
@@ -488,7 +488,7 @@ CMSpaceModel >> numberOfNeighbours [
 	^ self neighbourhoodConfiguration numberOfNeighbours
 ]
 
-{ #category : 'ESE initialize-release' }
+{ #category : 'initialization' }
 CMSpaceModel >> numberOfNeighbours: anIntegerOrSymbol [
 	" Create the grid.
 	Set the receiver's neighbourhood configuration to contain anIntegerOrSymbol neighbours "
@@ -532,19 +532,19 @@ CMSpaceModel >> printOn: aStream [
 		
 ]
 
-{ #category : 'ESE (regular) - special locations' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> randomCell [
 	"Return a spatialEntityElement (aCell) picked randomly from the spatial grid."
 
 	^ self selectRandomlyFrom: cormasModel cells
 ]
 
-{ #category : 'ESE (regular) - special locations' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> upperLeftCell [
 	^ cormasModel cells first
 ]
 
-{ #category : 'ESE (regular) - special locations' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> upperRightCell [
 	^ cormasModel cells at: numberOfColumns
 ]
