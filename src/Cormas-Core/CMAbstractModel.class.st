@@ -694,12 +694,11 @@ CMAbstractModel >> getterForEntityClass: aClass [
 CMAbstractModel >> initEntities [
 	"Initialize all the Entity classes of the model"
 
-	"Remove all the entities from previous simulation"
+	"Remove all the entities from previous simulation and reset the ID counter"
 
 	self agentClasses do: [ :aClass |
 		self initializeAgentsOfClass: aClass ].
-	self class allEntityClasses do: [ : cl | self resetEntities: cl]
-	
+	self class allEntityClasses do: [ :cl | self resetEntities: cl ]
 ]
 
 { #category : 'initialization' }
