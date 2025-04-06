@@ -6,19 +6,17 @@ Instance Variables:
 	surround <Collection> of surrounded cells
 "
 Class {
-	#name : 'CMSpatialEntityAggregate',
-	#superclass : 'CMSpatialEntity',
+	#name : #CMSpatialEntityAggregate,
+	#superclass : #CMSpatialEntity,
 	#instVars : [
 		'components',
 		'surround',
 		'borders'
 	],
-	#category : 'Cormas-Core-Entities',
-	#package : 'Cormas-Core',
-	#tag : 'Entities'
+	#category : 'Cormas-Core-Entities'
 }
 
-{ #category : 'instance creation' }
+{ #category : #'instance creation' }
 CMSpatialEntityAggregate class >> newWith: aSetOfSpatialEntities [
 	"Return a new instance of SpatialEntityAggregate, made of aSetOfSpatialEntities
 aSetOfSpatialEntities = <Collection of SpatialEntities>"
@@ -29,7 +27,7 @@ aSetOfSpatialEntities = <Collection of SpatialEntities>"
 	^ theSpaceModel createOneAggregate: self from: aSetOfSpatialEntities
 ]
 
-{ #category : 'components management' }
+{ #category : #'components management' }
 CMSpatialEntityAggregate >> addComponent: aSpatialEntity [
 	"Purpose: adds a given component and set the new surround.
 	Argument: aSpatialEntity = <SpatialEntity>"
@@ -39,7 +37,7 @@ CMSpatialEntityAggregate >> addComponent: aSpatialEntity [
 	self setSurround
 ]
 
-{ #category : 'components management' }
+{ #category : #'components management' }
 CMSpatialEntityAggregate >> addComponents: aCollectionOfSpatialEntities [
 	"Purpose: adds aCollectionOfSpatialEntities (components) 
 Argument: aCollectionOfSpatialEntities = <Collection(SpatialEntity)>
@@ -51,7 +49,7 @@ Example: self addComponents: self surround"
 	self setSurround
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMSpatialEntityAggregate >> componentAt: index [ 
 "Purpose: answers the component at index in the receiver
 Argument: index = <Integer>
@@ -60,19 +58,19 @@ Return value: <SpatialEntity>"
 	^self components at: index
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMSpatialEntityAggregate >> components [
 
 	^ components
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMSpatialEntityAggregate >> components: aColl [
 
 	components := aColl
 ]
 
-{ #category : 'environment - distance' }
+{ #category : #'environment - distance' }
 CMSpatialEntityAggregate >> distanceTo: anotherSpatialEntity [
 	"Purpose: returns the Manhattan shortest distance (in cells) between the receiver and aSpatialEntity ie. the number of cells to reach anotherSpatialEntity (aCell or an Aggregate). If both entities are connected (in contact), the distance is 1.
 Argument: anotherSpatialEntity = <SpatialEntity>
@@ -83,7 +81,7 @@ Return value: <Integer>"
 		  anotherSpatialEntity
 ]
 
-{ #category : 'environment - distance' }
+{ #category : #'environment - distance' }
 CMSpatialEntityAggregate >> distanceTo: aSpatialEntity constraintOnPath: aBlock [
 	"Purpose: returns the Manhattan distance (in cells) between the receiver and aSpatialEntity ie. the number of cells to reach aSpatialEntity (aCell or an Aggregate). If both entities are connected (in contact), the distance is 1.
 Argument: aSpatialEntity = <SpatialEntity>
@@ -105,7 +103,7 @@ Return value: <Integer>"
 	^ dist
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMSpatialEntityAggregate >> elementaryComponents [
 	"Purpose: returns a collection of the elementary cells that compose this aggregate (receiver). 
 	Works to collect the cells even when the receiver is an aggregate of aggregates"
@@ -121,7 +119,7 @@ CMSpatialEntityAggregate >> elementaryComponents [
 			  allComponents ]
 ]
 
-{ #category : 'environment - distance' }
+{ #category : #'environment - distance' }
 CMSpatialEntityAggregate >> euclideanDistanceTo: anotherSpatialEntity [
 	"Purpose: returns the shortest distance (in cell) between the receiver and another spatialEntity, using the Euclidean distance formula: 
 	square root of [(Xa - Xb)^2 + (Ya - Yb)^2)]
@@ -146,14 +144,14 @@ Return value: <Number>"
 	^dist
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMSpatialEntityAggregate >> externalSurround [
 	"Returns a collection of cells that surround the aggregate, WITHOUT included cells located into the aggregate"
 	
 	^self surround \ self internalSurrounds
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMSpatialEntityAggregate >> getBorders [
 	"Returns a sub-collection of elementaryComponents belonging to the 'internal skin' of the aggregate. 
 	It contains the epidermis (external cells), but also internal cells at the edge of the holes of the aggregate (endodermis)"
@@ -168,7 +166,7 @@ CMSpatialEntityAggregate >> getBorders [
 	^ borders
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMSpatialEntityAggregate >> includesCell: aCell [
 	"Purpose: tests if the receiver belongs to a higher level spatial entity, even if theCSE is nil. 
 This method is valid whatever the aggregate level and even if theCSE is nil. It will return 'true' if the receiver is a component of a component of aSpatialEntity
@@ -178,7 +176,7 @@ Return value: <Boolean>"
 	^ self elementaryComponents includes: aCell
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMSpatialEntityAggregate >> initialize [
 
 	super initialize.
@@ -186,7 +184,7 @@ CMSpatialEntityAggregate >> initialize [
 	surround := OrderedCollection new
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMSpatialEntityAggregate >> internalSurrounds [
 	"Returns a collection of internal cells that surround the aggregate, ie. only the cells of the surround located INTO the aggregate"
 
@@ -198,7 +196,7 @@ CMSpatialEntityAggregate >> internalSurrounds [
 	^ linkedCells
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMSpatialEntityAggregate >> intersectWith: otherAggregate [
 	"Answer if the receiver shares cells with otherAggregate"
 
@@ -208,24 +206,24 @@ CMSpatialEntityAggregate >> intersectWith: otherAggregate [
 		  ifNone: [ false ]
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMSpatialEntityAggregate >> isElementary [
 	^false
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMSpatialEntityAggregate >> isSpatialEntityElement [
 
 	^ false
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMSpatialEntityAggregate >> isSpatialEntitySet [
 	
 	^true
 ]
 
-{ #category : 'environment - picking - space' }
+{ #category : #'environment - picking - space' }
 CMSpatialEntityAggregate >> nearestCellAmong: aListOfCells [
 	"Purpose: returns the nearest cell among aListOfCells. Note that euclidean Distance is used for the calculation. 
 Argument: aListOfCells = <OrderedCollection or Set>
@@ -251,7 +249,7 @@ Example: self nearestCellAmong: aListOfCells "
 	^ nearestCell
 ]
 
-{ #category : 'environment - picking - space' }
+{ #category : #'environment - picking - space' }
 CMSpatialEntityAggregate >> nearestCellAmong: aListOfCells constraintOnPath: aBlock [
 	"Purpose: returns the nearest cell among aListOfCells.
 Note that euclidean Distance is used for the calculation. 
@@ -279,7 +277,7 @@ Example: self nearestCellAmong: aListOfCells "
 	^nearestCell
 ]
 
-{ #category : 'environment - picking - space' }
+{ #category : #'environment - picking - space' }
 CMSpatialEntityAggregate >> nearestCellTo: anotherSpatialEntity [
 	"Purpose: returns one of my component which is the nearest to anotherSpatialEntity, ie. the number of cells to reach anotherSpatialEntity (aCell or an Aggregate). If both entities are connected (in contact), the distance is 1.
 	This uses the Manhattan distance (in cells) between the receiver and anotherSpatialEntity
@@ -301,7 +299,7 @@ Return value: <Cell>"
 	^ nearestCell
 ]
 
-{ #category : 'environment - picking - space' }
+{ #category : #'environment - picking - space' }
 CMSpatialEntityAggregate >> nearestCellVerifying: condition1 constraintOnPath: condition2 [
 	"Purpose: returns the nearest cell verifying a specified condition1, the cells in between verifying another specified condition2.
 Arguments: condition1 = <BlockClosure>
@@ -328,7 +326,7 @@ Example := self nearestCellVerifying: [:aCell | aCell hasWater] constraintOnPath
 	^target
 ]
 
-{ #category : 'initialize - release' }
+{ #category : #'initialize - release' }
 CMSpatialEntityAggregate >> release [
 
 	super release.
@@ -337,7 +335,7 @@ CMSpatialEntityAggregate >> release [
 	components := nil
 ]
 
-{ #category : 'components management' }
+{ #category : #'components management' }
 CMSpatialEntityAggregate >> removeComponent: aSpatialEntity [
 	"Purpose: removes a given component and set the new surround.
 	Argument: aSpatialEntity = <SpatialEntity>"
@@ -347,7 +345,7 @@ CMSpatialEntityAggregate >> removeComponent: aSpatialEntity [
 	self setSurround
 ]
 
-{ #category : 'components management' }
+{ #category : #'components management' }
 CMSpatialEntityAggregate >> removeComponents: aCollectionOfSpatialEntities [
 	"Purpose: removes a collection of component and set the new surround.
 	Argument: aCollectionOfSpatialEntities = <Collection(SpatialEntity)>"
@@ -357,14 +355,14 @@ aCollectionOfSpatialEntities do: [ :c | c aggregates remove: self ifAbsent: [ ni
 	self setSurround
 ]
 
-{ #category : 'components management' }
+{ #category : #'components management' }
 CMSpatialEntityAggregate >> setSurround [
 	"Set (and returns) the 'surround' attribute: a collection of cells that surround the aggregate, including the cells located into the aggregate"
 
 	^	surround := (self class neighborsOf: self elementaryComponents) asOrderedCollection.
 ]
 
-{ #category : 'environment - distance' }
+{ #category : #'environment - distance' }
 CMSpatialEntityAggregate >> shortestDistanceToCells: aCollecOfCells constraintOnPath: aBlock [
 	"Purpose: gets the shortest distance (in cell unit) to a collection of other cells, taking a specified constraint into account.
 Arguments: aCollecOfCells = <Collection(SpatialEntityElement)>
@@ -380,7 +378,7 @@ Example: self shortestDistanceToCells: self myPlots constraintOnPath: [:aCell | 
 		  constraintOnPath: aBlock 
 ]
 
-{ #category : 'environment - distance' }
+{ #category : #'environment - distance' }
 CMSpatialEntityAggregate >> shortestDistanceToCellsVerifying: aCondition [
 	"Purpose: gets the shortest distance (in cell unit) to an external cell verifying a specified condition.
 Arguments: aCondition = <BlockClosure>
@@ -394,26 +392,26 @@ Example: self shortestDistanceToCellVerifying: [:c | c landCover = #forest]"
 	^ self shortestDistanceToCells: collec constraintOnPath: [  ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMSpatialEntityAggregate >> size [
 "Return the number of cells that compose this aggregate"
 
 	^ self elementaryComponents size
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMSpatialEntityAggregate >> surround [
 
 	^ surround
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMSpatialEntityAggregate >> surround: aColl [
 
 	surround := aColl
 ]
 
-{ #category : 'components management' }
+{ #category : #'components management' }
 CMSpatialEntityAggregate >> updateSurroundWith: newCell without: oldCell [
 	"Upadte (and returns) the 'surround' attribute: a collection of cells that surround the aggregate, including the cells located into the aggregate.
 	newCell is a new component of this aggregate. oldCell is an old component"
@@ -431,7 +429,7 @@ CMSpatialEntityAggregate >> updateSurroundWith: newCell without: oldCell [
 	^ surround
 ]
 
-{ #category : 'environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityAggregate >> wayTo: anotherSpatialEntity [
 	"Purpose: returns one of the shortest path to another spatial entity
 Argument: anotherSpatialEntity = <SpatialEntity> (can be a cell or an aggregate)
@@ -455,7 +453,7 @@ Example: self wayTo: self spaceModel centralLocation"
 	^ self selectRandomlyFrom: collOfPaths
 ]
 
-{ #category : 'environment - sensing - space' }
+{ #category : #'environment - sensing - space' }
 CMSpatialEntityAggregate >> wayToCell: aCell [
 "Purpose: returns one of the shortest paths to aCell
 Argument: aCell = <SpatialEntityElement>

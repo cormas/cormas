@@ -1,14 +1,13 @@
 Class {
-	#name : 'CMSimulationTest',
-	#superclass : 'TestCase',
+	#name : #CMSimulationTest,
+	#superclass : #TestCase,
 	#instVars : [
 		'simulation'
 	],
-	#category : 'Cormas-Tests',
-	#package : 'Cormas-Tests'
+	#category : 'Cormas-Tests'
 }
 
-{ #category : 'running' }
+{ #category : #running }
 CMSimulationTest >> setUp [
 
 	super setUp.
@@ -21,13 +20,13 @@ CMSimulationTest >> setUp [
 		yourself.
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 CMSimulationTest >> testCurrenTimeStepStartsWithZero [
 
 	self assert: simulation currentTimeStep equals: 0
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 CMSimulationTest >> testData [
 
 	| expectedData |
@@ -41,7 +40,7 @@ CMSimulationTest >> testData [
 	self assert: simulation data equals: expectedData 
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 CMSimulationTest >> testProbes [
 
 	| expectedProbes |
@@ -63,7 +62,7 @@ CMSimulationTest >> testProbes [
 	self assertCollection: simulation probes hasSameElements: expectedProbes.
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 CMSimulationTest >> testRunStep [
 
 	| cellStateMatrix expectedCellStateMatrix agent1 agent2 |

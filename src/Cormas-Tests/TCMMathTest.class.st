@@ -1,14 +1,13 @@
 Class {
-	#name : 'TCMMathTest',
-	#superclass : 'TestCase',
+	#name : #TCMMathTest,
+	#superclass : #TestCase,
 	#instVars : [
 		'object'
 	],
-	#category : 'Cormas-Tests',
-	#package : 'Cormas-Tests'
+	#category : 'Cormas-Tests'
 }
 
-{ #category : 'running' }
+{ #category : #running }
 TCMMathTest >> setUp [
 
 	| dummyClass |
@@ -22,7 +21,7 @@ TCMMathTest >> setUp [
 	object := dummyClass new.
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 TCMMathTest >> testLogisticGrowthRK [
 	self assert: (object logisticIncrease: 1.0 r: 2.0 k: 4.0) equals: 1.5.
 	self assert: (object logisticGrowth: 1.0 r: 2.0 k: 4.0) equals: 2.5

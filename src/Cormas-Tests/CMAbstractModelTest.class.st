@@ -1,24 +1,22 @@
 Class {
-	#name : 'CMAbstractModelTest',
-	#superclass : 'CMTestObject',
-	#category : 'Cormas-Tests-Model',
-	#package : 'Cormas-Tests',
-	#tag : 'Model'
+	#name : #CMAbstractModelTest,
+	#superclass : #CMTestObject,
+	#category : 'Cormas-Tests-Model'
 }
 
-{ #category : 'test' }
+{ #category : #test }
 CMAbstractModelTest >> sampleModelName [
 
 	^ 'CMXXXModel'
 ]
 
-{ #category : 'tests-accessing-entities' }
+{ #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> sampleModelNameWithoutPrefix [
 
 	^ 'SampleModel'
 ]
 
-{ #category : 'tests-accessing-entities' }
+{ #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testAgents [
 
 	| agents |
@@ -29,7 +27,7 @@ CMAbstractModelTest >> testAgents [
 		self assert: (agent isKindOf: CMMockAnimal) ]
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 CMAbstractModelTest >> testCellAtAt [
 
 	| expectedCell expectedId actualCell |
@@ -43,13 +41,13 @@ CMAbstractModelTest >> testCellAtAt [
 	self assert: actualCell id equals: expectedId.
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 CMAbstractModelTest >> testCellClass [
 
 	self assert: model cellClass equals: CMMockCell
 ]
 
-{ #category : 'tests-accessing-entities' }
+{ #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testCells [
 
 	| cells |
@@ -63,7 +61,7 @@ CMAbstractModelTest >> testCells [
 		self assert: (cells at: i) id equals: i ]
 ]
 
-{ #category : 'tests-accessing-entities' }
+{ #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testCellsBetweenRowAndRowColumnAndColumn [
 
 	| m cells |
@@ -85,7 +83,7 @@ CMAbstractModelTest >> testCellsBetweenRowAndRowColumnAndColumn [
 		self assert: (cell rowNumber between: 13 and: 15) ]
 ]
 
-{ #category : 'tests-accessing-entities' }
+{ #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testCentralCell [
 	| m |
 	m := CMMockModel new
@@ -99,7 +97,7 @@ CMAbstractModelTest >> testCentralCell [
 		identicalTo: (m selectCellsOfColumn: 2) second
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 CMAbstractModelTest >> testCreateGridXYNeighborHoodClosed [
 
 	self assert: model allTheEntities size equals: (4 * 4) + 2.
@@ -107,7 +105,7 @@ CMAbstractModelTest >> testCreateGridXYNeighborHoodClosed [
 	self assert: (model selectCellsOfLine: 1) size equals: 4
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 CMAbstractModelTest >> testDominance [
 	| m |
 	m := CMMockModel new
@@ -120,7 +118,7 @@ CMAbstractModelTest >> testDominance [
 
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 CMAbstractModelTest >> testDominance1 [
 	| m |
 	m := CMMockModel new
@@ -132,7 +130,7 @@ CMAbstractModelTest >> testDominance1 [
 	self assert: (m dominance: #state) < 1.0
 ]
 
-{ #category : 'tests-accessing-entities' }
+{ #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testLowerLeftCell [
 	| m |
 	m := CMMockModel new
@@ -146,7 +144,7 @@ CMAbstractModelTest >> testLowerLeftCell [
 		identicalTo: (m selectCellsOfColumn: 1) third
 ]
 
-{ #category : 'tests-accessing-entities' }
+{ #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testLowerRightCell [
 	| m |
 	m := CMMockModel new
@@ -160,7 +158,7 @@ CMAbstractModelTest >> testLowerRightCell [
 		identicalTo: (m selectCellsOfColumn: 3) third
 ]
 
-{ #category : 'tests-accessing-entities' }
+{ #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testPickRandomCell [
 	| cell |
 
@@ -170,7 +168,7 @@ CMAbstractModelTest >> testPickRandomCell [
 	self assert: (cell rowNumber between: 1 and: 20)
 ]
 
-{ #category : 'tests-accessing-entities' }
+{ #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testPickRandomCellConstrainedBy [
 	| m |
 	m := CMMockModel new
@@ -189,7 +187,7 @@ CMAbstractModelTest >> testPickRandomCellConstrainedBy [
 		equals: #dead
 ]
 
-{ #category : 'tests-accessing-entities' }
+{ #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testPickRandomCellWithoutAnyOccupantsOfClass [
 
 	| cell |
@@ -197,13 +195,13 @@ CMAbstractModelTest >> testPickRandomCellWithoutAnyOccupantsOfClass [
 	self assert: (cell occupantsOfClass: CMMockCow) isEmpty
 ]
 
-{ #category : 'tests-accessing-entities' }
+{ #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testPickRandomCells [
 
 	self assert: ((model pickRandomCells: 5) allSatisfy: #isSpatialEntity)
 ]
 
-{ #category : 'tests-accessing-entities' }
+{ #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testPickRandomEntitiesOfClass [
 
 	| collection |
@@ -213,7 +211,7 @@ CMAbstractModelTest >> testPickRandomEntitiesOfClass [
 	self assert: (collection allSatisfy: [ :each | each class = CMMockCell ])
 ]
 
-{ #category : 'tests-accessing-entities' }
+{ #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testPickRandomEntitiesOfClassConstrainedBy [
 
 	self
@@ -225,13 +223,13 @@ CMAbstractModelTest >> testPickRandomEntitiesOfClassConstrainedBy [
 				allSatisfy: [ :cell | cell columnNumber = 5 ])
 ]
 
-{ #category : 'tests-accessing-entities' }
+{ #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testPickRandomEntityOfClass [
 
 	self assert: (model pickRandomEntityOfClass: CMMockCell) isSpatialEntity
 ]
 
-{ #category : 'tests-accessing-entities' }
+{ #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testPickRandomEntityOfClassConstrainedBy [
 
 	| cell1 cell2 |
@@ -248,13 +246,13 @@ CMAbstractModelTest >> testPickRandomEntityOfClassConstrainedBy [
 	self assert: cell2 columnNumber equals: 4.
 ]
 
-{ #category : 'tests-accessing-entities' }
+{ #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testPickRandomUnoccupiedCell [
 
 	self assert: model pickRandomUnoccupiedCell theOccupants isEmpty
 ]
 
-{ #category : 'tests-accessing-entities' }
+{ #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
 	| m cells |
 	m := CMMockModel new
@@ -272,7 +270,7 @@ CMAbstractModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
 			self assert: (cell rowNumber between: 1 and: 5) ]
 ]
 
-{ #category : 'tests-accessing-entities' }
+{ #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testSelectCellsOfColumn [
 
 	1 to: 4 do: [ :column | 
@@ -282,7 +280,7 @@ CMAbstractModelTest >> testSelectCellsOfColumn [
 				identicalTo: ((model selectCellsOfLine: line) at: column) ] ]
 ]
 
-{ #category : 'tests-accessing-entities' }
+{ #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testSelectCellsOfLine [
 
 	1 to: 4 do: [ :line | 
@@ -292,7 +290,7 @@ CMAbstractModelTest >> testSelectCellsOfLine [
 		cells do: [ :cell | self assert: cell rowNumber equals: line ] ]
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 CMAbstractModelTest >> testShortestDistanceToCellsVerifying [
 	| m |
 	m := CMMockModel new.
@@ -302,7 +300,7 @@ CMAbstractModelTest >> testShortestDistanceToCellsVerifying [
 				equals: 1 ]
 ]
 
-{ #category : 'tests-accessing-entities' }
+{ #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testUpperLeftCell [
 	| m |
 	m := CMMockModel new
@@ -316,7 +314,7 @@ CMAbstractModelTest >> testUpperLeftCell [
 		identicalTo: (m selectCellsOfColumn: 1) first
 ]
 
-{ #category : 'tests-accessing-entities' }
+{ #category : #'tests-accessing-entities' }
 CMAbstractModelTest >> testUpperRightCell [
 	| m |
 	m := CMMockModel new

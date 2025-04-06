@@ -30,8 +30,8 @@ Class Instance Variables:
 
 "
 Class {
-	#name : 'CMEntity',
-	#superclass : 'Object',
+	#name : #CMEntity,
+	#superclass : #Object,
 	#traits : 'TCMRandom + TCMMath',
 	#classTraits : 'TCMRandom classTrait + TCMMath classTrait',
 	#instVars : [
@@ -43,18 +43,16 @@ Class {
 		'currentId',
 		'activePovSelector'
 	],
-	#category : 'Cormas-Core-Entities',
-	#package : 'Cormas-Core',
-	#tag : 'Entities'
+	#category : 'Cormas-Core-Entities'
 }
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMEntity class >> activePovSelector [
 
 	^ activePovSelector ifNil: [ activePovSelector := #pov ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMEntity class >> activePovSelector: aSymbol [
 
 	(self availablePov includes: aSymbol)
@@ -63,7 +61,7 @@ CMEntity class >> activePovSelector: aSymbol [
 	activePovSelector := aSymbol
 ]
 
-{ #category : 'accessing - methods & classes' }
+{ #category : #'accessing - methods & classes' }
 CMEntity class >> availablePov [
 	"Purpose: returns the list of available pov methods
 	Return value: <OrderedCollection>"
@@ -75,14 +73,14 @@ CMEntity class >> availablePov [
 		pragma method selector ]) asSet asOrderedCollection
 ]
 
-{ #category : 'utilities - colors' }
+{ #category : #'utilities - colors' }
 CMEntity class >> colorNames [
     | colorSpecs |
     colorSpecs := Color defaultColors, Color defaultColors2, Color defaultColors3, Color defaultColors4.
     ^ Array streamContents: [:stream | 1 to: colorSpecs size by: 4 do: [ :i | stream nextPut: (colorSpecs at: i) ]]
 ]
 
-{ #category : 'utilities - colors' }
+{ #category : #'utilities - colors' }
 CMEntity class >> colorOfNumber: aNumber [
 	"Purpose: Returns a Color from the existing 38 constant names: #(#black #veryVeryDarkGray #veryDarkGray #darkGray #gray #lightGray #veryLightGray #veryVeryLightGray #white #red #yellow #green #cyan #blue #magenta #brown #orange #lightRed #lightYellow #lightGreen #lightCyan #lightBlue #lightMagenta #lightBrown #lightOrange #pink #purple #tan #veryPaleRed #paleYellow #paleTan #paleRed #palePeach #paleOrange #paleMagenta #paleGreen #paleBuff #paleBlue).
 	Argument: aNumber = <Integer> is the index at which the color name is picked in the array. It can be greater than 38.
@@ -95,21 +93,21 @@ CMEntity class >> colorOfNumber: aNumber [
 				asSymbol
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMEntity class >> currentId [
 	"Getter accessor with default value = 0 "
 	
 	^ currentId ifNil: [ currentId := 0]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMEntity class >> currentId: anInteger [
 	
 	currentId := anInteger. 
 	^ anInteger
 ]
 
-{ #category : 'utilities - colors' }
+{ #category : #'utilities - colors' }
 CMEntity class >> defaultColor [
 	"Purpose: return the default color of the current class name.
 	Example: CMEntity defaultColor => Color lightBrown ; CMFireman defaultColor => Color paleRed"
@@ -117,7 +115,7 @@ CMEntity class >> defaultColor [
 	^ self colorOfNumber: self hash
 ]
 
-{ #category : 'accessing - methods & classes' }
+{ #category : #'accessing - methods & classes' }
 CMEntity class >> genericEntities [
 	
 	| kernel |
@@ -125,38 +123,38 @@ CMEntity class >> genericEntities [
 	^ self withAllSubclasses select: [ :cl | cl package classes = kernel]
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMEntity class >> initializeParameters [
 
 	"Do nothing. This method can be overriden by subclasses to initialize entity parameters. Implementors should always call super initializeParameters, same as for the initialize method"
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMEntity class >> isAbstract [
 	"Purpose: to test the existence of subclasses"
 	
 	^self subclasses notEmpty
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMEntity class >> isLocated [
 
 	^ false
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMEntity class >> isSpatialClass [
 	
 	^false
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMEntity class >> isSpatialEntityElementClass [
 	
 	^false
 ]
 
-{ #category : 'utilities - colors' }
+{ #category : #'utilities - colors' }
 CMEntity class >> lightColors [
 	"Purpose: Returns the light Color from the existing constant color values.
 Example: CMEntity lightColors => an OrderedCollection('veryPaleRed' 'magenta' 'brown' 'red' 'paleBlue' 'palePeach' 'white' 'transparent' 'blue' 'yellow' 'lightGreen' 'purple' 'lightGray' 'paleGreen' 'paleYellow' 'paleBuff' 'tan' 'lightBlue' 'lightRed' 'paleOrange' 'paleRed' 'orange' 'lightBrown' 'lightOrange' 'paleMagenta' 'pink' 'paleTan' 'gray' 'green' 'lightMagenta' 'lightCyan' 'lightYellow' 'cyan' 'veryLightGray' 'veryVeryLightGray')"
@@ -171,7 +169,7 @@ Example: CMEntity lightColors => an OrderedCollection('veryPaleRed' 'magenta' 'b
 	^ colors
 ]
 
-{ #category : 'utilities - classes' }
+{ #category : #'utilities - classes' }
 CMEntity class >> modelClass [
 	"Purpose: returns the Class of the current model.
 	Return value: <class>
@@ -182,20 +180,20 @@ CMEntity class >> modelClass [
 		ifNone: [ nil ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMEntity class >> resetActivePovSelector [
 
 	activePovSelector := nil
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMEntity >> actionSelectors [
 
 	^ (Pragma allNamed: 'action' from: self class to: CMEntity)
 		collect: [ :each | each method selector ]
 ]
 
-{ #category : 'converting' }
+{ #category : #converting }
 CMEntity >> asString [
 	" Private - See superimplementor's comment "
 
@@ -208,14 +206,14 @@ CMEntity >> asString [
 	
 ]
 
-{ #category : 'displaying' }
+{ #category : #displaying }
 CMEntity >> center: x [
 	"do nothing"
 	
 	
 ]
 
-{ #category : 'displaying' }
+{ #category : #displaying }
 CMEntity >> changed [
 	"an entityChange of type #valueChanged is sent to the cormasModel which delays it or not and then send it to the spaceModel which will then notify the spaceInterfaces (on the server or clients side)
 The notification is sent not from self but from an entityReference of self which stores the class and id of the entity. The class and id will be sent has value passMode to the remote computers while the entity will be sent has reference passMode to the remote computers. The remote  computers are supposed to use has much as possible the class and id values instead of the enity reference in order to limit the messages from the client to the server"
@@ -232,7 +230,7 @@ The notification is sent not from self but from an entityReference of self which
 				from: (EntityReference on: self)]"
 ]
 
-{ #category : 'utilities - color' }
+{ #category : #'utilities - color' }
 CMEntity >> colorAttribute: aSymbol min: minValue color: startColor max: maxValue color: stopColor [
 	"Purpose: returns a color among a palette of colors correlatively to the value of the attribute.
 Arguments: aSymbol = <Symbol>, the name of the attribute
@@ -250,7 +248,7 @@ Return value: a colorValue"
 		color: stopColor
 ]
 
-{ #category : 'utilities - color' }
+{ #category : #'utilities - color' }
 CMEntity >> colorAttribute: aSymbol min: minValue max: maxValue color: baseColor [
 	"Purpose: returns a color among a gradient correlatively to the value of the attribute.
 Arguments: aSymbol = <Symbol>, the name of the attribute
@@ -266,28 +264,28 @@ Return value: a colorValue"
 		color: baseColor
 ]
 
-{ #category : 'utilities - color' }
+{ #category : #'utilities - color' }
 CMEntity >> colorFromName: aName [
 	"returns a specific color from a name"
 
 	^ self colorOfNumber: aName hash
 ]
 
-{ #category : 'utilities - color' }
+{ #category : #'utilities - color' }
 CMEntity >> colorId [
 	"Returns a Color from the id (there is only 38 colors)."
 
 	^ self colorOfNumber: self id
 ]
 
-{ #category : 'utilities - color' }
+{ #category : #'utilities - color' }
 CMEntity >> colorOfNumber: aNumber [
 	"Returns a Color for aNumber (there is only 38 colors)."
 
 	^ self class colorOfNumber: aNumber
 ]
 
-{ #category : 'utilities - color' }
+{ #category : #'utilities - color' }
 CMEntity >> colorValue: aValue min: minValue color: startColor max: maxValue color: stopColor [
 	"Return a Color associated to aValue amongs a palette of colors.
 aValue = <Number> ; minValue = <Integer> ; maxValue = <Integer> ; startColor = <Color or Symbol> ; stopColor = <Color  or Symbol>"
@@ -308,7 +306,7 @@ aValue = <Number> ; minValue = <Integer> ; maxValue = <Integer> ; startColor = <
 	^ Color r: rv g: gv b: bv
 ]
 
-{ #category : 'utilities - color' }
+{ #category : #'utilities - color' }
 CMEntity >> colorValue: aValue min: minValue max: maxValue color: baseColor [
 
 	"Return a Color for aValue, in the interval of minValue and maxValue. 
@@ -331,37 +329,37 @@ aValue = <Number> ; minValue = <Integer> ; maxValue = <Integer> ; baseColor = <C
 		  v: color brightness * index
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMEntity >> cormasModel [
 	^ cormasModel
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMEntity >> cormasModel: aCMAbstractModel [
 	cormasModel := aCMAbstractModel
 ]
 
-{ #category : 'controlling' }
+{ #category : #controlling }
 CMEntity >> delete [
 	"Purpose: indicates that the instance has to be removed"
 	
 	self destroyed: true
 ]
 
-{ #category : 'initialize-release' }
+{ #category : #'initialize-release' }
 CMEntity >> destroyed [
 	"Answer if the entity is destroyed or not"
 	
 	self subclassResponsibility
 ]
 
-{ #category : 'initialize-release' }
+{ #category : #'initialize-release' }
 CMEntity >> destroyed: aBoolean [
 	
 	aBoolean ifTrue: [self release]
 ]
 
-{ #category : 'displaying' }
+{ #category : #displaying }
 CMEntity >> getInfoFor: aSelectorName [
 	"Returns a String according to the aSelectorName.
 aSelectorName = <ByteSymbol>."
@@ -375,7 +373,7 @@ aSelectorName = <ByteSymbol>."
 	^info printString
 ]
 
-{ #category : 'displaying' }
+{ #category : #displaying }
 CMEntity >> getPovResultFor: selectorName [
 	"Returns the povSymbol for a selectorName"
 	
@@ -388,51 +386,51 @@ This is not allowed!']"]
 		ifTrue: [selectorName]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMEntity >> group [
 
 	^ group
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMEntity >> group: aGroup [
 
 	group := aGroup
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMEntity >> hasCustomShape [
 
 	^ false
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMEntity >> id [
 	"Purpose: integer value, assigned at creation, used to identify the instance"
 	
 	^id
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMEntity >> id: aNumber [
 
 	id := aNumber
 ]
 
-{ #category : 'initialize-release' }
+{ #category : #'initialize-release' }
 CMEntity >> init [
 	
 	
 ]
 
-{ #category : 'initialize-release' }
+{ #category : #'initialize-release' }
 CMEntity >> initId [
 	" Private - Set the receiver's internal identifier. "
 
 	self id: (self class currentId: self class currentId + 1)
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMEntity >> initialize [
 
 	super initialize.
@@ -440,7 +438,7 @@ CMEntity >> initialize [
 	self class resetActivePovSelector
 ]
 
-{ #category : 'printing' }
+{ #category : #printing }
 CMEntity >> interestingDetails [
 	" Answer a <Collection> of interesting receiver's attributes, from a modeler point of view, to display in a popup for example "
 
@@ -449,19 +447,19 @@ CMEntity >> interestingDetails [
 		}
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMEntity >> isAgent [
 	
 	^false
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMEntity >> isArcEntity [
 	
 	^false
 ]
 
-{ #category : 'utilities - attributes' }
+{ #category : #'utilities - attributes' }
 CMEntity >> isAttributeValueABoolean: aSymbol [
 	
 	| aClass |
@@ -469,7 +467,7 @@ CMEntity >> isAttributeValueABoolean: aSymbol [
 	^aClass = Boolean or: [aClass inheritsFrom: Boolean]
 ]
 
-{ #category : 'utilities - attributes' }
+{ #category : #'utilities - attributes' }
 CMEntity >> isAttributeValueANumber: aSymbol [
 	
 	| aClass |
@@ -477,7 +475,7 @@ CMEntity >> isAttributeValueANumber: aSymbol [
 	^aClass = Number or: [aClass inheritsFrom: Number]	"or:[(aValue contains: [:char | char isDigit not and:[char ~= $.]]) not]"
 ]
 
-{ #category : 'utilities - attributes' }
+{ #category : #'utilities - attributes' }
 CMEntity >> isAttributeValueASymbol: aSymbol [
 	
 	| aClass |
@@ -485,61 +483,61 @@ CMEntity >> isAttributeValueASymbol: aSymbol [
 	^aClass = Symbol or: [aClass inheritsFrom: Symbol]
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMEntity >> isCellularAutomatonCell [
 	
 	^false
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMEntity >> isCommunicatingEntity [
 	
 	^false
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMEntity >> isCormasEntity [
 
 	^ true
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMEntity >> isObjectLocation [
 	
 	^false
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMEntity >> isPassiveObject [
 	
 	^false
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMEntity >> isSituated [
 	
 	^false
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMEntity >> isSpatialEntity [
 	
 	^false
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMEntity >> isSpatialEntityElement [
 	
 	^false
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMEntity >> isSpatialEntitySet [
 	
 	^false
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMEntity >> modelClass [
 	"Purpose: returns the Class of the current model
 	Return value: a class
@@ -548,7 +546,7 @@ CMEntity >> modelClass [
 	^ cormasModel ifNotNil: #class ifNil: [ self class modelClass ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMEntity >> parameters [
 	"Find all instance variables that have getter and setter accessors"
 	
@@ -576,20 +574,20 @@ CMEntity >> parameters [
 			receiver: self ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMEntity >> patch [
 	
 	^nil
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMEntity >> pov [
 	"Default point of view"
 	<pov>
 	^ CMPointOfView new
 ]
 
-{ #category : 'pov' }
+{ #category : #pov }
 CMEntity >> povClassName [
 	"Assign unique color to each class name"
 	
@@ -597,7 +595,7 @@ CMEntity >> povClassName [
 	^ CMPointOfView color: (self colorFromName: self class name)
 ]
 
-{ #category : 'pov' }
+{ #category : #pov }
 CMEntity >> povId [
 	"Purpose: Returns a Color from the existing 31 constant names: #(#black #blue #brown #chartreuse #cyan #darkCyan #darkGray #darkGreen #darkMagenta #darkRed #gray #green #lightCyan #lightGray #lightYellow #magenta #navy #olive #orange #orchid #paleGreen #pink #purple #red #royalBlue #salmon #springGreen #veryDarkGray #veryLightGray #white #yellow). The id is used to determine the index at which the color name is picked in the array. 
 Example: for an instance with id = 65, the returned color will be brown (65= 2*31+3)"
@@ -606,14 +604,14 @@ Example: for an instance with id = 65, the returned color will be brown (65= 2*3
 	^ CMPointOfView color: (self class colorOfNumber: self id)
 ]
 
-{ #category : 'pov' }
+{ #category : #pov }
 CMEntity >> povInvisible [
 
 	<pov>
 	^ CMPointOfView color: Color transparent
 ]
 
-{ #category : 'printing' }
+{ #category : #printing }
 CMEntity >> printOn: aStream [
 	" Private - See superimplementor's comment "
 	

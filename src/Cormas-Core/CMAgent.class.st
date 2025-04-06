@@ -2,23 +2,21 @@
 CMAgent is the abstract class of all agents classes in CORMAS.
 "
 Class {
-	#name : 'CMAgent',
-	#superclass : 'CMEntity',
+	#name : #CMAgent,
+	#superclass : #CMEntity,
 	#instVars : [
 		'isDead'
 	],
-	#category : 'Cormas-Core-Entities',
-	#package : 'Cormas-Core',
-	#tag : 'Entities'
+	#category : 'Cormas-Core-Entities'
 }
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMAgent class >> isCormasAgentClass [
 
 	^ true
 ]
 
-{ #category : 'controlling' }
+{ #category : #controlling }
 CMAgent >> delete [
 "Purpose: gets rid of this object. The collectGarbage is IMMEDIATELY performed  (ie. the receiver of class X is removed from 'theXXXs' collection)"
 
@@ -26,35 +24,35 @@ CMAgent >> delete [
 	cormasModel removeEntity: self.
 ]
 
-{ #category : 'initialize-release' }
+{ #category : #'initialize-release' }
 CMAgent >> destroyed [
 	"Answer if the entity is destroyed or not"
 	
 	^isDead
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMAgent >> destroyed: aBoolean [
 "Set the dead variable to True or False and delete the figures"
 	isDead := aBoolean.
 	(aBoolean and:[self isSituated]) ifTrue:[self leave].
 ]
 
-{ #category : 'controlling' }
+{ #category : #controlling }
 CMAgent >> die [
 
 	isDead := true.
 	cormasModel removeDestroyedEntities.
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMAgent >> initialize [
 
 	super initialize.
 	isDead := false.
 ]
 
-{ #category : 'printing' }
+{ #category : #printing }
 CMAgent >> interestingDetails [
 	" Answer a <Collection> of interesting receiver's attributes, from a modeler point of view, to display in a popup for example "
 
@@ -63,25 +61,25 @@ CMAgent >> interestingDetails [
 		}
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMAgent >> isAgent [
 	
 	^ true
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMAgent >> isAlive [
 
 	^ isDead not
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMAgent >> isDead [
 
 	^ isDead
 ]
 
-{ #category : 'control' }
+{ #category : #control }
 CMAgent >> step [
 	self subclassResponsibility
 ]

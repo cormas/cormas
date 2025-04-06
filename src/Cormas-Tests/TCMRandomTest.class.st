@@ -1,14 +1,13 @@
 Class {
-	#name : 'TCMRandomTest',
-	#superclass : 'TestCase',
+	#name : #TCMRandomTest,
+	#superclass : #TestCase,
 	#instVars : [
 		'cormasModel'
 	],
-	#category : 'Cormas-Tests',
-	#package : 'Cormas-Tests'
+	#category : 'Cormas-Tests'
 }
 
-{ #category : 'running' }
+{ #category : #running }
 TCMRandomTest >> setUp [
 
 	super setUp.
@@ -16,7 +15,7 @@ TCMRandomTest >> setUp [
 	cormasModel randomSeed: 42.
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 TCMRandomTest >> testRandom [
 
 	| expected actual |
@@ -33,7 +32,7 @@ TCMRandomTest >> testRandom [
 	self assert: expected closeTo: actual precision: 0.00000000001
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 TCMRandomTest >> testRandomBetweenAnd [
 
 	| expected actual |
@@ -50,7 +49,7 @@ TCMRandomTest >> testRandomBetweenAnd [
 	self assert: expected closeTo: actual precision: 0.00000000001
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 TCMRandomTest >> testSelectRandomlyFrom [
 
 	| collection |
@@ -59,7 +58,7 @@ TCMRandomTest >> testSelectRandomlyFrom [
 	self assert: (cormasModel selectRandomlyFrom: collection) equals: #avocado
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 TCMRandomTest >> testSelectRandomlyFromSize [
 
 	| collection |
@@ -70,7 +69,7 @@ TCMRandomTest >> testSelectRandomlyFromSize [
 		equals: #(cherry strawberry apple) asOrderedCollection
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 TCMRandomTest >> testShuffled [
 
 	| expected actual |

@@ -1,34 +1,32 @@
 Class {
-	#name : 'CMAgentGroup',
-	#superclass : 'CMAgent',
+	#name : #CMAgentGroup,
+	#superclass : #CMAgent,
 	#instVars : [
 		'children'
 	],
-	#category : 'Cormas-Core-Entities',
-	#package : 'Cormas-Core',
-	#tag : 'Entities'
+	#category : 'Cormas-Core-Entities'
 }
 
-{ #category : 'adding' }
+{ #category : #adding }
 CMAgentGroup >> addChild: anEntity [
 
 	children add: anEntity.
 	anEntity group: self
 ]
 
-{ #category : 'adding' }
+{ #category : #adding }
 CMAgentGroup >> addChildren: aCollection [
 
 	aCollection do: [ :each | self addChild: each ]
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMAgentGroup >> children [
 
 	^ children
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMAgentGroup >> initialize [
 
 	super initialize.

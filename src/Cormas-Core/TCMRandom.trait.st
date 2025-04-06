@@ -3,28 +3,26 @@ This is the random generator for Cormas.
 randomNumberGenerator is by default an instance of PMFishmanMooreRandomGenerator
 "
 Trait {
-	#name : 'TCMRandom',
+	#name : #TCMRandom,
 	#instVars : [
 		'randomNumberGenerator'
 	],
-	#category : 'Cormas-Core-Traits',
-	#package : 'Cormas-Core',
-	#tag : 'Traits'
+	#category : 'Cormas-Core-Traits'
 }
 
-{ #category : 'random' }
+{ #category : #random }
 TCMRandom >> random [
 
 	^ randomNumberGenerator next
 ]
 
-{ #category : 'random' }
+{ #category : #random }
 TCMRandom >> randomBetween: lowerBound and: higherBound [
 	"Answer a random float number from the range [lowerBound, higherBound)"
 	^ lowerBound + (self random * (higherBound - lowerBound))
 ]
 
-{ #category : 'random' }
+{ #category : #random }
 TCMRandom >> randomColor [
 
 	^ Color
@@ -33,37 +31,37 @@ TCMRandom >> randomColor [
 		  b: self random
 ]
 
-{ #category : 'random' }
+{ #category : #random }
 TCMRandom >> randomIntegerBetween: lowNumber and: highNumber [
 
 	^ (self randomBetween: lowNumber and: highNumber) rounded
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 TCMRandom >> randomNumberGenerator [
 	
 	^ randomNumberGenerator 
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 TCMRandom >> randomNumberGenerator: aGenerator [
 
 	randomNumberGenerator := aGenerator
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 TCMRandom >> randomSeed: aNumber [
 	
 	randomNumberGenerator seed: aNumber
 ]
 
-{ #category : 'random' }
+{ #category : #random }
 TCMRandom >> selectRandomlyFrom: aCollection [
 
 	^ aCollection atRandom: randomNumberGenerator
 ]
 
-{ #category : 'random' }
+{ #category : #random }
 TCMRandom >> selectRandomlyFrom: aCollection size: anInteger [
 	"Returns a subcollection randomly built from a collection (an item may be selected only once). If the collection is empty, or if the collection size is lower than the subcollection size, its returns aCollection randomly mixed."
 	
@@ -75,7 +73,7 @@ TCMRandom >> selectRandomlyFrom: aCollection size: anInteger [
 	^ randomCollection copyFrom: 1 to: anInteger
 ]
 
-{ #category : 'random' }
+{ #category : #random }
 TCMRandom >> shuffled: aCollection [
 
 	^ aCollection asOrderedCollection shuffledBy: randomNumberGenerator

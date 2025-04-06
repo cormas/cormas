@@ -3,18 +3,16 @@ Use only for automata ? Pierre can you elaborate a bit on that ?
 
 "
 Class {
-	#name : 'CMSpatialEntityCell',
-	#superclass : 'CMSpatialEntityElement',
+	#name : #CMSpatialEntityCell,
+	#superclass : #CMSpatialEntityElement,
 	#instVars : [
 		'state',
 		'bufferState'
 	],
-	#category : 'Cormas-Core-Entities',
-	#package : 'Cormas-Core',
-	#tag : 'Entities'
+	#category : 'Cormas-Core-Entities'
 }
 
-{ #category : 'converting' }
+{ #category : #converting }
 CMSpatialEntityCell >> asString [
 	" Private - See superimplementor's comment "
 
@@ -27,17 +25,17 @@ CMSpatialEntityCell >> asString [
 	
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMSpatialEntityCell >> bufferState [
 	^ bufferState
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMSpatialEntityCell >> bufferState: aValue [
 	bufferState := aValue
 ]
 
-{ #category : 'control' }
+{ #category : #control }
 CMSpatialEntityCell >> newState [
 	"Purpose: the specific transition function of the automaton should be written here
 Example: self bufferState: (test ifTrue: [value1] ifFalse: [value2])"
@@ -45,7 +43,7 @@ Example: self bufferState: (test ifTrue: [value1] ifFalse: [value2])"
 	self subclassResponsibility
 ]
 
-{ #category : 'printing' }
+{ #category : #printing }
 CMSpatialEntityCell >> printOn: aStream [
 	" Private - See superimplementor's comment "
 	
@@ -57,12 +55,12 @@ CMSpatialEntityCell >> printOn: aStream [
 		<< self state asString
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMSpatialEntityCell >> state [
 	^ state
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMSpatialEntityCell >> state: aValue [
 	
 	state = aValue ifTrue: [^nil].
@@ -70,7 +68,7 @@ CMSpatialEntityCell >> state: aValue [
 	self changed
 ]
 
-{ #category : 'control' }
+{ #category : #control }
 CMSpatialEntityCell >> updateState [
 	"Purpose: updates 'state' attribute with the value stored in 'bufferState' attribute"
 
