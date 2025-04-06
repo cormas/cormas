@@ -130,6 +130,15 @@ CMProbeTest >> testIsActiveByDefault [
 ]
 
 { #category : #tests }
+CMProbeTest >> testMethods [
+	
+	| method |
+	method := CMMockModel >> #numberOfAliveCells.
+	
+	self assert: method equals: method copy.
+]
+
+{ #category : #tests }
 CMProbeTest >> testValue [
 
 	self assert: probe value equals: 11.
