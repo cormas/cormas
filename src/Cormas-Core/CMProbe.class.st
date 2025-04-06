@@ -27,12 +27,18 @@ CMProbe >> = anObject [
 	"for tessting"
 	
 	anObject class = self class ifFalse: [ ^ false ].
+	'class is the same' traceCr.
 		
 	anObject name = name ifFalse: [ ^ false ].
+	'name is the same' traceCr.
 	anObject method = method ifFalse: [ ^ false ].
+	'method is the same' traceCr.
 	anObject object = object ifFalse: [ ^ false ].
+	'object is the same' traceCr.
 	anObject isActive = isActive ifFalse: [ ^ false ].
-	anObject colorString asSymbol = colorString asSymbol ifFalse: [ ^ false ].
+	'isActive is the same' traceCr.
+	anObject colorString = colorString ifFalse: [ ^ false ].
+	'colorString is the same' traceCr.
 	
 	^ true
 ]
