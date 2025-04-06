@@ -32,7 +32,7 @@ CMProbe >> = anObject [
 	anObject method = method ifFalse: [ ^ false ].
 	anObject object = object ifFalse: [ ^ false ].
 	anObject isActive = isActive ifFalse: [ ^ false ].
-	anObject colorString = colorString ifFalse: [ ^ false ].
+	anObject colorString asSymbol = colorString asSymbol ifFalse: [ ^ false ].
 	
 	^ true
 ]
