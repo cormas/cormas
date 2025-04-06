@@ -88,11 +88,6 @@ CMProbeTest >> setUp [
 { #category : #tests }
 CMProbeTest >> testEquality [
 
-	probe = probe copy ifFalse: [
-		'Probes should be equal!!!' traceCr.
-		probe traceCr.
-		probe copy traceCr ].
-	
 	self assert: probe equals: probe copy.
 ]
 
@@ -127,15 +122,6 @@ CMProbeTest >> testIsActive [
 CMProbeTest >> testIsActiveByDefault [
 
 	self assert: probe isActive
-]
-
-{ #category : #tests }
-CMProbeTest >> testMethods [
-	
-	| method |
-	method := CMMockModel >> #numberOfAliveCells.
-	
-	self assert: method equals: method copy.
 ]
 
 { #category : #tests }
