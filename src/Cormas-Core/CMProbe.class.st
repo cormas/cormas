@@ -31,7 +31,12 @@ CMProbe >> = anObject [
 		
 	anObject name = name ifFalse: [ ^ false ].
 	'name is the same' traceCr.
-	anObject method = method ifFalse: [ ^ false ].
+	
+	anObject method = method ifFalse: [
+		'Methods are not equal!' traceCr.
+		method traceCr.
+		anObject method traceCr.
+		^ false ].
 	'method is the same' traceCr.
 	anObject object = object ifFalse: [ ^ false ].
 	'object is the same' traceCr.
