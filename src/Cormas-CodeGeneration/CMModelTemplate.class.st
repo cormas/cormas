@@ -81,6 +81,8 @@ CMModelTemplate >> generatePrefixMethod [
 	method := modelClass compiler compile: ('prefix
 	"Every class name in model package must begin with this prefix"
 	^ ''', prefix, '''.').
+	
+	method protocol: 'accessing'.
 
 	modelClass class
 		addSelector: #prefix
