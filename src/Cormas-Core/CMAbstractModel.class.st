@@ -166,14 +166,11 @@ CMAbstractModel >> allTheEntities [
 
 { #category : 'accessing - entities' }
 CMAbstractModel >> allTheEntities: aClass [
-	" Answer a <Collection> of all the instances of aClass (and sub classes) collected by cormasModel. 
-	Usefull for abstract classes
-
-	Example: (self allTheEntities: Forager) is returning all the instances of restrained and unrestrained foragers "
+	"Purpose: This method returns a collection of all instances of aClass and of the instances of all its subclasses"
 	
 	| coll |
 	coll := OrderedCollection new.
-	aClass withAllSubclasses do: [:cl | cl isAbstract ifFalse: [coll addAll: (self entitiesOfClass: cl)]].
+	aClass withAllSubclasses do: [:cl | cl hasSubclasses ifFalse: [coll addAll: (self entitiesOfClass: cl)]].
 	^ coll
 ]
 
@@ -609,11 +606,9 @@ Example: self dominance: #groupNumber"
 
 { #category : 'accessing - entities' }
 CMAbstractModel >> entitiesOfClass: aClass [
-	"Returns a collection of all the instances of aClass"
-
 	| getter |
 	
-	aClass isAbstract ifTrue: [ ^ OrderedCollection new ].
+	aClass hasSubclasses ifTrue: [ ^ OrderedCollection new ].
 	
 	getter := self getterForEntityClass: aClass.
 	
@@ -707,7 +702,7 @@ CMAbstractModel >> initialize [
 { #category : 'accessing' }
 CMAbstractModel >> initializeAgentsOfClass: aClass [
 
-	(aClass isAbstract not and: [ aClass isLocated ]) ifTrue: [ 
+	(aClass hasSubclasses not and: [ aClass isLocated ]) ifTrue: [ 
 		(self entitiesOfClass: aClass) do: [ :each | each leave ] ].
 		
 	self resetEntities: aClass

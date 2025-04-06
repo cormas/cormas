@@ -24,7 +24,13 @@ CMEntityTest >> testColorOfNumber [
 ]
 
 { #category : 'tests' }
+CMEntityTest >> testCormasEntityHasSubclasses [
+	self assert: CMEntity hasSubclasses
+]
+
+{ #category : 'tests' }
 CMEntityTest >> testCormasEntityIsAbstract [
+	"This test is deprecated, use testCormasEntityHasSubclasses instead"
 	self assert: CMEntity isAbstract
 ]
 
