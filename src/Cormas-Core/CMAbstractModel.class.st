@@ -46,7 +46,7 @@ Class {
 		'cellClass',
 		'agentClasses'
 	],
-	#category : 'Cormas-Core-Kernel'
+	#category : #'Cormas-Core-Kernel'
 }
 
 { #category : #accessing }
@@ -87,7 +87,7 @@ CMAbstractModel class >> availableProbes [
 		CMProbe new
 			name: pragma arguments first;
 			colorString: pragma arguments second;
-			method: pragma method;
+			selector: pragma method selector;
 			yourself ].
 ]
 

@@ -30,31 +30,31 @@ CMProbeTest >> setUp [
 	probe := CMProbe
 		name: 'Number of alive cells'
 		colorString: '0000FF'
-		method: (CMMockModel >> #numberOfAliveCells)
+		selector: #numberOfAliveCells
 		on: model.
 		
 	probeWithDifferentName := CMProbe
 		name: 'Number of living cells'
 		colorString: '0000FF'
-		method: (CMMockModel >> #numberOfAliveCells)
+		selector: #numberOfAliveCells
 		on: model.
 		
 	probeWithDifferentMethod := CMProbe
 		name: 'Number of alive cells'
 		colorString: '0000FF'
-		method: (CMMockModel >> #numberOfDeadCells)
+		selector: #numberOfDeadCells
 		on: model.
 		
 	probeWithDifferentColor := CMProbe
 		name: 'Number of alive cells'
 		colorString: 'FF0000'
-		method: (CMMockModel >> #numberOfAliveCells)
+		selector: #numberOfAliveCells
 		on: model.
 		
 	probeWithDifferentModel := CMProbe
 		name: 'Number of alive cells'
 		colorString: '0000FF'
-		method: (CMMockModel >> #numberOfAliveCells)
+		selector: #numberOfAliveCells
 		on: differentModel.
 		
 	probeWithDifferentIsActive := probe copy.
@@ -62,7 +62,7 @@ CMProbeTest >> setUp [
 	
 	probeWithoutName := CMProbe new
 		colorString: '0000FF';
-		method: (CMMockModel >> #numberOfAliveCells);
+		selector: #numberOfAliveCells;
 		object: model;
 		yourself.
 		
@@ -75,12 +75,12 @@ CMProbeTest >> setUp [
 	probeWithoutObject := CMProbe new
 		name: 'Number of alive cells';
 		colorString: '0000FF';
-		method: (CMMockModel >> #numberOfAliveCells);
+		selector: #numberOfAliveCells;
 		yourself.
 		
 	probeWithoutColor := CMProbe new
 		name: 'Number of alive cells';
-		method: (CMMockModel >> #numberOfAliveCells);
+		selector: #numberOfAliveCells;
 		object: model;
 		yourself.
 ]

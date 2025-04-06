@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'simulation'
 	],
-	#category : 'Cormas-Tests'
+	#category : #'Cormas-Tests'
 }
 
 { #category : #running }
@@ -49,13 +49,13 @@ CMSimulationTest >> testProbes [
 		CMProbe
 			name: 'Number of alive cells'
 			colorString: '0000FF'
-			method: (CMMockModel >> #numberOfAliveCells)
+			selector: #numberOfAliveCells
 			on: simulation cormasModel .
 			
 		CMProbe
 			name: 'Number of dead cells'
 			colorString: 'FF0000'
-			method: (CMMockModel >> #numberOfDeadCells)
+			selector: #numberOfDeadCells
 			on: simulation cormasModel .
 	}.
 

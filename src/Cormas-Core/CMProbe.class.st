@@ -5,19 +5,19 @@ Class {
 		'name',
 		'object',
 		'isActive',
-		'method',
-		'colorString'
+		'colorString',
+		'selector'
 	],
 	#category : #'Cormas-Core-Analysis'
 }
 
 { #category : #'as yet unclassified' }
-CMProbe class >> name: aString colorString: aColorString method: aCompiledMethod on: anObject [
+CMProbe class >> name: aString colorString: aColorString selector: aSymbol on: anObject [
 
 	^ self new
 		name: aString;
 		colorString: aColorString;
-		method: aCompiledMethod;
+		selector: aSymbol;
 		object: anObject;
 		yourself
 ]
@@ -29,7 +29,7 @@ CMProbe >> = anObject [
 	anObject class = self class ifFalse: [ ^ false ].
 		
 	anObject name = name ifFalse: [ ^ false ].
-	anObject method = method ifFalse: [ ^ false ].
+	anObject selector = selector ifFalse: [ ^ false ].
 	anObject object = object ifFalse: [ ^ false ].
 	anObject isActive = isActive ifFalse: [ ^ false ].
 	anObject colorString = colorString ifFalse: [ ^ false ].
@@ -54,7 +54,7 @@ CMProbe >> hash [
 	"for tessting"
 
 	^ name hash bitXor:
-		  (method hash bitXor:
+		  (selector hash bitXor:
 				(object hash bitXor:
 					(isActive hash bitXor: colorString hash))) 
 ]
@@ -76,18 +76,6 @@ CMProbe >> isActive [
 CMProbe >> isActive: anObject [
 
 	isActive := anObject
-]
-
-{ #category : #accessing }
-CMProbe >> method [
-
-	^ method
-]
-
-{ #category : #accessing }
-CMProbe >> method: aCompiledMethod [
-
-	method := aCompiledMethod
 ]
 
 { #category : #accessing }
@@ -118,11 +106,23 @@ CMProbe >> object: anObject [
 CMProbe >> printOn: aStream [
 
 	super printOn: aStream.
-	aStream << $( << name << object asString << isActive asString << method asString << colorString << $)
+	aStream << $( << name << object asString << isActive asString << selector asString << colorString << $)
+]
+
+{ #category : #accessing }
+CMProbe >> selector [
+
+	^ selector
+]
+
+{ #category : #accessing }
+CMProbe >> selector: aSymbol [
+
+	selector := aSymbol
 ]
 
 { #category : #evaluating }
 CMProbe >> value [
 
-	^ method valueWithReceiver: object
+	^ object perform: selector
 ]
