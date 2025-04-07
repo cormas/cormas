@@ -1,7 +1,8 @@
 Trait {
 	#name : 'TCMToggleCommand',
 	#instVars : [
-		'isOn'
+		'isOn',
+		'button'
 	],
 	#traits : 'TCMCommand',
 	#classTraits : 'TCMCommand classTrait',
