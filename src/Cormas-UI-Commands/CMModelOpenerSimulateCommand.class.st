@@ -5,7 +5,7 @@ Class {
 	#package : 'Cormas-UI-Commands'
 }
 
-{ #category : 'accessing' }
+{ #category : 'action' }
 CMModelOpenerSimulateCommand >> action [
 
 	| presenter |

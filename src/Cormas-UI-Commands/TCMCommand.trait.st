@@ -40,7 +40,7 @@ TCMCommand classSide >> sortedSubclasses [
 		sorted: [ :a :b | a order < b order ]
 ]
 
-{ #category : 'accessing' }
+{ #category : 'action' }
 TCMCommand >> action [
 
 	self subclassResponsibility
