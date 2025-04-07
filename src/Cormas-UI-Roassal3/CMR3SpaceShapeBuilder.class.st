@@ -22,7 +22,10 @@ CMR3SpaceShapeBuilder class >> for: aBuilder [
 { #category : 'as yet unclassified' }
 CMR3SpaceShapeBuilder >> contextMenuItemsFor: anEntity [
 
-	^ { CMInspectSpaceContextMenuCommand forOwner: anEntity }
+	^ {
+		CMInspectSpaceContextMenuCommand forOwner: anEntity .
+		CMBrowseSpaceContextMenuCommand forOwner: anEntity
+	}
 ]
 
 { #category : 'as yet unclassified' }
