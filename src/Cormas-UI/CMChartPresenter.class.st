@@ -143,9 +143,6 @@ CMChartPresenter >> initializePresenters [
 	self updateShowProbesButtonIcon.
 
 	chart := SpRoassalPresenter new.
-	chart layout: (SpBoxLayout new
-			 add: RSCompositeChart new canvas height: 400;
-			 yourself).
 	self drawChart.
 ]
 
