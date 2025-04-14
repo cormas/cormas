@@ -1,6 +1,6 @@
 Class {
-	#name : 'CMSimulationControlsPresenter',
-	#superclass : 'SpPresenter',
+	#name : #CMSimulationControlsPresenter,
+	#superclass : #SpPresenter,
 	#instVars : [
 		'translator',
 		'runButton',
@@ -11,24 +11,23 @@ Class {
 		'speedDropList',
 		'displayEvery'
 	],
-	#category : 'Cormas-UI',
-	#package : 'Cormas-UI'
+	#category : 'Cormas-UI'
 }
 
-{ #category : 'examples' }
+{ #category : #examples }
 CMSimulationControlsPresenter class >> example [
 	<example>
 	
 	(self forTranslator: CMEnglishTranslator new) open
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMSimulationControlsPresenter class >> forTranslator: aTranslator [
 
 	^ self on: aTranslator
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMSimulationControlsPresenter >> beInNotRunningMode [
 
 	runButton
@@ -39,7 +38,7 @@ CMSimulationControlsPresenter >> beInNotRunningMode [
 	owner ifNotNil: [ owner beInNotRunningMode ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMSimulationControlsPresenter >> beInRunningMode [
 
 	runButton
@@ -50,7 +49,7 @@ CMSimulationControlsPresenter >> beInRunningMode [
 	owner ifNotNil: [ owner beInRunningMode ]
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMSimulationControlsPresenter >> connectPresenters [
 
 	stepButton action: [
@@ -60,7 +59,7 @@ CMSimulationControlsPresenter >> connectPresenters [
 		owner updateFinalTimeStep: number ].
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMSimulationControlsPresenter >> currentTimeStep: aNumber [
 
 	progressBarLabel label: ('Step ', aNumber asString).
@@ -70,7 +69,7 @@ CMSimulationControlsPresenter >> currentTimeStep: aNumber [
 		ifFalse: [ (aNumber / finalStep number) asFloat ]).
 ]
 
-{ #category : 'layout' }
+{ #category : #layout }
 CMSimulationControlsPresenter >> defaultLayout [ 
 
 	| row1Height row2Height |
@@ -120,13 +119,13 @@ CMSimulationControlsPresenter >> defaultLayout [
 		yourself.
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMSimulationControlsPresenter >> displayEvery [
 	
 	^ displayEvery number
 ]
 
-{ #category : 'settings' }
+{ #category : #settings }
 CMSimulationControlsPresenter >> finalTimeStep [
 
 	^ finalStep number = 0
@@ -134,13 +133,13 @@ CMSimulationControlsPresenter >> finalTimeStep [
 		ifFalse: [ finalStep number ]
 ]
 
-{ #category : 'settings' }
+{ #category : #settings }
 CMSimulationControlsPresenter >> finalTimeStep: aNumber [
 
 	finalStep number: aNumber
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMSimulationControlsPresenter >> initializePresenters [
 	
 	runButton := self newButton
@@ -177,13 +176,13 @@ CMSimulationControlsPresenter >> initializePresenters [
 	self beInNotRunningMode.
 ]
 
-{ #category : 'accessing - model' }
+{ #category : #'accessing - model' }
 CMSimulationControlsPresenter >> setModelBeforeInitialization: aTranslator [
 
 	translator := aTranslator
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMSimulationControlsPresenter >> speedDropListItems [
 
 	^ {
@@ -196,7 +195,7 @@ CMSimulationControlsPresenter >> speedDropListItems [
 		  translator tSpeed10xFaster }
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMSimulationControlsPresenter >> speedInMilliseconds [
 
 	| normalSpeed mapping |

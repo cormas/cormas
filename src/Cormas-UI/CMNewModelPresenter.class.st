@@ -1,6 +1,6 @@
 Class {
-	#name : 'CMNewModelPresenter',
-	#superclass : 'SpPresenter',
+	#name : #CMNewModelPresenter,
+	#superclass : #SpPresenter,
 	#instVars : [
 		'translator',
 		'modelTemplate',
@@ -13,23 +13,22 @@ Class {
 		'createButton',
 		'cancelButton'
 	],
-	#category : 'Cormas-UI',
-	#package : 'Cormas-UI'
+	#category : 'Cormas-UI'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMNewModelPresenter class >> example [
 	<example>
 	(self forTranslator: CMEnglishTranslator new) open
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMNewModelPresenter class >> forTranslator: aTranslator [
 
 	^ self on: aTranslator
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMNewModelPresenter >> connectPresenters [
 
 	nameInput whenTextChangedDo: [ self updatePrefix ].
@@ -46,7 +45,7 @@ CMNewModelPresenter >> connectPresenters [
 		] onErrorDo: [ :error | self alert: error messageText ] ].
 ]
 
-{ #category : 'layout' }
+{ #category : #layout }
 CMNewModelPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
@@ -85,12 +84,12 @@ CMNewModelPresenter >> defaultLayout [
 		yourself.
 ]
 
-{ #category : 'examples' }
+{ #category : #examples }
 CMNewModelPresenter >> example [
 	<script: 'self example'>
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMNewModelPresenter >> initializePresenters [
 
 	nameInput := self newTextInput.
@@ -137,7 +136,7 @@ CMNewModelPresenter >> initializePresenters [
 		yourself.
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMNewModelPresenter >> initializeWindow: aWindowPresenter [
 
 	super initializeWindow: aWindowPresenter.
@@ -147,7 +146,7 @@ CMNewModelPresenter >> initializeWindow: aWindowPresenter [
 		initialExtent: 475@450.
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMNewModelPresenter >> prefixFromModelName: aString [
 
 	| name capitalLetters |
@@ -160,14 +159,14 @@ CMNewModelPresenter >> prefixFromModelName: aString [
 	^ name first: (3 min: name size)
 ]
 
-{ #category : 'accessing - model' }
+{ #category : #'accessing - model' }
 CMNewModelPresenter >> setModelBeforeInitialization: aTranslator [
 
 	translator := aTranslator.
 	modelTemplate := CMModelTemplate new
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMNewModelPresenter >> updatePackageClassTree [
 
 	| items |
@@ -187,13 +186,13 @@ CMNewModelPresenter >> updatePackageClassTree [
 	packageClassTree expandAll
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMNewModelPresenter >> updatePrefix [
 
 	prefixInput text: (self prefixFromModelName: nameInput text asCamelCase)
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMNewModelPresenter >> updateTemplate [
 
 	modelTemplate clearNameAndPrefix.

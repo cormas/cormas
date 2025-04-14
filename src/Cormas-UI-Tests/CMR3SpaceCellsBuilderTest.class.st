@@ -1,17 +1,15 @@
 Class {
-	#name : 'CMR3SpaceCellsBuilderTest',
-	#superclass : 'TestCase',
+	#name : #CMR3SpaceCellsBuilderTest,
+	#superclass : #TestCase,
 	#instVars : [
 		'fixture',
 		'builder',
 		'model'
 	],
-	#category : 'Cormas-UI-Tests-Core',
-	#package : 'Cormas-UI-Tests',
-	#tag : 'Core'
+	#category : 'Cormas-UI-Tests-Core'
 }
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMR3SpaceCellsBuilderTest >> setUp [
 
 	super setUp.
@@ -21,13 +19,13 @@ CMR3SpaceCellsBuilderTest >> setUp [
 	model := fixture model.
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMR3SpaceCellsBuilderTest >> testMasterShape [
 
 	self assert: builder masterShape isShape.
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMR3SpaceCellsBuilderTest >> testShapeForIndex [
 
 	| cell shape |
@@ -41,7 +39,7 @@ CMR3SpaceCellsBuilderTest >> testShapeForIndex [
 
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMR3SpaceCellsBuilderTest >> testShapesFor [
 
 	| shapes |
