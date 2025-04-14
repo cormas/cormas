@@ -1,6 +1,6 @@
 Class {
-	#name : #CMExampleModelLoaderPresenter,
-	#superclass : #SpPresenter,
+	#name : 'CMExampleModelLoaderPresenter',
+	#superclass : 'SpPresenter',
 	#instVars : [
 		'table',
 		'openGithubButton',
@@ -8,17 +8,18 @@ Class {
 		'updateButton',
 		'deleteButton'
 	],
-	#category : 'Cormas-UI'
+	#category : 'Cormas-UI',
+	#package : 'Cormas-UI'
 }
 
-{ #category : #examples }
+{ #category : 'examples' }
 CMExampleModelLoaderPresenter class >> example [
 
 	<example>
 	self new open
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 CMExampleModelLoaderPresenter class >> exampleModels [
 
 	^ {
@@ -31,13 +32,13 @@ CMExampleModelLoaderPresenter class >> exampleModels [
 	}
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMExampleModelLoaderPresenter class >> githubOrganizationName [
 
 	^ 'cormas'
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMExampleModelLoaderPresenter >> connectPresenters [
 
 	table whenSelectedItemChangedDo: [ :assoc |
@@ -51,7 +52,7 @@ CMExampleModelLoaderPresenter >> connectPresenters [
 	deleteButton action: [ self deleteSelectedModel ]
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 CMExampleModelLoaderPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
@@ -68,7 +69,7 @@ CMExampleModelLoaderPresenter >> defaultLayout [
 		yourself
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMExampleModelLoaderPresenter >> deleteSelectedModel [
 
 	| repo |
@@ -79,7 +80,7 @@ CMExampleModelLoaderPresenter >> deleteSelectedModel [
 	self update
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMExampleModelLoaderPresenter >> downloadSelectedModel [
 
 	| name baseline |
@@ -96,13 +97,13 @@ CMExampleModelLoaderPresenter >> downloadSelectedModel [
 	self update
 ]
 
-{ #category : #examples }
+{ #category : 'examples' }
 CMExampleModelLoaderPresenter >> example [
 	
 	<script: 'self example'>
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMExampleModelLoaderPresenter >> githubLink: aString [
 
 	^ String streamContents: [ :stream |
@@ -114,7 +115,7 @@ CMExampleModelLoaderPresenter >> githubLink: aString [
 			<< ':main' ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMExampleModelLoaderPresenter >> githubUrlForModel: aString [
 
 	^ String streamContents: [ :stream |
@@ -125,13 +126,13 @@ CMExampleModelLoaderPresenter >> githubUrlForModel: aString [
 			<< aString ]
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMExampleModelLoaderPresenter >> httpsUrlForModel: aString [
 
 	^ (self githubUrlForModel: aString), '.git'
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMExampleModelLoaderPresenter >> initializePresenters [
 
 	table := self newTable
@@ -178,7 +179,7 @@ CMExampleModelLoaderPresenter >> initializePresenters [
 	self updateEnabledButtons.
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMExampleModelLoaderPresenter >> initializeWindow: aWindowPresenter [
 
 	super initializeWindow: aWindowPresenter.
@@ -188,14 +189,14 @@ CMExampleModelLoaderPresenter >> initializeWindow: aWindowPresenter [
 		initialExtent: 600@450.
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMExampleModelLoaderPresenter >> isModelLoaded: aString [
 
 	self repositoryForModel: aString ifNotFound: [ ^ false ].
 	^ true
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMExampleModelLoaderPresenter >> repositoryForModel: aString ifNotFound: aBlock [
 
 	^ IceRepository registry
@@ -204,7 +205,7 @@ CMExampleModelLoaderPresenter >> repositoryForModel: aString ifNotFound: aBlock 
 		ifNone: aBlock
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMExampleModelLoaderPresenter >> repositoryForSelectedModel [
 
 	| name |
@@ -214,7 +215,7 @@ CMExampleModelLoaderPresenter >> repositoryForSelectedModel [
 		self error: 'Repository for ', name, ' was not found!' ]
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMExampleModelLoaderPresenter >> sshUrlForModel: aString [
 
 	^ String streamContents: [ :stream |
@@ -226,7 +227,7 @@ CMExampleModelLoaderPresenter >> sshUrlForModel: aString [
 			<< '.git' ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMExampleModelLoaderPresenter >> updateEnabledButtons [
 
 	table selectedItem ifNil: [ ^ self ].
@@ -242,7 +243,7 @@ CMExampleModelLoaderPresenter >> updateEnabledButtons [
 			deleteButton disable ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMExampleModelLoaderPresenter >> updateSelectedModel [
 
 	| repo branch remote |

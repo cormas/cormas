@@ -1,15 +1,16 @@
 Class {
-	#name : #CMPovSelectionPresenter,
-	#superclass : #SpPresenter,
+	#name : 'CMPovSelectionPresenter',
+	#superclass : 'SpPresenter',
 	#instVars : [
 		'cormasModel',
 		'povTree',
 		'whenChangedBlock'
 	],
-	#category : 'Cormas-UI'
+	#category : 'Cormas-UI',
+	#package : 'Cormas-UI'
 }
 
-{ #category : #examples }
+{ #category : 'examples' }
 CMPovSelectionPresenter class >> example [
 	<example>
 	
@@ -18,7 +19,7 @@ CMPovSelectionPresenter class >> example [
 	(self on: model) open.
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 CMPovSelectionPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
@@ -26,7 +27,7 @@ CMPovSelectionPresenter >> defaultLayout [
 		yourself
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMPovSelectionPresenter >> initializePresenters [
 
 	whenChangedBlock := [ "do nothing" ].
@@ -66,13 +67,13 @@ CMPovSelectionPresenter >> initializePresenters [
 	
 ]
 
-{ #category : #'accessing - model' }
+{ #category : 'accessing - model' }
 CMPovSelectionPresenter >> setModelBeforeInitialization: aCormasModel [
 
 	cormasModel := aCormasModel
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMPovSelectionPresenter >> showPovs [
 
 	| roots |
@@ -84,7 +85,7 @@ CMPovSelectionPresenter >> showPovs [
 		roots: (roots sorted: [ :a :b | a name < b name ])
 ]
 
-{ #category : #announcing }
+{ #category : 'announcing' }
 CMPovSelectionPresenter >> whenChangedDo: aBlock [
 
 	whenChangedBlock := aBlock

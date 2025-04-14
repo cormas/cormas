@@ -1,16 +1,17 @@
 Class {
-	#name : #CMParametersEditorPresenter,
-	#superclass : #SpPresenter,
+	#name : 'CMParametersEditorPresenter',
+	#superclass : 'SpPresenter',
 	#instVars : [
 		'translator',
 		'parameters',
 		'classTree',
 		'parametersTable'
 	],
-	#category : 'Cormas-UI'
+	#category : 'Cormas-UI',
+	#package : 'Cormas-UI'
 }
 
-{ #category : #examples }
+{ #category : 'examples' }
 CMParametersEditorPresenter class >> example [
 	<example>
 	
@@ -23,20 +24,20 @@ CMParametersEditorPresenter class >> example [
 		open
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMParametersEditorPresenter class >> forParameters: aCollectionOfParameters translator: aTranslator [
 
 	^ self on: { aCollectionOfParameters . aTranslator }
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMParametersEditorPresenter >> connectPresenters [
 
 	classTree whenSelectedItemChangedDo: [ :aClass |
 		parametersTable items: (parameters select: [ :each | each receiver = aClass ]) ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMParametersEditorPresenter >> convertInputType: aString [
 
 	aString ifEmpty: [ ^ nil ].
@@ -44,7 +45,7 @@ CMParametersEditorPresenter >> convertInputType: aString [
 	^ [ aString asNumber ] onErrorDo: [ aString ].
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 CMParametersEditorPresenter >> defaultLayout [ 
 
 	^ SpBoxLayout newLeftToRight
@@ -54,7 +55,7 @@ CMParametersEditorPresenter >> defaultLayout [
 		yourself
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMParametersEditorPresenter >> initializeClassTree [
 
 	| receiverClasses |
@@ -74,7 +75,7 @@ CMParametersEditorPresenter >> initializeClassTree [
 			receiverClasses includes: subclass ] ].
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMParametersEditorPresenter >> initializeParametersTable [
 
 	parametersTable := self newTable.
@@ -91,14 +92,14 @@ CMParametersEditorPresenter >> initializeParametersTable [
 		yourself).
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMParametersEditorPresenter >> initializePresenters [ 
 
 	self initializeClassTree.
 	self initializeParametersTable
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMParametersEditorPresenter >> initializeWindow: aWindowPresenter [
 
 	super initializeWindow: aWindowPresenter.
@@ -108,7 +109,7 @@ CMParametersEditorPresenter >> initializeWindow: aWindowPresenter [
 		initialExtent: 600@300.
 ]
 
-{ #category : #'accessing - model' }
+{ #category : 'accessing - model' }
 CMParametersEditorPresenter >> setModelBeforeInitialization: aCollection [
 
 	parameters := aCollection first.

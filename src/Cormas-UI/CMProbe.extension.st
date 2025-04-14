@@ -1,6 +1,6 @@
-Extension { #name : #CMProbe }
+Extension { #name : 'CMProbe' }
 
-{ #category : #'*Cormas-UI' }
+{ #category : '*Cormas-UI' }
 CMProbe >> color [
 
 	^ [ CMColor perform: colorString asSymbol ]

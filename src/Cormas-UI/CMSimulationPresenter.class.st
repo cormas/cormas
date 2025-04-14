@@ -1,6 +1,6 @@
 Class {
-	#name : #CMSimulationPresenter,
-	#superclass : #SpPresenter,
+	#name : 'CMSimulationPresenter',
+	#superclass : 'SpPresenter',
 	#instVars : [
 		'translator',
 		'modelClass',
@@ -9,34 +9,35 @@ Class {
 		'hideInitializationSettingButton',
 		'isInitializerVisible'
 	],
-	#category : 'Cormas-UI'
+	#category : 'Cormas-UI',
+	#package : 'Cormas-UI'
 }
 
-{ #category : #examples }
+{ #category : 'examples' }
 CMSimulationPresenter class >> example [
 	<example>
 	(self forModelClass: CMMockModel translator: CMEnglishTranslator new) open
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMSimulationPresenter class >> forModelClass: aClass translator: aTranslator [
 
 	^ self on: { aClass . aTranslator }
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMSimulationPresenter >> beInNotRunningMode [
 
 	initializer enabled: true
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMSimulationPresenter >> beInRunningMode [
 
 	initializer disableInitialization.
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSimulationPresenter >> connectPresenters [
 
 	initializer
@@ -47,7 +48,7 @@ CMSimulationPresenter >> connectPresenters [
 		self updateInitializationSettingsVisibility ]
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 CMSimulationPresenter >> defaultLayout [
 
 	^ SpBoxLayout newLeftToRight
@@ -61,13 +62,13 @@ CMSimulationPresenter >> defaultLayout [
 		yourself
 ]
 
-{ #category : #settings }
+{ #category : 'settings' }
 CMSimulationPresenter >> finalTimeStep [
 	
 	^ simulationRunner finalTimeStep
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMSimulationPresenter >> hideInitializationSettings [
 
 	isInitializerVisible := false.
@@ -76,7 +77,7 @@ CMSimulationPresenter >> hideInitializationSettings [
 	self update
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSimulationPresenter >> initializePresenters [
 	
 	isInitializerVisible := true.
@@ -94,7 +95,7 @@ CMSimulationPresenter >> initializePresenters [
 		on: translator.
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSimulationPresenter >> initializeWindow: aWindowPresenter [
 
 	super initializeWindow: aWindowPresenter.
@@ -105,14 +106,14 @@ CMSimulationPresenter >> initializeWindow: aWindowPresenter [
 		whenResizingDo: [ simulationRunner fitDiagram ].
 ]
 
-{ #category : #'accessing - model' }
+{ #category : 'accessing - model' }
 CMSimulationPresenter >> setModelBeforeInitialization: aCollection [
 
 	modelClass := aCollection first.
 	translator := aCollection second
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMSimulationPresenter >> showInitializationSettings [
 
 	isInitializerVisible := true.
@@ -121,7 +122,7 @@ CMSimulationPresenter >> showInitializationSettings [
 	self update.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMSimulationPresenter >> updateInitializationSettingsVisibility [
 
 	isInitializerVisible

@@ -1,6 +1,6 @@
 Class {
-	#name : #CMSimulationInitializerPresenter,
-	#superclass : #SpPresenter,
+	#name : 'CMSimulationInitializerPresenter',
+	#superclass : 'SpPresenter',
 	#instVars : [
 		'translator',
 		'modelClass',
@@ -12,29 +12,30 @@ Class {
 		'editParametersButton',
 		'resetParametersButton'
 	],
-	#category : 'Cormas-UI'
+	#category : 'Cormas-UI',
+	#package : 'Cormas-UI'
 }
 
-{ #category : #examples }
+{ #category : 'examples' }
 CMSimulationInitializerPresenter class >> example [
 	<example>
 	
 	(self forModelClass: CMMockModel translator: CMEnglishTranslator new) open
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMSimulationInitializerPresenter class >> forModelClass: aClass translator: aTranslator [
 
 	^ self on: { aClass . aTranslator }
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMSimulationInitializerPresenter >> beReinitializeCondition: aBlock [
 
 	isReinitializeBlock := aBlock
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMSimulationInitializerPresenter >> confirmReinitialize [
 
 	SpConfirmDialog new
@@ -51,7 +52,7 @@ CMSimulationInitializerPresenter >> confirmReinitialize [
 		  openModal
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSimulationInitializerPresenter >> connectPresenters [
 
 	editParametersButton action: [ self openParametersEditor ].
@@ -73,7 +74,7 @@ CMSimulationInitializerPresenter >> connectPresenters [
 			ifFalse: [ initializeButton disable ] ].
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 CMSimulationInitializerPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
@@ -91,7 +92,7 @@ CMSimulationInitializerPresenter >> defaultLayout [
 		yourself
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMSimulationInitializerPresenter >> disableInitialization [
 	
 	| presenters |
@@ -102,7 +103,7 @@ CMSimulationInitializerPresenter >> disableInitialization [
 		do: [ :each | each enabled: false ].
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSimulationInitializerPresenter >> initializePresenters [ 
 
 	isReinitializeBlock := [ false ].
@@ -136,7 +137,7 @@ CMSimulationInitializerPresenter >> initializePresenters [
 	self updateInitializeButton.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMSimulationInitializerPresenter >> openParametersEditor [
 
 	(CMParametersEditorPresenter
@@ -146,14 +147,14 @@ CMSimulationInitializerPresenter >> openParametersEditor [
 	
 ]
 
-{ #category : #'accessing - model' }
+{ #category : 'accessing - model' }
 CMSimulationInitializerPresenter >> setModelBeforeInitialization: aCollection [
 
 	modelClass := aCollection first.
 	translator := aCollection second
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSimulationInitializerPresenter >> simulation [
 
 	| simulation |
@@ -178,7 +179,7 @@ CMSimulationInitializerPresenter >> simulation [
 	^ simulation
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMSimulationInitializerPresenter >> updateInitializeButton [
 
 	isReinitializeBlock value
@@ -192,7 +193,7 @@ CMSimulationInitializerPresenter >> updateInitializeButton [
 				icon: (self iconNamed: #smallNew) ]
 ]
 
-{ #category : #enumerating }
+{ #category : 'enumerating' }
 CMSimulationInitializerPresenter >> whenInitializedDo: aBlock [
 
 	initializeBlock := aBlock

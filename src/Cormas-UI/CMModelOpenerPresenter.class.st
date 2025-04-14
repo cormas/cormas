@@ -1,23 +1,24 @@
 Class {
-	#name : #CMModelOpenerPresenter,
-	#superclass : #SpPresenter,
+	#name : 'CMModelOpenerPresenter',
+	#superclass : 'SpPresenter',
 	#instVars : [
 		'translator',
 		'modelList',
 		'buttonBar',
 		'buttons'
 	],
-	#category : 'Cormas-UI'
+	#category : 'Cormas-UI',
+	#package : 'Cormas-UI'
 }
 
-{ #category : #examples }
+{ #category : 'examples' }
 CMModelOpenerPresenter class >> example [
 	<example>
 	
 	self new open
 ]
 
-{ #category : #menu }
+{ #category : 'menu' }
 CMModelOpenerPresenter class >> menu00CormasOn: aBuilder [
 	<worldMenu>
 	(aBuilder item: #Cormas)
@@ -77,7 +78,7 @@ CMModelOpenerPresenter class >> menu00CormasOn: aBuilder [
 		order: 1.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMModelOpenerPresenter class >> updateCormas [
 
 	| repo branch remote |
@@ -89,7 +90,7 @@ CMModelOpenerPresenter class >> updateCormas [
 	branch pullFrom: remote.
 ]
 
-{ #category : #layout }
+{ #category : 'layout' }
 CMModelOpenerPresenter >> defaultLayout [
 
 	| buttonsLayout |
@@ -104,13 +105,13 @@ CMModelOpenerPresenter >> defaultLayout [
 		yourself.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMModelOpenerPresenter >> findAvailableModels [
 
 	^ CMAbstractModel allSubclasses
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMModelOpenerPresenter >> initializeButtons [
 	
 	| command |
@@ -120,7 +121,7 @@ CMModelOpenerPresenter >> initializeButtons [
 		command button ]
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMModelOpenerPresenter >> initializePresenters [
 
 	translator := CMEnglishTranslator new.
@@ -133,7 +134,7 @@ CMModelOpenerPresenter >> initializePresenters [
 	self initializeButtons
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMModelOpenerPresenter >> initializeWindow: aWindowPresenter [
 
 	super initializeWindow: aWindowPresenter.
@@ -143,7 +144,7 @@ CMModelOpenerPresenter >> initializeWindow: aWindowPresenter [
 		initialExtent: 450@400.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMModelOpenerPresenter >> selectedModelClass [
 
 	^ modelList selectedItem
