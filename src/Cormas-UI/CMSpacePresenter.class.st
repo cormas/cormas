@@ -1,6 +1,6 @@
 Class {
-	#name : 'CMSpacePresenter',
-	#superclass : 'SpPresenter',
+	#name : #CMSpacePresenter,
+	#superclass : #SpPresenter,
 	#instVars : [
 		'translator',
 		'toolbar',
@@ -11,11 +11,10 @@ Class {
 		'isPovVisible',
 		'spaceBuilder'
 	],
-	#category : 'Cormas-UI',
-	#package : 'Cormas-UI'
+	#category : 'Cormas-UI'
 }
 
-{ #category : 'examples' }
+{ #category : #examples }
 CMSpacePresenter class >> example [
 	<example>
 	
@@ -34,7 +33,7 @@ CMSpacePresenter class >> example [
 	(self on: simulation cormasModel) open
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMSpacePresenter >> connectPresenters [
 
 	povButton action: [
@@ -44,13 +43,13 @@ CMSpacePresenter >> connectPresenters [
 		self update ].
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMSpacePresenter >> cormasModel [
 
 	^ cormasModel
 ]
 
-{ #category : 'layout' }
+{ #category : #layout }
 CMSpacePresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
@@ -63,26 +62,26 @@ CMSpacePresenter >> defaultLayout [
 		yourself
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMSpacePresenter >> fitDiagram [
 
 	diagram canvas camera zoomToFit.
 	diagram canvas signalUpdate
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMSpacePresenter >> hideSettings [
 
 	owner owner hideSettings
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMSpacePresenter >> initializeCanvasInteractions [
 
 	diagram canvas addInteraction: RSCanvasController new.
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMSpacePresenter >> initializeDiagram [
 	
 	spaceBuilder := CMR3SpaceDiagramBuilder new
@@ -96,7 +95,7 @@ CMSpacePresenter >> initializeDiagram [
 	
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMSpacePresenter >> initializePresenters [
 
 	self initializeToolbar.
@@ -110,7 +109,7 @@ CMSpacePresenter >> initializePresenters [
 	self initializeCanvasInteractions
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMSpacePresenter >> initializeToolbar [
 
 	isPovVisible := false.
@@ -129,7 +128,7 @@ CMSpacePresenter >> initializeToolbar [
 		toolbar add: command button ].
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMSpacePresenter >> saveToPng [
 
 	(StSaveFilePresenter extensions: {'png'})
@@ -139,31 +138,31 @@ CMSpacePresenter >> saveToPng [
 				exportToFile: fileReference ]
 ]
 
-{ #category : 'accessing - model' }
+{ #category : #'accessing - model' }
 CMSpacePresenter >> setModelBeforeInitialization: aCormasModel [
 	
 	cormasModel := aCormasModel 
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMSpacePresenter >> showSettings [
 
 	owner owner showSettings
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMSpacePresenter >> spaceBuilder [
 
 	^ spaceBuilder
 ]
 
-{ #category : 'TOREMOVE' }
+{ #category : #TOREMOVE }
 CMSpacePresenter >> updateDiagram [
 
 	spaceBuilder update
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMSpacePresenter >> updatePovButtonIcon [
 
 	povButton icon: (isPovVisible
@@ -171,7 +170,7 @@ CMSpacePresenter >> updatePovButtonIcon [
 		ifFalse: [ CMIcons eyeIcon ] )
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMSpacePresenter >> updatePovSelectionVisibility [
 
 	isPovVisible

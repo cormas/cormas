@@ -1,28 +1,27 @@
 Class {
-	#name : 'CMDataPresenter',
-	#superclass : 'SpPresenter',
+	#name : #CMDataPresenter,
+	#superclass : #SpPresenter,
 	#instVars : [
 		'table',
 		'toolbar',
 		'translator'
 	],
-	#category : 'Cormas-UI',
-	#package : 'Cormas-UI'
+	#category : 'Cormas-UI'
 }
 
-{ #category : 'examples' }
+{ #category : #examples }
 CMDataPresenter class >> example [
 	<example>
 	(self on: CMEnglishTranslator new) open
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMDataPresenter class >> forTranslator: aTranslator [
 
 	^ self on: aTranslator
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMDataPresenter >> columnNames: aCollection [
 
 	table columns: #().
@@ -34,13 +33,13 @@ CMDataPresenter >> columnNames: aCollection [
 				evaluated: [ :dataRow | dataRow at: name ]) ].
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMDataPresenter >> data [
 
 	^ table items
 ]
 
-{ #category : 'layout' }
+{ #category : #layout }
 CMDataPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
@@ -49,14 +48,14 @@ CMDataPresenter >> defaultLayout [
 		yourself
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMDataPresenter >> initializePresenters [
 
 	table := self newTable.
 	self initializeToolbar.
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMDataPresenter >> initializeToolbar [
 	
 	toolbar := self newToolbar.
@@ -67,13 +66,13 @@ CMDataPresenter >> initializeToolbar [
 		toolbar add: command button ].
 ]
 
-{ #category : 'accessing - model' }
+{ #category : #'accessing - model' }
 CMDataPresenter >> setModelBeforeInitialization: aTranslator [
 
 	translator := aTranslator
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMDataPresenter >> showData: aCollection [
 		
 	table items: aCollection
