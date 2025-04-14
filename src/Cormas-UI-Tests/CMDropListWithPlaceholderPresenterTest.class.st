@@ -1,22 +1,20 @@
 Class {
-	#name : 'CMDropListWithPlaceholderPresenterTest',
-	#superclass : 'TestCase',
+	#name : #CMDropListWithPlaceholderPresenterTest,
+	#superclass : #TestCase,
 	#instVars : [
 		'dropList'
 	],
-	#category : 'Cormas-UI-Tests-Core',
-	#package : 'Cormas-UI-Tests',
-	#tag : 'Core'
+	#category : 'Cormas-UI-Tests-Core'
 }
 
-{ #category : 'running' }
+{ #category : #running }
 CMDropListWithPlaceholderPresenterTest >> setUp [ 
 
 	super setUp.
 	dropList := CMDropListWithPlaceholderPresenter new.
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 CMDropListWithPlaceholderPresenterTest >> testChangingItemsPreservesPlaceholder [
 
 	| classes methods |
@@ -35,20 +33,20 @@ CMDropListWithPlaceholderPresenterTest >> testChangingItemsPreservesPlaceholder 
 	
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 CMDropListWithPlaceholderPresenterTest >> testHasPlaceholder [
 
 	dropList placeholder: 'some text' respondingTo: #someSelector.
 	self assert: dropList hasPlaceholder
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 CMDropListWithPlaceholderPresenterTest >> testHasPlaceholderDefaultFalse [
 
 	self deny: dropList hasPlaceholder
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 CMDropListWithPlaceholderPresenterTest >> testHasPlaceholderItem [
 
 	dropList placeholder: 'some text' respondingTo: #someSelector.
@@ -57,14 +55,14 @@ CMDropListWithPlaceholderPresenterTest >> testHasPlaceholderItem [
 	self assert: dropList items first class name equals: dropList placeholderClassName.
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 CMDropListWithPlaceholderPresenterTest >> testHasPlaceholderRespondsToSelector [
 
 	dropList placeholder: 'some text' respondingTo: #someSelector.
 	self assert: dropList items first someSelector equals: '-- some text --'.
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 CMDropListWithPlaceholderPresenterTest >> testPlaceholderPreservesExistingItems [
 
 	| classes |
@@ -78,7 +76,7 @@ CMDropListWithPlaceholderPresenterTest >> testPlaceholderPreservesExistingItems 
 	
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 CMDropListWithPlaceholderPresenterTest >> testPlaceholderSelectedWhenItemsChange [
 
 	| classes methods |

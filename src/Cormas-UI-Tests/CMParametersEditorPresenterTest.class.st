@@ -1,15 +1,13 @@
 Class {
-	#name : 'CMParametersEditorPresenterTest',
-	#superclass : 'TestCase',
+	#name : #CMParametersEditorPresenterTest,
+	#superclass : #TestCase,
 	#instVars : [
 		'editor'
 	],
-	#category : 'Cormas-UI-Tests-Core',
-	#package : 'Cormas-UI-Tests',
-	#tag : 'Core'
+	#category : 'Cormas-UI-Tests-Core'
 }
 
-{ #category : 'running' }
+{ #category : #running }
 CMParametersEditorPresenterTest >> setUp [
 
 	| translator |
@@ -22,7 +20,7 @@ CMParametersEditorPresenterTest >> setUp [
 		translator: translator.
 ]
 
-{ #category : 'tests' }
+{ #category : #tests }
 CMParametersEditorPresenterTest >> testConvertInputType [
 
 	self assert: (editor convertInputType: '5') equals: 5.

@@ -1,6 +1,6 @@
 Class {
-	#name : 'CMR3SpaceDiagramBuilderTest',
-	#superclass : 'TestCase',
+	#name : #CMR3SpaceDiagramBuilderTest,
+	#superclass : #TestCase,
 	#instVars : [
 		'fixture',
 		'model',
@@ -8,12 +8,10 @@ Class {
 		'presenter',
 		'simulation'
 	],
-	#category : 'Cormas-UI-Tests-Core',
-	#package : 'Cormas-UI-Tests',
-	#tag : 'Core'
+	#category : 'Cormas-UI-Tests-Core'
 }
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMR3SpaceDiagramBuilderTest >> setUp [
 	
 	super setUp.
@@ -27,19 +25,19 @@ CMR3SpaceDiagramBuilderTest >> setUp [
 	presenter := fixture presenter.
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMR3SpaceDiagramBuilderTest >> testActiveSpatialEntityPovDefaultValue [
 
 	self assert: builder activeSpatialEntityPov equals: #pov.
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMR3SpaceDiagramBuilderTest >> testCormasModel [
 
 	self assert: builder cormasModel equals: model.
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMR3SpaceDiagramBuilderTest >> testInitialCellColors [
 	
 	| expectedColors actualColors |
@@ -50,7 +48,7 @@ CMR3SpaceDiagramBuilderTest >> testInitialCellColors [
 	self assert: actualColors equals: expectedColors.
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMR3SpaceDiagramBuilderTest >> testRandomSeedCells [
 
 	"This test verifies that the random seed is fixed and the mock model is initialized with the expected combination of dead/alive cells."
@@ -63,7 +61,7 @@ CMR3SpaceDiagramBuilderTest >> testRandomSeedCells [
 	self assert: actualStates equals: expectedStates.
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMR3SpaceDiagramBuilderTest >> testUpdateCellShapes [
 
 	"Test if cell shapes are updated when model changes"
