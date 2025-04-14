@@ -1,24 +1,23 @@
 Class {
-	#name : 'CMDropListWithPlaceholderPresenter',
-	#superclass : 'SpDropListPresenter',
-	#category : 'Cormas-UI',
-	#package : 'Cormas-UI'
+	#name : #CMDropListWithPlaceholderPresenter,
+	#superclass : #SpDropListPresenter,
+	#category : 'Cormas-UI'
 }
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMDropListWithPlaceholderPresenter >> hasPlaceholder [
 
 	self items ifEmpty: [ ^ false ].
 	^ self items first class name = self placeholderClassName 
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMDropListWithPlaceholderPresenter >> isPlaceholderSelected [
 
 	^ self selectedItem class name = self placeholderClassName
 ]
 
-{ #category : 'api' }
+{ #category : #api }
 CMDropListWithPlaceholderPresenter >> items: aCollection [
 
 	self hasPlaceholder
@@ -29,7 +28,7 @@ CMDropListWithPlaceholderPresenter >> items: aCollection [
 		self selectItem: self items first ]
 ]
 
-{ #category : 'api' }
+{ #category : #api }
 CMDropListWithPlaceholderPresenter >> placeholder: aString respondingTo: aSelector [
 
 	| placeholderClass argument |
@@ -48,7 +47,7 @@ CMDropListWithPlaceholderPresenter >> placeholder: aString respondingTo: aSelect
 	super items: (self items copyWithFirst: placeholderClass new).
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMDropListWithPlaceholderPresenter >> placeholderClassName [
 
 	^ 'PlaceholderClass'

@@ -1,6 +1,6 @@
 Class {
-	#name : 'CMSimulationRunnerPresenter',
-	#superclass : 'SpPresenter',
+	#name : #CMSimulationRunnerPresenter,
+	#superclass : #SpPresenter,
 	#instVars : [
 		'translator',
 		'simulation',
@@ -14,11 +14,10 @@ Class {
 		'chartsPage',
 		'shouldPause'
 	],
-	#category : 'Cormas-UI',
-	#package : 'Cormas-UI'
+	#category : 'Cormas-UI'
 }
 
-{ #category : 'examples' }
+{ #category : #examples }
 CMSimulationRunnerPresenter class >> example [
 	<example>
 	| simulation |
@@ -35,19 +34,19 @@ CMSimulationRunnerPresenter class >> example [
 		open
 ]
 
-{ #category : 'examples' }
+{ #category : #examples }
 CMSimulationRunnerPresenter class >> exampleEmpty [
 	<example>
 	(self forTranslator: CMEnglishTranslator new) open
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMSimulationRunnerPresenter class >> forTranslator: aTranslator [
 
 	^ self on: aTranslator
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMSimulationRunnerPresenter class >> openForSimulation: aSimulation withTranslator: aTranslator [
 
 	(self forTranslator: aTranslator)
@@ -55,28 +54,28 @@ CMSimulationRunnerPresenter class >> openForSimulation: aSimulation withTranslat
 		open
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMSimulationRunnerPresenter >> beInNotRunningMode [
 
 	(owner isNotNil and: [ owner isWindowPresenter not ])
 		ifTrue: [ owner beInNotRunningMode ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMSimulationRunnerPresenter >> beInRunningMode [
 
 	(owner isNotNil and: [ owner isWindowPresenter not ])
 		ifTrue: [ owner beInRunningMode ]
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMSimulationRunnerPresenter >> connectPresenters [
 	
 	notebook whenSelectedPageChangedDo: [ :page |
 		self updateSelectedNotebookPage ].
 ]
 
-{ #category : 'specs' }
+{ #category : #specs }
 CMSimulationRunnerPresenter >> defaultLayout [
 	
 	^ SpBoxLayout newTopToBottom
@@ -86,33 +85,33 @@ CMSimulationRunnerPresenter >> defaultLayout [
 		yourself
 ]
 
-{ #category : 'settings' }
+{ #category : #settings }
 CMSimulationRunnerPresenter >> finalTimeStep [
 	
 	^ simulationControls finalTimeStep
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMSimulationRunnerPresenter >> fitDiagram [
 
 	simulation ifNil: [ ^ self ].
 	spacePresenter fitDiagram.
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMSimulationRunnerPresenter >> hasSimulation [
 	
 	^ simulation isNotNil
 ]
 
-{ #category : 'testing' }
+{ #category : #testing }
 CMSimulationRunnerPresenter >> hasSimulationData [
 	"Answer true if there is a simulation data that could be lost if presenter is closed"
 	
 	^ simulation isNotNil and: [ simulation data isNotEmpty ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMSimulationRunnerPresenter >> hideSettings [
 
 	simulationControls hide.
@@ -121,7 +120,7 @@ CMSimulationRunnerPresenter >> hideSettings [
 	self fitDiagram
 ]
 
-{ #category : 'public' }
+{ #category : #public }
 CMSimulationRunnerPresenter >> initializeCharts [
 
 	chartPresenter := self
@@ -129,14 +128,14 @@ CMSimulationRunnerPresenter >> initializeCharts [
 		on: { simulation . translator } 
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMSimulationRunnerPresenter >> initializeDataTable [
 
 	dataTable := self instantiate: CMDataPresenter on: translator.
 	dataTable columnNames: (simulation activeProbes collect: #name)
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMSimulationRunnerPresenter >> initializeNotebookPages [
 
 	self initializeSpacePresenter.
@@ -172,7 +171,7 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 	notebook selectPageIndex: 1.
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMSimulationRunnerPresenter >> initializePresenters [
 
 	shouldPause := false.
@@ -192,13 +191,13 @@ CMSimulationRunnerPresenter >> initializePresenters [
 	self enabled: false
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMSimulationRunnerPresenter >> initializeSpacePresenter [
 	
 	spacePresenter := self instantiate: CMSpacePresenter on: simulation cormasModel
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMSimulationRunnerPresenter >> initializeWindow: aWindowPresenter [
 
 	super initializeWindow: aWindowPresenter.
@@ -209,7 +208,7 @@ CMSimulationRunnerPresenter >> initializeWindow: aWindowPresenter [
 		whenResizingDo: [ self fitDiagram ].
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMSimulationRunnerPresenter >> initializeWithSimulation [
 
 	self enabled: true.
@@ -217,7 +216,7 @@ CMSimulationRunnerPresenter >> initializeWithSimulation [
 	self initializeNotebookPages.
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 CMSimulationRunnerPresenter >> runSimulationUntilEnd [
 
 	simulationControls beInRunningMode.
@@ -240,19 +239,19 @@ CMSimulationRunnerPresenter >> runSimulationUntilEnd [
 	simulationControls beInNotRunningMode ] fork.
 ]
 
-{ #category : 'accessing - model' }
+{ #category : #'accessing - model' }
 CMSimulationRunnerPresenter >> setModelBeforeInitialization: aTranslator [
 
 	translator := aTranslator
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMSimulationRunnerPresenter >> shouldPause: aBoolean [
 
 	shouldPause := aBoolean
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMSimulationRunnerPresenter >> showSettings [
 
 	simulationControls show.
@@ -261,20 +260,20 @@ CMSimulationRunnerPresenter >> showSettings [
 	self fitDiagram
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMSimulationRunnerPresenter >> simulation [
 
 	^ simulation 
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMSimulationRunnerPresenter >> simulation: aSimulation [
 
 	simulation := aSimulation.
 	self initializeWithSimulation
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMSimulationRunnerPresenter >> speedDropListItems [
 
 	^ {
@@ -287,45 +286,45 @@ CMSimulationRunnerPresenter >> speedDropListItems [
 		  translator tSpeed10xFaster }
 ]
 
-{ #category : 'actions' }
+{ #category : #actions }
 CMSimulationRunnerPresenter >> stepSimulation [
 
 	simulation runStep.
 	self updateAfterStep.
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMSimulationRunnerPresenter >> translator: anObject [
 
 	translator := anObject
 ]
 
-{ #category : 'update presenters' }
+{ #category : #'update presenters' }
 CMSimulationRunnerPresenter >> updateAfterStep [
 
 	simulationControls currentTimeStep: simulation currentTimeStep. 
 	self updateSelectedNotebookPage.
 ]
 
-{ #category : 'update presenters' }
+{ #category : #'update presenters' }
 CMSimulationRunnerPresenter >> updateChart [
 
 	chartPresenter updateCharts.
 ]
 
-{ #category : 'update presenters' }
+{ #category : #'update presenters' }
 CMSimulationRunnerPresenter >> updateDataTable [
 
 	dataTable showData: simulation data
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : #'as yet unclassified' }
 CMSimulationRunnerPresenter >> updateFinalTimeStep: aNumber [
 
 	simulation finalTimeStep: aNumber
 ]
 
-{ #category : 'update presenters' }
+{ #category : #'update presenters' }
 CMSimulationRunnerPresenter >> updateSelectedNotebookPage [
 	"Only update the page that is currently being displayed. This makes execution much faster because other pages (chart, space, data table) will not be updated when they are not displayed"
 	
@@ -336,7 +335,7 @@ CMSimulationRunnerPresenter >> updateSelectedNotebookPage [
 	notebook selectedPage = chartsPage ifTrue: [ self updateChart ]
 ]
 
-{ #category : 'update presenters' }
+{ #category : #'update presenters' }
 CMSimulationRunnerPresenter >> updateSpace [
 
 	spacePresenter updateDiagram
