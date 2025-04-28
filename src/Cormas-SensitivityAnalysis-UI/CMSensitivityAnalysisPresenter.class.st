@@ -78,7 +78,7 @@ CMSensitivityAnalysisPresenter >> defaultLayout [
 CMSensitivityAnalysisPresenter >> initializePresenters [
 
 	initializationSettings := self
-		instantiate: CMModelInitializationSettingsPresenter
+		instantiate: CMSimulationInitializationSettingsPresenter
 		on: translator.
 		
 	initializationSettings modelClass: sensitivityAnalysis modelClass.
