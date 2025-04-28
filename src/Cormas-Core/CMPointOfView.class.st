@@ -1,16 +1,18 @@
 Class {
-	#name : #CMPointOfView,
-	#superclass : #Object,
+	#name : 'CMPointOfView',
+	#superclass : 'Object',
 	#instVars : [
 		'color',
 		'shape',
 		'size',
 		'image'
 	],
-	#category : 'Cormas-Core-Analysis'
+	#category : 'Cormas-Core-Analysis',
+	#package : 'Cormas-Core',
+	#tag : 'Analysis'
 }
 
-{ #category : #instanceCreation }
+{ #category : 'instanceCreation' }
 CMPointOfView class >> color: aColor [
 
 	^ self new
@@ -18,7 +20,7 @@ CMPointOfView class >> color: aColor [
 		yourself
 ]
 
-{ #category : #instanceCreation }
+{ #category : 'instanceCreation' }
 CMPointOfView class >> color: aColor shape: aSymbol [
 
 	^ self new
@@ -27,7 +29,7 @@ CMPointOfView class >> color: aColor shape: aSymbol [
 		yourself
 ]
 
-{ #category : #instanceCreation }
+{ #category : 'instanceCreation' }
 CMPointOfView class >> color: aColor shape: aSymbol size: aNumber [
 
 	^ self new
@@ -37,7 +39,7 @@ CMPointOfView class >> color: aColor shape: aSymbol size: aNumber [
 		yourself
 ]
 
-{ #category : #instanceCreation }
+{ #category : 'instanceCreation' }
 CMPointOfView class >> color: aColor size: aNumber [
 
 	^ self new
@@ -46,7 +48,7 @@ CMPointOfView class >> color: aColor size: aNumber [
 		yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMPointOfView class >> image: aForm [
 
 	^ self new
@@ -54,7 +56,7 @@ CMPointOfView class >> image: aForm [
 		yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMPointOfView class >> image: aForm size: aNumber [
 
 	^ self new
@@ -63,7 +65,7 @@ CMPointOfView class >> image: aForm size: aNumber [
 		yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMPointOfView class >> shape: aSymbol [
 
 	^ self new
@@ -71,7 +73,7 @@ CMPointOfView class >> shape: aSymbol [
 		yourself
 ]
 
-{ #category : #instanceCreation }
+{ #category : 'instanceCreation' }
 CMPointOfView class >> shape: aSymbol size: aNumber [
 
 	^ self new
@@ -80,7 +82,7 @@ CMPointOfView class >> shape: aSymbol size: aNumber [
 		yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMPointOfView class >> size: aNumber [
 
 	^ self new
@@ -88,31 +90,31 @@ CMPointOfView class >> size: aNumber [
 		yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMPointOfView >> color [
 	
 	^ color value
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMPointOfView >> color: aColor [
 
 	color := aColor
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMPointOfView >> image [
 
 	^ image
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMPointOfView >> image: aForm [
 
 	image := aForm
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMPointOfView >> initialize [
 
 	super initialize.
@@ -122,19 +124,19 @@ CMPointOfView >> initialize [
 	shape := #circle
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMPointOfView >> isForImage [
 
 	^ image isNotNil
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMPointOfView >> shape [
 	
 	^ shape
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMPointOfView >> shape: aSymbol [
 	"Available shapes:
 	
@@ -150,13 +152,13 @@ CMPointOfView >> shape: aSymbol [
 	shape := aSymbol
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMPointOfView >> size [
 
 	^ size value
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMPointOfView >> size: aNumber [
 
 	size := aNumber

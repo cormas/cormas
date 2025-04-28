@@ -2,15 +2,17 @@
 A CMSpaceModelTest is a test class for testing the behavior of CMSpaceModel
 "
 Class {
-	#name : #CMSpaceModelTest,
-	#superclass : #CMTestObject,
+	#name : 'CMSpaceModelTest',
+	#superclass : 'CMTestObject',
 	#instVars : [
 		'spaceModel'
 	],
-	#category : 'Cormas-Tests-Space'
+	#category : 'Cormas-Tests-Space',
+	#package : 'Cormas-Tests',
+	#tag : 'Space'
 }
 
-{ #category : #test }
+{ #category : 'test' }
 CMSpaceModelTest >> newModelWithClosedEnvironment [
 
 	^ self spaceModel 
@@ -21,7 +23,7 @@ CMSpaceModelTest >> newModelWithClosedEnvironment [
 		yourself
 ]
 
-{ #category : #test }
+{ #category : 'test' }
 CMSpaceModelTest >> newModelWithOpenEnvironment [
 
 	^ self spaceModel 
@@ -32,26 +34,26 @@ CMSpaceModelTest >> newModelWithOpenEnvironment [
 		yourself
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 CMSpaceModelTest >> setUp [
 
 	super setUp.		
 	spaceModel := model spaceModel.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpaceModelTest >> spaceModel [
 
 	^ spaceModel
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpaceModelTest >> spaceModel: anObject [
 
 	spaceModel := anObject
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMSpaceModelTest >> testCellAtAt [
 
 	self assert: (spaceModel cellAt: 1 at: 1) id equals: 1.
@@ -67,7 +69,7 @@ CMSpaceModelTest >> testCellAtAt [
 	self assert: (spaceModel cellAt: 4 at: 4) id equals: 16.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMSpaceModelTest >> testCellsOfLine [
 
 	| cells |
@@ -80,14 +82,14 @@ CMSpaceModelTest >> testCellsOfLine [
 		self assert: each id equals: i ].
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMSpaceModelTest >> testIsNotTorroidal [
 
 	self assert: self newModelWithClosedEnvironment isClosedEnvironment.
 	self deny: self newModelWithOpenEnvironment isClosedEnvironment.	
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMSpaceModelTest >> testNeighbourhoodConfiguration [
 
 	self spaceModel numberOfNeighbours: 4.
@@ -100,7 +102,7 @@ CMSpaceModelTest >> testNeighbourhoodConfiguration [
 	self assert: self spaceModel neighbourhoodConfiguration isNil.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMSpaceModelTest >> testNumberOfNeighbours [
 
 	self spaceModel numberOfNeighbours: 4.
@@ -112,7 +114,7 @@ CMSpaceModelTest >> testNumberOfNeighbours [
 
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMSpaceModelTest >> testNumberOfRowsNumberOfColumns [
 
 	self spaceModel numberOfRows: 2 numberOfColumns: 3.

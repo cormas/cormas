@@ -1,6 +1,6 @@
 Class {
-	#name : #CMSpatialEntityTest,
-	#superclass : #TestCase,
+	#name : 'CMSpatialEntityTest',
+	#superclass : 'TestCase',
 	#instVars : [
 		'model',
 		'cellWithNoAgents',
@@ -13,10 +13,12 @@ Class {
 		'cowJudy',
 		'goatBob'
 	],
-	#category : 'Cormas-Tests-Model'
+	#category : 'Cormas-Tests-Model',
+	#package : 'Cormas-Tests',
+	#tag : 'Model'
 }
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSpatialEntityTest >> setUp [
 
 	super setUp.
@@ -41,7 +43,7 @@ CMSpatialEntityTest >> setUp [
 	goatBob moveTo: cellWithTwoAgentsOfDifferentClasses.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMSpatialEntityTest >> testAllOccupants [
 
 	self
@@ -49,7 +51,7 @@ CMSpatialEntityTest >> testAllOccupants [
 		equals: { cowJudy . goatBob }
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMSpatialEntityTest >> testHasNoOccupants [
 
 	self assert: cellWithNoAgents hasNoOccupants.
@@ -58,7 +60,7 @@ CMSpatialEntityTest >> testHasNoOccupants [
 	self deny: cellWithTwoAgentsOfDifferentClasses hasNoOccupants.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMSpatialEntityTest >> testHasNoOccupantsExcept [
 
 	self assert: (cellWithNoAgents hasNoOccupantsExcept: cowAlice).
@@ -68,7 +70,7 @@ CMSpatialEntityTest >> testHasNoOccupantsExcept [
 	self deny: (cellWithTwoAgentsOfDifferentClasses hasNoOccupantsExcept: cowJudy).
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMSpatialEntityTest >> testHasOccupants [
 
 	self deny: cellWithNoAgents hasOccupants.
@@ -77,7 +79,7 @@ CMSpatialEntityTest >> testHasOccupants [
 	self assert: cellWithTwoAgentsOfDifferentClasses hasOccupants.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMSpatialEntityTest >> testHasOccupantsOfClass [
 
 	self deny: (cellWithNoAgents hasOccupantsOfClass: CMMockCow).
@@ -88,7 +90,7 @@ CMSpatialEntityTest >> testHasOccupantsOfClass [
 	
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMSpatialEntityTest >> testOccupantsOfClass [
 
 	self
@@ -96,7 +98,7 @@ CMSpatialEntityTest >> testOccupantsOfClass [
 		equals: { cowJudy } asOrderedCollection
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMSpatialEntityTest >> testOccupantsOfClassNamed [
 
 	self

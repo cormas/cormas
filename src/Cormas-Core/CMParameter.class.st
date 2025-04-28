@@ -1,15 +1,17 @@
 Class {
-	#name : #CMParameter,
-	#superclass : #Object,
+	#name : 'CMParameter',
+	#superclass : 'Object',
 	#instVars : [
 		'getterSelector',
 		'setterSelector',
 		'receiver'
 	],
-	#category : 'Cormas-Core-Analysis'
+	#category : 'Cormas-Core-Analysis',
+	#package : 'Cormas-Core',
+	#tag : 'Analysis'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CMParameter class >> getterSelector: aGetterSelector setterSelector: aSetterSelector receiver: anObject [
 
 	^ self new
@@ -19,7 +21,7 @@ CMParameter class >> getterSelector: aGetterSelector setterSelector: aSetterSele
 		yourself
 ]
 
-{ #category : #comparing }
+{ #category : 'comparing' }
 CMParameter >> = anObject [
 
 	anObject class = self class
@@ -30,19 +32,19 @@ CMParameter >> = anObject [
 			and: [ anObject setterSelector = setterSelector ] ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMParameter >> getterSelector [
 
 	^ getterSelector
 ]
 
-{ #category : #comparing }
+{ #category : 'comparing' }
 CMParameter >> hash [
 		
 	^ receiver hash bitXor: (getterSelector hash bitXor: setterSelector hash)
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMParameter >> initailizeGetterSelector: aGetterSelector setterSelector: aSetterSelector receiver: anObject [
 	
 	getterSelector := aGetterSelector.
@@ -50,13 +52,13 @@ CMParameter >> initailizeGetterSelector: aGetterSelector setterSelector: aSetter
 	receiver := anObject.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMParameter >> name [
 
 	^ setterSelector allButLast
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 CMParameter >> printOn: aStream [
 
 	super printOn: aStream.
@@ -70,25 +72,25 @@ CMParameter >> printOn: aStream [
 		<< $).
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMParameter >> receiver [
 
 	^ receiver 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMParameter >> setterSelector [
 
 	^ setterSelector
 ]
 
-{ #category : #evaluating }
+{ #category : 'evaluating' }
 CMParameter >> value [
 
 	^ receiver perform: getterSelector
 ]
 
-{ #category : #evaluating }
+{ #category : 'evaluating' }
 CMParameter >> value: anObject [
 	"Set value of a parameter on receiver class and all its subclasses"
 	

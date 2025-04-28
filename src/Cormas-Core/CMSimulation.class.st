@@ -1,6 +1,6 @@
 Class {
-	#name : #CMSimulation,
-	#superclass : #Object,
+	#name : 'CMSimulation',
+	#superclass : 'Object',
 	#instVars : [
 		'modelClass',
 		'cormasModel',
@@ -15,16 +15,18 @@ Class {
 		'initialParameterValues',
 		'shouldReleaseRandomSeedAfterInitialization'
 	],
-	#category : 'Cormas-Core-Kernel'
+	#category : 'Cormas-Core-Kernel',
+	#package : 'Cormas-Core',
+	#tag : 'Kernel'
 }
 
-{ #category : #time }
+{ #category : 'time' }
 CMSimulation class >> defaultFinalTimeStep [
 
 	^ 100
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CMSimulation class >> for: aModelClass [
 
 	^ self new
@@ -32,80 +34,80 @@ CMSimulation class >> for: aModelClass [
 		yourself
 ]
 
-{ #category : #settings }
+{ #category : 'settings' }
 CMSimulation >> activeControlSelector: aSymbol [
 
 	activeControlSelector := aSymbol
 ]
 
-{ #category : #settings }
+{ #category : 'settings' }
 CMSimulation >> activeInitSelector: aSymbol [
 
 	activeInitSelector := aSymbol
 ]
 
-{ #category : #probes }
+{ #category : 'probes' }
 CMSimulation >> activeProbes [
 
 	^ probes select: [ :probe | probe isActive ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 CMSimulation >> chooseRandomSeedAtRandom [
 	"By default random seed is a random number but we still store it to ensure reproducibility"
 	randomSeed := Random new nextInteger: SmallInteger maxVal.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSimulation >> cormasModel [
 	
 	^ cormasModel
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSimulation >> currentTimeStep [
 
 	^ currentTimeStep 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSimulation >> data [
 
 	^ data
 ]
 
-{ #category : #settings }
+{ #category : 'settings' }
 CMSimulation >> finalTimeStep [
 
 	^ finalTimeStep
 ]
 
-{ #category : #settings }
+{ #category : 'settings' }
 CMSimulation >> finalTimeStep: anInteger [
 
 	finalTimeStep := anInteger
 	
 ]
 
-{ #category : #'time step' }
+{ #category : 'time step' }
 CMSimulation >> finishSimulation [
 
 	currentTimeStep := self finalTimeStep
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMSimulation >> hasEnded [
 	
 	^ self finalTimeStep <= self currentTimeStep
 ]
 
-{ #category : #settings }
+{ #category : 'settings' }
 CMSimulation >> initialParameterValues [
 
 	^ initialParameterValues
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSimulation >> initialize [
 
 	super initialize.
@@ -119,7 +121,7 @@ CMSimulation >> initialize [
 	shouldReleaseRandomSeedAfterInitialization := false
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSimulation >> initializeModel [
 
 	cormasModel := modelClass new
@@ -129,14 +131,14 @@ CMSimulation >> initializeModel [
 	self initializeProbes.
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSimulation >> initializeProbes [
 
 	probes := cormasModel class availableProbes.
 	probes do: [ :probe | probe object: cormasModel ].
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSimulation >> initializeSimulation [
 
 	currentTimeStep := 0.
@@ -156,38 +158,38 @@ CMSimulation >> initializeSimulation [
 		self chooseRandomSeedAtRandom ].
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSimulation >> modelClass [
 	
 	^ modelClass
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSimulation >> modelClass: aClass [
 	"Model will be instantiated by the initializeSimulation method"
 	
 	modelClass := aClass
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSimulation >> probes [
 
 	^ probes
 ]
 
-{ #category : #settings }
+{ #category : 'settings' }
 CMSimulation >> randomSeed [
 
 	^ randomSeed
 ]
 
-{ #category : #settings }
+{ #category : 'settings' }
 CMSimulation >> randomSeed: aNumber [
 
 	randomSeed := aNumber
 ]
 
-{ #category : #data }
+{ #category : 'data' }
 CMSimulation >> recordData [
 
 	data add:
@@ -195,13 +197,13 @@ CMSimulation >> recordData [
 			asDictionary 
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 CMSimulation >> runAllSteps [
 
 	self runAllStepsAfterEachDo: [ "nothing" ]
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 CMSimulation >> runAllStepsAfterEach: aNumberOfSteps do: aBlock [
 
 	[ currentTimeStep < finalTimeStep ] whileTrue: [
@@ -211,7 +213,7 @@ CMSimulation >> runAllStepsAfterEach: aNumberOfSteps do: aBlock [
 		aBlock value ]
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 CMSimulation >> runAllStepsAfterEachDo: aBlock [
 
 	[ currentTimeStep < finalTimeStep ] whileTrue: [
@@ -219,13 +221,13 @@ CMSimulation >> runAllStepsAfterEachDo: aBlock [
 		aBlock value ]
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 CMSimulation >> runAllStepsWithStepDelay: milliseconds [
 
 	self runAllStepsWithStepDelay: milliseconds afterEachDo: [ "nothing" ]
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 CMSimulation >> runAllStepsWithStepDelay: milliseconds afterEach: aNumberOfSteps do: aBlock [
 
 	[ [ currentTimeStep < finalTimeStep ] whileTrue: [
@@ -236,7 +238,7 @@ CMSimulation >> runAllStepsWithStepDelay: milliseconds afterEach: aNumberOfSteps
 		(Delay forMilliseconds: milliseconds) wait ] ] fork.
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 CMSimulation >> runAllStepsWithStepDelay: milliseconds afterEachDo: aBlock [
 
 	[ [ currentTimeStep < finalTimeStep ] whileTrue: [
@@ -245,7 +247,7 @@ CMSimulation >> runAllStepsWithStepDelay: milliseconds afterEachDo: aBlock [
 		(Delay forMilliseconds: milliseconds) wait ] ] fork.
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 CMSimulation >> runStep [
 	
 	currentTimeStep := currentTimeStep + 1.
@@ -259,13 +261,13 @@ CMSimulation >> runStep [
 	self recordData.
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSimulation >> setInitialParameters [
 
 	self setInitialParametersFor: initialParameterValues keys
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSimulation >> setInitialParametersFor: aCollectionOfParameters [
 
 	| classes parametersWithoutParent otherParameters |
@@ -287,7 +289,7 @@ CMSimulation >> setInitialParametersFor: aCollectionOfParameters [
 	self setInitialParametersFor: otherParameters 
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMSimulation >> shouldReleaseRandomSeedAfterInitialization: aBoolean [
 
 	shouldReleaseRandomSeedAfterInitialization := aBoolean

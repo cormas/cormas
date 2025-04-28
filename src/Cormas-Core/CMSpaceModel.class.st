@@ -23,8 +23,8 @@ Instance Variables:
 
 "
 Class {
-	#name : #CMSpaceModel,
-	#superclass : #Object,
+	#name : 'CMSpaceModel',
+	#superclass : 'Object',
 	#traits : 'TCMRandom',
 	#classTraits : 'TCMRandom classTrait',
 	#instVars : [
@@ -35,24 +35,26 @@ Class {
 		'numberOfColumns',
 		'neighbourhoodConfiguration'
 	],
-	#category : 'Cormas-Core-Space'
+	#category : 'Cormas-Core-Space',
+	#package : 'Cormas-Core',
+	#tag : 'Space'
 }
 
-{ #category : #defaults }
+{ #category : 'defaults' }
 CMSpaceModel class >> defaultNumberOfColumns [
 	" Answer the <Number> of default columns to create in the receiever's grid "
 
 	^ 10 
 ]
 
-{ #category : #defaults }
+{ #category : 'defaults' }
 CMSpaceModel class >> defaultNumberOfRows [
 	" Answer the default <Number> of rows to create in the receiver's grid "
 	
 	^ 10
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CMSpaceModel class >> forModel: aCormasModel [
 	" Answer a new space configured for aCormasModel "
 
@@ -63,19 +65,19 @@ CMSpaceModel class >> forModel: aCormasModel [
 		yourself
 ]
 
-{ #category : #'accessing cell' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> cellAt: aRowIndex at: aColumnIndex [
 	
 	^ cormasModel cells at: ((aRowIndex - 1) * numberOfColumns + aColumnIndex)
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpaceModel >> cells [
 
 	^ cormasModel cells
 ]
 
-{ #category : #'accessing cell' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> cellsBetweenColumn: colNumber1 andColumn: colNumber2 [
 	"Return the cells between the colNumber1 and the colNumber2 of the spatial grid.
 colNumber1   <Integer> lineNumber = Positive Integer
@@ -90,7 +92,7 @@ colNumber2   <Integer> colNumber = Positive Integer"
 	^ cells
 ]
 
-{ #category : #'accessing cell' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> cellsBetweenRow: lineNumber1 andRow: lineNumber2 [
 	"Return the cells between the lineNumber1 and the lineNumber2 of the spatial grid.
 lineNumber1   <Integer> lineNumber = Positive Integer
@@ -105,7 +107,7 @@ lineNumber2   <Integer> colNumber = Positive Integer"
 	^ cells
 ]
 
-{ #category : #'accessing cell' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> cellsBetweenRow: aRowNumber1 andRow: aRowNumber2 column: aColumnNumber1 andColumn: aColumnNumber2 [
 
 	| topRowNumber bottomRowNumber leftColumnNumber rightColumnNumber result |
@@ -122,7 +124,7 @@ CMSpaceModel >> cellsBetweenRow: aRowNumber1 andRow: aRowNumber2 column: aColumn
 		select: [ :cell | result includes: cell ]
 ]
 
-{ #category : #'accessing cell' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> cellsInRectangleFrom: cell1 to: cell2 [
 	"Return the cells between the lineNumber and the colNumber of the spatial grid. The Cells are ordered from cell1 to cell2.
 cell1   <SpatialEntityElement>  
@@ -158,7 +160,7 @@ cell2   <SpatialEntityElement> "
 	^cells
 ]
 
-{ #category : #'accessing cell' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> cellsOfColumn: colNumber [
 	"Return the cells in the colNumber of the spatial grid.
 colNumber   <Integer> colNumber = Positive Integer"
@@ -166,27 +168,27 @@ colNumber   <Integer> colNumber = Positive Integer"
 	^ cormasModel cells select: [ :cell | cell columnNumber = colNumber ]
 ]
 
-{ #category : #'accessing cell' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> cellsOfRow: aRowNumber [
 
 	^ cormasModel cells select: [ :cell | cell rowNumber = aRowNumber ]
 ]
 
-{ #category : #'accessing cell' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> centralCell [
 	(numberOfRows even or: [ numberOfColumns even ])
 		ifTrue: [ ^ self error: 'Grid dimensions is not odd' ].
 	^ cormasModel cells at: (numberOfRows * numberOfColumns / 2) asInteger + 1
 ]
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 CMSpaceModel >> cormasModel [
 	" Answer the receiver's configured <CMAbstractModel> or nil "
 
 	^ cormasModel
 ]
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 CMSpaceModel >> cormasModel: aCormasModel [
 	" The cormasModel is some kind of model for the spaceModel (receive notification) "
 	
@@ -194,7 +196,7 @@ CMSpaceModel >> cormasModel: aCormasModel [
 
 ]
 
-{ #category : #aggregate }
+{ #category : 'aggregate' }
 CMSpaceModel >> createAggregates: aggregateType from: baseEntityType attribute: attributeName minimumSize: integer [
 	"The aggregates occupy the whole grid. 
 	baseEntityType = a subClass of  <SpatialEntity> 
@@ -213,7 +215,7 @@ CMSpaceModel >> createAggregates: aggregateType from: baseEntityType attribute: 
 	^coll
 ]
 
-{ #category : #aggregate }
+{ #category : 'aggregate' }
 CMSpaceModel >> createAggregates: aggregateType from: baseEntityType verifying: aBlock minimumSize: integer [
 	"Return N instances of aggregateType of minimumSize. The previous aggregates are not removed.
 baseEntityType = a subClass of  <SpatialEntity>
@@ -232,7 +234,7 @@ integer = <integer> must be >= 1"
 	^ coll
 ]
 
-{ #category : #aggregate }
+{ #category : 'aggregate' }
 CMSpaceModel >> createAggregates: aggregateType horizontalDividers: xRatio verticalDividers: yRatio [
 	"Creates (xRatio x yRatio) aggregates of cells by dividing the grid by yRatio columns and xRatio lines.
 The aggregates will  occupy the whole grid. 
@@ -248,7 +250,7 @@ The aggregates will  occupy the whole grid.
 
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSpaceModel >> createCells [
 
 	1 to: self gridSize do: [ :i |
@@ -256,7 +258,7 @@ CMSpaceModel >> createCells [
 			spaceModel: self ].
 ]
 
-{ #category : #aggregate }
+{ #category : 'aggregate' }
 CMSpaceModel >> createOneAggregate: compoundEntityClass from: aCollectionOfSpatialEntities [
 	"Creates and returns an instance of Aggregat composed with a set of SpatialEntities. 
 	aSet = a set of base entities (inheriting from <SpatialEntity>) 
@@ -269,14 +271,14 @@ CMSpaceModel >> createOneAggregate: compoundEntityClass from: aCollectionOfSpati
 	^ anAggregate
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpaceModel >> dimensions [
 	" Answer a <Point> with the receiver's lines and columns "
 	
 	^ self numberOfColumns @ self numberOfRows
 ]
 
-{ #category : #'landscape indices' }
+{ #category : 'landscape indices' }
 CMSpaceModel >> distanceFromCell: cell1 toCell: cell2 [
 	"return the distance in number of cells (also known as Manhattan distance)"
 
@@ -292,7 +294,7 @@ CMSpaceModel >> distanceFromCell: cell1 toCell: cell2 [
 
 ]
 
-{ #category : #'landscape indices' }
+{ #category : 'landscape indices' }
 CMSpaceModel >> dominance: attribute [
 	"Compute dominance according to the attribute"
 
@@ -309,7 +311,7 @@ CMSpaceModel >> dominance: attribute [
 	^ n ln + sum
 ]
 
-{ #category : #'landscape indices' }
+{ #category : 'landscape indices' }
 CMSpaceModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 	"return the euclidian distance (unit = cell) using the Euclidean distance formula : square root of [(Xa - Xb)^2 + (Ya - Yb)^2)]"
 
@@ -324,7 +326,7 @@ CMSpaceModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 	^ (nbLines squared + nbCols squared) sqrt
 ]
 
-{ #category : #'private - aggregate' }
+{ #category : 'private - aggregate' }
 CMSpaceModel >> getGroupsOfConnectedEntiesFrom: baseEntityType attribute: attributeName [
 	"Return a collection of sets of contiguous components holding the same attributeName value"
 
@@ -340,7 +342,7 @@ CMSpaceModel >> getGroupsOfConnectedEntiesFrom: baseEntityType attribute: attrib
 	^ newCollection
 ]
 
-{ #category : #'private - aggregate' }
+{ #category : 'private - aggregate' }
 CMSpaceModel >> getSetsOfContiguousCellsHorizontalDividers: i verticalDividers: j [
 
 	| nbLP nbCP zone allComponents collec line column |
@@ -363,27 +365,27 @@ CMSpaceModel >> getSetsOfContiguousCellsHorizontalDividers: i verticalDividers: 
 	^ collec
 ]
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 CMSpaceModel >> gridCellShape [
 	
 	^gridCellShape
 ]
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 CMSpaceModel >> gridCellShape: x [
 	" This is not needed anymore, it is already provided by CMSpaceNeighourhood "
 
 	gridCellShape := x
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpaceModel >> gridSize [
 
 	^ numberOfRows * numberOfColumns
 
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSpaceModel >> initialize [
 	super initialize.
 	"self resetSpatialEntities."
@@ -391,7 +393,7 @@ CMSpaceModel >> initialize [
 	isClosedEnvironment := true
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSpaceModel >> initializeRegularNumberOfRows: aNumberOfRows numberOfColumns: aNumberOfColumns neighbourhood: aNumber closed: aBoolean [
 	" Private - Create a grid of regular cells."
 
@@ -403,7 +405,7 @@ CMSpaceModel >> initializeRegularNumberOfRows: aNumberOfRows numberOfColumns: aN
 
 ]
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 CMSpaceModel >> isClosedEnvironment [
 	"Open environment is torroidal. If you go over the edge, you come back from the other side
 	Closed environment is not torroidal. The edges have 'walls' and you can't cross them"
@@ -411,36 +413,36 @@ CMSpaceModel >> isClosedEnvironment [
 	^ isClosedEnvironment
 ]
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 CMSpaceModel >> isClosedEnvironment: aBoolean [
 
 	isClosedEnvironment := aBoolean.
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMSpaceModel >> isIrregular [
 	"Answer if the spaceModel is irregular (or regular), meaning that the cells are not uniform, but have different shapes (vectorial)"
 	
 	^gridCellShape = #irregular
 ]
 
-{ #category : #'accessing cell' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> lowerLeftCell [
 	^ cormasModel cells at: numberOfColumns * (numberOfRows - 1) + 1
 ]
 
-{ #category : #'accessing cell' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> lowerRightCell [
 	^ cormasModel cells at: numberOfColumns * numberOfRows
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpaceModel >> nearestEmptyCellFor: aCMAgentLocation [
 
 	^ self neighbourhoodConfiguration nearestEmptyCellFor: aCMAgentLocation.
 ]
 
-{ #category : #'landscape indices' }
+{ #category : 'landscape indices' }
 CMSpaceModel >> nearestNeighbourProbaAttribute: anAttribute state1: x1 state2: x2 [
 	"return the data (a number) to be recorded"
 	
@@ -450,18 +452,18 @@ CMSpaceModel >> nearestNeighbourProbaAttribute: anAttribute state1: x1 state2: x
 	^ c2 size / c1 size
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpaceModel >> neighbourhoodConfiguration [
 	^ neighbourhoodConfiguration
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpaceModel >> neighbourhoodConfiguration: aCMSpaceNeighbourhood [ 
 
 	neighbourhoodConfiguration := aCMSpaceNeighbourhood
 ]
 
-{ #category : #'private - init' }
+{ #category : 'private - init' }
 CMSpaceModel >> newEntity: aClass [
 	" Creates a new instance of aClass and collects it at the level of theXXXs collection"
 
@@ -471,7 +473,7 @@ CMSpaceModel >> newEntity: aClass [
 		  yourself
 ]
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 CMSpaceModel >> numberOfColumns [
 	" Answer the <Number> of columns in the receiver's grid "
 	
@@ -479,14 +481,14 @@ CMSpaceModel >> numberOfColumns [
 		ifNil: [ numberOfColumns := self class defaultNumberOfColumns ]
 ]
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 CMSpaceModel >> numberOfNeighbours [
 	" Answer a <Number> representing the receiver configured number of neighbours of regular cells "
 
 	^ self neighbourhoodConfiguration numberOfNeighbours
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSpaceModel >> numberOfNeighbours: anIntegerOrSymbol [
 	" Create the grid.
 	Set the receiver's neighbourhood configuration to contain anIntegerOrSymbol neighbours "
@@ -496,7 +498,7 @@ CMSpaceModel >> numberOfNeighbours: anIntegerOrSymbol [
 			 spaceModel: self)
 ]
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 CMSpaceModel >> numberOfRows [
 	" Answer the <Number> of rows of the receiver's grid "
 	
@@ -504,14 +506,14 @@ CMSpaceModel >> numberOfRows [
 		ifNil: [ numberOfRows := self class defaultNumberOfRows ]
 ]
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 CMSpaceModel >> numberOfRows: aNumberOfRows numberOfColumns: aNumberOfColumns [
 
 	numberOfRows := aNumberOfRows.
 	numberOfColumns := aNumberOfColumns.
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 CMSpaceModel >> printOn: aStream [
 	" Private - See superimplementor's comment "
 	
@@ -530,30 +532,30 @@ CMSpaceModel >> printOn: aStream [
 		
 ]
 
-{ #category : #'accessing cell' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> randomCell [
 	"Return a spatialEntityElement (aCell) picked randomly from the spatial grid."
 
 	^ self selectRandomlyFrom: cormasModel cells
 ]
 
-{ #category : #'accessing cell' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> upperLeftCell [
 	^ cormasModel cells first
 ]
 
-{ #category : #'accessing cell' }
+{ #category : 'accessing cell' }
 CMSpaceModel >> upperRightCell [
 	^ cormasModel cells at: numberOfColumns
 ]
 
-{ #category : #aggregate }
+{ #category : 'aggregate' }
 CMSpaceModel >> warningBoundaries [
 
 	UIManager default inform: ' The grid boundaries should be closed !'
 ]
 
-{ #category : #'landscape indices' }
+{ #category : 'landscape indices' }
 CMSpaceModel >> wayFromCell: cell1 toCell: cell2 [
 	"return a collection of cells from cell1 to cell2 (including cell1 and cell2)"
 	

@@ -1,6 +1,6 @@
 Class {
-	#name : #CMProbeTest,
-	#superclass : #TestCase,
+	#name : 'CMProbeTest',
+	#superclass : 'TestCase',
 	#instVars : [
 		'probe',
 		'probeWithDifferentMethod',
@@ -13,10 +13,11 @@ Class {
 		'probeWithDifferentColor',
 		'probeWithoutColor'
 	],
-	#category : #'Cormas-Tests'
+	#category : 'Cormas-Tests',
+	#package : 'Cormas-Tests'
 }
 
-{ #category : #running }
+{ #category : 'running' }
 CMProbeTest >> setUp [
 
 	| model differentModel |
@@ -85,19 +86,19 @@ CMProbeTest >> setUp [
 		yourself.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMProbeTest >> testEquality [
 
 	self assert: probe equals: probe copy.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMProbeTest >> testHash [
 
 	self assert: probe hash equals: probe copy hash.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMProbeTest >> testInequality [
 
 	self deny: probe equals: probeWithDifferentName.
@@ -111,20 +112,20 @@ CMProbeTest >> testInequality [
 	self deny: probe equals: probeWithoutColor.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMProbeTest >> testIsActive [
 
 	probe isActive: false.
 	self deny: probe isActive
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMProbeTest >> testIsActiveByDefault [
 
 	self assert: probe isActive
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMProbeTest >> testValue [
 
 	self assert: probe value equals: 11.

@@ -3,11 +3,12 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'translator',
+		'modelClass',
+		'randomNumberGenerator',
 		'fixRandomSeedCheckbox',
 		'randomSeedInput',
 		'randomSeedGeneratorDroplist',
 		'releaseRandomSeedCheckbox',
-		'modelClass',
 		'whenChangedBlock'
 	],
 	#category : 'Cormas-UI',
@@ -132,6 +133,12 @@ CMSimulationInitRandomPresenter >> isFixRandomSeed [
 CMSimulationInitRandomPresenter >> isReleaseRandomSeedAfterInitialization [
 
 	^ releaseRandomSeedCheckbox state
+]
+
+{ #category : 'accessing' }
+CMSimulationInitRandomPresenter >> randomNumberGenerator [
+	
+	^ randomNumberGenerator
 ]
 
 { #category : 'settings' }

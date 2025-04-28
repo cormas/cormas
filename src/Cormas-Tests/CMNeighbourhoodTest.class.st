@@ -1,6 +1,6 @@
 Class {
-	#name : #CMNeighbourhoodTest,
-	#superclass : #CMTestObject,
+	#name : 'CMNeighbourhoodTest',
+	#superclass : 'CMTestObject',
 	#instVars : [
 		'cellInTheMiddle',
 		'cellOnTheTopEdge',
@@ -12,10 +12,12 @@ Class {
 		'cellInTheTopRightCorner',
 		'cellInTheBottomRightCorner'
 	],
-	#category : 'Cormas-Tests-Space'
+	#category : 'Cormas-Tests-Space',
+	#package : 'Cormas-Tests',
+	#tag : 'Space'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CMNeighbourhoodTest >> newTestModel [
  	
 	^ CMMockModel new
@@ -23,7 +25,7 @@ CMNeighbourhoodTest >> newTestModel [
 		yourself
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMNeighbourhoodTest >> setUp [
 
 	super setUp.
@@ -41,7 +43,7 @@ CMNeighbourhoodTest >> setUp [
 	cellInTheBottomRightCorner := model cellAt: model class numberOfRows at: model class numberOfColumns.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomLeftNeighbourE [
 	
 	| expectedNeighbour actualNeighbour |
@@ -52,7 +54,7 @@ CMNeighbourhoodTest >> testBottomLeftNeighbourE [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomLeftNeighbourN [
 	
 	| expectedNeighbour actualNeighbour |
@@ -63,7 +65,7 @@ CMNeighbourhoodTest >> testBottomLeftNeighbourN [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomLeftNeighbourNE [
 	
 	| expectedNeighbour actualNeighbour |
@@ -74,7 +76,7 @@ CMNeighbourhoodTest >> testBottomLeftNeighbourNE [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomLeftNeighbourNW [
 	
 	self
@@ -82,7 +84,7 @@ CMNeighbourhoodTest >> testBottomLeftNeighbourNW [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomLeftNeighbourS [
 	
 	self
@@ -90,7 +92,7 @@ CMNeighbourhoodTest >> testBottomLeftNeighbourS [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomLeftNeighbourSE [
 	
 	self
@@ -98,7 +100,7 @@ CMNeighbourhoodTest >> testBottomLeftNeighbourSE [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomLeftNeighbourSW [
 	
 	self
@@ -106,7 +108,7 @@ CMNeighbourhoodTest >> testBottomLeftNeighbourSW [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomLeftNeighbourW [
 	
 	self
@@ -114,7 +116,7 @@ CMNeighbourhoodTest >> testBottomLeftNeighbourW [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomLeftNeighbourhood [
 	
 	| expectedNeighbourhood actualNeighbourhood |
@@ -130,7 +132,7 @@ CMNeighbourhoodTest >> testBottomLeftNeighbourhood [
 	self assert: actualNeighbourhood equals: expectedNeighbourhood.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomLeftNeighbourhoodAndSelf [
 	
 	| expectedNeighbourhood actualNeighbourhood |
@@ -147,7 +149,7 @@ CMNeighbourhoodTest >> testBottomLeftNeighbourhoodAndSelf [
 	self assert: actualNeighbourhood equals: expectedNeighbourhood.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomNeighbourE [
 	
 	| expectedNeighbour actualNeighbour |
@@ -158,7 +160,7 @@ CMNeighbourhoodTest >> testBottomNeighbourE [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomNeighbourN [
 	
 	| expectedNeighbour actualNeighbour |
@@ -169,7 +171,7 @@ CMNeighbourhoodTest >> testBottomNeighbourN [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomNeighbourNE [
 	
 	| expectedNeighbour actualNeighbour |
@@ -180,7 +182,7 @@ CMNeighbourhoodTest >> testBottomNeighbourNE [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomNeighbourNW [
 	
 	| expectedNeighbour actualNeighbour |
@@ -191,7 +193,7 @@ CMNeighbourhoodTest >> testBottomNeighbourNW [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomNeighbourS [
 	
 	self
@@ -199,7 +201,7 @@ CMNeighbourhoodTest >> testBottomNeighbourS [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomNeighbourSE [
 	
 	self
@@ -207,7 +209,7 @@ CMNeighbourhoodTest >> testBottomNeighbourSE [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomNeighbourSW [
 	
 	self
@@ -215,7 +217,7 @@ CMNeighbourhoodTest >> testBottomNeighbourSW [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomNeighbourW [
 	
 	| expectedNeighbour actualNeighbour |
@@ -226,7 +228,7 @@ CMNeighbourhoodTest >> testBottomNeighbourW [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomNeighbourhood [
 	
 	| expectedNeighbourhood actualNeighbourhood |
@@ -244,7 +246,7 @@ CMNeighbourhoodTest >> testBottomNeighbourhood [
 	self assert: actualNeighbourhood equals: expectedNeighbourhood.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomNeighbourhoodAndSelf [
 	
 	| expectedNeighbourhood actualNeighbourhood |
@@ -263,7 +265,7 @@ CMNeighbourhoodTest >> testBottomNeighbourhoodAndSelf [
 	self assert: actualNeighbourhood equals: expectedNeighbourhood.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomRightNeighbourE [
 	
 	self
@@ -271,7 +273,7 @@ CMNeighbourhoodTest >> testBottomRightNeighbourE [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomRightNeighbourN [
 	
 	| expectedNeighbour actualNeighbour |
@@ -282,7 +284,7 @@ CMNeighbourhoodTest >> testBottomRightNeighbourN [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomRightNeighbourNE [
 	
 	self
@@ -290,7 +292,7 @@ CMNeighbourhoodTest >> testBottomRightNeighbourNE [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomRightNeighbourNW [
 	
 	| expectedNeighbour actualNeighbour |
@@ -301,7 +303,7 @@ CMNeighbourhoodTest >> testBottomRightNeighbourNW [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomRightNeighbourS [
 	
 	self
@@ -309,7 +311,7 @@ CMNeighbourhoodTest >> testBottomRightNeighbourS [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomRightNeighbourSE [
 	
 	self
@@ -317,7 +319,7 @@ CMNeighbourhoodTest >> testBottomRightNeighbourSE [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomRightNeighbourSW [
 	
 	self
@@ -325,7 +327,7 @@ CMNeighbourhoodTest >> testBottomRightNeighbourSW [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomRightNeighbourW [
 	
 	| expectedNeighbour actualNeighbour |
@@ -336,7 +338,7 @@ CMNeighbourhoodTest >> testBottomRightNeighbourW [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomRightNeighbourhood [
 	
 	| expectedNeighbourhood actualNeighbourhood |
@@ -352,7 +354,7 @@ CMNeighbourhoodTest >> testBottomRightNeighbourhood [
 	self assert: actualNeighbourhood equals: expectedNeighbourhood.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testBottomRightNeighbourhoodAndSelf [
 	
 	| expectedNeighbourhood actualNeighbourhood |
@@ -369,7 +371,7 @@ CMNeighbourhoodTest >> testBottomRightNeighbourhoodAndSelf [
 	self assert: actualNeighbourhood equals: expectedNeighbourhood.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testLeftNeighbourE [
 	
 	| expectedNeighbour actualNeighbour |
@@ -380,7 +382,7 @@ CMNeighbourhoodTest >> testLeftNeighbourE [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testLeftNeighbourN [
 	
 	| expectedNeighbour actualNeighbour |
@@ -391,7 +393,7 @@ CMNeighbourhoodTest >> testLeftNeighbourN [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testLeftNeighbourNE [
 	
 	| expectedNeighbour actualNeighbour |
@@ -402,7 +404,7 @@ CMNeighbourhoodTest >> testLeftNeighbourNE [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testLeftNeighbourNW [
 	
 	self
@@ -410,7 +412,7 @@ CMNeighbourhoodTest >> testLeftNeighbourNW [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testLeftNeighbourS [
 	
 	| expectedNeighbour actualNeighbour |
@@ -421,7 +423,7 @@ CMNeighbourhoodTest >> testLeftNeighbourS [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testLeftNeighbourSE [
 	
 	| expectedNeighbour actualNeighbour |
@@ -432,7 +434,7 @@ CMNeighbourhoodTest >> testLeftNeighbourSE [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testLeftNeighbourSW [
 	
 	self
@@ -440,7 +442,7 @@ CMNeighbourhoodTest >> testLeftNeighbourSW [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testLeftNeighbourW [
 	
 	self
@@ -448,7 +450,7 @@ CMNeighbourhoodTest >> testLeftNeighbourW [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testLeftNeighbourhood [
 	
 	| expectedNeighbourhood actualNeighbourhood |
@@ -466,7 +468,7 @@ CMNeighbourhoodTest >> testLeftNeighbourhood [
 	self assert: actualNeighbourhood equals: expectedNeighbourhood.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testLeftNeighbourhoodAndSelf [
 	
 	| expectedNeighbourhood actualNeighbourhood |
@@ -485,7 +487,7 @@ CMNeighbourhoodTest >> testLeftNeighbourhoodAndSelf [
 	self assert: actualNeighbourhood equals: expectedNeighbourhood.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testMiddleNeighbourE [
 	
 	| expectedNeighbour actualNeighbour |
@@ -496,7 +498,7 @@ CMNeighbourhoodTest >> testMiddleNeighbourE [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testMiddleNeighbourN [
 	
 	| expectedNeighbour actualNeighbour |
@@ -507,7 +509,7 @@ CMNeighbourhoodTest >> testMiddleNeighbourN [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testMiddleNeighbourNE [
 	
 	| expectedNeighbour actualNeighbour |
@@ -518,7 +520,7 @@ CMNeighbourhoodTest >> testMiddleNeighbourNE [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testMiddleNeighbourNW [
 	
 	| expectedNeighbour actualNeighbour |
@@ -529,7 +531,7 @@ CMNeighbourhoodTest >> testMiddleNeighbourNW [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testMiddleNeighbourS [
 	
 	| expectedNeighbour actualNeighbour |
@@ -540,7 +542,7 @@ CMNeighbourhoodTest >> testMiddleNeighbourS [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testMiddleNeighbourSE [
 	
 	| expectedNeighbour actualNeighbour |
@@ -551,7 +553,7 @@ CMNeighbourhoodTest >> testMiddleNeighbourSE [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testMiddleNeighbourSW [
 	
 	| expectedNeighbour actualNeighbour |
@@ -562,7 +564,7 @@ CMNeighbourhoodTest >> testMiddleNeighbourSW [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testMiddleNeighbourW [
 	
 	| expectedNeighbour actualNeighbour |
@@ -573,7 +575,7 @@ CMNeighbourhoodTest >> testMiddleNeighbourW [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testMiddleNeighbourhood [
 	
 	| expectedNeighbourhood actualNeighbourhood |
@@ -594,7 +596,7 @@ CMNeighbourhoodTest >> testMiddleNeighbourhood [
 	self assert: actualNeighbourhood equals: expectedNeighbourhood.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testMiddleNeighbourhoodAndSelf [
 	
 	| expectedNeighbourhood actualNeighbourhood |
@@ -616,7 +618,7 @@ CMNeighbourhoodTest >> testMiddleNeighbourhoodAndSelf [
 	self assert: actualNeighbourhood equals: expectedNeighbourhood.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testRightNeighbourE [
 	
 	self
@@ -624,7 +626,7 @@ CMNeighbourhoodTest >> testRightNeighbourE [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testRightNeighbourN [
 	
 	| expectedNeighbour actualNeighbour |
@@ -635,7 +637,7 @@ CMNeighbourhoodTest >> testRightNeighbourN [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testRightNeighbourNE [
 	
 	self
@@ -643,7 +645,7 @@ CMNeighbourhoodTest >> testRightNeighbourNE [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testRightNeighbourNW [
 	
 	| expectedNeighbour actualNeighbour |
@@ -654,7 +656,7 @@ CMNeighbourhoodTest >> testRightNeighbourNW [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testRightNeighbourS [
 	
 	| expectedNeighbour actualNeighbour |
@@ -665,7 +667,7 @@ CMNeighbourhoodTest >> testRightNeighbourS [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testRightNeighbourSE [
 	
 	self
@@ -673,7 +675,7 @@ CMNeighbourhoodTest >> testRightNeighbourSE [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testRightNeighbourSW [
 	
 	| expectedNeighbour actualNeighbour |
@@ -684,7 +686,7 @@ CMNeighbourhoodTest >> testRightNeighbourSW [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testRightNeighbourW [
 	
 	| expectedNeighbour actualNeighbour |
@@ -695,7 +697,7 @@ CMNeighbourhoodTest >> testRightNeighbourW [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testRightNeighbourhood [
 	
 	| expectedNeighbourhood actualNeighbourhood |
@@ -713,7 +715,7 @@ CMNeighbourhoodTest >> testRightNeighbourhood [
 	self assert: actualNeighbourhood equals: expectedNeighbourhood.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testRightNeighbourhoodAndSelf [
 	
 	| expectedNeighbourhood actualNeighbourhood |
@@ -732,7 +734,7 @@ CMNeighbourhoodTest >> testRightNeighbourhoodAndSelf [
 	self assert: actualNeighbourhood equals: expectedNeighbourhood.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopLeftNeighbourE [
 	
 	| expectedNeighbour actualNeighbour |
@@ -743,7 +745,7 @@ CMNeighbourhoodTest >> testTopLeftNeighbourE [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopLeftNeighbourN [
 	
 	self
@@ -751,7 +753,7 @@ CMNeighbourhoodTest >> testTopLeftNeighbourN [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopLeftNeighbourNE [
 	
 	self
@@ -759,7 +761,7 @@ CMNeighbourhoodTest >> testTopLeftNeighbourNE [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopLeftNeighbourNW [
 	
 	self
@@ -767,7 +769,7 @@ CMNeighbourhoodTest >> testTopLeftNeighbourNW [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopLeftNeighbourS [
 	
 	| expectedNeighbour actualNeighbour |
@@ -778,7 +780,7 @@ CMNeighbourhoodTest >> testTopLeftNeighbourS [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopLeftNeighbourSE [
 	
 	| expectedNeighbour actualNeighbour |
@@ -789,7 +791,7 @@ CMNeighbourhoodTest >> testTopLeftNeighbourSE [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopLeftNeighbourSW [
 	
 	self
@@ -797,7 +799,7 @@ CMNeighbourhoodTest >> testTopLeftNeighbourSW [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopLeftNeighbourW [
 	
 	self
@@ -805,7 +807,7 @@ CMNeighbourhoodTest >> testTopLeftNeighbourW [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopLeftNeighbourhood [
 	
 	| expectedNeighbourhood actualNeighbourhood |
@@ -821,7 +823,7 @@ CMNeighbourhoodTest >> testTopLeftNeighbourhood [
 	self assert: actualNeighbourhood equals: expectedNeighbourhood.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopLeftNeighbourhoodAndSelf [
 	
 	| expectedNeighbourhood actualNeighbourhood |
@@ -838,7 +840,7 @@ CMNeighbourhoodTest >> testTopLeftNeighbourhoodAndSelf [
 	self assert: actualNeighbourhood equals: expectedNeighbourhood.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopNeighbourE [
 	
 	| expectedNeighbour actualNeighbour |
@@ -849,7 +851,7 @@ CMNeighbourhoodTest >> testTopNeighbourE [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopNeighbourN [
 	
 	self
@@ -857,7 +859,7 @@ CMNeighbourhoodTest >> testTopNeighbourN [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopNeighbourNE [
 	
 	self
@@ -865,7 +867,7 @@ CMNeighbourhoodTest >> testTopNeighbourNE [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopNeighbourNW [
 	
 	self
@@ -873,7 +875,7 @@ CMNeighbourhoodTest >> testTopNeighbourNW [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopNeighbourS [
 	
 	| expectedNeighbour actualNeighbour |
@@ -884,7 +886,7 @@ CMNeighbourhoodTest >> testTopNeighbourS [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopNeighbourSE [
 	
 	| expectedNeighbour actualNeighbour |
@@ -895,7 +897,7 @@ CMNeighbourhoodTest >> testTopNeighbourSE [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopNeighbourSW [
 	
 	| expectedNeighbour actualNeighbour |
@@ -906,7 +908,7 @@ CMNeighbourhoodTest >> testTopNeighbourSW [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopNeighbourW [
 	
 	| expectedNeighbour actualNeighbour |
@@ -917,7 +919,7 @@ CMNeighbourhoodTest >> testTopNeighbourW [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopNeighbourhood [
 	
 	| expectedNeighbourhood actualNeighbourhood |
@@ -935,7 +937,7 @@ CMNeighbourhoodTest >> testTopNeighbourhood [
 	self assert: actualNeighbourhood equals: expectedNeighbourhood.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopNeighbourhoodAndSelf [
 	
 	| expectedNeighbourhood actualNeighbourhood |
@@ -954,7 +956,7 @@ CMNeighbourhoodTest >> testTopNeighbourhoodAndSelf [
 	self assert: actualNeighbourhood equals: expectedNeighbourhood.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopRightNeighbourE [
 	
 	self
@@ -962,7 +964,7 @@ CMNeighbourhoodTest >> testTopRightNeighbourE [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopRightNeighbourN [
 	
 	self
@@ -970,7 +972,7 @@ CMNeighbourhoodTest >> testTopRightNeighbourN [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopRightNeighbourNE [
 	
 	self
@@ -978,7 +980,7 @@ CMNeighbourhoodTest >> testTopRightNeighbourNE [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopRightNeighbourNW [
 	
 	self
@@ -986,7 +988,7 @@ CMNeighbourhoodTest >> testTopRightNeighbourNW [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopRightNeighbourS [
 	
 	| expectedNeighbour actualNeighbour |
@@ -997,7 +999,7 @@ CMNeighbourhoodTest >> testTopRightNeighbourS [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopRightNeighbourSE [
 	
 	self
@@ -1005,7 +1007,7 @@ CMNeighbourhoodTest >> testTopRightNeighbourSE [
 		raise: Error.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopRightNeighbourSW [
 	
 	| expectedNeighbour actualNeighbour |
@@ -1016,7 +1018,7 @@ CMNeighbourhoodTest >> testTopRightNeighbourSW [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopRightNeighbourW [
 	
 	| expectedNeighbour actualNeighbour |
@@ -1027,7 +1029,7 @@ CMNeighbourhoodTest >> testTopRightNeighbourW [
 	self assert: actualNeighbour equals: expectedNeighbour.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopRightNeighbourhood [
 	
 	| expectedNeighbourhood actualNeighbourhood |
@@ -1043,7 +1045,7 @@ CMNeighbourhoodTest >> testTopRightNeighbourhood [
 	self assert: actualNeighbourhood equals: expectedNeighbourhood.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMNeighbourhoodTest >> testTopRightNeighbourhoodAndSelf [
 	
 	| expectedNeighbourhood actualNeighbourhood |

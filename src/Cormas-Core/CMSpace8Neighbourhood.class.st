@@ -1,28 +1,30 @@
 Class {
-	#name : #CMSpace8Neighbourhood,
-	#superclass : #CMSpaceNeighbourhood,
-	#category : 'Cormas-Core-Space'
+	#name : 'CMSpace8Neighbourhood',
+	#superclass : 'CMSpaceNeighbourhood',
+	#category : 'Cormas-Core-Space',
+	#package : 'Cormas-Core',
+	#tag : 'Space'
 }
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSpace8Neighbourhood class >> cardinal [
 
 	^ 8
 ]
 
-{ #category : #'private - accessing' }
+{ #category : 'private - accessing' }
 CMSpace8Neighbourhood class >> cardinalSymbol [
 
 	^ #eight
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMSpace8Neighbourhood class >> distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols [
 
 	^ nbLines max: nbCols
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMSpace8Neighbourhood >> initializeOrderedNeighbourhood: k [
 
 	| v i |
