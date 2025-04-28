@@ -296,6 +296,12 @@ CMAbstractModel >> centralCell [
 	^ self spaceModel centralCell
 ]
 
+{ #category : 'random numbers' }
+CMAbstractModel >> chooseRandomSeedAtRandom [
+	"By default random seed is a random number but we still store it to ensure reproducibility"
+	^ Random new nextInteger: SmallInteger maxVal
+]
+
 { #category : 'referencing entities' }
 CMAbstractModel >> collectEntity: anEntity [
 	"adds anEntity to the collection called theXXXs (where XXX is equal to the class name)"
@@ -705,6 +711,7 @@ CMAbstractModel >> initEntities [
 CMAbstractModel >> initialize [
 
 	super initialize.
+	self initializeRandomNumberGenerator.
 	self initializeModelClasses.
 	self initializeWithoutParameters.
 	self initializeParameters.
@@ -754,6 +761,23 @@ CMAbstractModel >> initializeParameters [
 ]
 
 { #category : 'initialization' }
+CMAbstractModel >> initializeRandomNumberGenerator [
+	
+	self 
+		initializeRandomNumberGeneratorClass: self class defaultRandomNumberGeneratorClass
+		seed: self chooseRandomSeedAtRandom
+		
+]
+
+{ #category : 'initialization' }
+CMAbstractModel >> initializeRandomNumberGeneratorClass: aRandomGeneratorClass seed: anInteger [
+	
+	randomNumberGenerator := aRandomGeneratorClass new.
+	randomNumberGenerator seed: anInteger
+		
+]
+
+{ #category : 'initialization' }
 CMAbstractModel >> initializeSpaceModel [
 	" Private - Setup the receiver's space model only if the model has a spatial entity cell class defined "
 
@@ -766,7 +790,6 @@ CMAbstractModel >> initializeSpaceModel [
 CMAbstractModel >> initializeWithoutParameters [
 
 	super initialize.
-	self randomNumberGenerator: self class defaultRandomNumberGeneratorClass new.
 	
 	self initializeEntityGetters.
 	self initializeSpaceModel.

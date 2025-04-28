@@ -13,7 +13,7 @@ Class {
 CMTestObject >> newTestModel [
  	
 	^ CMMockModel new
-		randomSeed: 42;
+		randomNumberGenerator: (PMFishmanMooreRandomGenerator seed: 42);
 		yourself.
 ]
 
