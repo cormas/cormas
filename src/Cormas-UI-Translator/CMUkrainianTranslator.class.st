@@ -98,7 +98,13 @@ CMUkrainianTranslator >> tFinalValue [
 { #category : 'translations' }
 CMUkrainianTranslator >> tFixRandomSeed [
 
-	^ 'Випадкове початкове значення:'
+	^ 'Зафіксувати початкове значення'
+]
+
+{ #category : 'translations' }
+CMUkrainianTranslator >> tGenerator [
+
+	^ 'Генератор'
 ]
 
 { #category : 'translations' }
@@ -228,6 +234,12 @@ CMUkrainianTranslator >> tProgressBarLabel [
 ]
 
 { #category : 'translations' }
+CMUkrainianTranslator >> tRandomSeed [
+
+	^ 'Початкове значення'
+]
+
+{ #category : 'translations' }
 CMUkrainianTranslator >> tRange [
 
 	^ 'Діапазон'
@@ -251,13 +263,13 @@ CMUkrainianTranslator >> tRunButtonHelp [
 	^ 'Грати симуляцію до самого кінця'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'translations' }
 CMUkrainianTranslator >> tSaveToCsv [
 
 	^ 'Зберегти як CSV'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'translations' }
 CMUkrainianTranslator >> tSaveToExcel [
 
 	^ 'Зберегти як Exel'

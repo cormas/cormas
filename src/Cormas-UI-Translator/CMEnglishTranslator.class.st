@@ -98,7 +98,13 @@ CMEnglishTranslator >> tFinalValue [
 { #category : 'translations' }
 CMEnglishTranslator >> tFixRandomSeed [
 
-	^ 'Fix random seed:'
+	^ 'Fix random seed'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tGenerator [
+
+	^ 'Generator'
 ]
 
 { #category : 'translations' }
@@ -228,6 +234,12 @@ CMEnglishTranslator >> tProgressBarLabel [
 ]
 
 { #category : 'translations' }
+CMEnglishTranslator >> tRandomSeed [
+
+	^ 'Random seed'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tRange [
 
 	^ 'Range'
@@ -251,13 +263,13 @@ CMEnglishTranslator >> tRunButtonHelp [
 	^ 'Run the simulation to the end'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'translations' }
 CMEnglishTranslator >> tSaveToCsv [
 
 	^ 'Save to CSV'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'translations' }
 CMEnglishTranslator >> tSaveToExcel [
 
 	^ 'Save to Excel'
