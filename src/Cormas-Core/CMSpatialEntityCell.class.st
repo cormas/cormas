@@ -4,7 +4,7 @@ Use only for automata ? Pierre can you elaborate a bit on that ?
 "
 Class {
 	#name : 'CMSpatialEntityCell',
-	#superclass : 'CMSpatialEntityElement',
+	#superclass : 'CMCell',
 	#instVars : [
 		'state',
 		'bufferState'

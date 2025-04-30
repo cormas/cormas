@@ -748,7 +748,7 @@ CMAbstractModel >> initializeModelClasses [
 	classes := self class allEntityClasses.
 	
 	self cellClass: (classes
-		detect: [ :each | each inheritsFrom: CMSpatialEntityElement ]
+		detect: [ :each | each inheritsFrom: CMCell ]
 		ifNone: [ nil ]).
 	
 	self agentClasses: (classes select: [ : each | each inheritsFrom: CMAgent ]).
