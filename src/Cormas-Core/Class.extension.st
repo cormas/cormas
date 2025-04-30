@@ -1,6 +1,6 @@
-Extension { #name : #Class }
+Extension { #name : 'Class' }
 
-{ #category : #'*Cormas-Core' }
+{ #category : '*Cormas-Core' }
 Class >> concreteSubclasses [
 
 	^ self allSubclasses select: [ : cls | cls subclasses isEmpty ]

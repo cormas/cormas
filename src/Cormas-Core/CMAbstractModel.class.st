@@ -32,8 +32,8 @@ Instance Variables
 
 "
 Class {
-	#name : #CMAbstractModel,
-	#superclass : #Object,
+	#name : 'CMAbstractModel',
+	#superclass : 'Object',
 	#traits : 'TCMRandom',
 	#classTraits : 'TCMRandom classTrait',
 	#instVars : [
@@ -46,10 +46,12 @@ Class {
 		'cellClass',
 		'agentClasses'
 	],
-	#category : #'Cormas-Core-Kernel'
+	#category : 'Cormas-Core-Kernel',
+	#package : 'Cormas-Core',
+	#tag : 'Kernel'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMAbstractModel class >> aboutThisModel [
 	" Answer a <String> which is the main description of the receiver's purpose "
 	
@@ -60,7 +62,7 @@ CMAbstractModel class >> aboutThisModel [
 
 ]
 
-{ #category : #'managing classes' }
+{ #category : 'managing classes' }
 CMAbstractModel class >> allEntityClasses [
 	"return all the classes of the model (except the classes that inheriting from Msg and other classes like Interface etc"
 
@@ -68,19 +70,19 @@ CMAbstractModel class >> allEntityClasses [
 		removeAllSuchThat: [ :class | (class inheritsFrom: CMEntity) not ]
 ]
 
-{ #category : #'available methods' }
+{ #category : 'available methods' }
 CMAbstractModel class >> availableControlSelectors [
 
 	^ (Pragma allNamed: #control in: self) collect: [ :each | each method selector ]
 ]
 
-{ #category : #'available methods' }
+{ #category : 'available methods' }
 CMAbstractModel class >> availableInitSelectors [
 
 	^ (Pragma allNamed: #init in: self) collect: [ :each | each method selector ]
 ]
 
-{ #category : #'available probes' }
+{ #category : 'available probes' }
 CMAbstractModel class >> availableProbes [
 
 	^ (Pragma allNamed: #probeNamed:color: in: self) collect: [ :pragma |
@@ -91,7 +93,13 @@ CMAbstractModel class >> availableProbes [
 			yourself ].
 ]
 
-{ #category : #initialization }
+{ #category : 'as yet unclassified' }
+CMAbstractModel class >> defaultRandomNumberGeneratorClass [
+
+	^ PMFishmanMooreRandomGenerator
+]
+
+{ #category : 'initialization' }
 CMAbstractModel class >> initializeParameters [
 
 	"Initialize parameters of all entity classes. This method can be overriden by subclasses to initialize model parameters. Implementors should always call super initializeParameters, same as for the initialize method"
@@ -99,13 +107,13 @@ CMAbstractModel class >> initializeParameters [
 	self allEntityClasses do: #initializeParameters. 
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 CMAbstractModel class >> isCormasModelClass [
 
 	^ true
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 CMAbstractModel class >> newWithoutParameters [
 
 	^ self basicNew
@@ -113,7 +121,7 @@ CMAbstractModel class >> newWithoutParameters [
 		yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMAbstractModel class >> parameters [
 	"Find all class side variables that have getter and setter accessors in model and all entity classes"
 	| classes |
@@ -133,26 +141,26 @@ CMAbstractModel class >> parameters [
 				ifFalse: [ OrderedCollection new ] ] ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMAbstractModel >> agentClasses [
 
 	^ agentClasses
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMAbstractModel >> agentClasses: aCollection [
 
 	agentClasses := aCollection
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> agents [
 
 	^ self agentClasses flatCollect: [ :eachClass |
 		self entitiesOfClass: eachClass ].
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> allTheEntities [
 	"Returns a collection of all the instances of the Entity (and sub classes) collected by cormasModel"
 	
@@ -162,7 +170,7 @@ CMAbstractModel >> allTheEntities [
 	^coll
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> allTheEntities: aClass [
 	" Answer a <Collection> of all the instances of aClass (and sub classes) collected by cormasModel. 
 	Usefull for abstract classes
@@ -175,7 +183,7 @@ CMAbstractModel >> allTheEntities: aClass [
 	^ coll
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> allTheEntitiesOfClassOrCollec: aCollecOrClass [
 	"Purpose:  In case aCollecOrClass is a class or a class name (symbol), the method returns all the entities of the class and subclasses. In case aCollecOrClass is a collection of entities, the method return the same collection
 Examples:
@@ -193,7 +201,7 @@ self  entitiesFromACollecOrClass: self theFarmers"
 	^nil
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> allTheLocatedEntities: aClass [
 	"Returns a collection of all the Located Entities (AgentLocation & ObjectLocation) of the model"
 	
@@ -213,28 +221,28 @@ CMAbstractModel >> allTheLocatedEntities: aClass [
 	^theLocatedObjects
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> allTheLocatedObjects [
 	"Returns a collection of all the instances of ObjectLocation (and sub classes) collected by cormasModel"
 	
 	^self allTheEntities select: [:entity | entity isObjectLocation]
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> allThePassiveObjects [
 	"Returns a collection of all the instances of PassiveObject (and sub classes) collected by cormasModel"
 	
 	^self allTheEntities select: [:entity | entity isPassiveObject]
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> allTheSituatedEntities [
 	" Answer a <Collection> of all the instances of AgentLocation and of ObjectLocation (and sub classes) collected by cormasModel, which are situated on a patch "
 	
 	^ self allTheEntities select: #isSituated
 ]
 
-{ #category : #control }
+{ #category : 'control' }
 CMAbstractModel >> ask: aCollectionOrClass toDo: aBlock [
 	"Purpose: To ask a collection of instances or all the instances of a class to execute a method named by aSymbol. In case aCollecOrClass is a 	class, the entities are ordered according to their id. In case aCollecOrClass is a collection of instances, the order of the collection is 	kept.
 	Example: self ask: Fireman toDo: #move
@@ -245,7 +253,7 @@ CMAbstractModel >> ask: aCollectionOrClass toDo: aBlock [
 	collecEntities do: [ :c | aBlock value: c ]
 ]
 
-{ #category : #control }
+{ #category : 'control' }
 CMAbstractModel >> askRandom: aCollectionOrClass toDo: aBlock [
 	"Ask a collection of instances or all the instances of a class to execute a block. The instances are randomly mixed.
 Example: self askRandom: Fireman toDo: #move
@@ -257,38 +265,44 @@ Example: self askRandom: (self theAnimals select:[:f | f energy > 10]) toDo: #re
 		(self shuffled: collecEntities) do: [ :c | aBlock value: c ] ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMAbstractModel >> cellAt: aRowIndex at: aColumnIndex [ 
 	
 	^ self spaceModel cellAt: aRowIndex at: aColumnIndex
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMAbstractModel >> cellClass [
 
 	^ cellClass
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMAbstractModel >> cellClass: aClass [
 
 	cellClass := aClass
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> cells [
 	
 	^ self entitiesOfClass: self cellClass
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> centralCell [
 	"Purpose: returns the cell located at the center of the spatial grid. Number of lines and number of columns of the spatial grid have to be odd"
 
 	^ self spaceModel centralCell
 ]
 
-{ #category : #'referencing entities' }
+{ #category : 'random numbers' }
+CMAbstractModel >> chooseRandomSeedAtRandom [
+	"By default random seed is a random number but we still store it to ensure reproducibility"
+	^ Random new nextInteger: SmallInteger maxVal
+]
+
+{ #category : 'referencing entities' }
 CMAbstractModel >> collectEntity: anEntity [
 	"adds anEntity to the collection called theXXXs (where XXX is equal to the class name)"
 	
@@ -303,7 +317,7 @@ CMAbstractModel >> collectEntity: anEntity [
 	collection add: anEntity
 ]
 
-{ #category : #'instance creation - aggregates' }
+{ #category : 'instance creation - aggregates' }
 CMAbstractModel >> createAggregate: aggregateClass from: aCollectionOfSpatialEntities [
 	"Purpose: Creates and returns an instance of aggregateClass composed with a set of cells.
 Arguments: 	aCollectionOfSpatialEntities = a collection of base entities (inheriting from <SpatialEntity>) 
@@ -319,7 +333,7 @@ Example: self createAggregate: Plot from: (self centalCell recursiveNeighbourhoo
 	^ anAggregate
 ]
 
-{ #category : #'instance creation - aggregates' }
+{ #category : 'instance creation - aggregates' }
 CMAbstractModel >> createAggregates: aggregateType from: baseEntityType attribute: attributeName [
 	"Purpose: Create n aggregates that will occupy the whole grid. Each aggregate is composed of baseEntities that have the same value for #attributeName. 
 	<baseEntityType> is a Class name inheriting from SpatialEntityElement. 
@@ -331,7 +345,7 @@ Example: self createAggregates: ZoneArea from: Cell attribute: #landCover"
 	^ self spaceModel createAggregates: aggregateType from: baseEntityType attribute: attributeName minimumSize: 1
 ]
 
-{ #category : #'instance creation - aggregates' }
+{ #category : 'instance creation - aggregates' }
 CMAbstractModel >> createAggregates: aggregateType from: baseEntityType attribute: attributeName minimumSize: integer [
 	"Purpose: Create n aggregates that will occupy the whole grid. Each aggregate is composed of baseEntities that have the same value for #attributeName. 
 	<baseEntityType> is a Class name inheriting from SpatialEntityElement. 
@@ -347,7 +361,7 @@ Example: self createAggregates: ZoneArea from: Cell attribute: #landCover"
 		  minimumSize: integer
 ]
 
-{ #category : #'instance creation - aggregates' }
+{ #category : 'instance creation - aggregates' }
 CMAbstractModel >> createAggregates: aggregateType from: baseEntityType verifying: aBlock [
 	"Purpose: Create and return N instances of aggregateType of minimumSize = 1, so it is possible to get aggregates made of only 1 component. The previous aggregates are not removed.
 baseEntityType = a subClass of  <SpatialEntity>
@@ -357,7 +371,7 @@ aggregateType = a subClass of  <SpatialEntitySet> "
 	^ self createAggregates: aggregateType from: baseEntityType verifying: aBlock minimumSize: 1
 ]
 
-{ #category : #'instance creation - aggregates' }
+{ #category : 'instance creation - aggregates' }
 CMAbstractModel >> createAggregates: aggregateType from: baseEntityType verifying: aBlock minimumSize: integer [
 	"Purpose: Create and return N instances of aggregateType of minimumSize. 
 baseEntityType = a subClass of  <SpatialEntity>
@@ -375,7 +389,7 @@ Example: self createAggregates: Forest from: Cell verifying: [:aCell | aCell isT
 		  minimumSize: integer
 ]
 
-{ #category : #'instance creation - aggregates' }
+{ #category : 'instance creation - aggregates' }
 CMAbstractModel >> createAggregates: aggregateType horizontalDividers: xRatio verticalDividers: yRatio [
 	"Purpose: Creates (xRatio x yRatio) rectangular aggregates by dividing the grid by yRatio columns and xRatio lines. The aggregates will  occupy the whole grid. 
 	aggregateType = a subClass of  <SpatialEntityAggregate>
@@ -389,7 +403,7 @@ Example: self createAggregates: SquareArea horizontalDividers: 5 verticalDivider
 		  verticalDividers: yRatio
 ]
 
-{ #category : #'instance creation - spatial grid' }
+{ #category : 'instance creation - spatial grid' }
 CMAbstractModel >> createGridNumberOfRows: aNumberOfRows numberOfColumns: aNumberOfColumns neighbourhood: aNumber closed: aBoolean [
 	"Create a spatial grid made of cells"
 
@@ -400,7 +414,7 @@ CMAbstractModel >> createGridNumberOfRows: aNumberOfRows numberOfColumns: aNumbe
 		closed: aBoolean
 ]
 
-{ #category : #'instance creation - agents & objects' }
+{ #category : 'instance creation - agents & objects' }
 CMAbstractModel >> createN: aNumber entity: aClass [
 	"Return a collection of aNumber of entities of aClass for wich the init method has been send.
 	ex: self createN: 10 entity: Predator "
@@ -408,7 +422,7 @@ CMAbstractModel >> createN: aNumber entity: aClass [
 	^self createN: aNumber entity: aClass initMethod: #init arguments: #()
 ]
 
-{ #category : #'instance creation - agents & objects' }
+{ #category : 'instance creation - agents & objects' }
 CMAbstractModel >> createN: aNumber entity: aClass initMethod: aSymbol [
 	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' has been send.
 	ex: self createN: 10 entity: Predator initMethod: #initAge"
@@ -416,7 +430,7 @@ CMAbstractModel >> createN: aNumber entity: aClass initMethod: aSymbol [
 	^self createN: aNumber entity: aClass initMethod: aSymbol arguments: #()
 ]
 
-{ #category : #'instance creation - agents & objects' }
+{ #category : 'instance creation - agents & objects' }
 CMAbstractModel >> createN: aNumber entity: aCMEntityClass initMethod: aSymbol arguments: anArray [
 	"Return a collection of aNumber of entities of aCMEntityClass for wich the init method 'aSymbol' with a set of arguments 'anArray' has been send.
 	ex: self createN: 10 entity: Predator initMethod: #initAge:energy: arguments: #(0 50) "
@@ -430,7 +444,7 @@ CMAbstractModel >> createN: aNumber entity: aCMEntityClass initMethod: aSymbol a
 				yourself ]
 ]
 
-{ #category : #'instance creation - agents & objects' }
+{ #category : 'instance creation - agents & objects' }
 CMAbstractModel >> createN: aNumber randomlyLocatedAloneEntities: aClass [
 	"Return a collection of aNumber of entities of aClass for wich the 'init' method has been send.
 	The new entities are randomly located on the free cells of the grid.
@@ -440,7 +454,7 @@ CMAbstractModel >> createN: aNumber randomlyLocatedAloneEntities: aClass [
 			#init arguments: #()
 ]
 
-{ #category : #'instance creation - agents & objects' }
+{ #category : 'instance creation - agents & objects' }
 CMAbstractModel >> createN: aNumber randomlyLocatedAloneEntities: aClass initMethod: aSymbol [
 	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' has been send.
 	The new entities are randomly located on the free cells of the grid.
@@ -450,7 +464,7 @@ CMAbstractModel >> createN: aNumber randomlyLocatedAloneEntities: aClass initMet
 			aSymbol arguments: #()
 ]
 
-{ #category : #'instance creation - agents & objects' }
+{ #category : 'instance creation - agents & objects' }
 CMAbstractModel >> createN: aNumber randomlyLocatedAloneEntities: aClass initMethod: aSymbol arguments: aCollec [
 
 	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' with a set of arguments 'aCollec' has been send.
@@ -468,7 +482,7 @@ CMAbstractModel >> createN: aNumber randomlyLocatedAloneEntities: aClass initMet
 	^ newEntities
 ]
 
-{ #category : #'instance creation - agents & objects' }
+{ #category : 'instance creation - agents & objects' }
 CMAbstractModel >> createN: aNumber randomlyLocatedEntities: aClass [
 	" Answer a <Collection> of aNumber of entities of aClass for wich the 'init' method 'has been send.
 	The new entities are randomly located on the grid. ex: 
@@ -482,7 +496,7 @@ CMAbstractModel >> createN: aNumber randomlyLocatedEntities: aClass [
 		initMethod: #init
 ]
 
-{ #category : #'instance creation - agents & objects' }
+{ #category : 'instance creation - agents & objects' }
 CMAbstractModel >> createN: aNumber randomlyLocatedEntities: aClass constrainedBy: aBlock [
 	" Answer a <Collection> of aNumber of entities of aClass for wich the init method 'aSymbol' has been send.
 	The new entities are randomly located on the grid on cells that verify the constraint. ex: 
@@ -498,7 +512,7 @@ CMAbstractModel >> createN: aNumber randomlyLocatedEntities: aClass constrainedB
 		constrainedBy: aBlock
 ]
 
-{ #category : #'instance creation - agents & objects' }
+{ #category : 'instance creation - agents & objects' }
 CMAbstractModel >> createN: aNumber randomlyLocatedEntities: aClass initMethod: aSymbol [
 	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' has been send.
 	The new entities are randomly located on the grid.
@@ -511,7 +525,7 @@ CMAbstractModel >> createN: aNumber randomlyLocatedEntities: aClass initMethod: 
 		arguments: #()
 ]
 
-{ #category : #'instance creation - agents & objects' }
+{ #category : 'instance creation - agents & objects' }
 CMAbstractModel >> createN: aNumber randomlyLocatedEntities: aClass initMethod: aSymbol arguments: aCollec [
 	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' with a set of arguments 'aCollec' has been send. 
 	The new entities are randomly located on the grid.
@@ -527,7 +541,7 @@ CMAbstractModel >> createN: aNumber randomlyLocatedEntities: aClass initMethod: 
 	^ newEntities
 ]
 
-{ #category : #'instance creation - agents & objects' }
+{ #category : 'instance creation - agents & objects' }
 CMAbstractModel >> createN: aNumber randomlyLocatedEntities: aClass initMethod: aSymbol arguments: aCollec constrainedBy: aBlock [
 
 	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' with a set of arguments 'aCollec' has been send.
@@ -546,7 +560,7 @@ CMAbstractModel >> createN: aNumber randomlyLocatedEntities: aClass initMethod: 
 	^ newEntities
 ]
 
-{ #category : #'instance creation - agents & objects' }
+{ #category : 'instance creation - agents & objects' }
 CMAbstractModel >> createN: aNumber randomlyLocatedEntitiesFrom: aCollectionOfClasses [
 	"Return a collection of aNumber of entities of aClass for wich the 'init' method 'has been send.
 	The new entities are randomly located on the grid.
@@ -558,7 +572,7 @@ CMAbstractModel >> createN: aNumber randomlyLocatedEntitiesFrom: aCollectionOfCl
 		initMethod: #init
 ]
 
-{ #category : #'instance creation - agents & objects' }
+{ #category : 'instance creation - agents & objects' }
 CMAbstractModel >> createN: aNumber randomlyLocatedEntitiesFrom: aCollectionOfClasses initMethod: aSymbol [
 	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' has been send.
 	The new entities are randomly located on the grid.
@@ -571,7 +585,7 @@ CMAbstractModel >> createN: aNumber randomlyLocatedEntitiesFrom: aCollectionOfCl
 		arguments: #()
 ]
 
-{ #category : #'instance creation - agents & objects' }
+{ #category : 'instance creation - agents & objects' }
 CMAbstractModel >> createN: aNumber randomlyLocatedEntitiesFrom: aCollectionOfClasses initMethod: aSymbol arguments: aCollec [
 	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' with a set of arguments 'aCollec' has been send. 
 	The new entities are randomly located on the grid.
@@ -588,14 +602,14 @@ CMAbstractModel >> createN: aNumber randomlyLocatedEntitiesFrom: aCollectionOfCl
 	^ newEntities
 ]
 
-{ #category : #'utilities - space metrics' }
+{ #category : 'utilities - space metrics' }
 CMAbstractModel >> distanceFromCell: cell1 toCell: cell2 [
 	"Purpose: return the distance in number of cells (also known as Manhattan distance)"
 	
 	^self spaceModel distanceFromCell: cell1 toCell: cell2
 ]
 
-{ #category : #'utilities - space metrics' }
+{ #category : 'utilities - space metrics' }
 CMAbstractModel >> dominance: anAttribute [
 	"Purpose: Return the Dominance-Index of SpatialEntityElements instances (theCells for example). The Dominance-Index is used as an index of biodiversity. It gives the information if there is one dominant category of cells in the spatial grid or if all categories have more or less the same relative proportions. Categories of cells are cells that have a different value of anAttribute (see the method nClasses: anAttribute).
 Argument: anAttribute is the name of the attribute, ex #state
@@ -605,7 +619,7 @@ Example: self dominance: #groupNumber"
 	^ self spaceModel dominance: anAttribute
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> entitiesOfClass: aClass [
 	"Returns a collection of all the instances of aClass"
 
@@ -618,14 +632,14 @@ CMAbstractModel >> entitiesOfClass: aClass [
 	^ self perform: getter.
 ]
 
-{ #category : #'utilities - space metrics' }
+{ #category : 'utilities - space metrics' }
 CMAbstractModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 	"Purpose: return the euclidian distance (unit = cell) using the Euclidean distance formula : square root of [(Xa - Xb)^2 + (Ya - Yb)^2)]"
 	
 	^self spaceModel euclideanDistanceFromCell: cell1 toCell: cell2
 ]
 
-{ #category : #'utilities - files' }
+{ #category : 'utilities - files' }
 CMAbstractModel >> getAttributesType: attributes fromInstances: instanceCollection [
 	
 	| firstInstance firstValue type dicoAttConv |
@@ -674,14 +688,14 @@ CMAbstractModel >> getAttributesType: attributes fromInstances: instanceCollecti
 	^dicoAttConv
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> getterForEntityClass: aClass [
 	
 	^ entityGetters at: aClass name
 		ifAbsent: [ self error: 'Getter for class #', aClass name, ' was not found in the dictionary' ].
 ]
 
-{ #category : #'init-release entities' }
+{ #category : 'init-release entities' }
 CMAbstractModel >> initEntities [
 
 	"Initialize all the Entity classes of the model"
@@ -693,16 +707,17 @@ CMAbstractModel >> initEntities [
 	self resetEntities: cellClass
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMAbstractModel >> initialize [
 
 	super initialize.
+	self initializeRandomNumberGenerator.
 	self initializeModelClasses.
 	self initializeWithoutParameters.
 	self initializeParameters.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMAbstractModel >> initializeAgentsOfClass: aClass [
 
 	(aClass isAbstract not and: [ aClass isLocated ]) ifTrue: [ 
@@ -711,7 +726,7 @@ CMAbstractModel >> initializeAgentsOfClass: aClass [
 	self resetEntities: aClass
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMAbstractModel >> initializeEntityGetters [
 	"Create a dictionary of getters for entity classes based on accessors with pragmas"
 
@@ -725,7 +740,7 @@ CMAbstractModel >> initializeEntityGetters [
 		className -> selector ])
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMAbstractModel >> initializeModelClasses [
 
 	| classes |
@@ -733,19 +748,36 @@ CMAbstractModel >> initializeModelClasses [
 	classes := self class allEntityClasses.
 	
 	self cellClass: (classes
-		detect: [ :each | each inheritsFrom: CMSpatialEntityElement ]
+		detect: [ :each | each inheritsFrom: CMCell ]
 		ifNone: [ nil ]).
 	
 	self agentClasses: (classes select: [ : each | each inheritsFrom: CMAgent ]).
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMAbstractModel >> initializeParameters [
 
 	self class initializeParameters. 
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
+CMAbstractModel >> initializeRandomNumberGenerator [
+	
+	self 
+		initializeRandomNumberGeneratorClass: self class defaultRandomNumberGeneratorClass
+		seed: self chooseRandomSeedAtRandom
+		
+]
+
+{ #category : 'initialization' }
+CMAbstractModel >> initializeRandomNumberGeneratorClass: aRandomGeneratorClass seed: anInteger [
+	
+	randomNumberGenerator := aRandomGeneratorClass new.
+	randomNumberGenerator seed: anInteger
+		
+]
+
+{ #category : 'initialization' }
 CMAbstractModel >> initializeSpaceModel [
 	" Private - Setup the receiver's space model only if the model has a spatial entity cell class defined "
 
@@ -754,32 +786,31 @@ CMAbstractModel >> initializeSpaceModel [
 
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMAbstractModel >> initializeWithoutParameters [
 
 	super initialize.
-	self randomNumberGenerator: PMFishmanMooreRandomGenerator new.
 	
 	self initializeEntityGetters.
 	self initializeSpaceModel.
 
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> lowerLeftCell [
 	"Purpose: returns the cell located at the lower left location of the spatial grid"
 
 	^ self spaceModel lowerLeftCell
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> lowerRightCell [
 	"Purpose: returns the cell located at the lower right location of the spatial grid"
 
 	^ self spaceModel lowerRightCell
 ]
 
-{ #category : #'utilities - space metrics' }
+{ #category : 'utilities - space metrics' }
 CMAbstractModel >> nearestNeighbourProbaAttribute: anAttribute state1: x1 state2: x2 [
 	"Purpose: Return the probability to have aCell having x2 as value for anAttribute in the direct neighbourhood (distance = 1) of aCell which has x1 as value for anAttribute.
 Argument: anAttribute is the name of the attribute, ex #state, X1 and x2 being two possible values.
@@ -789,7 +820,7 @@ Example: self nearestNeighbourProbaAttribute: #landUse state1: #field state2: #f
 		state2: x2
 ]
 
-{ #category : #'instance creation - agents & objects' }
+{ #category : 'instance creation - agents & objects' }
 CMAbstractModel >> newEntity: aClass [
 	"Creates a new instance of aClass and collects it, immediately, at the level of theXXXs collection."
 
@@ -804,7 +835,7 @@ CMAbstractModel >> newEntity: aClass [
 	^ anEntity
 ]
 
-{ #category : #'instance creation - agents & objects' }
+{ #category : 'instance creation - agents & objects' }
 CMAbstractModel >> newEntity: aClass locatedAt: aCell [
 	"Creates a new instance of aClass and collects it, immediately, at the level of theXXXs collection."
 
@@ -813,7 +844,7 @@ CMAbstractModel >> newEntity: aClass locatedAt: aCell [
 	entity moveTo: aCell
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> pickCellAt: aPointLocation [
 	"Purpose: return a spatialEntityElement (aCell) picked randomly from the spatial grid.
 	Example: self pickCell"
@@ -821,7 +852,7 @@ CMAbstractModel >> pickCellAt: aPointLocation [
 	^ self cells detect: [ : cellEntity | cellEntity coordinates = aPointLocation ]
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> pickRandomCell [
 	"Purpose: return a spatialEntityElement (aCell) picked randomly from the spatial grid.
 	Example: self pickCell"
@@ -829,7 +860,7 @@ CMAbstractModel >> pickRandomCell [
 	^ self selectRandomlyFrom: self cells
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> pickRandomCellConstrainedBy: aBlock [
 	"Purpose: return a random cell of the grid. The cell verifies the block condition.
 	Example:  self pickCellConstrainedBy: [:cell | state=#land] or self pickCellConstrainedBy: [: cell | cell energy > 1] "
@@ -837,21 +868,21 @@ CMAbstractModel >> pickRandomCellConstrainedBy: aBlock [
 	^ self selectRandomlyFrom: (self cells asArray select: [ :cell | aBlock value: cell ])
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> pickRandomCellWithoutAnyOccupantsOfClass: aClass [
 	"Return a cell (picked randomly) without any instance of aClassName"
 
 	^ self pickRandomCellConstrainedBy: [ :cell | (cell occupantsOfClass: aClass) isEmpty ]
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> pickRandomCells: anInteger [
 	"Return a collection of spatialEntityElements (some Cells) picked randomly from the spatial grid (without replacement)"
 
 	^ self selectRandomlyFrom: self cells size: anInteger
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> pickRandomEntities: anInteger ofClass: aClass [
 	"Return a collection of entities belonging to a class"
 
@@ -860,7 +891,7 @@ CMAbstractModel >> pickRandomEntities: anInteger ofClass: aClass [
 		size: anInteger
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> pickRandomEntities: anInteger ofClass: aClass constrainedBy: aBlock [
 	"Return a collection of entities belonging to a class and verifying a condition"
 
@@ -869,21 +900,21 @@ CMAbstractModel >> pickRandomEntities: anInteger ofClass: aClass constrainedBy: 
 		size: anInteger
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> pickRandomEntityOfClass: aClass [
 	"Return an entity belonging to a class, picked randomly"
 
 	^ self selectRandomlyFrom: (self allTheEntities: aClass)
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> pickRandomEntityOfClass: aClass constrainedBy: aBlock [
 	"Return a random entity belonging to a class and verifying the block condition"
 
 	^ self selectRandomlyFrom: ((self allTheEntities: aClass) select: [ :c | aBlock value: c ])
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> pickRandomUnoccupiedCell [
 	"Purpose: return a random cell not occuppied of the grid
 	Return Value: a cell"
@@ -891,7 +922,7 @@ CMAbstractModel >> pickRandomUnoccupiedCell [
 	^ self pickRandomCellConstrainedBy: [ :cell | cell hasNoOccupants ]
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 CMAbstractModel >> printOn: aStream [
 	" Private - See superimplementor's comment "
 	
@@ -903,7 +934,7 @@ CMAbstractModel >> printOn: aStream [
 		<< ')'
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 CMAbstractModel >> release [
 
 	super release.
@@ -913,28 +944,28 @@ CMAbstractModel >> release [
 	self cells do: #initOccupants
 ]
 
-{ #category : #'init-release entities' }
+{ #category : 'init-release entities' }
 CMAbstractModel >> releaseAggregateType: aggregateClass [
 "Delete the instances of aggregateClass, and clean up their components"
 	(self entitiesOfClass: aggregateClass) do: [ :agg | agg release ].
 	self resetEntities: aggregateClass
 ]
 
-{ #category : #'referencing entities' }
+{ #category : 'referencing entities' }
 CMAbstractModel >> removeDeadEntities [
 	"removes all the dead or destroyed intances"
 	
 	self removeDestroyedEntities
 ]
 
-{ #category : #'referencing entities' }
+{ #category : 'referencing entities' }
 CMAbstractModel >> removeDestroyedEntities [
 	"removes all the dead or destroyed intances"
 	
 	self class allEntityClasses do: [:aClass | self removeDestroyedEntities: aClass]
 ]
 
-{ #category : #'referencing entities' }
+{ #category : 'referencing entities' }
 CMAbstractModel >> removeDestroyedEntities: aClass [
 
 	"removes all the dead or destroyed intances of type: aClass"
@@ -948,7 +979,7 @@ CMAbstractModel >> removeDestroyedEntities: aClass [
 			theEntities remove: a ] ]
 ]
 
-{ #category : #'referencing entities' }
+{ #category : 'referencing entities' }
 CMAbstractModel >> removeEntity: anEntity [
 	"removes the dead or destroyed Entity"
 	
@@ -958,7 +989,7 @@ CMAbstractModel >> removeEntity: anEntity [
 		ifAbsent: [nil]
 ]
 
-{ #category : #'init-release entities' }
+{ #category : 'init-release entities' }
 CMAbstractModel >> resetEntities: aClass [
 	"Initialize the Entity classes of the model and creates the new collector (OrderedCollection)"
 	
@@ -970,7 +1001,7 @@ CMAbstractModel >> resetEntities: aClass [
 	entities removeAll
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> selectCellsBetweenRow: lineNumber1 andRow: lineNumber2 column: colNumber1 andColumn: colNumber2 [
 	"Purpose: Return the cells between the lines lineNumber1 and lineNumber2, and between the columns colNumber1 and colNumber2 of the spatial grid. The Cells are sorted by id.
 Arguments: lineNumber1   <Integer> lineNumber = Positive Integer
@@ -986,7 +1017,7 @@ Example:  cellsBetweenLine1: 1 line2: 6 andColumn1: 2 column2: 3  ->  a collecti
 		andColumn: colNumber2
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> selectCellsInRectangleOriginCell: cell1 cornerCell: cell2 [
 	"Purpose: return a collection of the cells located in a rectangle defined by an origin cell and a cell at the opposit corner of the rectangle. The collection of cells is ordered from cell1 to cell2.
 	Arguments : cell1   <SpatialEntityElement>
@@ -996,7 +1027,7 @@ CMAbstractModel >> selectCellsInRectangleOriginCell: cell1 cornerCell: cell2 [
 	^ self spaceModel cellsInRectangleFrom: cell1 to: cell2
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> selectCellsOfColumn: colNumber [
 	"Purpose: return a collection of the cells belonging to the specified column of the spatial grid.
 	Arguments: colNumber   <Integer> colNumber = Positive Integer
@@ -1005,7 +1036,7 @@ CMAbstractModel >> selectCellsOfColumn: colNumber [
 	^ self spaceModel cellsOfColumn: colNumber
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> selectCellsOfLine: lineNumber [
 	"Purpose: return a collection of the cells belonging to the specified line of the spatial grid.
 	Arguments : lineNumber   <Integer> lineNumber = Positive Integer
@@ -1014,7 +1045,7 @@ CMAbstractModel >> selectCellsOfLine: lineNumber [
 	^ self spaceModel cellsOfRow: lineNumber
 ]
 
-{ #category : #'init - spatial entities' }
+{ #category : 'init - spatial entities' }
 CMAbstractModel >> setLinearGradientForAttribute: aString centralValue: cv borderValue: bv [
 	"Purpose: Set the value of anAttribute of all spatial entity elements of the spatial grid in order to create a linear gradient for anAttribute starting from centre of the spatial grid with the value cv to the border of the spatial grid with the value bv. The horizontal and vertical grid dimensions have to be an odd number.
 Arguments: cv and bv are numbers (integer or float). anAttribute is the name of the attribute as symbol. 
@@ -1024,7 +1055,7 @@ Example: self setLinearGradientForAttribute: #energy centralValue: 10 borderValu
 		borderValue: bv
 ]
 
-{ #category : #'init - spatial entities' }
+{ #category : 'init - spatial entities' }
 CMAbstractModel >> setLinearGradientForAttribute: anAttribute centralValue: cv borderValue: bv bySections: anArray [
 	"Purpose: Set the value of anAttribute of all spatial entity elements of the spatial grid in order to create a gradient by layers for anAttribute starting from centre of the spatial grid with the value cv to the border of the spatial grid with the value bv. The horizontal and vertical grid dimensions have to be an odd number.
 Arguments: cv and bv are numbers (integer or float). anAttribute is the name of the attribute as symbol. 
@@ -1035,7 +1066,7 @@ Example: self setLinearGradientForAttribute: #energy centralValue: 10 borderValu
 			cv borderValue: bv bySections: anArray
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> setTheEntity: aClass with: aSet [
 	
 	^self
@@ -1043,7 +1074,7 @@ CMAbstractModel >> setTheEntity: aClass with: aSet [
 		with: aSet
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> setterForEntityClass: aClass [
 	"Return a Symbol as a name for the setter accessor for the entity class aClass.
 	ex : Object -> #theObjects: 
@@ -1054,19 +1085,19 @@ CMAbstractModel >> setterForEntityClass: aClass [
 	^ (self getterForEntityClass: aClass) asMutator
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMAbstractModel >> spaceModel [
 	
 	spaceModel ifNil: [ self initializeSpaceModel ].
 	^ spaceModel
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 CMAbstractModel >> spaceModel: aSpaceModel [
 	spaceModel := aSpaceModel
 ]
 
-{ #category : #control }
+{ #category : 'control' }
 CMAbstractModel >> stepAsynchronouslyCA: t [
 	"Purpose: To active the transition function and to update asynchronously a cellular automata"
 	
@@ -1078,7 +1109,7 @@ CMAbstractModel >> stepAsynchronouslyCA: t [
 				updateState]
 ]
 
-{ #category : #control }
+{ #category : 'control' }
 CMAbstractModel >> stepEntities: aCollecOrClass [
 	"Purpose: Iteration over aCollec or the entities of a class. 
 	In case aCollecOrClass is a class, the entities are ordered according to their id. 
@@ -1090,7 +1121,7 @@ CMAbstractModel >> stepEntities: aCollecOrClass [
 	self ask: aCollecOrClass toDo: #step
 ]
 
-{ #category : #control }
+{ #category : 'control' }
 CMAbstractModel >> stepEntitiesRandom: aCollecOrClass [
 	" Iterate over aCollecOrClass or the entities of a class. 
 	The elements of aCollec / or the instances of the class, are randomly mixed"
@@ -1098,7 +1129,7 @@ CMAbstractModel >> stepEntitiesRandom: aCollecOrClass [
 	self askRandom: aCollecOrClass toDo: #step
 ]
 
-{ #category : #Olddeprecated }
+{ #category : 'Olddeprecated' }
 CMAbstractModel >> stepSynchronously: t [
 	"Purpose: To active the transition function and to update synchronously a cellular automata
 Example: See the models Conway http://cormas.cirad.fr/en/applica/conway.htm or Fire http://cormas.cirad.fr/en/applica/fireautomata.htm "
@@ -1106,7 +1137,7 @@ Example: See the models Conway http://cormas.cirad.fr/en/applica/conway.htm or F
 	self stepSynchronouslyCA: t
 ]
 
-{ #category : #control }
+{ #category : 'control' }
 CMAbstractModel >> stepSynchronouslyCA: t [
 	"Purpose: To active the transition function and to update synchronously a cellular automata
 Example: See the models Conway http://cormas.cirad.fr/en/applica/conway.htm or Fire http://cormas.cirad.fr/en/applica/fireautomata.htm"
@@ -1115,21 +1146,21 @@ Example: See the models Conway http://cormas.cirad.fr/en/applica/conway.htm or F
 	self cells do: [:a | a updateState]
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> upperLeftCell [
 	"Purpose: returns the cell located at the upper left location of the spatial grid"
 
 	^ self spaceModel upperLeftCell
 ]
 
-{ #category : #'accessing - entities' }
+{ #category : 'accessing - entities' }
 CMAbstractModel >> upperRightCell [
 	"Purpose: return the cell located at the upper right location of the spatial grid"
 
 	^ self spaceModel upperRightCell
 ]
 
-{ #category : #'utilities - space metrics' }
+{ #category : 'utilities - space metrics' }
 CMAbstractModel >> wayFromCell: cell1 toCell: cell2 [
 	"Purpose: return a collection of cells from cell1 to cell2 (including cell1 and cell2)"
 	

@@ -1,13 +1,14 @@
 Class {
-	#name : #CMParameterTest,
-	#superclass : #TestCase,
+	#name : 'CMParameterTest',
+	#superclass : 'TestCase',
 	#instVars : [
 		'parameters'
 	],
-	#category : 'Cormas-Tests'
+	#category : 'Cormas-Tests',
+	#package : 'Cormas-Tests'
 }
 
-{ #category : #running }
+{ #category : 'running' }
 CMParameterTest >> setUp [
 
 	super setUp.
@@ -16,7 +17,7 @@ CMParameterTest >> setUp [
 	parameters := CMMockModel parameters.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMParameterTest >> testEquality [
 
 	| parameter1 parameter2 |
@@ -34,7 +35,7 @@ CMParameterTest >> testEquality [
 	self assert: parameter1 equals: parameter2.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMParameterTest >> testHash [
 
 	| parameter1 parameter2 |
@@ -52,7 +53,7 @@ CMParameterTest >> testHash [
 	self assert: parameter1 hash equals: parameter2 hash.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMParameterTest >> testInequality [
 
 	| parameter1 parameter2 parameter3 parameter4 |
@@ -82,7 +83,7 @@ CMParameterTest >> testInequality [
 	self deny: parameter4 equals: parameter1.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMParameterTest >> testParameterNames [
 
 	| expectedNames actualNames |
@@ -98,7 +99,7 @@ CMParameterTest >> testParameterNames [
 	self assertCollection: actualNames hasSameElements: expectedNames.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMParameterTest >> testReceiverClasses [
 
 	| expectedClasses actualClasses |
@@ -113,7 +114,7 @@ CMParameterTest >> testReceiverClasses [
 	self assertCollection: actualClasses hasSameElements: expectedClasses.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMParameterTest >> testSetValue [
 
 	| parameter |
@@ -130,7 +131,7 @@ CMParameterTest >> testSetValue [
 	self assert: CMMockGoat initialEnergy equals: 42.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMParameterTest >> testSetValueSubclass [
 
 	| parameter |
@@ -147,7 +148,7 @@ CMParameterTest >> testSetValueSubclass [
 	self assert: CMMockGoat initialEnergy equals: 42.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMParameterTest >> testSubclassesHaveSuperclassParameters [
 
 	| expectedParameters |
@@ -172,7 +173,7 @@ CMParameterTest >> testSubclassesHaveSuperclassParameters [
 	self assertCollection: parameters includesAll: expectedParameters.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMParameterTest >> testValue [
 
 	| parameter |
@@ -185,7 +186,7 @@ CMParameterTest >> testValue [
 	self assert: parameter value equals: 0.5.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMParameterTest >> testValueSubclass [
 
 	| parameter |

@@ -112,7 +112,7 @@ CMSimulationInitializerPresenter >> initializePresenters [
 	modelClass initializeParameters.
 
 	modelInitializationSettings := self
-		instantiate: CMModelInitializationSettingsPresenter
+		instantiate: CMSimulationInitializationSettingsPresenter
 		on: translator.
 		
 	modelInitializationSettings modelClass: modelClass.

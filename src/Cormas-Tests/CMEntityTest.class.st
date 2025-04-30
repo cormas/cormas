@@ -2,12 +2,14 @@
 A CormasEntityTest is a test class for testing the behavior of CormasEntity
 "
 Class {
-	#name : #CMEntityTest,
-	#superclass : #TestCase,
-	#category : 'Cormas-Tests-Model'
+	#name : 'CMEntityTest',
+	#superclass : 'TestCase',
+	#category : 'Cormas-Tests-Model',
+	#package : 'Cormas-Tests',
+	#tag : 'Model'
 }
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMEntityTest >> testAvailablePov [
 
 	self assertCollection: CMMockAnimal availablePov hasSameElements: #(pov povClassName povId povInvisible).
@@ -16,17 +18,17 @@ CMEntityTest >> testAvailablePov [
 	self assertCollection: CMMockCell availablePov hasSameElements: #(pov povClassName povId povInvisible).
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMEntityTest >> testColorOfNumber [
 	self assert: (CMEntity colorOfNumber: 65) equals: Color purple
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMEntityTest >> testCormasEntityIsAbstract [
 	self assert: CMEntity isAbstract
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMEntityTest >> testCormasModel [
 	| model |
 	model := CMMockModel new
@@ -42,7 +44,7 @@ CMEntityTest >> testCormasModel [
 	model agents do: [ :agent | self assert: agent cormasModel identicalTo: model ]
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 CMEntityTest >> testModelClass [
 	self
 		assert: CMMockCell modelClass
