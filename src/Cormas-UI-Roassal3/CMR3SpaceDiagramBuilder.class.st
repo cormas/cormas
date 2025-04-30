@@ -1,3 +1,10 @@
+"
+CMR3SpaceDiagramBuilder is the spatialGrid builder 
+To get the real view, call #asPresenter (diagram := spaceBuilder asPresenter)
+                                                                                                    
+Examples
+•	CMR3SpaceDiagramBuilder class>>#example
+"
 Class {
 	#name : 'CMR3SpaceDiagramBuilder',
 	#superclass : 'RSAbstractContainerBuilder',
@@ -19,15 +26,14 @@ CMR3SpaceDiagramBuilder class >> example [
 
 	<example>
 	| model builder |
-	
-	model := CMMockModel new.
+	model := CMMockModel new. model initFixed.
 
 	builder := self new
-		cormasModel: model;
-		inspect;
-		asPresenter.
-	
-	builder open.
+		           cormasModel: model;
+		           inspect;
+		           asPresenter.
+
+	builder open
 ]
 
 { #category : 'accessing - pov' }
@@ -47,6 +53,18 @@ CMR3SpaceDiagramBuilder >> agentShapes [
 CMR3SpaceDiagramBuilder >> cellShapes [
 
 	^ cellsBuilder shapes
+]
+
+{ #category : 'accessing' }
+CMR3SpaceDiagramBuilder >> cellsBuilder [
+
+	^ cellsBuilder
+]
+
+{ #category : 'accessing' }
+CMR3SpaceDiagramBuilder >> cellsBuilder: anObject [
+
+	cellsBuilder := anObject
 ]
 
 { #category : 'accessing' }
@@ -77,7 +95,7 @@ CMR3SpaceDiagramBuilder >> defaultContainer [
 
 { #category : 'initialization' }
 CMR3SpaceDiagramBuilder >> initialize [
-
+"Creates a new CMR3SpaceCellsBuilder and a new CMR3SpaceAgentsBuilder"
 	super initialize.
 	
 	cellsBuilder := CMR3SpaceCellsBuilder for: self.

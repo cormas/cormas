@@ -85,10 +85,11 @@ CMSpacePresenter >> initializeCanvasInteractions [
 { #category : 'initialization' }
 CMSpacePresenter >> initializeDiagram [
 	
+"Set the Grid presenter: a new instance of RoassalBuilder (CMR3SpaceDiagramBuilder)"
 	spaceBuilder := CMR3SpaceDiagramBuilder new
 		cormasModel: cormasModel;
 		yourself.
-	
+		spaceBuilder cellsBuilder setMasterShape.
 	diagram := spaceBuilder asPresenter.
 		
 	diagram owner: self.
@@ -98,7 +99,7 @@ CMSpacePresenter >> initializeDiagram [
 
 { #category : 'initialization' }
 CMSpacePresenter >> initializePresenters [
-
+"Set the Grid presenter (instance of RoassalBuilder (CMR3SpaceDiagramBuilder))"
 	self initializeToolbar.
 	
 	povSelection := (self instantiate: CMPovSelectionPresenter on: cormasModel)

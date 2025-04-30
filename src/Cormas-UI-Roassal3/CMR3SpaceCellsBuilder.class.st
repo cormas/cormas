@@ -9,12 +9,17 @@ Class {
 	#tag : 'Space'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 CMR3SpaceCellsBuilder >> defaultMasterShape [
-
-	^ RSBox new
-		size: 16;
+	"^(RSPolygon new points: (RSPolygon generatePointsFitSquare: 6) * 50)"
+| border |
+border := RSBorder new
+		color: (Color gray alpha: 0.5);
 		yourself.
+	^ RSBox new
+		  size: 16;
+			border: border;
+		  yourself
 ]
 
 { #category : 'initialization' }
@@ -26,9 +31,13 @@ CMR3SpaceCellsBuilder >> initialize [
 
 { #category : 'accessing' }
 CMR3SpaceCellsBuilder >> masterShape: aShape [
-
+	| border |
+	border := RSBorder new
+		          color: (Color gray alpha: 0.5);
+		          yourself.
+	aShape border: border.
 	super masterShape: aShape.
-	masterShape when: RSMouseLeftClick send: #processLeftClick: to: self.
+	masterShape when: RSMouseLeftClick send: #processLeftClick: to: self
 ]
 
 { #category : 'accessing' }
@@ -47,13 +56,23 @@ CMR3SpaceCellsBuilder >> processLeftClick: anEvent [
 
 { #category : 'rendering' }
 CMR3SpaceCellsBuilder >> renderIn: aCanvas [
-
+"self halt."
 	super renderIn: aCanvas.
-	
+
 	RSGridLayout new
 		gapSize: 0;
-		lineItemsCount: diagramBuilder cormasModel spaceModel numberOfColumns;
-		on: aCanvas nodes.
+		lineItemsCount:
+			diagramBuilder cormasModel spaceModel numberOfColumns;
+		on: aCanvas nodes
+]
+
+{ #category : 'initialization' }
+CMR3SpaceCellsBuilder >> setMasterShape [
+"Set masterShape, now that neighbourhoodConfiguration is knowned"
+	self masterShape:
+		diagramBuilder cormasModel spaceModel neighbourhoodConfiguration
+			getMasterShape
+	
 ]
 
 { #category : 'updating' }
@@ -61,19 +80,19 @@ CMR3SpaceCellsBuilder >> updateShape: aShape [
 
 	| model pov |
 	model := aShape model.
-	
+
 	pov := model perform: diagramBuilder activeSpatialEntityPov.
 
 	pov isForImage
 		ifTrue: [
 			| newSize |
 			newSize := pov image extent x.
-			
+
 			aShape
 				paint: (self paintFromImage: pov image);
 				size: newSize;
 				scaleBy: 16 / aShape extent x ]
-		ifFalse: [ aShape color: pov color ].
+		ifFalse: [ aShape color: pov color ]
 ]
 
 { #category : 'enumerating' }

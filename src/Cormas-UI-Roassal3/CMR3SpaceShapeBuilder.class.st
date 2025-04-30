@@ -12,7 +12,7 @@ Class {
 
 { #category : 'instance creation' }
 CMR3SpaceShapeBuilder class >> for: aBuilder [
-
+"Set the Grid presenter: a new instance of RoassalBuilder (CMR3SpaceDiagramBuilder)"
 	^ self new
 		diagramBuilder: aBuilder;
 		container: aBuilder container;
@@ -116,9 +116,13 @@ CMR3SpaceShapeBuilder >> renderIn: aCanvas [
 { #category : 'hooks' }
 CMR3SpaceShapeBuilder >> shapeFor: anObject index: aNumber [
 
-	^ masterShape copyWithAnnouncer
-		model: anObject;
-		yourself
+	| ms |
+	ms := masterShape copyWithAnnouncer.
+	ms translateBy: 400 @ 50.
+	ms position: 33@55.
+	ms translateTo: 100@120.
+	ms model: anObject.
+	^ ms
 ]
 
 { #category : 'as yet unclassified' }

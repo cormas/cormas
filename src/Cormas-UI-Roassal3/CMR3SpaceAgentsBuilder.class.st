@@ -179,19 +179,18 @@ CMR3SpaceAgentsBuilder >> shapeFor: anObject index: aNumber [
 
 	| pov shape |
 	pov := anObject perform: anObject class activePovSelector.
-	
+
 	self masterShape: ((RSShapeFactory perform: pov shape)
-		color: pov color;
-		extent: 20@20;
-		yourself).
-			
+			 color: pov color;
+			 extent: 20 @ 20;
+			 yourself).
+
 	shape := super shapeFor: anObject index: aNumber.
-	
+
 	shape model: anObject.
-		
-	isDraggable ifTrue: [
-		self makeAgentShapeDraggable: shape ].
-	
+
+	isDraggable ifTrue: [ self makeAgentShapeDraggable: shape ].
+
 	^ shape
 ]
 

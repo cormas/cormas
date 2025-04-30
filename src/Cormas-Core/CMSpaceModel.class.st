@@ -35,6 +35,9 @@ Class {
 		'numberOfColumns',
 		'neighbourhoodConfiguration'
 	],
+	#classInstVars : [
+		'flatTopHexagons'
+	],
 	#category : 'Cormas-Core-Space',
 	#package : 'Cormas-Core',
 	#tag : 'Space'
@@ -54,6 +57,18 @@ CMSpaceModel class >> defaultNumberOfRows [
 	^ 10
 ]
 
+{ #category : 'accessing' }
+CMSpaceModel class >> flatTopHexagons [
+"By default, pointedTop hexagons"
+	^ flatTopHexagons ifNil: [ flatTopHexagons := false ]
+]
+
+{ #category : 'accessing' }
+CMSpaceModel class >> flatTopHexagons: anObject [
+
+	flatTopHexagons := anObject
+]
+
 { #category : 'instance creation' }
 CMSpaceModel class >> forModel: aCormasModel [
 	" Answer a new space configured for aCormasModel "
@@ -63,6 +78,12 @@ CMSpaceModel class >> forModel: aCormasModel [
 		randomNumberGenerator: aCormasModel randomNumberGenerator;
 		initialize;
 		yourself
+]
+
+{ #category : 'accessing' }
+CMSpaceModel >> cardinal [
+"Returns 4, 6 or 8"
+	^ neighbourhoodConfiguration class cardinal
 ]
 
 { #category : 'accessing cell' }
