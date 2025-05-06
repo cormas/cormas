@@ -39,6 +39,7 @@ CMSimulationPresenter >> beInRunningMode [
 
 { #category : 'initialization' }
 CMSimulationPresenter >> connectPresenters [
+"Purpose: While instanciating a new simulation (with #activeInitSelector), set the presenters (grid, diagrams, etc.)"
 
 	initializer
 		whenInitializedDo: [ simulationRunner simulation: initializer simulation ];

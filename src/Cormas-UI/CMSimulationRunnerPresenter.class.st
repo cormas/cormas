@@ -139,6 +139,11 @@ CMSimulationRunnerPresenter >> initializeDataTable [
 { #category : 'initialization' }
 CMSimulationRunnerPresenter >> initializeNotebookPages [
 
+"Purpose: Set the Notebook Pages:
+	grid = SpacePresenter, 
+	data table = initializeDataTable,
+	charts = diagrams"
+	
 	self initializeSpacePresenter.
 	self initializeDataTable.
 	self initializeCharts.
@@ -194,7 +199,7 @@ CMSimulationRunnerPresenter >> initializePresenters [
 
 { #category : 'initialization' }
 CMSimulationRunnerPresenter >> initializeSpacePresenter [
-	
+	"Purpose: Instanciates a new SpacePresenter for the given simulation"
 	spacePresenter := self instantiate: CMSpacePresenter on: simulation cormasModel
 ]
 
@@ -211,7 +216,7 @@ CMSimulationRunnerPresenter >> initializeWindow: aWindowPresenter [
 
 { #category : 'initialization' }
 CMSimulationRunnerPresenter >> initializeWithSimulation [
-
+"Purpose: set the final time step, then initialize the Notebook Pages (grid, diagrams,...)"
 	self enabled: true.
 	simulationControls finalTimeStep: simulation finalTimeStep.
 	self initializeNotebookPages.
@@ -269,6 +274,8 @@ CMSimulationRunnerPresenter >> simulation [
 
 { #category : 'accessing' }
 CMSimulationRunnerPresenter >> simulation: aSimulation [
+
+"Purpose: registers aSimulation, then initialize the Notebook Pages (grid, diagrams,...)"
 
 	simulation := aSimulation.
 	self initializeWithSimulation
