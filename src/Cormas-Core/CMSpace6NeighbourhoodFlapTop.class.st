@@ -1,3 +1,6 @@
+"
+Hexagonal neighbourhood with Flat top hexagons
+"
 Class {
 	#name : 'CMSpace6NeighbourhoodFlapTop',
 	#superclass : 'CMSpace6Neighbourhood',
@@ -33,42 +36,116 @@ CMSpace6NeighbourhoodFlapTop >> getMasterShape [
 { #category : 'initialization' }
 CMSpace6NeighbourhoodFlapTop >> initializeOrderedNeighbourhood: k [
 
-	| v i | 
+	| v i |
 	v := Array new: 6.
+	"prendre la cell au nord"
 	(i := self northCell: k) > 0 ifTrue: [
-		v at: 6 put: (self elementaryEntitiesAt: i) ]. "prendre la cell au nord"
-	(i := self northCellHexaFlat: (self eastCell: k)) > 0 ifTrue: [
-		v at: 5 put: (self elementaryEntitiesAt: i) ]. "prendre la cell haute à l'est"
-	(i := self southCellHexaFlat: (self eastCell: k)) > 0 ifTrue: [
-		v at: 4 put: (self elementaryEntitiesAt: i) ]. "prendre la cell basse à l'est"
+		v at: 6 put: (self elementaryEntitiesAt: i) ].
+	"prendre la cell haute à l'est"
+	(i := self northEastCellHexaFlat: k) > 0 ifTrue: [
+		v at: 5 put: (self elementaryEntitiesAt: i) ].
+	"prendre la cell basse à l'est"
+	(i := self southEastCellHexaFlat: k) > 0 ifTrue: [
+		v at: 4 put: (self elementaryEntitiesAt: i) ].
+	"prendre la cell sud"
 	(i := self southCell: k) > 0 ifTrue: [
-		v at: 3 put: (self elementaryEntitiesAt: i) ]. "prendre la cell sud"
-	(i := self southCellHexaFlat: (self westCell: k)) > 0 ifTrue: [
-		v at: 2 put: (self elementaryEntitiesAt: i) ]. "prendre la cell basse à l'ouest"
-	(i := self northCellHexaFlat: (self westCell: k)) > 0 ifTrue: [
-		v at: 1 put: (self elementaryEntitiesAt: i) ]. "prendre la cell haute à l'ouest"
+		v at: 3 put: (self elementaryEntitiesAt: i) ].
+	"prendre la cell basse à l'ouest"
+	(i := self southWestCellHexaFlat: k) > 0 ifTrue: [
+		v at: 2 put: (self elementaryEntitiesAt: i) ].
+	"prendre la cell haute à l'ouest"
+	(i := self northWestCellHexaFlat: k) > 0 ifTrue: [
+		v at: 1 put: (self elementaryEntitiesAt: i) ].
 
 	^ (self elementaryEntitiesAt: k) neighbourhoodWithNils: v
 ]
 
 { #category : 'private - regular cells - instance creation' }
-CMSpace6NeighbourhoodFlapTop >> northCellHexaFlat: k [
+CMSpace6NeighbourhoodFlapTop >> northEastCellHexaFlat: k [
 
 	| numCol |
 	k = 0 ifTrue: [ ^ 0 ].
-	numCol := k - ((k / self numberOfColumns) ceiling - 1 * self numberOfColumns).
+	numCol := self numCol: k.
+	"if last column"
+	numCol = self numberOfColumns ifTrue: [
+		self isClosedEnvironment
+			ifTrue: [ ^ 0 ]
+			ifFalse: [
+				numCol odd
+					ifFalse: [ ^ self adaptedNumber: k + 1 - self numberOfColumns ]
+					ifTrue: [
+						^ self northCell:
+							  (self adaptedNumber: k + 1 - self numberOfColumns) ] ] ].
 	numCol odd
-		ifTrue: [ "colonne impaire ou premiere" ^ self northCell: k ]
-		ifFalse: [ "colonne paire" ^ k ]
+		ifTrue: [ ^ self northCell: (self adaptedNumber: k + 1) ]
+		ifFalse: [ ^ self adaptedNumber: k + 1 ]
 ]
 
 { #category : 'private - regular cells - instance creation' }
-CMSpace6NeighbourhoodFlapTop >> southCellHexaFlat: k [
+CMSpace6NeighbourhoodFlapTop >> northWestCellHexaFlat: k [
 
 	| numCol |
 	k = 0 ifTrue: [ ^ 0 ].
-	numCol := k - ((k / self numberOfColumns) ceiling - 1 * self numberOfColumns).
+	numCol := self numCol: k.
+	numCol = 1 ifTrue: [
+		self isClosedEnvironment
+			ifTrue: [ ^ 0 ]
+			ifFalse: [ ^ self adaptedNumber: k - 1 ] ].
+	numCol even
+		ifTrue: [ ^ self adaptedNumber: k - 1 ]
+		ifFalse: [ ^ self adaptedNumber: k - 1 - self numberOfColumns ]
+]
+
+{ #category : 'set grid' }
+CMSpace6NeighbourhoodFlapTop >> organizeShapesPositions: aRSGroup [
+	"If r is the radius of the circle passing through all the vertices of the hexagon, then the width of the hexagon is 2r, and the height is 2r cos 30° ( note: cos 30° = (3 sqrt)/2 = 0.866025 ), and one side measures r. Each shape on an even column must be move to a down point [height/2 @ r/2] (r cos 30/-2 @ r/2) "
+
+	| height  r numCol |
+	r := (GSegment
+		      with: (aRSGroup first points at: 1)
+		      with: (aRSGroup first points at: 2)) length.
+	height := 3 sqrt * r.
+	aRSGroup do: [ :aShape |
+		numCol := aShape model columnNumber - 1.
+		"columnNumber even = "
+		numCol odd ifTrue: [ 
+			aShape translateBy: (numCol * r / -2) @ (height / 2)] 
+		ifFalse: [ aShape translateBy: numCol * ((r / -2) @ 0) ]]
+]
+
+{ #category : 'private - regular cells - instance creation' }
+CMSpace6NeighbourhoodFlapTop >> southEastCellHexaFlat: k [
+
+	| numCol |
+	k = 0 ifTrue: [ ^ 0 ].
+	numCol := self numCol: k.
+	numCol = self numberOfColumns ifTrue: [
+		self isClosedEnvironment
+			ifTrue: [ ^ 0 ]
+			ifFalse: [
+				numCol odd
+					ifFalse: [
+						^ self southCell:
+							  (self adaptedNumber: k + 1 - self numberOfColumns) ]
+					ifTrue: [ ^ self adaptedNumber: k + 1 - self numberOfColumns ] ] ].
+
 	numCol odd
-		ifFalse: [ "colonne impaire ou premiere" ^ self southCell: k ]
-		ifTrue: [ "colonne paire" ^ k ]
+		ifFalse: [ ^ self southCell: (self adaptedNumber: k + 1) ]
+		ifTrue: [ ^ self adaptedNumber: k + 1 ]
+]
+
+{ #category : 'private - regular cells - instance creation' }
+CMSpace6NeighbourhoodFlapTop >> southWestCellHexaFlat: k [
+	"south west"
+
+	| numCol |
+	k = 0 ifTrue: [ ^ 0 ].
+	numCol := self numCol: k.
+	numCol = 1 ifTrue: [
+		self isClosedEnvironment
+			ifTrue: [ ^ 0 ]
+			ifFalse: [ ^ self southCell: (self adaptedNumber: k - 1) ] ].
+	numCol even
+		ifTrue: [ ^ self southCell: (self adaptedNumber: k - 1) ]
+		ifFalse: [ ^ self adaptedNumber: k - 1 ]
 ]

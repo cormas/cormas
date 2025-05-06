@@ -2,7 +2,9 @@ Class {
 	#name : 'CMR3SpaceCellsBuilder',
 	#superclass : 'CMR3SpaceShapeBuilder',
 	#instVars : [
-		'onLeftClickBlock'
+		'onLeftClickBlock',
+		'borderWidth',
+		'borderColor'
 	],
 	#category : 'Cormas-UI-Roassal3-Space',
 	#package : 'Cormas-UI-Roassal3',
@@ -10,15 +12,35 @@ Class {
 }
 
 { #category : 'accessing' }
+CMR3SpaceCellsBuilder >> borderColor [
+
+	^ borderColor
+]
+
+{ #category : 'accessing' }
+CMR3SpaceCellsBuilder >> borderColor: anObject [
+
+	borderColor := anObject
+]
+
+{ #category : 'accessing' }
+CMR3SpaceCellsBuilder >> borderWidth [
+
+	^ borderWidth
+]
+
+{ #category : 'accessing' }
+CMR3SpaceCellsBuilder >> borderWidth: anObject [
+
+	borderWidth := anObject
+]
+
+{ #category : 'accessing' }
 CMR3SpaceCellsBuilder >> defaultMasterShape [
-	"^(RSPolygon new points: (RSPolygon generatePointsFitSquare: 6) * 50)"
-| border |
-border := RSBorder new
-		color: (Color gray alpha: 0.5);
-		yourself.
+	"a RSBox, by default"
+
 	^ RSBox new
 		  size: 16;
-			border: border;
 		  yourself
 ]
 
@@ -27,13 +49,17 @@ CMR3SpaceCellsBuilder >> initialize [
 
 	super initialize.
 	onLeftClickBlock := [ :cell | "do nothing" ].
+	borderWidth := 1 . borderColor := (Color gray translucent)
 ]
 
 { #category : 'accessing' }
 CMR3SpaceCellsBuilder >> masterShape: aShape [
+	"Set the shape with its border"
+
 	| border |
 	border := RSBorder new
-		          color: (Color gray alpha: 0.5);
+		          color: borderColor;
+		          width: borderWidth;
 		          yourself.
 	aShape border: border.
 	super masterShape: aShape.
@@ -56,14 +82,16 @@ CMR3SpaceCellsBuilder >> processLeftClick: anEvent [
 
 { #category : 'rendering' }
 CMR3SpaceCellsBuilder >> renderIn: aCanvas [
-"self halt."
+
 	super renderIn: aCanvas.
 
 	RSGridLayout new
 		gapSize: 0;
 		lineItemsCount:
 			diagramBuilder cormasModel spaceModel numberOfColumns;
-		on: aCanvas nodes
+		on: aCanvas nodes.
+	diagramBuilder cormasModel spaceModel neighbourhoodConfiguration
+		organizeShapesPositions: aCanvas nodes
 ]
 
 { #category : 'initialization' }
@@ -77,7 +105,7 @@ CMR3SpaceCellsBuilder >> setMasterShape [
 
 { #category : 'updating' }
 CMR3SpaceCellsBuilder >> updateShape: aShape [
-
+"Set the PoV: Update shape and color of aShape"
 	| model pov |
 	model := aShape model.
 

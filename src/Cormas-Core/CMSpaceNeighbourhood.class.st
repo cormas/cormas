@@ -163,6 +163,19 @@ CMSpaceNeighbourhood >> northCell: k [
 ]
 
 { #category : 'private - regular cells - instance creation' }
+CMSpaceNeighbourhood >> numCol: k [
+	        ^k  -
+	          ((k / self numberOfColumns) ceiling - 1
+	           * self numberOfColumns).
+]
+
+{ #category : 'private - regular cells - instance creation' }
+CMSpaceNeighbourhood >> numRow: k [
+	
+	^ 1 max: ((k - 1) // (self numberOfColumns + 0) + 1)
+]
+
+{ #category : 'private - regular cells - instance creation' }
 CMSpaceNeighbourhood >> numberOfColumns [
 
 	^ self spaceModel numberOfColumns
@@ -178,6 +191,12 @@ CMSpaceNeighbourhood >> numberOfNeighbours [
 CMSpaceNeighbourhood >> numberOfRows [
 
 	^ self spaceModel numberOfRows
+]
+
+{ #category : 'set grid' }
+CMSpaceNeighbourhood >> organizeShapesPositions: r [
+"Do nothing, except for grid of hexagons"
+	
 ]
 
 { #category : 'private - regular cells - instance creation' }
@@ -205,10 +224,10 @@ CMSpaceNeighbourhood >> spaceModel: aCMSpaceModel [
 
 { #category : 'private - regular cells - instance creation' }
 CMSpaceNeighbourhood >> westCell: k [
-
-	k \\ self numberOfColumns = 1
-		ifFalse: [ ^ k - 1 ].
+"return K - 1, if k is not on the 1st column.
+If k is 1st col & grid close => 0. If torroid => k + column - 1"
+	k \\ self numberOfColumns = 1 ifFalse: [ ^ k - 1 ].
 	^ self isClosedEnvironment
-		ifTrue: [ 0 ]
-		ifFalse: [ k + self numberOfColumns - 1 ]
+		  ifTrue: [ 0 ]
+		  ifFalse: [ k + self numberOfColumns - 1 ]
 ]

@@ -118,9 +118,9 @@ CMR3SpaceShapeBuilder >> shapeFor: anObject index: aNumber [
 
 	| ms |
 	ms := masterShape copyWithAnnouncer.
-	ms translateBy: 400 @ 50.
+	"ms translateBy: 400 @ 50.
 	ms position: 33@55.
-	ms translateTo: 100@120.
+	ms translateTo: 100@120."
 	ms model: anObject.
 	^ ms
 ]

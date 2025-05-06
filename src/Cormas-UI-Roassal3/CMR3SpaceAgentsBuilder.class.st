@@ -143,16 +143,16 @@ CMR3SpaceAgentsBuilder >> objects [
 ]
 
 { #category : 'position in cell' }
-CMR3SpaceAgentsBuilder >> positionAgent: anAgent atProportion: aPoint [
-	"aPoint 0@0 will place the agent in the top-left corner of the cell, 1@1 - bottom-right corner, 0.5@0.5 - center of the cell"
+CMR3SpaceAgentsBuilder >> positionAgent: anAgent atProportion: aRelativePoint [
+	"aRelativePoint is relative to a cell. 0@0 will place the agent in the top-left corner of the cell, 1@1 - bottom-right corner, 0.5@0.5 - center of the cell"
 
 	| cell cellSize |
-	
 	cell := anAgent patch.
-	cellSize := diagramBuilder cellShapes anyOne encompassingRectangle extent.
+	cellSize := diagramBuilder cellShapes anyOne encompassingRectangle
+		            extent.
 
-	^ (((cell columnNumber @ cell rowNumber) - 1) * cellSize)
-		+ ((aPoint x * cellSize x) @ (aPoint y * cellSize y)).
+	^ cell columnNumber @ cell rowNumber - 1 * cellSize
+	  + (aRelativePoint x * cellSize x @ (aRelativePoint y * cellSize y))
 ]
 
 { #category : 'position in cell' }
