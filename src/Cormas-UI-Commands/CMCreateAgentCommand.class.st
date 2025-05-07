@@ -19,15 +19,23 @@ CMCreateAgentCommand >> actionWhenOff [
 
 { #category : 'action' }
 CMCreateAgentCommand >> actionWhenOn [
-
-	| agentClass |
+	| agentClasses selectedClass |
 	
-	agentClass := owner cormasModel class allEntityClasses
-		detect: [ :aClass | aClass isCormasAgentClass and: [ aClass subclasses isEmpty ] ].
+	agentClasses := (owner cormasModel class allEntityClasses 
+		select: [ :aClass | aClass isCormasAgentClass and: [ aClass subclasses isEmpty ] ]) asArray.
+	
+	selectedClass := UIManager default 
+		chooseFrom: (agentClasses collect: [:each | each name])
+		values: agentClasses
+		title: 'Create Agent'.
+		
+	selectedClass ifNil: [ ^ self ].
 	
 	owner spaceBuilder whenLeftClickOnCellDo: [ :cell |
-		owner cormasModel newEntity: agentClass locatedAt: cell.
+		| newAgent |
+		newAgent := owner cormasModel newEntity: selectedClass locatedAt: cell.
 		owner updateDiagram ].
+
 ]
 
 { #category : 'accessing' }
