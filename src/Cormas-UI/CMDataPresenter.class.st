@@ -67,6 +67,23 @@ CMDataPresenter >> initializeToolbar [
 		toolbar add: command button ].
 ]
 
+{ #category : 'as yet unclassified' }
+CMDataPresenter >> saveToCsv [
+	(StSaveFilePresenter extensions: {'csv'})
+		okAction: [ :fileReference | 
+			| csvStream keys |
+			csvStream := fileReference writeStream.
+			keys := self data first keys asSortedCollection.
+			csvStream nextPutAll: (keys joinUsing: ';'); cr.
+			self data do: [ :dict |
+    			| row |
+    			row := keys collect: [:key | (dict at: key ifAbsent: ['']) asString ].
+    			csvStream nextPutAll: (row joinUsing: ';'); cr.
+				].
+			csvStream close.
+			]
+]
+
 { #category : 'accessing - model' }
 CMDataPresenter >> setModelBeforeInitialization: aTranslator [
 

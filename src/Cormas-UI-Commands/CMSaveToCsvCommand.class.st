@@ -7,8 +7,7 @@ Class {
 
 { #category : 'accessing' }
 CMSaveToCsvCommand >> action [
-
-	"do nothing"
+	owner saveToCsv
 ]
 
 { #category : 'accessing' }
