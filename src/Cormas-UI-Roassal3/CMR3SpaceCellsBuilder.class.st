@@ -84,14 +84,16 @@ CMR3SpaceCellsBuilder >> processLeftClick: anEvent [
 CMR3SpaceCellsBuilder >> renderIn: aCanvas [
 
 	super renderIn: aCanvas.
-
 	RSGridLayout new
 		gapSize: 0;
 		lineItemsCount:
 			diagramBuilder cormasModel spaceModel numberOfColumns;
 		on: aCanvas nodes.
+
 	diagramBuilder cormasModel spaceModel neighbourhoodConfiguration
-		organizeShapesPositions: aCanvas nodes
+		organizeShapesPositions: aCanvas nodes "toFit: aCanvas".
+		
+	aCanvas color: Color lightOrange .
 ]
 
 { #category : 'initialization' }

@@ -33,6 +33,8 @@ CMSpace8Neighbourhood class >> example [
 
 { #category : 'initialization' }
 CMSpace8Neighbourhood >> initializeOrderedNeighbourhood: k [
+"Set the neighbourhood of the cell with id = k.
+Neighbours are ordered anticlockwise, starting from the North cell"
 
 	| v i |
 	v := Array new: 8.

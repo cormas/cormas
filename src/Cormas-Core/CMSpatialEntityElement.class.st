@@ -223,6 +223,16 @@ CMSpatialEntityElement >> isElementary [
 ]
 
 { #category : 'testing' }
+CMSpatialEntityElement >> isFlatTopTriangle [
+	"Answer if this cell is a Flat-Top triangle"
+
+	self spaceModel cardinal = 3 ifFalse: [ ^ false ].
+	^ self id odd
+		  ifTrue: [ CMSpace3Neighbourhood firstCellIsFlatTopTriangle ]
+		  ifFalse: [ CMSpace3Neighbourhood firstCellIsFlatTopTriangle not]
+]
+
+{ #category : 'testing' }
 CMSpatialEntityElement >> isOnTheEdge [
 	"Answer if the cell is on the edge of the grid (false if the grid is torroidal)"
 

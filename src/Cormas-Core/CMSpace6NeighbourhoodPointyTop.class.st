@@ -35,9 +35,10 @@ CMSpace6NeighbourhoodPointyTop >> getMasterShape [
 
 { #category : 'initialization' }
 CMSpace6NeighbourhoodPointyTop >> initializeOrderedNeighbourhood: k [
+"Set the neighbourhood of the cell with id = k.
+Neighbours are ordered anticlockwise, starting from the North-East cell"
 
 	| v i |
-	"k = 5 ifTrue: [ self halt ]."
 	v := Array new: 6.
 	"Cell at north east"
 	(i := self northEastCellHexa: k) > 0 ifTrue: [
@@ -64,15 +65,12 @@ CMSpace6NeighbourhoodPointyTop >> initializeOrderedNeighbourhood: k [
 { #category : 'private - regular cells - instance creation' }
 CMSpace6NeighbourhoodPointyTop >> northEastCellHexa: k [
 	"Return the ID of the North-East cell."
-
 	| numRow |
 	k = 0 ifTrue: [ ^ 0 ].
 	numRow := self numRow: k.
 	"If 1st line"
 	numRow = 1 ifTrue: [
-		self isClosedEnvironment
-			ifTrue: [ ^ 0 ]
-			"ifFalse: [ self halt ] "].
+		self isClosedEnvironment ifTrue: [ ^ 0 ] ].
 
 	(self numCol: k) = self numberOfColumns ifTrue: [
 		self isClosedEnvironment
@@ -126,14 +124,13 @@ CMSpace6NeighbourhoodPointyTop >> organizeShapesPositions: aRSGroup [
 	"If r is the radius of the circle passing through all the vertices of the hexagon, then the height of the hexagon is 2r, and the width is 2r cos 30° ( note: cos 30° = (3 sqrt)/2 = 0.866025 ), and one side measures r. "
 
 	| width numLine r |
-	
 	r := (GSegment
 		      with: (aRSGroup first points at: 1)
 		      with: (aRSGroup first points at: 2)) length.
 	width := 3 sqrt * r.
 	aRSGroup do: [ :aShape |
 		numLine := aShape model rowNumber - 1.
-		"rowNumber even = " numLine odd
+		numLine odd
 			ifTrue: [ aShape translateBy: width / 2 @ (numLine * r / -2) ]
 			ifFalse: [ aShape translateBy: numLine * (0 @ (r / -2)) ] ]
 ]

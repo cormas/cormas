@@ -33,7 +33,8 @@ CMSpace4Neighbourhood class >> example [
 
 { #category : 'initialization' }
 CMSpace4Neighbourhood >> initializeOrderedNeighbourhood: k [
-
+"Set the neighbourhood of the cell with id = k.
+Neighbours are ordered anticlockwise, starting from the North cell"
 	| v i |
 	v := Array new: 4.
 	(i := self northCell: k) > 0 ifTrue: [ 

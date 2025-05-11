@@ -266,6 +266,13 @@ Example: self askRandom: (self theAnimals select:[:f | f energy > 10]) toDo: #re
 		(self shuffled: collecEntities) do: [ :c | aBlock value: c ] ]
 ]
 
+{ #category : 'accessing - entities' }
+CMAbstractModel >> cellAt: id [
+	"Purpose: returns the cell with id = id"
+
+	^ self cells at: id
+]
+
 { #category : 'accessing' }
 CMAbstractModel >> cellAt: aRowIndex at: aColumnIndex [ 
 	
