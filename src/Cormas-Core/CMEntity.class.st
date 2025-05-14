@@ -37,7 +37,8 @@ Class {
 	#instVars : [
 		'id',
 		'cormasModel',
-		'group'
+		'group',
+		'pov'
 	],
 	#classInstVars : [
 		'currentId',
@@ -586,7 +587,14 @@ CMEntity >> patch [
 CMEntity >> pov [
 	"Default point of view"
 	<pov>
-	^ CMPointOfView new
+	pov := CMPointOfView new.
+	^ pov
+]
+
+{ #category : 'accessing' }
+CMEntity >> pov: aPointOfView [
+
+	pov := aPointOfView
 ]
 
 { #category : 'pov' }
@@ -594,7 +602,8 @@ CMEntity >> povClassName [
 	"Assign unique color to each class name"
 	
 	<pov>
-	^ CMPointOfView color: (self colorFromName: self class name)
+	pov := CMPointOfView color: (self colorFromName: self class name).
+	^ pov
 ]
 
 { #category : 'pov' }
@@ -603,14 +612,16 @@ CMEntity >> povId [
 Example: for an instance with id = 65, the returned color will be brown (65= 2*31+3)"
 
 	<pov>
-	^ CMPointOfView color: (self class colorOfNumber: self id)
+	pov := CMPointOfView color: (self class colorOfNumber: self id).
+	^ pov
 ]
 
 { #category : 'pov' }
 CMEntity >> povInvisible [
 
 	<pov>
-	^ CMPointOfView color: Color transparent
+	pov := CMPointOfView color: Color transparent.
+	^ pov
 ]
 
 { #category : 'printing' }
