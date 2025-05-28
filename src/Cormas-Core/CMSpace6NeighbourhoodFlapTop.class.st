@@ -19,27 +19,28 @@ CMSpace6NeighbourhoodFlapTop class >> isStartConditionFor: aSymbolOrNumber [
 
 { #category : 'initialization' }
 CMSpace6NeighbourhoodFlapTop >> initializeOrderedNeighbourhood: k [
-
+"Set the neighbourhood of the cell with id = k.
+Neighbours are ordered anticlockwise, starting from the North cell"
 	| v i |
 	v := Array new: 6.
 	"prendre la cell au nord"
 	(i := self northCell: k) > 0 ifTrue: [
-		v at: 6 put: (self elementaryEntitiesAt: i) ].
+		v at: 1 put: (self elementaryEntitiesAt: i) ].
 	"prendre la cell haute à l'est"
 	(i := self northEastCellHexaFlat: k) > 0 ifTrue: [
-		v at: 5 put: (self elementaryEntitiesAt: i) ].
+		v at: 6 put: (self elementaryEntitiesAt: i) ].
 	"prendre la cell basse à l'est"
 	(i := self southEastCellHexaFlat: k) > 0 ifTrue: [
-		v at: 4 put: (self elementaryEntitiesAt: i) ].
+		v at: 5 put: (self elementaryEntitiesAt: i) ].
 	"prendre la cell sud"
 	(i := self southCell: k) > 0 ifTrue: [
-		v at: 3 put: (self elementaryEntitiesAt: i) ].
+		v at: 4 put: (self elementaryEntitiesAt: i) ].
 	"prendre la cell basse à l'ouest"
 	(i := self southWestCellHexaFlat: k) > 0 ifTrue: [
-		v at: 2 put: (self elementaryEntitiesAt: i) ].
+		v at: 3 put: (self elementaryEntitiesAt: i) ].
 	"prendre la cell haute à l'ouest"
 	(i := self northWestCellHexaFlat: k) > 0 ifTrue: [
-		v at: 1 put: (self elementaryEntitiesAt: i) ].
+		v at: 2 put: (self elementaryEntitiesAt: i) ].
 
 	^ (self elementaryEntitiesAt: k) neighbourhoodWithNils: v
 ]
@@ -91,7 +92,6 @@ CMSpace6NeighbourhoodFlapTop >> organizeShapesPositions: aRSGroup [
 	height := 3 sqrt * r.
 	aRSGroup do: [ :aShape |
 		numCol := aShape model columnNumber - 1.
-		"columnNumber even = "
 		numCol odd ifTrue: [ 
 			aShape translateBy: (numCol * r / -2) @ (height / 2)] 
 		ifFalse: [ aShape translateBy: numCol * ((r / -2) @ 0) ]]

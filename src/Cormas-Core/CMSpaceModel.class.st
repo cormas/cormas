@@ -35,9 +35,6 @@ Class {
 		'numberOfColumns',
 		'neighbourhoodConfiguration'
 	],
-	#classInstVars : [
-		'flatTopHexagons'
-	],
 	#category : 'Cormas-Core-Space',
 	#package : 'Cormas-Core',
 	#tag : 'Space'
@@ -58,15 +55,28 @@ CMSpaceModel class >> defaultNumberOfRows [
 ]
 
 { #category : 'accessing' }
-CMSpaceModel class >> flatTopHexagons [
-"By default, pointedTop hexagons"
-	^ flatTopHexagons ifNil: [ flatTopHexagons := false ]
+CMSpaceModel class >> firstCellIsFlatTopTriangle [
+
+	^CMSpace3Neighbourhood firstCellIsFlatTopTriangle
 ]
 
 { #category : 'accessing' }
-CMSpaceModel class >> flatTopHexagons: anObject [
+CMSpaceModel class >> firstCellIsFlatTopTriangle: aBoolean [
 
-	flatTopHexagons := anObject
+	CMSpace3Neighbourhood firstCellIsFlatTopTriangle: aBoolean
+]
+
+{ #category : 'accessing' }
+CMSpaceModel class >> flatTopHexagons [
+	"By default, pointedTop hexagons"
+
+	^ CMSpace6Neighbourhood flatTopHexagons
+]
+
+{ #category : 'accessing' }
+CMSpaceModel class >> flatTopHexagons: aBoolean [
+
+	CMSpace6Neighbourhood flatTopHexagons: aBoolean
 ]
 
 { #category : 'instance creation' }
@@ -82,7 +92,7 @@ CMSpaceModel class >> forModel: aCormasModel [
 
 { #category : 'accessing' }
 CMSpaceModel >> cardinal [
-"Returns 4, 6 or 8"
+"Returns 3 ,4, 6 or 8"
 	^ neighbourhoodConfiguration class cardinal
 ]
 

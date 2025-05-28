@@ -22,9 +22,11 @@ Class {
 	#name : 'CMSpaceNeighbourhood',
 	#superclass : 'Object',
 	#traits : 'TCMRandom',
-	#classTraits : 'TCMRandom classTrait',
 	#instVars : [
 		'spaceModel'
+	],
+	#classInstVars : [
+		'flatTopHexagons'
 	],
 	#category : 'Cormas-Core-Space',
 	#package : 'Cormas-Core',
@@ -123,7 +125,8 @@ CMSpaceNeighbourhood >> initializeOn: aSpaceModel [
 
 { #category : 'initialization' }
 CMSpaceNeighbourhood >> initializeOrderedNeighbourhood: k [
-
+"Set the neighbourhood of the cell with id = k.
+Neighbours are ordered anticlockwise, starting from the North cell (except for the pointy hexagons)"
 	self subclassResponsibility
 ]
 
@@ -186,7 +189,8 @@ CMSpaceNeighbourhood >> numberOfRows [
 
 { #category : 'set grid' }
 CMSpaceNeighbourhood >> organizeShapesPositions: r [
-"Do nothing, except for grid of hexagons"
+	"Do nothing, except for grid of hexagons and triangles"
+
 	
 ]
 

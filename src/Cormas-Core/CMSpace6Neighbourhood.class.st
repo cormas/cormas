@@ -5,6 +5,9 @@ It is specialized as Flat or Pointy hexagon
 Class {
 	#name : 'CMSpace6Neighbourhood',
 	#superclass : 'CMSpaceNeighbourhood',
+	#instVars : [
+		'flatTopHexagons'
+	],
 	#category : 'Cormas-Core-Space',
 	#package : 'Cormas-Core',
 	#tag : 'Space'
@@ -26,6 +29,19 @@ CMSpace6Neighbourhood class >> cardinalSymbol [
 CMSpace6Neighbourhood class >> distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols [
 
 	^ nbLines max: nbCols
+]
+
+{ #category : 'accessing' }
+CMSpace6Neighbourhood class >> flatTopHexagons [
+	"By default, pointedTop hexagons"
+
+	^ flatTopHexagons ifNil: [ flatTopHexagons := false ] 
+]
+
+{ #category : 'accessing' }
+CMSpace6Neighbourhood class >> flatTopHexagons: aBoolean [
+
+	^ flatTopHexagons := aBoolean
 ]
 
 { #category : 'as yet unclassified' }
