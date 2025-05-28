@@ -34,15 +34,8 @@ CMR3SpaceShapeBuilder >> defaultMasterShape [
 { #category : 'accessing' }
 CMR3SpaceShapeBuilder >> diagramBuilder: anObject [
 
-	diagramBuilder := anObject
-]
-
-{ #category : 'initialization' }
-CMR3SpaceShapeBuilder >> initialize [ 
-
-	super initialize.
-	
-	self masterShape: self defaultMasterShape.
+	diagramBuilder := anObject.
+	self setMasterShape
 ]
 
 { #category : 'as yet unclassified' }
@@ -111,6 +104,12 @@ CMR3SpaceShapeBuilder >> renderIn: aCanvas [
 
 	super renderIn: aCanvas.
 	self update.
+]
+
+{ #category : 'initialization' }
+CMR3SpaceShapeBuilder >> setMasterShape [
+
+	self masterShape: self defaultMasterShape
 ]
 
 { #category : 'hooks' }

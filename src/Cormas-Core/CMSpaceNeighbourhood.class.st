@@ -97,15 +97,6 @@ CMSpaceNeighbourhood >> elementaryEntitiesAt: anInteger [
 	^ self spaceModel cells at: anInteger
 ]
 
-{ #category : 'accessing' }
-CMSpaceNeighbourhood >> getMasterShape [
-
-	"self subclassResponsibility"
-	^ RSBox new
-		  size: 16;
-		  yourself
-]
-
 { #category : 'private - regular cells - instance creation' }
 CMSpaceNeighbourhood >> gridCellShapeType [
 

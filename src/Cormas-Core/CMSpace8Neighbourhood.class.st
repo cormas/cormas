@@ -24,13 +24,6 @@ CMSpace8Neighbourhood class >> distanceFromCell: cell1 toCell: cell2 nbLines: nb
 	^ nbLines max: nbCols
 ]
 
-{ #category : 'examples' }
-CMSpace8Neighbourhood class >> example [
-
-	<example>
-	^ self new getMasterShape inspect
-]
-
 { #category : 'initialization' }
 CMSpace8Neighbourhood >> initializeOrderedNeighbourhood: k [
 "Set the neighbourhood of the cell with id = k.

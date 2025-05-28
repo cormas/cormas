@@ -40,15 +40,6 @@ CMSpace6NeighbourhoodPointyTop class >> isStartConditionFor: aSymbolOrNumber [
 		  CMSpaceModel flatTopHexagons not ]
 ]
 
-{ #category : 'accessing' }
-CMSpace6NeighbourhoodPointyTop >> getMasterShape [
-
-	^ (RSPolygon new points: (RSPolygon generatePointsFitSquare: 6))
-		  rotateByDegrees: 90;
-		  size: 16;
-		  yourself
-]
-
 { #category : 'initialization' }
 CMSpace6NeighbourhoodPointyTop >> initializeOrderedNeighbourhood: k [
 "Set the neighbourhood of the cell with id = k.
