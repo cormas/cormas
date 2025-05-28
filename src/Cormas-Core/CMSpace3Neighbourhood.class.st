@@ -25,17 +25,17 @@ CMSpace3Neighbourhood class >> cardinalSymbol [
 ]
 
 { #category : 'testing' }
-CMSpace3Neighbourhood class >> example [
-
-	<example>
-	^ self new getMasterShape inspect
-]
-
-{ #category : 'testing' }
-CMSpace3Neighbourhood class >> example2Reverse [
+CMSpace3Neighbourhood class >> exampleFlatTop [
 
 	<example>
 	^ (self new getMasterShape rotateByDegrees: 180) inspect
+]
+
+{ #category : 'testing' }
+CMSpace3Neighbourhood class >> examplePointyTop [
+
+	<example>
+	^ self new getMasterShape inspect
 ]
 
 { #category : 'accessing' }
@@ -96,6 +96,25 @@ Neighbours are ordered anticlockwise, starting from the North cell"
 ]
 
 { #category : 'initialization' }
+CMSpace3Neighbourhood >> organizeShapesPositions2: aRSGroup [
+	"Reverse the triangles when id is even. "
+
+	| i r numCol |
+	i := self class firstCellIsFlatTopTriangle
+		     ifTrue: [ 1 ]
+		     ifFalse: [ 0 ].
+	r := aRSGroup first encompassingRectangle width.
+	aRSGroup do: [ :aShape |
+		i := i + 1.
+		i even ifTrue: [ aShape rotateByDegrees: 180 ].
+		(aShape model columnNumber = self numberOfColumns and: [
+			 self numberOfColumns even ]) ifTrue: [ i := i + 1 ].
+		"aShape model rowNumber even ifTrue: [ "aShape scaleBy: 1.5 @ 1 .
+		numCol := aShape model columnNumber.
+		aShape translateBy: 0.5 * numCol * (r / -2 @ 0) ]
+]
+
+{ #category : 'initialization' }
 CMSpace3Neighbourhood >> organizeShapesPositions: aRSGroup [
 	"Reverse the triangles when id is even. "
 
@@ -110,7 +129,7 @@ CMSpace3Neighbourhood >> organizeShapesPositions: aRSGroup [
 		(aShape model columnNumber = self numberOfColumns and: [
 			 self numberOfColumns even ]) ifTrue: [ i := i + 1 ].
 		numCol := aShape model columnNumber.
-		aShape translateBy: (numCol * ((r) / -2 @ 0)) ]
+		aShape translateBy: numCol * (r / -2 @ 0) ]
 ]
 
 { #category : 'initialization' }
@@ -161,4 +180,22 @@ CMSpace3Neighbourhood >> organizeShapesPositions: aRSGroup toFit: aCanvas [
 
 	aCanvas color: Color blue.
 	aCanvas invalidate
+]
+
+{ #category : 'initialization' }
+CMSpace3Neighbourhood >> organizeShapesPositionsOK: aRSGroup [
+	"Reverse the triangles when id is even. "
+
+	| i r numCol |
+	i := self class firstCellIsFlatTopTriangle
+		     ifTrue: [ 1 ]
+		     ifFalse: [ 0 ].
+	r := aRSGroup first encompassingRectangle width.
+	aRSGroup do: [ :aShape |
+		i := i + 1.
+		i even ifTrue: [ aShape rotateByDegrees: 180 ].
+		(aShape model columnNumber = self numberOfColumns and: [
+			 self numberOfColumns even ]) ifTrue: [ i := i + 1 ].
+		numCol := aShape model columnNumber.
+		aShape translateBy: numCol * (r / -2 @ 0) ]
 ]

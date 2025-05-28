@@ -198,7 +198,8 @@ CMSpaceNeighbourhood >> numberOfRows [
 
 { #category : 'set grid' }
 CMSpaceNeighbourhood >> organizeShapesPositions: r [
-"Do nothing, except for grid of hexagons"
+	"Do nothing, except for grid of hexagons and triangles"
+
 	
 ]
 

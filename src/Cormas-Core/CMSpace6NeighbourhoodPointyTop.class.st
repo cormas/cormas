@@ -17,6 +17,22 @@ CMSpace6NeighbourhoodPointyTop class >> example [
 ]
 
 { #category : 'testing' }
+CMSpace6NeighbourhoodPointyTop class >> exampleGrid [
+
+	<example>
+| grid agent1 agent2 |
+grid := HexGrid new initializeRadius: 1.
+
+agent1 := HexAgent new.
+grid addAgent: agent1 toCell: (grid cellDictionary at: (HexCoordinate fromAxialQ: 0 r: 0)).
+
+agent2 := HexAgent new.
+grid addAgent: agent2 toCell: (grid cellDictionary at: (HexCoordinate fromAxialQ: 1 r: -1)).
+
+grid visualize.
+]
+
+{ #category : 'testing' }
 CMSpace6NeighbourhoodPointyTop class >> isStartConditionFor: aSymbolOrNumber [
 "Test: self isStartConditionFor: 6 "
 
