@@ -206,7 +206,5 @@ CMR3SpaceAgentsBuilder >> update [
 { #category : 'updating' }
 CMR3SpaceAgentsBuilder >> updateShape: aShape [
 
-	self moveAgentShape: aShape.
-	
-	Transcript show: diagramBuilder cormasModel agents size; cr.
+	self moveAgentShape: aShape
 ]

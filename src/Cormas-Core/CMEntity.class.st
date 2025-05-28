@@ -82,8 +82,13 @@ CMEntity class >> colorNames [
 	"Ex: (CMEntity colorNames collect: [:s | Color perform: s]) inspect"
 
 	| colorSpecs |
-	colorSpecs := Color defaultColors2 , Color defaultColors3
-	              , Color defaultColors4 , Color defaultColors.
+	
+	colorSpecs :=
+		Color defaultColors,
+		Color defaultColors2,
+		Color defaultColors3,
+		Color defaultColors4.
+	
 	^ Array streamContents: [ :stream |
 		  1 to: colorSpecs size by: 4 do: [ :i |
 		  stream nextPut: (colorSpecs at: i) ] ]
