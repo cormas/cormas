@@ -25,15 +25,19 @@ Class {
 CMR3SpaceDiagramBuilder class >> example [
 
 	<example>
-	| model builder |
-	model := CMMockModel new. model initFixed.
+	| model |
+	model := CMMockModel new. 
+	model initFixed.
 
-	builder := self new
-		           cormasModel: model;
-		           inspect;
-		           asPresenter.
+	(self for: model) asPresenter open
+]
 
-	builder open
+{ #category : 'instance creation' }
+CMR3SpaceDiagramBuilder class >> for: aCormasModel [
+
+	^ self new
+		initializeWithCormasModel: aCormasModel;
+		yourself
 ]
 
 { #category : 'accessing - pov' }
@@ -73,12 +77,6 @@ CMR3SpaceDiagramBuilder >> cormasModel [
 	^ cormasModel
 ]
 
-{ #category : 'accessing' }
-CMR3SpaceDiagramBuilder >> cormasModel: anObject [
-
-	cormasModel := anObject
-]
-
 { #category : 'as yet unclassified' }
 CMR3SpaceDiagramBuilder >> defaultContainer [
 
@@ -94,24 +92,11 @@ CMR3SpaceDiagramBuilder >> defaultContainer [
 ]
 
 { #category : 'initialization' }
-CMR3SpaceDiagramBuilder >> initialize [
-"Creates a new CMR3SpaceCellsBuilder and a new CMR3SpaceAgentsBuilder"
-	super initialize.
-	
+CMR3SpaceDiagramBuilder >> initializeWithCormasModel: aModel [
+
+	cormasModel := aModel.
 	cellsBuilder := CMR3SpaceCellsBuilder for: self.
 	agentsBuilder := CMR3SpaceAgentsBuilder for: self.
-]
-
-{ #category : 'accessing' }
-CMR3SpaceDiagramBuilder >> masterShapeForAgents: aShape [
-
-	agentsBuilder masterShape: aShape
-]
-
-{ #category : 'accessing' }
-CMR3SpaceDiagramBuilder >> masterShapeForCells: aShape [
-
-	cellsBuilder masterShape: aShape
 ]
 
 { #category : 'rendering' }

@@ -24,13 +24,6 @@ CMSpace4Neighbourhood class >> distanceFromCell: cell1 toCell: cell2 nbLines: nb
 	^ nbLines + nbCols
 ]
 
-{ #category : 'examples' }
-CMSpace4Neighbourhood class >> example [
-
-	<example>
-	^ self new getMasterShape inspect
-]
-
 { #category : 'initialization' }
 CMSpace4Neighbourhood >> initializeOrderedNeighbourhood: k [
 

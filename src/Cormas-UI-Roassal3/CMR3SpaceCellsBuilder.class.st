@@ -2,9 +2,7 @@ Class {
 	#name : 'CMR3SpaceCellsBuilder',
 	#superclass : 'CMR3SpaceShapeBuilder',
 	#instVars : [
-		'onLeftClickBlock',
-		'borderWidth',
-		'borderColor'
+		'onLeftClickBlock'
 	],
 	#category : 'Cormas-UI-Roassal3-Space',
 	#package : 'Cormas-UI-Roassal3',
@@ -12,56 +10,31 @@ Class {
 }
 
 { #category : 'accessing' }
-CMR3SpaceCellsBuilder >> borderColor [
-
-	^ borderColor
-]
-
-{ #category : 'accessing' }
-CMR3SpaceCellsBuilder >> borderColor: anObject [
-
-	borderColor := anObject
-]
-
-{ #category : 'accessing' }
-CMR3SpaceCellsBuilder >> borderWidth [
-
-	^ borderWidth
-]
-
-{ #category : 'accessing' }
-CMR3SpaceCellsBuilder >> borderWidth: anObject [
-
-	borderWidth := anObject
-]
-
-{ #category : 'accessing' }
 CMR3SpaceCellsBuilder >> defaultMasterShape [
 	"a RSBox, by default"
+	
+	| border |
+	border := RSBorder new
+		color: Color gray;
+		width: 1;
+		yourself.
 
-	^ RSBox new
-		  size: 16;
-		  yourself
+	^ diagramBuilder cormasModel spaceModel neighbourhoodConfiguration roassalMasterShape
+		size: 16;
+		border: border;
+		yourself
 ]
 
 { #category : 'initialization' }
 CMR3SpaceCellsBuilder >> initialize [
 
 	super initialize.
-	onLeftClickBlock := [ :cell | "do nothing" ].
-	borderWidth := 1 . borderColor := (Color gray translucent)
+	onLeftClickBlock := [ :cell | "do nothing" ]
 ]
 
 { #category : 'accessing' }
 CMR3SpaceCellsBuilder >> masterShape: aShape [
-	"Set the shape with its border"
 
-	| border |
-	border := RSBorder new
-		          color: borderColor;
-		          width: borderWidth;
-		          yourself.
-	aShape border: border.
 	super masterShape: aShape.
 	masterShape when: RSMouseLeftClick send: #processLeftClick: to: self
 ]
@@ -92,15 +65,6 @@ CMR3SpaceCellsBuilder >> renderIn: aCanvas [
 		on: aCanvas nodes.
 	diagramBuilder cormasModel spaceModel neighbourhoodConfiguration
 		organizeShapesPositions: aCanvas nodes
-]
-
-{ #category : 'initialization' }
-CMR3SpaceCellsBuilder >> setMasterShape [
-"Set masterShape, now that neighbourhoodConfiguration is knowned"
-	self masterShape:
-		diagramBuilder cormasModel spaceModel neighbourhoodConfiguration
-			getMasterShape
-	
 ]
 
 { #category : 'updating' }

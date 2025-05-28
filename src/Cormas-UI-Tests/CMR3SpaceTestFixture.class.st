@@ -53,11 +53,8 @@ CMR3SpaceTestFixture >> initialize [
 		
 	model := simulation cormasModel.
 
-	builder := CMR3SpaceDiagramBuilder new
-		cormasModel: model;
-		yourself.
-		
-	presenter := builder asPresenter.
+	builder := CMR3SpaceDiagramBuilder for: model.
+	presenter := builder asPresenter
 ]
 
 { #category : 'accessing' }

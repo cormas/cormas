@@ -27,15 +27,15 @@ CMMonteCarloValueGeneratorTest >> testGenerate [
 	| expected |
 	
 	expected := #(
-		31.20876521859726
-		28.472299789298464
-		15.467263220561325
 		10.7274076718499
+		15.467263220561325
 		18.220006622476507
-		32.791338070664246
-		29.074504179449054
-		32.30521348412391
 		22.453895589548114
+		28.472299789298464
+		29.074504179449054
+		31.20876521859726
+		32.30521348412391
+		32.791338070664246
 		40.86794010869597).
 		
 	self assert: generator generate closeTo: expected precision: 0.00000000001.
@@ -46,7 +46,7 @@ CMMonteCarloValueGeneratorTest >> testGenerateIntegers [
 
 	| expected |
 	generator beInteger.
-	expected := #(31 28 15 11 18 33 29 32 22 41).
+	expected := #(11 15 18 22 28 29 31 32 33 41).
 	self assert: generator generate equals: expected.
 ]
 

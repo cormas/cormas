@@ -10,27 +10,11 @@ Class {
 }
 
 { #category : 'testing' }
-CMSpace6NeighbourhoodFlapTop class >> example [
-
-	<example>
-	^ self new getMasterShape inspect
-]
-
-{ #category : 'testing' }
 CMSpace6NeighbourhoodFlapTop class >> isStartConditionFor: aSymbolOrNumber [
 "Test: self isStartConditionFor: 6 "
 
 	^ (super isStartConditionFor: aSymbolOrNumber) ifTrue: [
 		  CMSpaceModel flatTopHexagons ]
-]
-
-{ #category : 'accessing' }
-CMSpace6NeighbourhoodFlapTop >> getMasterShape [
-
-	^ RSPolygon new
-		  points: (RSPolygon generatePointsFitSquare: 6);
-		  size: 16;
-		  yourself
 ]
 
 { #category : 'initialization' }
