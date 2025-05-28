@@ -24,20 +24,6 @@ CMSpace3Neighbourhood class >> cardinalSymbol [
 	^#three
 ]
 
-{ #category : 'testing' }
-CMSpace3Neighbourhood class >> exampleFlatTop [
-
-	<example>
-	^ (self new getMasterShape rotateByDegrees: 180) inspect
-]
-
-{ #category : 'testing' }
-CMSpace3Neighbourhood class >> examplePointyTop [
-
-	<example>
-	^ self new getMasterShape inspect
-]
-
 { #category : 'accessing' }
 CMSpace3Neighbourhood class >> firstCellIsFlatTopTriangle [
 
@@ -55,15 +41,6 @@ CMSpace3Neighbourhood class >> isStartConditionFor: aSymbolOrNumber [
 "Test: self isStartConditionFor: 3 "
 
 	^ super isStartConditionFor: aSymbolOrNumber
-]
-
-{ #category : 'initialization' }
-CMSpace3Neighbourhood >> getMasterShape [
-
-	^ RSPolygon new
-		  points: (RSPolygon generatePointsFitSquare: 3);
-		  size: 16;
-		  yourself
 ]
 
 { #category : 'initialization' }
