@@ -53,17 +53,17 @@ CMSpace6NeighbourhoodFlapTop >> northEastCellHexaFlat: k [
 	numCol := self numCol: k.
 	"if last column"
 	numCol = self numberOfColumns ifTrue: [
-		self isClosedEnvironment
-			ifTrue: [ ^ 0 ]
+		^ self isClosedEnvironment
+			ifTrue: [ 0 ]
 			ifFalse: [
 				numCol odd
-					ifFalse: [ ^ self adaptedNumber: k + 1 - self numberOfColumns ]
+					ifFalse: [ self adaptedNumber: k + 1 - self numberOfColumns ]
 					ifTrue: [
-						^ self northCell:
-							  (self adaptedNumber: k + 1 - self numberOfColumns) ] ] ].
-	numCol odd
-		ifTrue: [ ^ self northCell: (self adaptedNumber: k + 1) ]
-		ifFalse: [ ^ self adaptedNumber: k + 1 ]
+						self northCell:
+							(self adaptedNumber: k + 1 - self numberOfColumns) ] ] ].
+	^ numCol odd
+		ifTrue: [ self northCell: (self adaptedNumber: k + 1) ]
+		ifFalse: [ self adaptedNumber: k + 1 ]
 ]
 
 { #category : 'private - regular cells - instance creation' }
@@ -73,12 +73,13 @@ CMSpace6NeighbourhoodFlapTop >> northWestCellHexaFlat: k [
 	k = 0 ifTrue: [ ^ 0 ].
 	numCol := self numCol: k.
 	numCol = 1 ifTrue: [
-		self isClosedEnvironment
-			ifTrue: [ ^ 0 ]
-			ifFalse: [ ^ self adaptedNumber: k - 1 ] ].
-	numCol even
-		ifTrue: [ ^ self adaptedNumber: k - 1 ]
-		ifFalse: [ ^ self adaptedNumber: k - 1 - self numberOfColumns ]
+		^ self isClosedEnvironment
+			ifTrue: [ 0 ]
+			ifFalse: [ self adaptedNumber: k - 1 ] ].
+		
+	^ numCol even
+		ifTrue: [ self adaptedNumber: k - 1 ]
+		ifFalse: [ self adaptedNumber: k - 1 - self numberOfColumns ]
 ]
 
 { #category : 'set grid' }
@@ -87,8 +88,8 @@ CMSpace6NeighbourhoodFlapTop >> organizeShapesPositions: aRSGroup [
 
 	| height  r numCol |
 	r := (GSegment
-		      with: (aRSGroup first points at: 1)
-		      with: (aRSGroup first points at: 2)) length.
+		      with: aRSGroup first points first
+		      with: aRSGroup first points second) length.
 	height := 3 sqrt * r.
 	aRSGroup do: [ :aShape |
 		numCol := aShape model columnNumber - 1.
@@ -104,18 +105,18 @@ CMSpace6NeighbourhoodFlapTop >> southEastCellHexaFlat: k [
 	k = 0 ifTrue: [ ^ 0 ].
 	numCol := self numCol: k.
 	numCol = self numberOfColumns ifTrue: [
-		self isClosedEnvironment
-			ifTrue: [ ^ 0 ]
+		^ self isClosedEnvironment
+			ifTrue: [ 0 ]
 			ifFalse: [
 				numCol odd
 					ifFalse: [
-						^ self southCell:
-							  (self adaptedNumber: k + 1 - self numberOfColumns) ]
-					ifTrue: [ ^ self adaptedNumber: k + 1 - self numberOfColumns ] ] ].
+						self southCell:
+							(self adaptedNumber: k + 1 - self numberOfColumns) ]
+					ifTrue: [ self adaptedNumber: k + 1 - self numberOfColumns ] ] ].
 
-	numCol odd
-		ifFalse: [ ^ self southCell: (self adaptedNumber: k + 1) ]
-		ifTrue: [ ^ self adaptedNumber: k + 1 ]
+	^ numCol odd
+		ifFalse: [ self southCell: (self adaptedNumber: k + 1) ]
+		ifTrue: [ self adaptedNumber: k + 1 ]
 ]
 
 { #category : 'private - regular cells - instance creation' }
@@ -126,10 +127,10 @@ CMSpace6NeighbourhoodFlapTop >> southWestCellHexaFlat: k [
 	k = 0 ifTrue: [ ^ 0 ].
 	numCol := self numCol: k.
 	numCol = 1 ifTrue: [
-		self isClosedEnvironment
-			ifTrue: [ ^ 0 ]
-			ifFalse: [ ^ self southCell: (self adaptedNumber: k - 1) ] ].
-	numCol even
-		ifTrue: [ ^ self southCell: (self adaptedNumber: k - 1) ]
-		ifFalse: [ ^ self adaptedNumber: k - 1 ]
+		^ self isClosedEnvironment
+			ifTrue: [ 0 ]
+			ifFalse: [ self southCell: (self adaptedNumber: k - 1) ] ].
+	^ numCol even
+		ifTrue: [ self southCell: (self adaptedNumber: k - 1) ]
+		ifFalse: [ self adaptedNumber: k - 1 ]
 ]

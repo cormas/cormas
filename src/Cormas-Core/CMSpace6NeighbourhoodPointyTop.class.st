@@ -57,20 +57,20 @@ CMSpace6NeighbourhoodPointyTop >> northEastCellHexa: k [
 		self isClosedEnvironment ifTrue: [ ^ 0 ] ].
 
 	(self numCol: k) = self numberOfColumns ifTrue: [
-		self isClosedEnvironment
+		^ self isClosedEnvironment
 			ifTrue: [
 				numRow even
-					ifTrue: [ ^ 0 ]
-					ifFalse: [ ^ self northCell: k ] ]
+					ifTrue: [ 0 ]
+					ifFalse: [ self northCell: k ] ]
 			ifFalse: [
 				numRow even
-					ifFalse: [ ^ self adaptedNumber: k - self numberOfColumns ]
+					ifFalse: [ self adaptedNumber: k - self numberOfColumns ]
 					ifTrue: [
-						^ self northCell:
-							  (self adaptedNumber: k + 1 - self numberOfColumns) ] ] ].
-	numRow odd
-		ifTrue: [ ^ self northCell: k ]
-		ifFalse: [ ^ self northCell: (self adaptedNumber: k + 1) ]
+						self northCell:
+							(self adaptedNumber: k + 1 - self numberOfColumns) ] ] ].
+	^ numRow odd
+		ifTrue: [ self northCell: k ]
+		ifFalse: [ self northCell: (self adaptedNumber: k + 1) ]
 ]
 
 { #category : 'private - regular cells - instance creation' }
@@ -81,26 +81,26 @@ CMSpace6NeighbourhoodPointyTop >> northWestCellHexa: k [
 	k = 0 ifTrue: [ ^ 0 ].
 	numRow := self numRow: k.
 	(self numCol: k) = 1 ifTrue: [
-		self isClosedEnvironment
+		^ self isClosedEnvironment
 			ifTrue: [
 				numRow odd
-					ifTrue: [ ^ 0 ]
-					ifFalse: [ ^ self northCell: k ] ]
+					ifTrue: [ 0 ]
+					ifFalse: [ self northCell: k ] ]
 			ifFalse: [
 				numRow even
-					ifTrue: [^ self adaptedNumber: k - self numberOfColumns ]
-					ifFalse: [ ^ self adaptedNumber: k - 1 ] ] ].
+					ifTrue: [ self adaptedNumber: k - self numberOfColumns ]
+					ifFalse: [ self adaptedNumber: k - 1 ] ] ].
 	numRow = 1 ifTrue: [
-		self isClosedEnvironment
-			ifTrue: [ ^ 0 ]
+		^ self isClosedEnvironment
+			ifTrue: [ 0 ]
 			ifFalse: [
 				numRow even
-					ifTrue: [ ^ self adaptedNumber: k - 1 ]
-					ifFalse: [ ^ self adaptedNumber: k - 1 - self numberOfColumns ] ] ].
+					ifTrue: [ self adaptedNumber: k - 1 ]
+					ifFalse: [ self adaptedNumber: k - 1 - self numberOfColumns ] ] ].
 
-	numRow even
-		ifTrue: [ ^ self adaptedNumber: k - self numberOfColumns ]
-		ifFalse: [ ^ self adaptedNumber: k - 1 - self numberOfColumns ]
+	^ numRow even
+		ifTrue: [ self adaptedNumber: k - self numberOfColumns ]
+		ifFalse: [ self adaptedNumber: k - 1 - self numberOfColumns ]
 ]
 
 { #category : 'set grid' }
@@ -109,8 +109,8 @@ CMSpace6NeighbourhoodPointyTop >> organizeShapesPositions: aRSGroup [
 
 	| width numLine r |
 	r := (GSegment
-		      with: (aRSGroup first points at: 1)
-		      with: (aRSGroup first points at: 2)) length.
+		      with: aRSGroup first points first
+		      with: aRSGroup first points second) length.
 	width := 3 sqrt * r.
 	aRSGroup do: [ :aShape |
 		numLine := aShape model rowNumber - 1.
@@ -127,18 +127,19 @@ CMSpace6NeighbourhoodPointyTop >> southEastCellHexa: k [
 	k = 0 ifTrue: [ ^ 0 ].
 	numRow := self numRow: k.
 	(self numCol: k) = self numberOfColumns ifTrue: [
-		self isClosedEnvironment
+		^ self isClosedEnvironment
 			ifTrue: [
 				numRow even
-					ifTrue: [ ^ 0 ]
-					ifFalse: [ ^ self southCell: k ] ]
-			ifFalse: [ numRow odd
-		ifTrue: [ ^ self southCell: k ]
-		ifFalse: [^ (self adaptedNumber: k + 1)] ]].
+					ifTrue: [ 0 ]
+					ifFalse: [ self southCell: k ] ]
+			ifFalse: [
+				numRow odd
+					ifTrue: [ self southCell: k ]
+					ifFalse: [ self adaptedNumber: k + 1 ] ]].
 
-	numRow odd
-		ifTrue: [ ^ self southCell: k ]
-		ifFalse: [ ^ self southCell: (self adaptedNumber: k + 1) ]
+	^ numRow odd
+		ifTrue: [ self southCell: k ]
+		ifFalse: [ self southCell: (self adaptedNumber: k + 1) ]
 ]
 
 { #category : 'private - regular cells - instance creation' }
@@ -149,17 +150,17 @@ CMSpace6NeighbourhoodPointyTop >> southWestCellHexa: k [
 	k = 0 ifTrue: [ ^ 0 ].
 	numRow := self numRow: k.
 	(self numCol: k) = 1 ifTrue: [
-		self isClosedEnvironment
+		^ self isClosedEnvironment
 			ifTrue: [
 				numRow odd
-					ifTrue: [ ^ 0 ]
-					ifFalse: [ ^ self southCell: k ] ]
-				ifFalse: [ 
-					numRow odd
-		ifTrue: [ ^ self southCell: (self adaptedNumber: (k + self numberOfColumns - 1)) ]
-		ifFalse: [ ^ self southCell: k ]
-					]].
-	numRow odd
-		ifTrue: [ ^ self southCell: k - 1 ]
-		ifFalse: [ ^ self southCell: k ]
+					ifTrue: [ 0 ]
+					ifFalse: [ self southCell: k ] ]
+			ifFalse: [ 
+				numRow odd
+					ifTrue: [ self southCell: (self adaptedNumber: (k + self numberOfColumns - 1)) ]
+					ifFalse: [ self southCell: k ] ] ].
+			
+	^ numRow odd
+		ifTrue: [ self southCell: k - 1 ]
+		ifFalse: [ self southCell: k ]
 ]

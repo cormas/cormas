@@ -52,8 +52,8 @@ Neighbours are ordered anticlockwise, starting from the North cell"
 	v := Array new: 3.
 	"k isFlatTopTriangle?"
 	(k odd
-		 ifTrue: [ CMSpace3Neighbourhood firstCellIsFlatTopTriangle ]
-		 ifFalse: [ CMSpace3Neighbourhood firstCellIsFlatTopTriangle not])
+		 ifTrue: [ self class firstCellIsFlatTopTriangle ]
+		 ifFalse: [ self class firstCellIsFlatTopTriangle not])
 		ifTrue: [
 			(i := self northCell: k) > 0 ifTrue: [
 				v at: 1 put: (self elementaryEntitiesAt: i) ].
