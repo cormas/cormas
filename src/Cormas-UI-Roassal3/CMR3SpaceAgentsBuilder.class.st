@@ -118,7 +118,7 @@ CMR3SpaceAgentsBuilder >> mouseEnd: anEvent [
 CMR3SpaceAgentsBuilder >> moveAgentShape: anAgentShape [
 
 	| agent pov |
-			
+
 	agent := anAgentShape model.
 
 	(anAgentShape propertyAt: #RSLabeled) ifNotNil: [ :p |
@@ -146,13 +146,20 @@ CMR3SpaceAgentsBuilder >> objects [
 CMR3SpaceAgentsBuilder >> positionAgent: anAgent atProportion: aRelativePoint [
 	"aRelativePoint is relative to a cell. 0@0 will place the agent in the top-left corner of the cell, 1@1 - bottom-right corner, 0.5@0.5 - center of the cell"
 
-	| cell cellSize |
+	| cell cellSize offset config intersectionProportion |
 	cell := anAgent patch.
-	cellSize := diagramBuilder cellShapes anyOne encompassingRectangle
-		            extent.
+	cellSize := diagramBuilder cellShapes anyOne encompassingRectangle extent.
+	
+	config := diagramBuilder cormasModel spaceModel neighbourhoodConfiguration.
+	
+	intersectionProportion :=
+		config boundingRectangleHorizontalIntersection @
+		config boundingRectangleVerticalIntersection.
+	
+	offset := (cell columnNumber - 1 * cellSize x) @ (cell rowNumber - 1 * cellSize y)
+		- (intersectionProportion * cellSize * ((cell columnNumber @ cell rowNumber) - 1)).
 
-	^ cell columnNumber @ cell rowNumber - 1 * cellSize
-	  + (aRelativePoint x * cellSize x @ (aRelativePoint y * cellSize y))
+	^ offset + (aRelativePoint x * cellSize x @ (aRelativePoint y * cellSize y))
 ]
 
 { #category : 'position in cell' }

@@ -101,6 +101,7 @@ CMR3SpaceDiagramBuilder >> initializeWithCormasModel: aModel [
 
 { #category : 'rendering' }
 CMR3SpaceDiagramBuilder >> renderIn: aCanvas [
+	aCanvas showEncompassingRectangles.
 	cellsBuilder renderIn: aCanvas.
 	agentsBuilder renderIn: aCanvas.
 ]
