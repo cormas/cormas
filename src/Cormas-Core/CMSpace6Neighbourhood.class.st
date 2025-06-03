@@ -51,8 +51,3 @@ CMSpace6Neighbourhood >> adaptedNumber: anInteger [
 					   number: anInteger 
 					   onCycle: self numberOfColumns * self numberOfRows
 ]
-
-{ #category : 'set grid' }
-CMSpace6Neighbourhood >> organizeShapesPositions: aRSGroup [
-	self subclassResponsibility 
-]

@@ -71,21 +71,3 @@ Neighbours are ordered anticlockwise, starting from the North cell"
 
 	^ (self elementaryEntitiesAt: k) neighbourhoodWithNils: v
 ]
-
-{ #category : 'initialization' }
-CMSpace3Neighbourhood >> organizeShapesPositions: aRSGroup [
-	"Reverse the triangles when id is even. "
-
-	| i r numCol |
-	i := self class firstCellIsFlatTopTriangle
-		     ifTrue: [ 1 ]
-		     ifFalse: [ 0 ].
-	r := aRSGroup first encompassingRectangle width.
-	aRSGroup do: [ :aShape |
-		i := i + 1.
-		i even ifTrue: [ aShape rotateByDegrees: 180 ].
-		(aShape model columnNumber = self numberOfColumns and: [
-			 self numberOfColumns even ]) ifTrue: [ i := i + 1 ].
-		numCol := aShape model columnNumber.
-		aShape translateBy: numCol * (r / -2 @ 0) ]
-]

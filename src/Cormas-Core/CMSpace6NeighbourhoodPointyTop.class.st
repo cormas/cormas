@@ -103,29 +103,6 @@ CMSpace6NeighbourhoodPointyTop >> northWestCellHexa: k [
 		ifFalse: [ self adaptedNumber: k - 1 - self numberOfColumns ]
 ]
 
-{ #category : 'set grid' }
-CMSpace6NeighbourhoodPointyTop >> organizeShapesPositions: aRSGroup [
-	| point1 point2 outerRadius innerRadius numLine offset |
-	
-	point1 := aRSGroup first points first.
-	point2 := aRSGroup first points second.
-	
-	"Radius of a circumcircle - a circle passing through all vertices of a hexagon"
-	outerRadius := point1 distanceTo: point2.
-	
-	"Radius of an incircle - a circle passing through the middle of each side of a hexagon"
-	innerRadius := 3 sqrt / 2 * outerRadius.
-	
-	aRSGroup do: [ :aShape |
-		numLine := aShape model rowNumber - 1.
-		
-		offset := numLine odd
-			ifTrue: [ innerRadius @ (numLine * outerRadius / -2) ]
-			ifFalse: [ 0 @ (numLine * outerRadius / -2) ].
-			
-		aShape translateBy: offset ]
-]
-
 { #category : 'private - regular cells - instance creation' }
 CMSpace6NeighbourhoodPointyTop >> southEastCellHexa: k [
 	"Return the ID of the South-East cell."

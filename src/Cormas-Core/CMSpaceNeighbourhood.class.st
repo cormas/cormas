@@ -187,13 +187,6 @@ CMSpaceNeighbourhood >> numberOfRows [
 	^ self spaceModel numberOfRows
 ]
 
-{ #category : 'set grid' }
-CMSpaceNeighbourhood >> organizeShapesPositions: r [
-	"Do nothing, except for grid of hexagons and triangles"
-
-	
-]
-
 { #category : 'private - regular cells - instance creation' }
 CMSpaceNeighbourhood >> southCell: k [
 	k = 0

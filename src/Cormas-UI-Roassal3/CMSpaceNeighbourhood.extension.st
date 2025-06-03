@@ -17,6 +17,13 @@ CMSpaceNeighbourhood >> boundingRectangleVerticalIntersection [
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
+CMSpaceNeighbourhood >> organizeShapesPositions: r [
+	"Do nothing, except for grid of hexagons and triangles"
+
+	
+]
+
+{ #category : '*Cormas-UI-Roassal3' }
 CMSpaceNeighbourhood >> roassalMasterShape [
 
 	self subclassResponsibility
