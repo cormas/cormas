@@ -105,18 +105,25 @@ CMSpace6NeighbourhoodPointyTop >> northWestCellHexa: k [
 
 { #category : 'set grid' }
 CMSpace6NeighbourhoodPointyTop >> organizeShapesPositions: aRSGroup [
-	"If r is the radius of the circle passing through all the vertices of the hexagon, then the height of the hexagon is 2r, and the width is 2r cos 30° ( note: cos 30° = (3 sqrt)/2 = 0.866025 ), and one side measures r. "
-
-	| width numLine r |
-	r := (GSegment
-		      with: aRSGroup first points first
-		      with: aRSGroup first points second) length.
-	width := 3 sqrt * r.
+	| point1 point2 outerRadius innerRadius numLine offset |
+	
+	point1 := aRSGroup first points first.
+	point2 := aRSGroup first points second.
+	
+	"Radius of a circumcircle - a circle passing through all vertices of a hexagon"
+	outerRadius := point1 distanceTo: point2.
+	
+	"Radius of an incircle - a circle passing through the middle of each side of a hexagon"
+	innerRadius := 3 sqrt / 2 * outerRadius.
+	
 	aRSGroup do: [ :aShape |
 		numLine := aShape model rowNumber - 1.
-		numLine odd
-			ifTrue: [ aShape translateBy: width / 2 @ (numLine * r / -2) ]
-			ifFalse: [ aShape translateBy: numLine * (0 @ (r / -2)) ] ]
+		
+		offset := numLine odd
+			ifTrue: [ innerRadius @ (numLine * outerRadius / -2) ]
+			ifFalse: [ 0 @ (numLine * outerRadius / -2) ].
+			
+		aShape translateBy: offset ]
 ]
 
 { #category : 'private - regular cells - instance creation' }

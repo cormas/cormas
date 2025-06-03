@@ -84,18 +84,25 @@ CMSpace6NeighbourhoodFlapTop >> northWestCellHexaFlat: k [
 
 { #category : 'set grid' }
 CMSpace6NeighbourhoodFlapTop >> organizeShapesPositions: aRSGroup [
-	"If r is the radius of the circle passing through all the vertices of the hexagon, then the width of the hexagon is 2r, and the height is 2r cos 30° ( note: cos 30° = (3 sqrt)/2 = 0.866025 ), and one side measures r. Each shape on an even column must be move to a down point [height/2 @ r/2] (r cos 30/-2 @ r/2) "
-
-	| height  r numCol |
-	r := (GSegment
-		      with: aRSGroup first points first
-		      with: aRSGroup first points second) length.
-	height := 3 sqrt * r.
+	| point1 point2 outerRadius innerRadius numCol offset |
+	
+	point1 := aRSGroup first points first.
+	point2 := aRSGroup first points second.
+	
+	"Radius of a circumcircle - a circle passing through all vertices of a hexagon"
+	outerRadius := point1 distanceTo: point2.
+	
+	"Radius of an incircle - a circle passing through the middle of each side of a hexagon"
+	innerRadius := 3 sqrt / 2 * outerRadius.
+	
 	aRSGroup do: [ :aShape |
 		numCol := aShape model columnNumber - 1.
-		numCol odd
-			ifTrue: [ aShape translateBy: (numCol * r / -2) @ (height / 2)] 
-			ifFalse: [ aShape translateBy: numCol * ((r / -2) @ 0) ]]
+		
+		offset := numCol odd
+			ifTrue: [ (numCol * outerRadius / -2) @ innerRadius ] 
+			ifFalse: [ (numCol * outerRadius / -2) @ 0 ].
+			
+		aShape translateBy: offset ]
 ]
 
 { #category : 'private - regular cells - instance creation' }

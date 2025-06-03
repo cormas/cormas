@@ -66,10 +66,7 @@ CMR3SpaceCellsBuilder >> renderIn: aCanvas [
 		on: aCanvas nodes.
 
 	diagramBuilder cormasModel spaceModel neighbourhoodConfiguration
-		organizeShapesPositions: aCanvas nodes. "toFit: aCanvas"
-
-	"aCanvas nodes last inspect.
-	aCanvas color: Color lightOrange"
+		organizeShapesPositions: aCanvas nodes
 ]
 
 { #category : 'updating' }
