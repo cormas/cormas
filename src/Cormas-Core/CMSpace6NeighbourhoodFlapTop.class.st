@@ -93,9 +93,9 @@ CMSpace6NeighbourhoodFlapTop >> organizeShapesPositions: aRSGroup [
 	height := 3 sqrt * r.
 	aRSGroup do: [ :aShape |
 		numCol := aShape model columnNumber - 1.
-		numCol odd ifTrue: [ 
-			aShape translateBy: (numCol * r / -2) @ (height / 2)] 
-		ifFalse: [ aShape translateBy: numCol * ((r / -2) @ 0) ]]
+		numCol odd
+			ifTrue: [ aShape translateBy: (numCol * r / -2) @ (height / 2)] 
+			ifFalse: [ aShape translateBy: numCol * ((r / -2) @ 0) ]]
 ]
 
 { #category : 'private - regular cells - instance creation' }
