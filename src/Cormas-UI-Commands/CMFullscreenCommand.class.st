@@ -5,37 +5,37 @@ Class {
 	#package : 'Cormas-UI-Commands'
 }
 
-{ #category : 'accessing' }
+{ #category : 'action' }
 CMFullscreenCommand >> actionWhenOff [
 
 	owner showSettings
 ]
 
-{ #category : 'accessing' }
+{ #category : 'action' }
 CMFullscreenCommand >> actionWhenOn [
 
 	owner hideSettings
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 CMFullscreenCommand >> iconWhenOff [
 
 	^ self iconNamed: #smallFullscreen
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 CMFullscreenCommand >> iconWhenOn [
 
 	^ self iconNamed: #smallFullscreen
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 CMFullscreenCommand >> nameWhenOff [
 
 	^ 'Fullscreen'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 CMFullscreenCommand >> nameWhenOn [
 
 	^ 'Fullscreen'

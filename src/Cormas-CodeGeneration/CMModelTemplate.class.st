@@ -1,6 +1,6 @@
 Class {
-	#name : 'CMModelTemplate',
-	#superclass : 'Object',
+	#name : #CMModelTemplate,
+	#superclass : #Object,
 	#instVars : [
 		'name',
 		'prefix',
@@ -9,30 +9,29 @@ Class {
 		'modelClass',
 		'testClass'
 	],
-	#category : 'Cormas-CodeGeneration',
-	#package : 'Cormas-CodeGeneration'
+	#category : #'Cormas-CodeGeneration'
 }
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMModelTemplate >> clearNameAndPrefix [
 
 	name := ''.
 	prefix := ''.
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMModelTemplate >> description [
 
 	^ description
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMModelTemplate >> description: anObject [
 
 	description := anObject
 ]
 
-{ #category : 'code generation' }
+{ #category : #'code generation' }
 CMModelTemplate >> generate [
 
 	(self packageOrganizer hasPackage: self modelPackageName) ifTrue: [
@@ -42,7 +41,7 @@ CMModelTemplate >> generate [
 	self generateMethods.
 ]
 
-{ #category : 'code generation' }
+{ #category : #'code generation' }
 CMModelTemplate >> generateDescriptionMethod [
 
 	| method |
@@ -56,25 +55,25 @@ CMModelTemplate >> generateDescriptionMethod [
 		withMethod: method.
 ]
 
-{ #category : 'code generation' }
+{ #category : #'code generation' }
 CMModelTemplate >> generateMethods [
 
 	self generatePrefixMethod.
 	self generateDescriptionMethod
 ]
 
-{ #category : 'code generation' }
+{ #category : #'code generation' }
 CMModelTemplate >> generatePackagesAndClasses [
 
-	modelClass := (CMAbstractModel << self modelClassName asSymbol
-		package: self modelPackageName) install.
-		
 	shouldGenerateTestPackage ifTrue: [ 
 		testClass := (TestCase << self testClassName asSymbol
 			package: self testPackageName) install ].
+
+	modelClass := (CMAbstractModel << self modelClassName asSymbol
+		package: self modelPackageName) install.
 ]
 
-{ #category : 'code generation' }
+{ #category : #'code generation' }
 CMModelTemplate >> generatePrefixMethod [
 
 	| method |
@@ -82,13 +81,15 @@ CMModelTemplate >> generatePrefixMethod [
 	method := modelClass compiler compile: ('prefix
 	"Every class name in model package must begin with this prefix"
 	^ ''', prefix, '''.').
+	
+	method protocol: 'accessing'.
 
 	modelClass class
 		addSelector: #prefix
 		withMethod: method.
 ]
 
-{ #category : 'initialization' }
+{ #category : #initialization }
 CMModelTemplate >> initialize [
 
 	super initialize.
@@ -99,25 +100,25 @@ CMModelTemplate >> initialize [
 	shouldGenerateTestPackage := true.
 ]
 
-{ #category : 'entity names' }
+{ #category : #'entity names' }
 CMModelTemplate >> modelClassName [
 
 	^ prefix, 'Model'
 ]
 
-{ #category : 'entity names' }
+{ #category : #'entity names' }
 CMModelTemplate >> modelPackageName [
 
 	^ name, '-Model'
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMModelTemplate >> name [
 
 	^ name
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMModelTemplate >> name: aString [
 
 	aString ifEmpty: [ 
@@ -135,13 +136,13 @@ CMModelTemplate >> name: aString [
 	name := aString
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMModelTemplate >> prefix [
 
 	^ prefix
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMModelTemplate >> prefix: aString [
 
 	aString ifEmpty: [ 
@@ -159,25 +160,25 @@ CMModelTemplate >> prefix: aString [
 	prefix := aString
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMModelTemplate >> shouldGenerateTestPackage [
 
 	^ shouldGenerateTestPackage
 ]
 
-{ #category : 'accessing' }
+{ #category : #accessing }
 CMModelTemplate >> shouldGenerateTestPackage: anObject [
 
 	shouldGenerateTestPackage := anObject
 ]
 
-{ #category : 'entity names' }
+{ #category : #'entity names' }
 CMModelTemplate >> testClassName [
 
 	^ prefix, 'ModelTest'
 ]
 
-{ #category : 'entity names' }
+{ #category : #'entity names' }
 CMModelTemplate >> testPackageName [
 
 	^ name, '-Model-Tests'

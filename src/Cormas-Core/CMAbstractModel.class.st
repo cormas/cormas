@@ -85,19 +85,18 @@ CMAbstractModel class >> availableInitSelectors [
 { #category : 'available probes' }
 CMAbstractModel class >> availableProbes [
 
-	| colorString color |
-
 	^ (Pragma allNamed: #probeNamed:color: in: self) collect: [ :pragma |
-		colorString := pragma arguments second.
-		
-		color := [ CMColor perform: colorString asSymbol ]
-			onErrorDo: [ Color fromHexString: colorString ].
-		
 		CMProbe new
 			name: pragma arguments first;
-			color: color;
-			method: pragma method;
+			colorString: pragma arguments second;
+			selector: pragma method selector;
 			yourself ].
+]
+
+{ #category : 'as yet unclassified' }
+CMAbstractModel class >> defaultRandomNumberGeneratorClass [
+
+	^ PMFishmanMooreRandomGenerator
 ]
 
 { #category : 'initialization' }
@@ -302,6 +301,12 @@ CMAbstractModel >> centralCell [
 	"Purpose: returns the cell located at the center of the spatial grid. Number of lines and number of columns of the spatial grid have to be odd"
 
 	^ self spaceModel centralCell
+]
+
+{ #category : 'random numbers' }
+CMAbstractModel >> chooseRandomSeedAtRandom [
+	"By default random seed is a random number but we still store it to ensure reproducibility"
+	^ Random new nextInteger: SmallInteger maxVal
 ]
 
 { #category : 'referencing entities' }
@@ -712,6 +717,7 @@ CMAbstractModel >> initEntities [
 CMAbstractModel >> initialize [
 
 	super initialize.
+	self initializeRandomNumberGenerator.
 	self initializeModelClasses.
 	self initializeWithoutParameters.
 	self initializeParameters.
@@ -748,7 +754,7 @@ CMAbstractModel >> initializeModelClasses [
 	classes := self class allEntityClasses.
 	
 	self cellClass: (classes
-		detect: [ :each | each inheritsFrom: CMSpatialEntityElement ]
+		detect: [ :each | each inheritsFrom: CMCell ]
 		ifNone: [ nil ]).
 	
 	self agentClasses: (classes select: [ : each | each inheritsFrom: CMAgent ]).
@@ -758,6 +764,23 @@ CMAbstractModel >> initializeModelClasses [
 CMAbstractModel >> initializeParameters [
 
 	self class initializeParameters. 
+]
+
+{ #category : 'initialization' }
+CMAbstractModel >> initializeRandomNumberGenerator [
+	
+	self 
+		initializeRandomNumberGeneratorClass: self class defaultRandomNumberGeneratorClass
+		seed: self chooseRandomSeedAtRandom
+		
+]
+
+{ #category : 'initialization' }
+CMAbstractModel >> initializeRandomNumberGeneratorClass: aRandomGeneratorClass seed: anInteger [
+	
+	randomNumberGenerator := aRandomGeneratorClass new.
+	randomNumberGenerator seed: anInteger
+		
 ]
 
 { #category : 'initialization' }
@@ -773,7 +796,6 @@ CMAbstractModel >> initializeSpaceModel [
 CMAbstractModel >> initializeWithoutParameters [
 
 	super initialize.
-	self randomNumberGenerator: PMFishmanMooreRandomGenerator new.
 	
 	self initializeEntityGetters.
 	self initializeSpaceModel.

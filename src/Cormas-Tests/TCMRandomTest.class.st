@@ -13,7 +13,7 @@ TCMRandomTest >> setUp [
 
 	super setUp.
 	cormasModel := CMMockModel new.
-	cormasModel randomSeed: 42.
+	cormasModel randomNumberGenerator: (PMFishmanMooreRandomGenerator seed: 42).
 ]
 
 { #category : 'tests' }

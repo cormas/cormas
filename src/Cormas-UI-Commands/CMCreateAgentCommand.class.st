@@ -11,13 +11,13 @@ CMCreateAgentCommand class >> order [
 	^ 5
 ]
 
-{ #category : 'accessing' }
+{ #category : 'action' }
 CMCreateAgentCommand >> actionWhenOff [
 
 	owner spaceBuilder whenLeftClickOnCellDo: [ :cell | "do nothing" ].
 ]
 
-{ #category : 'accessing' }
+{ #category : 'action' }
 CMCreateAgentCommand >> actionWhenOn [
 
 	| agentClass |
@@ -30,25 +30,25 @@ CMCreateAgentCommand >> actionWhenOn [
 		owner updateDiagram ].
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 CMCreateAgentCommand >> iconWhenOff [
 
 	^ self iconNamed: #smallAdd
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 CMCreateAgentCommand >> iconWhenOn [
 
 	^ self iconNamed: #changeRemove
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 CMCreateAgentCommand >> nameWhenOff [
 
 	^ 'Create'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 CMCreateAgentCommand >> nameWhenOn [
 
 	^ 'Stop'

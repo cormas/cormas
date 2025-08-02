@@ -122,6 +122,14 @@ CMAbstractModelTest >> testCreateGridXYNeighborHoodClosed [
 ]
 
 { #category : 'tests' }
+CMAbstractModelTest >> testDefaultRandomNumberGeneratorClass [
+
+	self
+		assert: model class defaultRandomNumberGeneratorClass
+		equals: PMFishmanMooreRandomGenerator.
+]
+
+{ #category : 'tests' }
 CMAbstractModelTest >> testDominance [
 	| m |
 	m := CMMockModel new

@@ -11,7 +11,7 @@ CMSaveToPngCommand class >> order [
 	^ 1
 ]
 
-{ #category : 'accessing' }
+{ #category : 'action' }
 CMSaveToPngCommand >> action [
 
 	owner saveToPng

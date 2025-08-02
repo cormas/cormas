@@ -49,14 +49,14 @@ CMSimulationTest >> testProbes [
 	expectedProbes := { 
 		CMProbe
 			name: 'Number of alive cells'
-			color: Color blue
-			method: (CMMockModel >> #numberOfAliveCells)
+			colorString: '0000FF'
+			selector: #numberOfAliveCells
 			on: simulation cormasModel .
 			
 		CMProbe
 			name: 'Number of dead cells'
-			color: Color red
-			method: (CMMockModel >> #numberOfDeadCells)
+			colorString: 'FF0000'
+			selector: #numberOfDeadCells
 			on: simulation cormasModel .
 	}.
 

@@ -111,6 +111,12 @@ CMAbstractTranslator >> tFixRandomSeed [
 ]
 
 { #category : 'translations' }
+CMAbstractTranslator >> tGenerator [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
 CMAbstractTranslator >> tInitMethod [
 
 	self subclassResponsibility
@@ -237,6 +243,12 @@ CMAbstractTranslator >> tProgressBarLabel [
 ]
 
 { #category : 'translations' }
+CMAbstractTranslator >> tRandomSeed [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
 CMAbstractTranslator >> tRange [
 
 	self subclassResponsibility
@@ -260,13 +272,13 @@ CMAbstractTranslator >> tRunButtonHelp [
 	self subclassResponsibility
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'translations' }
 CMAbstractTranslator >> tSaveToCsv [
 
 	self subclassResponsibility
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'translations' }
 CMAbstractTranslator >> tSaveToExcel [
 
 	self subclassResponsibility

@@ -5,8 +5,8 @@ Class {
 		'name',
 		'object',
 		'isActive',
-		'method',
-		'color'
+		'colorString',
+		'selector'
 	],
 	#category : 'Cormas-Core-Analysis',
 	#package : 'Cormas-Core',
@@ -14,12 +14,12 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-CMProbe class >> name: aString color: aColor method: aCompiledMethod on: anObject [
+CMProbe class >> name: aString colorString: aColorString selector: aSymbol on: anObject [
 
 	^ self new
 		name: aString;
-		color: aColor;
-		method: aCompiledMethod;
+		colorString: aColorString;
+		selector: aSymbol;
 		object: anObject;
 		yourself
 ]
@@ -27,28 +27,28 @@ CMProbe class >> name: aString color: aColor method: aCompiledMethod on: anObjec
 { #category : 'comparing' }
 CMProbe >> = anObject [
 	"for tessting"
-
+	
 	anObject class = self class ifFalse: [ ^ false ].
 		
 	anObject name = name ifFalse: [ ^ false ].
-	anObject method = method ifFalse: [ ^ false ].
+	anObject selector = selector ifFalse: [ ^ false ].
 	anObject object = object ifFalse: [ ^ false ].
 	anObject isActive = isActive ifFalse: [ ^ false ].
-	anObject color = color ifFalse: [ ^ false ].
+	anObject colorString = colorString ifFalse: [ ^ false ].
 	
 	^ true
 ]
 
 { #category : 'accessing' }
-CMProbe >> color [
+CMProbe >> colorString [
 
-	^ color
+	^ colorString
 ]
 
 { #category : 'accessing' }
-CMProbe >> color: aColor [
+CMProbe >> colorString: aString [
 
-	color := aColor
+	colorString := aString
 ]
 
 { #category : 'comparing' }
@@ -56,9 +56,9 @@ CMProbe >> hash [
 	"for tessting"
 
 	^ name hash bitXor:
-		  (method hash bitXor:
+		  (selector hash bitXor:
 				(object hash bitXor:
-					(isActive hash bitXor: color hash))) 
+					(isActive hash bitXor: colorString hash))) 
 ]
 
 { #category : 'initialization' }
@@ -78,18 +78,6 @@ CMProbe >> isActive [
 CMProbe >> isActive: anObject [
 
 	isActive := anObject
-]
-
-{ #category : 'accessing' }
-CMProbe >> method [
-
-	^ method
-]
-
-{ #category : 'accessing' }
-CMProbe >> method: aCompiledMethod [
-
-	method := aCompiledMethod
 ]
 
 { #category : 'accessing' }
@@ -120,11 +108,23 @@ CMProbe >> object: anObject [
 CMProbe >> printOn: aStream [
 
 	super printOn: aStream.
-	aStream << $( << name << $)
+	aStream << $( << name << object asString << isActive asString << selector asString << colorString << $)
+]
+
+{ #category : 'accessing' }
+CMProbe >> selector [
+
+	^ selector
+]
+
+{ #category : 'accessing' }
+CMProbe >> selector: aSymbol [
+
+	selector := aSymbol
 ]
 
 { #category : 'evaluating' }
 CMProbe >> value [
 
-	^ method valueWithReceiver: object
+	^ object perform: selector
 ]

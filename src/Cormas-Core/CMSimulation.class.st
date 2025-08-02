@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'modelClass',
 		'cormasModel',
-		'randomSeed',
+		'randomNumberGenerator',
 		'currentRunNumber',
 		'currentTimeStep',
 		'data',
@@ -30,7 +30,7 @@ CMSimulation class >> defaultFinalTimeStep [
 CMSimulation class >> for: aModelClass [
 
 	^ self new
-		modelClass: aModelClass;
+		initializeModelClass: aModelClass;
 		yourself
 ]
 
@@ -50,12 +50,6 @@ CMSimulation >> activeInitSelector: aSymbol [
 CMSimulation >> activeProbes [
 
 	^ probes select: [ :probe | probe isActive ]
-]
-
-{ #category : 'as yet unclassified' }
-CMSimulation >> chooseRandomSeedAtRandom [
-	"By default random seed is a random number but we still store it to ensure reproducibility"
-	randomSeed := Random new nextInteger: SmallInteger maxVal.
 ]
 
 { #category : 'accessing' }
@@ -122,13 +116,10 @@ CMSimulation >> initialize [
 ]
 
 { #category : 'initialization' }
-CMSimulation >> initializeModel [
+CMSimulation >> initializeModelClass: aClass [
 
-	cormasModel := modelClass new
-		randomSeed: randomSeed;
-		yourself.
-		
-	self initializeProbes.
+	cormasModel := aClass new.
+	self initializeProbes
 ]
 
 { #category : 'initialization' }
@@ -145,33 +136,17 @@ Reset the currentTimeStep and the data. Set the randomSeed"
 
 	currentTimeStep := 0.
 	data := OrderedCollection new.
-	
-	randomSeed ifNil: [ 
-		self chooseRandomSeedAtRandom.
-		shouldReleaseRandomSeedAfterInitialization := false ].
 
 	self initializeModel.
 	cormasModel initEntities.
+
 	self setInitialParameters.
 	
 	cormasModel perform: activeInitSelector.
 	self recordData.
 	
 	shouldReleaseRandomSeedAfterInitialization ifTrue: [ 
-		self chooseRandomSeedAtRandom ].
-]
-
-{ #category : 'accessing' }
-CMSimulation >> modelClass [
-	
-	^ modelClass
-]
-
-{ #category : 'accessing' }
-CMSimulation >> modelClass: aClass [
-	"Model will be instantiated by the initializeSimulation method"
-	
-	modelClass := aClass
+		cormasModel randomSeed: cormasModel chooseRandomSeedAtRandom ].
 ]
 
 { #category : 'accessing' }
@@ -181,15 +156,9 @@ CMSimulation >> probes [
 ]
 
 { #category : 'settings' }
-CMSimulation >> randomSeed [
-
-	^ randomSeed
-]
-
-{ #category : 'settings' }
 CMSimulation >> randomSeed: aNumber [
 
-	randomSeed := aNumber
+	cormasModel randomSeed: aNumber
 ]
 
 { #category : 'data' }
