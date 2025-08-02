@@ -655,5 +655,39 @@ CMSpatialEntityElement >> wayTo: anotherCell [
 	^path
 ]
 
-	^ true
+CMSpatialEntityElement >> wayTo: anotherCell constraint: aBlock [
+	"Purpose: gets the shortest way satisfying a constraint to anotherCell"
+	
+	| cellDistanceDict distance newRound path step alreadyComputed |
+	
+	cellDistanceDict := Dictionary new.
+	
+	path := OrderedCollection new.
+	alreadyComputed := Set with: anotherCell.
+	distance := 0.
+	cellDistanceDict at: anotherCell put: 0.
+	newRound := anotherCell neighbourhood select: [ :cell | aBlock value: cell ].
+	
+	"If there is a possible path, we reconstruct it by going up the gradient, starting from the origin"
+	[ newRound isNotEmpty and: [ (newRound includes: self) not ] ] whileTrue: [
+		distance := distance + 1.
+		newRound do: [ :cell | cellDistanceDict at: cell put: distance ].
+		alreadyComputed addAll: newRound.
+			
+		newRound := Set withAll: (newRound flatCollect: [ :cell |
+			cell neighbourhood select: [ :neighbour |
+				(aBlock value: neighbour) and: [ (alreadyComputed includes: neighbour) not ] ] ]) ].
+			
+	(newRound includes: self) ifTrue: [
+		step := self.
+		[ step = anotherCell ] whileFalse: [
+			path add: step.
+			
+			step := (step neighbourhood
+				select: [ :cell | cellDistanceDict includesKey: cell ])
+				detectMin: [ :cell | cellDistanceDict at: cell ] ].
+		
+		path add: step ].
+		
+	^path
 ]
