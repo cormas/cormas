@@ -137,7 +137,7 @@ Reset the currentTimeStep and the data. Set the randomSeed"
 	currentTimeStep := 0.
 	data := OrderedCollection new.
 
-	self initializeModel.
+"	self initializeModel."
 	cormasModel initEntities.
 
 	self setInitialParameters.

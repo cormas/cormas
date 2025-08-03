@@ -655,6 +655,7 @@ CMSpatialEntityElement >> wayTo: anotherCell [
 	^path
 ]
 
+{ #category : 'as yet unclassified' }
 CMSpatialEntityElement >> wayTo: anotherCell constraint: aBlock [
 	"Purpose: gets the shortest way satisfying a constraint to anotherCell"
 	
