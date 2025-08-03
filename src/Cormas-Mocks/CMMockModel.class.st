@@ -120,16 +120,14 @@ CMMockModel class >> showInit [
 { #category : 'examples' }
 CMMockModel class >> showModelWithInit: aSymbol [
 
-	| model builder |
+	| model |
 	
 	model := self new.
 	model perform: aSymbol.
 	
-	builder := CMR3SpaceDiagramBuilder new
-		cormasModel: model;
-		asPresenter.
-	
-	builder open.
+	(CMR3SpaceDiagramBuilder for: model)
+		asPresenter
+		open.
 ]
 
 { #category : 'as yet unclassified' }

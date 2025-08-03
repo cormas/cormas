@@ -22,9 +22,11 @@ Class {
 	#name : 'CMSpaceNeighbourhood',
 	#superclass : 'Object',
 	#traits : 'TCMRandom',
-	#classTraits : 'TCMRandom classTrait',
 	#instVars : [
 		'spaceModel'
+	],
+	#classInstVars : [
+		'flatTopHexagons'
 	],
 	#category : 'Cormas-Core-Space',
 	#package : 'Cormas-Core',
@@ -118,12 +120,13 @@ CMSpaceNeighbourhood >> initializeOn: aSpaceModel [
 	self spaceModel: aSpaceModel.
 
 	spaceModel createCells.
-	self initializeNeighbourhood
+	self initializeNeighbourhood.
 ]
 
 { #category : 'initialization' }
 CMSpaceNeighbourhood >> initializeOrderedNeighbourhood: k [
-
+"Set the neighbourhood of the cell with id = k.
+Neighbours are ordered anticlockwise, starting from the North cell (except for the pointy hexagons)"
 	self subclassResponsibility
 ]
 
@@ -151,6 +154,19 @@ CMSpaceNeighbourhood >> northCell: k [
 	^ self isClosedEnvironment
 		ifTrue: [ 0 ]
 		ifFalse: [ self numberOfColumns * (self numberOfRows - 1) + k ]
+]
+
+{ #category : 'private - regular cells - instance creation' }
+CMSpaceNeighbourhood >> numCol: k [
+	        ^k  -
+	          ((k / self numberOfColumns) ceiling - 1
+	           * self numberOfColumns).
+]
+
+{ #category : 'private - regular cells - instance creation' }
+CMSpaceNeighbourhood >> numRow: k [
+	
+	^ 1 max: ((k - 1) // (self numberOfColumns + 0) + 1)
 ]
 
 { #category : 'private - regular cells - instance creation' }
@@ -196,10 +212,10 @@ CMSpaceNeighbourhood >> spaceModel: aCMSpaceModel [
 
 { #category : 'private - regular cells - instance creation' }
 CMSpaceNeighbourhood >> westCell: k [
-
-	k \\ self numberOfColumns = 1
-		ifFalse: [ ^ k - 1 ].
+"return K - 1, if k is not on the 1st column.
+If k is 1st col & grid close => 0. If torroid => k + column - 1"
+	k \\ self numberOfColumns = 1 ifFalse: [ ^ k - 1 ].
 	^ self isClosedEnvironment
-		ifTrue: [ 0 ]
-		ifFalse: [ k + self numberOfColumns - 1 ]
+		  ifTrue: [ 0 ]
+		  ifFalse: [ k + self numberOfColumns - 1 ]
 ]

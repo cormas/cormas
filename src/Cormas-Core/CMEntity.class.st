@@ -77,9 +77,21 @@ CMEntity class >> availablePov [
 
 { #category : 'utilities - colors' }
 CMEntity class >> colorNames [
-    | colorSpecs |
-    colorSpecs := Color defaultColors, Color defaultColors2, Color defaultColors3, Color defaultColors4.
-    ^ Array streamContents: [:stream | 1 to: colorSpecs size by: 4 do: [ :i | stream nextPut: (colorSpecs at: i) ]]
+	"Returns an array of 38 color names: (#red #yellow #green...)"
+
+	"Ex: (CMEntity colorNames collect: [:s | Color perform: s]) inspect"
+
+	| colorSpecs |
+	
+	colorSpecs :=
+		Color defaultColors,
+		Color defaultColors2,
+		Color defaultColors3,
+		Color defaultColors4.
+	
+	^ Array streamContents: [ :stream |
+		  1 to: colorSpecs size by: 4 do: [ :i |
+		  stream nextPut: (colorSpecs at: i) ] ]
 ]
 
 { #category : 'utilities - colors' }

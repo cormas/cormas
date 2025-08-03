@@ -131,9 +131,14 @@ CMSimulation >> initializeProbes [
 
 { #category : 'initialization' }
 CMSimulation >> initializeSimulation [
+"Purpose: initialize one simulation by performing #activeInitSelector.
+Reset the currentTimeStep and the data. Set the randomSeed"
 
 	currentTimeStep := 0.
 	data := OrderedCollection new.
+
+"	self initializeModel."
+	cormasModel initEntities.
 
 	self setInitialParameters.
 	

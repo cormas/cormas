@@ -184,14 +184,14 @@ Return value: <Boolean>"
 	^aSpatialEntity includesCell: self
 ]
 
-{ #category : 'accessing' }
+{ #category : 'testing' }
 CMSpatialEntity >> belongsToAggregateType: aClass [
-	"Purpose: returns the instance of a given higher level spatialEntity the receiver belongs to.
+	"Purpose: answers if the instance belongs to a given type of higher level spatialEntity.
 Argument:  aClass that must be a subclass of <SpatialEntityAggregate>
-Return value: <SpatialEntityAggregate | nil>
-Example: self aggregateType: Forest"
+Return value: <Boolean>
+Example: self belongsToAggregateType: Forest"
 
-^ self aggregates detect: [: a | a isKindOf: aClass] ifNone: [nil]
+^ self aggregates detect: [: a | a isKindOf: aClass] ifFound: [true] ifNone: [false]
 ]
 
 { #category : 'displaying' }
@@ -260,6 +260,18 @@ CMSpatialEntity >> flashN [
 
 	self neighbourhood ifNotNil: [ 
 		self neighbourhood do: [ :v | v flash ] ]
+]
+
+{ #category : 'accessing' }
+CMSpatialEntity >> getAggregateType: aClassAggregate [
+	"Purpose: returns the higher level spatialEntity (Aggregate) this instance belongs to (or nil).
+Argument:  aClassAggregate that must be a subclass of <SpatialEntityAggregate>
+Return value: <aClassAggregate / nil>
+Example: self getAggregateType: Forest"
+
+	^ self aggregates
+		  detect: [ :a | a isKindOf: aClassAggregate ]
+		  ifNone: [ nil ]
 ]
 
 { #category : 'testing' }

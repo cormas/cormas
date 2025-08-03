@@ -30,6 +30,20 @@ CMAbstractModelTest >> testAgents [
 ]
 
 { #category : 'tests' }
+CMAbstractModelTest >> testCellAt [
+	| m |
+	m := CMMockModel new
+		     createGridNumberOfRows: 3
+		     numberOfColumns: 3
+		     neighbourhood: 4
+		     closed: true;
+		     yourself.
+	self
+		assert: (m cellAt: 4)
+		identicalTo: (m selectCellsOfColumn: 1) second
+]
+
+{ #category : 'tests' }
 CMAbstractModelTest >> testCellAtAt [
 
 	| expectedCell expectedId actualCell |

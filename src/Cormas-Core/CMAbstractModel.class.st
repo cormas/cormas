@@ -265,6 +265,13 @@ Example: self askRandom: (self theAnimals select:[:f | f energy > 10]) toDo: #re
 		(self shuffled: collecEntities) do: [ :c | aBlock value: c ] ]
 ]
 
+{ #category : 'accessing - entities' }
+CMAbstractModel >> cellAt: id [
+	"Purpose: returns the cell with id = id"
+
+	^ self cells at: id
+]
+
 { #category : 'accessing' }
 CMAbstractModel >> cellAt: aRowIndex at: aColumnIndex [ 
 	
@@ -697,14 +704,13 @@ CMAbstractModel >> getterForEntityClass: aClass [
 
 { #category : 'init-release entities' }
 CMAbstractModel >> initEntities [
-
 	"Initialize all the Entity classes of the model"
-	
-	"Remove all the Agents from previous simulation"
-	self agentClasses do: [ :aClass | 
+
+	"Remove all the entities from previous simulation and reset the ID counter"
+
+	self agentClasses do: [ :aClass |
 		self initializeAgentsOfClass: aClass ].
-	
-	self resetEntities: cellClass
+	self class allEntityClasses do: [ :cl | self resetEntities: cl ]
 ]
 
 { #category : 'initialization' }

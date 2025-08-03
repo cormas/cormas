@@ -179,6 +179,19 @@ Return value: <Boolean>"
 ]
 
 { #category : 'initialization' }
+CMSpatialEntityAggregate >> initNeighbourhood [
+	"Purpose: builds and store the neighbourhood of the receiver as the collection of same kind of aggregates whose components include at least one element the receiver surround"
+
+	| neighbourhoodCells |
+	neighbourhoodCells := (self surround select: [ :a |
+		                       a aggregates anySatisfy: [ :ag |
+			                       ag class = self class ] ]) asSet. 
+	neighbourhoodWithNils := Set new. "To get rid of duplicates, a Set is used..."
+	neighbourhoodCells do: [ :c | neighbourhoodWithNils addAll: c aggregates ].
+	neighbourhoodWithNils := neighbourhoodWithNils asOrderedCollection "...and then made as an OrderedCollection once the job is done..."
+]
+
+{ #category : 'initialization' }
 CMSpatialEntityAggregate >> initialize [
 
 	super initialize.
@@ -223,6 +236,20 @@ CMSpatialEntityAggregate >> isSpatialEntityElement [
 CMSpatialEntityAggregate >> isSpatialEntitySet [
 	
 	^true
+]
+
+{ #category : 'components management' }
+CMSpatialEntityAggregate >> mergeWith: otherAggregate [
+	"Purpose:  the receiver aggregate merges with otherAggregate. Then otherAggregate is deleted.
+(the surround is then reset)
+Argument: otherAggregate = <SpatialEntityAggregate>"
+
+	| copy |
+	otherAggregate ifNil: [ ^ nil ].
+	otherAggregate destroyed ifTrue: [ ^ nil ].
+	copy := otherAggregate components.
+	otherAggregate release.
+	self addComponents: copy
 ]
 
 { #category : 'environment - picking - space' }
@@ -331,10 +358,11 @@ Example := self nearestCellVerifying: [:aCell | aCell hasWater] constraintOnPath
 { #category : 'initialize - release' }
 CMSpatialEntityAggregate >> release [
 
-	super release.
-	components do: [ :c |
-		c aggregates remove: self ifAbsent: [ nil ]].
-	components := nil
+	components do: [ :c | c aggregates remove: self ifAbsent: [ nil ] ].
+	components := nil.
+	surround := nil.
+	neighbourhoodWithNils := nil.
+	super release
 ]
 
 { #category : 'components management' }

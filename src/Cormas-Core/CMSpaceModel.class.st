@@ -54,6 +54,31 @@ CMSpaceModel class >> defaultNumberOfRows [
 	^ 10
 ]
 
+{ #category : 'accessing' }
+CMSpaceModel class >> firstCellIsFlatTopTriangle [
+
+	^CMSpace3Neighbourhood firstCellIsFlatTopTriangle
+]
+
+{ #category : 'accessing' }
+CMSpaceModel class >> firstCellIsFlatTopTriangle: aBoolean [
+
+	CMSpace3Neighbourhood firstCellIsFlatTopTriangle: aBoolean
+]
+
+{ #category : 'accessing' }
+CMSpaceModel class >> flatTopHexagons [
+	"By default, pointedTop hexagons"
+
+	^ CMSpace6Neighbourhood flatTopHexagons
+]
+
+{ #category : 'accessing' }
+CMSpaceModel class >> flatTopHexagons: aBoolean [
+
+	CMSpace6Neighbourhood flatTopHexagons: aBoolean
+]
+
 { #category : 'instance creation' }
 CMSpaceModel class >> forModel: aCormasModel [
 	" Answer a new space configured for aCormasModel "
@@ -63,6 +88,12 @@ CMSpaceModel class >> forModel: aCormasModel [
 		randomNumberGenerator: aCormasModel randomNumberGenerator;
 		initialize;
 		yourself
+]
+
+{ #category : 'accessing' }
+CMSpaceModel >> cardinal [
+"Returns 3 ,4, 6 or 8"
+	^ neighbourhoodConfiguration class cardinal
 ]
 
 { #category : 'accessing cell' }
