@@ -27,7 +27,8 @@ CMExampleModelLoaderPresenter class >> exampleModels [
 		'firefighters-model' -> 'FirefightersModel' .
 		'robot-forager-model' -> 'RobotForagerModel' .
 		'shelling-model' -> 'ShellingModel' .
-		'conway-model' -> 'ConwayModel' ".
+		'conway-model' -> 'ConwayModel' .
+		'griffeath-model' -> 'GriffeathModel'"
 		'seir-model' -> 'SEIRModel'"
 	}
 ]
