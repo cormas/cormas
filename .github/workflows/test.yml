@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        smalltalk: [ Pharo64-11, Pharo64-12, Pharo64-13 ]
+        smalltalk: [ Pharo64-12, Pharo64-13, Pharo64-14 ]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -23,3 +23,4 @@ jobs:
         shell: bash
         timeout-minutes: 40
       - uses: actions/checkout@master
+
