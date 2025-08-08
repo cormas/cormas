@@ -32,8 +32,7 @@ CMCreateAgentCommand >> actionWhenOn [
 	selectedClass ifNil: [ ^ self ].
 	
 	owner spaceBuilder whenLeftClickOnCellDo: [ :cell |
-		| newAgent |
-		newAgent := owner cormasModel newEntity: selectedClass locatedAt: cell.
+		owner cormasModel newEntity: selectedClass locatedAt: cell.
 		owner updateDiagram ].
 
 ]
