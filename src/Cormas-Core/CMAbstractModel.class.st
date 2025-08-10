@@ -113,6 +113,12 @@ CMAbstractModel class >> isCormasModelClass [
 	^ true
 ]
 
+{ #category : 'accessing' }
+CMAbstractModel class >> modelName [
+	"A string with a human-friendly model name. By default, returns the name of model class. Overrive this method to provide a name for your model"
+	^ self name
+]
+
 { #category : 'instance creation' }
 CMAbstractModel class >> newWithoutParameters [
 
