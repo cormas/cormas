@@ -5,10 +5,7 @@ Class {
 		'translator',
 		'cormasModelClass',
 		'screenshot',
-		'modelDescription',
-		'runSimulationButton',
-		'runSimulationCommand',
-		'toolbar'
+		'modelDescription'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -17,13 +14,13 @@ Class {
 { #category : 'examples' }
 CMModelPreviewPresenter class >> example [
 	<example>
-	(self forModelClass: CMMockModel translator: CMEnglishTranslator new) open
+	(self forModelClass: CMMockModel) open
 ]
 
 { #category : 'instance creation' }
-CMModelPreviewPresenter class >> forModelClass: aClass translator: aTranslator [
+CMModelPreviewPresenter class >> forModelClass: aClass [
 
-	^ self on: { aClass . aTranslator }
+	^ self on: aClass
 ]
 
 { #category : 'as yet unclassified' }
@@ -32,28 +29,15 @@ CMModelPreviewPresenter class >> screenshotSize [
 	^ 400
 ]
 
-{ #category : 'accessing' }
-CMModelPreviewPresenter >> cormasModelClass [
-
-	^ cormasModelClass
-]
-
 { #category : 'layout' }
 CMModelPreviewPresenter >> defaultLayout [
 
-	^ SpBoxLayout newTopToBottom
-		spacing: 10;
-		add: (SpBoxLayout newLeftToRight
-			hAlignCenter;
-			add: (SpBoxLayout newTopToBottom
-				add: screenshot expand: false;
-				add: modelDescription;
-				yourself) width: self class screenshotSize;
-			yourself);
-		add: (SpBoxLayout newLeftToRight
-			add: runSimulationButton width: 150;
-			add: toolbar;
-			yourself) expand: false;
+	^ SpBoxLayout newLeftToRight
+		hAlignCenter;
+		add: (SpBoxLayout newTopToBottom
+			add: screenshot expand: false;
+			add: modelDescription;
+			yourself) width: self class screenshotSize;
 		yourself
 ]
 
@@ -72,25 +56,7 @@ CMModelPreviewPresenter >> initializePresenters [
 
 	modelDescription := self instantiate: MicrodownPresenter.
 	
-	runSimulationCommand := CMModelOpenerSimulateCommand forOwner: self translator: translator.
-	runSimulationButton := runSimulationCommand button.
-	
-	self initializeToolbar.
-	self initializeWithModelClass.
-]
-
-{ #category : 'initialization' }
-CMModelPreviewPresenter >> initializeToolbar [
-	
-	| command |
-	
-	toolbar := self newToolbar.
-	toolbar beIcons.
-	
-	(CMModelOpenerCommand sortedSubclasses copyWithout: runSimulationCommand class)
-		collect: [ :aCommandClass |
-			command := aCommandClass forOwner: self translator: translator.
-			toolbar addItemRight: command toolbarButton ]
+	self initializeWithModelClass
 ]
 
 { #category : 'initialization' }
@@ -114,8 +80,7 @@ CMModelPreviewPresenter >> initializeWithModelClass [
 ]
 
 { #category : 'accessing - model' }
-CMModelPreviewPresenter >> setModelBeforeInitialization: aCollection [
+CMModelPreviewPresenter >> setModelBeforeInitialization: aClass [
 
-	cormasModelClass := aCollection first.
-	translator := aCollection second
+	cormasModelClass := aClass
 ]

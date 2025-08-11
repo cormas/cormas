@@ -4,6 +4,7 @@ Class {
 	#instVars : [
 		'translator',
 		'modelList',
+		'exampleModelsList',
 		'modelPreview'
 	],
 	#category : 'Cormas-UI',
@@ -101,11 +102,24 @@ CMModelOpenerPresenter >> connectPresenters [
 			title: 'Model'
 			provider: [
 				self
-					instantiate: CMModelPreviewPresenter
+					instantiate: CMLoadedModelPreviewPresenter
 					on: { modelClass . translator } ].
 		
 		modelPreview addPage: page.
-		modelPreview selectPage: page ]
+		modelPreview selectPage: page ].
+	
+	exampleModelsList whenSelectedItemChangedDo: [ :manifest |
+		modelPreview removeAll.
+		
+		page := SpNotebookPage
+			title: 'Manifest'
+			provider: [
+				self
+					instantiate: CMExampleModelPreviewPresenter
+					on: { manifest . translator } ].
+		
+		modelPreview addPage: page.
+		modelPreview selectPage: page ].
 ]
 
 { #category : 'layout' }
@@ -116,6 +130,8 @@ CMModelOpenerPresenter >> defaultLayout [
 		add: (SpBoxLayout newTopToBottom
 			add: 'Models in this image' height: self class labelHeight;
 			add: modelList;
+			add: 'Model library' height: self class labelHeight;
+			add: exampleModelsList;
 			yourself) width: 300;
 		add: modelPreview;
 		yourself
@@ -124,6 +140,12 @@ CMModelOpenerPresenter >> defaultLayout [
 { #category : 'examples' }
 CMModelOpenerPresenter >> example [
 	<script: 'self example'>
+]
+
+{ #category : 'as yet unclassified' }
+CMModelOpenerPresenter >> findAvailableExampleModels [
+
+	^ CMModelManifest allSubclasses
 ]
 
 { #category : 'as yet unclassified' }
@@ -141,6 +163,12 @@ CMModelOpenerPresenter >> initializePresenters [
 		items: self findAvailableModels;
 		display: [ :modelClass | modelClass modelName ];
 		displayIcon: [ CMIcons cormasModelIcon ];
+		yourself.
+		
+	exampleModelsList := self newList
+		items: self findAvailableExampleModels;
+		display: [ :manifest | manifest modelName ];
+		displayIcon: [ :manifest | self iconNamed: #box ];
 		yourself.
 	
 	modelPreview := self newNotebook 
