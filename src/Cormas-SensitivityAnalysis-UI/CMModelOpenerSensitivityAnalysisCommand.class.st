@@ -6,12 +6,18 @@ Class {
 }
 
 { #category : 'accessing' }
+CMModelOpenerSensitivityAnalysisCommand class >> order [
+
+	^ 5
+]
+
+{ #category : 'accessing' }
 CMModelOpenerSensitivityAnalysisCommand >> action [
 
 	| presenter |
 		
 	presenter := CMSensitivityAnalysisPresenter
-		forModelClass: owner selectedModelClass
+		forModelClass: owner cormasModelClass
 		translator: translator.
 		
 	presenter open.

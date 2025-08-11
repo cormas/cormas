@@ -123,17 +123,31 @@ CMSpacePresenter >> initializeToolbar [
 	CMSpacePresenterCommand sortedSubclasses do: [ :aClass |
 		| command |
 		command := aClass forOwner: self translator: translator.
-		toolbar add: command button ].
+		toolbar add: command toolbarButton ].
+]
+
+{ #category : 'as yet unclassified' }
+CMSpacePresenter >> saveCanvas: aRoassalCanvas toPngFile: aFileReference [
+
+	RSPNGExporter new
+		canvas: aRoassalCanvas;
+		zoomToShapes;
+		exportToFile: aFileReference
 ]
 
 { #category : 'as yet unclassified' }
 CMSpacePresenter >> saveToPng [
 
 	(StSaveFilePresenter extensions: {'png'})
-		okAction: [ :fileReference | 
-			RSPNGExporter new
-				canvas: diagram canvas;
-				exportToFile: fileReference ]
+		okAction: [ :fileReference | self saveToPngFile: fileReference ]
+]
+
+{ #category : 'as yet unclassified' }
+CMSpacePresenter >> saveToPngFile: aFileReference [
+
+	self
+		saveCanvas: diagram canvas
+		toPngFile: aFileReference
 ]
 
 { #category : 'accessing - model' }

@@ -57,7 +57,7 @@ CMExampleModelLoaderPresenter >> connectPresenters [
 CMExampleModelLoaderPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
-		spacing: 3;
+		spacing: 5;
 		add: table;
 		add: (SpBoxLayout newLeftToRight
 			spacing: 2;

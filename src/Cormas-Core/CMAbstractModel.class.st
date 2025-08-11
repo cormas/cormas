@@ -55,9 +55,7 @@ Class {
 CMAbstractModel class >> aboutThisModel [
 	" Answer a <String> which is the main description of the receiver's purpose "
 	
-	^ '# About this model
-	
-	Edit this file to document your model using [Microdown](https://github.com/pillar-markup/Microdown) - Pharo''s dialect of [Markdown](https://en.wikipedia.org/wiki/Markdown).'
+	^ 'Edit this file to document your model using [Microdown](https://github.com/pillar-markup/Microdown) - Pharo''s dialect of [Markdown](https://en.wikipedia.org/wiki/Markdown).'
 	
 
 ]

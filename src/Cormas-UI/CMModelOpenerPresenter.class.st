@@ -4,8 +4,7 @@ Class {
 	#instVars : [
 		'translator',
 		'modelList',
-		'buttonBar',
-		'buttons'
+		'modelPreview'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -90,19 +89,41 @@ CMModelOpenerPresenter class >> updateCormas [
 	branch pullFrom: remote.
 ]
 
+{ #category : 'initialization' }
+CMModelOpenerPresenter >> connectPresenters [
+
+	| page |
+
+	modelList whenSelectedItemChangedDo: [ :modelClass |
+		modelPreview removeAll.
+		
+		page := SpNotebookPage
+			title: 'Model'
+			provider: [
+				self
+					instantiate: CMModelPreviewPresenter
+					on: { modelClass . translator } ].
+		
+		modelPreview addPage: page.
+		modelPreview selectPage: page ]
+]
+
 { #category : 'layout' }
 CMModelOpenerPresenter >> defaultLayout [
 
-	| buttonsLayout |
-	
-	buttonsLayout := SpBoxLayout newLeftToRight.
-	buttons do: [ :button | buttonsLayout add: button ].
-
-	^ SpBoxLayout newTopToBottom
+	^ SpBoxLayout newLeftToRight
 		spacing: 5;
-		add: modelList;
-		add: buttonsLayout height: self class buttonHeight
-		yourself.
+		add: (SpBoxLayout newTopToBottom
+			add: 'Models in this image' height: self class labelHeight;
+			add: modelList;
+			yourself) width: 300;
+		add: modelPreview;
+		yourself
+]
+
+{ #category : 'examples' }
+CMModelOpenerPresenter >> example [
+	<script: 'self example'>
 ]
 
 { #category : 'as yet unclassified' }
@@ -112,26 +133,17 @@ CMModelOpenerPresenter >> findAvailableModels [
 ]
 
 { #category : 'initialization' }
-CMModelOpenerPresenter >> initializeButtons [
-	
-	| command |
-	
-	buttons := CMModelOpenerCommand subclasses collect: [ :aCommandClass |
-		command := aCommandClass forOwner: self translator: translator.
-		command button ]
-]
-
-{ #category : 'initialization' }
 CMModelOpenerPresenter >> initializePresenters [
 
 	translator := CMEnglishTranslator new.
 
 	modelList := self newList
 		items: self findAvailableModels;
+		display: [ :modelClass | modelClass modelName ];
+		displayIcon: [ CMIcons cormasModelIcon ];
 		yourself.
-		
-	buttonBar := self newButtonBar.
-	self initializeButtons
+	
+	modelPreview := self newNotebook 
 ]
 
 { #category : 'initialization' }
@@ -141,7 +153,7 @@ CMModelOpenerPresenter >> initializeWindow: aWindowPresenter [
 	
 	aWindowPresenter 
 		title: 'Cormas Models';
-		initialExtent: 450@400.
+		initialExtent: 750@750.
 ]
 
 { #category : 'as yet unclassified' }

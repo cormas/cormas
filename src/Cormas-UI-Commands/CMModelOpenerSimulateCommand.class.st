@@ -5,12 +5,18 @@ Class {
 	#package : 'Cormas-UI-Commands'
 }
 
+{ #category : 'accessing' }
+CMModelOpenerSimulateCommand class >> order [
+
+	^ 1
+]
+
 { #category : 'action' }
 CMModelOpenerSimulateCommand >> action [
 
 	| presenter |
 	presenter:=  CMSimulationPresenter
-		forModelClass: owner selectedModelClass
+		forModelClass: owner cormasModelClass
 		translator: translator.
 			
 	presenter open.

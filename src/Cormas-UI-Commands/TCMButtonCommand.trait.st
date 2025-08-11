@@ -1,8 +1,5 @@
 Trait {
 	#name : 'TCMButtonCommand',
-	#instVars : [
-		'button'
-	],
 	#traits : 'TCMCommand',
 	#classTraits : 'TCMCommand classTrait',
 	#category : 'Cormas-UI-Commands',
@@ -12,22 +9,17 @@ Trait {
 { #category : 'converting' }
 TCMButtonCommand >> button [
 
-	^ button
+	^ self buttonOfClass: SpButtonPresenter
 ]
 
-{ #category : 'as yet unclassified' }
-TCMButtonCommand >> buttonClass [
+{ #category : 'converting' }
+TCMButtonCommand >> buttonOfClass: aClass [
 
-	^ SpToolbarButtonPresenter
-]
-
-{ #category : 'initialization' }
-TCMButtonCommand >> createButton [
-
-	button := (owner instantiate: self buttonClass)
+	^ (owner instantiate: aClass)
 		label: self name;
 		icon: self icon;
 		action: [ self action ];
+		help: self name;
 		yourself
 ]
 
@@ -35,7 +27,11 @@ TCMButtonCommand >> createButton [
 TCMButtonCommand >> initializeWithTranslator: aTranslator owner: aPresenter [
 
 	translator := aTranslator.
-	owner := aPresenter.
-	
-	self createButton
+	owner := aPresenter
+]
+
+{ #category : 'converting' }
+TCMButtonCommand >> toolbarButton [
+
+	^ self buttonOfClass: SpToolbarButtonPresenter
 ]
