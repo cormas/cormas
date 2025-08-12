@@ -3,6 +3,7 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'translator',
+		'toolbar',
 		'modelList',
 		'exampleModelsList',
 		'modelPreview'
@@ -122,18 +123,27 @@ CMModelOpenerPresenter >> connectPresenters [
 		modelPreview selectPage: page ].
 ]
 
+{ #category : 'as yet unclassified' }
+CMModelOpenerPresenter >> createNewModel [
+
+	 (CMNewModelPresenter forTranslator: translator) open
+]
+
 { #category : 'layout' }
 CMModelOpenerPresenter >> defaultLayout [
 
-	^ SpBoxLayout newLeftToRight
-		spacing: 5;
-		add: (SpBoxLayout newTopToBottom
-			add: 'Models in this image' height: self class labelHeight;
-			add: modelList;
-			add: 'Model library' height: self class labelHeight;
-			add: exampleModelsList;
-			yourself) width: 300;
-		add: modelPreview;
+	^ SpBoxLayout newTopToBottom
+		add: toolbar expand: false;
+		add: (SpBoxLayout newLeftToRight
+			spacing: 5;
+			add: (SpBoxLayout newTopToBottom
+				add: 'Models in this image' height: self class labelHeight;
+				add: modelList;
+				add: 'Model library' height: self class labelHeight;
+				add: exampleModelsList;
+				yourself) width: 300;
+			add: modelPreview;
+			yourself);
 		yourself
 ]
 
@@ -158,6 +168,9 @@ CMModelOpenerPresenter >> findAvailableModels [
 CMModelOpenerPresenter >> initializePresenters [
 
 	translator := CMEnglishTranslator new.
+	
+	toolbar := self newToolbar.
+	self initializeToolbarButtons.
 
 	modelList := self newList
 		items: self findAvailableModels;
@@ -175,13 +188,50 @@ CMModelOpenerPresenter >> initializePresenters [
 ]
 
 { #category : 'initialization' }
+CMModelOpenerPresenter >> initializeToolbarButtons [
+	
+	toolbar add: (self newToolbarButton
+		icon: (self iconNamed: #smallNew);
+		label: 'New';
+		help: 'Create new model';
+		action: [ self createNewModel ];
+		yourself).
+
+	toolbar add: (self newToolbarButton
+		icon: (self iconNamed: #open);
+		label: 'Load';
+		help: 'Load model from a file';
+		action: [ self loadModelFromFile ];
+		yourself).
+		
+	toolbar addItemRight: (self newToolbarButton
+		icon: (self iconNamed: #configuration);
+		label: 'Settings';
+		help: 'Cormas settings';
+		action: [ self openSettings ];
+		yourself).
+]
+
+{ #category : 'initialization' }
 CMModelOpenerPresenter >> initializeWindow: aWindowPresenter [
 
 	super initializeWindow: aWindowPresenter.
 	
 	aWindowPresenter 
 		title: 'Cormas Models';
-		initialExtent: 750@750.
+		initialExtent: 750@800.
+]
+
+{ #category : 'as yet unclassified' }
+CMModelOpenerPresenter >> loadModelFromFile [
+
+	self inform: 'Not implemented yet'
+]
+
+{ #category : 'as yet unclassified' }
+CMModelOpenerPresenter >> openSettings [
+
+	self inform: 'Not implemented yet'
 ]
 
 { #category : 'as yet unclassified' }
