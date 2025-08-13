@@ -97,30 +97,34 @@ CMModelOpenerPresenter >> connectPresenters [
 	| page |
 
 	modelList whenSelectedItemChangedDo: [ :modelClass |
-		modelPreview removeAll.
+		modelClass ifNotNil: [
+			exampleModelsList resetListSelection.
+			modelPreview removeAll.
 		
-		page := SpNotebookPage
-			title: 'Model'
-			provider: [
-				self
-					instantiate: CMLoadedModelPreviewPresenter
-					on: { modelClass . translator } ].
+			page := SpNotebookPage
+				title: 'Model'
+				provider: [
+					self
+						instantiate: CMLoadedModelPreviewPresenter
+						on: { modelClass . translator } ].
 		
-		modelPreview addPage: page.
-		modelPreview selectPage: page ].
+			modelPreview addPage: page.
+			modelPreview selectPage: page ] ].
 	
 	exampleModelsList whenSelectedItemChangedDo: [ :manifest |
-		modelPreview removeAll.
+		manifest ifNotNil: [
+			modelList resetListSelection.
+			modelPreview removeAll.
 		
-		page := SpNotebookPage
-			title: 'Manifest'
-			provider: [
-				self
-					instantiate: CMExampleModelPreviewPresenter
-					on: { manifest . translator } ].
+			page := SpNotebookPage
+				title: 'Manifest'
+				provider: [
+					self
+						instantiate: CMExampleModelPreviewPresenter
+						on: { manifest . translator } ].
 		
-		modelPreview addPage: page.
-		modelPreview selectPage: page ].
+			modelPreview addPage: page.
+			modelPreview selectPage: page ] ].
 ]
 
 { #category : 'as yet unclassified' }
@@ -218,7 +222,7 @@ CMModelOpenerPresenter >> initializeWindow: aWindowPresenter [
 	super initializeWindow: aWindowPresenter.
 	
 	aWindowPresenter 
-		title: 'Cormas Models';
+		title: 'Cormas';
 		initialExtent: 750@800.
 ]
 
