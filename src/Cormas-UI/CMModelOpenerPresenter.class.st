@@ -94,7 +94,7 @@ CMModelOpenerPresenter class >> updateCormas [
 { #category : 'initialization' }
 CMModelOpenerPresenter >> connectPresenters [
 
-	| page |
+	| page presenter |
 
 	modelList whenSelectedItemChangedDo: [ :modelClass |
 		modelClass ifNotNil: [
@@ -119,9 +119,12 @@ CMModelOpenerPresenter >> connectPresenters [
 			page := SpNotebookPage
 				title: 'Manifest'
 				provider: [
-					self
+					presenter := self
 						instantiate: CMExampleModelPreviewPresenter
-						on: { manifest . translator } ].
+						on: { manifest . translator }.
+						
+					presenter whenLoadedOrUnloadedDo: [ self initializeModelLists ].
+					presenter ].
 		
 			modelPreview addPage: page.
 			modelPreview selectPage: page ] ].
@@ -141,10 +144,17 @@ CMModelOpenerPresenter >> defaultLayout [
 		add: (SpBoxLayout newLeftToRight
 			spacing: 5;
 			add: (SpBoxLayout newTopToBottom
-				add: 'Models in this image' height: self class labelHeight;
-				add: modelList;
-				add: 'Model library' height: self class labelHeight;
-				add: exampleModelsList;
+				spacing: 5;
+				add: (SpBoxLayout newTopToBottom
+					spacing: 1;
+					add: 'Models in this image' height: self class labelHeight;
+					add: modelList;
+					yourself);
+				add: (SpBoxLayout newTopToBottom 
+					spacing: 1;
+					add: 'Model library' height: self class labelHeight;
+					add: exampleModelsList;
+					yourself);
 				yourself) width: 300;
 			add: modelPreview;
 			yourself);
@@ -165,7 +175,14 @@ CMModelOpenerPresenter >> findAvailableExampleModels [
 { #category : 'as yet unclassified' }
 CMModelOpenerPresenter >> findAvailableModels [
 
-	^ CMAbstractModel allSubclasses
+	^ CMAbstractModel allSubclasses copyWithout: CMMockModel
+]
+
+{ #category : 'initialization' }
+CMModelOpenerPresenter >> initializeModelLists [
+
+	modelList items: self findAvailableModels.
+	exampleModelsList items: self findAvailableExampleModels
 ]
 
 { #category : 'initialization' }
@@ -177,16 +194,16 @@ CMModelOpenerPresenter >> initializePresenters [
 	self initializeToolbarButtons.
 
 	modelList := self newList
-		items: self findAvailableModels;
 		display: [ :modelClass | modelClass modelName ];
 		displayIcon: [ CMIcons cormasModelIcon ];
 		yourself.
 		
 	exampleModelsList := self newList
-		items: self findAvailableExampleModels;
 		display: [ :manifest | manifest modelName ];
-		displayIcon: [ :manifest | self iconNamed: #box ];
+		displayIcon: [ :manifest | self iconNamed: #book ];
 		yourself.
+		
+	self initializeModelLists.
 	
 	modelPreview := self newNotebook 
 ]

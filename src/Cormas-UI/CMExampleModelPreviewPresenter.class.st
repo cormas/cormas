@@ -7,7 +7,8 @@ Class {
 		'modelPreview',
 		'loadButton',
 		'loadCommand',
-		'toolbar'
+		'toolbar',
+		'signalUpdateBlock'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -46,6 +47,8 @@ CMExampleModelPreviewPresenter >> example [
 
 { #category : 'initialization' }
 CMExampleModelPreviewPresenter >> initializePresenters [
+
+	signalUpdateBlock := [ "do nothing" ].
 
 	modelPreview := self instantiate: CMModelPreviewPresenter on: manifest.
 
@@ -86,4 +89,16 @@ CMExampleModelPreviewPresenter >> setModelBeforeInitialization: aCollection [
 
 	manifest := aCollection first.
 	translator := aCollection second
+]
+
+{ #category : 'as yet unclassified' }
+CMExampleModelPreviewPresenter >> signalUpdate [
+	
+	signalUpdateBlock value
+]
+
+{ #category : 'enumerating' }
+CMExampleModelPreviewPresenter >> whenLoadedOrUnloadedDo: aBlock [
+
+	signalUpdateBlock := aBlock
 ]

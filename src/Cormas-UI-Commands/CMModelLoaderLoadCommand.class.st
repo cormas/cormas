@@ -9,7 +9,7 @@ Class {
 CMModelLoaderLoadCommand >> action [ 
 
 	owner manifest load. 
-	owner onModelLoaded
+	owner signalUpdate
 ]
 
 { #category : 'accessing' }

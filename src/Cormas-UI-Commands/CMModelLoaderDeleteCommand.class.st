@@ -8,7 +8,8 @@ Class {
 { #category : 'action' }
 CMModelLoaderDeleteCommand >> action [ 
 
-	owner manifest delete
+	owner manifest delete.
+	owner signalUpdate
 ]
 
 { #category : 'accessing' }
