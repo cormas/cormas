@@ -89,7 +89,7 @@ BaselineOfCormas >> specForBaselines: spec [
 
 	spec
 		baseline: 'CormasExampleModels'
-		with: [ spec repository: 'github://cormas/example-models' ].
+		with: [ spec repository: 'github://cormas/example-models:main' ].
 
 	spec
 		baseline: 'MathRandomNumbers'
