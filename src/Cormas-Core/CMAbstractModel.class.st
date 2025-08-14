@@ -92,9 +92,31 @@ CMAbstractModel class >> availableProbes [
 ]
 
 { #category : 'as yet unclassified' }
+CMAbstractModel class >> copyMethod: aSelector into: aClass [
+
+	aClass class
+		addSelector: aSelector
+		withMethod: (aClass compiler compile: (self class lookupSelector: aSelector) sourceCode)
+]
+
+{ #category : 'as yet unclassified' }
 CMAbstractModel class >> defaultRandomNumberGeneratorClass [
 
 	^ PMFishmanMooreRandomGenerator
+]
+
+{ #category : 'as yet unclassified' }
+CMAbstractModel class >> generateManifest [
+
+	| manifestClassName manifestClass |
+	manifestClassName := (self name, 'Manifest') asSymbol.
+	
+	manifestClass := (CMModelManifest << manifestClassName
+		package: 'Cormas-ExampleModelManifests') install.
+		
+	self copyMethod: #modelName into: manifestClass.
+	self copyMethod: #aboutThisModel into: manifestClass.
+	self copyMethod: #screenshotContents into: manifestClass
 ]
 
 { #category : 'initialization' }
