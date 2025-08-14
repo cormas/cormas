@@ -86,6 +86,13 @@ CMModelManifest class >> iceRepositoryIfNotFound: aBlock [
 		ifNone: aBlock
 ]
 
+{ #category : 'testing' }
+CMModelManifest class >> isLoaded [
+
+	self iceRepositoryIfNotFound: [ ^ false ].
+	^ true
+]
+
 { #category : 'repository - loading' }
 CMModelManifest class >> load [
 	"Clone repository and install model into the image"
