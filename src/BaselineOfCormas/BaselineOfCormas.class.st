@@ -88,6 +88,10 @@ BaselineOfCormas >> postLoad [
 BaselineOfCormas >> specForBaselines: spec [
 
 	spec
+		baseline: 'CormasExampleModels'
+		with: [ spec repository: 'github://cormas/example-models' ].
+
+	spec
 		baseline: 'MathRandomNumbers'
 		with: [ spec repository: 'github://PolyMathOrg/random-numbers:v1.x.x/src' ].
 		
@@ -103,7 +107,7 @@ BaselineOfCormas >> specForGroups: spec [
 	spec
 		group: 'Core' with: #('Cormas-Core');
 		group: 'CoreTests' with: #('Cormas-Tests');
-		group: 'UI' with: #('Cormas-UI-Tilesets' 'Cormas-Tests' 'Cormas-CodeGeneration-Tests' 'Cormas-UI-Tests');
+		group: 'UI' with: #('CormasExampleModels' 'Cormas-UI-Tilesets' 'Cormas-Tests' 'Cormas-CodeGeneration-Tests' 'Cormas-UI-Tests');
 		group: 'SensitivityAnalysis' with: #('Cormas-SensitivityAnalysis');
 		group: 'SensitivityAnalysisTests' with: #('Cormas-SensitivityAnalysis-Tests' 'Cormas-Tests');
 		group: 'SensitivityAnalysisUI' with: #(
