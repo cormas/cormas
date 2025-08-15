@@ -59,6 +59,12 @@ TCMCommand >> initializeWithTranslator: aTranslator owner: aPresenter [
 	owner := aPresenter
 ]
 
+{ #category : 'testing' }
+TCMCommand >> isAvailable [
+	"Override to provide the condition for an action to be available"
+	^ true
+]
+
 { #category : 'accessing' }
 TCMCommand >> name [
 

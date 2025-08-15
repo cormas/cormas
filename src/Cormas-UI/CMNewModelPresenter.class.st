@@ -11,7 +11,8 @@ Class {
 		'generateTestsCheckbox',
 		'packageClassTree',
 		'createButton',
-		'cancelButton'
+		'cancelButton',
+		'modelCreatedBlock'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -38,12 +39,19 @@ CMNewModelPresenter >> connectPresenters [
 	
 	cancelButton action: [ self window close ].
 	
-	createButton action: [ 
-		[ 
-			modelTemplate generate.
-			(modelTemplate modelClassName asClassInEnvironment: self class environment) browse.
-			self window close
-		] onErrorDo: [ :error | self alert: error messageText ] ].
+	createButton action: [
+		[ self createModel ] onErrorDo: [ :error | self alert: error messageText ] ].
+]
+
+{ #category : 'as yet unclassified' }
+CMNewModelPresenter >> createModel [
+
+	| modelClass |
+	modelTemplate generate.
+	modelClass := modelTemplate modelClassName asClassInEnvironment: self class environment.
+	
+	modelCreatedBlock value: modelClass.
+	self window close
 ]
 
 { #category : 'layout' }
@@ -92,6 +100,8 @@ CMNewModelPresenter >> example [
 
 { #category : 'initialization' }
 CMNewModelPresenter >> initializePresenters [
+
+	modelCreatedBlock := [ :modelClass | "do nothing" ].
 
 	nameInput := self newTextInput.
 	prefixInput := self newTextInput.
@@ -210,4 +220,10 @@ CMNewModelPresenter >> updateTemplate [
 		statusLabel label: error messageText.
 		createButton disable.
 		packageClassTree roots: OrderedCollection new ]
+]
+
+{ #category : 'enumerating' }
+CMNewModelPresenter >> whenModelCreatedDo: aBlock [
+
+	modelCreatedBlock := aBlock
 ]

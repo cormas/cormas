@@ -18,6 +18,12 @@ CMModelLoaderDeleteCommand >> icon [
 	^ self iconNamed: #smallDelete
 ]
 
+{ #category : 'testing' }
+CMModelLoaderDeleteCommand >> isAvailable [
+
+	^ owner manifest isLoaded
+]
+
 { #category : 'accessing' }
 CMModelLoaderDeleteCommand >> name [
 	

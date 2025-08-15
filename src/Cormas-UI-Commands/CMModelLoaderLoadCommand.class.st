@@ -18,6 +18,12 @@ CMModelLoaderLoadCommand >> icon [
 	^ self iconNamed: #smallLoadProject
 ]
 
+{ #category : 'testing' }
+CMModelLoaderLoadCommand >> isAvailable [
+
+	^ owner manifest isLoaded not
+]
+
 { #category : 'accessing' }
 CMModelLoaderLoadCommand >> name [
 

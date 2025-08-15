@@ -5,9 +5,8 @@ Class {
 		'translator',
 		'manifest',
 		'modelPreview',
-		'loadButton',
-		'loadCommand',
 		'toolbar',
+		'buttonBar',
 		'signalUpdateBlock'
 	],
 	#category : 'Cormas-UI',
@@ -33,7 +32,7 @@ CMExampleModelPreviewPresenter >> defaultLayout [
 		spacing: 10;
 		add: modelPreview;
 		add: (SpBoxLayout newLeftToRight
-			add: loadButton width: 150;
+			add: buttonBar width: 200;
 			add: toolbar;
 			yourself) expand: false;
 		yourself
@@ -51,25 +50,41 @@ CMExampleModelPreviewPresenter >> initializePresenters [
 	signalUpdateBlock := [ "do nothing" ].
 
 	modelPreview := self instantiate: CMModelPreviewPresenter on: manifest.
-
-	loadCommand := CMModelLoaderLoadCommand forOwner: self translator: translator.
-	loadButton := loadCommand button.
 	
+	buttonBar := self newButtonBar.
+	buttonBar placeAtStart.
+	
+	toolbar := self newToolbar.
+	toolbar beIcons.
 	self initializeToolbar
 ]
 
 { #category : 'initialization' }
 CMExampleModelPreviewPresenter >> initializeToolbar [
 	
-	| command |
+	| largeButtonCommands toolbarButtonCommands command |
 	
-	toolbar := self newToolbar.
-	toolbar beIcons.
+	largeButtonCommands := {
+		CMModelLoaderLoadCommand .
+		CMModelLoaderUpdateCommand .
+		CMModelLoaderDeleteCommand }.
+		
+	toolbarButtonCommands := CMModelLoaderCommand sortedSubclasses copyWithoutAll: largeButtonCommands.
 	
-	(CMModelLoaderCommand sortedSubclasses copyWithout: loadCommand class)
-		collect: [ :aCommandClass |
-			command := aCommandClass forOwner: self translator: translator.
-			toolbar addItemRight: command toolbarButton ]
+	buttonBar items removeAll.
+	toolbar removeAllItems.
+	
+	largeButtonCommands collect: [ :aCommandClass |
+		command := aCommandClass forOwner: self translator: translator.
+			
+		command isAvailable ifTrue: [
+			buttonBar add: command button ] ].
+	
+	toolbarButtonCommands collect: [ :aCommandClass |
+		command := aCommandClass forOwner: self translator: translator.
+			
+		command isAvailable ifTrue: [
+			toolbar addItemRight: command toolbarButton ] ].
 ]
 
 { #category : 'accessing' }

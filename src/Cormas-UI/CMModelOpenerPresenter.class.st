@@ -54,28 +54,12 @@ CMModelOpenerPresenter class >> menu00CormasOn: aBuilder [
 		action: [ self new open ];
 		order: 1.
 		
-	(aBuilder item: #ExampleModels)
-		parent: #CormasRepositories;
-		label: 'Load example Models';
-		icon: (self iconNamed: #box);
-		help: 'Load example models';
-		action: [ CMExampleModelLoaderPresenter new open ];
-		order: 1.
-		
-	(aBuilder item: #UpdateCormas)
-		parent: #CormasRepositories ;
-		label: 'Update Cormas';
-		icon: (self iconNamed: #smallUpdate);
-		help: 'Pull the latest changes from Cormas repository on GitHub';
-		action: [ self updateCormas ];
-		order: 1.
-		
 	(aBuilder item: #ColorPicker)
 		parent: #Cormas ;
 		label: 'Color Picker';
 		icon: (self iconNamed: #paint);
 		help: 'Open color picker';
-		action: [ SpColorPickerWindow open ];
+		action: [ SpColorPickerPresenter open ];
 		order: 1.
 ]
 
@@ -123,7 +107,10 @@ CMModelOpenerPresenter >> connectPresenters [
 						instantiate: CMExampleModelPreviewPresenter
 						on: { manifest . translator }.
 						
-					presenter whenLoadedOrUnloadedDo: [ self initializeModelLists ].
+					presenter whenLoadedOrUnloadedDo: [
+						self initializeModelLists.
+						exampleModelsList selectItem: manifest ].
+					
 					presenter ].
 		
 			modelPreview addPage: page.
@@ -133,7 +120,14 @@ CMModelOpenerPresenter >> connectPresenters [
 { #category : 'as yet unclassified' }
 CMModelOpenerPresenter >> createNewModel [
 
-	 (CMNewModelPresenter forTranslator: translator) open
+	| newModelPresenter |
+	newModelPresenter := CMNewModelPresenter forTranslator: translator.
+	
+	newModelPresenter whenModelCreatedDo: [ :modelClass |
+		self initializeModelLists.
+		modelList selectItem: modelClass ].
+	
+	newModelPresenter open
 ]
 
 { #category : 'layout' }
@@ -240,7 +234,7 @@ CMModelOpenerPresenter >> initializeWindow: aWindowPresenter [
 	
 	aWindowPresenter 
 		title: 'Cormas';
-		initialExtent: 750@800.
+		initialExtent: 730@800.
 ]
 
 { #category : 'as yet unclassified' }

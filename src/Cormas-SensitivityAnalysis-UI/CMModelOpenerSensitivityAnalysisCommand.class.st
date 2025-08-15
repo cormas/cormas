@@ -21,8 +21,7 @@ CMModelOpenerSensitivityAnalysisCommand >> action [
 		translator: translator.
 		
 	presenter open.
-	presenter window centered.
-	owner window close
+	presenter window centered
 ]
 
 { #category : 'accessing' }

@@ -14,8 +14,7 @@ CMModelOpenerBrowseCommand class >> order [
 { #category : 'action' }
 CMModelOpenerBrowseCommand >> action [
 
-	owner cormasModelClass browse.
-	owner window close
+	owner cormasModelClass browse
 ]
 
 { #category : 'accessing' }
