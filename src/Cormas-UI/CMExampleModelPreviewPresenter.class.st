@@ -66,8 +66,7 @@ CMExampleModelPreviewPresenter >> initializeToolbar [
 	
 	largeButtonCommands := {
 		CMModelLoaderLoadCommand .
-		CMModelLoaderUpdateCommand .
-		CMModelLoaderDeleteCommand }.
+		CMModelLoaderUpdateCommand }.
 		
 	toolbarButtonCommands := CMModelLoaderCommand sortedSubclasses copyWithoutAll: largeButtonCommands.
 	
@@ -93,12 +92,6 @@ CMExampleModelPreviewPresenter >> manifest [
 	^ manifest
 ]
 
-{ #category : 'as yet unclassified' }
-CMExampleModelPreviewPresenter >> onModelLoaded [
-
-	"do nothing"
-]
-
 { #category : 'accessing - model' }
 CMExampleModelPreviewPresenter >> setModelBeforeInitialization: aCollection [
 
@@ -113,7 +106,7 @@ CMExampleModelPreviewPresenter >> signalUpdate [
 ]
 
 { #category : 'enumerating' }
-CMExampleModelPreviewPresenter >> whenLoadedOrUnloadedDo: aBlock [
+CMExampleModelPreviewPresenter >> whenLoadedDo: aBlock [
 
 	signalUpdateBlock := aBlock
 ]

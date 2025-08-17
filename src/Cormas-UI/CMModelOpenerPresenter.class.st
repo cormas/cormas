@@ -78,43 +78,13 @@ CMModelOpenerPresenter class >> updateCormas [
 { #category : 'initialization' }
 CMModelOpenerPresenter >> connectPresenters [
 
-	| page presenter |
-
 	modelList whenSelectedItemChangedDo: [ :modelClass |
 		modelClass ifNotNil: [
-			exampleModelsList resetListSelection.
-			modelPreview removeAll.
-		
-			page := SpNotebookPage
-				title: 'Model'
-				provider: [
-					self
-						instantiate: CMLoadedModelPreviewPresenter
-						on: { modelClass . translator } ].
-		
-			modelPreview addPage: page.
-			modelPreview selectPage: page ] ].
+			self showLoadedModel: modelClass ] ].
 	
 	exampleModelsList whenSelectedItemChangedDo: [ :manifest |
 		manifest ifNotNil: [
-			modelList resetListSelection.
-			modelPreview removeAll.
-		
-			page := SpNotebookPage
-				title: 'Manifest'
-				provider: [
-					presenter := self
-						instantiate: CMExampleModelPreviewPresenter
-						on: { manifest . translator }.
-						
-					presenter whenLoadedOrUnloadedDo: [
-						self initializeModelLists.
-						exampleModelsList selectItem: manifest ].
-					
-					presenter ].
-		
-			modelPreview addPage: page.
-			modelPreview selectPage: page ] ].
+			self showExampleModel: manifest ] ].
 ]
 
 { #category : 'as yet unclassified' }
@@ -253,4 +223,58 @@ CMModelOpenerPresenter >> openSettings [
 CMModelOpenerPresenter >> selectedModelClass [
 
 	^ modelList selectedItem
+]
+
+{ #category : 'as yet unclassified' }
+CMModelOpenerPresenter >> showExampleModel: aManifest [
+
+	| page presenter loadedModelClass |
+
+	modelList resetListSelection.
+	modelPreview removeAll.
+		
+	page := SpNotebookPage
+		title: 'Manifest'
+		provider: [
+			presenter := self
+				instantiate: CMExampleModelPreviewPresenter
+				on: { aManifest . translator }.
+						
+			presenter whenLoadedDo: [
+				self initializeModelLists.
+				
+				loadedModelClass := modelList items detect: [ :modelClass |
+					modelClass modelName = aManifest modelName ].
+				
+				modelList selectItem: loadedModelClass ].
+					
+			presenter ].
+		
+	modelPreview addPage: page.
+	modelPreview selectPage: page
+]
+
+{ #category : 'as yet unclassified' }
+CMModelOpenerPresenter >> showLoadedModel: aModelClass [
+
+	| page presenter |
+
+	exampleModelsList resetListSelection.
+	modelPreview removeAll.
+		
+	page := SpNotebookPage
+		title: 'Model'
+		provider: [
+			presenter := self
+				instantiate: CMLoadedModelPreviewPresenter
+				on: { aModelClass . translator }.
+				
+			presenter whenModelDeletedDo: [
+				modelPreview removeAll.
+				self initializeModelLists ].
+				
+			presenter ].
+		
+	modelPreview addPage: page.
+	modelPreview selectPage: page
 ]

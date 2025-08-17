@@ -7,7 +7,8 @@ Class {
 		'modelPreview',
 		'runSimulationButton',
 		'runSimulationCommand',
-		'toolbar'
+		'toolbar',
+		'signalUpdateBlock'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -53,6 +54,8 @@ CMLoadedModelPreviewPresenter >> example [
 { #category : 'initialization' }
 CMLoadedModelPreviewPresenter >> initializePresenters [
 
+	signalUpdateBlock := [ "do nothing" ].
+	
 	modelPreview := self instantiate: CMModelPreviewPresenter on: cormasModelClass.
 
 	runSimulationCommand := CMModelOpenerSimulateCommand forOwner: self translator: translator.
@@ -80,4 +83,16 @@ CMLoadedModelPreviewPresenter >> setModelBeforeInitialization: aCollection [
 
 	cormasModelClass := aCollection first.
 	translator := aCollection second
+]
+
+{ #category : 'signalling' }
+CMLoadedModelPreviewPresenter >> signalUpdate [
+	
+	signalUpdateBlock value
+]
+
+{ #category : 'enumerating' }
+CMLoadedModelPreviewPresenter >> whenModelDeletedDo: aBlock [
+
+	signalUpdateBlock := aBlock
 ]
