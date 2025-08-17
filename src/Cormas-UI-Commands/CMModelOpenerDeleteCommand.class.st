@@ -5,6 +5,12 @@ Class {
 	#package : 'Cormas-UI-Commands'
 }
 
+{ #category : 'accessing' }
+CMModelOpenerDeleteCommand class >> order [
+
+	^ 1
+]
+
 { #category : 'action' }
 CMModelOpenerDeleteCommand >> action [
 	"If there is an Iceberg repository, use it to unload the project and then delete the repository itself. If repository cannot be found, then identify project packages and delete them one by one"

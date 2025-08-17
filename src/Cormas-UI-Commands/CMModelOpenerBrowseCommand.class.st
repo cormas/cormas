@@ -8,7 +8,7 @@ Class {
 { #category : 'accessing' }
 CMModelOpenerBrowseCommand class >> order [ 
 
-	^ 10
+	^ 100
 ]
 
 { #category : 'action' }

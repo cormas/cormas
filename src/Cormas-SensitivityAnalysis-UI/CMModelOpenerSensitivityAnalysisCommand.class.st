@@ -8,7 +8,7 @@ Class {
 { #category : 'accessing' }
 CMModelOpenerSensitivityAnalysisCommand class >> order [
 
-	^ 5
+	^ 70
 ]
 
 { #category : 'accessing' }

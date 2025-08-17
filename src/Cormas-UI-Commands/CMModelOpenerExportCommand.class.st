@@ -5,6 +5,12 @@ Class {
 	#package : 'Cormas-UI-Commands'
 }
 
+{ #category : 'accessing' }
+CMModelOpenerExportCommand class >> order [
+
+	^ 50
+]
+
 { #category : 'action' }
 CMModelOpenerExportCommand >> action [
 

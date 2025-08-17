@@ -147,11 +147,66 @@ CMAbstractModel class >> generateManifest [
 ]
 
 { #category : 'repository - detecting' }
-CMAbstractModel class >> iceRepository [
+CMAbstractModel class >> githubOwnerAndRepositoryName [
+	"Detect the github owner and repository name. Signal an exception if:
+		1. Model has no Iceberg repository
+		2. Model has no GitHub remotes
+		3. Model has multiple GitHub remotes with different owners or repository names"
+		
+	| repo githubRemotes ownerName repositoryName |
+	
+	repo := self iceRepositoryIfNotFound: [ 
+		self error: 'Project has no Iceberg repository' ].
+
+	githubRemotes := repo remotes select: [ :each | each host = 'github.com' ].
+	githubRemotes ifEmpty: [ self error: 'Project has no GitHub remote' ].
+
+	ownerName := githubRemotes anyOne owner.
+	repositoryName := githubRemotes anyOne projectName.
+	
+	(githubRemotes allSatisfy: [ :each |
+		(each owner = ownerName) and: [ each projectName = repositoryName ] ])
+		ifFalse: [ self error: 'Project has several different GitHub remotes' ].
+		
+	^ ownerName -> repositoryName 
+]
+
+{ #category : 'repository - detecting' }
+CMAbstractModel class >> githubUrl [
+
+	| ownerAndRepo ownerName repositoryName |
+	
+	ownerAndRepo := self githubOwnerAndRepositoryName.
+	ownerName := ownerAndRepo key.
+	repositoryName := ownerAndRepo value.
+
+	^ String streamContents: [ :stream |
+		stream
+			<< 'https://github.com/'
+			<< ownerName
+			<< '/'
+			<< repositoryName ]
+]
+
+{ #category : 'repository - detecting' }
+CMAbstractModel class >> hasGithubUrl [
+
+	[ self githubUrl ] onErrorDo: [ ^ false ].
+	^ true
+]
+
+{ #category : 'repository - detecting' }
+CMAbstractModel class >> hasIceRepository [
 
 	^ self
-		iceRepositoryIfFound: [ :repo | repo ]
-		ifNotFound: [ self error: 'Repository not found' ]
+		iceRepositoryIfFound: [ true ]
+		ifNotFound: [ false ]
+]
+
+{ #category : 'repository - detecting' }
+CMAbstractModel class >> iceRepository [
+
+	^ self iceRepositoryIfNotFound: [ self error: 'Repository not found' ]
 ]
 
 { #category : 'repository - detecting' }
@@ -164,6 +219,14 @@ CMAbstractModel class >> iceRepositoryIfFound: aFoundBlock ifNotFound: aNotFound
 	
 	repo := ancestors first package workingCopy repository.
 	^ aFoundBlock value: repo
+]
+
+{ #category : 'repository - detecting' }
+CMAbstractModel class >> iceRepositoryIfNotFound: aNotFoundBlock [
+
+	^ self
+		iceRepositoryIfFound: [ :repo | repo ]
+		ifNotFound: aNotFoundBlock 
 ]
 
 { #category : 'initialization' }

@@ -1,24 +1,24 @@
 Class {
-	#name : 'CMModelLoaderGitHubCommand',
+	#name : 'CMModelLoaderGithubCommand',
 	#superclass : 'CMModelLoaderCommand',
 	#category : 'Cormas-UI-Commands',
 	#package : 'Cormas-UI-Commands'
 }
 
 { #category : 'action' }
-CMModelLoaderGitHubCommand >> action [
+CMModelLoaderGithubCommand >> action [
 
 	WebBrowser openOn: owner manifest githubUrl
 ]
 
 { #category : 'accessing' }
-CMModelLoaderGitHubCommand >> icon [
+CMModelLoaderGithubCommand >> icon [
 
 	^ self iconNamed: #github
 ]
 
 { #category : 'accessing' }
-CMModelLoaderGitHubCommand >> name [
+CMModelLoaderGithubCommand >> name [
 
 	^ 'Open on GitHub'
 ]

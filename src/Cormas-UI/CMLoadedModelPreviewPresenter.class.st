@@ -75,7 +75,9 @@ CMLoadedModelPreviewPresenter >> initializeToolbar [
 	(CMModelOpenerCommand sortedSubclasses copyWithout: runSimulationCommand class)
 		collect: [ :aCommandClass |
 			command := aCommandClass forOwner: self translator: translator.
-			toolbar addItemRight: command toolbarButton ]
+			
+			command isAvailable ifTrue: [
+				toolbar addItemRight: command toolbarButton ] ]
 ]
 
 { #category : 'accessing - model' }
