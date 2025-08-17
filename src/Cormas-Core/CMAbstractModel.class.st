@@ -133,6 +133,12 @@ CMAbstractModel class >> deleteModel [
 ]
 
 { #category : 'as yet unclassified' }
+CMAbstractModel class >> documentationUrl [ 
+	"Override this method to provide a link to model's documentation page"
+	^ nil
+]
+
+{ #category : 'as yet unclassified' }
 CMAbstractModel class >> generateManifest [
 
 	| manifestClassName manifestClass |
