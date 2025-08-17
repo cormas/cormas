@@ -88,6 +88,10 @@ BaselineOfCormas >> postLoad [
 BaselineOfCormas >> specForBaselines: spec [
 
 	spec
+		baseline: 'CormasExampleModels'
+		with: [ spec repository: 'github://cormas/example-models:main' ].
+
+	spec
 		baseline: 'MathRandomNumbers'
 		with: [ spec repository: 'github://PolyMathOrg/random-numbers:v1.x.x/src' ].
 		
@@ -142,7 +146,7 @@ BaselineOfCormas >> specForPackages: spec [
 		package: 'Cormas-UI-Translator';
 		package: 'Cormas-UI-Commands';
 		
-		package: 'Cormas-UI' with: [ spec requires: #('Cormas-Core' 'Cormas-CodeGeneration' 'Cormas-Mocks' 'Cormas-UI-Commands' 'Cormas-UI-Roassal3' 'Cormas-UI-Translator') ];
+		package: 'Cormas-UI' with: [ spec requires: #('Cormas-Core' 'Cormas-CodeGeneration' 'Cormas-Mocks' 'Cormas-UI-Commands' 'Cormas-UI-Roassal3' 'Cormas-UI-Translator' 'CormasExampleModels') ];
 		
 		package: 'Cormas-UI-Tests'
 		with: [ spec requires: #('Cormas-UI') ];

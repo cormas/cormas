@@ -5,11 +5,16 @@ Class {
 	#package : 'Cormas-UI-Commands'
 }
 
+{ #category : 'accessing' }
+CMModelOpenerBrowseCommand class >> order [ 
+
+	^ 100
+]
+
 { #category : 'action' }
 CMModelOpenerBrowseCommand >> action [
 
-	owner selectedModelClass browse.
-	owner window close
+	owner cormasModelClass browse
 ]
 
 { #category : 'accessing' }

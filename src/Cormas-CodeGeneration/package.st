@@ -1,1 +1,1 @@
-Package { #name : #'Cormas-CodeGeneration' }
+Package { #name : 'Cormas-CodeGeneration' }

@@ -6,17 +6,22 @@ Class {
 }
 
 { #category : 'accessing' }
+CMModelOpenerSensitivityAnalysisCommand class >> order [
+
+	^ 70
+]
+
+{ #category : 'accessing' }
 CMModelOpenerSensitivityAnalysisCommand >> action [
 
 	| presenter |
 		
 	presenter := CMSensitivityAnalysisPresenter
-		forModelClass: owner selectedModelClass
+		forModelClass: owner cormasModelClass
 		translator: translator.
 		
 	presenter open.
-	presenter window centered.
-	owner window close
+	presenter window centered
 ]
 
 { #category : 'accessing' }

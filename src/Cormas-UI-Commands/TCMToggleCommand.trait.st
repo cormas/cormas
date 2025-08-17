@@ -33,7 +33,7 @@ TCMToggleCommand >> actionWhenOn [
 { #category : 'converting' }
 TCMToggleCommand >> createButton [
 
-	button := (owner instantiate: self buttonClass)
+	button := (owner instantiate: SpToolbarButtonPresenter)
 		action: [
 			isOn := isOn not.
 			self updateLabelAndIcon.
@@ -93,6 +93,12 @@ TCMToggleCommand >> nameWhenOff [
 TCMToggleCommand >> nameWhenOn [
 
 	self subclassResponsibility
+]
+
+{ #category : 'converting' }
+TCMToggleCommand >> toolbarButton [
+
+	^ button
 ]
 
 { #category : 'as yet unclassified' }

@@ -1,5 +1,5 @@
 Class {
-	#name : 'CMModelOpenerCommand',
+	#name : 'CMModelLoaderCommand',
 	#superclass : 'Object',
 	#traits : 'TCMButtonCommand',
 	#classTraits : 'TCMButtonCommand classTrait',
