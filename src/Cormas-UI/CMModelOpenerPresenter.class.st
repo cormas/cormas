@@ -54,6 +54,14 @@ CMModelOpenerPresenter class >> menu00CormasOn: aBuilder [
 		action: [ self new open ];
 		order: 1.
 		
+	(aBuilder item: #CormasWebsite)
+		parent: #Cormas ;
+		label: 'Cormas website';
+		icon: (self iconNamed: #remote);
+		help: 'Open Cormas website in a web browser';
+		action: [ WebBrowser openOn: 'https://cormas.org' ];
+		order: 1.
+		
 	(aBuilder item: #ColorPicker)
 		parent: #Cormas ;
 		label: 'Color Picker';
