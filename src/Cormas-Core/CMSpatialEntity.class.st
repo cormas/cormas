@@ -219,12 +219,6 @@ CMSpatialEntity >> destroyed [
 	^ destroyed ifNil: [destroyed := false]
 ]
 
-{ #category : 'initialize-release' }
-CMSpatialEntity >> destroyed: aBoolean [
-	
-	destroyed := aBoolean
-]
-
 { #category : 'environment - distance' }
 CMSpatialEntity >> distanceTo: anotherSpatialEntity [
 	"Purpose: returns the Manhattan distance (in cells) between the receiver and aSpatialEntity
@@ -341,6 +335,12 @@ CMSpatialEntity >> isDead [
 	" See superimplementor's comment "
 
 	^ destroyed
+]
+
+{ #category : 'initialize-release' }
+CMSpatialEntity >> isDead: aBoolean [
+	
+	destroyed := aBoolean
 ]
 
 { #category : 'testing' }
