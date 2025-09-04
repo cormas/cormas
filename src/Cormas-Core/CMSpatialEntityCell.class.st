@@ -21,8 +21,8 @@ CMSpatialEntityCell >> asString [
 	^ String streamContents: [ : stream |
 		stream 
 			<< super asString;
-			cr;
-			<< 'State: ';
+			crtab;	
+			<< 'state: ';
 			<< self state asString ]
 	
 ]

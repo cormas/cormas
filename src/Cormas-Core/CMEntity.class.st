@@ -209,7 +209,7 @@ CMEntity >> actionSelectors [
 
 { #category : 'converting' }
 CMEntity >> asString [
-	" Private - See superimplementor's comment "
+	" After adding the name of this entity, add its id "
 
 	^ String streamContents: [ : stream |
 		stream 
@@ -357,7 +357,7 @@ CMEntity >> cormasModel: aCMAbstractModel [
 CMEntity >> delete [
 	"Purpose: indicates that the instance has to be removed"
 	
-	self destroyed: true
+	self isDead: true
 ]
 
 { #category : 'initialize-release' }
@@ -365,12 +365,6 @@ CMEntity >> destroyed [
 	"Answer if the entity is destroyed or not"
 	
 	self subclassResponsibility
-]
-
-{ #category : 'initialize-release' }
-CMEntity >> destroyed: aBoolean [
-	
-	aBoolean ifTrue: [self release]
 ]
 
 { #category : 'displaying' }
@@ -513,6 +507,12 @@ CMEntity >> isCommunicatingEntity [
 CMEntity >> isCormasEntity [
 
 	^ true
+]
+
+{ #category : 'initialize-release' }
+CMEntity >> isDead: aBoolean [
+	
+	aBoolean ifTrue: [self release]
 ]
 
 { #category : 'testing' }

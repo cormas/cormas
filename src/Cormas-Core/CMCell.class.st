@@ -25,6 +25,7 @@ CMCell class >> isSpatialEntityElementClass [
 
 { #category : 'accessing' }
 CMCell >> asString [
+	" After adding the name and id of this entity, add its coordinates "
 	" Private - See superimplementor's comment "
 
 	^ String streamContents: [ : stream |

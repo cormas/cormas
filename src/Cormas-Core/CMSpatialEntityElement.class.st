@@ -22,19 +22,6 @@ CMSpatialEntityElement class >> isSpatialEntityElementClass [
 ]
 
 { #category : 'accessing' }
-CMSpatialEntityElement >> asString [
-	" Private - See superimplementor's comment "
-
-	^ String streamContents: [ : stream |
-		stream 
-			<< super asString;
-			crtab;		
-			<< 'coordinates: ';
-			<< self coordinates asString ]
-	
-]
-
-{ #category : 'accessing' }
 CMSpatialEntityElement >> columnNumber [
 	"Purpose: returns the X coordinate of the cell in a regular spatial grid"
 	
@@ -655,7 +642,7 @@ CMSpatialEntityElement >> wayTo: anotherCell [
 	^path
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'environment - sensing - space' }
 CMSpatialEntityElement >> wayTo: anotherCell constraint: aBlock [
 	"Purpose: gets the shortest way satisfying a constraint to anotherCell"
 	
