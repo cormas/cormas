@@ -26,13 +26,6 @@ CMAgent >> delete [
 	cormasModel removeEntity: self.
 ]
 
-{ #category : 'accessing' }
-CMAgent >> destroyed: aBoolean [
-"Set the dead variable to True or False and delete the figures"
-	isDead := aBoolean.
-	(aBoolean and:[self isSituated]) ifTrue:[self leave].
-]
-
 { #category : 'controlling' }
 CMAgent >> die [
 
@@ -72,6 +65,13 @@ CMAgent >> isAlive [
 CMAgent >> isDead [
 
 	^ isDead
+]
+
+{ #category : 'accessing' }
+CMAgent >> isDead: aBoolean [
+"Set the dead variable to True or False and delete the figures"
+	isDead := aBoolean.
+	(aBoolean and:[self isSituated]) ifTrue:[self leave].
 ]
 
 { #category : 'control' }
