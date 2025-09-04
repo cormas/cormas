@@ -595,7 +595,11 @@ Example: self createAggregates: SquareArea horizontalDividers: 5 verticalDivider
 
 { #category : 'instance creation - spatial grid' }
 CMAbstractModel >> createGridNumberOfRows: aNumberOfRows numberOfColumns: aNumberOfColumns neighbourhood: aNumber closed: aBoolean [
-	"Create a spatial grid made of cells"
+	"Create a spatial grid made of regular cells (all the cells have the same shape).
+	The neighbourhood can be 3, 4, 6 or 8 cells: 3 for triangular cells, 4 or 8 for squared cells, and 6 for hexagonal cells.
+	closed set the boundaries of the grid: false means that the grid is torroidal. 
+	Ex: self createGridNumberOfRows: 5 numberOfColumns: 10 neighbourhood: 6 closed: false
+	 => instanciates a 5 x 10 torroidal grid made of hexagonal cells"
 
 	self spaceModel
 		initializeRegularNumberOfRows: aNumberOfRows
@@ -790,6 +794,12 @@ CMAbstractModel >> createN: aNumber randomlyLocatedEntitiesFrom: aCollectionOfCl
 			anAgent perform: aSymbol withArguments: aCollec.
 			newEntities add: anAgent ].
 	^ newEntities
+]
+
+{ #category : 'instance creation - spatial grid' }
+CMAbstractModel >> createSimpleGrid [
+	"Create a 10 by 10 spatial grid made of squared cells"
+self createGridNumberOfRows: 10 numberOfColumns: 10 neighbourhood: 4 closed: false
 ]
 
 { #category : 'utilities - space metrics' }

@@ -209,7 +209,7 @@ CMEntity >> actionSelectors [
 
 { #category : 'converting' }
 CMEntity >> asString [
-	" Private - See superimplementor's comment "
+	" After adding the name of this entity, add its id "
 
 	^ String streamContents: [ : stream |
 		stream 
