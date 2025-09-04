@@ -48,6 +48,12 @@ CMUkrainianTranslator >> tClass [
 ]
 
 { #category : 'translations' }
+CMUkrainianTranslator >> tClassPrefix [
+
+	^ 'Префікс класів'
+]
+
+{ #category : 'translations' }
 CMUkrainianTranslator >> tControlMethod [
 
 	^ 'Метод контролю'
@@ -57,6 +63,12 @@ CMUkrainianTranslator >> tControlMethod [
 CMUkrainianTranslator >> tCreate [
 
 	^ 'Створити'
+]
+
+{ #category : 'translations' }
+CMUkrainianTranslator >> tCreateBaseline [
+
+	^ 'Створити baseline'
 ]
 
 { #category : 'translations' }
@@ -201,12 +213,6 @@ CMUkrainianTranslator >> tParameters [
 CMUkrainianTranslator >> tPredefinedList [
 
 	^ 'Список'
-]
-
-{ #category : 'translations' }
-CMUkrainianTranslator >> tPrefix [
-
-	^ 'Префікс'
 ]
 
 { #category : 'translations' }

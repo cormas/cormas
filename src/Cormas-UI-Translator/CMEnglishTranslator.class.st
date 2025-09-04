@@ -48,6 +48,12 @@ CMEnglishTranslator >> tClass [
 ]
 
 { #category : 'translations' }
+CMEnglishTranslator >> tClassPrefix [
+
+	^ 'Class prefix'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tControlMethod [
 
 	^ 'Control method'
@@ -57,6 +63,12 @@ CMEnglishTranslator >> tControlMethod [
 CMEnglishTranslator >> tCreate [
 
 	^ 'Create'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tCreateBaseline [
+
+	^ 'Create a baseline'
 ]
 
 { #category : 'translations' }
@@ -201,12 +213,6 @@ CMEnglishTranslator >> tParameters [
 CMEnglishTranslator >> tPredefinedList [
 
 	^ 'Predefined list'
-]
-
-{ #category : 'translations' }
-CMEnglishTranslator >> tPrefix [
-
-	^ 'Prefix'
 ]
 
 { #category : 'translations' }

@@ -3,16 +3,18 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'translator',
-		'modelTemplate',
 		'nameInput',
+		'modelClassNameInput',
 		'prefixInput',
 		'statusLabel',
 		'descriptionText',
 		'generateTestsCheckbox',
+		'generateBaselineCheckbox',
 		'packageClassTree',
 		'createButton',
 		'cancelButton',
-		'modelCreatedBlock'
+		'modelCreatedBlock',
+		'generator'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -33,9 +35,17 @@ CMNewModelPresenter class >> forTranslator: aTranslator [
 { #category : 'initialization' }
 CMNewModelPresenter >> connectPresenters [
 
-	nameInput whenTextChangedDo: [ self updatePrefix ].
-	prefixInput whenTextChangedDo: [ self updateTemplate ].
-	generateTestsCheckbox whenChangedDo: [ self updateTemplate ].
+	nameInput whenTextChangedDo: [ self onModelNameChanged ].
+	modelClassNameInput whenTextChangedDo: [ self onModelClassNameChanged ].
+	prefixInput whenTextChangedDo: [ self onPrefixChanged ].
+	
+	generateTestsCheckbox whenChangedDo: [ 
+		generator shouldGenerateTestPackage: generateTestsCheckbox state.
+		self updatePackageClassTree ].
+	
+	generateBaselineCheckbox whenChangedDo: [
+		generator shouldGenerateBaseline: generateBaselineCheckbox state.
+		self updatePackageClassTree ].
 	
 	cancelButton action: [ self window close ].
 	
@@ -47,8 +57,8 @@ CMNewModelPresenter >> connectPresenters [
 CMNewModelPresenter >> createModel [
 
 	| modelClass |
-	modelTemplate generate.
-	modelClass := modelTemplate modelClassName asClassInEnvironment: self class environment.
+	generator generate.
+	modelClass := generator modelClassName asClassInEnvironment: self class environment.
 	
 	modelCreatedBlock value: modelClass.
 	self window close
@@ -60,28 +70,37 @@ CMNewModelPresenter >> defaultLayout [
 	^ SpBoxLayout newTopToBottom
 		spacing: 6;
 		borderWidth: 2;
-		add: (SpBoxLayout newLeftToRight
-			spacing: 15;
+		add: (SpBoxLayout newTopToBottom
+			spacing: 2;
 			add: (SpBoxLayout newLeftToRight
 				vAlignCenter;
-				add: translator tName, ' *' width: 50;
+				add: 'Model name' width: 120;
 				add: nameInput;
-				yourself);
+				yourself) expand: false;
 			add: (SpBoxLayout newLeftToRight
 				vAlignCenter;
-				add: translator tPrefix, ' *' width: 50;
+				add: 'Model class name' width: 120;
+				add: modelClassNameInput;
+				yourself) expand: false;
+			add: (SpBoxLayout newLeftToRight
+				vAlignCenter;
+				add: translator tClassPrefix width: 120;
 				add: prefixInput;
-				yourself);
+				yourself) expand: false;
+			add: '' expand: false;
 			yourself) expand: false;
 		add: (SpBoxLayout newTopToBottom
 			add: translator tDescription expand: false;
 			add: descriptionText;
 			yourself);
-		add: generateTestsCheckbox expand: false;
+		add: (SpBoxLayout newTopToBottom
+			add: generateTestsCheckbox;
+			add: generateBaselineCheckbox;
+			yourself) expand: false;
 		add: (SpBoxLayout newTopToBottom
 			spacing: 3;
 			add: translator tPackagesClassesToCreate expand: false;
-			add: packageClassTree height: 100;
+			add: packageClassTree height: 150;
 			yourself) expand: false;
 		add: (SpBoxLayout newLeftToRight
 			spacing: 3;
@@ -101,9 +120,11 @@ CMNewModelPresenter >> example [
 { #category : 'initialization' }
 CMNewModelPresenter >> initializePresenters [
 
+	generator := CMModelGenerator new.
 	modelCreatedBlock := [ :modelClass | "do nothing" ].
 
 	nameInput := self newTextInput.
+	modelClassNameInput := self newTextInput.
 	prefixInput := self newTextInput.
 	
 	statusLabel := self newLabel
@@ -134,16 +155,23 @@ CMNewModelPresenter >> initializePresenters [
 	
 	generateTestsCheckbox := self newCheckBox
 		label: translator tCreateTestPackage;
-		state: modelTemplate shouldGenerateTestPackage;
+		state: generator shouldGenerateTestPackage;
+		yourself.
+		
+	generateBaselineCheckbox := self newCheckBox
+		label: translator tCreateBaseline;
+		state: generator shouldGenerateBaseline;
 		yourself.
 	
 	createButton := self newButton
 		label: translator tCreate;
+		icon: (self iconNamed: #accept);
 		disable;
 		yourself.
 		
 	cancelButton := self newButton
 		label: translator tCancel;
+		icon: (self iconNamed: #cancel);
 		yourself.
 ]
 
@@ -154,27 +182,72 @@ CMNewModelPresenter >> initializeWindow: aWindowPresenter [
 	
 	aWindowPresenter 
 		title: 'New Model';
-		initialExtent: 475@450.
+		initialExtent: 400@600.
 ]
 
 { #category : 'as yet unclassified' }
-CMNewModelPresenter >> prefixFromModelName: aString [
+CMNewModelPresenter >> onError: anError [
 
-	| name capitalLetters |
+	statusLabel label: anError messageText.
+	createButton disable.
+	packageClassTree roots: OrderedCollection new
+]
+
+{ #category : 'as yet unclassified' }
+CMNewModelPresenter >> onModelClassNameChanged [
+
+	| cursorIndex |
+	[ generator modelClassName: modelClassNameInput text ] onErrorDo: [ :e | self onError: e ].
+
+	cursorIndex := modelClassNameInput cursorPositionIndex.
+	self updateNamesFromGenerator.
 	
-	name := aString asCamelCase select: [ :char | char isAlphaNumeric ].
+	modelClassNameInput takeKeyboardFocus.
+	modelClassNameInput cursorPositionIndex: cursorIndex
+]
+
+{ #category : 'as yet unclassified' }
+CMNewModelPresenter >> onModelNameChanged [
+
+	| cursorIndex |
+	[ generator modelName: nameInput text ] onErrorDo: [ :e | self onError: e ].
 	
-	capitalLetters := name select: [ :char | char isUppercase ].
-	capitalLetters size > 1 ifTrue: [ ^ capitalLetters ].
+	cursorIndex := nameInput cursorPositionIndex.
+	self updateNamesFromGenerator.
 	
-	^ name first: (3 min: name size)
+	nameInput takeKeyboardFocus.
+	nameInput cursorPositionIndex: cursorIndex
+]
+
+{ #category : 'as yet unclassified' }
+CMNewModelPresenter >> onPrefixChanged [
+
+	| cursorIndex |
+	[ generator prefix: prefixInput text ] onErrorDo: [ :e | self onError: e ].
+	
+	cursorIndex := prefixInput cursorPositionIndex.
+	self updateNamesFromGenerator.
+	
+	prefixInput takeKeyboardFocus.
+	prefixInput cursorPositionIndex: cursorIndex
 ]
 
 { #category : 'accessing - model' }
 CMNewModelPresenter >> setModelBeforeInitialization: aTranslator [
 
-	translator := aTranslator.
-	modelTemplate := CMModelTemplate new
+	translator := aTranslator
+]
+
+{ #category : 'as yet unclassified' }
+CMNewModelPresenter >> updateNamesFromGenerator [
+
+	"Update input values without announching the text changed"
+	nameInput property: #text rawValue: generator modelName.
+	modelClassNameInput property: #text rawValue: generator modelClassName.
+	prefixInput property: #text rawValue: generator prefix.
+	
+	self update.
+	self updatePackageClassTree
 ]
 
 { #category : 'as yet unclassified' }
@@ -182,44 +255,29 @@ CMNewModelPresenter >> updatePackageClassTree [
 
 	| items |
 	
+	generator modelPackageName ifEmpty: [ 
+		packageClassTree roots: #().
+		^ self ].
+	
 	items := OrderedCollection with: {
-		'name' -> modelTemplate modelPackageName .
-		'classes' -> { { 'name' -> modelTemplate modelClassName } asDictionary } 
+		'name' -> generator modelPackageName .
+		'classes' -> { { 'name' -> generator modelClassName } asDictionary } 
 	} asDictionary.
 		
-	modelTemplate shouldGenerateTestPackage ifTrue: [
+	generator shouldGenerateTestPackage ifTrue: [
 		items add: { 
-			'name' -> modelTemplate testPackageName .
-			'classes' -> { { 'name' -> modelTemplate testClassName } asDictionary }
+			'name' -> generator testPackageName .
+			'classes' -> { { 'name' -> generator testClassName } asDictionary }
+		} asDictionary ].
+	
+	generator shouldGenerateBaseline ifTrue: [ 
+		items add: { 
+			'name' -> generator baselinePackageName .
+			'classes' -> { { 'name' -> generator baselineClassName } asDictionary }
 		} asDictionary ].
 	
 	packageClassTree roots: items.
 	packageClassTree expandAll
-]
-
-{ #category : 'as yet unclassified' }
-CMNewModelPresenter >> updatePrefix [
-
-	prefixInput text: (self prefixFromModelName: nameInput text asCamelCase)
-]
-
-{ #category : 'as yet unclassified' }
-CMNewModelPresenter >> updateTemplate [
-
-	modelTemplate clearNameAndPrefix.
-	modelTemplate shouldGenerateTestPackage: generateTestsCheckbox state.
-
-	[
-		modelTemplate name: nameInput text asCamelCase.
-		modelTemplate prefix: prefixInput text asCamelCase.
-		
-		statusLabel label: ''.
-		createButton enable.
-		self updatePackageClassTree.
-	] onErrorDo: [ :error |
-		statusLabel label: error messageText.
-		createButton disable.
-		packageClassTree roots: OrderedCollection new ]
 ]
 
 { #category : 'enumerating' }
