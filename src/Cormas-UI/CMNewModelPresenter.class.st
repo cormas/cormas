@@ -197,10 +197,16 @@ CMNewModelPresenter >> onError: anError [
 CMNewModelPresenter >> onModelClassNameChanged [
 
 	| cursorIndex |
-	[ generator modelClassName: modelClassNameInput text ] onErrorDo: [ :e | self onError: e ].
-
 	cursorIndex := modelClassNameInput cursorPositionIndex.
-	self updateNamesFromGenerator.
+	
+	[ generator modelClassName: modelClassNameInput text ] onErrorDo: [ :e | self onError: e ].
+	
+	"Update input values without announching the text changed"
+	nameInput property: #text rawValue: generator modelName.
+	prefixInput property: #text rawValue: generator prefix.
+	
+	self update.
+	self updatePackageClassTree.
 	
 	modelClassNameInput takeKeyboardFocus.
 	modelClassNameInput cursorPositionIndex: cursorIndex
@@ -210,10 +216,16 @@ CMNewModelPresenter >> onModelClassNameChanged [
 CMNewModelPresenter >> onModelNameChanged [
 
 	| cursorIndex |
+	cursorIndex := nameInput cursorPositionIndex.
+	
 	[ generator modelName: nameInput text ] onErrorDo: [ :e | self onError: e ].
 	
-	cursorIndex := nameInput cursorPositionIndex.
-	self updateNamesFromGenerator.
+	"Update input values without announching the text changed"
+	modelClassNameInput property: #text rawValue: generator modelClassName.
+	prefixInput property: #text rawValue: generator prefix.
+	
+	self update.
+	self updatePackageClassTree.
 	
 	nameInput takeKeyboardFocus.
 	nameInput cursorPositionIndex: cursorIndex
@@ -223,10 +235,16 @@ CMNewModelPresenter >> onModelNameChanged [
 CMNewModelPresenter >> onPrefixChanged [
 
 	| cursorIndex |
+	cursorIndex := prefixInput cursorPositionIndex.
+	
 	[ generator prefix: prefixInput text ] onErrorDo: [ :e | self onError: e ].
 	
-	cursorIndex := prefixInput cursorPositionIndex.
-	self updateNamesFromGenerator.
+	"Update input values without announching the text changed"
+	nameInput property: #text rawValue: generator modelName.
+	modelClassNameInput property: #text rawValue: generator modelClassName.
+	
+	self update.
+	self updatePackageClassTree.
 	
 	prefixInput takeKeyboardFocus.
 	prefixInput cursorPositionIndex: cursorIndex
@@ -236,18 +254,6 @@ CMNewModelPresenter >> onPrefixChanged [
 CMNewModelPresenter >> setModelBeforeInitialization: aTranslator [
 
 	translator := aTranslator
-]
-
-{ #category : 'as yet unclassified' }
-CMNewModelPresenter >> updateNamesFromGenerator [
-
-	"Update input values without announching the text changed"
-	nameInput property: #text rawValue: generator modelName.
-	modelClassNameInput property: #text rawValue: generator modelClassName.
-	prefixInput property: #text rawValue: generator prefix.
-	
-	self update.
-	self updatePackageClassTree
 ]
 
 { #category : 'as yet unclassified' }
