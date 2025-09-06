@@ -39,6 +39,7 @@ Class {
 	#instVars : [
 		'spaceModel',
 		'entityGetters',
+		'entities',
 		'cellClass',
 		'agentClasses'
 	],
@@ -788,12 +789,6 @@ CMAbstractModel >> createN: aNumber randomlyLocatedEntitiesFrom: aCollectionOfCl
 			anAgent perform: aSymbol withArguments: aCollec.
 			newEntities add: anAgent ].
 	^ newEntities
-]
-
-{ #category : 'instance creation - spatial grid' }
-CMAbstractModel >> createSimpleGrid [
-	"Create a 10 by 10 spatial grid made of squared cells"
-self createGridNumberOfRows: 10 numberOfColumns: 10 neighbourhood: 4 closed: false
 ]
 
 { #category : 'utilities - space metrics' }
