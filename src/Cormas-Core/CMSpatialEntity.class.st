@@ -110,7 +110,7 @@ CMSpatialEntity class >> new: aSpaceModel [
 		             cormasModel: aSpaceModel cormasModel;
 		             yourself.
 
-	aSpaceModel cormasModel collectEntity: newEntity.
+	aSpaceModel cormasModel addEntityToCollection: newEntity.
 	newEntity initOccupants.
 
 	^ newEntity
