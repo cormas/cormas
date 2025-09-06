@@ -80,6 +80,25 @@ CMModelGenerator >> generate [
 ]
 
 { #category : 'code generation' }
+CMModelGenerator >> generateBaselineMethod [
+
+	| method |
+	
+	method := baselineClass compiler compile: ('baseline: spec
+	<baseline>
+	spec for: #common do: [
+		spec
+			package: ''', self modelPackageName, ''';
+		
+			package: ''', self testPackageName, '''
+			with: [ spec requires: #(''', self modelPackageName, ''') ] ].').
+
+	baselineClass
+		addSelector: #baseline:
+		withMethod: method.
+]
+
+{ #category : 'code generation' }
 CMModelGenerator >> generateDescriptionMethod [
 
 	| method |
@@ -94,12 +113,59 @@ CMModelGenerator >> generateDescriptionMethod [
 ]
 
 { #category : 'code generation' }
+CMModelGenerator >> generateInitMethod [
+
+	| method |
+	
+	method := modelClass compiler compile: ('init
+	<init>
+	"This method is used to define the initial environment of a simulation. It will be executed once when the simulation is initialized."
+	
+	"Example of a 4x4 rectangular grid"
+	self
+		createGridNumberOfRows: 4
+		numberOfColumns: 4
+		neighbourhood: 8
+		closed: false.
+		
+	"Example of creating agents and randomly positioning them on a grid"
+		
+	"self createN: 3 randomlyLocatedEntities: YourAgentClass1.
+	self createN: 3 randomlyLocatedAloneEntities: YourAgentClass2."').
+
+	modelClass
+		addSelector: #init
+		withMethod: method.
+]
+
+{ #category : 'code generation' }
+CMModelGenerator >> generateInitializeMethod [
+
+	| method |
+	
+	method := modelClass compiler compile: ('initialize
+	super initialize.
+	
+	"The code that you write here will be executed right after the model object is created (before the simulation is initialized)"').
+
+	modelClass
+		addSelector: #initialize
+		withMethod: method.
+]
+
+{ #category : 'code generation' }
 CMModelGenerator >> generateMethods [
 
 	self generateModelNameMethod.
 	self generatePrefixMethod.
 	
-	description ifNotEmpty: [ self generateDescriptionMethod ]
+	description ifNotEmpty: [ self generateDescriptionMethod ].
+	
+	self generateInitializeMethod.
+	self generateInitMethod.
+	self generateStepMethod.
+	
+	shouldGenerateBaseline ifTrue: [ self generateBaselineMethod ]
 ]
 
 { #category : 'code generation' }
@@ -138,12 +204,26 @@ CMModelGenerator >> generatePrefixMethod [
 	
 	method := modelClass compiler compile: ('prefix
 	"Every class name in model package must begin with this prefix"
-	^ ''', prefix, '''.').
+	^ ''', self prefix, '''.').
 	
 	method protocol: 'accessing'.
 
 	modelClass class
 		addSelector: #prefix
+		withMethod: method.
+]
+
+{ #category : 'code generation' }
+CMModelGenerator >> generateStepMethod [
+
+	| method |
+	
+	method := modelClass compiler compile: ('step
+	<control>
+	"This method will be executed at every step of the simulation"').
+
+	modelClass
+		addSelector: #step
 		withMethod: method.
 ]
 

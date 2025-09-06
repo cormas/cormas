@@ -199,7 +199,11 @@ CMNewModelPresenter >> onModelClassNameChanged [
 	| cursorIndex |
 	cursorIndex := modelClassNameInput cursorPositionIndex.
 	
-	[ generator modelClassName: modelClassNameInput text ] onErrorDo: [ :e | self onError: e ].
+	[ generator modelClassName: modelClassNameInput text ] onErrorDo: [ :e |
+		self onError: e.
+		^ self ].
+	
+	self onValidEntry.
 	
 	"Update input values without announching the text changed"
 	nameInput property: #text rawValue: generator modelName.
@@ -218,7 +222,11 @@ CMNewModelPresenter >> onModelNameChanged [
 	| cursorIndex |
 	cursorIndex := nameInput cursorPositionIndex.
 	
-	[ generator modelName: nameInput text ] onErrorDo: [ :e | self onError: e ].
+	[ generator modelName: nameInput text ] onErrorDo: [ :e |
+		self onError: e.
+		^ self ].
+	
+	self onValidEntry.
 	
 	"Update input values without announching the text changed"
 	modelClassNameInput property: #text rawValue: generator modelClassName.
@@ -237,7 +245,11 @@ CMNewModelPresenter >> onPrefixChanged [
 	| cursorIndex |
 	cursorIndex := prefixInput cursorPositionIndex.
 	
-	[ generator prefix: prefixInput text ] onErrorDo: [ :e | self onError: e ].
+	[ generator prefix: prefixInput text ] onErrorDo: [ :e |
+		self onError: e.
+		^ self ].
+	
+	self onValidEntry.
 	
 	"Update input values without announching the text changed"
 	nameInput property: #text rawValue: generator modelName.
@@ -248,6 +260,13 @@ CMNewModelPresenter >> onPrefixChanged [
 	
 	prefixInput takeKeyboardFocus.
 	prefixInput cursorPositionIndex: cursorIndex
+]
+
+{ #category : 'as yet unclassified' }
+CMNewModelPresenter >> onValidEntry [
+
+	statusLabel label: ''.
+	createButton enable
 ]
 
 { #category : 'accessing - model' }
