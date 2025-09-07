@@ -1,8 +1,6 @@
 Class {
 	#name : 'CMMockAnimal',
 	#superclass : 'CMAgent',
-	#traits : 'TCMLocated',
-	#classTraits : 'TCMLocated classTrait',
 	#instVars : [
 		'energy'
 	],

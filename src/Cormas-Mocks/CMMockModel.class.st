@@ -140,13 +140,6 @@ CMMockModel >> cellMatrix [
 		(1 1 1 0))
 ]
 
-{ #category : 'accessing' }
-CMMockModel >> cells [
-
-	<getterFor: #CMMockCell>
-	^ theCells
-]
-
 { #category : 'init' }
 CMMockModel >> init [ 
 	<init>
@@ -255,18 +248,4 @@ CMMockModel >> step: t [
 	<control>
 	self askRandom: CMMockAnimal toDo: #step.
 	self stepSynchronouslyCA: t.
-]
-
-{ #category : 'accessing' }
-CMMockModel >> theCows [
-
-	<getterFor: #CMMockCow>
-	^ theCows
-]
-
-{ #category : 'accessing' }
-CMMockModel >> theGoats [
-	
-	<getterFor: #CMMockGoat>
-	^ theGoats
 ]
