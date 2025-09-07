@@ -74,8 +74,8 @@ CMSimulationTest >> testRunStep [
 		
 	expectedCellStateMatrix := simulation cormasModel invertedCellMatrix flattened asOrderedCollection.
 	
-	agent1 := simulation cormasModel theCows first.
-	agent2 := simulation cormasModel theGoats first.
+	agent1 := (simulation cormasModel @@ CMMockCow) first.
+	agent2 := (simulation cormasModel @@ CMMockGoat) first.
 	
 	self assert: simulation currentTimeStep equals: 1.
 	self assert: cellStateMatrix equals: expectedCellStateMatrix.

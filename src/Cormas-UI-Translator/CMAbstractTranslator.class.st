@@ -57,6 +57,12 @@ CMAbstractTranslator >> tClass [
 ]
 
 { #category : 'translations' }
+CMAbstractTranslator >> tClassPrefix [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
 CMAbstractTranslator >> tControlMethod [
 
 	self subclassResponsibility
@@ -64,6 +70,12 @@ CMAbstractTranslator >> tControlMethod [
 
 { #category : 'translations' }
 CMAbstractTranslator >> tCreate [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tCreateBaseline [
 
 	self subclassResponsibility
 ]
@@ -208,12 +220,6 @@ CMAbstractTranslator >> tParameters [
 
 { #category : 'translations' }
 CMAbstractTranslator >> tPredefinedList [
-
-	self subclassResponsibility
-]
-
-{ #category : 'translations' }
-CMAbstractTranslator >> tPrefix [
 
 	self subclassResponsibility
 ]
