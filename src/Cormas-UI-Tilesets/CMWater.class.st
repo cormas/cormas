@@ -1,9 +1,6 @@
 Class {
 	#name : 'CMWater',
-	#superclass : 'Object',
-	#classVars : [
-		'icons'
-	],
+	#superclass : 'CMTileset',
 	#category : 'Cormas-UI-Tilesets',
 	#package : 'Cormas-UI-Tilesets'
 }
@@ -26,7 +23,7 @@ CMWater class >> frame00 [
 	<script: 'self frame00 inspect'>
 	^ self icons
 		at: #frame00
-		ifAbsentPut: [ Form fromBinaryStream: self frame00Contents base64Decoded asByteArray readStream ]
+		ifAbsentPut: [ self formFromBase64: self frame00Contents ]
 ]
 
 { #category : 'private - contents' }
@@ -41,7 +38,7 @@ CMWater class >> frame01 [
 	<script: 'self frame01 inspect'>
 	^ self icons
 		at: #frame01
-		ifAbsentPut: [ Form fromBinaryStream: self frame01Contents base64Decoded asByteArray readStream ]
+		ifAbsentPut: [ self formFromBase64: self frame01Contents ]
 ]
 
 { #category : 'private - contents' }
@@ -56,7 +53,7 @@ CMWater class >> frame02 [
 	<script: 'self frame02 inspect'>
 	^ self icons
 		at: #frame02
-		ifAbsentPut: [ Form fromBinaryStream: self frame02Contents base64Decoded asByteArray readStream ]
+		ifAbsentPut: [ self formFromBase64: self frame02Contents ]
 ]
 
 { #category : 'private - contents' }
@@ -71,35 +68,11 @@ CMWater class >> frame03 [
 	<script: 'self frame03 inspect'>
 	^ self icons
 		at: #frame03
-		ifAbsentPut: [ Form fromBinaryStream: self frame03Contents base64Decoded asByteArray readStream ]
+		ifAbsentPut: [ self formFromBase64: self frame03Contents ]
 ]
 
 { #category : 'private - contents' }
 CMWater class >> frame03Contents [
 	"Private - Method generated with the content of the file File @ /Users/zaitsev/Downloads/tiles/water/03_Water_4.png"
 	^ 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAHdJREFUOI2tUjsOgCAMfZKyMXN5j+MVPAUzG4NOmEZrP9E3QcL7lS7rvh0IopZxnSlKBoDWs1+Au3GiW0AicSRLwAJZETXUMkBREkfr+YcKnke85nQOCWg1xQq1jIfrG8QEkcEmr9MdM6X6jdqOzLs6RE+Vz3twAr5nKCtR/kBSAAAAAElFTkSuQmCC'
-]
-
-{ #category : 'accessing' }
-CMWater class >> icons [
-	^ icons ifNil: [ icons := Dictionary new ]
-]
-
-{ #category : 'InspectorExtensions' }
-CMWater class >> inspectionIcons [
-	<inspectorPresentationOrder: 0 title: 'icons'>
-	<script: 'self inspect'>
-	^ SpTablePresenter new
-		  addColumn: (SpImageTableColumn title: 'Icon' evaluated: #value);
-		  addColumn: (SpStringTableColumn title: 'Name' evaluated: #key);
-		  items:
-			  ((self class selectorsInCategory: 'accessing - icons') sorted
-				   collect: [ :each | each -> (self perform: each) ]);
-		  yourself
-]
-
-{ #category : 'accessing - reset' }
-CMWater class >> resetIcons [
-	<script>
-	^ icons := nil
 ]
