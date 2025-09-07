@@ -118,7 +118,7 @@ CMR3SpaceAgentsBuilder >> mouseEnd: anEvent [
 CMR3SpaceAgentsBuilder >> moveAgentShape: anAgentShape [
 
 	| agent pov |
-			
+
 	agent := anAgentShape model.
 
 	(anAgentShape propertyAt: #RSLabeled) ifNotNil: [ :p |
@@ -143,16 +143,23 @@ CMR3SpaceAgentsBuilder >> objects [
 ]
 
 { #category : 'position in cell' }
-CMR3SpaceAgentsBuilder >> positionAgent: anAgent atProportion: aPoint [
-	"aPoint 0@0 will place the agent in the top-left corner of the cell, 1@1 - bottom-right corner, 0.5@0.5 - center of the cell"
+CMR3SpaceAgentsBuilder >> positionAgent: anAgent atProportion: aRelativePoint [
+	"aRelativePoint is relative to a cell. 0@0 will place the agent in the top-left corner of the cell, 1@1 - bottom-right corner, 0.5@0.5 - center of the cell"
 
-	| cell cellSize |
-	
+	| cell cellSize offset config intersectionProportion |
 	cell := anAgent patch.
 	cellSize := diagramBuilder cellShapes anyOne encompassingRectangle extent.
+	
+	config := diagramBuilder cormasModel spaceModel neighbourhoodConfiguration.
+	
+	intersectionProportion :=
+		config boundingRectangleHorizontalIntersection @
+		config boundingRectangleVerticalIntersection.
+	
+	offset := (cell columnNumber - 1 * cellSize x) @ (cell rowNumber - 1 * cellSize y)
+		- (intersectionProportion * cellSize * ((cell columnNumber @ cell rowNumber) - 1)).
 
-	^ (((cell columnNumber @ cell rowNumber) - 1) * cellSize)
-		+ ((aPoint x * cellSize x) @ (aPoint y * cellSize y)).
+	^ offset + (aRelativePoint x * cellSize x @ (aRelativePoint y * cellSize y))
 ]
 
 { #category : 'position in cell' }
@@ -179,19 +186,18 @@ CMR3SpaceAgentsBuilder >> shapeFor: anObject index: aNumber [
 
 	| pov shape |
 	pov := anObject perform: anObject class activePovSelector.
-	
+
 	self masterShape: ((RSShapeFactory perform: pov shape)
-		color: pov color;
-		extent: 20@20;
-		yourself).
-			
+			 color: pov color;
+			 extent: 20 @ 20;
+			 yourself).
+
 	shape := super shapeFor: anObject index: aNumber.
-	
+
 	shape model: anObject.
-		
-	isDraggable ifTrue: [
-		self makeAgentShapeDraggable: shape ].
-	
+
+	isDraggable ifTrue: [ self makeAgentShapeDraggable: shape ].
+
 	^ shape
 ]
 
@@ -207,7 +213,5 @@ CMR3SpaceAgentsBuilder >> update [
 { #category : 'updating' }
 CMR3SpaceAgentsBuilder >> updateShape: aShape [
 
-	self moveAgentShape: aShape.
-	
-	Transcript show: diagramBuilder cormasModel agents size; cr.
+	self moveAgentShape: aShape
 ]

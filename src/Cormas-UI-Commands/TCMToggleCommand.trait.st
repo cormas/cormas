@@ -1,7 +1,8 @@
 Trait {
 	#name : 'TCMToggleCommand',
 	#instVars : [
-		'isOn'
+		'isOn',
+		'button'
 	],
 	#traits : 'TCMCommand',
 	#classTraits : 'TCMCommand classTrait',
@@ -9,7 +10,7 @@ Trait {
 	#package : 'Cormas-UI-Commands'
 }
 
-{ #category : 'accessing' }
+{ #category : 'action' }
 TCMToggleCommand >> action [
 
 	isOn
@@ -17,13 +18,13 @@ TCMToggleCommand >> action [
 		ifFalse: [ self actionWhenOff ]
 ]
 
-{ #category : 'accessing' }
+{ #category : 'action' }
 TCMToggleCommand >> actionWhenOff [
 
 	self subclassResponsibility
 ]
 
-{ #category : 'accessing' }
+{ #category : 'action' }
 TCMToggleCommand >> actionWhenOn [
 
 	self subclassResponsibility
@@ -32,7 +33,7 @@ TCMToggleCommand >> actionWhenOn [
 { #category : 'converting' }
 TCMToggleCommand >> createButton [
 
-	button := (owner instantiate: self buttonClass)
+	button := (owner instantiate: SpToolbarButtonPresenter)
 		action: [
 			isOn := isOn not.
 			self updateLabelAndIcon.
@@ -48,13 +49,13 @@ TCMToggleCommand >> icon [
 	self shouldNotImplement
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 TCMToggleCommand >> iconWhenOff [
 
 	self subclassResponsibility
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 TCMToggleCommand >> iconWhenOn [
 
 	self subclassResponsibility
@@ -82,16 +83,22 @@ TCMToggleCommand >> name [
 	self shouldNotImplement
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 TCMToggleCommand >> nameWhenOff [
 
 	self subclassResponsibility
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 TCMToggleCommand >> nameWhenOn [
 
 	self subclassResponsibility
+]
+
+{ #category : 'converting' }
+TCMToggleCommand >> toolbarButton [
+
+	^ button
 ]
 
 { #category : 'as yet unclassified' }

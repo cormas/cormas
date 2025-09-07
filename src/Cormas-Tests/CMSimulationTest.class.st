@@ -49,14 +49,14 @@ CMSimulationTest >> testProbes [
 	expectedProbes := { 
 		CMProbe
 			name: 'Number of alive cells'
-			color: Color blue
-			method: (CMMockModel >> #numberOfAliveCells)
+			colorString: '0000FF'
+			selector: #numberOfAliveCells
 			on: simulation cormasModel .
 			
 		CMProbe
 			name: 'Number of dead cells'
-			color: Color red
-			method: (CMMockModel >> #numberOfDeadCells)
+			colorString: 'FF0000'
+			selector: #numberOfDeadCells
 			on: simulation cormasModel .
 	}.
 
@@ -74,8 +74,8 @@ CMSimulationTest >> testRunStep [
 		
 	expectedCellStateMatrix := simulation cormasModel invertedCellMatrix flattened asOrderedCollection.
 	
-	agent1 := simulation cormasModel theCows first.
-	agent2 := simulation cormasModel theGoats first.
+	agent1 := (simulation cormasModel @@ CMMockCow) first.
+	agent2 := (simulation cormasModel @@ CMMockGoat) first.
 	
 	self assert: simulation currentTimeStep equals: 1.
 	self assert: cellStateMatrix equals: expectedCellStateMatrix.

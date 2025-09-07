@@ -1,3 +1,10 @@
+"
+CMR3SpaceDiagramBuilder is the spatialGrid builder 
+To get the real view, call #asPresenter (diagram := spaceBuilder asPresenter)
+                                                                                                    
+Examples
+•	CMR3SpaceDiagramBuilder class>>#example
+"
 Class {
 	#name : 'CMR3SpaceDiagramBuilder',
 	#superclass : 'RSAbstractContainerBuilder',
@@ -18,16 +25,19 @@ Class {
 CMR3SpaceDiagramBuilder class >> example [
 
 	<example>
-	| model builder |
-	
-	model := CMMockModel new.
+	| model |
+	model := CMMockModel new. 
+	model initFixed.
 
-	builder := self new
-		cormasModel: model;
-		inspect;
-		asPresenter.
-	
-	builder open.
+	(self for: model) asPresenter open
+]
+
+{ #category : 'instance creation' }
+CMR3SpaceDiagramBuilder class >> for: aCormasModel [
+
+	^ self new
+		initializeWithCormasModel: aCormasModel;
+		yourself
 ]
 
 { #category : 'accessing - pov' }
@@ -50,15 +60,21 @@ CMR3SpaceDiagramBuilder >> cellShapes [
 ]
 
 { #category : 'accessing' }
-CMR3SpaceDiagramBuilder >> cormasModel [
+CMR3SpaceDiagramBuilder >> cellsBuilder [
 
-	^ cormasModel
+	^ cellsBuilder
 ]
 
 { #category : 'accessing' }
-CMR3SpaceDiagramBuilder >> cormasModel: anObject [
+CMR3SpaceDiagramBuilder >> cellsBuilder: anObject [
 
-	cormasModel := anObject
+	cellsBuilder := anObject
+]
+
+{ #category : 'accessing' }
+CMR3SpaceDiagramBuilder >> cormasModel [
+
+	^ cormasModel
 ]
 
 { #category : 'as yet unclassified' }
@@ -76,28 +92,16 @@ CMR3SpaceDiagramBuilder >> defaultContainer [
 ]
 
 { #category : 'initialization' }
-CMR3SpaceDiagramBuilder >> initialize [
+CMR3SpaceDiagramBuilder >> initializeWithCormasModel: aModel [
 
-	super initialize.
-	
+	cormasModel := aModel.
 	cellsBuilder := CMR3SpaceCellsBuilder for: self.
 	agentsBuilder := CMR3SpaceAgentsBuilder for: self.
 ]
 
-{ #category : 'accessing' }
-CMR3SpaceDiagramBuilder >> masterShapeForAgents: aShape [
-
-	agentsBuilder masterShape: aShape
-]
-
-{ #category : 'accessing' }
-CMR3SpaceDiagramBuilder >> masterShapeForCells: aShape [
-
-	cellsBuilder masterShape: aShape
-]
-
 { #category : 'rendering' }
 CMR3SpaceDiagramBuilder >> renderIn: aCanvas [
+	"aCanvas showEncompassingRectangles."
 	cellsBuilder renderIn: aCanvas.
 	agentsBuilder renderIn: aCanvas.
 ]

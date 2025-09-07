@@ -11,7 +11,7 @@ CMKillSpaceContextMenuCommand class >> order [
 	^ 2
 ]
 
-{ #category : 'accessing' }
+{ #category : 'action' }
 CMKillSpaceContextMenuCommand >> action [
 
 	owner die

@@ -11,7 +11,7 @@ CMInspectSpaceContextMenuCommand class >> order [
 	^ 1
 ]
 
-{ #category : 'accessing' }
+{ #category : 'action' }
 CMInspectSpaceContextMenuCommand >> action [
 
 	owner inspect 

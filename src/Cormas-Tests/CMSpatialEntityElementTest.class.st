@@ -23,7 +23,7 @@ CMSpatialEntityElementTest >> testMoveTowardsConstraintOnPath [
 
 	| agent destination expectedPathOfIds |
 	
-	agent := model theCows anyOne.
+	agent := (model @@ CMMockCow) anyOne.
 	destination := model pickCellAt: 3 @ 2.
 	
 	expectedPathOfIds := #(5 9 14 11 7) asOrderedCollection.

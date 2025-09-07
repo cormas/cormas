@@ -64,7 +64,7 @@ CMDataPresenter >> initializeToolbar [
 	CMDataPresenterCommand sortedSubclasses do: [ :aClass |
 		| command |
 		command := aClass forOwner: self translator: translator.
-		toolbar add: command button ].
+		toolbar add: command toolbarButton ].
 ]
 
 { #category : 'accessing - model' }

@@ -11,44 +11,51 @@ CMCreateAgentCommand class >> order [
 	^ 5
 ]
 
-{ #category : 'accessing' }
+{ #category : 'action' }
 CMCreateAgentCommand >> actionWhenOff [
 
 	owner spaceBuilder whenLeftClickOnCellDo: [ :cell | "do nothing" ].
 ]
 
-{ #category : 'accessing' }
+{ #category : 'action' }
 CMCreateAgentCommand >> actionWhenOn [
-
-	| agentClass |
+	| agentClasses selectedClass |
 	
-	agentClass := owner cormasModel class allEntityClasses
-		detect: [ :aClass | aClass isCormasAgentClass and: [ aClass subclasses isEmpty ] ].
+	agentClasses := (owner cormasModel class allEntityClasses 
+		select: [ :aClass | aClass isCormasAgentClass and: [ aClass subclasses isEmpty ] ]) asArray.
+	
+	selectedClass := UIManager default 
+		chooseFrom: (agentClasses collect: [:each | each name])
+		values: agentClasses
+		title: 'Create Agent'.
+		
+	selectedClass ifNil: [ ^ self ].
 	
 	owner spaceBuilder whenLeftClickOnCellDo: [ :cell |
-		owner cormasModel newEntity: agentClass locatedAt: cell.
+		owner cormasModel newEntity: selectedClass locatedAt: cell.
 		owner updateDiagram ].
+
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 CMCreateAgentCommand >> iconWhenOff [
 
 	^ self iconNamed: #smallAdd
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 CMCreateAgentCommand >> iconWhenOn [
 
 	^ self iconNamed: #changeRemove
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 CMCreateAgentCommand >> nameWhenOff [
 
 	^ 'Create'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 CMCreateAgentCommand >> nameWhenOn [
 
 	^ 'Stop'

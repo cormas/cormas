@@ -30,6 +30,20 @@ CMAbstractModelTest >> testAgents [
 ]
 
 { #category : 'tests' }
+CMAbstractModelTest >> testCellAt [
+	| m |
+	m := CMMockModel new
+		     createGridNumberOfRows: 3
+		     numberOfColumns: 3
+		     neighbourhood: 4
+		     closed: true;
+		     yourself.
+	self
+		assert: (m cellAt: 4)
+		identicalTo: (m selectCellsOfColumn: 1) second
+]
+
+{ #category : 'tests' }
 CMAbstractModelTest >> testCellAtAt [
 
 	| expectedCell expectedId actualCell |
@@ -105,6 +119,14 @@ CMAbstractModelTest >> testCreateGridXYNeighborHoodClosed [
 	self assert: model allTheEntities size equals: (4 * 4) + 2.
 	self assert: (model selectCellsOfColumn: 1) size equals: 4.
 	self assert: (model selectCellsOfLine: 1) size equals: 4
+]
+
+{ #category : 'tests' }
+CMAbstractModelTest >> testDefaultRandomNumberGeneratorClass [
+
+	self
+		assert: model class defaultRandomNumberGeneratorClass
+		equals: PMFishmanMooreRandomGenerator.
 ]
 
 { #category : 'tests' }

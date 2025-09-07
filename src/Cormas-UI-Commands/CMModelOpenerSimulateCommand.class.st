@@ -6,16 +6,21 @@ Class {
 }
 
 { #category : 'accessing' }
+CMModelOpenerSimulateCommand class >> order [
+
+	^ 1
+]
+
+{ #category : 'action' }
 CMModelOpenerSimulateCommand >> action [
 
 	| presenter |
 	presenter:=  CMSimulationPresenter
-		forModelClass: owner selectedModelClass
+		forModelClass: owner cormasModelClass
 		translator: translator.
 			
 	presenter open.
-	presenter window centered.
-	owner window close
+	presenter window centered
 ]
 
 { #category : 'accessing' }

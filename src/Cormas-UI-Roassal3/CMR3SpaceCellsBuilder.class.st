@@ -9,26 +9,34 @@ Class {
 	#tag : 'Space'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 CMR3SpaceCellsBuilder >> defaultMasterShape [
-
-	^ RSBox new
-		size: 16;
+	"a RSBox, by default"
+	
+	| border |
+	border := RSBorder new
+		color: Color gray;
+		width: 1;
 		yourself.
+
+	^ diagramBuilder cormasModel spaceModel neighbourhoodConfiguration roassalMasterShape
+		size: 16;
+		border: border;
+		yourself
 ]
 
 { #category : 'initialization' }
 CMR3SpaceCellsBuilder >> initialize [
 
 	super initialize.
-	onLeftClickBlock := [ :cell | "do nothing" ].
+	onLeftClickBlock := [ :cell | "do nothing" ]
 ]
 
 { #category : 'accessing' }
 CMR3SpaceCellsBuilder >> masterShape: aShape [
 
 	super masterShape: aShape.
-	masterShape when: RSMouseLeftClick send: #processLeftClick: to: self.
+	masterShape when: RSMouseLeftClick send: #processLeftClick: to: self
 ]
 
 { #category : 'accessing' }
@@ -49,31 +57,36 @@ CMR3SpaceCellsBuilder >> processLeftClick: anEvent [
 CMR3SpaceCellsBuilder >> renderIn: aCanvas [
 
 	super renderIn: aCanvas.
-	
-	RSGridLayout new
+
+	"RSGridLayout"
+	RSCellLayout new
 		gapSize: 0;
-		lineItemsCount: diagramBuilder cormasModel spaceModel numberOfColumns;
+		lineItemsCount:
+			diagramBuilder cormasModel spaceModel numberOfColumns;
 		on: aCanvas nodes.
+
+	diagramBuilder cormasModel spaceModel neighbourhoodConfiguration
+		organizeShapesPositions: aCanvas nodes
 ]
 
 { #category : 'updating' }
 CMR3SpaceCellsBuilder >> updateShape: aShape [
-
+"Set the PoV: Update shape and color of aShape"
 	| model pov |
 	model := aShape model.
-	
+
 	pov := model perform: diagramBuilder activeSpatialEntityPov.
 
 	pov isForImage
 		ifTrue: [
 			| newSize |
 			newSize := pov image extent x.
-			
+
 			aShape
 				paint: (self paintFromImage: pov image);
 				size: newSize;
 				scaleBy: 16 / aShape extent x ]
-		ifFalse: [ aShape color: pov color ].
+		ifFalse: [ aShape color: pov color ]
 ]
 
 { #category : 'enumerating' }

@@ -112,7 +112,7 @@ CMSimulationInitializerPresenter >> initializePresenters [
 	modelClass initializeParameters.
 
 	modelInitializationSettings := self
-		instantiate: CMModelInitializationSettingsPresenter
+		instantiate: CMSimulationInitializationSettingsPresenter
 		on: translator.
 		
 	modelInitializationSettings modelClass: modelClass.
@@ -156,7 +156,8 @@ CMSimulationInitializerPresenter >> setModelBeforeInitialization: aCollection [
 
 { #category : 'accessing' }
 CMSimulationInitializerPresenter >> simulation [
-
+"Purpose: instanciate a new modelClass with init & control selectors. Then initialize this simulation by performing #activeInitSelector.
+Reset the currentTimeStep and the data. Set the randomSeed"
 	| simulation |
 	simulation := CMSimulation for: modelClass.
 

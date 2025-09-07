@@ -4,6 +4,8 @@ CMAgent is the abstract class of all agents classes in CORMAS.
 Class {
 	#name : 'CMAgent',
 	#superclass : 'CMEntity',
+	#traits : 'TCMLocated',
+	#classTraits : 'TCMLocated classTrait',
 	#instVars : [
 		'isDead'
 	],
@@ -24,20 +26,6 @@ CMAgent >> delete [
 
 	self die.
 	cormasModel removeEntity: self.
-]
-
-{ #category : 'initialize-release' }
-CMAgent >> destroyed [
-	"Answer if the entity is destroyed or not"
-	
-	^isDead
-]
-
-{ #category : 'accessing' }
-CMAgent >> destroyed: aBoolean [
-"Set the dead variable to True or False and delete the figures"
-	isDead := aBoolean.
-	(aBoolean and:[self isSituated]) ifTrue:[self leave].
 ]
 
 { #category : 'controlling' }
@@ -79,6 +67,13 @@ CMAgent >> isAlive [
 CMAgent >> isDead [
 
 	^ isDead
+]
+
+{ #category : 'accessing' }
+CMAgent >> isDead: aBoolean [
+"Set the dead variable to True or False and delete the figures"
+	isDead := aBoolean.
+	(aBoolean and:[self isSituated]) ifTrue:[self leave].
 ]
 
 { #category : 'control' }

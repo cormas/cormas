@@ -1,6 +1,8 @@
 Class {
 	#name : 'CMMockCell',
-	#superclass : 'CMSpatialEntityCell',
+	#superclass : 'CMCell',
+	#traits : 'TCMCellularAutomaton',
+	#classTraits : 'TCMCellularAutomaton classTrait',
 	#category : 'Cormas-Mocks',
 	#package : 'Cormas-Mocks'
 }

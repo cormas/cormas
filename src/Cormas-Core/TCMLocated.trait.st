@@ -146,12 +146,6 @@ TCMLocated >> coordinates [
 	^ self patch coordinates
 ]
 
-{ #category : 'accessing' }
-TCMLocated >> cormasModel [
-
-	self explicitRequirement
-]
-
 { #category : 'star control' }
 TCMLocated >> delete [
 "Purpose: gets rid of this object. The collectGarbage is IMMEDIATELY performed  (ie. the receiver of class X is removed from 'theXXXs' collection)"

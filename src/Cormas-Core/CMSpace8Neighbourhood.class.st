@@ -26,6 +26,8 @@ CMSpace8Neighbourhood class >> distanceFromCell: cell1 toCell: cell2 nbLines: nb
 
 { #category : 'initialization' }
 CMSpace8Neighbourhood >> initializeOrderedNeighbourhood: k [
+"Set the neighbourhood of the cell with id = k.
+Neighbours are ordered anticlockwise, starting from the North cell"
 
 	| v i |
 	v := Array new: 8.

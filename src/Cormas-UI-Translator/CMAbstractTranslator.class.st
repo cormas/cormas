@@ -57,6 +57,12 @@ CMAbstractTranslator >> tClass [
 ]
 
 { #category : 'translations' }
+CMAbstractTranslator >> tClassPrefix [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
 CMAbstractTranslator >> tControlMethod [
 
 	self subclassResponsibility
@@ -64,6 +70,12 @@ CMAbstractTranslator >> tControlMethod [
 
 { #category : 'translations' }
 CMAbstractTranslator >> tCreate [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tCreateBaseline [
 
 	self subclassResponsibility
 ]
@@ -106,6 +118,12 @@ CMAbstractTranslator >> tFinalValue [
 
 { #category : 'translations' }
 CMAbstractTranslator >> tFixRandomSeed [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tGenerator [
 
 	self subclassResponsibility
 ]
@@ -207,12 +225,6 @@ CMAbstractTranslator >> tPredefinedList [
 ]
 
 { #category : 'translations' }
-CMAbstractTranslator >> tPrefix [
-
-	self subclassResponsibility
-]
-
-{ #category : 'translations' }
 CMAbstractTranslator >> tProbe [
 
 	self subclassResponsibility
@@ -232,6 +244,12 @@ CMAbstractTranslator >> tProbesToBeMeasured [
 
 { #category : 'translations' }
 CMAbstractTranslator >> tProgressBarLabel [
+
+	self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tRandomSeed [
 
 	self subclassResponsibility
 ]
@@ -260,13 +278,13 @@ CMAbstractTranslator >> tRunButtonHelp [
 	self subclassResponsibility
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'translations' }
 CMAbstractTranslator >> tSaveToCsv [
 
 	self subclassResponsibility
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'translations' }
 CMAbstractTranslator >> tSaveToExcel [
 
 	self subclassResponsibility

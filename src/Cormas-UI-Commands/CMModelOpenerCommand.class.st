@@ -6,9 +6,3 @@ Class {
 	#category : 'Cormas-UI-Commands',
 	#package : 'Cormas-UI-Commands'
 }
-
-{ #category : 'as yet unclassified' }
-CMModelOpenerCommand >> buttonClass [
-
-	^ SpButtonPresenter
-]

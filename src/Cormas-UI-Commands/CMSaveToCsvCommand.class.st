@@ -5,10 +5,25 @@ Class {
 	#package : 'Cormas-UI-Commands'
 }
 
-{ #category : 'accessing' }
+{ #category : 'action' }
 CMSaveToCsvCommand >> action [
 
-	"do nothing"
+	| message |
+
+	(StSaveFilePresenter extensions: {'csv'})
+		okAction: [ :fileReference | 
+			self saveDataToFile: fileReference.
+			
+			message := String streamContents: [ :stream |
+				stream
+					<< 'Data saved to '
+					<< fileReference asString;
+					cr; cr;
+					<< 'Click to open location' ].
+			
+			UIManager default
+				inform: message
+			 	actionOnClick: [ fileReference openInOSFileBrowser ]]
 ]
 
 { #category : 'accessing' }
@@ -21,4 +36,24 @@ CMSaveToCsvCommand >> icon [
 CMSaveToCsvCommand >> name [
 
 	^ translator tSaveToCsv
+]
+
+{ #category : 'export' }
+CMSaveToCsvCommand >> saveDataToFile: aFileReference [ 
+
+	| data columnNames |
+	data := owner data.
+
+	data ifNil: [ ^ self ].
+	data ifEmpty: [ ^ self ].
+	aFileReference ifNil: [ ^ self ].
+	
+	aFileReference writeStreamDo: [ :stream |
+		columnNames := data first keys.
+		stream nextPutAll: (',' join: columnNames); cr.
+		
+		data do: [ :row |
+			stream nextPutAll: (',' join: row); cr ] ].
+
+
 ]

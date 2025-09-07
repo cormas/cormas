@@ -1,5 +1,5 @@
 Class {
-	#name : 'CMModelInitializationSettingsPresenter',
+	#name : 'CMSimulationInitializationSettingsPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'translator',
@@ -16,7 +16,7 @@ Class {
 }
 
 { #category : 'examples' }
-CMModelInitializationSettingsPresenter class >> example [
+CMSimulationInitializationSettingsPresenter class >> example [
 	<example>
 	
 	((self forTranslator: CMEnglishTranslator new)
@@ -25,13 +25,13 @@ CMModelInitializationSettingsPresenter class >> example [
 ]
 
 { #category : 'as yet unclassified' }
-CMModelInitializationSettingsPresenter class >> forTranslator: aTranslator [
+CMSimulationInitializationSettingsPresenter class >> forTranslator: aTranslator [
 
 	^ self on: aTranslator 
 ]
 
 { #category : 'initialization' }
-CMModelInitializationSettingsPresenter >> connectPresenters [
+CMSimulationInitializationSettingsPresenter >> connectPresenters [
 
 	whenChangedBlock := [ "do nothing" ].
 
@@ -48,13 +48,13 @@ CMModelInitializationSettingsPresenter >> connectPresenters [
 ]
 
 { #category : 'as yet unclassified' }
-CMModelInitializationSettingsPresenter >> controlSelector [
+CMSimulationInitializationSettingsPresenter >> controlSelector [
 
 	^ controlSelectorDropList selectedItem
 ]
 
 { #category : 'layout' }
-CMModelInitializationSettingsPresenter >> defaultLayout [
+CMSimulationInitializationSettingsPresenter >> defaultLayout [
 
 	| labelHeight buttonHeight numberInputWidth |
 	labelHeight := self class labelHeight.
@@ -83,7 +83,7 @@ CMModelInitializationSettingsPresenter >> defaultLayout [
 ]
 
 { #category : 'as yet unclassified' }
-CMModelInitializationSettingsPresenter >> disableRandomSeedPresenters [
+CMSimulationInitializationSettingsPresenter >> disableRandomSeedPresenters [
 	"Will be called when Fix random seed checkbox is deactivated"
 	
 	randomSeedInput beNotEditable.
@@ -92,7 +92,7 @@ CMModelInitializationSettingsPresenter >> disableRandomSeedPresenters [
 ]
 
 { #category : 'as yet unclassified' }
-CMModelInitializationSettingsPresenter >> enableRandomSeedPresenters [
+CMSimulationInitializationSettingsPresenter >> enableRandomSeedPresenters [
 	"Will be called when Fix random seed checkbox is activated"
 	
 	randomSeedInput beEditable.
@@ -101,13 +101,13 @@ CMModelInitializationSettingsPresenter >> enableRandomSeedPresenters [
 ]
 
 { #category : 'as yet unclassified' }
-CMModelInitializationSettingsPresenter >> initSelector [
+CMSimulationInitializationSettingsPresenter >> initSelector [
 
 	^ initSelectorDropList selectedItem
 ]
 
 { #category : 'initialization' }
-CMModelInitializationSettingsPresenter >> initializePresenters [
+CMSimulationInitializationSettingsPresenter >> initializePresenters [
 	
 	fixRandomSeedCheckbox := self newCheckBox
 		label: translator tFixRandomSeed;
@@ -126,52 +126,52 @@ CMModelInitializationSettingsPresenter >> initializePresenters [
 ]
 
 { #category : 'initialization' }
-CMModelInitializationSettingsPresenter >> initializeWithModel [
+CMSimulationInitializationSettingsPresenter >> initializeWithModel [
 
 	initSelectorDropList items: modelClass availableInitSelectors.
 	controlSelectorDropList items: modelClass availableControlSelectors.
 ]
 
 { #category : 'testing' }
-CMModelInitializationSettingsPresenter >> isDefined [
+CMSimulationInitializationSettingsPresenter >> isDefined [
 	"Answer true if simulation is fully defined and can be initialized"
 	
 	^ initSelectorDropList selectedItem isNotNil
 ]
 
 { #category : 'settings' }
-CMModelInitializationSettingsPresenter >> isFixRandomSeed [
+CMSimulationInitializationSettingsPresenter >> isFixRandomSeed [
 
 	^ fixRandomSeedCheckbox state
 ]
 
 { #category : 'settings' }
-CMModelInitializationSettingsPresenter >> isReleaseRandomSeedAfterInitialization [
+CMSimulationInitializationSettingsPresenter >> isReleaseRandomSeedAfterInitialization [
 
 	^ releaseRandomSeedCheckbox state
 ]
 
 { #category : 'accessing' }
-CMModelInitializationSettingsPresenter >> modelClass: aClass [
+CMSimulationInitializationSettingsPresenter >> modelClass: aClass [
 
 	modelClass := aClass.
 	self initializeWithModel.
 ]
 
 { #category : 'settings' }
-CMModelInitializationSettingsPresenter >> randomSeed [
+CMSimulationInitializationSettingsPresenter >> randomSeed [
 
 	^ randomSeedInput number
 ]
 
 { #category : 'accessing - model' }
-CMModelInitializationSettingsPresenter >> setModelBeforeInitialization: aTranslator [
+CMSimulationInitializationSettingsPresenter >> setModelBeforeInitialization: aTranslator [
 
 	translator := aTranslator
 ]
 
 { #category : 'announcing' }
-CMModelInitializationSettingsPresenter >> whenChangedDo: aBlock [
+CMSimulationInitializationSettingsPresenter >> whenChangedDo: aBlock [
 
 	whenChangedBlock := aBlock
 ]

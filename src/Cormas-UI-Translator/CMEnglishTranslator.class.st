@@ -48,6 +48,12 @@ CMEnglishTranslator >> tClass [
 ]
 
 { #category : 'translations' }
+CMEnglishTranslator >> tClassPrefix [
+
+	^ 'Class prefix'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tControlMethod [
 
 	^ 'Control method'
@@ -57,6 +63,12 @@ CMEnglishTranslator >> tControlMethod [
 CMEnglishTranslator >> tCreate [
 
 	^ 'Create'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tCreateBaseline [
+
+	^ 'Create a baseline'
 ]
 
 { #category : 'translations' }
@@ -98,7 +110,13 @@ CMEnglishTranslator >> tFinalValue [
 { #category : 'translations' }
 CMEnglishTranslator >> tFixRandomSeed [
 
-	^ 'Fix random seed:'
+	^ 'Fix random seed'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tGenerator [
+
+	^ 'Generator'
 ]
 
 { #category : 'translations' }
@@ -198,12 +216,6 @@ CMEnglishTranslator >> tPredefinedList [
 ]
 
 { #category : 'translations' }
-CMEnglishTranslator >> tPrefix [
-
-	^ 'Prefix'
-]
-
-{ #category : 'translations' }
 CMEnglishTranslator >> tProbe [
 
 	^ 'Probe'
@@ -225,6 +237,12 @@ CMEnglishTranslator >> tProbesToBeMeasured [
 CMEnglishTranslator >> tProgressBarLabel [
 
 	^ 'Progress'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tRandomSeed [
+
+	^ 'Random seed'
 ]
 
 { #category : 'translations' }
@@ -251,13 +269,13 @@ CMEnglishTranslator >> tRunButtonHelp [
 	^ 'Run the simulation to the end'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'translations' }
 CMEnglishTranslator >> tSaveToCsv [
 
 	^ 'Save to CSV'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'translations' }
 CMEnglishTranslator >> tSaveToExcel [
 
 	^ 'Save to Excel'

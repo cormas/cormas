@@ -12,7 +12,7 @@ Class {
 
 { #category : 'instance creation' }
 CMR3SpaceShapeBuilder class >> for: aBuilder [
-
+"Set the Grid presenter: a new instance of RoassalBuilder (CMR3SpaceDiagramBuilder)"
 	^ self new
 		diagramBuilder: aBuilder;
 		container: aBuilder container;
@@ -22,7 +22,10 @@ CMR3SpaceShapeBuilder class >> for: aBuilder [
 { #category : 'as yet unclassified' }
 CMR3SpaceShapeBuilder >> contextMenuItemsFor: anEntity [
 
-	^ { CMInspectSpaceContextMenuCommand forOwner: anEntity }
+	^ {
+		CMInspectSpaceContextMenuCommand forOwner: anEntity .
+		CMBrowseSpaceContextMenuCommand forOwner: anEntity
+	}
 ]
 
 { #category : 'as yet unclassified' }
@@ -34,15 +37,8 @@ CMR3SpaceShapeBuilder >> defaultMasterShape [
 { #category : 'accessing' }
 CMR3SpaceShapeBuilder >> diagramBuilder: anObject [
 
-	diagramBuilder := anObject
-]
-
-{ #category : 'initialization' }
-CMR3SpaceShapeBuilder >> initialize [ 
-
-	super initialize.
-	
-	self masterShape: self defaultMasterShape.
+	diagramBuilder := anObject.
+	self setMasterShape
 ]
 
 { #category : 'as yet unclassified' }
@@ -113,12 +109,22 @@ CMR3SpaceShapeBuilder >> renderIn: aCanvas [
 	self update.
 ]
 
+{ #category : 'initialization' }
+CMR3SpaceShapeBuilder >> setMasterShape [
+
+	self masterShape: self defaultMasterShape
+]
+
 { #category : 'hooks' }
 CMR3SpaceShapeBuilder >> shapeFor: anObject index: aNumber [
 
-	^ masterShape copyWithAnnouncer
-		model: anObject;
-		yourself
+	| ms |
+	ms := masterShape copyWithAnnouncer.
+	"ms translateBy: 400 @ 50.
+	ms position: 33@55.
+	ms translateTo: 100@120."
+	ms model: anObject.
+	^ ms
 ]
 
 { #category : 'as yet unclassified' }

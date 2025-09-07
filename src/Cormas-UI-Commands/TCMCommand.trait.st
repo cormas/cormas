@@ -40,7 +40,7 @@ TCMCommand classSide >> sortedSubclasses [
 		sorted: [ :a :b | a order < b order ]
 ]
 
-{ #category : 'accessing' }
+{ #category : 'action' }
 TCMCommand >> action [
 
 	self subclassResponsibility
@@ -57,6 +57,12 @@ TCMCommand >> initializeWithTranslator: aTranslator owner: aPresenter [
 
 	translator := aTranslator.
 	owner := aPresenter
+]
+
+{ #category : 'testing' }
+TCMCommand >> isAvailable [
+	"Override to provide the condition for an action to be available"
+	^ true
 ]
 
 { #category : 'accessing' }
