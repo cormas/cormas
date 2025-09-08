@@ -60,6 +60,7 @@ CMDataPresenter >> initializePresenters [
 CMDataPresenter >> initializeToolbar [
 	
 	toolbar := self newToolbar.
+	toolbar beIcons.
 
 	CMDataPresenterCommand sortedSubclasses do: [ :aClass |
 		| command |

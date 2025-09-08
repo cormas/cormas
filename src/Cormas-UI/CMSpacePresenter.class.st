@@ -112,9 +112,11 @@ CMSpacePresenter >> initializeToolbar [
 
 	isPovVisible := false.
 	toolbar := self newToolbar.
+	toolbar beIcons.
 	
 	povButton := self newToolbarButton
 		label: 'PoV';
+		help: 'PoV';
 		yourself.
 		
 	self updatePovButtonIcon.
