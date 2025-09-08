@@ -122,10 +122,12 @@ CMChartPresenter >> initializePresenters [
 	
 	showProbesButton := self newToolbarButton
 		label: 'Probes';
+		help: 'Probes';
 		yourself.
 		
 	saveToPngButton := self newToolbarButton
 		label: 'Save to PNG';
+		help: 'Save to PNG';
 		icon: (self iconNamed: #smallSave);
 		yourself.
 		
@@ -139,6 +141,8 @@ CMChartPresenter >> initializePresenters [
 		"add: saveToGifButton;"
 		addItemRight: showProbesButton;
 		yourself.
+		
+	toolbar beIcons.
 		
 	self updateProbesListVisibility.
 	self updateShowProbesButtonIcon.

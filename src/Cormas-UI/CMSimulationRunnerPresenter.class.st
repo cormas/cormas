@@ -152,17 +152,17 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 	
 	spacePage := SpNotebookPage
 		title: translator tSpace
-		icon: (self iconNamed: #paint)
+		"icon: (self iconNamed: #paint)"
 		provider: [ spacePresenter ].
 		
 	dataPage := SpNotebookPage
 		title: translator tData
-		icon: (self iconNamed: #database)
+		"icon: (self iconNamed: #database)"
 		provider: [ dataTable ].
 		
 	chartsPage := SpNotebookPage
 		title: translator tCharts
-		icon: CMIcons chartIcon
+		"icon: CMIcons chartIcon"
 		provider: [ chartPresenter ].
 		
 	notebook addPage: spacePage.
@@ -171,7 +171,7 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 		
 	notebook addPage: (SpNotebookPage
 		title: translator tInspector
-		icon: (self iconNamed: #smallInspectIt)
+		"icon: (self iconNamed: #smallInspectIt)"
 		provider: [ StInspectorPresenter onObject: simulation ]).
 		
 	notebook selectPageIndex: 1.

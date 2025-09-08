@@ -108,6 +108,10 @@ TCMToggleCommand >> updateLabelAndIcon [
 		ifTrue: [ self nameWhenOn ]
 		ifFalse: [ self nameWhenOff ]).
 		
+	button help: (isOn
+		ifTrue: [ self nameWhenOn ]
+		ifFalse: [ self nameWhenOff ]).	
+		
 	button icon: (isOn
 		ifTrue: [ self iconWhenOn ]
 		ifFalse: [ self iconWhenOff ]).
