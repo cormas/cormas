@@ -20,6 +20,16 @@ CMModelOpenerPresenter class >> example [
 ]
 
 { #category : 'as yet unclassified' }
+CMModelOpenerPresenter class >> loadMicroUmlPlugin [
+
+	Metacello new
+		onConflictUseLoaded;
+		baseline: 'CormasMicroUML';
+		repository: 'github://cormas/cormas-microuml:main';
+		load.
+]
+
+{ #category : 'as yet unclassified' }
 CMModelOpenerPresenter class >> loadTelegramPlugin [
 
 	Metacello new
@@ -62,6 +72,14 @@ CMModelOpenerPresenter class >> menu00CormasOn: aBuilder [
 		icon: (self iconNamed: #smallOpen);
 		help: 'Browse Cormas models that are installed on this image';
 		action: [ self new open ];
+		order: 1.
+		
+	(aBuilder item: #LoadMicroUMLPlugin)
+		parent: #Cormas ;
+		label: 'Load MicroUML plugin';
+		icon: (self iconNamed: #changeUpdate);
+		help: 'Load MicroUML plugin';
+		action: [ self loadMicroUmlPlugin ];
 		order: 1.
 		
 	(aBuilder item: #LoadTelegramPlugin)
