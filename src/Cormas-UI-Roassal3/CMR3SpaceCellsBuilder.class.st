@@ -12,16 +12,9 @@ Class {
 { #category : 'accessing' }
 CMR3SpaceCellsBuilder >> defaultMasterShape [
 	"a RSBox, by default"
-	
-	| border |
-	border := RSBorder new
-		color: Color gray;
-		width: 1;
-		yourself.
 
 	^ diagramBuilder cormasModel spaceModel neighbourhoodConfiguration roassalMasterShape
 		size: 16;
-		border: border;
 		yourself
 ]
 
@@ -72,7 +65,7 @@ CMR3SpaceCellsBuilder >> renderIn: aCanvas [
 { #category : 'updating' }
 CMR3SpaceCellsBuilder >> updateShape: aShape [
 "Set the PoV: Update shape and color of aShape"
-	| model pov |
+	| model pov border |
 	model := aShape model.
 
 	pov := model perform: diagramBuilder activeSpatialEntityPov.
@@ -83,7 +76,14 @@ CMR3SpaceCellsBuilder >> updateShape: aShape [
 				paint: (self paintFromImage: pov image);
 				extent: pov image extent ]
 			
-		ifFalse: [ aShape color: pov color ]
+		ifFalse: [ aShape color: pov color ].
+		
+	border := RSBorder new
+		color: pov borderColor;
+		width: (aShape encompassingRectangle extent max * pov borderWidth);
+		yourself.
+		
+	aShape border: border
 ]
 
 { #category : 'enumerating' }

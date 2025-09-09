@@ -5,7 +5,9 @@ Class {
 		'color',
 		'shape',
 		'size',
-		'image'
+		'image',
+		'borderWidth',
+		'borderColor'
 	],
 	#category : 'Cormas-Core-Analysis',
 	#package : 'Cormas-Core',
@@ -91,6 +93,30 @@ CMPointOfView class >> size: aNumber [
 ]
 
 { #category : 'accessing' }
+CMPointOfView >> borderColor [
+
+	^ borderColor
+]
+
+{ #category : 'accessing' }
+CMPointOfView >> borderColor: aColor [
+
+	borderColor := aColor
+]
+
+{ #category : 'accessing' }
+CMPointOfView >> borderWidth [
+
+	^ borderWidth
+]
+
+{ #category : 'accessing' }
+CMPointOfView >> borderWidth: aNumber [
+
+	borderWidth := aNumber
+]
+
+{ #category : 'accessing' }
 CMPointOfView >> color [
 	
 	^ color value
@@ -121,7 +147,9 @@ CMPointOfView >> initialize [
 	
 	color := Color gray.
 	size := 0.3.
-	shape := #circle
+	shape := #circle.
+	borderWidth := 0.02.
+	borderColor := Color gray.
 ]
 
 { #category : 'testing' }
