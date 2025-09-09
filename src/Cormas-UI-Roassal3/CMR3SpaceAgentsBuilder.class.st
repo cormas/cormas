@@ -132,7 +132,7 @@ CMR3SpaceAgentsBuilder >> moveAgentShape: anAgentShape [
 			extent: pov image extent ].
 	
 	anAgentShape
-		scaleBy: 16 / anAgentShape extent max * pov size;
+		scaleBy: pov size;
 		translateTo: (self positionForAgent: agent)
 ]
 
@@ -146,20 +146,32 @@ CMR3SpaceAgentsBuilder >> objects [
 CMR3SpaceAgentsBuilder >> positionAgent: anAgent atProportion: aRelativePoint [
 	"aRelativePoint is relative to a cell. 0@0 will place the agent in the top-left corner of the cell, 1@1 - bottom-right corner, 0.5@0.5 - center of the cell"
 
-	| cell cellSize offset config intersectionProportion |
+	| cell cellCoordinates cellSize offset intersectionProportion shiftProportionX shiftProportionY shiftProportion intersectionOffset config |
+	
 	cell := anAgent cell.
+	config := diagramBuilder cormasModel spaceModel neighbourhoodConfiguration.
 	cellSize := diagramBuilder cellShapes anyOne encompassingRectangle extent.
 	
-	config := diagramBuilder cormasModel spaceModel neighbourhoodConfiguration.
+	cellCoordinates := cell columnNumber @ cell rowNumber.
 	
 	intersectionProportion :=
 		config boundingRectangleHorizontalIntersection @
 		config boundingRectangleVerticalIntersection.
+		
+	shiftProportionX := cell rowNumber even
+		ifTrue: [ config boundingRectangleHorizontalShiftEven ]
+		ifFalse: [ config boundingRectangleHorizontalShiftOdd ].
+		
+	shiftProportionY := cell columnNumber even
+		ifTrue: [ config boundingRectangleVerticalShiftEven ]
+		ifFalse: [ config boundingRectangleVerticalShiftOdd ].
+		
+	shiftProportion := shiftProportionX @ shiftProportionY.
 	
-	offset := (cell columnNumber - 1 * cellSize x) @ (cell rowNumber - 1 * cellSize y)
-		- (intersectionProportion * cellSize * ((cell columnNumber @ cell rowNumber) - 1)).
+	intersectionOffset := (cellCoordinates - 1) * intersectionProportion.
+	offset := (cellCoordinates - 1) - intersectionOffset + shiftProportion.
 
-	^ offset + (aRelativePoint x * cellSize x @ (aRelativePoint y * cellSize y))
+	^ (offset + aRelativePoint) * cellSize
 ]
 
 { #category : 'position in cell' }

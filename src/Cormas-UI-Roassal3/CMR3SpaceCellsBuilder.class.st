@@ -79,13 +79,10 @@ CMR3SpaceCellsBuilder >> updateShape: aShape [
 
 	pov isForImage
 		ifTrue: [
-			| newSize |
-			newSize := pov image extent x.
-
 			aShape
 				paint: (self paintFromImage: pov image);
-				size: newSize;
-				scaleBy: 16 / aShape extent x ]
+				extent: pov image extent ]
+			
 		ifFalse: [ aShape color: pov color ]
 ]
 

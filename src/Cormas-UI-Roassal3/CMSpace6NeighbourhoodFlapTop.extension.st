@@ -3,7 +3,13 @@ Extension { #name : 'CMSpace6NeighbourhoodFlapTop' }
 { #category : '*Cormas-UI-Roassal3' }
 CMSpace6NeighbourhoodFlapTop >> boundingRectangleHorizontalIntersection [
 
-	^ 0.25
+	^ 0.28
+]
+
+{ #category : '*Cormas-UI-Roassal3' }
+CMSpace6NeighbourhoodFlapTop >> boundingRectangleVerticalShiftEven [
+
+	^ 0.5
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
