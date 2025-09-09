@@ -8,7 +8,10 @@ Class {
 { #category : 'action' }
 CMModelLoaderLoadCommand >> action [ 
 
-	owner manifest load. 
+	self isCormasDevVersion
+		ifTrue: [ owner manifest loadDev ]
+		ifFalse: [ owner manifest load ].
+		
 	owner signalUpdate
 ]
 
@@ -22,6 +25,23 @@ CMModelLoaderLoadCommand >> icon [
 CMModelLoaderLoadCommand >> isAvailable [
 
 	^ owner manifest isLoaded not
+]
+
+{ #category : 'testing' }
+CMModelLoaderLoadCommand >> isCormasDevVersion [
+
+	| httpsUrl sshUrl cormasRepo |
+	
+	httpsUrl := 'https://github.com/cormas/cormas.git'.
+	sshUrl := 'git@github.com:cormas/cormas.git'.
+
+	cormasRepo := IceRepository registry
+		detect: [ :repo | repo remotes anySatisfy: [ :remote |
+				{ httpsUrl . sshUrl } includes: remote url ] ]
+		ifNone: [ self error: 'Cormas repository was not found!' ].
+		
+	^ cormasRepo branch name = 'dev'
+
 ]
 
 { #category : 'accessing' }
