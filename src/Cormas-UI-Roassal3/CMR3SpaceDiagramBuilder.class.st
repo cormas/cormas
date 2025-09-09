@@ -14,7 +14,8 @@ Class {
 		'activePoVsDictionary',
 		'agentShapes',
 		'cellsBuilder',
-		'agentsBuilder'
+		'agentsBuilder',
+		'maxExtent'
 	],
 	#category : 'Cormas-UI-Roassal3-Space',
 	#package : 'Cormas-UI-Roassal3',
@@ -99,9 +100,26 @@ CMR3SpaceDiagramBuilder >> initializeWithCormasModel: aModel [
 	agentsBuilder := CMR3SpaceAgentsBuilder for: self.
 ]
 
+{ #category : 'accessing' }
+CMR3SpaceDiagramBuilder >> maxExtent [
+
+	^ maxExtent
+]
+
 { #category : 'rendering' }
 CMR3SpaceDiagramBuilder >> renderIn: aCanvas [
+
+	| imagePovs |
 	"aCanvas showEncompassingRectangles."
+	
+	imagePovs := cormasModel allTheEntities
+		collect: [ :entity | entity perform: entity class activePovSelector ]
+		thenSelect: [ :pov | pov isForImage ].
+		
+	maxExtent := imagePovs
+		ifEmpty: [ 16 ]
+		ifNotEmpty: [ (imagePovs collect: [ :pov | pov image extent max ]) max ].
+	
 	cellsBuilder renderIn: aCanvas.
 	agentsBuilder renderIn: aCanvas.
 ]

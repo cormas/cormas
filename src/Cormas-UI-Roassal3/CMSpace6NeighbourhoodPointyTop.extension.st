@@ -9,7 +9,7 @@ CMSpace6NeighbourhoodPointyTop >> boundingRectangleHorizontalShiftEven [
 { #category : '*Cormas-UI-Roassal3' }
 CMSpace6NeighbourhoodPointyTop >> boundingRectangleVerticalIntersection [
 
-	^ 0.28
+	^ 0.25
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
@@ -53,7 +53,6 @@ CMSpace6NeighbourhoodPointyTop >> organizeShapesPositions: aRSGroup [
 CMSpace6NeighbourhoodPointyTop >> roassalMasterShape [
 
 	^ RSPolygon new
-		points: (RSPolygon generatePointsFitSquare: 6);
-		rotateByDegrees: 90;
+		points: (RSPolygon generateUnitNgonPoints: 6 rotation: Float pi / 2);
 		yourself
 ]

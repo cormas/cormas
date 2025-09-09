@@ -14,7 +14,7 @@ CMR3SpaceCellsBuilder >> defaultMasterShape [
 	"a RSBox, by default"
 
 	^ diagramBuilder cormasModel spaceModel neighbourhoodConfiguration roassalMasterShape
-		size: 16;
+		"size: 16;"
 		yourself
 ]
 
@@ -51,7 +51,7 @@ CMR3SpaceCellsBuilder >> renderIn: aCanvas [
 
 	super renderIn: aCanvas.
 
-	"RSGridLayout"
+	"""RSGridLayout""
 	RSCellLayout new
 		gapSize: 0;
 		lineItemsCount:
@@ -59,23 +59,38 @@ CMR3SpaceCellsBuilder >> renderIn: aCanvas [
 		on: aCanvas nodes.
 
 	diagramBuilder cormasModel spaceModel neighbourhoodConfiguration
-		organizeShapesPositions: aCanvas nodes
+		organizeShapesPositions: aCanvas nodes"
+]
+
+{ #category : 'as yet unclassified' }
+CMR3SpaceCellsBuilder >> update [
+
+	super update.
+	
+	"RSGridLayout"
+	RSCellLayout new
+		gapSize: 0;
+		lineItemsCount:
+			diagramBuilder cormasModel spaceModel numberOfColumns;
+		on: shapes.
+
+	diagramBuilder cormasModel spaceModel neighbourhoodConfiguration
+		organizeShapesPositions: shapes
 ]
 
 { #category : 'updating' }
 CMR3SpaceCellsBuilder >> updateShape: aShape [
 "Set the PoV: Update shape and color of aShape"
-	| model pov border |
-	model := aShape model.
+	| cell pov extent border |
+	cell := aShape model.
 
-	pov := model perform: diagramBuilder activeSpatialEntityPov.
+	pov := cell perform: diagramBuilder activeSpatialEntityPov.
+	
+	extent := aShape extent / aShape extent max * diagramBuilder maxExtent.
+	aShape extent: extent.
 
 	pov isForImage
-		ifTrue: [
-			aShape
-				paint: (self paintFromImage: pov image);
-				extent: pov image extent ]
-			
+		ifTrue: [ aShape paint: (self paintFromImage: (pov image scaledToSize: (extent max @ extent max))) ]
 		ifFalse: [ aShape color: pov color ].
 		
 	border := RSBorder new

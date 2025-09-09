@@ -117,7 +117,7 @@ CMR3SpaceAgentsBuilder >> mouseEnd: anEvent [
 { #category : 'as yet unclassified' }
 CMR3SpaceAgentsBuilder >> moveAgentShape: anAgentShape [
 
-	| agent pov |
+	| agent pov extent |
 
 	agent := anAgentShape model.
 
@@ -125,11 +125,12 @@ CMR3SpaceAgentsBuilder >> moveAgentShape: anAgentShape [
 		p text: agent labelOfPOV ].
 	
 	pov := agent perform: agent class activePovSelector.
+	extent := anAgentShape extent / anAgentShape extent max * diagramBuilder maxExtent.
 	
 	pov isForImage ifTrue: [ 
-		anAgentShape
-			paint: (self paintFromImage: pov image);
-			extent: pov image extent ].
+		anAgentShape paint: (self paintFromImage: (pov image scaledToSize: extent)) ].
+		
+	anAgentShape extent: extent.
 	
 	anAgentShape
 		scaleBy: pov size;
@@ -146,7 +147,7 @@ CMR3SpaceAgentsBuilder >> objects [
 CMR3SpaceAgentsBuilder >> positionAgent: anAgent atProportion: aRelativePoint [
 	"aRelativePoint is relative to a cell. 0@0 will place the agent in the top-left corner of the cell, 1@1 - bottom-right corner, 0.5@0.5 - center of the cell"
 
-	| cell cellCoordinates cellSize offset intersectionProportion shiftProportionX shiftProportionY shiftProportion intersectionOffset config |
+	| cell cellCoordinates cellSize offset intersectionProportion shiftProportionX shiftProportionY shiftProportion borderOffset intersectionOffset config |
 	
 	cell := anAgent cell.
 	config := diagramBuilder cormasModel spaceModel neighbourhoodConfiguration.
@@ -168,8 +169,10 @@ CMR3SpaceAgentsBuilder >> positionAgent: anAgent atProportion: aRelativePoint [
 		
 	shiftProportion := shiftProportionX @ shiftProportionY.
 	
+	borderOffset := ((cell pov borderWidth / 4) * (cellCoordinates x - 1)) @ 0.
+	
 	intersectionOffset := (cellCoordinates - 1) * intersectionProportion.
-	offset := (cellCoordinates - 1) - intersectionOffset + shiftProportion.
+	offset := (cellCoordinates - 1) - intersectionOffset + shiftProportion + borderOffset.
 
 	^ (offset + aRelativePoint) * cellSize
 ]

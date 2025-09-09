@@ -1,26 +1,26 @@
-Extension { #name : 'CMSpace6NeighbourhoodFlapTop' }
+Extension { #name : 'CMSpace6NeighbourhoodFlatTop' }
 
 { #category : '*Cormas-UI-Roassal3' }
-CMSpace6NeighbourhoodFlapTop >> boundingRectangleHorizontalIntersection [
+CMSpace6NeighbourhoodFlatTop >> boundingRectangleHorizontalIntersection [
 
-	^ 0.28
+	^ 0.25
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
-CMSpace6NeighbourhoodFlapTop >> boundingRectangleVerticalShiftEven [
+CMSpace6NeighbourhoodFlatTop >> boundingRectangleVerticalShiftEven [
 
 	^ 0.5
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
-CMSpace6NeighbourhoodFlapTop class >> exampleRoassalMasterShape [
+CMSpace6NeighbourhoodFlatTop class >> exampleRoassalMasterShape [
 
 	<example>
 	^ self new roassalMasterShape inspect
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
-CMSpace6NeighbourhoodFlapTop >> organizeShapesPositions: aRSGroup [
+CMSpace6NeighbourhoodFlatTop >> organizeShapesPositions: aRSGroup [
 	| point1 point2 outerRadius innerRadius numCol offset |
 	
 	point1 := aRSGroup first points first.
@@ -43,9 +43,9 @@ CMSpace6NeighbourhoodFlapTop >> organizeShapesPositions: aRSGroup [
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
-CMSpace6NeighbourhoodFlapTop >> roassalMasterShape [
+CMSpace6NeighbourhoodFlatTop >> roassalMasterShape [
 
 	^ RSPolygon new
-		  points: (RSPolygon generatePointsFitSquare: 6);
+		  points: (RSPolygon generateUnitNgonPoints: 6 rotation: 0);
 		  yourself
 ]
