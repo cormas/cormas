@@ -250,7 +250,7 @@ CMSpaceModel >> createAggregates: aggregateType from: baseEntityType attribute: 
 CMSpaceModel >> createAggregates: aggregateType from: baseEntityType verifying: aBlock minimumSize: integer [
 	"Return N instances of aggregateType of minimumSize. The previous aggregates are not removed.
 baseEntityType = a subClass of  <SpatialEntity>
-aBlock example = [:cell | cell state = #tree]
+aBlock example = [:aCell | aCell state = #tree]
 aggregateType = a subClass of  <SpatialEntityAggregate>
 integer = <integer> must be >= 1"
 

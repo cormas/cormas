@@ -86,14 +86,14 @@ CMR3SpaceAgentsBuilder >> makeAgentShapeDraggable: anAgentShape [
 { #category : 'events' }
 CMR3SpaceAgentsBuilder >> mouseEnd: anEvent [
 
-	| position agent cell oldPatch |
+	| position agent cell oldCell |
 	
 	position := anEvent camera fromPixelToSpace: anEvent position.
 	
 	agent := anEvent shape model.
 	cell := (self cellAt: position ifAbsent: [ nil ]).
 	
-	oldPatch := agent patch.
+	oldCell := agent cell.
 		
 	agent moveTo: (cell
 		ifNotNil: [
@@ -108,10 +108,10 @@ CMR3SpaceAgentsBuilder >> mouseEnd: anEvent [
 			self
 				animateMove: anEvent shape
 				from: position
-				to: (anEvent canvas shapeFromModel: oldPatch) position
+				to: (anEvent canvas shapeFromModel: oldCell) position
 				duration: 1 second.
 			
-			oldPatch ]).
+			oldCell ]).
 ]
 
 { #category : 'as yet unclassified' }
@@ -147,7 +147,7 @@ CMR3SpaceAgentsBuilder >> positionAgent: anAgent atProportion: aRelativePoint [
 	"aRelativePoint is relative to a cell. 0@0 will place the agent in the top-left corner of the cell, 1@1 - bottom-right corner, 0.5@0.5 - center of the cell"
 
 	| cell cellSize offset config intersectionProportion |
-	cell := anAgent patch.
+	cell := anAgent cell.
 	cellSize := diagramBuilder cellShapes anyOne encompassingRectangle extent.
 	
 	config := diagramBuilder cormasModel spaceModel neighbourhoodConfiguration.

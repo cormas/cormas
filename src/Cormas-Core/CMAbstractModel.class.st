@@ -407,13 +407,13 @@ CMAbstractModel >> allTheLocatedEntities: aClass [
 	theLocatedObjects := OrderedCollection new.
 	self cells
 		do:
-			[:cell | 
+			[:aCell | 
 			aClass withAllSubclasses
 				do:
 					[:class | 
 					theLocatedObjects
 						addAll:
-							(cell theOccupants
+							(aCell theOccupants
 								at: class name
 								ifAbsent: [Array new])]].
 	^theLocatedObjects
@@ -435,7 +435,7 @@ CMAbstractModel >> allThePassiveObjects [
 
 { #category : 'accessing - entities' }
 CMAbstractModel >> allTheSituatedEntities [
-	" Answer a <Collection> of all the instances of AgentLocation and of ObjectLocation (and sub classes) collected by cormasModel, which are situated on a patch "
+	" Answer a <Collection> of all the instances of AgentLocation and of ObjectLocation (and sub classes) collected by cormasModel, which are situated on a cell "
 	
 	^ self allTheEntities select: #isSituated
 ]
@@ -566,7 +566,7 @@ CMAbstractModel >> createAggregates: aggregateType from: baseEntityType verifyin
 	"Purpose: Create and return N instances of aggregateType of minimumSize. 
 baseEntityType = a subClass of  <SpatialEntity>
 aBlock is the condition written as a block refering to a test on each of the base entity. 
-	example = [:cell | cell state = #tree]
+	example = [:aCell | aCell state = #tree]
 aggregateType = a subClass of  <SpatialEntityAggregate>
 integer = <integer> must be >= 1
 Note that this method is not destructive: The previous aggregates are not removed.
@@ -740,7 +740,7 @@ CMAbstractModel >> createN: aNumber randomlyLocatedEntities: aClass initMethod: 
 
 	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' with a set of arguments 'aCollec' has been send.
 	The new entities are randomly located on the free cells of the grid.
-	ex: self createN: 10 randomlyLocatedEntities: Predator initMethod: #initAge constrainedBy: [:cell | cell energy > 1] "
+	ex: self createN: 10 randomlyLocatedEntities: Predator initMethod: #initAge constrainedBy: [:aCell | aCell energy > 1] "
 
 	| a targetCell newEntities |
 	newEntities := OrderedCollection new.
@@ -1031,16 +1031,16 @@ CMAbstractModel >> pickRandomCell [
 { #category : 'accessing - entities' }
 CMAbstractModel >> pickRandomCellConstrainedBy: aBlock [
 	"Purpose: return a random cell of the grid. The cell verifies the block condition.
-	Example:  self pickCellConstrainedBy: [:cell | state=#land] or self pickCellConstrainedBy: [: cell | cell energy > 1] "
+	Example:  self pickCellConstrainedBy: [:aCell | state=#land] or self pickCellConstrainedBy: [: aCell | aCell energy > 1] "
 
-	^ self selectRandomlyFrom: (self cells asArray select: [ :cell | aBlock value: cell ])
+	^ self selectRandomlyFrom: (self cells asArray select: [ :aCell | aBlock value: aCell ])
 ]
 
 { #category : 'accessing - entities' }
 CMAbstractModel >> pickRandomCellWithoutAnyOccupantsOfClass: aClass [
 	"Return a cell (picked randomly) without any instance of aClassName"
 
-	^ self pickRandomCellConstrainedBy: [ :cell | (cell occupantsOfClass: aClass) isEmpty ]
+	^ self pickRandomCellConstrainedBy: [ :aCell | (aCell occupantsOfClass: aClass) isEmpty ]
 ]
 
 { #category : 'accessing - entities' }
@@ -1087,7 +1087,7 @@ CMAbstractModel >> pickRandomUnoccupiedCell [
 	"Purpose: return a random cell not occuppied of the grid
 	Return Value: a cell"
 
-	^ self pickRandomCellConstrainedBy: [ :cell | cell hasNoOccupants ]
+	^ self pickRandomCellConstrainedBy: [ :aCell | aCell hasNoOccupants ]
 ]
 
 { #category : 'printing' }

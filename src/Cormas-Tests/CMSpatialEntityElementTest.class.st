@@ -29,10 +29,10 @@ CMSpatialEntityElementTest >> testMoveTowardsConstraintOnPath [
 	expectedPathOfIds := #(5 9 14 11 7) asOrderedCollection.
 	
 	expectedPathOfIds do: [ :expectedCellId |
-		self assert: agent patch id equals: expectedCellId.
+		self assert: agent cell id equals: expectedCellId.
 		agent moveTowards: destination constraintOnPath: [ :cell | cell isAliveCell ] ].
 	
-	self assert: agent patch id equals: destination id.
+	self assert: agent cell id equals: destination id.
 ]
 
 { #category : 'tests' }
