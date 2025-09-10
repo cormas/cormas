@@ -1,7 +1,7 @@
 Trait {
 	#name : 'TCMLocated',
 	#instVars : [
-		'patch'
+		'cell'
 	],
 	#traits : 'TCMRandom',
 	#classTraits : 'TCMRandom classTrait',
@@ -16,10 +16,22 @@ TCMLocated classSide >> isLocated [
 	^ true
 ]
 
+{ #category : 'accessing' }
+TCMLocated >> cell [
+
+	^ cell
+]
+
+{ #category : 'accessing' }
+TCMLocated >> cell: anObject [
+
+	cell := anObject
+]
+
 { #category : 'displaying' }
 TCMLocated >> center [
 
-	^ patch ifNil: [ nil ] ifNotNil: [ patch center ]
+	^ cell ifNil: [ nil ] ifNotNil: [ cell center ]
 ]
 
 { #category : 'environment - sensing - agents' }
@@ -30,8 +42,8 @@ TCMLocated >> colocatedEntities: locatedEntityName [
 	"
 	
 	| occupants |
-	self patch ifNil: [ ^ nil ].
-	occupants := self patch occupantsOfClassNamed: locatedEntityName.
+	self cell ifNil: [ ^ nil ].
+	occupants := self cell occupantsOfClassNamed: locatedEntityName.
 	(occupants includes: self) 
 		ifTrue: [ occupants remove: self ].
 	^ occupants
@@ -45,7 +57,7 @@ Arguments: 	locatedEntityName = <Symbol | Class>
 Return value: <Collection(AgentLocation | ObjectLocation)>
 Example: self colocatedEntities: #Prey verifying: [:p | p isWeak]"
 	
-	^self patch
+	^self cell
 		ifNil: [ nil ]
 		ifNotNil: [ (self colocatedEntities: locatedEntityName) select: [:a | aBlock value: a] ]
 ]
@@ -131,7 +143,7 @@ Argument: aBlock = <BlockClosure>
 Return value: <Collection(AgentLocation)>
 Example: self colocatedSimilarAgentsVerifying: [:a | a sex ~= self sex] "
 	
-	^ self patch
+	^ self cell
 		ifNil: [ nil ]
 		ifNotNil: [ self colocatedSimilarAgents select: [ :a | aBlock value: a ] ]
 ]
@@ -143,7 +155,7 @@ TCMLocated >> coordinates [
 	self isSituated ifFalse: [ 
 		self error: 'The entity must be placed on a cell in order to have coordinates' ].
 	
-	^ self patch coordinates
+	^ self cell coordinates
 ]
 
 { #category : 'star control' }
@@ -156,16 +168,16 @@ TCMLocated >> delete [
 
 { #category : 'environment - distance' }
 TCMLocated >> distanceTo: aSpatialEntityOrSituatedEntity [
-	"Purpose: returns the Manhattan distance (in cells) between the patch of the agent and aSpatialEntityOrSituatedEntity
-If it is the distance to a situatedEntity, returrns the distance to the patch of this entity.
+	"Purpose: returns the Manhattan distance (in cells) between the cell of the agent and aSpatialEntityOrSituatedEntity
+If it is the distance to a situatedEntity, returrns the distance to the cell of this entity.
 Argument: aSpatialEntityOrSituatedEntity = <SpatialEntity> or <AgentLocation> or <ObjectLocation>
 Return value: <Integer>"
 	
 	self isSituated ifFalse: [^nil].
 	aSpatialEntityOrSituatedEntity isSituated
-		ifTrue: [^self patch distanceTo: aSpatialEntityOrSituatedEntity patch].
+		ifTrue: [^self cell distanceTo: aSpatialEntityOrSituatedEntity cell].
 	aSpatialEntityOrSituatedEntity isSpatialEntity
-		ifTrue: [^self patch distanceTo: aSpatialEntityOrSituatedEntity]
+		ifTrue: [^self cell distanceTo: aSpatialEntityOrSituatedEntity]
 ]
 
 { #category : 'printing' }
@@ -180,7 +192,7 @@ TCMLocated >> interestingDetails [
 { #category : 'testing' }
 TCMLocated >> isSituated [
 "Purpose: tests the location somewhere in the spatial grid"
-	^patch notNil
+	^cell notNil
 ]
 
 { #category : 'accessing' }
@@ -193,24 +205,24 @@ TCMLocated >> labelOfPOV [
 
 { #category : 'star moving' }
 TCMLocated >> leave [
-"Purpose: moves the agent away from the spatial grid (sets his patch attribute to nil): the situated agent is not located any more, but it is still 'alive'  "
+"Purpose: moves the agent away from the spatial grid (sets his cell attribute to nil): the situated agent is not located any more, but it is still 'alive'  "
 	self leaveWhileMoving: false.
 ]
 
 { #category : 'moving' }
 TCMLocated >> leaveWhileMoving: isMoving [
 
-	self patch ifNil: [ ^ self ].
+	self cell ifNil: [ ^ self ].
 	
 	isMoving ifFalse: [
 		"The situated agent doesn't move; it is not located any more. But it is still 'alive'  "
 		self cormasModel spaceModel ifNil: [ ^ self ] ].
 			
-	(self patch theOccupants at: self class name)
+	(self cell theOccupants at: self class name)
 		remove: self
 		ifAbsent: [ "do nothing" ].
 		
-	self patch: nil
+	self cell: nil
 ]
 
 { #category : 'environment - sensing - agents' }
@@ -222,7 +234,7 @@ Arguments: 	locatedEntityName = <Symbol | Class>
 Return value: <Collection(AgentLocation | ObjectLocation)>
 Example: self locatedEntities: #Predator verifying: [:a | a isHungry] withinRadius: self perceptionRangePredators"
 	
-	^ self patch
+	^ self cell
 		ifNil: [ nil ]
 		ifNotNil: [
 			(self locatedEntities: locatedEntityName withinRadius: range)
@@ -236,10 +248,10 @@ Return value: <Collection(AgentLocation | ObjectLocation)>
 Example: self locatedEntities: #Predator withinRadius: self perceptionRangePredators"
 	
 	| occupants |
-	self patch ifNil: [ ^ nil ].
+	self cell ifNil: [ ^ nil ].
 	
-	occupants := (self locationsWithinRadius: range) flatCollect: [ :cell |
-		cell occupantsOfClassNamed: locatedEntityName ].
+	occupants := (self locationsWithinRadius: range) flatCollect: [ :aCell |
+		aCell occupantsOfClassNamed: locatedEntityName ].
 	
 	(occupants includes: self) ifTrue: [ occupants remove: self ].
 	^ occupants
@@ -254,9 +266,9 @@ Arguments: 	aBlock = <BlockClosure>
 Return value: <Collection(SpatialEntity) | nil>
 Example: self locationsVerifying: [:c | c isClosed not] withinRadius: 5"
 	
-	^self patch
+	^self cell
 		ifNil: [ nil ]
-		ifNotNil: [ self patch recursiveNeighbourhood: range verifying: aBlock ]
+		ifNotNil: [ self cell recursiveNeighbourhood: range verifying: aBlock ]
 ]
 
 { #category : 'environment - sensing - space' }
@@ -266,9 +278,9 @@ The current location is considered
 Argument: range = <Integer>
 Return value: <Collection(SpatialEntity) | nil>"
 	
-	^ self patch
+	^ self cell
 		ifNil: [ Array new ]
-		ifNotNil: [ self patch recursiveNeighbourhood: range ]
+		ifNotNil: [ self cell recursiveNeighbourhood: range ]
 ]
 
 { #category : 'environment - sensing - space' }
@@ -280,41 +292,41 @@ Arguments: 	locatedEntityName = <Symbol | Class>
 Return value: <Collection(SpatialEntity) | nil>
 Example: self locationsWithoutAny: Predator withinRadius: self perceptionRangePredators"
 	
-	^self patch
+	^self cell
 		ifNil: [ nil ]
-		ifNotNil: [ self patch recursiveNeighbourhood: range withoutAny: locatedEntityName ]
+		ifNotNil: [ self cell recursiveNeighbourhood: range withoutAny: locatedEntityName ]
 ]
 
 { #category : 'star moving' }
 TCMLocated >> moveE [
 "Purpose: moves eastward if neighbourE exists (raster grid), do not move otherwise"
 	
-	(self patch notNil and: [self patch neighbourE notNil])
-		ifTrue: [self moveTo: self patch neighbourE]
+	(self cell notNil and: [self cell neighbourE notNil])
+		ifTrue: [self moveTo: self cell neighbourE]
 ]
 
 { #category : 'star moving' }
 TCMLocated >> moveN [
 "Purpose: moves northward if neighbourN exists (raster grid with square cells), do not move otherwise"
 	
-	(self patch notNil and: [self patch neighbourN notNil])
-		ifTrue: [self moveTo: self patch neighbourN]
+	(self cell notNil and: [self cell neighbourN notNil])
+		ifTrue: [self moveTo: self cell neighbourN]
 ]
 
 { #category : 'star moving' }
 TCMLocated >> moveNE [
 "Purpose: moves northeastward if neighbourNE exists (raster grid with hexagons or 8-neighbours squares), do not move otherwise"
 	
-	(self patch notNil and: [self patch neighbourNE notNil])
-		ifTrue: [self moveTo: self patch neighbourNE]
+	(self cell notNil and: [self cell neighbourNE notNil])
+		ifTrue: [self moveTo: self cell neighbourNE]
 ]
 
 { #category : 'star moving' }
 TCMLocated >> moveNW [
 "Purpose: moves northwestward if neighbourNW exists (raster grid with hexagons or 8-neighbours squares), do not move otherwise"
 	
-	(self patch notNil and: [self patch neighbourNW notNil])
-		ifTrue: [self moveTo: self patch neighbourNW]
+	(self cell notNil and: [self cell neighbourNW notNil])
+		ifTrue: [self moveTo: self cell neighbourNW]
 ]
 
 { #category : 'moving' }
@@ -322,13 +334,13 @@ TCMLocated >> moveNcells: n towards: aCell [
 	"Purpose: moves n cells in direction of a given location.
 Argument: aCell = <SpatialEntityElement>
 n = <positive Integer>
-Example: self moveNcells: 5 towards: self house patch"
+Example: self moveNcells: 5 towards: self house cell"
 	
 	| path |
 	
 	self isSituated ifTrue: [
-		self patch = aCell ifFalse: [
-			path := self patch wayTo: aCell.
+		self cell = aCell ifFalse: [
+			path := self cell wayTo: aCell.
 			
 			path size < n
 				ifTrue: [ self moveTo: aCell ]
@@ -340,13 +352,13 @@ TCMLocated >> moveNcells: n towards: aCell constraintOnPath: aBlock [
 	"Purpose: moves n cells in direction of a given location, taking a specified constraint on each cell of the path to destination.
 Argument: aCell = <SpatialEntityElement>
 n = <positive Integer>
-Example: self moveNcells: 3 towards: self house patch constraintOnPath: [:c | c isClosed not]"
+Example: self moveNcells: 3 towards: self house cell constraintOnPath: [:c | c isClosed not]"
 	
 	| path |
 	
 	self isSituated ifTrue: [
-		self patch = aCell ifFalse: [
-			path := self patch wayTo: aCell constraint: aBlock.
+		self cell = aCell ifFalse: [
+			path := self cell wayTo: aCell constraint: aBlock.
 					
 			path size < n
 				ifTrue: [ self moveTo: aCell ]
@@ -357,60 +369,60 @@ Example: self moveNcells: 3 towards: self house patch constraintOnPath: [:c | c 
 TCMLocated >> moveS [
 "Purpose: moves southward if neighbourS exists (raster grid with square cells), do not move otherwise"
 	
-	(self patch notNil and: [self patch neighbourS notNil])
-		ifTrue: [self moveTo: self patch neighbourS]
+	(self cell notNil and: [self cell neighbourS notNil])
+		ifTrue: [self moveTo: self cell neighbourS]
 ]
 
 { #category : 'star moving' }
 TCMLocated >> moveSE [
 "Purpose: moves southeastward if neighbourSE exists (raster grid with hexagons or 8-neighbours squares), do not move otherwise"
 	
-	(self patch notNil and: [self patch neighbourSE notNil])
-		ifTrue: [self moveTo: self patch neighbourSE]
+	(self cell notNil and: [self cell neighbourSE notNil])
+		ifTrue: [self moveTo: self cell neighbourSE]
 ]
 
 { #category : 'star moving' }
 TCMLocated >> moveSW [
 "Purpose: moves southwestward if neighbourSW exists (raster grid with hexagons or 8-neighbours squares), do not move otherwise"
 	
-	(self patch notNil and: [self patch neighbourSW notNil])
-		ifTrue: [self moveTo: self patch neighbourSW]
+	(self cell notNil and: [self cell neighbourSW notNil])
+		ifTrue: [self moveTo: self cell neighbourSW]
 ]
 
 { #category : 'moving' }
 TCMLocated >> moveTo: aSpatialEntity [
 	"Purpose: moves to a given location.
 Argument: aSpatialEntity = <SpatialEntity>
-Example: self moveTo: self patch neighbourN"
+Example: self moveTo: self cell neighbourN"
 	
 	aSpatialEntity isSpatialEntity ifFalse: [ ^ nil ].
 	self leaveWhileMoving: true.
-	self patch: aSpatialEntity.
-	self patch addOccupant: self.
+	self cell: aSpatialEntity.
+	self cell addOccupant: self.
 ]
 
 { #category : 'moving' }
 TCMLocated >> moveTowards: aCell [
 	"Purpose: moves one cell in direction of a given location.
 Argument: aCell = <SpatialEntityElement>
-Example: self moveTowards: self house patch"
+Example: self moveTowards: self house cell"
 	
 	self isSituated ifTrue: [
-		self patch = aCell ifFalse: [
-			self moveTo: (self patch wayTo: aCell) first ] ]
+		self cell = aCell ifFalse: [
+			self moveTo: (self cell wayTo: aCell) first ] ]
 ]
 
 { #category : 'moving' }
 TCMLocated >> moveTowards: aCell constraintOnPath: aBlock [
 	"Purpose: moves one cell in direction of a given location, taking a specified constraint on each cell of the path to destination.
 Argument: aCell = <SpatialEntityElement>
-Example: self moveTowards: self house patch constraintOnPath: [:c | c isClosed not]"
+Example: self moveTowards: self house cell constraintOnPath: [:c | c isClosed not]"
 
 	| path |
 	
 	self isSituated ifTrue: [
-		self patch = aCell ifFalse: [
-			path := self patch wayTo: aCell constraint: aBlock.
+		self cell = aCell ifFalse: [
+			path := self cell wayTo: aCell constraint: aBlock.
 			
 			path size < 2
 				ifTrue: [ self error: 'Could not find a valid path' ].
@@ -422,8 +434,8 @@ Example: self moveTowards: self house patch constraintOnPath: [:c | c isClosed n
 TCMLocated >> moveW [
 "Purpose: moves westward if neighbourW exists (raster grid), do not move otherwise"
 	
-	(self patch notNil and: [self patch neighbourW notNil])
-		ifTrue: [self moveTo: self patch neighbourW]
+	(self cell notNil and: [self cell neighbourW notNil])
+		ifTrue: [self moveTo: self cell neighbourW]
 ]
 
 { #category : 'environment - picking - space' }
@@ -433,9 +445,9 @@ The current location is NOT considered
 If none: returns nil; if more than one at the minimum radius: random selection
 Return value: <SpatialEntity | nil>"
 	
-	^ self patch
+	^ self cell
 		ifNil: [ nil ]
-		ifNotNil: [ self patch nearestEmptyCell ]
+		ifNotNil: [ self cell nearestEmptyCell ]
 ]
 
 { #category : 'environment - picking - space' }
@@ -446,9 +458,9 @@ If none: returns nil; if more than one at the minimum radius: random selection
 Argument: range = <Integer>
 Return value: <SpatialEntity | nil>"
 	
-	^self patch
+	^self cell
 		ifNil: [ nil ]
-		ifNotNil: [ self patch nearestEmptyNeighborWithinRadius: range ]
+		ifNotNil: [ self cell nearestEmptyNeighborWithinRadius: range ]
 ]
 
 { #category : 'environment - sensing - space' }
@@ -457,9 +469,9 @@ TCMLocated >> nearestEmptyLocations [
 The current location is NOT considered
 Return value: <Collection(SpatialEntity) | nil>"
 	
-	^ self patch
+	^ self cell
 		ifNil: [ nil ]
-		ifNotNil: [ self patch nearestEmptyCells ]
+		ifNotNil: [ self cell nearestEmptyCells ]
 ]
 
 { #category : 'environment - sensing - space' }
@@ -469,9 +481,9 @@ The current location is NOT considered
 Argument: range = <Integer>
 Return value: <Collection(SpatialEntity) | nil>"
 	
-	^self patch
+	^self cell
 		ifNil: [ nil ]
-		ifNotNil: [ self patch nearestEmptyNeighborsWithinRadius: range ]
+		ifNotNil: [ self cell nearestEmptyNeighborsWithinRadius: range ]
 ]
 
 { #category : 'environment - sensing - agents' }
@@ -483,7 +495,7 @@ Arguments: 	locatedEntityName = <Symbol | Class>
 Return value: <Collection(AgentLocation | ObjectLocation) | nil>
 Example: self nearestLocatedEntities: #Predator verifying: [:a | a isHungry] withinRadius: self perceptionRangePredators"
 	
-	^self patch
+	^self cell
 		ifNil: [ nil ]
 		ifNotNil: [
 			(self nearestLocatedEntities: locatedEntityName withinRadius: range)
@@ -499,7 +511,7 @@ Return value: <Collection(AgentLocation | ObjectLocation) | nil>
 Example: self nearestLocatedEntities: #Predator withinRadius: self perceptionRangePredators"
 	
 	| entities n |
-	self patch ifNil: [ ^ nil ].
+	self cell ifNil: [ ^ nil ].
 	
 	entities := OrderedCollection new.
 	n := 0.
@@ -519,9 +531,9 @@ If none: returns nil; if more than one at the minimum radius: random selection
 Return value: <SpatialEntity | nil>
 Example: self nearestLocationVerifying: [:c | c isClosed not]"
 	
-	^self patch
+	^self cell
 		ifNil: [ nil ]
-		ifNotNil: [ self patch nearestCellVerifying: aBlock ]
+		ifNotNil: [ self cell nearestCellVerifying: aBlock ]
 ]
 
 { #category : 'environment - picking - space' }
@@ -534,9 +546,9 @@ Arguments: 	aBlock = <BlockClosure>
 Return value: <SpatialEntity | nil>
 Example: self nearestLocationVerifying: [:c | c isClosed not] withinRadius: 5"
 	
-	^self patch
+	^self cell
 		ifNil: [ nil ]
-		ifNotNil: [ self patch nearestNeighborVerifying: aBlock withinRadius: range ]
+		ifNotNil: [ self cell nearestNeighborVerifying: aBlock withinRadius: range ]
 ]
 
 { #category : 'environment - picking - space' }
@@ -548,9 +560,9 @@ Arguments: locatedEntityName = <Symbol | Class>
 Return value: <SpatialEntityElement | nil>
 Example: self nearestLocationWithoutAny: #Predator"
 	
-	^self patch
+	^self cell
 		ifNil: [ nil ]
-		ifNotNil: [ self patch nearestCellWithoutAny: locatedEntityName ]
+		ifNotNil: [ self cell nearestCellWithoutAny: locatedEntityName ]
 ]
 
 { #category : 'environment - picking - space' }
@@ -563,9 +575,9 @@ Arguments: 	locatedEntityName = <Symbol | Class>
 Return value: <SpatialEntity | nil>
 Example: self nearestLocationWithoutAny: #Predator withinRadius: self perceptionRangePredators "
 	
-	^self patch
+	^self cell
 		ifNil: [ nil ]
-		ifNotNil: [ self patch nearestNeighborWithoutAny: locatedEntityName withinRadius: range ]
+		ifNotNil: [ self cell nearestNeighborWithoutAny: locatedEntityName withinRadius: range ]
 ]
 
 { #category : 'environment - sensing - space' }
@@ -575,9 +587,9 @@ The current location is NOT considered
 Return value: <Collection(SpatialEntity) | nil>
 Example: self nearestLocationsVerifying: [:c | c isClosed not]"
 	
-	^ self patch
+	^ self cell
 		ifNil: [ nil ]
-		ifNotNil: [ self patch nearestCellsVerifying: aBlock ]
+		ifNotNil: [ self cell nearestCellsVerifying: aBlock ]
 ]
 
 { #category : 'environment - sensing - space' }
@@ -590,10 +602,10 @@ Arguments: aMagnitudeName = <ByteSymbol>
 Return value: <Collection(SpatialEntity) | nil>
 Example: self nearestLocationsWithMaxOf: #water verifying: [:c | c isPolluted not] withinRadius: 5"
 	
-	^ self patch
+	^ self cell
 		ifNil: [ nil ]
 		ifNotNil: [
-			self patch
+			self cell
 				nearestNeighborsVerifying: aCondition
 				withMaxOf: aMagnitudeName
 				withinRadius: range ]
@@ -608,9 +620,9 @@ Arguments: aBlock = <BlockClosure>
 Return value: <Collection(SpatialEntity) | nil>
 Example: self nearestLocationsVerifying: [:c | c isClosed not] withinRadius: 5"
 	
-	^ self patch
+	^ self cell
 		ifNil: [ nil ]
-		ifNotNil: [ self patch nearestNeighborsVerifying: aBlock withinRadius: range ]
+		ifNotNil: [ self cell nearestNeighborsVerifying: aBlock withinRadius: range ]
 ]
 
 { #category : 'environment - sensing - space' }
@@ -622,9 +634,9 @@ Arguments: aMagnitudeName = <ByteSymbol>
 Return value: <Collection(SpatialEntity) | nil>
 Example: self nearestLocationsWithMaxOf: #water verifying: [:c | c isPolluted not] withinRadius: 5"
 	
-	^ self patch
+	^ self cell
 		ifNil: [ nil ]
-		ifNotNil: [ self patch nearestNeighborsWithMaxOf: aMagnitudeName withinRadius: range ]
+		ifNotNil: [ self cell nearestNeighborsWithMaxOf: aMagnitudeName withinRadius: range ]
 ]
 
 { #category : 'environment - sensing - space' }
@@ -635,9 +647,9 @@ Arguments: locatedEntityName = <Symbol | Class>
 Return value: <Collection(SpatialEntityElement) | nil>
 Example: self nearestLocationsWithoutAny: #Predator"
 	
-	^ self patch
+	^ self cell
 		ifNil: [ nil ]
-		ifNotNil: [ self patch nearestCellsWithoutAny: locatedEntityName ]
+		ifNotNil: [ self cell nearestCellsWithoutAny: locatedEntityName ]
 ]
 
 { #category : 'environment - sensing - space' }
@@ -649,10 +661,10 @@ Arguments: 	locatedEntityName = <Symbol | Class>
 Return value: <Collection(SpatialEntity) | nil>
 Example: self nearestLocationsWithoutAny: #Predator withinRadius: self perceptionRangePredators "
 	
-	^ self patch
+	^ self cell
 		ifNil: [ nil ]
 		ifNotNil: [
-			self patch
+			self cell
 				nearestNeighborsWithoutAny: locatedEntityName
 				withinRadius: range ]
 ]
@@ -706,9 +718,9 @@ TCMLocated >> neighboringLocations [
 The current location is NOT considered
 Return value: <Collection(SpatialEntity) | nil>"
 	
-	^ self patch
+	^ self cell
 		ifNil: [ nil ]
-		ifNotNil: [ self patch neighbourhood ]
+		ifNotNil: [ self cell neighbourhood ]
 ]
 
 { #category : 'environment - sensing - space' }
@@ -719,9 +731,9 @@ Argument: aBlock = <BlockClosure>
 Return value: <Collection(SpatialEntity) | nil>
 Example: self neighboringLocationsVerifying: [:c | c isClosed not]"
 	
-	^ self patch
+	^ self cell
 		ifNil: [ nil ]
-		ifNotNil: [ self patch neighbourhood select: [ :cell | aBlock value: cell ] ]
+		ifNotNil: [ self cell neighbourhood select: [ :aCell | aBlock value: aCell ] ]
 ]
 
 { #category : 'environment - sensing - agents' }
@@ -731,10 +743,10 @@ The co-located entities are not considered here (for that, use locatedEntities: 
 Return value: <Collection(AgentLocation | ObjectLocation)>
 Example: self neighbouringLocatedEntities: #Predator"
 	
-	self patch ifNil: [ ^ nil ].
+	self cell ifNil: [ ^ nil ].
 	
-	^ self patch neighbourhood flatCollect: [ :cell |
-		cell occupantsOfClassNamed: locatedEntityName ].
+	^ self cell neighbourhood flatCollect: [ :aCell |
+		aCell occupantsOfClassNamed: locatedEntityName ].
 ]
 
 { #category : 'environment - sensing - agents' }
@@ -746,7 +758,7 @@ Arguments: 	locatedEntityName = <Symbol | Class>
 Return value: <Collection(AgentLocation | ObjectLocation)>
 Example: self neighbouringLocatedEntities: #Prey verifying: [:p | p isWeak]"
 	
-	^ self patch
+	^ self cell
 		ifNil: [ nil ]
 		ifNotNil: [
 			(self neighbouringLocatedEntities: locatedEntityName)
@@ -770,30 +782,9 @@ Argument: aCondition = <BlockClosure>
 Return value: <Collection(AgentLocation)>
 Example: self neighbouringSimilarAgentsVerifying: [:a | a sex ~= self sex]"
 	
-	^ self patch
+	^ self cell
 		ifNil: [ nil ]
 		ifNotNil: [ self neighbouringSimilarAgents select: [ :agent | aCondition value: agent ] ]
-]
-
-{ #category : 'accessing' }
-TCMLocated >> patch [
-
-	^ patch
-]
-
-{ #category : 'accessing' }
-TCMLocated >> patch: anObject [
-
-	patch := anObject
-]
-
-{ #category : 'accessing' }
-TCMLocated >> patchID [
-	"Purpose: returns ID of patch
-Return value: <Integer>"
-	
-	self patch ifNil: [^0].
-	^self patch id
 ]
 
 { #category : 'printing' }
@@ -818,9 +809,9 @@ TCMLocated >> randomJump [
 TCMLocated >> randomJumpConstrainedBy: aBlock [
 
 	| destination candidates |
-	patch ifNil: [ ^ nil ].
+	cell ifNil: [ ^ nil ].
 	
-	candidates := self cormasModel cells select: [ :cell | aBlock value: cell ].
+	candidates := self cormasModel cells select: [ :aCell | aBlock value: aCell ].
 	candidates isEmpty ifTrue: [ ^ self ].
 	
 	destination := self selectRandomlyFrom: candidates.
@@ -832,9 +823,9 @@ TCMLocated >> randomWalk [
 	" Moves to a spatial entity randomly picked from the direct neighbourhood (relative distance = 1) of the current location "
 
 	| destination candidates |
-	patch ifNil: [ ^ nil ].
+	cell ifNil: [ ^ nil ].
 	
-	candidates := patch neighbourhood.
+	candidates := cell neighbourhood.
 	
 	candidates ifNil: [ ^ nil ].
 	candidates ifEmpty: [ ^ nil ].
@@ -849,7 +840,7 @@ TCMLocated >> randomWalk: radius [
 Argument: radius = <positive Integer>
 Example: self randomWalk: 2 "
 	
-	self moveTo: (self selectRandomlyFrom: (self patch recursiveNeighbourhood: radius))
+	self moveTo: (self selectRandomlyFrom: (self cell recursiveNeighbourhood: radius))
 ]
 
 { #category : 'moving' }
@@ -860,9 +851,9 @@ TCMLocated >> randomWalkConstrainedBy: aBlock [
 	"
 
 	| destination candidates |
-	patch ifNil: [ ^ nil ].
+	cell ifNil: [ ^ nil ].
 	
-	candidates := patch neighbourhood select: [ :cell | aBlock value: cell ].
+	candidates := cell neighbourhood select: [ :aCell | aBlock value: aCell ].
 	candidates isEmpty ifTrue: [ ^ self ].
 	
 	destination := self selectRandomlyFrom: candidates.
@@ -877,7 +868,7 @@ Arguments: aBlock = <BlockClosure>
 Return value: <Collection(AgentLocation)>
 Example: self similarAgentsVerifying: [:a | a sex ~= self sex] withinRadius: self pheromonePerceptionRange"
 	
-	^ self patch
+	^ self cell
 		ifNil: [ nil ]
 		ifNotNil: [
 			self
@@ -893,7 +884,7 @@ Argument: range = <Integer>
 Return value: <Collection(AgentLocation)>
 Example: self similarAgentsWithinRadius: 3"
 	
-	^ self patch
+	^ self cell
 		ifNil: [ nil ]
 		ifNotNil: [
 			self
@@ -910,16 +901,16 @@ Example: self walkToMaxOf: #sugar"
 	
 	| destination candidates |
 	
-	candidates := self patch neighbourhood select: [ :cell |
-		(cell perform: aSymbol) respondsTo: #>].
+	candidates := self cell neighbourhood select: [ :aCell |
+		(aCell perform: aSymbol) respondsTo: #>].
 		
 	candidates ifEmpty: [ ^ self ].
 		
-	candidates := self patch neighbourhood sorted: [ :a :b |
+	candidates := self cell neighbourhood sorted: [ :a :b |
 		(a perform: aSymbol) > (b perform: aSymbol)].
 	
-	candidates := candidates select: [ :cell |
-		(cell perform: aSymbol) = (candidates first perform: aSymbol) ].
+	candidates := candidates select: [ :aCell |
+		(aCell perform: aSymbol) = (candidates first perform: aSymbol) ].
 	
 	destination := self selectRandomlyFrom: candidates.
 	self moveTo: destination
@@ -936,16 +927,16 @@ In case several possible destinations share the same maximum value, the tie is r
 
 	| destination candidates |
 	
-	candidates := self patch neighbourhood select: [ :cell |
-		((cell perform: aSymbol) respondsTo: #>) and: [ aBlock value: cell ] ].
+	candidates := self cell neighbourhood select: [ :aCell |
+		((aCell perform: aSymbol) respondsTo: #>) and: [ aBlock value: aCell ] ].
 		
 	candidates isEmpty ifTrue: [ ^ self ].
 	
 	candidates sort: [ :a :b |
 		(a perform: aSymbol) > (b perform: aSymbol) ].
 	
-	candidates := candidates select: [ :cell |
-		(cell perform: aSymbol) = (candidates first perform: aSymbol) ].
+	candidates := candidates select: [ :aCell |
+		(aCell perform: aSymbol) = (candidates first perform: aSymbol) ].
 	
 	destination := self selectRandomlyFrom: candidates.
 	self moveTo: destination

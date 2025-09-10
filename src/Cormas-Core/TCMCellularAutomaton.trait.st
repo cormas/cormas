@@ -36,8 +36,7 @@ TCMCellularAutomaton >> state [
 TCMCellularAutomaton >> state: aValue [
 	
 	state = aValue ifTrue: [^nil].
-	state := aValue.
-	self changed
+	state := aValue
 ]
 
 { #category : 'control' }

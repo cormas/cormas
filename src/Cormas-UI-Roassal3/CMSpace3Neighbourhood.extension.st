@@ -45,7 +45,7 @@ CMSpace3Neighbourhood >> organizeShapesPositions: aRSGroup [
 CMSpace3Neighbourhood >> roassalMasterShape [
 
 	^ RSPolygon new
-		  points: (RSPolygon generatePointsFitSquare: 3);
+		  points: (RSPolygon generateUnitNgonPoints: 3 rotation: 0);
 		  size: 16;
 		  yourself
 ]

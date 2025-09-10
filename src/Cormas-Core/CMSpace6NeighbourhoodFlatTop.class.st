@@ -2,7 +2,7 @@
 Hexagonal neighbourhood with Flat top hexagons
 "
 Class {
-	#name : 'CMSpace6NeighbourhoodFlapTop',
+	#name : 'CMSpace6NeighbourhoodFlatTop',
 	#superclass : 'CMSpace6Neighbourhood',
 	#category : 'Cormas-Core-Space',
 	#package : 'Cormas-Core',
@@ -10,7 +10,7 @@ Class {
 }
 
 { #category : 'testing' }
-CMSpace6NeighbourhoodFlapTop class >> isStartConditionFor: aSymbolOrNumber [
+CMSpace6NeighbourhoodFlatTop class >> isStartConditionFor: aSymbolOrNumber [
 "Test: self isStartConditionFor: 6 "
 
 	^ (super isStartConditionFor: aSymbolOrNumber) ifTrue: [
@@ -18,7 +18,7 @@ CMSpace6NeighbourhoodFlapTop class >> isStartConditionFor: aSymbolOrNumber [
 ]
 
 { #category : 'initialization' }
-CMSpace6NeighbourhoodFlapTop >> initializeOrderedNeighbourhood: k [
+CMSpace6NeighbourhoodFlatTop >> initializeOrderedNeighbourhood: k [
 "Set the neighbourhood of the cell with id = k.
 Neighbours are ordered anticlockwise, starting from the North cell"
 	| v i |
@@ -46,7 +46,7 @@ Neighbours are ordered anticlockwise, starting from the North cell"
 ]
 
 { #category : 'private - regular cells - instance creation' }
-CMSpace6NeighbourhoodFlapTop >> northEastCellHexaFlat: k [
+CMSpace6NeighbourhoodFlatTop >> northEastCellHexaFlat: k [
 
 	| numCol |
 	k = 0 ifTrue: [ ^ 0 ].
@@ -67,7 +67,7 @@ CMSpace6NeighbourhoodFlapTop >> northEastCellHexaFlat: k [
 ]
 
 { #category : 'private - regular cells - instance creation' }
-CMSpace6NeighbourhoodFlapTop >> northWestCellHexaFlat: k [
+CMSpace6NeighbourhoodFlatTop >> northWestCellHexaFlat: k [
 
 	| numCol |
 	k = 0 ifTrue: [ ^ 0 ].
@@ -83,7 +83,7 @@ CMSpace6NeighbourhoodFlapTop >> northWestCellHexaFlat: k [
 ]
 
 { #category : 'private - regular cells - instance creation' }
-CMSpace6NeighbourhoodFlapTop >> southEastCellHexaFlat: k [
+CMSpace6NeighbourhoodFlatTop >> southEastCellHexaFlat: k [
 
 	| numCol |
 	k = 0 ifTrue: [ ^ 0 ].
@@ -104,7 +104,7 @@ CMSpace6NeighbourhoodFlapTop >> southEastCellHexaFlat: k [
 ]
 
 { #category : 'private - regular cells - instance creation' }
-CMSpace6NeighbourhoodFlapTop >> southWestCellHexaFlat: k [
+CMSpace6NeighbourhoodFlatTop >> southWestCellHexaFlat: k [
 	"south west"
 
 	| numCol |
