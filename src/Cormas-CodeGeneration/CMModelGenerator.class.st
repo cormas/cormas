@@ -161,7 +161,7 @@ CMModelGenerator >> generateMethods [
 	
 	description ifNotEmpty: [ self generateDescriptionMethod ].
 	
-	self generateInitializeMethod.
+	"self generateInitializeMethod."
 	self generateInitMethod.
 	self generateStepMethod.
 	
