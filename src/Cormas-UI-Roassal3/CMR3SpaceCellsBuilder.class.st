@@ -30,12 +30,6 @@ CMR3SpaceCellsBuilder >> masterShape: aShape [
 ]
 
 { #category : 'accessing' }
-CMR3SpaceCellsBuilder >> neighbourhoodConfiguration [
-
-	^ diagramBuilder cormasModel spaceModel neighbourhoodConfiguration
-]
-
-{ #category : 'accessing' }
 CMR3SpaceCellsBuilder >> objects [
 
 	^ diagramBuilder cormasModel cells

@@ -61,6 +61,12 @@ CMR3SpaceShapeBuilder >> masterShape: aShape [
 		yourself.
 ]
 
+{ #category : 'accessing' }
+CMR3SpaceShapeBuilder >> neighbourhoodConfiguration [
+
+	^ diagramBuilder cormasModel spaceModel neighbourhoodConfiguration
+]
+
 { #category : 'as yet unclassified' }
 CMR3SpaceShapeBuilder >> openContextMenu: anEvent [
 
