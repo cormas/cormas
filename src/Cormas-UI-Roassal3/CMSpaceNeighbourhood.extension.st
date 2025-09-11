@@ -45,7 +45,7 @@ CMSpaceNeighbourhood >> boundingRectangleVerticalShiftOdd [
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
-CMSpaceNeighbourhood >> organizeShapesPositions: r [
+CMSpaceNeighbourhood >> organizeShapesPositions: aRSGroup [
 	"Do nothing, except for grid of hexagons and triangles"
 
 	
@@ -55,4 +55,11 @@ CMSpaceNeighbourhood >> organizeShapesPositions: r [
 CMSpaceNeighbourhood >> roassalMasterShape [
 
 	self subclassResponsibility
+]
+
+{ #category : '*Cormas-UI-Roassal3' }
+CMSpaceNeighbourhood >> rotateShapes: aRSGroup [
+	"Do nothing, except for grid of triangles"
+
+	
 ]
