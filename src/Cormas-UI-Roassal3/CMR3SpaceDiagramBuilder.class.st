@@ -110,7 +110,7 @@ CMR3SpaceDiagramBuilder >> maxExtent [
 CMR3SpaceDiagramBuilder >> renderIn: aCanvas [
 
 	| imagePovs |
-	"aCanvas showEncompassingRectangles."
+	"aCanvas showEncompassingRectangles"
 	
 	imagePovs := cormasModel allTheEntities
 		collect: [ :entity | entity perform: entity class activePovSelector ]

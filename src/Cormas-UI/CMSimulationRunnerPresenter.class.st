@@ -138,43 +138,42 @@ CMSimulationRunnerPresenter >> initializeDataTable [
 
 { #category : 'initialization' }
 CMSimulationRunnerPresenter >> initializeNotebookPages [
-
-"Purpose: Set the Notebook Pages:
+	"Purpose: Set the Notebook Pages:
 	grid = SpacePresenter, 
 	data table = initializeDataTable,
 	charts = diagrams"
-	
+
 	self initializeSpacePresenter.
 	self initializeDataTable.
 	self initializeCharts.
-	
+
 	notebook removeAll.
-	
+
 	spacePage := SpNotebookPage
-		title: translator tSpace
-		"icon: (self iconNamed: #paint)"
-		provider: [ spacePresenter ].
-		
+		             title: translator tSpace
+		             provider: [ spacePresenter ].
+	"icon: (self iconNamed: #paint)"
+
 	dataPage := SpNotebookPage
-		title: translator tData
-		"icon: (self iconNamed: #database)"
-		provider: [ dataTable ].
-		
+		            title: translator tData
+		            provider: [ dataTable ].
+	"icon: (self iconNamed: #database)"
+
 	chartsPage := SpNotebookPage
-		title: translator tCharts
-		"icon: CMIcons chartIcon"
-		provider: [ chartPresenter ].
-		
+		              title: translator tCharts
+		              provider: [ chartPresenter ].
+	"icon: CMIcons chartIcon"
+
 	notebook addPage: spacePage.
 	notebook addPage: dataPage.
 	notebook addPage: chartsPage.
-		
+
 	notebook addPage: (SpNotebookPage
-		title: translator tInspector
-		"icon: (self iconNamed: #smallInspectIt)"
-		provider: [ StInspectorPresenter onObject: simulation ]).
-		
-	notebook selectPageIndex: 1.
+			 title: translator tInspector
+			 provider: [ StInspectorPresenter onObject: simulation ]).
+	"icon: (self iconNamed: #smallInspectIt)"
+
+	notebook selectPageIndex: 1
 ]
 
 { #category : 'initialization' }
