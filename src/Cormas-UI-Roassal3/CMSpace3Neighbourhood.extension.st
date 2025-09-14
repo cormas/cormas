@@ -7,6 +7,24 @@ CMSpace3Neighbourhood >> boundingRectangleHorizontalIntersection [
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
+CMSpace3Neighbourhood >> cellShapeOriginOffset [
+
+	^ 0.5@0
+]
+
+{ #category : '*Cormas-UI-Roassal3' }
+CMSpace3Neighbourhood >> centerOfShapeFor: aCell [
+	| radius |
+	
+	"Radius of circumcircle if triangle is pointy top, radius of incircle if it's flat top"
+	radius := (self shouldRotateShapeFor: aCell)
+		ifTrue: [ 3 sqrt / 6 ]
+		ifFalse: [ 3 sqrt / 3 ].
+
+	^ 0.5 @ radius
+]
+
+{ #category : '*Cormas-UI-Roassal3' }
 CMSpace3Neighbourhood class >> exampleFlatTop [
 
 	<example>
@@ -22,23 +40,14 @@ CMSpace3Neighbourhood class >> examplePointyTop [
 
 { #category : '*Cormas-UI-Roassal3' }
 CMSpace3Neighbourhood >> organizeShapesPositions: aRSGroup [
-	"Reverse the triangles when id is even. "
+	"Move shapes to fit align them with each other"
 
-	| i r numCol |
-	
-	i := self class firstCellIsFlatTopTriangle
-		     ifTrue: [ 1 ]
-		     ifFalse: [ 0 ].
-		
+	| r numCol |
 	r := aRSGroup first encompassingRectangle width.
-	
+
 	aRSGroup do: [ :aShape |
-		i := i + 1.
-		i even ifTrue: [ aShape rotateByDegrees: 180 ].
-		(aShape model columnNumber = self numberOfColumns and: [
-			 self numberOfColumns even ]) ifTrue: [ i := i + 1 ].
-		numCol := aShape model columnNumber.
-		aShape translateBy: numCol * (r / -2 @ 0) ]
+			numCol := aShape model columnNumber.
+			aShape translateBy: numCol * (r / -2 @ 0) ]
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
@@ -48,4 +57,19 @@ CMSpace3Neighbourhood >> roassalMasterShape [
 		  points: (RSPolygon generateUnitNgonPoints: 3 rotation: 0);
 		  size: 16;
 		  yourself
+]
+
+{ #category : '*Cormas-UI-Roassal3' }
+CMSpace3Neighbourhood >> rotateShapes: aRSGroup [
+	"Reverse the triangles when id is even. "
+
+	aRSGroup do: [ :aShape |
+		(self shouldRotateShapeFor: aShape model) ifTrue: [ aShape rotateByDegrees: 180 ] ]
+]
+
+{ #category : '*Cormas-UI-Roassal3' }
+CMSpace3Neighbourhood >> shouldRotateShapeFor: aCell [
+
+	^ (aCell rowNumber + aCell columnNumber +
+		(self class firstCellIsFlatTopTriangle ifTrue: [ 0 ] ifFalse: [ 1 ])) even
 ]

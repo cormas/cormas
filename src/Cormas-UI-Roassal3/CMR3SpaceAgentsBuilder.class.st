@@ -38,7 +38,7 @@ CMR3SpaceAgentsBuilder >> centeredPositionForAgent: anAgent [
 
 	^ self
 		positionAgent: anAgent
-		atProportion: 0.5@0.5
+		atProportion: (self neighbourhoodConfiguration centerOfShapeFor: anAgent cell)
 ]
 
 { #category : 'as yet unclassified' }
@@ -147,10 +147,10 @@ CMR3SpaceAgentsBuilder >> objects [
 CMR3SpaceAgentsBuilder >> positionAgent: anAgent atProportion: aRelativePoint [
 	"aRelativePoint is relative to a cell. 0@0 will place the agent in the top-left corner of the cell, 1@1 - bottom-right corner, 0.5@0.5 - center of the cell"
 
-	| cell cellCoordinates cellSize offset intersectionProportion shiftProportionX shiftProportionY shiftProportion intersectionOffset config |
+	| cell cellCoordinates cellSize offset intersectionProportion shiftProportionX shiftProportionY shiftProportion intersectionOffset  config |
 	
 	cell := anAgent cell.
-	config := diagramBuilder cormasModel spaceModel neighbourhoodConfiguration.
+	config := self neighbourhoodConfiguration.
 	cellSize := diagramBuilder cellShapes anyOne encompassingRectangle extent.
 	
 	cellCoordinates := cell columnNumber @ cell rowNumber.
@@ -172,7 +172,7 @@ CMR3SpaceAgentsBuilder >> positionAgent: anAgent atProportion: aRelativePoint [
 	intersectionOffset := (cellCoordinates - 1) * intersectionProportion.
 	offset := (cellCoordinates - 1) - intersectionOffset + shiftProportion.
 
-	^ (offset + aRelativePoint) * cellSize
+	^ (offset + aRelativePoint - config cellShapeOriginOffset) * cellSize
 ]
 
 { #category : 'position in cell' }

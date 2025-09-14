@@ -148,8 +148,8 @@ CMPointOfView >> initialize [
 	color := Color gray.
 	size := 0.3.
 	shape := #circle.
-	borderWidth := 0.02.
-	borderColor := Color gray.
+	borderWidth := 0.01.
+	borderColor := Color veryLightGray.
 ]
 
 { #category : 'testing' }

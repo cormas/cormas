@@ -893,10 +893,6 @@ CMAbstractModel >> initEntities [
 CMAbstractModel >> initialize [
 
 	super initialize.
-	entities := Dictionary new.
-	
-	self initializeRandomNumberGenerator.
-	self initializeModelClasses.
 	self initializeWithoutParameters.
 	self initializeParameters
 ]
@@ -958,10 +954,12 @@ CMAbstractModel >> initializeSpaceModel [
 
 { #category : 'initialization' }
 CMAbstractModel >> initializeWithoutParameters [
-
-	super initialize.
+	
+	entities := Dictionary new.
+	
+	self initializeRandomNumberGenerator.
+	self initializeModelClasses.
 	self initializeSpaceModel.
-
 ]
 
 { #category : 'accessing - entities' }

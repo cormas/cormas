@@ -11,11 +11,8 @@ Class {
 
 { #category : 'accessing' }
 CMR3SpaceCellsBuilder >> defaultMasterShape [
-	"a RSBox, by default"
 
-	^ diagramBuilder cormasModel spaceModel neighbourhoodConfiguration roassalMasterShape
-		"size: 16;"
-		yourself
+	^ self neighbourhoodConfiguration roassalMasterShape
 ]
 
 { #category : 'initialization' }
@@ -50,23 +47,14 @@ CMR3SpaceCellsBuilder >> processLeftClick: anEvent [
 CMR3SpaceCellsBuilder >> renderIn: aCanvas [
 
 	super renderIn: aCanvas.
-
-	"""RSGridLayout""
-	RSCellLayout new
-		gapSize: 0;
-		lineItemsCount:
-			diagramBuilder cormasModel spaceModel numberOfColumns;
-		on: aCanvas nodes.
-
-	diagramBuilder cormasModel spaceModel neighbourhoodConfiguration
-		organizeShapesPositions: aCanvas nodes"
+	self neighbourhoodConfiguration rotateShapes: aCanvas nodes
 ]
 
 { #category : 'as yet unclassified' }
 CMR3SpaceCellsBuilder >> update [
 
 	super update.
-	
+
 	"RSGridLayout"
 	RSCellLayout new
 		gapSize: 0;
@@ -74,8 +62,7 @@ CMR3SpaceCellsBuilder >> update [
 			diagramBuilder cormasModel spaceModel numberOfColumns;
 		on: shapes.
 
-	diagramBuilder cormasModel spaceModel neighbourhoodConfiguration
-		organizeShapesPositions: shapes
+	self neighbourhoodConfiguration organizeShapesPositions: shapes
 ]
 
 { #category : 'updating' }

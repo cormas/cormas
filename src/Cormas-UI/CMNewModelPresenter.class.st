@@ -61,7 +61,9 @@ CMNewModelPresenter >> createModel [
 	modelClass := generator modelClassName asClassInEnvironment: self class environment.
 	
 	modelCreatedBlock value: modelClass.
-	self window close
+	
+	modelClass browse.
+	self window close.
 ]
 
 { #category : 'layout' }

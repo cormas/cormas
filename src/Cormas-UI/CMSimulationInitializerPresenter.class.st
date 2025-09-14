@@ -159,7 +159,12 @@ CMSimulationInitializerPresenter >> simulation [
 "Purpose: instanciate a new modelClass with init & control selectors. Then initialize this simulation by performing #activeInitSelector.
 Reset the currentTimeStep and the data. Set the randomSeed"
 	| simulation |
-	simulation := CMSimulation for: modelClass.
+	
+	"TODO: A temporary hack to fix the bug with parameters being reset when we reinitialize a model"
+	simulation := CMSimulation new
+		cormasModel: modelClass newWithoutParameters;
+		initializeProbes;
+		yourself.
 
 	modelClass parameters do: [ :parameter |
 		simulation initialParameterValues at: parameter put: parameter value ].
