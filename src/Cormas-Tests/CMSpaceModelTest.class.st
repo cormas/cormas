@@ -23,7 +23,7 @@ CMSpaceModelTest >> distanceBetweenDeadCellsInModel: aModel [
 	^ cell1 distanceTo: cell2
 ]
 
-{ #category : 'test' }
+{ #category : 'models' }
 CMSpaceModelTest >> newModel2x4HexagonalFlatClosed [
 	<script: 'self new newModel2x4HexagonalFlatClosed openSpacePresenter'>
 
@@ -35,7 +35,7 @@ CMSpaceModelTest >> newModel2x4HexagonalFlatClosed [
 		yourself
 ]
 
-{ #category : 'test' }
+{ #category : 'models' }
 CMSpaceModelTest >> newModel2x4HexagonalFlatOpen [
 	<script: 'self new newModel2x4HexagonalFlatOpen openSpacePresenter'>
 
@@ -47,7 +47,7 @@ CMSpaceModelTest >> newModel2x4HexagonalFlatOpen [
 		yourself
 ]
 
-{ #category : 'test' }
+{ #category : 'models' }
 CMSpaceModelTest >> newModel2x4HexagonalPointyClosed [
 	<script: 'self new newModel2x4HexagonalPointyClosed openSpacePresenter'>
 
@@ -59,7 +59,7 @@ CMSpaceModelTest >> newModel2x4HexagonalPointyClosed [
 		yourself
 ]
 
-{ #category : 'test' }
+{ #category : 'models' }
 CMSpaceModelTest >> newModel2x4HexagonalPointyOpen [
 	<script: 'self new newModel2x4HexagonalPointyOpen openSpacePresenter'>
 
@@ -71,7 +71,7 @@ CMSpaceModelTest >> newModel2x4HexagonalPointyOpen [
 		yourself
 ]
 
-{ #category : 'test' }
+{ #category : 'models' }
 CMSpaceModelTest >> newModel2x4Square4NeighboursClosed [
 	<script: 'self new newModel2x4Square4NeighboursClosed openSpacePresenter'>
 
@@ -83,7 +83,7 @@ CMSpaceModelTest >> newModel2x4Square4NeighboursClosed [
 		yourself
 ]
 
-{ #category : 'test' }
+{ #category : 'models' }
 CMSpaceModelTest >> newModel2x4Square4NeighboursOpen [
 	<script: 'self new newModel2x4Square4NeighboursOpen openSpacePresenter'>
 
@@ -95,7 +95,7 @@ CMSpaceModelTest >> newModel2x4Square4NeighboursOpen [
 		yourself
 ]
 
-{ #category : 'test' }
+{ #category : 'models' }
 CMSpaceModelTest >> newModel2x4Square8NeighboursClosed [
 	<script: 'self new newModel2x4Square8NeighboursClosed openSpacePresenter'>
 
@@ -107,7 +107,7 @@ CMSpaceModelTest >> newModel2x4Square8NeighboursClosed [
 		yourself
 ]
 
-{ #category : 'test' }
+{ #category : 'models' }
 CMSpaceModelTest >> newModel2x4Square8NeighboursOpen [
 	<script: 'self new newModel2x4Square8NeighboursOpen openSpacePresenter'>
 
@@ -119,7 +119,7 @@ CMSpaceModelTest >> newModel2x4Square8NeighboursOpen [
 		yourself
 ]
 
-{ #category : 'test' }
+{ #category : 'models' }
 CMSpaceModelTest >> newModel8x10HexagonalFlatClosed [
 	<script: 'self new newModel8x10HexagonalFlatClosed openSpacePresenter'>
 
@@ -131,7 +131,7 @@ CMSpaceModelTest >> newModel8x10HexagonalFlatClosed [
 		yourself
 ]
 
-{ #category : 'test' }
+{ #category : 'models' }
 CMSpaceModelTest >> newModel8x10HexagonalFlatOpen [
 	<script: 'self new newModel8x10HexagonalFlatOpen openSpacePresenter'>
 
@@ -143,7 +143,7 @@ CMSpaceModelTest >> newModel8x10HexagonalFlatOpen [
 		yourself
 ]
 
-{ #category : 'test' }
+{ #category : 'models' }
 CMSpaceModelTest >> newModel8x10HexagonalPointyClosed [
 	<script: 'self new newModel8x10HexagonalPointyClosed openSpacePresenter'>
 
@@ -155,7 +155,7 @@ CMSpaceModelTest >> newModel8x10HexagonalPointyClosed [
 		yourself
 ]
 
-{ #category : 'test' }
+{ #category : 'models' }
 CMSpaceModelTest >> newModel8x10HexagonalPointyOpen [
 	<script: 'self new newModel8x10HexagonalPointyOpen openSpacePresenter'>
 
@@ -167,7 +167,7 @@ CMSpaceModelTest >> newModel8x10HexagonalPointyOpen [
 		yourself
 ]
 
-{ #category : 'test' }
+{ #category : 'models' }
 CMSpaceModelTest >> newModel8x10Square4NeighboursClosed [
 	<script: 'self new newModel8x10Square4NeighboursClosed openSpacePresenter'>
 
@@ -179,7 +179,7 @@ CMSpaceModelTest >> newModel8x10Square4NeighboursClosed [
 		yourself
 ]
 
-{ #category : 'test' }
+{ #category : 'models' }
 CMSpaceModelTest >> newModel8x10Square4NeighboursOpen [
 	<script: 'self new newModel8x10Square4NeighboursOpen openSpacePresenter'>
 
@@ -191,7 +191,7 @@ CMSpaceModelTest >> newModel8x10Square4NeighboursOpen [
 		yourself
 ]
 
-{ #category : 'test' }
+{ #category : 'models' }
 CMSpaceModelTest >> newModel8x10Square8NeighboursClosed [
 	<script: 'self new newModel8x10Square8NeighboursClosed openSpacePresenter'>
 
@@ -203,7 +203,7 @@ CMSpaceModelTest >> newModel8x10Square8NeighboursClosed [
 		yourself
 ]
 
-{ #category : 'test' }
+{ #category : 'models' }
 CMSpaceModelTest >> newModel8x10Square8NeighboursOpen [
 	<script: 'self new newModel8x10Square8NeighboursOpen openSpacePresenter'>
 
@@ -215,7 +215,59 @@ CMSpaceModelTest >> newModel8x10Square8NeighboursOpen [
 		yourself
 ]
 
-{ #category : 'test' }
+{ #category : 'situations' }
+CMSpaceModelTest >> situation1For2x4HexagonalFlatClosed [
+	<script: 'self new situation1For2x4HexagonalFlatClosed openSpacePresenter'>
+
+	| model |
+	model := self newModel2x4HexagonalFlatClosed.
+	
+	(model cellAt: 1 at: 4) initDead.
+	(model cellAt: 2 at: 1) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation1For2x4HexagonalFlatOpen [
+	<script: 'self new situation1For2x4HexagonalFlatOpen openSpacePresenter'>
+
+	| model |
+	model := self newModel2x4HexagonalFlatOpen.
+	
+	(model cellAt: 1 at: 4) initDead.
+	(model cellAt: 2 at: 1) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation1For2x4HexagonalPointyClosed [
+	<script: 'self new situation1For2x4HexagonalPointyClosed openSpacePresenter'>
+
+	| model |
+	model := self newModel2x4HexagonalPointyClosed.
+	
+	(model cellAt: 1 at: 4) initDead.
+	(model cellAt: 2 at: 1) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation1For2x4HexagonalPointyOpen [
+	<script: 'self new situation1For2x4HexagonalPointyOpen openSpacePresenter'>
+
+	| model |
+	model := self newModel2x4HexagonalPointyOpen.
+	
+	(model cellAt: 1 at: 4) initDead.
+	(model cellAt: 2 at: 1) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
 CMSpaceModelTest >> situation1For2x4Square4NeighboursClosed [
 	<script: 'self new situation1For2x4Square4NeighboursClosed openSpacePresenter'>
 
@@ -228,7 +280,7 @@ CMSpaceModelTest >> situation1For2x4Square4NeighboursClosed [
 	^ model
 ]
 
-{ #category : 'test' }
+{ #category : 'situations' }
 CMSpaceModelTest >> situation1For2x4Square4NeighboursOpen [
 	<script: 'self new situation1For2x4Square4NeighboursOpen openSpacePresenter'>
 
@@ -241,7 +293,7 @@ CMSpaceModelTest >> situation1For2x4Square4NeighboursOpen [
 	^ model
 ]
 
-{ #category : 'test' }
+{ #category : 'situations' }
 CMSpaceModelTest >> situation1For2x4Square8NeighboursClosed [
 	<script: 'self new situation1For2x4Square8NeighboursClosed openSpacePresenter'>
 
@@ -254,7 +306,7 @@ CMSpaceModelTest >> situation1For2x4Square8NeighboursClosed [
 	^ model
 ]
 
-{ #category : 'test' }
+{ #category : 'situations' }
 CMSpaceModelTest >> situation1For2x4Square8NeighboursOpen [
 	<script: 'self new situation1For2x4Square8NeighboursOpen openSpacePresenter'>
 
@@ -267,7 +319,111 @@ CMSpaceModelTest >> situation1For2x4Square8NeighboursOpen [
 	^ model
 ]
 
-{ #category : 'test' }
+{ #category : 'situations' }
+CMSpaceModelTest >> situation1For8x10HexagonalFlatClosed [
+	<script: 'self new situation1For8x10HexagonalFlatClosed openSpacePresenter'>
+
+	| model |
+	model := self newModel8x10HexagonalFlatClosed.
+	
+	(model cellAt: 7 at: 2) initDead.
+	(model cellAt: 2 at: 9) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation1For8x10HexagonalFlatOpen [
+	<script: 'self new situation1For8x10HexagonalFlatOpen openSpacePresenter'>
+
+	| model |
+	model := self newModel8x10HexagonalFlatOpen.
+	
+	(model cellAt: 7 at: 2) initDead.
+	(model cellAt: 2 at: 9) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation1For8x10HexagonalPointyClosed [
+	<script: 'self new situation1For8x10HexagonalPointyClosed openSpacePresenter'>
+
+	| model |
+	model := self newModel8x10HexagonalPointyClosed.
+	
+	(model cellAt: 7 at: 2) initDead.
+	(model cellAt: 2 at: 9) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation1For8x10HexagonalPointyOpen [
+	<script: 'self new situation1For8x10HexagonalPointyOpen openSpacePresenter'>
+
+	| model |
+	model := self newModel8x10HexagonalPointyOpen.
+	
+	(model cellAt: 7 at: 2) initDead.
+	(model cellAt: 2 at: 9) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation2For2x4HexagonalFlatClosed [
+	<script: 'self new situation2For2x4HexagonalFlatClosed openSpacePresenter'>
+
+	| model |
+	model := self newModel2x4HexagonalFlatClosed.
+	
+	(model cellAt: 1 at: 2) initDead.
+	(model cellAt: 2 at: 3) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation2For2x4HexagonalFlatOpen [
+	<script: 'self new situation2For2x4HexagonalFlatOpen openSpacePresenter'>
+
+	| model |
+	model := self newModel2x4HexagonalFlatOpen.
+	
+	(model cellAt: 1 at: 2) initDead.
+	(model cellAt: 2 at: 3) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation2For2x4HexagonalPointyClosed [
+	<script: 'self new situation2For2x4HexagonalPointyClosed openSpacePresenter'>
+
+	| model |
+	model := self newModel2x4HexagonalPointyClosed.
+	
+	(model cellAt: 1 at: 2) initDead.
+	(model cellAt: 2 at: 3) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation2For2x4HexagonalPointyOpen [
+	<script: 'self new situation2For2x4HexagonalPointyOpen openSpacePresenter'>
+
+	| model |
+	model := self newModel2x4HexagonalPointyOpen.
+	
+	(model cellAt: 1 at: 2) initDead.
+	(model cellAt: 2 at: 3) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
 CMSpaceModelTest >> situation2For2x4Square4NeighboursClosed [
 	<script: 'self new situation2For2x4Square4NeighboursClosed openSpacePresenter'>
 
@@ -280,7 +436,7 @@ CMSpaceModelTest >> situation2For2x4Square4NeighboursClosed [
 	^ model
 ]
 
-{ #category : 'test' }
+{ #category : 'situations' }
 CMSpaceModelTest >> situation2For2x4Square4NeighboursOpen [
 	<script: 'self new situation2For2x4Square4NeighboursOpen openSpacePresenter'>
 
@@ -293,7 +449,7 @@ CMSpaceModelTest >> situation2For2x4Square4NeighboursOpen [
 	^ model
 ]
 
-{ #category : 'test' }
+{ #category : 'situations' }
 CMSpaceModelTest >> situation2For2x4Square8NeighboursClosed [
 	<script: 'self new situation2For2x4Square8NeighboursClosed openSpacePresenter'>
 
@@ -306,7 +462,7 @@ CMSpaceModelTest >> situation2For2x4Square8NeighboursClosed [
 	^ model
 ]
 
-{ #category : 'test' }
+{ #category : 'situations' }
 CMSpaceModelTest >> situation2For2x4Square8NeighboursOpen [
 	<script: 'self new situation2For2x4Square8NeighboursOpen openSpacePresenter'>
 
@@ -319,7 +475,111 @@ CMSpaceModelTest >> situation2For2x4Square8NeighboursOpen [
 	^ model
 ]
 
-{ #category : 'test' }
+{ #category : 'situations' }
+CMSpaceModelTest >> situation2For8x10HexagonalFlatClosed [
+	<script: 'self new situation2For8x10HexagonalFlatClosed openSpacePresenter'>
+
+	| model |
+	model := self newModel8x10HexagonalFlatClosed.
+	
+	(model cellAt: 3 at: 4) initDead.
+	(model cellAt: 6 at: 7) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation2For8x10HexagonalFlatOpen [
+	<script: 'self new situation2For8x10HexagonalFlatOpen openSpacePresenter'>
+
+	| model |
+	model := self newModel8x10HexagonalFlatOpen.
+	
+	(model cellAt: 3 at: 4) initDead.
+	(model cellAt: 6 at: 7) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation2For8x10HexagonalPointyClosed [
+	<script: 'self new situation2For8x10HexagonalPointyClosed openSpacePresenter'>
+
+	| model |
+	model := self newModel8x10HexagonalPointyClosed.
+	
+	(model cellAt: 3 at: 4) initDead.
+	(model cellAt: 6 at: 7) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation2For8x10HexagonalPointyOpen [
+	<script: 'self new situation2For8x10HexagonalPointyOpen openSpacePresenter'>
+
+	| model |
+	model := self newModel8x10HexagonalPointyOpen.
+	
+	(model cellAt: 3 at: 4) initDead.
+	(model cellAt: 6 at: 7) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation3For2x4HexagonalFlatClosed [
+	<script: 'self new situation3For2x4HexagonalFlatClosed openSpacePresenter'>
+
+	| model |
+	model := self newModel2x4HexagonalFlatClosed.
+	
+	(model cellAt: 1 at: 1) initDead.
+	(model cellAt: 2 at: 1) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation3For2x4HexagonalFlatOpen [
+	<script: 'self new situation3For2x4HexagonalFlatOpen openSpacePresenter'>
+
+	| model |
+	model := self newModel2x4HexagonalFlatOpen.
+	
+	(model cellAt: 1 at: 1) initDead.
+	(model cellAt: 2 at: 1) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation3For2x4HexagonalPointyClosed [
+	<script: 'self new situation3For2x4HexagonalPointyClosed openSpacePresenter'>
+
+	| model |
+	model := self newModel2x4HexagonalPointyClosed.
+	
+	(model cellAt: 1 at: 1) initDead.
+	(model cellAt: 2 at: 1) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation3For2x4HexagonalPointyOpen [
+	<script: 'self new situation3For2x4HexagonalPointyOpen openSpacePresenter'>
+
+	| model |
+	model := self newModel2x4HexagonalPointyOpen.
+	
+	(model cellAt: 1 at: 1) initDead.
+	(model cellAt: 2 at: 1) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
 CMSpaceModelTest >> situation3For2x4Square4NeighboursClosed [
 	<script: 'self new situation3For2x4Square4NeighboursClosed openSpacePresenter'>
 
@@ -332,7 +592,7 @@ CMSpaceModelTest >> situation3For2x4Square4NeighboursClosed [
 	^ model
 ]
 
-{ #category : 'test' }
+{ #category : 'situations' }
 CMSpaceModelTest >> situation3For2x4Square4NeighboursOpen [
 	<script: 'self new situation3For2x4Square4NeighboursOpen openSpacePresenter'>
 
@@ -345,7 +605,7 @@ CMSpaceModelTest >> situation3For2x4Square4NeighboursOpen [
 	^ model
 ]
 
-{ #category : 'test' }
+{ #category : 'situations' }
 CMSpaceModelTest >> situation3For2x4Square8NeighboursClosed [
 	<script: 'self new situation3For2x4Square8NeighboursClosed openSpacePresenter'>
 
@@ -358,7 +618,7 @@ CMSpaceModelTest >> situation3For2x4Square8NeighboursClosed [
 	^ model
 ]
 
-{ #category : 'test' }
+{ #category : 'situations' }
 CMSpaceModelTest >> situation3For2x4Square8NeighboursOpen [
 	<script: 'self new situation3For2x4Square8NeighboursOpen openSpacePresenter'>
 
@@ -371,7 +631,111 @@ CMSpaceModelTest >> situation3For2x4Square8NeighboursOpen [
 	^ model
 ]
 
-{ #category : 'test' }
+{ #category : 'situations' }
+CMSpaceModelTest >> situation3For8x10HexagonalFlatClosed [
+	<script: 'self new situation3For8x10HexagonalFlatClosed openSpacePresenter'>
+
+	| model |
+	model := self newModel8x10HexagonalFlatClosed.
+	
+	(model cellAt: 1 at: 1) initDead.
+	(model cellAt: 8 at: 1) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation3For8x10HexagonalFlatOpen [
+	<script: 'self new situation3For8x10HexagonalFlatOpen openSpacePresenter'>
+
+	| model |
+	model := self newModel8x10HexagonalFlatOpen.
+	
+	(model cellAt: 1 at: 1) initDead.
+	(model cellAt: 8 at: 1) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation3For8x10HexagonalPointyClosed [
+	<script: 'self new situation3For8x10HexagonalPointyClosed openSpacePresenter'>
+
+	| model |
+	model := self newModel8x10HexagonalPointyClosed.
+	
+	(model cellAt: 1 at: 1) initDead.
+	(model cellAt: 8 at: 1) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation3For8x10HexagonalPointyOpen [
+	<script: 'self new situation3For8x10HexagonalPointyOpen openSpacePresenter'>
+
+	| model |
+	model := self newModel8x10HexagonalPointyOpen.
+	
+	(model cellAt: 1 at: 1) initDead.
+	(model cellAt: 8 at: 1) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation4For2x4HexagonalFlatClosed [
+	<script: 'self new situation4For2x4HexagonalFlatClosed openSpacePresenter'>
+
+	| model |
+	model := self newModel2x4HexagonalFlatClosed.
+	
+	(model cellAt: 2 at: 1) initDead.
+	(model cellAt: 2 at: 4) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation4For2x4HexagonalFlatOpen [
+	<script: 'self new situation4For2x4HexagonalFlatOpen openSpacePresenter'>
+
+	| model |
+	model := self newModel2x4HexagonalFlatOpen.
+	
+	(model cellAt: 2 at: 1) initDead.
+	(model cellAt: 2 at: 4) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation4For2x4HexagonalPointyClosed [
+	<script: 'self new situation4For2x4HexagonalPointyClosed openSpacePresenter'>
+
+	| model |
+	model := self newModel2x4HexagonalPointyClosed.
+	
+	(model cellAt: 2 at: 1) initDead.
+	(model cellAt: 2 at: 4) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation4For2x4HexagonalPointyOpen [
+	<script: 'self new situation4For2x4HexagonalPointyOpen openSpacePresenter'>
+
+	| model |
+	model := self newModel2x4HexagonalPointyOpen.
+	
+	(model cellAt: 2 at: 1) initDead.
+	(model cellAt: 2 at: 4) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
 CMSpaceModelTest >> situation4For2x4Square4NeighboursClosed [
 	<script: 'self new situation4For2x4Square4NeighboursClosed openSpacePresenter'>
 
@@ -384,7 +748,7 @@ CMSpaceModelTest >> situation4For2x4Square4NeighboursClosed [
 	^ model
 ]
 
-{ #category : 'test' }
+{ #category : 'situations' }
 CMSpaceModelTest >> situation4For2x4Square4NeighboursOpen [
 	<script: 'self new situation4For2x4Square4NeighboursOpen openSpacePresenter'>
 
@@ -397,7 +761,7 @@ CMSpaceModelTest >> situation4For2x4Square4NeighboursOpen [
 	^ model
 ]
 
-{ #category : 'test' }
+{ #category : 'situations' }
 CMSpaceModelTest >> situation4For2x4Square8NeighboursClosed [
 	<script: 'self new situation4For2x4Square8NeighboursClosed openSpacePresenter'>
 
@@ -410,7 +774,7 @@ CMSpaceModelTest >> situation4For2x4Square8NeighboursClosed [
 	^ model
 ]
 
-{ #category : 'test' }
+{ #category : 'situations' }
 CMSpaceModelTest >> situation4For2x4Square8NeighboursOpen [
 	<script: 'self new situation4For2x4Square8NeighboursOpen openSpacePresenter'>
 
@@ -419,6 +783,58 @@ CMSpaceModelTest >> situation4For2x4Square8NeighboursOpen [
 	
 	(model cellAt: 2 at: 1) initDead.
 	(model cellAt: 2 at: 4) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation4For8x10HexagonalFlatClosed [
+	<script: 'self new situation4For8x10HexagonalFlatClosed openSpacePresenter'>
+
+	| model |
+	model := self newModel8x10HexagonalFlatClosed.
+	
+	(model cellAt: 8 at: 1) initDead.
+	(model cellAt: 8 at: 10) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation4For8x10HexagonalFlatOpen [
+	<script: 'self new situation4For8x10HexagonalFlatOpen openSpacePresenter'>
+
+	| model |
+	model := self newModel8x10HexagonalFlatOpen.
+	
+	(model cellAt: 8 at: 1) initDead.
+	(model cellAt: 8 at: 10) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation4For8x10HexagonalPointyClosed [
+	<script: 'self new situation4For8x10HexagonalPointyClosed openSpacePresenter'>
+
+	| model |
+	model := self newModel8x10HexagonalPointyClosed.
+	
+	(model cellAt: 8 at: 1) initDead.
+	(model cellAt: 8 at: 10) initDead.
+	
+	^ model
+]
+
+{ #category : 'situations' }
+CMSpaceModelTest >> situation4For8x10HexagonalPointyOpen [
+	<script: 'self new situation4For8x10HexagonalPointyOpen openSpacePresenter'>
+
+	| model |
+	model := self newModel8x10HexagonalPointyOpen.
+	
+	(model cellAt: 8 at: 1) initDead.
+	(model cellAt: 8 at: 10) initDead.
 	
 	^ model
 ]
@@ -450,6 +866,50 @@ CMSpaceModelTest >> testCellsOfLine [
 	cells withIndexDo: [ :each :i |
 		self assert: (each isKindOf: CMMockCell).
 		self assert: each id equals: i ].
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation1For2x4HexagonalFlatClosed [
+
+	| model |
+	model := self situation1For2x4HexagonalFlatClosed.
+
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 3
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation1For2x4HexagonalFlatOpen [
+
+	| model |
+	model := self situation1For2x4HexagonalFlatOpen.
+
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 1
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation1For2x4HexagonalPointyClosed [
+
+	| model |
+	model := self situation1For2x4HexagonalPointyClosed.
+
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 3
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation1For2x4HexagonalPointyOpen [
+
+	| model |
+	model := self situation1For2x4HexagonalPointyOpen.
+
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 2
 ]
 
 { #category : 'tests' }
@@ -497,6 +957,94 @@ CMSpaceModelTest >> testDistanceSituation1For2x4Square8NeighboursOpen [
 ]
 
 { #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation1For8x10HexagonalFlatClosed [
+
+	| model |
+	model := self situation1For8x10HexagonalFlatClosed.
+
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 9
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation1For8x10HexagonalFlatOpen [
+
+	| model |
+	model := self situation1For8x10HexagonalFlatOpen.
+
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 4
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation1For8x10HexagonalPointyClosed [
+
+	| model |
+	model := self situation1For8x10HexagonalPointyClosed.
+
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 10
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation1For8x10HexagonalPointyOpen [
+
+	| model |
+	model := self situation1For8x10HexagonalPointyOpen.
+
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 4
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation2For2x4HexagonalFlatClosed [
+
+	| model |
+	model := self situation2For2x4HexagonalFlatClosed.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 1
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation2For2x4HexagonalFlatOpen [
+
+	| model |
+	model := self situation2For2x4HexagonalFlatOpen.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 1
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation2For2x4HexagonalPointyClosed [
+
+	| model |
+	model := self situation2For2x4HexagonalPointyClosed.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 2
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation2For2x4HexagonalPointyOpen [
+
+	| model |
+	model := self situation2For2x4HexagonalPointyOpen.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 2
+]
+
+{ #category : 'tests' }
 CMSpaceModelTest >> testDistanceSituation2For2x4Square4NeighboursClosed [
 
 	| model |
@@ -534,6 +1082,94 @@ CMSpaceModelTest >> testDistanceSituation2For2x4Square8NeighboursOpen [
 
 	| model |
 	model := self situation2For2x4Square8NeighboursOpen.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 1
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation2For8x10HexagonalFlatClosed [
+
+	| model |
+	model := self situation2For8x10HexagonalFlatClosed.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 4
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation2For8x10HexagonalFlatOpen [
+
+	| model |
+	model := self situation2For8x10HexagonalFlatOpen.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 4
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation2For8x10HexagonalPointyClosed [
+
+	| model |
+	model := self situation2For8x10HexagonalPointyClosed.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 5
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation2For8x10HexagonalPointyOpen [
+
+	| model |
+	model := self situation2For8x10HexagonalPointyOpen.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 5
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation3For2x4HexagonalFlatClosed [
+
+	| model |
+	model := self situation3For2x4HexagonalFlatClosed.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 1
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation3For2x4HexagonalFlatOpen [
+
+	| model |
+	model := self situation3For2x4HexagonalFlatOpen.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 1
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation3For2x4HexagonalPointyClosed [
+
+	| model |
+	model := self situation3For2x4HexagonalPointyClosed.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 1
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation3For2x4HexagonalPointyOpen [
+
+	| model |
+	model := self situation3For2x4HexagonalPointyOpen.
 	
 	self 
 		assert: (self distanceBetweenDeadCellsInModel: model)
@@ -585,6 +1221,94 @@ CMSpaceModelTest >> testDistanceSituation3For2x4Square8NeighboursOpen [
 ]
 
 { #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation3For8x10HexagonalFlatClosed [
+
+	| model |
+	model := self situation3For8x10HexagonalFlatClosed.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 7
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation3For8x10HexagonalFlatOpen [
+
+	| model |
+	model := self situation3For8x10HexagonalFlatOpen.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 1
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation3For8x10HexagonalPointyClosed [
+
+	| model |
+	model := self situation3For8x10HexagonalPointyClosed.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 7
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation3For8x10HexagonalPointyOpen [
+
+	| model |
+	model := self situation3For8x10HexagonalPointyOpen.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 1
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation4For2x4HexagonalFlatClosed [
+
+	| model |
+	model := self situation4For2x4HexagonalFlatClosed.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 3
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation4For2x4HexagonalFlatOpen [
+
+	| model |
+	model := self situation4For2x4HexagonalFlatOpen.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 1
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation4For2x4HexagonalPointyClosed [
+
+	| model |
+	model := self situation4For2x4HexagonalPointyClosed.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 3
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation4For2x4HexagonalPointyOpen [
+
+	| model |
+	model := self situation4For2x4HexagonalPointyOpen.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 1
+]
+
+{ #category : 'tests' }
 CMSpaceModelTest >> testDistanceSituation4For2x4Square4NeighboursClosed [
 
 	| model |
@@ -622,6 +1346,50 @@ CMSpaceModelTest >> testDistanceSituation4For2x4Square8NeighboursOpen [
 
 	| model |
 	model := self situation4For2x4Square8NeighboursOpen.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 1
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation4For8x10HexagonalFlatClosed [
+
+	| model |
+	model := self situation4For8x10HexagonalFlatClosed.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 9
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation4For8x10HexagonalFlatOpen [
+
+	| model |
+	model := self situation4For8x10HexagonalFlatOpen.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 1
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation4For8x10HexagonalPointyClosed [
+
+	| model |
+	model := self situation4For8x10HexagonalPointyClosed.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 9
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation4For8x10HexagonalPointyOpen [
+
+	| model |
+	model := self situation4For8x10HexagonalPointyOpen.
 	
 	self 
 		assert: (self distanceBetweenDeadCellsInModel: model)
