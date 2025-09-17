@@ -74,6 +74,14 @@ CMModelOpenerPresenter class >> menu00CormasOn: aBuilder [
 		action: [ self new open ];
 		order: 1.
 		
+	(aBuilder item: #CormasTilesetBrowser)
+		parent: #CormasMain;
+		label: 'Tileset browser';
+		icon: (self iconNamed: #versionControl);
+		help: 'Browse Cormas tilesets';
+		action: [CMTilesetBrowser new open ];
+		order: 1.
+		
 	(aBuilder item: #LoadMicroUMLPlugin)
 		parent: #Cormas ;
 		label: 'Load MicroUML plugin';
