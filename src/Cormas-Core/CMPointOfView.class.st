@@ -51,23 +51,6 @@ CMPointOfView class >> color: aColor size: aNumber [
 ]
 
 { #category : 'accessing' }
-CMPointOfView class >> image: aForm [
-
-	^ self new
-		image: aForm;
-		yourself
-]
-
-{ #category : 'accessing' }
-CMPointOfView class >> image: aForm size: aNumber [
-
-	^ self new
-		image: aForm;
-		size: aNumber;
-		yourself
-]
-
-{ #category : 'accessing' }
 CMPointOfView class >> shape: aSymbol [
 
 	^ self new
@@ -88,6 +71,23 @@ CMPointOfView class >> shape: aSymbol size: aNumber [
 CMPointOfView class >> size: aNumber [
 
 	^ self new
+		size: aNumber;
+		yourself
+]
+
+{ #category : 'accessing' }
+CMPointOfView class >> tile: aTile [
+
+	^ self new
+		tile: aTile;
+		yourself
+]
+
+{ #category : 'accessing' }
+CMPointOfView class >> tile: aTile size: aNumber [
+
+	^ self new
+		tile: aTile;
 		size: aNumber;
 		yourself
 ]
@@ -126,18 +126,6 @@ CMPointOfView >> color [
 CMPointOfView >> color: aColor [
 
 	color := aColor
-]
-
-{ #category : 'accessing' }
-CMPointOfView >> image [
-
-	^ tile
-]
-
-{ #category : 'accessing' }
-CMPointOfView >> image: aForm [
-
-	tile := aForm
 ]
 
 { #category : 'initialization' }
