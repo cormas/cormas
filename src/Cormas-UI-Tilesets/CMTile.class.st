@@ -5,6 +5,7 @@ Class {
 	#name : 'CMTile',
 	#superclass : 'Object',
 	#instVars : [
+		'verySmallForm',
 		'smallForm',
 		'mediumForm',
 		'largeForm'
@@ -40,6 +41,12 @@ CMTile class >> smallExtent [
 	^ 48@48
 ]
 
+{ #category : 'constants' }
+CMTile class >> verySmallExtent [
+
+	^ 15@15
+]
+
 { #category : 'base64 conversion' }
 CMTile >> formFromBase64: aString [
 
@@ -54,7 +61,8 @@ CMTile >> initializeWithBase64: aString [
 	
 	largeForm := originalForm scaledToSize: self class largeExtent.
 	mediumForm := originalForm scaledToSize: self class mediumExtent.
-	smallForm := originalForm scaledToSize: self class smallExtent
+	smallForm := originalForm scaledToSize: self class smallExtent.
+	verySmallForm := originalForm scaledToSize: self class verySmallExtent
 ]
 
 { #category : 'accessing' }
@@ -73,4 +81,10 @@ CMTile >> mediumForm [
 CMTile >> smallForm [
 
 	^ smallForm
+]
+
+{ #category : 'accessing' }
+CMTile >> verySmallForm [
+
+	^ verySmallForm
 ]

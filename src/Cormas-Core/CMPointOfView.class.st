@@ -5,9 +5,9 @@ Class {
 		'color',
 		'shape',
 		'size',
-		'image',
 		'borderWidth',
-		'borderColor'
+		'borderColor',
+		'tile'
 	],
 	#category : 'Cormas-Core-Analysis',
 	#package : 'Cormas-Core',
@@ -131,13 +131,13 @@ CMPointOfView >> color: aColor [
 { #category : 'accessing' }
 CMPointOfView >> image [
 
-	^ image
+	^ tile
 ]
 
 { #category : 'accessing' }
 CMPointOfView >> image: aForm [
 
-	image := aForm
+	tile := aForm
 ]
 
 { #category : 'initialization' }
@@ -155,7 +155,7 @@ CMPointOfView >> initialize [
 { #category : 'testing' }
 CMPointOfView >> isForImage [
 
-	^ image isNotNil
+	^ tile isNotNil
 ]
 
 { #category : 'accessing' }
@@ -190,4 +190,16 @@ CMPointOfView >> size [
 CMPointOfView >> size: aNumber [
 
 	size := aNumber
+]
+
+{ #category : 'accessing' }
+CMPointOfView >> tile [
+
+	^ tile
+]
+
+{ #category : 'accessing' }
+CMPointOfView >> tile: aTile [
+
+	tile := aTile
 ]

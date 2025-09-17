@@ -114,6 +114,16 @@ CMTilesetBrowser >> initializeTilesetsMenu [
 ]
 
 { #category : 'initialization' }
+CMTilesetBrowser >> initializeWindow: aWindowPresenter [
+
+	super initializeWindow: aWindowPresenter.
+	
+	aWindowPresenter 
+		title: 'Tileset Browser';
+		initialExtent: 800@600
+]
+
+{ #category : 'initialization' }
 CMTilesetBrowser >> onAddImagesClicked [
 	
 	| presenter |
@@ -162,6 +172,13 @@ CMTilesetBrowser >> showTile: aTile [
 		provider: [
 			self newImage
 				image: aTile smallForm;
+				yourself ].
+			
+	tilePreview
+		addPageTitle: 'Very Small'
+		provider: [
+			self newImage
+				image: aTile verySmallForm;
 				yourself ].
 			
 	tilePreview selectPageIndex: selectedPageIndex.

@@ -117,7 +117,7 @@ CMR3SpaceAgentsBuilder >> mouseEnd: anEvent [
 { #category : 'as yet unclassified' }
 CMR3SpaceAgentsBuilder >> moveAgentShape: anAgentShape [
 
-	| agent pov extent |
+	| agent pov extent image |
 
 	agent := anAgentShape model.
 
@@ -128,7 +128,8 @@ CMR3SpaceAgentsBuilder >> moveAgentShape: anAgentShape [
 	extent := anAgentShape extent / anAgentShape extent max * diagramBuilder maxExtent.
 	
 	pov isForImage ifTrue: [ 
-		anAgentShape paint: (self paintFromImage: (pov image scaledToSize: extent)) ].
+		image := self selectScaledFormFrom: pov tile.
+		anAgentShape paint: (self paintFromImage: (image scaledToSize: extent)) ].
 		
 	anAgentShape extent: extent.
 	
