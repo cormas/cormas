@@ -6,7 +6,8 @@ Class {
 		'tilesList',
 		'tilePreview',
 		'newTilesetButton',
-		'newImageButton'
+		'newImageButton',
+		'sourceCode'
 	],
 	#category : 'Cormas-UI-Tilesets-Presenters',
 	#package : 'Cormas-UI-Tilesets',
@@ -52,7 +53,10 @@ CMTilesetBrowser >> defaultLayout [
 			add: tilesList;
 			add: newImageButton expand: false;
 			yourself) width: 200;
-		add: tilePreview;
+		add: (SpBoxLayout newTopToBottom
+			add: tilePreview;
+			add: sourceCode height: 100;
+			yourself);
 		yourself
 ]
 
@@ -86,6 +90,8 @@ CMTilesetBrowser >> initializePresenters [
 		label: 'Add new image';
 		icon: (self iconNamed: #add);
 		yourself.
+		
+	sourceCode := self newCode.
 		
 	self showTilesets
 ]
@@ -147,6 +153,8 @@ CMTilesetBrowser >> removeTileset: aClass [
 CMTilesetBrowser >> showTile: aTile [
 
 	| selectedPageIndex |
+	
+	sourceCode text: tilesetClassesList selectedItem name, ' ', tilesList selectedItem.
 	
 	selectedPageIndex := tilePreview selectedPageIndex.
 	selectedPageIndex = 0 ifTrue: [ selectedPageIndex := 1 ].
