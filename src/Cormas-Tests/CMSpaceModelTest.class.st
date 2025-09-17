@@ -1047,6 +1047,39 @@ CMSpaceModelTest >> situation4For8x10Square8NeighboursOpen [
 	^ model
 ]
 
+{ #category : 'situations' }
+CMSpaceModelTest >> situation5For8x10HexagonalFlatClosed [
+	<script: 'self new situation5For8x10HexagonalFlatClosed openSpacePresenter'>
+
+	| model |
+	model := self newModel8x10HexagonalFlatClosed.
+	
+	(model cellAt: 6 at: 4) initDead.
+	(model cellAt: 3 at: 7) initDead.
+	
+	^ model
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testAxialCoordinates2x4HexagonalPointyClosed [
+
+	| expectedCoordinates model offsetCoordinates axialCoordinates |
+	
+	"Row 0: (0,0)→(0,0), (0,1)→(1,0), (0,2)→(2,0), (0,3)→(3,0)
+	 Row 1: (1,0)→(0,1), (1,1)→(1,1), (1,2)→(2,1), (1,3)→(3,1)"
+	expectedCoordinates := OrderedCollection withAll: {
+		0@0 . 1@0 . 2@0 . 3@0 .
+		0@1 . 1@1 . 2@1 . 3@1 }.
+		
+	model := self newModel2x4HexagonalPointyClosed.
+	
+	axialCoordinates := model cells collect: [ :each |
+		offsetCoordinates := each rowNumber @ each columnNumber.
+		model spaceModel neighbourhoodConfiguration offsetCoordinatesToAxial: offsetCoordinates ].
+	
+	self assertCollection: axialCoordinates equals: expectedCoordinates 
+]
+
 { #category : 'tests' }
 CMSpaceModelTest >> testCellAtAt [
 	
@@ -1778,6 +1811,17 @@ CMSpaceModelTest >> testDistanceSituation4For8x10Square8NeighboursOpen [
 	self 
 		assert: (self distanceBetweenDeadCellsInModel: model)
 		equals: 1
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testDistanceSituation5For8x10HexagonalFlatClosed [
+
+	| model |
+	model := self situation5For8x10HexagonalFlatClosed.
+	
+	self 
+		assert: (self distanceBetweenDeadCellsInModel: model)
+		equals: 5
 ]
 
 { #category : 'tests' }

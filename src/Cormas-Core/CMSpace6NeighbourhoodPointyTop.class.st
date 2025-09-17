@@ -9,12 +9,16 @@ Class {
 	#tag : 'Space'
 }
 
-{ #category : 'testing' }
-CMSpace6NeighbourhoodPointyTop class >> isStartConditionFor: aSymbolOrNumber [
-"Test: self isStartConditionFor: 6 "
+{ #category : 'accessing' }
+CMSpace6NeighbourhoodPointyTop class >> cardinal [
 
-	^ (super isStartConditionFor: aSymbolOrNumber) ifTrue: [
-		  CMSpaceModel flatTopHexagons not ]
+	^ 6
+]
+
+{ #category : 'accessing' }
+CMSpace6NeighbourhoodPointyTop class >> cardinalSymbol [
+
+	^ #pointy6
 ]
 
 { #category : 'initialization' }
@@ -101,6 +105,23 @@ CMSpace6NeighbourhoodPointyTop >> northWestCellHexa: k [
 	^ numRow even
 		ifTrue: [ self adaptedNumber: k - self numberOfColumns ]
 		ifFalse: [ self adaptedNumber: k - 1 - self numberOfColumns ]
+]
+
+{ #category : 'as yet unclassified' }
+CMSpace6NeighbourhoodPointyTop >> offsetCoordinatesToAxial: aPoint [
+	"Source: https://www.redblobgames.com/grids/hexagons/#conversions-offset"
+	| x y parity q r |
+	
+	"Shift the points by 1 to start indexing at 0 and be consistent with math"
+	x := aPoint x - 1.
+	y := aPoint y - 1.
+	
+	parity := x & 1.
+	
+	q := y - ((x - parity) / 2).
+   r := x.
+
+   ^ q @ r
 ]
 
 { #category : 'private - regular cells - instance creation' }

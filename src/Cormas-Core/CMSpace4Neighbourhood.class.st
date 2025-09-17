@@ -18,10 +18,15 @@ CMSpace4Neighbourhood class >> cardinalSymbol [
 	^ #four
 ]
 
-{ #category : 'accessing' }
-CMSpace4Neighbourhood class >> distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols [
-
-	^ nbLines + nbCols
+{ #category : 'utilities - space metrics' }
+CMSpace4Neighbourhood >> distanceInClosedEnvironmentFromPoint: pointA toPoint: pointB [
+	
+	| xDist yDist |
+	
+	xDist := (pointA x - pointB x) abs.
+	yDist := (pointA y - pointB y) abs.
+	
+	^ xDist + yDist
 ]
 
 { #category : 'initialization' }

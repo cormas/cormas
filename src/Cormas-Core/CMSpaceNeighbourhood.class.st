@@ -45,20 +45,13 @@ CMSpaceNeighbourhood class >> cardinalSymbol [
 	self subclassResponsibility
 ]
 
-{ #category : 'accessing' }
-CMSpaceNeighbourhood class >> distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols [
-
-	^ cell1 distanceCell: cell2	
-
-]
-
 { #category : 'instance creation' }
 CMSpaceNeighbourhood class >> forNeighbours: aNumberOrSymbol spaceModel: aCMSpaceModel [
 	" Answer a new instance of the receiver accordingly to the number of neighbours specified in aSymborOrNumberNeighbours "
 	
 	^ self concreteSubclasses
-		detect: [ : nbSubclass | nbSubclass isStartConditionFor: aNumberOrSymbol ]
-		ifFound: [ : nbSubclass | nbSubclass new initializeOn: aCMSpaceModel ]
+		detect: [ :nbSubclass | nbSubclass isStartConditionFor: aNumberOrSymbol ]
+		ifFound: [ :nbSubclass | nbSubclass new initializeOn: aCMSpaceModel ]
 		ifNone: [ self error: 'Should not happen' ]
 ]
 
@@ -75,10 +68,28 @@ CMSpaceNeighbourhood >> cardinal [
 	^ self class cardinal
 ]
 
-{ #category : 'accessing' }
-CMSpaceNeighbourhood >> distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols [
+{ #category : 'utilities - space metrics' }
+CMSpaceNeighbourhood >> distanceInClosedEnvironmentFromPoint: pointA toPoint: pointB [
 
-	^ self class distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols
+	self subclassResponsibility
+]
+
+{ #category : 'utilities - space metrics' }
+CMSpaceNeighbourhood >> distanceInOpenEnvironmentFromPoint: pointA toPoint: pointB [
+
+	| m n pA pB distances |
+	
+	m := self numberOfRows.
+	n := self numberOfColumns.
+	
+	pA := (pointA x + m) @ (pointA y + n).
+	
+	distances := #(0 1 2) flatCollect: [ :i |
+		#(0 1 2) collect: [ :j |
+			pB := (pointB x + (i * m)) @ (pointB y + (j * n)).
+			self distanceInClosedEnvironmentFromPoint: pA toPoint: pB ] ].
+	
+	^ distances min
 ]
 
 { #category : 'private - regular cells - instance creation' }
@@ -175,6 +186,17 @@ CMSpaceNeighbourhood >> numberOfColumns [
 	^ self spaceModel numberOfColumns
 ]
 
+{ #category : 'as yet unclassified' }
+CMSpaceNeighbourhood >> numberOfColumnsBetweenCell: cell1 andCell: cell2 [
+	
+	| number |
+	number := (cell1 columnNumber - cell2 columnNumber) abs.
+	
+	self isClosedEnvironment ifTrue: [ ^ number ].
+	
+	^ number min: (self numberOfColumns - number)
+]
+
 { #category : 'private - accessing' }
 CMSpaceNeighbourhood >> numberOfNeighbours [
 
@@ -185,6 +207,17 @@ CMSpaceNeighbourhood >> numberOfNeighbours [
 CMSpaceNeighbourhood >> numberOfRows [
 
 	^ self spaceModel numberOfRows
+]
+
+{ #category : 'as yet unclassified' }
+CMSpaceNeighbourhood >> numberOfRowsBetweenCell: cell1 andCell: cell2 [
+
+	| number |
+	number := (cell1 rowNumber - cell2 rowNumber) abs.
+	
+	self isClosedEnvironment ifTrue: [ ^ number ].
+	
+	^ number min: (self numberOfRows - number)
 ]
 
 { #category : 'private - regular cells - instance creation' }
