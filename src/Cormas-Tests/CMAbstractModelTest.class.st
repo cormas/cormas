@@ -154,6 +154,42 @@ CMAbstractModelTest >> testDominance1 [
 	self assert: (m dominance: #state) < 1.0
 ]
 
+{ #category : 'tests' }
+CMAbstractModelTest >> testIsCormasAgentClass [
+	
+	self deny: Object isCormasAgentClass.
+	self deny: Collection isCormasAgentClass.
+	self deny: Trait isCormasAgentClass.
+	self deny: TCMRandom isCormasAgentClass.
+	self deny: CMMockModel isCormasAgentClass.
+	self assert: CMMockGoat isCormasAgentClass.
+	self deny: CMMockCell isCormasAgentClass
+]
+
+{ #category : 'tests' }
+CMAbstractModelTest >> testIsCormasCellClass [
+	
+	self deny: Object isCormasCellClass.
+	self deny: Collection isCormasCellClass.
+	self deny: Trait isCormasCellClass.
+	self deny: TCMRandom isCormasCellClass.
+	self deny: CMMockModel isCormasCellClass.
+	self deny: CMMockGoat isCormasCellClass.
+	self assert: CMMockCell isCormasCellClass
+]
+
+{ #category : 'tests' }
+CMAbstractModelTest >> testIsCormasModelClass [
+	
+	self deny: Object isCormasModelClass.
+	self deny: Collection isCormasModelClass.
+	self deny: Trait isCormasModelClass.
+	self deny: TCMRandom isCormasModelClass.
+	self assert: CMMockModel isCormasModelClass.
+	self deny: CMMockGoat isCormasModelClass.
+	self deny: CMMockCell isCormasModelClass
+]
+
 { #category : 'tests-accessing-entities' }
 CMAbstractModelTest >> testLowerLeftCell [
 	| m |

@@ -118,7 +118,7 @@ CMR3SpaceDiagramBuilder >> renderIn: aCanvas [
 		
 	maxExtent := imagePovs
 		ifEmpty: [ 16 ]
-		ifNotEmpty: [ (imagePovs collect: [ :pov | pov image extent max ]) max ].
+		ifNotEmpty: [ (imagePovs collect: [ :pov | pov tile mediumForm extent max ]) max ].
 	
 	cellsBuilder renderIn: aCanvas.
 	agentsBuilder renderIn: aCanvas.

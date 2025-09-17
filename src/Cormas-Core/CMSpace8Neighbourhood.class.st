@@ -18,10 +18,15 @@ CMSpace8Neighbourhood class >> cardinalSymbol [
 	^ #eight
 ]
 
-{ #category : 'accessing' }
-CMSpace8Neighbourhood class >> distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols [
-
-	^ nbLines max: nbCols
+{ #category : 'utilities - space metrics' }
+CMSpace8Neighbourhood >> distanceInClosedEnvironmentFromPoint: pointA toPoint: pointB [
+	
+	| xDist yDist |
+	
+	xDist := (pointA x - pointB x) abs.
+	yDist := (pointA y - pointB y) abs.
+	
+	^ xDist max: yDist
 ]
 
 { #category : 'initialization' }

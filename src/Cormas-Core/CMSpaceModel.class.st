@@ -67,13 +67,6 @@ CMSpaceModel class >> firstCellIsFlatTopTriangle: aBoolean [
 ]
 
 { #category : 'accessing' }
-CMSpaceModel class >> flatTopHexagons [
-	"By default, pointedTop hexagons"
-
-	^ CMSpace6Neighbourhood flatTopHexagons
-]
-
-{ #category : 'accessing' }
 CMSpaceModel class >> flatTopHexagons: aBoolean [
 
 	CMSpace6Neighbourhood flatTopHexagons: aBoolean
@@ -310,18 +303,27 @@ CMSpaceModel >> dimensions [
 ]
 
 { #category : 'landscape indices' }
-CMSpaceModel >> distanceFromCell: cell1 toCell: cell2 [
+CMSpaceModel >> distanceFromCell: cellA toCell: cellB [
 	"return the distance in number of cells (also known as Manhattan distance)"
 
-	| nbLines nbCols |
-	nbLines := (cell1 rowNumber - cell2 rowNumber) abs.
-	nbCols := (cell1 columnNumber - cell2 columnNumber) abs.
-	self isClosedEnvironment
-		ifFalse: [ nbLines > (self numberOfRows - 2)
-				ifTrue: [ nbLines := nbLines - self numberOfRows + 2 ].
-			nbCols > (self numberOfColumns - 2)
-				ifTrue: [ nbCols := nbCols - self numberOfColumns + 2 ] ].
-	^ self neighbourhoodConfiguration distanceFromCell: cell1 toCell: cell2 nbLines: nbLines nbCols: nbCols.
+	|  pointA pointB |
+	
+	pointA := (cellA rowNumber @ cellA columnNumber).
+	pointB := (cellB rowNumber @ cellB columnNumber).
+
+	^ self isClosedEnvironment
+		ifTrue: [ 
+			self neighbourhoodConfiguration
+				distanceInClosedEnvironmentFromPoint: pointA
+				toPoint: pointB ]
+		ifFalse: [
+			self neighbourhoodConfiguration
+				distanceInOpenEnvironmentFromPoint: pointA
+				toPoint: pointB
+			
+			"self neighbourhoodConfiguration
+				distanceInOpenEnvironmentFromPoint: pointA
+				toPoint: pointB" ]
 
 ]
 

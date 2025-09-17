@@ -142,8 +142,9 @@ BaselineOfCormas >> specForPackages: spec [
 		
 		package: 'Cormas-UI-Translator';
 		package: 'Cormas-UI-Commands';
+		package: 'Cormas-UI-Tilesets';
 		
-		package: 'Cormas-UI' with: [ spec requires: #('Cormas-Core' 'Cormas-CodeGeneration' 'Cormas-Mocks' 'Cormas-UI-Commands' 'Cormas-UI-Roassal3' 'Cormas-UI-Translator' 'CormasExampleModels') ];
+		package: 'Cormas-UI' with: [ spec requires: #('Cormas-Core' 'Cormas-CodeGeneration' 'Cormas-Mocks' 'Cormas-UI-Commands' 'Cormas-UI-Roassal3' 'Cormas-UI-Translator' 'CormasExampleModels' 'Cormas-UI-Tilesets') ];
 		
 		package: 'Cormas-UI-Tests'
 		with: [ spec requires: #('Cormas-UI') ];

@@ -62,10 +62,8 @@ CMAbstractModel class >> aboutThisModel [
 
 { #category : 'managing classes' }
 CMAbstractModel class >> allEntityClasses [
-	"return all the classes of the model (except the classes that inheriting from Msg and other classes like Interface etc"
 
-	^ self package classes
-		removeAllSuchThat: [ :class | (class inheritsFrom: CMEntity) not ]
+	^ self package classes select: [ :aClass | aClass inheritsFrom: CMEntity ]
 ]
 
 { #category : 'available methods' }
@@ -360,12 +358,10 @@ CMAbstractModel >> agents [
 
 { #category : 'accessing - entities' }
 CMAbstractModel >> allTheEntities [
-	"Returns a collection of all the instances of the Entity (and sub classes) collected by cormasModel"
+	"Returns a collection of all instances of the subclasses of CMEntity collected by cormasModel"
 	
-	| coll |
-	coll := OrderedCollection new.
-	self class allEntityClasses do: [:cl | coll addAll: (self entitiesOfClass: cl)].
-	^coll
+	^ (self class allEntityClasses flatCollect: [ :each |
+		self entitiesOfClass: each]) asOrderedCollection
 ]
 
 { #category : 'accessing - entities' }

@@ -68,7 +68,7 @@ CMR3SpaceCellsBuilder >> update [
 { #category : 'updating' }
 CMR3SpaceCellsBuilder >> updateShape: aShape [
 "Set the PoV: Update shape and color of aShape"
-	| cell pov extent border |
+	| cell pov extent border image |
 	cell := aShape model.
 
 	pov := cell perform: diagramBuilder activeSpatialEntityPov.
@@ -77,7 +77,9 @@ CMR3SpaceCellsBuilder >> updateShape: aShape [
 	aShape extent: extent.
 
 	pov isForImage
-		ifTrue: [ aShape paint: (self paintFromImage: (pov image scaledToSize: (extent max @ extent max))) ]
+		ifTrue: [
+			image := self selectScaledFormFrom: pov tile.
+			aShape paint: (self paintFromImage: (image scaledToSize: (extent max @ extent max))) ]
 		ifFalse: [ aShape color: pov color ].
 		
 	border := RSBorder new
