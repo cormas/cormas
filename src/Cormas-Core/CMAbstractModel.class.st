@@ -796,6 +796,11 @@ CMAbstractModel >> createN: aNumber randomlyLocatedEntitiesFrom: aCollectionOfCl
 	^ newEntities
 ]
 
+{ #category : 'accessing' }
+CMAbstractModel >> currentTimeStep [
+"Returns the current time step (Integer) of the simulation"
+]
+
 { #category : 'utilities - space metrics' }
 CMAbstractModel >> distanceFromCell: cell1 toCell: cell2 [
 	"Purpose: return the distance in number of cells (also known as Manhattan distance)"
