@@ -1,6 +1,6 @@
 Class {
 	#name : 'CMColor',
-	#superclass : 'Object',
+	#superclass : 'Color',
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
 }
