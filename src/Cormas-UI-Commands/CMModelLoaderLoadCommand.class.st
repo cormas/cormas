@@ -38,7 +38,13 @@ CMModelLoaderLoadCommand >> isCormasDevVersion [
 	cormasRepo := IceRepository registry
 		detect: [ :repo | repo remotes anySatisfy: [ :remote |
 				{ httpsUrl . sshUrl } includes: remote url ] ]
-		ifNone: [ self error: 'Cormas repository was not found!' ].
+		ifNone: [
+			"Maybe it's a personal fork such as git@github.com:olekscode/cormas.git"
+			IceRepository registry
+				detect: [ :repo | repo remotes anySatisfy: [ :remote |
+					remote url endsWith: 'cormas.git' ] ]
+				ifNone: [
+					self error: 'Cormas repository was not found!' ] ].
 		
 	^ cormasRepo branch name = 'dev'
 
