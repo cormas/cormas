@@ -8,5 +8,5 @@ Class {
 { #category : 'data collection' }
 CMAverageValueCollector >> aggregate: aCollection [
 
-	^ aCollection average
+	^ aCollection average asFloat
 ]
