@@ -115,6 +115,20 @@ CMR3SpaceShapeBuilder >> renderIn: aCanvas [
 	self update.
 ]
 
+{ #category : 'as yet unclassified' }
+CMR3SpaceShapeBuilder >> selectScaledFormFrom: aTile [
+
+	| maxSpaceExtent |
+	
+	maxSpaceExtent := diagramBuilder cormasModel spaceModel dimensions max.
+	
+	maxSpaceExtent < 5 ifTrue: [ ^ aTile largeForm ].
+	maxSpaceExtent < 10 ifTrue: [ ^ aTile mediumForm ].
+	maxSpaceExtent < 15 ifTrue: [ ^ aTile smallForm ].
+	
+	^ aTile verySmallForm
+]
+
 { #category : 'initialization' }
 CMR3SpaceShapeBuilder >> setMasterShape [
 

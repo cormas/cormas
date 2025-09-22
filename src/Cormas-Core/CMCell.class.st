@@ -629,33 +629,35 @@ Example: self shortestDistanceToCellVerifying: [:c | c landCover = #forest]"
 CMCell >> wayTo: anotherCell [
 	"Shortest way to anotherCell"
 	
-	| shortestDistance path nearestCells shortestDistance2 nextCell |
-	path := OrderedCollection new.
-	self spaceModel gridCellShape = #irregular
-		ifFalse:
-			[path := self spaceModel wayFromCell: self toCell: anotherCell.
-			path first = self ifTrue: [path removeFirst].
-			^path].	"for irregular cells, the calculus is much more longer"
-	path add: anotherCell.
+	| shortestDistance path nearestCells shortestDistance2 nextCell dist |
+	
+	"for irregular cells, the calculations are much longer"
+	self spaceModel gridCellShape = #irregular ifFalse: [
+		path := self spaceModel wayFromCell: self toCell: anotherCell.
+		path first = self ifTrue: [ path removeFirst ].
+		^ path ].	
+		
+	path := OrderedCollection with: anotherCell.	
+	
 	shortestDistance := self distanceTo: anotherCell.
-	shortestDistance <= 1 ifTrue: [^path].	"First output condition"
+	shortestDistance <= 1 ifTrue: [ ^ path ].	"First output condition"
 	nearestCells := OrderedCollection new.
 	shortestDistance2 := shortestDistance.
-	anotherCell neighbourhood
-		do:
-			[:neighCell | 
-			| dist |
-			dist := self distanceTo: neighCell.
-			dist < shortestDistance
-				ifTrue:
-					[dist < shortestDistance2
-						ifTrue:
-							[nearestCells := OrderedCollection new.
-							shortestDistance2 := dist].
-					nearestCells add: neighCell]].
-	nextCell := self selectRandomlyFrom: nearestCells.	"nextCell flash."
+	
+	anotherCell neighbourhood do: [ :neighbourCell | 
+		dist := self distanceTo: neighbourCell.
+		
+		dist < shortestDistance ifTrue: [
+			dist < shortestDistance2 ifTrue: [
+				nearestCells := OrderedCollection new.
+				shortestDistance2 := dist ].
+			
+			nearestCells add: neighbourCell ] ].
+			
+	nextCell := self selectRandomlyFrom: nearestCells.
 	path addAllFirst: (self wayTo: nextCell).	"Recursivity call"
-	^path
+		
+	^ path
 ]
 
 { #category : 'environment - sensing - space' }
