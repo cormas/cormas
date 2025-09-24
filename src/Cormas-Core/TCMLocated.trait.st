@@ -439,15 +439,16 @@ TCMLocated >> moveW [
 ]
 
 { #category : 'environment - picking - space' }
-TCMLocated >> nearestEmptyLocation [
-	"Purpose: returns the nearest spatial entity with no occupant of any kind. 
-The current location is NOT considered
-If none: returns nil; if more than one at the minimum radius: random selection
-Return value: <SpatialEntity | nil>"
+TCMLocated >> nearestEmptyCell [
+	"Return the nearest cell with no occupant of any kind.
+	The current cell is NOT considered.
 	
-	^ self cell
-		ifNil: [ nil ]
-		ifNotNil: [ self cell nearestEmptyCell ]
+	If agent is not located on any cell: signal an error.
+	If none: returns nil.
+	If more than one at the minimum radius: random selection"
+	
+	self cell ifNil: [ self error: 'Agent is not located on any cell' ].
+	^ self cell nearestEmptyCell
 ]
 
 { #category : 'environment - picking - space' }
