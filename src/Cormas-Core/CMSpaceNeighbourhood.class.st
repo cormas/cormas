@@ -22,7 +22,9 @@ Class {
 	#name : 'CMSpaceNeighbourhood',
 	#superclass : 'Object',
 	#instVars : [
-		'spaceModel'
+		'numberOfRows',
+		'numberOfColumns',
+		'isClosedEnvironment'
 	],
 	#classInstVars : [
 		'flatTopHexagons'
@@ -42,16 +44,6 @@ CMSpaceNeighbourhood class >> cardinal [
 CMSpaceNeighbourhood class >> cardinalSymbol [
 
 	self subclassResponsibility
-]
-
-{ #category : 'instance creation' }
-CMSpaceNeighbourhood class >> forNeighbours: aNumberOrSymbol spaceModel: aCMSpaceModel [
-	" Answer a new instance of the receiver accordingly to the number of neighbours specified in aSymborOrNumberNeighbours "
-	
-	^ self concreteSubclasses
-		detect: [ :nbSubclass | nbSubclass isStartConditionFor: aNumberOrSymbol ]
-		ifFound: [ :nbSubclass | nbSubclass new initializeOn: aCMSpaceModel ]
-		ifNone: [ self error: 'Should not happen' ]
 ]
 
 { #category : 'testing' }
@@ -100,13 +92,6 @@ CMSpaceNeighbourhood >> eastCell: k [
 		ifFalse: [ k - (self numberOfColumns - 1) ]
 ]
 
-{ #category : 'accessing' }
-CMSpaceNeighbourhood >> elementaryEntitiesAt: anInteger [
-	" Answer a <Collection> of <CMSpatialEntity> cells at index anInteger "
-
-	^ self spaceModel cells at: anInteger
-]
-
 { #category : 'private - regular cells - instance creation' }
 CMSpaceNeighbourhood >> gridCellShapeType [
 
@@ -114,29 +99,19 @@ CMSpaceNeighbourhood >> gridCellShapeType [
 ]
 
 { #category : 'initialization' }
-CMSpaceNeighbourhood >> initializeNeighbourhood [
-	" Private - Initialize aSpaceModel neighbourhood values based on the receiver "
+CMSpaceNeighbourhood >> initializeNeighbourhoodFor: aSpaceModel [
 
-	1 to: self spaceModel gridSize do: [ :k | 
-		(self elementaryEntitiesAt: k) ifNotNil: [ 
-			self initializeOrderedNeighbourhood: k ] ].
+	| numberOfCells |
+	numberOfCells := self numberOfRows * self numberOfColumns.
+
+	1 to: numberOfCells do: [ :i | 
+		self initializeOrderedNeighbourhood: i forSpaceModel: aSpaceModel ].
 ]
 
 { #category : 'initialization' }
-CMSpaceNeighbourhood >> initializeOn: aSpaceModel [
-	" Private - Create a new instance of grid. Initialize aSpaceModel neighbourhood values based on the receiver "
-
-	aSpaceModel gridCellShape: self gridCellShapeType.
-	self spaceModel: aSpaceModel.
-
-	spaceModel createCells.
-	self initializeNeighbourhood.
-]
-
-{ #category : 'initialization' }
-CMSpaceNeighbourhood >> initializeOrderedNeighbourhood: k [
-"Set the neighbourhood of the cell with id = k.
-Neighbours are ordered anticlockwise, starting from the North cell (except for the pointy hexagons)"
+CMSpaceNeighbourhood >> initializeOrderedNeighbourhood: cellIndex forSpaceModel: aSpaceModel [
+	"Set the neighbourhood of the cell at a given index.
+	Neighbours are ordered anticlockwise, starting from the North cell (except for the pointy-top hexagons)"
 	self subclassResponsibility
 ]
 
@@ -144,15 +119,13 @@ Neighbours are ordered anticlockwise, starting from the North cell (except for t
 CMSpaceNeighbourhood >> isClosedEnvironment [
 	" Answer a <Boolean>. See comment in #isNotTorroidal "
 
-	^ self spaceModel isClosedEnvironment
+	^ isClosedEnvironment
 ]
 
-{ #category : 'environment - sensing - space' }
-CMSpaceNeighbourhood >> nearestEmptyCellFor: aCMAgentLocation [
-	
-	^ (aCMAgentLocation nearestEmptyNeighborsWithinRadius: (self spaceModel numberOfRows max: self spaceModel numberOfColumns))
-		ifNotEmpty: [ : locations | self selectRandomlyFrom: locations ]
-		ifEmpty: [ nil ]
+{ #category : 'accessing' }
+CMSpaceNeighbourhood >> isClosedEnvironment: aBoolean [
+
+	isClosedEnvironment := aBoolean
 ]
 
 { #category : 'private - regular cells - instance creation' }
@@ -182,7 +155,13 @@ CMSpaceNeighbourhood >> numRow: k [
 { #category : 'private - regular cells - instance creation' }
 CMSpaceNeighbourhood >> numberOfColumns [
 
-	^ self spaceModel numberOfColumns
+	^ numberOfColumns
+]
+
+{ #category : 'accessing' }
+CMSpaceNeighbourhood >> numberOfColumns: anInteger [
+
+	numberOfColumns := anInteger
 ]
 
 { #category : 'as yet unclassified' }
@@ -205,7 +184,13 @@ CMSpaceNeighbourhood >> numberOfNeighbours [
 { #category : 'private - regular cells - instance creation' }
 CMSpaceNeighbourhood >> numberOfRows [
 
-	^ self spaceModel numberOfRows
+	^ numberOfRows
+]
+
+{ #category : 'accessing' }
+CMSpaceNeighbourhood >> numberOfRows: anInteger [
+
+	numberOfRows := anInteger
 ]
 
 { #category : 'as yet unclassified' }
@@ -228,18 +213,6 @@ CMSpaceNeighbourhood >> southCell: k [
 	^ self isClosedEnvironment
 		ifTrue: [ 0 ]
 		ifFalse: [ k - (self numberOfColumns * (self numberOfRows - 1)) ]
-]
-
-{ #category : 'accessing' }
-CMSpaceNeighbourhood >> spaceModel [
-
-	^ spaceModel
-]
-
-{ #category : 'accessing' }
-CMSpaceNeighbourhood >> spaceModel: aCMSpaceModel [
-
-	spaceModel := aCMSpaceModel
 ]
 
 { #category : 'private - regular cells - instance creation' }

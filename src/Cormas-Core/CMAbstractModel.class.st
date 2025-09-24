@@ -460,16 +460,21 @@ Example: self askRandom: (self theAnimals select:[:f | f energy > 10]) toDo: #re
 ]
 
 { #category : 'accessing - entities' }
-CMAbstractModel >> cellAt: id [
-	"Purpose: returns the cell with id = id"
+CMAbstractModel >> cellAt: index [
 
-	^ self cells at: id
+	^ self spaceModel cellAt: index
 ]
 
 { #category : 'accessing' }
 CMAbstractModel >> cellAt: aRowIndex at: aColumnIndex [ 
 	
 	^ self spaceModel cellAt: aRowIndex at: aColumnIndex
+]
+
+{ #category : 'accessing - entities' }
+CMAbstractModel >> cellAtId: id [
+
+	^ self spaceModel cellAtId: id
 ]
 
 { #category : 'accessing' }
