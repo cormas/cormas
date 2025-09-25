@@ -111,7 +111,7 @@ CMModelOpenerPresenter class >> menu00CormasOn: aBuilder [
 		label: 'Color Picker';
 		icon: (self iconNamed: #paint);
 		help: 'Open color picker';
-		action: [ SpColorPickerPresenter open ];
+		action: [ SpColorPicker open ];
 		order: 1.
 ]
 
