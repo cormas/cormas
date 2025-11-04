@@ -186,12 +186,6 @@ CMUkrainianTranslator >> tNumberOfRepetitions [
 ]
 
 { #category : 'translations' }
-CMUkrainianTranslator >> tOpenSimulation [
-
-	^ 'Відкрити симуляцію'
-]
-
-{ #category : 'translations' }
 CMUkrainianTranslator >> tPackagesClassesToCreate [
 
 	^ 'Пакети і класи, що будуть створені'

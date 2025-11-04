@@ -186,12 +186,6 @@ CMEnglishTranslator >> tNumberOfRepetitions [
 ]
 
 { #category : 'translations' }
-CMEnglishTranslator >> tOpenSimulation [
-
-	^ 'Open Simulation'
-]
-
-{ #category : 'translations' }
 CMEnglishTranslator >> tPackagesClassesToCreate [
 
 	^ 'Packages and classes that will be created'
