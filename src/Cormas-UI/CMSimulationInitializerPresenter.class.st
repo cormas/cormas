@@ -6,11 +6,13 @@ Class {
 		'modelClass',
 		'modelInitializationSettings',
 		'initializeButton',
-		'initializeBlock',
 		'shouldWarnWhenReinitializeCheckbox',
-		'isReinitializeBlock',
 		'editParametersButton',
-		'resetParametersButton'
+		'resetParametersButton',
+		'isReinitializeBlock',
+		'rulesActivatorButton',
+		'initializeBlock',
+		'rulesApplierButton'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -29,7 +31,7 @@ CMSimulationInitializerPresenter class >> forModelClass: aClass translator: aTra
 	^ self on: { aClass . aTranslator }
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'enumerating' }
 CMSimulationInitializerPresenter >> beReinitializeCondition: aBlock [
 
 	isReinitializeBlock := aBlock
@@ -47,7 +49,7 @@ CMSimulationInitializerPresenter >> confirmReinitialize [
 					nextPutAll: 'Current simulation data will be lost' ]);
 		  acceptLabel: 'Yes';
 		  cancelLabel: 'No';
-		  onAccept: [ initializeBlock value ];
+		  onAccept: [ self reinitializeModel ];
 		  onCancel: [ "do nothing" ];
 		  openModal
 ]
@@ -60,11 +62,11 @@ CMSimulationInitializerPresenter >> connectPresenters [
 
 	initializeButton action: [
 		isReinitializeBlock value
-			ifFalse: [ initializeBlock value ]
-			ifTrue: [
+			ifFalse: [ self initializeModel  ]
+			ifTrue: [ 
 				shouldWarnWhenReinitializeCheckbox state
 					ifTrue: [ self confirmReinitialize ]
-					ifFalse: [ initializeBlock value ] ].
+					ifFalse: [ self reinitializeModel ] ].
 			
 		self updateInitializeButton ].
 	
@@ -72,6 +74,18 @@ CMSimulationInitializerPresenter >> connectPresenters [
 		modelInitializationSettings isDefined
 			ifTrue: [ initializeButton enable ]
 			ifFalse: [ initializeButton disable ] ].
+
+	rulesActivatorButton action: [ 
+		modelClass areRulesActive
+			ifTrue: [ modelClass deactivateRules ]
+			ifFalse: [ modelClass activateRules ].
+		self updateRulesActivatorButton ].
+
+	rulesApplierButton action: [ 
+		modelClass areRulesApplied
+			ifTrue: [ modelClass unapplyRules ]
+			ifFalse: [ modelClass applyRules ].
+		self updateRulesApplierButton ]
 ]
 
 { #category : 'layout' }
@@ -86,6 +100,8 @@ CMSimulationInitializerPresenter >> defaultLayout [
 			add: editParametersButton width: self class buttonHeight;
 			add: resetParametersButton width: self class buttonHeight;
 			yourself) height: self class buttonHeight;
+		add: rulesActivatorButton width: self class buttonHeight;
+		add: rulesApplierButton width: self class buttonHeight;
 		add: '';
 		add: shouldWarnWhenReinitializeCheckbox height: self class buttonHeight;
 		add: initializeButton height: self class buttonHeight;
@@ -101,6 +117,12 @@ CMSimulationInitializerPresenter >> disableInitialization [
 
 	(presenters copyWithoutAll: { editParametersButton . resetParametersButton })
 		do: [ :each | each enabled: false ].
+]
+
+{ #category : 'initialization' }
+CMSimulationInitializerPresenter >> initializeModel [
+
+	^ initializeBlock value
 ]
 
 { #category : 'initialization' }
@@ -133,8 +155,13 @@ CMSimulationInitializerPresenter >> initializePresenters [
 	initializeButton := self newButton
 		disable;
 		yourself.
-		
 	self updateInitializeButton.
+	
+	rulesActivatorButton := self newButton.
+	self updateRulesActivatorButton.
+	
+	rulesApplierButton := self newButton.
+	self updateRulesApplierButton
 ]
 
 { #category : 'as yet unclassified' }
@@ -145,6 +172,13 @@ CMSimulationInitializerPresenter >> openParametersEditor [
 		translator: translator)
 		open
 	
+]
+
+{ #category : 'initialization' }
+CMSimulationInitializerPresenter >> reinitializeModel [
+
+	"simulation cleanModelData."
+	^ self initializeModel
 ]
 
 { #category : 'accessing - model' }
@@ -197,6 +231,34 @@ CMSimulationInitializerPresenter >> updateInitializeButton [
 			initializeButton
 				label: 'Initialize simulation';
 				icon: (self iconNamed: #smallNew) ]
+]
+
+{ #category : 'as yet unclassified' }
+CMSimulationInitializerPresenter >> updateRulesActivatorButton [
+
+	modelClass areRulesActive
+		ifTrue: [
+				rulesActivatorButton
+					label: translator tRulesDeactivator;
+					icon: (self iconNamed: #cancel) ]
+		ifFalse: [
+				rulesActivatorButton
+					label: translator tRulesActivator;
+					icon: (self iconNamed: #accept) ]
+]
+
+{ #category : 'initialization' }
+CMSimulationInitializerPresenter >> updateRulesApplierButton [
+
+	modelClass areRulesApplied
+		ifTrue: [
+				rulesApplierButton
+					label: 'Unapply rules';
+					icon: (self iconNamed: #into) ]
+		ifFalse: [
+				rulesApplierButton
+					label: 'Apply rules';
+					icon: (self iconNamed: #over) ]
 ]
 
 { #category : 'enumerating' }
