@@ -102,7 +102,7 @@ CMSimulationPresenter >> initializeWindow: aWindowPresenter [
 	super initializeWindow: aWindowPresenter.
 
 	aWindowPresenter 
-		title: (modelClass ifNil: ['Simulation'] ifNotNil: [modelClass package name]);
+		title: (modelClass modelName, ' - Simulation');
 		initialExtent: 1000@600;
 		whenResizingDo: [ simulationRunner fitDiagram ].
 ]
