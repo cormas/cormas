@@ -29,8 +29,14 @@ CMModelOpenerSimulateCommand >> icon [
 	^ CMIcons runIcon
 ]
 
+{ #category : 'testing' }
+CMModelOpenerSimulateCommand >> isBigButton [
+
+	^ true
+]
+
 { #category : 'accessing' }
 CMModelOpenerSimulateCommand >> name [
 
-	^ translator tOpenSimulation
+	^ 'Simulate'
 ]
