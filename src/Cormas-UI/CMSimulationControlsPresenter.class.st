@@ -36,7 +36,7 @@ CMSimulationControlsPresenter >> beInNotRunningMode [
 		action: [ owner runSimulationUntilEnd ].
 		
 	stepButton enabled: true.
-	owner ifNotNil: [ owner beInNotRunningMode ]
+	"owner ifNotNil: [ owner beInNotRunningMode ]"
 ]
 
 { #category : 'as yet unclassified' }

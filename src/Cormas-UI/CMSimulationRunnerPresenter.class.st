@@ -116,7 +116,8 @@ CMSimulationRunnerPresenter >> hasSimulationData [
 CMSimulationRunnerPresenter >> hideSettings [
 
 	simulationControls hide.
-	owner hideInitializationSettings.
+	self flag: 'TODO'.
+	"owner hideInitializationSettings."
 	self update.
 	self fitDiagram
 ]
@@ -260,7 +261,8 @@ CMSimulationRunnerPresenter >> shouldPause: aBoolean [
 CMSimulationRunnerPresenter >> showSettings [
 
 	simulationControls show.
-	owner showInitializationSettings.
+	self flag: 'TODO'.
+	"owner showInitializationSettings."
 	self update.
 	self fitDiagram
 ]
