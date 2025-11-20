@@ -70,58 +70,56 @@ CMSimulationPresenter >> confirmReinitialize [
 
 { #category : 'initialization' }
 CMSimulationPresenter >> connectPresenters [
-"Purpose: While instanciating a new simulation (with #activeInitSelector), set the presenters (grid, diagrams, etc.)"
+	"Purpose: While instanciating a new simulation (with #activeInitSelector), set the presenters (grid, diagrams, etc.)"
 
 	editParametersButton action: [ self openParametersEditor ].
 	resetParametersButton action: [ modelClass initializeParameters ].
-	
-	initializeButton action: [
-		self shouldWarnWhenReinitialize
-			ifFalse: [ self initializeModel  ]
-			ifTrue: [ 
-				shouldWarnWhenReinitializeCheckbox state
-					ifTrue: [ self confirmReinitialize ]
-					ifFalse: [ self initializeModel ] ].
-			
-		self updateInitializeButton ].
-	
-	modelInitializationSettings whenChangedDo: [
-		modelInitializationSettings isDefined
-			ifTrue: [ initializeButton enable ]
-			ifFalse: [ initializeButton disable ] ].
-		
-	self updateInitializeButton.
 
+	initializeButton action: [
+		self initializeModel.
+		self updateInitializeButton ].
+
+	modelInitializationSettings whenChangedDo: [ self ensureAllInitSettingsDefined ].
+
+	self updateInitializeButton
 ]
 
 { #category : 'layout' }
 CMSimulationPresenter >> defaultLayout [
 
 	| initializerLayout |
-	
-	initializerLayout := SpBoxLayout newTopToBottom
+	initializerLayout := SpBoxLayout newTopToBottom.
+	initializerLayout
 		spacing: 10;
-		add: modelInitializationSettings height: 190;
+		add: modelInitializationSettings;
 		add: (SpBoxLayout newLeftToRight
-			add: translator tParameters expand: false;
-			add: '';
-			add: editParametersButton width: self class buttonHeight;
-			add: resetParametersButton width: self class buttonHeight;
-			yourself) height: self class buttonHeight;
-		add: '';
-		add: shouldWarnWhenReinitializeCheckbox height: self class buttonHeight;
-		add: initializeButton height: self class buttonHeight;
-		yourself.
+				 add: translator tParameters expand: false;
+				 add: SpNullPresenter new;
+				 add: editParametersButton;
+				 add: resetParametersButton;
+				 yourself)
+		expand: false;
+		add: SpNullPresenter new;
+		add: initializeButton expand: false.
 
 	^ SpBoxLayout newLeftToRight
-		spacing: 0;
-		add: initializerLayout width: 250;
-		add: (SpBoxLayout newTopToBottom
-			vAlignCenter;
-			add: hideInitializationSettingButton height: 70;
-			yourself) width: 25;
-		add: simulationRunner;
-		yourself
+		  add: initializerLayout width: 250;
+		  add: (SpBoxLayout newTopToBottom
+				   vAlignCenter;
+				   add: hideInitializationSettingButton;
+				   yourself)
+		  width: 25;
+		  add: simulationRunner;
+		  yourself
+]
+
+{ #category : 'as yet unclassified' }
+CMSimulationPresenter >> ensureAllInitSettingsDefined [
+	"Check if we have all the required settings for initializing a simulation: init method, control method, etc. If no - disable the initialize button"
+
+	^ modelInitializationSettings isDefined
+		  ifTrue: [ initializeButton enable ]
+		  ifFalse: [ initializeButton disable ]
 ]
 
 { #category : 'examples' }
@@ -132,13 +130,16 @@ CMSimulationPresenter >> example [
 { #category : 'settings' }
 CMSimulationPresenter >> finalTimeStep [
 	
-	^ simulationRunner finalTimeStep
+	^ modelInitializationSettings finalTimeStep
 ]
 
 { #category : 'initialization' }
 CMSimulationPresenter >> initializeModel [
 
-	^ simulationRunner simulation: self newSimulation 
+	| simulation |
+	simulation := self newSimulation.
+	modelInitializationSettings finalTimeStep: simulation finalTimeStep.
+	^ simulationRunner simulation: simulation
 ]
 
 { #category : 'initialization' }
@@ -160,19 +161,16 @@ CMSimulationPresenter >> initializePresenters [
 		icon: (self iconNamed: #glamorousRestart);
 		yourself.
 		
-	shouldWarnWhenReinitializeCheckbox := self newCheckBox
-		label: 'Ask before reinitializing';
-		state: false;
-		yourself.
-		
 	initializeButton := self newButton
 		disable;
 		yourself.
+
+	self ensureAllInitSettingsDefined.
 		
 	hideInitializationSettingButton := self newButton
 		icon: (self iconNamed: #overlayRemove);
 		yourself.
-		
+
 	simulationRunner := self
 		instantiate: CMSimulationRunnerPresenter
 		on: translator.
@@ -208,12 +206,11 @@ Reset the currentTimeStep and the data. Set the randomSeed"
 		activeInitSelector: modelInitializationSettings initSelector;
 		activeControlSelector: modelInitializationSettings controlSelector.
 		
-	owner finalTimeStep ifNotNil: [ :number | simulation finalTimeStep: number ].
-	
-	modelInitializationSettings isFixRandomSeed ifTrue: [ 
-		simulation randomSeed: modelInitializationSettings randomSeed.
-		simulation shouldReleaseRandomSeedAfterInitialization:
-			modelInitializationSettings isReleaseRandomSeedAfterInitialization ].
+	self finalTimeStep ifNotNil: [ :number | simulation finalTimeStep: number ].
+
+	simulation randomSeed: modelInitializationSettings randomSeed.
+	simulation shouldReleaseRandomSeedAfterInitialization:
+		modelInitializationSettings isReleaseRandomSeedAfterInitialization.
 		
 	simulation initializeSimulation.
 	

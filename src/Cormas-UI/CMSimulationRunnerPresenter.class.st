@@ -58,15 +58,13 @@ CMSimulationRunnerPresenter class >> openForSimulation: aSimulation withTranslat
 { #category : 'as yet unclassified' }
 CMSimulationRunnerPresenter >> beInNotRunningMode [
 
-	(owner isNotNil and: [ owner isWindowPresenter not ])
-		ifTrue: [ owner beInNotRunningMode ]
+	owner beInNotRunningMode
 ]
 
 { #category : 'as yet unclassified' }
 CMSimulationRunnerPresenter >> beInRunningMode [
 
-	(owner isNotNil and: [ owner isWindowPresenter not ])
-		ifTrue: [ owner beInRunningMode ]
+	owner beInRunningMode
 ]
 
 { #category : 'initialization' }
@@ -84,12 +82,6 @@ CMSimulationRunnerPresenter >> defaultLayout [
 		add: simulationControls height: 90;
 		add: notebook;
 		yourself
-]
-
-{ #category : 'settings' }
-CMSimulationRunnerPresenter >> finalTimeStep [
-	
-	^ simulationControls finalTimeStep
 ]
 
 { #category : 'as yet unclassified' }
@@ -218,7 +210,6 @@ CMSimulationRunnerPresenter >> initializeWindow: aWindowPresenter [
 CMSimulationRunnerPresenter >> initializeWithSimulation [
 "Purpose: set the final time step, then initialize the Notebook Pages (grid, diagrams,...)"
 	self enabled: true.
-	simulationControls finalTimeStep: simulation finalTimeStep.
 	self initializeNotebookPages.
 ]
 
@@ -311,7 +302,6 @@ CMSimulationRunnerPresenter >> translator: anObject [
 { #category : 'update presenters' }
 CMSimulationRunnerPresenter >> updateAfterStep [
 
-	simulationControls currentTimeStep: simulation currentTimeStep. 
 	self updateSelectedNotebookPage.
 ]
 
