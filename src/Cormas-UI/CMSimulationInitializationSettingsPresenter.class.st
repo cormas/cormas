@@ -55,6 +55,7 @@ CMSimulationInitializationSettingsPresenter >> defaultLayout [
 	gridLayout := SpGridLayout new.
 
 	gridLayout
+		borderWidth: 0;
 		beColumnNotHomogeneous;
 		column: 2 expand: true;
 		build: [ :builder |
