@@ -5,9 +5,6 @@ Class {
 		'translator',
 		'runButton',
 		'stepButton',
-		'progressBarLabel',
-		'progressBar',
-		'finalStep',
 		'speedDropList',
 		'displayEvery'
 	],
@@ -36,7 +33,7 @@ CMSimulationControlsPresenter >> beInNotRunningMode [
 		action: [ owner runSimulationUntilEnd ].
 		
 	stepButton enabled: true.
-	owner ifNotNil: [ owner beInNotRunningMode ]
+	"owner ifNotNil: [ owner beInNotRunningMode ]"
 ]
 
 { #category : 'as yet unclassified' }
@@ -45,29 +42,15 @@ CMSimulationControlsPresenter >> beInRunningMode [
 	runButton
 		icon: CMIcons pauseIcon;
 		action: [ owner shouldPause: true ].
-		
+
 	stepButton enabled: false.
-	owner ifNotNil: [ owner beInRunningMode ]
+	owner beInRunningMode
 ]
 
 { #category : 'initialization' }
 CMSimulationControlsPresenter >> connectPresenters [
 
-	stepButton action: [
-		owner stepSimulation ].
-
-	finalStep whenNumberChangedDo: [ :number |
-		owner updateFinalTimeStep: number ].
-]
-
-{ #category : 'as yet unclassified' }
-CMSimulationControlsPresenter >> currentTimeStep: aNumber [
-
-	progressBarLabel label: ('Step ', aNumber asString).
-	
-	progressBar fixedAt: (finalStep number = 0
-		ifTrue: [ 0 ]
-		ifFalse: [ (aNumber / finalStep number) asFloat ]).
+	stepButton action: [ owner stepSimulation ]
 ]
 
 { #category : 'layout' }
@@ -96,7 +79,6 @@ CMSimulationControlsPresenter >> defaultLayout [
 			add: (SpBoxLayout newTopToBottom
 				spacing: 3;
 				add: translator tFinalStep height: row1Height;
-				add: finalStep height: row2Height;
 				yourself) width: self class buttonWidth;
 			add: (SpBoxLayout newTopToBottom
 				spacing: 3;
@@ -109,14 +91,6 @@ CMSimulationControlsPresenter >> defaultLayout [
 				add: displayEvery height: row2Height;
 				yourself) width: self class buttonWidth;
 			yourself) height: row1Height + row2Height + 3;
-		add: (SpBoxLayout newLeftToRight 
-			spacing: 3;
-			add: (SpBoxLayout newTopToBottom
-				add: translator tProgressBarLabel height: self class labelHeight;
-				add: progressBarLabel height: self class labelHeight;
-				yourself) width: 80;
-			add: progressBar;
-			yourself) height: self class labelHeight * 2 + 1;
 		yourself.
 ]
 
@@ -124,20 +98,6 @@ CMSimulationControlsPresenter >> defaultLayout [
 CMSimulationControlsPresenter >> displayEvery [
 	
 	^ displayEvery number
-]
-
-{ #category : 'settings' }
-CMSimulationControlsPresenter >> finalTimeStep [
-
-	^ finalStep number = 0
-		ifTrue: [ nil ]
-		ifFalse: [ finalStep number ]
-]
-
-{ #category : 'settings' }
-CMSimulationControlsPresenter >> finalTimeStep: aNumber [
-
-	finalStep number: aNumber
 ]
 
 { #category : 'initialization' }
@@ -150,15 +110,6 @@ CMSimulationControlsPresenter >> initializePresenters [
 	stepButton := self newButton
 		icon: CMIcons stepIcon;
 		help: translator tStepButtonHelp;
-		yourself.
-		
-	progressBar := self newProgressBar.
-	progressBarLabel := self newLabel.
-		
-	finalStep := self newNumberInput
-		beInteger;
-		climbRate: 50;
-		minimum: 0;
 		yourself.
 	
 	speedDropList := self newDropList
@@ -173,7 +124,6 @@ CMSimulationControlsPresenter >> initializePresenters [
 		number: 1;
 		yourself.
 		
-	self currentTimeStep: 0.
 	self beInNotRunningMode.
 ]
 
