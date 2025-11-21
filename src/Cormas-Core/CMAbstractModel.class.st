@@ -40,7 +40,8 @@ Class {
 		'spaceModel',
 		'entities',
 		'cellClass',
-		'agentClasses'
+		'agentClasses',
+		'areAgentsCenteredInCells'
 	],
 	#classInstVars : [
 		'cellClass',
@@ -251,14 +252,6 @@ CMAbstractModel class >> isCormasModelClass [
 CMAbstractModel class >> modelName [
 	"A string with a human-friendly model name. By default, returns the name of model class. Overrive this method to provide a name for your model"
 	^ self name
-]
-
-{ #category : 'instance creation' }
-CMAbstractModel class >> newWithoutParameters [
-
-	^ self basicNew
-		initializeWithoutParameters;
-		yourself
 ]
 
 { #category : 'accessing' }
@@ -899,8 +892,15 @@ CMAbstractModel >> initEntities [
 CMAbstractModel >> initialize [
 
 	super initialize.
-	self initializeWithoutParameters.
-	self initializeParameters
+	
+	entities := Dictionary new.
+	
+	self initializeRandomNumberGenerator.
+	self initializeModelClasses.
+	self initializeSpaceModel.
+	self initializeParameters.
+	
+	areAgentsCenteredInCells := true
 ]
 
 { #category : 'accessing' }
@@ -956,16 +956,6 @@ CMAbstractModel >> initializeSpaceModel [
 	self cellClass ifNil: [ ^ nil ].
 	self spaceModel: (CMSpaceModel forModel: self).
 
-]
-
-{ #category : 'initialization' }
-CMAbstractModel >> initializeWithoutParameters [
-	
-	entities := Dictionary new.
-	
-	self initializeRandomNumberGenerator.
-	self initializeModelClasses.
-	self initializeSpaceModel.
 ]
 
 { #category : 'accessing - entities' }
