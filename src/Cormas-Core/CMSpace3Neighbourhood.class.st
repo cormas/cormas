@@ -43,6 +43,18 @@ CMSpace3Neighbourhood class >> isStartConditionFor: aSymbolOrNumber [
 	^ super isStartConditionFor: aSymbolOrNumber
 ]
 
+{ #category : 'rendering' }
+CMSpace3Neighbourhood >> cellCenterFor: aCell [
+	| radius |
+	
+	"Radius of circumcircle if triangle is pointy top, radius of incircle if it's flat top"
+	radius := (self shouldRotateShapeFor: aCell)
+		ifTrue: [ 3 sqrt / 6 ]
+		ifFalse: [ 3 sqrt / 3 ].
+
+	^ 0.5 @ radius
+]
+
 { #category : 'initialization' }
 CMSpace3Neighbourhood >> initializeOrderedNeighbourhood: cellIndex forSpaceModel: aSpaceModel [
 	"Set the neighbourhood of the cell at a givenIndex.

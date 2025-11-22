@@ -1,13 +1,14 @@
 Trait {
 	#name : 'TCMLocated',
 	#instVars : [
-		'cell'
+		'cell',
+		'positionInCell'
 	],
 	#traits : 'TCMRandom',
 	#classTraits : 'TCMRandom classTrait',
-	#category : 'Cormas-Core-Entities',
+	#category : 'Cormas-Core-Traits',
 	#package : 'Cormas-Core',
-	#tag : 'Entities'
+	#tag : 'Traits'
 }
 
 { #category : 'testing' }
@@ -390,15 +391,18 @@ TCMLocated >> moveSW [
 ]
 
 { #category : 'moving' }
-TCMLocated >> moveTo: aSpatialEntity [
+TCMLocated >> moveTo: aCell [
 	"Purpose: moves to a given location.
-Argument: aSpatialEntity = <SpatialEntity>
-Example: self moveTo: self cell neighbourN"
+	Example: self moveTo: self cell neighbourN"
 	
-	aSpatialEntity isSpatialEntity ifFalse: [ ^ nil ].
+	aCell isSpatialEntity ifFalse: [ ^ nil ].
 	self leaveWhileMoving: true.
-	self cell: aSpatialEntity.
+	self cell: aCell.
 	self cell addOccupant: self.
+	
+	"We check if the model is nil because we want to make it possible to create cells and agents without a Cormas model. This is used primarily in tests"
+	self cormasModel ifNotNil: [
+		self positionInCell: (self cormasModel choosePositionForAgent: self inCell: aCell) ]
 ]
 
 { #category : 'moving' }
@@ -786,6 +790,18 @@ Example: self neighbouringSimilarAgentsVerifying: [:a | a sex ~= self sex]"
 	^ self cell
 		ifNil: [ nil ]
 		ifNotNil: [ self neighbouringSimilarAgents select: [ :agent | aCondition value: agent ] ]
+]
+
+{ #category : 'accessing' }
+TCMLocated >> positionInCell [
+	"A Point (u@v) with 0 ≤ u,v ≤ 1 representing relative position inside the cell."
+	^ positionInCell ifNil: [ positionInCell := 0.5@0.5 ]
+]
+
+{ #category : 'accessing' }
+TCMLocated >> positionInCell: aPoint [
+
+	positionInCell := aPoint
 ]
 
 { #category : 'printing' }

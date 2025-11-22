@@ -495,6 +495,28 @@ CMAbstractModel >> centralCell [
 	^ self spaceModel centralCell
 ]
 
+{ #category : 'as yet unclassified' }
+CMAbstractModel >> choosePositionForAgent: anAgent inCell: aCell [ 
+
+	| config |
+	config := self spaceModel neighbourhoodConfiguration.
+	
+    ^ areAgentsCenteredInCells
+        ifTrue:  [ config cellCenterFor: aCell ]
+        ifFalse: [ config randomPointInCell: aCell withPadding: (anAgent pov size / 2) using: self randomNumberGenerator ].
+]
+
+{ #category : 'as yet unclassified' }
+CMAbstractModel >> choosePositionForAgentInCell: aCell [ 
+
+	| config |
+	config := self spaceModel neighbourhoodConfiguration.
+	
+    ^ areAgentsCenteredInCells
+        ifTrue:  [ config cellCenterFor: aCell ]
+        ifFalse: [ config randomPointInCell: aCell using: self randomNumberGenerator ].
+]
+
 { #category : 'random numbers' }
 CMAbstractModel >> chooseRandomSeedAtRandom [
 	"By default random seed is a random number but we still store it to ensure reproducibility"
@@ -970,6 +992,18 @@ CMAbstractModel >> lowerRightCell [
 	"Purpose: returns the cell located at the lower right location of the spatial grid"
 
 	^ self spaceModel lowerRightCell
+]
+
+{ #category : 'as yet unclassified' }
+CMAbstractModel >> makeAgentsCenteredInCells [
+
+	areAgentsCenteredInCells := true
+]
+
+{ #category : 'as yet unclassified' }
+CMAbstractModel >> makeAgentsScatteredInCells [
+
+	areAgentsCenteredInCells := false
 ]
 
 { #category : 'utilities - space metrics' }

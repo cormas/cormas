@@ -59,6 +59,12 @@ CMSpaceNeighbourhood >> cardinal [
 	^ self class cardinal
 ]
 
+{ #category : 'rendering' }
+CMSpaceNeighbourhood >> cellCenterFor: aCell [
+	"Relative center of a shape assuming that the top-left corner of the bounding box is at 0@0 and the bottom-right corner is at 1@1"
+	^ 0.5 @ 0.5
+]
+
 { #category : 'utilities - space metrics' }
 CMSpaceNeighbourhood >> distanceInClosedEnvironmentFromPoint: pointA toPoint: pointB [
 
@@ -202,6 +208,26 @@ CMSpaceNeighbourhood >> numberOfRowsBetweenCell: cell1 andCell: cell2 [
 	self isClosedEnvironment ifTrue: [ ^ number ].
 	
 	^ number min: (self numberOfRows - number)
+]
+
+{ #category : 'rendering' }
+CMSpaceNeighbourhood >> randomPointInCell: aCell using: aRandomNumberGenerator [
+
+	| x y |
+	x := aRandomNumberGenerator next.
+	y := aRandomNumberGenerator next.
+	
+	^ x@y
+]
+
+{ #category : 'rendering' }
+CMSpaceNeighbourhood >> randomPointInCell: aCell withPadding: aNumber using: aRandomNumberGenerator [
+
+	| x y |
+	x := aRandomNumberGenerator next.
+	y := aRandomNumberGenerator next.
+	
+	^ x@y * (1 - (2 * aNumber)) + aNumber
 ]
 
 { #category : 'private - regular cells - instance creation' }
