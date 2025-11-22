@@ -4,9 +4,9 @@ Trait {
 		'state',
 		'bufferState'
 	],
-	#category : 'Cormas-Core-Entities',
+	#category : 'Cormas-Core-Traits',
 	#package : 'Cormas-Core',
-	#tag : 'Entities'
+	#tag : 'Traits'
 }
 
 { #category : 'accessing' }
