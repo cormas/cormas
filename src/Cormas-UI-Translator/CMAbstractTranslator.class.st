@@ -195,12 +195,6 @@ CMAbstractTranslator >> tNumberOfRepetitions [
 ]
 
 { #category : 'translations' }
-CMAbstractTranslator >> tOpenSimulation [
-
-	self subclassResponsibility
-]
-
-{ #category : 'translations' }
 CMAbstractTranslator >> tPackagesClassesToCreate [
 
 	self subclassResponsibility

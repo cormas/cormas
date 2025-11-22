@@ -26,6 +26,13 @@ CMLoadedModelPreviewPresenter class >> forModelClass: aClass translator: aTransl
 	^ self on: { aClass . aTranslator }
 ]
 
+{ #category : 'public-api' }
+CMLoadedModelPreviewPresenter >> commands [
+
+	^ CMModelOpenerCommand sortedSubclasses collect: [ :commandClass |
+		commandClass forOwner: self translator: translator ]
+]
+
 { #category : 'accessing' }
 CMLoadedModelPreviewPresenter >> cormasModelClass [
 
@@ -35,13 +42,20 @@ CMLoadedModelPreviewPresenter >> cormasModelClass [
 { #category : 'layout' }
 CMLoadedModelPreviewPresenter >> defaultLayout [
 
+	| buttonsLayout |
+	buttonsLayout := SpBoxLayout newLeftToRight.
+	
+	self commands
+		select: #isBigButton
+		thenDo: [ :command |
+			buttonsLayout add: command button ].
+		
+	buttonsLayout add: toolbar.
+
 	^ SpBoxLayout newTopToBottom
 		spacing: 10;
 		add: modelPreview;
-		add: (SpBoxLayout newLeftToRight
-			add: runSimulationButton width: 150;
-			add: toolbar;
-			yourself) expand: false;
+		add: buttonsLayout expand: false;
 		yourself
 ]
 
@@ -67,17 +81,12 @@ CMLoadedModelPreviewPresenter >> initializePresenters [
 { #category : 'initialization' }
 CMLoadedModelPreviewPresenter >> initializeToolbar [
 	
-	| command |
-	
 	toolbar := self newToolbar.
 	toolbar beIcons.
 	
-	(CMModelOpenerCommand sortedSubclasses copyWithout: runSimulationCommand class)
-		collect: [ :aCommandClass |
-			command := aCommandClass forOwner: self translator: translator.
-			
-			command isAvailable ifTrue: [
-				toolbar addItemRight: command toolbarButton ] ]
+	(self commands reject: #isBigButton) do: [ :command |
+		command isAvailable ifTrue: [
+			toolbar addItemRight: command toolbarButton ] ]
 ]
 
 { #category : 'accessing - model' }

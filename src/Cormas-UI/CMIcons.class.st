@@ -162,12 +162,6 @@ CMIcons class >> icons [
 	^ icons ifNil: [ icons := Dictionary new ]
 ]
 
-{ #category : 'class initialization' }
-CMIcons class >> initialize [
-
-	icons := Dictionary new
-]
-
 { #category : 'examples' }
 CMIcons class >> inspectIcons [
 
@@ -187,7 +181,7 @@ CMIcons class >> pauseIcon [
 	<script: 'self pauseIcon inspect'>
 
 	| form |
-	icons at: #pauseIcon ifPresent: [ :icon | ^ icon ].
+	self icons at: #pauseIcon ifPresent: [ :icon | ^ icon ].
 	
 	form := Form extent: 16 @ 16 depth: 32.
 	form getCanvas
@@ -195,7 +189,7 @@ CMIcons class >> pauseIcon [
 		fillRectangle: (4 @ 3 corner: 7 @ 14) color: self colorRed;
 		fillRectangle: (10 @ 3 corner: 13 @ 14) color: self colorRed.
 	
-	^ icons at: #pauseIcon put: form
+	^ self icons at: #pauseIcon put: form
 ]
 
 { #category : 'icons' }
@@ -215,12 +209,19 @@ CMIcons class >> pngIconContents [
 	^ 'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAQAAADZc7J/AAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAACYktHRAD/h4/MvwAAAAlwSFlzAAAM3gAADN4BE1AQegAAAAd0SU1FB+gJARI6EKTTj1gAAAKISURBVEjHrdRfaNVlHMfx1+9sc3qOrXnh7M+ONCk3dCpGNHYEoRwko9ArDYTBjJYUgTdeeCNC4EUZrVaGuovCG28CobCoFhERKUyU1fC/otBNiVtnbOr58+vinLNz5tmpc9LPc/F7nu/zPG+e3/f5PF8K6pN0z92KLWPIAmWqn+1tcMZ75ldooXe87pKPVNSwY5UnNfpJ6LZX75+IVOiXnzRAs/f1VAZUoycMWf8gADp8YsWDAOg2qKVWQNYMMjIysl4xUExOdbpjr6PC/Gi3p2oFhEaNzo62zJeDcJb/3wqKawPQ5WVb1TlJfirIQwv9UOmOXhknfOVULhQ3JqyhZfPfMfFcDlq1uWfQqBkNVtum0+8OSttlg4wPXLBPHFeccNqkJi96TZtWNyFhyt+ew1rrRHS6ZEQ9NktKeUnMOaFvdKBFh8dslzIlkfuFhClJXWJ+NmkHhvxooZhGn8no9agxN6wSscdFf7nuulBSYq6RAlFNmpFG1kbLfOgP9ajznXGb7PeMes2apct9cMenQscts9GkrDZrvOu4BmRdxDpRV/SbEDWkc64PSPvC15532LOyQuwU97kJARowgUYr/WlUMnfVpYBFhv3qS1vy957WbsB5Z9UJrBfxg7NaDeue34kRy7WKlkTot8otoawem121wwFHXS5aqwiIiuX9l8vNYo140tseEUOTj/W7Zb+3XNNuSQ4RoMv3on4zrdPiPGDCuBZPY9oY1ogi5aqbUpaIe9y0npyZlxqpycqFNmJp4dEsl/CmBoerfI1vSDnkFzdKg0f+tazP1TFHym8hUkN9LFn7f4rqfayHCKi+pJWsLD6mlBccqgoS6PZtebjPTNUOmNFX2PYPoH0B+MSo9TsAAAAldEVYdGRhdGU6Y3JlYXRlADIwMjQtMDktMDFUMTg6NTg6MTErMDA6MDDvRyw5AAAAJXRFWHRkYXRlOm1vZGlmeQAyMDI0LTA5LTAxVDE4OjU4OjExKzAwOjAwnhqUhQAAACh0RVh0ZGF0ZTp0aW1lc3RhbXAAMjAyNC0wOS0wMVQxODo1ODoxNiswMDowMAyoi9QAAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAAAElFTkSuQmCC'
 ]
 
+{ #category : 'examples' }
+CMIcons class >> resetIcons [
+	<example>
+	
+	icons := nil
+]
+
 { #category : 'icons' }
 CMIcons class >> runIcon [
 	<script: 'self runIcon inspect'>
 
 	| form |
-	icons at: #runIcon ifPresent: [ :icon | ^ icon ].
+	self icons at: #runIcon ifPresent: [ :icon | ^ icon ].
 	
 	form := Form extent: 16 @ 16 depth: 32.
 	form getCanvas
@@ -233,7 +234,7 @@ CMIcons class >> runIcon [
 		borderWidth: 0
 		borderColor: Color darkGray.
 	
-	^ icons at: #runIcon put: form
+	^ self icons at: #runIcon put: form
 ]
 
 { #category : 'icons' }
@@ -241,7 +242,7 @@ CMIcons class >> stepIcon [
 	<script: 'self stepIcon inspect'>
 
 	| form |
-	icons at: #stepIcon ifPresent: [ :icon | ^ icon ].
+	self icons at: #stepIcon ifPresent: [ :icon | ^ icon ].
 	
 	form := Form extent: 16 @ 16 depth: 32.
 	form getCanvas
@@ -255,7 +256,7 @@ CMIcons class >> stepIcon [
 		borderColor: self colorGreen;
 		fillRectangle: (11 @ 3 corner: 14 @ 14) color: self colorGreen.
 	
-	^ icons at: #stepIcon put: form
+	^ self icons at: #stepIcon put: form
 ]
 
 { #category : 'see class side' }
