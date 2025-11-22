@@ -22,32 +22,32 @@ CMSpace6NeighbourhoodPointyTop class >> cardinalSymbol [
 ]
 
 { #category : 'initialization' }
-CMSpace6NeighbourhoodPointyTop >> initializeOrderedNeighbourhood: k [
-"Set the neighbourhood of the cell with id = k.
+CMSpace6NeighbourhoodPointyTop >> initializeOrderedNeighbourhood: cellIndex forSpaceModel: aSpaceModel [
+"Set the neighbourhood of the cell at a given index.
 Neighbours are ordered anticlockwise, starting from the North-East cell"
 
 	| v i |
 	v := Array new: 6.
 	"Cell at north east"
-	(i := self northEastCellHexa: k) > 0 ifTrue: [
-		v at: 6 put: (self elementaryEntitiesAt: i) ].
+	(i := self northEastCellHexa: cellIndex) > 0 ifTrue: [
+		v at: 6 put: (aSpaceModel cellAt: i) ].
 	"Cell at East"
-	(i := self eastCell: k) > 0 ifTrue: [
-		v at: 5 put: (self elementaryEntitiesAt: i) ].
+	(i := self eastCell: cellIndex) > 0 ifTrue: [
+		v at: 5 put: (aSpaceModel cellAt: i) ].
 	"Cell at south east"
-	(i := self southEastCellHexa: k) > 0 ifTrue: [
-		v at: 4 put: (self elementaryEntitiesAt: i) ].
+	(i := self southEastCellHexa: cellIndex) > 0 ifTrue: [
+		v at: 4 put: (aSpaceModel cellAt: i) ].
 	"prendre la cell sud"
-	(i := self southWestCellHexa: k) > 0 ifTrue: [
-		v at: 3 put: (self elementaryEntitiesAt: i) ].
+	(i := self southWestCellHexa: cellIndex) > 0 ifTrue: [
+		v at: 3 put: (aSpaceModel cellAt: i) ].
 	"prendre la cell à l'ouest"
-	(i := self westCell: k) > 0 ifTrue: [
-		v at: 2 put: (self elementaryEntitiesAt: i) ].
+	(i := self westCell: cellIndex) > 0 ifTrue: [
+		v at: 2 put: (aSpaceModel cellAt: i) ].
 	"prendre la cell haute à l'ouest"
-	(i := self northWestCellHexa: k) > 0 ifTrue: [
-		v at: 1 put: (self elementaryEntitiesAt: i) ].
+	(i := self northWestCellHexa: cellIndex) > 0 ifTrue: [
+		v at: 1 put: (aSpaceModel cellAt: i) ].
 
-	^ (self elementaryEntitiesAt: k) neighbourhoodWithNils: v
+	^ (aSpaceModel cellAt: cellIndex) neighbourhoodWithNils: v
 ]
 
 { #category : 'private - regular cells - instance creation' }

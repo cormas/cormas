@@ -90,9 +90,21 @@ CMSpaceModel >> cardinal [
 ]
 
 { #category : 'accessing cell' }
+CMSpaceModel >> cellAt: index [
+
+	^ self cells at: index
+]
+
+{ #category : 'accessing cell' }
 CMSpaceModel >> cellAt: aRowIndex at: aColumnIndex [
 	
 	^ cormasModel cells at: ((aRowIndex - 1) * numberOfColumns + aColumnIndex)
+]
+
+{ #category : 'accessing cell' }
+CMSpaceModel >> cellAtId: id [
+
+	^ self cells detect: [ :each | each id = id ]
 ]
 
 { #category : 'accessing' }
@@ -470,9 +482,11 @@ CMSpaceModel >> lowerRightCell [
 ]
 
 { #category : 'accessing' }
-CMSpaceModel >> nearestEmptyCellFor: aCMAgentLocation [
+CMSpaceModel >> nearestEmptyCellFor: aCell [
 
-	^ self neighbourhoodConfiguration nearestEmptyCellFor: aCMAgentLocation.
+	^ (aCell nearestEmptyNeighborsWithinRadius: (self numberOfRows max: self numberOfColumns))
+		ifNotEmpty: [ :cells | self selectRandomlyFrom: cells ]
+		ifEmpty: [ nil ]
 ]
 
 { #category : 'landscape indices' }
@@ -493,7 +507,11 @@ CMSpaceModel >> neighbourhoodConfiguration [
 { #category : 'accessing' }
 CMSpaceModel >> neighbourhoodConfiguration: aCMSpaceNeighbourhood [ 
 
-	neighbourhoodConfiguration := aCMSpaceNeighbourhood
+	neighbourhoodConfiguration := aCMSpaceNeighbourhood.
+	
+	self gridCellShape: neighbourhoodConfiguration gridCellShapeType.
+	self createCells.
+	neighbourhoodConfiguration initializeNeighbourhoodFor: self
 ]
 
 { #category : 'private - init' }
@@ -523,12 +541,20 @@ CMSpaceModel >> numberOfNeighbours [
 
 { #category : 'initialization' }
 CMSpaceModel >> numberOfNeighbours: anIntegerOrSymbol [
-	" Create the grid.
-	Set the receiver's neighbourhood configuration to contain anIntegerOrSymbol neighbours "
+	
+	| configClass config |
+	
+	configClass := CMSpaceNeighbourhood concreteSubclasses
+		detect: [ :subclass | subclass isStartConditionFor: anIntegerOrSymbol ]
+		ifNone: [ self error: 'Should not happen' ].
+		
+	config := configClass new
+		numberOfRows: self numberOfRows;
+		numberOfColumns: self numberOfColumns;
+		isClosedEnvironment: self isClosedEnvironment;
+		yourself.
 
-	self neighbourhoodConfiguration: (CMSpaceNeighbourhood
-			 forNeighbours: anIntegerOrSymbol
-			 spaceModel: self)
+	self neighbourhoodConfiguration: config
 ]
 
 { #category : 'private - accessing' }

@@ -1843,8 +1843,17 @@ CMSpaceModelTest >> testNeighbourhoodConfiguration [
 	spaceModel numberOfNeighbours: 8.
 	self assert: (spaceModel neighbourhoodConfiguration isKindOf: CMSpace8Neighbourhood).
 	
-	spaceModel neighbourhoodConfiguration: nil.
-	self assert: spaceModel neighbourhoodConfiguration isNil.
+	spaceModel numberOfNeighbours: 3.
+	self assert: (spaceModel neighbourhoodConfiguration isKindOf: CMSpace3Neighbourhood).
+	
+	spaceModel numberOfNeighbours: 6.
+	self assert: (spaceModel neighbourhoodConfiguration isKindOf: CMSpace6NeighbourhoodPointyTop).
+	
+	spaceModel numberOfNeighbours: #pointy6.
+	self assert: (spaceModel neighbourhoodConfiguration isKindOf: CMSpace6NeighbourhoodPointyTop).
+	
+	spaceModel numberOfNeighbours: #flat6.
+	self assert: (spaceModel neighbourhoodConfiguration isKindOf: CMSpace6NeighbourhoodFlatTop).
 ]
 
 { #category : 'tests' }

@@ -58,6 +58,20 @@ CMAbstractModelTest >> testCellAtAt [
 ]
 
 { #category : 'tests' }
+CMAbstractModelTest >> testCellAtId [
+	| m |
+	m := CMMockModel new
+		     createGridNumberOfRows: 3
+		     numberOfColumns: 3
+		     neighbourhood: 4
+		     closed: true;
+		     yourself.
+	self
+		assert: (m cellAtId: 4)
+		identicalTo: (m selectCellsOfColumn: 1) second
+]
+
+{ #category : 'tests' }
 CMAbstractModelTest >> testCellClass [
 
 	self assert: model cellClass equals: CMMockCell
