@@ -10,6 +10,7 @@ Class {
 		'finalStepInput',
 		'dummyTextInput',
 		'stopConditionDropList',
+		'applyButton',
 		'onChangedBlock'
 	],
 	#category : 'Cormas-UI',
@@ -32,18 +33,8 @@ CMStopConditionPresenter >> activateFinalStep [
 		finalStepInput number: CMSimulation defaultFinalTimeStep ]
 ]
 
-{ #category : 'compiling' }
-CMStopConditionPresenter >> compileBlock: aSourceCode [
-
-	"Black magic"
-	^ Smalltalk compiler
-		environment: self class environment;
-		source: aSourceCode;
-		evaluate
-]
-
 { #category : 'accessing' }
-CMStopConditionPresenter >> condition [
+CMStopConditionPresenter >> buildConditionBlock [
 	"Note: we want to minimize the complexity of the returned block because it will be evaluated after each simulation step"
 
 	"Case 1: Run simulation endlessly until paused"
@@ -67,18 +58,26 @@ CMStopConditionPresenter >> condition [
 	self error: 'This should never happen'
 ]
 
+{ #category : 'compiling' }
+CMStopConditionPresenter >> compileBlock: aSourceCode [
+
+	"Black magic"
+	^ Smalltalk compiler
+		environment: self class environment;
+		source: aSourceCode;
+		evaluate
+]
+
 { #category : 'initialization' }
 CMStopConditionPresenter >> connectPresenters [
 
-	onChangedBlock := [ :conditionBlock | "do nothing" ].
+	onChangedBlock := [ :conditionBlock | "do nothing" self inform: 'Condition changed!' ].
 
 	hasFinalStepCheckbox
 		whenActivatedDo: [ self activateFinalStep ];
-		whenDeactivatedDo: [ self deactivateFinalStep ];
-		whenChangedDo: [ onChangedBlock value: self condition ].
+		whenDeactivatedDo: [ self deactivateFinalStep ].
 		
-	finalStepInput whenNumberChangedDo: [ onChangedBlock value: self condition ].
-	stopConditionDropList whenSelectionChangedDo: [ onChangedBlock value: self condition ]
+	applyButton action: [ onChangedBlock value: self buildConditionBlock ]
 	
 ]
 
@@ -106,6 +105,8 @@ CMStopConditionPresenter >> defaultLayout [
 				nextRow ]) expand: false;
 		add: 'or when' expand: false;
 		add: stopConditionDropList expand: false;
+		add: SpNullPresenter new;
+		add: applyButton expand: false;
 		yourself
 ]
 
@@ -146,6 +147,11 @@ CMStopConditionPresenter >> initializePresenters [
 		respondingTo: #value;
 		items: cormasModelClass availableBooleanSelectors;
 		display: [ :each | each value ];
+		yourself.
+		
+	applyButton := self newButton
+		label: 'Apply';
+		icon: (self iconNamed: #accept);
 		yourself
 	
 ]
@@ -162,6 +168,6 @@ CMStopConditionPresenter >> whenChangedDo: aBlock [
 	"A one argument block accepting a stop condition block that is constructed by this UI"
 	onChangedBlock := aBlock.
 	
-	"In case nothing is changed"
-	onChangedBlock value: self condition
+	"Default condition in case nothing is changed"
+	onChangedBlock value: self buildConditionBlock
 ]

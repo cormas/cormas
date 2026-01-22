@@ -5,7 +5,6 @@ Class {
 		'modelClass',
 		'randomSeed',
 		'cormasModel',
-		'stopCondition',
 		'data',
 		'activeInitSelector',
 		'activeControlSelector',
@@ -69,6 +68,12 @@ CMSimulation >> data [
 	^ data
 ]
 
+{ #category : 'running' }
+CMSimulation >> defaultStopCondition [
+	"Be careful when modifying the stop condition because it can make the simulation (including the tests) run endlesly"
+	^ [ :model | model currentTimeStep >= self class defaultFinalTimeStep ]
+]
+
 { #category : 'settings' }
 CMSimulation >> initialParameterValues [
 
@@ -79,9 +84,6 @@ CMSimulation >> initialParameterValues [
 CMSimulation >> initialize [
 
 	super initialize.
-	
-	"Be careful when modifying the stop condition because it can make the simulation (including the tests) run endlesly"
-	stopCondition := [ :model | model currentTimeStep >= self class defaultFinalTimeStep ].
 	
 	probes := OrderedCollection new.
 	data := OrderedCollection new.
@@ -130,7 +132,7 @@ CMSimulation >> initializeSimulationRunner [
 
 	simulationRunner := CMSimulationProcessRunner new
 		cormasSimulation: self;
-		stopCondition: stopCondition
+		stopCondition: self defaultStopCondition
 ]
 
 { #category : 'testing' }
@@ -174,54 +176,24 @@ CMSimulation >> recordData [
 { #category : 'running' }
 CMSimulation >> runAllSteps [
 
-	self initializeSimulationRunner.
 	simulationRunner
 		beDefaultSimulation;
-		run
+		runInBackground 
 ]
 
 { #category : 'running' }
 CMSimulation >> runAllStepsAfterEach: aNumberOfSteps do: aBlock [
 
-	self initializeSimulationRunner.
 	simulationRunner
 		beSimulationAfterEach: aNumberOfSteps do: aBlock;
-		run
+		runInBackground
 ]
 
 { #category : 'running' }
 CMSimulation >> runAllStepsAfterEachDo: aBlock [
 
-	self initializeSimulationRunner.
 	simulationRunner
 		beSimulationAfterEachDo: aBlock;
-		run
-]
-
-{ #category : 'running' }
-CMSimulation >> runAllStepsWithStepDelay: milliseconds [
-
-	self initializeSimulationRunner.
-	simulationRunner
-		beSimulationWithStepDelay: milliseconds;
-		runInBackground
-]
-
-{ #category : 'running' }
-CMSimulation >> runAllStepsWithStepDelay: milliseconds afterEach: aNumberOfSteps do: aBlock [
-
-	self initializeSimulationRunner.
-	simulationRunner
-		beSimulationWithStepDelay: milliseconds afterEach: aNumberOfSteps do: aBlock;
-		runInBackground
-]
-
-{ #category : 'running' }
-CMSimulation >> runAllStepsWithStepDelay: milliseconds afterEachDo: aBlock [
-
-	self initializeSimulationRunner.
-	simulationRunner
-		beSimulationWithStepDelay: milliseconds afterEachDo: aBlock;
 		runInBackground
 ]
 
@@ -292,5 +264,5 @@ CMSimulation >> stopWhen: aBlock [
 	"Provede a one-argument block with a stop condition. The argument is a cormasModel. Be careful when modifying the stop condition because it can make the simulation run endlesly.
 	
 	Example: self stopWhen: [ :model | model totalBiomass > 100 ]"
-	stopCondition := aBlock
+	simulationRunner stopCondition: aBlock
 ]

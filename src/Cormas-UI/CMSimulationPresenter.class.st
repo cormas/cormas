@@ -52,6 +52,18 @@ CMSimulationPresenter >> compileBlock: aSourceCode [
 		evaluate
 ]
 
+{ #category : 'initialization' }
+CMSimulationPresenter >> connectPresenters [
+				
+	stopConditionPresenter whenChangedDo: [ :stopConditionBlock |
+		"Simulation will be nil if the stop condition is changed before
+		simulation is initialized. This will happen in most cases. However,
+		we still want to have the possibility to change the stop condition
+		during the simulation. For example, if the simulation has completed
+		and then you want to run it for 100 more steps"
+		simulation ifNotNil: [ simulation stopWhen: stopConditionBlock ] ]
+]
+
 { #category : 'layout' }
 CMSimulationPresenter >> defaultLayout [
 
@@ -144,14 +156,6 @@ CMSimulationPresenter >> initializePresenters [
 		instantiate: CMStopConditionPresenter
 		on: { modelClass . translator }.
 				
-	stopConditionPresenter whenChangedDo: [ :stopConditionBlock |
-		"Simulation will be nil if the stop condition is changed before
-		simulation is initialized. This will happen in most cases. However,
-		we still want to have the possibility to change the stop condition
-		during the simulation. For example, if the simulation has completed
-		and then you want to run it for 100 more steps"
-		simulation ifNotNil: [ simulation stopWhen: stopConditionBlock ] ].
-		
 	fancyNotebookButtons ifNotEmpty: [ fancyNotebookButtons first click ]
 ]
 
@@ -168,7 +172,7 @@ Reset the currentTimeStep and the data. Set the randomSeed"
 		activeInitSelector: anInitSelector;
 		activeControlSelector: aControlSelector.
 		
-	simulation stopWhen: stopConditionPresenter condition.
+	simulation stopWhen: stopConditionPresenter buildConditionBlock.
 		
 	self flag: 'TODO'.
 	

@@ -6,6 +6,7 @@ Class {
 		'simulation',
 		'runButton',
 		'stepButton',
+		'currentTimeStepLabel',
 		'speedDropList',
 		'displayEveryNumberPresenter',
 		'notebook',
@@ -78,6 +79,8 @@ CMSimulationRunnerPresenter >> connectPresenters [
 
 	self initializeRunButtonWithRunAction.
 	
+	speedDropList whenSelectedItemChangedDo: [ :item | self setSimulationStepDelay ].
+	
 	notebook whenSelectedPageChangedDo: [ :page |
 		self updateSelectedNotebookPage ].
 ]
@@ -92,26 +95,32 @@ CMSimulationRunnerPresenter >> defaultLayout [
 		  add: (SpBoxLayout newTopToBottom
 				   spacing: 3;
 				   add: translator tStepButtonLabel expand: false;
-				   add: stepButton expand: false;
+				   add: stepButton;
 				   yourself)
-		  expand: false;
+		  width: 60;
 		  add: (SpBoxLayout newTopToBottom
 				   spacing: 3;
 				   add: translator tRun expand: false;
-				   add: runButton expand: false;
+				   add: runButton;
 				   yourself)
-		  expand: false;
+		  width: 60;
+		  add: SpNullPresenter new width: 10;
+		  add: (SpBoxLayout newTopToBottom
+				vAlignCenter;
+				add: SpNullPresenter new height: self class labelHeight;
+				add: currentTimeStepLabel;
+				yourself) width: 100;
 		  add: SpNullPresenter new;
 		  add: (SpBoxLayout newTopToBottom
 				   spacing: 3;
 				   add: translator tSpeedLabel expand: false;
-				   add: speedDropList expand: false;
+				   add: speedDropList;
 				   yourself)
-		  expand: false;
+		  height: 52;
 		  add: (SpBoxLayout newTopToBottom
 				   spacing: 3;
 				   add: translator tDisplayEveryLabel expand: false;
-				   add: displayEveryNumberPresenter expand: false;
+				   add: displayEveryNumberPresenter;
 				   yourself)
 		  expand: false;
 		  yourself.
@@ -121,6 +130,12 @@ CMSimulationRunnerPresenter >> defaultLayout [
 		  add: simulationControlsLayout expand: false;
 		  add: notebook;
 		  yourself
+]
+
+{ #category : 'as yet unclassified' }
+CMSimulationRunnerPresenter >> displayCurrentTimeStep [
+
+	currentTimeStepLabel label: ('Step: ', simulation currentTimeStep asString)
 ]
 
 { #category : 'examples' }
@@ -226,6 +241,8 @@ CMSimulationRunnerPresenter >> initializePresenters [
 		              icon: CMIcons stepIcon;
 		              help: translator tStepButtonHelp;
 		              yourself.
+		
+	currentTimeStepLabel := self newLabel.
 
 	speedDropList := self newDropList
 		                 help: translator tSpeedHelp;
@@ -288,6 +305,10 @@ CMSimulationRunnerPresenter >> initializeWindow: aWindowPresenter [
 { #category : 'initialization' }
 CMSimulationRunnerPresenter >> initializeWithSimulation [
 "Purpose: set the final time step, then initialize the Notebook Pages (grid, diagrams,...)"
+	self setSimulationStepDelay.
+	simulation simulationRunner whenFinishedDo: [ self beInPauseMode ].
+	
+	self displayCurrentTimeStep.
 	self enabled: true.
 	self initializeNotebookPages.
 ]
@@ -312,8 +333,7 @@ CMSimulationRunnerPresenter >> runSimulationUntilEnd [
 	self beInRunningMode.
 
 	simulation
-		runAllStepsWithStepDelay: self speedInMilliseconds
-		afterEach: displayEveryNumberPresenter number
+		runAllStepsAfterEach: displayEveryNumberPresenter number
 		do: [
 			[ self updateAfterStep ] onErrorDo: [ :error |
 					error asString = '#intersect: was sent to nil' ifFalse: [ error signal ] ] ]
@@ -323,6 +343,12 @@ CMSimulationRunnerPresenter >> runSimulationUntilEnd [
 CMSimulationRunnerPresenter >> setModelBeforeInitialization: aTranslator [
 
 	translator := aTranslator
+]
+
+{ #category : 'initialization' }
+CMSimulationRunnerPresenter >> setSimulationStepDelay [
+
+	simulation simulationRunner stepDelay: self speedInMilliseconds.
 ]
 
 { #category : 'as yet unclassified' }
@@ -397,6 +423,7 @@ CMSimulationRunnerPresenter >> translator: anObject [
 { #category : 'update presenters' }
 CMSimulationRunnerPresenter >> updateAfterStep [
 
+	self displayCurrentTimeStep.
 	self updateSelectedNotebookPage.
 ]
 
