@@ -38,7 +38,7 @@ CMSimulationInitializerPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
 		borderWidth: 5;
-		spacing: 10;
+		spacing: 12;
 		add: (SpBoxLayout newTopToBottom
 			add: translator tInitMethod expand: false;
 			add: initSelectorDropList expand: false;

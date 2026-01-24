@@ -67,16 +67,22 @@ CMSimulationInitRandomPresenter >> connectPresenters [
 CMSimulationInitRandomPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
-		  add: translator tGenerator expand: false;
-		  add: (self instantiate: SpNullPresenter) expand: false;
-		  add: randomSeedGeneratorDroplist expand: false;
-		  add: (self instantiate: SpNullPresenter) expand: false;
-		  add: translator tRandomSeed expand: false;
-		  add: (self instantiate: SpNullPresenter) expand: false;
-		  add: randomSeedInput expand: false;
-		  add: fixRandomSeedCheckbox expand: false;
-		  add: releaseRandomSeedCheckbox expand: false;
-		  yourself
+		borderWidth: 5;
+		spacing: 12;
+		add: (SpBoxLayout newTopToBottom
+			add: translator tGenerator expand: false;
+			add: randomSeedGeneratorDroplist expand: false;
+			yourself) expand: false;
+		add: (SpBoxLayout newTopToBottom
+			add: translator tRandomSeed expand: false;
+			add: randomSeedInput expand: false;
+			yourself) expand: false;
+		add: (SpBoxLayout newTopToBottom
+			add: fixRandomSeedCheckbox expand: false;
+			add: releaseRandomSeedCheckbox expand: false;
+			yourself) expand: false;
+		yourself
+
 ]
 
 { #category : 'as yet unclassified' }
@@ -95,6 +101,11 @@ CMSimulationInitRandomPresenter >> enableRandomSeedPresenters [
 	randomSeedInput beEditable.
 	randomSeedInput enable.
 	releaseRandomSeedCheckbox enable.
+]
+
+{ #category : 'examples' }
+CMSimulationInitRandomPresenter >> example [
+	<script: 'self example'>
 ]
 
 { #category : 'initialization' }
