@@ -351,15 +351,6 @@ CMSimulationRunnerPresenter >> setSimulationStepDelay [
 	simulation simulationRunner stepDelay: self speedInMilliseconds.
 ]
 
-{ #category : 'as yet unclassified' }
-CMSimulationRunnerPresenter >> showSettings [
-
-	self flag: 'TODO'.
-	"owner showInitializationSettings."
-	self update.
-	self fitDiagram
-]
-
 { #category : 'accessing' }
 CMSimulationRunnerPresenter >> simulation [
 

@@ -158,12 +158,6 @@ CMSpacePresenter >> setModelBeforeInitialization: aCormasModel [
 	cormasModel := aCormasModel 
 ]
 
-{ #category : 'as yet unclassified' }
-CMSpacePresenter >> showSettings [
-
-	owner owner showSettings
-]
-
 { #category : 'accessing' }
 CMSpacePresenter >> spaceBuilder [
 
