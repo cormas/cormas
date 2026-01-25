@@ -109,7 +109,7 @@ BaselineOfCormas >> specForGroups: spec [
 		with: #( 'Cormas-Core' 'Cormas-Tests' 'Cormas-Mocks' );
 	
 		group: 'UI'
-		with: #( 'Core' 'Cormas-UI' 'Cormas-CodeGeneration-Tests' 'Cormas-UI-Tests' 'Cormas-UI-Commands' 'Cormas-UI-Roassal3' 'Cormas-UI-Tilesets' 'Cormas-UI-Translator' );
+		with: #( 'Core' 'Cormas-UI' 'Cormas-CodeGeneration-Tests' 'Cormas-UI-Tests' 'Cormas-UI-Commands' 'Cormas-UI-Roassal3' 'Cormas-UI-Tilesets' );
 	
 		group: 'SensitivityAnalysis'
 		with: #( 'UI' 'Cormas-SensitivityAnalysis' 'Cormas-SensitivityAnalysis-Tests' 'Cormas-SensitivityAnalysis-UI' );
