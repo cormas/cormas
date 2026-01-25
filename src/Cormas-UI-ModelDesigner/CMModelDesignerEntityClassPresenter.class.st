@@ -79,15 +79,15 @@ CMModelDesignerEntityClassPresenter >> initializePresenters [
 		
 	variableList := self
 		instantiate: CMModelDesignerParametersPresenter
-		on: { 'Variables' . aClass . translator }.
+		on: { 'Variables' . aClass }.
 		
 	customMethodsList := self
 		instantiate: CMModelDesignerMethodsPresenter
-		on: { 'Custom methods' . translator }.
+		on: 'Custom methods'.
 	
 	povList := self
 		instantiate: CMModelDesignerMethodsPresenter
-		on: { 'Points of View' . translator }.
+		on: 'Points of View'.
 		
 	povMethods := aClass availablePov
 		select: [ :selector | aClass includesSelector: selector ]

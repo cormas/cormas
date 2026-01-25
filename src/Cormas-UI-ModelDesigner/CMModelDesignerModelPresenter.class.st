@@ -86,19 +86,17 @@ CMModelDesignerModelPresenter >> initializePresenters [
 	
 	initMethodList := self
 		instantiate: CMModelDesignerMethodsPresenter
-		on: { 'Init methods' . translator }. 
+		on: 'Init methods'. 
 		
 	controlMethodList := self
 		instantiate: CMModelDesignerMethodsPresenter
-		on: { 'Control methods' . translator }.  
+		on: 'Control methods'.  
 		
 	customMethodList := self
 		instantiate: CMModelDesignerMethodsPresenter
-		on: { 'Custom methods' . translator }.  
+		on: 'Custom methods'.  
 		
-	probeList := (self
-		instantiate: CMModelDesignerProbesPresenter
-		on: translator)
+	probeList := (self instantiate: CMModelDesignerProbesPresenter)
 		items: aClass availableProbes;
 		yourself. 
 		

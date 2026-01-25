@@ -2,7 +2,6 @@ Class {
 	#name : 'CMStopConditionPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
 		'cormasModelClass',
 		'hasFinalStepCheckbox',
 		'finalStepLabel',
@@ -20,7 +19,7 @@ Class {
 { #category : 'examples' }
 CMStopConditionPresenter class >> example [
 	<example>
-	(self on: { CMMockModel . CMEnglishTranslator new}) open
+	(self on: CMMockModel) open
 ]
 
 { #category : 'as yet unclassified' }
@@ -123,7 +122,7 @@ CMStopConditionPresenter >> initializePresenters [
 		yourself.
 		
 	finalStepLabel := self newLabel
-		label: translator tFinalStep;
+		label: 'Final step';
 		yourself.
 		
 	finalStepInput := self newNumberInput.
@@ -157,10 +156,9 @@ CMStopConditionPresenter >> initializePresenters [
 ]
 
 { #category : 'accessing - model' }
-CMStopConditionPresenter >> setModelBeforeInitialization: aCollection [
+CMStopConditionPresenter >> setModelBeforeInitialization: aClass [
 
-	cormasModelClass := aCollection first.
-	translator := aCollection second
+	cormasModelClass := aClass
 ]
 
 { #category : 'announcing' }

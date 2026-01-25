@@ -2,7 +2,6 @@ Class {
 	#name : 'CMModelDesignerClassPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
 		'prefix',
 		'aClass',
 		'nameInput',
@@ -15,9 +14,9 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-CMModelDesignerClassPresenter class >> forClass: aClass prefix: aString translator: aTranslator [
+CMModelDesignerClassPresenter class >> forClass: aClass prefix: aString [
 
-	^ self on: { aClass . aString . aTranslator }
+	^ self on: { aClass . aString }
 ]
 
 { #category : 'initialization' }
@@ -39,7 +38,7 @@ CMModelDesignerClassPresenter >> initializePresenters [
 		
 	parameterList := self
 		instantiate: CMModelDesignerParametersPresenter
-		on: { 'Parameters' . aClass . translator }. 
+		on: { 'Parameters' . aClass }. 
 		
 	sourceCodeNotebook := self newNotebook
 ]
@@ -48,8 +47,7 @@ CMModelDesignerClassPresenter >> initializePresenters [
 CMModelDesignerClassPresenter >> setModelBeforeInitialization: aCollection [
 
 	aClass := aCollection first.
-	prefix := aCollection second.
-	translator := aCollection third
+	prefix := aCollection second
 ]
 
 { #category : 'as yet unclassified' }

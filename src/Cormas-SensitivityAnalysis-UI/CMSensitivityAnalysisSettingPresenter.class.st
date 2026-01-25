@@ -2,7 +2,6 @@ Class {
 	#name : 'CMSensitivityAnalysisSettingPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
 		'generator'
 	],
 	#category : 'Cormas-SensitivityAnalysis-UI',
@@ -10,13 +9,7 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-CMSensitivityAnalysisSettingPresenter class >> nameForTranslator: aTranslator [
+CMSensitivityAnalysisSettingPresenter class >> samplingStrategyName [
 
 	self subclassResponsibility
-]
-
-{ #category : 'accessing - model' }
-CMSensitivityAnalysisSettingPresenter >> setModelBeforeInitialization: aTranslator [
-
-	translator := aTranslator
 ]

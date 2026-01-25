@@ -3,7 +3,6 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'availableProbes',
-		'translator',
 		'probesList',
 		'toolbar'
 	],
@@ -15,16 +14,14 @@ Class {
 CMSensitivityAnalysisProbesListPresenter class >> example [ 
 	<example>
 	
-	(self
-		forAvailableProbes: CMMockModel availableProbes
-		translator: CMEnglishTranslator new) open.
+	(self forAvailableProbes: CMMockModel availableProbes) open.
 
 ]
 
 { #category : 'as yet unclassified' }
-CMSensitivityAnalysisProbesListPresenter class >> forAvailableProbes: aCollectionOfProbes translator: aTranslator [
+CMSensitivityAnalysisProbesListPresenter class >> forAvailableProbes: aCollectionOfProbes [
 
-	^ self on: { aCollectionOfProbes . aTranslator }
+	^ self on: aCollectionOfProbes
 ]
 
 { #category : 'as yet unclassified' }
@@ -58,14 +55,13 @@ CMSensitivityAnalysisProbesListPresenter >> initializePresenters [
 	probesList := self newComponentList.
 		
 	addButton := self newToolbarButton
-		label: translator tAdd;
+		label: 'Add';
 		icon: (self iconNamed: #add);
-		help: translator tAddMeasurementHelp;
+		help: 'Add new probe measurement';
 		action: [
 			probesList addPresenter: (
 				CMSensitivityAnalysisProbeRowPresenter
-					forAvailableProbes: availableProbes
-					translator: translator) ];
+					forAvailableProbes: availableProbes) ];
 		yourself.
 		
 	toolbar := self newToolbar
@@ -78,6 +74,5 @@ CMSensitivityAnalysisProbesListPresenter >> initializePresenters [
 { #category : 'accessing - model' }
 CMSensitivityAnalysisProbesListPresenter >> setModelBeforeInitialization: aCollection [
 
-	availableProbes := aCollection first.
-	translator := aCollection second
+	availableProbes := aCollection
 ]

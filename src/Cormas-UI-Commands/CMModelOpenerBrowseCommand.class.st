@@ -26,5 +26,5 @@ CMModelOpenerBrowseCommand >> icon [
 { #category : 'accessing' }
 CMModelOpenerBrowseCommand >> name [
 
-	^ translator tBrowse
+	^ 'Browse'
 ]

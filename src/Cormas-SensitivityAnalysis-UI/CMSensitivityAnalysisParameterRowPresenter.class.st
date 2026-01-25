@@ -3,7 +3,6 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'availableParameters',
-		'translator',
 		'classDropList',
 		'parameterDropList',
 		'strategyDropList',
@@ -19,15 +18,13 @@ Class {
 CMSensitivityAnalysisParameterRowPresenter class >> example [
 	<example>
 	
-	(self
-		forParameters: CMMockModel parameters
-		translator: CMEnglishTranslator new) open
+	(self forParameters: CMMockModel parameters) open
 ]
 
 { #category : 'instance creation' }
-CMSensitivityAnalysisParameterRowPresenter class >> forParameters: aCollectionOfParameters translator: aTranslator [
+CMSensitivityAnalysisParameterRowPresenter class >> forParameters: aCollectionOfParameters [
 
-	^ self on: { aCollectionOfParameters . aTranslator }
+	^ self on: aCollectionOfParameters
 ]
 
 { #category : 'layout' }
@@ -59,20 +56,20 @@ CMSensitivityAnalysisParameterRowPresenter >> initializePresenters [
 	classDropList := (self instantiate: CMDropListWithPlaceholderPresenter)
 		items: parameterClasses;
 		display: [ :aClass | aClass name ];
-		placeholder: translator tClass asLowercase respondingTo: #name;
+		placeholder: 'class' respondingTo: #name;
 		whenSelectedItemChangedDo: [ :aClass |
 			parameterDropList items: (
 				availableParameters select: [ :p | p receiver = aClass ]) ]
 		yourself.
 		
 	parameterDropList := (self instantiate: CMDropListWithPlaceholderPresenter)
-		placeholder: translator tParameter asLowercase respondingTo: #name;
+		placeholder: 'parameter' respondingTo: #name;
 		display: [ :parameter | parameter name ];
 		yourself.
 		
 	strategyDropList := (self instantiate: CMDropListWithPlaceholderPresenter)
-		placeholder: translator tStrategy asLowercase respondingTo: #nameForTranslator:;
-		display: [ :aClass | aClass nameForTranslator: translator ];
+		placeholder: 'strategy' respondingTo: #samplingStrategyName;
+		display: [ :aClass | aClass samplingStrategyName ];
 		items: CMSensitivityAnalysisSettingPresenter allSubclasses;
 		whenSelectedItemChangedDo: [ :strategyClass |
 			settingsPresenter updatePresenter ];
@@ -80,7 +77,7 @@ CMSensitivityAnalysisParameterRowPresenter >> initializePresenters [
 		
 	settingsPresenter := self newPresenterSelector
 		when: [ strategyDropList isPlaceholderSelected not ]
-		show: [ self instantiate: strategyDropList selectedItem on: translator ];
+		show: [ self instantiate: strategyDropList selectedItem ];
 		defaultShow: [ self newLabel ];
 		yourself. 
 		
@@ -114,8 +111,7 @@ CMSensitivityAnalysisParameterRowPresenter >> parameter [
 { #category : 'accessing - model' }
 CMSensitivityAnalysisParameterRowPresenter >> setModelBeforeInitialization: aCollection [
 
-	availableParameters := aCollection first.
-	translator := aCollection second
+	availableParameters := aCollection
 ]
 
 { #category : 'accessing' }

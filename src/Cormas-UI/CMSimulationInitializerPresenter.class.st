@@ -2,7 +2,6 @@ Class {
 	#name : 'CMSimulationInitializerPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
 		'modelClass',
 		'initSelectorDropList',
 		'controlSelectorDropList',
@@ -16,7 +15,7 @@ Class {
 { #category : 'examples' }
 CMSimulationInitializerPresenter class >> example [
 	<example>
-	(self on: { CMMockModel . CMEnglishTranslator new}) open
+	(self on: CMMockModel) open
 ]
 
 { #category : 'initialization' }
@@ -40,11 +39,11 @@ CMSimulationInitializerPresenter >> defaultLayout [
 		borderWidth: 5;
 		spacing: 12;
 		add: (SpBoxLayout newTopToBottom
-			add: translator tInitMethod expand: false;
+			add: 'Init method' expand: false;
 			add: initSelectorDropList expand: false;
 			yourself) expand: false;
 		add: (SpBoxLayout newTopToBottom
-			add: translator tControlMethod expand: false;
+			add: 'Control method' expand: false;
 			add: controlSelectorDropList expand: false;
 			yourself) expand: false;
 		add: SpNullPresenter new;
@@ -85,10 +84,9 @@ CMSimulationInitializerPresenter >> initializePresenters [
 ]
 
 { #category : 'accessing - model' }
-CMSimulationInitializerPresenter >> setModelBeforeInitialization: aCollection [
+CMSimulationInitializerPresenter >> setModelBeforeInitialization: aClass [
 
-	modelClass := aCollection first.
-	translator := aCollection second
+	modelClass := aClass
 ]
 
 { #category : 'enumerating' }

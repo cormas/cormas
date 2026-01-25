@@ -35,7 +35,7 @@ CMSaveToCsvCommand >> icon [
 { #category : 'accessing' }
 CMSaveToCsvCommand >> name [
 
-	^ translator tSaveToCsv
+	^ 'Save to CSV'
 ]
 
 { #category : 'export' }

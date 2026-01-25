@@ -2,7 +2,6 @@ Class {
 	#name : 'CMSpacePresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
 		'toolbar',
 		'cormasModel',
 		'povSelection',
@@ -124,7 +123,7 @@ CMSpacePresenter >> initializeToolbar [
 
 	CMSpacePresenterCommand sortedSubclasses do: [ :aClass |
 		| command |
-		command := aClass forOwner: self translator: translator.
+		command := aClass forOwner: self.
 		toolbar add: command toolbarButton ].
 ]
 

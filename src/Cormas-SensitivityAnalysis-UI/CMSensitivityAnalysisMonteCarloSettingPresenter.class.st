@@ -14,16 +14,13 @@ Class {
 { #category : 'examples' }
 CMSensitivityAnalysisMonteCarloSettingPresenter class >> example [
 	<example>
-	| translator |
-	translator := CMEnglishTranslator new.
-	
-	(self on: translator) open
+	self new open
 ]
 
 { #category : 'as yet unclassified' }
-CMSensitivityAnalysisMonteCarloSettingPresenter class >> nameForTranslator: aTranslator [
+CMSensitivityAnalysisMonteCarloSettingPresenter class >> samplingStrategyName [
 
-	^ aTranslator tMonteCarlo
+	^ 'Monte Carlo'
 ]
 
 { #category : 'layout' }
@@ -52,7 +49,7 @@ CMSensitivityAnalysisMonteCarloSettingPresenter >> initializePresenters [
 	numberOfValuesInput := self newNumberInput.
 	
 	integerCheckbox := self newCheckBox
-		label: translator tInteger asLowercase;
+		label: 'integer';
 		whenActivatedDo: [ generator beInteger ];
 		whenDeactivatedDo: [ generator beFloat ];
 		yourself.

@@ -2,7 +2,6 @@ Class {
 	#name : 'CMLoadedModelPreviewPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
 		'cormasModelClass',
 		'modelPreview',
 		'runSimulationButton',
@@ -17,20 +16,20 @@ Class {
 { #category : 'examples' }
 CMLoadedModelPreviewPresenter class >> example [
 	<example>
-	(self forModelClass: CMMockModel translator: CMEnglishTranslator new) open
+	(self forModelClass: CMMockModel) open
 ]
 
 { #category : 'instance creation' }
-CMLoadedModelPreviewPresenter class >> forModelClass: aClass translator: aTranslator [
+CMLoadedModelPreviewPresenter class >> forModelClass: aClass [
 
-	^ self on: { aClass . aTranslator }
+	^ self on: aClass
 ]
 
 { #category : 'public-api' }
 CMLoadedModelPreviewPresenter >> commands [
 
 	^ CMModelOpenerCommand sortedSubclasses collect: [ :commandClass |
-		commandClass forOwner: self translator: translator ]
+		commandClass forOwner: self ]
 ]
 
 { #category : 'accessing' }
@@ -74,8 +73,7 @@ CMLoadedModelPreviewPresenter >> initializePresenters [
 		action: [
 			| presenter |
 			presenter := CMSimulationPresenter
-				forModelClass: cormasModelClass
-				translator: translator.
+				forModelClass: cormasModelClass.
 			presenter open.
 			presenter window centered ].
 	
@@ -92,10 +90,9 @@ CMLoadedModelPreviewPresenter >> initializeToolbar [
 ]
 
 { #category : 'accessing - model' }
-CMLoadedModelPreviewPresenter >> setModelBeforeInitialization: aCollection [
+CMLoadedModelPreviewPresenter >> setModelBeforeInitialization: aClass [
 
-	cormasModelClass := aCollection first.
-	translator := aCollection second
+	cormasModelClass := aClass
 ]
 
 { #category : 'signalling' }

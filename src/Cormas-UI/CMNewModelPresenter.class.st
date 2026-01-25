@@ -2,7 +2,6 @@ Class {
 	#name : 'CMNewModelPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
 		'nameInput',
 		'modelClassNameInput',
 		'prefixInput',
@@ -23,13 +22,7 @@ Class {
 { #category : 'as yet unclassified' }
 CMNewModelPresenter class >> example [
 	<example>
-	(self forTranslator: CMEnglishTranslator new) open
-]
-
-{ #category : 'as yet unclassified' }
-CMNewModelPresenter class >> forTranslator: aTranslator [
-
-	^ self on: aTranslator
+	self new open
 ]
 
 { #category : 'initialization' }
@@ -86,13 +79,13 @@ CMNewModelPresenter >> defaultLayout [
 				yourself) expand: false;
 			add: (SpBoxLayout newLeftToRight
 				vAlignCenter;
-				add: translator tClassPrefix width: 120;
+				add: 'Class prefix' width: 120;
 				add: prefixInput;
 				yourself) expand: false;
 			add: '' expand: false;
 			yourself) expand: false;
 		add: (SpBoxLayout newTopToBottom
-			add: translator tDescription expand: false;
+			add: 'Description' expand: false;
 			add: descriptionText;
 			yourself);
 		add: (SpBoxLayout newTopToBottom
@@ -101,7 +94,7 @@ CMNewModelPresenter >> defaultLayout [
 			yourself) expand: false;
 		add: (SpBoxLayout newTopToBottom
 			spacing: 3;
-			add: translator tPackagesClassesToCreate expand: false;
+			add: 'Packages and classes that will be created' expand: false;
 			add: packageClassTree height: 150;
 			yourself) expand: false;
 		add: (SpBoxLayout newLeftToRight
@@ -156,23 +149,23 @@ CMNewModelPresenter >> initializePresenters [
 		children: [ :dict | dict at: 'classes' ifAbsent: [ OrderedCollection new ] ].
 	
 	generateTestsCheckbox := self newCheckBox
-		label: translator tCreateTestPackage;
+		label: 'Create a test package';
 		state: generator shouldGenerateTestPackage;
 		yourself.
 		
 	generateBaselineCheckbox := self newCheckBox
-		label: translator tCreateBaseline;
+		label: 'Create a baseline';
 		state: generator shouldGenerateBaseline;
 		yourself.
 	
 	createButton := self newButton
-		label: translator tCreate;
+		label: 'Create';
 		icon: (self iconNamed: #accept);
 		disable;
 		yourself.
 		
 	cancelButton := self newButton
-		label: translator tCancel;
+		label: 'Cancel';
 		icon: (self iconNamed: #cancel);
 		yourself.
 ]
@@ -269,12 +262,6 @@ CMNewModelPresenter >> onValidEntry [
 
 	statusLabel label: ''.
 	createButton enable
-]
-
-{ #category : 'accessing - model' }
-CMNewModelPresenter >> setModelBeforeInitialization: aTranslator [
-
-	translator := aTranslator
 ]
 
 { #category : 'as yet unclassified' }

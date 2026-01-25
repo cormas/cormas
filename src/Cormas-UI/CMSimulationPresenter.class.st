@@ -2,7 +2,6 @@ Class {
 	#name : 'CMSimulationPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
 		'modelClass',
 		'fancyNotebookButtons',
 		'fancyNotebookPage',
@@ -18,13 +17,13 @@ Class {
 { #category : 'examples' }
 CMSimulationPresenter class >> example [
 	<example>
-	(self forModelClass: CMMockModel translator: CMEnglishTranslator new) open
+	(self forModelClass: CMMockModel) open
 ]
 
 { #category : 'as yet unclassified' }
-CMSimulationPresenter class >> forModelClass: aClass translator: aTranslator [
+CMSimulationPresenter class >> forModelClass: aClass [
 
-	^ self on: { aClass . aTranslator }
+	^ self on: aClass
 ]
 
 { #category : 'as yet unclassified' }
@@ -149,12 +148,11 @@ CMSimulationPresenter >> initializePresenters [
 	self initializeFancyNotebook.
 
 	simulationRunner := self
-		instantiate: CMSimulationRunnerPresenter
-		on: translator.
+		instantiate: CMSimulationRunnerPresenter.
 		
 	stopConditionPresenter := self
 		instantiate: CMStopConditionPresenter
-		on: { modelClass . translator }.
+		on: modelClass.
 				
 	fancyNotebookButtons ifNotEmpty: [ fancyNotebookButtons first click ]
 ]
@@ -204,10 +202,9 @@ CMSimulationPresenter >> presenterWindowTitle [
 ]
 
 { #category : 'accessing - model' }
-CMSimulationPresenter >> setModelBeforeInitialization: aCollection [
+CMSimulationPresenter >> setModelBeforeInitialization: aClass [
 
-	modelClass := aCollection first.
-	translator := aCollection second
+	modelClass := aClass
 ]
 
 { #category : 'as yet unclassified' }
@@ -219,7 +216,7 @@ CMSimulationPresenter >> settingsRandomNumbers [
 		icon: (self iconNamed: #configuration)
 		provider: [ self
 			instantiate: CMSimulationInitRandomPresenter
-			on: { modelClass . translator } ]
+			on: modelClass ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -231,7 +228,7 @@ CMSimulationPresenter >> settingsSimulationInitializer [
 		icon: (self iconNamed: #smallNew)
 		provider: [ (self
 			instantiate: CMSimulationInitializerPresenter
-			on: { modelClass . translator })
+			on: modelClass)
 			whenInitializeButtonClickedDo: [ :initSelector :controlSelector |
 				self initializeSimulationInit: initSelector control: controlSelector ];
 			yourself ]

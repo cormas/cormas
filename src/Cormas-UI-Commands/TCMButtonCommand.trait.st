@@ -23,13 +23,6 @@ TCMButtonCommand >> buttonOfClass: aClass [
 		yourself
 ]
 
-{ #category : 'initialization' }
-TCMButtonCommand >> initializeWithTranslator: aTranslator owner: aPresenter [
-
-	translator := aTranslator.
-	owner := aPresenter
-]
-
 { #category : 'converting' }
 TCMButtonCommand >> toolbarButton [
 

@@ -15,16 +15,13 @@ Class {
 CMModelDesignerParametersPresenter class >> example [
 	<example>
 	
-	(self
-		withTitle: 'Parameters'
-		forClass: CMMockModel
-		translator: CMEnglishTranslator new) open
+	(self withTitle: 'Parameters' forClass: CMMockModel) open
 ]
 
 { #category : 'instance creation' }
-CMModelDesignerParametersPresenter class >> withTitle: aString forClass: aClass translator: aTranslator [
+CMModelDesignerParametersPresenter class >> withTitle: aString forClass: aClass [
 
-	^ self on: { aString . aClass . aTranslator }
+	^ self on: { aString . aClass }
 ]
 
 { #category : 'initialization' }
@@ -105,8 +102,7 @@ CMModelDesignerParametersPresenter >> initializePresenters [
 CMModelDesignerParametersPresenter >> setModelBeforeInitialization: aCollection [
 
 	title := aCollection first.
-	aClass := aCollection second.
-	translator := aCollection third
+	aClass := aCollection second
 ]
 
 { #category : 'as yet unclassified' }
