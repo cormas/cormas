@@ -266,3 +266,9 @@ CMSimulation >> stopWhen: aBlock [
 	Example: self stopWhen: [ :model | model totalBiomass > 100 ]"
 	simulationRunner stopCondition: aBlock
 ]
+
+{ #category : 'enumerating' }
+CMSimulation >> whenFinishedDo: aBlock [
+
+	simulationRunner whenFinishedDo: aBlock
+]
