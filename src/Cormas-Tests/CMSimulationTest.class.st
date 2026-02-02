@@ -72,37 +72,56 @@ CMSimulationTest >> testProbes [
 { #category : 'tests' }
 CMSimulationTest >> testRunAllSteps [
 
+	| done |
+	done := Semaphore new.
+
 	self assert: simulation currentTimeStep equals: 0.
+	
+	simulation whenFinishedDo: [ done signal ].
 	simulation runAllSteps.
-	self assert: simulation currentTimeStep equals: simulation class defaultFinalTimeStep.
+	
+	"Wait deterministically for completion (and fail if it never completes)"
+	self deny: (done waitTimeoutSeconds: 10).
+	self assert: simulation currentTimeStep equals: simulation class defaultFinalTimeStep
 ]
 
 { #category : 'tests' }
 CMSimulationTest >> testRunAllStepsAfterEachDo [
 
-	| counter |
+	| done counter |
+	done := Semaphore new.
 	counter := 0.
-
+	
+	simulation whenFinishedDo: [ done signal ].
 	simulation runAllStepsAfterEachDo: [ counter := counter + 1 ].
+	
+	"Wait deterministically for completion (and fail if it never completes)"
+	self deny: (done waitTimeoutSeconds: 10).
 	
 	"Did we run the simulation until the end?"
 	self assert: simulation currentTimeStep equals: simulation class defaultFinalTimeStep.
 	
 	"Did we execute the given block (increase the counter) after each step?"
-	self assert: counter equals: simulation class defaultFinalTimeStep.
+	self assert: counter equals: simulation class defaultFinalTimeStep
 ]
 
 { #category : 'tests' }
 CMSimulationTest >> testRunAllStepsAfterEachThreeStepsDo [
 
-	| finalStep stepsWhenBlockIsExecuted  |
+	| finalStep stepsWhenBlockIsExecuted done |
+	done := Semaphore new.
 	
 	"Run 10 steps of a simulation - we need this number to be even"
 	finalStep := 10.
 	simulation stopAfterStep: finalStep.
 	
+	simulation whenFinishedDo: [ done signal ].
+	
 	stepsWhenBlockIsExecuted := OrderedCollection new.
 	simulation runAllStepsAfterEach: 3 do: [ stepsWhenBlockIsExecuted add: simulation currentTimeStep ].
+	
+	"Wait deterministically for completion (and fail if it never completes)"
+	self deny: (done waitTimeoutSeconds: 10).
 	
 	"Did we run the simulation until the end?"
 	self assert: simulation currentTimeStep equals: finalStep.
@@ -115,14 +134,20 @@ CMSimulationTest >> testRunAllStepsAfterEachThreeStepsDo [
 { #category : 'tests' }
 CMSimulationTest >> testRunAllStepsAfterEachTwoStepsDo [
 
-	| finalStep stepsWhenBlockIsExecuted  |
+	| finalStep stepsWhenBlockIsExecuted done |
+	done := Semaphore new.
 	
 	"Run 10 steps of a simulation - we need this number to be even"
 	finalStep := 10.
 	simulation stopAfterStep: finalStep.
 	
+	simulation whenFinishedDo: [ done signal ].
+	
 	stepsWhenBlockIsExecuted := OrderedCollection new.
 	simulation runAllStepsAfterEach: 2 do: [ stepsWhenBlockIsExecuted add: simulation currentTimeStep ].
+	
+	"Wait deterministically for completion (and fail if it never completes)"
+	self deny: (done waitTimeoutSeconds: 10).
 	
 	"Did we run the simulation until the end?"
 	self assert: simulation currentTimeStep equals: finalStep.
@@ -154,22 +179,38 @@ CMSimulationTest >> testRunStep [
 { #category : 'tests' }
 CMSimulationTest >> testStopAfterStep [
 
-	simulation stopAfterStep: 7.
+	| done |
+	done := Semaphore new.
 
+	simulation stopAfterStep: 7.
 	self assert: simulation currentTimeStep equals: 0.
+	
+	simulation whenFinishedDo: [ done signal ].
+	
 	simulation runAllSteps.
+	
+	"Wait deterministically for completion (and fail if it never completes)"
+	self deny: (done waitTimeoutSeconds: 10).
 	self assert: simulation currentTimeStep equals: 7.
 ]
 
 { #category : 'tests' }
 CMSimulationTest >> testStopWhen [
 
+	| done |
+	done := Semaphore new.
+
 	"Stop when cell 1@1 has a goat on it or when the simulation runs for 10000 steps (to ensure that it doesn't run endlessly if something goes wrong)"
 	simulation stopWhen: [ :model |
 		(model cells first hasOccupantsOfClass: CMMockGoat)
 			or: [ model currentTimeStep >= 10000 ] ].
 		
+	simulation whenFinishedDo: [ done signal ].
+		
 	simulation runAllSteps.
+	
+	"Wait deterministically for completion (and fail if it never completes)"
+	self deny: (done waitTimeoutSeconds: 10).
 	
 	"Normally, at least one step of the simulation should be executed. Otherwise this is not a very good test"
 	self assert: simulation currentTimeStep > 0.
