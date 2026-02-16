@@ -4,13 +4,10 @@ Class {
 	#instVars : [
 		'modelClass',
 		'sidebar',
-		'fancyNotebookButtons',
-		'fancyNotebookPage',
 		'stopConditionPresenter',
 		'simulationRunner',
 		'simulation',
-		'whenWindowIsClosedHooks',
-		'inspectPresenterButton'
+		'whenWindowIsClosedHooks'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -80,17 +77,6 @@ CMSimulationPresenter >> example [
 	<script: 'self example'>
 ]
 
-{ #category : 'as yet unclassified' }
-CMSimulationPresenter >> hideOrShowFancyNotebookPage [
-
-	(fancyNotebookButtons anySatisfy: #isActive)
-		ifTrue: [ fancyNotebookPage show ]
-		ifFalse: [ fancyNotebookPage hide ].
-		
-	"if we don't do this, the width of the page will not be applied in the layout"
-	self layout: self defaultLayout
-]
-
 { #category : 'initialization' }
 CMSimulationPresenter >> initialize [
 
@@ -102,49 +88,17 @@ CMSimulationPresenter >> initialize [
 { #category : 'initialization' }
 CMSimulationPresenter >> initializeFancyNotebook [
 		
-	| pages "selectedPage" |
-	
-	pages := self collectFancyNotebookPages.
-	
+	| pages |
 	sidebar := self instantiate: CMDockableSidebar.
 	
+	pages := self collectFancyNotebookPages.
 	pages do: [ :page | sidebar addPage: page ]. 
-	
-	"fancyNotebookButtons := pages collect: [ :page |
-		self newToggleButton
-			icon: page icon;
-			help: page title;
-			whenActivatedDo: [ ""we keep it here and not in controlPresenters because we need to access page""
-				selectedPage := page.
-				fancyNotebookPage updatePresenter ];
-			whenChangedDo: [ 
-				self hideOrShowFancyNotebookPage ] ].
-		
-	fancyNotebookButtons size > 1 ifTrue: [ 
-		fancyNotebookButtons first associatedToggleButtons: fancyNotebookButtons allButFirst ].
-		
-	fancyNotebookPage := self newPresenterSelector.
-	
-	pages do: [ :page | fancyNotebookPage
-		when: [ selectedPage = page ]
-		show: [ page retrievePresenter ] ].
-
-	fancyNotebookPage
-		defaultShow: [ self newLabel label: 'Choose one!' ];
-		""update presenter is needed to make sure the presenter will have correct initial 
-		 value (before anything happens)""
-		updatePresenter."
 ]
 
 { #category : 'initialization' }
 CMSimulationPresenter >> initializePresenters [
 	
 	modelClass initializeParameters.
-	
-	inspectPresenterButton := self newButton
-		icon: (self iconNamed: #inspect);
-		action: [ self inspect ];
-		yourself.
 		
 	stopConditionPresenter := self
 		instantiate: CMStopConditionPresenter
@@ -154,8 +108,6 @@ CMSimulationPresenter >> initializePresenters [
 
 	simulationRunner := self
 		instantiate: CMSimulationRunnerPresenter.
-				
-	"fancyNotebookButtons ifNotEmpty: [ fancyNotebookButtons first click ]"
 ]
 
 { #category : 'instance creation' }
