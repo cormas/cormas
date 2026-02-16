@@ -297,7 +297,7 @@ CMSimulationRunnerPresenter >> initializeWindow: aWindowPresenter [
 CMSimulationRunnerPresenter >> initializeWithSimulation [
 "Purpose: set the final time step, then initialize the Notebook Pages (grid, diagrams,...)"
 	self setSimulationStepDelay.
-	simulation simulationRunner whenFinishedDo: [ self beInPauseMode ].
+	simulation whenFinishedDo: [ self beInPauseMode ].
 	
 	self displayCurrentTimeStep.
 	self enabled: true.

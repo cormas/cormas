@@ -3,12 +3,14 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'modelClass',
+		'sidebar',
 		'fancyNotebookButtons',
 		'fancyNotebookPage',
 		'stopConditionPresenter',
 		'simulationRunner',
 		'simulation',
-		'whenWindowIsClosedHooks'
+		'whenWindowIsClosedHooks',
+		'inspectPresenterButton'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -66,19 +68,9 @@ CMSimulationPresenter >> connectPresenters [
 { #category : 'layout' }
 CMSimulationPresenter >> defaultLayout [
 
-	| buttonsLayout |
-	
-	buttonsLayout := SpBoxLayout newTopToBottom.
-	
-	fancyNotebookButtons do: [ :button |
-		buttonsLayout add: button height: 40 ].
-
 	^ SpBoxLayout newLeftToRight
-		spacing: 4;
-		add: buttonsLayout width: 40;
-		add: fancyNotebookPage width: 250;
-		"this null presented is a hack to have a larger spacing between 2nd and 3rd column than the one between 1st and 2nd column while keeping all 3 columns in the same layout. If they are in different layouts, hiding column 2 will not expand column 3"
-		add: SpNullPresenter new width: 6;
+		spacing: 10;
+		add: sidebar expand: false;
 		add: simulationRunner;
 		yourself
 ]
@@ -96,7 +88,7 @@ CMSimulationPresenter >> hideOrShowFancyNotebookPage [
 		ifFalse: [ fancyNotebookPage hide ].
 		
 	"if we don't do this, the width of the page will not be applied in the layout"
-	self update
+	self layout: self defaultLayout
 ]
 
 { #category : 'initialization' }
@@ -110,15 +102,19 @@ CMSimulationPresenter >> initialize [
 { #category : 'initialization' }
 CMSimulationPresenter >> initializeFancyNotebook [
 		
-	| pages selectedPage |
+	| pages "selectedPage" |
 	
 	pages := self collectFancyNotebookPages.
 	
-	fancyNotebookButtons := pages collect: [ :page |
+	sidebar := self instantiate: CMDockableSidebar.
+	
+	pages do: [ :page | sidebar addPage: page ]. 
+	
+	"fancyNotebookButtons := pages collect: [ :page |
 		self newToggleButton
 			icon: page icon;
 			help: page title;
-			whenActivatedDo: [ "we keep it here and not in controlPresenters because we need to access page"
+			whenActivatedDo: [ ""we keep it here and not in controlPresenters because we need to access page""
 				selectedPage := page.
 				fancyNotebookPage updatePresenter ];
 			whenChangedDo: [ 
@@ -135,9 +131,9 @@ CMSimulationPresenter >> initializeFancyNotebook [
 
 	fancyNotebookPage
 		defaultShow: [ self newLabel label: 'Choose one!' ];
-		"update presenter is needed to make sure the presenter will have correct initial 
-		 value (before anything happens)"
-		updatePresenter.
+		""update presenter is needed to make sure the presenter will have correct initial 
+		 value (before anything happens)""
+		updatePresenter."
 ]
 
 { #category : 'initialization' }
@@ -145,16 +141,21 @@ CMSimulationPresenter >> initializePresenters [
 	
 	modelClass initializeParameters.
 	
-	self initializeFancyNotebook.
-
-	simulationRunner := self
-		instantiate: CMSimulationRunnerPresenter.
+	inspectPresenterButton := self newButton
+		icon: (self iconNamed: #inspect);
+		action: [ self inspect ];
+		yourself.
 		
 	stopConditionPresenter := self
 		instantiate: CMStopConditionPresenter
 		on: modelClass.
+	
+	self initializeFancyNotebook.
+
+	simulationRunner := self
+		instantiate: CMSimulationRunnerPresenter.
 				
-	fancyNotebookButtons ifNotEmpty: [ fancyNotebookButtons first click ]
+	"fancyNotebookButtons ifNotEmpty: [ fancyNotebookButtons first click ]"
 ]
 
 { #category : 'instance creation' }
@@ -209,11 +210,11 @@ CMSimulationPresenter >> setModelBeforeInitialization: aClass [
 
 { #category : 'as yet unclassified' }
 CMSimulationPresenter >> settingsRandomNumbers [
-	<fancyNotebookPageOrder: 5>
+	<fancyNotebookPageOrder: 6>
 	
 	^ SpNotebookPage
 		title: 'Random numbers'
-		icon: (self iconNamed: #configuration)
+		icon: (self iconNamed: #testRunner)
 		provider: [ self
 			instantiate: CMSimulationInitRandomPresenter
 			on: modelClass ]
