@@ -153,19 +153,24 @@ ex: collResult =
 		3 -> #(layer 2)
 		4 -> #(layer 3)  ...]"
 	
-	| layer1 layer2 collResult |
-	collResult := OrderedCollection new: radius.
-	layer1 := Array with: self.
-	collResult add: layer1.
-	radius = 0 ifTrue: [^collResult].
-	layer2 := self neighbourhood.
-	collResult add: layer2.
-	[collResult size < (radius + 1)]
-		whileTrue:
-			[collResult add: (self layer3FromLayer2: layer2 andLayer1: layer1) first.
-			layer2 := collResult last.
-			layer1 := collResult at: collResult size - 1].
-	^collResult
+	| collResult visited current next |
+	collResult := OrderedCollection new.
+	collResult add: (Array with: self).
+	radius = 0 ifTrue: [ ^ collResult ].
+	visited := IdentitySet with: self.
+	current := self neighbourhood.
+	current do: [ :each | visited add: each ].
+	collResult add: current asArray.
+	2 to: radius do: [ :each |
+		next := OrderedCollection new.
+		current do: [ :each |
+			each neighbourhood do: [ :neighbour |
+				(visited includes: neighbour) ifFalse: [
+					visited add: neighbour.
+					next add: neighbour ] ] ].
+		collResult add: next asArray.
+		current := next ].
+	^ collResult
 ]
 
 { #category : 'environment - sensing - agents' }
@@ -359,18 +364,17 @@ CMSpatialEntity >> isSpatialEntity [
 CMSpatialEntity >> layer3FromLayer2: aSet2 andLayer1: aSet1 [
 	"returns an collection of 2 arrays of cells: layers 3 and 2"
 	
-	| newLayer |
+	| newLayer visited |
 	newLayer := OrderedCollection new.
-	aSet2
-		do:
-			[:cell | 
-			newLayer
-				addAll:
-					(cell neighbourhood
-						select:
-							[:c2 | (aSet2 includes: c2) not and: [(aSet1 includes: c2) not]])].
-	newLayer := Array withAll: newLayer.
-	^OrderedCollection with: newLayer with: aSet2
+	visited := IdentitySet new.
+	aSet1 do: [ :cell | visited add: cell ].
+	aSet2 do: [ :cell | visited add: cell ].
+	aSet2 do: [ :cell |
+		cell neighbourhood do: [ :neighbour |
+			(visited includes: neighbour) ifFalse: [
+				visited add: neighbour.
+				newLayer add: neighbour ] ] ].
+	^ OrderedCollection with: newLayer asArray with: aSet2
 ]
 
 { #category : 'environment - sensing - space' }

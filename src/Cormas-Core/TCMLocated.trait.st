@@ -840,7 +840,13 @@ TCMLocated >> randomWalk: radius [
 Argument: radius = <positive Integer>
 Example: self randomWalk: 2 "
 	
-	self moveTo: (self selectRandomlyFrom: (self cell recursiveNeighbourhood: radius))
+	| candidates |
+	cell ifNil: [ ^ nil ].
+	radius <= 0 ifTrue: [ ^ self moveTo: cell ].
+	radius = 1 ifTrue: [ ^ self moveTo: (self selectRandomlyFrom: cell neighbourhoodAndSelf) ].
+	candidates := cell recursiveNeighbourhood: radius.
+	candidates ifEmpty: [ ^ nil ].
+	self moveTo: (self selectRandomlyFrom: candidates)
 ]
 
 { #category : 'moving' }
