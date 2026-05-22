@@ -155,7 +155,7 @@ ex: collResult =
 	| layers visited current next |
 
    layers := Array new: radius + 1.
-   visited := IdentitySet new.
+   visited := Set new.
 
    layers at: 1 put: (Array with: self).
    visited add: self.
