@@ -141,47 +141,6 @@ CMSpatialEntity >> aggregates: anObject [
 	aggregates := anObject
 ]
 
-{ #category : 'environment - sensing - space' }
-CMSpatialEntity >> allLayersTo: radius [
-	"returns a collection (collResult) of layers :
-		- index of collResult is the distance to this layer, 
-		- each sub collection is a layer of cells.
-radius = integer >= 0.
-ex: collResult =	
-		[1 ->#(self)
-		2 ->#(self neighbourhood)
-		3 -> #(layer 2)
-		4 -> #(layer 3)  ...]"
-	| layers visited current next |
-
-   layers := Array new: radius + 1.
-   visited := Set new.
-
-   layers at: 1 put: (Array with: self).
-   visited add: self.
-	radius = 0 ifTrue: [ ^ layers ].
-	current := Array with: self.
-
-   1 to: radius do: [ :level |
-		next := OrderedCollection new.
-
-      current do: [ :cell |
-    	cell neighbourhood do: [ :neighbour |
-      		| alreadySeen |
-
-        	alreadySeen := visited includes: neighbour.
-
-        	alreadySeen ifFalse: [
-         visited add: neighbour.
-         next add: neighbour ] ] ].
-
-      layers at: level + 1 put: next asArray.
-		current := next asArray
-	].
-
-    ^ layers
-]
-
 { #category : 'environment - sensing - agents' }
 CMSpatialEntity >> allOccupants [
 
@@ -367,15 +326,6 @@ CMSpatialEntity >> isElementary [
 CMSpatialEntity >> isSpatialEntity [
 	
 	^true
-]
-
-{ #category : 'environment - sensing - space' }
-CMSpatialEntity >> layerOfRadius: radius [
-	"Purpose: returns the spatial entities belonging to the appropriate layer.of recursive neighbourhood
-Argument: radius = <Integer>
-Return value: <Collection(SpatialEntity)>"
-	
-	^(self allLayersTo: radius) last
 ]
 
 { #category : 'environment - picking - space' }
@@ -594,11 +544,34 @@ The receiver itself is included in the collection, which is ordered from the cen
 Argument: radius = <Integer>
 Return value: <OrderedCollection>"
 	
-	| allCells layers |
-	allCells := OrderedCollection new.
-	layers := self allLayersTo: radius.
-	layers do: [:layer | allCells addAll: layer].
-	^allCells
+	| layers visited current next |
+
+   layers := Array new: radius + 1.
+   visited := Set new.
+
+   layers at: 1 put: (Array with: self).
+   visited add: self.
+	radius = 0 ifTrue: [ ^ layers ].
+	current := Array with: self.
+
+   1 to: radius do: [ :level |
+		next := OrderedCollection new.
+
+      current do: [ :cell |
+    	cell neighbourhood do: [ :neighbour |
+      		| alreadySeen |
+
+        	alreadySeen := visited includes: neighbour.
+
+        	alreadySeen ifFalse: [
+         visited add: neighbour.
+         next add: neighbour ] ] ].
+
+      layers at: level + 1 put: next asArray.
+		current := next asArray
+	].
+
+	^ layers flattened
 ]
 
 { #category : 'environment - sensing - space' }
