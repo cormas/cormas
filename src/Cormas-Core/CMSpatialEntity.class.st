@@ -152,20 +152,34 @@ ex: collResult =
 		2 ->#(self neighbourhood)
 		3 -> #(layer 2)
 		4 -> #(layer 3)  ...]"
-	
-	| layer1 layer2 collResult |
-	collResult := OrderedCollection new: radius.
-	layer1 := Array with: self.
-	collResult add: layer1.
-	radius = 0 ifTrue: [^collResult].
-	layer2 := self neighbourhood.
-	collResult add: layer2.
-	[collResult size < (radius + 1)]
-		whileTrue:
-			[collResult add: (self layer3FromLayer2: layer2 andLayer1: layer1) first.
-			layer2 := collResult last.
-			layer1 := collResult at: collResult size - 1].
-	^collResult
+	| layers visited current next |
+
+   layers := Array new: radius + 1.
+   visited := IdentitySet new.
+
+   layers at: 1 put: (Array with: self).
+   visited add: self.
+	radius = 0 ifTrue: [ ^ layers ].
+	current := Array with: self.
+
+   1 to: radius do: [ :level |
+		next := OrderedCollection new.
+
+      current do: [ :cell |
+    	cell neighbourhood do: [ :neighbour |
+      		| alreadySeen |
+
+        	alreadySeen := visited includes: neighbour.
+
+        	alreadySeen ifFalse: [
+         visited add: neighbour.
+         next add: neighbour ] ] ].
+
+      layers at: level + 1 put: next asArray.
+		current := next asArray
+	].
+
+    ^ layers
 ]
 
 { #category : 'environment - sensing - agents' }
