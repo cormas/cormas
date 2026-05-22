@@ -494,7 +494,7 @@ Example: self nearestNeighborsWithMaxOf: #water verifying: [:c | c isPolluted no
 	| locations |
 	locations := self
 		             selectEntitiesWithMaxOf: aMagnitudeName
-		             amongEntities: (self recursiveNeighbourhood: range)
+		             amongEntities: (self neighbourhoodOfRadius: range)
 		             verifying: aCondition.
 	locations remove: self ifAbsent: [  ].
 	locations := locations asSortedCollection: [ :i :j |
@@ -588,6 +588,20 @@ Return value: <Collection(SpatialEntity)>"
 ]
 
 { #category : 'environment - sensing - space' }
+CMSpatialEntity >> neighbourhoodOfRadius: radius [
+	"Purpose: returns a collection of receiver-like spatial entities within a given radius of the receiver.
+The receiver itself is included in the collection, which is ordered from the center (self) to the perimeter of the radius.
+Argument: radius = <Integer>
+Return value: <OrderedCollection>"
+	
+	| allCells layers |
+	allCells := OrderedCollection new.
+	layers := self allLayersTo: radius.
+	layers do: [:layer | allCells addAll: layer].
+	^allCells
+]
+
+{ #category : 'environment - sensing - space' }
 CMSpatialEntity >> neighbourhoodWithNils [
 	
 	^ neighbourhoodWithNils
@@ -661,22 +675,6 @@ CMSpatialEntity >> randomNeighbourVerifying: aCondition [
 ]
 
 { #category : 'environment - sensing - space' }
-CMSpatialEntity >> recursiveNeighbourhood: radius [
-	"Purpose: returns a collection of receiver-like spatial entities within a given radius of the receiver.
-The receiver itself is included in the collection, which is ordered from the center (self) to the perimeter of the radius.
-Argument: radius = <Integer>
-Return value: <OrderedCollection>
-Example: self recursiveNeighbourhood: 0 (== OrderedCollection with: self)
-Example: self recursiveNeighbourhood: 1 (== self neighbourhoodAndSelf)"
-	
-	| allCells layers |
-	allCells := OrderedCollection new.
-	layers := self allLayersTo: radius.
-	layers do: [:layer | allCells addAll: layer].
-	^allCells
-]
-
-{ #category : 'environment - sensing - space' }
 CMSpatialEntity >> recursiveNeighbourhood: range verifying: aBlock [
 	"Purpose: returns the spatial entities within a given radius and fulfilling the constraint specified in aBlock. 
 Arguments: range = <Integer>
@@ -684,7 +682,7 @@ Arguments: range = <Integer>
 Return value: <Collection(SpatialEntity)>
 Example: self recursiveNeighbourhood: 5 verifying: [:c | c isClosed not] "
 	
-	^(self recursiveNeighbourhood: range) select: [:p | aBlock value: p]
+	^(self neighbourhoodOfRadius: range) select: [:p | aBlock value: p]
 ]
 
 { #category : 'environment - sensing - space' }
