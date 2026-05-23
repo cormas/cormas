@@ -137,12 +137,6 @@ CMEntity class >> genericEntities [
 	^ self withAllSubclasses select: [ :cl | cl package classes = kernel]
 ]
 
-{ #category : 'initialization' }
-CMEntity class >> initializeParameters [
-
-	"Do nothing. This method can be overriden by subclasses to initialize entity parameters. Implementors should always call super initializeParameters, same as for the initialize method"
-]
-
 { #category : 'testing' }
 CMEntity class >> isAbstract [
 	"Purpose: to test the existence of subclasses"
@@ -195,9 +189,36 @@ CMEntity class >> modelClass [
 ]
 
 { #category : 'accessing' }
+CMEntity class >> parameters [
+	"Collect all parameters of this entity. Those are all parameters defined by its class or any of its superclasses. If parameter of a superclass is redefined by one of its subclasses, keep only the final definition"
+		
+	| classes parameters |
+	classes := self allSuperclassesIncluding: CMEntity.
+	classes addFirst: self.
+	
+	parameters := OrderedCollection new.
+	
+	classes do: [ :aClass |
+		(CMParameter collectAllParametersFrom: aClass) do: [ :parameter |
+			(parameters noneSatisfy: [ :existingParameter |
+				existingParameter getterSelector = parameter getterSelector ])
+				ifTrue: [ parameters add: parameter ] ] ].
+		
+	^ parameters
+]
+
+{ #category : 'accessing' }
 CMEntity class >> resetActivePovSelector [
 
 	activePovSelector := nil
+]
+
+{ #category : 'initialization' }
+CMEntity class >> resetClassSideParameters [
+
+	self parameters do: [ :parameter |
+		parameter isClassSide ifTrue: [ 
+			parameter setDefaultValueFor: self ] ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -432,7 +453,16 @@ CMEntity >> initialize [
 
 	super initialize.
 	self initId.
+	self initializeInstanceSideParameters.
 	self class resetActivePovSelector
+]
+
+{ #category : 'initialization' }
+CMEntity >> initializeInstanceSideParameters [
+
+	self parameters
+		select: [ :p | p isInstanceSide ]
+		thenDo: [ :p | p setDefaultValueFor: self ]
 ]
 
 { #category : 'printing' }
@@ -547,6 +577,12 @@ CMEntity >> modelClass [
 	Example: self modelClass -> ECEC"
 
 	^ cormasModel ifNotNil: #class ifNil: [ self class modelClass ]
+]
+
+{ #category : 'accessing' }
+CMEntity >> parameters [
+
+	^ self class parameters
 ]
 
 { #category : 'accessing' }

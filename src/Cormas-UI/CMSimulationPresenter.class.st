@@ -98,7 +98,7 @@ CMSimulationPresenter >> initializeFancyNotebook [
 { #category : 'initialization' }
 CMSimulationPresenter >> initializePresenters [
 	
-	modelClass initializeParameters.
+	"modelClass initializeParameters."
 		
 	stopConditionPresenter := self
 		instantiate: CMStopConditionPresenter
@@ -114,10 +114,14 @@ CMSimulationPresenter >> initializePresenters [
 CMSimulationPresenter >> initializeSimulationInit: anInitSelector control: aControlSelector [
 "Purpose: instanciate a new modelClass with init & control selectors. Then initialize this simulation by performing #activeInitSelector.
 Reset the currentTimeStep and the data. Set the randomSeed"
-	simulation := CMSimulation for: modelClass.
 
-	modelClass parameters do: [ :parameter |
-		simulation initialParameterValues at: parameter put: parameter value ].
+	| parameters |
+
+	simulation ifNotNil: [ 
+		"Save parameters from previous simulation to copy their values and start with the same values in the new simulation. This is important if we want to set some parameters before initialization"
+		parameters := simulation cormasModel allParameters ].
+
+	simulation := CMSimulation for: modelClass.
 
 	simulation
 		activeInitSelector: anInitSelector;
@@ -131,7 +135,11 @@ Reset the currentTimeStep and the data. Set the randomSeed"
 		simulation randomSeed: modelInitializationSettings randomSeed.
 		simulation shouldReleaseRandomSeedAfterInitialization:
 			modelInitializationSettings isReleaseRandomSeedAfterInitialization ]."
-		
+	
+	"Create a new Cormas model for this simulation"
+	simulation initializeModel.
+
+	
 	simulation initializeSimulation.
 	simulationRunner simulation: simulation
 ]
@@ -158,6 +166,18 @@ CMSimulationPresenter >> presenterWindowTitle [
 CMSimulationPresenter >> setModelBeforeInitialization: aClass [
 
 	modelClass := aClass
+]
+
+{ #category : 'as yet unclassified' }
+CMSimulationPresenter >> settingsParameters [
+	<fancyNotebookPageOrder: 5>
+	
+	^ SpNotebookPage
+		title: 'Parameters'
+		icon: (self iconNamed: #configuration)
+		provider: [ self
+			instantiate: CMParametersBrowserPresenter
+			on: modelClass ]
 ]
 
 { #category : 'as yet unclassified' }

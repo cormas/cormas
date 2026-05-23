@@ -55,7 +55,7 @@ CMSensitivityAnalysis >> addSimulationForParameter: aParameter value: aValue [
 		shouldReleaseRandomSeedAfterInitialization: releaseRandomSeedAfterInit;
 		yourself.
 		
-	simulation initialParameterValues at: aParameter put: aValue.
+	"simulation initialParameterValues at: aParameter put: aValue."
 	simulations add: simulation
 ]
 
@@ -168,9 +168,9 @@ CMSensitivityAnalysis >> runSimulation: aSimulation afterEachRepetitionDo: aBloc
 		dataCollectors do: #collectDataAfterSimulation.
 		
 		dataRecord := {
-			'Parameter class' -> aSimulation initialParameterValues keys anyOne receiver name .
+			"'Parameter class' -> aSimulation initialParameterValues keys anyOne receiver name .
 			'Parameter name' -> aSimulation initialParameterValues keys anyOne name .
-			'Parameter value' -> aSimulation initialParameterValues values anyOne .
+			'Parameter value' -> aSimulation initialParameterValues values anyOne ."
 			'Repetition' -> i
 		} asOrderedDictionary.
 		

@@ -16,7 +16,8 @@ Class {
 	#instVars : [
 		'theCells',
 		'theCows',
-		'theGoats'
+		'theGoats',
+		'weather'
 	],
 	#classInstVars : [
 		'initialNumberOfCows',
@@ -30,7 +31,7 @@ Class {
 
 { #category : 'parameters' }
 CMMockModel class >> initialNumberOfCows [
-
+	<parameterInteger: 'Number of cows' min: 1 max: 5 default: 3>
 	^ initialNumberOfCows
 ]
 
@@ -42,7 +43,7 @@ CMMockModel class >> initialNumberOfCows: aNumber [
 
 { #category : 'parameters' }
 CMMockModel class >> initialNumberOfGoats [
-
+	<parameterInteger: 'Number of goats' min: 1 max: 5 default: 3>
 	^ initialNumberOfGoats
 ]
 
@@ -52,20 +53,9 @@ CMMockModel class >> initialNumberOfGoats: aNumber [
 	initialNumberOfGoats := aNumber
 ]
 
-{ #category : 'instance creation' }
-CMMockModel class >> initializeParameters [
-
-	super initializeParameters.
-	
-	initialNumberOfCows := 3.
-	initialNumberOfGoats := 3.
-	numberOfRows := 4.
-	numberOfColumns := 4.
-]
-
 { #category : 'parameters' }
 CMMockModel class >> numberOfColumns [
-
+	<parameterInteger: 'Number of columns' min: 1 max: 20 default: 4>
 	^ numberOfColumns
 ]
 
@@ -77,7 +67,7 @@ CMMockModel class >> numberOfColumns: aNumber [
 
 { #category : 'parameters' }
 CMMockModel class >> numberOfRows [
-
+	<parameterInteger: 'Number of rows' min: 1 max: 20 default: 4>
 	^ numberOfRows
 ]
 
@@ -125,7 +115,7 @@ CMMockModel >> init [
 
 { #category : 'init' }
 CMMockModel >> initAlive [
-	<init>
+	<init>	
 	self cells do: #initAlive
 ]
 
@@ -224,4 +214,16 @@ CMMockModel >> step: t [
 	<control>
 	self askRandom: CMMockAnimal toDo: #step.
 	self stepSynchronouslyCA: t.
+]
+
+{ #category : 'accessing' }
+CMMockModel >> weather [
+	<parameterValues: #(sunny cloudy rainy snowy) default: #sunny>
+	^ weather
+]
+
+{ #category : 'accessing' }
+CMMockModel >> weather: aSymbol [
+	
+	weather := aSymbol
 ]

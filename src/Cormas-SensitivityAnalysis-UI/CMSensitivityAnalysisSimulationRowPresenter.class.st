@@ -20,10 +20,10 @@ CMSensitivityAnalysisSimulationRowPresenter class >> example [
 	
 	| parameter simulation |
 	
-	parameter := CMMockModel parameters first.
+	parameter := CMMockModel allParameters first.
 	simulation := CMSimulation for: CMMockModel.
 	
-	simulation initialParameterValues at: parameter put: 42.
+	"simulation initialParameterValues at: parameter put: 42."
 	
 	(self forSimulation: simulation) open
 ]
@@ -86,13 +86,13 @@ CMSensitivityAnalysisSimulationRowPresenter >> initializePresenters [
 { #category : 'accessing' }
 CMSensitivityAnalysisSimulationRowPresenter >> parameter [
 	"The dictionary is expected to have exactly one element"
-	^ simulation initialParameterValues keys anyOne
+	"^ simulation initialParameterValues keys anyOne"
 ]
 
 { #category : 'accessing' }
 CMSensitivityAnalysisSimulationRowPresenter >> parameterValue [
 	"The dictionary is expected to have exactly one element"
-	^ simulation initialParameterValues values anyOne
+	"^ simulation initialParameterValues values anyOne"
 ]
 
 { #category : 'accessing - model' }
@@ -100,6 +100,6 @@ CMSensitivityAnalysisSimulationRowPresenter >> setModelBeforeInitialization: aSi
 
 	simulation := aSimulation.
 	
-	simulation initialParameterValues size = 1 ifFalse: [ 
-		self error: 'Each simulation is supposed to set exactly one initial parameter value' ].
+	"simulation initialParameterValues size = 1 ifFalse: [ 
+		self error: 'Each simulation is supposed to set exactly one initial parameter value' ]."
 ]

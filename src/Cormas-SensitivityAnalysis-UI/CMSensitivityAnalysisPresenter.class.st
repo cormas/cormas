@@ -102,7 +102,7 @@ CMSensitivityAnalysisPresenter >> initializePresenters [
 		
 	parametersTable := self
 		instantiate: CMSensitivityAnalysisParametersListPresenter
-		on: sensitivityAnalysis modelClass parameters.
+		on: sensitivityAnalysis modelClass allParameters.
 		
 	runButton := self newButton
 		label: 'Run';

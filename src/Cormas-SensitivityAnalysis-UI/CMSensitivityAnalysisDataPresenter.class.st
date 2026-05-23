@@ -25,7 +25,7 @@ CMSensitivityAnalysisDataPresenter class >> example [
 		activeControlSelector: #step:;
 		yourself.
 	
-	CMMockModel parameters do: [ :parameter |
+	CMMockModel allParameters do: [ :parameter |
 		1 to: 5 do: [ :value | 
 			sensitivityAnalysis addSimulationForParameter: parameter value: value ] ].
 	
@@ -44,7 +44,7 @@ CMSensitivityAnalysisDataPresenter >> addChartsPage [
 	| parameters measurementNames |
 	
 	parameters := (sensitivityAnalysis simulations
-		flatCollect: [ :each | each initialParameterValues keys ]) asSet asOrderedCollection.
+		flatCollect: [ :each | each allParameters ]) asSet asOrderedCollection.
 		
 	measurementNames := sensitivityAnalysis data first keys allButFirst: 4.
 
@@ -115,7 +115,7 @@ CMSensitivityAnalysisDataPresenter >> initializePresenters [
 								yourself) ] ];
 			yourself);
 		items: sensitivityAnalysis simulations;
-		addColumn: (SpStringTableColumn
+		"addColumn: (SpStringTableColumn
 			title: 'Parameter class'
 			evaluated: [ :simulation | simulation initialParameterValues keys anyOne receiver name ]);
 		addColumn: (SpStringTableColumn
@@ -123,7 +123,7 @@ CMSensitivityAnalysisDataPresenter >> initializePresenters [
 			evaluated: [ :simulation | simulation initialParameterValues keys anyOne name ]);
 		addColumn: (SpStringTableColumn
 			title: 'Parameter value'
-			evaluated: [ :simulation | simulation initialParameterValues values anyOne ]);
+			evaluated: [ :simulation | simulation initialParameterValues values anyOne ]);"
 		addColumn: (SpStringTableColumn
 			title: 'Progress'
 			evaluated: [ :simulation | self progressStringFrom: 0 ] )

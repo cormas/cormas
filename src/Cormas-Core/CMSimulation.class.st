@@ -95,6 +95,12 @@ CMSimulation >> initialize [
 ]
 
 { #category : 'initialization' }
+CMSimulation >> initializeModel [
+
+	cormasModel := modelClass new.
+]
+
+{ #category : 'initialization' }
 CMSimulation >> initializeProbes [
 
 	probes := cormasModel class availableProbes.
@@ -105,8 +111,6 @@ CMSimulation >> initializeProbes [
 CMSimulation >> initializeSimulation [
 "Purpose: initialize one simulation by performing #activeInitSelector.
 Reset the currentTimeStep and the data. Set the randomSeed"
-
-	cormasModel := modelClass new.
 	
 	randomSeed ifNotNil: [
 		cormasModel randomSeed: randomSeed ].
