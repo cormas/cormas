@@ -281,7 +281,7 @@ Return value: <Collection(SpatialEntity) | nil>"
 	
 	^ self cell
 		ifNil: [ Array new ]
-		ifNotNil: [ self cell recursiveNeighbourhood: range ]
+		ifNotNil: [ self cell neighbourhoodOfRadius: range ]
 ]
 
 { #category : 'environment - sensing - space' }
@@ -857,7 +857,7 @@ TCMLocated >> randomWalk: radius [
 Argument: radius = <positive Integer>
 Example: self randomWalk: 2 "
 	
-	self moveTo: (self selectRandomlyFrom: (self cell recursiveNeighbourhood: radius))
+	self moveTo: (self selectRandomlyFrom: (self cell neighbourhoodOfRadius: radius))
 ]
 
 { #category : 'moving' }
