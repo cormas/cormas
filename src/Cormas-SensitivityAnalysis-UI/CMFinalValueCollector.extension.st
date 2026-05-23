@@ -1,7 +1,7 @@
 Extension { #name : 'CMFinalValueCollector' }
 
 { #category : '*Cormas-SensitivityAnalysis-UI' }
-CMFinalValueCollector class >> collectorNameFromTranslator: aTranslator [
+CMFinalValueCollector class >> collectorName [
 
-	^ aTranslator tFinalValue
+	^ 'Final value'
 ]

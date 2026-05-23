@@ -9,15 +9,9 @@ Class {
 CMModelDesignerProbesPresenter class >> example [
 	<example>
 	
-	(self withTranslator: CMEnglishTranslator new)
+	self new
 		items: CMMockModel availableProbes;
-		open.
-]
-
-{ #category : 'as yet unclassified' }
-CMModelDesignerProbesPresenter class >> withTranslator: aTranslator [
-
-	^ self on: aTranslator
+		open
 ]
 
 { #category : 'as yet unclassified' }
@@ -48,11 +42,11 @@ CMModelDesignerProbesPresenter >> initializeList [
 		yourself
 ]
 
-{ #category : 'accessing - model' }
-CMModelDesignerProbesPresenter >> setModelBeforeInitialization: aTranslator [
+{ #category : 'initialization' }
+CMModelDesignerProbesPresenter >> initializePresenters [
 
-	translator := aTranslator.
-	title := translator tProbes
+	title := 'Probes'.
+	super initializePresenters.
 ]
 
 { #category : 'as yet unclassified' }

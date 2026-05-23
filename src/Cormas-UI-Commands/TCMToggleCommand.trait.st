@@ -62,12 +62,10 @@ TCMToggleCommand >> iconWhenOn [
 ]
 
 { #category : 'initialization' }
-TCMToggleCommand >> initializeWithTranslator: aTranslator owner: aPresenter [
+TCMToggleCommand >> initializeWithOwner: aPresenter [
 
-	translator := aTranslator.
 	owner := aPresenter.
-	isOn := self isOnByDefault.
-	
+	isOn := self isOnByDefault.	
 	self createButton.
 ]
 

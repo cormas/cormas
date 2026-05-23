@@ -3,8 +3,7 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'table',
-		'toolbar',
-		'translator'
+		'toolbar'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -13,13 +12,7 @@ Class {
 { #category : 'examples' }
 CMDataPresenter class >> example [
 	<example>
-	(self on: CMEnglishTranslator new) open
-]
-
-{ #category : 'as yet unclassified' }
-CMDataPresenter class >> forTranslator: aTranslator [
-
-	^ self on: aTranslator
+	self new open
 ]
 
 { #category : 'as yet unclassified' }
@@ -64,16 +57,10 @@ CMDataPresenter >> initializeToolbar [
 
 	CMDataPresenterCommand sortedSubclasses do: [ :aClass |
 		| command |
-		command := (aClass forOwner: self translator: translator)
+		command := (aClass forOwner: self)
 			cormasIconProvider: CMIcons;
 			yourself.
 		toolbar add: command toolbarButton ].
-]
-
-{ #category : 'accessing - model' }
-CMDataPresenter >> setModelBeforeInitialization: aTranslator [
-
-	translator := aTranslator
 ]
 
 { #category : 'as yet unclassified' }

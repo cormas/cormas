@@ -19,5 +19,5 @@ CMBrowseSpaceContextMenuCommand >> icon [
 { #category : 'accessing' }
 CMBrowseSpaceContextMenuCommand >> name [
 
-	^ translator tBrowse
+	^ 'Browse'
 ]

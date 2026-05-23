@@ -14,9 +14,7 @@ CMSimulationInitRandomPresenterTest >> setUp [
 
 	super setUp.
 	
-	presenter := CMSimulationInitRandomPresenter
-		forModelClass: CMMockModel
-		translator: CMEnglishTranslator new
+	presenter := CMSimulationInitRandomPresenter forModelClass: CMMockModel
 ]
 
 { #category : 'tests' }

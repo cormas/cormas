@@ -109,7 +109,7 @@ BaselineOfCormas >> specForGroups: spec [
 		with: #( 'Cormas-Core' 'Cormas-Tests' 'Cormas-Mocks' );
 	
 		group: 'UI'
-		with: #( 'Core' 'Cormas-UI' 'Cormas-CodeGeneration-Tests' 'Cormas-UI-Tests' 'Cormas-UI-Commands' 'Cormas-UI-Roassal3' 'Cormas-UI-Tilesets' 'Cormas-UI-Translator' );
+		with: #( 'Core' 'Cormas-UI' 'Cormas-CodeGeneration-Tests' 'Cormas-UI-Tests' 'Cormas-UI-Commands' 'Cormas-UI-Roassal3' 'Cormas-UI-Tilesets' );
 	
 		group: 'SensitivityAnalysis'
 		with: #( 'UI' 'Cormas-SensitivityAnalysis' 'Cormas-SensitivityAnalysis-Tests' 'Cormas-SensitivityAnalysis-UI' );
@@ -138,12 +138,11 @@ BaselineOfCormas >> specForPackages: spec [
 		package: 'Cormas-UI-Roassal3'
 		with: [ spec requires: #('Cormas-Core' 'RoassalExporters') ];
 		
-		package: 'Cormas-UI-Translator';
 		package: 'Cormas-UI-Commands';
 		package: 'Cormas-UI-Tilesets';
 		
 		package: 'Cormas-UI'
-		with: [ spec requires: #('Cormas-Core' 'Cormas-CodeGeneration' 'Cormas-Mocks' 'Cormas-UI-Roassal3' 'Cormas-UI-Translator' 'CormasExampleModels' 'Cormas-UI-Tilesets' 'Cormas-UI-Commands') ];
+		with: [ spec requires: #('Cormas-Core' 'Cormas-CodeGeneration' 'Cormas-Mocks' 'Cormas-UI-Roassal3' 'CormasExampleModels' 'Cormas-UI-Tilesets' 'Cormas-UI-Commands') ];
 
 		package: 'Cormas-UI-Tests'
 		with: [ spec requires: #('Cormas-UI') ];
@@ -155,5 +154,5 @@ BaselineOfCormas >> specForPackages: spec [
 		with: [ spec requires: #('Cormas-SensitivityAnalysis' 'Cormas-Mocks') ];
 		
 		package: 'Cormas-SensitivityAnalysis-UI'
-		with: [ spec requires: #('Cormas-SensitivityAnalysis' 'Cormas-Mocks' 'Cormas-UI-Translator') ]
+		with: [ spec requires: #('Cormas-SensitivityAnalysis' 'Cormas-Mocks') ]
 ]

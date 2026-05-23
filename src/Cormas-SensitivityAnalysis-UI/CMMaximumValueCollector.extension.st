@@ -1,7 +1,7 @@
 Extension { #name : 'CMMaximumValueCollector' }
 
 { #category : '*Cormas-SensitivityAnalysis-UI' }
-CMMaximumValueCollector class >> collectorNameFromTranslator: aTranslator [
+CMMaximumValueCollector class >> collectorName [
 
-	^ aTranslator tMaximumValue
+	^ 'Maximum value'
 ]

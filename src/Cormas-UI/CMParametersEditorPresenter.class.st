@@ -2,7 +2,6 @@ Class {
 	#name : 'CMParametersEditorPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
 		'parameters',
 		'classTree',
 		'parametersTable'
@@ -15,19 +14,13 @@ Class {
 CMParametersEditorPresenter class >> example [
 	<example>
 	
-	| translator |
-	translator := CMEnglishTranslator new.
-	
-	(self
-		forParameters: CMMockModel parameters
-		translator: translator)
-		open
+	(self forParameters: CMMockModel parameters) open
 ]
 
 { #category : 'as yet unclassified' }
-CMParametersEditorPresenter class >> forParameters: aCollectionOfParameters translator: aTranslator [
+CMParametersEditorPresenter class >> forParameters: aCollectionOfParameters [
 
-	^ self on: { aCollectionOfParameters . aTranslator }
+	^ self on: aCollectionOfParameters
 ]
 
 { #category : 'initialization' }
@@ -81,11 +74,11 @@ CMParametersEditorPresenter >> initializeParametersTable [
 	parametersTable := self newTable.
 	
 	parametersTable addColumn: (SpStringTableColumn
-		title: translator tParameter
+		title: 'Parameter'
 		evaluated: [ :each | each name ]).
 		
 	parametersTable addColumn: (SpStringTableColumn new
-		title: translator tValue;
+		title: 'Value';
 		evaluated: [ :each | each value asString ];
 		beEditable;
 		onTextChanged: [ :parameter :newValue | parameter value: (self convertInputType: newValue) ];
@@ -112,6 +105,5 @@ CMParametersEditorPresenter >> initializeWindow: aWindowPresenter [
 { #category : 'accessing - model' }
 CMParametersEditorPresenter >> setModelBeforeInitialization: aCollection [
 
-	parameters := aCollection first.
-	translator := aCollection second.
+	parameters := aCollection
 ]

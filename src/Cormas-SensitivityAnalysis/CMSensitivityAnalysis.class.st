@@ -175,7 +175,7 @@ CMSensitivityAnalysis >> runSimulation: aSimulation afterEachRepetitionDo: aBloc
 		} asOrderedDictionary.
 		
 		dataCollectors do: [ :collector |
-			dataRecord at: ((collector class collectorNameFromTranslator: CMEnglishTranslator new), ' of ', collector probe name) put: collector data last ].
+			dataRecord at: (collector class collectorName, ' of ', collector probe name) put: collector data last ].
 		
 		data add: dataRecord.
 		aBlock value ].

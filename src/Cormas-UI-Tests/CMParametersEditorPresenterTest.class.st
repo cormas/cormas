@@ -12,14 +12,9 @@ Class {
 { #category : 'running' }
 CMParametersEditorPresenterTest >> setUp [
 
-	| translator |
 	super setUp.
 	
-	translator := CMEnglishTranslator new.
-	
-	editor := CMParametersEditorPresenter
-		forParameters: CMMockModel parameters
-		translator: translator.
+	editor := CMParametersEditorPresenter forParameters: CMMockModel parameters.
 ]
 
 { #category : 'tests' }

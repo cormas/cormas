@@ -1,7 +1,7 @@
 Extension { #name : 'CMDataCollector' }
 
 { #category : '*Cormas-SensitivityAnalysis-UI' }
-CMDataCollector class >> collectorNameFromTranslator: aTranslator [
+CMDataCollector class >> collectorName [
 
 	self subclassResponsibility
 ]

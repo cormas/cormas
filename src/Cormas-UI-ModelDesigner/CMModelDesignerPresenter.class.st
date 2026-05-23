@@ -2,7 +2,6 @@ Class {
 	#name : 'CMModelDesignerPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
 		'modelClass',
 		'toolbar',
 		'openSimulationButton',
@@ -16,13 +15,13 @@ Class {
 CMModelDesignerPresenter class >> example [
 	<example>
 	
-	(self forModelClass: ECECModel translator: CMEnglishTranslator new) open
+	(self forModelClass: ECECModel) open
 ]
 
 { #category : 'as yet unclassified' }
-CMModelDesignerPresenter class >> forModelClass: aClass translator: aTranslator [
+CMModelDesignerPresenter class >> forModelClass: aClass [
 
-	^ self on: { aClass . aTranslator }
+	^ self on: aClass 
 ]
 
 { #category : 'as yet unclassified' }
@@ -34,7 +33,7 @@ CMModelDesignerPresenter >> addAboutModelNotebookPage [
 		provider: [
 			self
 				instantiate: CMModelDesignerAboutPresenter
-				on: { modelClass . translator } ])
+				on: modelClass ])
 ]
 
 { #category : 'as yet unclassified' }
@@ -49,7 +48,7 @@ CMModelDesignerPresenter >> addClassesNotebookPages [
 		notebook addPage: ((SpNotebookPage 
 			title: (aClass name withoutPrefix: modelClass prefix)
 			icon: (self iconForClass: aClass)
-			provider: [ self instantiate: CMModelDesignerEntityClassPresenter on: { aClass . modelClass prefix . translator } ])
+			provider: [ self instantiate: CMModelDesignerEntityClassPresenter on: { aClass . modelClass prefix } ])
 			beCloseable;
 			yourself) ].
 ]
@@ -60,7 +59,7 @@ CMModelDesignerPresenter >> addModelNotebookPage [
 	notebook addPage: ((SpNotebookPage 
 		title: 'Model'
 		icon: (self iconForClass: modelClass)
-		provider: [ self instantiate: CMModelDesignerModelPresenter on: { modelClass . modelClass prefix . translator } ])
+		provider: [ self instantiate: CMModelDesignerModelPresenter on: { modelClass . modelClass prefix } ])
 		yourself)
 ]
 
@@ -73,7 +72,7 @@ CMModelDesignerPresenter >> addNewClassNotebookPage [
 		provider: [
 			self
 				instantiate: CMModelDesignerNewClassPresenter
-				on: { modelClass . modelClass prefix . translator } ])
+				on: { modelClass . modelClass prefix } ])
 ]
 
 { #category : 'as yet unclassified' }
@@ -114,10 +113,7 @@ CMModelDesignerPresenter >> confirmDeleteClassNamed: aString [
 CMModelDesignerPresenter >> connectPresenters [
 
 	openSimulationButton action: [ 
-		(CMSimulationPresenter
-			forModelClass: modelClass
-			translator: translator)
-			open ]
+		(CMSimulationPresenter forModelClass: modelClass) open ]
 ]
 
 { #category : 'layout' }
@@ -181,10 +177,9 @@ CMModelDesignerPresenter >> initializeWindow: aWindowPresenter [
 ]
 
 { #category : 'accessing - model' }
-CMModelDesignerPresenter >> setModelBeforeInitialization: aCollection [
+CMModelDesignerPresenter >> setModelBeforeInitialization: aClass [
 
-	modelClass := aCollection first.
-	translator := aCollection second
+	modelClass := aClass
 ]
 
 { #category : 'as yet unclassified' }

@@ -2,7 +2,6 @@ Class {
 	#name : 'CMModelPreviewPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
 		'cormasModelClass',
 		'screenshot',
 		'modelDescription'

@@ -2,10 +2,8 @@ Class {
 	#name : 'CMSimulationPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
 		'modelClass',
-		'fancyNotebookButtons',
-		'fancyNotebookPage',
+		'sidebar',
 		'stopConditionPresenter',
 		'simulationRunner',
 		'simulation',
@@ -18,13 +16,13 @@ Class {
 { #category : 'examples' }
 CMSimulationPresenter class >> example [
 	<example>
-	(self forModelClass: CMMockModel translator: CMEnglishTranslator new) open
+	(self forModelClass: CMMockModel) open
 ]
 
 { #category : 'as yet unclassified' }
-CMSimulationPresenter class >> forModelClass: aClass translator: aTranslator [
+CMSimulationPresenter class >> forModelClass: aClass [
 
-	^ self on: { aClass . aTranslator }
+	^ self on: aClass
 ]
 
 { #category : 'as yet unclassified' }
@@ -52,22 +50,24 @@ CMSimulationPresenter >> compileBlock: aSourceCode [
 		evaluate
 ]
 
+{ #category : 'initialization' }
+CMSimulationPresenter >> connectPresenters [
+				
+	stopConditionPresenter whenChangedDo: [ :stopConditionBlock |
+		"Simulation will be nil if the stop condition is changed before
+		simulation is initialized. This will happen in most cases. However,
+		we still want to have the possibility to change the stop condition
+		during the simulation. For example, if the simulation has completed
+		and then you want to run it for 100 more steps"
+		simulation ifNotNil: [ simulation stopWhen: stopConditionBlock ] ]
+]
+
 { #category : 'layout' }
 CMSimulationPresenter >> defaultLayout [
 
-	| buttonsLayout |
-	
-	buttonsLayout := SpBoxLayout newTopToBottom.
-	
-	fancyNotebookButtons do: [ :button |
-		buttonsLayout add: button height: 40 ].
-
 	^ SpBoxLayout newLeftToRight
-		spacing: 4;
-		add: buttonsLayout width: 40;
-		add: fancyNotebookPage width: 250;
-		"this null presented is a hack to have a larger spacing between 2nd and 3rd column than the one between 1st and 2nd column while keeping all 3 columns in the same layout. If they are in different layouts, hiding column 2 will not expand column 3"
-		add: SpNullPresenter new width: 6;
+		spacing: 10;
+		add: sidebar expand: false;
 		add: simulationRunner;
 		yourself
 ]
@@ -75,17 +75,6 @@ CMSimulationPresenter >> defaultLayout [
 { #category : 'examples' }
 CMSimulationPresenter >> example [
 	<script: 'self example'>
-]
-
-{ #category : 'as yet unclassified' }
-CMSimulationPresenter >> hideOrShowFancyNotebookPage [
-
-	(fancyNotebookButtons anySatisfy: #isActive)
-		ifTrue: [ fancyNotebookPage show ]
-		ifFalse: [ fancyNotebookPage hide ].
-		
-	"if we don't do this, the width of the page will not be applied in the layout"
-	self update
 ]
 
 { #category : 'initialization' }
@@ -99,60 +88,26 @@ CMSimulationPresenter >> initialize [
 { #category : 'initialization' }
 CMSimulationPresenter >> initializeFancyNotebook [
 		
-	| pages selectedPage |
+	| pages |
+	sidebar := self instantiate: CMDockableSidebar.
 	
 	pages := self collectFancyNotebookPages.
-	
-	fancyNotebookButtons := pages collect: [ :page |
-		self newToggleButton
-			icon: page icon;
-			help: page title;
-			whenActivatedDo: [ "we keep it here and not in controlPresenters because we need to access page"
-				selectedPage := page.
-				fancyNotebookPage updatePresenter ];
-			whenChangedDo: [ 
-				self hideOrShowFancyNotebookPage ] ].
-		
-	fancyNotebookButtons size > 1 ifTrue: [ 
-		fancyNotebookButtons first associatedToggleButtons: fancyNotebookButtons allButFirst ].
-		
-	fancyNotebookPage := self newPresenterSelector.
-	
-	pages do: [ :page | fancyNotebookPage
-		when: [ selectedPage = page ]
-		show: [ page retrievePresenter ] ].
-
-	fancyNotebookPage
-		defaultShow: [ self newLabel label: 'Choose one!' ];
-		"update presenter is needed to make sure the presenter will have correct initial 
-		 value (before anything happens)"
-		updatePresenter.
+	pages do: [ :page | sidebar addPage: page ]. 
 ]
 
 { #category : 'initialization' }
 CMSimulationPresenter >> initializePresenters [
 	
 	modelClass initializeParameters.
+		
+	stopConditionPresenter := self
+		instantiate: CMStopConditionPresenter
+		on: modelClass.
 	
 	self initializeFancyNotebook.
 
 	simulationRunner := self
-		instantiate: CMSimulationRunnerPresenter
-		on: translator.
-		
-	stopConditionPresenter := self
-		instantiate: CMStopConditionPresenter
-		on: { modelClass . translator }.
-				
-	stopConditionPresenter whenChangedDo: [ :stopConditionBlock |
-		"Simulation will be nil if the stop condition is changed before
-		simulation is initialized. This will happen in most cases. However,
-		we still want to have the possibility to change the stop condition
-		during the simulation. For example, if the simulation has completed
-		and then you want to run it for 100 more steps"
-		simulation ifNotNil: [ simulation stopWhen: stopConditionBlock ] ].
-		
-	fancyNotebookButtons ifNotEmpty: [ fancyNotebookButtons first click ]
+		instantiate: CMSimulationRunnerPresenter.
 ]
 
 { #category : 'instance creation' }
@@ -168,7 +123,7 @@ Reset the currentTimeStep and the data. Set the randomSeed"
 		activeInitSelector: anInitSelector;
 		activeControlSelector: aControlSelector.
 		
-	simulation stopWhen: stopConditionPresenter condition.
+	simulation stopWhen: stopConditionPresenter buildConditionBlock.
 		
 	self flag: 'TODO'.
 	
@@ -200,22 +155,21 @@ CMSimulationPresenter >> presenterWindowTitle [
 ]
 
 { #category : 'accessing - model' }
-CMSimulationPresenter >> setModelBeforeInitialization: aCollection [
+CMSimulationPresenter >> setModelBeforeInitialization: aClass [
 
-	modelClass := aCollection first.
-	translator := aCollection second
+	modelClass := aClass
 ]
 
 { #category : 'as yet unclassified' }
 CMSimulationPresenter >> settingsRandomNumbers [
-	<fancyNotebookPageOrder: 5>
+	<fancyNotebookPageOrder: 6>
 	
 	^ SpNotebookPage
 		title: 'Random numbers'
-		icon: (self iconNamed: #configuration)
+		icon: (self iconNamed: #testRunner)
 		provider: [ self
 			instantiate: CMSimulationInitRandomPresenter
-			on: { modelClass . translator } ]
+			on: modelClass ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -227,7 +181,7 @@ CMSimulationPresenter >> settingsSimulationInitializer [
 		icon: (self iconNamed: #smallNew)
 		provider: [ (self
 			instantiate: CMSimulationInitializerPresenter
-			on: { modelClass . translator })
+			on: modelClass)
 			whenInitializeButtonClickedDo: [ :initSelector :controlSelector |
 				self initializeSimulationInit: initSelector control: controlSelector ];
 			yourself ]

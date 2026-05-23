@@ -2,7 +2,6 @@ Class {
 	#name : 'CMModelDesignerAboutPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
 		'modelClass',
 		'textEdit',
 		'microdown'
@@ -15,13 +14,13 @@ Class {
 CMModelDesignerAboutPresenter class >> example [
 	<example>
 	
-	(self forModelClass: CMMockModel translator: CMEnglishTranslator new) open
+	(self forModelClass: CMMockModel) open
 ]
 
 { #category : 'as yet unclassified' }
-CMModelDesignerAboutPresenter class >> forModelClass: aClass translator: aTranslator [
+CMModelDesignerAboutPresenter class >> forModelClass: aClass [
 
-	^ self on: { aClass . aTranslator }
+	^ self on: aClass
 ]
 
 { #category : 'initialization' }
@@ -58,8 +57,7 @@ CMModelDesignerAboutPresenter >> initializePresenters [
 ]
 
 { #category : 'accessing - model' }
-CMModelDesignerAboutPresenter >> setModelBeforeInitialization: aCollection [
+CMModelDesignerAboutPresenter >> setModelBeforeInitialization: aClass [
 
-	modelClass := aCollection first.
-	translator := aCollection second
+	modelClass := aClass
 ]

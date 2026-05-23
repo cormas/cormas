@@ -2,7 +2,6 @@ Class {
 	#name : 'CMSimulationInitRandomPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
 		'modelClass',
 		'randomNumberGenerator',
 		'fixRandomSeedCheckbox',
@@ -40,13 +39,13 @@ CMSimulationInitRandomPresenter class >> availableRandomNumberGenerators [
 CMSimulationInitRandomPresenter class >> example [
 	<example>
 	
-	(self forModelClass: CMMockModel translator: CMEnglishTranslator new) open
+	(self forModelClass: CMMockModel) open
 ]
 
 { #category : 'as yet unclassified' }
-CMSimulationInitRandomPresenter class >> forModelClass: aClass translator: aTranslator [
+CMSimulationInitRandomPresenter class >> forModelClass: aClass [
 
-	^ self on: { aClass . aTranslator }
+	^ self on: aClass
 ]
 
 { #category : 'initialization' }
@@ -67,16 +66,22 @@ CMSimulationInitRandomPresenter >> connectPresenters [
 CMSimulationInitRandomPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
-		  add: translator tGenerator expand: false;
-		  add: (self instantiate: SpNullPresenter) expand: false;
-		  add: randomSeedGeneratorDroplist expand: false;
-		  add: (self instantiate: SpNullPresenter) expand: false;
-		  add: translator tRandomSeed expand: false;
-		  add: (self instantiate: SpNullPresenter) expand: false;
-		  add: randomSeedInput expand: false;
-		  add: fixRandomSeedCheckbox expand: false;
-		  add: releaseRandomSeedCheckbox expand: false;
-		  yourself
+		borderWidth: 5;
+		spacing: 12;
+		add: (SpBoxLayout newTopToBottom
+			add: 'Generator' expand: false;
+			add: randomSeedGeneratorDroplist expand: false;
+			yourself) expand: false;
+		add: (SpBoxLayout newTopToBottom
+			add: 'Random seed' expand: false;
+			add: randomSeedInput expand: false;
+			yourself) expand: false;
+		add: (SpBoxLayout newTopToBottom
+			add: fixRandomSeedCheckbox expand: false;
+			add: releaseRandomSeedCheckbox expand: false;
+			yourself) expand: false;
+		yourself
+
 ]
 
 { #category : 'as yet unclassified' }
@@ -97,11 +102,16 @@ CMSimulationInitRandomPresenter >> enableRandomSeedPresenters [
 	releaseRandomSeedCheckbox enable.
 ]
 
+{ #category : 'examples' }
+CMSimulationInitRandomPresenter >> example [
+	<script: 'self example'>
+]
+
 { #category : 'initialization' }
 CMSimulationInitRandomPresenter >> initializePresenters [
 	
 	fixRandomSeedCheckbox := self newCheckBox
-		label: translator tFixRandomSeed;
+		label: 'Fix random seed';
 		yourself.
 		
 	randomSeedInput := self newNumberInput.
@@ -111,7 +121,7 @@ CMSimulationInitRandomPresenter >> initializePresenters [
 		yourself.
 	
 	releaseRandomSeedCheckbox := self newCheckBox
-		label: translator tReleaseRandomSeedAfterInitialization;
+		label: 'Release random seed after initialization';
 		yourself.
 		
 	self disableRandomSeedPresenters.
@@ -142,8 +152,7 @@ CMSimulationInitRandomPresenter >> randomSeed [
 ]
 
 { #category : 'accessing - model' }
-CMSimulationInitRandomPresenter >> setModelBeforeInitialization: aCollection [
+CMSimulationInitRandomPresenter >> setModelBeforeInitialization: aClass [
 
-	modelClass := aCollection first.
-	translator := aCollection second
+	modelClass := aClass
 ]

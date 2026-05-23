@@ -2,7 +2,6 @@ Class {
 	#name : 'CMModelOpenerPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
 		'toolbar',
 		'modelList',
 		'exampleModelsList',
@@ -63,7 +62,7 @@ CMModelOpenerPresenter class >> menu00CormasOn: aBuilder [
 		label: 'New model';
 		icon: (self iconNamed: #smallNew);
 		help: 'Create a new Cormas model';
-		action: [ (CMNewModelPresenter forTranslator: CMEnglishTranslator new) open ];
+		action: [ CMNewModelPresenter new open ];
 		order: 1.
 		
 	(aBuilder item: #CormasModels)
@@ -145,7 +144,7 @@ CMModelOpenerPresenter >> connectPresenters [
 CMModelOpenerPresenter >> createNewModel [
 
 	| newModelPresenter |
-	newModelPresenter := CMNewModelPresenter forTranslator: translator.
+	newModelPresenter := CMNewModelPresenter new.
 	
 	newModelPresenter whenModelCreatedDo: [ :modelClass |
 		self initializeModelLists.
@@ -205,8 +204,6 @@ CMModelOpenerPresenter >> initializeModelLists [
 
 { #category : 'initialization' }
 CMModelOpenerPresenter >> initializePresenters [
-
-	translator := CMEnglishTranslator new.
 	
 	toolbar := self newToolbar.
 	self initializeToolbarButtons.
@@ -292,7 +289,7 @@ CMModelOpenerPresenter >> showExampleModel: aManifest [
 		provider: [
 			presenter := self
 				instantiate: CMExampleModelPreviewPresenter
-				on: { aManifest . translator }.
+				on: aManifest.
 						
 			presenter whenLoadedDo: [
 				self initializeModelLists.
@@ -321,7 +318,7 @@ CMModelOpenerPresenter >> showLoadedModel: aModelClass [
 		provider: [
 			presenter := self
 				instantiate: CMLoadedModelPreviewPresenter
-				on: { aModelClass . translator }.
+				on: aModelClass.
 				
 			presenter whenModelDeletedDo: [
 				modelPreview removeAll.

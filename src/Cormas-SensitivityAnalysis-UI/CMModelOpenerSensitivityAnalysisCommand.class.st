@@ -17,8 +17,7 @@ CMModelOpenerSensitivityAnalysisCommand >> action [
 	| presenter |
 		
 	presenter := CMSensitivityAnalysisPresenter
-		forModelClass: owner cormasModelClass
-		translator: translator.
+		forModelClass: owner cormasModelClass.
 		
 	presenter open.
 	presenter window centered
@@ -33,5 +32,5 @@ CMModelOpenerSensitivityAnalysisCommand >> icon [
 { #category : 'accessing' }
 CMModelOpenerSensitivityAnalysisCommand >> name [
 
-	^ translator tSensitivityAnalysis
+	^ 'Sensitivity Analysis'
 ]

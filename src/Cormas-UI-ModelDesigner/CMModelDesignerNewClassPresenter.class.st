@@ -2,7 +2,6 @@ Class {
 	#name : 'CMModelDesignerNewClassPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
 		'modelClass',
 		'prefix',
 		'cellClassRadioButton',
@@ -17,9 +16,9 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-CMModelDesignerNewClassPresenter class >> forModelClass: aClass translator: aTranslator [
+CMModelDesignerNewClassPresenter class >> forModelClass: aClass [
 
-	^ self on: { aClass . aTranslator }
+	^ self on: aClass
 ]
 
 { #category : 'initialization' }
@@ -106,7 +105,7 @@ CMModelDesignerNewClassPresenter >> displaySuperclassesForAgentClass [
 { #category : 'as yet unclassified' }
 CMModelDesignerNewClassPresenter >> displaySuperclassesForCellClass [
 
-	superclassDroplist items: { CMSpatialEntityElement . CMSpatialEntityCell }
+	superclassDroplist items: { CMCell }
 ]
 
 { #category : 'as yet unclassified' }
@@ -165,10 +164,9 @@ CMModelDesignerNewClassPresenter >> initializePresenters [
 ]
 
 { #category : 'accessing - model' }
-CMModelDesignerNewClassPresenter >> setModelBeforeInitialization: aCollection [
+CMModelDesignerNewClassPresenter >> setModelBeforeInitialization: aClass [
 
-	modelClass := aCollection first.
-	translator := aCollection second
+	modelClass := aClass 
 ]
 
 { #category : 'as yet unclassified' }

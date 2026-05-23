@@ -3,7 +3,6 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'simulation',
-		'translator',
 		'toolbar',
 		'showProbesButton',
 		'saveToPngButton',
@@ -31,13 +30,13 @@ CMChartPresenter class >> example [
 		
 	10 timesRepeat: [ simulation runStep ].
 	
-	(self forSimulation: simulation translator: CMEnglishTranslator new) open
+	(self forSimulation: simulation) open
 ]
 
 { #category : 'as yet unclassified' }
-CMChartPresenter class >> forSimulation: aSimulation translator: aTranslator [
+CMChartPresenter class >> forSimulation: aSimulation [
 
-	^ self on: { aSimulation . aTranslator }
+	^ self on: aSimulation
 ]
 
 { #category : 'initialization' }
@@ -179,10 +178,9 @@ CMChartPresenter >> saveToPng [
 ]
 
 { #category : 'accessing - model' }
-CMChartPresenter >> setModelBeforeInitialization: aCollection [
+CMChartPresenter >> setModelBeforeInitialization: aSimulation [
 
-	simulation := aCollection first.
-	translator := aCollection second
+	simulation := aSimulation
 ]
 
 { #category : 'as yet unclassified' }

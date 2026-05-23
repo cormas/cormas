@@ -2,7 +2,6 @@ Class {
 	#name : 'CMExampleModelPreviewPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
 		'manifest',
 		'modelPreview',
 		'toolbar',
@@ -16,13 +15,13 @@ Class {
 { #category : 'examples' }
 CMExampleModelPreviewPresenter class >> example [
 	<example>
-	(self forManifest: ECECModelManifest translator: CMEnglishTranslator new) open
+	(self forManifest: ECECModelManifest) open
 ]
 
 { #category : 'instance creation' }
-CMExampleModelPreviewPresenter class >> forManifest: aManifest translator: aTranslator [
+CMExampleModelPreviewPresenter class >> forManifest: aManifest [
 
-	^ self on: { aManifest . aTranslator }
+	^ self on: aManifest
 ]
 
 { #category : 'layout' }
@@ -74,13 +73,13 @@ CMExampleModelPreviewPresenter >> initializeToolbar [
 	toolbar removeAllItems.
 	
 	largeButtonCommands collect: [ :aCommandClass |
-		command := aCommandClass forOwner: self translator: translator.
+		command := aCommandClass forOwner: self.
 			
 		command isAvailable ifTrue: [
 			buttonBar add: command button ] ].
 	
 	toolbarButtonCommands collect: [ :aCommandClass |
-		command := aCommandClass forOwner: self translator: translator.
+		command := aCommandClass forOwner: self.
 			
 		command isAvailable ifTrue: [
 			toolbar addItemRight: command toolbarButton ] ].
@@ -93,10 +92,9 @@ CMExampleModelPreviewPresenter >> manifest [
 ]
 
 { #category : 'accessing - model' }
-CMExampleModelPreviewPresenter >> setModelBeforeInitialization: aCollection [
+CMExampleModelPreviewPresenter >> setModelBeforeInitialization: aManifest [
 
-	manifest := aCollection first.
-	translator := aCollection second
+	manifest := aManifest
 ]
 
 { #category : 'as yet unclassified' }

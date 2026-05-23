@@ -3,7 +3,6 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'simulation',
-		'translator',
 		'parameterClassName',
 		'parameterName',
 		'parameterValue',
@@ -19,21 +18,20 @@ Class {
 CMSensitivityAnalysisSimulationRowPresenter class >> example [
 	<example>
 	
-	| parameter simulation translator |
+	| parameter simulation |
 	
 	parameter := CMMockModel parameters first.
 	simulation := CMSimulation for: CMMockModel.
 	
 	simulation initialParameterValues at: parameter put: 42.
-	translator := CMEnglishTranslator new.
 	
-	(self forSimulation: simulation translator: translator) open
+	(self forSimulation: simulation) open
 ]
 
 { #category : 'as yet unclassified' }
-CMSensitivityAnalysisSimulationRowPresenter class >> forSimulation: aSimulation translator: aTranslator [
+CMSensitivityAnalysisSimulationRowPresenter class >> forSimulation: aSimulation [
 
-	^ self on: { aSimulation . aTranslator }
+	^ self on: aSimulation
 ]
 
 { #category : 'layout' }
@@ -80,9 +78,8 @@ CMSensitivityAnalysisSimulationRowPresenter >> initializePresenters [
 	openSimulationButton := self newButton
 		icon: (self iconNamed: #paint);
 		action: [
-			CMSimulationPresenter
-				openForSimulation: (simulation initializeSimulation; yourself)
-				withTranslator: translator ];
+			CMSimulationRunnerPresenter
+				openForSimulation: (simulation initializeSimulation; yourself) ];
 		yourself.
 ]
 
@@ -99,10 +96,9 @@ CMSensitivityAnalysisSimulationRowPresenter >> parameterValue [
 ]
 
 { #category : 'accessing - model' }
-CMSensitivityAnalysisSimulationRowPresenter >> setModelBeforeInitialization: aCollection [
+CMSensitivityAnalysisSimulationRowPresenter >> setModelBeforeInitialization: aSimulation [
 
-	simulation := aCollection first.
-	translator := aCollection second.
+	simulation := aSimulation.
 	
 	simulation initialParameterValues size = 1 ifFalse: [ 
 		self error: 'Each simulation is supposed to set exactly one initial parameter value' ].

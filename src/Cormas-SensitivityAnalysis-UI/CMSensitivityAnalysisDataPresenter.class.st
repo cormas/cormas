@@ -2,7 +2,6 @@ Class {
 	#name : 'CMSensitivityAnalysisDataPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
 		'sensitivityAnalysis',
 		'progressBar',
 		'runButton',
@@ -19,7 +18,7 @@ Class {
 CMSensitivityAnalysisDataPresenter class >> example [
 	<example>
 	
-	| sensitivityAnalysis translator |
+	| sensitivityAnalysis |
 	
 	sensitivityAnalysis := (CMSensitivityAnalysis for: CMMockModel)
 		activeInitSelector: #initFixed;
@@ -30,15 +29,13 @@ CMSensitivityAnalysisDataPresenter class >> example [
 		1 to: 5 do: [ :value | 
 			sensitivityAnalysis addSimulationForParameter: parameter value: value ] ].
 	
-	translator := CMEnglishTranslator new.
-	
-	^ (self forAnalysis: sensitivityAnalysis translator: translator) open
+	^ (self forAnalysis: sensitivityAnalysis) open
 ]
 
 { #category : 'as yet unclassified' }
-CMSensitivityAnalysisDataPresenter class >> forAnalysis: aSensitivityAnalysis translator: aTranslator [
+CMSensitivityAnalysisDataPresenter class >> forAnalysis: aSensitivityAnalysis [
 
-	^ self on: { aSensitivityAnalysis . aTranslator }
+	^ self on: aSensitivityAnalysis
 ]
 
 { #category : 'adding' }
@@ -115,8 +112,7 @@ CMSensitivityAnalysisDataPresenter >> initializePresenters [
 							simulationsTable selectedItem
 								randomSeed: sensitivityAnalysis randomSeed;
 								initializeSimulation;
-								yourself)
-						withTranslator: translator ] ];
+								yourself) ] ];
 			yourself);
 		items: sensitivityAnalysis simulations;
 		addColumn: (SpStringTableColumn
@@ -138,7 +134,7 @@ CMSensitivityAnalysisDataPresenter >> initializePresenters [
 	dataNotebook addPage: (SpNotebookPage
 		title: 'Data'
 		icon: (self iconNamed: #database)
-		provider: [ dataTable := self instantiate: CMDataPresenter on: translator ]).
+		provider: [ dataTable := self instantiate: CMDataPresenter ]).
 		
 	simulationsCountLabel := self newLabel.
 	self updateSimulationsCountLabel.
@@ -150,7 +146,7 @@ CMSensitivityAnalysisDataPresenter >> initializeWindow: aWindowPresenter [
 	super initializeWindow: aWindowPresenter.
 	
 	aWindowPresenter 
-		title: translator tSensitivityAnalysis;
+		title: 'Sensitivity Analysis';
 		initialExtent: 800@650.
 ]
 
@@ -186,10 +182,9 @@ CMSensitivityAnalysisDataPresenter >> runSimulations [
 ]
 
 { #category : 'accessing - model' }
-CMSensitivityAnalysisDataPresenter >> setModelBeforeInitialization: aCollection [
+CMSensitivityAnalysisDataPresenter >> setModelBeforeInitialization: anAnalysis [
 
-	sensitivityAnalysis := aCollection first.
-	translator := aCollection second
+	sensitivityAnalysis := anAnalysis
 ]
 
 { #category : 'as yet unclassified' }
