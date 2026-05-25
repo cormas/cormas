@@ -18,7 +18,7 @@ Class {
 CMSensitivityAnalysisParameterRowPresenter class >> example [
 	<example>
 	
-	(self forParameters: CMMockModel parameters) open
+	(self forParameters: CMMockModel allParameters) open
 ]
 
 { #category : 'instance creation' }

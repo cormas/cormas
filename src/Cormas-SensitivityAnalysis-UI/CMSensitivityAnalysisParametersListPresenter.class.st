@@ -14,7 +14,7 @@ Class {
 CMSensitivityAnalysisParametersListPresenter class >> example [
 	<example>
 	
-	(self forParameters: CMMockModel parameters) open
+	(self forParameters: CMMockModel allParameters) open
 ]
 
 { #category : 'as yet unclassified' }

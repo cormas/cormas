@@ -2,11 +2,9 @@ Class {
 	#name : 'CMSimulationPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'modelClass',
 		'sidebar',
 		'stopConditionPresenter',
 		'simulationRunner',
-		'simulation',
 		'whenWindowIsClosedHooks'
 	],
 	#category : 'Cormas-UI',
@@ -16,13 +14,10 @@ Class {
 { #category : 'examples' }
 CMSimulationPresenter class >> example [
 	<example>
-	(self forModelClass: CMMockModel) open
-]
-
-{ #category : 'as yet unclassified' }
-CMSimulationPresenter class >> forModelClass: aClass [
-
-	^ self on: aClass
+	
+	CMSimulationApplication new
+		cormasModel: CMMockModel new;
+		run
 ]
 
 { #category : 'as yet unclassified' }
@@ -52,6 +47,9 @@ CMSimulationPresenter >> compileBlock: aSourceCode [
 
 { #category : 'initialization' }
 CMSimulationPresenter >> connectPresenters [
+
+	| simulation |
+	simulation := self application simulation.
 				
 	stopConditionPresenter whenChangedDo: [ :stopConditionBlock |
 		"Simulation will be nil if the stop condition is changed before
@@ -60,6 +58,12 @@ CMSimulationPresenter >> connectPresenters [
 		during the simulation. For example, if the simulation has completed
 		and then you want to run it for 100 more steps"
 		simulation ifNotNil: [ simulation stopWhen: stopConditionBlock ] ]
+]
+
+{ #category : 'accessing' }
+CMSimulationPresenter >> cormasModel [
+
+	^ self application cormasModel
 ]
 
 { #category : 'layout' }
@@ -97,12 +101,10 @@ CMSimulationPresenter >> initializeFancyNotebook [
 
 { #category : 'initialization' }
 CMSimulationPresenter >> initializePresenters [
-	
-	modelClass initializeParameters.
 		
 	stopConditionPresenter := self
 		instantiate: CMStopConditionPresenter
-		on: modelClass.
+		on: self cormasModel class.
 	
 	self initializeFancyNotebook.
 
@@ -114,10 +116,15 @@ CMSimulationPresenter >> initializePresenters [
 CMSimulationPresenter >> initializeSimulationInit: anInitSelector control: aControlSelector [
 "Purpose: instanciate a new modelClass with init & control selectors. Then initialize this simulation by performing #activeInitSelector.
 Reset the currentTimeStep and the data. Set the randomSeed"
-	simulation := CMSimulation for: modelClass.
 
-	modelClass parameters do: [ :parameter |
-		simulation initialParameterValues at: parameter put: parameter value ].
+	| simulation parameters |
+	
+	"Save parameters from previous simulation to copy their values and start with the same values
+	in the new simulation. This is important if we want to set some parameters before initialization"
+	parameters := self cormasModel allParameters.
+
+	simulation := CMSimulation for: self cormasModel.
+	self application simulation: simulation.
 
 	simulation
 		activeInitSelector: anInitSelector;
@@ -131,7 +138,7 @@ Reset the currentTimeStep and the data. Set the randomSeed"
 		simulation randomSeed: modelInitializationSettings randomSeed.
 		simulation shouldReleaseRandomSeedAfterInitialization:
 			modelInitializationSettings isReleaseRandomSeedAfterInitialization ]."
-		
+	
 	simulation initializeSimulation.
 	simulationRunner simulation: simulation
 ]
@@ -151,13 +158,19 @@ CMSimulationPresenter >> initializeWindow: aWindowPresenter [
 { #category : 'initialization' }
 CMSimulationPresenter >> presenterWindowTitle [
 	"We extract it here to allow customization in subclasses"
-	^ modelClass modelName, ' - Simulation'
+	^ self cormasModel class modelName, ' - Simulation'
 ]
 
-{ #category : 'accessing - model' }
-CMSimulationPresenter >> setModelBeforeInitialization: aClass [
-
-	modelClass := aClass
+{ #category : 'as yet unclassified' }
+CMSimulationPresenter >> settingsParameters [
+	<fancyNotebookPageOrder: 5>
+	
+	^ SpNotebookPage
+		title: 'Parameters'
+		icon: (self iconNamed: #configuration)
+		provider: [ self
+			instantiate: CMParametersBrowserPresenter
+			on: self cormasModel ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -169,7 +182,7 @@ CMSimulationPresenter >> settingsRandomNumbers [
 		icon: (self iconNamed: #testRunner)
 		provider: [ self
 			instantiate: CMSimulationInitRandomPresenter
-			on: modelClass ]
+			on: self cormasModel class ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -181,7 +194,7 @@ CMSimulationPresenter >> settingsSimulationInitializer [
 		icon: (self iconNamed: #smallNew)
 		provider: [ (self
 			instantiate: CMSimulationInitializerPresenter
-			on: modelClass)
+			on: self cormasModel class)
 			whenInitializeButtonClickedDo: [ :initSelector :controlSelector |
 				self initializeSimulationInit: initSelector control: controlSelector ];
 			yourself ]

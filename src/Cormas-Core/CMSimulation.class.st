@@ -2,7 +2,6 @@ Class {
 	#name : 'CMSimulation',
 	#superclass : 'Object',
 	#instVars : [
-		'modelClass',
 		'randomSeed',
 		'cormasModel',
 		'data',
@@ -25,10 +24,10 @@ CMSimulation class >> defaultFinalTimeStep [
 ]
 
 { #category : 'instance creation' }
-CMSimulation class >> for: aModelClass [
+CMSimulation class >> for: aModel [
 
 	^ self new
-		modelClass: aModelClass;
+		cormasModel: aModel;
 		yourself
 ]
 
@@ -54,6 +53,12 @@ CMSimulation >> activeProbes [
 CMSimulation >> cormasModel [
 	
 	^ cormasModel
+]
+
+{ #category : 'accessing' }
+CMSimulation >> cormasModel: aModel [
+
+	cormasModel := aModel
 ]
 
 { #category : 'accessing' }
@@ -105,8 +110,6 @@ CMSimulation >> initializeProbes [
 CMSimulation >> initializeSimulation [
 "Purpose: initialize one simulation by performing #activeInitSelector.
 Reset the currentTimeStep and the data. Set the randomSeed"
-
-	cormasModel := modelClass new.
 	
 	randomSeed ifNotNil: [
 		cormasModel randomSeed: randomSeed ].
@@ -115,7 +118,6 @@ Reset the currentTimeStep and the data. Set the randomSeed"
 
 	data := OrderedCollection new.
 
-"	self initializeModel."
 	cormasModel initEntities.
 
 	self setInitialParameters.
@@ -145,12 +147,6 @@ CMSimulation >> isSimulationProcessConfigured [
 CMSimulation >> isSimulationRunning [ 
 
 	^ simulationRunner isSimulationRunning
-]
-
-{ #category : 'initialization' }
-CMSimulation >> modelClass: aClass [
-
-	modelClass := aClass
 ]
 
 { #category : 'accessing' }

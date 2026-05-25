@@ -22,7 +22,7 @@ CMChartPresenter class >> example [
 	
 	| simulation |
 	
-	simulation := (CMSimulation for: CMMockModel)
+	simulation := (CMSimulation for: CMMockModel new)
 		activeInitSelector: #initFixed;
 		activeControlSelector: #step:;
 		initializeSimulation;

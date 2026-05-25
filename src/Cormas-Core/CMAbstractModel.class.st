@@ -65,7 +65,20 @@ CMAbstractModel class >> aboutThisModel [
 { #category : 'managing classes' }
 CMAbstractModel class >> allEntityClasses [
 
-	^ self package classes select: [ :aClass | aClass inheritsFrom: CMEntity ]
+	^ self package classes asOrderedCollection
+		select: [ :aClass | aClass inheritsFrom: CMEntity ]
+]
+
+{ #category : 'accessing' }
+CMAbstractModel class >> allParameters [
+	"Collect parameters from all classes defined by this model"
+	
+	| classes |
+	classes := self allEntityClasses asOrderedCollection.
+	classes add: self.
+
+	^ classes flatCollect: [ :aClass |
+		CMParameter collectAllParametersFrom: aClass ].
 ]
 
 { #category : 'available methods' }
@@ -116,6 +129,12 @@ CMAbstractModel class >> baseline [
 	relevantBaselines size = 1 ifTrue: [ ^ relevantBaselines first ].
 	
 	self error: 'Multiple baselines include this model and the relevant one could not be identified'.
+]
+
+{ #category : 'accessing' }
+CMAbstractModel class >> classSideParameters [
+	
+	^ self parameters select: [ :p | p isClassSide ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -241,12 +260,10 @@ CMAbstractModel class >> iceRepositoryIfNotFound: aNotFoundBlock [
 		ifNotFound: aNotFoundBlock 
 ]
 
-{ #category : 'initialization' }
-CMAbstractModel class >> initializeParameters [
-
-	"Initialize parameters of all entity classes. This method can be overriden by subclasses to initialize model parameters. Implementors should always call super initializeParameters, same as for the initialize method"
+{ #category : 'accessing' }
+CMAbstractModel class >> instanceSideParameters [
 	
-	self allEntityClasses do: #initializeParameters. 
+	^ self parameters select: [ :p | p isInstanceSide ]
 ]
 
 { #category : 'testing' }
@@ -263,22 +280,8 @@ CMAbstractModel class >> modelName [
 
 { #category : 'accessing' }
 CMAbstractModel class >> parameters [
-	"Find all class side variables that have getter and setter accessors in model and all entity classes"
-	| classes |
-	
-	classes := self allEntityClasses asOrderedCollection.
-	classes add: self.
-
-	^ classes flatCollect: [ :aClass |
-		aClass class slots flatCollect: [ :slot |
-			((aClass respondsTo: slot name) and: [ aClass respondsTo: slot name, ':' ])
-				ifTrue: [
-					aClass withAllSubclasses collect: [ :receiverClass |
-						CMParameter
-							getterSelector: slot name
-							setterSelector: (slot name, ':')
-							receiver: receiverClass ] ]
-				ifFalse: [ OrderedCollection new ] ] ]
+	"Parameters defined by this model"
+	^ CMParameter collectAllParametersFrom: self
 ]
 
 { #category : 'as yet unclassified' }
@@ -354,6 +357,12 @@ CMAbstractModel >> agents [
 
 	^ self agentClasses flatCollect: [ :eachClass |
 		self entitiesOfClass: eachClass ].
+]
+
+{ #category : 'accessing' }
+CMAbstractModel >> allParameters [
+
+	^ self class allParameters
 ]
 
 { #category : 'accessing - entities' }
@@ -528,6 +537,12 @@ CMAbstractModel >> choosePositionForAgentInCell: aCell [
 CMAbstractModel >> chooseRandomSeedAtRandom [
 	"By default random seed is a random number but we still store it to ensure reproducibility"
 	^ Random new nextInteger: SmallInteger maxVal
+]
+
+{ #category : 'accessing' }
+CMAbstractModel >> classSideParameters [
+
+	^ self class classSideParameters 
 ]
 
 { #category : 'instance creation - aggregates' }
@@ -932,10 +947,10 @@ CMAbstractModel >> initialize [
 	currentTimeStep := 0.
 	entities := Dictionary new.
 	
+	self initializeParameters.
 	self initializeRandomNumberGenerator.
 	self initializeModelClasses.
 	self initializeSpaceModel.
-	self initializeParameters.
 	
 	areAgentsCenteredInCells := true
 ]
@@ -966,7 +981,15 @@ CMAbstractModel >> initializeModelClasses [
 { #category : 'initialization' }
 CMAbstractModel >> initializeParameters [
 
-	self class initializeParameters. 
+	"Model parameters"
+	self parameters do: [ :parameter |
+		parameter isInstanceSide
+			ifTrue: [ parameter setDefaultValueFor: self ]
+			ifFalse: [ parameter setDefaultValueFor: self class ] ].
+		
+	"Class side parameters of entity classes"
+	self class allEntityClasses do: [ :eachClass |
+		eachClass resetClassSideParameters ]
 ]
 
 { #category : 'initialization' }
@@ -993,6 +1016,12 @@ CMAbstractModel >> initializeSpaceModel [
 	self cellClass ifNil: [ ^ nil ].
 	self spaceModel: (CMSpaceModel forModel: self).
 
+]
+
+{ #category : 'accessing' }
+CMAbstractModel >> instanceSideParameters [
+
+	^ self class instanceSideParameters 
 ]
 
 { #category : 'accessing - entities' }
@@ -1043,6 +1072,8 @@ CMAbstractModel >> newEntity: aClass [
 		            yourself.
 
 	self addEntityToCollection: anEntity.
+	self setDefaultInstanceSideParameterValuesFor: anEntity.
+	
 	^ anEntity
 ]
 
@@ -1053,6 +1084,12 @@ CMAbstractModel >> newEntity: aClass locatedAt: aCell [
 	| entity |
 	entity := self newEntity: aClass.
 	entity moveTo: aCell
+]
+
+{ #category : 'accessing' }
+CMAbstractModel >> parameters [
+
+	^ self class parameters
 ]
 
 { #category : 'accessing - entities' }
@@ -1254,6 +1291,19 @@ CMAbstractModel >> selectCellsOfLine: lineNumber [
 	Example: self ask: (self selectCellsOfLine: 2) toDo: #flash"
 
 	^ self spaceModel cellsOfRow: lineNumber
+]
+
+{ #category : 'initialization' }
+CMAbstractModel >> setDefaultInstanceSideParameterValuesFor: anEntity [
+
+	| relevantParameters |
+	
+	relevantParameters := self class allParameters select: [ :parameter |
+		parameter isInstanceSide and: [ 
+			anEntity isKindOf: parameter targetClass ] ].
+	
+	relevantParameters do: [ :parameter |
+		parameter setDefaultValueFor: anEntity ]
 ]
 
 { #category : 'init - spatial entities' }
