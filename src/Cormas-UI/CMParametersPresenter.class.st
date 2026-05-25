@@ -16,7 +16,9 @@ Class {
 { #category : 'examples' }
 CMParametersPresenter class >> example [
 	<example>
-	(self on: { CMMockModel classSideParameters . { CMMockModel } }) open
+	| model |
+	model := CMMockModel new.
+	(self on: { model parameters . { model } }) open
 ]
 
 { #category : 'initialization' }

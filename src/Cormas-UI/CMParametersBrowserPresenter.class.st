@@ -65,13 +65,6 @@ CMParametersBrowserPresenter >> hideCurrentParametersPresenter [
 
 { #category : 'initialization' }
 CMParametersBrowserPresenter >> initializePresenters [
-	
-	| modelParameters classParameters |
-	
-	modelParameters := cormasModel parameters.
-	
-	classParameters := Dictionary newFrom: (cormasModel class allEntityClasses collect: [ :aClass |
-		aClass -> aClass classSideParameters ]).
 
 	modelRadio := self newRadioButton
 		label: 'Model';
@@ -89,11 +82,11 @@ CMParametersBrowserPresenter >> initializePresenters [
 	
 	modelParametersPresenter := self
 		instantiate: CMParametersPresenter
-		on: { modelParameters . { cormasModel } }.
+		on: { cormasModel parameters . { cormasModel } }.
 		
 	classParametersPresenter := self
 		instantiate: CMClassParametersPresenter
-		on: classParameters.
+		on: cormasModel.
 		
 	selectionParametersPresenter := self
 		instantiate: CMSelectionParametersPresenter

@@ -171,7 +171,7 @@ CMSimulationPresenter >> settingsParameters [
 		icon: (self iconNamed: #configuration)
 		provider: [ self
 			instantiate: CMParametersBrowserPresenter
-			on: cormasModel class ]
+			on: cormasModel ]
 ]
 
 { #category : 'as yet unclassified' }
