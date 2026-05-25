@@ -32,6 +32,7 @@ CMClassParametersPresenter >> defaultLayout [
 	
 	^ SpBoxLayout newTopToBottom
 		spacing: 5;
+		borderWidth: 3;
 		add: (SpBoxLayout newTopToBottom
 			add: 'Entity class' expand: false;
 			add: classDropList expand: false;

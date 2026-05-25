@@ -25,7 +25,10 @@ CMParametersPresenter class >> example [
 CMParametersPresenter >> connectPresenters [
 
 	applyButton action: [
-		parameterPresenters do: [ :each | each applyChange ] ]
+		parameterPresenters do: [ :each | each applyChange ].
+		
+		"Update spatial grid"
+		self application announcer announce: CMSpaceGridChanged new ]
 ]
 
 { #category : 'as yet unclassified' }

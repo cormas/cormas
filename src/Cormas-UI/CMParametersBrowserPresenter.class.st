@@ -20,6 +20,8 @@ CMParametersBrowserPresenter class >> example [
 CMParametersBrowserPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
+		spacing: 10;
+		add: 'Parameters' expand: false;
 		add: notebook;
 		yourself.
 ]

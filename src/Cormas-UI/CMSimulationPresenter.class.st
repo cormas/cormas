@@ -2,8 +2,6 @@ Class {
 	#name : 'CMSimulationPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'cormasModel',
-		'simulation',
 		'sidebar',
 		'stopConditionPresenter',
 		'simulationRunner',
@@ -16,13 +14,10 @@ Class {
 { #category : 'examples' }
 CMSimulationPresenter class >> example [
 	<example>
-	(self forModel: CMMockModel new) open
-]
-
-{ #category : 'as yet unclassified' }
-CMSimulationPresenter class >> forModel: aModel [
-
-	^ self on: aModel
+	
+	CMSimulationApplication new
+		cormasModel: CMMockModel new;
+		run
 ]
 
 { #category : 'as yet unclassified' }
@@ -52,6 +47,9 @@ CMSimulationPresenter >> compileBlock: aSourceCode [
 
 { #category : 'initialization' }
 CMSimulationPresenter >> connectPresenters [
+
+	| simulation |
+	simulation := self application simulation.
 				
 	stopConditionPresenter whenChangedDo: [ :stopConditionBlock |
 		"Simulation will be nil if the stop condition is changed before
@@ -60,6 +58,12 @@ CMSimulationPresenter >> connectPresenters [
 		during the simulation. For example, if the simulation has completed
 		and then you want to run it for 100 more steps"
 		simulation ifNotNil: [ simulation stopWhen: stopConditionBlock ] ]
+]
+
+{ #category : 'accessing' }
+CMSimulationPresenter >> cormasModel [
+
+	^ self application cormasModel
 ]
 
 { #category : 'layout' }
@@ -100,7 +104,7 @@ CMSimulationPresenter >> initializePresenters [
 		
 	stopConditionPresenter := self
 		instantiate: CMStopConditionPresenter
-		on: cormasModel class.
+		on: self cormasModel class.
 	
 	self initializeFancyNotebook.
 
@@ -113,13 +117,14 @@ CMSimulationPresenter >> initializeSimulationInit: anInitSelector control: aCont
 "Purpose: instanciate a new modelClass with init & control selectors. Then initialize this simulation by performing #activeInitSelector.
 Reset the currentTimeStep and the data. Set the randomSeed"
 
-	| parameters |
+	| simulation parameters |
+	
+	"Save parameters from previous simulation to copy their values and start with the same values
+	in the new simulation. This is important if we want to set some parameters before initialization"
+	parameters := self cormasModel allParameters.
 
-	simulation ifNotNil: [ 
-		"Save parameters from previous simulation to copy their values and start with the same values in the new simulation. This is important if we want to set some parameters before initialization"
-		parameters := simulation cormasModel allParameters ].
-
-	simulation := CMSimulation for: cormasModel.
+	simulation := CMSimulation for: self cormasModel.
+	self application simulation: simulation.
 
 	simulation
 		activeInitSelector: anInitSelector;
@@ -153,13 +158,7 @@ CMSimulationPresenter >> initializeWindow: aWindowPresenter [
 { #category : 'initialization' }
 CMSimulationPresenter >> presenterWindowTitle [
 	"We extract it here to allow customization in subclasses"
-	^ cormasModel class modelName, ' - Simulation'
-]
-
-{ #category : 'accessing - model' }
-CMSimulationPresenter >> setModelBeforeInitialization: aModel [
-
-	cormasModel := aModel
+	^ self cormasModel class modelName, ' - Simulation'
 ]
 
 { #category : 'as yet unclassified' }
@@ -171,7 +170,7 @@ CMSimulationPresenter >> settingsParameters [
 		icon: (self iconNamed: #configuration)
 		provider: [ self
 			instantiate: CMParametersBrowserPresenter
-			on: cormasModel ]
+			on: self cormasModel ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -183,7 +182,7 @@ CMSimulationPresenter >> settingsRandomNumbers [
 		icon: (self iconNamed: #testRunner)
 		provider: [ self
 			instantiate: CMSimulationInitRandomPresenter
-			on: cormasModel class ]
+			on: self cormasModel class ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -195,7 +194,7 @@ CMSimulationPresenter >> settingsSimulationInitializer [
 		icon: (self iconNamed: #smallNew)
 		provider: [ (self
 			instantiate: CMSimulationInitializerPresenter
-			on: cormasModel class)
+			on: self cormasModel class)
 			whenInitializeButtonClickedDo: [ :initSelector :controlSelector |
 				self initializeSimulationInit: initSelector control: controlSelector ];
 			yourself ]

@@ -37,6 +37,11 @@ CMSpacePresenter >> connectPresenters [
 		self updatePovSelectionVisibility.
 		self updatePovButtonIcon.
 		self update ].
+	
+	self application announcer
+		when: CMSpaceGridChanged
+		send: #updateDiagram
+		to: self
 ]
 
 { #category : 'accessing' }

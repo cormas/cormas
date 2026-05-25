@@ -70,6 +70,7 @@ CMSelectionParametersPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
 		spacing: 5;
+		borderWidth: 3;
 		add: (SpBoxLayout newTopToBottom
 			add: manualSelectionRadio expand: false;
 			add: (SpBoxLayout newLeftToRight 
