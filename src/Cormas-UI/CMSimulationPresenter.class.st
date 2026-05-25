@@ -2,11 +2,11 @@ Class {
 	#name : 'CMSimulationPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'modelClass',
+		'cormasModel',
+		'simulation',
 		'sidebar',
 		'stopConditionPresenter',
 		'simulationRunner',
-		'simulation',
 		'whenWindowIsClosedHooks'
 	],
 	#category : 'Cormas-UI',
@@ -16,13 +16,13 @@ Class {
 { #category : 'examples' }
 CMSimulationPresenter class >> example [
 	<example>
-	(self forModelClass: CMMockModel) open
+	(self forModel: CMMockModel new) open
 ]
 
 { #category : 'as yet unclassified' }
-CMSimulationPresenter class >> forModelClass: aClass [
+CMSimulationPresenter class >> forModel: aModel [
 
-	^ self on: aClass
+	^ self on: aModel
 ]
 
 { #category : 'as yet unclassified' }
@@ -97,12 +97,10 @@ CMSimulationPresenter >> initializeFancyNotebook [
 
 { #category : 'initialization' }
 CMSimulationPresenter >> initializePresenters [
-	
-	"modelClass initializeParameters."
 		
 	stopConditionPresenter := self
 		instantiate: CMStopConditionPresenter
-		on: modelClass.
+		on: cormasModel class.
 	
 	self initializeFancyNotebook.
 
@@ -121,7 +119,7 @@ Reset the currentTimeStep and the data. Set the randomSeed"
 		"Save parameters from previous simulation to copy their values and start with the same values in the new simulation. This is important if we want to set some parameters before initialization"
 		parameters := simulation cormasModel allParameters ].
 
-	simulation := CMSimulation for: modelClass.
+	simulation := CMSimulation for: cormasModel.
 
 	simulation
 		activeInitSelector: anInitSelector;
@@ -135,10 +133,6 @@ Reset the currentTimeStep and the data. Set the randomSeed"
 		simulation randomSeed: modelInitializationSettings randomSeed.
 		simulation shouldReleaseRandomSeedAfterInitialization:
 			modelInitializationSettings isReleaseRandomSeedAfterInitialization ]."
-	
-	"Create a new Cormas model for this simulation"
-	simulation initializeModel.
-
 	
 	simulation initializeSimulation.
 	simulationRunner simulation: simulation
@@ -159,13 +153,13 @@ CMSimulationPresenter >> initializeWindow: aWindowPresenter [
 { #category : 'initialization' }
 CMSimulationPresenter >> presenterWindowTitle [
 	"We extract it here to allow customization in subclasses"
-	^ modelClass modelName, ' - Simulation'
+	^ cormasModel class modelName, ' - Simulation'
 ]
 
 { #category : 'accessing - model' }
-CMSimulationPresenter >> setModelBeforeInitialization: aClass [
+CMSimulationPresenter >> setModelBeforeInitialization: aModel [
 
-	modelClass := aClass
+	cormasModel := aModel
 ]
 
 { #category : 'as yet unclassified' }
@@ -177,7 +171,7 @@ CMSimulationPresenter >> settingsParameters [
 		icon: (self iconNamed: #configuration)
 		provider: [ self
 			instantiate: CMParametersBrowserPresenter
-			on: modelClass ]
+			on: cormasModel class ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -189,7 +183,7 @@ CMSimulationPresenter >> settingsRandomNumbers [
 		icon: (self iconNamed: #testRunner)
 		provider: [ self
 			instantiate: CMSimulationInitRandomPresenter
-			on: modelClass ]
+			on: cormasModel class ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -201,7 +195,7 @@ CMSimulationPresenter >> settingsSimulationInitializer [
 		icon: (self iconNamed: #smallNew)
 		provider: [ (self
 			instantiate: CMSimulationInitializerPresenter
-			on: modelClass)
+			on: cormasModel class)
 			whenInitializeButtonClickedDo: [ :initSelector :controlSelector |
 				self initializeSimulationInit: initSelector control: controlSelector ];
 			yourself ]

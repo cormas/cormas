@@ -33,14 +33,14 @@ CMNeighbourhoodTest >> setUp [
 	cellInTheMiddle := model cellAt: 2 at: 2.
 	
 	cellOnTheTopEdge := model cellAt: 1 at: 2.
-	cellOnTheBottomEdge := model cellAt: model class numberOfRows at: 2.
+	cellOnTheBottomEdge := model cellAt: model numberOfRows at: 2.
 	cellOnTheLeftEdge := model cellAt: 2 at: 1.
-	cellOnTheRightEdge := model cellAt: 2 at: model class numberOfColumns.
+	cellOnTheRightEdge := model cellAt: 2 at: model numberOfColumns.
 	
 	cellInTheTopLeftCorner := model cellAt: 1 at: 1.
-	cellInTheBottomLeftCorner := model cellAt: model class numberOfRows at: 1.
-	cellInTheTopRightCorner := model cellAt: 1 at: model class numberOfColumns.
-	cellInTheBottomRightCorner := model cellAt: model class numberOfRows at: model class numberOfColumns.
+	cellInTheBottomLeftCorner := model cellAt: model numberOfRows at: 1.
+	cellInTheTopRightCorner := model cellAt: 1 at: model numberOfColumns.
+	cellInTheBottomRightCorner := model cellAt: model numberOfRows at: model numberOfColumns.
 ]
 
 { #category : 'tests' }

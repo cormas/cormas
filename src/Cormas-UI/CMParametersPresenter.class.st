@@ -3,6 +3,7 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'parameters',
+		'targets',
 		'parameterPresenters',
 		'applyButton',
 		'resetButton'
@@ -15,7 +16,7 @@ Class {
 { #category : 'examples' }
 CMParametersPresenter class >> example [
 	<example>
-	(self on: CMMockModel allParameters) open
+	(self on: { CMMockModel classSideParameters . { CMMockModel } }) open
 ]
 
 { #category : 'initialization' }
@@ -56,7 +57,7 @@ CMParametersPresenter >> example [
 CMParametersPresenter >> initializePresenters [
 
 	parameterPresenters := parameters collect: [ :parameter |
-		self instantiate: parameter specPresenterClass on: { parameter . parameter targetClass } ].
+		self instantiate: parameter specPresenterClass on: { parameter . targets } ].
 	
 	applyButton := self newButton
 		label: 'Apply';
@@ -72,5 +73,6 @@ CMParametersPresenter >> initializePresenters [
 { #category : 'accessing - model' }
 CMParametersPresenter >> setModelBeforeInitialization: aCollection [
 
-	parameters := aCollection
+	parameters := aCollection first.
+	targets := aCollection second
 ]

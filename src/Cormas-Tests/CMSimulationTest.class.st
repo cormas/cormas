@@ -13,7 +13,7 @@ CMSimulationTest >> setUp [
 
 	super setUp.
 	
-	simulation := (CMSimulation for: CMMockModel)
+	simulation := (CMSimulation for: CMMockModel new)
 		randomSeed: 42;
 		activeInitSelector: #initFixed;
 		activeControlSelector: #step:;

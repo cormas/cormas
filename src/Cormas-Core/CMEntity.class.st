@@ -75,6 +75,12 @@ CMEntity class >> availablePov [
 		pragma method selector ]) asSet asOrderedCollection
 ]
 
+{ #category : 'as yet unclassified' }
+CMEntity class >> classSideParameters [
+
+	^ self parameters select: [ :p | p isClassSide ]
+]
+
 { #category : 'utilities - colors' }
 CMEntity class >> colorNames [
 	"Returns an array of 38 color names: (#red #yellow #green...)"
@@ -135,6 +141,12 @@ CMEntity class >> genericEntities [
 	| kernel |
 	kernel := self package classes.
 	^ self withAllSubclasses select: [ :cl | cl package classes = kernel]
+]
+
+{ #category : 'as yet unclassified' }
+CMEntity class >> instanceSideParameters [
+
+	^ self parameters select: [ :p | p isInstanceSide ]
 ]
 
 { #category : 'testing' }
@@ -252,6 +264,12 @@ CMEntity >> center: x [
 	"do nothing"
 	
 	
+]
+
+{ #category : 'as yet unclassified' }
+CMEntity >> classSideParameters [
+
+	^ self class classSideParameters
 ]
 
 { #category : 'utilities - color' }
@@ -460,9 +478,13 @@ CMEntity >> initialize [
 { #category : 'initialization' }
 CMEntity >> initializeInstanceSideParameters [
 
-	self parameters
-		select: [ :p | p isInstanceSide ]
-		thenDo: [ :p | p setDefaultValueFor: self ]
+	self instanceSideParameters do: [ :p | p setDefaultValueFor: self ]
+]
+
+{ #category : 'as yet unclassified' }
+CMEntity >> instanceSideParameters [
+
+	^ self class instanceSideParameters
 ]
 
 { #category : 'printing' }

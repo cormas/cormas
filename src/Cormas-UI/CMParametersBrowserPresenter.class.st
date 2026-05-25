@@ -2,7 +2,7 @@ Class {
 	#name : 'CMParametersBrowserPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'modelClass',
+		'cormasModel',
 		'modelRadio',
 		'classRadio',
 		'selectionRadio',
@@ -19,7 +19,7 @@ Class {
 { #category : 'examples' }
 CMParametersBrowserPresenter class >> example [
 
-	(self on: ECECModel) open
+	(self on: CMMockModel new) open
 ]
 
 { #category : 'initialization' }
@@ -68,10 +68,10 @@ CMParametersBrowserPresenter >> initializePresenters [
 	
 	| modelParameters classParameters |
 	
-	modelParameters := CMParameter collectAllParametersFrom: modelClass.
+	modelParameters := cormasModel parameters.
 	
-	classParameters := Dictionary newFrom: (modelClass allEntityClasses collect: [ :aClass |
-		aClass -> (CMParameter collectAllParametersFrom: aClass) ]).
+	classParameters := Dictionary newFrom: (cormasModel class allEntityClasses collect: [ :aClass |
+		aClass -> aClass classSideParameters ]).
 
 	modelRadio := self newRadioButton
 		label: 'Model';
@@ -87,9 +87,17 @@ CMParametersBrowserPresenter >> initializePresenters [
 		
 	modelRadio associatedRadioButtons: { classRadio . selectionRadio }.
 	
-	modelParametersPresenter := self instantiate: CMParametersPresenter on: modelParameters.
-	classParametersPresenter := self instantiate: CMClassParametersPresenter on: classParameters.
-	selectionParametersPresenter := self newLabel label: 'Selection selected'; yourself.
+	modelParametersPresenter := self
+		instantiate: CMParametersPresenter
+		on: { modelParameters . { cormasModel } }.
+		
+	classParametersPresenter := self
+		instantiate: CMClassParametersPresenter
+		on: classParameters.
+		
+	selectionParametersPresenter := self
+		instantiate: CMSelectionParametersPresenter
+		on: cormasModel.
 	
 	"presenterSelector := self newPresenterSelector
 		when: [ modelRadio state ] show: [ self instantiate: CMParametersPresenter on: modelParameters ];
@@ -125,9 +133,9 @@ CMParametersBrowserPresenter >> layoutWithSelectionParametersPresenter [
 ]
 
 { #category : 'accessing - model' }
-CMParametersBrowserPresenter >> setModelBeforeInitialization: aClass [
+CMParametersBrowserPresenter >> setModelBeforeInitialization: aModel [
 
-	modelClass := aClass 
+	cormasModel := aModel 
 ]
 
 { #category : 'as yet unclassified' }

@@ -58,11 +58,16 @@ CMNumberParameter class >> newFromPragmaNamedMinMaxStepDefault: aPragma [
 { #category : 'testing' }
 CMNumberParameter >> isValidValue: aValue [
 
+	| steps |
+
 	aValue isNumber ifFalse: [ ^ false ].
 	
 	minValue ifNotNil: [ aValue < minValue ifTrue: [ ^ false ] ].
 	maxValue ifNotNil: [ aValue > maxValue ifTrue: [ ^ false ] ].
-	step ifNotNil: [ (aValue - minValue) % step = 0 ifFalse: [ ^ false ] ].
+	
+	step ifNotNil: [ 
+		steps := (aValue - minValue) / step.
+		((steps - steps rounded) abs closeTo: 0) ifFalse: [ ^ false ] ].
 	
 	^ true
 ]

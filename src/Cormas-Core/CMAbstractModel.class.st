@@ -65,7 +65,8 @@ CMAbstractModel class >> aboutThisModel [
 { #category : 'managing classes' }
 CMAbstractModel class >> allEntityClasses [
 
-	^ self package classes select: [ :aClass | aClass inheritsFrom: CMEntity ]
+	^ self package classes asOrderedCollection
+		select: [ :aClass | aClass inheritsFrom: CMEntity ]
 ]
 
 { #category : 'accessing' }
@@ -128,6 +129,12 @@ CMAbstractModel class >> baseline [
 	relevantBaselines size = 1 ifTrue: [ ^ relevantBaselines first ].
 	
 	self error: 'Multiple baselines include this model and the relevant one could not be identified'.
+]
+
+{ #category : 'accessing' }
+CMAbstractModel class >> classSideParameters [
+	
+	^ self parameters select: [ :p | p isClassSide ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -251,6 +258,12 @@ CMAbstractModel class >> iceRepositoryIfNotFound: aNotFoundBlock [
 	^ self
 		iceRepositoryIfFound: [ :repo | repo ]
 		ifNotFound: aNotFoundBlock 
+]
+
+{ #category : 'accessing' }
+CMAbstractModel class >> instanceSideParameters [
+	
+	^ self parameters select: [ :p | p isInstanceSide ]
 ]
 
 { #category : 'testing' }
@@ -524,6 +537,12 @@ CMAbstractModel >> choosePositionForAgentInCell: aCell [
 CMAbstractModel >> chooseRandomSeedAtRandom [
 	"By default random seed is a random number but we still store it to ensure reproducibility"
 	^ Random new nextInteger: SmallInteger maxVal
+]
+
+{ #category : 'accessing' }
+CMAbstractModel >> classSideParameters [
+
+	^ self class classSideParameters 
 ]
 
 { #category : 'instance creation - aggregates' }
@@ -997,6 +1016,12 @@ CMAbstractModel >> initializeSpaceModel [
 	self cellClass ifNil: [ ^ nil ].
 	self spaceModel: (CMSpaceModel forModel: self).
 
+]
+
+{ #category : 'accessing' }
+CMAbstractModel >> instanceSideParameters [
+
+	^ self class instanceSideParameters 
 ]
 
 { #category : 'accessing - entities' }

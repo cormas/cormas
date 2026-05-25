@@ -71,9 +71,10 @@ CMLoadedModelPreviewPresenter >> initializePresenters [
 		label: 'Simulate';
 		icon: CMIcons runIcon;
 		action: [
-			| presenter |
+			| model presenter |
+			model := cormasModelClass new.
 			presenter := CMSimulationPresenter
-				forModelClass: cormasModelClass.
+				forModel: model.
 			presenter open.
 			presenter window centered ].
 	

@@ -23,6 +23,18 @@ CMMockAnimal class >> initialEnergy: aNumber [
 	initialEnergy := aNumber
 ]
 
+{ #category : 'accessing' }
+CMMockAnimal >> energy [
+	<parameterFloatMin: 0 max: 1 step: 0.1 default: 0.5>
+	^ energy
+]
+
+{ #category : 'accessing' }
+CMMockAnimal >> energy: aNumber [
+	
+	energy := aNumber 
+]
+
 { #category : 'initialization' }
 CMMockAnimal >> initialize [
 

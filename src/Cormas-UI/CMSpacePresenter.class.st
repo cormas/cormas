@@ -18,19 +18,15 @@ Class {
 CMSpacePresenter class >> example [
 	<example>
 	
-	| simulation |
+	| model |
+	model := CMMockModel new.
 	
-	simulation := (CMSimulation for: CMMockModel)
+	(CMSimulation for: model)
 		activeInitSelector: #initFixed;
 		activeControlSelector: #step:;
 		initializeSimulation.
-		
-	"simulation := (CMSimulation for: ECECModel)
-		activeInitSelector: #homogeneousEnvironment;
-		activeControlSelector: #step:;
-		initializeSimulation."
 	
-	(self on: simulation cormasModel) open
+	(self on: model) open
 ]
 
 { #category : 'initialization' }

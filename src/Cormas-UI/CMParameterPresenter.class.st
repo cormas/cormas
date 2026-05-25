@@ -3,7 +3,7 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'parameter',
-		'target'
+		'targets'
 	],
 	#category : 'Cormas-UI-Parameters',
 	#package : 'Cormas-UI',
@@ -13,13 +13,14 @@ Class {
 { #category : 'as yet unclassified' }
 CMParameterPresenter >> applyChange [
 
-	parameter setValue: self newValue for: target 
+	targets do: [ :target |
+		parameter setValue: self newValue for: target  ]
 ]
 
 { #category : 'instance creation' }
 CMParameterPresenter >> currentValue [
-	"The current value of the parameter used by the model"
-	^ parameter valueFor: target
+	"The current value of the parameter. If multiple targets are selected, we display the value of any one of them. In many cases, they will share the same value"
+	^ parameter valueFor: targets anyOne
 ]
 
 { #category : 'instance creation' }
@@ -33,6 +34,6 @@ CMParameterPresenter >> setModelBeforeInitialization: aCollection [
 
 	parameter := aCollection first.
 	
-	"An object to which the parameter is applied. For instance-side parameters, this would be a specific instance, for class-side parameter, this would be a class"
-	target := aCollection second
+	"A collection of objects to which the parameter is applied. For instance-side parameters, those would be specific instances, for class-side parameter, those would be classes"
+	targets := aCollection second
 ]

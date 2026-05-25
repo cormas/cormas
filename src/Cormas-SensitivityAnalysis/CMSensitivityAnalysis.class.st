@@ -48,7 +48,7 @@ CMSensitivityAnalysis >> addSimulationForParameter: aParameter value: aValue [
 
 	| simulation |
 	
-	simulation := (CMSimulation for: modelClass)
+	simulation := (CMSimulation for: modelClass new)
 		activeInitSelector: activeInitSelector;
 		activeControlSelector: activeControlSelector;
 		stopAfterStep: finalTimeStep;

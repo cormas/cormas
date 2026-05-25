@@ -2,7 +2,7 @@ Class {
 	#name : 'CMClassParametersPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'parameterDict',
+		'cormasModel',
 		'classDropList',
 		'parametersPresenter',
 		'selectedClass'
@@ -15,12 +15,8 @@ Class {
 { #category : 'examples' }
 CMClassParametersPresenter class >> example [
 	<example>
-	| dict |
 	
-	dict := (CMMockModel allEntityClasses collect: [ :aClass |
-		aClass -> (CMParameter collectAllParametersFrom: aClass) ]) asDictionary.
-	
-	(self on: dict) open
+	(self on: CMMockModel new) open
 ]
 
 { #category : 'as yet unclassified' }
@@ -52,16 +48,21 @@ CMClassParametersPresenter >> example [
 { #category : 'initialization' }
 CMClassParametersPresenter >> initializePresenters [
 
+	| classes |
+	classes := cormasModel class allEntityClasses.
+
 	classDropList := self newDropList
-		items: parameterDict keys;
+		items: classes;
 		yourself.
 		
 	parametersPresenter := self newPresenterSelector.
 	
-	parameterDict keysDo: [ :aClass |
+	classes do: [ :aClass |
 		parametersPresenter
 			when: [ selectedClass = aClass ]
-			show: [ self instantiate: CMParametersPresenter on: (parameterDict at: aClass) ] ].
+			show: [ self
+				instantiate: CMParametersPresenter
+				on: { aClass classSideParameters . { aClass } } ] ].
 		
 	parametersPresenter
 		defaultShow: [ self newLabel label: 'Select a class'; yourself ];
@@ -69,7 +70,7 @@ CMClassParametersPresenter >> initializePresenters [
 ]
 
 { #category : 'accessing - model' }
-CMClassParametersPresenter >> setModelBeforeInitialization: aDictionary [
+CMClassParametersPresenter >> setModelBeforeInitialization: aModel [
 
-	parameterDict := aDictionary
+	cormasModel := aModel
 ]

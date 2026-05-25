@@ -21,7 +21,7 @@ CMSensitivityAnalysisSimulationRowPresenter class >> example [
 	| parameter simulation |
 	
 	parameter := CMMockModel allParameters first.
-	simulation := CMSimulation for: CMMockModel.
+	simulation := CMSimulation for: CMMockModel new.
 	
 	"simulation initialParameterValues at: parameter put: 42."
 	
