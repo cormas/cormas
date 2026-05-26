@@ -2,7 +2,6 @@ Class {
 	#name : 'CMSimulationRunnerPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'simulation',
 		'runButton',
 		'stepButton',
 		'currentTimeStepLabel',
@@ -23,7 +22,7 @@ Class {
 { #category : 'examples' }
 CMSimulationRunnerPresenter class >> example [
 	<example>
-	| simulation |
+	| app simulation |
 
 	simulation := (CMSimulation for: CMMockModel new)
 		randomSeed: 41;
@@ -31,22 +30,17 @@ CMSimulationRunnerPresenter class >> example [
 		activeControlSelector: #step:;
 		initializeSimulation;
 		yourself.
-
-	self openForSimulation: simulation
+		
+	app := CMSimulationApplication new.
+	app simulation: simulation.
+	app cormasModel: simulation cormasModel.
+	(app newPresenter: CMSimulationRunnerPresenter) open
 ]
 
 { #category : 'examples' }
 CMSimulationRunnerPresenter class >> exampleEmpty [
 	<example>
-	self new open
-]
-
-{ #category : 'as yet unclassified' }
-CMSimulationRunnerPresenter class >> openForSimulation: aSimulation [
-
-	self new
-		simulation: aSimulation;
-		open
+	(CMSimulationApplication new newPresenter: self) open
 ]
 
 { #category : 'as yet unclassified' }
@@ -74,6 +68,12 @@ CMSimulationRunnerPresenter >> connectPresenters [
 	
 	notebook whenSelectedPageChangedDo: [ :page |
 		self updateSelectedNotebookPage ].
+]
+
+{ #category : 'accessing' }
+CMSimulationRunnerPresenter >> cormasModel [
+
+	^ self simulation cormasModel
 ]
 
 { #category : 'specs' }
@@ -126,7 +126,7 @@ CMSimulationRunnerPresenter >> defaultLayout [
 { #category : 'as yet unclassified' }
 CMSimulationRunnerPresenter >> displayCurrentTimeStep [
 
-	currentTimeStepLabel label: ('Step: ', simulation currentTimeStep asString)
+	currentTimeStepLabel label: ('Step: ', self simulation currentTimeStep asString)
 ]
 
 { #category : 'examples' }
@@ -137,21 +137,8 @@ CMSimulationRunnerPresenter >> example [
 { #category : 'as yet unclassified' }
 CMSimulationRunnerPresenter >> fitDiagram [
 
-	simulation ifNil: [ ^ self ].
+	self simulation ifNil: [ ^ self ].
 	spacePresenter fitDiagram.
-]
-
-{ #category : 'testing' }
-CMSimulationRunnerPresenter >> hasSimulation [
-	
-	^ simulation isNotNil
-]
-
-{ #category : 'testing' }
-CMSimulationRunnerPresenter >> hasSimulationData [
-	"Answer true if there is a simulation data that could be lost if presenter is closed"
-	
-	^ simulation isNotNil and: [ simulation data isNotEmpty ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -166,48 +153,28 @@ CMSimulationRunnerPresenter >> hideSettings [
 	self fitDiagram
 ]
 
-{ #category : 'public' }
-CMSimulationRunnerPresenter >> initializeCharts [
-
-	chartPresenter := self
-		instantiate: CMChartPresenter
-		on: simulation 
-]
-
-{ #category : 'initialization' }
-CMSimulationRunnerPresenter >> initializeDataTable [
-
-	dataTable := self instantiate: CMDataPresenter.
-	dataTable columnNames: (simulation activeProbes collect: #name)
-]
-
 { #category : 'initialization' }
 CMSimulationRunnerPresenter >> initializeNotebookPages [
-	"Purpose: Set the Notebook Pages:
-	grid = SpacePresenter, 
-	data table = initializeDataTable,
-	charts = diagrams"
-
-	self initializeSpacePresenter.
-	self initializeDataTable.
-	self initializeCharts.
+	
+	spacePresenter := self instantiate: CMSpacePresenter.
+	chartPresenter := self instantiate: CMChartPresenter.
+	
+	dataTable := self instantiate: CMDataPresenter.
+	dataTable columnNames: (self simulation activeProbes collect: #name).
 
 	notebook removeAll.
 
 	spacePage := SpNotebookPage
 		             title: 'Space'
 		             provider: [ spacePresenter ].
-	"icon: (self iconNamed: #paint)"
 
 	dataPage := SpNotebookPage
 		            title: 'Data'
 		            provider: [ dataTable ].
-	"icon: (self iconNamed: #database)"
 
 	chartsPage := SpNotebookPage
 		              title: 'Charts'
 		              provider: [ chartPresenter ].
-	"icon: CMIcons chartIcon"
 
 	notebook addPage: spacePage.
 	notebook addPage: dataPage.
@@ -215,8 +182,7 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 
 	notebook addPage: (SpNotebookPage
 			 title: 'Inspector'
-			 provider: [ StInspectorPresenter onObject: simulation ]).
-	"icon: (self iconNamed: #smallInspectIt)"
+			 provider: [ StInspectorPresenter onObject: self simulation ]).
 
 	notebook selectPageIndex: 1
 ]
@@ -255,7 +221,9 @@ CMSimulationRunnerPresenter >> initializePresenters [
 	notebook addPage: (SpNotebookPage title: 'Empty' provider: [ self newLabel ]).
 
 	"By default this page is disabled. It will be enabled when the simulation: setter is called"
-	self enabled: false
+	self enabled: false.
+	
+	self simulation ifNotNil: [ self updateWithSimulation ]
 ]
 
 { #category : 'initialization' }
@@ -271,15 +239,9 @@ CMSimulationRunnerPresenter >> initializeRunButtonWithRunAction [
 
 	runButton
 		icon: CMIcons runIcon;
-		action: [ simulation isSimulationProcessConfigured
+		action: [ self simulation isSimulationProcessConfigured
 			ifFalse: [ self runSimulationUntilEnd ]
 			ifTrue: [ self resumeSimulation ] ]
-]
-
-{ #category : 'initialization' }
-CMSimulationRunnerPresenter >> initializeSpacePresenter [
-	"Purpose: Instanciates a new SpacePresenter for the given simulation"
-	spacePresenter := self instantiate: CMSpacePresenter on: simulation cormasModel
 ]
 
 { #category : 'initialization' }
@@ -294,28 +256,17 @@ CMSimulationRunnerPresenter >> initializeWindow: aWindowPresenter [
 ]
 
 { #category : 'initialization' }
-CMSimulationRunnerPresenter >> initializeWithSimulation [
-"Purpose: set the final time step, then initialize the Notebook Pages (grid, diagrams,...)"
-	self setSimulationStepDelay.
-	simulation whenFinishedDo: [ self beInPauseMode ].
-	
-	self displayCurrentTimeStep.
-	self enabled: true.
-	self initializeNotebookPages.
-]
-
-{ #category : 'initialization' }
 CMSimulationRunnerPresenter >> pauseSimulation [
 
 	self beInPauseMode.
-	simulation simulationRunner pause
+	self simulation simulationRunner pause
 ]
 
 { #category : 'actions' }
 CMSimulationRunnerPresenter >> resumeSimulation [
 
 	self beInRunningMode.
-	simulation simulationRunner resume
+	self simulation simulationRunner resume
 ]
 
 { #category : 'actions' }
@@ -323,7 +274,7 @@ CMSimulationRunnerPresenter >> runSimulationUntilEnd [
 
 	self beInRunningMode.
 
-	simulation
+	self simulation
 		runAllStepsAfterEach: displayEveryNumberPresenter number
 		do: [
 			[ self updateAfterStep ] onErrorDo: [ :error |
@@ -333,22 +284,13 @@ CMSimulationRunnerPresenter >> runSimulationUntilEnd [
 { #category : 'initialization' }
 CMSimulationRunnerPresenter >> setSimulationStepDelay [
 
-	simulation simulationRunner stepDelay: self speedInMilliseconds.
+	self simulation simulationRunner stepDelay: self speedInMilliseconds.
 ]
 
 { #category : 'accessing' }
 CMSimulationRunnerPresenter >> simulation [
 
-	^ simulation 
-]
-
-{ #category : 'accessing' }
-CMSimulationRunnerPresenter >> simulation: aSimulation [
-
-"Purpose: registers aSimulation, then initialize the Notebook Pages (grid, diagrams,...)"
-
-	simulation := aSimulation.
-	self initializeWithSimulation
+	^ self application simulation 
 ]
 
 { #category : 'as yet unclassified' }
@@ -386,7 +328,7 @@ CMSimulationRunnerPresenter >> speedInMilliseconds [
 { #category : 'actions' }
 CMSimulationRunnerPresenter >> stepSimulation [
 
-	simulation runStep.
+	self simulation runStep.
 	self updateAfterStep.
 ]
 
@@ -406,7 +348,7 @@ CMSimulationRunnerPresenter >> updateChart [
 { #category : 'update presenters' }
 CMSimulationRunnerPresenter >> updateDataTable [
 
-	dataTable showData: simulation data
+	dataTable showData: self simulation data
 ]
 
 { #category : 'update presenters' }
@@ -424,4 +366,15 @@ CMSimulationRunnerPresenter >> updateSelectedNotebookPage [
 CMSimulationRunnerPresenter >> updateSpace [
 
 	spacePresenter updateDiagram
+]
+
+{ #category : 'initialization' }
+CMSimulationRunnerPresenter >> updateWithSimulation [
+
+	self setSimulationStepDelay.
+	self simulation whenFinishedDo: [ self beInPauseMode ].
+	
+	self displayCurrentTimeStep.
+	self enabled: true.
+	self initializeNotebookPages.
 ]

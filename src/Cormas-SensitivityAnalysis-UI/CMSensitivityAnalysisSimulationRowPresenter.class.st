@@ -78,8 +78,10 @@ CMSensitivityAnalysisSimulationRowPresenter >> initializePresenters [
 	openSimulationButton := self newButton
 		icon: (self iconNamed: #paint);
 		action: [
-			CMSimulationRunnerPresenter
-				openForSimulation: (simulation initializeSimulation; yourself) ];
+			| app |
+			app := CMSimulationApplication new.
+			app simulation: (simulation initializeSimulation; yourself).
+			(app newPresenter: CMSimulationRunnerPresenter) open ];
 		yourself.
 ]
 

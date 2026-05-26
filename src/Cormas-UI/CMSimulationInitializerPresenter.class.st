@@ -2,7 +2,6 @@ Class {
 	#name : 'CMSimulationInitializerPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'modelClass',
 		'initSelectorDropList',
 		'controlSelectorDropList',
 		'initializeButton',
@@ -15,7 +14,10 @@ Class {
 { #category : 'examples' }
 CMSimulationInitializerPresenter class >> example [
 	<example>
-	(self on: CMMockModel) open
+	| app |
+	app := CMSimulationApplication new.
+	app cormasModel: CMMockModel new.
+	(app newPresenter: self) open
 ]
 
 { #category : 'initialization' }
@@ -68,6 +70,9 @@ CMSimulationInitializerPresenter >> example [
 { #category : 'initialization' }
 CMSimulationInitializerPresenter >> initializePresenters [
 
+	| modelClass |
+	modelClass := self application cormasModel class.
+
 	initSelectorDropList := self newDropList.
 	controlSelectorDropList := self newDropList.
 	
@@ -81,12 +86,6 @@ CMSimulationInitializerPresenter >> initializePresenters [
 		yourself.
 
 	self ensureAllInitSettingsDefined
-]
-
-{ #category : 'accessing - model' }
-CMSimulationInitializerPresenter >> setModelBeforeInitialization: aClass [
-
-	modelClass := aClass
 ]
 
 { #category : 'enumerating' }
