@@ -33,6 +33,12 @@ CMBooleanParameterPresenter >> defaultLayout [
 		yourself
 ]
 
+{ #category : 'as yet unclassified' }
+CMBooleanParameterPresenter >> displayValue: aBoolean [
+
+	checkbox state: aBoolean
+]
+
 { #category : 'examples' }
 CMBooleanParameterPresenter >> example [
 	<script: 'self example'>
@@ -45,7 +51,7 @@ CMBooleanParameterPresenter >> initializePresenters [
 		label: parameter name;
 		yourself.
 		
-	checkbox state: self currentValue
+	self displayCurrentValue
 ]
 
 { #category : 'instance creation' }

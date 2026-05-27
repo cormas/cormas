@@ -23,10 +23,29 @@ CMParameterPresenter >> currentValue [
 	^ parameter valueFor: targets anyOne
 ]
 
+{ #category : 'as yet unclassified' }
+CMParameterPresenter >> displayCurrentValue [
+
+	self displayValue: self currentValue
+]
+
+{ #category : 'as yet unclassified' }
+CMParameterPresenter >> displayValue: aValue [
+
+	self subclassResponsibility
+]
+
 { #category : 'instance creation' }
 CMParameterPresenter >> newValue [
 	"The value entered by a user through the UI"
 	self subclassResponsibility
+]
+
+{ #category : 'as yet unclassified' }
+CMParameterPresenter >> resetValue [
+
+	targets do: [ :target | parameter setDefaultValueFor: target  ].
+	self displayCurrentValue
 ]
 
 { #category : 'accessing - model' }
