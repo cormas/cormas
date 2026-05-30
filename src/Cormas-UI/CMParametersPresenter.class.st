@@ -16,9 +16,19 @@ Class {
 { #category : 'examples' }
 CMParametersPresenter class >> example [
 	<example>
-	| model |
+	| app model |
+	
+	app := CMSimulationApplication new.
 	model := CMMockModel new.
-	(self on: { model parameters . { model } }) open
+	
+	(self newApplication: app model: { model parameters . { model } }) open
+]
+
+{ #category : 'private - announcing' }
+CMParametersPresenter >> announceChange [
+
+	"Update spatial grid"
+	self application announcer announce: CMSpaceGridChanged new
 ]
 
 { #category : 'initialization' }
@@ -26,9 +36,11 @@ CMParametersPresenter >> connectPresenters [
 
 	applyButton action: [
 		parameterPresenters do: [ :each | each applyChange ].
-		
-		"Update spatial grid"
-		self application announcer announce: CMSpaceGridChanged new ]
+		self announceChange ].
+	
+	resetButton action: [ 
+		parameterPresenters do: [ :each | each resetValue ].
+		self announceChange ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -59,10 +71,16 @@ CMParametersPresenter >> example [
 ]
 
 { #category : 'initialization' }
-CMParametersPresenter >> initializePresenters [
+CMParametersPresenter >> initializeParameters [
 
 	parameterPresenters := parameters collect: [ :parameter |
 		self instantiate: parameter specPresenterClass on: { parameter . targets } ].
+]
+
+{ #category : 'initialization' }
+CMParametersPresenter >> initializePresenters [
+
+	self initializeParameters.
 	
 	applyButton := self newButton
 		label: 'Apply';

@@ -41,6 +41,12 @@ CMFloatParameterPresenter >> defaultLayout [
 		yourself.
 ]
 
+{ #category : 'as yet unclassified' }
+CMFloatParameterPresenter >> displayValue: aNumber [
+
+	numberInput number: aNumber
+]
+
 { #category : 'examples' }
 CMFloatParameterPresenter >> example [
 	<script: 'self example'>
@@ -69,8 +75,8 @@ CMFloatParameterPresenter >> initializePresenters [
 	parameter step ifNotNil: [ 
 		numberInput climbRate: parameter step ].
 	
-	numberInput number: self currentValue.
 	numberInput beFloat.
+	self displayCurrentValue.
 		
 ]
 

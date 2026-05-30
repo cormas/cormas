@@ -468,7 +468,7 @@ Example: self nearestNeighborsVerifying: [:c | c isClosed not] withinRadius: 7"
 	n := 1.
 	[locations isEmpty and: [n <= range]]
 		whileTrue:
-			[locations := self recursiveNeighbourhood: n verifying: aBlock.
+			[locations := self neighbourhoodOfRadius: n verifying: aBlock.
 			n := n + 1].
 	locations
 		remove: self
@@ -546,13 +546,13 @@ Return value: <OrderedCollection>"
 	
 	| layers visited current next |
 
-   layers := Array new: radius + 1.
+   layers := OrderedCollection new.
    visited := Set new.
 
-   layers at: 1 put: (Array with: self).
+   layers add: (OrderedCollection with: self).
    visited add: self.
 	radius = 0 ifTrue: [ ^ layers ].
-	current := Array with: self.
+	current := OrderedCollection with: self.
 
    1 to: radius do: [ :level |
 		next := OrderedCollection new.
@@ -567,11 +567,33 @@ Return value: <OrderedCollection>"
          visited add: neighbour.
          next add: neighbour ] ] ].
 
-      layers at: level + 1 put: next asArray.
-		current := next asArray
+      layers add: next.
+		current := next
 	].
 
-	^ layers flattened
+	^ layers flattened asOrderedCollection
+]
+
+{ #category : 'environment - sensing - space' }
+CMSpatialEntity >> neighbourhoodOfRadius: range verifying: aBlock [
+	"Purpose: returns the spatial entities within a given radius and fulfilling the constraint specified in aBlock. 
+Arguments: range = <Integer>
+			aBlock = <BlockClosure>
+Return value: <Collection(SpatialEntity)>
+Example: self recursiveNeighbourhood: 5 verifying: [:c | c isClosed not] "
+	
+	^(self neighbourhoodOfRadius: range) select: [:p | aBlock value: p]
+]
+
+{ #category : 'environment - sensing - space' }
+CMSpatialEntity >> neighbourhoodOfRadius: range withoutAny: aClass [
+	"Purpose: returns the spatial entities within a given radius and without any occupant of a given type.
+Return value: <Collection(SpatialEntity)>
+Example: self recursiveNeighbourhood: 5 withoutAny: #Tree"
+	
+	^self
+		neighbourhoodOfRadius: range
+		verifying: [:p | (p hasOccupantsOfClass: aClass) not ]
 ]
 
 { #category : 'environment - sensing - space' }
@@ -645,28 +667,6 @@ CMSpatialEntity >> randomNeighbourVerifying: aCondition [
 	^ candidates
 		ifEmpty: [ nil ]
 		ifNotEmpty: [ self selectRandomlyFrom: candidates ]
-]
-
-{ #category : 'environment - sensing - space' }
-CMSpatialEntity >> recursiveNeighbourhood: range verifying: aBlock [
-	"Purpose: returns the spatial entities within a given radius and fulfilling the constraint specified in aBlock. 
-Arguments: range = <Integer>
-			aBlock = <BlockClosure>
-Return value: <Collection(SpatialEntity)>
-Example: self recursiveNeighbourhood: 5 verifying: [:c | c isClosed not] "
-	
-	^(self neighbourhoodOfRadius: range) select: [:p | aBlock value: p]
-]
-
-{ #category : 'environment - sensing - space' }
-CMSpatialEntity >> recursiveNeighbourhood: range withoutAny: aClass [
-	"Purpose: returns the spatial entities within a given radius and without any occupant of a given type.
-Return value: <Collection(SpatialEntity)>
-Example: self recursiveNeighbourhood: 5 withoutAny: #Tree"
-	
-	^self
-		recursiveNeighbourhood: range
-		verifying: [:p | (p hasOccupantsOfClass: aClass) not ]
 ]
 
 { #category : 'initialize-release' }

@@ -2,7 +2,6 @@ Class {
 	#name : 'CMPovSelectionPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'cormasModel',
 		'povTree',
 		'whenChangedBlock'
 	],
@@ -14,9 +13,16 @@ Class {
 CMPovSelectionPresenter class >> example [
 	<example>
 	
-	| model |
-	model := CMMockModel new.
-	(self on: model) open.
+	| app |
+	app := CMSimulationApplication new.
+	app cormasModel: CMMockModel new.
+	(app newPresenter: self) open.
+]
+
+{ #category : 'accessing' }
+CMPovSelectionPresenter >> cormasModel [
+
+	^ self application cormasModel
 ]
 
 { #category : 'layout' }
@@ -67,19 +73,13 @@ CMPovSelectionPresenter >> initializePresenters [
 	
 ]
 
-{ #category : 'accessing - model' }
-CMPovSelectionPresenter >> setModelBeforeInitialization: aCormasModel [
-
-	cormasModel := aCormasModel
-]
-
 { #category : 'as yet unclassified' }
 CMPovSelectionPresenter >> showPovs [
 
 	| roots |
 	
-	roots := cormasModel class allEntityClasses reject: [ :aClass |
-		cormasModel class allEntityClasses includes: aClass superclass ].
+	roots := self cormasModel class allEntityClasses reject: [ :aClass |
+		self cormasModel class allEntityClasses includes: aClass superclass ].
 
 	povTree
 		roots: (roots sorted: [ :a :b | a name < b name ])

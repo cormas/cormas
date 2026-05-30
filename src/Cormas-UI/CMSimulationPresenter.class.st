@@ -70,7 +70,8 @@ CMSimulationPresenter >> cormasModel [
 CMSimulationPresenter >> defaultLayout [
 
 	^ SpBoxLayout newLeftToRight
-		spacing: 10;
+		spacing: 7;
+		borderWidth: 2;
 		add: sidebar expand: false;
 		add: simulationRunner;
 		yourself
@@ -97,19 +98,21 @@ CMSimulationPresenter >> initializeFancyNotebook [
 	
 	pages := self collectFancyNotebookPages.
 	pages do: [ :page | sidebar addPage: page ]. 
+	
+	sidebar
+		addButtonIcon: (self iconNamed: #smallSystemBrowser)
+		help: 'Browse'
+		action: [ self cormasModel browse ]
 ]
 
 { #category : 'initialization' }
 CMSimulationPresenter >> initializePresenters [
 		
-	stopConditionPresenter := self
-		instantiate: CMStopConditionPresenter
-		on: self cormasModel class.
+	stopConditionPresenter := self instantiate: CMStopConditionPresenter.
 	
 	self initializeFancyNotebook.
 
-	simulationRunner := self
-		instantiate: CMSimulationRunnerPresenter.
+	simulationRunner := self instantiate: CMSimulationRunnerPresenter.
 ]
 
 { #category : 'instance creation' }
@@ -140,7 +143,7 @@ Reset the currentTimeStep and the data. Set the randomSeed"
 			modelInitializationSettings isReleaseRandomSeedAfterInitialization ]."
 	
 	simulation initializeSimulation.
-	simulationRunner simulation: simulation
+	simulationRunner updateWithSimulation
 ]
 
 { #category : 'initialization' }
@@ -168,9 +171,7 @@ CMSimulationPresenter >> settingsParameters [
 	^ SpNotebookPage
 		title: 'Parameters'
 		icon: (self iconNamed: #configuration)
-		provider: [ self
-			instantiate: CMParametersBrowserPresenter
-			on: self cormasModel ]
+		provider: [ self instantiate: CMParametersBrowserPresenter ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -180,9 +181,7 @@ CMSimulationPresenter >> settingsRandomNumbers [
 	^ SpNotebookPage
 		title: 'Random numbers'
 		icon: (self iconNamed: #testRunner)
-		provider: [ self
-			instantiate: CMSimulationInitRandomPresenter
-			on: self cormasModel class ]
+		provider: [ self instantiate: CMSimulationInitRandomPresenter ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -192,11 +191,11 @@ CMSimulationPresenter >> settingsSimulationInitializer [
 	^ SpNotebookPage
 		title: 'Initialize simulation'
 		icon: (self iconNamed: #smallNew)
-		provider: [ (self
-			instantiate: CMSimulationInitializerPresenter
-			on: self cormasModel class)
+		provider: [ (self instantiate: CMSimulationInitializerPresenter)
 			whenInitializeButtonClickedDo: [ :initSelector :controlSelector |
-				self initializeSimulationInit: initSelector control: controlSelector ];
+				self
+					initializeSimulationInit: initSelector
+					control: controlSelector ];
 			yourself ]
 ]
 

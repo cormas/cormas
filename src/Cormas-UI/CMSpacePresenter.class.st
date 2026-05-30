@@ -3,7 +3,6 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'toolbar',
-		'cormasModel',
 		'povSelection',
 		'diagram',
 		'povButton',
@@ -18,15 +17,17 @@ Class {
 CMSpacePresenter class >> example [
 	<example>
 	
-	| model |
+	| model app |
 	model := CMMockModel new.
 	
 	(CMSimulation for: model)
 		activeInitSelector: #initFixed;
 		activeControlSelector: #step:;
 		initializeSimulation.
-	
-	(self on: model) open
+		
+	app := CMSimulationApplication new.
+	app cormasModel: model.
+	(app newPresenter: self) open
 ]
 
 { #category : 'initialization' }
@@ -47,7 +48,7 @@ CMSpacePresenter >> connectPresenters [
 { #category : 'accessing' }
 CMSpacePresenter >> cormasModel [
 
-	^ cormasModel
+	^ self application cormasModel
 ]
 
 { #category : 'layout' }
@@ -86,7 +87,7 @@ CMSpacePresenter >> initializeCanvasInteractions [
 CMSpacePresenter >> initializeDiagram [
 	"Set the Grid presenter: a new instance of RoassalBuilder (CMR3SpaceDiagramBuilder)"
 
-	spaceBuilder := CMR3SpaceDiagramBuilder for: cormasModel.
+	spaceBuilder := CMR3SpaceDiagramBuilder for: self cormasModel.
 	diagram := spaceBuilder asPresenter.
 
 	diagram owner: self.
@@ -98,7 +99,7 @@ CMSpacePresenter >> initializePresenters [
 "Set the Grid presenter (instance of RoassalBuilder (CMR3SpaceDiagramBuilder))"
 	self initializeToolbar.
 	
-	povSelection := (self instantiate: CMPovSelectionPresenter on: cormasModel)
+	povSelection := (self instantiate: CMPovSelectionPresenter)
 		whenChangedDo: [ spaceBuilder update ];
 		yourself.
 		
@@ -150,12 +151,6 @@ CMSpacePresenter >> saveToPngFile: aFileReference [
 	self
 		saveCanvas: diagram canvas
 		toPngFile: aFileReference
-]
-
-{ #category : 'accessing - model' }
-CMSpacePresenter >> setModelBeforeInitialization: aCormasModel [
-	
-	cormasModel := aCormasModel 
 ]
 
 { #category : 'accessing' }

@@ -107,12 +107,14 @@ CMSensitivityAnalysisDataPresenter >> initializePresenters [
 				name: 'Open simulation'; 
 				icon: CMIcons runIcon;
 				action: [
-					CMSimulationRunnerPresenter
-						openForSimulation: (
-							simulationsTable selectedItem
-								randomSeed: sensitivityAnalysis randomSeed;
-								initializeSimulation;
-								yourself) ] ];
+					| app |
+					app := CMSimulationApplication new.
+					app simulation: (simulationsTable selectedItem
+						randomSeed: sensitivityAnalysis randomSeed;
+						initializeSimulation;
+						yourself).
+								 
+					(app newPresenter: CMSimulationRunnerPresenter) open ] ];
 			yourself);
 		items: sensitivityAnalysis simulations;
 		"addColumn: (SpStringTableColumn

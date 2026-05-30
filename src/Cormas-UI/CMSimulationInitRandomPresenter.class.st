@@ -2,7 +2,6 @@ Class {
 	#name : 'CMSimulationInitRandomPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'modelClass',
 		'randomNumberGenerator',
 		'fixRandomSeedCheckbox',
 		'randomSeedInput',
@@ -38,14 +37,7 @@ CMSimulationInitRandomPresenter class >> availableRandomNumberGenerators [
 { #category : 'examples' }
 CMSimulationInitRandomPresenter class >> example [
 	<example>
-	
-	(self forModelClass: CMMockModel) open
-]
-
-{ #category : 'as yet unclassified' }
-CMSimulationInitRandomPresenter class >> forModelClass: aClass [
-
-	^ self on: aClass
+	self new open
 ]
 
 { #category : 'initialization' }
@@ -149,10 +141,4 @@ CMSimulationInitRandomPresenter >> randomNumberGenerator [
 CMSimulationInitRandomPresenter >> randomSeed [
 
 	^ randomSeedInput number
-]
-
-{ #category : 'accessing - model' }
-CMSimulationInitRandomPresenter >> setModelBeforeInitialization: aClass [
-
-	modelClass := aClass
 ]

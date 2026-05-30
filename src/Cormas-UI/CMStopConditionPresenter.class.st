@@ -2,7 +2,6 @@ Class {
 	#name : 'CMStopConditionPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'cormasModelClass',
 		'hasFinalStepCheckbox',
 		'finalStepLabel',
 		'choice',
@@ -19,7 +18,10 @@ Class {
 { #category : 'examples' }
 CMStopConditionPresenter class >> example [
 	<example>
-	(self on: CMMockModel) open
+	| app |
+	app := CMSimulationApplication new.
+	app cormasModel: CMMockModel new.
+	(app newPresenter: self) open
 ]
 
 { #category : 'as yet unclassified' }
@@ -78,6 +80,12 @@ CMStopConditionPresenter >> connectPresenters [
 		
 	applyButton action: [ onChangedBlock value: self buildConditionBlock ]
 	
+]
+
+{ #category : 'accessing' }
+CMStopConditionPresenter >> cormasModel [
+
+	^ self application cormasModel
 ]
 
 { #category : 'as yet unclassified' }
@@ -144,7 +152,7 @@ CMStopConditionPresenter >> initializePresenters [
 	stopConditionDropList := (self instantiate: CMDropListWithPlaceholderPresenter)
 		placeholder: 'boolean method'
 		respondingTo: #value;
-		items: cormasModelClass availableBooleanSelectors;
+		items: self cormasModel class availableBooleanSelectors;
 		display: [ :each | each value ];
 		yourself.
 		
@@ -153,12 +161,6 @@ CMStopConditionPresenter >> initializePresenters [
 		icon: (self iconNamed: #accept);
 		yourself
 	
-]
-
-{ #category : 'accessing - model' }
-CMStopConditionPresenter >> setModelBeforeInitialization: aClass [
-
-	cormasModelClass := aClass
 ]
 
 { #category : 'announcing' }

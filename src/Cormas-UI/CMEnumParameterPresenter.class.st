@@ -36,6 +36,12 @@ CMEnumParameterPresenter >> defaultLayout [
 		yourself
 ]
 
+{ #category : 'as yet unclassified' }
+CMEnumParameterPresenter >> displayValue: aSymbol [
+
+	droplist selectItem: aSymbol 
+]
+
 { #category : 'examples' }
 CMEnumParameterPresenter >> example [
 	<script: 'self example'>
@@ -50,8 +56,9 @@ CMEnumParameterPresenter >> initializePresenters [
 		
 	droplist := self newDropList
 		items: parameter values;
-		selectItem: self currentValue;
-		yourself
+		yourself.
+		
+	self displayCurrentValue
 ]
 
 { #category : 'instance creation' }

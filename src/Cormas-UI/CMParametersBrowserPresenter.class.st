@@ -2,7 +2,6 @@ Class {
 	#name : 'CMParametersBrowserPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'cormasModel',
 		'notebook'
 	],
 	#category : 'Cormas-UI-Parameters',
@@ -12,8 +11,21 @@ Class {
 
 { #category : 'examples' }
 CMParametersBrowserPresenter class >> example [
+	
+	| model app |
+	
+	model := CMMockModel new.
+	model initFixed.
+	
+	app := CMSimulationApplication new.
+	app cormasModel: model.
+	(app newPresenter: self) open
+]
 
-	(self on: CMMockModel new) open
+{ #category : 'accessing' }
+CMParametersBrowserPresenter >> cormasModel [
+
+	^ self application cormasModel
 ]
 
 { #category : 'layout' }
@@ -40,23 +52,17 @@ CMParametersBrowserPresenter >> initializePresenters [
 		title: 'Model'
 		provider: [ self
 			instantiate: CMParametersPresenter
-			on: { cormasModel parameters . { cormasModel } } ]).
+			on: { self cormasModel parameters . { self cormasModel } } ]).
 		
 	notebook addPage: (SpNotebookPage
 		title: 'Class'
 		provider: [ self
 			instantiate: CMClassParametersPresenter
-			on: cormasModel ]).
+			on: self cormasModel ]).
 		
 	notebook addPage: (SpNotebookPage
 		title: 'Selection'
 		provider: [ self
 			instantiate: CMSelectionParametersPresenter
-			on: cormasModel ]).
-]
-
-{ #category : 'accessing - model' }
-CMParametersBrowserPresenter >> setModelBeforeInitialization: aModel [
-
-	cormasModel := aModel 
+			on: self cormasModel ]).
 ]

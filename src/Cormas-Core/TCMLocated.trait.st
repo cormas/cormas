@@ -269,7 +269,7 @@ Example: self locationsVerifying: [:c | c isClosed not] withinRadius: 5"
 	
 	^self cell
 		ifNil: [ nil ]
-		ifNotNil: [ self cell recursiveNeighbourhood: range verifying: aBlock ]
+		ifNotNil: [ self cell neighbourhoodOfRadius: range verifying: aBlock ]
 ]
 
 { #category : 'environment - sensing - space' }
@@ -295,7 +295,7 @@ Example: self locationsWithoutAny: Predator withinRadius: self perceptionRangePr
 	
 	^self cell
 		ifNil: [ nil ]
-		ifNotNil: [ self cell recursiveNeighbourhood: range withoutAny: locatedEntityName ]
+		ifNotNil: [ self cell neighbourhoodOfRadius: range withoutAny: locatedEntityName ]
 ]
 
 { #category : 'star moving' }
