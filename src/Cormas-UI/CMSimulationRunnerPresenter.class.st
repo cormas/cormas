@@ -84,13 +84,13 @@ CMSimulationRunnerPresenter >> defaultLayout [
 	simulationControlsLayout := SpBoxLayout newLeftToRight
 		  spacing: 5;
 		  add: (SpBoxLayout newTopToBottom
-				   spacing: 3;
+				   spacing: 2;
 				   add: 'Step' expand: false;
 				   add: stepButton;
 				   yourself)
 		  width: 60;
 		  add: (SpBoxLayout newTopToBottom
-				   spacing: 3;
+				   spacing: 2;
 				   add: 'Run' expand: false;
 				   add: runButton;
 				   yourself)
@@ -103,13 +103,13 @@ CMSimulationRunnerPresenter >> defaultLayout [
 				yourself) width: 100;
 		  add: SpNullPresenter new;
 		  add: (SpBoxLayout newTopToBottom
-				   spacing: 3;
+				   spacing: 2;
 				   add: 'Speed' expand: false;
 				   add: speedDropList;
 				   yourself)
 		  height: 52;
 		  add: (SpBoxLayout newTopToBottom
-				   spacing: 3;
+				   spacing: 2;
 				   add: 'Display every' expand: false;
 				   add: displayEveryNumberPresenter;
 				   yourself)

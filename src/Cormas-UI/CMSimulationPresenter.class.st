@@ -70,7 +70,8 @@ CMSimulationPresenter >> cormasModel [
 CMSimulationPresenter >> defaultLayout [
 
 	^ SpBoxLayout newLeftToRight
-		spacing: 10;
+		spacing: 7;
+		borderWidth: 2;
 		add: sidebar expand: false;
 		add: simulationRunner;
 		yourself
@@ -97,6 +98,11 @@ CMSimulationPresenter >> initializeFancyNotebook [
 	
 	pages := self collectFancyNotebookPages.
 	pages do: [ :page | sidebar addPage: page ]. 
+	
+	sidebar
+		addButtonIcon: (self iconNamed: #smallSystemBrowser)
+		help: 'Browse'
+		action: [ self cormasModel browse ]
 ]
 
 { #category : 'initialization' }
