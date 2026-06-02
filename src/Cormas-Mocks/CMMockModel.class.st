@@ -12,7 +12,7 @@ Internal Representation and Key Implementation Points.
 "
 Class {
 	#name : 'CMMockModel',
-	#superclass : 'CMAbstractModel',
+	#superclass : 'CMModel',
 	#instVars : [
 		'theCells',
 		'theCows',
