@@ -70,7 +70,7 @@ CMSimulationPresenter >> cormasModel [
 CMSimulationPresenter >> defaultLayout [
 
 	^ SpBoxLayout newLeftToRight
-		spacing: 7;
+		spacing: 10;
 		borderWidth: 2;
 		add: sidebar expand: false;
 		add: simulationRunner;
@@ -172,16 +172,6 @@ CMSimulationPresenter >> settingsParameters [
 		title: 'Parameters'
 		icon: (self iconNamed: #configuration)
 		provider: [ self instantiate: CMParametersBrowserPresenter ]
-]
-
-{ #category : 'as yet unclassified' }
-CMSimulationPresenter >> settingsRandomNumbers [
-	<fancyNotebookPageOrder: 6>
-	
-	^ SpNotebookPage
-		title: 'Random numbers'
-		icon: (self iconNamed: #testRunner)
-		provider: [ self instantiate: CMSimulationInitRandomPresenter ]
 ]
 
 { #category : 'as yet unclassified' }

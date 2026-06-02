@@ -99,7 +99,6 @@ CMStopConditionPresenter >> deactivateFinalStep [
 CMStopConditionPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
-		borderWidth: 5;
 		spacing: 10;
 		add: hasFinalStepCheckbox expand: false;
 		add: (SpGridLayout new
@@ -113,7 +112,7 @@ CMStopConditionPresenter >> defaultLayout [
 		add: 'or when' expand: false;
 		add: stopConditionDropList expand: false;
 		add: SpNullPresenter new;
-		add: applyButton expand: false;
+		add: applyButton height: CMActivityBar activityButtonHeight;
 		yourself
 ]
 

@@ -26,7 +26,7 @@ CMSelectionParametersPresenter class >> example [
 	
 	(CMSimulation for: model)
 		activeInitSelector: #initFixed;
-		activeControlSelector: #step:;
+		activeControlSelector: #step;
 		initializeSimulation.
 	
 	(self on: model) open

@@ -28,6 +28,7 @@ Class {
 	#traits : 'TCMRandom',
 	#classTraits : 'TCMRandom classTrait',
 	#instVars : [
+		'context',
 		'cormasModel',
 		'gridCellShape',
 		'isClosedEnvironment',
@@ -78,7 +79,7 @@ CMSpaceModel class >> forModel: aCormasModel [
 
 	^ self basicNew
 		cormasModel: aCormasModel;
-		randomNumberGenerator: aCormasModel randomNumberGenerator;
+		simulationContext: aCormasModel simulationContext;
 		initialize;
 		yourself
 ]
@@ -516,11 +517,9 @@ CMSpaceModel >> neighbourhoodConfiguration: aCMSpaceNeighbourhood [
 
 { #category : 'private - init' }
 CMSpaceModel >> newEntity: aClass [
-	" Creates a new instance of aClass and collects it at the level of theXXXs collection"
 
 	^ (aClass new: self)
-		  cormasModel: self cormasModel;
-		  randomNumberGenerator: randomNumberGenerator;
+		  simulationContext: context;
 		  yourself
 ]
 
@@ -596,6 +595,18 @@ CMSpaceModel >> randomCell [
 	"Return a spatialEntityElement (aCell) picked randomly from the spatial grid."
 
 	^ self selectRandomlyFrom: cormasModel cells
+]
+
+{ #category : 'as yet unclassified' }
+CMSpaceModel >> simulationContext [
+
+	^ context
+]
+
+{ #category : 'as yet unclassified' }
+CMSpaceModel >> simulationContext: aContext [
+
+	context := aContext
 ]
 
 { #category : 'accessing cell' }

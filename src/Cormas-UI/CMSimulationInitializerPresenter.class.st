@@ -4,6 +4,7 @@ Class {
 	#instVars : [
 		'initSelectorDropList',
 		'controlSelectorDropList',
+		'randomNumbersPresenter',
 		'initializeButton',
 		'initializeButtonBlock'
 	],
@@ -38,18 +39,21 @@ CMSimulationInitializerPresenter >> connectPresenters [
 CMSimulationInitializerPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
-		borderWidth: 5;
 		spacing: 12;
 		add: (SpBoxLayout newTopToBottom
+			spacing: 1;
 			add: 'Init method' expand: false;
 			add: initSelectorDropList expand: false;
 			yourself) expand: false;
 		add: (SpBoxLayout newTopToBottom
+			spacing: 1;
 			add: 'Control method' expand: false;
 			add: controlSelectorDropList expand: false;
 			yourself) expand: false;
 		add: SpNullPresenter new;
-		add: initializeButton expand: false;
+		add: randomNumbersPresenter;
+		add: SpNullPresenter new;
+		add: initializeButton height: CMActivityBar activityButtonHeight;
 		yourself
 ]
 
@@ -78,6 +82,8 @@ CMSimulationInitializerPresenter >> initializePresenters [
 	
 	initSelectorDropList items: modelClass availableInitSelectors.
 	controlSelectorDropList items: modelClass availableControlSelectors.
+	
+	randomNumbersPresenter := self instantiate: CMSimulationInitRandomPresenter. 
 		
 	initializeButton := self newButton
 		disable;

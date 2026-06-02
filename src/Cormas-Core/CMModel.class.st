@@ -146,12 +146,6 @@ CMModel class >> copyMethod: aSelector into: aClass [
 ]
 
 { #category : 'as yet unclassified' }
-CMModel class >> defaultRandomNumberGeneratorClass [
-
-	^ PMFishmanMooreRandomGenerator
-]
-
-{ #category : 'as yet unclassified' }
 CMModel class >> deleteModel [
 
 	self projectPackages do: [ :package | package removeFromSystem ]
@@ -533,12 +527,6 @@ CMModel >> choosePositionForAgentInCell: aCell [
         ifFalse: [ config randomPointInCell: aCell using: self randomNumberGenerator ].
 ]
 
-{ #category : 'random numbers' }
-CMModel >> chooseRandomSeedAtRandom [
-	"By default random seed is a random number but we still store it to ensure reproducibility"
-	^ Random new nextInteger: SmallInteger maxVal
-]
-
 { #category : 'accessing' }
 CMModel >> classSideParameters [
 
@@ -834,12 +822,6 @@ CMModel >> createN: aNumber randomlyLocatedEntitiesFrom: aCollectionOfClasses in
 	^ newEntities
 ]
 
-{ #category : 'accessing' }
-CMModel >> currentTimeStep [
-	"This must be a property of model, not simulation, because it is very common that the behavior of agents depends on this number. For example: collect harvest after every 30 steps"
-	^ currentTimeStep
-]
-
 { #category : 'utilities - space metrics' }
 CMModel >> distanceFromCell: cell1 toCell: cell2 [
 	"Purpose: return the distance in number of cells (also known as Manhattan distance)"
@@ -922,12 +904,6 @@ CMModel >> getAttributesType: attributes fromInstances: instanceCollection [
 	^dicoAttConv
 ]
 
-{ #category : 'accessing' }
-CMModel >> incrementCurrentTimeStep [
-
-	currentTimeStep := currentTimeStep + 1
-]
-
 { #category : 'init-release entities' }
 CMModel >> initEntities [
 	"Initialize all the Entity classes of the model"
@@ -944,11 +920,13 @@ CMModel >> initialize [
 
 	super initialize.
 	
-	currentTimeStep := 0.
+	self flag: 'TODO'.
+	"A dummy context because before the simulation is created we already need things like random number generator. For example, for testing or to display the default generator in the UI"
+	self simulationContext: CMSimulationContext new.
+	
 	entities := Dictionary new.
 	
 	self initializeParameters.
-	self initializeRandomNumberGenerator.
 	self initializeModelClasses.
 	self initializeSpaceModel.
 	
@@ -990,15 +968,6 @@ CMModel >> initializeParameters [
 	"Class side parameters of entity classes"
 	self class allEntityClasses do: [ :eachClass |
 		eachClass resetClassSideParameters ]
-]
-
-{ #category : 'initialization' }
-CMModel >> initializeRandomNumberGenerator [
-	
-	self 
-		initializeRandomNumberGeneratorClass: self class defaultRandomNumberGeneratorClass
-		seed: self chooseRandomSeedAtRandom
-		
 ]
 
 { #category : 'initialization' }
@@ -1066,10 +1035,10 @@ CMModel >> newEntity: aClass [
 
 	| anEntity |
 	anEntity := aClass basicNew
-		            cormasModel: self;
-		            randomNumberGenerator: randomNumberGenerator;
-		            initialize;
-		            yourself.
+		cormasModel: self;
+		simulationContext: context;
+		initialize;
+		yourself.
 
 	self addEntityToCollection: anEntity.
 	self setDefaultInstanceSideParameterValuesFor: anEntity.
@@ -1325,6 +1294,18 @@ Example: self setLinearGradientForAttribute: #energy centralValue: 10 borderValu
 	
 	^self spaceModel setLinearGradientForAttribute: anAttribute centralValue:
 			cv borderValue: bv bySections: anArray
+]
+
+{ #category : 'as yet unclassified' }
+CMModel >> simulationContext [
+
+	^ context
+]
+
+{ #category : 'as yet unclassified' }
+CMModel >> simulationContext: aContext [
+
+	context := aContext
 ]
 
 { #category : 'accessing' }

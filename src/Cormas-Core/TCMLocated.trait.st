@@ -214,10 +214,6 @@ TCMLocated >> leave [
 TCMLocated >> leaveWhileMoving: isMoving [
 
 	self cell ifNil: [ ^ self ].
-	
-	isMoving ifFalse: [
-		"The situated agent doesn't move; it is not located any more. But it is still 'alive'  "
-		self cormasModel spaceModel ifNil: [ ^ self ] ].
 			
 	(self cell theOccupants at: self class name)
 		remove: self

@@ -27,26 +27,3 @@ CMEntityTest >> testColorOfNumber [
 CMEntityTest >> testCormasEntityIsAbstract [
 	self assert: CMEntity isAbstract
 ]
-
-{ #category : 'tests' }
-CMEntityTest >> testCormasModel [
-	| model |
-	model := CMMockModel new
-		createGridNumberOfRows: 3
-			numberOfColumns: 3
-			neighbourhood: 4
-			closed: true;
-		yourself.
-	self assert: model centralCell cormasModel identicalTo: model.
-	model
-		createN: 5
-		randomlyLocatedAloneEntities: CMMockCow.
-	model agents do: [ :agent | self assert: agent cormasModel identicalTo: model ]
-]
-
-{ #category : 'tests' }
-CMEntityTest >> testModelClass [
-	self
-		assert: CMMockCell modelClass
-		identicalTo: CMMockModel
-]

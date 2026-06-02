@@ -27,7 +27,7 @@ CMSimulationRunnerPresenter class >> example [
 	simulation := (CMSimulation for: CMMockModel new)
 		randomSeed: 41;
 		activeInitSelector: #initFixed;
-		activeControlSelector: #step:;
+		activeControlSelector: #step;
 		initializeSimulation;
 		yourself.
 		

@@ -15,7 +15,7 @@ Trait {
 { #category : 'random' }
 TCMRandom >> random [
 
-	^ randomNumberGenerator next
+	^ self randomNumberGenerator next
 ]
 
 { #category : 'random' }
@@ -42,25 +42,13 @@ TCMRandom >> randomIntegerBetween: lowNumber and: highNumber [
 { #category : 'accessing' }
 TCMRandom >> randomNumberGenerator [
 	
-	^ randomNumberGenerator 
-]
-
-{ #category : 'accessing' }
-TCMRandom >> randomNumberGenerator: aGenerator [
-
-	randomNumberGenerator := aGenerator
-]
-
-{ #category : 'accessing' }
-TCMRandom >> randomSeed: aNumber [
-	aNumber ifNil: [ ^self ].
-	randomNumberGenerator seed: aNumber
+	^ self simulationContext randomNumberGenerator 
 ]
 
 { #category : 'random' }
 TCMRandom >> selectRandomlyFrom: aCollection [
 
-	^ aCollection atRandom: randomNumberGenerator
+	^ aCollection atRandom: self randomNumberGenerator
 ]
 
 { #category : 'random' }
@@ -78,5 +66,5 @@ TCMRandom >> selectRandomlyFrom: aCollection size: anInteger [
 { #category : 'random' }
 TCMRandom >> shuffled: aCollection [
 
-	^ aCollection asOrderedCollection shuffledBy: randomNumberGenerator
+	^ aCollection asOrderedCollection shuffledBy: self randomNumberGenerator
 ]

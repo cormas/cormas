@@ -36,6 +36,7 @@ Class {
 	#classTraits : 'TCMRandom classTrait + TCMMath classTrait',
 	#instVars : [
 		'id',
+		'context',
 		'cormasModel',
 		'group'
 	],
@@ -593,15 +594,6 @@ CMEntity >> isSpatialEntitySet [
 ]
 
 { #category : 'accessing' }
-CMEntity >> modelClass [
-	"Purpose: returns the Class of the current model
-	Return value: a class
-	Example: self modelClass -> ECEC"
-
-	^ cormasModel ifNotNil: #class ifNil: [ self class modelClass ]
-]
-
-{ #category : 'accessing' }
 CMEntity >> parameters [
 
 	^ self class parameters
@@ -648,4 +640,16 @@ CMEntity >> printOn: aStream [
 		<< $-;
 		<< 'id: ';
 		<< self id asString
+]
+
+{ #category : 'as yet unclassified' }
+CMEntity >> simulationContext [
+
+	^ context 
+]
+
+{ #category : 'as yet unclassified' }
+CMEntity >> simulationContext: aContext [
+
+	context := aContext 
 ]
