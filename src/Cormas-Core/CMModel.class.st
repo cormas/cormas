@@ -37,7 +37,7 @@ Class {
 	#traits : 'TCMRandom',
 	#classTraits : 'TCMRandom classTrait',
 	#instVars : [
-		'currentTimeStep',
+		'context',
 		'spaceModel',
 		'entities',
 		'cellClass',
@@ -1340,15 +1340,20 @@ CMModel >> spaceModel: aSpaceModel [
 ]
 
 { #category : 'control' }
-CMModel >> stepAsynchronouslyCA: t [
+CMModel >> stepAsynchronously [
 	"Purpose: To active the transition function and to update asynchronously a cellular automata"
 	
-	self cells
-		do:
-			[:a | 
-			a
-				newState;
-				updateState]
+	self cells do: [ :each | 
+		each newState.
+		each updateState ]
+]
+
+{ #category : 'deprecated' }
+CMModel >> stepAsynchronouslyCA: t [
+	
+	self
+		deprecated: 'Use #stepAsynchronously instead'
+		transformWith: '`@rec stepAsynchronouslyCA: `@arg' -> '`@rec stepAsynchronously'
 ]
 
 { #category : 'control' }
@@ -1371,21 +1376,29 @@ CMModel >> stepEntitiesRandom: aCollecOrClass [
 	self askRandom: aCollecOrClass toDo: #step
 ]
 
-{ #category : 'Olddeprecated' }
-CMModel >> stepSynchronously: t [
+{ #category : 'as yet unclassified' }
+CMModel >> stepSynchronously [
 	"Purpose: To active the transition function and to update synchronously a cellular automata
-Example: See the models Conway http://cormas.cirad.fr/en/applica/conway.htm or Fire http://cormas.cirad.fr/en/applica/fireautomata.htm "
-	
-	self stepSynchronouslyCA: t
-]
-
-{ #category : 'control' }
-CMModel >> stepSynchronouslyCA: t [
-	"Purpose: To active the transition function and to update synchronously a cellular automata
-Example: See the models Conway http://cormas.cirad.fr/en/applica/conway.htm or Fire http://cormas.cirad.fr/en/applica/fireautomata.htm"
+Example: See the mosdels Conway http://cormas.cirad.fr/en/applica/conway.htm or Fire http://cormas.cirad.fr/en/applica/fireautomata.htm "
 	
 	self cells do: [:a | a newState].
 	self cells do: [:a | a updateState]
+]
+
+{ #category : 'deprecated' }
+CMModel >> stepSynchronously: t [
+	
+	self
+		deprecated: 'Use #stepSynchronously instead'
+		transformWith: '`@rec stepSynchronously: `@arg' -> '`@rec stepSynchronously'
+]
+
+{ #category : 'deprecated' }
+CMModel >> stepSynchronouslyCA: t [
+
+	self
+		deprecated: 'Use #stepSynchronously instead'
+		transformWith: '`@rec stepSynchronouslyCA: `@arg' -> '`@rec stepSynchronously'
 ]
 
 { #category : 'accessing - entities' }
