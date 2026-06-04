@@ -273,6 +273,12 @@ CMSimulation >> shouldReleaseRandomSeedAfterInitialization: aBoolean [
 	shouldReleaseRandomSeedAfterInitialization := aBoolean
 ]
 
+{ #category : 'as yet unclassified' }
+CMSimulation >> simulationContext [
+
+	^ context
+]
+
 { #category : 'accessing' }
 CMSimulation >> simulationRunner [
 

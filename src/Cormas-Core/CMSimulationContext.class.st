@@ -67,7 +67,8 @@ CMSimulationContext >> randomNumberGenerator [
 { #category : 'accessing' }
 CMSimulationContext >> randomNumberGenerator: anObject [
 
-	randomNumberGenerator := anObject
+	randomNumberGenerator := anObject.
+	randomSeed ifNotNil: [ randomNumberGenerator seed: randomSeed ]
 ]
 
 { #category : 'accessing' }

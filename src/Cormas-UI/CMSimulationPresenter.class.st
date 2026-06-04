@@ -3,6 +3,7 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'sidebar',
+		'simulationInitializerPresenter',
 		'stopConditionPresenter',
 		'simulationRunner',
 		'whenWindowIsClosedHooks'
@@ -110,6 +111,13 @@ CMSimulationPresenter >> initializePresenters [
 		
 	stopConditionPresenter := self instantiate: CMStopConditionPresenter.
 	
+	simulationInitializerPresenter := (self instantiate: CMSimulationInitializerPresenter)
+		whenInitializeButtonClickedDo: [ :initSelector :controlSelector |
+			self
+				initializeSimulationInit: initSelector
+				control: controlSelector ];
+		yourself.
+	
 	self initializeFancyNotebook.
 
 	simulationRunner := self instantiate: CMSimulationRunnerPresenter.
@@ -135,15 +143,11 @@ Reset the currentTimeStep and the data. Set the randomSeed"
 		
 	simulation stopWhen: stopConditionPresenter buildConditionBlock.
 		
-	self flag: 'TODO'.
-	
-	"modelInitializationSettings isFixRandomSeed ifTrue: [ 
-		simulation randomSeed: modelInitializationSettings randomSeed.
-		simulation shouldReleaseRandomSeedAfterInitialization:
-			modelInitializationSettings isReleaseRandomSeedAfterInitialization ]."
+	simulationInitializerPresenter applyRandomNumberGeneratorSettings.
 	
 	simulation initializeSimulation.
-	simulationRunner updateWithSimulation
+	simulationRunner updateWithSimulation.
+	simulationInitializerPresenter updatePresenter
 ]
 
 { #category : 'initialization' }
@@ -181,12 +185,7 @@ CMSimulationPresenter >> settingsSimulationInitializer [
 	^ SpNotebookPage
 		title: 'Initialize simulation'
 		icon: (self iconNamed: #smallNew)
-		provider: [ (self instantiate: CMSimulationInitializerPresenter)
-			whenInitializeButtonClickedDo: [ :initSelector :controlSelector |
-				self
-					initializeSimulationInit: initSelector
-					control: controlSelector ];
-			yourself ]
+		provider: [ simulationInitializerPresenter ]
 ]
 
 { #category : 'as yet unclassified' }

@@ -41,6 +41,21 @@ CMSimulationInitRandomPresenter class >> example [
 	(app newPresenter: self) open
 ]
 
+{ #category : 'utilities' }
+CMSimulationInitRandomPresenter >> apply [
+
+	| simulation context |
+	
+	simulation := self application simulation.
+	context := simulation simulationContext.
+	
+	context randomSeed: randomSeedInput number.
+	context randomNumberGenerator: randomSeedGeneratorDroplist selectedItem new.
+	
+	simulation hasFixedRandomSeed: fixRandomSeedCheckbox state.
+	simulation shouldReleaseRandomSeedAfterInitialization: releaseRandomSeedCheckbox state
+]
+
 { #category : 'initialization' }
 CMSimulationInitRandomPresenter >> connectPresenters [
 
@@ -119,17 +134,7 @@ CMSimulationInitRandomPresenter >> initializePresenters [
 		yourself.
 		
 	self disableRandomSeedPresenters.
-	self initializeWithModel
-]
-
-{ #category : 'initialization' }
-CMSimulationInitRandomPresenter >> initializeWithModel [
-
-	| context |
-	context := self cormasModel simulationContext.
-
-	randomSeedGeneratorDroplist selectItem: context randomNumberGenerator class.
-	randomSeedInput number: context randomSeed.
+	self showCurrentSettings
 ]
 
 { #category : 'testing' }
@@ -148,4 +153,14 @@ CMSimulationInitRandomPresenter >> isReleaseRandomSeedAfterInitialization [
 CMSimulationInitRandomPresenter >> randomSeed [
 
 	^ randomSeedInput number
+]
+
+{ #category : 'initialization' }
+CMSimulationInitRandomPresenter >> showCurrentSettings [
+
+	| context |
+	context := self cormasModel simulationContext.
+
+	randomSeedGeneratorDroplist selectItem: context randomNumberGenerator class.
+	randomSeedInput number: context randomSeed.
 ]

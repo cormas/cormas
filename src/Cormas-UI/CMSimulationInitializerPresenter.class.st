@@ -21,6 +21,12 @@ CMSimulationInitializerPresenter class >> example [
 	(app newPresenter: self) open
 ]
 
+{ #category : 'as yet unclassified' }
+CMSimulationInitializerPresenter >> applyRandomNumberGeneratorSettings [
+
+	randomNumbersPresenter apply
+]
+
 { #category : 'initialization' }
 CMSimulationInitializerPresenter >> connectPresenters [
 
@@ -94,9 +100,16 @@ CMSimulationInitializerPresenter >> initializePresenters [
 	self ensureAllInitSettingsDefined
 ]
 
+{ #category : 'initialization' }
+CMSimulationInitializerPresenter >> updatePresenter [
+
+	super updatePresenter.
+	randomNumbersPresenter showCurrentSettings 
+]
+
 { #category : 'enumerating' }
 CMSimulationInitializerPresenter >> whenInitializeButtonClickedDo: aBlock [
 	"A two-argument block where first argument is the selected init selector and the second argument is the selected control selector"
 	
-	initializeButtonBlock := aBlock 
+	initializeButtonBlock := aBlock
 ]
