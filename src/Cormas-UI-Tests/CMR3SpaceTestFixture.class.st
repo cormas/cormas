@@ -49,7 +49,7 @@ CMR3SpaceTestFixture >> initialize [
 		
 	simulation := (CMSimulation for: model)
 		activeInitSelector: #initFixed;
-		activeControlSelector: #step:;
+		activeControlSelector: #step;
 		initializeSimulation;
 		yourself.
 

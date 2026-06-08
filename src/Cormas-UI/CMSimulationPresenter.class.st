@@ -3,6 +3,7 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'sidebar',
+		'simulationInitializerPresenter',
 		'stopConditionPresenter',
 		'simulationRunner',
 		'whenWindowIsClosedHooks'
@@ -47,9 +48,6 @@ CMSimulationPresenter >> compileBlock: aSourceCode [
 
 { #category : 'initialization' }
 CMSimulationPresenter >> connectPresenters [
-
-	| simulation |
-	simulation := self application simulation.
 				
 	stopConditionPresenter whenChangedDo: [ :stopConditionBlock |
 		"Simulation will be nil if the stop condition is changed before
@@ -57,6 +55,8 @@ CMSimulationPresenter >> connectPresenters [
 		we still want to have the possibility to change the stop condition
 		during the simulation. For example, if the simulation has completed
 		and then you want to run it for 100 more steps"
+		| simulation |
+		simulation := self application simulation.
 		simulation ifNotNil: [ simulation stopWhen: stopConditionBlock ] ]
 ]
 
@@ -70,7 +70,7 @@ CMSimulationPresenter >> cormasModel [
 CMSimulationPresenter >> defaultLayout [
 
 	^ SpBoxLayout newLeftToRight
-		spacing: 7;
+		spacing: 10;
 		borderWidth: 2;
 		add: sidebar expand: false;
 		add: simulationRunner;
@@ -110,6 +110,13 @@ CMSimulationPresenter >> initializePresenters [
 		
 	stopConditionPresenter := self instantiate: CMStopConditionPresenter.
 	
+	simulationInitializerPresenter := (self instantiate: CMSimulationInitializerPresenter)
+		whenInitializeButtonClickedDo: [ :initSelector :controlSelector |
+			self
+				initializeSimulationInit: initSelector
+				control: controlSelector ];
+		yourself.
+	
 	self initializeFancyNotebook.
 
 	simulationRunner := self instantiate: CMSimulationRunnerPresenter.
@@ -135,15 +142,11 @@ Reset the currentTimeStep and the data. Set the randomSeed"
 		
 	simulation stopWhen: stopConditionPresenter buildConditionBlock.
 		
-	self flag: 'TODO'.
-	
-	"modelInitializationSettings isFixRandomSeed ifTrue: [ 
-		simulation randomSeed: modelInitializationSettings randomSeed.
-		simulation shouldReleaseRandomSeedAfterInitialization:
-			modelInitializationSettings isReleaseRandomSeedAfterInitialization ]."
+	simulationInitializerPresenter applyRandomNumberGeneratorSettings.
 	
 	simulation initializeSimulation.
-	simulationRunner updateWithSimulation
+	simulationRunner updateWithSimulation.
+	simulationInitializerPresenter updatePresenter
 ]
 
 { #category : 'initialization' }
@@ -175,28 +178,13 @@ CMSimulationPresenter >> settingsParameters [
 ]
 
 { #category : 'as yet unclassified' }
-CMSimulationPresenter >> settingsRandomNumbers [
-	<fancyNotebookPageOrder: 6>
-	
-	^ SpNotebookPage
-		title: 'Random numbers'
-		icon: (self iconNamed: #testRunner)
-		provider: [ self instantiate: CMSimulationInitRandomPresenter ]
-]
-
-{ #category : 'as yet unclassified' }
 CMSimulationPresenter >> settingsSimulationInitializer [
 	<fancyNotebookPageOrder: 1>
 	
 	^ SpNotebookPage
 		title: 'Initialize simulation'
 		icon: (self iconNamed: #smallNew)
-		provider: [ (self instantiate: CMSimulationInitializerPresenter)
-			whenInitializeButtonClickedDo: [ :initSelector :controlSelector |
-				self
-					initializeSimulationInit: initSelector
-					control: controlSelector ];
-			yourself ]
+		provider: [ simulationInitializerPresenter ]
 ]
 
 { #category : 'as yet unclassified' }

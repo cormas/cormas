@@ -12,9 +12,12 @@ Class {
 { #category : 'running' }
 CMSimulationInitRandomPresenterTest >> setUp [
 
+	| app |
 	super setUp.
 	
-	presenter := CMSimulationInitRandomPresenter new
+	app := CMSimulationApplication new.
+	app cormasModel: CMMockModel new.
+	presenter := app newPresenter: CMSimulationInitRandomPresenter
 ]
 
 { #category : 'tests' }

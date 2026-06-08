@@ -104,7 +104,7 @@ CMDockableSidebar >> initializePresenters [
 CMDockableSidebar >> showSidebar [
 
 	"This is a hack. We have to use a null presenter instead of spacing because otherwise the parent layout can't calculate size correctly when using expand: false"
-	layout add: self newNullPresenter width: 5.
+	layout add: self newNullPresenter width: 10.
 
 	layout add: sidebar width: 250.
 	owner layout: owner layout

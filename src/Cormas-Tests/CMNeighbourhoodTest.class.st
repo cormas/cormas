@@ -19,9 +19,13 @@ Class {
 
 { #category : 'instance creation' }
 CMNeighbourhoodTest >> newTestModel [
+
+	| context |
+	context := CMSimulationContext new.
+	context randomSeed: 42.
  	
 	^ CMMockModel new
-		randomNumberGenerator: (PMFishmanMooreRandomGenerator seed: 42);
+		simulationContext: context;
 		yourself
 ]
 

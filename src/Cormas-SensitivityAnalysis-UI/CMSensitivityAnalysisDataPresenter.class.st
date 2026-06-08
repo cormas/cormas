@@ -22,7 +22,7 @@ CMSensitivityAnalysisDataPresenter class >> example [
 	
 	sensitivityAnalysis := (CMSensitivityAnalysis for: CMMockModel)
 		activeInitSelector: #initFixed;
-		activeControlSelector: #step:;
+		activeControlSelector: #step;
 		yourself.
 	
 	CMMockModel allParameters do: [ :parameter |

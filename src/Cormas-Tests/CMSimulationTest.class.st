@@ -16,7 +16,7 @@ CMSimulationTest >> setUp [
 	simulation := (CMSimulation for: CMMockModel new)
 		randomSeed: 42;
 		activeInitSelector: #initFixed;
-		activeControlSelector: #step:;
+		activeControlSelector: #step;
 		initializeSimulation;
 		yourself.
 ]
@@ -86,14 +86,14 @@ CMSimulationTest >> testRunAllSteps [
 ]
 
 { #category : 'tests' }
-CMSimulationTest >> testRunAllStepsAfterEachDo [
+CMSimulationTest >> testRunAllStepsAfterEachIntervalDo [
 
 	| done counter |
 	done := Semaphore new.
 	counter := 0.
 	
 	simulation whenFinishedDo: [ done signal ].
-	simulation runAllStepsAfterEachDo: [ counter := counter + 1 ].
+	simulation runAllStepsAfterEachIntervalDo: [ counter := counter + 1 ].
 	
 	"Wait deterministically for completion (and fail if it never completes)"
 	self deny: (done waitTimeoutSeconds: 10).
@@ -114,11 +114,12 @@ CMSimulationTest >> testRunAllStepsAfterEachThreeStepsDo [
 	"Run 10 steps of a simulation - we need this number to be even"
 	finalStep := 10.
 	simulation stopAfterStep: finalStep.
+	simulation stepsPerInterval: 3.
 	
 	simulation whenFinishedDo: [ done signal ].
 	
 	stepsWhenBlockIsExecuted := OrderedCollection new.
-	simulation runAllStepsAfterEach: 3 do: [ stepsWhenBlockIsExecuted add: simulation currentTimeStep ].
+	simulation runAllStepsAfterEachIntervalDo: [ stepsWhenBlockIsExecuted add: simulation currentTimeStep ].
 	
 	"Wait deterministically for completion (and fail if it never completes)"
 	self deny: (done waitTimeoutSeconds: 10).
@@ -140,11 +141,12 @@ CMSimulationTest >> testRunAllStepsAfterEachTwoStepsDo [
 	"Run 10 steps of a simulation - we need this number to be even"
 	finalStep := 10.
 	simulation stopAfterStep: finalStep.
+	simulation stepsPerInterval: 2.
 	
 	simulation whenFinishedDo: [ done signal ].
 	
 	stepsWhenBlockIsExecuted := OrderedCollection new.
-	simulation runAllStepsAfterEach: 2 do: [ stepsWhenBlockIsExecuted add: simulation currentTimeStep ].
+	simulation runAllStepsAfterEachIntervalDo: [ stepsWhenBlockIsExecuted add: simulation currentTimeStep ].
 	
 	"Wait deterministically for completion (and fail if it never completes)"
 	self deny: (done waitTimeoutSeconds: 10).
@@ -186,7 +188,7 @@ CMSimulationTest >> testStopAfterStep [
 	self assert: simulation currentTimeStep equals: 0.
 	
 	simulation whenFinishedDo: [ done signal ].
-	
+
 	simulation runAllSteps.
 	
 	"Wait deterministically for completion (and fail if it never completes)"
@@ -203,7 +205,7 @@ CMSimulationTest >> testStopWhen [
 	"Stop when cell 1@1 has a goat on it or when the simulation runs for 10000 steps (to ensure that it doesn't run endlessly if something goes wrong)"
 	simulation stopWhen: [ :model |
 		(model cells first hasOccupantsOfClass: CMMockGoat)
-			or: [ model currentTimeStep >= 10000 ] ].
+			or: [ model simulationContext currentTimeStep >= 10000 ] ].
 		
 	simulation whenFinishedDo: [ done signal ].
 		

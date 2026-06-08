@@ -193,7 +193,7 @@ CMModelGenerator >> generatePackagesAndClasses [
 		baselineClass := (BaselineOf << self baselineClassName asSymbol
 			package: self baselinePackageName) install ].
 
-	modelClass := (CMAbstractModel << self modelClassName asSymbol
+	modelClass := (CMModel << self modelClassName asSymbol
 		package: self modelPackageName) install.
 ]
 

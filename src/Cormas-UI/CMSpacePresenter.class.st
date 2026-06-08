@@ -22,7 +22,7 @@ CMSpacePresenter class >> example [
 	
 	(CMSimulation for: model)
 		activeInitSelector: #initFixed;
-		activeControlSelector: #step:;
+		activeControlSelector: #step;
 		initializeSimulation.
 		
 	app := CMSimulationApplication new.

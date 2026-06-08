@@ -6,7 +6,8 @@ Class {
 		'stopCondition',
 		'simulation',
 		'simulationBlock',
-		'stepDelay',
+		'stepsPerInterval',
+		'intervalDelay',
 		'whenFinishedBlock'
 	],
 	#category : 'Cormas-Core-Kernel',
@@ -20,31 +21,20 @@ CMSimulationProcessRunner >> beDefaultSimulation [
 	simulationBlock := [
 		[ stopCondition value: simulation cormasModel ] whileFalse: [
 			simulation runStep.
-			(Delay forMilliseconds: stepDelay) wait ].
+			(Delay forMilliseconds: intervalDelay) wait ].
 		
 		whenFinishedBlock value ]
 ]
 
 { #category : 'api - type of simulation' }
-CMSimulationProcessRunner >> beSimulationAfterEach: aNumberOfSteps do: aBlock [
+CMSimulationProcessRunner >> beSimulationAfterEachIntervalDo: aBlock [
+	"Interval is a given number of steps after which we execute aBlock"
 
 	simulationBlock := [ 
 		[ stopCondition value: simulation cormasModel ] whileFalse: [
 			simulation runStep.
-			simulation currentTimeStep % aNumberOfSteps = 0 ifTrue: [ aBlock value ].
-			(Delay forMilliseconds: stepDelay) wait ].
-		
-		whenFinishedBlock value ]
-]
-
-{ #category : 'api - type of simulation' }
-CMSimulationProcessRunner >> beSimulationAfterEachDo: aBlock [
-
-	simulationBlock := [ 
-		[ stopCondition value: simulation cormasModel ] whileFalse: [
-			simulation runStep.
-			aBlock value.
-			(Delay forMilliseconds: stepDelay) wait ].
+			simulation currentTimeStep % stepsPerInterval = 0 ifTrue: [ aBlock value ].
+			(Delay forMilliseconds: intervalDelay) wait ].
 		
 		whenFinishedBlock value ]
 ]
@@ -59,8 +49,15 @@ CMSimulationProcessRunner >> cormasSimulation: aCMSimulation [
 CMSimulationProcessRunner >> initialize [
 
 	super initialize.
-	stepDelay := 0. "milliseconds"
+	stepsPerInterval := 1.
+	intervalDelay := 0. "milliseconds"
 	whenFinishedBlock := [ "do nothing" ]
+]
+
+{ #category : 'accessing' }
+CMSimulationProcessRunner >> intervalDelay: aNumberOfMilliseconds [
+
+	intervalDelay := aNumberOfMilliseconds
 ]
 
 { #category : 'api - running' }
@@ -102,9 +99,9 @@ CMSimulationProcessRunner >> runInBackground [
 ]
 
 { #category : 'accessing' }
-CMSimulationProcessRunner >> stepDelay: aNumberOfMilliseconds [
+CMSimulationProcessRunner >> stepsPerInterval: aPositiveInteger [
 
-	stepDelay := aNumberOfMilliseconds
+	stepsPerInterval := aPositiveInteger
 ]
 
 { #category : 'accessing' }

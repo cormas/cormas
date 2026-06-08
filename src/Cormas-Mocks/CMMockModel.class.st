@@ -12,7 +12,7 @@ Internal Representation and Key Implementation Points.
 "
 Class {
 	#name : 'CMMockModel',
-	#superclass : 'CMAbstractModel',
+	#superclass : 'CMModel',
 	#instVars : [
 		'theCells',
 		'theCows',
@@ -214,10 +214,10 @@ CMMockModel >> numberOfRows: aNumber [
 ]
 
 { #category : 'control' }
-CMMockModel >> step: t [
+CMMockModel >> step [
 	<control>
 	self askRandom: CMMockAnimal toDo: #step.
-	self stepSynchronouslyCA: t.
+	self stepSynchronously.
 ]
 
 { #category : 'accessing' }

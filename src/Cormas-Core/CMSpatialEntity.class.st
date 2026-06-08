@@ -107,7 +107,6 @@ CMSpatialEntity class >> new: aSpaceModel [
 
 	newEntity := self new
 		             spaceModel: aSpaceModel;
-		             cormasModel: aSpaceModel cormasModel;
 		             yourself.
 
 	aSpaceModel cormasModel addEntityToCollection: newEntity.
