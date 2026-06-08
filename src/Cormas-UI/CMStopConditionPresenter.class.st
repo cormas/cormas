@@ -45,12 +45,12 @@ CMStopConditionPresenter >> buildConditionBlock [
 	"Case 2: Combine both stop criteria"
 	(hasFinalStepCheckbox state and: [ stopConditionDropList isPlaceholderSelected not ]) ifTrue: [ 
 		^ self compileBlock: ('[ :model |
-			model currentTimeStep >= ', finalStepInput number asString, ' or: [
+			model simulationContext currentTimeStep >= ', finalStepInput number asString, ' or: [
 				model ', stopConditionDropList selectedItem, ' ] ]') ].
 	
 	"Case 3: Stop after a given number of steps"
 	hasFinalStepCheckbox state ifTrue: [ 
-		^ self compileBlock: ('[ :model | model currentTimeStep >= ', finalStepInput number asString, ' ]') ].
+		^ self compileBlock: ('[ :model | model simulationContext currentTimeStep >= ', finalStepInput number asString, ' ]') ].
 	
 	"Case 4: Stop when a selected boolean method returns true"
 	stopConditionDropList isPlaceholderSelected ifFalse: [ 

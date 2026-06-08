@@ -75,7 +75,7 @@ CMSimulation >> data [
 	^ data
 ]
 
-{ #category : 'running' }
+{ #category : 'simulation runner - init' }
 CMSimulation >> defaultStopCondition [
 	"Be careful when modifying the stop condition because it can make the simulation (including the tests) run endlesly"
 	^ [ :model |
@@ -154,7 +154,7 @@ Reset the currentTimeStep and the data. Set the randomSeed"
 		context chooseRandomSeedAtRandom ].
 ]
 
-{ #category : 'running' }
+{ #category : 'simulation runner - init' }
 CMSimulation >> initializeSimulationRunner [
 
 	simulationRunner := CMSimulationProcessRunner new
@@ -162,16 +162,28 @@ CMSimulation >> initializeSimulationRunner [
 		stopCondition: self defaultStopCondition
 ]
 
-{ #category : 'testing' }
+{ #category : 'simulation runner - config' }
+CMSimulation >> intervalDelay: aNumberOfMilliseconds [
+
+	simulationRunner intervalDelay: aNumberOfMilliseconds
+]
+
+{ #category : 'simulation runner - testing' }
 CMSimulation >> isSimulationProcessConfigured [
 
 	^ simulationRunner isProcessConfigured
 ]
 
-{ #category : 'testing' }
+{ #category : 'simulation runner - testing' }
 CMSimulation >> isSimulationRunning [ 
 
 	^ simulationRunner isSimulationRunning
+]
+
+{ #category : 'simulation runner - running' }
+CMSimulation >> pause [
+
+	simulationRunner pause
 ]
 
 { #category : 'accessing' }
@@ -198,7 +210,13 @@ CMSimulation >> recordData [
 			asDictionary 
 ]
 
-{ #category : 'running' }
+{ #category : 'simulation runner - running' }
+CMSimulation >> resume [
+
+	simulationRunner resume
+]
+
+{ #category : 'simulation runner - running' }
 CMSimulation >> runAllSteps [
 
 	simulationRunner
@@ -206,23 +224,15 @@ CMSimulation >> runAllSteps [
 		runInBackground 
 ]
 
-{ #category : 'running' }
-CMSimulation >> runAllStepsAfterEach: aNumberOfSteps do: aBlock [
+{ #category : 'simulation runner - running' }
+CMSimulation >> runAllStepsAfterEachIntervalDo: aBlock [
 
 	simulationRunner
-		beSimulationAfterEach: aNumberOfSteps do: aBlock;
+		beSimulationAfterEachIntervalDo: aBlock;
 		runInBackground
 ]
 
-{ #category : 'running' }
-CMSimulation >> runAllStepsAfterEachDo: aBlock [
-
-	simulationRunner
-		beSimulationAfterEachDo: aBlock;
-		runInBackground
-]
-
-{ #category : 'running' }
+{ #category : 'simulation runner - running' }
 CMSimulation >> runStep [
 	
 	self incrementCurrentTimeStep.
@@ -279,19 +289,19 @@ CMSimulation >> simulationContext [
 	^ context
 ]
 
-{ #category : 'accessing' }
-CMSimulation >> simulationRunner [
+{ #category : 'simulation runner - config' }
+CMSimulation >> stepsPerInterval: aPositiveInteger [
 
-	^ simulationRunner
+	simulationRunner stepsPerInterval: aPositiveInteger
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'simulation runner - config' }
 CMSimulation >> stopAfterStep: aNumber [
 	"A syntactic sugar to provide a stop condition that will stop a simulation after a given number of steps"
 	self stopWhen: [ :model | model simulationContext currentTimeStep >= aNumber ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'simulation runner - config' }
 CMSimulation >> stopWhen: aBlock [
 	"Provede a one-argument block with a stop condition. The argument is a cormasModel. Be careful when modifying the stop condition because it can make the simulation run endlesly.
 	

@@ -64,7 +64,7 @@ CMSimulationRunnerPresenter >> connectPresenters [
 
 	self initializeRunButtonWithRunAction.
 	
-	speedDropList whenSelectedItemChangedDo: [ :item | self setSimulationStepDelay ].
+	speedDropList whenSelectedItemChangedDo: [ :item | self setSimulationIntervalDelay ].
 	
 	notebook whenSelectedPageChangedDo: [ :page |
 		self updateSelectedNotebookPage ].
@@ -259,32 +259,38 @@ CMSimulationRunnerPresenter >> initializeWindow: aWindowPresenter [
 CMSimulationRunnerPresenter >> pauseSimulation [
 
 	self beInPauseMode.
-	self simulation simulationRunner pause
+	self simulation pause
 ]
 
 { #category : 'actions' }
 CMSimulationRunnerPresenter >> resumeSimulation [
 
 	self beInRunningMode.
-	self simulation simulationRunner resume
+	self simulation resume
 ]
 
 { #category : 'actions' }
 CMSimulationRunnerPresenter >> runSimulationUntilEnd [
 
 	self beInRunningMode.
+	self setStepsPerInterval.
 
-	self simulation
-		runAllStepsAfterEach: displayEveryNumberPresenter number
-		do: [
-			[ self updateAfterStep ] onErrorDo: [ :error |
-					error asString = '#intersect: was sent to nil' ifFalse: [ error signal ] ] ]
+	self simulation runAllStepsAfterEachIntervalDo: [
+		[ self updateAfterStep ] onErrorDo: [ :error |
+			error asString = '#intersect: was sent to nil'
+				ifFalse: [ error signal ] ] ]
 ]
 
 { #category : 'initialization' }
-CMSimulationRunnerPresenter >> setSimulationStepDelay [
+CMSimulationRunnerPresenter >> setSimulationIntervalDelay [
 
-	self simulation simulationRunner stepDelay: self speedInMilliseconds.
+	self simulation intervalDelay: self speedInMilliseconds.
+]
+
+{ #category : 'initialization' }
+CMSimulationRunnerPresenter >> setStepsPerInterval [
+
+	self simulation stepsPerInterval: displayEveryNumberPresenter number.
 ]
 
 { #category : 'accessing' }
@@ -337,6 +343,9 @@ CMSimulationRunnerPresenter >> updateAfterStep [
 
 	self displayCurrentTimeStep.
 	self updateSelectedNotebookPage.
+	
+	"To apply the new value entered into the number input"
+	self setStepsPerInterval
 ]
 
 { #category : 'update presenters' }
@@ -371,7 +380,7 @@ CMSimulationRunnerPresenter >> updateSpace [
 { #category : 'initialization' }
 CMSimulationRunnerPresenter >> updateWithSimulation [
 
-	self setSimulationStepDelay.
+	self setSimulationIntervalDelay.
 	self simulation whenFinishedDo: [ self beInPauseMode ].
 	
 	self displayCurrentTimeStep.

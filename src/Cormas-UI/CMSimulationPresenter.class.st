@@ -48,9 +48,6 @@ CMSimulationPresenter >> compileBlock: aSourceCode [
 
 { #category : 'initialization' }
 CMSimulationPresenter >> connectPresenters [
-
-	| simulation |
-	simulation := self application simulation.
 				
 	stopConditionPresenter whenChangedDo: [ :stopConditionBlock |
 		"Simulation will be nil if the stop condition is changed before
@@ -58,6 +55,8 @@ CMSimulationPresenter >> connectPresenters [
 		we still want to have the possibility to change the stop condition
 		during the simulation. For example, if the simulation has completed
 		and then you want to run it for 100 more steps"
+		| simulation |
+		simulation := self application simulation.
 		simulation ifNotNil: [ simulation stopWhen: stopConditionBlock ] ]
 ]
 
