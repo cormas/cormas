@@ -266,6 +266,30 @@ CMModel class >> isCormasModelClass [
 	^ true
 ]
 
+{ #category : 'as yet unclassified' }
+CMModel class >> loadFromFile: aFileReference [
+
+	| parentDir dir baselineName |
+	parentDir := '.' asFileReference.
+
+	ZipArchive new
+		readFrom: aFileReference;
+		extractAllTo: parentDir.
+	
+	dir := parentDir / 'src'. 
+	
+	baselineName := (dir childNames
+		detect: [ :each | each beginsWith: 'BaselineOf' ]
+		ifNone: [ self error: 'The model is missing a baseline' ])
+		allButFirst: 'BaselineOf' size.
+	
+	Metacello new
+		baseline: baselineName;
+		repository: 'tonel:///', dir;
+		load.
+	
+]
+
 { #category : 'model - metadata' }
 CMModel class >> modelName [
 	"A string with a human-friendly model name. By default, returns the name of model class. Overrive this method to provide a name for your model"
@@ -304,6 +328,37 @@ CMModel class >> projectPackagesIfNoBaseline [
 	
 	packages add: testPackage.
 	^ packages 
+]
+
+{ #category : 'files' }
+CMModel class >> saveToFile: aFileReference [
+
+	| fs directory repo packageNames |
+	
+	fs := FileSystem memory. 
+	directory := fs / 'src'.
+	directory ensureCreateDirectory.
+
+	repo := TonelRepository new
+		directory: directory;
+		yourself.
+
+	packageNames := self projectPackages collect: #name.
+
+	packageNames do: [ :packageName |
+		| wc version |
+		wc := MCWorkingCopy forPackage: (MCPackage named: packageName).
+	
+		version := wc
+			newVersionWithName: packageName , '-export.1'
+			message: 'Export to local Tonel directory'
+			in: repo.
+
+		repo storeVersion: version ].
+
+	ZipArchive new
+		addTree: directory relativeTo: (directory parent) match: [ :e | true ];
+		writeToFile: aFileReference
 ]
 
 { #category : 'model - metadata' }
