@@ -285,8 +285,10 @@ CMModel class >> loadFromFile: aFileReference [
 	
 	Metacello new
 		baseline: baselineName;
-		repository: 'tonel:///', dir;
+		repository: 'tonel:///', dir pathString;
 		load.
+		
+	dir deleteAll 
 	
 ]
 
