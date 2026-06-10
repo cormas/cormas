@@ -898,6 +898,12 @@ CMModel >> createN: aNumber randomlyLocatedEntitiesFrom: aCollectionOfClasses in
 	^ newEntities
 ]
 
+{ #category : 'accessing' }
+CMModel >> currentTimeStep [
+
+	^ context currentTimeStep
+]
+
 { #category : 'utilities - space metrics' }
 CMModel >> distanceFromCell: cell1 toCell: cell2 [
 	"Purpose: return the distance in number of cells (also known as Manhattan distance)"

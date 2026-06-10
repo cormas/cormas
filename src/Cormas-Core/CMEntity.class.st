@@ -382,6 +382,12 @@ CMEntity >> cormasModel: aCMAbstractModel [
 	cormasModel := aCMAbstractModel
 ]
 
+{ #category : 'accessing' }
+CMEntity >> currentTimeStep [
+
+	^ context currentTimeStep
+]
+
 { #category : 'controlling' }
 CMEntity >> delete [
 	"Purpose: indicates that the instance has to be removed"

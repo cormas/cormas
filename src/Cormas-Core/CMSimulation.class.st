@@ -79,7 +79,7 @@ CMSimulation >> data [
 CMSimulation >> defaultStopCondition [
 	"Be careful when modifying the stop condition because it can make the simulation (including the tests) run endlesly"
 	^ [ :model |
-		model simulationContext currentTimeStep >=
+		model currentTimeStep >=
 		self class defaultFinalTimeStep ]
 ]
 
@@ -298,7 +298,7 @@ CMSimulation >> stepsPerInterval: aPositiveInteger [
 { #category : 'simulation runner - config' }
 CMSimulation >> stopAfterStep: aNumber [
 	"A syntactic sugar to provide a stop condition that will stop a simulation after a given number of steps"
-	self stopWhen: [ :model | model simulationContext currentTimeStep >= aNumber ]
+	self stopWhen: [ :model | model currentTimeStep >= aNumber ]
 ]
 
 { #category : 'simulation runner - config' }
