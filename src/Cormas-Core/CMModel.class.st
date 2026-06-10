@@ -120,7 +120,7 @@ CMModel class >> baseline [
 	baselines size = 1 ifTrue: [ ^ baselines first ].
 	baselines ifEmpty: [ self error: 'This model does not belong to any baseline' ].
 	
-	"If more than one baseline is fond, select the one that ends with the name of model class"
+	"If more than one baseline is found, select the one that ends with the name of model class"
 	relevantBaselines := baselines select: [ :each | each name endsWith: self name ].
 	relevantBaselines size = 1 ifTrue: [ ^ relevantBaselines first ].
 	
@@ -254,6 +254,32 @@ CMModel class >> iceRepositoryIfNotFound: aNotFoundBlock [
 		ifNotFound: aNotFoundBlock 
 ]
 
+{ #category : 'files' }
+CMModel class >> installModelFromFile: aFileReference [
+
+	| parentDir dir metadata |
+	parentDir := '.' asFileReference.
+
+	ZipArchive new
+		readFrom: aFileReference;
+		extractAllTo: parentDir.
+	
+	dir := parentDir / 'src'. 
+	metadata := STONJSON fromString: (dir / 'metadata.json') contents.
+	
+	Metacello new
+		baseline: (metadata at: 'baselineName');
+		repository: 'tonel:///', dir pathString;
+		load.
+		
+	dir deleteAll.
+	
+	"Return model class"
+	^ Smalltalk at: (metadata at: 'modelClassName') asSymbol
+	
+	
+]
+
 { #category : 'accessing' }
 CMModel class >> instanceSideParameters [
 	
@@ -264,30 +290,6 @@ CMModel class >> instanceSideParameters [
 CMModel class >> isCormasModelClass [
 
 	^ true
-]
-
-{ #category : 'as yet unclassified' }
-CMModel class >> loadFromFile: aFileReference [
-
-	| parentDir dir baselineName |
-	parentDir := '.' asFileReference.
-
-	ZipArchive new
-		readFrom: aFileReference;
-		extractAllTo: parentDir.
-	
-	dir := parentDir / 'src'. 
-	
-	baselineName := (dir childNames
-		detect: [ :each | each beginsWith: 'BaselineOf' ]
-		ifNone: [ self error: 'The model is missing a baseline' ])
-		allButFirst: 'BaselineOf' size.
-	
-	Metacello new
-		baseline: baselineName;
-		repository: 'tonel:///', dir;
-		load.
-	
 ]
 
 { #category : 'model - metadata' }
@@ -355,6 +357,13 @@ CMModel class >> saveToFile: aFileReference [
 			in: repo.
 
 		repo storeVersion: version ].
+	
+	"We store this metadata to speed up the loading of the model"
+	(directory / 'metadata.json') writeStreamDo: [ :stream |
+		stream nextPutAll: (STONJSON toString: {
+			'modelClassName' -> self name .
+			'baselineName' -> (self baseline name asString allButFirst: 'BaselineOf' size)
+		} asDictionary) ].
 
 	ZipArchive new
 		addTree: directory relativeTo: (directory parent) match: [ :e | true ];

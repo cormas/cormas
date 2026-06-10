@@ -1,5 +1,5 @@
 Class {
-	#name : 'CMAbstractModelTest',
+	#name : 'CMModelTest',
 	#superclass : 'CMTestObject',
 	#category : 'Cormas-Tests-Model',
 	#package : 'Cormas-Tests',
@@ -7,19 +7,19 @@ Class {
 }
 
 { #category : 'test' }
-CMAbstractModelTest >> sampleModelName [
+CMModelTest >> sampleModelName [
 
 	^ 'CMXXXModel'
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> sampleModelNameWithoutPrefix [
+CMModelTest >> sampleModelNameWithoutPrefix [
 
 	^ 'SampleModel'
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testAgents [
+CMModelTest >> testAgents [
 
 	| agents |
 	agents := model agents.
@@ -30,7 +30,7 @@ CMAbstractModelTest >> testAgents [
 ]
 
 { #category : 'tests' }
-CMAbstractModelTest >> testCellAt [
+CMModelTest >> testCellAt [
 	| m |
 	m := CMMockModel new
 		     createGridNumberOfRows: 3
@@ -44,7 +44,7 @@ CMAbstractModelTest >> testCellAt [
 ]
 
 { #category : 'tests' }
-CMAbstractModelTest >> testCellAtAt [
+CMModelTest >> testCellAtAt [
 
 	| expectedCell expectedId actualCell |
 	
@@ -58,7 +58,7 @@ CMAbstractModelTest >> testCellAtAt [
 ]
 
 { #category : 'tests' }
-CMAbstractModelTest >> testCellAtId [
+CMModelTest >> testCellAtId [
 	| m |
 	m := CMMockModel new
 		     createGridNumberOfRows: 3
@@ -72,13 +72,13 @@ CMAbstractModelTest >> testCellAtId [
 ]
 
 { #category : 'tests' }
-CMAbstractModelTest >> testCellClass [
+CMModelTest >> testCellClass [
 
 	self assert: model cellClass equals: CMMockCell
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testCells [
+CMModelTest >> testCells [
 
 	| cells |
 	cells := model cells.
@@ -92,7 +92,7 @@ CMAbstractModelTest >> testCells [
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testCellsBetweenRowAndRowColumnAndColumn [
+CMModelTest >> testCellsBetweenRowAndRowColumnAndColumn [
 
 	| m cells |
 	
@@ -114,7 +114,7 @@ CMAbstractModelTest >> testCellsBetweenRowAndRowColumnAndColumn [
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testCentralCell [
+CMModelTest >> testCentralCell [
 	| m |
 	m := CMMockModel new
 		createGridNumberOfRows: 3
@@ -128,7 +128,7 @@ CMAbstractModelTest >> testCentralCell [
 ]
 
 { #category : 'tests' }
-CMAbstractModelTest >> testCreateGridXYNeighborHoodClosed [
+CMModelTest >> testCreateGridXYNeighborHoodClosed [
 
 	self assert: model allTheEntities size equals: (4 * 4) + 2.
 	self assert: (model selectCellsOfColumn: 1) size equals: 4.
@@ -136,7 +136,7 @@ CMAbstractModelTest >> testCreateGridXYNeighborHoodClosed [
 ]
 
 { #category : 'tests' }
-CMAbstractModelTest >> testDominance [
+CMModelTest >> testDominance [
 	| m |
 	m := CMMockModel new
 		createGridNumberOfRows: 100
@@ -149,19 +149,7 @@ CMAbstractModelTest >> testDominance [
 ]
 
 { #category : 'tests' }
-CMAbstractModelTest >> testDominance1 [
-	| m |
-	m := CMMockModel new
-		createGridNumberOfRows: 100
-			numberOfColumns: 100
-			neighbourhood: 4
-			closed: true;
-		yourself.
-	self assert: (m dominance: #state) < 1.0
-]
-
-{ #category : 'tests' }
-CMAbstractModelTest >> testIsCormasAgentClass [
+CMModelTest >> testIsCormasAgentClass [
 	
 	self deny: Object isCormasAgentClass.
 	self deny: Collection isCormasAgentClass.
@@ -173,7 +161,7 @@ CMAbstractModelTest >> testIsCormasAgentClass [
 ]
 
 { #category : 'tests' }
-CMAbstractModelTest >> testIsCormasCellClass [
+CMModelTest >> testIsCormasCellClass [
 	
 	self deny: Object isCormasCellClass.
 	self deny: Collection isCormasCellClass.
@@ -185,7 +173,7 @@ CMAbstractModelTest >> testIsCormasCellClass [
 ]
 
 { #category : 'tests' }
-CMAbstractModelTest >> testIsCormasModelClass [
+CMModelTest >> testIsCormasModelClass [
 	
 	self deny: Object isCormasModelClass.
 	self deny: Collection isCormasModelClass.
@@ -197,7 +185,7 @@ CMAbstractModelTest >> testIsCormasModelClass [
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testLowerLeftCell [
+CMModelTest >> testLowerLeftCell [
 	| m |
 	m := CMMockModel new
 		createGridNumberOfRows: 3
@@ -211,7 +199,7 @@ CMAbstractModelTest >> testLowerLeftCell [
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testLowerRightCell [
+CMModelTest >> testLowerRightCell [
 	| m |
 	m := CMMockModel new
 		createGridNumberOfRows: 3
@@ -225,7 +213,7 @@ CMAbstractModelTest >> testLowerRightCell [
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testPickRandomCell [
+CMModelTest >> testPickRandomCell [
 	| cell |
 
 	cell := model pickRandomCell.
@@ -235,7 +223,7 @@ CMAbstractModelTest >> testPickRandomCell [
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testPickRandomCellConstrainedBy [
+CMModelTest >> testPickRandomCellConstrainedBy [
 	| m |
 	m := CMMockModel new
 		createGridNumberOfRows: 9
@@ -254,7 +242,7 @@ CMAbstractModelTest >> testPickRandomCellConstrainedBy [
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testPickRandomCellWithoutAnyOccupantsOfClass [
+CMModelTest >> testPickRandomCellWithoutAnyOccupantsOfClass [
 
 	| cell |
 	cell := model pickRandomCellWithoutAnyOccupantsOfClass: CMMockCow.
@@ -262,13 +250,13 @@ CMAbstractModelTest >> testPickRandomCellWithoutAnyOccupantsOfClass [
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testPickRandomCells [
+CMModelTest >> testPickRandomCells [
 
 	self assert: ((model pickRandomCells: 5) allSatisfy: #isSpatialEntity)
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testPickRandomEntitiesOfClass [
+CMModelTest >> testPickRandomEntitiesOfClass [
 
 	| collection |
 	collection := model pickRandomEntities: 5 ofClass: CMMockCell.
@@ -278,7 +266,7 @@ CMAbstractModelTest >> testPickRandomEntitiesOfClass [
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testPickRandomEntitiesOfClassConstrainedBy [
+CMModelTest >> testPickRandomEntitiesOfClassConstrainedBy [
 
 	self
 		assert:
@@ -290,13 +278,13 @@ CMAbstractModelTest >> testPickRandomEntitiesOfClassConstrainedBy [
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testPickRandomEntityOfClass [
+CMModelTest >> testPickRandomEntityOfClass [
 
 	self assert: (model pickRandomEntityOfClass: CMMockCell) isSpatialEntity
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testPickRandomEntityOfClassConstrainedBy [
+CMModelTest >> testPickRandomEntityOfClassConstrainedBy [
 
 	| cell1 cell2 |
 	
@@ -313,13 +301,13 @@ CMAbstractModelTest >> testPickRandomEntityOfClassConstrainedBy [
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testPickRandomUnoccupiedCell [
+CMModelTest >> testPickRandomUnoccupiedCell [
 
 	self assert: model pickRandomUnoccupiedCell theOccupants isEmpty
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
+CMModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
 	| m cells |
 	m := CMMockModel new
 		createGridNumberOfRows: 9
@@ -337,7 +325,7 @@ CMAbstractModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testSelectCellsOfColumn [
+CMModelTest >> testSelectCellsOfColumn [
 
 	1 to: 4 do: [ :column | 
 		1 to: 4 do: [ :line | 
@@ -347,7 +335,7 @@ CMAbstractModelTest >> testSelectCellsOfColumn [
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testSelectCellsOfLine [
+CMModelTest >> testSelectCellsOfLine [
 
 	1 to: 4 do: [ :line | 
 		| cells |
@@ -357,7 +345,7 @@ CMAbstractModelTest >> testSelectCellsOfLine [
 ]
 
 { #category : 'tests' }
-CMAbstractModelTest >> testShortestDistanceToCellsVerifying [
+CMModelTest >> testShortestDistanceToCellsVerifying [
 	| m |
 	m := CMMockModel new.
 	(m allTheEntities: CMMockCell)
@@ -367,7 +355,7 @@ CMAbstractModelTest >> testShortestDistanceToCellsVerifying [
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testUpperLeftCell [
+CMModelTest >> testUpperLeftCell [
 	| m |
 	m := CMMockModel new
 		createGridNumberOfRows: 3
@@ -381,7 +369,7 @@ CMAbstractModelTest >> testUpperLeftCell [
 ]
 
 { #category : 'tests-accessing-entities' }
-CMAbstractModelTest >> testUpperRightCell [
+CMModelTest >> testUpperRightCell [
 	| m |
 	m := CMMockModel new
 		createGridNumberOfRows: 3
