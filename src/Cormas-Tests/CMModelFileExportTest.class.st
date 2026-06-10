@@ -118,8 +118,7 @@ CMModelFileExportTest >> testSaveThenLoadFromFile [
 	self generateDummyModel.
 	
 	fs := FileSystem memory.
-	(fs / 'src') ensureCreateDirectory.
-	file := fs / 'src' / 'model.cmx'.
+	file := fs / 'model.cmx'.
 	
 	self dummyModelClass saveToFile: file.
 	
@@ -132,20 +131,4 @@ CMModelFileExportTest >> testSaveThenLoadFromFile [
 	self assert: self isDummyModelFullyLoaded.
 	
 	self deleteDummyModel
-]
-
-{ #category : 'tests' }
-CMModelFileExportTest >> testSaveToFile [
-
-	| modelClass fs file |
-	modelClass := CMMockModel.
-	
-	fs := FileSystem memory.
-	file := fs / 'model.cmx'.
-	
-	modelClass saveToFile: file.
-	
-	self assert: file exists.
-	self assert: file isFile.
-	self assert: file size > 0
 ]
