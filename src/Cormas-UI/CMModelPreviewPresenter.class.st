@@ -6,8 +6,9 @@ Class {
 		'screenshot',
 		'modelDescription'
 	],
-	#category : 'Cormas-UI',
-	#package : 'Cormas-UI'
+	#category : 'Cormas-UI-ModelOpener',
+	#package : 'Cormas-UI',
+	#tag : 'ModelOpener'
 }
 
 { #category : 'examples' }

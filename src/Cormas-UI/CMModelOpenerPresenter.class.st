@@ -7,8 +7,9 @@ Class {
 		'exampleModelsList',
 		'modelPreview'
 	],
-	#category : 'Cormas-UI',
-	#package : 'Cormas-UI'
+	#category : 'Cormas-UI-ModelOpener',
+	#package : 'Cormas-UI',
+	#tag : 'ModelOpener'
 }
 
 { #category : 'examples' }
@@ -147,8 +148,7 @@ CMModelOpenerPresenter >> createNewModel [
 	newModelPresenter := CMNewModelPresenter new.
 	
 	newModelPresenter whenModelCreatedDo: [ :modelClass |
-		self initializeModelLists.
-		modelList selectItem: modelClass ].
+		self updateListAndSelectModel: modelClass ].
 	
 	newModelPresenter open
 ]
@@ -261,7 +261,25 @@ CMModelOpenerPresenter >> initializeWindow: aWindowPresenter [
 { #category : 'as yet unclassified' }
 CMModelOpenerPresenter >> loadModelFromFile [
 
-	self inform: 'Not implemented yet'
+	StOpenFilePresenter new
+		title: 'Select a Cormas model file to load';
+		okAction: [ :fileReference | self loadModelFromFile: fileReference ];
+		open.
+]
+
+{ #category : 'as yet unclassified' }
+CMModelOpenerPresenter >> loadModelFromFile: aFileReference [
+
+	| modelClass |
+
+	aFileReference ifNil: [
+		self error: 'Selected file is nil' ].
+	
+	aFileReference extension = CMModel modelFileExtension ifFalse: [
+		self error: 'Wrong file selected. Only files with extension .cmx are supported' ].
+	
+	modelClass := CMModel installModelFromFile: aFileReference.
+	self updateListAndSelectModel: modelClass
 ]
 
 { #category : 'as yet unclassified' }
@@ -292,12 +310,7 @@ CMModelOpenerPresenter >> showExampleModel: aManifest [
 				on: aManifest.
 						
 			presenter whenLoadedDo: [
-				self initializeModelLists.
-				
-				loadedModelClass := modelList items detect: [ :modelClass |
-					modelClass modelName = aManifest modelName ].
-				
-				modelList selectItem: loadedModelClass ].
+				self updateListAndSelectModelNamed: aManifest modelName ].
 					
 			presenter ].
 		
@@ -328,4 +341,23 @@ CMModelOpenerPresenter >> showLoadedModel: aModelClass [
 		
 	modelPreview addPage: page.
 	modelPreview selectPage: page
+]
+
+{ #category : 'as yet unclassified' }
+CMModelOpenerPresenter >> updateListAndSelectModel: aModelClass [
+
+	self initializeModelLists.
+	modelList selectItem: aModelClass
+]
+
+{ #category : 'as yet unclassified' }
+CMModelOpenerPresenter >> updateListAndSelectModelNamed: aModelName [
+
+	| loadedModelClass |
+	self initializeModelLists.
+				
+	loadedModelClass := modelList items detect: [ :modelClass |
+		modelClass modelName = aModelName ].
+				
+	modelList selectItem: loadedModelClass
 ]

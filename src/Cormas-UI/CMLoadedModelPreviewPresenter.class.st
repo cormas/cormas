@@ -9,8 +9,9 @@ Class {
 		'toolbar',
 		'signalUpdateBlock'
 	],
-	#category : 'Cormas-UI',
-	#package : 'Cormas-UI'
+	#category : 'Cormas-UI-ModelOpener',
+	#package : 'Cormas-UI',
+	#tag : 'ModelOpener'
 }
 
 { #category : 'examples' }

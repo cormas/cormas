@@ -257,7 +257,7 @@ CMModel class >> iceRepositoryIfNotFound: aNotFoundBlock [
 { #category : 'files' }
 CMModel class >> installModelFromFile: aFileReference [
 
-	| parentDir dir metadata |
+	| parentDir dir metadata modelClassName baselineName |
 	parentDir := '.' asFileReference.
 
 	ZipArchive new
@@ -265,18 +265,24 @@ CMModel class >> installModelFromFile: aFileReference [
 		extractAllTo: parentDir.
 	
 	dir := parentDir / 'src'. 
-	metadata := STONJSON fromString: (dir / 'metadata.json') contents.
 	
-	Metacello new
-		baseline: (metadata at: 'baselineName');
-		repository: 'tonel:///', dir pathString;
-		load.
-		
-	dir deleteAll.
+	[
+		metadata := STONJSON fromString: (dir / 'metadata.json') contents.
+	
+		modelClassName := (metadata at: 'modelClassName') asSymbol.
+		baselineName := metadata at: 'baselineName'.
+	
+		(self environment hasClassNamed: modelClassName) ifTrue: [ 
+			self error: 'Model ', modelClassName, ' already exists!' ].
+	
+		Metacello new
+			baseline: baselineName;
+			repository: 'tonel:///', dir pathString;
+			load.
+	] ensure: [ dir deleteAll ].
 	
 	"Return model class"
-	^ Smalltalk at: (metadata at: 'modelClassName') asSymbol
-	
+	^ Smalltalk at: modelClassName
 	
 ]
 
@@ -290,6 +296,12 @@ CMModel class >> instanceSideParameters [
 CMModel class >> isCormasModelClass [
 
 	^ true
+]
+
+{ #category : 'as yet unclassified' }
+CMModel class >> modelFileExtension [
+	"Cormas Model eXchange"
+	^ 'cmx'
 ]
 
 { #category : 'model - metadata' }

@@ -9,8 +9,9 @@ Class {
 		'isPovVisible',
 		'spaceBuilder'
 	],
-	#category : 'Cormas-UI',
-	#package : 'Cormas-UI'
+	#category : 'Cormas-UI-Simulation',
+	#package : 'Cormas-UI',
+	#tag : 'Simulation'
 }
 
 { #category : 'examples' }

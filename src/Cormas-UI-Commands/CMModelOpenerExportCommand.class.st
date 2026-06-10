@@ -14,13 +14,29 @@ CMModelOpenerExportCommand class >> order [
 { #category : 'action' }
 CMModelOpenerExportCommand >> action [
 
-	^ self inform: 'Model exporting is not implemented yet'
+	(StSaveFilePresenter extensions: {'cmx'})
+		okAction: [ :fileReference | 
+			owner cormasModelClass saveToFile: fileReference.
+			self informSaved: fileReference ]
 ]
 
 { #category : 'accessing' }
 CMModelOpenerExportCommand >> icon [
 
 	^ self iconNamed: #save
+]
+
+{ #category : 'action' }
+CMModelOpenerExportCommand >> informSaved: aFileReference [
+
+	MorphicUIManager new
+		inform: (String streamContents: [ :stream |
+			stream
+				nextPutAll: 'Model saved: ';
+				nextPutAll: aFileReference pathString;
+				cr;
+				nextPutAll: 'Click to open location' ])
+		actionOnClick: [ aFileReference parent openInOSFileBrowser ]
 ]
 
 { #category : 'accessing' }
