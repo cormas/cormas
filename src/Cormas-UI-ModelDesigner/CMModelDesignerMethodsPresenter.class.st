@@ -9,15 +9,15 @@ Class {
 CMModelDesignerMethodsPresenter class >> example [
 	<example>
 	
-	(self withTitle: 'Custom methods' translator: CMEnglishTranslator new)
+	(self withTitle: 'Custom methods')
 		items: CMMockModel methods;
 		open
 ]
 
 { #category : 'as yet unclassified' }
-CMModelDesignerMethodsPresenter class >> withTitle: aString translator: aTranslator [
+CMModelDesignerMethodsPresenter class >> withTitle: aString [
 	
-	^ self on: { aString . aTranslator }
+	^ self on: aString
 ]
 
 { #category : 'as yet unclassified' }

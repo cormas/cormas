@@ -32,15 +32,6 @@ CMR3SpaceAgentsBuilder >> cellAt: aPoint ifAbsent: absentBlock [
 		ifNone: absentBlock
 ]
 
-{ #category : 'position in cell' }
-CMR3SpaceAgentsBuilder >> centeredPositionForAgent: anAgent [
-	"Place an agent in the center of the cell"
-
-	^ self
-		positionAgent: anAgent
-		atProportion: (self neighbourhoodConfiguration centerOfShapeFor: anAgent cell)
-]
-
 { #category : 'as yet unclassified' }
 CMR3SpaceAgentsBuilder >> contextMenuItemsFor: anEntity [
 
@@ -91,11 +82,11 @@ CMR3SpaceAgentsBuilder >> mouseEnd: anEvent [
 	position := anEvent camera fromPixelToSpace: anEvent position.
 	
 	agent := anEvent shape model.
-	cell := (self cellAt: position ifAbsent: [ nil ]).
+	cell := self cellAt: position ifAbsent: [ nil ].
 	
 	oldCell := agent cell.
 		
-	agent moveTo: (cell
+	cell
 		ifNotNil: [
 			self
 				animateMove: anEvent shape
@@ -103,15 +94,15 @@ CMR3SpaceAgentsBuilder >> mouseEnd: anEvent [
 				to: "cell" position
 				duration: 250 milliSeconds.
 			
-			cell model ]
+			agent moveTo: cell model.
+			
+			agent positionInCell: (self positionInCell: cell model fromAbsolutePosition: position) ]
 		ifNil: [ 
 			self
 				animateMove: anEvent shape
 				from: position
 				to: (anEvent canvas shapeFromModel: oldCell) position
-				duration: 1 second.
-			
-			oldCell ]).
+				duration: 1 second ].
 ]
 
 { #category : 'as yet unclassified' }
@@ -144,27 +135,26 @@ CMR3SpaceAgentsBuilder >> objects [
 	^ diagramBuilder cormasModel agents select: [ :each | each isSituated ]
 ]
 
-{ #category : 'position in cell' }
-CMR3SpaceAgentsBuilder >> positionAgent: anAgent atProportion: aRelativePoint [
-	"aRelativePoint is relative to a cell. 0@0 will place the agent in the top-left corner of the cell, 1@1 - bottom-right corner, 0.5@0.5 - center of the cell"
+{ #category : 'as yet unclassified' }
+CMR3SpaceAgentsBuilder >> offsetOfCell: aCell [
+	"Calculate offset of a cell in a spatial grid. This accounts for the intersection of cell shapes such as hexagons or triangles. It also accounts for the shifting of the odd rows / columns"
 
-	| cell cellCoordinates cellSize offset intersectionProportion shiftProportionX shiftProportionY shiftProportion intersectionOffset  config |
-	
-	cell := anAgent cell.
+	| config cellSize cellCoordinates intersectionProportion shiftProportionX shiftProportionY shiftProportion intersectionOffset offset |
+
 	config := self neighbourhoodConfiguration.
 	cellSize := diagramBuilder cellShapes anyOne encompassingRectangle extent.
 	
-	cellCoordinates := cell columnNumber @ cell rowNumber.
+	cellCoordinates := aCell columnNumber @ aCell rowNumber.
 	
 	intersectionProportion :=
 		config boundingRectangleHorizontalIntersection @
 		config boundingRectangleVerticalIntersection.
 		
-	shiftProportionX := cell rowNumber even
+	shiftProportionX := aCell rowNumber even
 		ifTrue: [ config boundingRectangleHorizontalShiftEven ]
 		ifFalse: [ config boundingRectangleHorizontalShiftOdd ].
 		
-	shiftProportionY := cell columnNumber even
+	shiftProportionY := aCell columnNumber even
 		ifTrue: [ config boundingRectangleVerticalShiftEven ]
 		ifFalse: [ config boundingRectangleVerticalShiftOdd ].
 		
@@ -173,26 +163,38 @@ CMR3SpaceAgentsBuilder >> positionAgent: anAgent atProportion: aRelativePoint [
 	intersectionOffset := (cellCoordinates - 1) * intersectionProportion.
 	offset := (cellCoordinates - 1) - intersectionOffset + shiftProportion.
 
-	^ (offset + aRelativePoint - config cellShapeOriginOffset) * cellSize
+	^ offset - config cellShapeOriginOffset
+]
+
+{ #category : 'position in cell' }
+CMR3SpaceAgentsBuilder >> positionAgent: anAgent atProportion: aRelativePoint [
+	"aRelativePoint is relative to a cell. 0@0 will place the agent in the top-left corner of the cell, 1@1 - bottom-right corner, 0.5@0.5 - center of the cell"
+
+	| cell cellSize offset |
+	
+	cell := anAgent cell.
+	cellSize := diagramBuilder cellShapes anyOne encompassingRectangle extent.
+	offset := self offsetOfCell: cell.
+
+	^ (aRelativePoint + offset) * cellSize
 ]
 
 { #category : 'position in cell' }
 CMR3SpaceAgentsBuilder >> positionForAgent: anAgent [
-	"This method should be modified to define the logic of choosing agent position (for example, based on the POV). For now, we have two options: #centeredPositionForAgent: and #randomPositionForAgent:"
-	
-	^ self centeredPositionForAgent: anAgent
-]
-
-{ #category : 'position in cell' }
-CMR3SpaceAgentsBuilder >> randomPositionForAgent: anAgent [
-	"Place an agent at a random location inside a cell"
-	| x y |
-	x := anAgent random.
-	y := anAgent random.
 
 	^ self
 		positionAgent: anAgent
-		atProportion: x@y
+		atProportion: anAgent positionInCell
+]
+
+{ #category : 'as yet unclassified' }
+CMR3SpaceAgentsBuilder >> positionInCell: aCell fromAbsolutePosition: aPoint [
+
+	|  cellSize offset |
+	cellSize := diagramBuilder cellShapes anyOne encompassingRectangle extent.
+	offset := self offsetOfCell: aCell.
+	
+	^ aPoint / cellSize - offset
 ]
 
 { #category : 'hooks' }

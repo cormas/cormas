@@ -2,13 +2,13 @@ Class {
 	#name : 'CMModelPreviewPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
 		'cormasModelClass',
 		'screenshot',
 		'modelDescription'
 	],
-	#category : 'Cormas-UI',
-	#package : 'Cormas-UI'
+	#category : 'Cormas-UI-ModelOpener',
+	#package : 'Cormas-UI',
+	#tag : 'ModelOpener'
 }
 
 { #category : 'examples' }

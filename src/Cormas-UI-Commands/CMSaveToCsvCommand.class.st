@@ -29,13 +29,13 @@ CMSaveToCsvCommand >> action [
 { #category : 'accessing' }
 CMSaveToCsvCommand >> icon [
 
-	^ CMIcons csvIcon
+	^ cormasIconProvider csvIcon
 ]
 
 { #category : 'accessing' }
 CMSaveToCsvCommand >> name [
 
-	^ translator tSaveToCsv
+	^ 'Save to CSV'
 ]
 
 { #category : 'export' }

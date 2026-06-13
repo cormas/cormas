@@ -14,18 +14,22 @@ Trait {
 
 { #category : 'random' }
 TCMRandom >> random [
-
-	^ randomNumberGenerator next
+	<api>
+	
+	^ self randomNumberGenerator next
 ]
 
 { #category : 'random' }
 TCMRandom >> randomBetween: lowerBound and: higherBound [
-	"Answer a random float number from the range [lowerBound, higherBound)"
+	<api>
+	<doc: 'Answer a random float number from the range [lowerBound, higherBound)'>
+		
 	^ lowerBound + (self random * (higherBound - lowerBound))
 ]
 
 { #category : 'random' }
 TCMRandom >> randomColor [
+	<api>
 
 	^ Color
 		  r: self random
@@ -35,37 +39,29 @@ TCMRandom >> randomColor [
 
 { #category : 'random' }
 TCMRandom >> randomIntegerBetween: lowNumber and: highNumber [
+	<api>
 
 	^ (self randomBetween: lowNumber and: highNumber) rounded
 ]
 
 { #category : 'accessing' }
 TCMRandom >> randomNumberGenerator [
+	<api>
 	
-	^ randomNumberGenerator 
-]
-
-{ #category : 'accessing' }
-TCMRandom >> randomNumberGenerator: aGenerator [
-
-	randomNumberGenerator := aGenerator
-]
-
-{ #category : 'accessing' }
-TCMRandom >> randomSeed: aNumber [
-	aNumber ifNil: [ ^self ].
-	randomNumberGenerator seed: aNumber
+	^ self simulationContext randomNumberGenerator 
 ]
 
 { #category : 'random' }
 TCMRandom >> selectRandomlyFrom: aCollection [
+	<api>
 
-	^ aCollection atRandom: randomNumberGenerator
+	^ aCollection atRandom: self randomNumberGenerator
 ]
 
 { #category : 'random' }
 TCMRandom >> selectRandomlyFrom: aCollection size: anInteger [
-	"Returns a subcollection randomly built from a collection (an item may be selected only once). If the collection is empty, or if the collection size is lower than the subcollection size, its returns aCollection randomly mixed."
+	<api>
+	<doc: 'Returns a subcollection randomly built from a collection (an item may be selected only once). If the collection is empty, or if the collection size is lower than the subcollection size, its returns aCollection randomly mixed.'>
 	
 	| randomCollection |
 	anInteger < 1 ifTrue: [ ^ OrderedCollection new ].
@@ -77,6 +73,7 @@ TCMRandom >> selectRandomlyFrom: aCollection size: anInteger [
 
 { #category : 'random' }
 TCMRandom >> shuffled: aCollection [
+	<api>
 
-	^ aCollection asOrderedCollection shuffledBy: randomNumberGenerator
+	^ aCollection asOrderedCollection shuffledBy: self randomNumberGenerator
 ]

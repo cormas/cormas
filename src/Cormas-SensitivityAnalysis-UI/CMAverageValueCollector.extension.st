@@ -1,7 +1,7 @@
 Extension { #name : 'CMAverageValueCollector' }
 
 { #category : '*Cormas-SensitivityAnalysis-UI' }
-CMAverageValueCollector class >> collectorNameFromTranslator: aTranslator [
+CMAverageValueCollector class >> collectorName [
 
-	^ aTranslator tAverageValue
+	^ 'Average value'
 ]

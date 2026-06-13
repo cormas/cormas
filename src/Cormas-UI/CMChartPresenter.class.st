@@ -2,8 +2,6 @@ Class {
 	#name : 'CMChartPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'simulation',
-		'translator',
 		'toolbar',
 		'showProbesButton',
 		'saveToPngButton',
@@ -21,23 +19,20 @@ Class {
 CMChartPresenter class >> example [
 	<example>
 	
-	| simulation |
+	| simulation app |
 	
-	simulation := (CMSimulation for: CMMockModel)
+	simulation := (CMSimulation for: CMMockModel new)
 		activeInitSelector: #initFixed;
-		activeControlSelector: #step:;
+		activeControlSelector: #step;
 		initializeSimulation;
 		yourself.
 		
+	app := CMSimulationApplication new.
+	app simulation: simulation.
+		
 	10 timesRepeat: [ simulation runStep ].
 	
-	(self forSimulation: simulation translator: CMEnglishTranslator new) open
-]
-
-{ #category : 'as yet unclassified' }
-CMChartPresenter class >> forSimulation: aSimulation translator: aTranslator [
-
-	^ self on: { aSimulation . aTranslator }
+	(app newPresenter: self) open
 ]
 
 { #category : 'initialization' }
@@ -72,18 +67,18 @@ CMChartPresenter >> drawChart [
 	| chartBuilder size x y |
 	
 	chartBuilder := CMR3ChartBuilder new
-		maxChartValueX: simulation finalTimeStep + 1;
+		maxChartValueX: self simulation data size;
 		yourself.
 		
 	(isProbeVisibleDictionary values noneSatisfy: #yourself)
 		ifTrue: [ chartBuilder addPlotX: { 0 } y: { 0 } color: Color black ]
 		ifFalse: [
-			size := simulation data size.
+			size := self simulation data size.
 			x := (1 to: size) asArray.
 	
-			simulation probes do: [ :probe |
+			self simulation probes do: [ :probe |
 				(isProbeVisibleDictionary at: probe) ifTrue: [
-					y := (simulation data first: size) collect: [ :row | row at: probe name ].
+					y := (self simulation data first: size) collect: [ :row | row at: probe name ].
 					chartBuilder addPlotX: x y: y color: probe color ] ] ].
 
 	chartBuilder chart build.
@@ -95,7 +90,7 @@ CMChartPresenter >> initializePresenters [
 
 	isProbesListVisible := false.
 
-	isProbeVisibleDictionary := (simulation probes collect: [ :probe |
+	isProbeVisibleDictionary := (self simulation probes collect: [ :probe |
 		probe -> true ]) asDictionary.
 
 	probesCheckboxes := self newTable
@@ -118,7 +113,7 @@ CMChartPresenter >> initializePresenters [
 			yourself);
 		addColumn: (SpStringTableColumn evaluated: [ :probe | probe name ]).
 		
-	probesCheckboxes items: simulation probes.
+	probesCheckboxes items: self simulation probes.
 	
 	showProbesButton := self newToolbarButton
 		label: 'Probes';
@@ -161,13 +156,6 @@ CMChartPresenter >> initializeWindow: aWindowPresenter [
 		initialExtent: 1000@600
 ]
 
-{ #category : 'running' }
-CMChartPresenter >> runStep [
-
-	10 timesRepeat: [ simulation runStep ].
-	self updateCharts.
-]
-
 { #category : 'as yet unclassified' }
 CMChartPresenter >> saveToPng [
 
@@ -178,11 +166,10 @@ CMChartPresenter >> saveToPng [
 				exportToFile: fileReference ]
 ]
 
-{ #category : 'accessing - model' }
-CMChartPresenter >> setModelBeforeInitialization: aCollection [
+{ #category : 'accessing' }
+CMChartPresenter >> simulation [
 
-	simulation := aCollection first.
-	translator := aCollection second
+	^ self application simulation
 ]
 
 { #category : 'as yet unclassified' }

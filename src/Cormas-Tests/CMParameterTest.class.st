@@ -2,7 +2,7 @@ Class {
 	#name : 'CMParameterTest',
 	#superclass : 'TestCase',
 	#instVars : [
-		'parameters'
+		'fixtureClass'
 	],
 	#category : 'Cormas-Tests',
 	#package : 'Cormas-Tests'
@@ -12,189 +12,219 @@ Class {
 CMParameterTest >> setUp [
 
 	super setUp.
-	
-	CMMockModel allEntityClasses do: #initializeParameters.
-	parameters := CMMockModel parameters.
+	fixtureClass := CMParameterFixture
 ]
 
 { #category : 'tests' }
-CMParameterTest >> testEquality [
-
-	| parameter1 parameter2 |
+CMParameterTest >> testBoolean [
 	
-	parameter1 := CMParameter
-		getterSelector: #initialEnergy
-		setterSelector: #initialEnergy:
-		receiver: CMMockAnimal.
-		
-	parameter2 := CMParameter
-		getterSelector: #initialEnergy
-		setterSelector: #initialEnergy:
-		receiver: CMMockAnimal.
-		
-	self assert: parameter1 equals: parameter2.
-]
-
-{ #category : 'tests' }
-CMParameterTest >> testHash [
-
-	| parameter1 parameter2 |
-	
-	parameter1 := CMParameter
-		getterSelector: #initialEnergy
-		setterSelector: #initialEnergy:
-		receiver: CMMockAnimal.
-		
-	parameter2 := CMParameter
-		getterSelector: #initialEnergy
-		setterSelector: #initialEnergy:
-		receiver: CMMockAnimal.
-		
-	self assert: parameter1 hash equals: parameter2 hash.
-]
-
-{ #category : 'tests' }
-CMParameterTest >> testInequality [
-
-	| parameter1 parameter2 parameter3 parameter4 |
-	
-	parameter1 := CMParameter
-		getterSelector: #initialEnergy
-		setterSelector: #initialEnergy:
-		receiver: CMMockAnimal.
-		
-	parameter2 := CMParameter
-		getterSelector: #initializeParameters
-		setterSelector: #initialEnergy:
-		receiver: CMMockAnimal.
-		
-	parameter3 := CMParameter
-		getterSelector: #initialEnergy
-		setterSelector: #initializeParameters
-		receiver: CMMockAnimal.
-		
-	parameter4 := CMParameter
-		getterSelector: #initialEnergy
-		setterSelector: #initialEnergy:
-		receiver: CMMockCow.
-		
-	self deny: parameter2 equals: parameter1.
-	self deny: parameter3 equals: parameter1.
-	self deny: parameter4 equals: parameter1.
-]
-
-{ #category : 'tests' }
-CMParameterTest >> testParameterNames [
-
-	| expectedNames actualNames |
-	
-	expectedNames := Set withAll: #(
-		initialEnergy
-		initialNumberOfCows
-		initialNumberOfGoats
-		numberOfRows
-		numberOfColumns).
-		
-	actualNames := (parameters collect: [ :each | each name ]) asSet.
-	self assertCollection: actualNames hasSameElements: expectedNames.
-]
-
-{ #category : 'tests' }
-CMParameterTest >> testReceiverClasses [
-
-	| expectedClasses actualClasses |
-	
-	expectedClasses := Set withAll: {
-		CMMockModel .
-		CMMockAnimal .
-		CMMockCow .
-		CMMockGoat }.
-		
-	actualClasses := (parameters collect: [ :each | each receiver ]) asSet.
-	self assertCollection: actualClasses hasSameElements: expectedClasses.
-]
-
-{ #category : 'tests' }
-CMParameterTest >> testSetValue [
-
 	| parameter |
 	
-	parameter := CMParameter
-		getterSelector: #initialEnergy
-		setterSelector: #initialEnergy:
-		receiver: CMMockAnimal.
-		
-	parameter value: 42.
-	self assert: parameter value equals: 42.
-	self assert: CMMockAnimal initialEnergy equals: 42.
-	self assert: CMMockCow initialEnergy equals: 42.
-	self assert: CMMockGoat initialEnergy equals: 42.
+	parameter := CMBooleanParameter fromMethod: fixtureClass >> #bool.
+	self assert: parameter class equals: CMBooleanParameter.
+	self assert: parameter defaultValue equals: true.
+	
+	self assert: parameter name equals: 'bool'.
 ]
 
 { #category : 'tests' }
-CMParameterTest >> testSetValueSubclass [
-
+CMParameterTest >> testBooleanNamed [
+	
 	| parameter |
 	
-	parameter := CMParameter
-		getterSelector: #initialEnergy
-		setterSelector: #initialEnergy:
-		receiver: CMMockGoat.
-		
-	parameter value: 42.
-	self assert: parameter value equals: 42.
-	self assert: CMMockAnimal initialEnergy equals: 0.5.
-	self assert: CMMockCow initialEnergy equals: 0.5.
-	self assert: CMMockGoat initialEnergy equals: 42.
-]
-
-{ #category : 'tests' }
-CMParameterTest >> testSubclassesHaveSuperclassParameters [
-
-	| expectedParameters |
+	parameter := CMBooleanParameter fromMethod: fixtureClass >> #boolNamed.
+	self assert: parameter class equals: CMBooleanParameter.
+	self assert: parameter defaultValue equals: true.
 	
-	expectedParameters := { 
-		CMParameter
-			getterSelector: #initialEnergy
-			setterSelector: #initialEnergy:
-			receiver: CMMockAnimal.
-			
-		CMParameter
-			getterSelector: #initialEnergy
-			setterSelector: #initialEnergy:
-			receiver: CMMockCow.
-			
-		CMParameter
-			getterSelector: #initialEnergy
-			setterSelector: #initialEnergy:
-			receiver: CMMockGoat
-	}.
-
-	self assertCollection: parameters includesAll: expectedParameters.
+	self assert: parameter name equals: 'Boolean with name'.
 ]
 
 { #category : 'tests' }
-CMParameterTest >> testValue [
-
+CMParameterTest >> testEnum [
+	
 	| parameter |
 	
-	parameter := CMParameter
-		getterSelector: #initialEnergy
-		setterSelector: #initialEnergy:
-		receiver: CMMockAnimal.
-		
-	self assert: parameter value equals: 0.5.
+	parameter := CMEnumParameter fromMethod: fixtureClass >> #enum.
+	self assert: parameter class equals: CMEnumParameter.
+	self assert: parameter values equals: #(sunny rainy cloudy).
+	self assert: parameter defaultValue equals: #sunny.
+	
+	self assert: parameter name equals: 'enum'.
 ]
 
 { #category : 'tests' }
-CMParameterTest >> testValueSubclass [
-
+CMParameterTest >> testEnumNamed [
+	
 	| parameter |
 	
-	parameter := CMParameter
-		getterSelector: #initialEnergy
-		setterSelector: #initialEnergy:
-		receiver: CMMockGoat.
-		
-	self assert: parameter value equals: 0.5.
+	parameter := CMEnumParameter fromMethod: fixtureClass >> #enumNamed.
+	self assert: parameter class equals: CMEnumParameter.
+	self assert: parameter values equals: #(sunny rainy cloudy).
+	self assert: parameter defaultValue equals: #sunny.
+	
+	self assert: parameter name equals: 'Enum with name'.
+]
+
+{ #category : 'tests' }
+CMParameterTest >> testFloat [
+	
+	| parameter |
+	
+	parameter := CMFloatParameter fromMethod: fixtureClass >> #float.
+	self assert: parameter class equals: CMFloatParameter.
+	self assert: parameter defaultValue equals: 0.
+	
+	self assert: parameter name equals: 'float'.
+]
+
+{ #category : 'tests' }
+CMParameterTest >> testFloatMinMax [
+	
+	| parameter |
+	
+	parameter := CMFloatParameter fromMethod: fixtureClass >> #floatMinMax.
+	self assert: parameter class equals: CMFloatParameter.
+	self assert: parameter defaultValue equals: 0.
+	self assert: parameter minValue equals: -1.
+	self assert: parameter maxValue equals: 1.
+	
+	self assert: parameter name equals: 'floatMinMax'.
+]
+
+{ #category : 'tests' }
+CMParameterTest >> testFloatMinMaxNamed [
+	
+	| parameter |
+	
+	parameter := CMFloatParameter fromMethod: fixtureClass >> #floatMinMaxNamed.
+	self assert: parameter class equals: CMFloatParameter.
+	self assert: parameter defaultValue equals: 0.
+	self assert: parameter minValue equals: -1.
+	self assert: parameter maxValue equals: 1.
+	
+	self assert: parameter name equals: 'Float with min, max and name'.
+]
+
+{ #category : 'tests' }
+CMParameterTest >> testFloatMinMaxStep [
+	
+	| parameter |
+	
+	parameter := CMFloatParameter fromMethod: fixtureClass >> #floatMinMaxStep.
+	self assert: parameter class equals: CMFloatParameter.
+	self assert: parameter defaultValue equals: 0.
+	self assert: parameter minValue equals: -1.
+	self assert: parameter maxValue equals: 1.
+	self assert: parameter step equals: 0.1.
+	
+	self assert: parameter name equals: 'floatMinMaxStep'.
+]
+
+{ #category : 'tests' }
+CMParameterTest >> testFloatMinMaxStepNamed [
+	
+	| parameter |
+	
+	parameter := CMFloatParameter fromMethod: fixtureClass >> #floatMinMaxStepNamed.
+	self assert: parameter class equals: CMFloatParameter.
+	self assert: parameter defaultValue equals: 0.
+	self assert: parameter minValue equals: -1.
+	self assert: parameter maxValue equals: 1.
+	self assert: parameter step equals: 0.1.
+	
+	self assert: parameter name equals: 'Float with min, max, step and name'.
+]
+
+{ #category : 'tests' }
+CMParameterTest >> testFloatNamed [
+	
+	| parameter |
+	
+	parameter := CMFloatParameter fromMethod: fixtureClass >> #floatNamed.
+	self assert: parameter class equals: CMFloatParameter.
+	self assert: parameter defaultValue equals: 0.
+	
+	self assert: parameter name equals: 'Float with name'.
+]
+
+{ #category : 'tests' }
+CMParameterTest >> testInteger [
+	
+	| parameter |
+	
+	parameter := CMIntegerParameter fromMethod: fixtureClass >> #int.
+	self assert: parameter class equals: CMIntegerParameter.
+	self assert: parameter defaultValue equals: 0.
+	
+	self assert: parameter name equals: 'int'.
+]
+
+{ #category : 'tests' }
+CMParameterTest >> testIntegerMinMax [
+	
+	| parameter |
+	
+	parameter := CMIntegerParameter fromMethod: fixtureClass >> #intMinMax.
+	self assert: parameter class equals: CMIntegerParameter.
+	self assert: parameter defaultValue equals: 0.
+	self assert: parameter minValue equals: -10.
+	self assert: parameter maxValue equals: 20.
+	
+	self assert: parameter name equals: 'intMinMax'.
+]
+
+{ #category : 'tests' }
+CMParameterTest >> testIntegerMinMaxNamed [
+	
+	| parameter |
+	
+	parameter := CMIntegerParameter fromMethod: fixtureClass >> #intMinMaxNamed.
+	self assert: parameter class equals: CMIntegerParameter.
+	self assert: parameter defaultValue equals: 0.
+	self assert: parameter minValue equals: -10.
+	self assert: parameter maxValue equals: 20.
+	
+	self assert: parameter name equals: 'Integer with min, max and name'.
+]
+
+{ #category : 'tests' }
+CMParameterTest >> testIntegerMinMaxStep [
+	
+	| parameter |
+	
+	parameter := CMIntegerParameter fromMethod: fixtureClass >> #intMinMaxStep.
+	self assert: parameter class equals: CMIntegerParameter.
+	self assert: parameter defaultValue equals: 0.
+	self assert: parameter minValue equals: -10.
+	self assert: parameter maxValue equals: 20.
+	self assert: parameter step equals: 2.
+	
+	self assert: parameter name equals: 'intMinMaxStep'.
+]
+
+{ #category : 'tests' }
+CMParameterTest >> testIntegerMinMaxStepNamed [
+	
+	| parameter |
+	
+	parameter := CMIntegerParameter fromMethod: fixtureClass >> #intMinMaxStepNamed.
+	self assert: parameter class equals: CMIntegerParameter.
+	self assert: parameter defaultValue equals: 0.
+	self assert: parameter minValue equals: -10.
+	self assert: parameter maxValue equals: 20.
+	self assert: parameter step equals: 2.
+	
+	self assert: parameter name equals: 'Integer with min, max, step and name'.
+]
+
+{ #category : 'tests' }
+CMParameterTest >> testIntegerNamed [
+	
+	| parameter |
+	
+	parameter := CMIntegerParameter fromMethod: fixtureClass >> #intNamed.
+	self assert: parameter class equals: CMIntegerParameter.
+	self assert: parameter defaultValue equals: 0.
+	
+	self assert: parameter name equals: 'Integer with name'.
 ]

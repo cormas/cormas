@@ -6,7 +6,7 @@ SmalltalkCISpec {
       #registerInIceberg : true,
       #onWarningLog: true,
       #onConflict : #useLoaded,
-      #load : [ 'CoreTests' ],
+      #load : [ 'Core' ],
       #platforms : [ #pharo ]
     }
   ],

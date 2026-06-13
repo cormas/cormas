@@ -1,13 +1,12 @@
 Trait {
 	#name : 'TCMLocated',
 	#instVars : [
-		'cell'
+		'cell',
+		'positionInCell'
 	],
-	#traits : 'TCMRandom',
-	#classTraits : 'TCMRandom classTrait',
-	#category : 'Cormas-Core-Entities',
+	#category : 'Cormas-Core-Traits',
 	#package : 'Cormas-Core',
-	#tag : 'Entities'
+	#tag : 'Traits'
 }
 
 { #category : 'testing' }
@@ -213,10 +212,6 @@ TCMLocated >> leave [
 TCMLocated >> leaveWhileMoving: isMoving [
 
 	self cell ifNil: [ ^ self ].
-	
-	isMoving ifFalse: [
-		"The situated agent doesn't move; it is not located any more. But it is still 'alive'  "
-		self cormasModel spaceModel ifNil: [ ^ self ] ].
 			
 	(self cell theOccupants at: self class name)
 		remove: self
@@ -268,7 +263,7 @@ Example: self locationsVerifying: [:c | c isClosed not] withinRadius: 5"
 	
 	^self cell
 		ifNil: [ nil ]
-		ifNotNil: [ self cell recursiveNeighbourhood: range verifying: aBlock ]
+		ifNotNil: [ self cell neighbourhoodOfRadius: range verifying: aBlock ]
 ]
 
 { #category : 'environment - sensing - space' }
@@ -280,7 +275,7 @@ Return value: <Collection(SpatialEntity) | nil>"
 	
 	^ self cell
 		ifNil: [ Array new ]
-		ifNotNil: [ self cell recursiveNeighbourhood: range ]
+		ifNotNil: [ self cell neighbourhoodOfRadius: range ]
 ]
 
 { #category : 'environment - sensing - space' }
@@ -294,7 +289,7 @@ Example: self locationsWithoutAny: Predator withinRadius: self perceptionRangePr
 	
 	^self cell
 		ifNil: [ nil ]
-		ifNotNil: [ self cell recursiveNeighbourhood: range withoutAny: locatedEntityName ]
+		ifNotNil: [ self cell neighbourhoodOfRadius: range withoutAny: locatedEntityName ]
 ]
 
 { #category : 'star moving' }
@@ -390,15 +385,18 @@ TCMLocated >> moveSW [
 ]
 
 { #category : 'moving' }
-TCMLocated >> moveTo: aSpatialEntity [
+TCMLocated >> moveTo: aCell [
 	"Purpose: moves to a given location.
-Argument: aSpatialEntity = <SpatialEntity>
-Example: self moveTo: self cell neighbourN"
+	Example: self moveTo: self cell neighbourN"
 	
-	aSpatialEntity isSpatialEntity ifFalse: [ ^ nil ].
+	aCell isSpatialEntity ifFalse: [ ^ nil ].
 	self leaveWhileMoving: true.
-	self cell: aSpatialEntity.
+	self cell: aCell.
 	self cell addOccupant: self.
+	
+	"We check if the model is nil because we want to make it possible to create cells and agents without a Cormas model. This is used primarily in tests"
+	self cormasModel ifNotNil: [
+		self positionInCell: (self cormasModel choosePositionForAgent: self inCell: aCell) ]
 ]
 
 { #category : 'moving' }
@@ -439,15 +437,16 @@ TCMLocated >> moveW [
 ]
 
 { #category : 'environment - picking - space' }
-TCMLocated >> nearestEmptyLocation [
-	"Purpose: returns the nearest spatial entity with no occupant of any kind. 
-The current location is NOT considered
-If none: returns nil; if more than one at the minimum radius: random selection
-Return value: <SpatialEntity | nil>"
+TCMLocated >> nearestEmptyCell [
+	"Return the nearest cell with no occupant of any kind.
+	The current cell is NOT considered.
 	
-	^ self cell
-		ifNil: [ nil ]
-		ifNotNil: [ self cell nearestEmptyCell ]
+	If agent is not located on any cell: signal an error.
+	If none: returns nil.
+	If more than one at the minimum radius: random selection"
+	
+	self cell ifNil: [ self error: 'Agent is not located on any cell' ].
+	^ self cell nearestEmptyCell
 ]
 
 { #category : 'environment - picking - space' }
@@ -787,6 +786,18 @@ Example: self neighbouringSimilarAgentsVerifying: [:a | a sex ~= self sex]"
 		ifNotNil: [ self neighbouringSimilarAgents select: [ :agent | aCondition value: agent ] ]
 ]
 
+{ #category : 'accessing' }
+TCMLocated >> positionInCell [
+	"A Point (u@v) with 0 ≤ u,v ≤ 1 representing relative position inside the cell."
+	^ positionInCell ifNil: [ positionInCell := 0.5@0.5 ]
+]
+
+{ #category : 'accessing' }
+TCMLocated >> positionInCell: aPoint [
+
+	positionInCell := aPoint
+]
+
 { #category : 'printing' }
 TCMLocated >> printOn: aStream [
 
@@ -840,7 +851,7 @@ TCMLocated >> randomWalk: radius [
 Argument: radius = <positive Integer>
 Example: self randomWalk: 2 "
 	
-	self moveTo: (self selectRandomlyFrom: (self cell recursiveNeighbourhood: radius))
+	self moveTo: (self selectRandomlyFrom: (self cell neighbourhoodOfRadius: radius))
 ]
 
 { #category : 'moving' }

@@ -3,7 +3,6 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'availableParameters',
-		'translator',
 		'list',
 		'toolbar'
 	],
@@ -15,15 +14,13 @@ Class {
 CMSensitivityAnalysisParametersListPresenter class >> example [
 	<example>
 	
-	(self
-		forParameters: CMMockModel parameters
-		translator: CMEnglishTranslator new) open
+	(self forParameters: CMMockModel allParameters) open
 ]
 
 { #category : 'as yet unclassified' }
-CMSensitivityAnalysisParametersListPresenter class >> forParameters: aCollectionOfParameters translator: aTranslator [
+CMSensitivityAnalysisParametersListPresenter class >> forParameters: aCollectionOfParameters [
 
-	^ self on: { aCollectionOfParameters . aTranslator }
+	^ self on: aCollectionOfParameters
 ]
 
 { #category : 'layout' }
@@ -50,18 +47,17 @@ CMSensitivityAnalysisParametersListPresenter >> initializePresenters [
 	list := self newComponentList.
 	
 	addButton := self newToolbarButton
-		label: translator tAdd;
+		label: 'Add';
 		icon: (self iconNamed: #add);
-		help: translator tAddMeasurementHelp;
+		help: 'Add new probe measurement';
 		action: [
 			list addPresenter: (
 				CMSensitivityAnalysisParameterRowPresenter
-					forParameters: availableParameters
-					translator: translator) ];
+					forParameters: availableParameters) ];
 		yourself.
 		
 	inspectButton := self newToolbarButton
-		label: translator tInspector;
+		label: 'Inspector';
 		icon: (self iconNamed: #smallInspectIt);
 		action: [ self parameterValues inspect ];
 		yourself.
@@ -90,6 +86,5 @@ CMSensitivityAnalysisParametersListPresenter >> parameterValues [
 { #category : 'accessing - model' }
 CMSensitivityAnalysisParametersListPresenter >> setModelBeforeInitialization: aCollection [
 
-	availableParameters := aCollection first.
-	translator := aCollection second
+	availableParameters := aCollection
 ]

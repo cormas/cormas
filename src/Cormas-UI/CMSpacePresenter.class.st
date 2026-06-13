@@ -2,36 +2,33 @@ Class {
 	#name : 'CMSpacePresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
 		'toolbar',
-		'cormasModel',
 		'povSelection',
 		'diagram',
 		'povButton',
 		'isPovVisible',
 		'spaceBuilder'
 	],
-	#category : 'Cormas-UI',
-	#package : 'Cormas-UI'
+	#category : 'Cormas-UI-Simulation',
+	#package : 'Cormas-UI',
+	#tag : 'Simulation'
 }
 
 { #category : 'examples' }
 CMSpacePresenter class >> example [
 	<example>
 	
-	| simulation |
+	| model app |
+	model := CMMockModel new.
 	
-	simulation := (CMSimulation for: CMMockModel)
+	(CMSimulation for: model)
 		activeInitSelector: #initFixed;
-		activeControlSelector: #step:;
+		activeControlSelector: #step;
 		initializeSimulation.
 		
-	"simulation := (CMSimulation for: ECECModel)
-		activeInitSelector: #homogeneousEnvironment;
-		activeControlSelector: #step:;
-		initializeSimulation."
-	
-	(self on: simulation cormasModel) open
+	app := CMSimulationApplication new.
+	app cormasModel: model.
+	(app newPresenter: self) open
 ]
 
 { #category : 'initialization' }
@@ -42,12 +39,17 @@ CMSpacePresenter >> connectPresenters [
 		self updatePovSelectionVisibility.
 		self updatePovButtonIcon.
 		self update ].
+	
+	self application announcer
+		when: CMSpaceGridChanged
+		send: #updateDiagram
+		to: self
 ]
 
 { #category : 'accessing' }
 CMSpacePresenter >> cormasModel [
 
-	^ cormasModel
+	^ self application cormasModel
 ]
 
 { #category : 'layout' }
@@ -86,7 +88,7 @@ CMSpacePresenter >> initializeCanvasInteractions [
 CMSpacePresenter >> initializeDiagram [
 	"Set the Grid presenter: a new instance of RoassalBuilder (CMR3SpaceDiagramBuilder)"
 
-	spaceBuilder := CMR3SpaceDiagramBuilder for: cormasModel.
+	spaceBuilder := CMR3SpaceDiagramBuilder for: self cormasModel.
 	diagram := spaceBuilder asPresenter.
 
 	diagram owner: self.
@@ -98,7 +100,7 @@ CMSpacePresenter >> initializePresenters [
 "Set the Grid presenter (instance of RoassalBuilder (CMR3SpaceDiagramBuilder))"
 	self initializeToolbar.
 	
-	povSelection := (self instantiate: CMPovSelectionPresenter on: cormasModel)
+	povSelection := (self instantiate: CMPovSelectionPresenter)
 		whenChangedDo: [ spaceBuilder update ];
 		yourself.
 		
@@ -124,7 +126,7 @@ CMSpacePresenter >> initializeToolbar [
 
 	CMSpacePresenterCommand sortedSubclasses do: [ :aClass |
 		| command |
-		command := aClass forOwner: self translator: translator.
+		command := aClass forOwner: self.
 		toolbar add: command toolbarButton ].
 ]
 
@@ -150,18 +152,6 @@ CMSpacePresenter >> saveToPngFile: aFileReference [
 	self
 		saveCanvas: diagram canvas
 		toPngFile: aFileReference
-]
-
-{ #category : 'accessing - model' }
-CMSpacePresenter >> setModelBeforeInitialization: aCormasModel [
-	
-	cormasModel := aCormasModel 
-]
-
-{ #category : 'as yet unclassified' }
-CMSpacePresenter >> showSettings [
-
-	owner owner showSettings
 ]
 
 { #category : 'accessing' }

@@ -2,17 +2,14 @@ Class {
 	#name : 'CMSimulationInitRandomPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
-		'modelClass',
-		'randomNumberGenerator',
-		'fixRandomSeedCheckbox',
-		'randomSeedInput',
 		'randomSeedGeneratorDroplist',
-		'releaseRandomSeedCheckbox',
-		'whenChangedBlock'
+		'randomSeedInput',
+		'fixRandomSeedCheckbox',
+		'releaseRandomSeedCheckbox'
 	],
-	#category : 'Cormas-UI',
-	#package : 'Cormas-UI'
+	#category : 'Cormas-UI-Simulation',
+	#package : 'Cormas-UI',
+	#tag : 'Simulation'
 }
 
 { #category : 'as yet unclassified' }
@@ -39,50 +36,62 @@ CMSimulationInitRandomPresenter class >> availableRandomNumberGenerators [
 { #category : 'examples' }
 CMSimulationInitRandomPresenter class >> example [
 	<example>
-	
-	(self forModelClass: CMMockModel translator: CMEnglishTranslator new) open
+	| app |
+	app := CMSimulationApplication new.
+	app cormasModel: CMMockModel new.
+	(app newPresenter: self) open
 ]
 
-{ #category : 'as yet unclassified' }
-CMSimulationInitRandomPresenter class >> forModelClass: aClass translator: aTranslator [
+{ #category : 'utilities' }
+CMSimulationInitRandomPresenter >> apply [
 
-	^ self on: { aClass . aTranslator }
+	| simulation context |
+	
+	simulation := self application simulation.
+	context := simulation simulationContext.
+	
+	context randomSeed: randomSeedInput number.
+	context randomNumberGenerator: randomSeedGeneratorDroplist selectedItem new.
+	
+	simulation hasFixedRandomSeed: fixRandomSeedCheckbox state.
+	simulation shouldReleaseRandomSeedAfterInitialization: releaseRandomSeedCheckbox state
 ]
 
 { #category : 'initialization' }
 CMSimulationInitRandomPresenter >> connectPresenters [
 
-	whenChangedBlock := [ "do nothing" ].
-
 	fixRandomSeedCheckbox
-		whenChangedDo: [ :boolean | whenChangedBlock value ];
 		whenActivatedDo: [ self enableRandomSeedPresenters ];
-		whenDeactivatedDo: [ self disableRandomSeedPresenters ].
-		
-	randomSeedInput whenNumberChangedDo: [ :number | whenChangedBlock value ].
-	releaseRandomSeedCheckbox whenChangedDo: [ :boolean | whenChangedBlock value ].
+		whenDeactivatedDo: [ self disableRandomSeedPresenters ]
+]
+
+{ #category : 'accessing' }
+CMSimulationInitRandomPresenter >> cormasModel [
+
+	^ self application cormasModel
 ]
 
 { #category : 'layout' }
 CMSimulationInitRandomPresenter >> defaultLayout [
- 
+
 	^ SpBoxLayout newTopToBottom
 		spacing: 12;
-		add: (SpBoxLayout newLeftToRight
-			add: translator tGenerator width: 85;
-			add: randomSeedGeneratorDroplist;
-			yourself)
-		height: 25;
-		add: (SpBoxLayout newLeftToRight
-			add: translator tRandomSeed width: 85;
-			add: randomSeedInput;
-			yourself)
-		height: 25;
 		add: (SpBoxLayout newTopToBottom
-			add: fixRandomSeedCheckbox height: 15;
-			add: releaseRandomSeedCheckbox height: 15;
-			yourself);
+			spacing: 1;
+			add: 'Random number generator' expand: false;
+			add: randomSeedGeneratorDroplist expand: false;
+			yourself) expand: false;
+		add: (SpBoxLayout newTopToBottom
+			add: 'Random seed' expand: false;
+			add: randomSeedInput expand: false;
+			yourself) expand: false;
+		add: (SpBoxLayout newTopToBottom
+			spacing: 1;
+			add: fixRandomSeedCheckbox expand: false;
+			add: releaseRandomSeedCheckbox expand: false;
+			yourself) expand: false;
 		yourself
+
 ]
 
 { #category : 'as yet unclassified' }
@@ -103,11 +112,16 @@ CMSimulationInitRandomPresenter >> enableRandomSeedPresenters [
 	releaseRandomSeedCheckbox enable.
 ]
 
+{ #category : 'examples' }
+CMSimulationInitRandomPresenter >> example [
+	<script: 'self example'>
+]
+
 { #category : 'initialization' }
 CMSimulationInitRandomPresenter >> initializePresenters [
 	
 	fixRandomSeedCheckbox := self newCheckBox
-		label: translator tFixRandomSeed;
+		label: 'Fix random seed';
 		yourself.
 		
 	randomSeedInput := self newNumberInput.
@@ -117,10 +131,11 @@ CMSimulationInitRandomPresenter >> initializePresenters [
 		yourself.
 	
 	releaseRandomSeedCheckbox := self newCheckBox
-		label: translator tReleaseRandomSeedAfterInitialization;
+		label: 'Release random seed after initialization';
 		yourself.
 		
 	self disableRandomSeedPresenters.
+	self showCurrentSettings
 ]
 
 { #category : 'testing' }
@@ -135,21 +150,18 @@ CMSimulationInitRandomPresenter >> isReleaseRandomSeedAfterInitialization [
 	^ releaseRandomSeedCheckbox state
 ]
 
-{ #category : 'accessing' }
-CMSimulationInitRandomPresenter >> randomNumberGenerator [
-	
-	^ randomNumberGenerator
-]
-
 { #category : 'settings' }
 CMSimulationInitRandomPresenter >> randomSeed [
 
 	^ randomSeedInput number
 ]
 
-{ #category : 'accessing - model' }
-CMSimulationInitRandomPresenter >> setModelBeforeInitialization: aCollection [
+{ #category : 'initialization' }
+CMSimulationInitRandomPresenter >> showCurrentSettings [
 
-	modelClass := aCollection first.
-	translator := aCollection second
+	| context |
+	context := self cormasModel simulationContext.
+
+	randomSeedGeneratorDroplist selectItem: context randomNumberGenerator class.
+	randomSeedInput number: context randomSeed.
 ]

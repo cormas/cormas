@@ -107,7 +107,6 @@ CMSpatialEntity class >> new: aSpaceModel [
 
 	newEntity := self new
 		             spaceModel: aSpaceModel;
-		             cormasModel: aSpaceModel cormasModel;
 		             yourself.
 
 	aSpaceModel cormasModel addEntityToCollection: newEntity.
@@ -139,33 +138,6 @@ CMSpatialEntity >> aggregates [
 CMSpatialEntity >> aggregates: anObject [
 
 	aggregates := anObject
-]
-
-{ #category : 'environment - sensing - space' }
-CMSpatialEntity >> allLayersTo: radius [
-	"returns a collection (collResult) of layers :
-		- index of collResult is the distance to this layer, 
-		- each sub collection is a layer of cells.
-radius = integer >= 0.
-ex: collResult =	
-		[1 ->#(self)
-		2 ->#(self neighbourhood)
-		3 -> #(layer 2)
-		4 -> #(layer 3)  ...]"
-	
-	| layer1 layer2 collResult |
-	collResult := OrderedCollection new: radius.
-	layer1 := Array with: self.
-	collResult add: layer1.
-	radius = 0 ifTrue: [^collResult].
-	layer2 := self neighbourhood.
-	collResult add: layer2.
-	[collResult size < (radius + 1)]
-		whileTrue:
-			[collResult add: (self layer3FromLayer2: layer2 andLayer1: layer1) first.
-			layer2 := collResult last.
-			layer1 := collResult at: collResult size - 1].
-	^collResult
 ]
 
 { #category : 'environment - sensing - agents' }
@@ -270,13 +242,15 @@ Example: self getAggregateType: Forest"
 
 { #category : 'testing' }
 CMSpatialEntity >> hasNoOccupants [
-
+	<api>
+	
 	^ self hasOccupants not
 ]
 
 { #category : 'testing' }
 CMSpatialEntity >> hasNoOccupantsExcept: anObject [
-
+	<api>
+	
 	self theOccupants ifNil: [ ^ true ].
 
 	^ self theOccupants allSatisfy: [ :list | 
@@ -285,7 +259,12 @@ CMSpatialEntity >> hasNoOccupantsExcept: anObject [
 
 { #category : 'testing' }
 CMSpatialEntity >> hasOccupants [
-
+	<api>
+	<returnType: #Boolean description: 'true if the spatial entity contains at least one occupant'>
+	<doc: 'Answer whether the spatial entity contains any occupants. This method returns true if at least one entity is currently located on the receiver, regardless of its class.'>
+	<example: 'self hasOccupants'>
+	<seeAlso: #(hasOccupantsOfClass: hasNoOccupants hasNoOccupantsExcept:)>
+	
 	self theOccupants ifNil: [ ^ false ].
 
 	^ self theOccupants values anySatisfy: [ :list | 
@@ -294,11 +273,12 @@ CMSpatialEntity >> hasOccupants [
 
 { #category : 'testing' }
 CMSpatialEntity >> hasOccupantsOfClass: aClass [
-
-	"Purpose: test if there is an occupant of a given type.
-Argument: locatedEntityName = <Symbol | AgentLocation | ObjectLocation>
-Return value: <Boolean>
-Example: self hasOccupantType: #Tree"
+	<api>
+	<argument: #aClass type: #Class description: 'The occupant class to test for'>
+	<returnType: #Boolean description: 'true if at least one occupant is an instance of the specified class'>
+	<doc: 'Answer whether the spatial entity contains at least one occupant of the given class.'>
+	<example: 'self hasOccupantsOfClass: Tree'>
+	<seeAlso: #(hasOccupants hasNoOccupants hasNoOccupantsExcept:)>
 
 	^ (self occupantsOfClass: aClass) isNotEmpty
 ]
@@ -353,33 +333,6 @@ CMSpatialEntity >> isElementary [
 CMSpatialEntity >> isSpatialEntity [
 	
 	^true
-]
-
-{ #category : 'environment - sensing - space' }
-CMSpatialEntity >> layer3FromLayer2: aSet2 andLayer1: aSet1 [
-	"returns an collection of 2 arrays of cells: layers 3 and 2"
-	
-	| newLayer |
-	newLayer := OrderedCollection new.
-	aSet2
-		do:
-			[:cell | 
-			newLayer
-				addAll:
-					(cell neighbourhood
-						select:
-							[:c2 | (aSet2 includes: c2) not and: [(aSet1 includes: c2) not]])].
-	newLayer := Array withAll: newLayer.
-	^OrderedCollection with: newLayer with: aSet2
-]
-
-{ #category : 'environment - sensing - space' }
-CMSpatialEntity >> layerOfRadius: radius [
-	"Purpose: returns the spatial entities belonging to the appropriate layer.of recursive neighbourhood
-Argument: radius = <Integer>
-Return value: <Collection(SpatialEntity)>"
-	
-	^(self allLayersTo: radius) last
 ]
 
 { #category : 'environment - picking - space' }
@@ -498,7 +451,7 @@ Example: self nearestNeighborsWithMaxOf: #water verifying: [:c | c isPolluted no
 	| locations |
 	locations := self
 		             selectEntitiesWithMaxOf: aMagnitudeName
-		             amongEntities: (self recursiveNeighbourhood: range)
+		             amongEntities: (self neighbourhoodOfRadius: range)
 		             verifying: aCondition.
 	locations remove: self ifAbsent: [  ].
 	locations := locations asSortedCollection: [ :i :j |
@@ -522,7 +475,7 @@ Example: self nearestNeighborsVerifying: [:c | c isClosed not] withinRadius: 7"
 	n := 1.
 	[locations isEmpty and: [n <= range]]
 		whileTrue:
-			[locations := self recursiveNeighbourhood: n verifying: aBlock.
+			[locations := self neighbourhoodOfRadius: n verifying: aBlock.
 			n := n + 1].
 	locations
 		remove: self
@@ -573,6 +526,7 @@ Return value: <ByteString>"
 
 { #category : 'environment - sensing - space' }
 CMSpatialEntity >> neighbourhood [
+	<api>
 	"If the cell is located at the edge or in the corner of a closed (non-torroidal) envionment, the missing neighbours are represented as nils. Here we remove them to get only the list of neighbours"
 	
 	^ neighbourhoodWithNils reject: [ :each | each isNil ]
@@ -580,6 +534,7 @@ CMSpatialEntity >> neighbourhood [
 
 { #category : 'environment - sensing - space' }
 CMSpatialEntity >> neighbourhoodAndSelf [
+	<api>
 	"Purpose: returns the spatial entities belonging to the direct neighbourhood of the receiver
 Also includes the receiver itself
 self neighbourhoodAndSelf == self recursiveNeighbourhood: 1
@@ -589,6 +544,68 @@ Return value: <Collection(SpatialEntity)>"
 	collec := self neighbourhood asOrderedCollection.
 	collec addFirst: self.
 	^collec asArray
+]
+
+{ #category : 'environment - sensing - space' }
+CMSpatialEntity >> neighbourhoodOfRadius: radius [
+	<api>
+	"Purpose: returns a collection of receiver-like spatial entities within a given radius of the receiver.
+The receiver itself is included in the collection, which is ordered from the center (self) to the perimeter of the radius.
+Argument: radius = <Integer>
+Return value: <OrderedCollection>"
+	
+	| layers visited current next |
+
+   layers := OrderedCollection new.
+   visited := Set new.
+
+   layers add: (OrderedCollection with: self).
+   visited add: self.
+	radius = 0 ifTrue: [ ^ layers ].
+	current := OrderedCollection with: self.
+
+   1 to: radius do: [ :level |
+		next := OrderedCollection new.
+
+      current do: [ :cell |
+    	cell neighbourhood do: [ :neighbour |
+      		| alreadySeen |
+
+        	alreadySeen := visited includes: neighbour.
+
+        	alreadySeen ifFalse: [
+         visited add: neighbour.
+         next add: neighbour ] ] ].
+
+      layers add: next.
+		current := next
+	].
+
+	^ layers flattened asOrderedCollection
+]
+
+{ #category : 'environment - sensing - space' }
+CMSpatialEntity >> neighbourhoodOfRadius: range verifying: aBlock [
+	<api>
+	"Purpose: returns the spatial entities within a given radius and fulfilling the constraint specified in aBlock. 
+Arguments: range = <Integer>
+			aBlock = <BlockClosure>
+Return value: <Collection(SpatialEntity)>
+Example: self recursiveNeighbourhood: 5 verifying: [:c | c isClosed not] "
+	
+	^(self neighbourhoodOfRadius: range) select: [:p | aBlock value: p]
+]
+
+{ #category : 'environment - sensing - space' }
+CMSpatialEntity >> neighbourhoodOfRadius: range withoutAny: aClass [
+	<api>
+	"Purpose: returns the spatial entities within a given radius and without any occupant of a given type.
+Return value: <Collection(SpatialEntity)>
+Example: self recursiveNeighbourhood: 5 withoutAny: #Tree"
+	
+	^self
+		neighbourhoodOfRadius: range
+		verifying: [:p | (p hasOccupantsOfClass: aClass) not ]
 ]
 
 { #category : 'environment - sensing - space' }
@@ -606,7 +623,7 @@ CMSpatialEntity >> neighbourhoodWithNils: aCollection [
 
 { #category : 'environment - sensing - agents' }
 CMSpatialEntity >> occupantsOfClass: aClass [
-
+	<api>
 	"Purpose: returns all the entities of a given type located there
 Note that the instances of subclasses ARE CONSIDERED by this method
 Return value: <Collection(AgentLocation & ObjectLocation)>"
@@ -621,7 +638,7 @@ Return value: <Collection(AgentLocation & ObjectLocation)>"
 
 { #category : 'environment - sensing - agents' }
 CMSpatialEntity >> occupantsOfClassNamed: aClassName [
-
+	<api>
 	"Purpose: returns all the entities of a given class name located there
 Return value: <Collection(AgentLocation & ObjectLocation)>"
 
@@ -662,44 +679,6 @@ CMSpatialEntity >> randomNeighbourVerifying: aCondition [
 	^ candidates
 		ifEmpty: [ nil ]
 		ifNotEmpty: [ self selectRandomlyFrom: candidates ]
-]
-
-{ #category : 'environment - sensing - space' }
-CMSpatialEntity >> recursiveNeighbourhood: radius [
-	"Purpose: returns a collection of receiver-like spatial entities within a given radius of the receiver.
-The receiver itself is included in the collection, which is ordered from the center (self) to the perimeter of the radius.
-Argument: radius = <Integer>
-Return value: <OrderedCollection>
-Example: self recursiveNeighbourhood: 0 (== OrderedCollection with: self)
-Example: self recursiveNeighbourhood: 1 (== self neighbourhoodAndSelf)"
-	
-	| allCells layers |
-	allCells := OrderedCollection new.
-	layers := self allLayersTo: radius.
-	layers do: [:layer | allCells addAll: layer].
-	^allCells
-]
-
-{ #category : 'environment - sensing - space' }
-CMSpatialEntity >> recursiveNeighbourhood: range verifying: aBlock [
-	"Purpose: returns the spatial entities within a given radius and fulfilling the constraint specified in aBlock. 
-Arguments: range = <Integer>
-			aBlock = <BlockClosure>
-Return value: <Collection(SpatialEntity)>
-Example: self recursiveNeighbourhood: 5 verifying: [:c | c isClosed not] "
-	
-	^(self recursiveNeighbourhood: range) select: [:p | aBlock value: p]
-]
-
-{ #category : 'environment - sensing - space' }
-CMSpatialEntity >> recursiveNeighbourhood: range withoutAny: aClass [
-	"Purpose: returns the spatial entities within a given radius and without any occupant of a given type.
-Return value: <Collection(SpatialEntity)>
-Example: self recursiveNeighbourhood: 5 withoutAny: #Tree"
-	
-	^self
-		recursiveNeighbourhood: range
-		verifying: [:p | (p hasOccupantsOfClass: aClass) not ]
 ]
 
 { #category : 'initialize-release' }
@@ -792,8 +771,9 @@ CMSpatialEntity >> theOccupants: aDict [
 
 { #category : 'environment - sensing - space' }
 CMSpatialEntity >> wayTo: anotherSpatialEntity [
-	"Purpose: returns one of the shortest path to another spatial entity
-Argument: anotherSpatialEntity = <SpatialEntity>"
+	<api>
+	<doc: 'Returns one of the shortest path to another spatial entity
+Argument: anotherSpatialEntity = <SpatialEntity>'>
 	
 	self subclassResponsibility
 ]

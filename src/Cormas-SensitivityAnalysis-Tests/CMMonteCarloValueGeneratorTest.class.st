@@ -13,7 +13,7 @@ CMMonteCarloValueGeneratorTest >> setUp [
 
 	super setUp.
 	generator := CMMonteCarloValueGenerator new.
-	generator randomSeed: 42.
+	generator simulationContext randomSeed: 42.
 	
 	generator
 		lowValue: 10;

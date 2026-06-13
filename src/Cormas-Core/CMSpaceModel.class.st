@@ -28,6 +28,7 @@ Class {
 	#traits : 'TCMRandom',
 	#classTraits : 'TCMRandom classTrait',
 	#instVars : [
+		'context',
 		'cormasModel',
 		'gridCellShape',
 		'isClosedEnvironment',
@@ -78,7 +79,7 @@ CMSpaceModel class >> forModel: aCormasModel [
 
 	^ self basicNew
 		cormasModel: aCormasModel;
-		randomNumberGenerator: aCormasModel randomNumberGenerator;
+		simulationContext: aCormasModel simulationContext;
 		initialize;
 		yourself
 ]
@@ -90,9 +91,21 @@ CMSpaceModel >> cardinal [
 ]
 
 { #category : 'accessing cell' }
+CMSpaceModel >> cellAt: index [
+
+	^ self cells at: index
+]
+
+{ #category : 'accessing cell' }
 CMSpaceModel >> cellAt: aRowIndex at: aColumnIndex [
 	
 	^ cormasModel cells at: ((aRowIndex - 1) * numberOfColumns + aColumnIndex)
+]
+
+{ #category : 'accessing cell' }
+CMSpaceModel >> cellAtId: id [
+
+	^ self cells detect: [ :each | each id = id ]
 ]
 
 { #category : 'accessing' }
@@ -328,20 +341,26 @@ CMSpaceModel >> distanceFromCell: cellA toCell: cellB [
 ]
 
 { #category : 'landscape indices' }
-CMSpaceModel >> dominance: attribute [
-	"Compute dominance according to the attribute"
+CMSpaceModel >> dominance: anAttribute [
+	"Compute the normalized dominance index according to the given attribute"
 
-	| numberCells sum n pi classes |
-	numberCells := self numberOfRows * self numberOfColumns.
-	sum := 0.
-	classes := (self cormasModel cells collect: [ :a | a perform: attribute ]) asSet.
-	n := classes size.
-	classes
-		do: [ :i | 
-			pi := (self cormasModel cells select: [ :a | (a perform: attribute) = i ]) size
-				/ numberCells.
-			sum := sum + (pi * pi ln) ].
-	^ n ln + sum
+	| cells attributeValues numberOfCells entropy proportion |
+	cells := self cells.
+	cells ifEmpty: [ ^ 0 ].
+
+	attributeValues := (cells collect: [ :cell | cell perform: anAttribute ]) asSet.
+	attributeValues size <= 1 ifTrue: [ ^ 1 ].
+
+	numberOfCells := cells size.
+	entropy := 0.
+
+	attributeValues do: [ :value |
+		proportion := (cells count: [ :cell | (cell perform: anAttribute) = value ])
+			/ numberOfCells.
+			
+		entropy := entropy - (proportion * proportion ln) ].
+
+	^ 1 - (entropy / attributeValues size ln)
 ]
 
 { #category : 'landscape indices' }
@@ -470,19 +489,11 @@ CMSpaceModel >> lowerRightCell [
 ]
 
 { #category : 'accessing' }
-CMSpaceModel >> nearestEmptyCellFor: aCMAgentLocation [
+CMSpaceModel >> nearestEmptyCellFor: aCell [
 
-	^ self neighbourhoodConfiguration nearestEmptyCellFor: aCMAgentLocation.
-]
-
-{ #category : 'landscape indices' }
-CMSpaceModel >> nearestNeighbourProbaAttribute: anAttribute state1: x1 state2: x2 [
-	"return the data (a number) to be recorded"
-	
-	| c1 c2 |
-	c1 := self cormasModel cells select: [:a | (a perform: anAttribute) = x1].
-	c2 := c1 select: [:a | a neighbourhood anySatisfy: [:b | (a perform: anAttribute) = x2 ] ].
-	^ c2 size / c1 size
+	^ (aCell nearestEmptyNeighborsWithinRadius: (self numberOfRows max: self numberOfColumns))
+		ifNotEmpty: [ :cells | self selectRandomlyFrom: cells ]
+		ifEmpty: [ nil ]
 ]
 
 { #category : 'accessing' }
@@ -493,16 +504,18 @@ CMSpaceModel >> neighbourhoodConfiguration [
 { #category : 'accessing' }
 CMSpaceModel >> neighbourhoodConfiguration: aCMSpaceNeighbourhood [ 
 
-	neighbourhoodConfiguration := aCMSpaceNeighbourhood
+	neighbourhoodConfiguration := aCMSpaceNeighbourhood.
+	
+	self gridCellShape: neighbourhoodConfiguration gridCellShapeType.
+	self createCells.
+	neighbourhoodConfiguration initializeNeighbourhoodFor: self
 ]
 
 { #category : 'private - init' }
 CMSpaceModel >> newEntity: aClass [
-	" Creates a new instance of aClass and collects it at the level of theXXXs collection"
 
 	^ (aClass new: self)
-		  cormasModel: self cormasModel;
-		  randomNumberGenerator: randomNumberGenerator;
+		  simulationContext: context;
 		  yourself
 ]
 
@@ -523,12 +536,20 @@ CMSpaceModel >> numberOfNeighbours [
 
 { #category : 'initialization' }
 CMSpaceModel >> numberOfNeighbours: anIntegerOrSymbol [
-	" Create the grid.
-	Set the receiver's neighbourhood configuration to contain anIntegerOrSymbol neighbours "
+	
+	| configClass config |
+	
+	configClass := CMSpaceNeighbourhood concreteSubclasses
+		detect: [ :subclass | subclass isStartConditionFor: anIntegerOrSymbol ]
+		ifNone: [ self error: 'Should not happen' ].
+		
+	config := configClass new
+		numberOfRows: self numberOfRows;
+		numberOfColumns: self numberOfColumns;
+		isClosedEnvironment: self isClosedEnvironment;
+		yourself.
 
-	self neighbourhoodConfiguration: (CMSpaceNeighbourhood
-			 forNeighbours: anIntegerOrSymbol
-			 spaceModel: self)
+	self neighbourhoodConfiguration: config
 ]
 
 { #category : 'private - accessing' }
@@ -570,6 +591,18 @@ CMSpaceModel >> randomCell [
 	"Return a spatialEntityElement (aCell) picked randomly from the spatial grid."
 
 	^ self selectRandomlyFrom: cormasModel cells
+]
+
+{ #category : 'as yet unclassified' }
+CMSpaceModel >> simulationContext [
+
+	^ context
+]
+
+{ #category : 'as yet unclassified' }
+CMSpaceModel >> simulationContext: aContext [
+
+	context := aContext
 ]
 
 { #category : 'accessing cell' }

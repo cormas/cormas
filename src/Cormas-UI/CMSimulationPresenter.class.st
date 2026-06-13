@@ -2,98 +2,152 @@ Class {
 	#name : 'CMSimulationPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
-		'modelClass',
-		'initializer',
+		'sidebar',
+		'simulationInitializerPresenter',
+		'stopConditionPresenter',
 		'simulationRunner',
-		'hideInitializationSettingButton',
-		'isInitializerVisible'
+		'whenWindowIsClosedHooks'
 	],
-	#category : 'Cormas-UI',
-	#package : 'Cormas-UI'
+	#category : 'Cormas-UI-Simulation',
+	#package : 'Cormas-UI',
+	#tag : 'Simulation'
 }
 
 { #category : 'examples' }
 CMSimulationPresenter class >> example [
 	<example>
-	(self forModelClass: CMMockModel translator: CMEnglishTranslator new) open
+	
+	CMSimulationApplication new
+		cormasModel: CMMockModel new;
+		run
 ]
 
 { #category : 'as yet unclassified' }
-CMSimulationPresenter class >> forModelClass: aClass translator: aTranslator [
+CMSimulationPresenter >> collectFancyNotebookPages [
 
-	^ self on: { aClass . aTranslator }
+	| pragmas |
+	
+	"To make sure that we can still do it on subclasses"
+	pragmas := Pragma
+		allNamed: #fancyNotebookPageOrder:
+		from: self class
+		to: CMSimulationPresenter
+		sortedByArgument: 1.
+
+	^ pragmas collect: [ :pragma | self perform: pragma methodSelector ]
 ]
 
-{ #category : 'as yet unclassified' }
-CMSimulationPresenter >> beInNotRunningMode [
+{ #category : 'compiling' }
+CMSimulationPresenter >> compileBlock: aSourceCode [
 
-	initializer enabled: true
-]
-
-{ #category : 'as yet unclassified' }
-CMSimulationPresenter >> beInRunningMode [
-
-	initializer disableInitialization.
+	"Black magic"
+	^ Smalltalk compiler
+		environment: self class environment;
+		source: aSourceCode;
+		evaluate
 ]
 
 { #category : 'initialization' }
 CMSimulationPresenter >> connectPresenters [
-"Purpose: While instanciating a new simulation (with #activeInitSelector), set the presenters (grid, diagrams, etc.)"
+				
+	stopConditionPresenter whenChangedDo: [ :stopConditionBlock |
+		"Simulation will be nil if the stop condition is changed before
+		simulation is initialized. This will happen in most cases. However,
+		we still want to have the possibility to change the stop condition
+		during the simulation. For example, if the simulation has completed
+		and then you want to run it for 100 more steps"
+		| simulation |
+		simulation := self application simulation.
+		simulation ifNotNil: [ simulation stopWhen: stopConditionBlock ] ]
+]
 
-	initializer
-		whenInitializedDo: [ simulationRunner simulation: initializer simulation ];
-		beReinitializeCondition: [ simulationRunner hasSimulationData ].
-		
-	hideInitializationSettingButton action: [ 
-		self updateInitializationSettingsVisibility ]
+{ #category : 'accessing' }
+CMSimulationPresenter >> cormasModel [
+
+	^ self application cormasModel
 ]
 
 { #category : 'layout' }
 CMSimulationPresenter >> defaultLayout [
 
 	^ SpBoxLayout newLeftToRight
-		spacing: 0;
-		add: initializer width: 250;
-		add: (SpBoxLayout newTopToBottom
-			vAlignCenter;
-			add: hideInitializationSettingButton height: 70;
-			yourself) width: 25;
+		spacing: 10;
+		borderWidth: 2;
+		add: sidebar expand: false;
 		add: simulationRunner;
 		yourself
 ]
 
-{ #category : 'settings' }
-CMSimulationPresenter >> finalTimeStep [
-	
-	^ simulationRunner finalTimeStep
+{ #category : 'examples' }
+CMSimulationPresenter >> example [
+	<script: 'self example'>
 ]
 
-{ #category : 'as yet unclassified' }
-CMSimulationPresenter >> hideInitializationSettings [
+{ #category : 'initialization' }
+CMSimulationPresenter >> initialize [
 
-	isInitializerVisible := false.
-	hideInitializationSettingButton icon: (self iconNamed: #overlayAdd).
-	initializer hide.
-	self update
+	whenWindowIsClosedHooks := OrderedCollection new.
+	"Call super after initializing the hooks variable"
+	super initialize
+]
+
+{ #category : 'initialization' }
+CMSimulationPresenter >> initializeFancyNotebook [
+		
+	| pages |
+	sidebar := self instantiate: CMDockableSidebar.
+	
+	pages := self collectFancyNotebookPages.
+	pages do: [ :page | sidebar addPage: page ]. 
+	
+	sidebar
+		addButtonIcon: (self iconNamed: #smallSystemBrowser)
+		help: 'Browse'
+		action: [ self cormasModel browse ]
 ]
 
 { #category : 'initialization' }
 CMSimulationPresenter >> initializePresenters [
-	
-	isInitializerVisible := true.
-	
-	initializer := self
-		instantiate: CMSimulationInitializerPresenter
-		on: { modelClass . translator }.
 		
-	hideInitializationSettingButton := self newButton
-		icon: (self iconNamed: #overlayRemove);
+	stopConditionPresenter := self instantiate: CMStopConditionPresenter.
+	
+	simulationInitializerPresenter := (self instantiate: CMSimulationInitializerPresenter)
+		whenInitializeButtonClickedDo: [ :initSelector :controlSelector |
+			self
+				initializeSimulationInit: initSelector
+				control: controlSelector ];
 		yourself.
+	
+	self initializeFancyNotebook.
+
+	simulationRunner := self instantiate: CMSimulationRunnerPresenter.
+]
+
+{ #category : 'instance creation' }
+CMSimulationPresenter >> initializeSimulationInit: anInitSelector control: aControlSelector [
+"Purpose: instanciate a new modelClass with init & control selectors. Then initialize this simulation by performing #activeInitSelector.
+Reset the currentTimeStep and the data. Set the randomSeed"
+
+	| simulation parameters |
+	
+	"Save parameters from previous simulation to copy their values and start with the same values
+	in the new simulation. This is important if we want to set some parameters before initialization"
+	parameters := self cormasModel allParameters.
+
+	simulation := CMSimulation for: self cormasModel.
+	self application simulation: simulation.
+
+	simulation
+		activeInitSelector: anInitSelector;
+		activeControlSelector: aControlSelector.
 		
-	simulationRunner := self
-		instantiate: CMSimulationRunnerPresenter
-		on: translator.
+	simulation stopWhen: stopConditionPresenter buildConditionBlock.
+		
+	simulationInitializerPresenter applyRandomNumberGeneratorSettings.
+	
+	simulation initializeSimulation.
+	simulationRunner updateWithSimulation.
+	simulationInitializerPresenter updatePresenter
 ]
 
 { #category : 'initialization' }
@@ -102,31 +156,44 @@ CMSimulationPresenter >> initializeWindow: aWindowPresenter [
 	super initializeWindow: aWindowPresenter.
 
 	aWindowPresenter 
-		title: (modelClass modelName, ' - Simulation');
+		title: self presenterWindowTitle;
 		initialExtent: 1000@600;
-		whenResizingDo: [ simulationRunner fitDiagram ].
+		whenResizingDo: [ simulationRunner fitDiagram ];
+		whenClosedDo: [ whenWindowIsClosedHooks do: #value ]
 ]
 
-{ #category : 'accessing - model' }
-CMSimulationPresenter >> setModelBeforeInitialization: aCollection [
-
-	modelClass := aCollection first.
-	translator := aCollection second
-]
-
-{ #category : 'as yet unclassified' }
-CMSimulationPresenter >> showInitializationSettings [
-
-	isInitializerVisible := true.
-	hideInitializationSettingButton icon: (self iconNamed: #overlayRemove).
-	initializer show.
-	self update.
+{ #category : 'initialization' }
+CMSimulationPresenter >> presenterWindowTitle [
+	"We extract it here to allow customization in subclasses"
+	^ self cormasModel class modelName, ' - Simulation'
 ]
 
 { #category : 'as yet unclassified' }
-CMSimulationPresenter >> updateInitializationSettingsVisibility [
+CMSimulationPresenter >> settingsParameters [
+	<fancyNotebookPageOrder: 5>
+	
+	^ SpNotebookPage
+		title: 'Parameters'
+		icon: (self iconNamed: #configuration)
+		provider: [ self instantiate: CMParametersBrowserPresenter ]
+]
 
-	isInitializerVisible
-		ifTrue: [ self hideInitializationSettings ]
-		ifFalse: [ self showInitializationSettings ]
+{ #category : 'as yet unclassified' }
+CMSimulationPresenter >> settingsSimulationInitializer [
+	<fancyNotebookPageOrder: 1>
+	
+	^ SpNotebookPage
+		title: 'Initialize simulation'
+		icon: (self iconNamed: #smallNew)
+		provider: [ simulationInitializerPresenter ]
+]
+
+{ #category : 'as yet unclassified' }
+CMSimulationPresenter >> settingsStopCondition [
+	<fancyNotebookPageOrder: 3>
+	
+	^ SpNotebookPage
+		title: 'Stop condition'
+		icon: (self iconNamed: #accept)
+		provider: [ stopConditionPresenter ]
 ]

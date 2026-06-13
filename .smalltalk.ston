@@ -11,8 +11,6 @@ SmalltalkCISpec {
     }
   ],
   #testing : {
-    #coverage : {
-      #packages : [ 'Cormas-*' ]
-    }
+    #categories : [ 'Cormas-*' ]
   }
 }

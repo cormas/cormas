@@ -13,18 +13,6 @@ CMSpace3Neighbourhood >> cellShapeOriginOffset [
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
-CMSpace3Neighbourhood >> centerOfShapeFor: aCell [
-	| radius |
-	
-	"Radius of circumcircle if triangle is pointy top, radius of incircle if it's flat top"
-	radius := (self shouldRotateShapeFor: aCell)
-		ifTrue: [ 3 sqrt / 6 ]
-		ifFalse: [ 3 sqrt / 3 ].
-
-	^ 0.5 @ radius
-]
-
-{ #category : '*Cormas-UI-Roassal3' }
 CMSpace3Neighbourhood class >> exampleFlatTop [
 
 	<example>

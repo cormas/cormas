@@ -3,7 +3,6 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'sensitivityAnalysis',
-		'translator',
 		'initializationSettings',
 		'finalStepInput',
 		'numberOfRepetitionsInput',
@@ -19,13 +18,13 @@ Class {
 CMSensitivityAnalysisPresenter class >> example [
 	<example>
 	
-	(self forModelClass: CMMockModel translator: CMEnglishTranslator new) open.
+	(self forModelClass: CMMockModel) open.
 ]
 
 { #category : 'as yet unclassified' }
-CMSensitivityAnalysisPresenter class >> forModelClass: aClass translator: aTranslator [
+CMSensitivityAnalysisPresenter class >> forModelClass: aClass [
 
-	^ self on: { aClass . aTranslator }
+	^ self on: aClass
 ]
 
 { #category : 'initialization' }
@@ -55,17 +54,17 @@ CMSensitivityAnalysisPresenter >> defaultLayout [
 				add: (SpBoxLayout newTopToBottom
 					spacing: 5;
 					add: (SpBoxLayout newLeftToRight
-						add: translator tFinalStep;
+						add: 'Final step';
 						add: finalStepInput width: numberInputWidth;
 						yourself) height: 25;
 					add: (SpBoxLayout newLeftToRight
-						add: translator tNumberOfRepetitions;
+						add: 'Number of repetitions';
 						add: numberOfRepetitionsInput width: numberInputWidth;
 						yourself) height: 25;
 					yourself) height: 55;
 				yourself) width: 300;
 			add: (SpBoxLayout newTopToBottom
-				add: translator tProbesToBeMeasured height: labelHeight;
+				add: 'Probes to be measured' height: labelHeight;
 				add: probesList;
 				yourself);
 			yourself) height: 300;
@@ -77,9 +76,9 @@ CMSensitivityAnalysisPresenter >> defaultLayout [
 { #category : 'initialization' }
 CMSensitivityAnalysisPresenter >> initializePresenters [
 
-	initializationSettings := self
+	"initializationSettings := self
 		instantiate: CMSimulationInitializationSettingsPresenter
-		on: translator.
+		on: translator."
 		
 	initializationSettings modelClass: sensitivityAnalysis modelClass.
 	self setModelInitializationSettings.
@@ -99,14 +98,14 @@ CMSensitivityAnalysisPresenter >> initializePresenters [
 
 	probesList := self
 		instantiate: CMSensitivityAnalysisProbesListPresenter
-		on: { sensitivityAnalysis modelClass availableProbes . translator }.
+		on: sensitivityAnalysis modelClass availableProbes.
 		
 	parametersTable := self
 		instantiate: CMSensitivityAnalysisParametersListPresenter
-		on: { sensitivityAnalysis modelClass parameters . translator }.
+		on: sensitivityAnalysis modelClass allParameters.
 		
 	runButton := self newButton
-		label: translator tRun;
+		label: 'Run';
 		action: [ self openRunner ];
 		yourself.
 
@@ -118,7 +117,7 @@ CMSensitivityAnalysisPresenter >> initializeWindow: aWindowPresenter [
 	super initializeWindow: aWindowPresenter.
 	
 	aWindowPresenter 
-		title: translator tSensitivityAnalysis;
+		title: 'Sensitivity Analysis';
 		initialExtent: 1020@600.
 ]
 
@@ -128,7 +127,7 @@ CMSensitivityAnalysisPresenter >> openRunner [
 	sensitivityAnalysis clearSimulations.
 	sensitivityAnalysis clearData.
 	
-	sensitivityAnalysis finalTimeStep: finalStepInput number.
+	sensitivityAnalysis stopAfterStep: finalStepInput number.
 	
 	initializationSettings isFixRandomSeed
 		ifTrue: [ sensitivityAnalysis randomSeed: initializationSettings randomSeed ]
@@ -147,17 +146,14 @@ CMSensitivityAnalysisPresenter >> openRunner [
 			
 	(self
 		instantiate: CMSensitivityAnalysisDataPresenter
-		on: { sensitivityAnalysis . translator })
+		on: sensitivityAnalysis)
 		open.
 ]
 
 { #category : 'accessing - model' }
-CMSensitivityAnalysisPresenter >> setModelBeforeInitialization: aCollection [
+CMSensitivityAnalysisPresenter >> setModelBeforeInitialization: aClass [
 
-	| modelClass |
-	modelClass := aCollection first.
-	sensitivityAnalysis := CMSensitivityAnalysis for: modelClass.
-	translator := aCollection second
+	sensitivityAnalysis := CMSensitivityAnalysis for: aClass.
 ]
 
 { #category : 'initialization' }

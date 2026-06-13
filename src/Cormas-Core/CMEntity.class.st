@@ -36,6 +36,7 @@ Class {
 	#classTraits : 'TCMRandom classTrait + TCMMath classTrait',
 	#instVars : [
 		'id',
+		'context',
 		'cormasModel',
 		'group'
 	],
@@ -73,6 +74,12 @@ CMEntity class >> availablePov [
 
 	^ (pragmas collect: [ :pragma |
 		pragma method selector ]) asSet asOrderedCollection
+]
+
+{ #category : 'as yet unclassified' }
+CMEntity class >> classSideParameters [
+
+	^ self parameters select: [ :p | p isClassSide ]
 ]
 
 { #category : 'utilities - colors' }
@@ -137,10 +144,10 @@ CMEntity class >> genericEntities [
 	^ self withAllSubclasses select: [ :cl | cl package classes = kernel]
 ]
 
-{ #category : 'initialization' }
-CMEntity class >> initializeParameters [
+{ #category : 'as yet unclassified' }
+CMEntity class >> instanceSideParameters [
 
-	"Do nothing. This method can be overriden by subclasses to initialize entity parameters. Implementors should always call super initializeParameters, same as for the initialize method"
+	^ self parameters select: [ :p | p isInstanceSide ]
 ]
 
 { #category : 'testing' }
@@ -190,14 +197,41 @@ CMEntity class >> modelClass [
 	Example: CMECECRestrained modelClass -> ECEC "
 
 	^ self package classes
-		detect: [ :cl | cl superclass = CMAbstractModel ]
+		detect: [ :cl | cl superclass = CMModel ]
 		ifNone: [ nil ]
+]
+
+{ #category : 'accessing' }
+CMEntity class >> parameters [
+	"Collect all parameters of this entity. Those are all parameters defined by its class or any of its superclasses. If parameter of a superclass is redefined by one of its subclasses, keep only the final definition"
+		
+	| classes parameters |
+	classes := self allSuperclassesIncluding: CMEntity.
+	classes addFirst: self.
+	
+	parameters := OrderedCollection new.
+	
+	classes do: [ :aClass |
+		(CMParameter collectAllParametersFrom: aClass) do: [ :parameter |
+			(parameters noneSatisfy: [ :existingParameter |
+				existingParameter getterSelector = parameter getterSelector ])
+				ifTrue: [ parameters add: parameter ] ] ].
+		
+	^ parameters
 ]
 
 { #category : 'accessing' }
 CMEntity class >> resetActivePovSelector [
 
 	activePovSelector := nil
+]
+
+{ #category : 'initialization' }
+CMEntity class >> resetClassSideParameters [
+
+	self parameters do: [ :parameter |
+		parameter isClassSide ifTrue: [ 
+			parameter setDefaultValueFor: self ] ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -231,6 +265,12 @@ CMEntity >> center: x [
 	"do nothing"
 	
 	
+]
+
+{ #category : 'as yet unclassified' }
+CMEntity >> classSideParameters [
+
+	^ self class classSideParameters
 ]
 
 { #category : 'utilities - color' }
@@ -342,6 +382,12 @@ CMEntity >> cormasModel: aCMAbstractModel [
 	cormasModel := aCMAbstractModel
 ]
 
+{ #category : 'accessing' }
+CMEntity >> currentTimeStep [
+
+	^ context currentTimeStep
+]
+
 { #category : 'controlling' }
 CMEntity >> delete [
 	"Purpose: indicates that the instance has to be removed"
@@ -432,7 +478,20 @@ CMEntity >> initialize [
 
 	super initialize.
 	self initId.
+	self initializeInstanceSideParameters.
 	self class resetActivePovSelector
+]
+
+{ #category : 'initialization' }
+CMEntity >> initializeInstanceSideParameters [
+
+	self instanceSideParameters do: [ :p | p setDefaultValueFor: self ]
+]
+
+{ #category : 'as yet unclassified' }
+CMEntity >> instanceSideParameters [
+
+	^ self class instanceSideParameters
 ]
 
 { #category : 'printing' }
@@ -505,18 +564,6 @@ CMEntity >> isDead: aBoolean [
 ]
 
 { #category : 'testing' }
-CMEntity >> isObjectLocation [
-	
-	^false
-]
-
-{ #category : 'testing' }
-CMEntity >> isPassiveObject [
-	
-	^false
-]
-
-{ #category : 'testing' }
 CMEntity >> isSituated [
 	
 	^false
@@ -541,40 +588,9 @@ CMEntity >> isSpatialEntitySet [
 ]
 
 { #category : 'accessing' }
-CMEntity >> modelClass [
-	"Purpose: returns the Class of the current model
-	Return value: a class
-	Example: self modelClass -> ECEC"
-
-	^ cormasModel ifNotNil: #class ifNil: [ self class modelClass ]
-]
-
-{ #category : 'accessing' }
 CMEntity >> parameters [
-	"Find all instance variables that have getter and setter accessors"
-	
-	| relevantClasses slots |
-	
-	relevantClasses := self class withAllSuperclasses
-		select: [ :each | each package = self class package ].
-	
-	slots := relevantClasses flatCollect: #slots.
-	
-	"Must have both getter and setter accessors"
-	slots := slots select: [ :slot |
-		(self respondsTo: slot name) and: [ self respondsTo: slot name, ':' ] ].
-	
-	"Must not be defined by Cormas traits"
-	slots := slots reject: [ :slot |
-		slot definingClass isNotNil and: [
-			slot definingClass isTrait and: [ 
-				slot definingClass package ~= self class package ] ] ].
 
-	^ slots collect: [ :slot |
-		CMInstanceParameter
-			getterSelector: slot name
-			setterSelector: (slot name, ':')
-			receiver: self ]
+	^ self class parameters
 ]
 
 { #category : 'accessing' }
@@ -618,4 +634,16 @@ CMEntity >> printOn: aStream [
 		<< $-;
 		<< 'id: ';
 		<< self id asString
+]
+
+{ #category : 'as yet unclassified' }
+CMEntity >> simulationContext [
+
+	^ context 
+]
+
+{ #category : 'as yet unclassified' }
+CMEntity >> simulationContext: aContext [
+
+	context := aContext 
 ]

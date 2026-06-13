@@ -2,205 +2,115 @@ Class {
 	#name : 'CMSimulationInitializerPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
-		'modelClass',
-		'modelInitializationSettings',
+		'initSelectorDropList',
+		'controlSelectorDropList',
+		'randomNumbersPresenter',
 		'initializeButton',
-		'initializeBlock',
-		'shouldWarnWhenReinitializeCheckbox',
-		'isReinitializeBlock',
-		'editParametersButton',
-		'resetParametersButton'
+		'initializeButtonBlock'
 	],
-	#category : 'Cormas-UI',
-	#package : 'Cormas-UI'
+	#category : 'Cormas-UI-Simulation',
+	#package : 'Cormas-UI',
+	#tag : 'Simulation'
 }
 
 { #category : 'examples' }
 CMSimulationInitializerPresenter class >> example [
 	<example>
-	
-	(self forModelClass: CMMockModel translator: CMEnglishTranslator new) open
+	| app |
+	app := CMSimulationApplication new.
+	app cormasModel: CMMockModel new.
+	(app newPresenter: self) open
 ]
 
 { #category : 'as yet unclassified' }
-CMSimulationInitializerPresenter class >> forModelClass: aClass translator: aTranslator [
+CMSimulationInitializerPresenter >> applyRandomNumberGeneratorSettings [
 
-	^ self on: { aClass . aTranslator }
-]
-
-{ #category : 'as yet unclassified' }
-CMSimulationInitializerPresenter >> beReinitializeCondition: aBlock [
-
-	isReinitializeBlock := aBlock
-]
-
-{ #category : 'as yet unclassified' }
-CMSimulationInitializerPresenter >> confirmReinitialize [
-
-	SpConfirmDialog new
-		  title: 'Warning!';
-		  label: (String streamContents: [ :stream |
-				stream 
-					nextPutAll: 'Are you sure you want to reinitialize the simulation?';
-					cr;
-					nextPutAll: 'Current simulation data will be lost' ]);
-		  acceptLabel: 'Yes';
-		  cancelLabel: 'No';
-		  onAccept: [ initializeBlock value ];
-		  onCancel: [ "do nothing" ];
-		  openModal
+	randomNumbersPresenter apply
 ]
 
 { #category : 'initialization' }
 CMSimulationInitializerPresenter >> connectPresenters [
 
-	editParametersButton action: [ self openParametersEditor ].
-	resetParametersButton action: [ modelClass initializeParameters ].
+	initializeButtonBlock := [ :initSelector :controlSelector | "do nothing" ].
 
 	initializeButton action: [
-		isReinitializeBlock value
-			ifFalse: [ initializeBlock value ]
-			ifTrue: [
-				shouldWarnWhenReinitializeCheckbox state
-					ifTrue: [ self confirmReinitialize ]
-					ifFalse: [ initializeBlock value ] ].
-			
-		self updateInitializeButton ].
+		initializeButtonBlock
+			value: initSelectorDropList selectedItem
+			value: controlSelectorDropList selectedItem ].
 	
-	modelInitializationSettings whenChangedDo: [
-		modelInitializationSettings isDefined
-			ifTrue: [ initializeButton enable ]
-			ifFalse: [ initializeButton disable ] ].
+	initSelectorDropList whenSelectedItemChangedDo: [ :item | self ensureAllInitSettingsDefined ].
+	controlSelectorDropList whenSelectedItemChangedDo: [ :item | self ensureAllInitSettingsDefined ]
 ]
 
 { #category : 'layout' }
 CMSimulationInitializerPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
-		spacing: 10;
-		add: modelInitializationSettings height: 190;
-		add: (SpBoxLayout newLeftToRight
-			add: translator tParameters expand: false;
-			add: '';
-			add: editParametersButton width: self class buttonHeight;
-			add: resetParametersButton width: self class buttonHeight;
-			yourself) height: self class buttonHeight;
-		add: '';
-		add: shouldWarnWhenReinitializeCheckbox height: self class buttonHeight;
-		add: initializeButton height: self class buttonHeight;
+		spacing: 12;
+		add: (SpBoxLayout newTopToBottom
+			spacing: 1;
+			add: 'Init method' expand: false;
+			add: initSelectorDropList expand: false;
+			yourself) expand: false;
+		add: (SpBoxLayout newTopToBottom
+			spacing: 1;
+			add: 'Control method' expand: false;
+			add: controlSelectorDropList expand: false;
+			yourself) expand: false;
+		add: SpNullPresenter new;
+		add: randomNumbersPresenter;
+		add: SpNullPresenter new;
+		add: initializeButton height: CMActivityBar activityButtonHeight;
 		yourself
 ]
 
 { #category : 'as yet unclassified' }
-CMSimulationInitializerPresenter >> disableInitialization [
-	
-	| presenters |
-	
-	presenters := self layout allPresenters select: [ :each | each isKindOf: SpPresenter ].
+CMSimulationInitializerPresenter >> ensureAllInitSettingsDefined [
+	"Check if we have all the required settings for initializing a simulation: init method, control method, etc. If no - disable the initialize button"
 
-	(presenters copyWithoutAll: { editParametersButton . resetParametersButton })
-		do: [ :each | each enabled: false ].
+	^ initSelectorDropList selectedItem
+		ifNotNil: [ initializeButton enable ]
+		ifNil: [ initializeButton disable ]
+]
+
+{ #category : 'examples' }
+CMSimulationInitializerPresenter >> example [
+	<script: 'self example'>
 ]
 
 { #category : 'initialization' }
-CMSimulationInitializerPresenter >> initializePresenters [ 
+CMSimulationInitializerPresenter >> initializePresenters [
 
-	isReinitializeBlock := [ false ].
-	initializeBlock := [ "do nothing" ].
-	
-	modelClass initializeParameters.
+	| modelClass |
+	modelClass := self application cormasModel class.
 
-	modelInitializationSettings := self
-		instantiate: CMSimulationInitializationSettingsPresenter
-		on: translator.
-		
-	modelInitializationSettings modelClass: modelClass.
+	initSelectorDropList := self newDropList.
+	controlSelectorDropList := self newDropList.
 	
-	editParametersButton := self newButton
-		icon: (self iconNamed: #glamorousEdit);
-		yourself.
-		
-	resetParametersButton := self newButton
-		icon: (self iconNamed: #glamorousRestart);
-		yourself.
-		
-	shouldWarnWhenReinitializeCheckbox := self newCheckBox
-		label: 'Ask before reinitializing';
-		state: false;
-		yourself.
+	initSelectorDropList items: modelClass availableInitSelectors.
+	controlSelectorDropList items: modelClass availableControlSelectors.
 	
+	randomNumbersPresenter := self instantiate: CMSimulationInitRandomPresenter. 
+		
 	initializeButton := self newButton
 		disable;
-		yourself.
-		
-	self updateInitializeButton.
-]
-
-{ #category : 'as yet unclassified' }
-CMSimulationInitializerPresenter >> openParametersEditor [
-
-	(CMParametersEditorPresenter
-		forParameters: modelClass parameters
-		translator: translator)
-		open
-	
-]
-
-{ #category : 'accessing - model' }
-CMSimulationInitializerPresenter >> setModelBeforeInitialization: aCollection [
-
-	modelClass := aCollection first.
-	translator := aCollection second
-]
-
-{ #category : 'accessing' }
-CMSimulationInitializerPresenter >> simulation [
-"Purpose: instanciate a new modelClass with init & control selectors. Then initialize this simulation by performing #activeInitSelector.
-Reset the currentTimeStep and the data. Set the randomSeed"
-	| simulation |
-	
-	"TODO: A temporary hack to fix the bug with parameters being reset when we reinitialize a model"
-	simulation := CMSimulation new
-		cormasModel: modelClass newWithoutParameters;
-		initializeProbes;
+		label: 'Initialize simulation';
+		icon: (self iconNamed: #smallNew)
 		yourself.
 
-	modelClass parameters do: [ :parameter |
-		simulation initialParameterValues at: parameter put: parameter value ].
-
-	simulation
-		activeInitSelector: modelInitializationSettings initSelector;
-		activeControlSelector: modelInitializationSettings controlSelector.
-		
-	owner finalTimeStep ifNotNil: [ :number | simulation finalTimeStep: number ].
-	
-	modelInitializationSettings isFixRandomSeed ifTrue: [ 
-		simulation randomSeed: modelInitializationSettings randomSeed.
-		simulation shouldReleaseRandomSeedAfterInitialization:
-			modelInitializationSettings isReleaseRandomSeedAfterInitialization ].
-		
-	simulation initializeSimulation.
-	
-	^ simulation
+	self ensureAllInitSettingsDefined
 ]
 
-{ #category : 'as yet unclassified' }
-CMSimulationInitializerPresenter >> updateInitializeButton [
+{ #category : 'initialization' }
+CMSimulationInitializerPresenter >> updatePresenter [
 
-	isReinitializeBlock value
-		ifTrue: [
-			initializeButton
-				label: 'Reinitialize simulation';
-				icon: (self iconNamed: #glamorousRestart) ]
-		ifFalse: [ 
-			initializeButton
-				label: 'Initialize simulation';
-				icon: (self iconNamed: #smallNew) ]
+	super updatePresenter.
+	randomNumbersPresenter showCurrentSettings 
 ]
 
 { #category : 'enumerating' }
-CMSimulationInitializerPresenter >> whenInitializedDo: aBlock [
-
-	initializeBlock := aBlock
+CMSimulationInitializerPresenter >> whenInitializeButtonClickedDo: aBlock [
+	"A two-argument block where first argument is the selected init selector and the second argument is the selected control selector"
+	
+	initializeButtonBlock := aBlock
 ]

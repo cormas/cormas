@@ -1,7 +1,6 @@
 Trait {
 	#name : 'TCMCommand',
 	#instVars : [
-		'translator',
 		'owner'
 	],
 	#category : 'Cormas-UI-Commands',
@@ -9,17 +8,10 @@ Trait {
 }
 
 { #category : 'as yet unclassified' }
-TCMCommand classSide >> forOwner: anObject [
-
-	^ self forOwner: anObject translator: CMEnglishTranslator new
-]
-
-{ #category : 'as yet unclassified' }
-TCMCommand classSide >> forOwner: aPresenter translator: aTranslator [
+TCMCommand classSide >> forOwner: aPresenter [
 
 	^ self new
-		initializeWithTranslator: aTranslator
-		owner: aPresenter;
+		initializeWithOwner: aPresenter;
 		yourself
 ]
 
@@ -53,9 +45,8 @@ TCMCommand >> icon [
 ]
 
 { #category : 'initialization' }
-TCMCommand >> initializeWithTranslator: aTranslator owner: aPresenter [
+TCMCommand >> initializeWithOwner: aPresenter [
 
-	translator := aTranslator.
 	owner := aPresenter
 ]
 

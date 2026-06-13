@@ -4,6 +4,7 @@ Class {
 	#traits : 'TCMRandom',
 	#classTraits : 'TCMRandom classTrait',
 	#instVars : [
+		'context',
 		'isInteger'
 	],
 	#category : 'Cormas-SensitivityAnalysis',
@@ -38,7 +39,10 @@ CMMonteCarloValueGenerator >> generate [
 CMMonteCarloValueGenerator >> initialize [
 
 	super initialize.
-	randomNumberGenerator := PMFishmanMooreRandomGenerator new.
+	
+	self flag: 'TODO'.
+	"A temporary hack to use TCMRandom and make the test pass"
+	context := CMSimulationContext new.
 	self beFloat.
 ]
 
@@ -46,4 +50,10 @@ CMMonteCarloValueGenerator >> initialize [
 CMMonteCarloValueGenerator >> isInteger [
 
 	^ isInteger 
+]
+
+{ #category : 'as yet unclassified' }
+CMMonteCarloValueGenerator >> simulationContext [
+
+	^ context
 ]

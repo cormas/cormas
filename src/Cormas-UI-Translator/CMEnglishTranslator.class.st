@@ -252,6 +252,18 @@ CMEnglishTranslator >> tReleaseRandomSeedAfterInitialization [
 ]
 
 { #category : 'translations' }
+CMEnglishTranslator >> tRulesActivator [
+
+	^ 'Activate Rules'
+]
+
+{ #category : 'translations' }
+CMEnglishTranslator >> tRulesDeactivator [
+
+	^ 'Deactivate Rules'
+]
+
+{ #category : 'translations' }
 CMEnglishTranslator >> tRun [ 
 
 	^ 'Run'

@@ -1,7 +1,7 @@
 Extension { #name : 'CMMinimumValueCollector' }
 
 { #category : '*Cormas-SensitivityAnalysis-UI' }
-CMMinimumValueCollector class >> collectorNameFromTranslator: aTranslator [
+CMMinimumValueCollector class >> collectorName [
 
-	^ aTranslator tMinimumValue
+	^ 'Minimum value'
 ]

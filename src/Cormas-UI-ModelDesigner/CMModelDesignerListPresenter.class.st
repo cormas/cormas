@@ -2,7 +2,6 @@ Class {
 	#name : 'CMModelDesignerListPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
 		'items',
 		'title',
 		'titleLabel',
@@ -106,10 +105,9 @@ CMModelDesignerListPresenter >> items: aCollection [
 ]
 
 { #category : 'accessing - model' }
-CMModelDesignerListPresenter >> setModelBeforeInitialization: aCollection [
+CMModelDesignerListPresenter >> setModelBeforeInitialization: aString [
 
-	title := aCollection first.
-	translator := aCollection second 
+	title := aString
 ]
 
 { #category : 'as yet unclassified' }

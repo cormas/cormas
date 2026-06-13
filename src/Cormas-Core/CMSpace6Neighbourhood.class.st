@@ -29,9 +29,8 @@ CMSpace6Neighbourhood class >> flatTopHexagons: aBoolean [
 { #category : 'as yet unclassified' }
 CMSpace6Neighbourhood >> adaptedNumber: anInteger [
 	"Adapt anInteger to the size of the grid"
-	^ TCMMath
-		number: anInteger 
-		onCycle: self numberOfColumns * self numberOfRows
+	
+	^ anInteger - 1 \\ (self numberOfColumns * self numberOfRows) + 1
 ]
 
 { #category : 'as yet unclassified' }

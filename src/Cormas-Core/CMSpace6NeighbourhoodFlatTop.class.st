@@ -22,31 +22,31 @@ CMSpace6NeighbourhoodFlatTop class >> isStartConditionFor: aSymbolOrNumber [
 ]
 
 { #category : 'initialization' }
-CMSpace6NeighbourhoodFlatTop >> initializeOrderedNeighbourhood: k [
-"Set the neighbourhood of the cell with id = k.
+CMSpace6NeighbourhoodFlatTop >> initializeOrderedNeighbourhood: cellIndex forSpaceModel: aSpaceModel [
+"Set the neighbourhood of the cell at a given index.
 Neighbours are ordered anticlockwise, starting from the North cell"
 	| v i |
 	v := Array new: 6.
 	"prendre la cell au nord"
-	(i := self northCell: k) > 0 ifTrue: [
-		v at: 1 put: (self elementaryEntitiesAt: i) ].
+	(i := self northCell: cellIndex) > 0 ifTrue: [
+		v at: 1 put: (aSpaceModel cellAt: i) ].
 	"prendre la cell haute à l'est"
-	(i := self northEastCellHexaFlat: k) > 0 ifTrue: [
-		v at: 6 put: (self elementaryEntitiesAt: i) ].
+	(i := self northEastCellHexaFlat: cellIndex) > 0 ifTrue: [
+		v at: 6 put: (aSpaceModel cellAt: i) ].
 	"prendre la cell basse à l'est"
-	(i := self southEastCellHexaFlat: k) > 0 ifTrue: [
-		v at: 5 put: (self elementaryEntitiesAt: i) ].
+	(i := self southEastCellHexaFlat: cellIndex) > 0 ifTrue: [
+		v at: 5 put: (aSpaceModel cellAt: i) ].
 	"prendre la cell sud"
-	(i := self southCell: k) > 0 ifTrue: [
-		v at: 4 put: (self elementaryEntitiesAt: i) ].
+	(i := self southCell: cellIndex) > 0 ifTrue: [
+		v at: 4 put: (aSpaceModel cellAt: i) ].
 	"prendre la cell basse à l'ouest"
-	(i := self southWestCellHexaFlat: k) > 0 ifTrue: [
-		v at: 3 put: (self elementaryEntitiesAt: i) ].
+	(i := self southWestCellHexaFlat: cellIndex) > 0 ifTrue: [
+		v at: 3 put: (aSpaceModel cellAt: i) ].
 	"prendre la cell haute à l'ouest"
-	(i := self northWestCellHexaFlat: k) > 0 ifTrue: [
-		v at: 2 put: (self elementaryEntitiesAt: i) ].
+	(i := self northWestCellHexaFlat: cellIndex) > 0 ifTrue: [
+		v at: 2 put: (aSpaceModel cellAt: i) ].
 
-	^ (self elementaryEntitiesAt: k) neighbourhoodWithNils: v
+	^ (aSpaceModel cellAt: cellIndex) neighbourhoodWithNils: v
 ]
 
 { #category : 'private - regular cells - instance creation' }

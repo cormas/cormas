@@ -11,16 +11,13 @@ Class {
 { #category : 'examples' }
 CMSensitivityAnalysisPredefinedListSettingPresenter class >> example [
 	<example>
-	| translator |
-	translator := CMEnglishTranslator new.
-	
-	(self on: translator) open
+	self new open
 ]
 
 { #category : 'as yet unclassified' }
-CMSensitivityAnalysisPredefinedListSettingPresenter class >> nameForTranslator: aTranslator [
+CMSensitivityAnalysisPredefinedListSettingPresenter class >> samplingStrategyName [
 
-	^ aTranslator tPredefinedList
+	^ 'Predefined list'
 ]
 
 { #category : 'layout' }

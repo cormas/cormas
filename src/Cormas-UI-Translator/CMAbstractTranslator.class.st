@@ -261,6 +261,18 @@ CMAbstractTranslator >> tReleaseRandomSeedAfterInitialization [
 ]
 
 { #category : 'translations' }
+CMAbstractTranslator >> tRulesActivator [
+
+	^ self subclassResponsibility
+]
+
+{ #category : 'translations' }
+CMAbstractTranslator >> tRulesDeactivator [
+
+	^ self subclassResponsibility
+]
+
+{ #category : 'translations' }
 CMAbstractTranslator >> tRun [
 
 	self subclassResponsibility

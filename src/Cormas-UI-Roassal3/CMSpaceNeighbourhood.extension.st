@@ -55,12 +55,6 @@ CMSpaceNeighbourhood >> cellShapeOriginOffset [
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
-CMSpaceNeighbourhood >> centerOfShapeFor: aCell [
-	"Relative center of a shape assuming that the top-left corner of the bounding box is at 0@0 and the bottom-right corner is at 1@1"
-	^ 0.5 @ 0.5
-]
-
-{ #category : '*Cormas-UI-Roassal3' }
 CMSpaceNeighbourhood >> organizeShapesPositions: aRSGroup [
 	"Do nothing, except for grid of hexagons and triangles"
 

@@ -14,16 +14,13 @@ Class {
 { #category : 'examples' }
 CMSensitivityAnalysisRangeSettingPresenter class >> example [
 	<example>
-	| translator |
-	translator := CMEnglishTranslator new.
-	
-	(self on: translator) open
+	self new open
 ]
 
 { #category : 'as yet unclassified' }
-CMSensitivityAnalysisRangeSettingPresenter class >> nameForTranslator: aTranslator [
+CMSensitivityAnalysisRangeSettingPresenter class >> samplingStrategyName [
 
-	^ aTranslator tRange
+	^ 'Range'
 ]
 
 { #category : 'layout' }

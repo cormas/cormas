@@ -2,7 +2,6 @@ Class {
 	#name : 'CMSensitivityAnalysisDataPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
 		'sensitivityAnalysis',
 		'progressBar',
 		'runButton',
@@ -19,26 +18,24 @@ Class {
 CMSensitivityAnalysisDataPresenter class >> example [
 	<example>
 	
-	| sensitivityAnalysis translator |
+	| sensitivityAnalysis |
 	
 	sensitivityAnalysis := (CMSensitivityAnalysis for: CMMockModel)
 		activeInitSelector: #initFixed;
-		activeControlSelector: #step:;
+		activeControlSelector: #step;
 		yourself.
 	
-	CMMockModel parameters do: [ :parameter |
+	CMMockModel allParameters do: [ :parameter |
 		1 to: 5 do: [ :value | 
 			sensitivityAnalysis addSimulationForParameter: parameter value: value ] ].
 	
-	translator := CMEnglishTranslator new.
-	
-	^ (self forAnalysis: sensitivityAnalysis translator: translator) open
+	^ (self forAnalysis: sensitivityAnalysis) open
 ]
 
 { #category : 'as yet unclassified' }
-CMSensitivityAnalysisDataPresenter class >> forAnalysis: aSensitivityAnalysis translator: aTranslator [
+CMSensitivityAnalysisDataPresenter class >> forAnalysis: aSensitivityAnalysis [
 
-	^ self on: { aSensitivityAnalysis . aTranslator }
+	^ self on: aSensitivityAnalysis
 ]
 
 { #category : 'adding' }
@@ -47,7 +44,7 @@ CMSensitivityAnalysisDataPresenter >> addChartsPage [
 	| parameters measurementNames |
 	
 	parameters := (sensitivityAnalysis simulations
-		flatCollect: [ :each | each initialParameterValues keys ]) asSet asOrderedCollection.
+		flatCollect: [ :each | each allParameters ]) asSet asOrderedCollection.
 		
 	measurementNames := sensitivityAnalysis data first keys allButFirst: 4.
 
@@ -110,16 +107,17 @@ CMSensitivityAnalysisDataPresenter >> initializePresenters [
 				name: 'Open simulation'; 
 				icon: CMIcons runIcon;
 				action: [
-					CMSimulationRunnerPresenter
-						openForSimulation: (
-							simulationsTable selectedItem
-								randomSeed: sensitivityAnalysis randomSeed;
-								initializeSimulation;
-								yourself)
-						withTranslator: translator ] ];
+					| app |
+					app := CMSimulationApplication new.
+					app simulation: (simulationsTable selectedItem
+						randomSeed: sensitivityAnalysis randomSeed;
+						initializeSimulation;
+						yourself).
+								 
+					(app newPresenter: CMSimulationRunnerPresenter) open ] ];
 			yourself);
 		items: sensitivityAnalysis simulations;
-		addColumn: (SpStringTableColumn
+		"addColumn: (SpStringTableColumn
 			title: 'Parameter class'
 			evaluated: [ :simulation | simulation initialParameterValues keys anyOne receiver name ]);
 		addColumn: (SpStringTableColumn
@@ -127,7 +125,7 @@ CMSensitivityAnalysisDataPresenter >> initializePresenters [
 			evaluated: [ :simulation | simulation initialParameterValues keys anyOne name ]);
 		addColumn: (SpStringTableColumn
 			title: 'Parameter value'
-			evaluated: [ :simulation | simulation initialParameterValues values anyOne ]);
+			evaluated: [ :simulation | simulation initialParameterValues values anyOne ]);"
 		addColumn: (SpStringTableColumn
 			title: 'Progress'
 			evaluated: [ :simulation | self progressStringFrom: 0 ] )
@@ -138,7 +136,7 @@ CMSensitivityAnalysisDataPresenter >> initializePresenters [
 	dataNotebook addPage: (SpNotebookPage
 		title: 'Data'
 		icon: (self iconNamed: #database)
-		provider: [ dataTable := self instantiate: CMDataPresenter on: translator ]).
+		provider: [ dataTable := self instantiate: CMDataPresenter ]).
 		
 	simulationsCountLabel := self newLabel.
 	self updateSimulationsCountLabel.
@@ -150,7 +148,7 @@ CMSensitivityAnalysisDataPresenter >> initializeWindow: aWindowPresenter [
 	super initializeWindow: aWindowPresenter.
 	
 	aWindowPresenter 
-		title: translator tSensitivityAnalysis;
+		title: 'Sensitivity Analysis';
 		initialExtent: 800@650.
 ]
 
@@ -186,10 +184,9 @@ CMSensitivityAnalysisDataPresenter >> runSimulations [
 ]
 
 { #category : 'accessing - model' }
-CMSensitivityAnalysisDataPresenter >> setModelBeforeInitialization: aCollection [
+CMSensitivityAnalysisDataPresenter >> setModelBeforeInitialization: anAnalysis [
 
-	sensitivityAnalysis := aCollection first.
-	translator := aCollection second
+	sensitivityAnalysis := anAnalysis
 ]
 
 { #category : 'as yet unclassified' }

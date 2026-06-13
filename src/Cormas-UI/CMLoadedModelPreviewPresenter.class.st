@@ -2,7 +2,6 @@ Class {
 	#name : 'CMLoadedModelPreviewPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'translator',
 		'cormasModelClass',
 		'modelPreview',
 		'runSimulationButton',
@@ -10,27 +9,28 @@ Class {
 		'toolbar',
 		'signalUpdateBlock'
 	],
-	#category : 'Cormas-UI',
-	#package : 'Cormas-UI'
+	#category : 'Cormas-UI-ModelOpener',
+	#package : 'Cormas-UI',
+	#tag : 'ModelOpener'
 }
 
 { #category : 'examples' }
 CMLoadedModelPreviewPresenter class >> example [
 	<example>
-	(self forModelClass: CMMockModel translator: CMEnglishTranslator new) open
+	(self forModelClass: CMMockModel) open
 ]
 
 { #category : 'instance creation' }
-CMLoadedModelPreviewPresenter class >> forModelClass: aClass translator: aTranslator [
+CMLoadedModelPreviewPresenter class >> forModelClass: aClass [
 
-	^ self on: { aClass . aTranslator }
+	^ self on: aClass
 ]
 
 { #category : 'public-api' }
 CMLoadedModelPreviewPresenter >> commands [
 
 	^ CMModelOpenerCommand sortedSubclasses collect: [ :commandClass |
-		commandClass forOwner: self translator: translator ]
+		commandClass forOwner: self ]
 ]
 
 { #category : 'accessing' }
@@ -43,14 +43,10 @@ CMLoadedModelPreviewPresenter >> cormasModelClass [
 CMLoadedModelPreviewPresenter >> defaultLayout [
 
 	| buttonsLayout |
-	buttonsLayout := SpBoxLayout newLeftToRight.
-	
-	self commands
-		select: #isBigButton
-		thenDo: [ :command |
-			buttonsLayout add: command button ].
-		
-	buttonsLayout add: toolbar.
+	buttonsLayout := SpBoxLayout newLeftToRight
+		add: runSimulationButton;
+		add: toolbar;
+		yourself.
 
 	^ SpBoxLayout newTopToBottom
 		spacing: 10;
@@ -72,8 +68,14 @@ CMLoadedModelPreviewPresenter >> initializePresenters [
 	
 	modelPreview := self instantiate: CMModelPreviewPresenter on: cormasModelClass.
 
-	runSimulationCommand := CMModelOpenerSimulateCommand forOwner: self translator: translator.
-	runSimulationButton := runSimulationCommand button.
+	runSimulationButton := self newButton
+		label: 'Simulate';
+		icon: CMIcons runIcon;
+		action: [
+			| app |
+			app := CMSimulationApplication new.
+			app cormasModel: cormasModelClass new.
+			app run ].
 	
 	self initializeToolbar
 ]
@@ -83,17 +85,14 @@ CMLoadedModelPreviewPresenter >> initializeToolbar [
 	
 	toolbar := self newToolbar.
 	toolbar beIcons.
-	
-	(self commands reject: #isBigButton) do: [ :command |
-		command isAvailable ifTrue: [
-			toolbar addItemRight: command toolbarButton ] ]
+	self commands do: [ :command |
+		command isAvailable ifTrue: [ toolbar addItemRight: command toolbarButton ] ]
 ]
 
 { #category : 'accessing - model' }
-CMLoadedModelPreviewPresenter >> setModelBeforeInitialization: aCollection [
+CMLoadedModelPreviewPresenter >> setModelBeforeInitialization: aClass [
 
-	cormasModelClass := aCollection first.
-	translator := aCollection second
+	cormasModelClass := aClass
 ]
 
 { #category : 'signalling' }

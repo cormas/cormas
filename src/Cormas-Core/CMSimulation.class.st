@@ -2,18 +2,16 @@ Class {
 	#name : 'CMSimulation',
 	#superclass : 'Object',
 	#instVars : [
-		'modelClass',
 		'cormasModel',
-		'randomNumberGenerator',
-		'currentRunNumber',
-		'currentTimeStep',
+		'context',
 		'data',
-		'finalTimeStep',
 		'activeInitSelector',
 		'activeControlSelector',
 		'probes',
 		'initialParameterValues',
-		'shouldReleaseRandomSeedAfterInitialization'
+		'hasFixedRandomSeed',
+		'shouldReleaseRandomSeedAfterInitialization',
+		'simulationRunner'
 	],
 	#category : 'Cormas-Core-Kernel',
 	#package : 'Cormas-Core',
@@ -27,10 +25,10 @@ CMSimulation class >> defaultFinalTimeStep [
 ]
 
 { #category : 'instance creation' }
-CMSimulation class >> for: aModelClass [
+CMSimulation class >> for: aModel [
 
 	^ self new
-		initializeModelClass: aModelClass;
+		cormasModel: aModel;
 		yourself
 ]
 
@@ -60,14 +58,15 @@ CMSimulation >> cormasModel [
 
 { #category : 'accessing' }
 CMSimulation >> cormasModel: aModel [
-	
-	cormasModel :=  aModel
+
+	cormasModel := aModel.
+	cormasModel simulationContext: context
 ]
 
 { #category : 'accessing' }
 CMSimulation >> currentTimeStep [
 
-	^ currentTimeStep 
+	^ context currentTimeStep 
 ]
 
 { #category : 'accessing' }
@@ -76,29 +75,30 @@ CMSimulation >> data [
 	^ data
 ]
 
-{ #category : 'settings' }
-CMSimulation >> finalTimeStep [
-
-	^ finalTimeStep
-]
-
-{ #category : 'settings' }
-CMSimulation >> finalTimeStep: anInteger [
-
-	finalTimeStep := anInteger
-	
-]
-
-{ #category : 'time step' }
-CMSimulation >> finishSimulation [
-
-	currentTimeStep := self finalTimeStep
+{ #category : 'simulation runner - init' }
+CMSimulation >> defaultStopCondition [
+	"Be careful when modifying the stop condition because it can make the simulation (including the tests) run endlesly"
+	^ [ :model |
+		model currentTimeStep >=
+		self class defaultFinalTimeStep ]
 ]
 
 { #category : 'testing' }
-CMSimulation >> hasEnded [
-	
-	^ self finalTimeStep <= self currentTimeStep
+CMSimulation >> hasFixedRandomSeed [
+
+	^ hasFixedRandomSeed
+]
+
+{ #category : 'testing' }
+CMSimulation >> hasFixedRandomSeed: aBoolean [
+
+	hasFixedRandomSeed := aBoolean
+]
+
+{ #category : 'accessing' }
+CMSimulation >> incrementCurrentTimeStep [
+
+	context currentTimeStep: context currentTimeStep + 1
 ]
 
 { #category : 'settings' }
@@ -111,21 +111,16 @@ CMSimulation >> initialParameterValues [
 CMSimulation >> initialize [
 
 	super initialize.
-	
-	finalTimeStep := self class defaultFinalTimeStep.
+	context := CMSimulationContext new.
 	
 	probes := OrderedCollection new.
 	data := OrderedCollection new.
 	initialParameterValues := Dictionary new.
 	
-	shouldReleaseRandomSeedAfterInitialization := false
-]
-
-{ #category : 'initialization' }
-CMSimulation >> initializeModelClass: aClass [
-
-	cormasModel := aClass new.
-	self initializeProbes
+	hasFixedRandomSeed := false.
+	shouldReleaseRandomSeedAfterInitialization := false.
+	
+	self initializeSimulationRunner
 ]
 
 { #category : 'initialization' }
@@ -139,11 +134,15 @@ CMSimulation >> initializeProbes [
 CMSimulation >> initializeSimulation [
 "Purpose: initialize one simulation by performing #activeInitSelector.
 Reset the currentTimeStep and the data. Set the randomSeed"
+	
+	self hasFixedRandomSeed ifFalse: [
+		"Choose a new random seed every time the simulation is initialized. If random seed is fixed, then we will always initialize the same scenario"
+		context chooseRandomSeedAtRandom ].
+	
+	self initializeProbes.
 
-	currentTimeStep := 0.
 	data := OrderedCollection new.
 
-"	self initializeModel."
 	cormasModel initEntities.
 
 	self setInitialParameters.
@@ -152,7 +151,39 @@ Reset the currentTimeStep and the data. Set the randomSeed"
 	self recordData.
 	
 	shouldReleaseRandomSeedAfterInitialization ifTrue: [ 
-		cormasModel randomSeed: cormasModel chooseRandomSeedAtRandom ].
+		context chooseRandomSeedAtRandom ].
+]
+
+{ #category : 'simulation runner - init' }
+CMSimulation >> initializeSimulationRunner [
+
+	simulationRunner := CMSimulationProcessRunner new
+		cormasSimulation: self;
+		stopCondition: self defaultStopCondition
+]
+
+{ #category : 'simulation runner - config' }
+CMSimulation >> intervalDelay: aNumberOfMilliseconds [
+
+	simulationRunner intervalDelay: aNumberOfMilliseconds
+]
+
+{ #category : 'simulation runner - testing' }
+CMSimulation >> isSimulationProcessConfigured [
+
+	^ simulationRunner isProcessConfigured
+]
+
+{ #category : 'simulation runner - testing' }
+CMSimulation >> isSimulationRunning [ 
+
+	^ simulationRunner isSimulationRunning
+]
+
+{ #category : 'simulation runner - running' }
+CMSimulation >> pause [
+
+	simulationRunner pause
 ]
 
 { #category : 'accessing' }
@@ -164,7 +195,11 @@ CMSimulation >> probes [
 { #category : 'settings' }
 CMSimulation >> randomSeed: aNumber [
 
-	cormasModel randomSeed: aNumber
+	context randomSeed: aNumber.
+	
+	"If user calls this method to set the random seed, it means that they want to fix it. Otherwise, if we don't fix it, the new random seed will be selected when the simulation is initialized and this number will be lost"
+	self hasFixedRandomSeed: true
+	
 ]
 
 { #category : 'data' }
@@ -175,65 +210,34 @@ CMSimulation >> recordData [
 			asDictionary 
 ]
 
-{ #category : 'running' }
+{ #category : 'simulation runner - running' }
+CMSimulation >> resume [
+
+	simulationRunner resume
+]
+
+{ #category : 'simulation runner - running' }
 CMSimulation >> runAllSteps [
 
-	self runAllStepsAfterEachDo: [ "nothing" ]
+	simulationRunner
+		beDefaultSimulation;
+		runInBackground 
 ]
 
-{ #category : 'running' }
-CMSimulation >> runAllStepsAfterEach: aNumberOfSteps do: aBlock [
+{ #category : 'simulation runner - running' }
+CMSimulation >> runAllStepsAfterEachIntervalDo: aBlock [
 
-	[ currentTimeStep < finalTimeStep ] whileTrue: [
-		(aNumberOfSteps min: (finalTimeStep - currentTimeStep))
-			timesRepeat: [ self runStep ].
-			
-		aBlock value ]
+	simulationRunner
+		beSimulationAfterEachIntervalDo: aBlock;
+		runInBackground
 ]
 
-{ #category : 'running' }
-CMSimulation >> runAllStepsAfterEachDo: aBlock [
-
-	[ currentTimeStep < finalTimeStep ] whileTrue: [
-		self runStep.
-		aBlock value ]
-]
-
-{ #category : 'running' }
-CMSimulation >> runAllStepsWithStepDelay: milliseconds [
-
-	self runAllStepsWithStepDelay: milliseconds afterEachDo: [ "nothing" ]
-]
-
-{ #category : 'running' }
-CMSimulation >> runAllStepsWithStepDelay: milliseconds afterEach: aNumberOfSteps do: aBlock [
-
-	[ [ currentTimeStep < finalTimeStep ] whileTrue: [
-		(aNumberOfSteps min: (finalTimeStep - currentTimeStep))
-			timesRepeat: [ self runStep ].
-			
-		aBlock value.
-		(Delay forMilliseconds: milliseconds) wait ] ] fork.
-]
-
-{ #category : 'running' }
-CMSimulation >> runAllStepsWithStepDelay: milliseconds afterEachDo: aBlock [
-
-	[ [ currentTimeStep < finalTimeStep ] whileTrue: [
-		self runStep.
-		aBlock value.
-		(Delay forMilliseconds: milliseconds) wait ] ] fork.
-]
-
-{ #category : 'running' }
+{ #category : 'simulation runner - running' }
 CMSimulation >> runStep [
 	
-	currentTimeStep := currentTimeStep + 1.
+	self incrementCurrentTimeStep.
 	
-	activeControlSelector last = $:
-		ifTrue: [ cormasModel perform: activeControlSelector with: currentTimeStep ]
-		ifFalse: [ cormasModel perform: activeControlSelector ].
-		
+	cormasModel perform: activeControlSelector.
 	cormasModel removeDestroyedEntities.
 	
 	self recordData.
@@ -268,7 +272,45 @@ CMSimulation >> setInitialParametersFor: aCollectionOfParameters [
 ]
 
 { #category : 'testing' }
+CMSimulation >> shouldReleaseRandomSeedAfterInitialization [
+
+	^ shouldReleaseRandomSeedAfterInitialization
+]
+
+{ #category : 'testing' }
 CMSimulation >> shouldReleaseRandomSeedAfterInitialization: aBoolean [
 
 	shouldReleaseRandomSeedAfterInitialization := aBoolean
+]
+
+{ #category : 'as yet unclassified' }
+CMSimulation >> simulationContext [
+
+	^ context
+]
+
+{ #category : 'simulation runner - config' }
+CMSimulation >> stepsPerInterval: aPositiveInteger [
+
+	simulationRunner stepsPerInterval: aPositiveInteger
+]
+
+{ #category : 'simulation runner - config' }
+CMSimulation >> stopAfterStep: aNumber [
+	"A syntactic sugar to provide a stop condition that will stop a simulation after a given number of steps"
+	self stopWhen: [ :model | model currentTimeStep >= aNumber ]
+]
+
+{ #category : 'simulation runner - config' }
+CMSimulation >> stopWhen: aBlock [
+	"Provede a one-argument block with a stop condition. The argument is a cormasModel. Be careful when modifying the stop condition because it can make the simulation run endlesly.
+	
+	Example: self stopWhen: [ :model | model totalBiomass > 100 ]"
+	simulationRunner stopCondition: aBlock
+]
+
+{ #category : 'enumerating' }
+CMSimulation >> whenFinishedDo: aBlock [
+
+	simulationRunner whenFinishedDo: aBlock
 ]

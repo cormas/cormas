@@ -44,14 +44,14 @@ CMR3SpaceTestFixture >> initialCellStates [
 CMR3SpaceTestFixture >> initialize [
 
 	super initialize.
+	
+	model := CMMockModel new.
 		
-	simulation := (CMSimulation for: CMMockModel)
+	simulation := (CMSimulation for: model)
 		activeInitSelector: #initFixed;
-		activeControlSelector: #step:;
+		activeControlSelector: #step;
 		initializeSimulation;
 		yourself.
-		
-	model := simulation cormasModel.
 
 	builder := CMR3SpaceDiagramBuilder for: model.
 	presenter := builder asPresenter
