@@ -130,22 +130,60 @@ CMModelTest >> testCentralCell [
 { #category : 'tests' }
 CMModelTest >> testCreateGridXYNeighborHoodClosed [
 
-	self assert: model allTheEntities size equals: (4 * 4) + 2.
+	self assert: model entities size equals: (4 * 4) + 2.
 	self assert: (model selectCellsOfColumn: 1) size equals: 4.
 	self assert: (model selectCellsOfLine: 1) size equals: 4
 ]
 
 { #category : 'tests' }
 CMModelTest >> testDominance [
-	| m |
-	m := CMMockModel new
-		createGridNumberOfRows: 100
-			numberOfColumns: 100
-			neighbourhood: 4
-			closed: true;
-		yourself.
-	self assert: (m dominance: #state) < 1.0.
+	| dominance |
+	model initFixed.
+	
+	dominance := model dominance: #state.
+	self assert: dominance >= 0.
+	self assert: dominance <= 1.
+]
 
+{ #category : 'tests' }
+CMModelTest >> testDominanceIsBetweenZeroAndOneWhenCategoriesAreUnequallyRepresented [
+	| cells dominance n |
+	cells := model cells.
+	
+	"One category is more common than the other."
+	n := (0.75 * cells size) asInteger.
+	(cells first: n) do: [ :cell | cell initAlive ].
+	(cells allButFirst: n) do: [ :cell | cell initDead ].
+	
+	dominance := model dominance: #state.
+	self assert: dominance > 0.
+	self assert: dominance < 1.
+	self assert: dominance closeTo: 0.19 precision: 0.01
+]
+
+{ #category : 'tests' }
+CMModelTest >> testDominanceIsOneWhenAllCellsBelongToTheSameCategory [
+	| dominance |
+
+	"All cells have the same value: maximum dominance."
+	model cells do: [ :cell | cell initAlive ].
+	
+	dominance := model dominance: #state.
+	self assert: dominance equals: 1.
+]
+
+{ #category : 'tests' }
+CMModelTest >> testDominanceIsZeroWhenCategoriesAreEquallyRepresented [
+	| cells dominance n |
+	cells := model cells.
+
+	"Two equally represented values: minimum dominance."
+	n := (0.5 * cells size) asInteger.
+	(cells first: n) do: [ :cell | cell initAlive ].
+	(cells allButFirst: n) do: [ :cell | cell initDead ].
+
+	dominance := model dominance: #state.
+	self assert: dominance equals: 0
 ]
 
 { #category : 'tests' }
@@ -348,7 +386,7 @@ CMModelTest >> testSelectCellsOfLine [
 CMModelTest >> testShortestDistanceToCellsVerifying [
 	| m |
 	m := CMMockModel new.
-	(m allTheEntities: CMMockCell)
+	(m allEntitiesOfClass: CMMockCell)
 		do: [ :cell | 
 			self assert: (cell shortestDistanceToCellsVerifying: [ :c | c state = #dead | (c state = #alive) ])
 				equals: 1 ]

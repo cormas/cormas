@@ -29,6 +29,9 @@ Class >> isCormasModelClass [
 Class >> publicMethods [
 
 	| methods |
-	methods := (Pragma allNamed: #api in: self) collect: #method.
+	
+	methods := self withAllSuperclasses flatCollect: [ :aClass |
+		(Pragma allNamed: #api in: aClass) collect: #method ].
+	
 	^ methods sorted: [ :a :b | a selector < b selector ]
 ]

@@ -564,18 +564,6 @@ CMEntity >> isDead: aBoolean [
 ]
 
 { #category : 'testing' }
-CMEntity >> isObjectLocation [
-	
-	^false
-]
-
-{ #category : 'testing' }
-CMEntity >> isPassiveObject [
-	
-	^false
-]
-
-{ #category : 'testing' }
 CMEntity >> isSituated [
 	
 	^false

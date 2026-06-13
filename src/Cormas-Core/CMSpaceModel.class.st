@@ -341,20 +341,26 @@ CMSpaceModel >> distanceFromCell: cellA toCell: cellB [
 ]
 
 { #category : 'landscape indices' }
-CMSpaceModel >> dominance: attribute [
-	"Compute dominance according to the attribute"
+CMSpaceModel >> dominance: anAttribute [
+	"Compute the normalized dominance index according to the given attribute"
 
-	| numberCells sum n pi classes |
-	numberCells := self numberOfRows * self numberOfColumns.
-	sum := 0.
-	classes := (self cormasModel cells collect: [ :a | a perform: attribute ]) asSet.
-	n := classes size.
-	classes
-		do: [ :i | 
-			pi := (self cormasModel cells select: [ :a | (a perform: attribute) = i ]) size
-				/ numberCells.
-			sum := sum + (pi * pi ln) ].
-	^ n ln + sum
+	| cells attributeValues numberOfCells entropy proportion |
+	cells := self cells.
+	cells ifEmpty: [ ^ 0 ].
+
+	attributeValues := (cells collect: [ :cell | cell perform: anAttribute ]) asSet.
+	attributeValues size <= 1 ifTrue: [ ^ 1 ].
+
+	numberOfCells := cells size.
+	entropy := 0.
+
+	attributeValues do: [ :value |
+		proportion := (cells count: [ :cell | (cell perform: anAttribute) = value ])
+			/ numberOfCells.
+			
+		entropy := entropy - (proportion * proportion ln) ].
+
+	^ 1 - (entropy / attributeValues size ln)
 ]
 
 { #category : 'landscape indices' }
@@ -488,16 +494,6 @@ CMSpaceModel >> nearestEmptyCellFor: aCell [
 	^ (aCell nearestEmptyNeighborsWithinRadius: (self numberOfRows max: self numberOfColumns))
 		ifNotEmpty: [ :cells | self selectRandomlyFrom: cells ]
 		ifEmpty: [ nil ]
-]
-
-{ #category : 'landscape indices' }
-CMSpaceModel >> nearestNeighbourProbaAttribute: anAttribute state1: x1 state2: x2 [
-	"return the data (a number) to be recorded"
-	
-	| c1 c2 |
-	c1 := self cormasModel cells select: [:a | (a perform: anAttribute) = x1].
-	c2 := c1 select: [:a | a neighbourhood anySatisfy: [:b | (a perform: anAttribute) = x2 ] ].
-	^ c2 size / c1 size
 ]
 
 { #category : 'accessing' }

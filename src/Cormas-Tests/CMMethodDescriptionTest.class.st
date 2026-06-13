@@ -181,6 +181,21 @@ CMMethodDescriptionTest >> testMethod [
 ]
 
 { #category : 'tests' }
+CMMethodDescriptionTest >> testPublicMethods [
+
+	| expected |
+	
+	expected := { 
+		self class >> #exampleMethod .
+		self class >> #exampleMethod:and: .
+		self class >> #exampleMethodWithSeeAlsoError }.
+	
+	self
+		assertCollection: self class publicMethods 
+		hasSameElements: expected
+]
+
+{ #category : 'tests' }
 CMMethodDescriptionTest >> testRelatedMethods [
 
 	| expected |

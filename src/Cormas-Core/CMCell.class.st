@@ -431,6 +431,7 @@ Return value: <Collection(SpatialEntityElement)>"
 
 { #category : 'environment - sensing - space' }
 CMCell >> neighbourE [
+	<api>
 	"Purpose: returns the neighbour to the East
 Not nil only for square and hexagonal cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
@@ -448,6 +449,7 @@ Return value: <SpatialEntityElement | nil>"
 
 { #category : 'environment - sensing - space' }
 CMCell >> neighbourN [
+	<api>
 	"Purpose: returns the neighbour to the North
 Not nil only for square cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
@@ -462,6 +464,7 @@ Return value: <SpatialEntityElement | nil>"
 
 { #category : 'environment - sensing - space' }
 CMCell >> neighbourNE [
+	<api>
 	"Purpose: returns the neighbour to the NorthEast
 Not nil only for square (8 neighbors) and hexagonal cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
@@ -481,6 +484,7 @@ Return value: <SpatialEntityElement | nil>"
 
 { #category : 'environment - sensing - space' }
 CMCell >> neighbourNW [
+	<api>
 	"Purpose: returns the neighbour to the NorthWest
 Not nil only for square (8 neighbors) and hexagonal cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
@@ -500,6 +504,7 @@ Return value: <SpatialEntityElement | nil>"
 
 { #category : 'environment - sensing - space' }
 CMCell >> neighbourS [
+	<api>
 	"Purpose: returns the neighbour to the South
 Not nil only fore square cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
@@ -516,6 +521,7 @@ Return value: <SpatialEntityElement | nil>"
 
 { #category : 'environment - sensing - space' }
 CMCell >> neighbourSE [
+	<api>
 	"Purpose: returns the neighbour to the SouthEast
 Not nil only for square (8 neighbors) and hexagonal cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
@@ -535,6 +541,7 @@ Return value: <SpatialEntityElement | nil>"
 
 { #category : 'environment - sensing - space' }
 CMCell >> neighbourSW [
+	<api>
 	"Purpose: returns the neighbour to the SouthWest
 Not nil only for square (8 neighbors) and hexagonal cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
@@ -554,6 +561,7 @@ Return value: <SpatialEntityElement | nil>"
 
 { #category : 'environment - sensing - space' }
 CMCell >> neighbourW [
+	<api>
 	"Purpose: returns the neighbour to the West
 Not nil only for square and hexagonal cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
@@ -578,6 +586,7 @@ CMCell >> rowNumber [
 
 { #category : 'environment - distance' }
 CMCell >> shortestDistanceToCells: aCollecOfCells constraintOnPath: aBlock [
+	<api>
 	"Purpose: gets the shortest distance (Manhattan distance in cell unit) to a collection of other cells, taking a specified constraint into account.
 Arguments: aCollecOfCells = <Collection(SpatialEntityElement)>
 			aBlock = <BlockClosure>
@@ -591,6 +600,7 @@ Example: self shortestDistanceToCells: self myPlots constraintOnPath: [:aCell | 
 
 { #category : 'environment - distance' }
 CMCell >> shortestDistanceToCellsVerifying: aCondition [
+	<api>
 	"Purpose: gets the shortest distance (Manhattan distance in cell unit) to a cell verifying a specified condition.
 Arguments: aCondition = <BlockClosure>
 Return value: <Integer>
@@ -605,7 +615,8 @@ Example: self shortestDistanceToCellVerifying: [:c | c landCover = #forest]"
 
 { #category : 'environment - sensing - space' }
 CMCell >> wayTo: anotherCell [
-	"Shortest way to anotherCell"
+	<api>
+	<doc: 'Shortest way to anotherCell'>
 	
 	| shortestDistance path nearestCells shortestDistance2 nextCell dist |
 	

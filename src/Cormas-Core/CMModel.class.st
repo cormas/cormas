@@ -399,19 +399,26 @@ CMModel class >> screenshotContents [
 CMModel >> @@ aClass [
 	<api>
 	<argument: #aClass type: #Class description: 'The entity class to retrieve'>
-	<returnType: #OrderedCollection description: 'All entities that are instances of the specified class'>
-	<doc: 'Answer all entities of the given class.
-This method is a convenient shortcut for `#entitiesOfClass:` and can be used to write concise model code.'>
+	<returnType: #OrderedCollection description: 'All entities that are instances of the specified class and its subclasses'>
+	<doc: 'Answer all entities of the given class and its subclasses.
+This method is a convenient shortcut for `#allEntitiesOfClass:` and can be used to write concise model code.'>
 	<example: 'self @@ Farmer'>
 	<example: 'self @@ Plot'>
-	<seeAlso: #(entitiesOfClass:)>
+	<seeAlso: #(@@? allEntitiesOfClass: entitiesOfClass: entities agents cells)>
 	
-	^ self entitiesOfClass: aClass 
+	^ self allEntitiesOfClass: aClass 
+]
+
+{ #category : 'operations' }
+CMModel >> @@? aClass [
+	<api>
+	
+	^ self shuffled: (self @@ aClass)
 ]
 
 { #category : 'referencing entities' }
 CMModel >> addEntityToCollection: anEntity [
-	"adds anEntity to the collection called theXXXs (where XXX is equal to the class name)"
+	"adds anEntity to the collection owned by the model"
 	
 	| collection |
 	collection := self entitiesOfClass: anEntity class.
@@ -443,22 +450,9 @@ CMModel >> agents [
 		self entitiesOfClass: eachClass ].
 ]
 
-{ #category : 'accessing' }
-CMModel >> allParameters [
-
-	^ self class allParameters
-]
-
 { #category : 'accessing - entities' }
-CMModel >> allTheEntities [
-	"Returns a collection of all instances of the subclasses of CMEntity collected by cormasModel"
-	
-	^ (self class allEntityClasses flatCollect: [ :each |
-		self entitiesOfClass: each]) asOrderedCollection
-]
-
-{ #category : 'accessing - entities' }
-CMModel >> allTheEntities: aClass [
+CMModel >> allEntitiesOfClass: aClass [
+	<api>
 	" Answer a <Collection> of all the instances of aClass (and sub classes) collected by cormasModel. 
 	Usefull for abstract classes
 
@@ -470,94 +464,16 @@ CMModel >> allTheEntities: aClass [
 	^ coll
 ]
 
-{ #category : 'accessing - entities' }
-CMModel >> allTheEntitiesOfClassOrCollec: aCollecOrClass [
-	"Purpose:  In case aCollecOrClass is a class or a class name (symbol), the method returns all the entities of the class and subclasses. In case aCollecOrClass is a collection of entities, the method return the same collection
-Examples:
-self  entitiesFromACollecOrClass: #Farmer
-self  entitiesFromACollecOrClass: Farmer
-self  entitiesFromACollecOrClass: self theFarmers"
-	
-	aCollecOrClass isSymbol
-		ifTrue: [^self allTheEntities: aCollecOrClass class].
-	aCollecOrClass isCollection ifTrue: [^aCollecOrClass].
-	aCollecOrClass isCormasEntity
-		ifTrue: [^Array with: aCollecOrClass].
-	(aCollecOrClass isKindOf: CMEntity class)
-		ifTrue: [^self allTheEntities: aCollecOrClass].
-	^nil
-]
+{ #category : 'accessing' }
+CMModel >> allParameters [
 
-{ #category : 'accessing - entities' }
-CMModel >> allTheLocatedEntities: aClass [
-	"Returns a collection of all the Located Entities (AgentLocation & ObjectLocation) of the model"
-	
-	| theLocatedObjects |
-	theLocatedObjects := OrderedCollection new.
-	self cells
-		do:
-			[:aCell | 
-			aClass withAllSubclasses
-				do:
-					[:class | 
-					theLocatedObjects
-						addAll:
-							(aCell theOccupants
-								at: class name
-								ifAbsent: [Array new])]].
-	^theLocatedObjects
-]
-
-{ #category : 'accessing - entities' }
-CMModel >> allTheLocatedObjects [
-	"Returns a collection of all the instances of ObjectLocation (and sub classes) collected by cormasModel"
-	
-	^self allTheEntities select: [:entity | entity isObjectLocation]
-]
-
-{ #category : 'accessing - entities' }
-CMModel >> allThePassiveObjects [
-	"Returns a collection of all the instances of PassiveObject (and sub classes) collected by cormasModel"
-	
-	^self allTheEntities select: [:entity | entity isPassiveObject]
-]
-
-{ #category : 'accessing - entities' }
-CMModel >> allTheSituatedEntities [
-	" Answer a <Collection> of all the instances of AgentLocation and of ObjectLocation (and sub classes) collected by cormasModel, which are situated on a cell "
-	
-	^ self allTheEntities select: #isSituated
-]
-
-{ #category : 'control' }
-CMModel >> ask: aCollectionOrClass toDo: aBlock [
-	<api>
-	<argument: #aCollectionOrClass type: #Class description: 'A class of entities that should perform an action'>
-	<argument: #aBlock type: #Block description: 'A block or symbol to be executed by each instance'>
-	<doc: 'Ask all instances of a class to execute a block. If you provide a Symbol instead of a block, the method with the same name will be exuted on each entity.'>
-	<example: 'self ask: Fireman toDo: #move'>
-	<example: 'self ask: Cow toDo: [ :each | each reproduce ]'>
-	<seeAlso: #(askRandom:toDo:)> 
-
-	(self entitiesOfClass: aCollectionOrClass)
-		do: [ :each | aBlock value: each ]
-]
-
-{ #category : 'control' }
-CMModel >> askRandom: aCollectionOrClass toDo: aBlock [
-	"Ask a collection of instances or all the instances of a class to execute a block. The instances are randomly mixed.
-Example: self askRandom: Fireman toDo: #move
-Example: self askRandom: (self theAnimals select:[:f | f energy > 10]) toDo: #reproduce"
-
-	| collecEntities |
-	(collecEntities := self allTheEntitiesOfClassOrCollec:
-		                   aCollectionOrClass) ifNotEmpty: [
-		(self shuffled: collecEntities) do: [ :c | aBlock value: c ] ]
+	^ self class allParameters
 ]
 
 { #category : 'accessing - entities' }
 CMModel >> cellAt: index [
-
+	<api>
+	
 	^ self spaceModel cellAt: index
 ]
 
@@ -577,7 +493,8 @@ The first argument specifies the row and the second argument specifies the colum
 
 { #category : 'accessing - entities' }
 CMModel >> cellAtId: id [
-
+	<api>
+	
 	^ self spaceModel cellAtId: id
 ]
 
@@ -644,6 +561,7 @@ CMModel >> classSideParameters [
 
 { #category : 'instance creation - aggregates' }
 CMModel >> createAggregate: aggregateClass from: aCollectionOfSpatialEntities [
+	<api>
 	"Purpose: Creates and returns an instance of aggregateClass composed with a set of cells.
 Arguments: 	aCollectionOfSpatialEntities = a collection of base entities (inheriting from <SpatialEntity>) 
 	aggregateClass = a Class inheriting from <SpatialEntityAggregate>
@@ -660,6 +578,7 @@ Example: self createAggregate: Plot from: (self centalCell recursiveNeighbourhoo
 
 { #category : 'instance creation - aggregates' }
 CMModel >> createAggregates: aggregateType from: baseEntityType attribute: attributeName [
+	<api>
 	"Purpose: Create n aggregates that will occupy the whole grid. Each aggregate is composed of baseEntities that have the same value for #attributeName. 
 	<baseEntityType> is a Class name inheriting from SpatialEntityElement. 
 	<attributeName> is a symbol referring to a baseEntity's attribute name. 
@@ -672,6 +591,7 @@ Example: self createAggregates: ZoneArea from: Cell attribute: #landCover"
 
 { #category : 'instance creation - aggregates' }
 CMModel >> createAggregates: aggregateType from: baseEntityType attribute: attributeName minimumSize: integer [
+	<api>
 	"Purpose: Create n aggregates that will occupy the whole grid. Each aggregate is composed of baseEntities that have the same value for #attributeName. 
 	<baseEntityType> is a Class name inheriting from SpatialEntityElement. 
 	<attributeName> is a symbol referring to a baseEntity's attribute name. 
@@ -688,6 +608,7 @@ Example: self createAggregates: ZoneArea from: Cell attribute: #landCover"
 
 { #category : 'instance creation - aggregates' }
 CMModel >> createAggregates: aggregateType from: baseEntityType verifying: aBlock [
+	<api>
 	"Purpose: Create and return N instances of aggregateType of minimumSize = 1, so it is possible to get aggregates made of only 1 component. The previous aggregates are not removed.
 baseEntityType = a subClass of  <SpatialEntity>
 aBlock example = [:cell | cell state = #tree]
@@ -698,6 +619,7 @@ aggregateType = a subClass of  <SpatialEntitySet> "
 
 { #category : 'instance creation - aggregates' }
 CMModel >> createAggregates: aggregateType from: baseEntityType verifying: aBlock minimumSize: integer [
+	<api>
 	"Purpose: Create and return N instances of aggregateType of minimumSize. 
 baseEntityType = a subClass of  <SpatialEntity>
 aBlock is the condition written as a block refering to a test on each of the base entity. 
@@ -716,6 +638,7 @@ Example: self createAggregates: Forest from: Cell verifying: [:aCell | aCell isT
 
 { #category : 'instance creation - aggregates' }
 CMModel >> createAggregates: aggregateType horizontalDividers: xRatio verticalDividers: yRatio [
+	<api>
 	"Purpose: Creates (xRatio x yRatio) rectangular aggregates by dividing the grid by yRatio columns and xRatio lines. The aggregates will  occupy the whole grid. 
 	aggregateType = a subClass of  <SpatialEntityAggregate>
 Note that this method is not destructive.
@@ -730,6 +653,7 @@ Example: self createAggregates: SquareArea horizontalDividers: 5 verticalDivider
 
 { #category : 'instance creation - spatial grid' }
 CMModel >> createGridNumberOfRows: aNumberOfRows numberOfColumns: aNumberOfColumns neighbourhood: aNumber closed: aBoolean [
+	<api>
 	"Create a spatial grid made of regular cells (all the cells have the same shape).
 	The neighbourhood can be 3, 4, 6 or 8 cells: 3 for triangular cells, 4 or 8 for squared cells, and 6 for hexagonal cells.
 	closed set the boundaries of the grid: false means that the grid is torroidal. 
@@ -941,19 +865,33 @@ CMModel >> currentTimeStep [
 
 { #category : 'utilities - space metrics' }
 CMModel >> distanceFromCell: cell1 toCell: cell2 [
-	"Purpose: return the distance in number of cells (also known as Manhattan distance)"
+	<api>
+	<doc: 'return the distance in number of cells (also known as Manhattan distance)'>
 	
 	^self spaceModel distanceFromCell: cell1 toCell: cell2
 ]
 
 { #category : 'utilities - space metrics' }
 CMModel >> dominance: anAttribute [
-	"Purpose: Return the Dominance-Index of SpatialEntityElements instances (theCells for example). The Dominance-Index is used as an index of biodiversity. It gives the information if there is one dominant category of cells in the spatial grid or if all categories have more or less the same relative proportions. Categories of cells are cells that have a different value of anAttribute (see the method nClasses: anAttribute).
-Argument: anAttribute is the name of the attribute, ex #state
-Return Value: Depending of the proportions the results range between 0 and 1.
-Example: self dominance: #groupNumber"
+	<api>
+	<argument: #anAttribute type: #Symbol description: 'The attribute selector used to classify cells into categories'>
+	<returnType: #Float description: 'A normalized dominance index between 0 and 1'>
+	<doc: 'Answer the dominance index of the cells based on the values of the given attribute.
+
+The dominance index is a biodiversity measure derived from the distribution of attribute values across all cells. It indicates whether one category dominates the spatial grid or whether all categories have similar proportions.
+
+Categories are defined by distinct values of the specified attribute. A value close to 1 indicates that a single category dominates the grid, while a value close to 0 indicates a more even distribution among categories.'>
+	<example: 'self dominance: #state'>
 
 	^ self spaceModel dominance: anAttribute
+]
+
+{ #category : 'accessing - entities' }
+CMModel >> entities [
+	"Returns a collection of all instances of the subclasses of CMEntity collected by cormasModel"
+	
+	^ (self class allEntityClasses flatCollect: [ :each |
+		self entitiesOfClass: each]) asOrderedCollection
 ]
 
 { #category : 'accessing - entities' }
@@ -978,58 +916,10 @@ You can also use a shorter method `@@` which does the same'>
 
 { #category : 'utilities - space metrics' }
 CMModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
-	"Purpose: return the euclidian distance (unit = cell) using the Euclidean distance formula : square root of [(Xa - Xb)^2 + (Ya - Yb)^2)]"
+	<api>
+	<doc: 'Return the euclidian distance (unit = cell) using the Euclidean distance formula: square root of [(Xa - Xb)^2 + (Ya - Yb)^2)]'>
 	
 	^self spaceModel euclideanDistanceFromCell: cell1 toCell: cell2
-]
-
-{ #category : 'utilities - files' }
-CMModel >> getAttributesType: attributes fromInstances: instanceCollection [
-	
-	| firstInstance firstValue type dicoAttConv |
-	dicoAttConv := Dictionary new.
-	attributes
-		do:
-			[:att | 
-			firstInstance := instanceCollection
-				detect: [:p | (p perform: att asSymbol) isNil not]
-				ifNone: [nil].
-			firstInstance isNil
-				ifTrue: [firstValue := nil]
-				ifFalse: [firstValue := firstInstance perform: att asSymbol].
-			firstValue isSymbol
-				ifTrue:
-					[type := '(Symbol)'.
-					dicoAttConv
-						at: att asSymbol
-						put: #(#asString '(Symbol)')]
-				ifFalse:
-					[firstValue isNumber
-						ifTrue:
-							[type := '(Number)'.
-							dicoAttConv
-								at: att asSymbol
-								put: #(#printString '(Number)')]
-						ifFalse:
-							[firstValue isString
-								ifTrue:
-									[type := '(String)'.
-									dicoAttConv
-										at: att asSymbol
-										put: #(#asString '(String)')]
-								ifFalse:
-									[(firstValue isKindOf: Boolean)
-										ifTrue:
-											[type := '(Boolean)'.
-											dicoAttConv
-												at: att asSymbol
-												put: #(#printString '(Boolean)')]
-										ifFalse:
-											[type := '(nil)'.
-											dicoAttConv
-												at: att asSymbol
-												put: #(#printString '(nil)')]]]]].
-	^dicoAttConv
 ]
 
 { #category : 'init-release entities' }
@@ -1149,16 +1039,6 @@ CMModel >> makeAgentsScatteredInCells [
 	areAgentsCenteredInCells := false
 ]
 
-{ #category : 'utilities - space metrics' }
-CMModel >> nearestNeighbourProbaAttribute: anAttribute state1: x1 state2: x2 [
-	"Purpose: Return the probability to have aCell having x2 as value for anAttribute in the direct neighbourhood (distance = 1) of aCell which has x1 as value for anAttribute.
-Argument: anAttribute is the name of the attribute, ex #state, X1 and x2 being two possible values.
-Example: self nearestNeighbourProbaAttribute: #landUse state1: #field state2: #forest"
-	
-	^self spaceModel nearestNeighbourProbaAttribute: anAttribute state1: x1
-		state2: x2
-]
-
 { #category : 'instance creation - agents & objects' }
 CMModel >> newEntity: aClass [
 	<api>
@@ -1254,7 +1134,7 @@ CMModel >> pickRandomEntities: anInteger ofClass: aClass [
 	"Return a collection of entities belonging to a class"
 
 	^ self
-		selectRandomlyFrom: (self allTheEntities: aClass)
+		selectRandomlyFrom: (self allEntitiesOfClass: aClass)
 		size: anInteger
 ]
 
@@ -1264,7 +1144,7 @@ CMModel >> pickRandomEntities: anInteger ofClass: aClass constrainedBy: aBlock [
 	"Return a collection of entities belonging to a class and verifying a condition"
 
 	^ self
-		selectRandomlyFrom: ((self allTheEntities: aClass) select: [ :c | aBlock value: c ])
+		selectRandomlyFrom: ((self allEntitiesOfClass: aClass) select: [ :c | aBlock value: c ])
 		size: anInteger
 ]
 
@@ -1273,7 +1153,7 @@ CMModel >> pickRandomEntityOfClass: aClass [
 	<api>
 	"Return an entity belonging to a class, picked randomly"
 
-	^ self selectRandomlyFrom: (self allTheEntities: aClass)
+	^ self selectRandomlyFrom: (self allEntitiesOfClass: aClass)
 ]
 
 { #category : 'accessing - entities' }
@@ -1281,7 +1161,7 @@ CMModel >> pickRandomEntityOfClass: aClass constrainedBy: aBlock [
 	<api>
 	"Return a random entity belonging to a class and verifying the block condition"
 
-	^ self selectRandomlyFrom: ((self allTheEntities: aClass) select: [ :c | aBlock value: c ])
+	^ self selectRandomlyFrom: ((self allEntitiesOfClass: aClass) select: [ :c | aBlock value: c ])
 ]
 
 { #category : 'accessing - entities' }
@@ -1301,7 +1181,7 @@ CMModel >> printOn: aStream [
 	aStream
 		space;
 		<< '(entities: ';
-		<< self allTheEntities size asString;
+		<< self entities size asString;
 		<< ')'
 ]
 
@@ -1494,26 +1374,6 @@ CMModel >> stepAsynchronouslyCA: t [
 	self
 		deprecated: 'Use #stepAsynchronously instead'
 		transformWith: '`@rec stepAsynchronouslyCA: `@arg' -> '`@rec stepAsynchronously'
-]
-
-{ #category : 'control' }
-CMModel >> stepEntities: aCollecOrClass [
-	"Purpose: Iteration over aCollec or the entities of a class. 
-	In case aCollecOrClass is a class, the entities are ordered according to their id. 
-	In case aCollecOrClass is a collection of instances, the order of the collection is kept.
-	
-	Example: self stepEntities: Farmer
-	Example: self stepEntities: (self theForagers select:[:f| f energy > 10]) "
-	
-	self ask: aCollecOrClass toDo: #step
-]
-
-{ #category : 'control' }
-CMModel >> stepEntitiesRandom: aCollecOrClass [
-	" Iterate over aCollecOrClass or the entities of a class. 
-	The elements of aCollec / or the instances of the class, are randomly mixed"
-
-	self askRandom: aCollecOrClass toDo: #step
 ]
 
 { #category : 'as yet unclassified' }

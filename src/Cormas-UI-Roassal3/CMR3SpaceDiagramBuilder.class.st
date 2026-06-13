@@ -112,7 +112,7 @@ CMR3SpaceDiagramBuilder >> renderIn: aCanvas [
 	| imagePovs |
 	"aCanvas showEncompassingRectangles"
 	
-	imagePovs := cormasModel allTheEntities
+	imagePovs := cormasModel entities
 		collect: [ :entity | entity perform: entity class activePovSelector ]
 		thenSelect: [ :pov | pov isForImage ].
 		

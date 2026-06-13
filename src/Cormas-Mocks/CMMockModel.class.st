@@ -216,7 +216,7 @@ CMMockModel >> numberOfRows: aNumber [
 { #category : 'control' }
 CMMockModel >> step [
 	<control>
-	self askRandom: CMMockAnimal toDo: #step.
+	(self @@? CMMockAnimal) do: #step.
 	self stepSynchronously.
 ]
 

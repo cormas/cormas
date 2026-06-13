@@ -242,13 +242,15 @@ Example: self getAggregateType: Forest"
 
 { #category : 'testing' }
 CMSpatialEntity >> hasNoOccupants [
-
+	<api>
+	
 	^ self hasOccupants not
 ]
 
 { #category : 'testing' }
 CMSpatialEntity >> hasNoOccupantsExcept: anObject [
-
+	<api>
+	
 	self theOccupants ifNil: [ ^ true ].
 
 	^ self theOccupants allSatisfy: [ :list | 
@@ -257,7 +259,12 @@ CMSpatialEntity >> hasNoOccupantsExcept: anObject [
 
 { #category : 'testing' }
 CMSpatialEntity >> hasOccupants [
-
+	<api>
+	<returnType: #Boolean description: 'true if the spatial entity contains at least one occupant'>
+	<doc: 'Answer whether the spatial entity contains any occupants. This method returns true if at least one entity is currently located on the receiver, regardless of its class.'>
+	<example: 'self hasOccupants'>
+	<seeAlso: #(hasOccupantsOfClass: hasNoOccupants hasNoOccupantsExcept:)>
+	
 	self theOccupants ifNil: [ ^ false ].
 
 	^ self theOccupants values anySatisfy: [ :list | 
@@ -266,11 +273,12 @@ CMSpatialEntity >> hasOccupants [
 
 { #category : 'testing' }
 CMSpatialEntity >> hasOccupantsOfClass: aClass [
-
-	"Purpose: test if there is an occupant of a given type.
-Argument: locatedEntityName = <Symbol | AgentLocation | ObjectLocation>
-Return value: <Boolean>
-Example: self hasOccupantType: #Tree"
+	<api>
+	<argument: #aClass type: #Class description: 'The occupant class to test for'>
+	<returnType: #Boolean description: 'true if at least one occupant is an instance of the specified class'>
+	<doc: 'Answer whether the spatial entity contains at least one occupant of the given class.'>
+	<example: 'self hasOccupantsOfClass: Tree'>
+	<seeAlso: #(hasOccupants hasNoOccupants hasNoOccupantsExcept:)>
 
 	^ (self occupantsOfClass: aClass) isNotEmpty
 ]
@@ -518,6 +526,7 @@ Return value: <ByteString>"
 
 { #category : 'environment - sensing - space' }
 CMSpatialEntity >> neighbourhood [
+	<api>
 	"If the cell is located at the edge or in the corner of a closed (non-torroidal) envionment, the missing neighbours are represented as nils. Here we remove them to get only the list of neighbours"
 	
 	^ neighbourhoodWithNils reject: [ :each | each isNil ]
@@ -525,6 +534,7 @@ CMSpatialEntity >> neighbourhood [
 
 { #category : 'environment - sensing - space' }
 CMSpatialEntity >> neighbourhoodAndSelf [
+	<api>
 	"Purpose: returns the spatial entities belonging to the direct neighbourhood of the receiver
 Also includes the receiver itself
 self neighbourhoodAndSelf == self recursiveNeighbourhood: 1
@@ -538,6 +548,7 @@ Return value: <Collection(SpatialEntity)>"
 
 { #category : 'environment - sensing - space' }
 CMSpatialEntity >> neighbourhoodOfRadius: radius [
+	<api>
 	"Purpose: returns a collection of receiver-like spatial entities within a given radius of the receiver.
 The receiver itself is included in the collection, which is ordered from the center (self) to the perimeter of the radius.
 Argument: radius = <Integer>
@@ -575,6 +586,7 @@ Return value: <OrderedCollection>"
 
 { #category : 'environment - sensing - space' }
 CMSpatialEntity >> neighbourhoodOfRadius: range verifying: aBlock [
+	<api>
 	"Purpose: returns the spatial entities within a given radius and fulfilling the constraint specified in aBlock. 
 Arguments: range = <Integer>
 			aBlock = <BlockClosure>
@@ -586,6 +598,7 @@ Example: self recursiveNeighbourhood: 5 verifying: [:c | c isClosed not] "
 
 { #category : 'environment - sensing - space' }
 CMSpatialEntity >> neighbourhoodOfRadius: range withoutAny: aClass [
+	<api>
 	"Purpose: returns the spatial entities within a given radius and without any occupant of a given type.
 Return value: <Collection(SpatialEntity)>
 Example: self recursiveNeighbourhood: 5 withoutAny: #Tree"
@@ -610,7 +623,7 @@ CMSpatialEntity >> neighbourhoodWithNils: aCollection [
 
 { #category : 'environment - sensing - agents' }
 CMSpatialEntity >> occupantsOfClass: aClass [
-
+	<api>
 	"Purpose: returns all the entities of a given type located there
 Note that the instances of subclasses ARE CONSIDERED by this method
 Return value: <Collection(AgentLocation & ObjectLocation)>"
@@ -625,7 +638,7 @@ Return value: <Collection(AgentLocation & ObjectLocation)>"
 
 { #category : 'environment - sensing - agents' }
 CMSpatialEntity >> occupantsOfClassNamed: aClassName [
-
+	<api>
 	"Purpose: returns all the entities of a given class name located there
 Return value: <Collection(AgentLocation & ObjectLocation)>"
 
@@ -758,8 +771,9 @@ CMSpatialEntity >> theOccupants: aDict [
 
 { #category : 'environment - sensing - space' }
 CMSpatialEntity >> wayTo: anotherSpatialEntity [
-	"Purpose: returns one of the shortest path to another spatial entity
-Argument: anotherSpatialEntity = <SpatialEntity>"
+	<api>
+	<doc: 'Returns one of the shortest path to another spatial entity
+Argument: anotherSpatialEntity = <SpatialEntity>'>
 	
 	self subclassResponsibility
 ]
