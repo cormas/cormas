@@ -74,6 +74,14 @@ CMModelOpenerPresenter class >> menu00CormasOn: aBuilder [
 		action: [ self new open ];
 		order: 1.
 		
+	(aBuilder item: #MethodDocumentation)
+		parent: #CormasMain;
+		label: 'Method Documentation';
+		icon: (self iconNamed: #help);
+		help: 'Documentation of the public methods of Cormas classes';
+		action: [ CMDocumentationBrowser new open ];
+		order: 1.
+		
 	(aBuilder item: #CormasTilesetBrowser)
 		parent: #CormasMain;
 		label: 'Tileset browser';

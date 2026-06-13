@@ -4,9 +4,9 @@ Class {
 	#instVars : [
 		'package'
 	],
-	#category : 'Cormas-Core-Calypso',
+	#category : 'Cormas-Core-Helpers',
 	#package : 'Cormas-Core',
-	#tag : 'Calypso'
+	#tag : 'Helpers'
 }
 
 { #category : 'testing' }

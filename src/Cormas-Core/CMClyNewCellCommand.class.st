@@ -1,9 +1,9 @@
 Class {
 	#name : 'CMClyNewCellCommand',
 	#superclass : 'CMClyPackageCommand',
-	#category : 'Cormas-Core-Calypso',
+	#category : 'Cormas-Core-Helpers',
 	#package : 'Cormas-Core',
-	#tag : 'Calypso'
+	#tag : 'Helpers'
 }
 
 { #category : 'activation' }

@@ -397,7 +397,15 @@ CMModel class >> screenshotContents [
 
 { #category : 'operations' }
 CMModel >> @@ aClass [
-	"Syntactic sugar to access entities of a given class"
+	<api>
+	<argument: #aClass type: #Class description: 'The entity class to retrieve'>
+	<returnType: #OrderedCollection description: 'All entities that are instances of the specified class'>
+	<doc: 'Answer all entities of the given class.
+This method is a convenient shortcut for `#entitiesOfClass:` and can be used to write concise model code.'>
+	<example: 'self @@ Farmer'>
+	<example: 'self @@ Plot'>
+	<seeAlso: #(entitiesOfClass:)>
+	
 	^ self entitiesOfClass: aClass 
 ]
 
@@ -424,7 +432,13 @@ CMModel >> agentClasses: aCollection [
 
 { #category : 'accessing - entities' }
 CMModel >> agents [
-
+	<api>
+	<returnType: #OrderedCollection description: 'All agents in the model'>
+	<doc: 'Answer a collection containing all agents currently present in the model. Use this method when you need to iterate over all agents regardless of their class.'>
+	<example: 'self agents size'>
+	<example: 'self agents do: [ :agent | agent step ]'>
+	<seeAlso: #(cells entitiesOfClass: @@)>
+	
 	^ self agentClasses flatCollect: [ :eachClass |
 		self entitiesOfClass: eachClass ].
 ]
@@ -517,13 +531,16 @@ CMModel >> allTheSituatedEntities [
 
 { #category : 'control' }
 CMModel >> ask: aCollectionOrClass toDo: aBlock [
-	"Purpose: To ask a collection of instances or all the instances of a class to execute a method named by aSymbol. In case aCollecOrClass is a 	class, the entities are ordered according to their id. In case aCollecOrClass is a collection of instances, the order of the collection is 	kept.
-	Example: self ask: Fireman toDo: #move
-	Example: self ask: (self theAnimals select:[:f | f energy > 10]) toDo: #reproduce"
+	<api>
+	<argument: #aCollectionOrClass type: #Class description: 'A class of entities that should perform an action'>
+	<argument: #aBlock type: #Block description: 'A block or symbol to be executed by each instance'>
+	<doc: 'Ask all instances of a class to execute a block. If you provide a Symbol instead of a block, the method with the same name will be exuted on each entity.'>
+	<example: 'self ask: Fireman toDo: #move'>
+	<example: 'self ask: Cow toDo: [ :each | each reproduce ]'>
+	<seeAlso: #(askRandom:toDo:)> 
 
-	| collecEntities |
-	collecEntities := self allTheEntitiesOfClassOrCollec: aCollectionOrClass.
-	collecEntities do: [ :c | aBlock value: c ]
+	(self entitiesOfClass: aCollectionOrClass)
+		do: [ :each | aBlock value: each ]
 ]
 
 { #category : 'control' }
@@ -546,6 +563,14 @@ CMModel >> cellAt: index [
 
 { #category : 'accessing' }
 CMModel >> cellAt: aRowIndex at: aColumnIndex [ 
+	<api>
+	<argumentType: #Integer description: 'Row index of a cell'>
+	<argumentType: #Integer description: 'Column index of a cell'>
+	<returnType: #CMCell description: 'The cell located at the specified coordinates'>
+	<doc: 'Answer the spatial cell located at the given row and column indices.
+The first argument specifies the row and the second argument specifies the column. Indices start at 1.'>
+	<example: 'self cellAt: 10 at: 15'>
+	<seeAlso: #(cellAt: cellAtId:)>
 	
 	^ self spaceModel cellAt: aRowIndex at: aColumnIndex
 ]
@@ -570,12 +595,20 @@ CMModel >> cellClass: aClass [
 
 { #category : 'accessing - entities' }
 CMModel >> cells [
+	<api>
+	<returnType: #OrderedCollection description: 'All cells in the model'>
+	<doc: 'Answer a collection containing all cells in the spatial grid.'>
+	<example: 'self cells size'>
+	<example: 'self cells do: [ :cell | cell step ]'>
+	<example: '(self cells collect: #biomass) sum'>
+	<seeAlso: #(agents entitiesOfClass: @@)>
 	
 	^ self entitiesOfClass: self cellClass
 ]
 
 { #category : 'accessing - entities' }
 CMModel >> centralCell [
+	<api>
 	"Purpose: returns the cell located at the center of the spatial grid. Number of lines and number of columns of the spatial grid have to be odd"
 
 	^ self spaceModel centralCell
@@ -900,7 +933,9 @@ CMModel >> createN: aNumber randomlyLocatedEntitiesFrom: aCollectionOfClasses in
 
 { #category : 'accessing' }
 CMModel >> currentTimeStep [
-
+	<api>
+	<doc: 'Current time step of a simulation. This method can be used to change model behavior depending on the time step. For example, perform some action once every 30 steps.'>
+	
 	^ context currentTimeStep
 ]
 
@@ -923,7 +958,18 @@ Example: self dominance: #groupNumber"
 
 { #category : 'accessing - entities' }
 CMModel >> entitiesOfClass: aClass [
-	"Returns a collection of all the instances of aClass"
+	<api>
+	<argument: #aClass type: #Class description: 'The entity class to retrieve. Must be a subclass of #CMEntity'>
+	<returnType: #OrderedCollection description: 'All entities that are instances of the specified class'>
+	<doc: 'Answer a collection containing all entities of the given class.
+
+Use this method to retrieve all instances of a particular entity class currently present in the model. The answer may contain agents, cells, or any other type of entity depending on the class provided.
+
+You can also use a shorter method `@@` which does the same'>
+	<example: 'self entitiesOfClass: Farmer'>
+	<example: 'self entitiesOfClass: Plot'>
+	<example: '(self entitiesOfClass: Farmer) size'>
+	<seeAlso: #(@@ agents cells)>
 
 	^ entities
 		at: aClass
@@ -1077,27 +1123,29 @@ CMModel >> instanceSideParameters [
 
 { #category : 'accessing - entities' }
 CMModel >> lowerLeftCell [
-	"Purpose: returns the cell located at the lower left location of the spatial grid"
+	<api>
+	<doc: 'Purpose: returns the cell located at the lower left location of the spatial grid'>
 
 	^ self spaceModel lowerLeftCell
 ]
 
 { #category : 'accessing - entities' }
 CMModel >> lowerRightCell [
-	"Purpose: returns the cell located at the lower right location of the spatial grid"
+	<api>
+	<doc: 'Purpose: returns the cell located at the lower right location of the spatial grid'>
 
 	^ self spaceModel lowerRightCell
 ]
 
 { #category : 'as yet unclassified' }
 CMModel >> makeAgentsCenteredInCells [
-
+	<api>
 	areAgentsCenteredInCells := true
 ]
 
 { #category : 'as yet unclassified' }
 CMModel >> makeAgentsScatteredInCells [
-
+	<api>
 	areAgentsCenteredInCells := false
 ]
 
@@ -1113,8 +1161,21 @@ Example: self nearestNeighbourProbaAttribute: #landUse state1: #field state2: #f
 
 { #category : 'instance creation - agents & objects' }
 CMModel >> newEntity: aClass [
-	"Creates a new instance of aClass and collects it, immediately, at the level of theXXXs collection."
+	<api>
+	<argument: #aClass type: #Class description: 'The class of the entity to create. Must be a subclass of #CMEntity'>
+	<returnType: #CMEntity description: 'A newly created and initialized entity'>
+	<doc: 'Create and answer a new entity of the given class.
 
+This method should be used to create all Cormas entities. In addition to instantiating the object, it performs the necessary initialization, registers the entity in the and gives it access to shared simulation resources.
+
+Do not create entities using `new`. Those entities will not be properly registered which can lead to unexpected behavior.
+
+Use this method only for instances of subclasses of #CMEntity. Regular Pharo objects should be created using `new`.'>
+	<example: 'farmer := self newEntity: Farmer'>
+	<example: 'plot := self newEntity: Plot'>
+	<example: '(1 to: 100) collect: [ :i | self newEntity: Farmer ]'>
+	<seeAlso: #(newEntity:locatedAt:)>
+	
 	| anEntity |
 	anEntity := aClass basicNew
 		cormasModel: self;
@@ -1130,7 +1191,8 @@ CMModel >> newEntity: aClass [
 
 { #category : 'instance creation - agents & objects' }
 CMModel >> newEntity: aClass locatedAt: aCell [
-	"Creates a new instance of aClass and collects it, immediately, at the level of theXXXs collection."
+	<api>
+	<doc: 'Creates a new instance of aClass and collects it, immediately, at the level of theXXXs collection.'>
 
 	| entity |
 	entity := self newEntity: aClass.
@@ -1145,6 +1207,7 @@ CMModel >> parameters [
 
 { #category : 'accessing - entities' }
 CMModel >> pickCellAt: aPointLocation [
+	<api>
 	"Purpose: return a spatialEntityElement (aCell) picked randomly from the spatial grid.
 	Example: self pickCell"
 
@@ -1153,6 +1216,7 @@ CMModel >> pickCellAt: aPointLocation [
 
 { #category : 'accessing - entities' }
 CMModel >> pickRandomCell [
+	<api>
 	"Purpose: return a spatialEntityElement (aCell) picked randomly from the spatial grid.
 	Example: self pickCell"
 
@@ -1161,6 +1225,7 @@ CMModel >> pickRandomCell [
 
 { #category : 'accessing - entities' }
 CMModel >> pickRandomCellConstrainedBy: aBlock [
+	<api>
 	"Purpose: return a random cell of the grid. The cell verifies the block condition.
 	Example:  self pickCellConstrainedBy: [:aCell | state=#land] or self pickCellConstrainedBy: [: aCell | aCell energy > 1] "
 
@@ -1169,6 +1234,7 @@ CMModel >> pickRandomCellConstrainedBy: aBlock [
 
 { #category : 'accessing - entities' }
 CMModel >> pickRandomCellWithoutAnyOccupantsOfClass: aClass [
+	<api>
 	"Return a cell (picked randomly) without any instance of aClassName"
 
 	^ self pickRandomCellConstrainedBy: [ :aCell | (aCell occupantsOfClass: aClass) isEmpty ]
@@ -1176,6 +1242,7 @@ CMModel >> pickRandomCellWithoutAnyOccupantsOfClass: aClass [
 
 { #category : 'accessing - entities' }
 CMModel >> pickRandomCells: anInteger [
+	<api>
 	"Return a collection of spatialEntityElements (some Cells) picked randomly from the spatial grid (without replacement)"
 
 	^ self selectRandomlyFrom: self cells size: anInteger
@@ -1183,6 +1250,7 @@ CMModel >> pickRandomCells: anInteger [
 
 { #category : 'accessing - entities' }
 CMModel >> pickRandomEntities: anInteger ofClass: aClass [
+	<api>
 	"Return a collection of entities belonging to a class"
 
 	^ self
@@ -1192,6 +1260,7 @@ CMModel >> pickRandomEntities: anInteger ofClass: aClass [
 
 { #category : 'accessing - entities' }
 CMModel >> pickRandomEntities: anInteger ofClass: aClass constrainedBy: aBlock [
+	<api>
 	"Return a collection of entities belonging to a class and verifying a condition"
 
 	^ self
@@ -1201,6 +1270,7 @@ CMModel >> pickRandomEntities: anInteger ofClass: aClass constrainedBy: aBlock [
 
 { #category : 'accessing - entities' }
 CMModel >> pickRandomEntityOfClass: aClass [
+	<api>
 	"Return an entity belonging to a class, picked randomly"
 
 	^ self selectRandomlyFrom: (self allTheEntities: aClass)
@@ -1208,6 +1278,7 @@ CMModel >> pickRandomEntityOfClass: aClass [
 
 { #category : 'accessing - entities' }
 CMModel >> pickRandomEntityOfClass: aClass constrainedBy: aBlock [
+	<api>
 	"Return a random entity belonging to a class and verifying the block condition"
 
 	^ self selectRandomlyFrom: ((self allTheEntities: aClass) select: [ :c | aBlock value: c ])
@@ -1215,6 +1286,7 @@ CMModel >> pickRandomEntityOfClass: aClass constrainedBy: aBlock [
 
 { #category : 'accessing - entities' }
 CMModel >> pickRandomUnoccupiedCell [
+	<api>
 	"Purpose: return a random cell not occuppied of the grid
 	Return Value: a cell"
 
@@ -1302,6 +1374,7 @@ CMModel >> resetEntities: aClass [
 
 { #category : 'accessing - entities' }
 CMModel >> selectCellsBetweenRow: lineNumber1 andRow: lineNumber2 column: colNumber1 andColumn: colNumber2 [
+	<api>
 	"Purpose: Return the cells between the lines lineNumber1 and lineNumber2, and between the columns colNumber1 and colNumber2 of the spatial grid. The Cells are sorted by id.
 Arguments: lineNumber1   <Integer> lineNumber = Positive Integer
 Arguments: lineNumber2   <Integer> colNumber = Positive Integer
@@ -1318,6 +1391,7 @@ Example:  cellsBetweenLine1: 1 line2: 6 andColumn1: 2 column2: 3  ->  a collecti
 
 { #category : 'accessing - entities' }
 CMModel >> selectCellsInRectangleOriginCell: cell1 cornerCell: cell2 [
+	<api>
 	"Purpose: return a collection of the cells located in a rectangle defined by an origin cell and a cell at the opposit corner of the rectangle. The collection of cells is ordered from cell1 to cell2.
 	Arguments : cell1   <SpatialEntityElement>
 	Arguments : cell2   <SpatialEntityElement>
@@ -1328,6 +1402,7 @@ CMModel >> selectCellsInRectangleOriginCell: cell1 cornerCell: cell2 [
 
 { #category : 'accessing - entities' }
 CMModel >> selectCellsOfColumn: colNumber [
+	<api>
 	"Purpose: return a collection of the cells belonging to the specified column of the spatial grid.
 	Arguments: colNumber   <Integer> colNumber = Positive Integer
 	Example: self ask: (self selectCellsOfColumn: 2) toDo: #flash"
@@ -1337,6 +1412,7 @@ CMModel >> selectCellsOfColumn: colNumber [
 
 { #category : 'accessing - entities' }
 CMModel >> selectCellsOfLine: lineNumber [
+	<api>
 	"Purpose: return a collection of the cells belonging to the specified line of the spatial grid.
 	Arguments : lineNumber   <Integer> lineNumber = Positive Integer
 	Example: self ask: (self selectCellsOfLine: 2) toDo: #flash"
@@ -1404,7 +1480,8 @@ CMModel >> spaceModel: aSpaceModel [
 
 { #category : 'control' }
 CMModel >> stepAsynchronously [
-	"Purpose: To active the transition function and to update asynchronously a cellular automata"
+	<api>
+	<doc: 'Purpose: To active the transition function and to update asynchronously a cellular automata'>
 	
 	self cells do: [ :each | 
 		each newState.
@@ -1441,8 +1518,9 @@ CMModel >> stepEntitiesRandom: aCollecOrClass [
 
 { #category : 'as yet unclassified' }
 CMModel >> stepSynchronously [
-	"Purpose: To active the transition function and to update synchronously a cellular automata
-Example: See the mosdels Conway http://cormas.cirad.fr/en/applica/conway.htm or Fire http://cormas.cirad.fr/en/applica/fireautomata.htm "
+	<api>
+	<doc: 'Purpose: To active the transition function and to update synchronously a cellular automata
+Example: See the mosdels Conway http://cormas.cirad.fr/en/applica/conway.htm or Fire http://cormas.cirad.fr/en/applica/fireautomata.htm'>
 	
 	self cells do: [:a | a newState].
 	self cells do: [:a | a updateState]
@@ -1466,6 +1544,7 @@ CMModel >> stepSynchronouslyCA: t [
 
 { #category : 'accessing - entities' }
 CMModel >> upperLeftCell [
+	<api>
 	"Purpose: returns the cell located at the upper left location of the spatial grid"
 
 	^ self spaceModel upperLeftCell
@@ -1473,6 +1552,7 @@ CMModel >> upperLeftCell [
 
 { #category : 'accessing - entities' }
 CMModel >> upperRightCell [
+	<api>
 	"Purpose: return the cell located at the upper right location of the spatial grid"
 
 	^ self spaceModel upperRightCell
@@ -1480,6 +1560,7 @@ CMModel >> upperRightCell [
 
 { #category : 'utilities - space metrics' }
 CMModel >> wayFromCell: cell1 toCell: cell2 [
+	<api>
 	"Purpose: return a collection of cells from cell1 to cell2 (including cell1 and cell2)"
 	
 	^self spaceModel wayFromCell: cell1 toCell: cell2
