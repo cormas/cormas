@@ -105,8 +105,8 @@ CMMockModel >> initFixed [
 	cow := self newEntity: CMMockCow.
 	goat := self newEntity: CMMockGoat.
 	
-	cow moveTo: (self pickCellAt: 1 @ 2).
-	goat moveTo: (self pickCellAt: 3 @ 3).
+	cow moveTo: (self cellAt: 2 at: 1).
+	goat moveTo: (self cellAt: 3 at: 3).
 ]
 
 { #category : 'init' }
@@ -157,7 +157,7 @@ CMMockModel >> initializeCellsFromMatrix [
 	1 to: self numberOfRows do: [ :i | 
 		1 to: self numberOfColumns do: [ :j | 
 			matrixCellValue := (self cellMatrix at: i) at: j.
-			modelCell := self pickCellAt: j @ i.
+			modelCell := self cellAt: i at: j.
 			
 			matrixCellValue = 0 ifTrue: [ modelCell initDead ].
 			matrixCellValue = 1 ifTrue: [ modelCell initAlive ] ] ]

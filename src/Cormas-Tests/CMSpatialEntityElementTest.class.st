@@ -24,7 +24,7 @@ CMSpatialEntityElementTest >> testMoveTowardsConstraintOnPath [
 	| agent destination expectedPathOfIds |
 	
 	agent := (model @@ CMMockCow) anyOne.
-	destination := model pickCellAt: 3 @ 2.
+	destination := model cellAt: 2 at: 3.
 	
 	expectedPathOfIds := #(5 9 14 11 7) asOrderedCollection.
 	
@@ -40,8 +40,8 @@ CMSpatialEntityElementTest >> testWayToConstrained [
 
 	| origin destination path pathOfIds expectedPathOfIds |
 	
-	origin := model pickCellAt: 1 @ 2.
-	destination := model pickCellAt: 3 @ 2.
+	origin := model cellAt: 2 at: 1.
+	destination := model cellAt: 2 at: 3.
 	
 	path := origin wayTo: destination constraint: [ :cell | cell isAliveCell ].
 	pathOfIds := path collect: [ :cell | cell id ].

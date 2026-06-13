@@ -412,6 +412,14 @@ This method is a convenient shortcut for `#allEntitiesOfClass:` and can be used 
 { #category : 'operations' }
 CMModel >> @@? aClass [
 	<api>
+	<argument: #aClass type: #Class description: 'The entity class to retrieve'>
+	<returnType: #OrderedCollection description: 'All entities of the specified class in random order'>
+	<doc: 'Answer a randomly shuffled collection containing all entities of the given class.
+
+This method is equivalent to `@@` but randomizes the order of the returned entities. It is useful when iterating over agents in a random order to avoid biases caused by a fixed activation sequence.'>
+	<example: '(self @@? Farmer) do: [ :farmer | farmer step ]'>
+	<example: '(self @@? Plot) do: #growBiomass'>
+	<seeAlso: #(@@ allEntitiesOfClass: entitiesOfClass: shuffled:)>
 	
 	^ self shuffled: (self @@ aClass)
 ]
@@ -453,15 +461,18 @@ CMModel >> agents [
 { #category : 'accessing - entities' }
 CMModel >> allEntitiesOfClass: aClass [
 	<api>
-	" Answer a <Collection> of all the instances of aClass (and sub classes) collected by cormasModel. 
-	Usefull for abstract classes
+	<argument: #aClass type: #Class description: 'The entity class whose instances should be retrieved'>
+	<returnType: #OrderedCollection description: 'All entities that are instances of the specified class or any of its subclasses'>
+	<doc: 'Answer a collection containing all entities that are instances of the given class or any of its subclasses.
 
-	Example: (self allTheEntities: Forager) is returning all the instances of restrained and unrestrained foragers "
+Unlike #entitiesOfClass:, which only returns direct instances of the specified class, this method traverses the class hierarchy and collects instances of all subclasses as well. This is particularly useful when working with abstract entity classes.
+
+For example, if Forager has two subclasses, RestrainedForager and UnrestrainedForager, then `self allEntitiesOfClass: Forager` will return instances of both subclasses.'>
+	<example: 'self allEntitiesOfClass: Forager'>
+	<seeAlso: #(entitiesOfClass: @@ entities agents cells)>
 	
-	| coll |
-	coll := OrderedCollection new.
-	aClass withAllSubclasses do: [:cl | cl isAbstract ifFalse: [coll addAll: (self entitiesOfClass: cl)]].
-	^ coll
+	^ aClass withAllSubclasses flatCollect: [ :eachClass |
+		self entitiesOfClass: eachClass ].
 ]
 
 { #category : 'accessing' }
@@ -473,15 +484,25 @@ CMModel >> allParameters [
 { #category : 'accessing - entities' }
 CMModel >> cellAt: index [
 	<api>
+	<argument: #index type: #Integer description: 'The position of the cell in the grid enumeration'>
+	<returnType: #CMCell description: 'The cell at the specified index'>
+	<doc: 'Answer the cell located at the given index in the grid.
+
+This method accesses cells using a single linear index rather than row and column coordinates. The exact ordering depends on the spatial grid implementation.
+
+Use #cellAt:at: when you know the row and column coordinates of a cell. Use #cellAtId: when you need to retrieve a cell by its unique identifier.'>
+	<example: 'self cellAt: 1'>
+	<example: 'self cellAt: 100'>
+	<seeAlso: #(cellAt:at: cellAtId:)>
 	
 	^ self spaceModel cellAt: index
 ]
 
-{ #category : 'accessing' }
+{ #category : 'accessing - entities' }
 CMModel >> cellAt: aRowIndex at: aColumnIndex [ 
 	<api>
-	<argumentType: #Integer description: 'Row index of a cell'>
-	<argumentType: #Integer description: 'Column index of a cell'>
+	<argument: #aRowIndex type: #Integer description: 'Row index of a cell'>
+	<argument: #aColumnIndex type: #Integer description: 'Column index of a cell'>
 	<returnType: #CMCell description: 'The cell located at the specified coordinates'>
 	<doc: 'Answer the spatial cell located at the given row and column indices.
 The first argument specifies the row and the second argument specifies the column. Indices start at 1.'>
@@ -494,6 +515,15 @@ The first argument specifies the row and the second argument specifies the colum
 { #category : 'accessing - entities' }
 CMModel >> cellAtId: id [
 	<api>
+	<argument: #id type: #Integer description: 'The unique identifier of the cell'>
+	<returnType: #CMCell description: 'The cell with the specified identifier'>
+	<doc: 'Answer the cell with the given identifier.
+
+Cell identifiers are stable identifiers assigned to cells when they are created. This method is useful when cell references have been stored, exchanged, or serialized using their identifiers.
+
+Use #cellAt:at: to retrieve a cell by its row and column coordinates. Use #cellAt: to retrieve a cell by its position in the grid enumeration.'>
+	<example: 'self cellAtId: 42'>
+	<seeAlso: #(cellAt:at: cellAt:)>
 	
 	^ self spaceModel cellAtId: id
 ]
@@ -830,7 +860,14 @@ Categories are defined by distinct values of the specified attribute. A value cl
 { #category : 'accessing - entities' }
 CMModel >> entities [
 	<api>
-	<doc: 'Returns a collection of all instances of the subclasses of CMEntity collected by cormasModel'>
+	<returnType: #OrderedCollection description: 'All entities currently present in the model'>
+	<doc: 'Answer a collection containing all entities managed by the model, including agents, cells, aggregates, and any other subclasses of CMEntity.
+
+This method is useful when performing operations on all entities regardless of their specific type.'>
+	<example: 'self entities'>
+	<example: 'self entities size'>
+	<example: 'self entities do: [ :each | each step ]'>
+	<seeAlso: #(entitiesOfClass: allEntitiesOfClass: @@ @@? agents cells)>
 	
 	^ (self class allEntityClasses flatCollect: [ :each |
 		self entitiesOfClass: each]) asOrderedCollection
@@ -840,16 +877,16 @@ CMModel >> entities [
 CMModel >> entitiesOfClass: aClass [
 	<api>
 	<argument: #aClass type: #Class description: 'The entity class to retrieve. Must be a subclass of #CMEntity'>
-	<returnType: #OrderedCollection description: 'All entities that are instances of the specified class'>
-	<doc: 'Answer a collection containing all entities of the given class.
+	<returnType: #OrderedCollection description: 'All entities that are direct instances of the specified class'>
+	<doc: 'Answer a collection containing all entities of the given class registered in this model.
 
-Use this method to retrieve all instances of a particular entity class currently present in the model. The answer may contain agents, cells, or any other type of entity depending on the class provided.
+Use this method to retrieve all instances of the specified class that were created by the model. The answer may contain agents, cells, or any other type of entity depending on the class provided.
 
-You can also use a shorter method `@@` which does the same'>
+Unlike #allEntitiesOfClass:, this method does not include instances of subclasses.'>
 	<example: 'self entitiesOfClass: Farmer'>
 	<example: 'self entitiesOfClass: Plot'>
 	<example: '(self entitiesOfClass: Farmer) size'>
-	<seeAlso: #(@@ agents cells)>
+	<seeAlso: #(allEntitiesOfClass: @@ entities agents cells)>
 
 	^ entities
 		at: aClass
@@ -1025,15 +1062,6 @@ CMModel >> newEntity: aClass locatedAt: aCell [
 CMModel >> parameters [
 
 	^ self class parameters
-]
-
-{ #category : 'accessing - entities' }
-CMModel >> pickCellAt: aPointLocation [
-	<api>
-	"Purpose: return a spatialEntityElement (aCell) picked randomly from the spatial grid.
-	Example: self pickCell"
-
-	^ self cells detect: [ : cellEntity | cellEntity coordinates = aPointLocation ]
 ]
 
 { #category : 'accessing - entities' }
