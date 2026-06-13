@@ -194,7 +194,7 @@ CMDocumentationBrowser >> initializeWindow: aWindowPresenter [
 	
 	aWindowPresenter 
 		title: 'Cormas Method Documentation';
-		initialExtent: 830@600.
+		initialExtent: 860@600.
 ]
 
 { #category : 'tool controlling' }

@@ -56,17 +56,18 @@ CMMockModel >> cellMatrix [
 ]
 
 { #category : 'init' }
-CMMockModel >> init [ 
+CMMockModel >> init [
+
 	<init>
 	self initEmpty.
-		
+
 	self
-		createN: self initialNumberOfCows
-		randomlyLocatedAloneEntities: CMMockCow.
-		
+		create: self initialNumberOfCows
+		randomlyLocatedAloneEntitiesOfClass: CMMockCow.
+
 	self
-		createN: self initialNumberOfGoats
-		randomlyLocatedAloneEntities: CMMockGoat.
+		create: self initialNumberOfGoats
+		randomlyLocatedAloneEntitiesOfClass: CMMockGoat
 ]
 
 { #category : 'init' }

@@ -403,7 +403,7 @@ CMModel >> @@ aClass [
 	<doc: 'Answer all entities of the given class and its subclasses.
 This method is a convenient shortcut for `#allEntitiesOfClass:` and can be used to write concise model code.'>
 	<example: 'self @@ Farmer'>
-	<example: 'self @@ Plot'>
+	<example: '(self @@ Plot) do: #growCarrots'>
 	<seeAlso: #(@@? allEntitiesOfClass: entitiesOfClass: entities agents cells)>
 	
 	^ self allEntitiesOfClass: aClass 
@@ -559,6 +559,59 @@ CMModel >> classSideParameters [
 	^ self class classSideParameters 
 ]
 
+{ #category : 'instance creation - agents & objects' }
+CMModel >> create: aNumber entitiesOfClass: aClass [
+	<api>
+	<doc: 'Return a collection of aNumber of entities of aClass for wich the init method has been send.'>
+	<example: 'self create: 10 entitiesOfClass: Predator'>
+	
+	^ (1 to: aNumber) collect: [ :i | 
+		self newEntity: aClass ]
+]
+
+{ #category : 'instance creation - agents & objects' }
+CMModel >> create: aNumber randomlyLocatedAloneEntitiesOfClass: aClass [
+	<api>
+	<doc: 'Return a collection of aNumber of entities of aClass.
+	The new entities are randomly located on the free cells of the grid.'>
+	<example: 'self create: 10 randomlyLocatedAloneEntitiesOfClass: Predator'>
+	
+	^ self
+		create: aNumber
+		randomlyLocatedEntitiesOfClass: aClass
+		constrainedBy: [ :cell | cell hasNoOccupants ]
+]
+
+{ #category : 'instance creation - agents & objects' }
+CMModel >> create: aNumber randomlyLocatedEntitiesOfClass: aClass [
+	<api>
+	<doc: 'Answer a Collection of aNumber of entities of aClass. The new entities are randomly located on the grid.'>
+	<example: 'self create: 10 randomlyLocatedEntitiesOfClass: Predator'>
+	
+	| newEntities |
+	newEntities := self create: aNumber entitiesOfClass: aClass.
+	newEntities do: [ :each | each moveTo: self pickRandomCell ].
+	^ newEntities
+]
+
+{ #category : 'instance creation - agents & objects' }
+CMModel >> create: aNumber randomlyLocatedEntitiesOfClass: aClass constrainedBy: aBlock [
+	<api>
+	<doc: 'Answer a Collection of aNumber of entities of aClass. The new entities are randomly located on the grid on cells that verify the constraint.'> 
+	<example: 'self create: 10 randomlyLocatedEntitiesOfClass: Predator constrainedBy: [ :cell | cell hasNoOccupants and: [ cell energy > 1 ] ]'>
+	
+	| newEntities targetCell |
+	newEntities := self create: aNumber entitiesOfClass: aClass.
+	
+	newEntities do: [ :each | 
+		(targetCell := self pickRandomCellConstrainedBy: aBlock) 
+			ifNil: [ self error: 'No available cell for the constraint. The simulation will stop' ].
+			
+		each moveTo: targetCell ].
+	
+	^ newEntities
+]
+
 { #category : 'instance creation - aggregates' }
 CMModel >> createAggregate: aggregateClass from: aCollectionOfSpatialEntities [
 	<api>
@@ -669,190 +722,50 @@ CMModel >> createGridNumberOfRows: aNumberOfRows numberOfColumns: aNumberOfColum
 
 { #category : 'instance creation - agents & objects' }
 CMModel >> createN: aNumber entity: aClass [
-	"Return a collection of aNumber of entities of aClass for wich the init method has been send.
-	ex: self createN: 10 entity: Predator "
-	
-	^self createN: aNumber entity: aClass initMethod: #init arguments: #()
-]
 
-{ #category : 'instance creation - agents & objects' }
-CMModel >> createN: aNumber entity: aClass initMethod: aSymbol [
-	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' has been send.
-	ex: self createN: 10 entity: Predator initMethod: #initAge"
-	
-	^self createN: aNumber entity: aClass initMethod: aSymbol arguments: #()
-]
-
-{ #category : 'instance creation - agents & objects' }
-CMModel >> createN: aNumber entity: aCMEntityClass initMethod: aSymbol arguments: anArray [
-	"Return a collection of aNumber of entities of aCMEntityClass for wich the init method 'aSymbol' with a set of arguments 'anArray' has been send.
-	ex: self createN: 10 entity: Predator initMethod: #initAge:energy: arguments: #(0 50) "
-
-	| args |
-	args := anArray asArray.
-	^ (1 to: aNumber)
-		collect: [ :i | 
-			(self newEntity: aCMEntityClass)
-				perform: aSymbol withArguments: args;
-				yourself ]
+	self
+		deprecated: 'Method renamed. Use #create:entitiesOfClass: instead'
+		transformWith:
+			'`@rec createN: `@arg1 entity: `@arg2' ->
+			'`@rec create: `@arg1 entitiesOfClass: `@arg2'.
+		
+	^ self create: aNumber entitiesOfClass: aClass
 ]
 
 { #category : 'instance creation - agents & objects' }
 CMModel >> createN: aNumber randomlyLocatedAloneEntities: aClass [
-	"Return a collection of aNumber of entities of aClass for wich the 'init' method has been send.
-	The new entities are randomly located on the free cells of the grid.
-	ex: self createN: 10 randomlyLocatedAloneEntities: Predator"
 	
-	self createN: aNumber randomlyLocatedAloneEntities: aClass initMethod:
-			#init arguments: #()
-]
-
-{ #category : 'instance creation - agents & objects' }
-CMModel >> createN: aNumber randomlyLocatedAloneEntities: aClass initMethod: aSymbol [
-	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' has been send.
-	The new entities are randomly located on the free cells of the grid.
-	ex: self createN: 10 randomlyLocatedAloneEntities: Predator initMethod: #initAge  "
-	
-	^self createN: aNumber randomlyLocatedAloneEntities: aClass initMethod:
-			aSymbol arguments: #()
-]
-
-{ #category : 'instance creation - agents & objects' }
-CMModel >> createN: aNumber randomlyLocatedAloneEntities: aClass initMethod: aSymbol arguments: aCollec [
-
-	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' with a set of arguments 'aCollec' has been send.
-	The new entities are randomly located on the free cells of the grid.
-	ex: self createN: 10 randomlyLocatedAloneEntities: Predator initMethod: #initAge:energy: arguments: #(0 50) "
-
-	| a freeCell newEntities |
-	newEntities := OrderedCollection new.
-	aNumber timesRepeat: [ 
-		(freeCell := self pickRandomUnoccupiedCell) ifNil: [ self error: 'No free cell. The simulation will stop' ].
-		a := self newEntity: aClass.
-		a moveTo: freeCell.
-		a perform: aSymbol withArguments: aCollec.
-		newEntities add: a ].
-	^ newEntities
+	self
+		deprecated: 'Method renamed. Use #create:randomlyLocatedAloneEntitiesOfClass: instead'
+		transformWith:
+			'`@rec createN: `@arg1 randomlyLocatedAloneEntities: `@arg2' -> 
+			'`@rec create: `@arg1 randomlyLocatedAloneEntitiesOfClass: `@arg2'.
+			
+	^ self create: aNumber randomlyLocatedAloneEntitiesOfClass: aClass
 ]
 
 { #category : 'instance creation - agents & objects' }
 CMModel >> createN: aNumber randomlyLocatedEntities: aClass [
-	" Answer a <Collection> of aNumber of entities of aClass for wich the 'init' method 'has been send.
-	The new entities are randomly located on the grid. ex: 
 	
-	self createN: 10 randomlyLocatedEntities: Predator
-	"
-	
-	^ self 
-		createN: aNumber 
-		randomlyLocatedEntities: aClass 
-		initMethod: #init
+	self
+		deprecated: 'Method renamed. Use #create:randomlyLocatedEntitiesOfClass: instead'
+		transformWith:
+			'`@rec createN: `@arg1 randomlyLocatedEntities: `@arg2' ->
+			'`@rec create: `@arg1 randomlyLocatedEntitiesOfClass: `@arg2'.
+			
+	^ self create: aNumber randomlyLocatedEntitiesOfClass: aClass
 ]
 
 { #category : 'instance creation - agents & objects' }
 CMModel >> createN: aNumber randomlyLocatedEntities: aClass constrainedBy: aBlock [
-	" Answer a <Collection> of aNumber of entities of aClass for wich the init method 'aSymbol' has been send.
-	The new entities are randomly located on the grid on cells that verify the constraint. ex: 
 	
-	self createN: 10 randomlyLocatedEntities: Predator constrainedBy: [:c | c noOccupant and: [c energy > 1]]
-	"
-	
-	^ self 
-		createN: aNumber 
-		randomlyLocatedEntities: aClass 
-		initMethod: #init
-		arguments: #() 
-		constrainedBy: aBlock
-]
-
-{ #category : 'instance creation - agents & objects' }
-CMModel >> createN: aNumber randomlyLocatedEntities: aClass initMethod: aSymbol [
-	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' has been send.
-	The new entities are randomly located on the grid.
-	ex: self createN: 10 randomlyLocatedEntities: Predator initMethod: #initAge "
-
-	^ self
-		createN: aNumber
-		randomlyLocatedEntities: aClass
-		initMethod: aSymbol
-		arguments: #()
-]
-
-{ #category : 'instance creation - agents & objects' }
-CMModel >> createN: aNumber randomlyLocatedEntities: aClass initMethod: aSymbol arguments: aCollec [
-	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' with a set of arguments 'aCollec' has been send. 
-	The new entities are randomly located on the grid.
-	ex: self createN: 10 randomlyLocatedEntities: Predator initMethod: #initAge:energy: arguments: #(0 50) "
-
-	| anAgent newEntities |
-	newEntities := OrderedCollection new.
-	aNumber
-		timesRepeat: [ anAgent := self newEntity: aClass.
-			anAgent moveTo: self pickRandomCell.
-			anAgent perform: aSymbol withArguments: aCollec.
-			newEntities add: anAgent ].
-	^ newEntities
-]
-
-{ #category : 'instance creation - agents & objects' }
-CMModel >> createN: aNumber randomlyLocatedEntities: aClass initMethod: aSymbol arguments: aCollec constrainedBy: aBlock [
-
-	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' with a set of arguments 'aCollec' has been send.
-	The new entities are randomly located on the free cells of the grid.
-	ex: self createN: 10 randomlyLocatedEntities: Predator initMethod: #initAge constrainedBy: [:aCell | aCell energy > 1] "
-
-	| a targetCell newEntities |
-	newEntities := OrderedCollection new.
-	aNumber timesRepeat: [ 
-		(targetCell := self pickRandomCellConstrainedBy: aBlock) 
-			ifNil: [ self error: 'No available cell for the constraint. The simulation will stop' ].
-		a := self newEntity: aClass.
-		a moveTo: targetCell.
-		a perform: aSymbol withArguments: aCollec.
-		newEntities add: a ].
-	^ newEntities
-]
-
-{ #category : 'instance creation - agents & objects' }
-CMModel >> createN: aNumber randomlyLocatedEntitiesFrom: aCollectionOfClasses [
-	"Return a collection of aNumber of entities of aClass for wich the 'init' method 'has been send.
-	The new entities are randomly located on the grid.
-	ex: self createN: 10 randomlyLocatedEntities: Predator"
-	
-	^ self 
-		createN: aNumber 
-		randomlyLocatedEntitiesFrom: aCollectionOfClasses 
-		initMethod: #init
-]
-
-{ #category : 'instance creation - agents & objects' }
-CMModel >> createN: aNumber randomlyLocatedEntitiesFrom: aCollectionOfClasses initMethod: aSymbol [
-	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' has been send.
-	The new entities are randomly located on the grid.
-	ex: self createN: 10 randomlyLocatedEntities: Predator initMethod: #initAge "
-
-	^ self
-		createN: aNumber 
-		randomlyLocatedEntitiesFrom: aCollectionOfClasses 
-		initMethod: aSymbol 
-		arguments: #()
-]
-
-{ #category : 'instance creation - agents & objects' }
-CMModel >> createN: aNumber randomlyLocatedEntitiesFrom: aCollectionOfClasses initMethod: aSymbol arguments: aCollec [
-	"Return a collection of aNumber of entities of aClass for wich the init method 'aSymbol' with a set of arguments 'aCollec' has been send. 
-	The new entities are randomly located on the grid.
-	ex: self createN: 10 randomlyLocatedEntities: Predator initMethod: #initAge:energy: arguments: #(0 50) "
-
-	| anAgent newEntities |
-	newEntities := OrderedCollection new.
-	aNumber
-		timesRepeat: [ 
-			anAgent := self newEntity: aCollectionOfClasses atRandom.
-			anAgent moveTo: self pickRandomCell.
-			anAgent perform: aSymbol withArguments: aCollec.
-			newEntities add: anAgent ].
-	^ newEntities
+	self
+		deprecated: 'Method renamed. Use #create:randomlyLocatedEntitiesOfClass:constrainedBy: instead'
+		transformWith:
+			'`@rec createN: `@arg1 randomlyLocatedEntities: `@arg2 constrainedBy: `@arg3' ->
+			'`@rec create: `@arg1 randomlyLocatedEntitiesOfClass: `@arg2 constrainedBy: `@arg3'.
+			
+	^ self create: aNumber randomlyLocatedEntitiesOfClass: aClass constrainedBy: aBlock
 ]
 
 { #category : 'accessing' }
