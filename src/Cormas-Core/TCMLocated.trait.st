@@ -4,8 +4,6 @@ Trait {
 		'cell',
 		'positionInCell'
 	],
-	#traits : 'TCMRandom',
-	#classTraits : 'TCMRandom classTrait',
 	#category : 'Cormas-Core-Traits',
 	#package : 'Cormas-Core',
 	#tag : 'Traits'

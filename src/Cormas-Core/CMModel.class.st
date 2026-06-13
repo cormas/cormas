@@ -562,8 +562,14 @@ CMModel >> classSideParameters [
 { #category : 'instance creation - agents & objects' }
 CMModel >> create: aNumber entitiesOfClass: aClass [
 	<api>
-	<doc: 'Return a collection of aNumber of entities of aClass for wich the init method has been send.'>
+	<argument: #aNumber type: #Integer description: 'The number of entities to create'>
+	<argument: #aClass type: #Class description: 'The entity class to instantiate'>
+	<returnType: #OrderedCollection description: 'The newly created entities'>
+	<doc: 'Create and answer a collection containing the specified number of entities of the given class.
+
+Each entity is created using #newEntity:, which initializes it, registers it in the model, and performs the required Cormas-specific setup.'>
 	<example: 'self create: 10 entitiesOfClass: Predator'>
+	<seeAlso: #(newEntity: create:randomlyLocatedEntitiesOfClass: create:randomlyLocatedAloneEntitiesOfClass: create:randomlyLocatedEntitiesOfClass:constrainedBy:)>
 	
 	^ (1 to: aNumber) collect: [ :i | 
 		self newEntity: aClass ]
@@ -572,9 +578,16 @@ CMModel >> create: aNumber entitiesOfClass: aClass [
 { #category : 'instance creation - agents & objects' }
 CMModel >> create: aNumber randomlyLocatedAloneEntitiesOfClass: aClass [
 	<api>
-	<doc: 'Return a collection of aNumber of entities of aClass.
-	The new entities are randomly located on the free cells of the grid.'>
+	<argument: #aNumber type: #Integer description: 'The number of entities to create'>
+	<argument: #aClass type: #Class description: 'The entity class to instantiate'>
+	<returnType: #OrderedCollection description: 'The newly created and located entities'>
+	<doc: 'Create and answer a collection containing the specified number of entities of the given class.
+
+Each entity is created using #newEntity: and then placed on a randomly selected cell that contains no occupants. As a result, no two created entities will be located on the same cell.
+
+An error is raised if there are not enough free cells available to place all entities.'>
 	<example: 'self create: 10 randomlyLocatedAloneEntitiesOfClass: Predator'>
+	<seeAlso: #(newEntity: create:entitiesOfClass: create:randomlyLocatedEntitiesOfClass: create:randomlyLocatedEntitiesOfClass:constrainedBy:)>
 	
 	^ self
 		create: aNumber
@@ -585,8 +598,14 @@ CMModel >> create: aNumber randomlyLocatedAloneEntitiesOfClass: aClass [
 { #category : 'instance creation - agents & objects' }
 CMModel >> create: aNumber randomlyLocatedEntitiesOfClass: aClass [
 	<api>
-	<doc: 'Answer a Collection of aNumber of entities of aClass. The new entities are randomly located on the grid.'>
+	<argument: #aNumber type: #Integer description: 'The number of entities to create'>
+	<argument: #aClass type: #Class description: 'The entity class to instantiate'>
+	<returnType: #OrderedCollection description: 'The newly created and located entities'>
+	<doc: 'Create and answer a collection containing the specified number of entities of the given class.
+
+Each entity is created using #newEntity: and then placed on a randomly selected cell of the spatial grid. Multiple entities may be located on the same cell if the model allows it. If you want to make sure that there is never more than one entity per cell, use #create:randomlyLocatedAloneEntitiesOfClass: instead.'>
 	<example: 'self create: 10 randomlyLocatedEntitiesOfClass: Predator'>
+	<seeAlso: #(newEntity: create:entitiesOfClass: create:randomlyLocatedAloneEntitiesOfClass: create:randomlyLocatedEntitiesOfClass:constrainedBy:)>
 	
 	| newEntities |
 	newEntities := self create: aNumber entitiesOfClass: aClass.
@@ -597,8 +616,17 @@ CMModel >> create: aNumber randomlyLocatedEntitiesOfClass: aClass [
 { #category : 'instance creation - agents & objects' }
 CMModel >> create: aNumber randomlyLocatedEntitiesOfClass: aClass constrainedBy: aBlock [
 	<api>
-	<doc: 'Answer a Collection of aNumber of entities of aClass. The new entities are randomly located on the grid on cells that verify the constraint.'> 
+	<argument: #aNumber type: #Integer description: 'The number of entities to create'>
+	<argument: #aClass type: #Class description: 'The entity class to instantiate'>
+	<argument: #aBlock type: #BlockClosure description: 'A predicate evaluated on cells. Only cells for which the block answers true may be selected'>
+	<returnType: #OrderedCollection description: 'The newly created and located entities'>
+	<doc: 'Create and answer a collection containing the specified number of entities of the given class.
+
+Each entity is created using #newEntity: and then placed on a randomly selected cell that satisfies the given constraint. The constraint block is evaluated on candidate cells and must answer true for a cell to be eligible.
+
+An error is raised if no cell satisfies the constraint while placing an entity.'>
 	<example: 'self create: 10 randomlyLocatedEntitiesOfClass: Predator constrainedBy: [ :cell | cell hasNoOccupants and: [ cell energy > 1 ] ]'>
+	<seeAlso: #(newEntity: create:entitiesOfClass: create:randomlyLocatedEntitiesOfClass: create:randomlyLocatedAloneEntitiesOfClass:)>
 	
 	| newEntities targetCell |
 	newEntities := self create: aNumber entitiesOfClass: aClass.
@@ -801,7 +829,8 @@ Categories are defined by distinct values of the specified attribute. A value cl
 
 { #category : 'accessing - entities' }
 CMModel >> entities [
-	"Returns a collection of all instances of the subclasses of CMEntity collected by cormasModel"
+	<api>
+	<doc: 'Returns a collection of all instances of the subclasses of CMEntity collected by cormasModel'>
 	
 	^ (self class allEntityClasses flatCollect: [ :each |
 		self entitiesOfClass: each]) asOrderedCollection
