@@ -128,7 +128,9 @@ CMDocumentationBrowser >> connectPresenters [
 				ifTrue: [ self showAllMethodsOfClass: classesDroplist selectedItem ]
 				ifFalse: [ self showMethodsOfProtocol: aProtocol ] ] ].
 	
-	methodsList whenSelectedItemChangedDo: [ :method |
+	methodsList whenSelectionChangedDo: [ :selection |
+		| method |
+		method := selection selectedItem.
 		method ifNotNil: [ self showMethod: method ] ].
 	
 	classesDroplist selectItem: classesDroplist items first.
@@ -186,7 +188,7 @@ CMDocumentationBrowser >> initializePresenters [
 		placeholder: 'all methods' respondingTo: #name;
 		yourself.
 		
-	methodsList := self newList
+	methodsList := self newFilteringList
 		display: [ :each | each selector ];
 		displayIcon: [ :each | self iconNamed: #help ];
 		yourself.
