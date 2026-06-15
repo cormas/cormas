@@ -163,7 +163,10 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 	dataTable := self instantiate: CMDataPresenter.
 	dataTable columnNames: (self simulation activeProbes collect: #name).
 
-	notebook removeAll.
+	self flag: 'TODO'.
+	"This is a hack to avoid a nasty Spec bug. When we remove all pages after changing a nancy notebook page (a different presenter), it breaks because it can't find the model"
+	"notebook removeAll."
+	notebook pages size timesRepeat: [ notebook removePageAt: 1 ].
 
 	spacePage := SpNotebookPage
 		             title: 'Space'

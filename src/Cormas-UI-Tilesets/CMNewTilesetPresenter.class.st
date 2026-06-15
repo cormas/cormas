@@ -37,7 +37,7 @@ CMNewTilesetPresenter class >> exampleEmpty [
 CMNewTilesetPresenter class >> exampleForClass [
 
 	(self new
-		targetClass: CMTileset;
+		targetClass: CMDefaultTileset;
 		yourself) open
 ]
 
@@ -207,8 +207,7 @@ CMNewTilesetPresenter >> generateTargetClass [
 	
 	targetClassName := classNameInput text.
 	
-	targetClass := (Object << targetClassName asSymbol
-		traits: { TCMTileset };
+	targetClass := (CMTileset << targetClassName asSymbol
 		package: targetPackage name) install.
 ]
 

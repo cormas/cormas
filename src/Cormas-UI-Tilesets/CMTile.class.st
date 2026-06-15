@@ -35,6 +35,14 @@ CMTile class >> newFrom: aBase64String [
 		yourself
 ]
 
+{ #category : 'instance creation' }
+CMTile class >> newFromForm: aForm [
+
+	^ self new
+		initializeWithForm: aForm;
+		yourself
+]
+
 { #category : 'constants' }
 CMTile class >> smallExtent [
 
@@ -47,6 +55,24 @@ CMTile class >> verySmallExtent [
 	^ 15@15
 ]
 
+{ #category : 'arithmetic' }
+CMTile >> + aTile [
+
+	^ self class newFromForm: (self largeForm + aTile largeForm)
+		
+]
+
+{ #category : 'arithmetic' }
+CMTile >> add: aTile scaledDownTo: aProportion [
+
+	| topForm |
+	topForm := aTile largeForm.
+	topForm := topForm scaledToSize: (topForm extent * aProportion).
+	
+	^ self class newFromForm: (self largeForm + topForm)
+		
+]
+
 { #category : 'base64 conversion' }
 CMTile >> formFromBase64: aString [
 
@@ -56,8 +82,14 @@ CMTile >> formFromBase64: aString [
 { #category : 'initialization' }
 CMTile >> initializeWithBase64: aString [
 
+	self initializeWithForm: (self formFromBase64: aString)
+]
+
+{ #category : 'initialization' }
+CMTile >> initializeWithForm: aForm [
+
 	| originalForm |
-	originalForm := self formFromBase64: aString.
+	originalForm := aForm.
 	
 	largeForm := originalForm scaledToSize: self class largeExtent.
 	mediumForm := originalForm scaledToSize: self class mediumExtent.

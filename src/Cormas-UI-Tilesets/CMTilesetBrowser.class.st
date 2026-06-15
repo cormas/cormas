@@ -195,6 +195,6 @@ CMTilesetBrowser >> showTile: aTile [
 { #category : 'as yet unclassified' }
 CMTilesetBrowser >> showTilesets [
 
-	tilesetClassesList items: TCMTileset users asOrderedCollection.
+	tilesetClassesList items: CMTileset allSubclasses asOrderedCollection.
 	"tilesetClassesList items ifNotEmpty: [ tilesetClassesList selectIndex: 1 ]"
 ]

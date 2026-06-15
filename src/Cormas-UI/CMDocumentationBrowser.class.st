@@ -3,6 +3,7 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'classesDroplist',
+		'protocolDropList',
 		'methodsList',
 		'notebook',
 		'documentation',
@@ -119,9 +120,17 @@ CMDocumentationBrowser >> buildSeeAlsoStringFrom: aMethodDescription [
 CMDocumentationBrowser >> connectPresenters [
 
 	classesDroplist whenSelectedItemChangedDo: [ :aClass |
-		methodsList items: aClass publicMethods ].
+		self showProtocolsOfClass: aClass ].
 	
-	methodsList whenSelectedItemChangedDo: [ :method |
+	protocolDropList whenSelectedItemChangedDo: [ :aProtocol |
+		aProtocol ifNotNil: [
+			protocolDropList isPlaceholderSelected
+				ifTrue: [ self showAllMethodsOfClass: classesDroplist selectedItem ]
+				ifFalse: [ self showMethodsOfProtocol: aProtocol ] ] ].
+	
+	methodsList whenSelectionChangedDo: [ :selection |
+		| method |
+		method := selection selectedItem.
 		method ifNotNil: [ self showMethod: method ] ].
 	
 	classesDroplist selectItem: classesDroplist items first.
@@ -141,6 +150,10 @@ CMDocumentationBrowser >> defaultLayout [
 			add: (SpBoxLayout newTopToBottom
 				add: 'Select a class' expand: false;
 				add: classesDroplist expand: false;
+				yourself) expand: false;
+			add: (SpBoxLayout newTopToBottom
+				add: 'Protocol' expand: false;
+				add: protocolDropList expand: false;
 				yourself) expand: false;
 			add: (SpBoxLayout newTopToBottom
 				add: 'Public methods' expand: false;
@@ -170,7 +183,12 @@ CMDocumentationBrowser >> initializePresenters [
 		displayIcon: [ :each | self iconNamed: #class ];
 		yourself.
 		
-	methodsList := self newList
+	protocolDropList := (self instantiate: CMDropListWithPlaceholderPresenter)
+		display: [ :protocol | protocol name ];
+		placeholder: 'all methods' respondingTo: #name;
+		yourself.
+		
+	methodsList := self newFilteringList
 		display: [ :each | each selector ];
 		displayIcon: [ :each | self iconNamed: #help ];
 		yourself.
@@ -198,6 +216,12 @@ CMDocumentationBrowser >> initializeWindow: aWindowPresenter [
 ]
 
 { #category : 'tool controlling' }
+CMDocumentationBrowser >> showAllMethodsOfClass: aClass [
+	
+	methodsList items: aClass publicMethods
+]
+
+{ #category : 'tool controlling' }
 CMDocumentationBrowser >> showMethod: aMethod [
 
 	| methodDescription |
@@ -207,4 +231,30 @@ CMDocumentationBrowser >> showMethod: aMethod [
 	sourceCode text: methodDescription sourceCode.
 	
 	documentation documentFromString: (self buildDocumentationStringFrom: methodDescription)
+]
+
+{ #category : 'tool controlling' }
+CMDocumentationBrowser >> showMethodsOfProtocol: aProtocol [
+
+	| methods |
+	methods := classesDroplist selectedItem publicMethods.
+	
+	methods := methods select: [ :m |
+		m protocol name = aProtocol name ].
+	
+	methodsList items: methods
+]
+
+{ #category : 'tool controlling' }
+CMDocumentationBrowser >> showProtocolsOfClass: aClass [
+
+	| methods protocols |
+	methods := aClass publicMethods.
+	
+	protocols := (methods collect: #protocol) asSet asOrderedCollection
+		sorted: [ :a :b | a name < b name ].
+		
+	protocolDropList items: protocols.
+	
+	methodsList items: methods
 ]
