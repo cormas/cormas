@@ -20,7 +20,7 @@ CMEntityTest >> testAvailablePov [
 
 { #category : 'tests' }
 CMEntityTest >> testColorOfNumber [
-	self assert: (CMEntity colorOfNumber: 65) equals: Color purple
+	self assert: (CMColor colorOfNumber: 65) equals: Color purple
 ]
 
 { #category : 'tests' }
