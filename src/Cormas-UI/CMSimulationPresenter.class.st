@@ -5,6 +5,7 @@ Class {
 		'sidebar',
 		'simulationInitializerPresenter',
 		'stopConditionPresenter',
+		'randomNumbersPresenter',
 		'simulationRunner',
 		'whenWindowIsClosedHooks'
 	],
@@ -110,6 +111,7 @@ CMSimulationPresenter >> initializeFancyNotebook [
 CMSimulationPresenter >> initializePresenters [
 		
 	stopConditionPresenter := self instantiate: CMStopConditionPresenter.
+	randomNumbersPresenter := self instantiate: CMSimulationInitRandomPresenter. 
 	
 	simulationInitializerPresenter := (self instantiate: CMSimulationInitializerPresenter)
 		whenInitializeButtonClickedDo: [ :initSelector :controlSelector |
@@ -143,11 +145,11 @@ Reset the currentTimeStep and the data. Set the randomSeed"
 		
 	simulation stopWhen: stopConditionPresenter buildConditionBlock.
 		
-	simulationInitializerPresenter applyRandomNumberGeneratorSettings.
+	randomNumbersPresenter apply.
 	
 	simulation initializeSimulation.
 	simulationRunner updateWithSimulation.
-	simulationInitializerPresenter updatePresenter
+	randomNumbersPresenter showCurrentSettings
 ]
 
 { #category : 'initialization' }
@@ -176,6 +178,16 @@ CMSimulationPresenter >> settingsParameters [
 		title: 'Parameters'
 		icon: (self iconNamed: #configuration)
 		provider: [ self instantiate: CMParametersBrowserPresenter ]
+]
+
+{ #category : 'as yet unclassified' }
+CMSimulationPresenter >> settingsRandomNumbers [
+	<fancyNotebookPageOrder: 4>
+	
+	^ SpNotebookPage
+		title: 'Random number generator'
+		icon: CMIcons diceIcon
+		provider: [ randomNumbersPresenter ]
 ]
 
 { #category : 'as yet unclassified' }
