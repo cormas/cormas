@@ -254,19 +254,6 @@ CMEntity >> asString [
 	
 ]
 
-{ #category : 'accessing' }
-CMEntity >> cell [
-	
-	^nil
-]
-
-{ #category : 'displaying' }
-CMEntity >> center: x [
-	"do nothing"
-	
-	
-]
-
 { #category : 'as yet unclassified' }
 CMEntity >> classSideParameters [
 
