@@ -217,7 +217,7 @@ CMEntity >> cormasModel: aCMAbstractModel [
 
 { #category : 'accessing' }
 CMEntity >> currentTimeStep [
-
+	<api>
 	^ context currentTimeStep
 ]
 
@@ -235,33 +235,6 @@ CMEntity >> destroyed [
 	self subclassResponsibility
 ]
 
-{ #category : 'displaying' }
-CMEntity >> getInfoFor: aSelectorName [
-	"Returns a String according to the aSelectorName.
-aSelectorName = <ByteSymbol>."
-	
-	| info |
-	aSelectorName = #nil ifTrue: [^''].
-	aSelectorName ifNil: [^''].
-	info := self perform: aSelectorName.
-	info isString ifTrue: [^info].
-	info isSymbol ifTrue: [^info asString].
-	^info printString
-]
-
-{ #category : 'displaying' }
-CMEntity >> getPovResultFor: selectorName [
-	"Returns the povSymbol for a selectorName"
-	
-	selectorName ifNil: [^nil].
-	^selectorName = #nil
-		ifFalse:
-			[self perform: selectorName	"ifNil:
-					[Dialog warn: 'The pov metod #' , selectorName , ' did not return a symbol or a colorValue, but a nil value.
-This is not allowed!']"]
-		ifTrue: [selectorName]
-]
-
 { #category : 'accessing' }
 CMEntity >> group [
 
@@ -272,12 +245,6 @@ CMEntity >> group [
 CMEntity >> group: aGroup [
 
 	group := aGroup
-]
-
-{ #category : 'accessing' }
-CMEntity >> hasCustomShape [
-
-	^ false
 ]
 
 { #category : 'accessing' }
@@ -293,26 +260,20 @@ CMEntity >> id: aNumber [
 	id := aNumber
 ]
 
-{ #category : 'initialize-release' }
-CMEntity >> init [
-	
-	
-]
-
-{ #category : 'initialize-release' }
-CMEntity >> initId [
-	" Private - Set the receiver's internal identifier. "
-
-	self id: (self class currentId: self class currentId + 1)
-]
-
 { #category : 'initialization' }
 CMEntity >> initialize [
 
 	super initialize.
-	self initId.
+	self initializeEntityId.
 	self initializeInstanceSideParameters.
 	self class resetActivePovSelector
+]
+
+{ #category : 'initialize-release' }
+CMEntity >> initializeEntityId [
+	" Private - Set the receiver's internal identifier. "
+
+	self id: (self class currentId: self class currentId + 1)
 ]
 
 { #category : 'initialization' }
@@ -325,69 +286,6 @@ CMEntity >> initializeInstanceSideParameters [
 CMEntity >> instanceSideParameters [
 
 	^ self class instanceSideParameters
-]
-
-{ #category : 'printing' }
-CMEntity >> interestingDetails [
-	" Answer a <Collection> of interesting receiver's attributes, from a modeler point of view, to display in a popup for example "
-
-	^ { 
-		'Id: ' -> (self id)
-		}
-]
-
-{ #category : 'testing' }
-CMEntity >> isAgent [
-	
-	^false
-]
-
-{ #category : 'testing' }
-CMEntity >> isArcEntity [
-	
-	^false
-]
-
-{ #category : 'utilities - attributes' }
-CMEntity >> isAttributeValueABoolean: aSymbol [
-	
-	| aClass |
-	aClass := (self perform: aSymbol) class.
-	^aClass = Boolean or: [aClass inheritsFrom: Boolean]
-]
-
-{ #category : 'utilities - attributes' }
-CMEntity >> isAttributeValueANumber: aSymbol [
-	
-	| aClass |
-	aClass := (self perform: aSymbol) class.
-	^aClass = Number or: [aClass inheritsFrom: Number]	"or:[(aValue contains: [:char | char isDigit not and:[char ~= $.]]) not]"
-]
-
-{ #category : 'utilities - attributes' }
-CMEntity >> isAttributeValueASymbol: aSymbol [
-	
-	| aClass |
-	aClass := (self perform: aSymbol) class.
-	^aClass = Symbol or: [aClass inheritsFrom: Symbol]
-]
-
-{ #category : 'testing' }
-CMEntity >> isCellularAutomatonCell [
-	
-	^false
-]
-
-{ #category : 'testing' }
-CMEntity >> isCommunicatingEntity [
-	
-	^false
-]
-
-{ #category : 'testing' }
-CMEntity >> isCormasEntity [
-
-	^ true
 ]
 
 { #category : 'initialize-release' }
@@ -471,7 +369,7 @@ CMEntity >> printOn: aStream [
 
 { #category : 'as yet unclassified' }
 CMEntity >> simulationContext [
-
+	<api>
 	^ context 
 ]
 

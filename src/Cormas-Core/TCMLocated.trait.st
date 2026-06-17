@@ -179,15 +179,6 @@ Return value: <Integer>"
 		ifTrue: [^self cell distanceTo: aSpatialEntityOrSituatedEntity]
 ]
 
-{ #category : 'printing' }
-TCMLocated >> interestingDetails [
-	" Answer a <Collection> of interesting receiver's attributes, from a modeler point of view, to display in a popup for example "
-
-	^ super interestingDetails , { 
-		'Coordinates ' -> (self coordinates asString)
-		}
-]
-
 { #category : 'testing' }
 TCMLocated >> isSituated [
 "Purpose: tests the location somewhere in the spatial grid"

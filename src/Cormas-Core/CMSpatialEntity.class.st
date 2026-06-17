@@ -300,16 +300,6 @@ CMSpatialEntity >> initialize [
 	aggregates := OrderedCollection new
 ]
 
-{ #category : 'printing' }
-CMSpatialEntity >> interestingDetails [
-	" Answer a <Collection> of interesting receiver's attributes, from a modeler point of view, to display in a popup for example "
-
-	^ super interestingDetails , { 
-		'Occupants: ' -> (self theOccupants size) . 
-		'Neighbours: ' -> (self neighbourhood size)
-		}
-]
-
 { #category : 'testing' }
 CMSpatialEntity >> isDead [
 	" See superimplementor's comment "

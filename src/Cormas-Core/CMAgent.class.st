@@ -48,21 +48,6 @@ CMAgent >> initialize [
 	isDead := false.
 ]
 
-{ #category : 'printing' }
-CMAgent >> interestingDetails [
-	" Answer a <Collection> of interesting receiver's attributes, from a modeler point of view, to display in a popup for example "
-
-	^ super interestingDetails , { 
-		'Dead: ' -> (self isDead asString)
-		}
-]
-
-{ #category : 'testing' }
-CMAgent >> isAgent [
-	
-	^ true
-]
-
 { #category : 'accessing' }
 CMAgent >> isAlive [
 
