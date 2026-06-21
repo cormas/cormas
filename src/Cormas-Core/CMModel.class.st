@@ -102,7 +102,7 @@ CMModel class >> availableInitSelectors [
 { #category : 'available probes' }
 CMModel class >> availableProbes [
 
-	^ (Pragma allNamed: #probeNamed:color: in: self) collect: [ :pragma |
+	^ (Pragma allNamed: #probeNamed:color: from: self to: CMModel) collect: [ :pragma |
 		CMProbe new
 			name: pragma arguments first;
 			colorString: pragma arguments second;
@@ -308,6 +308,12 @@ CMModel class >> modelFileExtension [
 CMModel class >> modelName [
 	"A string with a human-friendly model name. By default, returns the name of model class. Overrive this method to provide a name for your model"
 	^ self name
+]
+
+{ #category : 'as yet unclassified' }
+CMModel class >> modelsInThisImage [
+
+	^ (CMModel allSubclasses reject: #isDeprecated) copyWithout: CMMockModel
 ]
 
 { #category : 'accessing' }
@@ -828,6 +834,8 @@ CMModel >> createN: aNumber randomlyLocatedEntities: aClass constrainedBy: aBloc
 
 { #category : 'accessing' }
 CMModel >> currentTimeStep [
+	<probeNamed: 'Time step' color: '#000000'>
+	
 	<api>
 	<doc: 'Current time step of a simulation. This method can be used to change model behavior depending on the time step. For example, perform some action once every 30 steps.'>
 	
