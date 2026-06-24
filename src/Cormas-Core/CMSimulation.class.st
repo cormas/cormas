@@ -207,7 +207,7 @@ CMSimulation >> recordData [
 
 	data add:
 		(self activeProbes collect: [ :probe | probe name -> probe value ])
-			asDictionary 
+			asOrderedDictionary 
 ]
 
 { #category : 'simulation runner - running' }

@@ -102,12 +102,28 @@ CMModel class >> availableInitSelectors [
 { #category : 'available probes' }
 CMModel class >> availableProbes [
 
-	^ (Pragma allNamed: #probeNamed:color: from: self to: CMModel) collect: [ :pragma |
-		CMProbe new
-			name: pragma arguments first;
-			colorString: pragma arguments second;
-			selector: pragma methodSelector;
-			yourself ].
+	| allProbes timeStepProbe |
+	
+	allProbes := (Pragma allNamed: #probeNamed:color: from: self to: CMModel)
+		collect: [ :pragma |
+			CMProbe new
+				name: pragma arguments first;
+				colorString: pragma arguments second;
+				selector: pragma methodSelector;
+				yourself ].
+			
+	"Time step probe must be first in the list.
+	All other probes must be sorted bt names"
+	timeStepProbe := allProbes
+		detect: [ :probe | probe selector = #currentTimeStep ].
+		
+	allProbes := allProbes asOrderedCollection
+		reject: [ :probe | probe selector = #currentTimeStep ].
+		
+	allProbes sort: [ :a :b | a name < b name ].
+	allProbes addFirst: timeStepProbe.
+			
+	^ allProbes
 ]
 
 { #category : 'baselines' }
@@ -834,7 +850,7 @@ CMModel >> createN: aNumber randomlyLocatedEntities: aClass constrainedBy: aBloc
 
 { #category : 'accessing' }
 CMModel >> currentTimeStep [
-	<probeNamed: 'Time step' color: '#000000'>
+	<probeNamed: 'Time step' color: '000000'>
 	
 	<api>
 	<doc: 'Current time step of a simulation. This method can be used to change model behavior depending on the time step. For example, perform some action once every 30 steps.'>

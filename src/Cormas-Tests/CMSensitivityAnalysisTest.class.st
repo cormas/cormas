@@ -9,9 +9,8 @@ Class {
 		'probe1',
 		'probe2'
 	],
-	#category : 'Cormas-UI-SensitivityAnalysis',
-	#package : 'Cormas-UI',
-	#tag : 'SensitivityAnalysis'
+	#category : 'Cormas-Tests',
+	#package : 'Cormas-Tests'
 }
 
 { #category : 'running' }

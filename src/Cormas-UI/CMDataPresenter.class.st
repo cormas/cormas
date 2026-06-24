@@ -3,7 +3,7 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'table',
-		'toolbar'
+		'saveToCsvButton'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -27,6 +27,12 @@ CMDataPresenter >> columnNames: aCollection [
 				evaluated: [ :dataRow | dataRow at: name ]) ].
 ]
 
+{ #category : 'initialization' }
+CMDataPresenter >> connectPresenters [
+
+	saveToCsvButton action: [ self saveDataToCsv ]
+]
+
 { #category : 'accessing' }
 CMDataPresenter >> data [
 
@@ -37,30 +43,67 @@ CMDataPresenter >> data [
 CMDataPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
-		add: toolbar expand: false;
+		spacing: 3;
 		add: table;
+		add: saveToCsvButton expand: false;
 		yourself
+]
+
+{ #category : 'examples' }
+CMDataPresenter >> example [
+	<script: 'self example'>
 ]
 
 { #category : 'initialization' }
 CMDataPresenter >> initializePresenters [
 
 	table := self newTable.
-	self initializeToolbar.
+	
+	saveToCsvButton := self newButton
+		label: 'Save to CSV';
+		icon: CMIcons csvIcon;
+		yourself
 ]
 
-{ #category : 'initialization' }
-CMDataPresenter >> initializeToolbar [
-	
-	toolbar := self newToolbar.
-	toolbar beIcons.
+{ #category : 'as yet unclassified' }
+CMDataPresenter >> saveDataToCsv [
 
-	CMDataPresenterCommand sortedSubclasses do: [ :aClass |
-		| command |
-		command := (aClass forOwner: self)
-			cormasIconProvider: CMIcons;
-			yourself.
-		toolbar add: command toolbarButton ].
+	| message |
+
+	(StSaveFilePresenter extensions: {'csv'})
+		okAction: [ :fileReference | 
+			self saveDataToFile: fileReference.
+			
+			message := String streamContents: [ :stream |
+				stream
+					<< 'Data saved to '
+					<< fileReference asString;
+					cr; cr;
+					<< 'Click to open location' ].
+			
+			UIManager default
+				inform: message
+			 	actionOnClick: [ fileReference openInOSFileBrowser ]]
+]
+
+{ #category : 'as yet unclassified' }
+CMDataPresenter >> saveDataToFile: aFileReference [ 
+
+	| data columnNames |
+	data := self data.
+
+	data ifNil: [ ^ self ].
+	data ifEmpty: [ ^ self ].
+	aFileReference ifNil: [ ^ self ].
+	
+	aFileReference writeStreamDo: [ :stream |
+		columnNames := data first keys.
+		stream nextPutAll: (',' join: columnNames); cr.
+		
+		data do: [ :row |
+			stream nextPutAll: (',' join: row); cr ] ].
+
+
 ]
 
 { #category : 'as yet unclassified' }

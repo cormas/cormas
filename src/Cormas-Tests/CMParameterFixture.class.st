@@ -23,6 +23,102 @@ Class {
 	#package : 'Cormas-Tests'
 }
 
+{ #category : 'as yet unclassified' }
+CMParameterFixture class >> parameterBool [
+
+	^ CMBooleanParameter fromMethod: (self >> #bool)
+]
+
+{ #category : 'as yet unclassified' }
+CMParameterFixture class >> parameterBoolNamed [
+
+	^ CMBooleanParameter fromMethod: (self >> #boolNamed)
+]
+
+{ #category : 'as yet unclassified' }
+CMParameterFixture class >> parameterEnum [
+
+	^ CMEnumParameter fromMethod: (self >> #enum)
+]
+
+{ #category : 'as yet unclassified' }
+CMParameterFixture class >> parameterEnumNamed [
+
+	^ CMEnumParameter fromMethod: (self >> #enumNamed)
+]
+
+{ #category : 'as yet unclassified' }
+CMParameterFixture class >> parameterFloat [
+
+	^ CMFloatParameter fromMethod: (self >> #float)
+]
+
+{ #category : 'as yet unclassified' }
+CMParameterFixture class >> parameterFloatMinMax [
+
+	^ CMFloatParameter fromMethod: (self >> #floatMinMax)
+]
+
+{ #category : 'as yet unclassified' }
+CMParameterFixture class >> parameterFloatMinMaxNamed [
+
+	^ CMFloatParameter fromMethod: (self >> #floatMinMaxNamed)
+]
+
+{ #category : 'as yet unclassified' }
+CMParameterFixture class >> parameterFloatMinMaxStep [
+
+	^ CMFloatParameter fromMethod: (self >> #floatMinMaxStep)
+]
+
+{ #category : 'as yet unclassified' }
+CMParameterFixture class >> parameterFloatMinMaxStepNamed [
+
+	^ CMFloatParameter fromMethod: (self >> #floatMinMaxStepNamed)
+]
+
+{ #category : 'as yet unclassified' }
+CMParameterFixture class >> parameterFloatNamed [
+
+	^ CMFloatParameter fromMethod: (self >> #floatNamed)
+]
+
+{ #category : 'as yet unclassified' }
+CMParameterFixture class >> parameterInt [
+
+	^ CMIntegerParameter fromMethod: (self >> #int)
+]
+
+{ #category : 'as yet unclassified' }
+CMParameterFixture class >> parameterIntMinMax [
+
+	^ CMIntegerParameter fromMethod: (self >> #intMinMax)
+]
+
+{ #category : 'as yet unclassified' }
+CMParameterFixture class >> parameterIntMinMaxNamed [
+
+	^ CMIntegerParameter fromMethod: (self >> #intMinMaxNamed)
+]
+
+{ #category : 'as yet unclassified' }
+CMParameterFixture class >> parameterIntMinMaxStep [
+
+	^ CMIntegerParameter fromMethod: (self >> #intMinMaxStep)
+]
+
+{ #category : 'as yet unclassified' }
+CMParameterFixture class >> parameterIntMinMaxStepNamed [
+
+	^ CMIntegerParameter fromMethod: (self >> #intMinMaxStepNamed)
+]
+
+{ #category : 'as yet unclassified' }
+CMParameterFixture class >> parameterIntNamed [
+
+	^ CMIntegerParameter fromMethod: (self >> #intNamed)
+]
+
 { #category : 'accessing' }
 CMParameterFixture >> bool [
 	<parameterBooleanDefault: true>

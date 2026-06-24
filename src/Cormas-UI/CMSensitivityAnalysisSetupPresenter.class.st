@@ -104,16 +104,16 @@ CMSensitivityAnalysisSetupPresenter >> defaultLayout [
 { #category : 'as yet unclassified' }
 CMSensitivityAnalysisSetupPresenter >> editSamplingFor: aParameter [
 
-	parameterSamplings at: aParameter put:
-		(CMMonteCarloSampling new
-			lowValue: 0;
-			highValue: 1;
-			numberOfValues: 10;
-			isInteger: false;
-			yourself).
+	| presenter |	
+	presenter := CMSamplingEditorPresenter on: aParameter.
 	
-	self updateTable.
-	self updateRunButton
+	presenter openDialog okAction: [
+		parameterSamplings
+			at: aParameter 
+			put: presenter sampler.
+			
+		self updateTable.
+		self updateRunButton ].
 ]
 
 { #category : 'examples' }
@@ -127,7 +127,7 @@ CMSensitivityAnalysisSetupPresenter >> initializeParameterSamplings [
 	parameterSamplings := Dictionary new.
 		
 	parameterSamplings at: randomSeedParameter put: (
-		CMListSampling new
+		CMListSamplingMethod new
 			values: { randomSeedParameter defaultValue };
 			yourself)
 	
@@ -172,7 +172,14 @@ CMSensitivityAnalysisSetupPresenter >> initializeParametersTable [
 		title: ''
 		evaluated: [ :parameter | 'Edit' ]
 		action: [ :parameter | self editSamplingFor: parameter ])
-		width: 50;
+		width: 30;
+		yourself).
+		
+	parametersTable addColumn: ((SpLinkTableColumn
+		title: ''
+		evaluated: [ :parameter | 'Reset' ]
+		action: [ :parameter | self resetSamplingFor: parameter ])
+		width: 45;
 		yourself).
 ]
 
@@ -231,6 +238,8 @@ CMSensitivityAnalysisSetupPresenter >> initializeRandomSeedParameter [
 		targetClass: CMSimulationContext;
 		getterSelector: #randomSeed;
 		setterSelector: #randomSeed:;
+		minValue: 1;
+		maxValue: SmallInteger maxVal;
 		defaultValue: (Random new nextInteger: SmallInteger maxVal);
 		isClassSide: false;
 		yourself
@@ -295,6 +304,15 @@ CMSensitivityAnalysisSetupPresenter >> relevantParametersFrom: aModelClass [
 	
 	parameters addAll: entityClassParameters.
 	^ parameters 
+]
+
+{ #category : 'as yet unclassified' }
+CMSensitivityAnalysisSetupPresenter >> resetSamplingFor: aParameter [
+
+	parameterSamplings removeKey: aParameter.
+	
+	self updateTable.
+	self updateRunButton
 ]
 
 { #category : 'updating - presenters' }

@@ -1,10 +1,9 @@
 Class {
-	#name : 'CMSaveToCsvCommandTest',
+	#name : 'CMPataPresenterTest',
 	#superclass : 'TestCase',
 	#instVars : [
-		'presenter',
-		'command',
-		'fixture'
+		'fixture',
+		'dataPresenter'
 	],
 	#category : 'Cormas-UI-Tests-Core',
 	#package : 'Cormas-UI-Tests',
@@ -12,26 +11,23 @@ Class {
 }
 
 { #category : 'running' }
-CMSaveToCsvCommandTest >> setUp [
+CMPataPresenterTest >> setUp [
 
-	| dataPresenter |
 	super setUp.
 	
 	fixture := CMDataFixture new.
 	dataPresenter := CMDataPresenter new.
 	dataPresenter showData: fixture data.
-	
-	command := CMSaveToCsvCommand forOwner: dataPresenter
 ]
 
 { #category : 'tests' }
-CMSaveToCsvCommandTest >> testSaveDataToFile [
+CMPataPresenterTest >> testSaveDataToFile [
 
 	| fs file |
 	fs := FileSystem memory.
 	file := (fs / 'data.csv') ensureCreateFile.
 	
-	command saveDataToFile: file.
+	dataPresenter saveDataToFile: file.
 	
 	self assert: file contents equals: fixture dataAsCsv
 ]

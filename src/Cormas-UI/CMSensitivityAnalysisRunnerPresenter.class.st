@@ -35,7 +35,7 @@ CMSensitivityAnalysisRunnerPresenter class >> example [
 		modelClass: CMMockModel;
 		initSelector: #initFixed;
 		controlSelector: #step;
-		finalTimeStep: 1000;
+		finalTimeStep: 10000;
 		probes: CMMockModel availableProbes;
 		parameterSamplings: { 
 			randomSeedParameter -> #(42 24) .

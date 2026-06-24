@@ -9,8 +9,8 @@ Class {
 		'whenProgressBlock',
 		'whenFinishedBlock'
 	],
-	#category : 'Cormas-UI-SensitivityAnalysis',
-	#package : 'Cormas-UI',
+	#category : 'Cormas-Core-SensitivityAnalysis',
+	#package : 'Cormas-Core',
 	#tag : 'SensitivityAnalysis'
 }
 
