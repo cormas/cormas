@@ -56,7 +56,7 @@ CMRangeSamplingPresenter >> initializeNumberInputs [
 	super initializeNumberInputs.
 	
 	stepInput := self newNumberInput.
-	parameter isInteger ifFalse: [ stepInput beFloat ].
+	parameter isFloatParameter ifTrue: [ stepInput beFloat ].
 ]
 
 { #category : 'initialization' }

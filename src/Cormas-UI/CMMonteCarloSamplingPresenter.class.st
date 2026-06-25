@@ -61,7 +61,7 @@ CMMonteCarloSamplingPresenter >> initializeSampler [
 
 	super initializeSampler.
 	sampler numberOfValues: 10.
-	sampler isInteger: (parameter class = CMIntegerParameter)
+	sampler isInteger: parameter isIntegerParameter
 ]
 
 { #category : 'as yet unclassified' }

@@ -40,7 +40,7 @@ CMNumericalSamplingPresenter >> initializeNumberInputs [
 	lowNumberInput := self newNumberInput.
 	highNumberInput := self newNumberInput.
 	
-	parameter isInteger ifFalse: [
+	parameter isFloatParameter ifTrue: [
 		lowNumberInput beFloat.
 		highNumberInput beFloat ].
 ]
