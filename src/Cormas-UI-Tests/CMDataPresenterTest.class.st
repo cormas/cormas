@@ -1,5 +1,5 @@
 Class {
-	#name : 'CMPataPresenterTest',
+	#name : 'CMDataPresenterTest',
 	#superclass : 'TestCase',
 	#instVars : [
 		'fixture',
@@ -11,17 +11,18 @@ Class {
 }
 
 { #category : 'running' }
-CMPataPresenterTest >> setUp [
+CMDataPresenterTest >> setUp [
 
 	super setUp.
 	
 	fixture := CMDataFixture new.
 	dataPresenter := CMDataPresenter new.
+	dataPresenter columnNames: fixture data first keys.
 	dataPresenter showData: fixture data.
 ]
 
 { #category : 'tests' }
-CMPataPresenterTest >> testSaveDataToFile [
+CMDataPresenterTest >> testSaveDataToFile [
 
 	| fs file |
 	fs := FileSystem memory.
