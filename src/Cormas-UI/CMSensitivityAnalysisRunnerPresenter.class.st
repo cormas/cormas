@@ -58,7 +58,7 @@ CMSensitivityAnalysisRunnerPresenter >> beInFinishedMode [
 	runButton disable.
 	stopButton disable.
 	
-	self onFinished
+	self showCharts
 ]
 
 { #category : 'states' }
@@ -77,6 +77,7 @@ CMSensitivityAnalysisRunnerPresenter >> beInPauseMode [
 
 	runButton label: 'Resume'.
 	runButton icon: CMIcons runIcon.
+	self showCharts.
 	
 	runButton action: [ 
 		self beInRunningMode.
@@ -88,6 +89,7 @@ CMSensitivityAnalysisRunnerPresenter >> beInRunningMode [
 
 	runButton label: 'Pause'.
 	runButton icon: CMIcons pauseIcon.
+	self hideCharts.
 	
 	runButton action: [ 
 		self beInPauseMode.
@@ -141,6 +143,14 @@ CMSensitivityAnalysisRunnerPresenter >> example [
 	<script: 'self example'>
 ]
 
+{ #category : 'as yet unclassified' }
+CMSensitivityAnalysisRunnerPresenter >> hideCharts [
+
+	notebook pages
+		detect: [ :page | page title = 'Scatterplot' ]
+		ifFound: [ :page | notebook removePage: page ]
+]
+
 { #category : 'initialization' }
 CMSensitivityAnalysisRunnerPresenter >> initializePresenters [
 
@@ -168,14 +178,14 @@ CMSensitivityAnalysisRunnerPresenter >> initializePresenters [
 	self beInInitialMode.
 ]
 
-{ #category : 'as yet unclassified' }
-CMSensitivityAnalysisRunnerPresenter >> onFinished [
+{ #category : 'initialization' }
+CMSensitivityAnalysisRunnerPresenter >> initializeWindow: aWindowPresenter [
 
-	notebook
-		addPageTitle: 'Charts'
-		provider: [ self
-			instantiate: CMSensitivityAnalysisChartPresenter 
-			on: analysis data ]
+	super initializeWindow: aWindowPresenter.
+
+	aWindowPresenter 
+		title: 'Sensitivity Analysis Runner';
+		initialExtent: 800@600
 ]
 
 { #category : 'accessing - model' }
@@ -184,6 +194,15 @@ CMSensitivityAnalysisRunnerPresenter >> setModelBeforeInitialization: aSetup [
 	analysis := CMSensitivityAnalysis new
 		setup: aSetup;
 		yourself
+]
+
+{ #category : 'as yet unclassified' }
+CMSensitivityAnalysisRunnerPresenter >> showCharts [
+
+	notebook addPageTitle: 'Scatterplot' provider: [ 
+		self
+			instantiate: CMSensitivityAnalysisChartPresenter 
+			on: analysis data ]
 ]
 
 { #category : 'as yet unclassified' }

@@ -34,6 +34,7 @@ CMSensitivityAnalysisChartPresenter >> defaultLayout [
 	
 	^ SpBoxLayout newTopToBottom
 		spacing: 15;
+		borderWidth: 4;
 		add: (SpBoxLayout newLeftToRight
 			spacing: 10;
 			add: 'X column:' expand: false;
@@ -53,13 +54,16 @@ CMSensitivityAnalysisChartPresenter >> drawChart [
 	y := self yCollection.
 	
 	chart := RSScatterPlot new x: x y: y.
-	chart color: CMColor green.
+	chart color: CMColor green darker.
 	chart extent: 800 @ 400.
 	chart spineDecoration: (spine := RSLineSpineDecoration new).
 	spine shape format: '^'.
 	chart padding: 0.
 	
 	chart build.
+	chart ellipses do: [ :each | each size: 10 ].
+	chart ellipses translucent.
+	
 	chartPresenter canvas: chart container.
 ]
 
