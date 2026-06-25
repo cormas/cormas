@@ -32,6 +32,22 @@ CMSensitivityAnalysis >> data [
 	^ data 
 ]
 
+{ #category : 'as yet unclassified' }
+CMSensitivityAnalysis >> dataColumnNames [
+
+	| parameterNames probeNames |
+	
+	parameterNames := (setup parameterSamplings keys
+		collect: [ :parameter | parameter name ])
+		asOrderedCollection.
+	
+	probeNames := (setup probes
+		collect: [ :probe | probe name ])
+		asOrderedCollection.
+	
+	^ parameterNames, probeNames 
+]
+
 { #category : 'initialization' }
 CMSensitivityAnalysis >> initialize [
 
@@ -95,7 +111,7 @@ CMSensitivityAnalysis >> numberOfCompletedSimulations [
 CMSensitivityAnalysis >> parameterCombinations [
 
 	| combinations |
-	combinations := { Dictionary new } asOrderedCollection.
+	combinations := { OrderedDictionary new } asOrderedCollection.
 	
 	setup parameterSamplings keysAndValuesDo: [ :parameter :values |
 		combinations := combinations flatCollect: [ :existingCombination |
@@ -124,7 +140,7 @@ CMSensitivityAnalysis >> progress [
 CMSensitivityAnalysis >> recordDataFrom: aSimulation combination: aParameterCombination [
 
 	| row lastDataRow |
-	row := Dictionary new.
+	row := OrderedDictionary new.
 	
 	aParameterCombination keysAndValuesDo: [ :parameter :value |
 		row

@@ -15,8 +15,9 @@ CMRangeSamplingPresenter >> connectPresenters [
 	super connectPresenters.
 	
 	stepInput whenNumberChangedDo: [ :number |
-		sampler step: number.
-		whenChangedBlock value ].
+		number = 0 ifFalse: [
+			sampler step: number.
+			whenChangedBlock value ] ].
 ]
 
 { #category : 'layout' }
@@ -53,7 +54,9 @@ CMRangeSamplingPresenter >> exampleInteger [
 CMRangeSamplingPresenter >> initializeNumberInputs [
 
 	super initializeNumberInputs.
-	stepInput := self newNumberInput
+	
+	stepInput := self newNumberInput.
+	parameter isInteger ifFalse: [ stepInput beFloat ].
 ]
 
 { #category : 'initialization' }

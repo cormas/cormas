@@ -57,6 +57,8 @@ CMSensitivityAnalysisRunnerPresenter >> beInFinishedMode [
 	
 	runButton disable.
 	stopButton disable.
+	
+	self onFinished
 ]
 
 { #category : 'states' }
@@ -158,6 +160,7 @@ CMSensitivityAnalysisRunnerPresenter >> initializePresenters [
 		yourself.
 		
 	table := self instantiate: CMDataPresenter.
+	table columnNames: analysis dataColumnNames.
 		
 	notebook := self newNotebook.
 	notebook addPageTitle: 'Data' provider: [ table ].
@@ -168,7 +171,11 @@ CMSensitivityAnalysisRunnerPresenter >> initializePresenters [
 { #category : 'as yet unclassified' }
 CMSensitivityAnalysisRunnerPresenter >> onFinished [
 
-	"do nothing"
+	notebook
+		addPageTitle: 'Charts'
+		provider: [ self
+			instantiate: CMSensitivityAnalysisChartPresenter 
+			on: analysis data ]
 ]
 
 { #category : 'accessing - model' }

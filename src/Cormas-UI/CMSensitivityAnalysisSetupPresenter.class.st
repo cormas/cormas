@@ -124,7 +124,7 @@ CMSensitivityAnalysisSetupPresenter >> example [
 { #category : 'initialization' }
 CMSensitivityAnalysisSetupPresenter >> initializeParameterSamplings [
 
-	parameterSamplings := Dictionary new.
+	parameterSamplings := OrderedDictionary new.
 		
 	parameterSamplings at: randomSeedParameter put: (
 		CMListSamplingMethod new
@@ -228,6 +228,9 @@ CMSensitivityAnalysisSetupPresenter >> initializePresenters [
 		icon: CMIcons runIcon;
 		yourself.
 		
+	modelClassDropList selectedItem ifNotNil: [ :aClass |
+		self initializeWithModelClass: aClass ].
+	
 	self updateRunButton.
 ]
 

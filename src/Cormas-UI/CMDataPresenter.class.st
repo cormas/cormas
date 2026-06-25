@@ -3,6 +3,7 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'table',
+		'columnNames',
 		'saveToCsvButton'
 	],
 	#category : 'Cormas-UI',
@@ -18,9 +19,10 @@ CMDataPresenter class >> example [
 { #category : 'as yet unclassified' }
 CMDataPresenter >> columnNames: aCollection [
 
+	columnNames := aCollection.
 	table columns: #().
 
-	aCollection do: [ :name |
+	columnNames do: [ :name |
 		table
 			addColumn: (SpStringTableColumn
 				title: name
@@ -89,15 +91,16 @@ CMDataPresenter >> saveDataToCsv [
 { #category : 'as yet unclassified' }
 CMDataPresenter >> saveDataToFile: aFileReference [ 
 
-	| data columnNames |
+	| data |
 	data := self data.
 
 	data ifNil: [ ^ self ].
-	data ifEmpty: [ ^ self ].
 	aFileReference ifNil: [ ^ self ].
 	
+	aFileReference exists ifTrue: [ 
+		aFileReference delete ].
+	
 	aFileReference writeStreamDo: [ :stream |
-		columnNames := data first keys.
 		stream nextPutAll: (',' join: columnNames); cr.
 		
 		data do: [ :row |
