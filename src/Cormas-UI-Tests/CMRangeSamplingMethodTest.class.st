@@ -28,7 +28,7 @@ CMRangeSamplingMethodTest >> testGenerate [
 	
 	generator
 		lowValue: 20;
-		highValue: 120;
+		highValue: 100;
 		step: 20.
 		
 	expected := #(20 40 60 80 100).
@@ -46,7 +46,7 @@ CMRangeSamplingMethodTest >> testGenerateFloats [
 		highValue: 1;
 		step: 0.1.
 	
-	expected := #(0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9).
+	expected := #(0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1).
 	
 	self assert: generator generate closeTo: expected precision: 0.00000000001.
 ]
@@ -59,7 +59,7 @@ CMRangeSamplingMethodTest >> testLowValueHighValueAndStepSetNumberOfValues [
 		highValue: 130;
 		step: 20.
 		
-	self assert: generator numberOfValues equals: 5 
+	self assert: generator numberOfValues equals: 6 
 ]
 
 { #category : 'tests' }

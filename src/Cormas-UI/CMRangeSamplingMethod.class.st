@@ -35,7 +35,7 @@ CMRangeSamplingMethod >> generate [
 { #category : 'accessing' }
 CMRangeSamplingMethod >> numberOfValues [
 
-	^ ((highValue - lowValue) / step) floor
+	^ ((highValue - lowValue) / step) floor + 1
 ]
 
 { #category : 'printing' }
