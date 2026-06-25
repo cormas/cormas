@@ -76,7 +76,7 @@ CMChartPresenter >> drawChart [
 			size := self simulation data size.
 			x := (1 to: size) asArray.
 	
-			self simulation probes do: [ :probe |
+			self probes do: [ :probe |
 				(isProbeVisibleDictionary at: probe) ifTrue: [
 					y := (self simulation data first: size) collect: [ :row | row at: probe name ].
 					chartBuilder addPlotX: x y: y color: probe color ] ] ].
@@ -90,7 +90,7 @@ CMChartPresenter >> initializePresenters [
 
 	isProbesListVisible := false.
 
-	isProbeVisibleDictionary := (self simulation probes collect: [ :probe |
+	isProbeVisibleDictionary := (self probes collect: [ :probe |
 		probe -> true ]) asDictionary.
 
 	probesCheckboxes := self newTable
@@ -113,7 +113,7 @@ CMChartPresenter >> initializePresenters [
 			yourself);
 		addColumn: (SpStringTableColumn evaluated: [ :probe | probe name ]).
 		
-	probesCheckboxes items: self simulation probes.
+	probesCheckboxes items: self probes.
 	
 	showProbesButton := self newToolbarButton
 		label: 'Probes';
@@ -154,6 +154,12 @@ CMChartPresenter >> initializeWindow: aWindowPresenter [
 	aWindowPresenter 
 		title: 'Chart';
 		initialExtent: 1000@600
+]
+
+{ #category : 'accessing' }
+CMChartPresenter >> probes [
+
+	^ self simulation probes reject: [ :probe | probe selector = #currentTimeStep ]
 ]
 
 { #category : 'as yet unclassified' }
