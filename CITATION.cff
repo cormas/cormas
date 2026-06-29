@@ -1,0 +1,50 @@
+cff-version: 1.2.0
+message: "If you use Cormas in your research, please cite it using the preferred citation below."
+title: "Cormas"
+type: software
+
+authors:
+  - name: "The Cormas contributors"
+
+repository-code: "https://github.com/cormas/cormas"
+url: "https://cormas.org"
+license: "MIT"
+
+keywords:
+  - agent-based modeling
+  - participatory modeling
+  - simulation
+  - socio-ecological systems
+  - common-pool resources
+  - Pharo
+
+preferred-citation:
+  type: book-chapter
+  title: "Cormas: An Agent-Based Simulation Platform for Coupling Human Decisions with Computerized Dynamics"
+  authors:
+    - family-names: "Bommel"
+      given-names: "Pierre"
+    - family-names: "Becu"
+      given-names: "Nicolas"
+    - family-names: "Le Page"
+      given-names: "Christophe"
+    - family-names: "Bousquet"
+      given-names: "François"
+  year: 2016
+  collection-title: "Simulation and Gaming in the Network Society"
+  editors:
+    - family-names: "Kaneda"
+      given-names: "Toshiyuki"
+    - family-names: "Kanegae"
+      given-names: "Hidehiko"
+    - family-names: "Toyoda"
+      given-names: "Yuya"
+    - family-names: "Rizzi"
+      given-names: "Paolo"
+  series-title: "Translational Systems Sciences"
+  volume: 9
+  start: 387
+  end: 410
+  publisher:
+    name: "Springer"
+  doi: "10.1007/978-981-10-0575-6_27"
