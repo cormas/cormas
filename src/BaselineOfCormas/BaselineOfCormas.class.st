@@ -77,11 +77,13 @@ BaselineOfCormas >> baseline: spec [
 
 { #category : 'doits' }
 BaselineOfCormas >> postLoad [
-	
+
 	self class loadBackgroundImage.
-	
+	CMIcons initialize.
 	SystemAnnouncer uniqueInstance
-		when: UIThemeChanged send: #loadBackgroundImage to: self class.
+		when: UIThemeChanged
+		send: #loadBackgroundImage
+		to: self class
 ]
 
 { #category : 'specs' }

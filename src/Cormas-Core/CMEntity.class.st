@@ -179,6 +179,12 @@ CMEntity class >> resetClassSideParameters [
 			parameter setDefaultValueFor: self ] ]
 ]
 
+{ #category : 'accessing' }
+CMEntity class >> systemIconName [
+
+	^ #cormasIcon
+]
+
 { #category : 'as yet unclassified' }
 CMEntity >> actionSelectors [
 
