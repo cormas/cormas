@@ -180,20 +180,19 @@ CMIcons class >> icons [
 ]
 
 { #category : 'initialization' }
-CMIcons class >> initialize [ 
-    | source formSet |
+CMIcons class >> initialize [
 
-    source := self cormasIcon.
+	| source formSet |
+	source := Form fromBinaryStream:
+				   self cormasIconContents base64Decoded asByteArray readStream.
 
-    formSet := FormSet forms: {
-        source scaledToSize: 16@16.
-        source scaledToSize: 16@16.
-        source scaledToSize: 24@24.
-        source scaledToSize: 32@32 }.
+	formSet := FormSet forms: {
+			           (source scaledToSize: 10 @ 10).
+			           (source scaledToSize: 16 @ 16).
+			           (source scaledToSize: 24 @ 24).
+			           (source scaledToSize: 32 @ 32) }.
 
-    ThemeIcons current icons
-        at: #cormasIcon
-        put: formSet.
+	ThemeIcons current icons at: #cormasIcon put: formSet
 ]
 
 { #category : 'examples' }
@@ -293,7 +292,7 @@ CMIcons class >> stepIcon [
 	^ self icons at: #stepIcon put: form
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'icons' }
 CMIcons class >> stopIcon [
 	<script: 'self stopIcon inspect'>
 
