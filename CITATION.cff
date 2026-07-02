@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use Cormas in your research, please cite it using the preferred citation below."
+title: "Cormas"
+type: software
+
+authors:
+  - name: "The Cormas contributors"
+
+repository-code: "https://github.com/cormas/cormas"
+url: "https://cormas.org"
+license: "MIT"
+
+keywords:
+  - agent-based modeling
+  - participatory modeling
+  - simulation
+  - socio-ecological systems
+  - common-pool resources
+  - Pharo

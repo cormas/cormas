@@ -30,12 +30,21 @@ CMSimulationTest >> testCurrenTimeStepStartsWithZero [
 { #category : 'tests' }
 CMSimulationTest >> testData [
 
-	| expectedData |
-	expectedData := #( #( 11 5 ) #( 5 11 ) #( 11 5 ) #( 5 11 )
-	                   #( 11 5 ) #(5 11) ) asOrderedCollection collect: [ :row |
-		                Dictionary newFrom: {
-				                ('Number of alive cells' -> row first).
-				                ('Number of dead cells' -> row second) } ].
+	| values expectedData |
+	values := #(
+		(0 11 5)
+		(1 5 11) 
+		(2 11 5)
+		(3 5 11)
+	   (4 11 5)
+		(5 5 11)).
+		
+	expectedData := values asOrderedCollection collect: [ :row |
+		OrderedDictionary newFrom: {
+			('Time step' -> row first).
+			('Number of alive cells' -> row second).
+			('Number of dead cells' -> row third) }
+	].
 
 	5 timesRepeat: [ simulation runStep ].
 	self assert: simulation data equals: expectedData 
@@ -54,6 +63,12 @@ CMSimulationTest >> testProbes [
 	
 	expectedProbes := { 
 		CMProbe
+			name: 'Time step'
+			colorString: '000000'
+			selector: #currentTimeStep
+			on: simulation cormasModel .
+	
+		CMProbe
 			name: 'Number of alive cells'
 			colorString: '0000FF'
 			selector: #numberOfAliveCells
@@ -67,6 +82,14 @@ CMSimulationTest >> testProbes [
 	}.
 
 	self assertCollection: simulation probes hasSameElements: expectedProbes.
+]
+
+{ #category : 'tests' }
+CMSimulationTest >> testProbesTimeStepIsFirst [
+
+	self
+		assert: simulation probes first name
+		equals: 'Time step'.
 ]
 
 { #category : 'tests' }

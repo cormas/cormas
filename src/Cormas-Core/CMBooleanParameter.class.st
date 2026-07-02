@@ -19,3 +19,9 @@ CMBooleanParameter >> isValidValue: aValue [
 
 	^ #(true false) includes: aValue 
 ]
+
+{ #category : 'accessing' }
+CMBooleanParameter >> values [
+
+	^ { true . false } 
+]

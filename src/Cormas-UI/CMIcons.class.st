@@ -293,6 +293,22 @@ CMIcons class >> stepIcon [
 	^ self icons at: #stepIcon put: form
 ]
 
+{ #category : 'as yet unclassified' }
+CMIcons class >> stopIcon [
+	<script: 'self stopIcon inspect'>
+
+	| form |
+	self icons at: #stopIcon ifPresent: [ :icon | ^ icon ].
+
+	form := Form extent: 16 @ 16 depth: 32.
+	form getCanvas
+		fillColor: Color transparent;
+		fillRectangle: (3 @ 3 corner: 13 @ 13)
+		color: self colorRed.
+
+	^ self icons at: #stopIcon put: form
+]
+
 { #category : 'see class side' }
 CMIcons >> seeClassSide [
 ]
