@@ -186,13 +186,13 @@ CMIcons class >> initialize [
 	source := Form fromBinaryStream:
 				   self cormasIconContents base64Decoded asByteArray readStream.
 
-	formSet := FormSet forms: {
+	"formSet := FormSet forms: {
 			           (source scaledToSize: 10 @ 10).
 			           (source scaledToSize: 16 @ 16).
 			           (source scaledToSize: 24 @ 24).
-			           (source scaledToSize: 32 @ 32) }.
+			           (source scaledToSize: 32 @ 32) }."
 
-	ThemeIcons current icons at: #cormasIcon put: formSet
+	ThemeIcons current icons at: #cormasIcon put: (source scaledToSize: 16 @ 16)
 ]
 
 { #category : 'examples' }
