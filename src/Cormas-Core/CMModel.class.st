@@ -984,8 +984,7 @@ CMModel >> initialize [
 
 	super initialize.
 	
-	self flag: 'TODO'.
-	self simulationContext: CMSimulationContext new.
+	self simulationContext: self newSimulationContext.
 	
 	entities := Dictionary new.
 	
@@ -1122,6 +1121,13 @@ CMModel >> newEntity: aClass locatedAt: aCell [
 	| entity |
 	entity := self newEntity: aClass.
 	entity moveTo: aCell
+]
+
+{ #category : 'initialization' }
+CMModel >> newSimulationContext [
+	"This method can be overriden by plugins"
+	
+	^ CMSimulationContext new
 ]
 
 { #category : 'accessing' }
