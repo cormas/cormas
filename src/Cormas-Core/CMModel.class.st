@@ -985,7 +985,6 @@ CMModel >> initialize [
 	super initialize.
 	
 	self flag: 'TODO'.
-	"A dummy context because before the simulation is created we already need things like random number generator. For example, for testing or to display the default generator in the UI"
 	self simulationContext: CMSimulationContext new.
 	
 	entities := Dictionary new.

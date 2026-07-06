@@ -12,13 +12,10 @@ Class {
 { #category : 'tests-accessing-entities' }
 CMTestObject >> newTestModel [
 
-	| context |
-	context := CMSimulationContext new.
-	context randomSeed: 42.
- 	
-	^ CMMockModel new
-		simulationContext: context;
-		yourself.
+	| newModel |
+	newModel := CMMockModel new.
+	newModel simulationContext randomSeed: 42.
+	^ newModel
 ]
 
 { #category : 'running' }

@@ -60,7 +60,7 @@ CMSimulation >> cormasModel [
 CMSimulation >> cormasModel: aModel [
 
 	cormasModel := aModel.
-	cormasModel simulationContext: context
+	context := cormasModel simulationContext
 ]
 
 { #category : 'accessing' }
@@ -111,7 +111,6 @@ CMSimulation >> initialParameterValues [
 CMSimulation >> initialize [
 
 	super initialize.
-	context := CMSimulationContext new.
 	
 	probes := OrderedCollection new.
 	data := OrderedCollection new.
