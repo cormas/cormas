@@ -74,7 +74,7 @@ BaselineOfCormas >> baseline: spec [
 BaselineOfCormas >> postLoad [
 
 	self class loadBackgroundImage.
-	CMIcons initialize.
+
 	SystemAnnouncer uniqueInstance
 		when: UIThemeChanged
 		send: #loadBackgroundImage
