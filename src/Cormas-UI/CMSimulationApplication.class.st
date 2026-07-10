@@ -36,6 +36,12 @@ CMSimulationApplication >> initialize [
 	announcer := Announcer new
 ]
 
+{ #category : 'converting' }
+CMSimulationApplication >> presenterClass [
+
+	^ CMSimulationPresenter
+]
+
 { #category : 'accessing' }
 CMSimulationApplication >> simulation [
 
@@ -55,7 +61,7 @@ CMSimulationApplication >> start [
 	
 	cormasModel ifNil: [ self error: [ 'Provide cormasModel to run the application' ] ].
 	
-	presenter := CMSimulationPresenter newApplication: self model: cormasModel.
+	presenter := self presenterClass newApplication: self model: cormasModel.
 	presenter open.
 	presenter window centered
 ]

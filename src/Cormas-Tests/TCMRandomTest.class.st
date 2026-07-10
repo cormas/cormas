@@ -11,14 +11,10 @@ Class {
 { #category : 'running' }
 TCMRandomTest >> setUp [
 
-	| context |
 	super setUp.
 	
-	context := CMSimulationContext new.
-	context randomSeed: 42.
-	
 	cormasModel := CMMockModel new.
-	cormasModel simulationContext: context.
+	cormasModel simulationContext randomSeed: 42.
 ]
 
 { #category : 'tests' }

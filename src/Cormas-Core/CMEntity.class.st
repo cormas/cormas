@@ -82,38 +82,6 @@ CMEntity class >> classSideParameters [
 	^ self parameters select: [ :p | p isClassSide ]
 ]
 
-{ #category : 'utilities - colors' }
-CMEntity class >> colorNames [
-	"Returns an array of 38 color names: (#red #yellow #green...)"
-
-	"Ex: (CMEntity colorNames collect: [:s | Color perform: s]) inspect"
-
-	| colorSpecs |
-	
-	colorSpecs :=
-		Color defaultColors,
-		Color defaultColors2,
-		Color defaultColors3,
-		Color defaultColors4.
-	
-	^ Array streamContents: [ :stream |
-		  1 to: colorSpecs size by: 4 do: [ :i |
-		  stream nextPut: (colorSpecs at: i) ] ]
-]
-
-{ #category : 'utilities - colors' }
-CMEntity class >> colorOfNumber: aNumber [
-	"Purpose: Returns a Color from the existing 38 constant names: #(#black #veryVeryDarkGray #veryDarkGray #darkGray #gray #lightGray #veryLightGray #veryVeryLightGray #white #red #yellow #green #cyan #blue #magenta #brown #orange #lightRed #lightYellow #lightGreen #lightCyan #lightBlue #lightMagenta #lightBrown #lightOrange #pink #purple #tan #veryPaleRed #paleYellow #paleTan #paleRed #palePeach #paleOrange #paleMagenta #paleGreen #paleBuff #paleBlue).
-	Argument: aNumber = <Integer> is the index at which the color name is picked in the array. It can be greater than 38.
-	Example: CMEntity colorOfNumber: 65  -> Color palePeach"
-
-	^ Color
-		perform:
-			(self colorNames
-				at: (aNumber - 1) \\ self colorNames size + 1)
-				asSymbol
-]
-
 { #category : 'accessing' }
 CMEntity class >> currentId [
 	"Getter accessor with default value = 0 "
@@ -126,14 +94,6 @@ CMEntity class >> currentId: anInteger [
 	
 	currentId := anInteger. 
 	^ anInteger
-]
-
-{ #category : 'utilities - colors' }
-CMEntity class >> defaultColor [
-	"Purpose: return the default color of the current class name.
-	Example: CMEntity defaultColor => Color lightBrown ; CMFireman defaultColor => Color paleRed"
-
-	^ self colorOfNumber: self hash
 ]
 
 { #category : 'accessing - methods & classes' }
@@ -173,21 +133,6 @@ CMEntity class >> isSpatialClass [
 CMEntity class >> isSpatialEntityElementClass [
 	
 	^false
-]
-
-{ #category : 'utilities - colors' }
-CMEntity class >> lightColors [
-	"Purpose: Returns the light Color from the existing constant color values.
-Example: CMEntity lightColors => an OrderedCollection('veryPaleRed' 'magenta' 'brown' 'red' 'paleBlue' 'palePeach' 'white' 'transparent' 'blue' 'yellow' 'lightGreen' 'purple' 'lightGray' 'paleGreen' 'paleYellow' 'paleBuff' 'tan' 'lightBlue' 'lightRed' 'paleOrange' 'paleRed' 'orange' 'lightBrown' 'lightOrange' 'paleMagenta' 'pink' 'paleTan' 'gray' 'green' 'lightMagenta' 'lightCyan' 'lightYellow' 'cyan' 'veryLightGray' 'veryVeryLightGray')"
-
-	| colors |
-	colors := Color registeredColorNames asOrderedCollection.
-	colors
-		removeAllSuchThat: [ :symb | 
-			(symb indexOfSubCollection: 'dark' startingAt: 1) ~= 0
-				or: [ (symb indexOfSubCollection: 'Dark' startingAt: 1) ~= 0 ] ].
-	colors remove: #black.
-	^ colors
 ]
 
 { #category : 'utilities - classes' }
@@ -254,122 +199,10 @@ CMEntity >> asString [
 	
 ]
 
-{ #category : 'accessing' }
-CMEntity >> cell [
-	
-	^nil
-]
-
-{ #category : 'displaying' }
-CMEntity >> center: x [
-	"do nothing"
-	
-	
-]
-
 { #category : 'as yet unclassified' }
 CMEntity >> classSideParameters [
 
 	^ self class classSideParameters
-]
-
-{ #category : 'utilities - color' }
-CMEntity >> colorAttribute: aSymbol min: minValue color: startColor max: maxValue color: stopColor [
-	"Purpose: returns a color among a palette of colors correlatively to the value of the attribute.
-Arguments: aSymbol = <Symbol>, the name of the attribute
-			minValue = <Integer>, the minimum value of the attribute
-		 	maxValue = <Integer>, the maximum value of the attribute
-			startColor = <ColorValue  or Symbol>, the color associated to the minimum value of the attribute
-			stopColor = <ColorValue  or Symbol>, the color associated to the maximum value of the attribute
-Return value: a colorValue"
-	
-	^self
-		colorValue: (self perform: aSymbol)
-		min: minValue
-		color: startColor
-		max: maxValue
-		color: stopColor
-]
-
-{ #category : 'utilities - color' }
-CMEntity >> colorAttribute: aSymbol min: minValue max: maxValue color: baseColor [
-	"Purpose: returns a color among a gradient correlatively to the value of the attribute.
-Arguments: aSymbol = <Symbol>, the name of the attribute
-			minValue = <Integer>, the minimum value of the attribute
-		 	maxValue = <Integer>, the maximum value of the attribute
-			color = <ColorValue  or Symbol>, the color itself or its name
-Return value: a colorValue"
-	
-	^self
-		colorValue: (self perform: aSymbol)
-		min: minValue
-		max: maxValue
-		color: baseColor
-]
-
-{ #category : 'utilities - color' }
-CMEntity >> colorFromName: aName [
-	"returns a specific color from a name"
-
-	^ self colorOfNumber: aName hash
-]
-
-{ #category : 'utilities - color' }
-CMEntity >> colorId [
-	"Returns a Color from the id (there is only 38 colors)."
-
-	^ self colorOfNumber: self id
-]
-
-{ #category : 'utilities - color' }
-CMEntity >> colorOfNumber: aNumber [
-	"Returns a Color for aNumber (there is only 38 colors)."
-
-	^ self class colorOfNumber: aNumber
-]
-
-{ #category : 'utilities - color' }
-CMEntity >> colorValue: aValue min: minValue color: startColor max: maxValue color: stopColor [
-	"Return a Color associated to aValue amongs a palette of colors.
-aValue = <Number> ; minValue = <Integer> ; maxValue = <Integer> ; startColor = <Color or Symbol> ; stopColor = <Color  or Symbol>"
-
-	| alpha rv gv bv value start_Color stop_Color |
-	(aValue isNil or: [ aValue isNumber not ]) ifTrue: [ ^ Color white ].
-	value := aValue max: minValue.
-	value := aValue min: maxValue.
-	start_Color := Color colorFrom: startColor.
-	stop_Color := Color colorFrom: stopColor.
-	alpha := value - minValue / (maxValue - minValue).
-	rv := (stop_Color red * alpha)
-	      + (start_Color red * (1 - alpha)).
-	gv := (stop_Color green * alpha)
-	      + (start_Color green * (1 - alpha)).
-	bv := (stop_Color blue * alpha)
-	      + (start_Color blue * (1 - alpha)).
-	^ Color r: rv g: gv b: bv
-]
-
-{ #category : 'utilities - color' }
-CMEntity >> colorValue: aValue min: minValue max: maxValue color: baseColor [
-
-	"Return a Color for aValue, in the interval of minValue and maxValue. 
-Works even if this value is less or up to minValue or maxValue
-aValue = <Number> ; minValue = <Integer> ; maxValue = <Integer> ; baseColor = <ColorValue  or Symbol>"
-
-	| index value color |
-	(aValue isNil or: [ aValue isNumber not ]) ifTrue: [ 
-		^ Color white ].
-	value := aValue.
-	value := value max: minValue.
-	value := value min: maxValue.
-	index := maxValue = minValue
-		         ifTrue: [ 0.8 ]
-		         ifFalse: [ maxValue - value / (maxValue - minValue) ].
-	color := Color colorFrom: baseColor.
-	^ Color
-		  h: color hue
-		  s: color saturation * (1 - (index raisedTo: 10))
-		  v: color brightness * index
 ]
 
 { #category : 'accessing' }
@@ -384,7 +217,7 @@ CMEntity >> cormasModel: aCMAbstractModel [
 
 { #category : 'accessing' }
 CMEntity >> currentTimeStep [
-
+	<api>
 	^ context currentTimeStep
 ]
 
@@ -402,33 +235,6 @@ CMEntity >> destroyed [
 	self subclassResponsibility
 ]
 
-{ #category : 'displaying' }
-CMEntity >> getInfoFor: aSelectorName [
-	"Returns a String according to the aSelectorName.
-aSelectorName = <ByteSymbol>."
-	
-	| info |
-	aSelectorName = #nil ifTrue: [^''].
-	aSelectorName ifNil: [^''].
-	info := self perform: aSelectorName.
-	info isString ifTrue: [^info].
-	info isSymbol ifTrue: [^info asString].
-	^info printString
-]
-
-{ #category : 'displaying' }
-CMEntity >> getPovResultFor: selectorName [
-	"Returns the povSymbol for a selectorName"
-	
-	selectorName ifNil: [^nil].
-	^selectorName = #nil
-		ifFalse:
-			[self perform: selectorName	"ifNil:
-					[Dialog warn: 'The pov metod #' , selectorName , ' did not return a symbol or a colorValue, but a nil value.
-This is not allowed!']"]
-		ifTrue: [selectorName]
-]
-
 { #category : 'accessing' }
 CMEntity >> group [
 
@@ -439,12 +245,6 @@ CMEntity >> group [
 CMEntity >> group: aGroup [
 
 	group := aGroup
-]
-
-{ #category : 'accessing' }
-CMEntity >> hasCustomShape [
-
-	^ false
 ]
 
 { #category : 'accessing' }
@@ -460,26 +260,20 @@ CMEntity >> id: aNumber [
 	id := aNumber
 ]
 
-{ #category : 'initialize-release' }
-CMEntity >> init [
-	
-	
-]
-
-{ #category : 'initialize-release' }
-CMEntity >> initId [
-	" Private - Set the receiver's internal identifier. "
-
-	self id: (self class currentId: self class currentId + 1)
-]
-
 { #category : 'initialization' }
 CMEntity >> initialize [
 
 	super initialize.
-	self initId.
+	self initializeEntityId.
 	self initializeInstanceSideParameters.
 	self class resetActivePovSelector
+]
+
+{ #category : 'initialize-release' }
+CMEntity >> initializeEntityId [
+	" Private - Set the receiver's internal identifier. "
+
+	self id: (self class currentId: self class currentId + 1)
 ]
 
 { #category : 'initialization' }
@@ -492,69 +286,6 @@ CMEntity >> initializeInstanceSideParameters [
 CMEntity >> instanceSideParameters [
 
 	^ self class instanceSideParameters
-]
-
-{ #category : 'printing' }
-CMEntity >> interestingDetails [
-	" Answer a <Collection> of interesting receiver's attributes, from a modeler point of view, to display in a popup for example "
-
-	^ { 
-		'Id: ' -> (self id)
-		}
-]
-
-{ #category : 'testing' }
-CMEntity >> isAgent [
-	
-	^false
-]
-
-{ #category : 'testing' }
-CMEntity >> isArcEntity [
-	
-	^false
-]
-
-{ #category : 'utilities - attributes' }
-CMEntity >> isAttributeValueABoolean: aSymbol [
-	
-	| aClass |
-	aClass := (self perform: aSymbol) class.
-	^aClass = Boolean or: [aClass inheritsFrom: Boolean]
-]
-
-{ #category : 'utilities - attributes' }
-CMEntity >> isAttributeValueANumber: aSymbol [
-	
-	| aClass |
-	aClass := (self perform: aSymbol) class.
-	^aClass = Number or: [aClass inheritsFrom: Number]	"or:[(aValue contains: [:char | char isDigit not and:[char ~= $.]]) not]"
-]
-
-{ #category : 'utilities - attributes' }
-CMEntity >> isAttributeValueASymbol: aSymbol [
-	
-	| aClass |
-	aClass := (self perform: aSymbol) class.
-	^aClass = Symbol or: [aClass inheritsFrom: Symbol]
-]
-
-{ #category : 'testing' }
-CMEntity >> isCellularAutomatonCell [
-	
-	^false
-]
-
-{ #category : 'testing' }
-CMEntity >> isCommunicatingEntity [
-	
-	^false
-]
-
-{ #category : 'testing' }
-CMEntity >> isCormasEntity [
-
-	^ true
 ]
 
 { #category : 'initialize-release' }
@@ -605,7 +336,7 @@ CMEntity >> povClassName [
 	"Assign unique color to each class name"
 	
 	<pov>
-	^ CMPointOfView color: (self colorFromName: self class name)
+	^ CMPointOfView color: (CMColor colorOfNumber: self class name hash)
 ]
 
 { #category : 'pov' }
@@ -614,7 +345,7 @@ CMEntity >> povId [
 Example: for an instance with id = 65, the returned color will be brown (65= 2*31+3)"
 
 	<pov>
-	^ CMPointOfView color: (self class colorOfNumber: self id)
+	^ CMPointOfView color: (CMColor colorOfNumber: self id)
 ]
 
 { #category : 'pov' }
@@ -638,7 +369,7 @@ CMEntity >> printOn: aStream [
 
 { #category : 'as yet unclassified' }
 CMEntity >> simulationContext [
-
+	<api>
 	^ context 
 ]
 

@@ -7,6 +7,7 @@ Trait {
 
 { #category : 'utilities - mathematics' }
 TCMMath >> logisticGrowth: x r: r k: k [
+	<api>
 	"Purpose: Returns the next value of X(t+1), according to the discrete logistic equation :
 	 X(t+1) = X(t) + dx /dt  "
 
@@ -15,6 +16,7 @@ TCMMath >> logisticGrowth: x r: r k: k [
 
 { #category : 'utilities - mathematics' }
 TCMMath >> logisticGrowthContinuous: x r: r k: k [
+	<api>
 	"Returns the next value of X(t+1), according to the continuous logistic equation :
 	 f(x,t) = x(t) = K / [(K-Xo)/Xo . exp(- r.t) + 1]   "
 

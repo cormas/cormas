@@ -9,6 +9,7 @@ Class {
 		'shouldGenerateTestPackage',
 		'shouldGenerateBaseline',
 		'modelClass',
+		'cellClass',
 		'testClass',
 		'baselineClass'
 	],
@@ -55,6 +56,12 @@ CMModelGenerator >> basenameFrom: aString [
 		basename := basename copyFrom: 1 to: basename size - 'model' size ].
 	
 	^ basename
+]
+
+{ #category : 'entity names' }
+CMModelGenerator >> cellClassName [
+
+	^ self prefix, 'Cell'
 ]
 
 { #category : 'accessing' }
@@ -143,12 +150,12 @@ CMModelGenerator >> generateInitializeMethod [
 
 	| method |
 	
-	method := modelClass compiler compile: ('initialize
+	method := cellClass compiler compile: ('initialize
 	super initialize.
 	
-	"The code that you write here will be executed right after the model object is created (before the simulation is initialized)"').
+	"The code that you write here will be executed right after the cell object is created (before the simulation is initialized)"').
 
-	modelClass
+	cellClass
 		addSelector: #initialize
 		withMethod: method.
 ]
@@ -161,9 +168,12 @@ CMModelGenerator >> generateMethods [
 	
 	description ifNotEmpty: [ self generateDescriptionMethod ].
 	
-	"self generateInitializeMethod."
+	"Model methods"
 	self generateInitMethod.
 	self generateStepMethod.
+	
+	"Cell methods"
+	self generateInitializeMethod.
 	
 	shouldGenerateBaseline ifTrue: [ self generateBaselineMethod ]
 ]
@@ -194,6 +204,9 @@ CMModelGenerator >> generatePackagesAndClasses [
 			package: self baselinePackageName) install ].
 
 	modelClass := (CMModel << self modelClassName asSymbol
+		package: self modelPackageName) install.
+		
+	cellClass := (CMCell << self cellClassName asSymbol
 		package: self modelPackageName) install.
 ]
 
@@ -255,7 +268,7 @@ CMModelGenerator >> modelClassName: aString [
 	modelClassName := aString
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'entity names' }
 CMModelGenerator >> modelClassNameFromPrefix [
 
 	^ self prefix, 'Model'

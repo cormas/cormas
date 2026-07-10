@@ -4,7 +4,6 @@ Class {
 	#instVars : [
 		'initSelectorDropList',
 		'controlSelectorDropList',
-		'randomNumbersPresenter',
 		'initializeButton',
 		'initializeButtonBlock'
 	],
@@ -20,12 +19,6 @@ CMSimulationInitializerPresenter class >> example [
 	app := CMSimulationApplication new.
 	app cormasModel: CMMockModel new.
 	(app newPresenter: self) open
-]
-
-{ #category : 'as yet unclassified' }
-CMSimulationInitializerPresenter >> applyRandomNumberGeneratorSettings [
-
-	randomNumbersPresenter apply
 ]
 
 { #category : 'initialization' }
@@ -58,8 +51,6 @@ CMSimulationInitializerPresenter >> defaultLayout [
 			add: controlSelectorDropList expand: false;
 			yourself) expand: false;
 		add: SpNullPresenter new;
-		add: randomNumbersPresenter;
-		add: SpNullPresenter new;
 		add: initializeButton height: CMActivityBar activityButtonHeight;
 		yourself
 ]
@@ -89,8 +80,6 @@ CMSimulationInitializerPresenter >> initializePresenters [
 	
 	initSelectorDropList items: modelClass availableInitSelectors.
 	controlSelectorDropList items: modelClass availableControlSelectors.
-	
-	randomNumbersPresenter := self instantiate: CMSimulationInitRandomPresenter. 
 		
 	initializeButton := self newButton
 		disable;
@@ -99,13 +88,6 @@ CMSimulationInitializerPresenter >> initializePresenters [
 		yourself.
 
 	self ensureAllInitSettingsDefined
-]
-
-{ #category : 'initialization' }
-CMSimulationInitializerPresenter >> updatePresenter [
-
-	super updatePresenter.
-	randomNumbersPresenter showCurrentSettings 
 ]
 
 { #category : 'enumerating' }

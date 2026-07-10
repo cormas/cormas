@@ -102,12 +102,28 @@ CMModel class >> availableInitSelectors [
 { #category : 'available probes' }
 CMModel class >> availableProbes [
 
-	^ (Pragma allNamed: #probeNamed:color: in: self) collect: [ :pragma |
-		CMProbe new
-			name: pragma arguments first;
-			colorString: pragma arguments second;
-			selector: pragma methodSelector;
-			yourself ].
+	| allProbes timeStepProbe |
+	
+	allProbes := (Pragma allNamed: #probeNamed:color: from: self to: CMModel)
+		collect: [ :pragma |
+			CMProbe new
+				name: pragma arguments first;
+				colorString: pragma arguments second;
+				selector: pragma methodSelector;
+				yourself ].
+			
+	"Time step probe must be first in the list.
+	All other probes must be sorted bt names"
+	timeStepProbe := allProbes
+		detect: [ :probe | probe selector = #currentTimeStep ].
+		
+	allProbes := allProbes asOrderedCollection
+		reject: [ :probe | probe selector = #currentTimeStep ].
+		
+	allProbes sort: [ :a :b | a name < b name ].
+	allProbes addFirst: timeStepProbe.
+			
+	^ allProbes
 ]
 
 { #category : 'baselines' }
@@ -310,10 +326,54 @@ CMModel class >> modelName [
 	^ self name
 ]
 
+{ #category : 'as yet unclassified' }
+CMModel class >> modelsInThisImage [
+
+	^ (CMModel allSubclasses reject: #isDeprecated) copyWithout: CMMockModel
+]
+
 { #category : 'accessing' }
 CMModel class >> parameters [
 	"Parameters defined by this model"
 	^ CMParameter collectAllParametersFrom: self
+]
+
+{ #category : 'accessing' }
+CMModel class >> pragmas [ 
+"self pragmas "
+
+| cormasPackages cormasClasses cormasMethods allPragmas pragmaSelectors |
+cormasPackages := CMModel allSubclasses collect: #package.
+cormasPackages := cormasPackages copyWithout: 'Cormas-Core' asPackage.
+	
+cormasClasses := cormasPackages flatCollect: #definedClasses.
+cormasMethods := cormasClasses flatCollect: #methods.
+
+allPragmas := cormasMethods flatCollect: #pragmas.
+pragmaSelectors := (allPragmas collect: #selector) asSet.
+^pragmaSelectors
+]
+
+{ #category : 'accessing' }
+CMModel class >> pragmasOfClass: aClass [
+" self pragmasOfClass: FFFirefightersModel "
+
+
+| cormasPackages cormasClasses cormasMethods allPragmas pragmaSelectors dictionary |
+cormasPackages := {
+	"'Cormas-Core' asPackage ."
+	aClass package
+}.
+
+cormasClasses := cormasPackages flatCollect: #definedClasses.
+cormasMethods := cormasClasses flatCollect: #methods.
+
+allPragmas := cormasMethods flatCollect: #pragmas.
+pragmaSelectors := (allPragmas collect: #selector) asSet asSortedCollection: [ :a :b | a < b ] .
+dictionary := Dictionary new.
+pragmaSelectors do: [ : p | dictionary at: p put: (allPragmas detect: [ :c | c selector = p ]) ].
+^dictionary
+"^allPragmas asSet"
 ]
 
 { #category : 'as yet unclassified' }
@@ -828,6 +888,8 @@ CMModel >> createN: aNumber randomlyLocatedEntities: aClass constrainedBy: aBloc
 
 { #category : 'accessing' }
 CMModel >> currentTimeStep [
+	<probeNamed: 'Time step' color: '000000'>
+	
 	<api>
 	<doc: 'Current time step of a simulation. This method can be used to change model behavior depending on the time step. For example, perform some action once every 30 steps.'>
 	
@@ -917,9 +979,7 @@ CMModel >> initialize [
 
 	super initialize.
 	
-	self flag: 'TODO'.
-	"A dummy context because before the simulation is created we already need things like random number generator. For example, for testing or to display the default generator in the UI"
-	self simulationContext: CMSimulationContext new.
+	self simulationContext: self newSimulationContext.
 	
 	entities := Dictionary new.
 	
@@ -1056,6 +1116,13 @@ CMModel >> newEntity: aClass locatedAt: aCell [
 	| entity |
 	entity := self newEntity: aClass.
 	entity moveTo: aCell
+]
+
+{ #category : 'initialization' }
+CMModel >> newSimulationContext [
+	"This method can be overriden by plugins"
+	
+	^ CMSimulationContext new
 ]
 
 { #category : 'accessing' }
@@ -1346,7 +1413,7 @@ CMModel >> stepAsynchronouslyCA: t [
 		transformWith: '`@rec stepAsynchronouslyCA: `@arg' -> '`@rec stepAsynchronously'
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'control' }
 CMModel >> stepSynchronously [
 	<api>
 	<doc: 'Purpose: To active the transition function and to update synchronously a cellular automata

@@ -56,6 +56,18 @@ CMNumberParameter class >> newFromPragmaNamedMinMaxStepDefault: aPragma [
 ]
 
 { #category : 'testing' }
+CMNumberParameter >> isFloatParameter [
+
+	^ false
+]
+
+{ #category : 'testing' }
+CMNumberParameter >> isIntegerParameter [
+
+	^ false
+]
+
+{ #category : 'testing' }
 CMNumberParameter >> isValidValue: aValue [
 
 	| steps |

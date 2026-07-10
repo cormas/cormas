@@ -197,16 +197,10 @@ CMModelOpenerPresenter >> findAvailableExampleModels [
 	^ CMModelManifest allSubclasses
 ]
 
-{ #category : 'as yet unclassified' }
-CMModelOpenerPresenter >> findAvailableModels [
-
-	^ (CMModel allSubclasses reject: #isDeprecated) copyWithout: CMMockModel
-]
-
 { #category : 'initialization' }
 CMModelOpenerPresenter >> initializeModelLists [
 
-	modelList items: self findAvailableModels.
+	modelList items: CMModel modelsInThisImage.
 	exampleModelsList items: self findAvailableExampleModels
 ]
 

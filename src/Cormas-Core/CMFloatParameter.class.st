@@ -19,6 +19,12 @@ CMFloatParameter class >> pragmaDict [
 ]
 
 { #category : 'testing' }
+CMFloatParameter >> isFloatParameter [
+
+	^ true
+]
+
+{ #category : 'testing' }
 CMFloatParameter >> isValidValue: aValue [
 
 	^ (super isValidValue: aValue) and: [ aValue isNumber ]

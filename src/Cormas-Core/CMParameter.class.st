@@ -50,6 +50,12 @@ CMParameter class >> collectParametersFromInstanceAndClassSideOf: aClass [
 	^ parameters
 ]
 
+{ #category : 'as yet unclassified' }
+CMParameter class >> compatibeSamplingMethods [
+
+	self subclassResponsibility
+]
+
 { #category : 'testing' }
 CMParameter class >> concreteSubclasses [
 	"A parameter class is concrete if it defines the #pragmaDict method"

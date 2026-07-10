@@ -6,6 +6,11 @@ Class {
 }
 
 { #category : 'tests' }
+CMColorTest >> testColorOfNumber [
+	self assert: (CMColor colorOfNumber: 65) equals: Color purple
+]
+
+{ #category : 'tests' }
 CMColorTest >> testHexString [
 
 	| color hex |

@@ -275,7 +275,9 @@ CMNewModelPresenter >> updatePackageClassTree [
 	
 	items := OrderedCollection with: {
 		'name' -> generator modelPackageName .
-		'classes' -> { { 'name' -> generator modelClassName } asDictionary } 
+		'classes' -> {
+			{ 'name' -> generator modelClassName } asDictionary .
+			{ 'name' -> generator cellClassName } asDictionary } 
 	} asDictionary.
 		
 	generator shouldGenerateTestPackage ifTrue: [

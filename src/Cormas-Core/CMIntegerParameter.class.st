@@ -19,6 +19,12 @@ CMIntegerParameter class >> pragmaDict [
 ]
 
 { #category : 'testing' }
+CMIntegerParameter >> isIntegerParameter [
+
+	^ true
+]
+
+{ #category : 'testing' }
 CMIntegerParameter >> isValidValue: aValue [
 
 	^ (super isValidValue: aValue) and: [ aValue isInteger ]
