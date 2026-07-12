@@ -86,8 +86,7 @@ CMR3SpaceAgentsBuilder >> mouseEnd: anEvent [
 	
 	oldCell := agent cell.
 		
-	cell
-		ifNotNil: [
+
 			self
 				animateMove: anEvent shape
 				from: position
@@ -96,13 +95,7 @@ CMR3SpaceAgentsBuilder >> mouseEnd: anEvent [
 			
 			agent moveTo: cell model.
 			
-			agent positionInCell: (self positionInCell: cell model fromAbsolutePosition: position) ]
-		ifNil: [ 
-			self
-				animateMove: anEvent shape
-				from: position
-				to: (anEvent canvas shapeFromModel: oldCell) position
-				duration: 1 second ].
+			agent positionInCell: (self positionInCell: cell model fromAbsolutePosition: position) 
 ]
 
 { #category : 'as yet unclassified' }

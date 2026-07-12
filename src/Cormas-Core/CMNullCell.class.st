@@ -6,6 +6,12 @@ Class {
 	#tag : 'Entities'
 }
 
+{ #category : 'testing' }
+CMNullCell >> isSituated [ 
+
+	^ false
+]
+
 { #category : 'moving' }
 CMNullCell >> leaveWhileMoving: isMoving [
 	"Does nothing"
@@ -15,6 +21,12 @@ CMNullCell >> leaveWhileMoving: isMoving [
 
 { #category : 'accessing' }
 CMNullCell >> neighbourhood [
+
+	^ #()
+]
+
+{ #category : 'environment - sensing - space' }
+CMNullCell >> neighbourhoodOfRadius: range verifying: aBlock [
 
 	^ #()
 ]

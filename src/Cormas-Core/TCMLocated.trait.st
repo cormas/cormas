@@ -55,9 +55,7 @@ Arguments: 	locatedEntityName = <Symbol | Class>
 Return value: <Collection(AgentLocation | ObjectLocation)>
 Example: self colocatedEntities: #Prey verifying: [:p | p isWeak]"
 	
-	^self cell
-		ifNil: [ nil ]
-		ifNotNil: [ (self colocatedEntities: locatedEntityName) select: [:a | aBlock value: a] ]
+	^ (self colocatedEntities: locatedEntityName) select: [:a | aBlock value: a]
 ]
 
 { #category : 'environment - picking - agents' }
@@ -180,8 +178,8 @@ Return value: <Integer>"
 
 { #category : 'testing' }
 TCMLocated >> isSituated [
-"Purpose: tests the location somewhere in the spatial grid"
-	^cell notNil
+	"Purpose: tests the location somewhere in the spatial grid"
+	^cell isSituated
 ]
 
 { #category : 'accessing' }
@@ -217,11 +215,8 @@ Arguments: 	locatedEntityName = <Symbol | Class>
 Return value: <Collection(AgentLocation | ObjectLocation)>
 Example: self locatedEntities: #Predator verifying: [:a | a isHungry] withinRadius: self perceptionRangePredators"
 	
-	^ self cell
-		ifNil: [ nil ]
-		ifNotNil: [
-			(self locatedEntities: locatedEntityName withinRadius: range)
-				select: [ :a | aBlock value: a ] ]
+	^ (self locatedEntities: locatedEntityName withinRadius: range)
+			select: [ :a | aBlock value: a ]
 ]
 
 { #category : 'environment - sensing - agents' }
@@ -248,9 +243,7 @@ Arguments: 	aBlock = <BlockClosure>
 Return value: <Collection(SpatialEntity) | nil>
 Example: self locationsVerifying: [:c | c isClosed not] withinRadius: 5"
 	
-	^self cell
-		ifNil: [ nil ]
-		ifNotNil: [ self cell neighbourhoodOfRadius: range verifying: aBlock ]
+	^ self cell neighbourhoodOfRadius: range verifying: aBlock 
 ]
 
 { #category : 'environment - sensing - space' }
@@ -864,13 +857,10 @@ Arguments: aBlock = <BlockClosure>
 Return value: <Collection(AgentLocation)>
 Example: self similarAgentsVerifying: [:a | a sex ~= self sex] withinRadius: self pheromonePerceptionRange"
 	
-	^ self cell
-		ifNil: [ nil ]
-		ifNotNil: [
-			self
-				locatedEntities: self class name
-				verifying: aBlock
-				withinRadius: range ]
+	^ self
+		locatedEntities: self class name
+		verifying: aBlock
+		withinRadius: range
 ]
 
 { #category : 'environment - sensing - agents' }

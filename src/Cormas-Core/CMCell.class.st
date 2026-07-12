@@ -226,6 +226,12 @@ CMCell >> isOnTheEdge [
 ]
 
 { #category : 'testing' }
+CMCell >> isSituated [ 
+
+	^ true
+]
+
+{ #category : 'testing' }
 CMCell >> isSpatialEntityElement [
 	
 	^true
