@@ -28,12 +28,8 @@ CMCell >> asString [
 	" After adding the name and id of this entity, add its coordinates "
 	" Private - See superimplementor's comment "
 
-	^ String streamContents: [ : stream |
-		stream 
-			<< super asString;
-			crtab;		
-			<< 'coordinates: ';
-			<< self coordinates asString ]
+	^ String streamContents: [ :stream |
+		self printOn: stream ]
 	
 ]
 
@@ -112,11 +108,8 @@ CMCell >> hasNeighbourE [
 
 { #category : 'environment - sensing - space' }
 CMCell >> hasNeighbourN [
-	
-	| index |
-	
-	index := 1.
-	^ (neighbourhoodWithNils at: index) isNotNil
+
+	^ (neighbourhoodWithNils at: 1) isNotNil
 ]
 
 { #category : 'environment - sensing - space' }
@@ -296,7 +289,7 @@ Example := self nearestCellVerifying: [:aCell | aCell hasWater] constraintOnPath
 	collec := cormasModel cells select: [:c | condition1 value: c].
 	collec isEmpty ifTrue: [^nil].
 	minimum := self spaceModel numberOfRows * self spaceModel numberOfColumns.
-	collec do: [ : c | 
+	collec do: [ :c | 
 			c ~= self
 				ifTrue: [
 					d := self distanceTo: c constraintOnPath: condition2.
@@ -310,13 +303,13 @@ Example := self nearestCellVerifying: [:aCell | aCell hasWater] constraintOnPath
 { #category : 'environment - sensing - space' }
 CMCell >> nearestCellVerifying: aCondition withMaxOf: aMagnitudeName [
 	"Returns the nearest cell verifying a specified condition and with the highest value of a specified function. 
-If none: returns nil; if more than one at the minimum radius: random selection
-Valid only for regular grids (square or hexagonal cells)."
+	If none: returns nil; if more than one at the minimum radius: random selection
+	Valid only for regular grids (square or hexagonal cells)."
 	
 	| locations |
-	locations := self nearestCellsVerifying: aCondition withMaxOf:
-			aMagnitudeName.
-			
+	locations := self 
+		nearestCellsVerifying: aCondition 
+		withMaxOf: aMagnitudeName.
 	^ locations
 		ifNotEmpty: [ self selectRandomlyFrom: locations ]
 		ifEmpty: [ nil ]
@@ -325,12 +318,11 @@ Valid only for regular grids (square or hexagonal cells)."
 { #category : 'environment - sensing - space' }
 CMCell >> nearestCellWithMaxOf: aMagnitudeName [
 	"Returns the nearest cell with the highest value of a specified function. 
-If none: returns nil; if more than one at the minimum radius: random selection
-Valid only for regular grids (square or hexagonal cells)"
+	If none: returns nil; if more than one at the minimum radius: random selection
+	Valid only for regular grids (square or hexagonal cells)"
 	
 	| locations |
 	locations := self nearestCellsWithMaxOf: aMagnitudeName.
-	
 	^ locations
 		ifNotEmpty: [ self selectRandomlyFrom: locations ]
 		ifEmpty: [ nil ]
@@ -454,10 +446,8 @@ CMCell >> neighbourN [
 Not nil only for square cells (regular spatial grid). 
 Return value: <SpatialEntityElement | nil>"
 	
-	| index neighbour |
-	
-	index := 1.
-	neighbour := neighbourhoodWithNils at: index.
+	| neighbour |
+	neighbour := neighbourhoodWithNils at: 1.
 	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the North' ].
 	^ neighbour
 ]
@@ -575,6 +565,19 @@ Return value: <SpatialEntityElement | nil>"
 	neighbour := neighbourhoodWithNils at: index.
 	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the West' ].
 	^ neighbour
+]
+
+{ #category : 'accessing' }
+CMCell >> printOn: aStream [
+	" After adding the name and id of this entity, add its coordinates "
+	" Private - See superimplementor's comment "
+
+	super printOn: aStream.
+	aStream 
+			crtab;		
+			<< 'coordinates: '.
+	self coordinates printOn: aStream 
+	
 ]
 
 { #category : 'accessing' }
