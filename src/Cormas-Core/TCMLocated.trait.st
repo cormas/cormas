@@ -201,14 +201,12 @@ TCMLocated >> leave [
 
 { #category : 'moving' }
 TCMLocated >> leaveWhileMoving: isMoving [
-
-	self cell ifNil: [ ^ self ].
 			
-	(self cell theOccupants at: self class name)
+	(self cell theOccupantsAt: self class name)
 		remove: self
 		ifAbsent: [ "do nothing" ].
 		
-	self cell: nil
+	self cell: CMNullCell new
 ]
 
 { #category : 'environment - sensing - agents' }
@@ -892,6 +890,12 @@ Example: self similarAgentsWithinRadius: 3"
 			self
 				locatedEntities: self class name
 				withinRadius: range ]
+]
+
+{ #category : 'moving' }
+TCMLocated >> theOccupantsAt: anId [
+
+	^ self cell theOccupants at: anId
 ]
 
 { #category : 'moving' }
