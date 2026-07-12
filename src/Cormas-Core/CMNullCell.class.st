@@ -14,6 +14,18 @@ CMNullCell >> leaveWhileMoving: isMoving [
 ]
 
 { #category : 'accessing' }
+CMNullCell >> neighbourhood [
+
+	^ #()
+]
+
+{ #category : 'environment - sensing - agents' }
+CMNullCell >> occupantsOfClassNamed: aName [
+
+	^ #()
+]
+
+{ #category : 'accessing' }
 CMNullCell >> theOccupantsAt: anIndex [
 
 	^ OrderedCollection new

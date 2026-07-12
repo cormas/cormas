@@ -41,7 +41,6 @@ TCMLocated >> colocatedEntities: locatedEntityName [
 	"
 	
 	| occupants |
-	self cell ifNil: [ ^ nil ].
 	occupants := self cell occupantsOfClassNamed: locatedEntityName.
 	(occupants includes: self) 
 		ifTrue: [ occupants remove: self ].
@@ -232,12 +231,11 @@ Return value: <Collection(AgentLocation | ObjectLocation)>
 Example: self locatedEntities: #Predator withinRadius: self perceptionRangePredators"
 	
 	| occupants |
-	self cell ifNil: [ ^ nil ].
-	
 	occupants := (self locationsWithinRadius: range) flatCollect: [ :aCell |
 		aCell occupantsOfClassNamed: locatedEntityName ].
 	
-	(occupants includes: self) ifTrue: [ occupants remove: self ].
+	(occupants includes: self) 
+		ifTrue: [ occupants remove: self ].
 	^ occupants
 ]
 
@@ -730,8 +728,6 @@ TCMLocated >> neighbouringLocatedEntities: locatedEntityName [
 The co-located entities are not considered here (for that, use locatedEntities: locatedEntityName withinRadius: 1)
 Return value: <Collection(AgentLocation | ObjectLocation)>
 Example: self neighbouringLocatedEntities: #Predator"
-	
-	self cell ifNil: [ ^ nil ].
 	
 	^ self cell neighbourhood flatCollect: [ :aCell |
 		aCell occupantsOfClassNamed: locatedEntityName ].
