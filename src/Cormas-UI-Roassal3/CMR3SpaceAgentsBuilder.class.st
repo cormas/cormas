@@ -86,8 +86,8 @@ CMR3SpaceAgentsBuilder >> mouseEnd: anEvent [
 	
 	oldCell := agent cell.
 		
-	cell
-		ifNotNil: [
+	agent isSituated
+		ifTrue: [
 			self
 				animateMove: anEvent shape
 				from: position
@@ -97,7 +97,7 @@ CMR3SpaceAgentsBuilder >> mouseEnd: anEvent [
 			agent moveTo: cell model.
 			
 			agent positionInCell: (self positionInCell: cell model fromAbsolutePosition: position) ]
-		ifNil: [ 
+		ifFalse: [ 
 			self
 				animateMove: anEvent shape
 				from: position

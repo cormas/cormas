@@ -22,98 +22,106 @@ CMDocumentationBrowser class >> example [
 ]
 
 { #category : 'as yet unclassified' }
-CMDocumentationBrowser >> buildArgumentsStringFrom: aMethodDescription [
+CMDocumentationBrowser >> buildArgumentsStringFrom: aMethodDescription builder: aBuilder [
 
 	| arguments |
-	aMethodDescription hasArguments ifFalse: [ ^ '' ].
+	aMethodDescription hasArguments ifFalse: [ ^ self ].
 	
 	arguments := aMethodDescription arguments.
 	
-	^ String streamContents: [ :stream |
-		stream << '##### Argument'.
+	aBuilder header: [
+		aBuilder text: 'Argument'.
 		
-		arguments size > 1
-			ifTrue: [ stream << 's' ].
-			
-		stream cr.
-		
+		arguments size > 1 ifTrue: [ 
+			aBuilder text: 's' ]
+	] withLevel: 5.
+
+	aBuilder unorderedListDuring: [ 
 		arguments do: [ :dict |
-			stream
-				<< '- **';
-				<< (dict at: 'type');
-				<< '** — ';
-				<< (dict at: 'description'); cr ] ]
+			aBuilder item: [
+				aBuilder
+					bold: [ aBuilder text: (dict at: 'type') ];
+					text: ' - ';
+					text: (dict at: 'description') ] ] ].
 ]
 
 { #category : 'as yet unclassified' }
 CMDocumentationBrowser >> buildDocumentationStringFrom: aMethodDescription [
+
+	| builder |
+	builder := Microdown builder.
 	
-	^ String streamContents: [ :stream |
-		stream
-			<< '### '
-			<< aMethodDescription method selector; cr;
-			<< '***'; cr; << ' '; cr;
-			<< aMethodDescription documentationString;
-			<< ' ';
-			cr; cr;
-			<< (self buildArgumentsStringFrom: aMethodDescription); cr;
-			<< (self buildReturnInfoStringFrom: aMethodDescription); cr;
-			<< (self buildExamplesStringFrom: aMethodDescription); cr;
-			<< (self buildSeeAlsoStringFrom: aMethodDescription) ]
+	builder header: [ builder text: aMethodDescription method selector asString ] withLevel: 3.
+	builder horizontalLine.
+	builder paragraph: [ builder text: aMethodDescription documentationString ].
+	
+	self buildArgumentsStringFrom: aMethodDescription builder: builder.
+	self buildReturnInfoStringFrom: aMethodDescription builder: builder.
+	self buildExamplesStringFrom: aMethodDescription builder: builder.
+	self buildSeeAlsoStringFrom: aMethodDescription builder: builder.
+	
+	^ builder contents
 ]
 
 { #category : 'as yet unclassified' }
-CMDocumentationBrowser >> buildExamplesStringFrom: aMethodDescription [
+CMDocumentationBrowser >> buildExamplesStringFrom: aMethodDescription builder: aBuilder [
 
-	| examples |
-	aMethodDescription hasExamples ifFalse: [ ^ '' ].
+	| examples code |
+	aMethodDescription hasExamples ifFalse: [ ^ self ].
 	
 	examples := aMethodDescription examples.
 	
-	^ String streamContents: [ :stream |
-		stream << '##### Example'.
+	aBuilder header: [
+		aBuilder text: 'Example'.
 		
-		examples size > 1
-			ifTrue: [ stream << 's' ].
-			
-		stream cr.
-		stream << '```'; cr.
-		
+		examples size > 1 ifTrue: [ 
+			aBuilder text: 's' ]
+	] withLevel: 5.
+
+	code := String streamContents: [ :stream |
 		examples do: [ :example |
 			stream
 				<< example
-				<< '.'; cr ].
-			
-		stream << '```' ]
-]
-
-{ #category : 'as yet unclassified' }
-CMDocumentationBrowser >> buildReturnInfoStringFrom: aMethodDescription [
-
-	aMethodDescription hasReturnInfo ifFalse: [ ^ '' ].
-	
-	^ String streamContents: [ :stream |
-		stream
-			<< '##### Return value'; cr;
-			<< '- **';
-			<< (aMethodDescription returnInfo at: 'type');
-			<< '** — ';
-			<< (aMethodDescription returnInfo at: 'description'); cr ]
-]
-
-{ #category : 'as yet unclassified' }
-CMDocumentationBrowser >> buildSeeAlsoStringFrom: aMethodDescription [
-
-	aMethodDescription hasRelatedMethods ifFalse: [ ^ '' ].
-	
-	^ String streamContents: [ :stream |
-		stream << '##### See also'; cr.
+				<< '.'; cr ] ].
 		
+	aBuilder
+		codeblock: code
+		firstLineAssociations: { ('language2' -> 'Pharo') }
+]
+
+{ #category : 'as yet unclassified' }
+CMDocumentationBrowser >> buildReturnInfoStringFrom: aMethodDescription builder: aBuilder [
+
+	| returnInfo |
+	aMethodDescription hasReturnInfo ifFalse: [ ^ self ].
+	
+	returnInfo := aMethodDescription returnInfo.
+	
+	aBuilder header: [ aBuilder text: 'Return value' ] withLevel: 5.
+	
+	aBuilder unorderedListDuring: [ 
+		aBuilder item: [ 
+			aBuilder
+				bold: [ aBuilder text: (returnInfo at: 'type') ];
+				text: ' - ';
+				text: (returnInfo at: 'description') ] ].
+]
+
+{ #category : 'as yet unclassified' }
+CMDocumentationBrowser >> buildSeeAlsoStringFrom: aMethodDescription builder: aBuilder [
+
+	| link |
+	aMethodDescription hasRelatedMethods ifFalse: [ ^ self ].
+	
+	aBuilder header: [ aBuilder text: 'See also' ] withLevel: 5.
+	
+	aBuilder unorderedListDuring: [ 
 		aMethodDescription relatedMethods do: [ :method |
-			stream
-				<< '- '
-				<< '`' << method methodClass name << '>>#' << method selector << '`';
-				cr ] ]
+			link := String streamContents: [ :stream |
+				stream << method methodClass name << '>>#' << method selector ].
+			
+			aBuilder item: [ 
+				aBuilder monospace: link ] ] ]
 ]
 
 { #category : 'initialization' }

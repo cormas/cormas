@@ -45,6 +45,7 @@ CMAgent >> die [
 CMAgent >> initialize [
 
 	super initialize.
+	cell := CMNullCell new.
 	isDead := false.
 ]
 
