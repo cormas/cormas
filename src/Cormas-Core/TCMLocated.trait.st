@@ -253,9 +253,7 @@ The current location is considered
 Argument: range = <Integer>
 Return value: <Collection(SpatialEntity) | nil>"
 	
-	^ self cell
-		ifNil: [ Array new ]
-		ifNotNil: [ self cell neighbourhoodOfRadius: range ]
+	^ self cell neighbourhoodOfRadius: range
 ]
 
 { #category : 'environment - sensing - space' }
@@ -267,14 +265,12 @@ Arguments: 	locatedEntityName = <Symbol | Class>
 Return value: <Collection(SpatialEntity) | nil>
 Example: self locationsWithoutAny: Predator withinRadius: self perceptionRangePredators"
 	
-	^self cell
-		ifNil: [ nil ]
-		ifNotNil: [ self cell neighbourhoodOfRadius: range withoutAny: locatedEntityName ]
+	^ self cell neighbourhoodOfRadius: range withoutAny: locatedEntityName
 ]
 
 { #category : 'star moving' }
 TCMLocated >> moveE [
-"Purpose: moves eastward if neighbourE exists (raster grid), do not move otherwise"
+	"Purpose: moves eastward if neighbourE exists (raster grid), do not move otherwise"
 	
 	(self cell notNil and: [self cell neighbourE notNil])
 		ifTrue: [self moveTo: self cell neighbourE]
@@ -425,7 +421,7 @@ TCMLocated >> nearestEmptyCell [
 	If none: returns nil.
 	If more than one at the minimum radius: random selection"
 	
-	self cell ifNil: [ self error: 'Agent is not located on any cell' ].
+	self isSituated ifFalse: [ self error: 'Agent is not located on any cell' ].
 	^ self cell nearestEmptyCell
 ]
 
@@ -437,9 +433,7 @@ If none: returns nil; if more than one at the minimum radius: random selection
 Argument: range = <Integer>
 Return value: <SpatialEntity | nil>"
 	
-	^self cell
-		ifNil: [ nil ]
-		ifNotNil: [ self cell nearestEmptyNeighborWithinRadius: range ]
+	^ self cell nearestEmptyNeighborWithinRadius: range
 ]
 
 { #category : 'environment - sensing - space' }

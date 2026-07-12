@@ -19,6 +19,12 @@ CMNullCell >> leaveWhileMoving: isMoving [
 	^ self 
 ]
 
+{ #category : 'environment - picking - space' }
+CMNullCell >> nearestEmptyLocationWithinRadius: r [
+
+	^ #()
+]
+
 { #category : 'accessing' }
 CMNullCell >> neighbourhood [
 
