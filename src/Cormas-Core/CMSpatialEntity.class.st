@@ -617,9 +617,7 @@ CMSpatialEntity >> occupantsOfClass: aClass [
 	"Purpose: returns all the entities of a given type located there
 Note that the instances of subclasses ARE CONSIDERED by this method
 Return value: <Collection(AgentLocation & ObjectLocation)>"
-	
-	aClass ifNil: [ ^ OrderedCollection new ].
-	
+
 	^ aClass withAllSubclasses flatCollect: [ :eachClass |
 		self theOccupants
 			at: eachClass name
