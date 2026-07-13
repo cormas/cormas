@@ -196,15 +196,10 @@ TCMLocated >> labelOfPOV [
 { #category : 'star moving' }
 TCMLocated >> leave [
 "Purpose: moves the agent away from the spatial grid (sets his cell attribute to nil): the situated agent is not located any more, but it is still 'alive'  "
-	self leaveWhileMoving: false.
-]
-
-{ #category : 'moving' }
-TCMLocated >> leaveWhileMoving: isMoving [
-
+	
 	self cell ifNil: [ ^ self ].
 			
-	(self cell theOccupants at: self class name)
+	(self cell occupantsOfClass: self class)
 		remove: self
 		ifAbsent: [ "do nothing" ].
 		
@@ -381,7 +376,7 @@ TCMLocated >> moveTo: aCell [
 	Example: self moveTo: self cell neighbourN"
 	
 	aCell isSpatialEntity ifFalse: [ ^ nil ].
-	self leaveWhileMoving: true.
+	self leave.
 	self cell: aCell.
 	self cell addOccupant: self.
 	
