@@ -95,58 +95,6 @@ Example: self colocatedEntity: #Prey verifying: [:a | a isWeak]"
 	^ self selectRandomlyFrom: candidates
 ]
 
-{ #category : 'environment - picking - agents' }
-TCMLocated >> colocatedSimilarAgent [
-	"Purpose: picks RANDOMLY one among the co-located receiver-like entities. 
-If none: returns nil; if more than one: random selection
-Return value: <AgentLocation | nil>"
-	
-	| candidates |
-	candidates := self colocatedSimilarAgents.
-	
-	candidates ifNil: [ ^ nil ].
-	candidates ifEmpty: [ ^ nil ].
-	
-	^ self selectRandomlyFrom: candidates
-]
-
-{ #category : 'environment - picking - agents' }
-TCMLocated >> colocatedSimilarAgentVerifying: aCondition [
-	"Purpose: picks RANDOMLY one among the co-located receiver-like entities verifying a specified condition. 
-If none: returns nil; if more than one: random selection
-Argument: aCondition = <BlockClosure>
-Return value: <AgentLocation | nil>
-Example: self colocatedSimilarAgentVerifying: [:a | a sex ~= self sex]"
-	
-	| candidates |
-	candidates := self colocatedSimilarAgentsVerifying: aCondition.
-	
-	candidates ifNil: [ ^ nil ].
-	candidates ifEmpty: [ ^ nil ].
-	
-	^ self selectRandomlyFrom: candidates
-]
-
-{ #category : 'environment - sensing - agents' }
-TCMLocated >> colocatedSimilarAgents [
-	"Purpose: returns all receiver-like entities located in the same location as the receiver.
-Return value: <Collection(AgentLocation)>"
-	
-	^ self colocatedEntities: self class name
-]
-
-{ #category : 'environment - sensing - agents' }
-TCMLocated >> colocatedSimilarAgentsVerifying: aBlock [
-	"Purpose: returns all receiver-like entities located in the same location as the receiver and verifying a specified condition.
-Argument: aBlock = <BlockClosure>
-Return value: <Collection(AgentLocation)>
-Example: self colocatedSimilarAgentsVerifying: [:a | a sex ~= self sex] "
-	
-	^ self cell
-		ifNil: [ nil ]
-		ifNotNil: [ self colocatedSimilarAgents select: [ :a | aBlock value: a ] ]
-]
-
 { #category : 'displaying' }
 TCMLocated >> coordinates [
 	" Answer a <Point> with the receiver's coordinates "
@@ -633,20 +581,6 @@ If the receiver is not currently located on a cell, this method answers an empty
 	^ entities
 ]
 
-{ #category : 'environment - sensing - agents' }
-TCMLocated >> nearestSimilarNeighboursVerifying: aBlock withinRadius: range [
-	"Purpose: returns the nearest receiver-like instances located withing a given radius of the receiver location and fulfilling a specified constraint
-Arguments: aBlock = <BlockClosure>
-			range = <Integer>
-Return value: <Collection(AgentLocation)>
-Example: self nearestSimilarAgentsVerifying: [:a | a sex ~= self sex] withinRadius: self pheromonePerceptionRange"
-	
-	^ self
-		nearestNeighboursOfClass: self class
-		verifying: aBlock
-		withinRadius: range
-]
-
 { #category : 'environment - sensing - space' }
 TCMLocated >> neighboringLocations [
 	"Purpose: return direct neighbours of current location
@@ -723,7 +657,6 @@ The search is centered on the receiver''s current location. If the receiver is n
 	<returnType: #OrderedCollection description: 'The entities of the specified class that satisfy the condition and are located within the specified radius'>
 
 	<example: 'self neighbourEntitiesOfClass: Predator verifying: [ :predator | predator isHungry ] withinRadius: self perceptionRangePredators'>
-	<seeAlso: #(#neighboursOfClass:verifying: #similarNeighboursVerifying:withinRadius:)>
 	
 	^ (self neighboursOfClass: aClass withinRadius: range)
 		select: [ :each | aBlock value: each ]
@@ -838,77 +771,6 @@ TCMLocated >> randomWalkConstrainedBy: aBlock [
 	
 	destination := self selectRandomlyFrom: candidates.
 	self moveTo: destination
-]
-
-{ #category : 'environment - sensing - agents' }
-TCMLocated >> similarNeighbours [
-	<api>
-	<doc: 'Answer all entities of the same class as the receiver that are located in directly neighbouring cells.
-
-Only entities located in adjacent cells are included. Entities located on the same cell as the receiver are not considered.
-
-If the receiver is not currently located on a cell, this method answers an empty collection.'>
-
-	<returnType: #OrderedCollection description: 'The neighbouring entities that are instances of the same class as the receiver'>
-	<example: 'self similarNeighbours'>
-	
-	^ self neighboursOfClass: self class
-]
-
-{ #category : 'environment - sensing - agents' }
-TCMLocated >> similarNeighboursVerifying: aBlock [
-	<api>
-	<doc: 'Answer all entities of the same class as the receiver that are located in directly neighbouring cells and satisfy the specified condition.
-
-Only entities located in adjacent cells are considered. Entities located on the same cell as the receiver are not included.
-
-The condition is evaluated on each neighbouring entity, and only those for which the block answers true are returned. If the receiver is not currently located on a cell, this method answers an empty collection.'>
-
-	<argument: #aBlock type: #BlockClosure description: 'A predicate evaluated on each neighbouring entity'>
-	<returnType: #OrderedCollection description: 'The neighbouring entities of the same class as the receiver that satisfy the specified condition'>
-	<example: 'self similarNeighboursVerifying: [ :agent | agent sex ~= self sex ]'>
-	
-	^ self similarNeighbours select: [ :each | aBlock value: each ]
-]
-
-{ #category : 'environment - sensing - agents' }
-TCMLocated >> similarNeighboursVerifying: aBlock withinRadius: anInteger [
-	<api>
-	<doc: 'Answer all entities of the same class as the receiver that are located within the specified radius and satisfy the given condition.
-
-The search is centered on the receiver''s current location and includes only entities whose class is the same as the receiver''s class.'>
-
-	<argument: #aBlock type: #BlockClosure description: 'A predicate evaluated on each neighbouring agent'>
-	<argument: #anInteger type: #Integer description: 'The search radius, expressed in number of cells'>
-	<returnType: #OrderedCollection description: 'The entities of the receiver''s class that satisfy the condition and are located within the specified radius'>
-
-	<example: 'self similarNeighboursVerifying: [ :agent | agent sex ~= self sex ] withinRadius: self pheromonePerceptionRange'>
-	
-	^ self
-		neighboursOfClass: self class
-		verifying: aBlock
-		withinRadius: anInteger
-]
-
-{ #category : 'environment - sensing - agents' }
-TCMLocated >> similarNeighboursWithinRadius: anInteger [
-	<api>
-	<doc: 'Answer all entities of the same class as the receiver that are located within the specified radius.
-
-The search is centered on the receiver''s current location. If the receiver is not currently located on a cell, this method answers an empty collection.
-
-Use #similarAgentsVerifying:withinRadius: to restrict the answer to entities satisfying a given condition.'>
-
-	<argument: #anInteger type: #Integer description: 'The search radius, expressed in number of cells'>
-	<returnType: #OrderedCollection description: 'The entities of the receiver''s class that are located within the specified radius'>
-
-	<example: 'self similarNeighboursWithinRadius: 3'>
-
-	self cell ifNil: [ ^ OrderedCollection new ].
-	
-	^ self
-		neighboursOfClass: self class
-		withinRadius: anInteger
 ]
 
 { #category : 'moving' }
