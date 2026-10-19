@@ -32,8 +32,8 @@ Class Instance Variables:
 Class {
 	#name : 'CMEntity',
 	#superclass : 'Object',
-	#traits : 'TCMRandom + TCMMath',
-	#classTraits : 'TCMRandom classTrait + TCMMath classTrait',
+	#traits : 'TCMMath',
+	#classTraits : 'TCMMath classTrait',
 	#instVars : [
 		'id',
 		'context',
@@ -179,7 +179,7 @@ CMEntity class >> resetClassSideParameters [
 			parameter setDefaultValueFor: self ] ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'pragmas' }
 CMEntity >> actionSelectors [
 
 	^ (Pragma allNamed: 'action' from: self class to: CMEntity)
@@ -199,7 +199,7 @@ CMEntity >> asString [
 	
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 CMEntity >> classSideParameters [
 
 	^ self class classSideParameters
@@ -282,7 +282,7 @@ CMEntity >> initializeInstanceSideParameters [
 	self instanceSideParameters do: [ :p | p setDefaultValueFor: self ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 CMEntity >> instanceSideParameters [
 
 	^ self class instanceSideParameters
@@ -367,13 +367,58 @@ CMEntity >> printOn: aStream [
 		<< self id asString
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'random' }
+CMEntity >> randomBetween: lowerBound and: higherBound [
+	<api>
+	<doc: 'Answer a random float number from the range [lowerBound, higherBound)'>
+		
+	^ lowerBound + (self random * (higherBound - lowerBound))
+]
+
+{ #category : 'random' }
+CMEntity >> randomColor [
+	<api>
+	<doc: 'Returns a random instance of Color (for which the amount of light in red, green, and blue are randomly choosen)'>
+
+	^ Color
+		  r: self random
+		  g: self random
+		  b: self random
+]
+
+{ #category : 'random' }
+CMEntity >> randomIntegerBetween: lowNumber and: highNumber [
+	<api>
+	<doc: 'Answer a random integer number from the range [lowerBound, higherBound)'>
+
+	^ (self randomBetween: lowNumber and: highNumber) rounded
+]
+
+{ #category : 'random' }
+CMEntity >> selectRandomlyFrom: aCollection [
+
+	<api>
+	<doc: 'Returns a random element from aCollection.
+	If aCollection is empty, returns nil'>
+	^ aCollection
+		  ifEmpty: [ nil ]
+		  ifNotEmpty: [ aCollection atRandom: self randomNumberGenerator ] 
+]
+
+{ #category : 'random' }
+CMEntity >> shuffled: aCollection [
+	<api>
+	<doc: 'Returns a copy of aCollection randomly mixed.'>
+	^ aCollection asOrderedCollection shuffledBy: self randomNumberGenerator
+]
+
+{ #category : 'accessing' }
 CMEntity >> simulationContext [
 	<api>
 	^ context 
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 CMEntity >> simulationContext: aContext [
 
 	context := aContext 
