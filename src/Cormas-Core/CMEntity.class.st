@@ -368,6 +368,14 @@ CMEntity >> printOn: aStream [
 ]
 
 { #category : 'random' }
+CMEntity >> random [
+	<api>
+	<doc: 'Answer a random float number from the range ] 0 , 1 [ '>
+		
+	^ self randomNumberGenerator next
+]
+
+{ #category : 'random' }
 CMEntity >> randomBetween: lowerBound and: higherBound [
 	<api>
 	<doc: 'Answer a random float number from the range [lowerBound, higherBound)'>
@@ -392,6 +400,11 @@ CMEntity >> randomIntegerBetween: lowNumber and: highNumber [
 	<doc: 'Answer a random integer number from the range [lowerBound, higherBound)'>
 
 	^ (self randomBetween: lowNumber and: highNumber) rounded
+]
+
+{ #category : 'random' }
+CMEntity >> randomNumberGenerator [
+	^self simulationContext randomNumberGenerator
 ]
 
 { #category : 'random' }
