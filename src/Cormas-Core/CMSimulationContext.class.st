@@ -11,7 +11,8 @@ Class {
 	#instVars : [
 		'randomNumberGenerator',
 		'randomSeed',
-		'currentTimeStep'
+		'currentTimeStep',
+		'timeStepAnnouncer'
 	],
 	#category : 'Cormas-Core-Kernel',
 	#package : 'Cormas-Core',
@@ -37,9 +38,12 @@ CMSimulationContext >> currentTimeStep [
 ]
 
 { #category : 'accessing' }
-CMSimulationContext >> currentTimeStep: anObject [
+CMSimulationContext >> currentTimeStep: anInteger [
 
-	currentTimeStep := anObject
+    currentTimeStep = anInteger ifFalse: [
+        timeStepAnnouncer announce: (ValueChanged oldValue: currentTimeStep newValue: anInteger) ].
+    currentTimeStep := anInteger.
+
 ]
 
 { #category : 'initialization' }
@@ -47,6 +51,7 @@ CMSimulationContext >> initialize [
 
 	super initialize.
 	currentTimeStep := 0.
+	timeStepAnnouncer := Announcer new.
 	
 	self initializeRandomNumberGenerator
 ]
@@ -84,4 +89,10 @@ CMSimulationContext >> randomSeed: anObject [
 	
 	"Some random number generators confuse seed and state and modify the seed value every time they generate a random number. To make sure that the initial seed is retained, we store it separately in the randomSeed variable before passign it to the generator"
 	randomNumberGenerator seed: anObject
+]
+
+{ #category : 'accessing' }
+CMSimulationContext >> timeStepAnnouncer [
+
+	^ timeStepAnnouncer
 ]

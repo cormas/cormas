@@ -390,4 +390,8 @@ CMSimulationRunnerPresenter >> updateWithSimulation [
 	self displayCurrentTimeStep.
 	self enabled: true.
 	self initializeNotebookPages.
+	self simulation simulationContext timeStepAnnouncer
+    when: ValueChanged do: [ :ann |
+        currentTimeStepLabel defer: [ self displayCurrentTimeStep ] ]
+    for: self.  "Automatic unsubscription when the presenter is released"
 ]
