@@ -56,3 +56,9 @@ CMMockCell >> pov [
 		ifTrue: [ CMPointOfView color: Color black ]
 		ifFalse: [ CMPointOfView color: Color white ]
 ]
+
+{ #category : 'accessing' }
+CMMockCell >> theOccupantsAt: index [
+
+	^ OrderedCollection new
+]

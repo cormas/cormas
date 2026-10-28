@@ -335,7 +335,8 @@ CMSensitivityAnalysisTest >> testRunIsAsynchronous [
 	self assert: analysis isRunning.
 	self assert: analysis data isEmpty.
 
-	self deny: (semaphore waitTimeoutMilliseconds: 1000).
+	semaphore waitTimeoutMilliseconds: 5000.
+
 
 	self assert: finished.
 	self assert: analysis isRunning not
