@@ -34,9 +34,24 @@ CMBlPresenterTest >> embeddedViewOf: aSpacePresenter [
 ]
 
 { #category : 'private' }
+CMBlPresenterTest >> isShownAtItsRealSize: aSpacePresenter [
+
+	| container form |
+	aSpacePresenter space root hasChildren ifFalse: [ ^ false ].
+	container := aSpacePresenter space host containerMorph.
+	container submorphs ifEmpty: [ ^ false ].
+	form := container submorphs first form.
+	form ifNil: [ ^ false ].
+	^ form extent = container extent rounded and: [
+		  aSpacePresenter space root extent rounded
+		  = container extent rounded ]
+]
+
+{ #category : 'private' }
 CMBlPresenterTest >> open: aPresenter [
 
 	window := aPresenter open.
+	self waitUntilShown: aPresenter.
 	^ aPresenter
 ]
 
@@ -96,6 +111,17 @@ CMBlPresenterTest >> sendKeyDown: aKeyboardKey buttons: aNumber [
 	morph keyDown: event.
 	spacePresenter space settle.
 	spacePresenter space settle
+]
+
+{ #category : 'private' }
+CMBlPresenterTest >> spacePresenterIn: aPresenter [
+	"Answer the presenter embedding the Bloc space among those that a test opens"
+
+	(aPresenter isKindOf: SpBlSpaceInMorphPresenter) ifTrue: [
+		^ aPresenter ].
+	(aPresenter isKindOf: CMBlViewComparison) ifTrue: [
+		^ aPresenter blocView ].
+	^ self embeddedViewOf: aPresenter
 ]
 
 { #category : 'running' }
@@ -317,6 +343,7 @@ CMBlPresenterTest >> testOpenSpacePresenterShowsTheModel [
 
 	window := model openSpacePresenter.
 	presenter := window presenter.
+	self waitUntilShown: presenter.
 
 	self
 		assert: (self screenColorIn: presenter at: 80 @ 48)
@@ -402,8 +429,56 @@ CMBlPresenterTest >> testUpdateReachesTheScreen [
 ]
 
 { #category : 'tests' }
+CMBlPresenterTest >> testViewEmbeddedInSpacePresenterFitsAsSoonAsItOpens [
+
+	| application presenter view |
+	self gridWithNeighbourhood: 4.
+	application := CMSimulationApplication new.
+	application cormasModel: model.
+	presenter := self openSpacePresenter: application.
+	view := self embeddedViewOf: presenter.
+
+	self
+		assert: view space root extent rounded
+		equals: view space extent rounded
+]
+
+{ #category : 'tests' }
+CMBlPresenterTest >> testViewFitsTheWindowAsSoonAsItOpens [
+	"The zoom buttons are lost outside the window when the view believes it is larger than it is"
+
+	| presenter viewport corner |
+	self gridWithNeighbourhood: 4.
+	presenter := (CMBlSpaceElement for: model) asPresenter.
+	window := presenter open.
+	self waitUntilShown: presenter.
+
+	self
+		assert: presenter space root extent rounded
+		equals: presenter space extent rounded.
+	viewport := presenter space root children first.
+	corner := viewport zoomToFitButton localPointToGlobal:
+		          viewport zoomToFitButton extent.
+	self assert: corner <= presenter space extent
+]
+
+{ #category : 'tests' }
 CMBlPresenterTest >> testViewIsNotOfferedForCellOutsideAGrid [
 
 	self deny: (CMMockCell new inspectionContexts anySatisfy: [ :each |
 			 each title = 'View' ])
+]
+
+{ #category : 'private' }
+CMBlPresenterTest >> waitUntilShown: aPresenter [
+	"A space starts with a default size and gets the real one from its morph some time after the window opens. A space can be settled before that, so this checks the size itself, for at most one second"
+
+	| spacePresenter deadline |
+	spacePresenter := self spacePresenterIn: aPresenter.
+	deadline := DateAndTime now + 1 second.
+	[
+		spacePresenter space settle.
+		(self isShownAtItsRealSize: spacePresenter) or: [
+			DateAndTime now > deadline ] ] whileFalse: [ 20 milliSeconds wait ].
+	spacePresenter space settle
 ]

@@ -50,6 +50,18 @@ CMBlElement >> contextMenuFor: anEntity [
 ]
 
 { #category : '*Cormas-Bloc-Spec' }
+CMBlElement >> layOutRootOf: aSpace attempts: aNumber [
+	"Bloc does not announce the first real size of its morph, so the root would keep the default size of a space until the window is resized. The morph gets its size some frames after the presenter is displayed, so wait for it, but not forever"
+
+	aSpace defer: [
+			aSpace extent = aSpace host containerMorph extent
+				ifTrue: [ aSpace root requestLayout ]
+				ifFalse: [
+					aNumber > 0 ifTrue: [
+						self layOutRootOf: aSpace attempts: aNumber - 1 ] ] ]
+]
+
+{ #category : '*Cormas-Bloc-Spec' }
 CMBlElement >> presenterShowing: anElement [
 
 	| presenter |
@@ -58,5 +70,7 @@ CMBlElement >> presenterShowing: anElement [
 				self currentHand position ].
 	presenter := SpBlSpaceInMorphPresenter new.
 	presenter space defer: [ presenter space root addChild: anElement ].
+	presenter whenDisplayDo: [
+		self layOutRootOf: presenter space attempts: 100 ].
 	^ presenter
 ]
