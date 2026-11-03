@@ -20,10 +20,19 @@ I am the abstract root of the Bloc elements that draw Cormas models and entities
 ### Implementation Points
 
 Elements that are attached to a space may only be changed from the process of that space, while simulations run in another process. This is why `update` goes through the space when I am attached.
+
+## Interaction
+
+- `whenLeftClickOnCellDo:` and `whenRightClickOnEntityDo:` let my clients react to clicks on what I show
+- `entity` answers the cell or agent that a click on me is about, if any
 "
 Class {
 	#name : 'CMBlElement',
 	#superclass : 'BlElement',
+	#instVars : [
+		'leftClickBlock',
+		'rightClickBlock'
+	],
 	#category : 'Cormas-Bloc',
 	#package : 'Cormas-Bloc'
 }
@@ -77,6 +86,26 @@ CMBlElement >> crop: aSquareForm toCenter: anExtent [
 	^ aSquareForm copy: (origin extent: anExtent ceiling)
 ]
 
+{ #category : 'interaction' }
+CMBlElement >> entity [
+	"Answer the entity that a click on me is about, if any"
+
+	^ nil
+]
+
+{ #category : 'interaction' }
+CMBlElement >> entityTargetedBy: anEvent [
+	"Answer the entity of the deepest element under me that the event is aimed at"
+
+	| target |
+	target := anEvent target.
+	[ target isNil ] whileFalse: [
+			target entity ifNotNil: [ :entity | ^ entity ].
+			target == self ifTrue: [ ^ nil ].
+			target := target parent ].
+	^ nil
+]
+
 { #category : 'drawing' }
 CMBlElement >> formOfTile: aTile in: aSpaceModel [
 	"The cells of a smaller grid are shown larger on screen, so they need a larger form"
@@ -96,6 +125,23 @@ CMBlElement >> gridPositionOfCell: aCell [
 
 	^ ((self neighbourhoodOf: aCell) relativeOriginOfCell: aCell)
 	  * (self cellExtentOf: aCell)
+]
+
+{ #category : 'interaction' }
+CMBlElement >> handleLeftClick: anEvent [
+
+	(self entityTargetedBy: anEvent) ifNotNil: [ :entity |
+			entity isSpatialEntity ifTrue: [
+					anEvent consume.
+					leftClickBlock value: entity ] ]
+]
+
+{ #category : 'interaction' }
+CMBlElement >> handleRightClick: anEvent [
+
+	(self entityTargetedBy: anEvent) ifNotNil: [ :entity |
+			anEvent consume.
+			rightClickBlock value: entity ]
 ]
 
 { #category : 'updating' }
@@ -130,4 +176,26 @@ CMBlElement >> update [
 	"Show the current state of what I draw"
 
 	self inSpaceDo: [ self refresh ]
+]
+
+{ #category : 'interaction' }
+CMBlElement >> whenLeftClickOnCellDo: aBlock [
+	"Evaluate aBlock with the cell whenever a cell shown under me is clicked with the left button. Only the last block given is kept"
+
+	leftClickBlock ifNil: [
+			self
+				addEventHandlerOn: BlPrimaryClickEvent
+				do: [ :event | self handleLeftClick: event ] ].
+	leftClickBlock := aBlock
+]
+
+{ #category : 'interaction' }
+CMBlElement >> whenRightClickOnEntityDo: aBlock [
+	"Evaluate aBlock with the entity whenever a cell or an agent shown under me is clicked with the right button. Only the last block given is kept"
+
+	rightClickBlock ifNil: [
+			self
+				addEventHandlerOn: BlSecondaryClickEvent
+				do: [ :event | self handleRightClick: event ] ].
+	rightClickBlock := aBlock
 ]

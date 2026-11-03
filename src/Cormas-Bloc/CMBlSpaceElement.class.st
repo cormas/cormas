@@ -34,6 +34,8 @@ I fit my parent until the user navigates. `CMBlSpaceViewport` gives me the contr
 - `zoomBy:at:`
 - `panBy:`
 - `saveToPngFile:` saves the whole space at its natural size, whatever the current zoom
+
+Agents can be dragged onto another cell. An agent dropped outside the grid goes back to where it was.
 "
 Class {
 	#name : 'CMBlSpaceElement',
@@ -43,7 +45,9 @@ Class {
 		'agentElements',
 		'zoom',
 		'offset',
-		'followsParent'
+		'followsParent',
+		'draggedElement',
+		'dragOrigin'
 	],
 	#category : 'Cormas-Bloc',
 	#package : 'Cormas-Bloc'
@@ -77,10 +81,34 @@ CMBlSpaceElement >> applyNavigation [
 				scaleBy: zoom ]
 ]
 
+{ #category : 'interaction' }
+CMBlSpaceElement >> cellElementAt: aPoint ifNone: aBlock [
+	"Answer the element of the cell whose shape contains aPoint, in my coordinates. The boxes of neighbouring cells can overlap, so their shape decides"
+
+	^ cellElements
+		  detect: [ :each |
+		  each containsPoint: (each parentPointToLocal: aPoint) ]
+		  ifNone: aBlock
+]
+
 { #category : 'accessing' }
 CMBlSpaceElement >> cells [
 
 	^ cormasModel cells
+]
+
+{ #category : 'interaction' }
+CMBlSpaceElement >> dropAgentOfElement: anAgentElement [
+	"The position of the element itself is only up to date after the next layout, and its constraints already know where it is going"
+
+	| center |
+	center := anAgentElement constraints position
+	          + (anAgentElement extent / 2).
+	(self cellElementAt: center ifNone: [ ^ self ]) in: [ :cellElement |
+			anAgentElement entity
+				moveTo: cellElement entity;
+				positionInCell:
+					(cellElement parentPointToLocal: center) / cellElement extent ]
 ]
 
 { #category : 'navigation' }
@@ -97,6 +125,37 @@ CMBlSpaceElement >> fitIfFollowingParent [
 	self applyNavigation
 ]
 
+{ #category : 'interaction' }
+CMBlSpaceElement >> handleDrag: anEvent [
+
+	draggedElement ifNil: [ ^ self ].
+	anEvent consume.
+	draggedElement position: draggedElement constraints position
+		+ (anEvent position - dragOrigin / zoom).
+	dragOrigin := anEvent position
+]
+
+{ #category : 'interaction' }
+CMBlSpaceElement >> handleDragEnd: anEvent [
+	"An update puts the agent where it belongs, also when it was dropped outside the grid"
+
+	draggedElement ifNil: [ ^ self ].
+	anEvent consume.
+	self dropAgentOfElement: draggedElement.
+	draggedElement := nil.
+	self update
+]
+
+{ #category : 'interaction' }
+CMBlSpaceElement >> handleDragStart: anEvent [
+	"Only agents are dragged. Any other drag is left to whoever pans me"
+
+	(agentElements includes: anEvent target) ifFalse: [ ^ self ].
+	anEvent consume.
+	draggedElement := anEvent target.
+	dragOrigin := anEvent position
+]
+
 { #category : 'initialization' }
 CMBlSpaceElement >> initialize [
 
@@ -107,7 +166,13 @@ CMBlSpaceElement >> initialize [
 	followsParent := true.
 	self
 		addEventHandlerOn: BlElementExtentChangedEvent
-		do: [ self fitIfFollowingParent ]
+		do: [ self fitIfFollowingParent ];
+		addEventHandlerOn: BlDragStartEvent
+		do: [ :event | self handleDragStart: event ];
+		addEventHandlerOn: BlDragEvent
+		do: [ :event | self handleDrag: event ];
+		addEventHandlerOn: BlDragEndEvent
+		do: [ :event | self handleDragEnd: event ]
 ]
 
 { #category : 'updating' }

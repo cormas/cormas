@@ -99,6 +99,12 @@ CMBlAgentElement >> centerAt: aPoint [
 	self position: aPoint - (self side / 2)
 ]
 
+{ #category : 'interaction' }
+CMBlAgentElement >> entity [
+
+	^ agent
+]
+
 { #category : 'geometry' }
 CMBlAgentElement >> geometryForShape: aSymbol [
 

@@ -71,6 +71,12 @@ CMBlCellElement >> cell [
 	^ cell
 ]
 
+{ #category : 'interaction' }
+CMBlCellElement >> entity [
+
+	^ cell
+]
+
 { #category : 'initialization' }
 CMBlCellElement >> initialize [
 
