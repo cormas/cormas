@@ -67,8 +67,8 @@ You can install CORMAS through Unix command line. It works as follow:
 # Create a cormas/ directory and navigate into it
 mkdir cormas; cd cormas
 
-# Download Pharo 12 image and virtual machine
-curl https://get.pharo.org/120+vm | bash
+# Download Pharo 13 image and virtual machine
+curl https://get.pharo.org/130+vm | bash
 
 # Install Cormas
 ./pharo Pharo.image eval "
