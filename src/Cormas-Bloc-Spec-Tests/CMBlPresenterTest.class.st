@@ -20,7 +20,8 @@ Class {
 	#name : 'CMBlPresenterTest',
 	#superclass : 'CMBlTestCase',
 	#instVars : [
-		'window'
+		'window',
+		'spacePresenter'
 	],
 	#category : 'Cormas-Bloc-Spec-Tests',
 	#package : 'Cormas-Bloc-Spec-Tests'
@@ -31,6 +32,15 @@ CMBlPresenterTest >> open: aPresenter [
 
 	window := aPresenter open.
 	^ aPresenter
+]
+
+{ #category : 'private' }
+CMBlPresenterTest >> openFocused: aSpaceElement [
+
+	spacePresenter := self open: aSpaceElement asPresenter.
+	spacePresenter space settle.
+	spacePresenter space root children first requestFocus.
+	spacePresenter space settle
 ]
 
 { #category : 'private' }
@@ -45,11 +55,35 @@ CMBlPresenterTest >> openInspectorViewOf: anEntity [
 
 { #category : 'private' }
 CMBlPresenterTest >> screenColorIn: aPresenter at: aPoint [
-	"Answer the color shown at aPoint of the space embedded in aPresenter, once it has been drawn"
+	"Answer the color shown at the point of the view given in its own coordinates, once it has been drawn"
 
+	| view |
 	aPresenter space settle.
+	view := aPresenter space root children first.
+	(view isKindOf: CMBlSpaceViewport) ifTrue: [
+		view := view spaceElement ].
 	^ (aPresenter space host containerMorph submorphs first form
-		   colorAt: aPoint) asHexString
+		   colorAt: (view localPointToGlobal: aPoint) rounded) asHexString
+]
+
+{ #category : 'private' }
+CMBlPresenterTest >> sendKeyDown: aKeyboardKey buttons: aNumber [
+	"Send a key press the way Morphic delivers it to the morph of a space"
+
+	| event morph |
+	morph := spacePresenter space host containerMorph submorphs first.
+	event := KeyboardEvent new
+		         setType: #keyDown
+		         buttons: aNumber
+		         position: morph center
+		         keyValue: aKeyboardKey value
+		         charCode: aKeyboardKey value
+		         hand: self currentWorld activeHand
+		         stamp: Time millisecondClockValue.
+	event key: aKeyboardKey.
+	morph keyDown: event.
+	spacePresenter space settle.
+	spacePresenter space settle
 ]
 
 { #category : 'running' }
@@ -57,6 +91,55 @@ CMBlPresenterTest >> tearDown [
 
 	window ifNotNil: [ window close ].
 	super tearDown
+]
+
+{ #category : 'tests' }
+CMBlPresenterTest >> testArrowKeyPressArrivingFromMorphicPans [
+
+	| before element |
+	self gridWithNeighbourhood: 4.
+	element := CMBlSpaceElement for: model.
+	self openFocused: element.
+	before := element localPointToGlobal: 0 @ 0.
+
+	self sendKeyDown: KeyboardKey right buttons: 0.
+
+	self assert: (element localPointToGlobal: 0 @ 0) x < before x
+]
+
+{ #category : 'tests' }
+CMBlPresenterTest >> testClickingAZoomButtonOnScreenZooms [
+
+	| presenter viewport element before |
+	self gridWithNeighbourhood: 4.
+	element := CMBlSpaceElement for: model.
+	presenter := self open: element asPresenter.
+	presenter space settle.
+	viewport := presenter space root children first.
+	before := element localPointToGlobal: 128 @ 96.
+
+	viewport zoomInButton eventSimulator click.
+	presenter space settle.
+
+	self assert: (element localPointToGlobal: 128 @ 96) x > before x
+]
+
+{ #category : 'tests' }
+CMBlPresenterTest >> testCommandKeyPressArrivingFromMorphicZooms [
+
+	| before element |
+	self gridWithNeighbourhood: 4.
+	element := CMBlSpaceElement for: model.
+	self openFocused: element.
+	before := element localPointToGlobal: 128 @ 96.
+
+	self
+		sendKeyDown: KeyboardKey equal
+		buttons: (OSPlatform current isMacOS
+				 ifTrue: [ 64 ]
+				 ifFalse: [ 16 ]).
+
+	self assert: (element localPointToGlobal: 128 @ 96) x > before x
 ]
 
 { #category : 'tests' }
@@ -111,6 +194,32 @@ CMBlPresenterTest >> testEmptyModelViewShowsNothing [
 	self
 		assert: (self screenColorIn: presenter at: 16 @ 16)
 		equals: 'FFFFFF'
+]
+
+{ #category : 'tests' }
+CMBlPresenterTest >> testFitButtonOfSpacePresenterFitsTheView [
+
+	| application presenter view |
+	self gridWithNeighbourhood: 4.
+	self newCowOn: (model cellAt: 2 at: 3).
+	application := CMSimulationApplication new.
+	application cormasModel: model.
+	presenter := self open:
+		             (application newPresenter: CMBlTestSpacePresenter).
+	self
+		assert: (self screenColorIn: presenter diagram at: 80 @ 48)
+		equals: 'FF0000'.
+	view := presenter spaceBuilder.
+	view zoomBy: 5 at: 0 @ 0.
+
+	presenter fitDiagram.
+	presenter diagram space settle.
+
+	self
+		assert: (self screenColorIn: presenter diagram at: 80 @ 48)
+		equals: 'FF0000'.
+	self assert: (view localPointToGlobal: 128 @ 96)
+		<= presenter diagram space root extent
 ]
 
 { #category : 'tests' }
@@ -211,6 +320,25 @@ CMBlPresenterTest >> testPresenterShowsTheElement [
 	self
 		assert: (self screenColorIn: presenter at: 16 @ 16)
 		equals: '000000'
+]
+
+{ #category : 'tests' }
+CMBlPresenterTest >> testSpacePresenterSavesPicture [
+
+	| application presenter file form |
+	self gridWithNeighbourhood: 4.
+	self newCowOn: (model cellAt: 2 at: 3).
+	application := CMSimulationApplication new.
+	application cormasModel: model.
+	presenter := self open:
+		             (application newPresenter: CMBlTestSpacePresenter).
+	file := FileSystem memory / 'space.png'.
+
+	presenter saveToPngFile: file.
+
+	form := file binaryReadStreamDo: [ :stream |
+		        PNGReadWriter formFromStream: stream ].
+	self assert: (form colorAt: 80 @ 48) asHexString equals: 'FF0000'
 ]
 
 { #category : 'tests' }

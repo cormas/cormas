@@ -98,6 +98,15 @@ CMBlElement >> gridPositionOfCell: aCell [
 	  * (self cellExtentOf: aCell)
 ]
 
+{ #category : 'updating' }
+CMBlElement >> inSpaceDo: aBlock [
+	"Elements in a space may only change from the process of that space, while my clients may run in the process of a simulation"
+
+	self isAttachedToSceneGraph
+		ifTrue: [ self space defer: aBlock ]
+		ifFalse: aBlock
+]
+
 { #category : 'geometry' }
 CMBlElement >> neighbourhoodOf: aCell [
 
@@ -118,9 +127,7 @@ CMBlElement >> setUpFor: anObject [
 
 { #category : 'updating' }
 CMBlElement >> update [
-	"Show the current state of what I draw. Elements in a space may only change from the process of that space, while this can be called from the process of a simulation"
+	"Show the current state of what I draw"
 
-	self isAttachedToSceneGraph
-		ifTrue: [ self space defer: [ self refresh ] ]
-		ifFalse: [ self refresh ]
+	self inSpaceDo: [ self refresh ]
 ]

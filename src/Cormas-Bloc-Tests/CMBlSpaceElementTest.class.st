@@ -265,7 +265,8 @@ CMBlSpaceElementTest >> testUpdateWhileAttachedToASpaceRunsInThatSpace [
 		space settle.
 
 		self
-			assert: (element aeAsForm colorAt: 80 @ 48) asHexString
+			assert: (element aeAsForm colorAt:
+					 (element localPointToGlobal: 80 @ 48) rounded) asHexString
 			equals: 'FFFFFF' ] ensure: [
 			space
 				close;
