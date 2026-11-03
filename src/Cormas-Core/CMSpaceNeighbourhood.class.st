@@ -52,6 +52,50 @@ CMSpaceNeighbourhood class >> isStartConditionFor: aSymbolOrNumber [
 	^ aSymbolOrNumber = self cardinal or: [ aSymbolOrNumber == self cardinalSymbol ]
 ]
 
+{ #category : 'geometry' }
+CMSpaceNeighbourhood >> boundingRectangleHorizontalIntersection [
+	"A proportion of a bounding rectangle that intersects horizontally - between the columns of a grid.
+	By default, return 0, meaning that there is no intersection"
+	
+	^ 0
+]
+
+{ #category : 'geometry' }
+CMSpaceNeighbourhood >> boundingRectangleHorizontalShiftEven [
+	"A proportion of a bounding rectangle that will be shifted for the even rows"
+	
+	^ 0
+]
+
+{ #category : 'geometry' }
+CMSpaceNeighbourhood >> boundingRectangleHorizontalShiftOdd [
+	"A proportion of a bounding rectangle that will be shifted for the odd rows"
+	
+	^ 0
+]
+
+{ #category : 'geometry' }
+CMSpaceNeighbourhood >> boundingRectangleVerticalIntersection [
+	"A proportion of a bounding rectangle that intersects vertically - between the rows of a grid.
+	By default, return 0, meaning that there is no intersection"
+	
+	^ 0
+]
+
+{ #category : 'geometry' }
+CMSpaceNeighbourhood >> boundingRectangleVerticalShiftEven [
+	"A proportion of a bounding rectangle that will be shifted for the even columns"
+	
+	^ 0
+]
+
+{ #category : 'geometry' }
+CMSpaceNeighbourhood >> boundingRectangleVerticalShiftOdd [
+	"A proportion of a bounding rectangle that will be shifted for the odd columns"
+	
+	^ 0
+]
+
 { #category : 'accessing' }
 CMSpaceNeighbourhood >> cardinal [
 	" See class side comment "
@@ -228,6 +272,26 @@ CMSpaceNeighbourhood >> randomPointInCell: aCell withPadding: aNumber using: aRa
 	y := aRandomNumberGenerator next.
 	
 	^ x@y * (1 - (2 * aNumber)) + aNumber
+]
+
+{ #category : 'geometry' }
+CMSpaceNeighbourhood >> relativeOriginOfCell: aCell [
+	"Answer the top-left corner of the bounding box of aCell, in units of cell size, with 0@0 at the top-left corner of the grid. This accounts for the overlap of cell shapes such as hexagons or triangles, and for the shift of odd or even rows and columns."
+
+	| distanceInCells overlap shift |
+	distanceInCells := aCell columnNumber - 1 @ (aCell rowNumber - 1).
+
+	overlap := self boundingRectangleHorizontalIntersection
+	           @ self boundingRectangleVerticalIntersection.
+
+	shift := (aCell rowNumber even
+		          ifTrue: [ self boundingRectangleHorizontalShiftEven ]
+		          ifFalse: [ self boundingRectangleHorizontalShiftOdd ])
+	         @ (aCell columnNumber even
+			          ifTrue: [ self boundingRectangleVerticalShiftEven ]
+			          ifFalse: [ self boundingRectangleVerticalShiftOdd ]).
+
+	^ distanceInCells - (distanceInCells * overlap) + shift
 ]
 
 { #category : 'private - regular cells - instance creation' }

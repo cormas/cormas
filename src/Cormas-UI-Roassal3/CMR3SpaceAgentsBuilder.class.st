@@ -137,33 +137,11 @@ CMR3SpaceAgentsBuilder >> objects [
 
 { #category : 'as yet unclassified' }
 CMR3SpaceAgentsBuilder >> offsetOfCell: aCell [
-	"Calculate offset of a cell in a spatial grid. This accounts for the intersection of cell shapes such as hexagons or triangles. It also accounts for the shifting of the odd rows / columns"
+	"Calculate offset of a cell in a spatial grid, taking into account where Roassal places the origin of the cell shape"
 
-	| config cellSize cellCoordinates intersectionProportion shiftProportionX shiftProportionY shiftProportion intersectionOffset offset |
-
+	| config |
 	config := self neighbourhoodConfiguration.
-	cellSize := diagramBuilder cellShapes anyOne encompassingRectangle extent.
-	
-	cellCoordinates := aCell columnNumber @ aCell rowNumber.
-	
-	intersectionProportion :=
-		config boundingRectangleHorizontalIntersection @
-		config boundingRectangleVerticalIntersection.
-		
-	shiftProportionX := aCell rowNumber even
-		ifTrue: [ config boundingRectangleHorizontalShiftEven ]
-		ifFalse: [ config boundingRectangleHorizontalShiftOdd ].
-		
-	shiftProportionY := aCell columnNumber even
-		ifTrue: [ config boundingRectangleVerticalShiftEven ]
-		ifFalse: [ config boundingRectangleVerticalShiftOdd ].
-		
-	shiftProportion := shiftProportionX @ shiftProportionY.
-	
-	intersectionOffset := (cellCoordinates - 1) * intersectionProportion.
-	offset := (cellCoordinates - 1) - intersectionOffset + shiftProportion.
-
-	^ offset - config cellShapeOriginOffset
+	^ (config relativeOriginOfCell: aCell) - config cellShapeOriginOffset
 ]
 
 { #category : 'position in cell' }

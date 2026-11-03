@@ -43,6 +43,12 @@ CMSpace3Neighbourhood class >> isStartConditionFor: aSymbolOrNumber [
 	^ super isStartConditionFor: aSymbolOrNumber
 ]
 
+{ #category : 'geometry' }
+CMSpace3Neighbourhood >> boundingRectangleHorizontalIntersection [
+	
+	^ 0.5
+]
+
 { #category : 'rendering' }
 CMSpace3Neighbourhood >> cellCenterFor: aCell [
 	| radius |
@@ -82,4 +88,11 @@ Neighbours are ordered anticlockwise, starting from the North cell"
 				v at: 3 put: (aSpaceModel cellAt: i) ] ].
 
 	^ (aSpaceModel cellAt: cellIndex) neighbourhoodWithNils: v
+]
+
+{ #category : 'geometry' }
+CMSpace3Neighbourhood >> shouldRotateShapeFor: aCell [
+
+	^ (aCell rowNumber + aCell columnNumber +
+		(self class firstCellIsFlatTopTriangle ifTrue: [ 0 ] ifFalse: [ 1 ])) even
 ]

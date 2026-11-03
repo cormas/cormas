@@ -21,6 +21,18 @@ CMSpace6NeighbourhoodPointyTop class >> cardinalSymbol [
 	^ #pointy6
 ]
 
+{ #category : 'geometry' }
+CMSpace6NeighbourhoodPointyTop >> boundingRectangleHorizontalShiftEven [
+
+	^ 0.5
+]
+
+{ #category : 'geometry' }
+CMSpace6NeighbourhoodPointyTop >> boundingRectangleVerticalIntersection [
+
+	^ 0.25
+]
+
 { #category : 'initialization' }
 CMSpace6NeighbourhoodPointyTop >> initializeOrderedNeighbourhood: cellIndex forSpaceModel: aSpaceModel [
 "Set the neighbourhood of the cell at a given index.

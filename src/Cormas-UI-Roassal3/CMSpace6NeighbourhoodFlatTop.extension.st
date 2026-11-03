@@ -1,18 +1,6 @@
 Extension { #name : 'CMSpace6NeighbourhoodFlatTop' }
 
 { #category : '*Cormas-UI-Roassal3' }
-CMSpace6NeighbourhoodFlatTop >> boundingRectangleHorizontalIntersection [
-
-	^ 0.25
-]
-
-{ #category : '*Cormas-UI-Roassal3' }
-CMSpace6NeighbourhoodFlatTop >> boundingRectangleVerticalShiftEven [
-
-	^ 0.5
-]
-
-{ #category : '*Cormas-UI-Roassal3' }
 CMSpace6NeighbourhoodFlatTop class >> exampleRoassalMasterShape [
 
 	<example>

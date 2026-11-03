@@ -1,12 +1,6 @@
 Extension { #name : 'CMSpace3Neighbourhood' }
 
 { #category : '*Cormas-UI-Roassal3' }
-CMSpace3Neighbourhood >> boundingRectangleHorizontalIntersection [
-	
-	^ 0.5
-]
-
-{ #category : '*Cormas-UI-Roassal3' }
 CMSpace3Neighbourhood >> cellShapeOriginOffset [
 
 	^ 0.5@0
@@ -53,11 +47,4 @@ CMSpace3Neighbourhood >> rotateShapes: aRSGroup [
 
 	aRSGroup do: [ :aShape |
 		(self shouldRotateShapeFor: aShape model) ifTrue: [ aShape rotateByDegrees: 180 ] ]
-]
-
-{ #category : '*Cormas-UI-Roassal3' }
-CMSpace3Neighbourhood >> shouldRotateShapeFor: aCell [
-
-	^ (aCell rowNumber + aCell columnNumber +
-		(self class firstCellIsFlatTopTriangle ifTrue: [ 0 ] ifFalse: [ 1 ])) even
 ]

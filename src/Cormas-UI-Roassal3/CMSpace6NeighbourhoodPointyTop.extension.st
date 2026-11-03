@@ -1,18 +1,6 @@
 Extension { #name : 'CMSpace6NeighbourhoodPointyTop' }
 
 { #category : '*Cormas-UI-Roassal3' }
-CMSpace6NeighbourhoodPointyTop >> boundingRectangleHorizontalShiftEven [
-
-	^ 0.5
-]
-
-{ #category : '*Cormas-UI-Roassal3' }
-CMSpace6NeighbourhoodPointyTop >> boundingRectangleVerticalIntersection [
-
-	^ 0.25
-]
-
-{ #category : '*Cormas-UI-Roassal3' }
 CMSpace6NeighbourhoodPointyTop class >> example [
 
 	<example>

@@ -21,6 +21,18 @@ CMSpace6NeighbourhoodFlatTop class >> isStartConditionFor: aSymbolOrNumber [
 	^ aSymbolOrNumber == self cardinalSymbol
 ]
 
+{ #category : 'geometry' }
+CMSpace6NeighbourhoodFlatTop >> boundingRectangleHorizontalIntersection [
+
+	^ 0.25
+]
+
+{ #category : 'geometry' }
+CMSpace6NeighbourhoodFlatTop >> boundingRectangleVerticalShiftEven [
+
+	^ 0.5
+]
+
 { #category : 'initialization' }
 CMSpace6NeighbourhoodFlatTop >> initializeOrderedNeighbourhood: cellIndex forSpaceModel: aSpaceModel [
 "Set the neighbourhood of the cell at a given index.
