@@ -69,8 +69,23 @@ CMBlElement >> presenterShowing: anElement [
 			(self contextMenuFor: entity) openWithSpecAt:
 				self currentHand position ].
 	presenter := SpBlSpaceInMorphPresenter new.
-	presenter space defer: [ presenter space root addChild: anElement ].
+	presenter space defer: [
+			presenter space root
+				background: Smalltalk ui theme backgroundColor;
+				addChild: anElement ].
+	SystemAnnouncer uniqueInstance weak
+		when: UIThemeChanged
+		send: #useBackgroundOfTheTheme
+		to: self.
 	presenter whenDisplayDo: [
 		self layOutRootOf: presenter space attempts: 100 ].
 	^ presenter
+]
+
+{ #category : '*Cormas-Bloc-Spec' }
+CMBlElement >> useBackgroundOfTheTheme [
+
+	self spaceDo: [ :space |
+			space defer: [
+				space root background: Smalltalk ui theme backgroundColor ] ]
 ]

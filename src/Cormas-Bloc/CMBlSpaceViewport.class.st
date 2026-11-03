@@ -165,8 +165,7 @@ CMBlSpaceViewport >> initialize [
 		constraintsDo: [ :constraints |
 				constraints horizontal matchParent.
 				constraints vertical matchParent ];
-		clipChildren: true;
-		background: Color white.
+		clipChildren: true.
 	self
 		addEventHandlerOn: BlMouseDownEvent do: [ self requestFocus ];
 		addEventHandlerOn: BlMouseWheelEvent

@@ -86,7 +86,9 @@ CMBlNavigationTest >> openGridWithCow [
 	self newCowOn: (model cellAt: 2 at: 3).
 	element := CMBlSpaceElement for: model.
 	viewport := CMBlSpaceViewport on: element.
-	viewport extent: 256 @ 256.
+	viewport
+		extent: 256 @ 256;
+		background: Color white.
 	viewport forceLayout
 ]
 

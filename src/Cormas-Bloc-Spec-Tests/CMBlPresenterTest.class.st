@@ -297,7 +297,7 @@ CMBlPresenterTest >> testEmptyModelViewShowsNothing [
 
 	self
 		assert: (self screenColorIn: presenter at: 16 @ 16)
-		equals: 'FFFFFF'
+		equals: self themeBackground
 ]
 
 { #category : 'tests' }
@@ -370,7 +370,7 @@ CMBlPresenterTest >> testInspectorViewOfAggregateShowsOnlyItsCells [
 		equals: '000000'.
 	self
 		assert: (self screenColorIn: presenter at: 48 @ 16)
-		equals: 'FFFFFF'
+		equals: self themeBackground
 ]
 
 { #category : 'tests' }
@@ -587,6 +587,26 @@ CMBlPresenterTest >> testUpdateReachesTheScreen [
 ]
 
 { #category : 'tests' }
+CMBlPresenterTest >> testViewBackgroundFollowsAThemeChange [
+	"Announcing the change is enough, so this test does not change the theme of the whole image"
+
+	| presenter |
+	presenter := self open:
+		             (CMBlSpaceElement for: CMMockModel new) asPresenter.
+	presenter space defer: [ presenter space root background: Color red ].
+	presenter space settle.
+	self
+		assert: (self screenColorIn: presenter at: 16 @ 16)
+		equals: 'FF0000'.
+
+	SystemAnnouncer uniqueInstance announce: UIThemeChanged new.
+
+	self
+		assert: (self screenColorIn: presenter at: 16 @ 16)
+		equals: self themeBackground
+]
+
+{ #category : 'tests' }
 CMBlPresenterTest >> testViewEmbeddedInSpacePresenterFitsAsSoonAsItOpens [
 
 	| application presenter view |
@@ -647,6 +667,12 @@ CMBlPresenterTest >> testWindowCannotBeNarrowerThanItsContentWithTheSideMenuOpen
 	300 milliSeconds wait.
 
 	self assertWindowCannotHideItsContent
+]
+
+{ #category : 'private' }
+CMBlPresenterTest >> themeBackground [
+
+	^ Smalltalk ui theme backgroundColor asHexString
 ]
 
 { #category : 'private' }
