@@ -49,3 +49,29 @@ CMEntityTest >> testAvailablePov [
 CMEntityTest >> testCormasEntityIsAbstract [
 	self assert: CMEntity isAbstract
 ]
+
+{ #category : 'tests' }
+CMEntityTest >> testPovClassNameGivesSameColorToEntitiesOfSameClass [
+
+	| model firstCow secondCow |
+	model := CMMockModel new.
+	firstCow := model newEntity: CMMockCow.
+	secondCow := model newEntity: CMMockCow.
+
+	self assert: (firstCow povClassName color isKindOf: Color).
+	self
+		assert: firstCow povClassName color
+		equals: secondCow povClassName color
+]
+
+{ #category : 'tests' }
+CMEntityTest >> testPovIdGivesDifferentColorsToDifferentEntities [
+
+	| model firstCow secondCow |
+	model := CMMockModel new.
+	firstCow := model newEntity: CMMockCow.
+	secondCow := model newEntity: CMMockCow.
+
+	self assert: (firstCow povId color isKindOf: Color).
+	self deny: firstCow povId color equals: secondCow povId color
+]

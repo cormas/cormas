@@ -1,8 +1,29 @@
+"
+I represent a color in Cormas: a `Color` with extra named constants and utilities that turn numbers into colors. Points of view use me to choose how entities look.
+
+## Responsibility:
+
+- Provide named colors, on my class side.
+- Pick a color from a number, cycling through the named colors.
+- Interpolate a color for a value within a range.
+
+## Public API and Key Messages
+
+- `colorOfNumber:` answers the named color at a position in `colorNames`.
+- `colorValue:min:max:color:` answers a shade of a color for a value in a range.
+- `colorValue:min:color:max:color:` answers a blend of two colors for a value in a range.
+
+```
+CMColor colorOfNumber: 65
+```
+
+"
 Class {
 	#name : 'CMColor',
 	#superclass : 'Color',
-	#category : 'Cormas-UI',
-	#package : 'Cormas-UI'
+	#category : 'Cormas-Core-Helpers',
+	#package : 'Cormas-Core',
+	#tag : 'Helpers'
 }
 
 { #category : 'as yet unclassified' }

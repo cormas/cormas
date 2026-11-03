@@ -1,8 +1,8 @@
 Class {
 	#name : 'CMColorTest',
 	#superclass : 'TestCase',
-	#category : 'Cormas-UI-Tests',
-	#package : 'Cormas-UI-Tests'
+	#category : 'Cormas-Tests',
+	#package : 'Cormas-Tests'
 }
 
 { #category : 'tests' }
