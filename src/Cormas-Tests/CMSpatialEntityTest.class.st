@@ -91,6 +91,45 @@ CMSpatialEntityTest >> testHasOccupantsOfClass [
 ]
 
 { #category : 'tests' }
+CMSpatialEntityTest >> testLeavingKeepsOtherOccupants [
+
+	cowMaria leave.
+
+	self
+		assertCollection: cellWithTwoAgentsOfSameClass allOccupants
+		hasSameElements: { cowAnna }
+]
+
+{ #category : 'tests' }
+CMSpatialEntityTest >> testLeavingRemovesOccupant [
+
+	cowAlice leave.
+
+	self deny: cellWithOneAgent hasOccupants.
+	self assert: cellWithOneAgent allOccupants isEmpty
+]
+
+{ #category : 'tests' }
+CMSpatialEntityTest >> testMovingAwayRemovesOccupant [
+
+	cowAlice moveTo: cellWithNoAgents.
+
+	self deny: cellWithOneAgent hasOccupants.
+	self
+		assertCollection: cellWithNoAgents allOccupants
+		hasSameElements: { cowAlice }
+]
+
+{ #category : 'tests' }
+CMSpatialEntityTest >> testMovingBackAddsOccupantOnce [
+
+	cowAlice moveTo: cellWithNoAgents.
+	cowAlice moveTo: cellWithOneAgent.
+
+	self assert: cellWithOneAgent allOccupants size equals: 1
+]
+
+{ #category : 'tests' }
 CMSpatialEntityTest >> testOccupantsOfClass [
 
 	self

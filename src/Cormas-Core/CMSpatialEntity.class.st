@@ -677,6 +677,14 @@ CMSpatialEntity >> release [
 	^super release
 ]
 
+{ #category : 'adding' }
+CMSpatialEntity >> removeOccupant: anObject [
+
+	(self theOccupants at: anObject class name ifAbsent: [ ^ self ])
+		remove: anObject
+		ifAbsent: [ "do nothing" ]
+]
+
 { #category : 'utilities - collection' }
 CMSpatialEntity >> selectEntitiesWithMaxOf: aMagnitudeName amongEntities: aCollection verifying: aCondition [
 	"Selects the entities with the maximum value of a given magnitude and verifying a specified condition"

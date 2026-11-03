@@ -143,14 +143,12 @@ TCMLocated >> labelOfPOV [
 
 { #category : 'star moving' }
 TCMLocated >> leave [
-"Purpose: moves the agent away from the spatial grid (sets his cell attribute to nil): the situated agent is not located any more, but it is still 'alive'  "
-	
+	"Purpose: moves the agent away from the spatial grid (sets his cell attribute to nil): the situated agent is not located any more, but it is still 'alive'  "
+
 	self cell ifNil: [ ^ self ].
-			
-	(self cell occupantsOfClass: self class)
-		remove: self
-		ifAbsent: [ "do nothing" ].
-		
+
+	self cell removeOccupant: self.
+
 	self cell: nil
 ]
 
