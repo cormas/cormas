@@ -58,6 +58,12 @@ CMSimulationRunnerPresenter >> beInRunningMode [
 	stepButton enabled: false
 ]
 
+{ #category : 'closing' }
+CMSimulationRunnerPresenter >> closeDiagram [
+
+	spacePresenter ifNotNil: [ spacePresenter closeDiagram ]
+]
+
 { #category : 'initialization' }
 CMSimulationRunnerPresenter >> connectPresenters [
 
@@ -156,10 +162,11 @@ CMSimulationRunnerPresenter >> hideSettings [
 
 { #category : 'initialization' }
 CMSimulationRunnerPresenter >> initializeNotebookPages [
-	
+
+	self closeDiagram.
 	spacePresenter := self instantiate: CMSpacePresenter.
 	chartPresenter := self instantiate: CMChartPresenter.
-	
+
 	dataTable := self instantiate: CMDataPresenter.
 	dataTable columnNames: (self simulation activeProbes collect: #name).
 
@@ -172,9 +179,7 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 		             title: 'Space'
 		             provider: [ spacePresenter ].
 
-	dataPage := SpNotebookPage
-		            title: 'Data'
-		            provider: [ dataTable ].
+	dataPage := SpNotebookPage title: 'Data' provider: [ dataTable ].
 
 	chartsPage := SpNotebookPage
 		              title: 'Charts'

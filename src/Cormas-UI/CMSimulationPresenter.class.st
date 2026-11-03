@@ -7,7 +7,8 @@ Class {
 		'stopConditionPresenter',
 		'randomNumbersPresenter',
 		'simulationRunner',
-		'whenWindowIsClosedHooks'
+		'whenWindowIsClosedHooks',
+		'minimumWidthWithoutSidebar'
 	],
 	#category : 'Cormas-UI-Simulation',
 	#package : 'Cormas-UI',
@@ -94,17 +95,23 @@ CMSimulationPresenter >> initialize [
 
 { #category : 'initialization' }
 CMSimulationPresenter >> initializeFancyNotebook [
-		
+
 	| pages |
 	sidebar := self instantiate: CMDockableSidebar.
-	
+
 	pages := self collectFancyNotebookPages.
-	pages do: [ :page | sidebar addPage: page ]. 
-	
+	pages do: [ :page | sidebar addPage: page ].
+
 	sidebar
 		addButtonIcon: (self iconNamed: #smallSystemBrowser)
 		help: 'Browse'
-		action: [ self cormasModel browse ]
+		action: [ self cormasModel browse ].
+
+	"Switching between two pages opens one and closes the other, so the size is only meaningful after both"
+	sidebar whenToggledDo: [
+			self defer: [
+					self withWindowDo: [ :aWindowPresenter |
+						self keepWindowWiderThanItsContent: aWindowPresenter ] ] ]
 ]
 
 { #category : 'initialization' }
@@ -157,11 +164,31 @@ CMSimulationPresenter >> initializeWindow: aWindowPresenter [
 
 	super initializeWindow: aWindowPresenter.
 
-	aWindowPresenter 
+	aWindowPresenter
 		title: self presenterWindowTitle;
-		initialExtent: 1000@600;
+		initialExtent: 1000 @ 600;
+		whenOpenedDo: [
+			self keepWindowWiderThanItsContent: aWindowPresenter ];
 		whenResizingDo: [ simulationRunner fitDiagram ];
-		whenClosedDo: [ whenWindowIsClosedHooks do: #value ]
+		whenClosedDo: [
+				simulationRunner closeDiagram.
+				whenWindowIsClosedHooks do: #value ]
+]
+
+{ #category : 'initialization' }
+CMSimulationPresenter >> keepWindowWiderThanItsContent: aWindowPresenter [
+	"The controls of a simulation cannot shrink, so a narrower window would cut off the view of the space. The window measures this once when it opens with the sidebar closed, as the measure is unreliable while the layout changes. A window that is already too narrow grows, as a window respects its minimum extent when its extent is set"
+
+	| window content |
+	window := aWindowPresenter window.
+	minimumWidthWithoutSidebar ifNil: [
+			content := window submorphs last.
+			minimumWidthWithoutSidebar := content minExtent x
+			                              + (window width - content width) ].
+	window minimumExtent:
+		minimumWidthWithoutSidebar + sidebar openSidebarWidth
+		@ window minimumExtent y.
+	window extent: window extent
 ]
 
 { #category : 'initialization' }

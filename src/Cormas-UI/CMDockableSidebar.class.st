@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'activityBar',
 		'sidebar',
-		'pages'
+		'pages',
+		'toggledBlock'
 	],
 	#category : 'Cormas-UI-DockableSidebar',
 	#package : 'Cormas-UI',
@@ -91,7 +92,8 @@ CMDockableSidebar >> hideSidebar [
 
 	layout remove: layout presenters second. "removing null presenter (spacing)"
 	layout remove: layout presenters second. "removing sidebar"
-	owner layout: owner layout
+	owner layout: owner layout.
+	toggledBlock ifNotNil: [ toggledBlock value ]
 ]
 
 { #category : 'initialization' }
@@ -101,11 +103,39 @@ CMDockableSidebar >> initializePresenters [
 ]
 
 { #category : 'as yet unclassified' }
+CMDockableSidebar >> openSidebarWidth [
+	"Answer how much wider I am now than when my sidebar is closed"
+
+	^ layout presenters size > 1
+		  ifTrue: [ self sidebarSpacing + self sidebarWidth ]
+		  ifFalse: [ 0 ]
+]
+
+{ #category : 'as yet unclassified' }
 CMDockableSidebar >> showSidebar [
-
 	"This is a hack. We have to use a null presenter instead of spacing because otherwise the parent layout can't calculate size correctly when using expand: false"
-	layout add: self newNullPresenter width: 10.
 
-	layout add: sidebar width: 250.
-	owner layout: owner layout
+	layout add: self newNullPresenter width: self sidebarSpacing.
+	layout add: sidebar width: self sidebarWidth.
+	owner layout: owner layout.
+	toggledBlock ifNotNil: [ toggledBlock value ]
+]
+
+{ #category : 'as yet unclassified' }
+CMDockableSidebar >> sidebarSpacing [
+
+	^ 10
+]
+
+{ #category : 'as yet unclassified' }
+CMDockableSidebar >> sidebarWidth [
+
+	^ 250
+]
+
+{ #category : 'as yet unclassified' }
+CMDockableSidebar >> whenToggledDo: aBlock [
+	"Evaluate aBlock after the sidebar opens or closes, which changes the space that I need"
+
+	toggledBlock := aBlock
 ]

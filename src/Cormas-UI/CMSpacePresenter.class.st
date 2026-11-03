@@ -31,6 +31,14 @@ CMSpacePresenter class >> example [
 	(app newPresenter: self) open
 ]
 
+{ #category : 'closing' }
+CMSpacePresenter >> closeDiagram [
+	"Stop showing and updating the diagram. A space keeps running until it is closed, even when nothing displays it anymore"
+
+	self application announcer unsubscribe: self.
+	diagram space close
+]
+
 { #category : 'initialization' }
 CMSpacePresenter >> connectPresenters [
 

@@ -28,6 +28,15 @@ Class {
 }
 
 { #category : 'private' }
+CMBlPresenterTest >> assertWindowCannotHideItsContent [
+
+	window window extent: 200 @ 700.
+	300 milliSeconds wait.
+	self assert:
+		self windowContent width >= self windowContent minExtent x
+]
+
+{ #category : 'private' }
 CMBlPresenterTest >> embeddedViewOf: aSpacePresenter [
 
 	^ aSpacePresenter instVarNamed: #diagram
@@ -75,9 +84,34 @@ CMBlPresenterTest >> openInspectorViewOf: anEntity [
 ]
 
 { #category : 'private' }
+CMBlPresenterTest >> openSimulationPresenter [
+
+	| simulation application presenter |
+	simulation := (CMSimulation for: CMMockModel new)
+		              activeInitSelector: #initFixed;
+		              activeControlSelector: #step;
+		              initializeSimulation;
+		              yourself.
+	model := simulation cormasModel.
+	application := CMSimulationApplication new.
+	application
+		simulation: simulation;
+		cormasModel: model.
+	presenter := application newPresenter: CMSimulationPresenter.
+	window := presenter open.
+	^ presenter
+]
+
+{ #category : 'private' }
 CMBlPresenterTest >> openSpacePresenter: application [
 
 	^ self open: (application newPresenter: CMSpacePresenter)
+]
+
+{ #category : 'private' }
+CMBlPresenterTest >> runnerOf: aSimulationPresenter [
+
+	^ aSimulationPresenter instVarNamed: #simulationRunner
 ]
 
 { #category : 'private' }
@@ -122,12 +156,25 @@ CMBlPresenterTest >> showAtARealSize: aPresenter [
 ]
 
 { #category : 'private' }
+CMBlPresenterTest >> sideMenuButtonsOf: aSimulationPresenter [
+
+	^ ((aSimulationPresenter instVarNamed: #sidebar) instVarNamed:
+		   #activityBar) instVarNamed: #toggleButtons
+]
+
+{ #category : 'private' }
 CMBlPresenterTest >> spacePresenterIn: aPresenter [
 	"Answer the presenter embedding the Bloc space among those that a test opens"
 
 	(aPresenter isKindOf: SpBlSpaceInMorphPresenter) ifTrue: [
 		^ aPresenter ].
 	^ self embeddedViewOf: aPresenter
+]
+
+{ #category : 'private' }
+CMBlPresenterTest >> spacePresenterOf: aSimulationPresenter [
+
+	^ (self runnerOf: aSimulationPresenter) instVarNamed: #spacePresenter
 ]
 
 { #category : 'running' }
@@ -166,6 +213,43 @@ CMBlPresenterTest >> testClickingAZoomButtonOnScreenZooms [
 	presenter space settle.
 
 	self assert: (element localPointToGlobal: 128 @ 96) x > before x
+]
+
+{ #category : 'tests' }
+CMBlPresenterTest >> testClosingTheSideMenuLetsTheWindowShrinkAgain [
+
+	| presenter narrowest button |
+	presenter := self openSimulationPresenter.
+	300 milliSeconds wait.
+	window window extent: 200 @ 700.
+	narrowest := window window width.
+	button := (self sideMenuButtonsOf: presenter) first.
+	button state: true.
+	300 milliSeconds wait.
+
+	button state: false.
+	300 milliSeconds wait.
+	window window extent: 200 @ 700.
+
+	self assert: window window width equals: narrowest
+]
+
+{ #category : 'tests' }
+CMBlPresenterTest >> testClosingTheWindowOnAnotherTabClosesTheView [
+
+	| presenter space |
+	presenter := self openSimulationPresenter.
+	space := (self embeddedViewOf: (self spacePresenterOf: presenter))
+		         space.
+	space settle.
+
+	((self runnerOf: presenter) instVarNamed: #notebook)
+		selectPageIndex: 2.
+	300 milliSeconds wait.
+	window close.
+	space settle.
+
+	self deny: space isOpened
 ]
 
 { #category : 'tests' }
@@ -339,6 +423,37 @@ CMBlPresenterTest >> testOpenSpacePresenterShowsTheModel [
 ]
 
 { #category : 'tests' }
+CMBlPresenterTest >> testOpeningTheSideMenuGrowsANarrowWindow [
+
+	| presenter narrowest |
+	presenter := self openSimulationPresenter.
+	300 milliSeconds wait.
+	window window extent: 200 @ 700.
+	narrowest := window window width.
+
+	(self sideMenuButtonsOf: presenter) first state: true.
+	300 milliSeconds wait.
+
+	self assert: window window width > narrowest.
+	self assert:
+		self windowContent width >= self windowContent minExtent x
+]
+
+{ #category : 'tests' }
+CMBlPresenterTest >> testOpeningTheSideMenuKeepsAWideWindow [
+
+	| presenter |
+	presenter := self openSimulationPresenter.
+	300 milliSeconds wait.
+	window window extent: 1500 @ 700.
+
+	(self sideMenuButtonsOf: presenter) first state: true.
+	300 milliSeconds wait.
+
+	self assert: window window width equals: 1500
+]
+
+{ #category : 'tests' }
 CMBlPresenterTest >> testPresenterShowsTheElement [
 
 	| presenter |
@@ -352,6 +467,43 @@ CMBlPresenterTest >> testPresenterShowsTheElement [
 	self
 		assert: (self screenColorIn: presenter at: 16 @ 16)
 		equals: '000000'
+]
+
+{ #category : 'tests' }
+CMBlPresenterTest >> testReinitializingClosesTheOldView [
+
+	| presenter oldSpace newSpace |
+	presenter := self openSimulationPresenter.
+	oldSpace := (self embeddedViewOf: (self spacePresenterOf: presenter))
+		            space.
+	oldSpace settle.
+
+	presenter initializeSimulationInit: #initFixed control: #step.
+	oldSpace settle.
+
+	newSpace := (self embeddedViewOf: (self spacePresenterOf: presenter))
+		            space.
+	self deny: oldSpace isOpened.
+	self assert: newSpace isOpened
+]
+
+{ #category : 'tests' }
+CMBlPresenterTest >> testReinitializingStopsUpdatingTheOldView [
+
+	| presenter oldView childrenBefore |
+	presenter := self openSimulationPresenter.
+	(self embeddedViewOf: (self spacePresenterOf: presenter)) space
+		settle.
+	oldView := (self spacePresenterOf: presenter) spaceBuilder.
+
+	presenter initializeSimulationInit: #initFixed control: #step.
+	childrenBefore := oldView children size.
+	(model newEntity: CMMockCow) moveTo: (model cellAt: 1 at: 1).
+	presenter application announcer announce: CMSpaceGridChanged new.
+	(self embeddedViewOf: (self spacePresenterOf: presenter)) space
+		settle.
+
+	self assert: oldView children size equals: childrenBefore
 ]
 
 { #category : 'tests' }
@@ -391,6 +543,24 @@ CMBlPresenterTest >> testSpacePresenterSavesPicture [
 	form := file binaryReadStreamDo: [ :stream |
 		        PNGReadWriter formFromStream: stream ].
 	self assert: (form colorAt: 80 @ 48) asHexString equals: 'FF0000'
+]
+
+{ #category : 'tests' }
+CMBlPresenterTest >> testSwitchingTabsOfTheSideMenuKeepsTheMinimumWidth [
+
+	| presenter buttons minimum |
+	presenter := self openSimulationPresenter.
+	300 milliSeconds wait.
+	buttons := self sideMenuButtonsOf: presenter.
+	buttons first state: true.
+	300 milliSeconds wait.
+	minimum := window window minimumExtent x.
+
+	buttons second state: true.
+	300 milliSeconds wait.
+
+	self assert: window window minimumExtent x equals: minimum.
+	self assertWindowCannotHideItsContent
 ]
 
 { #category : 'tests' }
@@ -453,6 +623,32 @@ CMBlPresenterTest >> testViewIsNotOfferedForCellOutsideAGrid [
 			 each title = 'View' ])
 ]
 
+{ #category : 'tests' }
+CMBlPresenterTest >> testWindowCannotBeNarrowerThanItsContent [
+	"The controls of a simulation cannot shrink, so a narrower window would cut off the view of the space"
+
+	self openSimulationPresenter.
+	300 milliSeconds wait.
+
+	window window extent: 200 @ 700.
+	300 milliSeconds wait.
+
+	self assert:
+		self windowContent width >= self windowContent minExtent x
+]
+
+{ #category : 'tests' }
+CMBlPresenterTest >> testWindowCannotBeNarrowerThanItsContentWithTheSideMenuOpen [
+
+	| presenter |
+	presenter := self openSimulationPresenter.
+	300 milliSeconds wait.
+	(self sideMenuButtonsOf: presenter) first state: true.
+	300 milliSeconds wait.
+
+	self assertWindowCannotHideItsContent
+]
+
 { #category : 'private' }
 CMBlPresenterTest >> waitUntilShown: aPresenter [
 	"A space starts with a default size and gets the real one from its morph some time after the window opens. A space can be settled before that, so this checks the size itself, for at most one second"
@@ -465,4 +661,11 @@ CMBlPresenterTest >> waitUntilShown: aPresenter [
 		(self isShownAtItsRealSize: spacePresenter) or: [
 			DateAndTime now > deadline ] ] whileFalse: [ 20 milliSeconds wait ].
 	spacePresenter space settle
+]
+
+{ #category : 'private' }
+CMBlPresenterTest >> windowContent [
+	"Answer the morph holding everything shown in the window, under its title bar"
+
+	^ window window submorphs last
 ]
