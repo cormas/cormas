@@ -124,6 +124,16 @@ CMR3SpaceDiagramBuilder >> renderIn: aCanvas [
 	agentsBuilder renderIn: aCanvas.
 ]
 
+{ #category : 'actions' }
+CMR3SpaceDiagramBuilder >> saveToPngFile: aFileReference [
+	"Save a picture of the whole space. Roassal exports through Cairo, so aFileReference must be on the real disk"
+
+	RSPNGExporter new
+		canvas: self container;
+		zoomToShapes;
+		exportToFile: aFileReference
+]
+
 { #category : 'accessing' }
 CMR3SpaceDiagramBuilder >> update [
 	cellsBuilder update.
@@ -135,4 +145,12 @@ CMR3SpaceDiagramBuilder >> update [
 CMR3SpaceDiagramBuilder >> whenLeftClickOnCellDo: aBlock [
 
 	cellsBuilder whenLeftClickDo: aBlock
+]
+
+{ #category : 'actions' }
+CMR3SpaceDiagramBuilder >> zoomToFit [
+	"Zoom and move the view so that the whole space is visible"
+
+	self container camera zoomToFit.
+	self container signalUpdate
 ]

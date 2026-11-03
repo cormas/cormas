@@ -68,20 +68,13 @@ CMSpacePresenter >> defaultLayout [
 { #category : 'as yet unclassified' }
 CMSpacePresenter >> fitDiagram [
 
-	diagram canvas camera zoomToFit.
-	diagram canvas signalUpdate
+	spaceBuilder zoomToFit
 ]
 
 { #category : 'as yet unclassified' }
 CMSpacePresenter >> hideSettings [
 
 	owner owner hideSettings
-]
-
-{ #category : 'initialization' }
-CMSpacePresenter >> initializeCanvasInteractions [
-
-	diagram canvas addInteraction: RSCanvasController new.
 ]
 
 { #category : 'initialization' }
@@ -97,16 +90,15 @@ CMSpacePresenter >> initializeDiagram [
 
 { #category : 'initialization' }
 CMSpacePresenter >> initializePresenters [
-"Set the Grid presenter (instance of RoassalBuilder (CMR3SpaceDiagramBuilder))"
+
 	self initializeToolbar.
-	
+
 	povSelection := (self instantiate: CMPovSelectionPresenter)
-		whenChangedDo: [ spaceBuilder update ];
-		yourself.
-		
+		                whenChangedDo: [ spaceBuilder update ];
+		                yourself.
+
 	self updatePovSelectionVisibility.
-	self initializeDiagram.
-	self initializeCanvasInteractions
+	self initializeDiagram
 ]
 
 { #category : 'initialization' }
@@ -131,15 +123,6 @@ CMSpacePresenter >> initializeToolbar [
 ]
 
 { #category : 'as yet unclassified' }
-CMSpacePresenter >> saveCanvas: aRoassalCanvas toPngFile: aFileReference [
-
-	RSPNGExporter new
-		canvas: aRoassalCanvas;
-		zoomToShapes;
-		exportToFile: aFileReference
-]
-
-{ #category : 'as yet unclassified' }
 CMSpacePresenter >> saveToPng [
 
 	(StSaveFilePresenter extensions: {'png'})
@@ -149,9 +132,7 @@ CMSpacePresenter >> saveToPng [
 { #category : 'as yet unclassified' }
 CMSpacePresenter >> saveToPngFile: aFileReference [
 
-	self
-		saveCanvas: diagram canvas
-		toPngFile: aFileReference
+	spaceBuilder saveToPngFile: aFileReference
 ]
 
 { #category : 'accessing' }
