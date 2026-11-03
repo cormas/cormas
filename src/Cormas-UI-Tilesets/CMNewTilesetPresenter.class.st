@@ -140,52 +140,32 @@ CMNewTilesetPresenter >> fileNameToCamelCase: aString [
 { #category : 'code generation' }
 CMNewTilesetPresenter >> generateContentsMethodInTargetClassForImage: aForm named: aString [
 
-	| sourceCode method |
-	
+	| sourceCode |
 	sourceCode := String streamContents: [ :stream |
-		stream
-			<< aString
-			<< 'Contents'
-			<< String cr
-			<< '	"Generated method with the content of the image"'
-			<< String cr
-			<< '	^ '''
-			<< (self imageToBase64: aForm)
-			<< '''' ].
-	
-	method := targetClass compiler compile: sourceCode.
+			              stream << aString << 'Contents' << String cr
+			              <<
+			              '	"Generated method with the content of the image"'
+			              << String cr << '	^ '''
+			              << (self imageToBase64: aForm) << '''' ].
 
-	targetClass class
-		addSelector: (aString, 'Contents') asSymbol
-		withMethod: method.
+	targetClass class compile: sourceCode classified: 'tiles'
 ]
 
 { #category : 'code generation' }
 CMNewTilesetPresenter >> generateMethodInTargetClassForImageNamed: aString [
 
-	| sourceCode method |
-	
+	| sourceCode |
 	sourceCode := String streamContents: [ :stream |
-		stream
-			<< aString
-			<< String cr
-			<< '	"Generated method"'
-			<< String cr
-			<< '	<script: ''self ' << aString << ' inspect''>'
-			<< String cr
-			<< '	<tile>'
-			<< String cr
-			<< '	^ self tiles'
-			<< String cr
-			<< '		at: #' << aString
-			<< String cr
-			<< '		ifAbsentPut: [ CMTile newFrom: self ' << aString << 'Contents ]' ].
-	
-	method := targetClass compiler compile: sourceCode.
+			              stream << aString << String cr
+			              << '	"Generated method"' << String cr
+			              << '	<script: ''self ' << aString << ' inspect''>'
+			              << String cr << '	<tile>' << String cr
+			              << '	^ self tiles' << String cr << '		at: #'
+			              << aString << String cr
+			              << '		ifAbsentPut: [ CMTile newFrom: self '
+			              << aString << 'Contents ]' ].
 
-	targetClass class 
-		addSelector: aString asSymbol
-		withMethod: method.
+	targetClass class compile: sourceCode classified: 'tiles'
 ]
 
 { #category : 'code generation' }
