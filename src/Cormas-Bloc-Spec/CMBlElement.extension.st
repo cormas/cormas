@@ -1,6 +1,19 @@
 Extension { #name : 'CMBlElement' }
 
 { #category : '*Cormas-Bloc-Spec' }
+CMBlElement >> addAggregatesOf: aSpatialEntity to: aMenu [
+
+	aSpatialEntity allAggregates ifEmpty: [ ^ self ].
+	aMenu addGroup: [ :group |
+			(aSpatialEntity allAggregates sorted: [ :a :b | a id > b id ]) do: [
+					:each |
+					group addItem: [ :item |
+							item
+								name: each class name , ' ' , each id printString;
+								subMenu: (self contextMenuFor: each) ] ] ]
+]
+
+{ #category : '*Cormas-Bloc-Spec' }
 CMBlElement >> asPresenter [
 	"Answer a new presenter showing me, which can be opened or embedded in another presenter"
 
@@ -23,7 +36,7 @@ CMBlElement >> contextMenuCommandsFor: anEntity [
 
 { #category : '*Cormas-Bloc-Spec' }
 CMBlElement >> contextMenuFor: anEntity [
-	"Answer a menu with the commands and the actions of anEntity. Each of them updates me after it runs"
+	"Answer a menu with the commands and the actions of anEntity, and a submenu for each aggregate containing it. Each of them updates me after it runs"
 
 	| menu |
 	menu := SpMenuPresenter new
@@ -46,6 +59,8 @@ CMBlElement >> contextMenuFor: anEntity [
 								action: [
 										anEntity perform: selector.
 										self update ] ] ] ].
+	anEntity isSpatialEntity ifTrue: [
+		self addAggregatesOf: anEntity to: menu ].
 	^ menu
 ]
 

@@ -140,6 +140,14 @@ CMSpatialEntity >> aggregates: anObject [
 	aggregates := anObject
 ]
 
+{ #category : 'accessing' }
+CMSpatialEntity >> allAggregates [
+	"Answer the aggregates that contain me, directly or through other aggregates"
+
+	^ (aggregates
+	   , (aggregates flatCollect: [ :each | each allAggregates ])) asSet
+]
+
 { #category : 'environment - sensing - agents' }
 CMSpatialEntity >> allOccupants [
 
