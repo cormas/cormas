@@ -23,13 +23,6 @@ Class {
 	#package : 'Cormas-Bloc-Tests'
 }
 
-{ #category : 'control' }
-CMBlTestCell >> newState [
-	"My state does not change"
-
-	
-]
-
 { #category : 'accessing' }
 CMBlTestCell >> pov [
 
@@ -41,11 +34,4 @@ CMBlTestCell >> pov [
 CMBlTestCell >> testPov: aPointOfView [
 
 	testPov := aPointOfView
-]
-
-{ #category : 'control' }
-CMBlTestCell >> updateState [
-	"My state does not change"
-
-	
 ]

@@ -127,8 +127,6 @@ CMBlPresenterTest >> spacePresenterIn: aPresenter [
 
 	(aPresenter isKindOf: SpBlSpaceInMorphPresenter) ifTrue: [
 		^ aPresenter ].
-	(aPresenter isKindOf: CMBlViewComparison) ifTrue: [
-		^ aPresenter blocView ].
 	^ self embeddedViewOf: aPresenter
 ]
 
@@ -186,24 +184,6 @@ CMBlPresenterTest >> testCommandKeyPressArrivingFromMorphicZooms [
 				 ifFalse: [ 16 ]).
 
 	self assert: (element localPointToGlobal: 128 @ 96) x > before x
-]
-
-{ #category : 'tests' }
-CMBlPresenterTest >> testComparisonStepsTheBlocView [
-	"A step of the mock model turns every dead cell alive"
-
-	| comparison |
-	self gridWithNeighbourhood: 4.
-	comparison := self open: (CMBlViewComparison on: model).
-	self
-		assert: (self screenColorIn: comparison blocView at: 16 @ 16)
-		equals: '000000'.
-
-	comparison step.
-
-	self
-		assert: (self screenColorIn: comparison blocView at: 16 @ 16)
-		equals: 'FFFFFF'
 ]
 
 { #category : 'tests' }

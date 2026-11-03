@@ -284,6 +284,20 @@ CMBlNavigationTest >> testPlainBrowserKeysDoNothing [
 ]
 
 { #category : 'tests' }
+CMBlNavigationTest >> testPlainZoomKeysWithPrimaryModifierDoNothing [
+
+	self openGridWithCow.
+	#( 'i' 'o' ' ' ) do: [ :each |
+		self type: each modifiers: self primaryModifier ].
+	{
+		KeyboardKey I.
+		KeyboardKey O.
+		KeyboardKey space } do: [ :each |
+		self pressWithPrimaryModifier: each ].
+	self assertFitted
+]
+
+{ #category : 'tests' }
 CMBlNavigationTest >> testPrimaryModifierAndShiftWithEqualsZoomsIn [
 	"This is how a plus sign is typed on many keyboards"
 
@@ -320,20 +334,6 @@ CMBlNavigationTest >> testPrimaryModifierWithZeroZoomsToFit [
 	self openGridWithCow.
 	self press: $i.
 	self pressWithPrimaryModifier: KeyboardKey zero.
-	self assertFitted
-]
-
-{ #category : 'tests' }
-CMBlNavigationTest >> testRoassalKeysWithPrimaryModifierDoNothing [
-
-	self openGridWithCow.
-	#( 'i' 'o' ' ' ) do: [ :each |
-		self type: each modifiers: self primaryModifier ].
-	{
-		KeyboardKey I.
-		KeyboardKey O.
-		KeyboardKey space } do: [ :each |
-		self pressWithPrimaryModifier: each ].
 	self assertFitted
 ]
 
