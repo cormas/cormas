@@ -131,26 +131,24 @@ CMSimulation >> initializeProbes [
 
 { #category : 'initialization' }
 CMSimulation >> initializeSimulation [
-"Purpose: initialize one simulation by performing #activeInitSelector.
+	"Purpose: initialize one simulation by performing #activeInitSelector.
 Reset the currentTimeStep and the data. Set the randomSeed"
-	
-	self hasFixedRandomSeed ifFalse: [
-		"Choose a new random seed every time the simulation is initialized. If random seed is fixed, then we will always initialize the same scenario"
+
+	context currentTimeStep: 0.
+
+	self hasFixedRandomSeed ifFalse: [ "Choose a new random seed every time the simulation is initialized. If random seed is fixed, then we will always initialize the same scenario"
 		context chooseRandomSeedAtRandom ].
-	
+
 	self initializeProbes.
-
 	data := OrderedCollection new.
-
 	cormasModel initEntities.
-
 	self setInitialParameters.
-	
+
 	cormasModel perform: activeInitSelector.
 	self recordData.
-	
-	shouldReleaseRandomSeedAfterInitialization ifTrue: [ 
-		context chooseRandomSeedAtRandom ].
+
+	shouldReleaseRandomSeedAfterInitialization ifTrue: [
+		context chooseRandomSeedAtRandom ]
 ]
 
 { #category : 'simulation runner - init' }

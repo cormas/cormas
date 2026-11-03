@@ -57,6 +57,19 @@ CMSimulationTest >> testDefaultFinalTimeStep [
 ]
 
 { #category : 'tests' }
+CMSimulationTest >> testInitializeSimulationResetsCurrentTimeStep [
+
+	simulation
+		runStep;
+		runStep.
+	self assert: simulation currentTimeStep equals: 2.
+
+	simulation initializeSimulation.
+
+	self assert: simulation currentTimeStep equals: 0
+]
+
+{ #category : 'tests' }
 CMSimulationTest >> testProbes [
 
 	| expectedProbes |
