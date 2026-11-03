@@ -34,7 +34,8 @@ Class {
 		'roassalView',
 		'blocElement',
 		'blocView',
-		'stepButton'
+		'stepButton',
+		'stepAction'
 	],
 	#category : 'Cormas-Bloc-Spec-Tests',
 	#package : 'Cormas-Bloc-Spec-Tests'
@@ -93,6 +94,25 @@ CMBlViewComparison class >> scriptECEC [
 		activeControlSelector: #step;
 		initializeSimulation.
 	^ (self on: model) open
+]
+
+{ #category : 'scripts' }
+CMBlViewComparison class >> scriptFirefighters [
+	"A model of the example models that draws with tiles. The points of view are selected after the initialization, which resets them"
+
+	<script>
+	| model simulation |
+	model := FFFirefightersModel new.
+	simulation := (CMSimulation for: model)
+		              activeInitSelector: #basicCreation;
+		              activeControlSelector: #basicStep;
+		              initializeSimulation;
+		              yourself.
+	FFPlot activePovSelector: #povImage.
+	FFFirefighter activePovSelector: #povImage.
+	^ (self on: model)
+		  stepAction: [ simulation runStep ];
+		  open
 ]
 
 { #category : 'scripts' }
@@ -191,7 +211,14 @@ CMBlViewComparison >> setModelBeforeInitialization: aModel [
 { #category : 'actions' }
 CMBlViewComparison >> step [
 
-	model step.
+	stepAction ifNil: [ model step ] ifNotNil: [ stepAction value ].
 	roassalBuilder update.
 	blocElement update
+]
+
+{ #category : 'actions' }
+CMBlViewComparison >> stepAction: aBlock [
+	"Use aBlock to step a model that has no #step of its own"
+
+	stepAction := aBlock
 ]
