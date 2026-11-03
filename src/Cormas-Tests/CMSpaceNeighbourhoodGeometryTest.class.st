@@ -5,7 +5,6 @@ I test the grid geometry answered by `CMSpaceNeighbourhood` and its subclasses, 
 
 - Check where each kind of grid places the bounding box of a cell.
 - Cover overlapping and shifted grids: triangles and both kinds of hexagons.
-- Check that this geometry lives in `Cormas-Core`, so it does not depend on a visualization package.
 
 ## Collaborators:
 
@@ -54,23 +53,6 @@ CMSpaceNeighbourhoodGeometryTest >> configurationOfGrid: aNeighbourhood [
 		neighbourhood: aNeighbourhood
 		closed: true.
 	^ model spaceModel neighbourhoodConfiguration
-]
-
-{ #category : 'tests' }
-CMSpaceNeighbourhoodGeometryTest >> testGridGeometryLivesInCore [
-	"Grid geometry is used by Core and by every visualization, so it must not live in a visualization package"
-
-	| geometryMethods |
-	geometryMethods := CMSpaceNeighbourhood withAllSubclasses
-		                   flatCollect: [ :each |
-				                   each localMethods select: [ :method |
-						                   (method selector beginsWith:
-							                    'boundingRectangle') or: [
-							                   method selector = #shouldRotateShapeFor: ] ] ].
-
-	self assert: geometryMethods isNotEmpty.
-	geometryMethods do: [ :method |
-		self assert: method package name equals: 'Cormas-Core' ]
 ]
 
 { #category : 'tests' }

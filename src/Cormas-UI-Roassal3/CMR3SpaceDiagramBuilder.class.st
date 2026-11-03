@@ -41,13 +41,6 @@ CMR3SpaceDiagramBuilder class >> for: aCormasModel [
 		yourself
 ]
 
-{ #category : 'accessing - pov' }
-CMR3SpaceDiagramBuilder >> activeSpatialEntityPov [
-	" Answer a <Symbol> representing the selector of the active PoV which is a Spatial Entity "
-	
-	^ cormasModel cellClass activePovSelector
-]
-
 { #category : 'accessing' }
 CMR3SpaceDiagramBuilder >> agentShapes [
 

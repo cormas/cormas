@@ -51,12 +51,6 @@ CMR3SpaceDiagramBuilderTest >> setUp [
 ]
 
 { #category : 'as yet unclassified' }
-CMR3SpaceDiagramBuilderTest >> testActiveSpatialEntityPovDefaultValue [
-
-	self assert: builder activeSpatialEntityPov equals: #pov.
-]
-
-{ #category : 'as yet unclassified' }
 CMR3SpaceDiagramBuilderTest >> testCormasModel [
 
 	self assert: builder cormasModel equals: model.
