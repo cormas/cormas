@@ -137,6 +137,16 @@ CMBlViewComparison >> initializePresenters [
 ]
 
 { #category : 'initialization' }
+CMBlViewComparison >> initializeWindow: aWindowPresenter [
+
+	super initializeWindow: aWindowPresenter.
+
+	aWindowPresenter
+		title: 'Roassal (left) and Bloc (right)';
+		initialExtent: 1200 @ 650
+]
+
+{ #category : 'initialization' }
 CMBlViewComparison >> setModelBeforeInitialization: aModel [
 
 	model := aModel
