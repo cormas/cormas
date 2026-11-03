@@ -294,6 +294,23 @@ CMBlSpaceElementTest >> testTranslucentAggregateTintsItsCells [
 ]
 
 { #category : 'tests' }
+CMBlSpaceElementTest >> testUpdateDoesNotDrawAnAggregateTwice [
+	"A second copy of a translucent shape would make it stronger"
+
+	| element blue |
+	self gridWithNeighbourhood: 4.
+	self
+		aggregateOf: { (model cellAt: 2 at: 2) }
+		pov: (CMPointOfView color: (Color blue alpha: 0.5)).
+	element := CMBlSpaceElement for: model.
+
+	element update.
+	blue := ((self formOf: element) colorAt: 48 @ 48) blue.
+
+	self assert: (blue closeTo: 0.5 precision: 0.02)
+]
+
+{ #category : 'tests' }
 CMBlSpaceElementTest >> testUpdateFollowsANewGrid [
 
 	| element |
@@ -328,6 +345,40 @@ CMBlSpaceElementTest >> testUpdateFollowsTheActivePov [
 ]
 
 { #category : 'tests' }
+CMBlSpaceElementTest >> testUpdateFollowsTheActivePovOfAnAggregate [
+
+	| element |
+	self gridWithNeighbourhood: 4.
+	self
+		aggregateOf: { (model cellAt: 2 at: 2) }
+		pov: (CMPointOfView color: Color blue).
+	element := CMBlSpaceElement for: model.
+
+	[
+		CMMockAggregate activePovSelector: #povInvisible.
+		element update.
+
+		self
+			assert: ((self formOf: element) colorAt: 48 @ 48)
+			equals: Color black ] ensure: [
+		CMMockAggregate resetActivePovSelector ]
+]
+
+{ #category : 'tests' }
+CMBlSpaceElementTest >> testUpdateKeepsAgentsOnTopOfAggregates [
+
+	| element |
+	self gridWithNeighbourhood: 4.
+	self newCowOn: (model cellAt: 2 at: 3).
+	self aggregateOf: model cells pov: (CMPointOfView color: Color blue).
+	element := CMBlSpaceElement for: model.
+
+	element update.
+
+	self assert: (self hexColorIn: element at: 80 @ 48) equals: 'FF0000'
+]
+
+{ #category : 'tests' }
 CMBlSpaceElementTest >> testUpdateRemovesDeadAgent [
 
 	| element cow |
@@ -339,6 +390,40 @@ CMBlSpaceElementTest >> testUpdateRemovesDeadAgent [
 	element update.
 
 	self assert: (self hexColorIn: element at: 80 @ 48) equals: '000000'
+]
+
+{ #category : 'tests' }
+CMBlSpaceElementTest >> testUpdateRemovesReleasedAggregates [
+
+	| element |
+	self gridWithNeighbourhood: 4.
+	self
+		aggregateOf: { (model cellAt: 2 at: 2) }
+		pov: (CMPointOfView color: Color blue).
+	element := CMBlSpaceElement for: model.
+
+	model releaseAggregateType: CMMockAggregate.
+	element update.
+
+	self
+		assert: ((self formOf: element) colorAt: 48 @ 48)
+		equals: Color black
+]
+
+{ #category : 'tests' }
+CMBlSpaceElementTest >> testUpdateShowsAggregateThatGrew [
+
+	| aggregate element |
+	self gridWithNeighbourhood: 4.
+	aggregate := self
+		             aggregateOf: { (model cellAt: 1 at: 1) }
+		             pov: (CMPointOfView color: Color blue).
+	element := CMBlSpaceElement for: model.
+
+	aggregate addComponent: (model cellAt: 2 at: 2).
+	element update.
+
+	self assert: (self hexColorIn: element at: 48 @ 48) equals: '0000FF'
 ]
 
 { #category : 'tests' }
@@ -370,6 +455,21 @@ CMBlSpaceElementTest >> testUpdateShowsNewAgent [
 ]
 
 { #category : 'tests' }
+CMBlSpaceElementTest >> testUpdateShowsNewAggregate [
+
+	| element |
+	self gridWithNeighbourhood: 4.
+	element := CMBlSpaceElement for: model.
+
+	self
+		aggregateOf: { (model cellAt: 2 at: 2) }
+		pov: (CMPointOfView color: Color blue).
+	element update.
+
+	self assert: (self hexColorIn: element at: 48 @ 48) equals: '0000FF'
+]
+
+{ #category : 'tests' }
 CMBlSpaceElementTest >> testUpdateShowsNewCellState [
 
 	| element |
@@ -380,6 +480,24 @@ CMBlSpaceElementTest >> testUpdateShowsNewCellState [
 	element update.
 
 	self assert: (self hexColorIn: element at: 80 @ 48) equals: 'FFFFFF'
+]
+
+{ #category : 'tests' }
+CMBlSpaceElementTest >> testUpdateShowsNewPovOfAnAggregate [
+
+	| aggregate element |
+	self gridWithNeighbourhood: 4.
+	aggregate := self
+		             aggregateOf: { (model cellAt: 2 at: 2) }
+		             pov: (CMPointOfView color: Color blue).
+	element := CMBlSpaceElement for: model.
+
+	aggregate pov: (CMPointOfView color: Color green).
+	element update.
+
+	self
+		assert: (self hexColorIn: element at: 48 @ 48)
+		equals: Color green asHexString
 ]
 
 { #category : 'tests' }
