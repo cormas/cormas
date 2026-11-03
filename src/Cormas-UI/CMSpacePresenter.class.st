@@ -79,11 +79,10 @@ CMSpacePresenter >> hideSettings [
 
 { #category : 'initialization' }
 CMSpacePresenter >> initializeDiagram [
-	"Set the Grid presenter: a new instance of RoassalBuilder (CMR3SpaceDiagramBuilder)"
+	"Create the view of the space and the presenter that embeds it"
 
-	spaceBuilder := CMR3SpaceDiagramBuilder for: self cormasModel.
+	spaceBuilder := CMBlSpaceElement for: self cormasModel.
 	diagram := spaceBuilder asPresenter.
-
 	diagram owner: self.
 	self update
 ]

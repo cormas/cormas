@@ -96,22 +96,6 @@ CMR3SpaceDiagramBuilderTest >> testSpacePresenterSavesPngThroughItsBuilder [
 		spacePresenter saveToPngFile: file ]
 ]
 
-{ #category : 'tests' }
-CMR3SpaceDiagramBuilderTest >> testSpacePresenterSendsZoomToFitToItsBuilder [
-
-	| spacePresenter camera |
-	spacePresenter := self newSpacePresenter.
-	camera := spacePresenter spaceBuilder container camera.
-	camera
-		scale: 100;
-		translateTo: 1000 @ 1000.
-
-	spacePresenter fitDiagram.
-
-	self assert: camera scale < 100.
-	self assert: camera position x < 1000
-]
-
 { #category : 'as yet unclassified' }
 CMR3SpaceDiagramBuilderTest >> testUpdateCellShapes [
 

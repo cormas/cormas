@@ -87,15 +87,19 @@ BaselineOfCormas >> specForBaselines: spec [
 	spec
 		baseline: 'CormasExampleModels'
 		with: [ spec repository: 'github://cormas/example-models:main' ].
-
 	spec
 		baseline: 'MathRandomNumbers'
-		with: [ spec repository: 'github://PolyMathOrg/random-numbers:v1.x.x/src' ].
-		
+		with: [
+		spec repository: 'github://PolyMathOrg/random-numbers:v1.x.x/src' ].
+
 	spec
 		baseline: 'RoassalExporters'
-		with: [ spec repository: 'github://pharo-graphics/RoassalExporters:v1.02' ]
+		with: [
+		spec repository: 'github://pharo-graphics/RoassalExporters:v1.02' ].
 
+	spec
+		baseline: 'Bloc'
+		with: [ spec repository: 'github://pharo-graphics/Bloc:v3.0.0/src' ]
 ]
 
 { #category : 'specs' }
@@ -103,12 +107,13 @@ BaselineOfCormas >> specForGroups: spec [
 
 	spec
 		group: 'Core'
-		with: #( 'Cormas-Core' 'Cormas-Tests' 'Cormas-Mocks' 'Cormas-CodeGeneration-Tests' );
-	
+		with:
+			#( 'Cormas-Core' 'Cormas-Tests' 'Cormas-Mocks' 'Cormas-CodeGeneration-Tests' );
 		group: 'UI'
-		with: #( 'Core' 'Cormas-UI' 'Cormas-UI-Tests' 'Cormas-UI-Commands' 'Cormas-UI-Roassal3' 'Cormas-UI-Tilesets' );
-
-		group: 'default' with: #( 'Core' 'UI' ).
+		with: #( 'Core' 'Cormas-UI' 'Cormas-UI-Tests' 'Cormas-UI-Commands'
+			   'Cormas-UI-Roassal3' 'Cormas-UI-Tilesets' 'Cormas-Bloc'
+			   'Cormas-Bloc-Spec' 'Cormas-Bloc-Tests' 'Cormas-Bloc-Spec-Tests' );
+		group: 'default' with: #( 'Core' 'UI' )
 ]
 
 { #category : 'specs' }
@@ -116,28 +121,34 @@ BaselineOfCormas >> specForPackages: spec [
 
 	spec
 		package: 'Cormas-Core'
-		with: [ spec requires: #('MathRandomNumbers') ];
-		
-		package: 'Cormas-Mocks'
-		with: [ spec requires: #('Cormas-Core') ];
-		
+		with: [ spec requires: #( 'MathRandomNumbers' ) ];
+		package: 'Cormas-Mocks' with: [ spec requires: #( 'Cormas-Core' ) ];
 		package: 'Cormas-Tests'
-		with: [ spec requires: #('Cormas-Core' 'Cormas-Mocks') ];
-		
+		with: [ spec requires: #( 'Cormas-Core' 'Cormas-Mocks' ) ];
 		package: 'Cormas-CodeGeneration';
-		
 		package: 'Cormas-CodeGeneration-Tests'
 		with: [ spec requires: 'Cormas-CodeGeneration' ];
-		
 		package: 'Cormas-UI-Roassal3'
-		with: [ spec requires: #('Cormas-Core' 'RoassalExporters') ];
-		
+		with: [ spec requires: #( 'Cormas-Core' 'RoassalExporters' ) ];
 		package: 'Cormas-UI-Commands';
 		package: 'Cormas-UI-Tilesets';
-		
-		package: 'Cormas-UI'
-		with: [ spec requires: #('Cormas-Core' 'Cormas-CodeGeneration' 'Cormas-Mocks' 'Cormas-UI-Roassal3' 'CormasExampleModels' 'Cormas-UI-Tilesets' 'Cormas-UI-Commands') ];
-
+		package: 'Cormas-Bloc'
+		with: [ spec requires: #( 'Cormas-Core' 'Cormas-Mocks'
+				   'Bloc' ) ];
+		package: 'Cormas-Bloc-Spec'
+		with: [ spec requires: #( 'Cormas-Bloc' 'Cormas-UI-Commands' ) ];
+		package: 'Cormas-UI' with: [
+				spec requires:
+						#( 'Cormas-Core' 'Cormas-CodeGeneration' 'Cormas-Mocks'
+						   'Cormas-UI-Roassal3' 'CormasExampleModels'
+						   'Cormas-UI-Tilesets' 'Cormas-UI-Commands'
+						   'Cormas-Bloc-Spec' ) ];
 		package: 'Cormas-UI-Tests'
-		with: [ spec requires: #('Cormas-UI') ]
+		with: [ spec requires: #( 'Cormas-UI' ) ];
+		package: 'Cormas-Bloc-Tests' with: [
+			spec requires:
+					#( 'Cormas-Bloc' 'Cormas-Mocks' 'Cormas-UI-Tilesets' ) ];
+		package: 'Cormas-Bloc-Spec-Tests' with: [
+				spec requires:
+						#( 'Cormas-Bloc-Tests' 'Cormas-Bloc-Spec' 'Cormas-UI' ) ]
 ]

@@ -10,7 +10,7 @@ I check that Bloc views appear correctly in Spec windows, by reading the pixels 
 ## Collaborators: 
 
 - `CMBlElement`: answers the presenters I open.
-- `CMBlTestSpacePresenter`: embeds the view as Cormas UI would.
+- `CMSpacePresenter`: embeds the view in Cormas UI.
 
 ### Implementation Points
 
@@ -26,6 +26,12 @@ Class {
 	#category : 'Cormas-Bloc-Spec-Tests',
 	#package : 'Cormas-Bloc-Spec-Tests'
 }
+
+{ #category : 'private' }
+CMBlPresenterTest >> embeddedViewOf: aSpacePresenter [
+
+	^ aSpacePresenter instVarNamed: #diagram
+]
 
 { #category : 'private' }
 CMBlPresenterTest >> open: aPresenter [
@@ -51,6 +57,12 @@ CMBlPresenterTest >> openInspectorViewOf: anEntity [
 		           each title = 'View' ].
 	^ self open: (context basicNewInspectionPresenter:
 			   (context newPresenterBuilderOnApplication: SpApplication new))
+]
+
+{ #category : 'private' }
+CMBlPresenterTest >> openSpacePresenter: application [
+
+	^ self open: (application newPresenter: CMSpacePresenter)
 ]
 
 { #category : 'private' }
@@ -163,26 +175,20 @@ CMBlPresenterTest >> testComparisonStepsTheBlocView [
 { #category : 'tests' }
 CMBlPresenterTest >> testEmbeddedViewFollowsGridChanges [
 
-	| cow application presenter |
+	| cow application presenter view |
 	self gridWithNeighbourhood: 4.
 	cow := self newCowOn: (model cellAt: 2 at: 3).
 	application := CMSimulationApplication new.
 	application cormasModel: model.
-	presenter := self open:
-		             (application newPresenter: CMBlTestSpacePresenter).
-	self
-		assert: (self screenColorIn: presenter diagram at: 80 @ 48)
-		equals: 'FF0000'.
+	presenter := self openSpacePresenter: application.
+	view := self embeddedViewOf: presenter.
+	self assert: (self screenColorIn: view at: 80 @ 48) equals: 'FF0000'.
 
 	cow moveTo: (model cellAt: 1 at: 1).
 	application announcer announce: CMSpaceGridChanged new.
 
-	self
-		assert: (self screenColorIn: presenter diagram at: 80 @ 48)
-		equals: '000000'.
-	self
-		assert: (self screenColorIn: presenter diagram at: 16 @ 16)
-		equals: 'FF0000'
+	self assert: (self screenColorIn: view at: 80 @ 48) equals: '000000'.
+	self assert: (self screenColorIn: view at: 16 @ 16) equals: 'FF0000'
 ]
 
 { #category : 'tests' }
@@ -199,27 +205,23 @@ CMBlPresenterTest >> testEmptyModelViewShowsNothing [
 { #category : 'tests' }
 CMBlPresenterTest >> testFitButtonOfSpacePresenterFitsTheView [
 
-	| application presenter view |
+	| application presenter view element |
 	self gridWithNeighbourhood: 4.
 	self newCowOn: (model cellAt: 2 at: 3).
 	application := CMSimulationApplication new.
 	application cormasModel: model.
-	presenter := self open:
-		             (application newPresenter: CMBlTestSpacePresenter).
-	self
-		assert: (self screenColorIn: presenter diagram at: 80 @ 48)
-		equals: 'FF0000'.
-	view := presenter spaceBuilder.
-	view zoomBy: 5 at: 0 @ 0.
+	presenter := self openSpacePresenter: application.
+	view := self embeddedViewOf: presenter.
+	self assert: (self screenColorIn: view at: 80 @ 48) equals: 'FF0000'.
+	element := presenter spaceBuilder.
+	element zoomBy: 5 at: 0 @ 0.
 
 	presenter fitDiagram.
-	presenter diagram space settle.
+	view space settle.
 
-	self
-		assert: (self screenColorIn: presenter diagram at: 80 @ 48)
-		equals: 'FF0000'.
-	self assert: (view localPointToGlobal: 128 @ 96)
-		<= presenter diagram space root extent
+	self assert: (self screenColorIn: view at: 80 @ 48) equals: 'FF0000'.
+	self assert:
+		(element localPointToGlobal: 128 @ 96) <= view space root extent
 ]
 
 { #category : 'tests' }
@@ -307,6 +309,21 @@ CMBlPresenterTest >> testInspectorViewOfModelShowsTheSpace [
 ]
 
 { #category : 'tests' }
+CMBlPresenterTest >> testOpenSpacePresenterShowsTheModel [
+
+	| presenter |
+	self gridWithNeighbourhood: 4.
+	self newCowOn: (model cellAt: 2 at: 3).
+
+	window := model openSpacePresenter.
+	presenter := window presenter.
+
+	self
+		assert: (self screenColorIn: presenter at: 80 @ 48)
+		equals: 'FF0000'
+]
+
+{ #category : 'tests' }
 CMBlPresenterTest >> testPresenterShowsTheElement [
 
 	| presenter |
@@ -323,6 +340,27 @@ CMBlPresenterTest >> testPresenterShowsTheElement [
 ]
 
 { #category : 'tests' }
+CMBlPresenterTest >> testSpacePresenterCellClickReachesItsBlock [
+	"The command that creates agents listens for clicks on cells this way"
+
+	| application presenter clicked cellElement |
+	self gridWithNeighbourhood: 4.
+	application := CMSimulationApplication new.
+	application cormasModel: model.
+	presenter := self openSpacePresenter: application.
+	(self embeddedViewOf: presenter) space settle.
+	presenter spaceBuilder whenLeftClickOnCellDo: [ :cell |
+		clicked := cell ].
+	cellElement := presenter spaceBuilder children detect: [ :each |
+		               each entity == (model cellAt: 1 at: 3) ].
+
+	cellElement eventSimulator click.
+	(self embeddedViewOf: presenter) space settle.
+
+	self assert: clicked equals: (model cellAt: 1 at: 3)
+]
+
+{ #category : 'tests' }
 CMBlPresenterTest >> testSpacePresenterSavesPicture [
 
 	| application presenter file form |
@@ -330,8 +368,7 @@ CMBlPresenterTest >> testSpacePresenterSavesPicture [
 	self newCowOn: (model cellAt: 2 at: 3).
 	application := CMSimulationApplication new.
 	application cormasModel: model.
-	presenter := self open:
-		             (application newPresenter: CMBlTestSpacePresenter).
+	presenter := self openSpacePresenter: application.
 	file := FileSystem memory / 'space.png'.
 
 	presenter saveToPngFile: file.
