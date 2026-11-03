@@ -71,7 +71,7 @@ CMR3SpaceCellsBuilder >> updateShape: aShape [
 	| cell pov extent border image |
 	cell := aShape model.
 
-	pov := cell perform: diagramBuilder activeSpatialEntityPov.
+	pov := cell activePov.
 	
 	extent := aShape extent / aShape extent max * diagramBuilder maxExtent.
 	aShape extent: extent.

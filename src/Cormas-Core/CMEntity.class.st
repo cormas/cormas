@@ -186,6 +186,13 @@ CMEntity >> actionSelectors [
 		collect: [ :each | each method selector ]
 ]
 
+{ #category : 'pov' }
+CMEntity >> activePov [
+	"Answer the point of view currently selected for the class of the receiver. This is how visualizations should ask an entity how to display itself."
+
+	^ self perform: self class activePovSelector
+]
+
 { #category : 'converting' }
 CMEntity >> asString [
 	" After adding the name of this entity, add its id "

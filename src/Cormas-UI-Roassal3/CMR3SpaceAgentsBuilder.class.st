@@ -115,7 +115,7 @@ CMR3SpaceAgentsBuilder >> moveAgentShape: anAgentShape [
 	(anAgentShape propertyAt: #RSLabeled) ifNotNil: [ :p |
 		p text: agent labelOfPOV ].
 	
-	pov := agent perform: agent class activePovSelector.
+	pov := agent activePov.
 	extent := anAgentShape extent / anAgentShape extent max * diagramBuilder maxExtent.
 	
 	pov isForImage ifTrue: [ 
@@ -179,7 +179,7 @@ CMR3SpaceAgentsBuilder >> positionInCell: aCell fromAbsolutePosition: aPoint [
 CMR3SpaceAgentsBuilder >> shapeFor: anObject index: aNumber [
 
 	| pov shape |
-	pov := anObject perform: anObject class activePovSelector.
+	pov := anObject activePov.
 
 	self masterShape: ((RSShapeFactory perform: pov shape)
 			 color: pov color;

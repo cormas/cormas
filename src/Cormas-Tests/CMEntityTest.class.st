@@ -9,6 +9,33 @@ Class {
 	#tag : 'Model'
 }
 
+{ #category : 'running' }
+CMEntityTest >> tearDown [
+
+	CMMockCow resetActivePovSelector.
+	super tearDown
+]
+
+{ #category : 'tests' }
+CMEntityTest >> testActivePovAnswersDefaultPov [
+
+	| cow |
+	cow := CMMockModel new newEntity: CMMockCow.
+
+	self assert: cow activePov color equals: Color red
+]
+
+{ #category : 'tests' }
+CMEntityTest >> testActivePovAnswersSelectedPov [
+
+	| cow |
+	cow := CMMockModel new newEntity: CMMockCow.
+
+	CMMockCow activePovSelector: #povInvisible.
+
+	self assert: cow activePov color equals: Color transparent
+]
+
 { #category : 'tests' }
 CMEntityTest >> testAvailablePov [
 
