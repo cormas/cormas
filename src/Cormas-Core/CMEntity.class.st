@@ -272,8 +272,7 @@ CMEntity >> initialize [
 
 	super initialize.
 	self initializeEntityId.
-	self initializeInstanceSideParameters.
-	self class resetActivePovSelector
+	self initializeInstanceSideParameters
 ]
 
 { #category : 'initialize-release' }

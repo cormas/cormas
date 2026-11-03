@@ -51,6 +51,18 @@ CMEntityTest >> testCormasEntityIsAbstract [
 ]
 
 { #category : 'tests' }
+CMEntityTest >> testCreatingAnEntityKeepsTheSelectedPov [
+
+	| model |
+	model := CMMockModel new.
+	CMMockCow activePovSelector: #povInvisible.
+
+	model newEntity: CMMockCow.
+
+	self assert: CMMockCow activePovSelector equals: #povInvisible
+]
+
+{ #category : 'tests' }
 CMEntityTest >> testPovClassNameGivesSameColorToEntitiesOfSameClass [
 
 	| model firstCow secondCow |

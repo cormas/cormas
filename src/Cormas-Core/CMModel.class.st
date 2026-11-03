@@ -967,11 +967,13 @@ CMModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 CMModel >> initEntities [
 	"Initialize all the Entity classes of the model"
 
-	"Remove all the entities from previous simulation and reset the ID counter"
+	"Remove all the entities from previous simulation, reset the ID counter and the selected point of view"
 
 	self agentClasses do: [ :aClass |
 		self initializeAgentsOfClass: aClass ].
-	self class allEntityClasses do: [ :cl | self resetEntities: cl ]
+	self class allEntityClasses do: [ :cl |
+			self resetEntities: cl.
+			cl resetActivePovSelector ]
 ]
 
 { #category : 'initialization' }

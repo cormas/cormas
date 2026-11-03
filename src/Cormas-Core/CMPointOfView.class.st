@@ -95,7 +95,7 @@ CMPointOfView class >> tile: aTile size: aNumber [
 { #category : 'accessing' }
 CMPointOfView >> borderColor [
 
-	^ borderColor
+	^ borderColor ifNil: [ Color veryLightGray ]
 ]
 
 { #category : 'accessing' }
@@ -107,7 +107,7 @@ CMPointOfView >> borderColor: aColor [
 { #category : 'accessing' }
 CMPointOfView >> borderWidth [
 
-	^ borderWidth
+	^ borderWidth ifNil: [ 0.01 ]
 ]
 
 { #category : 'accessing' }
@@ -118,8 +118,8 @@ CMPointOfView >> borderWidth: aNumber [
 
 { #category : 'accessing' }
 CMPointOfView >> color [
-	
-	^ color value
+
+	^ color value ifNil: [ Color gray ]
 ]
 
 { #category : 'accessing' }
@@ -128,22 +128,38 @@ CMPointOfView >> color: aColor [
 	color := aColor
 ]
 
+{ #category : 'testing' }
+CMPointOfView >> hasBorder [
+
+	^ borderColor isNotNil or: [ borderWidth isNotNil ]
+]
+
+{ #category : 'testing' }
+CMPointOfView >> hasColor [
+
+	^ color isNotNil
+]
+
 { #category : 'initialization' }
 CMPointOfView >> initialize [
 
 	super initialize.
-	
-	color := Color gray.
+
 	size := 0.3.
-	shape := #circle.
-	borderWidth := 0.01.
-	borderColor := Color veryLightGray.
+	shape := #circle
 ]
 
 { #category : 'testing' }
 CMPointOfView >> isForImage [
 
 	^ tile isNotNil
+]
+
+{ #category : 'accessing' }
+CMPointOfView >> outlineWidth [
+	"Answer the width of the line around an aggregate. Its default is wider than the one of a cell border, as an outline is meant to be seen"
+
+	^ borderWidth ifNil: [ 0.1 ]
 ]
 
 { #category : 'accessing' }
