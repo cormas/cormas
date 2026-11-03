@@ -124,7 +124,10 @@ CMBlAgentElement >> refresh [
 	side := self side.
 	self
 		extent: side @ side;
-		background: pov color;
+		background: (self
+				 backgroundOfPov: pov
+				 in: (agent cormasModel ifNotNil: [ :model | model spaceModel ])
+				 extent: side @ side);
 		geometry: (self geometryForShape: pov shape)
 ]
 

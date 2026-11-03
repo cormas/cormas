@@ -82,13 +82,16 @@ CMBlCellElement >> initialize [
 { #category : 'updating' }
 CMBlCellElement >> refresh [
 
-	| pov |
+	| pov extent |
 	pov := cell activePov.
+	extent := self cellExtentOf: cell.
 	self
-		background: pov color;
-		border: (BlBorder
+		background:
+			(self backgroundOfPov: pov in: cell spaceModel extent: extent);
+		border:
+			(BlBorder
 				 paint: pov borderColor
-				 width: pov borderWidth * (self cellExtentOf: cell) max).
+				 width: pov borderWidth * extent max).
 	showsOccupants ifTrue: [ self refreshOccupants ]
 ]
 

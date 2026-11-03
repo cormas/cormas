@@ -40,6 +40,32 @@ Class {
 	#package : 'Cormas-Bloc-Spec-Tests'
 }
 
+{ #category : 'private' }
+CMBlViewComparison class >> newTileModelRows: aNumberOfRows agents: aNumberOfAgents [
+
+	| grass model cells |
+	grass := CMPointOfView tile: CMDefaultTileset grass.
+	model := CMMockModel new.
+	model cellClass: CMBlTestCell.
+	model agentClasses: { CMBlTestAgent }.
+	model
+		createGridNumberOfRows: aNumberOfRows
+		numberOfColumns: aNumberOfRows
+		neighbourhood: 4
+		closed: true.
+	cells := model cells.
+	cells do: [ :each | each testPov: grass ].
+	1 to: aNumberOfAgents do: [ :i |
+			(model newEntity: CMBlTestAgent)
+				testPov: ((CMPointOfView tile: CMDefaultTileset farmer size: 0.8)
+						 shape: (i even
+								  ifTrue: [ #circle ]
+								  ifFalse: [ #square ]);
+						 yourself);
+				moveTo: (cells at: i * 7 \\ cells size + 1) ].
+	^ model
+]
+
 { #category : 'scripts' }
 CMBlViewComparison class >> openMockModelWithNeighbourhood: aNeighbourhood [
 	"Open the comparison on a small grid of random cells with a few cows"
@@ -95,6 +121,16 @@ CMBlViewComparison class >> scriptSquaresWithDiagonals [
 
 	<script>
 	^ self openMockModelWithNeighbourhood: 8
+]
+
+{ #category : 'scripts' }
+CMBlViewComparison class >> scriptTiles [
+	"Grass cells and farmer agents, the agents in the default circle and square shapes"
+
+	<script>
+	| model |
+	model := self newTileModelRows: 10 agents: 6.
+	^ (self on: model) open
 ]
 
 { #category : 'scripts' }

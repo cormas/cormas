@@ -43,6 +43,19 @@ CMBlElement class >> for: anObject [
 		  yourself
 ]
 
+{ #category : 'drawing' }
+CMBlElement >> backgroundOfPov: aPointOfView in: aSpaceModel extent: anExtent [
+	"Answer the color or the image with which a point of view fills an element of the given extent"
+
+	aPointOfView isForImage ifFalse: [ ^ aPointOfView color ].
+
+	^ BlBackground image: (self
+			   crop:
+				   ((self formOfTile: aPointOfView tile in: aSpaceModel)
+					    scaledToSize: anExtent max ceiling asPoint)
+			   toCenter: anExtent)
+]
+
 { #category : 'geometry' }
 CMBlElement >> cellExtentOf: aCell [
 	"Answer the extent in pixels of the box around aCell"
@@ -54,6 +67,27 @@ CMBlElement >> cellExtentOf: aCell [
 CMBlElement >> cellSize [
 
 	^ self class cellSize
+]
+
+{ #category : 'drawing' }
+CMBlElement >> crop: aSquareForm toCenter: anExtent [
+
+	| origin |
+	origin := (aSquareForm extent - anExtent / 2) rounded.
+	^ aSquareForm copy: (origin extent: anExtent ceiling)
+]
+
+{ #category : 'drawing' }
+CMBlElement >> formOfTile: aTile in: aSpaceModel [
+	"The cells of a smaller grid are shown larger on screen, so they need a larger form"
+
+	| gridSize |
+	aSpaceModel ifNil: [ ^ aTile largeForm ].
+	gridSize := aSpaceModel dimensions max.
+	gridSize < 5 ifTrue: [ ^ aTile largeForm ].
+	gridSize < 10 ifTrue: [ ^ aTile mediumForm ].
+	gridSize < 15 ifTrue: [ ^ aTile smallForm ].
+	^ aTile verySmallForm
 ]
 
 { #category : 'geometry' }
