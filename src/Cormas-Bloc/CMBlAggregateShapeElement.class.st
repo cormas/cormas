@@ -5,7 +5,7 @@ I draw an aggregate as one shape, covering all its cells in their grid positions
 
 - Fill my shape with the color of the active point of view of my aggregate, or stay transparent when it has no color, so that the cells show through.
 - Draw a line around my shape, including around its holes, when that point of view has a border.
-- Ignore the tile, shape and size of that point of view.
+- Ignore the tile, shape and size of that point of view, and mouse events.
 
 ## Collaborators:
 
@@ -139,8 +139,10 @@ CMBlAggregateShapeElement >> refresh [
 
 { #category : 'initialization' }
 CMBlAggregateShapeElement >> setUpFor: anAggregate [
+	"Clicks and drags go to the cells and agents around me"
 
 	aggregate := anAggregate.
+	self preventMouseEvents.
 	self refresh
 ]
 

@@ -22,6 +22,14 @@ Class {
 }
 
 { #category : 'private' }
+CMBlSpaceElementTest >> aggregateOf: someCells pov: aPointOfView [
+
+	^ (model createAggregate: CMMockAggregate from: someCells)
+		  pov: aPointOfView;
+		  yourself
+]
+
+{ #category : 'private' }
 CMBlSpaceElementTest >> assertCell2x3OfGrid: aNeighbourhood hasCenter: aCenter andCell2x2HasCenter: anotherCenter [
 	"Paint only cell (row 2, column 3) white, and check where it appears on screen"
 
@@ -86,6 +94,20 @@ CMBlSpaceElementTest >> testAgentsAppearOnTheirCellInGridOfTriangles [
 ]
 
 { #category : 'tests' }
+CMBlSpaceElementTest >> testAgentsStayOnTopOfAggregates [
+
+	| element |
+	self gridWithNeighbourhood: 4.
+	self newCowOn: (model cellAt: 2 at: 3).
+	self aggregateOf: model cells pov: (CMPointOfView color: Color blue).
+
+	element := CMBlSpaceElement for: model.
+
+	self assert: (self hexColorIn: element at: 80 @ 48) equals: 'FF0000'.
+	self assert: (self hexColorIn: element at: 16 @ 16) equals: '0000FF'
+]
+
+{ #category : 'tests' }
 CMBlSpaceElementTest >> testAgentsWithoutACellAreNotShown [
 
 	| element |
@@ -95,6 +117,91 @@ CMBlSpaceElementTest >> testAgentsWithoutACellAreNotShown [
 	element := CMBlSpaceElement for: model.
 
 	self assert: (self hexColorIn: element at: 16 @ 16) equals: '000000'
+]
+
+{ #category : 'tests' }
+CMBlSpaceElementTest >> testAggregateCreatedLastIsOnTop [
+
+	| element |
+	self gridWithNeighbourhood: 4.
+	self aggregateOf: model cells pov: (CMPointOfView color: Color blue).
+	self
+		aggregateOf: { (model cellAt: 2 at: 2) }
+		pov: (CMPointOfView color: Color green).
+
+	element := CMBlSpaceElement for: model.
+
+	self
+		assert: (self hexColorIn: element at: 48 @ 48)
+		equals: Color green asHexString.
+	self assert: (self hexColorIn: element at: 16 @ 16) equals: '0000FF'
+]
+
+{ #category : 'tests' }
+CMBlSpaceElementTest >> testAggregateOfAggregatesIsDrawn [
+
+	| inner element |
+	self gridWithNeighbourhood: 4.
+	inner := self
+		         aggregateOf: { (model cellAt: 2 at: 2) }
+		         pov: CMPointOfView new.
+	self aggregateOf: { inner } pov: (CMPointOfView color: Color blue).
+
+	element := CMBlSpaceElement for: model.
+
+	self assert: (self hexColorIn: element at: 48 @ 48) equals: '0000FF'
+]
+
+{ #category : 'tests' }
+CMBlSpaceElementTest >> testAggregateOfAnyClassIsDrawn [
+
+	| element aggregate |
+	self gridWithNeighbourhood: 4.
+	aggregate := model
+		             createAggregate: CMSpatialEntityAggregate
+		             from: { (model cellAt: 2 at: 2) }.
+
+	[
+		CMSpatialEntityAggregate activePovSelector: #povId.
+		element := CMBlSpaceElement for: model.
+		self
+			assert: (self hexColorIn: element at: 48 @ 48)
+			equals: aggregate povId color asHexString ] ensure: [
+		CMSpatialEntityAggregate resetActivePovSelector ]
+]
+
+{ #category : 'tests' }
+CMBlSpaceElementTest >> testAggregateWithDefaultPovDrawsNothing [
+
+	| element |
+	self gridWithNeighbourhood: 4.
+	model
+		createAggregate: CMSpatialEntityAggregate
+		from: { (model cellAt: 2 at: 2) }.
+
+	element := CMBlSpaceElement for: model.
+
+	self
+		assert: ((self formOf: element) colorAt: 48 @ 48)
+		equals: Color black
+]
+
+{ #category : 'tests' }
+CMBlSpaceElementTest >> testAggregateWithoutAColorShowsItsCells [
+
+	| element form |
+	self gridWithNeighbourhood: 4.
+	self
+		aggregateOf: { (model cellAt: 2 at: 2) }
+		pov: (CMPointOfView new
+				 borderColor: Color blue;
+				 yourself).
+
+	element := CMBlSpaceElement for: model.
+	form := self formOf: element.
+
+	self assert: (form colorAt: 48 @ 48) equals: Color black.
+	self assert: (form colorAt: 48 @ 32) blue > 0.9
 ]
 
 { #category : 'tests' }
@@ -153,6 +260,37 @@ CMBlSpaceElementTest >> testExtentFitsTheGrid [
 	self
 		assert: (self formOf: (CMBlSpaceElement for: model)) extent
 		equals: 128 @ 96
+]
+
+{ #category : 'tests' }
+CMBlSpaceElementTest >> testOpaqueAggregateHidesItsCells [
+
+	| element |
+	self gridWithNeighbourhood: 4.
+	self
+		aggregateOf: { (model cellAt: 2 at: 2) }
+		pov: (CMPointOfView color: Color blue).
+
+	element := CMBlSpaceElement for: model.
+
+	self assert: (self hexColorIn: element at: 48 @ 48) equals: '0000FF'.
+	self assert: (self hexColorIn: element at: 16 @ 16) equals: '000000'
+]
+
+{ #category : 'tests' }
+CMBlSpaceElementTest >> testTranslucentAggregateTintsItsCells [
+	"Half blue over the black of a dead cell"
+
+	| element blue |
+	self gridWithNeighbourhood: 4.
+	self
+		aggregateOf: { (model cellAt: 2 at: 2) }
+		pov: (CMPointOfView color: (Color blue alpha: 0.5)).
+
+	element := CMBlSpaceElement for: model.
+	blue := ((self formOf: element) colorAt: 48 @ 48) blue.
+
+	self assert: (blue closeTo: 0.5 precision: 0.02)
 ]
 
 { #category : 'tests' }

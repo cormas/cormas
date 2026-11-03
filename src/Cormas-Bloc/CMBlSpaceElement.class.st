@@ -1,15 +1,17 @@
 "
-I draw the whole space of a Cormas model: its grid of cells, and its agents on top.
+I draw the whole space of a Cormas model: its grid of cells, its aggregates on top of the cells, and its agents on top of everything.
 
 ## Responsibility:
 
 - Show all the cells of my model in their grid positions.
+- Show the aggregates that have something to draw, the ones with the highest `id` on top.
 - Show the agents that are on a cell, at their position in that cell.
 - Follow the model when `update` is sent: new and removed agents, moved agents and changed points of view.
 
 ## Collaborators:
 
-- `CMModel`: answers the cells and the agents.
+- `CMModel`: answers the cells, the aggregates and the agents.
+- `CMBlAggregateShapeElement`: draws each aggregate.
 - `CMBlAgentElement`: draws each agent.
 
 ## Public API and Key Messages
@@ -24,6 +26,7 @@ I draw the whole space of a Cormas model: its grid of cells, and its agents on t
 ## Internal Representation
 
 - `cormasModel`: the model I draw.
+- `aggregateElements`: the elements of the aggregates, recreated by each update.
 - `agentElements`: the elements of the agents, recreated by each update.
 
 ## Navigation and export
@@ -47,7 +50,8 @@ Class {
 		'offset',
 		'followsParent',
 		'draggedElement',
-		'dragOrigin'
+		'dragOrigin',
+		'aggregateElements'
 	],
 	#category : 'Cormas-Bloc',
 	#package : 'Cormas-Bloc'
@@ -160,6 +164,7 @@ CMBlSpaceElement >> handleDragStart: anEvent [
 CMBlSpaceElement >> initialize [
 
 	super initialize.
+	aggregateElements := #(  ).
 	agentElements := #(  ).
 	zoom := 1.
 	offset := 0 @ 0.
@@ -208,10 +213,14 @@ CMBlSpaceElement >> panBy: aPoint [
 
 { #category : 'updating' }
 CMBlSpaceElement >> refresh [
-	"Agents are added after the cells so that they appear on top of them"
+	"Aggregates are added after the cells and agents after the aggregates, so that each appears on top of the previous ones"
 
+	self removeChildren: aggregateElements.
 	self removeChildren: agentElements.
 	super refresh.
+	aggregateElements := self visibleAggregates collect: [ :each |
+		                     CMBlAggregateShapeElement for: each ].
+	self addChildren: aggregateElements.
 	agentElements := (cormasModel agents select: [ :each |
 		                  each isSituated ]) collect: [ :each |
 		                 self newElementForAgent: each ].
@@ -234,6 +243,16 @@ CMBlSpaceElement >> setUpFor: aCormasModel [
 
 	cormasModel := aCormasModel.
 	super setUpFor: aCormasModel
+]
+
+{ #category : 'updating' }
+CMBlSpaceElement >> visibleAggregates [
+	"Answer the aggregates that have something to draw, the ones to appear on top last"
+
+	^ ((cormasModel allEntitiesOfClass: CMSpatialEntityAggregate)
+		   select: [ :each |
+		   each activePov hasColor or: [ each activePov hasBorder ] ])
+		  sorted: [ :a :b | a id < b id ]
 ]
 
 { #category : 'navigation' }

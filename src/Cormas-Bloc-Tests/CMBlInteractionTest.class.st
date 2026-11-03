@@ -40,6 +40,15 @@ CMBlInteractionTest >> cellElementOf: aCell [
 	^ element children detect: [ :each | each entity == aCell ]
 ]
 
+{ #category : 'running' }
+CMBlInteractionTest >> coverGridWithAnAggregate [
+
+	(model createAggregate: CMMockAggregate from: model cells) pov:
+		(CMPointOfView color: Color blue).
+	element update.
+	space settle
+]
+
 { #category : 'private' }
 CMBlInteractionTest >> drag: anElement by: aPoint [
 
@@ -78,6 +87,19 @@ CMBlInteractionTest >> testDraggingACellPans [
 
 	| before |
 	self openGrid: 4.
+	before := element localPointToGlobal: 0 @ 0.
+
+	self drag: (self cellElementOf: (model cellAt: 1 at: 1)) by: 20 @ 0.
+
+	self assert: (element localPointToGlobal: 0 @ 0) x > before x
+]
+
+{ #category : 'tests' }
+CMBlInteractionTest >> testDraggingACellUnderAnAggregatePans [
+
+	| before |
+	self openGrid: 4.
+	self coverGridWithAnAggregate.
 	before := element localPointToGlobal: 0 @ 0.
 
 	self drag: (self cellElementOf: (model cellAt: 1 at: 1)) by: 20 @ 0.
@@ -179,6 +201,20 @@ CMBlInteractionTest >> testLeftClickOnCellCallsTheBlock [
 ]
 
 { #category : 'tests' }
+CMBlInteractionTest >> testLeftClickReachesACellUnderAnAggregate [
+
+	| clicked |
+	self openGrid: 4.
+	self coverGridWithAnAggregate.
+	element whenLeftClickOnCellDo: [ :cell | clicked := cell ].
+
+	(self cellElementOf: (model cellAt: 1 at: 3)) eventSimulator click.
+	space settle.
+
+	self assert: clicked equals: (model cellAt: 1 at: 3)
+]
+
+{ #category : 'tests' }
 CMBlInteractionTest >> testLeftClickUsesTheLastBlock [
 
 	| first second |
@@ -218,4 +254,33 @@ CMBlInteractionTest >> testRightClickOnCellCallsTheBlock [
 	space settle.
 
 	self assert: clicked equals: (model cellAt: 1 at: 3)
+]
+
+{ #category : 'tests' }
+CMBlInteractionTest >> testRightClickReachesACellUnderAnAggregate [
+
+	| clicked |
+	self openGrid: 4.
+	self coverGridWithAnAggregate.
+	element whenRightClickOnEntityDo: [ :entity | clicked := entity ].
+
+	(self cellElementOf: (model cellAt: 1 at: 3)) eventSimulator
+		secondaryClick.
+	space settle.
+
+	self assert: clicked equals: (model cellAt: 1 at: 3)
+]
+
+{ #category : 'tests' }
+CMBlInteractionTest >> testRightClickReachesAnAgentAboveAnAggregate [
+
+	| clicked |
+	self openGrid: 4.
+	self coverGridWithAnAggregate.
+	element whenRightClickOnEntityDo: [ :entity | clicked := entity ].
+
+	self agentElement eventSimulator secondaryClick.
+	space settle.
+
+	self assert: clicked equals: cow
 ]
