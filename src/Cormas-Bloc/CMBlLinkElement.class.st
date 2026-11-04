@@ -139,9 +139,10 @@ CMBlLinkElement >> containsGlobalPoint: aPoint [
 
 { #category : 'geometry testing' }
 CMBlLinkElement >> containsPoint: aPoint [
-	"Only the line and the arrowhead are hit, and not my bounding box. Ends at the same position draw nothing to hit"
+	"Only the line and the arrowhead are hit, and not my bounding box. Ends at the same position draw nothing to hit, and neither does a transparent line"
 
 	(startPoint isNil or: [ startPoint = endPoint ]) ifTrue: [ ^ false ].
+	self border paint isTransparent ifTrue: [ ^ false ].
 	^ (aPoint
 		   onLineFrom: startPoint
 		   to: endPoint

@@ -280,6 +280,23 @@ CMBlLinkElementTest >> testIgnoresShapeAndTile [
 	self assert: (self isTransparentIn: parent at: 64 @ 51)
 ]
 
+{ #category : 'tests - point of view' }
+CMBlLinkElementTest >> testInvisibleLinkIsNotHit [
+
+	| road element |
+	self gridWithNeighbourhood: 4.
+	road := model
+		        newEntity: CMMockRoad
+		        from: (model cellAt: 2 at: 2)
+		        to: (model cellAt: 2 at: 3).
+	road pov: road povInvisible.
+	element := CMBlLinkElement for: road.
+	self parentOf: element.
+
+	self deny:
+		(element containsPoint: element startPoint + element endPoint / 2)
+]
+
 { #category : 'tests' }
 CMBlLinkElementTest >> testLineBetweenCellCentersInGridOfFlatTopHexagons [
 

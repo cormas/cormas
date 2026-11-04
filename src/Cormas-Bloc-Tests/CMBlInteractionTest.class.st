@@ -596,6 +596,20 @@ CMBlInteractionTest >> testRightClickOnAnArrowheadCallsTheBlockWithTheLink [
 	self assert: (self entityRightClickedAt: 94 @ 40) equals: road
 ]
 
+{ #category : 'tests - links' }
+CMBlInteractionTest >> testRightClickOnAnInvisibleLineReachesTheCell [
+
+	| road |
+	self openGrid: 4.
+	road := self showDiagonalRoad.
+	road pov: road povInvisible.
+	(self lineElementOf: road) refresh.
+
+	self
+		assert: (self entityRightClickedAt: 72 @ 40)
+		equals: (model cellAt: 2 at: 3)
+]
+
 { #category : 'tests' }
 CMBlInteractionTest >> testRightClickOnCellCallsTheBlock [
 
