@@ -38,6 +38,12 @@ CMBlLinkElementTest >> centerOfVertices: aCollectionOfPoints [
 ]
 
 { #category : 'private' }
+CMBlLinkElementTest >> colorIn: anElement at: aPoint [
+
+	^ (self formOf: anElement) colorAt: aPoint rounded
+]
+
+{ #category : 'private' }
 CMBlLinkElementTest >> elementOfRoadFrom: anEntity to: anotherEntity [
 
 	^ CMBlLinkElement for:
@@ -51,6 +57,44 @@ CMBlLinkElementTest >> parentOf: anElement [
 		  extent: 300 @ 300;
 		  addChild: anElement;
 		  yourself
+]
+
+{ #category : 'private' }
+CMBlLinkElementTest >> parentOfHorizontalRoadWithPov: aPointOfView [
+	"The line goes from 48@48 to 80@48"
+
+	self gridWithNeighbourhood: 4.
+	^ self parentOf: (CMBlLinkElement for: ((model
+				     newEntity: CMMockRoad
+				     from: (model cellAt: 2 at: 2)
+				     to: (model cellAt: 2 at: 3))
+				    pov: aPointOfView;
+				    yourself))
+]
+
+{ #category : 'tests - point of view' }
+CMBlLinkElementTest >> testColorWithoutASizeDrawsAThinLineOfThatColor [
+
+	| parent color |
+	parent := self parentOfHorizontalRoadWithPov:
+		          (CMPointOfView color: Color red).
+	color := self colorIn: parent at: 64 @ 48.
+
+	self assert: color alpha > 0.
+	self assert: color red > color green.
+	self assert: (self isTransparentIn: parent at: 64 @ 51)
+]
+
+{ #category : 'tests - point of view' }
+CMBlLinkElementTest >> testDefaultPovDrawsAThinDarkLine [
+
+	| parent color |
+	parent := self parentOfHorizontalRoadWithPov: CMPointOfView new.
+	color := self colorIn: parent at: 64 @ 48.
+
+	self assert: color alpha > 0.
+	self assert: color brightness < 0.3.
+	self assert: (self isTransparentIn: parent at: 64 @ 51)
 ]
 
 { #category : 'tests' }
@@ -107,6 +151,32 @@ CMBlLinkElementTest >> testExampleBetweenTwoCellsAnswersAnElementWithALine [
 
 	self assert:
 		CMBlLinkElement exampleBetweenTwoCells startPoint isPoint
+]
+
+{ #category : 'tests - point of view' }
+CMBlLinkElementTest >> testIgnoresBorder [
+
+	| parent |
+	parent := self parentOfHorizontalRoadWithPov: (CMPointOfView new
+			           color: Color red;
+			           borderColor: Color green;
+			           borderWidth: 0.25;
+			           yourself).
+
+	self assert: (self colorIn: parent at: 64 @ 48) red
+		> (self colorIn: parent at: 64 @ 48) green.
+	self assert: (self isTransparentIn: parent at: 64 @ 51)
+]
+
+{ #category : 'tests - point of view' }
+CMBlLinkElementTest >> testIgnoresShapeAndTile [
+
+	| parent |
+	parent := self parentOfHorizontalRoadWithPov:
+		          (CMPointOfView shape: #star).
+
+	self deny: (self isTransparentIn: parent at: 64 @ 48).
+	self assert: (self isTransparentIn: parent at: 64 @ 51)
 ]
 
 { #category : 'tests' }
@@ -183,6 +253,43 @@ CMBlLinkElementTest >> testLineEndsAtTheExactPositionOfAnAgent [
 	self assert: element startPoint equals: 40 @ 56
 ]
 
+{ #category : 'tests - point of view' }
+CMBlLinkElementTest >> testPovInvisibleOfALinkDrawsNothingVisible [
+
+	| road parent |
+	self gridWithNeighbourhood: 4.
+	road := model
+		        newEntity: CMMockRoad
+		        from: (model cellAt: 2 at: 2)
+		        to: (model cellAt: 2 at: 3).
+
+	road pov: road povInvisible.
+	parent := self parentOf: (CMBlLinkElement for: road).
+
+	self assert: (self isTransparentIn: parent at: 64 @ 48)
+]
+
+{ #category : 'tests - point of view' }
+CMBlLinkElementTest >> testRefreshFollowsAChangeOfPov [
+
+	| road element parent |
+	self gridWithNeighbourhood: 4.
+	road := model
+		        newEntity: CMMockRoad
+		        from: (model cellAt: 2 at: 2)
+		        to: (model cellAt: 2 at: 3).
+	element := CMBlLinkElement for: road.
+	parent := self parentOf: element.
+	self assert: (self isTransparentIn: parent at: 64 @ 51).
+
+	road pov: (CMPointOfView color: Color red size: 0.25).
+	element refresh.
+
+	self
+		assert: (self hexColorIn: parent at: 64 @ 51)
+		equals: Color red asHexString
+]
+
 { #category : 'tests' }
 CMBlLinkElementTest >> testRefreshFollowsAnAgentThatMoves [
 
@@ -233,6 +340,43 @@ CMBlLinkElementTest >> testRefreshFollowsAnEndLeavingAndComingBackToTheGrid [
 	cow moveTo: (model cellAt: 2 at: 2).
 	element refresh.
 	self deny: (self isTransparentIn: parent at: 64 @ 48)
+]
+
+{ #category : 'tests - point of view' }
+CMBlLinkElementTest >> testSizeIsTheThicknessAsAFractionOfTheCell [
+
+	| parent |
+	parent := self parentOfHorizontalRoadWithPov:
+		          (CMPointOfView color: Color red size: 0.25).
+
+	self
+		assert: (self hexColorIn: parent at: 64 @ 48)
+		equals: Color red asHexString.
+	self
+		assert: (self hexColorIn: parent at: 64 @ 51)
+		equals: Color red asHexString.
+	self assert: (self isTransparentIn: parent at: 64 @ 54)
+]
+
+{ #category : 'tests - point of view' }
+CMBlLinkElementTest >> testSizeWithoutAColorDrawsAThickDarkLine [
+
+	| parent |
+	parent := self parentOfHorizontalRoadWithPov:
+		          (CMPointOfView size: 0.25).
+
+	self assert: (self colorIn: parent at: 64 @ 51) brightness < 0.3.
+	self assert: (self colorIn: parent at: 64 @ 51) alpha > 0.9
+]
+
+{ #category : 'tests - point of view' }
+CMBlLinkElementTest >> testTransparentColorDrawsNothingVisible [
+
+	| parent |
+	parent := self parentOfHorizontalRoadWithPov:
+		          (CMPointOfView color: Color transparent size: 0.25).
+
+	self assert: (self isTransparentIn: parent at: 64 @ 48)
 ]
 
 { #category : 'tests' }

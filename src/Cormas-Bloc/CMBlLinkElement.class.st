@@ -5,12 +5,14 @@ I draw a link as a straight line between its two ends, in their grid positions. 
 
 - Draw a line from the position of the first end of my link to the position of the second one.
 - Draw nothing while one of the ends is not on the grid, because the ends are the only source of my coordinates.
+- Use the color and the size of the active point of view of my link, as a fraction of the cell like the size of an agent. A thin dark line when it specifies neither. Ignore its shape, tile and border.
 - Ignore mouse events, so that clicks and drags go to what is around me.
 
 ## Collaborators:
 
 - `CMLink`: answers its two ends.
 - `CMEntity`: each end tells whether it is on the grid, and where a line to it ends.
+- `CMPointOfView`: tells which color and size were specified.
 
 ## Public API and Key Messages
 
@@ -117,6 +119,8 @@ CMBlLinkElement >> positionOfLocatedEntity: anEntity [
 { #category : 'updating' }
 CMBlLinkElement >> refresh [
 
+	| pov |
+	pov := link activePov.
 	(link ends allSatisfy: [ :each | each isOnGrid ])
 		ifTrue: [
 				startPoint := link from linkEndIn: self.
@@ -127,7 +131,13 @@ CMBlLinkElement >> refresh [
 				endPoint := nil.
 				self extent: 0 @ 0 ].
 	self
-		border: (BlBorder paint: Color black width: 1);
+		border: (BlBorder
+				 paint: (pov hasColor
+						  ifTrue: [ pov color ]
+						  ifFalse: [ Color black ])
+				 width: (pov hasSize
+						  ifTrue: [ pov size * self cellSize ]
+						  ifFalse: [ 1 ]));
 		invalidate
 ]
 
