@@ -171,6 +171,24 @@ CMBlSpaceElementTest >> testAggregateOfAnyClassIsDrawn [
 ]
 
 { #category : 'tests' }
+CMBlSpaceElementTest >> testAggregateReleasedByAMergeIsNotDrawn [
+
+	| kept merged element |
+	self gridWithNeighbourhood: 4.
+	kept := self
+		        aggregateOf: { (model cellAt: 1 at: 1) }
+		        pov: (CMPointOfView color: Color blue).
+	merged := self
+		          aggregateOf: { (model cellAt: 2 at: 2) }
+		          pov: (CMPointOfView color: Color green).
+	kept mergeWith: merged.
+
+	element := CMBlSpaceElement for: model.
+
+	self assert: (self hexColorIn: element at: 48 @ 48) equals: '0000FF'
+]
+
+{ #category : 'tests' }
 CMBlSpaceElementTest >> testAggregateWithDefaultPovDrawsNothing [
 
 	| element |
@@ -308,6 +326,25 @@ CMBlSpaceElementTest >> testUpdateDoesNotDrawAnAggregateTwice [
 	blue := ((self formOf: element) colorAt: 48 @ 48) blue.
 
 	self assert: (blue closeTo: 0.5 precision: 0.02)
+]
+
+{ #category : 'tests' }
+CMBlSpaceElementTest >> testUpdateFollowsAMerge [
+
+	| kept merged element |
+	self gridWithNeighbourhood: 4.
+	kept := self
+		        aggregateOf: { (model cellAt: 1 at: 1) }
+		        pov: (CMPointOfView color: Color blue).
+	merged := self
+		          aggregateOf: { (model cellAt: 2 at: 2) }
+		          pov: (CMPointOfView color: Color green).
+	element := CMBlSpaceElement for: model.
+
+	kept mergeWith: merged.
+	element update.
+
+	self assert: (self hexColorIn: element at: 48 @ 48) equals: '0000FF'
 ]
 
 { #category : 'tests' }

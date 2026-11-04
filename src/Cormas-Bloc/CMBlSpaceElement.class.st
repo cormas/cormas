@@ -247,11 +247,12 @@ CMBlSpaceElement >> setUpFor: aCormasModel [
 
 { #category : 'updating' }
 CMBlSpaceElement >> visibleAggregates [
-	"Answer the aggregates that have something to draw, the ones to appear on top last"
+	"Answer the aggregates that have something to draw, the ones to appear on top last. Aggregates released by a merge stay dead in the model until the simulation step ends"
 
 	^ ((cormasModel allEntitiesOfClass: CMSpatialEntityAggregate)
 		   select: [ :each |
-		   each activePov hasColor or: [ each activePov hasBorder ] ])
+				   each isDead not and: [
+					   each activePov hasColor or: [ each activePov hasBorder ] ] ])
 		  sorted: [ :a :b | a id < b id ]
 ]
 
