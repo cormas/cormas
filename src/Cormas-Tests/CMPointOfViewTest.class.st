@@ -62,11 +62,35 @@ CMPointOfViewTest >> testHasColor [
 ]
 
 { #category : 'tests' }
+CMPointOfViewTest >> testHasSize [
+
+	self deny: CMPointOfView new hasSize.
+	self deny: (CMPointOfView color: Color red) hasSize.
+	self deny: (CMPointOfView shape: #star) hasSize.
+	self assert: (CMPointOfView size: 0.5) hasSize.
+	self assert: (CMPointOfView color: Color red size: 0.5) hasSize
+]
+
+{ #category : 'tests' }
+CMPointOfViewTest >> testSizeHasADefaultWhenNotSpecified [
+
+	self assert: CMPointOfView new size equals: 0.3.
+	self assert: (CMPointOfView color: Color red) size equals: 0.3
+]
+
+{ #category : 'tests' }
 CMPointOfViewTest >> testSpecifiedBorderColorIsAnswered [
 
 	self
 		assert: (CMPointOfView new borderColor: Color red) borderColor
 		equals: Color red
+]
+
+{ #category : 'tests' }
+CMPointOfViewTest >> testSpecifiedSizeIsAnswered [
+
+	self assert: (CMPointOfView size: 0.5) size equals: 0.5.
+	self assert: (CMPointOfView size: [ 0.5 ]) size equals: 0.5
 ]
 
 { #category : 'tests' }

@@ -140,12 +140,17 @@ CMPointOfView >> hasColor [
 	^ color isNotNil
 ]
 
+{ #category : 'testing' }
+CMPointOfView >> hasSize [
+
+	^ size isNotNil
+]
+
 { #category : 'initialization' }
 CMPointOfView >> initialize [
 
 	super initialize.
 
-	size := 0.3.
 	shape := #circle
 ]
 
@@ -187,7 +192,7 @@ CMPointOfView >> shape: aSymbol [
 { #category : 'accessing' }
 CMPointOfView >> size [
 
-	^ size value
+	^ size value ifNil: [ 0.3 ]
 ]
 
 { #category : 'accessing' }
