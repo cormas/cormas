@@ -301,6 +301,12 @@ CMEntity >> isDead: aBoolean [
 ]
 
 { #category : 'testing' }
+CMEntity >> isLink [
+
+	^ false
+]
+
+{ #category : 'testing' }
 CMEntity >> isOnGrid [
 
 	<api>

@@ -621,6 +621,25 @@ CMModel >> centralCell [
 	^ self spaceModel centralCell
 ]
 
+{ #category : 'instance creation - agents & objects' }
+CMModel >> checkCanLink: anEntity to: anotherEntity [
+	"Signal an error unless a link can connect these two entities"
+
+	anEntity == anotherEntity ifTrue: [
+		self error: 'A link must connect two different entities' ].
+	{
+		anEntity.
+		anotherEntity } do: [ :each |
+			((self entitiesOfClass: each class) identityIncludes: each)
+				ifFalse: [
+						self error:
+							each printString
+							, ' cannot be linked because it is not in this model' ].
+			each isLink ifTrue: [
+					self error:
+						each printString , ' cannot be linked because it is a link' ] ]
+]
+
 { #category : 'as yet unclassified' }
 CMModel >> choosePositionForAgent: anAgent inCell: aCell [ 
 
@@ -1100,6 +1119,34 @@ Use this method only for instances of subclasses of #CMEntity. Regular Pharo obj
 	self setDefaultInstanceSideParameterValuesFor: anEntity.
 	
 	^ anEntity
+]
+
+{ #category : 'instance creation - agents & objects' }
+CMModel >> newEntity: aLinkClass from: anEntity to: anotherEntity [
+
+	<api>
+	<argument: #aLinkClass type: #Class description:
+	'The class of the link to create. Must be a subclass of #CMLink'>
+	<argument: #anEntity type: #CMEntity description:
+	'The entity at the start of the link'>
+	<argument: #anotherEntity type: #CMEntity description:
+	'The entity at the end of the link'>
+	<returnType: #CMLink description:
+	'A newly created link connecting the two entities'>
+	<doc:
+	'Create and answer a new link of the given class between two entities. This is the only way to create a link.
+
+The ends can be of any type except a link: cells, agents or aggregates. They can be dead or off the grid, but they must exist in this model and be two different entities. Signal an error otherwise.
+
+The same two entities can be linked several times.'>
+	<example: 'road := self newEntity: Road from: cellA to: cellB'>
+	<example:
+	'self cormasModel newEntity: Trust from: self to: otherFarmer'>
+	<seeAlso: #( newEntity: newEntity:locatedAt: )>
+	self checkCanLink: anEntity to: anotherEntity.
+	^ (self newEntity: aLinkClass)
+		  setFrom: anEntity to: anotherEntity;
+		  yourself
 ]
 
 { #category : 'instance creation - agents & objects' }
