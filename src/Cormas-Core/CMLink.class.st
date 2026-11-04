@@ -129,9 +129,23 @@ An undirected link counts as going both ways.'>
 ]
 
 { #category : 'testing' }
+CMLink >> isIncomingTo: anEntity [
+	"An undirected link goes both ways, so it arrives at both of its ends"
+
+	^ self isDirected not or: [ to == anEntity ]
+]
+
+{ #category : 'testing' }
 CMLink >> isLink [
 
 	^ true
+]
+
+{ #category : 'testing' }
+CMLink >> isOutgoingFrom: anEntity [
+	"An undirected link goes both ways, so it leaves both of its ends"
+
+	^ self isDirected not or: [ from == anEntity ]
 ]
 
 { #category : 'accessing' }

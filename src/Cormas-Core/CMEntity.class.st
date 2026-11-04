@@ -275,6 +275,38 @@ CMEntity >> id: aNumber [
 	id := aNumber
 ]
 
+{ #category : 'links - direct links' }
+CMEntity >> incomingLinks [
+
+	<api>
+	<returnType: #OrderedCollection description:
+	'The links that lead to the entity'>
+	<doc:
+	'Answer a new collection with the links that lead to this entity, of every class. These are the directed links ending here and all the undirected links, which go both ways.'>
+	<example: 'self incomingLinks'>
+	<example: 'self incomingLinks isEmpty'>
+	<seeAlso:
+	#( incomingLinksOfClass: outgoingLinks links previousEntities )>
+	^ self links select: [ :each | each isIncomingTo: self ]
+]
+
+{ #category : 'links - direct links' }
+CMEntity >> incomingLinksOfClass: aLinkClass [
+
+	<api>
+	<argument: #aLinkClass type: #Class description:
+	'The class of links to answer. Instances of its subclasses are included'>
+	<returnType: #OrderedCollection description:
+	'The links of the given class that lead to the entity'>
+	<doc:
+	'Answer a new collection with the links of the given class, or of its subclasses, that lead to this entity. These are the directed links ending here and all the undirected links, which go both ways.'>
+	<example: 'self incomingLinksOfClass: River'>
+	<example: '(self incomingLinksOfClass: River) isEmpty'>
+	<seeAlso:
+	#( incomingLinks outgoingLinksOfClass: linksOfClass: previousEntitiesLinkedBy: )>
+	^ self incomingLinks select: [ :each | each isKindOf: aLinkClass ]
+]
+
 { #category : 'initialization' }
 CMEntity >> initialize [
 
@@ -351,6 +383,65 @@ CMEntity >> isSpatialEntityElement [
 CMEntity >> isSpatialEntitySet [
 	
 	^false
+]
+
+{ #category : 'links - direct links' }
+CMEntity >> links [
+
+	<api>
+	<returnType: #OrderedCollection description:
+	'All the links of the entity, in either direction'>
+	<doc:
+	'Answer a new collection with all the links that have this entity at one of their ends, of every class and in either direction.'>
+	<example: 'self links'>
+	<example: 'self links size'>
+	<seeAlso: #( linksOfClass: outgoingLinks incomingLinks allLinks )>
+	^ links ifNil: [ OrderedCollection new ] ifNotNil: [ links copy ]
+]
+
+{ #category : 'links - direct links' }
+CMEntity >> linksOfClass: aLinkClass [
+
+	<api>
+	<argument: #aLinkClass type: #Class description:
+	'The class of links to answer. Instances of its subclasses are included'>
+	<returnType: #OrderedCollection description:
+	'The links of the entity of the given class, in either direction'>
+	<doc:
+	'Answer a new collection with the links of the given class, or of its subclasses, that have this entity at one of their ends, in either direction.'>
+	<example: 'self linksOfClass: Road'>
+	<seeAlso: #( links outgoingLinksOfClass: incomingLinksOfClass:
+	   allLinksOfClass: )>
+	^ self links select: [ :each | each isKindOf: aLinkClass ]
+]
+
+{ #category : 'links - direct links' }
+CMEntity >> outgoingLinks [
+
+	<api>
+	<returnType: #OrderedCollection description:
+	'The links that lead away from the entity'>
+	<doc:
+	'Answer a new collection with the links that lead away from this entity, of every class. These are the directed links starting here and all the undirected links, which go both ways.'>
+	<example: 'self outgoingLinks'>
+	<seeAlso: #( outgoingLinksOfClass: incomingLinks links nextEntities )>
+	^ self links select: [ :each | each isOutgoingFrom: self ]
+]
+
+{ #category : 'links - direct links' }
+CMEntity >> outgoingLinksOfClass: aLinkClass [
+
+	<api>
+	<argument: #aLinkClass type: #Class description:
+	'The class of links to answer. Instances of its subclasses are included'>
+	<returnType: #OrderedCollection description:
+	'The links of the given class that lead away from the entity'>
+	<doc:
+	'Answer a new collection with the links of the given class, or of its subclasses, that lead away from this entity. These are the directed links starting here and all the undirected links, which go both ways.'>
+	<example: 'self outgoingLinksOfClass: River'>
+	<seeAlso:
+	#( outgoingLinks incomingLinksOfClass: linksOfClass: nextEntitiesLinkedBy: )>
+	^ self outgoingLinks select: [ :each | each isKindOf: aLinkClass ]
 ]
 
 { #category : 'accessing' }

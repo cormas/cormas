@@ -21,6 +21,23 @@ CMLinkTest >> roadsOfModel [
 	^ model entitiesOfClass: CMMockRoad
 ]
 
+{ #category : 'tests - direct links' }
+CMLinkTest >> testChangingTheAnswerOfAQueryDoesNotChangeTheLinks [
+
+	| cell road |
+	cell := model cellAt: 1 at: 1.
+	road := model
+		        newEntity: CMMockRoad
+		        from: cell
+		        to: (model cellAt: 1 at: 2).
+
+	cell links removeAll.
+	cell outgoingLinks removeAll.
+	(cell linksOfClass: CMMockRoad) removeAll.
+
+	self assert: cell links asArray equals: { road }
+]
+
 { #category : 'tests - ends' }
 CMLinkTest >> testChangingTheAnswerOfEndsDoesNotChangeTheLink [
 
@@ -88,6 +105,39 @@ CMLinkTest >> testCreatingANewGridRemovesLinksToTheOldCells [
 	self assert: self roadsOfModel asArray equals: { agentRoad }
 ]
 
+{ #category : 'tests - direct links' }
+CMLinkTest >> testDeadAndOffGridEndsStillHaveTheirLinks [
+
+	| dead offGrid cell road otherRoad |
+	dead := self newCow.
+	offGrid := model newEntity: CMMockGoat.
+	cell := model cellAt: 2 at: 2.
+	road := model newEntity: CMMockRoad from: dead to: cell.
+	otherRoad := model newEntity: CMMockRoad from: offGrid to: cell.
+
+	dead isDead: true.
+
+	self assert: dead links asArray equals: { road }.
+	self assert: offGrid links asArray equals: { otherRoad }.
+	self assert: cell links asArray equals: {
+			road.
+			otherRoad }
+]
+
+{ #category : 'tests - direct links' }
+CMLinkTest >> testDeletedLinkLeavesBothEnds [
+
+	| cellA cellB road |
+	cellA := model cellAt: 1 at: 1.
+	cellB := model cellAt: 1 at: 2.
+	road := model newEntity: CMMockRoad from: cellA to: cellB.
+
+	road delete.
+
+	self assertEmpty: cellA links.
+	self assertEmpty: cellB links
+]
+
 { #category : 'tests - lifecycle' }
 CMLinkTest >> testDeletingALinkDoesNotAffectItsEnds [
 
@@ -132,6 +182,57 @@ CMLinkTest >> testDeletingALinkTwiceIsHarmless [
 	road delete.
 
 	self assertEmpty: self roadsOfModel
+]
+
+{ #category : 'tests - direct links' }
+CMLinkTest >> testDirectedAndUndirectedLinksCanBeMixed [
+
+	| cell other road friendship |
+	cell := model cellAt: 1 at: 1.
+	other := model cellAt: 1 at: 2.
+
+	road := model newEntity: CMMockRoad from: other to: cell.
+	friendship := model newEntity: CMMockFriendship from: cell to: other.
+
+	self assert: cell links asArray equals: {
+			road.
+			friendship }.
+	self assert: cell outgoingLinks asArray equals: { friendship }.
+	self assert: cell incomingLinks asArray equals: {
+			road.
+			friendship }
+]
+
+{ #category : 'tests - direct links' }
+CMLinkTest >> testDirectedLinkIsOutgoingFromItsStartAndIncomingToItsEnd [
+
+	| cellA cellB road |
+	cellA := model cellAt: 1 at: 1.
+	cellB := model cellAt: 1 at: 2.
+
+	road := model newEntity: CMMockRoad from: cellA to: cellB.
+
+	self assert: cellA links asArray equals: { road }.
+	self assert: cellB links asArray equals: { road }.
+	self assert: cellA outgoingLinks asArray equals: { road }.
+	self assertEmpty: cellA incomingLinks.
+	self assert: cellB incomingLinks asArray equals: { road }.
+	self assertEmpty: cellB outgoingLinks
+]
+
+{ #category : 'tests - direct links' }
+CMLinkTest >> testDirectionIsAskedEachTime [
+
+	| cellA cellB highway |
+	cellA := model cellAt: 1 at: 1.
+	cellB := model cellAt: 1 at: 2.
+	highway := model newEntity: CMMockHighway from: cellA to: cellB.
+	self assertEmpty: cellB outgoingLinks.
+
+	highway isOneWay: false.
+
+	self assert: cellB outgoingLinks asArray equals: { highway }.
+	self assert: cellA incomingLinks asArray equals: { highway }
 ]
 
 { #category : 'tests - creating' }
@@ -247,6 +348,17 @@ CMLinkTest >> testEndsCannotBeTheSameEntity [
 		raise: Error.
 
 	self assertEmpty: (model entitiesOfClass: CMMockRoad)
+]
+
+{ #category : 'tests - direct links' }
+CMLinkTest >> testEntityWithoutLinksAnswersEmptyCollections [
+
+	| cell |
+	cell := model cellAt: 1 at: 1.
+
+	self assertEmpty: cell links.
+	self assertEmpty: cell outgoingLinks.
+	self assertEmpty: cell incomingLinks
 ]
 
 { #category : 'tests - ends' }
@@ -396,6 +508,42 @@ CMLinkTest >> testLinkSurvivesAnEndLeavingTheGrid [
 	self assert: self roadsOfModel asArray equals: { road }
 ]
 
+{ #category : 'tests - direct links' }
+CMLinkTest >> testLinksCanBeDeletedWhileLoopingOverAQuery [
+
+	| cell |
+	cell := model cellAt: 1 at: 1.
+	model newEntity: CMMockRoad from: cell to: (model cellAt: 1 at: 2).
+	model newEntity: CMMockRoad from: cell to: (model cellAt: 2 at: 1).
+	model newEntity: CMMockRoad from: cell to: (model cellAt: 2 at: 2).
+
+	cell links do: [ :each | each delete ].
+
+	self assertEmpty: cell links.
+	self assertEmpty: (model entitiesOfClass: CMMockRoad)
+]
+
+{ #category : 'tests - direct links' }
+CMLinkTest >> testLinksOfClassFilterByClassIncludingSubclasses [
+
+	| cell other road highway friendship |
+	cell := model cellAt: 1 at: 1.
+	other := model cellAt: 1 at: 2.
+	road := model newEntity: CMMockRoad from: cell to: other.
+	highway := model newEntity: CMMockHighway from: cell to: other.
+	friendship := model newEntity: CMMockFriendship from: cell to: other.
+
+	self assert: (cell linksOfClass: CMMockRoad) asArray equals: {
+			road.
+			highway }.
+	self
+		assert: (cell linksOfClass: CMMockHighway) asArray
+		equals: { highway }.
+	self
+		assert: (cell linksOfClass: CMMockFriendship) asArray
+		equals: { friendship }
+]
+
 { #category : 'tests - ends' }
 CMLinkTest >> testOtherEndOfAnEntityThatIsNotAnEndIsAnError [
 
@@ -421,6 +569,30 @@ CMLinkTest >> testOtherEndOfAnswersTheOtherEnd [
 
 	self assert: (road otherEndOf: cellA) identicalTo: cellB.
 	self assert: (road otherEndOf: cellB) identicalTo: cellA
+]
+
+{ #category : 'tests - direct links' }
+CMLinkTest >> testOutgoingAndIncomingLinksOfClassFilterByClassAndDirection [
+
+	| cell other outgoing incoming friendship |
+	cell := model cellAt: 1 at: 1.
+	other := model cellAt: 1 at: 2.
+	outgoing := model newEntity: CMMockHighway from: cell to: other.
+	incoming := model newEntity: CMMockRoad from: other to: cell.
+	friendship := model newEntity: CMMockFriendship from: cell to: other.
+
+	self
+		assert: (cell outgoingLinksOfClass: CMMockRoad) asArray
+		equals: { outgoing }.
+	self
+		assert: (cell incomingLinksOfClass: CMMockRoad) asArray
+		equals: { incoming }.
+	self
+		assert: (cell outgoingLinksOfClass: CMMockFriendship) asArray
+		equals: { friendship }.
+	self
+		assert: (cell incomingLinksOfClass: CMMockFriendship) asArray
+		equals: { friendship }
 ]
 
 { #category : 'tests - lifecycle' }
@@ -453,6 +625,19 @@ CMLinkTest >> testRemovingAnEndRemovesAllItsLinksAndNoOthers [
 	cow delete.
 
 	self assert: self roadsOfModel asArray equals: { other }
+]
+
+{ #category : 'tests - direct links' }
+CMLinkTest >> testRemovingAnEndRemovesTheLinkFromTheOtherEnd [
+
+	| cow cell |
+	cow := self newCow.
+	cell := model cellAt: 2 at: 2.
+	model newEntity: CMMockRoad from: cow to: cell.
+
+	cow delete.
+
+	self assertEmpty: cell links
 ]
 
 { #category : 'tests - lifecycle' }
@@ -512,4 +697,21 @@ CMLinkTest >> testSubclassCanBeUndirected [
 		              to: (model newEntity: CMMockGoat).
 
 	self deny: friendship isDirected
+]
+
+{ #category : 'tests - direct links' }
+CMLinkTest >> testUndirectedLinkIsBothOutgoingAndIncomingForBothEnds [
+
+	| cow goat friendship |
+	cow := self newCow.
+	goat := model newEntity: CMMockGoat.
+
+	friendship := model newEntity: CMMockFriendship from: cow to: goat.
+
+	{
+		cow.
+		goat } do: [ :each |
+			self assert: each links asArray equals: { friendship }.
+			self assert: each outgoingLinks asArray equals: { friendship }.
+			self assert: each incomingLinks asArray equals: { friendship } ]
 ]
