@@ -250,6 +250,23 @@ CMEntity >> destroyed [
 	self subclassResponsibility
 ]
 
+{ #category : 'links - direct entities' }
+CMEntity >> entitiesLinkedBy: aLinkClass [
+
+	<api>
+	<argument: #aLinkClass type: #Class description:
+	'The class of links to follow. Instances of its subclasses are followed too'>
+	<returnType: #OrderedCollection description:
+	'The entities directly linked to this one by links of the given class, in either direction'>
+	<doc:
+	'Answer a new collection with the entities at the other end of the links of the given class, or of its subclasses, in either direction. Each entity appears once, in the order its first link was created. Dead entities appear until they are removed from the model.'>
+	<example: 'self entitiesLinkedBy: Trust'>
+	<seeAlso:
+	#( linkedEntities nextEntitiesLinkedBy: previousEntitiesLinkedBy:
+	   allEntitiesLinkedBy: linksOfClass: )>
+	^ self otherEndsOf: (self linksOfClass: aLinkClass)
+]
+
 { #category : 'accessing' }
 CMEntity >> group [
 
@@ -385,6 +402,23 @@ CMEntity >> isSpatialEntitySet [
 	^false
 ]
 
+{ #category : 'links - direct entities' }
+CMEntity >> linkedEntities [
+
+	<api>
+	<returnType: #OrderedCollection description:
+	'The entities directly linked to this one, in either direction'>
+	<doc:
+	'Answer a new collection with the entities at the other end of the links of this entity, in either direction. Each entity appears once, in the order its first link was created.
+
+This follows every kind of link, so adding a new link class to a model changes the answer. Use entitiesLinkedBy: to follow only one kind. Dead entities appear until they are removed from the model.'>
+	<example: 'self linkedEntities'>
+	<seeAlso:
+	#( entitiesLinkedBy: nextEntities previousEntities allLinkedEntities
+	   links )>
+	^ self otherEndsOf: self links
+]
+
 { #category : 'links - direct links' }
 CMEntity >> links [
 
@@ -413,6 +447,53 @@ CMEntity >> linksOfClass: aLinkClass [
 	<seeAlso: #( links outgoingLinksOfClass: incomingLinksOfClass:
 	   allLinksOfClass: )>
 	^ self links select: [ :each | each isKindOf: aLinkClass ]
+]
+
+{ #category : 'links - direct entities' }
+CMEntity >> nextEntities [
+
+	<api>
+	<returnType: #OrderedCollection description:
+	'The entities that the links of this entity lead to'>
+	<doc:
+	'Answer a new collection with the entities that the outgoing links of this entity lead to, one step away. Each entity appears once, in the order its first link was created.
+
+This follows every kind of link, so adding a new link class to a model changes the answer. Use nextEntitiesLinkedBy: to follow only one kind. Dead entities appear until they are removed from the model.'>
+	<example: 'self nextEntities'>
+	<seeAlso: #( nextEntitiesLinkedBy: previousEntities linkedEntities
+	   allDownstreamEntities outgoingLinks )>
+	^ self otherEndsOf: self outgoingLinks
+]
+
+{ #category : 'links - direct entities' }
+CMEntity >> nextEntitiesLinkedBy: aLinkClass [
+
+	<api>
+	<argument: #aLinkClass type: #Class description:
+	'The class of links to follow. Instances of its subclasses are followed too'>
+	<returnType: #OrderedCollection description:
+	'The entities that the links of the given class lead to'>
+	<doc:
+	'Answer a new collection with the entities that the outgoing links of the given class, or of its subclasses, lead to, one step away. Each entity appears once, in the order its first link was created. Dead entities appear until they are removed from the model.'>
+	<example: 'self nextEntitiesLinkedBy: River'>
+	<seeAlso:
+	#( nextEntities previousEntitiesLinkedBy: entitiesLinkedBy:
+	   allDownstreamEntitiesLinkedBy: outgoingLinksOfClass: )>
+	^ self otherEndsOf: (self outgoingLinksOfClass: aLinkClass)
+]
+
+{ #category : 'links - private' }
+CMEntity >> otherEndsOf: aCollectionOfLinks [
+	"Answer the entities at the far end of the given links, each one once, in the order of the links"
+
+	| entities |
+	entities := OrderedCollection new.
+	aCollectionOfLinks do: [ :each |
+			| otherEnd |
+			otherEnd := each otherEndOf: self.
+			(entities identityIncludes: otherEnd) ifFalse: [
+				entities add: otherEnd ] ].
+	^ entities
 ]
 
 { #category : 'links - direct links' }
@@ -479,6 +560,39 @@ CMEntity >> povInvisible [
 
 	<pov>
 	^ CMPointOfView color: Color transparent
+]
+
+{ #category : 'links - direct entities' }
+CMEntity >> previousEntities [
+
+	<api>
+	<returnType: #OrderedCollection description:
+	'The entities whose links lead to this entity'>
+	<doc:
+	'Answer a new collection with the entities that the incoming links of this entity come from, one step away. Each entity appears once, in the order its first link was created.
+
+This follows every kind of link, so adding a new link class to a model changes the answer. Use previousEntitiesLinkedBy: to follow only one kind. Dead entities appear until they are removed from the model.'>
+	<example: 'self previousEntities'>
+	<seeAlso: #( previousEntitiesLinkedBy: nextEntities linkedEntities
+	   allUpstreamEntities incomingLinks )>
+	^ self otherEndsOf: self incomingLinks
+]
+
+{ #category : 'links - direct entities' }
+CMEntity >> previousEntitiesLinkedBy: aLinkClass [
+
+	<api>
+	<argument: #aLinkClass type: #Class description:
+	'The class of links to follow. Instances of its subclasses are followed too'>
+	<returnType: #OrderedCollection description:
+	'The entities whose links of the given class lead to this entity'>
+	<doc:
+	'Answer a new collection with the entities that the incoming links of the given class, or of its subclasses, come from, one step away. Each entity appears once, in the order its first link was created. Dead entities appear until they are removed from the model.'>
+	<example: 'self previousEntitiesLinkedBy: River'>
+	<seeAlso:
+	#( previousEntities nextEntitiesLinkedBy: entitiesLinkedBy:
+	   allUpstreamEntitiesLinkedBy: incomingLinksOfClass: )>
+	^ self otherEndsOf: (self incomingLinksOfClass: aLinkClass)
 ]
 
 { #category : 'printing' }

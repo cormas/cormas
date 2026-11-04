@@ -124,6 +124,23 @@ CMLinkTest >> testDeadAndOffGridEndsStillHaveTheirLinks [
 			otherRoad }
 ]
 
+{ #category : 'tests - direct entities' }
+CMLinkTest >> testDeadAndOffGridEntitiesAreLinkedEntities [
+
+	| cell dead offGrid |
+	cell := model cellAt: 2 at: 2.
+	dead := self newCow.
+	offGrid := model newEntity: CMMockGoat.
+	model newEntity: CMMockRoad from: cell to: dead.
+	model newEntity: CMMockRoad from: cell to: offGrid.
+
+	dead isDead: true.
+
+	self assert: cell nextEntities asArray equals: {
+			dead.
+			offGrid }
+]
+
 { #category : 'tests - direct links' }
 CMLinkTest >> testDeletedLinkLeavesBothEnds [
 
@@ -218,6 +235,23 @@ CMLinkTest >> testDirectedLinkIsOutgoingFromItsStartAndIncomingToItsEnd [
 	self assertEmpty: cellA incomingLinks.
 	self assert: cellB incomingLinks asArray equals: { road }.
 	self assertEmpty: cellB outgoingLinks
+]
+
+{ #category : 'tests - direct entities' }
+CMLinkTest >> testDirectedLinkLeadsFromItsStartToItsEnd [
+
+	| cellA cellB |
+	cellA := model cellAt: 1 at: 1.
+	cellB := model cellAt: 1 at: 2.
+
+	model newEntity: CMMockRoad from: cellA to: cellB.
+
+	self assert: cellA nextEntities asArray equals: { cellB }.
+	self assertEmpty: cellA previousEntities.
+	self assert: cellB previousEntities asArray equals: { cellA }.
+	self assertEmpty: cellB nextEntities.
+	self assert: cellA linkedEntities asArray equals: { cellB }.
+	self assert: cellB linkedEntities asArray equals: { cellA }
 ]
 
 { #category : 'tests - direct links' }
@@ -350,6 +384,73 @@ CMLinkTest >> testEndsCannotBeTheSameEntity [
 	self assertEmpty: (model entitiesOfClass: CMMockRoad)
 ]
 
+{ #category : 'tests - direct entities' }
+CMLinkTest >> testEntitiesAreInTheOrderTheirLinksWereCreated [
+
+	| cell first second third |
+	cell := model cellAt: 1 at: 1.
+	first := model cellAt: 3 at: 3.
+	second := model cellAt: 1 at: 2.
+	third := model cellAt: 2 at: 1.
+
+	model newEntity: CMMockRoad from: cell to: first.
+	model newEntity: CMMockRoad from: cell to: second.
+	model newEntity: CMMockRoad from: cell to: third.
+
+	self assert: cell nextEntities asArray equals: {
+			first.
+			second.
+			third }
+]
+
+{ #category : 'tests - direct entities' }
+CMLinkTest >> testEntitiesLinkedByFollowOnlyTheGivenClassAndItsSubclasses [
+
+	| cell roadEnd highwayEnd friend |
+	cell := model cellAt: 1 at: 1.
+	roadEnd := model cellAt: 1 at: 2.
+	highwayEnd := model cellAt: 2 at: 1.
+	friend := model cellAt: 2 at: 2.
+	model newEntity: CMMockRoad from: cell to: roadEnd.
+	model newEntity: CMMockHighway from: highwayEnd to: cell.
+	model newEntity: CMMockFriendship from: cell to: friend.
+
+	self assert: (cell entitiesLinkedBy: CMMockRoad) asArray equals: {
+			roadEnd.
+			highwayEnd }.
+	self
+		assert: (cell entitiesLinkedBy: CMMockHighway) asArray
+		equals: { highwayEnd }.
+	self
+		assert: (cell nextEntitiesLinkedBy: CMMockRoad) asArray
+		equals: { roadEnd }.
+	self
+		assert: (cell previousEntitiesLinkedBy: CMMockRoad) asArray
+		equals: { highwayEnd }.
+	self
+		assert: (cell nextEntitiesLinkedBy: CMMockFriendship) asArray
+		equals: { friend }.
+	self
+		assert: (cell previousEntitiesLinkedBy: CMMockFriendship) asArray
+		equals: { friend }
+]
+
+{ #category : 'tests - direct entities' }
+CMLinkTest >> testEntityLinkedSeveralTimesAppearsOnce [
+
+	| cellA cellB |
+	cellA := model cellAt: 1 at: 1.
+	cellB := model cellAt: 1 at: 2.
+
+	model newEntity: CMMockRoad from: cellA to: cellB.
+	model newEntity: CMMockRoad from: cellA to: cellB.
+	model newEntity: CMMockRoad from: cellB to: cellA.
+
+	self assert: cellA nextEntities asArray equals: { cellB }.
+	self assert: cellA previousEntities asArray equals: { cellB }.
+	self assert: cellA linkedEntities asArray equals: { cellB }
+]
+
 { #category : 'tests - direct links' }
 CMLinkTest >> testEntityWithoutLinksAnswersEmptyCollections [
 
@@ -361,6 +462,17 @@ CMLinkTest >> testEntityWithoutLinksAnswersEmptyCollections [
 	self assertEmpty: cell incomingLinks
 ]
 
+{ #category : 'tests - direct entities' }
+CMLinkTest >> testEntityWithoutLinksHasNoLinkedEntities [
+
+	| cell |
+	cell := model cellAt: 1 at: 1.
+
+	self assertEmpty: cell linkedEntities.
+	self assertEmpty: cell nextEntities.
+	self assertEmpty: cell previousEntities
+]
+
 { #category : 'tests - ends' }
 CMLinkTest >> testExampleConnectsTwoAgents [
 
@@ -370,6 +482,24 @@ CMLinkTest >> testExampleConnectsTwoAgents [
 	self assert: link from class equals: CMAgent.
 	self assert: link to class equals: CMAgent.
 	self assert: (link otherEndOf: link from) identicalTo: link to
+]
+
+{ #category : 'tests - direct entities' }
+CMLinkTest >> testFormsWithoutAClassFollowEveryKindOfLink [
+
+	| cell roadEnd friend |
+	cell := model cellAt: 1 at: 1.
+	roadEnd := model cellAt: 1 at: 2.
+	friend := model cellAt: 2 at: 2.
+	model newEntity: CMMockRoad from: cell to: roadEnd.
+	model newEntity: CMMockFriendship from: cell to: friend.
+
+	self assert: cell nextEntities asArray equals: {
+			roadEnd.
+			friend }.
+	self assert: cell linkedEntities asArray equals: {
+			roadEnd.
+			friend }
 ]
 
 { #category : 'tests - creating' }
@@ -611,6 +741,19 @@ CMLinkTest >> testReinitializingEntitiesRemovesLinksToCellsAndAgents [
 	self assertEmpty: self roadsOfModel
 ]
 
+{ #category : 'tests - direct entities' }
+CMLinkTest >> testRemovedEntityIsNoLongerALinkedEntity [
+
+	| cell cow |
+	cell := model cellAt: 2 at: 2.
+	cow := self newCow.
+	model newEntity: CMMockRoad from: cell to: cow.
+
+	cow delete.
+
+	self assertEmpty: cell nextEntities
+]
+
 { #category : 'tests - lifecycle' }
 CMLinkTest >> testRemovingAnEndRemovesAllItsLinksAndNoOthers [
 
@@ -714,4 +857,19 @@ CMLinkTest >> testUndirectedLinkIsBothOutgoingAndIncomingForBothEnds [
 			self assert: each links asArray equals: { friendship }.
 			self assert: each outgoingLinks asArray equals: { friendship }.
 			self assert: each incomingLinks asArray equals: { friendship } ]
+]
+
+{ #category : 'tests - direct entities' }
+CMLinkTest >> testUndirectedLinkLeadsBothWays [
+
+	| cow goat |
+	cow := self newCow.
+	goat := model newEntity: CMMockGoat.
+
+	model newEntity: CMMockFriendship from: cow to: goat.
+
+	self assert: cow nextEntities asArray equals: { goat }.
+	self assert: cow previousEntities asArray equals: { goat }.
+	self assert: goat nextEntities asArray equals: { cow }.
+	self assert: goat previousEntities asArray equals: { cow }
 ]
