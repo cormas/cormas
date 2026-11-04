@@ -20,6 +20,7 @@ I draw a link as a straight line between its two ends, in their grid positions. 
 - `for:` creates me for a link.
 - `update` shows the current state of the link.
 - `startPoint` and `endPoint` answer the ends of the line, in pixels, or nil while nothing is drawn.
+- `moveEnd:to:` draws one end at a given position until the next update, as when an agent is being dragged.
 
 ```
 (CMBlLinkElement for: aLink) openInNewSpace
@@ -159,6 +160,21 @@ CMBlLinkElement >> lineEndUnderArrowhead [
 	^ base + (endPoint - base / (endPoint distanceTo: base) * 0.5)
 ]
 
+{ #category : 'accessing' }
+CMBlLinkElement >> link [
+
+	^ link
+]
+
+{ #category : 'updating' }
+CMBlLinkElement >> moveEnd: anEntity to: aPoint [
+	"Draw the end of the line at anEntity at a given position, before anEntity is there, as when it is being dragged"
+
+	link from == anEntity ifTrue: [ startPoint := aPoint ].
+	link to == anEntity ifTrue: [ endPoint := aPoint ].
+	self refreshLine
+]
+
 { #category : 'geometry' }
 CMBlLinkElement >> positionOfLocatedEntity: anEntity [
 	"Answer the position of anEntity inside its cell, where it is drawn"
@@ -172,32 +188,40 @@ CMBlLinkElement >> positionOfLocatedEntity: anEntity [
 { #category : 'updating' }
 CMBlLinkElement >> refresh [
 
-	| pov lineWidth |
+	| pov |
 	pov := link activePov.
-	lineWidth := pov hasSize
-		             ifTrue: [ pov size * self cellSize ]
-		             ifFalse: [ 1 ].
-	arrowhead := nil.
+	self border: (BlBorder
+			 paint: (pov hasColor
+					  ifTrue: [ pov color ]
+					  ifFalse: [ Color black ])
+			 width: (pov hasSize
+					  ifTrue: [ pov size * self cellSize ]
+					  ifFalse: [ 1 ])).
 	(link ends allSatisfy: [ :each | each isOnGrid ])
 		ifTrue: [
 				startPoint := link from linkEndIn: self.
 				endPoint := link to linkEndIn: self.
-				link isDirected ifTrue: [
-					arrowhead := self arrowheadVerticesWithWidth: lineWidth ].
-				lineEnd := arrowhead
-					           ifNil: [ endPoint ]
-					           ifNotNil: [ self lineEndUnderArrowhead ].
-				self extent: (startPoint max: endPoint) ]
+				self refreshLine ]
 		ifFalse: [
 				startPoint := nil.
 				endPoint := nil.
-				self extent: 0 @ 0 ].
+				arrowhead := nil.
+				self
+					extent: 0 @ 0;
+					invalidate ]
+]
+
+{ #category : 'updating' }
+CMBlLinkElement >> refreshLine [
+	"Work out what to draw from the ends of the line"
+
+	arrowhead := link isDirected ifTrue: [
+		             self arrowheadVerticesWithWidth: self border width ].
+	lineEnd := arrowhead
+		           ifNil: [ endPoint ]
+		           ifNotNil: [ self lineEndUnderArrowhead ].
 	self
-		border: (BlBorder
-				 paint: (pov hasColor
-						  ifTrue: [ pov color ]
-						  ifFalse: [ Color black ])
-				 width: lineWidth);
+		extent: (startPoint max: endPoint);
 		invalidate
 ]
 

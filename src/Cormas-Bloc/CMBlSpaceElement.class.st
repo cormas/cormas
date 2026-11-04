@@ -41,7 +41,7 @@ I fit my parent until the user navigates. `CMBlSpaceViewport` gives me the contr
 - `panBy:`
 - `saveToPngFile:` saves the whole space at its natural size, whatever the current zoom
 
-Agents can be dragged onto another cell. An agent dropped outside the grid goes back to where it was.
+Agents can be dragged onto another cell, and their links follow them during the drag. An agent dropped outside the grid goes back to where it was.
 "
 Class {
 	#name : 'CMBlSpaceElement',
@@ -140,7 +140,8 @@ CMBlSpaceElement >> handleDrag: anEvent [
 	anEvent consume.
 	draggedElement position: draggedElement constraints position
 		+ (anEvent position - dragOrigin / zoom).
-	dragOrigin := anEvent position
+	dragOrigin := anEvent position.
+	self moveLinksOfDraggedElement
 ]
 
 { #category : 'interaction' }
@@ -183,6 +184,19 @@ CMBlSpaceElement >> initialize [
 		do: [ :event | self handleDrag: event ];
 		addEventHandlerOn: BlDragEndEvent
 		do: [ :event | self handleDragEnd: event ]
+]
+
+{ #category : 'interaction' }
+CMBlSpaceElement >> moveLinksOfDraggedElement [
+	"The agent only moves when it is dropped, so tell its links where it is being dragged"
+
+	| agent center |
+	agent := draggedElement entity.
+	center := draggedElement constraints position
+	          + (draggedElement extent / 2).
+	linkElements do: [ :each |
+			(each link ends identityIncludes: agent) ifTrue: [
+				each moveEnd: agent to: center ] ]
 ]
 
 { #category : 'updating' }

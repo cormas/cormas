@@ -57,6 +57,27 @@ CMBlInteractionTest >> drag: anElement by: aPoint [
 	space settle
 ]
 
+{ #category : 'private' }
+CMBlInteractionTest >> dragAgentWithoutDroppingBy: aPoint [
+	"Like the simulator's dragBy:, the distance is in my own coordinates, and the mouse moves in those of the space. The mouse stays down"
+
+	| agentElement |
+	agentElement := self agentElement.
+	agentElement eventSimulator
+		mouseDown;
+		mouseMoveBy: (agentElement localBoundsToGlobal:
+					 (BlBounds origin: 0.0 @ 0.0 extent: aPoint)) extent.
+	space settle.
+	space settle
+]
+
+{ #category : 'private' }
+CMBlInteractionTest >> lineElementOf: aLink [
+
+	^ element children detect: [ :each |
+		  (each isKindOf: CMBlLinkElement) and: [ each link == aLink ] ]
+]
+
 { #category : 'running' }
 CMBlInteractionTest >> openGrid: aNeighbourhood [
 
@@ -72,6 +93,19 @@ CMBlInteractionTest >> openGrid: aNeighbourhood [
 		settle
 ]
 
+{ #category : 'private' }
+CMBlInteractionTest >> showRoadFrom: anEntity to: anotherEntity [
+	"A blue road thick enough to look at, 8 pixels wide"
+
+	| road |
+	road := (model newEntity: CMMockRoad from: anEntity to: anotherEntity)
+		        pov: (CMPointOfView color: Color blue size: 0.25);
+		        yourself.
+	element update.
+	space settle.
+	^ road
+]
+
 { #category : 'running' }
 CMBlInteractionTest >> tearDown [
 
@@ -80,6 +114,21 @@ CMBlInteractionTest >> tearDown [
 				close;
 				settle ].
 	super tearDown
+]
+
+{ #category : 'tests - links' }
+CMBlInteractionTest >> testArrowheadFollowsAnAgentDuringADrag [
+	"The tip of the arrowhead is at the cow, which goes from 48@48 to 48@80"
+
+	| road |
+	self openGrid: 4.
+	road := self showRoadFrom: (model cellAt: 2 at: 4) to: cow.
+
+	self dragAgentWithoutDroppingBy: 0 @ 32.
+
+	self
+		assert: (self lineElementOf: road) endPoint rounded
+		equals: 48 @ 80
 ]
 
 { #category : 'tests' }
@@ -227,6 +276,88 @@ CMBlInteractionTest >> testLeftClickUsesTheLastBlock [
 
 	self assert: first isNil.
 	self assert: second equals: (model cellAt: 1 at: 3)
+]
+
+{ #category : 'tests - links' }
+CMBlInteractionTest >> testLineFollowsAnAgentDuringADrag [
+	"The cow starts at 48@48 and the line goes to the center of the fourth cell of the row"
+
+	| road |
+	self openGrid: 4.
+	road := self showRoadFrom: cow to: (model cellAt: 2 at: 4).
+
+	self dragAgentWithoutDroppingBy: 0 @ 32.
+
+	self
+		assert: (self lineElementOf: road) startPoint rounded
+		equals: 48 @ 80.
+	self
+		assert: (self lineElementOf: road) endPoint rounded
+		equals: 112 @ 48.
+	self assert: cow cell equals: (model cellAt: 2 at: 2)
+]
+
+{ #category : 'tests - links' }
+CMBlInteractionTest >> testLineFollowsAnUndirectedLinkDuringADrag [
+
+	| friendship |
+	self openGrid: 4.
+	friendship := model
+		              newEntity: CMMockFriendship
+		              from: (model cellAt: 2 at: 4)
+		              to: cow.
+	element update.
+	space settle.
+
+	self dragAgentWithoutDroppingBy: 0 @ 32.
+
+	self
+		assert: (self lineElementOf: friendship) endPoint rounded
+		equals: 48 @ 80
+]
+
+{ #category : 'tests - links' }
+CMBlInteractionTest >> testLineGoesBackWhenAnAgentIsDroppedOutsideTheGrid [
+
+	| road |
+	self openGrid: 4.
+	road := self showRoadFrom: cow to: (model cellAt: 2 at: 4).
+
+	self drag: self agentElement by: 0 @ 320.
+
+	self assert: (self lineElementOf: road) startPoint equals: 48 @ 48
+]
+
+{ #category : 'tests - links' }
+CMBlInteractionTest >> testLineGoesToTheFinalPlaceAfterADrop [
+
+	| road |
+	self openGrid: 4.
+	road := self showRoadFrom: cow to: (model cellAt: 2 at: 4).
+
+	self drag: self agentElement by: 32 @ 0.
+
+	self assert: cow cell equals: (model cellAt: 2 at: 3).
+	self assert: (self lineElementOf: road) startPoint equals: 80 @ 48
+]
+
+{ #category : 'tests - links' }
+CMBlInteractionTest >> testOtherLinksDoNotMoveDuringADrag [
+
+	| road other before |
+	self openGrid: 4.
+	road := self showRoadFrom: cow to: (model cellAt: 2 at: 4).
+	other := self
+		         showRoadFrom: (model cellAt: 1 at: 1)
+		         to: (model cellAt: 3 at: 1).
+	before := (self lineElementOf: other) startPoint.
+
+	self dragAgentWithoutDroppingBy: 0 @ 32.
+
+	self assert: (self lineElementOf: other) startPoint equals: before.
+	self
+		assert: (self lineElementOf: road) startPoint rounded
+		equals: 48 @ 80
 ]
 
 { #category : 'tests' }

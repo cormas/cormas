@@ -367,6 +367,24 @@ CMBlLinkElementTest >> testLineReachesTheArrowheadWithoutAGap [
 				equals: Color red asHexString ]
 ]
 
+{ #category : 'tests - arrowhead' }
+CMBlLinkElementTest >> testMovingAnEndMovesTheLineAndTheArrowhead [
+
+	| element parent |
+	self gridWithNeighbourhood: 4.
+	element := self
+		           elementOfRoadFrom: (model cellAt: 2 at: 2)
+		           to: (model cellAt: 2 at: 3).
+	parent := self parentOf: element.
+	self deny: (self isTransparentIn: parent at: 74 @ 46).
+
+	element moveEnd: (model cellAt: 2 at: 3) to: 80 @ 112.
+
+	self assert: element endPoint equals: 80 @ 112.
+	self assert: (self isTransparentIn: parent at: 74 @ 46).
+	self deny: (self isTransparentIn: parent at: 64 @ 80)
+]
+
 { #category : 'tests - point of view' }
 CMBlLinkElementTest >> testPovInvisibleOfALinkDrawsNothingVisible [
 
