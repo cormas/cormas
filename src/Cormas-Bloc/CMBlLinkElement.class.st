@@ -131,6 +131,7 @@ CMBlLinkElement >> drawArrowheadOn: aeCanvas [
 
 { #category : 'drawing' }
 CMBlLinkElement >> drawLineOn: aeCanvas [
+	"Round caps fill the corner where two lines meet at an angle"
 
 	aeCanvas
 		pathFactory: [ :cairoContext |
@@ -141,7 +142,9 @@ CMBlLinkElement >> drawLineOn: aeCanvas [
 		setOutskirtsCentered;
 		setBorderBlock: [
 				self border paint aeApplyTo: aeCanvas.
-				aeCanvas setBorderWidth: self border width ];
+				aeCanvas
+					setCapRound;
+					setBorderWidth: self border width ];
 		drawFigure
 ]
 

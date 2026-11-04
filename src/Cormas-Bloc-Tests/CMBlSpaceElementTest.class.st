@@ -439,6 +439,39 @@ CMBlSpaceElementTest >> testLinkWithAnEndOffTheGridIsNotDrawn [
 	self assert: (self hexColorIn: element at: 48 @ 48) equals: '000000'
 ]
 
+{ #category : 'tests - links' }
+CMBlSpaceElementTest >> testLinksMeetingAtAnAngleHaveNoGapAtTheCorner [
+	"Two lines 8 pixels wide meet at 80@48. The outside of the corner must be filled and rounded"
+
+	| corner first second element |
+	self gridWithNeighbourhood: 4.
+	model cells do: #initAlive.
+	corner := model cellAt: 2 at: 3.
+	first := model
+		         newEntity: CMMockHighway
+		         from: (model cellAt: 2 at: 2)
+		         to: corner.
+	second := model
+		          newEntity: CMMockHighway
+		          from: corner
+		          to: (model cellAt: 3 at: 3).
+	{
+		first.
+		second } do: [ :each |
+			each
+				isOneWay: false;
+				pov: (CMPointOfView color: Color red size: 0.25) ].
+
+	element := CMBlSpaceElement for: model.
+
+	self
+		assert: (self hexColorIn: element at: 82 @ 46)
+		equals: Color red asHexString.
+	self
+		deny: (self hexColorIn: element at: 84 @ 44)
+		equals: Color red asHexString
+]
+
 { #category : 'tests' }
 CMBlSpaceElementTest >> testOpaqueAggregateHidesItsCells [
 
