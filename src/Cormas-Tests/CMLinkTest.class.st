@@ -9,16 +9,88 @@ Class {
 	#tag : 'Model'
 }
 
+{ #category : 'tests - all entities' }
+CMLinkTest >> cells: aCollectionOfPoints [
+
+	^ aCollectionOfPoints collect: [ :each |
+		  model cellAt: each x at: each y ]
+]
+
 { #category : 'tests - creating' }
 CMLinkTest >> newCow [
 
 	^ model newEntity: CMMockCow locatedAt: (model cellAt: 1 at: 1)
 ]
 
+{ #category : 'tests - all entities' }
+CMLinkTest >> road: aCell to: anotherCell [
+
+	^ model newEntity: CMMockRoad from: aCell to: anotherCell
+]
+
 { #category : 'tests - lifecycle' }
 CMLinkTest >> roadsOfModel [
 
 	^ model entitiesOfClass: CMMockRoad
+]
+
+{ #category : 'tests - all entities' }
+CMLinkTest >> testAgentsCellsAndAggregatesCanBeInOneNetwork [
+
+	| cow cell aggregate |
+	cow := self newCow.
+	cell := model cellAt: 2 at: 2.
+	aggregate := model
+		             createAggregate: CMMockAggregate
+		             from: { (model cellAt: 3 at: 3) }.
+	self road: cow to: cell.
+	self road: cell to: aggregate.
+
+	self assert: cow allDownstreamEntities asArray equals: {
+			cell.
+			aggregate }
+]
+
+{ #category : 'tests - all entities' }
+CMLinkTest >> testAllLinkedEntitiesIgnoresDirection [
+
+	| cells |
+	cells := self cells: {
+			         (1 @ 1).
+			         (1 @ 2).
+			         (1 @ 3).
+			         (2 @ 3) }.
+	self road: cells first to: cells second.
+	self road: cells third to: cells second.
+	self road: cells third to: cells fourth.
+
+	self
+		assert: cells first allDownstreamEntities asArray
+		equals: { cells second }.
+	self assert: cells first allLinkedEntities asArray equals: {
+			cells second.
+			cells third.
+			cells fourth }
+]
+
+{ #category : 'tests - all entities' }
+CMLinkTest >> testBranchesThatRejoinGiveEachEntityOnce [
+
+	| cells |
+	cells := self cells: {
+			         (1 @ 1).
+			         (1 @ 2).
+			         (2 @ 1).
+			         (2 @ 2) }.
+	self road: cells first to: cells second.
+	self road: cells first to: cells third.
+	self road: cells second to: cells fourth.
+	self road: cells third to: cells fourth.
+
+	self assert: cells first allDownstreamEntities asArray equals: {
+			cells second.
+			cells third.
+			cells fourth }
 ]
 
 { #category : 'tests - direct links' }
@@ -103,6 +175,27 @@ CMLinkTest >> testCreatingANewGridRemovesLinksToTheOldCells [
 		closed: true.
 
 	self assert: self roadsOfModel asArray equals: { agentRoad }
+]
+
+{ #category : 'tests - all entities' }
+CMLinkTest >> testCycleEndsAndExcludesTheReceiver [
+
+	| cells |
+	cells := self cells: {
+			         (1 @ 1).
+			         (1 @ 2).
+			         (1 @ 3) }.
+	self road: cells first to: cells second.
+	self road: cells second to: cells third.
+	self road: cells third to: cells first.
+
+	self assert: cells first allDownstreamEntities asArray equals: {
+			cells second.
+			cells third }.
+	self assert: cells first allUpstreamEntities asArray equals: {
+			cells third.
+			cells second }.
+	self assert: cells first allLinkedEntities size equals: 2
 ]
 
 { #category : 'tests - direct links' }
@@ -269,6 +362,29 @@ CMLinkTest >> testDirectionIsAskedEachTime [
 	self assert: cellA incomingLinks asArray equals: { highway }
 ]
 
+{ #category : 'tests - all entities' }
+CMLinkTest >> testDownstreamFollowsDirectionAllTheWay [
+
+	| cells |
+	cells := self cells: {
+			         (1 @ 1).
+			         (1 @ 2).
+			         (1 @ 3).
+			         (2 @ 3) }.
+	self road: cells first to: cells second.
+	self road: cells second to: cells third.
+	self road: cells third to: cells fourth.
+
+	self assert: cells first allDownstreamEntities asArray equals: {
+			cells second.
+			cells third.
+			cells fourth }.
+	self
+		assert: cells third allDownstreamEntities asArray
+		equals: { cells fourth }.
+	self assertEmpty: cells fourth allDownstreamEntities
+]
+
 { #category : 'tests - creating' }
 CMLinkTest >> testEndCanBeDeadButNotYetRemoved [
 
@@ -403,6 +519,23 @@ CMLinkTest >> testEntitiesAreInTheOrderTheirLinksWereCreated [
 			third }
 ]
 
+{ #category : 'tests - all entities' }
+CMLinkTest >> testEntitiesInAnotherNetworkAreNotReached [
+
+	| cells |
+	cells := self cells: {
+			         (1 @ 1).
+			         (1 @ 2).
+			         (3 @ 1).
+			         (3 @ 2) }.
+	self road: cells first to: cells second.
+	self road: cells third to: cells fourth.
+
+	self
+		assert: cells first allLinkedEntities asArray
+		equals: { cells second }
+]
+
 { #category : 'tests - direct entities' }
 CMLinkTest >> testEntitiesLinkedByFollowOnlyTheGivenClassAndItsSubclasses [
 
@@ -471,6 +604,17 @@ CMLinkTest >> testEntityWithoutLinksHasNoLinkedEntities [
 	self assertEmpty: cell linkedEntities.
 	self assertEmpty: cell nextEntities.
 	self assertEmpty: cell previousEntities
+]
+
+{ #category : 'tests - all entities' }
+CMLinkTest >> testEntityWithoutLinksReachesNothing [
+
+	| cell |
+	cell := model cellAt: 1 at: 1.
+
+	self assertEmpty: cell allLinkedEntities.
+	self assertEmpty: cell allDownstreamEntities.
+	self assertEmpty: cell allUpstreamEntities
 ]
 
 { #category : 'tests - ends' }
@@ -638,6 +782,45 @@ CMLinkTest >> testLinkSurvivesAnEndLeavingTheGrid [
 	self assert: self roadsOfModel asArray equals: { road }
 ]
 
+{ #category : 'tests - all entities' }
+CMLinkTest >> testLinkedByFollowsOnlyTheGivenClassAndItsSubclasses [
+
+	| cells |
+	cells := self cells: {
+			         (1 @ 1).
+			         (1 @ 2).
+			         (1 @ 3).
+			         (2 @ 3) }.
+	self road: cells first to: cells second.
+	model newEntity: CMMockHighway from: cells second to: cells third.
+	model newEntity: CMMockFriendship from: cells third to: cells fourth.
+
+	self
+		assert:
+		(cells first allDownstreamEntitiesLinkedBy: CMMockRoad) asArray
+		equals: {
+				cells second.
+				cells third }.
+	self
+		assert:
+		(cells first allDownstreamEntitiesLinkedBy: CMMockHighway) asArray
+		equals: #(  ).
+	self
+		assert:
+		(cells third allUpstreamEntitiesLinkedBy: CMMockRoad) asArray
+		equals: {
+				cells second.
+				cells first }.
+	self
+		assert: (cells fourth allEntitiesLinkedBy: CMMockRoad) asArray
+		equals: #(  ).
+	self
+		assert: (cells second allEntitiesLinkedBy: CMMockRoad) asArray
+		equals: {
+				cells first.
+				cells third }
+]
+
 { #category : 'tests - direct links' }
 CMLinkTest >> testLinksCanBeDeletedWhileLoopingOverAQuery [
 
@@ -672,6 +855,29 @@ CMLinkTest >> testLinksOfClassFilterByClassIncludingSubclasses [
 	self
 		assert: (cell linksOfClass: CMMockFriendship) asArray
 		equals: { friendship }
+]
+
+{ #category : 'tests - all entities' }
+CMLinkTest >> testNearestEntitiesComeFirst [
+
+	| cells |
+	cells := self cells: {
+			         (1 @ 1).
+			         (1 @ 2).
+			         (1 @ 3).
+			         (2 @ 1).
+			         (2 @ 2) }.
+	"The first branch is longer, and is created first"
+	self road: cells first to: cells second.
+	self road: cells second to: cells fifth.
+	self road: cells first to: cells third.
+	self road: cells third to: cells fourth.
+
+	self assert: cells first allDownstreamEntities asArray equals: {
+			cells second.
+			cells third.
+			cells fifth.
+			cells fourth }
 ]
 
 { #category : 'tests - ends' }
@@ -739,6 +945,21 @@ CMLinkTest >> testReinitializingEntitiesRemovesLinksToCellsAndAgents [
 	model initEntities.
 
 	self assertEmpty: self roadsOfModel
+]
+
+{ #category : 'tests - all entities' }
+CMLinkTest >> testRemovedEntityBreaksThePath [
+
+	| cow cellA cellB |
+	cow := self newCow.
+	cellA := model cellAt: 2 at: 2.
+	cellB := model cellAt: 2 at: 3.
+	self road: cellA to: cow.
+	self road: cow to: cellB.
+
+	cow delete.
+
+	self assertEmpty: cellA allDownstreamEntities
 ]
 
 { #category : 'tests - direct entities' }
@@ -842,6 +1063,45 @@ CMLinkTest >> testSubclassCanBeUndirected [
 	self deny: friendship isDirected
 ]
 
+{ #category : 'tests - all entities' }
+CMLinkTest >> testTraversalGoesThroughDeadAndOffGridEntities [
+
+	| dead offGrid cellA cellB |
+	dead := self newCow.
+	offGrid := model newEntity: CMMockGoat.
+	cellA := model cellAt: 2 at: 2.
+	cellB := model cellAt: 2 at: 3.
+	self road: cellA to: dead.
+	self road: dead to: offGrid.
+	self road: offGrid to: cellB.
+
+	dead isDead: true.
+
+	self assert: cellA allDownstreamEntities asArray equals: {
+			dead.
+			offGrid.
+			cellB }
+]
+
+{ #category : 'tests - all entities' }
+CMLinkTest >> testTraversalWithoutAClassFollowsEveryKindOfLink [
+
+	| cells |
+	cells := self cells: {
+			         (1 @ 1).
+			         (1 @ 2).
+			         (1 @ 3) }.
+	self road: cells first to: cells second.
+	model newEntity: CMMockFriendship from: cells second to: cells third.
+
+	self assert: cells first allDownstreamEntities asArray equals: {
+			cells second.
+			cells third }.
+	self assert: cells first allLinkedEntities asArray equals: {
+			cells second.
+			cells third }
+]
+
 { #category : 'tests - direct links' }
 CMLinkTest >> testUndirectedLinkIsBothOutgoingAndIncomingForBothEnds [
 
@@ -872,4 +1132,40 @@ CMLinkTest >> testUndirectedLinkLeadsBothWays [
 	self assert: cow previousEntities asArray equals: { goat }.
 	self assert: goat nextEntities asArray equals: { cow }.
 	self assert: goat previousEntities asArray equals: { cow }
+]
+
+{ #category : 'tests - all entities' }
+CMLinkTest >> testUndirectedLinksAreFollowedBothWays [
+
+	| cells |
+	cells := self cells: {
+			         (1 @ 1).
+			         (1 @ 2).
+			         (1 @ 3) }.
+	model newEntity: CMMockFriendship from: cells second to: cells first.
+	self road: cells second to: cells third.
+
+	self assert: cells first allDownstreamEntities asArray equals: {
+			cells second.
+			cells third }.
+	self assert: cells third allUpstreamEntities asArray equals: {
+			cells second.
+			cells first }
+]
+
+{ #category : 'tests - all entities' }
+CMLinkTest >> testUpstreamFollowsDirectionBackwardsAllTheWay [
+
+	| cells |
+	cells := self cells: {
+			         (1 @ 1).
+			         (1 @ 2).
+			         (1 @ 3) }.
+	self road: cells first to: cells second.
+	self road: cells second to: cells third.
+
+	self assert: cells third allUpstreamEntities asArray equals: {
+			cells second.
+			cells first }.
+	self assertEmpty: cells first allUpstreamEntities
 ]

@@ -201,6 +201,110 @@ CMEntity >> addLink: aLink [
 	links add: aLink
 ]
 
+{ #category : 'links - all entities' }
+CMEntity >> allDownstreamEntities [
+
+	<api>
+	<returnType: #OrderedCollection description:
+	'All the entities that can be reached following the direction of links'>
+	<doc:
+	'Answer a new collection with all the entities that can be reached from this one by following outgoing links repeatedly. Each entity appears once, the nearest first, and the entity itself is not included, even if a cycle leads back to it. Undirected links are followed both ways.
+
+This follows every kind of link, so adding a new link class to a model changes the answer. Use allDownstreamEntitiesLinkedBy: to follow only one kind. Dead entities appear and are followed until they are removed from the model.'>
+	<example: 'self allDownstreamEntities'>
+	<seeAlso: #( allDownstreamEntitiesLinkedBy:
+	   allUpstreamEntities allLinkedEntities nextEntities allDownstreamLinks )>
+	^ self entitiesReachedBy: [ :each | each nextEntities ]
+]
+
+{ #category : 'links - all entities' }
+CMEntity >> allDownstreamEntitiesLinkedBy: aLinkClass [
+
+	<api>
+	<argument: #aLinkClass type: #Class description:
+	'The class of links to follow. Instances of its subclasses are followed too'>
+	<returnType: #OrderedCollection description:
+	'All the entities that can be reached following the direction of links of the given class'>
+	<doc:
+	'Answer a new collection with all the entities that can be reached from this one by following outgoing links of the given class, or of its subclasses, repeatedly. Each entity appears once, the nearest first, and the entity itself is not included, even if a cycle leads back to it. Undirected links are followed both ways. Dead entities appear and are followed until they are removed from the model.'>
+	<example: 'self allDownstreamEntitiesLinkedBy: River'>
+	<example:
+	'(self allDownstreamEntitiesLinkedBy: River) do: [ :cell | cell receivePollution: amount ]'>
+	<seeAlso: #( allDownstreamEntities allUpstreamEntitiesLinkedBy:
+	   allEntitiesLinkedBy: nextEntitiesLinkedBy: allDownstreamLinksOfClass: )>
+	^ self entitiesReachedBy: [ :each |
+		  each nextEntitiesLinkedBy: aLinkClass ]
+]
+
+{ #category : 'links - all entities' }
+CMEntity >> allEntitiesLinkedBy: aLinkClass [
+
+	<api>
+	<argument: #aLinkClass type: #Class description:
+	'The class of links to follow. Instances of its subclasses are followed too'>
+	<returnType: #OrderedCollection description:
+	'All the other entities of the network formed by the links of the given class'>
+	<doc:
+	'Answer a new collection with all the entities that can be reached from this one by following links of the given class, or of its subclasses, repeatedly, ignoring their direction. This is the whole network of those links, without the entity itself. Each entity appears once, the nearest first. Dead entities appear and are followed until they are removed from the model.'>
+	<example: 'self allEntitiesLinkedBy: River'>
+	<seeAlso: #( allLinkedEntities allDownstreamEntitiesLinkedBy:
+	   allUpstreamEntitiesLinkedBy: entitiesLinkedBy: allLinksOfClass: )>
+	^ self entitiesReachedBy: [ :each |
+		  each entitiesLinkedBy: aLinkClass ]
+]
+
+{ #category : 'links - all entities' }
+CMEntity >> allLinkedEntities [
+
+	<api>
+	<returnType: #OrderedCollection description:
+	'All the other entities of the network of this entity'>
+	<doc:
+	'Answer a new collection with all the entities that can be reached from this one by following links repeatedly, ignoring their direction. This is the whole network of the entity, without the entity itself. Each entity appears once, the nearest first.
+
+This follows every kind of link, so adding a new link class to a model changes the answer. Use allEntitiesLinkedBy: to follow only one kind. Dead entities appear and are followed until they are removed from the model.'>
+	<example: 'self allLinkedEntities'>
+	<seeAlso:
+	#( allEntitiesLinkedBy: allDownstreamEntities allUpstreamEntities
+	   linkedEntities allLinks )>
+	^ self entitiesReachedBy: [ :each | each linkedEntities ]
+]
+
+{ #category : 'links - all entities' }
+CMEntity >> allUpstreamEntities [
+
+	<api>
+	<returnType: #OrderedCollection description:
+	'All the entities that can reach this one following the direction of links'>
+	<doc:
+	'Answer a new collection with all the entities from which this one can be reached by following links in their direction. Each entity appears once, the nearest first, and the entity itself is not included, even if a cycle leads back to it. Undirected links are followed both ways.
+
+This follows every kind of link, so adding a new link class to a model changes the answer. Use allUpstreamEntitiesLinkedBy: to follow only one kind. Dead entities appear and are followed until they are removed from the model.'>
+	<example: 'self allUpstreamEntities'>
+	<seeAlso: #( allUpstreamEntitiesLinkedBy:
+	   allDownstreamEntities allLinkedEntities previousEntities
+	   allUpstreamLinks )>
+	^ self entitiesReachedBy: [ :each | each previousEntities ]
+]
+
+{ #category : 'links - all entities' }
+CMEntity >> allUpstreamEntitiesLinkedBy: aLinkClass [
+
+	<api>
+	<argument: #aLinkClass type: #Class description:
+	'The class of links to follow. Instances of its subclasses are followed too'>
+	<returnType: #OrderedCollection description:
+	'All the entities that can reach this one following the direction of links of the given class'>
+	<doc:
+	'Answer a new collection with all the entities from which this one can be reached by following links of the given class, or of its subclasses, in their direction. Each entity appears once, the nearest first, and the entity itself is not included, even if a cycle leads back to it. Undirected links are followed both ways. Dead entities appear and are followed until they are removed from the model.'>
+	<example: 'self allUpstreamEntitiesLinkedBy: River'>
+	<seeAlso: #( allUpstreamEntities allDownstreamEntitiesLinkedBy:
+	   allEntitiesLinkedBy: previousEntitiesLinkedBy:
+	   allUpstreamLinksOfClass: )>
+	^ self entitiesReachedBy: [ :each |
+		  each previousEntitiesLinkedBy: aLinkClass ]
+]
+
 { #category : 'converting' }
 CMEntity >> asString [
 	" After adding the name of this entity, add its id "
@@ -265,6 +369,23 @@ CMEntity >> entitiesLinkedBy: aLinkClass [
 	#( linkedEntities nextEntitiesLinkedBy: previousEntitiesLinkedBy:
 	   allEntitiesLinkedBy: linksOfClass: )>
 	^ self otherEndsOf: (self linksOfClass: aLinkClass)
+]
+
+{ #category : 'links - private' }
+CMEntity >> entitiesReachedBy: aBlock [
+	"Answer the entities reached by repeatedly asking aBlock for the entities one step away from an entity. Each one appears once, the nearest first, and I am not among them. The set only remembers what was seen, so the order does not depend on hashes"
+
+	| seen waiting reached |
+	seen := IdentitySet with: self.
+	waiting := OrderedCollection with: self.
+	reached := OrderedCollection new.
+	[ waiting isEmpty ] whileFalse: [
+			(aBlock value: waiting removeFirst) do: [ :each |
+					(seen includes: each) ifFalse: [
+							seen add: each.
+							reached add: each.
+							waiting add: each ] ] ].
+	^ reached
 ]
 
 { #category : 'accessing' }
