@@ -32,8 +32,8 @@ Class Instance Variables:
 Class {
 	#name : 'CMEntity',
 	#superclass : 'Object',
-	#traits : 'TCMMath',
-	#classTraits : 'TCMMath classTrait',
+	#traits : 'TCMRandom + TCMMath',
+	#classTraits : 'TCMRandom classTrait + TCMMath classTrait',
 	#instVars : [
 		'id',
 		'context',
@@ -371,64 +371,6 @@ CMEntity >> printOn: aStream [
 		<< $-;
 		<< 'id: ';
 		<< self id asString
-]
-
-{ #category : 'random' }
-CMEntity >> random [
-	<api>
-	<doc: 'Answer a random float number from the range ] 0 , 1 [ '>
-		
-	^ self randomNumberGenerator next
-]
-
-{ #category : 'random' }
-CMEntity >> randomBetween: lowerBound and: higherBound [
-	<api>
-	<doc: 'Answer a random float number from the range [lowerBound, higherBound)'>
-		
-	^ lowerBound + (self random * (higherBound - lowerBound))
-]
-
-{ #category : 'random' }
-CMEntity >> randomColor [
-	<api>
-	<doc: 'Returns a random instance of Color (for which the amount of light in red, green, and blue are randomly choosen)'>
-
-	^ Color
-		  r: self random
-		  g: self random
-		  b: self random
-]
-
-{ #category : 'random' }
-CMEntity >> randomIntegerBetween: lowNumber and: highNumber [
-	<api>
-	<doc: 'Answer a random integer number from the range [lowerBound, higherBound)'>
-
-	^ (self randomBetween: lowNumber and: highNumber) rounded
-]
-
-{ #category : 'random' }
-CMEntity >> randomNumberGenerator [
-	^self simulationContext randomNumberGenerator
-]
-
-{ #category : 'random' }
-CMEntity >> selectRandomlyFrom: aCollection [
-
-	<api>
-	<doc: 'Returns a random element from aCollection.
-	If aCollection is empty, returns nil'>
-	^ aCollection
-		  ifEmpty: [ nil ]
-		  ifNotEmpty: [ aCollection atRandom: self randomNumberGenerator ] 
-]
-
-{ #category : 'random' }
-CMEntity >> shuffled: aCollection [
-	<api>
-	<doc: 'Returns a copy of aCollection randomly mixed.'>
-	^ aCollection asOrderedCollection shuffledBy: self randomNumberGenerator
 ]
 
 { #category : 'accessing' }

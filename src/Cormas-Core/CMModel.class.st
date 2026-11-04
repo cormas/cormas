@@ -1030,14 +1030,6 @@ CMModel >> initializeParameters [
 ]
 
 { #category : 'initialization' }
-CMModel >> initializeRandomNumberGeneratorClass: aRandomGeneratorClass seed: anInteger [
-	
-	randomNumberGenerator := aRandomGeneratorClass new.
-	randomNumberGenerator seed: anInteger
-		
-]
-
-{ #category : 'initialization' }
 CMModel >> initializeSpaceModel [
 	" Private - Setup the receiver's space model only if the model has a spatial entity cell class defined "
 

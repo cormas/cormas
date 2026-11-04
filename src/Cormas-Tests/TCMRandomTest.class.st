@@ -18,6 +18,41 @@ TCMRandomTest >> setUp [
 ]
 
 { #category : 'tests' }
+TCMRandomTest >> testEntitySelectsRandomlyFromEmptyCollectionRaisesAnError [
+
+	| entity |
+	entity := cormasModel newEntity: CMMockCow.
+
+	self should: [ entity selectRandomlyFrom: #(  ) ] raise: Error.
+	self should: [ entity selectRandomlyFrom: Set new ] raise: Error
+]
+
+{ #category : 'tests' }
+TCMRandomTest >> testEntitySelectsRandomlyFromSize [
+
+	| collection entity |
+	collection := #( apple banana avocado cherry strawberry ).
+	entity := cormasModel newEntity: CMMockCow.
+
+	self
+		assert: (entity selectRandomlyFrom: collection size: 3)
+		equals: #( cherry strawberry apple ) asOrderedCollection
+]
+
+{ #category : 'tests' }
+TCMRandomTest >> testEntityUsesTheGeneratorOfItsSimulationContext [
+
+	| entity fromEntity fromModel |
+	entity := cormasModel newEntity: CMMockCow.
+
+	fromEntity := entity random.
+	cormasModel simulationContext randomSeed: 42.
+	fromModel := cormasModel random.
+
+	self assert: fromEntity equals: fromModel
+]
+
+{ #category : 'tests' }
 TCMRandomTest >> testRandom [
 
 	| expected actual |
@@ -58,6 +93,12 @@ TCMRandomTest >> testSelectRandomlyFrom [
 	collection := #(apple banana avocado cherry strawberry).
 	
 	self assert: (cormasModel selectRandomlyFrom: collection) equals: #avocado
+]
+
+{ #category : 'tests' }
+TCMRandomTest >> testSelectRandomlyFromEmptyCollectionRaisesAnError [
+
+	self should: [ cormasModel selectRandomlyFrom: #(  ) ] raise: Error
 ]
 
 { #category : 'tests' }
