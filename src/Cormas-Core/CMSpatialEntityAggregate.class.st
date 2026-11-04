@@ -227,6 +227,18 @@ CMSpatialEntityAggregate >> isElementary [
 ]
 
 { #category : 'testing' }
+CMSpatialEntityAggregate >> isOnGrid [
+
+	<api>
+	<returnType: #Boolean description:
+	'Whether the aggregate has at least one cell'>
+	<doc:
+	'Answer whether the aggregate has at least one cell, directly or through the aggregates that compose it.'>
+	<example: 'self isOnGrid'>
+	^ self elementaryComponents isNotEmpty
+]
+
+{ #category : 'testing' }
 CMSpatialEntityAggregate >> isSpatialEntityElement [
 
 	^ false

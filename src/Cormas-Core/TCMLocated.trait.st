@@ -128,6 +128,19 @@ Return value: <Integer>"
 ]
 
 { #category : 'testing' }
+TCMLocated >> isOnGrid [
+
+	<api>
+	<returnType: #Boolean description:
+	'Whether the entity is currently on a cell'>
+	<doc:
+	'Answer whether the entity is currently on a cell. It is not after leaving its cell, or if it was never placed on one.'>
+	<example: 'self isOnGrid'>
+	<example: '(self agents select: [ :each | each isOnGrid ]) size'>
+	^ self cell isNotNil
+]
+
+{ #category : 'testing' }
 TCMLocated >> isSituated [
 "Purpose: tests the location somewhere in the spatial grid"
 	^cell notNil

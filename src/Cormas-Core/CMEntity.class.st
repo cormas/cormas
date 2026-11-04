@@ -301,6 +301,21 @@ CMEntity >> isDead: aBoolean [
 ]
 
 { #category : 'testing' }
+CMEntity >> isOnGrid [
+
+	<api>
+	<returnType: #Boolean description:
+	'Whether the entity currently has a location on the spatial grid'>
+	<doc:
+	'Answer whether the entity is currently located on the spatial grid. An entity can be on the grid and still be invisible, or be off the grid and still exist in the model.
+
+An agent is on the grid while it has a cell, a cell when it belongs to a grid, and an aggregate when it has at least one cell. Other entities are not on the grid.'>
+	<example: 'self isOnGrid'>
+	<example: '(self agents select: [ :each | each isOnGrid ]) size'>
+	^ false
+]
+
+{ #category : 'testing' }
 CMEntity >> isSituated [
 	
 	^false

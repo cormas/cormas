@@ -221,6 +221,18 @@ CMCell >> isFlatTopTriangle [
 ]
 
 { #category : 'testing' }
+CMCell >> isOnGrid [
+
+	<api>
+	<returnType: #Boolean description:
+	'Whether the cell belongs to a spatial grid'>
+	<doc:
+	'Answer whether the cell belongs to a spatial grid. This is true for all the cells created with the grid.'>
+	<example: 'self isOnGrid'>
+	^ spaceModel isNotNil
+]
+
+{ #category : 'testing' }
 CMCell >> isOnTheEdge [
 	"Answer if the cell is on the edge of the grid (false if the grid is torroidal)"
 
