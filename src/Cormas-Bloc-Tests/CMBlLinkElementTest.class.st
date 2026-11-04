@@ -72,6 +72,62 @@ CMBlLinkElementTest >> parentOfHorizontalRoadWithPov: aPointOfView [
 				    yourself))
 ]
 
+{ #category : 'tests - arrowhead' }
+CMBlLinkElementTest >> testArrowheadFollowsADiagonalLine [
+
+	| parent |
+	self gridWithNeighbourhood: 4.
+	parent := self parentOf: (self
+			           elementOfRoadFrom: (model cellAt: 2 at: 2)
+			           to: (model cellAt: 3 at: 3)).
+
+	self deny: (self isTransparentIn: parent at: 76 @ 74).
+	self deny: (self isTransparentIn: parent at: 74 @ 76).
+	self assert: (self isTransparentIn: parent at: 58 @ 56).
+	self assert: (self isTransparentIn: parent at: 84 @ 78)
+]
+
+{ #category : 'tests - arrowhead' }
+CMBlLinkElementTest >> testArrowheadGrowsWithTheThicknessOfTheLine [
+
+	| parent |
+	parent := self parentOfHorizontalRoadWithPov:
+		          (CMPointOfView color: Color red size: 0.25).
+
+	self
+		assert: (self hexColorIn: parent at: 60 @ 40)
+		equals: Color red asHexString.
+	self
+		assert: (self hexColorIn: parent at: 60 @ 56)
+		equals: Color red asHexString.
+	self assert: (self isTransparentIn: parent at: 50 @ 40)
+]
+
+{ #category : 'tests - arrowhead' }
+CMBlLinkElementTest >> testArrowheadHasTheColorOfTheLine [
+
+	| parent |
+	parent := self parentOfHorizontalRoadWithPov:
+		          (CMPointOfView color: Color red).
+
+	self
+		assert: (self hexColorIn: parent at: 74 @ 46)
+		equals: Color red asHexString
+]
+
+{ #category : 'tests - arrowhead' }
+CMBlLinkElementTest >> testArrowheadPointsToTheEndOfTheLink [
+
+	| parent |
+	self gridWithNeighbourhood: 4.
+	parent := self parentOf: (self
+			           elementOfRoadFrom: (model cellAt: 2 at: 3)
+			           to: (model cellAt: 2 at: 2)).
+
+	self deny: (self isTransparentIn: parent at: 54 @ 46).
+	self assert: (self isTransparentIn: parent at: 74 @ 46)
+]
+
 { #category : 'tests - point of view' }
 CMBlLinkElementTest >> testColorWithoutASizeDrawsAThinLineOfThatColor [
 
@@ -95,6 +151,21 @@ CMBlLinkElementTest >> testDefaultPovDrawsAThinDarkLine [
 	self assert: color alpha > 0.
 	self assert: color brightness < 0.3.
 	self assert: (self isTransparentIn: parent at: 64 @ 51)
+]
+
+{ #category : 'tests - arrowhead' }
+CMBlLinkElementTest >> testDirectedLinkHasAnArrowheadAtItsEnd [
+
+	| parent |
+	self gridWithNeighbourhood: 4.
+	parent := self parentOf: (self
+			           elementOfRoadFrom: (model cellAt: 2 at: 2)
+			           to: (model cellAt: 2 at: 3)).
+
+	self deny: (self isTransparentIn: parent at: 74 @ 46).
+	self deny: (self isTransparentIn: parent at: 74 @ 50).
+	self assert: (self isTransparentIn: parent at: 54 @ 46).
+	self assert: (self isTransparentIn: parent at: 84 @ 46)
 ]
 
 { #category : 'tests' }
@@ -144,6 +215,36 @@ CMBlLinkElementTest >> testDrawsNothingWhileAnEndIsNotOnTheGrid [
 	self assert: element endPoint isNil.
 	self assert:
 		(self isTransparentIn: (self parentOf: element) at: 48 @ 48)
+]
+
+{ #category : 'tests - arrowhead' }
+CMBlLinkElementTest >> testEndOffTheGridDrawsNoArrowhead [
+
+	| element |
+	self gridWithNeighbourhood: 4.
+
+	element := self
+		           elementOfRoadFrom: (model cellAt: 2 at: 3)
+		           to: (model newEntity: CMMockCow).
+
+	self assert:
+		(self isTransparentIn: (self parentOf: element) at: 74 @ 46)
+]
+
+{ #category : 'tests - arrowhead' }
+CMBlLinkElementTest >> testEndsAtTheSamePositionDrawWithoutAnError [
+
+	| cell element |
+	self gridWithNeighbourhood: 4.
+	cell := model cellAt: 2 at: 2.
+
+	element := self
+		           elementOfRoadFrom: (self newCowOn: cell)
+		           to: (self newCowOn: cell).
+
+	self assert: element startPoint equals: element endPoint.
+	self assert:
+		(self isTransparentIn: (self parentOf: element) at: 100 @ 100)
 ]
 
 { #category : 'tests' }
@@ -269,8 +370,28 @@ CMBlLinkElementTest >> testPovInvisibleOfALinkDrawsNothingVisible [
 	self assert: (self isTransparentIn: parent at: 64 @ 48)
 ]
 
+{ #category : 'tests - arrowhead' }
+CMBlLinkElementTest >> testRefreshFollowsAChangeOfDirection [
+
+	| highway element parent |
+	self gridWithNeighbourhood: 4.
+	highway := model
+		           newEntity: CMMockHighway
+		           from: (model cellAt: 2 at: 2)
+		           to: (model cellAt: 2 at: 3).
+	element := CMBlLinkElement for: highway.
+	parent := self parentOf: element.
+	self deny: (self isTransparentIn: parent at: 74 @ 46).
+
+	highway isOneWay: false.
+	element refresh.
+
+	self assert: (self isTransparentIn: parent at: 74 @ 46)
+]
+
 { #category : 'tests - point of view' }
 CMBlLinkElementTest >> testRefreshFollowsAChangeOfPov [
+	"This looks at the start of the line, because the arrowhead of a thick line is long"
 
 	| road element parent |
 	self gridWithNeighbourhood: 4.
@@ -280,13 +401,13 @@ CMBlLinkElementTest >> testRefreshFollowsAChangeOfPov [
 		        to: (model cellAt: 2 at: 3).
 	element := CMBlLinkElement for: road.
 	parent := self parentOf: element.
-	self assert: (self isTransparentIn: parent at: 64 @ 51).
+	self assert: (self isTransparentIn: parent at: 52 @ 51).
 
 	road pov: (CMPointOfView color: Color red size: 0.25).
 	element refresh.
 
 	self
-		assert: (self hexColorIn: parent at: 64 @ 51)
+		assert: (self hexColorIn: parent at: 52 @ 51)
 		equals: Color red asHexString
 ]
 
@@ -344,29 +465,31 @@ CMBlLinkElementTest >> testRefreshFollowsAnEndLeavingAndComingBackToTheGrid [
 
 { #category : 'tests - point of view' }
 CMBlLinkElementTest >> testSizeIsTheThicknessAsAFractionOfTheCell [
+	"This looks at the start of the line, because the arrowhead of a thick line is long"
 
 	| parent |
 	parent := self parentOfHorizontalRoadWithPov:
 		          (CMPointOfView color: Color red size: 0.25).
 
 	self
-		assert: (self hexColorIn: parent at: 64 @ 48)
+		assert: (self hexColorIn: parent at: 52 @ 48)
 		equals: Color red asHexString.
 	self
-		assert: (self hexColorIn: parent at: 64 @ 51)
+		assert: (self hexColorIn: parent at: 52 @ 51)
 		equals: Color red asHexString.
-	self assert: (self isTransparentIn: parent at: 64 @ 54)
+	self assert: (self isTransparentIn: parent at: 52 @ 54)
 ]
 
 { #category : 'tests - point of view' }
 CMBlLinkElementTest >> testSizeWithoutAColorDrawsAThickDarkLine [
+	"This looks at the start of the line, because the arrowhead of a thick line is long"
 
 	| parent |
 	parent := self parentOfHorizontalRoadWithPov:
 		          (CMPointOfView size: 0.25).
 
-	self assert: (self colorIn: parent at: 64 @ 51) brightness < 0.3.
-	self assert: (self colorIn: parent at: 64 @ 51) alpha > 0.9
+	self assert: (self colorIn: parent at: 52 @ 51) brightness < 0.3.
+	self assert: (self colorIn: parent at: 52 @ 51) alpha > 0.9
 ]
 
 { #category : 'tests - point of view' }
@@ -377,6 +500,16 @@ CMBlLinkElementTest >> testTransparentColorDrawsNothingVisible [
 		          (CMPointOfView color: Color transparent size: 0.25).
 
 	self assert: (self isTransparentIn: parent at: 64 @ 48)
+]
+
+{ #category : 'tests - arrowhead' }
+CMBlLinkElementTest >> testTransparentColorHidesTheArrowhead [
+
+	| parent |
+	parent := self parentOfHorizontalRoadWithPov:
+		          (CMPointOfView color: Color transparent).
+
+	self assert: (self isTransparentIn: parent at: 74 @ 46)
 ]
 
 { #category : 'tests' }
@@ -394,4 +527,19 @@ CMBlLinkElementTest >> testTwoAgentsOnOneCellHaveDifferentLineEnds [
 
 	self assert: element startPoint equals: 32 @ 32.
 	self assert: element endPoint equals: 64 @ 64
+]
+
+{ #category : 'tests - arrowhead' }
+CMBlLinkElementTest >> testUndirectedLinkHasNoArrowhead [
+
+	| parent |
+	self gridWithNeighbourhood: 4.
+	parent := self parentOf: (CMBlLinkElement for: (model
+				            newEntity: CMMockFriendship
+				            from: (model cellAt: 2 at: 2)
+				            to: (model cellAt: 2 at: 3))).
+
+	self deny: (self isTransparentIn: parent at: 64 @ 48).
+	self assert: (self isTransparentIn: parent at: 74 @ 46).
+	self assert: (self isTransparentIn: parent at: 54 @ 46)
 ]

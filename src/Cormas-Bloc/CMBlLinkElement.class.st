@@ -6,6 +6,7 @@ I draw a link as a straight line between its two ends, in their grid positions. 
 - Draw a line from the position of the first end of my link to the position of the second one.
 - Draw nothing while one of the ends is not on the grid, because the ends are the only source of my coordinates.
 - Use the color and the size of the active point of view of my link, as a fraction of the cell like the size of an agent. A thin dark line when it specifies neither. Ignore its shape, tile and border.
+- Draw an arrowhead at the second end when my link is directed, in the color of the line.
 - Ignore mouse events, so that clicks and drags go to what is around me.
 
 ## Collaborators:
@@ -29,12 +30,15 @@ I draw a link as a straight line between its two ends, in their grid positions. 
 - `link`: the link I draw.
 - `startPoint`: where the line starts, in pixels, with 0@0 at the origin of the grid.
 - `endPoint`: where the line ends, in the same coordinates.
+- `arrowhead`: the corners of the arrowhead, or nil when there is none.
 
 ### Implementation Points
 
 A line ends at the exact position of an agent, at the center of a cell, and at the average of the centers of the cells of an aggregate, which can fall outside a C-shaped or ring-shaped aggregate.
 
-The line is centered on the positions, so half of its width can extend outside my bounds.
+The line is centered on the positions, so half of its width and the arrowhead can extend outside my bounds.
+
+The arrowhead grows with the thickness of the line, with a minimum size so that it can be seen on a thin line. An agent at the end of the line is drawn on top of it and can hide it.
 "
 Class {
 	#name : 'CMBlLinkElement',
@@ -42,7 +46,8 @@ Class {
 	#instVars : [
 		'link',
 		'startPoint',
-		'endPoint'
+		'endPoint',
+		'arrowhead'
 	],
 	#category : 'Cormas-Bloc',
 	#package : 'Cormas-Bloc'
@@ -63,20 +68,28 @@ CMBlLinkElement class >> exampleBetweenTwoCells [
 
 { #category : 'drawing' }
 CMBlLinkElement >> aeDrawGeometryOn: aeCanvas [
-	"Draw a line between the ends instead of the geometry of an element"
+	"Draw a line between the ends and an arrowhead instead of the geometry of an element"
 
 	startPoint ifNil: [ ^ self ].
-	aeCanvas
-		pathFactory: [ :cairoContext |
-				cairoContext
-					moveTo: startPoint;
-					lineTo: endPoint ];
-		setBackgroundOff;
-		setOutskirtsCentered;
-		setBorderBlock: [
-				self border paint aeApplyTo: aeCanvas.
-				aeCanvas setBorderWidth: self border width ];
-		drawFigure
+	self drawLineOn: aeCanvas.
+	arrowhead ifNotNil: [ self drawArrowheadOn: aeCanvas ]
+]
+
+{ #category : 'geometry' }
+CMBlLinkElement >> arrowheadVerticesWithWidth: aLineWidth [
+	"Answer the corners of a triangle with its tip at the end of the line, large enough to be seen on a thin line. Ends at the same position have no direction, so they have no arrowhead"
+
+	| length direction side base |
+	startPoint = endPoint ifTrue: [ ^ nil ].
+	length := aLineWidth * 3 max: 8.
+	direction := endPoint - startPoint
+	             / (endPoint distanceTo: startPoint).
+	side := direction y negated @ direction x * (length / 2).
+	base := endPoint - (direction * length).
+	^ {
+		  endPoint.
+		  (base + side).
+		  (base - side) }
 ]
 
 { #category : 'geometry' }
@@ -100,6 +113,35 @@ CMBlLinkElement >> centerOfPoints: aCollectionOfPoints [
 		   into: [ :sum :each | sum + each ]) / aCollectionOfPoints size
 ]
 
+{ #category : 'drawing' }
+CMBlLinkElement >> drawArrowheadOn: aeCanvas [
+
+	aeCanvas pathFactory: [ :cairoContext |
+			cairoContext moveTo: arrowhead first.
+			arrowhead allButFirstDo: [ :each | cairoContext lineTo: each ].
+			cairoContext closePath ].
+	self border paint aeApplyAsBackgroundTo: aeCanvas opacity: 1.
+	aeCanvas
+		setBorderOff;
+		drawFigure
+]
+
+{ #category : 'drawing' }
+CMBlLinkElement >> drawLineOn: aeCanvas [
+
+	aeCanvas
+		pathFactory: [ :cairoContext |
+				cairoContext
+					moveTo: startPoint;
+					lineTo: endPoint ];
+		setBackgroundOff;
+		setOutskirtsCentered;
+		setBorderBlock: [
+				self border paint aeApplyTo: aeCanvas.
+				aeCanvas setBorderWidth: self border width ];
+		drawFigure
+]
+
 { #category : 'accessing' }
 CMBlLinkElement >> endPoint [
 
@@ -119,12 +161,18 @@ CMBlLinkElement >> positionOfLocatedEntity: anEntity [
 { #category : 'updating' }
 CMBlLinkElement >> refresh [
 
-	| pov |
+	| pov lineWidth |
 	pov := link activePov.
+	lineWidth := pov hasSize
+		             ifTrue: [ pov size * self cellSize ]
+		             ifFalse: [ 1 ].
+	arrowhead := nil.
 	(link ends allSatisfy: [ :each | each isOnGrid ])
 		ifTrue: [
 				startPoint := link from linkEndIn: self.
 				endPoint := link to linkEndIn: self.
+				link isDirected ifTrue: [
+					arrowhead := self arrowheadVerticesWithWidth: lineWidth ].
 				self extent: (startPoint max: endPoint) ]
 		ifFalse: [
 				startPoint := nil.
@@ -135,9 +183,7 @@ CMBlLinkElement >> refresh [
 				 paint: (pov hasColor
 						  ifTrue: [ pov color ]
 						  ifFalse: [ Color black ])
-				 width: (pov hasSize
-						  ifTrue: [ pov size * self cellSize ]
-						  ifFalse: [ 1 ]));
+				 width: lineWidth);
 		invalidate
 ]
 
