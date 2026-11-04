@@ -1036,6 +1036,48 @@ CMLinkTest >> testLinksOfClassFilterByClassIncludingSubclasses [
 		equals: { friendship }
 ]
 
+{ #category : 'tests - model' }
+CMLinkTest >> testModelAnswersLinksOfEveryClass [
+
+	| cow goat cell road highway friendship |
+	cow := self newCow.
+	goat := model newEntity: CMMockGoat.
+	cell := model cellAt: 2 at: 2.
+	road := model newEntity: CMMockRoad from: cow to: cell.
+	highway := model newEntity: CMMockHighway from: goat to: cell.
+	friendship := model newEntity: CMMockFriendship from: cow to: goat.
+
+	self assert: model links size equals: 3.
+	self assert: (model links includesAll: {
+				 road.
+				 highway.
+				 friendship })
+]
+
+{ #category : 'tests - model' }
+CMLinkTest >> testModelNoLongerAnswersARemovedLink [
+
+	| road other |
+	road := model
+		        newEntity: CMMockRoad
+		        from: (model cellAt: 1 at: 1)
+		        to: (model cellAt: 1 at: 2).
+	other := model
+		         newEntity: CMMockRoad
+		         from: (model cellAt: 2 at: 1)
+		         to: (model cellAt: 2 at: 2).
+
+	road delete.
+
+	self assert: model links asArray equals: { other }
+]
+
+{ #category : 'tests - model' }
+CMLinkTest >> testModelWithoutLinksAnswersAnEmptyCollection [
+
+	self assertEmpty: model links
+]
+
 { #category : 'tests - all entities' }
 CMLinkTest >> testNearestEntitiesComeFirst [
 

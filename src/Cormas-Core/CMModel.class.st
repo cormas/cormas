@@ -1064,6 +1064,19 @@ CMModel >> instanceSideParameters [
 ]
 
 { #category : 'accessing - entities' }
+CMModel >> links [
+
+	<api>
+	<returnType: #OrderedCollection description: 'All links in the model'>
+	<doc:
+	'Answer a collection containing all links currently present in the model, of every class. Use this method when you need to iterate over all links regardless of their class. Use entitiesOfClass: to get the links of one class.'>
+	<example: 'self links size'>
+	<example: 'self links do: [ :link | link deteriorate ]'>
+	<seeAlso: #( agents cells entitiesOfClass: newEntity:from:to: )>
+	^ self allEntitiesOfClass: CMLink
+]
+
+{ #category : 'accessing - entities' }
 CMModel >> lowerLeftCell [
 	<api>
 	<doc: 'Purpose: returns the cell located at the lower left location of the spatial grid'>
