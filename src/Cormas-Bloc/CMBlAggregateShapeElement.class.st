@@ -160,14 +160,3 @@ CMBlAggregateShapeElement >> sidesOfOnlyOneCell [
 	^ allSides asSet select: [ :each |
 		  (allSides occurrencesOf: each) = 1 ]
 ]
-
-{ #category : 'geometry' }
-CMBlAggregateShapeElement >> verticesOfCell: aCell [
-	"Answer the vertices of aCell in pixels, on a grid starting at 0@0"
-
-	| position extent |
-	position := self gridPositionOfCell: aCell.
-	extent := self cellExtentOf: aCell.
-	^ ((self neighbourhoodOf: aCell) blocCellVerticesFor: aCell)
-		  collect: [ :each | each * extent + position ]
-]

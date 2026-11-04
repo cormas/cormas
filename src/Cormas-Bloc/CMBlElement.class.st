@@ -178,6 +178,17 @@ CMBlElement >> update [
 	self inSpaceDo: [ self refresh ]
 ]
 
+{ #category : 'geometry' }
+CMBlElement >> verticesOfCell: aCell [
+	"Answer the vertices of aCell in pixels, on a grid starting at 0@0"
+
+	| position extent |
+	position := self gridPositionOfCell: aCell.
+	extent := self cellExtentOf: aCell.
+	^ ((self neighbourhoodOf: aCell) blocCellVerticesFor: aCell)
+		  collect: [ :each | each * extent + position ]
+]
+
 { #category : 'interaction' }
 CMBlElement >> whenLeftClickOnCellDo: aBlock [
 	"Evaluate aBlock with the cell whenever a cell shown under me is clicked with the left button. Only the last block given is kept"
