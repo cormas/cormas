@@ -97,6 +97,28 @@ CMBlInteractionTest >> dragAgentWithoutDroppingBy: aPoint [
 ]
 
 { #category : 'private' }
+CMBlInteractionTest >> dragFrom: aPoint by: aDelta [
+	"Drag from a point of the grid, which is not always the center of an element"
+
+	| start end |
+	start := element localPointToGlobal: aPoint.
+	end := element localPointToGlobal: aPoint + aDelta.
+	element eventSimulator events: {
+			(BlMouseDownEvent primary
+				 position: start;
+				 yourself).
+			(BlMouseMoveEvent primary
+				 position: end;
+				 delta: end - start;
+				 yourself).
+			(BlMouseUpEvent primary
+				 position: end;
+				 yourself) }.
+	space settle.
+	space settle
+]
+
+{ #category : 'private' }
 CMBlInteractionTest >> entityRightClickedAt: aPoint [
 
 	| clicked |
@@ -199,6 +221,23 @@ CMBlInteractionTest >> testDraggingACellUnderAnAggregatePans [
 	self assert: (element localPointToGlobal: 0 @ 0) x > before x
 ]
 
+{ #category : 'tests - links' }
+CMBlInteractionTest >> testDraggingALinePansAndDoesNotMoveIt [
+
+	| road before |
+	self openGrid: 4.
+	road := self
+		        showRoadFrom: (model cellAt: 2 at: 3)
+		        to: (model cellAt: 2 at: 4).
+	before := element localPointToGlobal: 0 @ 0.
+
+	self dragFrom: 90 @ 48 by: 20 @ 0.
+
+	self assert: (element localPointToGlobal: 0 @ 0) x > before x.
+	self assert: (self lineElementOf: road) startPoint equals: 80 @ 48.
+	self assert: (self lineElementOf: road) endPoint equals: 112 @ 48
+]
+
 { #category : 'tests' }
 CMBlInteractionTest >> testDraggingAnAgentDoesNotPan [
 
@@ -234,6 +273,35 @@ CMBlInteractionTest >> testDroppingAnAgentMovesItToTheCell [
 	self assert: cow cell equals: (model cellAt: 2 at: 3).
 	self deny: (model cellAt: 2 at: 2) hasOccupants.
 	self assert: (model cellAt: 2 at: 3) hasOccupants
+]
+
+{ #category : 'tests - links' }
+CMBlInteractionTest >> testDroppingAnAgentOnALineAboveAnAggregateLandsOnTheCellUnderneath [
+
+	self openGrid: 4.
+	self coverGridWithAnAggregate.
+	self
+		showRoadFrom: (model cellAt: 3 at: 1)
+		to: (model cellAt: 3 at: 4).
+
+	self drag: self agentElement by: 16 @ 32.
+
+	self assert: cow cell equals: (model cellAt: 3 at: 3)
+]
+
+{ #category : 'tests - links' }
+CMBlInteractionTest >> testDroppingAnAgentOnALineLandsOnTheCellUnderneath [
+
+	| road |
+	self openGrid: 4.
+	road := self
+		        showRoadFrom: (model cellAt: 3 at: 1)
+		        to: (model cellAt: 3 at: 4).
+
+	self drag: self agentElement by: 16 @ 32.
+
+	self assert: cow cell equals: (model cellAt: 3 at: 3).
+	self assert: (self lineElementOf: road) startPoint equals: 16 @ 80
 ]
 
 { #category : 'tests' }
