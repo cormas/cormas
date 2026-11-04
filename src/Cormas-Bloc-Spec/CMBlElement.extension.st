@@ -29,8 +29,12 @@ CMBlElement >> contextMenuCommandsFor: anEntity [
 		            (CMInspectSpaceContextMenuCommand forOwner: anEntity)
 		            with:
 		            (CMBrowseSpaceContextMenuCommand forOwner: anEntity).
-	anEntity isSpatialEntity ifFalse: [
-		commands add: (CMKillSpaceContextMenuCommand forOwner: anEntity) ].
+	anEntity isLink
+		ifTrue: [
+		commands add: (CMRemoveSpaceContextMenuCommand forOwner: anEntity) ]
+		ifFalse: [
+				anEntity isSpatialEntity ifFalse: [
+					commands add: (CMKillSpaceContextMenuCommand forOwner: anEntity) ] ].
 	^ commands sorted: [ :a :b | a class order < b class order ]
 ]
 

@@ -70,6 +70,18 @@ CMBlContextMenuTest >> testAgentMenuDoesNotOfferAggregates [
 ]
 
 { #category : 'tests' }
+CMBlContextMenuTest >> testAgentMenuDoesNotOfferRemove [
+
+	| cow |
+	self gridWithNeighbourhood: 4.
+	cow := self newCowOn: (model cellAt: 2 at: 3).
+
+	self deny:
+		((self namesIn: ((CMBlSpaceElement for: model) contextMenuFor: cow))
+			 includes: 'Remove')
+]
+
+{ #category : 'tests' }
 CMBlContextMenuTest >> testAgentMenuOffersKillAndItsActions [
 
 	| cow names |
@@ -124,6 +136,14 @@ CMBlContextMenuTest >> testCellMenuDoesNotOfferOtherAggregates [
 
 	self deny: ((self namesIn: self menuOfCellAt1x1) includes:
 			 (self nameOfAggregate: aggregate))
+]
+
+{ #category : 'tests' }
+CMBlContextMenuTest >> testCellMenuDoesNotOfferRemove [
+
+	self gridWithNeighbourhood: 4.
+
+	self deny: ((self namesIn: self menuOfCellAt1x1) includes: 'Remove')
 ]
 
 { #category : 'tests' }
@@ -207,6 +227,46 @@ CMBlContextMenuTest >> testChoosingKillRemovesTheAgentFromTheView [
 	item performMenuActionWith: nil.
 
 	self assert: (self hexColorIn: element at: 80 @ 48) equals: '000000'
+]
+
+{ #category : 'tests' }
+CMBlContextMenuTest >> testChoosingRemoveRemovesTheLinkFromTheView [
+
+	| cellA cellB road element item |
+	self gridWithNeighbourhood: 4.
+	cellA := model cellAt: 2 at: 2.
+	cellB := model cellAt: 2 at: 3.
+	road := (model newEntity: CMMockRoad from: cellA to: cellB)
+		        pov: (CMPointOfView color: Color blue size: 0.25);
+		        yourself.
+	element := CMBlSpaceElement for: model.
+	self assert: (self hexColorIn: element at: 52 @ 48) equals: '0000FF'.
+
+	item := self itemNamed: 'Remove' in: (element contextMenuFor: road).
+	item performMenuActionWith: nil.
+
+	self assert: (self hexColorIn: element at: 52 @ 48) equals: '000000'.
+	self assertEmpty: model links.
+	self assert: (model cells identityIncludes: cellA).
+	self assert: (model cells identityIncludes: cellB)
+]
+
+{ #category : 'tests' }
+CMBlContextMenuTest >> testLinkMenuOffersRemoveAndItsActions [
+
+	| road names |
+	self gridWithNeighbourhood: 4.
+	road := model
+		        newEntity: CMMockRoad
+		        from: (model cellAt: 2 at: 2)
+		        to: (model cellAt: 2 at: 3).
+
+	names := self namesIn:
+		         ((CMBlSpaceElement for: model) contextMenuFor: road).
+
+	self assert:
+		(names includesAll: { 'Inspect'. 'Browse'. 'Remove'. 'repair' }).
+	self deny: (names includes: 'Kill')
 ]
 
 { #category : 'tests' }

@@ -24,3 +24,10 @@ CMMockRoad >> pov: aPointOfView [
 
 	customPov := aPointOfView
 ]
+
+{ #category : 'actions' }
+CMMockRoad >> repair [
+
+	<action>
+	
+]
