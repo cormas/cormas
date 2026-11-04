@@ -1104,12 +1104,23 @@ Use this method only for instances of subclasses of #CMEntity. Regular Pharo obj
 
 { #category : 'instance creation - agents & objects' }
 CMModel >> newEntity: aClass locatedAt: aCell [
-	<api>
-	<doc: 'Creates a new instance of aClass and collects it, immediately, at the level of theXXXs collection.'>
 
+	<api>
+	<argument: #aClass type: #Class description:
+	'The class of the entity to create. It must be able to move to a cell, as agents do'>
+	<argument: #aCell type: #CMCell description:
+	'The cell on which the new entity is placed'>
+	<returnType: #CMEntity description:
+	'The newly created entity, located on the cell'>
+	<doc:
+	'Create a new instance of the given class, register it in the model, place it on the given cell and answer it.'>
+	<example:
+	'farmer := self newEntity: Farmer locatedAt: self centralCell'>
+	<seeAlso: #( newEntity: )>
 	| entity |
 	entity := self newEntity: aClass.
-	entity moveTo: aCell
+	entity moveTo: aCell.
+	^ entity
 ]
 
 { #category : 'initialization' }

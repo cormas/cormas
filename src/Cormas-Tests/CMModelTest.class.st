@@ -250,6 +250,23 @@ CMModelTest >> testLowerRightCell [
 		identicalTo: (m selectCellsOfColumn: 3) third
 ]
 
+{ #category : 'tests' }
+CMModelTest >> testNewEntityLocatedAtAnswersTheEntityOnThatCell [
+
+	| cell cow |
+	model
+		createGridNumberOfRows: 3
+		numberOfColumns: 3
+		neighbourhood: 4
+		closed: true.
+	cell := model cellAt: 2 at: 2.
+
+	cow := model newEntity: CMMockCow locatedAt: cell.
+
+	self assert: cow class equals: CMMockCow.
+	self assert: cow cell equals: cell
+]
+
 { #category : 'tests-accessing-entities' }
 CMModelTest >> testPickRandomCell [
 	| cell |
