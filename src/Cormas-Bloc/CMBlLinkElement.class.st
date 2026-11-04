@@ -7,7 +7,7 @@ I draw a link as a straight line between its two ends, in their grid positions. 
 - Draw nothing while one of the ends is not on the grid, because the ends are the only source of my coordinates.
 - Use the color and the size of the active point of view of my link, as a fraction of the cell like the size of an agent. A thin dark line when it specifies neither. Ignore its shape, tile and border.
 - Draw an arrowhead at the second end when my link is directed, in the color of the line.
-- Ignore mouse events, so that clicks and drags go to what is around me.
+- React to the mouse only on the line and the arrowhead, not on my bounding box. Clicks anywhere else go to what is around me.
 
 ## Collaborators:
 
@@ -20,6 +20,7 @@ I draw a link as a straight line between its two ends, in their grid positions. 
 - `for:` creates me for a link.
 - `update` shows the current state of the link.
 - `startPoint` and `endPoint` answer the ends of the line, in pixels, or nil while nothing is drawn.
+- `entity` answers my link, so that a right click opens its menu.
 - `moveEnd:to:` draws one end at a given position until the next update, as when an agent is being dragged.
 
 ```
@@ -78,6 +79,19 @@ CMBlLinkElement >> aeDrawGeometryOn: aeCanvas [
 	arrowhead ifNotNil: [ self drawArrowheadOn: aeCanvas ]
 ]
 
+{ #category : 'geometry testing' }
+CMBlLinkElement >> arrowheadContainsPoint: aPoint [
+	"A point is inside a triangle when it is on the same side of each of its edges"
+
+	| sides |
+	sides := arrowhead withIndexCollect: [ :each :index |
+			         | next |
+			         next := arrowhead atWrap: index + 1.
+			         (next x - each x * (aPoint y - each y)
+			          - (next y - each y * (aPoint x - each x))) sign ].
+	^ (sides includes: 1) not or: [ (sides includes: -1) not ]
+]
+
 { #category : 'geometry' }
 CMBlLinkElement >> arrowheadVerticesWithWidth: aLineWidth [
 	"Answer the corners of a triangle with its tip at the end of the line, large enough to be seen on a thin line. Ends at the same position have no direction, so they have no arrowhead"
@@ -116,6 +130,25 @@ CMBlLinkElement >> centerOfPoints: aCollectionOfPoints [
 		   into: [ :sum :each | sum + each ]) / aCollectionOfPoints size
 ]
 
+{ #category : 'geometry testing' }
+CMBlLinkElement >> containsGlobalPoint: aPoint [
+	"My bounds do not include half of the width of the line, nor all of the arrowhead, so only my shape decides"
+
+	^ self containsPoint: (self globalPointToLocal: aPoint)
+]
+
+{ #category : 'geometry testing' }
+CMBlLinkElement >> containsPoint: aPoint [
+	"Only the line and the arrowhead are hit, and not my bounding box. Ends at the same position draw nothing to hit"
+
+	(startPoint isNil or: [ startPoint = endPoint ]) ifTrue: [ ^ false ].
+	^ (aPoint
+		   onLineFrom: startPoint
+		   to: endPoint
+		   within: self border width / 2) or: [
+		  arrowhead isNotNil and: [ self arrowheadContainsPoint: aPoint ] ]
+]
+
 { #category : 'drawing' }
 CMBlLinkElement >> drawArrowheadOn: aeCanvas [
 
@@ -152,6 +185,12 @@ CMBlLinkElement >> drawLineOn: aeCanvas [
 CMBlLinkElement >> endPoint [
 
 	^ endPoint
+]
+
+{ #category : 'accessing' }
+CMBlLinkElement >> entity [
+
+	^ link
 ]
 
 { #category : 'geometry' }
@@ -230,10 +269,8 @@ CMBlLinkElement >> refreshLine [
 
 { #category : 'initialization' }
 CMBlLinkElement >> setUpFor: aLink [
-	"Clicks and drags go to what is around me"
 
 	link := aLink.
-	self preventMouseEvents.
 	self refresh
 ]
 

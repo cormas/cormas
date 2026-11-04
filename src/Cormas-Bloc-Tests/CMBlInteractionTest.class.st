@@ -40,6 +40,31 @@ CMBlInteractionTest >> cellElementOf: aCell [
 	^ element children detect: [ :each | each entity == aCell ]
 ]
 
+{ #category : 'private' }
+CMBlInteractionTest >> cellLeftClickedAt: aPoint [
+
+	| clicked |
+	element whenLeftClickOnCellDo: [ :cell | clicked := cell ].
+	self click: BlMouseButton primary at: aPoint.
+	^ clicked
+]
+
+{ #category : 'private' }
+CMBlInteractionTest >> click: aMouseButton at: aPoint [
+	"Click at a point of the grid, which is not always the center of an element"
+
+	| position |
+	position := element localPointToGlobal: aPoint.
+	element eventSimulator events: {
+			((BlMouseDownEvent button: aMouseButton)
+				 position: position;
+				 yourself).
+			((BlMouseUpEvent button: aMouseButton)
+				 position: position;
+				 yourself) }.
+	space settle
+]
+
 { #category : 'running' }
 CMBlInteractionTest >> coverGridWithAnAggregate [
 
@@ -72,6 +97,15 @@ CMBlInteractionTest >> dragAgentWithoutDroppingBy: aPoint [
 ]
 
 { #category : 'private' }
+CMBlInteractionTest >> entityRightClickedAt: aPoint [
+
+	| clicked |
+	element whenRightClickOnEntityDo: [ :entity | clicked := entity ].
+	self click: BlMouseButton secondary at: aPoint.
+	^ clicked
+]
+
+{ #category : 'private' }
 CMBlInteractionTest >> lineElementOf: aLink [
 
 	^ element children detect: [ :each |
@@ -91,6 +125,15 @@ CMBlInteractionTest >> openGrid: aNeighbourhood [
 	space
 		show;
 		settle
+]
+
+{ #category : 'private' }
+CMBlInteractionTest >> showDiagonalRoad [
+	"From 48@16 to 112@80, with its bounding box covering 0@0 to 112@80"
+
+	^ self
+		  showRoadFrom: (model cellAt: 1 at: 2)
+		  to: (model cellAt: 3 at: 4)
 ]
 
 { #category : 'private' }
@@ -223,6 +266,33 @@ CMBlInteractionTest >> testDroppingAnAgentOutsideTheGridPutsItBack [
 		equals: 48 @ 48
 ]
 
+{ #category : 'tests - links' }
+CMBlInteractionTest >> testLeftClickOnALineAboveAnAggregateReachesTheCellUnderneath [
+
+	self openGrid: 4.
+	self coverGridWithAnAggregate.
+	self
+		showRoadFrom: (model cellAt: 2 at: 3)
+		to: (model cellAt: 2 at: 4).
+
+	self
+		assert: (self cellLeftClickedAt: 90 @ 48)
+		equals: (model cellAt: 2 at: 3)
+]
+
+{ #category : 'tests - links' }
+CMBlInteractionTest >> testLeftClickOnALineReachesTheCellUnderneath [
+
+	self openGrid: 4.
+	self
+		showRoadFrom: (model cellAt: 2 at: 3)
+		to: (model cellAt: 2 at: 4).
+
+	self
+		assert: (self cellLeftClickedAt: 90 @ 48)
+		equals: (model cellAt: 2 at: 3)
+]
+
 { #category : 'tests' }
 CMBlInteractionTest >> testLeftClickOnAgentDoesNotCallTheBlockForCells [
 
@@ -234,6 +304,19 @@ CMBlInteractionTest >> testLeftClickOnAgentDoesNotCallTheBlockForCells [
 	space settle.
 
 	self assert: clicked isNil
+]
+
+{ #category : 'tests - links' }
+CMBlInteractionTest >> testLeftClickOnAnArrowheadReachesTheCellUnderneath [
+
+	self openGrid: 4.
+	self
+		showRoadFrom: (model cellAt: 2 at: 3)
+		to: (model cellAt: 2 at: 4).
+
+	self
+		assert: (self cellLeftClickedAt: 104 @ 48)
+		equals: (model cellAt: 2 at: 4)
 ]
 
 { #category : 'tests' }
@@ -360,6 +443,56 @@ CMBlInteractionTest >> testOtherLinksDoNotMoveDuringADrag [
 		equals: 48 @ 80
 ]
 
+{ #category : 'tests - links' }
+CMBlInteractionTest >> testRightClickInTheBoundsOfADiagonalLineReachesTheCell [
+
+	| road |
+	self openGrid: 4.
+	road := self showDiagonalRoad.
+
+	self assert: (self entityRightClickedAt: 72 @ 40) equals: road.
+	self
+		assert: (self entityRightClickedAt: 60 @ 70)
+		equals: (model cellAt: 3 at: 2)
+]
+
+{ #category : 'tests - links' }
+CMBlInteractionTest >> testRightClickNearALineReachesTheCell [
+
+	self openGrid: 4.
+	self
+		showRoadFrom: (model cellAt: 2 at: 3)
+		to: (model cellAt: 2 at: 4).
+
+	self
+		assert: (self entityRightClickedAt: 86 @ 58)
+		equals: (model cellAt: 2 at: 3)
+]
+
+{ #category : 'tests - links' }
+CMBlInteractionTest >> testRightClickOnALineCallsTheBlockWithTheLink [
+
+	| road |
+	self openGrid: 4.
+	road := self
+		        showRoadFrom: (model cellAt: 2 at: 3)
+		        to: (model cellAt: 2 at: 4).
+
+	self assert: (self entityRightClickedAt: 90 @ 48) equals: road
+]
+
+{ #category : 'tests - links' }
+CMBlInteractionTest >> testRightClickOnALineWithEndsAtTheSamePositionReachesTheAgent [
+
+	| goat |
+	self openGrid: 4.
+	goat := self newCowOn: (model cellAt: 2 at: 2).
+	self showRoadFrom: cow to: goat.
+
+	self assert:
+		((self entityRightClickedAt: 48 @ 48) isKindOf: CMMockCow)
+]
+
 { #category : 'tests' }
 CMBlInteractionTest >> testRightClickOnAgentCallsTheBlock [
 
@@ -371,6 +504,28 @@ CMBlInteractionTest >> testRightClickOnAgentCallsTheBlock [
 	space settle.
 
 	self assert: clicked equals: cow
+]
+
+{ #category : 'tests - links' }
+CMBlInteractionTest >> testRightClickOnAnAgentOnALineCallsTheBlockWithTheAgent [
+
+	self openGrid: 4.
+	self showRoadFrom: cow to: (model cellAt: 2 at: 4).
+
+	self assert: (self entityRightClickedAt: 48 @ 48) equals: cow
+]
+
+{ #category : 'tests - links' }
+CMBlInteractionTest >> testRightClickOnAnArrowheadCallsTheBlockWithTheLink [
+	"The arrowhead of a road 8 pixels wide is 24 pixels long and as wide at its base, with its tip at 112@48"
+
+	| road |
+	self openGrid: 4.
+	road := self
+		        showRoadFrom: (model cellAt: 2 at: 3)
+		        to: (model cellAt: 2 at: 4).
+
+	self assert: (self entityRightClickedAt: 94 @ 40) equals: road
 ]
 
 { #category : 'tests' }
@@ -385,6 +540,21 @@ CMBlInteractionTest >> testRightClickOnCellCallsTheBlock [
 	space settle.
 
 	self assert: clicked equals: (model cellAt: 1 at: 3)
+]
+
+{ #category : 'tests - links' }
+CMBlInteractionTest >> testRightClickOnOverlappingLinesCallsTheBlockWithTheLastOne [
+
+	| last |
+	self openGrid: 4.
+	self
+		showRoadFrom: (model cellAt: 2 at: 3)
+		to: (model cellAt: 2 at: 4).
+	last := self
+		        showRoadFrom: (model cellAt: 2 at: 3)
+		        to: (model cellAt: 2 at: 4).
+
+	self assert: (self entityRightClickedAt: 90 @ 48) equals: last
 ]
 
 { #category : 'tests' }
@@ -414,4 +584,30 @@ CMBlInteractionTest >> testRightClickReachesAnAgentAboveAnAggregate [
 	space settle.
 
 	self assert: clicked equals: cow
+]
+
+{ #category : 'tests - links' }
+CMBlInteractionTest >> testRightClickReachesTheThicknessOfALineAboveItsCenter [
+	"The road is 8 pixels wide, centered on the row at y = 48, and this half is inside the bounds of its element"
+
+	| road |
+	self openGrid: 4.
+	road := self
+		        showRoadFrom: (model cellAt: 2 at: 3)
+		        to: (model cellAt: 2 at: 4).
+
+	self assert: (self entityRightClickedAt: 86 @ 45) equals: road
+]
+
+{ #category : 'tests - links' }
+CMBlInteractionTest >> testRightClickReachesTheThicknessOfALineBelowItsCenter [
+	"The road is 8 pixels wide, centered on the row at y = 48, and this half is outside the bounds of its element"
+
+	| road |
+	self openGrid: 4.
+	road := self
+		        showRoadFrom: (model cellAt: 2 at: 3)
+		        to: (model cellAt: 2 at: 4).
+
+	self assert: (self entityRightClickedAt: 86 @ 51) equals: road
 ]
