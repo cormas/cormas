@@ -31,6 +31,7 @@ I draw a link as a straight line between its two ends, in their grid positions. 
 - `startPoint`: where the line starts, in pixels, with 0@0 at the origin of the grid.
 - `endPoint`: where the line ends, in the same coordinates.
 - `arrowhead`: the corners of the arrowhead, or nil when there is none.
+- `lineEnd`: where the drawn line stops, just inside the base of the arrowhead, so that it does not show behind the tip.
 
 ### Implementation Points
 
@@ -47,7 +48,8 @@ Class {
 		'link',
 		'startPoint',
 		'endPoint',
-		'arrowhead'
+		'arrowhead',
+		'lineEnd'
 	],
 	#category : 'Cormas-Bloc',
 	#package : 'Cormas-Bloc'
@@ -133,7 +135,7 @@ CMBlLinkElement >> drawLineOn: aeCanvas [
 		pathFactory: [ :cairoContext |
 				cairoContext
 					moveTo: startPoint;
-					lineTo: endPoint ];
+					lineTo: lineEnd ];
 		setBackgroundOff;
 		setOutskirtsCentered;
 		setBorderBlock: [
@@ -146,6 +148,15 @@ CMBlLinkElement >> drawLineOn: aeCanvas [
 CMBlLinkElement >> endPoint [
 
 	^ endPoint
+]
+
+{ #category : 'geometry' }
+CMBlLinkElement >> lineEndUnderArrowhead [
+	"Answer a point just past the base of the arrowhead, so that there is no gap between them and the line does not show behind the tip"
+
+	| base |
+	base := arrowhead second + arrowhead third / 2.
+	^ base + (endPoint - base / (endPoint distanceTo: base) * 0.5)
 ]
 
 { #category : 'geometry' }
@@ -173,6 +184,9 @@ CMBlLinkElement >> refresh [
 				endPoint := link to linkEndIn: self.
 				link isDirected ifTrue: [
 					arrowhead := self arrowheadVerticesWithWidth: lineWidth ].
+				lineEnd := arrowhead
+					           ifNil: [ endPoint ]
+					           ifNotNil: [ self lineEndUnderArrowhead ].
 				self extent: (startPoint max: endPoint) ]
 		ifFalse: [
 				startPoint := nil.

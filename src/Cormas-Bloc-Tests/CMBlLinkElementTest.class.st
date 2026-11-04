@@ -354,6 +354,19 @@ CMBlLinkElementTest >> testLineEndsAtTheExactPositionOfAnAgent [
 	self assert: element startPoint equals: 40 @ 56
 ]
 
+{ #category : 'tests - arrowhead' }
+CMBlLinkElementTest >> testLineReachesTheArrowheadWithoutAGap [
+
+	| parent |
+	parent := self parentOfHorizontalRoadWithPov:
+		          (CMPointOfView color: Color red size: 0.25).
+
+	{ 55. 56. 57 } do: [ :x |
+			self
+				assert: (self hexColorIn: parent at: x @ 48)
+				equals: Color red asHexString ]
+]
+
 { #category : 'tests - point of view' }
 CMBlLinkElementTest >> testPovInvisibleOfALinkDrawsNothingVisible [
 
@@ -492,6 +505,34 @@ CMBlLinkElementTest >> testSizeWithoutAColorDrawsAThickDarkLine [
 	self assert: (self colorIn: parent at: 52 @ 51) alpha > 0.9
 ]
 
+{ #category : 'tests - arrowhead' }
+CMBlLinkElementTest >> testTipOfTheArrowheadIsSharpOnAThickLine [
+	"The line would show as a square behind the tip if it went all the way to the end"
+
+	| parent |
+	parent := self parentOfHorizontalRoadWithPov:
+		          (CMPointOfView color: Color red size: 0.25).
+
+	self assert: (self isTransparentIn: parent at: 78 @ 44).
+	self assert: (self isTransparentIn: parent at: 78 @ 52)
+]
+
+{ #category : 'tests - arrowhead' }
+CMBlLinkElementTest >> testTranslucentLineDoesNotShowThroughTheArrowhead [
+	"Under the arrowhead, a translucent line would make it stronger"
+
+	| parent |
+	parent := self parentOfHorizontalRoadWithPov:
+		          (CMPointOfView color: (Color red alpha: 0.5) size: 0.25).
+
+	self assert: (((self formOf: parent) colorAt: 70 @ 48) red
+			 closeTo: 1
+			 precision: 0.05).
+	self assert: (((self formOf: parent) colorAt: 70 @ 48) alpha
+			 closeTo: 0.5
+			 precision: 0.05)
+]
+
 { #category : 'tests - point of view' }
 CMBlLinkElementTest >> testTransparentColorDrawsNothingVisible [
 
@@ -527,6 +568,21 @@ CMBlLinkElementTest >> testTwoAgentsOnOneCellHaveDifferentLineEnds [
 
 	self assert: element startPoint equals: 32 @ 32.
 	self assert: element endPoint equals: 64 @ 64
+]
+
+{ #category : 'tests - arrowhead' }
+CMBlLinkElementTest >> testUndirectedLineGoesAllTheWayToItsEnd [
+
+	| friendship element parent |
+	self gridWithNeighbourhood: 4.
+	friendship := model
+		              newEntity: CMMockFriendship
+		              from: (model cellAt: 2 at: 2)
+		              to: (model cellAt: 2 at: 3).
+	element := CMBlLinkElement for: friendship.
+	parent := self parentOf: element.
+
+	self deny: (self isTransparentIn: parent at: 78 @ 48)
 ]
 
 { #category : 'tests - arrowhead' }

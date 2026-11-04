@@ -45,6 +45,15 @@ CMBlSpaceElementTest >> assertCell2x3OfGrid: aNeighbourhood hasCenter: aCenter a
 		equals: '000000'
 ]
 
+{ #category : 'private' }
+CMBlSpaceElementTest >> roadFrom: anEntity to: anotherEntity color: aColor [
+	"A road thick enough to look at, 8 pixels wide"
+
+	^ (model newEntity: CMMockRoad from: anEntity to: anotherEntity)
+		  pov: (CMPointOfView color: aColor size: 0.25);
+		  yourself
+]
+
 { #category : 'tests' }
 CMBlSpaceElementTest >> testAgentAppearsAtItsPositionInTheCell [
 
@@ -56,6 +65,22 @@ CMBlSpaceElementTest >> testAgentAppearsAtItsPositionInTheCell [
 
 	self assert: (self hexColorIn: element at: 72 @ 56) equals: 'FF0000'.
 	self assert: (self hexColorIn: element at: 80 @ 48) equals: '000000'
+]
+
+{ #category : 'tests - links' }
+CMBlSpaceElementTest >> testAgentIsDrawnOnTopOfItsLink [
+
+	| element |
+	self gridWithNeighbourhood: 4.
+	self
+		roadFrom: (self newCowOn: (model cellAt: 2 at: 2))
+		to: (model cellAt: 2 at: 3)
+		color: Color blue.
+
+	element := CMBlSpaceElement for: model.
+
+	self assert: (self hexColorIn: element at: 48 @ 48) equals: 'FF0000'.
+	self assert: (self hexColorIn: element at: 55 @ 48) equals: '0000FF'
 ]
 
 { #category : 'tests' }
@@ -280,6 +305,140 @@ CMBlSpaceElementTest >> testExtentFitsTheGrid [
 		equals: 128 @ 96
 ]
 
+{ #category : 'tests - links' }
+CMBlSpaceElementTest >> testLinkCreatedLastIsOnTop [
+
+	| element |
+	self gridWithNeighbourhood: 4.
+	self
+		roadFrom: (model cellAt: 2 at: 2)
+		to: (model cellAt: 2 at: 3)
+		color: Color blue.
+	self
+		roadFrom: (model cellAt: 2 at: 2)
+		to: (model cellAt: 2 at: 3)
+		color: Color green.
+
+	element := CMBlSpaceElement for: model.
+
+	self
+		assert: (self hexColorIn: element at: 52 @ 48)
+		equals: Color green asHexString
+]
+
+{ #category : 'tests - links' }
+CMBlSpaceElementTest >> testLinkIsDrawnOnTopOfAggregates [
+
+	| element |
+	self gridWithNeighbourhood: 4.
+	self aggregateOf: model cells pov: (CMPointOfView color: Color green).
+	self
+		roadFrom: (model cellAt: 2 at: 2)
+		to: (model cellAt: 2 at: 3)
+		color: Color blue.
+
+	element := CMBlSpaceElement for: model.
+
+	self assert: (self hexColorIn: element at: 52 @ 48) equals: '0000FF'.
+	self
+		assert: (self hexColorIn: element at: 16 @ 16)
+		equals: Color green asHexString
+]
+
+{ #category : 'tests - links' }
+CMBlSpaceElementTest >> testLinkIsDrawnOnTopOfTheCells [
+
+	| element |
+	self gridWithNeighbourhood: 4.
+	self
+		roadFrom: (model cellAt: 2 at: 2)
+		to: (model cellAt: 2 at: 3)
+		color: Color blue.
+
+	element := CMBlSpaceElement for: model.
+
+	self assert: (self hexColorIn: element at: 52 @ 48) equals: '0000FF'.
+	self assert: (self hexColorIn: element at: 16 @ 16) equals: '000000'
+]
+
+{ #category : 'tests - links' }
+CMBlSpaceElementTest >> testLinkOfAnyClassIsDrawn [
+	"The default line is black, so it needs a white background to be seen"
+
+	| element |
+	self gridWithNeighbourhood: 4.
+	self aggregateOf: model cells pov: (CMPointOfView color: Color white).
+	(model
+		 newEntity: CMMockHighway
+		 from: (model cellAt: 2 at: 2)
+		 to: (model cellAt: 2 at: 3)) pov:
+		(CMPointOfView color: Color blue size: 0.25).
+	model
+		newEntity: CMMockFriendship
+		from: (model cellAt: 3 at: 2)
+		to: (model cellAt: 3 at: 3).
+
+	element := CMBlSpaceElement for: model.
+
+	self assert: (self hexColorIn: element at: 52 @ 48) equals: '0000FF'.
+	self deny: (self hexColorIn: element at: 64 @ 80) equals: 'FFFFFF'.
+	self assert: (self hexColorIn: element at: 64 @ 90) equals: 'FFFFFF'
+]
+
+{ #category : 'tests - links' }
+CMBlSpaceElementTest >> testLinkToADeadAggregateIsDrawnUntilItIsRemoved [
+
+	| aggregate element |
+	self gridWithNeighbourhood: 4.
+	aggregate := model
+		             createAggregate: CMMockAggregate
+		             from: { (model cellAt: 2 at: 2) }.
+	self
+		roadFrom: aggregate
+		to: (model cellAt: 2 at: 3)
+		color: Color blue.
+	aggregate isDead: true.
+
+	element := CMBlSpaceElement for: model.
+	self assert: (self hexColorIn: element at: 52 @ 48) equals: '0000FF'.
+
+	model removeDestroyedEntities.
+	element update.
+	self assert: (self hexColorIn: element at: 52 @ 48) equals: '000000'
+]
+
+{ #category : 'tests - links' }
+CMBlSpaceElementTest >> testLinkToAnInvisibleEntityIsDrawn [
+
+	| goat element |
+	self gridWithNeighbourhood: 4.
+	goat := model
+		        newEntity: CMMockGoat
+		        locatedAt: (model cellAt: 2 at: 2).
+	self roadFrom: goat to: (model cellAt: 2 at: 3) color: Color blue.
+	CMMockGoat activePovSelector: #povInvisible.
+
+	[
+		element := CMBlSpaceElement for: model.
+		self assert: (self hexColorIn: element at: 48 @ 48) equals: '0000FF' ]
+		ensure: [ CMMockGoat resetActivePovSelector ]
+]
+
+{ #category : 'tests - links' }
+CMBlSpaceElementTest >> testLinkWithAnEndOffTheGridIsNotDrawn [
+
+	| element |
+	self gridWithNeighbourhood: 4.
+	self
+		roadFrom: (model newEntity: CMMockCow)
+		to: (model cellAt: 2 at: 2)
+		color: Color blue.
+
+	element := CMBlSpaceElement for: model.
+
+	self assert: (self hexColorIn: element at: 48 @ 48) equals: '000000'
+]
+
 { #category : 'tests' }
 CMBlSpaceElementTest >> testOpaqueAggregateHidesItsCells [
 
@@ -311,6 +470,24 @@ CMBlSpaceElementTest >> testTranslucentAggregateTintsItsCells [
 	self assert: (blue closeTo: 0.5 precision: 0.02)
 ]
 
+{ #category : 'tests - links' }
+CMBlSpaceElementTest >> testUpdateDoesNotDrawALinkTwice [
+	"A second copy of a translucent line would make it stronger"
+
+	| element blue |
+	self gridWithNeighbourhood: 4.
+	self
+		roadFrom: (model cellAt: 2 at: 2)
+		to: (model cellAt: 2 at: 3)
+		color: (Color blue alpha: 0.5).
+	element := CMBlSpaceElement for: model.
+
+	element update.
+	blue := ((self formOf: element) colorAt: 52 @ 48) blue.
+
+	self assert: (blue closeTo: 0.5 precision: 0.02)
+]
+
 { #category : 'tests' }
 CMBlSpaceElementTest >> testUpdateDoesNotDrawAnAggregateTwice [
 	"A second copy of a translucent shape would make it stronger"
@@ -326,6 +503,25 @@ CMBlSpaceElementTest >> testUpdateDoesNotDrawAnAggregateTwice [
 	blue := ((self formOf: element) colorAt: 48 @ 48) blue.
 
 	self assert: (blue closeTo: 0.5 precision: 0.02)
+]
+
+{ #category : 'tests - links' }
+CMBlSpaceElementTest >> testUpdateFollowsAChangeOfPovOfALink [
+
+	| road element |
+	self gridWithNeighbourhood: 4.
+	road := self
+		        roadFrom: (model cellAt: 2 at: 2)
+		        to: (model cellAt: 2 at: 3)
+		        color: Color blue.
+	element := CMBlSpaceElement for: model.
+
+	road pov: (CMPointOfView color: Color green size: 0.25).
+	element update.
+
+	self
+		assert: (self hexColorIn: element at: 52 @ 48)
+		equals: Color green asHexString
 ]
 
 { #category : 'tests' }
@@ -347,6 +543,23 @@ CMBlSpaceElementTest >> testUpdateFollowsAMerge [
 	self assert: (self hexColorIn: element at: 48 @ 48) equals: '0000FF'
 ]
 
+{ #category : 'tests - links' }
+CMBlSpaceElementTest >> testUpdateFollowsAMovingAgent [
+
+	| cow element |
+	self gridWithNeighbourhood: 4.
+	cow := self newCowOn: (model cellAt: 2 at: 2).
+	self roadFrom: cow to: (model cellAt: 2 at: 4) color: Color blue.
+	element := CMBlSpaceElement for: model.
+	self assert: (self hexColorIn: element at: 55 @ 48) equals: '0000FF'.
+
+	cow moveTo: (model cellAt: 2 at: 3).
+	element update.
+
+	self assert: (self hexColorIn: element at: 55 @ 48) equals: '000000'.
+	self assert: (self hexColorIn: element at: 87 @ 48) equals: '0000FF'
+]
+
 { #category : 'tests' }
 CMBlSpaceElementTest >> testUpdateFollowsANewGrid [
 
@@ -364,6 +577,25 @@ CMBlSpaceElementTest >> testUpdateFollowsANewGrid [
 
 	self assert: (self formOf: element) extent equals: 64 @ 32.
 	self assert: (self hexColorIn: element at: 48 @ 16) equals: 'FFFFFF'
+]
+
+{ #category : 'tests - links' }
+CMBlSpaceElementTest >> testUpdateFollowsAnEndLeavingAndComingBackToTheGrid [
+
+	| cow cell element |
+	self gridWithNeighbourhood: 4.
+	cell := model cellAt: 2 at: 2.
+	cow := self newCowOn: cell.
+	self roadFrom: cow to: (model cellAt: 2 at: 3) color: Color blue.
+	element := CMBlSpaceElement for: model.
+
+	cow leave.
+	element update.
+	self assert: (self hexColorIn: element at: 55 @ 48) equals: '000000'.
+
+	cow moveTo: cell.
+	element update.
+	self assert: (self hexColorIn: element at: 55 @ 48) equals: '0000FF'
 ]
 
 { #category : 'tests' }
@@ -427,6 +659,23 @@ CMBlSpaceElementTest >> testUpdateRemovesDeadAgent [
 	element update.
 
 	self assert: (self hexColorIn: element at: 80 @ 48) equals: '000000'
+]
+
+{ #category : 'tests - links' }
+CMBlSpaceElementTest >> testUpdateRemovesDeletedLink [
+
+	| road element |
+	self gridWithNeighbourhood: 4.
+	road := self
+		        roadFrom: (model cellAt: 2 at: 2)
+		        to: (model cellAt: 2 at: 3)
+		        color: Color blue.
+	element := CMBlSpaceElement for: model.
+
+	road delete.
+	element update.
+
+	self assert: (self hexColorIn: element at: 52 @ 48) equals: '000000'
 ]
 
 { #category : 'tests' }
@@ -517,6 +766,22 @@ CMBlSpaceElementTest >> testUpdateShowsNewCellState [
 	element update.
 
 	self assert: (self hexColorIn: element at: 80 @ 48) equals: 'FFFFFF'
+]
+
+{ #category : 'tests - links' }
+CMBlSpaceElementTest >> testUpdateShowsNewLink [
+
+	| element |
+	self gridWithNeighbourhood: 4.
+	element := CMBlSpaceElement for: model.
+
+	self
+		roadFrom: (model cellAt: 2 at: 2)
+		to: (model cellAt: 2 at: 3)
+		color: Color blue.
+	element update.
+
+	self assert: (self hexColorIn: element at: 52 @ 48) equals: '0000FF'
 ]
 
 { #category : 'tests' }

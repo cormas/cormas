@@ -1,17 +1,19 @@
 "
-I draw the whole space of a Cormas model: its grid of cells, its aggregates on top of the cells, and its agents on top of everything.
+I draw the whole space of a Cormas model: its grid of cells, its aggregates on top of the cells, its links on top of the aggregates, and its agents on top of everything.
 
 ## Responsibility:
 
 - Show all the cells of my model in their grid positions.
 - Show the aggregates that have something to draw, the ones with the highest `id` on top.
+- Show the links with both ends on the grid, the ones with the highest `id` on top.
 - Show the agents that are on a cell, at their position in that cell.
 - Follow the model when `update` is sent: new and removed agents, moved agents and changed points of view.
 
 ## Collaborators:
 
-- `CMModel`: answers the cells, the aggregates and the agents.
+- `CMModel`: answers the cells, the aggregates, the links and the agents.
 - `CMBlAggregateShapeElement`: draws each aggregate.
+- `CMBlLinkElement`: draws each link.
 - `CMBlAgentElement`: draws each agent.
 
 ## Public API and Key Messages
@@ -27,6 +29,7 @@ I draw the whole space of a Cormas model: its grid of cells, its aggregates on t
 
 - `cormasModel`: the model I draw.
 - `aggregateElements`: the elements of the aggregates, recreated by each update.
+- `linkElements`: the elements of the links, recreated by each update.
 - `agentElements`: the elements of the agents, recreated by each update.
 
 ## Navigation and export
@@ -51,7 +54,8 @@ Class {
 		'followsParent',
 		'draggedElement',
 		'dragOrigin',
-		'aggregateElements'
+		'aggregateElements',
+		'linkElements'
 	],
 	#category : 'Cormas-Bloc',
 	#package : 'Cormas-Bloc'
@@ -165,6 +169,7 @@ CMBlSpaceElement >> initialize [
 
 	super initialize.
 	aggregateElements := #(  ).
+	linkElements := #(  ).
 	agentElements := #(  ).
 	zoom := 1.
 	offset := 0 @ 0.
@@ -213,14 +218,18 @@ CMBlSpaceElement >> panBy: aPoint [
 
 { #category : 'updating' }
 CMBlSpaceElement >> refresh [
-	"Aggregates are added after the cells and agents after the aggregates, so that each appears on top of the previous ones"
+	"Aggregates are added after the cells, links after the aggregates and agents after the links, so that each appears on top of the previous ones"
 
 	self removeChildren: aggregateElements.
+	self removeChildren: linkElements.
 	self removeChildren: agentElements.
 	super refresh.
 	aggregateElements := self visibleAggregates collect: [ :each |
 		                     CMBlAggregateShapeElement for: each ].
 	self addChildren: aggregateElements.
+	linkElements := self visibleLinks collect: [ :each |
+		                CMBlLinkElement for: each ].
+	self addChildren: linkElements.
 	agentElements := (cormasModel agents select: [ :each |
 		                  each isSituated ]) collect: [ :each |
 		                 self newElementForAgent: each ].
@@ -254,6 +263,15 @@ CMBlSpaceElement >> visibleAggregates [
 				   each isDead not and: [
 					   each activePov hasColor or: [ each activePov hasBorder ] ] ])
 		  sorted: [ :a :b | a id < b id ]
+]
+
+{ #category : 'updating' }
+CMBlSpaceElement >> visibleLinks [
+	"Answer the links with both ends on the grid, the ones to appear on top last"
+
+	^ (cormasModel links select: [ :each |
+		   each ends allSatisfy: [ :end | end isOnGrid ] ]) sorted: [ :a :b |
+		  a id < b id ]
 ]
 
 { #category : 'navigation' }
