@@ -15,6 +15,12 @@ CMLinkTest >> newCow [
 	^ model newEntity: CMMockCow locatedAt: (model cellAt: 1 at: 1)
 ]
 
+{ #category : 'tests - lifecycle' }
+CMLinkTest >> roadsOfModel [
+
+	^ model entitiesOfClass: CMMockRoad
+]
+
 { #category : 'tests - ends' }
 CMLinkTest >> testChangingTheAnswerOfEndsDoesNotChangeTheLink [
 
@@ -58,6 +64,74 @@ CMLinkTest >> testCreatedLinkKnowsItsEnds [
 	self assert: road class equals: CMMockRoad.
 	self assert: road from identicalTo: cellA.
 	self assert: road to identicalTo: cellB
+]
+
+{ #category : 'tests - lifecycle' }
+CMLinkTest >> testCreatingANewGridRemovesLinksToTheOldCells [
+
+	| agentRoad |
+	agentRoad := model
+		             newEntity: CMMockRoad
+		             from: self newCow
+		             to: (model newEntity: CMMockGoat).
+	model
+		newEntity: CMMockRoad
+		from: (model cellAt: 1 at: 1)
+		to: (model cellAt: 1 at: 2).
+
+	model
+		createGridNumberOfRows: 2
+		numberOfColumns: 2
+		neighbourhood: 4
+		closed: true.
+
+	self assert: self roadsOfModel asArray equals: { agentRoad }
+]
+
+{ #category : 'tests - lifecycle' }
+CMLinkTest >> testDeletingALinkDoesNotAffectItsEnds [
+
+	| cow goat road |
+	cow := self newCow.
+	goat := model newEntity: CMMockGoat.
+	road := model newEntity: CMMockRoad from: cow to: goat.
+
+	road delete.
+
+	self deny: cow isDead.
+	self deny: goat isDead.
+	self assert: cow isOnGrid.
+	self assert: ((model entitiesOfClass: CMMockCow) includes: cow).
+	self assert: ((model entitiesOfClass: CMMockGoat) includes: goat)
+]
+
+{ #category : 'tests - lifecycle' }
+CMLinkTest >> testDeletingALinkRemovesItFromTheModelImmediately [
+
+	| road |
+	road := model
+		        newEntity: CMMockRoad
+		        from: (model cellAt: 1 at: 1)
+		        to: (model cellAt: 1 at: 2).
+
+	road delete.
+
+	self assertEmpty: self roadsOfModel
+]
+
+{ #category : 'tests - lifecycle' }
+CMLinkTest >> testDeletingALinkTwiceIsHarmless [
+
+	| road |
+	road := model
+		        newEntity: CMMockRoad
+		        from: (model cellAt: 1 at: 1)
+		        to: (model cellAt: 1 at: 2).
+
+	road delete.
+	road delete.
+
+	self assertEmpty: self roadsOfModel
 ]
 
 { #category : 'tests - creating' }
@@ -208,6 +282,76 @@ CMLinkTest >> testLinkCanConnectAnyTypesOfEntities [
 			self assert: link to identicalTo: ends value ]
 ]
 
+{ #category : 'tests - lifecycle' }
+CMLinkTest >> testLinkGoesWhenACellEndIsRemoved [
+
+	| cell |
+	cell := model cellAt: 1 at: 1.
+	model newEntity: CMMockRoad from: cell to: (model cellAt: 2 at: 2).
+
+	cell isDead: true.
+	self assert: self roadsOfModel size equals: 1.
+
+	model removeDestroyedEntities.
+	self assertEmpty: self roadsOfModel
+]
+
+{ #category : 'tests - lifecycle' }
+CMLinkTest >> testLinkGoesWhenAnAggregateEndIsRemoved [
+
+	| aggregate |
+	aggregate := model
+		             createAggregate: CMMockAggregate
+		             from: { (model cellAt: 1 at: 1) }.
+	model
+		newEntity: CMMockRoad
+		from: aggregate
+		to: (model cellAt: 2 at: 2).
+
+	aggregate isDead: true.
+	self assert: self roadsOfModel size equals: 1.
+
+	model removeDestroyedEntities.
+	self assertEmpty: self roadsOfModel
+]
+
+{ #category : 'tests - lifecycle' }
+CMLinkTest >> testLinkGoesWhenAnEndDies [
+
+	| cow |
+	cow := self newCow.
+	model newEntity: CMMockRoad from: (model cellAt: 2 at: 2) to: cow.
+
+	cow die.
+
+	self assertEmpty: self roadsOfModel
+]
+
+{ #category : 'tests - lifecycle' }
+CMLinkTest >> testLinkGoesWhenAnEndIsDeleted [
+
+	| cow |
+	cow := self newCow.
+	model newEntity: CMMockRoad from: cow to: (model cellAt: 2 at: 2).
+
+	cow delete.
+
+	self assertEmpty: self roadsOfModel
+]
+
+{ #category : 'tests - lifecycle' }
+CMLinkTest >> testLinkGoesWhenAnEndIsRemovedWithoutBeingFlaggedDead [
+
+	| cow |
+	cow := self newCow.
+	model newEntity: CMMockRoad from: cow to: (model cellAt: 2 at: 2).
+
+	model removeEntity: cow.
+
+	self deny: cow isDead.
+	self assertEmpty: self roadsOfModel
+]
+
 { #category : 'tests - ends' }
 CMLinkTest >> testLinkIsDirectedByDefault [
 
@@ -218,6 +362,38 @@ CMLinkTest >> testLinkIsDirectedByDefault [
 		        to: (model cellAt: 1 at: 2).
 
 	self assert: road isDirected
+]
+
+{ #category : 'tests - lifecycle' }
+CMLinkTest >> testLinkSurvivesAnEndFlaggedDeadUntilItIsRemoved [
+
+	| cow road |
+	cow := self newCow.
+	road := model
+		        newEntity: CMMockRoad
+		        from: cow
+		        to: (model cellAt: 2 at: 2).
+
+	cow isDead: true.
+	self assert: self roadsOfModel asArray equals: { road }.
+
+	model removeDestroyedEntities.
+	self assertEmpty: self roadsOfModel
+]
+
+{ #category : 'tests - lifecycle' }
+CMLinkTest >> testLinkSurvivesAnEndLeavingTheGrid [
+
+	| cow road |
+	cow := self newCow.
+	road := model
+		        newEntity: CMMockRoad
+		        from: cow
+		        to: (model cellAt: 2 at: 2).
+
+	cow leave.
+
+	self assert: self roadsOfModel asArray equals: { road }
 ]
 
 { #category : 'tests - ends' }
@@ -245,6 +421,55 @@ CMLinkTest >> testOtherEndOfAnswersTheOtherEnd [
 
 	self assert: (road otherEndOf: cellA) identicalTo: cellB.
 	self assert: (road otherEndOf: cellB) identicalTo: cellA
+]
+
+{ #category : 'tests - lifecycle' }
+CMLinkTest >> testReinitializingEntitiesRemovesLinksToCellsAndAgents [
+
+	| cow |
+	cow := self newCow.
+	model
+		newEntity: CMMockRoad
+		from: (model cellAt: 1 at: 1)
+		to: (model cellAt: 1 at: 2).
+	model newEntity: CMMockRoad from: cow to: (model cellAt: 1 at: 2).
+
+	model initEntities.
+
+	self assertEmpty: self roadsOfModel
+]
+
+{ #category : 'tests - lifecycle' }
+CMLinkTest >> testRemovingAnEndRemovesAllItsLinksAndNoOthers [
+
+	| cow cellA cellB other |
+	cow := self newCow.
+	cellA := model cellAt: 2 at: 2.
+	cellB := model cellAt: 2 at: 3.
+	model newEntity: CMMockRoad from: cow to: cellA.
+	model newEntity: CMMockRoad from: cellB to: cow.
+	other := model newEntity: CMMockRoad from: cellA to: cellB.
+
+	cow delete.
+
+	self assert: self roadsOfModel asArray equals: { other }
+]
+
+{ #category : 'tests - lifecycle' }
+CMLinkTest >> testRemovingAnEndWithLinksOfSeveralClassesRemovesThemAll [
+
+	| cow |
+	cow := self newCow.
+	model newEntity: CMMockRoad from: cow to: (model cellAt: 2 at: 2).
+	model
+		newEntity: CMMockFriendship
+		from: cow
+		to: (model cellAt: 2 at: 3).
+
+	cow delete.
+
+	self assertEmpty: self roadsOfModel.
+	self assertEmpty: (model entitiesOfClass: CMMockFriendship)
 ]
 
 { #category : 'tests - ends' }

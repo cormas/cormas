@@ -38,7 +38,8 @@ Class {
 		'id',
 		'context',
 		'cormasModel',
-		'group'
+		'group',
+		'links'
 	],
 	#classInstVars : [
 		'currentId',
@@ -191,6 +192,13 @@ CMEntity >> activePov [
 	"Answer the point of view currently selected for the class of the receiver. This is how visualizations should ask an entity how to display itself."
 
 	^ self perform: self class activePovSelector
+]
+
+{ #category : 'links - private' }
+CMEntity >> addLink: aLink [
+
+	links ifNil: [ links := OrderedCollection new ].
+	links add: aLink
 ]
 
 { #category : 'converting' }
@@ -394,11 +402,17 @@ CMEntity >> printOn: aStream [
 		<< self id asString
 ]
 
+{ #category : 'links - private' }
+CMEntity >> removeLink: aLink [
+
+	links remove: aLink ifAbsent: [ ]
+]
+
 { #category : 'initialize-release' }
 CMEntity >> removedFromModel [
-	"The model has just stopped holding me. This is the place to react to it, because it holds for every way of removing an entity"
+	"The model has just stopped holding me, so my links can no longer exist. This holds for every way of removing an entity"
 
-	
+	links ifNotNil: [ links copy do: [ :each | each delete ] ]
 ]
 
 { #category : 'accessing' }

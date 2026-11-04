@@ -21,6 +21,7 @@ To use me, create a subclass of me in your model, as with cells and agents.
 - `ends` answers both of them.
 - `otherEndOf:` answers the end that is not the given one.
 - `isDirected` answers whether I have a direction. Override it to answer false, or an attribute of mine.
+- `delete` removes me from the model immediately, and does not affect my ends.
 
 ```
 road := self newEntity: Road from: cellA to: cellB.
@@ -37,6 +38,8 @@ road otherEndOf: cellA. ""cellB""
 My ends never change. To connect something else, delete me and create a new link.
 
 An undirected link still has a `from` and a `to`, which are just the order given at creation.
+
+I do not know whether my ends are alive. I am removed when one of them is removed from the model, by any route, and not before. I have no dead state: `isDead` only answers false because the model asks it of every entity.
 "
 Class {
 	#name : 'CMLink',
@@ -60,6 +63,19 @@ CMLink class >> exampleBetweenTwoAgents [
 		  newEntity: self
 		  from: (model newEntity: CMAgent)
 		  to: (model newEntity: CMAgent)
+]
+
+{ #category : 'controlling' }
+CMLink >> delete [
+
+	<api>
+	<doc:
+	'Remove the link from the model immediately. Its ends are not affected. A link has no dead state: it either exists or not.
+
+A link is also removed when one of its ends is removed from the model.'>
+	<example: 'road delete'>
+	<seeAlso: #( from to )>
+	cormasModel removeEntity: self
 ]
 
 { #category : 'accessing' }
@@ -136,11 +152,21 @@ CMLink >> otherEndOf: anEntity [
 		anEntity printString , ' is not an end of ' , self printString
 ]
 
+{ #category : 'initialize-release' }
+CMLink >> removedFromModel [
+
+	super removedFromModel.
+	from removeLink: self.
+	to removeLink: self
+]
+
 { #category : 'private' }
 CMLink >> setFrom: anEntity to: anotherEntity [
 
 	from := anEntity.
-	to := anotherEntity
+	to := anotherEntity.
+	from addLink: self.
+	to addLink: self
 ]
 
 { #category : 'accessing' }
