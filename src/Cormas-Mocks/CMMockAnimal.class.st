@@ -2,7 +2,8 @@ Class {
 	#name : 'CMMockAnimal',
 	#superclass : 'CMAgent',
 	#instVars : [
-		'energy'
+		'energy',
+		'timesRemovedFromModel'
 	],
 	#classInstVars : [
 		'initialEnergy'
@@ -48,8 +49,21 @@ CMMockAnimal >> pov [
 	^ CMPointOfView size: 0.3 + (energy * 0.1)
 ]
 
+{ #category : 'initialize-release' }
+CMMockAnimal >> removedFromModel [
+
+	super removedFromModel.
+	timesRemovedFromModel := self timesRemovedFromModel + 1
+]
+
 { #category : 'control' }
 CMMockAnimal >> step [
 	
 	self randomWalk
+]
+
+{ #category : 'accessing' }
+CMMockAnimal >> timesRemovedFromModel [
+
+	^ timesRemovedFromModel ifNil: [ 0 ]
 ]

@@ -3,6 +3,9 @@ Class {
 	#superclass : 'CMCell',
 	#traits : 'TCMCellularAutomaton',
 	#classTraits : 'TCMCellularAutomaton classTrait',
+	#instVars : [
+		'timesRemovedFromModel'
+	],
 	#category : 'Cormas-Mocks',
 	#package : 'Cormas-Mocks'
 }
@@ -55,4 +58,17 @@ CMMockCell >> pov [
 	^ state = #dead
 		ifTrue: [ CMPointOfView color: Color black ]
 		ifFalse: [ CMPointOfView color: Color white ]
+]
+
+{ #category : 'initialize-release' }
+CMMockCell >> removedFromModel [
+
+	super removedFromModel.
+	timesRemovedFromModel := self timesRemovedFromModel + 1
+]
+
+{ #category : 'accessing' }
+CMMockCell >> timesRemovedFromModel [
+
+	^ timesRemovedFromModel ifNil: [ 0 ]
 ]

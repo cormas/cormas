@@ -388,6 +388,13 @@ CMEntity >> printOn: aStream [
 		<< self id asString
 ]
 
+{ #category : 'initialize-release' }
+CMEntity >> removedFromModel [
+	"The model has just stopped holding me. This is the place to react to it, because it holds for every way of removing an entity"
+
+	
+]
+
 { #category : 'accessing' }
 CMEntity >> simulationContext [
 	<api>

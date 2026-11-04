@@ -1260,38 +1260,40 @@ CMModel >> removeDestroyedEntities [
 
 { #category : 'referencing entities' }
 CMModel >> removeDestroyedEntities: aClass [
-
 	"removes all the dead or destroyed intances of type: aClass"
 
 	| theEntities destroyedEntities |
 	theEntities := self entitiesOfClass: aClass.
-	theEntities ifNotNil: [ 
-		destroyedEntities := theEntities select: [ :a | a isDead ].
-		destroyedEntities do: [ :a | 
-			a isSituated ifTrue: [ a leave ].
-			theEntities remove: a ] ]
+	theEntities ifNotNil: [
+			destroyedEntities := theEntities select: [ :a | a isDead ].
+			destroyedEntities do: [ :a |
+					a isSituated ifTrue: [ a leave ].
+					theEntities remove: a.
+					a removedFromModel ] ]
 ]
 
 { #category : 'referencing entities' }
 CMModel >> removeEntity: anEntity [
 	"removes the dead or destroyed Entity"
-	
-	anEntity isSituated ifTrue: [anEntity leave].
+
+	anEntity isSituated ifTrue: [ anEntity leave ].
 	(self entitiesOfClass: anEntity class)
 		remove: anEntity
-		ifAbsent: [nil]
+		ifAbsent: [ ^ self ].
+	anEntity removedFromModel
 ]
 
 { #category : 'init-release entities' }
 CMModel >> resetEntities: aClass [
 	"Initialize the Entity classes of the model and creates the new collector (OrderedCollection)"
-	
-	| entities |
-	
+
+	| entities remaining |
 	entities := self entitiesOfClass: aClass.
-	entities reverseDo: [:anEntity | anEntity delete].
+	entities reverseDo: [ :anEntity | anEntity delete ].
 	aClass currentId: 0.
-	entities removeAll
+	remaining := entities copy.
+	entities removeAll.
+	remaining do: [ :anEntity | anEntity removedFromModel ]
 ]
 
 { #category : 'accessing - entities' }

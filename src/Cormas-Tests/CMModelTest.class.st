@@ -135,6 +135,17 @@ CMModelTest >> testCreateGridXYNeighborHoodClosed [
 	self assert: (model selectCellsOfLine: 1) size equals: 4
 ]
 
+{ #category : 'tests - removing entities' }
+CMModelTest >> testDeletingAnAgentTellsItOnce [
+
+	| cow |
+	cow := model newEntity: CMMockCow.
+
+	cow delete.
+
+	self assert: cow timesRemovedFromModel equals: 1
+]
+
 { #category : 'tests' }
 CMModelTest >> testDominance [
 	| dominance |
@@ -186,6 +197,28 @@ CMModelTest >> testDominanceIsZeroWhenCategoriesAreEquallyRepresented [
 	self assert: dominance equals: 0
 ]
 
+{ #category : 'tests - removing entities' }
+CMModelTest >> testDyingTellsTheEntityOnce [
+
+	| cow |
+	cow := model newEntity: CMMockCow.
+
+	cow die.
+
+	self assert: cow timesRemovedFromModel equals: 1
+]
+
+{ #category : 'tests - removing entities' }
+CMModelTest >> testFlaggingDeadDoesNotTellTheEntityBeforeItIsRemoved [
+
+	| cow |
+	cow := model newEntity: CMMockCow.
+
+	cow isDead: true.
+
+	self assert: cow timesRemovedFromModel equals: 0
+]
+
 { #category : 'tests' }
 CMModelTest >> testIsCormasAgentClass [
 	
@@ -220,6 +253,17 @@ CMModelTest >> testIsCormasModelClass [
 	self assert: CMMockModel isCormasModelClass.
 	self deny: CMMockGoat isCormasModelClass.
 	self deny: CMMockCell isCormasModelClass
+]
+
+{ #category : 'tests - removing entities' }
+CMModelTest >> testLeavingTheGridDoesNotTellTheEntity [
+
+	| cow |
+	cow := model newEntity: CMMockCow locatedAt: (model cellAt: 2 at: 2).
+
+	cow leave.
+
+	self assert: cow timesRemovedFromModel equals: 0
 ]
 
 { #category : 'tests-accessing-entities' }
@@ -359,6 +403,65 @@ CMModelTest >> testPickRandomEntityOfClassConstrainedBy [
 CMModelTest >> testPickRandomUnoccupiedCell [
 
 	self assert: model pickRandomUnoccupiedCell theOccupants isEmpty
+]
+
+{ #category : 'tests - removing entities' }
+CMModelTest >> testRemovingAnEntityAlreadyRemovedDoesNotTellItAgain [
+
+	| cow |
+	cow := model newEntity: CMMockCow.
+	model removeEntity: cow.
+
+	model removeEntity: cow.
+
+	self assert: cow timesRemovedFromModel equals: 1
+]
+
+{ #category : 'tests - removing entities' }
+CMModelTest >> testRemovingAnEntityTellsIt [
+
+	| cow |
+	cow := model newEntity: CMMockCow.
+
+	model removeEntity: cow.
+
+	self assert: cow timesRemovedFromModel equals: 1
+]
+
+{ #category : 'tests - removing entities' }
+CMModelTest >> testRemovingDestroyedEntitiesTellsOnlyTheDeadOnes [
+
+	| dead alive |
+	dead := model newEntity: CMMockCow.
+	alive := model newEntity: CMMockCow.
+	dead isDead: true.
+
+	model removeDestroyedEntities.
+
+	self assert: dead timesRemovedFromModel equals: 1.
+	self assert: alive timesRemovedFromModel equals: 0
+]
+
+{ #category : 'tests - removing entities' }
+CMModelTest >> testResettingCellsTellsThemOnce [
+
+	| cell |
+	cell := model cellAt: 2 at: 2.
+
+	model resetEntities: cell class.
+
+	self assert: cell timesRemovedFromModel equals: 1
+]
+
+{ #category : 'tests - removing entities' }
+CMModelTest >> testResettingEntitiesTellsThem [
+
+	| cow |
+	cow := model newEntity: CMMockCow.
+
+	model resetEntities: CMMockCow.
+
+	self assert: cow timesRemovedFromModel equals: 1
 ]
 
 { #category : 'tests-accessing-entities' }
