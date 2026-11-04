@@ -175,7 +175,12 @@ CMDocumentationBrowser >> defaultLayout [
 { #category : 'as yet unclassified' }
 CMDocumentationBrowser >> documentedClasses [
 
-	^ { CMModel . CMCell . CMAgent . CMSpatialEntityAggregate }
+	^ {
+		  CMModel.
+		  CMCell.
+		  CMAgent.
+		  CMSpatialEntityAggregate.
+		  CMLink }
 ]
 
 { #category : 'examples' }

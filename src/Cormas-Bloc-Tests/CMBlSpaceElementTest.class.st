@@ -666,6 +666,25 @@ CMBlSpaceElementTest >> testUpdateFollowsTheActivePovOfAnAggregate [
 		CMMockAggregate resetActivePovSelector ]
 ]
 
+{ #category : 'tests - links' }
+CMBlSpaceElementTest >> testUpdateFollowsTheSelectedPovOfALinkClass [
+
+	| element |
+	self gridWithNeighbourhood: 4.
+	self
+		roadFrom: (model cellAt: 2 at: 2)
+		to: (model cellAt: 2 at: 3)
+		color: Color blue.
+	element := CMBlSpaceElement for: model.
+	self assert: (self hexColorIn: element at: 52 @ 48) equals: '0000FF'.
+
+	CMMockRoad activePovSelector: #povInvisible.
+	[
+		element update.
+		self assert: (self hexColorIn: element at: 52 @ 48) equals: '000000' ]
+		ensure: [ CMMockRoad resetActivePovSelector ]
+]
+
 { #category : 'tests' }
 CMBlSpaceElementTest >> testUpdateKeepsAgentsOnTopOfAggregates [
 
