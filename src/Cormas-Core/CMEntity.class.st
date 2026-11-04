@@ -236,6 +236,45 @@ CMEntity >> allDownstreamEntitiesLinkedBy: aLinkClass [
 		  each nextEntitiesLinkedBy: aLinkClass ]
 ]
 
+{ #category : 'links - all links' }
+CMEntity >> allDownstreamLinks [
+
+	<api>
+	<returnType: #OrderedCollection description:
+	'All the links that can be followed from this entity in their direction'>
+	<doc:
+	'Answer a new collection with all the links that can be reached from this entity by following outgoing links repeatedly. Each link appears once, the nearest first. A link leading back to this entity is included. Undirected links are followed both ways.
+
+This follows every kind of link, so adding a new link class to a model changes the answer. Use allDownstreamLinksOfClass: to follow only one kind.'>
+	<example: 'self allDownstreamLinks'>
+	<seeAlso:
+	#( allDownstreamLinksOfClass: allUpstreamLinks allLinks outgoingLinks
+	   allDownstreamEntities )>
+	^ self
+		  linksOfSelfAnd: self allDownstreamEntities
+		  followedBy: [ :each | each outgoingLinks ]
+]
+
+{ #category : 'links - all links' }
+CMEntity >> allDownstreamLinksOfClass: aLinkClass [
+
+	<api>
+	<argument: #aLinkClass type: #Class description:
+	'The class of links to follow. Instances of its subclasses are followed too'>
+	<returnType: #OrderedCollection description:
+	'All the links of the given class that can be followed from this entity in their direction'>
+	<doc:
+	'Answer a new collection with all the links of the given class, or of its subclasses, that can be reached from this entity by following outgoing links of that class repeatedly. Each link appears once, the nearest first. A link leading back to this entity is included. Undirected links are followed both ways.'>
+	<example: 'self allDownstreamLinksOfClass: River'>
+	<example:
+	'(self allDownstreamLinksOfClass: River) sum: [ :each | each pollution ]'>
+	<seeAlso: #( allDownstreamLinks allUpstreamLinksOfClass:
+	   allLinksOfClass: outgoingLinksOfClass: allDownstreamEntitiesLinkedBy: )>
+	^ self
+		  linksOfSelfAnd: (self allDownstreamEntitiesLinkedBy: aLinkClass)
+		  followedBy: [ :each | each outgoingLinksOfClass: aLinkClass ]
+]
+
 { #category : 'links - all entities' }
 CMEntity >> allEntitiesLinkedBy: aLinkClass [
 
@@ -268,6 +307,43 @@ This follows every kind of link, so adding a new link class to a model changes t
 	#( allEntitiesLinkedBy: allDownstreamEntities allUpstreamEntities
 	   linkedEntities allLinks )>
 	^ self entitiesReachedBy: [ :each | each linkedEntities ]
+]
+
+{ #category : 'links - all links' }
+CMEntity >> allLinks [
+
+	<api>
+	<returnType: #OrderedCollection description:
+	'All the links of the network of this entity'>
+	<doc:
+	'Answer a new collection with all the links that can be reached from this entity by following links repeatedly, ignoring their direction. These are all the links of its network. Each link appears once, the nearest first.
+
+This follows every kind of link, so adding a new link class to a model changes the answer. Use allLinksOfClass: to follow only one kind.'>
+	<example: 'self allLinks'>
+	<seeAlso: #( allLinksOfClass: allDownstreamLinks allUpstreamLinks
+	   links allLinkedEntities )>
+	^ self
+		  linksOfSelfAnd: self allLinkedEntities
+		  followedBy: [ :each | each links ]
+]
+
+{ #category : 'links - all links' }
+CMEntity >> allLinksOfClass: aLinkClass [
+
+	<api>
+	<argument: #aLinkClass type: #Class description:
+	'The class of links to follow. Instances of its subclasses are followed too'>
+	<returnType: #OrderedCollection description:
+	'All the links of the network formed by the links of the given class'>
+	<doc:
+	'Answer a new collection with all the links of the given class, or of its subclasses, that can be reached from this entity by following such links repeatedly, ignoring their direction. Each link appears once, the nearest first.'>
+	<example: 'self allLinksOfClass: River'>
+	<seeAlso:
+	#( allLinks allDownstreamLinksOfClass: allUpstreamLinksOfClass:
+	   linksOfClass: allEntitiesLinkedBy: )>
+	^ self
+		  linksOfSelfAnd: (self allEntitiesLinkedBy: aLinkClass)
+		  followedBy: [ :each | each linksOfClass: aLinkClass ]
 ]
 
 { #category : 'links - all entities' }
@@ -303,6 +379,43 @@ CMEntity >> allUpstreamEntitiesLinkedBy: aLinkClass [
 	   allUpstreamLinksOfClass: )>
 	^ self entitiesReachedBy: [ :each |
 		  each previousEntitiesLinkedBy: aLinkClass ]
+]
+
+{ #category : 'links - all links' }
+CMEntity >> allUpstreamLinks [
+
+	<api>
+	<returnType: #OrderedCollection description:
+	'All the links that can be followed to this entity in their direction'>
+	<doc:
+	'Answer a new collection with all the links that lead to this entity when followed in their direction. Each link appears once, the nearest first. A link starting from this entity is included if a cycle leads back to it. Undirected links are followed both ways.
+
+This follows every kind of link, so adding a new link class to a model changes the answer. Use allUpstreamLinksOfClass: to follow only one kind.'>
+	<example: 'self allUpstreamLinks'>
+	<seeAlso:
+	#( allUpstreamLinksOfClass: allDownstreamLinks allLinks incomingLinks
+	   allUpstreamEntities )>
+	^ self
+		  linksOfSelfAnd: self allUpstreamEntities
+		  followedBy: [ :each | each incomingLinks ]
+]
+
+{ #category : 'links - all links' }
+CMEntity >> allUpstreamLinksOfClass: aLinkClass [
+
+	<api>
+	<argument: #aLinkClass type: #Class description:
+	'The class of links to follow. Instances of its subclasses are followed too'>
+	<returnType: #OrderedCollection description:
+	'All the links of the given class that can be followed to this entity in their direction'>
+	<doc:
+	'Answer a new collection with all the links of the given class, or of its subclasses, that lead to this entity when followed in their direction. Each link appears once, the nearest first. A link starting from this entity is included if a cycle leads back to it. Undirected links are followed both ways.'>
+	<example: 'self allUpstreamLinksOfClass: River'>
+	<seeAlso: #( allUpstreamLinks allDownstreamLinksOfClass:
+	   allLinksOfClass: incomingLinksOfClass: allUpstreamEntitiesLinkedBy: )>
+	^ self
+		  linksOfSelfAnd: (self allUpstreamEntitiesLinkedBy: aLinkClass)
+		  followedBy: [ :each | each incomingLinksOfClass: aLinkClass ]
 ]
 
 { #category : 'converting' }
@@ -568,6 +681,21 @@ CMEntity >> linksOfClass: aLinkClass [
 	<seeAlso: #( links outgoingLinksOfClass: incomingLinksOfClass:
 	   allLinksOfClass: )>
 	^ self links select: [ :each | each isKindOf: aLinkClass ]
+]
+
+{ #category : 'links - private' }
+CMEntity >> linksOfSelfAnd: aCollectionOfEntities followedBy: aBlock [
+	"Answer the links that aBlock answers for me and for each of the given entities, each link once, in the order of the entities"
+
+	| seen reached |
+	seen := IdentitySet new.
+	reached := OrderedCollection new.
+	{ self } , aCollectionOfEntities do: [ :eachEntity |
+			(aBlock value: eachEntity) do: [ :eachLink |
+					(seen includes: eachLink) ifFalse: [
+							seen add: eachLink.
+							reached add: eachLink ] ] ].
+	^ reached
 ]
 
 { #category : 'links - direct entities' }
