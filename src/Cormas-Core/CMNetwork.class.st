@@ -21,6 +21,7 @@ A thing such as a cell or an agent is connected to another thing by a link, and 
 
 - `CMModel>>newEntity:` creates me.
 - `add:` and `addAll:` add links and networks. Adding one that I already hold directly changes nothing. Adding a thing, or a network that I am inside of, is an error.
+- `addChainOf:through:` creates a link from each thing to the next one and adds them.
 - `remove:` takes out a direct member, which stays in the model.
 - `delete` removes me from the model, and what I hold stays there.
 - `members` answers what was directly added to me.
@@ -120,6 +121,33 @@ CMNetwork >> addAll: aCollection [
 	<seeAlso: #( add: members links )>
 	aCollection do: [ :each | self add: each ].
 	^ aCollection
+]
+
+{ #category : 'adding' }
+CMNetwork >> addChainOf: aLinkClass through: aCollectionOfThings [
+
+	<api>
+	<argument: #aLinkClass type: #Class description:
+	'The class of the links to create. Must be a subclass of #CMLink'>
+	<argument: #aCollectionOfThings type: #SequenceableCollection
+	description: 'The things to connect, in the order the links go'>
+	<returnType: #OrderedCollection description:
+	'The new links, in order'>
+	<doc:
+	'Create a link from each thing of the collection to the next one, add those links to this network, and answer them, for example to set their attributes. A chain through fewer than two things creates nothing.
+
+The same rules apply as when creating any link, so a thing cannot be followed by itself. Signal an error otherwise, keeping the links made before that point.
+
+A network does not have to be one chain. Use this message several times to make branches that join, and add: for any other link.'>
+	<example: 'river addChainOf: RiverSegment through: { a. b. d. e. f }'>
+	<example: 'river addChainOf: RiverSegment through: { c. d }'>
+	<seeAlso: #( add: addAll: links )>
+	| chain |
+	chain := OrderedCollection new.
+	aCollectionOfThings overlappingPairsDo: [ :start :end |
+			chain add:
+				(self add: (cormasModel newEntity: aLinkClass from: start to: end)) ].
+	^ chain
 ]
 
 { #category : 'adding - private' }

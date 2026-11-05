@@ -150,6 +150,106 @@ CMNetworkTest >> testCannotRemoveWhatWasNeverAdded [
 		self deny: (error isKindOf: MessageNotUnderstood) ]
 ]
 
+{ #category : 'tests - chains' }
+CMNetworkTest >> testChainCanFollowAgentsAndCellsTogether [
+
+	| street cow cell chain |
+	street := self newStreet.
+	cow := model newEntity: CMMockCow.
+	cell := model cellAt: 1 at: 1.
+	chain := street addChainOf: CMMockFriendship through: {
+			         cow.
+			         cell }.
+	self assert: chain first from identicalTo: cow.
+	self assert: chain first to identicalTo: cell.
+	self deny: chain first isDirected
+]
+
+{ #category : 'tests - chains' }
+CMNetworkTest >> testChainCannotLinkAPlaceToItself [
+
+	| street cell |
+	street := self newStreet.
+	cell := model cellAt: 1 at: 1.
+	self
+		should: [
+				street addChainOf: CMMockRoad through: {
+						cell.
+						cell } ]
+		raise: Error
+		withExceptionDo: [ :error |
+		self deny: (error isKindOf: MessageNotUnderstood) ].
+	self assert: street members isEmpty.
+	self assert: (model entitiesOfClass: CMMockRoad) isEmpty
+]
+
+{ #category : 'tests - chains' }
+CMNetworkTest >> testChainLinksEachPlaceToTheNextAndAddsTheLinks [
+
+	| street a b c chain |
+	street := self newStreet.
+	a := model cellAt: 1 at: 1.
+	b := model cellAt: 1 at: 2.
+	c := model cellAt: 2 at: 2.
+	chain := street addChainOf: CMMockRoad through: {
+			         a.
+			         b.
+			         c }.
+	self assert: chain size equals: 2.
+	self assert: chain first from identicalTo: a.
+	self assert: chain first to identicalTo: b.
+	self assert: chain second from identicalTo: b.
+	self assert: chain second to identicalTo: c.
+	self assert: street members asArray equals: chain asArray.
+	self assert: (model entitiesOfClass: CMMockRoad) size equals: 2
+]
+
+{ #category : 'tests - chains' }
+CMNetworkTest >> testChainThroughNoPlaceHasNoLinks [
+
+	| street |
+	street := self newStreet.
+	self assert: (street addChainOf: CMMockRoad through: #(  )) isEmpty
+]
+
+{ #category : 'tests - chains' }
+CMNetworkTest >> testChainThroughOnePlaceHasNoLinks [
+
+	| street chain |
+	street := self newStreet.
+	chain := street
+		         addChainOf: CMMockRoad
+		         through: { (model cellAt: 1 at: 1) }.
+	self assert: chain isEmpty.
+	self assert: street members isEmpty.
+	self assert: (model entitiesOfClass: CMMockRoad) isEmpty
+]
+
+{ #category : 'tests - chains' }
+CMNetworkTest >> testChainsCanJoinAtAPlaceToMakeATributary [
+
+	| river a b c d e f |
+	river := self newStreet.
+	a := model cellAt: 1 at: 1.
+	b := model cellAt: 1 at: 2.
+	c := model cellAt: 3 at: 1.
+	d := model cellAt: 2 at: 2.
+	e := model cellAt: 2 at: 3.
+	f := model cellAt: 3 at: 3.
+	river addChainOf: CMMockRoad through: {
+			a.
+			b.
+			d.
+			e.
+			f }.
+	river addChainOf: CMMockRoad through: {
+			c.
+			d }.
+	self assert: river links size equals: 5.
+	self assert: (d incomingLinksOfClass: CMMockRoad) size equals: 2.
+	self assert: (d outgoingLinksOfClass: CMMockRoad) size equals: 1
+]
+
 { #category : 'tests - contents' }
 CMNetworkTest >> testChangingAnAnswerDoesNotChangeTheNetwork [
 
@@ -163,6 +263,18 @@ CMNetworkTest >> testChangingAnAnswerDoesNotChangeTheNetwork [
 	self assert: street members size equals: 1.
 	self assert: street links size equals: 1.
 	self assert: road networks size equals: 1
+]
+
+{ #category : 'tests - chains' }
+CMNetworkTest >> testChangingTheAnswerOfAChainDoesNotChangeTheNetwork [
+
+	| street chain |
+	street := self newStreet.
+	chain := street addChainOf: CMMockRoad through: {
+			         (model cellAt: 1 at: 1).
+			         (model cellAt: 1 at: 2) }.
+	chain removeAll.
+	self assert: street links size equals: 1
 ]
 
 { #category : 'tests - lifecycle' }
