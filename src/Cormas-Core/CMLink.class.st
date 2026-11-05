@@ -20,6 +20,7 @@ To use me, create a subclass of me in your model, as with cells and agents.
 - `from` and `to` answer my ends.
 - `ends` answers both of them.
 - `otherEndOf:` answers the end that is not the given one.
+- `length` answers the number of cells between my ends, or signals an error if one of them is not on the grid.
 - `isDirected` answers whether I have a direction. Override it to answer false, or an attribute of mine.
 - `delete` removes me from the model immediately, and does not affect my ends.
 
@@ -148,6 +149,27 @@ CMLink >> isOutgoingFrom: anEntity [
 	"An undirected link goes both ways, so it leaves both of its ends"
 
 	^ self isDirected not or: [ from == anEntity ]
+]
+
+{ #category : 'accessing' }
+CMLink >> length [
+
+	<api>
+	<returnType: #Number description:
+	'The number of cells between the two ends of the link'>
+	<doc:
+	'Answer the number of cells between the two ends of the link, measured as distanceTo: does on the grid. It is worked out when asked, so it follows an agent that moves.
+
+Signal an error if an end is not on the grid. A link between things off the grid has no length, so use a cost: block with wayTo:in:cost: and distanceTo:in:cost: instead.'>
+	<example: 'road length'>
+	<example: 'river links sum: [ :segment | segment length ]'>
+	<seeAlso: #( from to ends )>
+	self ends do: [ :each |
+			each isOnGrid ifFalse: [
+					self error:
+						self printString , ' has no length because ' , each printString
+						, ' is not on the grid. Use a cost: block instead' ] ].
+	^ from placeOnGrid distanceTo: to placeOnGrid
 ]
 
 { #category : 'networks - private' }

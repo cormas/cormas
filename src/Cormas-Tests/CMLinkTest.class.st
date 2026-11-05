@@ -790,6 +790,101 @@ CMLinkTest >> testFormsWithoutAClassFollowEveryKindOfLink [
 			friend }
 ]
 
+{ #category : 'tests - length' }
+CMLinkTest >> testLengthBetweenTwoCellsIsTheNumberOfCellsBetweenThem [
+
+	| road |
+	road := model
+		        newEntity: CMMockRoad
+		        from: (model cellAt: 1 at: 1)
+		        to: (model cellAt: 1 at: 3).
+	self assert: road length equals: 2
+]
+
+{ #category : 'tests - length' }
+CMLinkTest >> testLengthFollowsAnAgentThatMoves [
+
+	| cow road |
+	cow := self newCow.
+	cow moveTo: (model cellAt: 1 at: 2).
+	road := model
+		        newEntity: CMMockRoad
+		        from: (model cellAt: 1 at: 1)
+		        to: cow.
+	self assert: road length equals: 1.
+	cow moveTo: (model cellAt: 1 at: 3).
+	self assert: road length equals: 2
+]
+
+{ #category : 'tests - length' }
+CMLinkTest >> testLengthIsAnErrorWhenAnEndIsNotOnTheGrid [
+
+	| cow cell |
+	cow := model newEntity: CMMockCow.
+	cell := model cellAt: 1 at: 1.
+	self deny: cow isOnGrid.
+	{
+		(model newEntity: CMMockRoad from: cow to: cell).
+		(model newEntity: CMMockRoad from: cell to: cow) } do: [ :each |
+			self
+				should: [ each length ]
+				raise: Error
+				withExceptionDo: [ :error |
+						self deny: (error isKindOf: MessageNotUnderstood).
+						self assert: (error messageText includesSubstring: 'cost:') ] ]
+]
+
+{ #category : 'tests - length' }
+CMLinkTest >> testLengthWorksBetweenTwoAgents [
+
+	| cow1 cow2 |
+	cow1 := self newCow.
+	cow2 := self newCow.
+	cow1 moveTo: (model cellAt: 1 at: 1).
+	cow2 moveTo: (model cellAt: 1 at: 3).
+	self
+		assert: (model newEntity: CMMockRoad from: cow1 to: cow2) length
+		equals: 2
+]
+
+{ #category : 'tests - length' }
+CMLinkTest >> testLengthWorksWithAnAgentAtEitherEnd [
+
+	| cow cell |
+	cow := self newCow.
+	cow moveTo: (model cellAt: 1 at: 3).
+	cell := model cellAt: 1 at: 1.
+	self
+		assert: (model newEntity: CMMockRoad from: cow to: cell) length
+		equals: 2.
+	self
+		assert: (model newEntity: CMMockRoad from: cell to: cow) length
+		equals: 2
+]
+
+{ #category : 'tests - length' }
+CMLinkTest >> testLengthWorksWithAnAggregateAtEitherEnd [
+
+	| aggregate cell cow |
+	aggregate := model
+		             createAggregate: CMMockAggregate
+		             from: { (model cellAt: 3 at: 1) }.
+	cell := model cellAt: 1 at: 1.
+	cow := self newCow.
+	cow moveTo: cell.
+	self
+		assert:
+		(model newEntity: CMMockRoad from: aggregate to: cell) length
+		equals: 2.
+	self
+		assert:
+		(model newEntity: CMMockRoad from: cell to: aggregate) length
+		equals: 2.
+	self
+		assert: (model newEntity: CMMockRoad from: aggregate to: cow) length
+		equals: 2
+]
+
 { #category : 'tests - creating' }
 CMLinkTest >> testLinkCanConnectAnyTypesOfEntities [
 

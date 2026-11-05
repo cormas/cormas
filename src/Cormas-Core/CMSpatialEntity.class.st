@@ -645,6 +645,13 @@ Return value: <Collection(AgentLocation & ObjectLocation)>"
 	^ self occupantsOfClass: aClass
 ]
 
+{ #category : 'links - private' }
+CMSpatialEntity >> placeOnGrid [
+	"Answer the spatial entity to measure a distance from, which is myself"
+
+	^ self
+]
+
 { #category : 'printing' }
 CMSpatialEntity >> printOn: aStream [
 	" Private - See superimplementor's comment "

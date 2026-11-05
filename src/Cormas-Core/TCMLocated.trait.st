@@ -699,6 +699,13 @@ The receiver itself is excluded from the answer, even if it is an instance of th
 	^ occupants
 ]
 
+{ #category : 'links - private' }
+TCMLocated >> placeOnGrid [
+	"Answer the spatial entity to measure a distance from, which is my cell"
+
+	^ self cell
+]
+
 { #category : 'accessing' }
 TCMLocated >> positionInCell [
 	"A Point (u@v) with 0 ≤ u,v ≤ 1 representing relative position inside the cell."
