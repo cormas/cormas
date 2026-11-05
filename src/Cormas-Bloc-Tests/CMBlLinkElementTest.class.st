@@ -371,6 +371,26 @@ CMBlLinkElementTest >> testLineEndsAtTheExactPositionOfAnAgent [
 	self assert: element startPoint equals: 40 @ 56
 ]
 
+{ #category : 'tests - point of view' }
+CMBlLinkElementTest >> testLineIsDrawnWithThePovOfItsNetwork [
+
+	| road street parent color |
+	self gridWithNeighbourhood: 4.
+	road := (model
+		         newEntity: CMMockRoad
+		         from: (model cellAt: 2 at: 2)
+		         to: (model cellAt: 2 at: 3))
+		        pov: (CMPointOfView color: Color green);
+		        yourself.
+	street := model newEntity: CMMockStreet.
+	street pov: (CMPointOfView color: Color red).
+	street add: road.
+	parent := self parentOf: (CMBlLinkElement for: road).
+	color := self colorIn: parent at: 64 @ 48.
+	self assert: color alpha > 0.
+	self assert: color red > color green
+]
+
 { #category : 'tests - arrowhead' }
 CMBlLinkElementTest >> testLineReachesTheArrowheadWithoutAGap [
 

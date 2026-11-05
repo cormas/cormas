@@ -36,6 +36,13 @@ CMNetworkTest >> roadNumber: aNumber [
 		  to: (model cellAt: 2 at: aNumber)
 ]
 
+{ #category : 'running' }
+CMNetworkTest >> tearDown [
+
+	CMMockCity resetActivePovSelector.
+	super tearDown
+]
+
 { #category : 'tests - membership' }
 CMNetworkTest >> testALinkCanBelongToSeveralNetworksInTheOrderItJoinedThem [
 
@@ -67,6 +74,20 @@ CMNetworkTest >> testALinkInsideSeveralMembersIsAnsweredOnce [
 	self assert: city links asArray equals: { road }
 ]
 
+{ #category : 'tests - point of view' }
+CMNetworkTest >> testALinkThatLeavesANetworkGetsItsOwnPovBack [
+
+	| road street pov |
+	road := self roadNumber: 1.
+	pov := CMPointOfView color: Color green.
+	road pov: pov.
+	street := self newStreet.
+	street pov: (CMPointOfView color: Color red).
+	street add: road.
+	street remove: road.
+	self assert: road activePov identicalTo: pov
+]
+
 { #category : 'tests - shape' }
 CMNetworkTest >> testARingHasNoSourcesOrSinks [
 
@@ -94,6 +115,32 @@ CMNetworkTest >> testARingHasNoTerminals [
 			t third.
 			t first }.
 	self assert: ring terminals isEmpty
+]
+
+{ #category : 'tests - point of view' }
+CMNetworkTest >> testASizeAloneMakesAPovActive [
+
+	| road street streetPov |
+	road := self roadNumber: 1.
+	road pov: (CMPointOfView color: Color green).
+	streetPov := CMPointOfView size: 0.3.
+	street := self newStreet.
+	street pov: streetPov.
+	street add: road.
+	self assert: road activePov identicalTo: streetPov
+]
+
+{ #category : 'tests - point of view' }
+CMNetworkTest >> testATransparentColorLetsTheLinkShowThrough [
+
+	| road street streetPov |
+	road := self roadNumber: 1.
+	streetPov := CMPointOfView color: Color red.
+	road pov: streetPov.
+	street := self newStreet.
+	street pov: (CMPointOfView color: Color transparent).
+	street add: road.
+	self assert: road activePov identicalTo: streetPov
 ]
 
 { #category : 'tests - shape' }
@@ -384,6 +431,21 @@ CMNetworkTest >> testAllLinksInStopAtTheEdgeOfTheNetworkAndReachInsideNestedOnes
 			alsoInside }
 ]
 
+{ #category : 'tests - point of view' }
+CMNetworkTest >> testAmongOverlappingNetworksTheOneJoinedFirstDecides [
+
+	| road bus tram busPov |
+	road := self roadNumber: 1.
+	busPov := CMPointOfView color: Color red.
+	bus := self newStreet.
+	bus pov: busPov.
+	tram := self newStreet.
+	tram pov: (CMPointOfView color: Color blue).
+	bus add: road.
+	tram add: road.
+	self assert: road activePov identicalTo: busPov
+]
+
 { #category : 'tests - shape' }
 CMNetworkTest >> testAnEmptyNetworkHasNoSourcesOrSinks [
 
@@ -397,6 +459,20 @@ CMNetworkTest >> testAnEmptyNetworkHasNoSourcesOrSinks [
 CMNetworkTest >> testAnEmptyNetworkHasNoTerminals [
 
 	self assert: self newStreet terminals isEmpty
+]
+
+{ #category : 'tests - point of view' }
+CMNetworkTest >> testAnInactiveNetworkLetsTheNextOverlappingOneDecide [
+
+	| road bus tram tramPov |
+	road := self roadNumber: 1.
+	tramPov := CMPointOfView color: Color blue.
+	bus := self newStreet.
+	tram := self newStreet.
+	tram pov: tramPov.
+	bus add: road.
+	tram add: road.
+	self assert: road activePov identicalTo: tramPov
 ]
 
 { #category : 'tests - queries' }
@@ -1198,6 +1274,16 @@ CMNetworkTest >> testLinkQueriesInANetworkReachInsideNestedNetworks [
 		equals: { road }
 ]
 
+{ #category : 'tests - point of view' }
+CMNetworkTest >> testLinkWithNoNetworkUsesItsOwnPov [
+
+	| road pov |
+	road := self roadNumber: 1.
+	pov := CMPointOfView color: Color green.
+	road pov: pov.
+	self assert: road activePov identicalTo: pov
+]
+
 { #category : 'tests - contents' }
 CMNetworkTest >> testLinksAreAnsweredInTheOrderTheyWereAdded [
 
@@ -1369,6 +1455,31 @@ CMNetworkTest >> testNetworkIsNotOnTheGrid [
 	self deny: street isOnGrid
 ]
 
+{ #category : 'tests - point of view' }
+CMNetworkTest >> testNetworkPovAppliesToAnyLinkEvenWithoutAPovOfItsOwn [
+
+	| road street streetPov |
+	road := self roadNumber: 1.
+	streetPov := CMPointOfView color: Color red.
+	street := self newStreet.
+	street pov: streetPov.
+	street add: road.
+	self assert: road activePov identicalTo: streetPov
+]
+
+{ #category : 'tests - point of view' }
+CMNetworkTest >> testNetworkPovReplacesThePovOfItsLinks [
+
+	| road street streetPov |
+	road := self roadNumber: 1.
+	road pov: (CMPointOfView color: Color green).
+	streetPov := CMPointOfView color: Color red.
+	street := self newStreet.
+	street pov: streetPov.
+	street add: road.
+	self assert: road activePov identicalTo: streetPov
+]
+
 { #category : 'tests - as an entity' }
 CMNetworkTest >> testNetworkSurvivesTheRemovalOfDeadEntities [
 
@@ -1377,6 +1488,18 @@ CMNetworkTest >> testNetworkSurvivesTheRemovalOfDeadEntities [
 	model removeDestroyedEntities.
 	self assert:
 		((model entitiesOfClass: CMMockStreet) identityIncludes: street)
+]
+
+{ #category : 'tests - point of view' }
+CMNetworkTest >> testNetworkThatSaysNothingLeavesTheLinkItsOwnPov [
+
+	| road pov street |
+	road := self roadNumber: 1.
+	pov := CMPointOfView color: Color green.
+	road pov: pov.
+	street := self newStreet.
+	street add: road.
+	self assert: road activePov identicalTo: pov
 ]
 
 { #category : 'tests - membership' }
@@ -1442,6 +1565,22 @@ CMNetworkTest >> testNextAndPreviousEntitiesInFollowTheDirection [
 	self assert: (t third nextEntitiesIn: river) isEmpty
 ]
 
+{ #category : 'tests - point of view' }
+CMNetworkTest >> testOutermostActiveNetworkDecides [
+
+	| road street city cityPov |
+	road := self roadNumber: 1.
+	road pov: (CMPointOfView color: Color green).
+	cityPov := CMPointOfView color: Color blue.
+	street := self newStreet.
+	street pov: (CMPointOfView color: Color red).
+	street add: road.
+	city := self newCity.
+	city pov: cityPov.
+	city add: street.
+	self assert: road activePov identicalTo: cityPov
+]
+
 { #category : 'tests - queries' }
 CMNetworkTest >> testOutgoingAndIncomingLinksInFollowTheDirection [
 
@@ -1473,6 +1612,24 @@ CMNetworkTest >> testParallelLinksAreNotTerminals [
 			(self road: t first to: t second).
 			(self road: t first to: t second) }.
 	self assert: street terminals isEmpty
+]
+
+{ #category : 'tests - point of view' }
+CMNetworkTest >> testPovOfANetworkCanHighlightOnlySomeOfItsStreets [
+
+	| main side mainRoad sideRoad mainPov sidePov |
+	mainRoad := self roadNumber: 1.
+	sideRoad := self roadNumber: 2.
+	sidePov := CMPointOfView color: Color green.
+	sideRoad pov: sidePov.
+	mainPov := CMPointOfView color: Color red size: 0.3.
+	main := self newStreet.
+	main pov: mainPov.
+	main add: mainRoad.
+	side := self newStreet.
+	side add: sideRoad.
+	self assert: mainRoad activePov identicalTo: mainPov.
+	self assert: sideRoad activePov identicalTo: sidePov
 ]
 
 { #category : 'tests - lifecycle' }
@@ -1544,6 +1701,22 @@ CMNetworkTest >> testRemovedNetworkTakesItsLinksOutOfTheNetworkThatHeldIt [
 	self deny: (city includes: road).
 	self assert: street links asArray equals: { road }.
 	self assert: street networks isEmpty
+]
+
+{ #category : 'tests - point of view' }
+CMNetworkTest >> testSelectingPovInvisibleDeactivatesANetwork [
+
+	| road city streetPov street |
+	road := self roadNumber: 1.
+	streetPov := CMPointOfView color: Color red.
+	street := self newStreet.
+	street pov: streetPov.
+	street add: road.
+	city := self newCity.
+	city pov: (CMPointOfView color: Color blue).
+	city add: street.
+	CMMockCity activePovSelector: #povInvisible.
+	self assert: road activePov identicalTo: streetPov
 ]
 
 { #category : 'tests - errors' }
@@ -1810,6 +1983,28 @@ CMNetworkTest >> testTerminalsOfATwoWayStreetAreItsEnds [
 	self assert: street terminals asArray equals: {
 			t first.
 			t third }
+]
+
+{ #category : 'tests - point of view' }
+CMNetworkTest >> testThreePovsCanBeActivatedInTurn [
+
+	| road street city roadPov streetPov cityPov |
+	road := self roadNumber: 1.
+	roadPov := CMPointOfView color: Color green.
+	streetPov := CMPointOfView color: Color red.
+	cityPov := CMPointOfView color: Color blue.
+	road pov: roadPov.
+	street := self newStreet.
+	street pov: streetPov.
+	street add: road.
+	city := self newCity.
+	city pov: cityPov.
+	city add: street.
+	self assert: road activePov identicalTo: cityPov.
+	city pov: CMPointOfView new.
+	self assert: road activePov identicalTo: streetPov.
+	street pov: CMPointOfView new.
+	self assert: road activePov identicalTo: roadPov
 ]
 
 { #category : 'tests - ways' }

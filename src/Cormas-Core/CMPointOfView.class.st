@@ -155,6 +155,13 @@ CMPointOfView >> initialize [
 ]
 
 { #category : 'testing' }
+CMPointOfView >> isActiveOnANetwork [
+	"Answer whether a network with this point of view decides how its links look. With no color, or a transparent one, and no size, its links show through, as cells do under an aggregate"
+
+	^ self hasSize or: [ self hasColor and: [ self color alpha > 0 ] ]
+]
+
+{ #category : 'testing' }
 CMPointOfView >> isForImage [
 
 	^ tile isNotNil

@@ -3,7 +3,7 @@ I am a network for testing `CMNetwork`.
 "
 Class {
 	#name : 'CMMockCity',
-	#superclass : 'CMNetwork',
+	#superclass : 'CMMockNetwork',
 	#category : 'Cormas-Mocks',
 	#package : 'Cormas-Mocks'
 }

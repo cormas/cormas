@@ -6,6 +6,7 @@ I let a connection, which is a link or a network, belong to networks and know wh
 - Know the networks that directly contain this connection.
 - Answer those networks, or only the ones of a given class.
 - Tell whether this connection is inside a given network, directly or through other networks.
+- Answer the point of view to show, which comes from the outermost network with an active one, or else from this connection.
 
 ## Collaborators:
 
@@ -41,6 +42,17 @@ Trait {
 	#package : 'Cormas-Core',
 	#tag : 'Traits'
 }
+
+{ #category : 'pov' }
+TCMNetworkMember >> activePov [
+	"Answer the point of view of the outermost network with an active one, or else my own. A network asks the networks containing it in the same way, so the container wins over what it contains. Among several networks, the one I joined first decides"
+
+	self networks do: [ :each |
+			| pov |
+			pov := each activePov.
+			pov isActiveOnANetwork ifTrue: [ ^ pov ] ].
+	^ super activePov
+]
 
 { #category : 'networks - private' }
 TCMNetworkMember >> addNetwork: aNetwork [

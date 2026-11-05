@@ -31,6 +31,7 @@ A thing such as a cell or an agent is connected to another thing by a link, and 
 - `terminals` answers the things touching exactly one of my links, whatever its direction, such as the two ends of a two-way street.
 - `includes:` tells whether a link or a network is inside me, at any depth.
 - `networks` and `networksOfClass:` answer the networks directly containing me.
+- `pov` and other methods with `<pov>` can be selected for my class, as for any entity. An active one replaces the point of view of all the links inside me. One with no color, or a transparent one, and no size, lets my links show through.
 
 ```
 street := self newEntity: Street.
@@ -51,6 +52,8 @@ city includes: road1. ""true""
 ### Implementation Points
 
 I store nothing about the shape of my links. Anything about their shape is worked out from the links when asked, so it cannot become stale. This includes the ways that entities ask me for with `wayTo:in:` and the messages like it.
+
+I am never drawn as an element of my own: only my links are drawn, each once, so that I add nothing to the cost of the view. The container wins over what it contains: a city over its streets, and a street over its roads.
 
 I have no dead state: `isDead` only answers false because the model asks it of every entity. A link that is removed from the model leaves me at that moment, so I never hold a removed link unless it was added after its removal, which is not checked.
 "
