@@ -5,14 +5,14 @@ To use me, create a subclass of me in your model, as with cells and agents.
 
 ## Responsibility:
 
-- Connect exactly two different entities that exist in the model, of any type except a link, alive or dead.
+- Connect exactly two different things that exist in the model, such as cells, agents or aggregates, alive or dead.
 - Know my two ends, and tell the other end from one of them.
 - Tell whether I have a direction. By default I go from my first end to my second one.
 
 ## Collaborators:
 
 - `CMModel`: creates me and checks that my ends can be linked.
-- `CMEntity`: any entity can be one of my ends.
+- `TCMLinkable`: the things that can be my ends.
 
 ## Public API and Key Messages
 

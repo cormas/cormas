@@ -635,9 +635,10 @@ CMModel >> checkCanLink: anEntity to: anotherEntity [
 						self error:
 							each printString
 							, ' cannot be linked because it is not in this model' ].
-			each isLink ifTrue: [
-					self error:
-						each printString , ' cannot be linked because it is a link' ] ]
+			each isLinkable ifFalse: [
+					self error: each printString
+						,
+						' cannot be linked because only things such as cells, agents and aggregates can be the ends of a link' ] ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -1149,7 +1150,7 @@ CMModel >> newEntity: aLinkClass from: anEntity to: anotherEntity [
 	<doc:
 	'Create and answer a new link of the given class between two entities. This is the only way to create a link.
 
-The ends can be of any type except a link: cells, agents or aggregates. They can be dead or off the grid, but they must exist in this model and be two different entities. Signal an error otherwise.
+The ends must be things such as cells, agents or aggregates, and cannot be links. They can be dead or off the grid, but they must exist in this model and be two different entities. Signal an error otherwise.
 
 The same two entities can be linked several times.'>
 	<example: 'road := self newEntity: Road from: cellA to: cellB'>

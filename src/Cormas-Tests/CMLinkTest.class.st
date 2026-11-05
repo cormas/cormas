@@ -1313,6 +1313,26 @@ CMLinkTest >> testSubclassCanBeUndirected [
 	self deny: friendship isDirected
 ]
 
+{ #category : 'tests - creating' }
+CMLinkTest >> testThingsAreLinkableButLinksAreNot [
+
+	| cell cow aggregate road |
+	cell := model cellAt: 1 at: 1.
+	cow := self newCow.
+	aggregate := model
+		             createAggregate: CMMockAggregate
+		             from: { (model cellAt: 2 at: 1) }.
+	road := model
+		        newEntity: CMMockRoad
+		        from: cell
+		        to: (model cellAt: 1 at: 2).
+
+	self assert: cell isLinkable.
+	self assert: cow isLinkable.
+	self assert: aggregate isLinkable.
+	self deny: road isLinkable
+]
+
 { #category : 'tests - all entities' }
 CMLinkTest >> testTraversalGoesThroughDeadAndOffGridEntities [
 

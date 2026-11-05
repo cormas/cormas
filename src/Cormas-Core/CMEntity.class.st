@@ -307,6 +307,19 @@ CMEntity >> isLink [
 ]
 
 { #category : 'testing' }
+CMEntity >> isLinkable [
+
+	<api>
+	<returnType: #Boolean description:
+	'Whether the entity can be an end of a link'>
+	<doc:
+	'Answer whether the entity can be an end of a link. Things such as cells, agents and aggregates can. A link cannot, because it is a connection and not a thing.'>
+	<example: 'self isLinkable'>
+	<seeAlso: #( links )>
+	^ false
+]
+
+{ #category : 'testing' }
 CMEntity >> isOnGrid [
 
 	<api>

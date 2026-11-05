@@ -14,6 +14,7 @@ I give an entity the ability to be an end of a link, and to answer questions abo
 
 ## Public API and Key Messages
 
+- `isLinkable` answers true, and false on entities that do not use me.
 - `links`, `outgoingLinks` and `incomingLinks` answer the links of this entity.
 - `linkedEntities`, `nextEntities` and `previousEntities` answer the entities at their other ends.
 - `allLinks`, `allDownstreamLinks`, `allUpstreamLinks`, `allLinkedEntities`, `allDownstreamEntities` and `allUpstreamEntities` follow links repeatedly.
@@ -331,6 +332,12 @@ TCMLinkable >> incomingLinksOfClass: aLinkClass [
 	<seeAlso:
 	#( incomingLinks outgoingLinksOfClass: linksOfClass: previousEntitiesLinkedBy: )>
 	^ self incomingLinks select: [ :each | each isKindOf: aLinkClass ]
+]
+
+{ #category : 'testing' }
+TCMLinkable >> isLinkable [
+
+	^ true
 ]
 
 { #category : 'links - direct entities' }
