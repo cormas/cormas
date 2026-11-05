@@ -11,6 +11,7 @@ I give an entity the ability to be an end of a link, and to answer questions abo
 
 - `CMLink`: tells me when it starts and stops connecting me, and tells me which way it goes.
 - `CMModel`: tells me when I have been removed.
+- `CMNetwork`: tells me which links it includes, for the forms limited to a network.
 
 ## Public API and Key Messages
 
@@ -18,12 +19,13 @@ I give an entity the ability to be an end of a link, and to answer questions abo
 - `links`, `outgoingLinks` and `incomingLinks` answer the links of this entity.
 - `linkedEntities`, `nextEntities` and `previousEntities` answer the entities at their other ends.
 - `allLinks`, `allDownstreamLinks`, `allUpstreamLinks`, `allLinkedEntities`, `allDownstreamEntities` and `allUpstreamEntities` follow links repeatedly.
-- Each of these has a form limited to a class of links, such as `outgoingLinksOfClass:` and `nextEntitiesLinkedBy:`.
+- Each of these has a form limited to a class of links, such as `outgoingLinksOfClass:` and `nextEntitiesLinkedBy:`, and a form limited to a network, such as `outgoingLinksIn:` and `nextEntitiesIn:`.
 
 ```
 road := self newEntity: Road from: cellA to: cellB.
 cellA outgoingLinks.
-cellA nextEntitiesLinkedBy: Road
+cellA nextEntitiesLinkedBy: Road.
+cellA nextEntitiesIn: mainStreet
 ```
 
 ## Internal Representation
@@ -81,7 +83,7 @@ TCMLinkable >> allDownstreamEntitiesIn: aNetwork [
 	<example:
 	'(self allDownstreamEntitiesIn: river) do: [ :cell | cell receivePollution: amount ]'>
 	<seeAlso: #( allDownstreamEntities allDownstreamEntitiesLinkedBy:
-	   allUpstreamEntitiesIn: allLinkedEntitiesIn: nextEntitiesIn: )>
+	   allUpstreamEntitiesIn: allLinkedEntitiesIn: nextEntitiesIn: allDownstreamLinksIn: )>
 	^ self entitiesReachedBy: [ :each | each nextEntitiesIn: aNetwork ]
 ]
 
@@ -121,6 +123,26 @@ This follows every kind of link, so adding a new link class to a model changes t
 	^ self
 		  linksOfSelfAnd: self allDownstreamEntities
 		  followedBy: [ :each | each outgoingLinks ]
+]
+
+{ #category : 'links - all links' }
+TCMLinkable >> allDownstreamLinksIn: aNetwork [
+
+	<api>
+	<argument: #aNetwork type: #CMNetwork description:
+	'The network to stay in. The networks inside it are included'>
+	<returnType: #OrderedCollection description:
+	'All the links inside the given network that can be followed from this entity in their direction'>
+	<doc:
+	'Answer a new collection with all the links inside the given network, at any depth, that can be reached from this entity by following outgoing links inside it repeatedly. Each link appears once, the nearest first. A link leading back to this entity is included. Undirected links are followed both ways. Two rivers of one class that cross stay separate, unlike with allDownstreamLinksOfClass:.'>
+	<example: 'self allDownstreamLinksIn: river'>
+	<example:
+	'(self allDownstreamLinksIn: river) do: [ :segment | segment receivePollution: amount ]'>
+	<seeAlso: #( allDownstreamLinks allDownstreamLinksOfClass:
+	   allUpstreamLinksIn: allLinksIn: outgoingLinksIn: allDownstreamEntitiesIn: )>
+	^ self
+		  linksOfSelfAnd: (self allDownstreamEntitiesIn: aNetwork)
+		  followedBy: [ :each | each outgoingLinksIn: aNetwork ]
 ]
 
 { #category : 'links - all links' }
@@ -190,7 +212,7 @@ TCMLinkable >> allLinkedEntitiesIn: aNetwork [
 	<example: 'self allLinkedEntitiesIn: river'>
 	<seeAlso:
 	#( allLinkedEntities allEntitiesLinkedBy: allDownstreamEntitiesIn:
-	   allUpstreamEntitiesIn: linkedEntitiesIn: )>
+	   allUpstreamEntitiesIn: linkedEntitiesIn: allLinksIn: )>
 	^ self entitiesReachedBy: [ :each | each linkedEntitiesIn: aNetwork ]
 ]
 
@@ -210,6 +232,24 @@ This follows every kind of link, so adding a new link class to a model changes t
 	^ self
 		  linksOfSelfAnd: self allLinkedEntities
 		  followedBy: [ :each | each links ]
+]
+
+{ #category : 'links - all links' }
+TCMLinkable >> allLinksIn: aNetwork [
+
+	<api>
+	<argument: #aNetwork type: #CMNetwork description:
+	'The network to stay in. The networks inside it are included'>
+	<returnType: #OrderedCollection description:
+	'All the links inside the given network reachable from this entity'>
+	<doc:
+	'Answer a new collection with all the links inside the given network, at any depth, that can be reached from this entity by following such links repeatedly, ignoring their direction. A network does not have to be connected, so links in another piece of it are not included. Use links on the network to get all of them. Each link appears once, the nearest first.'>
+	<example: 'self allLinksIn: river'>
+	<seeAlso: #( allLinks allLinksOfClass: allDownstreamLinksIn:
+	   allUpstreamLinksIn: linksIn: allLinkedEntitiesIn: )>
+	^ self
+		  linksOfSelfAnd: (self allLinkedEntitiesIn: aNetwork)
+		  followedBy: [ :each | each linksIn: aNetwork ]
 ]
 
 { #category : 'links - all links' }
@@ -260,7 +300,7 @@ TCMLinkable >> allUpstreamEntitiesIn: aNetwork [
 	'Answer a new collection with all the entities from which this one can be reached by following links inside the given network, at any depth, in their direction. Each entity appears once, the nearest first, and the entity itself is not included, even if a cycle leads back to it. Undirected links are followed both ways. Two rivers of one class that cross stay separate, unlike with allUpstreamEntitiesLinkedBy:. Dead entities appear and are followed until they are removed from the model.'>
 	<example: 'self allUpstreamEntitiesIn: river'>
 	<seeAlso: #( allUpstreamEntities allUpstreamEntitiesLinkedBy:
-	   allDownstreamEntitiesIn: allLinkedEntitiesIn: previousEntitiesIn: )>
+	   allDownstreamEntitiesIn: allLinkedEntitiesIn: previousEntitiesIn: allUpstreamLinksIn: )>
 	^ self entitiesReachedBy: [ :each |
 		  each previousEntitiesIn: aNetwork ]
 ]
@@ -300,6 +340,25 @@ This follows every kind of link, so adding a new link class to a model changes t
 	^ self
 		  linksOfSelfAnd: self allUpstreamEntities
 		  followedBy: [ :each | each incomingLinks ]
+]
+
+{ #category : 'links - all links' }
+TCMLinkable >> allUpstreamLinksIn: aNetwork [
+
+	<api>
+	<argument: #aNetwork type: #CMNetwork description:
+	'The network to stay in. The networks inside it are included'>
+	<returnType: #OrderedCollection description:
+	'All the links inside the given network that can be followed to this entity in their direction'>
+	<doc:
+	'Answer a new collection with all the links inside the given network, at any depth, that lead to this entity when followed in their direction. Each link appears once, the nearest first. A link starting from this entity is included if a cycle leads back to it. Undirected links are followed both ways. Two rivers of one class that cross stay separate, unlike with allUpstreamLinksOfClass:.'>
+	<example: 'self allUpstreamLinksIn: river'>
+	<seeAlso:
+	#( allUpstreamLinks allUpstreamLinksOfClass: allDownstreamLinksIn:
+	   allLinksIn: incomingLinksIn: allUpstreamEntitiesIn: )>
+	^ self
+		  linksOfSelfAnd: (self allUpstreamEntitiesIn: aNetwork)
+		  followedBy: [ :each | each incomingLinksIn: aNetwork ]
 ]
 
 { #category : 'links - all links' }
@@ -381,7 +440,7 @@ TCMLinkable >> incomingLinksIn: aNetwork [
 	'Answer a new collection with the links inside the given network, at any depth, that lead to this entity. These are the directed links ending here and all the undirected links, which go both ways. Two rivers of one class that cross here stay separate, unlike with incomingLinksOfClass:.'>
 	<example: 'self incomingLinksIn: river'>
 	<seeAlso: #( incomingLinks incomingLinksOfClass:
-	   outgoingLinksIn: linksIn: )>
+	   outgoingLinksIn: linksIn: allUpstreamLinksIn: previousEntitiesIn: )>
 	^ self incomingLinks select: [ :each | aNetwork includes: each ]
 ]
 
@@ -467,7 +526,7 @@ TCMLinkable >> linksIn: aNetwork [
 	<doc:
 	'Answer a new collection with the links inside the given network, at any depth, that have this entity at one of their ends, in either direction. An entity with no link in the network answers an empty collection.'>
 	<example: 'self linksIn: river'>
-	<seeAlso: #( links linksOfClass: outgoingLinksIn: incomingLinksIn: )>
+	<seeAlso: #( links linksOfClass: outgoingLinksIn: incomingLinksIn: allLinksIn: )>
 	^ self links select: [ :each | aNetwork includes: each ]
 ]
 
@@ -590,7 +649,7 @@ TCMLinkable >> outgoingLinksIn: aNetwork [
 	'Answer a new collection with the links inside the given network, at any depth, that lead away from this entity. These are the directed links starting here and all the undirected links, which go both ways. Two rivers of one class that cross here stay separate, unlike with outgoingLinksOfClass:.'>
 	<example: 'self outgoingLinksIn: river'>
 	<seeAlso: #( outgoingLinks outgoingLinksOfClass:
-	   incomingLinksIn: linksIn: )>
+	   incomingLinksIn: linksIn: allDownstreamLinksIn: nextEntitiesIn: )>
 	^ self outgoingLinks select: [ :each | aNetwork includes: each ]
 ]
 

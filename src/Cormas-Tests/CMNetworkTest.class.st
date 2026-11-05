@@ -192,6 +192,37 @@ CMNetworkTest >> testAllDownstreamAndUpstreamEntitiesInFollowTheWholeRiver [
 ]
 
 { #category : 'tests - queries' }
+CMNetworkTest >> testAllDownstreamAndUpstreamLinksInFollowTheWholeRiver [
+
+	| river t a b c d e ab bd de cd |
+	t := self things: 5.
+	a := t first.
+	b := t second.
+	c := t third.
+	d := t fourth.
+	e := t fifth.
+	ab := self road: a to: b.
+	bd := self road: b to: d.
+	de := self road: d to: e.
+	cd := self road: c to: d.
+	river := self newStreet.
+	river addAll: {
+			ab.
+			bd.
+			de.
+			cd }.
+	self assert: (b allDownstreamLinksIn: river) asArray equals: {
+			bd.
+			de }.
+	self assert: (d allUpstreamLinksIn: river) asArray equals: {
+			bd.
+			cd.
+			ab }.
+	self assert: (e allDownstreamLinksIn: river) isEmpty.
+	self assert: (a allUpstreamLinksIn: river) isEmpty
+]
+
+{ #category : 'tests - queries' }
 CMNetworkTest >> testAllEntitiesInDoNotIncludeTheReceiverOnARing [
 
 	| ring t |
@@ -280,6 +311,77 @@ CMNetworkTest >> testAllLinkedEntitiesInIgnoreTheDirection [
 				(n at: 2).
 				(n at: 3).
 				(n at: 4) }
+]
+
+{ #category : 'tests - queries' }
+CMNetworkTest >> testAllLinksInAnswerOnlyThePieceConnectedToTheEntity [
+
+	| network n one two |
+	n := self things: 4.
+	one := self road: (n at: 1) to: (n at: 2).
+	two := self road: (n at: 3) to: (n at: 4).
+	network := self newStreet.
+	network addAll: {
+			one.
+			two }.
+	self assert: ((n at: 1) allLinksIn: network) asArray equals: { one }.
+	self assert: ((n at: 4) allLinksIn: network) asArray equals: { two }
+]
+
+{ #category : 'tests - queries' }
+CMNetworkTest >> testAllLinksInIgnoreTheDirection [
+
+	| network n one two three |
+	n := self things: 4.
+	one := self road: (n at: 1) to: (n at: 2).
+	two := self road: (n at: 3) to: (n at: 2).
+	three := self road: (n at: 3) to: (n at: 4).
+	network := self newStreet.
+	network addAll: {
+			one.
+			two.
+			three }.
+	self assert: ((n at: 1) allLinksIn: network) asArray equals: {
+			one.
+			two.
+			three }
+]
+
+{ #category : 'tests - queries' }
+CMNetworkTest >> testAllLinksInIncludeALinkLeadingBackOnARing [
+
+	| ring t one two three |
+	t := self things: 3.
+	one := self road: t first to: t second.
+	two := self road: t second to: t third.
+	three := self road: t third to: t first.
+	ring := self newStreet.
+	ring addAll: {
+			one.
+			two.
+			three }.
+	self assert: (t first allDownstreamLinksIn: ring) asArray equals: {
+			one.
+			two.
+			three }
+]
+
+{ #category : 'tests - queries' }
+CMNetworkTest >> testAllLinksInStopAtTheEdgeOfTheNetworkAndReachInsideNestedOnes [
+
+	| street city t inside alsoInside |
+	t := self things: 4.
+	inside := self road: t first to: t second.
+	alsoInside := self road: t second to: t third.
+	self road: t third to: t fourth.
+	street := self newStreet.
+	street add: inside.
+	city := self newCity.
+	city add: street.
+	city add: alsoInside.
+	self assert: (t first allDownstreamLinksIn: city) asArray equals: {
+			inside.
+			alsoInside }
 ]
 
 { #category : 'tests - shape' }
@@ -575,6 +677,45 @@ CMNetworkTest >> testCrossingRiversOfOneClassStaySeparateAllTheWayToTheirEntitie
 		assert: (crossing allUpstreamEntitiesIn: river1) asArray
 		equals: { t first }.
 	self assert: (t first allLinkedEntitiesIn: river2) isEmpty
+]
+
+{ #category : 'tests - queries' }
+CMNetworkTest >> testCrossingRiversOfOneClassStaySeparateAllTheWayToTheirLinks [
+
+	| river1 river2 t crossing away1 further1 away2 further2 into1 |
+	t := self things: 7.
+	crossing := t third.
+	into1 := self road: t first to: crossing.
+	away1 := self road: crossing to: t fourth.
+	further1 := self road: t fourth to: t sixth.
+	away2 := self road: crossing to: t fifth.
+	further2 := self road: t fifth to: t seventh.
+	river1 := self newStreet.
+	river1 addAll: {
+			into1.
+			away1.
+			further1 }.
+	river2 := self newStreet.
+	river2 addAll: {
+			away2.
+			further2 }.
+	self
+		assert: (crossing allDownstreamLinksOfClass: CMMockRoad) size
+		equals: 4.
+	self
+		assert: (crossing allDownstreamLinksIn: river1) asArray
+		equals: {
+				away1.
+				further1 }.
+	self
+		assert: (crossing allDownstreamLinksIn: river2) asArray
+		equals: {
+				away2.
+				further2 }.
+	self
+		assert: (crossing allUpstreamLinksIn: river1) asArray
+		equals: { into1 }.
+	self assert: (crossing allUpstreamLinksIn: river2) isEmpty
 ]
 
 { #category : 'tests - queries' }
