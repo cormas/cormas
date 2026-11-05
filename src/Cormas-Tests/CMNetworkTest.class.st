@@ -431,6 +431,28 @@ CMNetworkTest >> testAllLinksInStopAtTheEdgeOfTheNetworkAndReachInsideNestedOnes
 			alsoInside }
 ]
 
+{ #category : 'tests' }
+CMNetworkTest >> testAllNetworksIncludeOuterLevelsEachOnce [
+
+	| road streetA streetB city |
+	road := self roadNumber: 1.
+	streetA := self newStreet.
+	streetB := self newStreet.
+	city := self newCity.
+	streetA add: road.
+	streetB add: road.
+	city addAll: {
+			streetA.
+			streetB }.
+
+	self assert: road allNetworks asArray equals: {
+			streetA.
+			streetB.
+			city }.
+	self assert: streetA allNetworks asArray equals: { city }.
+	self assertEmpty: city allNetworks
+]
+
 { #category : 'tests - point of view' }
 CMNetworkTest >> testAmongOverlappingNetworksTheOneJoinedFirstDecides [
 

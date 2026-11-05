@@ -320,6 +320,12 @@ CMEntity >> isLinkable [
 ]
 
 { #category : 'testing' }
+CMEntity >> isNetwork [
+
+	^ false
+]
+
+{ #category : 'testing' }
 CMEntity >> isOnGrid [
 
 	<api>

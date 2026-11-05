@@ -61,6 +61,25 @@ TCMNetworkMember >> addNetwork: aNetwork [
 	networks add: aNetwork
 ]
 
+{ #category : 'networks' }
+TCMNetworkMember >> allNetworks [
+
+	<api>
+	<returnType: #OrderedCollection description:
+	'The networks containing this link or network, directly or through other networks'>
+	<doc:
+	'Answer a new collection with the networks that contain this link or network, at any depth. Each one appears once: first the networks directly containing it, in the order it joined them, and then the networks containing those.'>
+	<example: 'self allNetworks'>
+	<example: 'self allNetworks size'>
+	<seeAlso: #( networks networksOfClass: )>
+	| all |
+	all := self networks.
+	self networks do: [ :each | all addAll: each allNetworks ].
+	^ all
+		  removeDuplicates;
+		  yourself
+]
+
 { #category : 'networks - private' }
 TCMNetworkMember >> isInside: aNetwork [
 	"Answer whether aNetwork contains me, directly or through other networks"
@@ -85,7 +104,7 @@ TCMNetworkMember >> networks [
 	'Answer a new collection with the networks that directly contain this link or network, in the order it joined them. A network that contains it only through another network is not included.'>
 	<example: 'self networks'>
 	<example: 'self networks size'>
-	<seeAlso: #( networksOfClass: )>
+	<seeAlso: #( allNetworks networksOfClass: )>
 	^ networks
 		  ifNil: [ OrderedCollection new ]
 		  ifNotNil: [ networks copy ]

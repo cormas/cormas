@@ -1,12 +1,12 @@
 Extension { #name : 'CMBlElement' }
 
 { #category : '*Cormas-Bloc-Spec' }
-CMBlElement >> addAggregatesOf: aSpatialEntity to: aMenu [
+CMBlElement >> addSubmenusFor: someContainers to: aMenu [
+	"Add a group with a submenu for each aggregate or network, in the given order"
 
-	aSpatialEntity allAggregates ifEmpty: [ ^ self ].
+	someContainers ifEmpty: [ ^ self ].
 	aMenu addGroup: [ :group |
-			(aSpatialEntity allAggregates sorted: [ :a :b | a id > b id ]) do: [
-					:each |
+			someContainers do: [ :each |
 					group addItem: [ :item |
 							item
 								name: each class name , ' ' , each id printString;
@@ -33,14 +33,14 @@ CMBlElement >> contextMenuCommandsFor: anEntity [
 		ifTrue: [
 		commands add: (CMRemoveSpaceContextMenuCommand forOwner: anEntity) ]
 		ifFalse: [
-				anEntity isSpatialEntity ifFalse: [
+				(anEntity isSpatialEntity or: [ anEntity isNetwork ]) ifFalse: [
 					commands add: (CMKillSpaceContextMenuCommand forOwner: anEntity) ] ].
 	^ commands sorted: [ :a :b | a class order < b class order ]
 ]
 
 { #category : '*Cormas-Bloc-Spec' }
 CMBlElement >> contextMenuFor: anEntity [
-	"Answer a menu with the commands and the actions of anEntity, and a submenu for each aggregate containing it. Each of them updates me after it runs"
+	"Answer a menu with the commands and the actions of anEntity, and a submenu for each aggregate or network containing it. Aggregates show the highest id first, and networks the innermost first. Each of them updates me after it runs"
 
 	| menu |
 	menu := SpMenuPresenter new
@@ -64,7 +64,12 @@ CMBlElement >> contextMenuFor: anEntity [
 										anEntity perform: selector.
 										self update ] ] ] ].
 	anEntity isSpatialEntity ifTrue: [
-		self addAggregatesOf: anEntity to: menu ].
+			self
+				addSubmenusFor:
+				(anEntity allAggregates sorted: [ :a :b | a id > b id ])
+				to: menu ].
+	(anEntity isLink or: [ anEntity isNetwork ]) ifTrue: [
+		self addSubmenusFor: anEntity allNetworks to: menu ].
 	^ menu
 ]
 

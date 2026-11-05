@@ -11,6 +11,13 @@ Class {
 	#package : 'Cormas-Mocks'
 }
 
+{ #category : 'actions' }
+CMMockNetwork >> clean [
+
+	<action>
+	
+]
+
 { #category : 'pov' }
 CMMockNetwork >> pov [
 	"Each test gives a network the point of view it needs through pov:, as with a mock road"

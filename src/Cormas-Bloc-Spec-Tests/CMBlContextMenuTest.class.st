@@ -37,6 +37,12 @@ CMBlContextMenuTest >> itemsOf: aMenu [
 ]
 
 { #category : 'private' }
+CMBlContextMenuTest >> menuOf: anEntity [
+
+	^ (CMBlSpaceElement for: model) contextMenuFor: anEntity
+]
+
+{ #category : 'private' }
 CMBlContextMenuTest >> menuOfCellAt1x1 [
 
 	^ (CMBlSpaceElement for: model) contextMenuFor:
@@ -50,9 +56,24 @@ CMBlContextMenuTest >> nameOfAggregate: anAggregate [
 ]
 
 { #category : 'private' }
+CMBlContextMenuTest >> nameOfNetwork: aNetwork [
+
+	^ aNetwork class name , ' ' , aNetwork id printString
+]
+
+{ #category : 'private' }
 CMBlContextMenuTest >> namesIn: aMenu [
 
 	^ (self itemsOf: aMenu) collect: [ :each | each name ]
+]
+
+{ #category : 'private' }
+CMBlContextMenuTest >> newRoad [
+
+	^ model
+		  newEntity: CMMockRoad
+		  from: (model cellAt: 2 at: 2)
+		  to: (model cellAt: 2 at: 3)
 ]
 
 { #category : 'tests' }
@@ -252,6 +273,45 @@ CMBlContextMenuTest >> testChoosingRemoveRemovesTheLinkFromTheView [
 ]
 
 { #category : 'tests' }
+CMBlContextMenuTest >> testLinkMenuListsItsNetworksFromTheInnermostOut [
+
+	| road olderCity street newerCity group |
+	self gridWithNeighbourhood: 4.
+	road := self newRoad.
+	olderCity := model newEntity: CMMockCity.
+	street := model newEntity: CMMockStreet.
+	newerCity := model newEntity: CMMockCity.
+	street add: road.
+	olderCity add: street.
+	newerCity add: street.
+
+	group := (self menuOf: road) menuGroups last.
+
+	self
+		assert: (group menuItems collect: [ :each | each name ]) asArray
+		equals: {
+				(self nameOfNetwork: street).
+				(self nameOfNetwork: olderCity).
+				(self nameOfNetwork: newerCity) }
+]
+
+{ #category : 'tests' }
+CMBlContextMenuTest >> testLinkMenuOffersItsNetworksInASeparateGroup [
+
+	| road street group |
+	self gridWithNeighbourhood: 4.
+	road := self newRoad.
+	street := model newEntity: CMMockStreet.
+	street add: road.
+
+	group := (self menuOf: road) menuGroups last.
+
+	self
+		assert: (group menuItems collect: [ :each | each name ]) asArray
+		equals: { (self nameOfNetwork: street) }
+]
+
+{ #category : 'tests' }
 CMBlContextMenuTest >> testLinkMenuOffersRemoveAndItsActions [
 
 	| road names |
@@ -270,6 +330,18 @@ CMBlContextMenuTest >> testLinkMenuOffersRemoveAndItsActions [
 ]
 
 { #category : 'tests' }
+CMBlContextMenuTest >> testLinkMenuWithoutNetworksKeepsItsGroups [
+
+	| road before |
+	self gridWithNeighbourhood: 4.
+	road := self newRoad.
+	before := (self menuOf: road) menuGroups size.
+	(model newEntity: CMMockStreet) add: road.
+
+	self assert: (self menuOf: road) menuGroups size equals: before + 1
+]
+
+{ #category : 'tests' }
 CMBlContextMenuTest >> testMenuIsTitledWithTheClassOfTheEntity [
 
 	| cow |
@@ -279,4 +351,37 @@ CMBlContextMenuTest >> testMenuIsTitledWithTheClassOfTheEntity [
 	self
 		assert: ((CMBlSpaceElement for: model) contextMenuFor: cow) title
 		equals: 'CMMockCow'
+]
+
+{ #category : 'tests' }
+CMBlContextMenuTest >> testNetworkMenuOffersTheNetworksContainingIt [
+
+	| street city |
+	self gridWithNeighbourhood: 4.
+	street := model newEntity: CMMockStreet.
+	city := model newEntity: CMMockCity.
+	city add: street.
+
+	self assert: ((self namesIn: (self menuOf: street)) includes:
+			 (self nameOfNetwork: city))
+]
+
+{ #category : 'tests' }
+CMBlContextMenuTest >> testNetworkSubmenuIsTheMenuOfTheNetwork [
+
+	| road street submenu names |
+	self gridWithNeighbourhood: 4.
+	road := self newRoad.
+	street := model newEntity: CMMockStreet.
+	street add: road.
+
+	submenu := (self
+		            itemNamed: (self nameOfNetwork: street)
+		            in: (self menuOf: road)) subMenu.
+	names := self namesIn: submenu.
+
+	self assert: submenu title equals: 'CMMockStreet'.
+	self assert: (names includesAll: { 'Inspect'. 'Browse'. 'clean' }).
+	self deny: (names includes: 'Kill').
+	self deny: (names includes: 'Remove')
 ]

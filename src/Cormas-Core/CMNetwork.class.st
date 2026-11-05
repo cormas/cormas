@@ -254,6 +254,12 @@ CMNetwork >> isDead [
 	^ false
 ]
 
+{ #category : 'testing' }
+CMNetwork >> isNetwork [
+
+	^ true
+]
+
 { #category : 'accessing' }
 CMNetwork >> links [
 
