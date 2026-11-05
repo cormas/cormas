@@ -26,6 +26,7 @@ A thing such as a cell or an agent is connected to another thing by a link, and 
 - `delete` removes me from the model, and what I hold stays there.
 - `members` answers what was directly added to me.
 - `links` answers all the links inside me, at any depth.
+- `entities` answers the things at the ends of those links.
 - `includes:` tells whether a link or a network is inside me, at any depth.
 - `networks` and `networksOfClass:` answer the networks directly containing me.
 
@@ -178,6 +179,21 @@ To delete the links too: street links do: [ :road | road delete ].'>
 	cormasModel removeEntity: self
 ]
 
+{ #category : 'accessing' }
+CMNetwork >> entities [
+
+	<api>
+	<returnType: #OrderedCollection description:
+	'The things at the ends of the links inside this network'>
+	<doc:
+	'Answer a new collection with the things at the ends of all the links inside this network, at any depth. Each one appears once, in the order of the links. Things are not added to a network: they belong to it through its links, so a place without a link in this network is not included.'>
+	<example: 'river entities'>
+	<example: 'river entities size'>
+	<seeAlso: #( links members )>
+	^ self withoutRepetitions:
+		  (self links flatCollect: [ :each | each ends ])
+]
+
 { #category : 'testing' }
 CMNetwork >> includes: aLinkOrNetwork [
 
@@ -218,15 +234,8 @@ CMNetwork >> links [
 	'Answer a new collection with all the links inside this network, including the ones inside the networks it contains, however deep. Each link appears once, in the order the links were added, entering each nested network where it appears.'>
 	<example: 'city links'>
 	<example: 'street links average: [ :road | road wear ]'>
-	<seeAlso: #( members includes: )>
-	| seen reached |
-	seen := IdentitySet new.
-	reached := OrderedCollection new.
-	self linksAsMember do: [ :each |
-			(seen includes: each) ifFalse: [
-					seen add: each.
-					reached add: each ] ].
-	^ reached
+	<seeAlso: #( members entities includes: )>
+	^ self withoutRepetitions: self linksAsMember
 ]
 
 { #category : 'networks - private' }
@@ -278,4 +287,18 @@ CMNetwork >> removedFromModel [
 	super removedFromModel.
 	self leaveAllNetworks.
 	self members do: [ :each | self remove: each ]
+]
+
+{ #category : 'accessing - private' }
+CMNetwork >> withoutRepetitions: aCollection [
+	"Answer the elements of aCollection, each once, in their order. The set only remembers what was seen, so the order does not depend on hashes"
+
+	| seen unique |
+	seen := IdentitySet new.
+	unique := OrderedCollection new.
+	aCollection do: [ :each |
+			(seen includes: each) ifFalse: [
+					seen add: each.
+					unique add: each ] ].
+	^ unique
 ]

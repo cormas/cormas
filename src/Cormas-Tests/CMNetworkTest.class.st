@@ -349,6 +349,63 @@ CMNetworkTest >> testEmptyNetworkStaysInTheModel [
 		((model entitiesOfClass: CMMockStreet) identityIncludes: street)
 ]
 
+{ #category : 'tests - shape' }
+CMNetworkTest >> testEntitiesAnswersANewCollection [
+
+	| street |
+	street := self newStreet.
+	street add: (self roadNumber: 1).
+	street entities removeAll.
+	self assert: street entities size equals: 2
+]
+
+{ #category : 'tests - shape' }
+CMNetworkTest >> testEntitiesAreTheEndsOfTheLinksEachOnce [
+
+	| street a b c cow |
+	street := self newStreet.
+	a := model cellAt: 1 at: 1.
+	b := model cellAt: 1 at: 2.
+	c := model cellAt: 2 at: 2.
+	cow := model newEntity: CMMockCow.
+	street addChainOf: CMMockRoad through: {
+			a.
+			b.
+			c }.
+	street add: (model newEntity: CMMockFriendship from: cow to: a).
+	self assert: street entities asArray equals: {
+			a.
+			b.
+			c.
+			cow }
+]
+
+{ #category : 'tests - shape' }
+CMNetworkTest >> testEntitiesIncludeThoseOfNestedNetworks [
+
+	| street city a b c d |
+	street := self newStreet.
+	city := self newCity.
+	a := model cellAt: 1 at: 1.
+	b := model cellAt: 1 at: 2.
+	c := model cellAt: 2 at: 1.
+	d := model cellAt: 2 at: 2.
+	street add: (model newEntity: CMMockRoad from: a to: b).
+	city add: street.
+	city add: (model newEntity: CMMockRoad from: c to: d).
+	self assert: city entities asArray equals: {
+			a.
+			b.
+			c.
+			d }
+]
+
+{ #category : 'tests - shape' }
+CMNetworkTest >> testEntitiesOfAnEmptyNetworkIsEmpty [
+
+	self assert: self newStreet entities isEmpty
+]
+
 { #category : 'tests - contents' }
 CMNetworkTest >> testIncludesFindsMembersAtAnyDepth [
 
