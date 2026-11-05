@@ -35,7 +35,7 @@ CMLinkTest >> roadsOfModel [
 ]
 
 { #category : 'tests - all entities' }
-CMLinkTest >> testAgentsCellsAndAggregatesCanBeInOneNetwork [
+CMLinkTest >> testAgentsCellsAndAggregatesCanBeConnectedTogether [
 
 	| cow cell aggregate |
 	cow := self newCow.
@@ -652,23 +652,6 @@ CMLinkTest >> testEntitiesAreInTheOrderTheirLinksWereCreated [
 			third }
 ]
 
-{ #category : 'tests - all entities' }
-CMLinkTest >> testEntitiesInAnotherNetworkAreNotReached [
-
-	| cells |
-	cells := self cells: {
-			         (1 @ 1).
-			         (1 @ 2).
-			         (3 @ 1).
-			         (3 @ 2) }.
-	self road: cells first to: cells second.
-	self road: cells third to: cells fourth.
-
-	self
-		assert: cells first allLinkedEntities asArray
-		equals: { cells second }
-]
-
 { #category : 'tests - direct entities' }
 CMLinkTest >> testEntitiesLinkedByFollowOnlyTheGivenClassAndItsSubclasses [
 
@@ -699,6 +682,23 @@ CMLinkTest >> testEntitiesLinkedByFollowOnlyTheGivenClassAndItsSubclasses [
 	self
 		assert: (cell previousEntitiesLinkedBy: CMMockFriendship) asArray
 		equals: { friend }
+]
+
+{ #category : 'tests - all entities' }
+CMLinkTest >> testEntitiesThatAreNotConnectedAreNotReached [
+
+	| cells |
+	cells := self cells: {
+			         (1 @ 1).
+			         (1 @ 2).
+			         (3 @ 1).
+			         (3 @ 2) }.
+	self road: cells first to: cells second.
+	self road: cells third to: cells fourth.
+
+	self
+		assert: cells first allLinkedEntities asArray
+		equals: { cells second }
 ]
 
 { #category : 'tests - direct entities' }

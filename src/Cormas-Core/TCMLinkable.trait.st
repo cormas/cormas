@@ -132,9 +132,9 @@ TCMLinkable >> allEntitiesLinkedBy: aLinkClass [
 	<argument: #aLinkClass type: #Class description:
 	'The class of links to follow. Instances of its subclasses are followed too'>
 	<returnType: #OrderedCollection description:
-	'All the other entities of the network formed by the links of the given class'>
+	'All the other entities reachable from this entity through links of the given class'>
 	<doc:
-	'Answer a new collection with all the entities that can be reached from this one by following links of the given class, or of its subclasses, repeatedly, ignoring their direction. This is the whole network of those links, without the entity itself. Each entity appears once, the nearest first. Dead entities appear and are followed until they are removed from the model.'>
+	'Answer a new collection with all the entities that can be reached from this one by following links of the given class, or of its subclasses, repeatedly, ignoring their direction. The entity itself is not included. Each entity appears once, the nearest first. Dead entities appear and are followed until they are removed from the model.'>
 	<example: 'self allEntitiesLinkedBy: River'>
 	<seeAlso: #( allLinkedEntities allDownstreamEntitiesLinkedBy:
 	   allUpstreamEntitiesLinkedBy: entitiesLinkedBy: allLinksOfClass: )>
@@ -147,9 +147,9 @@ TCMLinkable >> allLinkedEntities [
 
 	<api>
 	<returnType: #OrderedCollection description:
-	'All the other entities of the network of this entity'>
+	'All the other entities reachable from this entity'>
 	<doc:
-	'Answer a new collection with all the entities that can be reached from this one by following links repeatedly, ignoring their direction. This is the whole network of the entity, without the entity itself. Each entity appears once, the nearest first.
+	'Answer a new collection with all the entities that can be reached from this one by following links repeatedly, ignoring their direction. The entity itself is not included. Each entity appears once, the nearest first.
 
 This follows every kind of link, so adding a new link class to a model changes the answer. Use allEntitiesLinkedBy: to follow only one kind. Dead entities appear and are followed until they are removed from the model.'>
 	<example: 'self allLinkedEntities'>
@@ -164,9 +164,9 @@ TCMLinkable >> allLinks [
 
 	<api>
 	<returnType: #OrderedCollection description:
-	'All the links of the network of this entity'>
+	'All the links reachable from this entity'>
 	<doc:
-	'Answer a new collection with all the links that can be reached from this entity by following links repeatedly, ignoring their direction. These are all the links of its network. Each link appears once, the nearest first.
+	'Answer a new collection with all the links that can be reached from this entity by following links repeatedly, ignoring their direction. Each link appears once, the nearest first.
 
 This follows every kind of link, so adding a new link class to a model changes the answer. Use allLinksOfClass: to follow only one kind.'>
 	<example: 'self allLinks'>
@@ -184,7 +184,7 @@ TCMLinkable >> allLinksOfClass: aLinkClass [
 	<argument: #aLinkClass type: #Class description:
 	'The class of links to follow. Instances of its subclasses are followed too'>
 	<returnType: #OrderedCollection description:
-	'All the links of the network formed by the links of the given class'>
+	'All the links of the given class reachable from this entity'>
 	<doc:
 	'Answer a new collection with all the links of the given class, or of its subclasses, that can be reached from this entity by following such links repeatedly, ignoring their direction. Each link appears once, the nearest first.'>
 	<example: 'self allLinksOfClass: River'>
