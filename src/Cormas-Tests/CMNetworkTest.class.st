@@ -158,6 +158,130 @@ CMNetworkTest >> testAddingAMemberTwiceChangesNothing [
 	self assert: road networks size equals: 1
 ]
 
+{ #category : 'tests - queries' }
+CMNetworkTest >> testAllDownstreamAndUpstreamEntitiesInFollowTheWholeRiver [
+
+	| river t a b c d e f |
+	t := self things: 6.
+	a := t first.
+	b := t second.
+	c := t third.
+	d := t fourth.
+	e := t fifth.
+	f := t sixth.
+	river := self newStreet.
+	river addChainOf: CMMockRoad through: {
+			a.
+			b.
+			d.
+			e.
+			f }.
+	river addChainOf: CMMockRoad through: {
+			c.
+			d }.
+	self assert: (b allDownstreamEntitiesIn: river) asArray equals: {
+			d.
+			e.
+			f }.
+	self assert: (d allUpstreamEntitiesIn: river) asArray equals: {
+			b.
+			c.
+			a }.
+	self assert: (f allDownstreamEntitiesIn: river) isEmpty.
+	self assert: (a allUpstreamEntitiesIn: river) isEmpty
+]
+
+{ #category : 'tests - queries' }
+CMNetworkTest >> testAllEntitiesInDoNotIncludeTheReceiverOnARing [
+
+	| ring t |
+	t := self things: 3.
+	ring := self newStreet.
+	ring addChainOf: CMMockRoad through: {
+			t first.
+			t second.
+			t third.
+			t first }.
+	self
+		assert: (t first allDownstreamEntitiesIn: ring) asArray
+		equals: {
+				t second.
+				t third }.
+	self assert: (t first allUpstreamEntitiesIn: ring) asArray equals: {
+			t third.
+			t second }
+]
+
+{ #category : 'tests - queries' }
+CMNetworkTest >> testAllEntitiesInFollowUndirectedLinksBothWays [
+
+	| street t |
+	t := self things: 3.
+	street := self newStreet.
+	street addChainOf: CMMockFriendship through: t.
+	self
+		assert: (t third allDownstreamEntitiesIn: street) asArray
+		equals: {
+				t second.
+				t first }.
+	self
+		assert: (t first allUpstreamEntitiesIn: street) asArray
+		equals: {
+				t second.
+				t third }
+]
+
+{ #category : 'tests - queries' }
+CMNetworkTest >> testAllEntitiesInReachInsideNestedNetworks [
+
+	| street city t |
+	t := self things: 3.
+	street := self newStreet.
+	street add: (self road: t first to: t second).
+	city := self newCity.
+	city add: street.
+	city add: (self road: t second to: t third).
+	self
+		assert: (t first allDownstreamEntitiesIn: city) asArray
+		equals: {
+				t second.
+				t third }
+]
+
+{ #category : 'tests - queries' }
+CMNetworkTest >> testAllEntitiesInStopAtTheEdgeOfTheNetwork [
+
+	| street t |
+	t := self things: 3.
+	street := self newStreet.
+	street add: (self road: t first to: t second).
+	self road: t second to: t third.
+	self
+		assert: (t first allDownstreamEntitiesIn: street) asArray
+		equals: { t second }.
+	self
+		assert: (t first allLinkedEntitiesIn: street) asArray
+		equals: { t second }
+]
+
+{ #category : 'tests - queries' }
+CMNetworkTest >> testAllLinkedEntitiesInIgnoreTheDirection [
+
+	| network n |
+	n := self things: 4.
+	network := self newStreet.
+	network addAll: {
+			(self road: (n at: 1) to: (n at: 2)).
+			(self road: (n at: 3) to: (n at: 2)).
+			(self road: (n at: 3) to: (n at: 4)) }.
+	self
+		assert: (n first allLinkedEntitiesIn: network) asArray
+		equals: {
+				(n at: 2).
+				(n at: 3).
+				(n at: 4) }
+]
+
 { #category : 'tests - shape' }
 CMNetworkTest >> testAnEmptyNetworkHasNoSourcesOrSinks [
 
@@ -414,6 +538,43 @@ CMNetworkTest >> testCrossingRiversOfOneClassLeadToDifferentPlaces [
 	self assert: (crossing linkedEntitiesIn: river2) asArray equals: {
 			t second.
 			t fifth }
+]
+
+{ #category : 'tests - queries' }
+CMNetworkTest >> testCrossingRiversOfOneClassStaySeparateAllTheWayToTheirEntities [
+
+	| river1 river2 t crossing |
+	t := self things: 7.
+	crossing := t third.
+	river1 := self newStreet.
+	river2 := self newStreet.
+	river1 addChainOf: CMMockRoad through: {
+			t first.
+			crossing.
+			t fourth.
+			t sixth }.
+	river2 addChainOf: CMMockRoad through: {
+			t second.
+			crossing.
+			t fifth.
+			t seventh }.
+	self
+		assert: (crossing allDownstreamEntitiesLinkedBy: CMMockRoad) size
+		equals: 4.
+	self
+		assert: (crossing allDownstreamEntitiesIn: river1) asArray
+		equals: {
+				t fourth.
+				t sixth }.
+	self
+		assert: (crossing allDownstreamEntitiesIn: river2) asArray
+		equals: {
+				t fifth.
+				t seventh }.
+	self
+		assert: (crossing allUpstreamEntitiesIn: river1) asArray
+		equals: { t first }.
+	self assert: (t first allLinkedEntitiesIn: river2) isEmpty
 ]
 
 { #category : 'tests - queries' }
