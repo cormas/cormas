@@ -27,6 +27,7 @@ A thing such as a cell or an agent is connected to another thing by a link, and 
 - `members` answers what was directly added to me.
 - `links` answers all the links inside me, at any depth.
 - `entities` answers the things at the ends of those links.
+- `sources` and `sinks` answer the things where none of my links arrives, or leaves. There can be several or none.
 - `includes:` tells whether a link or a network is inside me, at any depth.
 - `networks` and `networksOfClass:` answer the networks directly containing me.
 
@@ -189,9 +190,22 @@ CMNetwork >> entities [
 	'Answer a new collection with the things at the ends of all the links inside this network, at any depth. Each one appears once, in the order of the links. Things are not added to a network: they belong to it through its links, so a place without a link in this network is not included.'>
 	<example: 'river entities'>
 	<example: 'river entities size'>
-	<seeAlso: #( links members )>
+	<seeAlso: #( links members sources sinks )>
 	^ self withoutRepetitions:
 		  (self links flatCollect: [ :each | each ends ])
+]
+
+{ #category : 'shape - private' }
+CMNetwork >> entitiesWithoutLinkSuchThat: aBlock [
+	"Answer my entities that none of my links makes aBlock true for, when given that link and that entity"
+
+	| excluded |
+	excluded := IdentitySet new.
+	self links do: [ :eachLink |
+			eachLink ends do: [ :eachEnd |
+					(aBlock value: eachLink value: eachEnd) ifTrue: [
+						excluded add: eachEnd ] ] ].
+	^ self entities reject: [ :each | excluded includes: each ]
 ]
 
 { #category : 'testing' }
@@ -287,6 +301,40 @@ CMNetwork >> removedFromModel [
 	super removedFromModel.
 	self leaveAllNetworks.
 	self members do: [ :each | self remove: each ]
+]
+
+{ #category : 'shape' }
+CMNetwork >> sinks [
+
+	<api>
+	<returnType: #OrderedCollection description:
+	'The things that no link of this network leaves from'>
+	<doc:
+	'Answer a new collection with the things where no link of this network leaves, in the order of the links. Links outside this network do not count.
+
+There can be several sinks or none. An undirected link leaves from both of its ends, so a two-way street or a ring has no sinks.'>
+	<example: 'river sinks'>
+	<example: 'river sinks size'>
+	<seeAlso: #( sources entities links )>
+	^ self entitiesWithoutLinkSuchThat: [ :link :end |
+		  link isOutgoingFrom: end ]
+]
+
+{ #category : 'shape' }
+CMNetwork >> sources [
+
+	<api>
+	<returnType: #OrderedCollection description:
+	'The things that no link of this network arrives at'>
+	<doc:
+	'Answer a new collection with the things where no link of this network arrives, in the order of the links. Links outside this network do not count.
+
+There can be several sources or none. An undirected link arrives at both of its ends, so a two-way street or a ring has no sources.'>
+	<example: 'river sources'>
+	<example: 'river sources size'>
+	<seeAlso: #( sinks entities links )>
+	^ self entitiesWithoutLinkSuchThat: [ :link :end |
+		  link isIncomingTo: end ]
 ]
 
 { #category : 'accessing - private' }

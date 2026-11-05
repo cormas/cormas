@@ -22,6 +22,12 @@ CMNetworkTest >> newStreet [
 ]
 
 { #category : 'helpers' }
+CMNetworkTest >> road: aThing to: anotherThing [
+
+	^ model newEntity: CMMockRoad from: aThing to: anotherThing
+]
+
+{ #category : 'helpers' }
 CMNetworkTest >> roadNumber: aNumber [
 
 	^ model
@@ -61,6 +67,45 @@ CMNetworkTest >> testALinkInsideSeveralMembersIsAnsweredOnce [
 	self assert: city links asArray equals: { road }
 ]
 
+{ #category : 'tests - shape' }
+CMNetworkTest >> testARingHasNoSourcesOrSinks [
+
+	| ring t |
+	t := self things: 3.
+	ring := self newStreet.
+	ring addChainOf: CMMockRoad through: {
+			t first.
+			t second.
+			t third.
+			t first }.
+	self assert: ring sources isEmpty.
+	self assert: ring sinks isEmpty
+]
+
+{ #category : 'tests - shape' }
+CMNetworkTest >> testATwoWayLinkCountsAsArrivingAndLeaving [
+
+	| network t |
+	t := self things: 3.
+	network := self newStreet.
+	network addAll: {
+			(self twoWay: t first to: t second).
+			(self road: t second to: t third) }.
+	self assert: network sources isEmpty.
+	self assert: network sinks asArray equals: { t third }
+]
+
+{ #category : 'tests - shape' }
+CMNetworkTest >> testATwoWayStreetHasNoSourcesOrSinks [
+
+	| street t |
+	t := self things: 3.
+	street := self newStreet.
+	street addChainOf: CMMockFriendship through: t.
+	self assert: street sources isEmpty.
+	self assert: street sinks isEmpty
+]
+
 { #category : 'tests - errors' }
 CMNetworkTest >> testAddAllStopsAtAThing [
 
@@ -97,6 +142,15 @@ CMNetworkTest >> testAddingAMemberTwiceChangesNothing [
 	street add: road.
 	self assert: street members size equals: 1.
 	self assert: road networks size equals: 1
+]
+
+{ #category : 'tests - shape' }
+CMNetworkTest >> testAnEmptyNetworkHasNoSourcesOrSinks [
+
+	| street |
+	street := self newStreet.
+	self assert: street sources isEmpty.
+	self assert: street sinks isEmpty
 ]
 
 { #category : 'tests - errors' }
@@ -729,4 +783,109 @@ CMNetworkTest >> testSeveralNetworksCanShareANetwork [
 	self assert: street networks asArray equals: {
 			city1.
 			city2 }
+]
+
+{ #category : 'tests - shape' }
+CMNetworkTest >> testSourcesAndSinksFollowADirectionThatChanges [
+
+	| street t highway |
+	t := self things: 2.
+	highway := model newEntity: CMMockHighway from: t first to: t second.
+	street := self newStreet.
+	street add: highway.
+	highway isOneWay: true.
+	self assert: street sources asArray equals: { t first }.
+	highway isOneWay: false.
+	self assert: street sources isEmpty
+]
+
+{ #category : 'tests - shape' }
+CMNetworkTest >> testSourcesAndSinksIgnoreLinksOutsideTheNetwork [
+
+	| street t |
+	t := self things: 4.
+	street := self newStreet.
+	street add: (self road: t second to: t third).
+	self road: t first to: t second.
+	self road: t third to: t fourth.
+	self assert: street sources asArray equals: { t second }.
+	self assert: street sinks asArray equals: { t third }
+]
+
+{ #category : 'tests - shape' }
+CMNetworkTest >> testSourcesAndSinksIncludeNestedNetworks [
+
+	| street city t |
+	t := self things: 3.
+	street := self newStreet.
+	street add: (self road: t first to: t second).
+	city := self newCity.
+	city add: street.
+	city add: (self road: t second to: t third).
+	self assert: city sources asArray equals: { t first }.
+	self assert: city sinks asArray equals: { t third }
+]
+
+{ #category : 'tests - shape' }
+CMNetworkTest >> testSourcesAndSinksOfAMixedNetworkInTwoPieces [
+
+	| network n |
+	n := self things: 8.
+	network := self newStreet.
+	network addAll: {
+			(self road: (n at: 1) to: (n at: 2)).
+			(self road: (n at: 3) to: (n at: 2)).
+			(self road: (n at: 3) to: (n at: 4)).
+			(self road: (n at: 4) to: (n at: 5)).
+			(self road: (n at: 6) to: (n at: 5)).
+			(self road: (n at: 7) to: (n at: 8)) }.
+	self assert: network sources asArray equals: {
+			(n at: 1).
+			(n at: 3).
+			(n at: 6).
+			(n at: 7) }.
+	self assert: network sinks asArray equals: {
+			(n at: 2).
+			(n at: 5).
+			(n at: 8) }
+]
+
+{ #category : 'tests - shape' }
+CMNetworkTest >> testSourcesAndSinksOfARiverWithATributary [
+
+	| river t a b c d e f |
+	t := self things: 6.
+	a := t first.
+	b := t second.
+	c := t third.
+	d := t fourth.
+	e := t fifth.
+	f := t sixth.
+	river := self newStreet.
+	river addChainOf: CMMockRoad through: {
+			a.
+			b.
+			d.
+			e.
+			f }.
+	river addChainOf: CMMockRoad through: {
+			c.
+			d }.
+	self assert: river sources asArray equals: {
+			a.
+			c }.
+	self assert: river sinks asArray equals: { f }
+]
+
+{ #category : 'helpers' }
+CMNetworkTest >> things: aNumber [
+	"Agents make simple places here, because a test of shape does not need a grid"
+
+	^ (1 to: aNumber) collect: [ :each | model newEntity: CMMockCow ]
+]
+
+{ #category : 'helpers' }
+CMNetworkTest >> twoWay: aThing to: anotherThing [
+
+	^ model newEntity: CMMockFriendship from: aThing to: anotherThing
 ]
