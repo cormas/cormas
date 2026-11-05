@@ -190,6 +190,24 @@ CMNetworkTest >> testAnUndirectedLinkIsBothOutgoingAndIncomingInANetwork [
 				equals: { link } ]
 ]
 
+{ #category : 'tests - queries' }
+CMNetworkTest >> testAnUndirectedLinkLeadsBothWaysInANetwork [
+
+	| street t |
+	t := self things: 2.
+	street := self newStreet.
+	street add: (self twoWay: t first to: t second).
+	self
+		assert: (t first nextEntitiesIn: street) asArray
+		equals: { t second }.
+	self
+		assert: (t second nextEntitiesIn: street) asArray
+		equals: { t first }.
+	self
+		assert: (t first previousEntitiesIn: street) asArray
+		equals: { t second }
+]
+
 { #category : 'tests - errors' }
 CMNetworkTest >> testCannotAddAThing [
 
@@ -369,6 +387,36 @@ CMNetworkTest >> testChangingTheAnswerOfAChainDoesNotChangeTheNetwork [
 ]
 
 { #category : 'tests - queries' }
+CMNetworkTest >> testCrossingRiversOfOneClassLeadToDifferentPlaces [
+
+	| river1 river2 t crossing |
+	t := self things: 5.
+	crossing := t third.
+	river1 := self newStreet.
+	river2 := self newStreet.
+	river1 addChainOf: CMMockRoad through: {
+			t first.
+			crossing.
+			t fourth }.
+	river2 addChainOf: CMMockRoad through: {
+			t second.
+			crossing.
+			t fifth }.
+	self
+		assert: (crossing nextEntitiesIn: river1) asArray
+		equals: { t fourth }.
+	self
+		assert: (crossing nextEntitiesIn: river2) asArray
+		equals: { t fifth }.
+	self
+		assert: (crossing previousEntitiesIn: river1) asArray
+		equals: { t first }.
+	self assert: (crossing linkedEntitiesIn: river2) asArray equals: {
+			t second.
+			t fifth }
+]
+
+{ #category : 'tests - queries' }
 CMNetworkTest >> testCrossingRiversOfOneClassStaySeparateOneStepAway [
 
 	| river1 river2 t crossing away1 away2 |
@@ -494,6 +542,20 @@ CMNetworkTest >> testEntitiesAreTheEndsOfTheLinksEachOnce [
 			cow }
 ]
 
+{ #category : 'tests - queries' }
+CMNetworkTest >> testEntitiesInANetworkAppearOnceThroughParallelLinks [
+
+	| street t |
+	t := self things: 2.
+	street := self newStreet.
+	street addAll: {
+			(self road: t first to: t second).
+			(self road: t first to: t second) }.
+	self
+		assert: (t first nextEntitiesIn: street) asArray
+		equals: { t second }
+]
+
 { #category : 'tests - shape' }
 CMNetworkTest >> testEntitiesIncludeThoseOfNestedNetworks [
 
@@ -518,6 +580,23 @@ CMNetworkTest >> testEntitiesIncludeThoseOfNestedNetworks [
 CMNetworkTest >> testEntitiesOfAnEmptyNetworkIsEmpty [
 
 	self assert: self newStreet entities isEmpty
+]
+
+{ #category : 'tests - queries' }
+CMNetworkTest >> testEntityQueriesInANetworkReachInsideNestedNetworksAndNoFurther [
+
+	| street city t |
+	t := self things: 3.
+	street := self newStreet.
+	street add: (self road: t first to: t second).
+	city := self newCity.
+	city add: street.
+	self road: t second to: t third.
+	self
+		assert: (t first nextEntitiesIn: city) asArray
+		equals: { t second }.
+	self assert: (t second nextEntitiesIn: city) isEmpty.
+	self assert: (t third linkedEntitiesIn: city) isEmpty
 ]
 
 { #category : 'tests - contents' }
@@ -808,6 +887,26 @@ CMNetworkTest >> testNewNetworkIsEmptyAndInTheModel [
 	self assert: street links isEmpty.
 	self assert:
 		((model entitiesOfClass: CMMockStreet) identityIncludes: street)
+]
+
+{ #category : 'tests - queries' }
+CMNetworkTest >> testNextAndPreviousEntitiesInFollowTheDirection [
+
+	| river t |
+	t := self things: 3.
+	river := self newStreet.
+	river addChainOf: CMMockRoad through: t.
+	self
+		assert: (t second nextEntitiesIn: river) asArray
+		equals: { t third }.
+	self
+		assert: (t second previousEntitiesIn: river) asArray
+		equals: { t first }.
+	self assert: (t second linkedEntitiesIn: river) asArray equals: {
+			t first.
+			t third }.
+	self assert: (t first previousEntitiesIn: river) isEmpty.
+	self assert: (t third nextEntitiesIn: river) isEmpty
 ]
 
 { #category : 'tests - queries' }

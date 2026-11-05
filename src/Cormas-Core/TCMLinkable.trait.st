@@ -373,6 +373,23 @@ This follows every kind of link, so adding a new link class to a model changes t
 	^ self otherEndsOf: self links
 ]
 
+{ #category : 'links - direct entities' }
+TCMLinkable >> linkedEntitiesIn: aNetwork [
+
+	<api>
+	<argument: #aNetwork type: #CMNetwork description:
+	'The network to look in. The networks inside it are included'>
+	<returnType: #OrderedCollection description:
+	'The entities directly linked to this one by links inside the given network, in either direction'>
+	<doc:
+	'Answer a new collection with the entities at the other end of the links inside the given network, at any depth, in either direction. Each entity appears once, in the order its first link was created. Dead entities appear until they are removed from the model.'>
+	<example: 'self linkedEntitiesIn: river'>
+	<seeAlso:
+	#( linkedEntities entitiesLinkedBy: nextEntitiesIn: previousEntitiesIn:
+	   linksIn: )>
+	^ self otherEndsOf: (self linksIn: aNetwork)
+]
+
 { #category : 'links - direct links' }
 TCMLinkable >> links [
 
@@ -447,6 +464,22 @@ This follows every kind of link, so adding a new link class to a model changes t
 	<seeAlso: #( nextEntitiesLinkedBy: previousEntities linkedEntities
 	   allDownstreamEntities outgoingLinks )>
 	^ self otherEndsOf: self outgoingLinks
+]
+
+{ #category : 'links - direct entities' }
+TCMLinkable >> nextEntitiesIn: aNetwork [
+
+	<api>
+	<argument: #aNetwork type: #CMNetwork description:
+	'The network to look in. The networks inside it are included'>
+	<returnType: #OrderedCollection description:
+	'The entities that the links inside the given network lead to'>
+	<doc:
+	'Answer a new collection with the entities that the outgoing links inside the given network, at any depth, lead to, one step away. Each entity appears once, in the order its first link was created. Dead entities appear until they are removed from the model.'>
+	<example: 'self nextEntitiesIn: river'>
+	<seeAlso: #( nextEntities nextEntitiesLinkedBy: previousEntitiesIn:
+	   linkedEntitiesIn: outgoingLinksIn: )>
+	^ self otherEndsOf: (self outgoingLinksIn: aNetwork)
 ]
 
 { #category : 'links - direct entities' }
@@ -539,6 +572,22 @@ This follows every kind of link, so adding a new link class to a model changes t
 	<seeAlso: #( previousEntitiesLinkedBy: nextEntities linkedEntities
 	   allUpstreamEntities incomingLinks )>
 	^ self otherEndsOf: self incomingLinks
+]
+
+{ #category : 'links - direct entities' }
+TCMLinkable >> previousEntitiesIn: aNetwork [
+
+	<api>
+	<argument: #aNetwork type: #CMNetwork description:
+	'The network to look in. The networks inside it are included'>
+	<returnType: #OrderedCollection description:
+	'The entities whose links inside the given network lead to this entity'>
+	<doc:
+	'Answer a new collection with the entities that the incoming links inside the given network, at any depth, come from, one step away. Each entity appears once, in the order its first link was created. Dead entities appear until they are removed from the model.'>
+	<example: 'self previousEntitiesIn: river'>
+	<seeAlso: #( previousEntities previousEntitiesLinkedBy:
+	   nextEntitiesIn: linkedEntitiesIn: incomingLinksIn: )>
+	^ self otherEndsOf: (self incomingLinksIn: aNetwork)
 ]
 
 { #category : 'links - direct entities' }
