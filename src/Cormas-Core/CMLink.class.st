@@ -44,6 +44,8 @@ I do not know whether my ends are alive. I am removed when one of them is remove
 Class {
 	#name : 'CMLink',
 	#superclass : 'CMEntity',
+	#traits : 'TCMNetworkMember',
+	#classTraits : 'TCMNetworkMember classTrait',
 	#instVars : [
 		'from',
 		'to'
@@ -146,6 +148,13 @@ CMLink >> isOutgoingFrom: anEntity [
 	"An undirected link goes both ways, so it leaves both of its ends"
 
 	^ self isDirected not or: [ from == anEntity ]
+]
+
+{ #category : 'networks - private' }
+CMLink >> linksAsMember [
+	"A network answers all the links inside it, and I am a single link"
+
+	^ { self }
 ]
 
 { #category : 'accessing' }
