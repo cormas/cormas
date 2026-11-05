@@ -15,6 +15,8 @@ I give an entity the ability to be an end of a link, and to answer questions abo
 
 ## Public API and Key Messages
 
+- `wayTo:in:`, `wayTo:in:constraint:` and `wayTo:in:cost:` answer the links of the shortest or cheapest way to another entity in a network.
+- `distanceTo:in:` answers the cells along that way, and `distanceTo:in:cost:` its total cost. If there is no way, they signal an error.
 - `isLinkable` answers true, and false on entities that do not use me.
 - `links`, `outgoingLinks` and `incomingLinks` answer the links of this entity.
 - `linkedEntities`, `nextEntities` and `previousEntities` answer the entities at their other ends.
@@ -379,6 +381,57 @@ TCMLinkable >> allUpstreamLinksOfClass: aLinkClass [
 		  followedBy: [ :each | each incomingLinksOfClass: aLinkClass ]
 ]
 
+{ #category : 'links - ways' }
+TCMLinkable >> distanceTo: anEntity in: aNetwork [
+
+	<api>
+	<argument: #anEntity type: #CMEntity description:
+	'The entity to reach'>
+	<argument: #aNetwork type: #CMNetwork description:
+	'The network to stay in. The networks inside it are included'>
+	<returnType: #Number description:
+	'The number of cells along the shortest way'>
+	<doc:
+	'Answer the number of cells along the shortest way from this entity to the given one, using only links inside the given network, at any depth, in the directions they allow. The number of links does not matter. An entity is at a distance of 0 from itself.
+
+Signal an error if there is no way, because a distance is one number and no number would be correct. To test first: (self wayTo: anEntity in: aNetwork) isEmpty. Signal an error too if the search reaches a link with an end off the grid. Use distanceTo:in:cost: for those.'>
+	<example: 'self distanceTo: mouth in: river'>
+	<seeAlso: #( distanceTo:in:cost: wayTo:in: distanceTo: )>
+	^ self
+		  distanceTo: anEntity
+		  in: aNetwork
+		  cost: [ :each | each length ]
+]
+
+{ #category : 'links - ways' }
+TCMLinkable >> distanceTo: anEntity in: aNetwork cost: aBlock [
+
+	<api>
+	<argument: #anEntity type: #CMEntity description:
+	'The entity to reach'>
+	<argument: #aNetwork type: #CMNetwork description:
+	'The network to stay in. The networks inside it are included'>
+	<argument: #aBlock type: #BlockClosure description:
+	'Answers the cost of crossing a link, given that link. The cost cannot be negative'>
+	<returnType: #Number description:
+	'The total cost of the cheapest way'>
+	<doc:
+	'Answer the total cost of the cheapest way from this entity to the given one, using only links inside the given network, at any depth, in the directions they allow. An entity is at a cost of 0 from itself.
+
+Signal an error if there is no way, because a distance is one number and no number would be correct, or if a cost is negative. To test first: (self wayTo: anEntity in: aNetwork cost: aBlock) isEmpty.'>
+	<example:
+	'self distanceTo: work in: city cost: [ :road | road ticketPrice ]'>
+	<seeAlso: #( distanceTo:in: wayTo:in:cost: )>
+	| way |
+	self == anEntity ifTrue: [ ^ 0 ].
+	way := self wayTo: anEntity in: aNetwork cost: aBlock.
+	way ifEmpty: [
+			self error:
+				self printString , ' cannot reach ' , anEntity printString
+				, ' in ' , aNetwork printString ].
+	^ way sum: aBlock
+]
+
 { #category : 'links - direct entities' }
 TCMLinkable >> entitiesLinkedBy: aLinkClass [
 
@@ -730,4 +783,74 @@ TCMLinkable >> removedFromModel [
 
 	super removedFromModel.
 	links ifNotNil: [ links copy do: [ :each | each delete ] ]
+]
+
+{ #category : 'links - ways' }
+TCMLinkable >> wayTo: anEntity in: aNetwork [
+
+	<api>
+	<argument: #anEntity type: #CMEntity description:
+	'The entity to reach'>
+	<argument: #aNetwork type: #CMNetwork description:
+	'The network to stay in. The networks inside it are included'>
+	<returnType: #OrderedCollection description:
+	'The links of the shortest way in cells, in order, without this entity'>
+	<doc:
+	'Answer a new collection with the links of the shortest way from this entity to the given one, measured in cells, using only links inside the given network, at any depth, in the directions they allow. A way is made of what you travel on: cells on the grid, links in a network.
+
+When two ways have the same length, the choice is repeatable. Answer an empty collection if there is no way, or if the two entities are the same. Signal an error if the search reaches a link with an end off the grid, because such a link has no length. Use wayTo:in:cost: for those.'>
+	<example: 'self wayTo: mouth in: river'>
+	<example: '(self wayTo: mouth in: river) first'>
+	<seeAlso:
+	#( wayTo:in:constraint: wayTo:in:cost: distanceTo:in: outgoingLinksIn: )>
+	^ self wayTo: anEntity in: aNetwork cost: [ :each | each length ]
+]
+
+{ #category : 'links - ways' }
+TCMLinkable >> wayTo: anEntity in: aNetwork constraint: aBlock [
+
+	<api>
+	<argument: #anEntity type: #CMEntity description:
+	'The entity to reach'>
+	<argument: #aNetwork type: #CMNetwork description:
+	'The network to stay in. The networks inside it are included'>
+	<argument: #aBlock type: #BlockClosure description:
+	'Answers whether the way can use a link, given that link'>
+	<returnType: #OrderedCollection description:
+	'The links of the shortest way in cells using allowed links, in order, without this entity'>
+	<doc:
+	'Answer a new collection with the links of the shortest way from this entity to the given one, measured in cells, using only links inside the given network that the block allows. On the grid, the block of wayTo:constraint: receives a cell. Here it receives a link, because a way in a network is made of links.
+
+Answer an empty collection if there is no way, or if the two entities are the same. Signal an error if the search reaches an allowed link with an end off the grid, because such a link has no length.'>
+	<example:
+	'self wayTo: work in: city constraint: [ :road | road isOpen ]'>
+	<seeAlso: #( wayTo:in: wayTo:in:cost: outgoingLinksIn: )>
+	^ aNetwork
+		  wayFrom: self
+		  to: anEntity
+		  allowing: aBlock
+		  cost: [ :each | each length ]
+]
+
+{ #category : 'links - ways' }
+TCMLinkable >> wayTo: anEntity in: aNetwork cost: aBlock [
+
+	<api>
+	<argument: #anEntity type: #CMEntity description:
+	'The entity to reach'>
+	<argument: #aNetwork type: #CMNetwork description:
+	'The network to stay in. The networks inside it are included'>
+	<argument: #aBlock type: #BlockClosure description:
+	'Answers the cost of crossing a link, given that link. The cost cannot be negative'>
+	<returnType: #OrderedCollection description:
+	'The links of the cheapest way, in order, without this entity'>
+	<doc:
+	'Answer a new collection with the links of the cheapest way from this entity to the given one, using only links inside the given network, at any depth, in the directions they allow. A way is made of what you travel on: cells on the grid, links in a network.
+
+The cost comes from the block, so the same network can compare time, fuel or the price of tickets. When two ways cost the same, the choice is repeatable. Answer an empty collection if there is no way, or if the two entities are the same. Signal an error if a cost is negative.'>
+	<example: 'self wayTo: work in: city cost: [ :road | road fuelUsed ]'>
+	<example:
+	'(self wayTo: work in: city cost: [ :road | road length * road wear ]) first'>
+	<seeAlso: #( wayTo:in: wayTo:in:constraint: distanceTo:in:cost: outgoingLinksIn: nextEntitiesIn: )>
+	^ aNetwork wayFrom: self to: anEntity cost: aBlock
 ]

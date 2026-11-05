@@ -585,6 +585,17 @@ CMNetworkTest >> testChainsCanJoinAtAPlaceToMakeATributary [
 	self assert: (d outgoingLinksOfClass: CMMockRoad) size equals: 1
 ]
 
+{ #category : 'tests - ways' }
+CMNetworkTest >> testChangingAWayDoesNotChangeTheNetwork [
+
+	| street t |
+	t := self things: 2.
+	street := self newStreet.
+	street add: (self road: t first to: t second).
+	(t first wayTo: t second in: street cost: [ :road | 1 ]) removeAll.
+	self assert: street links size equals: 1
+]
+
 { #category : 'tests - contents' }
 CMNetworkTest >> testChangingAnAnswerDoesNotChangeTheNetwork [
 
@@ -610,6 +621,86 @@ CMNetworkTest >> testChangingTheAnswerOfAChainDoesNotChangeTheNetwork [
 			         (model cellAt: 1 at: 2) }.
 	chain removeAll.
 	self assert: street links size equals: 1
+]
+
+{ #category : 'tests - ways' }
+CMNetworkTest >> testCheapestWayCanHaveMoreLinks [
+
+	| city t direct first second |
+	t := self things: 3.
+	direct := self road: t first to: t third.
+	first := self road: t first to: t second.
+	second := self road: t second to: t third.
+	city := self newCity.
+	city addAll: {
+			direct.
+			first.
+			second }.
+	self
+		assert: (t first wayTo: t third in: city cost: [ :road |
+					 road == direct
+						 ifTrue: [ 10 ]
+						 ifFalse: [ 1 ] ]) asArray
+		equals: {
+				first.
+				second }.
+	self
+		assert: (t first wayTo: t third in: city cost: [ :road |
+					 road == direct
+						 ifTrue: [ 1 ]
+						 ifFalse: [ 10 ] ]) asArray
+		equals: { direct }
+]
+
+{ #category : 'tests - ways' }
+CMNetworkTest >> testConstraintKeepsTheWayAwayFromSomeLinks [
+
+	| city a b c closed open1 open2 |
+	a := model cellAt: 1 at: 1.
+	b := model cellAt: 2 at: 2.
+	c := model cellAt: 1 at: 3.
+	closed := self road: a to: c.
+	open1 := self road: a to: b.
+	open2 := self road: b to: c.
+	city := self newCity.
+	city addAll: {
+			closed.
+			open1.
+			open2 }.
+	self assert: (a wayTo: c in: city) asArray equals: { closed }.
+	self
+		assert:
+		(a wayTo: c in: city constraint: [ :road | road ~~ closed ]) asArray
+		equals: {
+				open1.
+				open2 }
+]
+
+{ #category : 'tests - ways' }
+CMNetworkTest >> testConstraintReceivesLinksOfTheNetworkOnly [
+
+	| street road seen |
+	road := self roadNumber: 1.
+	self road: road from to: (model cellAt: 3 at: 3).
+	street := self newStreet.
+	street add: road.
+	seen := OrderedCollection new.
+	road from wayTo: road to in: street constraint: [ :each |
+			seen add: each.
+			true ].
+	self assert: seen asArray equals: { road }
+]
+
+{ #category : 'tests - ways' }
+CMNetworkTest >> testConstraintThatLeavesNoWayAnswersAnEmptyWay [
+
+	| street road |
+	road := self roadNumber: 1.
+	street := self newStreet.
+	street add: road.
+	self assert:
+		(road from wayTo: road to in: street constraint: [ :each | false ])
+			isEmpty
 ]
 
 { #category : 'tests - queries' }
@@ -798,6 +889,132 @@ CMNetworkTest >> testDeletedNetworkLeavesTheNetworksContainingIt [
 	self assert: road networks isEmpty.
 	self assert:
 		((model entitiesOfClass: CMMockRoad) identityIncludes: road)
+]
+
+{ #category : 'tests - distances' }
+CMNetworkTest >> testDistanceCountsCellsAndNotLinks [
+
+	| street a c |
+	a := model cellAt: 1 at: 1.
+	c := model cellAt: 1 at: 3.
+	street := self newStreet.
+	street add: (self road: a to: c).
+	self assert: (a distanceTo: c in: street) equals: 2
+]
+
+{ #category : 'tests - distances' }
+CMNetworkTest >> testDistanceFollowsADirection [
+
+	| street a b |
+	a := model cellAt: 1 at: 1.
+	b := model cellAt: 1 at: 2.
+	street := self newStreet.
+	street add: (self twoWay: a to: b).
+	self assert: (b distanceTo: a in: street) equals: 1
+]
+
+{ #category : 'tests - distances' }
+CMNetworkTest >> testDistanceFromAnEntityToItselfIsZero [
+
+	| street t |
+	t := self things: 2.
+	street := self newStreet.
+	street add: (self road: t first to: t second).
+	self
+		assert: (t first distanceTo: t first in: street cost: [ :road | 1 ])
+		equals: 0.
+	self assert: (t first distanceTo: t first in: street) equals: 0
+]
+
+{ #category : 'tests - distances' }
+CMNetworkTest >> testDistanceIsTheNumberOfCellsAlongTheWay [
+
+	| river a b c |
+	a := model cellAt: 1 at: 1.
+	b := model cellAt: 1 at: 2.
+	c := model cellAt: 1 at: 3.
+	river := self newStreet.
+	river addChainOf: CMMockRoad through: {
+			a.
+			b.
+			c }.
+	self assert: (a distanceTo: c in: river) equals: 2.
+	self assert: (a distanceTo: b in: river) equals: 1
+]
+
+{ #category : 'tests - distances' }
+CMNetworkTest >> testDistanceOffTheGridNeedsACost [
+
+	| street t |
+	t := self things: 2.
+	street := self newStreet.
+	street add: (self road: t first to: t second).
+	self
+		should: [ t first distanceTo: t second in: street ]
+		raise: Error
+		withExceptionDo: [ :error |
+				self deny: (error isKindOf: MessageNotUnderstood).
+				self assert: (error messageText includesSubstring: 'cost:') ].
+	self
+		assert:
+		(t first distanceTo: t second in: street cost: [ :road | 3 ])
+		equals: 3
+]
+
+{ #category : 'tests - distances' }
+CMNetworkTest >> testDistanceToAnEntityOutsideTheNetworkIsAnError [
+
+	| street road outside |
+	road := self roadNumber: 1.
+	outside := model cellAt: 3 at: 3.
+	street := self newStreet.
+	street add: road.
+	self
+		should: [ road from distanceTo: outside in: street ]
+		raise: Error
+		withExceptionDo: [ :error |
+		self deny: (error isKindOf: MessageNotUnderstood) ]
+]
+
+{ #category : 'tests - distances' }
+CMNetworkTest >> testDistanceToAnUnreachableEntityIsAnError [
+
+	| street road |
+	road := self roadNumber: 1.
+	street := self newStreet.
+	street add: road.
+	self
+		should: [ road to distanceTo: road from in: street ]
+		raise: Error
+		withExceptionDo: [ :error |
+		self deny: (error isKindOf: MessageNotUnderstood) ].
+	self
+		should: [
+		road to distanceTo: road from in: street cost: [ :each | 1 ] ]
+		raise: Error
+		withExceptionDo: [ :error |
+		self deny: (error isKindOf: MessageNotUnderstood) ]
+]
+
+{ #category : 'tests - distances' }
+CMNetworkTest >> testDistanceWithACostIsTheTotalOfTheCheapestWay [
+
+	| city t direct first second |
+	t := self things: 3.
+	direct := self road: t first to: t third.
+	first := self road: t first to: t second.
+	second := self road: t second to: t third.
+	city := self newCity.
+	city addAll: {
+			direct.
+			first.
+			second }.
+	self
+		assert: (t first distanceTo: t third in: city cost: [ :road |
+					 road == direct
+						 ifTrue: [ 10 ]
+						 ifFalse: [ 2.5 ] ])
+		equals: 5.0
 ]
 
 { #category : 'tests - lifecycle' }
@@ -1066,6 +1283,20 @@ CMNetworkTest >> testLinksInAnswersOnlyTheLinksOfThatNetwork [
 	self assert: (t third linksIn: river2) asArray equals: { other }
 ]
 
+{ #category : 'tests - ways' }
+CMNetworkTest >> testNegativeCostIsAnError [
+
+	| street t |
+	t := self things: 2.
+	street := self newStreet.
+	street add: (self road: t first to: t second).
+	self
+		should: [ t first wayTo: t second in: street cost: [ :road | -1 ] ]
+		raise: Error
+		withExceptionDo: [ :error |
+		self deny: (error isKindOf: MessageNotUnderstood) ]
+]
+
 { #category : 'tests - contents' }
 CMNetworkTest >> testNetworkAddedLaterIsSeenByTheNetworkContainingIt [
 
@@ -1329,6 +1560,79 @@ CMNetworkTest >> testSeveralNetworksCanShareANetwork [
 			city2 }
 ]
 
+{ #category : 'tests - ways' }
+CMNetworkTest >> testShortestWayFromAnEntityToItselfIsEmpty [
+
+	| street road |
+	road := self roadNumber: 1.
+	street := self newStreet.
+	street add: road.
+	self assert: (road from wayTo: road from in: street) isEmpty
+]
+
+{ #category : 'tests - ways' }
+CMNetworkTest >> testShortestWayIsMeasuredInCellsAndNotInLinks [
+
+	| city start goal far middle1 middle2 short1 short2 short3 |
+	start := model cellAt: 1 at: 1.
+	goal := model cellAt: 1 at: 3.
+	far := model cellAt: 3 at: 3.
+	middle1 := model cellAt: 1 at: 2.
+	middle2 := model cellAt: 2 at: 2.
+	short1 := self road: start to: middle1.
+	short2 := self road: middle1 to: middle2.
+	short3 := self road: middle2 to: goal.
+	city := self newCity.
+	city addAll: {
+			(self road: start to: far).
+			(self road: far to: goal) }.
+	city addAll: {
+			short1.
+			short2.
+			short3 }.
+	self assert: (start wayTo: goal in: city) asArray equals: {
+			short1.
+			short2.
+			short3 }
+]
+
+{ #category : 'tests - ways' }
+CMNetworkTest >> testShortestWayOfASingleLink [
+
+	| street road |
+	road := self roadNumber: 1.
+	street := self newStreet.
+	street add: road.
+	self
+		assert: (road from wayTo: road to in: street) asArray
+		equals: { road }
+]
+
+{ #category : 'tests - ways' }
+CMNetworkTest >> testShortestWayOffTheGridIsAnErrorThatPointsToACost [
+
+	| street t |
+	t := self things: 2.
+	street := self newStreet.
+	street add: (self road: t first to: t second).
+	self
+		should: [ t first wayTo: t second in: street ]
+		raise: Error
+		withExceptionDo: [ :error |
+				self deny: (error isKindOf: MessageNotUnderstood).
+				self assert: (error messageText includesSubstring: 'cost:') ]
+]
+
+{ #category : 'tests - ways' }
+CMNetworkTest >> testShortestWayThatDoesNotExistIsEmpty [
+
+	| street road |
+	road := self roadNumber: 1.
+	street := self newStreet.
+	street add: road.
+	self assert: (road to wayTo: road from in: street) isEmpty
+]
+
 { #category : 'tests - shape' }
 CMNetworkTest >> testSourcesAndSinksFollowADirectionThatChanges [
 
@@ -1506,6 +1810,225 @@ CMNetworkTest >> testTerminalsOfATwoWayStreetAreItsEnds [
 	self assert: street terminals asArray equals: {
 			t first.
 			t third }
+]
+
+{ #category : 'tests - ways' }
+CMNetworkTest >> testWayBetweenEqualCostsIsRepeatable [
+
+	| city t ab ac bd cd way |
+	t := self things: 4.
+	ab := self road: t first to: t second.
+	ac := self road: t first to: t third.
+	bd := self road: t second to: t fourth.
+	cd := self road: t third to: t fourth.
+	city := self newCity.
+	city addAll: {
+			ab.
+			ac.
+			bd.
+			cd }.
+	way := t first wayTo: t fourth in: city cost: [ :road | 1 ].
+	self assert: way asArray equals: {
+			ab.
+			bd }.
+	10 timesRepeat: [
+			self
+				assert:
+				(t first wayTo: t fourth in: city cost: [ :road | 1 ]) asArray
+				equals: way asArray ]
+]
+
+{ #category : 'tests - ways' }
+CMNetworkTest >> testWayCanFollowAnUndirectedLinkBothWays [
+
+	| street t link |
+	t := self things: 2.
+	link := self twoWay: t first to: t second.
+	street := self newStreet.
+	street add: link.
+	self
+		assert:
+		(t first wayTo: t second in: street cost: [ :road | 1 ]) asArray
+		equals: { link }.
+	self
+		assert:
+		(t second wayTo: t first in: street cost: [ :road | 1 ]) asArray
+		equals: { link }
+]
+
+{ #category : 'tests - ways' }
+CMNetworkTest >> testWayCannotGoAgainstADirectedLink [
+
+	| street t |
+	t := self things: 2.
+	street := self newStreet.
+	street add: (self road: t first to: t second).
+	self assert:
+		(t second wayTo: t first in: street cost: [ :road | 1 ]) isEmpty
+]
+
+{ #category : 'tests - ways' }
+CMNetworkTest >> testWayChoosesTheCheapestOfParallelLinks [
+
+	| street t toll free |
+	t := self things: 2.
+	toll := self road: t first to: t second.
+	free := self road: t first to: t second.
+	street := self newStreet.
+	street addAll: {
+			toll.
+			free }.
+	self
+		assert: (t first wayTo: t second in: street cost: [ :road |
+					 road == toll
+						 ifTrue: [ 5 ]
+						 ifFalse: [ 1 ] ]) asArray
+		equals: { free }
+]
+
+{ #category : 'tests - ways' }
+CMNetworkTest >> testWayFinishesOnARing [
+
+	| ring t one two |
+	t := self things: 4.
+	one := self road: t first to: t second.
+	two := self road: t second to: t third.
+	ring := self newStreet.
+	ring addAll: {
+			one.
+			two.
+			(self road: t third to: t first) }.
+	self
+		assert:
+		(t first wayTo: t third in: ring cost: [ :road | 1 ]) asArray
+		equals: {
+				one.
+				two }.
+	self assert:
+		(t first wayTo: t fourth in: ring cost: [ :road | 1 ]) isEmpty
+]
+
+{ #category : 'tests - ways' }
+CMNetworkTest >> testWayFollowsACostThatChanges [
+
+	| city t direct first second wear |
+	t := self things: 3.
+	direct := self road: t first to: t third.
+	first := self road: t first to: t second.
+	second := self road: t second to: t third.
+	city := self newCity.
+	city addAll: {
+			direct.
+			first.
+			second }.
+	wear := 1.
+	self
+		assert: (t first wayTo: t third in: city cost: [ :road |
+					 road == direct
+						 ifTrue: [ wear ]
+						 ifFalse: [ 1 ] ]) asArray
+		equals: { direct }.
+	wear := 5.
+	self
+		assert: (t first wayTo: t third in: city cost: [ :road |
+					 road == direct
+						 ifTrue: [ wear ]
+						 ifFalse: [ 1 ] ]) asArray
+		equals: {
+				first.
+				second }
+]
+
+{ #category : 'tests - ways' }
+CMNetworkTest >> testWayFromAnEntityToItselfIsEmpty [
+
+	| street t |
+	t := self things: 2.
+	street := self newStreet.
+	street add: (self road: t first to: t second).
+	self assert:
+		(t first wayTo: t first in: street cost: [ :road | 1 ]) isEmpty
+]
+
+{ #category : 'tests - ways' }
+CMNetworkTest >> testWayReachesInsideNestedNetworks [
+
+	| street city t one two |
+	t := self things: 3.
+	one := self road: t first to: t second.
+	two := self road: t second to: t third.
+	street := self newStreet.
+	street add: one.
+	city := self newCity.
+	city add: street.
+	city add: two.
+	self
+		assert:
+		(t first wayTo: t third in: city cost: [ :road | 1 ]) asArray
+		equals: {
+				one.
+				two }
+]
+
+{ #category : 'tests - ways' }
+CMNetworkTest >> testWayThatDoesNotExistIsEmpty [
+
+	| street t |
+	t := self things: 4.
+	street := self newStreet.
+	street add: (self road: t first to: t second).
+	street add: (self road: t third to: t fourth).
+	self assert:
+		(t first wayTo: t fourth in: street cost: [ :road | 1 ]) isEmpty
+]
+
+{ #category : 'tests - ways' }
+CMNetworkTest >> testWayUsesOnlyLinksInsideTheNetwork [
+
+	| street t long1 long2 |
+	t := self things: 3.
+	long1 := self road: t first to: t second.
+	long2 := self road: t second to: t third.
+	self road: t first to: t third.
+	street := self newStreet.
+	street addAll: {
+			long1.
+			long2 }.
+	self
+		assert:
+		(t first wayTo: t third in: street cost: [ :road | 1 ]) asArray
+		equals: {
+				long1.
+				long2 }
+]
+
+{ #category : 'tests - ways' }
+CMNetworkTest >> testWayWorksOffTheGridWithACost [
+
+	| street t trust |
+	t := self things: 2.
+	self deny: t first isOnGrid.
+	trust := self road: t first to: t second.
+	street := self newStreet.
+	street add: trust.
+	self
+		assert:
+		(t first wayTo: t second in: street cost: [ :road | 1 ]) asArray
+		equals: { trust }
+]
+
+{ #category : 'tests - ways' }
+CMNetworkTest >> testZeroCostIsAllowed [
+
+	| street t road |
+	t := self things: 2.
+	road := self road: t first to: t second.
+	street := self newStreet.
+	street add: road.
+	self
+		assert:
+		(t first wayTo: t second in: street cost: [ :each | 0 ]) asArray
+		equals: { road }
 ]
 
 { #category : 'helpers' }

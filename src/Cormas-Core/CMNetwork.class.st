@@ -50,7 +50,7 @@ city includes: road1. ""true""
 
 ### Implementation Points
 
-I store nothing about the shape of my links. Anything about their shape is worked out from the links when asked, so it cannot become stale.
+I store nothing about the shape of my links. Anything about their shape is worked out from the links when asked, so it cannot become stale. This includes the ways that entities ask me for with `wayTo:in:` and the messages like it.
 
 I have no dead state: `isDead` only answers false because the model asks it of every entity. A link that is removed from the model leaves me at that moment, so I never hold a removed link unless it was added after its removal, which is not checked.
 "
@@ -168,6 +168,18 @@ CMNetwork >> checkCanAdd: aLinkOrNetwork [
 					, self printString , ' because a network cannot contain itself' ]
 ]
 
+{ #category : 'ways - private' }
+CMNetwork >> costOf: aLink given: aBlock [
+	"Answer the cost of aLink. A negative cost is a mistake, because the cheapest way would no longer be found"
+
+	| cost |
+	cost := aBlock value: aLink.
+	cost < 0 ifTrue: [
+			self error:
+				aLink printString , ' has a negative cost, which is not allowed' ].
+	^ cost
+]
+
 { #category : 'controlling' }
 CMNetwork >> delete [
 
@@ -248,7 +260,7 @@ CMNetwork >> links [
 	<doc:
 	'Answer a new collection with all the links inside this network, including the ones inside the networks it contains, however deep. Each link appears once, in the order the links were added, entering each nested network where it appears.'>
 	<example: 'city links'>
-	<example: 'street links average: [ :road | road wear ]'>
+	<example: '(street links collect: [ :road | road wear ]) average'>
 	<seeAlso: #( members entities includes: )>
 	^ self withoutRepetitions: self linksAsMember
 ]
@@ -357,6 +369,57 @@ Use this to find the ends of a two-way street, which has no sources or sinks. Th
 			eachLink ends do: [ :eachEnd |
 				counts at: eachEnd put: (counts at: eachEnd ifAbsent: [ 0 ]) + 1 ] ].
 	^ self entities select: [ :each | (counts at: each) = 1 ]
+]
+
+{ #category : 'ways - private' }
+CMNetwork >> wayFrom: aStart to: aGoal allowing: aConstraint cost: aBlock [
+	"Answer the links of the cheapest way, without aStart, using Dijkstra's algorithm: always continue from the cheapest entity reached so far, until that entity is aGoal. It follows only my links that aConstraint allows, in the directions they allow. The first cheapest entity reached is chosen, so a tie always has the same answer"
+
+	| costs lastLinks frontier |
+	costs := IdentityDictionary new.
+	lastLinks := IdentityDictionary new.
+	frontier := OrderedCollection with: aStart.
+	costs at: aStart put: 0.
+	[ frontier isEmpty ] whileFalse: [
+			| entity |
+			entity := frontier detectMin: [ :each | costs at: each ].
+			entity == aGoal ifTrue: [
+				^ self wayFrom: aStart to: aGoal following: lastLinks ].
+			frontier remove: entity.
+			((entity outgoingLinksIn: self) select: aConstraint) do: [ :link |
+					| next cost |
+					next := link otherEndOf: entity.
+					cost := (costs at: entity) + (self costOf: link given: aBlock).
+					cost < (costs at: next ifAbsent: [ Float infinity ]) ifTrue: [
+							(costs includesKey: next) ifFalse: [ frontier add: next ].
+							costs at: next put: cost.
+							lastLinks at: next put: link ] ] ].
+	^ OrderedCollection new
+]
+
+{ #category : 'ways - private' }
+CMNetwork >> wayFrom: aStart to: aGoal cost: aBlock [
+
+	^ self
+		  wayFrom: aStart
+		  to: aGoal
+		  allowing: [ :each | true ]
+		  cost: aBlock
+]
+
+{ #category : 'ways - private' }
+CMNetwork >> wayFrom: aStart to: aGoal following: lastLinks [
+	"Answer the links from aStart to aGoal, in order, going back from aGoal through the link that reached each entity"
+
+	| way entity |
+	way := OrderedCollection new.
+	entity := aGoal.
+	[ entity == aStart ] whileFalse: [
+			| link |
+			link := lastLinks at: entity.
+			way addFirst: link.
+			entity := link otherEndOf: entity ].
+	^ way
 ]
 
 { #category : 'accessing - private' }
