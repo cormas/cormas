@@ -128,6 +128,7 @@ CMLink >> isDirected [
 
 An undirected link counts as going both ways.'>
 	<example: 'road isDirected'>
+	<seeAlso: #( from to otherEndOf: )>
 	^ true
 ]
 

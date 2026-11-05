@@ -180,7 +180,8 @@ CMDocumentationBrowser >> documentedClasses [
 		  CMCell.
 		  CMAgent.
 		  CMSpatialEntityAggregate.
-		  CMLink }
+		  CMLink.
+		  CMNetwork }
 ]
 
 { #category : 'examples' }

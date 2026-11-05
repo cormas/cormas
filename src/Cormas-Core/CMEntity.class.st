@@ -315,7 +315,7 @@ CMEntity >> isLinkable [
 	<doc:
 	'Answer whether the entity can be an end of a link. Things such as cells, agents and aggregates can. A link cannot, because it is a connection and not a thing.'>
 	<example: 'self isLinkable'>
-	<seeAlso: #( links )>
+	<seeAlso: #( isOnGrid )>
 	^ false
 ]
 
