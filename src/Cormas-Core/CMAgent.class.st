@@ -4,8 +4,8 @@ CMAgent is the abstract class of all agents classes in CORMAS.
 Class {
 	#name : 'CMAgent',
 	#superclass : 'CMEntity',
-	#traits : 'TCMLocated',
-	#classTraits : 'TCMLocated classTrait',
+	#traits : 'TCMLocated + TCMLinkable',
+	#classTraits : 'TCMLocated classTrait + TCMLinkable classTrait',
 	#instVars : [
 		'isDead'
 	],

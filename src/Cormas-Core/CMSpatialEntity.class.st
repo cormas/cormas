@@ -40,6 +40,8 @@ ag update: (assoc key asString) to:  assoc value
 Class {
 	#name : 'CMSpatialEntity',
 	#superclass : 'CMEntity',
+	#traits : 'TCMLinkable',
+	#classTraits : 'TCMLinkable classTrait',
 	#instVars : [
 		'spaceModel',
 		'destroyed',

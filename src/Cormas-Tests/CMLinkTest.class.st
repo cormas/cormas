@@ -812,6 +812,20 @@ CMLinkTest >> testLinkCanConnectAnyTypesOfEntities [
 			self assert: link to identicalTo: ends value ]
 ]
 
+{ #category : 'tests' }
+CMLinkTest >> testLinkDoesNotAnswerLinkQueries [
+	"A link is a connection and not a thing that can be linked, so asking for its links is a mistake that must show at once"
+
+	| road |
+	road := model
+		        newEntity: CMMockRoad
+		        from: (model cellAt: 1 at: 1)
+		        to: (model cellAt: 1 at: 2).
+	self should: [ road links ] raise: MessageNotUnderstood.
+	self should: [ road nextEntities ] raise: MessageNotUnderstood.
+	self should: [ road allLinks ] raise: MessageNotUnderstood
+]
+
 { #category : 'tests - lifecycle' }
 CMLinkTest >> testLinkGoesWhenACellEndIsRemoved [
 
