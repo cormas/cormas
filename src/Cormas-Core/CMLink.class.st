@@ -179,6 +179,7 @@ CMLink >> otherEndOf: anEntity [
 CMLink >> removedFromModel [
 
 	super removedFromModel.
+	self leaveAllNetworks.
 	from removeLink: self.
 	to removeLink: self
 ]

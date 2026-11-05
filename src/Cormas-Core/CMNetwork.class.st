@@ -21,6 +21,8 @@ A thing such as a cell or an agent is connected to another thing by a link, and 
 
 - `CMModel>>newEntity:` creates me.
 - `add:` and `addAll:` add links and networks. Adding one that I already hold directly changes nothing. Adding a thing, or a network that I am inside of, is an error.
+- `remove:` takes out a direct member, which stays in the model.
+- `delete` removes me from the model, and what I hold stays there.
 - `members` answers what was directly added to me.
 - `links` answers all the links inside me, at any depth.
 - `includes:` tells whether a link or a network is inside me, at any depth.
@@ -46,7 +48,7 @@ city includes: road1. ""true""
 
 I store nothing about the shape of my links. Anything about their shape is worked out from the links when asked, so it cannot become stale.
 
-I have no dead state: `isDead` only answers false because the model asks it of every entity.
+I have no dead state: `isDead` only answers false because the model asks it of every entity. A link that is removed from the model leaves me at that moment, so I never hold a removed link unless it was added after its removal, which is not checked.
 "
 Class {
 	#name : 'CMNetwork',
@@ -135,6 +137,19 @@ CMNetwork >> checkCanAdd: aLinkOrNetwork [
 					, self printString , ' because a network cannot contain itself' ]
 ]
 
+{ #category : 'controlling' }
+CMNetwork >> delete [
+
+	<api>
+	<doc:
+	'Remove the network from the model immediately. It leaves the networks that contain it. Its links and the networks inside it stay in the model, because a network only collects them and they can belong to other networks.
+
+To delete the links too: street links do: [ :road | road delete ].'>
+	<example: 'street delete'>
+	<seeAlso: #( remove: members )>
+	cormasModel removeEntity: self
+]
+
 { #category : 'testing' }
 CMNetwork >> includes: aLinkOrNetwork [
 
@@ -204,4 +219,35 @@ CMNetwork >> members [
 	<example: 'city members'>
 	<seeAlso: #( links add: includes: )>
 	^ members copy
+]
+
+{ #category : 'removing' }
+CMNetwork >> remove: aLinkOrNetwork [
+
+	<api>
+	<argument: #aLinkOrNetwork type: #CMEntity description:
+	'The link or the network to take out, which must be a direct member'>
+	<returnType: #CMEntity description:
+	'The link or the network that was taken out'>
+	<doc:
+	'Take a link or a network out of this network, and answer it. It stays in the model and in any other network it belongs to.
+
+Signal an error if it is not a direct member, including when it is only inside a network that this one contains.'>
+	<example: 'street remove: road'>
+	<example: 'city remove: street'>
+	<seeAlso: #( add: members delete )>
+	members remove: aLinkOrNetwork ifAbsent: [
+			self error: aLinkOrNetwork printString
+				, ' cannot be removed because it is not a direct member of '
+				, self printString ].
+	aLinkOrNetwork removeNetwork: self.
+	^ aLinkOrNetwork
+]
+
+{ #category : 'initialize-release' }
+CMNetwork >> removedFromModel [
+
+	super removedFromModel.
+	self leaveAllNetworks.
+	self members do: [ :each | self remove: each ]
 ]

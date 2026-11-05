@@ -119,6 +119,37 @@ CMNetworkTest >> testCannotAddAThing [
 	self assert: street members isEmpty
 ]
 
+{ #category : 'tests - removing' }
+CMNetworkTest >> testCannotRemoveAMemberOfANestedNetwork [
+
+	| street city road |
+	street := self newStreet.
+	city := self newCity.
+	road := self roadNumber: 1.
+	street add: road.
+	city add: street.
+	self
+		should: [ city remove: road ]
+		raise: Error
+		withExceptionDo: [ :error |
+		self deny: (error isKindOf: MessageNotUnderstood) ].
+	self assert: street members asArray equals: { road }.
+	self assert: road networks asArray equals: { street }
+]
+
+{ #category : 'tests - removing' }
+CMNetworkTest >> testCannotRemoveWhatWasNeverAdded [
+
+	| street road |
+	street := self newStreet.
+	road := self roadNumber: 1.
+	self
+		should: [ street remove: road ]
+		raise: Error
+		withExceptionDo: [ :error |
+		self deny: (error isKindOf: MessageNotUnderstood) ]
+]
+
 { #category : 'tests - contents' }
 CMNetworkTest >> testChangingAnAnswerDoesNotChangeTheNetwork [
 
@@ -132,6 +163,78 @@ CMNetworkTest >> testChangingAnAnswerDoesNotChangeTheNetwork [
 	self assert: street members size equals: 1.
 	self assert: street links size equals: 1.
 	self assert: road networks size equals: 1
+]
+
+{ #category : 'tests - lifecycle' }
+CMNetworkTest >> testDeletedLinkLeavesEveryNetwork [
+
+	| street city road |
+	street := self newStreet.
+	city := self newCity.
+	road := self roadNumber: 1.
+	street add: road.
+	city add: road.
+	road delete.
+	self assert: street members isEmpty.
+	self assert: city links isEmpty
+]
+
+{ #category : 'tests - lifecycle' }
+CMNetworkTest >> testDeletedNetworkIsRemovedFromTheModel [
+
+	| street |
+	street := self newStreet.
+	street delete.
+	self deny:
+		((model entitiesOfClass: CMMockStreet) identityIncludes: street)
+]
+
+{ #category : 'tests - lifecycle' }
+CMNetworkTest >> testDeletedNetworkKeepsItsContentsInTheModel [
+
+	| street city road |
+	street := self newStreet.
+	city := self newCity.
+	road := self roadNumber: 1.
+	street add: road.
+	city add: street.
+	city delete.
+	self assert: street networks isEmpty.
+	self assert: street links asArray equals: { road }.
+	self assert:
+		((model entitiesOfClass: CMMockStreet) identityIncludes: street).
+	self assert:
+		((model entitiesOfClass: CMMockRoad) identityIncludes: road)
+]
+
+{ #category : 'tests - lifecycle' }
+CMNetworkTest >> testDeletedNetworkLeavesTheNetworksContainingIt [
+
+	| street city road |
+	street := self newStreet.
+	city := self newCity.
+	road := self roadNumber: 1.
+	street add: road.
+	city add: street.
+	street delete.
+	self assert: city members isEmpty.
+	self assert: city links isEmpty.
+	self assert: road networks isEmpty.
+	self assert:
+		((model entitiesOfClass: CMMockRoad) identityIncludes: road)
+]
+
+{ #category : 'tests - lifecycle' }
+CMNetworkTest >> testEmptyNetworkStaysInTheModel [
+
+	| street road |
+	street := self newStreet.
+	road := self roadNumber: 1.
+	street add: road.
+	road delete.
+	self assert: street links isEmpty.
+	self assert:
+		((model entitiesOfClass: CMMockStreet) identityIncludes: street)
 ]
 
 { #category : 'tests - contents' }
@@ -150,6 +253,39 @@ CMNetworkTest >> testIncludesFindsMembersAtAnyDepth [
 	self deny: (city includes: other).
 	self deny: (street includes: city).
 	self deny: (city includes: city)
+]
+
+{ #category : 'tests - lifecycle' }
+CMNetworkTest >> testLinkLeavesItsNetworksWhenACellEndIsRemoved [
+
+	| street cell road other |
+	street := self newStreet.
+	cell := model cellAt: 1 at: 1.
+	road := model
+		        newEntity: CMMockRoad
+		        from: cell
+		        to: (model cellAt: 2 at: 1).
+	other := self roadNumber: 2.
+	street addAll: {
+			road.
+			other }.
+	model removeEntity: cell.
+	self assert: street members asArray equals: { other }
+]
+
+{ #category : 'tests - lifecycle' }
+CMNetworkTest >> testLinkLeavesItsNetworksWhenAnAgentEndDies [
+
+	| street cow road |
+	street := self newStreet.
+	cow := model newEntity: CMMockCow.
+	road := model
+		        newEntity: CMMockRoad
+		        from: cow
+		        to: (model cellAt: 1 at: 1).
+	street add: road.
+	cow die.
+	self assert: street members isEmpty
 ]
 
 { #category : 'tests - contents' }
@@ -339,6 +475,77 @@ CMNetworkTest >> testNewNetworkIsEmptyAndInTheModel [
 	self assert: street links isEmpty.
 	self assert:
 		((model entitiesOfClass: CMMockStreet) identityIncludes: street)
+]
+
+{ #category : 'tests - lifecycle' }
+CMNetworkTest >> testReinitializingEntitiesRemovesNetworks [
+
+	| street city road |
+	street := self newStreet.
+	city := self newCity.
+	road := self roadNumber: 1.
+	street add: road.
+	city add: street.
+	model initEntities.
+	self assertEmpty: (model entitiesOfClass: CMMockStreet).
+	self assertEmpty: (model entitiesOfClass: CMMockCity).
+	self assertEmpty: (model entitiesOfClass: CMMockRoad)
+]
+
+{ #category : 'tests - removing' }
+CMNetworkTest >> testRemoveAnswersTheMember [
+
+	| street road |
+	street := self newStreet.
+	road := self roadNumber: 1.
+	street add: road.
+	self assert: (street remove: road) identicalTo: road
+]
+
+{ #category : 'tests - removing' }
+CMNetworkTest >> testRemovedLinkCanBeAddedAgain [
+
+	| street road |
+	street := self newStreet.
+	road := self roadNumber: 1.
+	street add: road.
+	street remove: road.
+	street add: road.
+	self assert: street members asArray equals: { road }.
+	self assert: road networks asArray equals: { street }
+]
+
+{ #category : 'tests - removing' }
+CMNetworkTest >> testRemovedLinkStaysInTheModelAndInItsOtherNetworks [
+
+	| street city road |
+	street := self newStreet.
+	city := self newCity.
+	road := self roadNumber: 1.
+	street add: road.
+	city add: road.
+	street remove: road.
+	self assert: street members isEmpty.
+	self assert: road networks asArray equals: { city }.
+	self assert: (city includes: road).
+	self assert:
+		((model entitiesOfClass: CMMockRoad) identityIncludes: road)
+]
+
+{ #category : 'tests - removing' }
+CMNetworkTest >> testRemovedNetworkTakesItsLinksOutOfTheNetworkThatHeldIt [
+
+	| street city road |
+	street := self newStreet.
+	city := self newCity.
+	road := self roadNumber: 1.
+	street add: road.
+	city add: street.
+	city remove: street.
+	self assert: city links isEmpty.
+	self deny: (city includes: road).
+	self assert: street links asArray equals: { road }.
+	self assert: street networks isEmpty
 ]
 
 { #category : 'tests - errors' }

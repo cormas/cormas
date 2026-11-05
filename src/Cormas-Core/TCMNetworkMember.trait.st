@@ -57,6 +57,12 @@ TCMNetworkMember >> isInside: aNetwork [
 		  each == aNetwork or: [ each isInside: aNetwork ] ]
 ]
 
+{ #category : 'networks - private' }
+TCMNetworkMember >> leaveAllNetworks [
+
+	self networks do: [ :each | each remove: self ]
+]
+
 { #category : 'networks' }
 TCMNetworkMember >> networks [
 
@@ -87,4 +93,10 @@ TCMNetworkMember >> networksOfClass: aNetworkClass [
 	<example: '(self networksOfClass: Street) first speedLimit'>
 	<seeAlso: #( networks )>
 	^ self networks select: [ :each | each isKindOf: aNetworkClass ]
+]
+
+{ #category : 'networks - private' }
+TCMNetworkMember >> removeNetwork: aNetwork [
+
+	networks remove: aNetwork
 ]
