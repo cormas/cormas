@@ -258,7 +258,7 @@ Argument: otherAggregate = <SpatialEntityAggregate>"
 
 	| copy |
 	otherAggregate ifNil: [ ^ nil ].
-	otherAggregate destroyed ifTrue: [ ^ nil ].
+	otherAggregate isDead ifTrue: [ ^ nil ].
 	copy := otherAggregate components.
 	otherAggregate release.
 	self addComponents: copy
