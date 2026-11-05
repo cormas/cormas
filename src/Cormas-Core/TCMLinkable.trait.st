@@ -318,6 +318,22 @@ TCMLinkable >> incomingLinks [
 ]
 
 { #category : 'links - direct links' }
+TCMLinkable >> incomingLinksIn: aNetwork [
+
+	<api>
+	<argument: #aNetwork type: #CMNetwork description:
+	'The network to look in. The networks inside it are included'>
+	<returnType: #OrderedCollection description:
+	'The links inside the given network that lead to the entity'>
+	<doc:
+	'Answer a new collection with the links inside the given network, at any depth, that lead to this entity. These are the directed links ending here and all the undirected links, which go both ways. Two rivers of one class that cross here stay separate, unlike with incomingLinksOfClass:.'>
+	<example: 'self incomingLinksIn: river'>
+	<seeAlso: #( incomingLinks incomingLinksOfClass:
+	   outgoingLinksIn: linksIn: )>
+	^ self incomingLinks select: [ :each | aNetwork includes: each ]
+]
+
+{ #category : 'links - direct links' }
 TCMLinkable >> incomingLinksOfClass: aLinkClass [
 
 	<api>
@@ -369,6 +385,21 @@ TCMLinkable >> links [
 	<example: 'self links size'>
 	<seeAlso: #( linksOfClass: outgoingLinks incomingLinks allLinks )>
 	^ links ifNil: [ OrderedCollection new ] ifNotNil: [ links copy ]
+]
+
+{ #category : 'links - direct links' }
+TCMLinkable >> linksIn: aNetwork [
+
+	<api>
+	<argument: #aNetwork type: #CMNetwork description:
+	'The network to look in. The networks inside it are included'>
+	<returnType: #OrderedCollection description:
+	'The links of the entity inside the given network, in either direction'>
+	<doc:
+	'Answer a new collection with the links inside the given network, at any depth, that have this entity at one of their ends, in either direction. An entity with no link in the network answers an empty collection.'>
+	<example: 'self linksIn: river'>
+	<seeAlso: #( links linksOfClass: outgoingLinksIn: incomingLinksIn: )>
+	^ self links select: [ :each | aNetwork includes: each ]
 ]
 
 { #category : 'links - direct links' }
@@ -460,6 +491,22 @@ TCMLinkable >> outgoingLinks [
 	<example: 'self outgoingLinks'>
 	<seeAlso: #( outgoingLinksOfClass: incomingLinks links nextEntities )>
 	^ self links select: [ :each | each isOutgoingFrom: self ]
+]
+
+{ #category : 'links - direct links' }
+TCMLinkable >> outgoingLinksIn: aNetwork [
+
+	<api>
+	<argument: #aNetwork type: #CMNetwork description:
+	'The network to look in. The networks inside it are included'>
+	<returnType: #OrderedCollection description:
+	'The links inside the given network that lead away from the entity'>
+	<doc:
+	'Answer a new collection with the links inside the given network, at any depth, that lead away from this entity. These are the directed links starting here and all the undirected links, which go both ways. Two rivers of one class that cross here stay separate, unlike with outgoingLinksOfClass:.'>
+	<example: 'self outgoingLinksIn: river'>
+	<seeAlso: #( outgoingLinks outgoingLinksOfClass:
+	   incomingLinksIn: linksIn: )>
+	^ self outgoingLinks select: [ :each | aNetwork includes: each ]
 ]
 
 { #category : 'links - direct links' }

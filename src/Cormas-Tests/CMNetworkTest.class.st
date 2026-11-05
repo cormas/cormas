@@ -173,6 +173,23 @@ CMNetworkTest >> testAnEmptyNetworkHasNoTerminals [
 	self assert: self newStreet terminals isEmpty
 ]
 
+{ #category : 'tests - queries' }
+CMNetworkTest >> testAnUndirectedLinkIsBothOutgoingAndIncomingInANetwork [
+
+	| street t link |
+	t := self things: 2.
+	link := self twoWay: t first to: t second.
+	street := self newStreet.
+	street add: link.
+	t do: [ :each |
+			self
+				assert: (each outgoingLinksIn: street) asArray
+				equals: { link }.
+			self
+				assert: (each incomingLinksIn: street) asArray
+				equals: { link } ]
+]
+
 { #category : 'tests - errors' }
 CMNetworkTest >> testCannotAddAThing [
 
@@ -349,6 +366,29 @@ CMNetworkTest >> testChangingTheAnswerOfAChainDoesNotChangeTheNetwork [
 			         (model cellAt: 1 at: 2) }.
 	chain removeAll.
 	self assert: street links size equals: 1
+]
+
+{ #category : 'tests - queries' }
+CMNetworkTest >> testCrossingRiversOfOneClassStaySeparateOneStepAway [
+
+	| river1 river2 t crossing away1 away2 |
+	t := self things: 5.
+	crossing := t third.
+	river1 := self newStreet.
+	river2 := self newStreet.
+	river1 add: (self road: t first to: crossing).
+	away1 := river1 add: (self road: crossing to: t fourth).
+	river2 add: (self road: t second to: crossing).
+	away2 := river2 add: (self road: crossing to: t fifth).
+	self
+		assert: (crossing outgoingLinksOfClass: CMMockRoad) size
+		equals: 2.
+	self
+		assert: (crossing outgoingLinksIn: river1) asArray
+		equals: { away1 }.
+	self
+		assert: (crossing outgoingLinksIn: river2) asArray
+		equals: { away2 }
 ]
 
 { #category : 'tests - lifecycle' }
@@ -531,6 +571,35 @@ CMNetworkTest >> testLinkLeavesItsNetworksWhenAnAgentEndDies [
 	self assert: street members isEmpty
 ]
 
+{ #category : 'tests - queries' }
+CMNetworkTest >> testLinkQueriesInANetworkAnswerNothingForAnEntityOutsideIt [
+
+	| street t |
+	t := self things: 3.
+	street := self newStreet.
+	street add: (self road: t first to: t second).
+	self assert: (t third linksIn: street) isEmpty.
+	self assert: (t third outgoingLinksIn: street) isEmpty.
+	self assert: (t third incomingLinksIn: street) isEmpty
+]
+
+{ #category : 'tests - queries' }
+CMNetworkTest >> testLinkQueriesInANetworkReachInsideNestedNetworks [
+
+	| street city t road |
+	t := self things: 2.
+	road := self road: t first to: t second.
+	street := self newStreet.
+	street add: road.
+	city := self newCity.
+	city add: street.
+	self assert: (t first linksIn: city) asArray equals: { road }.
+	self assert: (t first outgoingLinksIn: city) asArray equals: { road }.
+	self
+		assert: (t second incomingLinksIn: city) asArray
+		equals: { road }
+]
+
 { #category : 'tests - contents' }
 CMNetworkTest >> testLinksAreAnsweredInTheOrderTheyWereAdded [
 
@@ -593,6 +662,27 @@ CMNetworkTest >> testLinksCanBeOfAnyClassAndAnyShape [
 	self assert: street links asArray equals: {
 			road.
 			friendship }
+]
+
+{ #category : 'tests - queries' }
+CMNetworkTest >> testLinksInAnswersOnlyTheLinksOfThatNetwork [
+
+	| river1 river2 t into away other |
+	t := self things: 5.
+	into := self road: t first to: t third.
+	away := self road: t third to: t fourth.
+	other := self road: t second to: t third.
+	self road: t third to: t fifth.
+	river1 := self newStreet.
+	river1 addAll: {
+			into.
+			away }.
+	river2 := self newStreet.
+	river2 add: other.
+	self assert: (t third linksIn: river1) asArray equals: {
+			into.
+			away }.
+	self assert: (t third linksIn: river2) asArray equals: { other }
 ]
 
 { #category : 'tests - contents' }
@@ -718,6 +808,27 @@ CMNetworkTest >> testNewNetworkIsEmptyAndInTheModel [
 	self assert: street links isEmpty.
 	self assert:
 		((model entitiesOfClass: CMMockStreet) identityIncludes: street)
+]
+
+{ #category : 'tests - queries' }
+CMNetworkTest >> testOutgoingAndIncomingLinksInFollowTheDirection [
+
+	| river t into away |
+	t := self things: 3.
+	into := self road: t first to: t second.
+	away := self road: t second to: t third.
+	river := self newStreet.
+	river addAll: {
+			into.
+			away }.
+	self
+		assert: (t second outgoingLinksIn: river) asArray
+		equals: { away }.
+	self
+		assert: (t second incomingLinksIn: river) asArray
+		equals: { into }.
+	self assert: (t first incomingLinksIn: river) isEmpty.
+	self assert: (t third outgoingLinksIn: river) isEmpty
 ]
 
 { #category : 'tests - shape' }
