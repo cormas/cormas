@@ -1,12 +1,6 @@
 Extension { #name : 'CMSpace6NeighbourhoodFlatTop' }
 
 { #category : '*Cormas-Bloc' }
-CMSpace6NeighbourhoodFlatTop >> blocCellProportions [
-
-	^ 1 @ (3 sqrt / 2)
-]
-
-{ #category : '*Cormas-Bloc' }
 CMSpace6NeighbourhoodFlatTop >> blocCellVerticesFor: aCell [
 
 	^ {

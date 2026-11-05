@@ -103,10 +103,46 @@ CMSpaceNeighbourhood >> cardinal [
 	^ self class cardinal
 ]
 
+{ #category : 'geometry' }
+CMSpaceNeighbourhood >> cellAt: aPoint startingFrom: aCell [
+	"Answer the cell around a position on the grid, walking there from aCell through the cells closest to it"
+
+	| current distanceTo closest |
+	current := aCell.
+	distanceTo := [ :each |
+	              (self wayFrom: (self centerOnGridOf: each) to: aPoint)
+		              r ].
+	[
+		closest := (self cellsToWalkThroughFrom: current) detectMin:
+			           distanceTo.
+		(distanceTo value: closest) < (distanceTo value: current) ]
+		whileTrue: [ current := closest ].
+	^ current
+]
+
 { #category : 'rendering' }
 CMSpaceNeighbourhood >> cellCenterFor: aCell [
 	"Relative center of a shape assuming that the top-left corner of the bounding box is at 0@0 and the bottom-right corner is at 1@1"
 	^ 0.5 @ 0.5
+]
+
+{ #category : 'geometry' }
+CMSpaceNeighbourhood >> cellProportions [
+	"Answer the width and height of the box around a cell, relative to its longest side"
+
+	^ 1 @ 1
+]
+
+{ #category : 'geometry' }
+CMSpaceNeighbourhood >> cellsToWalkThroughFrom: aCell [
+
+	^ aCell neighbourhoodAndSelf
+]
+
+{ #category : 'geometry' }
+CMSpaceNeighbourhood >> centerOnGridOf: aCell [
+
+	^ self gridPositionOf: aCell at: (self cellCenterFor: aCell)
 ]
 
 { #category : 'utilities - space metrics' }
@@ -146,6 +182,26 @@ CMSpaceNeighbourhood >> eastCell: k [
 CMSpaceNeighbourhood >> gridCellShapeType [
 
 	^ #regular
+]
+
+{ #category : 'geometry' }
+CMSpaceNeighbourhood >> gridPositionOf: aCell at: aRelativePoint [
+	"Answer a position on the whole grid, where one cell width is 1, from a position relative to the box around aCell"
+
+	^ (self relativeOriginOfCell: aCell) + aRelativePoint
+	  * self cellProportions
+]
+
+{ #category : 'geometry' }
+CMSpaceNeighbourhood >> gridSize [
+	"Answer the width and height of the whole grid, in the units of gridPositionOf:at:"
+
+	^ self numberOfColumns
+	  * (1 - self boundingRectangleHorizontalIntersection)
+	  @
+	  (self numberOfRows
+	   * (1 - self boundingRectangleVerticalIntersection))
+	  * self cellProportions
 ]
 
 { #category : 'initialization' }
@@ -294,6 +350,22 @@ CMSpaceNeighbourhood >> relativeOriginOfCell: aCell [
 	^ distanceInCells - (distanceInCells * overlap) + shift
 ]
 
+{ #category : 'geometry' }
+CMSpaceNeighbourhood >> relativePositionOf: aPoint in: aCell [
+	"Answer a position on the grid as relative to the box around aCell"
+
+	^ (self wayFrom: (self gridPositionOf: aCell at: 0 @ 0) to: aPoint)
+	  / self cellProportions
+]
+
+{ #category : 'geometry' }
+CMSpaceNeighbourhood >> shortest: aDistance around: aLength [
+	"When going directly is as short as going the other way, go directly"
+
+	aDistance abs <= (aLength / 2) ifTrue: [ ^ aDistance ].
+	^ aDistance - (aLength * (aDistance / aLength) rounded)
+]
+
 { #category : 'private - regular cells - instance creation' }
 CMSpaceNeighbourhood >> southCell: k [
 	k = 0
@@ -303,6 +375,18 @@ CMSpaceNeighbourhood >> southCell: k [
 	^ self isClosedEnvironment
 		ifTrue: [ 0 ]
 		ifFalse: [ k - (self numberOfColumns * (self numberOfRows - 1)) ]
+]
+
+{ #category : 'geometry' }
+CMSpaceNeighbourhood >> wayFrom: aPoint to: anotherPoint [
+	"Answer the shortest vector between two positions on the grid. On a torus it can cross the edges of the grid"
+
+	| way size |
+	way := anotherPoint - aPoint.
+	self isClosedEnvironment ifTrue: [ ^ way ].
+	size := self gridSize.
+	^ (self shortest: way x around: size x)
+	  @ (self shortest: way y around: size y)
 ]
 
 { #category : 'private - regular cells - instance creation' }

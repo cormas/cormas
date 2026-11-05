@@ -33,6 +33,13 @@ TCMLocated >> center [
 	^ cell ifNil: [ nil ] ifNotNil: [ cell center ]
 ]
 
+{ #category : 'moving' }
+TCMLocated >> closeEnoughToACenter [
+	"Positions are floats, so an agent walking to a center may never be exactly there. Closer than this distance, in cell widths, it is at the center"
+
+	^ 0.000001
+]
+
 { #category : 'environment - sensing - agents' }
 TCMLocated >> colocatedEntities: locatedEntityName [
 	"Purpose: returns all entities (except the sender) of a given type located in the same location as the receiver. (all locatedEntityName subclasses are considered).
@@ -125,6 +132,37 @@ Return value: <Integer>"
 		ifTrue: [^self cell distanceTo: aSpatialEntityOrSituatedEntity cell].
 	aSpatialEntityOrSituatedEntity isSpatialEntity
 		ifTrue: [^self cell distanceTo: aSpatialEntityOrSituatedEntity]
+]
+
+{ #category : 'moving' }
+TCMLocated >> enterCell: aCell [
+	"Move to aCell and leave my position in the cell as it is"
+
+	self cell = aCell ifTrue: [ ^ self ].
+	self leave.
+	self cell: aCell.
+	self cell addOccupant: self
+]
+
+{ #category : 'moving' }
+TCMLocated >> isAtCenterOf: aCell [
+
+	<api>
+	<argument: #aCell type: #CMSpatialEntity description:
+	'The cell to check'>
+	<returnType: #Boolean description:
+	'Whether this agent is at the center of the given cell'>
+	<doc:
+	'Answer whether this agent is in the given cell and at its center, or so close that the difference is only a rounding error. An agent that has just entered a cell is usually not at its center yet.'>
+	<example:
+	'(self isAtCenterOf: self house cell) ifFalse: [ self moveStraight: 0.25 towards: self house cell ]'>
+	<seeAlso: #( moveStraight:towards: cell positionInCell )>
+	| grid |
+	self cell = aCell ifFalse: [ ^ false ].
+	grid := aCell spaceModel neighbourhoodConfiguration.
+	^ (grid
+		   wayFrom: (grid gridPositionOf: aCell at: self positionInCell)
+		   to: (grid centerOnGridOf: aCell)) r <= self closeEnoughToACenter
 ]
 
 { #category : 'testing' }
@@ -295,6 +333,40 @@ TCMLocated >> moveSW [
 	
 	(self cell notNil and: [self cell neighbourSW notNil])
 		ifTrue: [self moveTo: self cell neighbourSW]
+]
+
+{ #category : 'moving' }
+TCMLocated >> moveStraight: aDistance towards: aCell [
+
+	<api>
+	<argument: #aDistance type: #Number description:
+	'How far to move. One cell width is 1, so it can be a fraction of a cell'>
+	<argument: #aCell type: #CMSpatialEntity description:
+	'The cell whose center to move towards'>
+	<doc:
+	'Move along the straight line from where this agent is to the center of the given cell, by the given distance, and never beyond that center. Unlike moveTo:, it keeps the position of the agent inside its cell, so the agent can take many small steps across one cell, and it enters the cell under its new position.
+
+The line takes no account of what is on the grid, and the agent only enters the cell where it ends up, not the ones it passes over. On a torus, the line takes the shortest way, which can cross the edges of the grid. Use isAtCenterOf: to know when the agent has arrived. Signal an error if the agent is not on the grid.'>
+	<example: 'self moveStraight: 0.25 towards: self house cell'>
+	<example:
+	'self moveStraight: self speed towards: (road otherEndOf: self cell)'>
+	<seeAlso: #( isAtCenterOf: moveTowards: moveTo: )>
+	| grid here way remaining position newCell |
+	self isSituated ifFalse: [
+			self error:
+				'An agent must be on the grid to move straight towards a cell' ].
+	grid := self cell spaceModel neighbourhoodConfiguration.
+	here := grid gridPositionOf: self cell at: self positionInCell.
+	way := grid wayFrom: here to: (grid centerOnGridOf: aCell).
+	remaining := way r.
+	remaining <= (aDistance + self closeEnoughToACenter) ifTrue: [
+			self enterCell: aCell.
+			self positionInCell: (grid cellCenterFor: aCell).
+			^ self ].
+	position := here + (way * (aDistance / remaining)).
+	newCell := grid cellAt: position startingFrom: self cell.
+	self enterCell: newCell.
+	self positionInCell: (grid relativePositionOf: position in: newCell)
 ]
 
 { #category : 'moving' }

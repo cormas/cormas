@@ -33,6 +33,12 @@ CMSpace6NeighbourhoodFlatTop >> boundingRectangleVerticalShiftEven [
 	^ 0.5
 ]
 
+{ #category : 'geometry' }
+CMSpace6NeighbourhoodFlatTop >> cellProportions [
+
+	^ 1 @ (3 sqrt / 2)
+]
+
 { #category : 'initialization' }
 CMSpace6NeighbourhoodFlatTop >> initializeOrderedNeighbourhood: cellIndex forSpaceModel: aSpaceModel [
 "Set the neighbourhood of the cell at a given index.

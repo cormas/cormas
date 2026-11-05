@@ -61,6 +61,13 @@ CMSpace3Neighbourhood >> cellCenterFor: aCell [
 	^ 0.5 @ radius
 ]
 
+{ #category : 'geometry' }
+CMSpace3Neighbourhood >> cellsToWalkThroughFrom: aCell [
+	"All three neighbours of a triangle can be further from a position than the triangle itself, even when the position is in another cell, so a walk through them alone can stop too early"
+
+	^ (aCell neighbourhoodOfRadius: 2) copyWith: aCell
+]
+
 { #category : 'initialization' }
 CMSpace3Neighbourhood >> initializeOrderedNeighbourhood: cellIndex forSpaceModel: aSpaceModel [
 	"Set the neighbourhood of the cell at a givenIndex.

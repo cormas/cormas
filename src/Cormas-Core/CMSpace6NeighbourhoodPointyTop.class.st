@@ -33,6 +33,12 @@ CMSpace6NeighbourhoodPointyTop >> boundingRectangleVerticalIntersection [
 	^ 0.25
 ]
 
+{ #category : 'geometry' }
+CMSpace6NeighbourhoodPointyTop >> cellProportions [
+
+	^ 3 sqrt / 2 @ 1
+]
+
 { #category : 'initialization' }
 CMSpace6NeighbourhoodPointyTop >> initializeOrderedNeighbourhood: cellIndex forSpaceModel: aSpaceModel [
 "Set the neighbourhood of the cell at a given index.

@@ -1,12 +1,6 @@
 Extension { #name : 'CMSpace6NeighbourhoodPointyTop' }
 
 { #category : '*Cormas-Bloc' }
-CMSpace6NeighbourhoodPointyTop >> blocCellProportions [
-
-	^ 3 sqrt / 2 @ 1
-]
-
-{ #category : '*Cormas-Bloc' }
 CMSpace6NeighbourhoodPointyTop >> blocCellVerticesFor: aCell [
 
 	^ {

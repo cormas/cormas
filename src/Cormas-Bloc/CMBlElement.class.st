@@ -69,7 +69,7 @@ CMBlElement >> backgroundOfPov: aPointOfView in: aSpaceModel extent: anExtent [
 CMBlElement >> cellExtentOf: aCell [
 	"Answer the extent in pixels of the box around aCell"
 
-	^ (self neighbourhoodOf: aCell) blocCellProportions * self cellSize
+	^ (self neighbourhoodOf: aCell) cellProportions * self cellSize
 ]
 
 { #category : 'geometry' }
