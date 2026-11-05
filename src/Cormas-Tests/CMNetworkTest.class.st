@@ -61,6 +61,23 @@ CMNetworkTest >> testALinkInsideSeveralMembersIsAnsweredOnce [
 	self assert: city links asArray equals: { road }
 ]
 
+{ #category : 'tests - errors' }
+CMNetworkTest >> testAddAllStopsAtAThing [
+
+	| street road |
+	street := self newStreet.
+	road := self roadNumber: 1.
+	self
+		should: [
+				street addAll: {
+						road.
+						(model cellAt: 3 at: 3) } ]
+		raise: Error
+		withExceptionDo: [ :error |
+		self deny: (error isKindOf: MessageNotUnderstood) ].
+	self assert: street members asArray equals: { road }
+]
+
 { #category : 'tests - contents' }
 CMNetworkTest >> testAddAnswersTheMember [
 
@@ -80,6 +97,26 @@ CMNetworkTest >> testAddingAMemberTwiceChangesNothing [
 	street add: road.
 	self assert: street members size equals: 1.
 	self assert: road networks size equals: 1
+]
+
+{ #category : 'tests - errors' }
+CMNetworkTest >> testCannotAddAThing [
+
+	| street aggregate |
+	street := self newStreet.
+	aggregate := model
+		             createAggregate: CMMockAggregate
+		             from: { (model cellAt: 3 at: 3) }.
+	{
+		(model cellAt: 1 at: 1).
+		(model newEntity: CMMockCow).
+		aggregate } do: [ :each |
+			self
+				should: [ street add: each ]
+				raise: Error
+				withExceptionDo: [ :error |
+				self deny: (error isKindOf: MessageNotUnderstood) ] ].
+	self assert: street members isEmpty
 ]
 
 { #category : 'tests - contents' }
@@ -207,6 +244,32 @@ CMNetworkTest >> testNetworkCannotBeAnEndOfALink [
 	self assert: (model entitiesOfClass: CMMockRoad) isEmpty
 ]
 
+{ #category : 'tests - errors' }
+CMNetworkTest >> testNetworkCannotContainItself [
+
+	| street |
+	street := self newStreet.
+	self should: [ street add: street ] raise: Error.
+	self assert: street members isEmpty.
+	self assert: street networks isEmpty
+]
+
+{ #category : 'tests - errors' }
+CMNetworkTest >> testNetworkCannotContainItselfThroughAnotherNetwork [
+
+	| street district city |
+	street := self newStreet.
+	district := self newCity.
+	city := self newCity.
+	city add: district.
+	district add: street.
+	self should: [ street add: city ] raise: Error.
+	self should: [ street add: district ] raise: Error.
+	self should: [ district add: city ] raise: Error.
+	self assert: street members isEmpty.
+	self assert: district members asArray equals: { street }
+]
+
 { #category : 'tests - as an entity' }
 CMNetworkTest >> testNetworkDoesNotAnswerQuestionsAboutWhatLinksReach [
 
@@ -276,4 +339,18 @@ CMNetworkTest >> testNewNetworkIsEmptyAndInTheModel [
 	self assert: street links isEmpty.
 	self assert:
 		((model entitiesOfClass: CMMockStreet) identityIncludes: street)
+]
+
+{ #category : 'tests - errors' }
+CMNetworkTest >> testSeveralNetworksCanShareANetwork [
+
+	| street city1 city2 |
+	street := self newStreet.
+	city1 := self newCity.
+	city2 := self newCity.
+	city1 add: street.
+	city2 add: street.
+	self assert: street networks asArray equals: {
+			city1.
+			city2 }
 ]

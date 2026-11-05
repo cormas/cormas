@@ -20,7 +20,7 @@ A thing such as a cell or an agent is connected to another thing by a link, and 
 ## Public API and Key Messages
 
 - `CMModel>>newEntity:` creates me.
-- `add:` and `addAll:` add links and networks. Adding one that I already hold directly changes nothing.
+- `add:` and `addAll:` add links and networks. Adding one that I already hold directly changes nothing. Adding a thing, or a network that I am inside of, is an error.
 - `members` answers what was directly added to me.
 - `links` answers all the links inside me, at any depth.
 - `includes:` tells whether a link or a network is inside me, at any depth.
@@ -91,10 +91,13 @@ CMNetwork >> add: aLinkOrNetwork [
 	<returnType: #CMEntity description:
 	'The link or the network that was added'>
 	<doc:
-	'Add a link or another network to this network, and answer it. Links and networks can be mixed, and each can belong to several networks. Adding one that this network already holds directly changes nothing.'>
+	'Add a link or another network to this network, and answer it. Links and networks can be mixed, and each can belong to several networks. Adding one that this network already holds directly changes nothing.
+
+Signal an error for a thing such as a cell or an agent, because a network collects connections, and for a network that this one is inside of, because a network cannot contain itself.'>
 	<example: 'street add: road'>
 	<example: 'city add: street'>
 	<seeAlso: #( addAll: members links includes: )>
+	self checkCanAdd: aLinkOrNetwork.
 	(aLinkOrNetwork networks identityIncludes: self) ifFalse: [
 			members add: aLinkOrNetwork.
 			aLinkOrNetwork addNetwork: self ].
@@ -115,6 +118,21 @@ CMNetwork >> addAll: aCollection [
 	<seeAlso: #( add: members links )>
 	aCollection do: [ :each | self add: each ].
 	^ aCollection
+]
+
+{ #category : 'adding - private' }
+CMNetwork >> checkCanAdd: aLinkOrNetwork [
+	"Signal an error unless I can hold it. Only things are linkable, so what is not linkable is a link or a network"
+
+	aLinkOrNetwork isLinkable ifTrue: [
+			self error: aLinkOrNetwork printString
+				,
+				' cannot be added to a network because only links and networks can be added' ].
+	(aLinkOrNetwork == self or: [ self isInside: aLinkOrNetwork ])
+		ifTrue: [
+				self error:
+					aLinkOrNetwork printString , ' cannot be added to '
+					, self printString , ' because a network cannot contain itself' ]
 ]
 
 { #category : 'testing' }
