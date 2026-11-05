@@ -28,6 +28,7 @@ A thing such as a cell or an agent is connected to another thing by a link, and 
 - `links` answers all the links inside me, at any depth.
 - `entities` answers the things at the ends of those links.
 - `sources` and `sinks` answer the things where none of my links arrives, or leaves. There can be several or none.
+- `terminals` answers the things touching exactly one of my links, whatever its direction, such as the two ends of a two-way street.
 - `includes:` tells whether a link or a network is inside me, at any depth.
 - `networks` and `networksOfClass:` answer the networks directly containing me.
 
@@ -190,7 +191,7 @@ CMNetwork >> entities [
 	'Answer a new collection with the things at the ends of all the links inside this network, at any depth. Each one appears once, in the order of the links. Things are not added to a network: they belong to it through its links, so a place without a link in this network is not included.'>
 	<example: 'river entities'>
 	<example: 'river entities size'>
-	<seeAlso: #( links members sources sinks )>
+	<seeAlso: #( links members sources sinks terminals )>
 	^ self withoutRepetitions:
 		  (self links flatCollect: [ :each | each ends ])
 ]
@@ -315,7 +316,7 @@ CMNetwork >> sinks [
 There can be several sinks or none. An undirected link leaves from both of its ends, so a two-way street or a ring has no sinks.'>
 	<example: 'river sinks'>
 	<example: 'river sinks size'>
-	<seeAlso: #( sources entities links )>
+	<seeAlso: #( sources terminals entities links )>
 	^ self entitiesWithoutLinkSuchThat: [ :link :end |
 		  link isOutgoingFrom: end ]
 ]
@@ -332,9 +333,30 @@ CMNetwork >> sources [
 There can be several sources or none. An undirected link arrives at both of its ends, so a two-way street or a ring has no sources.'>
 	<example: 'river sources'>
 	<example: 'river sources size'>
-	<seeAlso: #( sinks entities links )>
+	<seeAlso: #( sinks terminals entities links )>
 	^ self entitiesWithoutLinkSuchThat: [ :link :end |
 		  link isIncomingTo: end ]
+]
+
+{ #category : 'shape' }
+CMNetwork >> terminals [
+
+	<api>
+	<returnType: #OrderedCollection description:
+	'The things touching exactly one link of this network'>
+	<doc:
+	'Answer a new collection with the things touching exactly one link of this network, in the order of the links. The direction of the links does not matter, and links outside this network do not count.
+
+Use this to find the ends of a two-way street, which has no sources or sinks. There can be several terminals or none, as on a ring.'>
+	<example: 'street terminals'>
+	<example: 'street terminals size'>
+	<seeAlso: #( sources sinks entities links )>
+	| counts |
+	counts := IdentityDictionary new.
+	self links do: [ :eachLink |
+			eachLink ends do: [ :eachEnd |
+				counts at: eachEnd put: (counts at: eachEnd ifAbsent: [ 0 ]) + 1 ] ].
+	^ self entities select: [ :each | (counts at: each) = 1 ]
 ]
 
 { #category : 'accessing - private' }

@@ -83,6 +83,20 @@ CMNetworkTest >> testARingHasNoSourcesOrSinks [
 ]
 
 { #category : 'tests - shape' }
+CMNetworkTest >> testARingHasNoTerminals [
+
+	| ring t |
+	t := self things: 3.
+	ring := self newStreet.
+	ring addChainOf: CMMockRoad through: {
+			t first.
+			t second.
+			t third.
+			t first }.
+	self assert: ring terminals isEmpty
+]
+
+{ #category : 'tests - shape' }
 CMNetworkTest >> testATwoWayLinkCountsAsArrivingAndLeaving [
 
 	| network t |
@@ -151,6 +165,12 @@ CMNetworkTest >> testAnEmptyNetworkHasNoSourcesOrSinks [
 	street := self newStreet.
 	self assert: street sources isEmpty.
 	self assert: street sinks isEmpty
+]
+
+{ #category : 'tests - shape' }
+CMNetworkTest >> testAnEmptyNetworkHasNoTerminals [
+
+	self assert: self newStreet terminals isEmpty
 ]
 
 { #category : 'tests - errors' }
@@ -700,6 +720,18 @@ CMNetworkTest >> testNewNetworkIsEmptyAndInTheModel [
 		((model entitiesOfClass: CMMockStreet) identityIncludes: street)
 ]
 
+{ #category : 'tests - shape' }
+CMNetworkTest >> testParallelLinksAreNotTerminals [
+
+	| street t |
+	t := self things: 2.
+	street := self newStreet.
+	street addAll: {
+			(self road: t first to: t second).
+			(self road: t first to: t second) }.
+	self assert: street terminals isEmpty
+]
+
 { #category : 'tests - lifecycle' }
 CMNetworkTest >> testReinitializingEntitiesRemovesNetworks [
 
@@ -875,6 +907,93 @@ CMNetworkTest >> testSourcesAndSinksOfARiverWithATributary [
 			a.
 			c }.
 	self assert: river sinks asArray equals: { f }
+]
+
+{ #category : 'tests - shape' }
+CMNetworkTest >> testTerminalsIgnoreLinksOutsideTheNetwork [
+
+	| street t |
+	t := self things: 3.
+	street := self newStreet.
+	street add: (self road: t first to: t second).
+	self road: t second to: t third.
+	self assert: street terminals asArray equals: {
+			t first.
+			t second }
+]
+
+{ #category : 'tests - shape' }
+CMNetworkTest >> testTerminalsIncludeNestedNetworks [
+
+	| street city t |
+	t := self things: 3.
+	street := self newStreet.
+	street add: (self road: t first to: t second).
+	city := self newCity.
+	city add: street.
+	city add: (self road: t second to: t third).
+	self assert: city terminals asArray equals: {
+			t first.
+			t third }
+]
+
+{ #category : 'tests - shape' }
+CMNetworkTest >> testTerminalsOfAMixedNetworkInTwoPieces [
+
+	| network n |
+	n := self things: 8.
+	network := self newStreet.
+	network addAll: {
+			(self road: (n at: 1) to: (n at: 2)).
+			(self road: (n at: 3) to: (n at: 2)).
+			(self road: (n at: 3) to: (n at: 4)).
+			(self road: (n at: 4) to: (n at: 5)).
+			(self road: (n at: 6) to: (n at: 5)).
+			(self road: (n at: 7) to: (n at: 8)) }.
+	self assert: network terminals asArray equals: {
+			(n at: 1).
+			(n at: 6).
+			(n at: 7).
+			(n at: 8) }
+]
+
+{ #category : 'tests - shape' }
+CMNetworkTest >> testTerminalsOfARiverWithATributary [
+
+	| river t a b c d e f |
+	t := self things: 6.
+	a := t first.
+	b := t second.
+	c := t third.
+	d := t fourth.
+	e := t fifth.
+	f := t sixth.
+	river := self newStreet.
+	river addChainOf: CMMockRoad through: {
+			a.
+			b.
+			d.
+			e.
+			f }.
+	river addChainOf: CMMockRoad through: {
+			c.
+			d }.
+	self assert: river terminals asArray equals: {
+			a.
+			f.
+			c }
+]
+
+{ #category : 'tests - shape' }
+CMNetworkTest >> testTerminalsOfATwoWayStreetAreItsEnds [
+
+	| street t |
+	t := self things: 3.
+	street := self newStreet.
+	street addChainOf: CMMockFriendship through: t.
+	self assert: street terminals asArray equals: {
+			t first.
+			t third }
 ]
 
 { #category : 'helpers' }
