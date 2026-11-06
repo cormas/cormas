@@ -4,19 +4,20 @@ I represent a model installed in the image from a folder of the workspace. I kee
 ## Responsibility:
 
 - I know the baseline of the model, which declares its packages, and the folder it was installed from.
-- I write a changed package into my folder, touching only the files that differ, each through a temporary file.
+- I write what changed in the image into my folder: one class, or a whole package, touching only the files that differ, each through a temporary file.
 - I remember the hash of every file as Cormas last loaded or wrote it. When a file to touch differs from it, someone else changed the folder: I stop saving and remember the problem, and the code stays in the image.
 
 ## Collaborators:
 
 - `CMWorkspace` creates me when it installs a model and asks me to save the packages that change.
-- `TonelRepository` writes packages with the same Tonel writer as Iceberg, so the files are the ones Iceberg would commit.
+- `TonelWriter` writes the files, in the version declared in `src/.properties` as Iceberg does, so they are the files Iceberg would commit.
 - `CMWorkspaceError` carries the reason why a package could not be saved.
 
 ## Public API and Key Messages
 
 - `CMInstalledModel baselineName: aString folder: aFileReference` creates an instance; `recordFiles` then remembers the files of the folder.
-- `savePackageNamed: aPackageName` writes a package of the model into the folder.
+- `saveClassNamed: aClassName inPackageNamed: aPackageName` writes what a package of the model defines on a class: the class itself, or the extension methods of the package on it. Its cost depends on the class, not on the size of the model.
+- `savePackageNamed: aPackageName` writes a whole package of the model.
 - `isSaved` and `problem` tell whether everything in the image is in the folder, and why not.
 - `ownsPackageNamed:`, `packageNames` and `loadedPackages` describe the packages of the model.
 - `writePackagesTo: aFolder` writes all the packages, for example into a backup.
@@ -26,7 +27,7 @@ For example, after a method of the Forest model was changed in the image:
 ```smalltalk
 | model |
 model := CMWorkspace current installedModelNamed: 'Forest'.
-model savePackageNamed: 'Forest-Model'.
+model saveClassNamed: 'Tree' inPackageNamed: 'Forest-Model'.
 model isSaved
 	ifFalse: [ model problem ]
 ```
@@ -40,7 +41,7 @@ model isSaved
 
 ### Implementation Points
 
-- A whole package is written in memory and compared with the folder file by file, which handles new, changed, renamed and removed classes the same way. Files that do not differ are not touched.
+- What to save is written in memory and compared with the folder file by file. For a class, the files compared are `package.st` and every file the package could hold about the class (`.class.st`, `.trait.st`, `.extension.st`), so a class that moved or disappeared leaves no file behind. Files that do not differ are not touched, and a file changed outside Cormas elsewhere in the package does not prevent saving this class.
 - A file is written to a temporary file, then the old file is deleted and the temporary one renamed. A crash between the two leaves a missing file, which the next save reports as changed outside Cormas.
 "
 Class {
@@ -99,21 +100,44 @@ CMInstalledModel >> dependencyNames [
 ]
 
 { #category : 'private' }
-CMInstalledModel >> filesOf: aPackageName [
-	"Return the Tonel files of the package as it is in the image, as a dictionary from their path in my folder to their bytes. They are written in memory with the format declared in my folder"
+CMInstalledModel >> filesOf: definitions inPackageNamed: aPackageName [
+	"Return the Tonel files of the definitions as a dictionary from their path in my folder to their bytes. They are written in memory, with the Tonel writer that Iceberg would use for my folder"
 
 	| root src |
 	root := FileSystem memory root.
 	src := root / 'src'.
 	src ensureCreateDirectory.
-	(folder / 'src' / '.properties') isFile ifTrue: [
-		folder / 'src' / '.properties' copyTo: src / '.properties' ].
-	self
-		write: (self packageOrganizer packageNamed: aPackageName)
-		to: src.
+	self tonelWriterClass new
+		directoryReference: src;
+		writeSnapshot: (MCSnapshot fromDefinitions: definitions).
 	^ ((src / aPackageName) allFiles collect: [ :each |
 		   (each relativeTo: root) pathString
 		   -> each binaryReadStream upToEnd ]) asDictionary
+]
+
+{ #category : 'private' }
+CMInstalledModel >> filesOfClassNamed: aClassName inPackageNamed: aPackageName [
+
+	| definitions |
+	definitions := OrderedCollection with:
+		               (MCOrganizationDefinition packageName: aPackageName).
+	self class environment at: aClassName asSymbol ifPresent: [ :class |
+			class package name = aPackageName ifTrue: [
+				definitions add: class asClassDefinition ].
+			definitions addAll:
+				(class localMethods , class classSide localMethods
+					 select: [ :each | each package name = aPackageName ]
+					 thenCollect: [ :each |
+					 each asRingDefinition asMCMethodDefinition ]) ].
+	^ self filesOf: definitions inPackageNamed: aPackageName
+]
+
+{ #category : 'private' }
+CMInstalledModel >> filesOfPackageNamed: aPackageName [
+
+	^ self
+		  filesOf: (MCPackage named: aPackageName) snapshot definitions
+		  inPackageNamed: aPackageName
 ]
 
 { #category : 'accessing' }
@@ -166,6 +190,32 @@ CMInstalledModel >> pathOf: aFile [
 	^ (aFile relativeTo: folder) pathString
 ]
 
+{ #category : 'private' }
+CMInstalledModel >> pathsOfClassNamed: aClassName inPackageNamed: aPackageName [
+	"Return the paths of every file where the package can hold something about the class, so that a file left behind by a class that moved or disappeared is deleted"
+
+	| packageFolder |
+	packageFolder := folder / 'src' / aPackageName.
+	^ ({
+		   'package.st'.
+		   (aClassName , '.class.st').
+		   (aClassName , '.trait.st').
+		   (aClassName , '.extension.st') } collect: [ :each |
+		   self pathOf: packageFolder / each ]) asSet
+]
+
+{ #category : 'private' }
+CMInstalledModel >> pathsOnDiskInPackageNamed: aPackageName [
+
+	| packageFolder |
+	packageFolder := folder / 'src' / aPackageName.
+	^ packageFolder exists
+		  ifTrue: [
+			  (packageFolder allFiles collect: [ :each | self pathOf: each ])
+				  asSet ]
+		  ifFalse: [ Set new ]
+]
+
 { #category : 'saving' }
 CMInstalledModel >> problem [
 	"Return why the model is not saved"
@@ -182,16 +232,39 @@ CMInstalledModel >> recordFiles [
 		fileHashes at: (self pathOf: each) put: (self hashOf: each) ]
 ]
 
-{ #category : 'saving' }
-CMInstalledModel >> savePackageNamed: aPackageName [
-	"Write the package as it is in the image into my folder, touching only the files that differ. When a file was changed by someone else, or cannot be written, stop saving and remember the problem: the code stays in the image, and nothing more is written until the model is reloaded"
+{ #category : 'private' }
+CMInstalledModel >> save: files over: paths [
+	"Make each of paths hold its content in files, or not exist when files has none for it. When a file was changed by someone else, or cannot be written, stop saving and remember the problem: the code stays in the image, and nothing more is written until the model is reloaded"
 
 	self isSaved ifFalse: [ ^ self ].
 	folder exists ifFalse: [
 		^ problem := 'The folder ' , folder fullName , ' is gone' ].
-	[ self write: (self filesOf: aPackageName) in: aPackageName ]
+	[ self write: files over: paths ]
 		on: CMWorkspaceError
 		do: [ :error | problem := error messageText ]
+]
+
+{ #category : 'saving' }
+CMInstalledModel >> saveClassNamed: aClassName inPackageNamed: aPackageName [
+	"Write into my folder what the package defines on the class: its definition and methods, or the extension methods of the package on it. Only that file and package.st are compared and touched, so saving does not get slower as the model grows"
+
+	self
+		save:
+		(self filesOfClassNamed: aClassName inPackageNamed: aPackageName)
+		over:
+		(self pathsOfClassNamed: aClassName inPackageNamed: aPackageName)
+]
+
+{ #category : 'saving' }
+CMInstalledModel >> savePackageNamed: aPackageName [
+	"Write the whole package as it is in the image into my folder, touching only the files that differ"
+
+	| files |
+	files := self filesOfPackageNamed: aPackageName.
+	self
+		save: files
+		over:
+		files keys asSet , (self pathsOnDiskInPackageNamed: aPackageName)
 ]
 
 { #category : 'initialization' }
@@ -203,49 +276,38 @@ CMInstalledModel >> setBaselineName: aString folder: aFileReference [
 ]
 
 { #category : 'private' }
-CMInstalledModel >> write: files in: aPackageName [
-	"Make the folder of the package hold exactly files, checking first that every file to touch is as Cormas last saw it"
+CMInstalledModel >> tonelWriterClass [
+	"Return the Tonel writer for the version declared in src/.properties, as Iceberg does"
 
-	| packageFolder onDisk toWrite toDelete |
-	packageFolder := folder / 'src' / aPackageName.
-	onDisk := packageFolder exists
-		          ifTrue: [
-			          (packageFolder allFiles collect: [ :each |
-				           self pathOf: each ]) asSet ]
-		          ifFalse: [ Set new ].
+	| properties version |
+	properties := folder / 'src' / '.properties'.
+	version := TonelWriter defaultVersion.
+	properties isFile ifTrue: [
+			version := (STON fromString: properties contents)
+				           at: #version
+				           ifAbsent: [ version ] ].
+	^ TonelWriter forVersion: version
+]
+
+{ #category : 'private' }
+CMInstalledModel >> write: files over: paths [
+	"Check first that every file to touch is as Cormas last saw it, then write and delete"
+
+	| toWrite toDelete |
 	toWrite := files keys reject: [ :path |
-			           (onDisk includes: path) and: [
-					           (folder resolveString: path) binaryReadStream upToEnd
-					           = (files at: path) ] ].
-	toDelete := onDisk reject: [ :path | files includesKey: path ].
+			           | file |
+			           file := folder resolveString: path.
+			           file exists and: [
+				           file binaryReadStream upToEnd = (files at: path) ] ].
+	toDelete := paths reject: [ :path |
+			            (files includesKey: path) or: [
+				            (folder resolveString: path) exists not ] ].
 	toWrite , toDelete asArray do: [ :path | self checkUnchanged: path ].
-	CMWorkspaceError whileWritingIn: packageFolder do: [
+	CMWorkspaceError whileWritingIn: folder / 'src' do: [
 			toWrite do: [ :path | self writeBytes: (files at: path) at: path ].
 			toDelete do: [ :path |
 					(folder resolveString: path) delete.
 					fileHashes removeKey: path ] ]
-]
-
-{ #category : 'writing' }
-CMInstalledModel >> write: aPackage to: aSourceFolder [
-	"Write the package as it is in the image with the Tonel writer that Iceberg uses, without changing its working copy, so that Iceberg sees no difference"
-
-	| package |
-	package := MCPackage named: aPackage name.
-	(TonelRepository new directory: aSourceFolder) storeVersion:
-		(MCVersion
-			 package: package
-			 info: (MCVersionInfo
-					  name: aPackage name , '-cormas'
-					  id: UUID new
-					  message: 'Written by Cormas'
-					  date: Date today
-					  time: Time now
-					  author: 'Cormas'
-					  ancestors: #(  )
-					  stepChildren: #(  ))
-			 snapshot: package snapshot
-			 dependencies: #(  ))
 ]
 
 { #category : 'private' }
@@ -267,5 +329,8 @@ CMInstalledModel >> writeBytes: aByteArray at: aPath [
 CMInstalledModel >> writePackagesTo: aSourceFolder [
 	"Write the packages of the model, as they are in the image, as Tonel files in aSourceFolder"
 
-	self loadedPackages do: [ :each | self write: each to: aSourceFolder ]
+	self loadedPackages do: [ :each |
+			self tonelWriterClass new
+				directoryReference: aSourceFolder;
+				writeSnapshot: (MCPackage named: each name) snapshot ]
 ]

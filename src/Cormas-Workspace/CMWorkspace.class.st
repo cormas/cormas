@@ -27,7 +27,7 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - `install: aModelFolder` loads a model from the files in its folder and remembers the folder. It refuses, leaving the image as it was, to replace any code already in the image.
 - `uninstall: aBaselineName` backs up the code of a model as it is in the image, then removes it; the folder is left untouched.
 - `delete: aModelFolder` backs up a folder, uninstalls its model if it is installed from there, then deletes it.
-- `savePackageNamed: aPackageName` writes a package into the folder of the installed model it belongs to; `installedModelNamed:` tells whether that model is saved.
+- `saveClassNamed: aClassName inPackageNamed: aPackageName` and `savePackageNamed: aPackageName` write what changed into the folder of the installed model the package belongs to; `installedModelNamed:` tells whether that model is saved.
 - `folderOf: aClass` returns the folder of the installed model that a class belongs to; `CMModel>>folder` uses it.
 - `isFound` tells whether my folder is still there, so that an unplugged drive is never taken for deleted models.
 
@@ -364,6 +364,16 @@ CMWorkspace >> removePackagesNotIn: packageNames [
 	(self packageOrganizer packages reject: [ :each |
 		 packageNames includes: each name ]) do: [ :each |
 		each removeFromSystem ]
+]
+
+{ #category : 'saving' }
+CMWorkspace >> saveClassNamed: aClassName inPackageNamed: aPackageName [
+	"Write what a package defines on a class, as it is in the image, into the folder of the installed model the package belongs to. A package of no installed model is not saved anywhere"
+
+	installed
+		detect: [ :each | each ownsPackageNamed: aPackageName ]
+		ifFound: [ :model |
+			model saveClassNamed: aClassName inPackageNamed: aPackageName ]
 ]
 
 { #category : 'saving' }

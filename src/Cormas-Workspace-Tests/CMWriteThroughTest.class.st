@@ -48,6 +48,14 @@ CMWriteThroughTest >> save [
 	workspace savePackageNamed: 'CMWorkspaceMock-Model'
 ]
 
+{ #category : 'helpers' }
+CMWriteThroughTest >> saveClassNamed: aClassName [
+
+	workspace
+		saveClassNamed: aClassName
+		inPackageNamed: 'CMWorkspaceMock-Model'
+]
+
 { #category : 'running' }
 CMWriteThroughTest >> setUp [
 
@@ -116,6 +124,18 @@ CMWriteThroughTest >> testSaveAPackageOfNoModelDoesNothing [
 	self assert: self model isSaved
 ]
 
+{ #category : 'tests - class' }
+CMWriteThroughTest >> testSaveARemovedClassDeletesItsFile [
+
+	self addTreeClass.
+	self saveClassNamed: 'CMWorkspaceMockTree'.
+	self assert: self treeFile isFile.
+	(self class environment at: #CMWorkspaceMockTree) removeFromSystem.
+	self saveClassNamed: 'CMWorkspaceMockTree'.
+	self deny: self treeFile exists.
+	self assert: self model isSaved
+]
+
 { #category : 'tests' }
 CMWriteThroughTest >> testSaveAgainAfterItsOwnWrites [
 
@@ -124,6 +144,80 @@ CMWriteThroughTest >> testSaveAgainAfterItsOwnWrites [
 	self mockClass compile: 'answer ^ 43' classified: 'editing'.
 	self save.
 	self assert: (self modelFile contents includesSubstring: '43').
+	self assert: self model isSaved
+]
+
+{ #category : 'tests - class' }
+CMWriteThroughTest >> testSaveAnExtensionMethod [
+
+	| extensionFile |
+	extensionFile := self packageFolder / 'Object.extension.st'.
+	Object
+		compile: 'cmWorkspaceMockAnswer ^ 42'
+		classified: '*CMWorkspaceMock-Model'.
+	self saveClassNamed: 'Object'.
+	self assert:
+		(extensionFile contents includesSubstring: 'cmWorkspaceMockAnswer').
+	self deny: (extensionFile contents includesSubstring: 'printString').
+	Object removeSelector: #cmWorkspaceMockAnswer.
+	self saveClassNamed: 'Object'.
+	self deny: extensionFile exists
+]
+
+{ #category : 'tests - class' }
+CMWriteThroughTest >> testSaveClassAndSavePackageWriteTheSameFiles [
+
+	| byClass |
+	self editModelClass.
+	self saveClassNamed: 'CMWorkspaceMockModel'.
+	byClass := self modelFile binaryReadStream upToEnd.
+	self save.
+	self assert: self modelFile binaryReadStream upToEnd equals: byClass.
+	self assert: self model isSaved
+]
+
+{ #category : 'tests - class' }
+CMWriteThroughTest >> testSaveClassDoesNotOverwriteItsFileChangedOutsideCormas [
+
+	self
+		write: self modelFile contents , '"changed by Bob"'
+		to: self modelFile.
+	self editModelClass.
+	self saveClassNamed: 'CMWorkspaceMockModel'.
+	self assert:
+		(self modelFile contents includesSubstring: 'changed by Bob').
+	self deny: self model isSaved
+]
+
+{ #category : 'tests - class' }
+CMWriteThroughTest >> testSaveClassIgnoresOtherFilesChangedOutsideCormas [
+
+	self
+		write: 'Class { #name : ''Bob'' }'
+		to: self packageFolder / 'Bob.class.st'.
+	self editModelClass.
+	self saveClassNamed: 'CMWorkspaceMockModel'.
+	self assert: (self modelFile contents includesSubstring: 'answer').
+	self assert: (self packageFolder / 'Bob.class.st') isFile.
+	self assert: self model isSaved
+]
+
+{ #category : 'tests - class' }
+CMWriteThroughTest >> testSaveClassWritesOnlyThatClass [
+
+	self editModelClass.
+	self addTreeClass.
+	self saveClassNamed: 'CMWorkspaceMockModel'.
+	self assert: (self modelFile contents includesSubstring: 'answer').
+	self deny: self treeFile exists
+]
+
+{ #category : 'tests - class' }
+CMWriteThroughTest >> testSaveClassWritesTheChangedClass [
+
+	self editModelClass.
+	self saveClassNamed: 'CMWorkspaceMockModel'.
+	self assert: (self modelFile contents includesSubstring: 'answer').
 	self assert: self model isSaved
 ]
 
@@ -208,4 +302,10 @@ CMWriteThroughTest >> testSavedCodeIsInstalledAgain [
 	workspace install:
 		(CMModelFolder in: workspace at: workspace modelsFolder / 'Mock').
 	self assert: self mockClass new answer equals: 42
+]
+
+{ #category : 'helpers' }
+CMWriteThroughTest >> treeFile [
+
+	^ self packageFolder / 'CMWorkspaceMockTree.class.st'
 ]
