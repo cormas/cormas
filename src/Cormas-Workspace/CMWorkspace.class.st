@@ -8,12 +8,14 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - I remember the workspace of the image, so the modeler chooses it once per image.
 - I save every code change of the image into the folder of the installed model it belongs to, while I am the current workspace.
 - I bring installed models up to date with their folders when the image starts and when asked: I follow a folder that was renamed or moved, and reload what changed outside Cormas after backing up the code in the image.
+- I register the folder of an installed model with Iceberg when it is a git repository, so that git users can commit from the image, and I refresh a model after an Iceberg operation changed its folder.
 - I install and uninstall models, remember which folder each installed model comes from, and delete folders; I back up before removing any code.
 
 ## Collaborators:
 
 - `CMModelFolder` describes each folder in `Models` and `Examples`.
 - `Metacello` loads a model from the Tonel files of its folder.
+- `Iceberg` lists the folders that are git repositories; I never load code through it.
 - `FileReference` gives me my folder; I never assume it is on a particular disk, so tests use a memory file system.
 - `CMWorkspaceError` is what I raise when a folder cannot be used.
 
@@ -53,7 +55,8 @@ CMWorkspace current: ((CMWorkspace isWorkspace: location)
 
 ### Implementation Points
 
-- A model is always loaded from its files with `tonel://`, even when its folder is a git repository: Iceberg would load the last commit instead of what is in the folder.
+- A model is always loaded from its files with `tonel://`, even when its folder is a git repository: Iceberg would load the last commit instead of what is in the folder. Iceberg only registers the folder, with `src` as its source directory; a folder without `.project` shows in Iceberg as a project to commit.
+- The class side also listens to `IceRepositoryModified`, which Iceberg announces after a commit, a checkout or a pull, and when its working copy becomes dirty; the refresh that follows reloads only when files changed.
 - A failed installation removes every package that appeared during it.
 - The class side listens to the code changes announced by `SystemAnnouncer` and passes them to the current workspace. Each change saves one class in the packages it affected. A removed or renamed class is saved in every package of the installed models, because Pharo does not announce that the extension methods of other packages went with it.
 - Uninstalling and reloading forget the model while its code is removed or loaded, so that this is not saved back into its folder.
@@ -133,9 +136,16 @@ CMWorkspace class >> defaultLocation [
 	^ FileLocator home asFileReference / 'Cormas'
 ]
 
+{ #category : 'code changes' }
+CMWorkspace class >> icebergRepositoryModified: anAnnouncement [
+
+	current ifNotNil: [ :workspace |
+		workspace icebergRepositoryModified: anAnnouncement repository ]
+]
+
 { #category : 'class initialization' }
 CMWorkspace class >> initialize [
-	"Listen to the code changes of the image, so that the current workspace saves them into the folders of its models, and refresh the current workspace when the image starts"
+	"Listen to the code changes of the image and to Iceberg, so that the current workspace saves changes into the folders of its models and refreshes a model whose folder Iceberg changed, and refresh the current workspace when the image starts"
 
 	SessionManager default registerUserClassNamed: self name.
 	SystemAnnouncer uniqueInstance unsubscribe: self.
@@ -148,7 +158,12 @@ CMWorkspace class >> initialize [
 		when: ClassRenamed , ClassRemoved
 		send: #classRenamedOrRemoved:
 		to: self;
-		when: PackageTagRenamed send: #packageTagRenamed: to: self
+		when: PackageTagRenamed send: #packageTagRenamed: to: self.
+	Iceberg announcer unsubscribe: self.
+	Iceberg announcer
+		when: IceRepositoryModified
+		send: #icebergRepositoryModified:
+		to: self
 ]
 
 { #category : 'testing' }
@@ -331,6 +346,26 @@ CMWorkspace >> folders [
 		  CMModelFolder in: self at: each ]
 ]
 
+{ #category : 'iceberg' }
+CMWorkspace >> forgetIcebergRepositoriesAt: aFolder [
+
+	(self icebergRepositoriesAt: aFolder) do: [ :each | each forget ]
+]
+
+{ #category : 'iceberg' }
+CMWorkspace >> icebergRepositoriesAt: aFolder [
+
+	^ IceRepository registry select: [ :each | each location = aFolder ]
+]
+
+{ #category : 'iceberg' }
+CMWorkspace >> icebergRepositoryModified: anIceRepository [
+	"An Iceberg operation, such as a checkout or a pull, may have changed the folder of a model: bring that model up to date with it"
+
+	(installed select: [ :each | each folder = anIceRepository location ])
+		do: [ :each | self refresh: each ]
+]
+
 { #category : 'initialization' }
 CMWorkspace >> initialize [
 
@@ -373,7 +408,8 @@ CMWorkspace >> install: aModelFolder [
 					model baselineName , ' could not be installed: '
 					, error messageText ].
 	model recordFiles.
-	installed at: model baselineName put: model
+	installed at: model baselineName put: model.
+	self registerWithIceberg: model
 ]
 
 { #category : 'installing' }
@@ -470,8 +506,24 @@ CMWorkspace >> refresh: anInstalledModel [
 				              each hasBaselineNamed: anInstalledModel baselineName ].
 			candidates size = 1 ifFalse: [
 				^ anInstalledModel cannotChooseAmongFolders: candidates ].
+			self forgetIcebergRepositoriesAt: anInstalledModel folder.
 			anInstalledModel folder: candidates first location ].
-	anInstalledModel isUpToDate ifFalse: [ self reload: anInstalledModel ]
+	anInstalledModel isUpToDate ifFalse: [ self reload: anInstalledModel ].
+	self registerWithIceberg: anInstalledModel
+]
+
+{ #category : 'iceberg' }
+CMWorkspace >> registerWithIceberg: anInstalledModel [
+	"When the folder of the model is a git repository, register it with Iceberg so that git users can commit from the image. Iceberg only reads the folder: Cormas loads the code itself, from the files rather than from the last commit"
+
+	(anInstalledModel folder / '.git') exists ifFalse: [ ^ self ].
+	(self icebergRepositoriesAt: anInstalledModel folder) ifNotEmpty: [
+		^ self ].
+	(IceRepositoryCreator new
+		 location: anInstalledModel folder;
+		 subdirectory: 'src';
+		 ensureProjectFile;
+		 addLocalRepository) register
 ]
 
 { #category : 'refreshing' }
@@ -525,6 +577,7 @@ CMWorkspace >> uninstall: aBaselineName [
 	model := self installedModelNamed: aBaselineName.
 	self backUpCodeOf: aBaselineName.
 	installed removeKey: aBaselineName.
+	self forgetIcebergRepositoriesAt: model folder.
 	model loadedPackages do: [ :each | each removeFromSystem ].
 	Metacello new
 		baseline: aBaselineName;

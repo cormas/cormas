@@ -71,6 +71,10 @@ CMWorkspaceOnDiskTestCase >> setUp [
 CMWorkspaceOnDiskTestCase >> tearDown [
 
 	CMWorkspace instVarNamed: 'current' put: previousWorkspace.
+	(IceRepository registry select: [ :each |
+			 each location notNil and: [
+				 each location fullName beginsWith: directory fullName ] ]) do: [
+		:each | each forget ].
 	(PackageOrganizer default packages select: [ :each |
 			 (each name beginsWith: 'CMWorkspaceMock') or: [
 				 each name beginsWith: 'BaselineOfCMWorkspaceMock' ] ]) do: [
