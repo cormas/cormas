@@ -129,7 +129,8 @@ BaselineOfCormas >> specForPackages: spec [
 		package: 'Cormas-Workspace'
 		with: [ spec requires: #( 'Cormas-Core' ) ];
 		package: 'Cormas-Workspace-Tests'
-		with: [ spec requires: #( 'Cormas-Workspace' ) ];
+		with: [
+			spec requires: #( 'Cormas-Workspace' 'Cormas-CodeGeneration' ) ];
 		package: 'Cormas-CodeGeneration';
 		package: 'Cormas-CodeGeneration-Tests'
 		with: [ spec requires: 'Cormas-CodeGeneration' ];

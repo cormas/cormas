@@ -148,6 +148,19 @@ CMIcebergTest >> testInstallingAGitFolderRegistersItWithIceberg [
 ]
 
 { #category : 'tests' }
+CMIcebergTest >> testNewModelFolderIsACleanIcebergProject [
+
+	| folder repository |
+	folder := (workspace createModelWith: (CMModelGenerator new
+			            modelName: 'CMWorkspaceMock Forest';
+			            yourself)) location.
+	self makeGitRepository: folder.
+	workspace refresh.
+	repository := (self icebergRepositoriesAt: folder) first.
+	self deny: repository workingCopy isModified
+]
+
+{ #category : 'tests' }
 CMIcebergTest >> testRefreshRegistersAFolderThatBecameAGitRepository [
 
 	workspace install: (self mockFolderNamed: 'Mock').
