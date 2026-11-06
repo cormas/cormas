@@ -1107,9 +1107,12 @@ CMModel >> makeAgentsScatteredInCells [
 
 { #category : 'instance creation - agents & objects' }
 CMModel >> newEntity: aClass [
+
 	<api>
-	<argument: #aClass type: #Class description: 'The class of the entity to create. Must be a subclass of #CMEntity'>
-	<returnType: #CMEntity description: 'A newly created and initialized entity'>
+	<argument: #aClass type: #Class description:
+	'The class of the entity to create. Must be a subclass of #CMEntity'>
+	<returnType: #CMEntity description:
+	'A newly created and initialized entity'>
 	<doc: 'Create and answer a new entity of the given class.
 
 This method should be used to create all Cormas entities. In addition to instantiating the object, it performs the necessary initialization, registers the entity in the and gives it access to shared simulation resources.
@@ -1120,18 +1123,17 @@ Use this method only for instances of subclasses of #CMEntity. Regular Pharo obj
 	<example: 'farmer := self newEntity: Farmer'>
 	<example: 'plot := self newEntity: Plot'>
 	<example: '(1 to: 100) collect: [ :i | self newEntity: Farmer ]'>
-	<seeAlso: #(newEntity:locatedAt:)>
-	
+	<seeAlso: #( newEntity:locatedAt: )>
 	| anEntity |
 	anEntity := aClass basicNew
-		cormasModel: self;
-		simulationContext: context;
-		initialize;
-		yourself.
+		            cormasModel: self;
+		            simulationContext: context;
+		            initialize;
+		            yourself.
 
 	self addEntityToCollection: anEntity.
 	self setDefaultInstanceSideParameterValuesFor: anEntity.
-	
+
 	^ anEntity
 ]
 
