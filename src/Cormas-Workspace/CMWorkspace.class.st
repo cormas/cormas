@@ -9,7 +9,7 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - I save every code change of the image into the folder of the installed model it belongs to, while I am the current workspace.
 - I bring installed models up to date with their folders when the image starts and when asked: I follow a folder that was renamed or moved, and reload what changed outside Cormas after backing up the code in the image.
 - I register the folder of an installed model with Iceberg when it is a git repository, so that git users can commit from the image, and I refresh a model after an Iceberg operation changed its folder.
-- I create new models: their code is generated in the image, their folder is created in `Models`, and they are installed from it.
+- I create new models: a `CMModelTemplate` writes their folder in `Models`, and they are installed from it.
 - I install and uninstall models, remember which folder each installed model comes from, and delete folders; I back up before removing any code.
 
 ## Collaborators:
@@ -29,7 +29,7 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - `CMWorkspace defaultLocation` is the folder suggested to the modeler, `Cormas` in their home folder.
 - `folders` returns a `CMModelFolder` for each folder in `Models` and `Examples`, whether it is a model or not.
 - `backUp: aFolder` zips a folder, with everything in it, into `Backups` and returns the zip. Cormas calls it before destroying any code; restoring is unzipping into `Models`.
-- `createModelWith: aModelGenerator` creates a new model with a `CMModelGenerator` and returns its folder, which holds `cormas.json`, `README.md`, `.gitignore`, `.project`, `src`, `data` and `output`.
+- `createModelFrom: aModelTemplate` writes a new model into a new folder of `Models`, installs it and returns the folder.
 - `install: aModelFolder` loads a model from the files in its folder and remembers the folder. It refuses, leaving the image as it was, to replace any code already in the image.
 - `uninstall: aBaselineName` backs up the code of a model as it is in the image, then removes it; the folder is left untouched.
 - `delete: aModelFolder` backs up a folder, uninstalls its model if it is installed from there, then deletes it.
@@ -299,41 +299,28 @@ CMWorkspace >> createFolders [
 ]
 
 { #category : 'creating' }
-CMWorkspace >> createModelWith: aModelGenerator [
-	"Generate a new model in the image, write it into a new folder of Models with everything a model folder holds, and install it from there. Return the folder. Raise a CMWorkspaceError, leaving the image and the workspace as they were, when the model cannot be created"
+CMWorkspace >> createModelFrom: aModelTemplate [
+	"Write a new model from the template into a new folder of Models and install it from there, like any other model. Return the folder. Raise a CMWorkspaceError, leaving the image and the workspace as they were, when the model cannot be created"
 
-	| baselineName folder packagesBefore model |
-	aModelGenerator shouldGenerateBaseline: true.
-	baselineName := aModelGenerator baselineClassName allButFirst:
-		                'BaselineOf' size.
+	| folder modelFolder |
 	self folders
-		detect: [ :each | each hasBaselineNamed: baselineName ]
+		detect: [ :each |
+		each hasBaselineNamed: aModelTemplate baselineName ]
 		ifFound: [ :each |
 				CMWorkspaceError signal:
-					'A model named ' , baselineName
+					'A model named ' , aModelTemplate baselineName
 					, ' is already in the workspace, in ' , each location fullName ].
-	folder := self newFolderNamed: aModelGenerator basename.
-	packagesBefore := self packageOrganizer packageNames asSet.
-	[
-		aModelGenerator generate.
-		self
-			writeFilesOfNewModel: aModelGenerator
-			baselineName: baselineName
-			in: folder.
-		model := CMInstalledModel baselineName: baselineName folder: folder.
-		model loadedPackages do: [ :each |
-			model savePackageNamed: each name ].
-		model isSaved ifFalse: [ CMWorkspaceError signal: model problem ].
-		model recordFiles ]
-		on: Error
+	folder := self newFolderNamed: aModelTemplate basename.
+	CMWorkspaceError
+		whileWritingIn: folder
+		do: [ aModelTemplate writeTo: folder ].
+	modelFolder := CMModelFolder in: self at: folder.
+	[ self install: modelFolder ]
+		on: CMWorkspaceError
 		do: [ :error |
-				self removePackagesNotIn: packagesBefore.
 				folder ensureDeleteAll.
-				(error isKindOf: CMWorkspaceError) ifTrue: [ error pass ].
-				CMWorkspaceError signal:
-					baselineName , ' could not be created: ' , error messageText ].
-	installed at: baselineName put: model.
-	^ CMModelFolder in: self at: folder
+				error pass ].
+	^ modelFolder
 ]
 
 { #category : 'installing' }
@@ -635,49 +622,4 @@ CMWorkspace >> uninstall: aBaselineName [
 	Metacello new
 		baseline: aBaselineName;
 		unregister
-]
-
-{ #category : 'private' }
-CMWorkspace >> writeFilesOfNewModel: aModelGenerator baselineName: aBaselineName in: aFolder [
-	"Create the folder of a new model with everything but its code: cormas.json, README.md, the files that make it a Pharo project as Iceberg writes them, and the folders for its data and outputs"
-
-	CMWorkspaceError whileWritingIn: aFolder do: [
-			(aFolder / 'src') ensureCreateDirectory.
-			(aFolder / 'data') ensureCreateDirectory.
-			(aFolder / 'output') ensureCreateDirectory.
-			aFolder / 'cormas.json' writeStreamDo: [ :stream |
-					STONJSON
-						put: (OrderedDictionary new
-								 at: 'baseline' put: aBaselineName;
-								 at: 'summary' put: aModelGenerator description;
-								 yourself)
-						onStreamPretty: stream ].
-			aFolder / 'README.md' writeStreamDo: [ :stream |
-					stream
-						nextPutAll: '# ';
-						nextPutAll: aModelGenerator modelName;
-						lf;
-						lf;
-						nextPutAll: aModelGenerator description;
-						lf ].
-			aFolder / '.gitignore' writeStreamDo: [ :stream |
-					stream
-						nextPutAll: 'output/';
-						lf ].
-			aFolder / '.project' writeStreamDo: [ :stream |
-					stream
-						nextPutAll: '{';
-						lf;
-						tab;
-						nextPutAll: '''srcDirectory'' : ''src''';
-						lf;
-						nextPutAll: '}' ].
-			aFolder / 'src' / '.properties' writeStreamDo: [ :stream |
-					stream
-						nextPutAll: '{';
-						lf;
-						tab;
-						nextPutAll: '#format : #tonel';
-						lf;
-						nextPutAll: '}' ] ]
 ]

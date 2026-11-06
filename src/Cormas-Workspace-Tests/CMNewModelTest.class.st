@@ -1,7 +1,7 @@
 "
-I test how a workspace creates a new model: its code is generated in the image, its folder is created in `Models` with everything a model folder holds, and the model is installed from that folder.
+I test how a workspace creates a new model from a `CMModelTemplate`: its folder is written in `Models`, and the model is installed from it like any other, so that it can be simulated, saved as it is edited and installed again.
 
-I work on disk, with the fixture of `CMWorkspaceOnDiskTestCase`, so that a new model can be installed again from its folder.
+I work on disk, with the fixture of `CMWorkspaceOnDiskTestCase`.
 "
 Class {
 	#name : 'CMNewModelTest',
@@ -13,7 +13,7 @@ Class {
 { #category : 'helpers' }
 CMNewModelTest >> createForest [
 
-	^ workspace createModelWith: self generator
+	^ workspace createModelFrom: self template
 ]
 
 { #category : 'helpers' }
@@ -23,12 +23,23 @@ CMNewModelTest >> forestFolder [
 ]
 
 { #category : 'helpers' }
-CMNewModelTest >> generator [
+CMNewModelTest >> modelClass [
 
-	^ CMModelGenerator new
-		  modelName: 'CMWorkspaceMock Forest';
-		  description: 'Trees grow and burn';
-		  yourself
+	^ self class environment at: self template modelClassName asSymbol
+]
+
+{ #category : 'helpers' }
+CMNewModelTest >> modelFile [
+
+	^ self forestFolder / 'src' / self template modelPackageName
+	  / (self template modelClassName , '.class.st')
+]
+
+{ #category : 'helpers' }
+CMNewModelTest >> template [
+
+	^ (CMModelTemplate named: 'CMWorkspaceMock Forest') description:
+		  'Trees grow and burn'
 ]
 
 { #category : 'tests' }
@@ -47,55 +58,24 @@ CMNewModelTest >> testNewModelAlreadyInTheWorkspaceRaisesAnError [
 { #category : 'tests' }
 CMNewModelTest >> testNewModelCanBeInstalledAgain [
 
-	| generator |
-	generator := self generator.
-	workspace createModelWith: generator.
+	self createForest.
 	workspace uninstall: 'CMWorkspaceMockForest'.
-	self deny:
-		(self class environment includesKey:
-			 generator modelClassName asSymbol).
+	self deny: (self class environment includesKey:
+			 self template modelClassName asSymbol).
 	workspace install:
 		(CMModelFolder in: workspace at: self forestFolder).
-	self assert:
-		(self class environment includesKey:
-			 generator modelClassName asSymbol)
+	self assert: (self class environment includesKey:
+			 self template modelClassName asSymbol)
 ]
 
 { #category : 'tests' }
-CMNewModelTest >> testNewModelFolderHoldsWhatAModelFolderHolds [
+CMNewModelTest >> testNewModelCanBeSimulated [
 
+	| model |
 	self createForest.
-	self assert:
-		((self forestFolder / 'README.md') contents includesSubstring:
-			 'CMWorkspaceMock Forest').
-	self assert:
-		((self forestFolder / 'README.md') contents includesSubstring:
-			 'Trees grow and burn').
-	self assert:
-		((self forestFolder / '.gitignore') contents includesSubstring:
-			 'output/').
-	self assert:
-		((self forestFolder / '.project') contents includesSubstring:
-			 '''srcDirectory'' : ''src''').
-	self assert: ((self forestFolder / 'src' / '.properties') contents
-			 includesSubstring: '#tonel').
-	self assert: (self forestFolder / 'data') isDirectory.
-	self assert: (self forestFolder / 'output') isDirectory
-]
-
-{ #category : 'tests' }
-CMNewModelTest >> testNewModelHasItsCodeInItsFolder [
-
-	| generator |
-	generator := self generator.
-	workspace createModelWith: generator.
-	self assert: (self forestFolder / 'src' / generator modelPackageName
-		 / (generator modelClassName , '.class.st')) isFile.
-	self assert:
-		(self forestFolder / 'src' / generator testPackageName) isDirectory.
-	self assert:
-		(self forestFolder / 'src' / generator baselineClassName
-		 / (generator baselineClassName , '.class.st')) isFile
+	model := self modelClass new.
+	model init.
+	self assert: model cells size equals: 16
 ]
 
 { #category : 'tests' }
@@ -111,13 +91,10 @@ CMNewModelTest >> testNewModelIsAFolderOfTheWorkspace [
 { #category : 'tests' }
 CMNewModelTest >> testNewModelIsInstalled [
 
-	| generator |
-	generator := self generator.
-	workspace createModelWith: generator.
+	self createForest.
 	self assert: (workspace isInstalled: 'CMWorkspaceMockForest').
 	self
-		assert: (workspace folderOf:
-				 (self class environment at: generator modelClassName asSymbol))
+		assert: (workspace folderOf: self modelClass)
 		equals: self forestFolder.
 	self assert:
 		(workspace installedModelNamed: 'CMWorkspaceMockForest') isUpToDate
@@ -126,17 +103,10 @@ CMNewModelTest >> testNewModelIsInstalled [
 { #category : 'tests' }
 CMNewModelTest >> testNewModelIsSavedAsItIsEdited [
 
-	| generator |
-	generator := self generator.
-	workspace createModelWith: generator.
+	self createForest.
 	CMWorkspace current: workspace.
-	(self class environment at: generator modelClassName asSymbol)
-		compile: 'answer ^ 42'
-		classified: 'editing'.
-	self assert:
-		((self forestFolder / 'src' / generator modelPackageName
-		  / (generator modelClassName , '.class.st')) contents
-			 includesSubstring: 'answer')
+	self modelClass compile: 'answer ^ 42' classified: 'editing'.
+	self assert: (self modelFile contents includesSubstring: 'answer')
 ]
 
 { #category : 'tests' }
@@ -152,7 +122,7 @@ CMNewModelTest >> testNewModelTakesAnotherFolderWhenTheNameIsTaken [
 ]
 
 { #category : 'tests' }
-CMNewModelTest >> testNewModelThatCannotBeGeneratedLeavesNothingBehind [
+CMNewModelTest >> testNewModelThatCannotBeInstalledLeavesNothingBehind [
 
 	PackageOrganizer default ensurePackage: 'CMWorkspaceMockForest-Model'.
 	self should: [ self createForest ] raise: CMWorkspaceError.

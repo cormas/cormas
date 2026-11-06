@@ -151,9 +151,9 @@ CMIcebergTest >> testInstallingAGitFolderRegistersItWithIceberg [
 CMIcebergTest >> testNewModelFolderIsACleanIcebergProject [
 
 	| folder repository |
-	folder := (workspace createModelWith: (CMModelGenerator new
-			            modelName: 'CMWorkspaceMock Forest';
-			            yourself)) location.
+	folder := (workspace createModelFrom:
+		           (CMModelTemplate named: 'CMWorkspaceMock Forest'))
+		          location.
 	self makeGitRepository: folder.
 	workspace refresh.
 	repository := (self icebergRepositoriesAt: folder) first.
