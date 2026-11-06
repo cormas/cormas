@@ -20,6 +20,7 @@ I represent a model installed in the image from a folder of the workspace. I kee
 - `savePackageNamed: aPackageName` writes a whole package of the model.
 - `isSaved` and `problem` tell whether everything in the image is in the folder, and why not.
 - `ownsPackageNamed:`, `packageNames` and `loadedPackages` describe the packages of the model.
+- `addPackageNamed: aPackageName` declares a package in the baseline, creating it if needed, and saves both. It refuses a baseline with groups or without a `for: #common do:` block, which must be edited by hand.
 - `writePackagesTo: aFolder` writes all the packages, for example into a backup.
 
 For example, after a method of the Forest model was changed in the image:
@@ -63,6 +64,45 @@ CMInstalledModel class >> baselineName: aString folder: aFileReference [
 	^ self new setBaselineName: aString folder: aFileReference
 ]
 
+{ #category : 'packages' }
+CMInstalledModel >> addPackageNamed: aPackageName [
+	"Declare the package in my baseline, creating it when it does not exist, and save it with the baseline into my folder. From then on its changes are saved like those of my other packages"
+
+	| method |
+	(self ownsPackageNamed: aPackageName) ifTrue: [
+			CMWorkspaceError signal:
+				aPackageName , ' is already a package of ' , baselineName ].
+	self baselineClass project version groups ifNotEmpty: [
+			CMWorkspaceError signal:
+				self baselinePackageName , ' defines groups, so add '
+				, aPackageName , ' to it by hand' ].
+	method := self baselineMethod.
+	self baselineClass
+		compile: (self sourceOf: method withPackageNamed: aPackageName)
+		classified: method protocolName.
+	self packageOrganizer ensurePackage: aPackageName.
+	self
+		saveClassNamed: self baselinePackageName
+		inPackageNamed: self baselinePackageName.
+	self savePackageNamed: aPackageName
+]
+
+{ #category : 'private' }
+CMInstalledModel >> baselineClass [
+
+	^ self class environment at: self baselinePackageName asSymbol
+]
+
+{ #category : 'private' }
+CMInstalledModel >> baselineMethod [
+
+	^ self baselineClass methods
+		  detect: [ :each | each hasPragmaNamed: #baseline ]
+		  ifNone: [
+				  CMWorkspaceError signal:
+					  self baselinePackageName , ' has no method with <baseline>' ]
+]
+
 { #category : 'accessing' }
 CMInstalledModel >> baselineName [
 
@@ -95,8 +135,8 @@ CMInstalledModel >> checkUnchanged: aPath [
 CMInstalledModel >> dependencyNames [
 	"Return the names of the projects that my baseline loads before the model"
 
-	^ (self class environment at: self baselinePackageName asSymbol)
-		  project version projects collect: [ :each | each name ]
+	^ self baselineClass project version projects collect: [ :each |
+		  each name ]
 ]
 
 { #category : 'private' }
@@ -125,10 +165,7 @@ CMInstalledModel >> filesOfClassNamed: aClassName inPackageNamed: aPackageName [
 			class package name = aPackageName ifTrue: [
 				definitions add: class asClassDefinition ].
 			definitions addAll:
-				(class localMethods , class classSide localMethods
-					 select: [ :each | each package name = aPackageName ]
-					 thenCollect: [ :each |
-					 each asRingDefinition asMCMethodDefinition ]) ].
+				(self methodsOf: class inPackageNamed: aPackageName) ].
 	^ self filesOf: definitions inPackageNamed: aPackageName
 ]
 
@@ -152,6 +189,14 @@ CMInstalledModel >> hashOf: aFile [
 	^ (SHA256 hashMessage: aFile binaryReadStream upToEnd) hex
 ]
 
+{ #category : 'packages' }
+CMInstalledModel >> isNamedLikeMyPackages: aPackageName [
+	"Answer whether the package starts like my packages, up to their first dash, such as Forest-Analysis for a model whose packages are Forest-Model and Forest-Tests"
+
+	^ self packageNames anySatisfy: [ :each |
+		  aPackageName beginsWith: (each copyUpTo: $-) , '-' ]
+]
+
 { #category : 'saving' }
 CMInstalledModel >> isSaved [
 	"Answer whether everything changed in the image was written to my folder"
@@ -168,6 +213,16 @@ CMInstalledModel >> loadedPackages [
 		  thenCollect: [ :each | self packageOrganizer packageNamed: each ]
 ]
 
+{ #category : 'private' }
+CMInstalledModel >> methodsOf: aClass inPackageNamed: aPackageName [
+	"Return the definitions of the methods of the package in aClass, on both sides. They are read from the method dictionaries, which are up to date when a removal is announced, unlike localMethods of a class that uses traits; methods that come from traits are left out"
+
+	^ aClass methods , aClass classSide methods
+		  select: [ :each |
+			  each isFromTrait not and: [ each package name = aPackageName ] ]
+		  thenCollect: [ :each | each asMCMethodDefinition ]
+]
+
 { #category : 'testing' }
 CMInstalledModel >> ownsPackageNamed: aPackageName [
 	"Answer whether the package is one of the model, its baseline included, so that its changes are saved in my folder"
@@ -180,8 +235,8 @@ CMInstalledModel >> ownsPackageNamed: aPackageName [
 CMInstalledModel >> packageNames [
 	"Return the names of the packages that my baseline declares, in all its groups, without the baseline itself. They are the packages of the model"
 
-	^ (self class environment at: self baselinePackageName asSymbol)
-		  project version packages collect: [ :each | each name ]
+	^ self baselineClass project version packages collect: [ :each |
+		  each name ]
 ]
 
 { #category : 'private' }
@@ -273,6 +328,29 @@ CMInstalledModel >> setBaselineName: aString folder: aFileReference [
 	baselineName := aString.
 	folder := aFileReference.
 	fileHashes := Dictionary new
+]
+
+{ #category : 'private' }
+CMInstalledModel >> sourceOf: aBaselineMethod withPackageNamed: aPackageName [
+	"Return the source of the baseline method with the package declared at the end of its for: #common do: block"
+
+	| tree common |
+	tree := aBaselineMethod parseTree.
+	common := tree allChildren
+		          detect: [ :each |
+				          each isMessage and: [
+						          each selector = #for:do: and: [
+								          each arguments first isLiteralNode and: [
+									          each arguments first value = #common ] ] ] ]
+		          ifNone: [
+				          CMWorkspaceError signal:
+					          self baselinePackageName
+					          , ' has no for: #common do: block, so add '
+					          , aPackageName , ' to it by hand' ].
+	common arguments last body addNode:
+		(RBParser parseExpression:
+			 'spec package: ' , aPackageName printString).
+	^ tree formattedCode
 ]
 
 { #category : 'private' }

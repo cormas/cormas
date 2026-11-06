@@ -68,15 +68,15 @@ CMWorkspaceOnDiskTestCase >> setUp [
 { #category : 'running' }
 CMWorkspaceOnDiskTestCase >> tearDown [
 
-	#( 'CMWorkspaceMock-Model' 'CMWorkspaceMockFire-Model'
-	   'BaselineOfCMWorkspaceMock' 'BaselineOfCMWorkspaceMockFire' ) do: [
-			:each |
-			(PackageOrganizer default packageNamed: each ifAbsent: [ nil ])
-				ifNotNil: [ :package | package removeFromSystem ] ].
+	(PackageOrganizer default packages select: [ :each |
+			 (each name beginsWith: 'CMWorkspaceMock') or: [
+				 each name beginsWith: 'BaselineOfCMWorkspaceMock' ] ]) do: [
+		:each | each removeFromSystem ].
 	#( 'CMWorkspaceMock' 'CMWorkspaceMockFire' ) do: [ :each |
 			Metacello new
 				baseline: each;
 				unregister ].
+	Smalltalk image cleanOutUndeclared.
 	directory ensureDeleteAll.
 	super tearDown
 ]

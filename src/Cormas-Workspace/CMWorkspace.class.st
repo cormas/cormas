@@ -6,6 +6,7 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - I know my folder and the folders inside it: `Models`, `Examples`, `Catalog` and `Backups`.
 - I create a new workspace, or open an existing one, and refuse a folder where Cormas cannot write, with a message naming the folder and the reason.
 - I remember the workspace of the image, so the modeler chooses it once per image.
+- I save every code change of the image into the folder of the installed model it belongs to, while I am the current workspace.
 - I install and uninstall models, remember which folder each installed model comes from, and delete folders; I back up before removing any code.
 
 ## Collaborators:
@@ -28,6 +29,7 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - `uninstall: aBaselineName` backs up the code of a model as it is in the image, then removes it; the folder is left untouched.
 - `delete: aModelFolder` backs up a folder, uninstalls its model if it is installed from there, then deletes it.
 - `saveClassNamed: aClassName inPackageNamed: aPackageName` and `savePackageNamed: aPackageName` write what changed into the folder of the installed model the package belongs to; `installedModelNamed:` tells whether that model is saved.
+- `orphanPackages` returns the loaded packages named like the packages of an installed model but outside its baseline, whose changes are saved nowhere, with the model they seem to belong to.
 - `folderOf: aClass` returns the folder of the installed model that a class belongs to; `CMModel>>folder` uses it.
 - `isFound` tells whether my folder is still there, so that an unplugged drive is never taken for deleted models.
 
@@ -51,6 +53,8 @@ CMWorkspace current: ((CMWorkspace isWorkspace: location)
 
 - A model is always loaded from its files with `tonel://`, even when its folder is a git repository: Iceberg would load the last commit instead of what is in the folder.
 - A failed installation removes every package that appeared during it.
+- The class side listens to the code changes announced by `SystemAnnouncer` and passes them to the current workspace. Each change saves one class in the packages it affected. A removed or renamed class is saved in every package of the installed models, because Pharo does not announce that the extension methods of other packages went with it.
+- Uninstalling forgets the model before removing its code, so that the removal is not saved into its folder.
 "
 Class {
 	#name : 'CMWorkspace',
@@ -76,6 +80,20 @@ CMWorkspace class >> at: aFileReference [
 	^ (self new setLocation: aFileReference)
 		  checkWritable;
 		  yourself
+]
+
+{ #category : 'code changes' }
+CMWorkspace class >> classChanged: anAnnouncement [
+
+	current ifNotNil: [ :workspace |
+		workspace classChanged: anAnnouncement ]
+]
+
+{ #category : 'code changes' }
+CMWorkspace class >> classRenamedOrRemoved: anAnnouncement [
+
+	current ifNotNil: [ :workspace |
+		workspace classRenamedOrRemoved: anAnnouncement ]
 ]
 
 { #category : 'instance creation' }
@@ -112,11 +130,35 @@ CMWorkspace class >> defaultLocation [
 	^ FileLocator home asFileReference / 'Cormas'
 ]
 
+{ #category : 'class initialization' }
+CMWorkspace class >> initialize [
+	"Listen to the code changes of the image, so that the current workspace saves them into the folders of its models"
+
+	SystemAnnouncer uniqueInstance unsubscribe: self.
+	SystemAnnouncer uniqueInstance
+		when:
+			MethodAnnouncement , ClassAdded , ClassModifiedClassDefinition
+			, ClassCommented , ClassRepackaged , ClassParentRenamed
+		send: #classChanged:
+		to: self;
+		when: ClassRenamed , ClassRemoved
+		send: #classRenamedOrRemoved:
+		to: self;
+		when: PackageTagRenamed send: #packageTagRenamed: to: self
+]
+
 { #category : 'testing' }
 CMWorkspace class >> isWorkspace: aFileReference [
 	"A folder is a workspace if and only if it contains a Models folder"
 
 	^ (aFileReference / 'Models') isDirectory
+]
+
+{ #category : 'code changes' }
+CMWorkspace class >> packageTagRenamed: anAnnouncement [
+
+	current ifNotNil: [ :workspace |
+		workspace savePackageNamed: anAnnouncement package name ]
 ]
 
 { #category : 'backups' }
@@ -192,6 +234,31 @@ CMWorkspace >> checkWritable [
 	CMWorkspaceError whileWritingIn: location do: [
 			probe writeStreamDo: [ :stream | stream nextPutAll: 'Cormas' ].
 			probe delete ]
+]
+
+{ #category : 'code changes' }
+CMWorkspace >> classChanged: anAnnouncement [
+	"Save the class in every package the change affected: a method moved from one package to another changes both"
+
+	anAnnouncement packagesAffected do: [ :each |
+			self
+				saveClassNamed: anAnnouncement classAffected instanceSide name
+				inPackageNamed: each name ]
+]
+
+{ #category : 'code changes' }
+CMWorkspace >> classRenamedOrRemoved: anAnnouncement [
+	"Save the class under its old and new names in every package of the installed models: Pharo does not announce that the extension methods of other packages on the class went with it"
+
+	| classNames |
+	classNames := { anAnnouncement classAffected instanceSide
+		              originalName } asSet.
+	(anAnnouncement isKindOf: ClassRenamed) ifTrue: [
+		classNames add: anAnnouncement oldName ].
+	installed do: [ :model |
+			model loadedPackages do: [ :package |
+					classNames do: [ :each |
+						model saveClassNamed: each inPackageNamed: package name ] ] ]
 ]
 
 { #category : 'private' }
@@ -358,6 +425,20 @@ CMWorkspace >> newBackupFor: aName [
 	^ candidate
 ]
 
+{ #category : 'code changes' }
+CMWorkspace >> orphanPackages [
+	"Return, for each loaded package named like the packages of an installed model but declared by no installed model, the model it seems to belong to. Its changes are saved nowhere until it is added to that model"
+
+	| orphans |
+	orphans := Dictionary new.
+	installed do: [ :model |
+			(self packageOrganizer packageNames select: [ :each |
+					 (model isNamedLikeMyPackages: each) and: [
+						 installed noneSatisfy: [ :other | other ownsPackageNamed: each ] ] ])
+				do: [ :each | orphans at: each put: model ] ].
+	^ orphans
+]
+
 { #category : 'private' }
 CMWorkspace >> removePackagesNotIn: packageNames [
 
@@ -393,14 +474,14 @@ CMWorkspace >> setLocation: aFileReference [
 
 { #category : 'installing' }
 CMWorkspace >> uninstall: aBaselineName [
-	"Remove the code of an installed model from the image and forget its folder, which is left untouched. The code in the image is backed up first, so nothing is lost even if it differs from the folder or the folder is gone"
+	"Remove the code of an installed model from the image and forget its folder, which is left untouched. The code in the image is backed up first, so nothing is lost even if it differs from the folder or the folder is gone. The model is forgotten before its code is removed, so that the removal is not saved into its folder"
 
 	| model |
 	model := self installedModelNamed: aBaselineName.
 	self backUpCodeOf: aBaselineName.
+	installed removeKey: aBaselineName.
 	model loadedPackages do: [ :each | each removeFromSystem ].
 	Metacello new
 		baseline: aBaselineName;
-		unregister.
-	installed removeKey: aBaselineName
+		unregister
 ]
