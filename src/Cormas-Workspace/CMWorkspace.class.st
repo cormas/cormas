@@ -10,6 +10,7 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - I bring installed models up to date with their folders when the image starts and when asked: I follow a folder that was renamed or moved, and reload what changed outside Cormas after backing up the code in the image.
 - I register the folder of an installed model with Iceberg when it is a git repository, so that git users can commit from the image, and I refresh a model after an Iceberg operation changed its folder.
 - I create new models: a `CMModelTemplate` writes their folder in `Models`, and they are installed from it.
+- I export a model folder as a zip, and install a model from a zip into a new folder of `Models`.
 - I install and uninstall models, remember which folder each installed model comes from, and delete folders; I back up before removing any code.
 
 ## Collaborators:
@@ -30,6 +31,8 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - `folders` returns a `CMModelFolder` for each folder in `Models` and `Examples`, whether it is a model or not.
 - `backUp: aFolder` zips a folder, with everything in it, into `Backups` and returns the zip. Cormas calls it before destroying any code; restoring is unzipping into `Models`.
 - `createModelFrom: aModelTemplate` writes a new model into a new folder of `Models`, installs it and returns the folder.
+- `export: aModelFolder to: aZipFile` zips the whole folder, as it is on disk.
+- `installFromZip: aZipFile` extracts a zip into a new folder of `Models`, following single folders down to the one holding `cormas.json`, and installs the model; the folder stays even when the model cannot be installed.
 - `install: aModelFolder` loads a model from the files in its folder and remembers the folder. It refuses, leaving the image as it was, to replace any code already in the image.
 - `uninstall: aBaselineName` backs up the code of a model as it is in the image, then removes it; the folder is left untouched.
 - `delete: aModelFolder` backs up a folder, uninstalls its model if it is installed from there, then deletes it.
@@ -198,11 +201,7 @@ CMWorkspace >> backUp: aFolder [
 	CMWorkspaceError whileWritingIn: self backupsFolder do: [
 			self backupsFolder ensureCreateDirectory.
 			zip := self newBackupFor: aFolder basename.
-			ZipArchive new
-				addTree: aFolder
-				relativeTo: aFolder parent
-				match: [ :each | true ];
-				writeToFile: zip ].
+			self zip: aFolder to: zip ].
 	^ zip
 ]
 
@@ -351,6 +350,29 @@ CMWorkspace >> examplesFolder [
 	^ location / 'Examples'
 ]
 
+{ #category : 'sharing' }
+CMWorkspace >> export: aModelFolder to: aZipFile [
+	"Zip the whole folder of a model, as it is on disk, so that it can be sent and installed elsewhere"
+
+	CMWorkspaceError
+		whileWritingIn: aZipFile parent
+		do: [ self zip: aModelFolder location to: aZipFile ]
+]
+
+{ #category : 'private' }
+CMWorkspace >> extract: aZipFile to: aFolder [
+
+	CMWorkspaceError
+		whileWritingIn: aFolder parent
+		do: [ aFolder ensureCreateDirectory ].
+	[ (ZipArchive new readFrom: aZipFile) extractAllTo: aFolder ]
+		on: Error
+		do: [ :error |
+				CMWorkspaceError signal:
+					aZipFile basename , ' cannot be read as a zip file ('
+					, error messageText , ')' ]
+]
+
 { #category : 'installing' }
 CMWorkspace >> folderOf: aClass [
 	"Return the folder of the installed model that the package of aClass belongs to"
@@ -439,6 +461,30 @@ CMWorkspace >> install: aModelFolder [
 	self registerWithIceberg: model
 ]
 
+{ #category : 'sharing' }
+CMWorkspace >> installFromZip: aZipFile [
+	"Extract a zip into a new folder of Models, never over another one, and install the model it holds. Return the folder. The folder stays in Models even when the model cannot be installed, like a folder dropped there"
+
+	| temporaryName model folder |
+	temporaryName := '.cormas-unzip-' , UUID new asString.
+	[
+		self extract: aZipFile to: self modelsFolder / temporaryName.
+		model := self
+			         modelFolderIn: self modelsFolder / temporaryName
+			         ifNone: [
+					         CMWorkspaceError signal:
+						         aZipFile basename , ' holds no model (no cormas.json)' ].
+		folder := self newFolderNamed: (model basename = temporaryName
+				           ifTrue: [ aZipFile basenameWithoutExtension ]
+				           ifFalse: [ model basename ]).
+		CMWorkspaceError
+			whileWritingIn: self modelsFolder
+			do: [ model moveTo: folder ] ] ensure: [
+		(self modelsFolder / temporaryName) ensureDeleteAll ].
+	self install: (CMModelFolder in: self at: folder).
+	^ CMModelFolder in: self at: folder
+]
+
 { #category : 'installing' }
 CMWorkspace >> installedModelNamed: aBaselineName [
 
@@ -475,6 +521,21 @@ CMWorkspace >> metacelloFor: aModelFolder [
 		  baseline: aModelFolder baselineName;
 		  repository: 'tonel://' , (aModelFolder location / 'src') fullName;
 		  yourself
+]
+
+{ #category : 'private' }
+CMWorkspace >> modelFolderIn: aFolder ifNone: aBlock [
+	"Return the folder holding cormas.json, following single folders down from aFolder, as zips are made in many ways. Hidden folders and the __MACOSX folder that macOS adds to zips are ignored"
+
+	| current subfolders |
+	current := aFolder.
+	[ (current / 'cormas.json') isFile ] whileFalse: [
+			subfolders := current directories reject: [ :each |
+				              (each basename beginsWith: '.') or: [
+					              each basename = '__MACOSX' ] ].
+			subfolders size = 1 ifFalse: [ ^ aBlock value ].
+			current := subfolders first ].
+	^ current
 ]
 
 { #category : 'accessing' }
@@ -622,4 +683,13 @@ CMWorkspace >> uninstall: aBaselineName [
 	Metacello new
 		baseline: aBaselineName;
 		unregister
+]
+
+{ #category : 'private' }
+CMWorkspace >> zip: aFolder to: aZipFile [
+	"Write a zip holding aFolder itself with everything in it, so that unzipping it gives the folder back"
+
+	ZipArchive new
+		addTree: aFolder relativeTo: aFolder parent match: [ :each | true ];
+		writeToFile: aZipFile
 ]
