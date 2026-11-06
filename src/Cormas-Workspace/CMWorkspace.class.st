@@ -19,6 +19,7 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - `CMWorkspace isWorkspace: aFileReference` tells whether a folder is a workspace: it is when it contains a `Models` folder.
 - `CMWorkspace current` and `CMWorkspace current:` give and set the workspace of the image.
 - `CMWorkspace defaultLocation` is the folder suggested to the modeler, `Cormas` in their home folder.
+- `folders` returns a `CMModelFolder` for each folder in `Models` and `Examples`, whether it is a model or not.
 - `isFound` tells whether my folder is still there, so that an unplugged drive is never taken for deleted models.
 
 For example, the first time an image starts:
@@ -133,10 +134,28 @@ CMWorkspace >> createFolders [
 		doing: [ self modelsFolder ensureCreateDirectory ]
 ]
 
+{ #category : 'private' }
+CMWorkspace >> exampleDirectories [
+	"Examples is only created when the first example is downloaded"
+
+	^ self examplesFolder exists
+		  ifTrue: [ self examplesFolder directories ]
+		  ifFalse: [ #(  ) ]
+]
+
 { #category : 'accessing' }
 CMWorkspace >> examplesFolder [
 
 	^ location / 'Examples'
+]
+
+{ #category : 'accessing' }
+CMWorkspace >> folders [
+	"Return a CMModelFolder for each folder directly in Models and Examples, models or not, so that the modeler sees every folder and why it is not a model. Hidden folders are left out"
+
+	^ (self modelsFolder directories , self exampleDirectories reject: [
+		   :each | each basename beginsWith: '.' ]) collect: [ :each |
+		  CMModelFolder in: self at: each ]
 ]
 
 { #category : 'testing' }
