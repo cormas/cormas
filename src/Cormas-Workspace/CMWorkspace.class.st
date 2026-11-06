@@ -27,6 +27,7 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - `install: aModelFolder` loads a model from the files in its folder and remembers the folder. It refuses, leaving the image as it was, to replace any code already in the image.
 - `uninstall: aBaselineName` backs up the code of a model as it is in the image, then removes it; the folder is left untouched.
 - `delete: aModelFolder` backs up a folder, uninstalls its model if it is installed from there, then deletes it.
+- `savePackageNamed: aPackageName` writes a package into the folder of the installed model it belongs to; `installedModelNamed:` tells whether that model is saved.
 - `folderOf: aClass` returns the folder of the installed model that a class belongs to; `CMModel>>folder` uses it.
 - `isFound` tells whether my folder is still there, so that an unplugged drive is never taken for deleted models.
 
@@ -43,7 +44,7 @@ CMWorkspace current: ((CMWorkspace isWorkspace: location)
 ## Internal Representation
 
 - `location` is the `FileReference` of my folder.
-- `installed` maps the baseline name of each installed model to its folder.
+- `installed` maps the baseline name of each installed model to its `CMInstalledModel`.
 - The class-side `current` is the workspace of the image, or `nil` until one is chosen.
 
 ### Implementation Points
@@ -123,7 +124,7 @@ CMWorkspace >> backUp: aFolder [
 	"Zip aFolder, with everything in it, into my Backups folder and return the zip. Unzipping it into Models restores the folder. A backup never replaces another one. Cormas backs up code before destroying it, so when this raises an error, nothing must be destroyed"
 
 	| zip |
-	self writeAt: self backupsFolder doing: [
+	CMWorkspaceError whileWritingIn: self backupsFolder do: [
 			self backupsFolder ensureCreateDirectory.
 			zip := self newBackupFor: aFolder basename.
 			ZipArchive new
@@ -138,7 +139,7 @@ CMWorkspace >> backUp: aFolder [
 CMWorkspace >> backUpCodeOf: aBaselineName [
 	"Back up the code of an installed model as it is in the image, in the layout of a model folder, so that unzipping and installing the backup restores it. Return the zip"
 
-	| folder src repository |
+	| folder src |
 	folder := FileSystem memory
 	          / (aBaselineName , ' (code in the image)').
 	src := folder / 'src'.
@@ -148,9 +149,7 @@ CMWorkspace >> backUpCodeOf: aBaselineName [
 				(STONJSON toString: (Dictionary with: 'baseline' -> aBaselineName)) ].
 	src / '.properties' writeStreamDo: [ :stream |
 		stream nextPutAll: '{ #format : #tonel }' ].
-	repository := TonelRepository new directory: src.
-	(self loadedPackagesOf: aBaselineName) do: [ :each |
-		repository storeVersion: (self versionOf: each) ].
+	(self installedModelNamed: aBaselineName) writePackagesTo: src.
 	^ self backUp: folder
 ]
 
@@ -160,12 +159,6 @@ CMWorkspace >> backupsFolder [
 	^ location / 'Backups'
 ]
 
-{ #category : 'private' }
-CMWorkspace >> baselineClassOf: aBaselineName [
-
-	^ self class environment at: ('BaselineOf' , aBaselineName) asSymbol
-]
-
 { #category : 'accessing' }
 CMWorkspace >> catalogFolder [
 
@@ -173,20 +166,19 @@ CMWorkspace >> catalogFolder [
 ]
 
 { #category : 'private' }
-CMWorkspace >> checkNothingIsReplacedBy: aBaselineName in: packageNames [
-	"Raise a CMWorkspaceError if loading the baseline would replace a package in packageNames or a model installed from the workspace"
+CMWorkspace >> checkNothingIsReplacedBy: anInstalledModel in: packageNames [
+	"Raise a CMWorkspaceError if loading the model would replace a package in packageNames or a model installed from the workspace"
 
-	(self packageNamesOf: aBaselineName)
+	anInstalledModel packageNames
 		detect: [ :each | packageNames includes: each ]
 		ifFound: [ :each |
-				CMWorkspaceError signal:
-					each , ' is already in this image, so ' , aBaselineName
-					, ' cannot be installed' ].
-	((self baselineClassOf: aBaselineName) project version projects
-		 collect: [ :each | each name ])
+				CMWorkspaceError signal: each , ' is already in this image, so '
+					, anInstalledModel baselineName , ' cannot be installed' ].
+	anInstalledModel dependencyNames
 		detect: [ :each | installed includesKey: each ]
 		ifFound: [ :each |
-				CMWorkspaceError signal: aBaselineName , ' needs ' , each
+				CMWorkspaceError signal:
+					anInstalledModel baselineName , ' needs ' , each
 					,
 					', which is installed from the workspace. Models that depend on other models are not supported yet' ]
 ]
@@ -197,7 +189,7 @@ CMWorkspace >> checkWritable [
 
 	| probe |
 	probe := location / '.cormas-write-check'.
-	self writeAt: location doing: [
+	CMWorkspaceError whileWritingIn: location do: [
 			probe writeStreamDo: [ :stream | stream nextPutAll: 'Cormas' ].
 			probe delete ]
 ]
@@ -205,9 +197,9 @@ CMWorkspace >> checkWritable [
 { #category : 'private' }
 CMWorkspace >> createFolders [
 
-	self
-		writeAt: location
-		doing: [ self modelsFolder ensureCreateDirectory ]
+	CMWorkspaceError
+		whileWritingIn: location
+		do: [ self modelsFolder ensureCreateDirectory ]
 ]
 
 { #category : 'installing' }
@@ -215,11 +207,12 @@ CMWorkspace >> delete: aModelFolder [
 	"Back up a folder of the workspace, then delete it. When this image installed a model from that folder, uninstall it first"
 
 	self backUp: aModelFolder location.
-	(installed keyAtValue: aModelFolder location ifAbsent: [ nil ])
-		ifNotNil: [ :baselineName | self uninstall: baselineName ].
-	self
-		writeAt: aModelFolder location
-		doing: [ aModelFolder location deleteAll ]
+	installed
+		detect: [ :each | each folder = aModelFolder location ]
+		ifFound: [ :model | self uninstall: model baselineName ].
+	CMWorkspaceError
+		whileWritingIn: aModelFolder location
+		do: [ aModelFolder location deleteAll ]
 ]
 
 { #category : 'private' }
@@ -239,14 +232,15 @@ CMWorkspace >> examplesFolder [
 
 { #category : 'installing' }
 CMWorkspace >> folderOf: aClass [
-	"Return the folder of the installed model whose baseline declares the package of aClass"
+	"Return the folder of the installed model that the package of aClass belongs to"
 
-	installed keysAndValuesDo: [ :baselineName :folder |
-			((self packageNamesOf: baselineName) includes: aClass package name)
-				ifTrue: [ ^ folder ] ].
-	^ CMWorkspaceError signal:
-		  aClass name
-		  , ' is not part of a model installed from the workspace'
+	^ (installed
+		   detect: [ :each | each ownsPackageNamed: aClass package name ]
+		   ifNone: [
+				   CMWorkspaceError signal:
+					   aClass name
+					   , ' is not part of a model installed from the workspace' ])
+		  folder
 ]
 
 { #category : 'accessing' }
@@ -269,33 +263,47 @@ CMWorkspace >> initialize [
 CMWorkspace >> install: aModelFolder [
 	"Load the model in aModelFolder into the image, from the files in its folder, and remember that folder. Raise a CMWorkspaceError when the model cannot be installed, leaving the image as it was: an installation never replaces code that is already in the image"
 
-	| baselineName packagesBefore |
+	| model packagesBefore |
 	aModelFolder isModel ifFalse: [
 			CMWorkspaceError signal: aModelFolder location fullName
 				, ' is not a model (it has no cormas.json)' ].
-	baselineName := aModelFolder baselineName.
-	installed at: baselineName ifPresent: [ :folder |
+	model := CMInstalledModel
+		         baselineName: aModelFolder baselineName
+		         folder: aModelFolder location.
+	installed at: model baselineName ifPresent: [ :other |
 			CMWorkspaceError signal:
-				baselineName , ' is already installed from ' , folder fullName ].
+				model baselineName , ' is already installed from '
+				, other folder fullName ].
 	packagesBefore := self packageOrganizer packageNames asSet.
-	(packagesBefore includes: 'BaselineOf' , baselineName) ifTrue: [
-			CMWorkspaceError signal: 'BaselineOf' , baselineName
+	(packagesBefore includes: model baselinePackageName) ifTrue: [
+			CMWorkspaceError signal: model baselinePackageName
 				,
 				' is already in this image, but not installed from the workspace' ].
 	[
 		(self metacelloFor: aModelFolder) get.
-		self checkNothingIsReplacedBy: baselineName in: packagesBefore.
+		self checkNothingIsReplacedBy: model in: packagesBefore.
 		(self metacelloFor: aModelFolder) load ]
 		on: Error
 		do: [ :error |
 				self removePackagesNotIn: packagesBefore.
 				Metacello new
-					baseline: baselineName;
+					baseline: model baselineName;
 					unregister.
 				(error isKindOf: CMWorkspaceError) ifTrue: [ error pass ].
 				CMWorkspaceError signal:
-					baselineName , ' could not be installed: ' , error messageText ].
-	installed at: baselineName put: aModelFolder location
+					model baselineName , ' could not be installed: '
+					, error messageText ].
+	model recordFiles.
+	installed at: model baselineName put: model
+]
+
+{ #category : 'installing' }
+CMWorkspace >> installedModelNamed: aBaselineName [
+
+	^ installed
+		  at: aBaselineName
+		  ifAbsent: [
+		  CMWorkspaceError signal: aBaselineName , ' is not installed' ]
 ]
 
 { #category : 'testing' }
@@ -309,16 +317,6 @@ CMWorkspace >> isFound [
 CMWorkspace >> isInstalled: aBaselineName [
 
 	^ installed includesKey: aBaselineName
-]
-
-{ #category : 'private' }
-CMWorkspace >> loadedPackagesOf: aBaselineName [
-	"Return the packages of the model that are in the image, with its baseline. A package of a group that was not loaded is not in the image"
-
-	^ ((self packageNamesOf: aBaselineName) copyWith:
-		   'BaselineOf' , aBaselineName)
-		  select: [ :each | self packageOrganizer hasPackage: each ]
-		  thenCollect: [ :each | self packageOrganizer packageNamed: each ]
 ]
 
 { #category : 'accessing' }
@@ -361,19 +359,20 @@ CMWorkspace >> newBackupFor: aName [
 ]
 
 { #category : 'private' }
-CMWorkspace >> packageNamesOf: aBaselineName [
-	"Return the names of the packages that the baseline declares, in all its groups. They are the packages of the model"
-
-	^ (self baselineClassOf: aBaselineName) project version packages
-		  collect: [ :each | each name ]
-]
-
-{ #category : 'private' }
 CMWorkspace >> removePackagesNotIn: packageNames [
 
 	(self packageOrganizer packages reject: [ :each |
 		 packageNames includes: each name ]) do: [ :each |
 		each removeFromSystem ]
+]
+
+{ #category : 'saving' }
+CMWorkspace >> savePackageNamed: aPackageName [
+	"Write a package, as it is in the image, into the folder of the installed model it belongs to. A package of no installed model is not saved anywhere"
+
+	installed
+		detect: [ :each | each ownsPackageNamed: aPackageName ]
+		ifFound: [ :model | model savePackageNamed: aPackageName ]
 ]
 
 { #category : 'initialization' }
@@ -386,46 +385,12 @@ CMWorkspace >> setLocation: aFileReference [
 CMWorkspace >> uninstall: aBaselineName [
 	"Remove the code of an installed model from the image and forget its folder, which is left untouched. The code in the image is backed up first, so nothing is lost even if it differs from the folder or the folder is gone"
 
-	(self isInstalled: aBaselineName) ifFalse: [
-		CMWorkspaceError signal: aBaselineName , ' is not installed' ].
+	| model |
+	model := self installedModelNamed: aBaselineName.
 	self backUpCodeOf: aBaselineName.
-	(self loadedPackagesOf: aBaselineName) do: [ :each |
-		each removeFromSystem ].
+	model loadedPackages do: [ :each | each removeFromSystem ].
 	Metacello new
 		baseline: aBaselineName;
 		unregister.
 	installed removeKey: aBaselineName
-]
-
-{ #category : 'private' }
-CMWorkspace >> versionOf: aPackage [
-	"Return a Monticello version of the package as it is in the image, built without changing its working copy, so that Iceberg sees no difference"
-
-	| package |
-	package := MCPackage named: aPackage name.
-	^ MCVersion
-		  package: package
-		  info: (MCVersionInfo
-				   name: aPackage name , '-backup'
-				   id: UUID new
-				   message: 'Backup by Cormas'
-				   date: Date today
-				   time: Time now
-				   author: 'Cormas'
-				   ancestors: #(  )
-				   stepChildren: #(  ))
-		  snapshot: package snapshot
-		  dependencies: #(  )
-]
-
-{ #category : 'private' }
-CMWorkspace >> writeAt: aFileReference doing: aBlock [
-	"Evaluate aBlock, turning a file system failure into a CMWorkspaceError that names the folder and the reason"
-
-	aBlock
-		on: FileSystemError , PrimitiveFailed
-		do: [ :error |
-				CMWorkspaceError signal:
-					'Cormas cannot write in ' , aFileReference fullName , ' ('
-					, error messageText , ')' ]
 ]
