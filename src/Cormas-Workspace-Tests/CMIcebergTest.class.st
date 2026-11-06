@@ -11,23 +11,6 @@ Class {
 }
 
 { #category : 'helpers' }
-CMIcebergTest >> commitAllIn: aFolder [
-
-	self assert: (self git: 'add -A' in: aFolder).
-	self assert: (self git: 'commit -q -m Cormas' in: aFolder)
-]
-
-{ #category : 'helpers' }
-CMIcebergTest >> git: aCommand in: aFolder [
-	"Run a git command in aFolder and answer whether it succeeded"
-
-	^ (LibC resultOfCommand:
-		   'cd ' , aFolder fullName surroundedBySingleQuotes
-		   , ' && git -c user.name=Cormas -c user.email=cormas@example.org '
-		   , aCommand , ' > /dev/null 2>&1 && echo ok') trimBoth = 'ok'
-]
-
-{ #category : 'helpers' }
 CMIcebergTest >> icebergRepositoriesAt: aFolder [
 
 	^ IceRepository registry select: [ :each | each location = aFolder ]
@@ -40,15 +23,6 @@ CMIcebergTest >> installGitMock [
 	self makeGitRepository: self mockFolder.
 	workspace install: (CMModelFolder in: workspace at: self mockFolder).
 	CMWorkspace current: workspace
-]
-
-{ #category : 'helpers' }
-CMIcebergTest >> makeGitRepository: aFolder [
-	"Turn aFolder into a git repository with one commit of all its files, or skip the test without git"
-
-	OSPlatform current isWindows ifTrue: [ ^ self skip ].
-	(self git: 'init -q' in: aFolder) ifFalse: [ ^ self skip ].
-	self commitAllIn: aFolder
 ]
 
 { #category : 'helpers' }

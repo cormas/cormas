@@ -9,6 +9,7 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - I save every code change of the image into the folder of the installed model it belongs to, while I am the current workspace.
 - I bring installed models up to date with their folders when the image starts and when asked: I follow a folder that was renamed or moved, and reload what changed outside Cormas after backing up the code in the image.
 - I register the folder of an installed model with Iceberg when it is a git repository, so that git users can commit from the image, and I refresh a model after an Iceberg operation changed its folder.
+- I download examples from the library into `Examples`, and update them to its latest version, backing up the files someone edited by hand.
 - I create new models: a `CMModelTemplate` writes their folder in `Models`, and they are installed from it.
 - I export a model folder as a zip, and install a model from a zip into a new folder of `Models`.
 - I install and uninstall models, remember which folder each installed model comes from, and delete folders; I back up before removing any code.
@@ -30,6 +31,8 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - `CMWorkspace defaultLocation` is the folder suggested to the modeler, `Cormas` in their home folder.
 - `folders` returns a `CMModelFolder` for each folder in `Models` and `Examples`, whether it is a model or not.
 - `backUp: aFolder` zips a folder, with everything in it, into `Backups` and returns the zip. Cormas calls it before destroying any code; restoring is unzipping into `Models`.
+- `download: aRepositoryUrl` clones a model of the library into a new folder of `Examples`, named after its baseline, without installing it.
+- `updateExamples` resets every example to the latest version of its repository, then reloads the installed ones. Files added by hand, such as outputs, are kept.
 - `createModelFrom: aModelTemplate` writes a new model into a new folder of `Models`, installs it and returns the folder.
 - `export: aModelFolder to: aZipFile` zips the whole folder, as it is on disk.
 - `installFromZip: aZipFile` extracts a zip into a new folder of `Models`, following single folders down to the one holding `cormas.json`, and installs the model; the folder stays even when the model cannot be installed.
@@ -62,6 +65,7 @@ CMWorkspace current: ((CMWorkspace isWorkspace: location)
 
 - A model is always loaded from its files with `tonel://`, even when its folder is a git repository: Iceberg would load the last commit instead of what is in the folder. Iceberg only registers the folder, with `src` as its source directory; a folder without `.project` shows in Iceberg as a project to commit.
 - The class side also listens to `IceRepositoryModified`, which Iceberg announces after a commit, a checkout or a pull, and when its working copy becomes dirty; the refresh that follows reloads only when files changed.
+- Examples are cloned and updated with libgit2 through Iceberg's classes, without registering them with Iceberg. Whether an example was edited by hand is found by comparing its files with those of its last commit.
 - A failed installation removes every package that appeared during it.
 - The class side listens to the code changes announced by `SystemAnnouncer` and passes them to the current workspace. Each change saves one class in the packages it affected. A removed or renamed class is saved in every package of the installed models, because Pharo does not announce that the extension methods of other packages went with it.
 - Uninstalling and reloading forget the model while its code is removed or loaded, so that this is not saved back into its folder.
@@ -193,6 +197,21 @@ CMWorkspace class >> startUp: resuming [
 		current ifNotNil: [ :workspace | workspace refresh ] ]
 ]
 
+{ #category : 'private' }
+CMWorkspace >> anyFileIn: aCommitFolder differsFrom: aFolder [
+	"Answer whether a file of aCommitFolder, looking into its subfolders, is missing from aFolder or has other contents there"
+
+	^ aCommitFolder children anySatisfy: [ :each |
+			  | file |
+			  file := aFolder / each basename.
+			  each isDirectory
+				  ifTrue: [ self anyFileIn: each differsFrom: file ]
+				  ifFalse: [
+						  file isFile not or: [
+								  (file binaryReadStreamDo: [ :stream | stream upToEnd ])
+								  ~= (each binaryReadStreamDo: [ :stream | stream upToEnd ]) ] ] ]
+]
+
 { #category : 'backups' }
 CMWorkspace >> backUp: aFolder [
 	"Zip aFolder, with everything in it, into my Backups folder and return the zip. Unzipping it into Models restores the folder. A backup never replaces another one. Cormas backs up code before destroying it, so when this raises an error, nothing must be destroyed"
@@ -290,6 +309,21 @@ CMWorkspace >> classRenamedOrRemoved: anAnnouncement [
 ]
 
 { #category : 'private' }
+CMWorkspace >> clone: aRepositoryUrl to: aFolder [
+
+	[
+		IceGitLibGitClone new
+			location: aFolder;
+			url: aRepositoryUrl;
+			execute ]
+		on: IceError
+		do: [ :error |
+				CMWorkspaceError signal:
+					'Cormas cannot download ' , aRepositoryUrl , ' ('
+					, error description , ')' ]
+]
+
+{ #category : 'private' }
 CMWorkspace >> createFolders [
 
 	CMWorkspaceError
@@ -309,7 +343,9 @@ CMWorkspace >> createModelFrom: aModelTemplate [
 				CMWorkspaceError signal:
 					'A model named ' , aModelTemplate baselineName
 					, ' is already in the workspace, in ' , each location fullName ].
-	folder := self newFolderNamed: aModelTemplate basename.
+	folder := self
+		          newFolderNamed: aModelTemplate basename
+		          in: self modelsFolder.
 	CMWorkspaceError
 		whileWritingIn: folder
 		do: [ aModelTemplate writeTo: folder ].
@@ -333,6 +369,37 @@ CMWorkspace >> delete: aModelFolder [
 	CMWorkspaceError
 		whileWritingIn: aModelFolder location
 		do: [ aModelFolder location deleteAll ]
+]
+
+{ #category : 'examples' }
+CMWorkspace >> download: aRepositoryUrl [
+	"Clone a model of the library into a new folder of Examples, named after its baseline, and return the folder. The model is not installed. Raise a CMWorkspaceError, leaving nothing in Examples, when the repository cannot be cloned, holds no model, or when that example is already downloaded"
+
+	| temporaryName clone folder |
+	temporaryName := '.cormas-download-' , UUID new asString.
+	[
+		clone := CMModelFolder
+			         in: self
+			         at: self examplesFolder / temporaryName.
+		self clone: aRepositoryUrl to: clone location.
+		clone isModel ifFalse: [
+				CMWorkspaceError signal:
+					aRepositoryUrl , ' holds no model (no cormas.json)' ].
+		self folders
+			detect: [ :each |
+				each isExample and: [ each hasBaselineNamed: clone baselineName ] ]
+			ifFound: [ :each |
+					CMWorkspaceError signal:
+						clone baselineName , ' is already downloaded, in '
+						, each location fullName ].
+		folder := self
+			          newFolderNamed: clone baselineName
+			          in: self examplesFolder.
+		CMWorkspaceError
+			whileWritingIn: self examplesFolder
+			do: [ clone location moveTo: folder ] ] ensure: [
+		(self examplesFolder / temporaryName) ensureDeleteAll ].
+	^ CMModelFolder in: self at: folder
 ]
 
 { #category : 'private' }
@@ -474,9 +541,11 @@ CMWorkspace >> installFromZip: aZipFile [
 			         ifNone: [
 					         CMWorkspaceError signal:
 						         aZipFile basename , ' holds no model (no cormas.json)' ].
-		folder := self newFolderNamed: (model basename = temporaryName
-				           ifTrue: [ aZipFile basenameWithoutExtension ]
-				           ifFalse: [ model basename ]).
+		folder := self
+			          newFolderNamed: (model basename = temporaryName
+					           ifTrue: [ aZipFile basenameWithoutExtension ]
+					           ifFalse: [ model basename ])
+			          in: self modelsFolder.
 		CMWorkspaceError
 			whileWritingIn: self modelsFolder
 			do: [ model moveTo: folder ] ] ensure: [
@@ -562,15 +631,15 @@ CMWorkspace >> newBackupFor: aName [
 ]
 
 { #category : 'private' }
-CMWorkspace >> newFolderNamed: aName [
-	"Return a folder of Models that does not exist yet, named aName, or 'aName 2', 'aName 3' and so on when it is taken"
+CMWorkspace >> newFolderNamed: aName in: aParentFolder [
+	"Return a folder of aParentFolder that does not exist yet, named aName, or 'aName 2', 'aName 3' and so on when it is taken"
 
 	| candidate index |
-	candidate := self modelsFolder / aName.
+	candidate := aParentFolder / aName.
 	index := 1.
 	[ candidate exists ] whileTrue: [
 			index := index + 1.
-			candidate := self modelsFolder / (aName , ' ' , index printString) ].
+			candidate := aParentFolder / (aName , ' ' , index printString) ].
 	^ candidate
 ]
 
@@ -683,6 +752,39 @@ CMWorkspace >> uninstall: aBaselineName [
 	Metacello new
 		baseline: aBaselineName;
 		unregister
+]
+
+{ #category : 'private' }
+CMWorkspace >> update: anExample [
+	"Reset the folder of anExample to the latest commit of its library repository, backing it up first when files of the library were edited by hand"
+
+	| repository latest |
+	repository := IceRepositoryCreator new
+		              location: anExample location;
+		              createRepository.
+	[
+		repository fetch.
+		latest := repository branch upstream commit ]
+		on: IceError
+		do: [ :error |
+				CMWorkspaceError signal:
+					'Cormas cannot download the latest version of ' , anExample name
+					, ' (' , error description , ')' ].
+	(self
+		 anyFileIn: repository headCommit fileSystem
+		 differsFrom: anExample location) ifTrue: [
+		self backUp: anExample location ].
+	repository branch commit: latest
+]
+
+{ #category : 'examples' }
+CMWorkspace >> updateExamples [
+	"Reset every downloaded example to the latest version of its library repository, then reload the installed ones from their folders. Files of the library edited by hand in an example are backed up first. Files added by hand, such as outputs, are kept"
+
+	(self folders select: [ :each |
+		 each isExample and: [ (each location / '.git') isDirectory ] ])
+		do: [ :each | self update: each ].
+	self refresh
 ]
 
 { #category : 'private' }
