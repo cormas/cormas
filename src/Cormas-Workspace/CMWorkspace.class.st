@@ -20,6 +20,7 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - `CMWorkspace current` and `CMWorkspace current:` give and set the workspace of the image.
 - `CMWorkspace defaultLocation` is the folder suggested to the modeler, `Cormas` in their home folder.
 - `folders` returns a `CMModelFolder` for each folder in `Models` and `Examples`, whether it is a model or not.
+- `backUp: aFolder` zips a folder, with everything in it, into `Backups` and returns the zip. Cormas calls it before destroying any code; restoring is unzipping into `Models`.
 - `isFound` tells whether my folder is still there, so that an unplugged drive is never taken for deleted models.
 
 For example, the first time an image starts:
@@ -103,6 +104,22 @@ CMWorkspace class >> isWorkspace: aFileReference [
 	^ (aFileReference / 'Models') isDirectory
 ]
 
+{ #category : 'backups' }
+CMWorkspace >> backUp: aFolder [
+	"Zip aFolder, with everything in it, into my Backups folder and return the zip. Unzipping it into Models restores the folder. A backup never replaces another one. Cormas backs up code before destroying it, so when this raises an error, nothing must be destroyed"
+
+	| zip |
+	self writeAt: self backupsFolder doing: [
+			self backupsFolder ensureCreateDirectory.
+			zip := self newBackupFor: aFolder basename.
+			ZipArchive new
+				addTree: aFolder
+				relativeTo: aFolder parent
+				match: [ :each | true ];
+				writeToFile: zip ].
+	^ zip
+]
+
 { #category : 'accessing' }
 CMWorkspace >> backupsFolder [
 
@@ -175,6 +192,23 @@ CMWorkspace >> location [
 CMWorkspace >> modelsFolder [
 
 	^ location / 'Models'
+]
+
+{ #category : 'private' }
+CMWorkspace >> newBackupFor: aName [
+	"Return a file in Backups that does not exist yet, named after aName and the time, such as 'Forest 2026-11-06 14-05-09.zip', then 'Forest 2026-11-06 14-05-09 2.zip' within the same second"
+
+	| now stem candidate index |
+	now := DateAndTime now.
+	stem := aName , ' ' , now asDate yyyymmdd , ' '
+	        , (now asTime print24 copyReplaceAll: ':' with: '-').
+	candidate := self backupsFolder / (stem , '.zip').
+	index := 1.
+	[ candidate exists ] whileTrue: [
+			index := index + 1.
+			candidate := self backupsFolder
+			             / (stem , ' ' , index printString , '.zip') ].
+	^ candidate
 ]
 
 { #category : 'initialization' }
