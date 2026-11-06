@@ -102,13 +102,14 @@ BaselineOfCormas >> specForBaselines: spec [
 		with: [ spec repository: 'github://pharo-graphics/Bloc:v3.0.0/src' ]
 ]
 
-{ #category : 'specs' }
+{ #category : 'baselines' }
 BaselineOfCormas >> specForGroups: spec [
 
 	spec
 		group: 'Core'
 		with:
-			#( 'Cormas-Core' 'Cormas-Tests' 'Cormas-Mocks' 'Cormas-CodeGeneration-Tests' );
+			#( 'Cormas-Core' 'Cormas-Tests' 'Cormas-Mocks' 'Cormas-CodeGeneration-Tests'
+			   'Cormas-Workspace' 'Cormas-Workspace-Tests' );
 		group: 'UI'
 		with: #( 'Core' 'Cormas-UI' 'Cormas-UI-Tests' 'Cormas-UI-Commands'
 			   'Cormas-UI-Roassal3' 'Cormas-UI-Tilesets' 'Cormas-Bloc'
@@ -116,7 +117,7 @@ BaselineOfCormas >> specForGroups: spec [
 		group: 'default' with: #( 'Core' 'UI' )
 ]
 
-{ #category : 'specs' }
+{ #category : 'baselines' }
 BaselineOfCormas >> specForPackages: spec [
 
 	spec
@@ -125,6 +126,10 @@ BaselineOfCormas >> specForPackages: spec [
 		package: 'Cormas-Mocks' with: [ spec requires: #( 'Cormas-Core' ) ];
 		package: 'Cormas-Tests'
 		with: [ spec requires: #( 'Cormas-Core' 'Cormas-Mocks' ) ];
+		package: 'Cormas-Workspace'
+		with: [ spec requires: #( 'Cormas-Core' ) ];
+		package: 'Cormas-Workspace-Tests'
+		with: [ spec requires: #( 'Cormas-Workspace' ) ];
 		package: 'Cormas-CodeGeneration';
 		package: 'Cormas-CodeGeneration-Tests'
 		with: [ spec requires: 'Cormas-CodeGeneration' ];
