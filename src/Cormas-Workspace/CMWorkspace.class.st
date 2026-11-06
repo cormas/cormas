@@ -6,7 +6,7 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - I know my folder and the folders inside it: `Models`, `Examples`, `Catalog` and `Backups`.
 - I create a new workspace, or open an existing one, and refuse a folder where Cormas cannot write, with a message naming the folder and the reason.
 - I remember the workspace of the image, so the modeler chooses it once per image.
-- I install models from their folders and remember which folder each installed model comes from.
+- I install and uninstall models, remember which folder each installed model comes from, and delete folders; I back up before removing any code.
 
 ## Collaborators:
 
@@ -25,6 +25,8 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - `folders` returns a `CMModelFolder` for each folder in `Models` and `Examples`, whether it is a model or not.
 - `backUp: aFolder` zips a folder, with everything in it, into `Backups` and returns the zip. Cormas calls it before destroying any code; restoring is unzipping into `Models`.
 - `install: aModelFolder` loads a model from the files in its folder and remembers the folder. It refuses, leaving the image as it was, to replace any code already in the image.
+- `uninstall: aBaselineName` backs up the code of a model as it is in the image, then removes it; the folder is left untouched.
+- `delete: aModelFolder` backs up a folder, uninstalls its model if it is installed from there, then deletes it.
 - `folderOf: aClass` returns the folder of the installed model that a class belongs to; `CMModel>>folder` uses it.
 - `isFound` tells whether my folder is still there, so that an unplugged drive is never taken for deleted models.
 
@@ -132,6 +134,26 @@ CMWorkspace >> backUp: aFolder [
 	^ zip
 ]
 
+{ #category : 'backups' }
+CMWorkspace >> backUpCodeOf: aBaselineName [
+	"Back up the code of an installed model as it is in the image, in the layout of a model folder, so that unzipping and installing the backup restores it. Return the zip"
+
+	| folder src repository |
+	folder := FileSystem memory
+	          / (aBaselineName , ' (code in the image)').
+	src := folder / 'src'.
+	src ensureCreateDirectory.
+	folder / 'cormas.json' writeStreamDo: [ :stream |
+			stream nextPutAll:
+				(STONJSON toString: (Dictionary with: 'baseline' -> aBaselineName)) ].
+	src / '.properties' writeStreamDo: [ :stream |
+		stream nextPutAll: '{ #format : #tonel }' ].
+	repository := TonelRepository new directory: src.
+	(self loadedPackagesOf: aBaselineName) do: [ :each |
+		repository storeVersion: (self versionOf: each) ].
+	^ self backUp: folder
+]
+
 { #category : 'accessing' }
 CMWorkspace >> backupsFolder [
 
@@ -186,6 +208,18 @@ CMWorkspace >> createFolders [
 	self
 		writeAt: location
 		doing: [ self modelsFolder ensureCreateDirectory ]
+]
+
+{ #category : 'installing' }
+CMWorkspace >> delete: aModelFolder [
+	"Back up a folder of the workspace, then delete it. When this image installed a model from that folder, uninstall it first"
+
+	self backUp: aModelFolder location.
+	(installed keyAtValue: aModelFolder location ifAbsent: [ nil ])
+		ifNotNil: [ :baselineName | self uninstall: baselineName ].
+	self
+		writeAt: aModelFolder location
+		doing: [ aModelFolder location deleteAll ]
 ]
 
 { #category : 'private' }
@@ -277,6 +311,16 @@ CMWorkspace >> isInstalled: aBaselineName [
 	^ installed includesKey: aBaselineName
 ]
 
+{ #category : 'private' }
+CMWorkspace >> loadedPackagesOf: aBaselineName [
+	"Return the packages of the model that are in the image, with its baseline. A package of a group that was not loaded is not in the image"
+
+	^ ((self packageNamesOf: aBaselineName) copyWith:
+		   'BaselineOf' , aBaselineName)
+		  select: [ :each | self packageOrganizer hasPackage: each ]
+		  thenCollect: [ :each | self packageOrganizer packageNamed: each ]
+]
+
 { #category : 'accessing' }
 CMWorkspace >> location [
 
@@ -336,6 +380,42 @@ CMWorkspace >> removePackagesNotIn: packageNames [
 CMWorkspace >> setLocation: aFileReference [
 
 	location := aFileReference
+]
+
+{ #category : 'installing' }
+CMWorkspace >> uninstall: aBaselineName [
+	"Remove the code of an installed model from the image and forget its folder, which is left untouched. The code in the image is backed up first, so nothing is lost even if it differs from the folder or the folder is gone"
+
+	(self isInstalled: aBaselineName) ifFalse: [
+		CMWorkspaceError signal: aBaselineName , ' is not installed' ].
+	self backUpCodeOf: aBaselineName.
+	(self loadedPackagesOf: aBaselineName) do: [ :each |
+		each removeFromSystem ].
+	Metacello new
+		baseline: aBaselineName;
+		unregister.
+	installed removeKey: aBaselineName
+]
+
+{ #category : 'private' }
+CMWorkspace >> versionOf: aPackage [
+	"Return a Monticello version of the package as it is in the image, built without changing its working copy, so that Iceberg sees no difference"
+
+	| package |
+	package := MCPackage named: aPackage name.
+	^ MCVersion
+		  package: package
+		  info: (MCVersionInfo
+				   name: aPackage name , '-backup'
+				   id: UUID new
+				   message: 'Backup by Cormas'
+				   date: Date today
+				   time: Time now
+				   author: 'Cormas'
+				   ancestors: #(  )
+				   stepChildren: #(  ))
+		  snapshot: package snapshot
+		  dependencies: #(  )
 ]
 
 { #category : 'private' }

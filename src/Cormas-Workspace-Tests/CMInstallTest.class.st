@@ -1,7 +1,7 @@
 "
-I test how `CMWorkspace` installs a model from its folder: loading its packages, remembering its folder, and refusing an installation that would replace code already in the image.
+I test how `CMWorkspace` installs and uninstalls a model and deletes a folder: loading its packages, remembering its folder, refusing an installation that would replace code already in the image, and backing up before removing anything.
 
-Metacello cannot load from a memory file system, so I write a small model, `CMWorkspaceMock`, in Tonel files in a temporary folder on disk. I remove its packages and the folder after each test.
+Metacello cannot load from a memory file system, so I write small models such as `CMWorkspaceMock` in Tonel files in a temporary folder on disk. I remove their packages and the folder after each test.
 "
 Class {
 	#name : 'CMInstallTest',
@@ -43,6 +43,13 @@ CMInstallTest >> mockFolderNamed: aFolderName [
 	^ CMModelFolder in: workspace at: folder
 ]
 
+{ #category : 'helpers' }
+CMInstallTest >> onlyBackup [
+
+	self assert: workspace backupsFolder children size equals: 1.
+	^ workspace backupsFolder children first
+]
+
 { #category : 'running' }
 CMInstallTest >> setUp [
 
@@ -66,6 +73,70 @@ CMInstallTest >> tearDown [
 				unregister ].
 	directory ensureDeleteAll.
 	super tearDown
+]
+
+{ #category : 'tests - uninstall' }
+CMInstallTest >> testBackUpOfTheCodeInTheImageCanBeInstalled [
+
+	| unzipped restored |
+	workspace install: (self mockFolderNamed: 'Mock').
+	self mockClass compile: 'answer ^ 42' classified: 'editing'.
+	workspace uninstall: 'CMWorkspaceMock'.
+	unzipped := self unzip: self onlyBackup.
+	restored := workspace modelsFolder / 'Restored'.
+	unzipped children first moveTo: restored.
+	workspace install: (CMModelFolder in: workspace at: restored).
+	self assert: self mockClass new answer equals: 42
+]
+
+{ #category : 'tests - uninstall' }
+CMInstallTest >> testDeleteACopyKeepsTheInstalledModel [
+
+	| original copy |
+	original := self mockFolderNamed: 'Mock'.
+	copy := self mockFolderNamed: 'Mock copy'.
+	workspace install: original.
+	workspace delete: copy.
+	self assert: (workspace isInstalled: 'CMWorkspaceMock').
+	self assert: (self isLoaded: 'CMWorkspaceMock-Model')
+]
+
+{ #category : 'tests - uninstall' }
+CMInstallTest >> testDeleteAFolderThatIsNotAModel [
+
+	| folder |
+	folder := workspace modelsFolder / 'Untitled folder'.
+	folder ensureCreateDirectory.
+	workspace delete: (CMModelFolder in: workspace at: folder).
+	self deny: folder exists
+]
+
+{ #category : 'tests - uninstall' }
+CMInstallTest >> testDeleteBacksUpThenDeletesTheFolder [
+
+	| folder unzipped |
+	folder := self mockFolderNamed: 'Mock'.
+	(folder location / 'data') ensureCreateDirectory.
+	self write: '1,2,3' to: folder location / 'data' / 'map.csv'.
+	workspace delete: folder.
+	self deny: folder location exists.
+	unzipped := self unzip: self onlyBackup.
+	self
+		assert: (unzipped / 'Mock' / 'data' / 'map.csv') contents
+		equals: '1,2,3'
+]
+
+{ #category : 'tests - uninstall' }
+CMInstallTest >> testDeleteTheFolderOfAnInstalledModelUninstallsIt [
+
+	| folder |
+	folder := self mockFolderNamed: 'Mock'.
+	workspace install: folder.
+	workspace delete: folder.
+	self deny: folder location exists.
+	self deny: (self isLoaded: 'CMWorkspaceMock-Model').
+	self deny: (workspace isInstalled: 'CMWorkspaceMock').
+	self assert: workspace backupsFolder children size equals: 2
 ]
 
 { #category : 'tests' }
@@ -127,6 +198,19 @@ CMInstallTest >> testInstallAFolderThatIsNotAModelRaisesAnError [
 						 in: workspace
 						 at: workspace modelsFolder / 'Untitled folder') ]
 		raise: CMWorkspaceError
+]
+
+{ #category : 'tests - uninstall' }
+CMInstallTest >> testInstallAgainAfterUninstall [
+
+	| folder |
+	folder := self mockFolderNamed: 'Mock'.
+	workspace install: folder.
+	workspace uninstall: 'CMWorkspaceMock'.
+	workspace install: folder.
+	self assert:
+		(self class environment includesKey: #CMWorkspaceMockModel).
+	self assert: (workspace isInstalled: 'CMWorkspaceMock')
 ]
 
 { #category : 'tests' }
@@ -216,6 +300,77 @@ CMInstallTest >> testInstallTheSameModelFromAnotherFolderRaisesAnError [
 	self
 		assert: (workspace folderOf: self mockClass)
 		equals: original location
+]
+
+{ #category : 'tests - uninstall' }
+CMInstallTest >> testUninstallAModelThatIsNotInstalledRaisesAnError [
+
+	self
+		should: [ workspace uninstall: 'CMWorkspaceMock' ]
+		raise: CMWorkspaceError
+]
+
+{ #category : 'tests - uninstall' }
+CMInstallTest >> testUninstallBacksUpTheCodeInTheImage [
+
+	| unzipped model |
+	workspace install: (self mockFolderNamed: 'Mock').
+	self mockClass compile: 'answer ^ 42' classified: 'editing'.
+	workspace uninstall: 'CMWorkspaceMock'.
+	unzipped := self unzip: self onlyBackup.
+	model := unzipped children first.
+	self
+		assert: (CMModelFolder in: workspace at: model) baselineName
+		equals: 'CMWorkspaceMock'.
+	self assert: (model / 'src' / 'BaselineOfCMWorkspaceMock'
+		 / 'BaselineOfCMWorkspaceMock.class.st') isFile.
+	self assert: ((model / 'src' / 'CMWorkspaceMock-Model'
+		  / 'CMWorkspaceMockModel.class.st') contents includesSubstring:
+			 'answer')
+]
+
+{ #category : 'tests - uninstall' }
+CMInstallTest >> testUninstallLeavesTheFolderUntouched [
+
+	| folder |
+	folder := self mockFolderNamed: 'Mock'.
+	workspace install: folder.
+	workspace uninstall: 'CMWorkspaceMock'.
+	self assert: folder isModel.
+	self assert: (folder location / 'src' / 'CMWorkspaceMock-Model'
+		 / 'CMWorkspaceMockModel.class.st') isFile
+]
+
+{ #category : 'tests - uninstall' }
+CMInstallTest >> testUninstallRemovesTheCodeOfTheModel [
+
+	workspace install: (self mockFolderNamed: 'Mock').
+	workspace uninstall: 'CMWorkspaceMock'.
+	self deny: (self isLoaded: 'CMWorkspaceMock-Model').
+	self deny: (self isLoaded: 'BaselineOfCMWorkspaceMock').
+	self deny: (workspace isInstalled: 'CMWorkspaceMock')
+]
+
+{ #category : 'tests - uninstall' }
+CMInstallTest >> testUninstallWhenTheFolderIsGone [
+
+	| folder |
+	folder := self mockFolderNamed: 'Mock'.
+	workspace install: folder.
+	folder location deleteAll.
+	workspace uninstall: 'CMWorkspaceMock'.
+	self deny: (self isLoaded: 'CMWorkspaceMock-Model').
+	self assert: self onlyBackup isFile
+]
+
+{ #category : 'helpers' }
+CMInstallTest >> unzip: aZipFile [
+
+	| folder |
+	folder := directory / 'Unzipped'.
+	folder ensureCreateDirectory.
+	(ZipArchive new readFrom: aZipFile) extractAllTo: folder.
+	^ folder
 ]
 
 { #category : 'helpers' }
