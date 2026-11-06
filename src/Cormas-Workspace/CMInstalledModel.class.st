@@ -10,13 +10,13 @@ I represent a model installed in the image from a folder of the workspace. I kee
 
 ## Collaborators:
 
-- `CMWorkspace` creates me when it installs a model and asks me to save the packages that change.
+- `CMWorkspace` creates me when it installs a model and asks me to save the packages that change. Before I change the folder of an example, I ask it to copy the example to `Models`.
 - `TonelWriter` writes the files, in the version declared in `src/.properties` as Iceberg does, so they are the files Iceberg would commit.
 - `CMWorkspaceError` carries the reason why a package could not be saved.
 
 ## Public API and Key Messages
 
-- `CMInstalledModel baselineName: aString folder: aFileReference` creates an instance; `recordFiles` then remembers the files of the folder.
+- `CMInstalledModel in: aWorkspace baselineName: aString folder: aFileReference` creates an instance; `recordFiles` then remembers the files of the folder.
 - `saveClassNamed: aClassName inPackageNamed: aPackageName` writes what a package of the model defines on a class: the class itself, or the extension methods of the package on it. Its cost depends on the class, not on the size of the model.
 - `savePackageNamed: aPackageName` writes a whole package of the model.
 - `isUpToDate` tells whether the image and the folder hold the same code; `reload` loads from the folder what differs, and `folder:` follows a folder that was renamed or moved.
@@ -38,6 +38,7 @@ model isSaved
 ## Internal Representation
 
 - `baselineName` is the name of the baseline, without `BaselineOf`; it is the identity of the model.
+- `workspace` is the `CMWorkspace` that installed me.
 - `folder` is the `FileReference` of the model folder.
 - `fileHashes` maps the path of each file of `src`, relative to `folder`, to the SHA-256 of its content as Cormas last loaded or wrote it.
 - `problem` is `nil` while everything is saved, otherwise the reason why it is not.
@@ -55,16 +56,20 @@ Class {
 		'baselineName',
 		'folder',
 		'fileHashes',
-		'problem'
+		'problem',
+		'workspace'
 	],
 	#category : 'Cormas-Workspace',
 	#package : 'Cormas-Workspace'
 }
 
 { #category : 'instance creation' }
-CMInstalledModel class >> baselineName: aString folder: aFileReference [
+CMInstalledModel class >> in: aWorkspace baselineName: aString folder: aFileReference [
 
-	^ self new setBaselineName: aString folder: aFileReference
+	^ self new
+		  setWorkspace: aWorkspace
+		  baselineName: aString
+		  folder: aFileReference
 ]
 
 { #category : 'packages' }
@@ -409,8 +414,9 @@ CMInstalledModel >> savePackageNamed: aPackageName [
 ]
 
 { #category : 'initialization' }
-CMInstalledModel >> setBaselineName: aString folder: aFileReference [
+CMInstalledModel >> setWorkspace: aWorkspace baselineName: aString folder: aFileReference [
 
+	workspace := aWorkspace.
 	baselineName := aString.
 	folder := aFileReference.
 	fileHashes := Dictionary new
@@ -455,7 +461,7 @@ CMInstalledModel >> tonelWriterClass [
 
 { #category : 'private' }
 CMInstalledModel >> write: files over: paths [
-	"Check first that every file to touch is as Cormas last saw it, then write and delete"
+	"Check first that every file to touch is as Cormas last saw it, then write and delete. Before changing the folder of an example, which only Cormas changes, have the workspace copy it to Models or stop saving"
 
 	| toWrite toDelete |
 	toWrite := files keys reject: [ :path |
@@ -466,6 +472,9 @@ CMInstalledModel >> write: files over: paths [
 	toDelete := paths reject: [ :path |
 			            (files includesKey: path) or: [
 				            (folder resolveString: path) exists not ] ].
+	(toWrite isEmpty and: [ toDelete isEmpty ]) ifTrue: [ ^ self ].
+	(CMModelFolder in: workspace at: folder) isExample ifTrue: [
+		workspace copyEditedExample: self ].
 	toWrite , toDelete asArray do: [ :path | self checkUnchanged: path ].
 	CMWorkspaceError whileWritingIn: folder / 'src' do: [
 			toWrite do: [ :path | self writeBytes: (files at: path) at: path ].

@@ -11,6 +11,12 @@ Class {
 }
 
 { #category : 'helpers' }
+CMExampleTest >> addAnswerMethod [
+
+	self mockClass compile: 'answer ^ 42' classified: 'accessing'
+]
+
+{ #category : 'helpers' }
 CMExampleTest >> changeLibraryFile: aPath to: aString [
 	"Write aString into a file of the library and commit it, as a new version of the model"
 
@@ -26,9 +32,31 @@ CMExampleTest >> download [
 ]
 
 { #category : 'helpers' }
+CMExampleTest >> edit: aBlock answering: aBoolean [
+	"Change code of the installed example with aBlock, answering aBoolean when asked whether to copy it to Models. Return how many times it was asked"
+
+	| questions |
+	questions := 0.
+	aBlock
+		on: CMExampleEdited
+		do: [ :question |
+				questions := questions + 1.
+				question resume: aBoolean ].
+	^ questions
+]
+
+{ #category : 'helpers' }
 CMExampleTest >> exampleFolder [
 
 	^ workspace examplesFolder / 'CMWorkspaceMock'
+]
+
+{ #category : 'helpers' }
+CMExampleTest >> installExample [
+
+	self makeLibrary.
+	workspace install: self download.
+	CMWorkspace current: workspace
 ]
 
 { #category : 'helpers' }
@@ -50,6 +78,65 @@ CMExampleTest >> makeLibrary [
 		withModelClass: 'CMWorkspaceMockModel'
 		in: self libraryFolder.
 	self makeGitRepository: self libraryFolder
+]
+
+{ #category : 'helpers' }
+CMExampleTest >> model [
+
+	^ workspace installedModelNamed: 'CMWorkspaceMock'
+]
+
+{ #category : 'helpers' }
+CMExampleTest >> modelFileIn: aFolder [
+
+	^ aFolder / 'src' / 'CMWorkspaceMock-Model'
+	  / 'CMWorkspaceMockModel.class.st'
+]
+
+{ #category : 'tests' }
+CMExampleTest >> testCopyOfAnEditedExampleMovesItsIcebergRepository [
+
+	self installExample.
+	self edit: [ self addAnswerMethod ] answering: true.
+	self assertEmpty:
+		(workspace icebergRepositoriesAt: self exampleFolder).
+	self
+		assert: (workspace icebergRepositoriesAt: self model folder) size
+		equals: 1
+]
+
+{ #category : 'tests' }
+CMExampleTest >> testCopyOfAnEditedExampleTakesAFreeName [
+
+	self installExample.
+	(workspace modelsFolder / 'CMWorkspaceMock') ensureCreateDirectory.
+	self edit: [ self addAnswerMethod ] answering: true.
+	self
+		assert: self model folder
+		equals: workspace modelsFolder / 'CMWorkspaceMock 2'
+]
+
+{ #category : 'tests' }
+CMExampleTest >> testDecliningTheCopyAsksOnceAndSavesNothing [
+
+	self installExample.
+	self
+		assert: (self
+				 edit: [
+						 self addAnswerMethod.
+						 self mockClass
+							 compile: 'question ^ 6 * 7'
+							 classified: 'accessing' ]
+				 answering: false)
+		equals: 1.
+	self assert: self model folder equals: self exampleFolder.
+	self deny:
+		((self modelFileIn: self exampleFolder) contents includesSubstring:
+			 'answer').
+	self assertEmpty: workspace modelsFolder children.
+	self assert:
+		(self model problem includesSubstring:
+			 'CMWorkspaceMock is an example')
 ]
 
 { #category : 'tests' }
@@ -112,6 +199,76 @@ CMExampleTest >> testDownloadOfARepositoryWithoutModelIsRefused [
 				self assert: (error messageText includesSubstring:
 						 'holds no model (no cormas.json)') ].
 	self assertEmpty: workspace examplesFolder children
+]
+
+{ #category : 'tests' }
+CMExampleTest >> testEditingAnExampleAsksOnceForManyChanges [
+
+	self installExample.
+	self
+		assert: (self
+				 edit: [
+						 self addAnswerMethod.
+						 self mockClass
+							 compile: 'question ^ 6 * 7'
+							 classified: 'accessing' ]
+				 answering: true)
+		equals: 1.
+	self assert:
+		((self modelFileIn: self model folder) contents includesSubstring:
+			 'question')
+]
+
+{ #category : 'tests' }
+CMExampleTest >> testEditingAnExampleCopiesItToModelsWhenAsked [
+
+	| copy |
+	self installExample.
+	self edit: [ self addAnswerMethod ] answering: true.
+	copy := workspace modelsFolder / 'CMWorkspaceMock'.
+	self assert: self model folder equals: copy.
+	self assert: self model isSaved.
+	self assert:
+		((self modelFileIn: copy) contents includesSubstring: 'answer').
+	self deny:
+		((self modelFileIn: self exampleFolder) contents includesSubstring:
+			 'answer').
+	self assert: (copy / '.git') isDirectory.
+	self assert: self mockClass new answer equals: 42
+]
+
+{ #category : 'tests' }
+CMExampleTest >> testRefreshAfterDecliningTheCopyRestoresTheExample [
+
+	| backup |
+	self installExample.
+	self edit: [ self addAnswerMethod ] answering: false.
+	workspace refresh.
+	self deny: (self mockClass includesSelector: #answer).
+	self assert: self model isSaved.
+	backup := self unzip: self onlyBackup.
+	self assert: ((self modelFileIn: backup children first) contents
+			 includesSubstring: 'answer')
+]
+
+{ #category : 'tests' }
+CMExampleTest >> testSavingAnExampleWithoutChangesDoesNotAsk [
+	"The library is written as Cormas writes it, as Iceberg does for real examples, so that saving unchanged code changes no file"
+
+	(CMModelTemplate named: 'CMWorkspaceMock') writeTo:
+		self libraryFolder.
+	self makeGitRepository: self libraryFolder.
+	workspace install: self download.
+	CMWorkspace current: workspace.
+	self
+		assert: (self
+				 edit: [
+						 workspace
+							 saveClassNamed: 'CMWMModel'
+							 inPackageNamed: 'CMWorkspaceMock-Model' ]
+				 answering: true)
+		equals: 0.
+	self assert: self model folder equals: self exampleFolder
 ]
 
 { #category : 'tests' }

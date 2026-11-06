@@ -20,6 +20,7 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - `Metacello` loads a model from the Tonel files of its folder.
 - `Iceberg` lists the folders that are git repositories; I never load code through it.
 - `FileReference` gives me my folder; I never assume it is on a particular disk, so tests use a memory file system.
+- `CMExampleEdited` asks the modeler whether to copy an example they edited.
 - `CMWorkspaceError` is what I raise when a folder cannot be used.
 
 ## Public API and Key Messages
@@ -32,6 +33,7 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - `folders` returns a `CMModelFolder` for each folder in `Models` and `Examples`, whether it is a model or not.
 - `backUp: aFolder` zips a folder, with everything in it, into `Backups` and returns the zip. Cormas calls it before destroying any code; restoring is unzipping into `Models`.
 - `download: aRepositoryUrl` clones a model of the library into a new folder of `Examples`, named after its baseline, without installing it.
+- `copyEditedExample: anInstalledModel` is called before the code of an installed example is saved: it signals `CMExampleEdited`, and copies the example to `Models` for the model to use from then on, or stops saving the model when the modeler declines.
 - `updateExamples` resets every example to the latest version of its repository, then reloads the installed ones. Files added by hand, such as outputs, are kept.
 - `createModelFrom: aModelTemplate` writes a new model into a new folder of `Models`, installs it and returns the folder.
 - `export: aModelFolder to: aZipFile` zips the whole folder, as it is on disk.
@@ -323,6 +325,25 @@ CMWorkspace >> clone: aRepositoryUrl to: aFolder [
 					, error description , ')' ]
 ]
 
+{ #category : 'examples' }
+CMWorkspace >> copyEditedExample: anInstalledModel [
+	"Ask whether to copy the example whose code changed to Models. With a copy, the installed model uses it from then on, so its changes are saved there and nothing is unloaded. Otherwise raise a CMWorkspaceError, which stops saving the model until it is reloaded from the example"
+
+	| copy |
+	(CMExampleEdited signalFor: anInstalledModel) ifFalse: [
+			CMWorkspaceError signal: anInstalledModel baselineName
+				, ' is an example: its changes are not saved' ].
+	copy := self
+		        newFolderNamed: anInstalledModel folder basename
+		        in: self modelsFolder.
+	CMWorkspaceError
+		whileWritingIn: self modelsFolder
+		do: [ anInstalledModel folder copyAllTo: copy ].
+	self forgetIcebergRepositoriesAt: anInstalledModel folder.
+	anInstalledModel folder: copy.
+	self registerWithIceberg: anInstalledModel
+]
+
 { #category : 'private' }
 CMWorkspace >> createFolders [
 
@@ -498,6 +519,7 @@ CMWorkspace >> install: aModelFolder [
 			CMWorkspaceError signal: aModelFolder location fullName
 				, ' is not a model (it has no cormas.json)' ].
 	model := CMInstalledModel
+		         in: self
 		         baselineName: aModelFolder baselineName
 		         folder: aModelFolder location.
 	installed at: model baselineName ifPresent: [ :other |
