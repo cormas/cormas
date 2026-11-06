@@ -33,8 +33,7 @@ CMWorkspaceOnDiskTestCase >> git: aCommand in: aFolder [
 	"Run a git command in aFolder and answer whether it succeeded"
 
 	^ (LibC resultOfCommand:
-		   'cd ' , aFolder fullName surroundedBySingleQuotes
-		   , ' && git -c user.name=Cormas -c user.email=cormas@example.org '
+		   'cd ' , aFolder fullName surroundedBySingleQuotes , ' && git '
 		   , aCommand , ' > /dev/null 2>&1 && echo ok') trimBoth = 'ok'
 ]
 
@@ -46,10 +45,13 @@ CMWorkspaceOnDiskTestCase >> isLoaded: aPackageName [
 
 { #category : 'helpers' }
 CMWorkspaceOnDiskTestCase >> makeGitRepository: aFolder [
-	"Turn aFolder into a git repository with one commit of all its files, or skip the test without git"
+	"Turn aFolder into a git repository with one commit of all its files, or skip the test without git. The repository has its own author, because Iceberg commits with the one git finds, and a CI machine has none"
 
 	OSPlatform current isWindows ifTrue: [ ^ self skip ].
 	(self git: 'init -q' in: aFolder) ifFalse: [ ^ self skip ].
+	self assert: (self git: 'config user.name Cormas' in: aFolder).
+	self assert:
+		(self git: 'config user.email cormas@example.org' in: aFolder).
 	self commitAllIn: aFolder
 ]
 

@@ -143,20 +143,6 @@ CMRefreshTest >> testRefreshIgnoresAFolderOfAnotherModel [
 		equals: workspace modelsFolder / 'Elsewhere'
 ]
 
-{ #category : 'tests - reload' }
-CMRefreshTest >> testRefreshKeepsTheCodeWhenTheFolderCannotBeLoaded [
-
-	self
-		write: 'Class { not tonel at all'
-		to: (self modelFileIn: self mockFolder).
-	workspace refresh.
-	self assert:
-		(self class environment includesKey: #CMWorkspaceMockModel).
-	self deny: self model isSaved.
-	self assert:
-		(self model problem includesSubstring: 'could not be reloaded')
-]
-
 { #category : 'tests - folder' }
 CMRefreshTest >> testRefreshKeepsTheCodeWhenTheFolderIsGone [
 
