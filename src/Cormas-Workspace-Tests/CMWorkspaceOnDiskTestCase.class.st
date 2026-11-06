@@ -1,14 +1,15 @@
 "
 I am the common fixture of the tests of `CMWorkspace` that load models with Metacello, which cannot read a memory file system.
 
-I create a workspace in a new temporary folder on disk, and I write small models such as `CMWorkspaceMock` there as Tonel files. After each test, I remove their packages, unregister their baselines and delete the folder.
+I create a workspace in a new temporary folder on disk, and I write small models such as `CMWorkspaceMock` there as Tonel files. After each test, I restore the current workspace of the image, remove the packages of the models, unregister their baselines and delete the folder.
 "
 Class {
 	#name : 'CMWorkspaceOnDiskTestCase',
 	#superclass : 'TestCase',
 	#instVars : [
 		'workspace',
-		'directory'
+		'directory',
+		'previousWorkspace'
 	],
 	#category : 'Cormas-Workspace-Tests',
 	#package : 'Cormas-Workspace-Tests'
@@ -60,6 +61,7 @@ CMWorkspaceOnDiskTestCase >> onlyBackup [
 CMWorkspaceOnDiskTestCase >> setUp [
 
 	super setUp.
+	previousWorkspace := CMWorkspace instVarNamed: 'current'.
 	directory := FileLocator temp asFileReference
 	             / ('cormas-install-test-' , UUID new asString).
 	workspace := CMWorkspace createAt: directory
@@ -68,6 +70,7 @@ CMWorkspaceOnDiskTestCase >> setUp [
 { #category : 'running' }
 CMWorkspaceOnDiskTestCase >> tearDown [
 
+	CMWorkspace instVarNamed: 'current' put: previousWorkspace.
 	(PackageOrganizer default packages select: [ :each |
 			 (each name beginsWith: 'CMWorkspaceMock') or: [
 				 each name beginsWith: 'BaselineOfCMWorkspaceMock' ] ]) do: [

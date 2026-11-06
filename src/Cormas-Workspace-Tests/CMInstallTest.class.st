@@ -103,15 +103,12 @@ CMInstallTest >> testFailedInstallRemovesWhatItLoaded [
 { #category : 'tests' }
 CMInstallTest >> testFolderOfAModelClassAndOfItsInstances [
 
-	| folder previous |
+	| folder |
 	folder := self mockFolderNamed: 'Mock'.
 	workspace install: folder.
-	previous := CMWorkspace instVarNamed: 'current'.
-	[
-		CMWorkspace current: workspace.
-		self assert: self mockClass folder equals: folder location.
-		self assert: self mockClass basicNew folder equals: folder location ]
-		ensure: [ CMWorkspace instVarNamed: 'current' put: previous ]
+	CMWorkspace current: workspace.
+	self assert: self mockClass folder equals: folder location.
+	self assert: self mockClass basicNew folder equals: folder location
 ]
 
 { #category : 'tests' }

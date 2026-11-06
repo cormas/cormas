@@ -7,6 +7,7 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - I create a new workspace, or open an existing one, and refuse a folder where Cormas cannot write, with a message naming the folder and the reason.
 - I remember the workspace of the image, so the modeler chooses it once per image.
 - I save every code change of the image into the folder of the installed model it belongs to, while I am the current workspace.
+- I bring installed models up to date with their folders when the image starts and when asked: I follow a folder that was renamed or moved, and reload what changed outside Cormas after backing up the code in the image.
 - I install and uninstall models, remember which folder each installed model comes from, and delete folders; I back up before removing any code.
 
 ## Collaborators:
@@ -31,6 +32,7 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - `saveClassNamed: aClassName inPackageNamed: aPackageName` and `savePackageNamed: aPackageName` write what changed into the folder of the installed model the package belongs to; `installedModelNamed:` tells whether that model is saved.
 - `orphanPackages` returns the loaded packages named like the packages of an installed model but outside its baseline, whose changes are saved nowhere, with the model they seem to belong to.
 - `folderOf: aClass` returns the folder of the installed model that a class belongs to; `CMModel>>folder` uses it.
+- `refresh` finds the folder of every installed model and reloads what changed in it; the class side calls it on the current workspace when the image starts.
 - `isFound` tells whether my folder is still there, so that an unplugged drive is never taken for deleted models.
 
 For example, the first time an image starts:
@@ -54,7 +56,8 @@ CMWorkspace current: ((CMWorkspace isWorkspace: location)
 - A model is always loaded from its files with `tonel://`, even when its folder is a git repository: Iceberg would load the last commit instead of what is in the folder.
 - A failed installation removes every package that appeared during it.
 - The class side listens to the code changes announced by `SystemAnnouncer` and passes them to the current workspace. Each change saves one class in the packages it affected. A removed or renamed class is saved in every package of the installed models, because Pharo does not announce that the extension methods of other packages went with it.
-- Uninstalling forgets the model before removing its code, so that the removal is not saved into its folder.
+- Uninstalling and reloading forget the model while its code is removed or loaded, so that this is not saved back into its folder.
+- A refresh uses the folder a model was installed from while its `cormas.json` names the same baseline. Otherwise it follows the only other folder with that baseline; with none or several, it keeps the code, stops saving and records the problem for the modeler to decide.
 "
 Class {
 	#name : 'CMWorkspace',
@@ -132,8 +135,9 @@ CMWorkspace class >> defaultLocation [
 
 { #category : 'class initialization' }
 CMWorkspace class >> initialize [
-	"Listen to the code changes of the image, so that the current workspace saves them into the folders of its models"
+	"Listen to the code changes of the image, so that the current workspace saves them into the folders of its models, and refresh the current workspace when the image starts"
 
+	SessionManager default registerUserClassNamed: self name.
 	SystemAnnouncer uniqueInstance unsubscribe: self.
 	SystemAnnouncer uniqueInstance
 		when:
@@ -159,6 +163,14 @@ CMWorkspace class >> packageTagRenamed: anAnnouncement [
 
 	current ifNotNil: [ :workspace |
 		workspace savePackageNamed: anAnnouncement package name ]
+]
+
+{ #category : 'system startup' }
+CMWorkspace class >> startUp: resuming [
+	"When the image starts, bring the models of the current workspace up to date with their folders, which may have changed while the image was closed"
+
+	resuming ifTrue: [
+		current ifNotNil: [ :workspace | workspace refresh ] ]
 ]
 
 { #category : 'backups' }
@@ -437,6 +449,39 @@ CMWorkspace >> orphanPackages [
 						 installed noneSatisfy: [ :other | other ownsPackageNamed: each ] ] ])
 				do: [ :each | orphans at: each put: model ] ].
 	^ orphans
+]
+
+{ #category : 'refreshing' }
+CMWorkspace >> refresh [
+	"Bring every installed model up to date with its folder, as at startup: find its folder, then reload from it what changed outside Cormas, backing up the code in the image first. When my own folder is not found, change nothing: a drive that is not plugged in is no reason to forget models"
+
+	self isFound ifFalse: [ ^ self ].
+	installed copy do: [ :each | self refresh: each ]
+]
+
+{ #category : 'refreshing' }
+CMWorkspace >> refresh: anInstalledModel [
+	"Use the folder the model was installed from while it is still there. Otherwise, follow the only folder with the same baseline, as when the folder was renamed or moved; with none or several, keep the code and stop saving until the modeler decides"
+
+	| candidates |
+	((CMModelFolder in: self at: anInstalledModel folder)
+		 hasBaselineNamed: anInstalledModel baselineName) ifFalse: [
+			candidates := self folders select: [ :each |
+				              each hasBaselineNamed: anInstalledModel baselineName ].
+			candidates size = 1 ifFalse: [
+				^ anInstalledModel cannotChooseAmongFolders: candidates ].
+			anInstalledModel folder: candidates first location ].
+	anInstalledModel isUpToDate ifFalse: [ self reload: anInstalledModel ]
+]
+
+{ #category : 'refreshing' }
+CMWorkspace >> reload: anInstalledModel [
+	"Back up the code of the model as it is in the image, then reload it from its folder. The model is forgotten while it loads, so that loading is not saved back into its folder"
+
+	self backUpCodeOf: anInstalledModel baselineName.
+	installed removeKey: anInstalledModel baselineName.
+	[ anInstalledModel reload ] ensure: [
+		installed at: anInstalledModel baselineName put: anInstalledModel ]
 ]
 
 { #category : 'private' }

@@ -6,9 +6,6 @@ I work on disk, with the fixture of `CMWorkspaceOnDiskTestCase`. I install the m
 Class {
 	#name : 'CMCodeChangeTest',
 	#superclass : 'CMWorkspaceOnDiskTestCase',
-	#instVars : [
-		'previousWorkspace'
-	],
 	#category : 'Cormas-Workspace-Tests',
 	#package : 'Cormas-Workspace-Tests'
 }
@@ -44,15 +41,7 @@ CMCodeChangeTest >> setUp [
 
 	super setUp.
 	workspace install: (self mockFolderNamed: 'Mock').
-	previousWorkspace := CMWorkspace instVarNamed: 'current'.
 	CMWorkspace current: workspace
-]
-
-{ #category : 'running' }
-CMCodeChangeTest >> tearDown [
-
-	CMWorkspace instVarNamed: 'current' put: previousWorkspace.
-	super tearDown
 ]
 
 { #category : 'tests' }

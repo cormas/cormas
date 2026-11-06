@@ -5,6 +5,7 @@ I represent a model installed in the image from a folder of the workspace. I kee
 
 - I know the baseline of the model, which declares its packages, and the folder it was installed from.
 - I write what changed in the image into my folder: one class, or a whole package, touching only the files that differ, each through a temporary file.
+- I reload from my folder the packages whose files changed outside Cormas, or all of them when the image holds code that was not saved.
 - I remember the hash of every file as Cormas last loaded or wrote it. When a file to touch differs from it, someone else changed the folder: I stop saving and remember the problem, and the code stays in the image.
 
 ## Collaborators:
@@ -18,6 +19,7 @@ I represent a model installed in the image from a folder of the workspace. I kee
 - `CMInstalledModel baselineName: aString folder: aFileReference` creates an instance; `recordFiles` then remembers the files of the folder.
 - `saveClassNamed: aClassName inPackageNamed: aPackageName` writes what a package of the model defines on a class: the class itself, or the extension methods of the package on it. Its cost depends on the class, not on the size of the model.
 - `savePackageNamed: aPackageName` writes a whole package of the model.
+- `isUpToDate` tells whether the image and the folder hold the same code; `reload` loads from the folder what differs, and `folder:` follows a folder that was renamed or moved.
 - `isSaved` and `problem` tell whether everything in the image is in the folder, and why not.
 - `ownsPackageNamed:`, `packageNames` and `loadedPackages` describe the packages of the model.
 - `addPackageNamed: aPackageName` declares a package in the baseline, creating it if needed, and saves both. It refuses a baseline with groups or without a `for: #common do:` block, which must be edited by hand.
@@ -43,6 +45,7 @@ model isSaved
 ### Implementation Points
 
 - What to save is written in memory and compared with the folder file by file. For a class, the files compared are `package.st` and every file the package could hold about the class (`.class.st`, `.trait.st`, `.extension.st`), so a class that moved or disappeared leaves no file behind. Files that do not differ are not touched, and a file changed outside Cormas elsewhere in the package does not prevent saving this class.
+- Monticello asks before loading over code it does not know about; `reload` answers to load, since the workspace backed up the code in the image just before.
 - A file is written to a temporary file, then the old file is deleted and the temporary one renamed. A crash between the two leaves a missing file, which the next save reports as changed outside Cormas.
 "
 Class {
@@ -115,6 +118,37 @@ CMInstalledModel >> baselinePackageName [
 	^ 'BaselineOf' , baselineName
 ]
 
+{ #category : 'refreshing' }
+CMInstalledModel >> cannotChooseAmongFolders: modelFolders [
+	"Stop saving: the folder I was installed from is gone, and there is not exactly one other folder of the same model to follow"
+
+	problem := modelFolders
+		           ifEmpty: [
+				           'The folder of ' , baselineName
+				           ,
+				           ' is gone: restore it, or remove the model from the image' ]
+		           ifNotEmpty: [
+				           baselineName , ' is in several folders: '
+				           ,
+				           (', ' join:
+					            (modelFolders collect: [ :each | each name ]))
+				           , '. Choose the one to use' ]
+]
+
+{ #category : 'private' }
+CMInstalledModel >> changedPackageNames [
+	"Return the names of the packages whose files differ from what Cormas last loaded or wrote, or of all my loaded packages when the image holds code that was not saved"
+
+	| onDisk |
+	self isSaved ifFalse: [
+		^ (self loadedPackages collect: [ :each | each name ]) asSet ].
+	onDisk := self hashesOnDisk.
+	^ ((onDisk keys asSet , fileHashes keys reject: [ :path |
+			    (onDisk at: path ifAbsent: [ nil ])
+			    = (fileHashes at: path ifAbsent: [ nil ]) ]) collect: [ :path |
+		   (folder resolveString: path) parent basename ]) asSet
+]
+
 { #category : 'private' }
 CMInstalledModel >> checkUnchanged: aPath [
 	"Raise a CMWorkspaceError unless the file is as Cormas last loaded or wrote it: Cormas never overwrites or deletes a file it did not write"
@@ -183,10 +217,24 @@ CMInstalledModel >> folder [
 	^ folder
 ]
 
+{ #category : 'refreshing' }
+CMInstalledModel >> folder: aFileReference [
+	"Use another folder, found with the same baseline after mine was renamed or moved"
+
+	folder := aFileReference
+]
+
 { #category : 'private' }
 CMInstalledModel >> hashOf: aFile [
 
 	^ (SHA256 hashMessage: aFile binaryReadStream upToEnd) hex
+]
+
+{ #category : 'private' }
+CMInstalledModel >> hashesOnDisk [
+
+	^ ((folder / 'src') allFiles collect: [ :each |
+		   (self pathOf: each) -> (self hashOf: each) ]) asDictionary
 ]
 
 { #category : 'packages' }
@@ -202,6 +250,20 @@ CMInstalledModel >> isSaved [
 	"Answer whether everything changed in the image was written to my folder"
 
 	^ problem isNil
+]
+
+{ #category : 'refreshing' }
+CMInstalledModel >> isUpToDate [
+	"Answer whether the image and my folder hold the same code: everything was saved, and no file changed since Cormas last loaded or wrote it"
+
+	^ self isSaved and: [ fileHashes = self hashesOnDisk ]
+]
+
+{ #category : 'private' }
+CMInstalledModel >> loadPackageNamed: aPackageName [
+
+	((TonelRepository new directory: folder / 'src')
+		 versionFromFileNamed: aPackageName) load
 ]
 
 { #category : 'accessing' }
@@ -282,9 +344,33 @@ CMInstalledModel >> problem [
 CMInstalledModel >> recordFiles [
 	"Remember the hash of every file of my folder's src, as Cormas loaded or wrote it, so that a file changed by someone else is never overwritten"
 
-	fileHashes := Dictionary new.
-	(folder / 'src') allFiles do: [ :each |
-		fileHashes at: (self pathOf: each) put: (self hashOf: each) ]
+	fileHashes := self hashesOnDisk
+]
+
+{ #category : 'refreshing' }
+CMInstalledModel >> reload [
+	"Load from my folder the packages whose files changed since Cormas last loaded or wrote them, all of them when the image holds code that was not saved, and the packages my baseline declares that are not loaded yet. Monticello asks before replacing code it does not know about: the code in the image was backed up, so load. When loading fails, keep the problem"
+
+	| changed |
+	changed := self changedPackageNames.
+	[
+		[
+			(changed includes: self baselinePackageName) ifTrue: [
+				self loadPackageNamed: self baselinePackageName ].
+			(self packageNames select: [ :each |
+					 (changed includes: each) or: [
+							 (self packageOrganizer hasPackage: each) not and: [
+								 (folder / 'src' / each) isDirectory ] ] ]) do: [ :each |
+				self loadPackageNamed: each ] ]
+			on: MCMergeOrLoadWarning
+			do: [ :warning | warning load ].
+		self recordFiles.
+		problem := nil ]
+		on: Error
+		do: [ :error |
+				problem := baselineName
+				           , ' could not be reloaded from its folder: '
+				           , error messageText ]
 ]
 
 { #category : 'private' }

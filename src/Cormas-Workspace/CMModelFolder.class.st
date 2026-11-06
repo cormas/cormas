@@ -16,7 +16,7 @@ I represent one folder directly inside the `Models` or `Examples` folder of a wo
 
 - `CMModelFolder in: aWorkspace at: aFileReference` creates an instance; usually `CMWorkspace>>folders` does it.
 - `isModel`, `isExample` and `hasModelOneLevelDown` describe the folder.
-- `baselineName` and `summary` read `cormas.json`.
+- `baselineName` and `summary` read `cormas.json`; `hasBaselineNamed:` tells whether I am the folder of a given model, and is false when `cormas.json` cannot be read.
 - `name` is the name of the folder, which can be anything.
 
 For example, to list the models of the image's workspace with their baseline:
@@ -65,6 +65,16 @@ CMModelFolder >> baselineName [
 CMModelFolder >> cormasJson [
 
 	^ location / 'cormas.json'
+]
+
+{ #category : 'testing' }
+CMModelFolder >> hasBaselineNamed: aBaselineName [
+	"Answer whether I am a model with that baseline. A folder whose cormas.json cannot be read is no model's folder"
+
+	^ self isModel and: [
+			  [ self baselineName = aBaselineName ]
+				  on: CMWorkspaceError
+				  do: [ false ] ]
 ]
 
 { #category : 'testing' }
