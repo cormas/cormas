@@ -34,6 +34,7 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - `backUp: aFolder` zips a folder, with everything in it, into `Backups` and returns the zip. Cormas calls it before destroying any code; restoring is unzipping into `Models`.
 - `download: aRepositoryUrl` clones a model of the library into a new folder of `Examples`, named after its baseline, without installing it.
 - `copyEditedExample: anInstalledModel` is called before the code of an installed example is saved: it signals `CMExampleEdited`, and copies the example to `Models` for the model to use from then on, or stops saving the model when the modeler declines.
+- `catalog` returns the `CMCatalog` of my `Catalog` folder, whose `update` downloads the catalog of example models.
 - `updateExamples` resets every example to the latest version of its repository, then reloads the installed ones. Files added by hand, such as outputs, are kept.
 - `createModelFrom: aModelTemplate` writes a new model into a new folder of `Models`, installs it and returns the folder.
 - `export: aModelFolder to: aZipFile` zips the whole folder, as it is on disk.
@@ -248,6 +249,12 @@ CMWorkspace >> backUpCodeOf: aBaselineName [
 CMWorkspace >> backupsFolder [
 
 	^ location / 'Backups'
+]
+
+{ #category : 'accessing' }
+CMWorkspace >> catalog [
+
+	^ CMCatalog in: self catalogFolder
 ]
 
 { #category : 'accessing' }
