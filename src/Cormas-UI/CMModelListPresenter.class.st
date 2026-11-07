@@ -1,5 +1,40 @@
 "
-placeholder
+I am the Cormas models window: the list of the models of the workspace, with the screenshot, description and actions of the selected one. Everything the modeler does with models starts here: create, install, run, version, share and delete them.
+
+## Responsibility:
+
+- I show the entries of the workspace and keep them up to date, whoever changes the workspace.
+- I offer the actions that make sense for the selected entry, and run them, explaining why Cormas refused one.
+- I ask the modeler before anything that cannot be undone, or that installs a model this Cormas has not checked.
+
+## Collaborators:
+
+- `CMWorkspace` does the work and announces `CMWorkspaceChanged`, which I listen to.
+- `CMModelListEntry` gives each row and its description.
+- `CMNewModelPresenter` creates a model; `CMWorkspaceChooser` changes the workspace.
+- `UIManager` asks the modeler simple questions.
+
+## Public API and Key Messages
+
+- `CMModelListPresenter open` opens me on the workspace of the image, asking for one first if needed, after bringing the installed models up to date with their folders.
+- `CMModelListPresenter on: aWorkspace` creates me on another workspace.
+- `selectEntryNamed: aName` selects a row.
+
+```smalltalk
+CMModelListPresenter open
+```
+
+## Internal Representation
+
+- `workspace` is the `CMWorkspace` I show.
+- `table` lists the entries; `screenshot`, `description` and `actions` show the selected one.
+- `toolbar` and `workspaceLabel` hold the actions on the whole workspace and its location.
+
+### Implementation Points
+
+- The actions of an entry are built again at each selection, from `mainActionsFor:` and `folderActionsFor:`.
+- Every action runs through `run:`, which shows a `CMWorkspaceError` as an alert and updates the entries.
+- I update the entries after the change that announced it is over, never in the middle of a compilation.
 "
 Class {
 	#name : 'CMModelListPresenter',

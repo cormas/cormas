@@ -1,3 +1,36 @@
+"
+I am the dialog that creates a new model in the workspace. The modeler gives a name, a prefix and a description, sees a preview of what will be created, and the model is written into a new folder of `Models`, then installed from there.
+
+## Responsibility:
+
+- I suggest a prefix that follows the name, until the modeler types a prefix of their own.
+- I preview what Cormas will create, or explain why it cannot, and allow creating only a model it can create.
+- I create the model through the workspace, and tell whoever opened me which model was created.
+
+## Collaborators:
+
+- `CMModelTemplate` checks the name and prefix and describes the model to create.
+- `CMWorkspace` writes the model folder and installs it.
+- `CMModelListPresenter` opens me and selects the new model.
+
+## Public API and Key Messages
+
+- `CMNewModelPresenter open` opens me on the workspace of the image, asking for one first if needed.
+- `CMNewModelPresenter on: aWorkspace` creates me on a workspace.
+- `whenCreatedDo: aBlock` evaluates aBlock with the baseline name of the created model.
+
+```smalltalk
+(CMNewModelPresenter on: CMWorkspace current)
+	whenCreatedDo: [ :baselineName | Transcript show: baselineName; cr ];
+	open
+```
+
+## Internal Representation
+
+- `workspace` is the `CMWorkspace` the model is created in.
+- `suggestedPrefix` is the last prefix I suggested, to know whether the modeler changed it.
+- `createdBlock` is evaluated once the model is created.
+"
 Class {
 	#name : 'CMNewModelPresenter',
 	#superclass : 'SpPresenter',

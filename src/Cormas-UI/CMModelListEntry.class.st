@@ -1,5 +1,36 @@
 "
-placeholder
+I am one row of the model list: a folder of the workspace, a model of the catalog that is not downloaded yet, or both when an example folder is listed in the catalog. I turn what the workspace knows into what the modeler reads: a name, a place, a state and a description.
+
+## Responsibility:
+
+- I know my folder, if any, and my catalog model, if any, and give the name, place (`Models`, `Examples` or `Online`) and state of the row.
+- I explain my state in words, such as why a model is not saved, that a folder is an old version, or that an example is pinned to a version.
+- I tell which choices make sense, such as whether the modeler can choose among versions.
+
+## Collaborators:
+
+- `CMWorkspace` tells me whether my model is installed and gives the catalog.
+- `CMModelFolder` is my folder: its baseline, README, versions and git state.
+- `CMCatalog` gives the versions of my catalog model.
+- `CMModelListPresenter` shows me and acts on me.
+
+## Public API and Key Messages
+
+- `CMModelListEntry entriesOf: aWorkspace` returns the sorted entries of a workspace: installed models first, then `Models`, `Examples` and the models available online.
+- `name`, `place` and `state` fill the columns. The states are `Available`, `Not installed`, `Installed`, `Not saved`, `Copy` (the same model is installed from another folder) and `Not a model`.
+- `description` returns the Microdown text shown next to the list.
+- `hasVersions` tells whether **Versions…** is offered.
+
+```smalltalk
+(CMModelListEntry entriesOf: CMWorkspace current)
+	collect: [ :each | each name -> each state ]
+```
+
+## Internal Representation
+
+- `workspace` is the `CMWorkspace` the list shows.
+- `folder` is a `CMModelFolder`, or nil for a model only available online.
+- `catalogModel` is the dictionary of the model in the catalog, or nil when the catalog does not list it.
 "
 Class {
 	#name : 'CMModelListEntry',
