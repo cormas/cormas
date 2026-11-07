@@ -40,7 +40,7 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - `createModelFrom: aModelTemplate` writes a new model into a new folder of `Models`, installs it and returns the folder.
 - `export: aModelFolder to: aZipFile` zips the whole folder, as it is on disk.
 - `restoreFolderOf: anInstalledModel` writes the code of a model whose folder is gone, as it is in the image, into a new folder of `Models`, and uses it from then on.
-- `announcer` announces `CMWorkspaceChanged` whenever the installed models change, so that tools showing them stay up to date.
+- `announcer` announces `CMWorkspaceChanged` whenever the installed models or the folders change, and `CMWorkspaceReplaced` when another workspace becomes the workspace of the image, so that every tool showing the workspace stays up to date.
 - `addFromZip: aZipFile` extracts a zip into a new folder of `Models`, following single folders down to the one holding `cormas.json`, and returns that model folder, without installing it.
 - `install: aModelFolder` loads a model from the files in its folder and remembers the folder. It refuses, leaving the image as it was, to replace any code already in the image.
 - `uninstall: aBaselineName` backs up the code of a model as it is in the image, then removes it; the folder is left untouched.
@@ -106,12 +106,16 @@ CMWorkspace class >> at: aFileReference [
 
 { #category : 'accessing' }
 CMWorkspace class >> changeTo: aWorkspace [
-	"Make aWorkspace the workspace of the image, as Change working directory does. The models installed from the previous workspace are uninstalled, each backed up first, so that every model of the image comes from aWorkspace. Raise a CMWorkspaceError, changing nothing, while a model is not saved"
+	"Make aWorkspace the workspace of the image, as Change working directory does. The models installed from the previous workspace are uninstalled, each backed up first, so that every model of the image comes from aWorkspace, and the tools that show the previous workspace are told to show aWorkspace. Raise a CMWorkspaceError, changing nothing, while a model is not saved"
 
-	current ifNotNil: [ :previous |
+	| previous |
+	previous := current.
+	previous ifNotNil: [
 			previous location = aWorkspace location ifTrue: [ ^ self ].
 			previous uninstallAll ].
-	current := aWorkspace
+	current := aWorkspace.
+	previous ifNotNil: [
+		previous announcer announce: (CMWorkspaceReplaced by: aWorkspace) ]
 ]
 
 { #category : 'code changes' }
@@ -251,6 +255,7 @@ CMWorkspace >> addFromZip: aZipFile [
 			whileWritingIn: self modelsFolder
 			do: [ model moveTo: folder ] ] ensure: [
 		(self modelsFolder / temporaryName) ensureDeleteAll ].
+	self announceChange.
 	^ CMModelFolder in: self at: folder
 ]
 
@@ -485,7 +490,8 @@ CMWorkspace >> chooseVersion: aVersion of: anExample [
 	(aVersion at: 'ref') = ((self catalogVersionOf: anExample) at: 'ref')
 		ifTrue: [ anExample forgetChosenVersion ]
 		ifFalse: [ anExample recordChosenVersion: (aVersion at: 'ref') ].
-	self refresh
+	self refresh.
+	self announceChange
 ]
 
 { #category : 'code changes' }
@@ -626,7 +632,8 @@ CMWorkspace >> delete: aModelFolder [
 		ifFound: [ :model | self uninstall: model baselineName ].
 	CMWorkspaceError
 		whileWritingIn: aModelFolder location
-		do: [ aModelFolder location deleteAll ]
+		do: [ aModelFolder location deleteAll ].
+	self announceChange
 ]
 
 { #category : 'examples' }
@@ -662,6 +669,7 @@ CMWorkspace >> download: aCatalogModel [
 			whileWritingIn: self examplesFolder
 			do: [ clone location moveTo: folder ] ] ensure: [
 		(self examplesFolder / temporaryName) ensureDeleteAll ].
+	self announceChange.
 	^ CMModelFolder in: self at: folder
 ]
 
@@ -777,6 +785,7 @@ CMWorkspace >> folderOfVersion: aTag of: aModelFolder [
 			whileWritingIn: self modelsFolder
 			do: [ clone location moveTo: folder ] ] ensure: [
 		(self modelsFolder / temporaryName) ensureDeleteAll ].
+	self announceChange.
 	^ CMModelFolder in: self at: folder
 ]
 
@@ -1135,13 +1144,22 @@ CMWorkspace >> update: anExample [
 ]
 
 { #category : 'examples' }
+CMWorkspace >> updateCatalog [
+	"Download the catalog of example models, and tell the tools that show me"
+
+	self catalog update.
+	self announceChange
+]
+
+{ #category : 'examples' }
 CMWorkspace >> updateExamples [
 	"Reset every downloaded example to the latest version of its library repository, then reload the installed ones from their folders. Files of the library edited by hand in an example are backed up first. Files added by hand, such as outputs, are kept"
 
 	(self folders select: [ :each |
 		 each isExample and: [ (each location / '.git') isDirectory ] ])
 		do: [ :each | self update: each ].
-	self refresh
+	self refresh.
+	self announceChange
 ]
 
 { #category : 'private' }

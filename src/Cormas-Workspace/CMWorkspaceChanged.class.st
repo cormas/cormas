@@ -1,5 +1,5 @@
 "
-I am announced by a `CMWorkspace` when its installed models change: a model is installed, uninstalled or reloaded, moves to another folder, or stops being saved. Tools that show the workspace, such as the model list, listen to me to stay up to date, whoever made the change.
+I am announced by a `CMWorkspace` when its installed models or its folders change: a model is installed, uninstalled or reloaded, moves to another folder, or stops being saved; a folder is deleted, downloaded, unzipped or checked out at another version; the catalog is downloaded. Tools that show the workspace, such as the model list, listen to me to stay up to date, whoever made the change.
 
 ## Responsibility:
 

@@ -97,6 +97,21 @@ CMWorkspaceTest >> testChangeIsRefusedWhileAModelIsNotSaved [
 ]
 
 { #category : 'tests' }
+CMWorkspaceTest >> testChangeToAnnouncesWhichWorkspaceReplacesThePreviousOne [
+
+	| research teaching replacement |
+	research := CMWorkspace createAt: fileSystem root / 'Research'.
+	teaching := CMWorkspace createAt: fileSystem root / 'Teaching'.
+	CMWorkspace current: research.
+	research announcer
+		when: CMWorkspaceReplaced
+		do: [ :announcement | replacement := announcement workspace ]
+		for: self.
+	CMWorkspace changeTo: teaching.
+	self assert: replacement identicalTo: teaching
+]
+
+{ #category : 'tests' }
 CMWorkspaceTest >> testChangeToMakesTheWorkspaceCurrent [
 
 	| workspace |
@@ -180,6 +195,21 @@ CMWorkspaceTest >> testDefaultLocationIsCormasInTheHomeFolder [
 	self
 		assert: CMWorkspace defaultLocation
 		equals: FileLocator home asFileReference / 'Cormas'
+]
+
+{ #category : 'tests' }
+CMWorkspaceTest >> testDeletingAFolderAnnouncesTheChange [
+
+	| research forest |
+	research := CMWorkspace createAt: fileSystem root / 'Research'.
+	forest := research modelsFolder / 'Forest'.
+	forest ensureCreateDirectory.
+	self
+		assert: (self
+				 announcementsOf: research
+				 during: [
+				 research delete: (CMModelFolder in: research at: forest) ])
+		equals: 1
 ]
 
 { #category : 'tests' }

@@ -86,3 +86,19 @@ CMModelListPresenterTest >> testSelectingAnyRowNoticesTheFolderOfAnInstalledMode
 		equals: 'Not saved'.
 	self assert: table selectedItem name equals: 'Forest'
 ]
+
+{ #category : 'tests' }
+CMModelListPresenterTest >> testWindowFollowsTheWorkspaceThatReplacesItsOwn [
+
+	| teaching previous |
+	teaching := CMWorkspace createAt: FileSystem memory / 'Teaching'.
+	previous := CMWorkspace instVarNamed: 'current'.
+	[
+		CMWorkspace current: workspace.
+		CMWorkspace changeTo: teaching.
+		self
+			assert: (presenter instVarNamed: 'workspace')
+			identicalTo: teaching.
+		self assert: (presenter instVarNamed: 'table') items isEmpty ]
+		ensure: [ CMWorkspace instVarNamed: 'current' put: previous ]
+]

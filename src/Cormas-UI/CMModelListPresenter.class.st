@@ -227,12 +227,11 @@ CMModelListPresenter >> analyseSensitivityOf: anEntry [
 
 { #category : 'actions' }
 CMModelListPresenter >> changeWorkspace [
+	"Let the modeler choose another workspace. Every window showing the previous one, me included, is then told to show it"
 
 	CMWorkspaceChooser open.
-	workspace announcer unsubscribe: self.
-	workspace := CMWorkspace currentIfNone: [ workspace ].
-	self listenToWorkspace.
-	self updateEntries
+	(CMWorkspace currentIfNone: [ workspace ]) == workspace ifFalse: [
+		self showWorkspace: CMWorkspace current ]
 ]
 
 { #category : 'actions' }
@@ -540,11 +539,14 @@ CMModelListPresenter >> isAnyFolderGone: anEntry [
 
 { #category : 'initialization' }
 CMModelListPresenter >> listenToWorkspace [
-	"Show the entries again whenever the workspace changes, whoever changed it: a browser, a dialog or another tool. The update waits until the change is over"
+	"Show the entries again whenever the workspace changes, whoever changed it: another window, a browser, a dialog or another tool. The update waits until the change is over. When another workspace replaces it, show that one"
 
 	workspace announcer
 		when: CMWorkspaceChanged
 		do: [ UIManager default defer: [ self updateEntries ] ]
+		for: self;
+		when: CMWorkspaceReplaced
+		do: [ :announcement | self showWorkspace: announcement workspace ]
 		for: self
 ]
 
@@ -701,6 +703,16 @@ CMModelListPresenter >> show: anEntry [
 	actions layout: (self actionsLayoutFor: anEntry)
 ]
 
+{ #category : 'initialization' }
+CMModelListPresenter >> showWorkspace: aWorkspace [
+	"Show aWorkspace instead of the one I showed"
+
+	workspace announcer unsubscribe: self.
+	workspace := aWorkspace.
+	self listenToWorkspace.
+	self updateEntries
+]
+
 { #category : 'actions' }
 CMModelListPresenter >> simulate: anEntry [
 
@@ -735,7 +747,7 @@ CMModelListPresenter >> updateCatalog [
 	self run: [
 			UIManager default
 				informUser: 'Downloading the catalog of example models…'
-				during: [ workspace catalog update ] ]
+				during: [ workspace updateCatalog ] ]
 ]
 
 { #category : 'updating' }
