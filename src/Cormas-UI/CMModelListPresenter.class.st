@@ -662,7 +662,10 @@ CMModelListPresenter >> setModelBeforeInitialization: aWorkspace [
 
 { #category : 'updating' }
 CMModelListPresenter >> show: anEntry [
+	"Show the entry, or nothing. An entry whose folder was deleted or moved outside Cormas is not shown: the folders are listed again instead"
 
+	(anEntry notNil and: [ anEntry isGone ]) ifTrue: [
+		^ self updateEntries ].
 	anEntry ifNil: [
 			screenshot image: nil.
 			description documentFromString: ''.

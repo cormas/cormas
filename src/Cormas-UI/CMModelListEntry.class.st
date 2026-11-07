@@ -157,6 +157,13 @@ CMModelListEntry >> installedModel [
 		  ifFalse: [ nil ]
 ]
 
+{ #category : 'testing' }
+CMModelListEntry >> isGone [
+	"Return whether my folder was deleted or moved outside Cormas since I was listed"
+
+	^ folder notNil and: [ folder location exists not ]
+]
+
 { #category : 'accessing' }
 CMModelListEntry >> modelClasses [
 	"Return the concrete model classes of my installed model"
