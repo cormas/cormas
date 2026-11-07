@@ -108,7 +108,7 @@ BaselineOfCormas >> specForGroups: spec [
 	spec
 		group: 'Core'
 		with:
-			#( 'Cormas-Core' 'Cormas-Tests' 'Cormas-Mocks' 'Cormas-CodeGeneration-Tests'
+			#( 'Cormas-Core' 'Cormas-Tests' 'Cormas-Mocks'
 			   'Cormas-Workspace' 'Cormas-Workspace-Tests' );
 		group: 'UI'
 		with: #( 'Core' 'Cormas-UI' 'Cormas-UI-Tests' 'Cormas-UI-Commands'
@@ -130,9 +130,6 @@ BaselineOfCormas >> specForPackages: spec [
 		with: [ spec requires: #( 'Cormas-Core' ) ];
 		package: 'Cormas-Workspace-Tests'
 		with: [ spec requires: #( 'Cormas-Workspace' ) ];
-		package: 'Cormas-CodeGeneration';
-		package: 'Cormas-CodeGeneration-Tests'
-		with: [ spec requires: 'Cormas-CodeGeneration' ];
 		package: 'Cormas-UI-Roassal3'
 		with: [ spec requires: #( 'Cormas-Core' 'RoassalExporters' ) ];
 		package: 'Cormas-UI-Commands';
@@ -144,7 +141,7 @@ BaselineOfCormas >> specForPackages: spec [
 		with: [ spec requires: #( 'Cormas-Bloc' 'Cormas-UI-Commands' ) ];
 		package: 'Cormas-UI' with: [
 				spec requires:
-						#( 'Cormas-Core' 'Cormas-Workspace' 'Cormas-CodeGeneration' 'Cormas-Mocks'
+						#( 'Cormas-Core' 'Cormas-Workspace' 'Cormas-Mocks'
 						   'Cormas-UI-Roassal3' 'CormasExampleModels'
 						   'Cormas-UI-Tilesets' 'Cormas-UI-Commands'
 						   'Cormas-Bloc-Spec' ) ];

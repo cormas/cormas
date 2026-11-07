@@ -2,302 +2,193 @@ Class {
 	#name : 'CMNewModelPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
+		'workspace',
 		'nameInput',
-		'modelClassNameInput',
 		'prefixInput',
-		'statusLabel',
-		'descriptionText',
-		'generateTestsCheckbox',
-		'generateBaselineCheckbox',
-		'packageClassTree',
+		'descriptionInput',
+		'preview',
 		'createButton',
 		'cancelButton',
-		'modelCreatedBlock',
-		'generator'
+		'suggestedPrefix',
+		'createdBlock'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
 }
 
-{ #category : 'as yet unclassified' }
-CMNewModelPresenter class >> example [
-	<example>
-	self new open
+{ #category : 'opening' }
+CMNewModelPresenter class >> open [
+	"Open the dialog on the workspace of the image, asking the modeler to choose one first if needed"
+
+	| workspace |
+	workspace := CMWorkspace currentIfNone: [
+			             CMWorkspaceChooser open.
+			             CMWorkspace currentIfNone: [ ^ nil ] ].
+	^ (self on: workspace) open
 ]
 
 { #category : 'initialization' }
 CMNewModelPresenter >> connectPresenters [
 
-	nameInput whenTextChangedDo: [ self onModelNameChanged ].
-	modelClassNameInput whenTextChangedDo: [ self onModelClassNameChanged ].
-	prefixInput whenTextChangedDo: [ self onPrefixChanged ].
-	
-	generateTestsCheckbox whenChangedDo: [ 
-		generator shouldGenerateTestPackage: generateTestsCheckbox state.
-		self updatePackageClassTree ].
-	
-	generateBaselineCheckbox whenChangedDo: [
-		generator shouldGenerateBaseline: generateBaselineCheckbox state.
-		self updatePackageClassTree ].
-	
-	cancelButton action: [ self window close ].
-	
-	createButton action: [
-		[ self createModel ] onErrorDo: [ :error | self alert: error messageText ] ].
+	nameInput whenTextChangedDo: [ self nameChanged ].
+	prefixInput whenTextChangedDo: [ self updatePreview ].
+	descriptionInput whenTextChangedDo: [ self updatePreview ].
+	createButton action: [ self create ].
+	cancelButton action: [ self window close ]
 ]
 
-{ #category : 'as yet unclassified' }
-CMNewModelPresenter >> createModel [
+{ #category : 'private' }
+CMNewModelPresenter >> create [
+	"Write the model into the workspace and install it, then close and tell who opened the dialog"
 
-	| modelClass |
-	generator generate.
-	modelClass := generator modelClassName asClassInEnvironment: self class environment.
-	
-	modelCreatedBlock value: modelClass.
-	
-	modelClass browse.
+	| template |
+	[
+		template := self template.
+		UIManager default
+			informUser: 'Creating ' , template name , '…'
+			during: [ workspace createModelFrom: template ] ]
+		on: CMWorkspaceError
+		do: [ :error | ^ UIManager default alert: error messageText ].
 	self window close.
+	createdBlock ifNotNil: [ createdBlock value: template baselineName ]
 ]
 
 { #category : 'layout' }
 CMNewModelPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
-		spacing: 6;
-		borderWidth: 2;
-		add: (SpBoxLayout newTopToBottom
-			spacing: 2;
-			add: (SpBoxLayout newLeftToRight
-				vAlignCenter;
-				add: 'Model name' width: 120;
-				add: nameInput;
-				yourself) expand: false;
-			add: (SpBoxLayout newLeftToRight
-				vAlignCenter;
-				add: 'Model class name' width: 120;
-				add: modelClassNameInput;
-				yourself) expand: false;
-			add: (SpBoxLayout newLeftToRight
-				vAlignCenter;
-				add: 'Class prefix' width: 120;
-				add: prefixInput;
-				yourself) expand: false;
-			add: '' expand: false;
-			yourself) expand: false;
-		add: (SpBoxLayout newTopToBottom
-			add: 'Description' expand: false;
-			add: descriptionText;
-			yourself);
-		add: (SpBoxLayout newTopToBottom
-			add: generateTestsCheckbox;
-			add: generateBaselineCheckbox;
-			yourself) expand: false;
-		add: (SpBoxLayout newTopToBottom
-			spacing: 3;
-			add: 'Packages and classes that will be created' expand: false;
-			add: packageClassTree height: 150;
-			yourself) expand: false;
-		add: (SpBoxLayout newLeftToRight
-			spacing: 3;
-			vAlignCenter;
-			add: statusLabel;
-			add: cancelButton width: self class buttonWidth;
-			add: createButton width: self class buttonWidth;
-			yourself) expand: false;
-		yourself.
+		  spacing: 5;
+		  add: 'Name of the model' expand: false;
+		  add: nameInput expand: false;
+		  add: 'Beginning of the class names' expand: false;
+		  add: prefixInput expand: false;
+		  add: 'Description' expand: false;
+		  add: descriptionInput height: 90;
+		  add: 'What Cormas will create' expand: false;
+		  add: preview;
+		  add: (SpBoxLayout newLeftToRight
+				   spacing: 5;
+				   addLast: cancelButton expand: false;
+				   addLast: createButton expand: false;
+				   yourself)
+		  expand: false;
+		  yourself
 ]
 
-{ #category : 'examples' }
-CMNewModelPresenter >> example [
-	<script: 'self example'>
+{ #category : 'private' }
+CMNewModelPresenter >> descriptionOf: aTemplate [
+
+	^ String streamContents: [ :stream |
+			  stream
+				  nextPutAll: 'The folder Models/';
+				  nextPutAll: aTemplate basename;
+				  nextPutAll: ' in the workspace, with:';
+				  cr;
+				  nextPutAll: '- the baseline BaselineOf';
+				  nextPutAll: aTemplate baselineName;
+				  cr;
+				  nextPutAll: '- the package ';
+				  nextPutAll: aTemplate modelPackageName;
+				  nextPutAll: ', with the classes ';
+				  nextPutAll: aTemplate modelClassName;
+				  nextPutAll: ' and ';
+				  nextPutAll: aTemplate cellClassName;
+				  cr;
+				  nextPutAll: '- the package ';
+				  nextPutAll: aTemplate testPackageName;
+				  nextPutAll: ', with the class ';
+				  nextPutAll: aTemplate testClassName;
+				  cr;
+				  cr;
+				  nextPutAll:
+					  'Cormas then installs the model in the image from this folder.' ]
 ]
 
 { #category : 'initialization' }
 CMNewModelPresenter >> initializePresenters [
 
-	generator := CMModelGenerator new.
-	modelCreatedBlock := [ :modelClass | "do nothing" ].
-
-	nameInput := self newTextInput.
-	modelClassNameInput := self newTextInput.
-	prefixInput := self newTextInput.
-	
-	statusLabel := self newLabel
-		displayColor: [ Color red ];
-		yourself.
-	
-	descriptionText := self newText
-		placeholder: 'Write a short description of your model';
-		yourself.
-	
-	packageClassTree := self newTreeTable.
-	
-	packageClassTree
-		hideColumnHeaders;
-		addColumn: (SpCompositeTableColumn new
-			addColumn: (SpImageTableColumn new
-				width: 20;
-				evaluated: [ :dict |
-					self iconNamed: ((dict includesKey: 'classes')
-						ifTrue: [ #package ]
-						ifFalse: [ #class ]) ];
-				yourself);
-			addColumn: (SpStringTableColumn new
-				evaluated: [ :dict | dict at: 'name' ];
-				yourself);
-			yourself);
-		children: [ :dict | dict at: 'classes' ifAbsent: [ OrderedCollection new ] ].
-	
-	generateTestsCheckbox := self newCheckBox
-		label: 'Create a test package';
-		state: generator shouldGenerateTestPackage;
-		yourself.
-		
-	generateBaselineCheckbox := self newCheckBox
-		label: 'Create a baseline';
-		state: generator shouldGenerateBaseline;
-		yourself.
-	
+	nameInput := self newTextInput placeholder: 'Forest fire'.
+	prefixInput := self newTextInput placeholder: 'FF'.
+	descriptionInput := self newText placeholder:
+		                    'What the model is about, in one paragraph'.
+	preview := self newText beNotEditable.
 	createButton := self newButton
-		label: 'Create';
-		icon: (self iconNamed: #accept);
-		disable;
-		yourself.
-		
+		                label: 'Create';
+		                icon: (self iconNamed: #smallNew);
+		                disable;
+		                yourself.
 	cancelButton := self newButton
-		label: 'Cancel';
-		icon: (self iconNamed: #cancel);
-		yourself.
+		                label: 'Cancel';
+		                yourself.
+	suggestedPrefix := ''.
+	self updatePreview
+]
+
+{ #category : 'layout' }
+CMNewModelPresenter >> initializeWindow: aWindowPresenter [
+
+	aWindowPresenter
+		title: 'New Cormas model';
+		initialExtent: 600 @ 560
+]
+
+{ #category : 'private' }
+CMNewModelPresenter >> nameChanged [
+	"Follow the name with the prefix Cormas suggests, until the modeler types a prefix of their own"
+
+	| newPrefix |
+	newPrefix := [
+	             (CMModelTemplate named: nameInput text trimBoth) prefix ]
+		             on: CMWorkspaceError
+		             do: [ '' ].
+	prefixInput text trimBoth = suggestedPrefix ifTrue: [
+			suggestedPrefix := newPrefix.
+			prefixInput text: newPrefix ].
+	suggestedPrefix := newPrefix.
+	self updatePreview
 ]
 
 { #category : 'initialization' }
-CMNewModelPresenter >> initializeWindow: aWindowPresenter [
+CMNewModelPresenter >> setModelBeforeInitialization: aWorkspace [
 
-	super initializeWindow: aWindowPresenter.
-	
-	aWindowPresenter 
-		title: 'New Model';
-		initialExtent: 400@600.
+	workspace := aWorkspace
 ]
 
-{ #category : 'as yet unclassified' }
-CMNewModelPresenter >> onError: anError [
+{ #category : 'private' }
+CMNewModelPresenter >> template [
+	"Return the template made from the fields. Raise a CMWorkspaceError when they cannot make a model"
 
-	statusLabel label: anError messageText.
-	createButton disable.
-	packageClassTree roots: OrderedCollection new
+	| template |
+	template := CMModelTemplate named: nameInput text trimBoth.
+	prefixInput text trimBoth ifNotEmpty: [ :prefix |
+		template prefix: prefix ].
+	template description: descriptionInput text asString trimBoth.
+	(workspace folders anySatisfy: [ :each |
+		 each hasBaselineNamed: template baselineName ]) ifTrue: [
+			CMWorkspaceError signal: 'A model named ' , template baselineName
+				, ' is already in the workspace: choose another name' ].
+	^ template
 ]
 
-{ #category : 'as yet unclassified' }
-CMNewModelPresenter >> onModelClassNameChanged [
+{ #category : 'private' }
+CMNewModelPresenter >> updatePreview [
+	"Show what Cormas will create, or why it cannot, and allow creating only a model it can create"
 
-	| cursorIndex |
-	cursorIndex := modelClassNameInput cursorPositionIndex.
-	
-	[ generator modelClassName: modelClassNameInput text ] onErrorDo: [ :e |
-		self onError: e.
-		^ self ].
-	
-	self onValidEntry.
-	
-	"Update input values without announching the text changed"
-	nameInput property: #text rawValue: generator modelName.
-	prefixInput property: #text rawValue: generator prefix.
-	
-	self update.
-	self updatePackageClassTree.
-	
-	modelClassNameInput takeKeyboardFocus.
-	modelClassNameInput cursorPositionIndex: cursorIndex
+	nameInput text trimBoth ifEmpty: [
+			preview text: 'Type the name of the model, such as Forest fire.'.
+			^ createButton disable ].
+	[
+		preview text: (self descriptionOf: self template).
+		createButton enable ]
+		on: CMWorkspaceError
+		do: [ :error |
+				preview text: error messageText.
+				createButton disable ]
 ]
 
-{ #category : 'as yet unclassified' }
-CMNewModelPresenter >> onModelNameChanged [
+{ #category : 'api' }
+CMNewModelPresenter >> whenCreatedDo: aBlock [
+	"Evaluate aBlock with the baseline name of the model once it is created"
 
-	| cursorIndex |
-	cursorIndex := nameInput cursorPositionIndex.
-	
-	[ generator modelName: nameInput text ] onErrorDo: [ :e |
-		self onError: e.
-		^ self ].
-	
-	self onValidEntry.
-	
-	"Update input values without announching the text changed"
-	modelClassNameInput property: #text rawValue: generator modelClassName.
-	prefixInput property: #text rawValue: generator prefix.
-	
-	self update.
-	self updatePackageClassTree.
-	
-	nameInput takeKeyboardFocus.
-	nameInput cursorPositionIndex: cursorIndex
-]
-
-{ #category : 'as yet unclassified' }
-CMNewModelPresenter >> onPrefixChanged [
-
-	| cursorIndex |
-	cursorIndex := prefixInput cursorPositionIndex.
-	
-	[ generator prefix: prefixInput text ] onErrorDo: [ :e |
-		self onError: e.
-		^ self ].
-	
-	self onValidEntry.
-	
-	"Update input values without announching the text changed"
-	nameInput property: #text rawValue: generator modelName.
-	modelClassNameInput property: #text rawValue: generator modelClassName.
-	
-	self update.
-	self updatePackageClassTree.
-	
-	prefixInput takeKeyboardFocus.
-	prefixInput cursorPositionIndex: cursorIndex
-]
-
-{ #category : 'as yet unclassified' }
-CMNewModelPresenter >> onValidEntry [
-
-	statusLabel label: ''.
-	createButton enable
-]
-
-{ #category : 'as yet unclassified' }
-CMNewModelPresenter >> updatePackageClassTree [
-
-	| items |
-	
-	generator modelPackageName ifEmpty: [ 
-		packageClassTree roots: #().
-		^ self ].
-	
-	items := OrderedCollection with: {
-		'name' -> generator modelPackageName .
-		'classes' -> {
-			{ 'name' -> generator modelClassName } asDictionary .
-			{ 'name' -> generator cellClassName } asDictionary } 
-	} asDictionary.
-		
-	generator shouldGenerateTestPackage ifTrue: [
-		items add: { 
-			'name' -> generator testPackageName .
-			'classes' -> { { 'name' -> generator testClassName } asDictionary }
-		} asDictionary ].
-	
-	generator shouldGenerateBaseline ifTrue: [ 
-		items add: { 
-			'name' -> generator baselinePackageName .
-			'classes' -> { { 'name' -> generator baselineClassName } asDictionary }
-		} asDictionary ].
-	
-	packageClassTree roots: items.
-	packageClassTree expandAll
-]
-
-{ #category : 'enumerating' }
-CMNewModelPresenter >> whenModelCreatedDo: aBlock [
-
-	modelCreatedBlock := aBlock
+	createdBlock := aBlock
 ]

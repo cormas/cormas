@@ -270,38 +270,6 @@ CMModel class >> iceRepositoryIfNotFound: aNotFoundBlock [
 		ifNotFound: aNotFoundBlock 
 ]
 
-{ #category : 'files' }
-CMModel class >> installModelFromFile: aFileReference [
-
-	| parentDir dir metadata modelClassName baselineName |
-	parentDir := '.' asFileReference.
-
-	ZipArchive new
-		readFrom: aFileReference;
-		extractAllTo: parentDir.
-	
-	dir := parentDir / 'src'. 
-	
-	[
-		metadata := STONJSON fromString: (dir / 'metadata.json') contents.
-	
-		modelClassName := (metadata at: 'modelClassName') asSymbol.
-		baselineName := metadata at: 'baselineName'.
-	
-		(self environment hasClassNamed: modelClassName) ifTrue: [ 
-			self error: 'Model ', modelClassName, ' already exists!' ].
-	
-		Metacello new
-			baseline: baselineName;
-			repository: 'tonel:///', dir pathString;
-			load.
-	] ensure: [ dir deleteAll ].
-	
-	"Return model class"
-	^ Smalltalk at: modelClassName
-	
-]
-
 { #category : 'accessing' }
 CMModel class >> instanceSideParameters [
 	
@@ -402,44 +370,6 @@ CMModel class >> projectPackagesIfNoBaseline [
 	
 	packages add: testPackage.
 	^ packages 
-]
-
-{ #category : 'files' }
-CMModel class >> saveToFile: aFileReference [
-
-	| fs directory repo packageNames |
-	
-	fs := FileSystem memory. 
-	directory := fs / 'src'.
-	directory ensureCreateDirectory.
-
-	repo := TonelRepository new
-		directory: directory;
-		yourself.
-
-	packageNames := self projectPackages collect: #name.
-
-	packageNames do: [ :packageName |
-		| wc version |
-		wc := MCWorkingCopy forPackage: (MCPackage named: packageName).
-	
-		version := wc
-			newVersionWithName: packageName , '-export.1'
-			message: 'Export to local Tonel directory'
-			in: repo.
-
-		repo storeVersion: version ].
-	
-	"We store this metadata to speed up the loading of the model"
-	(directory / 'metadata.json') writeStreamDo: [ :stream |
-		stream nextPutAll: (STONJSON toString: {
-			'modelClassName' -> self name .
-			'baselineName' -> (self baseline name asString allButFirst: 'BaselineOf' size)
-		} asDictionary) ].
-
-	ZipArchive new
-		addTree: directory relativeTo: (directory parent) match: [ :e | true ];
-		writeToFile: aFileReference
 ]
 
 { #category : 'model - metadata' }

@@ -97,6 +97,17 @@ CMCatalog >> hashOf: bytes [
 	^ (SHA256 hashMessage: bytes) hex
 ]
 
+{ #category : 'accessing' }
+CMCatalog >> models [
+	"Return the models of the downloaded catalog, as dictionaries with baseline, summary, url, screenshot and screenshotHash, or none before the first update"
+
+	| file |
+	file := folder / 'catalog.json'.
+	file exists ifFalse: [ ^ #(  ) ].
+	^ self modelsIn:
+		  (file binaryReadStreamDo: [ :stream | stream upToEnd ])
+]
+
 { #category : 'private' }
 CMCatalog >> modelsIn: catalogBytes [
 	"Return the models listed in catalog.json, checking that each screenshot is screenshots/<baseline>.png, so that a catalog never makes Cormas write outside my folder"
@@ -111,6 +122,12 @@ CMCatalog >> modelsIn: catalogBytes [
 		  do: [ :error |
 				  CMWorkspaceError signal:
 					  'The catalog is not valid (' , error description , ')' ]
+]
+
+{ #category : 'accessing' }
+CMCatalog >> screenshotOf: aCatalogModel [
+
+	^ folder resolveString: (aCatalogModel at: 'screenshot')
 ]
 
 { #category : 'initialization' }

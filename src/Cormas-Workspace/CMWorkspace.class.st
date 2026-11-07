@@ -153,6 +153,13 @@ CMWorkspace class >> current: aWorkspace [
 ]
 
 { #category : 'accessing' }
+CMWorkspace class >> currentIfNone: aBlock [
+	"Return the workspace of this image, or the value of aBlock if none was chosen yet"
+
+	^ current ifNil: aBlock
+]
+
+{ #category : 'accessing' }
 CMWorkspace class >> defaultLocation [
 	"Return the folder suggested to the modeler when an image has no workspace yet"
 
