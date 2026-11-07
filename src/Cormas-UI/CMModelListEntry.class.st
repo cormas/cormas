@@ -31,6 +31,7 @@ I am one row of the model list: a folder of the workspace, a model of the catalo
 - `workspace` is the `CMWorkspace` the list shows.
 - `folder` is a `CMModelFolder`, or nil for a model only available online.
 - `catalogModel` is the dictionary of the model in the catalog, or nil when the catalog does not list it.
+- `baseline` is read from my folder, or my catalog model, when I am created: a row keeps showing it until the list reads the workspace again, even when the folder changes in the meantime.
 - `model` is the `CMInstalledModel` of a row whose folder is gone, or nil: such a row has no folder, but can still be uninstalled.
 "
 Class {
@@ -40,7 +41,8 @@ Class {
 		'workspace',
 		'folder',
 		'catalogModel',
-		'model'
+		'model',
+		'baseline'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -106,9 +108,7 @@ CMModelListEntry class >> in: aWorkspace installedModel: anInstalledModel [
 CMModelListEntry >> baseline [
 
 	model ifNotNil: [ ^ model baselineName ].
-	^ folder
-		  ifNil: [ catalogModel at: 'baseline' ]
-		  ifNotNil: [ self class baselineOf: folder ]
+	^ baseline
 ]
 
 { #category : 'accessing' }
@@ -246,10 +246,14 @@ CMModelListEntry >> screenshotFile [
 
 { #category : 'initialization' }
 CMModelListEntry >> setWorkspace: aWorkspace folder: aModelFolder catalogModel: aDictionary [
+	"Read the baseline of the folder once: the list shows what it read until it reads the workspace again, even when the folder changes in the meantime"
 
 	workspace := aWorkspace.
 	folder := aModelFolder.
-	catalogModel := aDictionary
+	catalogModel := aDictionary.
+	baseline := aModelFolder
+		            ifNil: [ aDictionary at: 'baseline' ]
+		            ifNotNil: [ self class baselineOf: aModelFolder ]
 ]
 
 { #category : 'private' }

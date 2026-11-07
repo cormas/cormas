@@ -44,6 +44,16 @@ CMModelListPresenterTest >> testInstalledModelWhoseFolderIsGoneIsListedAndCanBeR
 	self assert: (actions includes: 'Uninstall…')
 ]
 
+{ #category : 'tests' }
+CMModelListPresenterTest >> testRowOfAFolderDeletedOutsideCormasKeepsItsStateUntilTheListIsReadAgain [
+
+	| entry |
+	entry := (presenter instVarNamed: 'table') items first.
+	(workspace modelsFolder / 'Forest') ensureDeleteAll.
+	self assert: entry name equals: 'Forest'.
+	self assert: entry state equals: 'Not installed'
+]
+
 { #category : 'running' }
 CMModelListPresenterTest >> testSelectingAFolderDeletedOutsideCormasShowsTheFoldersAgain [
 
@@ -52,4 +62,27 @@ CMModelListPresenterTest >> testSelectingAFolderDeletedOutsideCormasShowsTheFold
 	(workspace modelsFolder / 'Forest') ensureDeleteAll.
 	table selectItem: table items first.
 	self assert: table items isEmpty
+]
+
+{ #category : 'tests' }
+CMModelListPresenterTest >> testSelectingAnyRowNoticesTheFolderOfAnInstalledModelDeletedOutsideCormas [
+
+	| lost table |
+	lost := workspace modelsFolder / 'Lost'.
+	lost ensureCreateDirectory.
+	lost / 'cormas.json' writeStreamDo: [ :stream |
+		stream nextPutAll: '{ "baseline": "Lost" }' ].
+	(workspace instVarNamed: 'installed')
+		at: 'Lost'
+		put:
+		(CMInstalledModel in: workspace baselineName: 'Lost' folder: lost).
+	presenter updateEntries.
+	lost ensureDeleteAll.
+	table := presenter instVarNamed: 'table'.
+	table selectItem:
+		(table items detect: [ :each | each name = 'Forest' ]).
+	self
+		assert: (table items detect: [ :each | each name = 'Lost' ]) state
+		equals: 'Not saved'.
+	self assert: table selectedItem name equals: 'Forest'
 ]

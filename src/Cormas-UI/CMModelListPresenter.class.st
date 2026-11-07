@@ -529,6 +529,15 @@ CMModelListPresenter >> installFromZip [
 					self selectEntryNamed: (CMModelListEntry baselineOf: folder) ] ]
 ]
 
+{ #category : 'updating' }
+CMModelListPresenter >> isAnyFolderGone: anEntry [
+	"Return whether the folder of anEntry, or the folder of an installed model that Cormas still saves, was deleted or moved outside Cormas. This only checks that a few folders exist, so it is cheap enough to do at every selection"
+
+	(anEntry notNil and: [ anEntry isGone ]) ifTrue: [ ^ true ].
+	^ workspace installedModels anySatisfy: [ :each |
+		  each isSaved and: [ each folder exists not ] ]
+]
+
 { #category : 'initialization' }
 CMModelListPresenter >> listenToWorkspace [
 	"Show the entries again whenever the workspace changes, whoever changed it: a browser, a dialog or another tool. The update waits until the change is over"
@@ -678,10 +687,10 @@ CMModelListPresenter >> setModelBeforeInitialization: aWorkspace [
 
 { #category : 'updating' }
 CMModelListPresenter >> show: anEntry [
-	"Show the entry, or nothing. An entry whose folder was deleted or moved outside Cormas is not shown: the folders are listed again instead"
+	"Show the entry, or nothing. When a folder was deleted or moved outside Cormas since the entries were read, refresh the workspace and list the folders again instead, as when the window opens"
 
-	(anEntry notNil and: [ anEntry isGone ]) ifTrue: [
-		^ self updateEntries ].
+	(self isAnyFolderGone: anEntry) ifTrue: [
+		^ self run: [ workspace refresh ] ].
 	anEntry ifNil: [
 			screenshot image: nil.
 			description documentFromString: ''.
