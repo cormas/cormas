@@ -164,6 +164,22 @@ CMModelFolderTest >> testIsExample [
 ]
 
 { #category : 'tests' }
+CMModelFolderTest >> testIsMadeWithAnotherMajor [
+
+	| folder |
+	self
+		folderNamed: 'Forest'
+		withCormasJson: '{ "baseline": "Forest", "cormas": "1.2" }'.
+	folder := self folderNamed: 'Forest'.
+	self assert:
+		(folder isMadeWithAnotherMajorThan: (CMVersion fromString: '2.0.0')).
+	self assert:
+		(folder isMadeWithAnotherMajorThan: (CMVersion fromString: '0.9.0')).
+	self deny: (folder isMadeWithAnotherMajorThan:
+			 (CMVersion fromString: '1.0.0-dev'))
+]
+
+{ #category : 'tests' }
 CMModelFolderTest >> testMadeWithComesFromCormasJson [
 
 	| madeWith |
@@ -242,6 +258,14 @@ CMModelFolderTest >> testModelThatDoesNotSayWhatItIsMadeWithIsNotChecked [
 ]
 
 { #category : 'tests' }
+CMModelFolderTest >> testModelThatDoesNotSayWhatItIsMadeWithIsNotMadeWithAnotherMajor [
+
+	self folderNamed: 'Forest' withCormasJson: '{ "baseline": "Forest" }'.
+	self deny: ((self folderNamed: 'Forest') isMadeWithAnotherMajorThan:
+			 (CMVersion fromString: '1.0.0'))
+]
+
+{ #category : 'tests' }
 CMModelFolderTest >> testNoModelOneLevelDownInAModel [
 
 	self folderNamed: 'Forest' withCormasJson: '{ "baseline": "Forest" }'.
@@ -265,7 +289,7 @@ CMModelFolderTest >> testNoModelOneLevelDownWhenTheInnerFolderIsNotAlone [
 ]
 
 { #category : 'tests' }
-CMModelFolderTest >> testRecordMadeWithInAnotherMajorChangesNothing [
+CMModelFolderTest >> testRecordMadeWithInAnotherMajorReplacesIt [
 
 	| folder |
 	self
@@ -273,7 +297,7 @@ CMModelFolderTest >> testRecordMadeWithInAnotherMajorChangesNothing [
 		withCormasJson: '{ "baseline": "Forest", "cormas": "1.0" }'.
 	folder := self folderNamed: 'Forest'.
 	folder recordMadeWith: (CMVersion fromString: '2.0.0').
-	self assert: folder madeWith printString equals: '1.0.0'
+	self assert: folder madeWith printString equals: '2.0.0'
 ]
 
 { #category : 'tests' }

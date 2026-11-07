@@ -14,6 +14,28 @@ Class {
 	#package : 'Cormas-Workspace-Tests'
 }
 
+{ #category : 'helpers' }
+CMBackupTest >> migrateAnswering: aBoolean [
+	"Migrate Forest, made with Cormas 0.9, to Cormas 1.0 and answer the question with aBoolean. Return the question"
+
+	| question |
+	forest / 'cormas.json' writeStreamDo: [ :stream |
+		stream nextPutAll: '{ "baseline": "Forest", "cormas": "0.9" }' ].
+	[
+		workspace
+			migrate:
+			(CMInstalledModel
+				 in: workspace
+				 baselineName: 'Forest'
+				 folder: forest)
+			to: (CMVersion fromString: '1.0.0') ]
+		on: CMMigrationAsked
+		do: [ :each |
+				question := each.
+				each resume: aBoolean ].
+	^ question
+]
+
 { #category : 'running' }
 CMBackupTest >> setUp [
 
@@ -74,6 +96,34 @@ CMBackupTest >> testBackUpsNeverReplaceEachOther [
 	zips := (1 to: 3) collect: [ :each | workspace backUp: forest ].
 	self assert: zips asSet size equals: 3.
 	self assert: workspace backupsFolder children size equals: 3
+]
+
+{ #category : 'tests' }
+CMBackupTest >> testMigrationBacksUpTheFolderNamedAfterItsCormas [
+
+	| backups |
+	self migrateAnswering: true.
+	backups := workspace backupsFolder children.
+	self assert: backups size equals: 1.
+	self assert:
+		(backups first basename beginsWith: 'Forest (Cormas 0.9) ')
+]
+
+{ #category : 'tests' }
+CMBackupTest >> testMigrationQuestionExplainsTheChange [
+
+	self
+		assert: (self migrateAnswering: true) messageText
+		equals:
+		'Forest was made with Cormas 0.9. Saving this change makes it a Cormas 1.0 model, which may no longer work in Cormas 0.9. Migrating first saves a copy of the 0.9 version in Backups. Not saving undoes the change: Forest stays a Cormas 0.9 model, which cannot be changed in this Cormas.'
+]
+
+{ #category : 'tests' }
+CMBackupTest >> testRefusedMigrationRaisesAnErrorAndBacksUpNothing [
+
+	self should: [ self migrateAnswering: false ] raise: CMWorkspaceError.
+	self deny: (workspace backupsFolder exists and: [
+			 workspace backupsFolder hasChildren ])
 ]
 
 { #category : 'tests' }

@@ -123,6 +123,15 @@ CMModelFolder >> isExample [
 	^ location parent = workspace examplesFolder
 ]
 
+{ #category : 'accessing' }
+CMModelFolder >> isMadeWithAnotherMajorThan: aVersion [
+	"Return whether my model is made with a major of Cormas other than the one of aVersion: saving it in aVersion would migrate it"
+
+	| madeWith |
+	madeWith := self madeWith.
+	^ madeWith notNil and: [ madeWith major ~= aVersion major ]
+]
+
 { #category : 'testing' }
 CMModelFolder >> isModel [
 	"A folder is a model if and only if it contains cormas.json"
@@ -167,12 +176,9 @@ CMModelFolder >> name [
 
 { #category : 'accessing' }
 CMModelFolder >> recordMadeWith: aVersion [
-	"Record in cormas.json that the model is now made with this version of Cormas, when it was made with the same major or when nothing was recorded. Across majors nothing changes: moving a model to another major is the modeler's decision"
+	"Record in cormas.json that the model is now made with this version of Cormas. Moving a model to another major is the modeler's decision, asked before saving"
 
-	| madeWith metadata |
-	madeWith := self madeWith.
-	(madeWith isNil or: [ madeWith major = aVersion major ]) ifFalse: [
-		^ self ].
+	| metadata |
 	metadata := self metadata.
 	(metadata at: 'cormas' ifAbsent: [ nil ]) = aVersion majorMinorString
 		ifTrue: [ ^ self ].

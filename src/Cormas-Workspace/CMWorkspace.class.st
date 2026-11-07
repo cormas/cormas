@@ -270,10 +270,17 @@ CMWorkspace >> anyFileIn: aCommitFolder differsFrom: aFolder [
 CMWorkspace >> backUp: aFolder [
 	"Zip aFolder, with everything in it, into my Backups folder and return the zip. Unzipping it into Models restores the folder. A backup never replaces another one. Cormas backs up code before destroying it, so when this raises an error, nothing must be destroyed"
 
+	^ self backUp: aFolder as: aFolder basename
+]
+
+{ #category : 'backups' }
+CMWorkspace >> backUp: aFolder as: aName [
+	"Zip aFolder, with everything in it, into my Backups folder under aName and the time, and return the zip"
+
 	| zip |
 	CMWorkspaceError whileWritingIn: self backupsFolder do: [
 			self backupsFolder ensureCreateDirectory.
-			zip := self newBackupFor: aFolder basename.
+			zip := self newBackupFor: aName.
 			self zip: aFolder to: zip ].
 	^ zip
 ]
@@ -737,6 +744,28 @@ CMWorkspace >> metacelloFor: aModelFolder [
 		  baseline: aModelFolder baselineName;
 		  repository: 'tonel://' , (aModelFolder location / 'src') fullName;
 		  yourself
+]
+
+{ #category : 'saving' }
+CMWorkspace >> migrate: anInstalledModel to: aVersion [
+	"Ask whether to migrate a model made with another major of Cormas to aVersion, before saving a change to it. When migrating, back up its folder first, named after the Cormas it was made with. Otherwise raise a CMWorkspaceError, which stops saving and leaves the folder untouched; the question then has the change undone by reloading the model"
+
+	| madeWith |
+	madeWith := (CMModelFolder in: self at: anInstalledModel folder)
+		            madeWith.
+	(CMMigrationAsked
+		 signalFor: anInstalledModel
+		 madeWith: madeWith
+		 to: aVersion) ifFalse: [
+			CMWorkspaceError signal:
+				anInstalledModel baselineName , ' was made with Cormas '
+				, madeWith majorMinorString
+				, ': the change is not saved, so that it stays a Cormas '
+				, madeWith majorMinorString , ' model' ].
+	self
+		backUp: anInstalledModel folder
+		as: anInstalledModel folder basename , ' (Cormas '
+			, madeWith majorMinorString , ')'
 ]
 
 { #category : 'private' }
