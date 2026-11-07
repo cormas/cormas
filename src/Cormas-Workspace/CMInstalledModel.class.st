@@ -378,6 +378,15 @@ CMInstalledModel >> reload [
 				           , error messageText ]
 ]
 
+{ #category : 'refreshing' }
+CMInstalledModel >> restoredIn: aFolder [
+	"Use aFolder from now on: the workspace wrote my code into it, as it is in the image, so everything is saved"
+
+	folder := aFolder.
+	problem := nil.
+	self recordFiles
+]
+
 { #category : 'private' }
 CMInstalledModel >> save: files over: paths [
 	"Make each of paths hold its content in files, or not exist when files has none for it. When the folder is gone, follow the model to its new folder, as when it was renamed. When a file was changed by someone else, or cannot be written, stop saving and remember the problem: the code stays in the image, and nothing more is written until the model is reloaded"

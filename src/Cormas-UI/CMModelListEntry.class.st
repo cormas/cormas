@@ -1,9 +1,9 @@
 "
-I am one row of the model list: a folder of the workspace, a model of the catalog that is not downloaded yet, or both when an example folder is listed in the catalog. I turn what the workspace knows into what the modeler reads: a name, a place, a state and a description.
+I am one row of the model list: a folder of the workspace, a model of the catalog that is not downloaded yet, both when an example folder is listed in the catalog, or a model installed in the image whose folder is not in the workspace any more. I turn what the workspace knows into what the modeler reads: a name, a place, a state and a description.
 
 ## Responsibility:
 
-- I know my folder, if any, and my catalog model, if any, and give the name, place (`Models`, `Examples` or `Online`) and state of the row.
+- I know my folder, if any, and my catalog model, if any, and give the name, place (`Models`, `Examples`, `Online` or `Image`) and state of the row.
 - I explain my state in words, such as why a model is not saved, that a folder is an old version, or that an example is pinned to a version.
 - I tell which choices make sense, such as whether the modeler can choose among versions.
 
@@ -16,7 +16,7 @@ I am one row of the model list: a folder of the workspace, a model of the catalo
 
 ## Public API and Key Messages
 
-- `CMModelListEntry entriesOf: aWorkspace` returns the sorted entries of a workspace: installed models first, then `Models`, `Examples` and the models available online.
+- `CMModelListEntry entriesOf: aWorkspace` returns the sorted entries of a workspace: installed models first, including those whose folder is gone, then `Models`, `Examples` and the models available online.
 - `name`, `place` and `state` fill the columns. The states are `Available`, `Not installed`, `Installed`, `Not saved`, `Copy` (the same model is installed from another folder) and `Not a model`.
 - `description` returns the Microdown text shown next to the list.
 - `hasVersions` tells whether **Versions…** is offered.
@@ -31,6 +31,7 @@ I am one row of the model list: a folder of the workspace, a model of the catalo
 - `workspace` is the `CMWorkspace` the list shows.
 - `folder` is a `CMModelFolder`, or nil for a model only available online.
 - `catalogModel` is the dictionary of the model in the catalog, or nil when the catalog does not list it.
+- `model` is the `CMInstalledModel` of a row whose folder is gone, or nil: such a row has no folder, but can still be uninstalled.
 "
 Class {
 	#name : 'CMModelListEntry',
@@ -38,7 +39,8 @@ Class {
 	#instVars : [
 		'workspace',
 		'folder',
-		'catalogModel'
+		'catalogModel',
+		'model'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -56,11 +58,12 @@ CMModelListEntry class >> baselineOf: aModelFolder [
 
 { #category : 'instance creation' }
 CMModelListEntry class >> entriesOf: aWorkspace [
-	"Return an entry for each folder of the workspace, and for each model of the catalog that is in no folder: installed models first, then the folders of Models, the examples and the models available online"
+	"Return an entry for each folder of the workspace, for each installed model whose folder is not there any more, and for each model of the catalog that is in no folder: installed models first, then the folders of Models, the examples and the models available online"
 
-	| catalogModels entries |
+	| catalogModels folders entries |
 	catalogModels := aWorkspace catalog models.
-	entries := aWorkspace folders collect: [ :each |
+	folders := aWorkspace folders.
+	entries := folders collect: [ :each |
 			           | baseline |
 			           baseline := self baselineOf: each.
 			           self
@@ -70,6 +73,11 @@ CMModelListEntry class >> entriesOf: aWorkspace [
 						            detect: [ :model |
 						            (model at: 'baseline') = baseline ]
 						            ifNone: [ nil ]) ].
+	aWorkspace installedModels do: [ :model |
+			(folders anySatisfy: [ :each | each location = model folder ])
+				ifFalse: [
+						entries := entries copyWith:
+							           (self in: aWorkspace installedModel: model) ] ].
 	catalogModels do: [ :model |
 			(entries anySatisfy: [ :each | each name = (model at: 'baseline') ])
 				ifFalse: [
@@ -87,9 +95,17 @@ CMModelListEntry class >> in: aWorkspace folder: aModelFolder catalogModel: aDic
 		  catalogModel: aDictionary
 ]
 
+{ #category : 'instance creation' }
+CMModelListEntry class >> in: aWorkspace installedModel: anInstalledModel [
+	"Return an entry for a model installed from a folder that is not in the workspace any more"
+
+	^ self new setWorkspace: aWorkspace installedModel: anInstalledModel
+]
+
 { #category : 'accessing' }
 CMModelListEntry >> baseline [
 
+	model ifNotNil: [ ^ model baselineName ].
 	^ folder
 		  ifNil: [ catalogModel at: 'baseline' ]
 		  ifNotNil: [ self class baselineOf: folder ]
@@ -148,6 +164,7 @@ CMModelListEntry >> installedModel [
 	"Return the installed model that comes from my folder, or nil"
 
 	| baseline |
+	model ifNotNil: [ ^ model ].
 	baseline := self baseline.
 	(folder notNil and: [
 		 baseline notNil and: [ workspace isInstalled: baseline ] ])
@@ -162,6 +179,16 @@ CMModelListEntry >> isGone [
 	"Return whether my folder was deleted or moved outside Cormas since I was listed"
 
 	^ folder notNil and: [ folder location exists not ]
+]
+
+{ #category : 'private' }
+CMModelListEntry >> missingFolderExplanation [
+	"Explain a model that is in the image while the folder it was installed from is not in the workspace any more"
+
+	^ 'This model is in the image, but its folder '
+	  , model folder fullName
+	  ,
+	  ' is not in the workspace any more. Restore folder writes its code, as it is in the image, into a new folder of Models; the README, data and outputs of the lost folder do not come back. Or uninstall the model: its code is backed up first.'
 ]
 
 { #category : 'accessing' }
@@ -197,6 +224,7 @@ CMModelListEntry >> orphanPackageNames [
 { #category : 'accessing' }
 CMModelListEntry >> place [
 
+	model ifNotNil: [ ^ 'Image' ].
 	folder ifNil: [ ^ 'Online' ].
 	^ folder isExample
 		  ifTrue: [ 'Examples' ]
@@ -224,6 +252,13 @@ CMModelListEntry >> setWorkspace: aWorkspace folder: aModelFolder catalogModel: 
 	catalogModel := aDictionary
 ]
 
+{ #category : 'private' }
+CMModelListEntry >> setWorkspace: aWorkspace installedModel: anInstalledModel [
+
+	workspace := aWorkspace.
+	model := anInstalledModel
+]
+
 { #category : 'accessing' }
 CMModelListEntry >> sortKey [
 	"Installed models first, then the folders of Models, the examples, and the models available online"
@@ -239,12 +274,13 @@ CMModelListEntry >> sortKey [
 { #category : 'accessing' }
 CMModelListEntry >> state [
 
-	| model |
-	folder ifNil: [ ^ 'Available' ].
-	self baseline ifNil: [ ^ 'Not a model' ].
-	model := self installedModel.
-	model ifNotNil: [
-			^ model isSaved
+	| installedModel |
+	model ifNil: [
+			folder ifNil: [ ^ 'Available' ].
+			self baseline ifNil: [ ^ 'Not a model' ] ].
+	installedModel := self installedModel.
+	installedModel ifNotNil: [
+			^ installedModel isSaved
 				  ifTrue: [ 'Installed' ]
 				  ifFalse: [ 'Not saved' ] ].
 	^ (workspace isInstalled: self baseline)
@@ -256,6 +292,7 @@ CMModelListEntry >> state [
 CMModelListEntry >> stateExplanation [
 
 	| state version |
+	model ifNotNil: [ ^ self missingFolderExplanation ].
 	folder ifNil: [
 			version := workspace catalog offeredVersionOf: catalogModel.
 			^ 'Available online: ' , (version at: 'ref') , ' of '
@@ -295,6 +332,7 @@ CMModelListEntry >> stateExplanation [
 CMModelListEntry >> summary [
 
 	catalogModel ifNotNil: [ ^ catalogModel at: 'summary' ].
+	folder ifNil: [ ^ nil ].
 	^ [ folder summary ]
 		  on: CMWorkspaceError
 		  do: [ nil ]

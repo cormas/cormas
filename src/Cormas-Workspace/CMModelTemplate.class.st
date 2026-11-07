@@ -56,6 +56,32 @@ CMModelTemplate class >> named: aString [
 	^ self new setName: aString
 ]
 
+{ #category : 'writing' }
+CMModelTemplate class >> writeProjectFilesTo: aFolder [
+	"Write the files that make a model folder a Pharo project as Iceberg writes them, and keep outputs out of git"
+
+	aFolder / '.gitignore' writeStreamDo: [ :stream |
+			stream
+				nextPutAll: 'output/';
+				lf ].
+	aFolder / '.project' writeStreamDo: [ :stream |
+			stream
+				nextPutAll: '{';
+				lf;
+				tab;
+				nextPutAll: '''srcDirectory'' : ''src''';
+				lf;
+				nextPutAll: '}' ].
+	aFolder / 'src' / '.properties' writeStreamDo: [ :stream |
+			stream
+				nextPutAll: '{';
+				lf;
+				tab;
+				nextPutAll: '#format : #tonel';
+				lf;
+				nextPutAll: '}' ]
+]
+
 { #category : 'private' }
 CMModelTemplate >> baselineDefinitions [
 
@@ -306,26 +332,7 @@ CMModelTemplate >> writeMetadataTo: aFolder [
 				lf;
 				nextPutAll: description;
 				lf ].
-	aFolder / '.gitignore' writeStreamDo: [ :stream |
-			stream
-				nextPutAll: 'output/';
-				lf ].
-	aFolder / '.project' writeStreamDo: [ :stream |
-			stream
-				nextPutAll: '{';
-				lf;
-				tab;
-				nextPutAll: '''srcDirectory'' : ''src''';
-				lf;
-				nextPutAll: '}' ].
-	aFolder / 'src' / '.properties' writeStreamDo: [ :stream |
-			stream
-				nextPutAll: '{';
-				lf;
-				tab;
-				nextPutAll: '#format : #tonel';
-				lf;
-				nextPutAll: '}' ]
+	self class writeProjectFilesTo: aFolder
 ]
 
 { #category : 'private' }

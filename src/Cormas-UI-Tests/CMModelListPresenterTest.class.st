@@ -23,6 +23,27 @@ CMModelListPresenterTest >> setUp [
 	presenter := CMModelListPresenter on: workspace
 ]
 
+{ #category : 'tests' }
+CMModelListPresenterTest >> testInstalledModelWhoseFolderIsGoneIsListedAndCanBeRestoredOrUninstalled [
+
+	| entry actions |
+	(workspace instVarNamed: 'installed')
+		at: 'Lost'
+		put: (CMInstalledModel
+				 in: workspace
+				 baselineName: 'Lost'
+				 folder: workspace modelsFolder / 'Lost').
+	workspace refresh.
+	presenter updateEntries.
+	entry := (presenter instVarNamed: 'table') items detect: [ :each |
+		         each name = 'Lost' ].
+	actions := (presenter folderActionsFor: entry) collect: [ :each |
+		           each key ].
+	self assert: entry state equals: 'Not saved'.
+	self assert: (actions includes: 'Restore folder').
+	self assert: (actions includes: 'Uninstall…')
+]
+
 { #category : 'running' }
 CMModelListPresenterTest >> testSelectingAFolderDeletedOutsideCormasShowsTheFoldersAgain [
 

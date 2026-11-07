@@ -408,13 +408,18 @@ CMModelListPresenter >> export: anEntry [
 { #category : 'actions' }
 CMModelListPresenter >> folderActionsFor: anEntry [
 
-	anEntry folder ifNil: [ ^ #(  ) ].
-	^ (anEntry installedModel
+	| uninstall |
+	uninstall := anEntry installedModel
+		             ifNil: [ #(  ) ]
+		             ifNotNil: [
+		             { ('Uninstall…' -> [ self uninstall: anEntry ]) } ].
+	anEntry folder ifNil: [
+			^ anEntry installedModel ifNil: [ #(  ) ] ifNotNil: [
+					  { ('Restore folder' -> [ self restoreFolderOf: anEntry ]) }
+					  , uninstall ] ].
+	^ uninstall , (anEntry baseline
 		   ifNil: [ #(  ) ]
-		   ifNotNil: [ { ('Uninstall…' -> [ self uninstall: anEntry ]) } ])
-	  , (anEntry baseline
-			   ifNil: [ #(  ) ]
-			   ifNotNil: [ { ('Export…' -> [ self export: anEntry ]) } ]) , {
+		   ifNotNil: [ { ('Export…' -> [ self export: anEntry ]) } ]) , {
 		  ('Delete…' -> [ self delete: anEntry ]).
 		  ('Open folder' -> [ anEntry folder location openInOSFileBrowser ]) }
 ]
@@ -559,7 +564,7 @@ CMModelListPresenter >> modelActionsFor: anEntry [
 		  ('Simulate' -> [ self simulate: anEntry ]).
 		  ('Sensitivity analysis' -> [ self analyseSensitivityOf: anEntry ]).
 		  ('Browse' -> [ (self modelClassOf: anEntry) browse ]) }
-	  , (state = 'Not saved'
+	  , ((state = 'Not saved' and: [ anEntry folder notNil ])
 			   ifTrue: [ { ('Reload from folder' -> [ workspace refresh ]) } ]
 			   ifFalse: [ #(  ) ])
 	  , (anEntry orphanPackageNames collect: [ :each |
@@ -600,6 +605,17 @@ CMModelListPresenter >> reloadFromFolders [
 			UIManager default
 				informUser: 'Reloading the installed models from their folders…'
 				during: [ workspace refresh ] ]
+]
+
+{ #category : 'actions' }
+CMModelListPresenter >> restoreFolderOf: anEntry [
+	"Write the code of a model whose folder is gone into a new folder of Models, and show it"
+
+	UIManager default
+		informUser: 'Restoring ' , anEntry name , '…'
+		during: [ workspace restoreFolderOf: anEntry installedModel ].
+	self updateEntries.
+	self selectEntryNamed: anEntry name
 ]
 
 { #category : 'updating' }

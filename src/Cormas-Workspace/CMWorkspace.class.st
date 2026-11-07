@@ -39,6 +39,7 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - `updateExamples` resets every example to the latest version of its repository, then reloads the installed ones. Files added by hand, such as outputs, are kept.
 - `createModelFrom: aModelTemplate` writes a new model into a new folder of `Models`, installs it and returns the folder.
 - `export: aModelFolder to: aZipFile` zips the whole folder, as it is on disk.
+- `restoreFolderOf: anInstalledModel` writes the code of a model whose folder is gone, as it is in the image, into a new folder of `Models`, and uses it from then on.
 - `announcer` announces `CMWorkspaceChanged` whenever the installed models change, so that tools showing them stay up to date.
 - `addFromZip: aZipFile` extracts a zip into a new folder of `Models`, following single folders down to the one holding `cormas.json`, and returns that model folder, without installing it.
 - `install: aModelFolder` loads a model from the files in its folder and remembers the folder. It refuses, leaving the image as it was, to replace any code already in the image.
@@ -866,6 +867,12 @@ CMWorkspace >> installedModelNamed: aBaselineName [
 		  CMWorkspaceError signal: aBaselineName , ' is not installed' ]
 ]
 
+{ #category : 'installing' }
+CMWorkspace >> installedModels [
+
+	^ installed values
+]
+
 { #category : 'testing' }
 CMWorkspace >> isFound [
 	"Answer whether my folder is still a workspace. When it is not (a drive unplugged, a network share down), Cormas must change nothing rather than conclude that models were deleted"
@@ -1032,6 +1039,30 @@ CMWorkspace >> removePackagesNotIn: packageNames [
 	(self packageOrganizer packages reject: [ :each |
 		 packageNames includes: each name ]) do: [ :each |
 		each removeFromSystem ]
+]
+
+{ #category : 'refreshing' }
+CMWorkspace >> restoreFolderOf: anInstalledModel [
+	"Write the code of a model whose folder is gone, as it is in the image, into a new folder of Models named like the lost one, and use that folder from then on. Return it. Only the code comes back: the README, data, outputs and git history were in the lost folder"
+
+	| restored |
+	restored := self
+		            newFolderNamed: anInstalledModel folder basename
+		            in: self modelsFolder.
+	CMWorkspaceError whileWritingIn: self modelsFolder do: [
+			(restored / 'src') ensureCreateDirectory.
+			(restored / 'data') ensureCreateDirectory.
+			(restored / 'output') ensureCreateDirectory.
+			CMModelTemplate writeProjectFilesTo: restored.
+			(CMModelFolder in: self at: restored)
+				writeMetadata:
+					(Dictionary with: 'baseline' -> anInstalledModel baselineName);
+				recordMadeWith: CMVersion current.
+			anInstalledModel writePackagesTo: restored / 'src' ].
+	anInstalledModel restoredIn: restored.
+	self registerWithIceberg: anInstalledModel.
+	self announceChange.
+	^ CMModelFolder in: self at: restored
 ]
 
 { #category : 'saving' }
