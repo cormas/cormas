@@ -413,9 +413,12 @@ CMModelListPresenter >> folderActionsFor: anEntry [
 		             ifNotNil: [
 		             { ('Uninstall…' -> [ self uninstall: anEntry ]) } ].
 	anEntry folder ifNil: [
-			^ anEntry installedModel ifNil: [ #(  ) ] ifNotNil: [
-					  { ('Restore folder' -> [ self restoreFolderOf: anEntry ]) }
-					  , uninstall ] ].
+			^ (anEntry installedModel isNil or: [
+				   anEntry otherFolders notEmpty ])
+				  ifTrue: [ uninstall ]
+				  ifFalse: [
+						  { ('Restore folder' -> [ self restoreFolderOf: anEntry ]) }
+						  , uninstall ] ].
 	^ uninstall , (anEntry baseline
 		   ifNil: [ #(  ) ]
 		   ifNotNil: [ { ('Export…' -> [ self export: anEntry ]) } ]) , {
@@ -575,7 +578,8 @@ CMModelListPresenter >> modelActionsFor: anEntry [
 		  ('Simulate' -> [ self simulate: anEntry ]).
 		  ('Sensitivity analysis' -> [ self analyseSensitivityOf: anEntry ]).
 		  ('Browse' -> [ (self modelClassOf: anEntry) browse ]) }
-	  , ((state = 'Not saved' and: [ anEntry folder notNil ])
+	  , ((state = 'Not saved' and: [
+			    anEntry folder notNil or: [ anEntry otherFolders notEmpty ] ])
 			   ifTrue: [ { ('Reload from folder' -> [ workspace refresh ]) } ]
 			   ifFalse: [ #(  ) ])
 	  , (anEntry orphanPackageNames collect: [ :each |

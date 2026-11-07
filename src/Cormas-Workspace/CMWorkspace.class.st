@@ -956,18 +956,25 @@ CMWorkspace >> modelsFolder [
 
 { #category : 'private' }
 CMWorkspace >> newBackupFor: aName [
-	"Return a file in Backups that does not exist yet, named after aName and the time, such as 'Forest 2026-11-06 14-05-09.zip', then 'Forest 2026-11-06 14-05-09 2.zip' within the same second"
+	"Return a file in Backups that does not exist yet, named after aName and the time"
+
+	^ self newFileNamed: aName extension: 'zip' in: self backupsFolder
+]
+
+{ #category : 'accessing' }
+CMWorkspace >> newFileNamed: aName extension: anExtension in: aFolder [
+	"Return a file of aFolder that does not exist yet, named after aName and the time, such as 'Forest 2026-11-06 14-05-09.zip', then 'Forest 2026-11-06 14-05-09 2.zip' within the same second: such files never replace each other"
 
 	| now stem candidate index |
 	now := DateAndTime now.
 	stem := aName , ' ' , now asDate yyyymmdd , ' '
 	        , (now asTime print24 copyReplaceAll: ':' with: '-').
-	candidate := self backupsFolder / (stem , '.zip').
+	candidate := aFolder / (stem , '.' , anExtension).
 	index := 1.
 	[ candidate exists ] whileTrue: [
 			index := index + 1.
-			candidate := self backupsFolder
-			             / (stem , ' ' , index printString , '.zip') ].
+			candidate := aFolder
+			             / (stem , ' ' , index printString , '.' , anExtension) ].
 	^ candidate
 ]
 

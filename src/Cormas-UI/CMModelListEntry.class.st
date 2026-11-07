@@ -185,6 +185,17 @@ CMModelListEntry >> isGone [
 CMModelListEntry >> missingFolderExplanation [
 	"Explain a model that is in the image while the folder it was installed from is not in the workspace any more"
 
+	| others |
+	others := self otherFolders.
+	others ifNotEmpty: [
+			^ 'This model is in the image, but its folder '
+			  , model folder fullName
+			  ,
+			  ' is not in the workspace any more, and the workspace holds it in several folders: '
+			  ,
+			  (', ' join: (others collect: [ :each | each location basename ]))
+			  ,
+			  '. Move or delete all but one of them, then press Reload from folder: Cormas uses the one left, after backing up the code in the image.' ].
 	^ 'This model is in the image, but its folder '
 	  , model folder fullName
 	  ,
@@ -219,6 +230,17 @@ CMModelListEntry >> orphanPackageNames [
 	^ (workspace orphanPackages keys select: [ :each |
 		   (workspace orphanPackages at: each) == model ])
 		  asSortedCollection asArray
+]
+
+{ #category : 'accessing' }
+CMModelListEntry >> otherFolders [
+	"Return the folders of the workspace that hold the model whose folder is gone, sorted by name. Cormas follows a single one by itself, so there are none, or several"
+
+	model ifNil: [ ^ #(  ) ].
+	^ ((workspace folders select: [ :each |
+		    each hasBaselineNamed: model baselineName ])
+		   asSortedCollection: [ :a :b |
+		   a location basename <= b location basename ]) asArray
 ]
 
 { #category : 'accessing' }

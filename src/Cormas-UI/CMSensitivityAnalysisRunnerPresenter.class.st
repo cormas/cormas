@@ -171,6 +171,7 @@ CMSensitivityAnalysisRunnerPresenter >> initializePresenters [
 		
 	table := self instantiate: CMDataPresenter.
 	table columnNames: analysis dataColumnNames.
+	table modelClass: analysis modelClass.
 		
 	notebook := self newNotebook.
 	notebook addPageTitle: 'Data' provider: [ table ].

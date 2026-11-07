@@ -162,14 +162,18 @@ CMChartPresenter >> probes [
 	^ self simulation probes reject: [ :probe | probe selector = #currentTimeStep ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'actions' }
 CMChartPresenter >> saveToPng [
+	"Save a picture of the chart in the output folder of the model"
 
-	(StSaveFilePresenter extensions: {'png'})
-		okAction: [ :fileReference | 
-			RSPNGExporter new
-				canvas: chart canvas;
-				exportToFile: fileReference ]
+	CMExport
+		of: self simulation cormasModel class
+		named: 'chart'
+		extension: 'png'
+		writing: [ :file |
+				RSPNGExporter new
+					canvas: chart canvas;
+					exportToFile: file ]
 ]
 
 { #category : 'accessing' }

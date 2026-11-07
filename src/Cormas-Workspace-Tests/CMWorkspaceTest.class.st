@@ -253,6 +253,23 @@ CMWorkspaceTest >> testModelThatStopsBeingSavedAnnouncesTheChange [
 ]
 
 { #category : 'tests' }
+CMWorkspaceTest >> testNewFilesAreNamedAfterTheTimeAndNeverReplaceEachOther [
+
+	| research output first second |
+	research := CMWorkspace createAt: fileSystem root / 'Research'.
+	output := research modelsFolder / 'Forest' / 'output'.
+	output ensureCreateDirectory.
+	first := research newFileNamed: 'data' extension: 'csv' in: output.
+	first writeStreamDo: [ :stream | stream nextPutAll: '1' ].
+	second := research newFileNamed: 'data' extension: 'csv' in: output.
+	self deny: second equals: first.
+	self deny: second exists.
+	self assert: second parent equals: output.
+	self assert: (first basename beginsWith: 'data ').
+	self assert: (first basename endsWith: '.csv')
+]
+
+{ #category : 'tests' }
 CMWorkspaceTest >> testSavingAModelWhoseFolderWasRenamedFollowsIt [
 
 	| research model renamed |

@@ -128,16 +128,13 @@ CMInstalledModel >> cannotChooseAmongFolders: modelFolders [
 	"Stop saving: the folder I was installed from is gone, and there is not exactly one other folder of the same model to follow"
 
 	problem := modelFolders
-		           ifEmpty: [
-				           'The folder of ' , baselineName
-				           ,
-				           ' is gone: restore it, or remove the model from the image' ]
+		           ifEmpty: [ 'The folder of ' , baselineName , ' is gone' ]
 		           ifNotEmpty: [
 				           baselineName , ' is in several folders: '
 				           ,
 				           (', ' join:
 					            (modelFolders collect: [ :each | each name ]))
-				           , '. Choose the one to use' ]
+				           , '. Move or delete all but one of them' ]
 ]
 
 { #category : 'private' }

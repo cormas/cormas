@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'table',
 		'columnNames',
-		'saveToCsvButton'
+		'saveToCsvButton',
+		'modelClass'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -67,25 +68,21 @@ CMDataPresenter >> initializePresenters [
 		yourself
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
+CMDataPresenter >> modelClass: aModelClass [
+
+	modelClass := aModelClass
+]
+
+{ #category : 'actions' }
 CMDataPresenter >> saveDataToCsv [
+	"Save the data in the output folder of the model"
 
-	| message |
-
-	(StSaveFilePresenter extensions: {'csv'})
-		okAction: [ :fileReference | 
-			self saveDataToFile: fileReference.
-			
-			message := String streamContents: [ :stream |
-				stream
-					<< 'Data saved to '
-					<< fileReference asString;
-					cr; cr;
-					<< 'Click to open location' ].
-			
-			UIManager default
-				inform: message
-			 	actionOnClick: [ fileReference openInOSFileBrowser ]]
+	CMExport
+		of: modelClass
+		named: 'data'
+		extension: 'csv'
+		writing: [ :file | self saveDataToFile: file ]
 ]
 
 { #category : 'as yet unclassified' }

@@ -169,6 +169,7 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 
 	dataTable := self instantiate: CMDataPresenter.
 	dataTable columnNames: (self simulation activeProbes collect: #name).
+	dataTable modelClass: self cormasModel class.
 
 	self flag: 'TODO'.
 	"This is a hack to avoid a nasty Spec bug. When we remove all pages after changing a nancy notebook page (a different presenter), it breaks because it can't find the model"

@@ -129,11 +129,15 @@ CMSpacePresenter >> initializeToolbar [
 		toolbar add: command toolbarButton ].
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'actions' }
 CMSpacePresenter >> saveToPng [
+	"Save a picture of the whole space in the output folder of the model"
 
-	(StSaveFilePresenter extensions: {'png'})
-		okAction: [ :fileReference | self saveToPngFile: fileReference ]
+	CMExport
+		of: self cormasModel class
+		named: 'space'
+		extension: 'png'
+		writing: [ :file | self saveToPngFile: file ]
 ]
 
 { #category : 'as yet unclassified' }

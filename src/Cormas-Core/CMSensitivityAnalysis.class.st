@@ -81,6 +81,12 @@ CMSensitivityAnalysis >> isRunning [
 	^ runner isRunning
 ]
 
+{ #category : 'accessing' }
+CMSensitivityAnalysis >> modelClass [
+
+	^ setup modelClass
+]
+
 { #category : 'instance creation' }
 CMSensitivityAnalysis >> newSimulationFor: aParameterCombination [
 

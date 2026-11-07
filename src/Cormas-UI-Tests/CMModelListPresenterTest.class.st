@@ -45,6 +45,33 @@ CMModelListPresenterTest >> testInstalledModelWhoseFolderIsGoneIsListedAndCanBeR
 ]
 
 { #category : 'tests' }
+CMModelListPresenterTest >> testModelInSeveralFoldersExplainsToKeepOnlyOne [
+
+	| entry |
+	#( 'Lost backup' 'Lost 2025' ) do: [ :each |
+			| folder |
+			folder := workspace modelsFolder / each.
+			folder ensureCreateDirectory.
+			folder / 'cormas.json' writeStreamDo: [ :stream |
+				stream nextPutAll: '{ "baseline": "Lost" }' ] ].
+	(workspace instVarNamed: 'installed')
+		at: 'Lost'
+		put: (CMInstalledModel
+				 in: workspace
+				 baselineName: 'Lost'
+				 folder: workspace modelsFolder / 'Lost').
+	workspace refresh.
+	presenter updateEntries.
+	entry := (presenter instVarNamed: 'table') items detect: [ :each |
+		         each name = 'Lost' and: [ each place = 'Image' ] ].
+	self assert: (entry stateExplanation includesSubstring:
+			 'Lost 2025, Lost backup. Move or delete all but one of them').
+	self deny:
+		((presenter folderActionsFor: entry) anySatisfy: [ :each |
+			 each key = 'Restore folder' ])
+]
+
+{ #category : 'tests' }
 CMModelListPresenterTest >> testRowOfAFolderDeletedOutsideCormasKeepsItsStateUntilTheListIsReadAgain [
 
 	| entry |
