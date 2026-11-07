@@ -29,6 +29,7 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - `CMWorkspace at: aFileReference` opens an existing workspace.
 - `CMWorkspace isWorkspace: aFileReference` tells whether a folder is a workspace: it is when it contains a `Models` folder.
 - `CMWorkspace current` and `CMWorkspace current:` give and set the workspace of the image.
+- `CMWorkspace changeTo: aWorkspace` changes the workspace of the image: the models installed from the previous one are uninstalled, and nothing changes while one is not saved.
 - `CMWorkspace defaultLocation` is the folder suggested to the modeler, `Cormas` in their home folder.
 - `folders` returns a `CMModelFolder` for each folder in `Models` and `Examples`, whether it is a model or not.
 - `backUp: aFolder` zips a folder, with everything in it, into `Backups` and returns the zip. Cormas calls it before destroying any code; restoring is unzipping into `Models`.
@@ -45,7 +46,7 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - `saveClassNamed: aClassName inPackageNamed: aPackageName` and `savePackageNamed: aPackageName` write what changed into the folder of the installed model the package belongs to; `installedModelNamed:` tells whether that model is saved.
 - `orphanPackages` returns the loaded packages named like the packages of an installed model but outside its baseline, whose changes are saved nowhere, with the model they seem to belong to.
 - `folderOf: aClass` returns the folder of the installed model that a class belongs to; `CMModel>>folder` uses it.
-- `refresh` finds the folder of every installed model and reloads what changed in it; the class side calls it on the current workspace when the image starts.
+- `refresh` finds the folder of every installed model and reloads what changed in it; the class side calls it on the current workspace when the image starts, says when that folder is not found, and opens `CMWorkspaceChooser` in an interactive image without a workspace.
 - `isFound` tells whether my folder is still there, so that an unplugged drive is never taken for deleted models.
 
 For example, the first time an image starts:
@@ -98,6 +99,16 @@ CMWorkspace class >> at: aFileReference [
 	^ (self new setLocation: aFileReference)
 		  checkWritable;
 		  yourself
+]
+
+{ #category : 'accessing' }
+CMWorkspace class >> changeTo: aWorkspace [
+	"Make aWorkspace the workspace of the image, as Change working directory does. The models installed from the previous workspace are uninstalled, each backed up first, so that every model of the image comes from aWorkspace. Raise a CMWorkspaceError, changing nothing, while a model is not saved"
+
+	current ifNotNil: [ :previous |
+			previous location = aWorkspace location ifTrue: [ ^ self ].
+			previous uninstallAll ].
+	current := aWorkspace
 ]
 
 { #category : 'code changes' }
@@ -194,10 +205,18 @@ CMWorkspace class >> packageTagRenamed: anAnnouncement [
 
 { #category : 'system startup' }
 CMWorkspace class >> startUp: resuming [
-	"When the image starts, bring the models of the current workspace up to date with their folders, which may have changed while the image was closed"
+	"When the image starts, bring the models of the current workspace up to date with their folders, which may have changed while the image was closed. When the workspace folder is not there, as on an unplugged drive, say so and change nothing. An interactive image without a workspace asks the modeler to choose one"
 
-	resuming ifTrue: [
-		current ifNotNil: [ :workspace | workspace refresh ] ]
+	resuming ifFalse: [ ^ self ].
+	current ifNil: [
+			Smalltalk isInteractiveGraphic ifTrue: [
+				UIManager default defer: [ CMWorkspaceChooser open ] ].
+			^ self ].
+	current isFound ifFalse: [
+			^ UIManager default inform:
+				  'Cormas workspace not found: ' , current location fullName
+				  , '. Nothing was changed.' ].
+	current refresh
 ]
 
 { #category : 'private' }
@@ -781,6 +800,17 @@ CMWorkspace >> uninstall: aBaselineName [
 	Metacello new
 		baseline: aBaselineName;
 		unregister
+]
+
+{ #category : 'installing' }
+CMWorkspace >> uninstallAll [
+	"Uninstall every installed model. Raise a CMWorkspaceError, uninstalling nothing, while a model is not saved"
+
+	installed do: [ :each |
+			each isSaved ifFalse: [
+					CMWorkspaceError signal:
+						each baselineName , ' is not saved: ' , each problem ] ].
+	installed keys do: [ :each | self uninstall: each ]
 ]
 
 { #category : 'private' }

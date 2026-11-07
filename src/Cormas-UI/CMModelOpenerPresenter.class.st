@@ -123,6 +123,20 @@ CMModelOpenerPresenter class >> menu00CormasOn: aBuilder [
 		order: 1.
 ]
 
+{ #category : 'menu' }
+CMModelOpenerPresenter class >> menu01WorkspaceOn: aBuilder [
+
+	<worldMenu>
+	(aBuilder item: #CormasWorkingDirectory)
+		parent: #CormasMain;
+		label: 'Change working directory…';
+		icon: (self iconNamed: #open);
+		help:
+			'Choose the workspace folder where this image keeps its models';
+		action: [ CMWorkspaceChooser open ];
+		order: 2
+]
+
 { #category : 'as yet unclassified' }
 CMModelOpenerPresenter class >> telegramIcon [
 	<script: 'self telegramIcon inspect'>

@@ -144,7 +144,7 @@ BaselineOfCormas >> specForPackages: spec [
 		with: [ spec requires: #( 'Cormas-Bloc' 'Cormas-UI-Commands' ) ];
 		package: 'Cormas-UI' with: [
 				spec requires:
-						#( 'Cormas-Core' 'Cormas-CodeGeneration' 'Cormas-Mocks'
+						#( 'Cormas-Core' 'Cormas-Workspace' 'Cormas-CodeGeneration' 'Cormas-Mocks'
 						   'Cormas-UI-Roassal3' 'CormasExampleModels'
 						   'Cormas-UI-Tilesets' 'Cormas-UI-Commands'
 						   'Cormas-Bloc-Spec' ) ];

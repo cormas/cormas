@@ -14,6 +14,19 @@ Class {
 	#package : 'Cormas-Workspace-Tests'
 }
 
+{ #category : 'helpers' }
+CMWorkspaceTest >> installIn: aWorkspace modelNamed: aBaselineName [
+	"Record a model as installed without loading any code, which would make the test slow"
+
+	| model |
+	model := CMInstalledModel
+		         in: aWorkspace
+		         baselineName: aBaselineName
+		         folder: aWorkspace modelsFolder / aBaselineName.
+	(aWorkspace instVarNamed: 'installed') at: aBaselineName put: model.
+	^ model
+]
+
 { #category : 'running' }
 CMWorkspaceTest >> setUp [
 
@@ -45,6 +58,50 @@ CMWorkspaceTest >> testAtAnExistingWorkspaceReturnsIt [
 	self
 		assert: (CMWorkspace at: fileSystem / 'Cormas') location
 		equals: fileSystem / 'Cormas'
+]
+
+{ #category : 'tests' }
+CMWorkspaceTest >> testChangeIsRefusedWhileAModelIsNotSaved [
+
+	| research model |
+	research := CMWorkspace createAt: fileSystem root / 'Research'.
+	model := self installIn: research modelNamed: 'Forest'.
+	model
+		instVarNamed: 'problem'
+		put: 'The folder /Research/Models/Forest is gone'.
+	CMWorkspace current: research.
+	self
+		should: [
+				CMWorkspace changeTo:
+					(CMWorkspace createAt: fileSystem root / 'Teaching') ]
+		raise: CMWorkspaceError
+		withExceptionDo: [ :error |
+				self assert:
+					(error messageText includesSubstring: 'Forest is not saved') ].
+	self assert: CMWorkspace current identicalTo: research.
+	self assert: (research isInstalled: 'Forest')
+]
+
+{ #category : 'tests' }
+CMWorkspaceTest >> testChangeToMakesTheWorkspaceCurrent [
+
+	| workspace |
+	workspace := CMWorkspace createAt: fileSystem root / 'Research'.
+	CMWorkspace current: nil.
+	CMWorkspace changeTo: workspace.
+	self assert: CMWorkspace current identicalTo: workspace
+]
+
+{ #category : 'tests' }
+CMWorkspaceTest >> testChangeToTheSameFolderKeepsTheInstalledModels [
+
+	| research |
+	research := CMWorkspace createAt: fileSystem root / 'Research'.
+	self installIn: research modelNamed: 'Forest'.
+	CMWorkspace current: research.
+	CMWorkspace changeTo: (CMWorkspace at: fileSystem root / 'Research').
+	self assert: CMWorkspace current identicalTo: research.
+	self assert: (research isInstalled: 'Forest')
 ]
 
 { #category : 'tests' }
