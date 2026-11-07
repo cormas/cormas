@@ -10,6 +10,30 @@ Class {
 }
 
 { #category : 'tests' }
+CMVersionTest >> testDevVersionCountsAsItsMinor [
+
+	self assert: ((CMVersion fromString: '1.0-dev') isNoNewerThan:
+			 (CMVersion fromString: '1.0.0')).
+	self assert: ((CMVersion fromString: '1.0') isNoNewerThan:
+			 (CMVersion fromString: '1.0.0-dev'))
+]
+
+{ #category : 'tests' }
+CMVersionTest >> testIsNoNewerThanComparesMajorsAndMinors [
+
+	self assert: ((CMVersion fromString: '1.1') isNoNewerThan:
+			 (CMVersion fromString: '1.2.0')).
+	self assert: ((CMVersion fromString: '1.2') isNoNewerThan:
+			 (CMVersion fromString: '1.2.0')).
+	self deny: ((CMVersion fromString: '1.3') isNoNewerThan:
+			 (CMVersion fromString: '1.2.9')).
+	self deny: ((CMVersion fromString: '2.0') isNoNewerThan:
+			 (CMVersion fromString: '1.9.0')).
+	self assert: ((CMVersion fromString: '1.9') isNoNewerThan:
+			 (CMVersion fromString: '2.0.0'))
+]
+
+{ #category : 'tests' }
 CMVersionTest >> testLineOfADevVersionIsDev [
 
 	self assert: (CMVersion fromString: '1.0.0-dev') line equals: 'dev'

@@ -72,6 +72,14 @@ CMVersion >> isDev [
 	^ isDev
 ]
 
+{ #category : 'comparing' }
+CMVersion >> isNoNewerThan: aVersion [
+	"Return whether I am the same or an older major and minor than aVersion, ignoring patches and -dev: a model made with 1.0-dev runs in 1.0.0"
+
+	^ major < aVersion major or: [
+		  major = aVersion major and: [ minor <= aVersion minor ] ]
+]
+
 { #category : 'accessing' }
 CMVersion >> line [
 	"Return the catalog line of this version: dev for a version in development, otherwise its major, such as 1 for every 1.x.y release"

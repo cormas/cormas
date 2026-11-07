@@ -242,7 +242,7 @@ CMModelListPresenter >> download: anEntry andInstall: aBoolean [
 	UIManager default
 		informUser: 'Downloading ' , anEntry name , '…'
 		during: [
-		folder := workspace download: (anEntry catalogModel at: 'url') ].
+		folder := workspace download: anEntry catalogModel ].
 	aBoolean ifTrue: [
 			UIManager default
 				informUser: 'Installing ' , anEntry name , '…'

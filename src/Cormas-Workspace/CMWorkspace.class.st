@@ -290,6 +290,17 @@ CMWorkspace >> catalogFolder [
 ]
 
 { #category : 'private' }
+CMWorkspace >> catalogVersionOf: anExample [
+	"Return the version of anExample that the catalog offers, or nil when the catalog does not list it"
+
+	^ self catalog models
+		  detect: [ :each |
+		  anExample hasBaselineNamed: (each at: 'baseline') ]
+		  ifFound: [ :each | self catalog offeredVersionOf: each ]
+		  ifNone: [ nil ]
+]
+
+{ #category : 'private' }
 CMWorkspace >> checkNothingIsReplacedBy: anInstalledModel in: packageNames [
 	"Raise a CMWorkspaceError if loading the model would replace a package in packageNames or a model installed from the workspace"
 
@@ -305,6 +316,55 @@ CMWorkspace >> checkNothingIsReplacedBy: anInstalledModel in: packageNames [
 					anInstalledModel baselineName , ' needs ' , each
 					,
 					', which is installed from the workspace. Models that depend on other models are not supported yet' ]
+]
+
+{ #category : 'private' }
+CMWorkspace >> checkOut: aVersion in: aFolder [
+	"Bring a fresh clone to a version of the catalog"
+
+	| repository |
+	repository := IceRepositoryCreator new
+		              location: aFolder;
+		              createRepository.
+	self
+		checkOut: (self commitOf: aVersion in: repository)
+		of: aVersion
+		in: repository
+]
+
+{ #category : 'private' }
+CMWorkspace >> checkOut: aCommit of: aVersion in: aRepository [
+	"Put the files of aCommit in the folder of aRepository. In the dev line, the local branch of the version follows its remote branch, so that Update brings its latest commit. In a released line, the commit is checked out on its own"
+
+	| ref branch handle gitCommit |
+	ref := aVersion at: 'ref'.
+	[
+		self catalog isReleasedLine
+			ifTrue: [
+					handle := aRepository repositoryHandle.
+					gitCommit := handle revparse: aCommit id.
+					handle
+						checkout_treeish: gitCommit
+						opts: (LGitCheckoutOptions defaults
+								 checkoutStrategy: LGitCheckoutStrategyEnum git_checkout_force;
+								 yourself).
+					handle setHeadDetached: gitCommit ]
+			ifFalse: [
+					branch := (aRepository hasLocalBranchNamed: ref)
+						          ifTrue: [
+								          (aRepository branchNamed: ref)
+									          switch;
+									          yourself ]
+						          ifFalse: [
+						          aRepository createBranch: ref inCommit: aCommit ].
+					branch setUpstream:
+						(aRepository remoteBranchNamed: 'origin/' , ref).
+					branch commit: aCommit ] ]
+		on: IceError , LGitAbstractError
+		do: [ :error |
+				CMWorkspaceError signal:
+					'Cormas cannot check out ' , ref , ' of ' , (aVersion at: 'url')
+					, ' (' , error description , ')' ]
 ]
 
 { #category : 'private' }
@@ -356,6 +416,34 @@ CMWorkspace >> clone: aRepositoryUrl to: aFolder [
 				CMWorkspaceError signal:
 					'Cormas cannot download ' , aRepositoryUrl , ' ('
 					, error description , ')' ]
+]
+
+{ #category : 'private' }
+CMWorkspace >> commitOf: aVersion in: aRepository [
+	"Return the commit of a version of the catalog in a clone of its repository: the head of a branch in the dev line, which Cormas follows, or the commit of a tag in a released line, which must be the one the catalog recorded"
+
+	| ref commitId |
+	ref := aVersion at: 'ref'.
+	self catalog isReleasedLine ifFalse: [
+			aRepository
+				remoteBranchNamed: 'origin/' , ref
+				ifPresent: [ :branch | ^ branch commit ]
+				ifAbsent: [
+						CMWorkspaceError signal:
+							(aVersion at: 'url') , ' has no branch ' , ref ] ].
+	commitId := [
+		            (aRepository repositoryHandle revparse:
+			             'refs/tags/' , ref , '^{commit}') id hexString ]
+		            on: Error
+		            do: [
+			            CMWorkspaceError signal:
+				            (aVersion at: 'url') , ' has no tag ' , ref ].
+	commitId = (aVersion at: 'commit') ifFalse: [
+			CMWorkspaceError signal:
+				'The tag ' , ref , ' of ' , (aVersion at: 'url')
+				,
+				' has moved since the catalog recorded it: Cormas does not install it' ].
+	^ aRepository lookupCommit: commitId
 ]
 
 { #category : 'examples' }
@@ -426,19 +514,24 @@ CMWorkspace >> delete: aModelFolder [
 ]
 
 { #category : 'examples' }
-CMWorkspace >> download: aRepositoryUrl [
-	"Clone a model of the library into a new folder of Examples, named after its baseline, and return the folder. The model is not installed. Raise a CMWorkspaceError, leaving nothing in Examples, when the repository cannot be cloned, holds no model, or when that example is already downloaded"
+CMWorkspace >> download: aCatalogModel [
+	"Clone the version of a catalog model that this Cormas offers into a new folder of Examples, named after its baseline, and return the folder. The model is not installed. Raise a CMWorkspaceError, leaving nothing in Examples, when the version cannot be cloned, holds no model, or when that example is already downloaded"
 
-	| temporaryName clone folder |
+	| version temporaryName clone folder |
+	version := (self catalog offeredVersionOf: aCatalogModel) ifNil: [
+			           CMWorkspaceError signal:
+				           (aCatalogModel at: 'baseline')
+				           , ' has no version for this Cormas' ].
 	temporaryName := '.cormas-download-' , UUID new asString.
 	[
 		clone := CMModelFolder
 			         in: self
 			         at: self examplesFolder / temporaryName.
-		self clone: aRepositoryUrl to: clone location.
+		self clone: (version at: 'url') to: clone location.
+		self checkOut: version in: clone location.
 		clone isModel ifFalse: [
 				CMWorkspaceError signal:
-					aRepositoryUrl , ' holds no model (no cormas.json)' ].
+					(version at: 'url') , ' holds no model (no cormas.json)' ].
 		self folders
 			detect: [ :each |
 				each isExample and: [ each hasBaselineNamed: clone baselineName ] ]
@@ -822,15 +915,18 @@ CMWorkspace >> uninstallAll [
 
 { #category : 'private' }
 CMWorkspace >> update: anExample [
-	"Reset the folder of anExample to the latest commit of its library repository, backing it up first when files of the library were edited by hand"
+	"Bring the folder of anExample to the version the catalog offers, or to the latest commit of its branch when the catalog does not list it, backing it up first when files of its version were edited by hand"
 
-	| repository latest |
+	| repository version latest |
 	repository := IceRepositoryCreator new
 		              location: anExample location;
 		              createRepository.
+	version := self catalogVersionOf: anExample.
 	[
 		repository fetch.
-		latest := repository branch upstream commit ]
+		latest := version
+			          ifNil: [ repository branch upstream commit ]
+			          ifNotNil: [ self commitOf: version in: repository ] ]
 		on: IceError
 		do: [ :error |
 				CMWorkspaceError signal:
@@ -840,7 +936,9 @@ CMWorkspace >> update: anExample [
 		 anyFileIn: repository headCommit fileSystem
 		 differsFrom: anExample location) ifTrue: [
 		self backUp: anExample location ].
-	repository branch commit: latest
+	version
+		ifNil: [ repository branch commit: latest ]
+		ifNotNil: [ self checkOut: latest of: version in: repository ]
 ]
 
 { #category : 'examples' }

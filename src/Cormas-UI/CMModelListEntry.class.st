@@ -187,9 +187,11 @@ CMModelListEntry >> state [
 { #category : 'private' }
 CMModelListEntry >> stateExplanation [
 
-	| state |
+	| state version |
 	folder ifNil: [
-			^ 'Available online from ' , (catalogModel at: 'url')
+			version := workspace catalog offeredVersionOf: catalogModel.
+			^ 'Available online: ' , (version at: 'ref') , ' of '
+			  , (version at: 'url')
 			  , '. Download it into Examples to install it.' ].
 	self baseline ifNil: [
 			folder isModel ifTrue: [ ^ 'Its cormas.json cannot be read.' ].

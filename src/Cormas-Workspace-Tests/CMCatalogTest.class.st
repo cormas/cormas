@@ -13,19 +13,53 @@ Class {
 }
 
 { #category : 'helpers' }
+CMCatalogTest >> catalogFor: aVersionString serving: models [
+
+	| other |
+	other := CMCatalogMock
+		         in: folder
+		         for: (CMVersion fromString: aVersionString).
+	other files: (Dictionary new
+			 at: 'catalog.json' put: (STONJSON toString: (Dictionary new
+							   at: 'format' put: 1;
+							   at: 'models' put: models;
+							   yourself)) utf8Encoded;
+			 at: 'screenshots/Fire.png' put: #[ 1 ];
+			 yourself).
+	other update.
+	^ other
+]
+
+{ #category : 'helpers' }
 CMCatalogTest >> catalogJsonOf: screenshots [
 
 	^ STONJSON toString: (Dictionary new
+			   at: 'format' put: 1;
 			   at: 'models' put: (screenshots collect: [ :each |
-							    Dictionary new
-								    at: 'baseline' put: each key;
-								    at: 'summary' put: 'A model';
-								    at: 'url' put: 'https://github.com/cormas/' , each key;
-								    at: 'screenshot' put: 'screenshots/' , each key , '.png';
-								    at: 'screenshotHash'
-								    put: (SHA256 hashMessage: each value) hex;
-								    yourself ]) asArray;
+							    self
+								    modelNamed: each key
+								    screenshot: each value
+								    madeWith: #( '1.0-dev' ) ]) asArray;
 			   yourself)
+]
+
+{ #category : 'helpers' }
+CMCatalogTest >> modelNamed: aBaseline screenshot: bytes madeWith: versions [
+	"Return a model of a catalog with a version made with each of versions, in that order"
+
+	^ Dictionary new
+		  at: 'baseline' put: aBaseline;
+		  at: 'summary' put: 'A model';
+		  at: 'screenshot' put: 'screenshots/' , aBaseline , '.png';
+		  at: 'screenshotHash' put: (SHA256 hashMessage: bytes) hex;
+		  at: 'versions' put: (versions withIndexCollect: [ :each :index |
+						   Dictionary new
+							   at: 'url' put: 'https://github.com/cormas/' , aBaseline;
+							   at: 'ref' put: 'v' , index printString;
+							   at: 'commit' put: 'c' , index printString;
+							   at: 'cormas' put: each;
+							   yourself ]) asArray;
+		  yourself
 ]
 
 { #category : 'helpers' }
@@ -61,6 +95,18 @@ CMCatalogTest >> setUp [
 ]
 
 { #category : 'tests' }
+CMCatalogTest >> testCatalogOfAnotherFormatIsRefused [
+
+	self serve: {  } json: '{ "format": 2, "models": [] }'.
+	self
+		should: [ catalog update ]
+		raise: CMWorkspaceError
+		withExceptionDo: [ :error |
+			self assert: (error messageText includesSubstring: 'format 2') ].
+	self deny: (folder / 'catalog.json') exists
+]
+
+{ #category : 'tests' }
 CMCatalogTest >> testCatalogThatIsNotJsonIsRefused [
 
 	self serve: {  } json: '{ not json'.
@@ -85,6 +131,50 @@ CMCatalogTest >> testFailedUpdateKeepsThePreviousCatalog [
 	self should: [ catalog update ] raise: CMWorkspaceError.
 	self assert: (folder / 'catalog.json') contents equals: previous.
 	self assert: self screenshotNames asArray equals: #( 'Fire.png' )
+]
+
+{ #category : 'tests' }
+CMCatalogTest >> testFilesAreReadFromTheLineOfThisCormas [
+
+	self
+		assert:
+			((CMCatalog in: folder for: (CMVersion fromString: '1.0.0-dev'))
+				 urlOf: 'catalog.json')
+		equals:
+		'https://raw.githubusercontent.com/cormas/example-catalog/main/versions/dev/catalog.json'.
+	self
+		assert:
+			((CMCatalog in: folder for: (CMVersion fromString: '2.3.1'))
+				 urlOf: 'screenshots/Fire.png')
+		equals:
+		'https://raw.githubusercontent.com/cormas/example-catalog/main/versions/2/screenshots/Fire.png'
+]
+
+{ #category : 'tests' }
+CMCatalogTest >> testModelWithoutAVersionForThisCormasIsNotListed [
+
+	| other |
+	other := self
+		         catalogFor: '1.0.0'
+		         serving:
+		         { (self
+			          modelNamed: 'Fire'
+			          screenshot: #[ 1 ]
+			          madeWith: #( '1.1' )) }.
+	self assert: other models isEmpty
+]
+
+{ #category : 'tests' }
+CMCatalogTest >> testOfferedVersionIsTheNewestMadeWithNoNewerCormas [
+
+	| other |
+	other := self catalogFor: '1.1.3' serving: { (self
+			          modelNamed: 'Fire'
+			          screenshot: #[ 1 ]
+			          madeWith: #( '1.0' '1.1' '1.2' )) }.
+	self
+		assert: ((other offeredVersionOf: other models first) at: 'ref')
+		equals: 'v2'
 ]
 
 { #category : 'tests' }
@@ -168,4 +258,20 @@ CMCatalogTest >> testUpdateDownloadsTheCatalogAndItsScreenshots [
 	self
 		assert: self screenshotNames asSet
 		equals: #( 'Fire.png' 'River.png' ) asSet
+]
+
+{ #category : 'tests' }
+CMCatalogTest >> testVersionMadeWithADevCormasIsOfferedToItsRelease [
+
+	| other |
+	other := self
+		         catalogFor: '1.0.0'
+		         serving:
+		         { (self
+			          modelNamed: 'Fire'
+			          screenshot: #[ 1 ]
+			          madeWith: #( '1.0-dev' )) }.
+	self
+		assert: ((other offeredVersionOf: other models first) at: 'ref')
+		equals: 'v1'
 ]
