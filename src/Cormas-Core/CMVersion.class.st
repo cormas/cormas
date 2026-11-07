@@ -87,6 +87,18 @@ CMVersion >> major [
 	^ major
 ]
 
+{ #category : 'printing' }
+CMVersion >> majorMinorString [
+	"Return the version without its patch, such as 1.2 or 1.0-dev: what a model records as the Cormas it was made with"
+
+	^ String streamContents: [ :stream |
+			  stream
+				  print: major;
+				  nextPut: $.;
+				  print: minor.
+			  isDev ifTrue: [ stream nextPutAll: '-dev' ] ]
+]
+
 { #category : 'accessing' }
 CMVersion >> minor [
 

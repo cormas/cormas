@@ -155,6 +155,37 @@ CMModelFolderTest >> testIsExample [
 ]
 
 { #category : 'tests' }
+CMModelFolderTest >> testMadeWithComesFromCormasJson [
+
+	| madeWith |
+	self
+		folderNamed: 'Forest'
+		withCormasJson: '{ "baseline": "Forest", "cormas": "1.2-dev" }'.
+	madeWith := (self folderNamed: 'Forest') madeWith.
+	self assert: madeWith major equals: 1.
+	self assert: madeWith minor equals: 2.
+	self assert: madeWith isDev
+]
+
+{ #category : 'tests' }
+CMModelFolderTest >> testMadeWithIsNilWhenCormasJsonHasNone [
+
+	self folderNamed: 'Forest' withCormasJson: '{ "baseline": "Forest" }'.
+	self assert: (self folderNamed: 'Forest') madeWith isNil
+]
+
+{ #category : 'tests' }
+CMModelFolderTest >> testMadeWithThatIsNotAVersionRaisesAnError [
+
+	self
+		folderNamed: 'Forest'
+		withCormasJson: '{ "baseline": "Forest", "cormas": "recent" }'.
+	self
+		should: [ (self folderNamed: 'Forest') madeWith ]
+		raise: CMWorkspaceError
+]
+
+{ #category : 'tests' }
 CMModelFolderTest >> testModelOneLevelDown [
 
 	self
@@ -186,6 +217,55 @@ CMModelFolderTest >> testNoModelOneLevelDownWhenTheInnerFolderIsNotAlone [
 	(workspace modelsFolder / 'Downloads' / 'Other')
 		ensureCreateDirectory.
 	self deny: (self folderNamed: 'Downloads') hasModelOneLevelDown
+]
+
+{ #category : 'tests' }
+CMModelFolderTest >> testRecordMadeWithInAnotherMajorChangesNothing [
+
+	| folder |
+	self
+		folderNamed: 'Forest'
+		withCormasJson: '{ "baseline": "Forest", "cormas": "1.0" }'.
+	folder := self folderNamed: 'Forest'.
+	folder recordMadeWith: (CMVersion fromString: '2.0.0').
+	self assert: folder madeWith printString equals: '1.0.0'
+]
+
+{ #category : 'tests' }
+CMModelFolderTest >> testRecordMadeWithInTheSameMajorReplacesIt [
+
+	| folder |
+	self
+		folderNamed: 'Forest'
+		withCormasJson: '{ "baseline": "Forest", "cormas": "1.0-dev" }'.
+	folder := self folderNamed: 'Forest'.
+	folder recordMadeWith: (CMVersion fromString: '1.2.0').
+	self assert: folder madeWith printString equals: '1.2.0'
+]
+
+{ #category : 'tests' }
+CMModelFolderTest >> testRecordMadeWithKeepsTheOtherFields [
+
+	| folder |
+	self
+		folderNamed: 'Forest'
+		withCormasJson:
+		'{ "license": "MIT", "summary": "Trees", "baseline": "Forest", "cormas": "1.0" }'.
+	folder := self folderNamed: 'Forest'.
+	folder recordMadeWith: (CMVersion fromString: '1.1.0').
+	self assert: folder baselineName equals: 'Forest'.
+	self assert: folder summary equals: 'Trees'.
+	self assert: (folder metadata at: 'license') equals: 'MIT'
+]
+
+{ #category : 'tests' }
+CMModelFolderTest >> testRecordMadeWithWhenNoneIsRecorded [
+
+	| folder |
+	self folderNamed: 'Forest' withCormasJson: '{ "baseline": "Forest" }'.
+	folder := self folderNamed: 'Forest'.
+	folder recordMadeWith: (CMVersion fromString: '2.1.0').
+	self assert: folder madeWith printString equals: '2.1.0'
 ]
 
 { #category : 'tests' }

@@ -114,6 +114,17 @@ CMModelFolder >> location [
 	^ location
 ]
 
+{ #category : 'accessing' }
+CMModelFolder >> madeWith [
+	"Return the version of Cormas the model was made with, as written in cormas.json, or nil when it is not recorded"
+
+	| version |
+	version := self metadata at: 'cormas' ifAbsent: [ ^ nil ].
+	^ [ CMVersion fromString: version ]
+		  on: Error
+		  do: [ :error | self invalidCormasJson: error messageText ]
+]
+
 { #category : 'private' }
 CMModelFolder >> metadata [
 
@@ -132,6 +143,21 @@ CMModelFolder >> name [
 	^ location basename
 ]
 
+{ #category : 'accessing' }
+CMModelFolder >> recordMadeWith: aVersion [
+	"Record in cormas.json that the model is now made with this version of Cormas, when it was made with the same major or when nothing was recorded. Across majors nothing changes: moving a model to another major is the modeler's decision"
+
+	| madeWith metadata |
+	madeWith := self madeWith.
+	(madeWith isNil or: [ madeWith major = aVersion major ]) ifFalse: [
+		^ self ].
+	metadata := self metadata.
+	(metadata at: 'cormas' ifAbsent: [ nil ]) = aVersion majorMinorString
+		ifTrue: [ ^ self ].
+	metadata at: 'cormas' put: aVersion majorMinorString.
+	self writeMetadata: metadata
+]
+
 { #category : 'initialization' }
 CMModelFolder >> setWorkspace: aWorkspace location: aFileReference [
 
@@ -144,4 +170,22 @@ CMModelFolder >> summary [
 	"Return the paragraph that describes the model in the catalog, empty when cormas.json has none"
 
 	^ self metadata at: 'summary' ifAbsent: [ '' ]
+]
+
+{ #category : 'private' }
+CMModelFolder >> writeMetadata: aDictionary [
+	"Write cormas.json with the fields in the order Cormas creates them, then the others sorted, so that rewriting it changes as few lines as possible"
+
+	| ordered |
+	ordered := OrderedDictionary new.
+	#( 'baseline' 'summary' 'cormas' ) do: [ :key |
+		aDictionary
+			at: key
+			ifPresent: [ :value | ordered at: key put: value ] ].
+	(aDictionary keys asSortedCollection reject: [ :key |
+		 ordered includesKey: key ]) do: [ :key |
+		ordered at: key put: (aDictionary at: key) ].
+	self cormasJson ensureDelete.
+	self cormasJson writeStreamDo: [ :stream |
+		STONJSON put: ordered onStreamPretty: stream ]
 ]

@@ -22,6 +22,22 @@ CMVersionTest >> testLineOfAReleaseIsItsMajor [
 ]
 
 { #category : 'tests' }
+CMVersionTest >> testMajorMinorStringLeavesOutThePatch [
+
+	self
+		assert: (CMVersion fromString: '1.2.3') majorMinorString
+		equals: '1.2'
+]
+
+{ #category : 'tests' }
+CMVersionTest >> testMajorMinorStringOfADevVersionKeepsDev [
+
+	self
+		assert: (CMVersion fromString: '1.0.0-dev') majorMinorString
+		equals: '1.0-dev'
+]
+
+{ #category : 'tests' }
 CMVersionTest >> testPrintsAsItIsWritten [
 
 	self

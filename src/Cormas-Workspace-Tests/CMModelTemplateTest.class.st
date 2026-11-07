@@ -149,3 +149,17 @@ CMModelTemplateTest >> testWrittenFolderIsAModel [
 	self assert: modelFolder baselineName equals: 'ForestFire'.
 	self assert: modelFolder summary equals: 'Trees grow and burn'
 ]
+
+{ #category : 'tests' }
+CMModelTemplateTest >> testWrittenFolderIsMadeWithThisCormas [
+
+	| modelFolder |
+	self template writeTo: folder.
+	modelFolder := CMModelFolder
+		               in:
+		               (CMWorkspace createAt: FileSystem memory / 'Cormas')
+		               at: folder.
+	self
+		assert: modelFolder madeWith majorMinorString
+		equals: CMVersion current majorMinorString
+]

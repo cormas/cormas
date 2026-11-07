@@ -295,6 +295,7 @@ CMModelTemplate >> writeMetadataTo: aFolder [
 				put: (OrderedDictionary new
 						 at: 'baseline' put: self baselineName;
 						 at: 'summary' put: description;
+						 at: 'cormas' put: CMVersion current majorMinorString;
 						 yourself)
 				onStreamPretty: stream ].
 	aFolder / 'README.md' writeStreamDo: [ :stream |
