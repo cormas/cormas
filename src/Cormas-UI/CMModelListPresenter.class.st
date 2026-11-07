@@ -194,7 +194,9 @@ CMModelListPresenter >> analyseSensitivityOf: anEntry [
 CMModelListPresenter >> changeWorkspace [
 
 	CMWorkspaceChooser open.
+	workspace announcer unsubscribe: self.
 	workspace := CMWorkspace currentIfNone: [ workspace ].
+	self listenToWorkspace.
 	self updateEntries
 ]
 
@@ -267,7 +269,8 @@ CMModelListPresenter >> confirmInstalling: aModelFolder [
 { #category : 'initialization' }
 CMModelListPresenter >> connectPresenters [
 
-	table whenSelectedItemChangedDo: [ :entry | self show: entry ]
+	table whenSelectedItemChangedDo: [ :entry | self show: entry ].
+	self listenToWorkspace
 ]
 
 { #category : 'initialization' }
@@ -414,7 +417,8 @@ CMModelListPresenter >> initializeWindow: aWindowPresenter [
 	super initializeWindow: aWindowPresenter.
 	aWindowPresenter
 		title: 'Cormas models';
-		initialExtent: 1000 @ 750
+		initialExtent: 1000 @ 750;
+		whenClosedDo: [ workspace announcer unsubscribe: self ]
 ]
 
 { #category : 'actions' }
@@ -443,6 +447,16 @@ CMModelListPresenter >> installFromZip [
 								during: [ workspace install: folder ] ].
 					self updateEntries.
 					self selectEntryNamed: (CMModelListEntry baselineOf: folder) ] ]
+]
+
+{ #category : 'initialization' }
+CMModelListPresenter >> listenToWorkspace [
+	"Show the entries again whenever the workspace changes, whoever changed it: a browser, a dialog or another tool. The update waits until the change is over"
+
+	workspace announcer
+		when: CMWorkspaceChanged
+		do: [ UIManager default defer: [ self updateEntries ] ]
+		for: self
 ]
 
 { #category : 'actions' }

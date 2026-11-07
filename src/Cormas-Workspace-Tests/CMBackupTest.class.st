@@ -14,6 +14,21 @@ Class {
 	#package : 'Cormas-Workspace-Tests'
 }
 
+{ #category : 'tests' }
+CMBackupTest >> editOldVersionMakingANewModel: aBoolean [
+	"Edit Forest as if it were an old version, and answer whether to make a new model from it with aBoolean. Return the installed model"
+
+	| model |
+	model := CMInstalledModel
+		         in: workspace
+		         baselineName: 'Forest'
+		         folder: forest.
+	[ workspace editOldVersion: model ]
+		on: CMOldVersionEdited
+		do: [ :each | each resume: aBoolean ].
+	^ model
+]
+
 { #category : 'helpers' }
 CMBackupTest >> migrateAnswering: aBoolean [
 	"Migrate Forest, made with Cormas 0.9, to Cormas 1.0 and answer the question with aBoolean. Return the question"
@@ -116,6 +131,43 @@ CMBackupTest >> testMigrationQuestionExplainsTheChange [
 		assert: (self migrateAnswering: true) messageText
 		equals:
 		'Forest was made with Cormas 0.9. Saving this change makes it a Cormas 1.0 model, which may no longer work in Cormas 0.9. Migrating first saves a copy of the 0.9 version in Backups. Not saving undoes the change: Forest stays a Cormas 0.9 model, which cannot be changed in this Cormas.'
+]
+
+{ #category : 'tests' }
+CMBackupTest >> testNewModelFromAnOldVersionAnnouncesTheChange [
+
+	| count |
+	count := 0.
+	workspace announcer
+		when: CMWorkspaceChanged
+		do: [ count := count + 1 ]
+		for: self.
+	self editOldVersionMakingANewModel: true.
+	self assert: count equals: 1
+]
+
+{ #category : 'tests' }
+CMBackupTest >> testNewModelFromAnOldVersionIsACopyWithoutGit [
+
+	| model |
+	model := self editOldVersionMakingANewModel: true.
+	self
+		assert: model folder
+		equals: workspace modelsFolder / 'Forest copy'.
+	self
+		assert: (model folder / 'data' / 'map.csv') contents
+		equals: '1,2,3'.
+	self deny: (model folder / '.git') exists.
+	self assert: (forest / '.git' / 'config') exists
+]
+
+{ #category : 'tests' }
+CMBackupTest >> testOldVersionWithoutANewModelIsNotChanged [
+
+	self
+		should: [ self editOldVersionMakingANewModel: false ]
+		raise: CMWorkspaceError.
+	self deny: (workspace modelsFolder / 'Forest copy') exists
 ]
 
 { #category : 'tests' }

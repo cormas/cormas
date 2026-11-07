@@ -39,6 +39,7 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - `updateExamples` resets every example to the latest version of its repository, then reloads the installed ones. Files added by hand, such as outputs, are kept.
 - `createModelFrom: aModelTemplate` writes a new model into a new folder of `Models`, installs it and returns the folder.
 - `export: aModelFolder to: aZipFile` zips the whole folder, as it is on disk.
+- `announcer` announces `CMWorkspaceChanged` whenever the installed models change, so that tools showing them stay up to date.
 - `addFromZip: aZipFile` extracts a zip into a new folder of `Models`, following single folders down to the one holding `cormas.json`, and returns that model folder, without installing it.
 - `install: aModelFolder` loads a model from the files in its folder and remembers the folder. It refuses, leaving the image as it was, to replace any code already in the image.
 - `uninstall: aBaselineName` backs up the code of a model as it is in the image, then removes it; the folder is left untouched.
@@ -80,7 +81,8 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'location',
-		'installed'
+		'installed',
+		'announcer'
 	],
 	#classInstVars : [
 		'current'
@@ -249,6 +251,19 @@ CMWorkspace >> addFromZip: aZipFile [
 			do: [ model moveTo: folder ] ] ensure: [
 		(self modelsFolder / temporaryName) ensureDeleteAll ].
 	^ CMModelFolder in: self at: folder
+]
+
+{ #category : 'accessing' }
+CMWorkspace >> announceChange [
+	"Tell the tools that show me that my installed models changed"
+
+	announcer announce: CMWorkspaceChanged new
+]
+
+{ #category : 'accessing' }
+CMWorkspace >> announcer [
+
+	^ announcer
 ]
 
 { #category : 'private' }
@@ -435,12 +450,17 @@ CMWorkspace >> checkWritable [
 
 { #category : 'code changes' }
 CMWorkspace >> classChanged: anAnnouncement [
-	"Save the class in every package the change affected: a method moved from one package to another changes both"
+	"Save the class in every package the change affected: a method moved from one package to another changes both. A question about an old version learns which change it is about, so that it can show it again"
 
-	anAnnouncement packagesAffected do: [ :each |
-			self
-				saveClassNamed: anAnnouncement classAffected instanceSide name
-				inPackageNamed: each name ]
+	[
+		anAnnouncement packagesAffected do: [ :each |
+				self
+					saveClassNamed: anAnnouncement classAffected instanceSide name
+					inPackageNamed: each name ] ]
+		on: CMOldVersionEdited
+		do: [ :question |
+				question change: anAnnouncement.
+				question pass ]
 ]
 
 { #category : 'code changes' }
@@ -517,7 +537,8 @@ CMWorkspace >> copyEditedExample: anInstalledModel [
 		do: [ anInstalledModel folder copyAllTo: copy ].
 	self forgetIcebergRepositoriesAt: anInstalledModel folder.
 	anInstalledModel folder: copy.
-	self registerWithIceberg: anInstalledModel
+	self registerWithIceberg: anInstalledModel.
+	self announceChange
 ]
 
 { #category : 'private' }
@@ -606,11 +627,20 @@ CMWorkspace >> download: aCatalogModel [
 
 { #category : 'versions' }
 CMWorkspace >> editOldVersion: anInstalledModel [
-	"An old version must stay as it was released: raise a CMWorkspaceError, which stops saving it, after telling the modeler"
+	"An old version must stay as it was released. When the modeler makes a new model from it, copy its folder without git to a new folder of Models, such as 'Forest v1.0.0 copy': the installed model uses the copy from then on, so the change is saved there. Otherwise raise a CMWorkspaceError, which stops saving the old version"
 
+	| copy |
 	(CMOldVersionEdited signalFor: anInstalledModel) ifFalse: [
 			CMWorkspaceError signal: anInstalledModel folder basename
-				, ' is an old version: its changes are not saved' ]
+				, ' is an old version: its changes are not saved' ].
+	copy := self
+		        newFolderNamed: anInstalledModel folder basename , ' copy'
+		        in: self modelsFolder.
+	CMWorkspaceError whileWritingIn: self modelsFolder do: [
+			anInstalledModel folder copyAllTo: copy.
+			(copy / '.git') ensureDeleteAll ].
+	anInstalledModel folder: copy.
+	self announceChange
 ]
 
 { #category : 'private' }
@@ -723,7 +753,8 @@ CMWorkspace >> icebergRepositoryModified: anIceRepository [
 CMWorkspace >> initialize [
 
 	super initialize.
-	installed := Dictionary new
+	installed := Dictionary new.
+	announcer := Announcer new
 ]
 
 { #category : 'installing' }
@@ -763,7 +794,8 @@ CMWorkspace >> install: aModelFolder [
 					, error messageText ].
 	model recordFiles.
 	installed at: model baselineName put: model.
-	self registerWithIceberg: model
+	self registerWithIceberg: model.
+	self announceChange
 ]
 
 { #category : 'installing' }
@@ -939,7 +971,8 @@ CMWorkspace >> reload: anInstalledModel [
 	self backUpCodeOf: anInstalledModel baselineName.
 	installed removeKey: anInstalledModel baselineName.
 	[ anInstalledModel reload ] ensure: [
-		installed at: anInstalledModel baselineName put: anInstalledModel ]
+			installed at: anInstalledModel baselineName put: anInstalledModel.
+			self announceChange ]
 ]
 
 { #category : 'private' }
@@ -996,7 +1029,8 @@ CMWorkspace >> uninstall: aBaselineName [
 	model loadedPackages do: [ :each | each removeFromSystem ].
 	Metacello new
 		baseline: aBaselineName;
-		unregister
+		unregister.
+	self announceChange
 ]
 
 { #category : 'installing' }

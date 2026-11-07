@@ -14,6 +14,20 @@ Class {
 	#package : 'Cormas-Workspace-Tests'
 }
 
+{ #category : 'tests' }
+CMWorkspaceTest >> announcementsOf: aWorkspace during: aBlock [
+	"Return how many times aWorkspace announced that it changed while evaluating aBlock"
+
+	| count |
+	count := 0.
+	aWorkspace announcer
+		when: CMWorkspaceChanged
+		do: [ count := count + 1 ]
+		for: self.
+	aBlock value.
+	^ count
+]
+
 { #category : 'helpers' }
 CMWorkspaceTest >> installIn: aWorkspace modelNamed: aBaselineName [
 	"Record a model as installed without loading any code, which would make the test slow"
@@ -192,6 +206,20 @@ CMWorkspaceTest >> testIsWorkspace [
 	self assert: (CMWorkspace isWorkspace: fileSystem / 'Cormas').
 	self deny: (CMWorkspace isWorkspace: fileSystem / 'Documents').
 	self deny: (CMWorkspace isWorkspace: fileSystem / 'Missing')
+]
+
+{ #category : 'tests' }
+CMWorkspaceTest >> testModelThatStopsBeingSavedAnnouncesTheChange [
+
+	| research model |
+	research := CMWorkspace createAt: fileSystem root / 'Research'.
+	model := self installIn: research modelNamed: 'Forest'.
+	self
+		assert: (self
+				 announcementsOf: research
+				 during: [ model save: Dictionary new over: #(  ) ])
+		equals: 1.
+	self deny: model isSaved
 ]
 
 { #category : 'tests' }
