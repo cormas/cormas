@@ -61,6 +61,14 @@ CMModelFolder >> baselineName [
 		  ifAbsent: [ self invalidCormasJson: 'it has no "baseline"' ]
 ]
 
+{ #category : 'versions' }
+CMModelFolder >> chosenVersion [
+	"Return the version the modeler chose for my folder, recorded as cormas.version in its git configuration, or nil when none was chosen"
+
+	self isGitRepository ifFalse: [ ^ nil ].
+	^ self gitConfig getString: 'cormas.version' ifAbsent: [ nil ]
+]
+
 { #category : 'accessing' }
 CMModelFolder >> commit [
 	"Return the id of the commit checked out in my folder, or nil when my folder is not a git repository"
@@ -75,6 +83,14 @@ CMModelFolder >> commit [
 CMModelFolder >> cormasJson [
 
 	^ location / 'cormas.json'
+]
+
+{ #category : 'versions' }
+CMModelFolder >> gitConfig [
+
+	^ (LGitRepository on: location)
+		  open;
+		  config
 ]
 
 { #category : 'testing' }
@@ -123,6 +139,12 @@ CMModelFolder >> isExample [
 	^ location parent = workspace examplesFolder
 ]
 
+{ #category : 'versions' }
+CMModelFolder >> isGitRepository [
+
+	^ (location / '.git') isDirectory
+]
+
 { #category : 'accessing' }
 CMModelFolder >> isMadeWithAnotherMajorThan: aVersion [
 	"Return whether my model is made with a major of Cormas other than the one of aVersion: saving it in aVersion would migrate it"
@@ -137,6 +159,13 @@ CMModelFolder >> isModel [
 	"A folder is a model if and only if it contains cormas.json"
 
 	^ self cormasJson isFile
+]
+
+{ #category : 'versions' }
+CMModelFolder >> isOldVersion [
+	"Return whether my folder in Models holds an old version of a model, which Cormas cloned to run it and which cannot be changed"
+
+	^ self isExample not and: [ self chosenVersion notNil ]
 ]
 
 { #category : 'accessing' }
@@ -174,6 +203,13 @@ CMModelFolder >> name [
 	^ location basename
 ]
 
+{ #category : 'versions' }
+CMModelFolder >> recordChosenVersion: aTag [
+	"Record in the git configuration of my folder that it holds the version aTag"
+
+	self gitConfig setString: 'cormas.version' to: aTag
+]
+
 { #category : 'accessing' }
 CMModelFolder >> recordMadeWith: aVersion [
 	"Record in cormas.json that the model is now made with this version of Cormas. Moving a model to another major is the modeler's decision, asked before saving"
@@ -200,6 +236,18 @@ CMModelFolder >> summary [
 	^ self metadata at: 'summary' ifAbsent: [ '' ]
 ]
 
+{ #category : 'versions' }
+CMModelFolder >> tags [
+	"Return the names of the tags of my git repository, the newest commit first: the versions of my model. Return none when my folder is not a git repository"
+
+	self isGitRepository ifFalse: [ ^ #(  ) ].
+	^ ((IceRepositoryCreator new
+		    location: location;
+		    createRepository) tags asSortedCollection: [ :a :b |
+		   a commit datetime >= b commit datetime ]) asArray collect: [
+		  :each | each name ]
+]
+
 { #category : 'accessing' }
 CMModelFolder >> warningFrom: aCatalog [
 	"Return the warning shown before installing my model when aCatalog does not check it"
@@ -216,6 +264,20 @@ CMModelFolder >> warningFrom: aCatalog [
 		  ifNotNil: [
 				  self baselineName , ' was made with Cormas '
 				  , madeWith majorMinorString , ' and ' , checked ]
+]
+
+{ #category : 'versions' }
+CMModelFolder >> workingFolder [
+	"Return the folder of the model my old version was cloned from, or nil when it is gone"
+
+	| origin |
+	origin := ((IceRepositoryCreator new
+		            location: location;
+		            createRepository) remoteNamed: 'origin') url
+		          asFileReference.
+	^ origin exists
+		  ifTrue: [ CMModelFolder in: workspace at: origin ]
+		  ifFalse: [ nil ]
 ]
 
 { #category : 'private' }

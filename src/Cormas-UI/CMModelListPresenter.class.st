@@ -199,6 +199,59 @@ CMModelListPresenter >> changeWorkspace [
 ]
 
 { #category : 'actions' }
+CMModelListPresenter >> chooseVersionOf: anEntry [
+	"Let the modeler choose between their working version and the tags of its folder, and install the chosen one in place of the installed one. An old version is cloned into its own folder of Models: the working folder is never touched"
+
+	| working tags installedFolder labels index target |
+	working := anEntry folder isOldVersion
+		           ifTrue: [ anEntry folder workingFolder ]
+		           ifFalse: [ anEntry folder ].
+	working ifNil: [
+			^ UIManager default alert: 'The working folder of ' , anEntry name
+				  , ' is gone, so there are no other versions to choose.' ].
+	tags := working tags.
+	installedFolder := (workspace isInstalled: anEntry baseline)
+		                   ifTrue: [
+		                   (workspace installedModelNamed: anEntry baseline)
+			                   folder ]
+		                   ifFalse: [ nil ].
+	labels := { ('My working version' -> working location) }
+	          , (tags collect: [ :each |
+				           each
+				           ->
+				           (workspace modelsFolder
+				            / (working location basename , ' ' , each)) ])
+		          collect: [ :each |
+				          each value = installedFolder
+					          ifTrue: [ each key , ' (installed)' ]
+					          ifFalse: [ each key ] ].
+	index := UIManager default
+		         chooseFrom: labels
+		         title: 'Versions of ' , anEntry baseline
+			         ,
+			         '. An old version opens in its own folder: your working folder is not touched.'.
+	(index isNil or: [ index = 0 ]) ifTrue: [ ^ self ].
+	index = 1
+		ifTrue: [ target := working ]
+		ifFalse: [
+				UIManager default
+					informUser: 'Getting ' , (tags at: index - 1) , '…'
+					during: [
+						target := workspace
+							          folderOfVersion: (tags at: index - 1)
+							          of: working ] ].
+	target location = installedFolder ifTrue: [ ^ self ].
+	(self confirmInstalling: target) ifFalse: [ ^ self ].
+	UIManager default
+		informUser: 'Installing ' , (labels at: index) , '…'
+		during: [ workspace switchTo: target ].
+	self updateEntries.
+	self selectEntryNamed: (index = 1
+			 ifTrue: [ anEntry baseline ]
+			 ifFalse: [ anEntry baseline , ' ' , (tags at: index - 1) ])
+]
+
+{ #category : 'actions' }
 CMModelListPresenter >> confirmInstalling: aModelFolder [
 	"Return whether to install the model of aModelFolder: at once when this Cormas checks it, otherwise when the user accepts the warning"
 
@@ -394,6 +447,14 @@ CMModelListPresenter >> installFromZip [
 
 { #category : 'actions' }
 CMModelListPresenter >> mainActionsFor: anEntry [
+
+	^ (self modelActionsFor: anEntry) , (anEntry hasVersions
+		   ifTrue: [ { ('Versions…' -> [ self chooseVersionOf: anEntry ]) } ]
+		   ifFalse: [ #(  ) ])
+]
+
+{ #category : 'actions' }
+CMModelListPresenter >> modelActionsFor: anEntry [
 
 	| state |
 	state := anEntry state.

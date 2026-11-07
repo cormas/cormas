@@ -461,7 +461,7 @@ CMInstalledModel >> tonelWriterClass [
 
 { #category : 'private' }
 CMInstalledModel >> write: files over: paths [
-	"Check first that every file to touch is as Cormas last saw it, then write and delete. Before changing the folder of an example, which only Cormas changes, have the workspace copy it to Models or stop saving. Before changing a model made with another major of Cormas, have the workspace migrate it or stop saving. Then record that the model is made with this Cormas"
+	"Check first that every file to touch is as Cormas last saw it, then write and delete. Before changing the folder of an example, which only Cormas changes, have the workspace copy it to Models or stop saving. An old version is never changed. Before changing a model made with another major of Cormas, have the workspace migrate it or stop saving. Then record that the model is made with this Cormas"
 
 	| toWrite toDelete |
 	toWrite := files keys reject: [ :path |
@@ -475,6 +475,8 @@ CMInstalledModel >> write: files over: paths [
 	(toWrite isEmpty and: [ toDelete isEmpty ]) ifTrue: [ ^ self ].
 	(CMModelFolder in: workspace at: folder) isExample ifTrue: [
 		workspace copyEditedExample: self ].
+	(CMModelFolder in: workspace at: folder) isOldVersion ifTrue: [
+		workspace editOldVersion: self ].
 	toWrite , toDelete asArray do: [ :path | self checkUnchanged: path ].
 	((CMModelFolder in: workspace at: folder)
 		 isMadeWithAnotherMajorThan: CMVersion current) ifTrue: [

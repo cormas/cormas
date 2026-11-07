@@ -106,6 +106,17 @@ CMModelFolderTest >> testFolderWithCormasJsonIsAModel [
 ]
 
 { #category : 'tests' }
+CMModelFolderTest >> testFolderWithoutGitHasNoVersions [
+
+	| folder |
+	self folderNamed: 'Forest' withCormasJson: '{ "baseline": "Forest" }'.
+	folder := self folderNamed: 'Forest'.
+	self assert: folder tags isEmpty.
+	self assert: folder chosenVersion isNil.
+	self deny: folder isOldVersion
+]
+
+{ #category : 'tests' }
 CMModelFolderTest >> testFoldersAreTheFoldersInModelsAndExamples [
 
 	self folderNamed: 'Forest' withCormasJson: '{ "baseline": "Forest" }'.

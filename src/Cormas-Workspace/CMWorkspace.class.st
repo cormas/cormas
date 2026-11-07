@@ -400,6 +400,29 @@ CMWorkspace >> checkOut: aCommit of: aVersion in: aRepository [
 ]
 
 { #category : 'private' }
+CMWorkspace >> checkOutTag: aTag in: aModelFolder [
+	"Put the files of the commit of aTag in a fresh clone, on its own, with no branch"
+
+	| handle gitCommit |
+	[
+		handle := (IceRepositoryCreator new
+			           location: aModelFolder location;
+			           createRepository) repositoryHandle.
+		gitCommit := handle revparse: 'refs/tags/' , aTag , '^{commit}'.
+		handle
+			checkout_treeish: gitCommit
+			opts: (LGitCheckoutOptions defaults
+					 checkoutStrategy: LGitCheckoutStrategyEnum git_checkout_force;
+					 yourself).
+		handle setHeadDetached: gitCommit ]
+		on: IceError , LGitAbstractError
+		do: [ :error |
+				CMWorkspaceError signal:
+					'Cormas cannot check out ' , aTag , ' of '
+					, aModelFolder location fullName , ' (' , error description , ')' ]
+]
+
+{ #category : 'private' }
 CMWorkspace >> checkWritable [
 	"Create and delete a file, so that a folder where Cormas cannot write is refused when it is chosen rather than when the first model is saved"
 
@@ -581,6 +604,15 @@ CMWorkspace >> download: aCatalogModel [
 	^ CMModelFolder in: self at: folder
 ]
 
+{ #category : 'versions' }
+CMWorkspace >> editOldVersion: anInstalledModel [
+	"An old version must stay as it was released: raise a CMWorkspaceError, which stops saving it, after telling the modeler"
+
+	(CMOldVersionEdited signalFor: anInstalledModel) ifFalse: [
+			CMWorkspaceError signal: anInstalledModel folder basename
+				, ' is an old version: its changes are not saved' ]
+]
+
 { #category : 'private' }
 CMWorkspace >> exampleDirectories [
 	"Examples is only created when the first example is downloaded"
@@ -630,6 +662,32 @@ CMWorkspace >> folderOf: aClass [
 					   aClass name
 					   , ' is not part of a model installed from the workspace' ])
 		  folder
+]
+
+{ #category : 'versions' }
+CMWorkspace >> folderOfVersion: aTag of: aModelFolder [
+	"Return a folder of Models holding the version aTag of the model in aModelFolder, such as 'Forest v1.0.0'. The first time, clone aModelFolder at that tag and record the version in the clone, which makes it an old version that cannot be changed. Later, reuse that folder: it keeps the files simulations wrote in it. aModelFolder is never touched"
+
+	| name temporaryName clone folder |
+	name := aModelFolder location basename , ' ' , aTag.
+	folder := self modelsFolder / name.
+	(folder exists and: [
+		 (CMModelFolder in: self at: folder) chosenVersion = aTag ])
+		ifTrue: [ ^ CMModelFolder in: self at: folder ].
+	temporaryName := '.cormas-version-' , UUID new asString.
+	[
+		clone := CMModelFolder
+			         in: self
+			         at: self modelsFolder / temporaryName.
+		self clone: aModelFolder location fullName to: clone location.
+		self checkOutTag: aTag in: clone.
+		clone recordChosenVersion: aTag.
+		folder := self newFolderNamed: name in: self modelsFolder.
+		CMWorkspaceError
+			whileWritingIn: self modelsFolder
+			do: [ clone location moveTo: folder ] ] ensure: [
+		(self modelsFolder / temporaryName) ensureDeleteAll ].
+	^ CMModelFolder in: self at: folder
 ]
 
 { #category : 'accessing' }
@@ -860,9 +918,11 @@ CMWorkspace >> refresh: anInstalledModel [
 
 { #category : 'iceberg' }
 CMWorkspace >> registerWithIceberg: anInstalledModel [
-	"When the folder of the model is a git repository, register it with Iceberg so that git users can commit from the image. Iceberg only reads the folder: Cormas loads the code itself, from the files rather than from the last commit"
+	"When the folder of the model is a git repository, register it with Iceberg so that git users can commit from the image. Iceberg only reads the folder: Cormas loads the code itself, from the files rather than from the last commit. An old version is not registered: nothing is committed to it"
 
 	(anInstalledModel folder / '.git') exists ifFalse: [ ^ self ].
+	(CMModelFolder in: self at: anInstalledModel folder) isOldVersion
+		ifTrue: [ ^ self ].
 	(self icebergRepositoriesAt: anInstalledModel folder) ifNotEmpty: [
 		^ self ].
 	(IceRepositoryCreator new
@@ -913,6 +973,15 @@ CMWorkspace >> savePackageNamed: aPackageName [
 CMWorkspace >> setLocation: aFileReference [
 
 	location := aFileReference
+]
+
+{ #category : 'versions' }
+CMWorkspace >> switchTo: aModelFolder [
+	"Install the model of aModelFolder in place of the model installed with the same baseline, if any, which is uninstalled after its code is backed up"
+
+	(self isInstalled: aModelFolder baselineName) ifTrue: [
+		self uninstall: aModelFolder baselineName ].
+	self install: aModelFolder
 ]
 
 { #category : 'installing' }

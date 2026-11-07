@@ -85,6 +85,15 @@ CMModelListEntry >> folder [
 	^ folder
 ]
 
+{ #category : 'testing' }
+CMModelListEntry >> hasVersions [
+	"Return whether the modeler can choose among versions of my model: my folder is a model of Models that is an old version, or that has tags"
+
+	(folder isNil or: [ self baseline isNil or: [ folder isExample ] ])
+		ifTrue: [ ^ false ].
+	^ folder isOldVersion or: [ folder tags notEmpty ]
+]
+
 { #category : 'accessing' }
 CMModelListEntry >> installedModel [
 	"Return the installed model that comes from my folder, or nil"
@@ -112,7 +121,10 @@ CMModelListEntry >> modelClasses [
 { #category : 'accessing' }
 CMModelListEntry >> name [
 
-	^ self baseline ifNil: [ folder name ]
+	self baseline ifNil: [ ^ folder name ].
+	^ (folder notNil and: [ folder isOldVersion ])
+		  ifTrue: [ self baseline , ' ' , folder chosenVersion ]
+		  ifFalse: [ self baseline ]
 ]
 
 { #category : 'accessing' }
@@ -204,10 +216,18 @@ CMModelListEntry >> stateExplanation [
 			^ 'Not saved: ' , self installedModel problem
 			  ,
 			  '. Reload it from its folder; the code in the image is backed up first.' ].
+	folder isOldVersion ifTrue: [
+			^ 'This is ' , self baseline , ' as it was released in '
+			  , folder chosenVersion
+			  ,
+			  ', in its own folder: your working folder is not touched. An old version cannot be changed. To go back to your working version, choose it in Versions…' ].
 	state = 'Copy' ifTrue: [
 			^ 'The same model is installed from '
 			  , (workspace installedModelNamed: self baseline) folder fullName
-			  , '. Only one of them can be installed at a time.' ].
+			  , '. Only one of them can be installed at a time.'
+			  , (self hasVersions
+					   ifTrue: [ ' Choose which one in Versions…' ]
+					   ifFalse: [ '' ]) ].
 	folder isExample ifTrue: [
 		^ 'This is an example. Changing its code offers to copy it to Models.' ].
 	^ nil
