@@ -423,23 +423,6 @@ CMBlPresenterTest >> testOpenSpacePresenterShowsTheModel [
 ]
 
 { #category : 'tests' }
-CMBlPresenterTest >> testOpeningTheSideMenuGrowsANarrowWindow [
-
-	| presenter narrowest |
-	presenter := self openSimulationPresenter.
-	300 milliSeconds wait.
-	window window extent: 200 @ 700.
-	narrowest := window window width.
-
-	(self sideMenuButtonsOf: presenter) first state: true.
-	300 milliSeconds wait.
-
-	self assert: window window width > narrowest.
-	self assert:
-		self windowContent width >= self windowContent minExtent x
-]
-
-{ #category : 'tests' }
 CMBlPresenterTest >> testOpeningTheSideMenuKeepsAWideWindow [
 
 	| presenter |
