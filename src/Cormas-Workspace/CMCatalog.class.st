@@ -83,6 +83,12 @@ CMCatalog >> checkScreenshotOf: aModel [
 					(aModel at: 'screenshot') , ' is not a screenshot of the catalog' ]
 ]
 
+{ #category : 'accessing' }
+CMCatalog >> cormasVersion [
+
+	^ cormasVersion
+]
+
 { #category : 'private' }
 CMCatalog >> deleteScreenshotsNotIn: models [
 
@@ -123,6 +129,17 @@ CMCatalog >> isReleasedLine [
 	"Return whether my line lists tags of a release rather than branches in development"
 
 	^ cormasVersion isDev not
+]
+
+{ #category : 'accessing' }
+CMCatalog >> listsCommit: aCommitId [
+	"Return whether the downloaded catalog lists a version at aCommitId made with a Cormas no newer than mine: the Cormas team checked that version with my line"
+
+	^ self models anySatisfy: [ :model |
+			  (model at: 'versions') anySatisfy: [ :each |
+					  (each at: 'commit') = aCommitId and: [
+							  (CMVersion fromString: (each at: 'cormas')) isNoNewerThan:
+								  cormasVersion ] ] ]
 ]
 
 { #category : 'accessing' }

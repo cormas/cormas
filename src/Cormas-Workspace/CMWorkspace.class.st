@@ -39,7 +39,7 @@ I represent a Cormas workspace: the folder on the modeler's computer where their
 - `updateExamples` resets every example to the latest version of its repository, then reloads the installed ones. Files added by hand, such as outputs, are kept.
 - `createModelFrom: aModelTemplate` writes a new model into a new folder of `Models`, installs it and returns the folder.
 - `export: aModelFolder to: aZipFile` zips the whole folder, as it is on disk.
-- `installFromZip: aZipFile` extracts a zip into a new folder of `Models`, following single folders down to the one holding `cormas.json`, and installs the model; the folder stays even when the model cannot be installed.
+- `addFromZip: aZipFile` extracts a zip into a new folder of `Models`, following single folders down to the one holding `cormas.json`, and returns that model folder, without installing it.
 - `install: aModelFolder` loads a model from the files in its folder and remembers the folder. It refuses, leaving the image as it was, to replace any code already in the image.
 - `uninstall: aBaselineName` backs up the code of a model as it is in the image, then removes it; the folder is left untouched.
 - `delete: aModelFolder` backs up a folder, uninstalls its model if it is installed from there, then deletes it.
@@ -224,6 +224,31 @@ CMWorkspace class >> startUp: resuming [
 				  'Cormas workspace not found: ' , current location fullName
 				  , '. Nothing was changed.' ].
 	current refresh
+]
+
+{ #category : 'sharing' }
+CMWorkspace >> addFromZip: aZipFile [
+	"Extract a zip into a new folder of Models, never over another one, and return that model folder. Installing the model is a separate step"
+
+	| temporaryName model folder |
+	temporaryName := '.cormas-unzip-' , UUID new asString.
+	[
+		self extract: aZipFile to: self modelsFolder / temporaryName.
+		model := self
+			         modelFolderIn: self modelsFolder / temporaryName
+			         ifNone: [
+					         CMWorkspaceError signal:
+						         aZipFile basename , ' holds no model (no cormas.json)' ].
+		folder := self
+			          newFolderNamed: (model basename = temporaryName
+					           ifTrue: [ aZipFile basenameWithoutExtension ]
+					           ifFalse: [ model basename ])
+			          in: self modelsFolder.
+		CMWorkspaceError
+			whileWritingIn: self modelsFolder
+			do: [ model moveTo: folder ] ] ensure: [
+		(self modelsFolder / temporaryName) ensureDeleteAll ].
+	^ CMModelFolder in: self at: folder
 ]
 
 { #category : 'private' }
@@ -674,32 +699,6 @@ CMWorkspace >> install: aModelFolder [
 	model recordFiles.
 	installed at: model baselineName put: model.
 	self registerWithIceberg: model
-]
-
-{ #category : 'sharing' }
-CMWorkspace >> installFromZip: aZipFile [
-	"Extract a zip into a new folder of Models, never over another one, and install the model it holds. Return the folder. The folder stays in Models even when the model cannot be installed, like a folder dropped there"
-
-	| temporaryName model folder |
-	temporaryName := '.cormas-unzip-' , UUID new asString.
-	[
-		self extract: aZipFile to: self modelsFolder / temporaryName.
-		model := self
-			         modelFolderIn: self modelsFolder / temporaryName
-			         ifNone: [
-					         CMWorkspaceError signal:
-						         aZipFile basename , ' holds no model (no cormas.json)' ].
-		folder := self
-			          newFolderNamed: (model basename = temporaryName
-					           ifTrue: [ aZipFile basenameWithoutExtension ]
-					           ifFalse: [ model basename ])
-			          in: self modelsFolder.
-		CMWorkspaceError
-			whileWritingIn: self modelsFolder
-			do: [ model moveTo: folder ] ] ensure: [
-		(self modelsFolder / temporaryName) ensureDeleteAll ].
-	self install: (CMModelFolder in: self at: folder).
-	^ CMModelFolder in: self at: folder
 ]
 
 { #category : 'installing' }

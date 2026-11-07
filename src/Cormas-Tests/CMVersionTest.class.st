@@ -34,6 +34,23 @@ CMVersionTest >> testIsNoNewerThanComparesMajorsAndMinors [
 ]
 
 { #category : 'tests' }
+CMVersionTest >> testIsWithinTheMajorOfComparesMinorsOfTheSameMajor [
+
+	| version |
+	version := CMVersion fromString: '1.1.2'.
+	self assert:
+		((CMVersion fromString: '1.0-dev') isWithinTheMajorOf: version).
+	self assert:
+		((CMVersion fromString: '1.1') isWithinTheMajorOf: version).
+	self deny:
+		((CMVersion fromString: '1.2') isWithinTheMajorOf: version).
+	self deny:
+		((CMVersion fromString: '0.9') isWithinTheMajorOf: version).
+	self deny:
+		((CMVersion fromString: '2.0') isWithinTheMajorOf: version)
+]
+
+{ #category : 'tests' }
 CMVersionTest >> testLineOfADevVersionIsDev [
 
 	self assert: (CMVersion fromString: '1.0.0-dev') line equals: 'dev'

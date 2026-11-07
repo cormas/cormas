@@ -151,6 +151,20 @@ CMCatalogTest >> testFilesAreReadFromTheLineOfThisCormas [
 ]
 
 { #category : 'tests' }
+CMCatalogTest >> testListsOnlyTheCommitsOfVersionsMadeForThisCormas [
+
+	| other |
+	other := self catalogFor: '1.1.3' serving: { (self
+			          modelNamed: 'Fire'
+			          screenshot: #[ 1 ]
+			          madeWith: #( '0.9' '1.1' '1.2' )) }.
+	self assert: (other listsCommit: 'c1').
+	self assert: (other listsCommit: 'c2').
+	self deny: (other listsCommit: 'c3').
+	self deny: (other listsCommit: 'unknown')
+]
+
+{ #category : 'tests' }
 CMCatalogTest >> testModelWithoutAVersionForThisCormasIsNotListed [
 
 	| other |

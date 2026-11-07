@@ -198,6 +198,19 @@ CMModelListPresenter >> changeWorkspace [
 	self updateEntries
 ]
 
+{ #category : 'actions' }
+CMModelListPresenter >> confirmInstalling: aModelFolder [
+	"Return whether to install the model of aModelFolder: at once when this Cormas checks it, otherwise when the user accepts the warning"
+
+	| catalog |
+	catalog := workspace catalog.
+	(aModelFolder isCheckedBy: catalog) ifTrue: [ ^ true ].
+	^ (UIManager default
+		   confirm: (aModelFolder warningFrom: catalog)
+		   trueChoice: 'Install anyway'
+		   falseChoice: 'Cancel') = true
+]
+
 { #category : 'initialization' }
 CMModelListPresenter >> connectPresenters [
 
@@ -241,9 +254,8 @@ CMModelListPresenter >> download: anEntry andInstall: aBoolean [
 	| folder |
 	UIManager default
 		informUser: 'Downloading ' , anEntry name , '…'
-		during: [
-		folder := workspace download: anEntry catalogModel ].
-	aBoolean ifTrue: [
+		during: [ folder := workspace download: anEntry catalogModel ].
+	(aBoolean and: [ self confirmInstalling: folder ]) ifTrue: [
 			UIManager default
 				informUser: 'Installing ' , anEntry name , '…'
 				during: [ workspace install: folder ] ]
@@ -355,6 +367,7 @@ CMModelListPresenter >> initializeWindow: aWindowPresenter [
 { #category : 'actions' }
 CMModelListPresenter >> install: anEntry [
 
+	(self confirmInstalling: anEntry folder) ifFalse: [ ^ self ].
 	UIManager default
 		informUser: 'Installing ' , anEntry name , '…'
 		during: [ workspace install: anEntry folder ]
@@ -370,9 +383,11 @@ CMModelListPresenter >> installFromZip [
 				       extensions: #( 'zip' )
 				       path: FileLocator home asFileReference.
 			zip ifNotNil: [
-					UIManager default
-						informUser: 'Installing ' , zip basename , '…'
-						during: [ folder := workspace installFromZip: zip ].
+					folder := workspace addFromZip: zip.
+					(self confirmInstalling: folder) ifTrue: [
+							UIManager default
+								informUser: 'Installing ' , zip basename , '…'
+								during: [ workspace install: folder ] ].
 					self updateEntries.
 					self selectEntryNamed: (CMModelListEntry baselineOf: folder) ] ]
 ]

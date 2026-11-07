@@ -80,6 +80,13 @@ CMVersion >> isNoNewerThan: aVersion [
 		  major = aVersion major and: [ minor <= aVersion minor ] ]
 ]
 
+{ #category : 'comparing' }
+CMVersion >> isWithinTheMajorOf: aVersion [
+	"Return whether I am the same major as aVersion and no newer minor: a model made with me runs in aVersion without a warning"
+
+	^ major = aVersion major and: [ minor <= aVersion minor ]
+]
+
 { #category : 'accessing' }
 CMVersion >> line [
 	"Return the catalog line of this version: dev for a version in development, otherwise its major, such as 1 for every 1.x.y release"

@@ -13,6 +13,15 @@ Class {
 	#package : 'Cormas-Workspace-Tests'
 }
 
+{ #category : 'tests' }
+CMModelFolderTest >> catalogFor: aVersionString [
+	"Return a catalog of a Cormas of version aVersionString, that lists nothing"
+
+	^ CMCatalogMock
+		  in: workspace catalogFolder
+		  for: (CMVersion fromString: aVersionString)
+]
+
 { #category : 'helpers' }
 CMModelFolderTest >> folderNamed: aString [
 
@@ -186,6 +195,33 @@ CMModelFolderTest >> testMadeWithThatIsNotAVersionRaisesAnError [
 ]
 
 { #category : 'tests' }
+CMModelFolderTest >> testModelMadeWithANewerMinorOrAnotherMajorIsNotChecked [
+
+	self
+		folderNamed: 'Forest'
+		withCormasJson: '{ "baseline": "Forest", "cormas": "1.1" }'.
+	self deny:
+		((self folderNamed: 'Forest') isCheckedBy:
+			 (self catalogFor: '1.0.0')).
+	self deny:
+		((self folderNamed: 'Forest') isCheckedBy:
+			 (self catalogFor: '2.0.0'))
+]
+
+{ #category : 'tests' }
+CMModelFolderTest >> testModelMadeWithTheSameMajorAndNoNewerMinorIsChecked [
+
+	self
+		folderNamed: 'Forest'
+		withCormasJson: '{ "baseline": "Forest", "cormas": "1.1" }'.
+	self assert:
+		((self folderNamed: 'Forest') isCheckedBy:
+			 (self catalogFor: '1.1.0')).
+	self assert: ((self folderNamed: 'Forest') isCheckedBy:
+			 (self catalogFor: '1.2.0-dev'))
+]
+
+{ #category : 'tests' }
 CMModelFolderTest >> testModelOneLevelDown [
 
 	self
@@ -194,6 +230,15 @@ CMModelFolderTest >> testModelOneLevelDown [
 		withCormasJson: '{ "baseline": "Forest" }'.
 	self deny: (self folderNamed: 'Forest') isModel.
 	self assert: (self folderNamed: 'Forest') hasModelOneLevelDown
+]
+
+{ #category : 'tests' }
+CMModelFolderTest >> testModelThatDoesNotSayWhatItIsMadeWithIsNotChecked [
+
+	self folderNamed: 'Forest' withCormasJson: '{ "baseline": "Forest" }'.
+	self deny:
+		((self folderNamed: 'Forest') isCheckedBy:
+			 (self catalogFor: '1.0.0'))
 ]
 
 { #category : 'tests' }
@@ -273,4 +318,29 @@ CMModelFolderTest >> testSummaryIsEmptyWhenCormasJsonHasNone [
 
 	self folderNamed: 'Forest' withCormasJson: '{ "baseline": "Forest" }'.
 	self assert: (self folderNamed: 'Forest') summary equals: ''
+]
+
+{ #category : 'tests' }
+CMModelFolderTest >> testWarningSaysWhatTheModelIsMadeWith [
+
+	self
+		folderNamed: 'Forest'
+		withCormasJson: '{ "baseline": "Forest", "cormas": "1.2" }'.
+	self
+		assert:
+		((self folderNamed: 'Forest') warningFrom:
+			 (self catalogFor: '1.0.0'))
+		equals:
+		'Forest was made with Cormas 1.2 and has not been checked with Cormas 1.0. It may not work.'
+]
+
+{ #category : 'tests' }
+CMModelFolderTest >> testWarningWhenTheModelDoesNotSayWhatItIsMadeWith [
+
+	self folderNamed: 'Forest' withCormasJson: '{ "baseline": "Forest" }'.
+	self
+		assert: ((self folderNamed: 'Forest') warningFrom:
+				 (self catalogFor: '1.0.0-dev'))
+		equals:
+		'Forest does not say which Cormas it was made with, and has not been checked with Cormas 1.0-dev. It may not work.'
 ]

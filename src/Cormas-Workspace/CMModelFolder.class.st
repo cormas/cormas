@@ -61,6 +61,16 @@ CMModelFolder >> baselineName [
 		  ifAbsent: [ self invalidCormasJson: 'it has no "baseline"' ]
 ]
 
+{ #category : 'accessing' }
+CMModelFolder >> commit [
+	"Return the id of the commit checked out in my folder, or nil when my folder is not a git repository"
+
+	(location / '.git') exists ifFalse: [ ^ nil ].
+	^ (IceRepositoryCreator new
+		   location: location;
+		   createRepository) headCommit id
+]
+
 { #category : 'private' }
 CMModelFolder >> cormasJson [
 
@@ -93,6 +103,18 @@ CMModelFolder >> invalidCormasJson: aReason [
 
 	CMWorkspaceError signal:
 		'cormas.json in ' , location fullName , ' is not valid: ' , aReason
+]
+
+{ #category : 'accessing' }
+CMModelFolder >> isCheckedBy: aCatalog [
+	"Return whether the Cormas of aCatalog runs my model without a warning: my model is made with its major and no newer minor, or the catalog lists the commit of my folder"
+
+	| madeWith |
+	madeWith := self madeWith.
+	(madeWith notNil and: [
+		 madeWith isWithinTheMajorOf: aCatalog cormasVersion ]) ifTrue: [
+		^ true ].
+	^ self commit notNil and: [ aCatalog listsCommit: self commit ]
 ]
 
 { #category : 'testing' }
@@ -170,6 +192,24 @@ CMModelFolder >> summary [
 	"Return the paragraph that describes the model in the catalog, empty when cormas.json has none"
 
 	^ self metadata at: 'summary' ifAbsent: [ '' ]
+]
+
+{ #category : 'accessing' }
+CMModelFolder >> warningFrom: aCatalog [
+	"Return the warning shown before installing my model when aCatalog does not check it"
+
+	| madeWith checked |
+	madeWith := self madeWith.
+	checked := 'has not been checked with Cormas '
+	           , aCatalog cormasVersion majorMinorString
+	           , '. It may not work.'.
+	^ madeWith
+		  ifNil: [
+				  self baselineName
+				  , ' does not say which Cormas it was made with, and ' , checked ]
+		  ifNotNil: [
+				  self baselineName , ' was made with Cormas '
+				  , madeWith majorMinorString , ' and ' , checked ]
 ]
 
 { #category : 'private' }
