@@ -81,22 +81,17 @@ BaselineOfCormas >> postLoad [
 		to: self class
 ]
 
-{ #category : 'specs' }
+{ #category : 'baselines' }
 BaselineOfCormas >> specForBaselines: spec [
 
-	spec
-		baseline: 'CormasExampleModels'
-		with: [ spec repository: 'github://cormas/example-models:main' ].
 	spec
 		baseline: 'MathRandomNumbers'
 		with: [
 		spec repository: 'github://PolyMathOrg/random-numbers:v1.x.x/src' ].
-
 	spec
 		baseline: 'RoassalExporters'
 		with: [
 		spec repository: 'github://pharo-graphics/RoassalExporters:v1.02' ].
-
 	spec
 		baseline: 'Bloc'
 		with: [ spec repository: 'github://pharo-graphics/Bloc:v3.0.0/src' ]
@@ -142,7 +137,7 @@ BaselineOfCormas >> specForPackages: spec [
 		package: 'Cormas-UI' with: [
 				spec requires:
 						#( 'Cormas-Core' 'Cormas-Workspace' 'Cormas-Mocks'
-						   'Cormas-UI-Roassal3' 'CormasExampleModels'
+						   'Cormas-UI-Roassal3'
 						   'Cormas-UI-Tilesets' 'Cormas-UI-Commands'
 						   'Cormas-Bloc-Spec' ) ];
 		package: 'Cormas-UI-Tests'

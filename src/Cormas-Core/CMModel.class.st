@@ -173,20 +173,6 @@ CMModel class >> documentationUrl [
 	^ nil
 ]
 
-{ #category : 'as yet unclassified' }
-CMModel class >> generateManifest [
-
-	| manifestClassName manifestClass |
-	manifestClassName := (self name, 'Manifest') asSymbol.
-	
-	manifestClass := (CMModelManifest << manifestClassName
-		package: 'Cormas-ExampleModelManifests') install.
-		
-	self copyMethod: #modelName into: manifestClass.
-	self copyMethod: #aboutThisModel into: manifestClass.
-	self copyMethod: #screenshotContents into: manifestClass
-]
-
 { #category : 'repository - detecting' }
 CMModel class >> githubOwnerAndRepositoryName [
 	"Detect the github owner and repository name. Signal an exception if:
