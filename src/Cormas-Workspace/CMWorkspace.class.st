@@ -324,6 +324,33 @@ CMWorkspace >> backupsFolder [
 	^ location / 'Backups'
 ]
 
+{ #category : 'examples' }
+CMWorkspace >> bring: anExample to: aVersion [
+	"Bring the folder of anExample to aVersion of the catalog, or to the latest commit of its branch when aVersion is nil, backing it up first when files of its version were edited by hand"
+
+	| repository latest |
+	repository := IceRepositoryCreator new
+		              location: anExample location;
+		              createRepository.
+	[
+		repository fetch.
+		latest := aVersion
+			          ifNil: [ repository branch upstream commit ]
+			          ifNotNil: [ self commitOf: aVersion in: repository ] ]
+		on: IceError
+		do: [ :error |
+				CMWorkspaceError signal:
+					'Cormas cannot download the latest version of ' , anExample name
+					, ' (' , error description , ')' ].
+	(self
+		 anyFileIn: repository headCommit fileSystem
+		 differsFrom: anExample location) ifTrue: [
+		self backUp: anExample location ].
+	aVersion
+		ifNil: [ repository branch commit: latest ]
+		ifNotNil: [ self checkOut: latest of: aVersion in: repository ]
+]
+
 { #category : 'accessing' }
 CMWorkspace >> catalog [
 
@@ -383,19 +410,11 @@ CMWorkspace >> checkOut: aVersion in: aFolder [
 CMWorkspace >> checkOut: aCommit of: aVersion in: aRepository [
 	"Put the files of aCommit in the folder of aRepository. In the dev line, the local branch of the version follows its remote branch, so that Update brings its latest commit. In a released line, the commit is checked out on its own"
 
-	| ref branch handle gitCommit |
+	| ref branch |
 	ref := aVersion at: 'ref'.
 	[
 		self catalog isReleasedLine
-			ifTrue: [
-					handle := aRepository repositoryHandle.
-					gitCommit := handle revparse: aCommit id.
-					handle
-						checkout_treeish: gitCommit
-						opts: (LGitCheckoutOptions defaults
-								 checkoutStrategy: LGitCheckoutStrategyEnum git_checkout_force;
-								 yourself).
-					handle setHeadDetached: gitCommit ]
+			ifTrue: [ self checkOutDetached: aCommit id in: aRepository ]
 			ifFalse: [
 					branch := (aRepository hasLocalBranchNamed: ref)
 						          ifTrue: [
@@ -415,21 +434,30 @@ CMWorkspace >> checkOut: aCommit of: aVersion in: aRepository [
 ]
 
 { #category : 'private' }
+CMWorkspace >> checkOutDetached: aRevision in: aRepository [
+	"Put the files of the commit aRevision names, such as a commit id or 'refs/tags/v1.0.0^{commit}', in the folder of aRepository, on its own, with no branch"
+
+	| handle gitCommit |
+	handle := aRepository repositoryHandle.
+	gitCommit := handle revparse: aRevision.
+	handle
+		checkout_treeish: gitCommit
+		opts: (LGitCheckoutOptions defaults
+				 checkoutStrategy: LGitCheckoutStrategyEnum git_checkout_force;
+				 yourself).
+	handle setHeadDetached: gitCommit
+]
+
+{ #category : 'private' }
 CMWorkspace >> checkOutTag: aTag in: aModelFolder [
 	"Put the files of the commit of aTag in a fresh clone, on its own, with no branch"
 
-	| handle gitCommit |
 	[
-		handle := (IceRepositoryCreator new
-			           location: aModelFolder location;
-			           createRepository) repositoryHandle.
-		gitCommit := handle revparse: 'refs/tags/' , aTag , '^{commit}'.
-		handle
-			checkout_treeish: gitCommit
-			opts: (LGitCheckoutOptions defaults
-					 checkoutStrategy: LGitCheckoutStrategyEnum git_checkout_force;
-					 yourself).
-		handle setHeadDetached: gitCommit ]
+		self
+			checkOutDetached: 'refs/tags/' , aTag , '^{commit}'
+			in: (IceRepositoryCreator new
+					 location: aModelFolder location;
+					 createRepository) ]
 		on: IceError , LGitAbstractError
 		do: [ :error |
 				CMWorkspaceError signal:
@@ -446,6 +474,17 @@ CMWorkspace >> checkWritable [
 	CMWorkspaceError whileWritingIn: location do: [
 			probe writeStreamDo: [ :stream | stream nextPutAll: 'Cormas' ].
 			probe delete ]
+]
+
+{ #category : 'examples' }
+CMWorkspace >> chooseVersion: aVersion of: anExample [
+	"Check out aVersion of the catalog in the folder of anExample, then reload its model when it is installed. Unless aVersion is the one this Cormas offers, the example stays at it: Update no longer moves it until the offered version is chosen again"
+
+	self bring: anExample to: aVersion.
+	(aVersion at: 'ref') = ((self catalogVersionOf: anExample) at: 'ref')
+		ifTrue: [ anExample forgetChosenVersion ]
+		ifFalse: [ anExample recordChosenVersion: (aVersion at: 'ref') ].
+	self refresh
 ]
 
 { #category : 'code changes' }
@@ -1044,32 +1083,12 @@ CMWorkspace >> uninstallAll [
 	installed keys do: [ :each | self uninstall: each ]
 ]
 
-{ #category : 'private' }
+{ #category : 'examples' }
 CMWorkspace >> update: anExample [
-	"Bring the folder of anExample to the version the catalog offers, or to the latest commit of its branch when the catalog does not list it, backing it up first when files of its version were edited by hand"
+	"Bring the folder of anExample to the version the catalog offers, or to the latest commit of its branch when the catalog does not list it. An example whose version the modeler chose stays at it"
 
-	| repository version latest |
-	repository := IceRepositoryCreator new
-		              location: anExample location;
-		              createRepository.
-	version := self catalogVersionOf: anExample.
-	[
-		repository fetch.
-		latest := version
-			          ifNil: [ repository branch upstream commit ]
-			          ifNotNil: [ self commitOf: version in: repository ] ]
-		on: IceError
-		do: [ :error |
-				CMWorkspaceError signal:
-					'Cormas cannot download the latest version of ' , anExample name
-					, ' (' , error description , ')' ].
-	(self
-		 anyFileIn: repository headCommit fileSystem
-		 differsFrom: anExample location) ifTrue: [
-		self backUp: anExample location ].
-	version
-		ifNil: [ repository branch commit: latest ]
-		ifNotNil: [ self checkOut: latest of: version in: repository ]
+	anExample chosenVersion ifNotNil: [ ^ self ].
+	self bring: anExample to: (self catalogVersionOf: anExample)
 ]
 
 { #category : 'examples' }

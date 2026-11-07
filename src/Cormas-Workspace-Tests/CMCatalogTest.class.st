@@ -289,3 +289,17 @@ CMCatalogTest >> testVersionMadeWithADevCormasIsOfferedToItsRelease [
 		assert: ((other offeredVersionOf: other models first) at: 'ref')
 		equals: 'v1'
 ]
+
+{ #category : 'tests' }
+CMCatalogTest >> testVersionsAreThoseMadeWithNoNewerCormasNewestFirst [
+
+	| other |
+	other := self catalogFor: '1.1.3' serving: { (self
+			          modelNamed: 'Fire'
+			          screenshot: #[ 1 ]
+			          madeWith: #( '1.0' '1.1' '1.2' )) }.
+	self
+		assert: ((other versionsOf: other models first) collect: [ :each |
+				 each at: 'ref' ]) asArray
+		equals: #( 'v2' 'v1' )
+]

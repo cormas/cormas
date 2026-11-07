@@ -136,10 +136,8 @@ CMCatalog >> listsCommit: aCommitId [
 	"Return whether the downloaded catalog lists a version at aCommitId made with a Cormas no newer than mine: the Cormas team checked that version with my line"
 
 	^ self models anySatisfy: [ :model |
-			  (model at: 'versions') anySatisfy: [ :each |
-					  (each at: 'commit') = aCommitId and: [
-							  (CMVersion fromString: (each at: 'cormas')) isNoNewerThan:
-								  cormasVersion ] ] ]
+			  (self versionsOf: model) anySatisfy: [ :each |
+				  (each at: 'commit') = aCommitId ] ]
 ]
 
 { #category : 'accessing' }
@@ -186,11 +184,9 @@ CMCatalog >> modelsIn: catalogBytes [
 CMCatalog >> offeredVersionOf: aModel [
 	"Return the version of the model that my Cormas offers, as a dictionary with url, ref, commit and cormas: the newest one listed that is made with a Cormas no newer than mine. Return nil when there is none"
 
-	^ (aModel at: 'versions') reversed
-		  detect: [ :each |
-				  (CMVersion fromString: (each at: 'cormas')) isNoNewerThan:
-					  cormasVersion ]
-		  ifNone: [ nil ]
+	^ (self versionsOf: aModel)
+		  ifEmpty: [ nil ]
+		  ifNotEmpty: [ :versions | versions first ]
 ]
 
 { #category : 'accessing' }
@@ -242,6 +238,15 @@ CMCatalog >> urlOf: aPath [
 	"Return the URL of a file of the catalog line of my version of Cormas"
 
 	^ self baseUrl , cormasVersion line , '/' , aPath
+]
+
+{ #category : 'accessing' }
+CMCatalog >> versionsOf: aModel [
+	"Return the versions of the model that my Cormas can choose, newest first, as dictionaries with url, ref, commit and cormas: those listed made with a Cormas no newer than mine"
+
+	^ (aModel at: 'versions') reversed select: [ :each |
+			  (CMVersion fromString: (each at: 'cormas')) isNoNewerThan:
+				  cormasVersion ]
 ]
 
 { #category : 'private' }

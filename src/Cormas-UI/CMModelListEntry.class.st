@@ -70,6 +70,22 @@ CMModelListEntry >> catalogModel [
 	^ catalogModel
 ]
 
+{ #category : 'private' }
+CMModelListEntry >> chosenVersionExplanation [
+	"Return what to know about the version chosen for my example, or an empty string when it follows the version this Cormas recommends"
+
+	| chosen recommended |
+	chosen := folder chosenVersion ifNil: [ ^ '' ].
+	recommended := catalogModel ifNotNil: [
+		               (workspace catalog offeredVersionOf: catalogModel)
+			               at: 'ref' ].
+	^ 'Version ' , chosen , (recommended
+		   ifNil: [ '' ]
+		   ifNotNil: [ ' (recommended: ' , recommended , ')' ])
+	  ,
+	  '. Updating examples does not change it: to follow updates again, choose the recommended version in Versions… '
+]
+
 { #category : 'accessing' }
 CMModelListEntry >> description [
 	"Return the Microdown text shown for me: the README of my folder, or the summary of the catalog, followed by what the modeler should know about my state"
@@ -87,10 +103,12 @@ CMModelListEntry >> folder [
 
 { #category : 'testing' }
 CMModelListEntry >> hasVersions [
-	"Return whether the modeler can choose among versions of my model: my folder is a model of Models that is an old version, or that has tags"
+	"Return whether the modeler can choose among versions of my model: an example whose catalog line offers several versions to this Cormas, or a model of Models that is an old version or has tags"
 
-	(folder isNil or: [ self baseline isNil or: [ folder isExample ] ])
-		ifTrue: [ ^ false ].
+	(folder isNil or: [ self baseline isNil ]) ifTrue: [ ^ false ].
+	folder isExample ifTrue: [
+			^ catalogModel notNil and: [
+				  (workspace catalog versionsOf: catalogModel) size > 1 ] ].
 	^ folder isOldVersion or: [ folder tags notEmpty ]
 ]
 
@@ -229,7 +247,9 @@ CMModelListEntry >> stateExplanation [
 					   ifTrue: [ ' Choose which one in Versions…' ]
 					   ifFalse: [ '' ]) ].
 	folder isExample ifTrue: [
-		^ 'This is an example. Changing its code offers to copy it to Models.' ].
+			^ self chosenVersionExplanation
+			  ,
+			  'This is an example. Changing its code offers to copy it to Models.' ].
 	^ nil
 ]
 

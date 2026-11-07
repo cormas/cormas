@@ -86,6 +86,14 @@ CMModelFolder >> cormasJson [
 ]
 
 { #category : 'versions' }
+CMModelFolder >> forgetChosenVersion [
+	"Remove from the git configuration of my folder the version the modeler chose"
+
+	self chosenVersion ifNil: [ ^ self ].
+	self gitConfig unset: 'cormas.version'
+]
+
+{ #category : 'versions' }
 CMModelFolder >> gitConfig [
 
 	^ (LGitRepository on: location)

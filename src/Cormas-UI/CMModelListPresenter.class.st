@@ -201,7 +201,38 @@ CMModelListPresenter >> changeWorkspace [
 ]
 
 { #category : 'actions' }
-CMModelListPresenter >> chooseVersionOf: anEntry [
+CMModelListPresenter >> chooseCatalogVersionOf: anEntry [
+	"Let the modeler choose among the versions of an example that the catalog line offers to this Cormas, and check it out in place"
+
+	| versions recommended current labels index version |
+	versions := workspace catalog versionsOf: anEntry catalogModel.
+	recommended := versions first.
+	current := anEntry folder commit.
+	labels := versions collect: [ :each |
+			          String streamContents: [ :stream |
+					          stream
+						          nextPutAll: (each at: 'ref');
+						          nextPutAll: ', made with Cormas ';
+						          nextPutAll: (each at: 'cormas').
+					          each == recommended ifTrue: [
+						          stream nextPutAll: ' (recommended)' ].
+					          (each at: 'commit') = current ifTrue: [
+						          stream nextPutAll: ' (current)' ] ] ].
+	index := UIManager default
+		         chooseFrom: labels
+		         title: 'Versions of ' , anEntry baseline
+			         ,
+			         '. An example stays at a version other than the recommended one when examples are updated.'.
+	(index isNil or: [ index = 0 ]) ifTrue: [ ^ self ].
+	version := versions at: index.
+	UIManager default
+		informUser: 'Getting ' , (version at: 'ref') , '…'
+		during: [ workspace chooseVersion: version of: anEntry folder ].
+	self updateEntries
+]
+
+{ #category : 'actions' }
+CMModelListPresenter >> chooseTagOf: anEntry [
 	"Let the modeler choose between their working version and the tags of its folder, and install the chosen one in place of the installed one. An old version is cloned into its own folder of Models: the working folder is never touched"
 
 	| working tags installedFolder labels index target |
@@ -251,6 +282,15 @@ CMModelListPresenter >> chooseVersionOf: anEntry [
 	self selectEntryNamed: (index = 1
 			 ifTrue: [ anEntry baseline ]
 			 ifFalse: [ anEntry baseline , ' ' , (tags at: index - 1) ])
+]
+
+{ #category : 'actions' }
+CMModelListPresenter >> chooseVersionOf: anEntry [
+	"Let the modeler choose a version of the model of anEntry: among the catalog versions for an example, among the tags of its folder otherwise"
+
+	anEntry folder isExample
+		ifTrue: [ self chooseCatalogVersionOf: anEntry ]
+		ifFalse: [ self chooseTagOf: anEntry ]
 ]
 
 { #category : 'actions' }
