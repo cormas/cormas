@@ -223,6 +223,21 @@ CMWorkspaceTest >> testModelThatStopsBeingSavedAnnouncesTheChange [
 ]
 
 { #category : 'tests' }
+CMWorkspaceTest >> testSavingAModelWhoseFolderWasRenamedFollowsIt [
+
+	| research model renamed |
+	research := CMWorkspace createAt: fileSystem root / 'Research'.
+	model := self installIn: research modelNamed: 'Forest'.
+	renamed := research modelsFolder / 'Forest renamed'.
+	renamed ensureCreateDirectory.
+	renamed / 'cormas.json' writeStreamDo: [ :stream |
+		stream nextPutAll: '{ "baseline": "Forest" }' ].
+	model save: Dictionary new over: #(  ).
+	self assert: model folder equals: renamed.
+	self assert: model isSaved
+]
+
+{ #category : 'tests' }
 CMWorkspaceTest >> testWorkspaceIsNotFoundOnceItsFolderIsGone [
 
 	| workspace |

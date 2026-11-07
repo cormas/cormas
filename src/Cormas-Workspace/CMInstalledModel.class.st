@@ -380,14 +380,12 @@ CMInstalledModel >> reload [
 
 { #category : 'private' }
 CMInstalledModel >> save: files over: paths [
-	"Make each of paths hold its content in files, or not exist when files has none for it. When a file was changed by someone else, or cannot be written, stop saving and remember the problem: the code stays in the image, and nothing more is written until the model is reloaded"
+	"Make each of paths hold its content in files, or not exist when files has none for it. When the folder is gone, follow the model to its new folder, as when it was renamed. When a file was changed by someone else, or cannot be written, stop saving and remember the problem: the code stays in the image, and nothing more is written until the model is reloaded"
 
 	self isSaved ifFalse: [ ^ self ].
-	[
-		folder exists ifFalse: [
-			CMWorkspaceError signal:
-				'The folder ' , folder fullName , ' is gone' ].
-		self write: files over: paths ]
+	folder exists ifFalse: [
+		(workspace findFolderOf: self) ifFalse: [ ^ self ] ].
+	[ self write: files over: paths ]
 		on: CMWorkspaceError
 		do: [ :error |
 				problem := error messageText.

@@ -720,6 +720,26 @@ CMWorkspace >> extract: aZipFile to: aFolder [
 					, error messageText , ')' ]
 ]
 
+{ #category : 'refreshing' }
+CMWorkspace >> findFolderOf: anInstalledModel [
+	"Use the folder the model was installed from while it still holds it. Otherwise, follow the only folder with the same baseline, as when the folder was renamed or moved; with none or several, keep the code and stop saving until the modeler decides. Return whether the model has a folder"
+
+	| candidates |
+	((CMModelFolder in: self at: anInstalledModel folder)
+		 hasBaselineNamed: anInstalledModel baselineName) ifTrue: [ ^ true ].
+	candidates := self folders select: [ :each |
+		              each hasBaselineNamed: anInstalledModel baselineName ].
+	candidates size = 1 ifFalse: [
+			anInstalledModel cannotChooseAmongFolders: candidates.
+			self announceChange.
+			^ false ].
+	self forgetIcebergRepositoriesAt: anInstalledModel folder.
+	anInstalledModel folder: candidates first location.
+	self registerWithIceberg: anInstalledModel.
+	self announceChange.
+	^ true
+]
+
 { #category : 'installing' }
 CMWorkspace >> folderOf: aClass [
 	"Return the folder of the installed model that the package of aClass belongs to"
@@ -972,17 +992,9 @@ CMWorkspace >> refresh [
 
 { #category : 'refreshing' }
 CMWorkspace >> refresh: anInstalledModel [
-	"Use the folder the model was installed from while it is still there. Otherwise, follow the only folder with the same baseline, as when the folder was renamed or moved; with none or several, keep the code and stop saving until the modeler decides"
+	"Find the folder of the model, then reload from it what changed outside Cormas"
 
-	| candidates |
-	((CMModelFolder in: self at: anInstalledModel folder)
-		 hasBaselineNamed: anInstalledModel baselineName) ifFalse: [
-			candidates := self folders select: [ :each |
-				              each hasBaselineNamed: anInstalledModel baselineName ].
-			candidates size = 1 ifFalse: [
-				^ anInstalledModel cannotChooseAmongFolders: candidates ].
-			self forgetIcebergRepositoriesAt: anInstalledModel folder.
-			anInstalledModel folder: candidates first location ].
+	(self findFolderOf: anInstalledModel) ifFalse: [ ^ self ].
 	anInstalledModel isUpToDate ifFalse: [ self reload: anInstalledModel ].
 	self registerWithIceberg: anInstalledModel
 ]
