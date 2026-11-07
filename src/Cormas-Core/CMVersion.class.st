@@ -1,0 +1,121 @@
+"
+I am a version of Cormas, such as 1.0.0 or 1.0.0-dev.
+
+## Responsibility
+
+- I know my major, minor and patch numbers, and whether I am a version in development.
+- I give the catalog line I belong to: `dev` for a version in development, otherwise my major.
+- I know the version of this Cormas.
+
+## Collaborators
+
+- The workspace reads my line to choose the catalog of example models.
+
+## Public API and Key Messages
+
+- `CMVersion current` returns the version of this Cormas. The dev branch holds the next release followed by -dev.
+- `CMVersion fromString:` reads a version written as major.minor or major.minor.patch, optionally followed by -dev.
+- `line`, `major`, `minor`, `patch`, `isDev`.
+
+```
+(CMVersion fromString: '1.2.3') line. ""'1'""
+CMVersion current line. ""'dev' until 1.0.0 is released""
+```
+
+## Internal Representation
+
+- `major`, `minor`, `patch`: integers, the patch being 0 when it is not written.
+- `isDev`: true for a version in development.
+"
+Class {
+	#name : 'CMVersion',
+	#superclass : 'Object',
+	#instVars : [
+		'major',
+		'minor',
+		'patch',
+		'isDev'
+	],
+	#category : 'Cormas-Core-Kernel',
+	#package : 'Cormas-Core',
+	#tag : 'Kernel'
+}
+
+{ #category : 'instance creation' }
+CMVersion class >> current [
+	"Return the version of this Cormas. The dev branch holds the next release followed by -dev, and a release changes it"
+
+	^ self fromString: '1.0.0-dev'
+]
+
+{ #category : 'instance creation' }
+CMVersion class >> fromString: aString [
+	"Return the version written as major.minor, or major.minor.patch, optionally followed by -dev, such as '1.0.0-dev'. Raise an error for anything else"
+
+	| matcher |
+	matcher := '(\d+)\.(\d+)(\.(\d+))?(-dev)?' asRegex.
+	(matcher matches: aString) ifFalse: [
+			^ self error: aString printString
+				  , ' is not a Cormas version, such as 1.0.0 or 1.0.0-dev' ].
+	^ self new
+		  setMajor: (matcher subexpression: 2) asNumber
+		  minor: (matcher subexpression: 3) asNumber
+		  patch: ((matcher subexpression: 5)
+				   ifNil: [ 0 ]
+				   ifNotNil: [ :patch | patch asNumber ])
+		  isDev: (matcher subexpression: 6) notNil
+]
+
+{ #category : 'accessing' }
+CMVersion >> isDev [
+
+	^ isDev
+]
+
+{ #category : 'accessing' }
+CMVersion >> line [
+	"Return the catalog line of this version: dev for a version in development, otherwise its major, such as 1 for every 1.x.y release"
+
+	^ isDev
+		  ifTrue: [ 'dev' ]
+		  ifFalse: [ major printString ]
+]
+
+{ #category : 'accessing' }
+CMVersion >> major [
+
+	^ major
+]
+
+{ #category : 'accessing' }
+CMVersion >> minor [
+
+	^ minor
+]
+
+{ #category : 'accessing' }
+CMVersion >> patch [
+
+	^ patch
+]
+
+{ #category : 'printing' }
+CMVersion >> printOn: aStream [
+
+	aStream
+		print: major;
+		nextPut: $.;
+		print: minor;
+		nextPut: $.;
+		print: patch.
+	isDev ifTrue: [ aStream nextPutAll: '-dev' ]
+]
+
+{ #category : 'private' }
+CMVersion >> setMajor: aMajor minor: aMinor patch: aPatch isDev: aBoolean [
+
+	major := aMajor.
+	minor := aMinor.
+	patch := aPatch.
+	isDev := aBoolean
+]
