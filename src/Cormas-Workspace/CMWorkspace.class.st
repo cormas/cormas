@@ -549,9 +549,20 @@ CMWorkspace >> classChanged: anAnnouncement [
 
 { #category : 'code changes' }
 CMWorkspace >> classRenamedOrRemoved: anAnnouncement [
-	"Save the class under its old and new names in every package of the installed models: Pharo does not announce that the extension methods of other packages on the class went with it"
+	"Renaming the baseline of a model is renaming the model, which is asked once the refactoring is over. Otherwise, save the class under its old and new names in every package of the installed models: Pharo does not announce that the extension methods of other packages on the class went with it"
 
 	| classNames |
+	(anAnnouncement isKindOf: ClassRenamed) ifTrue: [
+		installed
+			detect: [ :each | each baselinePackageName = anAnnouncement oldName ]
+			ifFound: [ :model |
+				^ UIManager default defer: [
+					  self
+						  renameBaselineOf: model
+						  to: anAnnouncement newName
+						  undoing: [
+							  (self class environment at: anAnnouncement newName asSymbol)
+								  rename: anAnnouncement oldName ] ] ] ].
 	classNames := { anAnnouncement classAffected instanceSide
 		              originalName } asSet.
 	(anAnnouncement isKindOf: ClassRenamed) ifTrue: [
@@ -1075,8 +1086,18 @@ CMWorkspace >> packageRemoved: anAnnouncement [
 
 { #category : 'saving' }
 CMWorkspace >> packageRenamed: anAnnouncement [
-	"Have the installed model whose baseline Cormas manages follow its package to its new name"
+	"Renaming the package of the baseline of a model is renaming the model, which is asked once the refactoring is over. Otherwise, have the installed model whose baseline Cormas manages follow its package to its new name"
 
+	installed
+		detect: [ :each | each baselinePackageName = anAnnouncement oldName ]
+		ifFound: [ :model |
+			^ UIManager default defer: [
+				  self
+					  renameBaselineOf: model
+					  to: anAnnouncement newName
+					  undoing: [
+						  (self packageOrganizer packageNamed: anAnnouncement newName)
+							  renameTo: anAnnouncement oldName ] ] ].
 	installed
 		detect: [ :each |
 			each hasManagedBaseline and: [
@@ -1155,6 +1176,32 @@ CMWorkspace >> rename: aBaselineName to: aNewName [
 	(self metacelloFor: (CMModelFolder in: self at: model folder)) register.
 	self renameFolderOf: model from: aBaselineName.
 	self announceChange
+]
+
+{ #category : 'installing' }
+CMWorkspace >> renameBaselineOf: anInstalledModel to: aClassName undoing: anUndoBlock [
+	"The modeler renamed the baseline of the model, or its package, to aClassName from a Pharo tool. Undo it, then treat it as renaming the model. An example or an old version cannot be changed, so offer to make a copy first, as for any other change, and rename the copy. A model of Models is renamed when the modeler confirms"
+
+	| folder newName |
+	anUndoBlock value.
+	(aClassName beginsWith: 'BaselineOf') ifFalse: [
+		^ UIManager default inform:
+			  'A baseline is named BaselineOf followed by the name of its model, so '
+			  , aClassName , ' was renamed back to '
+			  , anInstalledModel baselinePackageName ].
+	newName := aClassName allButFirst: 'BaselineOf' size.
+	folder := CMModelFolder in: self at: anInstalledModel folder.
+	[
+		folder isExample ifTrue: [ self copyEditedExample: anInstalledModel ].
+		folder isOldVersion ifTrue: [ self editOldVersion: anInstalledModel ] ]
+		on: CMWorkspaceError
+		do: [ ^ self ].
+	((folder isExample or: [ folder isOldVersion ]) or: [
+		 CMModelRenamed signalFor: anInstalledModel to: newName ]) ifFalse: [
+		^ self ].
+	[ self rename: anInstalledModel baselineName to: newName ]
+		on: CMWorkspaceError
+		do: [ :error | UIManager default inform: error messageText ]
 ]
 
 { #category : 'installing' }
