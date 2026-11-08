@@ -160,6 +160,20 @@ CMInstalledModel >> checkUnchanged: aPath [
 				baselineName , ' was changed outside Cormas: ' , aPath ]
 ]
 
+{ #category : 'packages' }
+CMInstalledModel >> classNamesDefinedInPackageNamed: aPackageName [
+	"Return the names of the classes and traits that the package defines in my folder, as Tonel names their files"
+
+	| packageFolder |
+	packageFolder := folder / 'src' / aPackageName.
+	packageFolder isDirectory ifFalse: [ ^ #(  ) ].
+	^ packageFolder files
+		  select: [ :each |
+			  (each basename endsWith: '.class.st') or: [
+				  each basename endsWith: '.trait.st' ] ]
+		  thenCollect: [ :each | each basename copyUpTo: $. ]
+]
+
 { #category : 'baseline' }
 CMInstalledModel >> declarePackages: packageNames [
 	"Have my managed baseline declare exactly these packages, in this order, and save it into my folder"

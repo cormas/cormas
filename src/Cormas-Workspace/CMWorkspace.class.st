@@ -418,6 +418,18 @@ CMWorkspace >> checkCanRename: anInstalledModel to: aNewName [
 			, ' is not saved: reload it from its folder before renaming it' ]
 ]
 
+{ #category : 'installing' }
+CMWorkspace >> checkClassesOf: anInstalledModel inPackages: packageNames [
+	"Raise a CMWorkspaceError if one of the packages, in the folder of the model, defines a class that is already in the image. Loading it would silently move that class into the model"
+
+	packageNames do: [ :package |
+		(anInstalledModel classNamesDefinedInPackageNamed: package) do: [ :each |
+			Smalltalk globals at: each asSymbol ifPresent: [ :existing |
+				CMWorkspaceError signal: each , ' is already in this image, in '
+					, (self describePackageOf: existing) , ', so '
+					, anInstalledModel baselineName , ' cannot be installed' ] ] ]
+]
+
 { #category : 'private' }
 CMWorkspace >> checkNothingIsReplacedBy: anInstalledModel in: packageNames [
 	"Raise a CMWorkspaceError if loading the model would replace a package in packageNames or a model installed from the workspace"
@@ -685,6 +697,18 @@ CMWorkspace >> delete: aModelFolder [
 	self announceChange
 ]
 
+{ #category : 'installing' }
+CMWorkspace >> describePackageOf: aGlobal [
+	| packageName |
+	packageName := (aGlobal isClass or: [ aGlobal isTrait ])
+		               ifTrue: [ aGlobal package name ]
+		               ifFalse: [ ^ 'a global variable' ].
+	^ installed
+		  detect: [ :each | each ownsPackageNamed: packageName ]
+		  ifFound: [ :model | packageName , ' of the model ' , model baselineName ]
+		  ifNone: [ packageName ]
+]
+
 { #category : 'examples' }
 CMWorkspace >> download: aCatalogModel [
 	"Clone the version of a catalog model that this Cormas offers into a new folder of Examples, named after its baseline, and return the folder. The model is not installed. Raise a CMWorkspaceError, leaving nothing in Examples, when the version cannot be cloned, holds no model, or when that example is already downloaded"
@@ -877,7 +901,7 @@ CMWorkspace >> initialize [
 
 { #category : 'installing' }
 CMWorkspace >> install: aModelFolder [
-	"Load the model in aModelFolder into the image, from the files in its folder, and remember that folder. Raise a CMWorkspaceError when the model cannot be installed, leaving the image as it was: an installation never replaces code that is already in the image"
+	"Load the model in aModelFolder into the image, from the files in its folder, and remember that folder. Raise a CMWorkspaceError when the model cannot be installed, leaving the image as it was: an installation never replaces code that is already in the image, packages or classes"
 
 	| model packagesBefore |
 	aModelFolder isModel ifFalse: [
@@ -899,6 +923,7 @@ CMWorkspace >> install: aModelFolder [
 	[
 		(self metacelloFor: aModelFolder) get.
 		self checkNothingIsReplacedBy: model in: packagesBefore.
+		self checkClassesOf: model inPackages: model packageNames.
 		(self metacelloFor: aModelFolder) load ]
 		on: Error
 		do: [ :error |

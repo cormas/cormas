@@ -229,6 +229,49 @@ CMWorkspaceTest >> testFoldersOfTheWorkspace [
 ]
 
 { #category : 'tests' }
+CMWorkspaceTest >> testInstallingAClassThatIsAlreadyInTheImageRaisesAnError [
+
+	| workspace model |
+	workspace := CMWorkspace createAt: fileSystem root / 'Research'.
+	model := CMInstalledModel
+		         in: workspace
+		         baselineName: 'Forest'
+		         folder: workspace modelsFolder / 'Forest'.
+	(model folder / 'src' / 'Forest-Model') ensureCreateDirectory.
+	model folder / 'src' / 'Forest-Model' / 'CMCell.class.st'
+		writeStreamDo: [ :stream |
+		stream nextPutAll: 'Class { #name : #CMCell }' ].
+	self
+		should: [
+		workspace checkClassesOf: model inPackages: #( 'Forest-Model' ) ]
+		raise: CMWorkspaceError
+		withExceptionDo: [ :error |
+				self assert: (error messageText includesSubstring:
+						 'CMCell is already in this image').
+				self assert:
+					(error messageText includesSubstring: CMCell package name) ]
+]
+
+{ #category : 'tests' }
+CMWorkspaceTest >> testInstallingOnlyNewClassesRaisesNoError [
+
+	| workspace model |
+	workspace := CMWorkspace createAt: fileSystem root / 'Research'.
+	model := CMInstalledModel
+		         in: workspace
+		         baselineName: 'Forest'
+		         folder: workspace modelsFolder / 'Forest'.
+	(model folder / 'src' / 'Forest-Model') ensureCreateDirectory.
+	model folder / 'src' / 'Forest-Model'
+	/ 'ForNoSuchClassAnywhere.class.st' writeStreamDo: [ :stream |
+		stream nextPutAll: 'Class { #name : #ForNoSuchClassAnywhere }' ].
+	model folder / 'src' / 'Forest-Model' / 'CMCell.extension.st'
+		writeStreamDo: [ :stream |
+		stream nextPutAll: 'Extension { #name : #CMCell }' ].
+	workspace checkClassesOf: model inPackages: #( 'Forest-Model' )
+]
+
+{ #category : 'tests' }
 CMWorkspaceTest >> testIsWorkspace [
 
 	(fileSystem / 'Documents') ensureCreateDirectory.
