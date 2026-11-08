@@ -626,9 +626,18 @@ CMModelListPresenter >> reloadFromFolders [
 CMModelListPresenter >> rename: anEntry [
 	| newName |
 	newName := UIManager default
-		           request: 'The name of a model is the name of its baseline, the class that loads it. Renaming ' , anEntry name
-			           , ' renames BaselineOf' , anEntry baseline
-			           , ' and its package, cormas.json, and the folder when it has the name of the model. The other packages and classes keep their names.'
+		           request: (String streamContents: [ :stream | stream 
+							<< 'The name of a model is the name of its baseline, the class that loads it.'
+							<< String cr << String cr
+							<< 'Renaming '
+							<< anEntry name
+			           	<< ' renames BaselineOf'
+							<< anEntry baseline
+			           	<< ' and its package,'
+							<< String cr
+							<< 'cormas.json, and the folder when it has the name of the model.'
+							<< String cr << String cr
+							<< 'The other packages and classes keep their names.' ])
 		           initialAnswer: anEntry baseline
 		           title: 'Rename the model ' , anEntry name.
 	(newName isNil or: [ newName = anEntry baseline ]) ifTrue: [ ^ self ].
