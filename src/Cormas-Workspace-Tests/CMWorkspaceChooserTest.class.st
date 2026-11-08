@@ -32,7 +32,7 @@ CMWorkspaceChooserTest >> testCancellingChoosesNothing [
 { #category : 'tests' }
 CMWorkspaceChooserTest >> testCancellingTheFolderChoosesNothing [
 
-	chooser answers: #( false nil ).
+	chooser answers: #( 2 nil ).
 	self assert: chooser choose isNil
 ]
 
@@ -41,10 +41,21 @@ CMWorkspaceChooserTest >> testChoosesAnExistingWorkspace [
 
 	CMWorkspace createAt: root / 'Research'.
 	chooser answers: {
-			false.
+			2.
 			(root / 'Research') }.
 	self assert: chooser choose location equals: root / 'Research'.
 	self deny: (root / 'Cormas') exists
+]
+
+{ #category : 'tests' }
+CMWorkspaceChooserTest >> testChoosesAnotherExistingWorkspaceWhenTheDefaultExists [
+
+	CMWorkspace createAt: root / 'Cormas'.
+	CMWorkspace createAt: root / 'Research'.
+	chooser answers: {
+			2.
+			(root / 'Research') }.
+	self assert: chooser choose location equals: root / 'Research'
 ]
 
 { #category : 'tests' }
@@ -52,34 +63,47 @@ CMWorkspaceChooserTest >> testCreatesANewWorkspaceInAnotherFolder [
 
 	CMWorkspace createAt: root / 'Cormas'.
 	chooser answers: {
-			false.
+			3.
 			(root / 'Teaching') }.
 	self assert: chooser choose location equals: root / 'Teaching'.
 	self assert: (CMWorkspace isWorkspace: root / 'Teaching')
 ]
 
 { #category : 'tests' }
+CMWorkspaceChooserTest >> testCreatesANewWorkspaceInAnotherFolderWhenThereIsNone [
+
+	chooser answers: {
+			3.
+			(root / 'Teaching') }.
+	self assert: chooser choose location equals: root / 'Teaching'.
+	self assert: (CMWorkspace isWorkspace: root / 'Teaching').
+	self deny: (root / 'Cormas') exists
+]
+
+{ #category : 'tests' }
 CMWorkspaceChooserTest >> testOffersToCreateTheDefaultWorkspaceWhenThereIsNone [
 
 	| workspace |
-	chooser answers: #( true ).
+	chooser answers: #( 1 ).
 	workspace := chooser choose.
 	self assert: workspace location equals: root / 'Cormas'.
 	self assert: (CMWorkspace isWorkspace: root / 'Cormas').
 	self
 		assert: chooser questions first
-		equals: #( 'Create /Cormas' 'Choose an existing workspace…' )
+		equals: #( 'Create /Cormas' 'Choose an existing workspace…'
+			   'Create a new workspace…' )
 ]
 
 { #category : 'tests' }
 CMWorkspaceChooserTest >> testOffersToUseTheDefaultWorkspaceWhenItExists [
 
 	CMWorkspace createAt: root / 'Cormas'.
-	chooser answers: #( true ).
+	chooser answers: #( 1 ).
 	self assert: chooser choose location equals: root / 'Cormas'.
 	self
 		assert: chooser questions first
-		equals: #( 'Use /Cormas' 'Create a new workspace…' )
+		equals: #( 'Use /Cormas' 'Choose an existing workspace…'
+			   'Create a new workspace…' )
 ]
 
 { #category : 'tests' }
@@ -87,9 +111,9 @@ CMWorkspaceChooserTest >> testRefusedFolderIsExplainedAndTheQuestionAskedAgain [
 
 	(root / 'Empty') ensureCreateDirectory.
 	chooser answers: {
-			false.
+			2.
 			(root / 'Empty').
-			true }.
+			1 }.
 	self assert: chooser choose location equals: root / 'Cormas'.
 	self assert: chooser questions size equals: 2.
 	self

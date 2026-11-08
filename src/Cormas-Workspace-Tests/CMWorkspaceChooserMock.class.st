@@ -44,12 +44,10 @@ CMWorkspaceChooserMock >> answers: aCollection [
 ]
 
 { #category : 'dialogs' }
-CMWorkspaceChooserMock >> ask: aQuestion choosing: firstChoice or: secondChoice [
+CMWorkspaceChooserMock >> ask: aQuestion choosing: labels values: values [
 
-	questions add: {
-			firstChoice.
-			secondChoice }.
-	^ answers removeFirst
+	questions add: labels asArray.
+	^ answers removeFirst ifNotNil: [ :index | values at: index ]
 ]
 
 { #category : 'dialogs' }

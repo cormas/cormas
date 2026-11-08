@@ -3,7 +3,7 @@ I ask the modeler which workspace this image uses, the folder where Cormas keeps
 
 ## Responsibility:
 
-- I offer the default folder first: to use it when it is a workspace, otherwise to create it there; the other choice lets the modeler create or choose a workspace elsewhere.
+- I offer the default folder first: to use it when it is a workspace, otherwise to create it there. The other choices are to choose an existing workspace or to create a new one, in any folder.
 - I explain why Cormas refuses a folder, such as one that is not a workspace or where it cannot write, and ask again until a folder is accepted or the modeler cancels.
 - I make the chosen workspace the one of the image, and explain when that is refused because a model is not saved.
 
@@ -23,7 +23,7 @@ CMWorkspaceChooser open
 
 ### Implementation Points
 
-- Dialogs go through `ask:choosing:or:`, `chooseFolder:` and `alert:`, so that tests answer them with `CMWorkspaceChooserMock`.
+- Dialogs go through `ask:choosing:values:`, `chooseFolder:` and `alert:`, so that tests answer them with `CMWorkspaceChooserMock`.
 "
 Class {
 	#name : 'CMWorkspaceChooser',
@@ -45,55 +45,40 @@ CMWorkspaceChooser >> alert: aString [
 ]
 
 { #category : 'dialogs' }
-CMWorkspaceChooser >> ask: aQuestion choosing: firstChoice or: secondChoice [
-	"Return true for the first choice, false for the second, nil when cancelled"
+CMWorkspaceChooser >> ask: aQuestion choosing: labels values: values [
+	"Return the value of the choice made, nil when cancelled"
 
 	^ self uiManager
-		  confirm: aQuestion
-		  trueChoice: firstChoice
-		  falseChoice: secondChoice
-		  cancelChoice: 'Cancel'
-		  default: true
+		  chooseFrom: labels
+		  values: values
+		  message: aQuestion
+		  title: 'Cormas workspace'
 ]
 
 { #category : 'private' }
 CMWorkspaceChooser >> askForWorkspace [
-	"Offer the default folder first: to use it when it is a workspace, otherwise to create it there"
+	"Offer the default folder first: to use it when it is a workspace, otherwise to create it there. The other choices are to choose an existing workspace or to create a new one, in any folder"
 
-	| default |
+	| default useDefault |
 	default := self defaultLocation.
-	^ (CMWorkspace isWorkspace: default)
-		  ifTrue: [ self askToUse: default ]
-		  ifFalse: [ self askToCreate: default ]
-]
-
-{ #category : 'private' }
-CMWorkspaceChooser >> askToCreate: aDefaultFolder [
-
-	| answer folder |
-	answer := self
-		          ask: self question
-		          choosing: 'Create ' , aDefaultFolder fullName
-		          or: 'Choose an existing workspace…'.
-	answer ifNil: [ ^ nil ].
-	answer ifTrue: [ ^ CMWorkspace createAt: aDefaultFolder ].
-	folder := self chooseFolder:
-		          'Choose the folder of an existing workspace'.
-	^ folder ifNotNil: [ CMWorkspace at: folder ]
-]
-
-{ #category : 'private' }
-CMWorkspaceChooser >> askToUse: aDefaultFolder [
-
-	| answer folder |
-	answer := self
-		          ask: self question
-		          choosing: 'Use ' , aDefaultFolder fullName
-		          or: 'Create a new workspace…'.
-	answer ifNil: [ ^ nil ].
-	answer ifTrue: [ ^ CMWorkspace at: aDefaultFolder ].
-	folder := self chooseFolder: 'Choose a folder for the new workspace'.
-	^ folder ifNotNil: [ CMWorkspace createAt: folder ]
+	useDefault := (CMWorkspace isWorkspace: default)
+		              ifTrue: [
+		              'Use ' , default fullName
+		              -> [ CMWorkspace at: default ] ]
+		              ifFalse: [
+		              'Create ' , default fullName
+		              -> [ CMWorkspace createAt: default ] ].
+	^ (self
+		   ask: self question
+		   choosing: {
+				   useDefault key.
+				   'Choose an existing workspace…'.
+				   'Create a new workspace…' }
+		   values: {
+				   useDefault value.
+				   [ self chooseExistingWorkspace ].
+				   [ self createNewWorkspace ] }) ifNotNil: [ :action |
+		  action value ]
 ]
 
 { #category : 'choosing' }
@@ -106,6 +91,13 @@ CMWorkspaceChooser >> choose [
 			do: [ :error | self alert: error messageText ] ] repeat
 ]
 
+{ #category : 'private' }
+CMWorkspaceChooser >> chooseExistingWorkspace [
+
+	^ (self chooseFolder: 'Choose the folder of an existing workspace')
+		  ifNotNil: [ :folder | CMWorkspace at: folder ]
+]
+
 { #category : 'dialogs' }
 CMWorkspaceChooser >> chooseFolder: aTitle [
 	"Return the folder chosen, or nil when cancelled"
@@ -113,6 +105,13 @@ CMWorkspaceChooser >> chooseFolder: aTitle [
 	^ self uiManager
 		  chooseDirectory: aTitle
 		  path: FileLocator home asFileReference
+]
+
+{ #category : 'private' }
+CMWorkspaceChooser >> createNewWorkspace [
+
+	^ (self chooseFolder: 'Choose a folder for the new workspace')
+		  ifNotNil: [ :folder | CMWorkspace createAt: folder ]
 ]
 
 { #category : 'private' }
