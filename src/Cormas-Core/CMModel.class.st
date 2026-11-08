@@ -274,12 +274,6 @@ CMModel class >> modelFileExtension [
 	^ 'cmx'
 ]
 
-{ #category : 'model - metadata' }
-CMModel class >> modelName [
-	"A string with a human-friendly model name. By default, returns the name of model class. Overrive this method to provide a name for your model"
-	^ self name
-]
-
 { #category : 'as yet unclassified' }
 CMModel class >> modelsInThisImage [
 

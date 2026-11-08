@@ -392,6 +392,32 @@ CMWorkspace >> catalogVersionOf: anExample [
 		  ifNone: [ nil ]
 ]
 
+{ #category : 'installing' }
+CMWorkspace >> checkCanRename: anInstalledModel to: aNewName [
+	| folder |
+	(aNewName notEmpty and: [
+		 aNewName allSatisfy: [ :each | each isAlphaNumeric or: [ each = $_ ] ] ])
+		ifFalse: [
+			CMWorkspaceError signal: aNewName printString
+				, ' cannot be the name of a model: use only letters, digits and _, such as Woodland' ].
+	((self folders anySatisfy: [ :each |
+		  each isModel and: [ each baselineName = aNewName ] ]) or: [
+		 (self packageOrganizer hasPackage: 'BaselineOf' , aNewName) or: [
+			 Smalltalk globals includesKey: ('BaselineOf' , aNewName) asSymbol ] ])
+		ifTrue: [
+		CMWorkspaceError signal: 'There is already a model named ' , aNewName ].
+	folder := CMModelFolder in: self at: anInstalledModel folder.
+	folder isExample ifTrue: [
+		CMWorkspaceError signal: anInstalledModel baselineName
+			, ' is an example, which cannot be changed: make your own copy to rename it' ].
+	folder isOldVersion ifTrue: [
+		CMWorkspaceError signal: anInstalledModel baselineName
+			, ' is an old version, which cannot be changed' ].
+	anInstalledModel isSaved ifFalse: [
+		CMWorkspaceError signal: anInstalledModel baselineName
+			, ' is not saved: reload it from its folder before renaming it' ]
+]
+
 { #category : 'private' }
 CMWorkspace >> checkNothingIsReplacedBy: anInstalledModel in: packageNames [
 	"Raise a CMWorkspaceError if loading the model would replace a package in packageNames or a model installed from the workspace"
@@ -976,6 +1002,15 @@ CMWorkspace >> modelsFolder [
 	^ location / 'Models'
 ]
 
+{ #category : 'installing' }
+CMWorkspace >> nameOfModelClass: aClass [
+	"Return the name of the installed model that the package of aClass belongs to, or the name of aClass when it belongs to none"
+
+	^ (installed
+		   detect: [ :each | each ownsPackageNamed: aClass package name ]
+		   ifNone: [ ^ aClass name ]) baselineName
+]
+
 { #category : 'private' }
 CMWorkspace >> newBackupFor: aName [
 	"Return a file in Backups that does not exist yet, named after aName and the time"
@@ -1102,6 +1137,40 @@ CMWorkspace >> removePackagesNotIn: packageNames [
 	(self packageOrganizer packages reject: [ :each |
 		 packageNames includes: each name ]) do: [ :each |
 		each removeFromSystem ]
+]
+
+{ #category : 'installing' }
+CMWorkspace >> rename: aBaselineName to: aNewName [
+	"Rename an installed model of Models: its baseline class and package, its cormas.json, and its folder when the folder has the old name and the new one is free. The other packages and classes keep their names. The model is forgotten while it is renamed, so that the renaming is not saved under its old name"
+
+	| model |
+	model := self installedModelNamed: aBaselineName.
+	self checkCanRename: model to: aNewName.
+	installed removeKey: aBaselineName.
+	[ model renameBaselineTo: aNewName ] ensure: [
+		installed at: model baselineName put: model ].
+	Metacello new
+		baseline: aBaselineName;
+		unregister.
+	(self metacelloFor: (CMModelFolder in: self at: model folder)) register.
+	self renameFolderOf: model from: aBaselineName.
+	self announceChange
+]
+
+{ #category : 'installing' }
+CMWorkspace >> renameFolderOf: anInstalledModel from: anOldName [
+	"Name the folder of the model after it, when the folder had its old name and the new name is free"
+
+	| newFolder |
+	anInstalledModel folder basename = anOldName ifFalse: [ ^ self ].
+	newFolder := anInstalledModel folder parent / anInstalledModel baselineName.
+	newFolder exists ifTrue: [ ^ self ].
+	self forgetIcebergRepositoriesAt: anInstalledModel folder.
+	CMWorkspaceError
+		whileWritingIn: self modelsFolder
+		do: [ anInstalledModel folder moveTo: newFolder ].
+	anInstalledModel folder: newFolder.
+	self registerWithIceberg: anInstalledModel
 ]
 
 { #category : 'refreshing' }

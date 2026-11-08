@@ -419,7 +419,7 @@ CMModelListPresenter >> folderActionsFor: anEntry [
 				  ifFalse: [
 						  { ('Restore folder' -> [ self restoreFolderOf: anEntry ]) }
 						  , uninstall ] ].
-	^ uninstall , (anEntry baseline
+	^ uninstall , (self renameActionsFor: anEntry) , (anEntry baseline
 		   ifNil: [ #(  ) ]
 		   ifNotNil: [ { ('Export…' -> [ self export: anEntry ]) } ]) , {
 		  ('Delete…' -> [ self delete: anEntry ]).
@@ -620,6 +620,29 @@ CMModelListPresenter >> reloadFromFolders [
 			UIManager default
 				informUser: 'Reloading the installed models from their folders…'
 				during: [ workspace refresh ] ]
+]
+
+{ #category : 'actions' }
+CMModelListPresenter >> rename: anEntry [
+	| newName |
+	newName := UIManager default
+		           request: 'The name of a model is the name of its baseline, the class that loads it. Renaming ' , anEntry name
+			           , ' renames BaselineOf' , anEntry baseline
+			           , ' and its package, cormas.json, and the folder when it has the name of the model. The other packages and classes keep their names.'
+		           initialAnswer: anEntry baseline
+		           title: 'Rename the model ' , anEntry name.
+	(newName isNil or: [ newName = anEntry baseline ]) ifTrue: [ ^ self ].
+	workspace rename: anEntry baseline to: newName
+]
+
+{ #category : 'actions' }
+CMModelListPresenter >> renameActionsFor: anEntry [
+	"Only a model of Models that is installed and saved can be renamed: examples and old versions cannot be changed"
+
+	^ (anEntry state = 'Installed' and: [
+		   anEntry folder isExample not and: [ anEntry folder isOldVersion not ] ])
+		  ifTrue: [ { ('Rename…' -> [ self rename: anEntry ]) } ]
+		  ifFalse: [ #(  ) ]
 ]
 
 { #category : 'actions' }

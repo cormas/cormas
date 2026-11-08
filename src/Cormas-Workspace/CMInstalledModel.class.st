@@ -420,6 +420,21 @@ CMInstalledModel >> removePackageNamed: aPackageName [
 	self forgetPackageNamed: aPackageName
 ]
 
+{ #category : 'baseline' }
+CMInstalledModel >> renameBaselineTo: aNewName [
+	"Rename my baseline class and its package, and write them and cormas.json into my folder"
+
+	| oldPackageName |
+	oldPackageName := self baselinePackageName.
+	self baselineClass rename: 'BaselineOf' , aNewName.
+	(self packageOrganizer packageNamed: oldPackageName) renameTo:
+		'BaselineOf' , aNewName.
+	baselineName := aNewName.
+	(CMModelFolder in: workspace at: folder) recordBaselineName: aNewName.
+	self forgetPackageNamed: oldPackageName.
+	self savePackageNamed: self baselinePackageName
+]
+
 { #category : 'packages' }
 CMInstalledModel >> renamePackageNamed: anOldName to: aNewName [
 	"Follow a package of mine that was renamed: declare it under its new name in my managed baseline, and move its files in my folder"

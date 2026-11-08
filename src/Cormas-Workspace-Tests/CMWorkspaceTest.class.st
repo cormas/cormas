@@ -270,6 +270,50 @@ CMWorkspaceTest >> testNewFilesAreNamedAfterTheTimeAndNeverReplaceEachOther [
 ]
 
 { #category : 'tests' }
+CMWorkspaceTest >> testRenameOfAnExampleRaisesAnError [
+
+	| workspace model |
+	workspace := CMWorkspace createAt: fileSystem root / 'Research'.
+	model := self installIn: workspace modelNamed: 'Firefighters'.
+	model folder: workspace examplesFolder / 'Firefighters'.
+	self
+		should: [ workspace rename: 'Firefighters' to: 'MyFirefighters' ]
+		raise: CMWorkspaceError
+		withExceptionDo: [ :error |
+			self assert: (error messageText includesSubstring: 'example') ]
+]
+
+{ #category : 'tests' }
+CMWorkspaceTest >> testRenameToANameThatIsNotAClassNameRaisesAnError [
+
+	| workspace |
+	workspace := CMWorkspace createAt: fileSystem root / 'Research'.
+	self installIn: workspace modelNamed: 'Forest'.
+	self
+		should: [ workspace rename: 'Forest' to: 'Forest fire' ]
+		raise: CMWorkspaceError
+		withExceptionDo: [ :error |
+			self assert: (error messageText includesSubstring: 'Forest fire') ]
+]
+
+{ #category : 'tests' }
+CMWorkspaceTest >> testRenameToTheNameOfAnotherModelRaisesAnError [
+
+	| workspace woodland |
+	workspace := CMWorkspace createAt: fileSystem root / 'Research'.
+	self installIn: workspace modelNamed: 'Forest'.
+	woodland := workspace modelsFolder / 'My woods'.
+	woodland ensureCreateDirectory.
+	woodland / 'cormas.json' writeStreamDo: [ :stream |
+		stream nextPutAll: '{ "baseline" : "Woodland" }' ].
+	self
+		should: [ workspace rename: 'Forest' to: 'Woodland' ]
+		raise: CMWorkspaceError
+		withExceptionDo: [ :error |
+			self assert: (error messageText includesSubstring: 'Woodland') ]
+]
+
+{ #category : 'tests' }
 CMWorkspaceTest >> testSavingAModelWhoseFolderWasRenamedFollowsIt [
 
 	| research model renamed |

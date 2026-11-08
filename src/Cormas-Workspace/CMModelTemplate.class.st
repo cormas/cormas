@@ -234,14 +234,6 @@ CMModelTemplate >> modelDefinitions [
 			   superclass: 'CMCell'
 			   package: self modelPackageName).
 		  (self
-			   method: 'modelName
-	"A human-friendly name of the model"
-
-	^ ' , name printString
-			   of: self modelClassName
-			   classSide: true
-			   in: 'accessing').
-		  (self
 			   method: 'prefix
 	"Every class name in the model package begins with this prefix"
 

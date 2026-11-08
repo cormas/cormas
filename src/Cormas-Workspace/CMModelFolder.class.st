@@ -211,6 +211,16 @@ CMModelFolder >> name [
 	^ location basename
 ]
 
+{ #category : 'accessing' }
+CMModelFolder >> recordBaselineName: aBaselineName [
+	"Record in cormas.json the new name of the model"
+
+	| metadata |
+	metadata := self metadata.
+	metadata at: 'baseline' put: aBaselineName.
+	self writeMetadata: metadata
+]
+
 { #category : 'versions' }
 CMModelFolder >> recordChosenVersion: aTag [
 	"Record in the git configuration of my folder that it holds the version aTag"

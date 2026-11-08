@@ -106,7 +106,7 @@ CMModelTemplateTest >> testWrittenBaselineIsManagedByCormas [
 	self assert: (baseline includesSubstring: '^ true')
 ]
 
-{ #category : 'tests - files' }
+{ #category : 'tests' }
 CMModelTemplateTest >> testWrittenFolderHoldsTheCodeOfTheModel [
 
 	| src |
@@ -115,9 +115,6 @@ CMModelTemplateTest >> testWrittenFolderHoldsTheCodeOfTheModel [
 	self assert:
 		((src / 'ForestFire-Model' / 'FFModel.class.st') contents
 			 includesSubstring: '#superclass : ''CMModel''').
-	self assert:
-		((src / 'ForestFire-Model' / 'FFModel.class.st') contents
-			 includesSubstring: '^ ''Forest fire''').
 	self assert:
 		((src / 'ForestFire-Model' / 'FFCell.class.st') contents
 			 includesSubstring: '#superclass : ''CMCell''').
