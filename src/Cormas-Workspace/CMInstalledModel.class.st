@@ -74,24 +74,17 @@ CMInstalledModel class >> in: aWorkspace baselineName: aString folder: aFileRefe
 
 { #category : 'packages' }
 CMInstalledModel >> addPackageNamed: aPackageName [
-	"Declare the package in my baseline, creating it when it does not exist, and save it with the baseline into my folder. From then on its changes are saved like those of my other packages"
+	"Declare the package in my baseline, creating it when it does not exist, and save it into my folder. From then on its changes are saved like those of my other packages. Only a baseline that Cormas manages is changed: the modeler adds a package to their own baseline by hand"
 
-	| method |
 	(self ownsPackageNamed: aPackageName) ifTrue: [
-			CMWorkspaceError signal:
-				aPackageName , ' is already a package of ' , baselineName ].
-	self baselineClass project version groups ifNotEmpty: [
-			CMWorkspaceError signal:
-				self baselinePackageName , ' defines groups, so add '
-				, aPackageName , ' to it by hand' ].
-	method := self baselineMethod.
-	self baselineClass
-		compile: (self sourceOf: method withPackageNamed: aPackageName)
-		classified: method protocolName.
+		CMWorkspaceError signal:
+			aPackageName , ' is already a package of ' , baselineName ].
+	self hasManagedBaseline ifFalse: [
+		CMWorkspaceError signal: 'You manage the baseline of ' , baselineName
+			, ' yourself, so add ' , aPackageName , ' to '
+			, self baselinePackageName , ' by hand' ].
 	self packageOrganizer ensurePackage: aPackageName.
-	self
-		saveClassNamed: self baselinePackageName
-		inPackageNamed: self baselinePackageName.
+	self declarePackages: self packageNames asArray , { aPackageName }.
 	self savePackageNamed: aPackageName
 ]
 
@@ -167,6 +160,18 @@ CMInstalledModel >> checkUnchanged: aPath [
 				baselineName , ' was changed outside Cormas: ' , aPath ]
 ]
 
+{ #category : 'baseline' }
+CMInstalledModel >> declarePackages: packageNames [
+	"Have my managed baseline declare exactly these packages, in this order, and save it into my folder"
+
+	self baselineClass
+		compile: (CMModelTemplate sourceOfBaselineDeclaring: packageNames)
+		classified: 'baselines'.
+	self
+		saveClassNamed: self baselinePackageName
+		inPackageNamed: self baselinePackageName
+]
+
 { #category : 'accessing' }
 CMInstalledModel >> dependencyNames [
 	"Return the names of the projects that my baseline loads before the model"
@@ -226,6 +231,25 @@ CMInstalledModel >> folder: aFileReference [
 	folder := aFileReference
 ]
 
+{ #category : 'saving' }
+CMInstalledModel >> forgetPackageNamed: aPackageName [
+	"Delete the files of a package that is no longer mine from my folder"
+
+	| packageFolder |
+	self save: Dictionary new over: (self pathsOnDiskInPackageNamed: aPackageName).
+	packageFolder := folder / 'src' / aPackageName.
+	(packageFolder exists and: [ packageFolder hasChildren not ]) ifTrue: [
+		packageFolder delete ]
+]
+
+{ #category : 'baseline' }
+CMInstalledModel >> hasManagedBaseline [
+	"Answer whether my baseline says that Cormas manages it"
+
+	^ (self baselineClass includesSelector: #isManagedByCormas) and: [
+		  self baselineClass new isManagedByCormas ]
+]
+
 { #category : 'private' }
 CMInstalledModel >> hashOf: aFile [
 
@@ -237,6 +261,19 @@ CMInstalledModel >> hashesOnDisk [
 
 	^ ((folder / 'src') allFiles collect: [ :each |
 		   (self pathOf: each) -> (self hashOf: each) ]) asDictionary
+]
+
+{ #category : 'baseline' }
+CMInstalledModel >> isBaselineEditedByHand [
+	"Answer whether my baseline says that Cormas manages it, but is no longer exactly what Cormas writes for my packages"
+
+	| baseline |
+	baseline := self baselineClass.
+	^ self hasManagedBaseline and: [
+		  (baseline methods , baseline class methods collect: [ :each |
+			   each sourceCode ]) asSet ~= {
+			  (CMModelTemplate sourceOfBaselineDeclaring: self packageNames asArray).
+			  CMModelTemplate sourceOfIsManagedByCormas } asSet ]
 ]
 
 { #category : 'packages' }
@@ -375,6 +412,26 @@ CMInstalledModel >> reload [
 				           , error messageText ]
 ]
 
+{ #category : 'packages' }
+CMInstalledModel >> removePackageNamed: aPackageName [
+	"Follow a package of mine that was removed: remove it from my managed baseline, and its files from my folder"
+
+	self declarePackages: (self packageNames asArray copyWithout: aPackageName).
+	self forgetPackageNamed: aPackageName
+]
+
+{ #category : 'packages' }
+CMInstalledModel >> renamePackageNamed: anOldName to: aNewName [
+	"Follow a package of mine that was renamed: declare it under its new name in my managed baseline, and move its files in my folder"
+
+	self declarePackages: (self packageNames asArray collect: [ :each |
+			 each = anOldName
+				 ifTrue: [ aNewName ]
+				 ifFalse: [ each ] ]).
+	self savePackageNamed: aNewName.
+	self forgetPackageNamed: anOldName
+]
+
 { #category : 'refreshing' }
 CMInstalledModel >> restoredIn: aFolder [
 	"Use aFolder from now on: the workspace wrote my code into it, as it is in the image, so everything is saved"
@@ -430,27 +487,18 @@ CMInstalledModel >> setWorkspace: aWorkspace baselineName: aString folder: aFile
 	fileHashes := Dictionary new
 ]
 
-{ #category : 'private' }
-CMInstalledModel >> sourceOf: aBaselineMethod withPackageNamed: aPackageName [
-	"Return the source of the baseline method with the package declared at the end of its for: #common do: block"
+{ #category : 'baseline' }
+CMInstalledModel >> stopManagingBaseline [
+	"The modeler manages my baseline from now on: mark it so, and save it into my folder"
 
-	| tree common |
-	tree := aBaselineMethod parseTree.
-	common := tree allChildren
-		          detect: [ :each |
-				          each isMessage and: [
-						          each selector = #for:do: and: [
-								          each arguments first isLiteralNode and: [
-									          each arguments first value = #common ] ] ] ]
-		          ifNone: [
-				          CMWorkspaceError signal:
-					          self baselinePackageName
-					          , ' has no for: #common do: block, so add '
-					          , aPackageName , ' to it by hand' ].
-	common arguments last body addNode:
-		(RBParser parseExpression:
-			 'spec package: ' , aPackageName printString).
-	^ tree formattedCode
+	self baselineClass
+		compile: (CMModelTemplate sourceOfIsManagedByCormas
+				 copyReplaceAll: '^ true'
+				 with: '^ false')
+		classified: 'baselines'.
+	self
+		saveClassNamed: self baselinePackageName
+		inPackageNamed: self baselinePackageName
 ]
 
 { #category : 'private' }
@@ -468,8 +516,14 @@ CMInstalledModel >> tonelWriterClass [
 ]
 
 { #category : 'private' }
+CMInstalledModel >> touchesBaseline: paths [
+	^ paths anySatisfy: [ :each |
+		  each beginsWith: 'src/' , self baselinePackageName , '/' ]
+]
+
+{ #category : 'private' }
 CMInstalledModel >> write: files over: paths [
-	"Check first that every file to touch is as Cormas last saw it, then write and delete. Before changing the folder of an example, which only Cormas changes, have the workspace copy it to Models or stop saving. An old version is never changed. Before changing a model made with another major of Cormas, have the workspace migrate it or stop saving. Then record that the model is made with this Cormas"
+	"Check first that every file to touch is as Cormas last saw it, then write and delete. Before changing the folder of an example, which only Cormas changes, have the workspace copy it to Models or stop saving. An old version is never changed. When the modeler changed a baseline that Cormas manages, have the workspace ask whether they manage it from now on, which saves it, or stop saving. Before changing a model made with another major of Cormas, have the workspace migrate it or stop saving. Then record that the model is made with this Cormas"
 
 	| toWrite toDelete |
 	toWrite := files keys reject: [ :path |
@@ -485,6 +539,9 @@ CMInstalledModel >> write: files over: paths [
 		workspace copyEditedExample: self ].
 	(CMModelFolder in: workspace at: folder) isOldVersion ifTrue: [
 		workspace editOldVersion: self ].
+	((self touchesBaseline: toWrite , toDelete asArray) and: [
+		 self isBaselineEditedByHand ]) ifTrue: [
+		^ workspace manageBaselineOf: self ].
 	toWrite , toDelete asArray do: [ :path | self checkUnchanged: path ].
 	((CMModelFolder in: workspace at: folder)
 		 isMadeWithAnotherMajorThan: CMVersion current) ifTrue: [

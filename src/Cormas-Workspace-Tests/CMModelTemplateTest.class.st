@@ -95,6 +95,17 @@ CMModelTemplateTest >> testPrefixThatIsNotACapitalizedWordRaisesAnError [
 				raise: CMWorkspaceError ]
 ]
 
+{ #category : 'tests' }
+CMModelTemplateTest >> testWrittenBaselineIsManagedByCormas [
+
+	| baseline |
+	self template writeTo: folder.
+	baseline := (folder / 'src' / 'BaselineOfForestFire'
+	             / 'BaselineOfForestFire.class.st') contents.
+	self assert: (baseline includesSubstring: 'isManagedByCormas').
+	self assert: (baseline includesSubstring: '^ true')
+]
+
 { #category : 'tests - files' }
 CMModelTemplateTest >> testWrittenFolderHoldsTheCodeOfTheModel [
 

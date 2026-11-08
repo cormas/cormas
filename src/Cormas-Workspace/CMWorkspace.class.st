@@ -195,7 +195,9 @@ CMWorkspace class >> initialize [
 		when: ClassRenamed , ClassRemoved
 		send: #classRenamedOrRemoved:
 		to: self;
-		when: PackageTagRenamed send: #packageTagRenamed: to: self.
+		when: PackageTagRenamed send: #packageTagRenamed: to: self;
+		when: PackageRenamed send: #packageRenamed: to: self;
+		when: PackageRemoved send: #packageRemoved: to: self.
 	Iceberg announcer unsubscribe: self.
 	Iceberg announcer
 		when: IceRepositoryModified
@@ -208,6 +210,16 @@ CMWorkspace class >> isWorkspace: aFileReference [
 	"A folder is a workspace if and only if it contains a Models folder"
 
 	^ (aFileReference / 'Models') isDirectory
+]
+
+{ #category : 'code changes' }
+CMWorkspace class >> packageRemoved: anAnnouncement [
+	current ifNotNil: [ :workspace | workspace packageRemoved: anAnnouncement ]
+]
+
+{ #category : 'code changes' }
+CMWorkspace class >> packageRenamed: anAnnouncement [
+	current ifNotNil: [ :workspace | workspace packageRenamed: anAnnouncement ]
 ]
 
 { #category : 'code changes' }
@@ -901,6 +913,16 @@ CMWorkspace >> location [
 	^ location
 ]
 
+{ #category : 'saving' }
+CMWorkspace >> manageBaselineOf: anInstalledModel [
+	"Ask whether the modeler, who changed the baseline that Cormas manages for the model, manages it from now on. If so, mark it so and save it. Otherwise raise a CMWorkspaceError, which stops saving the model until it is reloaded from its folder"
+
+	(CMBaselineEdited signalFor: anInstalledModel) ifFalse: [
+		CMWorkspaceError signal: 'The baseline of ' , anInstalledModel baselineName
+			, ' was changed: its changes are not saved' ].
+	anInstalledModel stopManagingBaseline
+]
+
 { #category : 'private' }
 CMWorkspace >> metacelloFor: aModelFolder [
 	"Always load from the files, never through Iceberg, which loads the last commit rather than what is in the folder"
@@ -1003,6 +1025,31 @@ CMWorkspace >> orphanPackages [
 						 installed noneSatisfy: [ :other | other ownsPackageNamed: each ] ] ])
 				do: [ :each | orphans at: each put: model ] ].
 	^ orphans
+]
+
+{ #category : 'saving' }
+CMWorkspace >> packageRemoved: anAnnouncement [
+	"Have the installed model whose baseline Cormas manages forget its removed package"
+
+	installed
+		detect: [ :each |
+			each hasManagedBaseline and: [
+				each packageNames includes: anAnnouncement package name ] ]
+		ifFound: [ :model | model removePackageNamed: anAnnouncement package name ]
+]
+
+{ #category : 'saving' }
+CMWorkspace >> packageRenamed: anAnnouncement [
+	"Have the installed model whose baseline Cormas manages follow its package to its new name"
+
+	installed
+		detect: [ :each |
+			each hasManagedBaseline and: [
+				each packageNames includes: anAnnouncement oldName ] ]
+		ifFound: [ :model |
+			model
+				renamePackageNamed: anAnnouncement oldName
+				to: anAnnouncement newName ]
 ]
 
 { #category : 'refreshing' }

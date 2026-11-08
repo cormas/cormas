@@ -56,6 +56,37 @@ CMModelTemplate class >> named: aString [
 	^ self new setName: aString
 ]
 
+{ #category : 'baselines' }
+CMModelTemplate class >> sourceOfBaselineDeclaring: packageNames [
+	"Return the source of the baseline method that Cormas writes: it declares the packages in order, each one requiring those before it"
+
+	^ String streamContents: [ :stream |
+		  stream
+			  nextPutAll: 'baseline: spec'; cr;
+			  tab; nextPutAll: '<baseline>'; cr;
+			  tab; nextPutAll: 'spec for: #common do: ['; cr;
+			  tab; tab; nextPutAll: 'spec'.
+		  packageNames withIndexDo: [ :each :index |
+			  index > 1 ifTrue: [ stream nextPut: $; ].
+			  stream cr; tab; tab; tab; nextPutAll: 'package: '; print: each asString.
+			  index > 1 ifTrue: [
+				  stream nextPutAll: ' with: [ spec requires: #('.
+				  (packageNames first: index - 1) do: [ :required |
+					  stream space; print: required asString ].
+				  stream nextPutAll: ' ) ]' ] ].
+		  stream nextPutAll: ' ]' ]
+]
+
+{ #category : 'baselines' }
+CMModelTemplate class >> sourceOfIsManagedByCormas [
+	"Return the source of the method that marks a baseline written by Cormas"
+
+	^ 'isManagedByCormas
+	"Cormas wrote this baseline and keeps it up to date when packages of the model are added, renamed or removed. If you change the baseline yourself, Cormas asks whether you want to manage it yourself: this method then returns false, and Cormas never changes the baseline again"
+
+	^ true' withLineEndings: String cr
+]
+
 { #category : 'writing' }
 CMModelTemplate class >> writeProjectFilesTo: aFolder [
 	"Write the files that make a model folder a Pharo project as Iceberg writes them, and keep outputs out of git"
@@ -91,15 +122,14 @@ CMModelTemplate >> baselineDefinitions [
 			   superclass: 'BaselineOf'
 			   package: 'BaselineOf' , self baselineName).
 		  (self
-			   method: 'baseline: spec
-
-	<baseline>
-	spec for: #common do: [
-		spec
-			package: ' , self modelPackageName printString , ';
-			package: ' , self testPackageName printString , '
-			with: [ spec requires: #( ' , self modelPackageName printString
-				   , ' ) ] ]'
+			   method: (self class sourceOfBaselineDeclaring: {
+						    self modelPackageName.
+						    self testPackageName })
+			   of: 'BaselineOf' , self baselineName
+			   classSide: false
+			   in: 'baselines').
+		  (self
+			   method: self class sourceOfIsManagedByCormas
 			   of: 'BaselineOf' , self baselineName
 			   classSide: false
 			   in: 'baselines') }
