@@ -118,6 +118,19 @@ CMWorkspace class >> changeTo: aWorkspace [
 		previous announcer announce: (CMWorkspaceReplaced by: aWorkspace) ]
 ]
 
+{ #category : 'checking' }
+CMWorkspace class >> checkModelName: aString [
+	"Raise a CMWorkspaceError unless aString can be the name of a model, which is also the name of its baseline: letters and digits of the English alphabet, starting with a letter"
+
+	(aString notEmpty and: [
+			 aString first isLetter and: [
+					 aString allSatisfy: [ :each |
+						 each isAlphaNumeric and: [ each asInteger < 128 ] ] ] ])
+		ifFalse: [
+				CMWorkspaceError signal:
+					'Use only letters and digits, starting with a letter' ]
+]
+
 { #category : 'code changes' }
 CMWorkspace class >> classChanged: anAnnouncement [
 
@@ -392,30 +405,33 @@ CMWorkspace >> catalogVersionOf: anExample [
 		  ifNone: [ nil ]
 ]
 
-{ #category : 'installing' }
+{ #category : 'renaming' }
 CMWorkspace >> checkCanRename: anInstalledModel to: aNewName [
+
 	| folder |
-	(aNewName notEmpty and: [
-		 aNewName allSatisfy: [ :each | each isAlphaNumeric or: [ each = $_ ] ] ])
-		ifFalse: [
-			CMWorkspaceError signal: aNewName printString
-				, ' cannot be the name of a model: use only letters, digits and _, such as Woodland' ].
-	((self folders anySatisfy: [ :each |
-		  each isModel and: [ each baselineName = aNewName ] ]) or: [
-		 (self packageOrganizer hasPackage: 'BaselineOf' , aNewName) or: [
-			 Smalltalk globals includesKey: ('BaselineOf' , aNewName) asSymbol ] ])
-		ifTrue: [
-		CMWorkspaceError signal: 'There is already a model named ' , aNewName ].
+	self class checkModelName: aNewName.
+	self checkNameIsFree: aNewName.
 	folder := CMModelFolder in: self at: anInstalledModel folder.
 	folder isExample ifTrue: [
-		CMWorkspaceError signal: anInstalledModel baselineName
-			, ' is an example, which cannot be changed: make your own copy to rename it' ].
+			CMWorkspaceError signal: anInstalledModel baselineName
+				,
+				' is an example, which cannot be changed: make your own copy to rename it' ].
 	folder isOldVersion ifTrue: [
-		CMWorkspaceError signal: anInstalledModel baselineName
-			, ' is an old version, which cannot be changed' ].
+			CMWorkspaceError signal: anInstalledModel baselineName
+				, ' is an old version, which cannot be changed' ].
 	anInstalledModel isSaved ifFalse: [
-		CMWorkspaceError signal: anInstalledModel baselineName
-			, ' is not saved: reload it from its folder before renaming it' ]
+			CMWorkspaceError signal: anInstalledModel baselineName
+				, ' is not saved: reload it from its folder before renaming it' ]
+]
+
+{ #category : 'checking' }
+CMWorkspace >> checkClassesAreFreeFor: aModelTemplate [
+	"Raise a CMWorkspaceError if a class that the template would create is already in the image"
+
+	aModelTemplate classNames do: [ :each |
+			Smalltalk globals at: each asSymbol ifPresent: [ :existing |
+					CMWorkspaceError signal: each , ' is already in this image, in '
+						, (self describePackageOf: existing) , ': choose another prefix' ] ]
 ]
 
 { #category : 'installing' }
@@ -428,6 +444,18 @@ CMWorkspace >> checkClassesOf: anInstalledModel inPackages: packageNames [
 				CMWorkspaceError signal: each , ' is already in this image, in '
 					, (self describePackageOf: existing) , ', so '
 					, anInstalledModel baselineName , ' cannot be installed' ] ] ]
+]
+
+{ #category : 'checking' }
+CMWorkspace >> checkNameIsFree: aName [
+	"Raise a CMWorkspaceError if a model of the workspace or a baseline of the image already has that name"
+
+	((self folders anySatisfy: [ :each | each hasBaselineNamed: aName ])
+		 or: [
+				 (self packageOrganizer hasPackage: 'BaselineOf' , aName) or: [
+					 Smalltalk globals includesKey: ('BaselineOf' , aName) asSymbol ] ])
+		ifTrue: [
+		CMWorkspaceError signal: 'There is already a model named ' , aName ]
 ]
 
 { #category : 'private' }
@@ -656,21 +684,14 @@ CMWorkspace >> createFolders [
 		do: [ self modelsFolder ensureCreateDirectory ]
 ]
 
-{ #category : 'creating' }
+{ #category : 'creating models' }
 CMWorkspace >> createModelFrom: aModelTemplate [
 	"Write a new model from the template into a new folder of Models and install it from there, like any other model. Return the folder. Raise a CMWorkspaceError, leaving the image and the workspace as they were, when the model cannot be created"
 
 	| folder modelFolder |
-	self folders
-		detect: [ :each |
-		each hasBaselineNamed: aModelTemplate baselineName ]
-		ifFound: [ :each |
-				CMWorkspaceError signal:
-					'A model named ' , aModelTemplate baselineName
-					, ' is already in the workspace, in ' , each location fullName ].
-	folder := self
-		          newFolderNamed: aModelTemplate basename
-		          in: self modelsFolder.
+	self checkNameIsFree: aModelTemplate baselineName.
+	self checkClassesAreFreeFor: aModelTemplate.
+	folder := self newFolderForModelNamed: aModelTemplate baselineName.
 	CMWorkspaceError
 		whileWritingIn: folder
 		do: [ aModelTemplate writeTo: folder ].
@@ -1069,6 +1090,13 @@ CMWorkspace >> newFileNamed: aName extension: anExtension in: aFolder [
 			candidate := aFolder
 			             / (stem , ' ' , index printString , '.' , anExtension) ].
 	^ candidate
+]
+
+{ #category : 'creating models' }
+CMWorkspace >> newFolderForModelNamed: aName [
+	"Return the folder of Models where a new model with that name goes, which does not exist yet"
+
+	^ self newFolderNamed: aName in: self modelsFolder
 ]
 
 { #category : 'private' }

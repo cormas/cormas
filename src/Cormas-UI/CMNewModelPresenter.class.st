@@ -1,33 +1,35 @@
 "
-I am the dialog that creates a new model in the workspace. The modeler gives a name, a prefix and a description, sees a preview of what will be created, and the model is written into a new folder of `Models`, then installed from there.
+I am the dialog that creates a new model in the workspace. The modeler gives a name, a summary and a class prefix, and the model is written into a new folder of `Models`, then installed from there.
 
 ## Responsibility:
 
+- I keep the name and the prefix exactly as typed, say in red next to a field why it cannot make a model, and list the classes Cormas will create.
 - I suggest a prefix that follows the name, until the modeler types a prefix of their own.
-- I preview what Cormas will create, or explain why it cannot, and allow creating only a model it can create.
-- I create the model through the workspace, and tell whoever opened me which model was created.
+- I create the model through the workspace, allowing it only when it can be created, and tell whoever opened me which model was created.
 
 ## Collaborators:
 
-- `CMModelTemplate` checks the name and prefix and describes the model to create.
-- `CMWorkspace` writes the model folder and installs it.
+- `CMModelTemplate` checks the name and the prefix and knows the classes to create.
+- `CMWorkspace` checks that the name and the classes are free, writes the model folder and installs it.
 - `CMModelListPresenter` opens me and selects the new model.
 
 ## Public API and Key Messages
 
-- `CMNewModelPresenter open` opens me on the workspace of the image, asking for one first if needed.
+- `CMNewModelPresenter open` opens me as a modal dialog on the workspace of the image, asking for one first if needed.
 - `CMNewModelPresenter on: aWorkspace` creates me on a workspace.
 - `whenCreatedDo: aBlock` evaluates aBlock with the baseline name of the created model.
 
 ```smalltalk
 (CMNewModelPresenter on: CMWorkspace current)
 	whenCreatedDo: [ :baselineName | Transcript show: baselineName; cr ];
-	open
+	openModal
 ```
 
 ## Internal Representation
 
 - `workspace` is the `CMWorkspace` the model is created in.
+- `nameError` and `prefixError`, next to the labels of the name and the prefix, say in red why they cannot make a model, and are empty otherwise.
+- `classesLine`, under the prefix, lists the classes Cormas will create.
 - `suggestedPrefix` is the last prefix I suggested, to know whether the modeler changed it.
 - `createdBlock` is evaluated once the model is created.
 "
@@ -37,9 +39,11 @@ Class {
 	#instVars : [
 		'workspace',
 		'nameInput',
+		'nameError',
+		'summaryInput',
 		'prefixInput',
-		'descriptionInput',
-		'preview',
+		'prefixError',
+		'classesLine',
 		'createButton',
 		'cancelButton',
 		'suggestedPrefix',
@@ -57,20 +61,25 @@ CMNewModelPresenter class >> open [
 	workspace := CMWorkspace currentIfNone: [
 			             CMWorkspaceChooser open.
 			             CMWorkspace currentIfNone: [ ^ nil ] ].
-	^ (self on: workspace) open
+	^ (self on: workspace) openModal
+]
+
+{ #category : 'accessing' }
+CMNewModelPresenter >> classesLine [
+
+	^ classesLine
 ]
 
 { #category : 'initialization' }
 CMNewModelPresenter >> connectPresenters [
 
 	nameInput whenTextChangedDo: [ self nameChanged ].
-	prefixInput whenTextChangedDo: [ self updatePreview ].
-	descriptionInput whenTextChangedDo: [ self updatePreview ].
+	prefixInput whenTextChangedDo: [ self updateLines ].
 	createButton action: [ self create ].
 	cancelButton action: [ self window close ]
 ]
 
-{ #category : 'private' }
+{ #category : 'actions' }
 CMNewModelPresenter >> create [
 	"Write the model into the workspace and install it, then close and tell who opened the dialog"
 
@@ -78,7 +87,7 @@ CMNewModelPresenter >> create [
 	[
 		template := self template.
 		UIManager default
-			informUser: 'Creating ' , template name , '…'
+			informUser: 'Creating ' , template baselineName , '…'
 			during: [ workspace createModelFrom: template ] ]
 		on: CMWorkspaceError
 		do: [ :error | ^ UIManager default alert: error messageText ].
@@ -86,21 +95,27 @@ CMNewModelPresenter >> create [
 	createdBlock ifNotNil: [ createdBlock value: template baselineName ]
 ]
 
+{ #category : 'accessing' }
+CMNewModelPresenter >> createButton [
+
+	^ createButton
+]
+
 { #category : 'layout' }
 CMNewModelPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
-		  spacing: 5;
-		  add: 'Name of the model' expand: false;
+		  spacing: 4;
+		  add: (self label: 'Name' withError: nameError) expand: false;
 		  add: nameInput expand: false;
-		  add: 'Beginning of the class names' expand: false;
+		  add: 'Summary' expand: false;
+		  add: summaryInput;
+		  add: (self label: 'Class prefix' withError: prefixError)
+		  expand: false;
 		  add: prefixInput expand: false;
-		  add: 'Description' expand: false;
-		  add: descriptionInput height: 90;
-		  add: 'What Cormas will create' expand: false;
-		  add: preview;
+		  add: classesLine expand: false;
 		  add: (SpBoxLayout newLeftToRight
-				   spacing: 5;
+				   spacing: 8;
 				   addLast: cancelButton expand: false;
 				   addLast: createButton expand: false;
 				   yourself)
@@ -109,76 +124,106 @@ CMNewModelPresenter >> defaultLayout [
 ]
 
 { #category : 'private' }
-CMNewModelPresenter >> descriptionOf: aTemplate [
+CMNewModelPresenter >> error: anErrorLabel of: aBlock [
+	"Evaluate aBlock, showing in anErrorLabel why it raised a CMWorkspaceError. Return whether it did"
 
-	^ String streamContents: [ :stream |
-			  stream
-				  nextPutAll: 'The folder Models/';
-				  nextPutAll: aTemplate basename;
-				  nextPutAll: ' in the workspace, with:';
-				  cr;
-				  nextPutAll: '- the baseline BaselineOf';
-				  nextPutAll: aTemplate baselineName;
-				  cr;
-				  nextPutAll: '- the package ';
-				  nextPutAll: aTemplate modelPackageName;
-				  nextPutAll: ', with the classes ';
-				  nextPutAll: aTemplate modelClassName;
-				  nextPutAll: ' and ';
-				  nextPutAll: aTemplate cellClassName;
-				  cr;
-				  nextPutAll: '- the package ';
-				  nextPutAll: aTemplate testPackageName;
-				  nextPutAll: ', with the class ';
-				  nextPutAll: aTemplate testClassName;
-				  cr;
-				  cr;
-				  nextPutAll:
-					  'Cormas then installs the model in the image from this folder.' ]
+	^ [
+		  aBlock value.
+		  false ]
+		  on: CMWorkspaceError
+		  do: [ :error |
+				  anErrorLabel label: error messageText.
+				  true ]
+]
+
+{ #category : 'initialization' }
+CMNewModelPresenter >> initializeDialogWindow: aDialogWindowPresenter [
+	"Add no Ok and Cancel buttons: the dialog has its own"
+
+	
 ]
 
 { #category : 'initialization' }
 CMNewModelPresenter >> initializePresenters [
 
-	nameInput := self newTextInput placeholder: 'Forest fire'.
+	nameInput := self newTextInput placeholder: 'ForestFire'.
+	nameError := self newLabel addStyle: 'headerError'.
+	summaryInput := self newText placeholder:
+		                'What the model is about, in a few lines'.
 	prefixInput := self newTextInput placeholder: 'FF'.
-	descriptionInput := self newText placeholder:
-		                    'What the model is about, in one paragraph'.
-	preview := self newText beNotEditable.
+	prefixError := self newLabel addStyle: 'headerError'.
+	classesLine := self newLabel.
 	createButton := self newButton
-		                label: 'Create';
+		                label: 'Create model';
 		                icon: (self iconNamed: #smallNew);
-		                disable;
+		                addStyle: 'large';
 		                yourself.
 	cancelButton := self newButton
 		                label: 'Cancel';
 		                yourself.
 	suggestedPrefix := ''.
-	self updatePreview
+	self updateLines
+]
+
+{ #category : 'initialization' }
+CMNewModelPresenter >> initializeWindow: aWindowPresenter [
+
+	super initializeWindow: aWindowPresenter.
+	aWindowPresenter
+		title: 'New model';
+		initialExtent: 620 @ 400
 ]
 
 { #category : 'layout' }
-CMNewModelPresenter >> initializeWindow: aWindowPresenter [
+CMNewModelPresenter >> label: aString withError: anErrorLabel [
 
-	aWindowPresenter
-		title: 'New Cormas model';
-		initialExtent: 600 @ 560
+	^ SpBoxLayout newLeftToRight
+		  spacing: 10;
+		  add: aString expand: false;
+		  add: (SpBoxLayout newLeftToRight
+				   hAlignEnd;
+				   add: anErrorLabel expand: false;
+				   yourself);
+		  yourself
 ]
 
-{ #category : 'private' }
+{ #category : 'updating' }
 CMNewModelPresenter >> nameChanged [
 	"Follow the name with the prefix Cormas suggests, until the modeler types a prefix of their own"
 
 	| newPrefix |
-	newPrefix := [
-	             (CMModelTemplate named: nameInput text trimBoth) prefix ]
+	newPrefix := [ (CMModelTemplate named: nameInput text) prefix ]
 		             on: CMWorkspaceError
 		             do: [ '' ].
-	prefixInput text trimBoth = suggestedPrefix ifTrue: [
+	prefixInput text = suggestedPrefix ifTrue: [
 			suggestedPrefix := newPrefix.
 			prefixInput text: newPrefix ].
 	suggestedPrefix := newPrefix.
-	self updatePreview
+	self updateLines
+]
+
+{ #category : 'accessing' }
+CMNewModelPresenter >> nameError [
+
+	^ nameError
+]
+
+{ #category : 'accessing' }
+CMNewModelPresenter >> nameInput [
+
+	^ nameInput
+]
+
+{ #category : 'accessing' }
+CMNewModelPresenter >> prefixError [
+
+	^ prefixError
+]
+
+{ #category : 'accessing' }
+CMNewModelPresenter >> prefixInput [
+
+	^ prefixInput
 ]
 
 { #category : 'initialization' }
@@ -187,36 +232,36 @@ CMNewModelPresenter >> setModelBeforeInitialization: aWorkspace [
 	workspace := aWorkspace
 ]
 
-{ #category : 'private' }
+{ #category : 'actions' }
 CMNewModelPresenter >> template [
 	"Return the template made from the fields. Raise a CMWorkspaceError when they cannot make a model"
 
-	| template |
-	template := CMModelTemplate named: nameInput text trimBoth.
-	prefixInput text trimBoth ifNotEmpty: [ :prefix |
-		template prefix: prefix ].
-	template description: descriptionInput text asString trimBoth.
-	(workspace folders anySatisfy: [ :each |
-		 each hasBaselineNamed: template baselineName ]) ifTrue: [
-			CMWorkspaceError signal: 'A model named ' , template baselineName
-				, ' is already in the workspace: choose another name' ].
-	^ template
+	^ (CMModelTemplate named: nameInput text)
+		  prefix: prefixInput text;
+		  description: summaryInput text asString trimBoth;
+		  yourself
 ]
 
-{ #category : 'private' }
-CMNewModelPresenter >> updatePreview [
-	"Show what Cormas will create, or why it cannot, and allow creating only a model it can create"
+{ #category : 'updating' }
+CMNewModelPresenter >> updateLines [
+	"Say next to each field why it cannot make a model, list the classes Cormas will create, and allow creating only a model it can create"
 
-	nameInput text trimBoth ifEmpty: [
-			preview text: 'Type the name of the model, such as Forest fire.'.
-			^ createButton disable ].
-	[
-		preview text: (self descriptionOf: self template).
-		createButton enable ]
-		on: CMWorkspaceError
-		do: [ :error |
-				preview text: error messageText.
-				createButton disable ]
+	| template |
+	createButton disable.
+	nameError label: ''.
+	prefixError label: ''.
+	classesLine label: ''.
+	nameInput text ifEmpty: [ ^ self ].
+	(self error: nameError of: [
+			 template := CMModelTemplate named: nameInput text.
+			 workspace checkNameIsFree: template baselineName ]) ifTrue: [
+		^ self ].
+	(self error: prefixError of: [
+			 template prefix: prefixInput text.
+			 workspace checkClassesAreFreeFor: template ]) ifTrue: [ ^ self ].
+	classesLine label:
+		'Classes ' , (', ' join: template classNames allButFirst).
+	createButton enable
 ]
 
 { #category : 'api' }

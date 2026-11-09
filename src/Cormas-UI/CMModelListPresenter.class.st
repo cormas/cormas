@@ -610,7 +610,7 @@ CMModelListPresenter >> newModel [
 		whenCreatedDo: [ :baselineName |
 				self updateEntries.
 				self selectEntryNamed: baselineName ];
-		open
+		openModal
 ]
 
 { #category : 'actions' }

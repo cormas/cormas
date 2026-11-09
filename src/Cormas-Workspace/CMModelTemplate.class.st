@@ -51,7 +51,7 @@ Class {
 
 { #category : 'instance creation' }
 CMModelTemplate class >> named: aString [
-	"Return the template of a new model with this human-friendly name, such as 'Forest fire'. Raise a CMWorkspaceError when the name does not give a class name"
+	"Return the template of a new model with this name, which is also the name of its baseline, such as ForestFire. Raise a CMWorkspaceError when it cannot be the name of a model"
 
 	^ self new setName: aString
 ]
@@ -135,39 +135,16 @@ CMModelTemplate >> baselineDefinitions [
 			   in: 'baselines') }
 ]
 
-{ #category : 'names' }
+{ #category : 'accessing' }
 CMModelTemplate >> baselineName [
 
-	^ self basename
-]
-
-{ #category : 'names' }
-CMModelTemplate >> basename [
-	"Return the name of the model in camel case, without Model at the end, such as ForestFire for 'Forest fire model'. The names of the baseline and packages are made from it"
-
-	| camelCase |
-	camelCase := name asCamelCase.
-	(camelCase asLowercase endsWith: 'model') ifTrue: [
-		camelCase := camelCase allButLast: 'model' size ].
-	^ camelCase
+	^ name
 ]
 
 { #category : 'names' }
 CMModelTemplate >> cellClassName [
 
 	^ prefix , 'Cell'
-]
-
-{ #category : 'private' }
-CMModelTemplate >> check: aString isAClassNameOf: aDescription [
-
-	(aString notEmpty and: [
-		 aString first isUppercase and: [ aString isAllAlphaNumerics ] ])
-		ifFalse: [
-				CMWorkspaceError signal:
-					'Cormas cannot make class names from ' , aDescription , ' '
-					, aString printString
-					, ': use letters and digits, starting with a letter' ]
 ]
 
 { #category : 'private' }
@@ -187,6 +164,17 @@ CMModelTemplate >> classNamed: aClassName superclass: aSuperclassName package: a
 		  traitComposition: '{}';
 		  classTraitComposition: '{}';
 		  yourself
+]
+
+{ #category : 'accessing' }
+CMModelTemplate >> classNames [
+	"Return the names of the classes the template creates"
+
+	^ {
+		  ('BaselineOf' , name).
+		  self modelClassName.
+		  self cellClassName.
+		  self testClassName }
 ]
 
 { #category : 'accessing' }
@@ -277,10 +265,10 @@ CMModelTemplate >> modelDefinitions [
 			   in: 'initialization') }
 ]
 
-{ #category : 'names' }
+{ #category : 'accessing' }
 CMModelTemplate >> modelPackageName [
 
-	^ self basename , '-Model'
+	^ name , '-Model'
 ]
 
 { #category : 'accessing' }
@@ -300,27 +288,33 @@ CMModelTemplate >> prefix [
 CMModelTemplate >> prefix: aString [
 	"Choose the beginning of every class name of the model instead of the one made from its name"
 
-	self check: aString isAClassNameOf: 'a prefix'.
+	(aString notEmpty and: [
+			 aString first isUppercase and: [
+					 aString allSatisfy: [ :each |
+						 each isAlphaNumeric and: [ each asInteger < 128 ] ] ] ])
+		ifFalse: [
+				CMWorkspaceError signal:
+					'Use only letters and digits, starting with a capital letter' ].
 	prefix := aString
 ]
 
 { #category : 'private' }
-CMModelTemplate >> prefixFromBasename [
-	"Return the capital letters of the basename when there are several, such as FF for ForestFire, or its first three letters, such as For for Forest"
+CMModelTemplate >> prefixFromName [
+	"Return the capital letters of the name when there are several, such as FF for ForestFire, or its first two letters, such as Fo for Forest"
 
 	| capitals |
-	capitals := self basename select: [ :each | each isUppercase ].
+	capitals := name select: [ :each | each isUppercase ].
 	capitals size > 1 ifTrue: [ ^ capitals ].
-	^ self basename first: (3 min: self basename size)
+	^ (name first: (2 min: name size)) capitalized
 ]
 
 { #category : 'initialization' }
 CMModelTemplate >> setName: aString [
 
+	CMWorkspace checkModelName: aString.
 	name := aString.
 	description := ''.
-	self check: self basename isAClassNameOf: 'the name of a model'.
-	prefix := self prefixFromBasename
+	prefix := self prefixFromName
 ]
 
 { #category : 'names' }
@@ -329,10 +323,10 @@ CMModelTemplate >> testClassName [
 	^ self modelClassName , 'Test'
 ]
 
-{ #category : 'names' }
+{ #category : 'accessing' }
 CMModelTemplate >> testPackageName [
 
-	^ self basename , '-Tests'
+	^ name , '-Tests'
 ]
 
 { #category : 'private' }

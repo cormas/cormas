@@ -134,6 +134,21 @@ CMWorkspaceTest >> testChangeToTheSameFolderKeepsTheInstalledModels [
 ]
 
 { #category : 'tests' }
+CMWorkspaceTest >> testClassesOfATemplateThatAreInTheImageRaiseAnError [
+
+	| workspace |
+	workspace := CMWorkspace createAt: fileSystem root / 'Research'.
+	self
+		should: [
+				workspace checkClassesAreFreeFor:
+					((CMModelTemplate named: 'Woodland') prefix: 'CM') ]
+		raise: CMWorkspaceError
+		withExceptionDo: [ :error |
+				self assert: (error messageText includesSubstring: 'CMModel').
+				self assert: (error messageText includesSubstring: 'Cormas-Core') ]
+]
+
+{ #category : 'tests' }
 CMWorkspaceTest >> testCreateAtAnExistingWorkspaceRaisesAnError [
 
 	CMWorkspace createAt: fileSystem / 'Cormas'.
@@ -296,6 +311,42 @@ CMWorkspaceTest >> testModelThatStopsBeingSavedAnnouncesTheChange [
 ]
 
 { #category : 'tests' }
+CMWorkspaceTest >> testNameOfABaselineInTheImageIsNotFree [
+
+	| workspace |
+	workspace := CMWorkspace createAt: fileSystem root / 'Research'.
+	self
+		should: [ workspace checkNameIsFree: 'Cormas' ]
+		raise: CMWorkspaceError
+]
+
+{ #category : 'tests' }
+CMWorkspaceTest >> testNameOfAModelOfTheWorkspaceIsNotFree [
+
+	| workspace woodland |
+	workspace := CMWorkspace createAt: fileSystem root / 'Research'.
+	woodland := workspace modelsFolder / 'My woods'.
+	woodland ensureCreateDirectory.
+	woodland / 'cormas.json' writeStreamDo: [ :stream |
+		stream nextPutAll: '{ "baseline" : "Woodland" }' ].
+	self
+		should: [ workspace checkNameIsFree: 'Woodland' ]
+		raise: CMWorkspaceError
+		withExceptionDo: [ :error |
+			self assert: (error messageText includesSubstring: 'Woodland') ]
+]
+
+{ #category : 'tests' }
+CMWorkspaceTest >> testNameOfNoModelIsFree [
+
+	| workspace |
+	workspace := CMWorkspace createAt: fileSystem root / 'Research'.
+	self
+		shouldnt: [ workspace checkNameIsFree: 'Woodland' ]
+		raise: CMWorkspaceError
+]
+
+{ #category : 'tests' }
 CMWorkspaceTest >> testNewFilesAreNamedAfterTheTimeAndNeverReplaceEachOther [
 
 	| research output first second |
@@ -327,6 +378,17 @@ CMWorkspaceTest >> testRenameOfAnExampleRaisesAnError [
 ]
 
 { #category : 'tests' }
+CMWorkspaceTest >> testRenameToANameStartingWithADigitRaisesAnError [
+
+	| workspace |
+	workspace := CMWorkspace createAt: fileSystem root / 'Research'.
+	self installIn: workspace modelNamed: 'Forest'.
+	self
+		should: [ workspace rename: 'Forest' to: '3Forests' ]
+		raise: CMWorkspaceError
+]
+
+{ #category : 'tests' }
 CMWorkspaceTest >> testRenameToANameThatIsNotAClassNameRaisesAnError [
 
 	| workspace |
@@ -336,7 +398,9 @@ CMWorkspaceTest >> testRenameToANameThatIsNotAClassNameRaisesAnError [
 		should: [ workspace rename: 'Forest' to: 'Forest fire' ]
 		raise: CMWorkspaceError
 		withExceptionDo: [ :error |
-			self assert: (error messageText includesSubstring: 'Forest fire') ]
+				self
+					assert: error messageText
+					equals: 'Use only letters and digits, starting with a letter' ]
 ]
 
 { #category : 'tests' }

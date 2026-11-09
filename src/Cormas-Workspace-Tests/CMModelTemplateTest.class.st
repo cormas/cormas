@@ -20,41 +20,33 @@ CMModelTemplateTest >> setUp [
 	folder := FileSystem memory root / 'Forest fire'
 ]
 
-{ #category : 'tests - files' }
+{ #category : 'running' }
 CMModelTemplateTest >> template [
 
-	^ (CMModelTemplate named: 'Forest fire') description:
+	^ (CMModelTemplate named: 'ForestFire') description:
 		  'Trees grow and burn'
 ]
 
-{ #category : 'tests - names' }
-CMModelTemplateTest >> testBasenameDropsModelAtTheEnd [
+{ #category : 'tests' }
+CMModelTemplateTest >> testNameIsTheBaselineNameAsTyped [
 
-	self
-		assert: (CMModelTemplate named: 'Forest Model') basename
-		equals: 'Forest'
+	#( 'ForestFire' 'forest2' 'ForestModel' ) do: [ :each |
+		self assert: (CMModelTemplate named: each) baselineName equals: each ]
 ]
 
-{ #category : 'tests - names' }
-CMModelTemplateTest >> testBasenameIsTheNameInCamelCase [
+{ #category : 'tests' }
+CMModelTemplateTest >> testNameWithOtherThanLettersAndDigitsRaisesAnError [
 
-	self
-		assert: (CMModelTemplate named: 'Forest fire') basename
-		equals: 'ForestFire'
-]
-
-{ #category : 'tests - names' }
-CMModelTemplateTest >> testNameThatGivesNoClassNameRaisesAnError [
-
-	#( '' '   ' '3 forests' 'Forest/fire' ) do: [ :each |
+	#( '' 'Forest fire' '3Forests' 'Forest-fire' 'Forest_fire'
+	   'Forêt' ) do: [ :each |
 		self should: [ CMModelTemplate named: each ] raise: CMWorkspaceError ]
 ]
 
-{ #category : 'tests - names' }
+{ #category : 'tests' }
 CMModelTemplateTest >> testNamesOfPackagesAndClasses [
 
 	| template |
-	template := CMModelTemplate named: 'Forest fire'.
+	template := CMModelTemplate named: 'ForestFire'.
 	self assert: template baselineName equals: 'ForestFire'.
 	self assert: template modelPackageName equals: 'ForestFire-Model'.
 	self assert: template testPackageName equals: 'ForestFire-Tests'.
@@ -63,35 +55,36 @@ CMModelTemplateTest >> testNamesOfPackagesAndClasses [
 	self assert: template testClassName equals: 'FFModelTest'
 ]
 
-{ #category : 'tests - names' }
+{ #category : 'tests' }
 CMModelTemplateTest >> testPrefixCanBeChosen [
 
 	| template |
-	template := (CMModelTemplate named: 'Forest fire') prefix: 'FOR'.
+	template := (CMModelTemplate named: 'ForestFire') prefix: 'FOR'.
 	self assert: template modelClassName equals: 'FORModel'.
 	self assert: template cellClassName equals: 'FORCell'
 ]
 
-{ #category : 'tests - names' }
-CMModelTemplateTest >> testPrefixIsTheCapitalLettersOfTheBasename [
+{ #category : 'tests' }
+CMModelTemplateTest >> testPrefixIsTheCapitalLettersOfTheName [
 
 	self
-		assert: (CMModelTemplate named: 'Forest fire') prefix
+		assert: (CMModelTemplate named: 'ForestFire') prefix
 		equals: 'FF'
 ]
 
-{ #category : 'tests - names' }
-CMModelTemplateTest >> testPrefixOfASingleWordIsItsFirstThreeLetters [
+{ #category : 'tests' }
+CMModelTemplateTest >> testPrefixOfASingleWordIsItsFirstTwoLetters [
 
-	self assert: (CMModelTemplate named: 'Forest') prefix equals: 'For'
+	self assert: (CMModelTemplate named: 'Forest') prefix equals: 'Fo'.
+	self assert: (CMModelTemplate named: 'forest') prefix equals: 'Fo'
 ]
 
-{ #category : 'tests - names' }
+{ #category : 'tests' }
 CMModelTemplateTest >> testPrefixThatIsNotACapitalizedWordRaisesAnError [
 
-	#( '' 'ff' 'F F' '3F' ) do: [ :each |
+	#( '' 'ff' 'F F' '3F' 'Fé' ) do: [ :each |
 			self
-				should: [ (CMModelTemplate named: 'Forest fire') prefix: each ]
+				should: [ (CMModelTemplate named: 'ForestFire') prefix: each ]
 				raise: CMWorkspaceError ]
 ]
 
@@ -126,12 +119,12 @@ CMModelTemplateTest >> testWrittenFolderHoldsTheCodeOfTheModel [
 			 contents includesSubstring: 'ForestFire-Tests')
 ]
 
-{ #category : 'tests - files' }
+{ #category : 'tests' }
 CMModelTemplateTest >> testWrittenFolderHoldsWhatAModelFolderHolds [
 
 	self template writeTo: folder.
 	self assert:
-		((folder / 'README.md') contents includesSubstring: '# Forest fire').
+		((folder / 'README.md') contents includesSubstring: '# ForestFire').
 	self assert: ((folder / 'README.md') contents includesSubstring:
 			 'Trees grow and burn').
 	self assert:
