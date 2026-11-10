@@ -426,11 +426,6 @@ CMModelListPresenter >> initializePresenters [
 		            help:
 			            'Add a model from a zip file to Models and install it'
 		            do: [ self installFromZip ];
-		            addAction: 'Reload'
-		            icon: #refresh
-		            help:
-			            'Reload the installed models from their folders, for changes made outside Cormas'
-		            do: [ self reloadFromFolders ];
 		            emptyLines:
 			            #( 'You have no models yet.' 'Create one, or install an example below, or add one From zip.' )
 		            action: 'New model'
@@ -438,15 +433,15 @@ CMModelListPresenter >> initializePresenters [
 		            yourself.
 	examples := (self instantiate: CMModelTablePresenter)
 		            title: 'Examples';
-		            addAction: 'Update'
+		            addAction: 'Refresh'
 		            icon: #smallUpdate
 		            help:
-			            'Download the latest list of examples, then the latest version of the downloaded ones'
+			            'Download the latest list of examples, where new ones appear as Online, and bring the downloaded examples to their latest version'
 		            do: [ self updateExamples ];
 		            emptyLines:
 			            #( 'The list of examples has not been downloaded yet.'
 			               'It needs an internet connection.' )
-		            action: 'Download the list'
+		            action: 'Download catalog'
 		            do: [ self updateExamples ];
 		            yourself.
 	preview := self instantiate: CMModelPreviewPresenter.

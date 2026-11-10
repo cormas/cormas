@@ -3,7 +3,7 @@ I am the right pane of the model list window. I show the model selected in one o
 
 ## Responsibility:
 
-- I show what the authors of a model say about it: its screenshot, or a placeholder with its initials, and the summary of its cormas.json. Never its README, which is made for GitHub.
+- I show what the authors of a model say about it: its screenshot, or a quiet placeholder saying there is none, and the summary of its cormas.json. Never its README, which is made for GitHub.
 - I show under the title one line joining the version of the model, the Cormas it was made with, and what Cormas has to say about it, such as that it is read-only, in red when work is at risk.
 - I show the main actions as tall buttons with an icon across the whole width, and the other actions under them, those that fix a problem first, in rows of three that never crop them.
 
@@ -45,28 +45,16 @@ Class {
 }
 
 { #category : 'screenshots' }
-CMModelPreviewPresenter class >> placeholderFor: aName [
-	"Return a square image with the initials of aName, such as FF for ForestFire, so that models without a screenshot still look different from each other"
+CMModelPreviewPresenter class >> placeholder [
+	"Return the square shown when a model has no screenshot: a quiet frame in a translucent grey that shows in a light and a dark theme. The text saying so is a label over it, so that it stays sharp at any size"
 
-	| form canvas capitals initials font position |
-	capitals := aName select: [ :each | each isUppercase ].
-	initials := capitals isEmpty
-		            ifTrue: [
-		            (aName first: (1 min: aName size)) asUppercase ]
-		            ifFalse: [ capitals first: (2 min: capitals size) ].
+	| form |
 	form := Form extent: 400 @ 400 depth: 32.
-	form fillColor: (Color gray: 0.82).
-	font := LogicalFont
-		        familyName: StandardFonts defaultFont familyName
-		        pointSize: 96.
-	position := form extent
-	            - ((font widthOfString: initials) @ font height) // 2.
-	canvas := form getCanvas.
-	canvas
-		drawString: initials
-		at: position
-		font: font
-		color: Color white.
+	form fillColor: (Color gray alpha: 0.12).
+	form getCanvas
+		frameRectangle: form boundingBox
+		width: 2
+		color: (Color gray alpha: 0.4).
 	^ form
 ]
 
@@ -111,7 +99,7 @@ CMModelPreviewPresenter >> entryLayout [
 	entry infoLine ifNotEmpty: [ :line |
 		column add: (self infoLabel: line) expand: false ].
 	column
-		add: screenshot;
+		add: self screenshotLayout;
 		add: summary height: 110.
 	column add: self mainButtonsLayout height: 48.
 	secondary := (CMModelAction fixesFor: entry)
@@ -196,16 +184,34 @@ CMModelPreviewPresenter >> mainButtonsLayout [
 
 { #category : 'private' }
 CMModelPreviewPresenter >> screenshotForm [
-	"Return the screenshot of the model, or a placeholder with its initials when it has none or it cannot be read"
+	"Return the screenshot of the model, or a placeholder when it has none or it cannot be read"
 
 	^ entry screenshotFile
-		  ifNil: [ self class placeholderFor: entry title ]
+		  ifNil: [ self class placeholder ]
 		  ifNotNil: [ :file |
 				  [
 					  file binaryReadStreamDo: [ :stream |
 						  ImageReadWriter formFromStream: stream ] ]
 					  on: Error
-					  do: [ self class placeholderFor: entry title ] ]
+					  do: [ self class placeholder ] ]
+]
+
+{ #category : 'layout' }
+CMModelPreviewPresenter >> screenshotLayout [
+	"The screenshot, or the placeholder with a label saying there is none"
+
+	entry screenshotFile ifNotNil: [ ^ screenshot ].
+	^ SpOverlayLayout new
+		  child: screenshot;
+		  addOverlay: (self newLabel
+				   label: 'No screenshot';
+				   displayColor: [ :text | Color gray ];
+				   yourself)
+		  withConstraints: [ :constraints |
+				  constraints
+					  vAlignCenter;
+					  hAlignCenter ];
+		  yourself
 ]
 
 { #category : 'updating' }
