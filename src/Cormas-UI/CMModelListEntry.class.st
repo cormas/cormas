@@ -1,24 +1,25 @@
 "
-I am one row of the model list: a folder of the workspace, a model of the catalog that is not downloaded yet, both when an example folder is listed in the catalog, or a model installed in the image whose folder is not in the workspace any more. I turn what the workspace knows into what the modeler reads: a name, a place, a state and a description.
+I am one row of the model list: a folder of the workspace, a model of the catalog that is not downloaded yet, both when an example folder is listed in the catalog, or a model installed in the image whose folder is not in the workspace any more. I turn what the workspace knows into what the modeler reads: a name, a version, a state with its dot, a summary and what Cormas has to say about the model.
 
 ## Responsibility:
 
-- I know my folder, if any, and my catalog model, if any, and give the name, place (`Models`, `Examples`, `Online` or `Image`) and state of the row.
+- I know my folder, if any, and my catalog model, if any, and give the name, version and state of the row, and whether it belongs with the examples.
 - I explain my state in words, such as why a model is not saved, that a folder is an old version, or that an example is pinned to a version.
-- I tell which choices make sense, such as whether the modeler can choose among versions.
+- I tell which choices make sense, such as whether the modeler can choose among versions, and in which order rows are listed.
 
 ## Collaborators:
 
 - `CMWorkspace` tells me whether my model is installed and gives the catalog.
-- `CMModelFolder` is my folder: its baseline, README, versions and git state.
+- `CMModelFolder` is my folder: its baseline, summary, versions and git state.
 - `CMCatalog` gives the versions of my catalog model.
-- `CMModelListPresenter` shows me and acts on me.
+- `CMModelListPresenter`, `CMModelTablePresenter` and `CMModelPreviewPresenter` show me, and `CMModelAction` acts on me.
 
 ## Public API and Key Messages
 
-- `CMModelListEntry entriesOf: aWorkspace` returns the sorted entries of a workspace: installed models first, including those whose folder is gone, then `Models`, `Examples` and the models available online.
-- `name`, `place` and `state` fill the columns. The states are `Available`, `Not installed`, `Installed`, `Not saved`, `Copy` (the same model is installed from another folder) and `Not a model`.
-- `description` returns the Microdown text shown next to the list.
+- `CMModelListEntry entriesOf: aWorkspace` returns the sorted entries of a workspace: models whose code is not saved first, then installed models, then the others by name, and folders that are not models last.
+- `isExample` tells in which list I am.
+- `title`, `version`, `state` and `stateIcon` fill the columns. The states are `Online`, `Downloaded`, `Not installed`, `Installed`, `Not saved`, `Folder missing`, `Copy` (the same model is installed from another folder) and `Not a model`.
+- `summary`, `madeWith` and `note` fill the preview: `note` is what Cormas says, never what the authors of the model say.
 - `hasVersions` tells whether **Versions…** is offered.
 
 ```smalltalk
@@ -58,9 +59,27 @@ CMModelListEntry class >> baselineOf: aModelFolder [
 		  do: [ nil ]
 ]
 
+{ #category : 'icons' }
+CMModelListEntry class >> dotColored: aColor filled: aBoolean [
+	"Return a small round icon, filled or as a ring"
+
+	| form canvas |
+	form := Form extent: 14 @ 14 depth: 32.
+	canvas := form getCanvas.
+	aBoolean
+		ifTrue: [ canvas fillOval: (2 @ 2 extent: 10 @ 10) color: aColor ]
+		ifFalse: [
+				canvas
+					fillOval: (2 @ 2 extent: 10 @ 10)
+					color: Color transparent
+					borderWidth: 2
+					borderColor: aColor ].
+	^ form
+]
+
 { #category : 'instance creation' }
 CMModelListEntry class >> entriesOf: aWorkspace [
-	"Return an entry for each folder of the workspace, for each installed model whose folder is not there any more, and for each model of the catalog that is in no folder: installed models first, then the folders of Models, the examples and the models available online"
+	"Return an entry for each folder of the workspace, for each installed model whose folder is not there any more, and for each model of the catalog that is in no folder, in the order of their sort keys"
 
 	| catalogModels folders entries |
 	catalogModels := aWorkspace catalog models.
@@ -117,31 +136,6 @@ CMModelListEntry >> catalogModel [
 	^ catalogModel
 ]
 
-{ #category : 'private' }
-CMModelListEntry >> chosenVersionExplanation [
-	"Return what to know about the version chosen for my example, or an empty string when it follows the version this Cormas recommends"
-
-	| chosen recommended |
-	chosen := folder chosenVersion ifNil: [ ^ '' ].
-	recommended := catalogModel ifNotNil: [
-		               (workspace catalog offeredVersionOf: catalogModel)
-			               at: 'ref' ].
-	^ 'Version ' , chosen , (recommended
-		   ifNil: [ '' ]
-		   ifNotNil: [ ' (recommended: ' , recommended , ')' ])
-	  ,
-	  '. Updating examples does not change it: to follow updates again, choose the recommended version in Versions… '
-]
-
-{ #category : 'accessing' }
-CMModelListEntry >> description [
-	"Return the Microdown text shown for me: the README of my folder, or the summary of the catalog, followed by what the modeler should know about my state"
-
-	^ String streamContents: [ :stream |
-			  self writeTextOn: stream.
-			  self writeStateOn: stream ]
-]
-
 { #category : 'accessing' }
 CMModelListEntry >> folder [
 
@@ -160,6 +154,19 @@ CMModelListEntry >> hasVersions [
 ]
 
 { #category : 'accessing' }
+CMModelListEntry >> infoLine [
+	"Return the line shown under the name of my model: its version, the Cormas it was made with and the note of Cormas, leaving out what is not known"
+
+	| parts |
+	parts := OrderedCollection new.
+	self version ifNotEmpty: [ :version | parts add: version ].
+	self madeWith ifNotNil: [ :version |
+		parts add: 'Made with Cormas ' , version ].
+	self note ifNotNil: [ :note | parts add: note ].
+	^ ' · ' join: parts
+]
+
+{ #category : 'accessing' }
 CMModelListEntry >> installedModel [
 	"Return the installed model that comes from my folder, or nil"
 
@@ -175,31 +182,50 @@ CMModelListEntry >> installedModel [
 ]
 
 { #category : 'testing' }
+CMModelListEntry >> isAtRisk [
+	"Return whether code in the image is not saved in a folder"
+
+	^ #( 'Not saved' 'Folder missing' ) includes: self state
+]
+
+{ #category : 'testing' }
+CMModelListEntry >> isDimmed [
+	"Return whether my row is shown dimmed, because nothing can be done with my model but look at its folder"
+
+	^ #( 'Copy' 'Not a model' ) includes: self state
+]
+
+{ #category : 'testing' }
+CMModelListEntry >> isExample [
+	"Return whether I am listed with the examples: a folder of Examples, or a model of the catalog that is in no folder"
+
+	model ifNotNil: [ ^ false ].
+	^ folder isNil or: [ folder isExample ]
+]
+
+{ #category : 'testing' }
 CMModelListEntry >> isGone [
 	"Return whether my folder was deleted or moved outside Cormas since I was listed"
 
 	^ folder notNil and: [ folder location exists not ]
 ]
 
-{ #category : 'private' }
-CMModelListEntry >> missingFolderExplanation [
-	"Explain a model that is in the image while the folder it was installed from is not in the workspace any more"
+{ #category : 'testing' }
+CMModelListEntry >> isLoaded [
+	"Return whether the code of my model is in the image, so that it can be simulated"
 
-	| others |
-	others := self otherFolders.
-	others ifNotEmpty: [
-			^ 'This model is in the image, but its folder '
-			  , model folder fullName
-			  ,
-			  ' is not in the workspace any more, and the workspace holds it in several folders: '
-			  ,
-			  (', ' join: (others collect: [ :each | each location basename ]))
-			  ,
-			  '. Move or delete all but one of them, then press Reload from folder: Cormas uses the one left, after backing up the code in the image.' ].
-	^ 'This model is in the image, but its folder '
-	  , model folder fullName
-	  ,
-	  ' is not in the workspace any more. Restore folder writes its code, as it is in the image, into a new folder of Models; the README, data and outputs of the lost folder do not come back. Or uninstall the model: its code is backed up first.'
+	^ #( 'Installed' 'Not saved' 'Folder missing' ) includes: self state
+]
+
+{ #category : 'accessing' }
+CMModelListEntry >> madeWith [
+	"Return the Cormas line and minor my model was made with, such as 1.0, or nil when it is not known"
+
+	(folder isNil or: [ self baseline isNil ]) ifTrue: [ ^ nil ].
+	^ [
+	  folder madeWith ifNotNil: [ :version | version majorMinorString ] ]
+		  on: CMWorkspaceError
+		  do: [ nil ]
 ]
 
 { #category : 'accessing' }
@@ -222,6 +248,43 @@ CMModelListEntry >> name [
 ]
 
 { #category : 'accessing' }
+CMModelListEntry >> note [
+	"Return the one short line Cormas has to say about my model, such as that it is read-only or not saved, or nil when there is nothing worth saying"
+
+	| state |
+	model ifNotNil: [
+			^ self otherFolders
+				  ifEmpty: [ 'Its folder ' , model folder basename , ' is gone' ]
+				  ifNotEmpty: [ :others |
+						  'In several folders: '
+						  ,
+						  (', ' join:
+							   (others collect: [ :each | each location basename ]))
+						  , '. Keep only one' ] ].
+	folder ifNil: [ ^ nil ].
+	self baseline ifNil: [
+			folder isModel ifTrue: [ ^ 'Its cormas.json cannot be read' ].
+			^ folder hasModelOneLevelDown
+				  ifTrue: [ 'The model is one level down: move it into Models' ]
+				  ifFalse: [ 'Not a model: no cormas.json' ] ].
+	state := self state.
+	state = 'Not saved' ifTrue: [
+		^ 'Not saved: ' , self installedModel problem ].
+	state = 'Copy' ifTrue: [
+			^ 'Same model as the one installed from '
+			  , (workspace installedModelNamed: self baseline) folder basename ].
+	self orphanPackageNames ifNotEmpty: [ :names |
+		^ 'Not saved: ' , (', ' join: names) , ' is not part of the model' ].
+	folder isOldVersion ifTrue: [ ^ 'Old version: read-only' ].
+	folder isExample ifTrue: [
+			^ folder chosenVersion
+				  ifNil: [ 'Example: read-only' ]
+				  ifNotNil: [ :version |
+				  'Example: read-only, kept at ' , version , ' by Update' ] ].
+	^ nil
+]
+
+{ #category : 'accessing' }
 CMModelListEntry >> orphanPackageNames [
 	"Return the names of the loaded packages named like the packages of my installed model but outside its baseline, whose changes are saved nowhere"
 
@@ -241,16 +304,6 @@ CMModelListEntry >> otherFolders [
 		    each hasBaselineNamed: model baselineName ])
 		   asSortedCollection: [ :a :b |
 		   a location basename <= b location basename ]) asArray
-]
-
-{ #category : 'accessing' }
-CMModelListEntry >> place [
-
-	model ifNotNil: [ ^ 'Image' ].
-	folder ifNil: [ ^ 'Online' ].
-	^ folder isExample
-		  ifTrue: [ 'Examples' ]
-		  ifFalse: [ 'Models' ]
 ]
 
 { #category : 'accessing' }
@@ -287,13 +340,15 @@ CMModelListEntry >> setWorkspace: aWorkspace installedModel: anInstalledModel [
 
 { #category : 'accessing' }
 CMModelListEntry >> sortKey [
-	"Installed models first, then the folders of Models, the examples, and the models available online"
+	"Models whose code is not saved first, then installed models, then the others by name, and folders that are not models last"
 
 	| rank |
-	rank := self installedModel
-		        ifNotNil: [ 1 ]
-		        ifNil: [
-		        #( 'Models' 'Examples' 'Online' ) indexOf: self place ].
+	rank := self isAtRisk
+		        ifTrue: [ 1 ]
+		        ifFalse: [
+				        self isLoaded
+					        ifTrue: [ 2 ]
+					        ifFalse: [ self baseline ifNil: [ 4 ] ifNotNil: [ 3 ] ] ].
 	^ rank printString , self name asLowercase
 ]
 
@@ -301,57 +356,33 @@ CMModelListEntry >> sortKey [
 CMModelListEntry >> state [
 
 	| installedModel |
-	model ifNil: [
-			folder ifNil: [ ^ 'Available' ].
-			self baseline ifNil: [ ^ 'Not a model' ] ].
+	model ifNotNil: [ ^ 'Folder missing' ].
+	folder ifNil: [ ^ 'Online' ].
+	self baseline ifNil: [ ^ 'Not a model' ].
 	installedModel := self installedModel.
 	installedModel ifNotNil: [
 			^ installedModel isSaved
 				  ifTrue: [ 'Installed' ]
 				  ifFalse: [ 'Not saved' ] ].
-	^ (workspace isInstalled: self baseline)
-		  ifTrue: [ 'Copy' ]
+	(workspace isInstalled: self baseline) ifTrue: [ ^ 'Copy' ].
+	^ folder isExample
+		  ifTrue: [ 'Downloaded' ]
 		  ifFalse: [ 'Not installed' ]
 ]
 
-{ #category : 'private' }
-CMModelListEntry >> stateExplanation [
+{ #category : 'accessing' }
+CMModelListEntry >> stateIcon [
+	"Return a dot whose colour says my state: green when loaded and saved, red when code is at risk, yellow when the folder is not a model, and a grey ring otherwise"
 
-	| state version |
-	model ifNotNil: [ ^ self missingFolderExplanation ].
-	folder ifNil: [
-			version := workspace catalog offeredVersionOf: catalogModel.
-			^ 'Available online: ' , (version at: 'ref') , ' of '
-			  , (version at: 'url')
-			  , '. Download it into Examples to install it.' ].
-	self baseline ifNil: [
-			folder isModel ifTrue: [ ^ 'Its cormas.json cannot be read.' ].
-			^ folder hasModelOneLevelDown
-				  ifTrue: [
-					  'This folder contains a model one level down: move that folder directly into Models.' ]
-				  ifFalse: [ 'This folder is not a model: it has no cormas.json.' ] ].
+	| state |
 	state := self state.
-	state = 'Not saved' ifTrue: [
-			^ 'Not saved: ' , self installedModel problem
-			  ,
-			  '. Reload it from its folder; the code in the image is backed up first.' ].
-	folder isOldVersion ifTrue: [
-			^ 'This is ' , self baseline , ' as it was released in '
-			  , folder chosenVersion
-			  ,
-			  ', in its own folder: your working folder is not touched. An old version cannot be changed. To go back to your working version, choose it in Versions…' ].
-	state = 'Copy' ifTrue: [
-			^ 'The same model is installed from '
-			  , (workspace installedModelNamed: self baseline) folder fullName
-			  , '. Only one of them can be installed at a time.'
-			  , (self hasVersions
-					   ifTrue: [ ' Choose which one in Versions…' ]
-					   ifFalse: [ '' ]) ].
-	folder isExample ifTrue: [
-			^ self chosenVersionExplanation
-			  ,
-			  'This is an example. Changing its code offers to copy it to Models.' ].
-	^ nil
+	self isAtRisk ifTrue: [
+		^ self class dotColored: Color red filled: true ].
+	state = 'Installed' ifTrue: [
+		^ self class dotColored: (Color r: 0.2 g: 0.7 b: 0.3) filled: true ].
+	state = 'Not a model' ifTrue: [
+		^ self class dotColored: (Color r: 0.95 g: 0.75 b: 0.1) filled: true ].
+	^ self class dotColored: Color gray filled: false
 ]
 
 { #category : 'private' }
@@ -365,39 +396,38 @@ CMModelListEntry >> summary [
 ]
 
 { #category : 'accessing' }
+CMModelListEntry >> title [
+	"Return the name of my model, without its version"
+
+	^ self baseline ifNil: [ folder name ]
+]
+
+{ #category : 'accessing' }
+CMModelListEntry >> version [
+	"Return the version of my model: the version of an example, pinned or not, an old version of a model, working for the folder of a model under git, or an empty string"
+
+	| chosen |
+	folder ifNil: [
+			^ catalogModel
+				  ifNil: [ '' ]
+				  ifNotNil: [
+				  (workspace catalog offeredVersionOf: catalogModel) at: 'ref' ] ].
+	self baseline ifNil: [ ^ '' ].
+	chosen := folder chosenVersion.
+	folder isExample ifTrue: [
+			chosen ifNotNil: [ ^ chosen , ' (pinned)' ].
+			^ catalogModel
+				  ifNil: [ '' ]
+				  ifNotNil: [
+				  (workspace catalog offeredVersionOf: catalogModel) at: 'ref' ] ].
+	folder isOldVersion ifTrue: [ ^ chosen ].
+	^ folder isGitRepository
+		  ifTrue: [ 'working' ]
+		  ifFalse: [ '' ]
+]
+
+{ #category : 'accessing' }
 CMModelListEntry >> workspace [
 
 	^ workspace
-]
-
-{ #category : 'private' }
-CMModelListEntry >> writeStateOn: aStream [
-
-	self stateExplanation ifNotNil: [ :explanation |
-			aStream
-				cr;
-				cr;
-				nextPutAll: '> ';
-				nextPutAll: explanation ].
-	self orphanPackageNames ifNotEmpty: [ :names |
-			aStream
-				cr;
-				cr;
-				nextPutAll: '> Not part of this model, so never saved: ';
-				nextPutAll: (', ' join: names);
-				nextPutAll: '. Add them to the model to save them in its folder.' ]
-]
-
-{ #category : 'private' }
-CMModelListEntry >> writeTextOn: aStream [
-
-	(folder notNil and: [ (folder location / 'README.md') isFile ])
-		ifTrue: [
-		^ aStream nextPutAll: (folder location / 'README.md') contents ].
-	aStream
-		nextPutAll: '# ';
-		nextPutAll: self name;
-		cr;
-		cr.
-	self summary ifNotNil: [ :summary | aStream nextPutAll: summary ]
 ]

@@ -12,6 +12,33 @@ Class {
 	#package : 'Cormas-UI-Tests'
 }
 
+{ #category : 'helpers' }
+CMModelListPresenterTest >> fixLabelsOf: anEntry [
+	"The labels of the actions that fix a problem, leaving out the packages to add, which a model recorded as installed without its code does not have"
+
+	^ self labelsOf: ((CMModelAction fixSelectors collect: [ :each |
+			    CMModelAction perform: each ]) select: [ :each |
+			   each appliesTo: anEntry ])
+]
+
+{ #category : 'helpers' }
+CMModelListPresenterTest >> installModelNamed: aBaselineName [
+	"Record a model as installed from a folder of Models, without loading any code"
+
+	(workspace instVarNamed: 'installed')
+		at: aBaselineName
+		put: (CMInstalledModel
+				 in: workspace
+				 baselineName: aBaselineName
+				 folder: workspace modelsFolder / aBaselineName)
+]
+
+{ #category : 'helpers' }
+CMModelListPresenterTest >> labelsOf: actions [
+
+	^ (actions collect: [ :each | each label ]) asArray
+]
+
 { #category : 'running' }
 CMModelListPresenterTest >> setUp [
 
@@ -24,24 +51,75 @@ CMModelListPresenterTest >> setUp [
 ]
 
 { #category : 'tests' }
+CMModelListPresenterTest >> testActionsOfAModelThatIsNotInstalled [
+
+	| entry |
+	entry := presenter myModels items first.
+	self assert: entry state equals: 'Not installed'.
+	self
+		assert: (self labelsOf: (CMModelAction mainFor: entry))
+		equals: #( 'Install' ).
+	self
+		assert: (self labelsOf: (CMModelAction secondaryFor: entry))
+		equals: #( 'Export…' 'Open folder' 'Delete…' ).
+	self assert: (CMModelAction fixesFor: entry) isEmpty
+]
+
+{ #category : 'tests' }
+CMModelListPresenterTest >> testExampleCannotBeRenamedNorExported [
+
+	| entry |
+	self writeModelNamed: 'Conway' in: workspace location / 'Examples'.
+	presenter updateEntries.
+	entry := presenter examples items first.
+	self
+		assert: (self labelsOf: (CMModelAction mainFor: entry))
+		equals: #( 'Install' ).
+	self
+		assert: (self labelsOf: (CMModelAction secondaryFor: entry))
+		equals: #( 'Open folder' 'Delete…' )
+]
+
+{ #category : 'tests' }
+CMModelListPresenterTest >> testExampleIsNotedReadOnly [
+
+	self writeModelNamed: 'Conway' in: workspace location / 'Examples'.
+	presenter updateEntries.
+	self
+		assert: presenter examples items first note
+		equals: 'Example: read-only'
+]
+
+{ #category : 'tests' }
+CMModelListPresenterTest >> testInfoLineJoinsVersionCormasAndNote [
+
+	| folder |
+	folder := workspace location / 'Examples' / 'Conway'.
+	folder ensureCreateDirectory.
+	folder / 'cormas.json' writeStreamDo: [ :stream |
+		stream nextPutAll: '{ "baseline": "Conway", "cormas": "1.0" }' ].
+	presenter updateEntries.
+	self
+		assert: presenter examples items first infoLine
+		equals: 'Made with Cormas 1.0 · Example: read-only'
+]
+
+{ #category : 'tests' }
 CMModelListPresenterTest >> testInstalledModelWhoseFolderIsGoneIsListedAndCanBeRestoredOrUninstalled [
 
-	| entry actions |
-	(workspace instVarNamed: 'installed')
-		at: 'Lost'
-		put: (CMInstalledModel
-				 in: workspace
-				 baselineName: 'Lost'
-				 folder: workspace modelsFolder / 'Lost').
+	| entry |
+	self installModelNamed: 'Lost'.
 	workspace refresh.
 	presenter updateEntries.
-	entry := (presenter instVarNamed: 'table') items detect: [ :each |
+	entry := presenter myModels items detect: [ :each |
 		         each name = 'Lost' ].
-	actions := (presenter folderActionsFor: entry) collect: [ :each |
-		           each key ].
-	self assert: entry state equals: 'Not saved'.
-	self assert: (actions includes: 'Restore folder').
-	self assert: (actions includes: 'Uninstall…')
+	self assert: entry state equals: 'Folder missing'.
+	self
+		assert: (self labelsOf: (CMModelAction mainFor: entry))
+		equals: #( 'Simulate' ).
+	self
+		assert: (self fixLabelsOf: entry)
+		equals: #( 'Restore folder' 'Remove from image' )
 ]
 
 { #category : 'tests' }
@@ -54,64 +132,103 @@ CMModelListPresenterTest >> testModelInSeveralFoldersExplainsToKeepOnlyOne [
 			folder ensureCreateDirectory.
 			folder / 'cormas.json' writeStreamDo: [ :stream |
 				stream nextPutAll: '{ "baseline": "Lost" }' ] ].
-	(workspace instVarNamed: 'installed')
-		at: 'Lost'
-		put: (CMInstalledModel
-				 in: workspace
-				 baselineName: 'Lost'
-				 folder: workspace modelsFolder / 'Lost').
+	self installModelNamed: 'Lost'.
 	workspace refresh.
 	presenter updateEntries.
-	entry := (presenter instVarNamed: 'table') items detect: [ :each |
-		         each name = 'Lost' and: [ each place = 'Image' ] ].
-	self assert: (entry stateExplanation includesSubstring:
-			 'Lost 2025, Lost backup. Move or delete all but one of them').
-	self deny:
-		((presenter folderActionsFor: entry) anySatisfy: [ :each |
-			 each key = 'Restore folder' ])
+	entry := presenter myModels items detect: [ :each |
+		         each name = 'Lost' and: [ each state = 'Folder missing' ] ].
+	self
+		assert: entry note
+		equals: 'In several folders: Lost 2025, Lost backup. Keep only one'.
+	self
+		assert: (self fixLabelsOf: entry)
+		equals: #( 'Reload from folder' 'Remove from image' )
+]
+
+{ #category : 'tests' }
+CMModelListPresenterTest >> testModelThatIsSavedHasNoNote [
+
+	self assert: presenter myModels items first note isNil
+]
+
+{ #category : 'tests' }
+CMModelListPresenterTest >> testModelsAndExamplesAreListedApart [
+
+	self writeModelNamed: 'Conway' in: workspace location / 'Examples'.
+	presenter updateEntries.
+	self
+		assert:
+		(presenter myModels items collect: [ :each | each name ]) asArray
+		equals: #( 'Forest' ).
+	self
+		assert:
+		(presenter examples items collect: [ :each | each name ]) asArray
+		equals: #( 'Conway' ).
+	self
+		assert: presenter examples items first state
+		equals: 'Downloaded'
+]
+
+{ #category : 'tests' }
+CMModelListPresenterTest >> testModelsAtRiskComeFirst [
+
+	self installModelNamed: 'Lost'.
+	workspace refresh.
+	presenter updateEntries.
+	self
+		assert:
+		(presenter myModels items collect: [ :each | each name ]) asArray
+		equals: #( 'Lost' 'Forest' )
 ]
 
 { #category : 'tests' }
 CMModelListPresenterTest >> testRowOfAFolderDeletedOutsideCormasKeepsItsStateUntilTheListIsReadAgain [
 
 	| entry |
-	entry := (presenter instVarNamed: 'table') items first.
+	entry := presenter myModels items first.
 	(workspace modelsFolder / 'Forest') ensureDeleteAll.
 	self assert: entry name equals: 'Forest'.
 	self assert: entry state equals: 'Not installed'
 ]
 
-{ #category : 'running' }
+{ #category : 'tests' }
 CMModelListPresenterTest >> testSelectingAFolderDeletedOutsideCormasShowsTheFoldersAgain [
 
-	| table |
-	table := presenter instVarNamed: 'table'.
 	(workspace modelsFolder / 'Forest') ensureDeleteAll.
-	table selectItem: table items first.
-	self assert: table items isEmpty
+	presenter myModels selectItem: presenter myModels items first.
+	self assert: presenter myModels items isEmpty
 ]
 
 { #category : 'tests' }
 CMModelListPresenterTest >> testSelectingAnyRowNoticesTheFolderOfAnInstalledModelDeletedOutsideCormas [
 
-	| lost table |
+	| lost list |
 	lost := workspace modelsFolder / 'Lost'.
-	lost ensureCreateDirectory.
-	lost / 'cormas.json' writeStreamDo: [ :stream |
-		stream nextPutAll: '{ "baseline": "Lost" }' ].
+	self writeModelNamed: 'Lost' in: workspace modelsFolder.
 	(workspace instVarNamed: 'installed')
 		at: 'Lost'
 		put:
 		(CMInstalledModel in: workspace baselineName: 'Lost' folder: lost).
 	presenter updateEntries.
 	lost ensureDeleteAll.
-	table := presenter instVarNamed: 'table'.
-	table selectItem:
-		(table items detect: [ :each | each name = 'Forest' ]).
+	list := presenter myModels.
+	list selectItem:
+		(list items detect: [ :each | each name = 'Forest' ]).
 	self
-		assert: (table items detect: [ :each | each name = 'Lost' ]) state
-		equals: 'Not saved'.
-	self assert: table selectedItem name equals: 'Forest'
+		assert: (list items detect: [ :each | each name = 'Lost' ]) state
+		equals: 'Folder missing'.
+	self assert: list selectedItem name equals: 'Forest'
+]
+
+{ #category : 'tests' }
+CMModelListPresenterTest >> testSelectingInOneListClearsTheOther [
+
+	self writeModelNamed: 'Conway' in: workspace location / 'Examples'.
+	presenter updateEntries.
+	presenter myModels selectItem: presenter myModels items first.
+	presenter examples selectItem: presenter examples items first.
+	self assert: presenter myModels selectedItem isNil.
+	self assert: presenter preview entry name equals: 'Conway'
 ]
 
 { #category : 'tests' }
@@ -126,6 +243,14 @@ CMModelListPresenterTest >> testWindowFollowsTheWorkspaceThatReplacesItsOwn [
 		self
 			assert: (presenter instVarNamed: 'workspace')
 			identicalTo: teaching.
-		self assert: (presenter instVarNamed: 'table') items isEmpty ]
-		ensure: [ CMWorkspace instVarNamed: 'current' put: previous ]
+		self assert: presenter myModels items isEmpty ] ensure: [
+		CMWorkspace instVarNamed: 'current' put: previous ]
+]
+
+{ #category : 'helpers' }
+CMModelListPresenterTest >> writeModelNamed: aBaselineName in: aFolder [
+
+	(aFolder / aBaselineName) ensureCreateDirectory.
+	aFolder / aBaselineName / 'cormas.json' writeStreamDo: [ :stream |
+		stream nextPutAll: '{ "baseline": "' , aBaselineName , '" }' ]
 ]
