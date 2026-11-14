@@ -3,13 +3,13 @@ I draw an aggregate as one shape, covering all its cells in their grid positions
 
 ## Responsibility:
 
-- Fill my shape with the color of the active point of view of my aggregate, or stay transparent when it has no color, so that the cells show through.
-- Draw a line around my shape, including around its holes, when that point of view has a border.
-- Ignore the tile, shape and size of that point of view, and mouse events.
+- Fill my shape with the color of the look of my aggregate, which may be transparent, so that the cells show through.
+- Draw a line around my shape, including around its holes, with the border of that look.
+- Ignore mouse events.
 
 ## Collaborators:
 
-- `CMSpatialEntityAggregate`: answers its cells and its active point of view.
+- `CMSpatialEntityAggregate`: answers its cells and fills its look.
 - `CMPointOfView`: tells which color and border were specified.
 
 ## Public API and Key Messages

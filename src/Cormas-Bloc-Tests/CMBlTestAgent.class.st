@@ -1,22 +1,25 @@
 "
-I am an agent whose point of view is set by a test, so that tests can draw any shape, color and size.
+I am an agent whose look is set by a test, so that tests can draw any shape, color and size.
 
 ## Responsibility:
 
-- Answer the point of view I was given.
+- Fill my look with the block a test gave me.
 
 ## Collaborators:
 
-- `CMPointOfView`: the point of view set by the test.
+- `CMAgentLook`: the look the block fills.
 
 ## Public API and Key Messages
 
-- `testPov:` sets the point of view.
-- `pov` answers it.
+- `aspect:` sets the block that fills my look.
+
+```
+agent aspect: [ :look | look color: Color red; shape: #square; size: 1 ]
+```
 
 ## Internal Representation
 
-- `testPov`: the point of view to answer.
+- `customAspect`: a block that takes my look, which does nothing until a test sets it.
 "
 Class {
 	#name : 'CMBlTestAgent',
@@ -48,17 +51,4 @@ CMBlTestAgent >> initialize [
 
 	super initialize.
 	customAspect := [ :look |  ]
-]
-
-{ #category : 'accessing' }
-CMBlTestAgent >> pov [
-
-	<pov>
-	^ testPov
-]
-
-{ #category : 'accessing' }
-CMBlTestAgent >> testPov: aPointOfView [
-
-	testPov := aPointOfView
 ]

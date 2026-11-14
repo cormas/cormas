@@ -19,12 +19,3 @@ CMMockGoat >> aspectHorns: look [
 	<aspect>
 	look shape: #triangle
 ]
-
-{ #category : 'pov' }
-CMMockGoat >> pov [
-
-	<pov>
-	^ super pov
-		color: Color blue;
-		yourself
-]

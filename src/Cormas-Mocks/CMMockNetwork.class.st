@@ -1,5 +1,5 @@
 "
-I am a network for testing `CMNetwork`, and I can be given any point of view.
+I am a network for testing `CMNetwork`, and I can be given any look with `aspect:`.
 "
 Class {
 	#name : 'CMMockNetwork',
@@ -39,18 +39,4 @@ CMMockNetwork >> initialize [
 
 	super initialize.
 	customAspect := [ :look |  ]
-]
-
-{ #category : 'pov' }
-CMMockNetwork >> pov [
-	"Each test gives a network the point of view it needs through pov:, as with a mock road"
-
-	<pov>
-	^ customPov ifNil: [ super pov ]
-]
-
-{ #category : 'pov' }
-CMMockNetwork >> pov: aPointOfView [
-
-	customPov := aPointOfView
 ]

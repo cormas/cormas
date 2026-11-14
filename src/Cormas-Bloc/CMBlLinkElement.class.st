@@ -5,7 +5,7 @@ I draw a link as a straight line between its two ends, in their grid positions. 
 
 - Draw a line from the position of the first end of my link to the position of the second one.
 - Draw nothing while one of the ends is not on the grid, because the ends are the only source of my coordinates.
-- Use the color and the size of the active point of view of my link, as a fraction of the cell like the size of an agent. A thin dark line when it specifies neither. Ignore its shape, tile and border.
+- Use the color and the thickness of the look of my link, as a fraction of the cell like the size of an agent, and show its arrowhead when the look has one.
 - Draw an arrowhead at the second end when my link is directed, in the color of the line.
 - React to the mouse only on the line and the arrowhead, not on my bounding box. Clicks anywhere else go to what is around me.
 

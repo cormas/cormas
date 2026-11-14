@@ -551,15 +551,19 @@ CMModel >> checkCanLink: anEntity to: anotherEntity [
 						' cannot be linked because only things such as cells, agents and aggregates can be the ends of a link' ] ]
 ]
 
-{ #category : 'as yet unclassified' }
-CMModel >> choosePositionForAgent: anAgent inCell: aCell [ 
+{ #category : 'private' }
+CMModel >> choosePositionForAgent: anAgent inCell: aCell [
+	"Answer where anAgent stands in aCell, as a fraction of the cell. A scattered agent keeps away from the edges by 0.15 of a cell, so that an agent drawn at the default size stays inside its cell. The margin does not depend on how the agent is drawn, so that a simulation draws the same random numbers with or without a view"
 
 	| config |
 	config := self spaceModel neighbourhoodConfiguration.
-	
-    ^ areAgentsCenteredInCells
-        ifTrue:  [ config cellCenterFor: aCell ]
-        ifFalse: [ config randomPointInCell: aCell withPadding: (anAgent pov size / 2) using: self randomNumberGenerator ].
+	^ areAgentsCenteredInCells
+		  ifTrue: [ config cellCenterFor: aCell ]
+		  ifFalse: [
+				  config
+					  randomPointInCell: aCell
+					  withPadding: 0.15
+					  using: self randomNumberGenerator ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -893,17 +897,15 @@ CMModel >> euclideanDistanceFromCell: cell1 toCell: cell2 [
 	^self spaceModel euclideanDistanceFromCell: cell1 toCell: cell2
 ]
 
-{ #category : 'init-release entities' }
+{ #category : 'init' }
 CMModel >> initEntities [
 	"Initialize all the Entity classes of the model"
 
-	"Remove all the entities from previous simulation, reset the ID counter and the selected point of view"
+	"Remove all the entities from previous simulation and reset the ID counter"
 
 	self agentClasses do: [ :aClass |
 		self initializeAgentsOfClass: aClass ].
-	self class allEntityClasses do: [ :cl |
-			self resetEntities: cl.
-			cl resetActivePovSelector ]
+	self class allEntityClasses do: [ :cl | self resetEntities: cl ]
 ]
 
 { #category : 'initialization' }

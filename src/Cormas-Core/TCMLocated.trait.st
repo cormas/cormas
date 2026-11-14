@@ -184,14 +184,6 @@ TCMLocated >> isSituated [
 	^cell notNil
 ]
 
-{ #category : 'accessing' }
-TCMLocated >> labelOfPOV [
-	" Answer a <String> displayed to describe the receiver. 
-	To be overwritten if needed"
-
-	^ String empty
-]
-
 { #category : 'star moving' }
 TCMLocated >> leave [
 	"Purpose: moves the agent away from the spatial grid (sets his cell attribute to nil): the situated agent is not located any more, but it is still 'alive'  "

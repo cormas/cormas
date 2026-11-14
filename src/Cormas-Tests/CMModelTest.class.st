@@ -464,6 +464,23 @@ CMModelTest >> testResettingEntitiesTellsThem [
 	self assert: cow timesRemovedFromModel equals: 1
 ]
 
+{ #category : 'tests' }
+CMModelTest >> testScatteredAgentsStayAwayFromTheEdgesOfTheirCell [
+
+	| mockModel cow positions |
+	mockModel := CMMockModel new.
+	mockModel initEmpty.
+	mockModel makeAgentsScatteredInCells.
+	cow := mockModel newEntity: CMMockCow.
+	positions := (1 to: 50) collect: [ :each |
+			             cow moveTo: (mockModel cellAt: 1 at: 1).
+			             cow positionInCell ].
+	self assert: positions asSet size > 1.
+	positions do: [ :each |
+			self assert: (each x between: 0.15 and: 0.85).
+			self assert: (each y between: 0.15 and: 0.85) ]
+]
+
 { #category : 'tests-accessing-entities' }
 CMModelTest >> testSelectCellsInRectangleOriginCellCornerCell [
 	| m cells |

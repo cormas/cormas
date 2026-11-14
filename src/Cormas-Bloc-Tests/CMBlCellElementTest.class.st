@@ -23,13 +23,11 @@ Class {
 
 { #category : 'tests' }
 CMBlCellElementTest >> testBorderIsProportionalToCellSize [
-	"The default border width of a point of view is 0.01 of the size of a cell"
+	"The default border thickness of the look of a cell is 0.01 of the size of a cell"
 
 	| element |
 	self gridWithNeighbourhood: 4.
-
 	element := CMBlCellElement for: (model cellAt: 1 at: 1).
-
 	self assert: element border width closeTo: 0.32.
 	self assert: element border paint color equals: Color veryLightGray
 ]

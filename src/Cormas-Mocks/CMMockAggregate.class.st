@@ -1,28 +1,26 @@
 "
-I am an aggregate that can be given any point of view, so that examples and tests can show every way of drawing an aggregate.
+I am an aggregate that can be given any look, so that examples and tests can show every way of drawing an aggregate.
 
 ## Responsibility:
 
-- Answer the point of view I was given.
-- Answer a visible point of view when I was given none.
+- Fill my look with the block I was given, after the default aspect of aggregates.
 
 ## Collaborators:
 
-- `CMPointOfView`: describes how I look.
+- `CMAggregateLook`: describes how I look.
 
 ## Public API and Key Messages
 
-- `pov:` sets my point of view.
-- `pov` answers it.
+- `aspect:` sets the block that fills my look.
 
 ```
 (model createAggregate: CMMockAggregate from: someCells)
-	pov: (CMPointOfView color: Color orange)
+	aspect: [ :look | look color: Color orange ]
 ```
 
 ## Internal Representation
 
-- `customPov`: the point of view I was given, or nil.
+- `customAspect`: a block that takes my look, which does nothing until a test sets it.
 "
 Class {
 	#name : 'CMMockAggregate',
@@ -55,17 +53,4 @@ CMMockAggregate >> initialize [
 
 	super initialize.
 	customAspect := [ :look |  ]
-]
-
-{ #category : 'pov' }
-CMMockAggregate >> pov [
-
-	<pov>
-	^ customPov ifNil: [ CMPointOfView color: Color orange ]
-]
-
-{ #category : 'pov' }
-CMMockAggregate >> pov: aPointOfView [
-
-	customPov := aPointOfView
 ]

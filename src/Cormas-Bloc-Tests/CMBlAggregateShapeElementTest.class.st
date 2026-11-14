@@ -10,7 +10,7 @@ I test the shape of an aggregate, by reading the pixels of the rendered element.
 ## Collaborators:
 
 - `CMBlAggregateShapeElement`: the class under test.
-- `CMMockAggregate`: an aggregate with the point of view a test gives it.
+- `CMMockAggregate`: an aggregate with the look a test gives it.
 
 ## Public API and Key Messages
 

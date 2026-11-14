@@ -1,5 +1,5 @@
 "
-I check that cells and agents show the tile of their point of view, by reading pixels.
+I check that cells and agents show the tiles of their look, by reading pixels.
 
 ## Responsibility:
 
@@ -10,7 +10,7 @@ I check that cells and agents show the tile of their point of view, by reading p
 ## Collaborators: 
 
 - `CMTile`: I build tiles whose forms can be told apart by color.
-- `CMBlTestCell` and `CMBlTestAgent`: entities with the point of view I choose.
+- `CMBlTestCell` and `CMBlTestAgent`: entities whose look I choose.
 "
 Class {
 	#name : 'CMBlTileTest',

@@ -31,7 +31,7 @@ A thing such as a cell or an agent is connected to another thing by a link, and 
 - `terminals` answers the things touching exactly one of my links, whatever its direction, such as the two ends of a two-way street.
 - `includes:` tells whether a link or a network is inside me, at any depth.
 - `networks` and `networksOfClass:` answer the networks directly containing me.
-- `pov` and other methods with `<pov>` can be selected for my class, as for any entity. An active one replaces the point of view of all the links inside me. One with no color, or a transparent one, and no size, lets my links show through.
+- My aspects, methods with the pragma `<aspect>`, can be chosen for my class, as for any entity. My look is drawn as a highlight along my links, and never changes how they look.
 
 ```
 street := self newEntity: Street.

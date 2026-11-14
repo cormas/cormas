@@ -41,28 +41,12 @@ Class {
 		'group'
 	],
 	#classInstVars : [
-		'currentId',
-		'activePovSelector'
+		'currentId'
 	],
 	#category : 'Cormas-Core-Entities',
 	#package : 'Cormas-Core',
 	#tag : 'Entities'
 }
-
-{ #category : 'accessing' }
-CMEntity class >> activePovSelector [
-
-	^ activePovSelector ifNil: [ activePovSelector := #pov ]
-]
-
-{ #category : 'accessing' }
-CMEntity class >> activePovSelector: aSymbol [
-
-	(self availablePov includes: aSymbol)
-		ifFalse: [ ^ self inform: 'The class ' , self name , ' does not have a pov called ' , aSymbol ].
-
-	activePovSelector := aSymbol
-]
 
 { #category : 'aspects' }
 CMEntity class >> aspectSelectors [
@@ -71,18 +55,6 @@ CMEntity class >> aspectSelectors [
 	^ ((Pragma allNamed: #aspect from: self to: CMEntity)
 		   collect: [ :each | each method selector ]
 		   as: Set) asArray sorted
-]
-
-{ #category : 'accessing - methods & classes' }
-CMEntity class >> availablePov [
-	"Purpose: returns the list of available pov methods
-	Return value: <OrderedCollection>"
-	
-	| pragmas |
-	pragmas := Pragma allNamed: 'pov' from: self to: CMEntity.
-
-	^ (pragmas collect: [ :pragma |
-		pragma method selector ]) asSet asOrderedCollection
 ]
 
 { #category : 'as yet unclassified' }
@@ -181,12 +153,6 @@ CMEntity class >> parameters [
 	^ parameters
 ]
 
-{ #category : 'accessing' }
-CMEntity class >> resetActivePovSelector [
-
-	activePovSelector := nil
-]
-
 { #category : 'initialization' }
 CMEntity class >> resetClassSideParameters [
 
@@ -200,13 +166,6 @@ CMEntity >> actionSelectors [
 
 	^ (Pragma allNamed: 'action' from: self class to: CMEntity)
 		collect: [ :each | each method selector ]
-]
-
-{ #category : 'pov' }
-CMEntity >> activePov [
-	"Answer the point of view currently selected for the class of the receiver. This is how visualizations should ask an entity how to display itself."
-
-	^ self perform: self class activePovSelector
 ]
 
 { #category : 'converting' }
@@ -415,37 +374,6 @@ CMEntity >> isSpatialEntitySet [
 CMEntity >> parameters [
 
 	^ self class parameters
-]
-
-{ #category : 'accessing' }
-CMEntity >> pov [
-	"Default point of view"
-	<pov>
-	^ CMPointOfView new
-]
-
-{ #category : 'pov' }
-CMEntity >> povClassName [
-	"Assign unique color to each class name"
-	
-	<pov>
-	^ CMPointOfView color: (CMColor colorOfNumber: self class name hash)
-]
-
-{ #category : 'pov' }
-CMEntity >> povId [
-	"Purpose: Returns a Color from the existing 31 constant names: #(#black #blue #brown #chartreuse #cyan #darkCyan #darkGray #darkGreen #darkMagenta #darkRed #gray #green #lightCyan #lightGray #lightYellow #magenta #navy #olive #orange #orchid #paleGreen #pink #purple #red #royalBlue #salmon #springGreen #veryDarkGray #veryLightGray #white #yellow). The id is used to determine the index at which the color name is picked in the array. 
-Example: for an instance with id = 65, the returned color will be brown (65= 2*31+3)"
-
-	<pov>
-	^ CMPointOfView color: (CMColor colorOfNumber: self id)
-]
-
-{ #category : 'pov' }
-CMEntity >> povInvisible [
-
-	<pov>
-	^ CMPointOfView color: Color transparent
 ]
 
 { #category : 'printing' }

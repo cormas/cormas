@@ -1,20 +1,20 @@
 "
-I draw an agent as a shape, according to its active point of view. I can be shown on my own, even if the agent is not on a cell.
+I draw an agent as a shape, according to its look in my view. I can be shown on my own, even if the agent is not on a cell.
 
 ## Responsibility:
 
-- Show the color, shape and size of the point of view of my agent.
-- Know which shapes a point of view may ask for, and reject the others.
+- Show the color or the tiles, the shape, the size and the border of the look of my agent.
+- Know which shapes a look may ask for, and reject the others.
 
 ## Collaborators:
 
-- `CMAgent`: answers the point of view to show.
+- `CMAgent`: fills its look.
 - `CMPointOfView`: holds the color, the shape symbol and the size relative to a cell.
 
 ## Public API and Key Messages
 
 - `for:` creates me for an agent.
-- `update` shows the current point of view.
+- `update` shows the current look.
 - `centerAt:` places my center in the coordinates of my parent.
 
 ```

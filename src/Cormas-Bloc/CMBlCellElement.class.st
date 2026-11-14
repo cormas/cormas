@@ -1,15 +1,15 @@
 "
-I draw a cell with the shape required by its grid, according to its active point of view. On my own, I also draw the agents on the cell.
+I draw a cell with the shape required by its grid, according to its look in my view. On my own, I also draw the agents on the cell.
 
 ## Responsibility:
 
-- Show the color and border of the point of view of my cell.
+- Show the color or the tiles, and the border, of the look of my cell.
 - Take the shape of my grid: a square, a hexagon or a triangle.
 - Show the occupants of my cell, unless a group of cells draws the agents itself.
 
 ## Collaborators:
 
-- `CMCell`: answers the point of view, the occupants and the grid.
+- `CMCell`: answers the occupants and the grid, and fills its look.
 - `CMBlAgentElement`: draws each occupant.
 
 ## Public API and Key Messages

@@ -12,12 +12,3 @@ CMMockCow >> aspectDefault: look [
 	super aspectDefault: look.
 	look color: Color red
 ]
-
-{ #category : 'pov' }
-CMMockCow >> pov [
-
-	<pov>
-	^ super pov
-		color: Color red;
-		yourself
-]

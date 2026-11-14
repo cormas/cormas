@@ -74,15 +74,6 @@ Example: self bufferState: (test ifTrue: [value1] ifFalse: [value2])"
 	^ self bufferState: #dead
 ]
 
-{ #category : 'pov' }
-CMMockCell >> pov [
-
-	<pov>
-	^ state = #dead
-		ifTrue: [ CMPointOfView color: Color black ]
-		ifFalse: [ CMPointOfView color: Color white ]
-]
-
 { #category : 'initialize-release' }
 CMMockCell >> removedFromModel [
 

@@ -40,6 +40,19 @@ CMObserverTest >> testAClassListsItsOwnAndInheritedAspects [
 ]
 
 { #category : 'tests' }
+CMObserverTest >> testANetworkNeverChangesTheLookOfItsLinks [
+
+	| road street |
+	road := CMMockRoad new.
+	road aspect: [ :look | look color: Color green ].
+	street := CMMockNetwork new.
+	street aspect: [ :look | look color: Color red ].
+	street add: road.
+	self assert: (observer lookOf: road) color equals: Color green.
+	self assert: (observer lookOf: street) color equals: Color red
+]
+
+{ #category : 'tests' }
 CMObserverTest >> testANewObserverShowsTheDefaultAspect [
 
 	self

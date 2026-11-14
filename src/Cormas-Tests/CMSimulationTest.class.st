@@ -70,18 +70,6 @@ CMSimulationTest >> testInitializeSimulationResetsCurrentTimeStep [
 ]
 
 { #category : 'tests' }
-CMSimulationTest >> testInitializeSimulationResetsTheSelectedPov [
-
-	[
-		CMMockCow activePovSelector: #povInvisible.
-
-		simulation initializeSimulation.
-
-		self assert: CMMockCow activePovSelector equals: #pov ] ensure: [
-		CMMockCow resetActivePovSelector ]
-]
-
-{ #category : 'tests' }
 CMSimulationTest >> testProbes [
 
 	| expectedProbes |

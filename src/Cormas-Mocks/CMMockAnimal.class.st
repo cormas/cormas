@@ -57,12 +57,6 @@ CMMockAnimal >> initialize [
 	energy := self class initialEnergy
 ]
 
-{ #category : 'pov' }
-CMMockAnimal >> pov [
-
-	^ CMPointOfView size: 0.3 + (energy * 0.1)
-]
-
 { #category : 'initialize-release' }
 CMMockAnimal >> removedFromModel [
 

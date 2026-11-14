@@ -1,17 +1,25 @@
 "
-I am a cell whose point of view is set by a test, for points of view that the mock cells do not have.
+I am a cell whose look is set by a test, for looks that the mock cells do not have, such as tiles.
 
 ## Responsibility:
 
-- Answer the point of view a test gave me.
+- Fill my look with the block a test gave me.
 
-## Collaborators: 
+## Collaborators:
 
-- `CMBlTileTest`: sets my point of view.
+- `CMBlTileTest`: sets my look.
 
 ## Public API and Key Messages
 
-- `testPov:`
+- `aspect:` sets the block that fills my look.
+
+```
+cell aspect: [ :look | look tile: #halfRedHalfBlue ]
+```
+
+## Internal Representation
+
+- `customAspect`: a block that takes my look, which does nothing until a test sets it.
 "
 Class {
 	#name : 'CMBlTestCell',
@@ -43,17 +51,4 @@ CMBlTestCell >> initialize [
 
 	super initialize.
 	customAspect := [ :look |  ]
-]
-
-{ #category : 'accessing' }
-CMBlTestCell >> pov [
-
-	<pov>
-	^ testPov
-]
-
-{ #category : 'accessing' }
-CMBlTestCell >> testPov: aPointOfView [
-
-	testPov := aPointOfView
 ]
