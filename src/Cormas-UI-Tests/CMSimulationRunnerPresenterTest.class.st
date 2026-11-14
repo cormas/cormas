@@ -55,6 +55,12 @@ CMSimulationRunnerPresenterTest >> testADuplicateStartsWithTheChoicesOfItsViewAn
 ]
 
 { #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testANewSimulationShowsItsFirstView [
+
+	self assert: runner notebook selectedPage title equals: 'Space'
+]
+
+{ #category : 'tests' }
 CMSimulationRunnerPresenterTest >> testANewViewCanShowANamedPerspective [
 
 	| view |
@@ -63,6 +69,56 @@ CMSimulationRunnerPresenterTest >> testANewViewCanShowANamedPerspective [
 	self
 		assert: (view observer perspective aspectFor: CMMockCow)
 		equals: #aspectInvisible:
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testANewViewIsAddedBeforeTheLastTab [
+
+	runner newView.
+	self
+		assert:
+		(runner notebook pages collect: [ :each | each title ]) asArray
+		equals: #( 'Data' 'Charts' 'Inspector' 'Space' 'Space (2)'
+		   '' )
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testANewViewTakesTheFirstFreeTitle [
+
+	runner newView.
+	runner newView.
+	runner closeView: runner views second.
+	runner newView.
+	self
+		assert: (runner views collect: [ :each | each title ]) asArray
+		equals: #( 'Space' 'Space (3)' 'Space (2)' )
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testAViewKeepsItsTitleWhenItMovesBackToTheTabs [
+
+	| moved |
+	runner newView.
+	moved := runner moveToWindow: runner views first.
+	windows add: moved detachedWindow.
+	runner moveToTabs: moved.
+	self
+		assert: (runner views collect: [ :each | each title ]) asSet
+		equals: #( 'Space' 'Space (2)' ) asSet
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testAViewKeepsItsTitleWhenItMovesToAWindow [
+
+	| moved |
+	runner newView.
+	moved := runner moveToWindow: runner views first.
+	windows add: moved detachedWindow.
+	self assert: moved detachedWindow title equals: 'Space'.
+	self
+		assert:
+		(runner notebook pages collect: [ :each | each title ]) asArray
+		equals: #( 'Data' 'Charts' 'Inspector' 'Space (2)' '' )
 ]
 
 { #category : 'tests' }
@@ -112,6 +168,31 @@ CMSimulationRunnerPresenterTest >> testClosingEveryViewLeavesNone [
 ]
 
 { #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testClosingTheTabOfAViewClosesTheView [
+
+	runner newView.
+	(runner notebook pages detect: [ :each | each title = 'Space' ])
+		removeFromNotebook.
+	self
+		assert: (runner views collect: [ :each | each title ]) asArray
+		equals: #( 'Space (2)' )
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testClosingTheViewBeforeTheLastTabShowsTheTabBeforeIt [
+
+	windows add: runner open.
+	runner notebook selectPage: runner notebook pages last.
+	self waitForTheInterface.
+	runner notebook selectedPage removeFromNotebook.
+	self waitForTheInterface.
+	self
+		assert: (runner views collect: [ :each | each title ]) asArray
+		equals: #( 'Space' ).
+	self assert: runner notebook selectedPage title equals: 'Space'
+]
+
+{ #category : 'tests' }
 CMSimulationRunnerPresenterTest >> testClosingTheWindowOfAViewClosesTheView [
 
 	| moved |
@@ -132,8 +213,41 @@ CMSimulationRunnerPresenterTest >> testNewViewsAreNumbered [
 ]
 
 { #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testSelectingTheLastTabShowsANewView [
+
+	runner notebook selectPage: runner notebook pages last.
+	self waitForTheInterface.
+	self assert: runner views size equals: 2.
+	self assert: runner notebook selectedPage title equals: 'Space (2)'
+]
+
+{ #category : 'tests' }
 CMSimulationRunnerPresenterTest >> testStartsWithOneView [
 
 	self assert: runner views size equals: 1.
 	self assert: runner views first title equals: 'Space'
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testTabsKeepTheTitlesOfTheirViews [
+
+	windows add: runner open.
+	runner newView.
+	runner moveToWindow: runner views first.
+	windows add: runner views last detachedWindow.
+	self
+		assert: (runner notebook adapter widget pages collect: [ :each |
+					 (each labelMorph allMorphs detect: [ :morph |
+						  morph isKindOf: StringMorph ]) contents ]) asArray
+		equals: #( 'Data' 'Charts' 'Inspector' 'Space (2)' '' )
+]
+
+{ #category : 'running' }
+CMSimulationRunnerPresenterTest >> waitForTheInterface [
+	"Wait until the interface has run what was deferred so far"
+
+	| done |
+	done := Semaphore new.
+	runner application defer: [ done signal ].
+	self deny: (done waitTimeoutMilliseconds: 2000)
 ]

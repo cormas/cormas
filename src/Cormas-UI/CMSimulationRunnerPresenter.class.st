@@ -4,7 +4,7 @@ I run a simulation and show it: its views of the space, its data and its charts,
 ## Responsibility:
 
 - Step or run the simulation, and update what is shown after each step.
-- Manage any number of views of the space, each from its own point of view: add a new one, duplicate one, move one to a window of its own and back, close one.
+- Manage any number of views of the space, each with its own choices: add a new one, duplicate one, move one to a window of its own and back, close one.
 - Keep the choices of the views when the simulation is initialized again.
 
 ## Collaborators:
@@ -26,6 +26,7 @@ I run a simulation and show it: its views of the space, its data and its charts,
 
 - `views`: the views, in the order they were opened.
 - `pages`: the tab of each view that is in a tab.
+- `newViewPage`: the last tab, which adds a view when it is clicked.
 
 ### Implementation Points
 
@@ -47,7 +48,7 @@ Class {
 		'chartsPage',
 		'views',
 		'pages',
-		'newViewButton'
+		'newViewPage'
 	],
 	#category : 'Cormas-UI-Simulation',
 	#package : 'Cormas-UI',
@@ -80,14 +81,16 @@ CMSimulationRunnerPresenter class >> exampleEmpty [
 
 { #category : 'views' }
 CMSimulationRunnerPresenter >> addTab: aView [
+	"Show aView in a closeable tab, just before the tab that adds views. The notebook can only add a tab at the end, so that tab is removed and added again"
 
 	| page |
 	views add: aView.
-	page := SpNotebookPage title: '' provider: [ aView ].
+	page := SpNotebookPage title: aView title provider: [ aView ].
 	page beCloseable.
 	pages at: aView put: page.
+	notebook removePage: newViewPage.
 	notebook addPage: page.
-	self updateTitles.
+	notebook addPage: newViewPage.
 	^ aView
 ]
 
@@ -119,15 +122,15 @@ CMSimulationRunnerPresenter >> closeAllViews [
 
 { #category : 'views' }
 CMSimulationRunnerPresenter >> closeView: aView [
-	"Stop showing aView, whether it is in a tab or in a window"
+	"Stop showing aView, whether it is in a tab or in a window. A tab may already have left the notebook, when its close button was pressed"
 
 	views remove: aView ifAbsent: [ ^ self ].
 	pages at: aView ifPresent: [ :page |
 			pages removeKey: aView.
-			notebook removePage: page ].
+			(notebook pages includes: page) ifTrue: [
+				notebook removePage: page ] ].
 	aView isInWindow ifTrue: [ aView detachedWindow close ].
-	aView closeDiagram.
-	self updateTitles
+	aView closeDiagram
 ]
 
 { #category : 'initialization' }
@@ -135,14 +138,14 @@ CMSimulationRunnerPresenter >> connectPresenters [
 
 	stepButton action: [ self stepSimulation ].
 	self initializeRunButtonWithRunAction.
-	newViewButton action: [
-		notebook selectPage: (pages at: self newView) ].
 
 	speedDropList whenSelectedItemChangedDo: [ :item |
 		self setSimulationIntervalDelay ].
 
-	notebook whenSelectedPageChangedDo: [ :page |
-		self updateSelectedNotebookPage ].
+	notebook whenSelectedPageChangedDo: [ :page :previous |
+			page == newViewPage
+				ifTrue: [ self newViewPageSelectedAfter: previous ]
+				ifFalse: [ self updateSelectedNotebookPage ] ].
 	notebook whenPageRemovedDo: [ :page |
 			pages keysAndValuesDo: [ :view :each |
 				each == page ifTrue: [ self closeView: view ] ] ]
@@ -154,50 +157,46 @@ CMSimulationRunnerPresenter >> cormasModel [
 	^ self simulation cormasModel
 ]
 
-{ #category : 'specs' }
+{ #category : 'initialization' }
 CMSimulationRunnerPresenter >> defaultLayout [
 
 	| simulationControlsLayout |
-	
 	simulationControlsLayout := SpBoxLayout newLeftToRight
-		  spacing: 5;
-		  add: (SpBoxLayout newTopToBottom
-				   spacing: 2;
-				   add: 'Step' expand: false;
-				   add: stepButton;
-				   yourself)
-		  width: 60;
-		  add: (SpBoxLayout newTopToBottom
-				   spacing: 2;
-				   add: 'Run' expand: false;
-				   add: runButton;
-				   yourself)
-		  width: 60;
-		  add: SpNullPresenter new width: 10;
-		  add: (SpBoxLayout newTopToBottom
-				vAlignCenter;
-				add: SpNullPresenter new height: self class labelHeight;
-				add: currentTimeStepLabel;
-				yourself) width: 100;
-		  add: SpNullPresenter new;
-		  add: (SpBoxLayout newTopToBottom
-				   vAlignEnd;
-				   add: newViewButton expand: false;
-				   yourself)
-		  width: 110;
-		  add: (SpBoxLayout newTopToBottom
-				   spacing: 2;
-				   add: 'Speed' expand: false;
-				   add: speedDropList;
-				   yourself)
-		  height: 52;
-		  add: (SpBoxLayout newTopToBottom
-				   spacing: 2;
-				   add: 'Display every' expand: false;
-				   add: displayEveryNumberPresenter;
-				   yourself)
-		  expand: false;
-		  yourself.
+		                            spacing: 5;
+		                            add: (SpBoxLayout newTopToBottom
+				                             spacing: 2;
+				                             add: 'Step' expand: false;
+				                             add: stepButton;
+				                             yourself)
+		                            width: 60;
+		                            add: (SpBoxLayout newTopToBottom
+				                             spacing: 2;
+				                             add: 'Run' expand: false;
+				                             add: runButton;
+				                             yourself)
+		                            width: 60;
+		                            add: SpNullPresenter new width: 10;
+		                            add: (SpBoxLayout newTopToBottom
+				                             vAlignCenter;
+				                             add: SpNullPresenter new
+				                             height: self class labelHeight;
+				                             add: currentTimeStepLabel;
+				                             yourself)
+		                            width: 100;
+		                            add: SpNullPresenter new;
+		                            add: (SpBoxLayout newTopToBottom
+				                             spacing: 2;
+				                             add: 'Speed' expand: false;
+				                             add: speedDropList;
+				                             yourself)
+		                            height: 52;
+		                            add: (SpBoxLayout newTopToBottom
+				                             spacing: 2;
+				                             add: 'Display every' expand: false;
+				                             add: displayEveryNumberPresenter;
+				                             yourself)
+		                            expand: false;
+		                            yourself.
 
 	^ SpBoxLayout newTopToBottom
 		  spacing: 10;
@@ -231,6 +230,19 @@ CMSimulationRunnerPresenter >> fitDiagram [
 	views do: [ :each | each isInWindow ifFalse: [ each fitDiagram ] ]
 ]
 
+{ #category : 'views' }
+CMSimulationRunnerPresenter >> freeTitleFrom: aString [
+	"Answer aString, or aString numbered when a view already has that title"
+
+	| title number |
+	title := aString.
+	number := 1.
+	[ views anySatisfy: [ :each | each title = title ] ] whileTrue: [
+			number := number + 1.
+			title := aString , ' (' , number printString , ')' ].
+	^ title
+]
+
 { #category : 'as yet unclassified' }
 CMSimulationRunnerPresenter >> hideSettings [
 
@@ -245,7 +257,7 @@ CMSimulationRunnerPresenter >> hideSettings [
 
 { #category : 'initialization' }
 CMSimulationRunnerPresenter >> initializeNotebookPages [
-	"Show the views, the data and the charts of a new simulation. The views keep the choices they had for the previous simulation"
+	"Show the data and the charts of a new simulation, then its views and a last tab that adds a view. The views keep the choices they had for the previous simulation"
 
 	| perspectives |
 	perspectives := (views collect: [ :each | each observer perspective ])
@@ -256,6 +268,10 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 	dataTable := self instantiate: CMDataPresenter.
 	dataTable columnNames: (self simulation activeProbes collect: #name).
 	dataTable modelClass: self cormasModel class.
+
+	"Replaced before the old pages are removed, so that the old one is not taken for it when the notebook selects it"
+	newViewPage := SpNotebookPage title: '' provider: [ self newLabel ].
+	newViewPage icon: (self iconNamed: #smallAdd).
 
 	self flag: 'TODO'.
 	"This is a hack to avoid a nasty Spec bug. When we remove all pages after changing a nancy notebook page (a different presenter), it breaks because it can't find the model"
@@ -268,18 +284,18 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 		              title: 'Charts'
 		              provider: [ chartPresenter ].
 
+	notebook addPage: dataPage.
+	notebook addPage: chartsPage.
+	notebook addPage: (SpNotebookPage
+			 title: 'Inspector'
+			 provider: [ StInspectorPresenter onObject: self simulation ]).
+	notebook addPage: newViewPage.
+
 	perspectives do: [ :each |
 			self addViewObservedBy: (CMObserver new
 					 perspective: each;
 					 yourself) ].
-	notebook addPage: dataPage.
-	notebook addPage: chartsPage.
-
-	notebook addPage: (SpNotebookPage
-			 title: 'Inspector'
-			 provider: [ StInspectorPresenter onObject: self simulation ]).
-
-	notebook selectPageIndex: 1
+	notebook selectPage: (pages at: views first)
 ]
 
 { #category : 'initialization' }
@@ -304,12 +320,6 @@ CMSimulationRunnerPresenter >> initializePresenters [
 		                               minimum: 1;
 		                               number: 1;
 		                               yourself.
-	newViewButton := self newButton
-		                 label: 'New view';
-		                 icon: (self iconNamed: #smallAdd);
-		                 help:
-			                 'Show the space of the simulation in another tab';
-		                 yourself.
 	self beInPauseMode.
 	views := OrderedCollection new.
 	pages := IdentityDictionary new.
@@ -354,10 +364,11 @@ CMSimulationRunnerPresenter >> initializeWindow: aWindowPresenter [
 
 { #category : 'views' }
 CMSimulationRunnerPresenter >> moveToTabs: aView [
-	"Show aView in a new tab, with its choices, and close its window. Answer the view in the tab"
+	"Show aView in a new tab, with its choices and its title, and close its window. Answer the view in the tab"
 
 	| back |
 	back := self newViewObservedBy: aView observer.
+	back title: aView title.
 	self closeView: aView.
 	self addTab: back.
 	^ back
@@ -365,13 +376,13 @@ CMSimulationRunnerPresenter >> moveToTabs: aView [
 
 { #category : 'views' }
 CMSimulationRunnerPresenter >> moveToWindow: aView [
-	"Show aView in a window of its own, with its choices. Answer the view in the window"
+	"Show aView in a window of its own, with its choices and its title. Answer the view in the window"
 
 	| moved |
 	moved := self newViewObservedBy: aView observer.
+	moved title: aView title.
 	self closeView: aView.
 	views add: moved.
-	self updateTitles.
 	moved openInWindow.
 	^ moved
 ]
@@ -385,10 +396,25 @@ CMSimulationRunnerPresenter >> newView [
 
 { #category : 'views' }
 CMSimulationRunnerPresenter >> newViewObservedBy: anObserver [
+	"Answer a view on anObserver, with the first free title"
 
-	^ (self instantiate: CMSpacePresenter on: anObserver)
-		  host: self;
-		  yourself
+	| view |
+	view := (self instantiate: CMSpacePresenter on: anObserver)
+		        host: self;
+		        yourself.
+	view title: (self freeTitleFrom: view baseTitle).
+	^ view
+]
+
+{ #category : 'views' }
+CMSimulationRunnerPresenter >> newViewPageSelectedAfter: aPage [
+	"Show a new view when the tab that adds views is clicked. The notebook also selects that tab by itself when the tab before it closes, and then the tab before it is shown instead. The selection is deferred, because the notebook ignores a new selection while it announces one"
+
+	| page |
+	page := (notebook pages includes: aPage)
+		        ifTrue: [ pages at: self newView ]
+		        ifFalse: [ notebook pages at: notebook pages size - 1 ].
+	self application defer: [ notebook selectPage: page ]
 ]
 
 { #category : 'views' }
@@ -398,6 +424,12 @@ CMSimulationRunnerPresenter >> newViewWith: aSelector [
 	^ self addViewObservedBy: (CMObserver new
 			   perspective: (self cormasModel perspectiveNamed: aSelector);
 			   yourself)
+]
+
+{ #category : 'accessing' }
+CMSimulationRunnerPresenter >> notebook [
+
+	^ notebook
 ]
 
 { #category : 'initialization' }
@@ -515,23 +547,6 @@ CMSimulationRunnerPresenter >> updateSelectedNotebookPage [
 		notebook selectedPage = page ifTrue: [ view updateDiagram ] ].
 	notebook selectedPage = dataPage ifTrue: [ self updateDataTable ].
 	notebook selectedPage = chartsPage ifTrue: [ self updateChart ]
-]
-
-{ #category : 'views' }
-CMSimulationRunnerPresenter >> updateTitles [
-	"Give each view its title, numbered when several views would have the same one"
-
-	| counts |
-	counts := Bag new.
-	views do: [ :each |
-			| base |
-			base := each baseTitle.
-			counts add: base.
-			each title: ((counts occurrencesOf: base) = 1
-					 ifTrue: [ base ]
-					 ifFalse: [
-					 base , ' (' , (counts occurrencesOf: base) printString , ')' ]).
-			pages at: each ifPresent: [ :page | page title: each title ] ]
 ]
 
 { #category : 'initialization' }
