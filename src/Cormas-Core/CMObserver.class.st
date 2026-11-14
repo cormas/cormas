@@ -27,7 +27,11 @@ observer perspective: (CMPerspective new show: CMMockCell as: #aspectState:; you
 ## Internal Representation
 
 - `perspective`: a `CMPerspective`, empty for a new observer.
-- `looks`: an `IdentityDictionary` from an entity to its look. Each look is created once and filled again at each refresh.
+- `looks`: a `WeakIdentityKeyDictionary` from an entity to its look. Each look is created once and filled again at each refresh, and is forgotten once its entity is gone.
+
+### Implementation Points
+
+- A copy, as for a duplicated view, starts with a copy of my perspective and fills looks of its own.
 "
 Class {
 	#name : 'CMObserver',
@@ -46,7 +50,7 @@ CMObserver >> initialize [
 
 	super initialize.
 	perspective := CMPerspective new.
-	looks := IdentityDictionary new
+	looks := WeakIdentityKeyDictionary new
 ]
 
 { #category : 'accessing' }
@@ -72,4 +76,13 @@ CMObserver >> perspective [
 CMObserver >> perspective: aPerspective [
 
 	perspective := aPerspective
+]
+
+{ #category : 'initialization' }
+CMObserver >> postCopy [
+	"A copy chooses aspects on its own, and fills looks of its own"
+
+	super postCopy.
+	perspective := perspective copy.
+	looks := WeakIdentityKeyDictionary new
 ]

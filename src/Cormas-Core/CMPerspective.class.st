@@ -30,12 +30,14 @@ perspectiveEcologist
 ## Internal Representation
 
 - `aspects`: a `Dictionary` from a class to the selector of the aspect chosen for it.
+- `name`: the name shown to users, given by `CMModel>>perspectiveNamed:` after the method that defines me, and empty for a perspective made in a view.
 "
 Class {
 	#name : 'CMPerspective',
 	#superclass : 'Object',
 	#instVars : [
-		'aspects'
+		'aspects',
+		'name'
 	],
 	#category : 'Cormas-Core-Look',
 	#package : 'Cormas-Core',
@@ -56,7 +58,28 @@ CMPerspective >> aspectFor: aClass [
 CMPerspective >> initialize [
 
 	super initialize.
-	aspects := Dictionary new
+	aspects := Dictionary new.
+	name := ''
+]
+
+{ #category : 'accessing' }
+CMPerspective >> name [
+	"Answer the name shown to users, which is empty for a perspective made in a view"
+
+	^ name
+]
+
+{ #category : 'accessing' }
+CMPerspective >> name: aString [
+
+	name := aString
+]
+
+{ #category : 'initialization' }
+CMPerspective >> postCopy [
+
+	super postCopy.
+	aspects := aspects copy
 ]
 
 { #category : 'accessing' }

@@ -1017,6 +1017,18 @@ CMModel >> makeAgentsScatteredInCells [
 	areAgentsCenteredInCells := false
 ]
 
+{ #category : 'perspectives' }
+CMModel >> nameOfPerspective: aSelector [
+	"Answer the words of aSelector without its perspective prefix: #perspectiveHiddenCows is named 'Hidden cows'"
+
+	| words |
+	words := ((aSelector withoutPrefix: 'perspective') piecesCutWhere: [
+		          :a
+		          :b | b isUppercase ]) collect: [ :each | each asLowercase ].
+	words at: 1 put: words first capitalized.
+	^ ' ' join: words
+]
+
 { #category : 'instance creation - agents & objects' }
 CMModel >> newEntity: aClass [
 
@@ -1109,6 +1121,32 @@ CMModel >> newSimulationContext [
 CMModel >> parameters [
 
 	^ self class parameters
+]
+
+{ #category : 'perspectives' }
+CMModel >> perspectiveNamed: aSelector [
+	"Answer the perspective defined by my method aSelector, named after it"
+
+	(self perspectiveSelectors includes: aSelector) ifFalse: [
+			self error:
+				('{1} has no perspective #{2}. Its perspectives are {3}' format:
+					 {
+						 self class name.
+						 aSelector.
+						 (', ' join:
+							  (self perspectiveSelectors collect: [ :each | '#' , each ])) }) ].
+	^ (self perform: aSelector)
+		  name: (self nameOfPerspective: aSelector);
+		  yourself
+]
+
+{ #category : 'perspectives' }
+CMModel >> perspectiveSelectors [
+	"Answer the selectors of the methods that define my perspectives, sorted"
+
+	^ ((Pragma allNamed: #perspective from: self class to: CMModel)
+		   collect: [ :each | each method selector ]
+		   as: Set) asArray sorted
 ]
 
 { #category : 'accessing - entities' }

@@ -14,3 +14,17 @@ CMModel >> openSpacePresenter [
 	<api>
 	^ (CMBlSpaceElement for: self) asPresenter open
 ]
+
+{ #category : '*Cormas-Bloc-Spec' }
+CMModel >> openSpaceWith: aSelector [
+	"Open a window that shows my space from the perspective that I define in my method aSelector, and answer the window"
+
+	<api>
+	| perspective |
+	perspective := self perspectiveNamed: aSelector.
+	^ (CMBlSpaceElement for: self observedBy: (CMObserver new
+				    perspective: perspective;
+				    yourself)) asPresenter open
+		  title: 'Space — ' , perspective name;
+		  yourself
+]

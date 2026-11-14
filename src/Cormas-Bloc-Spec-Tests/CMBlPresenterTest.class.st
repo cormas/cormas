@@ -102,10 +102,13 @@ CMBlPresenterTest >> openSimulationPresenter [
 	^ presenter
 ]
 
-{ #category : 'private' }
+{ #category : 'helpers' }
 CMBlPresenterTest >> openSpacePresenter: application [
 
-	^ self open: (application newPresenter: CMSpacePresenter)
+	^ self open:
+		  (CMSpacePresenter
+			   newApplication: application
+			   model: CMObserver new)
 ]
 
 { #category : 'private' }
@@ -171,10 +174,10 @@ CMBlPresenterTest >> spacePresenterIn: aPresenter [
 	^ self embeddedViewOf: aPresenter
 ]
 
-{ #category : 'private' }
+{ #category : 'helpers' }
 CMBlPresenterTest >> spacePresenterOf: aSimulationPresenter [
 
-	^ (self runnerOf: aSimulationPresenter) instVarNamed: #spacePresenter
+	^ (self runnerOf: aSimulationPresenter) views first
 ]
 
 { #category : 'running' }
@@ -416,6 +419,16 @@ CMBlPresenterTest >> testOpenSpacePresenterShowsTheModel [
 	self
 		assert: (self screenColorIn: presenter at: 80 @ 48)
 		equals: 'FF0000'
+]
+
+{ #category : 'tests' }
+CMBlPresenterTest >> testOpeningASpaceWithAPerspectiveShowsItsName [
+
+	| mockModel |
+	mockModel := CMMockModel new.
+	mockModel initFixed.
+	window := mockModel openSpaceWith: #perspectiveHiddenCows.
+	self assert: (window title includesSubstring: 'Hidden cows')
 ]
 
 { #category : 'tests' }

@@ -40,6 +40,25 @@ CMObserverTest >> testAClassListsItsOwnAndInheritedAspects [
 ]
 
 { #category : 'tests' }
+CMObserverTest >> testACopyOfAnObserverChoosesAspectsOnItsOwn [
+
+	| copy cell |
+	cell := CMMockCell new
+		        state: #alive;
+		        yourself.
+	observer perspective show: CMMockCell as: #aspectState:.
+	copy := observer copy.
+	copy perspective show: CMMockCell as: #aspectInvisible:.
+	self assert: (observer lookOf: cell) isVisible.
+	self deny: (copy lookOf: cell) isVisible.
+	self
+		assert: (CMObserver new
+				 perspective: observer perspective;
+				 copy) perspective name
+		equals: observer perspective name
+]
+
+{ #category : 'tests' }
 CMObserverTest >> testANetworkNeverChangesTheLookOfItsLinks [
 
 	| road street |

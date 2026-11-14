@@ -214,6 +214,14 @@ CMMockModel >> numberOfRows: aNumber [
 	numberOfRows := aNumber
 ]
 
+{ #category : 'perspectives' }
+CMMockModel >> perspectiveHiddenCows [
+	"A perspective for tests, which hides the cows"
+
+	<perspective>
+	^ CMPerspective new show: CMMockCow as: #aspectInvisible:
+]
+
 { #category : 'control' }
 CMMockModel >> step [
 	<control>

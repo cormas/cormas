@@ -1,3 +1,36 @@
+"
+I run a simulation and show it: its views of the space, its data and its charts, in tabs.
+
+## Responsibility:
+
+- Step or run the simulation, and update what is shown after each step.
+- Manage any number of views of the space, each from its own point of view: add a new one, duplicate one, move one to a window of its own and back, close one.
+- Keep the choices of the views when the simulation is initialized again.
+
+## Collaborators:
+
+- `CMSpacePresenter`: each view of the space.
+- `CMObserver`: the state of each view, which moves with it between a tab and a window.
+- `CMSimulation`: the simulation I run.
+
+## Public API and Key Messages
+
+- `views`, `newView`, `newViewWith:`, `duplicateView:`, `moveToWindow:`, `moveToTabs:`, `closeView:`, `closeAllViews`
+- `stepSimulation`
+
+```
+(runner newViewWith: #perspectiveHiddenCows) title ""'Space — Hidden cows'""
+```
+
+## Internal Representation
+
+- `views`: the views, in the order they were opened.
+- `pages`: the tab of each view that is in a tab.
+
+### Implementation Points
+
+- After each step, I update the views in windows, and only the selected tab, so that hidden tabs cost nothing.
+"
 Class {
 	#name : 'CMSimulationRunnerPresenter',
 	#superclass : 'SpPresenter',
@@ -8,12 +41,13 @@ Class {
 		'speedDropList',
 		'displayEveryNumberPresenter',
 		'notebook',
-		'spacePresenter',
 		'dataTable',
 		'chartPresenter',
-		'spacePage',
 		'dataPage',
-		'chartsPage'
+		'chartsPage',
+		'views',
+		'pages',
+		'newViewButton'
 	],
 	#category : 'Cormas-UI-Simulation',
 	#package : 'Cormas-UI',
@@ -44,6 +78,25 @@ CMSimulationRunnerPresenter class >> exampleEmpty [
 	(CMSimulationApplication new newPresenter: self) open
 ]
 
+{ #category : 'views' }
+CMSimulationRunnerPresenter >> addTab: aView [
+
+	| page |
+	views add: aView.
+	page := SpNotebookPage title: '' provider: [ aView ].
+	page beCloseable.
+	pages at: aView put: page.
+	notebook addPage: page.
+	self updateTitles.
+	^ aView
+]
+
+{ #category : 'views' }
+CMSimulationRunnerPresenter >> addViewObservedBy: anObserver [
+
+	^ self addTab: (self newViewObservedBy: anObserver)
+]
+
 { #category : 'as yet unclassified' }
 CMSimulationRunnerPresenter >> beInPauseMode [
 
@@ -58,23 +111,41 @@ CMSimulationRunnerPresenter >> beInRunningMode [
 	stepButton enabled: false
 ]
 
-{ #category : 'closing' }
-CMSimulationRunnerPresenter >> closeDiagram [
+{ #category : 'views' }
+CMSimulationRunnerPresenter >> closeAllViews [
 
-	spacePresenter ifNotNil: [ spacePresenter closeDiagram ]
+	views copy do: [ :each | self closeView: each ]
+]
+
+{ #category : 'views' }
+CMSimulationRunnerPresenter >> closeView: aView [
+	"Stop showing aView, whether it is in a tab or in a window"
+
+	views remove: aView ifAbsent: [ ^ self ].
+	pages at: aView ifPresent: [ :page |
+			pages removeKey: aView.
+			notebook removePage: page ].
+	aView isInWindow ifTrue: [ aView detachedWindow close ].
+	aView closeDiagram.
+	self updateTitles
 ]
 
 { #category : 'initialization' }
 CMSimulationRunnerPresenter >> connectPresenters [
 
 	stepButton action: [ self stepSimulation ].
-
 	self initializeRunButtonWithRunAction.
-	
-	speedDropList whenSelectedItemChangedDo: [ :item | self setSimulationIntervalDelay ].
-	
+	newViewButton action: [
+		notebook selectPage: (pages at: self newView) ].
+
+	speedDropList whenSelectedItemChangedDo: [ :item |
+		self setSimulationIntervalDelay ].
+
 	notebook whenSelectedPageChangedDo: [ :page |
 		self updateSelectedNotebookPage ].
+	notebook whenPageRemovedDo: [ :page |
+			pages keysAndValuesDo: [ :view :each |
+				each == page ifTrue: [ self closeView: view ] ] ]
 ]
 
 { #category : 'accessing' }
@@ -110,6 +181,11 @@ CMSimulationRunnerPresenter >> defaultLayout [
 				yourself) width: 100;
 		  add: SpNullPresenter new;
 		  add: (SpBoxLayout newTopToBottom
+				   vAlignEnd;
+				   add: newViewButton expand: false;
+				   yourself)
+		  width: 110;
+		  add: (SpBoxLayout newTopToBottom
 				   spacing: 2;
 				   add: 'Speed' expand: false;
 				   add: speedDropList;
@@ -136,16 +212,23 @@ CMSimulationRunnerPresenter >> displayCurrentTimeStep [
 	currentTimeStepLabel label: ('Step: ', self simulation currentTimeStep asString)
 ]
 
+{ #category : 'views' }
+CMSimulationRunnerPresenter >> duplicateView: aView [
+	"Add a view in a new tab, which starts with the choices of aView and then chooses on its own"
+
+	^ self addViewObservedBy: aView observer copy
+]
+
 { #category : 'examples' }
 CMSimulationRunnerPresenter >> example [
 	<script: 'self example'>
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'update presenters' }
 CMSimulationRunnerPresenter >> fitDiagram [
 
 	self simulation ifNil: [ ^ self ].
-	spacePresenter fitDiagram.
+	views do: [ :each | each isInWindow ifFalse: [ each fitDiagram ] ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -162,9 +245,12 @@ CMSimulationRunnerPresenter >> hideSettings [
 
 { #category : 'initialization' }
 CMSimulationRunnerPresenter >> initializeNotebookPages [
+	"Show the views, the data and the charts of a new simulation. The views keep the choices they had for the previous simulation"
 
-	self closeDiagram.
-	spacePresenter := self instantiate: CMSpacePresenter.
+	| perspectives |
+	perspectives := (views collect: [ :each | each observer perspective ])
+		                ifEmpty: [ { CMPerspective new } ].
+	self closeAllViews.
 	chartPresenter := self instantiate: CMChartPresenter.
 
 	dataTable := self instantiate: CMDataPresenter.
@@ -176,17 +262,16 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 	"notebook removeAll."
 	notebook pages size timesRepeat: [ notebook removePageAt: 1 ].
 
-	spacePage := SpNotebookPage
-		             title: 'Space'
-		             provider: [ spacePresenter ].
-
 	dataPage := SpNotebookPage title: 'Data' provider: [ dataTable ].
 
 	chartsPage := SpNotebookPage
 		              title: 'Charts'
 		              provider: [ chartPresenter ].
 
-	notebook addPage: spacePage.
+	perspectives do: [ :each |
+			self addViewObservedBy: (CMObserver new
+					 perspective: each;
+					 yourself) ].
 	notebook addPage: dataPage.
 	notebook addPage: chartsPage.
 
@@ -203,36 +288,38 @@ CMSimulationRunnerPresenter >> initializePresenters [
 	runButton := self newButton
 		             help: 'Run the simulation to the end';
 		             yourself.
-
 	stepButton := self newButton
 		              icon: CMIcons stepIcon;
 		              help: 'Run the simulation just one step forward';
 		              yourself.
-		
-	currentTimeStepLabel := self newLabel.
 
+	currentTimeStepLabel := self newLabel.
 	speedDropList := self newDropList
 		                 help: 'Speed of simulation';
 		                 items: self speedDropListItems;
 		                 selectItem: 'normal';
 		                 yourself.
-
 	displayEveryNumberPresenter := self newNumberInput
-		                beInteger;
-		                minimum: 1;
-		                number: 1;
-		                yourself.
-
+		                               beInteger;
+		                               minimum: 1;
+		                               number: 1;
+		                               yourself.
+	newViewButton := self newButton
+		                 label: 'New view';
+		                 icon: (self iconNamed: #smallAdd);
+		                 help:
+			                 'Show the space of the simulation in another tab';
+		                 yourself.
 	self beInPauseMode.
-
+	views := OrderedCollection new.
+	pages := IdentityDictionary new.
 	notebook := self newNotebook.
-
 	"A hack to overcome an issue with notebook pages that were added to an empty notebook not signalling the event when they are selected"
-	notebook addPage: (SpNotebookPage title: 'Empty' provider: [ self newLabel ]).
-
+	notebook addPage:
+		(SpNotebookPage title: 'Empty' provider: [ self newLabel ]).
 	"By default this page is disabled. It will be enabled when the simulation: setter is called"
 	self enabled: false.
-	
+
 	self simulation ifNotNil: [ self updateWithSimulation ]
 ]
 
@@ -263,6 +350,54 @@ CMSimulationRunnerPresenter >> initializeWindow: aWindowPresenter [
 		title: 'Simulation Runner';
 		initialExtent: 1000@600;
 		whenResizingDo: [ self fitDiagram ].
+]
+
+{ #category : 'views' }
+CMSimulationRunnerPresenter >> moveToTabs: aView [
+	"Show aView in a new tab, with its choices, and close its window. Answer the view in the tab"
+
+	| back |
+	back := self newViewObservedBy: aView observer.
+	self closeView: aView.
+	self addTab: back.
+	^ back
+]
+
+{ #category : 'views' }
+CMSimulationRunnerPresenter >> moveToWindow: aView [
+	"Show aView in a window of its own, with its choices. Answer the view in the window"
+
+	| moved |
+	moved := self newViewObservedBy: aView observer.
+	self closeView: aView.
+	views add: moved.
+	self updateTitles.
+	moved openInWindow.
+	^ moved
+]
+
+{ #category : 'views' }
+CMSimulationRunnerPresenter >> newView [
+	"Add a view in a new tab, showing every class with its default aspect"
+
+	^ self addViewObservedBy: CMObserver new
+]
+
+{ #category : 'views' }
+CMSimulationRunnerPresenter >> newViewObservedBy: anObserver [
+
+	^ (self instantiate: CMSpacePresenter on: anObserver)
+		  host: self;
+		  yourself
+]
+
+{ #category : 'views' }
+CMSimulationRunnerPresenter >> newViewWith: aSelector [
+	"Add a view in a new tab, showing the perspective that the model defines in its method aSelector"
+
+	^ self addViewObservedBy: (CMObserver new
+			   perspective: (self cormasModel perspectiveNamed: aSelector);
+			   yourself)
 ]
 
 { #category : 'initialization' }
@@ -372,19 +507,31 @@ CMSimulationRunnerPresenter >> updateDataTable [
 
 { #category : 'update presenters' }
 CMSimulationRunnerPresenter >> updateSelectedNotebookPage [
-	"Only update the page that is currently being displayed. This makes execution much faster because other pages (chart, space, data table) will not be updated when they are not displayed"
-	
+	"Only update the page that is currently being displayed, and the views in windows of their own. This makes execution much faster because other pages (charts, data table, other views) are not updated when they are not displayed"
+
+	views do: [ :each | each isInWindow ifTrue: [ each updateDiagram ] ].
 	notebook selectedPage ifNil: [ ^ self ].
-	
-	notebook selectedPage = spacePage ifTrue: [ self updateSpace ].
+	pages keysAndValuesDo: [ :view :page |
+		notebook selectedPage = page ifTrue: [ view updateDiagram ] ].
 	notebook selectedPage = dataPage ifTrue: [ self updateDataTable ].
 	notebook selectedPage = chartsPage ifTrue: [ self updateChart ]
 ]
 
-{ #category : 'update presenters' }
-CMSimulationRunnerPresenter >> updateSpace [
+{ #category : 'views' }
+CMSimulationRunnerPresenter >> updateTitles [
+	"Give each view its title, numbered when several views would have the same one"
 
-	spacePresenter updateDiagram
+	| counts |
+	counts := Bag new.
+	views do: [ :each |
+			| base |
+			base := each baseTitle.
+			counts add: base.
+			each title: ((counts occurrencesOf: base) = 1
+					 ifTrue: [ base ]
+					 ifFalse: [
+					 base , ' (' , (counts occurrencesOf: base) printString , ')' ]).
+			pages at: each ifPresent: [ :page | page title: each title ] ]
 ]
 
 { #category : 'initialization' }
@@ -400,4 +547,11 @@ CMSimulationRunnerPresenter >> updateWithSimulation [
     when: ValueChanged do: [ :ann |
         currentTimeStepLabel defer: [ self displayCurrentTimeStep ] ]
     for: self.  "Automatic unsubscription when the presenter is released"
+]
+
+{ #category : 'views' }
+CMSimulationRunnerPresenter >> views [
+	"Answer the views of the space of the simulation, in tabs or in windows of their own"
+
+	^ views
 ]

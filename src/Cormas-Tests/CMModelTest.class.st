@@ -18,6 +18,32 @@ CMModelTest >> sampleModelNameWithoutPrefix [
 	^ 'SampleModel'
 ]
 
+{ #category : 'tests - perspectives' }
+CMModelTest >> testAModelListsItsPerspectives [
+
+	self
+		assert: CMMockModel new perspectiveSelectors
+		equals: #( #perspectiveHiddenCows )
+]
+
+{ #category : 'tests - perspectives' }
+CMModelTest >> testAPerspectiveIsNamedAfterItsMethod [
+
+	| perspective |
+	perspective := CMMockModel new perspectiveNamed:
+		               #perspectiveHiddenCows.
+	self assert: perspective name equals: 'Hidden cows'.
+	self
+		assert: (perspective aspectFor: CMMockCow)
+		equals: #aspectInvisible:
+]
+
+{ #category : 'tests - perspectives' }
+CMModelTest >> testAPerspectiveMadeInAViewHasNoName [
+
+	self assert: CMPerspective new name isEmpty
+]
+
 { #category : 'tests-accessing-entities' }
 CMModelTest >> testAgents [
 
@@ -27,6 +53,18 @@ CMModelTest >> testAgents [
 	
 	agents do: [ :agent |
 		self assert: (agent isKindOf: CMMockAnimal) ]
+]
+
+{ #category : 'tests - perspectives' }
+CMModelTest >> testAskingForAPerspectiveThatDoesNotExistRaisesAnErrorListingThePerspectives [
+
+	| error |
+	error := [ CMMockModel new perspectiveNamed: #perspectiveCows ]
+		         on: Error
+		         do: [ :each | each ].
+	self assert: (error messageText includesSubstring: 'perspectiveCows').
+	self assert:
+		(error messageText includesSubstring: 'perspectiveHiddenCows')
 ]
 
 { #category : 'tests' }
