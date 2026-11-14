@@ -144,25 +144,11 @@ CMLookTest >> testColorShadeClampsValuesOutsideTheRange [
 		forValue: 25
 		from: 0
 		to: 20.
-	self assert: look color equals: Color green
+	self assert: look color equals: Color black
 ]
 
 { #category : 'tests - helpers' }
-CMLookTest >> testColorShadeIsInBetweenForAValueInBetween [
-
-	| look |
-	look := CMCellLook new.
-	look
-		colorShadeOf: Color green
-		forValue: 10
-		from: 0
-		to: 20.
-	self deny: look color equals: Color white.
-	self deny: look color equals: Color green
-]
-
-{ #category : 'tests - helpers' }
-CMLookTest >> testColorShadeIsTheColorAtTheMaximum [
+CMLookTest >> testColorShadeIsBlackAtTheMaximum [
 
 	| look |
 	look := CMCellLook new.
@@ -171,7 +157,27 @@ CMLookTest >> testColorShadeIsTheColorAtTheMaximum [
 		forValue: 20
 		from: 0
 		to: 20.
-	self assert: look color equals: Color green
+	self assert: look color equals: Color black
+]
+
+{ #category : 'tests - helpers' }
+CMLookTest >> testColorShadeIsLighterBelowTheMiddleAndDarkerAbove [
+
+	| look light dark |
+	look := CMCellLook new.
+	look
+		colorShadeOf: Color green
+		forValue: 5
+		from: 0
+		to: 20.
+	light := look color.
+	look
+		colorShadeOf: Color green
+		forValue: 15
+		from: 0
+		to: 20.
+	dark := look color.
+	self assert: light brightness > dark brightness
 ]
 
 { #category : 'tests - helpers' }
@@ -188,7 +194,7 @@ CMLookTest >> testColorShadeIsWhiteAtTheMinimum [
 ]
 
 { #category : 'tests - helpers' }
-CMLookTest >> testColorShadeOfAnEmptyRangeIsTheColor [
+CMLookTest >> testColorShadeOfAnEmptyRangeIsBlack [
 
 	| look |
 	look := CMCellLook new.
@@ -197,7 +203,30 @@ CMLookTest >> testColorShadeOfAnEmptyRangeIsTheColor [
 		forValue: 5
 		from: 5
 		to: 5.
-	self assert: look color equals: Color green
+	self assert: look color equals: Color black
+]
+
+{ #category : 'tests - helpers' }
+CMLookTest >> testColorShadeQuicklyReachesTheColorThenDarkens [
+
+	| look early middle |
+	look := CMCellLook new.
+	look
+		colorShadeOf: Color green
+		forValue: 2
+		from: 0
+		to: 20.
+	early := look color.
+	look
+		colorShadeOf: Color green
+		forValue: 10
+		from: 0
+		to: 20.
+	middle := look color.
+	self assert: early saturation > 0.6.
+	self assert: early brightness > 0.85.
+	self assert: (middle brightness closeTo: 0.5 precision: 0.01).
+	self assert: (middle hue closeTo: Color green hue precision: 1)
 ]
 
 { #category : 'tests - defaults' }

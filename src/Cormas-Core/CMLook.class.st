@@ -93,11 +93,14 @@ CMLook >> colorGroupedBy: anObject [
 
 { #category : 'helpers' }
 CMLook >> colorShadeOf: aColor forValue: aNumber from: minimum to: maximum [
-	"Use a shade of aColor that goes from white at the minimum to aColor itself at the maximum. Values outside the range are clamped"
+	"Use a shade of aColor that is white at the minimum, quickly becomes aColor itself, and then grows darker until it is black at the maximum. Values outside the range are clamped"
 
-	color := Color white
-		         interpolateTo: aColor
-		         at: (self fractionOf: aNumber from: minimum to: maximum)
+	| lightness |
+	lightness := 1 - (self fractionOf: aNumber from: minimum to: maximum).
+	color := Color
+		         h: aColor hue
+		         s: aColor saturation * (1 - (lightness raisedTo: 10))
+		         v: aColor brightness * lightness
 ]
 
 { #category : 'helpers' }
