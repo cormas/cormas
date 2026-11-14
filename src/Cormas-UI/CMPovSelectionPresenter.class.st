@@ -3,7 +3,8 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'povTree',
-		'whenChangedBlock'
+		'whenChangedBlock',
+		'observer'
 	],
 	#category : 'Cormas-UI-Simulation',
 	#package : 'Cormas-UI',
@@ -38,40 +39,43 @@ CMPovSelectionPresenter >> defaultLayout [
 CMPovSelectionPresenter >> initializePresenters [
 
 	whenChangedBlock := [ "do nothing" ].
+	observer := CMObserver new.
 	povTree := self newTreeTable.
-	
+
 	povTree
 		hideColumnHeaders;
 		addColumn: (SpCompositeTableColumn new
-			addColumn:
-				(SpImageTableColumn
-					evaluated: [ :each |
-						each isClass
-							ifTrue: [ self iconNamed: #class ]
-							ifFalse: [ each key activePovSelector = each value
-								ifTrue: [ self iconNamed: #smallOk ]
-								ifFalse: [ self iconNamed: #bla ] ] ])
-					beNotExpandable;
-			addColumn:
-				(SpStringTableColumn
-					evaluated: [ :each |
-						each isClass
-							ifTrue: [ each name ]
-							ifFalse: [ each value ] ]);
-					yourself);
+				 addColumn: (SpImageTableColumn evaluated: [ :each |
+								  each isClass
+									  ifTrue: [ self iconNamed: #class ]
+									  ifFalse: [
+											  (observer perspective aspectFor: each key) = each value
+												  ifTrue: [ self iconNamed: #smallOk ]
+												  ifFalse: [ self iconNamed: #bla ] ] ]) beNotExpandable;
+				 addColumn: (SpStringTableColumn evaluated: [ :each |
+								  each isClass
+									  ifTrue: [ each name ]
+									  ifFalse: [ each value ] ]);
+				 yourself);
 		children: [ :item |
-			item isClass
-				ifTrue: [ (item availablePov collect: [ :each | item -> each ]), item subclasses ] 
-				ifFalse: [ OrderedCollection new ] ];
+				item isClass
+					ifTrue: [
+							(item aspectSelectors collect: [ :each | item -> each ])
+							, item subclasses ]
+					ifFalse: [ OrderedCollection new ] ];
 		whenSelectedItemChangedDo: [ :item |
-			(item isNil or: [ item isClass ]) ifFalse: [ 
-				item key activePovSelector: item value.
-				item key allSubclasses do: [ :subclass | subclass activePovSelector: item value ].
-				self showPovs.
-				whenChangedBlock value ] ].
-		
+				(item isNil or: [ item isClass ]) ifFalse: [
+						observer perspective show: item key as: item value.
+						self showPovs.
+						whenChangedBlock value ] ].
+
 	self showPovs
-	
+]
+
+{ #category : 'accessing' }
+CMPovSelectionPresenter >> observer: anObserver [
+
+	observer := anObserver
 ]
 
 { #category : 'as yet unclassified' }

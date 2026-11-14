@@ -116,8 +116,8 @@ CMBlAggregateShapeElement >> drawOutlineOn: aeCanvas [
 { #category : 'updating' }
 CMBlAggregateShapeElement >> refresh [
 
-	| pov |
-	pov := aggregate activePov.
+	| look |
+	look := observer lookOf: aggregate.
 	polygons := aggregate elementaryComponents collect: [ :each |
 		            self verticesOfCell: each ].
 	sides := self sidesOfOnlyOneCell.
@@ -125,14 +125,14 @@ CMBlAggregateShapeElement >> refresh [
 		extent: ((polygons flatCollect: [ :each | each ])
 				 inject: 0 @ 0
 				 into: [ :corner :each | corner max: each ]);
-		background: (pov hasColor
-				 ifTrue: [ pov color ]
+		background: (look isVisible
+				 ifTrue: [ look color ]
 				 ifFalse: [ Color transparent ]);
-		border: (pov hasBorder
+		border: ((look isVisible and: [ look borderThickness > 0 ])
 				 ifTrue: [
 						 BlBorder
-							 paint: pov borderColor
-							 width: pov outlineWidth * self cellSize ]
+							 paint: look borderColor
+							 width: look borderThickness * self cellSize ]
 				 ifFalse: [ BlBorder empty ]);
 		invalidate
 ]

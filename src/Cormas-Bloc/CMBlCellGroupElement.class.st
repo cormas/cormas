@@ -54,7 +54,9 @@ CMBlCellGroupElement >> rebuildCellElements [
 	| positions corners |
 	self removeChildren: cellElements.
 	cellElements := self cells asArray collect: [ :each |
-		                CMBlCellElement withoutOccupantsFor: each ].
+		                CMBlCellElement
+			                withoutOccupantsFor: each
+			                observedBy: observer ].
 	cellElements ifEmpty: [ ^ self extent: 0 @ 0 ].
 
 	positions := cellElements collect: [ :each |

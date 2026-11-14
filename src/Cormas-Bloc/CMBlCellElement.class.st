@@ -51,9 +51,10 @@ CMBlCellElement class >> exampleCellWithCow [
 ]
 
 { #category : 'instance creation' }
-CMBlCellElement class >> withoutOccupantsFor: aCell [
+CMBlCellElement class >> withoutOccupantsFor: aCell observedBy: anObserver [
 
 	^ self new
+		  observer: anObserver;
 		  beWithoutOccupants;
 		  setUpFor: aCell;
 		  yourself
@@ -88,16 +89,21 @@ CMBlCellElement >> initialize [
 { #category : 'updating' }
 CMBlCellElement >> refresh [
 
-	| pov extent |
-	pov := cell activePov.
+	| look extent |
+	look := observer lookOf: cell.
 	extent := self cellExtentOf: cell.
-	self
-		background:
-			(self backgroundOfPov: pov in: cell spaceModel extent: extent);
-		border:
-			(BlBorder
-				 paint: pov borderColor
-				 width: pov borderWidth * extent max).
+	look isVisible
+		ifTrue: [
+				self
+					background:
+						(self backgroundOfLook: look in: cell spaceModel extent: extent);
+					border: (BlBorder
+							 paint: look borderColor
+							 width: look borderThickness * extent max) ]
+		ifFalse: [
+				self
+					background: Color transparent;
+					border: BlBorder empty ].
 	showsOccupants ifTrue: [ self refreshOccupants ]
 ]
 
@@ -108,7 +114,7 @@ CMBlCellElement >> refreshOccupants [
 	extent := self cellExtentOf: cell.
 	self removeChildren: agentElements.
 	agentElements := cell allOccupants collect: [ :agent |
-			                 (CMBlAgentElement for: agent)
+			                 (CMBlAgentElement for: agent observedBy: observer)
 				                 centerAt: agent positionInCell * extent;
 				                 yourself ].
 	self addChildren: agentElements

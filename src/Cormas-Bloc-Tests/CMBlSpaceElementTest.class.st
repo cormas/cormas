@@ -22,10 +22,10 @@ Class {
 }
 
 { #category : 'private' }
-CMBlSpaceElementTest >> aggregateOf: someCells pov: aPointOfView [
+CMBlSpaceElementTest >> aggregateOf: someCells aspect: aBlock [
 
 	^ (model createAggregate: CMMockAggregate from: someCells)
-		  pov: aPointOfView;
+		  aspect: aBlock;
 		  yourself
 ]
 
@@ -45,12 +45,15 @@ CMBlSpaceElementTest >> assertCell2x3OfGrid: aNeighbourhood hasCenter: aCenter a
 		equals: '000000'
 ]
 
-{ #category : 'private' }
+{ #category : 'running' }
 CMBlSpaceElementTest >> roadFrom: anEntity to: anotherEntity color: aColor [
 	"A road thick enough to look at, 8 pixels wide"
 
 	^ (model newEntity: CMMockRoad from: anEntity to: anotherEntity)
-		  pov: (CMPointOfView color: aColor size: 0.25);
+		  aspect: [ :look |
+				  look
+					  color: aColor;
+					  thickness: 0.25 ];
 		  yourself
 ]
 
@@ -124,7 +127,7 @@ CMBlSpaceElementTest >> testAgentsStayOnTopOfAggregates [
 	| element |
 	self gridWithNeighbourhood: 4.
 	self newCowOn: (model cellAt: 2 at: 3).
-	self aggregateOf: model cells pov: (CMPointOfView color: Color blue).
+	self aggregateOf: model cells aspect: [ :look | look color: Color blue ].
 
 	element := CMBlSpaceElement for: model.
 
@@ -149,10 +152,10 @@ CMBlSpaceElementTest >> testAggregateCreatedLastIsOnTop [
 
 	| element |
 	self gridWithNeighbourhood: 4.
-	self aggregateOf: model cells pov: (CMPointOfView color: Color blue).
+	self aggregateOf: model cells aspect: [ :look | look color: Color blue ].
 	self
 		aggregateOf: { (model cellAt: 2 at: 2) }
-		pov: (CMPointOfView color: Color green).
+		aspect: [ :look | look color: Color green ].
 
 	element := CMBlSpaceElement for: model.
 
@@ -169,8 +172,8 @@ CMBlSpaceElementTest >> testAggregateOfAggregatesIsDrawn [
 	self gridWithNeighbourhood: 4.
 	inner := self
 		         aggregateOf: { (model cellAt: 2 at: 2) }
-		         pov: CMPointOfView new.
-	self aggregateOf: { inner } pov: (CMPointOfView color: Color blue).
+		         aspect: [ :look | ].
+	self aggregateOf: { inner } aspect: [ :look | look color: Color blue ].
 
 	element := CMBlSpaceElement for: model.
 
@@ -185,14 +188,16 @@ CMBlSpaceElementTest >> testAggregateOfAnyClassIsDrawn [
 	aggregate := model
 		             createAggregate: CMSpatialEntityAggregate
 		             from: { (model cellAt: 2 at: 2) }.
-
-	[
-		CMSpatialEntityAggregate activePovSelector: #povId.
-		element := CMBlSpaceElement for: model.
-		self
-			assert: (self hexColorIn: element at: 48 @ 48)
-			equals: aggregate povId color asHexString ] ensure: [
-		CMSpatialEntityAggregate resetActivePovSelector ]
+	element := CMBlSpaceElement for: model.
+	element observer perspective
+		show: CMSpatialEntityAggregate
+		as: #aspectId:.
+	element update.
+	self
+		assert: (self hexColorIn: element at: 48 @ 48)
+		equals: (CMAggregateLook new
+				 colorGroupedBy: aggregate id;
+				 color) asHexString
 ]
 
 { #category : 'tests' }
@@ -202,10 +207,10 @@ CMBlSpaceElementTest >> testAggregateReleasedByAMergeIsNotDrawn [
 	self gridWithNeighbourhood: 4.
 	kept := self
 		        aggregateOf: { (model cellAt: 1 at: 1) }
-		        pov: (CMPointOfView color: Color blue).
+		        aspect: [ :look | look color: Color blue ].
 	merged := self
 		          aggregateOf: { (model cellAt: 2 at: 2) }
-		          pov: (CMPointOfView color: Color green).
+		          aspect: [ :look | look color: Color green ].
 	kept mergeWith: merged.
 
 	element := CMBlSpaceElement for: model.
@@ -214,19 +219,17 @@ CMBlSpaceElementTest >> testAggregateReleasedByAMergeIsNotDrawn [
 ]
 
 { #category : 'tests' }
-CMBlSpaceElementTest >> testAggregateWithDefaultPovDrawsNothing [
+CMBlSpaceElementTest >> testAggregateWithTheDefaultLookShowsItsBorderOverItsCells [
 
-	| element |
+	| element form |
 	self gridWithNeighbourhood: 4.
 	model
 		createAggregate: CMSpatialEntityAggregate
 		from: { (model cellAt: 2 at: 2) }.
-
 	element := CMBlSpaceElement for: model.
-
-	self
-		assert: ((self formOf: element) colorAt: 48 @ 48)
-		equals: Color black
+	form := self formOf: element.
+	self assert: (form colorAt: 48 @ 48) equals: Color black.
+	self assert: (form colorAt: 48 @ 32) brightness > 0.2
 ]
 
 { #category : 'tests' }
@@ -236,13 +239,9 @@ CMBlSpaceElementTest >> testAggregateWithoutAColorShowsItsCells [
 	self gridWithNeighbourhood: 4.
 	self
 		aggregateOf: { (model cellAt: 2 at: 2) }
-		pov: (CMPointOfView new
-				 borderColor: Color blue;
-				 yourself).
-
+		aspect: [ :look | look borderColor: Color blue ].
 	element := CMBlSpaceElement for: model.
 	form := self formOf: element.
-
 	self assert: (form colorAt: 48 @ 48) equals: Color black.
 	self assert: (form colorAt: 48 @ 32) blue > 0.9
 ]
@@ -331,7 +330,7 @@ CMBlSpaceElementTest >> testLinkIsDrawnOnTopOfAggregates [
 
 	| element |
 	self gridWithNeighbourhood: 4.
-	self aggregateOf: model cells pov: (CMPointOfView color: Color green).
+	self aggregateOf: model cells aspect: [ :look | look color: Color green ].
 	self
 		roadFrom: (model cellAt: 2 at: 2)
 		to: (model cellAt: 2 at: 3)
@@ -361,25 +360,27 @@ CMBlSpaceElementTest >> testLinkIsDrawnOnTopOfTheCells [
 	self assert: (self hexColorIn: element at: 16 @ 16) equals: '000000'
 ]
 
-{ #category : 'tests - links' }
+{ #category : 'tests' }
 CMBlSpaceElementTest >> testLinkOfAnyClassIsDrawn [
 	"The default line is black, so it needs a white background to be seen"
 
 	| element |
 	self gridWithNeighbourhood: 4.
-	self aggregateOf: model cells pov: (CMPointOfView color: Color white).
+	self
+		aggregateOf: model cells
+		aspect: [ :look | look color: Color white ].
 	(model
 		 newEntity: CMMockHighway
 		 from: (model cellAt: 2 at: 2)
-		 to: (model cellAt: 2 at: 3)) pov:
-		(CMPointOfView color: Color blue size: 0.25).
+		 to: (model cellAt: 2 at: 3)) aspect: [ :look |
+			look
+				color: Color blue;
+				thickness: 0.25 ].
 	model
 		newEntity: CMMockFriendship
 		from: (model cellAt: 3 at: 2)
 		to: (model cellAt: 3 at: 3).
-
 	element := CMBlSpaceElement for: model.
-
 	self assert: (self hexColorIn: element at: 52 @ 48) equals: '0000FF'.
 	self deny: (self hexColorIn: element at: 64 @ 80) equals: 'FFFFFF'.
 	self assert: (self hexColorIn: element at: 64 @ 90) equals: 'FFFFFF'
@@ -407,7 +408,7 @@ CMBlSpaceElementTest >> testLinkToADeadAggregateIsDrawnUntilItIsRemoved [
 	self assert: (self hexColorIn: element at: 52 @ 48) equals: '000000'
 ]
 
-{ #category : 'tests - links' }
+{ #category : 'tests' }
 CMBlSpaceElementTest >> testLinkToAnInvisibleEntityIsDrawn [
 
 	| goat element |
@@ -416,12 +417,10 @@ CMBlSpaceElementTest >> testLinkToAnInvisibleEntityIsDrawn [
 		        newEntity: CMMockGoat
 		        locatedAt: (model cellAt: 2 at: 2).
 	self roadFrom: goat to: (model cellAt: 2 at: 3) color: Color blue.
-	CMMockGoat activePovSelector: #povInvisible.
-
-	[
-		element := CMBlSpaceElement for: model.
-		self assert: (self hexColorIn: element at: 48 @ 48) equals: '0000FF' ]
-		ensure: [ CMMockGoat resetActivePovSelector ]
+	element := CMBlSpaceElement for: model.
+	element observer perspective show: CMMockGoat as: #aspectInvisible:.
+	element update.
+	self assert: (self hexColorIn: element at: 48 @ 48) equals: '0000FF'
 ]
 
 { #category : 'tests - links' }
@@ -439,7 +438,7 @@ CMBlSpaceElementTest >> testLinkWithAnEndOffTheGridIsNotDrawn [
 	self assert: (self hexColorIn: element at: 48 @ 48) equals: '000000'
 ]
 
-{ #category : 'tests - links' }
+{ #category : 'tests' }
 CMBlSpaceElementTest >> testLinksMeetingAtAnAngleHaveNoGapAtTheCorner [
 	"Two lines 8 pixels wide meet at 80@48. The outside of the corner must be filled and rounded"
 
@@ -460,10 +459,11 @@ CMBlSpaceElementTest >> testLinksMeetingAtAnAngleHaveNoGapAtTheCorner [
 		second } do: [ :each |
 			each
 				isOneWay: false;
-				pov: (CMPointOfView color: Color red size: 0.25) ].
-
+				aspect: [ :look |
+						look
+							color: Color red;
+							thickness: 0.25 ] ].
 	element := CMBlSpaceElement for: model.
-
 	self
 		assert: (self hexColorIn: element at: 82 @ 46)
 		equals: Color red asHexString.
@@ -473,13 +473,46 @@ CMBlSpaceElementTest >> testLinksMeetingAtAnAngleHaveNoGapAtTheCorner [
 ]
 
 { #category : 'tests' }
+CMBlSpaceElementTest >> testNetworkDrawsNothingByDefault [
+
+	| street element |
+	self gridWithNeighbourhood: 4.
+	street := model newEntity: CMMockStreet.
+	street add: (self
+			 roadFrom: (model cellAt: 2 at: 2)
+			 to: (model cellAt: 2 at: 3)
+			 color: Color blue).
+	element := CMBlSpaceElement for: model.
+	self assert: (self hexColorIn: element at: 52 @ 48) equals: '0000FF'
+]
+
+{ #category : 'tests' }
+CMBlSpaceElementTest >> testNetworkHighlightsItsLinks [
+
+	| street element |
+	self gridWithNeighbourhood: 4.
+	street := model newEntity: CMMockStreet.
+	street add: (self
+			 roadFrom: (model cellAt: 2 at: 2)
+			 to: (model cellAt: 2 at: 3)
+			 color: Color blue).
+	street aspect: [ :look |
+			look
+				color: Color red;
+				thickness: 0.5 ].
+	element := CMBlSpaceElement for: model.
+	self assert: (self hexColorIn: element at: 52 @ 48) equals: 'FF0000'.
+	self assert: (self hexColorIn: element at: 52 @ 42) equals: 'FF0000'
+]
+
+{ #category : 'tests' }
 CMBlSpaceElementTest >> testOpaqueAggregateHidesItsCells [
 
 	| element |
 	self gridWithNeighbourhood: 4.
 	self
 		aggregateOf: { (model cellAt: 2 at: 2) }
-		pov: (CMPointOfView color: Color blue).
+		aspect: [ :look | look color: Color blue ].
 
 	element := CMBlSpaceElement for: model.
 
@@ -495,12 +528,32 @@ CMBlSpaceElementTest >> testTranslucentAggregateTintsItsCells [
 	self gridWithNeighbourhood: 4.
 	self
 		aggregateOf: { (model cellAt: 2 at: 2) }
-		pov: (CMPointOfView color: (Color blue alpha: 0.5)).
+		aspect: [ :look | look color: (Color blue alpha: 0.5) ].
 
 	element := CMBlSpaceElement for: model.
 	blue := ((self formOf: element) colorAt: 48 @ 48) blue.
 
 	self assert: (blue closeTo: 0.5 precision: 0.02)
+]
+
+{ #category : 'tests' }
+CMBlSpaceElementTest >> testTranslucentNetworkTintsItsLinks [
+
+	| street element color |
+	self gridWithNeighbourhood: 4.
+	street := model newEntity: CMMockStreet.
+	street add: (self
+			 roadFrom: (model cellAt: 2 at: 2)
+			 to: (model cellAt: 2 at: 3)
+			 color: Color blue).
+	street aspect: [ :look |
+			look
+				color: (Color red alpha: 0.5);
+				thickness: 0.25 ].
+	element := CMBlSpaceElement for: model.
+	color := (self formOf: element) colorAt: 52 @ 48.
+	self assert: color red > 0.3.
+	self assert: color blue > 0.3
 ]
 
 { #category : 'tests - links' }
@@ -529,7 +582,7 @@ CMBlSpaceElementTest >> testUpdateDoesNotDrawAnAggregateTwice [
 	self gridWithNeighbourhood: 4.
 	self
 		aggregateOf: { (model cellAt: 2 at: 2) }
-		pov: (CMPointOfView color: (Color blue alpha: 0.5)).
+		aspect: [ :look | look color: (Color blue alpha: 0.5) ].
 	element := CMBlSpaceElement for: model.
 
 	element update.
@@ -538,8 +591,8 @@ CMBlSpaceElementTest >> testUpdateDoesNotDrawAnAggregateTwice [
 	self assert: (blue closeTo: 0.5 precision: 0.02)
 ]
 
-{ #category : 'tests - links' }
-CMBlSpaceElementTest >> testUpdateFollowsAChangeOfPovOfALink [
+{ #category : 'tests' }
+CMBlSpaceElementTest >> testUpdateFollowsAChangeOfLookOfALink [
 
 	| road element |
 	self gridWithNeighbourhood: 4.
@@ -548,10 +601,11 @@ CMBlSpaceElementTest >> testUpdateFollowsAChangeOfPovOfALink [
 		        to: (model cellAt: 2 at: 3)
 		        color: Color blue.
 	element := CMBlSpaceElement for: model.
-
-	road pov: (CMPointOfView color: Color green size: 0.25).
+	road aspect: [ :look |
+			look
+				color: Color green;
+				thickness: 0.25 ].
 	element update.
-
 	self
 		assert: (self hexColorIn: element at: 52 @ 48)
 		equals: Color green asHexString
@@ -564,10 +618,10 @@ CMBlSpaceElementTest >> testUpdateFollowsAMerge [
 	self gridWithNeighbourhood: 4.
 	kept := self
 		        aggregateOf: { (model cellAt: 1 at: 1) }
-		        pov: (CMPointOfView color: Color blue).
+		        aspect: [ :look | look color: Color blue ].
 	merged := self
 		          aggregateOf: { (model cellAt: 2 at: 2) }
-		          pov: (CMPointOfView color: Color green).
+		          aspect: [ :look | look color: Color green ].
 	element := CMBlSpaceElement for: model.
 
 	kept mergeWith: merged.
@@ -632,42 +686,18 @@ CMBlSpaceElementTest >> testUpdateFollowsAnEndLeavingAndComingBackToTheGrid [
 ]
 
 { #category : 'tests' }
-CMBlSpaceElementTest >> testUpdateFollowsTheActivePov [
+CMBlSpaceElementTest >> testUpdateFollowsTheAspectChosenForACellClass [
 
 	| element |
 	self gridWithNeighbourhood: 4.
 	element := CMBlSpaceElement for: model.
-
-	[
-		CMMockCell activePovSelector: #povInvisible.
-		element update.
-
-		self assert: (self isTransparentIn: element at: 80 @ 48) ] ensure: [
-		CMMockCell resetActivePovSelector ]
+	element observer perspective show: CMMockCell as: #aspectInvisible:.
+	element update.
+	self assert: (self isTransparentIn: element at: 80 @ 48)
 ]
 
 { #category : 'tests' }
-CMBlSpaceElementTest >> testUpdateFollowsTheActivePovOfAnAggregate [
-
-	| element |
-	self gridWithNeighbourhood: 4.
-	self
-		aggregateOf: { (model cellAt: 2 at: 2) }
-		pov: (CMPointOfView color: Color blue).
-	element := CMBlSpaceElement for: model.
-
-	[
-		CMMockAggregate activePovSelector: #povInvisible.
-		element update.
-
-		self
-			assert: ((self formOf: element) colorAt: 48 @ 48)
-			equals: Color black ] ensure: [
-		CMMockAggregate resetActivePovSelector ]
-]
-
-{ #category : 'tests - links' }
-CMBlSpaceElementTest >> testUpdateFollowsTheSelectedPovOfALinkClass [
+CMBlSpaceElementTest >> testUpdateFollowsTheAspectChosenForALinkClass [
 
 	| element |
 	self gridWithNeighbourhood: 4.
@@ -677,12 +707,27 @@ CMBlSpaceElementTest >> testUpdateFollowsTheSelectedPovOfALinkClass [
 		color: Color blue.
 	element := CMBlSpaceElement for: model.
 	self assert: (self hexColorIn: element at: 52 @ 48) equals: '0000FF'.
+	element observer perspective show: CMMockRoad as: #aspectInvisible:.
+	element update.
+	self assert: (self hexColorIn: element at: 52 @ 48) equals: '000000'
+]
 
-	CMMockRoad activePovSelector: #povInvisible.
-	[
-		element update.
-		self assert: (self hexColorIn: element at: 52 @ 48) equals: '000000' ]
-		ensure: [ CMMockRoad resetActivePovSelector ]
+{ #category : 'tests' }
+CMBlSpaceElementTest >> testUpdateFollowsTheAspectChosenForAnAggregateClass [
+
+	| element |
+	self gridWithNeighbourhood: 4.
+	self
+		aggregateOf: { (model cellAt: 2 at: 2) }
+		aspect: [ :look | look color: Color blue ].
+	element := CMBlSpaceElement for: model.
+	element observer perspective
+		show: CMMockAggregate
+		as: #aspectInvisible:.
+	element update.
+	self
+		assert: ((self formOf: element) colorAt: 48 @ 48)
+		equals: Color black
 ]
 
 { #category : 'tests' }
@@ -691,7 +736,7 @@ CMBlSpaceElementTest >> testUpdateKeepsAgentsOnTopOfAggregates [
 	| element |
 	self gridWithNeighbourhood: 4.
 	self newCowOn: (model cellAt: 2 at: 3).
-	self aggregateOf: model cells pov: (CMPointOfView color: Color blue).
+	self aggregateOf: model cells aspect: [ :look | look color: Color blue ].
 	element := CMBlSpaceElement for: model.
 
 	element update.
@@ -737,7 +782,7 @@ CMBlSpaceElementTest >> testUpdateRemovesReleasedAggregates [
 	self gridWithNeighbourhood: 4.
 	self
 		aggregateOf: { (model cellAt: 2 at: 2) }
-		pov: (CMPointOfView color: Color blue).
+		aspect: [ :look | look color: Color blue ].
 	element := CMBlSpaceElement for: model.
 
 	model releaseAggregateType: CMMockAggregate.
@@ -755,7 +800,7 @@ CMBlSpaceElementTest >> testUpdateShowsAggregateThatGrew [
 	self gridWithNeighbourhood: 4.
 	aggregate := self
 		             aggregateOf: { (model cellAt: 1 at: 1) }
-		             pov: (CMPointOfView color: Color blue).
+		             aspect: [ :look | look color: Color blue ].
 	element := CMBlSpaceElement for: model.
 
 	aggregate addComponent: (model cellAt: 2 at: 2).
@@ -801,7 +846,7 @@ CMBlSpaceElementTest >> testUpdateShowsNewAggregate [
 
 	self
 		aggregateOf: { (model cellAt: 2 at: 2) }
-		pov: (CMPointOfView color: Color blue).
+		aspect: [ :look | look color: Color blue ].
 	element update.
 
 	self assert: (self hexColorIn: element at: 48 @ 48) equals: '0000FF'
@@ -837,18 +882,16 @@ CMBlSpaceElementTest >> testUpdateShowsNewLink [
 ]
 
 { #category : 'tests' }
-CMBlSpaceElementTest >> testUpdateShowsNewPovOfAnAggregate [
+CMBlSpaceElementTest >> testUpdateShowsNewLookOfAnAggregate [
 
 	| aggregate element |
 	self gridWithNeighbourhood: 4.
 	aggregate := self
 		             aggregateOf: { (model cellAt: 2 at: 2) }
-		             pov: (CMPointOfView color: Color blue).
+		             aspect: [ :look | look color: Color blue ].
 	element := CMBlSpaceElement for: model.
-
-	aggregate pov: (CMPointOfView color: Color green).
+	aggregate aspect: [ :look | look color: Color green ].
 	element update.
-
 	self
 		assert: (self hexColorIn: element at: 48 @ 48)
 		equals: Color green asHexString

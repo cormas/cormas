@@ -68,8 +68,8 @@ CMBlInteractionTest >> click: aMouseButton at: aPoint [
 { #category : 'running' }
 CMBlInteractionTest >> coverGridWithAnAggregate [
 
-	(model createAggregate: CMMockAggregate from: model cells) pov:
-		(CMPointOfView color: Color blue).
+	(model createAggregate: CMMockAggregate from: model cells) aspect: [
+		:look | look color: Color blue ].
 	element update.
 	space settle
 ]
@@ -158,13 +158,16 @@ CMBlInteractionTest >> showDiagonalRoad [
 		  to: (model cellAt: 3 at: 4)
 ]
 
-{ #category : 'private' }
+{ #category : 'running' }
 CMBlInteractionTest >> showRoadFrom: anEntity to: anotherEntity [
 	"A blue road thick enough to look at, 8 pixels wide"
 
 	| road |
 	road := (model newEntity: CMMockRoad from: anEntity to: anotherEntity)
-		        pov: (CMPointOfView color: Color blue size: 0.25);
+		        aspect: [ :look |
+				        look
+					        color: Color blue;
+					        thickness: 0.25 ];
 		        yourself.
 	element update.
 	space settle.
@@ -596,15 +599,15 @@ CMBlInteractionTest >> testRightClickOnAnArrowheadCallsTheBlockWithTheLink [
 	self assert: (self entityRightClickedAt: 94 @ 40) equals: road
 ]
 
-{ #category : 'tests - links' }
+{ #category : 'tests' }
 CMBlInteractionTest >> testRightClickOnAnInvisibleLineReachesTheCell [
 
 	| road |
 	self openGrid: 4.
 	road := self showDiagonalRoad.
-	road pov: road povInvisible.
-	(self lineElementOf: road) refresh.
-
+	road aspect: [ :look | look beInvisible ].
+	element update.
+	space settle.
 	self
 		assert: (self entityRightClickedAt: 72 @ 40)
 		equals: (model cellAt: 2 at: 3)

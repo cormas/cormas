@@ -5,17 +5,40 @@ Class {
 	#name : 'CMMockNetwork',
 	#superclass : 'CMNetwork',
 	#instVars : [
-		'customPov'
+		'customPov',
+		'customAspect'
 	],
 	#category : 'Cormas-Mocks',
 	#package : 'Cormas-Mocks'
 }
+
+{ #category : 'aspects' }
+CMMockNetwork >> aspect: aBlock [
+	"Each test gives a network the look it needs through a block that fills it, instead of a separate aspect method"
+
+	customAspect := aBlock
+]
+
+{ #category : 'aspects' }
+CMMockNetwork >> aspectDefault: look [
+
+	<aspect>
+	super aspectDefault: look.
+	customAspect value: look
+]
 
 { #category : 'actions' }
 CMMockNetwork >> clean [
 
 	<action>
 	
+]
+
+{ #category : 'aspects' }
+CMMockNetwork >> initialize [
+
+	super initialize.
+	customAspect := [ :look |  ]
 ]
 
 { #category : 'pov' }

@@ -131,7 +131,7 @@ BaselineOfCormas >> specForPackages: spec [
 		package: 'Cormas-UI-Tilesets';
 		package: 'Cormas-Bloc'
 		with: [ spec requires: #( 'Cormas-Core' 'Cormas-Mocks'
-				   'Bloc' ) ];
+				   'Cormas-UI-Tilesets' 'Bloc' ) ];
 		package: 'Cormas-Bloc-Spec'
 		with: [ spec requires: #( 'Cormas-Bloc' 'Cormas-UI-Commands' ) ];
 		package: 'Cormas-UI' with: [

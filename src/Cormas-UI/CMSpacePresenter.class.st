@@ -90,6 +90,7 @@ CMSpacePresenter >> initializeDiagram [
 	"Create the view of the space and the presenter that embeds it"
 
 	spaceBuilder := CMBlSpaceElement for: self cormasModel.
+	povSelection observer: spaceBuilder observer.
 	diagram := spaceBuilder asPresenter.
 	diagram owner: self.
 	self update

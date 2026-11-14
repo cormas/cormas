@@ -209,6 +209,13 @@ CMBlLinkElement >> link [
 	^ link
 ]
 
+{ #category : 'accessing' }
+CMBlLinkElement >> look [
+	"Answer the look I draw"
+
+	^ observer lookOf: link
+]
+
 { #category : 'updating' }
 CMBlLinkElement >> moveEnd: anEntity to: aPoint [
 	"Draw the end of the line at anEntity at a given position, before anEntity is there, as when it is being dragged"
@@ -231,34 +238,28 @@ CMBlLinkElement >> positionOfLocatedEntity: anEntity [
 { #category : 'updating' }
 CMBlLinkElement >> refresh [
 
-	| pov |
-	pov := link activePov.
-	self border: (BlBorder
-			 paint: (pov hasColor
-					  ifTrue: [ pov color ]
-					  ifFalse: [ Color black ])
-			 width: (pov hasSize
-					  ifTrue: [ pov size * self cellSize ]
-					  ifFalse: [ 1 ])).
-	(link ends allSatisfy: [ :each | each isOnGrid ])
-		ifTrue: [
-				startPoint := link from linkEndIn: self.
-				endPoint := link to linkEndIn: self.
-				self refreshLine ]
-		ifFalse: [
-				startPoint := nil.
-				endPoint := nil.
-				arrowhead := nil.
-				self
-					extent: 0 @ 0;
-					invalidate ]
+	| look |
+	look := self look.
+	(look isVisible and: [
+		 link ends allSatisfy: [ :each | each isOnGrid ] ]) ifFalse: [
+			startPoint := nil.
+			endPoint := nil.
+			arrowhead := nil.
+			^ self
+				  extent: 0 @ 0;
+				  invalidate ].
+	self border:
+		(BlBorder paint: look color width: look thickness * self cellSize).
+	startPoint := link from linkEndIn: self.
+	endPoint := link to linkEndIn: self.
+	self refreshLine
 ]
 
 { #category : 'updating' }
 CMBlLinkElement >> refreshLine [
 	"Work out what to draw from the ends of the line"
 
-	arrowhead := link isDirected ifTrue: [
+	arrowhead := self showsArrowhead ifTrue: [
 		             self arrowheadVerticesWithWidth: self border width ].
 	lineEnd := arrowhead
 		           ifNil: [ endPoint ]
@@ -273,6 +274,12 @@ CMBlLinkElement >> setUpFor: aLink [
 
 	link := aLink.
 	self refresh
+]
+
+{ #category : 'accessing' }
+CMBlLinkElement >> showsArrowhead [
+
+	^ self look hasArrowhead
 ]
 
 { #category : 'accessing' }

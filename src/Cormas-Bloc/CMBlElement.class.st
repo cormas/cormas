@@ -31,7 +31,11 @@ Class {
 	#superclass : 'BlElement',
 	#instVars : [
 		'leftClickBlock',
-		'rightClickBlock'
+		'rightClickBlock',
+		'observer'
+	],
+	#classInstVars : [
+		'composedTiles'
 	],
 	#category : 'Cormas-Bloc',
 	#package : 'Cormas-Bloc'
@@ -44,24 +48,56 @@ CMBlElement class >> cellSize [
 	^ 32
 ]
 
+{ #category : 'tiles' }
+CMBlElement class >> composedTiles [
+
+	^ composedTiles ifNil: [ composedTiles := Dictionary new ]
+]
+
 { #category : 'instance creation' }
 CMBlElement class >> for: anObject [
+	"Answer an element that shows anObject with the default aspects"
+
+	^ self for: anObject observedBy: CMObserver new
+]
+
+{ #category : 'instance creation' }
+CMBlElement class >> for: anObject observedBy: anObserver [
+	"Answer an element that shows anObject with the looks that anObserver fills"
 
 	^ self new
+		  observer: anObserver;
 		  setUpFor: anObject;
 		  yourself
 ]
 
+{ #category : 'tiles' }
+CMBlElement class >> tileOfLook: aLook [
+	"Answer the tile drawn for a look: its tile, with its overlays laid over it. Composing tiles is slow, so each combination is composed once"
+
+	^ self composedTiles
+		  at: {
+				  aLook tile.
+				  aLook overlays }
+		  ifAbsentPut: [
+				  aLook overlays
+					  inject: (CMTileset tileNamed: aLook tile)
+					  into: [ :tile :each |
+						  tile
+							  add: (CMTileset tileNamed: each key)
+							  scaledDownTo: each value ] ]
+]
+
 { #category : 'drawing' }
-CMBlElement >> backgroundOfPov: aPointOfView in: aSpaceModel extent: anExtent [
-	"Answer the color or the image with which a point of view fills an element of the given extent"
+CMBlElement >> backgroundOfLook: aLook in: aSpaceModel extent: anExtent [
+	"Answer the color or the image with which a look fills an element of the given extent"
 
-	aPointOfView isForImage ifFalse: [ ^ aPointOfView color ].
-
+	aLook hasTile ifFalse: [ ^ aLook color ].
 	^ BlBackground image: (self
 			   crop:
-				   ((self formOfTile: aPointOfView tile in: aSpaceModel)
-					    scaledToSize: anExtent max ceiling asPoint)
+				   ((self
+					     formOfTile: (self class tileOfLook: aLook)
+					     in: aSpaceModel) scaledToSize: anExtent max ceiling asPoint)
 			   toCenter: anExtent)
 ]
 
@@ -157,6 +193,18 @@ CMBlElement >> inSpaceDo: aBlock [
 CMBlElement >> neighbourhoodOf: aCell [
 
 	^ aCell spaceModel neighbourhoodConfiguration
+]
+
+{ #category : 'accessing' }
+CMBlElement >> observer [
+
+	^ observer
+]
+
+{ #category : 'accessing' }
+CMBlElement >> observer: anObserver [
+
+	observer := anObserver
 ]
 
 { #category : 'updating' }

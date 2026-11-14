@@ -9,6 +9,7 @@ Class {
 CMMockCow >> aspectDefault: look [
 
 	<aspect>
+	super aspectDefault: look.
 	look color: Color red
 ]
 

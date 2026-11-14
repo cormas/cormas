@@ -11,15 +11,26 @@ Class {
 }
 
 { #category : 'aspects' }
+CMMockCell >> aspectDefault: look [
+
+	<aspect>
+	self aspectState: look
+]
+
+{ #category : 'aspects' }
+CMMockCell >> aspectGraves: look [
+
+	<aspect>
+	state = #dead ifTrue: [ look tile: #grave ]
+]
+
+{ #category : 'aspects' }
 CMMockCell >> aspectState: look [
 
 	<aspect>
-	state = #dead
-		ifTrue: [
-				look
-					color: Color black;
-					tile: #grave ]
-		ifFalse: [ look color: Color white ]
+	look color: (state = #dead
+			 ifTrue: [ Color black ]
+			 ifFalse: [ Color white ])
 ]
 
 { #category : 'init' }

@@ -60,7 +60,9 @@ CMBlAggregateElement >> refresh [
 
 	shapeElement ifNotNil: [ self removeChild: shapeElement ].
 	super refresh.
-	shapeElement := (CMBlAggregateShapeElement for: aggregate)
+	shapeElement := (CMBlAggregateShapeElement
+		                 for: aggregate
+		                 observedBy: observer)
 		                position: gridOrigin negated;
 		                yourself.
 	self addChild: shapeElement

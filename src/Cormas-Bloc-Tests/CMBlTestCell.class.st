@@ -17,11 +17,33 @@ Class {
 	#name : 'CMBlTestCell',
 	#superclass : 'CMCell',
 	#instVars : [
-		'testPov'
+		'testPov',
+		'customAspect'
 	],
 	#category : 'Cormas-Bloc-Tests',
 	#package : 'Cormas-Bloc-Tests'
 }
+
+{ #category : 'aspects' }
+CMBlTestCell >> aspect: aBlock [
+	"Each test gives a cell the look it needs through a block that fills it"
+
+	customAspect := aBlock
+]
+
+{ #category : 'aspects' }
+CMBlTestCell >> aspectDefault: look [
+
+	<aspect>
+	customAspect value: look
+]
+
+{ #category : 'aspects' }
+CMBlTestCell >> initialize [
+
+	super initialize.
+	customAspect := [ :look |  ]
+]
 
 { #category : 'accessing' }
 CMBlTestCell >> pov [

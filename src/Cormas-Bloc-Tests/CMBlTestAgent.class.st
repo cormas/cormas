@@ -22,11 +22,33 @@ Class {
 	#name : 'CMBlTestAgent',
 	#superclass : 'CMAgent',
 	#instVars : [
-		'testPov'
+		'testPov',
+		'customAspect'
 	],
 	#category : 'Cormas-Bloc-Tests',
 	#package : 'Cormas-Bloc-Tests'
 }
+
+{ #category : 'aspects' }
+CMBlTestAgent >> aspect: aBlock [
+	"Each test gives an agent the look it needs through a block that fills it"
+
+	customAspect := aBlock
+]
+
+{ #category : 'aspects' }
+CMBlTestAgent >> aspectDefault: look [
+
+	<aspect>
+	customAspect value: look
+]
+
+{ #category : 'aspects' }
+CMBlTestAgent >> initialize [
+
+	super initialize.
+	customAspect := [ :look |  ]
+]
 
 { #category : 'accessing' }
 CMBlTestAgent >> pov [

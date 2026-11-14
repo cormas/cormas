@@ -27,14 +27,17 @@ CMBlAgentElementTest >> centerOf: anElement [
 	^ (self formOf: anElement) extent / 2
 ]
 
-{ #category : 'private' }
+{ #category : 'tests' }
 CMBlAgentElementTest >> elementWithShape: aSymbol [
 	"A cell-sized agent, not on any cell, so that its shape fills 32x32 pixels"
 
 	| agent |
 	agent := CMMockModel new newEntity: CMBlTestAgent.
-	agent testPov:
-		(CMPointOfView color: Color red shape: aSymbol size: 1).
+	agent aspect: [ :look |
+			look
+				color: Color red;
+				shape: aSymbol;
+				size: 1 ].
 	^ CMBlAgentElement for: agent
 ]
 
@@ -66,11 +69,12 @@ CMBlAgentElementTest >> testExtentIsProportionalToCellSize [
 
 	| agent element |
 	agent := CMMockModel new newEntity: CMBlTestAgent.
-	agent testPov:
-		(CMPointOfView color: Color red shape: #square size: 0.5).
-
+	agent aspect: [ :look |
+			look
+				color: Color red;
+				shape: #square;
+				size: 0.5 ].
 	element := CMBlAgentElement for: agent.
-
 	self assert: (self formOf: element) extent equals: 16 @ 16
 ]
 
@@ -150,18 +154,22 @@ CMBlAgentElementTest >> testUnknownShapeRaisesClearError [
 ]
 
 { #category : 'tests' }
-CMBlAgentElementTest >> testUpdateShowsNewPov [
+CMBlAgentElementTest >> testUpdateShowsNewLook [
 
 	| agent element |
 	agent := CMMockModel new newEntity: CMBlTestAgent.
-	agent testPov:
-		(CMPointOfView color: Color red shape: #square size: 1).
+	agent aspect: [ :look |
+			look
+				color: Color red;
+				shape: #square;
+				size: 1 ].
 	element := CMBlAgentElement for: agent.
-
-	agent testPov:
-		(CMPointOfView color: Color blue shape: #square size: 1).
+	agent aspect: [ :look |
+			look
+				color: Color blue;
+				shape: #square;
+				size: 1 ].
 	element update.
-
 	self assert: (self hexColorIn: element at: 16 @ 16) equals: '0000FF'
 ]
 
@@ -170,13 +178,17 @@ CMBlAgentElementTest >> testUpdateShowsNewShape [
 
 	| agent element |
 	agent := CMMockModel new newEntity: CMBlTestAgent.
-	agent testPov:
-		(CMPointOfView color: Color red shape: #square size: 1).
+	agent aspect: [ :look |
+			look
+				color: Color red;
+				shape: #square;
+				size: 1 ].
 	element := CMBlAgentElement for: agent.
-
-	agent testPov:
-		(CMPointOfView color: Color red shape: #circle size: 1).
+	agent aspect: [ :look |
+			look
+				color: Color red;
+				shape: #circle;
+				size: 1 ].
 	element update.
-
 	self assert: (self isTransparentIn: element at: 2 @ 2)
 ]

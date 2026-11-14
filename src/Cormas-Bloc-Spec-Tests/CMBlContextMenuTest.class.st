@@ -173,9 +173,8 @@ CMBlContextMenuTest >> testCellMenuIncludesHiddenAggregates [
 	| aggregate |
 	self gridWithNeighbourhood: 4.
 	aggregate := (self aggregateOf: { (model cellAt: 1 at: 1) })
-		             pov: CMPointOfView new;
+		             aspect: [ :look | look beInvisible ];
 		             yourself.
-
 	self assert: ((self namesIn: self menuOfCellAt1x1) includes:
 			 (self nameOfAggregate: aggregate))
 ]
@@ -258,14 +257,15 @@ CMBlContextMenuTest >> testChoosingRemoveRemovesTheLinkFromTheView [
 	cellA := model cellAt: 2 at: 2.
 	cellB := model cellAt: 2 at: 3.
 	road := (model newEntity: CMMockRoad from: cellA to: cellB)
-		        pov: (CMPointOfView color: Color blue size: 0.25);
+		        aspect: [ :look |
+				        look
+					        color: Color blue;
+					        thickness: 0.25 ];
 		        yourself.
 	element := CMBlSpaceElement for: model.
 	self assert: (self hexColorIn: element at: 52 @ 48) equals: '0000FF'.
-
 	item := self itemNamed: 'Remove' in: (element contextMenuFor: road).
 	item performMenuActionWith: nil.
-
 	self assert: (self hexColorIn: element at: 52 @ 48) equals: '000000'.
 	self assertEmpty: model links.
 	self assert: (model cells identityIncludes: cellA).

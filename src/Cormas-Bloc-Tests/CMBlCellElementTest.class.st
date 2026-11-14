@@ -206,10 +206,12 @@ CMBlCellElementTest >> testWithoutOccupantsShowsOnlyTheCell [
 	self gridWithNeighbourhood: 4.
 	cell := model cellAt: 1 at: 1.
 	self newCowOn: cell.
-
 	self
 		assert: (self
-				 hexColorIn: (CMBlCellElement withoutOccupantsFor: cell)
+				 hexColorIn:
+				 (CMBlCellElement
+					  withoutOccupantsFor: cell
+					  observedBy: CMObserver new)
 				 at: 16 @ 16)
 		equals: '000000'
 ]

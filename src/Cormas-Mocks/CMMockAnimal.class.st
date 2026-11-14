@@ -25,6 +25,13 @@ CMMockAnimal class >> initialEnergy: aNumber [
 ]
 
 { #category : 'aspects' }
+CMMockAnimal >> aspectDefault: look [
+
+	<aspect>
+	look size: 0.3 + (energy * 0.1)
+]
+
+{ #category : 'aspects' }
 CMMockAnimal >> aspectEnergy: look [
 
 	<aspect>

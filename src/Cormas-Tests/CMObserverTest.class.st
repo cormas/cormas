@@ -42,12 +42,8 @@ CMObserverTest >> testAClassListsItsOwnAndInheritedAspects [
 { #category : 'tests' }
 CMObserverTest >> testANewObserverShowsTheDefaultAspect [
 
-	| cell |
-	cell := CMMockCell new
-		        state: #dead;
-		        yourself.
 	self
-		assert: (observer lookOf: cell) color
+		assert: (observer lookOf: CMCell new) color
 		equals: CMCellLook new color
 ]
 
@@ -124,8 +120,10 @@ CMObserverTest >> testRedefiningTheDefaultAspectChangesTheDefault [
 
 	self assert: (observer lookOf: CMMockCow new) color equals: Color red.
 	self
-		assert: (observer lookOf: CMMockGoat new) color
-		equals: Color blue
+		assert: (observer lookOf: (CMMockCell new
+					  state: #dead;
+					  yourself)) color
+		equals: Color black
 ]
 
 { #category : 'tests' }
@@ -142,13 +140,12 @@ CMObserverTest >> testTheLookFollowsTheEntityAtEachRefresh [
 		        state: #dead;
 		        yourself.
 	observer perspective: (CMPerspective new
-			 show: CMMockCell as: #aspectState:;
+			 show: CMMockCell as: #aspectGraves:;
 			 yourself).
 	self assert: (observer lookOf: cell) hasTile.
 	cell state: #alive.
 	look := observer lookOf: cell.
-	self deny: look hasTile.
-	self assert: look color equals: Color white
+	self deny: look hasTile
 ]
 
 { #category : 'tests' }

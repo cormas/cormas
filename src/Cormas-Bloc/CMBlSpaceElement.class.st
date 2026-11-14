@@ -55,7 +55,8 @@ Class {
 		'draggedElement',
 		'dragOrigin',
 		'aggregateElements',
-		'linkElements'
+		'linkElements',
+		'routeElements'
 	],
 	#category : 'Cormas-Bloc',
 	#package : 'Cormas-Bloc'
@@ -192,6 +193,7 @@ CMBlSpaceElement >> initialize [
 	super initialize.
 	aggregateElements := #(  ).
 	linkElements := #(  ).
+	routeElements := #(  ).
 	agentElements := #(  ).
 	zoom := 1.
 	offset := 0 @ 0.
@@ -205,6 +207,12 @@ CMBlSpaceElement >> initialize [
 		do: [ :event | self handleDrag: event ];
 		addEventHandlerOn: BlDragEndEvent
 		do: [ :event | self handleDragEnd: event ]
+]
+
+{ #category : 'updating' }
+CMBlSpaceElement >> isOnGrid: aLink [
+
+	^ aLink ends allSatisfy: [ :end | end isOnGrid ]
 ]
 
 { #category : 'interaction' }
@@ -225,7 +233,7 @@ CMBlSpaceElement >> newElementForAgent: anAgent [
 
 	| cell |
 	cell := anAgent cell.
-	^ (CMBlAgentElement for: anAgent)
+	^ (CMBlAgentElement for: anAgent observedBy: observer)
 		  centerAt: (self gridPositionOfCell: cell) - gridOrigin
 			  + (anAgent positionInCell * (self cellExtentOf: cell));
 		  yourself
@@ -253,18 +261,29 @@ CMBlSpaceElement >> panBy: aPoint [
 
 { #category : 'updating' }
 CMBlSpaceElement >> refresh [
-	"Aggregates are added after the cells, links after the aggregates and agents after the links, so that each appears on top of the previous ones"
+	"Aggregates are added after the cells, links after the aggregates, the routes of networks after the links, and agents last, so that each appears on top of the previous ones"
 
 	self removeChildren: aggregateElements.
 	self removeChildren: linkElements.
+	self removeChildren: routeElements.
 	self removeChildren: agentElements.
 	super refresh.
 	aggregateElements := self visibleAggregates collect: [ :each |
-		                     CMBlAggregateShapeElement for: each ].
+		                     CMBlAggregateShapeElement
+			                     for: each
+			                     observedBy: observer ].
 	self addChildren: aggregateElements.
 	linkElements := self visibleLinks collect: [ :each |
-		                CMBlLinkElement for: each ].
+		                CMBlLinkElement for: each observedBy: observer ].
 	self addChildren: linkElements.
+	routeElements := self visibleNetworks flatCollect: [ :network |
+			                 (network links select: [ :each |
+				                  self isOnGrid: each ]) collect: [ :each |
+				                 CMBlRouteElement
+					                 for: each
+					                 of: network
+					                 observedBy: observer ] ].
+	self addChildren: routeElements.
 	agentElements := (cormasModel agents select: [ :each |
 		                  each isSituated ]) collect: [ :each |
 		                 self newElementForAgent: each ].
@@ -291,21 +310,32 @@ CMBlSpaceElement >> setUpFor: aCormasModel [
 
 { #category : 'updating' }
 CMBlSpaceElement >> visibleAggregates [
-	"Answer the aggregates that have something to draw, the ones to appear on top last. Aggregates released by a merge stay dead in the model until the simulation step ends"
+	"Answer the aggregates to draw, the ones to appear on top last. Aggregates released by a merge stay dead in the model until the simulation step ends"
 
 	^ ((cormasModel allEntitiesOfClass: CMSpatialEntityAggregate)
 		   select: [ :each |
-				   each isDead not and: [
-					   each activePov hasColor or: [ each activePov hasBorder ] ] ])
+		   each isDead not and: [ (observer lookOf: each) isVisible ] ])
 		  sorted: [ :a :b | a id < b id ]
 ]
 
 { #category : 'updating' }
 CMBlSpaceElement >> visibleLinks [
-	"Answer the links with both ends on the grid, the ones to appear on top last"
+	"Answer the links to draw, with both ends on the grid, the ones to appear on top last"
 
 	^ (cormasModel links select: [ :each |
-		   each ends allSatisfy: [ :end | end isOnGrid ] ]) sorted: [ :a :b |
+		   (self isOnGrid: each) and: [ (observer lookOf: each) isVisible ] ])
+		  sorted: [ :a :b | a id < b id ]
+]
+
+{ #category : 'updating' }
+CMBlSpaceElement >> visibleNetworks [
+	"Answer the networks whose look draws something over their links, the ones to appear on top last"
+
+	^ ((cormasModel allEntitiesOfClass: CMNetwork) select: [ :each |
+			   | look |
+			   look := observer lookOf: each.
+			   each isDead not and: [
+				   look isVisible and: [ look color alpha > 0 ] ] ]) sorted: [ :a :b |
 		  a id < b id ]
 ]
 

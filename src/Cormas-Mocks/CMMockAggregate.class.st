@@ -28,11 +28,34 @@ Class {
 	#name : 'CMMockAggregate',
 	#superclass : 'CMSpatialEntityAggregate',
 	#instVars : [
-		'customPov'
+		'customPov',
+		'customAspect'
 	],
 	#category : 'Cormas-Mocks',
 	#package : 'Cormas-Mocks'
 }
+
+{ #category : 'aspects' }
+CMMockAggregate >> aspect: aBlock [
+	"Each test gives an aggregate the look it needs through a block that fills it, instead of a separate aspect method"
+
+	customAspect := aBlock
+]
+
+{ #category : 'aspects' }
+CMMockAggregate >> aspectDefault: look [
+
+	<aspect>
+	super aspectDefault: look.
+	customAspect value: look
+]
+
+{ #category : 'aspects' }
+CMMockAggregate >> initialize [
+
+	super initialize.
+	customAspect := [ :look |  ]
+]
 
 { #category : 'pov' }
 CMMockAggregate >> pov [

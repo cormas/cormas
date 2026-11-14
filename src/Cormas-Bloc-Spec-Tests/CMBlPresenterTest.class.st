@@ -325,30 +325,26 @@ CMBlPresenterTest >> testFitButtonOfSpacePresenterFitsTheView [
 { #category : 'tests' }
 CMBlPresenterTest >> testInspectorViewOfAgentNotOnACell [
 
-	| cow presenter |
+	| cow presenter middle |
 	self gridWithNeighbourhood: 4.
 	cow := model newEntity: CMMockCow.
 	presenter := self openInspectorViewOf: cow.
-
+	middle := (CMObserver new lookOf: cow) size * 16 // 1.
 	self
-		assert: (self
-				 screenColorIn: presenter
-				 at: cow activePov size * 16 // 1 @ (cow activePov size * 16 // 1))
+		assert: (self screenColorIn: presenter at: middle @ middle)
 		equals: 'FF0000'
 ]
 
 { #category : 'tests' }
 CMBlPresenterTest >> testInspectorViewOfAgentShowsItsShape [
 
-	| cow presenter |
+	| cow presenter middle |
 	self gridWithNeighbourhood: 4.
 	cow := self newCowOn: (model cellAt: 2 at: 3).
 	presenter := self openInspectorViewOf: cow.
-
+	middle := (CMObserver new lookOf: cow) size * 16 // 1.
 	self
-		assert: (self
-				 screenColorIn: presenter
-				 at: cow activePov size * 16 // 1 @ (cow activePov size * 16 // 1))
+		assert: (self screenColorIn: presenter at: middle @ middle)
 		equals: 'FF0000'
 ]
 

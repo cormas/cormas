@@ -217,6 +217,33 @@ CMLookTest >> testNetworkDrawsNothingByDefault [
 ]
 
 { #category : 'tests - defaults' }
+CMLookTest >> testOverlaysAreLaidInOrder [
+
+	| look |
+	look := CMCellLook new.
+	look
+		tile: #grassLight;
+		overlayTile: #tree scaledTo: 0.7;
+		overlayTile: #fire scaledTo: 0.3.
+	self assert: look overlays equals: {
+			(#tree -> 0.7).
+			(#fire -> 0.3) }
+]
+
+{ #category : 'tests - defaults' }
+CMLookTest >> testResetForgetsTheOverlays [
+
+	| look |
+	look := CMAgentLook new.
+	look
+		tile: #grassLight;
+		overlayTile: #tree scaledTo: 0.7.
+	look reset.
+	self deny: look hasTile.
+	self assert: look overlays isEmpty
+]
+
+{ #category : 'tests - defaults' }
 CMLookTest >> testResetOfALinkForgetsItsArrowhead [
 
 	| look |

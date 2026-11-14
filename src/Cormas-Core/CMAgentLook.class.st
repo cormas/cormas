@@ -10,13 +10,14 @@ I describe how an agent appears in a view: its color or a picture, its shape, it
 ## Collaborators:
 
 - An aspect of an agent fills me.
+- `TCMTiledLook` gives me the tiles.
 - A renderer draws me.
 
 ## Public API and Key Messages
 
 - `shape:` with one of `#circle #square #diamond #triangle #hexagon #star`
 - `size:`, `sizeForValue:from:to:`
-- `color:`, `tile:`, `hasTile`, `borderColor:`, `borderThickness:`
+- `color:`, `tile:`, `overlayTile:scaledTo:`, `hasTile`, `borderColor:`, `borderThickness:`
 
 ```
 aspectEnergy: look
@@ -29,15 +30,15 @@ aspectEnergy: look
 
 ## Internal Representation
 
-- `tile`: a `Symbol` naming a tile, or nil when the agent is drawn with its color.
 - `shape`: a `Symbol`.
 - `size`: a `Number`, as a fraction of the side of a cell.
 "
 Class {
 	#name : 'CMAgentLook',
 	#superclass : 'CMAreaLook',
+	#traits : 'TCMTiledLook',
+	#classTraits : 'TCMTiledLook classTrait',
 	#instVars : [
-		'tile',
 		'shape',
 		'size'
 	],
@@ -46,17 +47,11 @@ Class {
 	#tag : 'Look'
 }
 
-{ #category : 'accessing' }
-CMAgentLook >> hasTile [
-
-	^ tile isNotNil
-]
-
 { #category : 'initialization' }
 CMAgentLook >> reset [
 
 	super reset.
-	tile := nil.
+	self resetTile.
 	shape := #circle.
 	size := 0.3.
 	borderThickness := 0
@@ -91,17 +86,4 @@ CMAgentLook >> sizeForValue: aNumber from: minimum to: maximum [
 	"Use a size that goes from small at the minimum to a full cell at the maximum. Values outside the range are clamped"
 
 	size := 0.1 + (0.9 * (self fractionOf: aNumber from: minimum to: maximum))
-]
-
-{ #category : 'accessing' }
-CMAgentLook >> tile [
-
-	^ tile
-]
-
-{ #category : 'accessing' }
-CMAgentLook >> tile: aSymbol [
-	"Draw the tile named aSymbol instead of the color"
-
-	tile := aSymbol
 ]

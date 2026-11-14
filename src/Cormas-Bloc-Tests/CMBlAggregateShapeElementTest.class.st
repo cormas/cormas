@@ -24,10 +24,10 @@ Class {
 }
 
 { #category : 'private' }
-CMBlAggregateShapeElementTest >> aggregateOf: someCells pov: aPointOfView [
+CMBlAggregateShapeElementTest >> aggregateOf: someCells aspect: aBlock [
 
 	^ (model createAggregate: CMMockAggregate from: someCells)
-		  pov: aPointOfView;
+		  aspect: aBlock;
 		  yourself
 ]
 
@@ -39,7 +39,10 @@ CMBlAggregateShapeElementTest >> assertNoSeamsInGrid: aNeighbourhood scale: aNum
 	self gridWithNeighbourhood: aNeighbourhood.
 	element := CMBlAggregateShapeElement for: (self
 			            aggregateOf: model cells
-			            pov: (CMPointOfView color: (Color red alpha: 0.5))).
+			            aspect: [ :look |
+					            look
+						            color: (Color red alpha: 0.5);
+						            borderThickness: 0 ]).
 	element transformDo: [ :transform | transform scaleBy: aNumber ].
 	parent := BlElement new
 		          extent: 400 @ 400;
@@ -72,7 +75,7 @@ CMBlAggregateShapeElementTest >> assertOutlineInGrid: aNeighbourhood [
 		             aggregateOf: {
 				             first.
 				             second }
-		             pov: self outlinePov.
+		             aspect: self outlineAspect.
 	element := CMBlAggregateShapeElement for: aggregate.
 
 	sidesOfFirst := self sidesOf: (element verticesOfCell: first).
@@ -117,12 +120,10 @@ CMBlAggregateShapeElementTest >> middleOf: aSide [
 	^ aSide inject: 0 @ 0 into: [ :sum :each | sum + (each / 2) ]
 ]
 
-{ #category : 'private' }
-CMBlAggregateShapeElementTest >> outlinePov [
+{ #category : 'running' }
+CMBlAggregateShapeElementTest >> outlineAspect [
 
-	^ CMPointOfView new
-		  borderColor: Color red;
-		  yourself
+	^ [ :look | look borderColor: Color red ]
 ]
 
 { #category : 'private' }
@@ -152,10 +153,10 @@ CMBlAggregateShapeElementTest >> testDrawsTheCellsOfNestedAggregates [
 	self gridWithNeighbourhood: 4.
 	inner := self
 		         aggregateOf: { (model cellAt: 2 at: 2) }
-		         pov: CMPointOfView new.
+		         aspect: [ :look | ].
 	outer := self
 		         aggregateOf: { inner }
-		         pov: (CMPointOfView color: Color red).
+		         aspect: [ :look | look color: Color red ].
 
 	element := CMBlAggregateShapeElement for: outer.
 
@@ -165,7 +166,7 @@ CMBlAggregateShapeElementTest >> testDrawsTheCellsOfNestedAggregates [
 ]
 
 { #category : 'tests' }
-CMBlAggregateShapeElementTest >> testFillsItsCellsWithTheColorOfThePov [
+CMBlAggregateShapeElementTest >> testFillsItsCellsWithItsColor [
 
 	| element |
 	self gridWithNeighbourhood: 4.
@@ -173,8 +174,7 @@ CMBlAggregateShapeElementTest >> testFillsItsCellsWithTheColorOfThePov [
 			            aggregateOf: {
 					            (model cellAt: 1 at: 1).
 					            (model cellAt: 2 at: 2) }
-			            pov: (CMPointOfView color: Color red)).
-
+			            aspect: [ :look | look color: Color red ]).
 	self
 		assert: (self hexColorIn: element at: 16 @ 16)
 		equals: Color red asHexString.
@@ -185,29 +185,12 @@ CMBlAggregateShapeElementTest >> testFillsItsCellsWithTheColorOfThePov [
 ]
 
 { #category : 'tests' }
-CMBlAggregateShapeElementTest >> testIgnoresATile [
-
-	| element |
-	self gridWithNeighbourhood: 4.
-	element := CMBlAggregateShapeElement for:
-		           (self
-			            aggregateOf: model cells
-			            pov: ((CMPointOfView color: Color red)
-					             tile: #aTile;
-					             yourself)).
-
-	self
-		assert: (self hexColorIn: element at: 16 @ 16)
-		equals: Color red asHexString
-]
-
-{ #category : 'tests' }
 CMBlAggregateShapeElementTest >> testIsTransparentWithoutAColor [
 
 	| element |
 	self gridWithNeighbourhood: 4.
 	element := CMBlAggregateShapeElement for:
-		           (self aggregateOf: model cells pov: CMPointOfView new).
+		           (self aggregateOf: model cells aspect: [ :look | ]).
 
 	self assert: (self isTransparentIn: element at: 16 @ 16)
 ]
@@ -219,7 +202,7 @@ CMBlAggregateShapeElementTest >> testKeepsItsCellsInTheirGridPositions [
 	self gridWithNeighbourhood: 4.
 	element := CMBlAggregateShapeElement for: (self
 			            aggregateOf: { (model cellAt: 2 at: 3) }
-			            pov: (CMPointOfView color: Color red)).
+			            aspect: [ :look | look color: Color red ]).
 
 	self
 		assert: (self hexColorIn: element at: 80 @ 48)
@@ -237,7 +220,7 @@ CMBlAggregateShapeElementTest >> testLeavesHolesEmpty [
 						             ((1 to: 3) reject: [ :column |
 							              row = 2 and: [ column = 2 ] ]) collect: [ :column |
 							             model cellAt: row at: column ] ])
-			            pov: (CMPointOfView color: Color red)).
+			            aspect: [ :look | look color: Color red ]).
 
 	self assert: (self isTransparentIn: element at: 48 @ 48).
 	self
@@ -246,14 +229,13 @@ CMBlAggregateShapeElementTest >> testLeavesHolesEmpty [
 ]
 
 { #category : 'tests' }
-CMBlAggregateShapeElementTest >> testNoOutlineWithoutABorder [
+CMBlAggregateShapeElementTest >> testNoOutlineWithoutABorderThickness [
 
 	| aggregate |
 	self gridWithNeighbourhood: 4.
 	aggregate := self
 		             aggregateOf: { (model cellAt: 2 at: 2) }
-		             pov: CMPointOfView new.
-
+		             aspect: [ :look | look borderThickness: 0 ].
 	self assert: (self isTransparentAround: aggregate at: 48 @ 32)
 ]
 
@@ -297,8 +279,8 @@ CMBlAggregateShapeElementTest >> testOutlineFollowsTheCellsOfNestedAggregates [
 		         aggregateOf: {
 				         (model cellAt: 2 at: 2).
 				         (model cellAt: 2 at: 3) }
-		         pov: CMPointOfView new.
-	aggregate := self aggregateOf: { inner } pov: self outlinePov.
+		         aspect: [ :look | ].
+	aggregate := self aggregateOf: { inner } aspect: self outlineAspect.
 
 	self assert: (self isOutlineOf: aggregate at: 32 @ 48).
 	self assert: (self isTransparentAround: aggregate at: 64 @ 48)
@@ -313,7 +295,7 @@ CMBlAggregateShapeElementTest >> testOutlineGoesAroundHoles [
 		             aggregateOf:
 		             (model cells reject: [ :each |
 			              each = (model cellAt: 2 at: 2) ])
-		             pov: self outlinePov.
+		             aspect: self outlineAspect.
 
 	self assert: (self isOutlineOf: aggregate at: 48 @ 32).
 	self assert: (self isTransparentAround: aggregate at: 48 @ 48)
@@ -326,7 +308,7 @@ CMBlAggregateShapeElementTest >> testOutlineGoesAroundItsCells [
 	self gridWithNeighbourhood: 4.
 	aggregate := self
 		             aggregateOf: { (model cellAt: 2 at: 2) }
-		             pov: self outlinePov.
+		             aspect: self outlineAspect.
 
 	{
 		(48 @ 32).
@@ -344,11 +326,10 @@ CMBlAggregateShapeElementTest >> testOutlineHasADefaultColor [
 	self gridWithNeighbourhood: 4.
 	aggregate := self
 		             aggregateOf: { (model cellAt: 2 at: 2) }
-		             pov: (CMPointOfView new borderWidth: 0.25).
-
+		             aspect: [ :look |  ].
 	self
 		assert: (self hexColorInShapeOf: aggregate at: 48 @ 32)
-		equals: Color veryLightGray asHexString
+		equals: Color darkGray asHexString
 ]
 
 { #category : 'tests' }
@@ -359,7 +340,7 @@ CMBlAggregateShapeElementTest >> testOutlineHasADefaultWidth [
 	self gridWithNeighbourhood: 4.
 	aggregate := self
 		             aggregateOf: { (model cellAt: 2 at: 2) }
-		             pov: self outlinePov.
+		             aspect: self outlineAspect.
 
 	self assert: (self isOutlineOf: aggregate at: 48 @ 31).
 	self assert: (self isTransparentAround: aggregate at: 48 @ 28)
@@ -372,7 +353,7 @@ CMBlAggregateShapeElementTest >> testOutlineHasClosedCorners [
 	self gridWithNeighbourhood: 4.
 	aggregate := self
 		             aggregateOf: { (model cellAt: 2 at: 2) }
-		             pov: self outlinePov.
+		             aspect: self outlineAspect.
 
 	self assert: (self isOutlineOf: aggregate at: 31 @ 31)
 ]
@@ -393,7 +374,7 @@ CMBlAggregateShapeElementTest >> testOutlineHasLinesAtTheWrapAroundOfATorus [
 		             aggregateOf: {
 				             (model cellAt: 1 at: 1).
 				             (model cellAt: 1 at: 4) }
-		             pov: self outlinePov.
+		             aspect: self outlineAspect.
 
 	self assert: (self isOutlineOf: aggregate at: 0 @ 16).
 	self assert: (self isOutlineOf: aggregate at: 128 @ 16)
@@ -437,8 +418,10 @@ CMBlAggregateShapeElementTest >> testOutlineIsDrawnOverTheFill [
 	self gridWithNeighbourhood: 4.
 	aggregate := self
 		             aggregateOf: { (model cellAt: 2 at: 2) }
-		             pov: (self outlinePov color: Color blue).
-
+		             aspect: [ :look |
+				             look
+					             borderColor: Color red;
+					             color: Color blue ].
 	self assert: (self isOutlineOf: aggregate at: 48 @ 32).
 	self
 		assert: (self hexColorInShapeOf: aggregate at: 48 @ 48)
@@ -454,7 +437,7 @@ CMBlAggregateShapeElementTest >> testOutlineSkipsSidesBetweenItsCells [
 		             aggregateOf: {
 				             (model cellAt: 2 at: 2).
 				             (model cellAt: 2 at: 3) }
-		             pov: self outlinePov.
+		             aspect: self outlineAspect.
 
 	self assert: (self isTransparentAround: aggregate at: 64 @ 48).
 	self assert: (self isOutlineOf: aggregate at: 96 @ 48)
@@ -462,14 +445,16 @@ CMBlAggregateShapeElementTest >> testOutlineSkipsSidesBetweenItsCells [
 
 { #category : 'tests' }
 CMBlAggregateShapeElementTest >> testOutlineWidthIsAFractionOfTheCell [
-	"A width of 0.25 on a cell of 32 pixels is 8 pixels, centered on the side at y = 32"
+	"A thickness of 0.25 on a cell of 32 pixels is 8 pixels, centered on the side at y = 32"
 
 	| aggregate |
 	self gridWithNeighbourhood: 4.
 	aggregate := self
 		             aggregateOf: { (model cellAt: 2 at: 2) }
-		             pov: (self outlinePov borderWidth: 0.25).
-
+		             aspect: [ :look |
+				             look
+					             borderColor: Color red;
+					             borderThickness: 0.25 ].
 	self assert: (self isOutlineOf: aggregate at: 48 @ 29).
 	self assert: (self isTransparentAround: aggregate at: 48 @ 27)
 ]
@@ -481,7 +466,7 @@ CMBlAggregateShapeElementTest >> testTranslucentColorStaysTranslucent [
 	self gridWithNeighbourhood: 4.
 	element := CMBlAggregateShapeElement for: (self
 			            aggregateOf: model cells
-			            pov: (CMPointOfView color: (Color red alpha: 0.5))).
+			            aspect: [ :look | look color: (Color red alpha: 0.5) ]).
 
 	alpha := ((self formOf: element) colorAt: 16 @ 16) alpha.
 
@@ -495,7 +480,7 @@ CMBlAggregateShapeElementTest >> testTransparentColorDrawsNothing [
 	self gridWithNeighbourhood: 4.
 	element := CMBlAggregateShapeElement for: (self
 			            aggregateOf: model cells
-			            pov: (CMPointOfView color: Color transparent)).
+			            aspect: [ :look | look color: Color transparent ]).
 
 	self assert: (self isTransparentIn: element at: 16 @ 16)
 ]
@@ -507,10 +492,10 @@ CMBlAggregateShapeElementTest >> testUpdateShowsANewColor [
 	self gridWithNeighbourhood: 4.
 	aggregate := self
 		             aggregateOf: model cells
-		             pov: (CMPointOfView color: Color red).
+		             aspect: [ :look | look color: Color red ].
 	element := CMBlAggregateShapeElement for: aggregate.
 
-	aggregate pov: (CMPointOfView color: Color blue).
+	aggregate aspect: [ :look | look color: Color blue ].
 	element update.
 
 	self
@@ -525,7 +510,7 @@ CMBlAggregateShapeElementTest >> testUpdateShowsNewCells [
 	self gridWithNeighbourhood: 4.
 	aggregate := self
 		             aggregateOf: { (model cellAt: 1 at: 1) }
-		             pov: (CMPointOfView color: Color red).
+		             aspect: [ :look | look color: Color red ].
 	element := CMBlAggregateShapeElement for: aggregate.
 
 	aggregate addComponent: (model cellAt: 2 at: 2).
@@ -543,7 +528,7 @@ CMBlAggregateShapeElementTest >> testUpdateShowsTheNewOutline [
 	self gridWithNeighbourhood: 4.
 	aggregate := self
 		             aggregateOf: { (model cellAt: 2 at: 2) }
-		             pov: self outlinePov.
+		             aspect: self outlineAspect.
 	parent := self parentOfShapeOf: aggregate.
 	shape := parent children first.
 	self

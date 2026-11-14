@@ -22,10 +22,10 @@ Class {
 }
 
 { #category : 'private' }
-CMBlAggregateElementTest >> aggregateOf: someCells pov: aPointOfView [
+CMBlAggregateElementTest >> aggregateOf: someCells aspect: aBlock [
 
 	^ (model createAggregate: CMMockAggregate from: someCells)
-		  pov: aPointOfView;
+		  aspect: aBlock;
 		  yourself
 ]
 
@@ -36,10 +36,10 @@ CMBlAggregateElementTest >> testDoesNotShowOtherAggregates [
 	self gridWithNeighbourhood: 4.
 	aggregate := self
 		             aggregateOf: { (model cellAt: 2 at: 2) }
-		             pov: CMPointOfView new.
+		             aspect: [ :look | ].
 	self
 		aggregateOf: { (model cellAt: 2 at: 2) }
-		pov: (CMPointOfView color: Color blue).
+		aspect: [ :look | look color: Color blue ].
 
 	element := CMBlAggregateElement for: aggregate.
 
@@ -66,6 +66,21 @@ CMBlAggregateElementTest >> testKeepsGapsBetweenItsCells [
 ]
 
 { #category : 'tests' }
+CMBlAggregateElementTest >> testShowsItsColorOverItsCells [
+	"The first cell of the aggregate is at my top-left corner"
+
+	| element |
+	self gridWithNeighbourhood: 4.
+	element := CMBlAggregateElement for: (self
+			            aggregateOf: {
+					            (model cellAt: 2 at: 2).
+					            (model cellAt: 2 at: 3) }
+			            aspect: [ :look | look color: Color blue ]).
+	self assert: (self hexColorIn: element at: 16 @ 16) equals: '0000FF'.
+	self assert: (self hexColorIn: element at: 48 @ 16) equals: '0000FF'
+]
+
+{ #category : 'tests' }
 CMBlAggregateElementTest >> testShowsItsOutlineAroundItsCells [
 	"The cells share a side at x = 32, where only their own grey borders must show"
 
@@ -75,12 +90,9 @@ CMBlAggregateElementTest >> testShowsItsOutlineAroundItsCells [
 			            aggregateOf: {
 					            (model cellAt: 2 at: 2).
 					            (model cellAt: 2 at: 3) }
-			            pov: (CMPointOfView new
-					             borderColor: Color red;
-					             yourself)).
+			            aspect: [ :look | look borderColor: Color red ]).
 	form := self formOf: element.
 	shared := form colorAt: 32 @ 16.
-
 	self assert: (form colorAt: 16 @ 0) equals: Color red.
 	self assert: (shared red closeTo: shared green precision: 0.01).
 	self assert: (form colorAt: 16 @ 16) equals: Color black
@@ -104,22 +116,6 @@ CMBlAggregateElementTest >> testShowsOnlyItsCellsInTheirGridPositions [
 ]
 
 { #category : 'tests' }
-CMBlAggregateElementTest >> testShowsTheColorOfItsPovOverItsCells [
-	"The first cell of the aggregate is at my top-left corner"
-
-	| element |
-	self gridWithNeighbourhood: 4.
-	element := CMBlAggregateElement for: (self
-			            aggregateOf: {
-					            (model cellAt: 2 at: 2).
-					            (model cellAt: 2 at: 3) }
-			            pov: (CMPointOfView color: Color blue)).
-
-	self assert: (self hexColorIn: element at: 16 @ 16) equals: '0000FF'.
-	self assert: (self hexColorIn: element at: 48 @ 16) equals: '0000FF'
-]
-
-{ #category : 'tests' }
 CMBlAggregateElementTest >> testUpdateDoesNotDrawTheShapeTwice [
 	"A second copy of a translucent shape would make it stronger"
 
@@ -127,7 +123,7 @@ CMBlAggregateElementTest >> testUpdateDoesNotDrawTheShapeTwice [
 	self gridWithNeighbourhood: 4.
 	element := CMBlAggregateElement for: (self
 			            aggregateOf: { (model cellAt: 2 at: 2) }
-			            pov: (CMPointOfView color: (Color blue alpha: 0.5))).
+			            aspect: [ :look | look color: (Color blue alpha: 0.5) ]).
 
 	element update.
 	blue := ((self formOf: element) colorAt: 16 @ 16) blue.
@@ -143,7 +139,7 @@ CMBlAggregateElementTest >> testUpdateKeepsTheShapeAlignedWhenTheCellsChange [
 	self gridWithNeighbourhood: 4.
 	aggregate := self
 		             aggregateOf: { (model cellAt: 2 at: 2) }
-		             pov: (CMPointOfView color: Color blue).
+		             aspect: [ :look | look color: Color blue ].
 	element := CMBlAggregateElement for: aggregate.
 
 	aggregate addComponent: (model cellAt: 1 at: 1).
@@ -155,18 +151,16 @@ CMBlAggregateElementTest >> testUpdateKeepsTheShapeAlignedWhenTheCellsChange [
 ]
 
 { #category : 'tests' }
-CMBlAggregateElementTest >> testUpdateShowsANewPov [
+CMBlAggregateElementTest >> testUpdateShowsANewLook [
 
 	| aggregate element |
 	self gridWithNeighbourhood: 4.
 	aggregate := self
 		             aggregateOf: { (model cellAt: 2 at: 2) }
-		             pov: (CMPointOfView color: Color blue).
+		             aspect: [ :look | look color: Color blue ].
 	element := CMBlAggregateElement for: aggregate.
-
-	aggregate pov: (CMPointOfView color: Color green).
+	aggregate aspect: [ :look | look color: Color green ].
 	element update.
-
 	self
 		assert: (self hexColorIn: element at: 16 @ 16)
 		equals: Color green asHexString

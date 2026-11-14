@@ -35,6 +35,23 @@ CMTileset class >> resetTiles [
 	^ tiles := nil
 ]
 
+{ #category : 'accessing' }
+CMTileset class >> tileNamed: aSymbol [
+	"Answer the tile named aSymbol, from the one tileset that has a tile with that name"
+
+	| tilesets |
+	tilesets := self allSubclasses select: [ :each |
+		            each tileSelectors includes: aSymbol ].
+	tilesets ifEmpty: [
+		self error: ('No tileset has a tile named #{1}' format: { aSymbol }) ].
+	tilesets size > 1 ifTrue: [
+			self error:
+				('The tilesets {1} all have a tile named #{2}' format: {
+						 (', ' join: (tilesets collect: #name)).
+						 aSymbol }) ].
+	^ tilesets first perform: aSymbol
+]
+
 { #category : 'as yet unclassified' }
 CMTileset class >> tileSelectors [
 

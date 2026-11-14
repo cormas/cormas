@@ -106,35 +106,38 @@ CMBlAgentElement >> entity [
 ]
 
 { #category : 'geometry' }
-CMBlAgentElement >> geometryForShape: aSymbol [
+CMBlAgentElement >> geometryForShape: aSymbol side: aNumber [
 
-	| vertices side |
+	| vertices |
 	aSymbol = #circle ifTrue: [ ^ BlCircleGeometry new ].
-
 	vertices := self class polygonShapes at: aSymbol ifAbsent: [
 			            self error:
 				            'Unknown agent shape #' , aSymbol
 				            , '. Supported shapes are: '
 				            , (', ' join: self class supportedShapes) ].
-
-	side := self side.
 	^ BlPolygonGeometry vertices:
-		  (vertices collect: [ :each | each * side ])
+		  (vertices collect: [ :each | each * aNumber ])
 ]
 
 { #category : 'updating' }
 CMBlAgentElement >> refresh [
 
-	| pov side |
-	pov := agent activePov.
-	side := self side.
+	| look side |
+	look := observer lookOf: agent.
+	side := look size * self cellSize.
 	self
+		visibility: (look isVisible
+				 ifTrue: [ BlVisibility visible ]
+				 ifFalse: [ BlVisibility hidden ]);
 		extent: side @ side;
 		background: (self
-				 backgroundOfPov: pov
+				 backgroundOfLook: look
 				 in: (agent cormasModel ifNotNil: [ :model | model spaceModel ])
 				 extent: side @ side);
-		geometry: (self geometryForShape: pov shape)
+		border: (BlBorder
+				 paint: look borderColor
+				 width: look borderThickness * self cellSize);
+		geometry: (self geometryForShape: look shape side: side)
 ]
 
 { #category : 'initialization' }
@@ -146,7 +149,7 @@ CMBlAgentElement >> setUpFor: anAgent [
 
 { #category : 'geometry' }
 CMBlAgentElement >> side [
-	"Answer the size in pixels of the box around my shape. The point of view expresses it relative to the size of a cell"
+	"Answer the size in pixels of the box around my shape. The look expresses it relative to the size of a cell"
 
-	^ agent activePov size * self cellSize
+	^ (observer lookOf: agent) size * self cellSize
 ]
