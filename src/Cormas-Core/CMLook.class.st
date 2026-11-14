@@ -81,12 +81,14 @@ CMLook >> colorBetween: firstColor and: secondColor forValue: aNumber from: mini
 
 { #category : 'helpers' }
 CMLook >> colorGroupedBy: anObject [
-	"Use one of the named colors of CMColor, chosen by anObject: the same object always gets the same color, and different objects get colors that are easy to tell apart"
+	"Use a color computed from anObject: the same object always gets the same color, in every view and every run, and different objects almost always get colors that are easy to tell apart, by their hue, their brightness or their saturation"
 
-	| names |
-	names := CMColor colorNames.
-	color := CMColor perform:
-		         (names at: anObject hash \\ names size + 1) asSymbol
+	| bits |
+	bits := self mixedBitsOf: anObject hash.
+	color := Color
+		         h: bits / 4294967296.0 * 360
+		         s: (#( 0.85 0.55 ) at: bits // 3 \\ 2 + 1)
+		         v: (#( 0.9 0.7 0.5 ) at: bits \\ 3 + 1)
 ]
 
 { #category : 'helpers' }
@@ -123,6 +125,17 @@ CMLook >> initialize [
 CMLook >> isVisible [
 
 	^ isVisible
+]
+
+{ #category : 'helpers' }
+CMLook >> mixedBitsOf: anInteger [
+	"Answer 32 bits that depend on every bit of anInteger, so that close integers, such as the hashes of similar names, give unrelated results. This is a variant of the finalizer of MurmurHash"
+
+	| bits |
+	bits := anInteger bitXor: (anInteger bitShift: -13).
+	bits := bits * 2654435761 \\ 4294967296.
+	bits := bits bitXor: (bits bitShift: -16).
+	^ bits * 2246822519 \\ 4294967296
 ]
 
 { #category : 'initialization' }

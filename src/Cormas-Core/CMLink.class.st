@@ -68,6 +68,20 @@ CMLink class >> exampleBetweenTwoAgents [
 		  to: (model newEntity: CMAgent)
 ]
 
+{ #category : 'aspects' }
+CMLink class >> lookClass [
+
+	^ CMLinkLook
+]
+
+{ #category : 'aspects' }
+CMLink >> aspectDefault: look [
+	"Show the direction of a directed link"
+
+	<aspect>
+	look hasArrowhead: self isDirected
+]
+
 { #category : 'controlling' }
 CMLink >> delete [
 

@@ -91,6 +91,12 @@ CMNetwork class >> exampleCityWithOneStreet [
 	^ city
 ]
 
+{ #category : 'aspects' }
+CMNetwork class >> lookClass [
+
+	^ CMNetworkLook
+]
+
 { #category : 'adding' }
 CMNetwork >> add: aLinkOrNetwork [
 

@@ -24,6 +24,13 @@ CMMockAnimal class >> initialEnergy: aNumber [
 	initialEnergy := aNumber
 ]
 
+{ #category : 'aspects' }
+CMMockAnimal >> aspectEnergy: look [
+
+	<aspect>
+	look sizeForValue: energy from: 0 to: 10
+]
+
 { #category : 'accessing' }
 CMMockAnimal >> energy [
 	<parameterFloatMin: 0 max: 1 step: 0.1 default: 0.5>

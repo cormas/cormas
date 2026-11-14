@@ -5,6 +5,20 @@ Class {
 	#package : 'Cormas-Mocks'
 }
 
+{ #category : 'aspects' }
+CMMockGoat >> aspectDefault: look [
+
+	<aspect>
+	look color: Color blue
+]
+
+{ #category : 'aspects' }
+CMMockGoat >> aspectHorns: look [
+
+	<aspect>
+	look shape: #triangle
+]
+
 { #category : 'pov' }
 CMMockGoat >> pov [
 

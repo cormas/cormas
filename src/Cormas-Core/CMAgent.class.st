@@ -20,6 +20,12 @@ CMAgent class >> isCormasAgentClass [
 	^ true
 ]
 
+{ #category : 'aspects' }
+CMAgent class >> lookClass [
+
+	^ CMAgentLook
+]
+
 { #category : 'accessing' }
 CMAgent >> cormasModel [
 

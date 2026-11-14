@@ -23,6 +23,12 @@ CMCell class >> isSpatialEntityElementClass [
 	^true
 ]
 
+{ #category : 'aspects' }
+CMCell class >> lookClass [
+
+	^ CMCellLook
+]
+
 { #category : 'accessing' }
 CMCell >> asString [
 	" After adding the name and id of this entity, add its coordinates "

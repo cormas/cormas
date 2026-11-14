@@ -10,6 +10,18 @@ Class {
 	#package : 'Cormas-Mocks'
 }
 
+{ #category : 'aspects' }
+CMMockCell >> aspectState: look [
+
+	<aspect>
+	state = #dead
+		ifTrue: [
+				look
+					color: Color black;
+					tile: #grave ]
+		ifFalse: [ look color: Color white ]
+]
+
 { #category : 'init' }
 CMMockCell >> initAlive [
 	self state: #alive

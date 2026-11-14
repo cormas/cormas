@@ -18,6 +18,12 @@ Class {
 	#tag : 'Entities'
 }
 
+{ #category : 'aspects' }
+CMSpatialEntityAggregate class >> lookClass [
+
+	^ CMAggregateLook
+]
+
 { #category : 'instance creation' }
 CMSpatialEntityAggregate class >> newWith: aSetOfSpatialEntities [
 	"Return a new instance of SpatialEntityAggregate, made of aSetOfSpatialEntities

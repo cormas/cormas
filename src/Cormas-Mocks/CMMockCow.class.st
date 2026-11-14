@@ -5,6 +5,13 @@ Class {
 	#package : 'Cormas-Mocks'
 }
 
+{ #category : 'aspects' }
+CMMockCow >> aspectDefault: look [
+
+	<aspect>
+	look color: Color red
+]
+
 { #category : 'pov' }
 CMMockCow >> pov [
 

@@ -64,6 +64,15 @@ CMEntity class >> activePovSelector: aSymbol [
 	activePovSelector := aSymbol
 ]
 
+{ #category : 'aspects' }
+CMEntity class >> aspectSelectors [
+	"Answer the selectors of my aspects, the ones I define and the ones I inherit, sorted"
+
+	^ ((Pragma allNamed: #aspect from: self to: CMEntity)
+		   collect: [ :each | each method selector ]
+		   as: Set) asArray sorted
+]
+
 { #category : 'accessing - methods & classes' }
 CMEntity class >> availablePov [
 	"Purpose: returns the list of available pov methods
@@ -135,6 +144,13 @@ CMEntity class >> isSpatialEntityElementClass [
 	^false
 ]
 
+{ #category : 'aspects' }
+CMEntity class >> lookClass [
+	"Answer the class of the looks that describe how my instances appear in a view"
+
+	^ self subclassResponsibility
+]
+
 { #category : 'utilities - classes' }
 CMEntity class >> modelClass [
 	"Purpose: returns the Class of the current model.
@@ -204,6 +220,37 @@ CMEntity >> asString [
 			<< 'id: ';
 			<< id asString ]
 	
+]
+
+{ #category : 'aspects' }
+CMEntity >> aspectClassName: look [
+	"Give all the entities of a class the same color, and different classes different colors"
+
+	<aspect>
+	look colorGroupedBy: self class name
+]
+
+{ #category : 'aspects' }
+CMEntity >> aspectDefault: look [
+	"Leave the look with its defaults. Redefine this aspect in a subclass to change how its instances appear when no other aspect is chosen"
+
+	<aspect>
+	
+]
+
+{ #category : 'aspects' }
+CMEntity >> aspectId: look [
+	"Give each entity its own color, chosen by its id"
+
+	<aspect>
+	look colorGroupedBy: self id
+]
+
+{ #category : 'aspects' }
+CMEntity >> aspectInvisible: look [
+
+	<aspect>
+	look beInvisible
 ]
 
 { #category : 'accessing' }
