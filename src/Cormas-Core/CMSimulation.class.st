@@ -38,6 +38,12 @@ CMSimulation >> activeControlSelector: aSymbol [
 	activeControlSelector := aSymbol
 ]
 
+{ #category : 'accessing' }
+CMSimulation >> activeInitSelector [
+
+	^ activeInitSelector
+]
+
 { #category : 'settings' }
 CMSimulation >> activeInitSelector: aSymbol [
 

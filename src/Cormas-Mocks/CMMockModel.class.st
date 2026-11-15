@@ -110,6 +110,15 @@ CMMockModel >> initFixed [
 ]
 
 { #category : 'init' }
+CMMockModel >> initFixedWithHiddenCows [
+	"The fixed grid, starting with the cows hidden"
+
+	<init>
+	<perspective: #perspectiveHiddenCows>
+	self initFixed
+]
+
+{ #category : 'init' }
 CMMockModel >> initRandom [
 	<init>
 	self cells do: #initRandom

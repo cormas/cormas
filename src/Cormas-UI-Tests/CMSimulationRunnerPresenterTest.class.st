@@ -51,22 +51,41 @@ CMSimulationRunnerPresenterTest >> testADuplicateStartsWithTheChoicesOfItsViewAn
 ]
 
 { #category : 'tests' }
-CMSimulationRunnerPresenterTest >> testANewSimulationKeepsTheModifiedChoicesOfItsViews [
+CMSimulationRunnerPresenterTest >> testANewSimulationClosesItsViewsAndShowsANewOne [
 
 	| view |
-	view := runner newViewWith: #perspectiveHiddenCows.
-	view observer perspective show: CMMockCow.
+	view := runner views first.
+	view observer perspective hide: CMMockCow.
+	runner newView.
+	runner moveToWindow: runner views last.
+	windows add: runner views last detachedWindow.
 	runner initializeNotebookPages.
-	self assert: runner views last observer isModified.
-	self
-		assert: runner views last observer original name
-		equals: 'Hidden cows'
+	self assert: runner views size equals: 1.
+	self deny: runner views first isInWindow.
+	self deny: runner views first observer isModified.
+	self assert:
+		(runner views first observer perspective isVisible: CMMockCow)
 ]
 
 { #category : 'tests' }
 CMSimulationRunnerPresenterTest >> testANewSimulationShowsItsFirstView [
 
 	self assert: runner notebook selectedPage title equals: 'Space'
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testANewSimulationShowsThePerspectiveNamedByItsInitMethod [
+
+	runner simulation
+		activeInitSelector: #initFixedWithHiddenCows;
+		initializeSimulation.
+	runner initializeNotebookPages.
+	self
+		assert: runner views first observer original name
+		equals: 'Hidden cows'.
+	self deny:
+		(runner views first observer perspective isVisible: CMMockCow).
+	self assert: runner views first title equals: 'Space — Hidden cows'
 ]
 
 { #category : 'tests' }

@@ -5,7 +5,7 @@ I run a simulation and show it: its views of the space, its data and its charts,
 
 - Step or run the simulation, and update what is shown after each step.
 - Manage any number of views of the space, each with its own choices: add a new one, duplicate one, move one to a window of its own and back, close one.
-- Keep the choices of the views when the simulation is initialized again.
+- Close all the views when the simulation is initialized again, and show one new view with the perspective that the init method names with the pragma `<perspective: #perspectiveX>`.
 
 ## Collaborators:
 
@@ -260,12 +260,21 @@ CMSimulationRunnerPresenter >> hideSettings [
 ]
 
 { #category : 'initialization' }
-CMSimulationRunnerPresenter >> initializeNotebookPages [
-	"Show the data and the charts of a new simulation, then its views and a last tab that adds a view. The views keep the choices they had for the previous simulation"
+CMSimulationRunnerPresenter >> initialPerspective [
+	"Answer the perspective that the init method of the simulation names with the pragma <perspective:>, or else an empty one"
 
-	| observers |
-	observers := (views collect: [ :each | each observer copy ])
-		             ifEmpty: [ { CMObserver new } ].
+	^ (self cormasModel class lookupSelector:
+		   self simulation activeInitSelector) pragmas
+		  detect: [ :each | each selector = #perspective: ]
+		  ifFound: [ :pragma |
+		  self cormasModel perspectiveNamed: pragma arguments first ]
+		  ifNone: [ CMPerspective new ]
+]
+
+{ #category : 'initialization' }
+CMSimulationRunnerPresenter >> initializeNotebookPages [
+	"Show the data and the charts of a new simulation, then one view of its space and a last tab that adds a view. The views of the previous simulation are closed, and the new one starts with the perspective named by the init method"
+
 	self closeAllViews.
 	chartPresenter := self instantiate: CMChartPresenter.
 
@@ -295,7 +304,9 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 			 provider: [ StInspectorPresenter onObject: self simulation ]).
 	notebook addPage: newViewPage.
 
-	observers do: [ :each | self addViewObservedBy: each ].
+	self addViewObservedBy: (CMObserver new
+			 perspective: self initialPerspective;
+			 yourself).
 	notebook selectPage: (pages at: views first)
 ]
 
