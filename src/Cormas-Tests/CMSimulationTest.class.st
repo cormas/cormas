@@ -22,6 +22,28 @@ CMSimulationTest >> setUp [
 ]
 
 { #category : 'tests' }
+CMSimulationTest >> testAPausedSimulationWaitsUntilItIsResumed [
+
+	| finished step |
+	finished := Semaphore new.
+	simulation
+		stopWhen: [ :model | model currentTimeStep >= 1000 ];
+		whenFinishedDo: [ finished signal ];
+		runAllStepsAfterEachIntervalDo: [
+			simulation currentTimeStep = 3 ifTrue: [ simulation pause ] ].
+	[
+		self waitUntilPaused.
+		step := simulation currentTimeStep.
+		(Delay forMilliseconds: 100) wait.
+		self assert: simulation currentTimeStep equals: step.
+		simulation resume.
+		self deny: (finished waitTimeoutSeconds: 5).
+		self assert: simulation currentTimeStep equals: 1000 ] ensure: [
+			simulation stopWhen: [ :model | true ].
+			simulation resume ]
+]
+
+{ #category : 'tests' }
 CMSimulationTest >> testASimulationIsRunningBetweenItsStepsUntilItFinishes [
 
 	| finished |
@@ -85,6 +107,29 @@ CMSimulationTest >> testInitializeSimulationResetsCurrentTimeStep [
 	simulation initializeSimulation.
 
 	self assert: simulation currentTimeStep equals: 0
+]
+
+{ #category : 'tests' }
+CMSimulationTest >> testPausingLetsTheCurrentStepFinish [
+	"The block after each step belongs to the step: pausing from it must not stop it in the middle"
+
+	| finished finishedItsStep |
+	finished := Semaphore new.
+	finishedItsStep := false.
+	simulation
+		stopWhen: [ :model | false ];
+		whenFinishedDo: [ finished signal ];
+		runAllStepsAfterEachIntervalDo: [
+				simulation currentTimeStep = 3 ifTrue: [
+							simulation pause.
+							finishedItsStep := true ] ].
+	[
+		self waitUntilPaused.
+		self assert: finishedItsStep.
+		self assert: simulation currentTimeStep equals: 3 ] ensure: [
+			simulation stopWhen: [ :model | true ].
+			simulation resume.
+			finished waitTimeoutSeconds: 5 ]
 ]
 
 { #category : 'tests' }
@@ -276,4 +321,16 @@ CMSimulationTest >> testStopWhen [
 
 	"Was the condition satisfied?"
 	self assert: (simulation cormasModel cells first hasOccupantsOfClass: CMMockGoat).
+]
+
+{ #category : 'running' }
+CMSimulationTest >> waitUntilPaused [
+	"Wait until the simulation has stopped between two steps, but not forever"
+
+	| tries |
+	tries := 0.
+	[ simulation isSimulationRunning and: [ tries < 100 ] ] whileTrue: [
+			(Delay forMilliseconds: 10) wait.
+			tries := tries + 1 ].
+	self deny: simulation isSimulationRunning
 ]

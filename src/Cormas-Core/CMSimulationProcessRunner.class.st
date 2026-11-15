@@ -8,35 +8,41 @@ Class {
 		'simulationBlock',
 		'stepsPerInterval',
 		'intervalDelay',
-		'whenFinishedBlock'
+		'whenFinishedBlock',
+		'shouldPause',
+		'isPaused',
+		'pauseSemaphore'
 	],
 	#category : 'Cormas-Core-Kernel',
 	#package : 'Cormas-Core',
 	#tag : 'Kernel'
 }
 
-{ #category : 'api - type of simulation' }
+{ #category : 'running' }
 CMSimulationProcessRunner >> beDefaultSimulation [
 
 	simulationBlock := [
-		[ stopCondition value: simulation cormasModel ] whileFalse: [
-			simulation runStep.
-			(Delay forMilliseconds: intervalDelay) wait ].
-		
-		whenFinishedBlock value ]
+		                   [ stopCondition value: simulation cormasModel ]
+			                   whileFalse: [
+					                   simulation runStep.
+					                   self waitWhilePaused.
+					                   (Delay forMilliseconds: intervalDelay) wait ].
+		                   whenFinishedBlock value ]
 ]
 
-{ #category : 'api - type of simulation' }
+{ #category : 'running' }
 CMSimulationProcessRunner >> beSimulationAfterEachIntervalDo: aBlock [
 	"Interval is a given number of steps after which we execute aBlock"
 
-	simulationBlock := [ 
-		[ stopCondition value: simulation cormasModel ] whileFalse: [
-			simulation runStep.
-			simulation currentTimeStep % stepsPerInterval = 0 ifTrue: [ aBlock value ].
-			(Delay forMilliseconds: intervalDelay) wait ].
-		
-		whenFinishedBlock value ]
+	simulationBlock := [
+		                   [ stopCondition value: simulation cormasModel ]
+			                   whileFalse: [
+					                   simulation runStep.
+					                   simulation currentTimeStep % stepsPerInterval
+					                   = 0 ifTrue: [ aBlock value ].
+					                   self waitWhilePaused.
+					                   (Delay forMilliseconds: intervalDelay) wait ].
+		                   whenFinishedBlock value ]
 ]
 
 { #category : 'accessing' }
@@ -51,7 +57,10 @@ CMSimulationProcessRunner >> initialize [
 	super initialize.
 	stepsPerInterval := 1.
 	intervalDelay := 0. "milliseconds"
-	whenFinishedBlock := [ "do nothing" ]
+	whenFinishedBlock := [ "do nothing" ].
+	shouldPause := false.
+	isPaused := false.
+	pauseSemaphore := Semaphore new
 ]
 
 { #category : 'accessing' }
@@ -74,23 +83,24 @@ CMSimulationProcessRunner >> isSimulationConfigured [
 
 { #category : 'testing' }
 CMSimulationProcessRunner >> isSimulationRunning [
-	"Answer whether the simulation runs its steps: its process has started, is not paused, and has not finished. Between two steps, the process waits, but the simulation still runs"
+	"Answer whether the simulation runs its steps: its process has started, has not finished, and has not stopped after a pause. A paused simulation runs until its current step is over. Between two steps, the process waits, but the simulation still runs"
 
 	simulationProcess ifNil: [ ^ false ].
-	^ simulationProcess isTerminated not and: [
-		  simulationProcess isSuspended not ]
+	^ simulationProcess isTerminated not and: [ isPaused not ]
 ]
 
-{ #category : 'api - processing' }
+{ #category : 'running' }
 CMSimulationProcessRunner >> pause [
+	"Stop the simulation once its current step is over, with what follows the step, so that the model is never left half changed"
 
-	simulationProcess suspend
+	shouldPause := true
 ]
 
-{ #category : 'api - running' }
+{ #category : 'running' }
 CMSimulationProcessRunner >> resume [
 
-	simulationProcess resume
+	shouldPause := false.
+	pauseSemaphore signal
 ]
 
 { #category : 'api - running' }
@@ -110,6 +120,15 @@ CMSimulationProcessRunner >> stepsPerInterval: aPositiveInteger [
 CMSimulationProcessRunner >> stopCondition: aFullBlockClosure [
 
 	stopCondition := aFullBlockClosure
+]
+
+{ #category : 'running' }
+CMSimulationProcessRunner >> waitWhilePaused [
+
+	[ shouldPause ] whileTrue: [
+			isPaused := true.
+			pauseSemaphore wait ].
+	isPaused := false
 ]
 
 { #category : 'enumerating' }
