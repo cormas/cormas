@@ -44,6 +44,15 @@ CMBlRouteElement class >> for: aLink of: aNetwork observedBy: anObserver [
 ]
 
 { #category : 'accessing' }
+CMBlRouteElement >> drawnKey [
+	"A link is drawn once for each network that highlights it"
+
+	^ {
+		  network.
+		  link }
+]
+
+{ #category : 'accessing' }
 CMBlRouteElement >> look [
 
 	^ observer lookOf: network

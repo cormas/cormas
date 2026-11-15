@@ -83,8 +83,7 @@ CMBlCellGroupElement >> rebuildCellElements [
 { #category : 'updating' }
 CMBlCellGroupElement >> refresh [
 
-	(cellElements collect: [ :each | each cell ]) asArray
-	= self cells asArray
+	self showsCurrentCells
 		ifTrue: [ cellElements do: [ :each | each refresh ] ]
 		ifFalse: [ self rebuildCellElements ]
 ]
@@ -93,4 +92,12 @@ CMBlCellGroupElement >> refresh [
 CMBlCellGroupElement >> setUpFor: anObject [
 
 	self refresh
+]
+
+{ #category : 'private' }
+CMBlCellGroupElement >> showsCurrentCells [
+	"Answer whether my cell elements are still those of my cells, which a new grid changes"
+
+	^ (cellElements collect: [ :each | each cell ]) asArray
+	  = self cells asArray
 ]

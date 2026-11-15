@@ -57,6 +57,19 @@ CMBlSpaceElementTest >> roadFrom: anEntity to: anotherEntity color: aColor [
 		  yourself
 ]
 
+{ #category : 'tests - links' }
+CMBlSpaceElementTest >> testALinkCreatedAfterTheAgentsIsDrawnUnderThem [
+
+	| cow element |
+	self gridWithNeighbourhood: 4.
+	cow := self newCowOn: (model cellAt: 2 at: 2).
+	element := CMBlSpaceElement for: model.
+	self roadFrom: cow to: (model cellAt: 2 at: 3) color: Color blue.
+	element update.
+	self assert: (self hexColorIn: element at: 48 @ 48) equals: 'FF0000'.
+	self assert: (self hexColorIn: element at: 55 @ 48) equals: '0000FF'
+]
+
 { #category : 'tests' }
 CMBlSpaceElementTest >> testAgentAppearsAtItsPositionInTheCell [
 
@@ -244,6 +257,26 @@ CMBlSpaceElementTest >> testAggregateWithoutAColorShowsItsCells [
 	form := self formOf: element.
 	self assert: (form colorAt: 48 @ 48) equals: Color black.
 	self assert: (form colorAt: 48 @ 32) blue > 0.9
+]
+
+{ #category : 'tests - links' }
+CMBlSpaceElementTest >> testAnAggregateShownAgainIsDrawnUnderTheLinks [
+
+	| element |
+	self gridWithNeighbourhood: 4.
+	self
+		roadFrom: (model cellAt: 2 at: 2)
+		to: (model cellAt: 2 at: 3)
+		color: Color blue.
+	self
+		aggregateOf: model cells
+		aspect: [ :look | look color: Color green ].
+	element := CMBlSpaceElement for: model.
+	element observer perspective hide: CMMockAggregate.
+	element update.
+	element observer perspective show: CMMockAggregate.
+	element update.
+	self assert: (self hexColorIn: element at: 55 @ 48) equals: '0000FF'
 ]
 
 { #category : 'tests' }

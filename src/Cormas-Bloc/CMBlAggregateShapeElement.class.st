@@ -113,6 +113,12 @@ CMBlAggregateShapeElement >> drawOutlineOn: aeCanvas [
 		drawFigure
 ]
 
+{ #category : 'accessing' }
+CMBlAggregateShapeElement >> drawnKey [
+
+	^ aggregate
+]
+
 { #category : 'updating' }
 CMBlAggregateShapeElement >> refresh [
 

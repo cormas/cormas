@@ -28,9 +28,11 @@ I draw the whole space of a Cormas model: its grid of cells, its aggregates on t
 ## Internal Representation
 
 - `cormasModel`: the model I draw.
-- `aggregateElements`: the elements of the aggregates, recreated by each update.
-- `linkElements`: the elements of the links, recreated by each update.
-- `agentElements`: the elements of the agents, recreated by each update.
+- `aggregateElements`: the elements of the visible aggregates, in drawing order.
+- `linkElements`: the elements of the visible links, in drawing order.
+- `agentElements`: the elements of the agents that have a cell.
+
+An update keeps the elements of the entities still shown and refreshes them, and only adds or removes those of new or gone entities, at their place in the drawing order: removing and adding children is costly next to the many cells.
 
 ## Navigation and export
 
@@ -118,6 +120,25 @@ CMBlSpaceElement >> dropAgentOfElement: anAgentElement [
 				moveTo: cellElement entity;
 				positionInCell:
 					(cellElement parentPointToLocal: center) / cellElement extent ]
+]
+
+{ #category : 'private' }
+CMBlSpaceElement >> elementsFor: someKeys reusing: someElements at: anIndex creating: aBlock [
+	"Answer an element for each key, in order, as my children from anIndex on. An element whose key is still there is kept and refreshed, an element for a new key is created by aBlock and added at its place, and the others are removed. Removing and adding children costs much more than refreshing them, because I have a child for every cell"
+
+	| byKey elements kept |
+	byKey := Dictionary new.
+	someElements do: [ :each | byKey at: each drawnKey put: each ].
+	elements := someKeys collect: [ :each |
+		            byKey at: each ifAbsent: [ aBlock value: each ] ].
+	kept := elements asIdentitySet.
+	self removeChildren:
+		(someElements reject: [ :each | kept includes: each ]).
+	elements withIndexDo: [ :each :index |
+			each parent == self
+				ifTrue: [ each refresh ]
+				ifFalse: [ self addChild: each at: anIndex + index - 1 ] ].
+	^ elements
 ]
 
 { #category : 'navigation' }
@@ -228,15 +249,10 @@ CMBlSpaceElement >> moveLinksOfDraggedElement [
 				each moveEnd: agent to: center ] ]
 ]
 
-{ #category : 'updating' }
+{ #category : 'private' }
 CMBlSpaceElement >> newElementForAgent: anAgent [
 
-	| cell |
-	cell := anAgent cell.
-	^ (CMBlAgentElement for: anAgent observedBy: observer)
-		  centerAt: (self gridPositionOfCell: cell) - gridOrigin
-			  + (anAgent positionInCell * (self cellExtentOf: cell));
-		  yourself
+	^ self place: (CMBlAgentElement for: anAgent observedBy: observer)
 ]
 
 { #category : 'initialization' }
@@ -259,35 +275,86 @@ CMBlSpaceElement >> panBy: aPoint [
 			self applyNavigation ]
 ]
 
+{ #category : 'private' }
+CMBlSpaceElement >> place: anAgentElement [
+	"Move anAgentElement to the position of its agent in its cell"
+
+	| agent cell |
+	agent := anAgentElement entity.
+	cell := agent cell.
+	^ anAgentElement
+		  centerAt: (self gridPositionOfCell: cell) - gridOrigin
+			  + (agent positionInCell * (self cellExtentOf: cell));
+		  yourself
+]
+
 { #category : 'updating' }
 CMBlSpaceElement >> refresh [
-	"Aggregates are added after the cells, links after the aggregates, the routes of networks after the links, and agents last, so that each appears on top of the previous ones"
+	"Aggregates come after the cells, links after the aggregates, the routes of networks after the links, and agents last, so that each appears on top of the previous ones. The elements of the entities still shown are kept and refreshed. A new grid adds its cells after my other children, so these are removed first"
 
-	self removeChildren: aggregateElements.
-	self removeChildren: linkElements.
-	self removeChildren: routeElements.
-	self removeChildren: agentElements.
+	| index |
+	self showsCurrentCells ifFalse: [ self removeElementsOverTheCells ].
 	super refresh.
-	aggregateElements := self visibleAggregates collect: [ :each |
+	index := self childrenCount - aggregateElements size
+	         - linkElements size - routeElements size
+	         - agentElements size + 1.
+	aggregateElements := self
+		                     elementsFor: self visibleAggregates
+		                     reusing: aggregateElements
+		                     at: index
+		                     creating: [ :each |
 		                     CMBlAggregateShapeElement
 			                     for: each
 			                     observedBy: observer ].
-	self addChildren: aggregateElements.
-	linkElements := self visibleLinks collect: [ :each |
+	index := index + aggregateElements size.
+	linkElements := self
+		                elementsFor: self visibleLinks
+		                reusing: linkElements
+		                at: index
+		                creating: [ :each |
 		                CMBlLinkElement for: each observedBy: observer ].
-	self addChildren: linkElements.
-	routeElements := self visibleNetworks flatCollect: [ :network |
-			                 (network links select: [ :each |
-				                  self isOnGrid: each ]) collect: [ :each |
-				                 CMBlRouteElement
-					                 for: each
-					                 of: network
-					                 observedBy: observer ] ].
-	self addChildren: routeElements.
-	agentElements := (cormasModel agents select: [ :each |
-		                  each isSituated ]) collect: [ :each |
-		                 self newElementForAgent: each ].
-	self addChildren: agentElements
+	index := index + linkElements size.
+	routeElements := self
+		                 elementsFor: self routes
+		                 reusing: routeElements
+		                 at: index
+		                 creating: [ :each |
+			                 CMBlRouteElement
+				                 for: each second
+				                 of: each first
+				                 observedBy: observer ].
+	index := index + routeElements size.
+	agentElements := self
+		                 elementsFor:
+		                 (cormasModel agents select: [ :each |
+			                  each isSituated ])
+		                 reusing: agentElements
+		                 at: index
+		                 creating: [ :each | self newElementForAgent: each ].
+	agentElements do: [ :each | self place: each ]
+]
+
+{ #category : 'private' }
+CMBlSpaceElement >> removeElementsOverTheCells [
+
+	self removeChildren:
+		aggregateElements , linkElements , routeElements , agentElements.
+	aggregateElements := #(  ).
+	linkElements := #(  ).
+	routeElements := #(  ).
+	agentElements := #(  )
+]
+
+{ #category : 'private' }
+CMBlSpaceElement >> routes [
+	"Answer a network and one of its links on the grid, for each link that a visible network highlights, in drawing order"
+
+	^ self visibleNetworks flatCollect: [ :network |
+			  (network links select: [ :each | self isOnGrid: each ]) collect: [
+					  :each |
+					  {
+						  network.
+						  each } ] ]
 ]
 
 { #category : 'export' }

@@ -123,6 +123,13 @@ CMBlElement >> crop: aSquareForm toCenter: anExtent [
 	^ aSquareForm copy: (origin extent: anExtent ceiling)
 ]
 
+{ #category : 'accessing' }
+CMBlElement >> drawnKey [
+	"Answer what I draw, so that a space element can keep me across its refreshes"
+
+	^ self entity
+]
+
 { #category : 'interaction' }
 CMBlElement >> entity [
 	"Answer the entity that a click on me is about, if any"

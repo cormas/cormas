@@ -53,16 +53,25 @@ Class {
 CMPerspective >> aspectFor: aClass [
 	"Answer the selector of the aspect that shows the instances of aClass: the choice for aClass, or for its nearest superclass that has one, or else its default aspect"
 
-	^ aClass withAllSuperclasses
-		  detect: [ :each | aspects includesKey: each ]
-		  ifFound: [ :each | aspects at: each ]
-		  ifNone: [ #aspectDefault: ]
+	^ self choiceIn: aspects for: aClass ifNone: [ #aspectDefault: ]
 ]
 
 { #category : 'private' }
 CMPerspective >> aspects [
 
 	^ aspects
+]
+
+{ #category : 'private' }
+CMPerspective >> choiceIn: aDictionary for: aClass ifNone: aBlock [
+	"Answer the choice in aDictionary for aClass, or for its nearest superclass that has one, or else the value of aBlock. It is asked for every entity at every refresh, so it walks up the superclasses without building a collection of them"
+
+	| class |
+	class := aClass.
+	[ class isNil ] whileFalse: [
+			aDictionary at: class ifPresent: [ :choice | ^ choice ].
+			class := class superclass ].
+	^ aBlock value
 ]
 
 { #category : 'choosing' }
@@ -114,10 +123,7 @@ CMPerspective >> isChosenFor: aClass [
 CMPerspective >> isVisible: aClass [
 	"Answer whether the instances of aClass are shown: the choice for aClass, or for its nearest superclass that has one, or else true"
 
-	^ aClass withAllSuperclasses
-		  detect: [ :each | visibilities includesKey: each ]
-		  ifFound: [ :each | visibilities at: each ]
-		  ifNone: [ true ]
+	^ self choiceIn: visibilities for: aClass ifNone: [ true ]
 ]
 
 { #category : 'accessing' }
