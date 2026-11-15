@@ -188,6 +188,25 @@ CMBlPresenterTest >> tearDown [
 ]
 
 { #category : 'tests' }
+CMBlPresenterTest >> testAnUpdateFromASimulationFinishesBeforeItReturns [
+	"A simulation updates its views from its own process, like this test, and changes the model again as soon as the update returns"
+
+	| application presenter element children |
+	self gridWithNeighbourhood: 4.
+	application := CMSimulationApplication new.
+	application cormasModel: model.
+	presenter := self openSpacePresenter: application.
+	element := presenter spaceBuilder.
+	self waitForTheInterface.
+	children := element childrenCount.
+	self newCowOn: (model cellAt: 2 at: 3).
+
+	element update.
+
+	self assert: element childrenCount equals: children + 1
+]
+
+{ #category : 'tests' }
 CMBlPresenterTest >> testArrowKeyPressArrivingFromMorphicPans [
 
 	| before element |

@@ -228,6 +228,18 @@ CMBlElement >> refresh [
 	self subclassResponsibility
 ]
 
+{ #category : 'updating' }
+CMBlElement >> refreshInSpaceAndWait [
+	"Refresh in the pulse process of my space, and wait until it is done, or until the space closes before it could refresh me"
+
+	| space done |
+	space := self space.
+	done := Semaphore new.
+	space defer: [ [ self refresh ] ensure: [ done signal ] ].
+	[ done waitTimeoutMilliseconds: 200 ] whileTrue: [
+		space isOpened ifFalse: [ ^ self ] ]
+]
+
 { #category : 'initialization' }
 CMBlElement >> setUpFor: anObject [
 
@@ -236,9 +248,13 @@ CMBlElement >> setUpFor: anObject [
 
 { #category : 'updating' }
 CMBlElement >> update [
-	"Show the current state of what I draw"
+	"Show the current state of what I draw. In a running space, I may only change in its pulse process. A simulation updates me from its own process and changes the model again as soon as I return, so it waits until I am refreshed"
 
-	self inSpaceDo: [ self refresh ]
+	(self isAttachedToSceneGraph and: [ self space host isRunning ])
+		ifFalse: [ ^ self refresh ].
+	self
+		ifPulseProcessActive: [ self refresh ]
+		else: [ self refreshInSpaceAndWait ]
 ]
 
 { #category : 'geometry' }
