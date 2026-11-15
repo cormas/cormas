@@ -956,9 +956,9 @@ CMModel >> initializeParameters [
 			ifTrue: [ parameter setDefaultValueFor: self ]
 			ifFalse: [ parameter setDefaultValueFor: self class ] ].
 		
-	"Class side parameters of entity classes"
+	"Parameters of entity classes"
 	self class allEntityClasses do: [ :eachClass |
-		eachClass resetClassSideParameters ]
+		eachClass resetParameters ]
 ]
 
 { #category : 'initialization' }
@@ -1029,7 +1029,7 @@ CMModel >> nameOfPerspective: aSelector [
 	^ ' ' join: words
 ]
 
-{ #category : 'instance creation - agents & objects' }
+{ #category : 'api' }
 CMModel >> newEntity: aClass [
 
 	<api>
@@ -1056,7 +1056,6 @@ Use this method only for instances of subclasses of #CMEntity. Regular Pharo obj
 		            yourself.
 
 	self addEntityToCollection: anEntity.
-	self setDefaultInstanceSideParameterValuesFor: anEntity.
 
 	^ anEntity
 ]
@@ -1355,19 +1354,6 @@ CMModel >> selectCellsOfLine: lineNumber [
 	Example: self ask: (self selectCellsOfLine: 2) toDo: #flash"
 
 	^ self spaceModel cellsOfRow: lineNumber
-]
-
-{ #category : 'initialization' }
-CMModel >> setDefaultInstanceSideParameterValuesFor: anEntity [
-
-	| relevantParameters |
-	
-	relevantParameters := self class allParameters select: [ :parameter |
-		parameter isInstanceSide and: [ 
-			anEntity isKindOf: parameter targetClass ] ].
-	
-	relevantParameters do: [ :parameter |
-		parameter setDefaultValueFor: anEntity ]
 ]
 
 { #category : 'init - spatial entities' }

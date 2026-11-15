@@ -35,7 +35,8 @@ Class {
 		'group'
 	],
 	#classInstVars : [
-		'currentId'
+		'currentId',
+		'instanceSideParameters'
 	],
 	#category : 'Cormas-Core-Entities',
 	#package : 'Cormas-Core',
@@ -79,10 +80,13 @@ CMEntity class >> genericEntities [
 	^ self withAllSubclasses select: [ :cl | cl package classes = kernel]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'parameters' }
 CMEntity class >> instanceSideParameters [
+	"Collected once, because each new entity needs them. A new model collects them again (see resetParameters), so that changes to their definitions are taken into account"
 
-	^ self parameters select: [ :p | p isInstanceSide ]
+	^ instanceSideParameters ifNil: [
+			  instanceSideParameters := self parameters select: [ :p |
+				                            p isInstanceSide ] ]
 ]
 
 { #category : 'testing' }
@@ -159,12 +163,15 @@ CMEntity class >> parameters [
 	^ parameters
 ]
 
-{ #category : 'initialization' }
-CMEntity class >> resetClassSideParameters [
+{ #category : 'parameters' }
+CMEntity class >> resetParameters [
+	"Set my class-side parameters to their default values, and collect my instance-side parameters again, since their definitions may have changed"
 
-	self parameters do: [ :parameter |
-		parameter isClassSide ifTrue: [ 
-			parameter setDefaultValueFor: self ] ]
+	| parameters |
+	parameters := self parameters.
+	instanceSideParameters := parameters select: [ :p | p isInstanceSide ].
+	parameters do: [ :parameter |
+		parameter isClassSide ifTrue: [ parameter setDefaultValueFor: self ] ]
 ]
 
 { #category : 'pragmas' }

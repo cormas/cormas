@@ -171,6 +171,19 @@ CMModelTest >> testCreateGridXYNeighborHoodClosed [
 	self assert: (model selectCellsOfLine: 1) size equals: 4
 ]
 
+{ #category : 'tests' }
+CMModelTest >> testCreatingAThousandAgentsTakesLessThanATenthOfASecond [
+
+	| mockModel agentClass |
+	mockModel := CMMockModel new.
+	mockModel initFixed.
+	agentClass := CMMockModel allEntityClasses detect: [ :each |
+		              each inheritsFrom: CMAgent ].
+	self assert:
+		[ 1000 timesRepeat: [ mockModel newEntity: agentClass ] ] timeToRun
+		< 100 milliSeconds
+]
+
 { #category : 'tests - removing entities' }
 CMModelTest >> testDeletingAnAgentTellsItOnce [
 
