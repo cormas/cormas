@@ -22,6 +22,24 @@ CMSimulationTest >> setUp [
 ]
 
 { #category : 'tests' }
+CMSimulationTest >> testASimulationIsRunningBetweenItsStepsUntilItFinishes [
+
+	| finished |
+	finished := Semaphore new.
+	simulation
+		stopWhen: [ :model | false ];
+		whenFinishedDo: [ finished signal ];
+		runAllStepsAfterEachIntervalDo: [ (Delay forMilliseconds: 20) wait ].
+	[
+		(Delay forMilliseconds: 50) wait.
+		self assert: simulation isSimulationRunning ] ensure: [
+			simulation stopWhen: [ :model | true ].
+			finished waitTimeoutSeconds: 5 ].
+	(Delay forMilliseconds: 50) wait.
+	self deny: simulation isSimulationRunning
+]
+
+{ #category : 'tests' }
 CMSimulationTest >> testCurrenTimeStepStartsWithZero [
 
 	self assert: simulation currentTimeStep equals: 0

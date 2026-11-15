@@ -64,6 +64,16 @@ Class {
 	#package : 'Cormas-Bloc'
 }
 
+{ #category : 'instance creation' }
+CMBlSpaceElement class >> emptyFor: aCormasModel observedBy: anObserver [
+	"Answer an element that shows aCormasModel with the looks that anObserver fills, but only from its first update. A running simulation may be changing the model now"
+
+	^ self new
+		  observer: anObserver;
+		  setUpEmptyFor: aCormasModel;
+		  yourself
+]
+
 { #category : 'examples' }
 CMBlSpaceElement class >> exampleMockModel [
 
@@ -366,6 +376,13 @@ CMBlSpaceElement >> saveToPngFile: aFileReference [
 	aFileReference ensureDelete.
 	aFileReference binaryWriteStreamDo: [ :stream |
 		PNGReadWriter putForm: form onStream: stream ]
+]
+
+{ #category : 'initialization' }
+CMBlSpaceElement >> setUpEmptyFor: aCormasModel [
+	"Show nothing of aCormasModel until my first update"
+
+	cormasModel := aCormasModel
 ]
 
 { #category : 'initialization' }

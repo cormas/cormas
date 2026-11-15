@@ -147,7 +147,7 @@ CMSimulationRunnerPresenter >> connectPresenters [
 	notebook whenSelectedPageChangedDo: [ :page :previous |
 			page == newViewPage
 				ifTrue: [ self newViewPageSelectedAfter: previous ]
-				ifFalse: [ self updateSelectedNotebookPage ] ].
+				ifFalse: [ self showSelectedNotebookPage ] ].
 	notebook whenPageRemovedDo: [ :page |
 			pages keysAndValuesDo: [ :view :each |
 				each == page ifTrue: [ self closeView: view ] ] ]
@@ -485,6 +485,15 @@ CMSimulationRunnerPresenter >> setSimulationIntervalDelay [
 CMSimulationRunnerPresenter >> setStepsPerInterval [
 
 	self simulation stepsPerInterval: displayEveryNumberPresenter number.
+]
+
+{ #category : 'update presenters' }
+CMSimulationRunnerPresenter >> showSelectedNotebookPage [
+	"Refresh the page that the user just selected, unless a simulation is running: its next displayed step refreshes the page, and a refresh asked by the interface must not overlap a step"
+
+	(self simulation isNotNil and: [ self simulation isSimulationRunning ])
+		ifTrue: [ ^ self ].
+	self updateSelectedNotebookPage
 ]
 
 { #category : 'views' }

@@ -72,11 +72,13 @@ CMSimulationProcessRunner >> isSimulationConfigured [
 	^ simulationBlock isNotNil
 ]
 
-{ #category : 'api - running' }
+{ #category : 'testing' }
 CMSimulationProcessRunner >> isSimulationRunning [
+	"Answer whether the simulation runs its steps: its process has started, is not paused, and has not finished. Between two steps, the process waits, but the simulation still runs"
 
 	simulationProcess ifNil: [ ^ false ].
-	^ simulationProcess isActive
+	^ simulationProcess isTerminated not and: [
+		  simulationProcess isSuspended not ]
 ]
 
 { #category : 'api - processing' }

@@ -121,6 +121,23 @@ CMSimulationRunnerPresenterTest >> testANewViewTakesTheFirstFreeTitle [
 ]
 
 { #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testAViewAddedWhileTheSimulationRunsShowsNothingUntilItsNextStep [
+	"Building a view reads the model, which a running simulation is changing. The next displayed step fills the view"
+
+	| finished view |
+	finished := Semaphore new.
+	runner simulation
+		stopWhen: [ :model | false ];
+		whenFinishedDo: [ finished signal ];
+		runAllStepsAfterEachIntervalDo: [ (Delay forMilliseconds: 20) wait ].
+	[
+		view := runner newView.
+		self assert: view spaceBuilder childrenCount equals: 0 ] ensure: [
+			runner simulation stopWhen: [ :model | true ].
+			finished waitTimeoutSeconds: 5 ]
+]
+
+{ #category : 'tests' }
 CMSimulationRunnerPresenterTest >> testAViewKeepsItsTitleWhenItMovesBackToTheTabs [
 
 	| moved |

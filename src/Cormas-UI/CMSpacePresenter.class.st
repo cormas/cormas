@@ -91,8 +91,9 @@ CMSpacePresenter >> baseTitle [
 
 { #category : 'aspects' }
 CMSpacePresenter >> choicesChanged [
+	"While a simulation runs, its next displayed step shows the new choices"
 
-	spaceBuilder update.
+	self isSimulationRunning ifFalse: [ spaceBuilder update ].
 	aspects refresh.
 	resetButton enabled: observer isModified.
 	self showTitle.
@@ -227,11 +228,17 @@ CMSpacePresenter >> host: aSimulationRunner [
 
 { #category : 'initialization' }
 CMSpacePresenter >> initializeDiagram [
-	"Create the view of the space and the presenter that embeds it. A choice made in the context menu of an entity may give a class a choice of its own, and so a row of its own"
+	"Create the view of the space and the presenter that embeds it. While a simulation runs, the view is filled by its next displayed step. A choice made in the context menu of an entity may give a class a choice of its own, and so a row of its own"
 
-	spaceBuilder := CMBlSpaceElement
-		                for: self cormasModel
-		                observedBy: observer.
+	spaceBuilder := self isSimulationRunning
+		                ifTrue: [
+		                CMBlSpaceElement
+			                emptyFor: self cormasModel
+			                observedBy: observer ]
+		                ifFalse: [
+		                CMBlSpaceElement
+			                for: self cormasModel
+			                observedBy: observer ].
 	spaceBuilder whenAspectsChangedDo: [
 			aspects updateRows.
 			self choicesChanged ].
@@ -284,6 +291,14 @@ CMSpacePresenter >> initializeToolbar [
 CMSpacePresenter >> isInWindow [
 
 	^ detachedWindow isNotNil
+]
+
+{ #category : 'aspects' }
+CMSpacePresenter >> isSimulationRunning [
+	"Answer whether a simulation is changing the model. Then only its displayed steps refresh me, so that I never read the model while it changes"
+
+	^ self application simulation isNotNil and: [
+		  self application simulation isSimulationRunning ]
 ]
 
 { #category : 'actions' }

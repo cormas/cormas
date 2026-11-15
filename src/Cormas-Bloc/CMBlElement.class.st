@@ -248,13 +248,14 @@ CMBlElement >> setUpFor: anObject [
 
 { #category : 'updating' }
 CMBlElement >> update [
-	"Show the current state of what I draw. In a running space, I may only change in its pulse process. A simulation updates me from its own process and changes the model again as soon as I return, so it waits until I am refreshed"
+	"Show the current state of what I draw. In a running space, I may only change in its pulse process. A simulation updates me from its own process and changes the model again as soon as I return, so it waits until I am refreshed. The UI never waits: it may be needed to show the space again"
 
 	(self isAttachedToSceneGraph and: [ self space host isRunning ])
 		ifFalse: [ ^ self refresh ].
-	self
-		ifPulseProcessActive: [ self refresh ]
-		else: [ self refreshInSpaceAndWait ]
+	self ifPulseProcessActive: [ self refresh ] else: [
+			Processor activeProcess == UIManager default uiProcess
+				ifTrue: [ self space defer: [ self refresh ] ]
+				ifFalse: [ self refreshInSpaceAndWait ] ]
 ]
 
 { #category : 'geometry' }

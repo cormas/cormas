@@ -557,6 +557,21 @@ CMBlPresenterTest >> testSpacePresenterSavesPicture [
 ]
 
 { #category : 'tests' }
+CMBlPresenterTest >> testSwitchingBackToTheSpaceKeepsTheInterfaceResponsive [
+
+	| notebook space |
+	notebook := (self runnerOf: self openSimulationPresenter) notebook.
+	self waitForTheInterface.
+	space := notebook selectedPage.
+	UIManager default defer: [
+			notebook selectPage:
+				(notebook pages detect: [ :each | each title = 'Charts' ]) ].
+	self waitForTheInterface.
+	UIManager default defer: [ notebook selectPage: space ].
+	self waitForTheInterface
+]
+
+{ #category : 'tests' }
 CMBlPresenterTest >> testSwitchingTabsOfTheSideMenuKeepsTheMinimumWidth [
 
 	| presenter buttons minimum |
