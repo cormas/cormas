@@ -90,7 +90,7 @@ CMBlAgentElementTest >> testHexagon [
 ]
 
 { #category : 'tests' }
-CMBlAgentElementTest >> testShowsColorOfPov [
+CMBlAgentElementTest >> testShowsTheColorOfItsLook [
 
 	| cow |
 	cow := CMMockModel new newEntity: CMMockCow.

@@ -223,15 +223,15 @@ CMBlPresenterTest >> testClosingTheSideMenuLetsTheWindowShrinkAgain [
 
 	| presenter narrowest button |
 	presenter := self openSimulationPresenter.
-	300 milliSeconds wait.
+	self waitForTheInterface.
 	window window extent: 200 @ 700.
 	narrowest := window window width.
 	button := (self sideMenuButtonsOf: presenter) first.
 	button state: true.
-	300 milliSeconds wait.
+	self waitForTheInterface.
 
 	button state: false.
-	300 milliSeconds wait.
+	self waitForTheInterface.
 	window window extent: 200 @ 700.
 
 	self assert: window window width equals: narrowest
@@ -665,6 +665,16 @@ CMBlPresenterTest >> testWindowCannotBeNarrowerThanItsContentWithTheSideMenuOpen
 CMBlPresenterTest >> themeBackground [
 
 	^ Smalltalk ui theme backgroundColor asHexString
+]
+
+{ #category : 'private' }
+CMBlPresenterTest >> waitForTheInterface [
+	"Wait until the interface has run what was deferred so far"
+
+	| done |
+	done := Semaphore new.
+	UIManager default defer: [ done signal ].
+	self deny: (done waitTimeoutMilliseconds: 2000)
 ]
 
 { #category : 'private' }

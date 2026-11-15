@@ -90,24 +90,6 @@ CMBlCellElementTest >> testPointyTopHexagon [
 ]
 
 { #category : 'tests' }
-CMBlCellElementTest >> testShowsColorOfPov [
-
-	| cell |
-	self gridWithNeighbourhood: 4.
-	cell := model cellAt: 1 at: 1.
-
-	self
-		assert: (self hexColorIn: (CMBlCellElement for: cell) at: 16 @ 16)
-		equals: '000000'.
-
-	cell initAlive.
-
-	self
-		assert: (self hexColorIn: (CMBlCellElement for: cell) at: 16 @ 16)
-		equals: 'FFFFFF'
-]
-
-{ #category : 'tests' }
 CMBlCellElementTest >> testShowsOccupantAtItsPositionInTheCell [
 
 	| cell element |
@@ -135,6 +117,24 @@ CMBlCellElementTest >> testShowsOccupants [
 	self
 		assert: (self hexColorIn: (CMBlCellElement for: cell) at: 4 @ 4)
 		equals: '000000'
+]
+
+{ #category : 'tests' }
+CMBlCellElementTest >> testShowsTheColorOfItsLook [
+
+	| cell |
+	self gridWithNeighbourhood: 4.
+	cell := model cellAt: 1 at: 1.
+
+	self
+		assert: (self hexColorIn: (CMBlCellElement for: cell) at: 16 @ 16)
+		equals: '000000'.
+
+	cell initAlive.
+
+	self
+		assert: (self hexColorIn: (CMBlCellElement for: cell) at: 16 @ 16)
+		equals: 'FFFFFF'
 ]
 
 { #category : 'tests' }

@@ -418,7 +418,7 @@ CMBlSpaceElementTest >> testLinkToAnInvisibleEntityIsDrawn [
 		        locatedAt: (model cellAt: 2 at: 2).
 	self roadFrom: goat to: (model cellAt: 2 at: 3) color: Color blue.
 	element := CMBlSpaceElement for: model.
-	element observer perspective show: CMMockGoat as: #aspectInvisible:.
+	element observer perspective hide: CMMockGoat.
 	element update.
 	self assert: (self hexColorIn: element at: 48 @ 48) equals: '0000FF'
 ]
@@ -691,7 +691,7 @@ CMBlSpaceElementTest >> testUpdateFollowsTheAspectChosenForACellClass [
 	| element |
 	self gridWithNeighbourhood: 4.
 	element := CMBlSpaceElement for: model.
-	element observer perspective show: CMMockCell as: #aspectInvisible:.
+	element observer perspective hide: CMMockCell.
 	element update.
 	self assert: (self isTransparentIn: element at: 80 @ 48)
 ]
@@ -707,7 +707,7 @@ CMBlSpaceElementTest >> testUpdateFollowsTheAspectChosenForALinkClass [
 		color: Color blue.
 	element := CMBlSpaceElement for: model.
 	self assert: (self hexColorIn: element at: 52 @ 48) equals: '0000FF'.
-	element observer perspective show: CMMockRoad as: #aspectInvisible:.
+	element observer perspective hide: CMMockRoad.
 	element update.
 	self assert: (self hexColorIn: element at: 52 @ 48) equals: '000000'
 ]
@@ -722,8 +722,7 @@ CMBlSpaceElementTest >> testUpdateFollowsTheAspectChosenForAnAggregateClass [
 		aspect: [ :look | look color: Color blue ].
 	element := CMBlSpaceElement for: model.
 	element observer perspective
-		show: CMMockAggregate
-		as: #aspectInvisible:.
+		hide: CMMockAggregate.
 	element update.
 	self
 		assert: ((self formOf: element) colorAt: 48 @ 48)

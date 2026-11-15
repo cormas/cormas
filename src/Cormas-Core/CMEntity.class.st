@@ -20,14 +20,8 @@ Instance Variables:
 
 Class Instance Variables:
 	isGeneric	<Boolean>  comment
-	activePov	<Symbol>  The current pov. ex: #pov
-	colorsDict	<Dictionary>  a Dictionary with the ColorValue of the activePov.
-				ex: Dictionary (#alive->(ColorValue red: 0.0 green: 0.670004 blue: 0.0) 
-									    #dead->ColorValue black )
 	image	<Image>  of the entity
-	pdvDict	<Dictionary>  ex: Dictionary (#pov->OrderedCollection () )
 	activeProbes	<OrderedCollection>  ex: OrderedCollection (#isAlive)
-
 "
 Class {
 	#name : 'CMEntity',
@@ -134,6 +128,18 @@ CMEntity class >> modelClass [
 		ifNone: [ nil ]
 ]
 
+{ #category : 'aspects' }
+CMEntity class >> nameOfAspect: aSelector [
+	"Answer the words of aSelector without its aspect prefix and its colon: #aspectClassName: is named 'Class name'"
+
+	| words |
+	words := (((aSelector withoutPrefix: 'aspect') withoutSuffix: ':')
+		          piecesCutWhere: [ :a :b | b isUppercase ]) collect: [
+		         :each | each asLowercase ].
+	words at: 1 put: words first capitalized.
+	^ ' ' join: words
+]
+
 { #category : 'accessing' }
 CMEntity class >> parameters [
 	"Collect all parameters of this entity. Those are all parameters defined by its class or any of its superclasses. If parameter of a superclass is redefined by one of its subclasses, keep only the final definition"
@@ -203,13 +209,6 @@ CMEntity >> aspectId: look [
 
 	<aspect>
 	look colorGroupedBy: self id
-]
-
-{ #category : 'aspects' }
-CMEntity >> aspectInvisible: look [
-
-	<aspect>
-	look beInvisible
 ]
 
 { #category : 'accessing' }

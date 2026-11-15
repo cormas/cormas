@@ -1,10 +1,11 @@
 "
-I am a choice of one aspect for each class of entities, such as ""the ecologist's perspective"": vegetation by biomass, foragers by energy. A view shows the simulation from one perspective, so two views with two perspectives show the same simulation from two points of view.
+I am a choice of one aspect for each class of entities, and of the classes that are hidden, such as ""the ecologist's perspective"": vegetation by biomass, foragers by energy. A view shows the simulation from one perspective, so two views with two perspectives show the same simulation in two ways.
 
 ## Responsibility:
 
 - Remember which aspect is chosen for which class, and check that the class has that aspect.
 - Answer the aspect of any class: the choice made for the class itself, or for its nearest superclass, or else its default aspect.
+- Answer whether a class is shown, in the same way. A hidden class keeps its aspect for when it is shown again.
 
 ## Collaborators:
 
@@ -16,6 +17,8 @@ I am a choice of one aspect for each class of entities, such as ""the ecologist'
 
 - `show:as:` chooses an aspect for a class and its subclasses.
 - `aspectFor:` answers the selector of the aspect of a class.
+- `hide:`, `show:` and `isVisible:` for the classes that are hidden.
+- `forget:` removes the choice of aspect for a class, which then follows its superclass.
 
 A new perspective is empty: every class shows its default aspect.
 
@@ -30,6 +33,7 @@ perspectiveEcologist
 ## Internal Representation
 
 - `aspects`: a `Dictionary` from a class to the selector of the aspect chosen for it.
+- `visibilities`: a `Dictionary` from a class to whether it is shown, for the classes that were hidden or shown.
 - `name`: the name shown to users, given by `CMModel>>perspectiveNamed:` after the method that defines me, and empty for a perspective made in a view.
 "
 Class {
@@ -37,7 +41,8 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'aspects',
-		'name'
+		'name',
+		'visibilities'
 	],
 	#category : 'Cormas-Core-Look',
 	#package : 'Cormas-Core',
@@ -54,12 +59,57 @@ CMPerspective >> aspectFor: aClass [
 		  ifNone: [ #aspectDefault: ]
 ]
 
+{ #category : 'private' }
+CMPerspective >> aspects [
+
+	^ aspects
+]
+
+{ #category : 'choosing' }
+CMPerspective >> forget: aClass [
+	"Remove the choice made for aClass, so that its instances follow the choice for its superclass"
+
+	aspects removeKey: aClass ifAbsent: [ ]
+]
+
+{ #category : 'testing' }
+CMPerspective >> hasChoiceFor: aClass [
+	"Answer whether a choice was made for aClass itself, rather than inherited from a superclass"
+
+	^ aspects includesKey: aClass
+]
+
+{ #category : 'testing' }
+CMPerspective >> hasSameChoicesAs: aPerspective [
+
+	^ aspects = aPerspective aspects and: [
+		  visibilities = aPerspective visibilities ]
+]
+
+{ #category : 'choosing' }
+CMPerspective >> hide: aClass [
+	"Hide the instances of aClass and of its subclasses, unless a subclass is shown. Their aspect is kept for when they are shown again"
+
+	visibilities at: aClass put: false
+]
+
 { #category : 'initialization' }
 CMPerspective >> initialize [
 
 	super initialize.
 	aspects := Dictionary new.
+	visibilities := Dictionary new.
 	name := ''
+]
+
+{ #category : 'testing' }
+CMPerspective >> isVisible: aClass [
+	"Answer whether the instances of aClass are shown: the choice for aClass, or for its nearest superclass that has one, or else true"
+
+	^ aClass withAllSuperclasses
+		  detect: [ :each | visibilities includesKey: each ]
+		  ifFound: [ :each | visibilities at: each ]
+		  ifNone: [ true ]
 ]
 
 { #category : 'accessing' }
@@ -79,7 +129,17 @@ CMPerspective >> name: aString [
 CMPerspective >> postCopy [
 
 	super postCopy.
-	aspects := aspects copy
+	aspects := aspects copy.
+	visibilities := visibilities copy
+]
+
+{ #category : 'choosing' }
+CMPerspective >> show: aClass [
+	"Show the instances of aClass again, with their aspect. If a superclass is hidden, only aClass and its subclasses are shown"
+
+	visibilities removeKey: aClass ifAbsent: [ ].
+	(self isVisible: aClass) ifFalse: [
+		visibilities at: aClass put: true ]
 ]
 
 { #category : 'accessing' }
@@ -94,4 +154,10 @@ CMPerspective >> show: aClass as: aSelector [
 						 (', ' join:
 							  (aClass aspectSelectors collect: [ :each | '#' , each ])) }) ].
 	aspects at: aClass put: aSelector
+]
+
+{ #category : 'private' }
+CMPerspective >> visibilities [
+
+	^ visibilities
 ]

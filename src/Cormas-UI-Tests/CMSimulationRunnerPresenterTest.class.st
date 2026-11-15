@@ -1,5 +1,5 @@
 "
-I check that a simulation runner shows any number of views of the same simulation, in tabs or in windows of their own, each from its own point of view.
+I check that a simulation runner shows any number of views of the same simulation, in tabs or in windows of their own, each with its own choices.
 "
 Class {
 	#name : 'CMSimulationRunnerPresenterTest',
@@ -43,15 +43,24 @@ CMSimulationRunnerPresenterTest >> testADuplicateStartsWithTheChoicesOfItsViewAn
 
 	| original duplicate |
 	original := runner views first.
-	original observer perspective show: CMMockCow as: #aspectInvisible:.
+	original observer perspective hide: CMMockCow.
 	duplicate := runner duplicateView: original.
+	self deny: (duplicate observer perspective isVisible: CMMockCow).
+	duplicate observer perspective show: CMMockCow.
+	self deny: (original observer perspective isVisible: CMMockCow)
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testANewSimulationKeepsTheModifiedChoicesOfItsViews [
+
+	| view |
+	view := runner newViewWith: #perspectiveHiddenCows.
+	view observer perspective show: CMMockCow.
+	runner initializeNotebookPages.
+	self assert: runner views last observer isModified.
 	self
-		assert: (duplicate observer perspective aspectFor: CMMockCow)
-		equals: #aspectInvisible:.
-	duplicate observer perspective show: CMMockCow as: #aspectDefault:.
-	self
-		assert: (original observer perspective aspectFor: CMMockCow)
-		equals: #aspectInvisible:
+		assert: runner views last observer original name
+		equals: 'Hidden cows'
 ]
 
 { #category : 'tests' }
@@ -66,9 +75,7 @@ CMSimulationRunnerPresenterTest >> testANewViewCanShowANamedPerspective [
 	| view |
 	view := runner newViewWith: #perspectiveHiddenCows.
 	self assert: view title equals: 'Space — Hidden cows'.
-	self
-		assert: (view observer perspective aspectFor: CMMockCow)
-		equals: #aspectInvisible:
+	self deny: (view observer perspective isVisible: CMMockCow)
 ]
 
 { #category : 'tests' }
@@ -139,14 +146,69 @@ CMSimulationRunnerPresenterTest >> testAViewMovedToAWindowKeepsItsChoices [
 
 	| view moved |
 	view := runner views first.
-	view observer perspective show: CMMockCow as: #aspectInvisible:.
+	view observer perspective hide: CMMockCow.
 	moved := runner moveToWindow: view.
 	windows add: moved detachedWindow.
 	self assert: moved isInWindow.
-	self
-		assert: (moved observer perspective aspectFor: CMMockCow)
-		equals: #aspectInvisible:.
+	self deny: (moved observer perspective isVisible: CMMockCow).
 	self assert: runner views size equals: 1
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testAViewOffersThePerspectivesOfTheModel [
+
+	| dropList |
+	dropList := runner views first perspectiveDropList.
+	self
+		assert:
+			(dropList items collect: [ :each | dropList display value: each ])
+				asArray
+		equals: #( 'None' 'Hidden cows' )
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testAViewWhoseChoicesDifferFromItsPerspectiveIsMarkedAsModified [
+
+	| view moved |
+	view := runner newViewWith: #perspectiveHiddenCows.
+	(view aspects rows detect: [ :each | each entityClass = CMMockCow ])
+		visibilityCheckBox state: true.
+	self
+		assert:
+		(runner notebook pages at: runner notebook pages size - 1) title
+		equals: 'Space — Hidden cows (modified)'.
+	moved := runner moveToWindow: view.
+	windows add: moved detachedWindow.
+	self
+		assert: moved detachedWindow title
+		equals: 'Space — Hidden cows (modified)'
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testChoosingAPerspectiveInAViewRetitlesIt [
+
+	| view |
+	view := runner views first.
+	view perspectiveDropList selectIndex: 2.
+	self assert: view title equals: 'Space — Hidden cows'.
+	self
+		assert:
+		(runner notebook pages collect: [ :each | each title ]) asArray
+		equals: #( 'Data' 'Charts' 'Inspector' 'Space — Hidden cows'
+			   '' )
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testChoosingAPerspectiveInAViewShowsIt [
+
+	| view |
+	view := runner views first.
+	view perspectiveDropList selectIndex: 2.
+	self deny: (view observer perspective isVisible: CMMockCow).
+	self deny:
+		(view aspects rows detect: [ :each | each entityClass = CMMockCow ])
+			visibilityCheckBox state.
+	self deny: view observer isModified
 ]
 
 { #category : 'tests' }
@@ -210,6 +272,26 @@ CMSimulationRunnerPresenterTest >> testNewViewsAreNumbered [
 	self
 		assert: (runner views collect: [ :each | each title ]) asArray
 		equals: #( 'Space' 'Space (2)' 'Space (3)' )
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testResetInAViewGoesBackToItsPerspective [
+
+	| view |
+	view := runner newViewWith: #perspectiveHiddenCows.
+	self deny: view resetButton isEnabled.
+	(view aspects rows detect: [ :each | each entityClass = CMMockCow ])
+		visibilityCheckBox state: true.
+	self assert: view resetButton isEnabled.
+	view resetButton click.
+	self deny:
+		(view aspects rows detect: [ :each | each entityClass = CMMockCow ])
+			visibilityCheckBox state.
+	self deny: view observer isModified.
+	self
+		assert:
+		(runner notebook pages at: runner notebook pages size - 1) title
+		equals: 'Space — Hidden cows'
 ]
 
 { #category : 'tests' }

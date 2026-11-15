@@ -26,16 +26,14 @@ CMModelTest >> testAModelListsItsPerspectives [
 		equals: #( #perspectiveHiddenCows )
 ]
 
-{ #category : 'tests - perspectives' }
+{ #category : 'tests' }
 CMModelTest >> testAPerspectiveIsNamedAfterItsMethod [
 
 	| perspective |
 	perspective := CMMockModel new perspectiveNamed:
 		               #perspectiveHiddenCows.
 	self assert: perspective name equals: 'Hidden cows'.
-	self
-		assert: (perspective aspectFor: CMMockCow)
-		equals: #aspectInvisible:
+	self deny: (perspective isVisible: CMMockCow)
 ]
 
 { #category : 'tests - perspectives' }

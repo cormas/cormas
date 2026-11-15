@@ -38,7 +38,8 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'perspective',
-		'looks'
+		'looks',
+		'original'
 	],
 	#category : 'Cormas-Core-Look',
 	#package : 'Cormas-Core',
@@ -49,21 +50,40 @@ Class {
 CMObserver >> initialize [
 
 	super initialize.
-	perspective := CMPerspective new.
+	self perspective: CMPerspective new.
 	looks := WeakIdentityKeyDictionary new
+]
+
+{ #category : 'testing' }
+CMObserver >> isModified [
+	"Answer whether my choices differ from the perspective I started from"
+
+	^ (perspective hasSameChoicesAs: original) not
 ]
 
 { #category : 'accessing' }
 CMObserver >> lookOf: anEntity [
-	"Answer the look of anEntity, filled again from its current attributes by the aspect that my perspective chooses for its class"
+	"Answer the look of anEntity, filled again from its current attributes by the aspect that my perspective chooses for its class, or invisible if its class is hidden"
 
 	| look |
 	look := looks
 		        at: anEntity
 		        ifAbsentPut: [ anEntity class lookClass new ].
 	look reset.
-	anEntity perform: (perspective aspectFor: anEntity class) with: look.
+	(perspective isVisible: anEntity class)
+		ifTrue: [
+			anEntity
+				perform: (perspective aspectFor: anEntity class)
+				with: look ]
+		ifFalse: [ look beInvisible ].
 	^ look
+]
+
+{ #category : 'accessing' }
+CMObserver >> original [
+	"Answer the perspective I started from"
+
+	^ original
 ]
 
 { #category : 'accessing' }
@@ -74,8 +94,10 @@ CMObserver >> perspective [
 
 { #category : 'accessing' }
 CMObserver >> perspective: aPerspective [
+	"Start from aPerspective. My choices change a copy of it, so that I can tell whether they differ from it, and go back to it"
 
-	perspective := aPerspective
+	original := aPerspective.
+	perspective := aPerspective copy
 ]
 
 { #category : 'initialization' }
@@ -85,4 +107,11 @@ CMObserver >> postCopy [
 	super postCopy.
 	perspective := perspective copy.
 	looks := WeakIdentityKeyDictionary new
+]
+
+{ #category : 'choosing' }
+CMObserver >> reset [
+	"Go back to the perspective I started from"
+
+	perspective := original copy
 ]

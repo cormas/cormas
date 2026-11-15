@@ -85,7 +85,9 @@ CMSimulationRunnerPresenter >> addTab: aView [
 
 	| page |
 	views add: aView.
-	page := SpNotebookPage title: aView title provider: [ aView ].
+	page := SpNotebookPage
+		        title: aView displayedTitle
+		        provider: [ aView ].
 	page beCloseable.
 	pages at: aView put: page.
 	notebook removePage: newViewPage.
@@ -231,13 +233,15 @@ CMSimulationRunnerPresenter >> fitDiagram [
 ]
 
 { #category : 'views' }
-CMSimulationRunnerPresenter >> freeTitleFrom: aString [
-	"Answer aString, or aString numbered when a view already has that title"
+CMSimulationRunnerPresenter >> freeTitleFrom: aString for: aView [
+	"Answer aString, or aString numbered when another view already has that title"
 
 	| title number |
 	title := aString.
 	number := 1.
-	[ views anySatisfy: [ :each | each title = title ] ] whileTrue: [
+	[
+	views anySatisfy: [ :each |
+		each ~~ aView and: [ each title = title ] ] ] whileTrue: [
 			number := number + 1.
 			title := aString , ' (' , number printString , ')' ].
 	^ title
@@ -259,9 +263,9 @@ CMSimulationRunnerPresenter >> hideSettings [
 CMSimulationRunnerPresenter >> initializeNotebookPages [
 	"Show the data and the charts of a new simulation, then its views and a last tab that adds a view. The views keep the choices they had for the previous simulation"
 
-	| perspectives |
-	perspectives := (views collect: [ :each | each observer perspective ])
-		                ifEmpty: [ { CMPerspective new } ].
+	| observers |
+	observers := (views collect: [ :each | each observer copy ])
+		             ifEmpty: [ { CMObserver new } ].
 	self closeAllViews.
 	chartPresenter := self instantiate: CMChartPresenter.
 
@@ -291,10 +295,7 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 			 provider: [ StInspectorPresenter onObject: self simulation ]).
 	notebook addPage: newViewPage.
 
-	perspectives do: [ :each |
-			self addViewObservedBy: (CMObserver new
-					 perspective: each;
-					 yourself) ].
+	observers do: [ :each | self addViewObservedBy: each ].
 	notebook selectPage: (pages at: views first)
 ]
 
@@ -402,19 +403,24 @@ CMSimulationRunnerPresenter >> newViewObservedBy: anObserver [
 	view := (self instantiate: CMSpacePresenter on: anObserver)
 		        host: self;
 		        yourself.
-	view title: (self freeTitleFrom: view baseTitle).
+	view title: (self freeTitleFrom: view baseTitle for: view).
+	view
+		whenPerspectiveChangedDo: [
+			view title: (self freeTitleFrom: view baseTitle for: view) ];
+		whenChoicesChangedDo: [ self showTitleOf: view ].
 	^ view
 ]
 
 { #category : 'views' }
 CMSimulationRunnerPresenter >> newViewPageSelectedAfter: aPage [
-	"Show a new view when the tab that adds views is clicked. The notebook also selects that tab by itself when the tab before it closes, and then the tab before it is shown instead. The selection is deferred, because the notebook ignores a new selection while it announces one"
+	"Show a new view when the tab that adds views is clicked. The notebook also selects that tab by itself when the tab before it closes, and then the tab before it is shown instead. The selection is deferred, because the notebook ignores a new selection while it announces one, and the tab may have left the notebook in the meantime, when all the tabs are replaced"
 
 	| page |
 	page := (notebook pages includes: aPage)
 		        ifTrue: [ pages at: self newView ]
 		        ifFalse: [ notebook pages at: notebook pages size - 1 ].
-	self application defer: [ notebook selectPage: page ]
+	self application defer: [
+		(notebook pages includes: page) ifTrue: [ notebook selectPage: page ] ]
 ]
 
 { #category : 'views' }
@@ -468,6 +474,16 @@ CMSimulationRunnerPresenter >> setSimulationIntervalDelay [
 CMSimulationRunnerPresenter >> setStepsPerInterval [
 
 	self simulation stepsPerInterval: displayEveryNumberPresenter number.
+]
+
+{ #category : 'views' }
+CMSimulationRunnerPresenter >> showTitleOf: aView [
+	"Show the title of aView on its tab, when it is in one"
+
+	pages at: aView ifPresent: [ :page |
+			page
+				title: aView displayedTitle;
+				pageTitleChanged ]
 ]
 
 { #category : 'accessing' }

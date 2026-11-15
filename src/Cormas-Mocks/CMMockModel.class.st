@@ -219,7 +219,9 @@ CMMockModel >> perspectiveHiddenCows [
 	"A perspective for tests, which hides the cows"
 
 	<perspective>
-	^ CMPerspective new show: CMMockCow as: #aspectInvisible:
+	^ CMPerspective new
+		  hide: CMMockCow;
+		  yourself
 ]
 
 { #category : 'control' }

@@ -36,7 +36,7 @@ CMObserverTest >> testAChoiceAppliesToSubclasses [
 CMObserverTest >> testAClassListsItsOwnAndInheritedAspects [
 
 	self assert: (CMMockGoat aspectSelectors includesAll:
-			 #( #aspectHorns: #aspectEnergy: #aspectDefault: #aspectInvisible: ))
+			 #( #aspectHorns: #aspectEnergy: #aspectDefault: #aspectId: ))
 ]
 
 { #category : 'tests' }
@@ -48,7 +48,7 @@ CMObserverTest >> testACopyOfAnObserverChoosesAspectsOnItsOwn [
 		        yourself.
 	observer perspective show: CMMockCell as: #aspectState:.
 	copy := observer copy.
-	copy perspective show: CMMockCell as: #aspectInvisible:.
+	copy perspective hide: CMMockCell.
 	self assert: (observer lookOf: cell) isVisible.
 	self deny: (copy lookOf: cell) isVisible.
 	self
@@ -56,6 +56,19 @@ CMObserverTest >> testACopyOfAnObserverChoosesAspectsOnItsOwn [
 				 perspective: observer perspective;
 				 copy) perspective name
 		equals: observer perspective name
+]
+
+{ #category : 'tests' }
+CMObserverTest >> testACopyOfAnObserverResetsToTheSamePerspective [
+
+	| copy |
+	observer perspective:
+		(CMMockModel new perspectiveNamed: #perspectiveHiddenCows).
+	observer perspective show: CMMockCow.
+	copy := observer copy.
+	copy reset.
+	self deny: (copy perspective isVisible: CMMockCow).
+	self assert: (observer perspective isVisible: CMMockCow)
 ]
 
 { #category : 'tests' }
@@ -90,6 +103,27 @@ CMObserverTest >> testAPerspectiveChoosesTheAspectOfAClass [
 			 show: CMMockCell as: #aspectState:;
 			 yourself).
 	self assert: (observer lookOf: cell) color equals: Color white
+]
+
+{ #category : 'tests' }
+CMObserverTest >> testAnAspectIsNamedAfterItsMethod [
+
+	self
+		assert: (CMEntity nameOfAspect: #aspectDefault:)
+		equals: 'Default'.
+	self
+		assert: (CMEntity nameOfAspect: #aspectClassName:)
+		equals: 'Class name'
+]
+
+{ #category : 'tests' }
+CMObserverTest >> testAnObserverIsModifiedOnceItsPerspectiveChanges [
+
+	observer perspective:
+		(CMMockModel new perspectiveNamed: #perspectiveHiddenCows).
+	self deny: observer isModified.
+	observer perspective show: CMMockGoat as: #aspectHorns:.
+	self assert: observer isModified
 ]
 
 { #category : 'tests' }
@@ -148,6 +182,47 @@ CMObserverTest >> testEachKindOfEntityGetsItsOwnKindOfLook [
 ]
 
 { #category : 'tests' }
+CMObserverTest >> testForgettingTheChoiceForAClassFollowsItsSuperclass [
+
+	observer perspective
+		show: CMMockAnimal as: #aspectEnergy:;
+		show: CMMockGoat as: #aspectHorns:;
+		forget: CMMockGoat.
+	self deny: (observer perspective hasChoiceFor: CMMockGoat).
+	self
+		assert: (observer perspective aspectFor: CMMockGoat)
+		equals: #aspectEnergy:
+]
+
+{ #category : 'tests' }
+CMObserverTest >> testHidingAClassHidesItsSubclasses [
+
+	observer perspective hide: CMMockAnimal.
+	self deny: (observer perspective isVisible: CMMockCow).
+	self deny: (observer lookOf: CMMockCow new) isVisible
+]
+
+{ #category : 'tests' }
+CMObserverTest >> testHidingAClassIsAModification [
+
+	observer perspective hide: CMMockGoat.
+	self assert: observer isModified
+]
+
+{ #category : 'tests' }
+CMObserverTest >> testHidingAndShowingAClassKeepsItsAspect [
+
+	observer perspective
+		show: CMMockGoat as: #aspectHorns:;
+		hide: CMMockGoat;
+		show: CMMockGoat.
+	self assert: (observer perspective isVisible: CMMockGoat).
+	self
+		assert: (observer perspective aspectFor: CMMockGoat)
+		equals: #aspectHorns:
+]
+
+{ #category : 'tests' }
 CMObserverTest >> testRedefiningTheDefaultAspectChangesTheDefault [
 
 	self assert: (observer lookOf: CMMockCow new) color equals: Color red.
@@ -156,6 +231,37 @@ CMObserverTest >> testRedefiningTheDefaultAspectChangesTheDefault [
 					  state: #dead;
 					  yourself)) color
 		equals: Color black
+]
+
+{ #category : 'tests' }
+CMObserverTest >> testResettingAnObserverGoesBackToItsPerspective [
+
+	observer perspective:
+		(CMMockModel new perspectiveNamed: #perspectiveHiddenCows).
+	observer perspective
+		show: CMMockCow;
+		show: CMMockGoat as: #aspectHorns:.
+	observer reset.
+	self deny: observer isModified.
+	self deny: (observer perspective isVisible: CMMockCow).
+	self
+		assert: (observer perspective aspectFor: CMMockGoat)
+		equals: #aspectDefault:.
+	self assert: observer perspective name equals: 'Hidden cows'
+]
+
+{ #category : 'tests' }
+CMObserverTest >> testShowingAClassWhoseSuperclassIsHiddenShowsOnlyThatClass [
+
+	observer perspective
+		show: CMMockAnimal as: #aspectEnergy:;
+		hide: CMMockAnimal;
+		show: CMMockCow.
+	self assert: (observer perspective isVisible: CMMockCow).
+	self
+		assert: (observer perspective aspectFor: CMMockCow)
+		equals: #aspectEnergy:.
+	self deny: (observer perspective isVisible: CMMockGoat)
 ]
 
 { #category : 'tests' }
@@ -213,8 +319,17 @@ CMObserverTest >> testTwoObserversFillDifferentLooksForTheSameEntity [
 			 yourself).
 	other := CMObserver new.
 	other perspective: (CMPerspective new
-			 show: CMMockCell as: #aspectInvisible:;
+			 hide: CMMockCell;
 			 yourself).
 	self assert: (observer lookOf: cell) isVisible.
 	self deny: (other lookOf: cell) isVisible
+]
+
+{ #category : 'tests' }
+CMObserverTest >> testUndoingAChangeLeavesAnObserverUnmodified [
+
+	observer perspective
+		show: CMMockGoat as: #aspectHorns:;
+		forget: CMMockGoat.
+	self deny: observer isModified
 ]

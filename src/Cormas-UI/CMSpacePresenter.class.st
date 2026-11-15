@@ -1,5 +1,5 @@
 "
-I am one view of the space of a simulation: I show its entities from the point of view of my observer, with a toolbar and a panel to choose their aspects.
+I am one view of the space of a simulation: I show its entities with the looks that my observer fills, with a toolbar, the perspective of the view beside it, and my aspects in a popover under the Aspects button.
 
 ## Responsibility:
 
@@ -30,21 +30,26 @@ CMSpacePresenter newApplication: anApplication model: CMObserver new
 - `host`: the `CMSimulationRunnerPresenter` that manages me, when there is one.
 - `title`: my title, numbered by my host when several views would have the same one.
 - `detachedWindow`: my window, when I was moved out of the tabs of my host, or nil.
+- `aspects`: my `CMAspectsPresenter`.
 "
 Class {
 	#name : 'CMSpacePresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'toolbar',
-		'povSelection',
 		'diagram',
-		'povButton',
-		'isPovVisible',
 		'spaceBuilder',
 		'observer',
 		'host',
 		'title',
-		'detachedWindow'
+		'detachedWindow',
+		'aspects',
+		'aspectsButton',
+		'whenChoicesChangedBlock',
+		'whenPerspectiveChangedBlock',
+		'perspectiveDropList',
+		'resetButton',
+		'aspectsClosedAt'
 	],
 	#category : 'Cormas-UI-Simulation',
 	#package : 'Cormas-UI',
@@ -69,6 +74,13 @@ CMSpacePresenter class >> example [
 ]
 
 { #category : 'accessing' }
+CMSpacePresenter >> aspects [
+	"Answer the panel where my choices are made"
+
+	^ aspects
+]
+
+{ #category : 'accessing' }
 CMSpacePresenter >> baseTitle [
 	"Answer my title before it is numbered: the name of my perspective, if it has one"
 
@@ -77,23 +89,48 @@ CMSpacePresenter >> baseTitle [
 		  ifNotEmpty: [ :name | 'Space — ' , name ]
 ]
 
-{ #category : 'closing' }
-CMSpacePresenter >> closeDiagram [
-	"Stop showing and updating the diagram. A space keeps running until it is closed, even when nothing displays it anymore"
+{ #category : 'aspects' }
+CMSpacePresenter >> choicesChanged [
 
+	spaceBuilder update.
+	aspects refresh.
+	resetButton enabled: observer isModified.
+	self showTitle.
+	whenChoicesChangedBlock value
+]
+
+{ #category : 'aspects' }
+CMSpacePresenter >> choosePerspective: aPerspective [
+
+	aPerspective name = observer original name ifTrue: [ ^ self ].
+	observer perspective: aPerspective.
+	self perspectiveChanged
+]
+
+{ #category : 'updating' }
+CMSpacePresenter >> closeDiagram [
+	"Stop showing and updating the diagram. A space keeps running until it is closed, even when nothing displays it anymore. Bloc fails when the morph of a closed space loses the keyboard focus later, so the focus is released first"
+
+	| hand |
 	self application announcer unsubscribe: self.
+	hand := self currentWorld activeHand.
+	(diagram adapter notNil and: [
+		 diagram adapter widget allMorphs includes: hand keyboardFocus ])
+		ifTrue: [ hand releaseKeyboardFocus ].
 	diagram space close
 ]
 
 { #category : 'initialization' }
 CMSpacePresenter >> connectPresenters [
 
-	povButton action: [
-		isPovVisible := isPovVisible not.
-		self updatePovSelectionVisibility.
-		self updatePovButtonIcon.
-		self update ].
-	
+	aspectsButton action: [ self toggleAspects ].
+	perspectiveDropList whenSelectedItemChangedDo: [ :each |
+		self choosePerspective: each ].
+	resetButton action: [
+			observer reset.
+			self perspectiveChanged ].
+	aspects whenChangedDo: [ self choicesChanged ].
+
 	self application announcer
 		when: CMSpaceGridChanged
 		send: #updateDiagram
@@ -108,15 +145,29 @@ CMSpacePresenter >> cormasModel [
 
 { #category : 'layout' }
 CMSpacePresenter >> defaultLayout [
+	"The perspective of the view is chosen beside the toolbar, when the model defines perspectives"
 
+	| top |
+	top := SpBoxLayout newLeftToRight
+		       spacing: 5;
+		       add: toolbar;
+		       yourself.
+	self hasPerspectives ifTrue: [
+			top
+				add: (SpBoxLayout newTopToBottom
+						 vAlignCenter;
+						 add: perspectiveDropList;
+						 yourself)
+				width: 180;
+				add: (SpBoxLayout newTopToBottom
+						 vAlignCenter;
+						 add: resetButton;
+						 yourself)
+				width: 60 ].
 	^ SpBoxLayout newTopToBottom
-		add: toolbar expand: false;
-		add: (SpBoxLayout newLeftToRight
-			spacing: 5;
-			add: diagram;
-			add: povSelection width: 200;
-			yourself);
-		yourself
+		  add: top expand: false;
+		  add: diagram;
+		  yourself
 ]
 
 { #category : 'accessing' }
@@ -126,10 +177,25 @@ CMSpacePresenter >> detachedWindow [
 	^ detachedWindow
 ]
 
+{ #category : 'updating' }
+CMSpacePresenter >> displayedTitle [
+	"Answer my title, marked when my choices differ from the named perspective I started from"
+
+	^ (observer isModified and: [ observer original name notEmpty ])
+		  ifTrue: [ title , ' (modified)' ]
+		  ifFalse: [ title ]
+]
+
 { #category : 'as yet unclassified' }
 CMSpacePresenter >> fitDiagram [
 
 	spaceBuilder zoomToFit
+]
+
+{ #category : 'aspects' }
+CMSpacePresenter >> hasPerspectives [
+
+	^ self cormasModel perspectiveSelectors isNotEmpty
 ]
 
 { #category : 'as yet unclassified' }
@@ -166,7 +232,6 @@ CMSpacePresenter >> initializeDiagram [
 	spaceBuilder := CMBlSpaceElement
 		                for: self cormasModel
 		                observedBy: observer.
-	povSelection observer: observer.
 	diagram := spaceBuilder asPresenter.
 	diagram owner: self.
 	self update
@@ -175,35 +240,41 @@ CMSpacePresenter >> initializeDiagram [
 { #category : 'initialization' }
 CMSpacePresenter >> initializePresenters [
 
+	whenChoicesChangedBlock := [ ].
+	whenPerspectiveChangedBlock := [ ].
+	aspectsClosedAt := 0.
 	self initializeToolbar.
-
-	povSelection := (self instantiate: CMPovSelectionPresenter)
-		                whenChangedDo: [ spaceBuilder update ];
-		                yourself.
-
-	self updatePovSelectionVisibility.
-	self initializeDiagram
+	perspectiveDropList := self newDropList
+		                       help: 'The perspective of this view';
+		                       items: self perspectives;
+		                       display: [ :each |
+			                       each name ifEmpty: [ 'None' ] ];
+		                       yourself.
+	resetButton := self newButton
+		               label: 'Reset';
+		               help: 'Go back to the perspective';
+		               yourself.
+	aspects := self instantiate: CMAspectsPresenter on: observer.
+	self initializeDiagram.
+	self showPerspective
 ]
 
 { #category : 'initialization' }
 CMSpacePresenter >> initializeToolbar [
 
-	isPovVisible := false.
 	toolbar := self newToolbar.
 	toolbar beIcons.
-	
-	povButton := self newToolbarButton
-		label: 'PoV';
-		help: 'PoV';
-		yourself.
-		
-	self updatePovButtonIcon.
-	toolbar addItemRight: povButton.
-
+	aspectsButton := self newToolbarButton
+		                 label: 'Aspects';
+		                 icon: CMIcons eyeIcon;
+		                 help:
+			                 'Show or hide each class of entities, and choose how it appears';
+		                 yourself.
+	toolbar addItemRight: aspectsButton.
 	CMSpacePresenterCommand sortedSubclasses do: [ :aClass |
-		| command |
-		command := aClass forOwner: self.
-		toolbar add: command toolbarButton ].
+			| command |
+			command := aClass forOwner: self.
+			toolbar add: command toolbarButton ]
 ]
 
 { #category : 'accessing' }
@@ -226,16 +297,47 @@ CMSpacePresenter >> observer [
 	^ observer
 ]
 
-{ #category : 'actions' }
+{ #category : 'accessing' }
 CMSpacePresenter >> openInWindow [
 	"Show me in a window of my own. Closing the window closes me as a view of the simulation"
 
 	detachedWindow := self asWindow.
 	detachedWindow
-		title: title;
-		initialExtent: 600 @ 600;
+		title: self displayedTitle;
+		initialExtent: 900 @ 600;
 		whenClosedDo: [ host closeView: self ].
 	detachedWindow open
+]
+
+{ #category : 'aspects' }
+CMSpacePresenter >> perspectiveChanged [
+	"My observer got another perspective, or went back to its own"
+
+	aspects updateRows.
+	self showPerspective.
+	whenPerspectiveChangedBlock value.
+	self choicesChanged
+]
+
+{ #category : 'aspects' }
+CMSpacePresenter >> perspectiveDropList [
+
+	^ perspectiveDropList
+]
+
+{ #category : 'aspects' }
+CMSpacePresenter >> perspectives [
+	"Answer an empty perspective and the perspectives that the model defines"
+
+	^ { CMPerspective new }
+	  , (self cormasModel perspectiveSelectors collect: [ :each |
+			   self cormasModel perspectiveNamed: each ])
+]
+
+{ #category : 'aspects' }
+CMSpacePresenter >> resetButton [
+
+	^ resetButton
 ]
 
 { #category : 'actions' }
@@ -261,6 +363,22 @@ CMSpacePresenter >> setModelBeforeInitialization: anObserver [
 	observer := anObserver
 ]
 
+{ #category : 'aspects' }
+CMSpacePresenter >> showPerspective [
+
+	perspectiveDropList disableSelectionDuring: [
+			perspectiveDropList selectItem:
+				(perspectiveDropList items detect: [ :each |
+					 each name = observer original name ]) ].
+	resetButton enabled: observer isModified
+]
+
+{ #category : 'updating' }
+CMSpacePresenter >> showTitle [
+
+	self isInWindow ifTrue: [ detachedWindow title: self displayedTitle ]
+]
+
 { #category : 'accessing' }
 CMSpacePresenter >> spaceBuilder [
 
@@ -273,11 +391,24 @@ CMSpacePresenter >> title [
 	^ title
 ]
 
-{ #category : 'accessing' }
+{ #category : 'updating' }
 CMSpacePresenter >> title: aString [
 
 	title := aString.
-	self isInWindow ifTrue: [ detachedWindow title: aString ]
+	self showTitle
+]
+
+{ #category : 'aspects' }
+CMSpacePresenter >> toggleAspects [
+	"Show my aspects in a popover under the Aspects button, which closes when the user clicks elsewhere. A click on the button while the popover is open closes it first, as any click outside it does, so that same click must not open it again"
+
+	(Time millisecondsSince: aspectsClosedAt) < 300 ifTrue: [ ^ self ].
+	self newPopover
+		relativeTo: aspectsButton;
+		bePositionBottom;
+		presenter: aspects;
+		whenClosedDo: [ aspectsClosedAt := Time millisecondClockValue ];
+		popup
 ]
 
 { #category : 'TOREMOVE' }
@@ -286,18 +417,16 @@ CMSpacePresenter >> updateDiagram [
 	spaceBuilder update
 ]
 
-{ #category : 'as yet unclassified' }
-CMSpacePresenter >> updatePovButtonIcon [
+{ #category : 'initialization' }
+CMSpacePresenter >> whenChoicesChangedDo: aBlock [
+	"Run aBlock after any change of the choices of my observer"
 
-	povButton icon: (isPovVisible
-		ifTrue: [ CMIcons grayEyeIcon ]
-		ifFalse: [ CMIcons eyeIcon ] )
+	whenChoicesChangedBlock := aBlock
 ]
 
-{ #category : 'as yet unclassified' }
-CMSpacePresenter >> updatePovSelectionVisibility [
+{ #category : 'initialization' }
+CMSpacePresenter >> whenPerspectiveChangedDo: aBlock [
+	"Run aBlock after another perspective was chosen in me, or after a reset, before the blocks of other changes"
 
-	isPovVisible
-		ifTrue: [ povSelection show ]
-		ifFalse: [ povSelection hide ].
+	whenPerspectiveChangedBlock := aBlock
 ]
