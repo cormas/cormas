@@ -235,6 +235,51 @@ CMBlContextMenuTest >> testCellMenuWithoutAggregatesKeepsItsGroups [
 ]
 
 { #category : 'tests' }
+CMBlContextMenuTest >> testChoosingAnAspectInTheMenuShowsTheClassWithIt [
+
+	| cow element item |
+	self gridWithNeighbourhood: 4.
+	cow := self newCowOn: (model cellAt: 2 at: 3).
+	element := CMBlSpaceElement for: model.
+	item := self
+		        itemNamed: 'Show CMMockCow as'
+		        in: (element contextMenuFor: cow).
+	(self itemNamed: 'Energy' in: item subMenu) performMenuActionWith:
+		nil.
+	self
+		assert: (element observer perspective aspectFor: CMMockCow)
+		equals: #aspectEnergy:
+]
+
+{ #category : 'tests' }
+CMBlContextMenuTest >> testChoosingHideInTheMenuHidesTheClassOfTheEntity [
+
+	| cow element |
+	self gridWithNeighbourhood: 4.
+	cow := self newCowOn: (model cellAt: 2 at: 3).
+	element := CMBlSpaceElement for: model.
+	self assert: (self hexColorIn: element at: 80 @ 48) equals: 'FF0000'.
+	(self itemNamed: 'Hide CMMockCow' in: (element contextMenuFor: cow))
+		performMenuActionWith: nil.
+	self deny: (element observer perspective isVisible: CMMockCow).
+	self deny: (self hexColorIn: element at: 80 @ 48) = 'FF0000'
+]
+
+{ #category : 'tests' }
+CMBlContextMenuTest >> testChoosingInTheMenuTellsTheElement [
+
+	| cow element changes |
+	self gridWithNeighbourhood: 4.
+	cow := self newCowOn: (model cellAt: 2 at: 3).
+	element := CMBlSpaceElement for: model.
+	changes := 0.
+	element whenAspectsChangedDo: [ changes := changes + 1 ].
+	(self itemNamed: 'Hide CMMockCow' in: (element contextMenuFor: cow))
+		performMenuActionWith: nil.
+	self assert: changes equals: 1
+]
+
+{ #category : 'tests' }
 CMBlContextMenuTest >> testChoosingKillRemovesTheAgentFromTheView [
 
 	| cow element item |
@@ -354,6 +399,18 @@ CMBlContextMenuTest >> testMenuIsTitledWithTheClassOfTheEntity [
 ]
 
 { #category : 'tests' }
+CMBlContextMenuTest >> testMenuOffersTheAspectsOfTheClassOfTheEntity [
+
+	| cow item |
+	self gridWithNeighbourhood: 4.
+	cow := self newCowOn: (model cellAt: 2 at: 3).
+	item := self itemNamed: 'Show CMMockCow as' in: (self menuOf: cow).
+	self
+		assert: (self namesIn: item subMenu) asArray
+		equals: #( 'Class name' 'Default' 'Energy' 'Id' )
+]
+
+{ #category : 'tests' }
 CMBlContextMenuTest >> testNetworkMenuOffersTheNetworksContainingIt [
 
 	| street city |
@@ -384,4 +441,19 @@ CMBlContextMenuTest >> testNetworkSubmenuIsTheMenuOfTheNetwork [
 	self assert: (names includesAll: { 'Inspect'. 'Browse'. 'clean' }).
 	self deny: (names includes: 'Kill').
 	self deny: (names includes: 'Remove')
+]
+
+{ #category : 'tests' }
+CMBlContextMenuTest >> testTheMenuOfAHiddenClassOffersToShowIt [
+
+	| cow element names |
+	self gridWithNeighbourhood: 4.
+	cow := self newCowOn: (model cellAt: 2 at: 3).
+	element := CMBlSpaceElement for: model.
+	element observer perspective hide: CMMockCow.
+	names := self namesIn: (element contextMenuFor: cow).
+	self deny: (names includes: 'Hide CMMockCow').
+	(self itemNamed: 'Show CMMockCow' in: (element contextMenuFor: cow))
+		performMenuActionWith: nil.
+	self assert: (element observer perspective isVisible: CMMockCow)
 ]

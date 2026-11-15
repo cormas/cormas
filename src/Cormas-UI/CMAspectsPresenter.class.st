@@ -144,7 +144,7 @@ CMAspectsPresenter >> refresh [
 
 { #category : 'private' }
 CMAspectsPresenter >> rowClasses [
-	"Answer the classes of the model that can be drawn, and that are not a subclass of another one, or that define aspects of their own, or have a choice of their own"
+	"Answer the classes of the model that can be drawn, and that are not a subclass of another one, or that define aspects of their own, or have a choice of their own, such as being hidden"
 
 	| classes |
 	classes := self cormasModel class allEntityClasses select: [ :each |
@@ -152,7 +152,7 @@ CMAspectsPresenter >> rowClasses [
 	^ classes select: [ :each |
 			  (classes includes: each superclass) not or: [
 					  (Pragma allNamed: #aspect in: each) notEmpty or: [
-						  observer perspective hasChoiceFor: each ] ] ]
+						  observer perspective isChosenFor: each ] ] ]
 ]
 
 { #category : 'accessing' }

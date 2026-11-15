@@ -103,6 +103,14 @@ CMPerspective >> initialize [
 ]
 
 { #category : 'testing' }
+CMPerspective >> isChosenFor: aClass [
+	"Answer whether an aspect, or whether to show it, was chosen for aClass itself"
+
+	^ (aspects includesKey: aClass) or: [
+		  visibilities includesKey: aClass ]
+]
+
+{ #category : 'testing' }
 CMPerspective >> isVisible: aClass [
 	"Answer whether the instances of aClass are shown: the choice for aClass, or for its nearest superclass that has one, or else true"
 

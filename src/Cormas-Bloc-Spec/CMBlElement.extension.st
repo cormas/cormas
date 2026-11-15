@@ -1,6 +1,34 @@
 Extension { #name : 'CMBlElement' }
 
 { #category : '*Cormas-Bloc-Spec' }
+CMBlElement >> addAspectGroupFor: anEntity to: aMenu [
+	"Add a group to show the class of anEntity with one of its aspects, and to hide it or show it again, in the view of my observer"
+
+	| entityClass |
+	entityClass := anEntity class.
+	aMenu addGroup: [ :group |
+			group
+				addItem: [ :item |
+						item
+							name: 'Show ' , entityClass name , ' as';
+							subMenu: (self aspectMenuFor: entityClass) ];
+				addItem: [ :item |
+						(observer perspective isVisible: entityClass)
+							ifTrue: [
+									item
+										name: 'Hide ' , entityClass name;
+										action: [
+												observer perspective hide: entityClass.
+												aspectsChangedBlock value ] ]
+							ifFalse: [
+									item
+										name: 'Show ' , entityClass name;
+										action: [
+												observer perspective show: entityClass.
+												aspectsChangedBlock value ] ] ] ]
+]
+
+{ #category : '*Cormas-Bloc-Spec' }
 CMBlElement >> addSubmenusFor: someContainers to: aMenu [
 	"Add a group with a submenu for each aggregate or network, in the given order"
 
@@ -18,6 +46,26 @@ CMBlElement >> asPresenter [
 	"Answer a new presenter showing me, which can be opened or embedded in another presenter"
 
 	^ self presenterShowing: self
+]
+
+{ #category : '*Cormas-Bloc-Spec' }
+CMBlElement >> aspectMenuFor: aClass [
+	"Answer a menu of the aspects of aClass, with the current one marked. Choosing one also shows aClass if it was hidden"
+
+	| menu |
+	menu := SpMenuPresenter new.
+	aClass aspectSelectors do: [ :selector |
+			menu addItem: [ :item |
+					item
+						name: (CMEntity nameOfAspect: selector);
+						action: [
+								observer perspective
+									show: aClass as: selector;
+									show: aClass.
+								aspectsChangedBlock value ].
+					(observer perspective aspectFor: aClass) = selector ifTrue: [
+						item icon: (self iconNamed: #smallOk) ] ] ].
+	^ menu
 ]
 
 { #category : '*Cormas-Bloc-Spec' }
@@ -40,7 +88,7 @@ CMBlElement >> contextMenuCommandsFor: anEntity [
 
 { #category : '*Cormas-Bloc-Spec' }
 CMBlElement >> contextMenuFor: anEntity [
-	"Answer a menu with the commands and the actions of anEntity, and a submenu for each aggregate or network containing it. Aggregates show the highest id first, and networks the innermost first. Each of them updates me after it runs"
+	"Answer a menu with the commands and the actions of anEntity, a group to choose how its class appears in my view, and a submenu for each aggregate or network containing it. Aggregates show the highest id first, and networks the innermost first. Each of them updates me after it runs"
 
 	| menu |
 	menu := SpMenuPresenter new
@@ -63,6 +111,7 @@ CMBlElement >> contextMenuFor: anEntity [
 								action: [
 										anEntity perform: selector.
 										self update ] ] ] ].
+	self addAspectGroupFor: anEntity to: menu.
 	anEntity isSpatialEntity ifTrue: [
 			self
 				addSubmenusFor:

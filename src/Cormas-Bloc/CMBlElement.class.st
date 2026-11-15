@@ -32,7 +32,8 @@ Class {
 	#instVars : [
 		'leftClickBlock',
 		'rightClickBlock',
-		'observer'
+		'observer',
+		'aspectsChangedBlock'
 	],
 	#classInstVars : [
 		'composedTiles'
@@ -189,6 +190,13 @@ CMBlElement >> inSpaceDo: aBlock [
 		ifFalse: aBlock
 ]
 
+{ #category : 'initialization' }
+CMBlElement >> initialize [
+
+	super initialize.
+	aspectsChangedBlock := [ self update ]
+]
+
 { #category : 'geometry' }
 CMBlElement >> neighbourhoodOf: aCell [
 
@@ -235,6 +243,13 @@ CMBlElement >> verticesOfCell: aCell [
 	extent := self cellExtentOf: aCell.
 	^ ((self neighbourhoodOf: aCell) blocCellVerticesFor: aCell)
 		  collect: [ :each | each * extent + position ]
+]
+
+{ #category : 'interaction' }
+CMBlElement >> whenAspectsChangedDo: aBlock [
+	"Evaluate aBlock instead of updating me after the aspects were changed from my context menu. Whoever gives the block shows the change"
+
+	aspectsChangedBlock := aBlock
 ]
 
 { #category : 'interaction' }

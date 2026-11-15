@@ -55,6 +55,21 @@ CMAspectsPresenterTest >> testAClassWithAChoiceOfItsOwnGetsARow [
 ]
 
 { #category : 'tests' }
+CMAspectsPresenterTest >> testAHiddenClassGetsARow [
+
+	observer perspective hide: CMMockCity.
+	self openPanel.
+	self
+		assert:
+			((panel rows collect: [ :each | each entityClass ])
+				 copyFrom: 4
+				 to: 5) asArray
+		equals: {
+				CMMockNetwork.
+				CMMockCity }
+]
+
+{ #category : 'tests' }
 CMAspectsPresenterTest >> testARowOffersTheAspectsOfItsClass [
 
 	self openPanel.

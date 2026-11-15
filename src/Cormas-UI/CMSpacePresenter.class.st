@@ -227,11 +227,14 @@ CMSpacePresenter >> host: aSimulationRunner [
 
 { #category : 'initialization' }
 CMSpacePresenter >> initializeDiagram [
-	"Create the view of the space and the presenter that embeds it"
+	"Create the view of the space and the presenter that embeds it. A choice made in the context menu of an entity may give a class a choice of its own, and so a row of its own"
 
 	spaceBuilder := CMBlSpaceElement
 		                for: self cormasModel
 		                observedBy: observer.
+	spaceBuilder whenAspectsChangedDo: [
+			aspects updateRows.
+			self choicesChanged ].
 	diagram := spaceBuilder asPresenter.
 	diagram owner: self.
 	self update

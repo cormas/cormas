@@ -212,6 +212,25 @@ CMSimulationRunnerPresenterTest >> testChoosingAPerspectiveInAViewShowsIt [
 ]
 
 { #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testChoosingInTheMenuOfAnEntityUpdatesItsView [
+
+	| view goat |
+	view := runner newViewWith: #perspectiveHiddenCows.
+	goat := view cormasModel newEntity: CMMockGoat.
+	(((view spaceBuilder contextMenuFor: goat) menuGroups flatCollect: [
+		  :each | each menuItems ]) detect: [ :each |
+		 each name = 'Hide CMMockGoat' ]) performMenuActionWith: nil.
+	self deny:
+		(view aspects rows detect: [ :each | each entityClass = CMMockGoat ])
+			visibilityCheckBox state.
+	self assert: view resetButton isEnabled.
+	self
+		assert:
+		(runner notebook pages at: runner notebook pages size - 1) title
+		equals: 'Space — Hidden cows (modified)'
+]
+
+{ #category : 'tests' }
 CMSimulationRunnerPresenterTest >> testClosingAllViewsClosesTheirWindows [
 
 	| moved |
