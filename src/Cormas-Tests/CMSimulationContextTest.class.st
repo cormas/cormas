@@ -49,3 +49,17 @@ CMSimulationContextTest >> testRandomSeedThenRandomNumberGenerator [
 	self assert: context randomSeed equals: 42.
 	self assert: context randomNumberGenerator seed equals: 42.
 ]
+
+{ #category : 'tests' }
+CMSimulationContextTest >> testTheNewTimeStepIsKnownWhenItsChangeIsAnnounced [
+
+	| seen |
+	context timeStepAnnouncer
+		when: ValueChanged
+		do: [ :announcement | seen := context currentTimeStep ]
+		for: self.
+
+	context currentTimeStep: 3.
+
+	self assert: seen equals: 3
+]

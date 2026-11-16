@@ -40,10 +40,12 @@ CMSimulationContext >> currentTimeStep [
 { #category : 'accessing' }
 CMSimulationContext >> currentTimeStep: anInteger [
 
-    currentTimeStep = anInteger ifFalse: [
-        timeStepAnnouncer announce: (ValueChanged oldValue: currentTimeStep newValue: anInteger) ].
-    currentTimeStep := anInteger.
-
+	| previousTimeStep |
+	previousTimeStep := currentTimeStep.
+	currentTimeStep := anInteger.
+	previousTimeStep = anInteger ifFalse: [
+			timeStepAnnouncer announce:
+				(ValueChanged oldValue: previousTimeStep newValue: anInteger) ]
 ]
 
 { #category : 'initialization' }
