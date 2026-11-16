@@ -182,11 +182,9 @@ CMChartPresenter >> simulation [
 	^ self application simulation
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'updating' }
 CMChartPresenter >> updateCharts [
-
-	self drawChart.
-	chart update
+	self drawChart
 ]
 
 { #category : 'as yet unclassified' }

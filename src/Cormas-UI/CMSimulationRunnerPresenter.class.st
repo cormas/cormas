@@ -573,7 +573,20 @@ CMSimulationRunnerPresenter >> updateDataTable [
 	dataTable showData: self simulation data
 ]
 
-{ #category : 'update presenters' }
+{ #category : 'updating' }
+CMSimulationRunnerPresenter >> updateInInterface: aBlock [
+	"Run aBlock in the UI process, since Spec and Morphic widgets may only change there. From the simulation's process, wait until it is done, or until I am no longer displayed"
+
+	| done |
+	Processor activeProcess == UIManager default uiProcess ifTrue: [
+		^ aBlock value ].
+	done := Semaphore new.
+	self application defer: [ [ aBlock value ] ensure: [ done signal ] ].
+	[ done waitTimeoutMilliseconds: 200 ] whileTrue: [
+		self isDisplayed ifFalse: [ ^ self ] ]
+]
+
+{ #category : 'updating' }
 CMSimulationRunnerPresenter >> updateSelectedNotebookPage [
 	"Only update the page that is currently being displayed, and the views in windows of their own. This makes execution much faster because other pages (charts, data table, other views) are not updated when they are not displayed"
 
@@ -581,8 +594,10 @@ CMSimulationRunnerPresenter >> updateSelectedNotebookPage [
 	notebook selectedPage ifNil: [ ^ self ].
 	pages keysAndValuesDo: [ :view :page |
 		notebook selectedPage = page ifTrue: [ view updateDiagram ] ].
-	notebook selectedPage = dataPage ifTrue: [ self updateDataTable ].
-	notebook selectedPage = chartsPage ifTrue: [ self updateChart ]
+	notebook selectedPage = dataPage ifTrue: [
+		self updateInInterface: [ self updateDataTable ] ].
+	notebook selectedPage = chartsPage ifTrue: [
+		self updateInInterface: [ self updateChart ] ]
 ]
 
 { #category : 'initialization' }
