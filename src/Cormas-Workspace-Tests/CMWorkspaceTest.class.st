@@ -57,6 +57,14 @@ CMWorkspaceTest >> tearDown [
 ]
 
 { #category : 'tests' }
+CMWorkspaceTest >> testAModelIsNamedAfterItsClassWhenNoWorkspaceWasChosen [
+	"Images without a workspace, such as those of the continuous integration, still open simulations, whose window titles show the model's name"
+
+	CMWorkspace current: nil.
+	self assert: CMModel modelName equals: 'CMModel'
+]
+
+{ #category : 'tests' }
 CMWorkspaceTest >> testAtAFolderWithoutModelsRaisesAnError [
 
 	(fileSystem / 'Documents') ensureCreateDirectory.

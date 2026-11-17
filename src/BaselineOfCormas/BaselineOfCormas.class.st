@@ -59,15 +59,18 @@ BaselineOfCormas class >> loadBackgroundImage [
 BaselineOfCormas >> baseline: spec [
 
 	<baseline>
-	
 	spec for: #common do: [
-		spec postLoadDoIt: #postLoad.
+			spec postLoadDoIt: #postLoad.
 
-		self
-			specForBaselines: spec;
-			specForPackages: spec;
-			specForGroups: spec ].
+			self
+				specForBaselines: spec;
+				specForPackages: spec;
+				specForGroups: spec ].
 
+	spec for: #'pharo13.x' do: [
+			spec
+				package: 'Cormas-Core'
+				with: [ spec requires: #( 'ZincHTTPComponents' ) ] ]
 ]
 
 { #category : 'doits' }
@@ -92,6 +95,7 @@ BaselineOfCormas >> specForBaselines: spec [
 		baseline: 'RoassalExporters'
 		with: [
 		spec repository: 'github://pharo-graphics/RoassalExporters:v1.02' ].
+	self specForZinc: spec.
 	spec
 		baseline: 'Bloc'
 		with: [ spec repository: 'github://pharo-graphics/Bloc:v3.0.0/src' ]
@@ -148,4 +152,14 @@ BaselineOfCormas >> specForPackages: spec [
 		package: 'Cormas-Bloc-Spec-Tests' with: [
 				spec requires:
 						#( 'Cormas-Bloc-Tests' 'Cormas-Bloc-Spec' 'Cormas-UI' ) ]
+]
+
+{ #category : 'baselines' }
+BaselineOfCormas >> specForZinc: spec [
+	"The Zinc of Pharo 13 rejects header lines over 4 KB, and GitHub now sends a longer one: Alexandrie, loaded by Bloc, then fails to download its test fonts (pharo-graphics/Alexandrie#137). On Pharo 13, Cormas-Core requires a Zinc that accepts 32 KB. It is declared before Bloc, so that it is loaded before Bloc. Pharo 14 and later have it already, and nothing requires it there"
+
+	spec baseline: 'ZincHTTPComponents' with: [
+			spec
+				repository: 'github://svenvc/zinc:89fc898/repository';
+				loads: #( 'Zinc-HTTP' ) ]
 ]

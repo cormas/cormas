@@ -278,6 +278,27 @@ CMSimulationTest >> testRunStep [
 ]
 
 { #category : 'tests' }
+CMSimulationTest >> testRunningAStepAnnouncesItsEndOnceTheModelHasStepped [
+
+	| endedSteps cowPositionAtEnd recordedStepsAtEnd |
+	endedSteps := OrderedCollection new.
+	simulation simulationContext timeStepAnnouncer
+		when: CMTimeStepEnded
+		do: [ :announcement |
+				endedSteps add: announcement timeStep.
+				cowPositionAtEnd := (simulation cormasModel @@ CMMockCow) first
+					                    coordinates.
+				recordedStepsAtEnd := simulation data size ]
+		for: self.
+
+	simulation runStep.
+
+	self assert: endedSteps asArray equals: #( 1 ).
+	self assert: cowPositionAtEnd equals: 2 @ 2.
+	self assert: recordedStepsAtEnd equals: simulation data size
+]
+
+{ #category : 'tests' }
 CMSimulationTest >> testStopAfterStep [
 
 	| done |

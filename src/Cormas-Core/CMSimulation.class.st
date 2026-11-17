@@ -237,13 +237,16 @@ CMSimulation >> runAllStepsAfterEachIntervalDo: aBlock [
 
 { #category : 'simulation runner - running' }
 CMSimulation >> runStep [
-	
+
 	self incrementCurrentTimeStep.
-	
+
 	cormasModel perform: activeControlSelector.
 	cormasModel removeDestroyedEntities.
-	
+
 	self recordData.
+
+	context timeStepAnnouncer announce:
+		(CMTimeStepEnded timeStep: self currentTimeStep)
 ]
 
 { #category : 'initialization' }

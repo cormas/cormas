@@ -31,6 +31,17 @@ CMSimulationRunnerPresenterTest >> setUp [
 ]
 
 { #category : 'running' }
+CMSimulationRunnerPresenterTest >> skipWithoutARealInterface [
+	"Skip the test when the interface runs deferred blocks at once, as UIManager does when there is no UI, such as on the continuous integration of Pharo 14. Selecting a page while the notebook announces the selection of another one is ignored, so the runner defers it"
+
+	| ran |
+	ran := false.
+	runner application defer: [ ran := true ].
+	ran ifTrue: [
+		self skip: 'The interface runs deferred blocks at once' ]
+]
+
+{ #category : 'running' }
 CMSimulationRunnerPresenterTest >> tearDown [
 
 	runner closeAllViews.
@@ -298,6 +309,7 @@ CMSimulationRunnerPresenterTest >> testClosingTheTabOfAViewClosesTheView [
 { #category : 'tests' }
 CMSimulationRunnerPresenterTest >> testClosingTheViewBeforeTheLastTabShowsTheTabBeforeIt [
 
+	self skipWithoutARealInterface.
 	windows add: runner open.
 	runner notebook selectPage: runner notebook pages last.
 	self waitForTheInterface.
@@ -352,6 +364,7 @@ CMSimulationRunnerPresenterTest >> testResetInAViewGoesBackToItsPerspective [
 { #category : 'tests' }
 CMSimulationRunnerPresenterTest >> testSelectingTheLastTabShowsANewView [
 
+	self skipWithoutARealInterface.
 	runner notebook selectPage: runner notebook pages last.
 	self waitForTheInterface.
 	self assert: runner views size equals: 2.
