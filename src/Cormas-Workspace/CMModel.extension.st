@@ -16,11 +16,9 @@ CMModel >> folder [
 
 { #category : '*Cormas-Workspace' }
 CMModel class >> modelName [
-	"Return the name of my model: the name of the baseline it was installed with from the workspace, or my own name when it was not"
+	"Return the name of my model: the name of the baseline it was installed with from the workspace, or my own name when it was not, or when no workspace was chosen"
 
-	^ CMWorkspace current
-		  ifNil: [ self name ]
-		  ifNotNil: [ :workspace | workspace nameOfModelClass: self ]
+	^ (CMWorkspace currentIfNone: [ ^ self name ]) nameOfModelClass: self
 ]
 
 { #category : '*Cormas-Workspace' }
