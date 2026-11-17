@@ -182,6 +182,17 @@ CMModelListPresenterTest >> testModelsAtRiskComeFirst [
 ]
 
 { #category : 'tests' }
+CMModelListPresenterTest >> testMyModelsWithoutModelsShowAnEmptyList [
+
+	(workspace modelsFolder / 'Forest') deleteAll.
+	presenter updateEntries.
+	self assert: presenter myModels items isEmpty.
+	self assert:
+		(presenter myModels layout children anySatisfy: [ :each |
+			 each isKindOf: SpTablePresenter ])
+]
+
+{ #category : 'tests' }
 CMModelListPresenterTest >> testRowOfAFolderDeletedOutsideCormasKeepsItsStateUntilTheListIsReadAgain [
 
 	| entry |

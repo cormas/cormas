@@ -46,16 +46,29 @@ Class {
 
 { #category : 'screenshots' }
 CMModelPreviewPresenter class >> placeholder [
-	"Return the square shown when a model has no screenshot: a quiet frame in a translucent grey that shows in a light and a dark theme. The text saying so is a label over it, so that it stays sharp at any size"
+	"Return the square shown when a model has no screenshot: a quiet frame in the color of a placeholder. The text saying so is a label over it, so that it stays sharp at any size"
 
 	| form |
 	form := Form extent: 400 @ 400 depth: 32.
-	form fillColor: (Color gray alpha: 0.12).
+	form fillColor: self placeholderFillColor.
 	form getCanvas
 		frameRectangle: form boundingBox
 		width: 2
-		color: (Color gray alpha: 0.4).
+		color: self placeholderFrameColor.
 	^ form
+]
+
+{ #category : 'screenshots' }
+CMModelPreviewPresenter class >> placeholderFillColor [
+	"A translucent grey that shows in a light and a dark theme"
+
+	^ Color gray alpha: 0.12
+]
+
+{ #category : 'screenshots' }
+CMModelPreviewPresenter class >> placeholderFrameColor [
+
+	^ Color gray alpha: 0.4
 ]
 
 { #category : 'private' }
@@ -72,12 +85,26 @@ CMModelPreviewPresenter >> buttonFor: anAction [
 
 { #category : 'layout' }
 CMModelPreviewPresenter >> defaultLayout [
+	"A placeholder that takes the whole place of a preview, with the logo and a label saying that no model is selected"
 
-	^ SpBoxLayout newTopToBottom
-		  vAlignCenter;
-		  hAlignCenter;
-		  add: (self newImage image: CMIcons cormasIcon) expand: false;
-		  add: 'Select a model' expand: false;
+	^ SpOverlayLayout new
+		  child: (self newMorph morph: (Morph new
+						    color: self class placeholderFillColor;
+						    borderStyle:
+							    (BorderStyle
+								     width: 2
+								     color: self class placeholderFrameColor);
+						    yourself));
+		  addOverlay: (SpBoxLayout newTopToBottom
+				   vAlignCenter;
+				   hAlignCenter;
+				   add: (self newImage image: CMIcons cormasIcon) expand: false;
+				   add: 'Select a model' expand: false;
+				   yourself)
+		  withConstraints: [ :constraints |
+				  constraints
+					  vAlignCenter;
+					  hAlignCenter ];
 		  yourself
 ]
 

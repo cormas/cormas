@@ -83,7 +83,7 @@ CMModelTablePresenter >> defaultLayout [
 		          add: header expand: false;
 		          yourself.
 	errorLabel label ifNotEmpty: [ column add: errorLabel expand: false ].
-	table items ifEmpty: [
+	(table items isEmpty and: [ emptyLabels isNotEmpty ]) ifTrue: [
 			^ column
 				  add: self emptyLayout;
 				  yourself ].

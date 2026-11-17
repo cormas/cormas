@@ -426,10 +426,6 @@ CMModelListPresenter >> initializePresenters [
 		            help:
 			            'Add a model from a zip file to Models and install it'
 		            do: [ self installFromZip ];
-		            emptyLines:
-			            #( 'You have no models yet.' 'Create one, or install an example below, or add one From zip.' )
-		            action: 'New model'
-		            do: [ self newModel ];
 		            yourself.
 	examples := (self instantiate: CMModelTablePresenter)
 		            title: 'Examples';
