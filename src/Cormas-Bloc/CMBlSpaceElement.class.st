@@ -84,6 +84,13 @@ CMBlSpaceElement class >> exampleMockModel [
 	^ self for: model
 ]
 
+{ #category : 'accessing' }
+CMBlSpaceElement class >> pictureSize [
+	"Answer the length in pixels of the longest side of a saved picture"
+
+	^ 2000
+]
+
 { #category : 'examples' }
 CMBlSpaceElement class >> scriptOpenMockModel [
 
@@ -369,10 +376,21 @@ CMBlSpaceElement >> routes [
 
 { #category : 'export' }
 CMBlSpaceElement >> saveToPngFile: aFileReference [
-	"Save a picture of the whole space at its natural size, whatever the current zoom"
+	"Save a picture of the whole space with the aspects I show, whatever the current zoom, scaled so that its longest side has the size of a picture"
 
-	| form |
-	form := (self class for: cormasModel) aeAsForm.
+	| picture scale frame form |
+	picture := self class for: cormasModel observedBy: observer.
+	picture forceLayout.
+	scale := self class pictureSize / picture extent max.
+	picture transformDo: [ :transform |
+			transform
+				topLeftOrigin;
+				scaleBy: scale ].
+	frame := BlElement new
+		         extent: (picture extent * scale) rounded;
+		         addChild: picture;
+		         yourself.
+	form := frame aeAsForm.
 	aFileReference ensureDelete.
 	aFileReference binaryWriteStreamDo: [ :stream |
 		PNGReadWriter putForm: form onStream: stream ]

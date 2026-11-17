@@ -340,6 +340,40 @@ CMBlNavigationTest >> testPrimaryModifierWithZeroZoomsToFit [
 ]
 
 { #category : 'tests' }
+CMBlNavigationTest >> testSavedPictureHasTheSameSizeForAnyGridSize [
+
+	| file form |
+	model := CMMockModel new.
+	model
+		createGridNumberOfRows: 30
+		numberOfColumns: 40
+		neighbourhood: 4
+		closed: true.
+	file := FileSystem memory / 'space.png'.
+
+	(CMBlSpaceElement for: model) saveToPngFile: file.
+
+	form := file binaryReadStreamDo: [ :stream |
+		        PNGReadWriter formFromStream: stream ].
+	self assert: form extent equals: 2000 @ 1500
+]
+
+{ #category : 'tests' }
+CMBlNavigationTest >> testSavedPictureShowsTheChosenAspects [
+
+	| file form |
+	self openGridWithCow.
+	element observer perspective hide: CMMockCell.
+	file := FileSystem memory / 'space.png'.
+
+	element saveToPngFile: file.
+
+	form := file binaryReadStreamDo: [ :stream |
+		        PNGReadWriter formFromStream: stream ].
+	self assert: (form colorAt: 1900 @ 1400) isTransparent
+]
+
+{ #category : 'tests' }
 CMBlNavigationTest >> testSavedPictureShowsTheWholeSpaceAtAnyZoom [
 
 	| file form |
@@ -351,9 +385,9 @@ CMBlNavigationTest >> testSavedPictureShowsTheWholeSpaceAtAnyZoom [
 
 	form := file binaryReadStreamDo: [ :stream |
 		        PNGReadWriter formFromStream: stream ].
-	self assert: form extent equals: 128 @ 96.
-	self assert: (form colorAt: 80 @ 48) asHexString equals: 'FF0000'.
-	self assert: (form colorAt: 120 @ 90) asHexString equals: '000000'
+	self assert: form extent equals: 2000 @ 1500.
+	self assert: (form colorAt: 1250 @ 750) asHexString equals: 'FF0000'.
+	self assert: (form colorAt: 1900 @ 1400) asHexString equals: '000000'
 ]
 
 { #category : 'tests' }

@@ -553,7 +553,7 @@ CMBlPresenterTest >> testSpacePresenterSavesPicture [
 
 	form := file binaryReadStreamDo: [ :stream |
 		        PNGReadWriter formFromStream: stream ].
-	self assert: (form colorAt: 80 @ 48) asHexString equals: 'FF0000'
+	self assert: (form colorAt: 1250 @ 750) asHexString equals: 'FF0000'
 ]
 
 { #category : 'tests' }
