@@ -33,6 +33,31 @@ CMBlCellElementTest >> testBorderIsProportionalToCellSize [
 ]
 
 { #category : 'tests' }
+CMBlCellElementTest >> testCellsOfTheSameColorMeetWithoutASeam [
+	"Without borders, two cells of the same color look like one continuous area, even when they meet in the middle of a pixel"
+
+	| left right container |
+	self gridWithNeighbourhood: 4.
+	left := CMBlCellElement for: (model cellAt: 1 at: 1).
+	right := CMBlCellElement for: (model cellAt: 1 at: 2).
+	left border: BlBorder empty.
+	right border: BlBorder empty.
+	left position: 10.5 @ 0.
+	right position: 42.5 @ 0.
+	container := BlElement new
+		             extent: 100 @ 40;
+		             background: Color white;
+		             addChildren: {
+				             left.
+				             right };
+		             yourself.
+
+	self
+		assert: (self hexColorIn: container at: 42 @ 10)
+		equals: '000000'
+]
+
+{ #category : 'tests' }
 CMBlCellElementTest >> testFlatTopHexagon [
 	"A flat-top hexagon touches the left and right of its box halfway down, and its corners are empty"
 

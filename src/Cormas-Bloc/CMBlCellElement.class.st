@@ -60,6 +60,18 @@ CMBlCellElement class >> withoutOccupantsFor: aCell observedBy: anObserver [
 		  yourself
 ]
 
+{ #category : 'drawing' }
+CMBlCellElement >> aeDrawGeometryOn: aeCanvas [
+	"Draw my shape without antialiasing, so that neighbouring cells fill every pixel along the edge they share and cells of the same color look like one continuous area"
+
+	| context antialias |
+	context := aeCanvas privateAeCairoContext.
+	antialias := context antialias.
+	context antialias: AeCairoAntialias none.
+	super aeDrawGeometryOn: aeCanvas.
+	context antialias: antialias
+]
+
 { #category : 'initialization' }
 CMBlCellElement >> beWithoutOccupants [
 
