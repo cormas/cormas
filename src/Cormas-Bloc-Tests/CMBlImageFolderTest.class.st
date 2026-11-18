@@ -9,9 +9,9 @@ Class {
 }
 
 { #category : 'running' }
-CMBlImageFolderTest >> colorOf: aForm [
+CMBlImageFolderTest >> colorOf: aSurface [
 
-	^ (aForm colorAt: 1 @ 1) asHexString
+	^ (aSurface asForm colorAt: 1 @ 1) asHexString
 ]
 
 { #category : 'running' }
@@ -25,14 +25,14 @@ CMBlImageFolderTest >> setUp [
 { #category : 'tests' }
 CMBlImageFolderTest >> testAFileIsReadOnlyOnce [
 
-	| folder form |
+	| folder surface |
 	self write: Color red extent: 4 @ 4 to: 'grass.png'.
 	folder := CMBlImageFolder on: directory.
-	form := folder formNamed: 'grass'.
+	surface := folder surfaceNamed: 'grass'.
 	self write: Color blue extent: 4 @ 4 to: 'grass.png'.
-	self assert: (folder formNamed: 'grass') identicalTo: form.
+	self assert: (folder surfaceNamed: 'grass') identicalTo: surface.
 	self
-		assert: (self colorOf: (folder formNamed: 'grass'))
+		assert: (self colorOf: (folder surfaceNamed: 'grass'))
 		equals: 'FF0000'
 ]
 
@@ -41,7 +41,7 @@ CMBlImageFolderTest >> testAMissingFolderRaisesTheSameError [
 
 	self
 		should: [
-		(CMBlImageFolder on: directory / 'nowhere') formNamed: 'grass' ]
+		(CMBlImageFolder on: directory / 'nowhere') surfaceNamed: 'grass' ]
 		raise: Error
 		withExceptionDo: [ :error |
 			self assert: (error messageText includesSubstring: '''grass''') ]
@@ -52,7 +52,7 @@ CMBlImageFolderTest >> testAMissingImageRaisesAnErrorNamingItAndTheFolder [
 
 	self write: Color red extent: 4 @ 4 to: 'grass.png'.
 	self
-		should: [ (CMBlImageFolder on: directory) formNamed: 'gras' ]
+		should: [ (CMBlImageFolder on: directory) surfaceNamed: 'gras' ]
 		raise: Error
 		withExceptionDo: [ :error |
 				self assert: (error messageText includesSubstring: '''gras''').
@@ -63,12 +63,12 @@ CMBlImageFolderTest >> testAMissingImageRaisesAnErrorNamingItAndTheFolder [
 { #category : 'tests' }
 CMBlImageFolderTest >> testFindsAnImageByTheNameOfItsFile [
 
-	| form |
+	| surface |
 	self write: Color red extent: 4 @ 2 to: 'tall-grass.png'.
 	self write: Color blue extent: 4 @ 2 to: 'tree.png'.
-	form := (CMBlImageFolder on: directory) formNamed: 'tall-grass'.
-	self assert: form extent equals: 4 @ 2.
-	self assert: (self colorOf: form) equals: 'FF0000'
+	surface := (CMBlImageFolder on: directory) surfaceNamed: 'tall-grass'.
+	self assert: surface extent equals: 4 @ 2.
+	self assert: (self colorOf: surface) equals: 'FF0000'
 ]
 
 { #category : 'tests' }
@@ -78,8 +78,8 @@ CMBlImageFolderTest >> testFindsJpegFilesWhateverTheCaseOfTheirExtension [
 	self write: Color blue extent: 4 @ 4 to: 'water.JPG'.
 	self write: Color blue extent: 4 @ 4 to: 'sand.jpeg'.
 	folder := CMBlImageFolder on: directory.
-	self assert: (folder formNamed: 'water') extent equals: 4 @ 4.
-	self assert: (folder formNamed: 'sand') extent equals: 4 @ 4
+	self assert: (folder surfaceNamed: 'water') extent equals: 4 @ 4.
+	self assert: (folder surfaceNamed: 'sand') extent equals: 4 @ 4
 ]
 
 { #category : 'tests' }
@@ -88,7 +88,7 @@ CMBlImageFolderTest >> testTwoFilesWithTheSameNameRaiseAnError [
 	self write: Color red extent: 4 @ 4 to: 'grass.png'.
 	self write: Color green extent: 4 @ 4 to: 'grass.jpg'.
 	self
-		should: [ (CMBlImageFolder on: directory) formNamed: 'grass' ]
+		should: [ (CMBlImageFolder on: directory) surfaceNamed: 'grass' ]
 		raise: Error
 		withExceptionDo: [ :error |
 				self assert: (error messageText includesSubstring: 'grass.png').

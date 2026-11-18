@@ -5,37 +5,38 @@ I am the folder of a model's image files, as a view sees it: I find the file of 
 
 - Find the PNG or JPEG file whose name, without its extension, is the name of an image.
 - Raise an error naming the image and the folder when no file, or more than one, has that name.
-- Keep every form I read, so that a file is read only the first time an image uses it.
+- Keep every file I read as a Cairo surface, so that a file is read and converted only the first time an image uses it.
 
 ## Collaborators:
 
-- A space element creates me on its model's `images` folder, and asks me for the forms of the images it draws.
-- `ImageReadWriter` reads the files.
+- A space element creates me on its model's `images` folder, and asks me for the surfaces of the images it draws.
+- `AeCairoImageSurface` reads PNG files; `ImageReadWriter` reads JPEG files.
 
 ## Public API and Key Messages
 
 - `CMBlImageFolder on: aDirectory`
-- `formNamed: aString`
+- `surfaceNamed: aString`
 
 ```
-(CMBlImageFolder on: CMMyModel folder / 'images') formNamed: 'tall-grass'
+(CMBlImageFolder on: CMMyModel folder / 'images') surfaceNamed: 'tall-grass'
 ```
 
 ## Internal Representation
 
 - `folder`: a `FileReference` to a directory, which may not exist.
-- `forms`: a `Dictionary` from names to the forms read so far.
+- `surfaces`: a `Dictionary` from names to the `AeCairoImageSurface`s read so far.
 
 ### Implementation Points
 
 - I never read a file again, so a modeller who edits an image sees the change in a newly opened view, which creates a new folder.
+- Cairo reads a PNG file of 2000 by 2000 pixels in about 15 ms, where `ImageReadWriter` takes about 1 s, and converting a form of that size to a surface takes about 250 ms. So PNG files never become forms.
 "
 Class {
 	#name : 'CMBlImageFolder',
 	#superclass : 'Object',
 	#instVars : [
 		'folder',
-		'forms'
+		'surfaces'
 	],
 	#category : 'Cormas-Bloc',
 	#package : 'Cormas-Bloc'
@@ -66,15 +67,6 @@ CMBlImageFolder >> fileNamed: aString [
 	^ files first
 ]
 
-{ #category : 'accessing' }
-CMBlImageFolder >> formNamed: aString [
-	"Return the form in the file whose name, without its extension, is aString. The file is read only the first time"
-
-	^ forms
-		  at: aString
-		  ifAbsentPut: [ self read: (self fileNamed: aString) ]
-]
-
 { #category : 'private' }
 CMBlImageFolder >> imageFiles [
 	"A model that has no images yet may have no folder for them"
@@ -86,14 +78,28 @@ CMBlImageFolder >> imageFiles [
 
 { #category : 'private' }
 CMBlImageFolder >> read: aFile [
+	"Cairo reads PNG files much faster than ImageReadWriter, but not JPEG files"
 
 	^ aFile binaryReadStreamDo: [ :stream |
-		  (ImageReadWriter formFromStream: stream) asFormOfDepth: 32 ]
+			  aFile extension asLowercase = 'png'
+				  ifTrue: [ AeCairoImageSurface newFromPngOn: stream ]
+				  ifFalse: [
+						  AeCairoImageSurface fromForm:
+							  ((ImageReadWriter formFromStream: stream) asFormOfDepth: 32) ] ]
 ]
 
 { #category : 'initialization' }
 CMBlImageFolder >> setFolder: aDirectory [
 
 	folder := aDirectory.
-	forms := Dictionary new
+	surfaces := Dictionary new
+]
+
+{ #category : 'accessing' }
+CMBlImageFolder >> surfaceNamed: aString [
+	"Return the Cairo surface of the file whose name, without its extension, is aString. The file is read only the first time"
+
+	^ surfaces
+		  at: aString
+		  ifAbsentPut: [ self read: (self fileNamed: aString) ]
 ]
