@@ -79,6 +79,22 @@ CMBlImageElementTest >> testANewViewReadsTheImageFilesAgain [
 ]
 
 { #category : 'tests' }
+CMBlImageElementTest >> testASavedPictureShowsImagesSharply [
+	"A cell is 1000 pixels wide in the picture, so each stripe of the image, 32 of its 1024 pixels, is about 31 pixels wide"
+
+	| file form |
+	self writeStripesNamed: 'stripes' side: 1024 stripeWidth: 32.
+	model cells do: [ :each |
+		each aspect: [ :look | look image: 'stripes' ] ].
+	file := FileSystem memory / 'space.png'.
+	(CMBlSpaceElement for: model) saveToPngFile: file.
+	form := file binaryReadStreamDo: [ :stream |
+		        PNGReadWriter formFromStream: stream ].
+	self assert: (form colorAt: 516 @ 500) asHexString equals: 'FF0000'.
+	self assert: (form colorAt: 547 @ 500) asHexString equals: '0000FF'
+]
+
+{ #category : 'tests' }
 CMBlImageElementTest >> testAnAgentImageIsCutToItsShape [
 
 	| agent element |
@@ -111,7 +127,7 @@ CMBlImageElementTest >> testElementsShowingTheSameImageShareOneBackground [
 CMBlImageElementTest >> testImagesStaySharpWhenTheViewIsZoomedIn [
 
 	| parent space form |
-	self writeStripesNamed: 'stripes'.
+	self writeStripesNamed: 'stripes' side: 64 stripeWidth: 1.
 	model cells do: [ :each |
 		each aspect: [ :look | look image: 'stripes' ] ].
 	parent := BlElement new extent: 64 @ 64.
@@ -174,15 +190,17 @@ CMBlImageElementTest >> write: aColor named: aName [
 ]
 
 { #category : 'running' }
-CMBlImageElementTest >> writeStripesNamed: aName [
-	"A 64 by 64 image of vertical stripes, one pixel wide, alternately red and blue"
+CMBlImageElementTest >> writeStripesNamed: aName side: aNumber stripeWidth: anotherNumber [
+	"A square image of vertical stripes, alternately red and blue"
 
 	| form |
-	form := Form extent: 64 @ 64 depth: 32.
-	0 to: 63 do: [ :x |
-			form fill: (x @ 0 extent: 1 @ 64) fillColor: (x even
-					 ifTrue: [ Color red ]
-					 ifFalse: [ Color blue ]) ].
+	form := Form extent: aNumber @ aNumber depth: 32.
+	0 to: aNumber - 1 by: anotherNumber do: [ :x |
+			form
+				fill: (x @ 0 extent: anotherNumber @ aNumber)
+				fillColor: ((x // anotherNumber) even
+						 ifTrue: [ Color red ]
+						 ifFalse: [ Color blue ]) ].
 	directory / 'images' / (aName , '.png') binaryWriteStreamDo: [
 		:stream | PNGReadWriter putForm: form onStream: stream ]
 ]
