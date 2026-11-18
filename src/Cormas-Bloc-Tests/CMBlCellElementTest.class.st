@@ -21,6 +21,25 @@ Class {
 	#package : 'Cormas-Bloc-Tests'
 }
 
+{ #category : 'private' }
+CMBlCellElementTest >> blackPixelsIn: anElement alongRow: y [
+	"Answer how many pixels of the row y of anElement are black"
+
+	| form |
+	form := self formOf: anElement.
+	^ (0 to: form width - 1) count: [ :x |
+		  (form colorAt: x @ y) = Color black ]
+]
+
+{ #category : 'tests' }
+CMBlCellElementTest >> testBorderIsAtLeastOnePixelWide [
+	"A border thinner than a pixel on the screen is shown one pixel wide"
+
+	| element |
+	element := self twoNeighbourCellsWithBorderWidth: 0.5 scaledBy: 0.5.
+	self assert: (self blackPixelsIn: element alongRow: 12) equals: 3
+]
+
 { #category : 'tests' }
 CMBlCellElementTest >> testBorderIsProportionalToCellSize [
 	"The default border thickness of the look of a cell is 0.01 of the size of a cell"
@@ -96,6 +115,24 @@ CMBlCellElementTest >> testGridOf8NeighboursHasSquareCells [
 
 	self assert: (self formOf: element) extent equals: 32 @ 32.
 	self assert: (self hexColorIn: element at: 3 @ 3) equals: '000000'
+]
+
+{ #category : 'tests' }
+CMBlCellElementTest >> testNeighbourCellsShareOneBorder [
+	"Two cells with borders 3 pixels wide are 3 pixels apart, not 6"
+
+	| element |
+	element := self twoNeighbourCellsWithBorderWidth: 3 scaledBy: 1.
+	self assert: (self blackPixelsIn: element alongRow: 24) equals: 3 * 3
+]
+
+{ #category : 'tests' }
+CMBlCellElementTest >> testNoBorderOnCellsTooSmallOnTheScreen [
+	"Borders would hide the colors of cells only a few pixels wide on the screen, however thick they are"
+
+	| element |
+	element := self twoNeighbourCellsWithBorderWidth: 8 scaledBy: 0.125.
+	self assert: (self blackPixelsIn: element alongRow: 3) equals: 0
 ]
 
 { #category : 'tests' }
@@ -237,4 +274,34 @@ CMBlCellElementTest >> testWithoutOccupantsShowsOnlyTheCell [
 					  observedBy: CMObserver new)
 				 at: 16 @ 16)
 		equals: '000000'
+]
+
+{ #category : 'private' }
+CMBlCellElementTest >> twoNeighbourCellsWithBorderWidth: aNumber scaledBy: aScale [
+	"Answer an element showing the first two cells of a row side by side, white with black borders, seen at the given zoom"
+
+	| cells |
+	self gridWithNeighbourhood: 4.
+	cells := {
+		         (model cellAt: 1 at: 1).
+		         (model cellAt: 1 at: 2) } collect: [ :each |
+		         CMBlCellElement for: each ].
+	cells doWithIndex: [ :each :index |
+			each
+				background: Color white;
+				border: (BlBorder paint: Color black width: aNumber);
+				position: index - 1 * 32 + 8 @ 8 ].
+	^ BlElement new
+		  extent: 100 @ 60;
+		  background: Color white;
+		  addChild: (BlElement new
+				   extent: 100 @ 60;
+				   clipChildren: false;
+				   transformDo: [ :transform |
+						   transform
+							   topLeftOrigin;
+							   scaleBy: aScale ];
+				   addChildren: cells;
+				   yourself);
+		  yourself
 ]

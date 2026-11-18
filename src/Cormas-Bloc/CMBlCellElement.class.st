@@ -50,6 +50,13 @@ CMBlCellElement class >> exampleCellWithCow [
 	^ self for: (model entitiesOfClass: CMMockCow) first cell
 ]
 
+{ #category : 'accessing' }
+CMBlCellElement class >> smallestSizeWithBorder [
+	"Answer the size, in pixels on the screen, under which a cell is shown without a border"
+
+	^ 5
+]
+
 { #category : 'instance creation' }
 CMBlCellElement class >> withoutOccupantsFor: aCell observedBy: anObserver [
 
@@ -62,13 +69,20 @@ CMBlCellElement class >> withoutOccupantsFor: aCell observedBy: anObserver [
 
 { #category : 'drawing' }
 CMBlCellElement >> aeDrawGeometryOn: aeCanvas [
-	"Draw my shape without antialiasing, so that neighbouring cells fill every pixel along the edge they share and cells of the same color look like one continuous area"
+	"Draw my shape without antialiasing, so that neighbouring cells fill every pixel along the edge they share and cells of the same color look like one continuous area. My border is centred on my edge, so that the border of a later neighbour covers mine and the two look like one"
 
 	| context antialias |
 	context := aeCanvas privateAeCairoContext.
 	antialias := context antialias.
 	context antialias: AeCairoAntialias none.
-	super aeDrawGeometryOn: aeCanvas.
+	self geometry aeApplyTo: aeCanvas element: self.
+	self background isTransparent
+		ifTrue: [ aeCanvas setBackgroundOff ]
+		ifFalse: [ self background aeApplyTo: aeCanvas ].
+	(self borderShownAtScale: context matrix sx abs)
+		aeApplyTo: aeCanvas
+		element: self.
+	aeCanvas drawFigureAndPrepareToClip: false.
 	context antialias: antialias
 ]
 
@@ -76,6 +90,15 @@ CMBlCellElement >> aeDrawGeometryOn: aeCanvas [
 CMBlCellElement >> beWithoutOccupants [
 
 	showsOccupants := false
+]
+
+{ #category : 'drawing' }
+CMBlCellElement >> borderShownAtScale: aNumber [
+	"Answer my border as shown when one unit of my extent is aNumber pixels on the screen: at least one pixel wide, or none when I am too small for a border to be seen clearly"
+
+	self extent max * aNumber < self class smallestSizeWithBorder
+		ifTrue: [ ^ BlBorder empty ].
+	^ self border copyWithWidth: (self border width max: 1 / aNumber)
 ]
 
 { #category : 'accessing' }
@@ -141,6 +164,7 @@ CMBlCellElement >> setUpFor: aCell [
 	self
 		extent: extent;
 		clipChildren: false;
+		outskirts: BlOutskirts centered;
 		geometry: (BlPolygonGeometry vertices:
 					 (((self neighbourhoodOf: cell) blocCellVerticesFor: cell)
 						  collect: [ :each | each * extent ])).
