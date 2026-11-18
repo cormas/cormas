@@ -52,6 +52,17 @@ CMBlCellElementTest >> testBorderIsProportionalToCellSize [
 ]
 
 { #category : 'tests' }
+CMBlCellElementTest >> testBordersHaveTheSameWidthWhereverCellsMeetPixels [
+	"Zoomed so that cell edges fall in the middle of pixels, a border 1.6 pixels wide on the screen is 2 pixels wide on every edge"
+
+	| element |
+	element := self
+		           twoNeighbourCellsWithBorderWidth: 16 / 7
+		           scaledBy: 0.7.
+	self assert: (self blackPixelsIn: element alongRow: 15) equals: 3 * 2
+]
+
+{ #category : 'tests' }
 CMBlCellElementTest >> testCellsOfTheSameColorMeetWithoutASeam [
 	"Without borders, two cells of the same color look like one continuous area, even when they meet in the middle of a pixel"
 

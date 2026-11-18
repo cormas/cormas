@@ -94,11 +94,12 @@ CMBlCellElement >> beWithoutOccupants [
 
 { #category : 'drawing' }
 CMBlCellElement >> borderShownAtScale: aNumber [
-	"Answer my border as shown when one unit of my extent is aNumber pixels on the screen: at least one pixel wide, or none when I am too small for a border to be seen clearly"
+	"Answer my border as shown when one unit of my extent is aNumber pixels on the screen: a whole number of pixels wide, at least one, so that it covers as many pixels on every edge, or none when I am too small for a border to be seen clearly"
 
 	self extent max * aNumber < self class smallestSizeWithBorder
 		ifTrue: [ ^ BlBorder empty ].
-	^ self border copyWithWidth: (self border width max: 1 / aNumber)
+	^ self border copyWithWidth:
+		  ((self border width * aNumber) rounded max: 1) / aNumber
 ]
 
 { #category : 'accessing' }
