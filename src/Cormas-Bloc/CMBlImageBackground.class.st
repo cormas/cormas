@@ -3,7 +3,7 @@ I am the background of an element that shows a `CMImage`. I hold the image alrea
 
 ## Responsibility:
 
-- Draw a `CMImage` at the pixel size of an element: covering it, or resized, moved and tinted, with its layers laid in order.
+- Draw a `CMImage` over a color at the pixel size of an element: covering it, or resized, moved and tinted, with its layers laid in order.
 - Fill the element with that drawing, scaled to the element's logical extent, so it stays sharp when the view is zoomed in or the screen has more pixels than points.
 
 ## Collaborators:
@@ -14,11 +14,12 @@ I am the background of an element that shows a `CMImage`. I hold the image alrea
 
 ## Public API and Key Messages
 
-- `CMBlImageBackground image: anImage extent: aPoint scale: aNumber folder: aFolder`: an element of logical extent aPoint is drawn with aNumber pixels per point.
+- `CMBlImageBackground image: anImage color: aColor extent: aPoint scale: aNumber folder: aFolder`: anImage over aColor, for an element of logical extent aPoint drawn with aNumber pixels per point.
 
 ```
 element background: (CMBlImageBackground
 	image: (CMImage named: 'grass') + ((CMImage named: 'tree') size: 0.5)
+	color: Color transparent
 	extent: 32 @ 32
 	scale: 2
 	folder: (CMBlImageFolder on: CMMyModel folder / 'images'))
@@ -31,7 +32,7 @@ element background: (CMBlImageBackground
 ### Implementation Points
 
 - Bloc's `BlImageBackground` converts its form at every paint unless the form is among the last 400 converted, and draws it at its own size. I keep my surface, and its device scale makes Cairo draw it at the element's size.
-- Elements that show the same image at the same size must share one instance of me; that sharing is what makes images as fast as colors.
+- Elements that show the same image over the same color at the same size share one instance of me, through `CMBlImageFolder`; that sharing is what makes images as fast as colors.
 "
 Class {
 	#name : 'CMBlImageBackground',
@@ -44,11 +45,12 @@ Class {
 }
 
 { #category : 'instance creation' }
-CMBlImageBackground class >> image: anImage extent: aPoint scale: aNumber folder: aFolder [
-	"Return a background that shows anImage on an element of logical extent aPoint, drawn with aNumber pixels per point from the files of aFolder"
+CMBlImageBackground class >> image: anImage color: aColor extent: aPoint scale: aNumber folder: aFolder [
+	"Return a background that shows anImage over aColor on an element of logical extent aPoint, drawn with aNumber pixels per point from the files of aFolder"
 
 	^ self new
 		  setImage: anImage
+		  color: aColor
 		  extent: aPoint
 		  scale: aNumber
 		  folder: aFolder
@@ -77,12 +79,15 @@ CMBlImageBackground >> matchExtent: anExtent [
 ]
 
 { #category : 'initialization' }
-CMBlImageBackground >> setImage: anImage extent: aPoint scale: aNumber folder: aFolder [
+CMBlImageBackground >> setImage: anImage color: aColor extent: aPoint scale: aNumber folder: aFolder [
 
 	| pixels |
 	pixels := aPoint * aNumber.
 	surface := AeCairoImageSurface extent: pixels ceiling.
 	surface newContextDo: [ :context |
-		anImage drawOn: context in: (0 @ 0 extent: pixels) folder: aFolder ].
+			context
+				sourceColor: aColor;
+				paint.
+			anImage drawOn: context in: (0 @ 0 extent: pixels) folder: aFolder ].
 	surface deviceScale: aNumber asPoint
 ]

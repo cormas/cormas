@@ -1,34 +1,43 @@
 "
-I am the folder of a model's image files, as a view sees it: I find the file of an image by its name, and read it once.
+I am the folder of a model's image files, as its views see it: I find the file of an image by its name, read it once, and keep the backgrounds drawn from it.
 
 ## Responsibility:
 
-- Find the PNG or JPEG file whose name, without its extension, is the name of an image.
-- Raise an error naming the image and the folder when no file, or more than one, has that name.
+- Find the PNG or JPEG file whose name, without its extension, is the name of an image, and raise an error naming the image and the folder when no file, or more than one, has that name.
 - Keep every file I read as a Cairo surface, so that a file is read and converted only the first time an image uses it.
+- Give every element that shows the same image over the same color at the same size the same background, drawn once.
 
 ## Collaborators:
 
-- A space element creates me on its model's `images` folder, and asks me for the surfaces of the images it draws.
+- Cell and agent elements ask me for the backgrounds of looks that have an image.
+- `CMBlImageBackground` draws an image, with the surfaces I give it.
 - `AeCairoImageSurface` reads PNG files; `ImageReadWriter` reads JPEG files.
 
 ## Public API and Key Messages
 
+- `CMBlImageFolder ofModel: aModelClass`: the folder that every view of the model shares; `forgetModel:` drops it when a new view opens
 - `CMBlImageFolder on: aDirectory`
+- `backgroundOf:color:extent:scale:`
 - `surfaceNamed: aString`
 
 ```
-(CMBlImageFolder on: CMMyModel folder / 'images') surfaceNamed: 'tall-grass'
+(CMBlImageFolder ofModel: CMMyModel)
+	backgroundOf: (CMImage named: 'tall-grass')
+	color: Color transparent
+	extent: 32 @ 32
+	scale: 1
 ```
 
 ## Internal Representation
 
 - `folder`: a `FileReference` to a directory, which may not exist.
 - `surfaces`: a `Dictionary` from names to the `AeCairoImageSurface`s read so far.
+- `backgrounds`: a `Dictionary` from arrays of an image, a color, an extent and a scale to their `CMBlImageBackground`s.
+- `folders`, on my class side: a `Dictionary` from model classes to their folders.
 
 ### Implementation Points
 
-- I never read a file again, so a modeller who edits an image sees the change in a newly opened view, which creates a new folder.
+- I never read a file again. A new view of a model makes a new folder, so a modeller who edits an image sees the change in a newly opened view.
 - Cairo reads a PNG file of 2000 by 2000 pixels in about 15 ms, where `ImageReadWriter` takes about 1 s, and converting a form of that size to a surface takes about 250 ms. So PNG files never become forms.
 "
 Class {
@@ -36,16 +45,61 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'folder',
-		'surfaces'
+		'surfaces',
+		'backgrounds'
+	],
+	#classInstVars : [
+		'folders'
 	],
 	#category : 'Cormas-Bloc',
 	#package : 'Cormas-Bloc'
 }
 
+{ #category : 'accessing' }
+CMBlImageFolder class >> forgetModel: aModelClass [
+	"Read the images of aModelClass again the next time they are drawn, so that a new view shows the files as they are now"
+
+	folders removeKey: aModelClass ifAbsent: [ ]
+]
+
+{ #category : 'class initialization' }
+CMBlImageFolder class >> initialize [
+
+	folders := Dictionary new
+]
+
+{ #category : 'accessing' }
+CMBlImageFolder class >> ofModel: aModelClass [
+	"Return the folder of the images of aModelClass that every view of it shares, until a new view opens"
+
+	^ folders
+		  at: aModelClass
+		  ifAbsentPut: [ self on: aModelClass folder / 'images' ]
+]
+
 { #category : 'instance creation' }
 CMBlImageFolder class >> on: aDirectory [
 
 	^ self new setFolder: aDirectory
+]
+
+{ #category : 'accessing' }
+CMBlImageFolder >> backgroundOf: anImage color: aColor extent: aPoint scale: aNumber [
+	"Return the background that shows anImage over aColor on an element of logical extent aPoint, with aNumber pixels per point. Every element that shows the same thing at the same size gets the same background, which is what makes images as fast as colors"
+
+	^ backgrounds
+		  at: {
+				  anImage.
+				  aColor.
+				  aPoint.
+				  aNumber }
+		  ifAbsentPut: [
+				  CMBlImageBackground
+					  image: anImage
+					  color: aColor
+					  extent: aPoint
+					  scale: aNumber
+					  folder: self ]
 ]
 
 { #category : 'private' }
@@ -92,7 +146,8 @@ CMBlImageFolder >> read: aFile [
 CMBlImageFolder >> setFolder: aDirectory [
 
 	folder := aDirectory.
-	surfaces := Dictionary new
+	surfaces := Dictionary new.
+	backgrounds := Dictionary new
 ]
 
 { #category : 'accessing' }

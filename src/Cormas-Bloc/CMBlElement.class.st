@@ -93,6 +93,12 @@ CMBlElement class >> tileOfLook: aLook [
 CMBlElement >> backgroundOfLook: aLook in: aSpaceModel extent: anExtent [
 	"Answer the color or the image with which a look fills an element of the given extent"
 
+	aLook hasImage ifTrue: [
+			^ (CMBlImageFolder ofModel: self entity cormasModel class)
+				  backgroundOf: aLook image
+				  color: aLook color
+				  extent: anExtent
+				  scale: 1 ].
 	aLook hasTile ifFalse: [ ^ aLook color ].
 	^ BlBackground image: (self
 			   crop:

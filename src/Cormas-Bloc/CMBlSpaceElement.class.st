@@ -405,8 +405,10 @@ CMBlSpaceElement >> setUpEmptyFor: aCormasModel [
 
 { #category : 'initialization' }
 CMBlSpaceElement >> setUpFor: aCormasModel [
+	"A new view reads the image files again, so that it shows them as they are now"
 
 	cormasModel := aCormasModel.
+	CMBlImageFolder forgetModel: aCormasModel class.
 	super setUpFor: aCormasModel
 ]
 

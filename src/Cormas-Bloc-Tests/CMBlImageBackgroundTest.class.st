@@ -24,6 +24,7 @@ CMBlImageBackgroundTest >> draw: anImage [
 		           extent: 8 @ 8;
 		           background: (CMBlImageBackground
 				            image: anImage
+				            color: Color transparent
 				            extent: 8 @ 8
 				            scale: 1
 				            folder: folder);
@@ -125,6 +126,7 @@ CMBlImageBackgroundTest >> testAnImageStaysSharpWhenZoomedIn [
 		           extent: 4 @ 4;
 		           background: (CMBlImageBackground
 				            image: (CMImage named: 'stripes')
+				            color: Color transparent
 				            extent: 4 @ 4
 				            scale: 2
 				            folder: folder);
