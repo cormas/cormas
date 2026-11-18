@@ -85,6 +85,21 @@ CMSimulationPresenter >> example [
 	<script: 'self example'>
 ]
 
+{ #category : 'private' }
+CMSimulationPresenter >> forgetFocusIn: aWindowPresenter [
+	"Morphic remembers the last focused morph in the hand and in the theme, even after its window closes. Forget the morphs of this window, so that the window and the simulation it shows can be collected"
+
+	| morphs hand theme |
+	morphs := aWindowPresenter adapter widget allMorphs asIdentitySet.
+	hand := self currentWorld activeHand.
+	(morphs includes: hand keyboardFocus) ifTrue: [
+		hand releaseKeyboardFocus ].
+	theme := Smalltalk ui theme.
+	theme focusIndicator ifNotNil: [ :indicator |
+		(morphs includes: indicator key) ifTrue: [
+			theme focusIndicator: nil ] ]
+]
+
 { #category : 'initialization' }
 CMSimulationPresenter >> initialize [
 
@@ -173,6 +188,7 @@ CMSimulationPresenter >> initializeWindow: aWindowPresenter [
 		whenClosedDo: [
 				self stopSimulation.
 				simulationRunner closeAllViews.
+				self forgetFocusIn: aWindowPresenter.
 				whenWindowIsClosedHooks do: #value ]
 ]
 

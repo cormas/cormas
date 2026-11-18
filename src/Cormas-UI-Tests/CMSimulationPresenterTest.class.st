@@ -48,6 +48,23 @@ CMSimulationPresenterTest >> testANewSimulationStopsThePreviousOne [
 ]
 
 { #category : 'tests' }
+CMSimulationPresenterTest >> testClosingTheWindowLeavesNoMorphFocused [
+	"Morphic remembers the last focused morph, which would keep the closed window and its simulation from being collected"
+
+	| morphs button |
+	morphs := window adapter widget allMorphs asIdentitySet.
+	button := morphs detect: [ :each |
+		          each isKindOf: SpPluggableButtonMorph ].
+	button takeKeyboardFocus.
+	button focusIndicatorMorph.
+	window close.
+	self deny:
+		(morphs includes: self currentWorld activeHand keyboardFocus).
+	self deny: (morphs includes:
+			 (Smalltalk ui theme focusIndicator ifNotNil: [ :each | each key ]))
+]
+
+{ #category : 'tests' }
 CMSimulationPresenterTest >> testClosingTheWindowStopsTheSimulation [
 
 	simulation runAllSteps.
