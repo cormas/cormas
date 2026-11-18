@@ -301,6 +301,13 @@ CMSimulation >> stepsPerInterval: aPositiveInteger [
 	simulationRunner stepsPerInterval: aPositiveInteger
 ]
 
+{ #category : 'simulation runner - running' }
+CMSimulation >> stop [
+	"End the simulation at once, also while it is paused, when nobody needs it any more, such as when its window closes. A stopped simulation cannot be resumed"
+
+	simulationRunner stop
+]
+
 { #category : 'simulation runner - config' }
 CMSimulation >> stopAfterStep: aNumber [
 	"A syntactic sugar to provide a stop condition that will stop a simulation after a given number of steps"

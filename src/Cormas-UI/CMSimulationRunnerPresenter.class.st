@@ -602,17 +602,20 @@ CMSimulationRunnerPresenter >> updateSelectedNotebookPage [
 
 { #category : 'initialization' }
 CMSimulationRunnerPresenter >> updateWithSimulation [
+	"A new simulation is ready to run, even if the previous one was running when it was replaced"
 
 	self setSimulationIntervalDelay.
 	self simulation whenFinishedDo: [ self beInPauseMode ].
-	
+	self beInPauseMode.
+
 	self displayCurrentTimeStep.
 	self enabled: true.
 	self initializeNotebookPages.
 	self simulation simulationContext timeStepAnnouncer
-    when: ValueChanged do: [ :ann |
-        currentTimeStepLabel defer: [ self displayCurrentTimeStep ] ]
-    for: self.  "Automatic unsubscription when the presenter is released"
+		when: ValueChanged
+		do: [ :ann |
+		currentTimeStepLabel defer: [ self displayCurrentTimeStep ] ]
+		for: self "Automatic unsubscription when the presenter is released"
 ]
 
 { #category : 'views' }

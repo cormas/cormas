@@ -116,6 +116,13 @@ CMSimulationProcessRunner >> stepsPerInterval: aPositiveInteger [
 	stepsPerInterval := aPositiveInteger
 ]
 
+{ #category : 'running' }
+CMSimulationProcessRunner >> stop [
+	"End the simulation at once, also while it is paused, when nobody needs it any more. A stopped simulation cannot be resumed"
+
+	simulationProcess ifNotNil: [ :process | process terminate ]
+]
+
 { #category : 'accessing' }
 CMSimulationProcessRunner >> stopCondition: aFullBlockClosure [
 

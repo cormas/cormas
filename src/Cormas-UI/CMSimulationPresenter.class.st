@@ -134,26 +134,27 @@ CMSimulationPresenter >> initializePresenters [
 
 { #category : 'instance creation' }
 CMSimulationPresenter >> initializeSimulationInit: anInitSelector control: aControlSelector [
-"Purpose: instanciate a new modelClass with init & control selectors. Then initialize this simulation by performing #activeInitSelector.
+	"Purpose: instanciate a new modelClass with init & control selectors. Then initialize this simulation by performing #activeInitSelector.
 Reset the currentTimeStep and the data. Set the randomSeed"
 
 	| simulation parameters |
-	
 	"Save parameters from previous simulation to copy their values and start with the same values
 	in the new simulation. This is important if we want to set some parameters before initialization"
 	parameters := self cormasModel allParameters.
 
+	"The new simulation shares the model of the previous one, which must not change it any more"
+	self stopSimulation.
 	simulation := CMSimulation for: self cormasModel.
 	self application simulation: simulation.
 
 	simulation
 		activeInitSelector: anInitSelector;
 		activeControlSelector: aControlSelector.
-		
+
 	simulation stopWhen: stopConditionPresenter buildConditionBlock.
-		
+
 	randomNumbersPresenter apply.
-	
+
 	simulation initializeSimulation.
 	simulationRunner updateWithSimulation.
 	randomNumbersPresenter showCurrentSettings
@@ -163,7 +164,6 @@ Reset the currentTimeStep and the data. Set the randomSeed"
 CMSimulationPresenter >> initializeWindow: aWindowPresenter [
 
 	super initializeWindow: aWindowPresenter.
-
 	aWindowPresenter
 		title: self presenterWindowTitle;
 		initialExtent: 1000 @ 600;
@@ -171,6 +171,7 @@ CMSimulationPresenter >> initializeWindow: aWindowPresenter [
 			self keepWindowWiderThanItsContent: aWindowPresenter ];
 		whenResizingDo: [ simulationRunner fitDiagram ];
 		whenClosedDo: [
+				self stopSimulation.
 				simulationRunner closeAllViews.
 				whenWindowIsClosedHooks do: #value ]
 ]
@@ -235,4 +236,12 @@ CMSimulationPresenter >> settingsStopCondition [
 		title: 'Stop condition'
 		icon: (self iconNamed: #accept)
 		provider: [ stopConditionPresenter ]
+]
+
+{ #category : 'actions' }
+CMSimulationPresenter >> stopSimulation [
+	"A simulation that nobody sees any more must not go on changing its model. There is none until the first one is initialized"
+
+	self application simulation ifNotNil: [ :simulation |
+		simulation stop ]
 ]

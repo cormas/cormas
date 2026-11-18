@@ -62,6 +62,25 @@ CMSimulationTest >> testASimulationIsRunningBetweenItsStepsUntilItFinishes [
 ]
 
 { #category : 'tests' }
+CMSimulationTest >> testAStoppedSimulationCannotBeResumed [
+
+	| step |
+	simulation
+		stopWhen: [ :model | false ];
+		runAllStepsAfterEachIntervalDo: [
+			simulation currentTimeStep = 3 ifTrue: [ simulation pause ] ].
+	[
+		self waitUntilPaused.
+		simulation stop.
+		step := simulation currentTimeStep.
+		simulation resume.
+		(Delay forMilliseconds: 50) wait.
+		self assert: simulation currentTimeStep equals: step ] ensure: [
+			simulation stopWhen: [ :model | true ].
+			simulation resume ]
+]
+
+{ #category : 'tests' }
 CMSimulationTest >> testCurrenTimeStepStartsWithZero [
 
 	self assert: simulation currentTimeStep equals: 0
@@ -342,6 +361,23 @@ CMSimulationTest >> testStopWhen [
 
 	"Was the condition satisfied?"
 	self assert: (simulation cormasModel cells first hasOccupantsOfClass: CMMockGoat).
+]
+
+{ #category : 'tests' }
+CMSimulationTest >> testStoppingEndsARunningSimulation [
+
+	| step |
+	simulation
+		stopWhen: [ :model | false ];
+		runAllStepsAfterEachIntervalDo: [ (Delay forMilliseconds: 5) wait ].
+	[
+		(Delay forMilliseconds: 50) wait.
+		simulation stop.
+		step := simulation currentTimeStep.
+		(Delay forMilliseconds: 50) wait.
+		self assert: simulation currentTimeStep equals: step.
+		self deny: simulation isSimulationRunning ] ensure: [
+		simulation stopWhen: [ :model | true ] ]
 ]
 
 { #category : 'running' }
