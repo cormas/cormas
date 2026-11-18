@@ -36,8 +36,8 @@ aspectEnergy: look
 Class {
 	#name : 'CMAgentLook',
 	#superclass : 'CMAreaLook',
-	#traits : 'TCMTiledLook',
-	#classTraits : 'TCMTiledLook classTrait',
+	#traits : 'TCMTiledLook + TCMImageLook',
+	#classTraits : 'TCMTiledLook classTrait + TCMImageLook classTrait',
 	#instVars : [
 		'shape',
 		'size'
@@ -52,6 +52,7 @@ CMAgentLook >> reset [
 
 	super reset.
 	self resetTile.
+	self resetImage.
 	shape := #circle.
 	size := 0.3.
 	borderThickness := 0

@@ -229,6 +229,47 @@ CMLookTest >> testColorShadeQuicklyReachesTheColorThenDarkens [
 	self assert: (middle hue closeTo: Color green hue precision: 1)
 ]
 
+{ #category : 'tests' }
+CMLookTest >> testColorUnderAnImageIsTransparentUnlessSet [
+
+	| look |
+	look := CMAgentLook new.
+	look image: 'farmer'.
+	self assert: look color equals: Color transparent.
+	look := CMCellLook new.
+	look
+		image: 'tree';
+		color: Color green.
+	self assert: look color equals: Color green.
+	look := CMCellLook new.
+	look
+		color: Color gray;
+		image: 'tree'.
+	self assert: look color equals: Color gray
+]
+
+{ #category : 'tests' }
+CMLookTest >> testImageReplacesThePreviousImage [
+
+	| look |
+	look := CMAgentLook new.
+	look
+		image: 'grass';
+		image: 'farmer'.
+	self assert: look image equals: (CMImage named: 'farmer')
+]
+
+{ #category : 'tests' }
+CMLookTest >> testImageTakesANameOrAnImage [
+
+	| look |
+	look := CMCellLook new.
+	look image: 'grass'.
+	self assert: look image equals: (CMImage named: 'grass').
+	look image: (CMImage named: 'grass') + 'tree'.
+	self assert: look image equals: (CMImage named: 'grass') + 'tree'
+]
+
 { #category : 'tests - defaults' }
 CMLookTest >> testLinkIsDrawnByDefault [
 
@@ -257,6 +298,21 @@ CMLookTest >> testOverlaysAreLaidInOrder [
 	self assert: look overlays equals: {
 			(#tree -> 0.7).
 			(#fire -> 0.3) }
+]
+
+{ #category : 'tests' }
+CMLookTest >> testResetForgetsTheImageAndTheColor [
+
+	| look |
+	look := CMCellLook new.
+	look
+		color: Color green;
+		image: 'tree'.
+	look reset.
+	self deny: look hasImage.
+	self assert: look color equals: CMCellLook new color.
+	look image: 'tree'.
+	self assert: look color equals: Color transparent
 ]
 
 { #category : 'tests - defaults' }

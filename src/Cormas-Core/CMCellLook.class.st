@@ -27,8 +27,8 @@ aspectRocky: look
 Class {
 	#name : 'CMCellLook',
 	#superclass : 'CMAreaLook',
-	#traits : 'TCMTiledLook',
-	#classTraits : 'TCMTiledLook classTrait',
+	#traits : 'TCMTiledLook + TCMImageLook',
+	#classTraits : 'TCMTiledLook classTrait + TCMImageLook classTrait',
 	#category : 'Cormas-Core-Look',
 	#package : 'Cormas-Core',
 	#tag : 'Look'
@@ -38,5 +38,6 @@ Class {
 CMCellLook >> reset [
 
 	super reset.
-	self resetTile
+	self resetTile.
+	self resetImage
 ]

@@ -31,7 +31,7 @@ look color
 
 ## Internal Representation
 
-- `color`: a `Color`. A translucent color lets what is below show through.
+- `color`: a `Color`, or nil until the aspect sets one; `color` then returns `defaultColor`. A translucent color lets what is below show through.
 - `isVisible`: a `Boolean`, false when nothing must be drawn.
 
 ### Implementation Points
@@ -61,7 +61,7 @@ CMLook >> beInvisible [
 { #category : 'accessing' }
 CMLook >> color [
 
-	^ color
+	^ color ifNil: [ self defaultColor ]
 ]
 
 { #category : 'accessing' }
@@ -101,6 +101,13 @@ CMLook >> colorShadeOf: aColor forValue: aNumber from: minimum to: maximum [
 		         h: aColor hue
 		         s: aColor saturation * (1 - (lightness raisedTo: 10))
 		         v: aColor brightness * lightness
+]
+
+{ #category : 'accessing' }
+CMLook >> defaultColor [
+	"The color when the aspect sets none"
+
+	^ Color gray
 ]
 
 { #category : 'helpers' }
@@ -146,5 +153,5 @@ CMLook >> reset [
 	"Return every value to its default, which always draws something. A view reuses the same look at every refresh, so its aspect starts from these defaults each time"
 
 	isVisible := true.
-	color := Color gray
+	color := nil
 ]
