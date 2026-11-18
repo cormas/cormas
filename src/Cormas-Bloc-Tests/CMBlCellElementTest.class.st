@@ -147,6 +147,15 @@ CMBlCellElementTest >> testNoBorderOnCellsTooSmallOnTheScreen [
 ]
 
 { #category : 'tests' }
+CMBlCellElementTest >> testNoBorderWhenItsThicknessIsZero [
+	"A border thickness of zero shows no border at any zoom, even where thin borders are shown one pixel wide"
+
+	| element |
+	element := self twoNeighbourCellsWithBorderWidth: 0 scaledBy: 0.5.
+	self assert: (self blackPixelsIn: element alongRow: 12) equals: 0
+]
+
+{ #category : 'tests' }
 CMBlCellElementTest >> testPointyTopHexagon [
 	"A pointy-top hexagon touches the top and bottom of its box halfway across, and its corners are empty"
 
