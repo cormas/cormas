@@ -111,6 +111,41 @@ CMBlImageElementTest >> testAnAgentImageIsCutToItsShape [
 ]
 
 { #category : 'tests' }
+CMBlImageElementTest >> testCellsOfTheSameImageMeetWithoutASeam [
+	"Zoomed so that cell edges fall in the middle of pixels, four cells showing the same image without borders look like one continuous area, also where their corners meet"
+
+	| cells container form |
+	self write: Color green named: 'grass'.
+	cells := model cells collect: [ :each |
+			         each aspect: [ :look |
+					         look
+						         image: 'grass';
+						         borderThickness: 0 ].
+			         (CMBlCellElement for: each)
+				         position:
+					         each columnNumber - 1 @ (each rowNumber - 1) * 32;
+				         yourself ].
+	container := BlElement new
+		             extent: 60 @ 60;
+		             background: Color white;
+		             addChild: (BlElement new
+				              extent: 100 @ 100;
+				              transformDo: [ :transform |
+						              transform
+							              topLeftOrigin;
+							              scaleBy: 0.7 ];
+				              addChildren: cells;
+				              yourself);
+		             yourself.
+	form := self formOf: container.
+	self
+		assert: ((0 to: 43) inject: 0 into: [ :count :x |
+					 count + ((0 to: 43) count: [ :y |
+						  (form colorAt: x @ y) asHexString ~= '00FF00' ]) ])
+		equals: 0
+]
+
+{ #category : 'tests' }
 CMBlImageElementTest >> testElementsShowingTheSameImageShareOneBackground [
 
 	| aspect first second |

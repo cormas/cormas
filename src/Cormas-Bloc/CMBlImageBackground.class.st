@@ -58,10 +58,14 @@ CMBlImageBackground class >> image: anImage color: aColor extent: aPoint scale: 
 
 { #category : 'drawing' }
 CMBlImageBackground >> aeApplyTo: aeCanvas [
+	"Paint with my surface. Its edge pixels are repeated beyond it, so that a zoomed view does not blend the pixels along the edges of an element with transparency"
 
 	aeCanvas
 		setBackgroundWith: [
-		aeCanvas privateAeCairoContext sourceSurface: surface ]
+				| context |
+				context := aeCanvas privateAeCairoContext.
+				context sourceSurface: surface.
+				context source extend: AeCairoExtendMode pad ]
 		alpha: self opacity
 ]
 
