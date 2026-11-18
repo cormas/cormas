@@ -34,6 +34,16 @@ CMBlImageElementTest >> setUp [
 ]
 
 { #category : 'running' }
+CMBlImageElementTest >> spaceIn: aParent [
+
+	| space |
+	space := CMBlSpaceElement for: model.
+	aParent addChild: space.
+	aParent forceLayout.
+	^ space
+]
+
+{ #category : 'running' }
 CMBlImageElementTest >> tearDown [
 
 	CMBlImageFolder forgetModel: CMBlImageTestModel.
@@ -98,6 +108,21 @@ CMBlImageElementTest >> testElementsShowingTheSameImageShareOneBackground [
 ]
 
 { #category : 'tests' }
+CMBlImageElementTest >> testImagesStaySharpWhenTheViewIsZoomedIn [
+
+	| parent space form |
+	self writeStripesNamed: 'stripes'.
+	model cells do: [ :each |
+		each aspect: [ :look | look image: 'stripes' ] ].
+	parent := BlElement new extent: 64 @ 64.
+	space := self spaceIn: parent.
+	space zoomBy: 2 at: 0 @ 0.
+	form := self formOf: parent.
+	self assert: (form colorAt: 10 @ 10) asHexString equals: 'FF0000'.
+	self assert: (form colorAt: 11 @ 10) asHexString equals: '0000FF'
+]
+
+{ #category : 'tests' }
 CMBlImageElementTest >> testTheColorShowsAroundASmallerImage [
 
 	| cell element |
@@ -111,12 +136,40 @@ CMBlImageElementTest >> testTheColorShowsAroundASmallerImage [
 	self assert: (self hexColorIn: element at: 2 @ 2) equals: 'FF0000'
 ]
 
+{ #category : 'tests' }
+CMBlImageElementTest >> testZoomingAViewMadeEmptyShowsNothingBeforeItsFirstUpdate [
+
+	| parent space |
+	self write: Color green named: 'grass'.
+	model cells do: [ :each |
+		each aspect: [ :look | look image: 'grass' ] ].
+	parent := BlElement new extent: 32 @ 32.
+	space := CMBlSpaceElement emptyFor: model observedBy: CMObserver new.
+	parent addChild: space.
+	space zoomBy: 4 at: 0 @ 0.
+	self assert: (self isTransparentIn: parent at: 16 @ 16)
+]
+
 { #category : 'running' }
 CMBlImageElementTest >> write: aColor named: aName [
 
 	| form |
 	form := Form extent: 4 @ 4 depth: 32.
 	form fillColor: aColor.
+	directory / 'images' / (aName , '.png') binaryWriteStreamDo: [
+		:stream | PNGReadWriter putForm: form onStream: stream ]
+]
+
+{ #category : 'running' }
+CMBlImageElementTest >> writeStripesNamed: aName [
+	"A 64 by 64 image of vertical stripes, one pixel wide, alternately red and blue"
+
+	| form |
+	form := Form extent: 64 @ 64 depth: 32.
+	0 to: 63 do: [ :x |
+			form fill: (x @ 0 extent: 1 @ 64) fillColor: (x even
+					 ifTrue: [ Color red ]
+					 ifFalse: [ Color blue ]) ].
 	directory / 'images' / (aName , '.png') binaryWriteStreamDo: [
 		:stream | PNGReadWriter putForm: form onStream: stream ]
 ]

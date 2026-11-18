@@ -58,7 +58,8 @@ Class {
 		'dragOrigin',
 		'aggregateElements',
 		'linkElements',
-		'routeElements'
+		'routeElements',
+		'imageScale'
 	],
 	#category : 'Cormas-Bloc',
 	#package : 'Cormas-Bloc'
@@ -106,7 +107,8 @@ CMBlSpaceElement >> applyNavigation [
 			transform
 				topLeftOrigin;
 				translateBy: offset / zoom;
-				scaleBy: zoom ]
+				scaleBy: zoom ].
+	self updateImageScale
 ]
 
 { #category : 'interaction' }
@@ -123,6 +125,12 @@ CMBlSpaceElement >> cellElementAt: aPoint ifNone: aBlock [
 CMBlSpaceElement >> cells [
 
 	^ cormasModel cells
+]
+
+{ #category : 'drawing' }
+CMBlSpaceElement >> cormasImageScale [
+
+	^ imageScale
 ]
 
 { #category : 'interaction' }
@@ -234,6 +242,7 @@ CMBlSpaceElement >> initialize [
 	routeElements := #(  ).
 	agentElements := #(  ).
 	zoom := 1.
+	imageScale := 1.
 	offset := 0 @ 0.
 	followsParent := true.
 	self
@@ -396,6 +405,14 @@ CMBlSpaceElement >> saveToPngFile: aFileReference [
 		PNGReadWriter putForm: form onStream: stream ]
 ]
 
+{ #category : 'navigation' }
+CMBlSpaceElement >> screenScale [
+	"Pixels of the screen per point: more than 1 on high resolution screens. Hosts return it as a number or as a point"
+
+	self isAttachedToSceneGraph ifFalse: [ ^ 1 ].
+	^ self space windowScale asPoint max
+]
+
 { #category : 'initialization' }
 CMBlSpaceElement >> setUpEmptyFor: aCormasModel [
 	"Show nothing of aCormasModel until my first update"
@@ -410,6 +427,17 @@ CMBlSpaceElement >> setUpFor: aCormasModel [
 	cormasModel := aCormasModel.
 	CMBlImageFolder forgetModel: aCormasModel class.
 	super setUpFor: aCormasModel
+]
+
+{ #category : 'navigation' }
+CMBlSpaceElement >> updateImageScale [
+	"Draw images with at least as many pixels as they cover on the screen. The scale only changes at powers of two, so zooming redraws them rarely. A view that shows nothing yet has nothing to redraw"
+
+	| scale |
+	scale := (2 raisedTo: (zoom log: 2) ceiling) * self screenScale.
+	scale = imageScale ifTrue: [ ^ self ].
+	imageScale := scale.
+	self hasChildren ifTrue: [ self refresh ]
 ]
 
 { #category : 'updating' }

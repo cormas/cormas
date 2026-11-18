@@ -98,7 +98,7 @@ CMBlElement >> backgroundOfLook: aLook in: aSpaceModel extent: anExtent [
 				  backgroundOf: aLook image
 				  color: aLook color
 				  extent: anExtent
-				  scale: 1 ].
+				  scale: self cormasImageScale ].
 	aLook hasTile ifFalse: [ ^ aLook color ].
 	^ BlBackground image: (self
 			   crop:
