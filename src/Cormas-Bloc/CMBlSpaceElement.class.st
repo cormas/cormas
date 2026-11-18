@@ -149,7 +149,7 @@ CMBlSpaceElement >> dropAgentOfElement: anAgentElement [
 
 { #category : 'private' }
 CMBlSpaceElement >> elementsFor: someKeys reusing: someElements at: anIndex creating: aBlock [
-	"Answer an element for each key, in order, as my children from anIndex on. An element whose key is still there is kept and refreshed, an element for a new key is created by aBlock and added at its place, and the others are removed. Removing and adding children costs much more than refreshing them, because I have a child for every cell"
+	"Answer an element for each key, in order, as my children from anIndex on. An element whose key is still there is kept and refreshed, an element for a new key is created by aBlock and added at its place, and the others are removed. Removing and adding children costs much more than refreshing them, because I have a child for every cell. A new element is refreshed once it is my child, so that it draws its images with my scale"
 
 	| byKey elements kept |
 	byKey := Dictionary new.
@@ -160,9 +160,9 @@ CMBlSpaceElement >> elementsFor: someKeys reusing: someElements at: anIndex crea
 	self removeChildren:
 		(someElements reject: [ :each | kept includes: each ]).
 	elements withIndexDo: [ :each :index |
-			each parent == self
-				ifTrue: [ each refresh ]
-				ifFalse: [ self addChild: each at: anIndex + index - 1 ] ].
+			each parent == self ifFalse: [
+				self addChild: each at: anIndex + index - 1 ].
+			each refresh ].
 	^ elements
 ]
 

@@ -95,6 +95,27 @@ CMBlImageElementTest >> testASavedPictureShowsImagesSharply [
 ]
 
 { #category : 'tests' }
+CMBlImageElementTest >> testAnAgentAddedToAZoomedViewShowsItsImageSharply [
+
+	| parent space agent form |
+	self writeStripesNamed: 'stripes' side: 64 stripeWidth: 1.
+	parent := BlElement new extent: 64 @ 64.
+	space := self spaceIn: parent.
+	space zoomBy: 2 at: 0 @ 0.
+	agent := model newEntity: CMBlTestAgent.
+	agent aspect: [ :look |
+			look
+				image: 'stripes';
+				shape: #square;
+				size: 1 ].
+	agent moveTo: (model cellAt: 1 at: 1).
+	space refresh.
+	form := self formOf: parent.
+	self assert: (form colorAt: 10 @ 10) asHexString equals: 'FF0000'.
+	self assert: (form colorAt: 11 @ 10) asHexString equals: '0000FF'
+]
+
+{ #category : 'tests' }
 CMBlImageElementTest >> testAnAgentImageIsCutToItsShape [
 
 	| agent element |
