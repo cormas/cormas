@@ -137,6 +137,19 @@ CMBlImageElementTest >> testTheColorShowsAroundASmallerImage [
 ]
 
 { #category : 'tests' }
+CMBlImageElementTest >> testUpdateChangesFromAColorToAnImage [
+
+	| cell element |
+	self write: Color green named: 'grass'.
+	cell := self cellWithAspect: [ :look | look color: Color red ].
+	element := CMBlCellElement for: cell.
+	self assert: (self hexColorIn: element at: 16 @ 16) equals: 'FF0000'.
+	cell aspect: [ :look | look image: 'grass' ].
+	element update.
+	self assert: (self hexColorIn: element at: 16 @ 16) equals: '00FF00'
+]
+
+{ #category : 'tests' }
 CMBlImageElementTest >> testZoomingAViewMadeEmptyShowsNothingBeforeItsFirstUpdate [
 
 	| parent space |

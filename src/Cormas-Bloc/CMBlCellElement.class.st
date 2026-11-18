@@ -3,7 +3,7 @@ I draw a cell with the shape required by its grid, according to its look in my v
 
 ## Responsibility:
 
-- Show the color or the tiles, and the border, of the look of my cell.
+- Show the color and the image, and the border, of the look of my cell.
 - Take the shape of my grid: a square, a hexagon or a triangle.
 - Show the occupants of my cell, unless a group of cells draws the agents itself.
 

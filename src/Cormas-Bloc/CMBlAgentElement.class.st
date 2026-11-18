@@ -3,7 +3,7 @@ I draw an agent as a shape, according to its look in my view. I can be shown on 
 
 ## Responsibility:
 
-- Show the color or the tiles, the shape, the size and the border of the look of my agent.
+- Show the color and the image, the shape, the size and the border of the look of my agent.
 - Know which shapes a look may ask for, and reject the others.
 
 ## Collaborators:

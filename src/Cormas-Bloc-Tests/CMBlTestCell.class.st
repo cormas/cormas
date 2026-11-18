@@ -1,5 +1,5 @@
 "
-I am a cell whose look is set by a test, for looks that the mock cells do not have, such as tiles.
+I am a cell whose look is set by a test, for looks that the mock cells do not have, such as images.
 
 ## Responsibility:
 
@@ -7,14 +7,14 @@ I am a cell whose look is set by a test, for looks that the mock cells do not ha
 
 ## Collaborators:
 
-- `CMBlTileTest`: sets my look.
+- `CMBlImageElementTest`: sets my look.
 
 ## Public API and Key Messages
 
 - `aspect:` sets the block that fills my look.
 
 ```
-cell aspect: [ :look | look tile: #halfRedHalfBlue ]
+cell aspect: [ :look | look image: 'grass' ]
 ```
 
 ## Internal Representation

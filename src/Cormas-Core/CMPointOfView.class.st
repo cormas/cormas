@@ -6,8 +6,7 @@ Class {
 		'shape',
 		'size',
 		'borderWidth',
-		'borderColor',
-		'tile'
+		'borderColor'
 	],
 	#category : 'Cormas-Core-Analysis',
 	#package : 'Cormas-Core',
@@ -82,23 +81,6 @@ CMPointOfView class >> size: aNumber [
 ]
 
 { #category : 'accessing' }
-CMPointOfView class >> tile: aTile [
-
-	^ self new
-		tile: aTile;
-		yourself
-]
-
-{ #category : 'accessing' }
-CMPointOfView class >> tile: aTile size: aNumber [
-
-	^ self new
-		tile: aTile;
-		size: aNumber;
-		yourself
-]
-
-{ #category : 'accessing' }
 CMPointOfView >> borderColor [
 
 	^ borderColor
@@ -146,12 +128,6 @@ CMPointOfView >> initialize [
 	borderColor := Color veryLightGray.
 ]
 
-{ #category : 'testing' }
-CMPointOfView >> isForImage [
-
-	^ tile isNotNil
-]
-
 { #category : 'accessing' }
 CMPointOfView >> shape [
 	
@@ -184,16 +160,4 @@ CMPointOfView >> size [
 CMPointOfView >> size: aNumber [
 
 	size := aNumber
-]
-
-{ #category : 'accessing' }
-CMPointOfView >> tile [
-
-	^ tile
-]
-
-{ #category : 'accessing' }
-CMPointOfView >> tile: aTile [
-
-	tile := aTile
 ]

@@ -1,23 +1,23 @@
 "
-I describe how an agent appears in a view: its color or a picture, its shape, its size and its border.
+I describe how an agent appears in a view: its color, an image drawn over it, its shape, its size and its border.
 
 ## Responsibility:
 
-- Hold the shape and the size of the agent, with its color or tile and its border.
+- Hold the shape and the size of the agent, with its color, its image and its border.
 - Compute the size from an attribute, with `sizeForValue:from:to:`.
 - Start with a small grey circle, so that agents are drawn even when their model defines no aspect.
 
 ## Collaborators:
 
 - An aspect of an agent fills me.
-- `TCMTiledLook` gives me the tiles.
+- `TCMImageLook` gives me the image, a `CMImage`.
 - A renderer draws me.
 
 ## Public API and Key Messages
 
 - `shape:` with one of `#circle #square #diamond #triangle #hexagon #star`
 - `size:`, `sizeForValue:from:to:`
-- `color:`, `tile:`, `overlayTile:scaledTo:`, `hasTile`, `borderColor:`, `borderThickness:`
+- `color:`, `image:`, `hasImage`, `borderColor:`, `borderThickness:`
 
 ```
 aspectEnergy: look
@@ -36,8 +36,8 @@ aspectEnergy: look
 Class {
 	#name : 'CMAgentLook',
 	#superclass : 'CMAreaLook',
-	#traits : 'TCMTiledLook + TCMImageLook',
-	#classTraits : 'TCMTiledLook classTrait + TCMImageLook classTrait',
+	#traits : 'TCMImageLook',
+	#classTraits : 'TCMImageLook classTrait',
 	#instVars : [
 		'shape',
 		'size'
@@ -51,7 +51,6 @@ Class {
 CMAgentLook >> reset [
 
 	super reset.
-	self resetTile.
 	self resetImage.
 	shape := #circle.
 	size := 0.3.

@@ -21,7 +21,7 @@ CMMockCell >> aspectDefault: look [
 CMMockCell >> aspectGraves: look [
 
 	<aspect>
-	state = #dead ifTrue: [ look tile: #grave ]
+	state = #dead ifTrue: [ look image: 'grave' ]
 ]
 
 { #category : 'aspects' }

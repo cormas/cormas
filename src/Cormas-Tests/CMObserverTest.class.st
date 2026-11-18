@@ -280,10 +280,10 @@ CMObserverTest >> testTheLookFollowsTheEntityAtEachRefresh [
 	observer perspective: (CMPerspective new
 			 show: CMMockCell as: #aspectGraves:;
 			 yourself).
-	self assert: (observer lookOf: cell) hasTile.
+	self assert: (observer lookOf: cell) hasImage.
 	cell state: #alive.
 	look := observer lookOf: cell.
-	self deny: look hasTile
+	self deny: look hasImage
 ]
 
 { #category : 'tests' }

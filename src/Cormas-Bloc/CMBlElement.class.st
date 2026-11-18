@@ -35,9 +35,6 @@ Class {
 		'observer',
 		'aspectsChangedBlock'
 	],
-	#classInstVars : [
-		'composedTiles'
-	],
 	#category : 'Cormas-Bloc',
 	#package : 'Cormas-Bloc'
 }
@@ -47,12 +44,6 @@ CMBlElement class >> cellSize [
 	"Answer the size, in pixels, of the longest side of the box around a cell"
 
 	^ 32
-]
-
-{ #category : 'tiles' }
-CMBlElement class >> composedTiles [
-
-	^ composedTiles ifNil: [ composedTiles := Dictionary new ]
 ]
 
 { #category : 'instance creation' }
@@ -72,40 +63,16 @@ CMBlElement class >> for: anObject observedBy: anObserver [
 		  yourself
 ]
 
-{ #category : 'tiles' }
-CMBlElement class >> tileOfLook: aLook [
-	"Answer the tile drawn for a look: its tile, with its overlays laid over it. Composing tiles is slow, so each combination is composed once"
-
-	^ self composedTiles
-		  at: {
-				  aLook tile.
-				  aLook overlays }
-		  ifAbsentPut: [
-				  aLook overlays
-					  inject: (CMTileset tileNamed: aLook tile)
-					  into: [ :tile :each |
-						  tile
-							  add: (CMTileset tileNamed: each key)
-							  scaledDownTo: each value ] ]
-]
-
 { #category : 'drawing' }
 CMBlElement >> backgroundOfLook: aLook in: aSpaceModel extent: anExtent [
 	"Answer the color or the image with which a look fills an element of the given extent"
 
-	aLook hasImage ifTrue: [
-			^ (CMBlImageFolder ofModel: self entity cormasModel class)
-				  backgroundOf: aLook image
-				  color: aLook color
-				  extent: anExtent
-				  scale: self cormasImageScale ].
-	aLook hasTile ifFalse: [ ^ aLook color ].
-	^ BlBackground image: (self
-			   crop:
-				   ((self
-					     formOfTile: (self class tileOfLook: aLook)
-					     in: aSpaceModel) scaledToSize: anExtent max ceiling asPoint)
-			   toCenter: anExtent)
+	aLook hasImage ifFalse: [ ^ aLook color ].
+	^ (CMBlImageFolder ofModel: self entity cormasModel class)
+		  backgroundOf: aLook image
+		  color: aLook color
+		  extent: anExtent
+		  scale: self cormasImageScale
 ]
 
 { #category : 'geometry' }
@@ -119,14 +86,6 @@ CMBlElement >> cellExtentOf: aCell [
 CMBlElement >> cellSize [
 
 	^ self class cellSize
-]
-
-{ #category : 'drawing' }
-CMBlElement >> crop: aSquareForm toCenter: anExtent [
-
-	| origin |
-	origin := (aSquareForm extent - anExtent / 2) rounded.
-	^ aSquareForm copy: (origin extent: anExtent ceiling)
 ]
 
 { #category : 'accessing' }
@@ -154,19 +113,6 @@ CMBlElement >> entityTargetedBy: anEvent [
 			target == self ifTrue: [ ^ nil ].
 			target := target parent ].
 	^ nil
-]
-
-{ #category : 'drawing' }
-CMBlElement >> formOfTile: aTile in: aSpaceModel [
-	"The cells of a smaller grid are shown larger on screen, so they need a larger form"
-
-	| gridSize |
-	aSpaceModel ifNil: [ ^ aTile largeForm ].
-	gridSize := aSpaceModel dimensions max.
-	gridSize < 5 ifTrue: [ ^ aTile largeForm ].
-	gridSize < 10 ifTrue: [ ^ aTile mediumForm ].
-	gridSize < 15 ifTrue: [ ^ aTile smallForm ].
-	^ aTile verySmallForm
 ]
 
 { #category : 'geometry' }

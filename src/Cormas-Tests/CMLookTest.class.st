@@ -52,14 +52,14 @@ CMLookTest >> testBeInvisible [
 	self deny: look isVisible
 ]
 
-{ #category : 'tests - defaults' }
+{ #category : 'tests' }
 CMLookTest >> testCellIsDrawnByDefault [
 
 	| look |
 	look := CMCellLook new.
 	self assert: look isVisible.
 	self assert: look color alpha > 0.
-	self deny: look hasTile
+	self deny: look hasImage
 ]
 
 { #category : 'tests - helpers' }
@@ -286,20 +286,6 @@ CMLookTest >> testNetworkDrawsNothingByDefault [
 	self assert: CMNetworkLook new color alpha equals: 0
 ]
 
-{ #category : 'tests - defaults' }
-CMLookTest >> testOverlaysAreLaidInOrder [
-
-	| look |
-	look := CMCellLook new.
-	look
-		tile: #grassLight;
-		overlayTile: #tree scaledTo: 0.7;
-		overlayTile: #fire scaledTo: 0.3.
-	self assert: look overlays equals: {
-			(#tree -> 0.7).
-			(#fire -> 0.3) }
-]
-
 { #category : 'tests' }
 CMLookTest >> testResetForgetsTheImageAndTheColor [
 
@@ -316,19 +302,6 @@ CMLookTest >> testResetForgetsTheImageAndTheColor [
 ]
 
 { #category : 'tests - defaults' }
-CMLookTest >> testResetForgetsTheOverlays [
-
-	| look |
-	look := CMAgentLook new.
-	look
-		tile: #grassLight;
-		overlayTile: #tree scaledTo: 0.7.
-	look reset.
-	self deny: look hasTile.
-	self assert: look overlays isEmpty
-]
-
-{ #category : 'tests - defaults' }
 CMLookTest >> testResetOfALinkForgetsItsArrowhead [
 
 	| look |
@@ -341,7 +314,7 @@ CMLookTest >> testResetOfALinkForgetsItsArrowhead [
 	self assert: look thickness equals: CMLinkLook new thickness
 ]
 
-{ #category : 'tests - defaults' }
+{ #category : 'tests' }
 CMLookTest >> testResetReturnsToTheDefaults [
 
 	| look default |
@@ -349,7 +322,7 @@ CMLookTest >> testResetReturnsToTheDefaults [
 	default := CMAgentLook new.
 	look
 		color: Color red;
-		tile: #rocks;
+		image: 'rocks';
 		shape: #star;
 		size: 0.9;
 		borderColor: Color blue;
@@ -357,7 +330,7 @@ CMLookTest >> testResetReturnsToTheDefaults [
 		beInvisible.
 	look reset.
 	self assert: look color equals: default color.
-	self deny: look hasTile.
+	self deny: look hasImage.
 	self assert: look shape equals: default shape.
 	self assert: look size equals: default size.
 	self assert: look borderColor equals: default borderColor.

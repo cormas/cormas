@@ -76,23 +76,24 @@ CMModelListPresenter class >> loadTelegramPlugin [
 
 { #category : 'menu' }
 CMModelListPresenter class >> menu00CormasOn: aBuilder [
+
 	<worldMenu>
 	(aBuilder item: #Cormas)
 		label: 'Cormas';
-		"icon: CMIcons cormasIcon;"
-		help: 'Agent-based modeling and simulations';
+		"icon: CMIcons cormasIcon;"help:
+			'Agent-based modeling and simulations';
 		order: 2.
-		
+
 	(aBuilder group: #CormasMain)
 		order: 1;
 		parent: #Cormas;
 		withSeparatorAfter.
-		
+
 	(aBuilder group: #CormasRepositories)
 		order: 1;
 		parent: #Cormas;
 		withSeparatorAfter.
-		
+
 	(aBuilder item: #NewCormasModel)
 		parent: #CormasMain;
 		label: 'New model';
@@ -100,7 +101,7 @@ CMModelListPresenter class >> menu00CormasOn: aBuilder [
 		help: 'Create a new Cormas model';
 		action: [ CMNewModelPresenter open ];
 		order: 1.
-		
+
 	(aBuilder item: #CormasModels)
 		parent: #CormasMain;
 		label: 'Models';
@@ -108,7 +109,7 @@ CMModelListPresenter class >> menu00CormasOn: aBuilder [
 		help: 'The models of the workspace and the examples of the catalog';
 		action: [ self open ];
 		order: 1.
-		
+
 	(aBuilder item: #MethodDocumentation)
 		parent: #CormasMain;
 		label: 'Method Documentation';
@@ -116,46 +117,38 @@ CMModelListPresenter class >> menu00CormasOn: aBuilder [
 		help: 'Documentation of the public methods of Cormas classes';
 		action: [ CMDocumentationBrowser new open ];
 		order: 1.
-		
-	(aBuilder item: #CormasTilesetBrowser)
-		parent: #CormasMain;
-		label: 'Tileset browser';
-		icon: (self iconNamed: #versionControl);
-		help: 'Browse Cormas tilesets';
-		action: [CMTilesetBrowser new open ];
-		order: 1.
-		
+
 	(aBuilder item: #LoadMicroUMLPlugin)
-		parent: #Cormas ;
+		parent: #Cormas;
 		label: 'Load MicroUML plugin';
 		icon: (self iconNamed: #changeUpdate);
 		help: 'Load MicroUML plugin';
 		action: [ self loadMicroUmlPlugin ];
 		order: 1.
-		
+
 	(aBuilder item: #LoadTelegramPlugin)
-		parent: #Cormas ;
+		parent: #Cormas;
 		label: 'Load Telegram plugin';
 		icon: self telegramIcon;
 		help: 'Load Telegram plugin';
 		action: [ self loadTelegramPlugin ];
 		order: 1.
-		
+
 	(aBuilder item: #CormasWebsite)
-		parent: #Cormas ;
+		parent: #Cormas;
 		label: 'Cormas website';
 		icon: (self iconNamed: #remote);
 		help: 'Open Cormas website in a web browser';
 		action: [ WebBrowser openOn: 'https://cormas.org' ];
 		order: 1.
-		
+
 	(aBuilder item: #ColorPicker)
-		parent: #Cormas ;
+		parent: #Cormas;
 		label: 'Color Picker';
 		icon: (self iconNamed: #paint);
 		help: 'Open color picker';
 		action: [ SpColorPickerPresenter open ];
-		order: 1.
+		order: 1
 ]
 
 { #category : 'menu' }
