@@ -270,7 +270,7 @@ CMSpaceNeighbourhood >> numberOfColumns: anInteger [
 	numberOfColumns := anInteger
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'utilities - space metrics' }
 CMSpaceNeighbourhood >> numberOfColumnsBetweenCell: cell1 andCell: cell2 [
 	
 	| number |
@@ -299,7 +299,7 @@ CMSpaceNeighbourhood >> numberOfRows: anInteger [
 	numberOfRows := anInteger
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'utilities - space metrics' }
 CMSpaceNeighbourhood >> numberOfRowsBetweenCell: cell1 andCell: cell2 [
 
 	| number |

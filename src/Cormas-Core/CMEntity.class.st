@@ -52,7 +52,7 @@ CMEntity class >> aspectSelectors [
 		   as: Set) asArray sorted
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'parameters' }
 CMEntity class >> classSideParameters [
 
 	^ self parameters select: [ :p | p isClassSide ]

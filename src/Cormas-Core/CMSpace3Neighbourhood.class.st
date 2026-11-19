@@ -4,6 +4,9 @@ Triangular neighbourhood with alternating flat-topped and pointed-topped cells
 Class {
 	#name : 'CMSpace3Neighbourhood',
 	#superclass : 'CMSpaceNeighbourhood',
+	#instVars : [
+		'isPreviousIndexForFlatTopTriangle'
+	],
 	#classInstVars : [
 		'firstCellIsFlatTopTriangle'
 	],
@@ -75,29 +78,39 @@ Neighbours are ordered anticlockwise, starting from the North cell"
 
 	| v i |
 	v := Array new: 3.
-	"k isFlatTopTriangle?"
-	(cellIndex odd
-		 ifTrue: [ self class firstCellIsFlatTopTriangle ]
-		 ifFalse: [ self class firstCellIsFlatTopTriangle not])
+	(self isIndexForFlatTopTriangle: cellIndex)
 		ifTrue: [
-			(i := self northCell: cellIndex) > 0 ifTrue: [
-				v at: 1 put: (aSpaceModel cellAt: i) ].
-			(i := self westCell: cellIndex) > 0 ifTrue: [
-				v at: 2 put: (aSpaceModel cellAt: i) ].
-			(i := self eastCell: cellIndex) > 0 ifTrue: [
-				v at: 3 put: (aSpaceModel cellAt: i) ] ]
+				(i := self northCell: cellIndex) > 0 ifTrue: [
+					v at: 1 put: (aSpaceModel cellAt: i) ].
+				(i := self westCell: cellIndex) > 0 ifTrue: [
+					v at: 2 put: (aSpaceModel cellAt: i) ].
+				(i := self eastCell: cellIndex) > 0 ifTrue: [
+					v at: 3 put: (aSpaceModel cellAt: i) ] ]
 		ifFalse: [
-			(i := self westCell: cellIndex) > 0 ifTrue: [
-				v at: 1 put: (aSpaceModel cellAt: i) ]. 
-			(i := self southCell: cellIndex) > 0 ifTrue: [
-				v at: 2 put: (aSpaceModel cellAt: i) ].
-			(i := self eastCell: cellIndex) > 0 ifTrue: [
-				v at: 3 put: (aSpaceModel cellAt: i) ] ].
+				(i := self westCell: cellIndex) > 0 ifTrue: [
+					v at: 1 put: (aSpaceModel cellAt: i) ].
+				(i := self southCell: cellIndex) > 0 ifTrue: [
+					v at: 2 put: (aSpaceModel cellAt: i) ].
+				(i := self eastCell: cellIndex) > 0 ifTrue: [
+					v at: 3 put: (aSpaceModel cellAt: i) ] ].
 
 	^ (aSpaceModel cellAt: cellIndex) neighbourhoodWithNils: v
 ]
 
-{ #category : 'geometry' }
+{ #category : 'initialization' }
+CMSpace3Neighbourhood >> isIndexForFlatTopTriangle: cellIndex [
+	"Ask if cellIndex is for a FlatTopTriangle, using the isPreviousIndexForFlatTopTriangle attribute"
+
+	isPreviousIndexForFlatTopTriangle ifNil: [
+			^ isPreviousIndexForFlatTopTriangle := self class firstCellIsFlatTopTriangle ].
+	numberOfColumns odd ifTrue: [
+			^ isPreviousIndexForFlatTopTriangle := isPreviousIndexForFlatTopTriangle not ].
+	cellIndex \\ (numberOfColumns + 1) = 0
+		ifTrue: [ ^ isPreviousIndexForFlatTopTriangle ]
+		ifFalse: [ ^ isPreviousIndexForFlatTopTriangle := isPreviousIndexForFlatTopTriangle not ]
+]
+
+{ #category : 'testing' }
 CMSpace3Neighbourhood >> shouldRotateShapeFor: aCell [
 
 	^ (aCell rowNumber + aCell columnNumber +

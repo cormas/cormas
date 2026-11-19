@@ -93,7 +93,7 @@ CMSpatialEntity class >> neighborsOf: aCollectionOfCells [
 	| neighbors |
 	neighbors := Set new.
 	aCollectionOfCells do: [:cell | neighbors addAll: cell neighbourhood].
-	^Set withAll: (neighbors \ aCollectionOfCells) "\ is a difference between 2 collections: it returns all the elements that are not in aCollectionOfCells"
+	^ Set withAll: (neighbors difference: aCollectionOfCells) "= difference (or /) between 2 collections: it returns all the elements that are not in aCollectionOfCells"
 ]
 
 { #category : 'default value' }
