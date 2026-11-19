@@ -120,6 +120,17 @@ CMSpaceModelTest >> newModel2x4Square8NeighboursOpen [
 ]
 
 { #category : 'models' }
+CMSpaceModelTest >> newModel3x4FlatTopOddColumnsDownClosed: isClosed [
+
+	^ CMMockModel new
+		  createGridNumberOfRows: 3
+		  numberOfColumns: 4
+		  neighbourhood: #flat6OddColumnsDown
+		  closed: isClosed;
+		  yourself
+]
+
+{ #category : 'models' }
 CMSpaceModelTest >> newModel8x10HexagonalFlatClosed [
 	<script: 'self new newModel8x10HexagonalFlatClosed openSpacePresenter'>
 
@@ -213,6 +224,14 @@ CMSpaceModelTest >> newModel8x10Square8NeighboursOpen [
 		neighbourhood: 8
 		closed: false;
 		yourself
+]
+
+{ #category : 'private' }
+CMSpaceModelTest >> positionsOfNeighboursOf: aCell [
+
+	^ aCell neighbourhood
+		  collect: [ :each | each rowNumber @ each columnNumber ]
+		  as: Set
 ]
 
 { #category : 'situations' }
@@ -1110,6 +1129,26 @@ CMSpaceModelTest >> testCellsOfLine [
 ]
 
 { #category : 'tests' }
+CMSpaceModelTest >> testDistanceInGridOfFlatTopHexagonsWithOddColumnsDown [
+
+	| model |
+	model := self newModel3x4FlatTopOddColumnsDownClosed: true.
+
+	self
+		assert:
+		((model cellAt: 2 at: 1) distanceTo: (model cellAt: 3 at: 2))
+		equals: 1.
+	self
+		assert:
+		((model cellAt: 2 at: 2) distanceTo: (model cellAt: 1 at: 1))
+		equals: 1.
+	self
+		assert:
+		((model cellAt: 1 at: 1) distanceTo: (model cellAt: 3 at: 4))
+		equals: 3
+]
+
+{ #category : 'tests' }
 CMSpaceModelTest >> testDistanceSituation1For2x4HexagonalFlatClosed [
 
 	| model |
@@ -1854,6 +1893,56 @@ CMSpaceModelTest >> testNeighbourhoodConfiguration [
 	
 	spaceModel numberOfNeighbours: #flat6.
 	self assert: (spaceModel neighbourhoodConfiguration isKindOf: CMSpace6NeighbourhoodFlatTop).
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testNeighboursInGridOfFlatTopHexagonsWithOddColumnsDown [
+	"Odd columns are shifted down by half a cell, so a cell of an odd column touches the next row of the columns beside it, and a cell of an even column the previous row"
+
+	| model |
+	model := self newModel3x4FlatTopOddColumnsDownClosed: true.
+
+	self
+		assert: (self positionsOfNeighboursOf: (model cellAt: 2 at: 3))
+		equals: {
+				(1 @ 3).
+				(2 @ 4).
+				(3 @ 4).
+				(3 @ 3).
+				(3 @ 2).
+				(2 @ 2) } asSet.
+	self
+		assert: (self positionsOfNeighboursOf: (model cellAt: 2 at: 2))
+		equals: {
+				(1 @ 2).
+				(1 @ 3).
+				(2 @ 3).
+				(3 @ 2).
+				(2 @ 1).
+				(1 @ 1) } asSet.
+	self
+		assert: (self positionsOfNeighboursOf: (model cellAt: 3 at: 1))
+		equals: {
+				(2 @ 1).
+				(3 @ 2) } asSet
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testNeighboursInOpenGridOfFlatTopHexagonsWithOddColumnsDown [
+	"Across the edges, the first column, shifted down, touches the next row of the last one"
+
+	| model |
+	model := self newModel3x4FlatTopOddColumnsDownClosed: false.
+
+	self
+		assert: (self positionsOfNeighboursOf: (model cellAt: 1 at: 1))
+		equals: {
+				(3 @ 1).
+				(1 @ 2).
+				(2 @ 2).
+				(2 @ 1).
+				(2 @ 4).
+				(1 @ 4) } asSet
 ]
 
 { #category : 'tests' }
