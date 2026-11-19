@@ -145,6 +145,13 @@ CMSpaceNeighbourhood >> centerOnGridOf: aCell [
 	^ self gridPositionOf: aCell at: (self cellCenterFor: aCell)
 ]
 
+{ #category : 'accessing' }
+CMSpaceNeighbourhood >> directions [
+	"Answer the compass directions of the neighbours of a cell, such as #N or #SE, in the order of its neighbourhood. A grid without compass directions answers none"
+
+	^ #(  )
+]
+
 { #category : 'utilities - space metrics' }
 CMSpaceNeighbourhood >> distanceInClosedEnvironmentFromPoint: pointA toPoint: pointB [
 

@@ -1871,6 +1871,60 @@ CMSpaceModelTest >> testIsNotTorroidal [
 ]
 
 { #category : 'tests' }
+CMSpaceModelTest >> testNeighbourInADirectionOnAGridOfFlatTopHexagons [
+
+	| model |
+	model := CMMockModel new.
+	model
+		createGridNumberOfRows: 2
+		numberOfColumns: 2
+		neighbourhood: #flat6
+		closed: true.
+
+	self
+		assert: (model cellAt: 1 at: 1) neighbourS
+		identicalTo: (model cellAt: 2 at: 1).
+	self
+		assert: (model cellAt: 1 at: 1) neighbourSE
+		identicalTo: (model cellAt: 1 at: 2).
+	self deny: (model cellAt: 1 at: 1) hasNeighbourNE
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testNeighbourInADirectionOnAGridOfFlatTopHexagonsWithOddColumnsDown [
+
+	| model |
+	model := self newModel3x4FlatTopOddColumnsDownClosed: true.
+
+	self
+		assert: (model cellAt: 1 at: 1) neighbourNE
+		identicalTo: (model cellAt: 1 at: 2).
+	self
+		assert: (model cellAt: 1 at: 1) neighbourSE
+		identicalTo: (model cellAt: 2 at: 2).
+	self deny: (model cellAt: 1 at: 1) hasNeighbourNW
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testNeighbourInADirectionOnAGridOfPointyTopHexagons [
+
+	| model |
+	model := CMMockModel new.
+	model
+		createGridNumberOfRows: 2
+		numberOfColumns: 2
+		neighbourhood: #pointy6
+		closed: true.
+
+	self
+		assert: (model cellAt: 1 at: 1) neighbourE
+		identicalTo: (model cellAt: 1 at: 2).
+	self
+		assert: (model cellAt: 1 at: 2) neighbourW
+		identicalTo: (model cellAt: 1 at: 1)
+]
+
+{ #category : 'tests' }
 CMSpaceModelTest >> testNeighbourhoodConfiguration [
 
 	| spaceModel |
@@ -1943,6 +1997,22 @@ CMSpaceModelTest >> testNeighboursInOpenGridOfFlatTopHexagonsWithOddColumnsDown 
 				(2 @ 1).
 				(2 @ 4).
 				(1 @ 4) } asSet
+]
+
+{ #category : 'tests' }
+CMSpaceModelTest >> testNoNeighbourInADirectionThatTheGridDoesNotHave [
+	"Flat-top hexagons have no neighbour to the East"
+
+	| model |
+	model := CMMockModel new.
+	model
+		createGridNumberOfRows: 2
+		numberOfColumns: 2
+		neighbourhood: #flat6
+		closed: true.
+
+	self should: [ (model cellAt: 1 at: 1) neighbourE ] raise: Error.
+	self should: [ (model cellAt: 1 at: 1) hasNeighbourE ] raise: Error
 ]
 
 { #category : 'tests' }

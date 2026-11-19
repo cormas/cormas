@@ -56,6 +56,12 @@ CMSpace6NeighbourhoodFlatTop >> cellProportions [
 	^ 1 @ (3 sqrt / 2)
 ]
 
+{ #category : 'accessing' }
+CMSpace6NeighbourhoodFlatTop >> directions [
+
+	^ #( #N #NW #SW #S #SE #NE )
+]
+
 { #category : 'initialization' }
 CMSpace6NeighbourhoodFlatTop >> initializeOrderedNeighbourhood: cellIndex forSpaceModel: aSpaceModel [
 "Set the neighbourhood of the cell at a given index.

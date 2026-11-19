@@ -63,13 +63,14 @@ CMCell >> coordinates [
 ]
 
 { #category : 'environment - sensing - space' }
-CMCell >> directionNeighbour: v [
-	
-	| directions |
-	directions := #(#N #S #W #E #NE #NW #SE #SW).
-	^ directions 
-		detect: [ : i | (self perform: ('neighbour' , i asString) asSymbol) = v  ]
-		ifNone: [ nil ]
+CMCell >> directionNeighbour: aCell [
+	"Return the compass direction in which aCell is my neighbour, such as #NE, or nil when it is not my neighbour"
+
+	<api>
+	| index |
+	index := neighbourhoodWithNils indexOf: aCell.
+	index = 0 ifTrue: [ ^ nil ].
+	^ self spaceModel neighbourhoodConfiguration directions at: index
 ]
 
 { #category : 'environment - distance' }
@@ -107,101 +108,91 @@ Return value: <Number>"
 { #category : 'environment - sensing - space' }
 CMCell >> hasNeighbourE [
 
-	| index |
-	
-	self spaceModel numberOfNeighbours = 4 ifTrue: [ index := 4 ].
-	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 7 ].
-	self spaceModel numberOfNeighbours = 6 ifTrue: [ index := 5 ].
-	
-	^ (neighbourhoodWithNils at: index) isNotNil
+	<api>
+	"Return whether I have a neighbour towards E. See hasNeighbourTowards:"
+
+	^ self hasNeighbourTowards: #E
 ]
 
 { #category : 'environment - sensing - space' }
 CMCell >> hasNeighbourN [
-	
-	| index |
-	
-	index := 1.
-	^ (neighbourhoodWithNils at: index) isNotNil
+
+	<api>
+	"Return whether I have a neighbour towards N. See hasNeighbourTowards:"
+
+	^ self hasNeighbourTowards: #N
 ]
 
 { #category : 'environment - sensing - space' }
 CMCell >> hasNeighbourNE [
 
-	| index |
-	
-	self spaceModel numberOfNeighbours = 4 ifTrue: [ 
-		self error: 'The number of neighbours was set to 4. There is no neighbour to the North-East' ].
-	
-	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 8 ].
-	self spaceModel numberOfNeighbours = 6 ifTrue: [ index := 6 ].
-	
-	^ (neighbourhoodWithNils at: index) isNotNil
+	<api>
+	"Return whether I have a neighbour towards NE. See hasNeighbourTowards:"
+
+	^ self hasNeighbourTowards: #NE
 ]
 
 { #category : 'environment - sensing - space' }
 CMCell >> hasNeighbourNW [
 
-	| index |
-	
-	self spaceModel numberOfNeighbours = 4 ifTrue: [ 
-		self error: 'The number of neighbours was set to 4. There is no neighbour to the North-West' ].
-	
-	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 2 ].
-	self spaceModel numberOfNeighbours = 6 ifTrue: [ index := 1 ].
-	
-	^ (neighbourhoodWithNils at: index) isNotNil
+	<api>
+	"Return whether I have a neighbour towards NW. See hasNeighbourTowards:"
+
+	^ self hasNeighbourTowards: #NW
 ]
 
 { #category : 'environment - sensing - space' }
 CMCell >> hasNeighbourS [
 
-	| index |
-	
-	self spaceModel numberOfNeighbours = 4 ifTrue: [ index := 3 ].
-	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 5 ].
-	
-	^ (neighbourhoodWithNils at: index) isNotNil
+	<api>
+	"Return whether I have a neighbour towards S. See hasNeighbourTowards:"
+
+	^ self hasNeighbourTowards: #S
 ]
 
 { #category : 'environment - sensing - space' }
 CMCell >> hasNeighbourSE [
 
-	| index |
-	
-	self spaceModel numberOfNeighbours = 4 ifTrue: [ 
-		self error: 'The number of neighbours was set to 4. There is no neighbour to the South-East' ].
-	
-	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 6 ].
-	self spaceModel numberOfNeighbours = 6 ifTrue: [ index := 4 ].
-	
-	^ (neighbourhoodWithNils at: index) isNotNil
+	<api>
+	"Return whether I have a neighbour towards SE. See hasNeighbourTowards:"
+
+	^ self hasNeighbourTowards: #SE
 ]
 
 { #category : 'environment - sensing - space' }
 CMCell >> hasNeighbourSW [
 
-	| index |
-	
-	self spaceModel numberOfNeighbours = 4 ifTrue: [ 
-		self error: 'The number of neighbours was set to 4. There is no neighbour to the South-West' ].
+	<api>
+	"Return whether I have a neighbour towards SW. See hasNeighbourTowards:"
 
-	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 4 ].
-	self spaceModel numberOfNeighbours = 6 ifTrue: [ index := 3 ].
-	
-	^ (neighbourhoodWithNils at: index) isNotNil
+	^ self hasNeighbourTowards: #SW
+]
+
+{ #category : 'environment - sensing - space' }
+CMCell >> hasNeighbourTowards: aDirection [
+	"Return whether I have a neighbour in a compass direction of my grid, such as #N or #SE. Raise an error when my grid has no such direction"
+
+	<api>
+	^ (neighbourhoodWithNils at: (self indexOfDirection: aDirection))
+		  isNotNil
 ]
 
 { #category : 'environment - sensing - space' }
 CMCell >> hasNeighbourW [
 
-	| index |
-	
-	self spaceModel numberOfNeighbours = 4 ifTrue: [ index := 2 ].
-	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 3 ].
-	self spaceModel numberOfNeighbours = 6 ifTrue: [ index := 2 ].
-	
-	^ (neighbourhoodWithNils at: index) isNotNil
+	<api>
+	"Return whether I have a neighbour towards W. See hasNeighbourTowards:"
+
+	^ self hasNeighbourTowards: #W
+]
+
+{ #category : 'private' }
+CMCell >> indexOfDirection: aDirection [
+
+	^ self spaceModel neighbourhoodConfiguration directions
+		  indexOf: aDirection
+		  ifAbsent: [
+		  self error: 'This grid has no direction ' , aDirection ]
 ]
 
 { #category : 'testing' }
@@ -449,150 +440,85 @@ Return value: <Collection(SpatialEntityElement)>"
 
 { #category : 'environment - sensing - space' }
 CMCell >> neighbourE [
-	<api>
-	"Purpose: returns the neighbour to the East
-Not nil only for square and hexagonal cells (regular spatial grid). 
-Return value: <SpatialEntityElement | nil>"
 
-	| index neighbour |
-	
-	self spaceModel numberOfNeighbours = 4 ifTrue: [ index := 4 ].
-	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 7 ].
-	self spaceModel numberOfNeighbours = 6 ifTrue: [ index := 5 ].
-	
-	neighbour := neighbourhoodWithNils at: index.
-	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the East' ].
-	^ neighbour
+	<api>
+	"Return my neighbour towards E. See neighbourTowards:"
+
+	^ self neighbourTowards: #E
 ]
 
 { #category : 'environment - sensing - space' }
 CMCell >> neighbourN [
+
 	<api>
-	"Purpose: returns the neighbour to the North
-Not nil only for square cells (regular spatial grid). 
-Return value: <SpatialEntityElement | nil>"
-	
-	| index neighbour |
-	
-	index := 1.
-	neighbour := neighbourhoodWithNils at: index.
-	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the North' ].
-	^ neighbour
+	"Return my neighbour towards N. See neighbourTowards:"
+
+	^ self neighbourTowards: #N
 ]
 
 { #category : 'environment - sensing - space' }
 CMCell >> neighbourNE [
-	<api>
-	"Purpose: returns the neighbour to the NorthEast
-Not nil only for square (8 neighbors) and hexagonal cells (regular spatial grid). 
-Return value: <SpatialEntityElement | nil>"
 
-	| index neighbour |
-	
-	self spaceModel numberOfNeighbours = 4 ifTrue: [ 
-		self error: 'The number of neighbours was set to 4. There is no neighbour to the North-East' ].
-	
-	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 8 ].
-	self spaceModel numberOfNeighbours = 6 ifTrue: [ index := 6 ].
-	
-	neighbour := neighbourhoodWithNils at: index.
-	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the North-East' ].
-	^ neighbour
+	<api>
+	"Return my neighbour towards NE. See neighbourTowards:"
+
+	^ self neighbourTowards: #NE
 ]
 
 { #category : 'environment - sensing - space' }
 CMCell >> neighbourNW [
-	<api>
-	"Purpose: returns the neighbour to the NorthWest
-Not nil only for square (8 neighbors) and hexagonal cells (regular spatial grid). 
-Return value: <SpatialEntityElement | nil>"
 
-	| index neighbour |
-	
-	self spaceModel numberOfNeighbours = 4 ifTrue: [ 
-		self error: 'The number of neighbours was set to 4. There is no neighbour to the North-West' ].
-	
-	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 2 ].
-	self spaceModel numberOfNeighbours = 6 ifTrue: [ index := 1 ].
-	
-	neighbour := neighbourhoodWithNils at: index.
-	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the North-West' ].
-	^ neighbour
+	<api>
+	"Return my neighbour towards NW. See neighbourTowards:"
+
+	^ self neighbourTowards: #NW
 ]
 
 { #category : 'environment - sensing - space' }
 CMCell >> neighbourS [
-	<api>
-	"Purpose: returns the neighbour to the South
-Not nil only fore square cells (regular spatial grid). 
-Return value: <SpatialEntityElement | nil>"
 
-	| index neighbour |
-	
-	self spaceModel numberOfNeighbours = 4 ifTrue: [ index := 3 ].
-	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 5 ].
-	
-	neighbour := neighbourhoodWithNils at: index.
-	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the South' ].
-	^ neighbour
+	<api>
+	"Return my neighbour towards S. See neighbourTowards:"
+
+	^ self neighbourTowards: #S
 ]
 
 { #category : 'environment - sensing - space' }
 CMCell >> neighbourSE [
-	<api>
-	"Purpose: returns the neighbour to the SouthEast
-Not nil only for square (8 neighbors) and hexagonal cells (regular spatial grid). 
-Return value: <SpatialEntityElement | nil>"
 
-	| index neighbour |
-	
-	self spaceModel numberOfNeighbours = 4 ifTrue: [ 
-		self error: 'The number of neighbours was set to 4. There is no neighbour to the South-East' ].
-	
-	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 6 ].
-	self spaceModel numberOfNeighbours = 6 ifTrue: [ index := 4 ].
-	
-	neighbour := neighbourhoodWithNils at: index.
-	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the South-East' ].
-	^ neighbour
+	<api>
+	"Return my neighbour towards SE. See neighbourTowards:"
+
+	^ self neighbourTowards: #SE
 ]
 
 { #category : 'environment - sensing - space' }
 CMCell >> neighbourSW [
+
 	<api>
-	"Purpose: returns the neighbour to the SouthWest
-Not nil only for square (8 neighbors) and hexagonal cells (regular spatial grid). 
-Return value: <SpatialEntityElement | nil>"
+	"Return my neighbour towards SW. See neighbourTowards:"
 
-	| index neighbour |
-	
-	self spaceModel numberOfNeighbours = 4 ifTrue: [ 
-		self error: 'The number of neighbours was set to 4. There is no neighbour to the South-West' ].
+	^ self neighbourTowards: #SW
+]
 
-	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 4 ].
-	self spaceModel numberOfNeighbours = 6 ifTrue: [ index := 3 ].
-	
-	neighbour := neighbourhoodWithNils at: index.
-	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the South-West' ].
-	^ neighbour
+{ #category : 'environment - sensing - space' }
+CMCell >> neighbourTowards: aDirection [
+	"Return my neighbour in a compass direction of my grid, such as #N or #SE. Raise an error when my grid has no such direction, or when I have no neighbour there, at the edge of a closed grid"
+
+	<api>
+	^ (neighbourhoodWithNils at: (self indexOfDirection: aDirection))
+		  ifNil: [
+				  self error:
+					  'This cell does not have a neighbour towards ' , aDirection ]
 ]
 
 { #category : 'environment - sensing - space' }
 CMCell >> neighbourW [
-	<api>
-	"Purpose: returns the neighbour to the West
-Not nil only for square and hexagonal cells (regular spatial grid). 
-Return value: <SpatialEntityElement | nil>"
 
-	| index neighbour |
-	
-	self spaceModel numberOfNeighbours = 4 ifTrue: [ index := 2 ].
-	self spaceModel numberOfNeighbours = 8 ifTrue: [ index := 3 ].
-	self spaceModel numberOfNeighbours = 6 ifTrue: [ index := 2 ].
-	
-	neighbour := neighbourhoodWithNils at: index.
-	neighbour ifNil: [ self error: 'This cell does not have a neighbour to the West' ].
-	^ neighbour
+	<api>
+	"Return my neighbour towards W. See neighbourTowards:"
+
+	^ self neighbourTowards: #W
 ]
 
 { #category : 'accessing' }

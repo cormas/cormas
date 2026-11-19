@@ -14,6 +14,12 @@ Class {
 }
 
 { #category : 'accessing' }
+CMSpace6Neighbourhood class >> cardinal [
+
+	^ 6
+]
+
+{ #category : 'accessing' }
 CMSpace6Neighbourhood class >> flatTopHexagons [
 	"By default, pointedTop hexagons"
 

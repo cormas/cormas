@@ -18,6 +18,12 @@ CMSpace8Neighbourhood class >> cardinalSymbol [
 	^ #eight
 ]
 
+{ #category : 'accessing' }
+CMSpace8Neighbourhood >> directions [
+
+	^ #( #N #NW #W #SW #S #SE #E #NE )
+]
+
 { #category : 'utilities - space metrics' }
 CMSpace8Neighbourhood >> distanceInClosedEnvironmentFromPoint: pointA toPoint: pointB [
 	
