@@ -101,11 +101,11 @@ Neighbours are ordered anticlockwise, starting from the North cell"
 CMSpace3Neighbourhood >> isIndexForFlatTopTriangle: cellIndex [
 	"Ask if cellIndex is for a FlatTopTriangle, using the isPreviousIndexForFlatTopTriangle attribute"
 
-	isPreviousIndexForFlatTopTriangle ifNil: [
+	isPreviousIndexForFlatTopTriangle "or cellIndex = 1" ifNil: [
 			^ isPreviousIndexForFlatTopTriangle := self class firstCellIsFlatTopTriangle ].
 	numberOfColumns odd ifTrue: [
 			^ isPreviousIndexForFlatTopTriangle := isPreviousIndexForFlatTopTriangle not ].
-	cellIndex \\ (numberOfColumns + 1) = 0
+	((cellIndex - 1) \\ numberOfColumns) = 0
 		ifTrue: [ ^ isPreviousIndexForFlatTopTriangle ]
 		ifFalse: [ ^ isPreviousIndexForFlatTopTriangle := isPreviousIndexForFlatTopTriangle not ]
 ]
