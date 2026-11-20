@@ -101,12 +101,15 @@ CMMockModel >> initFixed [
 	
 	self initEmpty.
 	self initializeCellsFromMatrix.
+	
+	self createAggregate: CMMockAggregate from: (self cells first: 3).
 		
 	cow := self newEntity: CMMockCow.
 	goat := self newEntity: CMMockGoat.
 	
 	cow moveTo: (self cellAt: 2 at: 1).
 	goat moveTo: (self cellAt: 3 at: 3).
+
 ]
 
 { #category : 'init' }

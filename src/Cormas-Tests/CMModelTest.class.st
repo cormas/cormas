@@ -166,7 +166,7 @@ CMModelTest >> testCentralCell [
 { #category : 'tests' }
 CMModelTest >> testCreateGridXYNeighborHoodClosed [
 
-	self assert: model entities size equals: (4 * 4) + 2.
+	self assert: model entities size equals: (4 * 4) "cells" + 2 "agents" + 1 "aggregate".
 	self assert: (model selectCellsOfColumn: 1) size equals: 4.
 	self assert: (model selectCellsOfLine: 1) size equals: 4
 ]
