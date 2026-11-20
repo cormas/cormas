@@ -111,6 +111,27 @@ CMSpaceNeighbourhoodGeometryTest >> testRelativeOriginOfCellInGridOfFlatTopHexag
 ]
 
 { #category : 'tests' }
+CMSpaceNeighbourhoodGeometryTest >> testRelativeOriginOfCellInGridOfFlatTopHexagonsWithOddColumnsDown [
+	"Columns overlap by a quarter of a cell, and odd columns are shifted down by half a cell"
+
+	| configuration |
+	configuration := self configurationOfGrid: #flat6OddColumnsDown.
+
+	self
+		assert: (configuration relativeOriginOfCell: (self cellAt: 1 at: 1))
+		equals: 0 @ 0.5.
+	self
+		assert: (configuration relativeOriginOfCell: (self cellAt: 1 at: 2))
+		equals: 0.75 @ 0.
+	self
+		assert: (configuration relativeOriginOfCell: (self cellAt: 2 at: 3))
+		equals: 1.5 @ 1.5.
+	self
+		assert: (configuration relativeOriginOfCell: (self cellAt: 3 at: 4))
+		equals: 2.25 @ 2
+]
+
+{ #category : 'tests' }
 CMSpaceNeighbourhoodGeometryTest >> testRelativeOriginOfCellInGridOfPointyTopHexagons [
 	"Rows overlap by a quarter of a cell, and even rows are shifted right by half a cell"
 

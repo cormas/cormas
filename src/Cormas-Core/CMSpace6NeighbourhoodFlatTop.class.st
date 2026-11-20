@@ -1,5 +1,34 @@
 "
-Hexagonal neighbourhood with Flat top hexagons
+I am a grid of flat-top hexagons, each with six neighbours. My subclasses say which columns are shifted down by half a cell, and I do the rest.
+
+## Responsibility:
+
+- Find the six neighbours of a cell, from which columns are shifted down.
+- Give the shape and proportions of a flat-top hexagon.
+- Leave to my subclasses the choice of shifted columns and the conversion to axial coordinates used for distances.
+
+## Collaborators:
+
+- `CMSpaceModel`: creates one of my subclasses from the neighbourhood symbol given to a grid.
+- `CMSpace6NeighbourhoodFlatTopEvenColumnsDown` and `CMSpace6NeighbourhoodFlatTopOddColumnsDown`: my two concrete layouts.
+
+## Public API and Key Messages
+
+I am abstract. A modeller chooses a layout by its symbol:
+
+```
+self
+	createGridNumberOfRows: 17
+	numberOfColumns: 24
+	neighbourhood: #flat6OddColumnsDown
+	closed: true
+```
+
+`#flat6` shifts even columns down, and `#flat6OddColumnsDown` shifts odd columns down, as in Cormas VisualWorks.
+
+### Implementation Points
+
+A diagonal neighbour is found by going one column east or west, and then one row north or south when the column is not shifted the right way. Wrapping across the edges of an open grid comes from `eastCell:`, `westCell:`, `northCell:` and `southCell:`, and is regular only with an even number of columns.
 "
 Class {
 	#name : 'CMSpace6NeighbourhoodFlatTop',
@@ -8,12 +37,6 @@ Class {
 	#package : 'Cormas-Core',
 	#tag : 'Space'
 }
-
-{ #category : 'accessing' }
-CMSpace6NeighbourhoodFlatTop class >> cardinalSymbol [
-
-	^ #flat6
-]
 
 { #category : 'testing' }
 CMSpace6NeighbourhoodFlatTop class >> isStartConditionFor: aSymbolOrNumber [
@@ -28,15 +51,15 @@ CMSpace6NeighbourhoodFlatTop >> boundingRectangleHorizontalIntersection [
 ]
 
 { #category : 'geometry' }
-CMSpace6NeighbourhoodFlatTop >> boundingRectangleVerticalShiftEven [
-
-	^ 0.5
-]
-
-{ #category : 'geometry' }
 CMSpace6NeighbourhoodFlatTop >> cellProportions [
 
 	^ 1 @ (3 sqrt / 2)
+]
+
+{ #category : 'accessing' }
+CMSpace6NeighbourhoodFlatTop >> directions [
+
+	^ #( #N #NW #SW #S #SE #NE )
 ]
 
 { #category : 'initialization' }
@@ -68,92 +91,44 @@ Neighbours are ordered anticlockwise, starting from the North cell"
 ]
 
 { #category : 'private - regular cells - instance creation' }
+CMSpace6NeighbourhoodFlatTop >> isColumnShiftedDown: aColumnNumber [
+	"Answer whether the cells of this column are half a cell lower than those of the columns beside it"
+
+	^ self subclassResponsibility
+]
+
+{ #category : 'private - regular cells - instance creation' }
 CMSpace6NeighbourhoodFlatTop >> northEastCellHexaFlat: k [
 
-	| numCol |
 	k = 0 ifTrue: [ ^ 0 ].
-	numCol := self numCol: k.
-	"if last column"
-	numCol = self numberOfColumns ifTrue: [
-		^ self isClosedEnvironment
-			ifTrue: [ 0 ]
-			ifFalse: [
-				numCol odd
-					ifFalse: [ self adaptedNumber: k + 1 - self numberOfColumns ]
-					ifTrue: [
-						self northCell:
-							(self adaptedNumber: k + 1 - self numberOfColumns) ] ] ].
-	^ numCol odd
-		ifTrue: [ self northCell: (self adaptedNumber: k + 1) ]
-		ifFalse: [ self adaptedNumber: k + 1 ]
+	^ (self isColumnShiftedDown: (self numCol: k))
+		  ifTrue: [ self eastCell: k ]
+		  ifFalse: [ self northCell: (self eastCell: k) ]
 ]
 
 { #category : 'private - regular cells - instance creation' }
 CMSpace6NeighbourhoodFlatTop >> northWestCellHexaFlat: k [
 
-	| numCol |
 	k = 0 ifTrue: [ ^ 0 ].
-	numCol := self numCol: k.
-	numCol = 1 ifTrue: [
-		^ self isClosedEnvironment
-			ifTrue: [ 0 ]
-			ifFalse: [ self adaptedNumber: k - 1 ] ].
-		
-	^ numCol even
-		ifTrue: [ self adaptedNumber: k - 1 ]
-		ifFalse: [ self adaptedNumber: k - 1 - self numberOfColumns ]
-]
-
-{ #category : 'as yet unclassified' }
-CMSpace6NeighbourhoodFlatTop >> offsetCoordinatesToAxial: aPoint [
-	"Source: https://www.redblobgames.com/grids/hexagons/#conversions-offset"
-	| x y parity q r |
-	
-	"Shift the points by 1 to start indexing at 0 and be consistent with math"
-	x := aPoint x - 1.
-	y := aPoint y - 1.
-	
-	parity := y & 1.
-	
-	q := y.
-   r := x - ((y - parity) / 2).
-
-   ^ q @ r
+	^ (self isColumnShiftedDown: (self numCol: k))
+		  ifTrue: [ self westCell: k ]
+		  ifFalse: [ self northCell: (self westCell: k) ]
 ]
 
 { #category : 'private - regular cells - instance creation' }
 CMSpace6NeighbourhoodFlatTop >> southEastCellHexaFlat: k [
 
-	| numCol |
 	k = 0 ifTrue: [ ^ 0 ].
-	numCol := self numCol: k.
-	numCol = self numberOfColumns ifTrue: [
-		^ self isClosedEnvironment
-			ifTrue: [ 0 ]
-			ifFalse: [
-				numCol odd
-					ifFalse: [
-						self southCell:
-							(self adaptedNumber: k + 1 - self numberOfColumns) ]
-					ifTrue: [ self adaptedNumber: k + 1 - self numberOfColumns ] ] ].
-
-	^ numCol odd
-		ifFalse: [ self southCell: (self adaptedNumber: k + 1) ]
-		ifTrue: [ self adaptedNumber: k + 1 ]
+	^ (self isColumnShiftedDown: (self numCol: k))
+		  ifTrue: [ self southCell: (self eastCell: k) ]
+		  ifFalse: [ self eastCell: k ]
 ]
 
 { #category : 'private - regular cells - instance creation' }
 CMSpace6NeighbourhoodFlatTop >> southWestCellHexaFlat: k [
-	"south west"
 
-	| numCol |
 	k = 0 ifTrue: [ ^ 0 ].
-	numCol := self numCol: k.
-	numCol = 1 ifTrue: [
-		^ self isClosedEnvironment
-			ifTrue: [ 0 ]
-			ifFalse: [ self southCell: (self adaptedNumber: k - 1) ] ].
-	^ numCol even
-		ifTrue: [ self southCell: (self adaptedNumber: k - 1) ]
-		ifFalse: [ self adaptedNumber: k - 1 ]
+	^ (self isColumnShiftedDown: (self numCol: k))
+		  ifTrue: [ self southCell: (self westCell: k) ]
+		  ifFalse: [ self westCell: k ]
 ]

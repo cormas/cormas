@@ -10,12 +10,6 @@ Class {
 }
 
 { #category : 'accessing' }
-CMSpace6NeighbourhoodPointyTop class >> cardinal [
-
-	^ 6
-]
-
-{ #category : 'accessing' }
 CMSpace6NeighbourhoodPointyTop class >> cardinalSymbol [
 
 	^ #pointy6
@@ -37,6 +31,12 @@ CMSpace6NeighbourhoodPointyTop >> boundingRectangleVerticalIntersection [
 CMSpace6NeighbourhoodPointyTop >> cellProportions [
 
 	^ 3 sqrt / 2 @ 1
+]
+
+{ #category : 'accessing' }
+CMSpace6NeighbourhoodPointyTop >> directions [
+
+	^ #( #NW #W #SW #SE #E #NE )
 ]
 
 { #category : 'initialization' }
