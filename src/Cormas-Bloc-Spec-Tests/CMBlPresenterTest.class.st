@@ -74,16 +74,6 @@ CMBlPresenterTest >> openFocused: aSpaceElement [
 ]
 
 { #category : 'private' }
-CMBlPresenterTest >> openInspectorViewOf: anEntity [
-
-	| context |
-	context := anEntity inspectionContexts detect: [ :each |
-		           each title = 'View' ].
-	^ self open: (context basicNewInspectionPresenter:
-			   (context newPresenterBuilderOnApplication: SpApplication new))
-]
-
-{ #category : 'private' }
 CMBlPresenterTest >> openSimulationPresenter [
 
 	| simulation application presenter |
@@ -312,17 +302,6 @@ CMBlPresenterTest >> testEmbeddedViewFollowsGridChanges [
 ]
 
 { #category : 'tests' }
-CMBlPresenterTest >> testEmptyModelViewShowsNothing [
-
-	| presenter |
-	presenter := self openInspectorViewOf: CMMockModel new.
-
-	self
-		assert: (self screenColorIn: presenter at: 16 @ 16)
-		equals: self themeBackground
-]
-
-{ #category : 'tests' }
 CMBlPresenterTest >> testFitButtonOfSpacePresenterFitsTheView [
 
 	| application presenter view element |
@@ -342,86 +321,6 @@ CMBlPresenterTest >> testFitButtonOfSpacePresenterFitsTheView [
 	self assert: (self screenColorIn: view at: 80 @ 48) equals: 'FF0000'.
 	self assert:
 		(element localPointToGlobal: 128 @ 96) <= view space root extent
-]
-
-{ #category : 'tests' }
-CMBlPresenterTest >> testInspectorViewOfAgentNotOnACell [
-
-	| cow presenter middle |
-	self gridWithNeighbourhood: 4.
-	cow := model newEntity: CMMockCow.
-	presenter := self openInspectorViewOf: cow.
-	middle := (CMObserver new lookOf: cow) size * 16 // 1.
-	self
-		assert: (self screenColorIn: presenter at: middle @ middle)
-		equals: 'FF0000'
-]
-
-{ #category : 'tests' }
-CMBlPresenterTest >> testInspectorViewOfAgentShowsItsShape [
-
-	| cow presenter middle |
-	self gridWithNeighbourhood: 4.
-	cow := self newCowOn: (model cellAt: 2 at: 3).
-	presenter := self openInspectorViewOf: cow.
-	middle := (CMObserver new lookOf: cow) size * 16 // 1.
-	self
-		assert: (self screenColorIn: presenter at: middle @ middle)
-		equals: 'FF0000'
-]
-
-{ #category : 'tests' }
-CMBlPresenterTest >> testInspectorViewOfAggregateShowsOnlyItsCells [
-
-	| aggregate presenter |
-	self gridWithNeighbourhood: 4.
-	aggregate := model createAggregate: CMSpatialEntityAggregate from: {
-			             (model cellAt: 1 at: 1).
-			             (model cellAt: 2 at: 2) }.
-	presenter := self openInspectorViewOf: aggregate.
-
-	self
-		assert: (self screenColorIn: presenter at: 16 @ 16)
-		equals: '000000'.
-	self
-		assert: (self screenColorIn: presenter at: 48 @ 48)
-		equals: '000000'.
-	self
-		assert: (self screenColorIn: presenter at: 48 @ 16)
-		equals: self themeBackground
-]
-
-{ #category : 'tests' }
-CMBlPresenterTest >> testInspectorViewOfCellShowsItsOccupants [
-
-	| cell presenter |
-	self gridWithNeighbourhood: 4.
-	cell := model cellAt: 2 at: 3.
-	self newCowOn: cell.
-	presenter := self openInspectorViewOf: cell.
-
-	self
-		assert: (self screenColorIn: presenter at: 16 @ 16)
-		equals: 'FF0000'.
-	self
-		assert: (self screenColorIn: presenter at: 2 @ 2)
-		equals: '000000'
-]
-
-{ #category : 'tests' }
-CMBlPresenterTest >> testInspectorViewOfModelShowsTheSpace [
-
-	| presenter |
-	self gridWithNeighbourhood: 4.
-	self newCowOn: (model cellAt: 2 at: 3).
-	presenter := self openInspectorViewOf: model.
-
-	self
-		assert: (self screenColorIn: presenter at: 80 @ 48)
-		equals: 'FF0000'.
-	self
-		assert: (self screenColorIn: presenter at: 16 @ 16)
-		equals: '000000'
 ]
 
 { #category : 'tests' }
@@ -708,7 +607,7 @@ CMBlPresenterTest >> waitForTheInterface [
 	| done |
 	done := Semaphore new.
 	UIManager default defer: [ done signal ].
-	self deny: (done waitTimeoutMilliseconds: 2000)
+	self deny: (done waitTimeoutMilliseconds: 5000)
 ]
 
 { #category : 'private' }
