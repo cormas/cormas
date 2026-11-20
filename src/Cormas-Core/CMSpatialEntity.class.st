@@ -91,9 +91,11 @@ CMSpatialEntity class >> neighborsOf: aCollectionOfCells [
 	"returns a set of cells that are neighbors of each element of aCollectionOfCells without belonging to aCollectionOfCells"
 	
 	| neighbors |
-	neighbors := Set new.
+	neighbors := OrderedCollection new.
 	aCollectionOfCells do: [:cell | neighbors addAll: cell neighbourhood].
-	^ Set withAll: (neighbors difference: aCollectionOfCells) "= difference (or /) between 2 collections: it returns all the elements that are not in aCollectionOfCells"
+	neighbors removeDuplicates.
+	neighbors removeAllFoundIn: aCollectionOfCells.
+	^ neighbors 
 ]
 
 { #category : 'default value' }
