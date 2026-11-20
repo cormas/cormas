@@ -192,9 +192,10 @@ CMSpatialEntityAggregate >> initNeighbourhood [
 	neighbourhoodCells := (self surround select: [ :a |
 		                       a aggregates anySatisfy: [ :ag |
 			                       ag class = self class ] ]) asSet. 
-	neighbourhoodWithNils := Set new. "To get rid of duplicates, a Set is used..."
+	
+	neighbourhoodWithNils := OrderedCollection new.
 	neighbourhoodCells do: [ :c | neighbourhoodWithNils addAll: c aggregates ].
-	neighbourhoodWithNils := neighbourhoodWithNils asOrderedCollection "...and then made as an OrderedCollection once the job is done..."
+	neighbourhoodWithNils removeDuplicates.
 ]
 
 { #category : 'initialization' }
