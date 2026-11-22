@@ -1,21 +1,21 @@
 "
-I run a simulation and show it: its views of the space, its data and its charts, in tabs.
+I run a simulation and show it: its views of the space, its data and each of its charts, in tabs.
 
 ## Responsibility:
 
 - Step or run the simulation, and update what is shown after each step.
-- Manage any number of views of the space, each with its own choices: add a new one, duplicate one, move one to a window of its own and back, close one.
-- Close all the views when the simulation is initialized again, and show one new view with the perspective that the init method names with the pragma `<perspective: #perspectiveX>`.
+- Manage any number of views of the space, each with its own choices: add a new one, duplicate one, move one to a window of its own and back, close one. Each chart of the model has a tab of its own, which moves to a window and back in the same way.
+- Close all the views and charts when the simulation is initialized again, and show one new view with the perspective that the init method names with the pragma `<perspective: #perspectiveX>`.
 
 ## Collaborators:
 
-- `CMSpacePresenter`: each view of the space.
+- `CMSpacePresenter`: each view of the space; `CMChartPresenter`: each chart. Both answer `copyFor:`, `registerIn:`, `openInWindow`, `isInWindow`, `detachedWindow`, `displayedTitle`, `updateDiagram` and `closeDiagram`, so that I move and close them alike.
 - `CMObserver`: the state of each view, which moves with it between a tab and a window.
 - `CMSimulation`: the simulation I run.
 
 ## Public API and Key Messages
 
-- `views`, `newView`, `newViewWith:`, `duplicateView:`, `moveToWindow:`, `moveToTabs:`, `closeView:`, `closeAllViews`
+- `views`, `charts`, `newView`, `newChartView:of:`, `newViewWith:`, `duplicateView:`, `moveToWindow:`, `moveToTabs:`, `closeView:`, `closeAllViews`
 - `stepSimulation`
 
 ```
@@ -24,13 +24,13 @@ I run a simulation and show it: its views of the space, its data and its charts,
 
 ## Internal Representation
 
-- `views`: the views, in the order they were opened.
-- `pages`: the tab of each view that is in a tab.
+- `views`: the views of the space, in the order they were opened; `charts`: the charts.
+- `pages`: the tab of each view or chart that is in a tab.
 - `newViewPage`: the last tab, which adds a view when it is clicked.
 
 ### Implementation Points
 
-- After each step, I update the views in windows, and only the selected tab, so that hidden tabs cost nothing.
+- After each step, I update the views and charts in windows, and only the selected tab, so that hidden tabs cost nothing.
 "
 Class {
 	#name : 'CMSimulationRunnerPresenter',
@@ -43,12 +43,11 @@ Class {
 		'displayEveryNumberPresenter',
 		'notebook',
 		'dataTable',
-		'chartPresenter',
 		'dataPage',
-		'chartsPage',
 		'views',
 		'pages',
-		'newViewPage'
+		'newViewPage',
+		'charts'
 	],
 	#category : 'Cormas-UI-Simulation',
 	#package : 'Cormas-UI',
@@ -80,18 +79,25 @@ CMSimulationRunnerPresenter class >> exampleEmpty [
 ]
 
 { #category : 'views' }
-CMSimulationRunnerPresenter >> addTab: aView [
-	"Show aView in a closeable tab, just before the tab that adds views. The notebook can only add a tab at the end, so that tab is removed and added again"
+CMSimulationRunnerPresenter >> addPageFor: aView [
+	"Show aView, a space view or a chart, in a closeable tab at the end of the notebook"
 
 	| page |
-	views add: aView.
+	aView registerIn: self.
 	page := SpNotebookPage
 		        title: aView displayedTitle
 		        provider: [ aView ].
 	page beCloseable.
 	pages at: aView put: page.
+	notebook addPage: page
+]
+
+{ #category : 'views' }
+CMSimulationRunnerPresenter >> addTab: aView [
+	"Show aView, a space view or a chart, in a closeable tab just before the tab that adds views. The notebook can only add a tab at the end, so that tab is removed and added again"
+
 	notebook removePage: newViewPage.
-	notebook addPage: page.
+	self addPageFor: aView.
 	notebook addPage: newViewPage.
 	^ aView
 ]
@@ -117,16 +123,26 @@ CMSimulationRunnerPresenter >> beInRunningMode [
 ]
 
 { #category : 'views' }
+CMSimulationRunnerPresenter >> charts [
+	"Answer the charts of the model, in tabs or in windows of their own"
+
+	^ charts
+]
+
+{ #category : 'views' }
 CMSimulationRunnerPresenter >> closeAllViews [
 
-	views copy do: [ :each | self closeView: each ]
+	views , charts do: [ :each | self closeView: each ]
 ]
 
 { #category : 'views' }
 CMSimulationRunnerPresenter >> closeView: aView [
-	"Stop showing aView, whether it is in a tab or in a window. A tab may already have left the notebook, when its close button was pressed"
+	"Stop showing aView, a space view or a chart, whether it is in a tab or in a window. A tab may already have left the notebook, when its close button was pressed"
 
-	views remove: aView ifAbsent: [ ^ self ].
+	((views includes: aView) or: [ charts includes: aView ]) ifFalse: [
+		^ self ].
+	views remove: aView ifAbsent: [ ].
+	charts remove: aView ifAbsent: [ ].
 	pages at: aView ifPresent: [ :page |
 			pages removeKey: aView.
 			(notebook pages includes: page) ifTrue: [
@@ -273,7 +289,7 @@ CMSimulationRunnerPresenter >> initialPerspective [
 
 { #category : 'initialization' }
 CMSimulationRunnerPresenter >> initializeNotebookPages [
-	"Show the data and the charts of a new simulation, when its model defines probes and charts, then one view of its space and a last tab that adds a view. The views of the previous simulation are closed, and the new one starts with the perspective named by the init method"
+	"Show the data of a new simulation, when its model defines probes, a tab for each chart the model defines, then one view of its space and a last tab that adds a view. The views and charts of the previous simulation are closed, and the new view starts with the perspective named by the init method"
 
 	self closeAllViews.
 	"Replaced before the old pages are removed, so that the old one is not taken for it when the notebook selects it"
@@ -284,19 +300,14 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 	"notebook removeAll."
 	notebook pages size timesRepeat: [ notebook removePageAt: 1 ].
 	dataPage := nil.
-	chartsPage := nil.
 	self simulation probes ifNotEmpty: [
 			dataTable := self instantiate: CMDataPresenter.
 			dataTable columnNames: #( 'step' ) , self simulation probes.
 			dataTable modelClass: self cormasModel class.
 			dataPage := SpNotebookPage title: 'Data' provider: [ dataTable ].
 			notebook addPage: dataPage ].
-	self cormasModel class chartSelectors ifNotEmpty: [
-			chartPresenter := self instantiate: CMChartPresenter.
-			chartsPage := SpNotebookPage
-				              title: 'Charts'
-				              provider: [ chartPresenter ].
-			notebook addPage: chartsPage ].
+	self cormasModel class chartSelectors do: [ :each |
+		self addPageFor: (self newChartView: each of: self cormasModel) ].
 	notebook addPage: (SpNotebookPage
 			 title: 'Inspector'
 			 provider: [ StInspectorPresenter onObject: self simulation ]).
@@ -331,6 +342,7 @@ CMSimulationRunnerPresenter >> initializePresenters [
 		                               yourself.
 	self beInPauseMode.
 	views := OrderedCollection new.
+	charts := OrderedCollection new.
 	pages := IdentityDictionary new.
 	notebook := self newNotebook.
 	"A hack to overcome an issue with notebook pages that were added to an empty notebook not signalling the event when they are selected"
@@ -373,11 +385,10 @@ CMSimulationRunnerPresenter >> initializeWindow: aWindowPresenter [
 
 { #category : 'views' }
 CMSimulationRunnerPresenter >> moveToTabs: aView [
-	"Show aView in a new tab, with its choices and its title, and close its window. Answer the view in the tab"
+	"Show aView, a space view or a chart, in a new tab, with its choices and its title, and close its window. Answer the view in the tab"
 
 	| back |
-	back := self newViewObservedBy: aView observer.
-	back title: aView title.
+	back := aView copyFor: self.
 	self closeView: aView.
 	self addTab: back.
 	^ back
@@ -385,15 +396,24 @@ CMSimulationRunnerPresenter >> moveToTabs: aView [
 
 { #category : 'views' }
 CMSimulationRunnerPresenter >> moveToWindow: aView [
-	"Show aView in a window of its own, with its choices and its title. Answer the view in the window"
+	"Show aView, a space view or a chart, in a window of its own, with its choices and its title. Answer the view in the window"
 
 	| moved |
-	moved := self newViewObservedBy: aView observer.
-	moved title: aView title.
+	moved := aView copyFor: self.
 	self closeView: aView.
-	views add: moved.
+	moved registerIn: self.
 	moved openInWindow.
 	^ moved
+]
+
+{ #category : 'views' }
+CMSimulationRunnerPresenter >> newChartView: aSelector of: aModelOrAnEntity [
+	"Answer a chart of the method aSelector of aModelOrAnEntity, that I manage"
+
+	^ (self instantiate: CMChartPresenter)
+		  host: self;
+		  subject: aModelOrAnEntity chart: aSelector;
+		  yourself
 ]
 
 { #category : 'views' }
@@ -559,12 +579,6 @@ CMSimulationRunnerPresenter >> updateAfterStep [
 ]
 
 { #category : 'update presenters' }
-CMSimulationRunnerPresenter >> updateChart [
-
-	chartPresenter drawChart
-]
-
-{ #category : 'update presenters' }
 CMSimulationRunnerPresenter >> updateDataTable [
 
 	dataTable showData: self simulation modelData rows
@@ -585,16 +599,15 @@ CMSimulationRunnerPresenter >> updateInInterface: aBlock [
 
 { #category : 'updating' }
 CMSimulationRunnerPresenter >> updateSelectedNotebookPage [
-	"Only update the page that is currently being displayed, and the views in windows of their own. This makes execution much faster because other pages (charts, data table, other views) are not updated when they are not displayed"
+	"Only update the page that is currently being displayed, and the views and charts in windows of their own. This makes execution much faster because other pages (data table, other views and charts) are not updated when they are not displayed"
 
-	views do: [ :each | each isInWindow ifTrue: [ each updateDiagram ] ].
+	views , charts do: [ :each |
+		each isInWindow ifTrue: [ each updateDiagram ] ].
 	notebook selectedPage ifNil: [ ^ self ].
 	pages keysAndValuesDo: [ :view :page |
 		notebook selectedPage = page ifTrue: [ view updateDiagram ] ].
 	notebook selectedPage = dataPage ifTrue: [
-		self updateInInterface: [ self updateDataTable ] ].
-	notebook selectedPage = chartsPage ifTrue: [
-		self updateInInterface: [ self updateChart ] ]
+		self updateInInterface: [ self updateDataTable ] ]
 ]
 
 { #category : 'initialization' }

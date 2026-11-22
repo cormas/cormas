@@ -88,8 +88,7 @@ CMBlElement >> contextMenuCommandsFor: anEntity [
 
 { #category : '*Cormas-Bloc-Spec' }
 CMBlElement >> contextMenuFor: anEntity [
-	"Answer a menu with the commands and the actions of anEntity, its data and charts, a group to choose how its class appears in my view, and a submenu for each aggregate or network containing it. Aggregates show the highest id first, and networks the innermost first. Each of them updates me after it runs"
-
+	"Answer a menu with the commands and the actions of anEntity, a group to choose how its class appears in my view, and a submenu for each aggregate or network containing it. Aggregates show the highest id first, and networks the innermost first. Each of them updates me after it runs"
 	| menu |
 	menu := SpMenuPresenter new
 		        title: anEntity class name;
@@ -111,7 +110,6 @@ CMBlElement >> contextMenuFor: anEntity [
 								action: [
 										anEntity perform: selector.
 										self update ] ] ] ].
-	self addDataGroupFor: anEntity to: menu.
 	self addAspectGroupFor: anEntity to: menu.
 	anEntity isSpatialEntity ifTrue: [
 			self

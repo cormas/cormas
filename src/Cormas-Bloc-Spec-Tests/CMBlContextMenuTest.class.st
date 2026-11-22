@@ -235,27 +235,6 @@ CMBlContextMenuTest >> testCellMenuWithoutAggregatesKeepsItsGroups [
 ]
 
 { #category : 'tests' }
-CMBlContextMenuTest >> testChoosingAChartInTheMenuOfAnEntityTellsWhichEntityAndWhichChart [
-
-	| cow element chosen |
-	self gridWithNeighbourhood: 4.
-	cow := self newCowOn: (model cellAt: 2 at: 3).
-	element := CMBlSpaceElement for: model.
-	element whenChartChosenDo: [ :entity :selector |
-			chosen := {
-				          entity.
-				          selector } ].
-	(self
-		 itemNamed: 'Energy'
-		 in:
-		 (self itemNamed: 'Charts' in: (element contextMenuFor: cow))
-			 subMenu) performMenuActionWith: nil.
-	self assert: chosen equals: {
-			cow.
-			#chartEnergy }
-]
-
-{ #category : 'tests' }
 CMBlContextMenuTest >> testChoosingAnAspectInTheMenuShowsTheClassWithIt [
 
 	| cow element item |
@@ -270,19 +249,6 @@ CMBlContextMenuTest >> testChoosingAnAspectInTheMenuShowsTheClassWithIt [
 	self
 		assert: (element observer perspective aspectFor: CMMockCow)
 		equals: #aspectEnergy:
-]
-
-{ #category : 'tests' }
-CMBlContextMenuTest >> testChoosingDataInTheMenuOfAnEntityWithProbesTellsWhichEntity [
-
-	| cow element chosen |
-	self gridWithNeighbourhood: 4.
-	cow := self newCowOn: (model cellAt: 2 at: 3).
-	element := CMBlSpaceElement for: model.
-	element whenDataChosenDo: [ :entity | chosen := entity ].
-	(self itemNamed: 'Data' in: (element contextMenuFor: cow))
-		performMenuActionWith: nil.
-	self assert: chosen identicalTo: cow
 ]
 
 { #category : 'tests' }
@@ -490,24 +456,4 @@ CMBlContextMenuTest >> testTheMenuOfAHiddenClassOffersToShowIt [
 	(self itemNamed: 'Show CMMockCow' in: (element contextMenuFor: cow))
 		performMenuActionWith: nil.
 	self assert: (element observer perspective isVisible: CMMockCow)
-]
-
-{ #category : 'tests' }
-CMBlContextMenuTest >> testTheMenuOfAnEntityWithoutChartsOffersNoCharts [
-
-	self gridWithNeighbourhood: 4.
-	self deny:
-		(((self itemsOf: self menuOfCellAt1x1) collect: [ :each | each name ])
-			 includes: 'Charts')
-]
-
-{ #category : 'tests' }
-CMBlContextMenuTest >> testTheMenuOfAnEntityWithoutProbesOffersNoData [
-
-	| aggregate |
-	self gridWithNeighbourhood: 4.
-	aggregate := self aggregateOf: { (model cellAt: 1 at: 1) }.
-	self deny:
-		(((self itemsOf: (self menuOf: aggregate)) collect: [ :each |
-			  each name ]) includes: 'Data')
 ]

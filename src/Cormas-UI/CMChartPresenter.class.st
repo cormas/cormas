@@ -1,26 +1,25 @@
 "
-I show the charts of a model, in the Charts tab of a simulation, or of an entity, in a window of my own: one chart at a time, drawn from the data recorded on my subject.
+I show one chart of a model or of an entity, drawn from the data recorded on it, in a tab of my host or in a window of my own.
 
 ## Responsibility:
 
-- I list the charts of my subject (the `<chart>` methods of its class) by their titles, and draw the chosen one. Clicking an entry of its legend hides its line or shows it again, and lines stay hidden when the chart is drawn again.
-- I say why a chart cannot be drawn, such as a probe or an entity that was not recorded, instead of drawing it.
-- I save a picture of the chart in the output folder of the model; in a window of my own, I draw the chart again after each step of the simulation.
+- I draw the chart that a `<chart>` method of my subject returns. Clicking an entry of its legend hides its line or shows it again, and lines stay hidden when the chart is drawn again.
+- I say why the chart cannot be drawn, such as a probe or an entity that was not recorded, instead of drawing it.
+- I save a picture of the chart in the output folder of the model, and move to a window of my own and back to the tabs of my host, keeping my hidden lines.
 
 ## Collaborators:
 
-- `CMModel class>>chartSelectors` and `CMEntity class>>chartSelectors` give the charts; each `<chart>` method returns a `CMChart`.
 - `CMLineChart>>chartLinesOf:in:` and `canvasOf:hiding:` draw the chart from the data of the simulation.
-- `CMSimulationRunnerPresenter` creates me for the model and asks me to `drawChart` after each displayed step; `CMSpacePresenter` opens me on an entity from its context menu.
+- My host, such as `CMSimulationRunnerPresenter`, creates me with `newChartView:of:`, moves me (`moveToWindow:`, `moveToTabs:`), closes me (`closeView:`) and asks me to `updateDiagram` after each displayed step, which I do through its `updateInInterface:`.
 
 ## Public API and Key Messages
 
-- `subject:` shows the charts of a model or an entity; `showChart:` chooses one; `drawChart` draws it again.
-- `followSimulation` draws the chart again at the end of each step.
-- `chartList`, `chartView` and `message` give access to my parts.
+- `subject:chart:` shows the chart of a method of a model or an entity; `drawChart` draws it again.
+- `title` is the title of the chart, or else the selector of its method.
+- `hiddenLines`, `chartView` and `message` give access to my state and my parts.
 
 ```smalltalk
-| simulation application cow |
+| simulation application |
 simulation := (CMSimulation for: CMMockModel new)
 	activeInitSelector: #initFixed;
 	activeControlSelector: #step;
@@ -30,31 +29,35 @@ simulation := (CMSimulation for: CMMockModel new)
 application := CMSimulationApplication new.
 application simulation: simulation.
 application cormasModel: simulation cormasModel.
-cow := (simulation cormasModel entitiesOfClass: CMMockCow) first.
 (application newPresenter: CMChartPresenter)
-	subject: cow;
+	subject: simulation cormasModel chart: #chartCells;
 	open
 ```
 
 ## Internal Representation
 
-- `subject`: the model or the entity whose charts I show.
-- `chart`: the chosen `CMChart`; `hiddenLines`: the names of its hidden lines.
-- `refreshPending`: whether a drawing after a step is already waiting in the UI process.
+- `subject`: the model or the entity whose chart I show; `chartSelector`: the method that returns it; `chart`: the `CMChart` it returned.
+- `hiddenLines`: the names of the hidden lines.
+- `host`: who manages me; `detachedWindow`: my window, when I am not in a tab.
+
+### Implementation Points
+
+- Spec cannot move a presenter from a tab to a window, so a moved chart is a copy (`copyFor:`), as for views of the space.
 "
 Class {
 	#name : 'CMChartPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'toolbar',
-		'chartList',
 		'saveToPngButton',
 		'chartView',
 		'messageLabel',
 		'subject',
 		'chart',
 		'hiddenLines',
-		'refreshPending'
+		'chartSelector',
+		'host',
+		'detachedWindow'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -81,15 +84,9 @@ CMChartPresenter class >> example [
 ]
 
 { #category : 'accessing' }
-CMChartPresenter >> chartList [
+CMChartPresenter >> chartSelector [
 
-	^ chartList
-]
-
-{ #category : 'accessing' }
-CMChartPresenter >> chartNamed: aSelector [
-
-	^ subject perform: aSelector
+	^ chartSelector
 ]
 
 { #category : 'accessing' }
@@ -98,43 +95,63 @@ CMChartPresenter >> chartView [
 	^ chartView
 ]
 
+{ #category : 'updating' }
+CMChartPresenter >> closeDiagram [
+	"Nothing keeps running for a chart once it is no longer shown"
+
+	
+]
+
 { #category : 'initialization' }
 CMChartPresenter >> connectPresenters [
-	"Changing the items of the drop list first leaves it without a selection, until the first chart is selected. Selecting a chart draws it"
 
-	chartList whenSelectedItemChangedDo: [ :selector |
-			selector ifNotNil: [
-					hiddenLines removeAll.
-					self drawChart ] ].
-	saveToPngButton action: [ self saveToPng ].
-	self showChartsOfSubject
+	saveToPngButton action: [ self saveToPng ]
+]
+
+{ #category : 'actions' }
+CMChartPresenter >> copyFor: aHost [
+	"Return a new presenter of my chart for aHost, with the same lines hidden. Spec cannot move a presenter from a tab to a window, so a moved chart is a copy"
+
+	| copy |
+	copy := aHost newChartView: chartSelector of: subject.
+	copy hiddenLines addAll: hiddenLines.
+	copy drawChart.
+	^ copy
 ]
 
 { #category : 'accessing' }
 CMChartPresenter >> cormasModel [
 
-	^ self simulation cormasModel
+	^ self application cormasModel
 ]
 
-{ #category : 'layout' }
+{ #category : 'initialization' }
 CMChartPresenter >> defaultLayout [
+
 	^ SpBoxLayout newTopToBottom
-		  add: (SpBoxLayout newLeftToRight
-				   spacing: 5;
-				   add: chartList;
-				   add: toolbar expand: false;
-				   yourself)
-		  expand: false;
+		  add: toolbar expand: false;
 		  add: messageLabel expand: false;
 		  add: chartView;
 		  yourself
 ]
 
+{ #category : 'accessing' }
+CMChartPresenter >> detachedWindow [
+	"Return the window of my own, when I was moved out of the tabs of my host"
+
+	^ detachedWindow
+]
+
+{ #category : 'accessing' }
+CMChartPresenter >> displayedTitle [
+
+	^ self title
+]
+
 { #category : 'updating' }
 CMChartPresenter >> drawChart [
-	"Draw the chosen chart from the data recorded on my subject, keeping hidden the lines hidden from its legend, or say why it cannot be drawn"
+	"Draw my chart from the data recorded on my subject, keeping hidden the lines hidden from its legend, or say why it cannot be drawn"
 
-	chart := self chartNamed: chartList selectedItem.
 	[
 		chartView canvas: (chart
 				 canvasOf: (chart chartLinesOf: subject in: self simulation)
@@ -147,28 +164,34 @@ CMChartPresenter >> drawChart [
 					'This chart cannot be drawn: ' , error messageText ]
 ]
 
-{ #category : 'updating' }
-CMChartPresenter >> followSimulation [
-	"Draw the chart again at the end of each step of the simulation. The subscription is weak, so that the simulation does not keep me alive"
+{ #category : 'accessing' }
+CMChartPresenter >> hiddenLines [
+	"Return the names of the lines hidden from the legend"
 
-	self timeStepAnnouncer weak
-		when: CMTimeStepEnded
-		send: #timeStepEnded:
-		to: self
+	^ hiddenLines
+]
+
+{ #category : 'actions' }
+CMChartPresenter >> host: aHost [
+	"Let aHost, such as a simulation runner, manage me in its tabs, and offer to move me to a window of my own and back"
+
+	host := aHost.
+	toolbar addItemRight: (self newToolbarButton
+			 label: 'Move';
+			 icon: (self iconNamed: #window);
+			 help:
+				 'Move this chart to a window of its own, or back to the tabs';
+			 action: [ self moveElsewhere ];
+			 yourself)
 ]
 
 { #category : 'initialization' }
 CMChartPresenter >> initializePresenters [
 
-	subject := self cormasModel.
 	hiddenLines := Set new.
-	refreshPending := false.
-	chartList := self newDropList
-		             display: [ :selector | self titleOf: selector ];
-		             yourself.
 	saveToPngButton := self newToolbarButton
 		                   label: 'Save to PNG';
-		                   help: 'Save to PNG';
+		                   help: 'Save a picture of the chart';
 		                   icon: (self iconNamed: #smallSave);
 		                   yourself.
 	toolbar := self newToolbar
@@ -179,30 +202,52 @@ CMChartPresenter >> initializePresenters [
 	chartView := SpRoassalInspectorPresenter new
 ]
 
-{ #category : 'initialization' }
-CMChartPresenter >> initializeWindow: aWindowPresenter [
+{ #category : 'accessing' }
+CMChartPresenter >> isInWindow [
 
-	super initializeWindow: aWindowPresenter.
-	aWindowPresenter
-		title: 'Charts of ' , subject printString;
-		initialExtent: 1100 @ 600;
-		whenClosedDo: [ self stopFollowingSimulation ]
+	^ detachedWindow isNotNil
 ]
 
 { #category : 'accessing' }
 CMChartPresenter >> message [
-	"Return why the chosen chart cannot be drawn, or an empty string"
+	"Return why the chart cannot be drawn, or an empty string"
 
 	^ messageLabel label
 ]
 
-{ #category : 'drawing' }
+{ #category : 'actions' }
+CMChartPresenter >> moveElsewhere [
+
+	self isInWindow
+		ifTrue: [ host moveToTabs: self ]
+		ifFalse: [ host moveToWindow: self ]
+]
+
+{ #category : 'actions' }
+CMChartPresenter >> openInWindow [
+	"Show me in a window of my own. Closing the window closes me in my host"
+
+	detachedWindow := self asWindow.
+	detachedWindow
+		title: self displayedTitle;
+		initialExtent: 900 @ 600;
+		whenClosedDo: [ host closeView: self ].
+	detachedWindow open
+]
+
+{ #category : 'actions' }
+CMChartPresenter >> registerIn: aHost [
+
+	aHost charts add: self
+]
+
+{ #category : 'actions' }
 CMChartPresenter >> saveToPng [
 	"Save a picture of the chart in the output folder of the model"
 
 	CMExport
 		of: self cormasModel class
-		named: 'chart'
+		named: chartSelector asString
 		extension: 'png'
 		writing: [ :file |
 				RSPNGExporter new
@@ -211,58 +256,37 @@ CMChartPresenter >> saveToPng [
 ]
 
 { #category : 'accessing' }
-CMChartPresenter >> showChart: aSelector [
-
-	chartList selectItem: aSelector
-]
-
-{ #category : 'updating' }
-CMChartPresenter >> showChartsOfSubject [
-
-	chartList
-		items: subject class chartSelectors;
-		selectIndex: 1
-]
-
-{ #category : 'accessing' }
 CMChartPresenter >> simulation [
 
 	^ self application simulation
 ]
 
-{ #category : 'updating' }
-CMChartPresenter >> stopFollowingSimulation [
+{ #category : 'accessing' }
+CMChartPresenter >> subject [
 
-	self timeStepAnnouncer unsubscribe: self
+	^ subject
 ]
 
 { #category : 'accessing' }
-CMChartPresenter >> subject: aModelOrAnEntity [
-	"Show the charts of aModelOrAnEntity, drawn from its own data"
+CMChartPresenter >> subject: aModelOrAnEntity chart: aSelector [
+	"Show the chart that the method aSelector of aModelOrAnEntity returns, drawn from the data recorded on it"
 
 	subject := aModelOrAnEntity.
-	self showChartsOfSubject
+	chartSelector := aSelector.
+	chart := subject perform: aSelector.
+	self drawChart
 ]
 
 { #category : 'accessing' }
-CMChartPresenter >> timeStepAnnouncer [
+CMChartPresenter >> title [
+	"Return the title of my chart, or else the selector of its method"
 
-	^ self simulation simulationContext timeStepAnnouncer
+	^ chart title ifNil: [ chartSelector asString ]
 ]
 
 { #category : 'updating' }
-CMChartPresenter >> timeStepEnded: aTimeStepEnded [
-	"The simulation announces the end of a step in its own process: draw in the UI process, once for all the steps that ended meanwhile"
+CMChartPresenter >> updateDiagram [
+	"Draw my chart again after a displayed step, in the UI process and while the simulation waits, so that the data does not change meanwhile"
 
-	refreshPending ifTrue: [ ^ self ].
-	refreshPending := true.
-	self defer: [
-			refreshPending := false.
-			self drawChart ]
-]
-
-{ #category : 'accessing' }
-CMChartPresenter >> titleOf: aSelector [
-
-	^ (self chartNamed: aSelector) title ifNil: [ aSelector asString ]
+	host updateInInterface: [ self drawChart ]
 ]

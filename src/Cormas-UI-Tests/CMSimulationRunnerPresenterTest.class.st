@@ -13,21 +13,9 @@ Class {
 }
 
 { #category : 'private' }
-CMSimulationRunnerPresenterTest >> itemNamed: aString inMenuOf: anEntity in: aView [
+CMSimulationRunnerPresenterTest >> pageTitles [
 
-	^ ((aView spaceBuilder contextMenuFor: anEntity) menuGroups
-		   flatCollect: [ :each | each menuItems ]) detect: [ :each |
-		  each name = aString ]
-]
-
-{ #category : 'private' }
-CMSimulationRunnerPresenterTest >> openedWindowOf: aPresenterClass [
-
-	| window |
-	window := runner application windows detect: [ :each |
-		          each presenter isKindOf: aPresenterClass ].
-	windows add: window.
-	^ window
+	^ (runner notebook pages collect: [ :each | each title ]) asArray
 ]
 
 { #category : 'running' }
@@ -65,6 +53,54 @@ CMSimulationRunnerPresenterTest >> tearDown [
 	runner closeAllViews.
 	windows do: [ :each | each close ].
 	super tearDown
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testAChartInAWindowIsDrawnAgainAfterADisplayedStep [
+
+	| moved canvas |
+	moved := runner moveToWindow: runner charts first.
+	windows add: moved detachedWindow.
+	canvas := moved chartView canvas.
+	runner simulation runStep.
+	runner updateSelectedNotebookPage.
+	self deny: moved chartView canvas identicalTo: canvas
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testAChartMovedBackToTheTabsClosesItsWindow [
+
+	| moved window back |
+	moved := runner moveToWindow: runner charts first.
+	window := moved detachedWindow.
+	windows add: window.
+	back := runner moveToTabs: moved.
+	self deny: back isInWindow.
+	self assert: window isClosed.
+	self assert: (self pageTitles includes: 'Cells').
+	self assert: runner charts size equals: 1
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testAChartMovedToAWindowKeepsItsHiddenLines [
+
+	| moved |
+	runner charts first hiddenLines add: 'numberOfDeadCells'.
+	moved := runner moveToWindow: runner charts first.
+	windows add: moved detachedWindow.
+	self assert: (moved hiddenLines includes: 'numberOfDeadCells')
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testAChartMovedToAWindowLeavesTheTabs [
+
+	| moved |
+	moved := runner moveToWindow: runner charts first.
+	windows add: moved detachedWindow.
+	self assert: moved isInWindow.
+	self assert: moved title equals: 'Cells'.
+	self deny: (self pageTitles includes: 'Cells').
+	self assert: runner charts size equals: 1
 ]
 
 { #category : 'tests' }
@@ -152,7 +188,7 @@ CMSimulationRunnerPresenterTest >> testANewViewIsAddedBeforeTheLastTab [
 	self
 		assert:
 		(runner notebook pages collect: [ :each | each title ]) asArray
-		equals: #( 'Data' 'Charts' 'Inspector' 'Space' 'Space (2)'
+		equals: #( 'Data' 'Cells' 'Inspector' 'Space' 'Space (2)'
 		   '' )
 ]
 
@@ -209,7 +245,7 @@ CMSimulationRunnerPresenterTest >> testAViewKeepsItsTitleWhenItMovesToAWindow [
 	self
 		assert:
 		(runner notebook pages collect: [ :each | each title ]) asArray
-		equals: #( 'Data' 'Charts' 'Inspector' 'Space (2)' '' )
+		equals: #( 'Data' 'Cells' 'Inspector' 'Space (2)' '' )
 ]
 
 { #category : 'tests' }
@@ -269,21 +305,6 @@ CMSimulationRunnerPresenterTest >> testAViewWhoseChoicesDifferFromItsPerspective
 ]
 
 { #category : 'tests' }
-CMSimulationRunnerPresenterTest >> testChoosingAChartInTheMenuOfAnEntityOpensThatChart [
-
-	| view cow window |
-	view := runner newViewWith: #perspectiveHiddenCows.
-	cow := (view cormasModel entitiesOfClass: CMMockCow) first.
-	(self itemNamed: 'Charts' inMenuOf: cow in: view) subMenu menuGroups
-		first menuItems first performMenuActionWith: nil.
-	window := self openedWindowOf: CMChartPresenter.
-	self assert: window title equals: 'Charts of ' , cow printString.
-	self
-		assert: window presenter chartList selectedItem
-		equals: #chartEnergy
-]
-
-{ #category : 'tests' }
 CMSimulationRunnerPresenterTest >> testChoosingAPerspectiveInAViewRetitlesIt [
 
 	| view |
@@ -293,7 +314,7 @@ CMSimulationRunnerPresenterTest >> testChoosingAPerspectiveInAViewRetitlesIt [
 	self
 		assert:
 		(runner notebook pages collect: [ :each | each title ]) asArray
-		equals: #( 'Data' 'Charts' 'Inspector' 'Space — Hidden cows'
+		equals: #( 'Data' 'Cells' 'Inspector' 'Space — Hidden cows'
 			   '' )
 ]
 
@@ -308,19 +329,6 @@ CMSimulationRunnerPresenterTest >> testChoosingAPerspectiveInAViewShowsIt [
 		(view aspects rows detect: [ :each | each entityClass = CMMockCow ])
 			visibilityCheckBox state.
 	self deny: view observer isModified
-]
-
-{ #category : 'tests' }
-CMSimulationRunnerPresenterTest >> testChoosingDataInTheMenuOfAnEntityOpensItsData [
-
-	| view cow |
-	view := runner newViewWith: #perspectiveHiddenCows.
-	cow := (view cormasModel entitiesOfClass: CMMockCow) first.
-	(self itemNamed: 'Data' inMenuOf: cow in: view)
-		performMenuActionWith: nil.
-	self
-		assert: (self openedWindowOf: CMEntityDataPresenter) title
-		equals: 'Data of ' , cow printString
 ]
 
 { #category : 'tests' }
@@ -387,6 +395,16 @@ CMSimulationRunnerPresenterTest >> testClosingTheViewBeforeTheLastTabShowsTheTab
 ]
 
 { #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testClosingTheWindowOfAChartClosesTheChart [
+
+	| moved |
+	moved := runner moveToWindow: runner charts first.
+	windows add: moved detachedWindow.
+	moved detachedWindow close.
+	self assertEmpty: runner charts
+]
+
+{ #category : 'tests' }
 CMSimulationRunnerPresenterTest >> testClosingTheWindowOfAViewClosesTheView [
 
 	| moved |
@@ -394,6 +412,14 @@ CMSimulationRunnerPresenterTest >> testClosingTheWindowOfAViewClosesTheView [
 	windows add: moved detachedWindow.
 	moved detachedWindow close.
 	self assertEmpty: runner views
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testEachChartOfTheModelHasATabTitledByItsTitle [
+
+	self
+		assert: self pageTitles
+		equals: #( 'Data' 'Cells' 'Inspector' 'Space' '' )
 ]
 
 { #category : 'tests' }
@@ -454,7 +480,7 @@ CMSimulationRunnerPresenterTest >> testTabsKeepTheTitlesOfTheirViews [
 		assert: (runner notebook adapter widget pages collect: [ :each |
 					 (each labelMorph allMorphs detect: [ :morph |
 						  morph isKindOf: StringMorph ]) contents ]) asArray
-		equals: #( 'Data' 'Charts' 'Inspector' 'Space (2)' '' )
+		equals: #( 'Data' 'Cells' 'Inspector' 'Space (2)' '' )
 ]
 
 { #category : 'running' }

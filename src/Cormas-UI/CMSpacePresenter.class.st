@@ -138,6 +138,15 @@ CMSpacePresenter >> connectPresenters [
 		to: self
 ]
 
+{ #category : 'actions' }
+CMSpacePresenter >> copyFor: aSimulationRunner [
+	"Return a new view for aSimulationRunner, with my choices and my title. Spec cannot move a presenter from a tab to a window, so a moved view is a copy"
+
+	^ (aSimulationRunner newViewObservedBy: observer)
+		  title: title;
+		  yourself
+]
+
 { #category : 'accessing' }
 CMSpacePresenter >> cormasModel [
 
@@ -228,7 +237,7 @@ CMSpacePresenter >> host: aSimulationRunner [
 
 { #category : 'initialization' }
 CMSpacePresenter >> initializeDiagram [
-	"Create the view of the space and the presenter that embeds it. While a simulation runs, the view is filled by its next displayed step. A choice made in the context menu of an entity may give a class a choice of its own, and so a row of its own. Its data and its charts open in windows of their own"
+	"Create the view of the space and the presenter that embeds it. While a simulation runs, the view is filled by its next displayed step. A choice made in the context menu of an entity may give a class a choice of its own, and so a row of its own"
 
 	spaceBuilder := self isSimulationRunning
 		                ifTrue: [
@@ -242,10 +251,6 @@ CMSpacePresenter >> initializeDiagram [
 	spaceBuilder whenAspectsChangedDo: [
 			aspects updateRows.
 			self choicesChanged ].
-	spaceBuilder
-		whenDataChosenDo: [ :entity | self openDataOf: entity ];
-		whenChartChosenDo: [ :entity :selector |
-			self openChart: selector of: entity ].
 	diagram := spaceBuilder asPresenter.
 	diagram owner: self.
 	self update
@@ -319,27 +324,6 @@ CMSpacePresenter >> observer [
 	^ observer
 ]
 
-{ #category : 'actions' }
-CMSpacePresenter >> openChart: aSelector of: anEntity [
-	"Open a window with the chart aSelector of anEntity, following the simulation"
-
-	(self application newPresenter: CMChartPresenter)
-		subject: anEntity;
-		showChart: aSelector;
-		followSimulation;
-		open
-]
-
-{ #category : 'actions' }
-CMSpacePresenter >> openDataOf: anEntity [
-	"Open a window with the data recorded on anEntity, following the simulation"
-
-	(self application newPresenter: CMEntityDataPresenter)
-		entity: anEntity;
-		followSimulation;
-		open
-]
-
 { #category : 'accessing' }
 CMSpacePresenter >> openInWindow [
 	"Show me in a window of my own. Closing the window closes me as a view of the simulation"
@@ -375,6 +359,12 @@ CMSpacePresenter >> perspectives [
 	^ { CMPerspective new }
 	  , (self cormasModel perspectiveSelectors collect: [ :each |
 			   self cormasModel perspectiveNamed: each ])
+]
+
+{ #category : 'actions' }
+CMSpacePresenter >> registerIn: aSimulationRunner [
+
+	aSimulationRunner views add: self
 ]
 
 { #category : 'aspects' }

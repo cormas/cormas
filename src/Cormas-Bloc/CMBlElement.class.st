@@ -33,9 +33,7 @@ Class {
 		'leftClickBlock',
 		'rightClickBlock',
 		'observer',
-		'aspectsChangedBlock',
-		'dataChosenBlock',
-		'chartChosenBlock'
+		'aspectsChangedBlock'
 	],
 	#category : 'Cormas-Bloc',
 	#package : 'Cormas-Bloc'
@@ -65,28 +63,6 @@ CMBlElement class >> for: anObject observedBy: anObserver [
 		  yourself
 ]
 
-{ #category : 'context menu' }
-CMBlElement >> addDataGroupFor: anEntity to: aMenu [
-	"Add a group to open the data recorded on anEntity, when its class has probes, and its charts, when its class has charts"
-
-	| hasProbes chartSelectors |
-	hasProbes := anEntity class probeSelectors notEmpty.
-	chartSelectors := anEntity class chartSelectors.
-	(hasProbes or: [ chartSelectors notEmpty ]) ifFalse: [ ^ self ].
-	aMenu addGroup: [ :group |
-			hasProbes ifTrue: [
-					group addItem: [ :item |
-							item
-								name: 'Data';
-								icon: CMIcons csvIcon;
-								action: [ dataChosenBlock value: anEntity ] ] ].
-			chartSelectors ifNotEmpty: [
-					group addItem: [ :item |
-							item
-								name: 'Charts';
-								subMenu: (self chartMenuFor: anEntity) ] ] ]
-]
-
 { #category : 'drawing' }
 CMBlElement >> backgroundOfLook: aLook in: aSpaceModel extent: anExtent [
 	"Answer the color or the image with which a look fills an element of the given extent"
@@ -110,21 +86,6 @@ CMBlElement >> cellExtentOf: aCell [
 CMBlElement >> cellSize [
 
 	^ self class cellSize
-]
-
-{ #category : 'context menu' }
-CMBlElement >> chartMenuFor: anEntity [
-	"Answer a menu of the charts of anEntity, by their titles"
-
-	| menu |
-	menu := SpMenuPresenter new.
-	anEntity class chartSelectors do: [ :selector |
-			menu addItem: [ :item |
-					item
-						name:
-							((anEntity perform: selector) title ifNil: [ selector asString ]);
-						action: [ chartChosenBlock value: anEntity value: selector ] ] ].
-	^ menu
 ]
 
 { #category : 'accessing' }
@@ -190,11 +151,8 @@ CMBlElement >> inSpaceDo: aBlock [
 
 { #category : 'initialization' }
 CMBlElement >> initialize [
-
 	super initialize.
-	aspectsChangedBlock := [ self update ].
-	dataChosenBlock := [ :entity |  ].
-	chartChosenBlock := [ :entity :selector |  ]
+	aspectsChangedBlock := [ self update ]
 ]
 
 { #category : 'geometry' }
@@ -267,20 +225,6 @@ CMBlElement >> whenAspectsChangedDo: aBlock [
 	"Evaluate aBlock instead of updating me after the aspects were changed from my context menu. Whoever gives the block shows the change"
 
 	aspectsChangedBlock := aBlock
-]
-
-{ #category : 'accessing' }
-CMBlElement >> whenChartChosenDo: aBlock [
-	"Evaluate aBlock with an entity and the selector of one of its charts when that chart is chosen in its context menu"
-
-	chartChosenBlock := aBlock
-]
-
-{ #category : 'accessing' }
-CMBlElement >> whenDataChosenDo: aBlock [
-	"Evaluate aBlock with an entity when Data is chosen in its context menu"
-
-	dataChosenBlock := aBlock
 ]
 
 { #category : 'interaction' }

@@ -9,6 +9,16 @@ Class {
 }
 
 { #category : 'private' }
+CMChartPresenterTest >> clickLegendEntryNamed: aString [
+
+	(presenter chartView canvas allChildren detect: [ :each |
+			 (each isKindOf: RSComposite) and: [
+					 each children anySatisfy: [ :child |
+						 (child isKindOf: RSLabel) and: [ child text = aString ] ] ] ])
+		announce: RSMouseClick new
+]
+
+{ #category : 'private' }
 CMChartPresenterTest >> cow [
 
 	^ (presenter simulation cormasModel entitiesOfClass: CMMockCow) first
@@ -29,15 +39,14 @@ CMChartPresenterTest >> setUp [
 	application := CMSimulationApplication new.
 	application simulation: simulation.
 	application cormasModel: simulation cormasModel.
-	presenter := application newPresenter: CMChartPresenter
+	presenter := application newPresenter: CMChartPresenter.
+	presenter subject: simulation cormasModel chart: #chartCells
 ]
 
 { #category : 'tests' }
-CMChartPresenterTest >> testAChartIsListedByItsTitle [
+CMChartPresenterTest >> testAChartIsTitledByItsTitle [
 
-	self
-		assert: (presenter chartList display value: #chartCells)
-		equals: 'Cells'
+	self assert: presenter title equals: 'Cells'
 ]
 
 { #category : 'tests' }
@@ -52,10 +61,25 @@ CMChartPresenterTest >> testAChartOfDataThatWasNotRecordedSaysWhatIsMissing [
 ]
 
 { #category : 'tests' }
+CMChartPresenterTest >> testALineHiddenFromTheLegendStaysHiddenWhenTheChartIsDrawnAgain [
+
+	self clickLegendEntryNamed: 'numberOfDeadCells'.
+	presenter drawChart.
+	self assert: (presenter hiddenLines includes: 'numberOfDeadCells')
+]
+
+{ #category : 'tests' }
+CMChartPresenterTest >> testTheChartIsDrawnFromTheRecordedData [
+
+	self assert: (self textsOfChart includes: 'numberOfAliveCells').
+	self assert: (self textsOfChart includes: 'Cells').
+	self assert: presenter message isEmpty
+]
+
+{ #category : 'tests' }
 CMChartPresenterTest >> testTheChartOfAnEntityIsDrawnFromItsData [
 
-	presenter subject: self cow.
-	self assert: (self textsOfChart includes: 'Energy').
+	presenter subject: self cow chart: #chartEnergy.
 	self assert: (self textsOfChart includes: 'energy').
 	self assert: presenter message isEmpty
 ]
@@ -68,36 +92,8 @@ CMChartPresenterTest >> testTheChartOfAnEntityThatWasNotRecordedSaysSo [
 		doNotRecord: CMMockCow;
 		initializeSimulation.
 	cow := self cow.
-	presenter subject: cow.
+	presenter subject: cow chart: #chartEnergy.
 	self assert: (presenter message includesSubstring: cow printString)
-]
-
-{ #category : 'tests' }
-CMChartPresenterTest >> testTheChartsOfAnEntityCanBeChosen [
-
-	presenter subject: self cow.
-	self
-		assert: presenter chartList items asArray
-		equals: #( #chartEnergy )
-]
-
-{ #category : 'tests' }
-CMChartPresenterTest >> testTheChartsOfTheModelCanBeChosen [
-
-	self
-		assert: presenter chartList items asArray
-		equals: #( #chartCells )
-]
-
-{ #category : 'tests' }
-CMChartPresenterTest >> testTheFirstChartIsDrawnFromTheRecordedData [
-
-	| texts |
-	texts := (presenter chartView canvas allChildren select: [ :each |
-		          each isKindOf: RSLabel ]) collect: [ :each | each text ].
-	self assert: (texts includes: 'numberOfAliveCells').
-	self assert: (texts includes: 'Cells').
-	self assert: presenter message isEmpty
 ]
 
 { #category : 'private' }

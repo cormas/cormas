@@ -11,7 +11,7 @@ I show, in a window of my own, the data recorded on one entity: a row for each r
 
 - `CMSimulation>>dataOf:` gives the data of the entity, and `CMSimulation>>writeCsvOfClass:on:` writes the data of its class.
 - `CMDataTable>>writeCsvOn:` writes the data of the entity.
-- `CMSpacePresenter` opens me from the context menu of the entity.
+- The entity inspector will show me as its Data tab.
 
 ## Public API and Key Messages
 
