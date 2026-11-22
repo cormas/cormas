@@ -63,9 +63,35 @@ CMLineChartTest >> testALineIsLabelledByItsProbe [
 ]
 
 { #category : 'tests' }
+CMLineChartTest >> testAProbeShownTwiceCannotBeLabelled [
+	chart lines: #boars ofAll: CMMockAnimal.
+	self
+		should: [ chart label: 'Boars' for: #boars ]
+		raise: Error
+		withExceptionDo: [ :error |
+			self assert: (error messageText includesSubstring: 'more than once') ]
+]
+
+{ #category : 'tests' }
 CMLineChartTest >> testLinesKeepTheirOrder [
 
 	self assert: chart lines asArray equals: #( #boars #urbanBoars )
+]
+
+{ #category : 'tests' }
+CMLineChartTest >> testTheLinesOfAllInstancesOfAClassCannotBeShownTwice [
+	chart lines: #energy ofAll: CMMockAnimal.
+	self
+		should: [ chart lines: #energy ofAll: CMMockAnimal ]
+		raise: Error
+		withExceptionDo: [ :error |
+			self assert: (error messageText includesSubstring: 'CMMockAnimal') ]
+]
+
+{ #category : 'tests' }
+CMLineChartTest >> testTheLinesOfAllInstancesOfAClassShowTheirProbe [
+	chart lines: #energy ofAll: CMMockAnimal.
+	self assert: (chart shownSelectors includes: #energy)
 ]
 
 { #category : 'tests' }

@@ -163,12 +163,9 @@ CMModelTest >> testCentralCell [
 		identicalTo: (m selectCellsOfColumn: 2) second
 ]
 
-{ #category : 'tests - probes and charts' }
+{ #category : 'tests' }
 CMModelTest >> testChartsAreTheMethodsMarkedAsCharts [
-
-	self
-		assert: CMMockModel chartSelectors asArray
-		equals: #( #chartCells #chartOfAMethodThatIsNotAProbe )
+	self assert: CMMockModel chartSelectors asArray equals: #( #chartCells )
 ]
 
 { #category : 'tests' }

@@ -68,6 +68,23 @@ CMDataTableTest >> testAStepThatIsNotAfterTheLastOneRaisesARecordingError [
 ]
 
 { #category : 'tests' }
+CMDataTableTest >> testAStringIsWrittenAsCsvBetweenQuotes [
+	table addStep: 0 values: #( 'big "bag", full' 4 ).
+	self
+		assert: (String streamContents: [ :stream | table writeCsvOn: stream ]) lines second
+		equals: '0,"big ""bag"", full",4'
+]
+
+{ #category : 'tests' }
+CMDataTableTest >> testATableIsWrittenAsCsvWithItsStepsThenItsColumns [
+	table addStep: 0 values: #( 1.5 true ).
+	table addStep: 2 values: #( 3 false ).
+	self
+		assert: (String streamContents: [ :stream | table writeCsvOn: stream ]) lines asArray
+		equals: #( 'step,bag,boars' '0,1.5,true' '2,3,false' )
+]
+
+{ #category : 'tests' }
 CMDataTableTest >> testAValueOfAnotherKindThanItsColumnRaisesARecordingError [
 
 	table addStep: 0 values: #( 3 40 ).

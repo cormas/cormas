@@ -38,6 +38,16 @@ CMMockAnimal >> aspectEnergy: look [
 	look sizeForValue: energy from: 0 to: 10
 ]
 
+{ #category : 'charts' }
+CMMockAnimal >> chartEnergy [
+
+	<chart>
+	^ CMLineChart new
+		  title: 'Energy';
+		  line: #energy;
+		  yourself
+]
+
 { #category : 'accessing' }
 CMMockAnimal >> energy [
 

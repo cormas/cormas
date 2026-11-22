@@ -2,86 +2,170 @@ Class {
 	#name : 'CMLineChartRoassalTest',
 	#superclass : 'TestCase',
 	#instVars : [
-		'table',
-		'chart'
+		'chart',
+		'simulation',
+		'model'
 	],
 	#category : 'Cormas-UI-Tests',
 	#package : 'Cormas-UI-Tests'
 }
 
+{ #category : 'private' }
+CMLineChartRoassalTest >> canvasHiding: aSet [
+
+	^ chart canvasOf: self lines hiding: aSet
+]
+
+{ #category : 'private' }
+CMLineChartRoassalTest >> legendEntryNamed: aString in: aCanvas [
+
+	^ aCanvas allChildren detect: [ :each |
+			  (each isKindOf: RSComposite) and: [
+					  each children anySatisfy: [ :child |
+						  (child isKindOf: RSLabel) and: [ child text = aString ] ] ] ]
+]
+
+{ #category : 'private' }
+CMLineChartRoassalTest >> lines [
+
+	^ chart chartLinesOf: model in: simulation
+]
+
+{ #category : 'private' }
+CMLineChartRoassalTest >> plotShapesNamed: aString in: aCanvas [
+	"The lines drawn for a chart line: the polylines of its color, or transparent ones when it is hidden"
+
+	| color |
+	color := (self lines detect: [ :each | each name = aString ]) color.
+	^ aCanvas allChildren select: [ :each |
+			  (each isKindOf: RSPolyline) and: [
+				  each color = color or: [ each color = Color transparent ] ] ]
+]
+
 { #category : 'running' }
 CMLineChartRoassalTest >> setUp [
 
 	super setUp.
-	table := CMDataTable withColumns: #( #boars #urbanBoars #landCover ).
-	table addStep: 0 values: #( 40 2 'forest' ).
-	table addStep: 1 values: #( 38 3 'forest' ).
-	table addStep: 2 values: #( 41 5 'urban' ).
+	simulation := (CMSimulation for: CMMockModel new)
+		              randomSeed: 41;
+		              activeInitSelector: #initFixed;
+		              activeControlSelector: #step;
+		              initializeSimulation;
+		              yourself.
+	3 timesRepeat: [ simulation runStep ].
+	model := simulation cormasModel.
 	chart := CMLineChart new
-		         line: #boars;
-		         line: #urbanBoars;
+		         line: #numberOfAliveCells;
+		         line: #numberOfDeadCells;
 		         yourself
 ]
 
 { #category : 'tests' }
 CMLineChartRoassalTest >> testAChosenColorIsUsed [
 
-	chart color: Color brown for: #urbanBoars.
+	chart color: Color brown for: #numberOfDeadCells.
+	self assert: self lines second color equals: Color brown
+]
+
+{ #category : 'tests' }
+CMLineChartRoassalTest >> testAHiddenLineIsDrawnTransparent [
+
+	| canvas |
+	canvas := self canvasHiding: (Set with: 'numberOfDeadCells').
+	self assert:
+		((self plotShapesNamed: 'numberOfDeadCells' in: canvas) allSatisfy: [
+			 :each | each color = Color transparent ])
+]
+
+{ #category : 'tests' }
+CMLineChartRoassalTest >> testALineOfAMethodThatIsNotAProbeRaisesAnError [
+
+	chart := CMLineChart new
+		         line: #numberOfCows;
+		         yourself.
+	self should: [ self lines ] raise: Error withExceptionDo: [ :error |
+			self assert: (error messageText includesSubstring: '#numberOfCows').
+			self assert: (error messageText includesSubstring: 'CMMockModel') ]
+]
+
+{ #category : 'tests' }
+CMLineChartRoassalTest >> testALineOfAnInstanceIsNamedAfterItsProbeAndItsInstance [
+
+	| cow |
+	chart := CMLineChart new
+		         lines: #energy ofAll: CMMockAnimal;
+		         label: 'Energy' for: #energy;
+		         yourself.
+	cow := (model entitiesOfClass: CMMockCow) first.
 	self
-		assert: (chart roassalChartOn: table) plots second color
-		equals: Color brown
+		assert: self lines first name
+		equals: 'Energy of ' , (simulation dataOf: cow) label
 ]
 
 { #category : 'tests' }
 CMLineChartRoassalTest >> testALineOfValuesThatAreNotNumbersRaisesAnError [
 
 	chart := CMLineChart new
-		         line: #landCover;
+		         lines: #state ofAll: CMMockCell;
 		         yourself.
+	self should: [ self lines ] raise: Error withExceptionDo: [ :error |
+		self assert: (error messageText includesSubstring: 'state') ]
+]
+
+{ #category : 'tests' }
+CMLineChartRoassalTest >> testAProbeThatWasNotRecordedCannotBeDrawn [
+
+	simulation
+		doNotRecord: #numberOfDeadCells of: CMMockModel;
+		initializeSimulation.
 	self
-		should: [ chart roassalChartOn: table ]
-		raise: Error
+		should: [ self lines ]
+		raise: CMRecordingError
 		withExceptionDo: [ :error |
-			self assert: (error messageText includesSubstring: 'landCover') ]
+				self assert:
+					(error messageText includesSubstring: 'numberOfDeadCells') ]
 ]
 
 { #category : 'tests' }
-CMLineChartRoassalTest >> testATableWithoutRowsCanBeDrawn [
+CMLineChartRoassalTest >> testClickingAHiddenLineInTheLegendShowsItAgain [
 
-	self
-		shouldnt: [
-		chart canvasOn: (CMDataTable withColumns: #( #boars #urbanBoars )) ]
-		raise: Error
+	| hidden canvas |
+	hidden := Set with: 'numberOfDeadCells'.
+	canvas := self canvasHiding: hidden.
+	(self legendEntryNamed: 'numberOfDeadCells' in: canvas) announce:
+		RSMouseClick new.
+	self assert: hidden isEmpty.
+	self assert:
+		((self plotShapesNamed: 'numberOfDeadCells' in: canvas) anySatisfy: [
+			 :each | each color = self lines second color ])
 ]
 
 { #category : 'tests' }
-CMLineChartRoassalTest >> testEachLineIsDrawnFromItsColumnOverTheSteps [
+CMLineChartRoassalTest >> testClickingALegendEntryHidesItsLine [
 
-	| plots |
-	plots := (chart roassalChartOn: table) plots.
-	self assert: plots size equals: 2.
-	self assert: plots first xValues asArray equals: #( 0 1 2 ).
-	self assert: plots first yValues asArray equals: #( 40 38 41 ).
-	self assert: plots second yValues asArray equals: #( 2 3 5 )
+	| hidden canvas |
+	hidden := Set new.
+	canvas := self canvasHiding: hidden.
+	(self legendEntryNamed: 'numberOfDeadCells' in: canvas) announce:
+		RSMouseClick new.
+	self assert: (hidden includes: 'numberOfDeadCells').
+	self assert:
+		((self plotShapesNamed: 'numberOfDeadCells' in: canvas) allSatisfy: [
+			 :each | each color = Color transparent ])
+]
+
+{ #category : 'tests' }
+CMLineChartRoassalTest >> testEachLineFollowsItsProbeOverTheRecordedSteps [
+
+	self assert: self lines first steps asArray equals: #( 0 1 2 3 ).
+	self assert: self lines first values asArray equals: #( 11 5 11 5 ).
+	self assert: self lines second values asArray equals: #( 5 11 5 11 )
 ]
 
 { #category : 'tests' }
 CMLineChartRoassalTest >> testLinesWithoutAChosenColorGetDifferentColors [
 
-	| plots |
-	plots := (chart roassalChartOn: table) plots.
-	self deny: plots first color equals: plots second color
-]
-
-{ #category : 'tests' }
-CMLineChartRoassalTest >> testTheCanvasShowsTheLabelOfEachLine [
-
-	| texts |
-	chart label: 'Boars in towns' for: #urbanBoars.
-	texts := ((chart canvasOn: table) allChildren select: [ :each |
-		          each isKindOf: RSLabel ]) collect: [ :each | each text ].
-	self assert: (texts includes: 'boars').
-	self assert: (texts includes: 'Boars in towns')
+	self deny: self lines first color equals: self lines second color
 ]
 
 { #category : 'tests' }
@@ -89,10 +173,92 @@ CMLineChartRoassalTest >> testTheCanvasShowsTheTitles [
 
 	| texts |
 	chart
-		title: 'Boars';
-		yTitle: 'Number of boars'.
-	texts := ((chart canvasOn: table) allChildren select: [ :each |
-		          each isKindOf: RSLabel ]) collect: [ :each | each text ].
-	self assert: (texts includes: 'Boars').
-	self assert: (texts includes: 'Number of boars')
+		title: 'Cells';
+		yTitle: 'Number of cells'.
+	texts := self textsOf: (self canvasHiding: Set new).
+	self assert: (texts includes: 'Cells').
+	self assert: (texts includes: 'Number of cells')
+]
+
+{ #category : 'tests' }
+CMLineChartRoassalTest >> testTheChartHasAxisLinesButNoFrame [
+
+	self deny:
+		((self canvasHiding: Set new) allChildren anySatisfy: [ :each |
+				 (each isKindOf: RSBox) and: [
+					 each color isNil or: [ each color = Color transparent ] ] ])
+]
+
+{ #category : 'tests' }
+CMLineChartRoassalTest >> testTheLegendShowsTheLabelOfEachLine [
+
+	| texts |
+	chart label: 'Dead cells' for: #numberOfDeadCells.
+	texts := self textsOf: (self canvasHiding: Set new).
+	self assert: (texts includes: 'numberOfAliveCells').
+	self assert: (texts includes: 'Dead cells')
+]
+
+{ #category : 'tests' }
+CMLineChartRoassalTest >> testTheLinesOfAllInstancesOfAClassAreALineForEachInstance [
+
+	| cow |
+	chart := CMLineChart new
+		         lines: #energy ofAll: CMMockAnimal;
+		         yourself.
+	cow := (model entitiesOfClass: CMMockCow) first.
+	self assert: self lines size equals: 2.
+	self
+		assert: self lines first values asArray
+		equals: ((simulation dataOf: cow) column: #energy) asArray
+]
+
+{ #category : 'tests' }
+CMLineChartRoassalTest >> testTheLinesOfAllInstancesOfAClassThatIsNotRecordedCannotBeDrawn [
+
+	simulation
+		doNotRecord: CMMockAnimal;
+		initializeSimulation.
+	chart := CMLineChart new
+		         lines: #energy ofAll: CMMockAnimal;
+		         yourself.
+	self should: [ self lines ] raise: CMRecordingError
+]
+
+{ #category : 'tests' }
+CMLineChartRoassalTest >> testTheLinesOfAllInstancesOfAMethodThatIsNotAProbeRaiseAnError [
+
+	chart := CMLineChart new
+		         lines: #id ofAll: CMMockCow;
+		         yourself.
+	self should: [ self lines ] raise: Error withExceptionDo: [ :error |
+		self assert: (error messageText includesSubstring: 'CMMockCow') ]
+]
+
+{ #category : 'tests' }
+CMLineChartRoassalTest >> testTicksOfDecimalsAreLabelledWithTheDecimalsTheyNeed [
+	"The energy of the animals stays at 0.5, so the y axis goes from 0.4 to 1.6, 0.2 apart"
+
+	| texts |
+	chart := CMLineChart new
+		         lines: #energy ofAll: CMMockAnimal;
+		         yourself.
+	texts := self textsOf: (self canvasHiding: Set new).
+	self assert: (texts includes: '0.4').
+	self assert: (texts includes: '1.6')
+]
+
+{ #category : 'tests' }
+CMLineChartRoassalTest >> testTicksOfWholeNumbersAreLabelledWithoutDecimals [
+
+	self deny:
+		((self textsOf: (self canvasHiding: Set new)) anySatisfy: [ :each |
+			 each includesSubstring: '.' ])
+]
+
+{ #category : 'private' }
+CMLineChartRoassalTest >> textsOf: aCanvas [
+
+	^ (aCanvas allChildren select: [ :each | each isKindOf: RSLabel ])
+		  collect: [ :each | each text ]
 ]

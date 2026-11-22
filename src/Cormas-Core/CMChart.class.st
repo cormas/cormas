@@ -61,7 +61,11 @@ CMChart >> checkShows: aSelector [
 				('The chart does not show #{1}. It shows {2}' format: {
 						 aSelector.
 						 (', ' join:
-							  (self shownSelectors collect: [ :each | '#' , each ])) }) ]
+							  (self shownSelectors collect: [ :each | '#' , each ])) }) ].
+	(self shownSelectors occurrencesOf: aSelector) > 1 ifTrue: [
+			self error:
+				('The chart shows #{1} more than once, so it cannot tell which one is meant'
+					 format: { aSelector }) ]
 ]
 
 { #category : 'presentation' }

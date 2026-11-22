@@ -12,6 +12,24 @@ Class {
 	#package : 'Cormas-UI-Tests'
 }
 
+{ #category : 'private' }
+CMSimulationRunnerPresenterTest >> itemNamed: aString inMenuOf: anEntity in: aView [
+
+	^ ((aView spaceBuilder contextMenuFor: anEntity) menuGroups
+		   flatCollect: [ :each | each menuItems ]) detect: [ :each |
+		  each name = aString ]
+]
+
+{ #category : 'private' }
+CMSimulationRunnerPresenterTest >> openedWindowOf: aPresenterClass [
+
+	| window |
+	window := runner application windows detect: [ :each |
+		          each presenter isKindOf: aPresenterClass ].
+	windows add: window.
+	^ window
+]
+
 { #category : 'running' }
 CMSimulationRunnerPresenterTest >> setUp [
 
@@ -251,6 +269,21 @@ CMSimulationRunnerPresenterTest >> testAViewWhoseChoicesDifferFromItsPerspective
 ]
 
 { #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testChoosingAChartInTheMenuOfAnEntityOpensThatChart [
+
+	| view cow window |
+	view := runner newViewWith: #perspectiveHiddenCows.
+	cow := (view cormasModel entitiesOfClass: CMMockCow) first.
+	(self itemNamed: 'Charts' inMenuOf: cow in: view) subMenu menuGroups
+		first menuItems first performMenuActionWith: nil.
+	window := self openedWindowOf: CMChartPresenter.
+	self assert: window title equals: 'Charts of ' , cow printString.
+	self
+		assert: window presenter chartList selectedItem
+		equals: #chartEnergy
+]
+
+{ #category : 'tests' }
 CMSimulationRunnerPresenterTest >> testChoosingAPerspectiveInAViewRetitlesIt [
 
 	| view |
@@ -275,6 +308,19 @@ CMSimulationRunnerPresenterTest >> testChoosingAPerspectiveInAViewShowsIt [
 		(view aspects rows detect: [ :each | each entityClass = CMMockCow ])
 			visibilityCheckBox state.
 	self deny: view observer isModified
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testChoosingDataInTheMenuOfAnEntityOpensItsData [
+
+	| view cow |
+	view := runner newViewWith: #perspectiveHiddenCows.
+	cow := (view cormasModel entitiesOfClass: CMMockCow) first.
+	(self itemNamed: 'Data' inMenuOf: cow in: view)
+		performMenuActionWith: nil.
+	self
+		assert: (self openedWindowOf: CMEntityDataPresenter) title
+		equals: 'Data of ' , cow printString
 ]
 
 { #category : 'tests' }

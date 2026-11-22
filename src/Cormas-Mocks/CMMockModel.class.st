@@ -67,17 +67,6 @@ CMMockModel >> chartCells [
 		  yourself
 ]
 
-{ #category : 'charts' }
-CMMockModel >> chartOfAMethodThatIsNotAProbe [
-	"A chart of data that is never recorded, to test how it is shown"
-
-	<chart>
-	^ CMLineChart new
-		  title: 'Cows';
-		  line: #numberOfCows;
-		  yourself
-]
-
 { #category : 'init' }
 CMMockModel >> init [
 

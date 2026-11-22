@@ -19,7 +19,7 @@ I am one simulation of a model: I initialize it with an init method, run it step
 - `CMSimulation for: aModel` creates a simulation; `activeInitSelector:`, `activeControlSelector:`, `stopWhen:` or `stopAfterStep:` set it up.
 - `initializeSimulation`, `runStep` and `runAllSteps` run it.
 - `recordEvery:`, `doNotRecord:`, `doNotRecord:of:`, `doNotRecordEntity:`, `record:` and `record:of:` choose what is recorded; everything is recorded by default.
-- `modelData` and `dataOf:` return the recorded data.
+- `modelData`, `dataOf:` (the model or an entity) and `dataOfAll:` return the recorded data; `writeCsvOfClass:on:` writes the data of all instances of a class as CSV.
 
 ```smalltalk
 | simulation |
@@ -122,15 +122,37 @@ CMSimulation >> currentTimeStep [
 	^ context currentTimeStep 
 ]
 
-{ #category : 'data' }
-CMSimulation >> dataOf: anEntity [
-	"Return the data recorded on anEntity: a CMDataTable with a row for each recorded step while it was alive"
+{ #category : 'recording' }
+CMSimulation >> dataOf: aRecordedObject [
+	"Return the data recorded on aRecordedObject, the model or one of its entities: a CMDataTable with a row for each recorded step while it was alive"
 
-	^ (entityData at: anEntity class ifAbsent: [ Dictionary new ])
-		  at: anEntity id
+	aRecordedObject == cormasModel ifTrue: [ ^ modelData ].
+	^ (entityData at: aRecordedObject class ifAbsent: [ Dictionary new ])
+		  at: aRecordedObject id
 		  ifAbsent: [
-		  CMRecordingError signal:
-			  anEntity printString , ' was not recorded' ]
+				  CMRecordingError signal:
+					  aRecordedObject printString , ' was not recorded' ]
+]
+
+{ #category : 'recording' }
+CMSimulation >> dataOfAll: aClass [
+	"Return the data recorded on each instance of aClass and of its subclasses, class by class in the order of their names, and in the order of the ids of their instances"
+
+	| classes |
+	classes := (recordedProbes keys select: [ :each |
+		            each includesBehavior: aClass ]) sorted: [ :a :b |
+		           a name < b name ].
+	classes ifEmpty: [
+		CMRecordingError signal: aClass name , ' is not recorded' ].
+	^ classes flatCollect: [ :each | self dataOfClass: each ]
+]
+
+{ #category : 'private' }
+CMSimulation >> dataOfClass: aClass [
+
+	| tables |
+	tables := entityData at: aClass ifAbsent: [ ^ #(  ) ].
+	^ tables keys sorted collect: [ :each | tables at: each ]
 ]
 
 { #category : 'simulation runner - init' }
@@ -491,4 +513,29 @@ CMSimulation >> stopWhen: aBlock [
 CMSimulation >> whenFinishedDo: aBlock [
 
 	simulationRunner whenFinishedDo: aBlock
+]
+
+{ #category : 'recording' }
+CMSimulation >> writeCsvOfClass: aClass on: aStream [
+	"Write the data recorded on the instances of aClass, not of its subclasses, as CSV on aStream: a header with step, id, label and the probes of aClass, then a line for each instance and each step it was recorded"
+
+	| tables |
+	(recordedProbes includesKey: aClass) ifFalse: [
+		CMRecordingError signal: aClass name , ' is not recorded' ].
+	aStream
+		nextPutAll: (',' join: #( 'step' 'id' 'label' )
+					 ,
+						 ((recordedProbes at: aClass) collect: [ :each | each asString ]));
+		lf.
+	tables := entityData at: aClass ifAbsent: [ ^ self ].
+	tables keys sorted do: [ :id |
+			| table |
+			table := tables at: id.
+			table rows do: [ :row |
+					CMDataTable
+						writeCsvValues: {
+								row first.
+								id.
+								table label } , row allButFirst
+						on: aStream ] ]
 ]

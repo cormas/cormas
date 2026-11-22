@@ -37,6 +37,30 @@ CMSimulationRecordingTest >> testAClassCanBeRecordedAgain [
 ]
 
 { #category : 'tests' }
+CMSimulationRecordingTest >> testAClassIsWrittenAsCsvWithARowForEachInstanceAndStep [
+	| cow lines |
+	simulation initializeSimulation.
+	simulation runStep.
+	cow := (model entitiesOfClass: CMMockCow) first.
+	lines := (String streamContents: [ :stream |
+		          simulation writeCsvOfClass: CMMockCow on: stream ]) lines.
+	self assert: lines size equals: 3.
+	self assert: lines first equals: 'step,id,label,energy'.
+	self
+		assert: lines second
+		equals: '0,1,"' , ((simulation dataOf: cow) label) , '",' , ((simulation dataOf: cow) column: #energy) first printString
+]
+
+{ #category : 'tests' }
+CMSimulationRecordingTest >> testAClassThatIsNotRecordedCannotBeWrittenAsCsv [
+	simulation doNotRecord: CMMockCow.
+	simulation initializeSimulation.
+	self
+		should: [ String streamContents: [ :stream | simulation writeCsvOfClass: CMMockCow on: stream ] ]
+		raise: CMRecordingError
+]
+
+{ #category : 'tests' }
 CMSimulationRecordingTest >> testAClassThatIsNotRecordedHasNoData [
 
 	simulation doNotRecord: CMMockCow.
@@ -210,6 +234,34 @@ CMSimulationRecordingTest >> testSwitchingOffAProbeThatDoesNotExistRaisesAnError
 		raise: Error
 		withExceptionDo: [ :error |
 			self assert: (error messageText includesSubstring: 'weight') ]
+]
+
+{ #category : 'tests' }
+CMSimulationRecordingTest >> testTheChartsOfAnEntityAreItsChartMethodsAndThoseItInherits [
+	self assert: CMMockCow chartSelectors asArray equals: #( #chartEnergy ).
+	self assert: CMMockCell chartSelectors isEmpty
+]
+
+{ #category : 'tests' }
+CMSimulationRecordingTest >> testTheDataOfAllInstancesOfAClassIncludesItsSubclasses [
+	| cow goat |
+	simulation initializeSimulation.
+	cow := (model entitiesOfClass: CMMockCow) first.
+	goat := (model entitiesOfClass: CMMockGoat) first.
+	self
+		assert: ((simulation dataOfAll: CMMockAnimal) collect: [ :each | each label ]) asArray
+		equals: { cow printString. goat printString }
+]
+
+{ #category : 'tests' }
+CMSimulationRecordingTest >> testTheDataOfAllInstancesOfAClassThatIsNotRecordedRaisesAnError [
+	simulation doNotRecord: CMMockAnimal.
+	simulation initializeSimulation.
+	self
+		should: [ simulation dataOfAll: CMMockCow ]
+		raise: CMRecordingError
+		withExceptionDo: [ :error |
+			self assert: (error messageText includesSubstring: 'CMMockCow') ]
 ]
 
 { #category : 'tests' }

@@ -17,6 +17,7 @@ I am the data table of one recorded object, such as the model or one hunting uni
 - `addStep:values:` adds a row.
 - `steps`, `column:`, `columnNames`, `rows` and `size` read the table.
 - `label:` names the recorded object, and `label` returns it.
+- `writeCsvOn:` writes the table as CSV: a header, then a line for each row; strings are written between double quotes.
 
 ```smalltalk
 | table |
@@ -58,6 +59,23 @@ CMDataTable class >> withColumns: aCollectionOfNames [
 	^ self new
 		  columnNames: aCollectionOfNames;
 		  yourself
+]
+
+{ #category : 'writing' }
+CMDataTable class >> writeCsvValues: aCollection on: aStream [
+	"Write aCollection as one line of CSV on aStream. A string is written between double quotes, with its own double quotes doubled"
+
+	aCollection
+		do: [ :each |
+				each isString
+					ifTrue: [
+							aStream
+								nextPut: $";
+								nextPutAll: (each copyReplaceAll: '"' with: '""');
+								nextPut: $" ]
+					ifFalse: [ aStream print: each ] ]
+		separatedBy: [ aStream nextPut: $, ].
+	aStream lf
 ]
 
 { #category : 'adding' }
@@ -169,4 +187,15 @@ CMDataTable >> size [
 CMDataTable >> steps [
 
 	^ steps
+]
+
+{ #category : 'writing' }
+CMDataTable >> writeCsvOn: aStream [
+	"Write me as CSV on aStream: a header with step and the names of my columns, then a line for each recorded step"
+
+	aStream
+		nextPutAll: (',' join:
+					 #( 'step' ) , (columnNames collect: [ :each | each asString ]));
+		lf.
+	self rows do: [ :each | self class writeCsvValues: each on: aStream ]
 ]

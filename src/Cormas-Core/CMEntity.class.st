@@ -51,6 +51,13 @@ CMEntity class >> aspectSelectors [
 		   as: Set) asArray sorted
 ]
 
+{ #category : 'probes' }
+CMEntity class >> chartSelectors [
+	"Return the selectors of the methods marked with <chart>, sorted. Each one returns a CMChart drawn from the data of one instance"
+
+	^ self selectorsMarkedWith: #chart
+]
+
 { #category : 'parameters' }
 CMEntity class >> classSideParameters [
 
@@ -152,8 +159,7 @@ CMEntity class >> parameters [
 CMEntity class >> probeSelectors [
 	"Return the selectors of the methods marked with <probe>, sorted"
 
-	^ ((Pragma allNamed: #probe from: self to: CMEntity) collect: [ :each |
-		   each methodSelector ]) asSet asSortedCollection asArray
+	^ self selectorsMarkedWith: #probe
 ]
 
 { #category : 'parameters' }
@@ -165,6 +171,14 @@ CMEntity class >> resetParameters [
 	instanceSideParameters := parameters select: [ :p | p isInstanceSide ].
 	parameters do: [ :parameter |
 		parameter isClassSide ifTrue: [ parameter setDefaultValueFor: self ] ]
+]
+
+{ #category : 'probes' }
+CMEntity class >> selectorsMarkedWith: aPragmaSelector [
+
+	^ ((Pragma allNamed: aPragmaSelector from: self to: CMEntity)
+		   collect: [ :each | each methodSelector ]) asSet
+		  asSortedCollection asArray
 ]
 
 { #category : 'pragmas' }
