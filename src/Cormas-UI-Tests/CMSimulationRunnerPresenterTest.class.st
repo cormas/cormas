@@ -85,10 +85,10 @@ CMSimulationRunnerPresenterTest >> testAChartMovedBackToTheTabsClosesItsWindow [
 CMSimulationRunnerPresenterTest >> testAChartMovedToAWindowKeepsItsHiddenLines [
 
 	| moved |
-	runner charts first hiddenLines add: 'numberOfDeadCells'.
+	runner charts first hiddenSeries add: 'numberOfDeadCells'.
 	moved := runner moveToWindow: runner charts first.
 	windows add: moved detachedWindow.
-	self assert: (moved hiddenLines includes: 'numberOfDeadCells')
+	self assert: (moved hiddenSeries includes: 'numberOfDeadCells')
 ]
 
 { #category : 'tests' }

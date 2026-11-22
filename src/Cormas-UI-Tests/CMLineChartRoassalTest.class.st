@@ -28,7 +28,7 @@ CMLineChartRoassalTest >> legendEntryNamed: aString in: aCanvas [
 { #category : 'private' }
 CMLineChartRoassalTest >> lines [
 
-	^ chart chartLinesOf: model in: simulation
+	^ chart seriesOf: model in: simulation
 ]
 
 { #category : 'private' }

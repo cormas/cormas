@@ -19,3 +19,14 @@ CMMockGoat >> aspectHorns: look [
 	<aspect>
 	look shape: #triangle
 ]
+
+{ #category : 'charts' }
+CMMockGoat >> chartEnergyDistribution [
+	"How is the energy spread among the animals?"
+
+	<chart>
+	^ CMHistogram new
+		  title: 'Energy distribution';
+		  bars: #energy ofAll: CMMockAnimal;
+		  yourself
+]

@@ -1,22 +1,23 @@
 "
-I am a chart that a modeler defines in a `<chart>` method, to show probes recorded during a simulation. I am the abstract superclass of the kinds of charts, such as `CMLineChart`.
+I am a chart that a modeler defines in a `<chart>` method, to show probes recorded during a simulation. I am the abstract superclass of the kinds of charts: `CMLineChart`, `CMAreaChart`, `CMBoxplot` and `CMHistogram`.
 
 ## Responsibility:
 
-- I know the title of the chart and of its axes.
-- I know how each probe I show is named and colored: by default, a probe is named by its selector and takes a color of the chart's palette.
+- I know which probes I show: probes of my subject (the model, or the entity whose chart I am), and probes of all instances of a class, in the order they were added. I refuse to show the same probe of the same objects twice.
+- I know the title of the chart and of its axes, and how each probe I show is named and colored: by default, a probe is named by its selector and takes a color of the chart's palette.
 - I refuse a label or a color for a probe I do not show, so that a typing mistake does not go unnoticed.
 
 ## Collaborators:
 
-- My subclasses say which probes they show (`shownSelectors`).
-- Cormas-UI-Roassal3 draws my subclasses from the `CMDataTable` of a recorded object.
+- My subclasses add the probes with the messages of their kind, such as `line:` or `boxes:ofAll:`.
+- Cormas-UI-Roassal3 turns me into `CMChartSeries` from the `CMDataTable`s a `CMSimulation` recorded (`seriesOf:in:`), and draws them with axis lines, ticks and a legend whose entries hide and show their series (`canvasOf:hiding:`). Each subclass says how it gathers series of all instances and how it plots them.
 
 ## Public API and Key Messages
 
 - `title:`, `xTitle:`, `yTitle:`
 - `label:for:` names a probe in the chart, and `color:for:` colors it.
-- `labelFor:` and `colorFor:ifNone:` read them.
+- `labelFor:`, `colorFor:ifNone:` and `shownSelectors` read them.
+- `isSingleStep` says whether I show one step, rather than the change over time.
 
 ```smalltalk
 CMLineChart new
@@ -33,6 +34,8 @@ CMLineChart new
 - `title`, `xTitle`, `yTitle`: strings, or nil when the chart has none.
 - `labels`: a `Dictionary` from probe selectors to strings.
 - `colors`: a `Dictionary` from probe selectors to colors.
+- `subjectProbes`: an `OrderedCollection` of probe selectors of my subject.
+- `probesOfAll`: an `OrderedCollection` of associations from probe selectors to classes.
 
 ### Implementation Points
 
@@ -46,7 +49,9 @@ Class {
 		'xTitle',
 		'yTitle',
 		'labels',
-		'colors'
+		'colors',
+		'subjectProbes',
+		'probesOfAll'
 	],
 	#category : 'Cormas-Core-Charts',
 	#package : 'Cormas-Core',
@@ -87,7 +92,16 @@ CMChart >> initialize [
 
 	super initialize.
 	labels := Dictionary new.
-	colors := Dictionary new
+	colors := Dictionary new.
+	subjectProbes := OrderedCollection new.
+	probesOfAll := OrderedCollection new
+]
+
+{ #category : 'accessing' }
+CMChart >> isSingleStep [
+	"Return whether I show the values of a single step, rather than their change over time"
+
+	^ false
 ]
 
 { #category : 'presentation' }
@@ -106,10 +120,29 @@ CMChart >> labelFor: aSelector [
 ]
 
 { #category : 'private' }
-CMChart >> shownSelectors [
-	"Return the selectors of the probes the chart shows"
+CMChart >> showProbe: aSelector [
+	"Show the probe aSelector of my subject: the model, or the entity whose chart I am"
 
-	^ self subclassResponsibility
+	(subjectProbes includes: aSelector) ifTrue: [
+		self error: ('The chart already shows #{1}' format: { aSelector }) ].
+	subjectProbes add: aSelector
+]
+
+{ #category : 'private' }
+CMChart >> showProbe: aSelector ofAll: aClass [
+	"Show the probe aSelector of each instance of aClass and of its subclasses"
+
+	(probesOfAll includes: aSelector -> aClass) ifTrue: [
+			self error: ('The chart already shows #{1} of all {2}' format: {
+						 aSelector.
+						 aClass name }) ].
+	probesOfAll add: aSelector -> aClass
+]
+
+{ #category : 'accessing' }
+CMChart >> shownSelectors [
+
+	^ subjectProbes , (probesOfAll collect: [ :each | each key ])
 ]
 
 { #category : 'accessing' }

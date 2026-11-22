@@ -7,7 +7,7 @@ I draw the x and y axis lines of a chart, without a frame around it.
 
 ## Collaborators:
 
-- `CMLineChart>>roassalChartOf:` gives me to its Roassal chart as its spine decoration.
+- `CMChart>>roassalChartOf:` gives me to its Roassal chart as its spine decoration.
 - `RSLineSpineDecoration`: my superclass, which draws the two lines.
 
 ## Public API and Key Messages

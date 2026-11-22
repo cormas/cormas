@@ -3,20 +3,21 @@ I show one chart of a model or of an entity, drawn from the data recorded on it,
 
 ## Responsibility:
 
-- I draw the chart that a `<chart>` method of my subject returns. Clicking an entry of its legend hides its line or shows it again, and lines stay hidden when the chart is drawn again.
+- I draw the chart that a `<chart>` method of my subject returns. Clicking an entry of its legend hides its series or shows it again, and series stay hidden when the chart is drawn again.
+- For a chart of a single step, such as a histogram, I show the latest recorded step after each displayed step, and a step slider chooses another one, which stays shown until the next displayed step.
 - I say why the chart cannot be drawn, such as a probe or an entity that was not recorded, instead of drawing it.
-- I save a picture of the chart in the output folder of the model, and move to a window of my own and back to the tabs of my host, keeping my hidden lines.
+- I save a picture of the chart in the output folder of the model, and move to a window of my own and back to the tabs of my host, keeping my hidden series and my chosen step.
 
 ## Collaborators:
 
-- `CMLineChart>>chartLinesOf:in:` and `canvasOf:hiding:` draw the chart from the data of the simulation.
+- `CMChart>>seriesOf:in:` and `canvasOf:hiding:` draw the chart from the data of the simulation; `CMChartSeries>>upToStep:` keeps the data up to the chosen step.
 - My host, a `TCMViewHost` such as `CMSimulationRunnerPresenter` or `CMEntityInspectorPresenter`, creates me with `newChartView:of:`, moves me (`moveToWindow:`, `moveToTabs:`), closes me (`closeView:`) and asks me to `updateDiagram` after each displayed step, which I do through its `updateInInterface:`.
 
 ## Public API and Key Messages
 
-- `subject:chart:` shows the chart of a method of a model or an entity; `drawChart` draws it again.
+- `subject:chart:` shows the chart of a method of a model or an entity; `drawChart` draws it again, and `drawChartUpToStep:` draws it from the data recorded up to a step.
 - `title` is the title of the chart, or else the selector of its method.
-- `hiddenLines`, `chartView` and `message` give access to my state and my parts.
+- `hiddenSeries`, `chartView`, `stepSlider` and `message` give access to my state and my parts.
 
 ```smalltalk
 | simulation application |
@@ -37,7 +38,8 @@ application cormasModel: simulation cormasModel.
 ## Internal Representation
 
 - `subject`: the model or the entity whose chart I show; `chartSelector`: the method that returns it; `chart`: the `CMChart` it returned.
-- `hiddenLines`: the names of the hidden lines.
+- `hiddenSeries`: the names of the hidden series.
+- `upToStep`: the step up to which the data is drawn, `Float infinity` for all of it; `shownStep`: the step a chart of a single step shows; `stepSlider`: the slider that chooses it, in my layout only for such a chart.
 - `host`: who manages me; `detachedWindow`: my window, when I am not in a tab.
 
 ### Implementation Points
@@ -54,10 +56,13 @@ Class {
 		'messageLabel',
 		'subject',
 		'chart',
-		'hiddenLines',
 		'chartSelector',
 		'host',
-		'detachedWindow'
+		'detachedWindow',
+		'stepSlider',
+		'upToStep',
+		'shownStep',
+		'hiddenSeries'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -105,17 +110,19 @@ CMChartPresenter >> closeDiagram [
 { #category : 'initialization' }
 CMChartPresenter >> connectPresenters [
 
-	saveToPngButton action: [ self saveToPng ]
+	saveToPngButton action: [ self saveToPng ].
+	stepSlider whenValueChangedDo: [ :value |
+		self showStep: value rounded ]
 ]
 
 { #category : 'actions' }
 CMChartPresenter >> copyFor: aHost [
-	"Return a new presenter of my chart for aHost, with the same lines hidden. Spec cannot move a presenter from a tab to a window, so a moved chart is a copy"
+	"Return a new presenter of my chart for aHost, with the same series hidden and the same step chosen. Spec cannot move a presenter from a tab to a window, so a moved chart is a copy"
 
 	| copy |
 	copy := aHost newChartView: chartSelector of: subject.
-	copy hiddenLines addAll: hiddenLines.
-	copy drawChart.
+	copy hiddenSeries addAll: hiddenSeries.
+	copy drawChartUpToStep: upToStep.
 	^ copy
 ]
 
@@ -150,12 +157,23 @@ CMChartPresenter >> displayedTitle [
 
 { #category : 'updating' }
 CMChartPresenter >> drawChart [
-	"Draw my chart from the data recorded on my subject, keeping hidden the lines hidden from its legend, or say why it cannot be drawn"
+	"Draw my chart again, from the data recorded on my subject up to the step chosen with the step slider, if any"
 
+	self drawChartUpToStep: upToStep
+]
+
+{ #category : 'updating' }
+CMChartPresenter >> drawChartUpToStep: aStep [
+	"Draw my chart from the data recorded on my subject up to aStep, keeping hidden the series hidden from its legend, or say why it cannot be drawn. A chart of a single step shows the last of these steps"
+
+	upToStep := aStep.
 	[
+		| series |
+		series := chart seriesOf: subject in: self simulation.
+		chart isSingleStep ifTrue: [ self updateStepSliderFor: series ].
 		chartView canvas: (chart
-				 canvasOf: (chart chartLinesOf: subject in: self simulation)
-				 hiding: hiddenLines).
+				 canvasOf: (series collect: [ :each | each upToStep: aStep ])
+				 hiding: hiddenSeries).
 		messageLabel label: '' ]
 		on: CMRecordingError
 		do: [ :error |
@@ -165,10 +183,10 @@ CMChartPresenter >> drawChart [
 ]
 
 { #category : 'accessing' }
-CMChartPresenter >> hiddenLines [
-	"Return the names of the lines hidden from the legend"
+CMChartPresenter >> hiddenSeries [
+	"Return the names of the series hidden from the legend"
 
-	^ hiddenLines
+	^ hiddenSeries
 ]
 
 { #category : 'actions' }
@@ -188,7 +206,8 @@ CMChartPresenter >> host: aHost [
 { #category : 'initialization' }
 CMChartPresenter >> initializePresenters [
 
-	hiddenLines := Set new.
+	hiddenSeries := Set new.
+	upToStep := Float infinity.
 	saveToPngButton := self newToolbarButton
 		                   label: 'Save to PNG';
 		                   help: 'Save a picture of the chart';
@@ -199,7 +218,10 @@ CMChartPresenter >> initializePresenters [
 		           yourself.
 	toolbar beIcons.
 	messageLabel := self newLabel.
-	chartView := SpRoassalInspectorPresenter new
+	chartView := SpRoassalInspectorPresenter new.
+	stepSlider := self newSlider
+		              quantum: 1;
+		              yourself
 ]
 
 { #category : 'accessing' }
@@ -255,10 +277,23 @@ CMChartPresenter >> saveToPng [
 					exportToFile: file ]
 ]
 
+{ #category : 'updating' }
+CMChartPresenter >> showStep: aStep [
+	"Draw my chart of a single step at aStep, chosen with the step slider"
+
+	aStep = shownStep ifFalse: [ self drawChartUpToStep: aStep ]
+]
+
 { #category : 'accessing' }
 CMChartPresenter >> simulation [
 
 	^ self application simulation
+]
+
+{ #category : 'accessing' }
+CMChartPresenter >> stepSlider [
+
+	^ stepSlider
 ]
 
 { #category : 'accessing' }
@@ -269,11 +304,13 @@ CMChartPresenter >> subject [
 
 { #category : 'accessing' }
 CMChartPresenter >> subject: aModelOrAnEntity chart: aSelector [
-	"Show the chart that the method aSelector of aModelOrAnEntity returns, drawn from the data recorded on it"
+	"Show the chart that the method aSelector of aModelOrAnEntity returns, drawn from the data recorded on it, with a step slider when it shows a single step"
 
 	subject := aModelOrAnEntity.
 	chartSelector := aSelector.
 	chart := subject perform: aSelector.
+	chart isSingleStep ifTrue: [
+		self layout add: stepSlider expand: false ].
 	self drawChart
 ]
 
@@ -286,7 +323,25 @@ CMChartPresenter >> title [
 
 { #category : 'updating' }
 CMChartPresenter >> updateDiagram [
-	"Draw my chart again after a displayed step, in the UI process and while the simulation waits, so that the data does not change meanwhile"
+	"Draw my chart again after a displayed step, in the UI process and while the simulation waits, so that the data does not change meanwhile. A chart of a single step goes back to the latest step"
 
-	host updateInInterface: [ self drawChart ]
+	host updateInInterface: [ self drawChartUpToStep: Float infinity ]
+]
+
+{ #category : 'updating' }
+CMChartPresenter >> updateStepSliderFor: someSeries [
+	"Let the step slider choose among the steps of someSeries, at the last of them up to my step"
+
+	| steps |
+	steps := (someSeries flatCollect: [ :each | each steps ]) asSet
+		         sorted.
+	steps ifEmpty: [ ^ self ].
+	shownStep := (steps select: [ :each | each <= upToStep ])
+		             ifEmpty: [ steps first ]
+		             ifNotEmpty: [ :earlierSteps | earlierSteps last ].
+	stepSlider
+		max: steps last;
+		min: steps first;
+		value: shownStep;
+		label: 'Step ' , shownStep printString
 ]

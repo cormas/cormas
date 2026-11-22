@@ -75,7 +75,9 @@ CMLineChartTest >> testAProbeShownTwiceCannotBeLabelled [
 { #category : 'tests' }
 CMLineChartTest >> testLinesKeepTheirOrder [
 
-	self assert: chart lines asArray equals: #( #boars #urbanBoars )
+	self
+		assert: chart shownSelectors asArray
+		equals: #( #boars #urbanBoars )
 ]
 
 { #category : 'tests' }
