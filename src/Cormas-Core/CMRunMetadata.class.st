@@ -3,7 +3,7 @@ I represent what is needed to reproduce a run of a simulation: its settings when
 
 ## Responsibility:
 
-- I know the model, the init and control selectors, the seed, the stop condition and the parameter values of a run, as they were at init.
+- I know the model, the init and control selectors, the seed and the seed chosen after init, the stop condition and the parameter values of a run, as they were at init.
 - I know what the run did not record, its recording interval, and the versions of Cormas and of the model's code.
 - I write myself as the JSON file `run.json` of a saved run.
 
@@ -17,7 +17,8 @@ I represent what is needed to reproduce a run of a simulation: its settings when
 
 - `CMSimulation>>#initializeSimulation` creates me with setters, from the settings of the run it starts.
 - `lastStep:` records the last step the run reached.
-- `writeJsonOn:` writes me as JSON.
+- `writeJsonOn:` writes me as JSON, and `CMRunMetadata fromJson:` reads me back.
+- `warnIfCodeDiffersFrom:` signals a `CMRerunWarning` when a rerun runs other code than mine.
 
 ```smalltalk
 | simulation |
@@ -48,12 +49,44 @@ Class {
 		'parameters',
 		'recording',
 		'versions',
-		'lastStep'
+		'lastStep',
+		'seedAfterInit'
 	],
 	#category : 'Cormas-Core-Simulation',
 	#package : 'Cormas-Core',
 	#tag : 'Simulation'
 }
+
+{ #category : 'instance creation' }
+CMRunMetadata class >> fromJson: aString [
+	"Return the settings of a run read from its run.json"
+
+	| settings |
+	settings := STONJSON fromString: aString.
+	^ self new
+		  model: (settings at: 'model');
+		  started: (DateAndTime fromString: (settings at: 'started'));
+		  init: (settings at: 'init');
+		  control: (settings at: 'control');
+		  seed: (settings at: 'seed');
+		  seedAfterInit: (settings at: 'seedAfterInit');
+		  stopCondition: (settings at: 'stopCondition');
+		  lastStep: (settings at: 'lastStep');
+		  parameters: (settings at: 'parameters');
+		  recording: (settings at: 'recording');
+		  versions: (settings at: 'versions');
+		  yourself
+]
+
+{ #category : 'instance creation' }
+CMRunMetadata class >> versionsOf: aModelClass [
+	"Return the version of Cormas and the git state of the folder of aModelClass"
+
+	^ OrderedDictionary new
+		  at: 'cormas' put: CMVersion current printString;
+		  addAll: aModelClass codeVersion;
+		  yourself
+]
 
 { #category : 'writing' }
 CMRunMetadata >> asDictionary [
@@ -64,12 +97,29 @@ CMRunMetadata >> asDictionary [
 		  at: 'init' put: init;
 		  at: 'control' put: control;
 		  at: 'seed' put: seed;
+		  at: 'seedAfterInit' put: seedAfterInit;
 		  at: 'stopCondition' put: stopCondition;
 		  at: 'lastStep' put: lastStep;
 		  at: 'parameters' put: parameters;
 		  at: 'recording' put: recording;
 		  at: 'versions' put: versions;
 		  yourself
+]
+
+{ #category : 'accessing' }
+CMRunMetadata >> classNamed: aString [
+	"Return the class of the image named aString, which a run names in its settings"
+
+	^ self class environment at: aString asSymbol ifAbsent: [
+			  self error:
+				  'The run names a class ' , aString
+				  , ' that the image does not have' ]
+]
+
+{ #category : 'accessing' }
+CMRunMetadata >> control [
+
+	^ control
 ]
 
 { #category : 'private' }
@@ -91,10 +141,22 @@ CMRunMetadata >> folderName [
 			  stream nextPutAll: init ]
 ]
 
+{ #category : 'accessing' }
+CMRunMetadata >> init [
+
+	^ init
+]
+
 { #category : 'private' }
 CMRunMetadata >> init: aSelector [
 
 	init := aSelector
+]
+
+{ #category : 'accessing' }
+CMRunMetadata >> lastStep [
+
+	^ lastStep
 ]
 
 { #category : 'accessing' }
@@ -103,10 +165,22 @@ CMRunMetadata >> lastStep: anInteger [
 	lastStep := anInteger
 ]
 
+{ #category : 'accessing' }
+CMRunMetadata >> model [
+
+	^ model
+]
+
 { #category : 'private' }
 CMRunMetadata >> model: aClassName [
 
 	model := aClassName
+]
+
+{ #category : 'accessing' }
+CMRunMetadata >> parameters [
+
+	^ parameters
 ]
 
 { #category : 'private' }
@@ -115,16 +189,40 @@ CMRunMetadata >> parameters: aDictionary [
 	parameters := aDictionary
 ]
 
+{ #category : 'accessing' }
+CMRunMetadata >> recording [
+
+	^ recording
+]
+
 { #category : 'private' }
 CMRunMetadata >> recording: aDictionary [
 
 	recording := aDictionary
 ]
 
+{ #category : 'accessing' }
+CMRunMetadata >> seed [
+
+	^ seed
+]
+
 { #category : 'private' }
 CMRunMetadata >> seed: aNumber [
 
 	seed := aNumber
+]
+
+{ #category : 'accessing' }
+CMRunMetadata >> seedAfterInit [
+
+	^ seedAfterInit
+]
+
+{ #category : 'accessing' }
+CMRunMetadata >> seedAfterInit: aNumber [
+
+	seedAfterInit := aNumber
 ]
 
 { #category : 'private' }
@@ -139,10 +237,42 @@ CMRunMetadata >> stopCondition: aString [
 	stopCondition := aString
 ]
 
+{ #category : 'accessing' }
+CMRunMetadata >> versions [
+
+	^ versions
+]
+
 { #category : 'private' }
 CMRunMetadata >> versions: aDictionary [
 
 	versions := aDictionary
+]
+
+{ #category : 'checking' }
+CMRunMetadata >> warnIfCodeDiffersFrom: currentVersions [
+	"Signal a CMRerunWarning naming each difference between the versions of the code I was made with and currentVersions"
+
+	| differences |
+	differences := OrderedCollection new.
+	(versions at: 'cormas') = (currentVersions at: 'cormas') ifFalse: [
+			differences add:
+				('it was made with Cormas {1}, this is Cormas {2}' format: {
+						 (versions at: 'cormas').
+						 (currentVersions at: 'cormas') }) ].
+	(versions at: 'commit') = (currentVersions at: 'commit') ifFalse: [
+			differences add:
+				('it was made at commit {1}, the model is at {2}' format: {
+						 ((versions at: 'commit') ifNil: [ 'none (no git)' ]).
+						 ((currentVersions at: 'commit') ifNil: [ 'none (no git)' ]) }) ].
+	(versions at: 'uncommittedChanges' ifAbsent: [ false ]) ifTrue: [
+		differences add: 'it was made with uncommitted changes' ].
+	(currentVersions at: 'uncommittedChanges' ifAbsent: [ false ])
+		ifTrue: [ differences add: 'the model has uncommitted changes' ].
+	differences ifNotEmpty: [
+			CMRerunWarning signal:
+				'The run is rerun with other code than its own: '
+				, ('; ' join: differences) ]
 ]
 
 { #category : 'writing' }

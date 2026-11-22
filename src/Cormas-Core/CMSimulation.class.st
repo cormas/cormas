@@ -65,7 +65,8 @@ Class {
 		'excludedProbes',
 		'excludedEntities',
 		'recordingInterval',
-		'runMetadata'
+		'runMetadata',
+		'seedAfterInit'
 	],
 	#category : 'Cormas-Core-Kernel',
 	#package : 'Cormas-Core',
@@ -84,6 +85,29 @@ CMSimulation class >> for: aModel [
 	^ self new
 		cormasModel: aModel;
 		yourself
+]
+
+{ #category : 'instance creation' }
+CMSimulation class >> fromRun: aRunFolder [
+	"Return a new simulation with the settings of the saved run in aRunFolder, which stops after the last step of the run. Signal a CMRerunWarning when the code differs from the one the run was made with"
+
+	| run modelClass |
+	run := CMRunMetadata fromJson: (aRunFolder / 'run.json') contents.
+	modelClass := run classNamed: run model.
+	run warnIfCodeDiffersFrom: (CMRunMetadata versionsOf: modelClass).
+	^ (self for: modelClass new)
+		  setUpRun: run;
+		  yourself
+]
+
+{ #category : 'instance creation' }
+CMSimulation class >> rerun: aRunFolder [
+	"Rerun the saved run in aRunFolder without the UI, up to its last step. Return the simulation, which records its own run and can be saved"
+
+	^ (self fromRun: aRunFolder)
+		  initializeSimulation;
+		  runUntilStopped;
+		  yourself
 ]
 
 { #category : 'settings' }
@@ -254,7 +278,10 @@ Reset the currentTimeStep and the data. Set the randomSeed"
 	cormasModel perform: activeInitSelector.
 	self recordData.
 	shouldReleaseRandomSeedAfterInitialization ifTrue: [
-		context chooseRandomSeedAtRandom ]
+			seedAfterInit
+				ifNil: [ context chooseRandomSeedAtRandom ]
+				ifNotNil: [ context randomSeed: seedAfterInit ].
+			runMetadata seedAfterInit: context randomSeed ]
 ]
 
 { #category : 'simulation runner - init' }
@@ -317,10 +344,7 @@ CMSimulation >> newRunMetadata [
 			  simulationRunner stopCondition sourceNode sourceCode;
 		  parameters: cormasModel parameterValues;
 		  recording: self recordingSettings;
-		  versions: (OrderedDictionary new
-				   at: 'cormas' put: CMVersion current printString;
-				   addAll: cormasModel class codeVersion;
-				   yourself);
+		  versions: (CMRunMetadata versionsOf: cormasModel class);
 		  yourself
 ]
 
@@ -480,6 +504,14 @@ CMSimulation >> runStep [
 		(CMTimeStepEnded timeStep: self currentTimeStep)
 ]
 
+{ #category : 'simulation runner' }
+CMSimulation >> runUntilStopped [
+	"Run steps in this process, without the UI, until the stop condition holds"
+
+	[ simulationRunner stopCondition value: cormasModel ] whileFalse: [
+		self runStep ]
+]
+
 { #category : 'saving' }
 CMSimulation >> saveData [
 	"Write the run in the output folder of the model's folder, as saveDataIn: does. Return the folder of the run"
@@ -505,6 +537,14 @@ CMSimulation >> saveDataIn: aFolder [
 			run / ('data-' , each name , '.csv') writeStreamDo: [ :stream |
 				self writeCsvOfClass: each on: stream ] ].
 	^ run
+]
+
+{ #category : 'settings' }
+CMSimulation >> seedAfterInit: aNumber [
+	"After each init, seed the random generator with aNumber rather than with a seed chosen at random, as a rerun does to repeat the steps of its run"
+
+	shouldReleaseRandomSeedAfterInitialization := true.
+	seedAfterInit := aNumber
 ]
 
 { #category : 'initialization' }
@@ -533,6 +573,34 @@ CMSimulation >> setInitialParametersFor: aCollectionOfParameters [
 		parameter value: (initialParameterValues at: parameter) ].
 	
 	self setInitialParametersFor: otherParameters 
+]
+
+{ #category : 'private' }
+CMSimulation >> setUpRun: aRun [
+	"Take the settings of aRun, a saved run of my model, stopping after its last step"
+
+	| recording |
+	cormasModel parameterValues: aRun parameters.
+	self
+		activeInitSelector: aRun init asSymbol;
+		activeControlSelector: aRun control asSymbol;
+		randomSeed: aRun seed;
+		stopAfterStep: aRun lastStep.
+	aRun seedAfterInit ifNotNil: [ :seed | self seedAfterInit: seed ].
+	recording := aRun recording.
+	self recordEvery: (recording at: 'interval').
+	(recording at: 'notRecordedClasses') do: [ :each |
+		self doNotRecord: (aRun classNamed: each) ].
+	(recording at: 'notRecordedProbes') keysAndValuesDo: [
+			:className
+			:selectors |
+			selectors do: [ :each |
+				self doNotRecord: each asSymbol of: (aRun classNamed: className) ] ].
+	(recording at: 'notRecordedEntities') keysAndValuesDo: [
+			:className
+			:ids |
+			ids do: [ :each |
+				excludedEntities add: (aRun classNamed: className) -> each ] ]
 ]
 
 { #category : 'testing' }

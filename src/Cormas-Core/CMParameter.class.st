@@ -261,3 +261,10 @@ CMParameter >> valueFor: aTarget [
 
 	^ aTarget perform: getterSelector
 ]
+
+{ #category : 'converting' }
+CMParameter >> valueFromJson: aValue [
+	"Return my value from aValue, as JSON wrote it"
+
+	^ aValue
+]

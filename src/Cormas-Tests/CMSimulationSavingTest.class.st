@@ -81,6 +81,16 @@ CMSimulationSavingTest >> testARunIsSavedInAFolderNamedAfterItsStartAndInit [
 ]
 
 { #category : 'tests' }
+CMSimulationSavingTest >> testARunWhoseSeedIsKeptAfterInitHasNoSeedAfterInit [
+
+	| settings |
+	simulation initializeSimulation.
+	settings := self savedSettings.
+	self assert: (settings includesKey: 'seedAfterInit').
+	self assert: (settings at: 'seedAfterInit') isNil
+]
+
+{ #category : 'tests' }
 CMSimulationSavingTest >> testTheDataOfTheModelAndOfEachRecordedClassIsSavedAsCsv [
 
 	| run |
@@ -138,6 +148,18 @@ CMSimulationSavingTest >> testTheParametersOfARunAreTheirValuesAtInit [
 	self
 		assert: ((parameters at: 'CMMockCow') at: 'initialEnergy')
 		equals: 7
+]
+
+{ #category : 'tests' }
+CMSimulationSavingTest >> testTheSeedChosenAfterInitIsSaved [
+
+	| seedAfterInit |
+	simulation shouldReleaseRandomSeedAfterInitialization: true.
+	simulation initializeSimulation.
+	seedAfterInit := simulation simulationContext randomSeed.
+	self
+		assert: (self savedSettings at: 'seedAfterInit')
+		equals: seedAfterInit
 ]
 
 { #category : 'tests' }

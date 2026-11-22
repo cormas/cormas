@@ -42,6 +42,12 @@ CMEnumParameter >> isValidValue: aValue [
 	^ aValue isSymbol and: [ values includes: aValue ]
 ]
 
+{ #category : 'converting' }
+CMEnumParameter >> valueFromJson: aString [
+
+	^ aString asSymbol
+]
+
 { #category : 'accessing' }
 CMEnumParameter >> values [
 

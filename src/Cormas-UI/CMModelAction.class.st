@@ -220,6 +220,16 @@ CMModelAction class >> rename [
 ]
 
 { #category : 'actions' }
+CMModelAction class >> rerun [
+
+	^ self
+		  label: 'Rerun a saved run…'
+		  icon: CMIcons runIcon
+		  if: [ :entry | #( 'Installed' 'Not saved' ) includes: entry state ]
+		  do: [ :list :entry | list rerunRunOf: entry ]
+]
+
+{ #category : 'actions' }
 CMModelAction class >> restoreFolder [
 
 	^ self
@@ -240,7 +250,7 @@ CMModelAction class >> secondaryFor: anEntry [
 CMModelAction class >> secondarySelectors [
 	"The buttons under the main ones, in the order they are shown"
 
-	^ #( analyseSensitivity browse versions rename export openFolder
+	^ #( analyseSensitivity rerun browse versions rename export openFolder
 	     uninstall delete )
 ]
 

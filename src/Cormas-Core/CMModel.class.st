@@ -1151,6 +1151,34 @@ CMModel >> parameterValues [
 ]
 
 { #category : 'accessing' }
+CMModel >> parameterValues: aDictionary [
+	"Set my parameters and the class-side parameters of my entity classes from aDictionary, as parameterValues returns it, with class names and getters as strings"
+
+	aDictionary keysAndValuesDo: [ :className :values |
+			| aClass parameters |
+			aClass := self class environment
+				          at: className asSymbol
+				          ifAbsent: [
+				          self error: 'The image has no class ' , className ].
+			parameters := aClass = self class
+				              ifTrue: [ self parameters ]
+				              ifFalse: [ aClass classSideParameters ].
+			values keysAndValuesDo: [ :getter :value |
+					| parameter |
+					parameter := parameters
+						             detect: [ :each |
+						             each getterSelector = getter asSymbol ]
+						             ifNone: [
+						             self error:
+							             className , ' has no parameter ' , getter ].
+					parameter
+						setValue: (parameter valueFromJson: value)
+						for: ((aClass = self class and: [ parameter isInstanceSide ])
+								 ifTrue: [ self ]
+								 ifFalse: [ aClass ]) ] ]
+]
+
+{ #category : 'accessing' }
 CMModel >> parameters [
 
 	^ self class parameters

@@ -570,6 +570,23 @@ CMModelListPresenter >> rename: anEntry [
 ]
 
 { #category : 'actions' }
+CMModelListPresenter >> rerunRunOf: anEntry [
+	"Ask for a saved run of the model of anEntry, rerun it without the UI, save it as a new run and open the folder of the new run"
+
+	| output run |
+	output := anEntry folder location / 'output'.
+	run := UIManager default
+		       chooseDirectory: 'Choose a saved run to rerun'
+		       path: (output exists
+				        ifTrue: [ output ]
+				        ifFalse: [ anEntry folder location ]).
+	run ifNil: [ ^ self ].
+	UIManager default
+		informUser: 'Rerunning ' , run basename , '…'
+		during: [ (CMSimulation rerun: run) saveData openInOSFileBrowser ]
+]
+
+{ #category : 'actions' }
 CMModelListPresenter >> restoreFolderOf: anEntry [
 	"Write the code of a model whose folder is gone into a new folder of Models, and show it"
 
