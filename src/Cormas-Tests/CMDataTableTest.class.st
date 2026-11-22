@@ -94,6 +94,14 @@ CMDataTableTest >> testColumnsKeepTheirOrder [
 ]
 
 { #category : 'tests' }
+CMDataTableTest >> testEachRowHasItsStepThenItsValues [
+
+	table addStep: 0 values: #( 3 40 ).
+	table addStep: 1 values: #( 5 38 ).
+	self assert: table rows asArray equals: #( #( 0 3 40 ) #( 1 5 38 ) )
+]
+
+{ #category : 'tests' }
 CMDataTableTest >> testEachRowKeepsItsStep [
 
 	table addStep: 4 values: #( 3 40 ).

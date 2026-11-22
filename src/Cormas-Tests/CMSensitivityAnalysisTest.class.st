@@ -15,36 +15,37 @@ Class {
 
 { #category : 'running' }
 CMSensitivityAnalysisTest >> setUp [
-	
+
 	| modelClass |
 	super setUp.
-	
+
 	modelClass := CMMockModel.
-	
+
 	parameter1 := modelClass parameters detect: [ :each |
-		each getterSelector = #initialNumberOfCows ].
-	
+		              each getterSelector = #initialNumberOfCows ].
+
 	parameter2 := modelClass parameters detect: [ :each |
-		each getterSelector = #initialNumberOfGoats ].
-	
-	probe1 := modelClass availableProbes first.
-	probe2 := modelClass availableProbes second.
+		              each getterSelector = #initialNumberOfGoats ].
+
+	probe1 := modelClass probeSelectors first.
+	probe2 := modelClass probeSelectors second.
 
 	setup := CMSensitivityAnalysisSetup new
-		modelClass: CMMockModel;
-		initSelector: #initFixed;
-		controlSelector: #step;
-		finalTimeStep: 1000;
-		probes: { probe1 . probe2 };
-		parameterSamplings: {
-			parameter1 -> #(1 2 3).
-			parameter2 -> #(5 4)
-		} asDictionary;
-		yourself.
-		
+		         modelClass: CMMockModel;
+		         initSelector: #initFixed;
+		         controlSelector: #step;
+		         finalTimeStep: 1000;
+		         probes: {
+				         probe1.
+				         probe2 };
+		         parameterSamplings: {
+				         (parameter1 -> #( 1 2 3 )).
+				         (parameter2 -> #( 5 4 )) } asDictionary;
+		         yourself.
+
 	analysis := CMSensitivityAnalysis new
-		setup: setup;
-		yourself
+		            setup: setup;
+		            yourself
 ]
 
 { #category : 'tests' }
@@ -194,24 +195,16 @@ CMSensitivityAnalysisTest >> testPausePreventsFurtherProgressUntilResume [
 CMSensitivityAnalysisTest >> testProgress [
 
 	| simulation combination |
-
-	simulation := CMSimulation new.
-
-	simulation data add: {
-		probe1 name -> 10.
-		probe2 name -> 4
-	} asDictionary.
-
+	simulation := (CMSimulation for: CMMockModel new)
+		              activeInitSelector: #initFixed;
+		              activeControlSelector: #step;
+		              initializeSimulation;
+		              yourself.
 	combination := {
-		parameter1 -> 2.
-		parameter2 -> 10
-	} asDictionary.
-
-	analysis
-		recordDataFrom: simulation
-		combination: combination.
-
-	self assert: analysis progress equals: (1 / 6)
+		               (parameter1 -> 2).
+		               (parameter2 -> 10) } asDictionary.
+	analysis recordDataFrom: simulation combination: combination.
+	self assert: analysis progress equals: 1 / 6
 ]
 
 { #category : 'tests' }
@@ -239,30 +232,30 @@ CMSensitivityAnalysisTest >> testProgressCallbackIsCalledForEachSimulation [
 CMSensitivityAnalysisTest >> testRecordDataFromCombination [
 
 	| simulation combination row |
+	simulation := (CMSimulation for: CMMockModel new)
+		              activeInitSelector: #initFixed;
+		              activeControlSelector: #step;
+		              initializeSimulation;
+		              yourself.
+	simulation runStep.
 
-	simulation := CMSimulation new.
-	
-	simulation data add: {
-		probe1 name -> 10.
-		probe2 name -> 4
-	} asDictionary.
-	
 	combination := {
-		parameter1 -> 2 .
-		parameter2 -> 5
-	} asDictionary.
-	
-	row := analysis
-		recordDataFrom: simulation
-		combination: combination.
-		
+		               (parameter1 -> 2).
+		               (parameter2 -> 5) } asDictionary.
+
+	row := analysis recordDataFrom: simulation combination: combination.
+
 	self assert: analysis data size equals: 1.
 	self assert: analysis numberOfCompletedSimulations equals: 1.
-	
+
 	self assert: (row at: parameter1 name) equals: 2.
 	self assert: (row at: parameter2 name) equals: 5.
-	self assert: (row at: probe1 name) equals: 10.
-	self assert: (row at: probe2 name) equals: 4.
+	self
+		assert: (row at: probe1)
+		equals: (simulation modelData column: probe1) last.
+	self
+		assert: (row at: probe2)
+		equals: (simulation modelData column: probe2) last
 ]
 
 { #category : 'tests' }

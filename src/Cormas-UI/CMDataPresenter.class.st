@@ -17,17 +17,17 @@ CMDataPresenter class >> example [
 	self new open
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 CMDataPresenter >> columnNames: aCollection [
+	"Show a column for each name of aCollection. Each row shown is an Array of values in the same order"
 
 	columnNames := aCollection.
-	table columns: #().
-
-	columnNames do: [ :name |
-		table
-			addColumn: (SpStringTableColumn
-				title: name
-				evaluated: [ :dataRow | dataRow at: name ]) ].
+	table columns: #(  ).
+	columnNames doWithIndex: [ :name :index |
+			table addColumn:
+				(SpStringTableColumn
+					 title: name
+					 evaluated: [ :row | row at: index ]) ]
 ]
 
 { #category : 'initialization' }

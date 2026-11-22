@@ -273,37 +273,34 @@ CMSimulationRunnerPresenter >> initialPerspective [
 
 { #category : 'initialization' }
 CMSimulationRunnerPresenter >> initializeNotebookPages [
-	"Show the data and the charts of a new simulation, then one view of its space and a last tab that adds a view. The views of the previous simulation are closed, and the new one starts with the perspective named by the init method"
+	"Show the data and the charts of a new simulation, when its model defines probes and charts, then one view of its space and a last tab that adds a view. The views of the previous simulation are closed, and the new one starts with the perspective named by the init method"
 
 	self closeAllViews.
-	chartPresenter := self instantiate: CMChartPresenter.
-
-	dataTable := self instantiate: CMDataPresenter.
-	dataTable columnNames: (self simulation activeProbes collect: #name).
-	dataTable modelClass: self cormasModel class.
-
 	"Replaced before the old pages are removed, so that the old one is not taken for it when the notebook selects it"
 	newViewPage := SpNotebookPage title: '' provider: [ self newLabel ].
 	newViewPage icon: (self iconNamed: #smallAdd).
-
 	self flag: 'TODO'.
 	"This is a hack to avoid a nasty Spec bug. When we remove all pages after changing a nancy notebook page (a different presenter), it breaks because it can't find the model"
 	"notebook removeAll."
 	notebook pages size timesRepeat: [ notebook removePageAt: 1 ].
-
-	dataPage := SpNotebookPage title: 'Data' provider: [ dataTable ].
-
-	chartsPage := SpNotebookPage
-		              title: 'Charts'
-		              provider: [ chartPresenter ].
-
-	notebook addPage: dataPage.
-	notebook addPage: chartsPage.
+	dataPage := nil.
+	chartsPage := nil.
+	self simulation probes ifNotEmpty: [
+			dataTable := self instantiate: CMDataPresenter.
+			dataTable columnNames: #( 'step' ) , self simulation probes.
+			dataTable modelClass: self cormasModel class.
+			dataPage := SpNotebookPage title: 'Data' provider: [ dataTable ].
+			notebook addPage: dataPage ].
+	self cormasModel class chartSelectors ifNotEmpty: [
+			chartPresenter := self instantiate: CMChartPresenter.
+			chartsPage := SpNotebookPage
+				              title: 'Charts'
+				              provider: [ chartPresenter ].
+			notebook addPage: chartsPage ].
 	notebook addPage: (SpNotebookPage
 			 title: 'Inspector'
 			 provider: [ StInspectorPresenter onObject: self simulation ]).
 	notebook addPage: newViewPage.
-
 	self addViewObservedBy: (CMObserver new
 			 perspective: self initialPerspective;
 			 yourself).
@@ -564,13 +561,13 @@ CMSimulationRunnerPresenter >> updateAfterStep [
 { #category : 'update presenters' }
 CMSimulationRunnerPresenter >> updateChart [
 
-	chartPresenter updateCharts.
+	chartPresenter drawChart
 ]
 
 { #category : 'update presenters' }
 CMSimulationRunnerPresenter >> updateDataTable [
 
-	dataTable showData: self simulation data
+	dataTable showData: self simulation modelData rows
 ]
 
 { #category : 'updating' }

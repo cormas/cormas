@@ -55,6 +55,29 @@ CMMockModel >> cellMatrix [
 		(1 1 1 0))
 ]
 
+{ #category : 'charts' }
+CMMockModel >> chartCells [
+	"How many cells are alive, and how many are dead?"
+
+	<chart>
+	^ CMLineChart new
+		  title: 'Cells';
+		  line: #numberOfAliveCells;
+		  line: #numberOfDeadCells;
+		  yourself
+]
+
+{ #category : 'charts' }
+CMMockModel >> chartOfAMethodThatIsNotAProbe [
+	"A chart of data that is never recorded, to test how it is shown"
+
+	<chart>
+	^ CMLineChart new
+		  title: 'Cows';
+		  line: #numberOfCows;
+		  yourself
+]
+
 { #category : 'init' }
 CMMockModel >> init [
 
@@ -191,7 +214,7 @@ CMMockModel >> isGoatInFirstCell [
 { #category : 'probes' }
 CMMockModel >> numberOfAliveCells [
 
-	<probeNamed: 'Number of alive cells' color: '0000FF'>
+	<probe>
 	^ (self cells select: [ :cell | cell isAliveCell ]) size
 ]
 
@@ -210,7 +233,7 @@ CMMockModel >> numberOfColumns: aNumber [
 { #category : 'probes' }
 CMMockModel >> numberOfDeadCells [
 
-	<probeNamed: 'Number of dead cells' color: 'FF0000'>
+	<probe>
 	^ (self cells select: [ :cell | cell isDeadCell ]) size
 ]
 

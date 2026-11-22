@@ -1,15 +1,45 @@
+"
+I am the Charts tab of a simulation: I show one of the charts defined by the model, drawn from the data recorded on the model.
+
+## Responsibility:
+
+- I list the charts of the model (its `<chart>` methods) by their titles, and draw the chosen one.
+- I say why a chart cannot be drawn, such as a probe that was not recorded, instead of drawing it.
+- I save a picture of the chart in the output folder of the model.
+
+## Collaborators:
+
+- `CMModel class>>chartSelectors` gives the charts; each `<chart>` method returns a `CMChart`.
+- `CMSimulation>>modelData` gives the recorded data.
+- `CMSimulationRunnerPresenter` creates me only when the model has charts, and asks me to `drawChart` after each displayed step.
+
+## Public API and Key Messages
+
+- `drawChart` draws the chosen chart again.
+- `chartList`, `chartView` and `message` give access to my parts.
+
+```smalltalk
+| simulation application |
+simulation := (CMSimulation for: CMMockModel new)
+	activeInitSelector: #initFixed;
+	activeControlSelector: #step;
+	initializeSimulation;
+	yourself.
+10 timesRepeat: [ simulation runStep ].
+application := CMSimulationApplication new.
+application simulation: simulation.
+(application newPresenter: CMChartPresenter) open
+```
+"
 Class {
 	#name : 'CMChartPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'toolbar',
-		'showProbesButton',
+		'chartList',
 		'saveToPngButton',
-		'saveToGifButton',
-		'probesCheckboxes',
-		'chart',
-		'isProbeVisibleDictionary',
-		'isProbesListVisible'
+		'chartView',
+		'messageLabel'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -35,115 +65,87 @@ CMChartPresenter class >> example [
 	(app newPresenter: self) open
 ]
 
+{ #category : 'accessing' }
+CMChartPresenter >> chartList [
+
+	^ chartList
+]
+
+{ #category : 'accessing' }
+CMChartPresenter >> chartNamed: aSelector [
+
+	^ self cormasModel perform: aSelector
+]
+
+{ #category : 'accessing' }
+CMChartPresenter >> chartView [
+
+	^ chartView
+]
+
 { #category : 'initialization' }
 CMChartPresenter >> connectPresenters [
 
-	showProbesButton action: [
-		isProbesListVisible := isProbesListVisible not.
-		self updateProbesListVisibility.
-		self updateShowProbesButtonIcon.
-		self update ].
-	
-	saveToPngButton action: [ self saveToPng ].
-	"saveToGifButton action: [ ""do nothing"" ]."
+	chartList whenSelectedItemChangedDo: [ self drawChart ].
+	saveToPngButton action: [ self saveToPng ]
 ]
 
-{ #category : 'layout' }
+{ #category : 'accessing' }
+CMChartPresenter >> cormasModel [
+
+	^ self simulation cormasModel
+]
+
+{ #category : 'initialization' }
 CMChartPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
-		add: toolbar expand: false;
-		add: (SpBoxLayout newLeftToRight
-			spacing: 5;
-			add: chart;
-			add: probesCheckboxes width: 250;
-			yourself);
-		yourself
+		  add: (SpBoxLayout newLeftToRight
+				   spacing: 5;
+				   add: chartList;
+				   add: toolbar expand: false;
+				   yourself)
+		  expand: false;
+		  add: messageLabel expand: false;
+		  add: chartView;
+		  yourself
 ]
 
-{ #category : 'public' }
+{ #category : 'drawing' }
 CMChartPresenter >> drawChart [
+	"Draw the chosen chart from the data recorded on the model, or say why it cannot be drawn"
 
-	| chartBuilder size x y |
-	
-	chartBuilder := CMR3ChartBuilder new
-		maxChartValueX: self simulation data size;
-		yourself.
-		
-	(isProbeVisibleDictionary values noneSatisfy: #yourself)
-		ifTrue: [ chartBuilder addPlotX: { 0 } y: { 0 } color: Color black ]
-		ifFalse: [
-			size := self simulation data size.
-			x := (1 to: size) asArray.
-	
-			self probes do: [ :probe |
-				(isProbeVisibleDictionary at: probe) ifTrue: [
-					y := (self simulation data first: size) collect: [ :row | row at: probe name ].
-					chartBuilder addPlotX: x y: y color: probe color ] ] ].
-
-	chartBuilder chart build.
-	chart canvas: chartBuilder chart container.
+	| chart |
+	chart := self chartNamed: chartList selectedItem.
+	[
+		chartView canvas: (chart canvasOn: self simulation modelData).
+		messageLabel label: '' ]
+		on: CMRecordingError
+		do: [ :error |
+				chartView canvas: RSCanvas new.
+				messageLabel label:
+					'This chart cannot be drawn: ' , error messageText ]
 ]
 
 { #category : 'initialization' }
 CMChartPresenter >> initializePresenters [
 
-	isProbesListVisible := false.
-
-	isProbeVisibleDictionary := (self probes collect: [ :probe |
-		probe -> true ]) asDictionary.
-
-	probesCheckboxes := self newTable
-		hideColumnHeaders;
-		addColumn: ((SpCheckBoxTableColumn evaluated: [ :probe | isProbeVisibleDictionary at: probe ])
-			onActivation: [ :probe |
-				isProbeVisibleDictionary at: probe put: true.
-				self updateCharts ];
-			onDeactivation: [ :probe |
-				isProbeVisibleDictionary at: probe put: false.
-				self updateCharts ];
-			width: 20;
-			yourself);
-		addColumn: ((SpImageTableColumn evaluated: [ :probe | 
-			| form |
-			form := Form extent: 16 @ 16 depth: 32.
-			form getCanvas fillColor: probe color.
-			form ])
-			width: 20;
-			yourself);
-		addColumn: (SpStringTableColumn evaluated: [ :probe | probe name ]).
-		
-	probesCheckboxes items: self probes.
-	
-	showProbesButton := self newToolbarButton
-		label: 'Probes';
-		help: 'Probes';
-		yourself.
-		
+	chartList := self newDropList
+		             items: self cormasModel class chartSelectors;
+		             display: [ :selector | self titleOf: selector ];
+		             yourself.
 	saveToPngButton := self newToolbarButton
-		label: 'Save to PNG';
-		help: 'Save to PNG';
-		icon: (self iconNamed: #smallSave);
-		yourself.
-		
-	"saveToGifButton := self newToolbarButton
-		label: 'Save to GIF';
-		icon: CMIcons gifIcon;
-		yourself."
-	
+		                   label: 'Save to PNG';
+		                   help: 'Save to PNG';
+		                   icon: (self iconNamed: #smallSave);
+		                   yourself.
 	toolbar := self newToolbar
-		add: saveToPngButton;
-		"add: saveToGifButton;"
-		addItemRight: showProbesButton;
-		yourself.
-		
+		           add: saveToPngButton;
+		           yourself.
 	toolbar beIcons.
-		
-	self updateProbesListVisibility.
-	self updateShowProbesButtonIcon.
-
-	chart := SpRoassalInspectorPresenter new.
-	self drawChart.
+	messageLabel := self newLabel.
+	chartView := SpRoassalInspectorPresenter new.
+	self drawChart
 ]
 
 { #category : 'initialization' }
@@ -157,22 +159,23 @@ CMChartPresenter >> initializeWindow: aWindowPresenter [
 ]
 
 { #category : 'accessing' }
-CMChartPresenter >> probes [
+CMChartPresenter >> message [
+	"Return why the chosen chart cannot be drawn, or an empty string"
 
-	^ self simulation probes reject: [ :probe | probe selector = #currentTimeStep ]
+	^ messageLabel label
 ]
 
-{ #category : 'actions' }
+{ #category : 'drawing' }
 CMChartPresenter >> saveToPng [
 	"Save a picture of the chart in the output folder of the model"
 
 	CMExport
-		of: self simulation cormasModel class
+		of: self cormasModel class
 		named: 'chart'
 		extension: 'png'
 		writing: [ :file |
 				RSPNGExporter new
-					canvas: chart canvas;
+					canvas: chartView canvas;
 					exportToFile: file ]
 ]
 
@@ -182,23 +185,8 @@ CMChartPresenter >> simulation [
 	^ self application simulation
 ]
 
-{ #category : 'updating' }
-CMChartPresenter >> updateCharts [
-	self drawChart
-]
+{ #category : 'accessing' }
+CMChartPresenter >> titleOf: aSelector [
 
-{ #category : 'as yet unclassified' }
-CMChartPresenter >> updateProbesListVisibility [
-
-	isProbesListVisible
-		ifTrue: [ probesCheckboxes show ]
-		ifFalse: [ probesCheckboxes hide ].
-]
-
-{ #category : 'as yet unclassified' }
-CMChartPresenter >> updateShowProbesButtonIcon [
-
-	showProbesButton icon: (isProbesListVisible
-		ifTrue: [ CMIcons grayEyeIcon ]
-		ifFalse: [ CMIcons eyeIcon ] )
+	^ (self chartNamed: aSelector) title ifNil: [ aSelector asString ]
 ]

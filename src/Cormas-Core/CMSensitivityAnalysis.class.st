@@ -32,20 +32,14 @@ CMSensitivityAnalysis >> data [
 	^ data 
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 CMSensitivityAnalysis >> dataColumnNames [
 
-	| parameterNames probeNames |
-	
-	parameterNames := (setup parameterSamplings keys
-		collect: [ :parameter | parameter name ])
-		asOrderedCollection.
-	
-	probeNames := (setup probes
-		collect: [ :probe | probe name ])
-		asOrderedCollection.
-	
-	^ parameterNames, probeNames 
+	| parameterNames |
+	parameterNames := (setup parameterSamplings keys collect: [
+		                   :parameter | parameter name ])
+		                  asOrderedCollection.
+	^ parameterNames , setup probes asOrderedCollection
 ]
 
 { #category : 'initialization' }
@@ -142,27 +136,22 @@ CMSensitivityAnalysis >> progress [
 	^ numberOfCompletedSimulations / self totalNumberOfSimulations
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'running' }
 CMSensitivityAnalysis >> recordDataFrom: aSimulation combination: aParameterCombination [
+	"Add a row of the parameter values of aParameterCombination and of the last recorded value of each probe of aSimulation"
 
-	| row lastDataRow |
+	| row |
 	row := OrderedDictionary new.
-	
+
 	aParameterCombination keysAndValuesDo: [ :parameter :value |
-		row
-			at: parameter name
-			put: value ].
-		
-	lastDataRow := aSimulation data last.
-	
+		row at: parameter name put: value ].
+
 	setup probes do: [ :probe |
-		row
-			at: probe name
-			put: (lastDataRow at: probe name) ].
-		
+		row at: probe put: (aSimulation modelData column: probe) last ].
+
 	data add: row.
 	numberOfCompletedSimulations := numberOfCompletedSimulations + 1.
-	
+
 	^ row
 ]
 

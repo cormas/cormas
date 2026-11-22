@@ -62,6 +62,25 @@ CMSimulationRunnerPresenterTest >> testADuplicateStartsWithTheChoicesOfItsViewAn
 ]
 
 { #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testAModelWithoutProbesOrChartsHasNeitherDataNorChartsTab [
+
+	| simulation application otherRunner |
+	simulation := (CMSimulation for: CMMockModelWithoutData new)
+		              activeInitSelector: #initGrid;
+		              activeControlSelector: #step;
+		              initializeSimulation;
+		              yourself.
+	application := CMSimulationApplication new.
+	application simulation: simulation.
+	application cormasModel: simulation cormasModel.
+	otherRunner := application newPresenter: CMSimulationRunnerPresenter.
+	self
+		assert:
+		(otherRunner notebook pages collect: [ :each | each title ]) asArray
+		equals: #( 'Inspector' 'Space' '' )
+]
+
+{ #category : 'tests' }
 CMSimulationRunnerPresenterTest >> testANewSimulationClosesItsViewsAndShowsANewOne [
 
 	| view |

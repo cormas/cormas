@@ -163,6 +163,14 @@ CMModelTest >> testCentralCell [
 		identicalTo: (m selectCellsOfColumn: 2) second
 ]
 
+{ #category : 'tests - probes and charts' }
+CMModelTest >> testChartsAreTheMethodsMarkedAsCharts [
+
+	self
+		assert: CMMockModel chartSelectors asArray
+		equals: #( #chartCells #chartOfAMethodThatIsNotAProbe )
+]
+
 { #category : 'tests' }
 CMModelTest >> testCreateGridXYNeighborHoodClosed [
 
@@ -490,6 +498,14 @@ CMModelTest >> testPickRandomEntityOfClassConstrainedBy [
 CMModelTest >> testPickRandomUnoccupiedCell [
 
 	self assert: model pickRandomUnoccupiedCell theOccupants isEmpty
+]
+
+{ #category : 'tests - probes and charts' }
+CMModelTest >> testProbesAreTheMethodsMarkedAsProbes [
+
+	self
+		assert: CMMockModel probeSelectors asArray
+		equals: #( #numberOfAliveCells #numberOfDeadCells )
 ]
 
 { #category : 'tests - removing entities' }

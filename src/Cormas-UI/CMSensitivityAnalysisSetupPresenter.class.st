@@ -219,7 +219,7 @@ CMSensitivityAnalysisSetupPresenter >> initializePresenters [
 			width: 20;
 			yourself);
 		addColumn: (SpStringTableColumn
-			evaluated: [ :probe | probe name ]);
+			evaluated: [ :probe | probe ]);
 		yourself.
 		
 	self initializeParametersTable.
@@ -272,7 +272,7 @@ CMSensitivityAnalysisSetupPresenter >> initializeWithModelClass: aClass [
 	
 	finalStepInput number: 100.
 	
-	probesList items: aClass availableProbes.
+	probesList items: aClass probeSelectors.
 	parametersTable items: ((self relevantParametersFrom: aClass) copyWithFirst: randomSeedParameter).
 	
 	setup probes: probesList items asSet.

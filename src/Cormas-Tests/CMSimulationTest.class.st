@@ -22,6 +22,14 @@ CMSimulationTest >> setUp [
 ]
 
 { #category : 'tests' }
+CMSimulationTest >> testANewInitStartsANewModelData [
+
+	3 timesRepeat: [ simulation runStep ].
+	simulation initializeSimulation.
+	self assert: simulation modelData steps asArray equals: #( 0 )
+]
+
+{ #category : 'tests' }
 CMSimulationTest >> testAPausedSimulationWaitsUntilItIsResumed [
 
 	| finished step |
@@ -87,29 +95,6 @@ CMSimulationTest >> testCurrenTimeStepStartsWithZero [
 ]
 
 { #category : 'tests' }
-CMSimulationTest >> testData [
-
-	| values expectedData |
-	values := #(
-		(0 11 5)
-		(1 5 11) 
-		(2 11 5)
-		(3 5 11)
-	   (4 11 5)
-		(5 5 11)).
-		
-	expectedData := values asOrderedCollection collect: [ :row |
-		OrderedDictionary newFrom: {
-			('Time step' -> row first).
-			('Number of alive cells' -> row second).
-			('Number of dead cells' -> row third) }
-	].
-
-	5 timesRepeat: [ simulation runStep ].
-	self assert: simulation data equals: expectedData 
-]
-
-{ #category : 'tests' }
 CMSimulationTest >> testDefaultFinalTimeStep [
 
 	self assert: simulation class defaultFinalTimeStep equals: 100
@@ -154,37 +139,9 @@ CMSimulationTest >> testPausingLetsTheCurrentStepFinish [
 { #category : 'tests' }
 CMSimulationTest >> testProbes [
 
-	| expectedProbes |
-	
-	expectedProbes := { 
-		CMProbe
-			name: 'Time step'
-			colorString: '000000'
-			selector: #currentTimeStep
-			on: simulation cormasModel .
-	
-		CMProbe
-			name: 'Number of alive cells'
-			colorString: '0000FF'
-			selector: #numberOfAliveCells
-			on: simulation cormasModel .
-			
-		CMProbe
-			name: 'Number of dead cells'
-			colorString: 'FF0000'
-			selector: #numberOfDeadCells
-			on: simulation cormasModel .
-	}.
-
-	self assertCollection: simulation probes hasSameElements: expectedProbes.
-]
-
-{ #category : 'tests' }
-CMSimulationTest >> testProbesTimeStepIsFirst [
-
 	self
-		assert: simulation probes first name
-		equals: 'Time step'.
+		assert: simulation probes asArray
+		equals: #( #numberOfAliveCells #numberOfDeadCells )
 ]
 
 { #category : 'tests' }
@@ -307,14 +264,12 @@ CMSimulationTest >> testRunningAStepAnnouncesItsEndOnceTheModelHasStepped [
 				endedSteps add: announcement timeStep.
 				cowPositionAtEnd := (simulation cormasModel @@ CMMockCow) first
 					                    coordinates.
-				recordedStepsAtEnd := simulation data size ]
+				recordedStepsAtEnd := simulation modelData size ]
 		for: self.
-
 	simulation runStep.
-
 	self assert: endedSteps asArray equals: #( 1 ).
 	self assert: cowPositionAtEnd equals: 2 @ 2.
-	self assert: recordedStepsAtEnd equals: simulation data size
+	self assert: recordedStepsAtEnd equals: simulation modelData size
 ]
 
 { #category : 'tests' }
@@ -378,6 +333,21 @@ CMSimulationTest >> testStoppingEndsARunningSimulation [
 		self assert: simulation currentTimeStep equals: step.
 		self deny: simulation isSimulationRunning ] ensure: [
 		simulation stopWhen: [ :model | true ] ]
+]
+
+{ #category : 'tests' }
+CMSimulationTest >> testTheModelDataHasARowForEachStep [
+
+	5 timesRepeat: [ simulation runStep ].
+	self
+		assert: simulation modelData steps asArray
+		equals: #( 0 1 2 3 4 5 ).
+	self
+		assert: (simulation modelData column: #numberOfAliveCells) asArray
+		equals: #( 11 5 11 5 11 5 ).
+	self
+		assert: (simulation modelData column: #numberOfDeadCells) asArray
+		equals: #( 5 11 5 11 5 11 )
 ]
 
 { #category : 'running' }

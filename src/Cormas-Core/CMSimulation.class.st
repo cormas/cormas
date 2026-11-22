@@ -4,14 +4,14 @@ Class {
 	#instVars : [
 		'cormasModel',
 		'context',
-		'data',
 		'activeInitSelector',
 		'activeControlSelector',
 		'probes',
 		'initialParameterValues',
 		'hasFixedRandomSeed',
 		'shouldReleaseRandomSeedAfterInitialization',
-		'simulationRunner'
+		'simulationRunner',
+		'modelData'
 	],
 	#category : 'Cormas-Core-Kernel',
 	#package : 'Cormas-Core',
@@ -50,12 +50,6 @@ CMSimulation >> activeInitSelector: aSymbol [
 	activeInitSelector := aSymbol
 ]
 
-{ #category : 'probes' }
-CMSimulation >> activeProbes [
-
-	^ probes select: [ :probe | probe isActive ]
-]
-
 { #category : 'accessing' }
 CMSimulation >> cormasModel [
 	
@@ -73,12 +67,6 @@ CMSimulation >> cormasModel: aModel [
 CMSimulation >> currentTimeStep [
 
 	^ context currentTimeStep 
-]
-
-{ #category : 'accessing' }
-CMSimulation >> data [
-
-	^ data
 ]
 
 { #category : 'simulation runner - init' }
@@ -117,22 +105,21 @@ CMSimulation >> initialParameterValues [
 CMSimulation >> initialize [
 
 	super initialize.
-	
-	probes := OrderedCollection new.
-	data := OrderedCollection new.
+
+	probes := #(  ).
+	modelData := CMDataTable withColumns: probes.
 	initialParameterValues := Dictionary new.
-	
+
 	hasFixedRandomSeed := false.
 	shouldReleaseRandomSeedAfterInitialization := false.
-	
+
 	self initializeSimulationRunner
 ]
 
 { #category : 'initialization' }
 CMSimulation >> initializeProbes [
 
-	probes := cormasModel class availableProbes.
-	probes do: [ :probe | probe object: cormasModel ].
+	probes := cormasModel class probeSelectors
 ]
 
 { #category : 'initialization' }
@@ -141,18 +128,14 @@ CMSimulation >> initializeSimulation [
 Reset the currentTimeStep and the data. Set the randomSeed"
 
 	context currentTimeStep: 0.
-
 	self hasFixedRandomSeed ifFalse: [ "Choose a new random seed every time the simulation is initialized. If random seed is fixed, then we will always initialize the same scenario"
 		context chooseRandomSeedAtRandom ].
-
 	self initializeProbes.
-	data := OrderedCollection new.
+	modelData := CMDataTable withColumns: probes.
 	cormasModel initEntities.
 	self setInitialParameters.
-
 	cormasModel perform: activeInitSelector.
 	self recordData.
-
 	shouldReleaseRandomSeedAfterInitialization ifTrue: [
 		context chooseRandomSeedAtRandom ]
 ]
@@ -183,6 +166,14 @@ CMSimulation >> isSimulationRunning [
 	^ simulationRunner isSimulationRunning
 ]
 
+{ #category : 'data' }
+CMSimulation >> modelData [
+
+	"Return the data recorded on the model: a CMDataTable with a row for each recorded step"
+
+	^ modelData
+]
+
 { #category : 'simulation runner - running' }
 CMSimulation >> pause [
 
@@ -207,10 +198,11 @@ CMSimulation >> randomSeed: aNumber [
 
 { #category : 'data' }
 CMSimulation >> recordData [
+	"Add a row of the values of the model's probes at the current step to the model's data"
 
-	data add:
-		(self activeProbes collect: [ :probe | probe name -> probe value ])
-			asOrderedDictionary 
+	modelData
+		addStep: self currentTimeStep
+		values: (probes collect: [ :each | cormasModel perform: each ])
 ]
 
 { #category : 'simulation runner - running' }

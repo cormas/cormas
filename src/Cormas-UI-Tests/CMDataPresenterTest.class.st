@@ -14,11 +14,11 @@ Class {
 CMDataPresenterTest >> setUp [
 
 	super setUp.
-	
+
 	fixture := CMDataFixture new.
 	dataPresenter := CMDataPresenter new.
-	dataPresenter columnNames: fixture data first keys.
-	dataPresenter showData: fixture data.
+	dataPresenter columnNames: fixture columnNames.
+	dataPresenter showData: fixture rows
 ]
 
 { #category : 'tests' }

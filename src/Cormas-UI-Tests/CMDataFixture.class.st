@@ -11,6 +11,12 @@ Class {
 }
 
 { #category : 'accessing' }
+CMDataFixture >> columnNames [
+
+	^ data first keys
+]
+
+{ #category : 'accessing' }
 CMDataFixture >> data [
 
 	^ data
@@ -45,4 +51,10 @@ CMDataFixture >> initialize [
 20,2
 25,3
 '.
+]
+
+{ #category : 'accessing' }
+CMDataFixture >> rows [
+
+	^ data collect: [ :each | each values asArray ]
 ]

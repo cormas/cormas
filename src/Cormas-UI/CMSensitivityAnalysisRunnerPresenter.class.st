@@ -36,7 +36,7 @@ CMSensitivityAnalysisRunnerPresenter class >> example [
 		initSelector: #initFixed;
 		controlSelector: #step;
 		finalTimeStep: 10000;
-		probes: CMMockModel availableProbes;
+		probes: CMMockModel probeSelectors;
 		parameterSamplings: { 
 			randomSeedParameter -> #(42 24) .
 			numberOfCows -> #(1 2 3 4)
@@ -206,15 +206,15 @@ CMSensitivityAnalysisRunnerPresenter >> showCharts [
 			on: analysis data ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'updating' }
 CMSensitivityAnalysisRunnerPresenter >> updateDataTable [
 
 	| data |
 	data := analysis data.
 	data ifEmpty: [ ^ self ].
-	
+
 	table columnNames: data first keys.
-	table showData: data
+	table showData: (data collect: [ :row | row values asArray ])
 ]
 
 { #category : 'as yet unclassified' }

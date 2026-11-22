@@ -135,6 +135,15 @@ CMDataTable >> kindOf: aValue inColumnAt: anIndex [
 ]
 
 { #category : 'accessing' }
+CMDataTable >> rows [
+	"Return each row as an Array of its step followed by its values, in the order of the columns"
+
+	^ (1 to: self size) collect: [ :index |
+			  (Array with: (steps at: index))
+			  , (columns collect: [ :column | column at: index ]) ]
+]
+
+{ #category : 'accessing' }
 CMDataTable >> size [
 
 	^ steps size
