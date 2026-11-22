@@ -257,6 +257,37 @@ CMModelTest >> testDyingTellsTheEntityOnce [
 	self assert: cow timesRemovedFromModel equals: 1
 ]
 
+{ #category : 'tests - ids' }
+CMModelTest >> testEntitiesAreNumberedFromOneForEachClass [
+
+	| other |
+	other := self newTestModel.
+	other newEntity: CMMockCow.
+	self assert: (other newEntity: CMMockCow) id equals: 2.
+	self assert: (other newEntity: CMMockGoat) id equals: 1
+]
+
+{ #category : 'tests - ids' }
+CMModelTest >> testEntitiesCreatedWithoutAModelHaveDifferentIds [
+
+	self deny: CMMockCow new id equals: CMMockCow new id
+]
+
+{ #category : 'tests - ids' }
+CMModelTest >> testEntitiesOfTwoModelsAreNumberedSeparately [
+
+	| first second firstIds secondIds |
+	first := self newTestModel.
+	second := self newTestModel.
+	firstIds := OrderedCollection new.
+	secondIds := OrderedCollection new.
+	3 timesRepeat: [
+			firstIds add: (first newEntity: CMMockCow) id.
+			secondIds add: (second newEntity: CMMockCow) id ].
+	self assert: firstIds asArray equals: #( 1 2 3 ).
+	self assert: secondIds asArray equals: #( 1 2 3 )
+]
+
 { #category : 'tests - removing entities' }
 CMModelTest >> testFlaggingDeadDoesNotTellTheEntityBeforeItIsRemoved [
 
@@ -266,6 +297,13 @@ CMModelTest >> testFlaggingDeadDoesNotTellTheEntityBeforeItIsRemoved [
 	cow isDead: true.
 
 	self assert: cow timesRemovedFromModel equals: 0
+]
+
+{ #category : 'tests - ids' }
+CMModelTest >> testIdsStartAgainFromOneWhenEntitiesAreReset [
+
+	model resetEntities: CMMockCow.
+	self assert: (model newEntity: CMMockCow) id equals: 1
 ]
 
 { #category : 'tests' }

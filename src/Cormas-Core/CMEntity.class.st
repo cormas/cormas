@@ -35,7 +35,6 @@ Class {
 		'group'
 	],
 	#classInstVars : [
-		'currentId',
 		'instanceSideParameters'
 	],
 	#category : 'Cormas-Core-Entities',
@@ -56,20 +55,6 @@ CMEntity class >> aspectSelectors [
 CMEntity class >> classSideParameters [
 
 	^ self parameters select: [ :p | p isClassSide ]
-]
-
-{ #category : 'accessing' }
-CMEntity class >> currentId [
-	"Getter accessor with default value = 0 "
-	
-	^ currentId ifNil: [ currentId := 0]
-]
-
-{ #category : 'accessing' }
-CMEntity class >> currentId: anInteger [
-	
-	currentId := anInteger. 
-	^ anInteger
 ]
 
 { #category : 'accessing - methods & classes' }
@@ -289,9 +274,11 @@ CMEntity >> initialize [
 
 { #category : 'initialize-release' }
 CMEntity >> initializeEntityId [
-	" Private - Set the receiver's internal identifier. "
+	"Private - Set the receiver's identifier: numbered within its model, or its identity hash for an entity created on its own, outside any model"
 
-	self id: (self class currentId: self class currentId + 1)
+	self id: (cormasModel
+			 ifNil: [ self identityHash ]
+			 ifNotNil: [ :model | model newIdFor: self class ])
 ]
 
 { #category : 'initialization' }

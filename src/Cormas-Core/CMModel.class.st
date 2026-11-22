@@ -42,7 +42,8 @@ Class {
 		'entities',
 		'cellClass',
 		'agentClasses',
-		'areAgentsCenteredInCells'
+		'areAgentsCenteredInCells',
+		'entityIds'
 	],
 	#classInstVars : [
 		'cellClass',
@@ -912,15 +913,16 @@ CMModel >> initEntities [
 CMModel >> initialize [
 
 	super initialize.
-	
+
 	self simulationContext: self newSimulationContext.
-	
+
 	entities := Dictionary new.
-	
+	entityIds := Dictionary new.
+
 	self initializeParameters.
 	self initializeModelClasses.
 	self initializeSpaceModel.
-	
+
 	areAgentsCenteredInCells := true
 ]
 
@@ -1107,6 +1109,15 @@ CMModel >> newEntity: aClass locatedAt: aCell [
 	entity := self newEntity: aClass.
 	entity moveTo: aCell.
 	^ entity
+]
+
+{ #category : 'init-release entities' }
+CMModel >> newIdFor: aClass [
+	"Return the next id for an entity of aClass in this model. Each class is numbered from 1, so that the same init gives the same ids whatever other models exist"
+
+	^ entityIds
+		  at: aClass
+		  put: (entityIds at: aClass ifAbsent: [ 0 ]) + 1
 ]
 
 { #category : 'initialization' }
@@ -1302,7 +1313,7 @@ CMModel >> resetEntities: aClass [
 	| entities remaining |
 	entities := self entitiesOfClass: aClass.
 	entities reverseDo: [ :anEntity | anEntity delete ].
-	aClass currentId: 0.
+	entityIds removeKey: aClass ifAbsent: [ ].
 	remaining := entities copy.
 	entities removeAll.
 	remaining do: [ :anEntity | anEntity removedFromModel ]
