@@ -423,6 +423,23 @@ CMSimulationRunnerPresenterTest >> testEachChartOfTheModelHasATabTitledByItsTitl
 ]
 
 { #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testInspectingAnEntityInASpaceOpensItsCormasInspector [
+
+	| view cow before inspector |
+	view := runner views first.
+	cow := (view cormasModel entitiesOfClass: CMMockCow) first.
+	before := CMEntityInspectorPresenter allInstances.
+	(((view spaceBuilder contextMenuFor: cow) menuGroups flatCollect: [
+		  :each | each menuItems ]) detect: [ :each | each name = 'Inspect' ])
+		performMenuActionWith: nil.
+	inspector := (CMEntityInspectorPresenter allInstances
+		              copyWithoutAll: before) detect: [ :each |
+		             each entity == cow ].
+	windows add: inspector window.
+	self assert: inspector isDisplayed
+]
+
+{ #category : 'tests' }
 CMSimulationRunnerPresenterTest >> testNewViewsAreNumbered [
 
 	runner newView.

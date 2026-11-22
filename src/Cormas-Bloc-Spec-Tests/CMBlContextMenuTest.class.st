@@ -280,6 +280,19 @@ CMBlContextMenuTest >> testChoosingInTheMenuTellsTheElement [
 ]
 
 { #category : 'tests' }
+CMBlContextMenuTest >> testChoosingInspectInspectsTheEntityAsTheElementWasTold [
+
+	| cow element inspected |
+	self gridWithNeighbourhood: 4.
+	cow := self newCowOn: (model cellAt: 2 at: 3).
+	element := CMBlSpaceElement for: model.
+	element inspectEntitiesWith: [ :entity | inspected := entity ].
+	(self itemNamed: 'Inspect' in: (element contextMenuFor: cow))
+		performMenuActionWith: nil.
+	self assert: inspected identicalTo: cow
+]
+
+{ #category : 'tests' }
 CMBlContextMenuTest >> testChoosingKillRemovesTheAgentFromTheView [
 
 	| cow element item |

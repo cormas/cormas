@@ -74,7 +74,9 @@ CMBlElement >> contextMenuCommandsFor: anEntity [
 	| commands |
 	commands := OrderedCollection
 		            with:
-		            (CMInspectSpaceContextMenuCommand forOwner: anEntity)
+			            ((CMInspectSpaceContextMenuCommand forOwner: anEntity)
+				             inspectWith: [ :entity | self inspectEntity: entity ];
+				             yourself)
 		            with:
 		            (CMBrowseSpaceContextMenuCommand forOwner: anEntity).
 	anEntity isLink
@@ -119,6 +121,21 @@ CMBlElement >> contextMenuFor: anEntity [
 	(anEntity isLink or: [ anEntity isNetwork ]) ifTrue: [
 		self addSubmenusFor: anEntity allNetworks to: menu ].
 	^ menu
+]
+
+{ #category : '*Cormas-Bloc-Spec' }
+CMBlElement >> inspectEntitiesWith: aBlock [
+	"Evaluate aBlock with the entity chosen by Inspect in my context menu, instead of opening the Pharo inspector on it. The block is kept in my user data, so that the elements already shown keep their layout"
+
+	self userData at: #inspectBlock put: aBlock
+]
+
+{ #category : '*Cormas-Bloc-Spec' }
+CMBlElement >> inspectEntity: anEntity [
+
+	(self userData
+		 at: #inspectBlock
+		 ifAbsent: [ [ :entity | entity inspect ] ]) value: anEntity
 ]
 
 { #category : '*Cormas-Bloc-Spec' }

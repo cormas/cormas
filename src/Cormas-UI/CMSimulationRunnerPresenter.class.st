@@ -10,6 +10,7 @@ I run a simulation and show it: its views of the space, its data and each of its
 ## Collaborators:
 
 - `CMSpacePresenter`: each view of the space; `CMChartPresenter`: each chart. Both answer `copyFor:`, `registerIn:`, `openInWindow`, `isInWindow`, `detachedWindow`, `displayedTitle`, `updateDiagram` and `closeDiagram`, so that I move and close them alike.
+- `TCMViewHost`: moves, closes and updates them, as for the charts of an entity in `CMEntityInspectorPresenter`.
 - `CMObserver`: the state of each view, which moves with it between a tab and a window.
 - `CMSimulation`: the simulation I run.
 
@@ -35,6 +36,8 @@ I run a simulation and show it: its views of the space, its data and each of its
 Class {
 	#name : 'CMSimulationRunnerPresenter',
 	#superclass : 'SpPresenter',
+	#traits : 'TCMViewHost',
+	#classTraits : 'TCMViewHost classTrait',
 	#instVars : [
 		'runButton',
 		'stepButton',
@@ -79,20 +82,6 @@ CMSimulationRunnerPresenter class >> exampleEmpty [
 ]
 
 { #category : 'views' }
-CMSimulationRunnerPresenter >> addPageFor: aView [
-	"Show aView, a space view or a chart, in a closeable tab at the end of the notebook"
-
-	| page |
-	aView registerIn: self.
-	page := SpNotebookPage
-		        title: aView displayedTitle
-		        provider: [ aView ].
-	page beCloseable.
-	pages at: aView put: page.
-	notebook addPage: page
-]
-
-{ #category : 'views' }
 CMSimulationRunnerPresenter >> addTab: aView [
 	"Show aView, a space view or a chart, in a closeable tab just before the tab that adds views. The notebook can only add a tab at the end, so that tab is removed and added again"
 
@@ -127,28 +116,6 @@ CMSimulationRunnerPresenter >> charts [
 	"Answer the charts of the model, in tabs or in windows of their own"
 
 	^ charts
-]
-
-{ #category : 'views' }
-CMSimulationRunnerPresenter >> closeAllViews [
-
-	views , charts do: [ :each | self closeView: each ]
-]
-
-{ #category : 'views' }
-CMSimulationRunnerPresenter >> closeView: aView [
-	"Stop showing aView, a space view or a chart, whether it is in a tab or in a window. A tab may already have left the notebook, when its close button was pressed"
-
-	((views includes: aView) or: [ charts includes: aView ]) ifFalse: [
-		^ self ].
-	views remove: aView ifAbsent: [ ].
-	charts remove: aView ifAbsent: [ ].
-	pages at: aView ifPresent: [ :page |
-			pages removeKey: aView.
-			(notebook pages includes: page) ifTrue: [
-				notebook removePage: page ] ].
-	aView isInWindow ifTrue: [ aView detachedWindow close ].
-	aView closeDiagram
 ]
 
 { #category : 'initialization' }
@@ -248,6 +215,13 @@ CMSimulationRunnerPresenter >> fitDiagram [
 	views do: [ :each | each isInWindow ifFalse: [ each fitDiagram ] ]
 ]
 
+{ #category : 'private' }
+CMSimulationRunnerPresenter >> forget: aView [
+
+	views remove: aView ifAbsent: [ ].
+	charts remove: aView ifAbsent: [ ]
+]
+
 { #category : 'views' }
 CMSimulationRunnerPresenter >> freeTitleFrom: aString for: aView [
 	"Answer aString, or aString numbered when another view already has that title"
@@ -273,6 +247,12 @@ CMSimulationRunnerPresenter >> hideSettings [
 	"owner hideInitializationSettings."
 	self update.
 	self fitDiagram
+]
+
+{ #category : 'accessing' }
+CMSimulationRunnerPresenter >> hostedViews [
+
+	^ views , charts
 ]
 
 { #category : 'initialization' }
@@ -384,39 +364,6 @@ CMSimulationRunnerPresenter >> initializeWindow: aWindowPresenter [
 ]
 
 { #category : 'views' }
-CMSimulationRunnerPresenter >> moveToTabs: aView [
-	"Show aView, a space view or a chart, in a new tab, with its choices and its title, and close its window. Answer the view in the tab"
-
-	| back |
-	back := aView copyFor: self.
-	self closeView: aView.
-	self addTab: back.
-	^ back
-]
-
-{ #category : 'views' }
-CMSimulationRunnerPresenter >> moveToWindow: aView [
-	"Show aView, a space view or a chart, in a window of its own, with its choices and its title. Answer the view in the window"
-
-	| moved |
-	moved := aView copyFor: self.
-	self closeView: aView.
-	moved registerIn: self.
-	moved openInWindow.
-	^ moved
-]
-
-{ #category : 'views' }
-CMSimulationRunnerPresenter >> newChartView: aSelector of: aModelOrAnEntity [
-	"Answer a chart of the method aSelector of aModelOrAnEntity, that I manage"
-
-	^ (self instantiate: CMChartPresenter)
-		  host: self;
-		  subject: aModelOrAnEntity chart: aSelector;
-		  yourself
-]
-
-{ #category : 'views' }
 CMSimulationRunnerPresenter >> newView [
 	"Add a view in a new tab, showing every class with its default aspect"
 
@@ -464,6 +411,12 @@ CMSimulationRunnerPresenter >> newViewWith: aSelector [
 CMSimulationRunnerPresenter >> notebook [
 
 	^ notebook
+]
+
+{ #category : 'accessing' }
+CMSimulationRunnerPresenter >> pages [
+
+	^ pages
 ]
 
 { #category : 'initialization' }
@@ -585,27 +538,10 @@ CMSimulationRunnerPresenter >> updateDataTable [
 ]
 
 { #category : 'updating' }
-CMSimulationRunnerPresenter >> updateInInterface: aBlock [
-	"Run aBlock in the UI process, since Spec and Morphic widgets may only change there. From the simulation's process, wait until it is done, or until I am no longer displayed"
-
-	| done |
-	Processor activeProcess == UIManager default uiProcess ifTrue: [
-		^ aBlock value ].
-	done := Semaphore new.
-	self application defer: [ [ aBlock value ] ensure: [ done signal ] ].
-	[ done waitTimeoutMilliseconds: 200 ] whileTrue: [
-		self isDisplayed ifFalse: [ ^ self ] ]
-]
-
-{ #category : 'updating' }
 CMSimulationRunnerPresenter >> updateSelectedNotebookPage [
 	"Only update the page that is currently being displayed, and the views and charts in windows of their own. This makes execution much faster because other pages (data table, other views and charts) are not updated when they are not displayed"
 
-	views , charts do: [ :each |
-		each isInWindow ifTrue: [ each updateDiagram ] ].
-	notebook selectedPage ifNil: [ ^ self ].
-	pages keysAndValuesDo: [ :view :page |
-		notebook selectedPage = page ifTrue: [ view updateDiagram ] ].
+	self updateShownViews.
 	notebook selectedPage = dataPage ifTrue: [
 		self updateInInterface: [ self updateDataTable ] ]
 ]

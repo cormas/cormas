@@ -458,13 +458,13 @@ CMBlPresenterTest >> testSpacePresenterSavesPicture [
 { #category : 'tests' }
 CMBlPresenterTest >> testSwitchingBackToTheSpaceKeepsTheInterfaceResponsive [
 
-	| notebook space |
+	| notebook space inspector |
 	notebook := (self runnerOf: self openSimulationPresenter) notebook.
 	self waitForTheInterface.
 	space := notebook selectedPage.
-	UIManager default defer: [
-			notebook selectPage:
-				(notebook pages detect: [ :each | each title = 'Charts' ]) ].
+	inspector := notebook pages detect: [ :each |
+		             each title = 'Inspector' ].
+	UIManager default defer: [ notebook selectPage: inspector ].
 	self waitForTheInterface.
 	UIManager default defer: [ notebook selectPage: space ].
 	self waitForTheInterface

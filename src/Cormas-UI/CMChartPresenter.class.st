@@ -10,7 +10,7 @@ I show one chart of a model or of an entity, drawn from the data recorded on it,
 ## Collaborators:
 
 - `CMLineChart>>chartLinesOf:in:` and `canvasOf:hiding:` draw the chart from the data of the simulation.
-- My host, such as `CMSimulationRunnerPresenter`, creates me with `newChartView:of:`, moves me (`moveToWindow:`, `moveToTabs:`), closes me (`closeView:`) and asks me to `updateDiagram` after each displayed step, which I do through its `updateInInterface:`.
+- My host, a `TCMViewHost` such as `CMSimulationRunnerPresenter` or `CMEntityInspectorPresenter`, creates me with `newChartView:of:`, moves me (`moveToWindow:`, `moveToTabs:`), closes me (`closeView:`) and asks me to `updateDiagram` after each displayed step, which I do through its `updateInInterface:`.
 
 ## Public API and Key Messages
 

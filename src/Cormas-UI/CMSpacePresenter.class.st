@@ -237,7 +237,7 @@ CMSpacePresenter >> host: aSimulationRunner [
 
 { #category : 'initialization' }
 CMSpacePresenter >> initializeDiagram [
-	"Create the view of the space and the presenter that embeds it. While a simulation runs, the view is filled by its next displayed step. A choice made in the context menu of an entity may give a class a choice of its own, and so a row of its own"
+	"Create the view of the space and the presenter that embeds it. While a simulation runs, the view is filled by its next displayed step. A choice made in the context menu of an entity may give a class a choice of its own, and so a row of its own. Inspecting an entity opens the inspector that also shows its data and its charts"
 
 	spaceBuilder := self isSimulationRunning
 		                ifTrue: [
@@ -251,6 +251,8 @@ CMSpacePresenter >> initializeDiagram [
 	spaceBuilder whenAspectsChangedDo: [
 			aspects updateRows.
 			self choicesChanged ].
+	spaceBuilder inspectEntitiesWith: [ :entity |
+		self openInspectorOn: entity ].
 	diagram := spaceBuilder asPresenter.
 	diagram owner: self.
 	self update
@@ -334,6 +336,15 @@ CMSpacePresenter >> openInWindow [
 		initialExtent: 900 @ 600;
 		whenClosedDo: [ host closeView: self ].
 	detachedWindow open
+]
+
+{ #category : 'actions' }
+CMSpacePresenter >> openInspectorOn: anEntity [
+	"Open a window showing anEntity, the data recorded on it and its charts"
+
+	(self application newPresenter: CMEntityInspectorPresenter)
+		entity: anEntity;
+		open
 ]
 
 { #category : 'aspects' }

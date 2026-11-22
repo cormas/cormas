@@ -1,6 +1,9 @@
 Class {
 	#name : 'CMInspectSpaceContextMenuCommand',
 	#superclass : 'CMSpaceContextMenuCommand',
+	#instVars : [
+		'inspectBlock'
+	],
 	#category : 'Cormas-UI-Commands',
 	#package : 'Cormas-UI-Commands'
 }
@@ -14,13 +17,20 @@ CMInspectSpaceContextMenuCommand class >> order [
 { #category : 'action' }
 CMInspectSpaceContextMenuCommand >> action [
 
-	owner inspect 
+	inspectBlock value: owner
 ]
 
 { #category : 'accessing' }
 CMInspectSpaceContextMenuCommand >> icon [
 
 	^ self iconNamed: #smallInspectIt 
+]
+
+{ #category : 'initialization' }
+CMInspectSpaceContextMenuCommand >> inspectWith: aBlock [
+	"Evaluate aBlock with my owner, an entity, to inspect it"
+
+	inspectBlock := aBlock
 ]
 
 { #category : 'accessing' }
