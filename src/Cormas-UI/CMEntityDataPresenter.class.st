@@ -1,5 +1,5 @@
 "
-I show the data recorded on one entity: a row for each recorded step, with its step and the value of each probe.
+I show the data recorded on one entity: a row for each recorded step, with its step and the value of each probe, below the summary statistics of its probes of numbers.
 
 ## Responsibility:
 
@@ -50,7 +50,8 @@ Class {
 		'messageLabel',
 		'saveButton',
 		'saveClassButton',
-		'refreshPending'
+		'refreshPending',
+		'summary'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -75,7 +76,11 @@ CMEntityDataPresenter >> defaultLayout [
 	^ SpBoxLayout newTopToBottom
 		  spacing: 3;
 		  add: messageLabel expand: false;
-		  add: table;
+		  add: (SpPanedLayout newTopToBottom
+				   positionOfSlider: 0.4;
+				   add: summary;
+				   add: table;
+				   yourself);
 		  add: (SpBoxLayout newLeftToRight
 				   spacing: 5;
 				   add: saveButton;
@@ -108,6 +113,7 @@ CMEntityDataPresenter >> followSimulation [
 CMEntityDataPresenter >> initializePresenters [
 
 	refreshPending := false.
+	summary := self instantiate: CMSummaryPresenter.
 	table := self newTable.
 	messageLabel := self newLabel.
 	saveButton := self newButton
@@ -164,13 +170,16 @@ CMEntityDataPresenter >> saveToCsv [
 
 { #category : 'updating' }
 CMEntityDataPresenter >> showData [
-	"Show a row for each step recorded on the entity, or say why it was not recorded"
+	"Show a row for each step recorded on the entity with the statistics of its probes, or say why it was not recorded"
 
 	| data |
 	data := [ self simulation dataOf: entity ]
 		        on: CMRecordingError
 		        do: [ :error |
 				        table
+					        columns: #(  );
+					        items: #(  ).
+				        summary table
 					        columns: #(  );
 					        items: #(  ).
 				        messageLabel label: error messageText.
@@ -182,7 +191,8 @@ CMEntityDataPresenter >> showData [
 				(SpStringTableColumn
 					 title: name
 					 evaluated: [ :row | row at: index ]) ].
-	table items: data rows
+	table items: data rows.
+	summary showSummariesOf: data
 ]
 
 { #category : 'accessing' }
@@ -195,6 +205,12 @@ CMEntityDataPresenter >> simulation [
 CMEntityDataPresenter >> stopFollowingSimulation [
 
 	self timeStepAnnouncer unsubscribe: self
+]
+
+{ #category : 'accessing' }
+CMEntityDataPresenter >> summary [
+
+	^ summary
 ]
 
 { #category : 'accessing' }

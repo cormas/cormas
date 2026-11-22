@@ -5,7 +5,8 @@ Class {
 		'table',
 		'columnNames',
 		'saveToCsvButton',
-		'modelClass'
+		'modelClass',
+		'summary'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -42,14 +43,18 @@ CMDataPresenter >> data [
 	^ table items
 ]
 
-{ #category : 'layout' }
+{ #category : 'initialization' }
 CMDataPresenter >> defaultLayout [
 
 	^ SpBoxLayout newTopToBottom
-		spacing: 3;
-		add: table;
-		add: saveToCsvButton expand: false;
-		yourself
+		  spacing: 3;
+		  add: (SpPanedLayout newTopToBottom
+				   positionOfSlider: 0.4;
+				   add: summary;
+				   add: table;
+				   yourself);
+		  add: saveToCsvButton expand: false;
+		  yourself
 ]
 
 { #category : 'examples' }
@@ -60,12 +65,13 @@ CMDataPresenter >> example [
 { #category : 'initialization' }
 CMDataPresenter >> initializePresenters [
 
+	summary := self instantiate: CMSummaryPresenter.
 	table := self newTable.
-	
+
 	saveToCsvButton := self newButton
-		label: 'Save to CSV';
-		icon: CMIcons csvIcon;
-		yourself
+		                   label: 'Save to CSV';
+		                   icon: CMIcons csvIcon;
+		                   yourself
 ]
 
 { #category : 'accessing' }
@@ -110,4 +116,18 @@ CMDataPresenter >> saveDataToFile: aFileReference [
 CMDataPresenter >> showData: aCollection [
 		
 	table items: aCollection
+]
+
+{ #category : 'updating' }
+CMDataPresenter >> showTable: aDataTable [
+	"Show the rows of aDataTable and the statistics of its columns of numbers"
+
+	self showData: aDataTable rows.
+	summary showSummariesOf: aDataTable
+]
+
+{ #category : 'accessing' }
+CMDataPresenter >> summary [
+
+	^ summary
 ]

@@ -33,6 +33,16 @@ CMEntityDataPresenterTest >> setUp [
 ]
 
 { #category : 'tests' }
+CMEntityDataPresenterTest >> testAnEntityThatWasNotRecordedHasNoStatistics [
+
+	presenter simulation
+		doNotRecord: CMMockCow;
+		initializeSimulation.
+	presenter entity: self cow.
+	self assert: presenter summary table items isEmpty
+]
+
+{ #category : 'tests' }
 CMEntityDataPresenterTest >> testAnEntityThatWasNotRecordedSaysSo [
 
 	| cow |
@@ -73,4 +83,15 @@ CMEntityDataPresenterTest >> testTheDataOfAnEntityHasARowForEachRecordedStep [
 		(presenter table items collect: [ :each | each first ]) asArray
 		equals: #( 0 1 2 3 ).
 	self assert: presenter message isEmpty
+]
+
+{ #category : 'tests' }
+CMEntityDataPresenterTest >> testTheStatisticsOfAnEntityHaveAColumnForEachProbeOfNumbers [
+
+	presenter entity: self cow.
+	self
+		assert:
+			(presenter summary table columns collect: [ :each | each title ])
+				asArray
+		equals: #( 'statistic' 'energy' )
 ]

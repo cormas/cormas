@@ -534,7 +534,7 @@ CMSimulationRunnerPresenter >> updateAfterStep [
 { #category : 'update presenters' }
 CMSimulationRunnerPresenter >> updateDataTable [
 
-	dataTable showData: self simulation modelData rows
+	dataTable showTable: self simulation modelData
 ]
 
 { #category : 'updating' }

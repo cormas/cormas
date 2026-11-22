@@ -189,6 +189,18 @@ CMDataTable >> steps [
 	^ steps
 ]
 
+{ #category : 'accessing' }
+CMDataTable >> summaries [
+	"Return the summary statistics of each column of numbers, keyed by its name, in the order of the columns. A table without rows has none"
+
+	| summaries |
+	summaries := OrderedDictionary new.
+	columnNames with: columns do: [ :name :column |
+			(column isNotEmpty and: [ column first isNumber ]) ifTrue: [
+				summaries at: name put: (CMColumnSummary of: column) ] ].
+	^ summaries
+]
+
 { #category : 'writing' }
 CMDataTable >> writeCsvOn: aStream [
 	"Write me as CSV on aStream: a header with step and the names of my columns, then a line for each recorded step"

@@ -85,6 +85,12 @@ CMDataTableTest >> testATableIsWrittenAsCsvWithItsStepsThenItsColumns [
 ]
 
 { #category : 'tests' }
+CMDataTableTest >> testATableWithoutRowsHasNoSummaries [
+
+	self assert: table summaries isEmpty
+]
+
+{ #category : 'tests' }
 CMDataTableTest >> testAValueOfAnotherKindThanItsColumnRaisesARecordingError [
 
 	table addStep: 0 values: #( 3 40 ).
@@ -152,6 +158,19 @@ CMDataTableTest >> testNilRaisesARecordingError [
 	self
 		should: [ table addStep: 0 values: { nil. 40 } ]
 		raise: CMRecordingError
+]
+
+{ #category : 'tests' }
+CMDataTableTest >> testOnlyColumnsOfNumbersAreSummarized [
+
+	| summaries |
+	table := CMDataTable withColumns: #( #bag #name #hunted #boars ).
+	table addStep: 0 values: #( 1 'a' true 5 ).
+	table addStep: 1 values: #( 3 'b' false 7 ).
+	summaries := table summaries.
+	self assert: summaries keys asArray equals: #( #bag #boars ).
+	self assert: (summaries at: #bag) mean equals: 2.
+	self assert: (summaries at: #boars) maximum equals: 7
 ]
 
 { #category : 'tests' }

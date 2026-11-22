@@ -22,6 +22,22 @@ CMDataPresenterTest >> setUp [
 ]
 
 { #category : 'tests' }
+CMDataPresenterTest >> testADataTableIsShownWithTheStatisticsOfItsColumnsOfNumbers [
+
+	| table |
+	table := CMDataTable withColumns: #( #boars #name ).
+	table addStep: 0 values: #( 5 'a' ).
+	table addStep: 1 values: #( 7 'b' ).
+	dataPresenter showTable: table.
+	self assert: dataPresenter data equals: table rows.
+	self
+		assert:
+			(dataPresenter summary table columns collect: [ :each | each title ])
+				asArray
+		equals: #( 'statistic' 'boars' )
+]
+
+{ #category : 'tests' }
 CMDataPresenterTest >> testSaveDataToFile [
 
 	| fs file |
