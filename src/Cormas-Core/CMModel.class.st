@@ -1122,6 +1122,35 @@ CMModel >> newSimulationContext [
 ]
 
 { #category : 'accessing' }
+CMModel >> parameterValues [
+	"Return the current values of my parameters and of the class-side parameters of my entity classes, by class name then by getter"
+
+	| values |
+	values := OrderedDictionary new.
+	values at: self class name put: (self parameters
+			 inject: OrderedDictionary new
+			 into: [ :result :each |
+					 result
+						 at: each getterSelector
+						 put: (each valueFor: (each isInstanceSide
+										   ifTrue: [ self ]
+										   ifFalse: [ self class ]));
+						 yourself ]).
+	self class allEntityClasses do: [ :aClass |
+			aClass classSideParameters ifNotEmpty: [ :parameters |
+					values
+						at: aClass name
+						put:
+							(parameters
+								 inject: OrderedDictionary new
+								 into: [ :result :each |
+										 result
+											 at: each getterSelector put: (each valueFor: aClass);
+											 yourself ]) ] ].
+	^ values
+]
+
+{ #category : 'accessing' }
 CMModel >> parameters [
 
 	^ self class parameters

@@ -48,6 +48,19 @@ CMDataTableTest >> testAColumnThatWasNotRecordedRaisesARecordingError [
 ]
 
 { #category : 'tests' }
+CMDataTableTest >> testAFractionIsWrittenAsCsvAsAFloat [
+
+	table addStep: 0 values: {
+			(1 / 4).
+			3 }.
+	self
+		assert:
+			(String streamContents: [ :stream | table writeCsvOn: stream ])
+				lines second
+		equals: '0,0.25,3'
+]
+
+{ #category : 'tests' }
 CMDataTableTest >> testARejectedRowLeavesTheTableUnchanged [
 
 	table addStep: 0 values: #( 3 40 ).

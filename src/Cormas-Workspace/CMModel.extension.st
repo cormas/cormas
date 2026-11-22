@@ -1,6 +1,13 @@
 Extension { #name : 'CMModel' }
 
 { #category : '*Cormas-Workspace' }
+CMModel class >> codeVersion [
+	"Return the git state of my folder: its commit, the tag of that commit and whether it has uncommitted changes. The commit is nil when I was not installed from the workspace or my folder has no git"
+
+	^ CMWorkspace current codeVersionOf: self
+]
+
+{ #category : '*Cormas-Workspace' }
 CMModel class >> folder [
 	"Return the folder of my model in the workspace, where its data, screenshots and outputs are, such as self folder / 'data' / 'map.csv'"
 

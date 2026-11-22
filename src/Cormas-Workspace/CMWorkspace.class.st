@@ -628,6 +628,20 @@ CMWorkspace >> clone: aRepositoryUrl to: aFolder [
 					, error description , ')' ]
 ]
 
+{ #category : 'versions' }
+CMWorkspace >> codeVersionOf: aClass [
+	"Return the git state of the folder of the installed model that the package of aClass belongs to, or a nil commit when it is not part of an installed model"
+
+	^ installed
+		  detect: [ :each | each ownsPackageNamed: aClass package name ]
+		  ifFound: [ :each |
+		  (CMModelFolder in: self at: each folder) codeVersion ]
+		  ifNone: [
+				  OrderedDictionary new
+					  at: 'commit' put: nil;
+					  yourself ]
+]
+
 { #category : 'private' }
 CMWorkspace >> commitOf: aVersion in: aRepository [
 	"Return the commit of a version of the catalog in a clone of its repository: the head of a branch in the dev line, which Cormas follows, or the commit of a tag in a released line, which must be the one the catalog recorded"

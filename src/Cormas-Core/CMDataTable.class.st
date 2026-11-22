@@ -63,7 +63,7 @@ CMDataTable class >> withColumns: aCollectionOfNames [
 
 { #category : 'writing' }
 CMDataTable class >> writeCsvValues: aCollection on: aStream [
-	"Write aCollection as one line of CSV on aStream. A string is written between double quotes, with its own double quotes doubled"
+	"Write aCollection as one line of CSV on aStream. A string is written between double quotes, with its own double quotes doubled, and a number that is not an integer, such as a fraction, as a float"
 
 	aCollection
 		do: [ :each |
@@ -73,7 +73,10 @@ CMDataTable class >> writeCsvValues: aCollection on: aStream [
 								nextPut: $";
 								nextPutAll: (each copyReplaceAll: '"' with: '""');
 								nextPut: $" ]
-					ifFalse: [ aStream print: each ] ]
+					ifFalse: [
+							aStream print: ((each isNumber and: [ each isInteger not ])
+									 ifTrue: [ each asFloat ]
+									 ifFalse: [ each ]) ] ]
 		separatedBy: [ aStream nextPut: $, ].
 	aStream lf
 ]

@@ -64,7 +64,8 @@ Class {
 		'excludedClasses',
 		'excludedProbes',
 		'excludedEntities',
-		'recordingInterval'
+		'recordingInterval',
+		'runMetadata'
 	],
 	#category : 'Cormas-Core-Kernel',
 	#package : 'Cormas-Core',
@@ -153,14 +154,6 @@ CMSimulation >> dataOfClass: aClass [
 	| tables |
 	tables := entityData at: aClass ifAbsent: [ ^ #(  ) ].
 	^ tables keys sorted collect: [ :each | tables at: each ]
-]
-
-{ #category : 'simulation runner - init' }
-CMSimulation >> defaultStopCondition [
-	"Be careful when modifying the stop condition because it can make the simulation (including the tests) run endlesly"
-	^ [ :model |
-		model currentTimeStep >=
-		self class defaultFinalTimeStep ]
 ]
 
 { #category : 'recording' }
@@ -257,6 +250,7 @@ Reset the currentTimeStep and the data. Set the randomSeed"
 	entityData := Dictionary new.
 	cormasModel initEntities.
 	self setInitialParameters.
+	runMetadata := self newRunMetadata.
 	cormasModel perform: activeInitSelector.
 	self recordData.
 	shouldReleaseRandomSeedAfterInitialization ifTrue: [
@@ -267,8 +261,9 @@ Reset the currentTimeStep and the data. Set the randomSeed"
 CMSimulation >> initializeSimulationRunner [
 
 	simulationRunner := CMSimulationProcessRunner new
-		cormasSimulation: self;
-		stopCondition: self defaultStopCondition
+		                    cormasSimulation: self;
+		                    yourself.
+	self stopAfterStep: self class defaultFinalTimeStep
 ]
 
 { #category : 'simulation runner - config' }
@@ -306,6 +301,27 @@ CMSimulation >> modelData [
 	"Return the data recorded on the model: a CMDataTable with a row for each recorded step"
 
 	^ modelData
+]
+
+{ #category : 'private' }
+CMSimulation >> newRunMetadata [
+	"Return the settings of the run that this init starts, with the versions of the code it runs"
+
+	^ CMRunMetadata new
+		  model: cormasModel class name;
+		  started: DateAndTime now truncated;
+		  init: activeInitSelector;
+		  control: activeControlSelector;
+		  seed: context randomSeed;
+		  stopCondition:
+			  simulationRunner stopCondition sourceNode sourceCode;
+		  parameters: cormasModel parameterValues;
+		  recording: self recordingSettings;
+		  versions: (OrderedDictionary new
+				   at: 'cormas' put: CMVersion current printString;
+				   addAll: cormasModel class codeVersion;
+				   yourself);
+		  yourself
 ]
 
 { #category : 'simulation runner - running' }
@@ -400,6 +416,34 @@ CMSimulation >> recordedProbesOf: aClass [
 				  each value = selector and: [ aClass includesBehavior: each key ] ] ]
 ]
 
+{ #category : 'private' }
+CMSimulation >> recordingSettings [
+
+	| notRecordedProbes notRecordedEntities |
+	notRecordedProbes := Dictionary new.
+	excludedProbes do: [ :each |
+			(notRecordedProbes
+				 at: each key name
+				 ifAbsentPut: [ SortedCollection new ]) add: each value ].
+	notRecordedEntities := Dictionary new.
+	excludedEntities do: [ :each |
+			(notRecordedEntities
+				 at: each key name
+				 ifAbsentPut: [ SortedCollection new ]) add: each value ].
+	^ OrderedDictionary new
+		  at: 'interval' put: recordingInterval;
+		  at: 'notRecordedClasses'
+		  put:
+			  (excludedClasses
+				   collect: [ :each | each name ]
+				   as: SortedCollection) asArray;
+		  at: 'notRecordedProbes'
+		  put: (notRecordedProbes collect: [ :each | each asArray ]);
+		  at: 'notRecordedEntities'
+		  put: (notRecordedEntities collect: [ :each | each asArray ]);
+		  yourself
+]
+
 { #category : 'simulation runner - running' }
 CMSimulation >> resume [
 
@@ -434,6 +478,33 @@ CMSimulation >> runStep [
 
 	context timeStepAnnouncer announce:
 		(CMTimeStepEnded timeStep: self currentTimeStep)
+]
+
+{ #category : 'saving' }
+CMSimulation >> saveData [
+	"Write the run in the output folder of the model's folder, as saveDataIn: does. Return the folder of the run"
+
+	^ self saveDataIn: cormasModel folder / 'output'
+]
+
+{ #category : 'saving' }
+CMSimulation >> saveDataIn: aFolder [
+	"Write the run in a new folder of aFolder, named after when it started and its init: its settings and versions as run.json, the data of the model as data.csv and the data of each class with recorded instances as data-<Class>.csv. Return the folder of the run"
+
+	| run |
+	run := aFolder / runMetadata folderName.
+	run exists ifTrue: [
+		CMRecordingError signal: run fullName , ' already exists' ].
+	run ensureCreateDirectory.
+	runMetadata lastStep: self currentTimeStep.
+	run / 'run.json' writeStreamDo: [ :stream |
+		runMetadata writeJsonOn: stream ].
+	run / 'data.csv' writeStreamDo: [ :stream |
+		modelData writeCsvOn: stream ].
+	entityData keysDo: [ :each |
+			run / ('data-' , each name , '.csv') writeStreamDo: [ :stream |
+				self writeCsvOfClass: each on: stream ] ].
+	^ run
 ]
 
 { #category : 'initialization' }
@@ -497,8 +568,11 @@ CMSimulation >> stop [
 
 { #category : 'simulation runner - config' }
 CMSimulation >> stopAfterStep: aNumber [
-	"A syntactic sugar to provide a stop condition that will stop a simulation after a given number of steps"
-	self stopWhen: [ :model | model currentTimeStep >= aNumber ]
+	"Stop the simulation after aNumber steps. The condition is compiled from its source, so that a saved run records its final step"
+
+	self stopWhen: (self class compiler evaluate:
+			 '[ :model | model currentTimeStep >= ' , aNumber printString
+			 , ' ]')
 ]
 
 { #category : 'simulation runner - config' }

@@ -69,6 +69,30 @@ CMModelFolder >> chosenVersion [
 	^ self gitConfig getString: 'cormas.version' ifAbsent: [ nil ]
 ]
 
+{ #category : 'versions' }
+CMModelFolder >> codeVersion [
+	"Return the commit checked out in my folder, its tag or nil, and whether files differ from it, including new files that git does not ignore. The commit is nil when my folder is not a git repository"
+
+	| repository head |
+	self isGitRepository ifFalse: [
+			^ OrderedDictionary new
+				  at: 'commit' put: nil;
+				  yourself ].
+	repository := IceRepositoryCreator new
+		              location: location;
+		              createRepository.
+	head := repository headCommit.
+	^ OrderedDictionary new
+		  at: 'commit' put: head id;
+		  at: 'tag' put: (repository tags
+				   detect: [ :each | each commit = head ]
+				   ifFound: [ :each | each name ]
+				   ifNone: [ nil ]);
+		  at: 'uncommittedChanges'
+		  put: (self hasUncommittedChangesIn: repository);
+		  yourself
+]
+
 { #category : 'accessing' }
 CMModelFolder >> commit [
 	"Return the id of the commit checked out in my folder, or nil when my folder is not a git repository"
@@ -120,6 +144,23 @@ CMModelFolder >> hasModelOneLevelDown [
 	subfolders := location directories.
 	^ subfolders size = 1 and: [
 		  (self class in: workspace at: subfolders first) isModel ]
+]
+
+{ #category : 'versions' }
+CMModelFolder >> hasUncommittedChangesIn: aRepository [
+
+	| handle diff options |
+	handle := aRepository repositoryHandle.
+	options := LGitDiffOptions defaults.
+	options prim_flags:
+		LGitDiffOptionTypeEnum git_diff_include_untracked value.
+	diff := LGitDiff of: handle.
+	diff
+		diff_tree_to_workdir_with_index: diff
+		repo: handle
+		old_tree: (handle revparse: 'HEAD^{tree}')
+		opts: options.
+	^ diff numberOfDeltas > 0
 ]
 
 { #category : 'private' }
