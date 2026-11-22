@@ -42,7 +42,7 @@ CMSimulationPresenterTest >> tearDown [
 CMSimulationPresenterTest >> testANewSimulationIsRecordedAsTheRecordingPageSays [
 
 	| newSimulation |
-	presenter recordingPresenter doNotRecord: CMMockCow.
+	presenter recordingPresenter doNotRecord: #energy of: CMMockAnimal.
 	presenter initializeSimulationInit: #initFixed control: #step.
 	newSimulation := presenter application simulation.
 	self

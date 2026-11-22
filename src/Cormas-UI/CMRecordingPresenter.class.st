@@ -1,20 +1,22 @@
 "
-I am the Recording page of a simulation window: I let the modeler choose how often data is recorded, and which classes and probes are recorded.
+I am the Recording page of a simulation window: I let the modeler choose how often data is recorded, and which probes are recorded.
 
 ## Responsibility:
 
-- I list the model, then each entity class that has probes, with its probes, each with a checkbox.
+- I show a flat table with a row for each probe of the model and of the entity classes, the model first, then the classes by name, each row with a checkbox. A probe inherited from another class of the model has a row only in that class, and switching it off there switches it off in the subclasses.
+- A class none of whose probes is recorded is not recorded at all.
 - I keep the choices across inits, and give them to each new simulation.
 
 ## Collaborators:
 
 - `CMSimulationPresenter` shows me in its sidebar and asks me to `applyTo:` each simulation it initializes.
-- `CMSimulation` receives the recording interval and the switches.
+- `CMSimulation` receives the recording interval and the probes that are switched off.
 
 ## Public API and Key Messages
 
 - `applyTo: aSimulation`
-- `doNotRecord:`, `record:`, `doNotRecord:of:`, `record:of:`, `isRecorded:` and `isRecorded:of:`, as the checkboxes do.
+- `doNotRecord:of:`, `record:of:` and `isRecorded:of:`, as the checkboxes do.
+- `probesTable`, `intervalInput`
 
 ```smalltalk
 | application |
@@ -25,35 +27,27 @@ application cormasModel: CMMockModel new.
 
 ## Internal Representation
 
-- `excludedClasses`: a `Set` of classes; `excludedProbes`: a `Set` of class -> selector associations.
+- `excludedProbes`: a `Set` of class -> selector associations, one for each row whose checkbox is unchecked.
 "
 Class {
 	#name : 'CMRecordingPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'intervalInput',
-		'classesTree',
-		'excludedClasses',
+		'probesTable',
 		'excludedProbes'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
 }
 
-{ #category : 'recording' }
+{ #category : 'accessing' }
 CMRecordingPresenter >> applyTo: aSimulation [
-	"Give aSimulation the recording interval and the classes and probes that are not recorded"
+	"Give aSimulation the recording interval and the probes that are not recorded. A class none of whose probes is recorded is not recorded at all"
 
 	aSimulation recordEvery: intervalInput number.
-	excludedClasses do: [ :each | aSimulation doNotRecord: each ].
 	excludedProbes do: [ :each |
 		aSimulation doNotRecord: each value of: each key ]
-]
-
-{ #category : 'accessing' }
-CMRecordingPresenter >> classesTree [
-
-	^ classesTree
 ]
 
 { #category : 'initialization' }
@@ -70,15 +64,9 @@ CMRecordingPresenter >> defaultLayout [
 		  add: (SpBoxLayout newTopToBottom
 				   spacing: 1;
 				   add: 'Probes to record' expand: false;
-				   add: classesTree;
+				   add: probesTable;
 				   yourself);
 		  yourself
-]
-
-{ #category : 'recording' }
-CMRecordingPresenter >> doNotRecord: aClass [
-
-	excludedClasses add: aClass
 ]
 
 { #category : 'recording' }
@@ -87,18 +75,9 @@ CMRecordingPresenter >> doNotRecord: aSelector of: aClass [
 	excludedProbes add: aClass -> aSelector
 ]
 
-{ #category : 'private' }
-CMRecordingPresenter >> doNotRecordItem: anItem [
-
-	anItem isClass
-		ifTrue: [ self doNotRecord: anItem ]
-		ifFalse: [ self doNotRecord: anItem value of: anItem key ]
-]
-
 { #category : 'initialization' }
 CMRecordingPresenter >> initialize [
 
-	excludedClasses := Set new.
 	excludedProbes := Set new.
 	super initialize
 ]
@@ -111,26 +90,26 @@ CMRecordingPresenter >> initializePresenters [
 		                 minimum: 1;
 		                 number: 1;
 		                 yourself.
-	classesTree := self newTreeTable
-		               hideColumnHeaders;
-		               addColumn:
-			               ((SpCheckBoxTableColumn evaluated: [ :item |
-					                 self isRecordedItem: item ])
-				                onActivation: [ :item | self recordItem: item ];
-				                onDeactivation: [ :item |
-					                self doNotRecordItem: item ];
-				                width: 20;
+	probesTable := self newTable
+		               addColumn: ((SpCheckBoxTableColumn
+				                 title: 'Record'
+				                 evaluated: [ :row |
+					                 self isRecorded: row value of: row key ])
+				                onActivation: [ :row |
+					                self record: row value of: row key ];
+				                onDeactivation: [ :row |
+					                self doNotRecord: row value of: row key ];
+				                width: 60;
 				                yourself);
 		               addColumn:
-		               (SpStringTableColumn evaluated: [ :item |
-			                self nameOfItem: item ]);
-		               roots: self recordableClasses;
-		               children: [ :item |
-				               item isClass
-					               ifTrue: [
-					               item probeSelectors collect: [ :each |
-						               item -> each ] ]
-					               ifFalse: [ #(  ) ] ];
+		               (SpStringTableColumn
+			                title: 'Class'
+			                evaluated: [ :row | row key name ]);
+		               addColumn:
+		               (SpStringTableColumn
+			                title: 'Probe'
+			                evaluated: [ :row | row value ]);
+		               items: self probeRows;
 		               yourself
 ]
 
@@ -141,51 +120,35 @@ CMRecordingPresenter >> intervalInput [
 ]
 
 { #category : 'recording' }
-CMRecordingPresenter >> isRecorded: aClass [
-
-	^ (excludedClasses includes: aClass) not
-]
-
-{ #category : 'recording' }
 CMRecordingPresenter >> isRecorded: aSelector of: aClass [
 
 	^ (excludedProbes includes: aClass -> aSelector) not
 ]
 
 { #category : 'private' }
-CMRecordingPresenter >> isRecordedItem: anItem [
+CMRecordingPresenter >> probeRows [
+	"Answer an association from a class to one of its probes for each probe of the model and of the entity classes. A probe inherited from another class of the model has a row only in that class, since switching it off there switches it off in its subclasses"
 
-	^ anItem isClass
-		  ifTrue: [ self isRecorded: anItem ]
-		  ifFalse: [ self isRecorded: anItem value of: anItem key ]
+	| classes |
+	classes := self recordableClasses.
+	^ classes flatCollect: [ :class |
+			  (class probeSelectors reject: [ :selector |
+					   classes anySatisfy: [ :other |
+							   (class inheritsFrom: other) and: [
+								   other probeSelectors includes: selector ] ] ]) collect: [
+				  :selector | class -> selector ] ]
 ]
 
-{ #category : 'private' }
-CMRecordingPresenter >> nameOfItem: anItem [
+{ #category : 'accessing' }
+CMRecordingPresenter >> probesTable [
 
-	^ anItem isClass
-		  ifTrue: [ anItem name ]
-		  ifFalse: [ anItem value ]
-]
-
-{ #category : 'recording' }
-CMRecordingPresenter >> record: aClass [
-
-	excludedClasses remove: aClass ifAbsent: [ ]
+	^ probesTable
 ]
 
 { #category : 'recording' }
 CMRecordingPresenter >> record: aSelector of: aClass [
 
 	excludedProbes remove: aClass -> aSelector ifAbsent: [ ]
-]
-
-{ #category : 'private' }
-CMRecordingPresenter >> recordItem: anItem [
-
-	anItem isClass
-		ifTrue: [ self record: anItem ]
-		ifFalse: [ self record: anItem value of: anItem key ]
 ]
 
 { #category : 'private' }

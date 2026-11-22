@@ -188,9 +188,9 @@ CMSimulationPresenter >> initializeWindow: aWindowPresenter [
 			self keepWindowWiderThanItsContent: aWindowPresenter ];
 		whenResizingDo: [ simulationRunner fitDiagram ];
 		whenClosedDo: [
+				self forgetFocusIn: aWindowPresenter.
 				self stopSimulation.
 				simulationRunner closeAllViews.
-				self forgetFocusIn: aWindowPresenter.
 				whenWindowIsClosedHooks do: #value ]
 ]
 

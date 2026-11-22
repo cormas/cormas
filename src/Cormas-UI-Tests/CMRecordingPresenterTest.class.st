@@ -38,20 +38,9 @@ CMRecordingPresenterTest >> setUp [
 ]
 
 { #category : 'tests' }
-CMRecordingPresenterTest >> testAClassCanBeRecordedAgain [
+CMRecordingPresenterTest >> testAClassWithoutAnyProbeToRecordIsNotRecorded [
 
-	presenter doNotRecord: CMMockCow.
-	presenter record: CMMockCow.
-	self assert: (presenter isRecorded: CMMockCow).
-	self initializeWithSettings.
-	self assert: (simulation dataOf: self cow) size equals: 1
-]
-
-{ #category : 'tests' }
-CMRecordingPresenterTest >> testAClassThatIsNotRecordedIsSwitchedOffInTheSimulation [
-
-	presenter doNotRecord: CMMockCow.
-	self deny: (presenter isRecorded: CMMockCow).
+	presenter doNotRecord: #energy of: CMMockAnimal.
 	self initializeWithSettings.
 	self should: [ simulation dataOf: self cow ] raise: CMRecordingError
 ]
@@ -79,13 +68,13 @@ CMRecordingPresenterTest >> testAProbeThatIsNotRecordedIsSwitchedOffInTheSimulat
 ]
 
 { #category : 'tests' }
-CMRecordingPresenterTest >> testEachClassListsItsProbes [
+CMRecordingPresenterTest >> testEachProbeHasARowTheModelFirstThenTheClassesByName [
 
-	self
-		assert: (presenter classesTree children value: CMMockModel) asArray
-		equals: {
-				(CMMockModel -> #numberOfAliveCells).
-				(CMMockModel -> #numberOfDeadCells) }
+	self assert: presenter probesTable items asArray equals: {
+			(CMMockModel -> #numberOfAliveCells).
+			(CMMockModel -> #numberOfDeadCells).
+			(CMMockAnimal -> #energy).
+			(CMMockCell -> #state) }
 ]
 
 { #category : 'tests' }
@@ -99,21 +88,20 @@ CMRecordingPresenterTest >> testEverythingIsRecordedByDefault [
 ]
 
 { #category : 'tests' }
-CMRecordingPresenterTest >> testTheModelComesFirstThenTheClassesWithProbes [
-
-	self assert: presenter classesTree roots asArray equals: {
-			CMMockModel.
-			CMMockAnimal.
-			CMMockCell.
-			CMMockCow.
-			CMMockGoat }
-]
-
-{ #category : 'tests' }
 CMRecordingPresenterTest >> testTheRecordingIntervalIsApplied [
 
 	presenter intervalInput number: 3.
 	self initializeWithSettings.
 	6 timesRepeat: [ simulation runStep ].
 	self assert: simulation modelData steps asArray equals: #( 0 3 6 )
+]
+
+{ #category : 'tests' }
+CMRecordingPresenterTest >> testTheTableHasAColumnToRecordAndColumnsForTheClassAndTheProbe [
+
+	self
+		assert:
+			(presenter probesTable columns collect: [ :each | each title ])
+				asArray
+		equals: #( 'Record' 'Class' 'Probe' )
 ]
