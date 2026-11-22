@@ -35,7 +35,8 @@ CMMockModelWithoutData >> initGrid [
 		createGridNumberOfRows: 2
 		numberOfColumns: 2
 		neighbourhood: 4
-		closed: true
+		closed: true.
+	self cells do: [ :each | each initDead ]
 ]
 
 { #category : 'control' }

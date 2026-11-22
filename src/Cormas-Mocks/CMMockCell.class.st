@@ -82,6 +82,13 @@ CMMockCell >> removedFromModel [
 ]
 
 { #category : 'accessing' }
+CMMockCell >> state [
+
+	<probe>
+	^ state
+]
+
+{ #category : 'accessing' }
 CMMockCell >> timesRemovedFromModel [
 
 	^ timesRemovedFromModel ifNil: [ 0 ]

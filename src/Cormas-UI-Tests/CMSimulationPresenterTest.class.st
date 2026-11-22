@@ -39,6 +39,20 @@ CMSimulationPresenterTest >> tearDown [
 ]
 
 { #category : 'tests' }
+CMSimulationPresenterTest >> testANewSimulationIsRecordedAsTheRecordingPageSays [
+
+	| newSimulation |
+	presenter recordingPresenter doNotRecord: CMMockCow.
+	presenter initializeSimulationInit: #initFixed control: #step.
+	newSimulation := presenter application simulation.
+	self
+		should: [
+				newSimulation dataOf:
+					(newSimulation cormasModel entitiesOfClass: CMMockCow) first ]
+		raise: CMRecordingError
+]
+
+{ #category : 'tests' }
 CMSimulationPresenterTest >> testANewSimulationStopsThePreviousOne [
 
 	simulation runAllSteps.

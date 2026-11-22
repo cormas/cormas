@@ -15,7 +15,8 @@ I am the data table of one recorded object, such as the model or one hunting uni
 
 - `CMDataTable withColumns: aCollectionOfNames` creates an empty table.
 - `addStep:values:` adds a row.
-- `steps`, `column:`, `columnNames` and `size` read the table.
+- `steps`, `column:`, `columnNames`, `rows` and `size` read the table.
+- `label:` names the recorded object, and `label` returns it.
 
 ```smalltalk
 | table |
@@ -30,6 +31,7 @@ table column: #boars ""an OrderedCollection(40 38)""
 - `columnNames`: an `Array` of the probe selectors.
 - `steps`: an `OrderedCollection` of the step of each row.
 - `columns`: an `Array` of `OrderedCollection`, one per column, in the order of `columnNames`.
+- `label`: a string naming the recorded object, or nil.
 
 ### Implementation Points
 
@@ -42,7 +44,8 @@ Class {
 	#instVars : [
 		'columnNames',
 		'steps',
-		'columns'
+		'columns',
+		'label'
 	],
 	#category : 'Cormas-Core-Analysis',
 	#package : 'Cormas-Core',
@@ -132,6 +135,19 @@ CMDataTable >> kindOf: aValue inColumnAt: anIndex [
 		(columnNames at: anIndex) printString , ' returned '
 		, aValue printString
 		, ', but a probe must return a number, a boolean or a string'
+]
+
+{ #category : 'accessing' }
+CMDataTable >> label [
+	"Return the text that names the recorded object, such as the printString of an entity"
+
+	^ label
+]
+
+{ #category : 'accessing' }
+CMDataTable >> label: aString [
+
+	label := aString
 ]
 
 { #category : 'accessing' }

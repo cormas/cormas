@@ -124,6 +124,12 @@ CMSimulationProcessRunner >> stop [
 ]
 
 { #category : 'accessing' }
+CMSimulationProcessRunner >> stopCondition [
+
+	^ stopCondition
+]
+
+{ #category : 'accessing' }
 CMSimulationProcessRunner >> stopCondition: aFullBlockClosure [
 
 	stopCondition := aFullBlockClosure

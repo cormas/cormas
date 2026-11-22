@@ -1,3 +1,50 @@
+"
+I am one simulation of a model: I initialize it with an init method, run it step by step with a control method until a stop condition holds, and record the data measured by its probes.
+
+## Responsibility:
+
+- I know the settings of the simulation: the init and control methods, the random seed, the stop condition and what is recorded.
+- I record, at init, every recording interval and at the last step, the probes of the model in its data, and the probes of each entity in the data of that entity.
+- I run the steps, in the background or one at a time.
+
+## Collaborators:
+
+- `CMModel` is the model I simulate; its `<probe>` methods, and those of its entity classes, are what I record.
+- `CMDataTable` holds the data of the model and of each recorded entity.
+- `CMSimulationProcessRunner` runs my steps in the background and holds the stop condition.
+- `CMSimulationContext` holds the current step and the random numbers.
+
+## Public API and Key Messages
+
+- `CMSimulation for: aModel` creates a simulation; `activeInitSelector:`, `activeControlSelector:`, `stopWhen:` or `stopAfterStep:` set it up.
+- `initializeSimulation`, `runStep` and `runAllSteps` run it.
+- `recordEvery:`, `doNotRecord:`, `doNotRecord:of:`, `doNotRecordEntity:`, `record:` and `record:of:` choose what is recorded; everything is recorded by default.
+- `modelData` and `dataOf:` return the recorded data.
+
+```smalltalk
+| simulation |
+simulation := (CMSimulation for: CMMockModel new)
+	activeInitSelector: #initFixed;
+	activeControlSelector: #step;
+	recordEvery: 2;
+	doNotRecord: CMMockCell;
+	yourself.
+simulation initializeSimulation.
+10 timesRepeat: [ simulation runStep ].
+simulation modelData column: #numberOfAliveCells
+```
+
+## Internal Representation
+
+- `modelData`: the `CMDataTable` of the model.
+- `entityData`: a `Dictionary` from entity classes to a `Dictionary` from ids to the `CMDataTable` of each entity.
+- `probes`: the recorded probes of the model; `recordedProbes`: a `Dictionary` from entity classes to their recorded probes. Both are chosen at init.
+- `excludedClasses`, `excludedProbes` (class -> selector) and `excludedEntities` (class -> id): the recording switches.
+
+### Implementation Points
+
+- Class and probe switches apply from the next init. An entity switch applies from the next recorded step, and since ids are numbered in the same order at each init, it also applies after a new init.
+"
 Class {
 	#name : 'CMSimulation',
 	#superclass : 'Object',
@@ -11,7 +58,13 @@ Class {
 		'hasFixedRandomSeed',
 		'shouldReleaseRandomSeedAfterInitialization',
 		'simulationRunner',
-		'modelData'
+		'modelData',
+		'entityData',
+		'recordedProbes',
+		'excludedClasses',
+		'excludedProbes',
+		'excludedEntities',
+		'recordingInterval'
 	],
 	#category : 'Cormas-Core-Kernel',
 	#package : 'Cormas-Core',
@@ -69,12 +122,48 @@ CMSimulation >> currentTimeStep [
 	^ context currentTimeStep 
 ]
 
+{ #category : 'data' }
+CMSimulation >> dataOf: anEntity [
+	"Return the data recorded on anEntity: a CMDataTable with a row for each recorded step while it was alive"
+
+	^ (entityData at: anEntity class ifAbsent: [ Dictionary new ])
+		  at: anEntity id
+		  ifAbsent: [
+		  CMRecordingError signal:
+			  anEntity printString , ' was not recorded' ]
+]
+
 { #category : 'simulation runner - init' }
 CMSimulation >> defaultStopCondition [
 	"Be careful when modifying the stop condition because it can make the simulation (including the tests) run endlesly"
 	^ [ :model |
 		model currentTimeStep >=
 		self class defaultFinalTimeStep ]
+]
+
+{ #category : 'recording' }
+CMSimulation >> doNotRecord: aClass [
+	"From the next init, record nothing of the model or the entities of aClass and of its subclasses"
+
+	excludedClasses add: aClass
+]
+
+{ #category : 'recording' }
+CMSimulation >> doNotRecord: aSelector of: aClass [
+	"From the next init, do not record the probe aSelector of aClass and of its subclasses"
+
+	(aClass probeSelectors includes: aSelector) ifFalse: [
+			self error: ('{1} has no probe #{2}' format: {
+						 aClass name.
+						 aSelector }) ].
+	excludedProbes add: aClass -> aSelector
+]
+
+{ #category : 'recording' }
+CMSimulation >> doNotRecordEntity: anEntity [
+	"From the next recorded step, record nothing more of anEntity. As ids are numbered in the same order at each init, the entity with the same id is not recorded after a new init either"
+
+	excludedEntities add: anEntity class -> anEntity id
 ]
 
 { #category : 'testing' }
@@ -108,6 +197,12 @@ CMSimulation >> initialize [
 
 	probes := #(  ).
 	modelData := CMDataTable withColumns: probes.
+	entityData := Dictionary new.
+	recordedProbes := Dictionary new.
+	excludedClasses := Set new.
+	excludedProbes := Set new.
+	excludedEntities := Set new.
+	recordingInterval := 1.
 	initialParameterValues := Dictionary new.
 
 	hasFixedRandomSeed := false.
@@ -118,8 +213,13 @@ CMSimulation >> initialize [
 
 { #category : 'initialization' }
 CMSimulation >> initializeProbes [
+	"Choose the probes to record on the model and on the entities of each class, from the probe methods and the recording switches"
 
-	probes := cormasModel class probeSelectors
+	probes := self recordedProbesOf: cormasModel class.
+	recordedProbes := Dictionary new.
+	cormasModel class allEntityClasses do: [ :each |
+			(self recordedProbesOf: each) ifNotEmpty: [ :selectors |
+				recordedProbes at: each put: selectors ] ]
 ]
 
 { #category : 'initialization' }
@@ -132,6 +232,7 @@ Reset the currentTimeStep and the data. Set the randomSeed"
 		context chooseRandomSeedAtRandom ].
 	self initializeProbes.
 	modelData := CMDataTable withColumns: probes.
+	entityData := Dictionary new.
 	cormasModel initEntities.
 	self setInitialParameters.
 	cormasModel perform: activeInitSelector.
@@ -167,6 +268,17 @@ CMSimulation >> isSimulationRunning [
 ]
 
 { #category : 'data' }
+CMSimulation >> isStepToRecord [
+	"Init, every recording interval, and the last step are recorded"
+
+	| step |
+	step := self currentTimeStep.
+	^ step = 0 or: [
+			  step \\ recordingInterval = 0 or: [
+				  simulationRunner stopCondition value: cormasModel ] ]
+]
+
+{ #category : 'data' }
 CMSimulation >> modelData [
 
 	"Return the data recorded on the model: a CMDataTable with a row for each recorded step"
@@ -196,13 +308,74 @@ CMSimulation >> randomSeed: aNumber [
 	
 ]
 
+{ #category : 'recording' }
+CMSimulation >> record: aClass [
+	"From the next init, record again the model or the entities of aClass"
+
+	excludedClasses remove: aClass ifAbsent: [ ]
+]
+
+{ #category : 'recording' }
+CMSimulation >> record: aSelector of: aClass [
+	"From the next init, record again the probe aSelector of aClass"
+
+	excludedProbes remove: aClass -> aSelector ifAbsent: [ ]
+]
+
 { #category : 'data' }
 CMSimulation >> recordData [
-	"Add a row of the values of the model's probes at the current step to the model's data"
+	"At a step to record, add a row of the values of the probes of the model to its data, and of each recorded entity to its own data"
 
+	self isStepToRecord ifFalse: [ ^ self ].
 	modelData
 		addStep: self currentTimeStep
-		values: (probes collect: [ :each | cormasModel perform: each ])
+		values: (probes collect: [ :each | cormasModel perform: each ]).
+	recordedProbes keysAndValuesDo: [ :aClass :selectors |
+			(cormasModel entitiesOfClass: aClass) do: [ :each |
+				self recordEntity: each probes: selectors ] ]
+]
+
+{ #category : 'data' }
+CMSimulation >> recordEntity: anEntity probes: aCollectionOfSelectors [
+
+	| data |
+	(excludedEntities isNotEmpty and: [
+		 excludedEntities includes: anEntity class -> anEntity id ])
+		ifTrue: [ ^ self ].
+	data := (entityData
+		         at: anEntity class
+		         ifAbsentPut: [ Dictionary new ])
+		        at: anEntity id
+		        ifAbsentPut: [
+				        (CMDataTable withColumns: aCollectionOfSelectors)
+					        label: anEntity printString;
+					        yourself ].
+	[
+		data
+			addStep: self currentTimeStep
+			values:
+			(aCollectionOfSelectors collect: [ :each | anEntity perform: each ]) ]
+		on: CMRecordingError
+		do: [ :error |
+				CMRecordingError signal:
+					anEntity printString , ': ' , error messageText ]
+]
+
+{ #category : 'recording' }
+CMSimulation >> recordEvery: anInteger [
+	"Record the data at init, every anInteger steps, and at the last step"
+
+	recordingInterval := anInteger
+]
+
+{ #category : 'recording' }
+CMSimulation >> recordedProbesOf: aClass [
+
+	(aClass withAllSuperclasses includesAny: excludedClasses) ifTrue: [
+		^ #(  ) ].
+	^ aClass probeSelectors reject: [ :selector |
+			  excludedProbes anySatisfy: [ :each |
+				  each value = selector and: [ aClass includesBehavior: each key ] ] ]
 ]
 
 { #category : 'simulation runner - running' }

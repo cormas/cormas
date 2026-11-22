@@ -8,7 +8,8 @@ Class {
 		'randomNumbersPresenter',
 		'simulationRunner',
 		'whenWindowIsClosedHooks',
-		'minimumWidthWithoutSidebar'
+		'minimumWidthWithoutSidebar',
+		'recordingPresenter'
 	],
 	#category : 'Cormas-UI-Simulation',
 	#package : 'Cormas-UI',
@@ -131,20 +132,25 @@ CMSimulationPresenter >> initializeFancyNotebook [
 
 { #category : 'initialization' }
 CMSimulationPresenter >> initializePresenters [
-		
-	stopConditionPresenter := self instantiate: CMStopConditionPresenter.
-	randomNumbersPresenter := self instantiate: CMSimulationInitRandomPresenter. 
-	
-	simulationInitializerPresenter := (self instantiate: CMSimulationInitializerPresenter)
-		whenInitializeButtonClickedDo: [ :initSelector :controlSelector |
-			self
-				initializeSimulationInit: initSelector
-				control: controlSelector ];
-		yourself.
-	
-	self initializeFancyNotebook.
 
-	simulationRunner := self instantiate: CMSimulationRunnerPresenter.
+	stopConditionPresenter := self instantiate: CMStopConditionPresenter.
+	randomNumbersPresenter := self instantiate:
+		                          CMSimulationInitRandomPresenter.
+	recordingPresenter := self instantiate: CMRecordingPresenter.
+
+	simulationInitializerPresenter := (self instantiate:
+			                                   CMSimulationInitializerPresenter)
+		                                  whenInitializeButtonClickedDo: [
+			                                  :initSelector
+			                                  :controlSelector |
+			                                  self
+				                                  initializeSimulationInit:
+					                                  initSelector
+				                                  control: controlSelector ];
+		                                  yourself.
+
+	self initializeFancyNotebook.
+	simulationRunner := self instantiate: CMSimulationRunnerPresenter
 ]
 
 { #category : 'instance creation' }
@@ -156,20 +162,16 @@ Reset the currentTimeStep and the data. Set the randomSeed"
 	"Save parameters from previous simulation to copy their values and start with the same values
 	in the new simulation. This is important if we want to set some parameters before initialization"
 	parameters := self cormasModel allParameters.
-
 	"The new simulation shares the model of the previous one, which must not change it any more"
 	self stopSimulation.
 	simulation := CMSimulation for: self cormasModel.
 	self application simulation: simulation.
-
 	simulation
 		activeInitSelector: anInitSelector;
 		activeControlSelector: aControlSelector.
-
 	simulation stopWhen: stopConditionPresenter buildConditionBlock.
-
 	randomNumbersPresenter apply.
-
+	recordingPresenter applyTo: simulation.
 	simulation initializeSimulation.
 	simulationRunner updateWithSimulation.
 	randomNumbersPresenter showCurrentSettings
@@ -214,6 +216,12 @@ CMSimulationPresenter >> presenterWindowTitle [
 	^ self cormasModel class modelName, ' - Simulation'
 ]
 
+{ #category : 'accessing' }
+CMSimulationPresenter >> recordingPresenter [
+
+	^ recordingPresenter
+]
+
 { #category : 'as yet unclassified' }
 CMSimulationPresenter >> settingsParameters [
 	<fancyNotebookPageOrder: 5>
@@ -232,6 +240,16 @@ CMSimulationPresenter >> settingsRandomNumbers [
 		title: 'Random number generator'
 		icon: CMIcons diceIcon
 		provider: [ randomNumbersPresenter ]
+]
+
+{ #category : 'as yet unclassified' }
+CMSimulationPresenter >> settingsRecording [
+
+	<fancyNotebookPageOrder: 6>
+	^ SpNotebookPage
+		  title: 'Recording'
+		  icon: CMIcons csvIcon
+		  provider: [ recordingPresenter ]
 ]
 
 { #category : 'as yet unclassified' }

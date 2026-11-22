@@ -148,6 +148,14 @@ CMEntity class >> parameters [
 	^ parameters
 ]
 
+{ #category : 'probes' }
+CMEntity class >> probeSelectors [
+	"Return the selectors of the methods marked with <probe>, sorted"
+
+	^ ((Pragma allNamed: #probe from: self to: CMEntity) collect: [ :each |
+		   each methodSelector ]) asSet asSortedCollection asArray
+]
+
 { #category : 'parameters' }
 CMEntity class >> resetParameters [
 	"Set my class-side parameters to their default values, and collect my instance-side parameters again, since their definitions may have changed"

@@ -40,7 +40,9 @@ CMMockAnimal >> aspectEnergy: look [
 
 { #category : 'accessing' }
 CMMockAnimal >> energy [
+
 	<parameterFloatMin: 0 max: 1 step: 0.1 default: 0.5>
+	<probe>
 	^ energy
 ]
 
