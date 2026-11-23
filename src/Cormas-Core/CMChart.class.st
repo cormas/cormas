@@ -5,7 +5,7 @@ I am a chart that a modeler defines in a `<chart>` method, to show the probes re
 
 - I know my series, each showing a probe of my subject (the model, or the entity whose chart I am) or of all the instances of a class, in the order they were added.
 - I refuse a series whose probe on x is not the one of my other series, so that my x axis has one meaning, and a series that draws what another of my series draws.
-- I know the titles of the chart and of its axes, and whether it has a legend.
+- I know the titles of the chart and of its axes, whether it has a legend, its reference lines and the range its y axis covers at least.
 
 ## Collaborators:
 
@@ -17,6 +17,8 @@ I am a chart that a modeler defines in a `<chart>` method, to show the probes re
 - `add:` adds a configured series.
 - `lineX:y:`, `linesX:y:ofAll:`, `pointsX:y:`, `pointsX:y:ofAll:`, `areaX:y:`, `areasX:y:ofAll:`, `barsX:y:`, `barsX:y:ofAll:`, `boxesX:y:ofAll:` and `histogramX:ofAll:` add a series with the default label and color.
 - `title:`, `xTitle:`, `yTitle:`, `hideLegend`.
+- `lineAtY:label:` and `lineAtX:label:` draw a reference line, such as a threshold or the step of an event, labelled on the chart rather than in the legend.
+- `yFrom:to:` fixes the y axis, for shares or scores, unless a value goes beyond it.
 - `hasSeriesAtShownStep` says whether a series shows only the step chosen with the step slider.
 
 Probes are named by their selectors. The step is `#currentTimeStep`, a message that every model and entity understands:
@@ -38,6 +40,8 @@ CMChart new
 - `title`, `xTitle`, `yTitle`: strings, or nil when the chart has none.
 - `series`: an `OrderedCollection` of `CMChartSeries`.
 - `showsLegend`: a boolean, true unless `hideLegend` was sent.
+- `xReferenceLines`, `yReferenceLines`: `OrderedCollection`s of associations from a value to its label.
+- `yMinimum`, `yMaximum`: numbers the y axis covers at least, 0 unless `yFrom:to:` was sent.
 
 ### Implementation Points
 
@@ -51,7 +55,11 @@ Class {
 		'xTitle',
 		'yTitle',
 		'series',
-		'showsLegend'
+		'showsLegend',
+		'xReferenceLines',
+		'yReferenceLines',
+		'yMinimum',
+		'yMaximum'
 	],
 	#category : 'Cormas-Core-Charts',
 	#package : 'Cormas-Core',
@@ -136,7 +144,25 @@ CMChart >> initialize [
 
 	super initialize.
 	series := OrderedCollection new.
-	showsLegend := true
+	showsLegend := true.
+	xReferenceLines := OrderedCollection new.
+	yReferenceLines := OrderedCollection new.
+	yMinimum := 0.
+	yMaximum := 0
+]
+
+{ #category : 'adding' }
+CMChart >> lineAtX: aNumber label: aString [
+	"Draw a line across the chart at aNumber on x, such as the step of an event, labelled aString on the chart rather than in the legend"
+
+	xReferenceLines add: aNumber -> aString
+]
+
+{ #category : 'adding' }
+CMChart >> lineAtY: aNumber label: aString [
+	"Draw a line across the chart at aNumber on y, such as a threshold or a need, labelled aString on the chart rather than in the legend"
+
+	yReferenceLines add: aNumber -> aString
 ]
 
 { #category : 'adding' }
@@ -195,6 +221,14 @@ CMChart >> xTitle [
 CMChart >> xTitle: aString [
 
 	xTitle := aString
+]
+
+{ #category : 'adding' }
+CMChart >> yFrom: aMinimum to: aMaximum [
+	"My y axis covers aMinimum to aMaximum, as shares cover 0 to 1, and more if a value goes beyond them"
+
+	yMinimum := aMinimum.
+	yMaximum := aMaximum
 ]
 
 { #category : 'accessing' }

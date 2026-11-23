@@ -17,6 +17,37 @@ CMChart >> add: aLegend below: aCanvas [
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
+CMChart >> addReferenceLinesTo: aRoassalChart [
+	"Draw each reference line across the built aRoassalChart, in grey and dashed so that it is not taken for a series, with its label at its end"
+
+	| left right bottom top |
+	left := aRoassalChart xScale scale: aRoassalChart minChartValueX.
+	right := aRoassalChart xScale scale: aRoassalChart maxChartValueX.
+	bottom := aRoassalChart yScale scale: aRoassalChart minChartValueY.
+	top := aRoassalChart yScale scale: aRoassalChart maxChartValueY.
+	yReferenceLines do: [ :each |
+			| y label |
+			y := aRoassalChart yScale scale: each key.
+			label := self
+				         referenceLabelOn: aRoassalChart
+				         from: left @ y
+				         to: right @ y
+				         named: each value.
+			label translateTo:
+				right - (label width / 2) - 4 @ (y - (label height / 2) - 2) ].
+	xReferenceLines do: [ :each |
+			| x label |
+			x := aRoassalChart xScale scale: each key.
+			label := self
+				         referenceLabelOn: aRoassalChart
+				         from: x @ bottom
+				         to: x @ top
+				         named: each value.
+			label translateTo:
+				x + (label width / 2) + 4 @ (top + (label height / 2) + 2) ]
+]
+
+{ #category : '*Cormas-UI-Roassal3' }
 CMChart >> atShownStep: someSeriesData [
 	"Return someSeriesData, those drawn by a series shown at the shown step keeping only the rows of the latest step any of them has"
 
@@ -39,7 +70,7 @@ CMChart >> canvasOf: someSeries hiding: aSetOfNames [
 
 { #category : '*Cormas-UI-Roassal3' }
 CMChart >> canvasOf: someSeriesData hiding: aSetOfNames leavingRoomToGrow: aBoolean [
-	"Return a canvas with the chart of someSeriesData and a legend naming each of them. The series data named in aSetOfNames are hidden. Clicking an entry of the legend hides its series data, or shows them again, and updates aSetOfNames. The x axis ends at the last value, unless aBoolean leaves room up to the next tick, so that a chart growing step by step is not drawn with a new range at each step. Values on x that are not all numbers are shown as categories. Series shown at the shown step only show the last step of their data"
+	"Return a canvas with the chart of someSeriesData and a legend naming each of them. The series data named in aSetOfNames are hidden. Clicking an entry of the legend hides its series data, or shows them again, and updates aSetOfNames. The x axis ends at the last value, unless aBoolean leaves room up to the next tick, so that a chart growing step by step is not drawn with a new range at each step. Values on x that are not all numbers are shown as categories. Series shown at the shown step only show the last step of their data. Reference lines are drawn over the series, labelled on the chart"
 
 	| shown categories plots roassalChart canvas shapes legend |
 	shown := self atShownStep: someSeriesData.
@@ -53,7 +84,9 @@ CMChart >> canvasOf: someSeriesData hiding: aSetOfNames leavingRoomToGrow: aBool
 		                xCategories: categories
 		                leavingRoomToGrow: aBoolean.
 	canvas := roassalChart canvas.
-	plots ifNotEmpty: [ roassalChart build ].
+	plots ifNotEmpty: [
+			roassalChart build.
+			self addReferenceLinesTo: roassalChart ].
 	shapes := Dictionary new.
 	plots do: [ :each |
 			(shapes at: each key name ifAbsentPut: [ OrderedCollection new ])
@@ -118,8 +151,29 @@ CMChart >> plotsOf: someSeriesData [
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
+CMChart >> referenceLabelOn: aRoassalChart from: aPoint to: anotherPoint named: aString [
+	"Add to the canvas of aRoassalChart a reference line from aPoint to anotherPoint and a label aString, and return the label so that it can be placed at the end of the line"
+
+	| label |
+	aRoassalChart canvas add: (RSLine new
+			 startPoint: aPoint;
+			 endPoint: anotherPoint;
+			 color: Color gray;
+			 width: 1.5;
+			 dashArray: #( 6 4 );
+			 yourself).
+	label := RSLabel new
+		         text: aString;
+		         fontSize: 10;
+		         color: Color gray;
+		         yourself.
+	aRoassalChart canvas add: label.
+	^ label
+]
+
+{ #category : '*Cormas-UI-Roassal3' }
 CMChart >> roassalChartOf: somePlots xCategories: someCategories leavingRoomToGrow: aBoolean [
-	"Return a Roassal chart that draws the plots of the associations somePlots, with x and y axis lines but no frame, and ticks labelled without needless decimals. Axes of values that are not negative start at 0. The chart cannot be zoomed nor dragged, but fits the space it is shown in. The x axis has a tick for each of someCategories, or else ends at its last value, unless aBoolean leaves room up to the next tick"
+	"Return a Roassal chart that draws the plots of the associations somePlots, with x and y axis lines but no frame, and ticks labelled without needless decimals. Axes start at 0, or below when a value is negative, and reach the reference lines and the fixed y range. The chart cannot be zoomed nor dragged, but fits the space it is shown in. The x axis has a tick for each of someCategories, or else ends at its last value, unless aBoolean leaves room up to the next tick"
 
 	| roassalChart yValues yTicks |
 	roassalChart := RSCompositeChart new.
@@ -143,16 +197,20 @@ CMChart >> roassalChartOf: somePlots xCategories: someCategories leavingRoomToGr
 				self
 					setXAxisOf: roassalChart
 					from:
-					(somePlots flatCollect: [ :each | each value definedValuesX ])
+						(somePlots flatCollect: [ :each | each value definedValuesX ])
+						, (xReferenceLines collect: [ :each | each key ])
 					margin:
 					(somePlots collect: [ :each | each key series class xMargin ])
 						max
 					leavingRoomToGrow: aBoolean ]
 		ifNotEmpty: [ self setXAxisOf: roassalChart to: someCategories ].
-	yValues := somePlots flatCollect: [ :each |
-		           each value definedValuesY ].
+	yValues := (somePlots flatCollect: [ :each |
+		            each value definedValuesY ])
+	           , (yReferenceLines collect: [ :each | each key ]) , {
+		           yMinimum.
+		           yMaximum }.
 	yTicks := self
-		          ticksFrom: (yValues min min: 0)
+		          ticksFrom: yValues min
 		          to: yValues max
 		          wholeNumbers:
 		          (yValues allSatisfy: [ :each | each isInteger ]).

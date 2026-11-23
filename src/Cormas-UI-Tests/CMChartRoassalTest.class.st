@@ -119,6 +119,17 @@ CMChartRoassalTest >> testAChosenColorIsUsedForTheLinesOfAllInstances [
 ]
 
 { #category : 'tests' }
+CMChartRoassalTest >> testAFixedYRangeSetsTheYAxis [
+
+	| texts |
+	chart yFrom: 20 to: 100.
+	texts := self textsOf:
+		         (chart canvasOf: { self lineData } hiding: Set new).
+	self assert: (texts includes: '100').
+	self assert: (texts count: [ :each | each = '0' ]) equals: 1
+]
+
+{ #category : 'tests' }
 CMChartRoassalTest >> testAHiddenLegendIsNotDrawn [
 
 	chart hideLegend.
@@ -225,6 +236,49 @@ CMChartRoassalTest >> testAProbeThatWasNotRecordedCannotBeDrawn [
 ]
 
 { #category : 'tests' }
+CMChartRoassalTest >> testAReferenceLineAtXIsDrawnAcrossTheChartAtItsValue [
+
+	| canvas pointX |
+	chart lineAtX: 13 label: 'Harvest'.
+	canvas := chart canvasOf: { self lineData } hiding: Set new.
+	pointX := (canvas allChildren detect: [ :each |
+		           each isKindOf: RSPolyline ]) controlPoints second x.
+	self assert: (canvas allChildren anySatisfy: [ :each |
+				 (each isKindOf: RSLine) and: [
+						 (each startPoint x closeTo: pointX) and: [
+								 (each endPoint x closeTo: pointX) and: [
+									 (each endPoint y - each startPoint y) abs > 300 ] ] ] ])
+]
+
+{ #category : 'tests' }
+CMChartRoassalTest >> testAReferenceLineAtYIsDrawnAcrossTheChartAtItsValue [
+
+	| canvas pointY |
+	chart lineAtY: 40 label: 'Target'.
+	canvas := chart canvasOf: { self lineData } hiding: Set new.
+	pointY := (canvas allChildren detect: [ :each |
+		           each isKindOf: RSPolyline ]) controlPoints second y.
+	self assert: (canvas allChildren anySatisfy: [ :each |
+				 (each isKindOf: RSLine) and: [
+						 (each startPoint y closeTo: pointY) and: [
+								 (each endPoint y closeTo: pointY) and: [
+									 each endPoint x - each startPoint x > 700 ] ] ] ])
+]
+
+{ #category : 'tests' }
+CMChartRoassalTest >> testAReferenceLineIsLabelledOnTheChartRatherThanInTheLegend [
+
+	| canvas |
+	chart
+		lineAtY: 40 label: 'Target';
+		lineAtX: 13 label: 'Harvest';
+		hideLegend.
+	canvas := chart canvasOf: { self lineData } hiding: Set new.
+	self assert:
+		((self textsOf: canvas) includesAll: #( 'Target' 'Harvest' ))
+]
+
+{ #category : 'tests' }
 CMChartRoassalTest >> testAxesOfNonNegativeValuesStartAtZero [
 
 	| canvas |
@@ -299,6 +353,18 @@ CMChartRoassalTest >> testSeriesOfDifferentKindsAreDrawnTogether [
 		equals: {
 				CMBoxesPlot.
 				RSLinePlot }
+]
+
+{ #category : 'tests' }
+CMChartRoassalTest >> testTheAxesReachTheReferenceLines [
+
+	| texts |
+	chart
+		lineAtY: 80 label: 'High';
+		lineAtX: 25 label: 'Late'.
+	texts := self textsOf:
+		         (chart canvasOf: { self lineData } hiding: Set new).
+	self assert: (texts includesAll: #( '80' '25' ))
 ]
 
 { #category : 'tests' }
@@ -456,6 +522,15 @@ CMChartRoassalTest >> testTicksOfWholeNumbersAreLabelledWithoutDecimals [
 	self deny:
 		((self textsOf: (self canvasHiding: Set new)) anySatisfy: [ :each |
 			 each includesSubstring: '.' ])
+]
+
+{ #category : 'tests' }
+CMChartRoassalTest >> testValuesBeyondAFixedYRangeWidenTheYAxis [
+
+	chart yFrom: 0 to: 1.
+	self assert:
+		((self textsOf: (chart canvasOf: { self lineData } hiding: Set new))
+			 includes: '50')
 ]
 
 { #category : 'private' }
