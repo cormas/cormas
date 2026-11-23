@@ -1,27 +1,29 @@
 "
-I am the boxes of a `CMBoxplot`: the spread of a probe over all the instances of a class, one box at each step.
+I am boxes: the spread of a probe on y, one box for each value of a probe on x, such as a box at each step for the energy of all the rabbits.
 
 ## Responsibility:
 
-- I show my probe, which must return numbers, of all the instances of a class and of its subclasses.
+- I gather the values on y of all the objects I show at each value on x; my probe on y must return numbers.
+- Several box series of a chart stand side by side at each value on x.
 
 ## Collaborators:
 
-- `CMSpreadSeries` makes my series; `CMBoxesPlot` draws them.
+- `CMXYSeries` gives me my probes, label and color; `CMBoxesPlot` draws me.
 
 ## Public API and Key Messages
 
-- `probe:ofAll:`, `label:`, `color:`
+- `x:y:ofAll:`, `x:y:`, `label:`, `color:`, `atShownStep`
 
 ```smalltalk
-(CMBoxSeries new probe: #energy ofAll: CMMockAnimal)
+CMBoxSeries new
+	x: #currentTimeStep y: #energy ofAll: CMMockAnimal;
 	color: Color orange;
 	yourself
 ```
 "
 Class {
 	#name : 'CMBoxSeries',
-	#superclass : 'CMSpreadSeries',
+	#superclass : 'CMXYSeries',
 	#category : 'Cormas-Core-Charts',
 	#package : 'Cormas-Core',
 	#tag : 'Charts'

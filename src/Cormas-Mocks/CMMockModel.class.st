@@ -59,9 +59,9 @@ CMMockModel >> cellMatrix [
 CMMockModel >> chartAliveCells [
 	"How many cells are alive?"
 	<chart>
-	^ CMLineChart new
+	^ CMChart new
 		  title: 'Alive cells';
-		  line: #numberOfAliveCells;
+		  lineX: #currentTimeStep y: #numberOfAliveCells;
 		  yourself
 ]
 
@@ -70,10 +70,10 @@ CMMockModel >> chartCells [
 	"How many cells are alive, and how many are dead?"
 
 	<chart>
-	^ CMLineChart new
+	^ CMChart new
 		  title: 'Cells';
-		  line: #numberOfAliveCells;
-		  line: #numberOfDeadCells;
+		  lineX: #currentTimeStep y: #numberOfAliveCells;
+		  lineX: #currentTimeStep y: #numberOfDeadCells;
 		  yourself
 ]
 

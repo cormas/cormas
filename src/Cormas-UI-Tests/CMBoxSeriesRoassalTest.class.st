@@ -1,5 +1,5 @@
 Class {
-	#name : 'CMBoxplotRoassalTest',
+	#name : 'CMBoxSeriesRoassalTest',
 	#superclass : 'TestCase',
 	#instVars : [
 		'simulation',
@@ -11,7 +11,7 @@ Class {
 }
 
 { #category : 'running' }
-CMBoxplotRoassalTest >> setUp [
+CMBoxSeriesRoassalTest >> setUp [
 
 	super setUp.
 	simulation := (CMSimulation for: CMMockModel new)
@@ -24,14 +24,14 @@ CMBoxplotRoassalTest >> setUp [
 	(model entitiesOfClass: CMMockCow) first energy: 0.2.
 	(model entitiesOfClass: CMMockGoat) first energy: 0.8.
 	3 timesRepeat: [ simulation runStep ].
-	chart := CMBoxplot new
+	chart := CMChart new
 ]
 
 { #category : 'tests' }
-CMBoxplotRoassalTest >> testABoxIsDrawnAtEachStep [
+CMBoxSeriesRoassalTest >> testABoxIsDrawnAtEachStep [
 
 	| canvas |
-	chart boxes: #energy ofAll: CMMockAnimal.
+	chart boxesX: #currentTimeStep y: #energy ofAll: CMMockAnimal.
 	canvas := chart
 		          canvasOf: (chart seriesDataOf: model in: simulation)
 		          hiding: Set new.
@@ -41,7 +41,7 @@ CMBoxplotRoassalTest >> testABoxIsDrawnAtEachStep [
 ]
 
 { #category : 'tests' }
-CMBoxplotRoassalTest >> testABoxSpansTheQuartilesOfItsValues [
+CMBoxSeriesRoassalTest >> testABoxSpansTheQuartilesOfItsValues [
 
 	self
 		assert: (CMBoxesPlot new fiveNumbersOf: #( 4 1 3 2 ))
@@ -52,9 +52,20 @@ CMBoxplotRoassalTest >> testABoxSpansTheQuartilesOfItsValues [
 ]
 
 { #category : 'tests' }
-CMBoxplotRoassalTest >> testBoxesOfValuesThatAreNotNumbersCannotBeDrawn [
+CMBoxSeriesRoassalTest >> testBoxesCanStandAtTheValuesOfAnyProbe [
 
-	chart boxes: #state ofAll: CMMockCell.
+	| plots |
+	chart boxesX: #energy y: #energy ofAll: CMMockAnimal.
+	plots := chart plotsOf: (chart seriesDataOf: model in: simulation).
+	self
+		assert: plots first value xValues asArray
+		equals: #( 0.2 0.5 0.8 )
+]
+
+{ #category : 'tests' }
+CMBoxSeriesRoassalTest >> testBoxesOfValuesThatAreNotNumbersCannotBeDrawn [
+
+	chart boxesX: #currentTimeStep y: #state ofAll: CMMockCell.
 	self
 		should: [ chart seriesDataOf: model in: simulation ]
 		raise: Error
@@ -63,20 +74,24 @@ CMBoxplotRoassalTest >> testBoxesOfValuesThatAreNotNumbersCannotBeDrawn [
 ]
 
 { #category : 'tests' }
-CMBoxplotRoassalTest >> testTheBoxOfEachStepGathersTheValuesOfAllInstancesAtThatStep [
+CMBoxSeriesRoassalTest >> testTheBoxOfEachStepGathersTheValuesOfAllInstancesAtThatStep [
 
-	| series |
-	chart boxes: #energy ofAll: CMMockAnimal.
-	series := chart seriesDataOf: model in: simulation.
-	self assert: series size equals: 1.
-	self assert: series first steps asArray equals: #( 0 1 2 3 ).
-	self assert: series first values first asArray equals: #( 0.5 0.5 ).
-	self assert: series first values last asArray equals: #( 0.2 0.8 )
+	| plots |
+	chart boxesX: #currentTimeStep y: #energy ofAll: CMMockAnimal.
+	plots := chart plotsOf: (chart seriesDataOf: model in: simulation).
+	self assert: plots size equals: 1.
+	self assert: plots first value xValues asArray equals: #( 0 1 2 3 ).
+	self
+		assert: (plots first value yValues asArray first: 2)
+		equals: #( 0.5 0.5 ).
+	self
+		assert: (plots first value yValues asArray last: 2)
+		equals: #( 0.2 0.8 )
 ]
 
 { #category : 'tests' }
-CMBoxplotRoassalTest >> testTheBoxesAreNamedAfterTheLabelOfTheirSeries [
-	chart add: (CMBoxSeries new probe: #energy ofAll: CMMockAnimal;
+CMBoxSeriesRoassalTest >> testTheBoxesAreNamedAfterTheLabelOfTheirSeries [
+	chart add: (CMBoxSeries new x: #currentTimeStep y: #energy ofAll: CMMockAnimal;
 			 label: 'Energy';
 			 yourself).
 	self

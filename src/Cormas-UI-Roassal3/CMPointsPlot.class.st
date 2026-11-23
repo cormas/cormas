@@ -1,5 +1,5 @@
 "
-I am the Roassal plot of the points of a `CMScatterplot`: a scatter plot whose points are large enough to see.
+I am the Roassal plot of the points of a `CMPointSeries`: a scatter plot whose points are large enough to see.
 
 ## Responsibility:
 
@@ -8,7 +8,7 @@ I am the Roassal plot of the points of a `CMScatterplot`: a scatter plot whose p
 
 ## Collaborators:
 
-- `CMScatterplot`: creates me for each series it draws, with a translucent color so that the points behind others show.
+- `CMPointSeries class>>plotsOf:on:`: creates me for each series data it draws, with a translucent color so that the points behind others show.
 
 ## Public API and Key Messages
 

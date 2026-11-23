@@ -1,28 +1,28 @@
 "
-I am a Roassal plot that draws the boxes of one probe of a `CMBoxplot`: at each step, a line from the minimum to the maximum, a box from the first to the third quartile, and a white line at the median.
+I am a Roassal plot that draws the boxes of a `CMBoxSeries`: at each value on x, a line from the minimum to the maximum, a box from the first to the third quartile, and a white line at the median.
 
 ## Responsibility:
 
-- I draw a box at each step from the numbers recorded at that step, scaled by the chart I belong to.
+- I draw a box at each value on x from the numbers gathered there, scaled by the chart I belong to.
 - I compute the five numbers of a box: minimum, quartiles, median and maximum, interpolated as R and NumPy do by default.
-- I share the width of a step with the boxes of the other probes of my chart, at my own place.
+- I share the space of a value on x with the boxes of the other box series of my chart, at my own place.
 
 ## Collaborators:
 
-- `CMBoxplot>>plotsOf:` creates me from a `CMSeriesData`.
+- `CMBoxSeries class>>plotsOf:on:` creates me from a `CMSeriesData`.
 - `RSCompositeChart` gives me my scales, and `CMChart>>canvasOf:hiding:` hides my shapes.
 
 ## Public API and Key Messages
 
-- `steps:spreads:` gives the steps and the numbers of each step.
-- `place:of:` gives my place among the boxes of a step.
+- `x:spreads:` gives the values on x and the numbers at each of them.
+- `place:of:` gives my place among the boxes of a value on x.
 - `fiveNumbersOf:` returns the five numbers of a box.
 
 ```smalltalk
 | chart |
 chart := RSCompositeChart new.
 chart add: (CMBoxesPlot new
-		 steps: #( 0 1 2 ) spreads: #( #( 1 2 3 ) #( 2 4 6 ) #( 3 5 9 ) );
+		 x: #( 0 1 2 ) spreads: #( #( 1 2 3 ) #( 2 4 6 ) #( 3 5 9 ) );
 		 yourself).
 chart
 	minChartValueX: -1;
@@ -34,8 +34,8 @@ chart open
 
 ## Internal Representation
 
-- `xValues`: the steps; `spreads`: the collection of numbers of each step; `yValues`: all the numbers, which set the extent of the chart.
-- `place`, `numberOfPlaces`: my place among the boxes of a step.
+- `xValues`: the values on x; `spreads`: the collection of numbers at each of them; `yValues`: all the numbers, which set the extent of the chart.
+- `place`, `numberOfPlaces`: my place among the boxes of a value on x.
 - `boxShapes`: the shapes I drew.
 "
 Class {
@@ -145,10 +145,10 @@ CMBoxesPlot >> renderIn: aCanvas [
 ]
 
 { #category : 'accessing' }
-CMBoxesPlot >> steps: someSteps spreads: someCollections [
-	"Draw a box at each of someSteps for the numbers of the collection at the same index of someCollections"
+CMBoxesPlot >> x: someValues spreads: someCollections [
+	"Draw a box at each of someValues on x for the numbers of the collection at the same index of someCollections"
 
-	xValues := someSteps.
+	xValues := someValues.
 	spreads := someCollections.
 	yValues := someCollections flatCollect: [ :each | each ]
 ]

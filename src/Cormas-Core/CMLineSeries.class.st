@@ -1,28 +1,29 @@
 "
-I am a line of a `CMLineChart`: the values of a probe over time, of the subject of the chart, or of each instance of a class, one line each.
+I am a line: the points of a probe on y against a probe on x, joined in the order of their steps. Against `#currentTimeStep`, I show how the probe changes over time; against another probe, how the two change together.
 
 ## Responsibility:
 
-- I make one series for my probe of the subject of the chart, or one for each instance, named after the instance.
-- My probe must return numbers.
+- For the subject of the chart, I make one line.
+- For all the instances of a class, I make one line for each instance, named after the instance.
 
 ## Collaborators:
 
-- `CMChartSeries` gives me my probe, label and color.
+- `CMXYSeries` gives me my probes, label and color; `RSLinePlot` draws me.
 
 ## Public API and Key Messages
 
-- `probe:`, `probe:ofAll:`, `label:`, `color:`
+- `x:y:`, `x:y:ofAll:`, `label:`, `color:`, `atShownStep`
 
 ```smalltalk
-(CMLineSeries new probe: #energy ofAll: CMMockAnimal)
+CMLineSeries new
+	x: #currentTimeStep y: #energy ofAll: CMMockAnimal;
 	color: Color gray;
 	yourself
 ```
 "
 Class {
 	#name : 'CMLineSeries',
-	#superclass : 'CMChartSeries',
+	#superclass : 'CMXYSeries',
 	#category : 'Cormas-Core-Charts',
 	#package : 'Cormas-Core',
 	#tag : 'Charts'

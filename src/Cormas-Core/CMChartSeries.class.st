@@ -1,55 +1,61 @@
 "
-I am a series of a chart: what it draws for one probe, or two for points, such as a line or a set of boxes, and how it is labelled and colored. I am the abstract superclass of `CMLineSeries`, `CMAreaSeries`, `CMBoxSeries`, `CMBarSeries` and `CMPointSeries`.
+I am a series of a chart: the marks it draws, such as a line, points or boxes, for a probe on x and, for most kinds, a probe on y, and how they are labelled and colored. I am the abstract superclass of `CMHistogramSeries`, which counts the values of its probe on x, and of `CMXYSeries`, which shows a probe on y against a probe on x.
 
 ## Responsibility:
 
-- I know the probe I show, and whether I show it on the subject of the chart (the model, or the entity whose chart it is) or on all the instances of a class and of its subclasses.
-- I know my label in the legend, my probe by default, and my color, a color of the chart's palette by default. When I show all the instances of a class, they all get my color.
-- Cormas-UI-Roassal3 makes me the `CMSeriesData` that draw me from the recorded data.
+- I know my probe on x, and whether I show the subject of the chart (the model, or the entity whose chart it is) or all the instances of a class and of its subclasses. A probe is the selector of a `<probe>` method, or `#currentTimeStep`, the step of each recorded row.
+- I know whether I show every recorded step or only the step the chart shows, my label in the legend, my probe by default, and my color, a color of the chart's palette by default. When I show all the instances of a class, they all get my color.
+- Cormas-UI-Roassal3 makes me the `CMSeriesData` I draw from the recorded data, and makes my class draw the series data of my kind together.
 
 ## Collaborators:
 
-- `CMChart` adds me with `add:` and asks me for my series, in its order.
-- `CMSimulation>>dataOf:` and `dataOfAll:` give the `CMDataTable`s I read my probe from.
+- `CMChart` adds me with `add:` and asks me whether I draw what another series draws (`showsTheSameAs:`).
+- `CMSimulation>>dataOf:` and `dataOfAll:` give the `CMDataTable`s I read my probes from.
 
 ## Public API and Key Messages
 
-- `probe:` or `probe:ofAll:` choose what I show, before `label:`, which they would replace.
+- `x:y:` or `x:y:ofAll:` (`x:` or `x:ofAll:` for a histogram) choose what I show, before `label:`, which they would replace.
+- `atShownStep` shows only the step chosen with the step slider of the chart.
 - `label:` and `color:` choose how I am shown.
 
 ```smalltalk
-CMLineChart new
-	title: 'Rabbits and grass';
-	line: #numberOfRabbits;
-	add: (CMLineSeries new probe: #amountOfGrass;
-		label: 'Patches with grass';
-		color: Color green;
-		yourself);
+CMLineSeries new
+	x: #currentTimeStep y: #energy ofAll: RMRabbit;
+	color: Color gray;
 	yourself
 ```
 
 ## Internal Representation
 
-- `probe`: the selector of a probe.
+- `x`: the selector of my probe on x.
 - `showsAllInstances`: whether I show all the instances of `classOfAll`, rather than the subject of the chart.
 - `classOfAll`: the class whose instances I show.
 - `label`: a string.
 - `colors`: the colors I am drawn in, by position, or none to take those of the chart's palette; `color:` makes it a single color.
+- `isAtShownStep`: whether I show only the step the chart shows.
 "
 Class {
 	#name : 'CMChartSeries',
 	#superclass : 'Object',
 	#instVars : [
-		'probe',
+		'x',
 		'showsAllInstances',
 		'classOfAll',
 		'label',
-		'colors'
+		'colors',
+		'isAtShownStep'
 	],
 	#category : 'Cormas-Core-Charts',
 	#package : 'Cormas-Core',
 	#tag : 'Charts'
 }
+
+{ #category : 'configuring' }
+CMChartSeries >> atShownStep [
+	"Show only the values of the step that the chart shows, chosen with its step slider, rather than those of every recorded step"
+
+	isAtShownStep := true
+]
 
 { #category : 'accessing' }
 CMChartSeries >> classOfAll [
@@ -71,9 +77,17 @@ CMChartSeries >> colors [
 
 { #category : 'initialization' }
 CMChartSeries >> initialize [
+
 	super initialize.
 	showsAllInstances := false.
-	colors := #(  )
+	colors := #(  ).
+	isAtShownStep := false
+]
+
+{ #category : 'accessing' }
+CMChartSeries >> isAtShownStep [
+
+	^ isAtShownStep
 ]
 
 { #category : 'accessing' }
@@ -91,42 +105,30 @@ CMChartSeries >> label: aString [
 
 { #category : 'printing' }
 CMChartSeries >> printOn: aStream [
-	aStream << '#' << probe.
+
+	self printProbesOn: aStream.
 	showsAllInstances ifTrue: [ aStream << ' of all ' << classOfAll name ]
 ]
 
-{ #category : 'accessing' }
-CMChartSeries >> probe [
+{ #category : 'printing' }
+CMChartSeries >> printProbesOn: aStream [
 
-	^ probe
-]
-
-{ #category : 'configuring' }
-CMChartSeries >> probe: aSelector [
-	"Show the probe aSelector of the subject of the chart: the model in a model chart, or the entity whose chart it is"
-	self setProbe: aSelector.
-	showsAllInstances := false
-]
-
-{ #category : 'configuring' }
-CMChartSeries >> probe: aSelector ofAll: aClass [
-	"Show the probe aSelector of all the instances of aClass and of its subclasses"
-	self setProbe: aSelector.
-	showsAllInstances := true.
-	classOfAll := aClass
+	aStream << '#' << x
 ]
 
 { #category : 'accessing' }
 CMChartSeries >> probes [
-	"Return the selectors of the probes I show"
+	"Return the selectors of the methods whose values I show"
 
-	^ { probe }
+	^ { x }
 ]
 
 { #category : 'private' }
-CMChartSeries >> setProbe: aSelector [
-	probe := aSelector.
-	label := aSelector asString
+CMChartSeries >> showAllInstancesOf: aClass [
+	"Show the instances of aClass and of its subclasses, rather than the subject of the chart"
+
+	showsAllInstances := true.
+	classOfAll := aClass
 ]
 
 { #category : 'testing' }
@@ -135,11 +137,19 @@ CMChartSeries >> showsAllInstances [
 	^ showsAllInstances
 ]
 
-{ #category : 'comparing' }
+{ #category : 'accessing' }
 CMChartSeries >> showsTheSameAs: aChartSeries [
-	"Return whether aChartSeries shows the same probe of the same objects as me"
-	^ probe = aChartSeries probe and: [
-		  showsAllInstances = aChartSeries showsAllInstances and: [
-			  showsAllInstances not or: [
-				  classOfAll = aChartSeries classOfAll ] ] ]
+	"Return whether aChartSeries draws the same marks of the same probes of the same objects as me"
+
+	^ self class = aChartSeries class and: [
+			  self probes = aChartSeries probes and: [
+					  showsAllInstances = aChartSeries showsAllInstances and: [
+						  showsAllInstances not or: [
+							  classOfAll = aChartSeries classOfAll ] ] ] ]
+]
+
+{ #category : 'accessing' }
+CMChartSeries >> x [
+
+	^ x
 ]

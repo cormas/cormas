@@ -4,7 +4,7 @@ I show one chart of a model or of an entity, drawn from the data recorded on it,
 ## Responsibility:
 
 - I draw the chart that a `<chart>` method of my subject returns. Clicking an entry of its legend hides its series or shows it again, and series stay hidden when the chart is drawn again.
-- For a chart of a single step, such as a histogram, I show the latest recorded step after each displayed step, and a step slider chooses another one, which stays shown until the next displayed step.
+- For a chart with a series shown at the shown step only, such as a histogram of one step, I show the latest recorded step after each displayed step, and a step slider chooses another one, which stays shown until the next displayed step.
 - I say why the chart cannot be drawn, such as a probe or an entity that was not recorded, instead of drawing it.
 - I save a picture of the chart in the output folder of the model, and move to a window of my own and back to the tabs of my host, keeping my hidden series and my chosen step.
 
@@ -39,7 +39,7 @@ application cormasModel: simulation cormasModel.
 
 - `subject`: the model or the entity whose chart I show; `chartSelector`: the method that returns it; `chart`: the `CMChart` it returned.
 - `hiddenSeries`: the names of the hidden series.
-- `upToStep`: the step up to which the data is drawn, `Float infinity` for all of it; `shownStep`: the step a chart of a single step shows; `stepSlider`: the slider that chooses it, in my layout only for such a chart.
+- `upToStep`: the step up to which the data is drawn, `Float infinity` for all of it; `shownStep`: the step shown by the series shown at the shown step only; `stepSlider`: the slider that chooses it, in my layout only for such a chart.
 - `host`: who manages me; `detachedWindow`: my window, when I am not in a tab.
 
 ### Implementation Points
@@ -160,13 +160,14 @@ CMChartPresenter >> drawChart [
 
 { #category : 'updating' }
 CMChartPresenter >> drawChartUpToStep: aStep [
-	"Draw my chart from the data recorded on my subject up to aStep, keeping hidden the series hidden from its legend, or say why it cannot be drawn. A chart of a single step shows the last of these steps. While the simulation runs, the x axis leaves room to grow"
+	"Draw my chart from the data recorded on my subject up to aStep, keeping hidden the series hidden from its legend, or say why it cannot be drawn. Series shown at the shown step show the last of these steps. While the simulation runs, the x axis leaves room to grow"
 
 	upToStep := aStep.
 	[
 		| series |
 		series := chart seriesDataOf: subject in: self simulation.
-		chart isSingleStep ifTrue: [ self updateStepSliderFor: series ].
+		chart hasSeriesAtShownStep ifTrue: [
+			self updateStepSliderFor: series ].
 		chartView canvas: (chart
 				 canvasOf: (series collect: [ :each | each upToStep: aStep ])
 				 hiding: hiddenSeries
@@ -281,7 +282,7 @@ CMChartPresenter >> saveToPng [
 
 { #category : 'updating' }
 CMChartPresenter >> showStep: aStep [
-	"Draw my chart of a single step at aStep, chosen with the step slider"
+	"Draw my chart at aStep, chosen with the step slider"
 
 	aStep = shownStep ifFalse: [ self drawChartUpToStep: aStep ]
 ]
@@ -306,12 +307,12 @@ CMChartPresenter >> subject [
 
 { #category : 'accessing' }
 CMChartPresenter >> subject: aModelOrAnEntity chart: aSelector [
-	"Show the chart that the method aSelector of aModelOrAnEntity returns, drawn from the data recorded on it, with a step slider when it shows a single step"
+	"Show the chart that the method aSelector of aModelOrAnEntity returns, drawn from the data recorded on it, with a step slider when one of its series shows the shown step only"
 
 	subject := aModelOrAnEntity.
 	chartSelector := aSelector.
 	chart := subject perform: aSelector.
-	chart isSingleStep ifTrue: [
+	chart hasSeriesAtShownStep ifTrue: [
 		self layout add: stepSlider expand: false ].
 	self drawChart
 ]
@@ -325,7 +326,7 @@ CMChartPresenter >> title [
 
 { #category : 'updating' }
 CMChartPresenter >> updateDiagram [
-	"Draw my chart again after a displayed step, in the UI process and while the simulation waits, so that the data does not change meanwhile. A chart of a single step goes back to the latest step"
+	"Draw my chart again after a displayed step, in the UI process and while the simulation waits, so that the data does not change meanwhile. Series shown at the shown step go back to the latest step"
 
 	host updateInInterface: [ self drawChartUpToStep: Float infinity ]
 ]

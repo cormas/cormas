@@ -1,8 +1,8 @@
 "
-I test how a `CMScatterplot` is drawn with Roassal from the data recorded in a simulation of `CMMockModel`.
+I test how a `CMPointSeries` is drawn with Roassal from the data recorded in a simulation of `CMMockModel`.
 "
 Class {
-	#name : 'CMScatterplotRoassalTest',
+	#name : 'CMPointSeriesRoassalTest',
 	#superclass : 'TestCase',
 	#instVars : [
 		'simulation',
@@ -14,22 +14,33 @@ Class {
 }
 
 { #category : 'tests' }
-CMScatterplotRoassalTest >> labelNamed: aString in: aCanvas [
+CMPointSeriesRoassalTest >> chartOfAllAnimalsAtShownStep [
+
+	^ CMChart new
+		  add: (CMPointSeries new
+				   x: #energy y: #energy ofAll: CMMockAnimal;
+				   atShownStep;
+				   yourself);
+		  yourself
+]
+
+{ #category : 'tests' }
+CMPointSeriesRoassalTest >> labelNamed: aString in: aCanvas [
 
 	^ aCanvas allChildren detect: [ :each |
 		  (each isKindOf: RSLabel) and: [ each text = aString ] ]
 ]
 
 { #category : 'tests' }
-CMScatterplotRoassalTest >> plotUpToStep: aStep [
+CMPointSeriesRoassalTest >> plotUpToStep: aStep [
 
-	^ (chart plotsOf:
-		   ((chart seriesDataOf: model in: simulation) collect: [ :each |
-			    each upToStep: aStep ])) first value
+	^ (chart plotsOf: (chart atShownStep:
+			    ((chart seriesDataOf: model in: simulation) collect: [ :each |
+				     each upToStep: aStep ]))) first value
 ]
 
 { #category : 'tests' }
-CMScatterplotRoassalTest >> setUp [
+CMPointSeriesRoassalTest >> setUp [
 
 	super setUp.
 	simulation := (CMSimulation for: CMMockModel new)
@@ -45,9 +56,9 @@ CMScatterplotRoassalTest >> setUp [
 ]
 
 { #category : 'tests' }
-CMScatterplotRoassalTest >> testAPointOfAMethodThatIsNotAProbeOnXRaisesAnError [
+CMPointSeriesRoassalTest >> testAPointOfAMethodThatIsNotAProbeOnXRaisesAnError [
 
-	chart := CMScatterplot new
+	chart := CMChart new
 		         pointsX: #numberOfRows y: #numberOfDeadCells;
 		         yourself.
 	self
@@ -58,10 +69,10 @@ CMScatterplotRoassalTest >> testAPointOfAMethodThatIsNotAProbeOnXRaisesAnError [
 ]
 
 { #category : 'tests' }
-CMScatterplotRoassalTest >> testPointsAreLargeAndTranslucentSoThatThePointsBehindThemShow [
+CMPointSeriesRoassalTest >> testPointsAreLargeAndTranslucentSoThatThePointsBehindThemShow [
 
 	| canvas points |
-	chart := CMScatterplot new
+	chart := CMChart new
 		         pointsX: #numberOfAliveCells y: #numberOfDeadCells;
 		         yourself.
 	canvas := chart
@@ -75,12 +86,10 @@ CMScatterplotRoassalTest >> testPointsAreLargeAndTranslucentSoThatThePointsBehin
 ]
 
 { #category : 'tests' }
-CMScatterplotRoassalTest >> testThePointsOfAllInstancesAreAPointForEachInstanceAtTheLastStep [
+CMPointSeriesRoassalTest >> testThePointsOfAllInstancesAreAPointForEachInstanceAtTheLastStep [
 
 	| plot energies |
-	chart := CMScatterplot new
-		         pointsX: #energy y: #energy ofAll: CMMockAnimal;
-		         yourself.
+	chart := self chartOfAllAnimalsAtShownStep.
 	plot := self plotUpToStep: Float infinity.
 	energies := ((model allEntitiesOfClass: CMMockAnimal) collect: [
 		             :each | each energy ]) asArray sorted.
@@ -90,11 +99,11 @@ CMScatterplotRoassalTest >> testThePointsOfAllInstancesAreAPointForEachInstanceA
 ]
 
 { #category : 'tests' }
-CMScatterplotRoassalTest >> testThePointsOfAllInstancesAreNamedAfterTheirSeries [
+CMPointSeriesRoassalTest >> testThePointsOfAllInstancesAreNamedAfterTheirSeries [
 
-	chart := CMScatterplot new
+	chart := CMChart new
 		         add: (CMPointSeries new
-				          probeX: #energy y: #energy ofAll: CMMockAnimal;
+				          x: #energy y: #energy ofAll: CMMockAnimal;
 				          label: 'Animals';
 				          yourself);
 		         yourself.
@@ -106,10 +115,21 @@ CMScatterplotRoassalTest >> testThePointsOfAllInstancesAreNamedAfterTheirSeries 
 ]
 
 { #category : 'tests' }
-CMScatterplotRoassalTest >> testThePointsOfTheModelAreAPointForEachRecordedStep [
+CMPointSeriesRoassalTest >> testThePointsOfAllInstancesAtEveryStepAreAPointForEachInstanceAndStep [
+
+	| plot |
+	chart := CMChart new
+		         pointsX: #currentTimeStep y: #energy ofAll: CMMockAnimal;
+		         yourself.
+	plot := self plotUpToStep: Float infinity.
+	self assert: plot xValues asArray sorted equals: #( 0 0 1 1 2 2 3 3 )
+]
+
+{ #category : 'tests' }
+CMPointSeriesRoassalTest >> testThePointsOfTheModelAreAPointForEachRecordedStep [
 
 	| plot data |
-	chart := CMScatterplot new
+	chart := CMChart new
 		         pointsX: #numberOfAliveCells y: #numberOfDeadCells;
 		         yourself.
 	plot := self plotUpToStep: Float infinity.
@@ -124,24 +144,23 @@ CMScatterplotRoassalTest >> testThePointsOfTheModelAreAPointForEachRecordedStep 
 ]
 
 { #category : 'tests' }
-CMScatterplotRoassalTest >> testThePointsUpToAnEarlierStepShowTheInstancesAtThatStep [
+CMPointSeriesRoassalTest >> testThePointsUpToAnEarlierStepShowTheInstancesAtThatStep [
 
 	| plot |
-	chart := CMScatterplot new
-		         pointsX: #energy y: #energy ofAll: CMMockAnimal;
-		         yourself.
+	chart := self chartOfAllAnimalsAtShownStep.
 	plot := self plotUpToStep: 0.
 	self assert: plot yValues size equals: 2.
 	self assert: plot yValues asSet size equals: 1
 ]
 
 { #category : 'tests' }
-CMScatterplotRoassalTest >> testValuesThatAreNotNumbersOnXAreShownInCategories [
+CMPointSeriesRoassalTest >> testValuesThatAreNotNumbersOnXAreShownInCategories [
 
 	| canvas |
-	chart := CMScatterplot new.
+	chart := CMChart new.
 	canvas := chart
 		          canvasOf: { (CMSeriesData
+				           of: (CMPointSeries new x: #level y: #energy)
 				           named: 'a'
 				           color: Color red
 				           steps: #( 1 2 3 )
@@ -155,7 +174,7 @@ CMScatterplotRoassalTest >> testValuesThatAreNotNumbersOnXAreShownInCategories [
 ]
 
 { #category : 'tests' }
-CMScatterplotRoassalTest >> textsOf: aCanvas [
+CMPointSeriesRoassalTest >> textsOf: aCanvas [
 
 	^ (aCanvas allChildren select: [ :each | each isKindOf: RSLabel ])
 		  collect: [ :each | each text ]

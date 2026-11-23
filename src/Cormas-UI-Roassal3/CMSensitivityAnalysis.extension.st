@@ -56,7 +56,7 @@ CMSensitivityAnalysis >> colorsOf: someValues [
 { #category : '*Cormas-UI-Roassal3' }
 CMSensitivityAnalysis >> scatterplotOf: anOutput against: aParameterName [
 
-	^ CMScatterplot new
+	^ CMChart new
 		  xTitle: aParameterName;
 		  yTitle: anOutput;
 		  yourself
@@ -67,6 +67,7 @@ CMSensitivityAnalysis >> seriesDataNamed: aString color: aColor showing: someRes
 	"Return the points of the runs of someResults, the value of the parameter named aParameterName on x and the value of anOutput on y"
 
 	^ CMSeriesData
+		  of: (CMPointSeries new x: aParameterName y: anOutput)
 		  named: aString
 		  color: aColor
 		  steps: (someResults collect: [ :row | row at: 'run' ]) asArray

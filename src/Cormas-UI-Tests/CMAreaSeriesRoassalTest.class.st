@@ -1,5 +1,5 @@
 Class {
-	#name : 'CMAreaChartRoassalTest',
+	#name : 'CMAreaSeriesRoassalTest',
 	#superclass : 'TestCase',
 	#instVars : [
 		'simulation',
@@ -11,7 +11,7 @@ Class {
 }
 
 { #category : 'running' }
-CMAreaChartRoassalTest >> setUp [
+CMAreaSeriesRoassalTest >> setUp [
 
 	super setUp.
 	simulation := (CMSimulation for: CMMockModel new)
@@ -22,13 +22,13 @@ CMAreaChartRoassalTest >> setUp [
 		              yourself.
 	3 timesRepeat: [ simulation runStep ].
 	model := simulation cormasModel.
-	chart := CMAreaChart new
+	chart := CMChart new
 ]
 
 { #category : 'tests' }
-CMAreaChartRoassalTest >> testAChosenColorIsUsedForTheAreaOfItsCategory [
+CMAreaSeriesRoassalTest >> testAChosenColorIsUsedForTheAreaOfItsCategory [
 	| series |
-	chart add: (CMAreaSeries new probe: #state ofAll: CMMockCell;
+	chart add: (CMAreaSeries new x: #currentTimeStep y: #state ofAll: CMMockCell;
 			 category: #dead color: Color gray;
 			 yourself).
 	series := chart seriesDataOf: model in: simulation.
@@ -37,9 +37,9 @@ CMAreaChartRoassalTest >> testAChosenColorIsUsedForTheAreaOfItsCategory [
 ]
 
 { #category : 'tests' }
-CMAreaChartRoassalTest >> testAChosenLabelNamesTheAreaOfItsCategory [
+CMAreaSeriesRoassalTest >> testAChosenLabelNamesTheAreaOfItsCategory [
 	| series |
-	chart add: (CMAreaSeries new probe: #state ofAll: CMMockCell;
+	chart add: (CMAreaSeries new x: #currentTimeStep y: #state ofAll: CMMockCell;
 			 category: #alive label: 'Alive cells';
 			 yourself).
 	series := chart seriesDataOf: model in: simulation.
@@ -49,11 +49,11 @@ CMAreaChartRoassalTest >> testAChosenLabelNamesTheAreaOfItsCategory [
 ]
 
 { #category : 'tests' }
-CMAreaChartRoassalTest >> testAnAreaOfOneObjectShowsOnlyNumbers [
+CMAreaSeriesRoassalTest >> testAnAreaOfOneObjectShowsOnlyNumbers [
 
 	| cell |
 	cell := (model entitiesOfClass: CMMockCell) first.
-	chart area: #state.
+	chart areaX: #currentTimeStep y: #state.
 	self
 		should: [ chart seriesDataOf: cell in: simulation ]
 		raise: Error
@@ -62,12 +62,12 @@ CMAreaChartRoassalTest >> testAnAreaOfOneObjectShowsOnlyNumbers [
 ]
 
 { #category : 'tests' }
-CMAreaChartRoassalTest >> testEachAreaIsStackedOnTheAreasBeforeIt [
+CMAreaSeriesRoassalTest >> testEachAreaIsStackedOnTheAreasBeforeIt [
 
 	| plots |
 	chart
-		area: #numberOfAliveCells;
-		area: #numberOfDeadCells.
+		areaX: #currentTimeStep y: #numberOfAliveCells;
+		areaX: #currentTimeStep y: #numberOfDeadCells.
 	plots := chart plotsOf: (chart seriesDataOf: model in: simulation).
 	self assert: plots first value yValues asArray equals: #( 11 5 11 5 ).
 	self
@@ -76,32 +76,36 @@ CMAreaChartRoassalTest >> testEachAreaIsStackedOnTheAreasBeforeIt [
 ]
 
 { #category : 'tests' }
-CMAreaChartRoassalTest >> testTheAreasOfAProbeOfNumbersAreAnAreaForEachInstance [
+CMAreaSeriesRoassalTest >> testTheAreasOfAProbeOfNumbersAreAnAreaForEachInstance [
 
-	chart areas: #energy ofAll: CMMockAnimal.
+	chart areasX: #currentTimeStep y: #energy ofAll: CMMockAnimal.
 	self assert: (chart seriesDataOf: model in: simulation) size equals: 2
 ]
 
 { #category : 'tests' }
-CMAreaChartRoassalTest >> testTheAreasOfAProbeOfStringsCountTheInstancesHavingEachValue [
-	| series |
-	chart areas: #state ofAll: CMMockCell.
+CMAreaSeriesRoassalTest >> testTheAreasOfAProbeOfStringsCountTheInstancesHavingEachValue [
+
+	| series plots |
+	chart areasX: #currentTimeStep y: #state ofAll: CMMockCell.
 	series := chart seriesDataOf: model in: simulation.
 	self
 		assert: (series collect: [ :each | each name ]) asArray
 		equals: #( 'alive' 'dead' ).
+	plots := chart plotsOf: series.
 	self
-		assert: series first values asArray
+		assert: plots first value yValues asArray
 		equals: (simulation modelData column: #numberOfAliveCells) asArray.
 	self
-		assert: series second values asArray
-		equals: (simulation modelData column: #numberOfDeadCells) asArray
+		assert: plots second value yValues asArray
+		equals: #( 16 16 16 16 )
 ]
 
 { #category : 'tests' }
-CMAreaChartRoassalTest >> testTheChosenCategoriesComeFirstInTheOrderTheyWereChosen [
+CMAreaSeriesRoassalTest >> testTheChosenCategoriesComeFirstInTheOrderTheyWereChosen [
+
 	| series |
-	chart add: (CMAreaSeries new probe: #state ofAll: CMMockCell;
+	chart add: (CMAreaSeries new
+			 x: #currentTimeStep y: #state ofAll: CMMockCell;
 			 category: #dead label: 'Dead' color: Color gray;
 			 yourself).
 	series := chart seriesDataOf: model in: simulation.
@@ -109,6 +113,6 @@ CMAreaChartRoassalTest >> testTheChosenCategoriesComeFirstInTheOrderTheyWereChos
 		assert: (series collect: [ :each | each name ]) asArray
 		equals: #( 'Dead' 'alive' ).
 	self
-		assert: series first values asArray
+		assert: (chart plotsOf: series) first value yValues asArray
 		equals: (simulation modelData column: #numberOfDeadCells) asArray
 ]

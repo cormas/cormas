@@ -42,9 +42,9 @@ CMMockAnimal >> aspectEnergy: look [
 CMMockAnimal >> chartEnergy [
 
 	<chart>
-	^ CMLineChart new
+	^ CMChart new
 		  title: 'Energy';
-		  line: #energy;
+		  lineX: #currentTimeStep y: #energy;
 		  yourself
 ]
 

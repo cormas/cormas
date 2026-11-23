@@ -1,43 +1,47 @@
 "
-I am a chart that a modeler defines in a `<chart>` method, to show probes recorded during a simulation. I am the abstract superclass of the kinds of charts: `CMLineChart`, `CMAreaChart`, `CMBoxplot`, `CMHistogram` and `CMScatterplot`.
+I am a chart that a modeler defines in a `<chart>` method, to show the probes recorded during a simulation. My series can be of different kinds, such as a line over stacked areas, or boxes with a line through them, as long as they all have the same probe on x.
 
 ## Responsibility:
 
-- I know my series, the `CMSeriesData` that each show a probe of my subject (the model, or the entity whose chart I am) or of all the instances of a class, in the order they were added.
-- I accept only the kind of series I draw, and refuse a series that shows what another of my series shows.
+- I know my series, each showing a probe of my subject (the model, or the entity whose chart I am) or of all the instances of a class, in the order they were added.
+- I refuse a series whose probe on x is not the one of my other series, so that my x axis has one meaning, and a series that draws what another of my series draws.
 - I know the titles of the chart and of its axes, and whether it has a legend.
 
 ## Collaborators:
 
-- `CMChartSeries` and its subclasses know the probe they show and how it is labelled and colored. My subclasses build series with the default label and color with the messages of their kind, such as `line:` or `boxes:ofAll:`.
-- Cormas-UI-Roassal3 asks my series for `CMSeriesData` from the `CMDataTable`s a `CMSimulation` recorded (`seriesDataOf:in:`), and draws them with axis lines, ticks and a legend whose entries hide and show their series (`canvasOf:hiding:`). Each subclass says how it plots its series.
+- `CMLineSeries`, `CMPointSeries`, `CMAreaSeries`, `CMBoxSeries` and `CMHistogramSeries` know what they show and how it is labelled and colored. My shortcuts, such as `lineX:y:` or `boxesX:y:ofAll:`, add one with the default label and color.
+- Cormas-UI-Roassal3 asks my series for `CMSeriesData` from the `CMDataTable`s a `CMSimulation` recorded (`seriesDataOf:in:`), and draws them with axis lines, ticks and a legend whose entries hide and show their series (`canvasOf:hiding:`). The series of each kind are drawn together, so that areas stack, histograms share their bins and boxes stand side by side.
 
 ## Public API and Key Messages
 
-- `add:` adds a series.
-- `title:`, `xTitle:`, `yTitle:`, `hideLegend`
-- `isSingleStep` says whether I show one step, rather than the change over time.
+- `add:` adds a configured series.
+- `lineX:y:`, `linesX:y:ofAll:`, `pointsX:y:`, `pointsX:y:ofAll:`, `areaX:y:`, `areasX:y:ofAll:`, `boxesX:y:ofAll:` and `histogramX:ofAll:` add a series with the default label and color.
+- `title:`, `xTitle:`, `yTitle:`, `hideLegend`.
+- `hasSeriesAtShownStep` says whether a series shows only the step chosen with the step slider.
+
+Probes are named by their selectors. The step is `#currentTimeStep`, a message that every model and entity understands:
 
 ```smalltalk
-CMLineChart new
-	title: 'Boars';
-	line: #boars;
-	add: (CMLineSeries new probe: #urbanBoars;
-		label: 'Boars in towns';
-		color: Color gray;
+CMChart new
+	title: 'Rabbits and grass';
+	add: (CMAreaSeries new
+		x: #currentTimeStep y: #amountOfGrass;
+		label: 'Patches with grass';
+		color: Color green;
 		yourself);
+	lineX: #currentTimeStep y: #numberOfRabbits;
 	yourself
 ```
 
 ## Internal Representation
 
 - `title`, `xTitle`, `yTitle`: strings, or nil when the chart has none.
-- `series`: an `OrderedCollection` of `CMSeriesData`.
+- `series`: an `OrderedCollection` of `CMChartSeries`.
 - `showsLegend`: a boolean, true unless `hideLegend` was sent.
 
 ### Implementation Points
 
-A chart names probes by their selectors and never refers to the model's state, so that the same chart can show a live simulation or saved data.
+A chart names probes by their selectors and never refers to the model's state, so that the same chart can show a live simulation or saved data. Each kind of series is drawn over the kinds added before it.
 "
 Class {
 	#name : 'CMChart',
@@ -54,19 +58,49 @@ Class {
 	#tag : 'Charts'
 }
 
-{ #category : 'accessing' }
+{ #category : 'adding' }
 CMChart >> add: aChartSeries [
-	"Show aChartSeries, after the series added before. It must be of the kind of series I draw, and not show what another of my series shows"
+	"Show aChartSeries, after the series added before. All my series have the same probe on x, so that my x axis has one meaning, and none draws what another already draws"
 
-	(aChartSeries isKindOf: self seriesClass) ifFalse: [
-			self error: ('{1} draws {2}, not {3}' format: {
-						 self class name.
-						 self seriesClass name.
-						 aChartSeries class name }) ].
+	(series isNotEmpty and: [ series first x ~= aChartSeries x ])
+		ifTrue: [
+				self error:
+					('All the series of a chart have the same probe on x: #{1}, not #{2}'
+						 format: {
+								 series first x.
+								 aChartSeries x }) ].
 	(series anySatisfy: [ :each | each showsTheSameAs: aChartSeries ])
 		ifTrue: [
 		self error: 'The chart already shows ' , aChartSeries printString ].
 	series add: aChartSeries
+]
+
+{ #category : 'adding' }
+CMChart >> areaX: xSelector y: ySelector [
+	"Show the probe ySelector against the probe xSelector of the subject of the chart, as an area stacked on the areas before it"
+
+	self add: (CMAreaSeries new x: xSelector y: ySelector)
+]
+
+{ #category : 'adding' }
+CMChart >> areasX: xSelector y: ySelector ofAll: aClass [
+	"Show the probe ySelector against the probe xSelector of all the instances of aClass, and of its subclasses, as stacked areas: one for each instance when it returns numbers, or else one for each of its values, counting the instances that have it"
+
+	self add: (CMAreaSeries new x: xSelector y: ySelector ofAll: aClass)
+]
+
+{ #category : 'adding' }
+CMChart >> boxesX: xSelector y: ySelector ofAll: aClass [
+	"Show the spread of the probe ySelector of all the instances of aClass, and of its subclasses, as a box for each value of the probe xSelector"
+
+	self add: (CMBoxSeries new x: xSelector y: ySelector ofAll: aClass)
+]
+
+{ #category : 'accessing' }
+CMChart >> hasSeriesAtShownStep [
+	"Return whether one of my series shows only the step chosen with the step slider"
+
+	^ series anySatisfy: [ :each | each isAtShownStep ]
 ]
 
 { #category : 'presentation' }
@@ -74,6 +108,13 @@ CMChart >> hideLegend [
 	"Draw me without a legend, for example when the legend would only repeat the title"
 
 	showsLegend := false
+]
+
+{ #category : 'adding' }
+CMChart >> histogramX: aSelector ofAll: aClass [
+	"Count the values of the probe aSelector of all the instances of aClass, and of its subclasses, in bins, over every recorded step. Add a CMHistogramSeries sent atShownStep to count those of one step"
+
+	self add: (CMHistogramSeries new x: aSelector ofAll: aClass)
 ]
 
 { #category : 'initialization' }
@@ -84,18 +125,38 @@ CMChart >> initialize [
 	showsLegend := true
 ]
 
-{ #category : 'accessing' }
-CMChart >> isSingleStep [
-	"Return whether I show the values of a single step, rather than their change over time"
+{ #category : 'adding' }
+CMChart >> lineX: xSelector y: ySelector [
+	"Show the probe ySelector against the probe xSelector of the subject of the chart, as a line. Add a CMLineSeries to choose its label or color"
 
-	^ false
+	self add: (CMLineSeries new x: xSelector y: ySelector)
+]
+
+{ #category : 'adding' }
+CMChart >> linesX: xSelector y: ySelector ofAll: aClass [
+	"Show the probe ySelector against the probe xSelector of each instance of aClass, and of its subclasses, as a line each"
+
+	self add: (CMLineSeries new x: xSelector y: ySelector ofAll: aClass)
+]
+
+{ #category : 'adding' }
+CMChart >> pointsX: xSelector y: ySelector [
+	"Show the probe ySelector against the probe xSelector of the subject of the chart, a point per recorded step"
+
+	self add: (CMPointSeries new x: xSelector y: ySelector)
+]
+
+{ #category : 'adding' }
+CMChart >> pointsX: xSelector y: ySelector ofAll: aClass [
+	"Show the probe ySelector against the probe xSelector of all the instances of aClass, and of its subclasses, a point per instance and recorded step"
+
+	self add: (CMPointSeries new x: xSelector y: ySelector ofAll: aClass)
 ]
 
 { #category : 'accessing' }
-CMChart >> seriesClass [
-	"Return the class of the series I draw"
+CMChart >> series [
 
-	^ self subclassResponsibility
+	^ series
 ]
 
 { #category : 'accessing' }

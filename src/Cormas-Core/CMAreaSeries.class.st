@@ -1,30 +1,30 @@
 "
-I am an area of a `CMAreaChart`, stacked on the areas before me.
+I am an area, stacked on the areas of the chart before me. My height at each value on x is the sum of my values on y there.
 
 ## Responsibility:
 
-- For the subject of the chart, I make one series of my probe, which must return numbers.
-- For all the instances of a class, I make one series for each instance when my probe returns numbers, or else one for each of its values, counting the instances that have it.
+- For the subject of the chart, I make one area of my probe on y, which must return numbers.
+- For all the instances of a class, I make one area for each instance when my probe on y returns numbers, or else one for each of its values, counting the instances that have it.
 
 ## Collaborators:
 
-- `CMChartSeries` gives me my probe, label and color.
+- `CMXYSeries` gives me my probes, label and color; `RSAreaPlot` draws me.
 
 ## Public API and Key Messages
 
-- `probe:`, `probe:ofAll:`, `label:`, `color:`
-- `category:label:`, `category:color:` and `category:label:color:` name and color the area of a value; the chosen values come first, in the order they were chosen, then the others in alphabetical order
+- `x:y:`, `x:y:ofAll:`, `label:`, `color:`, `atShownStep`
+- `category:label:`, `category:color:` and `category:label:color:` name and color the area of a value; the chosen values come first, in the order they were chosen, then the others in alphabetical order.
 
 ```smalltalk
 CMAreaSeries new
-	probe: #state ofAll: CMMockCell;
+	x: #currentTimeStep y: #state ofAll: CMMockCell;
 	category: #alive label: 'Alive' color: Color green;
 	yourself
 ```
 "
 Class {
 	#name : 'CMAreaSeries',
-	#superclass : 'CMChartSeries',
+	#superclass : 'CMXYSeries',
 	#instVars : [
 		'categoryLabels',
 		'categoryColors',

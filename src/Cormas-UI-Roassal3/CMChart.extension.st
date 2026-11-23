@@ -17,22 +17,37 @@ CMChart >> add: aLegend below: aCanvas [
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
+CMChart >> atShownStep: someSeriesData [
+	"Return someSeriesData, those drawn by a series shown at the shown step keeping only the rows of the latest step any of them has"
+
+	| steps shownStep |
+	steps := (someSeriesData select: [ :each | each series isAtShownStep ])
+		         flatCollect: [ :each | each steps ].
+	steps ifEmpty: [ ^ someSeriesData ].
+	shownStep := steps max.
+	^ someSeriesData collect: [ :each |
+			  each series isAtShownStep
+				  ifTrue: [ each atStep: shownStep ]
+				  ifFalse: [ each ] ]
+]
+
+{ #category : '*Cormas-UI-Roassal3' }
 CMChart >> canvasOf: someSeries hiding: aSetOfNames [
 	"Return a canvas with the chart of someSeries, whose x axis ends at its last value, and a legend naming each of them. The series named in aSetOfNames are hidden. Clicking an entry of the legend hides its series, or shows it again, and updates aSetOfNames"
 	^ self canvasOf: someSeries hiding: aSetOfNames leavingRoomToGrow: false
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
-CMChart >> canvasOf: someSeries hiding: aSetOfNames leavingRoomToGrow: aBoolean [
-	"Return a canvas with the chart of someSeries and a legend naming each of them. The series named in aSetOfNames are hidden. Clicking an entry of the legend hides its series, or shows it again, and updates aSetOfNames. The x axis ends at the last value, unless aBoolean leaves room up to the next tick, so that a chart growing step by step is not drawn with a new range at each step. Values on x that are not all numbers are shown as categories"
+CMChart >> canvasOf: someSeriesData hiding: aSetOfNames leavingRoomToGrow: aBoolean [
+	"Return a canvas with the chart of someSeriesData and a legend naming each of them. The series data named in aSetOfNames are hidden. Clicking an entry of the legend hides its series data, or shows them again, and updates aSetOfNames. The x axis ends at the last value, unless aBoolean leaves room up to the next tick, so that a chart growing step by step is not drawn with a new range at each step. Values on x that are not all numbers are shown as categories. Series shown at the shown step only show the last step of their data"
 
-	| categories plots roassalChart canvas shapes legend |
-	categories := self xCategoriesOf: someSeries.
+	| shown categories plots roassalChart canvas shapes legend |
+	shown := self atShownStep: someSeriesData.
+	categories := self xCategoriesOf: shown.
 	plots := self plotsOf: (categories
-			          ifEmpty: [ someSeries ]
+			          ifEmpty: [ shown ]
 			          ifNotEmpty: [
-			          someSeries collect: [ :each |
-				          self place: each in: categories ] ]).
+			          shown collect: [ :each | each placedIn: categories ] ]).
 	roassalChart := self
 		                roassalChartOf: plots
 		                xCategories: categories
@@ -41,20 +56,21 @@ CMChart >> canvasOf: someSeries hiding: aSetOfNames leavingRoomToGrow: aBoolean 
 	plots ifNotEmpty: [ roassalChart build ].
 	shapes := Dictionary new.
 	plots do: [ :each |
-		shapes at: each key name put: each value createdShapes asArray ].
+			(shapes at: each key name ifAbsentPut: [ OrderedCollection new ])
+				addAll: each value createdShapes ].
 	legend := RSLegend new.
 	legend container: canvas.
 	legend layout flow
 		maxWidth: roassalChart extent x;
 		gapSize: 12.
-	someSeries do: [ :each |
+	someSeriesData do: [ :each |
 			| entry drawn drawnColors |
 			entry := legend text: each name withBoxColor: each color.
 			entry shapes first border: (RSBorder new
 					 color: each color;
 					 width: 1.5;
 					 yourself).
-			drawn := (shapes at: each name ifAbsent: [ #(  ) ])
+			drawn := (shapes at: each name ifAbsent: [ #(  ) ]) asArray
 			         , { entry shapes first }.
 			drawnColors := drawn collect: [ :shape | shape color ].
 			entry
@@ -88,17 +104,17 @@ CMChart >> color: someShapes as: someColors hiding: aBoolean [
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
-CMChart >> place: aSeriesData in: someCategories [
-	"Return a copy of aSeriesData at the positions of someCategories on the x axis, for a chart that has categories"
+CMChart >> plotsOf: someSeriesData [
+	"Return, for each of someSeriesData that can be drawn, an association from it to the Roassal plot that draws it. The series data of each kind of series are drawn together, so that areas stack, histograms share their bins and boxes stand side by side; each kind is drawn over the kinds added before it"
 
-	^ self subclassResponsibility
-]
-
-{ #category : '*Cormas-UI-Roassal3' }
-CMChart >> plotsOf: someSeries [
-	"Return, for each of someSeries that can be drawn, an association from it to the Roassal plot that draws it"
-
-	^ self subclassResponsibility
+	| kinds |
+	kinds := (someSeriesData collect: [ :each | each series class ])
+		         asOrderedCollection removeDuplicates.
+	^ kinds flatCollect: [ :kind |
+			  kind
+				  plotsOf:
+				  (someSeriesData select: [ :each | each series class = kind ])
+				  on: self ]
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
@@ -128,6 +144,9 @@ CMChart >> roassalChartOf: somePlots xCategories: someCategories leavingRoomToGr
 					setXAxisOf: roassalChart
 					from:
 					(somePlots flatCollect: [ :each | each value definedValuesX ])
+					margin:
+					(somePlots collect: [ :each | each key series class xMargin ])
+						max
 					leavingRoomToGrow: aBoolean ]
 		ifNotEmpty: [ self setXAxisOf: roassalChart to: someCategories ].
 	yValues := somePlots flatCollect: [ :each |
@@ -157,8 +176,8 @@ CMChart >> seriesDataOf: aRecordedObject in: aSimulation [
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
-CMChart >> setXAxisOf: aRoassalChart from: xValues leavingRoomToGrow: aBoolean [
-	"Set the ticks of a numeric x axis showing xValues: from 0, or from the first value when it is negative, to the last value, or up to the next tick when aBoolean leaves room to grow"
+CMChart >> setXAxisOf: aRoassalChart from: xValues margin: aMargin leavingRoomToGrow: aBoolean [
+	"Set the ticks of a numeric x axis showing xValues: from 0, or from the first value when it is negative, to the last value, or up to the next tick when aBoolean leaves room to grow, with aMargin beyond them on each side"
 
 	| xTicks |
 	xTicks := self
@@ -169,10 +188,10 @@ CMChart >> setXAxisOf: aRoassalChart from: xValues leavingRoomToGrow: aBoolean [
 	aBoolean ifFalse: [
 		xTicks := xTicks select: [ :each | each <= xValues max ] ].
 	aRoassalChart
-		minChartValueX: xTicks first - self xMargin;
+		minChartValueX: xTicks first - aMargin;
 		maxChartValueX: (aBoolean
-				 ifTrue: [ xTicks last + self xMargin ]
-				 ifFalse: [ xValues max + self xMargin ]);
+				 ifTrue: [ xTicks last + aMargin ]
+				 ifFalse: [ xValues max + aMargin ]);
 		xTicks: xTicks labels: (self tickLabelsOf: xTicks)
 ]
 
@@ -223,15 +242,13 @@ CMChart >> ticksFrom: aLowest to: aHighest wholeNumbers: aBoolean [
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
-CMChart >> xCategoriesOf: someSeries [
-	"Return the values on my x axis, in the order they first appear, when they are not all numbers; or else none, and my x axis is numeric. Steps are numbers"
+CMChart >> xCategoriesOf: someSeriesData [
+	"Return the values on my x axis, in the order they first appear, when they are not all numbers; or else none, and my x axis is numeric"
 
-	^ #(  )
-]
-
-{ #category : '*Cormas-UI-Roassal3' }
-CMChart >> xMargin [
-	"The space left on each side of the x axis, beyond its first and last ticks"
-
-	^ 0
+	| xValues |
+	xValues := someSeriesData flatCollect: [ :each | each xValues ].
+	(xValues allSatisfy: [ :each | each isNumber ]) ifTrue: [ ^ #(  ) ].
+	^ xValues asOrderedCollection
+		  removeDuplicates;
+		  yourself
 ]

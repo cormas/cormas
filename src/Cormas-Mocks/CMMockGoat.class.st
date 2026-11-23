@@ -25,8 +25,11 @@ CMMockGoat >> chartEnergyDistribution [
 	"How is the energy spread among the animals?"
 
 	<chart>
-	^ CMHistogram new
+	^ CMChart new
 		  title: 'Energy distribution';
-		  bars: #energy ofAll: CMMockAnimal;
+		  add: (CMHistogramSeries new
+				   x: #energy ofAll: CMMockAnimal;
+				   atShownStep;
+				   yourself);
 		  yourself
 ]
