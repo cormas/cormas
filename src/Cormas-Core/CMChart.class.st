@@ -9,13 +9,13 @@ I am a chart that a modeler defines in a `<chart>` method, to show the probes re
 
 ## Collaborators:
 
-- `CMLineSeries`, `CMPointSeries`, `CMAreaSeries`, `CMBoxSeries` and `CMHistogramSeries` know what they show and how it is labelled and colored. My shortcuts, such as `lineX:y:` or `boxesX:y:ofAll:`, add one with the default label and color.
-- Cormas-UI-Roassal3 asks my series for `CMSeriesData` from the `CMDataTable`s a `CMSimulation` recorded (`seriesDataOf:in:`), and draws them with axis lines, ticks and a legend whose entries hide and show their series (`canvasOf:hiding:`). The series of each kind are drawn together, so that areas stack, histograms share their bins and boxes stand side by side.
+- `CMLineSeries`, `CMPointSeries`, `CMAreaSeries`, `CMBarSeries`, `CMBoxSeries` and `CMHistogramSeries` know what they show and how it is labelled and colored. My shortcuts, such as `lineX:y:` or `boxesX:y:ofAll:`, add one with the default label and color.
+- Cormas-UI-Roassal3 asks my series for `CMSeriesData` from the `CMDataTable`s a `CMSimulation` recorded (`seriesDataOf:in:`), and draws them with axis lines, ticks and a legend whose entries hide and show their series (`canvasOf:hiding:`). The series of each kind are drawn together, so that areas and bars stack, negative values below zero, histograms share their bins and boxes stand side by side.
 
 ## Public API and Key Messages
 
 - `add:` adds a configured series.
-- `lineX:y:`, `linesX:y:ofAll:`, `pointsX:y:`, `pointsX:y:ofAll:`, `areaX:y:`, `areasX:y:ofAll:`, `boxesX:y:ofAll:` and `histogramX:ofAll:` add a series with the default label and color.
+- `lineX:y:`, `linesX:y:ofAll:`, `pointsX:y:`, `pointsX:y:ofAll:`, `areaX:y:`, `areasX:y:ofAll:`, `barsX:y:`, `barsX:y:ofAll:`, `boxesX:y:ofAll:` and `histogramX:ofAll:` add a series with the default label and color.
 - `title:`, `xTitle:`, `yTitle:`, `hideLegend`.
 - `hasSeriesAtShownStep` says whether a series shows only the step chosen with the step slider.
 
@@ -87,6 +87,20 @@ CMChart >> areasX: xSelector y: ySelector ofAll: aClass [
 	"Show the probe ySelector against the probe xSelector of all the instances of aClass, and of its subclasses, as stacked areas: one for each instance when it returns numbers, or else one for each of its values, counting the instances that have it"
 
 	self add: (CMAreaSeries new x: xSelector y: ySelector ofAll: aClass)
+]
+
+{ #category : 'adding' }
+CMChart >> barsX: xSelector y: ySelector [
+	"Show the probe ySelector against the probe xSelector of the subject of the chart, as bars stacked on the bars before them, or below them when it is negative"
+
+	self add: (CMBarSeries new x: xSelector y: ySelector)
+]
+
+{ #category : 'adding' }
+CMChart >> barsX: xSelector y: ySelector ofAll: aClass [
+	"Show the probe ySelector against the probe xSelector of all the instances of aClass, and of its subclasses, as stacked bars: one for each instance when it returns numbers, or else one for each of its values, counting the instances that have it"
+
+	self add: (CMBarSeries new x: xSelector y: ySelector ofAll: aClass)
 ]
 
 { #category : 'adding' }

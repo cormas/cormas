@@ -1,29 +1,9 @@
 Class {
 	#name : 'CMAreaSeriesRoassalTest',
-	#superclass : 'TestCase',
-	#instVars : [
-		'simulation',
-		'model',
-		'chart'
-	],
+	#superclass : 'CMStackedSeriesRoassalTest',
 	#category : 'Cormas-UI-Tests',
 	#package : 'Cormas-UI-Tests'
 }
-
-{ #category : 'running' }
-CMAreaSeriesRoassalTest >> setUp [
-
-	super setUp.
-	simulation := (CMSimulation for: CMMockModel new)
-		              randomSeed: 41;
-		              activeInitSelector: #initFixed;
-		              activeControlSelector: #step;
-		              initializeSimulation;
-		              yourself.
-	3 timesRepeat: [ simulation runStep ].
-	model := simulation cormasModel.
-	chart := CMChart new
-]
 
 { #category : 'tests' }
 CMAreaSeriesRoassalTest >> testAChosenColorIsUsedForTheAreaOfItsCategory [
@@ -73,6 +53,17 @@ CMAreaSeriesRoassalTest >> testEachAreaIsStackedOnTheAreasBeforeIt [
 	self
 		assert: plots second value yValues asArray
 		equals: #( 16 16 16 16 )
+]
+
+{ #category : 'tests' }
+CMAreaSeriesRoassalTest >> testNegativeAreasAreStackedBelowZero [
+
+	| plots |
+	plots := chart plotsOf: (self flowsDrawnBy: CMAreaSeries).
+	self
+		assert:
+		(plots collect: [ :each | each value definedValuesY asArray ]) asArray
+		equals: #( #( 3 2 0 0 ) #( 0 0 -1 -4 ) #( -1 -4 -3 -5 ) )
 ]
 
 { #category : 'tests' }

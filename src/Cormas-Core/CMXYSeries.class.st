@@ -1,5 +1,5 @@
 "
-I am a series that shows a probe on y against a probe on x. I am the abstract superclass of the kinds of marks: `CMLineSeries`, `CMPointSeries`, `CMAreaSeries` and `CMBoxSeries`.
+I am a series that shows a probe on y against a probe on x. I am the abstract superclass of the kinds of marks: `CMLineSeries`, `CMPointSeries`, `CMBoxSeries`, and through `CMStackedSeries`, `CMAreaSeries` and `CMBarSeries`.
 
 ## Responsibility:
 
