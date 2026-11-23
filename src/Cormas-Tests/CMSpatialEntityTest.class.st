@@ -52,6 +52,19 @@ CMSpatialEntityTest >> testAllOccupants [
 ]
 
 { #category : 'tests' }
+CMSpatialEntityTest >> testAnEntityPrintsTheSameWhereverItIsAndWhoeverIsOnIt [
+	"A printString is the label of an entity in recorded data, recorded once, so it must not change during a simulation"
+
+	| agentLabel cellLabel |
+	agentLabel := cowAlice printString.
+	cellLabel := cellWithNoAgents printString.
+	cowAlice moveTo: cellWithNoAgents.
+	self
+		assert: cowAlice printString equals: agentLabel;
+		assert: cellWithNoAgents printString equals: cellLabel
+]
+
+{ #category : 'tests' }
 CMSpatialEntityTest >> testHasNoOccupants [
 
 	self assert: cellWithNoAgents hasNoOccupants.

@@ -782,17 +782,6 @@ TCMLocated >> positionInCell: aPoint [
 	positionInCell := aPoint
 ]
 
-{ #category : 'printing' }
-TCMLocated >> printOn: aStream [
-
-	super printOn: aStream.
-	
-	self isSituated ifTrue: [
-		aStream 
-			<< '-coord: ';
-			<< self coordinates asString ]
-]
-
 { #category : 'star moving' }
 TCMLocated >> randomJump [
 "Purpose: moves to a spatial entity randomly picked from the whole grid "

@@ -654,22 +654,6 @@ CMSpatialEntity >> placeOnGrid [
 	^ self
 ]
 
-{ #category : 'printing' }
-CMSpatialEntity >> printOn: aStream [
-	" Private - See superimplementor's comment "
-	
-	super printOn: aStream.
-	aStream
-		space; 
-		<< $-;
-		<< 'n: ';
-		<< self neighbourhood size asString;
-		space;
-		<< $-;
-		<< 'o: ';
-		<< self theOccupants size asString
-]
-
 { #category : 'environment - picking - space' }
 CMSpatialEntity >> randomNeighbour [
 	
