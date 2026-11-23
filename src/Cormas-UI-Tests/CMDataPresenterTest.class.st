@@ -38,6 +38,19 @@ CMDataPresenterTest >> testADataTableIsShownWithTheStatisticsOfItsColumnsOfNumbe
 ]
 
 { #category : 'tests' }
+CMDataPresenterTest >> testANumberThatIsNotAnIntegerIsShownAsADecimal [
+
+	| table |
+	table := CMDataTable withColumns: #( #share ).
+	table addStep: 0 values: { (1 / 4) }.
+	dataPresenter showTable: table.
+	self
+		assert: (dataPresenter table columns second readObject:
+				 dataPresenter data first) asString
+		equals: '0.25'
+]
+
+{ #category : 'tests' }
 CMDataPresenterTest >> testSaveDataToFile [
 
 	| fs file |

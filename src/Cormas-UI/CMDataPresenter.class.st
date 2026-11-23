@@ -25,10 +25,9 @@ CMDataPresenter >> columnNames: aCollection [
 	columnNames := aCollection.
 	table columns: #(  ).
 	columnNames doWithIndex: [ :name :index |
-			table addColumn:
-				(SpStringTableColumn
+			table addColumn: (SpStringTableColumn
 					 title: name
-					 evaluated: [ :row | row at: index ]) ]
+					 evaluated: [ :row | self shownValueOf: (row at: index) ]) ]
 ]
 
 { #category : 'initialization' }
@@ -135,8 +134,23 @@ CMDataPresenter >> showTable: aDataTable [
 	summary showSummariesOf: aDataTable
 ]
 
+{ #category : 'private' }
+CMDataPresenter >> shownValueOf: aValue [
+	"A number that is not an integer, such as a fraction, is shown as a decimal, as in the CSV files"
+
+	^ (aValue isNumber and: [ aValue isInteger not ])
+		  ifTrue: [ aValue asFloat ]
+		  ifFalse: [ aValue ]
+]
+
 { #category : 'accessing' }
 CMDataPresenter >> summary [
 
 	^ summary
+]
+
+{ #category : 'accessing' }
+CMDataPresenter >> table [
+
+	^ table
 ]
