@@ -165,7 +165,7 @@ CMModelTest >> testCentralCell [
 
 { #category : 'tests' }
 CMModelTest >> testChartsAreTheMethodsMarkedAsCharts [
-	self assert: CMMockModel chartSelectors asArray equals: #( #chartCells )
+	self assert: CMMockModel chartSelectors asArray equals: #( #chartAliveCells #chartCells )
 ]
 
 { #category : 'tests' }

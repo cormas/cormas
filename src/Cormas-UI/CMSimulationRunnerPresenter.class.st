@@ -50,7 +50,9 @@ Class {
 		'views',
 		'pages',
 		'newViewPage',
-		'charts'
+		'chartsPresenter',
+		'chartsPage',
+		'chartsInWindows'
 	],
 	#category : 'Cormas-UI-Simulation',
 	#package : 'Cormas-UI',
@@ -111,11 +113,28 @@ CMSimulationRunnerPresenter >> beInRunningMode [
 	stepButton enabled: false
 ]
 
-{ #category : 'views' }
-CMSimulationRunnerPresenter >> charts [
-	"Answer the charts of the model, in tabs or in windows of their own"
+{ #category : 'accessing' }
+CMSimulationRunnerPresenter >> chartsInWindows [
+	^ chartsInWindows
+]
 
-	^ charts
+{ #category : 'accessing' }
+CMSimulationRunnerPresenter >> chartsPresenter [
+	^ chartsPresenter
+]
+
+{ #category : 'views' }
+CMSimulationRunnerPresenter >> closeAllViews [
+	self hostedViews do: [ :each | self closeView: each ].
+	chartsInWindows copy do: [ :each |
+		chartsInWindows remove: each.
+		each window close ]
+]
+
+{ #category : 'hosting views' }
+CMSimulationRunnerPresenter >> closeCharts: aChartsPresenter [
+	"The window of aChartsPresenter, a copy of the Charts tab, was closed"
+	chartsInWindows remove: aChartsPresenter ifAbsent: [  ]
 ]
 
 { #category : 'initialization' }
@@ -196,6 +215,16 @@ CMSimulationRunnerPresenter >> displayCurrentTimeStep [
 	currentTimeStepLabel label: ('Step: ', self simulation currentTimeStep asString)
 ]
 
+{ #category : 'hosting views' }
+CMSimulationRunnerPresenter >> duplicateCharts: aChartsPresenter [
+	"Open a copy of aChartsPresenter in a window of its own, showing the same chart, so that another chart can be chosen in each. Return the copy"
+	| copy |
+	copy := aChartsPresenter copyFor: self.
+	chartsInWindows add: copy.
+	copy openInWindow.
+	^ copy
+]
+
 { #category : 'views' }
 CMSimulationRunnerPresenter >> duplicateView: aView [
 	"Add a view in a new tab, which starts with the choices of aView and then chooses on its own"
@@ -217,9 +246,7 @@ CMSimulationRunnerPresenter >> fitDiagram [
 
 { #category : 'private' }
 CMSimulationRunnerPresenter >> forget: aView [
-
-	views remove: aView ifAbsent: [ ].
-	charts remove: aView ifAbsent: [ ]
+	views remove: aView ifAbsent: [  ]
 ]
 
 { #category : 'views' }
@@ -251,8 +278,7 @@ CMSimulationRunnerPresenter >> hideSettings [
 
 { #category : 'accessing' }
 CMSimulationRunnerPresenter >> hostedViews [
-
-	^ views , charts
+	^ views copy
 ]
 
 { #category : 'initialization' }
@@ -286,8 +312,18 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 			dataTable modelClass: self cormasModel class.
 			dataPage := SpNotebookPage title: 'Data' provider: [ dataTable ].
 			notebook addPage: dataPage ].
-	self cormasModel class chartSelectors do: [ :each |
-		self addPageFor: (self newChartView: each of: self cormasModel) ].
+	chartsPresenter := nil.
+	chartsPage := nil.
+	self cormasModel class chartSelectors ifNotEmpty: [ :selectors |
+		chartsPresenter := (self instantiate: CMChartsPresenter)
+			                   host: self
+			                   subject: self cormasModel
+			                   chart: selectors first;
+			                   yourself.
+		chartsPage := SpNotebookPage
+			              title: 'Charts'
+			              provider: [ chartsPresenter ].
+		notebook addPage: chartsPage ].
 	notebook addPage: (SpNotebookPage
 			 title: 'Inspector'
 			 provider: [ StInspectorPresenter onObject: self simulation ]).
@@ -322,7 +358,7 @@ CMSimulationRunnerPresenter >> initializePresenters [
 		                               yourself.
 	self beInPauseMode.
 	views := OrderedCollection new.
-	charts := OrderedCollection new.
+	chartsInWindows := OrderedCollection new.
 	pages := IdentityDictionary new.
 	notebook := self newNotebook.
 	"A hack to overcome an issue with notebook pages that were added to an empty notebook not signalling the event when they are selected"
@@ -542,6 +578,9 @@ CMSimulationRunnerPresenter >> updateSelectedNotebookPage [
 	"Only update the page that is currently being displayed, and the views and charts in windows of their own. This makes execution much faster because other pages (data table, other views and charts) are not updated when they are not displayed"
 
 	self updateShownViews.
+	(notebook selectedPage isNotNil and: [ notebook selectedPage == chartsPage ])
+		ifTrue: [ chartsPresenter updateDiagram ].
+	chartsInWindows do: [ :each | each updateDiagram ].
 	notebook selectedPage = dataPage ifTrue: [
 		self updateInInterface: [ self updateDataTable ] ]
 ]

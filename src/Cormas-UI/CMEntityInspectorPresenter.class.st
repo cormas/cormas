@@ -150,6 +150,17 @@ CMEntityInspectorPresenter >> initializeWindow: aWindowPresenter [
 				self closeAllViews ]
 ]
 
+{ #category : 'views' }
+CMEntityInspectorPresenter >> newChartView: aSelector of: aModelOrAnEntity [
+	"Answer a chart of the method aSelector of aModelOrAnEntity, that I manage"
+
+	^ (self instantiate: CMChartPresenter)
+		  host: self;
+		  offerToMove;
+		  subject: aModelOrAnEntity chart: aSelector;
+		  yourself
+]
+
 { #category : 'accessing' }
 CMEntityInspectorPresenter >> notebook [
 

@@ -191,16 +191,8 @@ CMChartPresenter >> hiddenSeries [
 
 { #category : 'actions' }
 CMChartPresenter >> host: aHost [
-	"Let aHost, such as a simulation runner, manage me in its tabs, and offer to move me to a window of my own and back"
-
-	host := aHost.
-	toolbar addItemRight: (self newToolbarButton
-			 label: 'Move';
-			 icon: (self iconNamed: #window);
-			 help:
-				 'Move this chart to a window of its own, or back to the tabs';
-			 action: [ self moveElsewhere ];
-			 yourself)
+	"Let aHost, such as a simulation runner, manage me"
+	host := aHost
 ]
 
 { #category : 'initialization' }
@@ -243,6 +235,18 @@ CMChartPresenter >> moveElsewhere [
 	self isInWindow
 		ifTrue: [ host moveToTabs: self ]
 		ifFalse: [ host moveToWindow: self ]
+]
+
+{ #category : 'actions' }
+CMChartPresenter >> offerToMove [
+	"Offer to move me to a window of my own, and back to the tabs of my host"
+	toolbar addItemRight: (self newToolbarButton
+			 label: 'Move';
+			 icon: (self iconNamed: #window);
+			 help:
+				 'Move this chart to a window of its own, or back to the tabs';
+			 action: [ self moveElsewhere ];
+			 yourself)
 ]
 
 { #category : 'actions' }

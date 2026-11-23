@@ -115,16 +115,6 @@ TCMViewHost >> moveToWindow: aView [
 	^ moved
 ]
 
-{ #category : 'views' }
-TCMViewHost >> newChartView: aSelector of: aModelOrAnEntity [
-	"Answer a chart of the method aSelector of aModelOrAnEntity, that I manage"
-
-	^ (self instantiate: CMChartPresenter)
-		  host: self;
-		  subject: aModelOrAnEntity chart: aSelector;
-		  yourself
-]
-
 { #category : 'requirements' }
 TCMViewHost >> notebook [
 

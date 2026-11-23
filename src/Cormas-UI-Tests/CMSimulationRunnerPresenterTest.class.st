@@ -12,6 +12,11 @@ Class {
 	#package : 'Cormas-UI-Tests'
 }
 
+{ #category : 'helpers' }
+CMSimulationRunnerPresenterTest >> charts [
+	^ runner chartsPresenter
+]
+
 { #category : 'private' }
 CMSimulationRunnerPresenterTest >> pageTitles [
 
@@ -56,51 +61,48 @@ CMSimulationRunnerPresenterTest >> tearDown [
 ]
 
 { #category : 'tests' }
-CMSimulationRunnerPresenterTest >> testAChartInAWindowIsDrawnAgainAfterADisplayedStep [
+CMSimulationRunnerPresenterTest >> testAChartKeepsItsHiddenLinesWhenAnotherChartIsShown [
+	| first |
+	first := self charts shownChart.
+	first hiddenSeries add: 'numberOfAliveCells'.
+	self charts show: #chartCells.
+	self charts show: #chartAliveCells.
+	self assert: (self charts shownChart hiddenSeries includes: 'numberOfAliveCells')
+]
 
-	| moved canvas |
-	moved := runner moveToWindow: runner charts first.
-	windows add: moved detachedWindow.
-	canvas := moved chartView canvas.
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testADuplicateChoosesItsChartOnItsOwn [
+	| duplicate |
+	duplicate := runner duplicateCharts: self charts.
+	windows add: duplicate window.
+	duplicate show: #chartCells.
+	self assert: duplicate shownChart title equals: 'Cells'.
+	self assert: self charts shownChart title equals: 'Alive cells'
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testADuplicateIsDrawnAgainAfterADisplayedStep [
+	| duplicate canvas |
+	duplicate := runner duplicateCharts: self charts.
+	windows add: duplicate window.
+	canvas := duplicate shownChart chartView canvas.
 	runner simulation runStep.
 	runner updateSelectedNotebookPage.
-	self deny: moved chartView canvas identicalTo: canvas
+	self deny: duplicate shownChart chartView canvas identicalTo: canvas
 ]
 
 { #category : 'tests' }
-CMSimulationRunnerPresenterTest >> testAChartMovedBackToTheTabsClosesItsWindow [
-
-	| moved window back |
-	moved := runner moveToWindow: runner charts first.
-	window := moved detachedWindow.
-	windows add: window.
-	back := runner moveToTabs: moved.
-	self deny: back isInWindow.
-	self assert: window isClosed.
-	self assert: (self pageTitles includes: 'Cells').
-	self assert: runner charts size equals: 1
-]
-
-{ #category : 'tests' }
-CMSimulationRunnerPresenterTest >> testAChartMovedToAWindowKeepsItsHiddenLines [
-
-	| moved |
-	runner charts first hiddenSeries add: 'numberOfDeadCells'.
-	moved := runner moveToWindow: runner charts first.
-	windows add: moved detachedWindow.
-	self assert: (moved hiddenSeries includes: 'numberOfDeadCells')
-]
-
-{ #category : 'tests' }
-CMSimulationRunnerPresenterTest >> testAChartMovedToAWindowLeavesTheTabs [
-
-	| moved |
-	moved := runner moveToWindow: runner charts first.
-	windows add: moved detachedWindow.
-	self assert: moved isInWindow.
-	self assert: moved title equals: 'Cells'.
-	self deny: (self pageTitles includes: 'Cells').
-	self assert: runner charts size equals: 1
+CMSimulationRunnerPresenterTest >> testADuplicateOfTheChartsTabOpensInAWindowShowingTheSameChart [
+	| duplicate |
+	self charts show: #chartCells.
+	self charts shownChart hiddenSeries add: 'numberOfDeadCells'.
+	duplicate := runner duplicateCharts: self charts.
+	windows add: duplicate window.
+	self assert: duplicate isInWindow.
+	self assert: duplicate shownChart title equals: 'Cells'.
+	self assert: (duplicate shownChart hiddenSeries includes: 'numberOfDeadCells').
+	self assert: (self pageTitles includes: 'Charts').
+	self assert: self charts shownChart title equals: 'Cells'
 ]
 
 { #category : 'tests' }
@@ -188,7 +190,7 @@ CMSimulationRunnerPresenterTest >> testANewViewIsAddedBeforeTheLastTab [
 	self
 		assert:
 		(runner notebook pages collect: [ :each | each title ]) asArray
-		equals: #( 'Data' 'Cells' 'Inspector' 'Space' 'Space (2)'
+		equals: #( 'Data' 'Charts' 'Inspector' 'Space' 'Space (2)'
 		   '' )
 ]
 
@@ -245,7 +247,7 @@ CMSimulationRunnerPresenterTest >> testAViewKeepsItsTitleWhenItMovesToAWindow [
 	self
 		assert:
 		(runner notebook pages collect: [ :each | each title ]) asArray
-		equals: #( 'Data' 'Cells' 'Inspector' 'Space (2)' '' )
+		equals: #( 'Data' 'Charts' 'Inspector' 'Space (2)' '' )
 ]
 
 { #category : 'tests' }
@@ -305,6 +307,22 @@ CMSimulationRunnerPresenterTest >> testAViewWhoseChoicesDifferFromItsPerspective
 ]
 
 { #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testChoosingAChartDrawsItWithTheLatestData [
+	| canvas |
+	canvas := self charts shownChart chartView canvas.
+	self charts show: #chartCells.
+	runner simulation runStep.
+	self charts show: #chartAliveCells.
+	self deny: self charts shownChart chartView canvas identicalTo: canvas
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testChoosingAChartShowsIt [
+	self charts show: #chartCells.
+	self assert: self charts shownChart title equals: 'Cells'
+]
+
+{ #category : 'tests' }
 CMSimulationRunnerPresenterTest >> testChoosingAPerspectiveInAViewRetitlesIt [
 
 	| view |
@@ -314,7 +332,7 @@ CMSimulationRunnerPresenterTest >> testChoosingAPerspectiveInAViewRetitlesIt [
 	self
 		assert:
 		(runner notebook pages collect: [ :each | each title ]) asArray
-		equals: #( 'Data' 'Cells' 'Inspector' 'Space — Hidden cows'
+		equals: #( 'Data' 'Charts' 'Inspector' 'Space — Hidden cows'
 			   '' )
 ]
 
@@ -348,6 +366,16 @@ CMSimulationRunnerPresenterTest >> testChoosingInTheMenuOfAnEntityUpdatesItsView
 		assert:
 		(runner notebook pages at: runner notebook pages size - 1) title
 		equals: 'Space — Hidden cows (modified)'
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testClosingAllViewsClosesTheDuplicatesOfTheChartsTab [
+	| duplicate |
+	duplicate := runner duplicateCharts: self charts.
+	windows add: duplicate window.
+	runner closeAllViews.
+	self assert: duplicate window isClosed.
+	self assertEmpty: runner chartsInWindows
 ]
 
 { #category : 'tests' }
@@ -395,13 +423,13 @@ CMSimulationRunnerPresenterTest >> testClosingTheViewBeforeTheLastTabShowsTheTab
 ]
 
 { #category : 'tests' }
-CMSimulationRunnerPresenterTest >> testClosingTheWindowOfAChartClosesTheChart [
-
-	| moved |
-	moved := runner moveToWindow: runner charts first.
-	windows add: moved detachedWindow.
-	moved detachedWindow close.
-	self assertEmpty: runner charts
+CMSimulationRunnerPresenterTest >> testClosingTheWindowOfADuplicateClosesOnlyTheDuplicate [
+	| duplicate |
+	duplicate := runner duplicateCharts: self charts.
+	windows add: duplicate window.
+	duplicate window close.
+	self assertEmpty: runner chartsInWindows.
+	self assert: (self pageTitles includes: 'Charts')
 ]
 
 { #category : 'tests' }
@@ -412,14 +440,6 @@ CMSimulationRunnerPresenterTest >> testClosingTheWindowOfAViewClosesTheView [
 	windows add: moved detachedWindow.
 	moved detachedWindow close.
 	self assertEmpty: runner views
-]
-
-{ #category : 'tests' }
-CMSimulationRunnerPresenterTest >> testEachChartOfTheModelHasATabTitledByItsTitle [
-
-	self
-		assert: self pageTitles
-		equals: #( 'Data' 'Cells' 'Inspector' 'Space' '' )
 ]
 
 { #category : 'tests' }
@@ -497,7 +517,40 @@ CMSimulationRunnerPresenterTest >> testTabsKeepTheTitlesOfTheirViews [
 		assert: (runner notebook adapter widget pages collect: [ :each |
 					 (each labelMorph allMorphs detect: [ :morph |
 						  morph isKindOf: StringMorph ]) contents ]) asArray
-		equals: #( 'Data' 'Cells' 'Inspector' 'Space (2)' '' )
+		equals: #( 'Data' 'Charts' 'Inspector' 'Space (2)' '' )
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testTheChartsOfTheModelShareOneTab [
+	self
+		assert: self pageTitles
+		equals: #( 'Data' 'Charts' 'Inspector' 'Space' '' )
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testTheChartsTabOffersTheChartsOfTheModelByTitle [
+	self
+		assert: self charts offeredTitles asArray
+		equals: #( 'Alive cells' 'Cells' )
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testTheChartsTabStartsShowingTheFirstChart [
+	self assert: self charts shownChart title equals: 'Alive cells'
+]
+
+{ #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testTheShownChartIsDrawnAgainAfterADisplayedStepOnlyWhenTheChartsTabIsSelected [
+	| canvas |
+	self charts shownChart drawChart.
+	canvas := self charts shownChart chartView canvas.
+	runner simulation runStep.
+	runner updateSelectedNotebookPage.
+	self assert: self charts shownChart chartView canvas identicalTo: canvas.
+	runner notebook selectPage: (runner notebook pages detect: [ :each | each title = 'Charts' ]).
+	runner simulation runStep.
+	runner updateSelectedNotebookPage.
+	self deny: self charts shownChart chartView canvas identicalTo: canvas
 ]
 
 { #category : 'running' }

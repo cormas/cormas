@@ -56,6 +56,16 @@ CMMockModel >> cellMatrix [
 ]
 
 { #category : 'charts' }
+CMMockModel >> chartAliveCells [
+	"How many cells are alive?"
+	<chart>
+	^ CMLineChart new
+		  title: 'Alive cells';
+		  line: #numberOfAliveCells;
+		  yourself
+]
+
+{ #category : 'charts' }
 CMMockModel >> chartCells [
 	"How many cells are alive, and how many are dead?"
 
