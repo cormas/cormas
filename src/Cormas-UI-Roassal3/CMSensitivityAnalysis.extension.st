@@ -8,7 +8,7 @@ CMSensitivityAnalysis >> canvasOf: anOutput against: aParameterName [
 		  hideLegend;
 		  canvasOf: { (self
 				   seriesDataNamed: anOutput
-				   color: NSScale category10 range first
+				   color: CMColor palette first
 				   showing: (self resultsVarying: aParameterName)
 				   of: anOutput
 				   against: aParameterName) }
@@ -41,8 +41,8 @@ CMSensitivityAnalysis >> colorsOf: someValues [
 	| base light dark min max |
 	(someValues allSatisfy: [ :each | each isNumber ]) ifFalse: [
 			^ someValues withIndexCollect: [ :each :index |
-				  NSScale category10 range atWrap: index ] ].
-	base := NSScale category10 range first.
+				  CMColor palette atWrap: index ] ].
+	base := CMColor palette first.
 	light := base mixed: 0.3 with: Color white.
 	dark := base mixed: 0.6 with: Color black.
 	min := someValues min.

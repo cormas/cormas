@@ -3,7 +3,7 @@ I represent a color in Cormas: a `Color` with extra named constants and utilitie
 
 ## Responsibility:
 
-- Provide named colors, on my class side.
+- Provide named colors, on my class side, and a `palette` of the most distinct of them, which charts give to their series.
 - Pick a color from a number, cycling through the named colors.
 - Interpolate a color for a value within a range.
 
@@ -96,6 +96,28 @@ CMColor class >> olympic [
 CMColor class >> orange [
 	<script: 'self orange inspect'>
 	^ Color fromHexString: 'FF7417'
+]
+
+{ #category : 'accessing' }
+CMColor class >> palette [
+	"Named colors far enough apart to tell series apart, in the order in which charts give them to their series"
+
+	^ {
+		  self azure.
+		  self red.
+		  self green.
+		  self purple.
+		  self orange.
+		  self tiffanyBlue.
+		  self brown.
+		  self gold }
+]
+
+{ #category : 'accessing - defaults' }
+CMColor class >> purple [
+
+	<script: 'self purple inspect'>
+	^ Color fromHexString: '8E44AD'
 ]
 
 { #category : 'constants' }

@@ -153,16 +153,32 @@ CMChart >> initialize [
 
 { #category : 'adding' }
 CMChart >> lineAtX: aNumber label: aString [
-	"Draw a line across the chart at aNumber on x, such as the step of an event, labelled aString on the chart rather than in the legend"
+	"Draw a grey line across the chart at aNumber on x, such as the step of an event, labelled aString on the chart rather than in the legend"
 
-	xReferenceLines add: aNumber -> aString
+	self lineAtX: aNumber label: aString color: Color gray
+]
+
+{ #category : 'adding' }
+CMChart >> lineAtX: aNumber label: aString color: aColor [
+	"Draw a line of aColor across the chart at aNumber on x, such as the step of an event, labelled aString on the chart rather than in the legend"
+
+	xReferenceLines add:
+		(CMReferenceLine at: aNumber label: aString color: aColor)
 ]
 
 { #category : 'adding' }
 CMChart >> lineAtY: aNumber label: aString [
-	"Draw a line across the chart at aNumber on y, such as a threshold or a need, labelled aString on the chart rather than in the legend"
+	"Draw a grey line across the chart at aNumber on y, such as a threshold or a need, labelled aString on the chart rather than in the legend"
 
-	yReferenceLines add: aNumber -> aString
+	self lineAtY: aNumber label: aString color: Color gray
+]
+
+{ #category : 'adding' }
+CMChart >> lineAtY: aNumber label: aString color: aColor [
+	"Draw a line of aColor across the chart at aNumber on y, such as a threshold or a need, labelled aString on the chart rather than in the legend"
+
+	yReferenceLines add:
+		(CMReferenceLine at: aNumber label: aString color: aColor)
 ]
 
 { #category : 'adding' }

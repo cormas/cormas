@@ -275,7 +275,7 @@ CMChartPresenter >> saveToPng [
 		named: chartSelector asString
 		extension: 'png'
 		writing: [ :file |
-				RSPNGExporter new
+				CMPNGExporter new
 					canvas: chartView canvas;
 					exportToFile: file ]
 ]

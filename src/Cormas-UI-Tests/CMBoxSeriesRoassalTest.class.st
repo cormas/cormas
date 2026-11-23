@@ -28,6 +28,50 @@ CMBoxSeriesRoassalTest >> setUp [
 ]
 
 { #category : 'tests' }
+CMBoxSeriesRoassalTest >> testABoxAloneAtItsValueOfXIsCenteredOnIt [
+
+	| cows goats data canvas centers |
+	cows := CMBoxSeries new
+		        x: #energy y: #energy ofAll: CMMockCow;
+		        yourself.
+	goats := CMBoxSeries new
+		         x: #energy y: #energy ofAll: CMMockGoat;
+		         yourself.
+	chart
+		add: cows;
+		add: goats.
+	data := {
+		        (CMSeriesData
+			         of: cows
+			         named: 'cows'
+			         color: Color blue
+			         steps: #( 0 0 0 0 0 )
+			         values: {
+					         (1 @ 1).
+					         (1 @ 2).
+					         (1 @ 3).
+					         (2 @ 1).
+					         (2 @ 3) }).
+		        (CMSeriesData
+			         of: goats
+			         named: 'goats'
+			         color: Color red
+			         steps: #( 0 0 0 0 )
+			         values: {
+					         (2 @ 2).
+					         (2 @ 4).
+					         (3 @ 1).
+					         (3 @ 5) }) }.
+	canvas := chart canvasOf: data hiding: Set new.
+	centers := ((canvas allChildren select: [ :each | each model = #box ])
+		            collect: [ :each | each encompassingRectangle center x ])
+		           asSortedCollection asArray.
+	self assert: centers size equals: 4.
+	self assert: (centers second - centers first closeTo:
+			 2 * (centers third - centers second))
+]
+
+{ #category : 'tests' }
 CMBoxSeriesRoassalTest >> testABoxIsDrawnAtEachStep [
 
 	| canvas |

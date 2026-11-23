@@ -84,3 +84,17 @@ CMHistogramSeriesRoassalTest >> testTheBarsUpToAnEarlierStepCountTheInstancesAtT
 	self assert: counts sum equals: 2.
 	self assert: (counts count: [ :each | each > 0 ]) equals: 1
 ]
+
+{ #category : 'tests' }
+CMHistogramSeriesRoassalTest >> testValuesSpreadOverAWideRangeAreCountedInAboutThirtyBins [
+
+	| series counts |
+	series := CMSeriesData
+		          of: chart series first
+		          named: 'energy'
+		          color: Color red
+		          steps: ((1 to: 100) collect: [ :each | 0 ])
+		          values: ((1 to: 100) collect: [ :each | each + 0.5 ]).
+	counts := (chart plotsOf: { series }) first value yValues.
+	self assert: (counts size between: 20 and: 40)
+]

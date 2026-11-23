@@ -18,7 +18,7 @@ CMChart >> add: aLegend below: aCanvas [
 
 { #category : '*Cormas-UI-Roassal3' }
 CMChart >> addReferenceLinesTo: aRoassalChart [
-	"Draw each reference line across the built aRoassalChart, in grey and dashed so that it is not taken for a series, with its label at its end"
+	"Draw each reference line across the built aRoassalChart, dashed so that it is not taken for a series, with its label at its end"
 
 	| left right bottom top |
 	left := aRoassalChart xScale scale: aRoassalChart minChartValueX.
@@ -27,22 +27,22 @@ CMChart >> addReferenceLinesTo: aRoassalChart [
 	top := aRoassalChart yScale scale: aRoassalChart maxChartValueY.
 	yReferenceLines do: [ :each |
 			| y label |
-			y := aRoassalChart yScale scale: each key.
+			y := aRoassalChart yScale scale: each value.
 			label := self
 				         referenceLabelOn: aRoassalChart
 				         from: left @ y
 				         to: right @ y
-				         named: each value.
+				         of: each.
 			label translateTo:
 				right - (label width / 2) - 4 @ (y - (label height / 2) - 2) ].
 	xReferenceLines do: [ :each |
 			| x label |
-			x := aRoassalChart xScale scale: each key.
+			x := aRoassalChart xScale scale: each value.
 			label := self
 				         referenceLabelOn: aRoassalChart
 				         from: x @ bottom
 				         to: x @ top
-				         named: each value.
+				         of: each.
 			label translateTo:
 				x + (label width / 2) + 4 @ (top + (label height / 2) + 2) ]
 ]
@@ -151,21 +151,21 @@ CMChart >> plotsOf: someSeriesData [
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
-CMChart >> referenceLabelOn: aRoassalChart from: aPoint to: anotherPoint named: aString [
-	"Add to the canvas of aRoassalChart a reference line from aPoint to anotherPoint and a label aString, and return the label so that it can be placed at the end of the line"
+CMChart >> referenceLabelOn: aRoassalChart from: aPoint to: anotherPoint of: aReferenceLine [
+	"Add to the canvas of aRoassalChart the line of aReferenceLine from aPoint to anotherPoint, and its label, and return the label so that it can be placed at the end of the line"
 
 	| label |
 	aRoassalChart canvas add: (RSLine new
 			 startPoint: aPoint;
 			 endPoint: anotherPoint;
-			 color: Color gray;
+			 color: aReferenceLine color;
 			 width: 1.5;
 			 dashArray: #( 6 4 );
 			 yourself).
 	label := RSLabel new
-		         text: aString;
+		         text: aReferenceLine label;
 		         fontSize: 10;
-		         color: Color gray;
+		         color: aReferenceLine color;
 		         yourself.
 	aRoassalChart canvas add: label.
 	^ label
@@ -198,7 +198,7 @@ CMChart >> roassalChartOf: somePlots xCategories: someCategories leavingRoomToGr
 					setXAxisOf: roassalChart
 					from:
 						(somePlots flatCollect: [ :each | each value definedValuesX ])
-						, (xReferenceLines collect: [ :each | each key ])
+						, (xReferenceLines collect: [ :each | each value ])
 					margin:
 					(somePlots collect: [ :each | each key series class xMargin ])
 						max
@@ -206,7 +206,7 @@ CMChart >> roassalChartOf: somePlots xCategories: someCategories leavingRoomToGr
 		ifNotEmpty: [ self setXAxisOf: roassalChart to: someCategories ].
 	yValues := (somePlots flatCollect: [ :each |
 		            each value definedValuesY ])
-	           , (yReferenceLines collect: [ :each | each key ]) , {
+	           , (yReferenceLines collect: [ :each | each value ]) , {
 		           yMinimum.
 		           yMaximum }.
 	yTicks := self
@@ -281,22 +281,34 @@ CMChart >> tickLabelsOf: someTicks [
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
-CMChart >> ticksFrom: aLowest to: aHighest wholeNumbers: aBoolean [
-	"About five evenly spaced ticks, 1, 2 or 5 times a power of ten apart, from at most aLowest to at least aHighest. They are exact numbers, so that they can be labelled with as many decimals as their spacing needs. Spacings are compared as floats, since the values may be floats"
+CMChart >> ticksFrom: aLowest to: aHighest about: aNumber wholeNumbers: aBoolean [
+	"About aNumber evenly spaced ticks, 1, 2 or 5 times a power of ten apart, from at most aLowest to at least aHighest. They are exact numbers, so that they can be labelled with as many decimals as their spacing needs. Spacings are compared as floats, since the values may be floats"
 
 	| highest spacing power |
 	highest := aHighest = aLowest
 		           ifTrue: [ aLowest + 1 ]
 		           ifFalse: [ aHighest ].
-	power := 10 raisedTo: (highest - aLowest / 5 log: 10) floor.
+	power := 10 raisedTo: (highest - aLowest / aNumber log: 10) floor.
 	spacing := #( 1 2 5 10 )
 		           detect: [ :each |
-		           (each * power) asFloat >= (highest - aLowest / 5) asFloat ]
+			           (each * power) asFloat
+			           >= (highest - aLowest / aNumber) asFloat ]
 		           ifNone: [ 10 ].
 	spacing := spacing * power.
 	aBoolean ifTrue: [ spacing := spacing max: 1 ].
 	^ ((aLowest / spacing) floor * spacing to:
 	   (highest / spacing) ceiling * spacing by: spacing) asArray
+]
+
+{ #category : '*Cormas-UI-Roassal3' }
+CMChart >> ticksFrom: aLowest to: aHighest wholeNumbers: aBoolean [
+	"About five evenly spaced ticks, from at most aLowest to at least aHighest"
+
+	^ self
+		  ticksFrom: aLowest
+		  to: aHighest
+		  about: 5
+		  wholeNumbers: aBoolean
 ]
 
 { #category : '*Cormas-UI-Roassal3' }

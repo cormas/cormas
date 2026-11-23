@@ -90,7 +90,8 @@ CMChartSeries class >> plotsOf: someSeriesData on: aChart [
 { #category : '*Cormas-UI-Roassal3' }
 CMChartSeries >> roassalColorAt: anIndex [
 	"My color, or else the color of the chart's palette for the series at anIndex"
-	^ (colors ifEmpty: [ NSScale category10 range ]) atWrap: anIndex
+
+	^ (colors ifEmpty: [ CMColor palette ]) atWrap: anIndex
 ]
 
 { #category : '*Cormas-UI-Roassal3' }

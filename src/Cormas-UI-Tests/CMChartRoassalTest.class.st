@@ -279,6 +279,36 @@ CMChartRoassalTest >> testAReferenceLineIsLabelledOnTheChartRatherThanInTheLegen
 ]
 
 { #category : 'tests' }
+CMChartRoassalTest >> testAReferenceLineWithAColorIsDrawnAndLabelledInThatColor [
+
+	| canvas |
+	chart
+		lineAtX: 2 label: 'Harvest' color: Color red;
+		lineAtY: 40 label: 'Target' color: Color blue.
+	canvas := chart canvasOf: { self lineData } hiding: Set new.
+	self assert: (canvas allChildren anySatisfy: [ :each |
+			 (each isKindOf: RSLine) and: [ each color = Color red ] ]).
+	self assert: (canvas allChildren anySatisfy: [ :each |
+			 (each isKindOf: RSLine) and: [ each color = Color blue ] ]).
+	self
+		assert: (canvas allChildren detect: [ :each |
+				 (each isKindOf: RSLabel) and: [ each text = 'Harvest' ] ]) color
+		equals: Color red
+]
+
+{ #category : 'tests' }
+CMChartRoassalTest >> testAReferenceLineWithoutAColorIsGray [
+
+	| canvas |
+	chart lineAtY: 40 label: 'Target'.
+	canvas := chart canvasOf: { self lineData } hiding: Set new.
+	self
+		assert: (canvas allChildren detect: [ :each |
+				 (each isKindOf: RSLabel) and: [ each text = 'Target' ] ]) color
+		equals: Color gray
+]
+
+{ #category : 'tests' }
 CMChartRoassalTest >> testAxesOfNonNegativeValuesStartAtZero [
 
 	| canvas |
@@ -337,6 +367,14 @@ CMChartRoassalTest >> testEachLineFollowsItsProbeOverTheRecordedSteps [
 CMChartRoassalTest >> testLinesWithoutAChosenColorGetDifferentColors [
 
 	self deny: self lines first color equals: self lines second color
+]
+
+{ #category : 'tests' }
+CMChartRoassalTest >> testLinesWithoutAChosenColorTakeTheColorsOfThePaletteInOrder [
+
+	self
+		assert: (self lines collect: [ :each | each color ]) asArray
+		equals: (CMColor palette first: 2)
 ]
 
 { #category : 'tests' }

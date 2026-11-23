@@ -5,7 +5,7 @@ I am a Roassal plot that draws the boxes of a `CMBoxSeries`: at each value on x,
 
 - I draw a box at each value on x from the numbers gathered there, scaled by the chart I belong to.
 - I compute the five numbers of a box: minimum, quartiles, median and maximum, interpolated as R and NumPy do by default.
-- I share the space of a value on x with the boxes of the other box series of my chart, at my own place.
+- I share the space of a value on x with the boxes that other box series of my chart draw at the same value, at my own place; a box alone at its value is centered on it.
 
 ## Collaborators:
 
@@ -15,7 +15,7 @@ I am a Roassal plot that draws the boxes of a `CMBoxSeries`: at each value on x,
 ## Public API and Key Messages
 
 - `x:spreads:` gives the values on x and the numbers at each of them.
-- `place:of:` gives my place among the boxes of a value on x.
+- `places:` gives my place, and the number of places, among the boxes of each value on x.
 - `fiveNumbersOf:` returns the five numbers of a box.
 
 ```smalltalk
@@ -35,7 +35,7 @@ chart open
 ## Internal Representation
 
 - `xValues`: the values on x; `spreads`: the collection of numbers at each of them; `yValues`: all the numbers, which set the extent of the chart.
-- `place`, `numberOfPlaces`: my place among the boxes of a value on x.
+- `places`: for each value on x, an association of my place and of the number of boxes side by side there.
 - `boxShapes`: the shapes I drew.
 "
 Class {
@@ -44,8 +44,7 @@ Class {
 	#instVars : [
 		'spreads',
 		'boxShapes',
-		'place',
-		'numberOfPlaces'
+		'places'
 	],
 	#category : 'Cormas-UI-Roassal3',
 	#package : 'Cormas-UI-Roassal3'
@@ -81,17 +80,15 @@ CMBoxesPlot >> fiveNumbersOf: someNumbers [
 CMBoxesPlot >> initialize [
 
 	super initialize.
-	place := 1.
-	numberOfPlaces := 1.
+	places := #(  ).
 	boxShapes := #(  )
 ]
 
 { #category : 'accessing' }
-CMBoxesPlot >> place: anIndex of: aNumber [
-	"Draw my boxes at the place anIndex of aNumber places side by side within each step"
+CMBoxesPlot >> places: somePlaces [
+	"At each of my values on x, draw my box at a place among the boxes side by side there: somePlaces has an association of the place and of the number of places for each value on x, in the same order"
 
-	place := anIndex.
-	numberOfPlaces := aNumber
+	places := somePlaces
 ]
 
 { #category : 'statistics' }
@@ -107,20 +104,21 @@ CMBoxesPlot >> quantile: aFraction ofSorted: someNumbers [
 
 { #category : 'rendering' }
 CMBoxesPlot >> renderIn: aCanvas [
-	"Draw at each step a line from the minimum to the maximum, a box from the first to the third quartile, and a white line at the median"
+	"Draw at each value on x a line from the minimum to the maximum, a box from the first to the third quartile, and a white line at the median"
 
-	| stepWidth boxWidth color |
+	| stepWidth color |
 	super renderIn: aCanvas.
 	stepWidth := (xScale scale: 1) - (xScale scale: 0).
-	boxWidth := stepWidth * 0.8 / numberOfPlaces.
 	color := self computeColor.
 	boxShapes := OrderedCollection new.
-	xValues with: spreads do: [ :step :numbers |
-			| five center left right |
-			five := (self fiveNumbersOf: numbers) collect: [ :each |
+	xValues doWithIndex: [ :step :index |
+			| place five boxWidth center left right |
+			place := places at: index.
+			five := (self fiveNumbersOf: (spreads at: index)) collect: [ :each |
 				        yScale scale: each ].
+			boxWidth := stepWidth * 0.8 / place value.
 			center := (xScale scale: step) - (stepWidth * 0.4)
-			          + (boxWidth * (place - 0.5)).
+			          + (boxWidth * (place key - 0.5)).
 			left := center - (boxWidth / 2).
 			right := center + (boxWidth / 2).
 			boxShapes add: (RSLine new
@@ -146,9 +144,10 @@ CMBoxesPlot >> renderIn: aCanvas [
 
 { #category : 'accessing' }
 CMBoxesPlot >> x: someValues spreads: someCollections [
-	"Draw a box at each of someValues on x for the numbers of the collection at the same index of someCollections"
+	"Draw a box at each of someValues on x for the numbers of the collection at the same index of someCollections, alone at its value until places: says otherwise"
 
 	xValues := someValues.
 	spreads := someCollections.
-	yValues := someCollections flatCollect: [ :each | each ]
+	yValues := someCollections flatCollect: [ :each | each ].
+	places := someValues collect: [ :each | 1 -> 1 ]
 ]

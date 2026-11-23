@@ -2,16 +2,18 @@ Extension { #name : 'CMHistogramSeries' }
 
 { #category : '*Cormas-UI-Roassal3' }
 CMHistogramSeries class >> binsOf: someNumbers on: aChart [
-	"Return the limits of the bins, evenly spaced over someNumbers, at the ticks aChart would choose. Whole numbers each have a bin of their own when they are close enough. Other limits are floats, so that a float equal to a limit is compared with it exactly"
+	"Return the limits of about thirty bins, evenly spaced over someNumbers, at round numbers, so that the bars draw the shape of the distribution. Whole numbers each have a bin of their own when they are close enough. Other limits are floats, so that a float equal to a limit is compared with it exactly"
 
 	(someNumbers allSatisfy: [ :each | each isInteger ]) ifTrue: [
 			^ aChart
 				  ticksFrom: someNumbers min
 				  to: someNumbers max + 1
+				  about: 30
 				  wholeNumbers: true ].
 	^ (aChart
 		   ticksFrom: someNumbers min
 		   to: someNumbers max
+		   about: 30
 		   wholeNumbers: false) collect: [ :each | each asFloat ]
 ]
 
