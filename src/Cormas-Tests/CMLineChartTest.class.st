@@ -19,65 +19,36 @@ CMLineChartTest >> setUp [
 ]
 
 { #category : 'tests' }
-CMLineChartTest >> testAColorForAProbeThatIsNotShownRaisesAnError [
+CMLineChartTest >> testAConfiguredLineShowsTheSameProbeAsASimpleOne [
 
 	self
-		should: [ chart color: Color red for: #bag ]
+		should: [
+				chart add: ((CMLineSeries probe: #boars)
+						 label: 'Boars';
+						 yourself) ]
 		raise: Error
 		withExceptionDo: [ :error |
-		self assert: (error messageText includesSubstring: 'bag') ]
+			self assert: (error messageText includesSubstring: 'boars') ]
 ]
 
 { #category : 'tests' }
-CMLineChartTest >> testALabelForAProbeThatIsNotShownRaisesAnError [
+CMLineChartTest >> testALineIsLabelledByItsProbeUntilALabelIsChosen [
+
+	| line |
+	line := CMLineSeries probe: #urbanBoars.
+	self assert: line label equals: 'urbanBoars'.
+	line label: 'Boars in towns'.
+	self assert: line label equals: 'Boars in towns'
+]
+
+{ #category : 'tests' }
+CMLineChartTest >> testASeriesOfAnotherKindCannotBeAdded [
 
 	self
-		should: [ chart label: 'Bag' for: #bag ]
+		should: [ chart add: (CMAreaSeries probe: #sheep) ]
 		raise: Error
 		withExceptionDo: [ :error |
-		self assert: (error messageText includesSubstring: 'bag') ]
-]
-
-{ #category : 'tests' }
-CMLineChartTest >> testALabelReplacesTheProbeName [
-
-	chart label: 'Boars in towns' for: #urbanBoars.
-	self assert: (chart labelFor: #urbanBoars) equals: 'Boars in towns'.
-	self assert: (chart labelFor: #boars) equals: 'boars'
-]
-
-{ #category : 'tests' }
-CMLineChartTest >> testALineHasNoColorUntilOneIsChosen [
-
-	self assert: (chart colorFor: #boars ifNone: [ #none ]) equals: #none.
-	chart color: Color brown for: #boars.
-	self
-		assert: (chart colorFor: #boars ifNone: [ #none ])
-		equals: Color brown
-]
-
-{ #category : 'tests' }
-CMLineChartTest >> testALineIsLabelledByItsProbe [
-
-	self assert: (chart labelFor: #boars) equals: 'boars'
-]
-
-{ #category : 'tests' }
-CMLineChartTest >> testAProbeShownTwiceCannotBeLabelled [
-	chart lines: #boars ofAll: CMMockAnimal.
-	self
-		should: [ chart label: 'Boars' for: #boars ]
-		raise: Error
-		withExceptionDo: [ :error |
-			self assert: (error messageText includesSubstring: 'more than once') ]
-]
-
-{ #category : 'tests' }
-CMLineChartTest >> testLinesKeepTheirOrder [
-
-	self
-		assert: chart shownSelectors asArray
-		equals: #( #boars #urbanBoars )
+			self assert: (error messageText includesSubstring: 'CMAreaSeries') ]
 ]
 
 { #category : 'tests' }
@@ -88,12 +59,6 @@ CMLineChartTest >> testTheLinesOfAllInstancesOfAClassCannotBeShownTwice [
 		raise: Error
 		withExceptionDo: [ :error |
 			self assert: (error messageText includesSubstring: 'CMMockAnimal') ]
-]
-
-{ #category : 'tests' }
-CMLineChartTest >> testTheLinesOfAllInstancesOfAClassShowTheirProbe [
-	chart lines: #energy ofAll: CMMockAnimal.
-	self assert: (chart shownSelectors includes: #energy)
 ]
 
 { #category : 'tests' }

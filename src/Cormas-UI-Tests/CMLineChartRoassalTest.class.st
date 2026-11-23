@@ -28,7 +28,7 @@ CMLineChartRoassalTest >> legendEntryNamed: aString in: aCanvas [
 { #category : 'private' }
 CMLineChartRoassalTest >> lines [
 
-	^ chart seriesOf: model in: simulation
+	^ chart seriesDataOf: model in: simulation
 ]
 
 { #category : 'private' }
@@ -46,7 +46,7 @@ CMLineChartRoassalTest >> plotShapesNamed: aString in: aCanvas [
 CMLineChartRoassalTest >> seriesNamed: someNumbers [
 
 	^ someNumbers collect: [ :each |
-			  CMChartSeries new
+			  CMSeriesData new
 				  setName: 'Rabbit ' , each printString
 				  color: Color red
 				  steps: #( 0 1 2 )
@@ -74,8 +74,26 @@ CMLineChartRoassalTest >> setUp [
 { #category : 'tests' }
 CMLineChartRoassalTest >> testAChosenColorIsUsed [
 
-	chart color: Color brown for: #numberOfDeadCells.
+	chart := CMLineChart new
+		         line: #numberOfAliveCells;
+		         add: ((CMLineSeries probe: #numberOfDeadCells)
+				          color: Color brown;
+				          yourself);
+		         yourself.
 	self assert: self lines second color equals: Color brown
+]
+
+{ #category : 'tests' }
+CMLineChartRoassalTest >> testAChosenColorIsUsedForTheLinesOfAllInstances [
+
+	chart := CMLineChart new
+		         add: ((CMLineSeries probe: #energy ofAll: CMMockAnimal)
+				          color: Color gray;
+				          yourself);
+		         yourself.
+	self assert: self lines size > 1.
+	self assert:
+		(self lines allSatisfy: [ :each | each color = Color gray ])
 ]
 
 { #category : 'tests' }
@@ -141,8 +159,9 @@ CMLineChartRoassalTest >> testALineOfAnInstanceIsNamedAfterItsProbeAndItsInstanc
 
 	| cow |
 	chart := CMLineChart new
-		         lines: #energy ofAll: CMMockAnimal;
-		         label: 'Energy' for: #energy;
+		         add: ((CMLineSeries probe: #energy ofAll: CMMockAnimal)
+				          label: 'Energy';
+				          yourself);
 		         yourself.
 	cow := (model entitiesOfClass: CMMockCow) first.
 	self
@@ -179,7 +198,7 @@ CMLineChartRoassalTest >> testAxesOfNonNegativeValuesStartAtZero [
 
 	| canvas |
 	canvas := chart
-		          canvasOf: { (CMChartSeries new
+		          canvasOf: { (CMSeriesData new
 				           setName: 'a'
 				           color: Color red
 				           steps: #( 12 13 14 )
@@ -270,10 +289,23 @@ CMLineChartRoassalTest >> testTheChartHasAxisLinesButNoFrame [
 CMLineChartRoassalTest >> testTheLegendShowsTheLabelOfEachLine [
 
 	| texts |
-	chart label: 'Dead cells' for: #numberOfDeadCells.
+	chart := CMLineChart new
+		         line: #numberOfAliveCells;
+		         add: ((CMLineSeries probe: #numberOfDeadCells)
+				          label: 'Dead cells';
+				          yourself);
+		         yourself.
 	texts := self textsOf: (self canvasHiding: Set new).
 	self assert: (texts includes: 'numberOfAliveCells').
 	self assert: (texts includes: 'Dead cells')
+]
+
+{ #category : 'tests' }
+CMLineChartRoassalTest >> testTheLinesKeepTheOrderInWhichTheyWereAdded [
+
+	self
+		assert: (self lines collect: [ :each | each name ] as: Array)
+		equals: #( 'numberOfAliveCells' 'numberOfDeadCells' )
 ]
 
 { #category : 'tests' }

@@ -1,15 +1,6 @@
 Extension { #name : 'CMLineChart' }
 
 { #category : '*Cormas-UI-Roassal3' }
-CMLineChart >> addSeriesOf: aSelector ofAll: aClass in: someDataTables to: someSeries [
-
-	self
-		addSeriesOfEachInstance: aSelector
-		in: someDataTables
-		to: someSeries
-]
-
-{ #category : '*Cormas-UI-Roassal3' }
 CMLineChart >> plotsOf: someSeries [
 	"A line for each series that has values"
 

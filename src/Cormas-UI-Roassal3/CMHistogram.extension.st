@@ -1,16 +1,6 @@
 Extension { #name : 'CMHistogram' }
 
 { #category : '*Cormas-UI-Roassal3' }
-CMHistogram >> addSeriesOf: aSelector ofAll: aClass in: someDataTables to: someSeries [
-
-	self
-		addSpreadOf: aSelector
-		ofAll: aClass
-		in: someDataTables
-		to: someSeries
-]
-
-{ #category : '*Cormas-UI-Roassal3' }
 CMHistogram >> binsOf: someNumbers [
 	"Return the limits of the bins, evenly spaced over someNumbers. Whole numbers each have a bin of their own when they are close enough. Other limits are floats, so that a float equal to a limit is compared with it exactly"
 

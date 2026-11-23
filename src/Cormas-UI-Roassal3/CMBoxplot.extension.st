@@ -1,16 +1,6 @@
 Extension { #name : 'CMBoxplot' }
 
 { #category : '*Cormas-UI-Roassal3' }
-CMBoxplot >> addSeriesOf: aSelector ofAll: aClass in: someDataTables to: someSeries [
-
-	self
-		addSpreadOf: aSelector
-		ofAll: aClass
-		in: someDataTables
-		to: someSeries
-]
-
-{ #category : '*Cormas-UI-Roassal3' }
 CMBoxplot >> plotsOf: someSeries [
 	"A box at each step for each series that has values, side by side when there are several"
 

@@ -1,15 +1,15 @@
 Class {
-	#name : 'CMChartSeriesTest',
+	#name : 'CMSeriesDataTest',
 	#superclass : 'TestCase',
 	#category : 'Cormas-UI-Tests',
 	#package : 'Cormas-UI-Tests'
 }
 
 { #category : 'tests' }
-CMChartSeriesTest >> testASeriesUpToAStepKeepsOnlyTheValuesUntilThatStep [
+CMSeriesDataTest >> testASeriesUpToAStepKeepsOnlyTheValuesUntilThatStep [
 
 	| series |
-	series := (CMChartSeries
+	series := (CMSeriesData
 		           named: 'boars'
 		           color: Color brown
 		           steps: #( 0 2 4 )

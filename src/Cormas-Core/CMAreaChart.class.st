@@ -9,11 +9,12 @@ I am a chart that shows probes as areas stacked over time, so that their total c
 
 ## Collaborators:
 
-- `CMChart` gives me the probes I show, titles, labels and colors, and draws me.
+- `CMChart` keeps my `CMAreaSeries` and my titles, and draws me.
 - Cormas-UI-Roassal3 draws each area with a `RSAreaPlot`.
 
 ## Public API and Key Messages
 
+- `add:` adds a `CMAreaSeries`, with its own label or color; the messages below add one with the default label and color.
 - `area:` adds an area for a probe of my subject, which must return numbers.
 - `areas:ofAll:` adds the areas of a probe of the instances of a class and of its subclasses.
 
@@ -44,14 +45,20 @@ Class {
 
 { #category : 'accessing' }
 CMAreaChart >> area: aSelector [
-	"Show the probe aSelector, which returns numbers, as an area stacked on the areas shown before"
+	"Show the probe aSelector, which returns numbers, as an area stacked on the areas shown before. Add a CMAreaSeries to choose its label or color"
 
-	self showProbe: aSelector
+	self add: (CMAreaSeries probe: aSelector)
 ]
 
 { #category : 'accessing' }
 CMAreaChart >> areas: aSelector ofAll: aClass [
-	"Show the probe aSelector of the instances of aClass, and of its subclasses, as stacked areas: one for each instance when it returns numbers, or one for each value, counting the instances that have it, when it returns strings or booleans"
+	"Show the probe aSelector of the instances of aClass, and of its subclasses, as stacked areas: one for each instance when it returns numbers, or one for each value, counting the instances that have it, when it returns strings or booleans. Add a CMAreaSeries to choose their label or color"
 
-	self showProbe: aSelector ofAll: aClass
+	self add: (CMAreaSeries probe: aSelector ofAll: aClass)
+]
+
+{ #category : 'accessing' }
+CMAreaChart >> seriesClass [
+
+	^ CMAreaSeries
 ]

@@ -9,11 +9,12 @@ I am a chart that shows how a probe is spread over all instances of a class: at 
 
 ## Collaborators:
 
-- `CMChart` gives me the probes I show, titles, labels and colors, and draws me.
+- `CMChart` keeps my `CMBoxSeries` and my titles, and draws me.
 - `CMBoxesPlot` (in Cormas-UI-Roassal3) draws the boxes of one probe.
 
 ## Public API and Key Messages
 
+- `add:` adds a `CMBoxSeries`, with its own label or color; the messages below add one with the default label and color.
 - `boxes:ofAll:` adds the boxes of a probe of the instances of a class.
 
 ```smalltalk
@@ -43,7 +44,13 @@ Class {
 
 { #category : 'accessing' }
 CMBoxplot >> boxes: aSelector ofAll: aClass [
-	"Show the spread of the probe aSelector over the instances of aClass, and of its subclasses, as a box at each step"
+	"Show the spread of the probe aSelector over the instances of aClass, and of its subclasses, as a box at each step. Add a CMBoxSeries to choose their label or color"
 
-	self showProbe: aSelector ofAll: aClass
+	self add: (CMBoxSeries probe: aSelector ofAll: aClass)
+]
+
+{ #category : 'accessing' }
+CMBoxplot >> seriesClass [
+
+	^ CMBoxSeries
 ]

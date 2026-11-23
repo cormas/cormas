@@ -6,18 +6,6 @@ Class {
 }
 
 { #category : 'tests' }
-CMAreaChartTest >> testAreasCanBeLabelled [
-
-	| chart |
-	chart := CMAreaChart new
-		         area: #numberOfSheep;
-		         areas: #state ofAll: CMMockCell;
-		         label: 'Cell state' for: #state;
-		         yourself.
-	self assert: (chart labelFor: #state) equals: 'Cell state'
-]
-
-{ #category : 'tests' }
 CMAreaChartTest >> testTheAreasOfAllInstancesOfAClassCannotBeShownTwice [
 
 	| chart |

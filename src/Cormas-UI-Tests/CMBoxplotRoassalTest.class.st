@@ -33,7 +33,7 @@ CMBoxplotRoassalTest >> testABoxIsDrawnAtEachStep [
 	| canvas |
 	chart boxes: #energy ofAll: CMMockAnimal.
 	canvas := chart
-		          canvasOf: (chart seriesOf: model in: simulation)
+		          canvasOf: (chart seriesDataOf: model in: simulation)
 		          hiding: Set new.
 	self
 		assert: (canvas allChildren count: [ :each | each model = #box ])
@@ -56,7 +56,7 @@ CMBoxplotRoassalTest >> testBoxesOfValuesThatAreNotNumbersCannotBeDrawn [
 
 	chart boxes: #state ofAll: CMMockCell.
 	self
-		should: [ chart seriesOf: model in: simulation ]
+		should: [ chart seriesDataOf: model in: simulation ]
 		raise: Error
 		withExceptionDo: [ :error |
 			self assert: (error messageText includesSubstring: 'state') ]
@@ -67,7 +67,7 @@ CMBoxplotRoassalTest >> testTheBoxOfEachStepGathersTheValuesOfAllInstancesAtThat
 
 	| series |
 	chart boxes: #energy ofAll: CMMockAnimal.
-	series := chart seriesOf: model in: simulation.
+	series := chart seriesDataOf: model in: simulation.
 	self assert: series size equals: 1.
 	self assert: series first steps asArray equals: #( 0 1 2 3 ).
 	self assert: series first values first asArray equals: #( 0.5 0.5 ).

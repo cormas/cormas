@@ -9,7 +9,7 @@ I am a Roassal plot that draws the boxes of one probe of a `CMBoxplot`: at each 
 
 ## Collaborators:
 
-- `CMBoxplot>>plotsOf:` creates me from a `CMChartSeries`.
+- `CMBoxplot>>plotsOf:` creates me from a `CMSeriesData`.
 - `RSCompositeChart` gives me my scales, and `CMChart>>canvasOf:hiding:` hides my shapes.
 
 ## Public API and Key Messages

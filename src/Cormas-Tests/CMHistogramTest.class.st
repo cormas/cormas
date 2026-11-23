@@ -6,14 +6,13 @@ Class {
 }
 
 { #category : 'tests' }
-CMHistogramTest >> testBarsCanBeLabelled [
+CMHistogramTest >> testBarsNeedAllTheInstancesOfAClass [
 
-	| chart |
-	chart := CMHistogram new
-		         bars: #energy ofAll: CMMockAnimal;
-		         label: 'Energy' for: #energy;
-		         yourself.
-	self assert: (chart labelFor: #energy) equals: 'Energy'
+	self
+		should: [ CMBarSeries probe: #energy ]
+		raise: Error
+		withExceptionDo: [ :error |
+			self assert: (error messageText includesSubstring: 'probe:ofAll:') ]
 ]
 
 { #category : 'tests' }

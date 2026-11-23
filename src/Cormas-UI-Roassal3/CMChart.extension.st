@@ -17,45 +17,6 @@ CMChart >> add: aLegend below: aCanvas [
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
-CMChart >> addSeriesOf: aSelector ofAll: aClass in: someDataTables to: someSeries [
-	"Add to someSeries those that show the probe aSelector of all instances of aClass, from their data tables"
-
-	self subclassResponsibility
-]
-
-{ #category : '*Cormas-UI-Roassal3' }
-CMChart >> addSeriesOfEachInstance: aSelector in: someDataTables to: someSeries [
-	"Add to someSeries one series for the probe aSelector of each instance, named after the probe and the instance"
-
-	someDataTables do: [ :data |
-			someSeries add: (CMChartSeries
-					 named: (self labelFor: aSelector) , ' of ' , data label
-					 color: (self roassalColorFor: aSelector at: someSeries size + 1)
-					 steps: data steps asArray
-					 values: (self numbersOf: aSelector inInstanceData: data)) ]
-]
-
-{ #category : '*Cormas-UI-Roassal3' }
-CMChart >> addSpreadOf: aSelector ofAll: aClass in: someDataTables to: someSeries [
-	"Add to someSeries one series whose value at each step is the collection of the values of the probe aSelector of the instances recorded at that step"
-
-	| spreads steps |
-	spreads := Dictionary new.
-	someDataTables do: [ :data |
-			(self numbersOf: aSelector inInstanceData: data)
-				with: data steps
-				do: [ :value :step |
-					(spreads at: step ifAbsentPut: [ OrderedCollection new ]) add:
-						value ] ].
-	steps := spreads keys sorted asArray.
-	someSeries add: (CMChartSeries
-			 named: (self labelFor: aSelector) , ' of ' , aClass name
-			 color: (self roassalColorFor: aSelector at: someSeries size + 1)
-			 steps: steps
-			 values: (steps collect: [ :each | (spreads at: each) asArray ]))
-]
-
-{ #category : '*Cormas-UI-Roassal3' }
 CMChart >> canvasOf: someSeries hiding: aSetOfNames [
 	"Return a canvas with the chart of someSeries and a legend naming each of them. The series named in aSetOfNames are hidden. Clicking an entry of the legend hides its series, or shows it again, and updates aSetOfNames"
 
@@ -103,25 +64,6 @@ CMChart >> canvasOf: someSeries hiding: aSetOfNames [
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
-CMChart >> check: aSelector isProbeOf: aClass [
-
-	(aClass probeSelectors includes: aSelector) ifFalse: [
-			self error:
-				('#{1} is not a probe of {2}: only <probe> methods are recorded'
-					 format: {
-							 aSelector.
-							 aClass name }) ]
-]
-
-{ #category : '*Cormas-UI-Roassal3' }
-CMChart >> checkProbesOf: aClass [
-	"Raise an error for a probe of a method that is not a probe: it can never be recorded"
-
-	subjectProbes do: [ :each | self check: each isProbeOf: aClass ].
-	probesOfAll do: [ :each | self check: each key isProbeOf: each value ]
-]
-
-{ #category : '*Cormas-UI-Roassal3' }
 CMChart >> color: someShapes as: someColors hiding: aBoolean [
 	"Give the shapes that draw a series and its legend box the colors they were drawn with, or make them transparent when the series is hidden. The box keeps its border, so that it shows the color of a hidden series"
 
@@ -129,30 +71,6 @@ CMChart >> color: someShapes as: someColors hiding: aBoolean [
 			shape color: (aBoolean
 					 ifTrue: [ Color transparent ]
 					 ifFalse: [ color ]) ]
-]
-
-{ #category : '*Cormas-UI-Roassal3' }
-CMChart >> numbersOf: aSelector in: aDataTable [
-
-	| column |
-	column := aDataTable column: aSelector.
-	(column isEmpty or: [ column first isNumber ]) ifFalse: [
-			self error:
-				('The chart shows numbers, but #{1} returned {2}' format: {
-						 aSelector.
-						 column first printString }) ].
-	^ column asArray
-]
-
-{ #category : '*Cormas-UI-Roassal3' }
-CMChart >> numbersOf: aSelector inInstanceData: aDataTable [
-	"Return the numbers of aSelector in the data of an instance. An error names the instance"
-
-	^ [ self numbersOf: aSelector in: aDataTable ]
-		  on: CMRecordingError
-		  do: [ :error |
-			  CMRecordingError signal:
-				  aDataTable label , ': ' , error messageText ]
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
@@ -205,35 +123,15 @@ CMChart >> roassalChartOf: somePlots [
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
-CMChart >> roassalColorFor: aSelector at: anIndex [
+CMChart >> seriesDataOf: aRecordedObject in: aSimulation [
+	"Return the data to draw, as CMSeriesData, from what was recorded in aSimulation, in the order of my series. A series without ofAll: shows aRecordedObject: the model, or the entity whose chart I am"
 
-	^ self
-		  colorFor: aSelector
-		  ifNone: [ NSScale category10 range atWrap: anIndex ]
-]
-
-{ #category : '*Cormas-UI-Roassal3' }
-CMChart >> seriesOf: aRecordedObject in: aSimulation [
-	"Return the series to draw, as CMChartSeries, from the data recorded in aSimulation: one for each probe of aRecordedObject, the model or an entity, then those of each probe shown for all instances of a class"
-
-	| series |
-	self checkProbesOf: aRecordedObject class.
-	series := OrderedCollection new.
-	subjectProbes do: [ :each |
-			| data |
-			data := aSimulation dataOf: aRecordedObject.
-			series add: (CMChartSeries
-					 named: (self labelFor: each)
-					 color: (self roassalColorFor: each at: series size + 1)
-					 steps: data steps asArray
-					 values: (self numbersOf: each in: data)) ].
-	probesOfAll do: [ :each |
-			self
-				addSeriesOf: each key
-				ofAll: each value
-				in: (aSimulation dataOfAll: each value)
-				to: series ].
-	^ series
+	| data |
+	series do: [ :each | each checkIsProbeOf: aRecordedObject class ].
+	data := OrderedCollection new.
+	series do: [ :each |
+		each addSeriesDataOf: aRecordedObject in: aSimulation to: data ].
+	^ data
 ]
 
 { #category : '*Cormas-UI-Roassal3' }

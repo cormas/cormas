@@ -9,12 +9,13 @@ I am a chart that shows the distribution of a probe over all instances of a clas
 
 ## Collaborators:
 
-- `CMChart` gives me the probes I show, titles, labels and colors, and draws me.
+- `CMChart` keeps my `CMBarSeries` and my titles, and draws me.
 - Cormas-UI-Roassal3 draws the bars of each probe with a `RSHistogramPlot`.
 - `CMChartPresenter` adds a step slider to the view of a chart whose `isSingleStep` is true.
 
 ## Public API and Key Messages
 
+- `add:` adds a `CMBarSeries`, with its own label or color; the messages below add one with the default label and color.
 - `bars:ofAll:` adds the bars of a probe of the instances of a class.
 
 ```smalltalk
@@ -45,13 +46,19 @@ Class {
 
 { #category : 'accessing' }
 CMHistogram >> bars: aSelector ofAll: aClass [
-	"Show the distribution of the probe aSelector over the instances of aClass, and of its subclasses, at one step"
+	"Show the distribution of the probe aSelector over the instances of aClass, and of its subclasses, at one step. Add a CMBarSeries to choose their label or color"
 
-	self showProbe: aSelector ofAll: aClass
+	self add: (CMBarSeries probe: aSelector ofAll: aClass)
 ]
 
 { #category : 'accessing' }
 CMHistogram >> isSingleStep [
 
 	^ true
+]
+
+{ #category : 'accessing' }
+CMHistogram >> seriesClass [
+
+	^ CMBarSeries
 ]

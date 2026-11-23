@@ -6,16 +6,13 @@ Class {
 }
 
 { #category : 'tests' }
-CMBoxplotTest >> testBoxesCanBeColored [
+CMBoxplotTest >> testBoxesNeedAllTheInstancesOfAClass [
 
-	| chart |
-	chart := CMBoxplot new
-		         boxes: #energy ofAll: CMMockAnimal;
-		         color: Color red for: #energy;
-		         yourself.
 	self
-		assert: (chart colorFor: #energy ifNone: [ nil ])
-		equals: Color red
+		should: [ CMBoxSeries probe: #energy ]
+		raise: Error
+		withExceptionDo: [ :error |
+			self assert: (error messageText includesSubstring: 'probe:ofAll:') ]
 ]
 
 { #category : 'tests' }

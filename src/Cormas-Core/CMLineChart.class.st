@@ -8,11 +8,12 @@ I am a chart that shows probes as lines over time: one line for a probe of my su
 
 ## Collaborators:
 
-- `CMChart` gives me the probes I show, titles, labels and colors, and draws me.
+- `CMChart` keeps my `CMLineSeries` and my titles, and draws me.
 - `CMSimulation>>dataOf:` and `dataOfAll:` give the data I show.
 
 ## Public API and Key Messages
 
+- `add:` adds a `CMLineSeries`, with its own label or color; the messages below add one with the default label and color.
 - `line:` adds a line for a probe of my subject.
 - `lines:ofAll:` adds a line for a probe of each instance of a class and of its subclasses, named after the probe and the instance.
 
@@ -43,14 +44,20 @@ Class {
 
 { #category : 'accessing' }
 CMLineChart >> line: aSelector [
-	"Show the probe aSelector as a line over time"
+	"Show the probe aSelector as a line over time, labelled by the probe and in a color of the palette. Add a CMLineSeries to choose them"
 
-	self showProbe: aSelector
+	self add: (CMLineSeries probe: aSelector)
 ]
 
 { #category : 'accessing' }
 CMLineChart >> lines: aSelector ofAll: aClass [
-	"Show the probe aSelector of each instance of aClass, and of its subclasses, as a line over time"
+	"Show the probe aSelector of each instance of aClass, and of its subclasses, as a line over time. Add a CMLineSeries to choose their label or color"
 
-	self showProbe: aSelector ofAll: aClass
+	self add: (CMLineSeries probe: aSelector ofAll: aClass)
+]
+
+{ #category : 'accessing' }
+CMLineChart >> seriesClass [
+
+	^ CMLineSeries
 ]

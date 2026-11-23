@@ -33,7 +33,7 @@ CMHistogramRoassalTest >> setUp [
 CMHistogramRoassalTest >> testEachWholeNumberHasABinOfItsOwn [
 
 	| series counts |
-	series := CMChartSeries
+	series := CMSeriesData
 		          named: 'neighbours'
 		          color: Color red
 		          steps: #( 0 )
@@ -48,7 +48,7 @@ CMHistogramRoassalTest >> testEachWholeNumberHasABinOfItsOwn [
 CMHistogramRoassalTest >> testTheBarsCountTheInstancesInEachBinAtTheLastStep [
 
 	| counts |
-	counts := (chart plotsOf: (chart seriesOf: model in: simulation))
+	counts := (chart plotsOf: (chart seriesDataOf: model in: simulation))
 		          first value yValues.
 	self assert: counts sum equals: 2.
 	self assert: (counts count: [ :each | each > 0 ]) equals: 2
@@ -59,7 +59,7 @@ CMHistogramRoassalTest >> testTheBarsUpToAnEarlierStepCountTheInstancesAtThatSte
 
 	| counts |
 	counts := (chart plotsOf:
-		           ((chart seriesOf: model in: simulation) collect: [ :each |
+		           ((chart seriesDataOf: model in: simulation) collect: [ :each |
 			            each upToStep: 0 ])) first value yValues.
 	self assert: counts sum equals: 2.
 	self assert: (counts count: [ :each | each > 0 ]) equals: 1
