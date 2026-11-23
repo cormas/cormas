@@ -120,9 +120,10 @@ CMSimulationRerunTest >> testARunMadeWithUncommittedChangesIsRerunWithAWarning [
 	| run |
 	run := self savedRun.
 	self edit: run with: [ :settings |
-			(settings at: 'versions')
-				at: 'commit' put: 'abc';
-				at: 'uncommittedChanges' put: true ].
+			(settings at: 'versions') at: 'git' put: (Dictionary new
+					 at: 'commit' put: 'abc';
+					 at: 'uncommittedChanges' put: true;
+					 yourself) ].
 	self
 		should: [ CMSimulation rerun: run ]
 		raise: CMRerunWarning
@@ -130,6 +131,15 @@ CMSimulationRerunTest >> testARunMadeWithUncommittedChangesIsRerunWithAWarning [
 				self assert: (warning messageText includesSubstring: 'abc').
 				self assert:
 					(warning messageText includesSubstring: 'uncommitted') ]
+]
+
+{ #category : 'tests' }
+CMSimulationRerunTest >> testARunRecordingItsLastStepOnlyIsRerunSo [
+
+	| rerun |
+	simulation recordLastStepOnly.
+	rerun := CMSimulation rerun: self savedRun.
+	self assert: rerun modelData steps asArray equals: #( 3 )
 ]
 
 { #category : 'tests' }

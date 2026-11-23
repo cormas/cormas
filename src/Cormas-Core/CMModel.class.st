@@ -134,6 +134,13 @@ CMModel class >> classSideParameters [
 	^ self parameters select: [ :p | p isClassSide ]
 ]
 
+{ #category : 'versions' }
+CMModel class >> codeVersion [
+	"Return the git state of my folder under git: its commit, the tag of that commit and whether it has uncommitted changes. Return nothing when I was not installed from the workspace or my folder has no git"
+
+	^ CMWorkspace current codeVersionOf: self
+]
+
 { #category : 'as yet unclassified' }
 CMModel class >> copyMethod: aSelector into: aClass [
 

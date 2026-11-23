@@ -58,16 +58,15 @@ CMSimulationSavingTest >> testAFractionParameterIsSavedAsAFloat [
 ]
 
 { #category : 'tests' }
-CMSimulationSavingTest >> testAModelOutsideTheWorkspaceIsSavedWithoutCommit [
+CMSimulationSavingTest >> testAModelOutsideTheWorkspaceIsSavedWithoutGit [
 
 	| versions |
 	simulation initializeSimulation.
 	versions := self savedSettings at: 'versions'.
+	self assert: versions keys asArray equals: #( 'cormas' ).
 	self
 		assert: (versions at: 'cormas')
-		equals: CMVersion current printString.
-	self assert: (versions includesKey: 'commit').
-	self assert: (versions at: 'commit') isNil
+		equals: CMVersion current printString
 ]
 
 { #category : 'tests' }
@@ -81,13 +80,20 @@ CMSimulationSavingTest >> testARunIsSavedInAFolderNamedAfterItsStartAndInit [
 ]
 
 { #category : 'tests' }
+CMSimulationSavingTest >> testARunRecordingItsLastStepOnlyIsSavedSo [
+
+	simulation recordLastStepOnly.
+	simulation initializeSimulation.
+	self
+		assert: ((self savedSettings at: 'recording') at: 'steps')
+		equals: (Dictionary with: 'type' -> 'last')
+]
+
+{ #category : 'tests' }
 CMSimulationSavingTest >> testARunWhoseSeedIsKeptAfterInitHasNoSeedAfterInit [
 
-	| settings |
 	simulation initializeSimulation.
-	settings := self savedSettings.
-	self assert: (settings includesKey: 'seedAfterInit').
-	self assert: (settings at: 'seedAfterInit') isNil
+	self deny: (self savedSettings includesKey: 'seedAfterInit')
 ]
 
 { #category : 'tests' }
@@ -200,7 +206,10 @@ CMSimulationSavingTest >> testWhatIsNotRecordedIsSaved [
 		(model entitiesOfClass: CMMockCow) first.
 	simulation initializeSimulation.
 	recording := self savedSettings at: 'recording'.
-	self assert: (recording at: 'interval') equals: 3.
+	self assert: (recording at: 'steps') equals: (Dictionary new
+			 at: 'type' put: 'interval';
+			 at: 'every' put: 3;
+			 yourself).
 	self
 		assert: (recording at: 'notRecordedClasses')
 		equals: #( 'CMMockGoat' ).

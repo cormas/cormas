@@ -64,7 +64,7 @@ Class {
 		'excludedClasses',
 		'excludedProbes',
 		'excludedEntities',
-		'recordingInterval',
+		'recordedSteps',
 		'runMetadata',
 		'seedAfterInit'
 	],
@@ -241,7 +241,7 @@ CMSimulation >> initialize [
 	excludedClasses := Set new.
 	excludedProbes := Set new.
 	excludedEntities := Set new.
-	recordingInterval := 1.
+	recordedSteps := CMIntervalRecording every: 1.
 	initialParameterValues := Dictionary new.
 
 	hasFixedRandomSeed := false.
@@ -313,13 +313,10 @@ CMSimulation >> isSimulationRunning [
 
 { #category : 'data' }
 CMSimulation >> isStepToRecord [
-	"Init, every recording interval, and the last step are recorded"
+	"The steps of my recording and the last step are recorded"
 
-	| step |
-	step := self currentTimeStep.
-	^ step = 0 or: [
-			  step \\ recordingInterval = 0 or: [
-				  simulationRunner stopCondition value: cormasModel ] ]
+	^ (recordedSteps includes: self currentTimeStep) or: [
+		  simulationRunner stopCondition value: cormasModel ]
 ]
 
 { #category : 'data' }
@@ -427,7 +424,14 @@ CMSimulation >> recordEntity: anEntity probes: aCollectionOfSelectors [
 CMSimulation >> recordEvery: anInteger [
 	"Record the data at init, every anInteger steps, and at the last step"
 
-	recordingInterval := anInteger
+	recordedSteps := CMIntervalRecording every: anInteger
+]
+
+{ #category : 'recording' }
+CMSimulation >> recordLastStepOnly [
+	"Record the data at the last step only, as a sensitivity analysis does"
+
+	recordedSteps := CMLastStepRecording new
 ]
 
 { #category : 'recording' }
@@ -455,7 +459,7 @@ CMSimulation >> recordingSettings [
 				 at: each key name
 				 ifAbsentPut: [ SortedCollection new ]) add: each value ].
 	^ OrderedDictionary new
-		  at: 'interval' put: recordingInterval;
+		  at: 'steps' put: recordedSteps asDictionary;
 		  at: 'notRecordedClasses'
 		  put:
 			  (excludedClasses
@@ -588,7 +592,8 @@ CMSimulation >> setUpRun: aRun [
 		stopAfterStep: aRun lastStep.
 	aRun seedAfterInit ifNotNil: [ :seed | self seedAfterInit: seed ].
 	recording := aRun recording.
-	self recordEvery: (recording at: 'interval').
+	recordedSteps := CMStepsRecording fromDictionary:
+		                 (recording at: 'steps').
 	(recording at: 'notRecordedClasses') do: [ :each |
 		self doNotRecord: (aRun classNamed: each) ].
 	(recording at: 'notRecordedProbes') keysAndValuesDo: [

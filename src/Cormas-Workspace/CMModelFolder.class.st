@@ -71,25 +71,25 @@ CMModelFolder >> chosenVersion [
 
 { #category : 'versions' }
 CMModelFolder >> codeVersion [
-	"Return the commit checked out in my folder, its tag or nil, and whether files differ from it, including new files that git does not ignore. The commit is nil when my folder is not a git repository"
+	"Return the version of my code as run.json writes it: under git, the commit checked out in my folder, its tag when it has one, and whether files differ from it, including new files that git does not ignore. Return nothing when my folder is not a git repository"
 
-	| repository head |
-	self isGitRepository ifFalse: [
-			^ OrderedDictionary new
-				  at: 'commit' put: nil;
-				  yourself ].
+	| repository head git |
+	self isGitRepository ifFalse: [ ^ OrderedDictionary new ].
 	repository := IceRepositoryCreator new
 		              location: location;
 		              createRepository.
 	head := repository headCommit.
+	git := OrderedDictionary new
+		       at: 'commit' put: head id;
+		       yourself.
+	repository tags
+		detect: [ :each | each commit = head ]
+		ifFound: [ :each | git at: 'tag' put: each name ].
+	git
+		at: 'uncommittedChanges'
+		put: (self hasUncommittedChangesIn: repository).
 	^ OrderedDictionary new
-		  at: 'commit' put: head id;
-		  at: 'tag' put: (repository tags
-				   detect: [ :each | each commit = head ]
-				   ifFound: [ :each | each name ]
-				   ifNone: [ nil ]);
-		  at: 'uncommittedChanges'
-		  put: (self hasUncommittedChangesIn: repository);
+		  at: 'git' put: git;
 		  yourself
 ]
 

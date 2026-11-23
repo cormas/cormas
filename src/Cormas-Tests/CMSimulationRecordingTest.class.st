@@ -227,6 +227,20 @@ CMSimulationRecordingTest >> testNotRecordingAClassAlsoAppliesToItsSubclasses [
 ]
 
 { #category : 'tests' }
+CMSimulationRecordingTest >> testOnlyTheLastStepIsRecordedWhenAskedSo [
+
+	simulation
+		recordLastStepOnly;
+		stopAfterStep: 3.
+	simulation initializeSimulation.
+	3 timesRepeat: [ simulation runStep ].
+	self assert: simulation modelData steps asArray equals: #( 3 ).
+	self
+		assert: (simulation dataOf: self cow) steps asArray
+		equals: #( 3 )
+]
+
+{ #category : 'tests' }
 CMSimulationRecordingTest >> testSwitchingOffAProbeThatDoesNotExistRaisesAnError [
 
 	self

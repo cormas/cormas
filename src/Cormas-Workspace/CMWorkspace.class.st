@@ -630,16 +630,13 @@ CMWorkspace >> clone: aRepositoryUrl to: aFolder [
 
 { #category : 'versions' }
 CMWorkspace >> codeVersionOf: aClass [
-	"Return the git state of the folder of the installed model that the package of aClass belongs to, or a nil commit when it is not part of an installed model"
+	"Return the git state of the folder of the installed model that the package of aClass belongs to, as CMModelFolder>>codeVersion does, or nothing when it is not part of an installed model"
 
 	^ installed
 		  detect: [ :each | each ownsPackageNamed: aClass package name ]
 		  ifFound: [ :each |
 		  (CMModelFolder in: self at: each folder) codeVersion ]
-		  ifNone: [
-				  OrderedDictionary new
-					  at: 'commit' put: nil;
-					  yourself ]
+		  ifNone: [ OrderedDictionary new ]
 ]
 
 { #category : 'private' }

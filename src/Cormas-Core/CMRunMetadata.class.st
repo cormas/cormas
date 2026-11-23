@@ -61,21 +61,24 @@ Class {
 CMRunMetadata class >> fromJson: aString [
 	"Return the settings of a run read from its run.json"
 
-	| settings |
+	| settings run |
 	settings := STONJSON fromString: aString.
-	^ self new
-		  model: (settings at: 'model');
-		  started: (DateAndTime fromString: (settings at: 'started'));
-		  init: (settings at: 'init');
-		  control: (settings at: 'control');
-		  seed: (settings at: 'seed');
-		  seedAfterInit: (settings at: 'seedAfterInit');
-		  stopCondition: (settings at: 'stopCondition');
-		  lastStep: (settings at: 'lastStep');
-		  parameters: (settings at: 'parameters');
-		  recording: (settings at: 'recording');
-		  versions: (settings at: 'versions');
-		  yourself
+	run := self new
+		       model: (settings at: 'model');
+		       started: (DateAndTime fromString: (settings at: 'started'));
+		       init: (settings at: 'init');
+		       control: (settings at: 'control');
+		       seed: (settings at: 'seed');
+		       stopCondition: (settings at: 'stopCondition');
+		       lastStep: (settings at: 'lastStep');
+		       parameters: (settings at: 'parameters');
+		       recording: (settings at: 'recording');
+		       versions: (settings at: 'versions');
+		       yourself.
+	settings
+		at: 'seedAfterInit'
+		ifPresent: [ :seed | run seedAfterInit: seed ].
+	^ run
 ]
 
 { #category : 'instance creation' }
@@ -90,14 +93,19 @@ CMRunMetadata class >> versionsOf: aModelClass [
 
 { #category : 'writing' }
 CMRunMetadata >> asDictionary [
+	"Return my JSON object, which leaves out the seed after init when the seed is kept after init"
 
-	^ OrderedDictionary new
-		  at: 'model' put: model;
-		  at: 'started' put: started printString;
-		  at: 'init' put: init;
-		  at: 'control' put: control;
-		  at: 'seed' put: seed;
-		  at: 'seedAfterInit' put: seedAfterInit;
+	| dictionary |
+	dictionary := OrderedDictionary new
+		              at: 'model' put: model;
+		              at: 'started' put: started printString;
+		              at: 'init' put: init;
+		              at: 'control' put: control;
+		              at: 'seed' put: seed;
+		              yourself.
+	seedAfterInit ifNotNil: [
+		dictionary at: 'seedAfterInit' put: seedAfterInit ].
+	^ dictionary
 		  at: 'stopCondition' put: stopCondition;
 		  at: 'lastStep' put: lastStep;
 		  at: 'parameters' put: parameters;
@@ -114,6 +122,16 @@ CMRunMetadata >> classNamed: aString [
 			  self error:
 				  'The run names a class ' , aString
 				  , ' that the image does not have' ]
+]
+
+{ #category : 'private' }
+CMRunMetadata >> commitIn: someVersions [
+	"Return the commit named in someVersions, or say that there is none"
+
+	^ someVersions
+		  at: 'git'
+		  ifPresent: [ :git | git at: 'commit' ]
+		  ifAbsent: [ 'none (no git)' ]
 ]
 
 { #category : 'accessing' }
@@ -139,6 +157,15 @@ CMRunMetadata >> folderName [
 				  (started asTime print24 copyReplaceAll: ':' with: '-').
 			  stream space.
 			  stream nextPutAll: init ]
+]
+
+{ #category : 'private' }
+CMRunMetadata >> hasUncommittedChangesIn: someVersions [
+
+	^ someVersions
+		  at: 'git'
+		  ifPresent: [ :git | git at: 'uncommittedChanges' ]
+		  ifAbsent: [ false ]
 ]
 
 { #category : 'accessing' }
@@ -249,7 +276,7 @@ CMRunMetadata >> versions: aDictionary [
 	versions := aDictionary
 ]
 
-{ #category : 'checking' }
+{ #category : 'rerunning' }
 CMRunMetadata >> warnIfCodeDiffersFrom: currentVersions [
 	"Signal a CMRerunWarning naming each difference between the versions of the code I was made with and currentVersions"
 
@@ -260,15 +287,16 @@ CMRunMetadata >> warnIfCodeDiffersFrom: currentVersions [
 				('it was made with Cormas {1}, this is Cormas {2}' format: {
 						 (versions at: 'cormas').
 						 (currentVersions at: 'cormas') }) ].
-	(versions at: 'commit') = (currentVersions at: 'commit') ifFalse: [
-			differences add:
-				('it was made at commit {1}, the model is at {2}' format: {
-						 ((versions at: 'commit') ifNil: [ 'none (no git)' ]).
-						 ((currentVersions at: 'commit') ifNil: [ 'none (no git)' ]) }) ].
-	(versions at: 'uncommittedChanges' ifAbsent: [ false ]) ifTrue: [
+	(self commitIn: versions) = (self commitIn: currentVersions)
+		ifFalse: [
+				differences add:
+					('it was made at commit {1}, the model is at {2}' format: {
+							 (self commitIn: versions).
+							 (self commitIn: currentVersions) }) ].
+	(self hasUncommittedChangesIn: versions) ifTrue: [
 		differences add: 'it was made with uncommitted changes' ].
-	(currentVersions at: 'uncommittedChanges' ifAbsent: [ false ])
-		ifTrue: [ differences add: 'the model has uncommitted changes' ].
+	(self hasUncommittedChangesIn: currentVersions) ifTrue: [
+		differences add: 'the model has uncommitted changes' ].
 	differences ifNotEmpty: [
 			CMRerunWarning signal:
 				'The run is rerun with other code than its own: '
