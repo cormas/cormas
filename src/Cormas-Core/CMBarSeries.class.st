@@ -14,7 +14,7 @@ I am the bars of a `CMHistogram`: the distribution of a probe over all the insta
 - `probe:ofAll:`, `label:`, `color:`
 
 ```smalltalk
-(CMBarSeries probe: #energy ofAll: CMMockAnimal)
+(CMBarSeries new probe: #energy ofAll: CMMockAnimal)
 	label: 'Energy';
 	yourself
 ```

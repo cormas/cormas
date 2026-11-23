@@ -76,7 +76,7 @@ CMLineChartRoassalTest >> testAChosenColorIsUsed [
 
 	chart := CMLineChart new
 		         line: #numberOfAliveCells;
-		         add: ((CMLineSeries probe: #numberOfDeadCells)
+		         add: (CMLineSeries new probe: #numberOfDeadCells;
 				          color: Color brown;
 				          yourself);
 		         yourself.
@@ -87,7 +87,7 @@ CMLineChartRoassalTest >> testAChosenColorIsUsed [
 CMLineChartRoassalTest >> testAChosenColorIsUsedForTheLinesOfAllInstances [
 
 	chart := CMLineChart new
-		         add: ((CMLineSeries probe: #energy ofAll: CMMockAnimal)
+		         add: (CMLineSeries new probe: #energy ofAll: CMMockAnimal;
 				          color: Color gray;
 				          yourself);
 		         yourself.
@@ -158,7 +158,7 @@ CMLineChartRoassalTest >> testALineOfAMethodThatIsNotAProbeRaisesAnError [
 CMLineChartRoassalTest >> testALineOfAnInstanceIsNamedAfterItsInstance [
 	| cow |
 	chart := CMLineChart new
-		         add: ((CMLineSeries probe: #energy ofAll: CMMockAnimal)
+		         add: (CMLineSeries new probe: #energy ofAll: CMMockAnimal;
 				          label: 'Energy';
 				          yourself);
 		         yourself.
@@ -288,7 +288,7 @@ CMLineChartRoassalTest >> testTheLegendShowsTheLabelOfEachLine [
 	| texts |
 	chart := CMLineChart new
 		         line: #numberOfAliveCells;
-		         add: ((CMLineSeries probe: #numberOfDeadCells)
+		         add: (CMLineSeries new probe: #numberOfDeadCells;
 				          label: 'Dead cells';
 				          yourself);
 		         yourself.

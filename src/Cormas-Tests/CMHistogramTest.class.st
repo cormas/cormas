@@ -9,7 +9,7 @@ Class {
 CMHistogramTest >> testBarsNeedAllTheInstancesOfAClass [
 
 	self
-		should: [ CMBarSeries probe: #energy ]
+		should: [ CMBarSeries new probe: #energy ]
 		raise: Error
 		withExceptionDo: [ :error |
 			self assert: (error messageText includesSubstring: 'probe:ofAll:') ]

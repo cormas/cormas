@@ -22,7 +22,7 @@ I am a chart that a modeler defines in a `<chart>` method, to show probes record
 CMLineChart new
 	title: 'Boars';
 	line: #boars;
-	add: ((CMLineSeries probe: #urbanBoars)
+	add: (CMLineSeries new probe: #urbanBoars;
 		label: 'Boars in towns';
 		color: Color gray;
 		yourself);

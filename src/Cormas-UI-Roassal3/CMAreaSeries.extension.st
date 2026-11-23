@@ -30,7 +30,9 @@ CMAreaSeries >> addCountsIn: someDataTables to: someSeries [
 			:value |
 			someSeries add: (CMSeriesData
 					 named: (self labelOfCategory: value)
-					 color: ((self colorOfCategory: value) ifNil: [ self roassalColorAt: someSeries size + 1 ])
+					 color: (categoryColors
+						  at: value
+						  ifAbsent: [ self roassalColorAt: someSeries size + 1 ])
 					 steps: steps
 					 values:
 					 (steps collect: [ :step |

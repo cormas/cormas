@@ -28,7 +28,7 @@ CMAreaChartRoassalTest >> setUp [
 { #category : 'tests' }
 CMAreaChartRoassalTest >> testAChosenColorIsUsedForTheAreaOfItsCategory [
 	| series |
-	chart add: ((CMAreaSeries probe: #state ofAll: CMMockCell)
+	chart add: (CMAreaSeries new probe: #state ofAll: CMMockCell;
 			 category: #dead color: Color gray;
 			 yourself).
 	series := chart seriesDataOf: model in: simulation.
@@ -39,7 +39,7 @@ CMAreaChartRoassalTest >> testAChosenColorIsUsedForTheAreaOfItsCategory [
 { #category : 'tests' }
 CMAreaChartRoassalTest >> testAChosenLabelNamesTheAreaOfItsCategory [
 	| series |
-	chart add: ((CMAreaSeries probe: #state ofAll: CMMockCell)
+	chart add: (CMAreaSeries new probe: #state ofAll: CMMockCell;
 			 category: #alive label: 'Alive cells';
 			 yourself).
 	series := chart seriesDataOf: model in: simulation.
@@ -101,7 +101,7 @@ CMAreaChartRoassalTest >> testTheAreasOfAProbeOfStringsCountTheInstancesHavingEa
 { #category : 'tests' }
 CMAreaChartRoassalTest >> testTheChosenCategoriesComeFirstInTheOrderTheyWereChosen [
 	| series |
-	chart add: ((CMAreaSeries probe: #state ofAll: CMMockCell)
+	chart add: (CMAreaSeries new probe: #state ofAll: CMMockCell;
 			 category: #dead label: 'Dead' color: Color gray;
 			 yourself).
 	series := chart seriesDataOf: model in: simulation.

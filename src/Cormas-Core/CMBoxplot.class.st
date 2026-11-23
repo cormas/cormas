@@ -46,7 +46,7 @@ Class {
 CMBoxplot >> boxes: aSelector ofAll: aClass [
 	"Show the spread of the probe aSelector over the instances of aClass, and of its subclasses, as a box at each step. Add a CMBoxSeries to choose their label or color"
 
-	self add: (CMBoxSeries probe: aSelector ofAll: aClass)
+	self add: (CMBoxSeries new probe: aSelector ofAll: aClass)
 ]
 
 { #category : 'accessing' }

@@ -9,7 +9,7 @@ Class {
 CMBoxplotTest >> testBoxesNeedAllTheInstancesOfAClass [
 
 	self
-		should: [ CMBoxSeries probe: #energy ]
+		should: [ CMBoxSeries new probe: #energy ]
 		raise: Error
 		withExceptionDo: [ :error |
 			self assert: (error messageText includesSubstring: 'probe:ofAll:') ]

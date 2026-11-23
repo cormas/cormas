@@ -5,7 +5,7 @@ CMChartSeries >> addSeriesDataOf: aRecordedObject in: aSimulation to: someSeries
 	"Add to someSeries those that draw me, from the data recorded in aSimulation: of aRecordedObject, the subject of the chart, or of all the instances of my class"
 
 	| data |
-	classOfAll ifNotNil: [
+	showsAllInstances ifTrue: [
 			^ self
 				  addSeriesDataOfAll: (aSimulation dataOfAll: classOfAll)
 				  to: someSeries ].
@@ -41,7 +41,9 @@ CMChartSeries >> checkIsProbeOf: aSubjectClass [
 	"Raise an error when my probe is not a probe of the class whose objects I show, aSubjectClass when I show the subject of the chart: it can never be recorded"
 
 	| shownClass |
-	shownClass := classOfAll ifNil: [ aSubjectClass ].
+	shownClass := showsAllInstances
+		              ifTrue: [ classOfAll ]
+		              ifFalse: [ aSubjectClass ].
 	(shownClass probeSelectors includes: probe) ifFalse: [
 			self error:
 				('#{1} is not a probe of {2}: only <probe> methods are recorded'
@@ -77,6 +79,5 @@ CMChartSeries >> numbersInInstanceData: aDataTable [
 { #category : '*Cormas-UI-Roassal3' }
 CMChartSeries >> roassalColorAt: anIndex [
 	"My color, or else the color of the chart's palette for the series at anIndex"
-
-	^ color ifNil: [ NSScale category10 range atWrap: anIndex ]
+	^ (colors ifEmpty: [ NSScale category10 range ]) atWrap: anIndex
 ]

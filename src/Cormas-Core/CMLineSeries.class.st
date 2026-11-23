@@ -3,7 +3,7 @@ I am a line of a `CMLineChart`: the values of a probe over time, of the subject 
 
 ## Responsibility:
 
-- I make one series for my probe of the subject of the chart, or one for each instance, named after my label and the instance.
+- I make one series for my probe of the subject of the chart, or one for each instance, named after the instance.
 - My probe must return numbers.
 
 ## Collaborators:
@@ -15,7 +15,7 @@ I am a line of a `CMLineChart`: the values of a probe over time, of the subject 
 - `probe:`, `probe:ofAll:`, `label:`, `color:`
 
 ```smalltalk
-(CMLineSeries probe: #energy ofAll: CMMockAnimal)
+(CMLineSeries new probe: #energy ofAll: CMMockAnimal)
 	color: Color gray;
 	yourself
 ```

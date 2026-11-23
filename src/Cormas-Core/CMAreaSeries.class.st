@@ -13,10 +13,12 @@ I am an area of a `CMAreaChart`, stacked on the areas before me.
 ## Public API and Key Messages
 
 - `probe:`, `probe:ofAll:`, `label:`, `color:`
+- `category:label:`, `category:color:` and `category:label:color:` name and color the area of a value; the chosen values come first, in the order they were chosen, then the others in alphabetical order
 
 ```smalltalk
-(CMAreaSeries probe: #state ofAll: CMMockCell)
-	label: 'Cells';
+CMAreaSeries new
+	probe: #state ofAll: CMMockCell;
+	category: #alive label: 'Alive' color: Color green;
 	yourself
 ```
 "
@@ -24,7 +26,9 @@ Class {
 	#name : 'CMAreaSeries',
 	#superclass : 'CMChartSeries',
 	#instVars : [
-		'categories'
+		'categoryLabels',
+		'categoryColors',
+		'chosenCategories'
 	],
 	#category : 'Cormas-Core-Charts',
 	#package : 'Cormas-Core',
@@ -34,13 +38,15 @@ Class {
 { #category : 'configuring' }
 CMAreaSeries >> category: aValue color: aColor [
 	"Color the area of the instances whose probe returns aValue"
-	(self categoryAt: aValue) at: 2 put: aColor
+	self choose: aValue.
+	categoryColors at: aValue put: aColor
 ]
 
 { #category : 'configuring' }
 CMAreaSeries >> category: aValue label: aString [
 	"Name the area of the instances whose probe returns aValue"
-	(self categoryAt: aValue) at: 1 put: aString
+	self choose: aValue.
+	categoryLabels at: aValue put: aString
 ]
 
 { #category : 'configuring' }
@@ -51,30 +57,26 @@ CMAreaSeries >> category: aValue label: aString color: aColor [
 ]
 
 { #category : 'private' }
-CMAreaSeries >> categoryAt: aValue [
-	"The label and the color chosen for aValue, nil until chosen"
-	^ categories at: aValue ifAbsentPut: [ Array new: 2 ]
+CMAreaSeries >> choose: aValue [
+	(chosenCategories includes: aValue) ifFalse: [ chosenCategories add: aValue ]
 ]
 
 { #category : 'accessing' }
 CMAreaSeries >> chosenCategories [
 	"The values whose label or color were chosen, in the order they were first chosen"
-	^ categories keys
-]
-
-{ #category : 'accessing' }
-CMAreaSeries >> colorOfCategory: aValue [
-	"The color chosen for aValue, or nil"
-	^ (categories at: aValue ifAbsent: [ ^ nil ]) second
+	^ chosenCategories
 ]
 
 { #category : 'initialization' }
 CMAreaSeries >> initialize [
 	super initialize.
-	categories := OrderedDictionary new
+	categoryLabels := Dictionary new.
+	categoryColors := Dictionary new.
+	chosenCategories := OrderedCollection new
 ]
 
 { #category : 'accessing' }
 CMAreaSeries >> labelOfCategory: aValue [
-	^ (categories at: aValue ifAbsent: [ ^ aValue asString ]) first ifNil: [ aValue asString ]
+	"The label chosen for aValue, or else aValue itself"
+	^ categoryLabels at: aValue ifAbsent: [ aValue asString ]
 ]

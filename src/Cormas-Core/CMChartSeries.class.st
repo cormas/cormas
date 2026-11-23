@@ -14,14 +14,14 @@ I am a series of a chart: what it draws for one probe, such as a line or a set o
 
 ## Public API and Key Messages
 
-- `probe:` and `probe:ofAll:` (class side) create me.
+- `probe:` or `probe:ofAll:` choose what I show, before `label:`, which they would replace.
 - `label:` and `color:` choose how I am shown.
 
 ```smalltalk
 CMLineChart new
 	title: 'Rabbits and grass';
 	line: #numberOfRabbits;
-	add: ((CMLineSeries probe: #amountOfGrass)
+	add: (CMLineSeries new probe: #amountOfGrass;
 		label: 'Patches with grass';
 		color: Color green;
 		yourself);
@@ -31,36 +31,25 @@ CMLineChart new
 ## Internal Representation
 
 - `probe`: the selector of a probe.
-- `classOfAll`: the class whose instances I show, or nil when I show the subject of the chart.
-- `label`: a string; `color`: a color, or nil for a color of the chart's palette.
+- `showsAllInstances`: whether I show all the instances of `classOfAll`, rather than the subject of the chart.
+- `classOfAll`: the class whose instances I show.
+- `label`: a string.
+- `colors`: the colors I am drawn in, by position, or none to take those of the chart's palette; `color:` makes it a single color.
 "
 Class {
 	#name : 'CMChartSeries',
 	#superclass : 'Object',
 	#instVars : [
 		'probe',
+		'showsAllInstances',
 		'classOfAll',
 		'label',
-		'color'
+		'colors'
 	],
 	#category : 'Cormas-Core-Charts',
 	#package : 'Cormas-Core',
 	#tag : 'Charts'
 }
-
-{ #category : 'instance creation' }
-CMChartSeries class >> probe: aSelector [
-	"Return a series that shows the probe aSelector of the subject of the chart: the model in a model chart, or the entity whose chart it is"
-
-	^ self new setProbe: aSelector ofAll: nil
-]
-
-{ #category : 'instance creation' }
-CMChartSeries class >> probe: aSelector ofAll: aClass [
-	"Return a series that shows the probe aSelector of all the instances of aClass and of its subclasses"
-
-	^ self new setProbe: aSelector ofAll: aClass
-]
 
 { #category : 'accessing' }
 CMChartSeries >> classOfAll [
@@ -68,17 +57,23 @@ CMChartSeries >> classOfAll [
 	^ classOfAll
 ]
 
-{ #category : 'accessing' }
-CMChartSeries >> color [
-
-	^ color
+{ #category : 'configuring' }
+CMChartSeries >> color: aColor [
+	"Draw me in aColor, instead of the colors of the chart's palette. When I show all the instances of a class, they all get aColor"
+	colors := { aColor }
 ]
 
-{ #category : 'presentation' }
-CMChartSeries >> color: aColor [
-	"Draw me in aColor, instead of a color of the chart's palette. When I show all the instances of a class, they all get aColor"
+{ #category : 'accessing' }
+CMChartSeries >> colors [
+	"The colors chosen for me, or none to take those of the chart's palette"
+	^ colors
+]
 
-	color := aColor
+{ #category : 'initialization' }
+CMChartSeries >> initialize [
+	super initialize.
+	showsAllInstances := false.
+	colors := #(  )
 ]
 
 { #category : 'accessing' }
@@ -87,7 +82,7 @@ CMChartSeries >> label [
 	^ label
 ]
 
-{ #category : 'presentation' }
+{ #category : 'configuring' }
 CMChartSeries >> label: aString [
 	"Name me with aString in the legend, instead of my probe"
 
@@ -96,9 +91,8 @@ CMChartSeries >> label: aString [
 
 { #category : 'printing' }
 CMChartSeries >> printOn: aStream [
-
 	aStream << '#' << probe.
-	classOfAll ifNotNil: [ aStream << ' of all ' << classOfAll name ]
+	showsAllInstances ifTrue: [ aStream << ' of all ' << classOfAll name ]
 ]
 
 { #category : 'accessing' }
@@ -107,18 +101,38 @@ CMChartSeries >> probe [
 	^ probe
 ]
 
-{ #category : 'initialization' }
-CMChartSeries >> setProbe: aSelector ofAll: aClass [
+{ #category : 'configuring' }
+CMChartSeries >> probe: aSelector [
+	"Show the probe aSelector of the subject of the chart: the model in a model chart, or the entity whose chart it is"
+	self setProbe: aSelector.
+	showsAllInstances := false
+]
 
+{ #category : 'configuring' }
+CMChartSeries >> probe: aSelector ofAll: aClass [
+	"Show the probe aSelector of all the instances of aClass and of its subclasses"
+	self setProbe: aSelector.
+	showsAllInstances := true.
+	classOfAll := aClass
+]
+
+{ #category : 'private' }
+CMChartSeries >> setProbe: aSelector [
 	probe := aSelector.
-	classOfAll := aClass.
 	label := aSelector asString
 ]
 
 { #category : 'testing' }
+CMChartSeries >> showsAllInstances [
+	"Return whether I show all the instances of a class, rather than the subject of the chart"
+	^ showsAllInstances
+]
+
+{ #category : 'comparing' }
 CMChartSeries >> showsTheSameAs: aChartSeries [
 	"Return whether aChartSeries shows the same probe of the same objects as me"
-
 	^ probe = aChartSeries probe and: [
-		  classOfAll = aChartSeries classOfAll ]
+		  showsAllInstances = aChartSeries showsAllInstances and: [
+			  showsAllInstances not or: [
+				  classOfAll = aChartSeries classOfAll ] ] ]
 ]

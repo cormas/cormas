@@ -23,7 +23,7 @@ CMLineChartTest >> testAConfiguredLineShowsTheSameProbeAsASimpleOne [
 
 	self
 		should: [
-				chart add: ((CMLineSeries probe: #boars)
+				chart add: (CMLineSeries new probe: #boars;
 						 label: 'Boars';
 						 yourself) ]
 		raise: Error
@@ -35,7 +35,7 @@ CMLineChartTest >> testAConfiguredLineShowsTheSameProbeAsASimpleOne [
 CMLineChartTest >> testALineIsLabelledByItsProbeUntilALabelIsChosen [
 
 	| line |
-	line := CMLineSeries probe: #urbanBoars.
+	line := CMLineSeries new probe: #urbanBoars.
 	self assert: line label equals: 'urbanBoars'.
 	line label: 'Boars in towns'.
 	self assert: line label equals: 'Boars in towns'
@@ -45,7 +45,7 @@ CMLineChartTest >> testALineIsLabelledByItsProbeUntilALabelIsChosen [
 CMLineChartTest >> testASeriesOfAnotherKindCannotBeAdded [
 
 	self
-		should: [ chart add: (CMAreaSeries probe: #sheep) ]
+		should: [ chart add: (CMAreaSeries new probe: #sheep) ]
 		raise: Error
 		withExceptionDo: [ :error |
 			self assert: (error messageText includesSubstring: 'CMAreaSeries') ]

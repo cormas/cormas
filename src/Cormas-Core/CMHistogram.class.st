@@ -48,7 +48,7 @@ Class {
 CMHistogram >> bars: aSelector ofAll: aClass [
 	"Show the distribution of the probe aSelector over the instances of aClass, and of its subclasses, at one step. Add a CMBarSeries to choose their label or color"
 
-	self add: (CMBarSeries probe: aSelector ofAll: aClass)
+	self add: (CMBarSeries new probe: aSelector ofAll: aClass)
 ]
 
 { #category : 'accessing' }

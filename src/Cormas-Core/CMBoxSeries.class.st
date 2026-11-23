@@ -14,7 +14,7 @@ I am the boxes of a `CMBoxplot`: the spread of a probe over all the instances of
 - `probe:ofAll:`, `label:`, `color:`
 
 ```smalltalk
-(CMBoxSeries probe: #energy ofAll: CMMockAnimal)
+(CMBoxSeries new probe: #energy ofAll: CMMockAnimal)
 	color: Color orange;
 	yourself
 ```

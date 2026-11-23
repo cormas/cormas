@@ -4,7 +4,7 @@ I am a series that shows how a probe is spread over all the instances of a class
 ## Responsibility:
 
 - I make one series whose value at each step is the collection of the values of my probe of the instances recorded at that step.
-- I can only be created with `probe:ofAll:`: there is no spread over the subject of a chart alone.
+- I only show `probe:ofAll:`: there is no spread over the subject of a chart alone.
 
 ## Collaborators:
 
@@ -23,10 +23,9 @@ Class {
 	#tag : 'Charts'
 }
 
-{ #category : 'instance creation' }
-CMSpreadSeries class >> probe: aSelector [
-
+{ #category : 'configuring' }
+CMSpreadSeries >> probe: aSelector [
 	^ self error:
-		  ('{1} shows the spread over all the instances of a class: create it with probe:ofAll:'
-			   format: { self name })
+		  ('{1} shows the spread over all the instances of a class: send it probe:ofAll:'
+			   format: { self class name })
 ]

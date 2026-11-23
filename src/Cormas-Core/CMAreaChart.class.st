@@ -47,14 +47,14 @@ Class {
 CMAreaChart >> area: aSelector [
 	"Show the probe aSelector, which returns numbers, as an area stacked on the areas shown before. Add a CMAreaSeries to choose its label or color"
 
-	self add: (CMAreaSeries probe: aSelector)
+	self add: (CMAreaSeries new probe: aSelector)
 ]
 
 { #category : 'accessing' }
 CMAreaChart >> areas: aSelector ofAll: aClass [
 	"Show the probe aSelector of the instances of aClass, and of its subclasses, as stacked areas: one for each instance when it returns numbers, or one for each value, counting the instances that have it, when it returns strings or booleans. Add a CMAreaSeries to choose their label or color"
 
-	self add: (CMAreaSeries probe: aSelector ofAll: aClass)
+	self add: (CMAreaSeries new probe: aSelector ofAll: aClass)
 ]
 
 { #category : 'accessing' }

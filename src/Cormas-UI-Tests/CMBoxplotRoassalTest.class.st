@@ -76,7 +76,7 @@ CMBoxplotRoassalTest >> testTheBoxOfEachStepGathersTheValuesOfAllInstancesAtThat
 
 { #category : 'tests' }
 CMBoxplotRoassalTest >> testTheBoxesAreNamedAfterTheLabelOfTheirSeries [
-	chart add: ((CMBoxSeries probe: #energy ofAll: CMMockAnimal)
+	chart add: (CMBoxSeries new probe: #energy ofAll: CMMockAnimal;
 			 label: 'Energy';
 			 yourself).
 	self

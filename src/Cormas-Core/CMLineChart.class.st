@@ -46,14 +46,14 @@ Class {
 CMLineChart >> line: aSelector [
 	"Show the probe aSelector as a line over time, labelled by the probe and in a color of the palette. Add a CMLineSeries to choose them"
 
-	self add: (CMLineSeries probe: aSelector)
+	self add: (CMLineSeries new probe: aSelector)
 ]
 
 { #category : 'accessing' }
 CMLineChart >> lines: aSelector ofAll: aClass [
 	"Show the probe aSelector of each instance of aClass, and of its subclasses, as a line over time. Add a CMLineSeries to choose their label or color"
 
-	self add: (CMLineSeries probe: aSelector ofAll: aClass)
+	self add: (CMLineSeries new probe: aSelector ofAll: aClass)
 ]
 
 { #category : 'accessing' }
