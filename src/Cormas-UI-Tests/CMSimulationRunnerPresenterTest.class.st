@@ -207,6 +207,26 @@ CMSimulationRunnerPresenterTest >> testANewViewTakesTheFirstFreeTitle [
 ]
 
 { #category : 'tests' }
+CMSimulationRunnerPresenterTest >> testASimulationRecordingTheLastStepOnlyHasNoChartsTab [
+
+	| simulation application |
+	simulation := (CMSimulation for: CMMockModel new)
+		              randomSeed: 41;
+		              activeInitSelector: #initFixed;
+		              activeControlSelector: #step;
+		              recordLastStepOnly;
+		              initializeSimulation;
+		              yourself.
+	application := CMSimulationApplication new.
+	application simulation: simulation.
+	application cormasModel: simulation cormasModel.
+	runner := application newPresenter: CMSimulationRunnerPresenter.
+	self
+		assert: self pageTitles
+		equals: #( 'Data' 'Inspector' 'Space' '' )
+]
+
+{ #category : 'tests' }
 CMSimulationRunnerPresenterTest >> testAViewAddedWhileTheSimulationRunsShowsNothingUntilItsNextStep [
 	"Building a view reads the model, which a running simulation is changing. The next displayed step fills the view"
 

@@ -295,7 +295,7 @@ CMSimulationRunnerPresenter >> initialPerspective [
 
 { #category : 'initialization' }
 CMSimulationRunnerPresenter >> initializeNotebookPages [
-	"Show the data of a new simulation, when its model defines probes, a tab for each chart the model defines, then one view of its space and a last tab that adds a view. The views and charts of the previous simulation are closed, and the new view starts with the perspective named by the init method"
+	"Show the data of a new simulation, when its model defines probes, a tab for the charts the model defines unless only the last step is recorded, then one view of its space and a last tab that adds a view. The views and charts of the previous simulation are closed, and the new view starts with the perspective named by the init method"
 
 	self closeAllViews.
 	"Replaced before the old pages are removed, so that the old one is not taken for it when the notebook selects it"
@@ -314,7 +314,10 @@ CMSimulationRunnerPresenter >> initializeNotebookPages [
 			notebook addPage: dataPage ].
 	chartsPresenter := nil.
 	chartsPage := nil.
-	self cormasModel class chartSelectors ifNotEmpty: [ :selectors |
+	(self simulation recordsLastStepOnly or: [
+		 self cormasModel class chartSelectors isEmpty ]) ifFalse: [
+		| selectors |
+		selectors := self cormasModel class chartSelectors.
 		chartsPresenter := (self instantiate: CMChartsPresenter)
 			                   host: self
 			                   subject: self cormasModel

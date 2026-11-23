@@ -128,6 +128,18 @@ CMSimulationRecordingTest >> testAProbeThatIsNotRecordedHasNoColumn [
 ]
 
 { #category : 'tests' }
+CMSimulationRecordingTest >> testASimulationSaysWhetherItRecordsTheLastStepOnly [
+
+	| newSimulation |
+	newSimulation := CMSimulation for: CMMockModel new.
+	self deny: newSimulation recordsLastStepOnly.
+	newSimulation recordEvery: 5.
+	self deny: newSimulation recordsLastStepOnly.
+	newSimulation recordLastStepOnly.
+	self assert: newSimulation recordsLastStepOnly
+]
+
+{ #category : 'tests' }
 CMSimulationRecordingTest >> testAnEntityCreatedDuringTheRunHasRowsFromItsCreation [
 
 	| newCow |

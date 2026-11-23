@@ -90,7 +90,7 @@ CMEntityInspectorPresenter >> entity [
 
 { #category : 'accessing' }
 CMEntityInspectorPresenter >> entity: anEntity [
-	"Show anEntity, the data recorded on it when its class has probes, and a tab for each of its charts. Follow the simulation, so that they show its latest steps"
+	"Show anEntity, the data recorded on it when its class has probes, and a tab for each of its charts unless only the last step is recorded. Follow the simulation, so that they show its latest steps"
 
 	entity := anEntity.
 	notebook addPage: (SpNotebookPage
@@ -103,8 +103,9 @@ CMEntityInspectorPresenter >> entity: anEntity [
 				followSimulation.
 			notebook addPage:
 				(SpNotebookPage title: 'Data' provider: [ dataPresenter ]) ].
-	entity class chartSelectors do: [ :each |
-		self addPageFor: (self newChartView: each of: entity) ].
+	self simulation recordsLastStepOnly ifFalse: [
+		entity class chartSelectors do: [ :each |
+			self addPageFor: (self newChartView: each of: entity) ] ].
 	self followSimulation
 ]
 

@@ -87,6 +87,14 @@ CMEntityInspectorPresenterTest >> testAnEntityHasATabForItselfForItsDataAndForEa
 ]
 
 { #category : 'tests' }
+CMEntityInspectorPresenterTest >> testAnEntityHasNoChartTabWhenOnlyTheLastStepIsRecorded [
+
+	simulation recordLastStepOnly.
+	inspector entity: self cow.
+	self assert: self pageTitles equals: #( 'Inspector' 'Data' )
+]
+
+{ #category : 'tests' }
 CMEntityInspectorPresenterTest >> testAnEntityWithoutChartsHasNoChartTab [
 
 	inspector entity:

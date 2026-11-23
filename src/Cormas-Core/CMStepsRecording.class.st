@@ -67,3 +67,10 @@ CMStepsRecording >> includes: aStep [
 
 	^ self subclassResponsibility
 ]
+
+{ #category : 'testing' }
+CMStepsRecording >> isLastStepOnly [
+	"Return whether I record the last step only, so that nothing can be shown over time"
+
+	^ false
+]

@@ -514,6 +514,13 @@ CMSimulation >> recordingSettings [
 		  yourself
 ]
 
+{ #category : 'recording' }
+CMSimulation >> recordsLastStepOnly [
+	"Return whether I record the last step only, so that charts have nothing to show while I run"
+
+	^ recordedSteps isLastStepOnly
+]
+
 { #category : 'simulation runner - running' }
 CMSimulation >> resume [
 

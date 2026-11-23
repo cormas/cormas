@@ -47,3 +47,9 @@ CMLastStepRecording >> includes: aStep [
 
 	^ false
 ]
+
+{ #category : 'testing' }
+CMLastStepRecording >> isLastStepOnly [
+
+	^ true
+]
