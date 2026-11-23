@@ -180,16 +180,17 @@ CMSensitivityAnalysisRunnerPresenter >> initializePresenters [
 	tableDropList := self newDropList
 		                 items: analysis resultClasses;
 		                 display: [ :aClass | aClass name ];
+		                 help: 'The model: a row per run. An entity class: a row per run and instance';
 		                 yourself.
 
 	table := self instantiate: CMDataPresenter.
 	table columnNames: #(  ).
 	table modelClass: analysis modelClass.
-	table hideSummary.
+	table showRowsOnly.
 
 	exportButton := self newButton
 		                label: 'Export all data';
-		                icon: CMIcons csvIcon;
+		                icon: CMIcons downloadIcon;
 		                help:
 			                'Write the design and the results of the analysis in a folder of the model''s output folder';
 		                disable;
@@ -201,7 +202,12 @@ CMSensitivityAnalysisRunnerPresenter >> initializePresenters [
 			self newPresenter
 				layout: (SpBoxLayout newTopToBottom
 						 spacing: 5;
-						 add: tableDropList expand: false;
+						 add: (SpBoxLayout newLeftToRight
+							  spacing: 10;
+							  add: 'Final values of' expand: false;
+							  add: tableDropList;
+							  yourself)
+					 expand: false;
 						 add: table;
 						 add: exportButton height: 45;
 						 add: exportLabel expand: false;

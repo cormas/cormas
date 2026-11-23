@@ -50,11 +50,11 @@ CMDataPresenterTest >> testSaveDataToFile [
 ]
 
 { #category : 'tests' }
-CMDataPresenterTest >> testTheSummaryCanBeHidden [
+CMDataPresenterTest >> testTheRowsCanBeShownWithoutStatisticsNorSaving [
 
-	self assert:
-		(dataPresenter layout allPresenters includes: dataPresenter summary).
-	dataPresenter hideSummary.
+	self assert: dataPresenter layout allPresenters size equals: 3.
+	dataPresenter showRowsOnly.
 	self deny:
-		(dataPresenter layout allPresenters includes: dataPresenter summary)
+		(dataPresenter layout allPresenters includes: dataPresenter summary).
+	self assert: dataPresenter layout allPresenters size equals: 1
 ]

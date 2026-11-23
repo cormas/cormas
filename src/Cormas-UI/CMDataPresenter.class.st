@@ -46,23 +46,20 @@ CMDataPresenter >> data [
 { #category : 'initialization' }
 CMDataPresenter >> defaultLayout [
 
-	^ self layoutShowing: (SpPanedLayout newTopToBottom
-			   positionOfSlider: 0.4;
-			   add: summary;
-			   add: table;
-			   yourself)
+	^ SpBoxLayout newTopToBottom
+		  spacing: 3;
+		  add: (SpPanedLayout newTopToBottom
+				   positionOfSlider: 0.4;
+				   add: summary;
+				   add: table;
+				   yourself);
+		  add: saveToCsvButton expand: false;
+		  yourself
 ]
 
 { #category : 'examples' }
 CMDataPresenter >> example [
 	<script: 'self example'>
-]
-
-{ #category : 'updating' }
-CMDataPresenter >> hideSummary [
-	"Show only the rows, for data that is not a data table and has no statistics"
-
-	self layout: (self layoutShowing: table)
 ]
 
 { #category : 'initialization' }
@@ -75,16 +72,6 @@ CMDataPresenter >> initializePresenters [
 		                   label: 'Save to CSV';
 		                   icon: CMIcons csvIcon;
 		                   yourself
-]
-
-{ #category : 'initialization' }
-CMDataPresenter >> layoutShowing: aPresenterOrLayout [
-
-	^ SpBoxLayout newTopToBottom
-		  spacing: 3;
-		  add: aPresenterOrLayout;
-		  add: saveToCsvButton expand: false;
-		  yourself
 ]
 
 { #category : 'accessing' }
@@ -129,6 +116,15 @@ CMDataPresenter >> saveDataToFile: aFileReference [
 CMDataPresenter >> showData: aCollection [
 		
 	table items: aCollection
+]
+
+{ #category : 'updating' }
+CMDataPresenter >> showRowsOnly [
+	"Show only the rows, without statistics nor a button to save them, for data that is not a data table and is exported otherwise"
+
+	self layout: (SpBoxLayout newTopToBottom
+			 add: table;
+			 yourself)
 ]
 
 { #category : 'updating' }

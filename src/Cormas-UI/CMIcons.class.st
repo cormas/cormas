@@ -106,6 +106,36 @@ CMIcons class >> diceIconContents [
 ]
 
 { #category : 'icons' }
+CMIcons class >> downloadIcon [
+	"An arrow pointing down onto a tray, for exporting data to files"
+
+	<script: 'self downloadIcon inspect'>
+	| form canvas |
+	self icons at: #downloadIcon ifPresent: [ :icon | ^ icon ].
+
+	form := Form extent: 16 @ 16 depth: 32.
+	canvas := form getCanvas.
+	canvas fillColor: Color transparent.
+	canvas
+		drawPolygon: {
+				(7 @ 1).
+				(9 @ 1).
+				(9 @ 7).
+				(12 @ 7).
+				(8 @ 11).
+				(4 @ 7).
+				(7 @ 7) }
+		color: Color darkGray
+		borderWidth: 0
+		borderColor: Color darkGray.
+	canvas fillRectangle: (2 @ 13 extent: 12 @ 2) color: Color darkGray.
+	canvas fillRectangle: (2 @ 10 extent: 2 @ 4) color: Color darkGray.
+	canvas fillRectangle: (12 @ 10 extent: 2 @ 4) color: Color darkGray.
+
+	^ self icons at: #downloadIcon put: form
+]
+
+{ #category : 'icons' }
 CMIcons class >> excelIcon [
 	<script: 'self excelIcon inspect'>
 
