@@ -63,15 +63,6 @@ CMBoxesPlot >> defaultShape [
 	^ RSBox new
 ]
 
-{ #category : 'accessing' }
-CMBoxesPlot >> definedValuesX [
-	"One step more on each side, so that the boxes of the first and last steps fit"
-
-	^ {
-		  (xValues first - 1).
-		  (xValues last + 1) }
-]
-
 { #category : 'statistics' }
 CMBoxesPlot >> fiveNumbersOf: someNumbers [
 	"Return the minimum, the first quartile, the median, the third quartile and the maximum of someNumbers. Quartiles are interpolated between the two closest values, as R and NumPy do by default"

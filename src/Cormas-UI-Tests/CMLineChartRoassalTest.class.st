@@ -42,6 +42,17 @@ CMLineChartRoassalTest >> plotShapesNamed: aString in: aCanvas [
 				  each color = color or: [ each color = Color transparent ] ] ]
 ]
 
+{ #category : 'private' }
+CMLineChartRoassalTest >> seriesNamed: someNumbers [
+
+	^ someNumbers collect: [ :each |
+			  CMChartSeries new
+				  setName: 'Rabbit ' , each printString
+				  color: Color red
+				  steps: #( 0 1 2 )
+				  values: #( 1 2 3 ) ]
+]
+
 { #category : 'running' }
 CMLineChartRoassalTest >> setUp [
 
@@ -68,6 +79,14 @@ CMLineChartRoassalTest >> testAChosenColorIsUsed [
 ]
 
 { #category : 'tests' }
+CMLineChartRoassalTest >> testAHiddenLegendIsNotDrawn [
+
+	chart hideLegend.
+	self deny: ((self textsOf: (self canvasHiding: Set new)) includes:
+			 'numberOfDeadCells')
+]
+
+{ #category : 'tests' }
 CMLineChartRoassalTest >> testAHiddenLineIsDrawnTransparent [
 
 	| canvas |
@@ -75,6 +94,35 @@ CMLineChartRoassalTest >> testAHiddenLineIsDrawnTransparent [
 	self assert:
 		((self plotShapesNamed: 'numberOfDeadCells' in: canvas) allSatisfy: [
 			 :each | each color = Color transparent ])
+]
+
+{ #category : 'tests' }
+CMLineChartRoassalTest >> testALegendTooBigForThreeLinesIsReplacedByANote [
+
+	| texts |
+	texts := self textsOf:
+		         (chart
+			          canvasOf: (self seriesNamed: (1 to: 100))
+			          hiding: Set new).
+	self deny: (texts includes: 'Rabbit 1').
+	self assert: (texts includes: '(legend is too big to be displayed)')
+]
+
+{ #category : 'tests' }
+CMLineChartRoassalTest >> testALegendWiderThanTheChartWrapsOnSeveralLines [
+
+	| canvas entries |
+	canvas := chart
+		          canvasOf: (self seriesNamed: (1 to: 20))
+		          hiding: Set new.
+	entries := (1 to: 20) collect: [ :each |
+		           self
+			           legendEntryNamed: 'Rabbit ' , each printString
+			           in: canvas ].
+	self assert:
+		(entries collect: [ :each | each position y ] as: Set) size > 1.
+	self assert: (entries allSatisfy: [ :each |
+			 each encompassingRectangle right <= 800 ])
 ]
 
 { #category : 'tests' }
@@ -127,6 +175,22 @@ CMLineChartRoassalTest >> testAProbeThatWasNotRecordedCannotBeDrawn [
 ]
 
 { #category : 'tests' }
+CMLineChartRoassalTest >> testAxesOfNonNegativeValuesStartAtZero [
+
+	| canvas |
+	canvas := chart
+		          canvasOf: { (CMChartSeries new
+				           setName: 'a'
+				           color: Color red
+				           steps: #( 12 13 14 )
+				           values: #( 30 40 50 )) }
+		          hiding: Set new.
+	self
+		assert: ((self textsOf: canvas) count: [ :each | each = '0' ])
+		equals: 2
+]
+
+{ #category : 'tests' }
 CMLineChartRoassalTest >> testClickingAHiddenLineInTheLegendShowsItAgain [
 
 	| hidden canvas |
@@ -166,6 +230,19 @@ CMLineChartRoassalTest >> testEachLineFollowsItsProbeOverTheRecordedSteps [
 CMLineChartRoassalTest >> testLinesWithoutAChosenColorGetDifferentColors [
 
 	self deny: self lines first color equals: self lines second color
+]
+
+{ #category : 'tests' }
+CMLineChartRoassalTest >> testTheCanvasCannotBeZoomedNorDragged [
+
+	| canvas |
+	canvas := self canvasHiding: Set new.
+	self deny: ({
+			 RSMouseWheelEvent new.
+			 RSMouseDragStart new.
+			 RSMouseDragging new } anySatisfy: [ :event |
+				 canvas announcer subscriptions subscriptions anySatisfy: [ :each |
+					 each handlesAnnouncement: event ] ])
 ]
 
 { #category : 'tests' }
@@ -237,15 +314,15 @@ CMLineChartRoassalTest >> testTheLinesOfAllInstancesOfAMethodThatIsNotAProbeRais
 
 { #category : 'tests' }
 CMLineChartRoassalTest >> testTicksOfDecimalsAreLabelledWithTheDecimalsTheyNeed [
-	"The energy of the animals stays at 0.5, so the y axis goes from 0.4 to 1.6, 0.2 apart"
+	"The energy of the animals stays at 0.5, so the y axis goes from 0 to 0.5, 0.1 apart"
 
 	| texts |
 	chart := CMLineChart new
 		         lines: #energy ofAll: CMMockAnimal;
 		         yourself.
 	texts := self textsOf: (self canvasHiding: Set new).
-	self assert: (texts includes: '0.4').
-	self assert: (texts includes: '1.6')
+	self assert: (texts includes: '0.1').
+	self assert: (texts includes: '0.5')
 ]
 
 { #category : 'tests' }

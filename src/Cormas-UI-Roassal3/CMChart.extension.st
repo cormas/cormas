@@ -1,6 +1,22 @@
 Extension { #name : 'CMChart' }
 
 { #category : '*Cormas-UI-Roassal3' }
+CMChart >> add: aLegend below: aCanvas [
+	"Add aLegend below the chart of aCanvas, its entries wrapped on lines as wide as the chart. A legend of more than three lines would hide the chart, so a note replaces it"
+
+	| note |
+	aLegend location below offset: 0 @ 18.
+	(aLegend layout layout linesFor: aLegend shapes) size > 3 ifFalse: [
+		^ aLegend build ].
+	note := RSLabel new
+		        text: '(legend is too big to be displayed)';
+		        color: Color gray;
+		        yourself.
+	aLegend location move: note on: aCanvas shapes.
+	aCanvas add: note
+]
+
+{ #category : '*Cormas-UI-Roassal3' }
 CMChart >> addSeriesOf: aSelector ofAll: aClass in: someDataTables to: someSeries [
 	"Add to someSeries those that show the probe aSelector of all instances of aClass, from their data tables"
 
@@ -46,15 +62,16 @@ CMChart >> canvasOf: someSeries hiding: aSetOfNames [
 	| plots roassalChart canvas shapes legend |
 	plots := self plotsOf: someSeries.
 	roassalChart := self roassalChartOf: plots.
-	plots ifEmpty: [ canvas := RSCanvas new ] ifNotEmpty: [
-			roassalChart build.
-			canvas := roassalChart canvas ].
+	canvas := roassalChart canvas.
+	plots ifNotEmpty: [ roassalChart build ].
 	shapes := Dictionary new.
 	plots do: [ :each |
 		shapes at: each key name put: each value createdShapes asArray ].
 	legend := RSLegend new.
 	legend container: canvas.
-	legend layout horizontal gapSize: 12.
+	legend layout flow
+		maxWidth: roassalChart extent x;
+		gapSize: 12.
 	someSeries do: [ :each |
 			| entry drawn drawnColors |
 			entry := legend text: each name withBoxColor: each color.
@@ -81,8 +98,7 @@ CMChart >> canvasOf: someSeries hiding: aSetOfNames [
 				color: drawn
 				as: drawnColors
 				hiding: (aSetOfNames includes: each name) ].
-	legend location below offset: 0 @ 18.
-	legend build.
+	showsLegend ifTrue: [ self add: legend below: canvas ].
 	^ canvas
 ]
 
@@ -148,10 +164,15 @@ CMChart >> plotsOf: someSeries [
 
 { #category : '*Cormas-UI-Roassal3' }
 CMChart >> roassalChartOf: somePlots [
-	"Return a Roassal chart that draws the plots of the associations somePlots, with x and y axis lines but no frame, and ticks labelled without needless decimals"
+	"Return a Roassal chart that draws the plots of the associations somePlots, with x and y axis lines but no frame, and ticks labelled without needless decimals. Axes of values that are not negative start at 0. The chart cannot be zoomed nor dragged, but fits the space it is shown in"
 
 	| roassalChart xValues yValues xTicks yTicks |
 	roassalChart := RSCompositeChart new.
+	roassalChart container: (RSCanvas new
+			 addInteraction: (RSZoomToFitCanvasInteraction new
+					  useZoomToFitOnExtentChanged;
+					  yourself);
+			 yourself).
 	roassalChart extent: 800 @ 400.
 	roassalChart spineDecoration: CMChartAxes new.
 	title ifNotNil: [ roassalChart title: title ].
@@ -164,18 +185,18 @@ CMChart >> roassalChartOf: somePlots [
 	yValues := somePlots flatCollect: [ :each |
 		           each value definedValuesY ].
 	xTicks := self
-		          ticksFrom: xValues min
+		          ticksFrom: (xValues min min: 0)
 		          to: xValues max
 		          wholeNumbers:
 		          (xValues allSatisfy: [ :each | each isInteger ]).
 	yTicks := self
-		          ticksFrom: yValues min
+		          ticksFrom: (yValues min min: 0)
 		          to: yValues max
 		          wholeNumbers:
 		          (yValues allSatisfy: [ :each | each isInteger ]).
 	roassalChart
-		minChartValueX: xTicks first;
-		maxChartValueX: xTicks last;
+		minChartValueX: xTicks first - self xMargin;
+		maxChartValueX: xTicks last + self xMargin;
 		minChartValueY: yTicks first;
 		maxChartValueY: yTicks last;
 		xTicks: xTicks labels: (self tickLabelsOf: xTicks);
@@ -248,4 +269,11 @@ CMChart >> ticksFrom: aLowest to: aHighest wholeNumbers: aBoolean [
 	aBoolean ifTrue: [ spacing := spacing max: 1 ].
 	^ ((aLowest / spacing) floor * spacing to:
 	   (highest / spacing) ceiling * spacing by: spacing) asArray
+]
+
+{ #category : '*Cormas-UI-Roassal3' }
+CMChart >> xMargin [
+	"The space left on each side of the x axis, beyond its first and last ticks"
+
+	^ 0
 ]

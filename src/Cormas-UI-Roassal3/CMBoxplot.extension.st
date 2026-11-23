@@ -23,3 +23,10 @@ CMBoxplot >> plotsOf: someSeries [
 				   color: each color;
 				   yourself) ]
 ]
+
+{ #category : '*Cormas-UI-Roassal3' }
+CMBoxplot >> xMargin [
+	"Half a step on each side, so that the boxes of the first and last steps fit"
+
+	^ 1 / 2
+]

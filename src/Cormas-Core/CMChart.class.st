@@ -51,7 +51,8 @@ Class {
 		'labels',
 		'colors',
 		'subjectProbes',
-		'probesOfAll'
+		'probesOfAll',
+		'showsLegend'
 	],
 	#category : 'Cormas-Core-Charts',
 	#package : 'Cormas-Core',
@@ -87,6 +88,13 @@ CMChart >> colorFor: aSelector ifNone: aBlock [
 	^ colors at: aSelector ifAbsent: aBlock
 ]
 
+{ #category : 'presentation' }
+CMChart >> hideLegend [
+	"Draw me without a legend, for example when the legend would only repeat the title"
+
+	showsLegend := false
+]
+
 { #category : 'initialization' }
 CMChart >> initialize [
 
@@ -94,7 +102,8 @@ CMChart >> initialize [
 	labels := Dictionary new.
 	colors := Dictionary new.
 	subjectProbes := OrderedCollection new.
-	probesOfAll := OrderedCollection new
+	probesOfAll := OrderedCollection new.
+	showsLegend := true
 ]
 
 { #category : 'accessing' }
