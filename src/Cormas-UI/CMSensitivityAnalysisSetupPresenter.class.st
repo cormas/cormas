@@ -12,8 +12,8 @@ Class {
 		'summaryLabel',
 		'runButton',
 		'parameterSamplings',
-		'randomSeedParameter',
-		'setup'
+		'simulation',
+		'analysis'
 	],
 	#category : 'Cormas-UI-SensitivityAnalysis',
 	#package : 'Cormas-UI',
@@ -31,22 +31,19 @@ CMSensitivityAnalysisSetupPresenter >> connectPresenters [
 
 	modelClassDropList whenSelectedItemChangedDo: [ :aClass |
 		self initializeWithModelClass: aClass ].
-	
+
 	initSelectorDropList whenSelectedItemChangedDo: [ :selector |
-		setup initSelector: selector ].
-	
+		simulation activeInitSelector: selector ].
+
 	controlSelectorDropList whenSelectedItemChangedDo: [ :selector |
-		setup controlSelector: selector ].
-	
+		simulation activeControlSelector: selector ].
+
 	stopConditionDropList whenSelectedItemChangedDo: [ :selector |
-		setup stopConditionSelector: (
-			stopConditionDropList isPlaceholderSelected
-				ifTrue: [ nil ]
-				ifFalse: [ selector ]) ].
-	
+		self updateStopCondition ].
+
 	finalStepInput whenNumberChangedDo: [ :number |
-		setup finalTimeStep: number ].
-	
+		self updateStopCondition ].
+
 	runButton action: [ self openRunner ]
 ]
 
@@ -124,13 +121,7 @@ CMSensitivityAnalysisSetupPresenter >> example [
 { #category : 'initialization' }
 CMSensitivityAnalysisSetupPresenter >> initializeParameterSamplings [
 
-	parameterSamplings := OrderedDictionary new.
-		
-	parameterSamplings at: randomSeedParameter put: (
-		CMListSamplingMethod new
-			values: { randomSeedParameter defaultValue };
-			yourself)
-	
+	parameterSamplings := OrderedDictionary new
 ]
 
 { #category : 'initialization' }
@@ -186,66 +177,55 @@ CMSensitivityAnalysisSetupPresenter >> initializeParametersTable [
 { #category : 'initialization' }
 CMSensitivityAnalysisSetupPresenter >> initializePresenters [
 
-	setup := CMSensitivityAnalysisSetup new.
-	
-	self initializeRandomSeedParameter.
 	self initializeParameterSamplings.
 
 	modelClassDropList := self newDropList
-		items: CMModel modelsInThisImage;
-		display: [ :aClass | aClass modelName ];
-		displayIcon: [ :aClass | CMIcons cormasModelIcon ];
-		yourself.
-		
+		                      items: CMModel modelsInThisImage;
+		                      display: [ :aClass | aClass modelName ];
+		                      displayIcon: [ :aClass |
+			                      CMIcons cormasModelIcon ];
+		                      yourself.
+
 	initSelectorDropList := self newDropList.
 	controlSelectorDropList := self newDropList.
 	finalStepInput := self newNumberInput.
-	
-	stopConditionDropList := (self instantiate: CMDropListWithPlaceholderPresenter)
-		placeholder: 'boolean method' respondingTo: #value;
-		display: [ :each | each value ];
-		yourself.
-	
+
+	stopConditionDropList := (self instantiate:
+			                          CMDropListWithPlaceholderPresenter)
+		                         placeholder: 'boolean method'
+		                         respondingTo: #value;
+		                         display: [ :each | each value ];
+		                         yourself.
+
 	probesList := self newTable
-		hideColumnHeaders;
-		addColumn: ((SpCheckBoxTableColumn
-			evaluated: [ :probe | setup probes includes: probe ])
-			onActivation: [ :probe |
-				setup probes add: probe.
-				self updateRunButton ];
-			onDeactivation: [ :probe |
-				setup probes remove: probe.
-				self updateRunButton ];
-			width: 20;
-			yourself);
-		addColumn: (SpStringTableColumn
-			evaluated: [ :probe | probe ]);
-		yourself.
-		
+		              hideColumnHeaders;
+		              addColumn:
+			              ((SpCheckBoxTableColumn evaluated: [ :probe |
+						                (simulation recordedProbesOf:
+								                 simulation cormasModel class) includes: probe ])
+				               onActivation: [ :probe |
+					               simulation
+						               record: probe
+						               of: simulation cormasModel class ];
+				               onDeactivation: [ :probe |
+					               simulation
+						               doNotRecord: probe
+						               of: simulation cormasModel class ];
+				               width: 20;
+				               yourself);
+		              addColumn:
+		              (SpStringTableColumn evaluated: [ :probe | probe ]);
+		              yourself.
+
 	self initializeParametersTable.
-	
+
 	runButton := self newButton
-		icon: CMIcons runIcon;
-		yourself.
-		
+		             icon: CMIcons runIcon;
+		             disable;
+		             yourself.
+
 	modelClassDropList selectedItem ifNotNil: [ :aClass |
-		self initializeWithModelClass: aClass ].
-	
-	self updateRunButton.
-]
-
-{ #category : 'initialization' }
-CMSensitivityAnalysisSetupPresenter >> initializeRandomSeedParameter [
-
-	randomSeedParameter := CMIntegerParameter new
-		targetClass: CMSimulationContext;
-		getterSelector: #randomSeed;
-		setterSelector: #randomSeed:;
-		minValue: 1;
-		maxValue: SmallInteger maxVal;
-		defaultValue: (Random new nextInteger: SmallInteger maxVal);
-		isClassSide: false;
-		yourself
+		self initializeWithModelClass: aClass ]
 ]
 
 { #category : 'initialization' }
@@ -261,31 +241,32 @@ CMSensitivityAnalysisSetupPresenter >> initializeWindow: aWindowPresenter [
 { #category : 'initialization' }
 CMSensitivityAnalysisSetupPresenter >> initializeWithModelClass: aClass [
 
-	setup modelClass: aClass.
+	simulation := CMSimulation for: aClass new.
+	analysis := CMSensitivityAnalysis on: simulation.
 
-	initSelectorDropList items: aClass availableInitSelectors.	
+	initSelectorDropList items: aClass availableInitSelectors.
 	controlSelectorDropList items: aClass availableControlSelectors.
 	stopConditionDropList items: aClass availableBooleanSelectors.
-	
+
 	initSelectorDropList selectFirst.
 	controlSelectorDropList selectFirst.
-	
+
 	finalStepInput number: 100.
-	
+	self updateStopCondition.
+
 	probesList items: aClass probeSelectors.
-	parametersTable items: ((self relevantParametersFrom: aClass) copyWithFirst: randomSeedParameter).
-	
-	setup probes: probesList items asSet.
-	
+	parametersTable items: (self relevantParametersFrom: aClass).
+
 	self initializeParameterSamplings.
 	self updateTable.
 	self updateRunButton
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'private' }
 CMSensitivityAnalysisSetupPresenter >> openRunner [
 
-	(self instantiate: CMSensitivityAnalysisRunnerPresenter on: setup) open
+	(self instantiate: CMSensitivityAnalysisRunnerPresenter on: analysis)
+		open
 ]
 
 { #category : 'as yet unclassified' }
@@ -318,11 +299,16 @@ CMSensitivityAnalysisSetupPresenter >> resetSamplingFor: aParameter [
 	self updateRunButton
 ]
 
-{ #category : 'updating - presenters' }
+{ #category : 'private' }
 CMSensitivityAnalysisSetupPresenter >> sampleParameterValues [
+	"Vary in a new analysis each parameter that has a sampling, over the values it generates"
 
-	setup parameterSamplings: (parameterSamplings collect: [ :sampler | 
-		sampler generate ])
+	analysis := CMSensitivityAnalysis on: simulation.
+	parameterSamplings keysAndValuesDo: [ :parameter :sampler |
+			analysis
+				parameter: parameter getterSelector
+				of: parameter targetClass
+				values: sampler generate ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -331,14 +317,27 @@ CMSensitivityAnalysisSetupPresenter >> selectModel: aModelClass [
 	modelClassDropList selectItem: aModelClass
 ]
 
-{ #category : 'updating - presenters' }
+{ #category : 'private' }
 CMSensitivityAnalysisSetupPresenter >> updateRunButton [
 
-	runButton label: ('Run ', setup numberOfSimulations asString, ' simulations').
+	runButton label:
+		'Run ' , analysis numberOfRuns asString , ' simulations'.
+	parameterSamplings
+		ifEmpty: [ runButton disable ]
+		ifNotEmpty: [ runButton enable ]
+]
 
-	setup isComplete
-		ifTrue: [ runButton enable ]
-		ifFalse: [ runButton disable ]
+{ #category : 'private' }
+CMSensitivityAnalysisSetupPresenter >> updateStopCondition [
+	"Stop the runs after the number of steps chosen, or earlier when the chosen boolean method returns true"
+
+	stopConditionDropList isPlaceholderSelected ifTrue: [
+		^ simulation stopAfterStep: finalStepInput number ].
+	simulation stopWhen: (self class compiler evaluate:
+			 ('[ :model | model currentTimeStep >= {1} or: [ model {2} ] ]'
+				  format: {
+						  finalStepInput number printString.
+						  stopConditionDropList selectedItem }))
 ]
 
 { #category : 'updating - presenters' }

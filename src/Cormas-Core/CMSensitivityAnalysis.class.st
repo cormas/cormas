@@ -1,11 +1,63 @@
+"
+I am a sensitivity analysis: I run a simulation many times, with other parameter values and seeds, and save every run with a summary of their final values.
+
+## Responsibility:
+
+- I know the settings my runs share (those of a `CMSimulation`), the parameters I vary and their values, my design, my number of replicates and my master seed.
+- I run each combination of parameter values once per replicate, replicate k having the same seed in every combination, and set the parameters back afterwards.
+- I save myself in one folder: `analysis.json` (the design), a folder per run, `results.csv` (the last recorded values of the model probes) and a `results-<Class>.csv` per recorded entity class.
+
+## Collaborators:
+
+- `CMSimulation`: gives each run its settings through `newSimulationWithSameSettings`, runs it and saves it.
+- `CMRunMetadata`: describes the settings shared by the runs in `analysis.json`.
+- `CMLastStepRecording` and `CMIntervalRecording`: say which steps each run records, the last one only unless `recordEvery:` is sent.
+
+## Public API and Key Messages
+
+- `on:` creates an analysis on a simulation, whose settings each run takes.
+- `parameter:of:values:` varies a parameter of the model or of an entity class.
+- `beFullFactorial` (the default) or `beOneFactorAtATime`, `replicates:`, `masterSeed:`, `recordEvery:`.
+- `run` and `runIn:` run in this process and return the folder of the analysis; `runInBackground` runs in another one, and `pause`, `resume` and `stop` act between runs.
+- `results`, `numberOfRuns`, `numberOfCompletedRuns`, `whenProgressDo:` and `whenFinishedDo:` follow it.
+
+```
+| simulation |
+simulation := (CMSimulation for: FFFirefightersModel new)
+	activeInitSelector: #initSmall;
+	activeControlSelector: #basicStep;
+	stopAfterStep: 20;
+	yourself.
+(CMSensitivityAnalysis on: simulation)
+	parameter: #numberOfFirefighters of: FFFirefightersModel values: #( 1 5 10 );
+	replicates: 5;
+	masterSeed: 42;
+	run
+```
+
+## Internal Representation
+
+- `factors`: the varied parameters, as associations of a class and a getter, with their values.
+- `results` and `classResults`: a row per run, and per class a row per instance and run, each an `OrderedDictionary` from column names to values.
+- `shouldPause`, `shouldStop` and `pauseSemaphore` let another process pause or stop the runs.
+"
 Class {
 	#name : 'CMSensitivityAnalysis',
 	#superclass : 'Object',
 	#instVars : [
-		'setup',
-		'data',
-		'runner',
-		'numberOfCompletedSimulations',
+		'simulation',
+		'factors',
+		'isOneFactorAtATime',
+		'replicates',
+		'masterSeed',
+		'recordedSteps',
+		'results',
+		'classResults',
+		'numberOfCompletedRuns',
+		'isRunning',
+		'shouldStop',
+		'shouldPause',
+		'pauseSemaphore',
 		'whenProgressBlock',
 		'whenFinishedBlock'
 	],
@@ -14,222 +66,424 @@ Class {
 	#tag : 'SensitivityAnalysis'
 }
 
-{ #category : 'as yet unclassified' }
-CMSensitivityAnalysis >> announceFinished [
+{ #category : 'instance creation' }
+CMSensitivityAnalysis class >> on: aSimulation [
+	"Return an analysis whose runs take the settings of aSimulation"
 
-	whenFinishedBlock value: self
+	^ self new
+		  setSimulation: aSimulation;
+		  yourself
 ]
 
-{ #category : 'as yet unclassified' }
-CMSensitivityAnalysis >> announceProgress [
+{ #category : 'private' }
+CMSensitivityAnalysis >> add: aTableRow named: probes to: aRow [
+	"Add to aRow the step and the values of aTableRow, a row of a CMDataTable whose columns are probes"
 
-	whenProgressBlock value: self
+	aRow at: 'step' put: aTableRow first.
+	probes
+		with: aTableRow allButFirst
+		do: [ :probe :value | aRow at: probe asString put: value ]
 ]
 
-{ #category : 'accessing' }
-CMSensitivityAnalysis >> data [
+{ #category : 'private' }
+CMSensitivityAnalysis >> addResultsOf: aSimulation described: anArray [
+	"Add a row of the last recorded values of the model of aSimulation, and one for each instance whose class is recorded, starting with anArray"
 
-	^ data 
+	| row |
+	row := self rowStartingWith: anArray.
+	self
+		add: aSimulation modelData rows last
+		named: aSimulation modelData columnNames
+		to: row.
+	results add: row.
+	aSimulation recordedClasses do: [ :aClass |
+			| rows |
+			rows := classResults
+				        at: aClass
+				        ifAbsentPut: [ OrderedCollection new ].
+			(aSimulation dataByIdOfClass: aClass) keys sorted do: [ :id |
+					| table |
+					table := (aSimulation dataByIdOfClass: aClass) at: id.
+					table rows ifNotEmpty: [ :tableRows |
+							row := (self rowStartingWith: anArray)
+								       at: 'id' put: id;
+								       at: 'label' put: table label;
+								       yourself.
+							self add: tableRows last named: table columnNames to: row.
+							rows add: row ] ] ]
 ]
 
-{ #category : 'accessing' }
-CMSensitivityAnalysis >> dataColumnNames [
+{ #category : 'settings' }
+CMSensitivityAnalysis >> beFullFactorial [
+	"Run every combination of the values of the parameters"
 
-	| parameterNames |
-	parameterNames := (setup parameterSamplings keys collect: [
-		                   :parameter | parameter name ])
-		                  asOrderedCollection.
-	^ parameterNames , setup probes asOrderedCollection
+	isOneFactorAtATime := false
+]
+
+{ #category : 'settings' }
+CMSensitivityAnalysis >> beOneFactorAtATime [
+	"Vary each parameter over its values, the others keeping their values in the simulation"
+
+	isOneFactorAtATime := true
+]
+
+{ #category : 'private' }
+CMSensitivityAnalysis >> columnNames [
+	"Return the names of the columns describing a run: its number, replicate and seed, then my parameters, qualified by their class when it is an entity class"
+
+	^ #( 'run' 'replicate' 'seed' ) , (factors keys collect: [ :each |
+			   each key = self modelClass
+				   ifTrue: [ each value asString ]
+				   ifFalse: [ each key name , '.' , each value ] ])
+]
+
+{ #category : 'private' }
+CMSensitivityAnalysis >> combinations [
+	"Return the values of my parameters, in their order, for each combination of my design"
+
+	^ isOneFactorAtATime
+		  ifTrue: [ self oneFactorAtATimeCombinations ]
+		  ifFalse: [ self fullFactorialCombinations ]
+]
+
+{ #category : 'private' }
+CMSensitivityAnalysis >> fullFactorialCombinations [
+
+	^ factors values inject: #( #(  ) ) into: [ :combinations :values |
+			  combinations flatCollect: [ :each |
+				  values collect: [ :value | each copyWith: value ] ] ]
 ]
 
 { #category : 'initialization' }
 CMSensitivityAnalysis >> initialize [
 
 	super initialize.
-	
-	data := OrderedCollection new.
-	numberOfCompletedSimulations := 0.
+	factors := OrderedDictionary new.
+	isOneFactorAtATime := false.
+	replicates := 1.
+	masterSeed := Random new nextInteger: SmallInteger maxVal.
+	recordedSteps := CMLastStepRecording new.
+	results := OrderedCollection new.
+	classResults := Dictionary new.
+	numberOfCompletedRuns := 0.
+	isRunning := false.
+	shouldStop := false.
+	shouldPause := false.
+	pauseSemaphore := Semaphore new.
 	whenProgressBlock := [ :analysis | "do nothing" ].
-	whenFinishedBlock := [ :analysis | "do nothing" ].
-	
-	self initializeRunner
+	whenFinishedBlock := [ :analysis | "do nothing" ]
 ]
 
-{ #category : 'initialization' }
-CMSensitivityAnalysis >> initializeRunner [
-
-	runner := CMSensitivityAnalysisProcessRunner new
-		sensitivityAnalysis: self;
-		yourself
-]
-
-{ #category : 'testing' }
+{ #category : 'accessing' }
 CMSensitivityAnalysis >> isPaused [
-	
-	^ runner isPaused
+
+	^ shouldPause
 ]
 
-{ #category : 'testing' }
+{ #category : 'accessing' }
 CMSensitivityAnalysis >> isRunning [
-	
-	^ runner isRunning
+
+	^ isRunning
+]
+
+{ #category : 'private' }
+CMSensitivityAnalysis >> jsonWith: aRunMetadata [
+	"Return the JSON object of analysis.json: the settings that my runs share, as aRunMetadata has them, then my design"
+
+	| factorValues |
+	factorValues := OrderedDictionary new.
+	factors keysAndValuesDo: [ :factor :values |
+			(factorValues
+				 at: factor key name
+				 ifAbsentPut: [ OrderedDictionary new ])
+				at: factor value
+				put: values copy ].
+	^ aRunMetadata asDictionary
+		  removeKey: 'seed';
+		  removeKey: 'lastStep';
+		  at: 'design'
+		  put: (Dictionary with: 'type' -> (isOneFactorAtATime
+							    ifTrue: [ 'oneFactorAtATime' ]
+							    ifFalse: [ 'fullFactorial' ]));
+		  at: 'factors' put: factorValues;
+		  at: 'replicates' put: replicates;
+		  at: 'masterSeed' put: masterSeed;
+		  yourself
+]
+
+{ #category : 'settings' }
+CMSensitivityAnalysis >> masterSeed: anInteger [
+	"Choose the seeds of the replicates from anInteger, so that the same master seed gives the same seeds"
+
+	masterSeed := anInteger
 ]
 
 { #category : 'accessing' }
 CMSensitivityAnalysis >> modelClass [
 
-	^ setup modelClass
+	^ simulation cormasModel class
 ]
 
-{ #category : 'instance creation' }
-CMSensitivityAnalysis >> newSimulationFor: aParameterCombination [
+{ #category : 'private' }
+CMSensitivityAnalysis >> newRun [
+	"Return a new simulation with the settings of my simulation, recording the steps I record"
 
-	| model simulation |
-	model := setup modelClass new.
-	
-	simulation := (CMSimulation for: model)
-		activeInitSelector: setup initSelector;
-		activeControlSelector: setup controlSelector;
-		stopWhen: setup stopCondition;
-		hasFixedRandomSeed: true;
-		yourself.
-	
-	self setParameterValues: aParameterCombination on: model.
-	simulation initializeSimulation.
-	
-	^ simulation
-	
+	^ simulation newSimulationWithSameSettings
+		  recordedSteps: recordedSteps;
+		  yourself
 ]
 
 { #category : 'accessing' }
-CMSensitivityAnalysis >> numberOfCompletedSimulations [
+CMSensitivityAnalysis >> numberOfCompletedRuns [
 
-	^ numberOfCompletedSimulations
+	^ numberOfCompletedRuns
 ]
 
-{ #category : 'as yet unclassified' }
-CMSensitivityAnalysis >> parameterCombinations [
+{ #category : 'accessing' }
+CMSensitivityAnalysis >> numberOfRuns [
 
-	| combinations |
-	combinations := { OrderedDictionary new } asOrderedCollection.
-	
-	setup parameterSamplings keysAndValuesDo: [ :parameter :values |
-		combinations := combinations flatCollect: [ :existingCombination |
-			values collect: [ :value |
-				existingCombination copy
-					at: parameter put: value;
-					yourself ] ] ].
-		
-	^ combinations
+	^ self combinations size * replicates
+]
+
+{ #category : 'private' }
+CMSensitivityAnalysis >> oneFactorAtATimeCombinations [
+
+	| parameterValues inSimulation |
+	parameterValues := simulation cormasModel parameterValues.
+	inSimulation := factors keys collect: [ :each |
+		                (parameterValues at: each key name) at: each value ].
+	^ (1 to: factors size) flatCollect: [ :index |
+			  (factors values at: index) collect: [ :value |
+					  inSimulation copy
+						  at: index put: value;
+						  yourself ] ]
+]
+
+{ #category : 'settings' }
+CMSensitivityAnalysis >> parameter: aSelector of: aClass values: aCollection [
+	"Vary the parameter aSelector of aClass, the model's class or one of its entity classes, over the values of aCollection"
+
+	((simulation cormasModel parameterValues
+		  at: aClass name
+		  ifAbsent: [ Dictionary new ]) includesKey: aSelector) ifFalse: [
+		self error: aClass name , ' has no parameter ' , aSelector ].
+	factors at: aClass -> aSelector put: aCollection asArray
+]
+
+{ #category : 'private' }
+CMSensitivityAnalysis >> parameterValuesOf: aCombination [
+	"Return the values of aCombination by class name, then by getter, as parameterValues returns them"
+
+	| values |
+	values := OrderedDictionary new.
+	factors keys with: aCombination do: [ :factor :value |
+			(values at: factor key name ifAbsentPut: [ OrderedDictionary new ])
+				at: factor value
+				put: value ].
+	^ values
 ]
 
 { #category : 'running' }
 CMSensitivityAnalysis >> pause [
+	"Wait before the next run until resume is sent"
 
-	runner pause
+	shouldPause := true
 ]
 
 { #category : 'accessing' }
 CMSensitivityAnalysis >> progress [
+	"Return the fraction of the runs done"
 
-	self totalNumberOfSimulations = 0 ifTrue: [ ^ 0 ].
-	^ numberOfCompletedSimulations / self totalNumberOfSimulations
+	self numberOfRuns = 0 ifTrue: [ ^ 0 ].
+	^ numberOfCompletedRuns / self numberOfRuns
 ]
 
-{ #category : 'running' }
-CMSensitivityAnalysis >> recordDataFrom: aSimulation combination: aParameterCombination [
-	"Add a row of the parameter values of aParameterCombination and of the last recorded value of each probe of aSimulation"
+{ #category : 'settings' }
+CMSensitivityAnalysis >> recordEvery: anInteger [
+	"Record the data of each run at init, every anInteger steps, and at the last step, rather than at the last step only"
 
-	| row |
-	row := OrderedDictionary new.
+	recordedSteps := CMIntervalRecording every: anInteger
+]
 
-	aParameterCombination keysAndValuesDo: [ :parameter :value |
-		row at: parameter name put: value ].
+{ #category : 'settings' }
+CMSensitivityAnalysis >> replicates: anInteger [
+	"Run each combination of parameter values anInteger times, replicate k having the same seed in every combination"
 
-	setup probes do: [ :probe |
-		row at: probe put: (aSimulation modelData column: probe) last ].
+	replicates := anInteger
+]
 
-	data add: row.
-	numberOfCompletedSimulations := numberOfCompletedSimulations + 1.
+{ #category : 'accessing' }
+CMSensitivityAnalysis >> results [
+	"Return a row for each run done: its number, replicate, seed and parameter values, then the last recorded step and the value of each model probe at that step"
 
-	^ row
+	^ results
 ]
 
 { #category : 'running' }
 CMSensitivityAnalysis >> resume [
-	
-	runner resume
+
+	shouldPause := false.
+	pauseSemaphore signal
+]
+
+{ #category : 'private' }
+CMSensitivityAnalysis >> rowStartingWith: anArray [
+
+	| row |
+	row := OrderedDictionary new.
+	self columnNames
+		with: anArray
+		do: [ :name :value | row at: name put: value ].
+	^ row
 ]
 
 { #category : 'running' }
 CMSensitivityAnalysis >> run [
+	"Run the analysis in this process and save it in the output folder of the model's folder, as runIn: does. Return the folder of the analysis"
 
-	data := OrderedCollection new.
-	numberOfCompletedSimulations := 0.
-	
-	runner runInBackground
+	^ self runIn: self modelClass folder / 'output'
+]
+
+{ #category : 'private' }
+CMSensitivityAnalysis >> run: anArray in: aRunFolder [
+	"Do the run described by anArray: its number, replicate and seed, then the values of my parameters. Save it in aRunFolder and add its results"
+
+	| run |
+	run := self newRun.
+	run cormasModel parameterValues:
+		(self parameterValuesOf: (anArray allButFirst: 3)).
+	run
+		randomSeed: anArray third;
+		initializeSimulation;
+		runUntilStopped;
+		saveDataTo: aRunFolder.
+	self addResultsOf: run described: anArray
+]
+
+{ #category : 'private' }
+CMSensitivityAnalysis >> runAllIn: aFolder restoring: parameterValues [
+	"Do each run, saved in a folder of aFolder, and set the parameters back to parameterValues after it"
+
+	| seeds digits number |
+	seeds := self seeds.
+	digits := self numberOfRuns printString size.
+	number := 0.
+	self combinations do: [ :combination |
+			seeds withIndexDo: [ :seed :replicate |
+					self waitWhilePaused.
+					shouldStop ifTrue: [ ^ self ].
+					number := number + 1.
+					[
+						self
+							run: {
+									number.
+									replicate.
+									seed } , combination
+							in:
+							aFolder / ('run-' , (number printPaddedWith: $0 to: digits)) ]
+						ensure: [
+						simulation cormasModel parameterValues: parameterValues ].
+					numberOfCompletedRuns := numberOfCompletedRuns + 1.
+					whenProgressBlock value: self ] ]
+]
+
+{ #category : 'running' }
+CMSensitivityAnalysis >> runIn: aFolder [
+	"Run the analysis in this process and save it in a new folder of aFolder, named after when it started: the design as analysis.json, each run in a folder of its own, the results of the model as results.csv and of each class with recorded instances as results-<Class>.csv. Return the folder of the analysis"
+
+	| parameterValues metadata folder |
+	parameterValues := simulation cormasModel parameterValues.
+	metadata := self newRun newRunMetadata.
+	folder := aFolder / (metadata folderName , ' analysis').
+	folder exists ifTrue: [
+		CMRecordingError signal: folder fullName , ' already exists' ].
+	folder ensureCreateDirectory.
+	folder / 'analysis.json' writeStreamDo: [ :stream |
+		STONJSON put: (self jsonWith: metadata) onStreamPretty: stream ].
+	results := OrderedCollection new.
+	classResults := Dictionary new.
+	numberOfCompletedRuns := 0.
+	shouldStop := false.
+	isRunning := true.
+	[ self runAllIn: folder restoring: parameterValues ] ensure: [
+			self writeResultsIn: folder.
+			isRunning := false.
+			whenFinishedBlock value: self ].
+	^ folder
+]
+
+{ #category : 'running' }
+CMSensitivityAnalysis >> runInBackground [
+	"Run the analysis in another process, as run does"
+
+	[ self run ] fork
+]
+
+{ #category : 'private' }
+CMSensitivityAnalysis >> seeds [
+	"Return the seed of each replicate, chosen from my master seed"
+
+	| generator |
+	generator := CMSimulationContext defaultRandomNumberGeneratorClass
+		             new
+		             seed: masterSeed;
+		             yourself.
+	^ (1 to: replicates) collect: [ :each |
+		  generator nextInteger: SmallInteger maxVal ]
 ]
 
 { #category : 'initialization' }
-CMSensitivityAnalysis >> setParameter: aParameter value: aValue on: aCormasModel [
-	
-	"One parameter represents the random seed.
-	It is the only parameter for which the target class is the simulation context"
-	aParameter targetClass = CMSimulationContext ifTrue: [
-		^ aParameter
-			setValue: aValue
-			for: aCormasModel simulationContext ].
-	
-	"Class side parameters correspond to entity classes.
-	We set their values on those classes"
-	aParameter isClassSide ifTrue: [
-		^ aParameter
-			setValue: aValue
-			for: aParameter targetClass ].
+CMSensitivityAnalysis >> setSimulation: aSimulation [
 
-	"The only instance side parameters are model parameters"
-	^ aParameter
-		setValue: aValue
-		for: aCormasModel
-]
-
-{ #category : 'initialization' }
-CMSensitivityAnalysis >> setParameterValues: aParameterCombination on: aCormasModel [
-
-	aParameterCombination keysAndValuesDo: [ :parameter :value |
-		self
-			setParameter: parameter
-			value: value
-			on: aCormasModel ]
-]
-
-{ #category : 'accessing' }
-CMSensitivityAnalysis >> setup: aSensitivityAnalysisSetup [
-
-	setup := aSensitivityAnalysisSetup
+	simulation := aSimulation
 ]
 
 { #category : 'running' }
 CMSensitivityAnalysis >> stop [
+	"Do no more runs after the current one"
 
-	runner stop
+	shouldStop := true.
+	shouldPause := false.
+	pauseSemaphore signal
 ]
 
-{ #category : 'accessing' }
-CMSensitivityAnalysis >> totalNumberOfSimulations [
+{ #category : 'private' }
+CMSensitivityAnalysis >> waitWhilePaused [
 
-	setup ifNil: [ ^ 0 ].
-	^ setup numberOfSimulations
+	[ shouldPause ] whileTrue: [ pauseSemaphore wait ]
 ]
 
-{ #category : 'enumerating' }
+{ #category : 'settings' }
 CMSensitivityAnalysis >> whenFinishedDo: aBlock [
+	"Evaluate aBlock with me when my runs are done or stopped"
 
 	whenFinishedBlock := aBlock
 ]
 
-{ #category : 'enumerating' }
+{ #category : 'settings' }
 CMSensitivityAnalysis >> whenProgressDo: aBlock [
+	"Evaluate aBlock with me after each run"
 
 	whenProgressBlock := aBlock
+]
+
+{ #category : 'private' }
+CMSensitivityAnalysis >> writeCsvOf: rows on: aStream [
+
+	rows ifEmpty: [ ^ self ].
+	aStream
+		nextPutAll: (',' join: rows first keys);
+		lf.
+	rows do: [ :each |
+		CMDataTable writeCsvValues: each values on: aStream ]
+]
+
+{ #category : 'private' }
+CMSensitivityAnalysis >> writeResultsIn: aFolder [
+
+	aFolder / 'results.csv' writeStreamDo: [ :stream |
+		self writeCsvOf: results on: stream ].
+	classResults keysAndValuesDo: [ :aClass :rows |
+			aFolder / ('results-' , aClass name , '.csv') writeStreamDo: [
+				:stream | self writeCsvOf: rows on: stream ] ]
 ]

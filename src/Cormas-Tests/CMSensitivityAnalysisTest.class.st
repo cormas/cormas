@@ -2,363 +2,335 @@ Class {
 	#name : 'CMSensitivityAnalysisTest',
 	#superclass : 'TestCase',
 	#instVars : [
-		'setup',
 		'analysis',
-		'parameter1',
-		'parameter2',
-		'probe1',
-		'probe2'
+		'simulation',
+		'output'
 	],
 	#category : 'Cormas-Tests',
 	#package : 'Cormas-Tests'
 }
 
+{ #category : 'private' }
+CMSensitivityAnalysisTest >> csvOf: aFile [
+	"Return the lines of the CSV aFile, each as an Array of its fields"
+
+	^ aFile contents lines collect: [ :each | (each splitOn: $,) asArray ]
+]
+
 { #category : 'running' }
 CMSensitivityAnalysisTest >> setUp [
 
-	| modelClass |
 	super setUp.
-
-	modelClass := CMMockModel.
-
-	parameter1 := modelClass parameters detect: [ :each |
-		              each getterSelector = #initialNumberOfCows ].
-
-	parameter2 := modelClass parameters detect: [ :each |
-		              each getterSelector = #initialNumberOfGoats ].
-
-	probe1 := modelClass probeSelectors first.
-	probe2 := modelClass probeSelectors second.
-
-	setup := CMSensitivityAnalysisSetup new
-		         modelClass: CMMockModel;
-		         initSelector: #initFixed;
-		         controlSelector: #step;
-		         finalTimeStep: 1000;
-		         probes: {
-				         probe1.
-				         probe2 };
-		         parameterSamplings: {
-				         (parameter1 -> #( 1 2 3 )).
-				         (parameter2 -> #( 5 4 )) } asDictionary;
-		         yourself.
-
-	analysis := CMSensitivityAnalysis new
-		            setup: setup;
-		            yourself
-]
-
-{ #category : 'tests' }
-CMSensitivityAnalysisTest >> testDataIsUpdatedBeforeAnalysisFinishes [
-
-	| firstProgressSemaphore finishedSemaphore dataSizeAtFirstProgress |
-
-	firstProgressSemaphore := Semaphore new.
-	finishedSemaphore := Semaphore new.
-	dataSizeAtFirstProgress := nil.
-
-	analysis whenProgressDo: [ :runningAnalysis |
-		dataSizeAtFirstProgress ifNil: [
-			dataSizeAtFirstProgress := runningAnalysis data size.
-			firstProgressSemaphore signal ] ].
-
-	analysis whenFinishedDo: [ :finishedAnalysis |
-		finishedSemaphore signal ].
-
-	analysis run.
-
-	self deny: (firstProgressSemaphore waitTimeoutMilliseconds: 1000).
-
-	self assert: dataSizeAtFirstProgress equals: 1.
-	self assert: analysis isRunning.
-
-	self deny: (finishedSemaphore waitTimeoutMilliseconds: 3000)
-]
-
-{ #category : 'tests' }
-CMSensitivityAnalysisTest >> testFinishedCallbackIsCalledOnce [
-
-	| semaphore finishedCount |
-
-	semaphore := Semaphore new.
-	finishedCount := 0.
-
-	analysis whenFinishedDo: [ :finishedAnalysis |
-		finishedCount := finishedCount + 1.
-		semaphore signal ].
-
-	analysis run.
-
-	self deny: (semaphore waitTimeoutMilliseconds: 3000).
-	(Delay forMilliseconds: 100) wait.
-
-	self assert: finishedCount equals: 1
-]
-
-{ #category : 'tests' }
-CMSensitivityAnalysisTest >> testIncompleteSetupHasZeroSimulations [
-
-	setup := CMSensitivityAnalysisSetup new.
-	self assert: setup numberOfSimulations equals: 0
-]
-
-{ #category : 'tests' }
-CMSensitivityAnalysisTest >> testNewAnalysisHasNoDataAndZeroProgress [
-	
-	analysis := CMSensitivityAnalysis new.
-	self assert: analysis data isEmpty.
-	self assert: analysis numberOfCompletedSimulations equals: 0.
-	self assert: analysis progress equals: 0
-]
-
-{ #category : 'tests' }
-CMSensitivityAnalysisTest >> testNewSimulationForCombination [
-
-	| simulation |
-
-	simulation := analysis newSimulationFor: {
-		parameter1 -> 2.
-		parameter2 -> 4
-	} asDictionary.
-
-	self assert: simulation cormasModel initialNumberOfCows equals: 2.
-	self assert: simulation cormasModel initialNumberOfGoats equals: 4
-]
-
-{ #category : 'tests' }
-CMSensitivityAnalysisTest >> testNumberOfSimulations [ 
-
-	self assert: setup numberOfSimulations equals: 6
-]
-
-{ #category : 'tests' }
-CMSensitivityAnalysisTest >> testParameterCombinations [
-
-	| combinations |
-
-	combinations := analysis parameterCombinations.
-
-	self assert: combinations size equals: 6.
-
-	self assert: (combinations anySatisfy: [ :each |
-		(each at: parameter1) = 1 and: [
-		(each at: parameter2) = 5 ] ]).
-
-	self assert: (combinations anySatisfy: [ :each |
-		(each at: parameter1) = 2 and: [
-		(each at: parameter2) = 4 ] ])
-]
-
-{ #category : 'tests' }
-CMSensitivityAnalysisTest >> testPausePreventsFurtherProgressUntilResume [
-
-	| firstProgressSemaphore finishedSemaphore dataSizeAfterPause dataSizeLater |
-
-	firstProgressSemaphore := Semaphore new.
-	finishedSemaphore := Semaphore new.
-
-	analysis whenProgressDo: [ :runningAnalysis |
-		runningAnalysis data size = 1 ifTrue: [
-			firstProgressSemaphore signal ] ].
-
-	analysis whenFinishedDo: [ :finishedAnalysis |
-		finishedSemaphore signal ].
-
-	[
-		analysis run.
-
-		self deny: (firstProgressSemaphore waitTimeoutMilliseconds: 1000).
-
-		analysis pause.
-		(Delay forMilliseconds: 300) wait.
-
-		dataSizeAfterPause := analysis data size.
-
-		(Delay forMilliseconds: 300) wait.
-		dataSizeLater := analysis data size.
-
-		self assert: analysis isPaused.
-		self assert: analysis isRunning.
-		self assert: dataSizeLater equals: dataSizeAfterPause.
-
-		analysis resume.
-
-		self deny: (finishedSemaphore waitTimeoutMilliseconds: 3000).
-
-		self assert: analysis isPaused not.
-		self assert: analysis data size equals: setup numberOfSimulations
-	] ensure: [
-		analysis resume ]
-]
-
-{ #category : 'tests' }
-CMSensitivityAnalysisTest >> testProgress [
-
-	| simulation combination |
 	simulation := (CMSimulation for: CMMockModel new)
-		              activeInitSelector: #initFixed;
+		              activeInitSelector: #init;
 		              activeControlSelector: #step;
-		              initializeSimulation;
+		              stopAfterStep: 2;
 		              yourself.
-	combination := {
-		               (parameter1 -> 2).
-		               (parameter2 -> 10) } asDictionary.
-	analysis recordDataFrom: simulation combination: combination.
-	self assert: analysis progress equals: 1 / 6
+	analysis := (CMSensitivityAnalysis on: simulation)
+		            masterSeed: 42;
+		            yourself.
+	output := FileSystem memory / 'output'
+]
+
+{ #category : 'running' }
+CMSensitivityAnalysisTest >> tearDown [
+
+	CMMockCow resetParameters.
+	super tearDown
 ]
 
 { #category : 'tests' }
-CMSensitivityAnalysisTest >> testProgressCallbackIsCalledForEachSimulation [
+CMSensitivityAnalysisTest >> testAFullFactorialRunsEachCombinationOfValuesForEachReplicate [
 
-	| semaphore progressCount |
-
-	semaphore := Semaphore new.
-	progressCount := 0.
-
-	analysis whenProgressDo: [ :runningAnalysis |
-		progressCount := progressCount + 1 ].
-
-	analysis whenFinishedDo: [ :finishedAnalysis |
-		semaphore signal ].
-
-	analysis run.
-
-	self deny: (semaphore waitTimeoutMilliseconds: 3000).
-
-	self assert: progressCount equals: setup numberOfSimulations
-]
-
-{ #category : 'tests' }
-CMSensitivityAnalysisTest >> testRecordDataFromCombination [
-
-	| simulation combination row |
-	simulation := (CMSimulation for: CMMockModel new)
-		              activeInitSelector: #initFixed;
-		              activeControlSelector: #step;
-		              initializeSimulation;
-		              yourself.
-	simulation runStep.
-
-	combination := {
-		               (parameter1 -> 2).
-		               (parameter2 -> 5) } asDictionary.
-
-	row := analysis recordDataFrom: simulation combination: combination.
-
-	self assert: analysis data size equals: 1.
-	self assert: analysis numberOfCompletedSimulations equals: 1.
-
-	self assert: (row at: parameter1 name) equals: 2.
-	self assert: (row at: parameter2 name) equals: 5.
+	| results |
+	analysis
+		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
+		parameter: #initialEnergy of: CMMockCow values: #( 0.5 1 );
+		replicates: 2.
+	results := self csvOf: (analysis runIn: output) / 'results.csv'.
 	self
-		assert: (row at: probe1)
-		equals: (simulation modelData column: probe1) last.
+		assert: (results first first: 5)
+		equals: #( 'run' 'replicate' 'seed' 'initialNumberOfCows'
+			   'CMMockCow.initialEnergy' ).
 	self
-		assert: (row at: probe2)
-		equals: (simulation modelData column: probe2) last
+		assert: (results allButFirst collect: [ :each |
+				 (each at: 4) , ' ' , (each at: 5) ]) asArray
+		equals: #( '1 0.5' '1 0.5' '1 1' '1 1' '2 0.5' '2 0.5' '2 1' '2 1' )
 ]
 
 { #category : 'tests' }
-CMSensitivityAnalysisTest >> testResumeAfterPauseCompletesAnalysis [
+CMSensitivityAnalysisTest >> testAParameterTheModelDoesNotHaveIsRefused [
 
-	| firstProgressSemaphore finishedSemaphore |
-
-	firstProgressSemaphore := Semaphore new.
-	finishedSemaphore := Semaphore new.
-
-	analysis whenProgressDo: [ :runningAnalysis |
-		runningAnalysis data size = 1 ifTrue: [
-			firstProgressSemaphore signal ] ].
-
-	analysis whenFinishedDo: [ :finishedAnalysis |
-		finishedSemaphore signal ].
-
-	[
-		analysis run.
-
-		self deny: (firstProgressSemaphore waitTimeoutMilliseconds: 1000).
-
-		analysis pause.
-		(Delay forMilliseconds: 100) wait.
-		analysis resume.
-
-		self deny: (finishedSemaphore waitTimeoutMilliseconds: 3000).
-
-		self assert: analysis data size equals: setup numberOfSimulations.
-		self assert: analysis progress equals: 1
-	] ensure: [
-		analysis resume ]
+	self
+		should: [ analysis parameter: #speed of: CMMockCow values: #( 1 ) ]
+		raise: Error
+		withExceptionDo: [ :error |
+				self
+					assert: error messageText
+					equals: 'CMMockCow has no parameter speed' ]
 ]
 
 { #category : 'tests' }
-CMSensitivityAnalysisTest >> testRunCompletesAllSimulations [
+CMSensitivityAnalysisTest >> testAReplicateHasTheSameSeedInEveryCombination [
 
-	| semaphore finished |
-
-	semaphore := Semaphore new.
-	finished := false.
-
-	analysis whenFinishedDo: [ :finishedAnalysis |
-		finished := true.
-		semaphore signal ].
-
-	analysis run.
-
-	self deny: (semaphore waitTimeoutMilliseconds: 3000).
-
-	self assert: finished.
-	self assert: analysis data size equals: setup numberOfSimulations.
-	self assert: analysis numberOfCompletedSimulations equals: setup numberOfSimulations.
-	self assert: analysis progress equals: 1
+	| results seedsPerReplicate |
+	analysis
+		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
+		replicates: 3.
+	results := (self csvOf: (analysis runIn: output) / 'results.csv')
+		           allButFirst.
+	seedsPerReplicate := (results groupedBy: [ :each | each at: 2 ])
+		                     collect: [ :rows |
+		                     (rows collect: [ :each | each at: 3 ]) asSet ].
+	self assert: seedsPerReplicate size equals: 3.
+	self assert:
+		(seedsPerReplicate allSatisfy: [ :each | each size = 1 ]).
+	self
+		assert: (results collect: [ :each | each at: 3 ]) asSet size
+		equals: 3
 ]
 
 { #category : 'tests' }
-CMSensitivityAnalysisTest >> testRunIsAsynchronous [
+CMSensitivityAnalysisTest >> testAnAnalysisInAnotherProcessCanBePausedAndResumed [
 
-	| semaphore finished |
-	semaphore := Semaphore new.
-	finished := false.
-
-	analysis whenFinishedDo: [ :finishedAnalysis |
-		finished := true.
-		semaphore signal ].
-
-	analysis run.
-
-	self assert: analysis isRunning.
-	self assert: analysis data isEmpty.
-
-	self deny: (semaphore waitTimeoutMilliseconds: 1000).
-
-	self assert: finished.
-	self assert: analysis isRunning not
+	| finished |
+	finished := Semaphore new.
+	analysis
+		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
+		whenProgressDo: [ :each |
+			each numberOfCompletedRuns = 1 ifTrue: [ each pause ] ];
+		whenFinishedDo: [ :each | finished signal ].
+	[ analysis runIn: output ] fork.
+	self
+		assert: (finished waitTimeoutMilliseconds: 500)
+		description: 'A paused analysis must not finish'.
+	self assert: analysis numberOfCompletedRuns equals: 1.
+	analysis resume.
+	self deny: (finished waitTimeoutMilliseconds: 5000).
+	self assert: analysis numberOfCompletedRuns equals: 2
 ]
 
 { #category : 'tests' }
-CMSensitivityAnalysisTest >> testStopPreventsRemainingSimulations [
+CMSensitivityAnalysisTest >> testEachRunIsSavedInAFolderOfTheAnalysis [
 
-	| firstProgressSemaphore finishedSemaphore dataSizeAfterStop |
+	| folder results run |
+	analysis
+		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
+		replicates: 2.
+	folder := analysis runIn: output.
+	self
+		assert:
+		(folder children collect: [ :each | each basename ]) sorted asArray
+		equals:
+			#( 'analysis.json' 'results-CMMockCell.csv'
+			   'results-CMMockCow.csv' 'results-CMMockGoat.csv'
+			   'results.csv' 'run-1' 'run-2' 'run-3' 'run-4' ).
+	results := self csvOf: folder / 'results.csv'.
+	run := STONJSON fromString: (folder / 'run-3' / 'run.json') contents.
+	self
+		assert:
+		(((run at: 'parameters') at: 'CMMockModel') at:
+			 'initialNumberOfCows')
+		equals: 2.
+	self
+		assert: (run at: 'seed') printString
+		equals: ((results at: 4) at: 3)
+]
 
-	firstProgressSemaphore := Semaphore new.
-	finishedSemaphore := Semaphore new.
+{ #category : 'tests' }
+CMSensitivityAnalysisTest >> testEntityResultsHaveTheFinalValuesOfEachInstance [
 
-	analysis whenProgressDo: [ :runningAnalysis |
-		runningAnalysis data size = 1 ifTrue: [
-			firstProgressSemaphore signal ] ].
+	| results |
+	analysis
+		parameter: #initialNumberOfCows
+		of: CMMockModel
+		values: #( 1 2 ).
+	results := self csvOf:
+		           (analysis runIn: output) / 'results-CMMockCow.csv'.
+	self
+		assert: results first
+		equals: #( 'run' 'replicate' 'seed' 'initialNumberOfCows'
+			   'id' 'label' 'step' 'energy' ).
+	self
+		assert: (results allButFirst collect: [ :each |
+				 (each first: 1) , (each copyFrom: 4 to: 5) , { (each at: 7) } ])
+				asArray
+		equals:
+		#( #( '1' '1' '1' '2' ) #( '2' '2' '1' '2' ) #( '2' '2' '2' '2' ) )
+]
 
-	analysis whenFinishedDo: [ :finishedAnalysis |
-		finishedSemaphore signal ].
+{ #category : 'tests' }
+CMSensitivityAnalysisTest >> testOneFactorAtATimeKeepsTheOtherParametersAtTheirValuesInTheSimulation [
 
-	analysis run.
+	| results |
+	simulation cormasModel initialNumberOfCows: 5.
+	analysis
+		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
+		parameter: #initialNumberOfGoats of: CMMockModel values: #( 4 );
+		beOneFactorAtATime.
+	results := self csvOf: (analysis runIn: output) / 'results.csv'.
+	self
+		assert: (results allButFirst collect: [ :each |
+				 (each at: 4) , ' ' , (each at: 5) ]) asArray
+		equals: #( '1 3' '2 3' '5 4' )
+]
 
-	self deny: (firstProgressSemaphore waitTimeoutMilliseconds: 1000).
+{ #category : 'tests' }
+CMSensitivityAnalysisTest >> testResultsHaveTheFinalValueOfEachModelProbe [
 
-	analysis stop.
-	dataSizeAfterStop := analysis data size.
+	| folder results data |
+	analysis
+		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
+		recordEvery: 1.
+	folder := analysis runIn: output.
+	results := self csvOf: folder / 'results.csv'.
+	data := self csvOf: folder / 'run-2' / 'data.csv'.
+	self
+		assert: results first
+		equals: #( 'run' 'replicate' 'seed' 'initialNumberOfCows'
+			   'step' 'numberOfAliveCells' 'numberOfDeadCells' ).
+	self assert: (results last allButFirst: 4) equals: data last
+]
 
-	self deny: (finishedSemaphore waitTimeoutMilliseconds: 3000).
+{ #category : 'tests' }
+CMSensitivityAnalysisTest >> testRunFoldersAreNumberedSoThatTheyAreSortedInOrder [
 
-	self assert: analysis isRunning not.
-	self assert: analysis data size <= (dataSizeAfterStop + 1).
-	self assert: analysis data size < setup numberOfSimulations
+	| folder |
+	analysis replicates: 10.
+	folder := analysis runIn: output.
+	self assert: (folder / 'run-01') exists.
+	self assert: (folder / 'run-10') exists
+]
+
+{ #category : 'tests' }
+CMSensitivityAnalysisTest >> testRunsRecordEveryStepsWhenAsked [
+
+	analysis recordEvery: 1.
+	self
+		assert:
+		((analysis runIn: output) / 'run-1' / 'data.csv') contents lines
+			size
+		equals: 4
+]
+
+{ #category : 'tests' }
+CMSensitivityAnalysisTest >> testRunsRecordTheirLastStepOnly [
+
+	| run |
+	run := (analysis runIn: output) / 'run-1'.
+	self assert: (run / 'data.csv') contents lines size equals: 2.
+	self
+		assert:
+			(((STONJSON fromString: (run / 'run.json') contents) at:
+				  'recording') at: 'steps')
+		equals: (Dictionary with: 'type' -> 'last')
+]
+
+{ #category : 'tests' }
+CMSensitivityAnalysisTest >> testRunsTakeTheSettingsOfTheSimulation [
+
+	| folder results |
+	simulation
+		doNotRecord: CMMockGoat;
+		doNotRecord: #numberOfDeadCells of: CMMockModel;
+		stopAfterStep: 1.
+	folder := analysis runIn: output.
+	results := self csvOf: folder / 'results.csv'.
+	self
+		assert: results first
+		equals: #( 'run' 'replicate' 'seed' 'step' 'numberOfAliveCells' ).
+	self assert: (results second at: 4) equals: '1'.
+	self deny: (folder / 'results-CMMockGoat.csv') exists
+]
+
+{ #category : 'tests' }
+CMSensitivityAnalysisTest >> testStoppingKeepsTheResultsOfTheRunsDone [
+
+	| folder finished |
+	finished := 0.
+	analysis
+		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 3 );
+		whenProgressDo: [ :each | each stop ];
+		whenFinishedDo: [ :each | finished := finished + 1 ].
+	folder := analysis runIn: output.
+	self assert: (folder / 'results.csv') contents lines size equals: 2.
+	self deny: (folder / 'run-2') exists.
+	self assert: finished equals: 1
+]
+
+{ #category : 'tests' }
+CMSensitivityAnalysisTest >> testTheAnalysisIsDescribedInAnalysisJson [
+
+	| json |
+	analysis
+		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
+		replicates: 3;
+		beOneFactorAtATime.
+	json := STONJSON fromString:
+		        ((analysis runIn: output) / 'analysis.json') contents.
+	self assert: (json at: 'model') equals: 'CMMockModel'.
+	self assert: (json at: 'init') equals: 'init'.
+	self
+		assert: (json at: 'design')
+		equals: (Dictionary with: 'type' -> 'oneFactorAtATime').
+	self
+		assert: (((json at: 'factors') at: 'CMMockModel') at: 'initialNumberOfCows')
+		equals: #( 1 2 ).
+	self assert: (json at: 'replicates') equals: 3.
+	self assert: (json at: 'masterSeed') equals: 42.
+	self
+		assert: ((json at: 'recording') at: 'steps')
+		equals: (Dictionary with: 'type' -> 'last').
+	self deny: (json includesKey: 'seed')
+]
+
+{ #category : 'tests' }
+CMSensitivityAnalysisTest >> testTheNumberOfRunsDependsOnTheDesign [
+
+	analysis
+		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
+		parameter: #initialNumberOfGoats of: CMMockModel values: #( 1 2 3 );
+		replicates: 2.
+	self assert: analysis numberOfRuns equals: 12.
+	analysis beOneFactorAtATime.
+	self assert: analysis numberOfRuns equals: 10.
+	analysis beFullFactorial.
+	self assert: analysis numberOfRuns equals: 12
+]
+
+{ #category : 'tests' }
+CMSensitivityAnalysisTest >> testTheParametersOfTheSimulationAreKeptAfterTheAnalysis [
+
+	| before |
+	CMMockCow initialEnergy: 0.7.
+	simulation cormasModel initialNumberOfCows: 5.
+	before := simulation cormasModel parameterValues.
+	analysis
+		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 );
+		parameter: #initialEnergy of: CMMockCow values: #( 1 );
+		runIn: output.
+	self assert: simulation cormasModel parameterValues equals: before.
+	self assert: CMMockCow initialEnergy equals: 0.7
+]
+
+{ #category : 'tests' }
+CMSensitivityAnalysisTest >> testTheSameMasterSeedGivesTheSameResults [
+
+	| first second |
+	analysis
+		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
+		replicates: 2.
+	first := analysis runIn: output / 'first'.
+	second := (CMSensitivityAnalysis on: simulation)
+		          parameter: #initialNumberOfCows
+		          of: CMMockModel
+		          values: #( 1 2 );
+		          replicates: 2;
+		          masterSeed: 42;
+		          runIn: output / 'second'.
+	#( 'results.csv' 'results-CMMockCow.csv' 'results-CMMockGoat.csv' )
+		do: [ :each |
+			self
+				assert: (second / each) contents
+				equals: (first / each) contents ]
 ]

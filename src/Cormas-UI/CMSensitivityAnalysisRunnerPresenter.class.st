@@ -17,33 +17,20 @@ Class {
 
 { #category : 'examples' }
 CMSensitivityAnalysisRunnerPresenter class >> example [
+
 	<example>
-	| setup randomSeedParameter numberOfCows |
-	
-	randomSeedParameter := CMIntegerParameter new
-		targetClass: CMSimulationContext;
-		getterSelector: #randomSeed;
-		setterSelector: #randomSeed:;
-		defaultValue: (Random new nextInteger: SmallInteger maxVal);
-		isClassSide: false;
-		yourself.
-		
-	numberOfCows := CMMockModel parameters detect: [ :each |
-		each getterSelector = #initialNumberOfCows ].
-	
-	setup := CMSensitivityAnalysisSetup new
-		modelClass: CMMockModel;
-		initSelector: #initFixed;
-		controlSelector: #step;
-		finalTimeStep: 10000;
-		probes: CMMockModel probeSelectors;
-		parameterSamplings: { 
-			randomSeedParameter -> #(42 24) .
-			numberOfCows -> #(1 2 3 4)
-		} asDictionary;
-		yourself.
-	
-	(self on: setup) open
+	| simulation |
+	simulation := (CMSimulation for: FFFirefightersModel new)
+		              activeInitSelector: #initSmall;
+		              activeControlSelector: #basicStep;
+		              stopAfterStep: 20;
+		              yourself.
+	(self on: ((CMSensitivityAnalysis on: simulation)
+			  parameter: #numberOfFirefighters
+			  of: FFFirefightersModel
+			  values: #( 1 5 10 );
+			  replicates: 2;
+			  yourself)) open
 ]
 
 { #category : 'states' }
@@ -69,7 +56,7 @@ CMSensitivityAnalysisRunnerPresenter >> beInInitialMode [
 	
 	runButton action: [
 		self beInRunningMode.
-		analysis run ]
+		analysis runInBackground ]
 ]
 
 { #category : 'states' }
@@ -170,7 +157,7 @@ CMSensitivityAnalysisRunnerPresenter >> initializePresenters [
 		yourself.
 		
 	table := self instantiate: CMDataPresenter.
-	table columnNames: analysis dataColumnNames.
+	table columnNames: #(  ).
 	table modelClass: analysis modelClass.
 		
 	notebook := self newNotebook.
@@ -189,12 +176,10 @@ CMSensitivityAnalysisRunnerPresenter >> initializeWindow: aWindowPresenter [
 		initialExtent: 800@600
 ]
 
-{ #category : 'accessing - model' }
-CMSensitivityAnalysisRunnerPresenter >> setModelBeforeInitialization: aSetup [
+{ #category : 'initialization' }
+CMSensitivityAnalysisRunnerPresenter >> setModelBeforeInitialization: anAnalysis [
 
-	analysis := CMSensitivityAnalysis new
-		setup: aSetup;
-		yourself
+	analysis := anAnalysis
 ]
 
 { #category : 'as yet unclassified' }
@@ -203,14 +188,14 @@ CMSensitivityAnalysisRunnerPresenter >> showCharts [
 	notebook addPageTitle: 'Scatterplot' provider: [ 
 		self
 			instantiate: CMSensitivityAnalysisChartPresenter 
-			on: analysis data ]
+			on: analysis results ]
 ]
 
 { #category : 'updating' }
 CMSensitivityAnalysisRunnerPresenter >> updateDataTable [
 
 	| data |
-	data := analysis data.
+	data := analysis results.
 	data ifEmpty: [ ^ self ].
 
 	table columnNames: data first keys.
@@ -224,8 +209,8 @@ CMSensitivityAnalysisRunnerPresenter >> updateProgress [
 	
 	progressLabel label: (String streamContents: [ :stream | 
 		stream
-			<< analysis numberOfCompletedSimulations asString
+			<< analysis numberOfCompletedRuns asString
 			<< ' / '
-			<< analysis totalNumberOfSimulations asString
+			<< analysis numberOfRuns asString
 			<< ' completed' ]).
 ]

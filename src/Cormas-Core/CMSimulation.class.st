@@ -148,6 +148,13 @@ CMSimulation >> currentTimeStep [
 ]
 
 { #category : 'recording' }
+CMSimulation >> dataByIdOfClass: aClass [
+	"Return the data recorded on each instance of aClass, not of its subclasses, by id"
+
+	^ entityData at: aClass ifAbsent: [ Dictionary new ]
+]
+
+{ #category : 'recording' }
 CMSimulation >> dataOf: aRecordedObject [
 	"Return the data recorded on aRecordedObject, the model or one of its entities: a CMDataTable with a row for each recorded step while it was alive"
 
@@ -345,6 +352,28 @@ CMSimulation >> newRunMetadata [
 		  yourself
 ]
 
+{ #category : 'instance creation' }
+CMSimulation >> newSimulationWithSameSettings [
+	"Return a new simulation of a new instance of my model's class with my settings: init, control, stop condition, parameter values, seeds when they are fixed, and what is recorded"
+
+	| simulation |
+	simulation := self class for: cormasModel class new.
+	simulation cormasModel parameterValues: cormasModel parameterValues.
+	simulation
+		activeInitSelector: activeInitSelector;
+		activeControlSelector: activeControlSelector;
+		stopWhen: simulationRunner stopCondition;
+		setExcludedClasses: excludedClasses copy
+		probes: excludedProbes copy
+		entities: excludedEntities copy
+		recordedSteps: recordedSteps.
+	hasFixedRandomSeed ifTrue: [
+		simulation randomSeed: context randomSeed ].
+	shouldReleaseRandomSeedAfterInitialization ifTrue: [
+		simulation seedAfterInit: seedAfterInit ].
+	^ simulation
+]
+
 { #category : 'simulation runner - running' }
 CMSimulation >> pause [
 
@@ -435,6 +464,13 @@ CMSimulation >> recordLastStepOnly [
 ]
 
 { #category : 'recording' }
+CMSimulation >> recordedClasses [
+	"Return the entity classes with recorded instances, in the order of their names"
+
+	^ entityData keys sorted: [ :a :b | a name < b name ]
+]
+
+{ #category : 'recording' }
 CMSimulation >> recordedProbesOf: aClass [
 
 	(aClass withAllSuperclasses includesAny: excludedClasses) ifTrue: [
@@ -442,6 +478,12 @@ CMSimulation >> recordedProbesOf: aClass [
 	^ aClass probeSelectors reject: [ :selector |
 			  excludedProbes anySatisfy: [ :each |
 				  each value = selector and: [ aClass includesBehavior: each key ] ] ]
+]
+
+{ #category : 'private' }
+CMSimulation >> recordedSteps: aStepsRecording [
+
+	recordedSteps := aStepsRecording
 ]
 
 { #category : 'private' }
@@ -525,22 +567,27 @@ CMSimulation >> saveData [
 
 { #category : 'saving' }
 CMSimulation >> saveDataIn: aFolder [
-	"Write the run in a new folder of aFolder, named after when it started and its init: its settings and versions as run.json, the data of the model as data.csv and the data of each class with recorded instances as data-<Class>.csv. Return the folder of the run"
+	"Write the run in a new folder of aFolder, named after when it started and its init, as saveDataTo: does. Return the folder of the run"
 
-	| run |
-	run := aFolder / runMetadata folderName.
-	run exists ifTrue: [
-		CMRecordingError signal: run fullName , ' already exists' ].
-	run ensureCreateDirectory.
+	^ self saveDataTo: aFolder / runMetadata folderName
+]
+
+{ #category : 'saving' }
+CMSimulation >> saveDataTo: aRunFolder [
+	"Write the run in aRunFolder, which must not exist yet: its settings and versions as run.json, the data of the model as data.csv and the data of each class with recorded instances as data-<Class>.csv. Return aRunFolder"
+
+	aRunFolder exists ifTrue: [
+		CMRecordingError signal: aRunFolder fullName , ' already exists' ].
+	aRunFolder ensureCreateDirectory.
 	runMetadata lastStep: self currentTimeStep.
-	run / 'run.json' writeStreamDo: [ :stream |
+	aRunFolder / 'run.json' writeStreamDo: [ :stream |
 		runMetadata writeJsonOn: stream ].
-	run / 'data.csv' writeStreamDo: [ :stream |
+	aRunFolder / 'data.csv' writeStreamDo: [ :stream |
 		modelData writeCsvOn: stream ].
 	entityData keysDo: [ :each |
-			run / ('data-' , each name , '.csv') writeStreamDo: [ :stream |
-				self writeCsvOfClass: each on: stream ] ].
-	^ run
+			aRunFolder / ('data-' , each name , '.csv') writeStreamDo: [
+				:stream | self writeCsvOfClass: each on: stream ] ].
+	^ aRunFolder
 ]
 
 { #category : 'settings' }
@@ -549,6 +596,15 @@ CMSimulation >> seedAfterInit: aNumber [
 
 	shouldReleaseRandomSeedAfterInitialization := true.
 	seedAfterInit := aNumber
+]
+
+{ #category : 'private' }
+CMSimulation >> setExcludedClasses: aSetOfClasses probes: aSetOfProbes entities: aSetOfEntities recordedSteps: aStepsRecording [
+
+	excludedClasses := aSetOfClasses.
+	excludedProbes := aSetOfProbes.
+	excludedEntities := aSetOfEntities.
+	recordedSteps := aStepsRecording
 ]
 
 { #category : 'initialization' }
