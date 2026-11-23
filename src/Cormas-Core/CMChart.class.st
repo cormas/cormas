@@ -1,5 +1,5 @@
 "
-I am a chart that a modeler defines in a `<chart>` method, to show probes recorded during a simulation. I am the abstract superclass of the kinds of charts: `CMLineChart`, `CMAreaChart`, `CMBoxplot` and `CMHistogram`.
+I am a chart that a modeler defines in a `<chart>` method, to show probes recorded during a simulation. I am the abstract superclass of the kinds of charts: `CMLineChart`, `CMAreaChart`, `CMBoxplot`, `CMHistogram` and `CMScatterplot`.
 
 ## Responsibility:
 

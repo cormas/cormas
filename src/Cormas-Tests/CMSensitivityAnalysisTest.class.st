@@ -58,6 +58,20 @@ CMSensitivityAnalysisTest >> testAFullFactorialRunsEachCombinationOfValuesForEac
 		equals: #( '1 0.5' '1 0.5' '1 1' '1 1' '2 0.5' '2 0.5' '2 1' '2 1' )
 ]
 
+{ #category : 'tests - views' }
+CMSensitivityAnalysisTest >> testAFullFactorialShowsAParameterWithAllTheRuns [
+
+	analysis
+		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
+		parameter: #initialNumberOfGoats of: CMMockModel values: #( 4 ).
+	analysis runIn: output.
+	self
+		assert:
+			((analysis resultsVarying: 'initialNumberOfGoats') collect: [ :row |
+				 row at: 'run' ]) asArray
+		equals: #( 1 2 )
+]
+
 { #category : 'tests' }
 CMSensitivityAnalysisTest >> testAParameterTheModelDoesNotHaveIsRefused [
 
@@ -175,6 +189,47 @@ CMSensitivityAnalysisTest >> testOneFactorAtATimeKeepsTheOtherParametersAtTheirV
 		equals: #( '1 3' '2 3' '5 4' )
 ]
 
+{ #category : 'tests - views' }
+CMSensitivityAnalysisTest >> testOneFactorAtATimeShowsAParameterWithTheRunsVaryingIt [
+
+	analysis
+		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
+		parameter: #initialNumberOfGoats of: CMMockModel values: #( 1 2 4 );
+		beOneFactorAtATime.
+	analysis runIn: output.
+	self
+		assert:
+			((analysis resultsVarying: 'initialNumberOfGoats') collect: [ :row |
+				 row at: 'run' ]) asArray
+		equals: #( 3 4 5 )
+]
+
+{ #category : 'tests - views' }
+CMSensitivityAnalysisTest >> testOutputsAreTheRecordedProbesOfTheModel [
+
+	simulation doNotRecord: #numberOfDeadCells of: CMMockModel.
+	self
+		assert: (CMSensitivityAnalysis on: simulation) outputs asArray
+		equals: #( 'numberOfAliveCells' )
+]
+
+{ #category : 'tests - views' }
+CMSensitivityAnalysisTest >> testResultsGroupedByAParameterAreInTheOrderOfItsValues [
+
+	| groups |
+	analysis
+		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
+		parameter: #initialNumberOfGoats of: CMMockModel values: #( 5 4 ).
+	analysis runIn: output.
+	groups := analysis resultsGroupedBy: 'initialNumberOfGoats'.
+	self assert: groups keys asArray equals: #( 5 4 ).
+	self
+		assert:
+			((groups at: 4) collect: [ :row | row at: 'initialNumberOfCows' ])
+				asArray
+		equals: #( 1 2 )
+]
+
 { #category : 'tests' }
 CMSensitivityAnalysisTest >> testResultsHaveTheFinalValueOfEachModelProbe [
 
@@ -190,6 +245,21 @@ CMSensitivityAnalysisTest >> testResultsHaveTheFinalValueOfEachModelProbe [
 		equals: #( 'run' 'replicate' 'seed' 'initialNumberOfCows'
 			   'step' 'numberOfAliveCells' 'numberOfDeadCells' ).
 	self assert: (results last allButFirst: 4) equals: data last
+]
+
+{ #category : 'tests - views' }
+CMSensitivityAnalysisTest >> testResultsOfOneFactorAtATimeCannotBeGrouped [
+
+	analysis
+		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
+		parameter: #initialNumberOfGoats of: CMMockModel values: #( 4 );
+		beOneFactorAtATime.
+	analysis runIn: output.
+	self
+		should: [ analysis resultsGroupedBy: 'initialNumberOfGoats' ]
+		raise: Error
+		withExceptionDo: [ :error |
+			self assert: (error messageText includesSubstring: 'factorial') ]
 ]
 
 { #category : 'tests' }
@@ -333,4 +403,40 @@ CMSensitivityAnalysisTest >> testTheSameMasterSeedGivesTheSameResults [
 			self
 				assert: (second / each) contents
 				equals: (first / each) contents ]
+]
+
+{ #category : 'tests - views' }
+CMSensitivityAnalysisTest >> testTheSpreadOfAnOutputHasTheValueOfEachReplicateForEachCombination [
+
+	| spreads |
+	analysis
+		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
+		replicates: 3.
+	analysis runIn: output.
+	spreads := analysis spreadsOf: 'numberOfAliveCells'.
+	self
+		assert: (spreads collect: [ :each | each key ]) asArray
+		equals: #( #( 1 ) #( 2 ) ).
+	self
+		assert: spreads last value asArray
+		equals: ((analysis results last: 3) collect: [ :row |
+				 row at: 'numberOfAliveCells' ]) asArray
+]
+
+{ #category : 'tests - views' }
+CMSensitivityAnalysisTest >> testTheSpreadOfOneFactorAtATimeKeepsCombinationsWithTheSameValues [
+
+	| spreads |
+	simulation cormasModel
+		initialNumberOfCows: 1;
+		initialNumberOfGoats: 4.
+	analysis
+		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
+		parameter: #initialNumberOfGoats of: CMMockModel values: #( 4 );
+		beOneFactorAtATime.
+	analysis runIn: output.
+	spreads := analysis spreadsOf: 'numberOfAliveCells'.
+	self
+		assert: (spreads collect: [ :each | each key ]) asArray
+		equals: #( #( 1 4 ) #( 2 4 ) #( 1 4 ) )
 ]

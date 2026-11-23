@@ -24,11 +24,19 @@ CMChart >> canvasOf: someSeries hiding: aSetOfNames [
 
 { #category : '*Cormas-UI-Roassal3' }
 CMChart >> canvasOf: someSeries hiding: aSetOfNames leavingRoomToGrow: aBoolean [
-	"Return a canvas with the chart of someSeries and a legend naming each of them. The series named in aSetOfNames are hidden. Clicking an entry of the legend hides its series, or shows it again, and updates aSetOfNames. The x axis ends at the last value, unless aBoolean leaves room up to the next tick, so that a chart growing step by step is not drawn with a new range at each step"
+	"Return a canvas with the chart of someSeries and a legend naming each of them. The series named in aSetOfNames are hidden. Clicking an entry of the legend hides its series, or shows it again, and updates aSetOfNames. The x axis ends at the last value, unless aBoolean leaves room up to the next tick, so that a chart growing step by step is not drawn with a new range at each step. Values on x that are not all numbers are shown as categories"
 
-	| plots roassalChart canvas shapes legend |
-	plots := self plotsOf: someSeries.
-	roassalChart := self roassalChartOf: plots leavingRoomToGrow: aBoolean.
+	| categories plots roassalChart canvas shapes legend |
+	categories := self xCategoriesOf: someSeries.
+	plots := self plotsOf: (categories
+			          ifEmpty: [ someSeries ]
+			          ifNotEmpty: [
+			          someSeries collect: [ :each |
+				          self place: each in: categories ] ]).
+	roassalChart := self
+		                roassalChartOf: plots
+		                xCategories: categories
+		                leavingRoomToGrow: aBoolean.
 	canvas := roassalChart canvas.
 	plots ifNotEmpty: [ roassalChart build ].
 	shapes := Dictionary new.
@@ -70,6 +78,15 @@ CMChart >> canvasOf: someSeries hiding: aSetOfNames leavingRoomToGrow: aBoolean 
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
+CMChart >> categoriesOf: someValues [
+
+	(someValues allSatisfy: [ :each | each isNumber ]) ifTrue: [ ^ #(  ) ].
+	^ someValues asOrderedCollection
+		  removeDuplicates;
+		  yourself
+]
+
+{ #category : '*Cormas-UI-Roassal3' }
 CMChart >> color: someShapes as: someColors hiding: aBoolean [
 	"Give the shapes that draw a series and its legend box the colors they were drawn with, or make them transparent when the series is hidden. The box keeps its border, so that it shows the color of a hidden series"
 
@@ -80,6 +97,19 @@ CMChart >> color: someShapes as: someColors hiding: aBoolean [
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
+CMChart >> place: aSeriesData in: someCategories [
+	"Return a copy of aSeriesData with each step at the position of its category on the x axis"
+
+	^ CMSeriesData
+		  named: aSeriesData name
+		  color: aSeriesData color
+		  steps:
+		  (aSeriesData steps collect: [ :each |
+			   someCategories indexOf: each ])
+		  values: aSeriesData values
+]
+
+{ #category : '*Cormas-UI-Roassal3' }
 CMChart >> plotsOf: someSeries [
 	"Return, for each of someSeries that can be drawn, an association from it to the Roassal plot that draws it"
 
@@ -87,10 +117,10 @@ CMChart >> plotsOf: someSeries [
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
-CMChart >> roassalChartOf: somePlots leavingRoomToGrow: aBoolean [
-	"Return a Roassal chart that draws the plots of the associations somePlots, with x and y axis lines but no frame, and ticks labelled without needless decimals. Axes of values that are not negative start at 0. The chart cannot be zoomed nor dragged, but fits the space it is shown in. The x axis ends at its last value, unless aBoolean leaves room up to the next tick"
+CMChart >> roassalChartOf: somePlots xCategories: someCategories leavingRoomToGrow: aBoolean [
+	"Return a Roassal chart that draws the plots of the associations somePlots, with x and y axis lines but no frame, and ticks labelled without needless decimals. Axes of values that are not negative start at 0. The chart cannot be zoomed nor dragged, but fits the space it is shown in. The x axis has a tick for each of someCategories, or else ends at its last value, unless aBoolean leaves room up to the next tick"
 
-	| roassalChart xValues yValues xTicks yTicks |
+	| roassalChart yValues yTicks |
 	roassalChart := RSCompositeChart new.
 	roassalChart container: (RSCanvas new
 			 addInteraction: (RSZoomToFitCanvasInteraction new
@@ -107,30 +137,24 @@ CMChart >> roassalChartOf: somePlots leavingRoomToGrow: aBoolean [
 	yTitle ifNotNil: [ roassalChart ylabel: yTitle ].
 	somePlots do: [ :each | roassalChart add: each value ].
 	somePlots ifEmpty: [ ^ roassalChart ].
-	xValues := somePlots flatCollect: [ :each |
-		           each value definedValuesX ].
+	someCategories
+		ifEmpty: [
+				self
+					setXAxisOf: roassalChart
+					from:
+					(somePlots flatCollect: [ :each | each value definedValuesX ])
+					leavingRoomToGrow: aBoolean ]
+		ifNotEmpty: [ self setXAxisOf: roassalChart to: someCategories ].
 	yValues := somePlots flatCollect: [ :each |
 		           each value definedValuesY ].
-	xTicks := self
-		          ticksFrom: (xValues min min: 0)
-		          to: xValues max
-		          wholeNumbers:
-		          (xValues allSatisfy: [ :each | each isInteger ]).
 	yTicks := self
 		          ticksFrom: (yValues min min: 0)
 		          to: yValues max
 		          wholeNumbers:
 		          (yValues allSatisfy: [ :each | each isInteger ]).
-	aBoolean ifFalse: [
-		xTicks := xTicks select: [ :each | each <= xValues max ] ].
 	roassalChart
-		minChartValueX: xTicks first - self xMargin;
-		maxChartValueX: (aBoolean
-				 ifTrue: [ xTicks last + self xMargin ]
-				 ifFalse: [ xValues max + self xMargin ]);
 		minChartValueY: yTicks first;
 		maxChartValueY: yTicks last;
-		xTicks: xTicks labels: (self tickLabelsOf: xTicks);
 		yTicks: yTicks labels: (self tickLabelsOf: yTicks).
 	^ roassalChart
 ]
@@ -145,6 +169,37 @@ CMChart >> seriesDataOf: aRecordedObject in: aSimulation [
 	series do: [ :each |
 		each addSeriesDataOf: aRecordedObject in: aSimulation to: data ].
 	^ data
+]
+
+{ #category : '*Cormas-UI-Roassal3' }
+CMChart >> setXAxisOf: aRoassalChart from: xValues leavingRoomToGrow: aBoolean [
+	"Set the ticks of a numeric x axis showing xValues: from 0, or from the first value when it is negative, to the last value, or up to the next tick when aBoolean leaves room to grow"
+
+	| xTicks |
+	xTicks := self
+		          ticksFrom: (xValues min min: 0)
+		          to: xValues max
+		          wholeNumbers:
+		          (xValues allSatisfy: [ :each | each isInteger ]).
+	aBoolean ifFalse: [
+		xTicks := xTicks select: [ :each | each <= xValues max ] ].
+	aRoassalChart
+		minChartValueX: xTicks first - self xMargin;
+		maxChartValueX: (aBoolean
+				 ifTrue: [ xTicks last + self xMargin ]
+				 ifFalse: [ xValues max + self xMargin ]);
+		xTicks: xTicks labels: (self tickLabelsOf: xTicks)
+]
+
+{ #category : '*Cormas-UI-Roassal3' }
+CMChart >> setXAxisOf: aRoassalChart to: someCategories [
+	"Set a tick for each of someCategories at 1, 2, 3 and so on, named after it, with half a tick on each side so that nothing is drawn on the y axis"
+
+	aRoassalChart
+		minChartValueX: 1 / 2;
+		maxChartValueX: someCategories size + (1 / 2);
+		xTicks: (1 to: someCategories size) asArray
+		labels: (someCategories collect: [ :each | each asString ]) asArray
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
@@ -180,6 +235,13 @@ CMChart >> ticksFrom: aLowest to: aHighest wholeNumbers: aBoolean [
 	aBoolean ifTrue: [ spacing := spacing max: 1 ].
 	^ ((aLowest / spacing) floor * spacing to:
 	   (highest / spacing) ceiling * spacing by: spacing) asArray
+]
+
+{ #category : '*Cormas-UI-Roassal3' }
+CMChart >> xCategoriesOf: someSeries [
+	"Return the values on my x axis, in the order they first appear, when they are not all numbers; or else none, and my x axis is numeric"
+
+	^ self categoriesOf: (someSeries flatCollect: [ :each | each steps ])
 ]
 
 { #category : '*Cormas-UI-Roassal3' }

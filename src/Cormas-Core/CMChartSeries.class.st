@@ -1,5 +1,5 @@
 "
-I am a series of a chart: what it draws for one probe, such as a line or a set of boxes, and how it is labelled and colored. I am the abstract superclass of `CMLineSeries`, `CMAreaSeries`, `CMBoxSeries` and `CMBarSeries`.
+I am a series of a chart: what it draws for one probe, or two for points, such as a line or a set of boxes, and how it is labelled and colored. I am the abstract superclass of `CMLineSeries`, `CMAreaSeries`, `CMBoxSeries`, `CMBarSeries` and `CMPointSeries`.
 
 ## Responsibility:
 
@@ -114,6 +114,13 @@ CMChartSeries >> probe: aSelector ofAll: aClass [
 	self setProbe: aSelector.
 	showsAllInstances := true.
 	classOfAll := aClass
+]
+
+{ #category : 'accessing' }
+CMChartSeries >> probes [
+	"Return the selectors of the probes I show"
+
+	^ { probe }
 ]
 
 { #category : 'private' }

@@ -130,11 +130,11 @@ CMSensitivityAnalysisRunnerPresenter >> example [
 	<script: 'self example'>
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'updating' }
 CMSensitivityAnalysisRunnerPresenter >> hideCharts [
 
 	notebook pages
-		detect: [ :page | page title = 'Scatterplot' ]
+		detect: [ :page | page title = 'Analysis' ]
 		ifFound: [ :page | notebook removePage: page ]
 ]
 
@@ -182,13 +182,16 @@ CMSensitivityAnalysisRunnerPresenter >> setModelBeforeInitialization: anAnalysis
 	analysis := anAnalysis
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'updating' }
 CMSensitivityAnalysisRunnerPresenter >> showCharts [
+	"Show the views of the analysis once it has results of model probes"
 
-	notebook addPageTitle: 'Scatterplot' provider: [ 
-		self
-			instantiate: CMSensitivityAnalysisChartPresenter 
-			on: analysis results ]
+	(analysis results isEmpty or: [ analysis outputs isEmpty ]) ifTrue: [
+		^ self ].
+	notebook
+		addPageTitle: 'Analysis'
+		provider: [
+		self instantiate: CMSensitivityAnalysisChartPresenter on: analysis ]
 ]
 
 { #category : 'updating' }

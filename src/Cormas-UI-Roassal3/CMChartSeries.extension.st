@@ -1,6 +1,26 @@
 Extension { #name : 'CMChartSeries' }
 
 { #category : '*Cormas-UI-Roassal3' }
+CMChartSeries >> addSeriesDataGatheringEachStepOf: someDataTables to: someSeries [
+	"Add to someSeries one series whose value at each step is the collection of what I draw for the instances recorded at that step"
+
+	| gathered steps |
+	gathered := Dictionary new.
+	someDataTables do: [ :data |
+			(self valuesInInstanceData: data)
+				with: data steps
+				do: [ :value :step |
+					(gathered at: step ifAbsentPut: [ OrderedCollection new ]) add:
+						value ] ].
+	steps := gathered keys sorted asArray.
+	someSeries add: (CMSeriesData
+			 named: label
+			 color: (self roassalColorAt: someSeries size + 1)
+			 steps: steps
+			 values: (steps collect: [ :each | (gathered at: each) asArray ]))
+]
+
+{ #category : '*Cormas-UI-Roassal3' }
 CMChartSeries >> addSeriesDataOf: aRecordedObject in: aSimulation to: someSeries [
 	"Add to someSeries those that draw me, from the data recorded in aSimulation: of aRecordedObject, the subject of the chart, or of all the instances of my class"
 
@@ -14,7 +34,7 @@ CMChartSeries >> addSeriesDataOf: aRecordedObject in: aSimulation to: someSeries
 			 named: label
 			 color: (self roassalColorAt: someSeries size + 1)
 			 steps: data steps asArray
-			 values: (self numbersIn: data))
+			 values: (self valuesIn: data))
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
@@ -33,51 +53,59 @@ CMChartSeries >> addSeriesDataOfEachInstanceIn: someDataTables to: someSeries [
 					 named: data label
 					 color: (self roassalColorAt: someSeries size + 1)
 					 steps: data steps asArray
-					 values: (self numbersInInstanceData: data)) ]
+					 values: (self valuesInInstanceData: data)) ]
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
 CMChartSeries >> checkIsProbeOf: aSubjectClass [
-	"Raise an error when my probe is not a probe of the class whose objects I show, aSubjectClass when I show the subject of the chart: it can never be recorded"
+	"Raise an error when one of my probes is not a probe of the class whose objects I show, aSubjectClass when I show the subject of the chart: it can never be recorded"
 
 	| shownClass |
 	shownClass := showsAllInstances
 		              ifTrue: [ classOfAll ]
 		              ifFalse: [ aSubjectClass ].
-	(shownClass probeSelectors includes: probe) ifFalse: [
-			self error:
-				('#{1} is not a probe of {2}: only <probe> methods are recorded'
-					 format: {
-							 probe.
-							 shownClass name }) ]
+	self probes do: [ :each |
+			(shownClass probeSelectors includes: each) ifFalse: [
+					self error:
+						('#{1} is not a probe of {2}: only <probe> methods are recorded'
+							 format: {
+									 each.
+									 shownClass name }) ] ]
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
-CMChartSeries >> numbersIn: aDataTable [
+CMChartSeries >> numbersOf: aSelector in: aDataTable [
 
 	| column |
-	column := aDataTable column: probe.
+	column := aDataTable column: aSelector.
 	(column isEmpty or: [ column first isNumber ]) ifFalse: [
 			self error:
 				('The chart shows numbers, but #{1} returned {2}' format: {
-						 probe.
+						 aSelector.
 						 column first printString }) ].
 	^ column asArray
-]
-
-{ #category : '*Cormas-UI-Roassal3' }
-CMChartSeries >> numbersInInstanceData: aDataTable [
-	"Return the numbers of my probe in the data of an instance. An error names the instance"
-
-	^ [ self numbersIn: aDataTable ]
-		  on: CMRecordingError
-		  do: [ :error |
-			  CMRecordingError signal:
-				  aDataTable label , ': ' , error messageText ]
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
 CMChartSeries >> roassalColorAt: anIndex [
 	"My color, or else the color of the chart's palette for the series at anIndex"
 	^ (colors ifEmpty: [ NSScale category10 range ]) atWrap: anIndex
+]
+
+{ #category : '*Cormas-UI-Roassal3' }
+CMChartSeries >> valuesIn: aDataTable [
+	"Return what I draw at each step of aDataTable: the numbers of my probe"
+
+	^ self numbersOf: probe in: aDataTable
+]
+
+{ #category : '*Cormas-UI-Roassal3' }
+CMChartSeries >> valuesInInstanceData: aDataTable [
+	"Return what I draw at each step of the data of an instance. An error names the instance"
+
+	^ [ self valuesIn: aDataTable ]
+		  on: CMRecordingError
+		  do: [ :error |
+			  CMRecordingError signal:
+				  aDataTable label , ': ' , error messageText ]
 ]

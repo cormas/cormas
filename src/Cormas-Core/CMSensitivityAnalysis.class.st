@@ -20,6 +20,7 @@ I am a sensitivity analysis: I run a simulation many times, with other parameter
 - `beFullFactorial` (the default) or `beOneFactorAtATime`, `replicates:`, `masterSeed:`, `recordEvery:`.
 - `run` and `runIn:` run in this process and return the folder of the analysis; `runInBackground` runs in another one, and `pause`, `resume` and `stop` act between runs.
 - `results`, `numberOfRuns`, `numberOfCompletedRuns`, `whenProgressDo:` and `whenFinishedDo:` follow it.
+- `outputs`, `spreadsOf:`, `resultsVarying:` and `resultsGroupedBy:` give the data of the views of its results, which `spreadCanvasOf:`, `canvasOf:against:` and `canvasOf:against:groupedBy:` draw.
 
 ```
 | simulation |
@@ -125,6 +126,13 @@ CMSensitivityAnalysis >> beOneFactorAtATime [
 	"Vary each parameter over its values, the others keeping their values in the simulation"
 
 	isOneFactorAtATime := true
+]
+
+{ #category : 'views' }
+CMSensitivityAnalysis >> canGroupResults [
+	"Return whether my results can be grouped by a parameter: only a full factorial of several parameters varies them together"
+
+	^ isOneFactorAtATime not and: [ factors size > 1 ]
 ]
 
 { #category : 'private' }
@@ -265,6 +273,14 @@ CMSensitivityAnalysis >> oneFactorAtATimeCombinations [
 						  yourself ] ]
 ]
 
+{ #category : 'views' }
+CMSensitivityAnalysis >> outputs [
+	"Return the names of the model probes my runs record, the outputs my views show"
+
+	^ (simulation recordedProbesOf: self modelClass) collect: [ :each |
+		  each asString ]
+]
+
 { #category : 'settings' }
 CMSensitivityAnalysis >> parameter: aSelector of: aClass values: aCollection [
 	"Vary the parameter aSelector of aClass, the model's class or one of its entity classes, over the values of aCollection"
@@ -274,6 +290,13 @@ CMSensitivityAnalysis >> parameter: aSelector of: aClass values: aCollection [
 		  ifAbsent: [ Dictionary new ]) includesKey: aSelector) ifFalse: [
 		self error: aClass name , ' has no parameter ' , aSelector ].
 	factors at: aClass -> aSelector put: aCollection asArray
+]
+
+{ #category : 'views' }
+CMSensitivityAnalysis >> parameterNames [
+	"Return the names of the columns of my parameters in my results"
+
+	^ self columnNames allButFirst: 3
 ]
 
 { #category : 'private' }
@@ -330,6 +353,36 @@ CMSensitivityAnalysis >> results [
 	"Return a row for each run done: its number, replicate, seed and parameter values, then the last recorded step and the value of each model probe at that step"
 
 	^ results
+]
+
+{ #category : 'views' }
+CMSensitivityAnalysis >> resultsGroupedBy: aParameterName [
+	"Return the results of the runs grouped by the value of the parameter named aParameterName, in the order of its values. Only a full factorial varies several parameters in the same runs"
+
+	| groups |
+	isOneFactorAtATime ifTrue: [
+			self error:
+				'Only a full factorial varies several parameters together, so that its results can be grouped by one of them' ].
+	groups := OrderedDictionary new.
+	(factors values at: (self parameterNames indexOf: aParameterName))
+		do: [ :each | groups at: each put: OrderedCollection new ].
+	results do: [ :row | (groups at: (row at: aParameterName)) add: row ].
+	^ groups
+]
+
+{ #category : 'views' }
+CMSensitivityAnalysis >> resultsVarying: aParameterName [
+	"Return the results of the runs that vary the parameter named aParameterName: all of them in a full factorial, the runs of its values in one factor at a time"
+
+	| index runsBefore runs |
+	isOneFactorAtATime ifFalse: [ ^ results ].
+	index := self parameterNames indexOf: aParameterName.
+	runsBefore := ((factors values first: index - 1)
+		               inject: 0
+		               into: [ :sum :each | sum + each size ]) * replicates.
+	runs := (factors values at: index) size * replicates.
+	^ results select: [ :row |
+		  (row at: 'run') between: runsBefore + 1 and: runsBefore + runs ]
 ]
 
 { #category : 'running' }
@@ -449,6 +502,19 @@ CMSensitivityAnalysis >> seeds [
 CMSensitivityAnalysis >> setSimulation: aSimulation [
 
 	simulation := aSimulation
+]
+
+{ #category : 'views' }
+CMSensitivityAnalysis >> spreadsOf: anOutput [
+	"Return, for each combination of my design that has results, in order, an association from the values of my parameters to the values of anOutput in the runs of its replicates"
+
+	| spreads |
+	spreads := OrderedDictionary new.
+	results do: [ :row |
+			(spreads at: (row at: 'run') - 1 // replicates ifAbsentPut: [
+					 (self parameterNames collect: [ :each | row at: each ])
+					 -> OrderedCollection new ]) value add: (row at: anOutput) ].
+	^ spreads values
 ]
 
 { #category : 'running' }
