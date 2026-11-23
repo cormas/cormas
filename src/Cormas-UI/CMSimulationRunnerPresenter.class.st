@@ -587,10 +587,13 @@ CMSimulationRunnerPresenter >> updateSelectedNotebookPage [
 
 { #category : 'initialization' }
 CMSimulationRunnerPresenter >> updateWithSimulation [
-	"A new simulation is ready to run, even if the previous one was running when it was replaced"
+	"A new simulation is ready to run, even if the previous one was running when it was replaced. When it pauses or ends, the shown views are drawn again, so that charts fit their data instead of leaving room to grow"
 
 	self setSimulationIntervalDelay.
-	self simulation whenFinishedDo: [ self beInPauseMode ].
+	self simulation whenFinishedDo: [
+		self beInPauseMode.
+		self updateSelectedNotebookPage ].
+	self simulation whenPausedDo: [ self updateSelectedNotebookPage ].
 	self beInPauseMode.
 
 	self displayCurrentTimeStep.

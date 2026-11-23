@@ -9,8 +9,10 @@ Class {
 		'stepsPerInterval',
 		'intervalDelay',
 		'whenFinishedBlock',
+		'whenPausedBlock',
 		'shouldPause',
 		'isPaused',
+		'hasFinished',
 		'pauseSemaphore'
 	],
 	#category : 'Cormas-Core-Kernel',
@@ -27,6 +29,7 @@ CMSimulationProcessRunner >> beDefaultSimulation [
 					                   simulation runStep.
 					                   self waitWhilePaused.
 					                   (Delay forMilliseconds: intervalDelay) wait ].
+		                   hasFinished := true.
 		                   whenFinishedBlock value ]
 ]
 
@@ -42,6 +45,7 @@ CMSimulationProcessRunner >> beSimulationAfterEachIntervalDo: aBlock [
 					                   = 0 ifTrue: [ aBlock value ].
 					                   self waitWhilePaused.
 					                   (Delay forMilliseconds: intervalDelay) wait ].
+		                   hasFinished := true.
 		                   whenFinishedBlock value ]
 ]
 
@@ -58,6 +62,8 @@ CMSimulationProcessRunner >> initialize [
 	stepsPerInterval := 1.
 	intervalDelay := 0. "milliseconds"
 	whenFinishedBlock := [ "do nothing" ].
+	whenPausedBlock := [  ].
+	hasFinished := false.
 	shouldPause := false.
 	isPaused := false.
 	pauseSemaphore := Semaphore new
@@ -83,10 +89,10 @@ CMSimulationProcessRunner >> isSimulationConfigured [
 
 { #category : 'testing' }
 CMSimulationProcessRunner >> isSimulationRunning [
-	"Answer whether the simulation runs its steps: its process has started, has not finished, and has not stopped after a pause. A paused simulation runs until its current step is over. Between two steps, the process waits, but the simulation still runs"
-
+	"Answer whether the simulation runs its steps: its process has started, has not finished, and has not stopped after a pause. A paused simulation runs until its current step is over. Between two steps, the process waits, but the simulation still runs. A simulation that announces its end no longer runs"
 	simulationProcess ifNil: [ ^ false ].
-	^ simulationProcess isTerminated not and: [ isPaused not ]
+	^ simulationProcess isTerminated not and: [
+		  isPaused not and: [ hasFinished not ] ]
 ]
 
 { #category : 'running' }
@@ -105,7 +111,7 @@ CMSimulationProcessRunner >> resume [
 
 { #category : 'api - running' }
 CMSimulationProcessRunner >> runInBackground [
-
+	hasFinished := false.
 	simulationProcess := simulationBlock newProcess.
 	simulationProcess resume
 ]
@@ -137,10 +143,10 @@ CMSimulationProcessRunner >> stopCondition: aFullBlockClosure [
 
 { #category : 'running' }
 CMSimulationProcessRunner >> waitWhilePaused [
-
 	[ shouldPause ] whileTrue: [
-			isPaused := true.
-			pauseSemaphore wait ].
+		isPaused := true.
+		whenPausedBlock value.
+		pauseSemaphore wait ].
 	isPaused := false
 ]
 
@@ -149,4 +155,10 @@ CMSimulationProcessRunner >> whenFinishedDo: aBlock [
 	"A block to execute when simulation was finished because the stop condition was fullfilled"
 	
 	whenFinishedBlock := aBlock
+]
+
+{ #category : 'enumerating' }
+CMSimulationProcessRunner >> whenPausedDo: aBlock [
+	"A block to execute once a pause asked for has stopped the simulation, after its current step"
+	whenPausedBlock := aBlock
 ]

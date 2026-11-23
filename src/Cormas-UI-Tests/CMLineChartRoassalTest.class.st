@@ -298,6 +298,23 @@ CMLineChartRoassalTest >> testTheLegendShowsTheLabelOfEachLine [
 ]
 
 { #category : 'tests' }
+CMLineChartRoassalTest >> testTheLinesEndWhereTheXAxisEnds [
+	| canvas line |
+	canvas := chart
+		          canvasOf: { (CMSeriesData new
+				           setName: 'a'
+				           color: Color red
+				           steps: #( 12 13 14 )
+				           values: #( 30 40 50 )) }
+		          hiding: Set new.
+	line := canvas allChildren detect: [ :each | each isKindOf: RSPolyline ].
+	self
+		assert: line encompassingRectangle right
+		closeTo: (canvas allChildren detect: [ :each | each isKindOf: RSComposite ]) encompassingRectangle right
+		precision: 10
+]
+
+{ #category : 'tests' }
 CMLineChartRoassalTest >> testTheLinesKeepTheOrderInWhichTheyWereAdded [
 
 	self
@@ -339,6 +356,34 @@ CMLineChartRoassalTest >> testTheLinesOfAllInstancesOfAMethodThatIsNotAProbeRais
 		         yourself.
 	self should: [ self lines ] raise: Error withExceptionDo: [ :error |
 		self assert: (error messageText includesSubstring: 'CMMockCow') ]
+]
+
+{ #category : 'tests' }
+CMLineChartRoassalTest >> testTheXAxisEndsAtTheLastStep [
+	| canvas |
+	canvas := chart
+		          canvasOf: { (CMSeriesData new
+				           setName: 'a'
+				           color: Color red
+				           steps: #( 12 13 14 )
+				           values: #( 30 40 50 )) }
+		          hiding: Set new.
+	self assert: ((self textsOf: canvas) includes: '10').
+	self deny: ((self textsOf: canvas) includes: '15')
+]
+
+{ #category : 'tests' }
+CMLineChartRoassalTest >> testTheXAxisOfAGrowingChartLeavesRoomUpToTheNextTick [
+	| canvas |
+	canvas := chart
+		          canvasOf: { (CMSeriesData new
+				           setName: 'a'
+				           color: Color red
+				           steps: #( 12 13 14 )
+				           values: #( 30 40 50 )) }
+		          hiding: Set new
+		          leavingRoomToGrow: true.
+	self assert: ((self textsOf: canvas) includes: '15')
 ]
 
 { #category : 'tests' }

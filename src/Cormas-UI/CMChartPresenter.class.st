@@ -50,8 +50,7 @@ Class {
 	#name : 'CMChartPresenter',
 	#superclass : 'SpPresenter',
 	#instVars : [
-		'toolbar',
-		'saveToPngButton',
+		'buttonBar',
 		'chartView',
 		'messageLabel',
 		'subject',
@@ -109,8 +108,6 @@ CMChartPresenter >> closeDiagram [
 
 { #category : 'initialization' }
 CMChartPresenter >> connectPresenters [
-
-	saveToPngButton action: [ self saveToPng ].
 	stepSlider whenValueChangedDo: [ :value |
 		self showStep: value rounded ]
 ]
@@ -134,9 +131,8 @@ CMChartPresenter >> cormasModel [
 
 { #category : 'initialization' }
 CMChartPresenter >> defaultLayout [
-
 	^ SpBoxLayout newTopToBottom
-		  add: toolbar expand: false;
+		  add: buttonBar expand: false;
 		  add: messageLabel expand: false;
 		  add: chartView;
 		  yourself
@@ -164,7 +160,7 @@ CMChartPresenter >> drawChart [
 
 { #category : 'updating' }
 CMChartPresenter >> drawChartUpToStep: aStep [
-	"Draw my chart from the data recorded on my subject up to aStep, keeping hidden the series hidden from its legend, or say why it cannot be drawn. A chart of a single step shows the last of these steps"
+	"Draw my chart from the data recorded on my subject up to aStep, keeping hidden the series hidden from its legend, or say why it cannot be drawn. A chart of a single step shows the last of these steps. While the simulation runs, the x axis leaves room to grow"
 
 	upToStep := aStep.
 	[
@@ -173,7 +169,8 @@ CMChartPresenter >> drawChartUpToStep: aStep [
 		chart isSingleStep ifTrue: [ self updateStepSliderFor: series ].
 		chartView canvas: (chart
 				 canvasOf: (series collect: [ :each | each upToStep: aStep ])
-				 hiding: hiddenSeries).
+				 hiding: hiddenSeries
+				 leavingRoomToGrow: self simulation isSimulationRunning).
 		messageLabel label: '' ]
 		on: CMRecordingError
 		do: [ :error |
@@ -197,18 +194,11 @@ CMChartPresenter >> host: aHost [
 
 { #category : 'initialization' }
 CMChartPresenter >> initializePresenters [
-
 	hiddenSeries := Set new.
 	upToStep := Float infinity.
-	saveToPngButton := self newToolbarButton
-		                   label: 'Save to PNG';
-		                   help: 'Save a picture of the chart';
-		                   icon: (self iconNamed: #smallSave);
-		                   yourself.
-	toolbar := self newToolbar
-		           add: saveToPngButton;
-		           yourself.
-	toolbar beIcons.
+	buttonBar := SpBoxLayout newLeftToRight
+		             spacing: 5;
+		             yourself.
 	messageLabel := self newLabel.
 	chartView := SpRoassalInspectorPresenter new.
 	stepSlider := self newSlider
@@ -238,15 +228,23 @@ CMChartPresenter >> moveElsewhere [
 ]
 
 { #category : 'actions' }
-CMChartPresenter >> offerToMove [
-	"Offer to move me to a window of my own, and back to the tabs of my host"
-	toolbar addItemRight: (self newToolbarButton
-			 label: 'Move';
-			 icon: (self iconNamed: #window);
-			 help:
-				 'Move this chart to a window of its own, or back to the tabs';
-			 action: [ self moveElsewhere ];
-			 yourself)
+CMChartPresenter >> offerToSaveAndMove [
+	"Offer to save a picture of me, and to move me to a window of my own and back to the tabs of my host"
+	buttonBar
+		add: (self newButton
+				 label: 'Save a picture';
+				 icon: (self iconNamed: #smallSave);
+				 help: 'Save a picture of the chart in the output folder of the model';
+				 action: [ self saveToPng ];
+				 yourself)
+		expand: false;
+		add: (self newButton
+				 label: 'Move';
+				 icon: (self iconNamed: #window);
+				 help: 'Move this chart to a window of its own, or back to the tabs';
+				 action: [ self moveElsewhere ];
+				 yourself)
+		expand: false
 ]
 
 { #category : 'actions' }

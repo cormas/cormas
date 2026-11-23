@@ -37,6 +37,7 @@ Class {
 		'subject',
 		'dropList',
 		'duplicateButton',
+		'saveButton',
 		'chartBox',
 		'charts',
 		'shownChart',
@@ -77,6 +78,7 @@ CMChartsPresenter >> defaultLayout [
 				   spacing: 5;
 				   add: dropList width: 250;
 				   add: duplicateButton width: 30;
+				   add: saveButton expand: false;
 				   yourself)
 		  expand: false;
 		  add: chartBox;
@@ -109,6 +111,12 @@ CMChartsPresenter >> initializePresenters [
 		                   help: 'Open a copy of these charts in a window of its own, to show another chart at the same time';
 		                   action: [ host duplicateCharts: self ];
 		                   yourself.
+	saveButton := self newButton
+		              label: 'Save a picture';
+		              icon: (self iconNamed: #smallSave);
+		              help: 'Save a picture of the chart in the output folder of the model';
+		              action: [ shownChart saveToPng ];
+		              yourself.
 	chartBox := SpBoxLayout newTopToBottom
 ]
 

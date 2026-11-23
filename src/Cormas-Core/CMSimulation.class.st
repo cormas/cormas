@@ -657,6 +657,11 @@ CMSimulation >> whenFinishedDo: aBlock [
 	simulationRunner whenFinishedDo: aBlock
 ]
 
+{ #category : 'enumerating' }
+CMSimulation >> whenPausedDo: aBlock [
+	simulationRunner whenPausedDo: aBlock
+]
+
 { #category : 'recording' }
 CMSimulation >> writeCsvOfClass: aClass on: aStream [
 	"Write the data recorded on the instances of aClass, not of its subclasses, as CSV on aStream: a header with step, id, label and the probes of aClass, then a line for each instance and each step it was recorded"

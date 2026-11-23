@@ -156,7 +156,7 @@ CMEntityInspectorPresenter >> newChartView: aSelector of: aModelOrAnEntity [
 
 	^ (self instantiate: CMChartPresenter)
 		  host: self;
-		  offerToMove;
+		  offerToSaveAndMove;
 		  subject: aModelOrAnEntity chart: aSelector;
 		  yourself
 ]

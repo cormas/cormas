@@ -30,6 +30,26 @@ CMSimulationTest >> testANewInitStartsANewModelData [
 ]
 
 { #category : 'tests' }
+CMSimulationTest >> testAPauseIsAnnouncedOnceTheCurrentStepIsOver [
+	| paused stepAtThePause runningAtThePause |
+	paused := Semaphore new.
+	simulation
+		stopWhen: [ :model | false ];
+		whenPausedDo: [
+			stepAtThePause := simulation currentTimeStep.
+			runningAtThePause := simulation isSimulationRunning.
+			paused signal ];
+		runAllStepsAfterEachIntervalDo: [
+			simulation currentTimeStep = 3 ifTrue: [ simulation pause ] ].
+	[
+		self deny: (paused waitTimeoutSeconds: 5).
+		self assert: stepAtThePause equals: 3.
+		self deny: runningAtThePause ] ensure: [
+			simulation stopWhen: [ :model | true ].
+			simulation resume ]
+]
+
+{ #category : 'tests' }
 CMSimulationTest >> testAPausedSimulationWaitsUntilItIsResumed [
 
 	| finished step |
@@ -49,6 +69,20 @@ CMSimulationTest >> testAPausedSimulationWaitsUntilItIsResumed [
 		self assert: simulation currentTimeStep equals: 1000 ] ensure: [
 			simulation stopWhen: [ :model | true ].
 			simulation resume ]
+]
+
+{ #category : 'tests' }
+CMSimulationTest >> testASimulationIsNoLongerRunningWhenItsEndIsAnnounced [
+	| finished runningAtTheEnd |
+	finished := Semaphore new.
+	simulation
+		stopWhen: [ :model | model currentTimeStep >= 3 ];
+		whenFinishedDo: [
+			runningAtTheEnd := simulation isSimulationRunning.
+			finished signal ];
+		runAllStepsAfterEachIntervalDo: [  ].
+	self deny: (finished waitTimeoutSeconds: 5).
+	self deny: runningAtTheEnd
 ]
 
 { #category : 'tests' }

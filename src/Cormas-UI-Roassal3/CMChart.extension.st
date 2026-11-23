@@ -18,11 +18,17 @@ CMChart >> add: aLegend below: aCanvas [
 
 { #category : '*Cormas-UI-Roassal3' }
 CMChart >> canvasOf: someSeries hiding: aSetOfNames [
-	"Return a canvas with the chart of someSeries and a legend naming each of them. The series named in aSetOfNames are hidden. Clicking an entry of the legend hides its series, or shows it again, and updates aSetOfNames"
+	"Return a canvas with the chart of someSeries, whose x axis ends at its last value, and a legend naming each of them. The series named in aSetOfNames are hidden. Clicking an entry of the legend hides its series, or shows it again, and updates aSetOfNames"
+	^ self canvasOf: someSeries hiding: aSetOfNames leavingRoomToGrow: false
+]
+
+{ #category : '*Cormas-UI-Roassal3' }
+CMChart >> canvasOf: someSeries hiding: aSetOfNames leavingRoomToGrow: aBoolean [
+	"Return a canvas with the chart of someSeries and a legend naming each of them. The series named in aSetOfNames are hidden. Clicking an entry of the legend hides its series, or shows it again, and updates aSetOfNames. The x axis ends at the last value, unless aBoolean leaves room up to the next tick, so that a chart growing step by step is not drawn with a new range at each step"
 
 	| plots roassalChart canvas shapes legend |
 	plots := self plotsOf: someSeries.
-	roassalChart := self roassalChartOf: plots.
+	roassalChart := self roassalChartOf: plots leavingRoomToGrow: aBoolean.
 	canvas := roassalChart canvas.
 	plots ifNotEmpty: [ roassalChart build ].
 	shapes := Dictionary new.
@@ -81,8 +87,8 @@ CMChart >> plotsOf: someSeries [
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
-CMChart >> roassalChartOf: somePlots [
-	"Return a Roassal chart that draws the plots of the associations somePlots, with x and y axis lines but no frame, and ticks labelled without needless decimals. Axes of values that are not negative start at 0. The chart cannot be zoomed nor dragged, but fits the space it is shown in"
+CMChart >> roassalChartOf: somePlots leavingRoomToGrow: aBoolean [
+	"Return a Roassal chart that draws the plots of the associations somePlots, with x and y axis lines but no frame, and ticks labelled without needless decimals. Axes of values that are not negative start at 0. The chart cannot be zoomed nor dragged, but fits the space it is shown in. The x axis ends at its last value, unless aBoolean leaves room up to the next tick"
 
 	| roassalChart xValues yValues xTicks yTicks |
 	roassalChart := RSCompositeChart new.
@@ -93,6 +99,9 @@ CMChart >> roassalChartOf: somePlots [
 			 yourself).
 	roassalChart extent: 800 @ 400.
 	roassalChart spineDecoration: CMChartAxes new.
+	roassalChart decorations removeAll:
+		(roassalChart decorations select: [ :each | each isHorizontalTick ]).
+	roassalChart addDecoration: CMChartXTicks new.
 	title ifNotNil: [ roassalChart title: title ].
 	xTitle ifNotNil: [ roassalChart xlabel: xTitle ].
 	yTitle ifNotNil: [ roassalChart ylabel: yTitle ].
@@ -112,9 +121,13 @@ CMChart >> roassalChartOf: somePlots [
 		          to: yValues max
 		          wholeNumbers:
 		          (yValues allSatisfy: [ :each | each isInteger ]).
+	aBoolean ifFalse: [
+		xTicks := xTicks select: [ :each | each <= xValues max ] ].
 	roassalChart
 		minChartValueX: xTicks first - self xMargin;
-		maxChartValueX: xTicks last + self xMargin;
+		maxChartValueX: (aBoolean
+				 ifTrue: [ xTicks last + self xMargin ]
+				 ifFalse: [ xValues max + self xMargin ]);
 		minChartValueY: yTicks first;
 		maxChartValueY: yTicks last;
 		xTicks: xTicks labels: (self tickLabelsOf: xTicks);
