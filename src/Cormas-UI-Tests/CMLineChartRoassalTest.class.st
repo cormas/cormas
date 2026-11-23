@@ -155,8 +155,7 @@ CMLineChartRoassalTest >> testALineOfAMethodThatIsNotAProbeRaisesAnError [
 ]
 
 { #category : 'tests' }
-CMLineChartRoassalTest >> testALineOfAnInstanceIsNamedAfterItsProbeAndItsInstance [
-
+CMLineChartRoassalTest >> testALineOfAnInstanceIsNamedAfterItsInstance [
 	| cow |
 	chart := CMLineChart new
 		         add: ((CMLineSeries probe: #energy ofAll: CMMockAnimal)
@@ -164,9 +163,7 @@ CMLineChartRoassalTest >> testALineOfAnInstanceIsNamedAfterItsProbeAndItsInstanc
 				          yourself);
 		         yourself.
 	cow := (model entitiesOfClass: CMMockCow) first.
-	self
-		assert: self lines first name
-		equals: 'Energy of ' , (simulation dataOf: cow) label
+	self assert: self lines first name equals: (simulation dataOf: cow) label
 ]
 
 { #category : 'tests' }

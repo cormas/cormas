@@ -26,11 +26,11 @@ CMChartSeries >> addSeriesDataOfAll: someDataTables to: someSeries [
 
 { #category : '*Cormas-UI-Roassal3' }
 CMChartSeries >> addSeriesDataOfEachInstanceIn: someDataTables to: someSeries [
-	"Add to someSeries one series for each instance, named after my label and the instance"
+	"Add to someSeries one series for each instance, named after the instance"
 
 	someDataTables do: [ :data |
 			someSeries add: (CMSeriesData
-					 named: label , ' of ' , data label
+					 named: data label
 					 color: (self roassalColorAt: someSeries size + 1)
 					 steps: data steps asArray
 					 values: (self numbersInInstanceData: data)) ]

@@ -24,11 +24,13 @@ CMAreaSeries >> addCountsIn: someDataTables to: someSeries [
 						at: step
 						put: (countsOfValue at: step ifAbsent: [ 0 ]) + 1 ] ].
 	steps := steps sorted asArray.
-	(counts keys sorted: [ :a :b | a asString <= b asString ]) do: [
+	((self chosenCategories select: [ :each | counts includesKey: each ])
+	 , ((counts keys reject: [ :each | self chosenCategories includes: each ])
+			  sorted: [ :a :b | a asString <= b asString ])) do: [
 			:value |
 			someSeries add: (CMSeriesData
-					 named: label , ': ' , value asString
-					 color: (self roassalColorAt: someSeries size + 1)
+					 named: (self labelOfCategory: value)
+					 color: ((self colorOfCategory: value) ifNil: [ self roassalColorAt: someSeries size + 1 ])
 					 steps: steps
 					 values:
 					 (steps collect: [ :step |

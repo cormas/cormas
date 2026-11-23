@@ -73,3 +73,13 @@ CMBoxplotRoassalTest >> testTheBoxOfEachStepGathersTheValuesOfAllInstancesAtThat
 	self assert: series first values first asArray equals: #( 0.5 0.5 ).
 	self assert: series first values last asArray equals: #( 0.2 0.8 )
 ]
+
+{ #category : 'tests' }
+CMBoxplotRoassalTest >> testTheBoxesAreNamedAfterTheLabelOfTheirSeries [
+	chart add: ((CMBoxSeries probe: #energy ofAll: CMMockAnimal)
+			 label: 'Energy';
+			 yourself).
+	self
+		assert: (chart seriesDataOf: model in: simulation) first name
+		equals: 'Energy'
+]

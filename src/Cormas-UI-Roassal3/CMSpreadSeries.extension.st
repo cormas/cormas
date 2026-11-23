@@ -14,7 +14,7 @@ CMSpreadSeries >> addSeriesDataOfAll: someDataTables to: someSeries [
 						value ] ].
 	steps := spreads keys sorted asArray.
 	someSeries add: (CMSeriesData
-			 named: label , ' of ' , classOfAll name
+			 named: label
 			 color: (self roassalColorAt: someSeries size + 1)
 			 steps: steps
 			 values: (steps collect: [ :each | (spreads at: each) asArray ]))

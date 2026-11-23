@@ -26,6 +26,29 @@ CMAreaChartRoassalTest >> setUp [
 ]
 
 { #category : 'tests' }
+CMAreaChartRoassalTest >> testAChosenColorIsUsedForTheAreaOfItsCategory [
+	| series |
+	chart add: ((CMAreaSeries probe: #state ofAll: CMMockCell)
+			 category: #dead color: Color gray;
+			 yourself).
+	series := chart seriesDataOf: model in: simulation.
+	self assert: series first color equals: Color gray.
+	self deny: series second color equals: Color gray
+]
+
+{ #category : 'tests' }
+CMAreaChartRoassalTest >> testAChosenLabelNamesTheAreaOfItsCategory [
+	| series |
+	chart add: ((CMAreaSeries probe: #state ofAll: CMMockCell)
+			 category: #alive label: 'Alive cells';
+			 yourself).
+	series := chart seriesDataOf: model in: simulation.
+	self
+		assert: (series collect: [ :each | each name ]) asArray
+		equals: #( 'Alive cells' 'dead' )
+]
+
+{ #category : 'tests' }
 CMAreaChartRoassalTest >> testAnAreaOfOneObjectShowsOnlyNumbers [
 
 	| cell |
@@ -61,17 +84,31 @@ CMAreaChartRoassalTest >> testTheAreasOfAProbeOfNumbersAreAnAreaForEachInstance 
 
 { #category : 'tests' }
 CMAreaChartRoassalTest >> testTheAreasOfAProbeOfStringsCountTheInstancesHavingEachValue [
-
 	| series |
 	chart areas: #state ofAll: CMMockCell.
 	series := chart seriesDataOf: model in: simulation.
 	self
 		assert: (series collect: [ :each | each name ]) asArray
-		equals: #( 'state: alive' 'state: dead' ).
+		equals: #( 'alive' 'dead' ).
 	self
 		assert: series first values asArray
 		equals: (simulation modelData column: #numberOfAliveCells) asArray.
 	self
 		assert: series second values asArray
+		equals: (simulation modelData column: #numberOfDeadCells) asArray
+]
+
+{ #category : 'tests' }
+CMAreaChartRoassalTest >> testTheChosenCategoriesComeFirstInTheOrderTheyWereChosen [
+	| series |
+	chart add: ((CMAreaSeries probe: #state ofAll: CMMockCell)
+			 category: #dead label: 'Dead' color: Color gray;
+			 yourself).
+	series := chart seriesDataOf: model in: simulation.
+	self
+		assert: (series collect: [ :each | each name ]) asArray
+		equals: #( 'Dead' 'alive' ).
+	self
+		assert: series first values asArray
 		equals: (simulation modelData column: #numberOfDeadCells) asArray
 ]
