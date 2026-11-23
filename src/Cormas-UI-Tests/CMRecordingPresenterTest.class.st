@@ -25,12 +25,10 @@ CMRecordingPresenterTest >> initializeWithSettings [
 { #category : 'running' }
 CMRecordingPresenterTest >> setUp [
 
-	| application |
 	super setUp.
-	application := CMSimulationApplication new.
-	application cormasModel: CMMockModel new.
-	presenter := application newPresenter: CMRecordingPresenter.
-	simulation := (CMSimulation for: application cormasModel)
+	presenter := CMRecordingPresenter new.
+	presenter modelClass: CMMockModel.
+	simulation := (CMSimulation for: CMMockModel new)
 		              randomSeed: 41;
 		              activeInitSelector: #initFixed;
 		              activeControlSelector: #step;
@@ -85,6 +83,16 @@ CMRecordingPresenterTest >> testEverythingIsRecordedByDefault [
 	self
 		assert: (simulation dataOf: self cow) columnNames asArray
 		equals: #( #energy )
+]
+
+{ #category : 'tests' }
+CMRecordingPresenterTest >> testOnlyTheLastStepIsRecordedWhenChosen [
+
+	presenter lastStepOnlyCheckBox state: true.
+	simulation stopAfterStep: 3.
+	self initializeWithSettings.
+	3 timesRepeat: [ simulation runStep ].
+	self assert: simulation modelData steps asArray equals: #( 3 )
 ]
 
 { #category : 'tests' }

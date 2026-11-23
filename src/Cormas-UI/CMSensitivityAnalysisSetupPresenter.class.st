@@ -1,3 +1,36 @@
+"
+I am the window where a modeler sets up a sensitivity analysis of a model, and opens its runner.
+
+## Responsibility:
+
+- I edit a simulation of the chosen model: its init and control methods, and its stop condition.
+- I keep the design, the replicates, the master seed, the recording and the sampling of each varied parameter.
+- I build a new `CMSensitivityAnalysis` from all these choices whenever it is needed.
+
+## Collaborators:
+
+- `CMSensitivityAnalysis` is the analysis I build, on a copy of my simulation.
+- `CMRecordingPresenter` chooses the recorded steps and probes.
+- `CMSamplingEditorPresenter` edits the sampling of one parameter.
+- `CMSensitivityAnalysisRunnerPresenter` runs the analysis I build.
+
+## Public API and Key Messages
+
+- `selectModel: aModelClass`
+- `sample: aParameter with: aSampler` varies a parameter, as the Edit link does.
+- `newAnalysis` returns an analysis with the current choices.
+
+```smalltalk
+(CMSensitivityAnalysisSetupPresenter new
+	selectModel: CMModel modelsInThisImage first;
+	yourself) open
+```
+
+## Internal Representation
+
+- `simulation`: the simulation whose settings each analysis copies.
+- `parameterSamplings`: an `OrderedDictionary` from a parameter to its sampler.
+"
 Class {
 	#name : 'CMSensitivityAnalysisSetupPresenter',
 	#superclass : 'SpPresenter',
@@ -7,13 +40,15 @@ Class {
 		'controlSelectorDropList',
 		'finalStepInput',
 		'stopConditionDropList',
-		'probesList',
 		'parametersTable',
-		'summaryLabel',
 		'runButton',
 		'parameterSamplings',
 		'simulation',
-		'analysis'
+		'replicatesInput',
+		'masterSeedInput',
+		'fullFactorialButton',
+		'oneFactorAtATimeButton',
+		'recordingPresenter'
 	],
 	#category : 'Cormas-UI-SensitivityAnalysis',
 	#package : 'Cormas-UI',
@@ -44,6 +79,12 @@ CMSensitivityAnalysisSetupPresenter >> connectPresenters [
 	finalStepInput whenNumberChangedDo: [ :number |
 		self updateStopCondition ].
 
+	replicatesInput whenNumberChangedDo: [ :number |
+		self updateRunButton ].
+
+	fullFactorialButton whenChangedDo: [ :isSelected |
+		self updateRunButton ].
+
 	runButton action: [ self openRunner ]
 ]
 
@@ -54,68 +95,105 @@ CMSensitivityAnalysisSetupPresenter >> defaultLayout [
 	labelSpacing := 8.
 
 	^ SpBoxLayout newTopToBottom
-		borderWidth: 5;
-		spacing: 10;
-		add: (SpBoxLayout newLeftToRight
-			spacing: 15;
-			add: (SpBoxLayout newTopToBottom
-				spacing: labelSpacing;
-				add: 'Model initialization' expand: false;
-				add: (SpGridLayout new
-					borderWidth: 0;
-					beColumnNotHomogeneous;
-					column: 2 expand: true;
-					build: [ :builder | builder
-						add: 'Model';
-						add: modelClassDropList;
-						nextRow;
-						add: 'Init method';
-						add: initSelectorDropList;
-						nextRow;
-						add: 'Control method';
-						add: controlSelectorDropList;
-						nextRow;
-						add: 'Stop condition';
-						add: stopConditionDropList;
-						nextRow;
-						add: 'Max steps';
-						add: finalStepInput;
-						nextRow ];
-					yourself);
-				yourself);
-			add: (SpBoxLayout newTopToBottom
-				spacing: labelSpacing;
-				add: 'Probes to measure (outputs)' expand: false;
-				add: probesList;
-				yourself);
-			yourself) height: 180;
-		add: (SpBoxLayout newTopToBottom
-			spacing: labelSpacing;
-			add: 'Parameters (inputs)' expand: false;
-			add: parametersTable;
-			yourself);
-		add: runButton expand: false;
-		yourself
+		  borderWidth: 5;
+		  spacing: 10;
+		  add: (SpBoxLayout newLeftToRight
+				   spacing: 15;
+				   add: (SpBoxLayout newTopToBottom
+						    spacing: labelSpacing;
+						    add: 'Model initialization' expand: false;
+						    add: (SpGridLayout new
+								     borderWidth: 0;
+								     beColumnNotHomogeneous;
+								     column: 2 expand: true;
+								     build: [ :builder |
+										     builder
+											     add: 'Model';
+											     add: modelClassDropList;
+											     nextRow;
+											     add: 'Init method';
+											     add: initSelectorDropList;
+											     nextRow;
+											     add: 'Control method';
+											     add: controlSelectorDropList;
+											     nextRow;
+											     add: 'Stop condition';
+											     add: stopConditionDropList;
+											     nextRow;
+											     add: 'Max steps';
+											     add: finalStepInput;
+											     nextRow ];
+								     yourself);
+						    yourself);
+				   add: (SpBoxLayout newTopToBottom
+						    spacing: labelSpacing;
+						    add: 'Analysis' expand: false;
+						    add: (SpGridLayout new
+								     borderWidth: 0;
+								     beColumnNotHomogeneous;
+								     column: 2 expand: true;
+								     build: [ :builder |
+										     builder
+											     add: 'Design';
+											     add: fullFactorialButton;
+											     nextRow;
+											     add: '';
+											     add: oneFactorAtATimeButton;
+											     nextRow;
+											     add: 'Replicates';
+											     add: replicatesInput;
+											     nextRow;
+											     add: 'Master seed';
+											     add: masterSeedInput;
+											     nextRow ];
+								     yourself);
+						    yourself);
+				   yourself)
+		  height: 180;
+		  add: (SpBoxLayout newLeftToRight
+				   spacing: 15;
+				   add: (SpBoxLayout newTopToBottom
+						    spacing: labelSpacing;
+						    add: 'Parameters (inputs)' expand: false;
+						    add: parametersTable;
+						    yourself);
+				   add: recordingPresenter width: 300;
+				   yourself);
+		  add: runButton expand: false;
+		  yourself
 ]
 
 { #category : 'as yet unclassified' }
 CMSensitivityAnalysisSetupPresenter >> editSamplingFor: aParameter [
 
-	| presenter |	
+	| presenter |
 	presenter := CMSamplingEditorPresenter on: aParameter.
-	
+
 	presenter openDialog okAction: [
-		parameterSamplings
-			at: aParameter 
-			put: presenter sampler.
-			
-		self updateTable.
-		self updateRunButton ].
+		self sample: aParameter with: presenter sampler ]
 ]
 
 { #category : 'examples' }
 CMSensitivityAnalysisSetupPresenter >> example [
 	<script: 'self example'>
+]
+
+{ #category : 'accessing' }
+CMSensitivityAnalysisSetupPresenter >> finalStepInput [
+
+	^ finalStepInput
+]
+
+{ #category : 'accessing' }
+CMSensitivityAnalysisSetupPresenter >> fullFactorialButton [
+
+	^ fullFactorialButton
+]
+
+{ #category : 'accessing' }
+CMSensitivityAnalysisSetupPresenter >> initSelectorDropList [
+
+	^ initSelectorDropList
 ]
 
 { #category : 'initialization' }
@@ -197,31 +275,32 @@ CMSensitivityAnalysisSetupPresenter >> initializePresenters [
 		                         display: [ :each | each value ];
 		                         yourself.
 
-	probesList := self newTable
-		              hideColumnHeaders;
-		              addColumn:
-			              ((SpCheckBoxTableColumn evaluated: [ :probe |
-						                (simulation recordedProbesOf:
-								                 simulation cormasModel class) includes: probe ])
-				               onActivation: [ :probe |
-					               simulation
-						               record: probe
-						               of: simulation cormasModel class ];
-				               onDeactivation: [ :probe |
-					               simulation
-						               doNotRecord: probe
-						               of: simulation cormasModel class ];
-				               width: 20;
-				               yourself);
-		              addColumn:
-		              (SpStringTableColumn evaluated: [ :probe | probe ]);
-		              yourself.
+	fullFactorialButton := self newRadioButton
+		                       label: 'Full factorial';
+		                       yourself.
+	oneFactorAtATimeButton := self newRadioButton
+		                          label: 'One factor at a time';
+		                          yourself.
+	fullFactorialButton associatedRadioButtons:
+		{ oneFactorAtATimeButton }.
+	replicatesInput := self newNumberInput
+		                   beInteger;
+		                   minimum: 1;
+		                   number: 1;
+		                   yourself.
+	masterSeedInput := self newNumberInput
+		                   beInteger;
+		                   minimum: 0;
+		                   number: CMSensitivityAnalysis new masterSeed;
+		                   yourself.
+
+	recordingPresenter := self instantiate: CMRecordingPresenter.
+	recordingPresenter lastStepOnlyCheckBox state: true.
 
 	self initializeParametersTable.
 
 	runButton := self newButton
 		             icon: CMIcons runIcon;
-		             disable;
 		             yourself.
 
 	modelClassDropList selectedItem ifNotNil: [ :aClass |
@@ -233,16 +312,15 @@ CMSensitivityAnalysisSetupPresenter >> initializeWindow: aWindowPresenter [
 
 	super initializeWindow: aWindowPresenter.
 
-	aWindowPresenter 
+	aWindowPresenter
 		title: 'Sensitivity Analysis';
-		initialExtent: 800@600
+		initialExtent: 950 @ 650
 ]
 
 { #category : 'initialization' }
 CMSensitivityAnalysisSetupPresenter >> initializeWithModelClass: aClass [
 
 	simulation := CMSimulation for: aClass new.
-	analysis := CMSensitivityAnalysis on: simulation.
 
 	initSelectorDropList items: aClass availableInitSelectors.
 	controlSelectorDropList items: aClass availableControlSelectors.
@@ -254,7 +332,7 @@ CMSensitivityAnalysisSetupPresenter >> initializeWithModelClass: aClass [
 	finalStepInput number: 100.
 	self updateStopCondition.
 
-	probesList items: aClass probeSelectors.
+	recordingPresenter modelClass: aClass.
 	parametersTable items: (self relevantParametersFrom: aClass).
 
 	self initializeParameterSamplings.
@@ -262,11 +340,57 @@ CMSensitivityAnalysisSetupPresenter >> initializeWithModelClass: aClass [
 	self updateRunButton
 ]
 
+{ #category : 'accessing' }
+CMSensitivityAnalysisSetupPresenter >> masterSeedInput [
+
+	^ masterSeedInput
+]
+
+{ #category : 'private' }
+CMSensitivityAnalysisSetupPresenter >> newAnalysis [
+	"Return a new analysis of a copy of my simulation with the design, replicates, master seed, recording and parameter samplings chosen"
+
+	| run analysis |
+	run := simulation newSimulationWithSameSettings.
+	recordingPresenter applyTo: run.
+	analysis := (CMSensitivityAnalysis on: run)
+		            replicates: replicatesInput number;
+		            masterSeed: masterSeedInput number;
+		            recordedSteps: recordingPresenter recordedSteps;
+		            yourself.
+	oneFactorAtATimeButton state ifTrue: [ analysis beOneFactorAtATime ].
+	parameterSamplings keysAndValuesDo: [ :parameter :sampler |
+			analysis
+				parameter: parameter getterSelector
+				of: parameter targetClass
+				values: sampler generate ].
+	^ analysis
+]
+
+{ #category : 'accessing' }
+CMSensitivityAnalysisSetupPresenter >> oneFactorAtATimeButton [
+
+	^ oneFactorAtATimeButton
+]
+
 { #category : 'private' }
 CMSensitivityAnalysisSetupPresenter >> openRunner [
 
-	(self instantiate: CMSensitivityAnalysisRunnerPresenter on: analysis)
-		open
+	(self
+		 instantiate: CMSensitivityAnalysisRunnerPresenter
+		 on: self newAnalysis) open
+]
+
+{ #category : 'accessing' }
+CMSensitivityAnalysisSetupPresenter >> parametersTable [
+
+	^ parametersTable
+]
+
+{ #category : 'accessing' }
+CMSensitivityAnalysisSetupPresenter >> recordingPresenter [
+
+	^ recordingPresenter
 ]
 
 { #category : 'as yet unclassified' }
@@ -290,6 +414,12 @@ CMSensitivityAnalysisSetupPresenter >> relevantParametersFrom: aModelClass [
 	^ parameters 
 ]
 
+{ #category : 'accessing' }
+CMSensitivityAnalysisSetupPresenter >> replicatesInput [
+
+	^ replicatesInput
+]
+
 { #category : 'as yet unclassified' }
 CMSensitivityAnalysisSetupPresenter >> resetSamplingFor: aParameter [
 
@@ -299,16 +429,13 @@ CMSensitivityAnalysisSetupPresenter >> resetSamplingFor: aParameter [
 	self updateRunButton
 ]
 
-{ #category : 'private' }
-CMSensitivityAnalysisSetupPresenter >> sampleParameterValues [
-	"Vary in a new analysis each parameter that has a sampling, over the values it generates"
+{ #category : 'accessing' }
+CMSensitivityAnalysisSetupPresenter >> sample: aParameter with: aSampler [
+	"Vary aParameter in the analysis over the values aSampler generates"
 
-	analysis := CMSensitivityAnalysis on: simulation.
-	parameterSamplings keysAndValuesDo: [ :parameter :sampler |
-			analysis
-				parameter: parameter getterSelector
-				of: parameter targetClass
-				values: sampler generate ]
+	parameterSamplings at: aParameter put: aSampler.
+	self updateTable.
+	self updateRunButton
 ]
 
 { #category : 'as yet unclassified' }
@@ -321,10 +448,7 @@ CMSensitivityAnalysisSetupPresenter >> selectModel: aModelClass [
 CMSensitivityAnalysisSetupPresenter >> updateRunButton [
 
 	runButton label:
-		'Run ' , analysis numberOfRuns asString , ' simulations'.
-	parameterSamplings
-		ifEmpty: [ runButton disable ]
-		ifNotEmpty: [ runButton enable ]
+		'Run ' , self newAnalysis numberOfRuns asString , ' simulations'
 ]
 
 { #category : 'private' }
@@ -344,12 +468,9 @@ CMSensitivityAnalysisSetupPresenter >> updateStopCondition [
 CMSensitivityAnalysisSetupPresenter >> updateTable [
 
 	| items selectedItem |
-	
 	items := parametersTable items.
 	selectedItem := parametersTable selectedItem.
 
 	parametersTable items: items.
-	selectedItem ifNotNil: [ parametersTable selectItem: selectedItem ].
-	
-	self sampleParameterValues
+	selectedItem ifNotNil: [ parametersTable selectItem: selectedItem ]
 ]

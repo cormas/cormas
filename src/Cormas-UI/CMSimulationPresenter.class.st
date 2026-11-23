@@ -136,7 +136,9 @@ CMSimulationPresenter >> initializePresenters [
 	stopConditionPresenter := self instantiate: CMStopConditionPresenter.
 	randomNumbersPresenter := self instantiate:
 		                          CMSimulationInitRandomPresenter.
-	recordingPresenter := self instantiate: CMRecordingPresenter.
+	recordingPresenter := (self instantiate: CMRecordingPresenter)
+		                      modelClass: self cormasModel class;
+		                      yourself.
 
 	simulationInitializerPresenter := (self instantiate:
 			                                   CMSimulationInitializerPresenter)

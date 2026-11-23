@@ -1,5 +1,5 @@
 "
-I am the Recording page of a simulation window: I let the modeler choose how often data is recorded, and which probes are recorded.
+I let the modeler choose which steps are recorded (every n steps, or the last step only) and which probes are recorded, for a simulation window or for a sensitivity analysis.
 
 ## Responsibility:
 
@@ -10,23 +10,25 @@ I am the Recording page of a simulation window: I let the modeler choose how oft
 ## Collaborators:
 
 - `CMSimulationPresenter` shows me in its sidebar and asks me to `applyTo:` each simulation it initializes.
-- `CMSimulation` receives the recording interval and the probes that are switched off.
+- `CMSensitivityAnalysisSetupPresenter` applies me to the simulation of its analysis, and gives my `recordedSteps` to the analysis.
+- `CMSimulation` receives the recorded steps and the probes that are switched off.
 
 ## Public API and Key Messages
 
-- `applyTo: aSimulation`
+- `modelClass:` shows the probes of a model class, all of them recorded.
+- `applyTo: aSimulation` and `recordedSteps`
 - `doNotRecord:of:`, `record:of:` and `isRecorded:of:`, as the checkboxes do.
-- `probesTable`, `intervalInput`
+- `probesTable`, `intervalInput`, `lastStepOnlyCheckBox`
 
 ```smalltalk
-| application |
-application := CMSimulationApplication new.
-application cormasModel: CMMockModel new.
-(application newPresenter: CMRecordingPresenter) open
+(CMRecordingPresenter new
+	modelClass: CMMockModel;
+	yourself) open
 ```
 
 ## Internal Representation
 
+- `modelClass`: the model class whose probes and entity class probes I show.
 - `excludedProbes`: a `Set` of class -> selector associations, one for each row whose checkbox is unchecked.
 "
 Class {
@@ -35,7 +37,9 @@ Class {
 	#instVars : [
 		'intervalInput',
 		'probesTable',
-		'excludedProbes'
+		'excludedProbes',
+		'modelClass',
+		'lastStepOnlyCheckBox'
 	],
 	#category : 'Cormas-UI',
 	#package : 'Cormas-UI'
@@ -43,11 +47,18 @@ Class {
 
 { #category : 'accessing' }
 CMRecordingPresenter >> applyTo: aSimulation [
-	"Give aSimulation the recording interval and the probes that are not recorded. A class none of whose probes is recorded is not recorded at all"
+	"Give aSimulation the steps to record and the probes that are not recorded. A class none of whose probes is recorded is not recorded at all"
 
-	aSimulation recordEvery: intervalInput number.
+	aSimulation recordedSteps: self recordedSteps.
 	excludedProbes do: [ :each |
 		aSimulation doNotRecord: each value of: each key ]
+]
+
+{ #category : 'initialization' }
+CMRecordingPresenter >> connectPresenters [
+
+	lastStepOnlyCheckBox whenChangedDo: [ :isLastStepOnly |
+		intervalInput enabled: isLastStepOnly not ]
 ]
 
 { #category : 'initialization' }
@@ -58,7 +69,12 @@ CMRecordingPresenter >> defaultLayout [
 		  add: (SpBoxLayout newTopToBottom
 				   spacing: 1;
 				   add: 'Record every (steps)' expand: false;
-				   add: intervalInput expand: false;
+				   add: (SpBoxLayout newLeftToRight
+						    spacing: 10;
+						    add: intervalInput;
+						    add: lastStepOnlyCheckBox expand: false;
+						    yourself)
+				   expand: false;
 				   yourself)
 		  expand: false;
 		  add: (SpBoxLayout newTopToBottom
@@ -85,6 +101,9 @@ CMRecordingPresenter >> initialize [
 { #category : 'initialization' }
 CMRecordingPresenter >> initializePresenters [
 
+	lastStepOnlyCheckBox := self newCheckBox
+		                        label: 'Last step only';
+		                        yourself.
 	intervalInput := self newNumberInput
 		                 beInteger;
 		                 minimum: 1;
@@ -109,7 +128,6 @@ CMRecordingPresenter >> initializePresenters [
 		               (SpStringTableColumn
 			                title: 'Probe'
 			                evaluated: [ :row | row value ]);
-		               items: self probeRows;
 		               yourself
 ]
 
@@ -123,6 +141,21 @@ CMRecordingPresenter >> intervalInput [
 CMRecordingPresenter >> isRecorded: aSelector of: aClass [
 
 	^ (excludedProbes includes: aClass -> aSelector) not
+]
+
+{ #category : 'accessing' }
+CMRecordingPresenter >> lastStepOnlyCheckBox [
+
+	^ lastStepOnlyCheckBox
+]
+
+{ #category : 'accessing' }
+CMRecordingPresenter >> modelClass: aModelClass [
+	"Show the probes of aModelClass and of its entity classes, all of them recorded"
+
+	modelClass := aModelClass.
+	excludedProbes := Set new.
+	probesTable items: self probeRows
 ]
 
 { #category : 'private' }
@@ -155,9 +188,16 @@ CMRecordingPresenter >> record: aSelector of: aClass [
 CMRecordingPresenter >> recordableClasses [
 	"The model, then the entity classes that have probes, by name"
 
-	| modelClass |
-	modelClass := self application cormasModel class.
 	^ { modelClass } , ((modelClass allEntityClasses select: [ :each |
 		    each probeSelectors notEmpty ]) asSortedCollection: [ :a :b |
 		   a name < b name ]) asArray
+]
+
+{ #category : 'accessing' }
+CMRecordingPresenter >> recordedSteps [
+	"Return the steps to record, as chosen"
+
+	^ lastStepOnlyCheckBox state
+		  ifTrue: [ CMLastStepRecording new ]
+		  ifFalse: [ CMIntervalRecording every: intervalInput number ]
 ]

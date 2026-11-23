@@ -211,6 +211,12 @@ CMSensitivityAnalysis >> jsonWith: aRunMetadata [
 		  yourself
 ]
 
+{ #category : 'accessing' }
+CMSensitivityAnalysis >> masterSeed [
+
+	^ masterSeed
+]
+
 { #category : 'settings' }
 CMSensitivityAnalysis >> masterSeed: anInteger [
 	"Choose the seeds of the replicates from anInteger, so that the same master seed gives the same seeds"
@@ -303,6 +309,13 @@ CMSensitivityAnalysis >> recordEvery: anInteger [
 	"Record the data of each run at init, every anInteger steps, and at the last step, rather than at the last step only"
 
 	recordedSteps := CMIntervalRecording every: anInteger
+]
+
+{ #category : 'settings' }
+CMSensitivityAnalysis >> recordedSteps: aStepsRecording [
+	"Record the data of each run at the steps aStepsRecording chooses"
+
+	recordedSteps := aStepsRecording
 ]
 
 { #category : 'settings' }
