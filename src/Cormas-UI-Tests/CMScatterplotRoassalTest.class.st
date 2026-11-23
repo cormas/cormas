@@ -58,6 +58,23 @@ CMScatterplotRoassalTest >> testAPointOfAMethodThatIsNotAProbeOnXRaisesAnError [
 ]
 
 { #category : 'tests' }
+CMScatterplotRoassalTest >> testPointsAreLargeAndTranslucentSoThatThePointsBehindThemShow [
+
+	| canvas points |
+	chart := CMScatterplot new
+		         pointsX: #numberOfAliveCells y: #numberOfDeadCells;
+		         yourself.
+	canvas := chart
+		          canvasOf: (chart seriesDataOf: model in: simulation)
+		          hiding: Set new.
+	points := canvas allChildren select: [ :each |
+		          each isKindOf: RSEllipse ].
+	self assert: points notEmpty.
+	self assert: (points allSatisfy: [ :each |
+			 each extent x >= 8 and: [ each color alpha < 1 ] ])
+]
+
+{ #category : 'tests' }
 CMScatterplotRoassalTest >> testThePointsOfAllInstancesAreAPointForEachInstanceAtTheLastStep [
 
 	| plot energies |

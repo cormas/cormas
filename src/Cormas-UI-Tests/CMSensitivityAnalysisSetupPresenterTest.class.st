@@ -123,3 +123,14 @@ CMSensitivityAnalysisSetupPresenterTest >> testTheReplicatesHaveTheSeedsOfTheMas
 		assert: (self seedsOf: (presenter newAnalysis runIn: output))
 		equals: (self seedsOf: expected)
 ]
+
+{ #category : 'tests' }
+CMSensitivityAnalysisSetupPresenterTest >> testTheRunButtonCountsTheRunsOfTheChosenDesign [
+
+	self sample: #initialNumberOfCows values: #( 1 2 ).
+	self sample: #initialNumberOfGoats values: #( 1 2 3 ).
+	presenter oneFactorAtATimeButton click.
+	self assert: (presenter runButton label includesSubstring: ' 5 ').
+	presenter fullFactorialButton click.
+	self assert: (presenter runButton label includesSubstring: ' 6 ')
+]

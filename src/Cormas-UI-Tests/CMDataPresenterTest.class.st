@@ -48,3 +48,13 @@ CMDataPresenterTest >> testSaveDataToFile [
 	
 	self assert: file contents equals: fixture dataAsCsv
 ]
+
+{ #category : 'tests' }
+CMDataPresenterTest >> testTheSummaryCanBeHidden [
+
+	self assert:
+		(dataPresenter layout allPresenters includes: dataPresenter summary).
+	dataPresenter hideSummary.
+	self deny:
+		(dataPresenter layout allPresenters includes: dataPresenter summary)
+]

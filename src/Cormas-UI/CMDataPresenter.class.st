@@ -46,20 +46,23 @@ CMDataPresenter >> data [
 { #category : 'initialization' }
 CMDataPresenter >> defaultLayout [
 
-	^ SpBoxLayout newTopToBottom
-		  spacing: 3;
-		  add: (SpPanedLayout newTopToBottom
-				   positionOfSlider: 0.4;
-				   add: summary;
-				   add: table;
-				   yourself);
-		  add: saveToCsvButton expand: false;
-		  yourself
+	^ self layoutShowing: (SpPanedLayout newTopToBottom
+			   positionOfSlider: 0.4;
+			   add: summary;
+			   add: table;
+			   yourself)
 ]
 
 { #category : 'examples' }
 CMDataPresenter >> example [
 	<script: 'self example'>
+]
+
+{ #category : 'updating' }
+CMDataPresenter >> hideSummary [
+	"Show only the rows, for data that is not a data table and has no statistics"
+
+	self layout: (self layoutShowing: table)
 ]
 
 { #category : 'initialization' }
@@ -72,6 +75,16 @@ CMDataPresenter >> initializePresenters [
 		                   label: 'Save to CSV';
 		                   icon: CMIcons csvIcon;
 		                   yourself
+]
+
+{ #category : 'initialization' }
+CMDataPresenter >> layoutShowing: aPresenterOrLayout [
+
+	^ SpBoxLayout newTopToBottom
+		  spacing: 3;
+		  add: aPresenterOrLayout;
+		  add: saveToCsvButton expand: false;
+		  yourself
 ]
 
 { #category : 'accessing' }

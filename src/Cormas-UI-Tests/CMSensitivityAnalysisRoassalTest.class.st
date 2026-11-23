@@ -13,6 +13,13 @@ Class {
 }
 
 { #category : 'tests' }
+CMSensitivityAnalysisRoassalTest >> huesOfPointsIn: aCanvas [
+
+	^ ((aCanvas allChildren select: [ :each | each isKindOf: RSEllipse ])
+		   collect: [ :each | each color hue rounded ]) asSet
+]
+
+{ #category : 'tests' }
 CMSensitivityAnalysisRoassalTest >> setUp [
 
 	super setUp.
@@ -32,6 +39,38 @@ CMSensitivityAnalysisRoassalTest >> setUp [
 		            replicates: 2;
 		            yourself.
 	output := FileSystem memory / 'output'
+]
+
+{ #category : 'tests' }
+CMSensitivityAnalysisRoassalTest >> testAGroupingByCategoriesColorsThePointsInDistinctColors [
+
+	| canvas |
+	analysis
+		parameter: #weather
+		of: CMMockModel
+		values: #( #sunny #rainy ).
+	analysis runIn: output.
+	canvas := analysis
+		          canvasOf: 'numberOfAliveCells'
+		          against: 'initialNumberOfCows'
+		          groupedBy: 'weather'.
+	self assert: (self huesOfPointsIn: canvas) size equals: 2
+]
+
+{ #category : 'tests' }
+CMSensitivityAnalysisRoassalTest >> testAGroupingByNumbersColorsThePointsInShadesOfOneColor [
+
+	| canvas colors |
+	analysis runIn: output.
+	canvas := analysis
+		          canvasOf: 'numberOfAliveCells'
+		          against: 'initialNumberOfCows'
+		          groupedBy: 'initialNumberOfGoats'.
+	colors := ((canvas allChildren select: [ :each |
+		            each isKindOf: RSEllipse ]) collect: [ :each |
+		           each color ]) asSet.
+	self assert: colors size equals: 2.
+	self assert: (self huesOfPointsIn: canvas) size equals: 1
 ]
 
 { #category : 'tests' }
@@ -62,6 +101,19 @@ CMSensitivityAnalysisRoassalTest >> testAnOutputAgainstAParameterGroupedByAnothe
 ]
 
 { #category : 'tests' }
+CMSensitivityAnalysisRoassalTest >> testAnOutputAgainstAParameterHasNoLegend [
+
+	| texts |
+	analysis runIn: output.
+	texts := self textsOf: (analysis
+			          canvasOf: 'numberOfAliveCells'
+			          against: 'initialNumberOfCows').
+	self
+		assert: (texts count: [ :each | each = 'numberOfAliveCells' ])
+		equals: 1
+]
+
+{ #category : 'tests' }
 CMSensitivityAnalysisRoassalTest >> testAnOutputAgainstAParameterIsAPointForEachRun [
 
 	| canvas |
@@ -75,16 +127,6 @@ CMSensitivityAnalysisRoassalTest >> testAnOutputAgainstAParameterIsAPointForEach
 		equals: analysis numberOfRuns.
 	self assert: ((self textsOf: canvas) includesAll:
 			 #( 'numberOfAliveCells' 'initialNumberOfCows' ))
-]
-
-{ #category : 'tests' }
-CMSensitivityAnalysisRoassalTest >> testTheSpreadOfAnOutputIsNamedAfterTheValuesOfEachCombination [
-
-	| texts |
-	analysis runIn: output.
-	texts := self textsOf:
-		         (analysis spreadCanvasOf: 'numberOfAliveCells').
-	self assert: (texts includesAll: #( '1, 4' '1, 5' '2, 4' '2, 5' ))
 ]
 
 { #category : 'tests' }

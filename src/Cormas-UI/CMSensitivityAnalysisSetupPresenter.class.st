@@ -348,7 +348,7 @@ CMSensitivityAnalysisSetupPresenter >> masterSeedInput [
 
 { #category : 'private' }
 CMSensitivityAnalysisSetupPresenter >> newAnalysis [
-	"Return a new analysis of a copy of my simulation with the design, replicates, master seed, recording and parameter samplings chosen"
+	"Return a new analysis of a copy of my simulation with the design, replicates, master seed, recording and parameter samplings chosen. The design is read from the full factorial button, whose change updates the run button before the other button is selected"
 
 	| run analysis |
 	run := simulation newSimulationWithSameSettings.
@@ -358,7 +358,7 @@ CMSensitivityAnalysisSetupPresenter >> newAnalysis [
 		            masterSeed: masterSeedInput number;
 		            recordedSteps: recordingPresenter recordedSteps;
 		            yourself.
-	oneFactorAtATimeButton state ifTrue: [ analysis beOneFactorAtATime ].
+	fullFactorialButton state ifFalse: [ analysis beOneFactorAtATime ].
 	parameterSamplings keysAndValuesDo: [ :parameter :sampler |
 			analysis
 				parameter: parameter getterSelector
@@ -427,6 +427,12 @@ CMSensitivityAnalysisSetupPresenter >> resetSamplingFor: aParameter [
 	
 	self updateTable.
 	self updateRunButton
+]
+
+{ #category : 'accessing' }
+CMSensitivityAnalysisSetupPresenter >> runButton [
+
+	^ runButton
 ]
 
 { #category : 'accessing' }

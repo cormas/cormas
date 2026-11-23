@@ -404,39 +404,3 @@ CMSensitivityAnalysisTest >> testTheSameMasterSeedGivesTheSameResults [
 				assert: (second / each) contents
 				equals: (first / each) contents ]
 ]
-
-{ #category : 'tests - views' }
-CMSensitivityAnalysisTest >> testTheSpreadOfAnOutputHasTheValueOfEachReplicateForEachCombination [
-
-	| spreads |
-	analysis
-		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
-		replicates: 3.
-	analysis runIn: output.
-	spreads := analysis spreadsOf: 'numberOfAliveCells'.
-	self
-		assert: (spreads collect: [ :each | each key ]) asArray
-		equals: #( #( 1 ) #( 2 ) ).
-	self
-		assert: spreads last value asArray
-		equals: ((analysis results last: 3) collect: [ :row |
-				 row at: 'numberOfAliveCells' ]) asArray
-]
-
-{ #category : 'tests - views' }
-CMSensitivityAnalysisTest >> testTheSpreadOfOneFactorAtATimeKeepsCombinationsWithTheSameValues [
-
-	| spreads |
-	simulation cormasModel
-		initialNumberOfCows: 1;
-		initialNumberOfGoats: 4.
-	analysis
-		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
-		parameter: #initialNumberOfGoats of: CMMockModel values: #( 4 );
-		beOneFactorAtATime.
-	analysis runIn: output.
-	spreads := analysis spreadsOf: 'numberOfAliveCells'.
-	self
-		assert: (spreads collect: [ :each | each key ]) asArray
-		equals: #( #( 1 4 ) #( 2 4 ) #( 1 4 ) )
-]

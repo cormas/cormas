@@ -19,11 +19,12 @@ CMScatterplot >> place: aSeriesData in: someCategories [
 
 { #category : '*Cormas-UI-Roassal3' }
 CMScatterplot >> plotOf: somePoints color: aColor [
+	"Translucent points, so that the points behind them show"
 
-	^ (RSScatterPlot new
+	^ (CMPointsPlot new
 		   x: (somePoints collect: [ :each | each x ])
 		   y: (somePoints collect: [ :each | each y ]))
-		  color: aColor;
+		  color: (aColor alpha: 0.5);
 		  yourself
 ]
 
@@ -54,7 +55,11 @@ CMScatterplot >> pointsOf: aSeriesData [
 { #category : '*Cormas-UI-Roassal3' }
 CMScatterplot >> xCategoriesOf: someSeries [
 
-	^ self categoriesOf:
-		  ((someSeries flatCollect: [ :each | self pointsOf: each ])
-			   collect: [ :each | each x ])
+	| xValues |
+	xValues := (someSeries flatCollect: [ :each | self pointsOf: each ])
+		           collect: [ :each | each x ].
+	(xValues allSatisfy: [ :each | each isNumber ]) ifTrue: [ ^ #(  ) ].
+	^ xValues asOrderedCollection
+		  removeDuplicates;
+		  yourself
 ]

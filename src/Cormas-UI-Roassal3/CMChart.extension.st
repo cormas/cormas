@@ -78,15 +78,6 @@ CMChart >> canvasOf: someSeries hiding: aSetOfNames leavingRoomToGrow: aBoolean 
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
-CMChart >> categoriesOf: someValues [
-
-	(someValues allSatisfy: [ :each | each isNumber ]) ifTrue: [ ^ #(  ) ].
-	^ someValues asOrderedCollection
-		  removeDuplicates;
-		  yourself
-]
-
-{ #category : '*Cormas-UI-Roassal3' }
 CMChart >> color: someShapes as: someColors hiding: aBoolean [
 	"Give the shapes that draw a series and its legend box the colors they were drawn with, or make them transparent when the series is hidden. The box keeps its border, so that it shows the color of a hidden series"
 
@@ -98,15 +89,9 @@ CMChart >> color: someShapes as: someColors hiding: aBoolean [
 
 { #category : '*Cormas-UI-Roassal3' }
 CMChart >> place: aSeriesData in: someCategories [
-	"Return a copy of aSeriesData with each step at the position of its category on the x axis"
+	"Return a copy of aSeriesData at the positions of someCategories on the x axis, for a chart that has categories"
 
-	^ CMSeriesData
-		  named: aSeriesData name
-		  color: aSeriesData color
-		  steps:
-		  (aSeriesData steps collect: [ :each |
-			   someCategories indexOf: each ])
-		  values: aSeriesData values
+	^ self subclassResponsibility
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
@@ -239,9 +224,9 @@ CMChart >> ticksFrom: aLowest to: aHighest wholeNumbers: aBoolean [
 
 { #category : '*Cormas-UI-Roassal3' }
 CMChart >> xCategoriesOf: someSeries [
-	"Return the values on my x axis, in the order they first appear, when they are not all numbers; or else none, and my x axis is numeric"
+	"Return the values on my x axis, in the order they first appear, when they are not all numbers; or else none, and my x axis is numeric. Steps are numbers"
 
-	^ self categoriesOf: (someSeries flatCollect: [ :each | each steps ])
+	^ #(  )
 ]
 
 { #category : '*Cormas-UI-Roassal3' }

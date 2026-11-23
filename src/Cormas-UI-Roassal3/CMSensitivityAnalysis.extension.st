@@ -4,60 +4,73 @@ Extension { #name : 'CMSensitivityAnalysis' }
 CMSensitivityAnalysis >> canvasOf: anOutput against: aParameterName [
 	"Return a canvas with a point for each run that varies the parameter named aParameterName, its value on x and the value of anOutput on y"
 
-	^ self
-		  canvasOf: anOutput
-		  against: aParameterName
-		  showing: { (anOutput -> (self resultsVarying: aParameterName)) }
+	^ (self scatterplotOf: anOutput against: aParameterName)
+		  hideLegend;
+		  canvasOf: { (self
+				   seriesDataNamed: anOutput
+				   color: NSScale category10 range first
+				   showing: (self resultsVarying: aParameterName)
+				   of: anOutput
+				   against: aParameterName) }
+		  hiding: Set new
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
 CMSensitivityAnalysis >> canvasOf: anOutput against: aParameterName groupedBy: anotherParameterName [
-	"Return a canvas with a point for each run, the value of the parameter named aParameterName on x and the value of anOutput on y, in a color for each value of the parameter named anotherParameterName"
+	"Return a canvas with a point for each run, the value of the parameter named aParameterName on x and the value of anOutput on y, in a color for each value of the parameter named anotherParameterName, named in the legend"
 
-	^ self
-		  canvasOf: anOutput
-		  against: aParameterName
-		  showing:
-			  ((self resultsGroupedBy: anotherParameterName) associations
-				   collect: [ :each |
-					   anotherParameterName , ' = ' , each key asString -> each value ])
-]
-
-{ #category : '*Cormas-UI-Roassal3' }
-CMSensitivityAnalysis >> canvasOf: anOutput against: aParameterName showing: someNamedResults [
-	"Return a canvas with a series of points for each association of someNamedResults, from its name to the results of its runs"
-
-	^ (CMScatterplot new
-		   xTitle: aParameterName;
-		   yTitle: anOutput;
-		   yourself)
-		  canvasOf: (someNamedResults withIndexCollect: [ :each :index |
-					   CMSeriesData
-						   named: each key
-						   color: (NSScale category10 range atWrap: index)
-						   steps: (each value collect: [ :row | row at: 'run' ]) asArray
-						   values: (each value collect: [ :row |
-								    Point x: (row at: aParameterName) y: (row at: anOutput) ])
-								   asArray ])
+	| groups colors |
+	groups := self resultsGroupedBy: anotherParameterName.
+	colors := self colorsOf: groups keys.
+	^ (self scatterplotOf: anOutput against: aParameterName)
+		  canvasOf: (groups associations withIndexCollect: [ :each :index |
+					   self
+						   seriesDataNamed:
+						   anotherParameterName , ' = ' , each key asString
+						   color: (colors at: index)
+						   showing: each value
+						   of: anOutput
+						   against: aParameterName ])
 		  hiding: Set new
 ]
 
 { #category : '*Cormas-UI-Roassal3' }
-CMSensitivityAnalysis >> spreadCanvasOf: anOutput [
-	"Return a canvas with a box for each combination of my design, the spread of anOutput over its replicates, named after the values of my parameters"
+CMSensitivityAnalysis >> colorsOf: someValues [
+	"Return a color for each of someValues: distinct colors for categories, and shades of one color, from light to dark, for numbers"
 
-	| spreads |
-	spreads := self spreadsOf: anOutput.
-	^ (CMBoxplot new
-		   xTitle: (', ' join: self parameterNames);
-		   yTitle: anOutput;
-		   hideLegend;
-		   yourself)
-		  canvasOf: { (CMSeriesData
-				   named: anOutput
-				   color: NSScale category10 range first
-				   steps: (spreads collect: [ :each |
-						    ', ' join: (each key collect: [ :value | value asString ]) ])
-				   values: (spreads collect: [ :each | each value asArray ])) }
-		  hiding: Set new
+	| base light dark min max |
+	(someValues allSatisfy: [ :each | each isNumber ]) ifFalse: [
+			^ someValues withIndexCollect: [ :each :index |
+				  NSScale category10 range atWrap: index ] ].
+	base := NSScale category10 range first.
+	light := base mixed: 0.3 with: Color white.
+	dark := base mixed: 0.6 with: Color black.
+	min := someValues min.
+	max := someValues max.
+	^ someValues collect: [ :each |
+			  max = min
+				  ifTrue: [ base ]
+				  ifFalse: [ light mixed: max - each / (max - min) with: dark ] ]
+]
+
+{ #category : '*Cormas-UI-Roassal3' }
+CMSensitivityAnalysis >> scatterplotOf: anOutput against: aParameterName [
+
+	^ CMScatterplot new
+		  xTitle: aParameterName;
+		  yTitle: anOutput;
+		  yourself
+]
+
+{ #category : '*Cormas-UI-Roassal3' }
+CMSensitivityAnalysis >> seriesDataNamed: aString color: aColor showing: someResults of: anOutput against: aParameterName [
+	"Return the points of the runs of someResults, the value of the parameter named aParameterName on x and the value of anOutput on y"
+
+	^ CMSeriesData
+		  named: aString
+		  color: aColor
+		  steps: (someResults collect: [ :row | row at: 'run' ]) asArray
+		  values: (someResults collect: [ :row |
+				   Point x: (row at: aParameterName) y: (row at: anOutput) ])
+				  asArray
 ]

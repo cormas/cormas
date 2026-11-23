@@ -3,14 +3,14 @@ I show the views of a sensitivity analysis, drawn from its results: how an outpu
 
 ## Responsibility:
 
-- I let the user choose an output, a model probe, and what goes on x: the combinations of the design or one of its parameters.
-- With the combinations on x, I show the spread of the output over the replicates of each combination, as boxes.
-- With a parameter on x, I show a point per run, which a full factorial can color by the value of a second parameter.
+- I let the user choose an output, a model probe, and a parameter on x.
+- I show a point per run, its value of the parameter on x and of the output on y.
+- For a full factorial of several parameters, and only then, I offer to color the points by the value of a second parameter.
 
 ## Collaborators:
 
 - `CMSensitivityAnalysis`: its results, its outputs and parameters, and the canvases of its views.
-- `CMSensitivityAnalysisRunnerPresenter`: shows me in a tab once there are results.
+- `CMSensitivityAnalysisRunnerPresenter`: shows me in a tab once there are results of model probes against varied parameters.
 
 ## Public API and Key Messages
 
@@ -34,7 +34,7 @@ analysis runIn: FileSystem memory / 'output'.
 
 ## Internal Representation
 
-- `xDropList` holds `'Combination'` then the names of the parameters; `groupDropList` holds `'None'` then the names of the parameters, and is enabled only for a full factorial of several parameters with a parameter on x.
+- `groupDropList` holds `'None'` then the names of the parameters; it and `groupLabel` are visible only when the results can be grouped.
 "
 Class {
 	#name : 'CMSensitivityAnalysisChartPresenter',
@@ -44,7 +44,8 @@ Class {
 		'outputDropList',
 		'xDropList',
 		'groupDropList',
-		'chartView'
+		'chartView',
+		'groupLabel'
 	],
 	#category : 'Cormas-UI-SensitivityAnalysis',
 	#package : 'Cormas-UI',
@@ -81,20 +82,11 @@ CMSensitivityAnalysisChartPresenter >> chartView [
 	^ chartView
 ]
 
-{ #category : 'private' }
-CMSensitivityAnalysisChartPresenter >> combinationItem [
-
-	^ 'Combination'
-]
-
 { #category : 'initialization' }
 CMSensitivityAnalysisChartPresenter >> connectPresenters [
 
 	outputDropList whenSelectedItemChangedDo: [ :output | self drawChart ].
-	xDropList whenSelectedItemChangedDo: [ :name |
-			groupDropList enabled:
-				(analysis canGroupResults and: [ name ~= self combinationItem ]).
-			self drawChart ].
+	xDropList whenSelectedItemChangedDo: [ :name | self drawChart ].
 	groupDropList whenSelectedItemChangedDo: [ :name | self drawChart ]
 ]
 
@@ -110,7 +102,7 @@ CMSensitivityAnalysisChartPresenter >> defaultLayout [
 				   add: outputDropList;
 				   add: 'On x:' expand: false;
 				   add: xDropList;
-				   add: 'Colored by:' expand: false;
+				   add: groupLabel expand: false;
 				   add: groupDropList;
 				   yourself)
 		  expand: false;
@@ -120,14 +112,12 @@ CMSensitivityAnalysisChartPresenter >> defaultLayout [
 
 { #category : 'private' }
 CMSensitivityAnalysisChartPresenter >> drawChart [
-	"Show the chosen output against the combinations or against a parameter, colored by a second parameter when one is chosen and can be"
+	"Show the chosen output against the chosen parameter, colored by a second parameter when one is chosen"
 
 	| output x |
 	output := outputDropList selectedItem.
 	x := xDropList selectedItem.
-	x = self combinationItem ifTrue: [
-		^ chartView canvas: (analysis spreadCanvasOf: output) ].
-	(groupDropList isEnabled and: [
+	(groupDropList isVisible and: [
 		 groupDropList selectedItem ~= self noGroupItem ]) ifTrue: [
 			^ chartView canvas: (analysis
 					   canvasOf: output
@@ -149,13 +139,16 @@ CMSensitivityAnalysisChartPresenter >> initializePresenters [
 		                  items: analysis outputs;
 		                  yourself.
 	xDropList := self newDropList
-		             items:
-			             { self combinationItem } , analysis parameterNames;
+		             items: analysis parameterNames;
 		             yourself.
+	groupLabel := self newLabel
+		              label: 'Colored by:';
+		              visible: analysis canGroupResults;
+		              yourself.
 	groupDropList := self newDropList
 		                 items:
 			                 { self noGroupItem } , analysis parameterNames;
-		                 disable;
+		                 visible: analysis canGroupResults;
 		                 yourself.
 	chartView := SpRoassalInspectorPresenter new.
 	self drawChart

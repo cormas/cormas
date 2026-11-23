@@ -20,7 +20,7 @@ I am a sensitivity analysis: I run a simulation many times, with other parameter
 - `beFullFactorial` (the default) or `beOneFactorAtATime`, `replicates:`, `masterSeed:`, `recordEvery:`.
 - `run` and `runIn:` run in this process and return the folder of the analysis; `runInBackground` runs in another one, and `pause`, `resume` and `stop` act between runs.
 - `results`, `numberOfRuns`, `numberOfCompletedRuns`, `whenProgressDo:` and `whenFinishedDo:` follow it.
-- `outputs`, `spreadsOf:`, `resultsVarying:` and `resultsGroupedBy:` give the data of the views of its results, which `spreadCanvasOf:`, `canvasOf:against:` and `canvasOf:against:groupedBy:` draw.
+- `outputs`, `resultsVarying:` and `resultsGroupedBy:` give the data of the views of its results, which `canvasOf:against:` and `canvasOf:against:groupedBy:` draw.
 
 ```
 | simulation |
@@ -502,19 +502,6 @@ CMSensitivityAnalysis >> seeds [
 CMSensitivityAnalysis >> setSimulation: aSimulation [
 
 	simulation := aSimulation
-]
-
-{ #category : 'views' }
-CMSensitivityAnalysis >> spreadsOf: anOutput [
-	"Return, for each combination of my design that has results, in order, an association from the values of my parameters to the values of anOutput in the runs of its replicates"
-
-	| spreads |
-	spreads := OrderedDictionary new.
-	results do: [ :row |
-			(spreads at: (row at: 'run') - 1 // replicates ifAbsentPut: [
-					 (self parameterNames collect: [ :each | row at: each ])
-					 -> OrderedCollection new ]) value add: (row at: anOutput) ].
-	^ spreads values
 ]
 
 { #category : 'running' }

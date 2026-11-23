@@ -41,34 +41,31 @@ CMSensitivityAnalysisChartPresenterTest >> setUp [
 ]
 
 { #category : 'tests' }
-CMSensitivityAnalysisChartPresenterTest >> testAFullFactorialCanGroupThePointsByAParameter [
+CMSensitivityAnalysisChartPresenterTest >> testAFullFactorialCanColorThePointsByAParameter [
 
 	| presenter |
 	analysis runIn: output.
 	presenter := CMSensitivityAnalysisChartPresenter on: analysis.
+	self assert: presenter groupDropList isVisible.
 	self
 		assert: presenter groupDropList items asArray
 		equals: #( 'None' 'initialNumberOfCows' 'initialNumberOfGoats' ).
-	self deny: presenter groupDropList isEnabled.
-	presenter xDropList selectItem: 'initialNumberOfCows'.
-	self assert: presenter groupDropList isEnabled.
 	presenter groupDropList selectItem: 'initialNumberOfGoats'.
 	self assert: (self pointsIn: presenter) equals: analysis numberOfRuns
 ]
 
 { #category : 'tests' }
-CMSensitivityAnalysisChartPresenterTest >> testOneFactorAtATimeCannotGroupThePoints [
+CMSensitivityAnalysisChartPresenterTest >> testOneFactorAtATimeCannotColorThePoints [
 
 	| presenter |
 	analysis beOneFactorAtATime.
 	analysis runIn: output.
 	presenter := CMSensitivityAnalysisChartPresenter on: analysis.
-	presenter xDropList selectItem: 'initialNumberOfCows'.
-	self deny: presenter groupDropList isEnabled
+	self deny: presenter groupDropList isVisible
 ]
 
 { #category : 'tests' }
-CMSensitivityAnalysisChartPresenterTest >> testTheViewsShowTheOutputsAgainstTheCombinationsOrAParameter [
+CMSensitivityAnalysisChartPresenterTest >> testTheViewsShowTheOutputsAgainstAParameter [
 
 	| presenter |
 	analysis runIn: output.
@@ -78,9 +75,8 @@ CMSensitivityAnalysisChartPresenterTest >> testTheViewsShowTheOutputsAgainstTheC
 		equals: #( 'numberOfAliveCells' 'numberOfDeadCells' ).
 	self
 		assert: presenter xDropList items asArray
-		equals:
-		#( 'Combination' 'initialNumberOfCows' 'initialNumberOfGoats' ).
-	self assert: (self pointsIn: presenter) equals: 0.
+		equals: #( 'initialNumberOfCows' 'initialNumberOfGoats' ).
+	self assert: (self pointsIn: presenter) equals: analysis numberOfRuns.
 	presenter xDropList selectItem: 'initialNumberOfGoats'.
 	self assert: (self pointsIn: presenter) equals: analysis numberOfRuns
 ]

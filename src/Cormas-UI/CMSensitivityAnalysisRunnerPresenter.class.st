@@ -142,28 +142,29 @@ CMSensitivityAnalysisRunnerPresenter >> hideCharts [
 CMSensitivityAnalysisRunnerPresenter >> initializePresenters [
 
 	runButton := self newButton.
-		
+
 	stopButton := self newButton
-		label: 'Stop';
-		icon: CMIcons stopIcon;
-		yourself.
-		
+		              label: 'Stop';
+		              icon: CMIcons stopIcon;
+		              yourself.
+
 	progressBar := self newProgressBar
-		fixedAt: 0;
-		yourself.
-	
+		               fixedAt: 0;
+		               yourself.
+
 	progressLabel := self newLabel
-		label: 'Progress';
-		yourself.
-		
+		                 label: 'Progress';
+		                 yourself.
+
 	table := self instantiate: CMDataPresenter.
 	table columnNames: #(  ).
 	table modelClass: analysis modelClass.
-		
+	table hideSummary.
+
 	notebook := self newNotebook.
 	notebook addPageTitle: 'Data' provider: [ table ].
-	
-	self beInInitialMode.
+
+	self beInInitialMode
 ]
 
 { #category : 'initialization' }
@@ -184,10 +185,11 @@ CMSensitivityAnalysisRunnerPresenter >> setModelBeforeInitialization: anAnalysis
 
 { #category : 'updating' }
 CMSensitivityAnalysisRunnerPresenter >> showCharts [
-	"Show the views of the analysis once it has results of model probes"
+	"Show the views of the analysis once it has results of model probes against varied parameters"
 
-	(analysis results isEmpty or: [ analysis outputs isEmpty ]) ifTrue: [
-		^ self ].
+	(analysis results isEmpty or: [
+		 analysis outputs isEmpty or: [ analysis parameterNames isEmpty ] ])
+		ifTrue: [ ^ self ].
 	notebook
 		addPageTitle: 'Analysis'
 		provider: [
