@@ -28,7 +28,7 @@ analysis := (CMSensitivityAnalysis on: simulation)
 	parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 3 );
 	replicates: 5;
 	yourself.
-analysis runIn: FileSystem memory / 'output'.
+analysis run.
 (CMSensitivityAnalysisChartPresenter on: analysis) open
 ```
 
@@ -72,7 +72,7 @@ CMSensitivityAnalysisChartPresenter class >> scriptCowsAndGoats [
 		            values: #( 1 2 );
 		            replicates: 5;
 		            yourself.
-	analysis runIn: FileSystem memory / 'output'.
+	analysis run.
 	(self on: analysis) open
 ]
 

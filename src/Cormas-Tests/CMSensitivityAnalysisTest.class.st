@@ -17,6 +17,12 @@ CMSensitivityAnalysisTest >> csvOf: aFile [
 	^ aFile contents lines collect: [ :each | (each splitOn: $,) asArray ]
 ]
 
+{ #category : 'tests' }
+CMSensitivityAnalysisTest >> jsonOf: anAnalysisFolder [
+
+	^ STONJSON fromString: (anAnalysisFolder / 'analysis.json') contents
+]
+
 { #category : 'running' }
 CMSensitivityAnalysisTest >> setUp [
 
@@ -47,7 +53,7 @@ CMSensitivityAnalysisTest >> testAFullFactorialRunsEachCombinationOfValuesForEac
 		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
 		parameter: #initialEnergy of: CMMockCow values: #( 0.5 1 );
 		replicates: 2.
-	results := self csvOf: (analysis runIn: output) / 'results.csv'.
+	results := self csvOf: (analysis run; exportTo: output) / 'results.csv'.
 	self
 		assert: (results first first: 5)
 		equals: #( 'run' 'replicate' 'seed' 'initialNumberOfCows'
@@ -64,7 +70,7 @@ CMSensitivityAnalysisTest >> testAFullFactorialShowsAParameterWithAllTheRuns [
 	analysis
 		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
 		parameter: #initialNumberOfGoats of: CMMockModel values: #( 4 ).
-	analysis runIn: output.
+	analysis run; exportTo: output.
 	self
 		assert:
 			((analysis resultsVarying: 'initialNumberOfGoats') collect: [ :row |
@@ -91,7 +97,7 @@ CMSensitivityAnalysisTest >> testAReplicateHasTheSameSeedInEveryCombination [
 	analysis
 		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
 		replicates: 3.
-	results := (self csvOf: (analysis runIn: output) / 'results.csv')
+	results := (self csvOf: (analysis run; exportTo: output) / 'results.csv')
 		           allButFirst.
 	seedsPerReplicate := (results groupedBy: [ :each | each at: 2 ])
 		                     collect: [ :rows |
@@ -114,7 +120,7 @@ CMSensitivityAnalysisTest >> testAnAnalysisInAnotherProcessCanBePausedAndResumed
 		whenProgressDo: [ :each |
 			each numberOfCompletedRuns = 1 ifTrue: [ each pause ] ];
 		whenFinishedDo: [ :each | finished signal ].
-	[ analysis runIn: output ] fork.
+	analysis runInBackground.
 	self
 		assert: (finished waitTimeoutMilliseconds: 500)
 		description: 'A paused analysis must not finish'.
@@ -122,33 +128,6 @@ CMSensitivityAnalysisTest >> testAnAnalysisInAnotherProcessCanBePausedAndResumed
 	analysis resume.
 	self deny: (finished waitTimeoutMilliseconds: 5000).
 	self assert: analysis numberOfCompletedRuns equals: 2
-]
-
-{ #category : 'tests' }
-CMSensitivityAnalysisTest >> testEachRunIsSavedInAFolderOfTheAnalysis [
-
-	| folder results run |
-	analysis
-		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
-		replicates: 2.
-	folder := analysis runIn: output.
-	self
-		assert:
-		(folder children collect: [ :each | each basename ]) sorted asArray
-		equals:
-			#( 'analysis.json' 'results-CMMockCell.csv'
-			   'results-CMMockCow.csv' 'results-CMMockGoat.csv'
-			   'results.csv' 'run-1' 'run-2' 'run-3' 'run-4' ).
-	results := self csvOf: folder / 'results.csv'.
-	run := STONJSON fromString: (folder / 'run-3' / 'run.json') contents.
-	self
-		assert:
-		(((run at: 'parameters') at: 'CMMockModel') at:
-			 'initialNumberOfCows')
-		equals: 2.
-	self
-		assert: (run at: 'seed') printString
-		equals: ((results at: 4) at: 3)
 ]
 
 { #category : 'tests' }
@@ -160,7 +139,7 @@ CMSensitivityAnalysisTest >> testEntityResultsHaveTheFinalValuesOfEachInstance [
 		of: CMMockModel
 		values: #( 1 2 ).
 	results := self csvOf:
-		           (analysis runIn: output) / 'results-CMMockCow.csv'.
+		           (analysis run; exportTo: output) / 'results-CMMockCow.csv'.
 	self
 		assert: results first
 		equals: #( 'run' 'replicate' 'seed' 'initialNumberOfCows'
@@ -174,6 +153,12 @@ CMSensitivityAnalysisTest >> testEntityResultsHaveTheFinalValuesOfEachInstance [
 ]
 
 { #category : 'tests' }
+CMSensitivityAnalysisTest >> testNothingCanBeExportedBeforeARun [
+
+	self should: [ analysis exportTo: output ] raise: Error
+]
+
+{ #category : 'tests' }
 CMSensitivityAnalysisTest >> testOneFactorAtATimeKeepsTheOtherParametersAtTheirValuesInTheSimulation [
 
 	| results |
@@ -182,7 +167,7 @@ CMSensitivityAnalysisTest >> testOneFactorAtATimeKeepsTheOtherParametersAtTheirV
 		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
 		parameter: #initialNumberOfGoats of: CMMockModel values: #( 4 );
 		beOneFactorAtATime.
-	results := self csvOf: (analysis runIn: output) / 'results.csv'.
+	results := self csvOf: (analysis run; exportTo: output) / 'results.csv'.
 	self
 		assert: (results allButFirst collect: [ :each |
 				 (each at: 4) , ' ' , (each at: 5) ]) asArray
@@ -196,7 +181,7 @@ CMSensitivityAnalysisTest >> testOneFactorAtATimeShowsAParameterWithTheRunsVaryi
 		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
 		parameter: #initialNumberOfGoats of: CMMockModel values: #( 1 2 4 );
 		beOneFactorAtATime.
-	analysis runIn: output.
+	analysis run; exportTo: output.
 	self
 		assert:
 			((analysis resultsVarying: 'initialNumberOfGoats') collect: [ :row |
@@ -220,7 +205,7 @@ CMSensitivityAnalysisTest >> testResultsGroupedByAParameterAreInTheOrderOfItsVal
 	analysis
 		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
 		parameter: #initialNumberOfGoats of: CMMockModel values: #( 5 4 ).
-	analysis runIn: output.
+	analysis run; exportTo: output.
 	groups := analysis resultsGroupedBy: 'initialNumberOfGoats'.
 	self assert: groups keys asArray equals: #( 5 4 ).
 	self
@@ -233,18 +218,28 @@ CMSensitivityAnalysisTest >> testResultsGroupedByAParameterAreInTheOrderOfItsVal
 { #category : 'tests' }
 CMSensitivityAnalysisTest >> testResultsHaveTheFinalValueOfEachModelProbe [
 
-	| folder results data |
+	| results run |
 	analysis
-		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
-		recordEvery: 1.
-	folder := analysis runIn: output.
-	results := self csvOf: folder / 'results.csv'.
-	data := self csvOf: folder / 'run-2' / 'data.csv'.
+		parameter: #initialNumberOfCows
+		of: CMMockModel
+		values: #( 1 2 ).
+	results := self csvOf: (analysis
+			            run;
+			            exportTo: output) / 'results.csv'.
 	self
 		assert: results first
 		equals: #( 'run' 'replicate' 'seed' 'initialNumberOfCows'
 			   'step' 'numberOfAliveCells' 'numberOfDeadCells' ).
-	self assert: (results last allButFirst: 4) equals: data last
+	run := analysis newRun.
+	run cormasModel initialNumberOfCows: 2.
+	run
+		randomSeed: (results last at: 3) asNumber;
+		initializeSimulation;
+		runUntilStopped.
+	self
+		assert: (results last allButFirst: 4)
+		equals:
+		(run modelData rows last collect: [ :each | each printString ])
 ]
 
 { #category : 'tests - views' }
@@ -254,7 +249,7 @@ CMSensitivityAnalysisTest >> testResultsOfOneFactorAtATimeCannotBeGrouped [
 		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
 		parameter: #initialNumberOfGoats of: CMMockModel values: #( 4 );
 		beOneFactorAtATime.
-	analysis runIn: output.
+	analysis run; exportTo: output.
 	self
 		should: [ analysis resultsGroupedBy: 'initialNumberOfGoats' ]
 		raise: Error
@@ -263,36 +258,33 @@ CMSensitivityAnalysisTest >> testResultsOfOneFactorAtATimeCannotBeGrouped [
 ]
 
 { #category : 'tests' }
-CMSensitivityAnalysisTest >> testRunFoldersAreNumberedSoThatTheyAreSortedInOrder [
+CMSensitivityAnalysisTest >> testRunningWritesNothing [
+	"The mock model has no folder to write in"
 
-	| folder |
-	analysis replicates: 10.
-	folder := analysis runIn: output.
-	self assert: (folder / 'run-01') exists.
-	self assert: (folder / 'run-10') exists
+	analysis
+		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
+		run.
+	self assert: analysis results size equals: 2
 ]
 
 { #category : 'tests' }
 CMSensitivityAnalysisTest >> testRunsRecordEveryStepsWhenAsked [
 
-	analysis recordEvery: 1.
+	analysis recordEvery: 2.
 	self
-		assert:
-		((analysis runIn: output) / 'run-1' / 'data.csv') contents lines
-			size
-		equals: 4
+		assert: (((self jsonOf: (analysis
+					    run;
+					    exportTo: output)) at: 'recording') at: 'steps')
+		equals: (Dictionary with: 'type' -> 'interval' with: 'every' -> 2)
 ]
 
 { #category : 'tests' }
 CMSensitivityAnalysisTest >> testRunsRecordTheirLastStepOnly [
 
-	| run |
-	run := (analysis runIn: output) / 'run-1'.
-	self assert: (run / 'data.csv') contents lines size equals: 2.
 	self
-		assert:
-			(((STONJSON fromString: (run / 'run.json') contents) at:
-				  'recording') at: 'steps')
+		assert: (((self jsonOf: (analysis
+					    run;
+					    exportTo: output)) at: 'recording') at: 'steps')
 		equals: (Dictionary with: 'type' -> 'last')
 ]
 
@@ -304,7 +296,7 @@ CMSensitivityAnalysisTest >> testRunsTakeTheSettingsOfTheSimulation [
 		doNotRecord: CMMockGoat;
 		doNotRecord: #numberOfDeadCells of: CMMockModel;
 		stopAfterStep: 1.
-	folder := analysis runIn: output.
+	folder := analysis run; exportTo: output.
 	results := self csvOf: folder / 'results.csv'.
 	self
 		assert: results first
@@ -322,9 +314,10 @@ CMSensitivityAnalysisTest >> testStoppingKeepsTheResultsOfTheRunsDone [
 		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 3 );
 		whenProgressDo: [ :each | each stop ];
 		whenFinishedDo: [ :each | finished := finished + 1 ].
-	folder := analysis runIn: output.
+	folder := analysis
+		          run;
+		          exportTo: output.
 	self assert: (folder / 'results.csv') contents lines size equals: 2.
-	self deny: (folder / 'run-2') exists.
 	self assert: finished equals: 1
 ]
 
@@ -337,7 +330,7 @@ CMSensitivityAnalysisTest >> testTheAnalysisIsDescribedInAnalysisJson [
 		replicates: 3;
 		beOneFactorAtATime.
 	json := STONJSON fromString:
-		        ((analysis runIn: output) / 'analysis.json') contents.
+		        ((analysis run; exportTo: output) / 'analysis.json') contents.
 	self assert: (json at: 'model') equals: 'CMMockModel'.
 	self assert: (json at: 'init') equals: 'init'.
 	self
@@ -352,6 +345,39 @@ CMSensitivityAnalysisTest >> testTheAnalysisIsDescribedInAnalysisJson [
 		assert: ((json at: 'recording') at: 'steps')
 		equals: (Dictionary with: 'type' -> 'last').
 	self deny: (json includesKey: 'seed')
+]
+
+{ #category : 'tests' }
+CMSensitivityAnalysisTest >> testTheExportHasTheDesignAndTheResults [
+
+	| folder |
+	analysis
+		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
+		replicates: 2;
+		run.
+	folder := analysis exportTo: output.
+	self
+		assert:
+		(folder children collect: [ :each | each basename ]) sorted asArray
+		equals:
+			#( 'analysis.json' 'results-CMMockCell.csv'
+			   'results-CMMockCow.csv' 'results-CMMockGoat.csv'
+			   'results.csv' ).
+	self assert: (self csvOf: folder / 'results.csv') size equals: 5
+]
+
+{ #category : 'tests' }
+CMSensitivityAnalysisTest >> testTheExportSizeIsTheSizeOfTheExportedFiles [
+
+	| folder |
+	analysis
+		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
+		run.
+	folder := analysis exportTo: output.
+	self
+		assert: analysis exportSize
+		equals:
+		(folder children inject: 0 into: [ :sum :each | sum + each size ])
 ]
 
 { #category : 'tests' }
@@ -378,7 +404,7 @@ CMSensitivityAnalysisTest >> testTheParametersOfTheSimulationAreKeptAfterTheAnal
 	analysis
 		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 );
 		parameter: #initialEnergy of: CMMockCow values: #( 1 );
-		runIn: output.
+		run; exportTo: output.
 	self assert: simulation cormasModel parameterValues equals: before.
 	self assert: CMMockCow initialEnergy equals: 0.7
 ]
@@ -390,14 +416,14 @@ CMSensitivityAnalysisTest >> testTheSameMasterSeedGivesTheSameResults [
 	analysis
 		parameter: #initialNumberOfCows of: CMMockModel values: #( 1 2 );
 		replicates: 2.
-	first := analysis runIn: output / 'first'.
+	first := analysis run; exportTo: output / 'first'.
 	second := (CMSensitivityAnalysis on: simulation)
 		          parameter: #initialNumberOfCows
 		          of: CMMockModel
 		          values: #( 1 2 );
 		          replicates: 2;
 		          masterSeed: 42;
-		          runIn: output / 'second'.
+		          run; exportTo: output / 'second'.
 	#( 'results.csv' 'results-CMMockCow.csv' 'results-CMMockGoat.csv' )
 		do: [ :each |
 			self

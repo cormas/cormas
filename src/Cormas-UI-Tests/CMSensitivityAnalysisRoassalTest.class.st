@@ -49,7 +49,7 @@ CMSensitivityAnalysisRoassalTest >> testAGroupingByCategoriesColorsThePointsInDi
 		parameter: #weather
 		of: CMMockModel
 		values: #( #sunny #rainy ).
-	analysis runIn: output.
+	analysis run.
 	canvas := analysis
 		          canvasOf: 'numberOfAliveCells'
 		          against: 'initialNumberOfCows'
@@ -61,7 +61,7 @@ CMSensitivityAnalysisRoassalTest >> testAGroupingByCategoriesColorsThePointsInDi
 CMSensitivityAnalysisRoassalTest >> testAGroupingByNumbersColorsThePointsInShadesOfOneColor [
 
 	| canvas colors |
-	analysis runIn: output.
+	analysis run.
 	canvas := analysis
 		          canvasOf: 'numberOfAliveCells'
 		          against: 'initialNumberOfCows'
@@ -81,7 +81,7 @@ CMSensitivityAnalysisRoassalTest >> testAParameterWhoseValuesAreNotNumbersIsShow
 		parameter: #weather
 		of: CMMockModel
 		values: #( #sunny #rainy ).
-	analysis runIn: output.
+	analysis run.
 	texts := self textsOf:
 		         (analysis canvasOf: 'numberOfAliveCells' against: 'weather').
 	self assert: (texts includesAll: #( 'sunny' 'rainy' ))
@@ -91,7 +91,7 @@ CMSensitivityAnalysisRoassalTest >> testAParameterWhoseValuesAreNotNumbersIsShow
 CMSensitivityAnalysisRoassalTest >> testAnOutputAgainstAParameterGroupedByAnotherNamesEachValueOfTheOther [
 
 	| texts |
-	analysis runIn: output.
+	analysis run.
 	texts := self textsOf: (analysis
 			          canvasOf: 'numberOfAliveCells'
 			          against: 'initialNumberOfCows'
@@ -104,7 +104,7 @@ CMSensitivityAnalysisRoassalTest >> testAnOutputAgainstAParameterGroupedByAnothe
 CMSensitivityAnalysisRoassalTest >> testAnOutputAgainstAParameterHasNoLegend [
 
 	| texts |
-	analysis runIn: output.
+	analysis run.
 	texts := self textsOf: (analysis
 			          canvasOf: 'numberOfAliveCells'
 			          against: 'initialNumberOfCows').
@@ -117,7 +117,7 @@ CMSensitivityAnalysisRoassalTest >> testAnOutputAgainstAParameterHasNoLegend [
 CMSensitivityAnalysisRoassalTest >> testAnOutputAgainstAParameterIsAPointForEachRun [
 
 	| canvas |
-	analysis runIn: output.
+	analysis run.
 	canvas := analysis
 		          canvasOf: 'numberOfAliveCells'
 		          against: 'initialNumberOfCows'.

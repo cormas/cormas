@@ -10,7 +10,7 @@ I am the window where a modeler sets up a sensitivity analysis of a model, and o
 ## Collaborators:
 
 - `CMSensitivityAnalysis` is the analysis I build, on a copy of my simulation.
-- `CMRecordingPresenter` chooses the recorded steps and probes.
+- `CMRecordingPresenter` chooses the recorded steps and probes, the probes of the entity classes switched off by default.
 - `CMSamplingEditorPresenter` edits the sampling of one parameter.
 - `CMSensitivityAnalysisRunnerPresenter` runs the analysis I build.
 
@@ -332,7 +332,9 @@ CMSensitivityAnalysisSetupPresenter >> initializeWithModelClass: aClass [
 	finalStepInput number: 100.
 	self updateStopCondition.
 
-	recordingPresenter modelClass: aClass.
+	recordingPresenter
+		modelClass: aClass;
+		doNotRecordEntityProbes.
 	parametersTable items: (self relevantParametersFrom: aClass).
 
 	self initializeParameterSamplings.

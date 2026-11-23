@@ -3,7 +3,7 @@ I let the modeler choose which steps are recorded (every n steps, or the last st
 
 ## Responsibility:
 
-- I show a flat table with a row for each probe of the model and of the entity classes, the model first, then the classes by name, each row with a checkbox. A probe inherited from another class of the model has a row only in that class, and switching it off there switches it off in the subclasses.
+- I show a table of the model probes and a table of the probes of the entity classes, by class name, each row with a checkbox. A probe inherited from another class of the model has a row only in that class, and switching it off there switches it off in the subclasses.
 - A class none of whose probes is recorded is not recorded at all.
 - I keep the choices across inits, and give them to each new simulation.
 
@@ -15,10 +15,10 @@ I let the modeler choose which steps are recorded (every n steps, or the last st
 
 ## Public API and Key Messages
 
-- `modelClass:` shows the probes of a model class, all of them recorded.
+- `modelClass:` shows the probes of a model class, all of them recorded; `doNotRecordEntityProbes` switches off the probes of the entity classes, which may produce a lot of data.
 - `applyTo: aSimulation` and `recordedSteps`
 - `doNotRecord:of:`, `record:of:` and `isRecorded:of:`, as the checkboxes do.
-- `probesTable`, `intervalInput`, `lastStepOnlyCheckBox`
+- `modelProbesTable`, `entityProbesTable`, `intervalInput`, `lastStepOnlyCheckBox`
 
 ```smalltalk
 (CMRecordingPresenter new
@@ -36,7 +36,8 @@ Class {
 	#superclass : 'SpPresenter',
 	#instVars : [
 		'intervalInput',
-		'probesTable',
+		'modelProbesTable',
+		'entityProbesTable',
 		'excludedProbes',
 		'modelClass',
 		'lastStepOnlyCheckBox'
@@ -79,8 +80,14 @@ CMRecordingPresenter >> defaultLayout [
 		  expand: false;
 		  add: (SpBoxLayout newTopToBottom
 				   spacing: 1;
-				   add: 'Probes to record' expand: false;
-				   add: probesTable;
+				   add: 'Model probes to record' expand: false;
+				   add: modelProbesTable;
+				   yourself);
+		  add: (SpBoxLayout newTopToBottom
+				   spacing: 1;
+				   add: 'Entity probes to record (they may produce a lot of data)'
+				   expand: false;
+				   add: entityProbesTable;
 				   yourself);
 		  yourself
 ]
@@ -89,6 +96,21 @@ CMRecordingPresenter >> defaultLayout [
 CMRecordingPresenter >> doNotRecord: aSelector of: aClass [
 
 	excludedProbes add: aClass -> aSelector
+]
+
+{ #category : 'recording' }
+CMRecordingPresenter >> doNotRecordEntityProbes [
+	"Switch off all the probes of the entity classes, which may produce a lot of data"
+
+	entityProbesTable items do: [ :each |
+		self doNotRecord: each value of: each key ].
+	entityProbesTable refresh
+]
+
+{ #category : 'accessing' }
+CMRecordingPresenter >> entityProbesTable [
+
+	^ entityProbesTable
 ]
 
 { #category : 'initialization' }
@@ -109,26 +131,8 @@ CMRecordingPresenter >> initializePresenters [
 		                 minimum: 1;
 		                 number: 1;
 		                 yourself.
-	probesTable := self newTable
-		               addColumn: ((SpCheckBoxTableColumn
-				                 title: 'Record'
-				                 evaluated: [ :row |
-					                 self isRecorded: row value of: row key ])
-				                onActivation: [ :row |
-					                self record: row value of: row key ];
-				                onDeactivation: [ :row |
-					                self doNotRecord: row value of: row key ];
-				                width: 60;
-				                yourself);
-		               addColumn:
-		               (SpStringTableColumn
-			                title: 'Class'
-			                evaluated: [ :row | row key name ]);
-		               addColumn:
-		               (SpStringTableColumn
-			                title: 'Probe'
-			                evaluated: [ :row | row value ]);
-		               yourself
+	modelProbesTable := self newProbesTable.
+	entityProbesTable := self newProbesTable
 ]
 
 { #category : 'accessing' }
@@ -153,9 +157,43 @@ CMRecordingPresenter >> lastStepOnlyCheckBox [
 CMRecordingPresenter >> modelClass: aModelClass [
 	"Show the probes of aModelClass and of its entity classes, all of them recorded"
 
+	| rows |
 	modelClass := aModelClass.
 	excludedProbes := Set new.
-	probesTable items: self probeRows
+	rows := self probeRows.
+	modelProbesTable items:
+		(rows select: [ :each | each key = modelClass ]).
+	entityProbesTable items:
+		(rows reject: [ :each | each key = modelClass ])
+]
+
+{ #category : 'accessing' }
+CMRecordingPresenter >> modelProbesTable [
+
+	^ modelProbesTable
+]
+
+{ #category : 'initialization' }
+CMRecordingPresenter >> newProbesTable [
+
+	^ self newTable
+		  addColumn: ((SpCheckBoxTableColumn
+				    title: 'Record'
+				    evaluated: [ :row | self isRecorded: row value of: row key ])
+				   onActivation: [ :row | self record: row value of: row key ];
+				   onDeactivation: [ :row |
+					   self doNotRecord: row value of: row key ];
+				   width: 60;
+				   yourself);
+		  addColumn:
+		  (SpStringTableColumn
+			   title: 'Class'
+			   evaluated: [ :row | row key name ]);
+		  addColumn:
+		  (SpStringTableColumn
+			   title: 'Probe'
+			   evaluated: [ :row | row value ]);
+		  yourself
 ]
 
 { #category : 'private' }
@@ -170,12 +208,6 @@ CMRecordingPresenter >> probeRows [
 							   (class inheritsFrom: other) and: [
 								   other probeSelectors includes: selector ] ] ]) collect: [
 				  :selector | class -> selector ] ]
-]
-
-{ #category : 'accessing' }
-CMRecordingPresenter >> probesTable [
-
-	^ probesTable
 ]
 
 { #category : 'recording' }

@@ -8,7 +8,10 @@ Class {
 		'progressBar',
 		'progressLabel',
 		'notebook',
-		'table'
+		'table',
+		'tableDropList',
+		'exportButton',
+		'exportLabel'
 	],
 	#category : 'Cormas-UI-SensitivityAnalysis',
 	#package : 'Cormas-UI',
@@ -37,15 +40,16 @@ CMSensitivityAnalysisRunnerPresenter class >> example [
 CMSensitivityAnalysisRunnerPresenter >> beInFinishedMode [
 
 	self beInInitialMode.
-	
+
 	"Just in case"
 	runButton action: [ "do nothing" ].
 	stopButton action: [ "do nothing" ].
-	
+
 	runButton disable.
 	stopButton disable.
-	
-	self showCharts
+
+	self showCharts.
+	self offerExport
 ]
 
 { #category : 'states' }
@@ -85,16 +89,17 @@ CMSensitivityAnalysisRunnerPresenter >> beInRunningMode [
 
 { #category : 'initialization' }
 CMSensitivityAnalysisRunnerPresenter >> connectPresenters [
-	
+
 	analysis whenProgressDo: [ :anAnalysis |
-		self updateProgress.
-		self updateDataTable ].
-	
-	analysis whenFinishedDo: [ :anAnalysis |
-		self beInFinishedMode ].
-	
-	stopButton action: [
-		analysis stop ]
+			self updateProgress.
+			self updateDataTable ].
+
+	analysis whenFinishedDo: [ :anAnalysis | self beInFinishedMode ].
+
+	tableDropList whenSelectedItemChangedDo: [ :aClass |
+		self showResults ].
+
+	stopButton action: [ analysis stop ]
 ]
 
 { #category : 'layout' }
@@ -131,6 +136,22 @@ CMSensitivityAnalysisRunnerPresenter >> example [
 ]
 
 { #category : 'updating' }
+CMSensitivityAnalysisRunnerPresenter >> export [
+	"Export the analysis once, and say where"
+
+	| folder |
+	folder := analysis export.
+	exportButton disable.
+	exportLabel label: 'Exported to ' , folder fullName
+]
+
+{ #category : 'accessing' }
+CMSensitivityAnalysisRunnerPresenter >> exportButton [
+
+	^ exportButton
+]
+
+{ #category : 'updating' }
 CMSensitivityAnalysisRunnerPresenter >> hideCharts [
 
 	notebook pages
@@ -156,13 +177,36 @@ CMSensitivityAnalysisRunnerPresenter >> initializePresenters [
 		                 label: 'Progress';
 		                 yourself.
 
+	tableDropList := self newDropList
+		                 items: analysis resultClasses;
+		                 display: [ :aClass | aClass name ];
+		                 yourself.
+
 	table := self instantiate: CMDataPresenter.
 	table columnNames: #(  ).
 	table modelClass: analysis modelClass.
 	table hideSummary.
 
+	exportButton := self newButton
+		                label: 'Export all data';
+		                icon: CMIcons csvIcon;
+		                help:
+			                'Write the design and the results of the analysis in a folder of the model''s output folder';
+		                disable;
+		                yourself.
+	exportLabel := self newLabel.
+
 	notebook := self newNotebook.
-	notebook addPageTitle: 'Data' provider: [ table ].
+	notebook addPageTitle: 'Data' provider: [
+			self newPresenter
+				layout: (SpBoxLayout newTopToBottom
+						 spacing: 5;
+						 add: tableDropList expand: false;
+						 add: table;
+						 add: exportButton height: 45;
+						 add: exportLabel expand: false;
+						 yourself);
+				yourself ].
 
 	self beInInitialMode
 ]
@@ -175,6 +219,19 @@ CMSensitivityAnalysisRunnerPresenter >> initializeWindow: aWindowPresenter [
 	aWindowPresenter 
 		title: 'Sensitivity Analysis Runner';
 		initialExtent: 800@600
+]
+
+{ #category : 'updating' }
+CMSensitivityAnalysisRunnerPresenter >> offerExport [
+	"Offer to export the results of the runs done, with the size of the export"
+
+	analysis results ifEmpty: [ ^ self ].
+	exportButton
+		label:
+			'Export all data ('
+			, analysis exportSize humanReadableByteSizeString , ')';
+		action: [ self export ];
+		enable
 ]
 
 { #category : 'initialization' }
@@ -197,14 +254,34 @@ CMSensitivityAnalysisRunnerPresenter >> showCharts [
 ]
 
 { #category : 'updating' }
+CMSensitivityAnalysisRunnerPresenter >> showResults [
+	"Show the results of the class chosen in the drop-down list"
+
+	| rows |
+	rows := analysis resultsOf: tableDropList selectedItem.
+	rows ifEmpty: [ ^ self ].
+	table columnNames: rows first keys.
+	table showData: (rows collect: [ :row | row values asArray ])
+]
+
+{ #category : 'accessing' }
+CMSensitivityAnalysisRunnerPresenter >> table [
+
+	^ table
+]
+
+{ #category : 'accessing' }
+CMSensitivityAnalysisRunnerPresenter >> tableDropList [
+
+	^ tableDropList
+]
+
+{ #category : 'updating' }
 CMSensitivityAnalysisRunnerPresenter >> updateDataTable [
+	"Offer the results of the model and of each class with recorded instances, keeping the chosen one, and show it"
 
-	| data |
-	data := analysis results.
-	data ifEmpty: [ ^ self ].
-
-	table columnNames: data first keys.
-	table showData: (data collect: [ :row | row values asArray ])
+	tableDropList updateItemsKeepingSelection: analysis resultClasses.
+	self showResults
 ]
 
 { #category : 'as yet unclassified' }

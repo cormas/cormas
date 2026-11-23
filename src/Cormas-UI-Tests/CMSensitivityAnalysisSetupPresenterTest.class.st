@@ -19,6 +19,12 @@ CMSensitivityAnalysisSetupPresenterTest >> csvOf: aFile [
 	^ aFile contents lines collect: [ :each | (each splitOn: $,) asArray ]
 ]
 
+{ #category : 'tests' }
+CMSensitivityAnalysisSetupPresenterTest >> jsonOf: anAnalysisFolder [
+
+	^ STONJSON fromString: (anAnalysisFolder / 'analysis.json') contents
+]
+
 { #category : 'private' }
 CMSensitivityAnalysisSetupPresenterTest >> sample: aSelector values: anArray [
 
@@ -57,7 +63,7 @@ CMSensitivityAnalysisSetupPresenterTest >> testAProbeSwitchedOffIsNotInTheResult
 		doNotRecord: #numberOfDeadCells
 		of: CMMockModel.
 	header := (self csvOf:
-		           (presenter newAnalysis runIn: output) / 'results.csv')
+		           (presenter newAnalysis run; exportTo: output) / 'results.csv')
 		          first.
 	self assert: (header includes: 'numberOfAliveCells').
 	self deny: (header includes: 'numberOfDeadCells')
@@ -72,25 +78,37 @@ CMSensitivityAnalysisSetupPresenterTest >> testChoosingASamplingKeepsTheReplicat
 ]
 
 { #category : 'tests' }
+CMSensitivityAnalysisSetupPresenterTest >> testOnlyTheModelProbesAreRecordedByDefault [
+
+	| analysis |
+	analysis := presenter newAnalysis.
+	analysis run.
+	self assert: analysis resultClasses asArray equals: { CMMockModel }.
+	self
+		assert: analysis outputs asArray
+		equals: #( 'numberOfAliveCells' 'numberOfDeadCells' )
+]
+
+{ #category : 'tests' }
 CMSensitivityAnalysisSetupPresenterTest >> testRunsRecordEveryStepsWhenChosen [
 
 	presenter recordingPresenter lastStepOnlyCheckBox state: false.
-	presenter recordingPresenter intervalInput number: 1.
+	presenter recordingPresenter intervalInput number: 3.
 	self
-		assert:
-			((presenter newAnalysis runIn: output) / 'run-1' / 'data.csv')
-				contents lines size
-		equals: 4
+		assert: (((self jsonOf: (presenter newAnalysis
+					    run;
+					    exportTo: output)) at: 'recording') at: 'steps')
+		equals: (Dictionary with: 'type' -> 'interval' with: 'every' -> 3)
 ]
 
 { #category : 'tests' }
 CMSensitivityAnalysisSetupPresenterTest >> testRunsRecordTheirLastStepOnlyByDefault [
 
 	self
-		assert:
-			((presenter newAnalysis runIn: output) / 'run-1' / 'data.csv')
-				contents lines size
-		equals: 2
+		assert: (((self jsonOf: (presenter newAnalysis
+					    run;
+					    exportTo: output)) at: 'recording') at: 'steps')
+		equals: (Dictionary with: 'type' -> 'last')
 ]
 
 { #category : 'tests' }
@@ -118,9 +136,9 @@ CMSensitivityAnalysisSetupPresenterTest >> testTheReplicatesHaveTheSeedsOfTheMas
 				              yourself))
 		            masterSeed: 42;
 		            replicates: 3;
-		            runIn: output / 'expected'.
+		            run; exportTo: output / 'expected'.
 	self
-		assert: (self seedsOf: (presenter newAnalysis runIn: output))
+		assert: (self seedsOf: (presenter newAnalysis run; exportTo: output))
 		equals: (self seedsOf: expected)
 ]
 

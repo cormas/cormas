@@ -1,15 +1,15 @@
 "
-I am a sensitivity analysis: I run a simulation many times, with other parameter values and seeds, and save every run with a summary of their final values.
+I am a sensitivity analysis: I run a simulation many times, with other parameter values and seeds, and keep a summary of their final values, which I export on request.
 
 ## Responsibility:
 
 - I know the settings my runs share (those of a `CMSimulation`), the parameters I vary and their values, my design, my number of replicates and my master seed.
 - I run each combination of parameter values once per replicate, replicate k having the same seed in every combination, and set the parameters back afterwards.
-- I save myself in one folder: `analysis.json` (the design), a folder per run, `results.csv` (the last recorded values of the model probes) and a `results-<Class>.csv` per recorded entity class.
+- I keep my results in memory, and write nothing until I am exported to one folder: `analysis.json` (the design), `results.csv` (the last recorded values of the model probes) and a `results-<Class>.csv` per recorded entity class.
 
 ## Collaborators:
 
-- `CMSimulation`: gives each run its settings through `newSimulationWithSameSettings`, runs it and saves it.
+- `CMSimulation`: gives each run its settings through `newSimulationWithSameSettings`, and runs it.
 - `CMRunMetadata`: describes the settings shared by the runs in `analysis.json`.
 - `CMLastStepRecording` and `CMIntervalRecording`: say which steps each run records, the last one only unless `recordEvery:` is sent.
 
@@ -18,9 +18,10 @@ I am a sensitivity analysis: I run a simulation many times, with other parameter
 - `on:` creates an analysis on a simulation, whose settings each run takes.
 - `parameter:of:values:` varies a parameter of the model or of an entity class.
 - `beFullFactorial` (the default) or `beOneFactorAtATime`, `replicates:`, `masterSeed:`, `recordEvery:`.
-- `run` and `runIn:` run in this process and return the folder of the analysis; `runInBackground` runs in another one, and `pause`, `resume` and `stop` act between runs.
+- `run` runs in this process; `runInBackground` runs in another one, and `pause`, `resume` and `stop` act between runs.
+- `export` and `exportTo:` write the design and the results and return their folder; `exportSize` says how many bytes they take.
 - `results`, `numberOfRuns`, `numberOfCompletedRuns`, `whenProgressDo:` and `whenFinishedDo:` follow it.
-- `outputs`, `resultsVarying:` and `resultsGroupedBy:` give the data of the views of its results, which `canvasOf:against:` and `canvasOf:against:groupedBy:` draw.
+- `resultClasses` and `resultsOf:` give the results of the model and of each entity class; `outputs`, `resultsVarying:` and `resultsGroupedBy:` give the data of the views of its results, which `canvasOf:against:` and `canvasOf:against:groupedBy:` draw.
 
 ```
 | simulation |
@@ -60,7 +61,8 @@ Class {
 		'shouldPause',
 		'pauseSemaphore',
 		'whenProgressBlock',
-		'whenFinishedBlock'
+		'whenFinishedBlock',
+		'runMetadata'
 	],
 	#category : 'Cormas-Core-SensitivityAnalysis',
 	#package : 'Cormas-Core',
@@ -152,6 +154,63 @@ CMSensitivityAnalysis >> combinations [
 	^ isOneFactorAtATime
 		  ifTrue: [ self oneFactorAtATimeCombinations ]
 		  ifFalse: [ self fullFactorialCombinations ]
+]
+
+{ #category : 'private' }
+CMSensitivityAnalysis >> csvOf: rows [
+
+	^ String streamContents: [ :stream |
+		  self writeCsvOf: rows on: stream ]
+]
+
+{ #category : 'exporting' }
+CMSensitivityAnalysis >> export [
+	"Write my export in the output folder of the model's folder, as exportTo: does, and return its folder"
+
+	^ self exportTo: self modelClass folder / 'output'
+]
+
+{ #category : 'exporting' }
+CMSensitivityAnalysis >> exportSize [
+	"Return the number of bytes my export writes"
+
+	^ self exportedFiles
+		  inject: 0
+		  into: [ :sum :each | sum + each utf8Encoded size ]
+]
+
+{ #category : 'exporting' }
+CMSensitivityAnalysis >> exportTo: aFolder [
+	"Write my export in a new folder of aFolder, named after when the analysis started, and return it: the design as analysis.json, the results of the model as results.csv, and of each class with recorded instances as results-<Class>.csv"
+
+	| folder |
+	results isEmpty ifTrue: [
+		self error: 'Nothing to export: no run of the analysis is done' ].
+	folder := aFolder / (runMetadata folderName , ' analysis').
+	folder exists ifTrue: [
+		CMRecordingError signal: folder fullName , ' already exists' ].
+	folder ensureCreateDirectory.
+	self exportedFiles keysAndValuesDo: [ :name :contents |
+		folder / name writeStreamDo: [ :stream |
+			stream nextPutAll: contents ] ].
+	^ folder
+]
+
+{ #category : 'private' }
+CMSensitivityAnalysis >> exportedFiles [
+	"Return the contents of each file of my export, by name"
+
+	| files |
+	files := OrderedDictionary new.
+	files at: 'analysis.json' put: (String streamContents: [ :stream |
+			 STONJSON put: (self jsonWith: runMetadata) onStreamPretty: stream ]).
+	files at: 'results.csv' put: (self csvOf: results).
+	(classResults keys sorted: [ :a :b | a name <= b name ]) do: [
+			:aClass |
+			files
+				at: 'results-' , aClass name , '.csv'
+				put: (self csvOf: (classResults at: aClass)) ].
+	^ files
 ]
 
 { #category : 'private' }
@@ -349,6 +408,14 @@ CMSensitivityAnalysis >> replicates: anInteger [
 ]
 
 { #category : 'accessing' }
+CMSensitivityAnalysis >> resultClasses [
+	"Return the classes I have results of: my model class, then the entity classes with recorded instances, by name"
+
+	^ { self modelClass }
+	  , (classResults keys sorted: [ :a :b | a name <= b name ])
+]
+
+{ #category : 'accessing' }
 CMSensitivityAnalysis >> results [
 	"Return a row for each run done: its number, replicate, seed and parameter values, then the last recorded step and the value of each model probe at that step"
 
@@ -368,6 +435,14 @@ CMSensitivityAnalysis >> resultsGroupedBy: aParameterName [
 		do: [ :each | groups at: each put: OrderedCollection new ].
 	results do: [ :row | (groups at: (row at: aParameterName)) add: row ].
 	^ groups
+]
+
+{ #category : 'accessing' }
+CMSensitivityAnalysis >> resultsOf: aClass [
+	"Return the results of aClass, one of my result classes: a row per run for the model, and per run and instance for an entity class"
+
+	aClass = self modelClass ifTrue: [ ^ results ].
+	^ classResults at: aClass
 ]
 
 { #category : 'views' }
@@ -405,14 +480,24 @@ CMSensitivityAnalysis >> rowStartingWith: anArray [
 
 { #category : 'running' }
 CMSensitivityAnalysis >> run [
-	"Run the analysis in this process and save it in the output folder of the model's folder, as runIn: does. Return the folder of the analysis"
+	"Run the analysis in this process, keeping its results in memory. Nothing is written until it is exported"
 
-	^ self runIn: self modelClass folder / 'output'
+	| parameterValues |
+	parameterValues := simulation cormasModel parameterValues.
+	runMetadata := self newRun newRunMetadata.
+	results := OrderedCollection new.
+	classResults := Dictionary new.
+	numberOfCompletedRuns := 0.
+	shouldStop := false.
+	isRunning := true.
+	[ self runAllRestoring: parameterValues ] ensure: [
+			isRunning := false.
+			whenFinishedBlock value: self ]
 ]
 
 { #category : 'private' }
-CMSensitivityAnalysis >> run: anArray in: aRunFolder [
-	"Do the run described by anArray: its number, replicate and seed, then the values of my parameters. Save it in aRunFolder and add its results"
+CMSensitivityAnalysis >> run: anArray [
+	"Do the run described by anArray: its number, replicate and seed, then the values of my parameters, and add its results"
 
 	| run |
 	run := self newRun.
@@ -421,18 +506,16 @@ CMSensitivityAnalysis >> run: anArray in: aRunFolder [
 	run
 		randomSeed: anArray third;
 		initializeSimulation;
-		runUntilStopped;
-		saveDataTo: aRunFolder.
+		runUntilStopped.
 	self addResultsOf: run described: anArray
 ]
 
 { #category : 'private' }
-CMSensitivityAnalysis >> runAllIn: aFolder restoring: parameterValues [
-	"Do each run, saved in a folder of aFolder, and set the parameters back to parameterValues after it"
+CMSensitivityAnalysis >> runAllRestoring: parameterValues [
+	"Do each run, and set the parameters back to parameterValues after it"
 
-	| seeds digits number |
+	| seeds number |
 	seeds := self seeds.
-	digits := self numberOfRuns printString size.
 	number := 0.
 	self combinations do: [ :combination |
 			seeds withIndexDo: [ :seed :replicate |
@@ -440,42 +523,13 @@ CMSensitivityAnalysis >> runAllIn: aFolder restoring: parameterValues [
 					shouldStop ifTrue: [ ^ self ].
 					number := number + 1.
 					[
-						self
-							run: {
-									number.
-									replicate.
-									seed } , combination
-							in:
-							aFolder / ('run-' , (number printPaddedWith: $0 to: digits)) ]
-						ensure: [
+						self run: {
+								number.
+								replicate.
+								seed } , combination ] ensure: [
 						simulation cormasModel parameterValues: parameterValues ].
 					numberOfCompletedRuns := numberOfCompletedRuns + 1.
 					whenProgressBlock value: self ] ]
-]
-
-{ #category : 'running' }
-CMSensitivityAnalysis >> runIn: aFolder [
-	"Run the analysis in this process and save it in a new folder of aFolder, named after when it started: the design as analysis.json, each run in a folder of its own, the results of the model as results.csv and of each class with recorded instances as results-<Class>.csv. Return the folder of the analysis"
-
-	| parameterValues metadata folder |
-	parameterValues := simulation cormasModel parameterValues.
-	metadata := self newRun newRunMetadata.
-	folder := aFolder / (metadata folderName , ' analysis').
-	folder exists ifTrue: [
-		CMRecordingError signal: folder fullName , ' already exists' ].
-	folder ensureCreateDirectory.
-	folder / 'analysis.json' writeStreamDo: [ :stream |
-		STONJSON put: (self jsonWith: metadata) onStreamPretty: stream ].
-	results := OrderedCollection new.
-	classResults := Dictionary new.
-	numberOfCompletedRuns := 0.
-	shouldStop := false.
-	isRunning := true.
-	[ self runAllIn: folder restoring: parameterValues ] ensure: [
-			self writeResultsIn: folder.
-			isRunning := false.
-			whenFinishedBlock value: self ].
-	^ folder
 ]
 
 { #category : 'running' }
@@ -542,14 +596,4 @@ CMSensitivityAnalysis >> writeCsvOf: rows on: aStream [
 		lf.
 	rows do: [ :each |
 		CMDataTable writeCsvValues: each values on: aStream ]
-]
-
-{ #category : 'private' }
-CMSensitivityAnalysis >> writeResultsIn: aFolder [
-
-	aFolder / 'results.csv' writeStreamDo: [ :stream |
-		self writeCsvOf: results on: stream ].
-	classResults keysAndValuesDo: [ :aClass :rows |
-			aFolder / ('results-' , aClass name , '.csv') writeStreamDo: [
-				:stream | self writeCsvOf: rows on: stream ] ]
 ]

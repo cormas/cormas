@@ -44,7 +44,7 @@ CMSensitivityAnalysisChartPresenterTest >> setUp [
 CMSensitivityAnalysisChartPresenterTest >> testAFullFactorialCanColorThePointsByAParameter [
 
 	| presenter |
-	analysis runIn: output.
+	analysis run.
 	presenter := CMSensitivityAnalysisChartPresenter on: analysis.
 	self assert: presenter groupDropList isVisible.
 	self
@@ -59,7 +59,7 @@ CMSensitivityAnalysisChartPresenterTest >> testOneFactorAtATimeCannotColorThePoi
 
 	| presenter |
 	analysis beOneFactorAtATime.
-	analysis runIn: output.
+	analysis run.
 	presenter := CMSensitivityAnalysisChartPresenter on: analysis.
 	self deny: presenter groupDropList isVisible
 ]
@@ -68,7 +68,7 @@ CMSensitivityAnalysisChartPresenterTest >> testOneFactorAtATimeCannotColorThePoi
 CMSensitivityAnalysisChartPresenterTest >> testTheViewsShowTheOutputsAgainstAParameter [
 
 	| presenter |
-	analysis runIn: output.
+	analysis run.
 	presenter := CMSensitivityAnalysisChartPresenter on: analysis.
 	self
 		assert: presenter outputDropList items asArray

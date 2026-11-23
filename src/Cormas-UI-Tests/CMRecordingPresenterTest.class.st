@@ -66,16 +66,6 @@ CMRecordingPresenterTest >> testAProbeThatIsNotRecordedIsSwitchedOffInTheSimulat
 ]
 
 { #category : 'tests' }
-CMRecordingPresenterTest >> testEachProbeHasARowTheModelFirstThenTheClassesByName [
-
-	self assert: presenter probesTable items asArray equals: {
-			(CMMockModel -> #numberOfAliveCells).
-			(CMMockModel -> #numberOfDeadCells).
-			(CMMockAnimal -> #energy).
-			(CMMockCell -> #state) }
-]
-
-{ #category : 'tests' }
 CMRecordingPresenterTest >> testEverythingIsRecordedByDefault [
 
 	self initializeWithSettings.
@@ -96,6 +86,27 @@ CMRecordingPresenterTest >> testOnlyTheLastStepIsRecordedWhenChosen [
 ]
 
 { #category : 'tests' }
+CMRecordingPresenterTest >> testTheEntityProbesCanBeSwitchedOffTogether [
+
+	presenter doNotRecordEntityProbes.
+	self assert:
+		(presenter isRecorded: #numberOfAliveCells of: CMMockModel).
+	self deny: (presenter isRecorded: #energy of: CMMockAnimal).
+	self deny: (presenter isRecorded: #state of: CMMockCell)
+]
+
+{ #category : 'tests' }
+CMRecordingPresenterTest >> testTheModelProbesAndTheEntityProbesHaveATableEach [
+
+	self assert: presenter modelProbesTable items asArray equals: {
+			(CMMockModel -> #numberOfAliveCells).
+			(CMMockModel -> #numberOfDeadCells) }.
+	self assert: presenter entityProbesTable items asArray equals: {
+			(CMMockAnimal -> #energy).
+			(CMMockCell -> #state) }
+]
+
+{ #category : 'tests' }
 CMRecordingPresenterTest >> testTheRecordingIntervalIsApplied [
 
 	presenter intervalInput number: 3.
@@ -109,7 +120,7 @@ CMRecordingPresenterTest >> testTheTableHasAColumnToRecordAndColumnsForTheClassA
 
 	self
 		assert:
-			(presenter probesTable columns collect: [ :each | each title ])
+			(presenter entityProbesTable columns collect: [ :each | each title ])
 				asArray
 		equals: #( 'Record' 'Class' 'Probe' )
 ]
